@@ -1,0 +1,28 @@
+[Desktop Entry]
+Name=Current Track
+Name[bg]=Текущ записа
+Name[el]=Τρέχον κομμάτι
+Name[et]=Aktiivne pala
+Name[ga]=An tAmhrán Reatha
+Name[nb]=Gjeldende spor
+Name[nds]=Aktuell Stück
+Name[nl]=Huidige track
+Name[pt]=Faixa Actual
+Name[pt_BR]=Faixa Atual
+Name[sv]=Aktuellt spår
+Name[uk]=Поточна композиція
+Type=Service
+ServiceTypes=Plasma/Applet
+
+X-KDE-Library=amarok_context_applet_currenttrack
+X-KDE-PluginInfo-Author=Leo Franchi
+X-KDE-PluginInfo-Email=lfranchi@gmail.com
+X-KDE-PluginInfo-Name=currenttrack
+X-KDE-PluginInfo-Version=pre0.1
+X-KDE-PluginInfo-Website=
+X-KDE-PluginInfo-Depends=
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=true
+X-KDE-ParentApp=amarok
+X-KDE-PluginInfo-Category=Current
+

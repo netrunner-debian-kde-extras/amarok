@@ -1,0 +1,28 @@
+[Desktop Entry]
+Name=Bookmarks
+Name[bg]=Отметки
+Name[el]=Σελιδοδείκτες
+Name[et]=Järjehoidjad
+Name[ga]=Leabharmharcanna
+Name[nb]=Bokmerker
+Name[nds]=Leestekens
+Name[nl]=Bladwijzers
+Name[pt]=Favoritos
+Name[pt_BR]=Favoritos
+Name[sv]=Bokmärken
+Name[uk]=Закладки
+Type=Service
+ServiceTypes=Plasma/Applet
+
+X-KDE-Library=amarok_context_applet_bookmark
+X-KDE-PluginInfo-Author=Nikolaj Hald Nielsen
+X-KDE-PluginInfo-Email=nhnFreespirit@gmail.com
+X-KDE-PluginInfo-Name=bookmark
+X-KDE-PluginInfo-Version=pre0.1
+X-KDE-PluginInfo-Website=
+X-KDE-PluginInfo-Depends=
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=true
+X-KDE-ParentApp=amarok
+X-KDE-PluginInfo-Category=Current
+
