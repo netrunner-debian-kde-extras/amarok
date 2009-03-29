@@ -1,0 +1,11 @@
+# Development stuff
+usr/share/dbus-1/interfaces/org.freedesktop.MediaPlayer.root.xml
+usr/share/dbus-1/interfaces/org.freedesktop.MediaPlayer.player.xml
+usr/share/dbus-1/interfaces/org.freedesktop.MediaPlayer.tracklist.xml
+usr/lib/libamarok_taglib.so
+usr/lib/libamaroklib.so
+usr/lib/libamarokpud.so
+usr/lib/libmediadevicelib.so
+
+# Extra COPYING files
+debian/tmp/usr/share/kde4/apps/amarok/scripts/librivox_service/COPYING

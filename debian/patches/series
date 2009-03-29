@@ -1,0 +1,4 @@
+01_aboutdata_add_debian_version.diff
+#02_mysqle_fix_linkage.diff
+03_mysqle_link_to_amarok_executable.diff
+05_mysqle_amarok_local_errmsg.diff

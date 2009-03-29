@@ -1,0 +1,58 @@
+--- a/src/collection/sqlcollection/MySqlEmbeddedCollection.cpp
++++ b/src/collection/sqlcollection/MySqlEmbeddedCollection.cpp
+@@ -26,9 +26,13 @@
+ #include <QThreadStorage>
+ #include <QVarLengthArray>
+ 
++#include <KStandardDirs>
+ 
+ #include <mysql.h>
+ 
++#define MYSQLE_ERRMSG_FILENAME "errmsg.sys"
++#define MYSQLE_ERRMSG_LOCAL_DIR "amarok/mysqle"
++
+ /**
+  * This class is used by MySqlEmbeddedCollection to fulfill mysql's thread
+  * requirements. In every function, that calls mysql_*, an init() method of
+@@ -90,9 +94,12 @@
+ {
+     const QString defaultsFile = Amarok::config( "MySQLe" ).readEntry( "config", Amarok::saveLocation() + "my.cnf" ); 
+     const QString databaseDir = Amarok::config( "MySQLe" ).readEntry( "data", Amarok::saveLocation() + "mysqle" );
++    QString languageDataDir = KGlobal::dirs()->findResourceDir( "data", MYSQLE_ERRMSG_LOCAL_DIR "/" MYSQLE_ERRMSG_FILENAME );
+ 
+     char* defaultsLine = qstrdup( QString( "--defaults-file=%1" ).arg( defaultsFile ).toAscii().data() );
+     char* databaseLine = qstrdup( QString( "--datadir=%1" ).arg( databaseDir ).toAscii().data() );
++    char* languageLine = (languageDataDir.isNull()) ? NULL :
++        qstrdup( QString( "--language=%1/%2" ).arg( languageDataDir ).arg( MYSQLE_ERRMSG_LOCAL_DIR ).toAscii().data() );
+ 
+     if( !QFile::exists( defaultsFile ) )
+     {
+@@ -109,7 +116,9 @@
+         dir.mkpath( "." );
+     }
+ 
+-    static const int num_elements = 8;
++    int num_elements = 8;
++    if (languageLine)
++        num_elements++;
+     char **server_options = new char* [ num_elements + 1 ];
+     server_options[0] = const_cast<char*>( "amarokmysqld" );
+     server_options[1] = defaultsLine;
+@@ -121,6 +130,8 @@
+     server_options[5] = const_cast<char*>( "--loose-skip-innodb" );
+     server_options[6] = const_cast<char*>( "--skip-grant-tables" );
+     server_options[7] = const_cast<char*>( "--myisam-recover=FORCE" );
++    if (languageLine)
++        server_options[num_elements-1] = languageLine;
+     server_options[num_elements] = 0;
+ 
+     char **server_groups = new char* [ 3 ];
+@@ -140,6 +151,8 @@
+     delete [] server_groups;
+     delete [] defaultsLine;
+     delete [] databaseLine;
++    if (languageLine)
++        delete [] languageLine;
+ 
+     if( !m_db )
+     {

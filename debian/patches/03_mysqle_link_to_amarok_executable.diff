@@ -1,0 +1,54 @@
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -640,6 +640,16 @@
+ else(Q_WS_MAC)
+     kde4_add_executable(amarok ${amarok_SRCS})
+     target_link_libraries(amarok ${KDE4_KDEUI_LIBS} amaroklib )
++    # Link MySQLe to the executable. Hence -fPIC for libmysqld is not
++    # needed anymore.
++    target_link_libraries(amarok -Wl,-whole-archive ${MYSQL_EMBEDDED_LIBRARIES} -Wl,-no-whole-archive)
++    if(NOT WIN32)
++        if(NOT APPLE)
++            target_link_libraries(amarok crypt pthread dl wrap)
++        endif(NOT APPLE)
++    endif(NOT WIN32)
++    set_target_properties(amarok PROPERTIES LINK_FLAGS "-Wl,--allow-multiple-definition")
++
+     install(TARGETS amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
+ endif(Q_WS_MAC)
+ 
+--- a/src/collection/sqlcollection/CMakeLists.txt
++++ b/src/collection/sqlcollection/CMakeLists.txt
+@@ -56,29 +56,17 @@
+ STRING(REPLACE "-Wl,--fatal-warnings" "" CMAKE_MODULE_LINKER_FLAGS_NOFATALWARN ${CMAKE_MODULE_LINKER_FLAGS})
+ SET(CMAKE_MODULE_LINKER_FLAGS ${CMAKE_MODULE_LINKER_FLAGS_NOFATALWARN} )
+ 
++STRING(REPLACE "-Wl,--no-undefined" "" CMAKE_MODULE_LINKER_FLAGS_ALLOW_UNDEFINED ${CMAKE_MODULE_LINKER_FLAGS})
++SET(CMAKE_MODULE_LINKER_FLAGS ${CMAKE_MODULE_LINKER_FLAGS_ALLOW_UNDEFINED} )
++
+ target_link_libraries(amarok_collection-sqlcollection
+     amaroklib
+     amarokpud
+     ${KDE4_KDEUI_LIBS}
+     ${KDE4_KIO_LIBS}
+     ${KDE4_THREADWEAVER_LIBRARIES}
+-    ${CMAKE_DL_LIBS}
+-    ${MYSQL_EMBEDDED_LIBRARIES}
+-    #this line may be needed on Debian or other systems where mysql is compiled
+-    #in the prescence of yassl. However it seems to cause problems for other people,
+-    #so its been disabled.
+-    #See http://bugs.mysql.com/bug.php?id=21489
+-    ${MYSQL_LIBRARIES}
+-    ${ZLIB_LIBRARIES}
+ )
+ 
+-if(NOT WIN32)
+-    target_link_libraries(amarok_collection-sqlcollection crypto ssl)
+-    if(NOT APPLE)
+-        target_link_libraries(amarok_collection-sqlcollection crypt pthread)
+-    endif(NOT APPLE)
+-endif(NOT WIN32)
+-
+ if(APPLE)
+ 	SET_TARGET_PROPERTIES(amarok_collection-sqlcollection PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+ endif(APPLE)
