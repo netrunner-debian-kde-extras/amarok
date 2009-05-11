@@ -18,6 +18,7 @@ usr/share/kde4/apps/amarok/scripts/script_console/main.js
 usr/share/kde4/apps/amarok/scripts/script_console/script.spec
 usr/share/kde4/apps/desktoptheme/*
 usr/share/kde4/config.kcfg/*
+usr/share/kde4/config/amarok_homerc
 usr/share/kde4/config/amarok.knsrc
 usr/share/kde4/services/ServiceMenus/*
 usr/share/kde4/services/amarok-containment-vertical.desktop

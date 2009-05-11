@@ -31,14 +31,7 @@ usr/lib/kde4/libamarok_collection-ipodcollection.so
 usr/lib/kde4/libamarok_collection-mtpcollection.so
 usr/lib/kde4/libamarok_collection-sqlcollection.so
 usr/lib/kde4/libamarok_massstorage-device.so
-usr/lib/kde4/plugins/script/libqtscript_core.so
-usr/lib/kde4/plugins/script/libqtscript_gui.so
-usr/lib/kde4/plugins/script/libqtscript_network.so
-usr/lib/kde4/plugins/script/libqtscript_sql.so
-usr/lib/kde4/plugins/script/libqtscript_uitools.so
-usr/lib/kde4/plugins/script/libqtscript_xml.so
 usr/lib/libamarok_service_liblastfm.so
-usr/lib/libamarok_taglib.so.1*
 usr/lib/libamaroklib.so.1*
 usr/lib/libamarokpud.so.1*
 usr/lib/libmediadevicelib.so.1*
