@@ -1,4 +1,4 @@
-amarok (2.0.96-2) UNRELEASED; urgency=low
+amarok (2.0.96-2) experimental; urgency=low
 
   * Do not apply debian/mysqle_linkage_fix patch, rebase
     debian/mysqle_link_to_amarok_executable_feature on top of upstream.
