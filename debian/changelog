@@ -5,8 +5,9 @@ amarok (2.0.96-2) UNRELEASED; urgency=low
   * Update debian/copyright.
   * Add amarok-utils package.
   * Change main section to 'sound' and put amarok-utils to utils section.
+  * Update amarok package description.
 
- -- Modestas Vainius <modestas@vainius.eu>  Mon, 11 May 2009 22:23:17 +0300
+ -- Modestas Vainius <modestas@vainius.eu>  Mon, 11 May 2009 22:40:53 +0300
 
 amarok (2.0.96-1) experimental; urgency=low
 

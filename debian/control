@@ -26,17 +26,32 @@ Recommends: kdemultimedia-kio-plugins (>= 4:4.2.0)
 Suggests: libqt4-sql-sqlite, libqt4-sql-mysql, libqt4-sql-psql
 Conflicts: amarok-engine-xine (<< 2), amarok-engine-yauap (<< 2)
 Description: easy to use media player based on the KDE 4 technology platform
- Amarok is the media player with an intuitive interface. Amarok makes playing
- the music you love easier than ever before - and looks good doing it.
+ Amarok is a powerful music player with an intuitive interface. It makes
+ playing the music you love and discovering new music easier than ever before
+ and it looks good doing it! Amarok is based on the powerful Qt4 / KDE4
+ technology platform and nicely integrates with KDE desktop.
  .
- This package provides Amarok series 2 media player which is based on the KDE 4
- technology platform. Features include:
-   - new fascinating look.
-   - innovative user interface.
-   - almighty Internet service framework.
-   - powerful scripting.
-   - dynamic and new biased playlists.
-   - mobile devices support.
+ Much work has been invested into integrating Amarok 2 with various Web
+ services:
+   - Ampache
+   - Jamendo Service
+   - Last.fm
+   - Librivox
+   - MP3tunes
+   - Magnatune
+   - OPML Podcast Directory
+   - Shoutcast Radio Directory
+ .
+ Amarok comes with a lot of features including but not limited to:
+   - Scripts - enhance your Amarok experience with community developed scripts.
+   - Dynamic Playlists - create playlists that automatically update.
+   - Context View - customize interface with the Plasma powered Context View.
+   - PopUp Dropper - simplify drag&drop actions with revolutionary menu system.
+   - Multiple Language Translations
+   - Collection Management - organizing your music collection has never been
+     easier with Amarok's powerful tagging, renaming, and sorting abilities.
+   - Database Importing - import collections from Amarok 1.4 or iTunes.
+   - Scriptable Services - integrate other web services into Amarok.
 
 Package: amarok-common
 Architecture: all
