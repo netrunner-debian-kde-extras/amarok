@@ -12,8 +12,18 @@ amarok (2.0.96-0r1) UNRELEASED; urgency=low
   * Use TopGit for patch management:
     - update debian/README.source accordingly;
     - update patches from TopGit branches, they were renamed.
+  * Depend on QtScript bindings:
+    - add debian/disable_qtscriptbindings_check_fix patch to disable Qt Script
+      bindings cmake check at build time;
+    - make amarok depend on the following QtScript bindings packages:
+      - libqtscript4-core
+      - libqtscript4-gui
+      - libqtscript4-network
+      - libqtscript4-xml
+      - libqtscript4-sql
+      - libqtscript4-uitools
 
- -- Modestas Vainius <modestas@vainius.eu>  Mon, 11 May 2009 13:08:08 +0300
+ -- Modestas Vainius <modestas@vainius.eu>  Mon, 11 May 2009 13:20:32 +0300
 
 amarok (2.0.60+svn935422-2) experimental; urgency=low
 

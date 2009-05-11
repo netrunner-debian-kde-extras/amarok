@@ -20,7 +20,8 @@ Vcs-Browser: http://git.debian.org/?p=users/modax-guest/amarok.git
 
 Package: amarok
 Architecture: any
-Depends:  amarok-common (= ${source:Version}), ${shlibs:Depends}
+Depends: amarok-common (= ${source:Version}), ${shlibs:Depends},
+ libqtscript4-core, libqtscript4-gui, libqtscript4-network, libqtscript4-xml, libqtscript4-sql, libqtscript4-uitools
 Recommends: kdemultimedia-kio-plugins (>= 4:4.2.0)
 Suggests: libqt4-sql-sqlite, libqt4-sql-mysql, libqt4-sql-psql
 Conflicts: amarok-engine-xine (<< 2), amarok-engine-yauap (<< 2)
