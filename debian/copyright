@@ -25,147 +25,114 @@ Upstream Authors:
 
 Debian packaging (debian/*) is:
 Copyright: © 2004-2007 Adeodato Simó <dato@net.com.org.es>
-           © 2007-2008 Modestas Vainius <modestas@vainius.eu>
+           © 2007-2009 Modestas Vainius <modestas@vainius.eu>
 License: GNU General Public License, version 2 or later (GPL-2+)
   On Debian systems, the complete text of the GNU General Public License
   version 2 can be found in /usr/share/common-licenses/GPL-2.
 
 Upstream Copyright Holders:
 
-Copyright: © 2006-2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> <nhnFreespirit@gamil.com>
-Copyright: © 2006-2007, 2007-8, 2008 Maximilian Kossick <maximilian.kossick@googlemail.com>
-Copyright: © 1992-2008 Trolltech ASA. All Rights Reserved. <sales@trolltech.com.>
-Copyright: © 2005-2008 Aaron Seigo <aseigo@kde.org>
-Copyright: © 2005-2007 Last.fm Ltd
-Copyright: © 2002-2008 Mark Kretschmann <kretschmann@kde.org> <markey@web.de>
-Copyright: © 2002-2003, 2006 Jochen Issing <jochen.issing@isign-softart.de>
-Copyright: © 2003, 2003-4, 2004-2007, 5 Max Howell <max.howell@methylblue.com> <max@last.fm>
-Copyright: © 2005-2008 Ian Monroe <ian@monroe.nu> <imonroe@kde.org>
-Copyright: © 2004-2008 Seb Ruiz <ruiz@kde.org>
-Copyright: © 2002-2006 Roberto Raggi <roberto@kdevelop.org>
-Copyright: © 2007-2008 Leo Franchi <lfranchi@gmail.com> <lfranchi@kde.org>
-Copyright: © 2005-2007 Martin Aumueller <aumuell@reserv.at>
-Copyright: © 1998, 2001, 2005 Initial All Rights Reserved.
-Copyright: © 2003-2007 Christian Muehlhaeuser <chris@chris.de> <chris@last.fm>
-Copyright: © 2007-2008 Casey Link <unnamedrambler@gmail.com>
-Copyright: © 2008 Peter ZHOU <peterzhoulei@gmail.com>
-Copyright: © 2005-2008 Jeff Mitchell <kde-dev@emailgoeshere.com> <mitchell@kde.org>
-Copyright: © 2004, 2007-2008 Dan Meltzer <hydrogen@notyetimplemented.com>
-Copyright: © 2006-2007, 20078, 2008 Bart Cerneels <shanachie@yucom.be> <bart.cerneels@kde.org>
-Copyright: © 2007-2008 Shane King <kde@dontletsstart.com>
-Copyright: © 2005-2007 Erik Jaelevik <erik@last.fm>
-Copyright: © 2005-2007 Lukáš Lalinský <lalinsky@gmail.com>
-Copyright: © 2008 Daniel Caleb Jones <danielcjones@gmail.com>
-Copyright: © 2008 Daniel Winter <dw@danielwinter.de>
-Copyright: © 2005 Andy Leadbetter <andrew.leadbetter@gmail.com>
-Copyright: © 2005-2007 Alexandre Pereira de Oliveira <aleprj@gmail.com>
-Copyright: © 2008 William Viana Soares <vianasw@gmail.com>
-Copyright: © 2005-2006 Gábor Lehel <illissius@gmail.com>
-Copyright: © 2007 Ivan Cukic <ivan.cukic+kde@gmail.com>
-Copyright: © 2007-2008 Alejandro Wainzinger <aikawarazuni@gmail.com> <aikawarauzni@gmail.com>
-Copyright: © 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>
-Copyright: ©  Shy Shalom <shooshX@gmail.com>
-Copyright: © 2007-2008 Marco Martin <notmart@gmail.com>
-Copyright: © 2002-2004 Scott Wheeler <wheeler@kde.org>
-Copyright: © 2007 Riccardo Iaconelli <riccardo@kde.org>
-Copyright: © 2004 Allan Sandfeld Jensen <kde@carewolf.org>
-Copyright: © 2008 Daniel Jones <danielcjones@gmail.com>
-Copyright: © 2005-2007 Jono Cole <jono@last.fm>
-Copyright: © 2005-2007 Erik Jalevik <erik@last.fm>
-Copyright: © 2004 Pierpaolo Di Panfilo <pippo_dp@libero.it>
-Copyright: © 2007-2008 Alexis Ménard <darktears31@gmail.com>
-Copyright: © 2003-2004 Frederik Holljen <fh@ez.no>
-Copyright: © 2006 T.R.Shashwath <trshash84@gmail.com>
-Copyright: © 2004, 2007 Adam Pigg <adam@piggz.co.uk>
-Copyright: © 2005-2006 Paul Cifarelli <paul@cifarelli.net> <paulc2@optonline.net>
-Copyright: © 2001, 2006 Andres Oton <andres.oton@gmail.com>
-Copyright: © 2006 Andy Kelk <andy@mopoke.co.uk>
-Copyright: © 2008 Ménard Alexis <darktears31@gmail.com>
-Copyright: © 2005-2007 Alexandre Oliveira <aleprj@gmail.net> <aleprj@gmail.com>
-Copyright: © 2007 Matt Broadstone <mbroadst@gmail.com>
-Copyright: © 2006-2008 Sebastian Trueg <trueg@kde.org>
-Copyright: © 2004 Enrico Ros <eros.kde@email.it>
-Copyright: © 2005 Markus Brueffer <markus@brueffer.de>
-Copyright: © 2007 Bertjan Broeksema <b.broeksema@kdemail.net>
-Copyright: © 2001 Shaun Jackman <sjackman@debian.org>
-Copyright: © 2004 Thomas Loeber <vfat@loeber1.de> <ifp@loeber1.de>
-Copyright: © 2007 Mirko Stocker <me@misto.ch>
-Copyright: © 2004, 2007 Kevin Ottens <ervin@ipsquad.net> <ervin@kde.org>
-Copyright: © 2007 Zack Rusin <zack@kde.org>
-Copyright: © 2006 Peter Putzer <putzer@kde.org> <peter.penz@gmx.at>
-Copyright: © 2004 Michael Pyne <michael.pyne@kdemail.net>
-Copyright: © 2001-2002 Anders Lund <anders.lund@lund.tdcadsl.dk>
-Copyright: © 2004 David Hammerton <david@crazney.net> <crazney@crazney.net>
-Copyright: © 2003 Stanislav Karchebny <berkus@users.sf.net>
-Copyright: © 2007 Robert Knight <robertknight@gmail.com>
-Copyright: © 2007 Philipp Maihart <phil@last.fm>
-Copyright: © 2006 Roel Meeuws <r.j.meeuws+amarok@gmail.com>
-Copyright: © 2007 Jamie Faris <farisj@gmail.com>
-Copyright: © 2008 Bonne Eggleston <b.eggleston@gmail.com>
-Copyright: © 2007 David Faure <faure@kde.org>
-Copyright: © 2004 Stefan Bogner <bochi@online.ms>
-Copyright: © 2007 Richard J. Moore <rich@kde.org>
-Copyright: © 2004 Melchior Franz <mfranz@kde.org>
-Copyright: © 2006 Giovanni Venturi <giovanni@kde-it.org>
-Copyright: © 2004 Melchior FRANZ <mfranz@kde.org>
-Copyright: © 1998-2000 Peter Alm
-Copyright: © 2007 Sebastian Kuegler <sebas@kde.org>
-Copyright: © 2006 Peter C. Ndikuwera <pndiku@gmail.com>
-Copyright: © 2008 Jordi Polo <mumismo@gmail.com>
-Copyright: © 2008 Jeremy Whiting <jeremy@scitools.com>
-Copyright: © 1995-2005 Jean-loup Gailly.
-Copyright: © 2007 Alexander Wiedenbruch <mail@wiedenbruch.de>
-Copyright: © 2005 Harald Fernengel <harry@kdevelop.org>
-Copyright: © 2006-2007 Ryan P. Bitanga <ryan.bitanga@gmail.com>
-Copyright: © 1996-2000 the kicker authors.
-Copyright: © 2001 Christoph Cullmann <cullmann@kde.org>
-Copyright: © 2006 Martin Aumüller <aumuell@reserv.at>
-Copyright: © 2007 André Duffeck <duffeck@kde.org>
-Copyright: © 2003 Frerich Raabe <raabe@kde.org>
-Copyright: © 2001 Joseph Wenninger <jowenn@kde.org>
-Copyright: © 2005 Lukas Lalinsky <lalinsky@gmail.com>
-Copyright: © 1998-2000 Olle Hallnas
-Copyright: © 2008 Andrew Lake <jamboarder@yahoo.com>
-Copyright: © 2005 Martin Ehmke <ehmke@gmx.de>
-Copyright: © 2006-2007 Fredrik Höglund <fredrik@kde.org>
-Copyright: ©  Edward Toroshchin <edward.hades@gmail.com>
-Copyright: © 1998-2000 4Front Technologies
-Copyright: ©  Jim Huang <jserv.tw@gmail.com>
-Copyright: © 2007 Matias Valdenegro <mvaldenegro@informatica.utem.cl>
-Copyright: © 2008 Gilles CHAUVIN <gcnweb+kde@gmail.com>
-Copyright: © 2006 Martin Ellis <martin.ellis@kdemail.net>
-Copyright: © 1999-2002 Chris Schlaeger <cs@kde.org>
-Copyright: © 2005 Eyal Lotem <eyal.lotem@gmail.com>
-Copyright: © 2005 Angius Fabrizio. All Rights Reserved.
-Copyright: © 1998-2000 Thomas Nilsson
-Copyright: © 2005 Isaiah Damron <xepo@trifault.net>
-Copyright: © 1998-2000 Mikael Alm
-Copyright: ©  Kurt Granroth <granroth@kde.org>
-Copyright: © 2007 Petri Damsten <damu@iki.fi>
-Copyright: © 2006 Mattias Fliesberg <mattias.fliesberg@gmail.com>
-Copyright: © 2006 Tom Kaitchuck <tkaitchuck@comcast.net>
-Copyright: © 2002, 2004 Jason H. Stover <jason.stover@gcsu.edu>
-Copyright: © 1995-1996 Free Software <bug-glibc@prep.ai.mit.edu.>
-Copyright: © 2006 John Tapsell <tapsell@kde.org>
-Copyright: © 2008 Aaron J. Seigo
-Copyright: © 2006 Michael Fellinger <manveru@weez-int.com>
-Copyright: © 2007 Siraj Razick <siraj@kde.org>
-Copyright: ©  Simon Montagu <smontagu@smontagu.org>
-Copyright: © 2006 David Nicolson
-Copyright: ©  G??bor Lehel <illissius@gmail.com>
-Copyright: © 2006 Mike Diehl <madpenguin8@yahoo.com>
-Copyright: © 2007 Ian Alexander Monroe <ian@monroe.nu>
-Copyright: © 2003 Laur Ivan <laurivan@eircom.net>
-Copyright: © 2004 Shintaro Matsuoka <shin@shoegazed.org>
-Copyright: © 2006 All Rights Reserved.
-Copyright: © 1993 Colin Plumb
-Copyright: © 2007 Benjamin Reed <ranger@befunk.com>
-Copyright: © 1995-2005 Mark Adler
-Copyright: © 2007 Jani Huhtanen <jani.huhtanen@tut.fi>
-Copyright: ©  Shoshannah Forbes <xslf@xslf.com>
-Copyright: © 2004 KÃÂ©vin Ottens <ervin@kde.org>
-Copyright: © 2007 Leonardo Franchi <lfranchi@gmail.com>
-Copyright: © 2007 Henry de Valence <hdevalence@gmail.com>
+  Copyright: © 2006-2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> <nhnFreespiri@gmail.com> <nhnFreespirit@gamil.com>
+  Copyright: © 2006-2008, 2008-2009 Maximilian Kossick <maximilian.kossick@googlemail.com>
+  Copyright: © 2005-2008 Last.fm Ltd.
+  Copyright: © 2007-2009 Leo Franchi <lfranchi@gmail.com> <lfranchi@kde.org>
+  Copyright: © 2002-2009 Mark Kretschmann <kretschmann@kde.org> <markey@web.de>
+  Copyright: © 2004-2009 Seb Ruiz <ruiz@kde.org>
+  Copyright: © 2007-2009 Casey Link <unnamedrambler@gmail.com>
+  Copyright: © 2005-2009 Ian Monroe <ian@monroe.nu> <imonroe@kde.org>
+  Copyright: © 2008 Peter ZHOU <peterzhoulei@gmail.com> <peterzhoulei@gmail.org>
+  Copyright: © 1998, 2001, 2005 Initial All Rights Reserved.
+  Copyright: © 2005-2009 Jeff Mitchell <mitchell@kde.org> <kde-dev@emailgoeshere.com>
+  Copyright: © 2006-2009 Bart Cerneels <bart.cerneels@kde.org>
+  Copyright: © 2003, 2003-4, 2004-2007, 2009, 5 Max Howell <max.howell@methylblue.com> <max@last.fm>
+  Copyright: © 2004, 2007-2009 Dan Meltzer <parallelgrapefruit@gmail.com>
+  Copyright: © 2008 Soren Harward <stharward@gmail.com>
+  Copyright: © 2007-2008 Alejandro Wainzinger <aikawarazuni@gmail.com> <aikawarauzni@gmail.com>
+  Copyright: © 2008 William Viana Soares <vianasw@gmail.com>
+  Copyright: © 2008 Daniel Winter <dw@danielwinter.de>
+  Copyright: © 2007-2008 Shane King <kde@dontletsstart.com>
+  Copyright: © 2008-2009 Teo Mrnjavac <teo.mrnjavac@gmail.com>
+  Copyright: © 2008 Frederick Emmott <mail@fredemmott.co.uk>
+  Copyright: © 2005-2007 Alexandre Pereira de Oliveira <aleprj@gmail.com>
+  Copyright: © 2008 Daniel Caleb Jones <danielcjones@gmail.com>
+  Copyright: ©  Shy Shalom <shooshX@gmail.com>
+  Copyright: © 2003-2007 Christian Muehlhaeuser <chris@chris.de> <chris@last.fm>
+  Copyright: © 2008 Daniel Jones <danielcjones@gmail.com>
+  Copyright: © 2005-2007 Martin Aumueller <aumuell@reserv.at>
+  Copyright: © 2005-2006 Gábor Lehel <illissius@gmail.com>
+  Copyright: © 2004 Pierpaolo Di Panfilo <pippo_dp@libero.it>
+  Copyright: © 2008 Jason A. Donenfeld <Jason@zx2c4.com>
+  Copyright: © 2004, 2007 Adam Pigg <adam@piggz.co.uk>
+  Copyright: © 2003-2004 Frederik Holljen <fh@ez.no>
+  Copyright: © 2008 Urs Wolfer
+  Copyright: © 2001-2003, 2006, 2009 All Rights Reserved.
+  Copyright: © 2004 Enrico Ros <eros.kde@email.it>
+  Copyright: © 2008-2009 Alex Merry <alex.merry@kdemail.net>
+  Copyright: © 2004-2008 Trolltech ASA. All Rights Reserved.
+  Copyright: © 2005 Markus Brueffer <markus@brueffer.de>
+  Copyright: © 2006-2008 Sebastian Trueg <trueg@kde.org>
+  Copyright: © 2004 Michael Pyne <michael.pyne@kdemail.net>
+  Copyright: © 2001-2002 Anders Lund <anders.lund@lund.tdcadsl.dk>
+  Copyright: © 2009 Kevin Funk <krf@electrostorm.net>
+  Copyright: © 2007 Mirko Stocker <me@misto.ch>
+  Copyright: © 2005-2007 Alexandre Oliveira <aleprj@gmail.com>
+  Copyright: © 2004 David Hammerton <david@crazney.net> <crazney@crazney.net>
+  Copyright: © 2003 Stanislav Karchebny <berkus@users.sf.net>
+  Copyright: © 2008-2009 Sven Krohlas <sven@getamarok.com>
+  Copyright: © 2008 Bonne Eggleston <b.eggleston@gmail.com>
+  Copyright: © 2003 Scott Wheeler <wheeler@kde.org>
+  Copyright: © 2007 David Faure <faure@kde.org>
+  Copyright: © 2001 Joseph Wenninger <jowenn@kde.org>
+  Copyright: © 2008 Andreas Muetzel <andreas.muetzel@gmx.net>
+  Copyright: © 2004 Stefan Bogner <bochi@online.ms>
+  Copyright: © 2001-2003 Allan Saddi <allan@saddi.com>
+  Copyright: © 1998-2000 Olle Hallnas
+  Copyright: © 2005 Olivier Gay <olivier.gay@a3.epfl.ch>
+  Copyright: © 2004 Melchior Franz <mfranz@kde.org>
+  Copyright: © 2006 Giovanni Venturi <giovanni@kde-it.org>
+  Copyright: © 2004 Melchior FRANZ <mfranz@kde.org>
+  Copyright: © 2008 Edward Toroshchin <edward.hades@gmail.com>
+  Copyright: © 1998-2000 4Front Technologies
+  Copyright: ©  Jim Huang <jserv.tw@gmail.com>
+  Copyright: © 1998-2000 Peter Alm
+  Copyright: © 2006 Peter C. Ndikuwera <pndiku@gmail.com>
+  Copyright: © 2005 Eyal Lotem <eyal.lotem@gmail.com>
+  Copyright: © 2009 Roman Jarosz <kedgedev@gmail.com>
+  Copyright: © 1998-2000 Thomas Nilsson
+  Copyright: © 2009 Thomas Lübking <thomas.luebking@web.de>
+  Copyright: © 2008 Nicos Gollan <gtdev@spearhead.de>
+  Copyright: © 2005 Isaiah Damron <xepo@trifault.net>
+  Copyright: © 1998-2000 Mikael Alm
+  Copyright: © 2001 Christoph Cullmann <cullmann@kde.org>
+  Copyright: © 2006 Laurent Montel <montel@kde.org>
+  Copyright: © 2006 T.R.Shashwath <trshash84@gmail.com>
+  Copyright: © 2006 Mattias Fliesberg <mattias.fliesberg@gmail.com>
+  Copyright: © 2006 Andy Kelk <andy@mopoke.co.uk>
+  Copyright: © 2006 Martin Aumüller <aumuell@reserv.at>
+  Copyright: © 2007 Robert Knight <robertknight@gmail.com>
+  Copyright: © 2003 Frerich Raabe <raabe@kde.org>
+  Copyright: © 2007 Ian Alexander Monroe <ian@monroe.nu>
+  Copyright: © 2006 Pino Toscano <toscano.pino@tiscali.it>
+  Copyright: © 2003 Laur Ivan <laurivan@eircom.net>
+  Copyright: © 2004 Shintaro Matsuoka <shin@shoegazed.org>
+  Copyright: © 2005 Martin Ehmke <ehmke@gmx.de>
+  Copyright: © 2006 Jaroslaw Staniek <js@iidea.pl>
+  Copyright: © 2002, 2004 Jason H. Stover <jason.stover@gcsu.edu>
+  Copyright: © 2008 Modestas Vainius <modestas@vainius.eu>
+  Copyright: © 2006 Martin Ellis <martin.ellis@kdemail.net>
+  Copyright: © 2007 Jamie Faris <farisj@gmail.com>
+  Copyright: © 1995-1996 Free Software <bug-glibc@prep.ai.mit.edu.>
+  Copyright: © 1993 Colin Plumb
+  Copyright: © 2009 Patrick Spendrin <ps_ml@gmx.de>
+  Copyright: © 2007 Benjamin Reed <ranger@befunk.com>
+  Copyright: © 2008 Aaron Reichman <reldruh@gmail.com>
+  Copyright: ©  Shoshannah Forbes <xslf@xslf.com>
+  Copyright: ©  Simon Montagu <smontagu@smontagu.org>
+  Copyright: © 2006 David Nicolson
+  Copyright: © 2007 Leonardo Franchi <lfranchi@gmail.com>
+  Copyright: © 2007 Henry de Valence <hdevalence@gmail.com>
+  Copyright: © 2006 Mike Diehl <madpenguin8@yahoo.com>
+
 
 License for all components unless stated otherwise:
 --
@@ -178,25 +145,81 @@ License for all components unless stated otherwise:
 
 Other used licenses:
 --
-  GNU General Public License, version 2 (GPL-2)
-    250 file(s) are licensed under this license:
+  BSD-like License
+    5 files are licensed under this license:
 
-    + src/amarok_proxy.rb
-    + src/browsers/servicebrowser/scriptableservice/shoutcast_service.rb
-    src/charset-detector/include/*
-    src/charset-detector/src/*
-    src/mediadevice/ipod/*
-    + src/mediadevice/njb/njbmediadevice.cpp
-    + src/mediadevice/njb/njbmediadevice.h
-    + src/scriptengine/generator
-    src/scriptengine/generator/generator/*
-    src/scriptengine/generator/generator/parser/*
-    src/scriptengine/generator/generator/parser/include/*
-    src/scriptengine/generator/generator/parser/rpp/*
-    src/scriptengine/generator/qtbindings/qs_eval/*
-    src/scriptengine/generator/qtbindings/qtscript_core/*
-    src/scripts/*
+    src/services/ampache/sha256/*
+    + src/services/lastfm/lastfm/fingerprint/Sha256.cpp
+    + src/services/lastfm/lastfm/fingerprint/Sha256.h
+    + src/services/lastfm/lastfm/types/mbid_mp3.c
+
+  On Debian systems, the complete text of the
+  BSD-like License can be found in /usr/share/common-licenses/BSD
+--
+
+--
+    cmake/modules/* excluding:
+    -+ cmake/modules/FindQtScriptQtBindings.cmake
+    -+ cmake/modules/QtScriptBindingsTest.cpp
+
+  Redistribution and use in source and binary forms, with or without
+  modification, are permitted provided that the following conditions
+  are met:
+
+  1. Redistributions of source code must retain the copyright
+     notice, this list of conditions and the following disclaimer.
+  2. Redistributions in binary form must reproduce the copyright
+     notice, this list of conditions and the following disclaimer in the
+     documentation and/or other materials provided with the distribution.
+  3. The name of the author may not be used to endorse or promote products.
+     derived from this software without specific prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE AUTHOR ``AS IS'' AND ANY EXPRESS OR
+  IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.
+  IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT,
+  INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT
+  NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+  DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+  THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+  THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+--
+
+--
+  GNU General Public License, version 2 or 3 (GPL-2 or GPL-3)
+    2 files are licensed under this license:
+
+    + src/widgets/FlowLayout.cpp
+    + src/widgets/FlowLayout.h
+
+  | This file may be used under the terms of the GNU General Public
+  | License versions 2.0 or 3.0 as published by the Free Software
+  | Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
+  | included in the packaging of this file.  Alternatively you may (at
+  | your option) use any later version of the GNU General Public
+  | License if such license has been publicly approved by Trolltech ASA
+  | (or its successors, if any) and the KDE Free Qt Foundation. In
+  | addition, as a special exception, Trolltech gives you certain
+  | additional rights. These rights are described in the Trolltech GPL
+  | Exception version 1.2, which can be found at
+  | http://www.trolltech.com/products/qt/gplexception/ and in the file
+  | GPL_EXCEPTION.txt in this package.
+
+  On Debian systems, the complete text of the
+  GNU General Public License version 2 and 3 can be found in
+  /usr/share/common-licenses/GPL-2 and /usr/share/common-licenses/GPL-3
+--
+
+--
+  GNU General Public License, version 2 (GPL-2)
+
+    playground/src/scripts/*
+    src/context/popupdropper/*
     src/scripts/librivox_service/*
+    utilities/collectionscanner/charset-detector/include/*
+    utilities/collectionscanner/charset-detector/src/*
+    + src/services/scriptable/shoutcast_service.rb
 
   On Debian systems, the complete text of the
   GNU General Public License version 2 can be found in
@@ -204,41 +227,44 @@ Other used licenses:
 --
 
 --
-  GNU Lesser General Public License, version 2.1 (LGPL-2.1)
-    132 file(s) are licensed under this license:
+  GNU Library General Public License, version 2 (LGPL-2)
+    4 files are licensed under this license:
 
-    + src/ktrm.cpp
-    + src/ktrm.h
-    + src/metadata/tplugins.cpp
-    + src/metadata/tplugins.h
-    src/metadata/aac/*
-    src/metadata/asf/*
-    src/metadata/audible/*
-    src/metadata/m4a/*
-    src/metadata/mp4/*
-    src/metadata/speex/*
-    src/metadata/trueaudio/*
-    src/metadata/wav/*
-    src/metadata/wavpack/*
+    src/browsers/filebrowser/* excluding:
+    -+ src/browsers/filebrowser/MyDirOperator.cpp
+    -+ src/browsers/filebrowser/MyDirOperator.h
 
   On Debian systems, the complete text of the
-  GNU Lesser General Public License version 2.1 can be found in
-  /usr/share/common-licenses/LGPL-2.1
+  GNU Library General Public License version 2 can be found in
+  /usr/share/common-licenses/LGPL-2
 --
 
 --
-  GNU Library General Public License, version 2 (LGPL-2)
-    9 file(s) are licensed under this license:
+  GNU Library General Public License, version 2 or later (LGPL-2+)
+    22 files are licensed under this license:
 
-    + src/medium.cpp
-    + src/medium.h
-    + src/browsers/filebrowser/FileBrowser.cpp
-    + src/browsers/filebrowser/FileBrowser.h
-    + src/browsers/filebrowser/kbookmarkhandler.cpp
-    + src/browsers/filebrowser/kbookmarkhandler.h
-    + src/browsers/servicebrowser/lastfm/libUnicorn/URLLabel.cpp
-    + src/browsers/servicebrowser/lastfm/libUnicorn/URLLabel.h
-    src/context/plasma/effects/*
+    + src/Expression.cpp
+    + src/Expression.h
+    + src/Sidebar.h
+    + src/amarok_export.h
+    + src/amarok_libs_export.h
+    + src/collection/mediadevicecollection/support/mediadevicecollection_export.h
+    + src/context/layouts/ContextLayout.cpp
+    + src/context/layouts/ContextLayout.h
+    src/services/lastfm/kdenetwork/*
+    + src/services/lastfm/lastfm/scrobble/knetworkreply.cpp
+    + src/services/lastfm/lastfm/scrobble/knetworkreply.h
+    + src/strigi/audible/audiblethroughanalyzer.cpp
+    + src/strigi/mp4/mp4throughanalyzer.cpp
+    + src/widgets/SidebarWidget.cpp
+    + src/widgets/SidebarWidget.h
+    + src/widgets/kratingpainter.cpp
+    + src/widgets/kratingpainter.h
+    + src/widgets/kratingwidget.cpp
+    + src/widgets/kratingwidget.h
+    src/scripts/qtscript_debug/*
+    src/scripts/qtscript_debug/debug/*
+    src/scripts/templates/*
 
   On Debian systems, the complete text of the
   GNU Library General Public License version 2 can be found in
@@ -247,12 +273,13 @@ Other used licenses:
 
 --
   GNU Lesser General Public License, version 2.1 or later (LGPL-2.1+)
-    6 file(s) are licensed under this license:
+    6 files are licensed under this license:
 
-    src/browsers/servicebrowser/mp3tunes/libmp3tunes/* excluding:
-    -+ src/browsers/servicebrowser/mp3tunes/libmp3tunes/md5.h
-    + src/metadata/tfile_helper.cpp
-    + src/metadata/tfile_helper.h
+    + cmake/modules/FindQtScriptQtBindings.cmake
+    + cmake/modules/QtScriptBindingsTest.cpp
+    src/services/mp3tunes/libmp3tunes/* excluding:
+    -? src/services/mp3tunes/libmp3tunes/md5.c
+    -+ src/services/mp3tunes/libmp3tunes/md5.h
 
   On Debian systems, the complete text of the
   GNU Lesser General Public License version 2.1 can be found in
@@ -260,43 +287,9 @@ Other used licenses:
 --
 
 --
-  GNU Library General Public License, version 2 or later (LGPL-2+)
-    158 file(s) are licensed under this license:
+  MIT-like License (MIT)
+    4 files are licensed under this license:
 
-    + src/Expression.cpp
-    + src/Expression.h
-    + src/MediaItem.cpp
-    + src/MediaItem.h
-    + src/Sidebar.h
-    + src/amarok_export.h
-    + src/amarok_libs_export.h
-    src/context/animators/default/*
-    + src/context/layouts/ContextLayout.cpp
-    + src/context/layouts/ContextLayout.h
-    src/context/plasma/* excluding:
-    -+ src/context/plasma/dialog.cpp
-    -+ src/context/plasma/dialog.h
-    src/context/plasma/appletbrowser/*
-    src/context/plasma/layouts/*
-    src/context/plasma/scripting/*
-    src/context/plasma/tests/* excluding:
-    -? src/context/plasma/tests/sharedtimertest.h
-    src/context/plasma/widgets/*
-    src/strigi/audible/*
-    src/strigi/mp4/*
-    + src/widgets/SidebarWidget.cpp
-    + src/widgets/SidebarWidget.h
-    + src/widgets/kratingpainter.cpp
-    + src/widgets/kratingpainter.h
-    + src/widgets/kratingwidget.cpp
-    + src/widgets/kratingwidget.h
-
-  On Debian systems, the complete text of the
-  GNU Library General Public License version 2 can be found in
-  /usr/share/common-licenses/LGPL-2
---
-
---
     src/collection/daap/daapreader/authentication/* excluding:
     -+ src/collection/daap/daapreader/authentication/contentfetcher.cpp
     -+ src/collection/daap/daapreader/authentication/contentfetcher.h
@@ -306,9 +299,10 @@ Other used licenses:
   obtaining a copy of this software and associated documentation
   files (the "Software"), to deal in the Software without
   restriction, including without limitation the rights to use,
-  copy, modify, merge, publish, distribute, sublicense, and/or
-  sell copies of the Software, and to permit persons to whom the
-  Software is furnished to do so, subject to the following conditions:
+  copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the
+  Software is furnished to do so, subject to the following
+  conditions:
 
   The above copyright notice and this permission notice shall be
   included in all copies or substantial portions of the Software.
@@ -321,55 +315,26 @@ Other used licenses:
   WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
   FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
   OTHER DEALINGS IN THE SOFTWARE.
---
 
---
-    + src/browsers/servicebrowser/lastfm/libUnicorn/mbid_mp3.h
-
-  Redistribution and use in source and binary forms, with or without
-  modification, are permitted provided that the following conditions
-  are met:
-    
-    1. Redistributions of source code must retain the above copyright
-       notice, this list of conditions and the following disclaimer.
-    2. Redistributions in binary form must reproduce the above copyright
-       notice, this list of conditions and the following disclaimer in the
-       documentation and/or other materials provided with the distribution.
-    3. Neither the name of the author nor the names of its contributors
-       may be used to endorse or promote products derived from this software
-       without specific prior written permission.
-  
-  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-  "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-  LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
-  A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT UNLESS REQUIRED BY
-  LAW OR AGREED TO IN WRITING WILL ANY COPYRIGHT HOLDER OR CONTRIBUTOR
-  BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY,
-  OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT
-  OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, PROFITS; OR
-  BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
-  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
-  OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
-  EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 --
 
 --
-    + src/browsers/servicebrowser/lastfm/libUnicorn/zconf.h
-    + src/browsers/servicebrowser/lastfm/libUnicorn/zlib.h
+    playground/src/context/engines/songkick/JsonQt/*
+    src/context/engines/songkick/JsonQt/*
+    src/context/engines/songkick/JsonQt/lib/*
+    src/context/engines/songkick/JsonQt/tests/*
 
-  This software is provided 'as-is', without any express or implied
-  warranty.  In no event will the authors be held liable for any damages
-  arising from the use of this software.
-
-  Permission is granted to anyone to use this software for any purpose,
-  including commercial applications, and to alter it and redistribute it
-  freely, subject to the following restrictions:
-
-  1. The origin of this software must not be misrepresented; you must not
-     claim that you wrote the original software. If you use this software
-     in a product, an acknowledgment in the product documentation would be
-     appreciated but is not required.
-  2. Altered source versions must be plainly marked as such, and must not be
-     misrepresented as being the original software.
-  3. This notice may not be removed or altered from any source distribution.
+  | Copyright (c) 2008, Frederick Emmott <mail@fredemmott.co.uk>
+  |
+  | Permission to use, copy, modify, and/or distribute this software for any
+  | purpose with or without fee is hereby granted, provided that the above
+  | copyright notice and this permission notice appear in all copies.
+  |
+  | THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+  | WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+  | MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+  | ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+  | WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+  | ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+  | OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
 --
