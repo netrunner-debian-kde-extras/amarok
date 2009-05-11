@@ -15,6 +15,8 @@ Build-Depends: debhelper (>= 7.0.50), cmake (>= 2.6.2), quilt (>= 0.4.6-7~), pkg
 Build-Depends-Indep: mysql-server-5.1 (>= 5.1.26rc)
 Standards-Version: 3.8.1
 Homepage: http://amarok.kde.org
+Vcs-Git: git://git.debian.org/git/users/modax-guest/amarok.git
+Vcs-Browser: http://git.debian.org/?p=users/modax-guest/amarok.git
 
 Package: amarok
 Architecture: any

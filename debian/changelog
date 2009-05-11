@@ -8,8 +8,9 @@ amarok (2.0.96-0r1) UNRELEASED; urgency=low
   * Update build scripts:
     - use simplier debhelper/cmake.mk;
     - use dh --with quilt for patching (bump quilt build depend to 0.4.6-7~).
+  * Add Vcs-* fields.
 
- -- Modestas Vainius <modestas@vainius.eu>  Mon, 11 May 2009 12:10:09 +0300
+ -- Modestas Vainius <modestas@vainius.eu>  Mon, 11 May 2009 12:18:39 +0300
 
 amarok (2.0.60+svn935422-2) experimental; urgency=low
 
