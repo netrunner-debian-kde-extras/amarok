@@ -51,8 +51,6 @@
 #include <QPair>
 #include <QTimer>
 
-#include "metadata/tfile_helper.h" //TagLib::File::isWritable
-
 TagDialog::TagDialog( const Meta::TrackList &tracks, QWidget *parent )
     : KDialog( parent )
     , m_currentCover()
@@ -122,11 +120,11 @@ TagDialog::~TagDialog()
     // if tags have changed.
 
     if ( !m_tracks.isEmpty() )
-    {
         delete m_labelCloud;
-    }
     else
         debug() << "Empty tracklist?  Must mean TreeView has not been updated!";
+
+    delete ui;
 }
 
 void
@@ -190,40 +188,56 @@ void
 TagDialog::resultReady( const QString &collectionId, const Meta::AlbumList &albums )
 {
     Q_UNUSED( collectionId )
+
     foreach( Meta::AlbumPtr album, albums )
     {
-        m_albums << album->name();
+        if( !album->name().isEmpty() )
+            m_albums << album->name();
     }
+
+    m_albums.sort();
 }
 
 void
 TagDialog::resultReady( const QString &collectionId, const Meta::ArtistList &artists )
 {
     Q_UNUSED( collectionId )
+
     foreach( Meta::ArtistPtr artist, artists )
     {
-        m_artists << artist->name();
+        if( !artist->name().isEmpty() )
+            m_artists << artist->name();
     }
+
+    m_artists.sort();
 }
 
 void
 TagDialog::resultReady( const QString &collectionId, const Meta::ComposerList &composers )
 {
     Q_UNUSED( collectionId )
+
     foreach( Meta::ComposerPtr composer, composers )
     {
-        m_composers << composer->name();
+        if( !composer->name().isEmpty() )
+            m_composers << composer->name();
     }
+
+    m_composers.sort();
 }
 
 void
 TagDialog::resultReady( const QString &collectionId, const Meta::GenreList &genres )
 {
     Q_UNUSED( collectionId )
+
     foreach( Meta::GenrePtr genre, genres )
     {
-        m_genres << genre->name();
+        if( !genre->name().isEmpty() )  // Where the heck do the empty genres come from?
+            m_genres << genre->name();
     }
+
+    m_genres.sort();
 }
 
 void
@@ -264,7 +278,7 @@ TagDialog::dataQueryDone()
     ui->kComboBox_genre->insertItems( 0, m_genres );
     ui->kComboBox_genre->lineEdit()->setText( saveText );
 
-    m_fieldEdited = m_fieldEditedSave;
+   
 
     if( !m_queryMaker )  //track query complete or not necessary
     {
@@ -277,6 +291,8 @@ TagDialog::dataQueryDone()
             readMultipleTracks();
         }
     }
+
+    m_fieldEdited = m_fieldEditedSave;
 }
 
 void
@@ -428,6 +444,7 @@ TagDialog::scoreModified()
 inline void
 TagDialog::commentModified()
 {
+    DEBUG_BLOCK
     m_fieldEdited[ "comment" ] = true;
     checkModified();
 }
@@ -452,11 +469,12 @@ TagDialog::loadCover()
     if( !m_currentTrack->album() )
         return;
 
-    ui->pixmap_cover->setPixmap( m_currentTrack->album()->image() );
+    const int s = 100; // Image preview size
+
+    ui->pixmap_cover->setPixmap( m_currentTrack->album()->image(s) );
     QString artist = m_currentTrack->artist() ? m_currentTrack->artist()->name() : QString();
     ui->pixmap_cover->setInformation( artist, m_currentTrack->album()->name() );
 
-    const int s = 100; // Image preview size
     ui->pixmap_cover->setMinimumSize( s, s );
     ui->pixmap_cover->setMaximumSize( s, s );
 }
@@ -874,8 +892,8 @@ void TagDialog::readTags()
 
     summaryText = "<table width=100%><tr><td width=50%><table>";
     summaryText += body2cols.arg( i18n("Length:"), unknownSafe( Meta::secToPrettyTime( m_currentTrack->length() ) ) );
-    summaryText += body2cols.arg( i18n("Bitrate:"), unknownSafe( Meta::prettyBitrate( m_currentTrack->bitrate() ) ) );
-    summaryText += body2cols.arg( i18n("Samplerate:"), unknownSafe( QString::number( m_currentTrack->sampleRate() ) ) );
+    summaryText += body2cols.arg( i18n("Bit rate:"), unknownSafe( Meta::prettyBitrate( m_currentTrack->bitrate() ) ) );
+    summaryText += body2cols.arg( i18n("Sample rate:"), unknownSafe( QString::number( m_currentTrack->sampleRate() ) ) );
     summaryText += body2cols.arg( i18n("Size:"), unknownSafe( Meta::prettyFilesize( m_currentTrack->filesize() ) ) );
     summaryText += body2cols.arg( i18n("Format:"), unknownSafe( m_currentTrack->type() ) );
 
@@ -911,7 +929,11 @@ void TagDialog::readTags()
     ui->kLineEdit_location->setText( m_currentTrack->prettyUrl() );
 
     //lyrics
-    ui->kTextEdit_lyrics->setHtml( m_lyrics );
+    // if there is no <html> tag, set it as text instead
+    if( m_lyrics.contains( "<html>" ) )
+        ui->kTextEdit_lyrics->setHtml( m_lyrics );
+    else
+         ui->kTextEdit_lyrics->setPlainText( m_lyrics );
 
     loadCover();
 
@@ -937,6 +959,7 @@ void TagDialog::readTags()
     m_labelCloud->view()->setEnabled( editable );
     ui->ratingWidget->setEnabled( editable );
     ui->qSpinBox_score->setEnabled( editable );
+    ui->pushButton_guessTags->setEnabled( editable );
 
     if( local )
         ui->pushButton_guessTags->show();
@@ -1436,30 +1459,45 @@ TagDialog::saveTags()
         if( !ec->isEditable() )
         {
             debug() << "Track not editable. Aborting loop.";
+            The::statusBar()->shortMessage( i18n( "Writing to file failed. Please check permissions and available disc space." ) );
             continue;
         }
 
         QVariantMap data = storedTags[ track ];
-        ec->beginMetaDataUpdate();
-        if( data.contains( Meta::Field::TITLE ) )
-            ec->setTitle( data.value( Meta::Field::TITLE ).toString() );
-        if( data.contains( Meta::Field::COMMENT ) )
-            ec->setComment( data.value( Meta::Field::COMMENT ).toString() );
-        if( data.contains( Meta::Field::ARTIST ) )
-            ec->setArtist( data.value( Meta::Field::ARTIST ).toString() );
-        if( data.contains( Meta::Field::ALBUM ) )
-            ec->setAlbum( data.value( Meta::Field::ALBUM ).toString() );
-        if( data.contains( Meta::Field::GENRE ) )
-            ec->setGenre( data.value( Meta::Field::GENRE ).toString() );
-        if( data.contains( Meta::Field::COMPOSER ) )
-            ec->setComposer( data.value( Meta::Field::COMPOSER ).toString() );
-        if( data.contains( Meta::Field::YEAR ) )
-            ec->setYear( data.value( Meta::Field::YEAR ).toString() );
-        if( data.contains( Meta::Field::TRACKNUMBER ) )
-            ec->setTrackNumber( data.value( Meta::Field::TRACKNUMBER ).toInt() );
-        if( data.contains( Meta::Field::DISCNUMBER ) )
-            ec->setDiscNumber( data.value( Meta::Field::DISCNUMBER ).toInt() );
-        ec->endMetaDataUpdate();
+
+        //there is really no need to write to the file if only info stored in the db has changed
+
+        //the if from hell
+        if ( data.contains( Meta::Field::TITLE ) || data.contains( Meta::Field::COMMENT ) ||
+             data.contains( Meta::Field::ARTIST ) || data.contains( Meta::Field::ALBUM ) ||
+             data.contains( Meta::Field::GENRE ) || data.contains( Meta::Field::COMPOSER ) ||
+             data.contains( Meta::Field::YEAR ) || data.contains( Meta::Field::TRACKNUMBER ) ||
+             data.contains( Meta::Field::TRACKNUMBER ) || data.contains( Meta::Field::DISCNUMBER ) )
+        {
+
+            debug() << "File info changed....";
+
+            ec->beginMetaDataUpdate();
+            if( data.contains( Meta::Field::TITLE ) )
+                ec->setTitle( data.value( Meta::Field::TITLE ).toString() );
+            if( data.contains( Meta::Field::COMMENT ) )
+                ec->setComment( data.value( Meta::Field::COMMENT ).toString() );
+            if( data.contains( Meta::Field::ARTIST ) )
+                ec->setArtist( data.value( Meta::Field::ARTIST ).toString() );
+            if( data.contains( Meta::Field::ALBUM ) )
+                ec->setAlbum( data.value( Meta::Field::ALBUM ).toString() );
+            if( data.contains( Meta::Field::GENRE ) )
+                ec->setGenre( data.value( Meta::Field::GENRE ).toString() );
+            if( data.contains( Meta::Field::COMPOSER ) )
+                ec->setComposer( data.value( Meta::Field::COMPOSER ).toString() );
+            if( data.contains( Meta::Field::YEAR ) )
+                ec->setYear( data.value( Meta::Field::YEAR ).toString() );
+            if( data.contains( Meta::Field::TRACKNUMBER ) )
+                ec->setTrackNumber( data.value( Meta::Field::TRACKNUMBER ).toInt() );
+            if( data.contains( Meta::Field::DISCNUMBER ) )
+                ec->setDiscNumber( data.value( Meta::Field::DISCNUMBER ).toInt() );
+            ec->endMetaDataUpdate();
+        }
     }
 
     // build a map, such that at least one track represents a unique collection
@@ -1494,6 +1532,7 @@ void
 TagDialog::applyToAllTracks()
 {
     DEBUG_BLOCK
+            debug() << m_fieldEdited;
 
     generateDeltaForLabelList( labelListFromText( ui->kTextEdit_selectedLabels->toPlainText() ) );
 

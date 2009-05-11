@@ -86,6 +86,11 @@ Playlist::Model::Model()
 
     ServicePluginManager::instance();
 
+    /* The PlaylistManager needs to be loaded or podcast episodes and other
+     * non-collection Tracks will not be loaded correctly.
+     */
+    The::playlistManager();
+
     if ( QFile::exists( defaultPlaylistPath() ) )
     {
         Meta::TrackList tracks = Meta::loadPlaylist( KUrl( defaultPlaylistPath() ) )->tracks();
@@ -186,6 +191,9 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
     else if ( role == MultiSourceRole )
         return  m_items.at( row )->track()->hasCapabilityInterface( Meta::Capability::MultiSource );
 
+    else if ( role == StopAfterTrackRole )
+        return Actions::instance()->willStopAfterTrack( idAt( row ) );
+
     else if ( role == Qt::DisplayRole || role == Qt::ToolTipRole )
     {
         switch ( index.column() )
@@ -270,7 +278,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case GroupTracks:
             {
-                return i18n ( "%1 tracks", GroupingProxy::instance()->tracksInGroup( row ) );
+                return i18np ( "1 track", "%1 tracks", GroupingProxy::instance()->tracksInGroup( row ) );
             }
             case LastPlayed:
             {
@@ -316,7 +324,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
                 }
                 else
                 {
-                    sourceName = m_items.at( row )->track()->collection()->prettyName();
+                    sourceName = m_items.at( row )->track()->collection() ? m_items.at( row )->track()->collection()->prettyName() : QString();
                 }
                 return sourceName;
             }
@@ -620,8 +628,6 @@ Playlist::Model::stateOfId( quint64 id ) const
 void
 Playlist::Model::metadataChanged( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
-
     const int size = m_items.size();
     for ( int i = 0; i < size; i++ )
     {
@@ -636,13 +642,9 @@ Playlist::Model::metadataChanged( Meta::TrackPtr track )
 void
 Playlist::Model::metadataChanged( Meta::AlbumPtr album )
 {
-    DEBUG_BLOCK
-
     Meta::TrackList tracks = album->tracks();
     foreach( Meta::TrackPtr track, tracks )
-    {
         metadataChanged( track );
-    }
 }
 
 bool
@@ -656,9 +658,10 @@ Playlist::Model::exportPlaylist( const QString &path ) const
 }
 
 bool
-Playlist::Model::savePlaylist( const QString & name ) const
+Playlist::Model::savePlaylist() const //SLOT
 {
     DEBUG_BLOCK
+    QString name = QString();
 
     Meta::TrackList tl;
     foreach( Item* item, m_items )
@@ -735,19 +738,22 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
         }
     }
 
+    int activeShift = 0;
     int min = m_items.size() + cmds.size();
     int max = 0;
+    int begin = cmds.at( 0 ).second;
     QList<quint64> newIds;
     foreach( const InsertCmd &ic, cmds )
     {
         min = qMin( min, ic.second );
         max = qMax( max, ic.second );
+        activeShift += ( begin <= m_activeRow ) ? 1 : 0;
     }
 
     // actually do the insertion
+    beginInsertRows( QModelIndex(), min, max );
     foreach( const InsertCmd &ic, cmds )
     {
-        beginInsertRows( QModelIndex(), ic.second, ic.second );
         Meta::TrackPtr track = ic.first;
         m_totalLength += track->length();
         subscribeTo( track );
@@ -759,10 +765,11 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
         m_items.insert( ic.second, newitem );
         m_itemIds.insert( newitem->id(), newitem );
         newIds.append( newitem->id() );
-        endInsertRows();
     }
+    endInsertRows();
     emit dataChanged( createIndex( min, 0 ), createIndex( max, columnCount() - 1 ) );
     emit insertedIds( newIds );
+    emit itemsAdded( min );
 
     const Meta::TrackPtr currentTrackPtr = The::engineController()->currentTrack();
 
@@ -778,15 +785,28 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
         }
     }
 
-    Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
+    if( m_activeRow >= 0 )
+        m_activeRow += activeShift;
+    else
+        m_activeRow = -1;
+
+    if( Amarok::actionCollection()->action( "playlist_clear" ) )
+        Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
     //Amarok::actionCollection()->action( "play_pause" )->setEnabled( !activeTrack().isNull() );
 }
 
 void
 Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
 {
+    DEBUG_BLOCK
     if ( cmds.size() < 1 )
         return;
+
+    if ( cmds.size() == m_items.size() )
+    {
+        clearCommand();
+        return;
+    }
 
     int min = m_items.size();
     int max = 0;
@@ -869,7 +889,28 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
 
     Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
     //Amarok::actionCollection()->action( "play_pause" )->setEnabled( !activeTrack().isNull() );
+
+    //make sure that there are enough tracks if we just removed from a dynamic playlist.
+    Playlist::Actions::instance()->normalizeDynamicPlayist();
 }
+
+
+void Playlist::Model::clearCommand()
+{
+    int noOfRows = m_items.size();
+
+    QList<quint64> delIds = m_itemIds.keys();
+
+    beginRemoveRows( QModelIndex(), 0, noOfRows - 1);
+    qDeleteAll( m_items );
+    m_items.clear();
+    m_itemIds.clear();
+    endRemoveRows();
+
+    emit removedIds( delIds );
+
+}
+
 
 void
 Playlist::Model::moveTracksCommand( const MoveCmdList& cmds, bool reverse )
@@ -1065,3 +1106,4 @@ bool Playlist::Model::matchesCurrentSearchTerm( int row ) const
     }
     return false;
 }
+

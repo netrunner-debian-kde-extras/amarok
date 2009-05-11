@@ -21,7 +21,6 @@
 #ifndef AMAROK_META_FILE_P_H
 #define AMAROK_META_FILE_P_H
 
-#include "charset-detector/include/chardet.h"
 #include "Debug.h"
 #include "Meta.h"
 #include "MetaUtility.h"
@@ -34,6 +33,7 @@
 #include <QString>
 #include <QTextCodec>
 
+#include <KEncodingProber>
 #include <KLocale>
 
 // Taglib Includes
@@ -50,12 +50,8 @@
 #include <tstring.h>
 #include <vorbisfile.h>
 
-#ifdef HAVE_MP4V2
-#include "metadata/mp4/mp4file.h"
-#include "metadata/mp4/mp4tag.h"
-#else
-#include "metadata/m4a/mp4file.h"
-#include "metadata/m4a/mp4itunestag.h"
+#ifdef TAGLIB_EXTRAS_FOUND
+#include <mp4file.h>
 #endif
 
 namespace MetaFile
@@ -107,6 +103,10 @@ public:
         , batchUpdate( false )
         , album()
         , artist()
+        , score(0)
+        , rating(0)
+        , lastPlayed(0)
+        , firstPlayed(0)
         , playCount(0)
         , track( t )
     {}
@@ -169,9 +169,12 @@ void Track::Private::readMetaData()
     }
     if( !fileRef.isNull() )
     {
-        m_data.bitRate = fileRef.audioProperties()->bitrate();
-        m_data.sampleRate = fileRef.audioProperties()->sampleRate();
-        m_data.length = fileRef.audioProperties()->length();
+        if( fileRef.audioProperties() )
+        {
+            m_data.bitRate = fileRef.audioProperties()->bitrate();
+            m_data.sampleRate = fileRef.audioProperties()->sampleRate();
+            m_data.length = fileRef.audioProperties()->length();
+        }
 
         Meta::ReplayGainTagMap map = Meta::readReplayGainTags( fileRef );
         if ( map.contains( Meta::ReplayGain_Track_Gain ) )
@@ -205,22 +208,15 @@ void Track::Private::readMetaData()
                 m_data.artist = strip( flm[ "TPE2" ].front()->toString() );
 
         }
-        else if ( file->ID3v1Tag() )
+        else if ( file->ID3v1Tag() && tag )
         {
             TagLib::String metaData = tag->title() + tag->artist() + tag->album() + tag->comment();
             const char* buf = metaData.toCString();
             size_t len = strlen( buf );
-            int res = 0;
-            chardet_t det = NULL;
-            char encoding[CHARDET_MAX_ENCODING_NAME];
-            chardet_create( &det );
-            res = chardet_handle_data( det, buf, len );
-            chardet_data_end( det );
-            res = chardet_get_charset( det, encoding, CHARDET_MAX_ENCODING_NAME );
-            chardet_destroy( det );
-
-            QString track_encoding = encoding;
-            if ( res == CHARDET_RESULT_OK )
+            KEncodingProber prober;
+            KEncodingProber::ProberState result = prober.feed( buf, len );
+            QString track_encoding( prober.encodingName() );
+            if ( result != KEncodingProber::NotMe )
             {
                 //http://doc.trolltech.com/4.4/qtextcodec.html
                 //http://www.mozilla.org/projects/intl/chardet.html
@@ -272,17 +268,20 @@ void Track::Private::readMetaData()
                 disc = strip( flm[ "DISCNUMBER" ].front() );
         }
     }
-
+#ifdef TAGLIB_EXTRAS_FOUND
     else if( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileRef.file() ) )
     {
         TagLib::MP4::Tag *mp4tag = dynamic_cast< TagLib::MP4::Tag *>( file->tag() );
         if( mp4tag )
         {
-            m_data.composer = strip( mp4tag->composer() );
-            disc = QString::number( mp4tag->disk() );
+            if ( !mp4tag->itemListMap()["\xA9wrt"].toStringList().isEmpty() )
+                m_data.composer = strip( mp4tag->itemListMap()["\xA9wrt"].toStringList().front() );
+
+            if ( !mp4tag->itemListMap()["disk"].toStringList().isEmpty() )
+                disc = QString::number( mp4tag->itemListMap()["disk"].toIntPair().first );
         }
     }
-
+#endif
     if( !disc.isEmpty() )
     {
         int i = disc.indexOf( '/' );

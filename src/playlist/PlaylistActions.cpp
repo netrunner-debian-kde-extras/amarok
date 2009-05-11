@@ -37,7 +37,6 @@
 #include "navigators/RepeatAlbumNavigator.h"
 #include "navigators/RepeatTrackNavigator.h"
 #include "navigators/StandardTrackNavigator.h"
-#include "navigators/NavigatorFilterProxyModel.h"
 #include "PlaylistModel.h"
 #include "statusbar/StatusBar.h"
 
@@ -79,7 +78,8 @@ Playlist::Actions::Actions()
 Playlist::Actions::~Actions()
 {
     DEBUG_BLOCK
-    m_navigator->deleteLater();
+
+    delete m_navigator;
 }
 
 void
@@ -92,7 +92,10 @@ Playlist::Actions::requestNextTrack()
     m_trackError = false;
     m_currentTrack = Model::instance()->activeId();
     if ( stopAfterMode() == StopAfterQueue && m_currentTrack == m_trackToBeLast )
+    {
         setStopAfterMode( StopAfterCurrent );
+        m_trackToBeLast = 0;
+    }
     
     m_nextTrackCandidate = m_navigator->requestNextTrack();
     m_currentTrack = m_nextTrackCandidate;
@@ -143,8 +146,11 @@ Playlist::Actions::play()
 void
 Playlist::Actions::play( const QModelIndex& index )
 {
-    m_nextTrackCandidate = index.data( UniqueIdRole ).value<quint64>();
-    play( m_nextTrackCandidate );
+    if( index.isValid() )
+    {
+        m_nextTrackCandidate = index.data( UniqueIdRole ).value<quint64>();
+        play( m_nextTrackCandidate );
+    }
 }
 
 void
@@ -270,9 +276,9 @@ Playlist::Actions::queue( QList<int> rows )
 {
     foreach( int row, rows )
     {
-        quint64 id = NavigatorFilterProxyModel::instance()->idAt( row );
+        quint64 id = The::playlistModel()->idAt( row );
         m_navigator->queueId( id );
-        NavigatorFilterProxyModel::instance()->setRowQueued( row );
+        The::playlistModel()->setRowQueued( row );
     }
 }
 
@@ -281,9 +287,9 @@ Playlist::Actions::dequeue( QList<int> rows )
 {
     foreach( int row, rows )
     {
-        quint64 id = NavigatorFilterProxyModel::instance()->idAt( row );
+        quint64 id = The::playlistModel()->idAt( row );
         m_navigator->dequeueId( id );
-        NavigatorFilterProxyModel::instance()->setRowDequeued( row );
+        The::playlistModel()->setRowDequeued( row );
     }
 }
 
@@ -291,7 +297,7 @@ void
 Playlist::Actions::engineStateChanged( Phonon::State currentState, Phonon::State )
 {
     static int failures = 0;
-    const int maxFailures = 4;
+    const int maxFailures = 10;
 
     if ( currentState == Phonon::ErrorState )
     {
@@ -330,7 +336,12 @@ Playlist::Actions::engineNewTrackPlaying()
         else {
             warning() << "engineNewTrackPlaying:" << track->prettyName() << "does not match what the playlist controller thought it should be";
             if ( model->activeTrack() != track )
-                model->setActiveRow( model->rowForTrack( track ) ); // this will set active row to -1 if the track isn't in the playlist at all
+            {
+                if ( AmarokConfig::lastPlaying() > -1 )
+                    model->setActiveRow( AmarokConfig::lastPlaying() );
+                else
+                    model->setActiveRow( model->rowForTrack( track ) ); // this will set active row to -1 if the track isn't in the playlist at all
+            }
         }
     }
     else
@@ -338,6 +349,17 @@ Playlist::Actions::engineNewTrackPlaying()
 
     m_nextTrackCandidate = 0;
 }
+
+
+void
+Playlist::Actions::normalizeDynamicPlayist()
+{
+    if ( typeid( *m_navigator ) == typeid( DynamicTrackNavigator ) )
+    {
+        static_cast<DynamicTrackNavigator*>(m_navigator)->appendUpcoming();
+    }
+}
+
 
 namespace The
 {

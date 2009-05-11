@@ -43,13 +43,14 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     : Plasma::View( cont, parent )
     , EngineObserver( The::engineController() )
     , m_curState( Home )
+    , m_firstPlayingState( true )
 {
     Q_UNUSED( corona )
     DEBUG_BLOCK
 
     s_self = this;
 
-//     scene()->setItemIndexMethod( QGraphicsScene::BspTreeIndex );
+    scene()->setItemIndexMethod( QGraphicsScene::BspTreeIndex );
     //TODO: Figure out a way to use rubberband and ScrollHandDrag
     //setDragMode( QGraphicsView::RubberBandDrag );
     setTransformationAnchor( QGraphicsView::NoAnchor );
@@ -59,8 +60,7 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
    // setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     setMouseTracking( true );
-
-    scene()->setItemIndexMethod( QGraphicsScene::NoIndex );
+    setScreen( -1 );
     
     //make background transparent
     QPalette p = palette();
@@ -91,17 +91,18 @@ ContextView::~ContextView()
     DEBUG_BLOCK
 
     // Unload and destroy all Amarok plasma-engines
-    const QStringList engines = Plasma::DataEngineManager::self()->listAllEngines();
+    const QStringList engines = Plasma::DataEngineManager::self()->listAllEngines( "Amarok" );
+
+    // Assert added for tracing crash on exit, see BUG 187384
+    Q_ASSERT_X( !engines.isEmpty(), "Listing loaded Plasma engines", "List is empty (no engines loaded!?)" );
+
     foreach( const QString &engine, engines )
     {
-        if( engine.startsWith( "amarok-" ) )
-        {
-            debug() << "Unloading plasma engine: " << engine;
+        debug() << "Unloading plasma engine: " << engine;
 
-            // PlasmaDataEngineManager uses refcounting for the engines, so we need to unload until the refcount reaches 0
-            while( Plasma::DataEngineManager::self()->engine( engine )->isValid() )
-                Plasma::DataEngineManager::self()->unloadEngine( engine );
-        }
+        // PlasmaDataEngineManager uses refcounting for the engines, so we need to unload until the refcount reaches 0
+        while( Plasma::DataEngineManager::self()->engine( engine )->isValid() )
+            Plasma::DataEngineManager::self()->unloadEngine( engine );
     }
      
     clear( m_curState );
@@ -142,19 +143,45 @@ void ContextView::clear()
 
 void ContextView::engineStateChanged( Phonon::State state, Phonon::State oldState )
 {
-    Q_UNUSED( oldState );
-    Q_UNUSED( state );
     DEBUG_BLOCK
-    /*
+
+    /*if( oldState == Phonon::PlayingState )
+        debug() << "got state change from playing: state";
+    else if( oldState == Phonon::StoppedState )
+        debug() << "got state change from stopped";
+    else if( oldState == Phonon::PausedState )
+        debug() << "got state change from paused";
+            
     if( state == Phonon::PlayingState )
         debug() << "got state change to playing: state";
     else if( state == Phonon::StoppedState )
-        debug() << "got state change to stopped"; 
-    */    
-    if( state == Phonon::PlayingState )
+        debug() << "got state change to stopped";
+    else if( state == Phonon::PausedState )
+        debug() << "got state change to paused";
+    */
+    
+    if( state == Phonon::PlayingState && ( oldState != Phonon::PausedState || m_firstPlayingState ) )
+    {
         messageNotify( Current );
+        m_firstPlayingState = false;
+    }
     else if( state == Phonon::StoppedState )
         messageNotify( Home );
+}
+
+
+void
+ContextView::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged )
+{
+    Q_UNUSED( newMetaData )
+    Q_UNUSED( trackChanged )
+    DEBUG_BLOCK
+
+
+    // if we are listening to a stream, take the new metadata as a "new track"
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    if( track && track->type() == "stream" )
+        messageNotify( Current );
 }
 
 void ContextView::showHome()
@@ -173,7 +200,7 @@ void ContextView::loadConfig()
     contextScene()->clearContainments();    
 
     int numContainments = contextScene()->containments().size();
-    KConfig conf( "amarok_homerc", KConfig::SimpleConfig );
+    KConfig conf( "amarok_homerc", KConfig::FullConfig );
     for( int i = 0; i < numContainments; i++ )
     {
         Containment* containment = qobject_cast< Containment* >( contextScene()->containments()[i] );
@@ -221,8 +248,8 @@ void
 ContextView::updateContainmentsGeometry()
 {
   //  DEBUG_BLOCK
-
-  //  debug() << "cv rect: " << rect();
+    
+    debug() << "resizing containment to: " << rect();
 
     containment()->resize( rect().size() );
     containment()->setPos( rect().topLeft() );

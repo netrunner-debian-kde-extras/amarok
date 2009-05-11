@@ -52,6 +52,7 @@
 #include <QPainter>
 #include <QImage>
 #include <QFrame>
+#include <QTextDocument>        //Qt::escape
 
 AMAROK_EXPORT_PLUGIN( LastFmServiceFactory )
 
@@ -64,8 +65,13 @@ QString md5( const QByteArray& src )
 void
 LastFmServiceFactory::init()
 {
-    if( Solid::Networking::status() == Solid::Networking::Unknown ) // No working solid network backend, so force creation of the service
-    {
+   /* Fancy network detection is nice, but buggy if you're stepping outside your currently selected
+    * backend -- and since this is currently the only service using it, it makes it seem like there's just
+    * a last.fm bug.  Disable until such a time as *all* the Internet services go away and are replaced by
+    * helpful text describing how to change your backend if your network is actually running.
+    */
+   // if( Solid::Networking::status() == Solid::Networking::Unknown ) // No working solid network backend, so force creation of the service
+    //{
         ServiceBase *service = createLastFmService();
         if( service )
         {
@@ -73,7 +79,7 @@ LastFmServiceFactory::init()
             m_initialized = true;
             emit newService( service );
         }
-    }
+   /* }
     else
     {
         if( Solid::Networking::status() == Solid::Networking::Connected )
@@ -91,7 +97,7 @@ LastFmServiceFactory::init()
                     this, SLOT( slotCreateLastFmService() ) );
             connect( Solid::Networking::notifier(), SIGNAL( shouldDisconnect() ),
                         this, SLOT( slotRemoveLastFmService() ) );
-    }
+    } */
 }
 
 void
@@ -175,7 +181,7 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
     Q_UNUSED( sessionKey );
     Q_UNUSED( fetchSimilar ); // TODO implement..
 
-    setShortDescription( i18n( "Last.fm: The social music revolution." ) );
+    setShortDescription( i18n( "Last.fm: The social music revolution" ) );
     setIcon( KIcon( "view-services-lastfm-amarok" ) );
 
     if( !username.isEmpty() && !password.isEmpty() )
@@ -219,7 +225,6 @@ LastFmService::init()
     debug() << "username:" << QString( QUrl::toPercentEncoding( Ws::Username ) );
 
     QString authToken =  md5( ( m_userName + md5( password.toUtf8() ) ).toUtf8() );
-    QString sign_key = md5( ( "api_key" + QString( Ws::ApiKey ) + "authToken" + authToken + "methodauth.getMobileSession" + QString( Ws::SharedSecret ) ).toUtf8() );
 
     // now authenticate w/ last.fm and get our session key if we dont have one
     if( sessionKey.isEmpty() )
@@ -229,7 +234,6 @@ LastFmService::init()
         .add( "username", m_userName )
         .add( "authToken", authToken )
         .add( "api_key", Ws::ApiKey )
-        .add( "api_sig", sign_key )
         .get();
 
         connect( reply, SIGNAL( finished( WsReply* ) ), SLOT( onAuthenticated( WsReply* ) ) );
@@ -298,7 +302,7 @@ LastFmService::onAuthenticated( WsReply* reply )
 
                 break;
             } case Ws::AuthenticationFailed:
-                The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "Sorry, we don't recognise that username, or you typed the password wrongly." ) );
+                The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "Either the username was not recognized, or the password was incorrect." ) );
                 break;
 
             default:
@@ -315,6 +319,7 @@ LastFmService::onAuthenticated( WsReply* reply )
     {
         qWarning() << "Caught an exception - perhaps the web service didn't reply?" << e;
     }
+    reply->deleteLater();
 }
 
 void
@@ -361,6 +366,7 @@ LastFmService::onGetUserInfo( WsReply* reply )
     {
         qWarning() << "Caught an exception - perhaps the web service didn't reply?" << e;
     }
+    reply->deleteLater();
 }
 
 void
@@ -425,13 +431,19 @@ LastFmService::updateEditHint( int index )
 void
 LastFmService::updateProfileInfo()
 {
-    if( m_userinfo && !m_age.isEmpty() && !m_gender.isEmpty()) {
-        QString ageinfo = " (" + m_age + ", " + m_gender + ')';
-        m_userinfo->setText( m_userName + ageinfo);
+    if( m_userinfo )
+    {
+        QString info;
+        info += "<b>" + i18n( "Username: ") + "</b>" + Qt::escape( m_userName ) + "<br>";
+        info += !m_age.isEmpty() ? "<b>" + i18n( "Age: " ) + "</b>" + m_age + "<br>" : QString();
+        info += !m_gender.isEmpty() ? "<b>" + i18n( "Gender: " ) + "</b>" + m_gender + "<br>" : QString();
+        m_userinfo->setText( info );
     }
-    if( m_profile && !m_playcount.isEmpty() ) {
+
+    if( m_profile && !m_playcount.isEmpty() )
+    {
         QString playcount = KGlobal::locale()->formatNumber( m_playcount, false );
-        m_profile->setText( playcount + i18n( " plays" ) );
+        m_profile->setText( "<b>" + i18n( "Play Count: " ) + "</b>" + playcount + i18n( " plays" ) );
     }
 }
 

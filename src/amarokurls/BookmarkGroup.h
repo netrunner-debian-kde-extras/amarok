@@ -39,15 +39,14 @@ typedef QList<BookmarkGroupPtr> BookmarkGroupList;
 
 /**
 A class for allowing a "folder structure" in the bookmark browser and the database. Takes care of reading and writing  itself to the database.
-
-    @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
 */
 class BookmarkGroup : public BookmarkViewItem
 {
     public:
-
         BookmarkGroup( const QStringList &dbResultRow, BookmarkGroupPtr parent );
         explicit BookmarkGroup( const QString &name, BookmarkGroupPtr parent = BookmarkGroupPtr() );
+
+        BookmarkGroup( const QString &name, const QString &customType );
 
         ~BookmarkGroup();
 
@@ -73,18 +72,17 @@ class BookmarkGroup : public BookmarkViewItem
         virtual void removeFromDb();
 
     private:
-
         int m_dbId;
         BookmarkGroupPtr m_parent;
         QString m_name;
         QString m_description;
+        QString m_customType;
 
         mutable BookmarkGroupList m_childGroups;
         mutable BookmarkList m_childBookmarks;
 
         mutable bool m_hasFetchedChildGroups;
         mutable bool m_hasFetchedChildPlaylists;
-
 };
 
 

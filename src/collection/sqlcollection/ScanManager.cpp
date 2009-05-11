@@ -3,6 +3,7 @@
  *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
  *  Copyright (c) 2007 Casey Link <unnamedrambler@gmail.com>
  *  Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>
+ *  Copyright (c) 2008-2009 Jeff Mitchell <mitchell@kde.org>
  *
  *  This program is free software; you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -39,6 +40,7 @@
 #include <QVariant>
 #include <QTextCodec>
 #include <QXmlStreamAttributes>
+#include <QDir>         //QDir::separator
 
 #include <KMessageBox>
 #include <KStandardDirs>
@@ -65,8 +67,7 @@ ScanManager::ScanManager( SqlCollection *parent )
     DEBUG_BLOCK
 
     // If Amarok is not installed in standard directory
-    const QString binDir = KStandardDirs::findExe( "amarok" );
-    m_amarokCollectionScanDir = binDir.left( binDir.lastIndexOf( '/' ) + 1 );
+    m_amarokCollectionScanDir = App::instance()->applicationDirPath() + QDir::separator();
 
     QTimer *watchFoldersTimer = new QTimer( this );
     connect( watchFoldersTimer, SIGNAL( timeout() ), SLOT( slotWatchFolders() ) );
@@ -110,12 +111,13 @@ ScanManager::startFullScan()
     QString batchfileLocation( KGlobal::dirs()->saveLocation( "data", QString("amarok/"), false ) + "amarokcollectionscanner_batchfullscan.xml" );
     debug() << "Checking for batch file in " << batchfileLocation;
     
-    if( !QFile::exists( batchfileLocation ) || !readFullBatchFile()  )
+    if( !QFile::exists( batchfileLocation ) || !readBatchFile( batchfileLocation )  )
     {
         m_scanner = new AmarokProcess( this );
-        *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner" << "--nocrashhandler" << "-p";
+        *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner" << "-p";
         if( AmarokConfig::scanRecursively() )
             *m_scanner << "-r";
+        *m_scanner << "--savelocation" << KGlobal::dirs()->saveLocation( "data", QString("amarok/"), true );
         debug() << "GOING TO SCAN:";
         foreach( const QString &dir, MountPointManager::instance()->collectionFolders() )
             debug() << "    " << dir;
@@ -141,35 +143,31 @@ void ScanManager::startIncrementalScan()
         debug() << "scanning currently blocked";
         return;
     }
-    QStringList dirs = getDirsToScan();
 
-    debug() << "GOING TO SCAN:";
-    foreach( const QString &dir, dirs )
-        debug() << "    " << dir;
+    QString batchfileLocation( KGlobal::dirs()->saveLocation( "data", QString("amarok/"), false ) + "amarokcollectionscanner_batchincrementalscan.xml" );
+    bool batchfileExists = QFile::exists( batchfileLocation );
+    if( batchfileExists )
+        debug() << "Found batchfile in " << batchfileLocation;
 
-    if( dirs.isEmpty() )
+    QStringList dirs;
+    
+    if( !batchfileExists )
     {
-        debug() << "Scanning nothing, return.";
-        writeBatchIncrementalInfoFile();
-        return;
+        dirs = getDirsToScan();
+
+        debug() << "GOING TO SCAN:";
+        foreach( const QString &dir, dirs )
+            debug() << "    " << dir;
+
+        if( dirs.isEmpty() )
+        {
+            debug() << "Scanning nothing, return.";
+            writeBatchIncrementalInfoFile();
+            return;
+        }
+
     }
-    if( !m_dbusHandler )
-    {
-        m_dbusHandler = new SqlCollectionDBusHandler( m_collection );
-    }
-    m_scanner = new AmarokProcess( this );
-    *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner" << "--nocrashhandler" << "-i"
-               << "--collectionid" << m_collection->collectionId() << "-p";
-    if( AmarokConfig::scanRecursively() )
-        *m_scanner << "-r";
-    if( pApp->isNonUniqueInstance() )
-        *m_scanner << "--pid" << QString::number( QApplication::applicationPid() );
-    *m_scanner << dirs;
-    m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
-    connect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
-    connect( m_scanner, SIGNAL( finished( int ) ), SLOT( slotFinished() ) );
-    connect( m_scanner, SIGNAL( error( QProcess::ProcessError ) ), SLOT( slotError( QProcess::ProcessError ) ) );
-    m_scanner->start();
+
     if( m_parser )
     {
         stopParser();
@@ -179,6 +177,28 @@ void ScanManager::startIncrementalScan()
     m_isIncremental = true;
     connect( m_parser, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
     ThreadWeaver::Weaver::instance()->enqueue( m_parser );
+
+    if( !batchfileExists || !readBatchFile( batchfileLocation )  )
+    {
+        if( !m_dbusHandler )
+        {
+            m_dbusHandler = new SqlCollectionDBusHandler( m_collection );
+        }
+        m_scanner = new AmarokProcess( this );
+        *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner" << "-i"
+                << "--collectionid" << m_collection->collectionId() << "-p";
+        if( AmarokConfig::scanRecursively() )
+            *m_scanner << "-r";
+        *m_scanner << "--savelocation" << KGlobal::dirs()->saveLocation( "data", QString("amarok/"), true );
+        if( pApp->isNonUniqueInstance() )
+            *m_scanner << "--pid" << QString::number( QApplication::applicationPid() );
+        *m_scanner << dirs;
+        m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
+        connect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
+        connect( m_scanner, SIGNAL( finished( int ) ), SLOT( slotFinished() ) );
+        connect( m_scanner, SIGNAL( error( QProcess::ProcessError ) ), SLOT( slotError( QProcess::ProcessError ) ) );
+        m_scanner->start();        
+    }
 }
 
 bool
@@ -294,13 +314,26 @@ ScanManager::slotError( QProcess::ProcessError error )
     {
         handleRestart();
     }
+    else
+    {
+        debug() << "Unknown error: reseting scan manager state";
+        slotReadReady(); //make sure that we read the complete buffer
+
+        disconnect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
+        disconnect( m_scanner, SIGNAL( finished( int ) ), this, SLOT( slotFinished(  ) ) );
+        disconnect( m_scanner, SIGNAL( error( QProcess::ProcessError ) ), this, SLOT( slotError( QProcess::ProcessError ) ) );
+        m_scanner->deleteLater();
+        m_scanner = 0;
+        
+        m_parser->deleteLater();
+        m_parser = 0;
+    }
 }
 
 bool
-ScanManager::readFullBatchFile()
+ScanManager::readBatchFile( QString fileLocation )
 {
     DEBUG_BLOCK
-    QString fileLocation = KGlobal::dirs()->saveLocation( "data", QString("amarok/"), false ) + "amarokcollectionscanner_batchfullscan.xml";
     QFile file( fileLocation );
     if( !file.open( QIODevice::ReadOnly ) )
     {
@@ -471,7 +504,7 @@ ScanManager::restartScanner()
     DEBUG_BLOCK
 
     m_scanner = new AmarokProcess( this );
-    *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner" << "--nocrashhandler";
+    *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner";
     if( m_isIncremental )
     {
         *m_scanner << "-i" << "--collectionid" << m_collection->collectionId();
@@ -524,13 +557,14 @@ ScanManager::writeBatchIncrementalInfoFile()
     QString fileName = KGlobal::dirs()->saveLocation( "data", QString("amarok/"), true )
         + "amarokcollectionscanner_batchincrementalinput.data";
     QFile incrementalFile( fileName );
-    if( incrementalFile.open( QIODevice::WriteOnly ) )
+    if( incrementalFile.open( QIODevice::WriteOnly | QIODevice::Truncate ) )
     {
         QTextStream stream( &incrementalFile );
         stream.setCodec( QTextCodec::codecForName("UTF-8") );
         stream << m_incrementalDirs.join( "\n" );
         incrementalFile.close();
     }
+    m_incrementalDirs.clear();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -630,6 +664,18 @@ XmlParseJob::run()
 //                        debug() << " TAG: " << l.name().toString() << '\t' << l.value().toString() << '\n';
 //                     debug() << "End FILE";
 
+                    //NOTE: compilation may not be used according to the comment below,
+                    //but this is functionality getting moved from the collection scanner
+                    //until (if ever) pure-Qt transations are supported
+                    QString compilationValue = attrs.value( "compilation" ).toString();
+                    if( compilationValue == "checkforvarious" )
+                    {
+                        if( attrs.value( "artist" ).toString() == i18n( "Various Artists" ) )
+                            compilationValue = QString::number( 1 );
+                        else
+                            compilationValue = QString();
+                    }                            
+
                     QVariantMap data;
                     data.insert( Meta::Field::URL, attrs.value( "path" ).toString() );
                     data.insert( Meta::Field::TITLE, attrs.value( "title" ).toString() );
@@ -643,6 +689,7 @@ XmlParseJob::run()
                     data.insert( Meta::Field::DISCNUMBER, attrs.value( "discnumber" ).toString() );
                     data.insert( Meta::Field::BPM, attrs.value( "bpm" ).toString() );
                     //filetype and uniqueid are missing in the fields, compilation is not used here
+
                     if( attrs.value( "audioproperties" ) == "true" )
                     {
                         data.insert( Meta::Field::BITRATE, attrs.value( "bitrate" ).toString() );
@@ -706,7 +753,7 @@ XmlParseJob::run()
                 {
                     //TODO check for duplicates
                     //debug() << "Saving playlist with path: " << m_reader.attributes().value( "path" ).toString();
-                    The::playlistManager()->save( m_reader.attributes().value( "path" ).toString() );
+                    The::playlistManager()->import( m_reader.attributes().value( "path" ).toString() );
                 }
                 else if( localname == "image" )
                 {

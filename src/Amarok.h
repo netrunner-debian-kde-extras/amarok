@@ -1,5 +1,6 @@
 /*
     Copyright (c) 2004-2005 Max Howell <max.howell@methylblue.com>
+    Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>
 
     This program is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -33,6 +34,7 @@ class QEvent;
 class QMutex;
 class QPixmap;
 class QWidget;
+
 namespace KIO { class Job; }
 
 namespace Amarok
@@ -77,13 +79,6 @@ namespace Amarok
      * @return the KActionCollection used by Amarok
      */
     KActionCollection *actionCollection(); //defined in App.cpp
-
-    /**
-     * Invoke the external web browser set in Amarok's configuration.
-     * @param url The URL to be opened in the browser.
-     * @return True if the browser could be started.
-     */
-    AMAROK_EXPORT bool invokeBrowser( const QString& url ); //defined in App.cpp
 
     /**
      * Compute score for a track that has finished playing.
@@ -264,6 +259,7 @@ namespace Amarok
      * @param reverse if true, The Eagles -> Eagles, The. If false, Eagles, The -> The Eagles
      */
     AMAROK_EXPORT void manipulateThe( QString &str, bool reverse );
+
 }
 
 
@@ -302,6 +298,6 @@ namespace Amarok
 
 
 /// Update this when necessary
-#define APP_VERSION "2.1-SVN"
+#define APP_VERSION "2.0.96"
 
 #endif

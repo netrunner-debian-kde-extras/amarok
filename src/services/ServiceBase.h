@@ -20,8 +20,8 @@
 #ifndef AMAROKSERVICEBASE_H
 #define AMAROKSERVICEBASE_H
 
-#include "browsers/collectionbrowser/CollectionTreeItem.h"
-#include "browsers/collectionbrowser/SingleCollectionTreeItemModel.h"
+#include "browsers/CollectionTreeItem.h"
+#include "browsers/SingleCollectionTreeItemModel.h"
 #include "Amarok.h"
 #include "InfoParserBase.h"
 #include "ServiceCollectionTreeView.h"
@@ -158,7 +158,7 @@ public:
      /**
       * Constructor.
       */
-    ServiceBase( const QString &name, ServiceFactory* parent, bool useCollectionTreeView = true );
+    ServiceBase( const QString &name, ServiceFactory* parent, bool useCollectionTreeView = true, const QString &m_prettyName = QString::Null() );
 
     /**
      * Destructor.
@@ -166,10 +166,16 @@ public:
     ~ServiceBase();
 
     /**
-     * Get the name of this service.
+     * Get the internal name of this service.
      * @return The name of the service.
      */
     QString name() const;
+
+    /**
+     * Get the user visible name of this service.
+     * @return The name of the service.
+     */
+    QString prettyName() const;
 
     /**
      * Set a short description string for this service. This string is used to describe the service in the service browser.
@@ -390,6 +396,7 @@ protected:
     bool         m_polished;
 
     QString      m_name;
+    QString      m_prettyName;
     QString      m_shortDescription;
     QString      m_longDescription;
     QIcon        m_icon;

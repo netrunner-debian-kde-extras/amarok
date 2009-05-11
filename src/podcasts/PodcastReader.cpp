@@ -27,17 +27,13 @@
 #include <QDate>
 #include <time.h>
 
-/* used as PubDate for Podcasts module RSS
-** Mon, 13 Mar 2006 23:37:46 +0000
-*/
-#define RFC822_DATE_FORMAT "d MMM yyyy HH:mm:ss"
-
 using namespace Meta;
 
 PodcastReader::PodcastReader( PodcastProvider * podcastProvider )
         : QXmlStreamReader()
         , m_podcastProvider( podcastProvider )
         , m_current( 0 )
+        , m_parsingImage( false )
 {}
 
 PodcastReader::~PodcastReader()
@@ -53,7 +49,7 @@ bool PodcastReader::read ( QIODevice *device )
 }
 
 bool
-PodcastReader::read(const KUrl &url)
+PodcastReader::read( const KUrl &url )
 {
     DEBUG_BLOCK
 
@@ -105,7 +101,7 @@ PodcastReader::update( PodcastChannelPtr channel )
 }
 
 void
-PodcastReader::slotAddData( KIO::Job *, const QByteArray & data)
+PodcastReader::slotAddData( KIO::Job *, const QByteArray & data )
 {
     DEBUG_BLOCK
 
@@ -176,6 +172,11 @@ PodcastReader::read()
                             m_channel = new Meta::PodcastChannel();
                             m_channel->setUrl( m_url );
                             m_channel->setSubscribeDate( QDate::currentDate() );
+                            /* add this new channel to the provider, we get a pointer to a
+                            * PodcastChannelPtr of the correct type which we will use from now on.
+                            */
+                            m_channel = m_podcastProvider->addChannel( m_channel );
+
                             m_current = static_cast<Meta::PodcastMetaCommon *>( m_channel.data() );
                         }
                     }
@@ -206,6 +207,10 @@ PodcastReader::read()
                 {
                     m_urlString = QXmlStreamReader::attributes().value( QString(), QString("url") ).toString();
                 }
+                else if( QXmlStreamReader::name() == "image" )
+                {
+                    m_parsingImage = true;
+                }
                 m_currentTag = QXmlStreamReader::name().toString();
             }
             else if( isEndElement() )
@@ -222,7 +227,12 @@ PodcastReader::read()
                 }
                 else if( QXmlStreamReader::name() == "title")
                 {
-                    m_current->setTitle( m_titleString );
+                    if( !m_parsingImage )
+                    {
+                        // Remove redundant whitespace from the title.
+                        m_current->setTitle( m_titleString.simplified() );
+                    }
+                    //TODO save image data
                     m_titleString.clear();
                 }
                 else if( QXmlStreamReader::name() == "description" )
@@ -237,13 +247,14 @@ PodcastReader::read()
                 }
                 else if( QXmlStreamReader::name() == "enclosure" )
                 {
-//                     debug() << "enclosure: url = " << m_urlString;
                     static_cast<PodcastEpisode *>(m_current)->setUidUrl( KUrl( m_urlString ) );
                     m_urlString.clear();
                 }
                 else if( QXmlStreamReader::name() == "link" )
                 {
-                    m_channel->setWebLink( KUrl( m_linkString ) );
+                    if( !m_parsingImage )
+                        m_channel->setWebLink( KUrl( m_linkString ) );
+                    //TODO save image data
                     m_linkString.clear();
                 }
                 else if( QXmlStreamReader::name() == "pubDate")
@@ -252,6 +263,10 @@ PodcastReader::read()
                     if( episode )
                         episode->setPubDate( parsePubDate( m_pubDateString ) );
                     m_pubDateString.clear();
+                }
+                else if( QXmlStreamReader::name() == "image" )
+                {
+                    m_parsingImage = false;
                 }
             }
             else if( isCharacters() && !isWhitespace() )
@@ -338,7 +353,7 @@ PodcastReader::slotRedirection( KIO::Job * job, const KUrl & url )
 
 void
 PodcastReader::slotPermanentRedirection( KIO::Job * job, const KUrl & fromUrl,
-        const KUrl & toUrl)
+        const KUrl & toUrl )
 {
     DEBUG_BLOCK
     Q_UNUSED( job ); Q_UNUSED( fromUrl );
@@ -350,15 +365,7 @@ void
 PodcastReader::commitChannel()
 {
     Q_ASSERT( m_channel );
-
-    if( m_podcastProvider->channels().contains( m_channel ) )
-        return;
-
-    debug() << "commit new Podcast Channel " << m_channel->title();
-//     m_podcastProvider->acquireReadLock();
-    m_channel = m_podcastProvider->addChannel( PodcastChannelPtr( m_channel ) );
-//     m_podcastProvider->releaseLock();
-
+    //TODO: we probably need to notify the provider here to we are done updating the channel
 //     emit finished( this, true );
 }
 
@@ -380,13 +387,19 @@ PodcastReader::commitEpisode()
 //     }
 
     if( !m_podcastProvider->possiblyContainsTrack( item->uidUrl() ) )
-        m_channel->addEpisode( PodcastEpisodePtr( item ) );
+    {
+        Meta::PodcastEpisodePtr episode = PodcastEpisodePtr( item );
+        episode = m_channel->addEpisode( episode );
+        //also let the provider know an episode has been added
+        //TODO: change into a signal
+        m_podcastProvider->addEpisode( episode );
+    }
 
     m_current = static_cast<PodcastMetaCommon *>( m_channel.data() );
 }
 
 Meta::PodcastEpisodePtr
-PodcastReader::podcastEpisodeCheck(Meta::PodcastEpisodePtr episode)
+PodcastReader::podcastEpisodeCheck( Meta::PodcastEpisodePtr episode )
 {
 //     DEBUG_BLOCK
     Meta::PodcastEpisodePtr episodeMatch = episode;
@@ -422,4 +435,3 @@ PodcastReader::podcastEpisodeCheck(Meta::PodcastEpisodePtr episode)
 }
 
 #include "PodcastReader.moc"
-

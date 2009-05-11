@@ -36,16 +36,14 @@
 
 MyDirOperator::MyDirOperator( const KUrl &url, QWidget *parent )
         : KDirOperator( url, parent )
-        , mCopyActivated ( false )
-        , mMoveActivated ( false )
-        , mCopyAction( 0 )
-        , mMoveAction( 0 )
+        , m_copyActivated ( false )
+        , m_moveActivated ( false )
+        , m_copyAction( 0 )
+        , m_moveAction( 0 )
 {
     DEBUG_BLOCK
 
-    MyDirLister *dirlister = new MyDirLister( true );
-    dirlister->setMainWindow( The::mainWindow() );
-    setDirLister( dirlister );
+    dirLister()->setAutoUpdate( true );
 
     connect( this, SIGNAL( fileSelected( const KFileItem& ) ),
              this,   SLOT( fileSelected( const KFileItem& ) ) );
@@ -127,43 +125,43 @@ void MyDirOperator::aboutToShowContextMenu()
 void
 MyDirOperator::slotCopyTracks( const Meta::TrackList& tracks )
 {
-    if( !mCopyAction ||  !mCopyActivated  )
+    if( !m_copyAction || !m_copyActivated )
         return;
 
     CollectionLocation *source      = new FileCollectionLocation();
-    CollectionLocation *destination = mCopyAction->collection()->location();
+    CollectionLocation *destination = m_copyAction->collection()->location();
 
     source->prepareCopy( tracks, destination );
-    mCopyActivated = false;
-    mCopyAction = 0;
+    m_copyActivated = false;
+    m_copyAction = 0;
 }
 
 void
 MyDirOperator::slotMoveTracks( const Meta::TrackList& tracks )
 {
-    if( !mMoveAction ||  !mMoveActivated )
+    if( !m_moveAction || !m_moveActivated )
         return;
 
     CollectionLocation *source      = new FileCollectionLocation();
-    CollectionLocation *destination = mMoveAction->collection()->location();
+    CollectionLocation *destination = m_moveAction->collection()->location();
 
     source->prepareMove( tracks, destination );
-    mMoveActivated = false;
-    mMoveAction = 0;
+    m_moveActivated = false;
+    m_moveAction = 0;
 }
 
 void
 MyDirOperator::slotPrepareMoveTracks()
 {
-    if( mMoveActivated )
+    if( m_moveActivated )
         return;
 
     CollectionAction *action = dynamic_cast<CollectionAction*>( sender() );
     if ( !action )
         return;
 
-    mMoveActivated = true;
-    mMoveAction = action;
+    m_moveActivated = true;
+    m_moveAction = action;
     
     const KFileItemList list = selectedItems();
     if ( list.isEmpty() )
@@ -177,15 +175,15 @@ MyDirOperator::slotPrepareMoveTracks()
 void
 MyDirOperator::slotPrepareCopyTracks()
 {
-    if( mCopyActivated )
+    if( m_copyActivated )
         return;
 
     CollectionAction *action = dynamic_cast<CollectionAction*>( sender() );
     if ( !action )
         return;
 
-    mCopyActivated = true;
-    mCopyAction = action;
+    m_copyActivated = true;
+    m_copyAction = action;
     
     const KFileItemList list = selectedItems();
     if ( list.isEmpty() )
@@ -251,6 +249,18 @@ MyDirOperator::slotEditTracks()
         TagDialog *dialog = new TagDialog( tracks, this );
         dialog->show();
     }
+}
+
+bool
+MyDirOperator::eventFilter( QObject *object, QEvent *event )
+{
+    // TODO: This is a workaround for a crash in KDElibs (?). Should be removed at some later point.
+    // See: https://bugs.kde.org/show_bug.cgi?id=175803
+
+    if( ( event->type() == QEvent::Wheel ) && ( QApplication::keyboardModifiers() == Qt::ControlModifier ) )
+        return true;
+
+    return KDirOperator::eventFilter( object, event );
 }
 
 QList<QAction*>

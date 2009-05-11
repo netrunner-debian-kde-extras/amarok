@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
  ******************************************************************************/
 
+#define DEBUG_PREFIX "AmarokScript::Playlist"
+
 #include "AmarokPlaylistScript.h"
 
 #include "App.h"
@@ -37,8 +39,8 @@ namespace AmarokScript
         , m_scriptEngine( scriptEngine )
     {
         m_wrapperList = wrapperList;
-        connect( The::playlistModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT ( slotCountChanged() ) );
-        connect( The::playlistModel(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT ( slotCountChanged() ) );
+        connect( The::playlistModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT ( slotTrackInserted( const QModelIndex&, int, int ) ) );
+        connect( The::playlistModel(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT ( slotTrackRemoved( const QModelIndex&, int, int ) ) );
         connect( The::playlistModel(), SIGNAL( activeRowChanged( int ) ), this, SIGNAL( activeRowChanged( int ) ) );
     }
 
@@ -135,33 +137,39 @@ namespace AmarokScript
         return QVariant::fromValue( track );;
     }
 
-    void AmarokPlaylistScript::slotCountChanged()
+    QList<int> AmarokPlaylistScript::selectedIndexes()
     {
-        emit CountChanged( The::playlistModel()->rowCount() );
+        DEBUG_BLOCK
+
+        Playlist::PrettyListView* list = qobject_cast<Playlist::PrettyListView*>( The::mainWindow()->playlistWidget()->currentView() );
+        return list->selectedRows();
     }
-	
-	QList<int> AmarokPlaylistScript::selectedIndizes()
+
+    QStringList AmarokPlaylistScript::selectedFilenames()
     {
         DEBUG_BLOCK
 
-		Playlist::PrettyListView* list = qobject_cast<Playlist::PrettyListView*>( The::mainWindow()->playlistWidget()->currentView() );
+        QStringList fileNames;
+        const QList<int> indexes = selectedIndexes();
 
-		return list->selectedRows();
-	}
+        for( int i=0; i < indexes.size(); i++ )
+            fileNames << The::playlistModel()->trackAt( indexes[i] )->prettyUrl();
 
-	QStringList AmarokPlaylistScript::selectedFilenames()
+        return fileNames;
+    }
+
+    // PlaylistModel inserts only one track at a time
+    void AmarokPlaylistScript::slotTrackInserted( const QModelIndex&, int row, int )
     {
-        DEBUG_BLOCK
+        Meta::TrackPtr t = The::playlistModel()->trackAt( row );
+        emit trackInserted( QVariant::fromValue( t ), row );
+    }
 
-		QStringList fileNames;
-		const QList<int> indizes = selectedIndizes();
-
-		for( int i=0; i < indizes.size(); i++ )
-			fileNames << The::playlistModel()->trackAt( indizes[i] )->prettyUrl();
-
-		return fileNames;
-	}
+    // PlaylistModel removes only one track at a time
+    void AmarokPlaylistScript::slotTrackRemoved( const QModelIndex&, int row, int )
+    {
+        emit trackRemoved( row );
+    }
 }
 
 #include "AmarokPlaylistScript.moc"
-

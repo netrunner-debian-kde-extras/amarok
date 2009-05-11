@@ -22,7 +22,7 @@
 
 #include "CollectionManager.h"
 
-#include <QHash>
+#include <QFileInfo>
 #include <QList>
 #include <QMap>
 #include <QPair>
@@ -76,7 +76,7 @@ class ScanResultProcessor : public QObject
 
         int checkExistingAlbums( const QString &album );
 
-        QString findAlbumArtist( const QSet<QString> &artists ) const;
+        QString findAlbumArtist( const QSet<QString> &artists, int trackCount ) const;
         void setupDatabase();
 
     private:

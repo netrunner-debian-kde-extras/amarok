@@ -11,16 +11,19 @@
  *                                                                         *
  ***************************************************************************/
 
-
 #include "FirstRunTutorial.h"
 
 #include "Debug.h"
+#include "FirstRunTutorialPage.h"
+#include "MainWindow.h"
 
 #include <QChar>
 #include <QString>
 #include <QTimer>
 
 static int MAX_PAGE = 1;
+static int TUTORIAL_MARGIN = 200;
+
 
 FirstRunTutorial::FirstRunTutorial( QWidget *parent )
     : QObject( parent )
@@ -32,8 +35,7 @@ FirstRunTutorial::FirstRunTutorial( QWidget *parent )
     , m_framesMax( 60 )
     , m_itemSet()
     , m_pageNum( 0 )
-{
-}
+{}
 
 FirstRunTutorial::~FirstRunTutorial()
 {
@@ -46,16 +48,19 @@ void
 FirstRunTutorial::initOverlay() //SLOT
 {
     DEBUG_BLOCK
+
     m_scene = new QGraphicsScene( m_parent );
     m_view = new QGraphicsView( m_scene, m_parent );
     m_scene->setSceneRect( QRectF( m_parent->rect() ) );
-    m_view->setFixedSize( m_parent->size() );
+    m_view->resize( m_parent->size() );
     m_view->setLineWidth( 0 );
     m_view->setFrameStyle( QFrame::NoFrame );
     m_view->setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     m_view->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
     m_view->setBackgroundRole( QPalette::Window );
     m_view->setAutoFillBackground( true );
+
+    m_parent->installEventFilter( this );
 
     QColor color = Qt::blue;
     color.setAlpha( 0 );
@@ -71,6 +76,7 @@ FirstRunTutorial::initOverlay() //SLOT
     m_fadeHideTimer.setCurrentTime( 0 );
     m_fadeHideTimer.setFrameRange( 0, 60 );
     m_fadeHideTimer.setCurveShape( QTimeLine::EaseOutCurve );
+
     connect( &m_fadeShowTimer, SIGNAL( frameChanged(int) ), this, SLOT( fadeShowTimerFrameChanged(int) ) );
     connect( &m_fadeHideTimer, SIGNAL( frameChanged(int) ), this, SLOT( fadeHideTimerFrameChanged(int) ) );
     connect( &m_fadeShowTimer, SIGNAL( finished() ), this, SLOT( fadeShowTimerFinished() ) );
@@ -81,7 +87,6 @@ FirstRunTutorial::initOverlay() //SLOT
 void
 FirstRunTutorial::fadeShowTimerFrameChanged( int frame ) //SLOT
 {
-    DEBUG_BLOCK
     if( m_fadeShowTimer.state() == QTimeLine::Running && m_pageNum == 0 )
     {
         qreal val = ( frame * 1.0 ) / m_framesMax;
@@ -91,12 +96,17 @@ FirstRunTutorial::fadeShowTimerFrameChanged( int frame ) //SLOT
         p.setColor( QPalette::Window, color );
         m_view->setPalette( p );
     }
+    else
+    {
+        #if QT_VERSION >= 0x040500
+        m_pages[m_pageNum]->setOpacity( ( frame * 1.0 ) / m_framesMax );
+        #endif
+    }
 }
 
 void
 FirstRunTutorial::fadeShowTimerFinished() //SLOT
 {
-    DEBUG_BLOCK
     if( m_pageNum == 0 )
     {
         QColor color = Qt::blue;
@@ -104,15 +114,21 @@ FirstRunTutorial::fadeShowTimerFinished() //SLOT
         QPalette p = m_view->palette();
         p.setColor( QPalette::Window, color );
         m_view->setPalette( p );
-        QTimer::singleShot( 2000, this, SLOT( setupPerms() ) );
+        m_pageNum++;
+        QTimer::singleShot( 1000, this, SLOT( nextPage() ) );
+    }
+    else
+    {
+        #if QT_VERSION >= 0x040500
+        m_pages[m_pageNum]->setOpacity( 1.0 );
+        #endif
     }
 }
 
 void
 FirstRunTutorial::fadeHideTimerFrameChanged( int frame ) //SLOT
 {
-    DEBUG_BLOCK
-    if( m_fadeHideTimer.state() == QTimeLine::Running && m_pageNum == 0 )
+    if( m_fadeHideTimer.state() == QTimeLine::Running && m_pageNum > MAX_PAGE )
     {
         qreal val = ( frame * 1.0 ) / m_framesMax;
         QColor color = Qt::blue;
@@ -121,13 +137,18 @@ FirstRunTutorial::fadeHideTimerFrameChanged( int frame ) //SLOT
         p.setColor( QPalette::Window, color );
         m_view->setPalette( p );
     }
+    else
+    {
+        #if QT_VERSION >= 0x040500
+        m_pages[m_pageNum]->setOpacity( 1 - ( ( frame * 1.0 ) / m_framesMax ) );
+        #endif
+    }
 }
 
 void
 FirstRunTutorial::fadeHideTimerFinished() //SLOT
 {
-    DEBUG_BLOCK
-    if( m_pageNum == MAX_PAGE )
+    if( m_pageNum > MAX_PAGE )
     {
         QColor color = Qt::blue;
         color.setAlpha( 0 );
@@ -136,17 +157,31 @@ FirstRunTutorial::fadeHideTimerFinished() //SLOT
         m_view->setPalette( p );
         deleteLater();
     }
+    else
+    {
+        #if QT_VERSION >= 0x040500
+        m_pages[m_pageNum]->setOpacity( 0 );
+        #endif
+        m_pages[m_pageNum]->deleteLater();
+        m_pages[m_pageNum] = 0;
+        m_pageNum++;
+        QTimer::singleShot( 1000, this, SLOT( nextPage() ) );
+    }
 }
 
-void FirstRunTutorial::setupPerms() //SLOT
+void FirstRunTutorial::nextPage() //SLOT
 {
-    //Set up permanent items here, like close button, next/prev...for now just cause it to exit
-    //m_fadeHideTimer.start();
-    //now start the first page...see below
-    m_pageNum++;
-    QString page( QString("1slotPage%1()").arg( m_pageNum ) );
-    //QMetaObject::invokeMethod( this, page.toAscii().constData() ); //this should work, but doesn't...asking on k-c-d
-    QTimer::singleShot( 0, this, page.toAscii().constData() );
+    DEBUG_BLOCK
+    debug() << "page is " << m_pageNum << " out of " << MAX_PAGE;
+    if( m_pageNum <= MAX_PAGE )
+    {
+        QString page( QString("1slotPage%1()").arg( m_pageNum ) );
+        QTimer::singleShot( 0, this, page.toAscii().constData() );
+    }
+    else
+    {
+        m_fadeHideTimer.start();        
+    }
 }
 
 /*
@@ -163,8 +198,37 @@ where it just operates on the items currently in the set...reusability++
 void FirstRunTutorial::slotPage1() //SLOT
 {
     DEBUG_BLOCK
-    m_fadeHideTimer.start();
+
+    FirstRunTutorialPage* page = new FirstRunTutorialPage();
+    m_pages[m_pageNum] = page;
+    page->setGeometry( The::mainWindow()->frameGeometry().adjusted( TUTORIAL_MARGIN, TUTORIAL_MARGIN, -TUTORIAL_MARGIN, -TUTORIAL_MARGIN ) );
+    #if QT_VERSION >= 0x040500
+    page->setOpacity( 0 );
+    #endif
+
+    m_scene->addItem( page );
+    connect( page, SIGNAL( pageClosed() ), &m_fadeHideTimer, SLOT( start() ) );
+
+    m_fadeShowTimer.start();
 }
+
+
+bool FirstRunTutorial::eventFilter( QObject* watched, QEvent* event )
+{
+    if( watched == m_parent )
+    {
+        if( event->type() == QEvent::Resize )
+        {
+            debug() << "View resizeEvent";
+            m_pages[1]->triggerResize( m_parent->rect().adjusted( TUTORIAL_MARGIN, TUTORIAL_MARGIN, -TUTORIAL_MARGIN, -TUTORIAL_MARGIN ) );
+            return false;
+        }
+    }
+
+    return QObject::eventFilter( watched, event );
+}
+
+
 
 #include "FirstRunTutorial.moc"
 

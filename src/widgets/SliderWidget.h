@@ -38,7 +38,7 @@ namespace Amarok
         Q_OBJECT
 
         public:
-            Slider( Qt::Orientation, QWidget*, uint max = 0 );
+            explicit Slider( Qt::Orientation, uint max = 0, QWidget* parent = 0 );
 
             virtual void setValue( int );
 
@@ -60,8 +60,6 @@ namespace Amarok
             virtual void mousePressEvent( QMouseEvent* );
             virtual void slideEvent( QMouseEvent* );
             virtual void resizeEvent( QResizeEvent * ) { m_needsResize = true; }
-
-            virtual void paletteChange( const QPalette & oldPalette );
 
             void paintCustomSlider( QPainter *p, int x, int y, int width, int height, double pos = -1.0 );
 
@@ -102,35 +100,18 @@ namespace Amarok
         Q_OBJECT
 
         public:
-            explicit VolumeSlider( QWidget *parent, uint max = 0 );
+            explicit VolumeSlider( uint max, QWidget *parent = 0 );
 
         protected:
             virtual void paintEvent( QPaintEvent* );
 
-            virtual void paletteChange( const QPalette& );
-            virtual void slideEvent( QMouseEvent* );
             virtual void mousePressEvent( QMouseEvent* );
             virtual void contextMenuEvent( QContextMenuEvent* );
             virtual void wheelEvent( QWheelEvent *e );
             virtual void resizeEvent(QResizeEvent * event);
 
-        signals:
-            void mute();
-
         private:
             Q_DISABLE_COPY( VolumeSlider )
-
-            ////////////////////////////////////////////////////////////////
-            int m_iconHeight;
-            int m_iconWidth;
-            int m_textWidth;
-            int m_sliderWidth;
-            int m_sliderHeight;
-            int m_sliderX;
-
-            int m_margin;
-
-            int m_textHeight;
     };
 
     class TimeSlider : public Amarok::Slider
@@ -150,16 +131,13 @@ namespace Amarok
         protected:
             virtual void paintEvent( QPaintEvent* );
             virtual void mousePressEvent( QMouseEvent* );
-            virtual void paletteChange( const QPalette& );
             virtual void resizeEvent(QResizeEvent * event);
 
         private:
             Q_DISABLE_COPY( TimeSlider )
-            ////////////////////////////////////////////////////////////////
 
             QTimer *m_animTimer; // Used for a smooth progress.
             QList<BookmarkTriangle*> m_triangles;
-            int m_sliderHeight;
             double m_knobX; // The position of the current indicator.
     };
 }

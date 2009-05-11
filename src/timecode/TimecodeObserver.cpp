@@ -45,11 +45,11 @@ TimecodeObserver::engineNewTrackPlaying()
 
     if ( m_currentTrack ) // this is really the track _just_ played
     {
-        if ( m_trackTimecodeable && m_currPos != m_currentTrack->length() && m_currentTrack->length() > m_threshold )
+        if ( m_trackTimecodeable && m_currPos != m_currentTrack->length() && m_currentTrack->length() > m_threshold && m_currPos > 60 )
         {
             Meta::TimecodeWriteCapability *tcw = m_currentTrack->as<Meta::TimecodeWriteCapability>();
             if( tcw )
-                tcw->writeTimecode ( m_currPos ); // save the timecode
+                tcw->writeAutoTimecode ( m_currPos ); // save the timecode
         }
     }
 
@@ -70,12 +70,12 @@ TimecodeObserver::enginePlaybackEnded ( int finalPosition, int trackLength, Engi
     Q_UNUSED ( reason )
     DEBUG_BLOCK
 
-    if ( m_trackTimecodeable && finalPosition != trackLength && trackLength > m_threshold )
+    if ( m_trackTimecodeable && finalPosition != trackLength && trackLength > m_threshold && finalPosition > 60 )
     {
         Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
         Meta::TimecodeWriteCapability *tcw = currentTrack->as<Meta::TimecodeWriteCapability>();
         if( tcw )
-            tcw->writeTimecode ( finalPosition ); // save the timecode
+            tcw->writeAutoTimecode ( finalPosition ); // save the timecode
     }
 }
 

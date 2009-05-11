@@ -37,6 +37,7 @@ LayoutEditWidget::LayoutEditWidget( QWidget *parent )
     m_dragstack = new TokenDropTarget( "application/x-amarok-tag-token", this );
     m_dragstack->setCustomTokenFactory( m_tokenFactory );
     connect ( m_dragstack, SIGNAL( focussed(QWidget*) ), this, SIGNAL( focussed(QWidget*) ) );
+    connect ( m_dragstack, SIGNAL( changed() ), this, SIGNAL( changed() ) );
     
     m_showCoverCheckBox = new QCheckBox( i18n( "Show Cover" ) , this );
 }
@@ -51,7 +52,10 @@ void LayoutEditWidget::readLayout( Playlist::LayoutItemConfig config )
 {
     int rowCount = config.rows();
 
+    delete m_showCoverCheckBox;
+    m_showCoverCheckBox = new QCheckBox( i18n( "Show Cover" ) , this );
     m_showCoverCheckBox->setChecked( config.showCover() );
+    connect ( m_showCoverCheckBox, SIGNAL( stateChanged( int ) ), this, SIGNAL( changed() ) );
 
     m_dragstack->clear();
 
@@ -72,8 +76,10 @@ void LayoutEditWidget::readLayout( Playlist::LayoutItemConfig config )
             token->setBold( element.bold() );
             token->setItalic( element.italic() );
             token->setAlignment( element.alignment() );
-            m_dragstack->insertToken( token, i, j );
             token->setWidth( element.size() * 100.0 );
+            m_dragstack->insertToken( token, i, j );
+            // Do all modifications on the token above that line, otherwise the dialog will think it's been modified by the user
+            connect ( token, SIGNAL( changed() ), this, SIGNAL( changed() ) );
         }
 
     }
@@ -112,6 +118,10 @@ Playlist::LayoutItemConfig LayoutEditWidget::config()
     return config;
 }
 
+void LayoutEditWidget::clear()
+{
+    m_dragstack->clear();
+}
 
 #include "LayoutEditWidget.moc"
 

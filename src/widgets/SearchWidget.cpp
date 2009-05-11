@@ -70,6 +70,7 @@ SearchWidget::init( QWidget *parent, bool advanced )
     setLayout( layout );
 
     m_toolBar = new QToolBar( searchBox );
+    m_toolBar->setFixedHeight( m_sw->sizeHint().height() );
 
     if ( advanced ) {
         m_filterAction = new QAction( KIcon( "document-properties" ), i18n( "Edit filter" ), this );
@@ -117,6 +118,11 @@ void SearchWidget::showAdvancedButton(bool show)
         delete m_filterAction;
         m_filterAction = 0;
     }
+}
+
+void SearchWidget::setClickMessage( QString message )
+{
+    m_sw->setClickMessage( message );
 }
 
 

@@ -23,7 +23,7 @@
 
 class QGraphicsSimpleTextItem;
 class QGraphicsProxyWidget;
-class QTextEdit;
+class QTextBrowser;
 
 class LyricsApplet : public Context::Applet
 {
@@ -49,17 +49,20 @@ public slots:
     void suggestionChosen( const QString& link );
     void refreshLyrics();
     
+private slots:
+    void paletteChanged( const QPalette & palette );
 
 private:
     void calculateHeight();
     Plasma::IconWidget* addAction( QAction *action );
 
+    QString m_titleText;
     QGraphicsSimpleTextItem* m_titleLabel;
     Plasma::IconWidget* m_reloadIcon;
     
     // holds main body
     QGraphicsProxyWidget *m_lyricsProxy;
-    QTextEdit* m_lyrics;
+    QTextBrowser* m_lyrics;
     QGraphicsTextItem* m_suggested;
 };
 

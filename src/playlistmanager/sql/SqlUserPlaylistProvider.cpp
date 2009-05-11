@@ -24,11 +24,16 @@
 #include "CollectionManager.h"
 #include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "Debug.h"
+#include "meta/M3UPlaylist.h"
+#include "meta/PLSPlaylist.h"
+#include "meta/XSPFPlaylist.h"
+#include "PlaylistFileSupport.h"
 #include "SqlStorage.h"
 #include "SvgHandler.h"
 #include "UserPlaylistModel.h"
 
 #include <KIcon>
+#include <KInputDialog>
 #include <KUrl>
 
 #include <QMap>
@@ -88,7 +93,14 @@ void
 SqlUserPlaylistProvider::slotRename()
 {
     DEBUG_BLOCK
-    //TODO:inline rename
+    //only one playlist can be selected at this point
+    Meta::SqlPlaylistPtr playlist = selectedPlaylists().first();
+    if( playlist.isNull() )
+        return;
+    //TODO: inline rename
+    const QString newName = KInputDialog::getText( i18n("Change playlist"),
+                i18n("Enter new name for playlist:"), playlist->name() );
+    playlist->setName( newName.trimmed() );
 }
 
 QList<PopupDropperAction *>
@@ -97,6 +109,8 @@ SqlUserPlaylistProvider::playlistActions( Meta::PlaylistList list )
     Q_UNUSED( list )
     QList<PopupDropperAction *> actions;
 
+    m_selectedPlaylists.clear();
+    m_selectedPlaylists << toSqlPlaylists( list );
     if ( m_deleteAction == 0 )
     {
         m_deleteAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "delete", KIcon( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
@@ -114,18 +128,77 @@ SqlUserPlaylistProvider::playlistActions( Meta::PlaylistList list )
     return actions;
 }
 
-bool
+Meta::PlaylistPtr
 SqlUserPlaylistProvider::save( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
-    //TODO: ask for name and folder to save in
-    debug() << "saving " << tracks.count() << " tracks to db";
-    Meta::SqlPlaylistPtr( new Meta::SqlPlaylist( "new playlist", tracks,
+    return save( tracks,
+          QDateTime::currentDateTime().toString( "ddd MMMM d yy hh:mm") );
+}
+
+Meta::PlaylistPtr
+SqlUserPlaylistProvider::save( const Meta::TrackList &tracks, const QString& name )
+{
+    DEBUG_BLOCK
+    debug() << "saving " << tracks.count() << " tracks to db with name" << name;
+    Meta::SqlPlaylistPtr sqlPlaylist = Meta::SqlPlaylistPtr( new Meta::SqlPlaylist( name, tracks,
             Meta::SqlPlaylistGroupPtr() ) );
     reloadFromDb();
     emit updated();
 
-    return true; //assume insertion in db was successful
+    return Meta::PlaylistPtr::dynamicCast( sqlPlaylist ); //assumes insertion in db was successful!
+}
+
+bool
+SqlUserPlaylistProvider::import( const QString& fromLocation )
+{
+    DEBUG_BLOCK
+    debug() << "importing playlist " << fromLocation;
+    QString query = "SELECT id, parent_id, name, description, urlid FROM \
+                playlists where urlid='%1';";
+    SqlStorage *sql = CollectionManager::instance()->sqlStorage();
+    query = query.arg( sql->escape( fromLocation ) );
+    QStringList result = sql->query( query );
+    if( result.count() != 0 )
+    {
+        debug() << "Playlist was already imported";
+        return false;
+    }
+
+
+    KUrl url( fromLocation );
+    Meta::Playlist* playlist = 0;
+    Meta::Format format = Meta::getFormat( fromLocation );
+
+    switch( format )
+    {
+        case Meta::PLS:
+            playlist = new Meta::PLSPlaylist( url );
+            break;
+        case Meta::M3U:
+            playlist = new Meta::M3UPlaylist( url );
+            break;
+        case Meta::XSPF:
+            playlist = new Meta::XSPFPlaylist( url );
+            break;
+
+        default:
+            debug() << "unknown type, cannot save playlist!";
+            return false;
+    }
+    Meta::TrackList tracks = playlist->tracks();
+    QString name = playlist->name().split('.')[0];
+    debug() << name << QString(" has %1 tracks.").arg( tracks.count() );
+    if( tracks.isEmpty() )
+        return false;
+
+    Meta::SqlPlaylistPtr sqlPlaylist =
+        Meta::SqlPlaylistPtr( new Meta::SqlPlaylist( playlist->name(), tracks,
+                                                     Meta::SqlPlaylistGroupPtr(), fromLocation ) );
+    reloadFromDb();
+    emit updated();
+
+    return true;
 }
 
 void
@@ -247,6 +320,20 @@ SqlUserPlaylistProvider::checkTables()
             sqlStorage->query( "UPDATE admin SET version = '" + QString::number( USERPLAYLIST_DB_VERSION )  + "' WHERE component = '" + key + "';" );
         }
     }
+}
+
+Meta::SqlPlaylistList
+SqlUserPlaylistProvider::toSqlPlaylists( Meta::PlaylistList playlists )
+{
+    Meta::SqlPlaylistList sqlPlaylists;
+    foreach( Meta::PlaylistPtr playlist, playlists )
+    {
+        Meta::SqlPlaylistPtr sqlPlaylist =
+            Meta::SqlPlaylistPtr::dynamicCast( playlist );
+        if( !sqlPlaylist.isNull() )
+            sqlPlaylists << sqlPlaylist;
+    }
+    return sqlPlaylists;
 }
 
 #include "SqlUserPlaylistProvider.moc"

@@ -179,9 +179,12 @@ XSPFPlaylist::tracks()
             if ( typeid( * trackPtr.data() ) == typeid( MetaStream::Track ) )
             {
                 MetaStream::Track * streamTrack = dynamic_cast<MetaStream::Track *> ( trackPtr.data() );
-                streamTrack->setTitle( track.title );
-                streamTrack->setAlbum( track.album );
-                streamTrack->setArtist( track.creator );
+                if ( streamTrack )
+                {
+                    streamTrack->setTitle( track.title );
+                    streamTrack->setAlbum( track.album );
+                    streamTrack->setArtist( track.creator );
+                }
             } 
             tracks << trackPtr;
         }
@@ -463,6 +466,7 @@ XSPFTrackList
 XSPFPlaylist::trackList()
 {
     DEBUG_BLOCK
+
     XSPFTrackList list;
 
     QDomNode trackList = documentElement().namedItem( "trackList" );
@@ -518,9 +522,7 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
     DEBUG_BLOCK
 
     if ( documentElement().namedItem( "trackList" ).isNull() )
-    {
         documentElement().appendChild( createElement( "trackList" ) );
-    }
 
     QDomNode node = createElement( "trackList" );
     XSPFTrackList::iterator it;
@@ -530,42 +532,55 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
     {
         QDomNode subNode = createElement( "track" );
 
-//URI of resource to be rendered.
+        //URI of resource to be rendered.
         QDomNode location = createElement( "location" );
-//Human-readable name of the track that authored the resource
-        QDomNode title = createElement( "title" );
-//Human-readable name of the entity that authored the resource.
-        QDomNode creator = createElement( "creator" );
-//A human-readable comment on the track.
-        QDomNode annotation = createElement( "annotation" );
-//Human-readable name of the collection from which the resource comes
-        QDomNode album = createElement( "album" );
-//Integer > 0 giving the ordinal position of the media in the album.
-        QDomNode trackNum = createElement( "trackNum" );
-//The time to render a resource, in milliseconds. It MUST be a nonNegativeInteger.
-        QDomNode duration = createElement( "duration" );
-// location-independent name, such as a MusicBrainz identifier.  MUST be a legal URI.
-        QDomNode identifier = createElement( "identifier" );
-//info - URI of a place where this resource can be bought or more info can be found.
-//     QDomNode info = createElement( "info" );
-//image - URI of an image to display for the duration of the track.
-//        QDomNode image = createElement( "image" );
-// link - element allows XSPF to be extended without the use of XML namespaces.
-//        QDomNode link = createElement( "link" );
-        // QDomNode meta
-        // QDomNode extension
 
-#define APPENDNODE( X, Y ) \
+        //Human-readable name of the track that authored the resource
+        QDomNode title = createElement( "title" );
+
+        //Human-readable name of the entity that authored the resource.
+        QDomNode creator = createElement( "creator" );
+
+        //A human-readable comment on the track.
+        QDomNode annotation = createElement( "annotation" );
+
+        //Human-readable name of the collection from which the resource comes
+        QDomNode album = createElement( "album" );
+
+        //Integer > 0 giving the ordinal position of the media in the album.
+        QDomNode trackNum = createElement( "trackNum" );
+
+        //The time to render a resource, in milliseconds. It MUST be a nonNegativeInteger.
+        QDomNode duration = createElement( "duration" );
+
+        //location-independent name, such as a MusicBrainz identifier. MUST be a legal URI.
+        QDomNode identifier = createElement( "identifier" );
+
+        //info - URI of a place where this resource can be bought or more info can be found.
+        //QDomNode info = createElement( "info" );
+
+        //image - URI of an image to display for the duration of the track.
+        //QDomNode image = createElement( "image" );
+
+        //link - element allows XSPF to be extended without the use of XML namespaces.
+        //QDomNode link = createElement( "link" );
+
+        //QDomNode meta
+        //QDomNode extension
+
+        #define APPENDNODE( X, Y ) \
         { \
-        X.appendChild( createTextNode( Y ) );    \
-        subNode.appendChild( X ); \
-    }
+            X.appendChild( createTextNode( Y ) );    \
+            subNode.appendChild( X ); \
+        }
 
         if ( !track->playableUrl().url().isEmpty() )
             APPENDNODE( location, track->playableUrl().url() )
         else
             APPENDNODE( location, track->uidUrl() )
+
         APPENDNODE( identifier, track->uidUrl() )
+
         Meta::StreamInfoCapability *streamInfo = track->as<Meta::StreamInfoCapability>();
         if( streamInfo ) // We have a stream, use it's metadata instead of the tracks.
         {
@@ -573,6 +588,8 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
                 APPENDNODE( title, streamInfo->streamName() )
             if( !streamInfo->streamSource().isEmpty() )
                 APPENDNODE( creator, streamInfo->streamSource() )
+
+            delete streamInfo;
         }
         else
         {
@@ -589,9 +606,9 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
             APPENDNODE( trackNum, QString::number( track->trackNumber() ) );
         if ( track->length() > 0 )
             APPENDNODE( duration, QString::number( track->length() * 1000 ) );
-#undef APPENDNODE
         node.appendChild( subNode );
     }
+    #undef APPENDNODE
 
     if ( append )
     {
@@ -603,7 +620,6 @@ XSPFPlaylist::setTrackList( Meta::TrackList trackList, bool append )
     }
     else
         documentElement().replaceChild( node, documentElement().namedItem( "trackList" ) );
-
 }
 
 bool

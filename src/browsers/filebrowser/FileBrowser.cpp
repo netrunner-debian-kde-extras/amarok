@@ -61,11 +61,6 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
     m_filePlacesModel = new KFilePlacesModel( this );
     m_urlNav = new KUrlNavigator( m_filePlacesModel, KUrl( QDir::home().path() ), this );
 
-    setContentsMargins( 0, 0, 0, 0 );
-
-    setFrameShape( QFrame::StyledPanel );
-    setFrameShadow( QFrame::Sunken );
-
     m_dirOperator = new MyDirOperator( QDir::home().path(), this );
 
     connect( m_dirOperator, SIGNAL( viewChanged( QAbstractItemView * ) ), this, SLOT( selectorViewChanged( QAbstractItemView * ) ) );
@@ -105,8 +100,6 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
     // Connect the bookmark handler
     connect( m_bookmarkHandler, SIGNAL( openUrl( const KUrl& ) ), this, SLOT( setDir( const KUrl& ) ) );
 
-    waitingUrl.clear();
-
     // whatsthis help
     m_urlNav->setWhatsThis( i18n( "<p>Here you can enter a path for a folder to display.</p>"
                                   "<p>To go to a folder previously entered, press the arrow on "
@@ -140,42 +133,30 @@ void FileBrowser::Widget::readConfig()
 {
     DEBUG_BLOCK
 
-    debug() << "BEFORE 'KConfigGroup config'";
     KConfigGroup config = Amarok::config( "File Browser" );
-    debug() << "AFTER  'KConfigGroup config'";
 
-    { DEBUG_BLOCK
-    debug() << "BEFORE 'm_filter->setMaxCount()'"; 
     m_filter->setMaxCount( config.readEntry( "Filter History Length", 9 ) );
-    debug() << "AFTER  'm_filter->setMaxCount()'"; 
-    }
 
-    { DEBUG_BLOCK
-    debug() << "BEFORE 'setDir()'"; 
     setDir( config.readEntry( "Current Directory" ) );
-    debug() << "AFTER  'setDir()'"; 
-    }
 
-    { DEBUG_BLOCK
-    debug() << "BEFORE view initialization.";
     // KDirOperator view configuration:
-    m_dirOperator->setView( config.readEntry( "View Style" ) == "Detail" ? KFile::Detail : KFile::Simple );
+    QString viewStyle = config.readEntry( "View Style", "Simple" );
+    if( viewStyle == "Detail" )
+        m_dirOperator->setView( KFile::Detail );
+    else if( viewStyle == "Tree" )
+        m_dirOperator->setView( KFile::Tree );
+    else if( viewStyle == "DetailTree" )
+        m_dirOperator->setView( KFile::DetailTree );
+    else
+        m_dirOperator->setView( KFile::Simple );
     m_dirOperator->view()->setSelectionMode( QAbstractItemView::ExtendedSelection );
-    m_dirOperator->view()->setContentsMargins( 0, 0, 0, 0 );
-    m_dirOperator->view()->setFrameShape( QFrame::NoFrame );
-    m_dirOperator->view()->setSelectionMode( QAbstractItemView::ExtendedSelection );
-    debug() << "AFTER  view initialization.";
-    }
+    if( config.hasKey( "Sorting" ) )
+        m_dirOperator->setSorting( static_cast<QDir::SortFlags>( config.readEntry( "Sorting" ).toInt() ) );
 
-    { DEBUG_BLOCK
-    debug() << "BEFORE 'm_filter->setHistoryItems()'";
     m_filter->setHistoryItems( config.readEntry( "Filter History", QStringList() ), true );
-    debug() << "AFTER  'm_filter->setHistoryItems()'";
-    }
 
-    lastFilter = config.readEntry( "Last Filter" );
+    m_lastFilter = config.readEntry( "Last Filter" );
 }
-
 
 void FileBrowser::Widget::writeConfig()
 {
@@ -184,20 +165,14 @@ void FileBrowser::Widget::writeConfig()
     KConfigGroup config = Amarok::config( "File Browser" );
 
     config.writeEntry( "Current Directory", m_dirOperator->url() );
+    config.writeEntry( "Sorting", QString::number( static_cast<QDir::SortFlags>( m_dirOperator->sorting() ) ) );
     config.writeEntry( "Filter History Length", m_filter->maxCount() );
     config.writeEntry( "Filter History", m_filter->historyItems() );
-    config.writeEntry( "Last Filter", lastFilter );
+    config.writeEntry( "Last Filter", m_lastFilter );
 
     // Writes some settings from KDirOperator
     m_dirOperator->writeConfig( config );
 }
-
-
-void FileBrowser::Widget::initialDirChangeHack()
-{
-    setDir( waitingDir );
-}
-
 
 void FileBrowser::Widget::setupToolbar()
 {
@@ -227,26 +202,26 @@ void FileBrowser::Widget::slotFilterChange( const QString & nf )
     QString f = nf.trimmed();
     const bool empty = f.isEmpty() || f == "*";
 
-    if ( empty )
+    if( empty )
     {
         m_dirOperator->clearFilter();
         m_filter->lineEdit()->setText( QString() );
-        m_filterButton->setToolTip( i18n( "Apply last filter (\"%1\")", lastFilter ) ) ;
+        m_filterButton->setToolTip( i18n( "Apply last filter (\"%1\")", m_lastFilter ) ) ;
     }
     else
     {
         if ( !f.startsWith( '*' ) && !f.endsWith( '*' ) )
             f = '*' + f + '*'; // add regexp matches surrounding the filter
         m_dirOperator->setNameFilter( f );
-        lastFilter = f;
+        m_lastFilter = f;
         m_filterButton->setToolTip( i18n( "Clear filter" ) );
     }
 
     m_filterButton->setChecked( !empty );
-    m_dirOperator->updateDir(); //FIXME Crashes here, see http://bugs.kde.org/show_bug.cgi?id=177981
+    m_dirOperator->updateDir();
 
     // this will be never true after the filter has been used;)
-    m_filterButton->setEnabled( !( empty && lastFilter.isEmpty() ) );
+    m_filterButton->setEnabled( !( empty && m_lastFilter.isEmpty() ) );
 }
 
 namespace FileBrowser
@@ -313,8 +288,8 @@ void FileBrowser::Widget::filterButtonClicked()
     }
     else
     {
-        m_filter->lineEdit()->setText( lastFilter );
-        slotFilterChange( lastFilter );
+        m_filter->lineEdit()->setText( m_lastFilter );
+        slotFilterChange( m_lastFilter );
     }
 }
 
@@ -340,9 +315,6 @@ bool FileBrowser::Widget::eventFilter( QObject* o, QEvent *e )
 }
 
 //END Protected
-
-
-// kate: space-indent on; indent-width 4; replace-tabs on;
 
 #include "FileBrowser.moc"
 

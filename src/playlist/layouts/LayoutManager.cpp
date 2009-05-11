@@ -1,6 +1,6 @@
 /***************************************************************************
- *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *             (c) 2009  Seb Ruiz <ruiz@kde.org>                           *
+ * Copyright (c) 2008-2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> *
+ *           (c) 2009  Seb Ruiz <ruiz@kde.org>                             *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -52,6 +52,7 @@ LayoutManager::LayoutManager()
 
     loadDefaultLayouts();
     loadUserLayouts();
+    orderLayouts();
 
     KConfigGroup config = Amarok::config("Playlist Layout");
     m_activeLayout = config.readEntry( "CurrentLayout", "Default" );
@@ -59,7 +60,7 @@ LayoutManager::LayoutManager()
 
 QStringList LayoutManager::layouts() const
 {
-    return m_layouts.keys();
+    return m_layoutNames;
 }
 
 void LayoutManager::setActiveLayout( const QString &layout )
@@ -148,7 +149,7 @@ void LayoutManager::loadLayouts( const QString &fileName, bool user )
 
         QString layoutName = layout.toElement().attribute( "name", "" );
         PlaylistLayout currentLayout;
-        currentLayout.setIsEditable( user );
+        currentLayout.setEditable( user );
 
         currentLayout.setHead( parseItemConfig( layout.toElement().firstChildElement( "group_head" ) ) );
         currentLayout.setBody( parseItemConfig( layout.toElement().firstChildElement( "group_body" ) ) );
@@ -186,7 +187,7 @@ LayoutItemConfig LayoutManager::parseItemConfig( const QDomElement &elem ) const
             QDomNode elementNode = elements.item( index2 );
             index2++;
 
-            int value = columnNames.indexOf( elementNode.toElement().attribute( "value", "Title" ) );
+            int value = internalColumnNames.indexOf( elementNode.toElement().attribute( "value", "Title" ) );
             QString prefix = elementNode.toElement().attribute( "prefix", QString() );
             QString sufix = elementNode.toElement().attribute( "suffix", QString() );
             qreal size = elementNode.toElement().attribute( "size", "0.0" ).toDouble();
@@ -219,8 +220,14 @@ PlaylistLayout LayoutManager::layout( const QString &layout ) const
 
 void LayoutManager::addUserLayout( const QString &name, PlaylistLayout layout )
 {
-    layout.setIsEditable( true );
+    layout.setEditable( true );
+    if( m_layouts.find( name ) != m_layouts.end() )
+        m_layouts.remove( name );
+    else
+        m_layoutNames.append( name );
+
     m_layouts.insert( name, layout );
+
 
     QDomDocument doc( "layouts" );
     QDomElement layouts_element = doc.createElement( "playlist_layouts" );
@@ -273,7 +280,7 @@ QDomElement LayoutManager::createItemElement( QDomDocument doc, const QString &n
             LayoutItemConfigRowElement element = row.element( j );
             QDomElement elementElement = doc.createElement( "element" );
 
-            elementElement.setAttribute ( "value", columnNames[element.value()] );
+            elementElement.setAttribute ( "value", internalColumnNames[element.value()] );
             elementElement.setAttribute ( "size", QString::number( element.size() ) );
             elementElement.setAttribute ( "bold", element.bold() ? "true" : "false" );
             elementElement.setAttribute ( "italic", element.italic() ? "true" : "false" );
@@ -308,7 +315,7 @@ QString LayoutManager::activeLayoutName() const
     return m_activeLayout;
 }
 
-void LayoutManager::deleteLayout( const QString & layout )
+void LayoutManager::deleteLayout( const QString &layout )
 {
     //check if layout is editable
     if ( m_layouts.value( layout ).isEditable() )
@@ -321,6 +328,7 @@ void LayoutManager::deleteLayout( const QString & layout )
             debug() << "error deleting file....";
 
         m_layouts.remove( layout );
+        m_layoutNames.removeAll( layout );
         emit( layoutListChanged() );
 
         if ( layout == m_activeLayout )
@@ -335,4 +343,76 @@ bool LayoutManager::isDeleteable( const QString &layout ) const
     return m_layouts.value( layout ).isEditable();
 }
 
+int LayoutManager::moveUp( const QString &layout )
+{
+    int index = m_layoutNames.indexOf( layout );
+    if ( index > 0 ) {
+        m_layoutNames.swap ( index, index - 1 );
+        emit( layoutListChanged() );
+        storeLayoutOrdering();
+        return index - 1;
+    }
+
+    return index;
+}
+
+int LayoutManager::moveDown( const QString &layout )
+{
+    int index = m_layoutNames.indexOf( layout );
+    if ( index < m_layoutNames.size() -1 ) {
+        m_layoutNames.swap ( index, index + 1 );
+        emit( layoutListChanged() );
+        storeLayoutOrdering();
+        return index + 1;
+    }
+
+    return index;
+}
+
+void LayoutManager::orderLayouts()
+{
+    KConfigGroup config = Amarok::config( "Playlist Layout" );
+    QString orderString = config.readEntry( "Order", "Default" );
+    
+    QStringList knownLayouts = m_layouts.keys();
+
+    QStringList orderingList = orderString.split( ';', QString::SkipEmptyParts );
+
+    foreach( QString layout, orderingList )
+    {
+        if ( knownLayouts.contains( layout ) )
+        {
+            //skip any layout names that are in config but that we dont know. Perhaps someone manually deleted a layout file
+            m_layoutNames.append( layout );
+            knownLayouts.removeAll( layout );
+        }
+    }
+
+    //now add any layouts that were not in the order config to end of list:
+    foreach( QString layout, knownLayouts )
+        m_layoutNames.append( layout );
+}
+
 } //namespace Playlist
+
+void Playlist::LayoutManager::storeLayoutOrdering()
+{
+
+    QString ordering;
+
+    foreach( QString name, m_layoutNames )
+    {
+        ordering += name;
+        ordering += ';';
+    }
+
+    if ( !ordering.isEmpty() )
+        ordering.chop( 1 ); //remove trailing;
+    
+    KConfigGroup config = Amarok::config("Playlist Layout");
+    config.writeEntry( "Order", ordering );
+}
+
+
+
+

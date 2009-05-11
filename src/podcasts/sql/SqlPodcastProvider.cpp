@@ -55,6 +55,7 @@ SqlPodcastProvider::SqlPodcastProvider()
     , m_downloadAction( 0 )
     , m_removeAction( 0 )
     , m_renameAction( 0 )
+    , m_updateAction( 0 )
 {
     connect( m_updateTimer, SIGNAL( timeout() ), SLOT( autoUpdate() ) );
 
@@ -125,9 +126,10 @@ SqlPodcastProvider::loadPodcasts()
 bool
 SqlPodcastProvider::possiblyContainsTrack( const KUrl & url ) const
 {
+    DEBUG_BLOCK
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
-    QString command = "SELECT title FROM podcastepisodes WHERE url='%1';";
+    QString command = "SELECT title FROM podcastepisodes WHERE url='%1' OR localurl='%1';";
     command = command.arg( sqlStorage->escape( url.url() ) );
 
     QStringList dbResult = sqlStorage->query( command );
@@ -135,10 +137,37 @@ SqlPodcastProvider::possiblyContainsTrack( const KUrl & url ) const
 }
 
 Meta::TrackPtr
-SqlPodcastProvider::trackForUrl(const KUrl & url)
+SqlPodcastProvider::trackForUrl( const KUrl & url )
 {
-    Q_UNUSED( url );
-    return TrackPtr();
+    DEBUG_BLOCK
+            
+    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+
+    QString command = "SELECT id,channel FROM podcastepisodes WHERE url='%1' OR localurl='%1';";
+    command = command.arg( sqlStorage->escape( url.url() ) );
+    QStringList dbResult = sqlStorage->query( command );
+
+    int episodeId = dbResult[0].toInt();
+    int channelId = dbResult[1].toInt();
+    Meta::SqlPodcastChannelPtr channel;
+    foreach( channel, m_channels )
+        if( channel->dbId() == channelId )
+            break;
+
+    if( channel.isNull() )
+        return TrackPtr();
+
+    Meta::SqlPodcastEpisodePtr episode;
+    foreach( episode, channel->sqlEpisodes() )
+    {
+        if( episode->dbId() == episodeId )
+        {
+            debug() << "found it!";
+            break;
+        }
+    }
+
+    return Meta::TrackPtr::dynamicCast( episode );
 }
 
 Meta::PlaylistList
@@ -197,7 +226,20 @@ SqlPodcastProvider::addChannel( Meta::PodcastChannelPtr channel )
 Meta::PodcastEpisodePtr
 SqlPodcastProvider::addEpisode( Meta::PodcastEpisodePtr episode )
 {
-    return Meta::PodcastEpisodePtr( new SqlPodcastEpisode( episode ) );
+    DEBUG_BLOCK
+    Meta::SqlPodcastEpisodePtr sqlEpisode
+            = Meta::SqlPodcastEpisodePtr::dynamicCast( episode );
+    if( sqlEpisode.isNull() )
+        return Meta::PodcastEpisodePtr();
+    if( sqlEpisode->channel().isNull() )
+    {
+        debug() << "channel is null";
+        return Meta::PodcastEpisodePtr();
+    }
+
+    if( sqlEpisode->channel()->fetchType() == Meta::PodcastChannel::DownloadWhenAvailable )
+        downloadEpisode( sqlEpisode );
+    return Meta::PodcastEpisodePtr::dynamicCast( sqlEpisode );
 }
 
 Meta::PodcastChannelList
@@ -315,11 +357,14 @@ SqlPodcastProvider::episodeActions( Meta::PodcastEpisodeList episodes )
         );
         connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDeleteEpisodes() ) );
     }
-    bool hasDownloaded;
+    bool hasDownloaded = false;
     foreach( Meta::PodcastEpisodePtr episode, episodes )
     {
         Meta::SqlPodcastEpisodePtr sqlEpisode
                 = Meta::SqlPodcastEpisodePtr::dynamicCast( episode );
+        if( sqlEpisode.isNull() )
+            break;
+
         if( !sqlEpisode->localUrl().isEmpty() )
         {
             hasDownloaded = true;
@@ -381,6 +426,19 @@ SqlPodcastProvider::channelActions( Meta::PodcastChannelList )
     }
     actions << m_removeAction;
 
+    if( m_updateAction == 0 )
+    {
+        m_updateAction = new PopupDropperAction(
+            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
+            "update",
+            KIcon( "view-refresh-amarok" ),
+            i18n( "&Update Channel" ),
+            this
+        );
+        connect( m_updateAction, SIGNAL( triggered() ), this, SLOT( slotUpdateChannels() ) );
+    }
+    actions << m_updateAction;
+
     return actions;
 }
 
@@ -425,8 +483,22 @@ SqlPodcastProvider::slotRemoveChannels()
     {
         Meta::SqlPodcastChannelPtr sqlChannel =
             Meta::SqlPodcastChannelPtr::dynamicCast( channel );
-//         if( !sqlChannel )
-            removeSubscription( channel );
+
+        //TODO:request confirmation and ask if the files have to be deleted as well
+        removeSubscription( channel );
+    }
+}
+
+void
+SqlPodcastProvider::slotUpdateChannels()
+{
+    DEBUG_BLOCK
+    foreach( Meta::PodcastChannelPtr channel, The::podcastModel()->selectedChannels() )
+    {
+        Meta::SqlPodcastChannelPtr sqlChannel =
+            Meta::SqlPodcastChannelPtr::dynamicCast( channel );
+        if( !sqlChannel.isNull() )
+            update( channel );
     }
 }
 
@@ -474,6 +546,7 @@ SqlPodcastProvider::updateAll()
     foreach( Meta::SqlPodcastChannelPtr channel, m_channels )
     {
         update( channel );
+        
     }
 }
 
@@ -557,12 +630,12 @@ SqlPodcastProvider::slotReadResult( PodcastReader *podcastReader, bool result )
         //decrement the counter and load podcasts if needed.
         if( --m_updatingChannels == 0 )
         {
-            //reload to make sure all objects are valid BUG:180851
-            loadPodcasts();
+            //TODO: start downloading episodes here.
         }
     }
 
     podcastReader->deleteLater();
+    emit( updated() );
 }
 
 void
@@ -609,6 +682,8 @@ SqlPodcastProvider::downloadResult( KJob * job )
         {
             debug() << "successfully written Podcast Episode " << sqlEpisode->title() << " to " << localUrl.path();
             sqlEpisode->setLocalUrl( localUrl );
+            //force an update so the icon can be updated in the PlaylistBrowser
+            emit( updated() );
         }
         else
         {

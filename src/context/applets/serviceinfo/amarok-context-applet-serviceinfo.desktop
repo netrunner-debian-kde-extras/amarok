@@ -1,16 +1,28 @@
 [Desktop Entry]
 Name=Services
 Name[bg]=Услуги
+Name[ca]=Serveis
+Name[da]=Tjenester
 Name[el]=Υπηρεσίες
+Name[es]=Servicios
 Name[et]=Teenused
+Name[eu]=Zerbitzuak
 Name[ga]=Seirbhísí
+Name[it]=Servizi
+Name[ja]=サービス
+Name[mai]=सेवासभ
 Name[nb]=Tjenester
 Name[nds]=Deensten
 Name[nl]=Diensten
+Name[pl]=Usługi
 Name[pt]=Serviços
 Name[pt_BR]=Serviços
+Name[ro]=Servicii
+Name[ru]=Службы
 Name[sv]=Tjänster
+Name[tr]=Servisler
 Name[uk]=Служби
+Name[x-test]=xxServicesxx
 Type=Service
 ServiceTypes=Plasma/Applet
 

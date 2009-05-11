@@ -23,6 +23,8 @@
 #include "meta/Meta.h"
 #include "SmartPointerList.h"
 
+#include <QPointer>
+
 #include <KAction>
 #include <KSystemTrayIcon> //baseclass
 
@@ -40,6 +42,8 @@ class TrayIcon : public KSystemTrayIcon, public EngineObserver
 public:
     TrayIcon( QWidget *widget );
     friend class ::App;
+    
+    void setVisible( bool visible );
 
 protected:
     // reimplemented from engineobserver
@@ -48,6 +52,7 @@ protected:
     virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
     virtual void engineTrackPositionChanged( long position, bool /*userSeek*/ );
     virtual void engineVolumeChanged( int percent );
+    virtual void engineMuteStateChanged( bool mute );
 
     // get notified of 'highlight' color change
     virtual void paletteChange( const QPalette & oldPalette );
@@ -69,6 +74,7 @@ private:
     QPixmap m_baseIcon, m_grayedIcon, m_icon;
     QPixmap m_playOverlay, m_pauseOverlay;
     SmartPointerList<QAction> m_extraActions;
+    QPointer<QAction> m_separator;
 };
 
 }

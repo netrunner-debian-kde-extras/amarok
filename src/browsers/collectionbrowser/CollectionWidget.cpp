@@ -21,11 +21,12 @@
 
 #include "CollectionWidget.h"
 
-#include "CollectionTreeView.h"
+#include "CollectionTreeItemModel.h"
+#include "CollectionTreeItemDelegate.h"
+#include "CollectionBrowserTreeView.h"
 #include "Debug.h"
 #include "SearchWidget.h"
 #include <amarokconfig.h>
-#include "CollectionTreeItemModel.h"
 
 #include <KAction>
 #include <KIcon>
@@ -51,9 +52,15 @@ CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
     QMenu *filterMenu = new QMenu( this );
     KHBox *hbox = new KHBox( this );
     m_searchWidget = new SearchWidget( hbox );
+    m_searchWidget->setClickMessage( i18n( "Search collection" ) );
 
-    m_treeView = new CollectionTreeView( this );
+    m_treeView = new CollectionBrowserTreeView( this );
+    m_treeView->setAlternatingRowColors( true );
     m_treeView->setFrameShape( QFrame::NoFrame );
+    m_treeView->setRootIsDecorated( false );
+
+    CollectionTreeItemDelegate *delegate = new CollectionTreeItemDelegate( m_treeView );
+    m_treeView->setItemDelegate( delegate );
 
     m_levels = Amarok::config( "Collection Browser" ).readEntry( "TreeCategory", QList<int>() );
     if ( m_levels.isEmpty() )

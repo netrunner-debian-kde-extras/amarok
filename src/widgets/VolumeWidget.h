@@ -1,6 +1,7 @@
 /***************************************************************************
  * copyright     : (C) 2004 Mark Kretschmann <markey@web.de>               *
-                   (C) 2007 Dan Meltzer <parallelgrapefruit@gmail.com>   *
+                   (C) 2007 Dan Meltzer <parallelgrapefruit@gmail.com>     *
+                   (C) 2009 Kevin Funk <krf@electrostorm.net               *
  **************************************************************************/
 
  /***************************************************************************
@@ -15,28 +16,35 @@
 #ifndef VOLUMEWIDGET_H
 #define VOLUMEWIDGET_H
 
-#include "SliderWidget.h"
 #include "EngineObserver.h"
+#include "SliderWidget.h"
+#include "ToolBar.h"
 
+#include <KAction>
+
+#include <QLabel>
 #include <QPointer>
-#include <KHBox>
+#include <QStringList>
 
-/*
+/**
 * A custom widget that serves as our volume slider within Amarok.
 */
-class VolumeWidget : public KHBox, public EngineObserver
+class VolumeWidget : public Amarok::ToolBar, public EngineObserver
 {
     Q_OBJECT
 public:
     VolumeWidget( QWidget * );
-    Amarok::Slider* slider() const { return m_slider; }
+    Amarok::VolumeSlider* slider() const { return m_slider; }
 
 private slots:
     void engineVolumeChanged( int value );
+    void engineMuteStateChanged( bool mute );
 
 private:
-    QPointer<Amarok::Slider> m_slider;
-
+    QPointer<Amarok::VolumeSlider> m_slider;
+    KAction *m_action;
+    QLabel *m_label;
+    QStringList m_icons;
 };
 
 #endif

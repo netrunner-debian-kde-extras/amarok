@@ -24,6 +24,15 @@
 **************************************************************************/
 
 Importer.loadQtBinding( "qt.core" );
+Importer.loadQtBinding( "qt.xml" );
+
+xml = "<?xml version=\"1.0\" encoding=\"UTF-8\" ?><lyric artist=\"{artist}\" title=\"{title}\">{lyrics}</lyric>";
+
+
+function escapeString( str )
+{
+    return str.replace( '&', "&amp;" ).replace( '<', "&lt;" ).replace( ">", "&gt;" ).replace( "\"", "&quot;" ).replace( "'", "&apos;" )
+}
 
 function onFinished( dat )
 {
@@ -32,7 +41,16 @@ function onFinished( dat )
         if( dat.length == 0 )
             Amarok.Lyrics.showLyricsError( "Unable to contact server" ); // TODO: this should be i18n able
         else
-            Amarok.Lyrics.showLyricsHtml( dat );
+        {
+            doc = new QDomDocument();
+            doc.setContent( dat );
+            parsedContent = doc.elementsByTagName( "lyrics" ).at( 0 ).toElement().text();
+            parsedContent = parsedContent.replace( "<lyrics>", "" ).replace( "</lyrics>", "" ); // some lyrics have 2 lyrics in them...wtf?
+            newxml = xml.replace( "{artist}", escapeString( doc.elementsByTagName( "artist" ).at( 0 ).toElement().text() ) );
+            newxml = newxml.replace( "{title}", escapeString( doc.elementsByTagName( "song" ).at( 0 ).toElement().text() ) );
+            newxml = newxml.replace( "{lyrics}", escapeString( parsedContent ) );
+            Amarok.Lyrics.showLyrics( newxml );
+        }
     }
     catch( err )
     {
@@ -49,6 +67,7 @@ function getLyrics( artist, title, url )
         url.addQueryItem( "func", "getSong" );
         url.addQueryItem( "artist", artist );
         url.addQueryItem( "song", title );
+        url.addQueryItem( "fmt", "xml" );
         Amarok.debug( "request URL: " + url.toString() );
 
         new Downloader( url, onFinished );

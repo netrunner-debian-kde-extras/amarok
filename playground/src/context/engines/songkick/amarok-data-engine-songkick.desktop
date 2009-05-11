@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=Songkick Data Engine
 Name[bg]=Ядро Songkick
+Name[ca]=Motor de dades de Songkick
 Name[cs]=Datový nástroj Songkick
 Name[da]=Datamotor til Songkick
 Name[de]=Datenmodul für Songkick
@@ -12,6 +13,7 @@ Name[fr]=Moteur de données Songkick
 Name[ga]=Inneall Sonraí Songkick
 Name[gl]=Motor de dados de Songkick
 Name[he]=מנוע מידע של Songkic
+Name[hne]=सांगकिक डाटा इंजिन
 Name[is]=Songkick gagnarvélin
 Name[it]=Motore dati Songkick
 Name[ja]=Songkick データエンジン
@@ -26,6 +28,8 @@ Name[pl]=Moduł danych Songkick
 Name[pt]=Motor de Dados do Songkick
 Name[pt_BR]=Mecanismo de Dados do Songkick
 Name[ro]=Motor de date Songkick
+Name[ru]=Движок данных Songkick
+Name[sl]=Podatkovni pogon za Songkick
 Name[sv]=Songkick datagränssnitt
 Name[th]=กลไกข้อมูล Songkick
 Name[tr]=Songkick Veri Motoru

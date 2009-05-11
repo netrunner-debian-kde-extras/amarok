@@ -27,65 +27,63 @@
 #include <KIcon>
 #include <KLocale>
 
-ProgressBarNG::ProgressBarNG( QWidget * parent )
-        : KHBox( parent )
+ProgressBar::ProgressBar( QWidget * parent )
+        : QFrame( parent )
 {
-
-    //setup the basics
-
-    setSpacing( 4 );
-    setContentsMargins( 0, 2, 0, 2 );
-
-    m_extraButtonSpace = new KHBox( this );
-    m_extraButtonSpace->setSpacing( 0 );
-    m_extraButtonSpace->setContentsMargins( 0, 0, 0, 0 );
-
-    m_cancelButton = new QToolButton( this );
-    m_cancelButton->setIcon( KIcon( "dialog-cancel-amarok" ) );
-    m_cancelButton->setToolTip( i18n( "Abort" ) );
-
-    m_cancelButton->setEnabled( false );
-
-    m_progresBar = new QProgressBar( this );
-    m_progresBar->setMinimum( 0 );
-    m_progresBar->setMaximum( 100 );
-    m_progresBar->setMaximumWidth( 300 );
-    m_progresBar->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+    QHBoxLayout *box = new QHBoxLayout( this );
+    box->setMargin( 0 );
+    box->setSpacing( 0 );
 
     m_descriptionLabel = new QLabel( this );
-    m_descriptionLabel->setMinimumWidth( 300 );
-    m_descriptionLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+    m_descriptionLabel->setMinimumWidth( 50 );
+    //m_descriptionLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+    box->addWidget( m_descriptionLabel );
 
+    KHBox *progressBox = new KHBox( this );
+
+    m_extraButtonSpace = new KHBox( progressBox );
+    m_extraButtonSpace->setSpacing( 0 );
+    m_extraButtonSpace->setMargin( 0 );
+
+    m_cancelButton = new QToolButton( progressBox );
+    m_cancelButton->setIcon( KIcon( "dialog-cancel-amarok" ) );
+    m_cancelButton->setToolTip( i18n( "Abort" ) );
+    m_cancelButton->setEnabled( false );
+
+    m_progressBar = new QProgressBar( progressBox );
+    m_progressBar->setMinimum( 0 );
+    m_progressBar->setMaximum( 100 );
+    m_progressBar->setMinimumWidth( 200 );
+    m_progressBar->setMaximumWidth( 300 );
+    m_progressBar->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+
+    box->addWidget( progressBox );
+    box->setAlignment( progressBox, Qt::AlignRight );
+
+    // Fix multiple progressbars using all available vertical space
     const int contentHeight = QFontMetrics( m_descriptionLabel->font() ).height();
     const int barHeight = contentHeight + 6;
-
     setFixedHeight( barHeight );
+    m_progressBar->setFixedHeight( barHeight - 4 );
 
-    m_progresBar->setFixedHeight( barHeight - 4 );
-
-    setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Fixed );
-
-    /*setBackgroundRole( QPalette::Link );
-    setAutoFillBackground ( true );
-    */
-
+    setLayout( box );
 }
 
 
-ProgressBarNG::~ProgressBarNG()
+ProgressBar::~ProgressBar()
 {
 }
 
 void
-ProgressBarNG::setDescription( const QString & description )
+ProgressBar::setDescription( const QString & description )
 {
     DEBUG_BLOCK
     m_descriptionLabel->setText( description );
 
 }
 
-ProgressBarNG *
-ProgressBarNG::setAbortSlot( QObject * receiver, const char * slot )
+ProgressBar *
+ProgressBar::setAbortSlot( QObject * receiver, const char * slot )
 {
     DEBUG_BLOCK
 
@@ -102,7 +100,7 @@ ProgressBarNG::setAbortSlot( QObject * receiver, const char * slot )
     return this;
 }
 
-void ProgressBarNG::cancel()
+void ProgressBar::cancel()
 {
     DEBUG_BLOCK
     debug() << "cancelling operation: " << m_descriptionLabel->text();
@@ -110,33 +108,27 @@ void ProgressBarNG::cancel()
     emit( cancelled( this ) );
 }
 
-void ProgressBarNG::setValue( int percentage )
+void ProgressBar::setValue( int percentage )
 {
-    progresBar()->setValue( percentage );
+    progressBar()->setValue( percentage );
     emit( percentageChanged( percentage ) );
 
     //this safety check has to be removed as KJobs sometimes start out
     //by showing 100%, thus removing the progress info before it even gets started
-    /*if ( percentage == m_progresBar->maximum() )
+    /*if ( percentage == m_progressBar->maximum() )
         QTimer::singleShot( POST_COMPLETION_DELAY, this, SLOT( delayedDone() ) );*/
-
 }
 
-void ProgressBarNG::delayedDone()
+void ProgressBar::delayedDone()
 {
     emit( complete( this ) );
 }
 
-int ProgressBarNG::percentage()
+int ProgressBar::percentage()
 {
-    if ( m_progresBar->maximum() == 100 )
-        return m_progresBar->value();
-    else
-    {
-
-        return ( int )((( float ) m_progresBar->value() / ( float ) m_progresBar->maximum() ) * 100.0 );
-
-    }
+    if ( m_progressBar->maximum() == 100 )
+        return m_progressBar->value();
+    return ( int )((( float ) m_progressBar->value() / ( float ) m_progressBar->maximum() ) * 100.0 );
 }
 
 

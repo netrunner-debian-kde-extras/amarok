@@ -102,6 +102,7 @@ private:
             {
                 // TODO: nice poof animation? ;-)
                 delete token;
+                emit static_cast<TokenDropTarget*>( parent() )->changed();
                 ret = true; // THIS IS IMPORTANT
             }
             // anyway, tell daddy to wipe empty rows NOW
@@ -199,7 +200,6 @@ TokenDropTarget::clear()
     }
     //readd our spacer
     layout()->addItem( new QSpacerItem( 1, 1, QSizePolicy::Expanding, QSizePolicy::MinimumExpanding ) );
-    emit changed();
 }
 
 int
@@ -229,7 +229,6 @@ TokenDropTarget::deleteEmptyRows()
         if ( box && box->count() < 2 ) // sic! last is spacer
         {
             layout()->removeItem( box );
-            emit changed();
             delete box;
         }
         else
@@ -358,7 +357,6 @@ TokenDropTarget::insertToken( Token *token, int row, int col )
     token->removeEventFilter( m_tokenDragger );
     token->installEventFilter( m_tokenDragger );
     token->setCursor( Qt::OpenHandCursor );
-    emit changed();
 }
 
 int

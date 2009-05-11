@@ -21,12 +21,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  **************************************************************************/
 
-#ifndef AMAROK_GROUPINGPROXY_H
-#define AMAROK_GROUPINGPROXY_H
-
 #define DEBUG_PREFIX "Playlist::GroupingProxy"
 
 #include "GroupingProxy.h"
+#include "playlist/navigators/NavigatorFilterProxyModel.h"
 
 #include "Debug.h"
 #include "meta/Meta.h"
@@ -51,10 +49,10 @@ Playlist::GroupingProxy::destroy()
     }
 }
 
-Playlist::GroupingProxy::GroupingProxy() : QAbstractProxyModel( 0 ) , m_model( NavigatorFilterProxyModel::instance() )
+Playlist::GroupingProxy::GroupingProxy()
+    : QAbstractProxyModel( 0 )
+    , m_model( NavigatorFilterProxyModel::instance() )
 {
-    DEBUG_BLOCK
-
     setSourceModel( m_model );
     // signal proxies
     connect( m_model, SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( modelDataChanged( const QModelIndex&, const QModelIndex& ) ) );
@@ -65,9 +63,8 @@ Playlist::GroupingProxy::GroupingProxy() : QAbstractProxyModel( 0 ) , m_model( N
 
     int max = m_model->rowCount();
     for ( int i = 0; i < max; i++ )
-    {
         m_rowGroupMode.append( None );
-    }
+    
     regroupRows( 0, max - 1 );
 
     s_instance = this;
@@ -75,20 +72,14 @@ Playlist::GroupingProxy::GroupingProxy() : QAbstractProxyModel( 0 ) , m_model( N
 
 Playlist::GroupingProxy::~GroupingProxy()
 {
-    DEBUG_BLOCK
 }
 
 QModelIndex
 Playlist::GroupingProxy::index( int r, int c, const QModelIndex& ) const
 {
     if ( m_model->rowExists( r ) )
-    {
         return createIndex( r, c );
-    }
-    else
-    {
-        return QModelIndex();
-    }
+    return QModelIndex();
 }
 
 QModelIndex
@@ -130,21 +121,15 @@ Playlist::GroupingProxy::data( const QModelIndex& index, int role ) const
     int row = index.row();
 
     if ( role == Playlist::GroupRole )
-    {
         return m_rowGroupMode.at( row );
-    }
+    
     else if ( role == Playlist::GroupedTracksRole )
-    {
         return groupRowCount( row );
-    }
+    
     else if ( role == Playlist::GroupedAlternateRole )
-    {
         return ( row % 2 == 1 );
-    }
-    else
-    {
-        return m_model->data( index, role );
-    }
+    
+    return m_model->data( index, role );
 }
 
 int
@@ -156,7 +141,6 @@ Playlist::GroupingProxy::activeRow() const
 void
 Playlist::GroupingProxy::setActiveRow( int row ) const
 {
-    DEBUG_BLOCK
     m_model->setActiveRow( row );
 }
 
@@ -205,37 +189,33 @@ Playlist::GroupingProxy::setCollapsed( int, bool ) const
 int
 Playlist::GroupingProxy::firstInGroup( int row ) const
 {
-    int filteredRow = m_model->rowFromSource( row );
+    if ( m_rowGroupMode.at( row ) == None )
+        return row;
 
-    if ( m_rowGroupMode.at( filteredRow ) == None )
-        return filteredRow;
-
-    while ( filteredRow >= 0 )
+    while ( row >= 0 )
     {
-        if ( m_rowGroupMode.at( filteredRow ) == Head )
-            return filteredRow;
-        filteredRow--;
+        if ( m_rowGroupMode.at( row ) == Head )
+            return row;
+        row--;
     }
     warning() << "No group head found for row" << row;
-    return filteredRow;
+    return row;
 }
 
 int
 Playlist::GroupingProxy::lastInGroup( int row ) const
 {
-    int filteredRow = m_model->rowFromSource( row );
-        
-    if ( m_rowGroupMode.at( filteredRow ) == None )
-        return filteredRow;
+    if ( m_rowGroupMode.at( row ) == None )
+        return row;
 
-    while ( filteredRow < rowCount() )
+    while ( row < rowCount() )
     {
-        if ( m_rowGroupMode.at( filteredRow ) == Tail )
-            return filteredRow;
-        filteredRow++;
+        if ( m_rowGroupMode.at( row ) == Tail )
+            return row;
+        row++;
     }
     warning() << "No group tail found for row" << row;
-    return filteredRow;
+    return row;
 }
 
 void
@@ -379,11 +359,19 @@ int Playlist::GroupingProxy::currentSearchFields()
 
 int Playlist::GroupingProxy::tracksInGroup( int row ) const
 {
+    //unfortunately we need to map this to row from source as it will
+    //otherwise mess up ( and crash ) when a filter is applied
+    row = NavigatorFilterProxyModel::instance()->rowFromSource( row );
+
     return ( lastInGroup( row ) - firstInGroup( row ) ) + 1;
 }
 
 int Playlist::GroupingProxy::lengthOfGroup( int row ) const
 {
+    //unfortunately we need to map this to row from source as it will
+    //otherwise mess up ( and crash ) when a filter is applied
+    row = NavigatorFilterProxyModel::instance()->rowFromSource( row );
+    
     int totalLenght = 0;
     for ( int i = firstInGroup( row ); i <= lastInGroup( row ); i++ ) {
         totalLenght += m_model->trackAt( i )->length();
@@ -391,11 +379,3 @@ int Playlist::GroupingProxy::lengthOfGroup( int row ) const
 
     return totalLenght;
 }
-
-#endif
-
-
-
-
-
-

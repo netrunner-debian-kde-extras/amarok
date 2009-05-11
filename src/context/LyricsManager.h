@@ -70,7 +70,7 @@ class AMAROK_EXPORT LyricsManager : public LyricsSubject
 
             return s_self; 
         }
-    
+
         void lyricsResult( const QString& lyrics, bool cached = false );
         void lyricsResultHtml( const QString& lyrics, bool cached = false );
         void lyricsError( const QString &error );

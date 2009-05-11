@@ -62,7 +62,8 @@ enum DataRoles
     ActiveTrackRole,
     QueuePositionRole,
     InCollectionRole,
-    MultiSourceRole
+    MultiSourceRole,
+    StopAfterTrackRole
 };
 
 class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer
@@ -140,7 +141,6 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer
 
         // methods to save playlist to file
         bool exportPlaylist( const QString &path ) const;
-        bool savePlaylist( const QString &name ) const;
         void setPlaylistName( const QString &name, bool proposeOverwriting = false );
         void proposePlaylistName( const QString &name, bool proposeOverwriting = false );
         const QString& playlistName() const { return m_playlistName; }
@@ -206,11 +206,15 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer
          */
         int currentSearchFields() { return m_currentSearchFields; }
 
+    public slots:
+        bool savePlaylist() const;
+
     signals:
         void insertedIds( const QList<quint64>& );
         void removedIds( const QList<quint64>& );
         void activeTrackChanged( quint64 );
         void activeRowChanged( int );
+        void itemsAdded( int firstRow );
 
     private:
         Model();
@@ -226,6 +230,7 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer
         void insertTracksCommand( const InsertCmdList& );
         void removeTracksCommand( const RemoveCmdList& );
         void moveTracksCommand( const MoveCmdList&, bool reverse = false );
+        void clearCommand();
         void setStateOfRow( int row, Item::State state ) { m_items.at( row )->setState( state ); }
 
         /**

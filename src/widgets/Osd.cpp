@@ -54,7 +54,8 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
         , m_y( MARGIN )
         , m_drawShadow( true )
         , m_rating( 0 )
-        , m_volume( false )
+        , m_volume( 0 )
+        , m_showVolume( false )
 {
     Qt::WindowFlags flags;
     flags = Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint;
@@ -87,7 +88,7 @@ void
 OSDWidget::show( const QString &text, QImage newImage )
 {
     DEBUG_BLOCK
-    m_volume = false;
+    m_showVolume = false;
     if ( !newImage.isNull() )
     {
         m_cover = newImage;
@@ -122,43 +123,51 @@ OSDWidget::ratingChanged( const short rating )
 }
 
 void
-OSDWidget::volChanged( int volume )
+OSDWidget::volumeChanged( int volume )
 {
+    m_volume = volume;
+
     if ( isEnabled() )
     {
-        m_volume = true;
-        m_newvolume = volume;
-        m_text = m_newvolume ? i18n("Volume: %1%", m_newvolume) : i18nc( "State, as in, The playback is silent", "Mute" );
+        QString muteState = "";
+        m_showVolume = true;
+
+        m_text = i18n("Volume: %1% %2", m_volume, ( The::engineController()->isMuted() ? "(muted)" : "" ) );
 
         show();
     }
 }
 
 void
-OSDWidget::show() //virtual
+OSDWidget::setVisible( bool visible )
 {
-    if ( !isEnabled() || m_text.isEmpty() )
-        return;
-
-    const uint M = fontMetrics().width( 'x' );
-
-    const QRect oldGeometry = QRect( pos(), size() );
-    const QRect newGeometry = determineMetrics( M );
-
-    if( newGeometry.width() > 0 && newGeometry.height() > 0 )
+    if ( visible )
     {
-        m_m = M;
-        m_size = newGeometry.size();
-        setGeometry( newGeometry );
-        QWidget::show();
+        if ( !isEnabled() || m_text.isEmpty() )
+            return;
 
-        if( m_duration ) //duration 0 -> stay forever
-            m_timer->start( m_duration ); //calls hide()
+        const uint M = fontMetrics().width( 'x' );
+
+        const QRect oldGeometry = QRect( pos(), size() );
+        const QRect newGeometry = determineMetrics( M );
+
+        if( newGeometry.width() > 0 && newGeometry.height() > 0 )
+        {
+            m_m = M;
+            m_size = newGeometry.size();
+            setGeometry( newGeometry );
+            QWidget::setVisible( visible );
+
+            if( m_duration ) //duration 0 -> stay forever
+                m_timer->start( m_duration ); //calls hide()
+        }
+        else
+            warning() << "Attempted to make an invalid sized OSD\n";
+
+        update();
     }
-    else
-        warning() << "Attempted to make an invalid sized OSD\n";
-
-    update();
+    else 
+        QWidget::setVisible( visible );
 }
 
 QRect
@@ -182,11 +191,10 @@ OSDWidget::determineMetrics( const int M )
             Qt::AlignCenter | Qt::TextWordWrap, m_text );
     rect.setHeight( rect.height() + M + M );
 
-    if( m_volume )
+    if( m_showVolume )
     {
         static const QString tmp = QString ("******").insert( 3,
-            ( i18n("Volume: 100%").length() >= i18nc( "State, as in, the playback is silent", "Mute" ).length() )?
-            i18n("Volume: 100%") : i18nc( "State, as in, the playback is silent", "Mute" ) );
+            ( i18n("Volume: 100% (muted)" ) ) );
 
         QRect tmpRect = fontMetrics().boundingRect( 0, 0,
             max.width() - image.width(), max.height() - fontMetrics().height(),
@@ -195,14 +203,14 @@ OSDWidget::determineMetrics( const int M )
 
         rect = tmpRect;
 
-        if( m_newvolume > 66 )
-            m_cover = KIcon( "audio-volume-high-amarok" ).pixmap( 100, 100 ).toImage();
-        else if ( m_newvolume > 33 )
-            m_cover = KIcon( "audio-volume-medium-amarok" ).pixmap( 100, 100 ).toImage();
-        else if ( m_newvolume > 0 )
-            m_cover = KIcon( "audio-volume-low-amarok" ).pixmap( 100, 100 ).toImage();
-        else
+        if ( The::engineController()->isMuted() )
             m_cover = KIcon( "audio-volume-muted-amarok" ).pixmap( 100, 100 ).toImage();
+        else if( m_volume > 66 )
+            m_cover = KIcon( "audio-volume-high-amarok" ).pixmap( 100, 100 ).toImage();
+        else if ( m_volume > 33 )
+            m_cover = KIcon( "audio-volume-medium-amarok" ).pixmap( 100, 100 ).toImage();
+        else
+            m_cover = KIcon( "audio-volume-low-amarok" ).pixmap( 100, 100 ).toImage();
     }
     // Don't show both volume and rating
     else if( m_rating )
@@ -311,7 +319,7 @@ OSDWidget::paintEvent( QPaintEvent *e )
 
     int graphicsHeight = 0;
 
-    if( !m_volume && m_rating > 0 && !m_paused )
+    if( !m_showVolume && m_rating > 0 && !m_paused )
     {
         QPixmap* star = StarManager::instance()->getStar( m_rating/2 );
         QRect r( rect );
@@ -357,6 +365,7 @@ OSDWidget::paintEvent( QPaintEvent *e )
     //p.setPen( Qt::white ); // This too.
     p.setFont( font() );
     p.drawText( rect, align, m_text );
+
     m_paused = false;
 }
 
@@ -425,7 +434,8 @@ OSDPreviewWidget::OSDPreviewWidget( QWidget *parent )
     f.setPointSize( 16 );
     setFont( f );
     setTranslucent( AmarokConfig::osdUseTranslucency() );
-    show( m_text, m_cover );
+    setText( m_text );
+    setImage( m_cover );
 }
 
 void
@@ -620,28 +630,15 @@ Amarok::OSD::forceToggleOSD()
 void
 Amarok::OSD::engineVolumeChanged( int newVolume )
 {
-    volChanged( newVolume );
+    volumeChanged( newVolume );
 }
 
-/* Try to detect MetaData spam in Streams. */
-bool
-Amarok::OSD::isMetaDataSpam( const QHash<qint64, QString> &newMetaData )
+void
+Amarok::OSD::engineMuteStateChanged( bool mute )
 {
-    // search for Metadata in history
-    for( int i = 0; i < m_metaDataHistory.size(); i++)
-    {
-        if( m_metaDataHistory.at( i ) == newMetaData ) // we already had that one -> spam!
-        {
-            m_metaDataHistory.move( i, 0 ); // move spam to the beginning of the list
-            return true;
-        }
-    }
+    Q_UNUSED( mute )
 
-    if( m_metaDataHistory.size() == 12 )
-        m_metaDataHistory.removeLast();
-
-    m_metaDataHistory.insert( 0, newMetaData );
-    return false;
+    volumeChanged( m_volume );
 }
 
 void

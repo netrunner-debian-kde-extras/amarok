@@ -45,10 +45,8 @@
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistWidget.h"
-#include "playlist/view/graphic/PlaylistGraphicsView.h"
 #include "playlistmanager/PlaylistFileProvider.h"
 #include "playlistmanager/PlaylistManager.h"
-#include "queuemanager/QueueManager.h"
 #include "services/ServicePluginManager.h"
 #include "services/scriptable/ScriptableService.h"
 #include "statusbar/StatusBar.h"
@@ -66,10 +64,10 @@
 #include <KApplication>     //kapp
 #include <KFileDialog>      //savePlaylist(), openPlaylist()
 #include <KInputDialog>     //slotAddStream()
+#include <KMessageBox>
 #include <KLocale>
 #include <KMenu>
 #include <KMenuBar>
-#include <KMessageBox>      //savePlaylist()
 #include <KPixmapCache>
 #include <KStandardAction>
 #include <KWindowSystem>
@@ -294,6 +292,7 @@ MainWindow::init()
 
         PERF_LOG( "Creating PlaylistBrowser" )
         addBrowserMacro( PlaylistBrowserNS::PlaylistBrowser, "PlaylistBrowser", i18n("Playlists"), "view-media-playlist-amarok" )
+        playlistBrowser()->showCategory( PlaylistManager::Dynamic );
         PERF_LOG( "CreatedPlaylsitBrowser" )
 
         PERF_LOG( "Creating FileBrowser" )
@@ -308,7 +307,7 @@ MainWindow::init()
 
         internetContentServiceBrowser->setScriptableServiceManager( The::scriptableServiceManager() );
         PERF_LOG( "ScriptableServiceManager done" )
-        
+
         #undef addBrowserMacro
         PERF_LOG( "finished MainWindow::init" )
     }
@@ -324,8 +323,6 @@ MainWindow::init()
         m_splitter->restoreState( sPanels );
     }
 
-    //Amarok::MessageQueue::instance()->sendMessages();
-
     The::amarokUrlHandler(); //Instantiate
 }
 
@@ -337,11 +334,16 @@ MainWindow::createContextView( Plasma::Containment *containment )
             this, SLOT( createContextView( Plasma::Containment* ) ) );
     PERF_LOG( "Creating ContexView" )
     m_contextView = new Context::ContextView( containment, m_corona, m_contextWidget );
-    m_contextView->setFrameShape( QFrame::NoFrame );   
+    m_contextView->setFrameShape( QFrame::NoFrame );
     m_contextToolbarView = new Context::ToolbarView( containment, m_corona, m_contextWidget );
     m_contextToolbarView->setFrameShape( QFrame::NoFrame );
     m_contextView->showHome();
     PERF_LOG( "ContexView created" )
+
+
+    KConfigGroup config = Amarok::config();
+    bool show = config.readEntry( "Show Context View", true );
+    showContextView( show );
 }
 
 void
@@ -485,15 +487,8 @@ MainWindow::exportPlaylist() const //SLOT
 void
 MainWindow::savePlaylist() const
 {
-    DEBUG_BLOCK
-    //TODO make a nice dialog for choosing name and potentially parent group
-    //if( !playlistName.isEmpty() )
-
-    QString playlistName( i18n("Playlist") );
-    The::playlistModel()->savePlaylist( playlistName );
+    The::playlistModel()->savePlaylist();
 }
-
-
 
 void
 MainWindow::slotShowCoverManager() const //SLOT
@@ -518,11 +513,11 @@ MainWindow::slotAddLocation( bool directPlay ) //SLOT
     dlg.setMode( KFile::Files /*| KFile::Directory */); // Directory mode is fucked up - selects the parent dir
     dlg.exec();
     files = dlg.selectedUrls();
-    
+
     if( files.isEmpty() )
         return;
 
-    The::playlistController()->insertOptioned( files , Playlist::Append );
+    The::playlistController()->insertOptioned( files , Playlist::AppendAndPlayImmediately );
 }
 
 void
@@ -562,30 +557,12 @@ MainWindow::showScriptSelector() //SLOT
     ScriptManager::instance()->raise();
 }
 
-void
-MainWindow::showQueueManager() //SLOT
-{
-    if( QueueManagerNS::QueueManager::instance() )
-    {
-        QueueManagerNS::QueueManager::instance()->raise();
-        return;
-    }
-
-    QueueManagerNS::QueueManager dialog;
-    if( dialog.exec() == QDialog::Accepted )
-    {
-        // TODO: alter queue
-    }
-}
-
 /**
  * "Toggle Main Window" global shortcut connects to this slot
  */
 void
 MainWindow::showHide() //SLOT
 {
-    DEBUG_BLOCK
-
     setVisible( !isVisible() );
 }
 
@@ -666,7 +643,7 @@ MainWindow::createActions()
     connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowCoverManager() ) );
     ac->addAction( "cover_manager", action );
 
-    
+
 //     KAction *update_podcasts = new KAction( this );
 //     update_podcasts->setText( i18n( "Update Podcasts" ) );
 //     //update_podcasts->setIcon( KIcon("view-refresh-amarok") );
@@ -688,10 +665,6 @@ MainWindow::createActions()
     action = new KAction( KIcon("preferences-plugin-script-amarok"), i18n("Script Manager"), this );
     connect(action, SIGNAL(triggered(bool)), SLOT(showScriptSelector()));
     ac->addAction( "script_manager", action );
-
-    action = new KAction( KIcon( "go-bottom-amarok"), i18n( "Queue Manager" ), this );
-    connect(action, SIGNAL(triggered(bool)), SLOT(showQueueManager()));
-    ac->addAction( "queue_manager", action );
 
     action = new KAction( KIcon( "media-seek-forward-amarok" ), i18n("&Seek Forward"), this );
     ac->addAction( "seek_forward", action );
@@ -749,7 +722,7 @@ MainWindow::createActions()
     action = new KAction( i18n( "Mute Volume" ), this );
     ac->addAction( "mute", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_M ) );
-    connect( action, SIGNAL( triggered() ), ec, SLOT( mute() ) );
+    connect( action, SIGNAL( triggered() ), ec, SLOT( toggleMute() ) );
 
     action = new KAction( i18n( "Love Current Track" ), this );
     ac->addAction( "loveTrack", action );
@@ -834,8 +807,8 @@ MainWindow::createMenus()
     m_menubar = new QMenuBar(0);  // Fixes menubar in OS X
     actionsMenu = new KMenu( m_menubar );
     // Add these functions to the dock icon menu in OS X
-    extern void qt_mac_set_dock_menu(QMenu *);
-    qt_mac_set_dock_menu(actionsMenu);
+    //extern void qt_mac_set_dock_menu(QMenu *);
+    //qt_mac_set_dock_menu(actionsMenu);
     // Change to avoid duplicate menu titles in OS X
     actionsMenu->setTitle( i18n("&Music") );
 #else
@@ -905,8 +878,15 @@ MainWindow::createMenus()
     m_settingsMenu->setTitle( i18n("&Settings") );
     //TODO use KStandardAction or KXmlGuiWindow
 
+    // the phonon-coreaudio  backend has major issues with either the VolumeFaderEffect itself
+    // or with it in the pipeline. track playback stops every ~3-4 tracks, and on tracks >5min it
+    // stops at about 5:40. while we get this resolved upstream, don't make playing amarok such on osx.
+    // so we disable replaygain on osx
+#ifndef Q_WS_MAC
     m_settingsMenu->addAction( Amarok::actionCollection()->action("replay_gain_mode") );
     m_settingsMenu->addSeparator();
+#endif
+
     m_settingsMenu->addAction( Amarok::actionCollection()->action(KStandardAction::name(KStandardAction::ConfigureToolbars)) );
     m_settingsMenu->addAction( Amarok::actionCollection()->action(KStandardAction::name(KStandardAction::KeyBindings)) );
     m_settingsMenu->addAction( Amarok::actionCollection()->action(KStandardAction::name(KStandardAction::Preferences)) );
@@ -1004,8 +984,6 @@ void MainWindow::engineStateChanged( Phonon::State state, Phonon::State oldState
 
 void MainWindow::metadataChanged( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
-
     setPlainCaption( i18n( "%1 - %2  ::  %3", track->artist() ? track->artist()->prettyName() : i18n( "Unknown" ), track->prettyName(), AMAROK_CAPTION ) );
 }
 
@@ -1024,9 +1002,27 @@ PlaylistBrowserNS::PlaylistBrowser * MainWindow::playlistBrowser()
     return qobject_cast<PlaylistBrowserNS::PlaylistBrowser *>( m_browsers->at( 2 ) );
 }
 
+void MainWindow::toggleContectView()
+{
+    if( m_contextWidget->isVisible() )
+        showContextView( false );
+    else
+        showContextView( true );
+}
+
+void MainWindow::showContextView( bool visible )
+{
+    DEBUG_BLOCK
+    if ( visible )
+        m_contextWidget->show();
+    else 
+        m_contextWidget->hide();
+}
+
 namespace The {
     MainWindow* mainWindow() { return MainWindow::s_instance; }
 }
+
 
 #include "MainWindow.moc"
 

@@ -58,7 +58,7 @@ ServiceFactory::trackForUrl(const KUrl & url)
     /*Meta::ServiceTrack * serviceTrack = new Meta::ServiceTrack();
     serviceTrack->setUidUrl( url.url() );
     Meta::TrackPtr track( serviceTrack );*/
-    
+
     Meta::TrackPtr track;
     foreach( ServiceBase * service, m_activeServices )
     {
@@ -72,7 +72,7 @@ ServiceFactory::trackForUrl(const KUrl & url)
             debug() << "Service Ready. Collection is: " << service->collection();
             track = service->collection()->trackForUrl( url );
         }
-        
+
         if ( track )
             return track;
     }
@@ -98,7 +98,7 @@ void ServiceFactory::slotServiceReady()
 
 ServiceBase *ServiceBase::s_instance = 0;
 
-ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useCollectionTreeView )
+ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useCollectionTreeView, const QString &prettyName )
         : KVBox( 0 )
         , m_contentView ( 0 )
         , m_parentFactory( parent )
@@ -111,6 +111,7 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
     DEBUG_BLOCK
 
     m_name = name;
+    m_prettyName = prettyName;
 
     setContentsMargins( 1, 1, 1, 1 );
     setSpacing( 1 );
@@ -120,7 +121,7 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
     m_topPanel->setLineWidth( 2 );
     m_topPanel->setSpacing( 2 );
     m_topPanel->setMargin( 2 );
-    
+
     //m_topPanel->setFixedHeight( 50 );
 
     KHBox * commonPanel = new KHBox ( m_topPanel );
@@ -133,7 +134,11 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
 
     QLabel * nameLabel = new QLabel( commonPanel );
     nameLabel->setMinimumSize( 230 , 28 );
-    nameLabel->setText( m_name );
+    if( !m_prettyName.isEmpty() )
+        nameLabel->setText( m_prettyName );
+    else
+        nameLabel->setText( m_name );
+
     QFont nameLabelFont = nameLabel->font();
     nameLabelFont.setBold( true );
     nameLabelFont.setPointSize( nameLabelFont.pointSize() + 2 );
@@ -158,7 +163,7 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
     //connect( m_contentView, SIGNAL( doubleClicked ( const QModelIndex & ) ), this, SLOT( itemActivated ( const QModelIndex & ) ) );
 
     m_bottomPanel = new KVBox( this );
-    m_bottomPanel->setFixedHeight( 50 );
+    //m_bottomPanel->setFixedHeight( 50 );
     m_bottomPanel->setFrameStyle( QFrame::NoFrame );
     m_bottomPanel->setLineWidth(2);
     m_bottomPanel->setSpacing( 2 );
@@ -190,6 +195,14 @@ ServiceBase::~ServiceBase()
 QString
 ServiceBase::name() const
 {
+    return m_name;
+}
+
+QString
+ServiceBase::prettyName() const
+{
+    if( !m_prettyName.isEmpty() )
+      return m_prettyName;
     return m_name;
 }
 
