@@ -4,8 +4,9 @@ amarok (2.0.96-2) UNRELEASED; urgency=low
     debian/mysqle_link_to_amarok_executable_feature on top of upstream.
   * Update debian/copyright.
   * Add amarok-utils package.
+  * Change main section to 'sound' and put amarok-utils to utils section.
 
- -- Modestas Vainius <modestas@vainius.eu>  Mon, 11 May 2009 22:22:50 +0300
+ -- Modestas Vainius <modestas@vainius.eu>  Mon, 11 May 2009 22:23:17 +0300
 
 amarok (2.0.96-1) experimental; urgency=low
 

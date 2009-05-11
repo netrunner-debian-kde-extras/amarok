@@ -1,5 +1,5 @@
 Source: amarok
-Section: kde
+Section: sound
 Priority: optional
 Maintainer: Modestas Vainius <modestas@vainius.eu>
 DM-Upload-Allowed: yes
@@ -47,6 +47,7 @@ Description: architecture independent files for Amarok
  installed, you will hardly find this package useful.
 
 Package: amarok-utils
+Section: utils
 Architecture: any
 Depends: ${shlibs:Depends},
 Replaces: amarok (<< 2.0.96-2)
