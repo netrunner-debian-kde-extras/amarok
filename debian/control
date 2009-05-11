@@ -48,6 +48,7 @@ Description: architecture independent files for Amarok
 
 Package: amarok-dbg
 Priority: extra
+Section: debug
 Architecture: any
 Depends: amarok (= ${binary:Version})
 Recommends: kdelibs5-dbg
