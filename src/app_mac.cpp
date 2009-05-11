@@ -17,7 +17,22 @@
 
 #include <Carbon/Carbon.h>
 
+#include "amarokurls/AmarokUrl.h"
+#include "CollectionManager.h"
+#include "Debug.h"
+#include "Meta.h"
+#include "Playlist.h"
+#include "PlaylistFileSupport.h"
+#include "playlist/PlaylistController.h"
+#include "playlistmanager/PlaylistManager.h"
+
+
+#include <QByteArray>
+
+#include <KUrl>
+
 static AEEventHandlerUPP appleEventProcessorUPP = 0;
+static AEEventHandlerUPP macCallbackUrlHandlerUPP = 0;
 
 OSStatus
 appleEventProcessor(const AppleEvent *ae, AppleEvent *, long /*handlerRefCon*/)
@@ -41,10 +56,47 @@ appleEventProcessor(const AppleEvent *ae, AppleEvent *, long /*handlerRefCon*/)
     return eventNotHandledErr;
 }
 
+OSStatus
+macCallbackUrlHandler( const AppleEvent *ae, AppleEvent *, long /*handlerRefCon*/)
+{
+    DEBUG_BLOCK
+    OSErr error = noErr;
+    Size actualSize = 0;
+    DescType descType = typeUTF8Text;
+    if( ( error = AESizeOfParam( ae, keyDirectObject, &descType, &actualSize ) ) == noErr )
+    {
+        QByteArray ba;
+        ba.resize( actualSize + 1 );
+        error = AEGetParamPtr( ae, keyDirectObject, typeUTF8Text, 0, ba.data(), actualSize, &actualSize );
+        if( error == noErr )
+        {
+            KUrl url( QString::fromUtf8( ba.data() ) );
+            if( url.protocol() == "amarok" )
+            {
+                AmarokUrl aUrl( url.url() );
+                aUrl.run();
+            }
+            else if( PlaylistManager::instance()->isPlaylist( url ) )
+            {
+                Meta::PlaylistPtr playlist = Meta::loadPlaylist( url );
+                The::playlistController()->insertOptioned( playlist, Playlist::AppendAndPlay );
+            }
+            else
+            {
+                Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
+                The::playlistController()->insertOptioned( track, Playlist::AppendAndPlay );
+            }
+        }
+    }
+    return error;
+}
+
 void
 setupEventHandler_mac(long handlerRef)
 {
     appleEventProcessorUPP = AEEventHandlerUPP(appleEventProcessor);
     AEInstallEventHandler(kCoreEventClass, kAEReopenApplication, appleEventProcessorUPP, handlerRef, true);
+    macCallbackUrlHandlerUPP = AEEventHandlerUPP(macCallbackUrlHandler);
+    AEInstallEventHandler(kInternetEventClass, kAEGetURL, macCallbackUrlHandlerUPP, handlerRef, false);
 }
 

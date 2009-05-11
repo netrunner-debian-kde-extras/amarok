@@ -1,6 +1,7 @@
 /***************************************************************************
  * Ported to Collection Framework: *
  * copyright            : (C) 2008 Alejandro Wainzinger <aikawarazuni@gmail.com> 
+ * copyright            : (C) 2009 Seb Ruiz <ruiz@kde.org>
 
  * Original Work: *
  * copyright            : (C) 2005, 2006 by Martin Aumueller <aumuell@reserv.at>
@@ -82,19 +83,17 @@ struct PodcastInfo
         Q_OBJECT
 
         public:
-           /**
-            * Constructor
-            */
            IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject* parent );
-           /**
-            * Destructor
-            */
            ~IpodHandler();
 
            /* Get Methods */
-
            QString mountPoint() const { return m_mountPoint; }
            QMap<Meta::TrackPtr, QString> tracksFailed() const { return m_tracksFailed; }
+           
+           QPixmap getCover( Meta::IpodTrackPtr track ) const;
+           void setCoverArt( Itdb_Track *ipodtrack, const QString &filename ) const;
+           void setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image ) const;
+           
            /**
             * Successfully read Ipod database?
             */
@@ -131,7 +130,6 @@ struct PodcastInfo
            bool initializeIpod();
 
         private:
-
            /* Handler's Main Methods */
 
            /**
@@ -140,7 +138,7 @@ struct PodcastInfo
             * Extracts track information from ipodtrack
             * and puts it in track
             */
-           void getBasicIpodTrackInfo( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track );
+           void getBasicIpodTrackInfo( const Itdb_Track *ipodtrack, Meta::IpodTrackPtr track ) const;
 
            /* Handler's Collection Methods */
 
@@ -162,10 +160,8 @@ struct PodcastInfo
            QString realPath( const char *ipodPath );
 
            /* Cover Art functions */
-           #ifdef GDK_FOUND
-           void getCoverArt( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track );
-           #endif
-           void setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image );
+           QString ipodArtFilename( const Itdb_Track *ipodtrack ) const;
+           void getCoverArt( const Itdb_Track *ipodtrack );
 
            /* File I/O Methods */
 
@@ -225,7 +221,6 @@ struct PodcastInfo
 
            /* libgpod variables */
            Itdb_iTunesDB    *m_itdb;
-           Itdb_Device      *m_device;
            Itdb_Playlist    *m_masterPlaylist;
 
            /* Lockers */
@@ -238,7 +233,7 @@ struct PodcastInfo
            Meta::TrackList   m_tracksToDelete;
 
            /* Operation Progress Bar */
-           ProgressBarNG    *m_statusbar;
+           ProgressBar      *m_statusbar;
 
            /* Ipod Connection */
            bool              m_autoConnect;
@@ -274,6 +269,7 @@ struct PodcastInfo
 
            // tempdir for covers
            KTempDir *m_tempdir;
+           QSet<QString> m_coverArt;
 
            // TODO: Implement lockfile
            // QFile *m_lockFile;

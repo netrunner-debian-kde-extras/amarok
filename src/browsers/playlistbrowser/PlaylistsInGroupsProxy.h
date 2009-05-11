@@ -45,37 +45,70 @@ class PlaylistsInGroupsProxy : public PlaylistBrowserNS::MetaPlaylistModel
         QModelIndex mapToSource( const QModelIndex& ) const;
         QModelIndex mapFromSource( const QModelIndex& ) const;
         QVariant data( const QModelIndex &index, int role ) const;
+        virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+        virtual bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() );
+        virtual Qt::DropActions supportedDropActions() const { return Qt::MoveAction; }
+        virtual QStringList mimeTypes() const;
+        virtual QMimeData *mimeData( const QModelIndexList &indexes ) const;
+        virtual bool dropMimeData( const QMimeData *data, Qt::DropAction action,
+                                   int row, int column, const QModelIndex &parent );
 
         QList<PopupDropperAction *> actionsFor( const QModelIndexList &indexes );
 
         void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
 
+        QModelIndex createNewGroup( const QString &groupName );
+
     signals:
         void rowsInserted( const QModelIndex&, int, int );
         void rowsRemoved( const QModelIndex&, int, int );
+        void layoutAboutToBeChanged();
+        void layoutChanged();
+        void renameIndex( QModelIndex idx );
 
     private slots:
         void modelDataChanged( const QModelIndex&, const QModelIndex& );
         void modelRowsInserted( const QModelIndex&, int, int );
         void modelRowsRemoved( const QModelIndex&, int, int );
+        void slotRename( QModelIndex idx );
+        void buildTree();
 
         void slotDeleteGroup();
         void slotRenameGroup();
+        void slotAddToGroup();
 
     private:
-        void buildTree();
+        bool isGroup( const QModelIndex &index ) const;
         QModelIndexList mapToSource( const QModelIndexList& list ) const;
         QList<PopupDropperAction *> createGroupActions();
         bool isAGroupSelected( const QModelIndexList& list ) const;
         bool isAPlaylistSelected( const QModelIndexList& list ) const;
+        bool changeGroupName( const QString &from, const QString &to );
+
+        void deleteGroup( const QModelIndex &groupIdx );
 
         MetaPlaylistModel *m_model;
         PopupDropperAction *m_renameAction;
         PopupDropperAction *m_deleteAction;
 
-        QMultiHash<qint64, int> m_groupHash;
+        QMultiHash<quint32, int> m_groupHash;
         QStringList m_groupNames;
+
+        /** "instuctions" how to create a item in the tree.
+        This is used by parent( QModelIndex )
+        */
+        struct ParentCreate
+        {
+            int parentCreateIndex;
+            int row;
+        };
+        mutable QList<struct ParentCreate> m_parentCreateList;
+        /** @returns index of the "instructions" to recreate the parent. Will create new if it doesn't exist yet.
+        */
+        int indexOfParentCreate( const QModelIndex &parent ) const;
+
         QModelIndexList m_selectedGroups;
+        QModelIndexList m_selectedPlaylists;
 };
 
 #endif //AMAROK_PLAYLISTSINGROUPSPROXY_H

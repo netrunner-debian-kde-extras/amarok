@@ -25,7 +25,6 @@
 #include <KUniqueApplication>   //baseclass
 #include <KUrl>
 
-#include <QByteArray>
 #include <QHash>
 #include <QPointer>
 #include <QString>
@@ -82,6 +81,9 @@ class AMAROK_EXPORT App : public KUniqueApplication
         void slotConfigEqualizer();
         KIO::Job *trashFiles( const KUrl::List &files );
         void quit();
+
+    protected:
+        bool event( QEvent *event );
 
     private slots:
         void slotTrashResult( KJob *job );

@@ -63,6 +63,7 @@ class UserModel : public MetaPlaylistModel
         virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const;
         virtual int columnCount( const QModelIndex &parent = QModelIndex() ) const;
         virtual bool setData( const QModelIndex &index, const QVariant &value, int role = Qt::EditRole );
+        virtual bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() );
 
         virtual Qt::DropActions supportedDropActions() const{
             return Qt::MoveAction;
@@ -78,16 +79,17 @@ class UserModel : public MetaPlaylistModel
 
         /* UserPlaylistModel specific methods */
         Meta::PlaylistList selectedPlaylists() { return m_selectedPlaylists; }
+        Meta::TrackList selectedTracks() { return m_selectedTracks; }
 
     public slots:
         void slotLoad();
         void slotAppend();
 
-        void createNewGroup();
         void slotUpdate();
+        void slotRenamePlaylist( Meta::PlaylistPtr playlist );
 
     signals:
-        void editIndex( const QModelIndex & index );
+        void renameIndex( const QModelIndex & index );
 
     private:
         UserModel();
@@ -102,6 +104,9 @@ class UserModel : public MetaPlaylistModel
 
         Meta::PlaylistList m_selectedPlaylists;
         Meta::PlaylistList selectedPlaylists( const QModelIndexList &list );
+        Meta::TrackList m_selectedTracks;
+        Meta::TrackList selectedTracks( const QModelIndexList &list );
+        Meta::TrackPtr trackFromIndex( const QModelIndex &index ) const;
 };
 
 }

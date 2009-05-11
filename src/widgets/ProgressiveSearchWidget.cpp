@@ -134,6 +134,9 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
         tbutton->setPopupMode( QToolButton::InstantPopup );
     
     toolbar->setFixedHeight( m_searchEdit->sizeHint().height() );
+
+    //make sure that this edit is cleared when the playlist is cleared:
+    connect( Amarok::actionCollection()->action( "playlist_clear" ), SIGNAL( triggered() ), this, SLOT( slotFilterClear() ) );
 }
 
 
@@ -143,10 +146,16 @@ ProgressiveSearchWidget::~ProgressiveSearchWidget()
 void ProgressiveSearchWidget::slotFilterChanged( const QString & filter )
 {
     DEBUG_BLOCK
+
+    //when the clear button is pressed, we get 2 calls to this slot... filter this out  as it messes with
+    //resetting the view:
+    if ( filter == m_lastFilter )
+        return;
+    
     debug() << "New filter: " << filter;
 
-    emit( filterChanged( filter, m_searchFieldsMask ) );
-    
+    m_lastFilter = filter;
+
     if( filter.isEmpty() )
     {
         m_nextAction->setEnabled( false );
@@ -156,8 +165,15 @@ void ProgressiveSearchWidget::slotFilterChanged( const QString & filter )
         p.setColor( QPalette::Base, palette().color( QPalette::Base ) );
         m_searchEdit->setPalette( p );
 
+        if( m_showOnlyMatches )
+            hideHiddenTracksWarning();
+
         emit( filterCleared() );
+
+        return;
     }
+
+    emit( filterChanged( filter, m_searchFieldsMask, m_showOnlyMatches ) );
 }
 
 void ProgressiveSearchWidget::slotNext()
@@ -220,7 +236,7 @@ void ProgressiveSearchWidget::slotSearchTracks( bool search )
     Amarok::config( "Playlist Search" ).writeEntry( "MatchTrack", search );
 
     if( !m_searchEdit->text().isEmpty() )
-        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask ) );
+        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
 }
 
 void ProgressiveSearchWidget::slotSearchArtists( bool search )
@@ -233,7 +249,7 @@ void ProgressiveSearchWidget::slotSearchArtists( bool search )
     Amarok::config( "Playlist Search" ).writeEntry( "MatchArtist", search );
 
     if( !m_searchEdit->text().isEmpty() )
-        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask ) );
+        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
 }
 
 void ProgressiveSearchWidget::slotSearchAlbums( bool search )
@@ -246,7 +262,7 @@ void ProgressiveSearchWidget::slotSearchAlbums( bool search )
     Amarok::config( "Playlist Search" ).writeEntry( "MatchAlbum", search );
     
     if( !m_searchEdit->text().isEmpty() )
-        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask ) );
+        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
 }
 
 void ProgressiveSearchWidget::slotSearchGenre( bool search )
@@ -259,7 +275,7 @@ void ProgressiveSearchWidget::slotSearchGenre( bool search )
     Amarok::config( "Playlist Search" ).writeEntry( "MatchGenre", search );
 
     if( !m_searchEdit->text().isEmpty() )
-        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask ) );
+        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
 }
 
 void ProgressiveSearchWidget::slotSearchComposers( bool search )
@@ -272,7 +288,7 @@ void ProgressiveSearchWidget::slotSearchComposers( bool search )
     Amarok::config( "Playlist Search" ).writeEntry( "MatchComposer", search );
 
     if( !m_searchEdit->text().isEmpty() )
-        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask ) );
+        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
 }
 
 void ProgressiveSearchWidget::slotSearchYears( bool search )
@@ -285,7 +301,7 @@ void ProgressiveSearchWidget::slotSearchYears( bool search )
     Amarok::config( "Playlist Search" ).writeEntry( "MatchYear", search );
 
     if( !m_searchEdit->text().isEmpty() )
-        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask ) );
+        emit( filterChanged( m_searchEdit->text(), m_searchFieldsMask, m_showOnlyMatches ) );
 }
 
 void ProgressiveSearchWidget::readConfig()
@@ -336,11 +352,27 @@ ProgressiveSearchWidget::keyPressEvent( QKeyEvent *event )
         event->accept();
         slotPrevious();
     }
+    else if( event->key() == Qt::Key_Escape )
+    {
+        event->accept();
+        m_searchEdit->clear();
+    }
+    else if( event->key() == Qt::Key_Return )
+    {
+        DEBUG_BLOCK
+        event->accept();
+        emit activateFilterResult();
+    }
     else
     {
         event->ignore();
         KHBox::keyPressEvent( event );
     }
+}
+
+void ProgressiveSearchWidget::slotFilterClear()
+{
+    m_searchEdit->setText( QString() );
 }
 
 #include "ProgressiveSearchWidget.moc"

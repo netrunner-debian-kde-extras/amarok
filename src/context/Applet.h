@@ -22,6 +22,8 @@
 #include <QRectF>
 #include <QString>
 
+class QPainter;
+
 namespace Context
 {
 
@@ -34,6 +36,14 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
         //helper functions
         QFont shrinkTextSizeToFit( const QString& text, const QRectF& bounds );
         QString truncateTextToFit( QString text, const QFont& font, const QRectF& bounds );
+
+        void drawRoundedRectAroundText( QPainter* p, QGraphicsSimpleTextItem* t );
+        void addGradientToAppletBackground( QPainter* p );
+
+        /**
+          * Returns a standard CV-wide padding that applets can use for consistency.
+          */
+        qreal standardPadding();
         
     public Q_SLOTS:
         virtual void destroy();
@@ -42,6 +52,8 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
         void cleanUpAndDelete();
 
         bool m_transient;
+        qreal m_standardPadding;
+        
 };
 
 } // Context namespace

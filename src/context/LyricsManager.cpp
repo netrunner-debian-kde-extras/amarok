@@ -19,7 +19,6 @@
 
 #include <QDomDocument>
 
-
 ////////////////////////////////////////////////////////////////
 //// CLASS LyricsObserver
 ///////////////////////////////////////////////////////////////
@@ -96,7 +95,8 @@ void LyricsSubject::detach( LyricsObserver *obs )
 
 LyricsManager* LyricsManager::s_self = 0;
 
-void LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
+void
+LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
 {
     DEBUG_BLOCK
     Q_UNUSED( cached );
@@ -144,7 +144,7 @@ void LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
 
         lyrics = el.text();
         debug() << "setting cached lyrics";
-        The::engineController()->currentTrack()->setCachedLyrics( lyricsXML ); // TODO: setLyricsByPath?
+        The::engineController()->currentTrack()->setCachedLyrics( lyrics ); // TODO: setLyricsByPath?
 
         const QString title = el.attribute( "title" );
 
@@ -158,7 +158,6 @@ void LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
     }
 }
 
-
 void
 LyricsManager::lyricsResultHtml( const QString& lyricsHTML, bool cached )
 {
@@ -168,13 +167,15 @@ LyricsManager::lyricsResultHtml( const QString& lyricsHTML, bool cached )
     // we assume the script has called showLyrics if they could
     // be suggestions. this is for HTML display only
 
-    if( The::engineController()->currentTrack() )
+    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
+    if( currentTrack )
     {
         sendNewLyricsHtml( lyricsHTML );
+
+        // cache the Html anyway.
+        if( currentTrack->cachedLyrics().isEmpty() )
+            currentTrack->setCachedLyrics( lyricsHTML );
     }
-    // cache the Html anyway.
-    if( The::engineController()->currentTrack()->cachedLyrics().isEmpty() )
-        The::engineController()->currentTrack()->setCachedLyrics( lyricsHTML );
 }
 
 void

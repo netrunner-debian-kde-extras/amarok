@@ -22,6 +22,7 @@
 #include <QObject>
 
 class QScriptEngine;
+class QByteArray;
 
 namespace AmarokScript
 {
@@ -35,8 +36,6 @@ public:
     ~AmarokLyricsScript();
 
 public slots:
-    // NOTE TODO
-    // we really need to pull this out, but shouldn't break the API now
     void showLyrics( const QString& lyrics ) const;
     
     void showLyricsHtml( const QString& lyrics ) const;

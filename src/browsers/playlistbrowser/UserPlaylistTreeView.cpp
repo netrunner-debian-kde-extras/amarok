@@ -57,6 +57,8 @@ PlaylistBrowserNS::UserPlaylistTreeView::UserPlaylistTreeView( MetaPlaylistModel
     QPalette p = The::paletteHandler()->palette();
     QColor c = p.color( QPalette::Base );
     setStyleSheet("QLineEdit { background-color: " + c.name() + " }");
+
+    connect( m_model, SIGNAL( renameIndex( QModelIndex ) ), SLOT( edit( QModelIndex ) ) );
 }
 
 
@@ -139,25 +141,31 @@ void
 PlaylistBrowserNS::UserPlaylistTreeView::keyPressEvent( QKeyEvent *event )
 {
     Q_UNUSED( event )
-    AMAROK_NOTIMPLEMENTED
 
-//     switch( event->key() )
-//     {
-//         case Qt::Key_Delete:
-//             slotDelete();
-//             return;
-//
-//         case Qt::Key_F2:
-//             slotRename();
-//             return;
-//     }
-//     QTreeView::keyPressEvent( event );
+    switch( event->key() )
+    {
+        case Qt::Key_Delete:
+        {
+            QModelIndex selectedIdx = selectedIndexes().first();
+            m_model->removeRow( selectedIdx.row(), selectedIdx.parent() );
+            return;
+        }
+
+        case Qt::Key_F2:
+        {
+            //can only rename if one is selected
+            if( selectedIndexes().count() != 1 )
+                return;
+            event->accept();
+            edit( selectedIndexes().first() );
+            return;
+        }
+     }
+     QTreeView::keyPressEvent( event );
 }
 
 void PlaylistBrowserNS::UserPlaylistTreeView::contextMenuEvent( QContextMenuEvent * event )
 {
-    DEBUG_BLOCK
-
     QModelIndexList indices = selectionModel()->selectedIndexes();
 
     KMenu menu;
@@ -176,10 +184,17 @@ void PlaylistBrowserNS::UserPlaylistTreeView::contextMenuEvent( QContextMenuEven
     menu.exec( mapToGlobal( event->pos() ) );
 }
 
-void PlaylistBrowserNS::UserPlaylistTreeView::setNewGroupAction( KAction * action )
+void
+PlaylistBrowserNS::UserPlaylistTreeView::setNewGroupAction( KAction * action )
 {
     m_addGroupAction = action;
 }
 
-#include "UserPlaylistTreeView.moc"
+void
+PlaylistBrowserNS::UserPlaylistTreeView::createNewGroup()
+{
+    QModelIndex idx = m_model->createNewGroup( QString("New Folder") );
+    edit( idx );
+}
 
+#include "UserPlaylistTreeView.moc"

@@ -19,6 +19,7 @@
 #include "AmarokLyricsScript.h"
 
 #include "Amarok.h"
+#include "CollectionManager.h"
 #include "Debug.h"
 #include "EngineController.h"
 #include "LyricsManager.h"
@@ -26,6 +27,8 @@
 #include "ScriptManager.h"
 
 #include <KApplication>
+
+#include <QByteArray>
 
 namespace AmarokScript
 {
@@ -45,7 +48,6 @@ void
 AmarokLyricsScript::showLyrics( const QString& lyrics ) const
 {
     DEBUG_BLOCK
-    AMAROK_DEPRECATED
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( !track )
         return;
@@ -70,8 +72,9 @@ AmarokLyricsScript::showLyricsError( const QString& error ) const
 void
 AmarokLyricsScript::setLyricsForTrack( const QString& trackUrl, const QString& lyrics ) const
 {
-    Q_UNUSED( trackUrl );
-    Q_UNUSED( lyrics );
+   Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( trackUrl ) );
+   if( track )
+       track->setCachedLyrics( lyrics );
 }
 
 QString

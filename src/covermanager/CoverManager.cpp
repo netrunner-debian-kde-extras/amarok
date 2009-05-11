@@ -116,6 +116,7 @@ CoverManager::CoverManager()
 
     Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
     QueryMaker *qm = coll->queryMaker();
+    qm->setAutoDelete( true );
     qm->setQueryType( QueryMaker::Artist );
     qm->setAlbumQueryMode( QueryMaker::OnlyNormalAlbums );
     qm->orderBy( Meta::valArtist );
@@ -439,6 +440,7 @@ void CoverManager::slotArtistSelectedContinue() //SLOT
     Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
 
     QueryMaker *qm = coll->queryMaker();
+    qm->setAutoDelete( true );
     qm->setQueryType( QueryMaker::Album );
     qm->orderBy( Meta::valAlbum );
     if( item != m_artistView->invisibleRootItem()->child( 0 ) )
@@ -863,7 +865,7 @@ void CoverView::setStatusText( QListWidgetItem *item )
 CoverViewItem::CoverViewItem( QListWidget *parent, Meta::AlbumPtr album )
     : QListWidgetItem( parent )
     , m_albumPtr( album)
-    , m_coverPixmap( )
+    , m_coverPixmap()
     , m_parent( parent )
 {
     m_album = album->prettyName();
@@ -872,7 +874,12 @@ CoverViewItem::CoverViewItem( QListWidget *parent, Meta::AlbumPtr album )
     else
         m_artist = i18n( "No Artist" );
     setText( album->prettyName() );
+
+    const bool isSuppressing = album->suppressImageAutoFetch();
+    album->setSuppressImageAutoFetch( true );
     setIcon( album->image( 100 ) );
+    album->setSuppressImageAutoFetch( isSuppressing );
+
     CoverManager::instance()->subscribeTo( album );
 }
 
@@ -886,7 +893,10 @@ bool CoverViewItem::hasCover() const
 
 void CoverViewItem::loadCover()
 {
+    const bool isSuppressing = m_albumPtr->suppressImageAutoFetch();
+    m_albumPtr->setSuppressImageAutoFetch( true );
     m_coverPixmap = m_albumPtr->image();  //create the scaled cover
+    m_albumPtr->setSuppressImageAutoFetch( isSuppressing );
     setIcon( m_coverPixmap );
 }
 

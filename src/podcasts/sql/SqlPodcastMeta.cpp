@@ -19,18 +19,100 @@
 #include "SqlPodcastMeta.h"
 
 #include "amarokurls/BookmarkMetaActions.h"
+#include "amarokurls/PlayUrlRunner.h"
 #include "CollectionManager.h"
 #include "Debug.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
+#include "meta/capabilities/TimecodeLoadCapability.h"
+#include "meta/capabilities/TimecodeWriteCapability.h"
 #include "SqlPodcastProvider.h"
 #include "SqlStorage.h"
 
 #include <QDate>
+#include <QFile>
+
+// Taglib Includes
+#include <fileref.h>
+#include <tag.h>
+#include <flacfile.h>
+#include <id3v1tag.h>
+#include <id3v2tag.h>
+#include <mpcfile.h>
+#include <mpegfile.h>
+#include <oggfile.h>
+#include <oggflacfile.h>
+#include <tlist.h>
+#include <tstring.h>
+#include <vorbisfile.h>
+
+#ifdef TAGLIB_EXTRAS_FOUND
+#include <mp4file.h>
+#endif
+
+class TimecodeWriteCapabilityPodcastImpl : public Meta::TimecodeWriteCapability
+{
+    public:
+        TimecodeWriteCapabilityPodcastImpl( Meta::PodcastEpisode *episode )
+            : Meta::TimecodeWriteCapability()
+            , m_episode( episode )
+        {}
+
+    virtual bool writeTimecode ( int seconds )
+    {
+        DEBUG_BLOCK
+        return Meta::TimecodeWriteCapability::writeTimecode( seconds,
+                Meta::TrackPtr::dynamicCast( m_episode ) );
+    }
+
+    virtual bool writeAutoTimecode ( int seconds )
+    {
+        DEBUG_BLOCK
+        return Meta::TimecodeWriteCapability::writeAutoTimecode( seconds,
+                Meta::TrackPtr::dynamicCast( m_episode ) );
+    }
+
+    private:
+        Meta::PodcastEpisodePtr m_episode;
+};
+
+class TimecodeLoadCapabilityPodcastImpl : public Meta::TimecodeLoadCapability
+{
+    public:
+        TimecodeLoadCapabilityPodcastImpl( Meta::PodcastEpisode *episode )
+        : Meta::TimecodeLoadCapability()
+        , m_episode( episode )
+        {
+            DEBUG_BLOCK
+            debug() << "episode: " << m_episode->name();
+        }
+
+        virtual bool hasTimecodes()
+        {
+            if ( loadTimecodes().size() > 0 )
+                return true;
+            return false;
+        }
+
+        virtual BookmarkList loadTimecodes()
+        {
+            DEBUG_BLOCK
+            if ( m_episode && m_episode->playableUrl().isValid() )
+            {
+                BookmarkList list = PlayUrlRunner::bookmarksFromUrl( m_episode->playableUrl() );
+                return list;
+            }
+            else
+                return BookmarkList();
+        }
+
+    private:
+        Meta::PodcastEpisodePtr m_episode;
+};
 
 Meta::SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, Meta::SqlPodcastChannelPtr sqlChannel )
     : Meta::PodcastEpisode( Meta::PodcastChannelPtr::staticCast( sqlChannel ) )
     , m_batchUpdate( false )
-    , m_sqlChannel( sqlChannel )
+    , m_channel( sqlChannel )
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
     QStringList::ConstIterator iter = result.constBegin();
@@ -58,9 +140,9 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( Meta::PodcastEpisodePtr episode )
     , m_dbId( 0 )
 {
     m_url = KUrl( episode->uidUrl() );
-    m_sqlChannel = SqlPodcastChannelPtr::dynamicCast( episode->channel() );
+    m_channel = SqlPodcastChannelPtr::dynamicCast( episode->channel() );
 
-    if ( !m_sqlChannel && episode->channel()) {
+    if ( !m_channel && episode->channel()) {
         debug() << "BUG: creating SqlEpisode but not an sqlChannel!!!";
         debug() <<  episode->channel()->title();
     }
@@ -78,17 +160,45 @@ Meta::SqlPodcastEpisode::~SqlPodcastEpisode()
 {
 }
 
+int
+Meta::SqlPodcastEpisode::length() const
+{
+    //if downloaded get the duration from the file, else use the value read from the feed
+    if( m_localUrl.isEmpty() )
+        return m_duration;
+
+    int length = -2;
+
+    #ifdef COMPLEX_TAGLIB_FILENAME
+    const wchar_t * encodedName = reinterpret_cast<const wchar_t *>(m_localUrl.path().utf16());
+    #else
+    QByteArray fileName = QFile::encodeName( m_localUrl.path() );
+    const char * encodedName = fileName.constData(); // valid as long as fileName exists
+    #endif
+    TagLib::FileRef fileRef = TagLib::FileRef( encodedName, true, TagLib::AudioProperties::Fast );
+
+
+    if( !fileRef.isNull() )
+        if( fileRef.audioProperties() )
+            length = fileRef.audioProperties()->length();
+
+    if( length == -2 /*Undetermined*/ )
+        return 0;
+
+    return length;
+}
+
 bool
 Meta::SqlPodcastEpisode::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
     switch( type )
     {
-        //TODO: for download, delete, etc
-        //case Meta::Capability::CustomActions:
         case Meta::Capability::CurrentTrackActions:
+        case Meta::Capability::WriteTimecode:
+        case Meta::Capability::LoadTimecode:
             //only downloaded episodes can be position marked
-            return !localUrl().isEmpty();
-
+//            return !localUrl().isEmpty();
+            return true;
             //TODO: downloaded episodes can be edited
 //         case Meta::Capability::Editable:
 //             return isEditable();
@@ -101,6 +211,7 @@ Meta::SqlPodcastEpisode::hasCapabilityInterface( Meta::Capability::Type type ) c
 Meta::Capability*
 Meta::SqlPodcastEpisode::asCapabilityInterface( Meta::Capability::Type type )
 {
+    DEBUG_BLOCK
     switch( type )
     {
         case Meta::Capability::CurrentTrackActions:
@@ -111,7 +222,12 @@ Meta::SqlPodcastEpisode::asCapabilityInterface( Meta::Capability::Type type )
             debug() << "returning bookmarkcurrenttrack action";
             return new Meta::CurrentTrackActionsCapability( actions );
         }
-
+        case Meta::Capability::WriteTimecode:
+            debug() << "returning TimecodeWriteCapabilityPodcastImpl";
+            return new TimecodeWriteCapabilityPodcastImpl( this );
+        case Meta::Capability::LoadTimecode:
+            debug() << "returning TimecodeLoadCapabilityPodcastImpl";
+            return new TimecodeLoadCapabilityPodcastImpl( this );
         default:
             return 0;
     }
@@ -138,7 +254,7 @@ Meta::SqlPodcastEpisode::updateInDb()
     QString command = m_dbId ? update : insert;
 
     command = command.arg( escape(m_url.url()) ); //%1
-    command = command.arg( m_sqlChannel->dbId() ); //%2
+    command = command.arg( m_channel->dbId() ); //%2
     command = command.arg( escape(m_localUrl.url()) ); //%3
     command = command.arg( escape(m_guid) ); //%4
     command = command.arg( escape(m_title) ); //%5
@@ -209,20 +325,16 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( PodcastChannelPtr channel )
 
     updateInDb();
 
-    m_episodes = channel->episodes();
-
     foreach ( Meta::PodcastEpisodePtr episode, channel->episodes() ) {
         episode->setChannel( PodcastChannelPtr( this ) );
         SqlPodcastEpisode * sqlEpisode = new SqlPodcastEpisode( episode );
 
-        m_episodes << PodcastEpisodePtr( sqlEpisode );
-        m_sqlEpisodes << SqlPodcastEpisodePtr( sqlEpisode );
+        m_episodes << SqlPodcastEpisodePtr( sqlEpisode );
     }
 }
 
 Meta::SqlPodcastChannel::~SqlPodcastChannel()
 {
-    m_sqlEpisodes.clear();
     m_episodes.clear();
 }
 
@@ -236,16 +348,46 @@ Meta::SqlPodcastChannel::sqlEpisodesToTracks( Meta::SqlPodcastEpisodeList episod
     return tracks;
 }
 
-void
+Meta::PodcastEpisodeList
+Meta::SqlPodcastChannel::sqlEpisodesToPodcastEpisodes( SqlPodcastEpisodeList episodes )
+{
+    Meta::PodcastEpisodeList sqlEpisodes;
+    foreach( Meta::SqlPodcastEpisodePtr sqlEpisode, episodes )
+        sqlEpisodes << Meta::PodcastEpisodePtr::dynamicCast( sqlEpisode );
+
+    return sqlEpisodes;
+}
+
+Meta::PodcastEpisodeList
+Meta::SqlPodcastChannel::episodes()
+{
+    return sqlEpisodesToPodcastEpisodes( m_episodes );
+}
+
+Meta::PodcastEpisodePtr
 Meta::SqlPodcastChannel::addEpisode( PodcastEpisodePtr episode )
 {
     DEBUG_BLOCK
     debug() << "adding episode " << episode->title() << " to sqlchannel " << title();
-    m_episodes << episode;
-    addEpisode( SqlPodcastEpisodePtr( new SqlPodcastEpisode( episode ) ) );
+    SqlPodcastEpisodePtr sqlEpisode = SqlPodcastEpisodePtr( new SqlPodcastEpisode( episode ) );
 
-    //reload from db to get episodes ordered right
-    loadEpisodes();
+    //episodes are sorted on pubDate high to low
+    SqlPodcastEpisodeList::iterator i;
+    for( i = m_episodes.begin() ; i != m_episodes.end() ; ++i )
+    {
+        if( sqlEpisode->pubDate() > (*i)->pubDate() )
+        {
+            m_episodes.insert( i, sqlEpisode );
+            break;
+        }
+    }
+
+    //insert in case the list is empty or at the end of the list
+    if( i == m_episodes.end() )
+        m_episodes << sqlEpisode;
+
+
+    return PodcastEpisodePtr::dynamicCast( sqlEpisode );
 }
 
 void
@@ -295,11 +437,10 @@ void
 Meta::SqlPodcastChannel::deleteFromDb()
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
-    foreach( Meta::SqlPodcastEpisodePtr sqlEpisode, m_sqlEpisodes )
+    foreach( Meta::SqlPodcastEpisodePtr sqlEpisode, m_episodes )
     {
        sqlEpisode->deleteFromDb();
-       m_sqlEpisodes.removeOne( sqlEpisode );
-       m_episodes.removeOne( Meta::PodcastEpisodePtr::dynamicCast( sqlEpisode ) );
+       m_episodes.removeOne( sqlEpisode );
     }
 
     sqlStorage->query(
@@ -309,7 +450,6 @@ Meta::SqlPodcastChannel::deleteFromDb()
 void
 Meta::SqlPodcastChannel::loadEpisodes()
 {
-    m_sqlEpisodes.clear();
     m_episodes.clear();
 
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
@@ -337,9 +477,8 @@ Meta::SqlPodcastChannel::loadEpisodes()
     for(int i=0; i < results.size(); i+=rowLength)
     {
         QStringList episodesResult = results.mid( i, rowLength );
-        SqlPodcastEpisode *sqlEpisode = new SqlPodcastEpisode( episodesResult, SqlPodcastChannelPtr( this ) );
-        m_sqlEpisodes << SqlPodcastEpisodePtr( sqlEpisode );
-        m_episodes << PodcastEpisodePtr( sqlEpisode );
+        SqlPodcastEpisode *episode = new SqlPodcastEpisode( episodesResult, SqlPodcastChannelPtr( this ) );
+        m_episodes << SqlPodcastEpisodePtr( episode );
     }
 }
 

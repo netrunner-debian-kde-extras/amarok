@@ -13,7 +13,10 @@
 
 #include "AppletToolbarAppletItem.h"
 
+#include "Amarok.h"
+#include "App.h"
 #include "Debug.h"
+#include "PaletteHandler.h"
 
 #include <plasma/applet.h>
 #include <plasma/widgets/iconwidget.h>
@@ -30,7 +33,7 @@
 
 
 Context::AppletToolbarAppletItem::AppletToolbarAppletItem( QGraphicsItem* parent, Plasma::Applet* applet )
-    : QGraphicsWidget( parent )
+    : AppletToolbarBase( parent )
     , m_applet( applet )
     , m_label( 0 )
     , m_deleteIcon( 0 )
@@ -41,7 +44,7 @@ Context::AppletToolbarAppletItem::AppletToolbarAppletItem( QGraphicsItem* parent
     if( m_applet )
        m_label->setText( m_applet->name() );
     else
-        m_label->setText( "no applet name" );
+        m_label->setText( i18n("no applet name") );
         
     QAction* delApplet = new QAction( i18n( "Remove Applet" ), this );
     delApplet->setIcon( KIcon( "edit-delete" ) );
@@ -56,22 +59,7 @@ Context::AppletToolbarAppletItem::AppletToolbarAppletItem( QGraphicsItem* parent
 }
 
 Context::AppletToolbarAppletItem::~AppletToolbarAppletItem()
-{
-    
-}
-
-void 
-Context::AppletToolbarAppletItem::paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget )
-{
-    //DEBUG_BLOCK
-    painter->save();
-    painter->setRenderHint( QPainter::Antialiasing );
-    QColor fillColor( 102, 102, 102, 210 );
-    QPainterPath fillPath;
-    fillPath.addRoundedRect( boundingRect(), 5, 5 );
-    painter->fillPath( fillPath ,fillColor );
-    painter->restore();
-      
+{    
 }
 
 void 
@@ -81,9 +69,8 @@ Context::AppletToolbarAppletItem::setConfigEnabled( bool config )
     {
         // center over top-right corner
         m_deleteIcon->setPos( ( boundingRect().width() - (m_deleteIcon->boundingRect().width() ) ) - 1, -1);
-     //   m_deleteIcon->show();
-
-    } else
+    }
+    else
         m_deleteIcon->hide();
     
     m_configEnabled = config;
@@ -102,10 +89,26 @@ Context::AppletToolbarAppletItem::delIconSceneRect()
 }
 
 void 
-Context::AppletToolbarAppletItem::resizeEvent( QGraphicsSceneResizeEvent * event )
+Context::AppletToolbarAppletItem::resizeEvent( QGraphicsSceneResizeEvent *event )
 {
+    Q_UNUSED( event )
+    QFontMetrics fm( m_label->font() );
     if( m_configEnabled )
+    {
         m_deleteIcon->setPos( ( boundingRect().width() - (m_deleteIcon->boundingRect().width() ) ) - 1, -1);
+
+        if( fm.width( m_applet->name() ) + m_deleteIcon->boundingRect().width() > boundingRect().width() )
+            m_label->setText( fm.elidedText( m_applet->name(), Qt::ElideRight, boundingRect().width() - m_deleteIcon->boundingRect().width() ) );
+        else
+            m_label->setText( m_applet->name() );
+    } else
+    {
+        if( fm.width( m_applet->name() ) > boundingRect().width() )
+            m_label->setText( fm.elidedText( m_applet->name(), Qt::ElideRight, boundingRect().width() ) );
+        else
+            m_label->setText( m_applet->name() );
+    }
+    
     m_label->setPos( ( boundingRect().width() / 2 ) - ( m_label->boundingRect().width() / 2 ),  ( boundingRect().height() / 2 ) - ( m_label->boundingRect().height() / 2 ) );
     
     emit geometryChanged();
@@ -113,9 +116,9 @@ Context::AppletToolbarAppletItem::resizeEvent( QGraphicsSceneResizeEvent * event
 
 
 QVariant 
-Context::AppletToolbarAppletItem::itemChange(GraphicsItemChange change, const QVariant &value)
+Context::AppletToolbarAppletItem::itemChange( GraphicsItemChange change, const QVariant &value )
 {
-    QVariant ret = QGraphicsWidget::itemChange(change, value);
+    QVariant ret = QGraphicsWidget::itemChange( change, value );
     
     if( change == ItemPositionHasChanged )
         emit geometryChanged();
@@ -126,8 +129,10 @@ Context::AppletToolbarAppletItem::itemChange(GraphicsItemChange change, const QV
 QSizeF 
 Context::AppletToolbarAppletItem::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
 {
+    Q_UNUSED( constraint )
     if( which == Qt::MinimumSize )
-        return QSizeF( m_label->boundingRect().width() + 2 * m_labelPadding, QGraphicsWidget::sizeHint( which, constraint ).height() );
+    //    return QSizeF( m_label->boundingRect().width() + 2 * m_labelPadding, QGraphicsWidget::sizeHint( which, constraint ).height() );
+        return QSizeF();
     else
        // return QGraphicsWidget::sizeHint( which, constraint );
         return QSizeF( 10000, 10000 );

@@ -1,5 +1,5 @@
 /*****************************************************************************
- * copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>          *
+ * copyright            : (C) 2007-2009 Leo Franchi <lfranchi@gmail.com>     *
  *                      : (C) 2008 William Viana Soares <vianasw@gmail.com>  *
  *****************************************************************************/
 
@@ -17,7 +17,6 @@
 
 #include <context/Applet.h>
 #include <context/DataEngine.h>
-#include "context/Svg.h"
 #include <context/widgets/TrackWidget.h>
 #include <meta/Meta.h>
 
@@ -54,13 +53,11 @@ public:
 
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
-    void showConfigurationInterface();
 
 protected:
     virtual void constraintsEvent( Plasma::Constraints constraints );
 
 private slots:
-    void configAccepted();
     void changeTrackRating( int rating );
     void connectSource( const QString &source );
     void paletteChanged( const QPalette & palette );
@@ -69,49 +66,34 @@ private slots:
 private:
     QList<QAction*> contextualActions();
 
-    QHBoxLayout* m_configLayout;
-    QSpinBox* m_spinWidth;
-    int m_width;
-
-    qreal m_aspectRatio;
-
-    Context::Svg* m_theme;
-
-    QGraphicsSimpleTextItem* m_titleLabel;
-    QGraphicsSimpleTextItem* m_artistLabel;
-    QGraphicsSimpleTextItem* m_albumLabel;
-    QGraphicsPixmapItem* m_scoreLabel;
-    QGraphicsPixmapItem* m_numPlayedLabel;
-    QGraphicsPixmapItem* m_playedLastLabel;
+    bool resizeCover( QPixmap cover, qreal width, QPointF albumCoverPos );
+    // aligns the second QGI to be at the same level as the first (the bottom edges)
+    void alignBottomToFirst( QGraphicsItem* a, QGraphicsItem* b );
 
     QGraphicsSimpleTextItem* m_title;
     QGraphicsSimpleTextItem* m_artist;
     QGraphicsSimpleTextItem* m_album;
-    QGraphicsSimpleTextItem* m_score;
-    QGraphicsSimpleTextItem* m_numPlayed;
-    QGraphicsSimpleTextItem* m_playedLast;
     QGraphicsSimpleTextItem* m_noTrack;
-
-    QGraphicsRectItem* m_scoreIconBox;
-    QGraphicsRectItem* m_numPlayedIconBox;
-    QGraphicsRectItem* m_playedLastIconBox;
-
+    QGraphicsSimpleTextItem* m_byText;
+    QGraphicsSimpleTextItem* m_onText;
     int m_rating;
     int m_trackLength;
 
     QGraphicsPixmapItem* m_albumCover;
-    QGraphicsPixmapItem* m_sourceEmblem;
     QPixmap m_bigCover;
     QPixmap m_sourceEmblemPixmap;
 
     RatingWidget* m_ratingWidget;
 
     QString m_noTrackText;
-
-    bool resizeCover( QPixmap cover, qreal margin, qreal width );
+    QString m_playCountLabel;
+    QString m_scoreLabel;
+    QString m_lastPlayedLabel;
+    QString m_score;
+    QString m_numPlayed;
+    QString m_playedLast;
 
     int m_maxTextWidth;
-
 
     //keep this safe as we might need it when resizing
     QVariantMap m_currentInfo;
@@ -122,7 +104,6 @@ private:
     int m_tracksToShow;
 
     Plasma::TabBar *m_tabBar;
-
 };
 
 K_EXPORT_AMAROK_APPLET( currenttrack, CurrentTrack )

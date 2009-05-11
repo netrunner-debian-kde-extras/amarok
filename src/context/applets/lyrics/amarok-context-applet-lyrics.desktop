@@ -1,16 +1,27 @@
 [Desktop Entry]
 Name=Lyrics
 Name[bg]=Текстове на песни
+Name[ca]=Lletres
+Name[da]=Sangtekster
 Name[el]=Στίχοι
+Name[es]=Letras
 Name[et]=Sõnad
+Name[eu]=Hitzak
 Name[ga]=Liricí
+Name[it]=Testi
+Name[ja]=歌詞
 Name[nb]=Sangtekst
 Name[nds]=Leedtexten
 Name[nl]=Liedteksten
+Name[pl]=Słowa
 Name[pt]=Letras Musicais
 Name[pt_BR]=Letras
+Name[ro]=Versuri
+Name[ru]=Текст песни
 Name[sv]=Sångtext
+Name[tr]=Şarkı Sözleri
 Name[uk]=Текст пісні
+Name[x-test]=xxLyricsxx
 Type=Service
 ServiceTypes=Plasma/Applet
 

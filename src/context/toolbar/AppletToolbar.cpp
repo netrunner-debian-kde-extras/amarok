@@ -13,15 +13,19 @@
 
 #include "AppletToolbar.h"
 
+#include "Amarok.h"
+#include "App.h"
 #include "AppletItemOverlay.h"
 #include "AppletToolbarAddItem.h"
 #include "AppletToolbarAppletItem.h"
 #include "AppletToolbarConfigItem.h"
 #include "Containment.h"
 #include "Debug.h"
+#include "PaletteHandler.h"
 
 #include <QGraphicsScene>
 #include <QPainter>
+#include <QPalette>
 #include <QStyleOptionGraphicsItem>
 #include <QGraphicsSceneResizeEvent>
 #include <QGraphicsLinearLayout>
@@ -63,18 +67,33 @@ Context::AppletToolbar::~AppletToolbar()
 void
 Context::AppletToolbar::paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget )
 {
-    // draw translucent curved background
-    painter->save();
-
-    QPalette p;
-    painter->fillRect( boundingRect(), p.brush( QPalette::Window ) );
+    Q_UNUSED( option )
+    Q_UNUSED( widget )
 
     painter->setRenderHint( QPainter::Antialiasing );
-    QColor fillColor( 176, 176, 176, 225 );
-    QPainterPath path;
-    path.addRoundedRect( boundingRect(), 5, 5 );
-    painter->fillPath( path ,fillColor );
+
+    painter->save();
+    QPalette p;
+    painter->fillRect( boundingRect(), p.brush( QPalette::Window ) ); // remove white edges behind the toolbar
+    QColor col = PaletteHandler::highlightColor();
+    qreal radius = 6;
+    
+    QPainterPath outline;
+    outline.moveTo( 0, 0);
+    outline.lineTo( boundingRect().width(), 0 );
+    outline.lineTo( boundingRect().width(), boundingRect().height() - radius );
+    outline.quadTo( boundingRect().width(), boundingRect().height(),
+                    boundingRect().width() - radius, boundingRect().height() );
+    outline.lineTo( radius, boundingRect().height() );
+    outline.quadTo( 0, boundingRect().height() ,
+                    0, boundingRect().height() - radius );
+    outline.lineTo( 0, 0 );
+
+    painter->fillPath( outline, col );
+
     painter->restore();
+    
+
 }
 
 void
@@ -134,6 +153,7 @@ Context::AppletToolbar::appletRemoved( Plasma::Applet* applet )
 QSizeF
 Context::AppletToolbar::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
 {
+    Q_UNUSED( which )
     return QSizeF( constraint.width(), 30 );
 }
 
@@ -141,119 +161,8 @@ Context::AppletToolbar::sizeHint( Qt::SizeHint which, const QSizeF & constraint 
 void
 Context::AppletToolbar::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
-    DEBUG_BLOCK
+    Q_UNUSED( event )
 }
-/*
-void 
-Context::AppletToolbar::dragEnterEvent( QGraphicsSceneDragDropEvent *event )
-{
-  //  DEBUG_BLOCK
-    const Context::AppletToolbarMimeData* data = dynamic_cast< const Context::AppletToolbarMimeData* >( event->mimeData() );
-    if( data && data->appletData() )
-    {
-  //      debug() << "got applet in drag event, accepting";
-        event->setAccepted( true );
-    } else
-    {   
-        debug() << "GOT NO applet in drag event, BAD BAD!";
-        event->setAccepted( false );
-    }
-}
-
-void
-Context::AppletToolbar::dragMoveEvent( QGraphicsSceneDragDropEvent *event )
-{
- //   DEBUG_BLOCK
- //   debug() << "whoopdiedoo, accepting drag move event";
-    event->setAccepted( true );
-}
-
-
-void
-Context::AppletToolbar::dragLeaveEvent( QGraphicsSceneDragDropEvent *event )
-{
-    DEBUG_BLOCK
-}
-
-void 
-Context::AppletToolbar::dropEvent( QGraphicsSceneDragDropEvent *event )
-{
-    DEBUG_BLOCK
-    const Context::AppletToolbarMimeData* data = qobject_cast< const Context::AppletToolbarMimeData* >( event->mimeData() );
-    if( data && data->appletData() && data->appletData()->applet() )
-    {
-     //   debug() << "got an applet drop at position" << event->scenePos();
-       if( scene() )
-        {    
-            Context::AppletToolbarAppletItem* itemUnder;
-            foreach( QGraphicsItem* item, scene()->items( event->scenePos() ) )
-            {
-            //    debug() << "scene has item at position with rect:" << mapToScene( mapFromItem( item, item->boundingRect() ).boundingRect() ).boundingRect();
-                itemUnder = qgraphicsitem_cast< Context::AppletToolbarAppletItem* >( item );
-                if( itemUnder )
-                    break;
-            }
-            if( itemUnder )
-            {
-                bool turnedOffConfig = false;
-                if( m_configMode )
-                {
-                    toggleConfigMode();
-                    turnedOffConfig = true;
-                }
-            //    debug() << "got a toolbar applet item under the drag too!";
-                int oldLoc = -1, newLoc = -1;
-                for( int i = 0; i < m_appletLayout->count(); i++ )
-                {
-                    if( m_appletLayout->itemAt( i ) == data->appletData() )
-                        oldLoc = i;
-                    else if( m_appletLayout->itemAt( i ) == itemUnder )
-                        newLoc = i;
-                }
-                if( oldLoc == -1 || newLoc == -1 )
-                {
-                    if( turnedOffConfig )
-                        toggleConfigMode();
-                    return;
-                }
-                    
-                QRectF sceneAppletRect = mapToScene( mapFromItem( itemUnder, itemUnder->boundingRect() ).boundingRect() ).boundingRect();
-                int threshold;
-                if( event->scenePos().x() < (sceneAppletRect.topRight().x() - ( sceneAppletRect.width() / 2 ) ) )
-                {
-                    debug() << "dropped on first half of applet: " << itemUnder->applet()->name();
-                    threshold = 0;
-                    if( newLoc > oldLoc )
-                        newLoc--;
-                } else
-                {
-                    debug() << "dropped on second half of applet: " << itemUnder->applet()->name();
-                    if( newLoc > oldLoc )
-                        threshold = 0;
-                    else
-                        threshold = 1;
-                }
-                
-                // if the move is to the adjacent item (so not really a move), ignore it
-                debug() << "drop is saying move applet from" << oldLoc << " to " << newLoc;
-                if( qAbs( ( oldLoc ) - ( newLoc ) ) > threshold ) 
-                {   
-                    QGraphicsLayoutItem* tmp = m_appletLayout->itemAt( oldLoc );
-                    m_appletLayout->removeAt( oldLoc );
-                    m_appletLayout->insertItem( newLoc, tmp );
-
-                    emit moveApplet( data->appletData()->applet(), oldLoc, newLoc ); // divide by two as we have the add applets around
-                }
-                if( turnedOffConfig ) // leave it in the same state that we got it
-                    toggleConfigMode();
-            }
-        }   
-    } else if( data )
-    {
-        debug() << "got a NON-APPLET drop....WTF?";
-    }
-
-} */
 
 // user clicked on one of the add applet buttons, figure out which one he selected and tell the containment to
 // actually add the applet. appletAdded is called by the containment when it has been created.
@@ -348,7 +257,8 @@ Context::AppletToolbar::toggleConfigMode() // SLOT
         for( int i = 0; i < count; i++ )
             newAddItem( i * 2 );
             
-    } else
+    }
+    else
     {
         for( int i = 0; i < m_appletLayout->count(); i++ ) // tell each applet we are done configuring
         {

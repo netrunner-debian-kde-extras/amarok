@@ -129,7 +129,7 @@ class PlaylistManager : public QObject
          *  Saves a playlist from a file to the database.
          *  @arg fromLocation Saved playlist file to load
          */
-        AMAROK_EXPORT bool save( const QString& fromLocation );
+        AMAROK_EXPORT bool import( const QString& fromLocation );
 
         bool exportPlaylist( Meta::TrackList tracks, const QString &location );
 
@@ -145,6 +145,8 @@ class PlaylistManager : public QObject
         void updated();
         void categoryAdded( int category );
         void showCategory( int category );
+
+        void renamePlaylist( Meta::PlaylistPtr playlist );
 
     private slots:
         void slotUpdated( /*PlaylistProvider * provider*/ );

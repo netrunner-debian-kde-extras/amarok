@@ -1,10 +1,5 @@
 ADD_DEFINITIONS(${TAGLIB_CFLAGS})
 
-if(MP4V2_FOUND)
-    ADD_DEFINITIONS(-DHAVE_MP4V2)
-    include_directories( ${MP4V2_INCLUDE_DIR} )
-endif(MP4V2_FOUND)
-
 if(APPLE)
     set(mac_SRCS
         app_mac.cpp
@@ -17,25 +12,23 @@ endif(APPLE)
 
 # add_subdirectory( playlistmanager )
 add_subdirectory( collection )
-add_subdirectory( collectionscanner )
 #dont use our own libplasma anymore, but still pick up our applets/engines/containments
 add_subdirectory( context )
 add_subdirectory( images )
-add_subdirectory( metadata )
 add_subdirectory( services )
 add_subdirectory( scripts )
-add_subdirectory( strigi )
 add_subdirectory( themes )
 
+if( STRIGI_FOUND )
+    add_subdirectory( strigi )
+endif( STRIGI_FOUND )
 
 include_directories(
     amarokurls
+    browsers/
     browsers/playlistbrowser
     browsers/servicebrowser
     browsers/servicebrowser/scriptableservice
-    charset-detector/include
-    charset-detector/src
-    charset-detector/src/tables
     collection
     collection/mediadevicecollection/support # for MediaDeviceInfo
     configdialog
@@ -55,7 +48,8 @@ include_directories(
     widgets
     ${CMAKE_CURRENT_BINARY_DIR} #for amarokconfig.h
     ${KDE4_INCLUDE_DIR}
-    ${TAGLIB_INCLUDE_DIR}
+    ${TAGLIB_INCLUDES}
+    ${TAGLIB-EXTRAS_INCLUDE_DIR}
     ${QT_INCLUDES}
     ${QT_QTSCRIPT_INCLUDE_DIR}
 )
@@ -157,17 +151,22 @@ kde4_add_ui_files(libconfigdialog_SRCS
     configdialog/dialogs/PlaybackConfig.ui
 )
 
+set(libbrowserframework_SRCS
+    browsers/CollectionSortFilterProxyModel.cpp
+    browsers/CollectionTreeItem.cpp
+    browsers/CollectionTreeItemModel.cpp
+    browsers/CollectionTreeItemModelBase.cpp
+    browsers/CollectionTreeView.cpp
+    browsers/SingleCollectionTreeItemModel.cpp
+)
+
 #####################################################################
 # COLLECTIONBROWSER
 #####################################################################
 set(libcollectionbrowser_SRCS
-    browsers/collectionbrowser/CollectionSortFilterProxyModel.cpp
-    browsers/collectionbrowser/CollectionTreeItem.cpp
-    browsers/collectionbrowser/CollectionTreeItemModel.cpp
-    browsers/collectionbrowser/CollectionTreeItemModelBase.cpp
-    browsers/collectionbrowser/CollectionTreeView.cpp
+    browsers/collectionbrowser/CollectionTreeItemDelegate.cpp
+    browsers/collectionbrowser/CollectionBrowserTreeView.cpp
     browsers/collectionbrowser/CollectionWidget.cpp
-    browsers/collectionbrowser/SingleCollectionTreeItemModel.cpp
 )
 
 #####################################################################
@@ -246,6 +245,7 @@ set(collection_SRCS
     collection/MetaQueryMaker.cpp
     collection/QueryMaker.cpp
     collection/TrackForUrlWorker.cpp
+    collection/support/MemoryCustomValue.cpp
     collection/support/MemoryFilter.cpp
     collection/support/MemoryMatcher.cpp
     collection/support/MemoryQueryMaker.cpp
@@ -273,6 +273,7 @@ set( libcontextview_SRCS
     context/toolbar/AppletToolbar.cpp
     context/toolbar/AppletToolbarAddItem.cpp
     context/toolbar/AppletToolbarAppletItem.cpp
+    context/toolbar/AppletToolbarBase.cpp
     context/toolbar/AppletToolbarConfigItem.cpp
     context/widgets/RatingWidget.cpp
     context/widgets/ToolBoxIcon.cpp
@@ -310,14 +311,6 @@ set(libplaylistbrowser_SRCS
 )
 
 #####################################################################
-# QUEUEMANAGER
-#####################################################################
-set(libqueuemanager_SRCS
-    queuemanager/QueueManager.cpp
-    queuemanager/QueueModel.cpp
-)
-
-#####################################################################
 # PLAYLISTMANAGER
 #####################################################################
 set(libplaylistmanager_SRCS
@@ -340,7 +333,7 @@ set(libplaylist_SRCS
     playlist/PlaylistWidget.cpp
     playlist/UndoCommands.cpp
     playlist/layouts/LayoutEditWidget.cpp
-    playlist/layouts/LayoutConfigWidget.cpp
+    playlist/layouts/LayoutConfigAction.cpp
     playlist/layouts/LayoutItemConfig.cpp
     playlist/layouts/LayoutManager.cpp
     playlist/navigators/DynamicTrackNavigator.cpp
@@ -352,7 +345,6 @@ set(libplaylist_SRCS
     playlist/navigators/TrackNavigator.cpp
     playlist/navigators/NavigatorFilterProxyModel.cpp
     playlist/view/PlaylistViewCommon.cpp
-    playlist/view/classic/PlaylistClassicView.cpp
     playlist/view/listview/PrettyItemDelegate.cpp
     playlist/view/listview/PrettyListView.cpp
     playlist/view/listview/SourceSelectionPopup.cpp
@@ -415,44 +407,12 @@ set(libdynamic_SRCS
 )
 
 #####################################################################
-# Character Encoding Detector
-#####################################################################
-set(libchardet_SRCS
-    charset-detector/src/impl.cpp
-    charset-detector/src/CharDistribution.cpp
-    charset-detector/src/JpCntx.cpp
-    charset-detector/src/LangBulgarianModel.cpp
-    charset-detector/src/LangCyrillicModel.cpp
-    charset-detector/src/LangGreekModel.cpp
-    charset-detector/src/LangHebrewModel.cpp
-    charset-detector/src/LangHungarianModel.cpp
-    charset-detector/src/LangThaiModel.cpp
-    charset-detector/src/nsBig5Prober.cpp
-    charset-detector/src/nsCharSetProber.cpp
-    charset-detector/src/nsEscCharsetProber.cpp
-    charset-detector/src/nsEscSM.cpp
-    charset-detector/src/nsEUCJPProber.cpp
-    charset-detector/src/nsEUCKRProber.cpp
-    charset-detector/src/nsEUCTWProber.cpp
-    charset-detector/src/nsGB2312Prober.cpp
-    charset-detector/src/nsHebrewProber.cpp
-    charset-detector/src/nsLatin1Prober.cpp
-    charset-detector/src/nsMBCSGroupProber.cpp
-    charset-detector/src/nsMBCSSM.cpp
-    charset-detector/src/nsSBCharSetProber.cpp
-    charset-detector/src/nsSBCSGroupProber.cpp
-    charset-detector/src/nsSJISProber.cpp
-    charset-detector/src/nsUniversalDetector.cpp
-    charset-detector/src/nsUTF8Prober.cpp
-)
-
-#####################################################################
 # LIBAMAROK
 #####################################################################
 set(amaroklib_LIB_SRCS
     ${libscriptableservice_SRCS}
     ${libanalyzers_SRCS}
-    ${libchardet_SRCS}
+    ${libbrowserframework_SRCS}
     ${libcontextview_SRCS}
     ${libcollectionbrowser_SRCS}
     ${libconfigdialog_SRCS}
@@ -511,10 +471,10 @@ set(amaroklib_LIB_SRCS
     dialogs/TagDialog.cpp
     dialogs/TagGuesser.cpp
     browsers/filebrowser/FileBrowser.cpp
-    browsers/filebrowser/MyDirLister.cpp
     browsers/filebrowser/MyDirOperator.cpp
     browsers/filebrowser/kbookmarkhandler.cpp
     firstruntutorial/FirstRunTutorial.cpp
+    firstruntutorial/FirstRunTutorialPage.cpp
     MountPointManager.cpp
     PaletteHandler.cpp
     PopupDropperFactory.cpp
@@ -535,7 +495,7 @@ set(amaroklib_LIB_SRCS
     widgets/PixmapViewer.cpp
     widgets/PrettyTreeView.cpp
     widgets/ProgressiveSearchWidget.cpp
-    widgets/ProgressSlider.cpp
+    widgets/ProgressWidget.cpp
     widgets/SearchWidget.cpp
     widgets/SidebarWidget.cpp
     widgets/SliderWidget.cpp
@@ -546,7 +506,6 @@ set(amaroklib_LIB_SRCS
     widgets/Splitter.cpp
     widgets/BookmarkTriangle.cpp
     widgets/BookmarkPopup.cpp
-    widgets/Widget.cpp
     GlobalCollectionActions.cpp
     GlobalCurrentTrackActions.cpp
 )
@@ -585,12 +544,12 @@ target_link_libraries(amaroklib
     ${KDE4_PLASMA_LIBS}
     ${KDE4_SOLID_LIBRARY}
     ${TAGLIB_LIBRARIES}
+    ${TAGLIB-EXTRAS_LIBRARIES}
     ${QT_QTSCRIPT_LIBRARY}
     ${QT_QTSQL_LIBRARY}
     ${QT_QTWEBKIT_LIBRARY}
     ${CMAKE_THREAD_LIBS_INIT}
     ${EXTRA_LIBS}
-    amarok_taglib
     amarokpud
     mediadevicelib
 )
@@ -627,10 +586,16 @@ install(TARGETS amaroklib ${INSTALL_TARGETS_DEFAULT_ARGS} )
 set(amarok_SRCS main.cpp )
 
 kde4_add_app_icon(amarok_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/images/hi*-app-amarok.png)
-if(Q_WS_MAC)
+
+if(Q_WS_MAC)    
     kde4_add_executable(Amarok ${amarok_SRCS})
     target_link_libraries(Amarok ${KDE4_KDECORE_LIBS} amaroklib )
     SET_TARGET_PROPERTIES(Amarok PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
+    set_target_properties(Amarok PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${MAC_FILES_DIR}/Info.plist.template)
+    set_target_properties(Amarok PROPERTIES MACOSX_BUNDLE_GUI_IDENTIFIER "org.kde.amarok")
+    set_target_properties(Amarok PROPERTIES MACOSX_BUNDLE_BUNDLE_NAME "Amarok 2")
+    #the following line was copied from KDE4Macros.cmake. kde4_add_app_icon fails to actually copy the .icns file
+    SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_BINARY_DIR}/amarok.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
     install(TARGETS Amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
 else(Q_WS_MAC)
     kde4_add_executable(amarok ${amarok_SRCS})
@@ -665,6 +630,8 @@ install(FILES data/DefaultPlaylistLayouts.xml
               services/InfoParserLoading.html
               DESTINATION ${DATA_INSTALL_DIR}/amarok/data)
 
+install( FILES data/amarok_homerc DESTINATION ${CONFIG_INSTALL_DIR} )
+
 kde4_install_icons( ${ICON_INSTALL_DIR} )
 
 ############# AFT Tagger ##############
@@ -678,7 +645,6 @@ kde4_add_executable(amarok_afttagger ${amarok_afttagger_SRCS} )
 
 target_link_libraries(amarok_afttagger
     ${KDE4_KDECORE_LIBS}
-    ${QT_QTCORE_LIBS}
     ${TAGLIB_LIBRARIES}
 )
 

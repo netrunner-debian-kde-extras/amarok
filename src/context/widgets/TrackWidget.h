@@ -56,8 +56,11 @@ class AMAROK_EXPORT TrackWidget: public ToolBoxIcon
         Meta::TrackPtr track() const;        
         
     protected:
+        void hoverEnterEvent( QGraphicsSceneHoverEvent *event );
+        void hoverLeaveEvent( QGraphicsSceneHoverEvent *event );
         virtual void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
         virtual void mouseReleaseEvent( QGraphicsSceneMouseEvent *event );
+
         
     private slots:
         /**
@@ -69,8 +72,8 @@ class AMAROK_EXPORT TrackWidget: public ToolBoxIcon
     private:
         Meta::TrackPtr m_track;
         RatingWidget *m_rating;
-        Plasma::IconWidget *m_scoreIcon;
         QGraphicsSimpleTextItem *m_scoreText;
+        QGraphicsSimpleTextItem *m_scoreLabel;
 };
 
 #endif

@@ -66,6 +66,7 @@ EngineController::destroy()
 EngineController::EngineController()
     : m_playWhenFetched( true )
     , m_fadeoutTimer( new QTimer( this ) )
+    , m_volume( 0 )
 {
     DEBUG_BLOCK
 
@@ -100,10 +101,21 @@ EngineController::initializePhonon()
     PERF_LOG( "EngineController: loading phonon objects" )
     m_media = new Phonon::MediaObject( this );
     m_audio = new Phonon::AudioOutput( Phonon::MusicCategory, this );
-    m_preamp = new Phonon::VolumeFaderEffect( this );
 
     m_path = Phonon::createPath( m_media, m_audio );
-    m_path.insertEffect( m_preamp );
+    
+    // HACK we turn off replaygain manually on OSX, until the phonon coreaudio backend is fixed.
+    // as the default is specified in the .cfg file, we can't just tell it to be a different default on OSX
+#ifdef Q_WS_MAC
+    AmarokConfig::setReplayGainMode( AmarokConfig::EnumReplayGainMode::Off );
+#endif
+
+    // only create pre-amp if we have replaygain on, preamp can cause phonon issues
+    if( AmarokConfig::replayGainMode() != AmarokConfig::EnumReplayGainMode::Off )
+    {   
+        m_preamp = new Phonon::VolumeFaderEffect( this );
+        m_path.insertEffect( m_preamp );
+    }
 
     m_media->setTickInterval( 100 );
     debug() << "Tick Interval (actual): " << m_media->tickInterval();
@@ -448,26 +460,25 @@ EngineController::decreaseVolume( int ticks ) //SLOT
 int
 EngineController::setVolume( int percent ) //SLOT
 {
-    if( percent < 0 ) percent = 0;
-    if( percent > 100 ) percent = 100;
-
-    // If we're explicitly setting the volume, then I think it's safe
-    // to assume that we don't want the audio stream muted
-    m_audio->setMuted( false );
-
-    qreal newVolume = percent / 100.0; //Phonon's volume is 0.0 - 1.0
+    percent = qBound( 0, percent, 100 );
+    m_volume = percent; 
+    
+    // Phonon stays completely mute if the volume is lower than 0.05, so we shift and limit the range 
+    qreal newVolume =  ( percent + 4 ) / 100.0;
+    newVolume = qBound( 0.04, newVolume, 1.0 );
     m_audio->setVolume( newVolume );
+    
     AmarokConfig::setMasterVolume( percent );
     volumeChangedNotify( percent );
-
     emit volumeChanged( percent );
+
     return percent;
 }
 
 int
 EngineController::volume() const
 {
-    return static_cast<int>( m_audio->volume() * 100.0 );
+    return m_volume;
 }
 
 bool
@@ -477,16 +488,20 @@ EngineController::isMuted() const
 }
 
 void
-EngineController::mute() //SLOT
+EngineController::setMuted( bool mute ) //SLOT
 {
-    // if it's already muted then we restore to previous value
-    int newPercent = m_audio->isMuted() ? volume() : 0;
+    m_audio->setMuted( mute ); // toggle mute
 
-    m_audio->setMuted( !isMuted() ); // toggle mute
+    AmarokConfig::setMuteState( mute );
+    muteStateChangedNotify( mute );
 
-    AmarokConfig::setMasterVolume( newPercent );
-    volumeChangedNotify( newPercent );
-    emit volumeChanged( newPercent );
+    emit muteStateChanged( mute );
+}
+
+void
+EngineController::toggleMute() //SLOT
+{
+    setMuted( !isMuted() );
 }
 
 Meta::TrackPtr
@@ -499,8 +514,9 @@ int
 EngineController::trackLength() const
 {
     const qint64 phononLength = m_media->totalTime(); //may return -1
-    if( phononLength <= 0 && m_currentTrack ) //this is useful for stuff like last.fm streams
-        return m_currentTrack->length();      //where Meta::Track knows the length, but phonon doesn't
+
+    if( m_currentTrack && m_currentTrack->length() > 0 )   //When starting a last.fm stream, Phonon still shows the old track's length--trust Meta::Track over Phonon
+        return m_currentTrack->length();
     else
         return static_cast<int>( phononLength / 1000 );
 }
@@ -558,6 +574,12 @@ EngineController::trackPosition() const
 //NOTE: there was a bunch of last.fm logic removed from here
 //pretty sure it's irrelevant, if not, look back to mid-March 2008
     return static_cast<int>( m_media->currentTime() / 1000 );
+}
+
+int
+EngineController::trackPositionMs() const
+{
+    return m_media->currentTime();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -664,6 +686,12 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
 
     if ( m_currentTrack && AmarokConfig::replayGainMode() != AmarokConfig::EnumReplayGainMode::Off )
     {
+        if( !m_preamp ) // replaygain was just turned on, and amarok was started with it off
+        {
+            m_preamp = new Phonon::VolumeFaderEffect( this );
+            m_path.insertEffect( m_preamp );
+        }
+        
         Meta::Track::ReplayGainMode mode = ( AmarokConfig::replayGainMode() == AmarokConfig::EnumReplayGainMode::Track)
                                          ? Meta::Track::TrackReplayGain
                                          : Meta::Track::AlbumReplayGain;
@@ -681,7 +709,7 @@ EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
         // a little confused about minus signs
         m_preamp->setVolume( exp( gain * log10over20 ) );
     }
-    else
+    else if( m_preamp )
         m_preamp->setVolumeDecibel( 0.0 );
 
     // state never changes if tracks are queued, but we need this to update the caption
@@ -795,6 +823,10 @@ void
 EngineController::slotTrackLengthChanged( qint64 milliseconds )
 {
     DEBUG_BLOCK
+
+    //Phonon reports bad info on streams, so call trackLength() to verify
+    milliseconds = trackLength() * 1000;
+
     if( milliseconds != 0 ) //don't notify for 0 seconds, it's probably just a stream
         trackLengthChangedNotify( static_cast<long>( milliseconds ) / 1000 );
 }

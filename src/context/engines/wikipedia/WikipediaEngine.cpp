@@ -251,9 +251,11 @@ WikipediaEngine::wikiResult( KJob* job )
     }
 
     // Ok lets remove the top and bottom parts of the page
-    m_wiki = m_wiki.mid( m_wiki.indexOf( "<h1 id=\"firstHeading\"" ) );
+    m_wiki = m_wiki.mid( m_wiki.indexOf( "<!-- start content -->" ) );
     m_wiki = m_wiki.mid( 0, m_wiki.indexOf( "<div class=\"printfooter\">" ) );
-    // Adding back license information
+
+    // Adding back style and license information
+    m_wiki = "<div id=\"bodyContent\"" + m_wiki;
     m_wiki += copyright;
     m_wiki.append( "</div>" );
     m_wiki.remove( QRegExp("<h3 id=\"siteSub\">[^<]*</h3>") );
@@ -283,10 +285,6 @@ WikipediaEngine::wikiResult( KJob* job )
     m_wiki.remove( QRegExp( "<textarea[^>]*>" ) );
     m_wiki.remove( "</textarea>" );
 
-    //first we convert all the links with protocol to external, as they should all be External Links.
-    m_wiki.replace( QRegExp( "href= *\"http:" ), "href=\"externalurl:" );
-    m_wiki.replace( QRegExp( "href= *\"#" ), "href=\"" +m_wikiCurrentUrl + '#' );
-
     // Make sure that the relative links inside the wikipedia HTML is forcibly made into absolute links (yes, this is deep linking, but we're showing wikipedia data as wikipedia data, not stealing any credz here)
     m_wiki.replace( QRegExp( "href= *\"/" ), "href=\"" + wikiSiteUrl() );
     m_wiki.replace( QRegExp( "src= *\"/" ), "src=\"" + wikiSiteUrl() );
@@ -295,7 +293,7 @@ WikipediaEngine::wikiResult( KJob* job )
     m_wikiHTMLSource.append( m_wiki );
     if ( !m_wikiLanguages.isEmpty() )
     {
-        m_wikiHTMLSource.append( i18n( "Wikipedia Other Languages: <br/>" )+ m_wikiLanguages );
+        m_wikiHTMLSource.append( "<br/><div id=\"wiki_otherlangs\" >" + i18n( "Wikipedia Other Languages: <br/>" )+ m_wikiLanguages + " </div>" );
     }
     m_wikiHTMLSource.append( "</body></html>\n" );
 
@@ -336,7 +334,11 @@ WikipediaEngine::wikiResult( KJob* job )
 inline QString
 WikipediaEngine::wikiLocale() const
 {
-	return m_wikiLang.name().split('_')[0];
+    // if there is no language set (QLocale::C) then return english as default
+	if( m_wikiLang.language() == QLocale::C )
+        return "en";
+    else
+        return m_wikiLang.name().split( '_' )[0];
 }
 
 inline QString
@@ -347,7 +349,7 @@ WikipediaEngine::wikiArtistPostfix()
     else if( wikiLocale() == "de" )
         return " (Band)";
     else if( wikiLocale() == "pl" )
-        return " (Kapela)";
+        return " (grupa muzyczna)";
     return QString();
 }
 

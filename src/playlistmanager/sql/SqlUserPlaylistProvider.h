@@ -40,13 +40,17 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         virtual Meta::PlaylistList playlists();
 
         virtual bool canSavePlaylists() { return true; };
-        virtual bool save( const Meta::TrackList &tracks );
+        virtual Meta::PlaylistPtr save( const Meta::TrackList &tracks );
+        virtual Meta::PlaylistPtr save( const Meta::TrackList &tracks, const QString& name );
 
         virtual bool supportsEmptyGroups() { return true; }
 
         QList<PopupDropperAction *> playlistActions( Meta::PlaylistList list );
 
         Meta::SqlPlaylistGroupPtr group( const QString &name );
+        bool import( const QString& fromLocation );
+
+        static Meta::SqlPlaylistList toSqlPlaylists( Meta::PlaylistList playlists );
 
     signals:
         void updated();
@@ -64,6 +68,9 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         void checkTables();
         void loadFromDb();
 
+        Meta::SqlPlaylistList selectedPlaylists() const
+            { return m_selectedPlaylists; };
+        Meta::SqlPlaylistList m_selectedPlaylists;
         PopupDropperAction *m_deleteAction;
         PopupDropperAction *m_renameAction;
 };

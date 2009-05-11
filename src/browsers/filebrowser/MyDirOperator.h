@@ -19,8 +19,6 @@
 #ifndef MYDIROPERATOR_H
 #define MYDIROPERATOR_H
 
-#include "MyDirLister.h"
-
 #include "collection/Collection.h"
 #include "playlist/PlaylistController.h"
 #include "SvgHandler.h"
@@ -73,15 +71,18 @@ private slots:
     void slotAppendChildTracks();
     void slotEditTracks();
 
+protected:
+    bool eventFilter( QObject *, QEvent * );
+
 private:
     QList<QAction*> createBasicActions();
     void playChildTracks( const KFileItemList &items, Playlist::AddOptions insertMode );
     Meta::TrackList tracksForEdit() const;
 
-    bool mCopyActivated;
-    bool mMoveActivated;
-    CollectionAction* mCopyAction;
-    CollectionAction* mMoveAction;
+    bool m_copyActivated;
+    bool m_moveActivated;
+    CollectionAction* m_copyAction;
+    CollectionAction* m_moveAction;
 };
 
 #endif

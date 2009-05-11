@@ -31,9 +31,8 @@
 #include "PlaylistModel.h"
 #include "layouts/LayoutManager.h"
 #include "navigators/NavigatorFilterProxyModel.h"
-#include "widgets/Widget.h"
 #include "widgets/ProgressiveSearchWidget.h"
-#include "layouts/LayoutConfigWidget.h"
+#include "layouts/LayoutConfigAction.h"
 
 
 #include <KToolBarSpacerAction>
@@ -76,7 +75,7 @@ Playlist::Widget::Widget( QWidget* parent )
 
     connect( m_sortBox, SIGNAL( activated( int ) ), this, SLOT( sort( int ) ) );*/
     
-    Amarok::Widget * layoutHolder = new Amarok::Widget( this );
+    QWidget * layoutHolder = new QWidget( this );
 
     layoutHolder->setMinimumWidth( 100 );
     layoutHolder->setMinimumHeight( 200 );
@@ -87,11 +86,12 @@ Playlist::Widget::Widget( QWidget* parent )
     m_playlistView = new PrettyListView( this );
     m_playlistView->show();
 
-    connect( m_searchWidget, SIGNAL( filterChanged( const QString &, int ) ), m_playlistView, SLOT( find( const QString &, int ) ) );
+    connect( m_searchWidget, SIGNAL( filterChanged( const QString &, int, bool ) ), m_playlistView, SLOT( find( const QString &, int, bool ) ) );
     connect( m_searchWidget, SIGNAL( next( const QString &, int ) ), m_playlistView, SLOT( findNext( const QString &, int ) ) );
     connect( m_searchWidget, SIGNAL( previous( const QString &, int ) ), m_playlistView, SLOT( findPrevious( const QString &, int ) ) );
     connect( m_searchWidget, SIGNAL( filterCleared() ), m_playlistView, SLOT( clearSearchTerm() ) );
     connect( m_searchWidget, SIGNAL( showOnlyMatches( bool ) ), m_playlistView, SLOT( showOnlyMatches( bool ) ) );
+    connect( m_searchWidget, SIGNAL( activateFilterResult() ), m_playlistView, SLOT( playFirstSelected() ) );
 
     connect( m_playlistView, SIGNAL( found() ), m_searchWidget, SLOT( match() ) );
     connect( m_playlistView, SIGNAL( notFound() ), m_searchWidget, SLOT( noMatch() ) );
@@ -100,13 +100,6 @@ Playlist::Widget::Widget( QWidget* parent )
 
     mainPlaylistlayout->setSpacing( 0 );
     mainPlaylistlayout->addWidget( m_playlistView );
-
-    KHBox *layoutWidgetBox = new KHBox( this );
-    layoutWidgetBox->setMargin( 0 );
-    QLabel *layoutLabel = new QLabel( i18n("Playlist layout:"), layoutWidgetBox );
-    Playlist::LayoutConfigWidget *layoutWidget = new Playlist::LayoutConfigWidget( layoutWidgetBox );
-    layoutWidget->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
-    layoutLabel->setSizePolicy( QSizePolicy::Maximum, QSizePolicy::Preferred );
 
     KHBox *barBox = new KHBox( this );
     barBox->setMargin( 0 );
@@ -140,10 +133,14 @@ Playlist::Widget::Widget( QWidget* parent )
         plBar->addSeparator();
         plBar->addAction( Amarok::actionCollection()->action( "playlist_save" ) );
         plBar->addAction( Amarok::actionCollection()->action( "playlist_export" ) );
+        plBar->addSeparator();
 
-        // Alternate playlist view disabled for 2.0
-        //plBar->addSeparator();
-        //plBar->addAction( Amarok::actionCollection()->action( "playlist_switch") );
+        Playlist::LayoutConfigAction *layoutConfigAction = new Playlist::LayoutConfigAction( this );
+        plBar->addAction( layoutConfigAction );
+        QToolButton *tbutton = qobject_cast<QToolButton*>(plBar->widgetForAction( layoutConfigAction ) );
+        if( tbutton )
+            tbutton->setPopupMode( QToolButton::InstantPopup );
+
         plBar->addAction( new KToolBarSpacerAction( this ) );
 
     } //END Playlist Toolbar

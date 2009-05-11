@@ -18,7 +18,6 @@
 #include "EngineObserver.h"
 #include "meta/Meta.h"
 
-#include <QHash>
 #include <QImage>
 #include <QList>
 #include <QPixmap>
@@ -49,10 +48,11 @@ class OSDWidget : public QWidget
         void show( const QString &text, QImage newImage = QImage() );
         void ratingChanged( const short rating );
         void ratingChanged( const QString& path, int rating );
-        void volChanged( int volume );
+        void volumeChanged( int volume );
 
         /** reimplemented, shows the OSD */
-        virtual void show();
+        virtual void show() { QWidget::show(); };
+        virtual void setVisible( bool visible );
 
         /**
          * For the sake of simplicity, when these settings are
@@ -100,8 +100,8 @@ class OSDWidget : public QWidget
         uint        m_y;
         bool        m_drawShadow;
         short       m_rating;
-        int         m_newvolume;
-        bool        m_volume;
+        int         m_volume;
+        bool        m_showVolume;
         QString     m_text;
         QImage      m_cover;
         QPixmap     m_scaledCover;
@@ -169,6 +169,7 @@ namespace Amarok
     protected:
         // Reimplemented from EngineObserver
         virtual void engineVolumeChanged( int );
+        virtual void engineMuteStateChanged( bool );
         virtual void engineStateChanged( Phonon::State state, Phonon::State oldState );
 
         // Reimplemented from Meta::Observer
@@ -187,8 +188,6 @@ namespace Amarok
         ~OSD();
 
         static OSD* s_instance;
-        bool isMetaDataSpam( const QHash<qint64, QString>& );
-        QList<QHash<qint64, QString> > m_metaDataHistory;
         Meta::TrackPtr m_currentTrack;
     };
 }

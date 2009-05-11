@@ -46,6 +46,8 @@ public:
     void setText( const QString &text );
 
     QString text() const;
+
+    void setBrush( const QBrush& );
     
 protected:
     void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget = 0 );
@@ -67,6 +69,7 @@ private:
     int m_animHighlightId;
 
     QGraphicsSimpleTextItem *m_text;
+    QBrush m_defaultTextBrush;
 };
 
 #endif

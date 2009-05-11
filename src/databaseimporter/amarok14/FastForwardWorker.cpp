@@ -52,8 +52,19 @@ FastForwardWorker::databaseConnection()
     const bool isSqlite = m_driver == FastForwardImporter::SQLite;
 
     QString driver = driverName();
-    if (driver.isEmpty())
+    if( driver.isEmpty() )
+    {
+        emit importError( i18n("No database driver was selected") );
+        m_failed = true;
         return QSqlDatabase();
+    }
+
+    if( isSqlite && !QFile::exists( m_databaseLocation ) )
+    {
+        emit importError( i18n("Database could not be found at: %1", m_databaseLocation ) );
+        m_failed = true;
+        return QSqlDatabase();
+    }
 
     QSqlDatabase connection = QSqlDatabase::addDatabase( driver );
     connection.setDatabaseName( isSqlite ? m_databaseLocation : m_database );
@@ -162,6 +173,7 @@ FastForwardWorker::run()
 
     if( tracksForInsert.size() > 0 )
     {
+        emit showMessage( i18n( "Synchronizing Amarok database..." ) );
         CollectionLocation *location = CollectionManager::instance()->primaryCollection()->location();
         location->insertTracks( tracksForInsert );
         location->insertStatistics( tracksForInsert );
@@ -169,20 +181,20 @@ FastForwardWorker::run()
 
     if( m_importArtwork )
     {
-        QString message = i18n( "Importing downloaded album art" );
+        const QString message = i18n( "Importing downloaded album art" );
         emit showMessage( message );
 
-        // FIXME: determining the old cover art directory is a major hack, I admit.
-        // What's the best way of doing this?
         QString newCoverPath = Amarok::saveLocation( "albumcovers/large/" );
-        QString oldCoverPath = QString( newCoverPath );
-        oldCoverPath = oldCoverPath.replace( ".kde4", ".kde" );
         QDir newCoverDir( newCoverPath );
-        QDir oldCoverDir( oldCoverPath ); 
+        QDir oldCoverDir( m_importArtworkDir ); 
+
+        if( newCoverDir.canonicalPath() == oldCoverDir.canonicalPath() )
+            return;
+
         oldCoverDir.setFilter( QDir::Files | QDir::NoDotAndDotDot );
 
         debug() << "new covers:" << newCoverPath;
-        debug() << "old covers:" << oldCoverPath;
+        debug() << "old covers:" << m_importArtworkDir;
 
         foreach( QFileInfo image, oldCoverDir.entryInfoList() )
         {

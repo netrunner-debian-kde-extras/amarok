@@ -1,5 +1,5 @@
 /**************************************************************************
-* copyright            : (C) 2008 Leo Franchi <lfranchi@kde.org  >        *
+* copyright            : (C) 2008 Leo Franchi <lfranchi@kde.org>          *
 **************************************************************************/
 
 /***************************************************************************
@@ -13,6 +13,9 @@
 
 #include "AppletToolbarConfigItem.h"
 
+#include "App.h"
+#include "PaletteHandler.h"
+
 #include <plasma/widgets/iconwidget.h>
 
 #include <KIcon>
@@ -23,7 +26,7 @@
 #include <QStyleOptionGraphicsItem>
 
 Context::AppletToolbarConfigItem::AppletToolbarConfigItem( QGraphicsItem* parent )
-    : QGraphicsWidget( parent )
+    : AppletToolbarBase( parent )
     , m_iconPadding( 2 )
     , m_icon( 0 )
 {
@@ -53,23 +56,11 @@ Context::AppletToolbarConfigItem::AppletToolbarConfigItem( QGraphicsItem* parent
 
 Context::AppletToolbarConfigItem::~AppletToolbarConfigItem()
 {}
-
-void 
-Context::AppletToolbarConfigItem::paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget )
-{
-    painter->save();
-    painter->setRenderHint( QPainter::Antialiasing );
-    QColor fillColor( 88, 88, 88, 225 );
-    QPainterPath fillPath;
-    fillPath.addRoundedRect( boundingRect(), 5, 5 );
-    painter->fillPath( fillPath ,fillColor );
-    painter->restore();
-}
    
-      
 void 
 Context::AppletToolbarConfigItem::resizeEvent( QGraphicsSceneResizeEvent * event )
 {
+    Q_UNUSED( event )
     // center horizontally and vertically
     m_icon->setPos( ( boundingRect().width() / 2 ) - ( m_icon->boundingRect().width() / 2 ) , ( boundingRect().height() / 2 ) - ( m_icon->size().height() / 2 ) );
 }
@@ -81,8 +72,9 @@ Context::AppletToolbarConfigItem::sizeHint( Qt::SizeHint which, const QSizeF & c
 }
 
 void
-Context::AppletToolbarConfigItem::mousePressEvent( QGraphicsSceneMouseEvent * event )
+Context::AppletToolbarConfigItem::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
+    Q_UNUSED( event )
     emit triggered();
 }
 

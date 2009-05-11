@@ -15,15 +15,18 @@
 #define FIRSTRUNTUTORIAL_H
 
 #include "amarokconfig.h"
+#include "FirstRunTutorialPage.h"
 
 #include <QGraphicsScene>
 #include <QGraphicsView>
+#include <QHash>
 #include <QTimeLine>
 #include <QWidget>
 
 class FirstRunTutorial : public QObject
 {
     Q_OBJECT
+
     public:
         FirstRunTutorial( QWidget *parent );
         ~FirstRunTutorial();
@@ -36,9 +39,12 @@ class FirstRunTutorial : public QObject
         void fadeShowTimerFinished();
         void fadeHideTimerFrameChanged( int frame );
         void fadeHideTimerFinished();
-        void setupPerms();
+        void nextPage();
 
         void slotPage1();
+
+    protected:
+        virtual bool eventFilter( QObject* watched, QEvent* event );
 
     private:
         QWidget* m_parent;
@@ -48,6 +54,7 @@ class FirstRunTutorial : public QObject
         QTimeLine m_fadeHideTimer;
         int m_framesMax;
         QSet<QGraphicsItem*> m_itemSet;
+        QHash<int, FirstRunTutorialPage*> m_pages;
         int m_pageNum;
 };
 

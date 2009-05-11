@@ -40,6 +40,7 @@
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
 #include "playlist/view/PlaylistViewCommon.h"
+#include "playlist/navigators/NavigatorFilterProxyModel.h"
 #include "PopupDropperFactory.h"
 #include "SvgHandler.h"
 #include "SourceSelectionPopup.h"
@@ -91,6 +92,8 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
     m_proxyUpdateTimer->setSingleShot( true );
 
     connect( m_proxyUpdateTimer, SIGNAL( timeout() ), this, SLOT( updateProxyTimeout() ) );
+
+    connect( The::playlistModel(), SIGNAL( itemsAdded( int ) ), this, SLOT( itemsAdded( int ) ) );
 }
 
 Playlist::PrettyListView::~PrettyListView() {}
@@ -119,17 +122,27 @@ Playlist::PrettyListView::editTrackInformation()
 }
 
 void
-Playlist::PrettyListView::playTrack()
+Playlist::PrettyListView::playFirstSelected()
 {
-    trackActivated( currentIndex() );
+    QModelIndexList selected = selectedIndexes();
+    if( !selected.isEmpty() )
+        trackActivated( selected.first() );
 }
 
 void
 Playlist::PrettyListView::removeSelection()
 {
     QList<int> sr = selectedRows();
-    Controller::instance()->removeRows( sr );
-    selectionModel()->clearSelection();
+    if( !sr.isEmpty() )
+    {
+        qSort( sr );
+        int firstRow = sr.first();
+        Controller::instance()->removeRows( sr );
+
+        //select the track immediately above the cleared are as this is the one that ow has internal focus.
+        firstRow = qBound( 0, firstRow, model()->rowCount() -1 );
+        selectionModel()->select( model()->index( firstRow, 0, QModelIndex() ), QItemSelectionModel::Select );
+    }
 }
 
 void
@@ -196,7 +209,13 @@ Playlist::PrettyListView::trackActivated( const QModelIndex& idx )
 void
 Playlist::PrettyListView::contextMenuEvent( QContextMenuEvent* event )
 {
-    QModelIndex index = indexAt( event->pos() );
+    DEBUG_BLOCK
+    QModelIndex filteredIndex = indexAt( event->pos() );
+    
+    //translate to real model as we might be looking at a filered list:
+    int sourceRow = NavigatorFilterProxyModel::instance()->rowToSource( filteredIndex.row() );
+
+    QModelIndex index = The::playlistModel()->index( sourceRow );
 
     if ( !index.isValid() )
         return;
@@ -205,7 +224,7 @@ Playlist::PrettyListView::contextMenuEvent( QContextMenuEvent* event )
     if( event->modifiers() & Qt::ControlModifier )
         return;
 
-    trackMenu( this, index, event->globalPos(), true );
+    ViewCommon::trackMenu( this, &index, event->globalPos(), true );
     event->accept();
 }
 
@@ -221,10 +240,19 @@ void
 Playlist::PrettyListView::stopAfterTrack()
 {
     DEBUG_BLOCK
-    debug()<<"set stop after queue on track "<<currentIndex().data(UniqueIdRole).value<quint64>()<<endl;
-    Actions::instance()->setStopAfterMode( StopAfterQueue );
-    Actions::instance()->setTrackToBeLast( currentIndex().data( UniqueIdRole ).value<quint64>() );
+    const qint64 id = currentIndex().data( UniqueIdRole ).value<quint64>();
+    if( Actions::instance()->willStopAfterTrack( id ) )
+    {
+        Actions::instance()->setStopAfterMode( StopNever );
+        Actions::instance()->setTrackToBeLast( 0 );
+    }
+    else
+    {
+        Actions::instance()->setStopAfterMode( StopAfterQueue );
+        Actions::instance()->setTrackToBeLast( id );
+    }
 }
+
 void
 Playlist::PrettyListView::dragMoveEvent( QDragMoveEvent* event )
 {
@@ -407,12 +435,10 @@ Playlist::PrettyListView::startDrag( Qt::DropActions supportedActions )
         qDebug() << "does play exist in renderer? " << ( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" )->elementExists( "load" ) );
         QModelIndexList indices = selectedIndexes();
 
-        QList<PopupDropperAction*> actions =
-                actionsFor( indices.first(), true );
+        QList<PopupDropperAction*> actions =  ViewCommon::actionsFor( this, &indices.first(), true );
 
-        foreach( PopupDropperAction * action, actions ) {
+        foreach( PopupDropperAction * action, actions )
             m_pd->addItem( The::popupDropperFactory()->createItem( action ), true );
-        }
 
         m_pd->show();
     }
@@ -427,109 +453,6 @@ Playlist::PrettyListView::startDrag( Qt::DropActions supportedActions )
         m_pd->hide();
     }
     ongoingDrags = false;
-}
-
-void
-Playlist::PrettyListView::trackMenu( QWidget *parent, const QModelIndex &index, const QPoint &pos, bool coverActions )
-{
-    DEBUG_BLOCK
-    KMenu *menu = new KMenu( parent );
-
-    QList<PopupDropperAction *> actions = actionsFor( index, coverActions );
-    foreach( PopupDropperAction *action, actions )
-    {
-        menu->addAction( action );
-    }
-    menu->exec( pos );
-}
-
-QList<PopupDropperAction *>
-Playlist::PrettyListView::actionsFor( const QModelIndex &index, bool coverActions )
-{
-    DEBUG_BLOCK
-    QList<PopupDropperAction *> actions;
-
-    Meta::TrackPtr track = index.data( Playlist::TrackRole ).value< Meta::TrackPtr >();
-
-    const bool isCurrentTrack = index.data( Playlist::ActiveTrackRole ).toBool();
-
-    PopupDropperAction *playAction = new PopupDropperAction( KIcon( "media-playback-start-amarok" ), i18n( "&Play" ), this );
-    connect( playAction, SIGNAL( triggered() ), The::engineController(), SLOT( playPause() ) );
-
-    PopupDropperAction *pauseAction = new PopupDropperAction( KIcon( "media-playback-pause-amarok" ), i18n( "&Pause" ), this );
-    connect( pauseAction, SIGNAL( triggered() ), The::engineController(), SLOT( playPause() ) );
-
-    const bool isPaused = The::engineController()->isPaused();
-    if( isCurrentTrack && !isPaused )
-        actions << pauseAction;
-    else
-        actions << playAction;
-
-
-    const bool isMultiSource = index.data( Playlist::MultiSourceRole ).toBool();
-    if ( isMultiSource ) {
-        PopupDropperAction *selectSourceAction = new PopupDropperAction( KIcon( "media-playlist-repeat" ), i18n( "Select Source" ), this );
-        connect( selectSourceAction, SIGNAL( triggered() ), this, SLOT( selectSource() ) );
-        actions << selectSourceAction;
-    }
-
-    PopupDropperAction *queueAction = new PopupDropperAction( KIcon( "media-track-queue-amarok" ), i18n( "Queue Track" ), this );
-    connect( queueAction, SIGNAL( triggered() ), this, SLOT( queueSelection() ) );
-
-    PopupDropperAction *dequeueAction = new PopupDropperAction( KIcon( "media-track-queue-amarok" ), i18n( "Dequeue Track" ), this );
-    connect( dequeueAction, SIGNAL( triggered() ), this, SLOT( dequeueSelection() ) );
-
-    const bool isQueued = index.data( Playlist::StateRole ).toInt() & Item::Queued;
-    if( isQueued )
-        actions << dequeueAction;
-    else
-        actions << queueAction;
-
-    PopupDropperAction *stopAction = new PopupDropperAction( KIcon( "media-playback-stop-amarok" ), i18n( "Stop Playing After This Track" ), this );
-    connect( stopAction, SIGNAL( triggered() ), this, SLOT( stopAfterTrack() ) );
-    actions << stopAction;
-
-    PopupDropperAction *removeAction = new PopupDropperAction( KIcon( "media-track-remove-amarok" ), i18n( "Remove From Playlist" ), this );
-    connect( removeAction, SIGNAL( triggered() ), this, SLOT( removeSelection() ) );
-    actions << removeAction;
-
-    PopupDropperAction *editAction = new PopupDropperAction( KIcon( "media-track-edit-amarok" ), i18n( "Edit Track Details" ), this );
-    connect( editAction, SIGNAL( triggered() ), this, SLOT( editTrackInformation() ) );
-    actions << editAction;
-
-    //lets see if this is the currently playing tracks, and if it has CurrentTrackActionsCapability
-    if( isCurrentTrack )
-    {
-        QList<QAction *> globalCurrentTrackActions = The::globalCurrentTrackActions()->actions();
-        foreach( QAction *action, globalCurrentTrackActions )
-            actions << PopupDropperAction::from( action );
-
-        if ( track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
-        {
-            Meta::CurrentTrackActionsCapability *cac = track->as<Meta::CurrentTrackActionsCapability>();
-            if ( cac )
-            {
-                foreach( PopupDropperAction *action, cac->customActions() )
-                    actions << action;
-            }
-        }
-    }
-
-    if ( coverActions )
-    {
-        Meta::AlbumPtr album = track->album();
-        if ( album )
-        {
-            Meta::CustomActionsCapability *cac = album->as<Meta::CustomActionsCapability>();
-            if ( cac )
-            {
-                foreach( PopupDropperAction *action, cac->customActions() )
-                    actions << action;
-            }
-        }
-    }
-
-    return actions;
 }
 
 QItemSelectionModel::SelectionFlags
@@ -572,7 +495,8 @@ Playlist::PrettyListView::selectedRows() const
     QList<int> rows;
     foreach( const QModelIndex &idx, selectedIndexes() )
     {
-        rows.append( idx.row() );
+        int sourceRow = NavigatorFilterProxyModel::instance()->rowToSource( idx.row() );
+        rows.append( sourceRow );
     }
     return rows;
 }
@@ -586,7 +510,7 @@ void Playlist::PrettyListView::newPalette( const QPalette & palette )
 
 
 
-void Playlist::PrettyListView::find( const QString &searchTerm, int fields  )
+void Playlist::PrettyListView::find( const QString &searchTerm, int fields, bool filter  )
 {
     DEBUG_BLOCK
 
@@ -599,13 +523,15 @@ void Playlist::PrettyListView::find( const QString &searchTerm, int fields  )
     {
         //select this track
 
-        QModelIndex index = model()->index( row, 0 );
-        QItemSelection selItems( index, index );
-        selectionModel()->select( selItems, QItemSelectionModel::SelectCurrent );
+        if ( !filter ) {
+            QModelIndex index = model()->index( row, 0 );
+            QItemSelection selItems( index, index );
+            selectionModel()->select( selItems, QItemSelectionModel::SelectCurrent );
 
-        QModelIndex foundIndex = model()->index( row, 0, QModelIndex() );
-        if ( foundIndex.isValid() )
-            scrollTo( foundIndex, QAbstractItemView::PositionAtCenter );
+            QModelIndex foundIndex = model()->index( row, 0, QModelIndex() );
+            if ( foundIndex.isValid() )
+                scrollTo( foundIndex, QAbstractItemView::PositionAtCenter );
+        }
 
         emit( found() );
     }
@@ -698,8 +624,26 @@ void Playlist::PrettyListView::findPrevious( const QString & searchTerm, int fie
 
 void Playlist::PrettyListView::clearSearchTerm()
 {
+    DEBUG_BLOCK
+            
+    //We really do not want to reset the view to the top when the search/filter is cleared, so
+    //we store the first shown row and scroll to that once the term is removed.
+    QModelIndex index = indexAt( QPoint( 0, 0 ) );
+
+     //ah... but we want the source row and not the one reported by the filter model(s)
+    int row = NavigatorFilterProxyModel::instance()->rowToSource( index.row() );
+
+    debug() << "first row in filtered list: " << index.row();
+    debug() << "source row: " << row;
+
     NavigatorFilterProxyModel::instance()->filterUpdated();
     GroupingProxy::instance()->clearSearchTerm();
+
+    //now scroll to the selected row again
+
+    QModelIndex sourceIndex = model()->index( row, 0, QModelIndex() );
+    if ( sourceIndex.isValid() )
+        scrollTo( sourceIndex, QAbstractItemView::PositionAtTop );
 }
 
 void Playlist::PrettyListView::startProxyUpdateTimeout()
@@ -723,6 +667,22 @@ void Playlist::PrettyListView::showOnlyMatches( bool onlyMatches )
     NavigatorFilterProxyModel::instance()->setPassThrough( !onlyMatches );
 }
 
+void Playlist::PrettyListView::itemsAdded( int firstRow )
+{
+    DEBUG_BLOCK
+
+    QModelIndex index = model()->index( NavigatorFilterProxyModel::instance()->rowFromSource( firstRow ) , 0 );
+    if( !index.isValid() )
+        return;
+
+    debug() << "index has row: " << index.row();
+    //scrollTo( firstItem/*, QAbstractItemView::PositionAtCenter*/ );
+    scrollTo( index, QAbstractItemView::PositionAtCenter );
+    
+}
+
 
 
 #include "PrettyListView.moc"
+
+

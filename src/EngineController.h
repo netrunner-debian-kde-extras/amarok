@@ -49,6 +49,9 @@ public:
     /* returns track position (elapsed time) in seconds */
     int trackPosition() const;
 
+    /* returns track position (elapsed time) in milliseconds */
+    int trackPositionMs() const;
+
     /**
      * Returns the current track that is loaded into the engine.
      * @return a Meta::TrackPtr which is either the track, or empty if phonon
@@ -104,7 +107,8 @@ public slots:
     int decreaseVolume( int ticks = 100/25 );
     int setVolume( int percent );
 
-    void mute();
+    void setMuted( bool mute );
+    void toggleMute();
 
 signals:
     void trackPlayPause( int ); //Playing: 0, Paused: 1
@@ -112,6 +116,7 @@ signals:
     void trackChanged( Meta::TrackPtr );
     void trackSeeked( int ); //return relative time in million second
     void volumeChanged( int );
+    void muteStateChanged( bool );
 
 protected:
     void playUrl( const KUrl &url, uint offset );
@@ -150,6 +155,7 @@ private:
     QPointer<Meta::MultiSourceCapability> m_multiSource;
     bool m_playWhenFetched;
     QTimer* m_fadeoutTimer;
+    int m_volume;
 
     QMutex m_mutex;
 };

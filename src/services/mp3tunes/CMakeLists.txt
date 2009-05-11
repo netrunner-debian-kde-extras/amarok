@@ -24,7 +24,7 @@ if(LIBXML2_FOUND AND CURL_FOUND)
                 ./harmonydaemon
                 ${GLIB2_INCLUDE_DIR}
                 ${GOBJECT_INCLUDE_DIR}
-                ${LOUDMOUTH_INCLUDE_DIR}
+                ${LOUDMOUTH_INCLUDE_DIRS}
             )
             if(LIBGCRYPT_FOUND)
                 add_definitions(-DHAVE_LIBGCRYPT)
@@ -60,6 +60,7 @@ if(LIBXML2_FOUND AND CURL_FOUND)
                 ${LOUDMOUTH_LIBRARIES}
                 ${LIBXML2_LIBRARIES}
                 ${CURL_LIBRARIES}
+                ${TAGLIB-EXTRAS_LIBRARIES}
             )
 
             if(LIBGCRYPT_FOUND)

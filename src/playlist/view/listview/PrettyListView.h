@@ -56,7 +56,7 @@ signals:
     // these slots are used by the ContextMenu
 public slots:
     void editTrackInformation();
-    void playTrack();
+    void playFirstSelected();
     void dequeueSelection();
     void queueSelection();
     void removeSelection();
@@ -64,11 +64,13 @@ public slots:
     void scrollToActiveTrack();
     void selectSource();
 
-    void find( const QString & searchTerm, int fields );
+    void find( const QString & searchTerm, int fields, bool filter );
     void findNext( const QString & searchTerm, int fields  );
     void findPrevious( const QString & searchTerm, int fields  );
     void clearSearchTerm();
     void showOnlyMatches( bool onlyMatches );
+
+    void itemsAdded( int firstRow );
 
     virtual void engineNewTrackPlaying(); // from EngineObserver
 
@@ -95,9 +97,6 @@ private:
     QItemSelectionModel::SelectionFlags headerReleaseSelectionCommand( const QModelIndex&, const QMouseEvent* ) const;
 
     void startProxyUpdateTimeout();
-
-    void trackMenu( QWidget *, const QModelIndex &, const QPoint &pos, bool coverActions = false );
-    QList<PopupDropperAction *> actionsFor( const QModelIndex &index, bool coverActions );
 
     QRect                 m_dropIndicator;
     QPersistentModelIndex m_headerPressIndex;

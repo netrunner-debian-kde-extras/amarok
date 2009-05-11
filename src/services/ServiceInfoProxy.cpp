@@ -18,7 +18,10 @@
  ***************************************************************************/
 
 #include "ServiceInfoProxy.h"
+
+#include "App.h"
 #include "Debug.h"
+#include "PaletteHandler.h"
 
 #include <KStandardDirs>
 
@@ -154,6 +157,14 @@ ServiceInfoProxy::loadHomePage()
     QString imagePath = imageUrl.url();
 
     html.replace( "_PATH_", imagePath );
+
+    html.replace( "{background_color}",PaletteHandler::highlightColor().lighter( 150 ).name() );
+    html.replace( "{border_color}", PaletteHandler::highlightColor().lighter( 150 ).name() );
+    html.replace( "{text_color}", App::instance()->palette().brush( QPalette::Text ).color().name() );
+    QColor highlight( App::instance()->palette().highlight().color() );
+    highlight.setHsvF( highlight.hueF(), 0.3, .95, highlight.alphaF() );
+    html.replace( "{header_background_color}", highlight.name() );
+
 
     m_storedInfo["service_name"] =  i18n( "Home" );
     m_storedInfo["main_info"] = html;

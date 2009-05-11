@@ -14,6 +14,7 @@ email                : markey@web.de
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
+
 #include "App.h"
 
 #include "Amarok.h"
@@ -29,10 +30,11 @@ email                : markey@web.de
 #include "MainWindow.h"
 #include "Meta.h"
 #include "meta/MetaConstants.h"
-#include "metadata/tplugins.h"
 #include "MountPointManager.h"
 #include "Osd.h"
 #include "PlayerDBusHandler.h"
+#include "Playlist.h"
+#include "PlaylistFileSupport.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistController.h"
@@ -51,21 +53,29 @@ email                : markey@web.de
 #include <KCalendarSystem>
 #include <KCmdLineArgs>                  //initCliArgs()
 #include <KEditToolBar>                  //slotConfigToolbars()
+#include <KGlobalSettings>
 #include <KIO/CopyJob>
 #include <KJob>
 #include <KJobUiDelegate>
 #include <KLocale>
-#include <KRun>                          //Amarok::invokeBrowser()
-#include <KShell>
 #include <KShortcutsDialog>              //slotConfigShortcuts()
 #include <KSplashScreen>
 #include <KStandardDirs>
 
+#include <QByteArray>
 #include <QFile>
 #include <KPixmapCache>
 #include <QStringList>
 #include <QTimer>                       //showHyperThreadingWarning()
 #include <QtDBus/QtDBus>
+
+#ifdef TAGLIB_EXTRAS_FOUND
+#include <audiblefiletyperesolver.h>
+#include <asffiletyperesolver.h>
+#include <wavfiletyperesolver.h>
+#include <realmediafiletyperesolver.h>
+#include <mp4filetyperesolver.h>
+#endif
 
 QMutex Debug::mutex;
 QMutex Amarok::globalDirsMutex;
@@ -110,9 +120,15 @@ App::App()
         m_splash->show();
     }
 
+#ifdef TAGLIB_EXTRAS_FOUND
     PERF_LOG( "Registering taglib plugins" )
-    registerTaglibPlugins();
+    TagLib::FileRef::addFileTypeResolver(new MP4FileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new ASFFileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new RealMediaFileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new AudibleFileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new WavFileTypeResolver);
     PERF_LOG( "Done Registering taglib plugins" )
+#endif
 
     qRegisterMetaType<Meta::DataPtr>();
     qRegisterMetaType<Meta::DataList>();
@@ -206,10 +222,14 @@ App::~App()
             {
                 AmarokConfig::setResumeTrack( track->playableUrl().prettyUrl() );
                 AmarokConfig::setResumeTime( The::engineController()->trackPosition() * 1000 );
+                AmarokConfig::setLastPlaying( Playlist::Model::instance()->activeRow() );
             }
         }
         else
+        {
             AmarokConfig::setResumeTrack( QString() ); //otherwise it'll play previous resume next time!
+            AmarokConfig::setLastPlaying( -1 );
+        }
     }
 
     The::engineController()->endSession(); //records final statistics
@@ -365,12 +385,15 @@ App::handleCliArgs() //static
 
     const bool debugWasJustEnabled = !Amarok::config().readEntry( "Debug Enabled", false ) && args->isSet( "debug" );
     const bool debugIsDisabled = !args->isSet( "debug" );
+    //allows debugging on OS X. Bundles have to be started with "open". Therefore it is not possible to pass an argument
+    const bool forceDebug = Amarok::config().readEntry( "Force Debug", false );
+    
 
-    Amarok::config().writeEntry( "Debug Enabled", args->isSet( "debug" ) );
+    Amarok::config().writeEntry( "Debug Enabled", forceDebug ? true : args->isSet( "debug" ) );
 
     // Debug output will only work from this point on. If Amarok was run without debug output before,
     // then a part of the output (until this point) will be missing. Inform the user about this:
-    if( debugWasJustEnabled )
+    if( debugWasJustEnabled || forceDebug )
     {
         debug() << "************************************************************************************************************";
         debug() << "** DEBUGGING OUTPUT IS NOW ENABLED. PLEASE NOTE THAT YOU WILL ONLY SEE THE FULL OUTPUT ON THE NEXT START. **";
@@ -525,6 +548,9 @@ void App::applySettings( bool firstTime )
             Amarok::OSD::instance()->setEnabled( osdEnabled );
         }
 
+        if( The::engineController()->isMuted() != AmarokConfig::muteState() )
+            The::engineController()->setMuted( AmarokConfig::muteState() );
+
 #if 0
     // Audio CD is not currently supported
     Amarok::actionCollection()->action( "play_audiocd" )->setEnabled( false );
@@ -608,10 +634,14 @@ App::continueInit()
     m_splash = 0;
     PERF_LOG( "App init done" )
     KConfigGroup config = KGlobal::config()->group( "General" );
-    const bool firstruntut = config.readEntry( "FirstRunTutorial", false );
+
+    // NOTE: First Run Tutorial disabled for 2.1-beta1 release (too buggy / unfinished)
+#if 0
+    const bool firstruntut = config.readEntry( "FirstRunTutorial", true );
     debug() << "Checking whether to run first run tutorial..." << firstruntut;
     if( firstruntut )
     {
+        config.writeEntry( "FirstRunTutorial", false );
         debug() << "Starting first run tutorial";
         FirstRunTutorial *frt = new FirstRunTutorial( mainWindow() );
         QTimer::singleShot( 1000, frt, SLOT( initOverlay() ) );
@@ -622,6 +652,7 @@ App::continueInit()
         slotConfigAmarok( "CollectionConfig" );
         config.writeEntry( "First Run", false );
     }
+#endif
 }
 
 void App::slotConfigEqualizer() //SLOT
@@ -678,6 +709,34 @@ void App::quit()
     }
     */
     KApplication::quit();
+}
+
+bool App::event( QEvent *event )
+{
+
+    switch( event->type() )
+    {
+        //allows Amarok to open files from the finder on OS X
+        case QEvent::FileOpen:
+        {
+            QString file = static_cast<QFileOpenEvent*>( event )->file();
+            //we are only going to receive local files here
+            KUrl url( file );
+            if( PlaylistManager::instance()->isPlaylist( url ) )
+            {
+                Meta::PlaylistPtr playlist = Meta::loadPlaylist( url );
+                The::playlistController()->insertOptioned( playlist, Playlist::AppendAndPlay );
+            }
+            else
+            {
+                Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
+                The::playlistController()->insertOptioned( track, Playlist::AppendAndPlay );
+            }
+            return true;
+        }
+        default:
+            return KUniqueApplication::event( event );
+    }
 }
 
 namespace Amarok
@@ -832,26 +891,6 @@ namespace Amarok
     {
         //Slightly more useful config() that allows setting the group simultaneously
         return KGlobal::config()->group( group );
-    }
-
-    bool invokeBrowser( const QString& url )
-    {
-        //URL can be in whatever forms KUrl understands - ie most.
-        QString browser = AmarokConfig::externalBrowser();
-
-        // HACK to get around KConfigDialog. See configdialog/dialogs/GeneralConfig.cpp
-#ifdef Q_WS_MAC
-        if( browser == i18n( "Default Browser" ) )
-            browser = "open";
-#else
-        if( browser == i18n( "Default KDE Browser" ) )
-            browser = "xdg-open";
-#endif
-
-        const QString cmd = KShell::quoteArg( browser )
-                            + ' ' + KShell::quoteArg( KUrl( url ).url() );
-
-        return ( KRun::runCommand( cmd, 0L ) > 0 );
     }
 
     namespace ColorScheme

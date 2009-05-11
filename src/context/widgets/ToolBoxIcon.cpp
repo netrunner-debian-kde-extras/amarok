@@ -1,5 +1,6 @@
 /*******************************************************************************
 * copyright              : (C) 2008 William Viana Soares <vianasw@gmail.com>   *
+* copyright		 : (C) 2009 Leo Franchi		 <lfranchi@kde.org>    *
 *                                                                              *
 ********************************************************************************/
 
@@ -15,6 +16,7 @@
 #include "ToolBoxIcon.h"
 
 #include "Debug.h"
+#include "PaletteHandler.h"
 
 #include <plasma/animator.h>
 #include <plasma/paintutils.h>
@@ -38,13 +40,11 @@ ToolBoxIcon::ToolBoxIcon( QGraphicsItem *parent )
     m_text->setCursor( Qt::ArrowCursor ); // Don't show the carot, the text isn't editable.
 
     QFont font;
-    font.setBold( true );
-    font.setStyleHint( QFont::Times );
+    font.setBold( false );
     font.setPointSize( font.pointSize() - 2 );
     font.setStyleStrategy( QFont::PreferAntialias );
     
     m_text->setFont( font );
-    m_text->setBrush( Qt::white );
     m_text->show();
 }
 
@@ -87,6 +87,7 @@ ToolBoxIcon::mousePressed( bool pressed )
 void
 ToolBoxIcon::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
+    painter->setRenderHint( QPainter::Antialiasing );
     if( Plasma::IconWidget::drawBackground() )
     {
         if( m_text->text().isEmpty() )
@@ -96,23 +97,26 @@ ToolBoxIcon::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, Q
         m_text->setPos( PADDING, size().height() / 2 - fm.boundingRect( m_text->text() ).height() / 2 );
         painter->save();
         
-        QColor color = KColorScheme( QPalette::Active, KColorScheme::Window,
-                               Plasma::Theme::defaultTheme()->colorScheme() ).background().color();
-
-        painter->setBrush( color );
-        painter->setRenderHint( QPainter::Antialiasing );                        
+       // QColor color = KColorScheme( QPalette::Active, KColorScheme::Window,
+       //                        Plasma::Theme::defaultTheme()->colorScheme() ).background().color();
         painter->setOpacity( m_animOpacity );
-        painter->setPen( QPen( Qt::gray, 1 ) );
-        painter->drawPath( shape() );
-        painter->restore();
 
-        painter->save();
-        painter->setRenderHint( QPainter::Antialiasing );
-        painter->setPen( QPen( Qt::white, 2 ) );
-        QSize innerRectSize(  size().width() - 7, size().height() - 7 );
-        QPainterPath innerRect( Plasma::PaintUtils::roundedRectangle( QRectF( QPointF( 2.5, 2.5 ), innerRectSize ), 8 ) );
-        painter->drawPath( innerRect );
-        painter->restore();
+       QLinearGradient gradient( boundingRect().topLeft(), boundingRect().bottomLeft() );
+       QColor highlight = PaletteHandler::highlightColor();
+       highlight.setAlpha( 160 );
+       gradient.setColorAt( 0, highlight.darker( 140 ) );
+       highlight.setAlpha( 220 );
+       gradient.setColorAt( 1, highlight.darker( 180 ) );
+       QPainterPath path;
+       path.addRoundedRect( boundingRect(), 3, 3 );
+       painter->fillPath( path, gradient );
+       painter->restore();
+
+       // draw border
+       painter->save();
+       painter->setPen( PaletteHandler::highlightColor().darker( 150 ) );
+       painter->drawRoundedRect( boundingRect(), 3, 3 );
+       painter->restore();
     }
     else
         Plasma::IconWidget::paint( painter, option, widget );
@@ -129,10 +133,11 @@ ToolBoxIcon::hoverEnterEvent( QGraphicsSceneHoverEvent *event )
 {
     if( m_animHighlightId )
         Plasma::Animator::self()->stopCustomAnimation( m_animHighlightId );
-
+    
     m_hovering = true;
     m_animHighlightId = Plasma::Animator::self()->customAnimation( 10, 240, Plasma::Animator::EaseInCurve, this, "animateHighlight" );
-
+    m_defaultTextBrush = m_text->brush();
+    m_text->setBrush( The::paletteHandler()->palette().highlightedText() );
     Plasma::IconWidget::hoverEnterEvent( event );
 }
 
@@ -144,7 +149,7 @@ ToolBoxIcon::hoverLeaveEvent( QGraphicsSceneHoverEvent *event )
     
     m_hovering = false;
     m_animHighlightId = Plasma::Animator::self()->customAnimation( 10, 240, Plasma::Animator::EaseOutCurve, this, "animateHighlight" );
-
+    m_text->setBrush( m_defaultTextBrush );
     Plasma::IconWidget::hoverLeaveEvent( event );
 }
 
@@ -188,6 +193,11 @@ ToolBoxIcon::text() const
     return m_text->text();
 }
 
+void
+ToolBoxIcon::setBrush( const QBrush& b )
+{
+    m_text->setBrush( b );
+}
 
 #include "ToolBoxIcon.moc"
 

@@ -14,10 +14,13 @@
 #include "WikipediaApplet.h"
 
 #include "Amarok.h"
+#include "App.h"
 #include "Debug.h"
 #include "context/Svg.h"
 #include "EngineController.h"
+#include "PaletteHandler.h"
 
+#include <KGlobalSettings>
 #include <plasma/theme.h>
 #include <plasma/widgets/webview.h>
 #include <plasma/widgets/iconwidget.h>
@@ -26,19 +29,19 @@
 #include <KStandardDirs>
 
 #include <QAction>
+#include <QDesktopServices>
 #include <QGraphicsSimpleTextItem>
 #include <QPainter>
 
 WikipediaApplet::WikipediaApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
-    , m_theme( 0 )
-    , m_header( 0 )
     , m_aspectRatio( 0 )
     , m_headerAspectRatio( 0.0 )
     , m_size( QSizeF() )
     , m_wikipediaLabel( 0 )
     , m_webView( 0 )
     , m_reloadIcon( 0 )
+    , m_css( 0 )
 {
     setHasConfigurationInterface( false );
     setBackgroundHints( Plasma::Applet::NoBackground );
@@ -46,51 +49,32 @@ WikipediaApplet::WikipediaApplet( QObject* parent, const QVariantList& args )
 
 WikipediaApplet::~ WikipediaApplet()
 {
-    //hacky stuff to keep QWebView from causing a crash
-   /* m_wikiPage->setWidget( 0 );
-    delete m_wikiPage;
-    m_wikiPage = 0;
-    delete m_webView;*/
-
     delete m_webView;
+    delete m_css;
 }
 
 void WikipediaApplet::init()
 {
-    m_theme = new Plasma::FrameSvg( this );
-    QString imagePath = KStandardDirs::locate("data", "amarok/images/web_applet_background.svg" );
-
-    debug() << "Loading theme file: " << imagePath;
-    
-    m_theme->setImagePath( imagePath );
-    m_theme->setContainsMultipleImages( true );
-    m_theme->setEnabledBorders( Plasma::FrameSvg::AllBorders );
-
-    m_header = new Context::Svg( this );
-    m_header->setImagePath( "widgets/amarok-wikipedia" );
-    m_header->setContainsMultipleImages( false );
-    
-    m_header->resize();
-    m_aspectRatio = (qreal)m_header->size().height() / (qreal)m_header->size().width();
-    m_size = m_header->size();
-
     m_wikipediaLabel = new QGraphicsSimpleTextItem( this );
 
     m_webView = new Plasma::WebView( this );
+    m_webView->setAttribute( Qt::WA_NoSystemBackground );
 
-    m_webView->page()->settings()->setUserStyleSheetUrl( "file://" + KStandardDirs::locate("data", "amarok/data/WikipediaCustomStyle.css" ) );
+    paletteChanged( App::instance()->palette() );
+    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
+
     m_webView->page()->setLinkDelegationPolicy ( QWebPage::DelegateAllLinks );
     connect( m_webView->page(), SIGNAL( linkClicked( const QUrl & ) ) , this, SLOT( linkClicked ( const QUrl & ) ) );
 
-    //make background transparent
-    QPalette p = m_webView->palette();
-    p.setColor( QPalette::Dark, QColor( 255, 255, 255, 0)  );
-    p.setColor( QPalette::Window, QColor( 255, 255, 255, 0)  );
-    m_webView->setPalette( p );
-
+    // make transparent so we can use qpainter translucency to draw the  background
+    QPalette palette = m_webView->palette();
+    palette.setBrush(QPalette::Base, Qt::transparent);
+    m_webView->page()->setPalette(palette);
+    m_webView->setAttribute(Qt::WA_OpaquePaintEvent, false);
+    
+    
     QFont labelFont;
-    labelFont.setBold( true );
-    labelFont.setPointSize( labelFont.pointSize() + 3 );
+    labelFont.setPointSize( labelFont.pointSize() + 2 );
     m_wikipediaLabel->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
     m_wikipediaLabel->setFont( labelFont );
     m_wikipediaLabel->setText( i18n( "Wikipedia" ) );
@@ -146,35 +130,21 @@ void
 WikipediaApplet::linkClicked( const QUrl &url )
 {
     debug() << "URL: " << url;
-
-    Amarok::invokeBrowser( url.toString() );
+    QDesktopServices::openUrl( url.toString() );
 }
 
 void WikipediaApplet::constraintsEvent( Plasma::Constraints constraints )
 {
-    if( !m_header )
-        return;
 
     prepareGeometryChange();
-    if ( constraints & Plasma::SizeConstraint )
-        m_header->resize( size().toSize() );
-
-    m_theme->resizeFrame(size().toSize());
-
-    m_wikipediaLabel->setFont( shrinkTextSizeToFit( "Wikipedia", m_header->elementRect( "wikipedialabel" ) ) );
-
+    
     float textWidth = m_wikipediaLabel->boundingRect().width();
-    float totalWidth = m_header->elementRect( "wikipedialabel" ).width();
-    float offsetX =  ( totalWidth - textWidth ) / 2;
+    float offsetX =  ( boundingRect().width() - textWidth ) / 2;
 
-    m_wikipediaLabel->setPos( offsetX, m_header->elementRect( "wikipedialabel" ).topLeft().y() );
+    m_wikipediaLabel->setPos( offsetX, standardPadding() + 2 );
 
-    m_webView->setPos( m_header->elementRect( "wikipediainformation" ).topLeft() );
-
-    QSizeF infoSize( m_header->elementRect( "wikipediainformation" ).bottomRight().x() - m_header->elementRect( "wikipediainformation" ).topLeft().x(), m_header->elementRect( "wikipediainformation" ).bottomRight().y() - m_header->elementRect( "wikipediainformation" ).topLeft().y() );
-
-    if ( infoSize.isValid() )
-        m_webView->resize( infoSize );
+    m_webView->setPos( standardPadding(), m_wikipediaLabel->pos().y() + m_wikipediaLabel->boundingRect().height() + standardPadding() );
+    m_webView->resize( boundingRect().width() - 2 * standardPadding(), boundingRect().height() - m_webView->pos().y() - standardPadding() );
 
     m_reloadIcon->setPos( size().width() - m_reloadIcon->size().width() - MARGIN, MARGIN );
 }
@@ -223,14 +193,25 @@ void WikipediaApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsIte
 {
     Q_UNUSED( option )
     Q_UNUSED( contentsRect )
+    p->setRenderHint( QPainter::Antialiasing );
 
-    m_header->resize(size().toSize());
-    m_theme->resizeFrame(size().toSize());
+    addGradientToAppletBackground( p );
+
+    // draw rounded rect around title
+    drawRoundedRectAroundText( p, m_wikipediaLabel );
+
+
+    //draw background of wiki text
     p->save();
-
-    m_theme->paintFrame( p, QRectF( 0.0, 0.0, size().toSize().width(), size().toSize().height() )/*, "header" */);
-
-    p->restore();
+    QColor bg( App::instance()->palette().highlight().color() );
+    bg.setHsvF( bg.hueF(), 0.07, 1, bg.alphaF() );
+    QRectF wikiRect = m_webView->boundingRect();
+    wikiRect.moveTopLeft( m_webView->pos() );
+    QPainterPath round;
+    round.addRoundedRect( wikiRect, 3, 3 );
+    p->fillPath( round , bg  );
+    p->restore(); 
+    
 }
 
 QSizeF WikipediaApplet::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
@@ -249,6 +230,48 @@ WikipediaApplet::reloadWikipedia()
 {
     DEBUG_BLOCK
     dataEngine( "amarok-wikipedia" )->query( "wikipedia:reload" );
+}
+
+void
+WikipediaApplet::paletteChanged( const QPalette & palette )
+{
+
+  //  m_webView->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" ).arg( Amarok::highlightColor().lighter( 150 ).name() )
+  //                                                                                                            .arg( Amarok::highlightColor().darker( 400 ).name() ) );
+    //m_webView->page()->settings()->setUserStyleSheetUrl( "file://" + KStandardDirs::locate("data", "amarok/data/WikipediaCustomStyle.css" ) );
+    // read css, replace color placeholders, write to file, load into page
+    QFile file( KStandardDirs::locate("data", "amarok/data/WikipediaCustomStyle.css" ) );
+    if( file.open(QIODevice::ReadOnly | QIODevice::Text) )
+    {
+        QColor highlight( App::instance()->palette().highlight().color() );
+        highlight.setHsvF( highlight.hueF(), 0.07, 1, highlight.alphaF() );
+        
+        QString contents = QString( file.readAll() );
+        //debug() << "setting background:" << Amarok::highlightColor().lighter( 130 ).name();
+        contents.replace( "{background_color}", PaletteHandler::highlightColor( 0.12, 1 ).name() );
+        contents.replace( "{text_background_color}", highlight.name() );
+        contents.replace( "{border_color}", highlight.name() );
+        contents.replace( "{text_color}", palette.brush( QPalette::Text ).color().name() );
+        contents.replace( "{link_color}", palette.link().color().name() );
+        contents.replace( "{link_hover_color}", palette.link().color().darker( 200 ).name() );
+        highlight.setHsvF( highlight.hueF(), 0.3, .95, highlight.alphaF() );
+        contents.replace( "{shaded_text_background_color}", highlight.name() );
+        contents.replace( "{table_background_color}", highlight.name() );
+        contents.replace( "{headings_background_color}", highlight.name() );
+
+        delete m_css;
+        m_css = new KTemporaryFile();
+        m_css->setSuffix( ".css" );
+        if( m_css->open() )
+        {
+            m_css->write( contents.toLatin1() );
+
+            QString filename = m_css->fileName();
+            m_css->close(); // flush buffer to disk
+            debug() << "set user stylesheet to:" << "file://" + filename;
+            m_webView->page()->settings()->setUserStyleSheetUrl( "file://" + filename );
+        }
+    }
 }
 
 #include "WikipediaApplet.moc"

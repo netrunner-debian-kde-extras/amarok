@@ -67,6 +67,7 @@ Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
         : KSystemTrayIcon( playerWidget )
         , EngineObserver( The::engineController() )
         , m_trackLength( 0 )
+        , m_separator( 0 )
 {
     DEBUG_BLOCK
 
@@ -79,6 +80,16 @@ Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
     connect( quit, SIGNAL(activated()), kapp, SLOT(quit()) );*/
 
     PERF_LOG( "Before adding actions" );
+
+    #ifdef Q_WS_MAC
+    // Add these functions to the dock icon menu in OS X
+    extern void qt_mac_set_dock_menu(QMenu *);
+    qt_mac_set_dock_menu( contextMenu() );
+    contextMenu()->addAction( ac->action( "playlist_playmedia" ) );
+    contextMenu()->addAction( ac->action( "play_audiocd" ) );
+    contextMenu()->addSeparator();
+    #endif
+
     contextMenu()->addAction( ac->action( "prev"       ) );
     contextMenu()->addAction( ac->action( "play_pause" ) );
     contextMenu()->addAction( ac->action( "stop"       ) );
@@ -93,6 +104,19 @@ Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
     setupToolTip();
 
     connect( this, SIGNAL( activated( QSystemTrayIcon::ActivationReason ) ), SLOT( slotActivated( QSystemTrayIcon::ActivationReason ) ) );
+    #ifdef Q_WS_MAC
+    KSystemTrayIcon::setVisible( false );
+    #endif
+}
+
+void
+Amarok::TrayIcon::setVisible( bool visible )
+{
+    #ifdef Q_WS_MAC
+    Q_UNUSED( visible )
+    #else
+    KSystemTrayIcon::setVisible( visible );
+    #endif
 }
 
 void
@@ -132,7 +156,12 @@ Amarok::TrayIcon::setupToolTip()
 
         QStringList left, right;
 
-        right << QString("<i>%1%</i>").arg( The::engineController()->volume() );
+        QString volume;
+        if ( The::engineController()->isMuted() )
+            volume = i18n( "Muted" );
+        else
+            volume = QString( "%1%" ).arg( The::engineController()->volume() );
+        right << QString("<i>%1</i>").arg( volume );
         left << "<i>Volume</i>";
 
         const float score = m_track->score();
@@ -320,6 +349,14 @@ Amarok::TrayIcon::engineVolumeChanged( int percent )
 }
 
 void
+Amarok::TrayIcon::engineMuteStateChanged( bool mute )
+{
+    Q_UNUSED( mute );
+
+    setupToolTip();
+}
+
+void
 Amarok::TrayIcon::paletteChange( const QPalette & op )
 {
     Q_UNUSED( op );
@@ -400,6 +437,10 @@ Amarok::TrayIcon::setupMenu()
 {
     foreach( QAction* action, m_extraActions )
         contextMenu()->removeAction( action );
+    
+    contextMenu()->removeAction( m_separator );
+    
+    delete m_separator;
 
     if( !m_track )
         return;
@@ -417,6 +458,7 @@ Amarok::TrayIcon::setupMenu()
             foreach( PopupDropperAction *action, currentTrackActions )
                 m_extraActions.append( action );
         }
+        delete cac;
     }
 
     if ( m_extraActions.count() > 0 )
@@ -425,13 +467,12 @@ Amarok::TrayIcon::setupMenu()
         contextMenu()->removeAction( actionCollection()->action( "file_quit" ) );
         contextMenu()->removeAction( actionCollection()->action( "minimizeRestore" ) );
 
-    foreach( QAction* action, m_extraActions )
+        foreach( QAction* action, m_extraActions )
             contextMenu()->addAction( action );
 
-        contextMenu()->addSeparator();
-
+        m_separator = contextMenu()->addSeparator();
         // readd
-            contextMenu()->addAction( actionCollection()->action( "minimizeRestore" ) );
+        contextMenu()->addAction( actionCollection()->action( "minimizeRestore" ) );
         contextMenu()->addAction( actionCollection()->action( "file_quit" ) );
     }
 }

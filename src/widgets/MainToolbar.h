@@ -49,10 +49,8 @@ public:
     void reRender();
 
 protected:
-      virtual void paintEvent( QPaintEvent * );
       virtual void resizeEvent( QResizeEvent * event );
       virtual bool eventFilter( QObject*, QEvent* );
-      virtual void paletteChange( const QPalette & oldPalette );
       void handleAddActions();
 
 private:

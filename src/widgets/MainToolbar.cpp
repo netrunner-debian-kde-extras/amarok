@@ -26,9 +26,8 @@
 #include "EngineController.h"
 #include "GlobalCurrentTrackActions.h"
 #include "MainControlsWidget.h"
-#include "ProgressSlider.h"
+#include "ProgressWidget.h"
 #include "SvgHandler.h"
-#include "SvgTinter.h"
 #include "VolumeWidget.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "context/popupdropper/libpud/PopupDropperAction.h"
@@ -37,7 +36,6 @@
 #include <KApplication>
 #include <KVBox>
 
-#include <QPainter>
 #include <QResizeEvent>
 #include <QVBoxLayout>
 
@@ -49,8 +47,8 @@ MainToolbar::MainToolbar( QWidget * parent )
 {
     setObjectName( "MainToolbar" );
 
-    setMaximumSize( 20000, 67 );
-    setMinimumSize( 200, 67 );
+    setFixedHeight( 67 );
+    setMinimumWidth( 200 );
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     setContentsMargins( 0, 0, 0, 0 );
     layout()->setContentsMargins( 0, 0, 0, 0 );
@@ -61,29 +59,33 @@ MainToolbar::MainToolbar( QWidget * parent )
     m_mainControlsWidget = new MainControlsWidget( hBox );
 
     KVBox * vBox = new KVBox( hBox );
-    vBox->setContentsMargins( 0, 6, 0, 0 );
+    vBox->setContentsMargins( 0, 3, 0, 0 );
 
-    KHBox * topHBox = new KHBox( vBox );
+    QWidget * topBar = new QWidget( vBox );
 
-    m_addControlsToolbar = new Amarok::ToolBar( topHBox );
+    QHBoxLayout * layout = new QHBoxLayout( topBar );
+    topBar->setLayout( layout );
+    layout->setMargin( 1 ); // align correctly with the progress bar
+    layout->setSpacing( 3 ); // here aswell
+
+    m_addControlsToolbar = new Amarok::ToolBar( topBar );
     m_addControlsToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
     m_addControlsToolbar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
     m_addControlsToolbar->setIconDimensions( 16 );
     m_addControlsToolbar->setMovable( false );
     m_addControlsToolbar->setFloatable ( false );
-    m_addControlsToolbar->setFixedHeight( 22 );
     m_addControlsToolbar->setContentsMargins( 0, 0, 0, 0 );
 
-    ProgressWidget *pWidget = new ProgressWidget( vBox );
-    pWidget->setMinimumSize( 100, 17 );
-    pWidget->setContentsMargins( 0, 2, 0, 0 );
+    m_volumeWidget = new VolumeWidget( topBar );
+    m_volumeWidget->setIconDimensions( 16 );
+    m_volumeWidget->setFixedWidth( 340 );
 
-    const int volumeRightMargin = 24; // margin to have the volume slider right-aligned with the progress slider
-    const int volumeWidth = 340;
+    layout->addWidget( m_addControlsToolbar );
+    layout->addWidget( m_volumeWidget );
+    layout->setAlignment( m_volumeWidget, Qt::AlignRight );
 
-    m_volumeWidget = new VolumeWidget( topHBox );
-    m_volumeWidget->setFixedSize( volumeWidth + volumeRightMargin, 24 );
-    m_volumeWidget->setContentsMargins( 0, 0, volumeRightMargin, 0 );
+    ProgressWidget *progressWidget = new ProgressWidget( vBox );
+    progressWidget->setMinimumSize( 100, 17 );
 
     kapp->installEventFilter( this );
 }
@@ -91,17 +93,6 @@ MainToolbar::MainToolbar( QWidget * parent )
 MainToolbar::~MainToolbar()
 {
     DEBUG_BLOCK
-}
-
-void MainToolbar::paintEvent( QPaintEvent * )
-{
-    QPainter painter( this );
-
-    //const int watermarkWidth = height() * 1.36;
-
-    //painter.drawPixmap( width() - watermarkWidth, 0, The::svgHandler()->renderSvg( "volume_watermark", watermarkWidth, height(), "volume_watermark" ) );
-    
-    painter.drawPixmap( 0, 0, The::svgHandler()->renderSvg( "toolbar_bg", width(), height(), "toolbar_bg" ) );
 }
 
 void MainToolbar::engineStateChanged( Phonon::State state, Phonon::State oldState )
@@ -150,6 +141,7 @@ void MainToolbar::handleAddActions()
             //centerAddActions();
             //m_insideBox->layout()->setAlignment( m_addControlsToolbar, Qt::AlignCenter );
         }
+        delete cac;
     }
 
     foreach( QAction* action, m_additionalActions )
@@ -185,14 +177,6 @@ bool MainToolbar::eventFilter( QObject* object, QEvent* event )
     return QWidget::eventFilter( object, event );
 }
 
-void MainToolbar::paletteChange( const QPalette & oldPalette )
-{
-    Q_UNUSED( oldPalette );
-
-    The::svgHandler()->reTint();
-    repaint( 0, 0, -1, -1 );
-}
-
 /*void MainToolbar::centerAddActions()
 {
     int numberOfActions = m_additionalActions.size();
@@ -212,5 +196,3 @@ void MainToolbar::reRender()
     m_ignoreCache = true;
     update();
 }
-
-

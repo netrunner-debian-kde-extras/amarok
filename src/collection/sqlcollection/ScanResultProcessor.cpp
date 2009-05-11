@@ -188,10 +188,11 @@ ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
     }
     else
     {
-        QString albumArtist = findAlbumArtist( artists );
+        QString albumArtist = findAlbumArtist( artists, data.count() );
         //an empty string means that no albumartist was found
         int artist = albumArtist.isEmpty() ? 0 : artistId( albumArtist );
 
+        debug() << "albumartist " << albumArtist << "for artists" << artists;
         foreach( const QVariantMap &row, data )
         {
             addTrack( row, artist );
@@ -200,7 +201,7 @@ ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
 }
 
 QString
-ScanResultProcessor::findAlbumArtist( const QSet<QString> &artists ) const
+ScanResultProcessor::findAlbumArtist( const QSet<QString> &artists, int trackCount ) const
 {
     QMap<QString, int> artistCount;
     foreach( const QString &artist, artists )
@@ -218,13 +219,9 @@ ScanResultProcessor::findAlbumArtist( const QSet<QString> &artists ) const
             else
             {
                 if( artistCount.contains( tmp ) )
-                {
                     artistCount.insert( tmp, artistCount.value( tmp ) + 1 );
-                }
                 else
-                {
                     artistCount.insert( tmp, 1 );
-                }
             }
         }
         else if( artist.contains( "feat." ) )
@@ -240,25 +237,17 @@ ScanResultProcessor::findAlbumArtist( const QSet<QString> &artists ) const
             else
             {
                 if( artistCount.contains( tmp ) )
-                {
                     artistCount.insert( tmp, artistCount.value( tmp ) + 1 );
-                }
                 else
-                {
                     artistCount.insert( tmp, 1 );
-                }
             }
         }
         else
         {
             if( artistCount.contains( artist ) )
-            {
                 artistCount.insert( artist, artistCount.value( artist ) + 1 );
-            }
             else
-            {
                 artistCount.insert( artist, 1 );
-            }
         }
     }
     QString albumArtist;
@@ -271,7 +260,8 @@ ScanResultProcessor::findAlbumArtist( const QSet<QString> &artists ) const
             count = artistCount.value( key );
         }
     }
-    return albumArtist;
+    //if an artist is the primary artist of each track in the directory, assume the artist is the albumartist
+    return count == trackCount ? albumArtist : QString();
 }
 
 void
@@ -648,6 +638,7 @@ ScanResultProcessor::checkExistingAlbums( const QString &album )
     //check if this album already exists, ignoring the albumartist
     //if it does, and if each file of the album is alone in its directory
     //it's probably a compilation.
+    //this handles A1 compilations that were automatically organized by Amarok
     QString query = "SELECT urls.deviceid,urls.rpath,tracks_temp.id,albums.id,albums.artist FROM urls_temp AS urls "
                     "LEFT JOIN tracks_temp on urls.id = tracks_temp.url LEFT JOIN albums_temp AS albums ON "
                     "tracks_temp.album = albums.id WHERE albums.name = '%1';";
