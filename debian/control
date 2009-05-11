@@ -4,7 +4,7 @@ Priority: optional
 Maintainer: Modestas Vainius <modestas@vainius.eu>
 DM-Upload-Allowed: yes
 Build-Depends: debhelper (>= 7.0.50), cmake (>= 2.6.2), quilt (>= 0.4.6-7~), pkg-kde-tools (>= 0.2),
- libtag1-dev (>= 1.5), libtag-extras-dev,
+ libtag1-dev (>= 1.5), libtag-extras-dev (>= 0.1),
  kdelibs5-dev (>= 4:4.2.0), libsoprano-dev (>= 2.1.67),
  libstreamanalyzer-dev (>= 0.6.3), libstrigiqtdbusclient-dev (>= 0.6.3),
  libnjb-dev, libifp-dev, libmtp-dev (>= 0.3.0),
