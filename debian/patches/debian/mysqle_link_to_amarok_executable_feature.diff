@@ -9,8 +9,8 @@ Signed-off-by: Modestas Vainius <modestas@vainius.eu>
 
 ---
  src/CMakeLists.txt                          |   10 ++++++++++
- src/collection/sqlcollection/CMakeLists.txt |   14 --------------
- 2 files changed, 10 insertions(+), 14 deletions(-)
+ src/collection/sqlcollection/CMakeLists.txt |   17 +++--------------
+ 2 files changed, 13 insertions(+), 14 deletions(-)
 
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
 index 68eb7fb..3861a9b 100644
@@ -34,10 +34,19 @@ index 68eb7fb..3861a9b 100644
  endif(Q_WS_MAC)
  
 diff --git a/src/collection/sqlcollection/CMakeLists.txt b/src/collection/sqlcollection/CMakeLists.txt
-index fbfe450..1af8dd7 100644
+index fbfe450..fb750d5 100644
 --- a/src/collection/sqlcollection/CMakeLists.txt
 +++ b/src/collection/sqlcollection/CMakeLists.txt
-@@ -62,22 +62,8 @@ target_link_libraries(amarok_collection-sqlcollection
+@@ -56,28 +56,17 @@ SET(CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS_NOFATALWARN} )
+ STRING(REPLACE "-Wl,--fatal-warnings" "" CMAKE_MODULE_LINKER_FLAGS_NOFATALWARN ${CMAKE_MODULE_LINKER_FLAGS})
+ SET(CMAKE_MODULE_LINKER_FLAGS ${CMAKE_MODULE_LINKER_FLAGS_NOFATALWARN} )
+ 
++STRING(REPLACE "-Wl,--no-undefined" "" CMAKE_MODULE_LINKER_FLAGS_ALLOW_UNDEFINED ${CMAKE_MODULE_LINKER_FLAGS})
++SET(CMAKE_MODULE_LINKER_FLAGS ${CMAKE_MODULE_LINKER_FLAGS_ALLOW_UNDEFINED} )
++
+ target_link_libraries(amarok_collection-sqlcollection
+     amaroklib
+     amarokpud
      ${KDE4_KDEUI_LIBS}
      ${KDE4_KIO_LIBS}
      ${KDE4_THREADWEAVER_LIBRARIES}
