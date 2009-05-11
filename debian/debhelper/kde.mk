@@ -57,7 +57,7 @@ $(DEB_KDE_OVERRIDE_DH_AUTO_INSTALL): cmake_install
 .PHONY: $(DEB_KDE_OVERRIDE_DH_AUTO_INSTALL)
 
 DEB_KDE_OVERRIDE_DH_AUTO_CLEAN ?= override_dh_auto_clean
-$(DEB_KDE_OVERRIDE_DH_AUTO_INSTALL): cmake_clean
+$(DEB_KDE_OVERRIDE_DH_AUTO_CLEAN): cmake_clean
 .PHONY: $(DEB_KDE_OVERRIDE_DH_AUTO_CLEAN)
 
 # dh_strip override - automatic -dbg package
@@ -74,12 +74,12 @@ endif
 $(filter-out build clean,$(DEB_ALL_DEFAULT_TARGETS)): build
 
 # Default implementation (DH) of default targets.
-# Exclude clean as we have a specific target for it
-$(filter-out kde/clean,$(KDE_ALL_DEFAULT_TARGETS)):
+$(KDE_ALL_DEFAULT_TARGETS):
 	$(DH) $(subst kde/,,$@)
 
 # An implicit rule which runs default kde/ targets
 # It can be easily overriden.
 %: kde/%
+	
 
 .PHONY: $(KDE_ALL_DEFAULT_TARGETS)
