@@ -1,6 +1,22 @@
+From: Modestas Vainius <modestas@vainius.eu>
+Subject: [PATCH] Link MySQLe (libmysqld) to amarok executable.
+
+When libmysqld.a is linked to amarok executable, it no longer needs
+to be built with -fPIC. This avoid portability problems at low cost.
+sqlcollection is essential Amarok plugin anyway.
+
+Signed-off-by: Modestas Vainius <modestas@vainius.eu>
+
+---
+ src/CMakeLists.txt                          |   10 ++++++++++
+ src/collection/sqlcollection/CMakeLists.txt |   14 --------------
+ 2 files changed, 10 insertions(+), 14 deletions(-)
+
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 68eb7fb..3861a9b 100644
 --- a/src/CMakeLists.txt
 +++ b/src/CMakeLists.txt
-@@ -640,6 +640,16 @@
+@@ -600,6 +600,16 @@ if(Q_WS_MAC)
  else(Q_WS_MAC)
      kde4_add_executable(amarok ${amarok_SRCS})
      target_link_libraries(amarok ${KDE4_KDEUI_LIBS} amaroklib )
@@ -17,33 +33,25 @@
      install(TARGETS amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
  endif(Q_WS_MAC)
  
+diff --git a/src/collection/sqlcollection/CMakeLists.txt b/src/collection/sqlcollection/CMakeLists.txt
+index fbfe450..1af8dd7 100644
 --- a/src/collection/sqlcollection/CMakeLists.txt
 +++ b/src/collection/sqlcollection/CMakeLists.txt
-@@ -56,29 +56,17 @@
- STRING(REPLACE "-Wl,--fatal-warnings" "" CMAKE_MODULE_LINKER_FLAGS_NOFATALWARN ${CMAKE_MODULE_LINKER_FLAGS})
- SET(CMAKE_MODULE_LINKER_FLAGS ${CMAKE_MODULE_LINKER_FLAGS_NOFATALWARN} )
- 
-+STRING(REPLACE "-Wl,--no-undefined" "" CMAKE_MODULE_LINKER_FLAGS_ALLOW_UNDEFINED ${CMAKE_MODULE_LINKER_FLAGS})
-+SET(CMAKE_MODULE_LINKER_FLAGS ${CMAKE_MODULE_LINKER_FLAGS_ALLOW_UNDEFINED} )
-+
- target_link_libraries(amarok_collection-sqlcollection
-     amaroklib
-     amarokpud
+@@ -62,22 +62,8 @@ target_link_libraries(amarok_collection-sqlcollection
      ${KDE4_KDEUI_LIBS}
      ${KDE4_KIO_LIBS}
      ${KDE4_THREADWEAVER_LIBRARIES}
--    ${CMAKE_DL_LIBS}
 -    ${MYSQL_EMBEDDED_LIBRARIES}
 -    #this line may be needed on Debian or other systems where mysql is compiled
 -    #in the prescence of yassl. However it seems to cause problems for other people,
 -    #so its been disabled.
 -    #See http://bugs.mysql.com/bug.php?id=21489
 -    ${MYSQL_LIBRARIES}
+-    ${CMAKE_DL_LIBS}
 -    ${ZLIB_LIBRARIES}
  )
  
 -if(NOT WIN32)
--    target_link_libraries(amarok_collection-sqlcollection crypto ssl)
 -    if(NOT APPLE)
 -        target_link_libraries(amarok_collection-sqlcollection crypt pthread)
 -    endif(NOT APPLE)
@@ -52,3 +60,5 @@
  if(APPLE)
  	SET_TARGET_PROPERTIES(amarok_collection-sqlcollection PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
  endif(APPLE)
+-- 
+tg: (1e4d33f..) debian/mysqle_link_to_amarok_executable_feature (depends on: debian/mysqle_linkage_fix)

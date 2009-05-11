@@ -11,8 +11,9 @@ amarok (2.0.96-0r1) UNRELEASED; urgency=low
   * Add Vcs-* fields.
   * Use TopGit for patch management:
     - update debian/README.source accordingly;
+    - update patches from TopGit branches, they were renamed.
 
- -- Modestas Vainius <modestas@vainius.eu>  Mon, 11 May 2009 12:25:38 +0300
+ -- Modestas Vainius <modestas@vainius.eu>  Mon, 11 May 2009 13:08:08 +0300
 
 amarok (2.0.60+svn935422-2) experimental; urgency=low
 
