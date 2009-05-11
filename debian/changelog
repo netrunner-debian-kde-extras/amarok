@@ -23,8 +23,9 @@ amarok (2.0.96-0r1) UNRELEASED; urgency=low
       - libqtscript4-sql
       - libqtscript4-uitools
   * Update install files.
+  * Bump debhelper build depend to 7.2.3~ due to dh_bugfiles.
 
- -- Modestas Vainius <modestas@vainius.eu>  Mon, 11 May 2009 14:30:36 +0300
+ -- Modestas Vainius <modestas@vainius.eu>  Mon, 11 May 2009 14:36:45 +0300
 
 amarok (2.0.60+svn935422-2) experimental; urgency=low
 
