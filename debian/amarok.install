@@ -1,7 +1,6 @@
 debian/icons/*                          /usr/share/pixmaps
 usr/bin/amarok
 usr/bin/amarok_afttagger
-usr/bin/amarokcollectionscanner
 usr/bin/amarokmp3tunesharmonydaemon
 usr/lib/kde4/amarok_containment_vertical.so
 usr/lib/kde4/amarok_context_applet_albums.so

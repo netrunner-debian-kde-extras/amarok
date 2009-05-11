@@ -20,7 +20,7 @@ Vcs-Browser: http://git.debian.org/?p=users/modax-guest/amarok.git
 
 Package: amarok
 Architecture: any
-Depends: amarok-common (= ${source:Version}), ${shlibs:Depends},
+Depends: amarok-common (= ${source:Version}), amarok-utils (= ${binary:Version}), ${shlibs:Depends},
  libqtscript4-core, libqtscript4-gui, libqtscript4-network, libqtscript4-xml, libqtscript4-sql, libqtscript4-uitools
 Recommends: kdemultimedia-kio-plugins (>= 4:4.2.0)
 Suggests: libqt4-sql-sqlite, libqt4-sql-mysql, libqt4-sql-psql
@@ -45,6 +45,19 @@ Description: architecture independent files for Amarok
  This package contains architecture independent files needed for Amarok to run
  properly. Therefore, unless you have 'amarok' package of the same version
  installed, you will hardly find this package useful.
+
+Package: amarok-utils
+Architecture: any
+Depends: ${shlibs:Depends},
+Replaces: amarok (<< 2.0.96-2)
+Description: utilities for Amarok media player
+ This package contains command line utilities that are typically used by Amarok
+ media player but might also be useful on the systems without Amarok installed.
+ They are designed to be lightweight as they do not depend on KDE libraries.
+ .
+ Currently the package contains the following utilities:
+   - amarokcollectionscanner - scans audio files, collects information from
+     file tags and prints it in the structured XML format.
 
 Package: amarok-dbg
 Priority: extra

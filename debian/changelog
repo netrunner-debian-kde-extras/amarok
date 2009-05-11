@@ -3,8 +3,9 @@ amarok (2.0.96-2) UNRELEASED; urgency=low
   * Do not apply debian/mysqle_linkage_fix patch, rebase
     debian/mysqle_link_to_amarok_executable_feature on top of upstream.
   * Update debian/copyright.
+  * Add amarok-utils package.
 
- -- Modestas Vainius <modestas@vainius.eu>  Mon, 11 May 2009 21:55:02 +0300
+ -- Modestas Vainius <modestas@vainius.eu>  Mon, 11 May 2009 22:22:50 +0300
 
 amarok (2.0.96-1) experimental; urgency=low
 
