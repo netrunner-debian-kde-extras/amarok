@@ -9,8 +9,8 @@ Signed-off-by: Modestas Vainius <modestas@vainius.eu>
 
 ---
  src/CMakeLists.txt                          |   10 ++++++++++
- src/collection/sqlcollection/CMakeLists.txt |   17 +++--------------
- 2 files changed, 13 insertions(+), 14 deletions(-)
+ src/collection/sqlcollection/CMakeLists.txt |   18 +++---------------
+ 2 files changed, 13 insertions(+), 15 deletions(-)
 
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
 index 68eb7fb..3861a9b 100644
@@ -34,10 +34,10 @@ index 68eb7fb..3861a9b 100644
  endif(Q_WS_MAC)
  
 diff --git a/src/collection/sqlcollection/CMakeLists.txt b/src/collection/sqlcollection/CMakeLists.txt
-index fbfe450..fb750d5 100644
+index 9ca3f58..fb750d5 100644
 --- a/src/collection/sqlcollection/CMakeLists.txt
 +++ b/src/collection/sqlcollection/CMakeLists.txt
-@@ -56,28 +56,17 @@ SET(CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS_NOFATALWARN} )
+@@ -56,29 +56,17 @@ SET(CMAKE_SHARED_LINKER_FLAGS ${CMAKE_SHARED_LINKER_FLAGS_NOFATALWARN} )
  STRING(REPLACE "-Wl,--fatal-warnings" "" CMAKE_MODULE_LINKER_FLAGS_NOFATALWARN ${CMAKE_MODULE_LINKER_FLAGS})
  SET(CMAKE_MODULE_LINKER_FLAGS ${CMAKE_MODULE_LINKER_FLAGS_NOFATALWARN} )
  
@@ -61,6 +61,7 @@ index fbfe450..fb750d5 100644
  )
  
 -if(NOT WIN32)
+-    target_link_libraries(amarok_collection-sqlcollection crypto ssl)
 -    if(NOT APPLE)
 -        target_link_libraries(amarok_collection-sqlcollection crypt pthread)
 -    endif(NOT APPLE)
@@ -70,4 +71,4 @@ index fbfe450..fb750d5 100644
  	SET_TARGET_PROPERTIES(amarok_collection-sqlcollection PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
  endif(APPLE)
 -- 
-tg: (1e4d33f..) debian/mysqle_link_to_amarok_executable_feature (depends on: debian/mysqle_linkage_fix)
+tg: (8d05d01..) debian/mysqle_link_to_amarok_executable_feature (depends on: upstream)

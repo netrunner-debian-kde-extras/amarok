@@ -1,8 +1,9 @@
 #!/usr/bin/make -f
 
 # TopGit support
+ifneq (,$(shell which tg))
 TG_BRANCHES := $(filter-out debian/mysqle_linkage_fix,$(shell tg summary -t))
-TG_BRANCHES := debian/mysqle_linkage_fix $(TG_BRANCHES)
+endif
 include /usr/share/quilt/quilt.make
 -include /usr/share/topgit/tg2quilt.mk
 
