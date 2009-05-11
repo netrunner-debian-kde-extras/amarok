@@ -3,8 +3,9 @@ amarok (2.0.96-0r1) UNRELEASED; urgency=low
   * New upstream release (2.1 Beta 2) (Closes: #528082):
     - no longer contains QtScript Bindings, FTBFS is not applicable
       (Closes: #527817).
+  * Build depend on libtag-extras-dev.
 
- -- Modestas Vainius <modestas@vainius.eu>  Mon, 11 May 2009 12:05:08 +0300
+ -- Modestas Vainius <modestas@vainius.eu>  Mon, 11 May 2009 12:06:17 +0300
 
 amarok (2.0.60+svn935422-2) experimental; urgency=low
 
