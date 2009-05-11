@@ -1,12 +1,13 @@
 #!/usr/bin/make -f
 
+DH := dh --with quilt
 DEB_KDE_LINK_WITH_AS_NEEDED := yes
 
 # See debian/patches/01_aboutdata_add_debian_version.diff
 DEBIAN_PACKAGE_VERSION := $(shell dpkg-parsechangelog | grep '^Version:' | sed 's/^Version:[[:space:]]*\([^[:space:]]\+\).*$$/\1/')
 DEB_CMAKE_CUSTOM_FLAGS += -DDEBIAN_PACKAGE_VERSION="$(DEBIAN_PACKAGE_VERSION)"
 
-include debian/debhelper/kde4.mk
+include debian/debhelper/kde.mk
 
 override_dh_bugfiles:
 	dh_bugfiles -A

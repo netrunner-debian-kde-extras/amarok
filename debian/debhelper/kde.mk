@@ -1,11 +1,14 @@
-# Using quilt patch system
-include /usr/share/quilt/quilt.make
-
 # Include default KDE 4 cmake configuration variables
 include /usr/share/pkg-kde-tools/makefiles/1/variables.mk
 
+# CMake module
+include debian/debhelper/cmake.mk
+
+DH ?= dh
+
 # CMake configuration flags
-DEB_CMAKE_KDE4_DEFAULT_FLAGS = $(DEB_CMAKE_KDE4_FLAGS) $(DEB_CMAKE_CUSTOM_FLAGS)
+DEB_CMAKE_KDE_DEFAULT_FLAGS = $(DEB_CMAKE_KDE4_FLAGS) $(DEB_CMAKE_CUSTOM_FLAGS)
+CMAKE_ARGS = $(DEB_CMAKE_KDE_DEFAULT_FLAGS)
 
 # Source package name
 DEB_SOURCE_PACKAGE := $(shell grep '^Source:' debian/control | sed 's/^Source:[[:space:]]*\([^[:space:]]\+\).*$$/\1/')
@@ -36,62 +39,47 @@ ifeq (yes,$(shell dpkg --compare-versions '$(CMAKE_DEB_VERSION)' ge '2.6.2-1' &&
     DEB_CMAKE_CUSTOM_FLAGS += -DCMAKE_USE_RELATIVE_PATHS=ON
 endif
 
-# Include debian in the PERL lib search path and executable search path
-_PERLLIB := $(PERLLIB)
-_PATH := $(PATH)
-export PERLLIB := $(CURDIR)/debian:$(_PERLLIB)
-export PATH := $(CURDIR)/debian/debhelper:$(_PATH)
-DH = dh --with kde4
-
 # Default targets
 DEB_ALL_DEFAULT_TARGETS := build install binary binary-arch binary-indep clean
-KDE4_ALL_DEFAULT_TARGETS :=  $(patsubst %,kde4/%,$(DEB_ALL_DEFAULT_TARGETS))
+KDE_ALL_DEFAULT_TARGETS :=  $(patsubst %,kde/%,$(DEB_ALL_DEFAULT_TARGETS))
 
-# Ensure right permissions are set for custom debhelper scripts
-dh_permissions:
-	chmod a+x debian/debhelper/dh*
+# Default overrides for cmake configuring/building/installing
+DEB_KDE_OVERRIDE_DH_AUTO_CONFIGURE ?= override_dh_auto_configure
+$(DEB_KDE_OVERRIDE_DH_AUTO_CONFIGURE): cmake_configure
+.PHONY: $(DEB_KDE_OVERRIDE_DH_AUTO_CONFIGURE)
 
-$(KDE4_ALL_DEFAULT_TARGETS): | dh_permissions
+DEB_KDE_OVERRIDE_DH_AUTO_BUILD ?= override_dh_auto_build
+$(DEB_KDE_OVERRIDE_DH_AUTO_BUILD): cmake_build
+.PHONY: $(DEB_KDE_OVERRIDE_DH_AUTO_BUILD)
 
-.PHONY: dh_permissions
+DEB_KDE_OVERRIDE_DH_AUTO_INSTALL ?= override_dh_auto_install
+$(DEB_KDE_OVERRIDE_DH_AUTO_INSTALL): cmake_install
+.PHONY: $(DEB_KDE_OVERRIDE_DH_AUTO_INSTALL)
 
-# Pass cmake options via dh_auto_configure override
-DEB_KDE4_OVERRIDE_DH_AUTO_CONFIGURE ?= override_dh_auto_configure
-$(DEB_KDE4_OVERRIDE_DH_AUTO_CONFIGURE):
-	dh_auto_configure -- $(DEB_CMAKE_KDE4_DEFAULT_FLAGS)
+DEB_KDE_OVERRIDE_DH_AUTO_CLEAN ?= override_dh_auto_clean
+$(DEB_KDE_OVERRIDE_DH_AUTO_INSTALL): cmake_clean
+.PHONY: $(DEB_KDE_OVERRIDE_DH_AUTO_CLEAN)
 
 # dh_strip override - automatic -dbg package
 DEB_DBG_PACKAGE_NAME ?= $(DEB_SOURCE_PACKAGE)-dbg
 ifeq ($(DEB_DBG_PACKAGE_NAME),$(filter $(DEB_DBG_PACKAGE_NAME),$(shell dh_listpackages -s)))
 
-DEB_KDE4_OVERRIDE_DH_STRIP ?= override_dh_strip
-$(DEB_KDE4_OVERRIDE_DH_STRIP):
+DEB_KDE_OVERRIDE_DH_STRIP ?= override_dh_strip
+$(DEB_KDE_OVERRIDE_DH_STRIP):
 	dh_strip --dbg-package=$(DEB_DBG_PACKAGE_NAME)
 
 endif
 
-# Clean rule is more complex. Cleaning should be done
-# before unpatching.
-clean_before_unpatch:
-	$(DH) clean
-
-unpatch: clean_before_unpatch
-
-kde4/clean: unpatch
-
 # Required relationship between default targets
 $(filter-out build clean,$(DEB_ALL_DEFAULT_TARGETS)): build
 
-kde4/build: patch
-
 # Default implementation (DH) of default targets.
 # Exclude clean as we have a specific target for it
-$(filter-out kde4/clean,$(KDE4_ALL_DEFAULT_TARGETS)):
-	$(DH) $(subst kde4/,,$@)
+$(filter-out kde/clean,$(KDE_ALL_DEFAULT_TARGETS)):
+	$(DH) $(subst kde/,,$@)
 
-# An implicit rule which runs default kde4/ targets
+# An implicit rule which runs default kde/ targets
 # It can be easily overriden.
-%: kde4/%
-	
+%: kde/%
 
-.PHONY: $(KDE4_ALL_DEFAULT_TARGETS) clean_before_unpatch
+.PHONY: $(KDE_ALL_DEFAULT_TARGETS)

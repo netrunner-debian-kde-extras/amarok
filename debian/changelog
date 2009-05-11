@@ -5,8 +5,11 @@ amarok (2.0.96-0r1) UNRELEASED; urgency=low
       (Closes: #527817).
   * Build depend on libtag-extras-dev.
   * Bump Standards-Version to 3.8.1. No changes needed.
+  * Update build scripts:
+    - use simplier debhelper/cmake.mk;
+    - use dh --with quilt for patching (bump quilt build depend to 0.4.6-7~).
 
- -- Modestas Vainius <modestas@vainius.eu>  Mon, 11 May 2009 12:07:17 +0300
+ -- Modestas Vainius <modestas@vainius.eu>  Mon, 11 May 2009 12:10:09 +0300
 
 amarok (2.0.60+svn935422-2) experimental; urgency=low
 
