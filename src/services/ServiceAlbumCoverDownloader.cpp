@@ -32,6 +32,7 @@ using namespace Meta;
 
 Meta::ServiceAlbumWithCover::ServiceAlbumWithCover( const QString &name )
     : ServiceAlbum( name )
+    , m_cover( 0 )
     , m_hasFetchedCover( false )
     , m_isFetchingCover ( false )
     , m_coverDownloader( 0 )
@@ -39,6 +40,7 @@ Meta::ServiceAlbumWithCover::ServiceAlbumWithCover( const QString &name )
 
 Meta::ServiceAlbumWithCover::ServiceAlbumWithCover( const QStringList &resultRow )
     : ServiceAlbum( resultRow )
+    , m_cover( 0 )
     , m_hasFetchedCover( false )
     , m_isFetchingCover ( false )
     , m_coverDownloader( 0 )
@@ -47,6 +49,7 @@ Meta::ServiceAlbumWithCover::ServiceAlbumWithCover( const QStringList &resultRow
 Meta::ServiceAlbumWithCover::~ServiceAlbumWithCover()
 {
     delete m_coverDownloader;
+    delete m_cover;
 }
 
 QPixmap
@@ -84,9 +87,9 @@ ServiceAlbumWithCover::image( int size )
         pixmap = QPixmap( cacheCoverDir.filePath( sizeKey + coverName ) );
         return pixmap;
     }
-    else if ( m_hasFetchedCover && !m_cover.isNull() )
+    else if ( m_hasFetchedCover && m_cover && !m_cover->isNull() )
     {
-        pixmap = m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+        pixmap = m_cover->scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
         pixmap.save( cacheCoverDir.filePath( sizeKey + coverName ), "PNG" );
         return pixmap;
 
@@ -107,7 +110,8 @@ ServiceAlbumWithCover::image( int size )
 void
 ServiceAlbumWithCover::setImage( const QPixmap& pixmap )
 {
-    m_cover = pixmap;
+    delete m_cover;
+    m_cover = new QPixmap( pixmap );
     m_hasFetchedCover = true;
     m_isFetchingCover = false;
 

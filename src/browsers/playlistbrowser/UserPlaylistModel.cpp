@@ -189,8 +189,8 @@ PlaylistBrowserNS::UserModel::index(int row, int column, const QModelIndex & par
 QModelIndex
 PlaylistBrowserNS::UserModel::parent( const QModelIndex & index ) const
 {
-    DEBUG_BLOCK
-    debug() << index;
+//    DEBUG_BLOCK
+//    debug() << index;
     if( IS_TRACK(index) )
     {
 //        debug() << " is a track.";
@@ -211,8 +211,6 @@ PlaylistBrowserNS::UserModel::rowCount( const QModelIndex & parent ) const
         return 0;
     }
 
-    bool isTrack = IS_TRACK(parent);
-//    debug() << (isTrack?"is a track":"is not a track");
     if (!parent.isValid())
     {
         return m_playlists.count();
@@ -239,8 +237,11 @@ PlaylistBrowserNS::UserModel::flags( const QModelIndex & index ) const
     if (!index.isValid())
         return Qt::ItemIsEnabled | Qt::ItemIsDropEnabled;
 
+    if( IS_TRACK(index) )
+            return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
+
     //item is a playlist
-    return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
+    return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled;
 }
 
 QVariant
@@ -291,7 +292,12 @@ PlaylistBrowserNS::UserModel::removeRows( int row, int count, const QModelIndex 
 {
     DEBUG_BLOCK
     debug() << "in parent " << parent << "remove " << count << " starting at row " << row;
-    return false;
+    int playlistRow = REMOVE_TRACK_MASK(parent.internalId());
+    debug() << "playlist at row: " << playlistRow;
+    Meta::PlaylistPtr playlist = m_playlists.value( playlistRow );
+    for( int i = row; i < row + count; i++ )
+        playlist->removeTrack( i );
+    return true;
 }
 
 QStringList
@@ -299,6 +305,7 @@ PlaylistBrowserNS::UserModel::mimeTypes() const
 {
     QStringList ret;
     ret << AmarokMimeData::PLAYLIST_MIME;
+    ret << AmarokMimeData::TRACK_MIME;
     ret << "text/uri-list"; //we do accept urls
     return ret;
 }
@@ -333,15 +340,41 @@ PlaylistBrowserNS::UserModel::mimeData( const QModelIndexList &indices ) const
 }
 
 bool
-PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData * data, Qt::DropAction action, int row,
-        int column, const QModelIndex & parent ) //reimplemented
+PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData *data, Qt::DropAction action, int row,
+        int column, const QModelIndex &parent ) //reimplemented
 {
-    Q_UNUSED( column );
-    Q_UNUSED( row );
-    Q_UNUSED( parent )
+    DEBUG_BLOCK
+    debug() << "droped on " << QString("row: %1, column: %2, parent:").arg( row ).arg( column );
+    debug() << parent;
 
     if( action == Qt::IgnoreAction )
         return true;
+
+    //drop on track is not possible
+    if( IS_TRACK(parent) )
+            return false;
+
+    if( data->hasFormat( AmarokMimeData::TRACK_MIME ) )
+    {
+        debug() << "Found track mime type";
+        const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
+        if( !dragList )
+            return false;
+
+        emit layoutAboutToBeChanged();
+        int playlistRow = REMOVE_TRACK_MASK(parent.internalId());
+        debug() << "playlist at row: " << playlistRow;
+        Meta::PlaylistPtr playlist = m_playlists.value( playlistRow );
+        int insertAt = (row == -1) ? playlist->tracks().count() : row;
+        foreach( Meta::TrackPtr track, dragList->tracks() )
+        {
+            debug() << track->prettyName() << "dropped on " << playlist->prettyName() << "insert at " << insertAt;
+            playlist->addTrack( track, insertAt++ );
+        }
+        emit rowsInserted( parent, row, insertAt );
+
+        return true;
+    }
 
     if( data->hasFormat( AmarokMimeData::PLAYLIST_MIME ) )
     {
@@ -349,17 +382,14 @@ PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData * data, Qt::DropAct
 
         const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
         if( dragList )
+            return false;
+
+        foreach( Meta::PlaylistPtr playlistPtr, dragList->playlists() )
         {
-
-            Meta::PlaylistList playlists = dragList->playlists();
-
-            foreach( Meta::PlaylistPtr playlistPtr, playlists )
-            {
-                //TODO: found out if it dropped on a group and add the group to the playlists
-            };
-
-            return true;
+            //TODO: figure out what to do when a playlist is dropped onto onother playlist
         }
+
+        return true;
     }
 
     return false;

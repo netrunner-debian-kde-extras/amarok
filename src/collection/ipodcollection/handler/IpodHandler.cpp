@@ -106,7 +106,7 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject
     else
     {
         m_tempdir->setAutoRemove( true );
-        
+
         // read device info
         debug() << "Getting model information";
         detectModel(); // get relevant info about device
@@ -611,7 +611,7 @@ IpodHandler::copyTrackListToDevice( const Meta::TrackList tracklist )
     {
         /* Check for compatible formats: MP3/AAC/MP4 */
 
-        format = track->type();
+        format = track->type().toLower();
 
         if( !( format == "mp3" || format == "aac" || format == "mp4" ) )
         {
@@ -800,7 +800,7 @@ IpodHandler::insertTrackIntoDB( const KUrl &url, const Meta::TrackPtr &track )
     {
         debug() << "Adding " << QString::fromUtf8( ipodtrack->artist) << " - " << QString::fromUtf8( ipodtrack->title );
         addTrackInDB( ipodtrack );
-    
+
         // add track to collection
         addIpodTrackToCollection( ipodtrack );
     }
@@ -831,6 +831,7 @@ IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb
         ipodtrack = existingIpodTrack;
 
     QString type = pathname.section('.', -1).toLower();
+    type = type.toLower();
 
     debug() << "Path before put in ipod_path: " << pathname;
 
@@ -1292,7 +1293,7 @@ IpodHandler::getCoverArt( const Itdb_Track *ipodtrack )
     const QString filename = ipodArtFilename( ipodtrack );
 
     if( m_coverArt.contains(filename) )
-        return; 
+        return;
 
     if( ipodtrack->has_artwork == 0x02 )
         return;
@@ -1316,7 +1317,7 @@ IpodHandler::getCover( Meta::IpodTrackPtr track ) const
 #ifdef GDK_FOUND
     const Itdb_Track *ipodTrack = track->getIpodTrack();
     const QString filename = ipodArtFilename( ipodTrack );
-    return QPixmap( filename ); 
+    return QPixmap( filename );
 #else
     Q_UNUSED( track );
     return QPixmap();

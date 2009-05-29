@@ -1,8 +1,0 @@
-EXTRA tipsandthis
-SKIP /playground/src/context/engines/songkick/JsonQt/
-SKIP /utilities/collectionscanner/charset-detector/
-SKIP /src/context/popupdropper
-SKIP /src/mac/
-SKIP /src/scriptengine/generator/generator/
-SKIP /src/services/lastfm/lastfm/
-SKIP /src/services/mp3tunes/libmp3tunes/

@@ -189,6 +189,8 @@ void Playlist::PrettyListView::selectSource()
 void
 Playlist::PrettyListView::scrollToActiveTrack()
 {
+    DEBUG_BLOCK
+        debug() << "skipping scroll?" << m_skipAutoScroll;
     if( m_skipAutoScroll )
     {
         m_skipAutoScroll = false;
@@ -202,8 +204,40 @@ Playlist::PrettyListView::scrollToActiveTrack()
 void
 Playlist::PrettyListView::trackActivated( const QModelIndex& idx )
 {
+    DEBUG_BLOCK
     m_skipAutoScroll = true; // we don't want to do crazy view changes when selecting an item in the view
     Actions::instance()->play( idx );
+}
+
+void
+Playlist::PrettyListView::showEvent( QShowEvent* event )
+{
+    QTimer::singleShot( 0, this, SLOT( fixInvisible() ) );
+
+    QListView::showEvent( event ); 
+}
+
+// This method is a workaround for BUG 184714.
+//
+// It prevents the playlist from becoming invisible (clear) after changing the model, while Amarok is hidden in the tray.
+// Without this workaround the playlist stays invisible when the application is restored from the tray.
+// This is especially a problem with the Dynamic Playlist mode, which modifies the model without user interaction.
+//
+// The bug only seems to happen with Qt 4.5.x, so it might actually be a bug in Qt. 
+void
+Playlist::PrettyListView::fixInvisible() //SLOT
+{
+    DEBUG_BLOCK
+
+    // Part 1: Palette change
+    newPalette( palette() );
+
+    // Part 2: Change item selection
+    const QItemSelection oldSelection( selectionModel()->selection() );
+    selectionModel()->clear();
+    selectionModel()->select( oldSelection, QItemSelectionModel::SelectCurrent );
+
+    // NOTE: A simple update() call is not sufficient, but in fact the above two steps are required.
 }
 
 void
@@ -256,7 +290,6 @@ Playlist::PrettyListView::stopAfterTrack()
 void
 Playlist::PrettyListView::dragMoveEvent( QDragMoveEvent* event )
 {
-    QPoint mousept = event->pos() + QPoint( horizontalOffset(), verticalOffset() );
     QModelIndex index = indexAt( event->pos() );
     if ( index.isValid() ) {
         m_dropIndicator = visualRect( index );
@@ -401,14 +434,16 @@ Playlist::PrettyListView::mouseEventInHeader( const QMouseEvent* event ) const
 void
 Playlist::PrettyListView::paintEvent( QPaintEvent* event )
 {
-    QPoint offset( 6, 0 );
-    if ( !m_dropIndicator.size().isEmpty() ) {
-        QPalette p = KApplication::palette();
-        QPen pen( p.color( QPalette::Highlight ), 6, Qt::SolidLine, Qt::RoundCap );
+    if ( !m_dropIndicator.size().isEmpty() )
+    {
+        const QPoint offset( 6, 0 );
+        const QPalette p = KApplication::palette();
+        const QPen pen( p.color( QPalette::Highlight ), 6, Qt::SolidLine, Qt::RoundCap );
         QPainter painter( viewport() );
         painter.setPen( pen );
         painter.drawLine( m_dropIndicator.topLeft() + offset, m_dropIndicator.topRight() - offset );
     }
+
     QListView::paintEvent( event );
 }
 
@@ -508,12 +543,8 @@ void Playlist::PrettyListView::newPalette( const QPalette & palette )
     reset();
 }
 
-
-
-void Playlist::PrettyListView::find( const QString &searchTerm, int fields, bool filter  )
+void Playlist::PrettyListView::find( const QString &searchTerm, int fields, bool filter )
 {
-    DEBUG_BLOCK
-
     bool updateProxy = false;
     if ( ( GroupingProxy::instance()->currentSearchFields() != fields ) || ( GroupingProxy::instance()->currentSearchTerm() != searchTerm ) )
         updateProxy = true;
@@ -523,12 +554,14 @@ void Playlist::PrettyListView::find( const QString &searchTerm, int fields, bool
     {
         //select this track
 
-        if ( !filter ) {
+        if ( !filter )
+        {
             QModelIndex index = model()->index( row, 0 );
             QItemSelection selItems( index, index );
             selectionModel()->select( selItems, QItemSelectionModel::SelectCurrent );
 
             QModelIndex foundIndex = model()->index( row, 0, QModelIndex() );
+            setCurrentIndex( foundIndex );
             if ( foundIndex.isValid() )
                 scrollTo( foundIndex, QAbstractItemView::PositionAtCenter );
         }
@@ -561,8 +594,6 @@ void Playlist::PrettyListView::findNext( const QString & searchTerm, int fields 
     if( selected.size() > 0 )
         currentRow = selected.last();
 
-    debug() << "current row is: " << currentRow;
-
     int row = GroupingProxy::instance()->findNext( searchTerm, currentRow, fields );
     if( row != -1 )
     {
@@ -573,6 +604,7 @@ void Playlist::PrettyListView::findNext( const QString & searchTerm, int fields 
         selectionModel()->select( selItems, QItemSelectionModel::SelectCurrent );
 
         QModelIndex foundIndex = model()->index( row, 0, QModelIndex() );
+        setCurrentIndex( foundIndex );
         if ( foundIndex.isValid() )
             scrollTo( foundIndex, QAbstractItemView::PositionAtCenter );
 
@@ -598,8 +630,6 @@ void Playlist::PrettyListView::findPrevious( const QString & searchTerm, int fie
     if( selected.size() > 0 )
         currentRow = selected.first();
 
-    debug() << "current row is: " << currentRow;
-
     int row = GroupingProxy::instance()->findPrevious( searchTerm, currentRow, fields );
     if( row != -1 )
     {
@@ -610,6 +640,7 @@ void Playlist::PrettyListView::findPrevious( const QString & searchTerm, int fie
         selectionModel()->select( selItems, QItemSelectionModel::SelectCurrent );
 
         QModelIndex foundIndex = model()->index( row, 0, QModelIndex() );
+        setCurrentIndex( foundIndex );
         if ( foundIndex.isValid() )
             scrollTo( foundIndex, QAbstractItemView::PositionAtCenter );
 
