@@ -23,7 +23,6 @@
 #include "Debug.h"
 #include "meta/Playlist.h"
 #include "SvgHandler.h"
-    //ret << "text/uri-list"; //we do accept urls
 #include "UserPlaylistModel.h"
 
 #include <KIcon>
@@ -209,20 +208,18 @@ PlaylistsInGroupsProxy::removeRows( int row, int count, const QModelIndex &paren
 {
     DEBUG_BLOCK
     debug() << "in parent " << parent << "remove " << count << " starting at row " << row;
-    QModelIndex idx = index( row, 0, parent );
-    if( isGroup( idx ) )
+    if( isGroup( parent ) )
     {
-        deleteGroup( idx );
+        deleteGroup( parent );
         return true;
     }
-    QModelIndex originalIdx = mapToSource( idx );
-    return m_model->removeRow( originalIdx.row(), originalIdx.parent() );
+    QModelIndex originalIdx = mapToSource( parent );
+    return m_model->removeRows( row, count, originalIdx );
 }
 
 QStringList
 PlaylistsInGroupsProxy::mimeTypes() const
 {
-    DEBUG_BLOCK
     QStringList mimeTypes = m_model->mimeTypes();
     mimeTypes << AmarokMimeData::PLAYLISTBROWSERGROUP_MIME;
     return mimeTypes;
@@ -319,11 +316,29 @@ PlaylistsInGroupsProxy::dropMimeData( const QMimeData *data, Qt::DropAction acti
             return false;
         }
     }
+    else
+    {
+        debug() << "not dropped on the root or on a group";
+        QModelIndex sourceIndex = mapToSource( parent );
+        return m_model->dropMimeData( data, action, row, column,
+                               sourceIndex );
+    }
 
-    debug() << "not dropped on the root or on a group";
-    QModelIndex sourceIndex = mapToSource( parent );
-    return m_model->dropMimeData( data, action, sourceIndex.row(), sourceIndex.column(),
-                           sourceIndex.parent() );
+    return false;
+}
+
+Qt::DropActions
+PlaylistsInGroupsProxy::supportedDropActions() const
+{
+    //always add MoveAction because playlists can be put into a different group
+    return m_model->supportedDropActions() | Qt::MoveAction;
+}
+
+Qt::DropActions
+PlaylistsInGroupsProxy::supportedDragActions() const
+{
+    //always add MoveAction because playlists can be put into a different group
+    return m_model->supportedDragActions() | Qt::MoveAction;
 }
 
 int
@@ -415,7 +430,10 @@ PlaylistsInGroupsProxy::flags( const QModelIndex &index ) const
                  Qt::ItemIsDropEnabled );
 
     QModelIndex originalIdx = mapToSource( index );
-    return m_model->flags( originalIdx );
+    Qt::ItemFlags originalItemFlags = m_model->flags( originalIdx );
+
+    //make the original one drag enabled if it didn't have it yet. We can drag it on a group.
+    return originalItemFlags | Qt::ItemIsDragEnabled;
 }
 
 void

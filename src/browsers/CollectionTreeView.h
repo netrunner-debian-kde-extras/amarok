@@ -25,7 +25,9 @@
 #include "widgets/PrettyTreeView.h"
 
 
+#include <QModelIndex>
 #include <QMutex>
+#include <QPoint>
 #include <QSet>
 #include <QSortFilterProxyModel>
 #include <QTimer>
@@ -71,8 +73,10 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void slotFilterNow();
 
     protected:
-        void mouseReleaseEvent( QMouseEvent *event );
         void mouseDoubleClickEvent( QMouseEvent *event );
+        void mouseMoveEvent( QMouseEvent *event );
+        void mousePressEvent( QMouseEvent *event );
+        void mouseReleaseEvent( QMouseEvent *event );
         void keyPressEvent( QKeyEvent * event );
         void startDrag( Qt::DropActions supportedActions );
         //void changeEvent ( QEvent * event );
@@ -83,6 +87,8 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void slotCollapsed( const QModelIndex &index );
         void slotExpanded( const QModelIndex &index );
 
+        void slotClickTimeout();
+        
         void slotPlayChildTracks();
         void slotAppendChildTracks();
         void slotQueueChildTracks();
@@ -131,6 +137,10 @@ class CollectionTreeView: public Amarok::PrettyTreeView
 
         QMutex m_dragMutex;
         bool m_ongoingDrag;
+        QPoint m_clickLocation;
+        QTimer m_clickTimer;
+        QModelIndex m_savedClickIndex;
+        bool m_justDoubleClicked;
 
     signals:
         void itemSelected( CollectionTreeItem * item );

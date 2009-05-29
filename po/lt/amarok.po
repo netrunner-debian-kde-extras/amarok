@@ -6,8 +6,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-05-09 11:57+0200\n"
-"PO-Revision-Date: 2008-11-27 21:09+0300\n"
+"POT-Creation-Date: 2009-05-27 12:31+0200\n"
+"PO-Revision-Date: 2009-05-16 01:44+0300\n"
 "Last-Translator: Andrius Štikonas <stikonas@gmail.com>\n"
 "Language-Team: Lithuanian <komp_lt@konf.lt>\n"
 "MIME-Version: 1.0\n"
@@ -19,7 +19,7 @@ msgstr ""
 "=2 && (n%100<10 || n%100>=20) ? 1: 2);\n"
 
 #: mac/GrowlInterface.cpp:34 context/engines/current/CurrentEngine.cpp:129
-#: context/applets/currenttrack/CurrentTrack.cpp:94 widgets/Osd.cpp:566
+#: context/applets/currenttrack/CurrentTrack.cpp:99 widgets/Osd.cpp:566
 msgid "No track playing"
 msgstr "Negroja jokia daina"
 
@@ -106,9 +106,9 @@ msgid "Stream (%1)"
 msgstr "Srautas"
 
 #: meta/capabilities/TimecodeWriteCapability.cpp:105
-#, fuzzy, kde-format
+#, kde-format
 msgid "%1 - Stopped %2"
-msgstr "%1 - %2"
+msgstr "%1 – Sustabdyta %2"
 
 #: meta/capabilities/TimecodeWriteCapability.cpp:110
 msgid "Playback Ended Markers"
@@ -137,7 +137,7 @@ msgstr ""
 #: collection/mtpcollection/CollectionCapabilityMtp.cpp:48
 #: collection/sqlcollection/SqlCollectionCapability.cpp:51
 msgid "&Delete Tracks"
-msgstr "&Trinti takelius"
+msgstr "&Trinti dainas"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:522
 #, fuzzy
@@ -253,45 +253,43 @@ msgid ""
 msgstr "Ar tikrai norite pašalinti šį %1?"
 
 #: collection/sqlcollection/SqlCollection.cpp:354
-#, fuzzy
 msgid "Delete Files"
-msgstr "Pašalinti nepavyko"
+msgstr "Trinti failus"
 
-#: collection/sqlcollection/OrganizeCollectionDialog.cpp:163
+#: collection/sqlcollection/OrganizeCollectionDialog.cpp:165
 #: collection/sqlcollection/ScanManager.cpp:673
-#: browsers/CollectionTreeItem.cpp:159
-#: playlist/view/graphic/PlaylistGraphicsItem.cpp:343
-#: covermanager/CoverViewDialog.h:45 covermanager/CoverManager.cpp:854
+#: browsers/CollectionTreeItem.cpp:159 covermanager/CoverViewDialog.h:45
+#: covermanager/CoverManager.cpp:855
 msgid "Various Artists"
 msgstr "Įvairūs atlikėjai"
 
-#: collection/sqlcollection/OrganizeCollectionDialog.cpp:225
-#: collection/sqlcollection/OrganizeCollectionDialog.cpp:228
+#: collection/sqlcollection/OrganizeCollectionDialog.cpp:227
+#: collection/sqlcollection/OrganizeCollectionDialog.cpp:230
 #, kde-format
 msgid "%1 or %2"
 msgstr "%1 arba %2"
 
-#: collection/sqlcollection/OrganizeCollectionDialog.cpp:229
+#: collection/sqlcollection/OrganizeCollectionDialog.cpp:231
 msgid "Artist's Initial"
 msgstr "Atlikėjo inicialai"
 
-#: collection/sqlcollection/OrganizeCollectionDialog.cpp:230
+#: collection/sqlcollection/OrganizeCollectionDialog.cpp:232
 msgid "File Extension of Source"
 msgstr "Šaltinio failo plėtinys"
 
-#: collection/sqlcollection/OrganizeCollectionDialog.cpp:231
-msgid "Track Number"
-msgstr "Takelis"
-
 #: collection/sqlcollection/OrganizeCollectionDialog.cpp:233
+msgid "Track Number"
+msgstr "Dainos numeris"
+
+#: collection/sqlcollection/OrganizeCollectionDialog.cpp:235
 msgid "<h3>Custom Format String</h3>"
 msgstr "<h3>Naudotojo nurodytas eilutės formatas</h3>"
 
-#: collection/sqlcollection/OrganizeCollectionDialog.cpp:234
+#: collection/sqlcollection/OrganizeCollectionDialog.cpp:236
 msgid "You can use the following tokens:"
 msgstr "Galite naudoti šias žymes:"
 
-#: collection/sqlcollection/OrganizeCollectionDialog.cpp:241
+#: collection/sqlcollection/OrganizeCollectionDialog.cpp:243
 msgid ""
 "If you surround sections of text that contain a token with curly-braces, "
 "that section will be hidden if the token is empty."
@@ -300,9 +298,9 @@ msgstr ""
 "tekstas bus paslėptas jei žymės reikšmė bus tuščia."
 
 #: collection/sqlcollection/SqlCollectionLocation.cpp:239
-#, fuzzy, kde-format
+#, kde-format
 msgid "Transferring: %1"
-msgstr "Perkeliamos dainos"
+msgstr "Persiunčiama: %1"
 
 #: collection/sqlcollection/ScanManager.cpp:492
 msgid ""
@@ -327,10 +325,10 @@ msgstr "Srautas"
 
 #: collection/sqlcollection/SqlMeta.cpp:382
 #: services/lastfm/meta/LastFmMeta.cpp:141 covermanager/CoverViewDialog.h:44
-#: covermanager/CoverManager.cpp:854
+#: covermanager/CoverManager.cpp:855
 #, kde-format
 msgid "%1 - %2"
-msgstr "%1 - %2"
+msgstr "%1 – %2"
 
 #: collection/sqlcollection/SqlMeta.cpp:1128
 msgid "Do not show under Various Artists"
@@ -392,7 +390,7 @@ msgid "dates"
 msgstr "Atnaujinti"
 
 #: context/engines/wikipedia/WikipediaEngine.cpp:172
-#: context/engines/wikipedia/WikipediaEngine.cpp:387
+#: context/engines/wikipedia/WikipediaEngine.cpp:395
 msgid "Fetching content.."
 msgstr "Atsiunčiamas turinys..."
 
@@ -406,7 +404,7 @@ msgstr ""
 msgid "No information found..."
 msgstr "Įrenginio informacija "
 
-#: context/engines/wikipedia/WikipediaEngine.cpp:296
+#: context/engines/wikipedia/WikipediaEngine.cpp:302
 msgid "Wikipedia Other Languages: <br/>"
 msgstr "Vikipedija kitomis kalbomis: <br>"
 
@@ -441,60 +439,56 @@ msgstr "Įrašykite profilio pavadinimą:"
 msgid "Lyrics data could not be parsed"
 msgstr "Nepavyko sukurti šio objekto."
 
-#: context/applets/currenttrack/CurrentTrack.cpp:71
+#: context/applets/currenttrack/CurrentTrack.cpp:76
 #, fuzzy
 msgctxt "What artist is this track by"
 msgid "By"
 msgstr "Keisti"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:72
+#: context/applets/currenttrack/CurrentTrack.cpp:77
 #, fuzzy
 msgctxt "What album is this track on"
 msgid "On"
 msgstr "Įjungta"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:100
+#: context/applets/currenttrack/CurrentTrack.cpp:105
 #, fuzzy
 msgid "Play count"
 msgstr "Dažnumas:"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:101 Systray.cpp:171
+#: context/applets/currenttrack/CurrentTrack.cpp:106 Systray.cpp:171
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:253
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:696
 #: playlist/PlaylistModel.cpp:711 widgets/SmartPlaylistEditor.cpp:186
 msgid "Score"
 msgstr "Reitingas"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:102 Systray.cpp:201
+#: context/applets/currenttrack/CurrentTrack.cpp:107 Systray.cpp:201
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:258
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:701
 msgid "Last Played"
 msgstr "Paskutinį kartą grota"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:107
-#, fuzzy
+#: context/applets/currenttrack/CurrentTrack.cpp:112
 msgid "Last played"
-msgstr "Paskutinį kartą grota"
+msgstr "Paskiausiai grota"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:108
-#, fuzzy
+#: context/applets/currenttrack/CurrentTrack.cpp:113
 msgid "Favorite tracks"
-msgstr "Praleisti"
+msgstr "Mėgstamiausios dainos"
 
 #: context/applets/albums/AlbumsView.cpp:109 Systray.cpp:243
-#: browsers/CollectionTreeView.cpp:616
+#: browsers/CollectionTreeView.cpp:716
 #: browsers/filebrowser/MyDirOperator.cpp:271
-#: browsers/playlistbrowser/UserPlaylistModel.cpp:414
-#: browsers/playlistbrowser/PodcastModel.cpp:692
+#: browsers/playlistbrowser/UserPlaylistModel.cpp:449
+#: browsers/playlistbrowser/PodcastModel.cpp:693
 #: services/lastfm/LastFmTreeView.cpp:116
 msgid "&Append to Playlist"
 msgstr "&Papildyti grojaraštį"
 
 #: context/applets/albums/AlbumsView.cpp:110
-#: browsers/filebrowser/MyDirOperator.cpp:272
-#: browsers/playlistbrowser/UserPlaylistModel.cpp:420
-#: browsers/playlistbrowser/PodcastModel.cpp:705
-#: services/lastfm/LastFmTreeView.cpp:124
+#: browsers/playlistbrowser/UserPlaylistModel.cpp:455
+#: browsers/playlistbrowser/PodcastModel.cpp:706
 msgctxt "Replace the currently loaded tracks with these"
 msgid "&Load"
 msgstr "Į&kelti"
@@ -508,15 +502,15 @@ msgstr "&Dainą į eilę"
 #: browsers/filebrowser/MyDirOperator.cpp:273
 #: playlist/view/PlaylistViewCommon.cpp:138
 msgid "Edit Track Details"
-msgstr "Keisti takelio detales"
+msgstr "Keisti dainos detales"
 
-#: context/applets/albums/Albums.cpp:164
+#: context/applets/albums/Albums.cpp:167
 #, kde-format
 msgid "Disc %1"
 msgstr "Diskas %1"
 
 #: context/applets/albums/AlbumItem.cpp:70 MediaDevicePluginManager.cpp:531
-#: MainWindow.cpp:988
+#: MainWindow.cpp:971
 msgid "Unknown"
 msgstr "Nežinoma"
 
@@ -529,33 +523,33 @@ msgstr[1] "%1 dainos"
 msgstr[2] "%1 dainų"
 
 #: context/applets/lyrics/LyricsApplet.cpp:38
-#: context/applets/lyrics/LyricsApplet.cpp:61
-#: context/applets/lyrics/LyricsApplet.cpp:230 dialogs/TagDialog.cpp:580
+#: context/applets/lyrics/LyricsApplet.cpp:59
+#: context/applets/lyrics/LyricsApplet.cpp:227 dialogs/TagDialog.cpp:582
 msgid "Lyrics"
 msgstr "Tekstai"
 
-#: context/applets/lyrics/LyricsApplet.cpp:68
+#: context/applets/lyrics/LyricsApplet.cpp:65
 #, fuzzy
 msgid "Reload Lyrics"
 msgstr "Tekstai"
 
-#: context/applets/lyrics/LyricsApplet.cpp:184
+#: context/applets/lyrics/LyricsApplet.cpp:181
 #, fuzzy
 msgid "No lyrics script is running."
 msgstr "Dainų tekstų scenarijus nepaleistas!"
 
-#: context/applets/lyrics/LyricsApplet.cpp:190
+#: context/applets/lyrics/LyricsApplet.cpp:187
 msgid "Lyrics are being fetched."
 msgstr "Atsiunčiamas dainos tekstas."
 
-#: context/applets/lyrics/LyricsApplet.cpp:196
+#: context/applets/lyrics/LyricsApplet.cpp:193
 #, fuzzy, kde-format
 msgid ""
 "Lyrics were not able to be downloaded. Please check your internet "
 "connection: %1"
 msgstr "Nepavyko atsiųsti dainos teksto. Patikrinkite interneto ryšį."
 
-#: context/applets/lyrics/LyricsApplet.cpp:238
+#: context/applets/lyrics/LyricsApplet.cpp:235
 msgid "There were no lyrics found for this track"
 msgstr "Šios dainos tekstas nerastas"
 
@@ -596,14 +590,12 @@ msgid "Add Widgets..."
 msgstr "Įdėti valdiklius..."
 
 #: context/containments/oldcontainment/ColumnContainment.cpp:212
-#, fuzzy
 msgid "Next Group"
-msgstr "Nauja grupė"
+msgstr "Kita grupė"
 
 #: context/containments/oldcontainment/ColumnContainment.cpp:217
-#, fuzzy
 msgid "Previous Group"
-msgstr "Ankstesnė daina"
+msgstr "Ankstesnė grupė"
 
 #: context/widgets/ToolBoxMenu.cpp:104
 msgid "Hide menu"
@@ -621,100 +613,100 @@ msgid "Score:"
 msgstr "Reitingas:"
 
 #: context/widgets/TrackWidget.cpp:136
-#, fuzzy, kde-format
+#, kde-format
 msgid "%1 - %2 (%3)"
-msgstr "%1 – %2 ( %3 )"
+msgstr "%1 – %2 (%3)"
 
 #: ActionClasses.cpp:76
 msgid "Amarok Menu"
 msgstr "Amarok meniu"
 
-#: ActionClasses.cpp:161
+#: ActionClasses.cpp:170
 msgid "Play/Pause"
 msgstr "Groti/Pauzė"
 
-#: ActionClasses.cpp:292
+#: ActionClasses.cpp:301
 msgid "Click to change"
 msgstr "Paspauskite"
 
-#: ActionClasses.cpp:299
+#: ActionClasses.cpp:308
 msgid "Ra&ndom"
 msgstr "&Atsitiktinai"
 
-#: ActionClasses.cpp:302
+#: ActionClasses.cpp:311
 msgctxt "State, as in disabled"
 msgid "&Off"
 msgstr "&Išjungta"
 
-#: ActionClasses.cpp:303
+#: ActionClasses.cpp:312
 msgctxt "Items, as in music"
 msgid "&Tracks"
 msgstr "&Dainos"
 
-#: ActionClasses.cpp:304
+#: ActionClasses.cpp:313
 msgid "&Albums"
 msgstr "&Albumai"
 
-#: ActionClasses.cpp:332
+#: ActionClasses.cpp:341
 msgid "&Favor"
 msgstr "&Prioritetas"
 
-#: ActionClasses.cpp:334
+#: ActionClasses.cpp:343
 msgctxt "State, as in disabled"
 msgid "Off"
 msgstr "Išjungta"
 
-#: ActionClasses.cpp:335
+#: ActionClasses.cpp:344
 msgid "Higher &Scores"
 msgstr "Aukštesnis &reitingas"
 
-#: ActionClasses.cpp:336
+#: ActionClasses.cpp:345
 msgid "Higher &Ratings"
 msgstr "Aukštesnis &įvertinimas"
 
-#: ActionClasses.cpp:337
+#: ActionClasses.cpp:346
 msgid "Not Recently &Played"
 msgstr "&Paskutiniu metu negrotos"
 
-#: ActionClasses.cpp:347
+#: ActionClasses.cpp:356
 msgid "&Repeat"
 msgstr "Ka&rtoti"
 
-#: ActionClasses.cpp:349 ActionClasses.cpp:363
+#: ActionClasses.cpp:358 ActionClasses.cpp:372
 msgctxt "State, as in, disabled"
 msgid "&Off"
 msgstr "&Išjungta"
 
-#: ActionClasses.cpp:349 ActionClasses.cpp:363
+#: ActionClasses.cpp:358 ActionClasses.cpp:372
 msgctxt "Item, as in, music"
 msgid "&Track"
 msgstr "&Daina"
 
-#: ActionClasses.cpp:350 ActionClasses.cpp:364
+#: ActionClasses.cpp:359 ActionClasses.cpp:373
 msgid "&Album"
 msgstr "&Albumas"
 
-#: ActionClasses.cpp:350 MainWindow.cpp:837
+#: ActionClasses.cpp:359 MainWindow.cpp:829
 msgid "&Playlist"
 msgstr "&Grojaraštis"
 
-#: ActionClasses.cpp:361
+#: ActionClasses.cpp:370
 msgid "&Replay Gain Mode"
 msgstr ""
 
-#: ActionClasses.cpp:375
+#: ActionClasses.cpp:384
 msgid "Burn"
 msgstr "Įrašyti CD"
 
-#: ActionClasses.cpp:414 playlistmanager/PlaylistManager.cpp:224
+#: ActionClasses.cpp:423 playlistmanager/PlaylistManager.cpp:224
 msgid "Current Playlist"
 msgstr "Dabartinis grojaraštis"
 
-#: ActionClasses.cpp:415
+#: ActionClasses.cpp:424
 msgid "Selected Tracks"
 msgstr "Pažymėtas dainas"
 
-#: ActionClasses.cpp:447
+#: ActionClasses.cpp:456
 msgid "Stop"
 msgstr "Stop"
 
@@ -790,7 +782,7 @@ msgstr "Bendros parinktys"
 msgid "Configure General Options"
 msgstr "Keisti bendras parinktis"
 
-#: configdialog/ConfigDialog.cpp:55 MainWindow.cpp:280
+#: configdialog/ConfigDialog.cpp:55 MainWindow.cpp:273
 msgid "Collection"
 msgstr "Fonoteka"
 
@@ -967,21 +959,21 @@ msgstr ""
 "Įjungus šią parinktį Amarok automatiškai skenuos aplankus kai tik jų turinys "
 "pasikeis, pavyzdžiui, kai bus įdėtas naujas failas."
 
-#: dialogs/FilenameLayoutDialog.cpp:90
+#: dialogs/FilenameLayoutDialog.cpp:88
 #, fuzzy
 msgid "Collection root"
 msgstr "Fonoteka"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:101
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
-#: dialogs/FilenameLayoutDialog.cpp:117 dialogs/FilenameLayoutDialog.cpp:329
+#: dialogs/FilenameLayoutDialog.cpp:115 dialogs/FilenameLayoutDialog.cpp:327
 #: rc.cpp:930 services/jamendo/JamendoInfoParser.cpp:112
 msgid "Track"
-msgstr "Takelis"
+msgstr "Daina"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:96
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
-#: dialogs/FilenameLayoutDialog.cpp:118 dialogs/FilenameLayoutDialog.cpp:324
+#: dialogs/FilenameLayoutDialog.cpp:116 dialogs/FilenameLayoutDialog.cpp:322
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:248
 #: browsers/playlistbrowser/PodcastModel.cpp:282 rc.cpp:927
 #: playlist/PlaylistModel.cpp:695 widgets/SmartPlaylistEditor.cpp:184
@@ -990,11 +982,11 @@ msgstr "Pavadinimas"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:81
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
-#: dialogs/FilenameLayoutDialog.cpp:119 dialogs/FilenameLayoutDialog.cpp:334
+#: dialogs/FilenameLayoutDialog.cpp:117 dialogs/FilenameLayoutDialog.cpp:332
 #: dialogs/transferdialog.cpp:89 browsers/CollectionTreeItemModelBase.cpp:764
-#: browsers/collectionbrowser/CollectionWidget.cpp:88
-#: browsers/collectionbrowser/CollectionWidget.cpp:117
-#: browsers/collectionbrowser/CollectionWidget.cpp:149
+#: browsers/collectionbrowser/CollectionWidget.cpp:87
+#: browsers/collectionbrowser/CollectionWidget.cpp:116
+#: browsers/collectionbrowser/CollectionWidget.cpp:148
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:245 rc.cpp:918
 #: services/lastfm/LastFmService.cpp:517
 #: services/magnatune/MagnatuneStore.cpp:194
@@ -1006,11 +998,11 @@ msgstr "Atlikėjas"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:86
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
-#: dialogs/FilenameLayoutDialog.cpp:120
+#: dialogs/FilenameLayoutDialog.cpp:118
 #: browsers/CollectionTreeItemModelBase.cpp:765
-#: browsers/collectionbrowser/CollectionWidget.cpp:97
-#: browsers/collectionbrowser/CollectionWidget.cpp:126
-#: browsers/collectionbrowser/CollectionWidget.cpp:158
+#: browsers/collectionbrowser/CollectionWidget.cpp:96
+#: browsers/collectionbrowser/CollectionWidget.cpp:125
+#: browsers/collectionbrowser/CollectionWidget.cpp:157
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:246 rc.cpp:921
 #: playlist/PlaylistModel.cpp:698 widgets/SmartPlaylistEditor.cpp:184
 #: widgets/SmartPlaylistEditor.cpp:198
@@ -1019,7 +1011,7 @@ msgstr "Kompozitoius"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:106
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
-#: dialogs/FilenameLayoutDialog.cpp:121 dialogs/FilenameLayoutDialog.cpp:344
+#: dialogs/FilenameLayoutDialog.cpp:119 dialogs/FilenameLayoutDialog.cpp:342
 #: browsers/CollectionTreeItemModelBase.cpp:767
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:250
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:693 rc.cpp:933
@@ -1030,11 +1022,11 @@ msgstr "Metai"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:76
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
-#: dialogs/FilenameLayoutDialog.cpp:122 dialogs/FilenameLayoutDialog.cpp:349
+#: dialogs/FilenameLayoutDialog.cpp:120 dialogs/FilenameLayoutDialog.cpp:347
 #: dialogs/transferdialog.cpp:90 browsers/CollectionTreeItemModelBase.cpp:763
-#: browsers/collectionbrowser/CollectionWidget.cpp:91
-#: browsers/collectionbrowser/CollectionWidget.cpp:120
-#: browsers/collectionbrowser/CollectionWidget.cpp:152
+#: browsers/collectionbrowser/CollectionWidget.cpp:90
+#: browsers/collectionbrowser/CollectionWidget.cpp:119
+#: browsers/collectionbrowser/CollectionWidget.cpp:151
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:247 rc.cpp:915
 #: services/magnatune/MagnatuneStore.cpp:200
 #: services/jamendo/JamendoInfoParser.cpp:86 playlist/PlaylistHeader.cpp:42
@@ -1043,7 +1035,7 @@ msgstr "Metai"
 msgid "Album"
 msgstr "Albumas"
 
-#: dialogs/FilenameLayoutDialog.cpp:123 dialogs/FilenameLayoutDialog.cpp:354
+#: dialogs/FilenameLayoutDialog.cpp:121 dialogs/FilenameLayoutDialog.cpp:352
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:259
 #: playlist/PlaylistModel.cpp:705 widgets/SmartPlaylistEditor.cpp:185
 msgid "Comment"
@@ -1051,23 +1043,22 @@ msgstr "Komentaras"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:91
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
-#: dialogs/FilenameLayoutDialog.cpp:124 dialogs/FilenameLayoutDialog.cpp:359
+#: dialogs/FilenameLayoutDialog.cpp:122 dialogs/FilenameLayoutDialog.cpp:357
 #: dialogs/transferdialog.cpp:91 browsers/CollectionTreeItemModelBase.cpp:766
-#: browsers/collectionbrowser/CollectionWidget.cpp:94
-#: browsers/collectionbrowser/CollectionWidget.cpp:123
-#: browsers/collectionbrowser/CollectionWidget.cpp:155
+#: browsers/collectionbrowser/CollectionWidget.cpp:93
+#: browsers/collectionbrowser/CollectionWidget.cpp:122
+#: browsers/collectionbrowser/CollectionWidget.cpp:154
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:249 rc.cpp:924
-#: playlist/PlaylistModel.cpp:704 widgets/ProgressiveSearchWidget.cpp:95
+#: playlist/PlaylistModel.cpp:704 widgets/ProgressiveSearchWidget.cpp:96
 #: widgets/SmartPlaylistEditor.cpp:184 widgets/SmartPlaylistEditor.cpp:198
 msgid "Genre"
 msgstr "Žanras"
 
-#: dialogs/FilenameLayoutDialog.cpp:132 dialogs/FilenameLayoutDialog.cpp:369
-#, fuzzy
+#: dialogs/FilenameLayoutDialog.cpp:130 dialogs/FilenameLayoutDialog.cpp:367
 msgid "Ignore"
-msgstr "žanras"
+msgstr "Ignotuori"
 
-#: dialogs/FilenameLayoutDialog.cpp:135
+#: dialogs/FilenameLayoutDialog.cpp:133
 #, no-c-format
 msgctxt ""
 "Please do not translate the %foo words as they define a syntax used "
@@ -1078,20 +1069,20 @@ msgid ""
 "composer, %year, %album, %comment, %genre, %ignore."
 msgstr ""
 
-#: dialogs/FilenameLayoutDialog.cpp:141 dialogs/FilenameLayoutDialog.cpp:379
+#: dialogs/FilenameLayoutDialog.cpp:139 dialogs/FilenameLayoutDialog.cpp:377
 #, fuzzy
 msgid "Initial"
 msgstr "Pašalinti"
 
-#: dialogs/FilenameLayoutDialog.cpp:142 dialogs/FilenameLayoutDialog.cpp:364
+#: dialogs/FilenameLayoutDialog.cpp:140 dialogs/FilenameLayoutDialog.cpp:362
 msgid "File type"
 msgstr "Failo tipas"
 
-#: dialogs/FilenameLayoutDialog.cpp:143 dialogs/FilenameLayoutDialog.cpp:384
+#: dialogs/FilenameLayoutDialog.cpp:141 dialogs/FilenameLayoutDialog.cpp:382
 msgid "Disc number"
 msgstr "Disko numeris"
 
-#: dialogs/FilenameLayoutDialog.cpp:146
+#: dialogs/FilenameLayoutDialog.cpp:144
 #, no-c-format
 msgctxt ""
 "Please do not translate the %foo words as they define a syntax used "
@@ -1103,25 +1094,24 @@ msgid ""
 "discnumber."
 msgstr ""
 
-#: dialogs/FilenameLayoutDialog.cpp:263
+#: dialogs/FilenameLayoutDialog.cpp:261
 msgid "&Basic..."
 msgstr ""
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:213
 #. i18n: ectx: property (text), widget (KPushButton, kpbAdvanced)
-#: dialogs/FilenameLayoutDialog.cpp:273 rc.cpp:871
+#: dialogs/FilenameLayoutDialog.cpp:271 rc.cpp:871
 msgid "&Advanced..."
 msgstr "&Išsamiau..."
 
-#: dialogs/FilenameLayoutDialog.cpp:339
+#: dialogs/FilenameLayoutDialog.cpp:337
 #: browsers/CollectionTreeItemModelBase.cpp:540
 msgid "composer"
 msgstr "kompozitoius"
 
-#: dialogs/FilenameLayoutDialog.cpp:374
-#, fuzzy
+#: dialogs/FilenameLayoutDialog.cpp:372
 msgid "Folder"
-msgstr "Pridėti aplanką"
+msgstr "Aplankas"
 
 #. i18n: file: dialogs/PlaylistLayoutEditDialog.ui:171
 #. i18n: ectx: attribute (title), widget (QWidget, tab)
@@ -1273,9 +1263,8 @@ msgid "Banshee"
 msgstr "Banshee"
 
 #: dialogs/DatabaseImporterDialog.cpp:52
-#, fuzzy
 msgid "Rhythmbox"
-msgstr "Rythmbox"
+msgstr "Rhythmbox"
 
 #: dialogs/DatabaseImporterDialog.cpp:72
 msgid "Select Importer"
@@ -1315,127 +1304,127 @@ msgstr "<b><font color='red'>Klaida:</font></b> %1"
 #, kde-format
 msgctxt "Track has been imported, format: Artist - Track"
 msgid "Imported <b>%1 - %2</b>"
-msgstr ""
+msgstr "Importuota <b>%1 – %2</b>"
 
 #: dialogs/DatabaseImporterDialog.cpp:191
 #, kde-format
 msgctxt "Track has been imported, format: Artist - Track (Album)"
 msgid "Imported <b>%1 - %2 (%3)</b>"
-msgstr ""
+msgstr "Importuota <b>%1 – %2 (%3)</b>"
 
 #: dialogs/TagDialog.cpp:489
 msgid "Filename Layout Chooser"
 msgstr "Failo pavadinimo parinktys"
 
-#: dialogs/TagDialog.cpp:578 browsers/playlistbrowser/PodcastModel.cpp:283
+#: dialogs/TagDialog.cpp:580 browsers/playlistbrowser/PodcastModel.cpp:283
 msgid "Summary"
 msgstr "Santrauka"
 
-#: dialogs/TagDialog.cpp:579
+#: dialogs/TagDialog.cpp:581
 msgid "Tags"
 msgstr "Laukeliai"
 
-#: dialogs/TagDialog.cpp:581
+#: dialogs/TagDialog.cpp:583
 msgid "Statistics"
 msgstr "Statistika"
 
-#: dialogs/TagDialog.cpp:583
+#: dialogs/TagDialog.cpp:585
 msgid "Labels"
 msgstr "Etiketės"
 
-#: dialogs/TagDialog.cpp:709
+#: dialogs/TagDialog.cpp:711
 msgctxt "The value for this tag is not known"
 msgid "Unknown"
 msgstr "Nežinoma"
 
-#: dialogs/TagDialog.cpp:829
+#: dialogs/TagDialog.cpp:831
 #, kde-format
 msgid "Track Details: %1 by %2"
 msgstr "Dainos informacija: %1 – %2"
 
-#: dialogs/TagDialog.cpp:853 dialogs/TagDialog.cpp:863
+#: dialogs/TagDialog.cpp:855 dialogs/TagDialog.cpp:865
 #, kde-format
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> – <b>%2</b>"
 
-#: dialogs/TagDialog.cpp:861
+#: dialogs/TagDialog.cpp:863
 #, kde-format
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> – <b>%2</b> albumas <b>%3</b>"
 
-#: dialogs/TagDialog.cpp:865
+#: dialogs/TagDialog.cpp:867
 #, kde-format
 msgid "<b>%1</b>"
 msgstr "<b>%1</b>"
 
-#: dialogs/TagDialog.cpp:894
+#: dialogs/TagDialog.cpp:896
 msgid "Length:"
 msgstr "Trukmė:"
 
-#: dialogs/TagDialog.cpp:895
+#: dialogs/TagDialog.cpp:897
 #, fuzzy
 msgid "Bit rate:"
 msgstr "Bitų dažnis:"
 
-#: dialogs/TagDialog.cpp:896
+#: dialogs/TagDialog.cpp:898
 #, fuzzy
 msgid "Sample rate:"
 msgstr "Kadrų dažnis:"
 
-#: dialogs/TagDialog.cpp:897
+#: dialogs/TagDialog.cpp:899
 msgid "Size:"
 msgstr "Dydis:"
 
-#: dialogs/TagDialog.cpp:898
+#: dialogs/TagDialog.cpp:900
 msgid "Format:"
 msgstr "Formatas:"
 
 #. i18n: file: dialogs/TagDialogBase.ui:502
 #. i18n: ectx: property (text), widget (QLabel, scoreLabel)
-#: dialogs/TagDialog.cpp:901 rc.cpp:831
+#: dialogs/TagDialog.cpp:903 rc.cpp:831
 msgid "Score:"
 msgstr "Reitingas:"
 
 #. i18n: file: dialogs/TagDialogBase.ui:531
 #. i18n: ectx: property (text), widget (QLabel, ratingLabel)
-#: dialogs/TagDialog.cpp:903 rc.cpp:834
+#: dialogs/TagDialog.cpp:905 rc.cpp:834
 msgid "Rating:"
 msgstr "Įvertinimas:"
 
-#: dialogs/TagDialog.cpp:905
+#: dialogs/TagDialog.cpp:907
 msgid "Play Count:"
 msgstr "Grojimų skaičius:"
 
-#: dialogs/TagDialog.cpp:908
+#: dialogs/TagDialog.cpp:910
 msgid "First Played:"
 msgstr "Pirmą kartą atlikta:"
 
-#: dialogs/TagDialog.cpp:909
+#: dialogs/TagDialog.cpp:911
 msgctxt "When this track was first played"
 msgid "Never"
 msgstr "Niekada"
 
-#: dialogs/TagDialog.cpp:910
+#: dialogs/TagDialog.cpp:912
 msgctxt "a single item (singular)"
 msgid "Last Played:"
 msgstr "Paskutinį kartą atlikta:"
 
-#: dialogs/TagDialog.cpp:911
+#: dialogs/TagDialog.cpp:913
 msgctxt "When this track was last played"
 msgid "Never"
 msgstr "Niekada"
 
-#: dialogs/TagDialog.cpp:912
+#: dialogs/TagDialog.cpp:914
 msgid "Collection:"
 msgstr "Fonoteka:"
 
-#: dialogs/TagDialog.cpp:913
+#: dialogs/TagDialog.cpp:915
 #, fuzzy
 msgctxt "The collection this track is part of"
 msgid "None"
 msgstr "Nieko"
 
-#: dialogs/TagDialog.cpp:1038
+#: dialogs/TagDialog.cpp:1040
 #, kde-format
 msgctxt "The amount of tracks being edited"
 msgid "1 Track"
@@ -1444,7 +1433,7 @@ msgstr[0] "%1 dainos informacija"
 msgstr[1] "%1 dainų informacija"
 msgstr[2] "%1 dainų informacija"
 
-#: dialogs/TagDialog.cpp:1153
+#: dialogs/TagDialog.cpp:1155
 #, kde-format
 msgid "Editing 1 file"
 msgid_plural "Editing %1 files"
@@ -1452,23 +1441,23 @@ msgstr[0] "Keičiamas %1 failas"
 msgstr[1] "Keičiami %1 failai"
 msgstr[2] "Keičiama %1 failų"
 
-#: dialogs/TagDialog.cpp:1158
+#: dialogs/TagDialog.cpp:1160
 msgid "Rated Songs:"
 msgstr "Dainos su įvertinimu:"
 
-#: dialogs/TagDialog.cpp:1160
+#: dialogs/TagDialog.cpp:1162
 msgid "Average Rating:"
 msgstr "Vidutinis įvertinimas:"
 
-#: dialogs/TagDialog.cpp:1162
+#: dialogs/TagDialog.cpp:1164
 msgid "Scored Songs:"
 msgstr "Dainos su reitingais:"
 
-#: dialogs/TagDialog.cpp:1164
+#: dialogs/TagDialog.cpp:1166
 msgid "Average Score:"
 msgstr "Vidutinis reitingas:"
 
-#: dialogs/TagDialog.cpp:1462
+#: dialogs/TagDialog.cpp:1464
 msgid ""
 "Writing to file failed. Please check permissions and available disc space."
 msgstr ""
@@ -1589,8 +1578,8 @@ msgid "Select third grouping:\n"
 msgstr "Nurodykite trečiąjį grupavimo lygį:\n"
 
 #: dialogs/transferdialog.cpp:88
-#: browsers/collectionbrowser/CollectionWidget.cpp:114
-#: browsers/collectionbrowser/CollectionWidget.cpp:146
+#: browsers/collectionbrowser/CollectionWidget.cpp:113
+#: browsers/collectionbrowser/CollectionWidget.cpp:145
 msgid "None"
 msgstr "Nieko"
 
@@ -1604,7 +1593,7 @@ msgstr "Parinktys"
 msgid "Convert spaces to underscores"
 msgstr "Keisti tarpo simbolius pabraukimo simboliais"
 
-#: dialogs/ScriptManager.cpp:117 MainWindow.cpp:666
+#: dialogs/ScriptManager.cpp:117 MainWindow.cpp:659
 msgid "Script Manager"
 msgstr "Scenarijų tvarkyklė"
 
@@ -1668,7 +1657,7 @@ msgstr ""
 "<p>Šio scenarijaus pašalinti nepavyko.</p><p>Scenarijų tvarkyklė gali "
 "pašalinti tik tuos scenarijus, kurie buvo įdiegti kaip paketai.</p>"
 
-#: dialogs/ScriptManager.cpp:450
+#: dialogs/ScriptManager.cpp:451
 #, fuzzy, kde-format
 msgid ""
 "There are exceptions caught in the script '%1'. Please refer to the log."
@@ -1683,16 +1672,15 @@ msgid "The audio player for KDE"
 msgstr "KDE muzikos grotuvas"
 
 #: App.cpp:95
-#, fuzzy
 msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2009, The Amarok Development Squad"
 msgstr ""
 "(C) 2002-2003, Mark Kretschmann\n"
-"(C) 2003-2008, Amarok programuotojų komanda"
+"(C) 2003-2009, Amarok programuotojų komanda"
 
 #: App.cpp:96
-#, fuzzy, kde-format
+#, kde-format
 msgid ""
 "IRC:\n"
 "irc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n"
@@ -1703,12 +1691,12 @@ msgid ""
 "(Build Date: %1)"
 msgstr ""
 "IRC:\n"
-"irc.freenode.net – #amarok #amarok.de #amarok.es #amarok.fr\n"
+"irc.freenode.net – #amarok, #amarok.de, #amarok.es, #amarok.fr\n"
 "\n"
 "Pasiūlymai ir pastabos:\n"
 "amarok@kde.org\n"
 "\n"
-"(Kompiliavimo data: "
+"(Kompiliavimo data: %1)"
 
 #: App.cpp:438
 msgid "Files/URLs to open"
@@ -1941,27 +1929,26 @@ msgid "&Remove Subscription"
 msgstr "&Trukmė:"
 
 #: podcasts/sql/SqlPodcastProvider.cpp:435
-#, fuzzy
 msgid "&Update Channel"
-msgstr "&Atnaujinti viską"
+msgstr "&Atnaujinti kanalą"
 
-#: podcasts/sql/SqlPodcastProvider.cpp:594
+#: podcasts/sql/SqlPodcastProvider.cpp:593
 msgid "Downloading Podcast Media"
 msgstr "Atsiunčiami podcast įrašai"
 
-#: podcasts/sql/SqlPodcastProvider.cpp:594
+#: podcasts/sql/SqlPodcastProvider.cpp:593
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "Atsiunčiamas podcast „%1“"
 
-#: podcasts/sql/SqlPodcastProvider.cpp:690
+#: podcasts/sql/SqlPodcastProvider.cpp:689
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "Nepavyko įrašyti podcast epizodo failo į %1"
 
 #: podcasts/sql/SqlPodcastProvider.h:46
-#: browsers/playlistbrowser/PodcastModel.cpp:595
-#: services/opmldirectory/OpmlDirectoryService.cpp:238
+#: browsers/playlistbrowser/PodcastModel.cpp:596
+#: services/opmldirectory/OpmlDirectoryService.cpp:235
 msgid "Local Podcasts"
 msgstr "Vietiniai podcast"
 
@@ -1990,9 +1977,8 @@ msgid " on <b>%1</b>"
 msgstr "<b>%1</b> – <b>%2</b>"
 
 #: Systray.cpp:161
-#, fuzzy
 msgid "Muted"
-msgstr "Garsas išjungtas"
+msgstr "Nutildyta"
 
 #: Systray.cpp:189 browsers/playlistbrowser/DynamicBiasWidgets.cpp:252
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:695
@@ -2014,9 +2000,8 @@ msgid "Length"
 msgstr "Trukmė"
 
 #: Systray.cpp:221
-#, fuzzy
 msgid "Amarok - No track playing"
-msgstr "Amarok Ne."
+msgstr "Amarok – negroja jokia daina"
 
 #: Systray.cpp:244
 msgid "Append && &Play"
@@ -2136,7 +2121,7 @@ msgstr "Slaptažodis"
 
 #: databaseimporter/amarok14/FastForwardImporterConfig.cpp:56
 msgid "Database Name"
-msgstr ""
+msgstr "Duombazės pavadinimas"
 
 #: databaseimporter/amarok14/FastForwardImporterConfig.cpp:60
 #, fuzzy
@@ -2244,7 +2229,7 @@ msgstr "Alejandro Wainzinger"
 
 #: main.cpp:55
 msgid "Alex Merry"
-msgstr ""
+msgstr "Alex Merry"
 
 #: main.cpp:56
 msgid "Casey Link"
@@ -2458,31 +2443,32 @@ msgstr "Stanislav Karchebny"
 msgid "Stefan Bogner"
 msgstr "Stefan Bogner"
 
-#: browsers/CollectionTreeView.cpp:230
+#: browsers/CollectionTreeView.cpp:236
 #: browsers/filebrowser/MyDirOperator.cpp:114
 msgid "Copy to Collection"
 msgstr "Kopijuoti į fonoteką"
 
-#: browsers/CollectionTreeView.cpp:241
+#: browsers/CollectionTreeView.cpp:247
 #: browsers/filebrowser/MyDirOperator.cpp:105
 msgid "Move to Collection"
 msgstr "Perkelti į fonoteką"
 
-#: browsers/CollectionTreeView.cpp:388 services/lastfm/LastFmTreeView.cpp:204
+#: browsers/CollectionTreeView.cpp:488 services/lastfm/LastFmTreeView.cpp:204
 msgid "More..."
 msgstr "Daugiau..."
 
-#: browsers/CollectionTreeView.cpp:624
-#, fuzzy
+#: browsers/CollectionTreeView.cpp:724
+#: browsers/filebrowser/MyDirOperator.cpp:272
+#: services/lastfm/LastFmTreeView.cpp:124
 msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
-msgstr "Kartoti grojaraštį"
+msgstr "&Pakeisti grojaraštį"
 
-#: browsers/CollectionTreeView.cpp:642
+#: browsers/CollectionTreeView.cpp:742
 msgid "&Edit Track Details"
 msgstr "K&eisti dainos informaciją"
 
-#: browsers/CollectionTreeView.cpp:677
+#: browsers/CollectionTreeView.cpp:777
 msgctxt "Organize Files"
 msgid "Organize Files"
 msgstr "Sudėlioti failus"
@@ -2529,94 +2515,95 @@ msgstr "disko numeris"
 
 #: browsers/CollectionTreeItemModelBase.cpp:574
 msgid "tracknumber"
-msgstr "takelis"
+msgstr "dainos numeris"
 
 #: browsers/CollectionTreeItemModelBase.cpp:578
 msgid "added"
-msgstr ""
+msgstr "pridėta"
 
 #: browsers/CollectionTreeItemModelBase.cpp:584
-#, fuzzy
 msgid "today"
-msgstr "Keisti"
+msgstr "šiandien"
 
 #: browsers/CollectionTreeItemModelBase.cpp:586
 msgid "last week"
-msgstr ""
+msgstr "praeitą savaitę"
 
 #: browsers/CollectionTreeItemModelBase.cpp:588
-#, fuzzy
 msgid "last month"
-msgstr "Dažnumas"
+msgstr "praeitą mėnesį"
 
 #: browsers/CollectionTreeItemModelBase.cpp:590
 msgid "two months ago"
-msgstr ""
+msgstr "prieš du mėnesius"
 
 #: browsers/CollectionTreeItemModelBase.cpp:592
-#, fuzzy
 msgid "three months ago"
-msgstr "prieš %1 minutę"
+msgstr "prieš tris mėnesius"
 
 #: browsers/CollectionTreeItemModelBase.cpp:763
 msgid "Year - Album"
 msgstr "Metai – Albumas"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:55
+#: browsers/collectionbrowser/CollectionWidget.cpp:54
 msgid "Search collection"
 msgstr ""
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:72
+#: browsers/collectionbrowser/CollectionWidget.cpp:71
 #: services/magnatune/MagnatuneStore.cpp:197
 msgid "Artist / Album"
 msgstr "Atlikėjas / Albumas"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:76
+#: browsers/collectionbrowser/CollectionWidget.cpp:75
 #: services/magnatune/MagnatuneStore.cpp:203
-#: services/jamendo/JamendoService.cpp:144
+#: services/jamendo/JamendoService.cpp:139
 msgid "Genre / Artist"
 msgstr "Žanras / Atlikėjas"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:80
+#: browsers/collectionbrowser/CollectionWidget.cpp:79
 #: services/magnatune/MagnatuneStore.cpp:206
-#: services/jamendo/JamendoService.cpp:148
+#: services/jamendo/JamendoService.cpp:142
 msgid "Genre / Artist / Album"
 msgstr "Žanras / Atlikėjas / Albumas"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:86
-#, fuzzy
+#: browsers/collectionbrowser/CollectionWidget.cpp:85
 msgid "First Level"
-msgstr "Pirmą kartą atlikta"
+msgstr "Pirmas lygis"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:113
-#, fuzzy
+#: browsers/collectionbrowser/CollectionWidget.cpp:112
 msgid "Second Level"
-msgstr "Sekundės"
+msgstr "Antras lygis"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:145
+#: browsers/collectionbrowser/CollectionWidget.cpp:144
 msgid "Third Level"
-msgstr ""
+msgstr "Trečias lygis"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:178
-#, fuzzy
+#: browsers/collectionbrowser/CollectionWidget.cpp:177
 msgid "Show Years"
-msgstr "Metai"
+msgstr "Rodyti metus"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:183
+#: browsers/collectionbrowser/CollectionWidget.cpp:182
 #, fuzzy
 msgid "Show Cover Art"
 msgstr "Metai"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:257
+#: browsers/collectionbrowser/CollectionWidget.cpp:256
+#: services/magnatune/MagnatuneStore.cpp:209
+#: services/jamendo/JamendoService.cpp:145
 #, fuzzy
 msgid "Sort Options"
 msgstr "Parinktys"
 
-#: browsers/filebrowser/FileBrowser.cpp:88
+#: browsers/filebrowser/FileBrowser.cpp:78 widgets/SearchWidget.cpp:61
+#: covermanager/CoverManager.cpp:173
+msgid "Enter search terms here"
+msgstr "Įrašykite paieškos kriterijus"
+
+#: browsers/filebrowser/FileBrowser.cpp:93
 msgid "Bookmarks"
 msgstr "Žymelės"
 
-#: browsers/filebrowser/FileBrowser.cpp:104
+#: browsers/filebrowser/FileBrowser.cpp:109
 msgid ""
 "<p>Here you can enter a path for a folder to display.</p><p>To go to a "
 "folder previously entered, press the arrow on the right and choose one.</"
@@ -2629,7 +2616,7 @@ msgstr ""
 "pasirinkti automatinio užbaigimo veikseną, paspauskite dešinį pelės klavišą."
 "</p>"
 
-#: browsers/filebrowser/FileBrowser.cpp:108
+#: browsers/filebrowser/FileBrowser.cpp:113
 msgid ""
 "<p>Here you can enter a name filter to limit which files are displayed.</"
 "p><p>To clear the filter, toggle off the filter button to the left.</p><p>To "
@@ -2639,7 +2626,7 @@ msgstr ""
 "išvalyti filtrą, išjunkite filtro mygtuką, esantį kairėje.</p><p>Norėdami "
 "dar kartą pritaikyti paskutinį naudotą filtrą, įjunkite filtro mygtuką.</p>"
 
-#: browsers/filebrowser/FileBrowser.cpp:111
+#: browsers/filebrowser/FileBrowser.cpp:116
 msgid ""
 "<p>This button clears the name filter when toggled off, or reapplies the "
 "last filter used when toggled on.</p>"
@@ -2647,16 +2634,16 @@ msgstr ""
 "<p>Išjungus šį mygtuką bus išvalytas filtras. Įjungus mygtuką, bus vėl "
 "pritaikytas paskutinis naudotas fltras.</p>"
 
-#: browsers/filebrowser/FileBrowser.cpp:209
+#: browsers/filebrowser/FileBrowser.cpp:214
 #, kde-format
 msgid "Apply last filter (\"%1\")"
 msgstr "Pritaikyti paskutinį filtrą („%1“)"
 
-#: browsers/filebrowser/FileBrowser.cpp:217
+#: browsers/filebrowser/FileBrowser.cpp:222
 msgid "Clear filter"
 msgstr "Išvalyti filtrą"
 
-#: browsers/playlistbrowser/UserPlaylistModel.cpp:252
+#: browsers/playlistbrowser/UserPlaylistModel.cpp:253
 #: amarokurls/BookmarkModel.cpp:228
 msgid "Name"
 msgstr "Pavadinimas"
@@ -2667,44 +2654,32 @@ msgid "Random"
 msgstr "Atsitiktinai"
 
 #: browsers/playlistbrowser/DynamicModel.cpp:212
-#, fuzzy
 msgid "modified"
-msgstr ""
-"#-#-#-#-#  superkaramba.po (superkaramba)  #-#-#-#-#\n"
-"pakeista\n"
-"#-#-#-#-#  libtaskmanager.po (libtaskmanager)  #-#-#-#-#\n"
-"pakeistas\n"
-"#-#-#-#-#  kstyle_config.po (kstyle_config)  #-#-#-#-#\n"
-"redaguota\n"
-"#-#-#-#-#  kdelibs4.po (kdelibs4)  #-#-#-#-#\n"
-"pakeista"
+msgstr "pakeista"
 
-#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:353
-#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:373
-#, fuzzy
+#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:486
+#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:506
 msgid "New name"
-msgstr "Failo pavadinimas"
+msgstr "Naujas pavadinimas"
 
-#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:354
+#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:487
 #, fuzzy
 msgctxt "Enter a new name for a group that already exists"
 msgid "Enter new group name:"
 msgstr "Įrašykite naują profilio pavadinimą:"
 
-#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:374
+#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:507
 #, fuzzy
 msgid "Enter new group name:"
 msgstr "Įrašykite naują profilio pavadinimą:"
 
-#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:393
-#, fuzzy
+#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:526
 msgid "&Delete group"
-msgstr "Pa&šalinti"
+msgstr "&Trinti grupę"
 
-#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:400
-#, fuzzy
+#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:533
 msgid "&Rename group"
-msgstr "Pe&rvadinti"
+msgstr "&Pervadinti grupę"
 
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:112
 #, fuzzy
@@ -2734,7 +2709,7 @@ msgstr ""
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:698
 #: widgets/SmartPlaylistEditor.cpp:185
 msgid "Track #"
-msgstr "Takelis"
+msgstr "Daina #"
 
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:256
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:699
@@ -2743,9 +2718,8 @@ msgstr "Diskas #"
 
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:257
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:700
-#, fuzzy
 msgid "First Played"
-msgstr "Pirmą kartą atlikta:"
+msgstr "Pirmiausiai grota"
 
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:260
 #: playlist/PlaylistModel.cpp:694
@@ -2849,9 +2823,8 @@ msgid "Delete the preset."
 msgstr "Pašalinti."
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:266
-#, fuzzy
 msgid "Playlist Name"
-msgstr "Grojaraščio pavadinimas:"
+msgstr "Grojaraščio pavadinimas"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:267
 #, fuzzy
@@ -2859,9 +2832,8 @@ msgid "Enter a name for the playlist:"
 msgstr "&Įrašykite įrenginio pavadinimą (būtina):"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:277
-#, fuzzy
 msgid "Warning"
-msgstr "Dėmesio!"
+msgstr "Dėmesio"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:277
 #, fuzzy
@@ -2894,12 +2866,11 @@ msgid "Unknown"
 msgstr "Nežinomas"
 
 #: browsers/CollectionTreeItem.cpp:170
-#, fuzzy
 msgid "Counting"
-msgstr "Fonoteka"
+msgstr "Skaičiuojama"
 
 #: browsers/CollectionTreeItem.cpp:188 playlist/PlaylistModel.cpp:281
-#, fuzzy, kde-format
+#, kde-format
 msgid "1 track"
 msgid_plural "%1 tracks"
 msgstr[0] "%1 daina"
@@ -2907,9 +2878,8 @@ msgstr[1] "%1 dainos"
 msgstr[2] "%1 dainų"
 
 #: firstruntutorial/FirstRunTutorialPage.cpp:59
-#, fuzzy
 msgid "Close"
-msgstr "Kompozitoius"
+msgstr "Užverti"
 
 #: MediaDevicePluginManager.cpp:61
 msgid "Manage Devices and Plugins"
@@ -3077,7 +3047,7 @@ msgstr ""
 
 #: MediaDevicePluginManager.cpp:694
 msgid "Error Creating File"
-msgstr ""
+msgstr "Klaida, kuriant failą"
 
 #: MediaDevicePluginManager.cpp:704
 #, kde-format
@@ -3091,21 +3061,21 @@ msgstr ""
 
 #: MediaDevicePluginManager.cpp:708
 msgid "Error Removing File"
-msgstr ""
+msgstr "Klaida, šalinant failą"
 
-#: MainWindow.cpp:287
+#: MainWindow.cpp:280
 msgid "Internet"
 msgstr "Internetas"
 
-#: MainWindow.cpp:295
+#: MainWindow.cpp:288
 msgid "Playlists"
 msgstr "Grojaraščiai"
 
-#: MainWindow.cpp:300
+#: MainWindow.cpp:293
 msgid "Files"
 msgstr "Failai"
 
-#: MainWindow.cpp:443
+#: MainWindow.cpp:436
 #, fuzzy
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
@@ -3116,153 +3086,153 @@ msgstr ""
 "darbą nurodykite komandą <B>Baigti</B>, esančią meniu arba Amarok sisteminio "
 "dėklo ženkliuke.</qt>"
 
-#: MainWindow.cpp:445
+#: MainWindow.cpp:438
 msgid "Docking in System Tray"
 msgstr "Nukelti į sistemos dėklą"
 
-#: MainWindow.cpp:470
+#: MainWindow.cpp:463
 msgid "Use relative path for &saving"
 msgstr ""
 
-#: MainWindow.cpp:475
+#: MainWindow.cpp:468
 msgid "Save As"
 msgstr "Išsaugoti kaip"
 
-#: MainWindow.cpp:513
+#: MainWindow.cpp:506
 msgid "Play Media (Files or URLs)"
 msgstr "Groti muziką (failus ar URL)"
 
-#: MainWindow.cpp:513
+#: MainWindow.cpp:506
 msgid "Add Media (Files or URLs)"
 msgstr "Įdėti muziką (failus ar URL)"
 
-#: MainWindow.cpp:528
+#: MainWindow.cpp:521
 msgid "Add Stream"
 msgstr "Įdėti srautą"
 
-#: MainWindow.cpp:528
+#: MainWindow.cpp:521
 msgid "Enter Stream URL:"
 msgstr "Įrašykite srauto URL:"
 
-#: MainWindow.cpp:622
+#: MainWindow.cpp:615
 msgid "&Add Media..."
 msgstr "&Įdėti muziką..."
 
-#: MainWindow.cpp:627
+#: MainWindow.cpp:620
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "&Išvalyti grojaraštį"
 
-#: MainWindow.cpp:631
+#: MainWindow.cpp:624
 msgid "&Add Stream..."
 msgstr "&Įdėti srautą..."
 
-#: MainWindow.cpp:635
+#: MainWindow.cpp:628
 msgid "&Export Playlist As..."
 msgstr "&Eksportuoti grojaraštį kaip..."
 
-#: MainWindow.cpp:639
+#: MainWindow.cpp:632
 msgid "&Save Playlist"
 msgstr "Į&rašyti grojaraštį"
 
-#: MainWindow.cpp:643 covermanager/CoverManager.cpp:98
+#: MainWindow.cpp:636 covermanager/CoverManager.cpp:98
 msgid "Cover Manager"
 msgstr "Viršelių tvarkyklė"
 
-#: MainWindow.cpp:655
+#: MainWindow.cpp:648
 msgid "Play Media..."
 msgstr "Groti kūrinį..."
 
-#: MainWindow.cpp:661
+#: MainWindow.cpp:654
 msgid "Play Audio CD"
 msgstr "Groti muzikinį CD"
 
-#: MainWindow.cpp:670
+#: MainWindow.cpp:663
 msgid "&Seek Forward"
 msgstr "&Prasukti pirmyn"
 
-#: MainWindow.cpp:676
+#: MainWindow.cpp:669
 msgid "&Seek Backward"
 msgstr "&Prasukti atgal"
 
-#: MainWindow.cpp:683
+#: MainWindow.cpp:676
 msgid "Update Collection"
 msgstr "Atnaujinti fonoteką"
 
-#: MainWindow.cpp:690
+#: MainWindow.cpp:683
 msgid "Previous Track"
 msgstr "Ankstesnė daina"
 
-#: MainWindow.cpp:698
+#: MainWindow.cpp:691
 msgid "Next Track"
 msgstr "Kita daina"
 
-#: MainWindow.cpp:701
+#: MainWindow.cpp:694
 msgid "Increase Volume"
 msgstr "Pagarsinti"
 
-#: MainWindow.cpp:707
+#: MainWindow.cpp:700
 msgid "Decrease Volume"
 msgstr "Pritildyti"
 
-#: MainWindow.cpp:713
+#: MainWindow.cpp:706
 msgid "Toggle Main Window"
 msgstr "Įj./išj. pagrindinį langą"
 
-#: MainWindow.cpp:718
+#: MainWindow.cpp:711
 msgid "Show On Screen Display"
 msgstr "Rodyti pranešimus"
 
-#: MainWindow.cpp:723
+#: MainWindow.cpp:716
 msgid "Mute Volume"
 msgstr "Išjungti garsą"
 
-#: MainWindow.cpp:728
+#: MainWindow.cpp:721
 msgid "Love Current Track"
 msgstr "Ši daina patinka"
 
-#: MainWindow.cpp:733
+#: MainWindow.cpp:726
 msgid "Rate Current Track: 1"
 msgstr "Įvertinti šią dainą: 1"
 
-#: MainWindow.cpp:738
+#: MainWindow.cpp:731
 msgid "Rate Current Track: 2"
 msgstr "Įvertinti šią dainą: 2"
 
-#: MainWindow.cpp:743
+#: MainWindow.cpp:736
 msgid "Rate Current Track: 3"
 msgstr "Įvertinti šią dainą: 3"
 
-#: MainWindow.cpp:748
+#: MainWindow.cpp:741
 msgid "Rate Current Track: 4"
 msgstr "Įvertinti šią dainą: 4"
 
-#: MainWindow.cpp:753
+#: MainWindow.cpp:746
 msgid "Rate Current Track: 5"
 msgstr "Įvertinti šią dainą: 5"
 
-#: MainWindow.cpp:814
+#: MainWindow.cpp:807
 msgid "&Music"
 msgstr "&Muzika"
 
-#: MainWindow.cpp:818
+#: MainWindow.cpp:811
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:868
+#: MainWindow.cpp:852
 msgid "&Tools"
 msgstr "Įrank&iai"
 
-#: MainWindow.cpp:879
+#: MainWindow.cpp:863
 msgid "&Settings"
 msgstr "&Parinktys"
 
-#: MainWindow.cpp:976
+#: MainWindow.cpp:959
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Pristabdyta  ::  %1"
 
-#: MainWindow.cpp:988
+#: MainWindow.cpp:971
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 – %2  ::  %3"
@@ -4602,9 +4572,8 @@ msgstr "Podcast parinktys"
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:29
 #. i18n: ectx: property (text), widget (QPushButton, pushButtonPhonon)
 #: rc.cpp:578
-#, fuzzy
 msgid "Configure"
-msgstr "&Konfigūruoti"
+msgstr "Konfigūruoti"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:40
 #. i18n: ectx: property (whatsThis), widget (QGroupBox, opt_crossfade_2)
@@ -4950,9 +4919,8 @@ msgstr ""
 #. i18n: file: dialogs/PlaylistLayoutEditDialog.ui:181
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
 #: rc.cpp:749
-#, fuzzy
 msgid "Preview"
-msgstr "Ankstesnė daina"
+msgstr "Peržiūra"
 
 #. i18n: file: dialogs/EditCoverSearchDialog.ui:25
 #. i18n: ectx: property (windowTitle), widget (QDialog, EditCoverSearchDialog)
@@ -4974,31 +4942,31 @@ msgstr "Tarptautinė"
 
 #. i18n: file: dialogs/EditCoverSearchDialog.ui:67
 #. i18n: ectx: property (text), item, widget (KComboBox, amazonLocale)
-#: rc.cpp:761 covermanager/CoverManager.cpp:211
+#: rc.cpp:761 covermanager/CoverManager.cpp:212
 msgid "Canada"
 msgstr "Kanada"
 
 #. i18n: file: dialogs/EditCoverSearchDialog.ui:72
 #. i18n: ectx: property (text), item, widget (KComboBox, amazonLocale)
-#: rc.cpp:764 covermanager/CoverManager.cpp:215
+#: rc.cpp:764 covermanager/CoverManager.cpp:216
 msgid "France"
 msgstr "Prancūzija"
 
 #. i18n: file: dialogs/EditCoverSearchDialog.ui:77
 #. i18n: ectx: property (text), item, widget (KComboBox, amazonLocale)
-#: rc.cpp:767 covermanager/CoverManager.cpp:219
+#: rc.cpp:767 covermanager/CoverManager.cpp:220
 msgid "Germany"
 msgstr "Vokietija"
 
 #. i18n: file: dialogs/EditCoverSearchDialog.ui:82
 #. i18n: ectx: property (text), item, widget (KComboBox, amazonLocale)
-#: rc.cpp:770 covermanager/CoverManager.cpp:223
+#: rc.cpp:770 covermanager/CoverManager.cpp:224
 msgid "Japan"
 msgstr "Japonija"
 
 #. i18n: file: dialogs/EditCoverSearchDialog.ui:87
 #. i18n: ectx: property (text), item, widget (KComboBox, amazonLocale)
-#: rc.cpp:773 covermanager/CoverManager.cpp:227
+#: rc.cpp:773 covermanager/CoverManager.cpp:228
 msgid "United Kingdom"
 msgstr "Jungtinės karalystės"
 
@@ -5017,7 +4985,6 @@ msgstr "Dainos informacija"
 #. i18n: file: dialogs/TagDialogBase.ui:34
 #. i18n: ectx: attribute (title), widget (QWidget, summaryTab)
 #: rc.cpp:783
-#, fuzzy
 msgid "S&ummary"
 msgstr "&Santrauka"
 
@@ -5032,9 +4999,8 @@ msgstr "Daina – atlikėjas – albumas"
 #. i18n: file: dialogs/TagDialogBase.ui:142
 #. i18n: ectx: attribute (title), widget (QWidget, tagsTab)
 #: rc.cpp:789
-#, fuzzy
 msgid "Ta&gs"
-msgstr "&Laukeliai"
+msgstr "Ž&ymos"
 
 #. i18n: file: dialogs/TagDialogBase.ui:150
 #. i18n: ectx: property (text), widget (QLabel, textLabel1)
@@ -5099,21 +5065,18 @@ msgstr "Spėti laukelių meta in&formaciją pagal failo pavadinimą"
 #. i18n: file: dialogs/TagDialogBase.ui:438
 #. i18n: ectx: attribute (title), widget (QWidget, lyricsTab)
 #: rc.cpp:822
-#, fuzzy
 msgid "L&yrics"
 msgstr "&Tekstai"
 
 #. i18n: file: dialogs/TagDialogBase.ui:455
 #. i18n: ectx: attribute (title), widget (QWidget, statisticsTab)
 #: rc.cpp:825
-#, fuzzy
 msgid "St&atistics"
 msgstr "St&atistika"
 
 #. i18n: file: dialogs/TagDialogBase.ui:606
 #. i18n: ectx: attribute (title), widget (QWidget, labelsTab)
 #: rc.cpp:837
-#, fuzzy
 msgid "La&bels"
 msgstr "&Etiketės"
 
@@ -5141,13 +5104,13 @@ msgstr "Vieta:"
 
 #. i18n: file: dialogs/TagDialogBase.ui:695
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_previous)
-#: rc.cpp:849 widgets/ProgressiveSearchWidget.cpp:63
+#: rc.cpp:849 widgets/ProgressiveSearchWidget.cpp:64
 msgid "&Previous"
 msgstr "&Ankstesnė"
 
 #. i18n: file: dialogs/TagDialogBase.ui:705
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_next)
-#: rc.cpp:852 widgets/ProgressiveSearchWidget.cpp:60
+#: rc.cpp:852 widgets/ProgressiveSearchWidget.cpp:61
 msgid "&Next"
 msgstr "&Kita"
 
@@ -5430,7 +5393,6 @@ msgstr ""
 #. i18n: file: dialogs/EditFilterDialog.ui:287
 #. i18n: ectx: property (text), widget (QRadioButton, andButton)
 #: rc.cpp:990
-#, fuzzy
 msgid "AND"
 msgstr "IR"
 
@@ -5449,7 +5411,6 @@ msgstr ""
 #. i18n: file: dialogs/EditFilterDialog.ui:297
 #. i18n: ectx: property (text), widget (QRadioButton, orButton)
 #: rc.cpp:996
-#, fuzzy
 msgid "OR"
 msgstr "ARBA"
 
@@ -6013,7 +5974,7 @@ msgstr "Nario tipas:"
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:58
 #. i18n: ectx: property (text), item, widget (QComboBox, typeComboBox)
-#: rc.cpp:1275 services/jamendo/JamendoService.cpp:108
+#: rc.cpp:1275 services/jamendo/JamendoService.cpp:110
 msgid "Download"
 msgstr "Parsisiųsti"
 
@@ -6359,23 +6320,23 @@ msgstr "Kadrų dažnis"
 
 #: analyzers/blockanalyzer.cpp:449
 msgid "50 fps"
-msgstr ""
+msgstr "50 kps"
 
 #: analyzers/blockanalyzer.cpp:452
 msgid "33 fps"
-msgstr ""
+msgstr "33 kps"
 
 #: analyzers/blockanalyzer.cpp:455
 msgid "25 fps"
-msgstr ""
+msgstr "25 kps"
 
 #: analyzers/blockanalyzer.cpp:458
 msgid "20 fps"
-msgstr ""
+msgstr "20 kps"
 
 #: analyzers/blockanalyzer.cpp:461
 msgid "10 fps"
-msgstr ""
+msgstr "10 kps"
 
 #: analyzers/analyzerfactory.cpp:83
 msgid "Click for Analyzers"
@@ -6419,9 +6380,9 @@ msgctxt ""
 "Directory update complete. Added 4 feeds in 6 categories."
 msgid "1 category."
 msgid_plural "%1 categories."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%1 kategorija."
+msgstr[1] "%1 kategorijos."
+msgstr[2] "%1 kategorijų."
 
 #: services/opmldirectory/OpmlDirectoryService.cpp:40
 #, fuzzy
@@ -6433,7 +6394,7 @@ msgid "A large listing of podcasts"
 msgstr ""
 
 #: services/opmldirectory/OpmlDirectoryService.cpp:95
-#: services/jamendo/JamendoService.cpp:102
+#: services/jamendo/JamendoService.cpp:104
 msgctxt "Fetch new information from the website"
 msgid "Update"
 msgstr "Atnaujinti"
@@ -6442,12 +6403,12 @@ msgstr "Atnaujinti"
 msgid "Subscribe"
 msgstr "Prenumeruoti"
 
-#: services/opmldirectory/OpmlDirectoryService.cpp:147
+#: services/opmldirectory/OpmlDirectoryService.cpp:144
 #, fuzzy
 msgid "Downloading Podcast Directory Database"
 msgstr "Atsiunčiama Jamendo.com duomenų bazė"
 
-#: services/opmldirectory/OpmlDirectoryService.cpp:176
+#: services/opmldirectory/OpmlDirectoryService.cpp:173
 #, fuzzy
 msgid "Updating the local Podcast database."
 msgstr "Atnaujinama duomenų bazė"
@@ -6472,7 +6433,7 @@ msgstr "Ctrl+B"
 
 #: services/lastfm/meta/LastFmMeta.cpp:105
 msgid "Ban this track"
-msgstr "Užblokuoti šį takelį"
+msgstr "Užblokuoti šią dainą"
 
 #: services/lastfm/meta/LastFmMeta.cpp:109
 msgid "Last.fm: &Skip"
@@ -6484,7 +6445,7 @@ msgstr "Ctrl+S"
 
 #: services/lastfm/meta/LastFmMeta.cpp:111
 msgid "Skip this track"
-msgstr "Praleisti šį takelį"
+msgstr "Praleisti šią dainą"
 
 #: services/lastfm/meta/LastFmMeta.cpp:155
 #: services/lastfm/meta/LastFmMeta.cpp:405
@@ -6551,9 +6512,8 @@ msgid "Last.fm is cool..."
 msgstr "yra."
 
 #: services/lastfm/LastFmTreeModel.cpp:138
-#, fuzzy
 msgid "Personal Radio"
-msgstr "%1 asmeninis radijas"
+msgstr "Asmeninis radijas"
 
 #: services/lastfm/LastFmTreeModel.cpp:139
 #, fuzzy
@@ -6562,16 +6522,15 @@ msgstr "Pažymėtas dainas"
 
 #: services/lastfm/LastFmTreeModel.cpp:140
 msgid "Neighborhood"
-msgstr ""
+msgstr "Kaiminystė"
 
 #: services/lastfm/LastFmTreeModel.cpp:318
-#, fuzzy
 msgid "My Recommendations"
-msgstr "%1 mylimas radijas"
+msgstr "Mano rekomendacijos"
 
 #: services/lastfm/LastFmTreeModel.cpp:320
 msgid "My Radio Station"
-msgstr ""
+msgstr "Mano radijo stotis"
 
 #: services/lastfm/LastFmTreeModel.cpp:322
 #, fuzzy
@@ -6580,7 +6539,7 @@ msgstr "Pažymėtas dainas"
 
 #: services/lastfm/LastFmTreeModel.cpp:324
 msgid "My Neighborhood"
-msgstr ""
+msgstr "Mano kaimynai"
 
 #: services/lastfm/LastFmTreeModel.cpp:329
 #, fuzzy
@@ -6588,24 +6547,21 @@ msgid "My Top Artists"
 msgstr "Be atlikėjo"
 
 #: services/lastfm/LastFmTreeModel.cpp:331
-#, fuzzy
 msgid "My Tags"
-msgstr "Laukeliai"
+msgstr "Mano žymos"
 
 #: services/lastfm/LastFmTreeModel.cpp:333
-#, fuzzy
 msgid "Friends"
-msgstr "Failai"
+msgstr "Draugai"
 
 #: services/lastfm/LastFmTreeModel.cpp:335
 msgid "Neighbors"
-msgstr ""
+msgstr "Kaimynai"
 
 #: services/lastfm/LoveTrackAction.cpp:28
 #: services/lastfm/LastFmService.cpp:268
-#, fuzzy
 msgid "Last.fm: Love"
-msgstr "Last.fm: &Myliu"
+msgstr "Last.fm: Myliu"
 
 #: services/lastfm/LastFmService.cpp:184
 #, fuzzy
@@ -6656,7 +6612,7 @@ msgstr "Naudotojo vardas:"
 
 #: services/lastfm/LastFmService.cpp:438
 msgid "Age: "
-msgstr ""
+msgstr "Amžius: "
 
 #: services/lastfm/LastFmService.cpp:439
 #, fuzzy
@@ -6685,10 +6641,9 @@ msgstr ""
 #: services/lastfm/LastFmService.cpp:517
 #, fuzzy
 msgid "Tag"
-msgstr "Laukeliai"
+msgstr "Žyma"
 
 #: services/lastfm/LastFmService.cpp:517
-#, fuzzy
 msgid "User"
 msgstr "Naudotojas"
 
@@ -6699,33 +6654,34 @@ msgid "Loved Track: %1"
 msgstr "Takelis "
 
 #: services/lastfm/LastFmServiceSettings.cpp:88
-#, fuzzy
 msgid "Testing..."
-msgstr "Jungiamasi..."
+msgstr "Bandoma..."
 
-#: services/lastfm/LastFmServiceSettings.cpp:124
-msgctxt "The operation completed as expected"
-msgid "Success"
-msgstr ""
-
-#: services/lastfm/LastFmServiceSettings.cpp:130
+#: services/lastfm/LastFmServiceSettings.cpp:126
+#: services/lastfm/LastFmServiceSettings.cpp:138
 #, fuzzy
 msgid ""
 "Either the username or the password is incorrect, please correct and try "
 "again"
 msgstr "ir."
 
-#: services/lastfm/LastFmServiceSettings.cpp:130
-#, fuzzy
+#: services/lastfm/LastFmServiceSettings.cpp:126
+#: services/lastfm/LastFmServiceSettings.cpp:138
 msgid "Failed"
-msgstr "Failai"
+msgstr "Nepavyko"
 
-#: services/lastfm/LastFmServiceSettings.cpp:131
+#: services/lastfm/LastFmServiceSettings.cpp:127
+#: services/lastfm/LastFmServiceSettings.cpp:139
 #, fuzzy
 msgid "Test Login"
 msgstr "Prisijungti prie Mp3tunes"
 
-#: services/lastfm/LastFmServiceSettings.cpp:137
+#: services/lastfm/LastFmServiceSettings.cpp:131
+msgctxt "The operation completed as expected"
+msgid "Success"
+msgstr ""
+
+#: services/lastfm/LastFmServiceSettings.cpp:145
 msgid ""
 "Unable to reach the internet, please check your firewall settings and try "
 "again"
@@ -6828,9 +6784,8 @@ msgid "Fetching Magnatune.com front page"
 msgstr "Atsiunčiama magnatune.com duomenų bazė"
 
 #: services/magnatune/MagnatuneCollectionLocation.cpp:43
-#, fuzzy
 msgid "Preview Tracks"
-msgstr "Ankstesnė daina"
+msgstr "Peržiūrėti dainas"
 
 #: services/magnatune/MagnatuneCollectionLocation.cpp:46
 #, fuzzy
@@ -6889,26 +6844,26 @@ msgstr[2] ""
 "atlikėjai"
 
 #: services/magnatune/MagnatuneXmlParser.cpp:67
-#, fuzzy, kde-format
+#, kde-format
 msgctxt ""
 "Middle part of: Magnatune.com database update complete. Added 3 tracks on 4 "
 "albums from 5 artists."
 msgid "1 album from "
 msgid_plural "%1 albums from "
-msgstr[0] "%1 albumas"
-msgstr[1] "%1 albumai"
-msgstr[2] "%1 albumų"
+msgstr[0] "%1 albumas iš "
+msgstr[1] "%1 albumai iš "
+msgstr[2] "%1 albumų iš "
 
 #: services/magnatune/MagnatuneXmlParser.cpp:68
-#, fuzzy, kde-format
+#, kde-format
 msgctxt ""
 "Last part of: Magnatune.com database update complete. Added 3 tracks on 4 "
 "albums from 5 artists."
 msgid "1 artist."
 msgid_plural "%1 artists."
-msgstr[0] "atlikėjas"
-msgstr[1] "atlikėjas"
-msgstr[2] "atlikėjas"
+msgstr[0] "%1 atlikėjas."
+msgstr[1] "%1 atlikėjai."
+msgstr[2] "%1 atlikėjų."
 
 #: services/magnatune/MagnatuneRedownloadHandler.cpp:60
 #, fuzzy
@@ -6933,11 +6888,6 @@ msgstr "Pakartotinai atsiunčiant informaciją ivyko klaida."
 msgid "The friendly record company with the motto \"We are not evil!\""
 msgstr "Draugiška įrašų kompanija, kurios šūkis: „Mes nesame blogi!“"
 
-#: services/magnatune/MagnatuneStore.cpp:209
-#: widgets/ProgressiveSearchWidget.cpp:128
-msgid "Search Preferences"
-msgstr ""
-
 #: services/magnatune/MagnatuneStore.cpp:221
 #, fuzzy
 msgid "Re-download"
@@ -6948,9 +6898,8 @@ msgid "Update Database"
 msgstr "Atnaujinti duombazę"
 
 #: services/magnatune/MagnatuneStore.cpp:227
-#, fuzzy
 msgid "Tools"
-msgstr "Įrank&iai"
+msgstr "Įrankiai"
 
 #: services/magnatune/MagnatuneStore.cpp:247
 msgid "Download Album"
@@ -7086,24 +7035,8 @@ msgid "Could not process download"
 msgstr "Nepavyko pakartotinai atsiųsti albumo"
 
 #: services/ServiceInfoProxy.cpp:169
-#, fuzzy
 msgid "Home"
-msgstr ""
-"#-#-#-#-#  kdeqt.po (kdeqt)  #-#-#-#-#\n"
-"Pradžia\n"
-"#-#-#-#-#  konqueror.po (konqueror)  #-#-#-#-#\n"
-"Namai\n"
-"#-#-#-#-#  plasma_applet_folderview.po (plasma_applet_folderview)  #-#-#-#-"
-"#\n"
-"Namai\n"
-"#-#-#-#-#  marble.po (marble)  #-#-#-#-#\n"
-"Pradžia\n"
-"#-#-#-#-#  kmobiletools.po (kmobiletools)  #-#-#-#-#\n"
-"Pradžia\n"
-"#-#-#-#-#  kabcakonadi.po (kabcakonadi)  #-#-#-#-#\n"
-"Pradžia\n"
-"#-#-#-#-#  kopete.po (kopete)  #-#-#-#-#\n"
-"Namai"
+msgstr "Namai"
 
 #: services/ServicePluginManager.cpp:230 services/ServicePluginManager.cpp:244
 #: services/ServicePluginManager.cpp:257
@@ -7115,25 +7048,24 @@ msgstr "Ne yra"
 #: services/scriptable/ScriptableServiceInfoParser.cpp:65
 #: services/scriptable/ScriptableServiceInfoParser.cpp:81
 #: services/scriptable/ScriptableServiceInfoParser.cpp:97
-#, fuzzy
 msgid "Loading info..."
-msgstr "Įkeliamos miniatiūros..."
+msgstr "Įkeliama informacija..."
 
 #: services/ampache/AmpacheService.cpp:121
 #, fuzzy
 msgid "Use Amarok as a seamless frontend to your Ampache server."
 msgstr "Naudokite Amarok kaip betarpišką Ampache serverio sąsają!"
 
-#: services/ampache/AmpacheService.cpp:183
+#: services/ampache/AmpacheService.cpp:201
 msgid "Enter the server name and a password"
 msgstr "Įrašykite serverio pavadinimą ir slaptažodį"
 
-#: services/ampache/AmpacheService.cpp:242
+#: services/ampache/AmpacheService.cpp:260
 #, fuzzy
 msgid "Authenticating with Ampache"
 msgstr "Vyksta patvirtinimas"
 
-#: services/ampache/AmpacheService.cpp:270
+#: services/ampache/AmpacheService.cpp:288
 #, fuzzy
 msgid "Authentication Error"
 msgstr "Patvirtinimo klaida!"
@@ -7268,15 +7200,15 @@ msgstr "Jamendo.com: &Atsiųsti"
 msgid "A site where artists can freely share their music"
 msgstr "Svetainė, kurioje atlikėjai demonstruoja savo kūrinius pasauliui"
 
-#: services/jamendo/JamendoService.cpp:75
+#: services/jamendo/JamendoService.cpp:77
 msgid "A site where artists can showcase their creations to the world"
 msgstr "Svetainė, kurioje atlikėjai demonstruoja savo kūrinius pasauliui"
 
-#: services/jamendo/JamendoService.cpp:172
+#: services/jamendo/JamendoService.cpp:175
 msgid "Downloading Jamendo.com Database"
 msgstr "Atsiunčiama Jamendo.com duomenų bazė"
 
-#: services/jamendo/JamendoService.cpp:195
+#: services/jamendo/JamendoService.cpp:198
 #, fuzzy
 msgid "Updating the local Jamendo database."
 msgstr "Atnaujinama duomenų bazė"
@@ -7292,7 +7224,7 @@ msgstr "Aprašymo nėra..."
 msgid "From Jamendo.com"
 msgstr "Iš Jamendo.com"
 
-#: services/jamendo/JamendoXmlParser.cpp:62
+#: services/jamendo/JamendoXmlParser.cpp:147
 #, fuzzy, kde-format
 msgctxt ""
 "First part of: Jamendo.com database update complete. Added 3 tracks on 4 "
@@ -7303,27 +7235,27 @@ msgstr[0] "dainos nuo"
 msgstr[1] "dainos nuo"
 msgstr[2] "dainos nuo"
 
-#: services/jamendo/JamendoXmlParser.cpp:63
-#, fuzzy, kde-format
+#: services/jamendo/JamendoXmlParser.cpp:148
+#, kde-format
 msgctxt ""
 "Middle part of: Jamendo.com database update complete. Added 3 tracks on 4 "
 "albums from 5 artists."
 msgid "1 album from "
 msgid_plural "%1 albums from "
-msgstr[0] "%1 albumas"
-msgstr[1] "%1 albumai"
-msgstr[2] "%1 albumų"
+msgstr[0] "%1 albumas iš"
+msgstr[1] "%1 albumai iš"
+msgstr[2] "%1 albumų iš "
 
-#: services/jamendo/JamendoXmlParser.cpp:64
-#, fuzzy, kde-format
+#: services/jamendo/JamendoXmlParser.cpp:149
+#, kde-format
 msgctxt ""
 "Last part of: Jamendo.com database update complete. Added 3 tracks on 4 "
 "albums from 5 artists."
 msgid "1 artist."
 msgid_plural "%1 artists."
-msgstr[0] "atlikėjas"
-msgstr[1] "atlikėjas"
-msgstr[2] "atlikėjas"
+msgstr[0] "%1 atlikėjas."
+msgstr[1] "%1 atlikėjai."
+msgstr[2] "%1 atlikėjų."
 
 #: playlist/view/listview/SourceSelectionPopup.cpp:38
 #, fuzzy
@@ -7331,9 +7263,8 @@ msgid "The following sources are available for this track:"
 msgstr "Informacijos apie šią dainą nėra"
 
 #: playlist/view/listview/SourceSelectionPopup.cpp:43
-#, fuzzy
 msgid "Ok"
-msgstr "Normali"
+msgstr "Gerai"
 
 #: playlist/view/PlaylistViewCommon.cpp:63
 msgid "Stop Playing After This Track"
@@ -7364,25 +7295,21 @@ msgid "Placeholder"
 msgstr ""
 
 #: playlist/PlaylistDefines.h:70
-#, fuzzy
 msgctxt "'Album' playlist column name and token for playlist layouts"
 msgid "Album"
 msgstr "Albumas"
 
 #: playlist/PlaylistDefines.h:71
-#, fuzzy
 msgctxt "'Album artist' playlist column name and token for playlist layouts"
 msgid "Album artist"
 msgstr "Albumo atlikėjas"
 
 #: playlist/PlaylistDefines.h:72
-#, fuzzy
 msgctxt "'Artist' playlist column name and token for playlist layouts"
 msgid "Artist"
 msgstr "Atlikėjas"
 
 #: playlist/PlaylistDefines.h:73
-#, fuzzy
 msgctxt "'Bitrate' playlist column name and token for playlist layouts"
 msgid "Bitrate"
 msgstr "Bitų dažnis"
@@ -7395,31 +7322,26 @@ msgid "Bpm"
 msgstr ""
 
 #: playlist/PlaylistDefines.h:75
-#, fuzzy
 msgctxt "'Comment' playlist column name and token for playlist layouts"
 msgid "Comment"
 msgstr "Komentaras"
 
 #: playlist/PlaylistDefines.h:76
-#, fuzzy
 msgctxt "'Composer' playlist column name and token for playlist layouts"
 msgid "Composer"
-msgstr "Kompozitoius"
+msgstr "Kompozitorius"
 
 #: playlist/PlaylistDefines.h:77
-#, fuzzy
 msgctxt "'Cover image' playlist column name and token for playlist layouts"
 msgid "Cover image"
 msgstr "Viršelio paveiksliukas"
 
 #: playlist/PlaylistDefines.h:78
-#, fuzzy
 msgctxt "'Directory' playlist column name and token for playlist layouts"
 msgid "Directory"
 msgstr "Aplankas"
 
 #: playlist/PlaylistDefines.h:79
-#, fuzzy
 msgctxt "'Disc number' playlist column name and token for playlist layouts"
 msgid "Disc number"
 msgstr "Disko numeris"
@@ -7431,56 +7353,48 @@ msgid "Divider"
 msgstr ""
 
 #: playlist/PlaylistDefines.h:81
-#, fuzzy
 msgctxt "'File name' playlist column name and token for playlist layouts"
 msgid "File name"
 msgstr "Failo pavadinimas"
 
 #: playlist/PlaylistDefines.h:82
-#, fuzzy
 msgctxt "'File size' playlist column name and token for playlist layouts"
 msgid "File size"
 msgstr "Failo dydis"
 
 #: playlist/PlaylistDefines.h:83
-#, fuzzy
 msgctxt "'Genre' playlist column name and token for playlist layouts"
 msgid "Genre"
 msgstr "Žanras"
 
 #: playlist/PlaylistDefines.h:84
-#, fuzzy
 msgctxt ""
 "'Group length' (total play time of group) playlist column name and token for "
 "playlist layouts"
 msgid "Group length"
-msgstr "Grupavimo būdai"
+msgstr "Grupės ilgis"
 
 #: playlist/PlaylistDefines.h:85
-#, fuzzy
 msgctxt ""
 "'Group tracks' (number of tracks in group) playlist column name and token "
 "for playlist layouts"
 msgid "Group tracks"
-msgstr "dainos"
+msgstr "Grupės dainos"
 
 #: playlist/PlaylistDefines.h:86
-#, fuzzy
 msgctxt ""
 "'Last played' (when was track last played) playlist column name and token "
 "for playlist layouts"
 msgid "Last played"
-msgstr "Paskutinį kartą grota"
+msgstr "Paskiausiai grota"
 
 #: playlist/PlaylistDefines.h:87
-#, fuzzy
 msgctxt ""
 "'Length' (track length) playlist column name and token for playlist layouts"
 msgid "Length"
 msgstr "Trukmė"
 
 #: playlist/PlaylistDefines.h:88
-#, fuzzy
 msgctxt "'Mood' playlist column name and token for playlist layouts"
 msgid "Mood"
 msgstr "Nuotaika"
@@ -7492,16 +7406,14 @@ msgid "Play count"
 msgstr "Dažnumas:"
 
 #: playlist/PlaylistDefines.h:90
-#, fuzzy
 msgctxt "'Rating' playlist column name and token for playlist layouts"
 msgid "Rating"
 msgstr "Įvertinimas"
 
 #: playlist/PlaylistDefines.h:91
-#, fuzzy
 msgctxt "'Sample rate' playlist column name and token for playlist layouts"
 msgid "Sample rate"
-msgstr "Kadrų dažnis:"
+msgstr "Taktavimo dažnis"
 
 #: playlist/PlaylistDefines.h:92
 #, fuzzy
@@ -7524,7 +7436,6 @@ msgid "SourceEmblem"
 msgstr "Reitingas"
 
 #: playlist/PlaylistDefines.h:95
-#, fuzzy
 msgctxt ""
 "'Title' (track name) playlist column name and token for playlist layouts"
 msgid "Title"
@@ -7539,20 +7450,17 @@ msgid "Title (with track number)"
 msgstr "takelis"
 
 #: playlist/PlaylistDefines.h:97
-#, fuzzy
 msgctxt "'Track number' playlist column name and token for playlist layouts"
 msgid "Track number"
-msgstr "Takelis"
+msgstr "Dainos numeris"
 
 #: playlist/PlaylistDefines.h:98
-#, fuzzy
 msgctxt ""
 "'Type' (file format) playlist column name and token for playlist layouts"
 msgid "Type"
 msgstr "Tipas"
 
 #: playlist/PlaylistDefines.h:99
-#, fuzzy
 msgctxt "'Year' playlist column name and token for playlist layouts"
 msgid "Year"
 msgstr "Metai"
@@ -7578,15 +7486,14 @@ msgid "Playlist layouts"
 msgstr "Grojaraščių failai"
 
 #: playlist/layouts/LayoutConfigAction.cpp:70
-#, fuzzy
 msgid "Configure playlist layouts..."
-msgstr "Derinti..."
+msgstr "Konfigūruoti grojaraščio išdėstymą..."
 
 #: playlist/PlaylistHeader.cpp:42
 msgid "Track Number - Title"
-msgstr "Takelis – Pavadinimas"
+msgstr "Dainos numeris – Pavadinimas"
 
-#: playlist/PlaylistWidget.cpp:125
+#: playlist/PlaylistWidget.cpp:124
 #, fuzzy
 msgid "Show active track"
 msgstr "Praleisti šį takelį"
@@ -7604,12 +7511,11 @@ msgstr "Pašalintos dainos"
 msgid "Track moved"
 msgstr "Pašalintos dainos"
 
-#: playlist/PlaylistActions.cpp:306
+#: playlist/PlaylistActions.cpp:309
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr ""
 
 #: playlist/PlaylistModel.cpp:286
-#, fuzzy
 msgid "Never"
 msgstr "Niekada"
 
@@ -7624,7 +7530,7 @@ msgstr "Disko numeris"
 #: playlist/PlaylistModel.cpp:702
 msgctxt "The Track number for this item"
 msgid "Track"
-msgstr "Takelis"
+msgstr "Daina"
 
 #: playlist/PlaylistModel.cpp:703 widgets/SmartPlaylistEditor.cpp:188
 msgid "BPM"
@@ -7747,13 +7653,13 @@ msgstr ""
 msgctxt ""
 "translate this according to what you translated in TERMS OF USE sentence"
 msgid "y"
-msgstr ""
+msgstr "t"
 
 #: afttagger/afttagger_main.cpp:113
 msgctxt ""
 "translate this according to what you translated in TERMS OF USE sentence"
 msgid "Y"
-msgstr ""
+msgstr "T"
 
 #: statusbar/StatusBar.cpp:218
 msgid "Amarok is paused"
@@ -7795,22 +7701,22 @@ msgstr "Grojama: %1"
 msgctxt "%1 is number of tracks, %2 is time"
 msgid "%1 track (%2)"
 msgid_plural "%1 tracks (%2)"
-msgstr[0] "%1 takelis (%2)"
-msgstr[1] "%1 takeliai (%2)"
-msgstr[2] "%1 takelių (%2)"
+msgstr[0] "%1 daina (%2)"
+msgstr[1] "%1 dainos (%2)"
+msgstr[2] "%1 dainų (%2)"
 
 #: statusbar/StatusBar.cpp:347
 #, kde-format
 msgctxt "%1 is number of tracks"
 msgid "%1 track"
 msgid_plural "%1 tracks"
-msgstr[0] "%1 takelis"
-msgstr[1] "%1 takeliai"
-msgstr[2] "%1 takelių"
+msgstr[0] "%1 daina"
+msgstr[1] "%1 dainos"
+msgstr[2] "%1 dainų"
 
 #: statusbar/ProgressBar.cpp:50 statusbar/CompoundProgressBar.cpp:70
 #: statusbar/CompoundProgressBar.cpp:142 statusbar/CompoundProgressBar.cpp:177
-#: covermanager/CoverManager.cpp:261
+#: covermanager/CoverManager.cpp:262
 msgid "Abort"
 msgstr "Nutraukti"
 
@@ -7830,14 +7736,13 @@ msgid "New Group"
 msgstr "Nauja grupė"
 
 #: amarokurls/BookmarkTreeView.cpp:114
-#, fuzzy
 msgctxt "Load the view represented by this bookmark"
 msgid "&Load"
 msgstr "Į&kelti"
 
 #: amarokurls/BookmarkManagerWidget.cpp:58
 msgid "Url:"
-msgstr ""
+msgstr "Url:"
 
 #: amarokurls/BookmarkManagerWidget.cpp:63
 #, fuzzy
@@ -7850,14 +7755,12 @@ msgid "Goto"
 msgstr "Gera"
 
 #: amarokurls/BookmarkManagerWidget.cpp:85
-#, fuzzy
 msgid "New Bookmark"
-msgstr "Žymelės"
+msgstr "Nauja žymelė"
 
 #: amarokurls/BookmarkManagerWidget.cpp:140
-#, fuzzy
 msgid "Save"
-msgstr "Išsaugoti kaip"
+msgstr "Įrašyti"
 
 #: amarokurls/BookmarkMetaActions.cpp:34
 #, fuzzy
@@ -7879,9 +7782,9 @@ msgid "Album \"%1\" from %2"
 msgstr ""
 
 #: amarokurls/NavigationUrlGenerator.cpp:229
-#, fuzzy, kde-format
+#, kde-format
 msgid "Album \"%1\""
-msgstr "%1 albumai"
+msgstr "Albumas „%1“"
 
 #: amarokurls/NavigationUrlGenerator.cpp:279
 #, kde-format
@@ -7889,14 +7792,13 @@ msgid "Artist \"%1\" from %2"
 msgstr ""
 
 #: amarokurls/NavigationUrlGenerator.cpp:281
-#, fuzzy, kde-format
+#, kde-format
 msgid "Artist \"%1\""
-msgstr "Atlikėjas"
+msgstr "Atlikėjas „%1“"
 
 #: widgets/VolumeWidget.cpp:36
-#, fuzzy
 msgid "Mute"
-msgstr "Garsas išjungtas"
+msgstr "Nutildyti"
 
 #: widgets/VolumeWidget.cpp:41
 msgid "Volume Control"
@@ -7907,73 +7809,69 @@ msgid "Rating changed"
 msgstr "Įvertinimas pakeistas"
 
 #: widgets/Osd.cpp:135
-#, fuzzy, kde-format
+#, kde-format
 msgid "Volume: %1% %2"
-msgstr "Garsumas: %1%"
+msgstr "Garsumas: %1% %2"
 
 #: widgets/Osd.cpp:197
-#, fuzzy
 msgid "Volume: 100% (muted)"
-msgstr "Garsumas: 100%"
+msgstr "Garsumas: 100% (nutildyta)"
 
 #: widgets/Osd.cpp:428
 msgid "OSD Preview - drag to reposition"
 msgstr "Pranešimų peržiūra – norėdami pakeisti vietą tiesiog tempkite"
 
-#: widgets/Osd.cpp:664
+#: widgets/Osd.cpp:666
 msgid "Paused"
 msgstr "Pristabdyta"
 
-#: widgets/ProgressiveSearchWidget.cpp:45
+#: widgets/ProgressiveSearchWidget.cpp:44
 msgid "Warning: tracks have been hidden in the playlist"
 msgstr ""
 
-#: widgets/ProgressiveSearchWidget.cpp:49
-#, fuzzy
+#: widgets/ProgressiveSearchWidget.cpp:48
 msgid "Search playlist"
-msgstr "Išmoningas grojaraštis"
+msgstr "Ieškoti grojaraštyje"
 
-#: widgets/ProgressiveSearchWidget.cpp:53
+#: widgets/ProgressiveSearchWidget.cpp:52
 msgid "Start typing to progressively search through the playlist"
 msgstr ""
 
-#: widgets/ProgressiveSearchWidget.cpp:74
-#, fuzzy
+#: widgets/ProgressiveSearchWidget.cpp:75
 msgid "Tracks"
-msgstr "&Dainos"
+msgstr "Dainos"
 
-#: widgets/ProgressiveSearchWidget.cpp:81
+#: widgets/ProgressiveSearchWidget.cpp:82
 msgid "Albums"
 msgstr "Albumai"
 
-#: widgets/ProgressiveSearchWidget.cpp:88
+#: widgets/ProgressiveSearchWidget.cpp:89
 msgid "Artists"
 msgstr "Atlikėjai"
 
-#: widgets/ProgressiveSearchWidget.cpp:102
-#, fuzzy
+#: widgets/ProgressiveSearchWidget.cpp:103
 msgid "Composers"
-msgstr "Kompozitoius"
+msgstr "Kompozitoriai"
 
-#: widgets/ProgressiveSearchWidget.cpp:109 widgets/SmartPlaylistEditor.cpp:977
+#: widgets/ProgressiveSearchWidget.cpp:110 widgets/SmartPlaylistEditor.cpp:977
 msgid "Years"
 msgstr "Metai"
 
-#: widgets/ProgressiveSearchWidget.cpp:118
+#: widgets/ProgressiveSearchWidget.cpp:119
 #, fuzzy
 msgid "Show only matches"
 msgstr "Dažnumas"
 
-#: widgets/SearchWidget.cpp:62 covermanager/CoverManager.cpp:173
-msgid "Enter search terms here"
-msgstr "Įrašykite paieškos kriterijus"
+#: widgets/ProgressiveSearchWidget.cpp:129
+msgid "Search Preferences"
+msgstr ""
 
-#: widgets/SearchWidget.cpp:66
+#: widgets/SearchWidget.cpp:65
 #, fuzzy
 msgid "Enter space-separated terms to search."
 msgstr "Įrašykite tarpais atskirtus kriterijus paieškai albumuse"
 
-#: widgets/SearchWidget.cpp:76 widgets/SearchWidget.cpp:110
+#: widgets/SearchWidget.cpp:75 widgets/SearchWidget.cpp:109
 #, fuzzy
 msgid "Edit filter"
 msgstr "Keisti filtrą"
@@ -8035,9 +7933,8 @@ msgid "Alignment"
 msgstr "Visi valdikliai"
 
 #: widgets/TokenWithLayout.cpp:170
-#, fuzzy
 msgid "Layout"
-msgstr "dažnumas"
+msgstr "Išdėstymas"
 
 #: widgets/TokenLayoutWidget.cpp:48
 msgid "Drag tokens here to define a filename scheme."
@@ -8344,11 +8241,11 @@ msgstr "muzika filmui"
 msgid "part"
 msgstr "dalis"
 
-#: covermanager/CoverFetcher.cpp:247 covermanager/CoverFetcher.cpp:504
+#: covermanager/CoverFetcher.cpp:247 covermanager/CoverFetcher.cpp:505
 msgid "No cover found"
 msgstr "Nepavyko rasti viršelio"
 
-#: covermanager/CoverFetcher.cpp:280 covermanager/CoverFetcher.cpp:463
+#: covermanager/CoverFetcher.cpp:280 covermanager/CoverFetcher.cpp:464
 msgid "Fetching Cover"
 msgstr "Atsiunčiamas viršelis"
 
@@ -8368,7 +8265,7 @@ msgstr "Viršelio atsiųsti nepavyko."
 msgid "The cover-data produced an invalid image."
 msgstr "Viršelio paveikslėlis sugadintas."
 
-#: covermanager/CoverFetcher.cpp:495
+#: covermanager/CoverFetcher.cpp:496
 msgid ""
 "You have seen all the covers Amazon returned using the query below. Perhaps "
 "you can refine it:"
@@ -8376,31 +8273,31 @@ msgstr ""
 "Matėte visus užklausai Amazon pateiktus viršelius. Galbūt norite užklausti "
 "kitaip:"
 
-#: covermanager/CoverFetcher.cpp:518
+#: covermanager/CoverFetcher.cpp:519
 msgid "Amazon Query Editor"
 msgstr "Amazon užklausa"
 
-#: covermanager/CoverFetcher.cpp:585
+#: covermanager/CoverFetcher.cpp:586
 msgid "Ask Amazon for covers using this query:"
 msgstr "Ieškoti viršelių Amazon serveryje pagal šią užklausą:"
 
-#: covermanager/CoverFetcher.cpp:606 covermanager/CoverFetcher.cpp:683
+#: covermanager/CoverFetcher.cpp:607 covermanager/CoverFetcher.cpp:684
 msgid "Aborted."
 msgstr "Nutraukta."
 
-#: covermanager/CoverFetcher.cpp:626
+#: covermanager/CoverFetcher.cpp:627
 msgid "Ne&w Search..."
 msgstr "Nauja &paieška..."
 
-#: covermanager/CoverFetcher.cpp:628
+#: covermanager/CoverFetcher.cpp:629
 msgid "&Next Cover"
 msgstr "Kitas &viršelis"
 
-#: covermanager/CoverFetcher.cpp:639
+#: covermanager/CoverFetcher.cpp:640
 msgid "Cover Found"
 msgstr "Rastas viršelis"
 
-#: covermanager/CoverFetcher.cpp:692
+#: covermanager/CoverFetcher.cpp:693
 msgid "Retrieved cover successfully"
 msgstr ""
 
@@ -8408,54 +8305,54 @@ msgstr ""
 msgid "Albums By"
 msgstr "Albumų kūrėjai"
 
-#: covermanager/CoverManager.cpp:113 covermanager/CoverManager.cpp:358
+#: covermanager/CoverManager.cpp:113 covermanager/CoverManager.cpp:359
 msgid "All Artists"
 msgstr "Visi atlikėjai"
 
-#: covermanager/CoverManager.cpp:179
+#: covermanager/CoverManager.cpp:180
 msgid "Enter space-separated terms to search in the albums"
 msgstr "Įrašykite tarpais atskirtus kriterijus paieškai albumuse"
 
-#: covermanager/CoverManager.cpp:186
+#: covermanager/CoverManager.cpp:187
 msgid "All Albums"
 msgstr "Visi albumai"
 
-#: covermanager/CoverManager.cpp:187
+#: covermanager/CoverManager.cpp:188
 msgid "Albums With Cover"
 msgstr "Albumai su viršeliais"
 
-#: covermanager/CoverManager.cpp:188
+#: covermanager/CoverManager.cpp:189
 msgid "Albums Without Cover"
 msgstr "Albumai be viršelių"
 
-#: covermanager/CoverManager.cpp:207
+#: covermanager/CoverManager.cpp:208
 msgctxt "The locale to use when fetching covers from amazon.com"
 msgid "International"
 msgstr "Tarptautinė"
 
-#: covermanager/CoverManager.cpp:234
+#: covermanager/CoverManager.cpp:235
 msgctxt "@title buttontext for popup-menu"
 msgid "View"
 msgstr "Vaizdas"
 
-#: covermanager/CoverManager.cpp:239
+#: covermanager/CoverManager.cpp:240
 msgid "Amazon Locale"
 msgstr "Amazon lokalė"
 
-#: covermanager/CoverManager.cpp:245
+#: covermanager/CoverManager.cpp:246
 msgid "Fetch Missing Covers"
 msgstr "Parsiųsti trūkstamus viršelius"
 
-#: covermanager/CoverManager.cpp:434
+#: covermanager/CoverManager.cpp:435
 msgid "Loading Thumbnails..."
 msgstr "Įkeliamos miniatiūros..."
 
-#: covermanager/CoverManager.cpp:698
+#: covermanager/CoverManager.cpp:699
 msgctxt "The fetching is done."
 msgid "Finished."
 msgstr "Atlikta."
 
-#: covermanager/CoverManager.cpp:700
+#: covermanager/CoverManager.cpp:701
 #, kde-format
 msgid " Cover not found"
 msgid_plural " <b>%1</b> covers not found"
@@ -8463,17 +8360,17 @@ msgstr[0] " nerastas <b>%1</b> viršelis"
 msgstr[1] " nerasti <b>%1</b> viršeliai"
 msgstr[2] " nerasta <b>%1</b> viršelių"
 
-#: covermanager/CoverManager.cpp:713
+#: covermanager/CoverManager.cpp:714
 #, kde-format
 msgid "Fetching cover for %1..."
 msgstr "Parsisiunčiamas %1 viršelis..."
 
-#: covermanager/CoverManager.cpp:715
+#: covermanager/CoverManager.cpp:716
 #, kde-format
 msgid "Fetching cover for %1 - %2..."
 msgstr "Parsisiunčiamas %1 – %2 viršelis..."
 
-#: covermanager/CoverManager.cpp:722
+#: covermanager/CoverManager.cpp:723
 #, kde-format
 msgid "Fetching 1 cover: "
 msgid_plural "Fetching <b>%1</b> covers... : "
@@ -8481,7 +8378,7 @@ msgstr[0] "Parsiunčiamas <b>%1</b> viršelis... :"
 msgstr[1] "Parsiunčiami <b>%1</b> viršeliai... :"
 msgstr[2] "Parsiunčiama <b>%1</b> viršelių.. :"
 
-#: covermanager/CoverManager.cpp:724
+#: covermanager/CoverManager.cpp:725
 #, kde-format
 msgid "1 fetched"
 msgid_plural "%1 fetched"
@@ -8489,11 +8386,11 @@ msgstr[0] "%1 atsiųstas"
 msgstr[1] "%1 atsiųsti"
 msgstr[2] "%1 atsiųsta"
 
-#: covermanager/CoverManager.cpp:728
+#: covermanager/CoverManager.cpp:729
 msgid " - "
 msgstr " – "
 
-#: covermanager/CoverManager.cpp:729
+#: covermanager/CoverManager.cpp:730
 #, kde-format
 msgid "1 not found"
 msgid_plural "%1 not found"
@@ -8501,11 +8398,11 @@ msgstr[0] "%1 nerastas"
 msgstr[1] "%1 nerasti"
 msgstr[2] "%1 nerasta"
 
-#: covermanager/CoverManager.cpp:732
+#: covermanager/CoverManager.cpp:733
 msgid "Connecting..."
 msgstr "Jungiamasi..."
 
-#: covermanager/CoverManager.cpp:757
+#: covermanager/CoverManager.cpp:758
 #, kde-format
 msgid "1 result for \"%2\""
 msgid_plural "%1 results for \"%2\""
@@ -8513,7 +8410,7 @@ msgstr[0] "%1 rezultatas, skirtas „%2“"
 msgstr[1] "%1 rezultatai, skirti „%2“"
 msgstr[2] "%1 rezultatų, skirtų „%2“"
 
-#: covermanager/CoverManager.cpp:760
+#: covermanager/CoverManager.cpp:761
 #, kde-format
 msgid "1 album"
 msgid_plural "%1 albums"
@@ -8521,884 +8418,19 @@ msgstr[0] "%1 albumas"
 msgstr[1] "%1 albumai"
 msgstr[2] "%1 albumų"
 
-#: covermanager/CoverManager.cpp:766
+#: covermanager/CoverManager.cpp:767
 msgid " by "
 msgstr " — "
 
-#: covermanager/CoverManager.cpp:771
+#: covermanager/CoverManager.cpp:772
 #, kde-format
 msgid " - ( <b>%1</b> without cover )"
 msgstr " – (<b>%1</b> be viršelio)"
 
-#: covermanager/CoverManager.cpp:817
+#: covermanager/CoverManager.cpp:818
 msgid "Cover Image"
 msgstr "Viršelio paveiksliukas"
 
-#: covermanager/CoverManager.cpp:875
+#: covermanager/CoverManager.cpp:876
 msgid "No Artist"
 msgstr "Be atlikėjo"
-
-#, fuzzy
-#~ msgid "Save playlist"
-#~ msgstr "Į&rašyti grojaraštį"
-
-#, fuzzy
-#~ msgid "Enter name for the new playlist:"
-#~ msgstr "&Įrašykite įrenginio pavadinimą (būtina):"
-
-#~ msgid "Playlist"
-#~ msgstr "Grojaraštis"
-
-#~ msgid "&Play"
-#~ msgstr "&Groti"
-
-#~ msgid "&Pause"
-#~ msgstr "&Pristabdyti"
-
-#~ msgid "DirectoryListBase"
-#~ msgstr "Aplankų sąrašo langas"
-
-#~ msgid "SQL Podcast"
-#~ msgstr "SQL podcast"
-
-#~ msgid "Podcast"
-#~ msgstr "Podcast"
-
-#, fuzzy
-#~| msgid "&Save Playlist"
-#~ msgctxt "Replace the currently loaded tracks with these"
-#~ msgid "&Overwrite Playlist"
-#~ msgstr "Į&rašyti grojaraštį"
-
-#~ msgid "Playcount:"
-#~ msgstr "Dažnumas:"
-
-#, fuzzy
-#~ msgid "&Remove from iPod"
-#~ msgstr "Pašalinti iš grojaraščio"
-
-#, fuzzy
-#~ msgid "&Disconnect the iPod"
-#~ msgstr "Atjungti"
-
-#, fuzzy
-#~ msgid ""
-#~ "<p>Amarok could not find any collection plugins. Amarok is now updating "
-#~ "the KDE configuration database. Please wait a couple of minutes, then "
-#~ "restart Amarok.</p><p>If this does not help, it is likely that Amarok is "
-#~ "installed under the wrong prefix, please fix your installation using:<pre>"
-#~ "$ cd /path/to/amarok/source-code/<br>$ su -c \"make uninstall\"<br>$ ./"
-#~ "configure --prefix=`kde-config --prefix` && su -c \"make install\"<br>$ "
-#~ "kbuildsycoca4 --noincremental<br>$ amarok</pre>More information can be "
-#~ "found in the README file. For further assistance join us at #amarok on "
-#~ "irc.freenode.net.</p>"
-#~ msgstr ""
-#~ "<p>Amarok nerado jokių fonotekos įskiepių. Amarok atnaujina KDE parinkčių "
-#~ "duomenų bazę. Prašome palaukti keletą minučių ir paleisti Amarok iš naujo."
-#~ "</p><p>Jei tai nepadės, gali būti, kad Amarok įdiegtas blogoje vietoje, "
-#~ "pataisykite įdiegimo vietą komanda:<pre>$ cd /path/to/amarok/source-code/ "
-#~ "<br>$ su -c \"make uninstall\"<br>$ ./configure --prefix=`kde-config --"
-#~ "prefix` && su -c \"make install\"<br>$ kbuildsycoca4<br>$ amarok</"
-#~ "pre>Daugiau informacijos galite rasti README faile. Jei reikia tolimesnės "
-#~ "pagalbos, prisijunkite prie mūsų irc kanalo #amarok serveryje irc."
-#~ "freenode.net.</p>"
-
-#~ msgid "Page #1"
-#~ msgstr "Puslapis #1"
-
-#~ msgid "Page #%1"
-#~ msgstr "Puslapis #%1"
-
-#~ msgid "Unnamed"
-#~ msgstr "Be pavadinimo"
-
-#~ msgid "Configuration Definitions"
-#~ msgstr "Parinkčių aprašymai"
-
-#~ msgid "Main Script File"
-#~ msgstr "Pagrindinis secenarijų failas"
-
-#~ msgid "Null Engine"
-#~ msgstr "Garso sistemos nėra"
-
-#, fuzzy
-#~ msgid "Unknown Wallpaper"
-#~ msgstr "Nežinomas įskiepis"
-
-#, fuzzy
-#~ msgid "no items"
-#~ msgstr " elementus"
-
-#~ msgid "Script initialization failed"
-#~ msgstr "Paleidžiant scenarijų įvyko klaida"
-
-#~ msgid "Unable to load the widget"
-#~ msgstr "Nepavyko įkelti valdiklio"
-
-#, fuzzy
-#~ msgid "Unknown Activity"
-#~ msgstr "Nežinomas atlikėjas"
-
-#, fuzzy
-#~ msgid "%1 Activity"
-#~ msgstr "Įdėti veiklą"
-
-#~ msgid "Unknown Widget"
-#~ msgstr "Nežinomas valdiklis"
-
-#~ msgid "Configure..."
-#~ msgstr "Derinti..."
-
-#~ msgid "Remove this %1"
-#~ msgstr "Pašalinti šį %1"
-
-#~ msgid "Activate %1 Widget"
-#~ msgstr "Aktyvuoti valdiklį %1"
-
-#~ msgid "%1 Settings"
-#~ msgstr "%1 parinktys"
-
-#~ msgctxt "@title:window"
-#~ msgid "%1 Settings"
-#~ msgstr "%1 parinktys"
-
-#~ msgid "Settings"
-#~ msgstr "Parinktys"
-
-#~ msgid "Could not locate the %1 package required for the %2 widget."
-#~ msgstr "Nepavyko rasti %1 paketo, kurio reikia %2 valdikliui."
-
-#~ msgid "Could not create a %1 ScriptEngine for the %2 widget."
-#~ msgstr "Nepavyko sukurti %1 scenarijaus variklio %2 valdikliui."
-
-#~ msgid "Could not open the %1 package required for the %2 widget."
-#~ msgstr "Nepavyko atidaryti %1 paketo, kurio reikia %2 valdikliui."
-
-#~ msgid "This object could not be created."
-#~ msgstr "Nepavyko sukurti šio objekto."
-
-#~ msgid ""
-#~ "This object could not be created for the following reason:<p><b>%1</b></p>"
-#~ msgstr "Šio objekto nepavyko sukurti dėl šių priežasčių: <p><b>%1</b></p>"
-
-#~ msgid "Invalid"
-#~ msgstr "Neteisingas"
-
-#~ msgid "Expand this widget"
-#~ msgstr "Išplėsti šį valdiklį"
-
-#~ msgid "Collapse this widget"
-#~ msgstr "Sutraukti šį valdiklį"
-
-#~ msgid "This system does not support OpenGL widgets."
-#~ msgstr "Ši sistema nepalaiko OpenGL valdiklių."
-
-#~ msgid "Your machine does not support OpenGL widgets."
-#~ msgstr "Jūsų kompiuteris nepalaiko OpenGL valdiklių."
-
-#~ msgid "Next Widget"
-#~ msgstr "Kitas valdiklis"
-
-#~ msgid "Previous Widget"
-#~ msgstr "Ankstesnis valdiklis"
-
-#~ msgid "Lock Widgets"
-#~ msgstr "Užrakinti valdiklius"
-
-#~ msgid "Unlock Widgets"
-#~ msgstr "Atrakinti valdiklius"
-
-#~ msgid "Add Activity"
-#~ msgstr "Įdėti veiklą"
-
-#~ msgid "%1 Options"
-#~ msgstr "%1 parinktys"
-
-#~ msgid "Icon"
-#~ msgstr "Ženkliukas"
-
-#~ msgid "Do you really want to remove this %1?"
-#~ msgstr "Ar iš tikro pašalinti %1?"
-
-#~ msgid "Remove %1"
-#~ msgstr "Pašalinti %1"
-
-#~ msgid "Images"
-#~ msgstr "Paveiksliukai"
-
-#~ msgid "Executable Scripts"
-#~ msgstr "Vykdomi scenarijai"
-
-#~ msgid "Main Config UI File"
-#~ msgstr "Pagrindinis parinkčių lango failas"
-
-#~ msgid "Configuration XML file"
-#~ msgstr "Parinkčių XML failas"
-
-#~ msgid "Installation of <b>%1</b> failed!"
-#~ msgstr "<b>%1</b> diegimas nepavyko!"
-
-#~ msgid "Installation Failed"
-#~ msgstr "Diegimas nepavyko"
-
-#~ msgid "Images for dialogs"
-#~ msgstr "Langų paveiksliukai"
-
-#~ msgid "Generic dialog background"
-#~ msgstr "Bendras langų fonas"
-
-#~ msgid "Theme for the logout dialog"
-#~ msgstr "Išsiregistravimo lango tema"
-
-#~ msgid "Images for widgets"
-#~ msgstr "Valdiklių paveiksliukai"
-
-#~ msgid "Background image for plasmoids"
-#~ msgstr "Plazmoidų fono paveiksliukas"
-
-#~ msgid "Analog clock face"
-#~ msgstr "Mechaninio laikrodžio ciferblatas"
-
-#~ msgid "Background image for panels"
-#~ msgstr "Skydelių fono paveiksliukas"
-
-#~ msgid "Background for graphing widgets"
-#~ msgstr "Grafinių valdiklių fonas"
-
-#~ msgid "Background image for tooltips"
-#~ msgstr "Pagalbinių patarimų fono paveiksliukas"
-
-#~ msgid "Opaque images for dialogs"
-#~ msgstr "Neskaidrūs paveiksliukai dialogams"
-
-#~ msgid "Opaque generic dialog background"
-#~ msgstr "Neskaidrus daugybinis dialogo fonas"
-
-#~ msgid "Opaque theme for the logout dialog"
-#~ msgstr "Neskaidri atsijungimo dialogo tema"
-
-#~ msgid "Opaque images for widgets"
-#~ msgstr "Neskaidrūs paveiksliukai valdikliams"
-
-#~ msgid "Opaque background image for panels"
-#~ msgstr "Neskaidrus fono paveiksliukas skydeliams"
-
-#~ msgid "Opaque background image for tooltips"
-#~ msgstr "Neskaidrus fono paveiksliukas patarimams"
-
-#~ msgid "Low color images for dialogs"
-#~ msgstr "Prastos spalvų kokybės langų paveiksliukai"
-
-#~ msgid "Low color generic dialog background"
-#~ msgstr "Prastos spalvų kokybės bendras langų fonas"
-
-#~ msgid "Low color theme for the logout dialog"
-#~ msgstr "Prastos spalvų kokybės tema išsiregistravimo langui"
-
-#~ msgid "Low color background image for plasmoids"
-#~ msgstr "Prastos spalvų kokybės plazmoidų fono paveiksliukas"
-
-#~ msgid "Low color analog clock face"
-#~ msgstr "Prastos spalvų kokybės mechaninio laikrodžio ciferblatas"
-
-#~ msgid "Low color background image for panels"
-#~ msgstr "Prastos spalvų kokybės skydelių fonas"
-
-#~ msgid "Low color background for graphing widgets"
-#~ msgstr "Prastos spalvų kokybės grafinių valdiklių fonas"
-
-#~ msgid "Low color background image for tooltips"
-#~ msgstr "Prastos spalvų kokybės pagalbinių patarimų fono paveiksliukas"
-
-#~ msgid "KColorScheme configuration file"
-#~ msgstr "KColorScheme parinkčių failas"
-
-#~ msgid "Invalid (null) service, can not perform any operations."
-#~ msgstr "Klaidinga (null) tarnyba, operacijų atlikti neis."
-
-#~ msgid "No lyrics script is running!"
-#~ msgstr "Dainų tekstų scenarijus nepaleistas!"
-
-#~ msgid ""
-#~ "Lyrics were not able to be downloaded. Please check your internet "
-#~ "connection."
-#~ msgstr "Nepavyko atsiųsti dainos teksto. Patikrinkite interneto ryšį."
-
-#~ msgid "Service Info (No service active)"
-#~ msgstr "Tarnybos informacija (nėra aktyvių tarnybų)"
-
-#~ msgid "Default Browser"
-#~ msgstr "Numatytoji naršyklė"
-
-#~ msgid "Default KDE Browser"
-#~ msgstr "KDE numatyta naršyklė"
-
-#~ msgid "_"
-#~ msgstr "_"
-
-#~ msgid "-"
-#~ msgstr "-"
-
-#~ msgid "."
-#~ msgstr "."
-
-#, fuzzy
-#~ msgid "Ignore field"
-#~ msgstr "Ig&noruoti „The“"
-
-#~ msgid "/"
-#~ msgstr "/"
-
-#~ msgid "Artist initial"
-#~ msgstr "Atlikėjo inicialai"
-
-#~ msgid "Rythmbox"
-#~ msgstr "Rythmbox"
-
-#~ msgid "Bitrate:"
-#~ msgstr "Bitų dažnis:"
-
-#~ msgid "Samplerate:"
-#~ msgstr "Kadrų dažnis:"
-
-#~ msgid "There are exceptions caught in the script. Please refer to the log!"
-#~ msgstr "Scenarijus pranešė apie klaidas. Pasižiūrėkite į žurnalą."
-
-#~ msgid ""
-#~ "(C) 2002-2003, Mark Kretschmann\n"
-#~ "(C) 2003-2008, The Amarok Development Squad"
-#~ msgstr ""
-#~ "(C) 2002-2003, Mark Kretschmann\n"
-#~ "(C) 2003-2008, Amarok programuotojų komanda"
-
-#~ msgid "Queue Manager"
-#~ msgstr "Eilės tvarkyklė"
-
-#~ msgid "Alexandre 'Ain't afraid of no bugs' Oliveira"
-#~ msgstr "Alexandre „Ain't afraid of no bugs“ Oliveira"
-
-#~ msgid "Lydia Pintscher"
-#~ msgstr "Lydia Pintscher"
-
-#, fuzzy
-#~ msgctxt "@info"
-#~ msgid "Do you really want to delete these %1 tracks?"
-#~ msgstr "Ar tikrai norite pašalinti šį %1?"
-
-#~ msgid "Random Playlist"
-#~ msgstr "Atsitiktinis grojaraštis"
-
-#~ msgid "Warning!"
-#~ msgstr "Dėmesio!"
-
-#, fuzzy
-#~ msgid "Can not overwrite the random playlist."
-#~ msgstr "Nepavyko įrašyti grojaraščio (%1)."
-
-#, fuzzy
-#~ msgid "The stream URL provided was not valid."
-#~ msgstr "URL."
-
-#~ msgid ""
-#~ "Sorry, you cannot define two devices\n"
-#~ "with the same name and mountpoint!"
-#~ msgstr ""
-#~ "Negalima dviems įrenginiams nurodyti tokio pačio\n"
-#~ "pavadinimo ir tokios pačios prijungimo vietos!"
-
-#~ msgid ""
-#~ "Sorry, every device must have a name and\n"
-#~ "you cannot define two devices with the\n"
-#~ "same name. These names must be unique\n"
-#~ "across autodetected devices as well.\n"
-#~ msgstr ""
-#~ "Visi įrenginiai, įskaitant automatiškai aptiktus įrenginius, \n"
-#~ "privalo turėti pavadinimą ir tie pavadinimai privalo būti skirtingi.\n"
-
-#~ msgid "Well, we tried..."
-#~ msgstr "Ką gi, bent jau stengėmės..."
-
-#~ msgid "Amarok Version"
-#~ msgstr "Amarok versija"
-
-#~ msgid "Amarok version string, used to restart aRts in new installations."
-#~ msgstr ""
-#~ "Amarok versijos informacija, naudojama perleisti aRts tarnybą naujo "
-#~ "įdiegimo metu."
-
-#~ msgid ""
-#~ "Whether to follow symlinks while adding items to playlist recursively"
-#~ msgstr "Sekti simbolines nuorodas rekursyviai įkeliant dainas į grojaraštį"
-
-#~ msgid ""
-#~ "If set, amarok follows symlinks when adding files or directories to the "
-#~ "playlist."
-#~ msgstr ""
-#~ "Įjunkite šią parinktį norėdami, kad Amarok sektų simbolines nuorodas "
-#~ "įkeliant į grojaraštį failus ir aplankus."
-
-#~ msgid "The most recently used scoring script"
-#~ msgstr "Paskutinis naudotas reitingų scenarijus"
-
-#~ msgid "The name of the custom scoring script which was most recently loaded"
-#~ msgstr "Paskutinio naudoto reitingų scenarijaus pavadinimas"
-
-#~ msgid "Size of the cover previews in Contextbrowser and Covermanager"
-#~ msgstr "Viršelių peržiūros dydis Informacijos lange ir Viršelių tvarkyklėje"
-
-#~ msgid "Whether to add directories to playlist recursively"
-#~ msgstr "Aplankus į grojaraštį įtraukti rekursyviai"
-
-#~ msgid "Enable/Disable recursive directory adding to the playlist."
-#~ msgstr "Aplankus ir paaplankius į grojaraštį įtraukti rekursyviai."
-
-#~ msgid "Index of current visual analyzer"
-#~ msgstr "Dabartinio grafinio vaizdinio indeksas"
-
-#~ msgid "The ID of the visual analyzer to display."
-#~ msgstr "Rodomo grafinio vaizdinio indeksas."
-
-#~ msgid ""
-#~ "Whether organize files will group artist starting in the same character."
-#~ msgstr "Dėliojant failus grupuoti atlikėjus pagal pirmąją raidę."
-
-#~ msgid ""
-#~ "If set, Organize files will group artist starting in the same character."
-#~ msgstr ""
-#~ "Jei ši parinktis įjungta, dėliojant failus atlikėjai bus sugrupuoti pagal "
-#~ "pirmąją raidę."
-
-#~ msgid ""
-#~ "Whether organize files will replace spaces in filenames by an underscore."
-#~ msgstr ""
-#~ "Dėliojat failus pakeisti tarpus failų pavadinimuose pabraukimo simboliu."
-
-#~ msgid ""
-#~ "If set, Organize files will replace spaces in filenames by an underscore."
-#~ msgstr ""
-#~ "Jei ši parinktis įjungta, dėliojat failus tarpai failų pavadinimuose bus "
-#~ "pakeisti pabraukimo simboliu."
-
-#~ msgid "Whether the collection view is in the flat or tree view mode"
-#~ msgstr "Fonoteką pateikti naudojant sąrašo vaizdą arba medžio vaizdą"
-
-#~ msgid "Whether to use the CoverBling album art visualization."
-#~ msgstr "Viršelių vaizdavimui naudoti Blizgučių temą."
-
-#~ msgid "The Amarok master volume, a value between 0 (muted) and 100."
-#~ msgstr "Bendras garsumas, nuo 0 (tyla) iki 100."
-
-#~ msgid "How many milliseconds the text should be displayed"
-#~ msgstr "Pranešimo trukmė milisekundėmis"
-
-#~ msgid "External web browser:"
-#~ msgstr "Išorinė naršyklė:"
-
-#~ msgid ""
-#~ "The time in milliseconds to show the OSD. The value must be between 500 "
-#~ "ms and 10000 ms."
-#~ msgstr ""
-#~ "Pranešimo rodymo trukmė milisekundėmis. Galimos reikšmės nuo 500 ms iki "
-#~ "10000 ms."
-
-#, fuzzy
-#~ msgid "Form"
-#~ msgstr ""
-#~ "#-#-#-#-#  parley.po (kvoctrain)  #-#-#-#-#\n"
-#~ "Nuo: \n"
-#~ "#-#-#-#-#  umbrello.po (umbrello)  #-#-#-#-#\n"
-#~ "Dėl\n"
-#~ "#-#-#-#-#  kmail.po (kmail)  #-#-#-#-#\n"
-#~ "&Nuo\n"
-#~ "#-#-#-#-#  kopete.po (kopete)  #-#-#-#-#\n"
-#~ "Dėl\n"
-#~ "#-#-#-#-#  katepart4.po (katepart4)  #-#-#-#-#\n"
-#~ "&Formatas:"
-
-#, fuzzy
-#~ msgid "Downloading OpmlDirectory Database"
-#~ msgstr "Atsiunčiama Jamendo.com duomenų bazė"
-
-#, fuzzy
-#~ msgid "Updating the local OPML database."
-#~ msgstr "Atnaujinama duomenų bazė"
-
-#~ msgid "Last.fm: &Love"
-#~ msgstr "Last.fm: &Myliu"
-
-#~ msgid "Love this track on Last.fm"
-#~ msgstr "Mylėti šį takelį Last.fm"
-
-#~ msgid "Radio playlist has ended."
-#~ msgstr "Radijo grojaraštis baigtas."
-
-#~ msgid "Love"
-#~ msgstr "Mylėti"
-
-#~ msgid "Ban"
-#~ msgstr "Užblokuoti"
-
-#~ msgid "Skip"
-#~ msgstr "Praleisti"
-
-#~ msgid "Enter artist name"
-#~ msgstr "Įveskite atlikėjo vardą"
-
-#~ msgid "Go"
-#~ msgstr "Eiti"
-
-#~ msgctxt "Last.fm: errorMessage"
-#~ msgid "%1: %2 Error code: %3"
-#~ msgstr "%1: %2 Klaidos kodas: %3"
-
-#, fuzzy
-#~ msgid ""
-#~ "The tracks you are about to copy are Magnatune.com preview streams. For "
-#~ "better quality and free streams, consider buying an album download. "
-#~ "Remember that when buying from Magnatune the artist gets 50%. Also if you "
-#~ "buy using Amarok, you support the Amarok project with 10%."
-#~ msgstr "dainos ir nuo Amarok Amarok su."
-
-#~ msgid ""
-#~ "Magnatune.com database update complete. Added %1 tracks on %2 albums from "
-#~ "%3 artists"
-#~ msgstr ""
-#~ "Magnatune.com duomenų bazė atnaujinta. Įdėta: %1 dainos, %2 albumai, %3 "
-#~ "atlikėjai"
-
-#~ msgid "No purchases found!"
-#~ msgstr "Pirkinių nerasta!"
-
-#~ msgid "No previous purchases have been found. Nothing to redownload..."
-#~ msgstr "Ankstesnių pirkinių nerasta. Nėra ką pakartotinai atsiųsti..."
-
-#~ msgid "There seems to be a problem with the selected redownload info file."
-#~ msgstr "Pakartotinai atsiunčiant informaciją ivyko klaida."
-
-#~ msgid "Actions"
-#~ msgstr "Veiksmai"
-
-#~ msgid "Redownload"
-#~ msgstr "Pakartotinai atsiųsti"
-
-#~ msgid "Use Amarok as a seamless frontend to your Ampache server!"
-#~ msgstr "Naudokite Amarok kaip betarpišką Ampache serverio sąsają!"
-
-#~ msgid "Authentication Error!"
-#~ msgstr "Patvirtinimo klaida!"
-
-#, fuzzy
-#~ msgid ""
-#~ "Jamendo.com database update complete. Added %1 tracks on %2 albums from %"
-#~ "3 artists"
-#~ msgstr "dainos nuo"
-
-#, fuzzy
-#~ msgctxt "switch view"
-#~ msgid "Switch Playlist &View"
-#~ msgstr "&Vaizdas"
-
-#~ msgid ""
-#~ "Amarok Collection Scanner\n"
-#~ "\n"
-#~ "Note: For debugging purposes this application can be invoked from the "
-#~ "command line, but it will not actually build a collection this way."
-#~ msgstr ""
-#~ "Amarok fonotekos sudarymas\n"
-#~ "\n"
-#~ "Dėmesio: klaidų tikrinimo sumetimais ši programa gali būti paleista iš "
-#~ "komandinės eilutės, bet fonotekos ji tuo metu nesudarys."
-
-#~ msgid "Collection Scanner for Amarok"
-#~ msgstr "Amarok fonotekos sudarymas"
-
-#~ msgid "(C) 2003-2008, The Amarok Developers"
-#~ msgstr "(C) 2003-2008, Amarok programuotojai"
-
-#~ msgid "Folders to scan"
-#~ msgstr "Muzikos aplankai"
-
-#~ msgid "Scan folders recursively"
-#~ msgstr "Ieškoti aplankuose įskaitant paaplankius"
-
-#~ msgid "Incremental Scan (modified folders only)"
-#~ msgstr "Ieškoti tik pakeistuose aplankuose"
-
-#~ msgid "Import playlist"
-#~ msgstr "Importuoti grojaraštį"
-
-#~ msgid "Restart the scanner at last position, after a crash"
-#~ msgstr "Pratęsti sudarymą nuo ten, kur sustota po nulūžimo"
-
-#~ msgid "Volume: %1%"
-#~ msgstr "Garsumas: %1%"
-
-#~ msgctxt "State, as in, The playback is silent"
-#~ msgid "Mute"
-#~ msgstr "Garsas išjungtas"
-
-#~ msgid "Volume: 100%"
-#~ msgstr "Garsumas: 100%"
-
-#~ msgctxt "State, as in, the playback is silent"
-#~ msgid "Mute"
-#~ msgstr "Garsas išjungtas"
-
-#~ msgid "Enter space-separated terms to search in the playlist."
-#~ msgstr "Įrašykite tarpais atskirtus kriterijus paieškai grojaraštyje."
-
-# #-#-#-#-#  konsole.po (konsole)  #-#-#-#-#
-# (pofilter) compendiumconflicts: checks for Gettext compendium conflicts (#-#-#-#-#)
-#, fuzzy
-#~ msgid "Advanced"
-#~ msgstr ""
-#~ "#-#-#-#-#  plasma_applet_launcher.po (plasma_applet_launcher)  #-#-#-#-#\n"
-#~ "Sudėtingesni\n"
-#~ "#-#-#-#-#  kcm_autostart.po (kcm_autostart)  #-#-#-#-#\n"
-#~ "Sudėtingesnės parinktys\n"
-#~ "#-#-#-#-#  kcminput.po (kcminput)  #-#-#-#-#\n"
-#~ "Papildomai\n"
-#~ "#-#-#-#-#  konsole.po (konsole)  #-#-#-#-#\n"
-#~ "Sudėtingesnės parinktys\n"
-#~ "#-#-#-#-#  kxkb.po (kxkb)  #-#-#-#-#\n"
-#~ "Sudėtingesnės parinktys\n"
-#~ "#-#-#-#-#  kcmsmserver.po (kcmsmserver)  #-#-#-#-#\n"
-#~ "Sudėtingesnės\n"
-#~ "#-#-#-#-#  kmenuedit.po (kmenuedit)  #-#-#-#-#\n"
-#~ "Sudėtingesnis\n"
-#~ "#-#-#-#-#  kstars.po (kstars)  #-#-#-#-#\n"
-#~ "Sudėtingesnės\n"
-#~ "#-#-#-#-#  kmail.po (kmail)  #-#-#-#-#\n"
-#~ "Sudėtingesni\n"
-#~ "#-#-#-#-#  kwatchgnupg.po (kwatchgnupg)  #-#-#-#-#\n"
-#~ "Sudėtingesnis\n"
-#~ "#-#-#-#-#  kopete.po (kopete)  #-#-#-#-#\n"
-#~ "Išsamiau"
-
-#, fuzzy
-#~ msgid "Click to edit playlist filter"
-#~ msgstr "Naujų grojaraščio objektų spalva:"
-
-#~ msgid "&Equalizer"
-#~ msgstr "&Ekvalaizeris"
-
-#, fuzzy
-#~ msgid " on <b>%1</b></center>"
-#~ msgstr "<b>%1</b> albumas <b>%2</b>"
-
-#, fuzzy
-#~ msgid "Amarok - No track playing."
-#~ msgstr "Amarok Ne."
-
-#~ msgid "Toggle Focus"
-#~ msgstr "Įjungti/išjungti fokusavimą"
-
-#~ msgid "Unit:"
-#~ msgstr "Vienetas:"
-
-#~ msgid "B (1 Byte)"
-#~ msgstr "B (1 baitas)"
-
-#~ msgid "KB (1024 Bytes)"
-#~ msgstr "KB (1024 baitai)"
-
-#~ msgid "MB (1024 KB)"
-#~ msgstr "MB (1024 KB)"
-
-#~ msgid "Artist / Year - Album"
-#~ msgstr "Atlikėjas / Metai – Albumas"
-
-#~ msgid "TextLabel"
-#~ msgstr "Teksto antraštė"
-
-#~ msgid "(Help)"
-#~ msgstr "(Pagalba)"
-
-#~ msgid "F&ilename Format:"
-#~ msgstr "&Failo pavadinimo formatas:"
-
-#~ msgid "userevents"
-#~ msgstr "naudotojo pranešimai"
-
-#~ msgid "sysevents"
-#~ msgstr "sistemos pranešimai"
-
-#~ msgid "friendevents"
-#~ msgstr "draugų pranešimai"
-
-#~ msgid "relatedartists"
-#~ msgstr "panašūs atlikėjai"
-
-#~ msgid "suggestedsongs"
-#~ msgstr "siūlomos dainos"
-
-#~ msgid "username"
-#~ msgstr "naudotojo vardas"
-
-#~ msgid "Play an AudioCD from <device> or system:/media/<device>"
-#~ msgstr "Groti muzikinį CD iš <device> arba system:/media/<device>"
-
-#~ msgid " _ "
-#~ msgstr " _ "
-
-#~ msgid "&Use Cover Art for Folder Icons"
-#~ msgstr "&Aplankų ženkliukams naudoti albumų viršelius"
-
-#~ msgid "MusicBrainz Lookup"
-#~ msgstr "MusicBrainz paieška"
-
-#~ msgid "Could not connect to MusicBrainz server."
-#~ msgstr "Nepavyko prisijungti prie MusicBrainz serverio."
-
-#~ msgid "MusicBrainz returned invalid content."
-#~ msgstr "MusicBrainz pateikė kaidingą turinį."
-
-#~ msgid "Add Applets"
-#~ msgstr "Įdėti įskiepius"
-
-#~ msgid "Applet browser dialog"
-#~ msgstr "Įskiepių naršymo langas"
-
-#~ msgid "Plasma Applet Browser"
-#~ msgstr "Plasma įskiepių naršymas"
-
-#~ msgid "(C) 2008, Aaron Seigo"
-#~ msgstr "(C) 2008, Aaron Seigo"
-
-#~ msgid "Aaron Seigo"
-#~ msgstr "Aaron Seigo"
-
-#~ msgid "Original author"
-#~ msgstr "Pradinis autorius"
-
-#~ msgid "Select the type of widget to install from the list below."
-#~ msgstr "Iš žemiau esančio sąrašo nurodykite įdiegiamo valdiklio tipą."
-
-#~ msgid "Plasmoid: Native plasma widget"
-#~ msgstr "Plazmoidas: įdiegtas plasma valdiklis"
-
-#~ msgid "Install New Widget From File"
-#~ msgstr "Įdiegti naują valdiklį iš failo"
-
-#~ msgid "Select File"
-#~ msgstr "Nurodyti failą"
-
-#~| msgid "Files"
-#~ msgid "Filters"
-#~ msgstr "Filtrai"
-
-#~ msgid "Enter search phrase here"
-#~ msgstr "Įrašykite paieškos užklausą"
-
-#~ msgid "Unknown Applet"
-#~ msgstr "Nežinomas įskiepis"
-
-#~ msgid "All Widgets"
-#~ msgstr "Visi valdikliai"
-
-#~ msgid "Recommended by %1"
-#~ msgstr "%1 rekomenduoja"
-
-#~ msgid "My Favorite Widgets"
-#~ msgstr "Mėgstamiausi valdikliai"
-
-#~ msgid "Widgets I Have Used Before"
-#~ msgstr "Anksčiau jau naudoti valdikliai"
-
-#~ msgid "Currently Running Widgets"
-#~ msgstr "Šiuo metu naudojami valdikliai"
-
-#~ msgid "Categories:"
-#~ msgstr "Kategorijos:"
-
-#~ msgid "Widgets"
-#~ msgstr "Valdikliai"
-
-#~ msgid "Add Widget"
-#~ msgstr "Įdėti valdiklį"
-
-#~ msgid "Install New Widgets"
-#~ msgstr "Įdiegti naujus valdiklius"
-
-#~ msgid "Download From Internet"
-#~ msgstr "Atsisiųsti iš interneto"
-
-#~ msgid "Install From File..."
-#~ msgstr "Įdiegti iš failo..."
-
-#~ msgid "Close the dialog"
-#~ msgstr "Užverti langą"
-
-#~ msgid ""
-#~ "<qt>When clicking <b>Close</b>, this dialog will be closed with no "
-#~ "further action taken.</qt>"
-#~ msgstr ""
-#~ "<qt>Paspaudus <b>Užverti</b>, šis langas bus užvertas, pakeitimai nebus "
-#~ "vykdomi.</qt>"
-
-#~ msgid "Add selected widgets"
-#~ msgstr "Įdėti pažymėtus valdiklius"
-
-#~ msgid ""
-#~ "<qt>When clicking <b>Add Widget</b>, the selected widgets will be added "
-#~ "to your desktop.</qt>"
-#~ msgstr ""
-#~ "<qt>Paspaudus <b>Įdėti valdiklį</b>, pažymėti valdikliai bus įdėti į "
-#~ "darbastalį.</qt>"
-
-#~ msgid "Install new widgets"
-#~ msgstr "Įdiegti naujus valdiklius"
-
-#~ msgid ""
-#~ "<qt>Selecting <b>Get New Widgets</b> will show a window that allows you "
-#~ "to download new widgets directly from the Internet, while Install From "
-#~ "File allows you to add new widgets from files you have on disk.</qt>"
-#~ msgstr ""
-#~ "<qt>Pažymėjus <b>Gauti naujų valdiklių</b> bus atvertas langas, kuriame "
-#~ "galėsite atsisųsti naujų valdiklių tiesiai iš interneto. Paspaudę "
-#~ "<b>Įdiegti iš failo</b>galėsite įdiegti naujus valdiklius iš diske "
-#~ "esančių failų."
-
-#~ msgid "Next Applet"
-#~ msgstr "Kitas įskiepis"
-
-#~ msgid "Generating audio fingerprint..."
-#~ msgstr "Generuojamas dainos atpažinimo požymis..."
-
-#~ msgid ""
-#~ "Tunepimp (MusicBrainz tagging library) returned the following error: \"%1"
-#~ "\"."
-#~ msgstr ""
-#~ "Tunepimp (MusicBrainz meta informacijos biblioteka) pranešė apie šią "
-#~ "klaidą: „%1“."
-
-#~ msgid "The track was not found in the MusicBrainz database."
-#~ msgstr "MusicBrainz duomenų bazėse dainos rasti nepavyko."
-
-#~ msgid "Please install MusicBrainz to enable this functionality"
-#~ msgstr "Norėdami įjungti šias funkcijas įdiekite MusicBrainz"
-
-#~ msgid "MusicBrainz Results"
-#~ msgstr "MusicBrainz rezultatai"
-
-#~ msgctxt "state, as in playing"
-#~ msgid "Play"
-#~ msgstr "Grojimas"
-
-#~ msgid "Current Document Folder"
-#~ msgstr "Dabartinio dokumento aplankas"
-
-#~| msgid "This object could not be created."
-#~ msgid ""
-#~ "The playlist could not be read. Error:\n"
-#~ "\n"
-#~ "%1"
-#~ msgstr "Nepavyko sukurti šio objekto."
-
-#~| msgid "The user's password"
-#~ msgid "Wrong username / password"
-#~ msgstr "Naudotojo slaptažodis"
-
-#~| msgid "Could not read this package."
-#~ msgid "Could not reach server"
-#~ msgstr "Nepavyko perskaityti šio paketo."

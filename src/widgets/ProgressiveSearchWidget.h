@@ -21,9 +21,9 @@
 #define PROGRESSIVESEARCHWIDGET_H
 
 #include <KVBox>
+#include "LineEdit.h"
 
 class KAction;
-class KLineEdit;
 
 class QKeyEvent;
 class QLabel;
@@ -95,6 +95,11 @@ signals:
      * item in the playlist should be activated
      */
     void activateFilterResult();
+
+    /**
+     * Signal emitted when the down key is pressed. Forwarded on from Amarok::LineEdit
+     */
+    void downPressed();
 
 public slots:
     /**
@@ -187,7 +192,7 @@ private:
     void hideHiddenTracksWarning();
     void showHiddenTracksWarning();
 
-    KLineEdit *m_searchEdit;
+    Amarok::LineEdit *m_searchEdit;
     KAction   *m_nextAction;
     KAction   *m_previousAction;
     QMenu     *m_menu;

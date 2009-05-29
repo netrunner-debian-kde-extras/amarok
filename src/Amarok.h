@@ -298,6 +298,6 @@ namespace Amarok
 
 
 /// Update this when necessary
-#define APP_VERSION "2.0.96"
+#define APP_VERSION "2.1-SVN"
 
 #endif

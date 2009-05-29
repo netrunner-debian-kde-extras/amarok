@@ -564,7 +564,6 @@ SqlPodcastProvider::autoUpdate()
 void
 SqlPodcastProvider::update( Meta::PodcastChannelPtr channel )
 {
-    bool result = false;
     m_updatingChannels++;
     PodcastReader * podcastReader = new PodcastReader( this );
 
@@ -572,7 +571,7 @@ SqlPodcastProvider::update( Meta::PodcastChannelPtr channel )
              SLOT( slotReadResult( PodcastReader *, bool ) ) );
     //PodcastReader will create a progress bar in The StatusBar.
 
-    result = podcastReader->update( channel );
+    podcastReader->update( channel );
 }
 
 void

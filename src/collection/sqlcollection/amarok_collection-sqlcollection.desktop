@@ -43,6 +43,7 @@ Name[sv]=SQL-samling
 Name[th]=คลังดนตรีแบบ SQL
 Name[tr]=SQL Koleksiyonu
 Name[uk]=Збірка SQL
+Name[wa]=Ramexhnêye SQL
 Name[x-test]=xxSQL Collectionxx
 Name[zh_CN]=SQL 收藏
 Comment=Collection plugin for Amarok
@@ -86,7 +87,8 @@ Comment[sl]=Vstavek za zbirko za Amarok
 Comment[sv]=Samlingsinsticksprogram för Amarok
 Comment[th]=ส่วนเสริมของแอมอะร็อก สำหรับจัดการคลังดนตรี
 Comment[tr]=Amarok için Koleksiyon eklentisi
-Comment[uk]=Втулка збірки для Amarok
+Comment[uk]=Додаток збірки для Amarok
+Comment[wa]=Tchôke-divins di ramexhnêye pos Amarok
 Comment[x-test]=xxCollection plugin for Amarokxx
 Comment[zh_CN]=Amarok 的收藏插件
 
@@ -96,7 +98,7 @@ X-KDE-Library=libamarok_collection-sqlcollection
 
 X-KDE-Amarok-authors=Maximilian Kossick
 X-KDE-Amarok-email=maximilian.kossick@googlemail.com
-X-KDE-Amarok-framework-version=41
+X-KDE-Amarok-framework-version=42
 X-KDE-Amarok-name=sql-collection
 X-KDE-Amarok-plugintype=collection
 X-KDE-Amarok-rank=100
