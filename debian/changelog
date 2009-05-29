@@ -1,3 +1,11 @@
+amarok (2.1-0r1) experimental; urgency=low
+
+  * New upstream release.
+  * Remove duplicate symbols from libmysqld.a before linking
+    (improve patch debian/mysqle_link_to_amarok_executable_feature).
+
+ -- Modestas Vainius <modestas@vainius.eu>  Sat, 30 May 2009 02:17:29 +0300
+
 amarok (2.0.96-2) experimental; urgency=low
 
   * Do not apply debian/mysqle_linkage_fix patch, rebase

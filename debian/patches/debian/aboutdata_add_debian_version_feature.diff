@@ -13,7 +13,7 @@ Signed-off-by: Modestas Vainius <modestas@vainius.eu>
  2 files changed, 13 insertions(+), 1 deletions(-)
 
 diff --git a/src/App.cpp b/src/App.cpp
-index ccb5f74..f2ac927 100644
+index 4a8523b..1a14d1b 100644
 --- a/src/App.cpp
 +++ b/src/App.cpp
 @@ -88,9 +88,16 @@ int App::mainThreadId = 0;
@@ -35,10 +35,10 @@ index ccb5f74..f2ac927 100644
      ki18n( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2009, The Amarok Development Squad" ),
      ki18n( "IRC:\nirc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org\n\n(Build Date: %1)" ).subs( __DATE__ ),
 diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
-index 68eb7fb..bd9ec29 100644
+index a4788e7..56c9fc8 100644
 --- a/src/CMakeLists.txt
 +++ b/src/CMakeLists.txt
-@@ -554,6 +554,11 @@ target_link_libraries(amaroklib
+@@ -555,6 +555,11 @@ target_link_libraries(amaroklib
      mediadevicelib
  )
  
@@ -51,4 +51,4 @@ index 68eb7fb..bd9ec29 100644
      target_link_libraries(amaroklib ${QT_QTWEBKIT_LIBRARY})
  endif(WIN32)
 -- 
-tg: (8d05d01..) debian/aboutdata_add_debian_version_feature (depends on: upstream)
+tg: (d1aa295..) debian/aboutdata_add_debian_version_feature (depends on: upstream)
