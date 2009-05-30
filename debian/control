@@ -68,7 +68,7 @@ Depends: ${shlibs:Depends},
 Replaces: amarok (<< 2.0.96-2)
 Description: utilities for Amarok media player
  This package contains command line utilities that are typically used by Amarok
- media player but might also be useful on the systems without Amarok installed.
+ media player but might also be useful on systems without Amarok installed.
  They are designed to be lightweight as they do not depend on KDE libraries.
  .
  Currently the package contains the following utilities:
