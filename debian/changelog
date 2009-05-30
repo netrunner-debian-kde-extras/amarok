@@ -1,4 +1,4 @@
-amarok (2.1-0r2) experimental; urgency=low
+amarok (2.1-0r2+) experimental; urgency=low
 
   * New upstream release.
   * Remove duplicate symbols from libmysqld.a before linking
