@@ -4,8 +4,9 @@ amarok (2.1-0r2) experimental; urgency=low
   * Remove duplicate symbols from libmysqld.a before linking
     (improve patch debian/mysqle_link_to_amarok_executable_feature).
   * Fix typo in amarok-utils description (thanks to Frederik Schwarzer).
+  * Disable debian/bug-presubj (notice about upstream bugs).
 
- -- Modestas Vainius <modestas@vainius.eu>  Sat, 30 May 2009 03:39:57 +0300
+ -- Modestas Vainius <modestas@vainius.eu>  Sat, 30 May 2009 03:52:42 +0300
 
 amarok (2.0.96-2) experimental; urgency=low
 
