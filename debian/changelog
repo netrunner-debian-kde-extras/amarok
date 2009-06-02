@@ -1,4 +1,4 @@
-amarok (2.1-0r3) experimental; urgency=low
+amarok (2.1-1) experimental; urgency=low
 
   * New upstream release.
   * Remove duplicate symbols from libmysqld.a before linking
@@ -8,7 +8,7 @@ amarok (2.1-0r3) experimental; urgency=low
   * Disable patch debian/aboutdata_add_debian_version_feature. Breaks upstream
     BTS version tracking.
 
- -- Modestas Vainius <modestas@vainius.eu>  Sat, 30 May 2009 15:08:39 +0300
+ -- Modestas Vainius <modestas@vainius.eu>  Tue, 02 Jun 2009 22:24:27 +0300
 
 amarok (2.0.96-2) experimental; urgency=low
 
