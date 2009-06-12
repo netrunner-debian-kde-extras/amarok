@@ -5,6 +5,7 @@ usr/share/kde4/apps/amarok/images/*
 usr/share/kde4/apps/amarok/scripts/librivox_service/LibrivoxEmblem.png
 usr/share/kde4/apps/amarok/scripts/librivox_service/LibrivoxIcon.png
 usr/share/kde4/apps/amarok/scripts/librivox_service/LibrivoxLogo.png
+usr/share/kde4/apps/amarok/scripts/librivox_service/LibrivoxScalableEmblem.svgz
 usr/share/kde4/apps/amarok/scripts/librivox_service/LibrivoxService.html
 usr/share/kde4/apps/amarok/scripts/librivox_service/README
 usr/share/kde4/apps/amarok/scripts/librivox_service/audio_book128.png
