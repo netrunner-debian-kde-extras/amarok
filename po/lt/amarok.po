@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-05-27 12:31+0200\n"
+"POT-Creation-Date: 2009-06-12 11:25+0200\n"
 "PO-Revision-Date: 2009-05-16 01:44+0300\n"
 "Last-Translator: Andrius Štikonas <stikonas@gmail.com>\n"
 "Language-Team: Lithuanian <komp_lt@konf.lt>\n"
@@ -27,15 +27,15 @@ msgstr "Negroja jokia daina"
 msgid "No information available for this track"
 msgstr "Informacijos apie šią dainą nėra"
 
-#: meta/file/File_p.h:324 meta/file/File_p.h:371 meta/file/File_p.h:374
-#: meta/file/File_p.h:412 meta/file/File_p.h:441 meta/file/File_p.h:470
+#: meta/file/File_p.h:320 meta/file/File_p.h:367 meta/file/File_p.h:370
+#: meta/file/File_p.h:408 meta/file/File_p.h:437 meta/file/File_p.h:466
 #: meta/default/DefaultMetaTypes.h:41 meta/default/DefaultMetaTypes.h:81
 #: meta/default/DefaultMetaTypes.h:99
-#: services/scriptable/ScriptableServiceMeta_p.h:105
-#: services/scriptable/ScriptableServiceMeta_p.h:163
-#: services/scriptable/ScriptableServiceMeta_p.h:210
-#: services/scriptable/ScriptableServiceMeta_p.h:253
-#: services/scriptable/ScriptableServiceMeta_p.h:295
+#: services/scriptable/ScriptableServiceMeta_p.h:110
+#: services/scriptable/ScriptableServiceMeta_p.h:168
+#: services/scriptable/ScriptableServiceMeta_p.h:215
+#: services/scriptable/ScriptableServiceMeta_p.h:258
+#: services/scriptable/ScriptableServiceMeta_p.h:300
 msgctxt "The value is not known"
 msgid "Unknown"
 msgstr "Nežinoma"
@@ -153,65 +153,65 @@ msgstr "Perkeliamos dainos"
 msgid "Could not copy track from device."
 msgstr "Nepavyko nukopijuoti dainos iš įrenginio."
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:78
+#: collection/mtpcollection/handler/MtpHandler.cpp:108
 msgid "Could not connect to MTP Device"
 msgstr "Nepavyko prisijungti prie MTP įrenginio"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:316
+#: collection/mtpcollection/handler/MtpHandler.cpp:349
 msgid "Unknown Artist"
 msgstr "Nežinomas atlikėjas"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:325
+#: collection/mtpcollection/handler/MtpHandler.cpp:358
 msgid "Unknown Album"
 msgstr "Nežinomas albumas"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:331
+#: collection/mtpcollection/handler/MtpHandler.cpp:364
 msgid "Unknown Genre"
 msgstr "Nežinomas žanras"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:578
+#: collection/mtpcollection/handler/MtpHandler.cpp:611
 #, fuzzy
 msgid "Transferring Tracks to MTP"
 msgstr "Perkeliamos dainos"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:628
+#: collection/mtpcollection/handler/MtpHandler.cpp:661
 msgid "Could not send track"
 msgstr "Nepavyko persiųsti dainos"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:679
-#: collection/mtpcollection/handler/MtpHandler.cpp:1001
+#: collection/mtpcollection/handler/MtpHandler.cpp:712
+#: collection/mtpcollection/handler/MtpHandler.cpp:1034
 msgid "Unknown title"
 msgstr "Nežinomas pavadinimas"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:688
-#: collection/mtpcollection/handler/MtpHandler.cpp:1010
+#: collection/mtpcollection/handler/MtpHandler.cpp:721
+#: collection/mtpcollection/handler/MtpHandler.cpp:1043
 msgid "Unknown album"
 msgstr "Nežinomas albumas"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:697
-#: collection/mtpcollection/handler/MtpHandler.cpp:1019
+#: collection/mtpcollection/handler/MtpHandler.cpp:730
+#: collection/mtpcollection/handler/MtpHandler.cpp:1052
 msgid "Unknown artist"
 msgstr "Nežinomas atlikėjas"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:706
-#: collection/mtpcollection/handler/MtpHandler.cpp:1028
+#: collection/mtpcollection/handler/MtpHandler.cpp:739
+#: collection/mtpcollection/handler/MtpHandler.cpp:1061
 msgid "Unknown genre"
 msgstr "Nežinomas žanras"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:828
+#: collection/mtpcollection/handler/MtpHandler.cpp:861
 #, fuzzy
 msgid "Deleting Tracks from MTP"
 msgstr "Pašalinti %1 dainą iš iPod"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:872
+#: collection/mtpcollection/handler/MtpHandler.cpp:905
 msgid "Could not delete item"
 msgstr "Nepavyko pašalinti elemento"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:883
+#: collection/mtpcollection/handler/MtpHandler.cpp:916
 msgid "Delete failed"
 msgstr "Pašalinti nepavyko"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:1186
+#: collection/mtpcollection/handler/MtpHandler.cpp:1219
 #, fuzzy
 msgid "Transferring Tracks to MTP Device"
 msgstr "Perkeliamos dainos"
@@ -244,7 +244,7 @@ msgstr "Nepomuk fonoteka (lėta, Redland)"
 msgid "Local Collection"
 msgstr "Vietinė fonoteka"
 
-#: collection/sqlcollection/SqlCollection.cpp:350
+#: collection/sqlcollection/SqlCollection.cpp:359
 #, fuzzy, kde-format
 msgctxt "@info"
 msgid ""
@@ -252,12 +252,12 @@ msgid ""
 "as well as your collection."
 msgstr "Ar tikrai norite pašalinti šį %1?"
 
-#: collection/sqlcollection/SqlCollection.cpp:354
+#: collection/sqlcollection/SqlCollection.cpp:363
 msgid "Delete Files"
 msgstr "Trinti failus"
 
 #: collection/sqlcollection/OrganizeCollectionDialog.cpp:165
-#: collection/sqlcollection/ScanManager.cpp:673
+#: collection/sqlcollection/ScanManager.cpp:684
 #: browsers/CollectionTreeItem.cpp:159 covermanager/CoverViewDialog.h:45
 #: covermanager/CoverManager.cpp:855
 msgid "Various Artists"
@@ -302,24 +302,24 @@ msgstr ""
 msgid "Transferring: %1"
 msgstr "Persiunčiama: %1"
 
-#: collection/sqlcollection/ScanManager.cpp:492
+#: collection/sqlcollection/ScanManager.cpp:500
 msgid ""
 "<p>Sorry, the collection scan had to be aborted.</p><p>Too many errors were "
 "encountered during the scan.</p>"
 msgstr ""
 
-#: collection/sqlcollection/ScanManager.cpp:493
+#: collection/sqlcollection/ScanManager.cpp:501
 #, fuzzy
 msgid "Collection Scan Error"
 msgstr "Amarok fonotekos sudarymas"
 
-#: collection/sqlcollection/ScanManager.cpp:581
+#: collection/sqlcollection/ScanManager.cpp:590
 msgid "Scanning music"
 msgstr "Ieškoma dainų"
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:53
 #. i18n: ectx: property (text), item, widget (QComboBox, typeComboBox)
-#: collection/sqlcollection/SqlMeta.cpp:369 rc.cpp:1272
+#: collection/sqlcollection/SqlMeta.cpp:369 rc.cpp:1284
 msgid "Stream"
 msgstr "Srautas"
 
@@ -374,7 +374,7 @@ msgstr ""
 msgid "Recently added albums"
 msgstr "Neseniai pridėti albumai"
 
-#: context/engines/current/CurrentEngine.cpp:286
+#: context/engines/current/CurrentEngine.cpp:285
 #, kde-format
 msgid "Albums by %1"
 msgstr "%1 albumai"
@@ -434,10 +434,26 @@ msgstr "Įdėti įskiepį..."
 msgid "no applet name"
 msgstr "Įrašykite profilio pavadinimą:"
 
-#: context/LyricsManager.cpp:108
+#: context/LyricsManager.cpp:110
 #, fuzzy
 msgid "Lyrics data could not be parsed"
 msgstr "Nepavyko sukurti šio objekto."
+
+#: context/applets/songkick/SongkickApplet.cpp:173
+msgid "Concert information is being fetched."
+msgstr ""
+
+#: context/applets/songkick/SongkickApplet.cpp:178
+#, fuzzy, kde-format
+msgid ""
+"Songkick were not able to be downloaded. Please check your internet "
+"connection: %1"
+msgstr "Nepavyko atsiųsti dainos teksto. Patikrinkite interneto ryšį."
+
+#: context/applets/songkick/SongkickApplet.cpp:217
+#: context/applets/lyrics/LyricsApplet.cpp:238
+msgid "There were no lyrics found for this track"
+msgstr "Šios dainos tekstas nerastas"
 
 #: context/applets/currenttrack/CurrentTrack.cpp:76
 #, fuzzy
@@ -452,18 +468,21 @@ msgid "On"
 msgstr "Įjungta"
 
 #: context/applets/currenttrack/CurrentTrack.cpp:105
+#: context/applets/currenttrack/CurrentTrack.cpp:497
 #, fuzzy
 msgid "Play count"
 msgstr "Dažnumas:"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:106 Systray.cpp:171
+#: context/applets/currenttrack/CurrentTrack.cpp:106
+#: context/applets/currenttrack/CurrentTrack.cpp:498 Systray.cpp:171
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:253
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:696
 #: playlist/PlaylistModel.cpp:711 widgets/SmartPlaylistEditor.cpp:186
 msgid "Score"
 msgstr "Reitingas"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:107 Systray.cpp:201
+#: context/applets/currenttrack/CurrentTrack.cpp:107
+#: context/applets/currenttrack/CurrentTrack.cpp:499 Systray.cpp:201
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:258
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:701
 msgid "Last Played"
@@ -480,14 +499,14 @@ msgstr "Mėgstamiausios dainos"
 #: context/applets/albums/AlbumsView.cpp:109 Systray.cpp:243
 #: browsers/CollectionTreeView.cpp:716
 #: browsers/filebrowser/MyDirOperator.cpp:271
-#: browsers/playlistbrowser/UserPlaylistModel.cpp:449
+#: browsers/playlistbrowser/UserPlaylistModel.cpp:452
 #: browsers/playlistbrowser/PodcastModel.cpp:693
 #: services/lastfm/LastFmTreeView.cpp:116
 msgid "&Append to Playlist"
 msgstr "&Papildyti grojaraštį"
 
 #: context/applets/albums/AlbumsView.cpp:110
-#: browsers/playlistbrowser/UserPlaylistModel.cpp:455
+#: browsers/playlistbrowser/UserPlaylistModel.cpp:458
 #: browsers/playlistbrowser/PodcastModel.cpp:706
 msgctxt "Replace the currently loaded tracks with these"
 msgid "&Load"
@@ -510,7 +529,7 @@ msgid "Disc %1"
 msgstr "Diskas %1"
 
 #: context/applets/albums/AlbumItem.cpp:70 MediaDevicePluginManager.cpp:531
-#: MainWindow.cpp:971
+#: MainWindow.cpp:969
 msgid "Unknown"
 msgstr "Nežinoma"
 
@@ -524,7 +543,7 @@ msgstr[2] "%1 dainų"
 
 #: context/applets/lyrics/LyricsApplet.cpp:38
 #: context/applets/lyrics/LyricsApplet.cpp:59
-#: context/applets/lyrics/LyricsApplet.cpp:227 dialogs/TagDialog.cpp:582
+#: context/applets/lyrics/LyricsApplet.cpp:230 dialogs/TagDialog.cpp:585
 msgid "Lyrics"
 msgstr "Tekstai"
 
@@ -533,25 +552,21 @@ msgstr "Tekstai"
 msgid "Reload Lyrics"
 msgstr "Tekstai"
 
-#: context/applets/lyrics/LyricsApplet.cpp:181
+#: context/applets/lyrics/LyricsApplet.cpp:184
 #, fuzzy
 msgid "No lyrics script is running."
 msgstr "Dainų tekstų scenarijus nepaleistas!"
 
-#: context/applets/lyrics/LyricsApplet.cpp:187
+#: context/applets/lyrics/LyricsApplet.cpp:190
 msgid "Lyrics are being fetched."
 msgstr "Atsiunčiamas dainos tekstas."
 
-#: context/applets/lyrics/LyricsApplet.cpp:193
+#: context/applets/lyrics/LyricsApplet.cpp:196
 #, fuzzy, kde-format
 msgid ""
 "Lyrics were not able to be downloaded. Please check your internet "
 "connection: %1"
 msgstr "Nepavyko atsiųsti dainos teksto. Patikrinkite interneto ryšį."
-
-#: context/applets/lyrics/LyricsApplet.cpp:235
-msgid "There were no lyrics found for this track"
-msgstr "Šios dainos tekstas nerastas"
 
 #: context/applets/wikipedia/WikipediaApplet.cpp:80
 msgid "Wikipedia"
@@ -567,7 +582,7 @@ msgid "Configure Playlist Info Applet"
 msgstr "Derinti grojaraščio informacijos įskiepį"
 
 #: context/applets/playlistinfo/PlaylistInfo.cpp:160
-#: widgets/TokenWithLayout.cpp:103
+#: widgets/TokenWithLayout.cpp:105
 msgid "Width"
 msgstr "Plotis"
 
@@ -596,6 +611,11 @@ msgstr "Kita grupė"
 #: context/containments/oldcontainment/ColumnContainment.cpp:217
 msgid "Previous Group"
 msgstr "Ankstesnė grupė"
+
+#: context/containments/verticallayout/VerticalToolbarContainment.cpp:55
+msgid ""
+"Please add some applets from the toolbar at the bottom of the context view."
+msgstr ""
 
 #: context/widgets/ToolBoxMenu.cpp:104
 msgid "Hide menu"
@@ -686,7 +706,7 @@ msgstr "&Daina"
 msgid "&Album"
 msgstr "&Albumas"
 
-#: ActionClasses.cpp:359 MainWindow.cpp:829
+#: ActionClasses.cpp:359 MainWindow.cpp:827
 msgid "&Playlist"
 msgstr "&Grojaraštis"
 
@@ -763,9 +783,9 @@ msgstr "Bendri įrenginiai ir talpyklos..."
 msgid "Add Device..."
 msgstr "Įdėti įrenginį..."
 
-#. i18n: file: amarokconfig.kcfg:293
+#. i18n: file: amarokconfig.kcfg:294
 #. i18n: ectx: label, entry, group (OSD)
-#: configdialog/dialogs/OsdConfig.cpp:39 rc.cpp:279 rc.cpp:1658
+#: configdialog/dialogs/OsdConfig.cpp:39 rc.cpp:282 rc.cpp:1673
 msgid "Use Growl for notifications"
 msgstr ""
 
@@ -967,7 +987,7 @@ msgstr "Fonoteka"
 #. i18n: file: dialogs/EditFilterDialog.ui:101
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:115 dialogs/FilenameLayoutDialog.cpp:327
-#: rc.cpp:930 services/jamendo/JamendoInfoParser.cpp:112
+#: rc.cpp:942 services/jamendo/JamendoInfoParser.cpp:112
 msgid "Track"
 msgstr "Daina"
 
@@ -975,7 +995,7 @@ msgstr "Daina"
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:116 dialogs/FilenameLayoutDialog.cpp:322
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:248
-#: browsers/playlistbrowser/PodcastModel.cpp:282 rc.cpp:927
+#: browsers/playlistbrowser/PodcastModel.cpp:282 rc.cpp:939
 #: playlist/PlaylistModel.cpp:695 widgets/SmartPlaylistEditor.cpp:184
 msgid "Title"
 msgstr "Pavadinimas"
@@ -987,7 +1007,7 @@ msgstr "Pavadinimas"
 #: browsers/collectionbrowser/CollectionWidget.cpp:87
 #: browsers/collectionbrowser/CollectionWidget.cpp:116
 #: browsers/collectionbrowser/CollectionWidget.cpp:148
-#: browsers/playlistbrowser/DynamicBiasWidgets.cpp:245 rc.cpp:918
+#: browsers/playlistbrowser/DynamicBiasWidgets.cpp:245 rc.cpp:930
 #: services/lastfm/LastFmService.cpp:517
 #: services/magnatune/MagnatuneStore.cpp:194
 #: services/jamendo/JamendoInfoParser.cpp:54 playlist/PlaylistHeader.cpp:42
@@ -1003,7 +1023,7 @@ msgstr "Atlikėjas"
 #: browsers/collectionbrowser/CollectionWidget.cpp:96
 #: browsers/collectionbrowser/CollectionWidget.cpp:125
 #: browsers/collectionbrowser/CollectionWidget.cpp:157
-#: browsers/playlistbrowser/DynamicBiasWidgets.cpp:246 rc.cpp:921
+#: browsers/playlistbrowser/DynamicBiasWidgets.cpp:246 rc.cpp:933
 #: playlist/PlaylistModel.cpp:698 widgets/SmartPlaylistEditor.cpp:184
 #: widgets/SmartPlaylistEditor.cpp:198
 msgid "Composer"
@@ -1014,7 +1034,7 @@ msgstr "Kompozitoius"
 #: dialogs/FilenameLayoutDialog.cpp:119 dialogs/FilenameLayoutDialog.cpp:342
 #: browsers/CollectionTreeItemModelBase.cpp:767
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:250
-#: browsers/playlistbrowser/DynamicBiasWidgets.cpp:693 rc.cpp:933
+#: browsers/playlistbrowser/DynamicBiasWidgets.cpp:693 rc.cpp:945
 #: playlist/PlaylistModel.cpp:699 widgets/SmartPlaylistEditor.cpp:185
 #: widgets/SmartPlaylistEditor.cpp:198 widgets/SmartPlaylistEditor.cpp:922
 msgid "Year"
@@ -1027,7 +1047,7 @@ msgstr "Metai"
 #: browsers/collectionbrowser/CollectionWidget.cpp:90
 #: browsers/collectionbrowser/CollectionWidget.cpp:119
 #: browsers/collectionbrowser/CollectionWidget.cpp:151
-#: browsers/playlistbrowser/DynamicBiasWidgets.cpp:247 rc.cpp:915
+#: browsers/playlistbrowser/DynamicBiasWidgets.cpp:247 rc.cpp:927
 #: services/magnatune/MagnatuneStore.cpp:200
 #: services/jamendo/JamendoInfoParser.cpp:86 playlist/PlaylistHeader.cpp:42
 #: playlist/PlaylistModel.cpp:700 widgets/SmartPlaylistEditor.cpp:184
@@ -1048,7 +1068,7 @@ msgstr "Komentaras"
 #: browsers/collectionbrowser/CollectionWidget.cpp:93
 #: browsers/collectionbrowser/CollectionWidget.cpp:122
 #: browsers/collectionbrowser/CollectionWidget.cpp:154
-#: browsers/playlistbrowser/DynamicBiasWidgets.cpp:249 rc.cpp:924
+#: browsers/playlistbrowser/DynamicBiasWidgets.cpp:249 rc.cpp:936
 #: playlist/PlaylistModel.cpp:704 widgets/ProgressiveSearchWidget.cpp:96
 #: widgets/SmartPlaylistEditor.cpp:184 widgets/SmartPlaylistEditor.cpp:198
 msgid "Genre"
@@ -1100,7 +1120,7 @@ msgstr ""
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:213
 #. i18n: ectx: property (text), widget (KPushButton, kpbAdvanced)
-#: dialogs/FilenameLayoutDialog.cpp:271 rc.cpp:871
+#: dialogs/FilenameLayoutDialog.cpp:271 rc.cpp:883
 msgid "&Advanced..."
 msgstr "&Išsamiau..."
 
@@ -1115,7 +1135,7 @@ msgstr "Aplankas"
 
 #. i18n: file: dialogs/PlaylistLayoutEditDialog.ui:171
 #. i18n: ectx: attribute (title), widget (QWidget, tab)
-#: dialogs/PlaylistLayoutEditDialog.cpp:75 rc.cpp:746
+#: dialogs/PlaylistLayoutEditDialog.cpp:75 rc.cpp:758
 msgid "Head"
 msgstr ""
 
@@ -1150,7 +1170,7 @@ msgid "Rename playlist layout"
 msgstr "Derinti..."
 
 #: dialogs/PlaylistLayoutEditDialog.cpp:144
-#: dialogs/PlaylistLayoutEditDialog.cpp:183
+#: dialogs/PlaylistLayoutEditDialog.cpp:188
 #, fuzzy
 msgid "Choose a name for the new playlist layout"
 msgstr "&Įrašykite įrenginio pavadinimą (būtina):"
@@ -1160,76 +1180,84 @@ msgid "Please enter a name for the playlist layout you are about to define:"
 msgstr ""
 
 #: dialogs/PlaylistLayoutEditDialog.cpp:148
-#: dialogs/PlaylistLayoutEditDialog.cpp:153
-#: dialogs/PlaylistLayoutEditDialog.cpp:188
 #: dialogs/PlaylistLayoutEditDialog.cpp:193
-#: dialogs/PlaylistLayoutEditDialog.cpp:237
-#: dialogs/PlaylistLayoutEditDialog.cpp:241
-#: dialogs/PlaylistLayoutEditDialog.cpp:243
-#, fuzzy
-msgid "Layout name error"
-msgstr "dažnumas"
-
-#: dialogs/PlaylistLayoutEditDialog.cpp:148
-#: dialogs/PlaylistLayoutEditDialog.cpp:188
 #, fuzzy
 msgid "Cannot create a layout with no name."
 msgstr ""
 "Negalima dviems įrenginiams nurodyti tokio pačio\n"
 "pavadinimo ir tokios pačios prijungimo vietos!"
 
+#: dialogs/PlaylistLayoutEditDialog.cpp:148
 #: dialogs/PlaylistLayoutEditDialog.cpp:153
+#: dialogs/PlaylistLayoutEditDialog.cpp:158
 #: dialogs/PlaylistLayoutEditDialog.cpp:193
+#: dialogs/PlaylistLayoutEditDialog.cpp:198
+#: dialogs/PlaylistLayoutEditDialog.cpp:249
+#: dialogs/PlaylistLayoutEditDialog.cpp:253
+#: dialogs/PlaylistLayoutEditDialog.cpp:255
+#, fuzzy
+msgid "Layout name error"
+msgstr "dažnumas"
+
+#: dialogs/PlaylistLayoutEditDialog.cpp:153
+#: dialogs/PlaylistLayoutEditDialog.cpp:198
 #, fuzzy
 msgid "Cannot create a layout with the same name as an existing layout."
 msgstr ""
 "Negalima dviems įrenginiams nurodyti tokio pačio\n"
 "pavadinimo ir tokios pačios prijungimo vietos!"
 
-#: dialogs/PlaylistLayoutEditDialog.cpp:184
+#: dialogs/PlaylistLayoutEditDialog.cpp:158
+#, fuzzy
+msgid "Cannot create a layout containing '/'."
+msgstr ""
+"Negalima dviems įrenginiams nurodyti tokio pačio\n"
+"pavadinimo ir tokios pačios prijungimo vietos!"
+
+#: dialogs/PlaylistLayoutEditDialog.cpp:189
 #, kde-format
 msgid ""
 "Please enter a name for the playlist layout you are about to define as copy "
 "of the layout '%1':"
 msgstr ""
 
-#: dialogs/PlaylistLayoutEditDialog.cpp:233
+#: dialogs/PlaylistLayoutEditDialog.cpp:239
 #, fuzzy
 msgid "Choose a new name for the playlist layout"
 msgstr "&Įrašykite įrenginio pavadinimą (būtina):"
 
-#: dialogs/PlaylistLayoutEditDialog.cpp:234
+#: dialogs/PlaylistLayoutEditDialog.cpp:240
 msgid ""
 "Please enter a new name for the playlist layout you are about to rename:"
 msgstr ""
 
-#: dialogs/PlaylistLayoutEditDialog.cpp:237
+#: dialogs/PlaylistLayoutEditDialog.cpp:249
 #, fuzzy
 msgid "Cannot rename one of the default layouts."
 msgstr "&Įrašykite įrenginio pavadinimą (būtina):"
 
-#: dialogs/PlaylistLayoutEditDialog.cpp:241
+#: dialogs/PlaylistLayoutEditDialog.cpp:253
 #, fuzzy
 msgid "Cannot rename a layout to have no name."
 msgstr ""
 "Negalima dviems įrenginiams nurodyti tokio pačio\n"
 "pavadinimo ir tokios pačios prijungimo vietos!"
 
-#: dialogs/PlaylistLayoutEditDialog.cpp:243
+#: dialogs/PlaylistLayoutEditDialog.cpp:255
 #, fuzzy
 msgid "Cannot rename a layout to have the same name as an existing layout."
 msgstr ""
 "Negalima dviems įrenginiams nurodyti tokio pačio\n"
 "pavadinimo ir tokios pačios prijungimo vietos!"
 
-#: dialogs/PlaylistLayoutEditDialog.cpp:345
+#: dialogs/PlaylistLayoutEditDialog.cpp:357
 #, kde-format
 msgid ""
 "The layout '%1' you modified is one of the default layouts and cannot be "
 "overwritten.                 Please select a different name to save a copy."
 msgstr ""
 
-#: dialogs/PlaylistLayoutEditDialog.cpp:347
+#: dialogs/PlaylistLayoutEditDialog.cpp:359
 #, fuzzy
 msgid "Reserved Layout Name"
 msgstr "Dabartinis grojaraštis"
@@ -1312,119 +1340,119 @@ msgctxt "Track has been imported, format: Artist - Track (Album)"
 msgid "Imported <b>%1 - %2 (%3)</b>"
 msgstr "Importuota <b>%1 – %2 (%3)</b>"
 
-#: dialogs/TagDialog.cpp:489
+#: dialogs/TagDialog.cpp:492
 msgid "Filename Layout Chooser"
 msgstr "Failo pavadinimo parinktys"
 
-#: dialogs/TagDialog.cpp:580 browsers/playlistbrowser/PodcastModel.cpp:283
+#: dialogs/TagDialog.cpp:583 browsers/playlistbrowser/PodcastModel.cpp:283
 msgid "Summary"
 msgstr "Santrauka"
 
-#: dialogs/TagDialog.cpp:581
+#: dialogs/TagDialog.cpp:584
 msgid "Tags"
 msgstr "Laukeliai"
 
-#: dialogs/TagDialog.cpp:583
+#: dialogs/TagDialog.cpp:586
 msgid "Statistics"
 msgstr "Statistika"
 
-#: dialogs/TagDialog.cpp:585
+#: dialogs/TagDialog.cpp:588
 msgid "Labels"
 msgstr "Etiketės"
 
-#: dialogs/TagDialog.cpp:711
+#: dialogs/TagDialog.cpp:714
 msgctxt "The value for this tag is not known"
 msgid "Unknown"
 msgstr "Nežinoma"
 
-#: dialogs/TagDialog.cpp:831
+#: dialogs/TagDialog.cpp:834
 #, kde-format
 msgid "Track Details: %1 by %2"
 msgstr "Dainos informacija: %1 – %2"
 
-#: dialogs/TagDialog.cpp:855 dialogs/TagDialog.cpp:865
+#: dialogs/TagDialog.cpp:858 dialogs/TagDialog.cpp:868
 #, kde-format
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> – <b>%2</b>"
 
-#: dialogs/TagDialog.cpp:863
+#: dialogs/TagDialog.cpp:866
 #, kde-format
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> – <b>%2</b> albumas <b>%3</b>"
 
-#: dialogs/TagDialog.cpp:867
+#: dialogs/TagDialog.cpp:870
 #, kde-format
 msgid "<b>%1</b>"
 msgstr "<b>%1</b>"
 
-#: dialogs/TagDialog.cpp:896
+#: dialogs/TagDialog.cpp:899
 msgid "Length:"
 msgstr "Trukmė:"
 
-#: dialogs/TagDialog.cpp:897
+#: dialogs/TagDialog.cpp:900
 #, fuzzy
 msgid "Bit rate:"
 msgstr "Bitų dažnis:"
 
-#: dialogs/TagDialog.cpp:898
+#: dialogs/TagDialog.cpp:901
 #, fuzzy
 msgid "Sample rate:"
 msgstr "Kadrų dažnis:"
 
-#: dialogs/TagDialog.cpp:899
+#: dialogs/TagDialog.cpp:902
 msgid "Size:"
 msgstr "Dydis:"
 
-#: dialogs/TagDialog.cpp:900
+#: dialogs/TagDialog.cpp:903
 msgid "Format:"
 msgstr "Formatas:"
 
-#. i18n: file: dialogs/TagDialogBase.ui:502
+#. i18n: file: dialogs/TagDialogBase.ui:506
 #. i18n: ectx: property (text), widget (QLabel, scoreLabel)
-#: dialogs/TagDialog.cpp:903 rc.cpp:831
+#: dialogs/TagDialog.cpp:906 rc.cpp:843
 msgid "Score:"
 msgstr "Reitingas:"
 
-#. i18n: file: dialogs/TagDialogBase.ui:531
+#. i18n: file: dialogs/TagDialogBase.ui:535
 #. i18n: ectx: property (text), widget (QLabel, ratingLabel)
-#: dialogs/TagDialog.cpp:905 rc.cpp:834
+#: dialogs/TagDialog.cpp:908 rc.cpp:846
 msgid "Rating:"
 msgstr "Įvertinimas:"
 
-#: dialogs/TagDialog.cpp:907
+#: dialogs/TagDialog.cpp:910
 msgid "Play Count:"
 msgstr "Grojimų skaičius:"
 
-#: dialogs/TagDialog.cpp:910
+#: dialogs/TagDialog.cpp:913
 msgid "First Played:"
 msgstr "Pirmą kartą atlikta:"
 
-#: dialogs/TagDialog.cpp:911
+#: dialogs/TagDialog.cpp:914
 msgctxt "When this track was first played"
 msgid "Never"
 msgstr "Niekada"
 
-#: dialogs/TagDialog.cpp:912
+#: dialogs/TagDialog.cpp:915
 msgctxt "a single item (singular)"
 msgid "Last Played:"
 msgstr "Paskutinį kartą atlikta:"
 
-#: dialogs/TagDialog.cpp:913
+#: dialogs/TagDialog.cpp:916
 msgctxt "When this track was last played"
 msgid "Never"
 msgstr "Niekada"
 
-#: dialogs/TagDialog.cpp:914
+#: dialogs/TagDialog.cpp:917
 msgid "Collection:"
 msgstr "Fonoteka:"
 
-#: dialogs/TagDialog.cpp:915
+#: dialogs/TagDialog.cpp:918
 #, fuzzy
 msgctxt "The collection this track is part of"
 msgid "None"
 msgstr "Nieko"
 
-#: dialogs/TagDialog.cpp:1040
+#: dialogs/TagDialog.cpp:1043
 #, kde-format
 msgctxt "The amount of tracks being edited"
 msgid "1 Track"
@@ -1433,7 +1461,7 @@ msgstr[0] "%1 dainos informacija"
 msgstr[1] "%1 dainų informacija"
 msgstr[2] "%1 dainų informacija"
 
-#: dialogs/TagDialog.cpp:1155
+#: dialogs/TagDialog.cpp:1158
 #, kde-format
 msgid "Editing 1 file"
 msgid_plural "Editing %1 files"
@@ -1441,23 +1469,23 @@ msgstr[0] "Keičiamas %1 failas"
 msgstr[1] "Keičiami %1 failai"
 msgstr[2] "Keičiama %1 failų"
 
-#: dialogs/TagDialog.cpp:1160
+#: dialogs/TagDialog.cpp:1163
 msgid "Rated Songs:"
 msgstr "Dainos su įvertinimu:"
 
-#: dialogs/TagDialog.cpp:1162
+#: dialogs/TagDialog.cpp:1165
 msgid "Average Rating:"
 msgstr "Vidutinis įvertinimas:"
 
-#: dialogs/TagDialog.cpp:1164
+#: dialogs/TagDialog.cpp:1167
 msgid "Scored Songs:"
 msgstr "Dainos su reitingais:"
 
-#: dialogs/TagDialog.cpp:1166
+#: dialogs/TagDialog.cpp:1169
 msgid "Average Score:"
 msgstr "Vidutinis reitingas:"
 
-#: dialogs/TagDialog.cpp:1464
+#: dialogs/TagDialog.cpp:1467
 msgid ""
 "Writing to file failed. Please check permissions and available disc space."
 msgstr ""
@@ -1585,7 +1613,7 @@ msgstr "Nieko"
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:236
 #. i18n: ectx: property (title), widget (KButtonGroup, optionsFrame)
-#: dialogs/transferdialog.cpp:112 rc.cpp:874
+#: dialogs/transferdialog.cpp:112 rc.cpp:886
 msgid "Options"
 msgstr "Parinktys"
 
@@ -1593,7 +1621,7 @@ msgstr "Parinktys"
 msgid "Convert spaces to underscores"
 msgstr "Keisti tarpo simbolius pabraukimo simboliais"
 
-#: dialogs/ScriptManager.cpp:117 MainWindow.cpp:659
+#: dialogs/ScriptManager.cpp:117 MainWindow.cpp:657
 msgid "Script Manager"
 msgstr "Scenarijų tvarkyklė"
 
@@ -1660,7 +1688,8 @@ msgstr ""
 #: dialogs/ScriptManager.cpp:451
 #, fuzzy, kde-format
 msgid ""
-"There are exceptions caught in the script '%1'. Please refer to the log."
+"There are exceptions caught in the script '%1'. Please refer to the console "
+"debug output for more information."
 msgstr "Scenarijus pranešė apie klaidas. Pasižiūrėkite į žurnalą."
 
 #: App.cpp:93 browsers/playlistbrowser/PodcastModel.cpp:408
@@ -1698,73 +1727,73 @@ msgstr ""
 "\n"
 "(Kompiliavimo data: %1)"
 
-#: App.cpp:438
+#: App.cpp:437
 msgid "Files/URLs to open"
 msgstr "Atverti failus arba URL"
 
-#: App.cpp:440
+#: App.cpp:439
 msgid "Skip backwards in playlist"
 msgstr "Grojaraštyje eiti atgal"
 
-#: App.cpp:442
+#: App.cpp:441
 msgid "Start playing current playlist"
 msgstr "Pradėti groti dabartinį grojaraštį"
 
-#: App.cpp:444
+#: App.cpp:443
 msgid "Play if stopped, pause if playing"
 msgstr "Groti jei sustabdyta, pristabdyti jei grojama"
 
-#: App.cpp:445
+#: App.cpp:444
 msgid "Pause playback"
 msgstr "Pristabdyti"
 
-#: App.cpp:447
+#: App.cpp:446
 msgid "Stop playback"
 msgstr "Nustoti groti"
 
-#: App.cpp:449
+#: App.cpp:448
 msgid "Skip forwards in playlist"
 msgstr "Grojaraštyje eiti pirmyn"
 
-#: App.cpp:450
+#: App.cpp:449
 msgid "Additional options:"
 msgstr "Papildomos parinktys:"
 
-#: App.cpp:452
+#: App.cpp:451
 msgid "Append files/URLs to playlist"
 msgstr "Papildyti grojaraštį failais arba URL"
 
-#: App.cpp:453
+#: App.cpp:452
 msgid "Queue URLs after the currently playing track"
 msgstr "Įtraukti URL į eilę po dabar grojančios dainos"
 
-#: App.cpp:455
+#: App.cpp:454
 msgid "Load URLs, replacing current playlist"
 msgstr "Įkelti URL pakeičiant dabartinį grojaraštį"
 
-#: App.cpp:457
+#: App.cpp:456
 msgid "Print verbose debugging information"
 msgstr "Spausdinti išsamią klaidų derinimo informaciją"
 
-#: App.cpp:459
+#: App.cpp:458
 msgid "Allow running multiple Amarok instances"
 msgstr ""
 
-#: App.cpp:460
+#: App.cpp:459
 msgid "Base for relative filenames/URLs"
 msgstr "Santykinių failų pavadinimų ar URL pradžia"
 
-#: App.cpp:689
+#: App.cpp:691
 msgid "Moving files to trash"
 msgstr "Failai perkeliami į šiukšliadėžę"
 
-#: App.cpp:791
+#: App.cpp:793
 #, kde-format
 msgctxt "monthname year"
 msgid "%1 %2"
 msgstr "%1 %2"
 
-#: App.cpp:798
+#: App.cpp:800
 #, kde-format
 msgid "One week ago"
 msgid_plural "%1 weeks ago"
@@ -1772,16 +1801,16 @@ msgstr[0] "prieš %1 savaitę"
 msgstr[1] "prieš %1 savaites"
 msgstr[2] "prieš %1 savaičių"
 
-#: App.cpp:801 App.cpp:852
+#: App.cpp:803 App.cpp:854
 msgctxt "When this track was last played"
 msgid "Tomorrow"
 msgstr "Rytoj"
 
-#: App.cpp:807
+#: App.cpp:809
 msgid "Yesterday"
 msgstr "Vakar"
 
-#: App.cpp:808
+#: App.cpp:810
 #, kde-format
 msgid "One day ago"
 msgid_plural "%1 days ago"
@@ -1789,7 +1818,7 @@ msgstr[0] "prieš %1 dieną"
 msgstr[1] "prieš %1 dienas"
 msgstr[2] "prieš %1 dienų"
 
-#: App.cpp:811
+#: App.cpp:813
 #, kde-format
 msgid "One hour ago"
 msgid_plural "%1 hours ago"
@@ -1797,7 +1826,7 @@ msgstr[0] "prieš %1 valandą"
 msgstr[1] "prieš %1 valandas"
 msgstr[2] "prieš %1 valandų"
 
-#: App.cpp:817
+#: App.cpp:819
 #, kde-format
 msgid "One minute ago"
 msgid_plural "%1 minutes ago"
@@ -1805,49 +1834,49 @@ msgstr[0] "prieš %1 minutę"
 msgstr[1] "prieš %1 minutes"
 msgstr[2] "prieš %1 minučių"
 
-#: App.cpp:818
+#: App.cpp:820
 msgid "Within the last minute"
 msgstr "per pastarąją minutę"
 
-#: App.cpp:820
+#: App.cpp:822
 msgid "The future"
 msgstr "Ateityje"
 
-#: App.cpp:826
+#: App.cpp:828
 msgctxt "The amount of time since last played"
 msgid "Never"
 msgstr "Niekada"
 
-#: App.cpp:836
+#: App.cpp:838
 msgctxt "The amount of time since last played"
 msgid "0"
 msgstr "0"
 
-#: App.cpp:845
+#: App.cpp:847
 #, kde-format
 msgctxt "number of months ago"
 msgid "%1M"
 msgstr "%1mėn"
 
-#: App.cpp:849
+#: App.cpp:851
 #, kde-format
 msgctxt "w for weeks"
 msgid "%1w"
 msgstr "%1sav"
 
-#: App.cpp:858
+#: App.cpp:860
 #, no-c-format, kde-format
 msgctxt "d for days"
 msgid "%1d"
 msgstr "%1d"
 
-#: App.cpp:861
+#: App.cpp:863
 #, kde-format
 msgctxt "h for hours"
 msgid "%1h"
 msgstr "%1h"
 
-#: App.cpp:870
+#: App.cpp:872
 msgid "0"
 msgstr "0"
 
@@ -1855,23 +1884,17 @@ msgstr "0"
 msgid "Local Playlists stored in the database"
 msgstr ""
 
-#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:101
+#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:100
 #, fuzzy
 msgid "Change playlist"
 msgstr "Į&rašyti grojaraštį"
 
-#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:102
+#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:101
 #, fuzzy
 msgid "Enter new name for playlist:"
 msgstr "&Įrašykite įrenginio pavadinimą (būtina):"
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:116
-#: equalizerpresetmanager.cpp:59 MediaDevice.cpp:1032
-#: amarokurls/BookmarkTreeView.cpp:120
-msgid "&Delete"
-msgstr "Pa&šalinti"
-
-#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:123
 #: equalizerpresetmanager.cpp:58 amarokurls/BookmarkTreeView.cpp:126
 msgid "&Rename"
 msgstr "Pe&rvadinti"
@@ -2011,11 +2034,11 @@ msgstr "Papildyti ir &groti"
 msgid "&Queue Track"
 msgstr "&Dainą į eilę"
 
-#. i18n: file: dialogs/TagDialogBase.ui:751
+#. i18n: file: dialogs/TagDialogBase.ui:755
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_cancel)
 #. i18n: file: services/magnatune/MagnatuneRedownloadDialogBase.ui:36
 #. i18n: ectx: property (text), widget (QPushButton, cancelButton)
-#: Systray.cpp:249 rc.cpp:861 rc.cpp:1315
+#: Systray.cpp:249 rc.cpp:873 rc.cpp:1327
 msgid "&Cancel"
 msgstr "&Atšaukti"
 
@@ -2112,10 +2135,10 @@ msgstr "Fonoteka"
 msgid "Username"
 msgstr "Naudotojas"
 
-#. i18n: file: amarokconfig.kcfg:427
+#. i18n: file: amarokconfig.kcfg:428
 #. i18n: ectx: label, entry, group (Scrobbler)
-#: databaseimporter/amarok14/FastForwardImporterConfig.cpp:51 rc.cpp:405
-#: rc.cpp:1784
+#: databaseimporter/amarok14/FastForwardImporterConfig.cpp:51 rc.cpp:408
+#: rc.cpp:1799
 msgid "Password"
 msgstr "Slaptažodis"
 
@@ -2166,6 +2189,12 @@ msgstr "Generuojamas grojaraštis..."
 #: equalizerpresetmanager.cpp:38 equalizerpresetmanager.cpp:50
 msgid "Presets"
 msgstr "Profiliai"
+
+#: equalizerpresetmanager.cpp:59
+#: browsers/playlistbrowser/UserPlaylistModel.cpp:464 MediaDevice.cpp:1032
+#: amarokurls/BookmarkTreeView.cpp:120
+msgid "&Delete"
+msgstr "Pa&šalinti"
 
 #: equalizerpresetmanager.cpp:107
 msgid "Rename Equalizer Preset"
@@ -2643,7 +2672,7 @@ msgstr "Pritaikyti paskutinį filtrą („%1“)"
 msgid "Clear filter"
 msgstr "Išvalyti filtrą"
 
-#: browsers/playlistbrowser/UserPlaylistModel.cpp:253
+#: browsers/playlistbrowser/UserPlaylistModel.cpp:254
 #: amarokurls/BookmarkModel.cpp:228
 msgid "Name"
 msgstr "Pavadinimas"
@@ -2798,44 +2827,44 @@ msgstr "Įjungta"
 msgid "Turn dynamic mode on."
 msgstr "Paskutinė naudota dinaminė veiksena"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:66
+#: browsers/playlistbrowser/DynamicCategory.cpp:65
 #, fuzzy
 msgid "Repopulate"
 msgstr "Pakeisti"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:67
+#: browsers/playlistbrowser/DynamicCategory.cpp:66
 #, fuzzy
 msgid "Replace the upcoming tracks with fresh ones."
 msgstr "Pakeisti dainos su."
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:78
+#: browsers/playlistbrowser/DynamicCategory.cpp:77
 msgid "Playlist:"
 msgstr "Grojaraštis:"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:108
+#: browsers/playlistbrowser/DynamicCategory.cpp:107
 #, fuzzy
 msgid "Save the preset."
 msgstr "Įdėti profilį"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:118
+#: browsers/playlistbrowser/DynamicCategory.cpp:117
 #, fuzzy
 msgid "Delete the preset."
 msgstr "Pašalinti."
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:266
+#: browsers/playlistbrowser/DynamicCategory.cpp:265
 msgid "Playlist Name"
 msgstr "Grojaraščio pavadinimas"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:267
+#: browsers/playlistbrowser/DynamicCategory.cpp:266
 #, fuzzy
 msgid "Enter a name for the playlist:"
 msgstr "&Įrašykite įrenginio pavadinimą (būtina):"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:277
+#: browsers/playlistbrowser/DynamicCategory.cpp:276
 msgid "Warning"
 msgstr "Dėmesio"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:277
+#: browsers/playlistbrowser/DynamicCategory.cpp:276
 #, fuzzy
 msgid "Cannot overwrite the random playlist."
 msgstr "Nepavyko įrašyti grojaraščio (%1)."
@@ -3019,7 +3048,7 @@ msgstr "Nenaudoti"
 
 #. i18n: file: services/ampache/AmpacheConfigWidget.ui:104
 #. i18n: ectx: property (text), widget (KPushButton, removeButton)
-#: MediaDevicePluginManager.cpp:557 rc.cpp:1345
+#: MediaDevicePluginManager.cpp:557 rc.cpp:1357
 msgid "Remove"
 msgstr "Pašalinti"
 
@@ -3075,7 +3104,7 @@ msgstr "Grojaraščiai"
 msgid "Files"
 msgstr "Failai"
 
-#: MainWindow.cpp:436
+#: MainWindow.cpp:434
 #, fuzzy
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
@@ -3086,153 +3115,153 @@ msgstr ""
 "darbą nurodykite komandą <B>Baigti</B>, esančią meniu arba Amarok sisteminio "
 "dėklo ženkliuke.</qt>"
 
-#: MainWindow.cpp:438
+#: MainWindow.cpp:436
 msgid "Docking in System Tray"
 msgstr "Nukelti į sistemos dėklą"
 
-#: MainWindow.cpp:463
+#: MainWindow.cpp:461
 msgid "Use relative path for &saving"
 msgstr ""
 
-#: MainWindow.cpp:468
+#: MainWindow.cpp:466
 msgid "Save As"
 msgstr "Išsaugoti kaip"
 
-#: MainWindow.cpp:506
+#: MainWindow.cpp:504
 msgid "Play Media (Files or URLs)"
 msgstr "Groti muziką (failus ar URL)"
 
-#: MainWindow.cpp:506
+#: MainWindow.cpp:504
 msgid "Add Media (Files or URLs)"
 msgstr "Įdėti muziką (failus ar URL)"
 
-#: MainWindow.cpp:521
+#: MainWindow.cpp:519
 msgid "Add Stream"
 msgstr "Įdėti srautą"
 
-#: MainWindow.cpp:521
+#: MainWindow.cpp:519
 msgid "Enter Stream URL:"
 msgstr "Įrašykite srauto URL:"
 
-#: MainWindow.cpp:615
+#: MainWindow.cpp:613
 msgid "&Add Media..."
 msgstr "&Įdėti muziką..."
 
-#: MainWindow.cpp:620
+#: MainWindow.cpp:618
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "&Išvalyti grojaraštį"
 
-#: MainWindow.cpp:624
+#: MainWindow.cpp:622
 msgid "&Add Stream..."
 msgstr "&Įdėti srautą..."
 
-#: MainWindow.cpp:628
+#: MainWindow.cpp:626
 msgid "&Export Playlist As..."
 msgstr "&Eksportuoti grojaraštį kaip..."
 
-#: MainWindow.cpp:632
+#: MainWindow.cpp:630
 msgid "&Save Playlist"
 msgstr "Į&rašyti grojaraštį"
 
-#: MainWindow.cpp:636 covermanager/CoverManager.cpp:98
+#: MainWindow.cpp:634 covermanager/CoverManager.cpp:98
 msgid "Cover Manager"
 msgstr "Viršelių tvarkyklė"
 
-#: MainWindow.cpp:648
+#: MainWindow.cpp:646
 msgid "Play Media..."
 msgstr "Groti kūrinį..."
 
-#: MainWindow.cpp:654
+#: MainWindow.cpp:652
 msgid "Play Audio CD"
 msgstr "Groti muzikinį CD"
 
-#: MainWindow.cpp:663
+#: MainWindow.cpp:661
 msgid "&Seek Forward"
 msgstr "&Prasukti pirmyn"
 
-#: MainWindow.cpp:669
+#: MainWindow.cpp:667
 msgid "&Seek Backward"
 msgstr "&Prasukti atgal"
 
-#: MainWindow.cpp:676
+#: MainWindow.cpp:674
 msgid "Update Collection"
 msgstr "Atnaujinti fonoteką"
 
-#: MainWindow.cpp:683
+#: MainWindow.cpp:681
 msgid "Previous Track"
 msgstr "Ankstesnė daina"
 
-#: MainWindow.cpp:691
+#: MainWindow.cpp:689
 msgid "Next Track"
 msgstr "Kita daina"
 
-#: MainWindow.cpp:694
+#: MainWindow.cpp:692
 msgid "Increase Volume"
 msgstr "Pagarsinti"
 
-#: MainWindow.cpp:700
+#: MainWindow.cpp:698
 msgid "Decrease Volume"
 msgstr "Pritildyti"
 
-#: MainWindow.cpp:706
+#: MainWindow.cpp:704
 msgid "Toggle Main Window"
 msgstr "Įj./išj. pagrindinį langą"
 
-#: MainWindow.cpp:711
+#: MainWindow.cpp:709
 msgid "Show On Screen Display"
 msgstr "Rodyti pranešimus"
 
-#: MainWindow.cpp:716
+#: MainWindow.cpp:714
 msgid "Mute Volume"
 msgstr "Išjungti garsą"
 
-#: MainWindow.cpp:721
+#: MainWindow.cpp:719
 msgid "Love Current Track"
 msgstr "Ši daina patinka"
 
-#: MainWindow.cpp:726
+#: MainWindow.cpp:724
 msgid "Rate Current Track: 1"
 msgstr "Įvertinti šią dainą: 1"
 
-#: MainWindow.cpp:731
+#: MainWindow.cpp:729
 msgid "Rate Current Track: 2"
 msgstr "Įvertinti šią dainą: 2"
 
-#: MainWindow.cpp:736
+#: MainWindow.cpp:734
 msgid "Rate Current Track: 3"
 msgstr "Įvertinti šią dainą: 3"
 
-#: MainWindow.cpp:741
+#: MainWindow.cpp:739
 msgid "Rate Current Track: 4"
 msgstr "Įvertinti šią dainą: 4"
 
-#: MainWindow.cpp:746
+#: MainWindow.cpp:744
 msgid "Rate Current Track: 5"
 msgstr "Įvertinti šią dainą: 5"
 
-#: MainWindow.cpp:807
+#: MainWindow.cpp:805
 msgid "&Music"
 msgstr "&Muzika"
 
-#: MainWindow.cpp:811
+#: MainWindow.cpp:809
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:852
+#: MainWindow.cpp:850
 msgid "&Tools"
 msgstr "Įrank&iai"
 
-#: MainWindow.cpp:863
+#: MainWindow.cpp:861
 msgid "&Settings"
 msgstr "&Parinktys"
 
-#: MainWindow.cpp:959
+#: MainWindow.cpp:957
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Pristabdyta  ::  %1"
 
-#: MainWindow.cpp:971
+#: MainWindow.cpp:969
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 – %2  ::  %3"
@@ -3273,13 +3302,13 @@ msgstr "Duomenų formatas"
 
 #. i18n: file: amarokconfig.kcfg:13
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:3 rc.cpp:1382
+#: rc.cpp:3 rc.cpp:1394
 msgid "Whether to display a second, left time label."
 msgstr "Papildomai rodyti kairįjį grojimo trukmės indikatorių."
 
 #. i18n: file: amarokconfig.kcfg:14
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:6 rc.cpp:1385
+#: rc.cpp:6 rc.cpp:1397
 msgid ""
 "Set this to display a second time label to the left of the seek slider in "
 "the player window."
@@ -3289,13 +3318,13 @@ msgstr ""
 
 #. i18n: file: amarokconfig.kcfg:18
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:9 rc.cpp:1388
+#: rc.cpp:9 rc.cpp:1400
 msgid "Whether to display remaining track time in the left time label."
 msgstr "Kairiajame indikatoriuje rodyti likusią grojimo trukmę."
 
 #. i18n: file: amarokconfig.kcfg:19
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:12 rc.cpp:1391
+#: rc.cpp:12 rc.cpp:1403
 msgid ""
 "Set this to display remaining track time instead of past track time in the "
 "player window."
@@ -3305,13 +3334,13 @@ msgstr ""
 
 #. i18n: file: amarokconfig.kcfg:23
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:15 rc.cpp:1394
+#: rc.cpp:15 rc.cpp:1406
 msgid "Which track(s) to play repeatedly"
 msgstr "Groti kartojant"
 
 #. i18n: file: amarokconfig.kcfg:24
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:18 rc.cpp:1397
+#: rc.cpp:18 rc.cpp:1409
 msgid ""
 "Whether to repeat the current track, the current album, or the current "
 "playlist indefinitely, or neither."
@@ -3321,37 +3350,37 @@ msgstr ""
 
 #. i18n: file: amarokconfig.kcfg:27
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:21 rc.cpp:1400
+#: rc.cpp:21 rc.cpp:1412
 msgid "Do not Repeat"
 msgstr "Nekartoti nieko"
 
 #. i18n: file: amarokconfig.kcfg:30
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:24 rc.cpp:1403
+#: rc.cpp:24 rc.cpp:1415
 msgid "Repeat Track"
 msgstr "Kartoti dainą"
 
 #. i18n: file: amarokconfig.kcfg:33
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:27 rc.cpp:1406
+#: rc.cpp:27 rc.cpp:1418
 msgid "Repeat Album"
 msgstr "Kartoti albumą"
 
 #. i18n: file: amarokconfig.kcfg:36
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:30 rc.cpp:1409
+#: rc.cpp:30 rc.cpp:1421
 msgid "Repeat Playlist"
 msgstr "Kartoti grojaraštį"
 
 #. i18n: file: amarokconfig.kcfg:42
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:33 rc.cpp:1412
+#: rc.cpp:33 rc.cpp:1424
 msgid "Which tracks or albums to favor in Random Mode"
 msgstr "Kokioms dainoms teikti prioritetą grojant atsitiktine tvarka"
 
 #. i18n: file: amarokconfig.kcfg:43
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:36 rc.cpp:1415
+#: rc.cpp:36 rc.cpp:1427
 msgid ""
 "Tracks or albums with the chosen property will be more likely to be chosen "
 "in Random Mode."
@@ -3361,13 +3390,13 @@ msgstr ""
 
 #. i18n: file: amarokconfig.kcfg:53
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:39 rc.cpp:1418
+#: rc.cpp:39 rc.cpp:1430
 msgid "Whether to play tracks or albums in random order"
 msgstr "Groti atsitiktine tvarka dainas arba albumus"
 
 #. i18n: file: amarokconfig.kcfg:54
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:42 rc.cpp:1421
+#: rc.cpp:42 rc.cpp:1433
 msgid ""
 "If set, Amarok plays the tracks or albums in the playlist in a random order."
 msgstr ""
@@ -3376,13 +3405,13 @@ msgstr ""
 
 #. i18n: file: amarokconfig.kcfg:63
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:45 rc.cpp:1424
+#: rc.cpp:45 rc.cpp:1436
 msgid "The status of dynamic mode."
 msgstr "Dinaminės veiksenos būsena"
 
 #. i18n: file: amarokconfig.kcfg:64
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:48 rc.cpp:1427
+#: rc.cpp:48 rc.cpp:1439
 msgid ""
 "If set, dynamic mode will be on, and tracks will be added according to the "
 "dynamic playlist specified."
@@ -3392,88 +3421,104 @@ msgstr ""
 
 #. i18n: file: amarokconfig.kcfg:68
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:51 rc.cpp:1430
+#: rc.cpp:51 rc.cpp:1442
 msgid "The most recently used Dynamic Mode"
 msgstr "Paskutinė naudota dinaminė veiksena"
 
 #. i18n: file: amarokconfig.kcfg:69
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:54 rc.cpp:1433
+#: rc.cpp:54 rc.cpp:1445
 msgid ""
 "The title of the Dynamic Mode that was most recently loaded in the playlist"
 msgstr "Paskutinės į grojaraštį įkeltos dinaminės veiksenos pavadinimas"
 
 #. i18n: file: amarokconfig.kcfg:73
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:57 rc.cpp:1436
+#: rc.cpp:57 rc.cpp:1448
 msgid "Whether to show icon in system tray"
 msgstr "Rodyti ženkliuką sisteminiame dėkle."
 
 #. i18n: file: amarokconfig.kcfg:74
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:60 rc.cpp:1439
+#: rc.cpp:60 rc.cpp:1451
 msgid "Enable/Disable tray icon for Amarok."
 msgstr "Įjungti Amarok ženkliuką sistemos dėkle."
 
 #. i18n: file: amarokconfig.kcfg:78
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:63 rc.cpp:1442
-msgid "Whether to animate the systray icon"
+#: rc.cpp:63 rc.cpp:1454
+#, fuzzy
+#| msgid "Whether to animate the systray icon"
+msgid "Whether to hide the context view."
 msgstr "Animuotas sistemos dėklo ženkliukas"
 
 #. i18n: file: amarokconfig.kcfg:79
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:66 rc.cpp:1445
-msgid "Enable/Disable tray icon animation."
-msgstr "Animuoti sistemos dėklo ženkliuką."
+#: rc.cpp:66 rc.cpp:1457
+#, fuzzy
+#| msgid "Enable/Disable tray icon for Amarok."
+msgid "Enable/Disable context view in Amarok."
+msgstr "Įjungti Amarok ženkliuką sistemos dėkle."
 
 #. i18n: file: amarokconfig.kcfg:83
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:69 rc.cpp:1448
-msgid "Delay between tracks, in milliseconds"
-msgstr "Pauzė tarp dainų milisekundėmis"
+#: rc.cpp:69 rc.cpp:1460
+msgid "Whether to animate the systray icon"
+msgstr "Animuotas sistemos dėklo ženkliukas"
 
 #. i18n: file: amarokconfig.kcfg:84
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:72 rc.cpp:1451
-msgid "Delay between tracks, in milliseconds."
-msgstr "Pauzė tarp dainų milisekundėmis."
+#: rc.cpp:72 rc.cpp:1463
+msgid "Enable/Disable tray icon animation."
+msgstr "Animuoti sistemos dėklo ženkliuką."
 
 #. i18n: file: amarokconfig.kcfg:88
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:75 rc.cpp:1454
-msgid "Number of undo levels in playlist"
-msgstr "Grojaraštyje atšaukiamų keitimų skaičius"
+#: rc.cpp:75 rc.cpp:1466
+msgid "Delay between tracks, in milliseconds"
+msgstr "Pauzė tarp dainų milisekundėmis"
 
 #. i18n: file: amarokconfig.kcfg:89
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:78 rc.cpp:1457
-msgid "The number of undo levels in the playlist."
-msgstr "Atšaukiamų keitimų skaičius grojaraštyje."
+#: rc.cpp:78 rc.cpp:1469
+msgid "Delay between tracks, in milliseconds."
+msgstr "Pauzė tarp dainų milisekundėmis."
 
 #. i18n: file: amarokconfig.kcfg:93
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:81 rc.cpp:1460
-msgid "Whether a splash-screen should be displayed on startup"
-msgstr "Rodyti pasveikinimo langą"
+#: rc.cpp:81 rc.cpp:1472
+msgid "Number of undo levels in playlist"
+msgstr "Grojaraštyje atšaukiamų keitimų skaičius"
 
 #. i18n: file: amarokconfig.kcfg:94
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:84 rc.cpp:1463
+#: rc.cpp:84 rc.cpp:1475
+msgid "The number of undo levels in the playlist."
+msgstr "Atšaukiamų keitimų skaičius grojaraštyje."
+
+#. i18n: file: amarokconfig.kcfg:98
+#. i18n: ectx: label, entry, group (General Options)
+#: rc.cpp:87 rc.cpp:1478
+msgid "Whether a splash-screen should be displayed on startup"
+msgstr "Rodyti pasveikinimo langą"
+
+#. i18n: file: amarokconfig.kcfg:99
+#. i18n: ectx: whatsthis, entry, group (General Options)
+#: rc.cpp:90 rc.cpp:1481
 msgid "Enable/Disable splashscreen during Amarok startup."
 msgstr ""
 "Jei ši parinktis įjungta, kiekvieną kartą paleidus Amarok bus rodomas "
 "pasveikinimo ekranas."
 
-#. i18n: file: amarokconfig.kcfg:98
+#. i18n: file: amarokconfig.kcfg:103
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:87 rc.cpp:1466
+#: rc.cpp:93 rc.cpp:1484
 msgid "Whether playlists store relative path"
 msgstr "Grojaraščiuose įrašyti santykinius kelius"
 
-#. i18n: file: amarokconfig.kcfg:99
+#. i18n: file: amarokconfig.kcfg:104
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:90 rc.cpp:1469
+#: rc.cpp:96 rc.cpp:1487
 msgid ""
 "If set, Amarok's manually saved playlists will contain a relative path to "
 "each track, not an absolute path."
@@ -3481,47 +3526,47 @@ msgstr ""
 "Įjungus šią parinktį dainų kelių įrašymui Amarok naudos santykinius kelius "
 "jei grojarašis bus įrašomas paties naudotojo."
 
-#. i18n: file: amarokconfig.kcfg:103
+#. i18n: file: amarokconfig.kcfg:108
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:93 rc.cpp:1472
+#: rc.cpp:99 rc.cpp:1490
 msgid "Whether organize files will overwrite existing files."
 msgstr "Dėliojant failus perrašyti esančius failus."
 
-#. i18n: file: amarokconfig.kcfg:104
+#. i18n: file: amarokconfig.kcfg:109
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:96 rc.cpp:1475
+#: rc.cpp:102 rc.cpp:1493
 msgid "If set, Organize files will overwrite any existing destination."
 msgstr ""
 "Jei ši parinktis įjungta, dėliojant failus bus perrašyti esantys failai."
 
-#. i18n: file: amarokconfig.kcfg:108
+#. i18n: file: amarokconfig.kcfg:113
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:99 rc.cpp:1478
+#: rc.cpp:105 rc.cpp:1496
 msgid ""
 "Whether organize files will group directories according to their filetype."
 msgstr "Dėliojant failus grupuoti aplankus pagal failo tipą."
 
-#. i18n: file: amarokconfig.kcfg:109
+#. i18n: file: amarokconfig.kcfg:114
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:102 rc.cpp:1481
+#: rc.cpp:108 rc.cpp:1499
 msgid ""
 "If set, Organize files will group directories containing the same filetype."
 msgstr ""
 "Jei ši parinktis įjungta, dėliojant failus aplankai bus sugrupuoti pagal "
 "failo tipą."
 
-#. i18n: file: amarokconfig.kcfg:113
+#. i18n: file: amarokconfig.kcfg:118
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:105 rc.cpp:1484
+#: rc.cpp:111 rc.cpp:1502
 #, fuzzy
 msgid ""
 "Whether organize files will group artists whose names start with the same "
 "character."
 msgstr "Dėliojant failus grupuoti atlikėjus pagal pirmąją raidę."
 
-#. i18n: file: amarokconfig.kcfg:114
+#. i18n: file: amarokconfig.kcfg:119
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:108 rc.cpp:1487
+#: rc.cpp:114 rc.cpp:1505
 #, fuzzy
 msgid ""
 "If set, Organize files will group artists whose names start with the same "
@@ -3530,32 +3575,32 @@ msgstr ""
 "Jei ši parinktis įjungta, dėliojant failus atlikėjai bus sugrupuoti pagal "
 "pirmąją raidę."
 
-#. i18n: file: amarokconfig.kcfg:118
+#. i18n: file: amarokconfig.kcfg:123
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:111 rc.cpp:1490
+#: rc.cpp:117 rc.cpp:1508
 msgid "Whether organize files will ignore The in artist names."
 msgstr "Dėliojant failus ignoruoti „The“ atlikėjo pavadinime."
 
-#. i18n: file: amarokconfig.kcfg:119
+#. i18n: file: amarokconfig.kcfg:124
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:114 rc.cpp:1493
+#: rc.cpp:120 rc.cpp:1511
 msgid "If set, Organize files will ignore The in artist names."
 msgstr ""
 "Jei ši parinktis įjungta, dėliojant failus bus ignoruojamas „The“ atlikėjo "
 "pavadinime."
 
-#. i18n: file: amarokconfig.kcfg:123
+#. i18n: file: amarokconfig.kcfg:128
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:117 rc.cpp:1496
+#: rc.cpp:123 rc.cpp:1514
 #, fuzzy
 msgid ""
 "Whether organize files will replace spaces in filenames with underscores."
 msgstr ""
 "Dėliojat failus pakeisti tarpus failų pavadinimuose pabraukimo simboliu."
 
-#. i18n: file: amarokconfig.kcfg:124
+#. i18n: file: amarokconfig.kcfg:129
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:120 rc.cpp:1499
+#: rc.cpp:126 rc.cpp:1517
 #, fuzzy
 msgid ""
 "If set, Organize files will replace spaces in filenames with underscores."
@@ -3563,45 +3608,45 @@ msgstr ""
 "Jei ši parinktis įjungta, dėliojat failus tarpai failų pavadinimuose bus "
 "pakeisti pabraukimo simboliu."
 
-#. i18n: file: amarokconfig.kcfg:128
+#. i18n: file: amarokconfig.kcfg:133
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:123 rc.cpp:1502
+#: rc.cpp:129 rc.cpp:1520
 msgid "Whether organize files will use cover art as folder icons."
 msgstr ""
 "Dėliojant failus aplankų paveiksliukams naudoti viršelių paveiksliukus."
 
-#. i18n: file: amarokconfig.kcfg:129
+#. i18n: file: amarokconfig.kcfg:134
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:126 rc.cpp:1505
+#: rc.cpp:132 rc.cpp:1523
 msgid "If set, Organize files will use cover art as folder icons."
 msgstr ""
 "Jei ši parinktis įjungta, dėliojat failus aplankų paveiksliukams bus "
 "naudojami viršelių paveiksliukai."
 
-#. i18n: file: amarokconfig.kcfg:133
+#. i18n: file: amarokconfig.kcfg:138
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:129 rc.cpp:1508
+#: rc.cpp:135 rc.cpp:1526
 msgid "Index of collection folder destination for Organize files."
 msgstr "Fonotekos paskirties aplanko indeksas failų dėliojimui."
 
-#. i18n: file: amarokconfig.kcfg:134
+#. i18n: file: amarokconfig.kcfg:139
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:132 rc.cpp:1511
+#: rc.cpp:138 rc.cpp:1529
 msgid "The ID of the collection folder destination for Organize files."
 msgstr "Fonotekos paskirties aplanko id failų dėliojimui."
 
-#. i18n: file: amarokconfig.kcfg:138
+#. i18n: file: amarokconfig.kcfg:143
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:135 rc.cpp:1514
+#: rc.cpp:141 rc.cpp:1532
 msgid ""
 "Whether organize files will rename files in a manner compatible with vfat "
 "filesystems."
 msgstr ""
 "Dėliojant failus juos pervadinti pagal VFAT failų sistemos reikalavimus."
 
-#. i18n: file: amarokconfig.kcfg:139
+#. i18n: file: amarokconfig.kcfg:144
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:138 rc.cpp:1517
+#: rc.cpp:144 rc.cpp:1535
 msgid ""
 "If set, Organize files will replace characters that are not compatible with "
 "vfat filesystems (such as ':', '*' and '?')."
@@ -3609,17 +3654,17 @@ msgstr ""
 "Jei ši parinktis įjungta, dėliojat failus simboliai, neatitinkantys VFAT "
 "failų sistemos reikalavimų („:“, „*“, „?“ ir kt.), bus pakeisti."
 
-#. i18n: file: amarokconfig.kcfg:143
+#. i18n: file: amarokconfig.kcfg:148
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:141 rc.cpp:1520
+#: rc.cpp:147 rc.cpp:1538
 msgid ""
 "Whether organize files will rename files such that they only contain 7-bit "
 "ASCII characters."
 msgstr "Dėliojant failus juos pervadinti naudojant tik 7 bitų ASCII simbolius."
 
-#. i18n: file: amarokconfig.kcfg:144
+#. i18n: file: amarokconfig.kcfg:149
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:144 rc.cpp:1523
+#: rc.cpp:150 rc.cpp:1541
 msgid ""
 "If set, Organize files will replace characters that are not compatible with "
 "the 7-bit ASCII character set."
@@ -3627,30 +3672,30 @@ msgstr ""
 "Jei ši parinktis įjungta, dėliojat failus simboliai, nepatenkantys į 7 bitų "
 "ASCII simbolių lentelę, bus pakeisti."
 
-#. i18n: file: amarokconfig.kcfg:148
+#. i18n: file: amarokconfig.kcfg:153
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:147 rc.cpp:1526
+#: rc.cpp:153 rc.cpp:1544
 msgid "Whether organize files will use a custom file naming scheme."
 msgstr "Dėliojant failus naudoti naudotojo nurodytą failų pervadinimo šabloną."
 
-#. i18n: file: amarokconfig.kcfg:149
+#. i18n: file: amarokconfig.kcfg:154
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:150 rc.cpp:1529
+#: rc.cpp:156 rc.cpp:1547
 msgid ""
 "If set, Organize files will rename files according to a custom format string."
 msgstr ""
 "Jei ši parinktis įjungta, dėliojat failus jie bus pervadinti naudojant "
 "naudotojo nurodytą failų pervadinimo šabloną."
 
-#. i18n: file: amarokconfig.kcfg:153
+#. i18n: file: amarokconfig.kcfg:158
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:153 rc.cpp:1532
+#: rc.cpp:159 rc.cpp:1550
 msgid "Format string for Organize files, if a custom naming scheme is used."
 msgstr "Dėliojant failus naudoti šį failų pervadino šabloną."
 
-#. i18n: file: amarokconfig.kcfg:154
+#. i18n: file: amarokconfig.kcfg:159
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:156 rc.cpp:1535
+#: rc.cpp:162 rc.cpp:1553
 msgid ""
 "If the custom filename scheme is enabled, then Organize files will rename "
 "files according to this format string."
@@ -3658,125 +3703,119 @@ msgstr ""
 "Jei įjungtas failų pervadinimo šablonas, dėliojant failus juos pervadinti "
 "pagal šį šabloną."
 
-#. i18n: file: amarokconfig.kcfg:158
+#. i18n: file: amarokconfig.kcfg:163
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:159 rc.cpp:1538
+#: rc.cpp:165 rc.cpp:1556
 msgid "Regular expression that is to be replaced."
 msgstr ""
 "Simboliai, atitinkantys pakaitos simbolius, bus pakeisti pervadinant failą."
 
-#. i18n: file: amarokconfig.kcfg:159
+#. i18n: file: amarokconfig.kcfg:164
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:162 rc.cpp:1541
+#: rc.cpp:168 rc.cpp:1559
 msgid ""
 "Organize files will replace substrings matching this regular expression."
 msgstr ""
 "Dėliojant failus pakaitos simbolius atitinkantys simboliai bus pakeisti."
 
-#. i18n: file: amarokconfig.kcfg:163
+#. i18n: file: amarokconfig.kcfg:168
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:165 rc.cpp:1544
+#: rc.cpp:171 rc.cpp:1562
 msgid "Replacing string."
 msgstr "Keičiantys simboliai."
 
-#. i18n: file: amarokconfig.kcfg:164
+#. i18n: file: amarokconfig.kcfg:169
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:168 rc.cpp:1547
+#: rc.cpp:174 rc.cpp:1565
 msgid "Organize files will replace matching substrings with this string."
 msgstr ""
 "Dėliojant failus pakaitos simbolius atitinkantys simboliai bus pakeisti "
 "keičiančiais simboliais."
 
-#. i18n: file: amarokconfig.kcfg:168
+#. i18n: file: amarokconfig.kcfg:173
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:171 rc.cpp:1550
+#: rc.cpp:177 rc.cpp:1568
 msgid "Filename of the external web browser to be invoked by Amarok."
 msgstr "Amarok naudojamos išorinės naršyklės pavadinimas."
 
-#. i18n: file: amarokconfig.kcfg:172
+#. i18n: file: amarokconfig.kcfg:177
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:174 rc.cpp:1553
+#: rc.cpp:180 rc.cpp:1571
 msgid "Whether to automatically attempt to fetch cover art as needed"
 msgstr ""
 
-#. i18n: file: amarokconfig.kcfg:176
+#. i18n: file: amarokconfig.kcfg:181
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:177 rc.cpp:1556
+#: rc.cpp:183 rc.cpp:1574
 msgid ""
 "Automatically scroll the playlist to make the currently playing song visible"
 msgstr ""
 
-#. i18n: file: amarokconfig.kcfg:180
+#. i18n: file: amarokconfig.kcfg:185
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:180 rc.cpp:1559
+#: rc.cpp:186 rc.cpp:1577
 #, fuzzy
 msgid "Show Album art in the Collection Browser"
 msgstr "Fonotekos aplankų sąrašas"
 
-#. i18n: file: amarokconfig.kcfg:184
-#. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:183 rc.cpp:1562
-msgid "Show the Context View"
-msgstr ""
-
-#. i18n: file: amarokconfig.kcfg:191
+#. i18n: file: amarokconfig.kcfg:192
 #. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:186 rc.cpp:1565
+#: rc.cpp:189 rc.cpp:1580
 msgid "Master volume"
 msgstr "Bendras garsumas"
 
-#. i18n: file: amarokconfig.kcfg:192
+#. i18n: file: amarokconfig.kcfg:193
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: rc.cpp:189 rc.cpp:1568
+#: rc.cpp:192 rc.cpp:1583
 #, fuzzy
 msgid "The Amarok master volume, a value between 0 and 100."
 msgstr "Bendras garsumas, nuo 0 (tyla) iki 100."
 
-#. i18n: file: amarokconfig.kcfg:198
+#. i18n: file: amarokconfig.kcfg:199
 #. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:192 rc.cpp:1571
+#: rc.cpp:195 rc.cpp:1586
 msgid "Mute state"
 msgstr ""
 
-#. i18n: file: amarokconfig.kcfg:199
+#. i18n: file: amarokconfig.kcfg:200
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: rc.cpp:195 rc.cpp:1574
+#: rc.cpp:198 rc.cpp:1589
 msgid "Mute/Unmute sound."
 msgstr ""
 
-#. i18n: file: amarokconfig.kcfg:203
+#. i18n: file: amarokconfig.kcfg:204
 #. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:198 rc.cpp:1577
+#: rc.cpp:201 rc.cpp:1592
 msgid "Whether to crossfade between tracks"
 msgstr "Sulieti dainas"
 
-#. i18n: file: amarokconfig.kcfg:204
+#. i18n: file: amarokconfig.kcfg:205
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: rc.cpp:201 rc.cpp:1580
+#: rc.cpp:204 rc.cpp:1595
 msgid "Enable/Disable crossfading between track changes."
 msgstr "Keičiantis dainai sulieti dainas."
 
-#. i18n: file: amarokconfig.kcfg:208
+#. i18n: file: amarokconfig.kcfg:209
 #. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:204 rc.cpp:1583
+#: rc.cpp:207 rc.cpp:1598
 msgid "Length of crossfade, in milliseconds"
 msgstr "Suliejimo trukmė milisekundėmis"
 
-#. i18n: file: amarokconfig.kcfg:209
+#. i18n: file: amarokconfig.kcfg:210
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: rc.cpp:207 rc.cpp:1586
+#: rc.cpp:210 rc.cpp:1601
 msgid "The length of the crossfade between tracks in milliseconds."
 msgstr "Dainų suliejimo trukmė milisekundėmis."
 
-#. i18n: file: amarokconfig.kcfg:214
+#. i18n: file: amarokconfig.kcfg:215
 #. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:210 rc.cpp:1589
+#: rc.cpp:213 rc.cpp:1604
 msgid "When to Crossfade"
 msgstr "Suliejimo veiksena"
 
-#. i18n: file: amarokconfig.kcfg:215
+#. i18n: file: amarokconfig.kcfg:216
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: rc.cpp:213 rc.cpp:1592
+#: rc.cpp:216 rc.cpp:1607
 msgid ""
 "Determines whether to crossfade always, or on automatic/manual track changes "
 "only."
@@ -3784,153 +3823,153 @@ msgstr ""
 "Sulieti nuolatos, automatiškai keičiantis dainoms arba tik keičiant dainas "
 "pačiam naudotojui."
 
-#. i18n: file: amarokconfig.kcfg:219
+#. i18n: file: amarokconfig.kcfg:220
 #. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:216 rc.cpp:1595
+#: rc.cpp:219 rc.cpp:1610
 msgid "Whether to fade out tracks when pressing stop."
 msgstr "Pritildyti dainą paspaudus „Sustabdyti“."
 
-#. i18n: file: amarokconfig.kcfg:220
+#. i18n: file: amarokconfig.kcfg:221
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: rc.cpp:219 rc.cpp:1598
+#: rc.cpp:222 rc.cpp:1613
 msgid "Enable/Disable fadeout."
 msgstr "Įjungti pritildymą."
 
-#. i18n: file: amarokconfig.kcfg:224
+#. i18n: file: amarokconfig.kcfg:225
 #. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:222 rc.cpp:1601
+#: rc.cpp:225 rc.cpp:1616
 msgid "Length of fadeout, in milliseconds"
 msgstr "Pritildymo trukmė milisekundėmis"
 
-#. i18n: file: amarokconfig.kcfg:225
+#. i18n: file: amarokconfig.kcfg:226
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: rc.cpp:225 rc.cpp:1604
+#: rc.cpp:228 rc.cpp:1619
 msgid "The length of the fadeout in milliseconds."
 msgstr "Pritildymo trukmė milisekundėmis."
 
-#. i18n: file: amarokconfig.kcfg:230
+#. i18n: file: amarokconfig.kcfg:231
 #. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:228 rc.cpp:1607
+#: rc.cpp:231 rc.cpp:1622
 msgid "Whether to fade out when exiting the program."
 msgstr "Pritildyti išjungiant programą."
 
-#. i18n: file: amarokconfig.kcfg:234
+#. i18n: file: amarokconfig.kcfg:235
 #. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:231 rc.cpp:1610
+#: rc.cpp:234 rc.cpp:1625
 msgid "Enables the equalizer plugin"
 msgstr "Įjungti ekvalaizerio papildinį"
 
-#. i18n: file: amarokconfig.kcfg:235
+#. i18n: file: amarokconfig.kcfg:236
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: rc.cpp:234 rc.cpp:1613
+#: rc.cpp:237 rc.cpp:1628
 msgid "When enabled, an equalizer plugin filters the audio stream."
 msgstr "Ekvalaizerio papildinys filtruoja garso srautą nurodytu būdu."
 
-#. i18n: file: amarokconfig.kcfg:239
+#. i18n: file: amarokconfig.kcfg:240
 #. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:237 rc.cpp:1616
+#: rc.cpp:240 rc.cpp:1631
 msgid "Equalizer pre-amplification value, range -100..100, 0 is normal."
 msgstr "Ekvalaizerio didinimo reikšmė nuo -100 iki 100. Normali būsena 0."
 
-#. i18n: file: amarokconfig.kcfg:245
+#. i18n: file: amarokconfig.kcfg:246
 #. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:240 rc.cpp:1619
+#: rc.cpp:243 rc.cpp:1634
 msgid "Band gains for equalizer, 10 values, range -100..100, 0 is normal."
 msgstr ""
 "Ekvalaizerio dažnių didinimas. 10 dydžių nuo -100 iki 100. Normali būsena 0."
 
-#. i18n: file: amarokconfig.kcfg:249
+#. i18n: file: amarokconfig.kcfg:250
 #. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:243 rc.cpp:1622
+#: rc.cpp:246 rc.cpp:1637
 msgid "Equalizer preset name."
 msgstr "Ekvalaizerio profilio pavadinimas."
 
-#. i18n: file: amarokconfig.kcfg:253
+#. i18n: file: amarokconfig.kcfg:254
 #. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:246 rc.cpp:1625
+#: rc.cpp:249 rc.cpp:1640
 msgid "The mode for adjusting playback volume."
 msgstr ""
 
-#. i18n: file: amarokconfig.kcfg:254
+#. i18n: file: amarokconfig.kcfg:255
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: rc.cpp:249 rc.cpp:1628
+#: rc.cpp:252 rc.cpp:1643
 msgid ""
 "Whether to adjust the volume of tracks to make them sound the same volume, "
 "and if so whether to make the adjustments per-track or per-album."
 msgstr ""
 
-#. i18n: file: amarokconfig.kcfg:257
+#. i18n: file: amarokconfig.kcfg:258
 #. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:252 rc.cpp:1631
+#: rc.cpp:255 rc.cpp:1646
 msgid "Disable replay gain"
 msgstr ""
 
-#. i18n: file: amarokconfig.kcfg:260
+#. i18n: file: amarokconfig.kcfg:261
 #. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:255 rc.cpp:1634
+#: rc.cpp:258 rc.cpp:1649
 msgid "Make each track the same volume"
 msgstr ""
 
-#. i18n: file: amarokconfig.kcfg:263
+#. i18n: file: amarokconfig.kcfg:264
 #. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:258 rc.cpp:1637
+#: rc.cpp:261 rc.cpp:1652
 msgid "Make each album the same volume"
 msgstr ""
 
-#. i18n: file: amarokconfig.kcfg:272
+#. i18n: file: amarokconfig.kcfg:273
 #. i18n: ectx: label, entry, group (Cover Manager)
-#: rc.cpp:261 rc.cpp:1640
+#: rc.cpp:264 rc.cpp:1655
 msgid "Amazon locale for cover retrieval"
 msgstr "Amazon lokalė viršelio atsiuntimui"
 
-#. i18n: file: amarokconfig.kcfg:273
+#. i18n: file: amarokconfig.kcfg:274
 #. i18n: ectx: whatsthis, entry, group (Cover Manager)
-#: rc.cpp:264 rc.cpp:1643
+#: rc.cpp:267 rc.cpp:1658
 msgid "Determines which Amazon server cover images should be retrieved from."
 msgstr "Nurodykite iš kurio Amazon serverio siųsti viršelius."
 
-#. i18n: file: amarokconfig.kcfg:280
+#. i18n: file: amarokconfig.kcfg:281
 #. i18n: ectx: label, entry, group (Wikipedia)
-#: rc.cpp:267 rc.cpp:1646
+#: rc.cpp:270 rc.cpp:1661
 msgid "Wikipedia locale for information retrieval"
 msgstr "Vikipedijos lokalė informacijos atsiuntimui"
 
-#. i18n: file: amarokconfig.kcfg:281
+#. i18n: file: amarokconfig.kcfg:282
 #. i18n: ectx: whatsthis, entry, group (Wikipedia)
-#: rc.cpp:270 rc.cpp:1649
+#: rc.cpp:273 rc.cpp:1664
 msgid ""
 "Determines in which language the information is retrieved from Wikipedia."
 msgstr "Nurodykite kokia kalba bus atsiunčiama informacija iš Vikipedijos."
 
-#. i18n: file: amarokconfig.kcfg:288
+#. i18n: file: amarokconfig.kcfg:289
 #. i18n: ectx: label, entry, group (OSD)
-#: rc.cpp:273 rc.cpp:1652
+#: rc.cpp:276 rc.cpp:1667
 msgid "Use On-Screen Display"
 msgstr "Įjungti pranešimus"
 
-#. i18n: file: amarokconfig.kcfg:289
+#. i18n: file: amarokconfig.kcfg:290
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: rc.cpp:276 rc.cpp:1655
+#: rc.cpp:279 rc.cpp:1670
 msgid "Enable/Disable the On-Screen Display."
 msgstr "Įjungti pranešimų langą."
 
-#. i18n: file: amarokconfig.kcfg:294
+#. i18n: file: amarokconfig.kcfg:295
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: rc.cpp:282 rc.cpp:1661
+#: rc.cpp:285 rc.cpp:1676
 #, fuzzy
 msgid "Enable/Disable use of Growl for notifications."
 msgstr "Animuoti sistemos dėklo ženkliuką."
 
-#. i18n: file: amarokconfig.kcfg:298
+#. i18n: file: amarokconfig.kcfg:299
 #. i18n: ectx: label, entry, group (OSD)
-#: rc.cpp:285 rc.cpp:1664
+#: rc.cpp:288 rc.cpp:1679
 msgid "Display the same information in the OSD as in the playlist columns."
 msgstr ""
 "Pranešimų lange rodyti tą pačią informaciją kaip ir grojaraščio stulpeliuose."
 
-#. i18n: file: amarokconfig.kcfg:299
+#. i18n: file: amarokconfig.kcfg:300
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: rc.cpp:288 rc.cpp:1667
+#: rc.cpp:291 rc.cpp:1682
 msgid ""
 "If enabled, the OSD will display the same information and in the same order "
 "as the columns in the playlist."
@@ -3938,63 +3977,63 @@ msgstr ""
 "Pranešimų lange bus pateikiama ta pati informacija ta pačia tvarka kaip ir "
 "grojaraščio stulpeliuose."
 
-#. i18n: file: amarokconfig.kcfg:303
+#. i18n: file: amarokconfig.kcfg:304
 #. i18n: ectx: label, entry, group (OSD)
-#: rc.cpp:291 rc.cpp:1670
+#: rc.cpp:294 rc.cpp:1685
 msgid "The OSD text to show"
 msgstr "Pranešimo tekstas"
 
-#. i18n: file: amarokconfig.kcfg:304
+#. i18n: file: amarokconfig.kcfg:305
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: rc.cpp:294 rc.cpp:1673
+#: rc.cpp:297 rc.cpp:1688
 msgid "Customize the OSD display text."
 msgstr "Nurodykite pranešimo tekstą."
 
-#. i18n: file: amarokconfig.kcfg:308
+#. i18n: file: amarokconfig.kcfg:309
 #. i18n: ectx: label, entry, group (OSD)
-#: rc.cpp:297 rc.cpp:1676
+#: rc.cpp:300 rc.cpp:1691
 msgid "Font for On-Screen Display"
 msgstr "Pranešimo teksto šriftas"
 
-#. i18n: file: amarokconfig.kcfg:309
+#. i18n: file: amarokconfig.kcfg:310
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: rc.cpp:300 rc.cpp:1679
+#: rc.cpp:303 rc.cpp:1694
 msgid "The font to use for the On-Screen Display."
 msgstr "Pranešimo šriftas."
 
-#. i18n: file: amarokconfig.kcfg:313
+#. i18n: file: amarokconfig.kcfg:314
 #. i18n: ectx: label, entry, group (OSD)
-#: rc.cpp:303 rc.cpp:1682
+#: rc.cpp:306 rc.cpp:1697
 msgid "Translucency Toggle"
 msgstr "Įj./išj. peršviečiamumą"
 
-#. i18n: file: amarokconfig.kcfg:314
+#. i18n: file: amarokconfig.kcfg:315
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: rc.cpp:306 rc.cpp:1685
+#: rc.cpp:309 rc.cpp:1700
 msgid "Make the background of the OSD translucent."
 msgstr "Permatomas pranešimo fonas."
 
-#. i18n: file: amarokconfig.kcfg:318
+#. i18n: file: amarokconfig.kcfg:319
 #. i18n: ectx: label, entry, group (OSD)
-#: rc.cpp:309 rc.cpp:1688
+#: rc.cpp:312 rc.cpp:1703
 msgid "Whether to use custom colors for the OSD"
 msgstr "Pasirinkti pranešimo spalvas"
 
-#. i18n: file: amarokconfig.kcfg:319
+#. i18n: file: amarokconfig.kcfg:320
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: rc.cpp:312 rc.cpp:1691
+#: rc.cpp:315 rc.cpp:1706
 msgid "You can use custom colors for the OSD if you set this true."
 msgstr "Pasirinkite pranešimo spalvas."
 
-#. i18n: file: amarokconfig.kcfg:323
+#. i18n: file: amarokconfig.kcfg:324
 #. i18n: ectx: label, entry, group (OSD)
-#: rc.cpp:315 rc.cpp:1694
+#: rc.cpp:318 rc.cpp:1709
 msgid "Font Color for On-Screen Display"
 msgstr "Pranešimo teksto spalva"
 
-#. i18n: file: amarokconfig.kcfg:324
+#. i18n: file: amarokconfig.kcfg:325
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: rc.cpp:318 rc.cpp:1697
+#: rc.cpp:321 rc.cpp:1712
 msgid ""
 "The color of the OSD text. The color is specified in RGB, a comma-separated "
 "list containing three integers between 0 and 255."
@@ -4002,16 +4041,16 @@ msgstr ""
 "Pranešimo teksto spalva, nurodyta RGB fomatu: trimis kableliais atskirtais "
 "skaičiais nuo 0 iki 255."
 
-#. i18n: file: amarokconfig.kcfg:328
+#. i18n: file: amarokconfig.kcfg:329
 #. i18n: ectx: label, entry, group (OSD)
-#: rc.cpp:321 rc.cpp:1700
+#: rc.cpp:324 rc.cpp:1715
 #, fuzzy
 msgid "How many milliseconds the text should be displayed for"
 msgstr "Pranešimo trukmė milisekundėmis"
 
-#. i18n: file: amarokconfig.kcfg:329
+#. i18n: file: amarokconfig.kcfg:330
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: rc.cpp:324 rc.cpp:1703
+#: rc.cpp:327 rc.cpp:1718
 msgid ""
 "The time in milliseconds to show the OSD. A value of 0 means never hide. The "
 "default value is 5000 ms."
@@ -4019,15 +4058,15 @@ msgstr ""
 "Pranešimo rodymo trukmė milisekundėmis. 0 reiškia rodyti nuolatos. Numatyta "
 "trukmė 5000 ms."
 
-#. i18n: file: amarokconfig.kcfg:334
+#. i18n: file: amarokconfig.kcfg:335
 #. i18n: ectx: label, entry, group (OSD)
-#: rc.cpp:327 rc.cpp:1706
+#: rc.cpp:330 rc.cpp:1721
 msgid "Y position offset"
 msgstr "Y koordinatės postūmis"
 
-#. i18n: file: amarokconfig.kcfg:335
+#. i18n: file: amarokconfig.kcfg:336
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: rc.cpp:330 rc.cpp:1709
+#: rc.cpp:333 rc.cpp:1724
 #, fuzzy
 msgid ""
 "The Y position of the OSD relative to the chosen screen and OSD alignment. "
@@ -4041,15 +4080,15 @@ msgstr ""
 "dalies iki ekrano viršaus. Jei pasirinkta lygiuoti apačioje, Y postūmis "
 "matuojamas nuo apatinės pranešimo dalies iki ekrano apačios."
 
-#. i18n: file: amarokconfig.kcfg:341
+#. i18n: file: amarokconfig.kcfg:342
 #. i18n: ectx: label, entry, group (OSD)
-#: rc.cpp:333 rc.cpp:1712
+#: rc.cpp:336 rc.cpp:1727
 msgid "OSD screen"
 msgstr "Pranešimo darbastalis"
 
-#. i18n: file: amarokconfig.kcfg:342
+#. i18n: file: amarokconfig.kcfg:343
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: rc.cpp:336 rc.cpp:1715
+#: rc.cpp:339 rc.cpp:1730
 msgid ""
 "The screen that should display the OSD. For single-headed environments this "
 "setting should be 0."
@@ -4057,220 +4096,220 @@ msgstr ""
 "Darbastalis, kuriame bus rodomas pranešimas. Vieno darbastalio aplinkoms "
 "nurodykite 0."
 
-#. i18n: file: amarokconfig.kcfg:346
+#. i18n: file: amarokconfig.kcfg:347
 #. i18n: ectx: label, entry, group (OSD)
-#: rc.cpp:339 rc.cpp:1718
+#: rc.cpp:342 rc.cpp:1733
 msgid "Whether the album cover should be shown"
 msgstr "Rodyti albumo viršelį"
 
-#. i18n: file: amarokconfig.kcfg:347
+#. i18n: file: amarokconfig.kcfg:348
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: rc.cpp:342 rc.cpp:1721
+#: rc.cpp:345 rc.cpp:1736
 msgid "If enabled, shows the album cover in the OSD."
 msgstr "Pranešime rodyti albumo viršelį."
 
-#. i18n: file: amarokconfig.kcfg:351
+#. i18n: file: amarokconfig.kcfg:352
 #. i18n: ectx: label, entry, group (OSD)
-#: rc.cpp:345 rc.cpp:1724
+#: rc.cpp:348 rc.cpp:1739
 msgid "Align OSD to"
 msgstr "Pranešimo lygiavimas"
 
-#. i18n: file: amarokconfig.kcfg:352
+#. i18n: file: amarokconfig.kcfg:353
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: rc.cpp:348 rc.cpp:1727
+#: rc.cpp:351 rc.cpp:1742
 msgid ""
 "The relative position of the OSD. Possible choices are Left, Middle, Right "
 "and Center."
 msgstr "Lygiuoti pranešimą kairėje, viduryje, dešinėje arba centre."
 
-#. i18n: file: amarokconfig.kcfg:366
+#. i18n: file: amarokconfig.kcfg:367
 #. i18n: ectx: label, entry, group (Session)
-#: rc.cpp:351 rc.cpp:1730
+#: rc.cpp:354 rc.cpp:1745
 msgid "Resume playback of last played track on startup"
 msgstr "Paleidus programą tęsti buvusios dainos grojimą"
 
-#. i18n: file: amarokconfig.kcfg:367
+#. i18n: file: amarokconfig.kcfg:368
 #. i18n: ectx: whatsthis, entry, group (Session)
-#: rc.cpp:354 rc.cpp:1733
+#: rc.cpp:357 rc.cpp:1748
 msgid "If set, Amarok resumes playback of the last played track on startup."
 msgstr "Paleidus programą tęsti buvusios dainos grojimą."
 
-#. i18n: file: amarokconfig.kcfg:371
+#. i18n: file: amarokconfig.kcfg:372
 #. i18n: ectx: label, entry, group (Session)
-#: rc.cpp:357 rc.cpp:1736
+#: rc.cpp:360 rc.cpp:1751
 msgid "Track URL to resume upon startup"
 msgstr "Paleidus programą tęsti nurodyto URL grojimą"
 
-#. i18n: file: amarokconfig.kcfg:372
+#. i18n: file: amarokconfig.kcfg:373
 #. i18n: ectx: whatsthis, entry, group (Session)
-#: rc.cpp:360 rc.cpp:1739
+#: rc.cpp:363 rc.cpp:1754
 msgid "Internal: URL of the track to resume on startup."
 msgstr ""
 "Įjunkite šią parinktį norėdami, kad Amarok sektų simbolines nuorodas "
 "įkeldamas į grojaraštį failus ir aplankus."
 
-#. i18n: file: amarokconfig.kcfg:375
+#. i18n: file: amarokconfig.kcfg:376
 #. i18n: ectx: label, entry, group (Session)
-#: rc.cpp:363 rc.cpp:1742
+#: rc.cpp:366 rc.cpp:1757
 msgid "Time to resume at, in milliseconds"
 msgstr "Vieta, nuo kurios tęsti grojimą, milisekundėmis"
 
-#. i18n: file: amarokconfig.kcfg:376
+#. i18n: file: amarokconfig.kcfg:377
 #. i18n: ectx: whatsthis, entry, group (Session)
-#: rc.cpp:366 rc.cpp:1745
+#: rc.cpp:369 rc.cpp:1760
 msgid "Internal: Playback position in the track to resume on startup."
 msgstr ""
 "Vieta dainoje, nuo kurios tęsti grojimą paleidus programą, milisekundėmis."
 
-#. i18n: file: amarokconfig.kcfg:379
+#. i18n: file: amarokconfig.kcfg:380
 #. i18n: ectx: label, entry, group (Session)
-#: rc.cpp:369 rc.cpp:1748
+#: rc.cpp:372 rc.cpp:1763
 msgid ""
 "List of bools describing which browsers are visible, from top to bottom."
 msgstr ""
 
-#. i18n: file: amarokconfig.kcfg:382
+#. i18n: file: amarokconfig.kcfg:383
 #. i18n: ectx: label, entry, group (Session)
-#: rc.cpp:372 rc.cpp:1751
+#: rc.cpp:375 rc.cpp:1766
 msgid "Track playing on last exit. Value is -1 if no track was playing."
 msgstr ""
 
-#. i18n: file: amarokconfig.kcfg:386
+#. i18n: file: amarokconfig.kcfg:387
 #. i18n: ectx: label, entry, group (Session)
-#: rc.cpp:375 rc.cpp:1754
+#: rc.cpp:378 rc.cpp:1769
 msgid "Number (from the top) of the last active browser."
 msgstr ""
 
-#. i18n: file: amarokconfig.kcfg:392
+#. i18n: file: amarokconfig.kcfg:393
 #. i18n: ectx: label, entry, group (Collection)
-#: rc.cpp:378 rc.cpp:1757
+#: rc.cpp:381 rc.cpp:1772
 msgid "Whether Collections folders are scanned recursively"
 msgstr "Aplankus į grojaraštį įtraukti rekursyviai"
 
-#. i18n: file: amarokconfig.kcfg:396
+#. i18n: file: amarokconfig.kcfg:397
 #. i18n: ectx: label, entry, group (Collection)
-#: rc.cpp:381 rc.cpp:1760
+#: rc.cpp:384 rc.cpp:1775
 msgid "Whether Collection folders are rescanned on change"
 msgstr "Atnaujinti fonoteką pasikeitus aplankų turiniui"
 
-#. i18n: file: amarokconfig.kcfg:400
+#. i18n: file: amarokconfig.kcfg:401
 #. i18n: ectx: label, entry, group (Collection)
-#: rc.cpp:384 rc.cpp:1763
+#: rc.cpp:387 rc.cpp:1778
 msgid "List of folders in the Collection"
 msgstr "Fonotekos aplankų sąrašas"
 
-#. i18n: file: amarokconfig.kcfg:403
+#. i18n: file: amarokconfig.kcfg:404
 #. i18n: ectx: label, entry, group (Collection)
-#: rc.cpp:387 rc.cpp:1766
+#: rc.cpp:390 rc.cpp:1781
 msgid "Whether track numbers are shown in the collection browser."
 msgstr ""
 
-#. i18n: file: amarokconfig.kcfg:407
+#. i18n: file: amarokconfig.kcfg:408
 #. i18n: ectx: label, entry, group (Collection)
-#: rc.cpp:390 rc.cpp:1769
+#: rc.cpp:393 rc.cpp:1784
 msgid "Whether years are shown in the collection browser."
 msgstr ""
 
-#. i18n: file: amarokconfig.kcfg:417
+#. i18n: file: amarokconfig.kcfg:418
 #. i18n: ectx: label, entry, group (Scrobbler)
-#: rc.cpp:393 rc.cpp:1772
+#: rc.cpp:396 rc.cpp:1787
 msgid "Submit played songs"
 msgstr "Nusiųsti atliktas dainas"
 
-#. i18n: file: amarokconfig.kcfg:418
+#. i18n: file: amarokconfig.kcfg:419
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
-#: rc.cpp:396 rc.cpp:1775
+#: rc.cpp:399 rc.cpp:1790
 msgid "Whether played songs are submitted to Audioscrobbler"
 msgstr "Nusiųsti atliktas dainas į Audioscrobbler"
 
-#. i18n: file: amarokconfig.kcfg:422
+#. i18n: file: amarokconfig.kcfg:423
 #. i18n: ectx: label, entry, group (Scrobbler)
-#: rc.cpp:399 rc.cpp:1778
+#: rc.cpp:402 rc.cpp:1793
 msgctxt "Username for audioscrobbler login"
 msgid "Username"
 msgstr "Naudotojas"
 
-#. i18n: file: amarokconfig.kcfg:423
+#. i18n: file: amarokconfig.kcfg:424
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
-#: rc.cpp:402 rc.cpp:1781
+#: rc.cpp:405 rc.cpp:1796
 msgid "The username to use for connecting to Audioscrobbler"
 msgstr "Audioscrobbler naudotojo vardas"
 
-#. i18n: file: amarokconfig.kcfg:428
+#. i18n: file: amarokconfig.kcfg:429
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
-#: rc.cpp:408 rc.cpp:1787
+#: rc.cpp:411 rc.cpp:1802
 msgid "The password to use for connecting to Audioscrobbler"
 msgstr "Audioscrobbler slaptažodis"
 
-#. i18n: file: amarokconfig.kcfg:432
+#. i18n: file: amarokconfig.kcfg:433
 #. i18n: ectx: label, entry, group (Scrobbler)
-#: rc.cpp:411 rc.cpp:1790
+#: rc.cpp:414 rc.cpp:1805
 msgid "Retrieve similar artists"
 msgstr "Sužinoti panašius atlikėjus"
 
-#. i18n: file: amarokconfig.kcfg:433
+#. i18n: file: amarokconfig.kcfg:434
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
-#: rc.cpp:414 rc.cpp:1793
+#: rc.cpp:417 rc.cpp:1808
 msgid "Whether similar songs are retrieved from Audioscrobbler"
 msgstr "Atsisiųsti panašius atlikėjus iš Audioscrobbler"
 
-#. i18n: file: amarokconfig.kcfg:440
+#. i18n: file: amarokconfig.kcfg:441
 #. i18n: ectx: label, entry, group (MediaDevice)
-#: rc.cpp:417 rc.cpp:1796
+#: rc.cpp:420 rc.cpp:1811
 msgid "Device type"
 msgstr "Įrenginio tipas"
 
-#. i18n: file: amarokconfig.kcfg:441
+#. i18n: file: amarokconfig.kcfg:442
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
-#: rc.cpp:420 rc.cpp:1799
+#: rc.cpp:423 rc.cpp:1814
 msgid "The type of media device."
 msgstr "Muzikos įrenginio tipas."
 
-#. i18n: file: amarokconfig.kcfg:444
+#. i18n: file: amarokconfig.kcfg:445
 #. i18n: ectx: label, entry, group (MediaDevice)
-#: rc.cpp:423 rc.cpp:1802
+#: rc.cpp:426 rc.cpp:1817
 msgid "Mount point"
 msgstr "Prijungimo vieta"
 
-#. i18n: file: amarokconfig.kcfg:445
+#. i18n: file: amarokconfig.kcfg:446
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
-#: rc.cpp:426 rc.cpp:1805
+#: rc.cpp:429 rc.cpp:1820
 msgid "The mount point used for the media device connection."
 msgstr "Vieta, kurioje bus prijungiamas muzikos įrenginys."
 
-#. i18n: file: amarokconfig.kcfg:448
+#. i18n: file: amarokconfig.kcfg:449
 #. i18n: ectx: label, entry, group (MediaDevice)
-#: rc.cpp:429 rc.cpp:1808
+#: rc.cpp:432 rc.cpp:1823
 msgid "Mount command"
 msgstr "Prijungimo komanda"
 
-#. i18n: file: amarokconfig.kcfg:449
+#. i18n: file: amarokconfig.kcfg:450
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
-#: rc.cpp:432 rc.cpp:1811
+#: rc.cpp:435 rc.cpp:1826
 msgid "The mount command used for the media device connection."
 msgstr "Komanda, kuria bus prijungiamas muzikos įrenginys."
 
-#. i18n: file: amarokconfig.kcfg:452
+#. i18n: file: amarokconfig.kcfg:453
 #. i18n: ectx: label, entry, group (MediaDevice)
-#: rc.cpp:435 rc.cpp:1814
+#: rc.cpp:438 rc.cpp:1829
 msgid "UmountCommand"
 msgstr "Atjungimo komanda"
 
-#. i18n: file: amarokconfig.kcfg:453
+#. i18n: file: amarokconfig.kcfg:454
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
-#: rc.cpp:438 rc.cpp:1817
+#: rc.cpp:441 rc.cpp:1832
 msgid "The umount command used for the media device connection."
 msgstr "Komanda, kuria bus atjungiamas muzikos įrenginys."
 
-#. i18n: file: amarokconfig.kcfg:456
+#. i18n: file: amarokconfig.kcfg:457
 #. i18n: ectx: label, entry, group (MediaDevice)
-#: rc.cpp:441 rc.cpp:1820
+#: rc.cpp:444 rc.cpp:1835
 msgid "Auto delete podcasts"
 msgstr "Automatiškai pašalinti podcast"
 
-#. i18n: file: amarokconfig.kcfg:457
+#. i18n: file: amarokconfig.kcfg:458
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
-#: rc.cpp:444 rc.cpp:1823
+#: rc.cpp:447 rc.cpp:1838
 msgid ""
 "Whether podcasts shows already played are automatically deleted when media "
 "device is connected."
@@ -4278,15 +4317,15 @@ msgstr ""
 "Prijungus muzikos įrenginį automatiškai pašalinti jau atliktus podcast "
 "įrašus."
 
-#. i18n: file: amarokconfig.kcfg:460
+#. i18n: file: amarokconfig.kcfg:461
 #. i18n: ectx: label, entry, group (MediaDevice)
-#: rc.cpp:447 rc.cpp:1826
+#: rc.cpp:450 rc.cpp:1841
 msgid "Sync stats"
 msgstr "Sinchronizuoti statistiką"
 
-#. i18n: file: amarokconfig.kcfg:461
+#. i18n: file: amarokconfig.kcfg:462
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
-#: rc.cpp:450 rc.cpp:1829
+#: rc.cpp:453 rc.cpp:1844
 msgid ""
 "Whether Amarok statistics should be synchronized with play count/ratings on "
 "device and whether tracks played should be submitted to last.fm."
@@ -4294,134 +4333,134 @@ msgstr ""
 "Sinchronizuoti Amarok statistiką su įrenginio statistika ir nusiųsti atliktų "
 "dainų sąrašą į last.fm."
 
-#. i18n: file: amarokconfig.kcfg:467
+#. i18n: file: amarokconfig.kcfg:468
 #. i18n: ectx: label, entry, group (Daap)
-#: rc.cpp:453 rc.cpp:1832
+#: rc.cpp:456 rc.cpp:1847
 msgid "Manually added servers"
 msgstr "Naudotojo įdėti serveriai"
 
-#. i18n: file: amarokconfig.kcfg:468
+#. i18n: file: amarokconfig.kcfg:469
 #. i18n: ectx: whatsthis, entry, group (Daap)
-#: rc.cpp:456 rc.cpp:1835
+#: rc.cpp:459 rc.cpp:1850
 msgid "Music Sharing servers added by the user."
 msgstr "Naudotojo įdėti muzika besidalinantys serveriai."
 
-#. i18n: file: amarokconfig.kcfg:471
+#. i18n: file: amarokconfig.kcfg:472
 #. i18n: ectx: label, entry, group (Daap)
-#: rc.cpp:459 rc.cpp:1838
+#: rc.cpp:462 rc.cpp:1853
 msgid "Server passwords"
 msgstr "Serverio slaptažodžiai"
 
-#. i18n: file: amarokconfig.kcfg:472
+#. i18n: file: amarokconfig.kcfg:473
 #. i18n: ectx: whatsthis, entry, group (Daap)
-#: rc.cpp:462 rc.cpp:1841
+#: rc.cpp:465 rc.cpp:1856
 msgid "Passwords stored by hostname."
 msgstr "Slaptažodžiai laikomi su mazgo pavadinimais."
 
-#. i18n: file: amarokconfig.kcfg:478
+#. i18n: file: amarokconfig.kcfg:479
 #. i18n: ectx: label, entry, group (Panel Sizes)
-#: rc.cpp:465 rc.cpp:1844
+#: rc.cpp:468 rc.cpp:1859
 msgid "State of main window splitter"
 msgstr ""
 
-#. i18n: file: amarokconfig.kcfg:485
+#. i18n: file: amarokconfig.kcfg:486
 #. i18n: ectx: label, entry, group (Playlist Search)
-#: rc.cpp:468 rc.cpp:1847
+#: rc.cpp:471 rc.cpp:1862
 msgid "Include track names in matching"
 msgstr ""
 
-#. i18n: file: amarokconfig.kcfg:489
+#. i18n: file: amarokconfig.kcfg:490
 #. i18n: ectx: label, entry, group (Playlist Search)
-#: rc.cpp:471 rc.cpp:1850
+#: rc.cpp:474 rc.cpp:1865
 msgid "Include album names in matching"
 msgstr ""
 
-#. i18n: file: amarokconfig.kcfg:493
+#. i18n: file: amarokconfig.kcfg:494
 #. i18n: ectx: label, entry, group (Playlist Search)
-#: rc.cpp:474 rc.cpp:1853
+#: rc.cpp:477 rc.cpp:1868
 msgid "Include artist names in matching"
 msgstr ""
 
-#. i18n: file: amarokconfig.kcfg:497
+#. i18n: file: amarokconfig.kcfg:498
 #. i18n: ectx: label, entry, group (Playlist Search)
-#: rc.cpp:477 rc.cpp:1856
+#: rc.cpp:480 rc.cpp:1871
 msgid "Include genre names in matching"
 msgstr ""
 
-#. i18n: file: amarokconfig.kcfg:501
+#. i18n: file: amarokconfig.kcfg:502
 #. i18n: ectx: label, entry, group (Playlist Search)
-#: rc.cpp:480 rc.cpp:1859
+#: rc.cpp:483 rc.cpp:1874
 msgid "Include composer names in matching"
 msgstr ""
 
-#. i18n: file: amarokconfig.kcfg:505
+#. i18n: file: amarokconfig.kcfg:506
 #. i18n: ectx: label, entry, group (Playlist Search)
-#. i18n: file: amarokconfig.kcfg:509
+#. i18n: file: amarokconfig.kcfg:510
 #. i18n: ectx: label, entry, group (Playlist Search)
-#. i18n: file: amarokconfig.kcfg:505
+#. i18n: file: amarokconfig.kcfg:506
 #. i18n: ectx: label, entry, group (Playlist Search)
-#. i18n: file: amarokconfig.kcfg:509
+#. i18n: file: amarokconfig.kcfg:510
 #. i18n: ectx: label, entry, group (Playlist Search)
-#: rc.cpp:483 rc.cpp:486 rc.cpp:1862 rc.cpp:1865
+#: rc.cpp:486 rc.cpp:489 rc.cpp:1877 rc.cpp:1880
 msgid "Include years in matching"
 msgstr ""
 
-#. i18n: file: amarokconfig.kcfg:516
+#. i18n: file: amarokconfig.kcfg:517
 #. i18n: ectx: label, entry, group (Playlist Layout)
-#: rc.cpp:489 rc.cpp:1868
+#: rc.cpp:492 rc.cpp:1883
 msgid "The name of the layout that will be loaded on startup"
 msgstr ""
 
-#: rc.cpp:490
+#: rc.cpp:493
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
 msgstr "Dovydas Sankauskas"
 
-#: rc.cpp:491
+#: rc.cpp:494
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
 msgstr "laisve@gmail.com"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:20
 #. i18n: ectx: property (windowTitle), widget (QWidget, OrganizeCollectionDialogBase)
-#: rc.cpp:494
+#: rc.cpp:497
 msgid "Organize Files"
 msgstr "Sudėlioti failus"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:37
 #. i18n: ectx: property (toolTip), widget (QLabel, folderLabel)
-#: rc.cpp:497
+#: rc.cpp:500
 msgid "Base directory under which to put files"
 msgstr "Bazinis aplankas, į kurį dėti failus"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:40
 #. i18n: ectx: property (text), widget (QLabel, folderLabel)
-#: rc.cpp:500
+#: rc.cpp:503
 msgid "C&ollection Folder:"
 msgstr "&Fonotekos aplankas:"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:78
 #. i18n: ectx: attribute (title), widget (QWidget, tab)
-#: rc.cpp:503
+#: rc.cpp:506
 msgid "File Naming Scheme"
 msgstr "Failo pavadinimo šablonas"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:84
 #. i18n: ectx: property (toolTip), widget (QCheckBox, filetypeCheck)
-#: rc.cpp:506
+#: rc.cpp:509
 msgid "If checked, create a directory hierarchy using the filename extension."
 msgstr ""
 "Jei ši parinktis įjungta, bus sukurtas aplankų medis pagal failų plėtinius."
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:87
 #. i18n: ectx: property (text), widget (QCheckBox, filetypeCheck)
-#: rc.cpp:509
+#: rc.cpp:512
 msgid "Group b&y File Type"
 msgstr "Grupuoti fai&lus pagal failo tipą"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:100
 #. i18n: ectx: property (toolTip), widget (QCheckBox, initialCheck)
-#: rc.cpp:512
+#: rc.cpp:515
 msgid ""
 "If checked, introduce another directory hierarchy for the artists' initials."
 msgstr ""
@@ -4430,13 +4469,13 @@ msgstr ""
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:103
 #. i18n: ectx: property (text), widget (QCheckBox, initialCheck)
-#: rc.cpp:515
+#: rc.cpp:518
 msgid "Group &by Artist's Initial"
 msgstr "Grupuoti pagal &atlikėjo pavadinimo pirmąją raidę"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:110
 #. i18n: ectx: property (toolTip), widget (QCheckBox, customschemeCheck)
-#: rc.cpp:518
+#: rc.cpp:521
 msgid ""
 "If checked, use a custom format string for naming the files in the collection"
 msgstr ""
@@ -4444,32 +4483,32 @@ msgstr ""
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:113
 #. i18n: ectx: property (text), widget (QCheckBox, customschemeCheck)
-#: rc.cpp:521
+#: rc.cpp:524
 msgid "Custo&m Format"
 msgstr "&Naudotojo nurodytas formatas"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:134
 #. i18n: ectx: attribute (title), widget (QWidget, tab_2)
-#: rc.cpp:524
+#: rc.cpp:527
 msgid "Character Replacement"
 msgstr "Simbolių keitimas"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:140
 #. i18n: ectx: property (toolTip), widget (QCheckBox, spaceCheck)
-#: rc.cpp:527
+#: rc.cpp:530
 msgid "If checked, convert spaces to underscores."
 msgstr ""
 "Jei ši parinktis įjungta, tarpo simboliai bus pakeisti pabraukimo simboliais."
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:143
 #. i18n: ectx: property (text), widget (QCheckBox, spaceCheck)
-#: rc.cpp:530
+#: rc.cpp:533
 msgid "&Replace Spaces with Underscores"
 msgstr "&Keisti tarpus pabraukimo simboliais"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:150
 #. i18n: ectx: property (toolTip), widget (QCheckBox, asciiCheck)
-#: rc.cpp:533
+#: rc.cpp:536
 msgid ""
 "If checked, replace characters that are unavailable in the 7-bit ASCII code."
 msgstr ""
@@ -4478,13 +4517,13 @@ msgstr ""
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:153
 #. i18n: ectx: property (text), widget (QCheckBox, asciiCheck)
-#: rc.cpp:536
+#: rc.cpp:539
 msgid "Restrict to &ASCII"
 msgstr "Naudoti tik &ASCII"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:160
 #. i18n: ectx: property (toolTip), widget (QCheckBox, ignoreTheCheck)
-#: rc.cpp:539
+#: rc.cpp:542
 msgid "If checked, postfix artists' names starting with 'The' with ', The'."
 msgstr ""
 "Jei ši parinktis įjungta, žodis „The“ atlikėjo pavadinimo priekyje bus "
@@ -4492,13 +4531,13 @@ msgstr ""
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:163
 #. i18n: ectx: property (text), widget (QCheckBox, ignoreTheCheck)
-#: rc.cpp:542
+#: rc.cpp:545
 msgid "I&gnore 'The' in Artist Names"
 msgstr "I&gnoruoti „The“ atlikėjo pavadinime"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:170
 #. i18n: ectx: property (toolTip), widget (QCheckBox, vfatCheck)
-#: rc.cpp:545
+#: rc.cpp:548
 msgid ""
 "If checked, replace characters that are incompatible with MS-DOS/VFAT file "
 "systems."
@@ -4508,49 +4547,49 @@ msgstr ""
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:173
 #. i18n: ectx: property (text), widget (QCheckBox, vfatCheck)
-#: rc.cpp:548
+#: rc.cpp:551
 msgid "VFAT Safe &Names"
 msgstr "VFAT atitinkatys &pavadinimai"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:182
 #. i18n: ectx: property (text), widget (QLabel, textLabel1)
-#: rc.cpp:551
+#: rc.cpp:554
 msgid "Replace"
 msgstr "Pakeisti"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:192
 #. i18n: ectx: property (toolTip), widget (KLineEdit, regexpEdit)
-#: rc.cpp:554
+#: rc.cpp:557
 msgid "Regular expression"
 msgstr "Įprastoji išraiška"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:199
 #. i18n: ectx: property (text), widget (QLabel, textLabel2)
-#: rc.cpp:557
+#: rc.cpp:560
 msgid "with"
 msgstr "su"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:209
 #. i18n: ectx: property (toolTip), widget (KLineEdit, replaceEdit)
-#: rc.cpp:560
+#: rc.cpp:563
 msgid "Character string"
 msgstr "Simbolių eilutė"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:247
 #. i18n: ectx: property (title), widget (QGroupBox, previewBox)
-#: rc.cpp:563
+#: rc.cpp:566
 msgid "Destination Preview"
 msgstr "Paskirties peržiūra"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:259
 #. i18n: ectx: property (toolTip), widget (QLabel, previewText)
-#: rc.cpp:566
+#: rc.cpp:569
 msgid "This is what the file names will look like after renaming."
 msgstr "Taip atrodys pakeisti failo pavadinimai."
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:290
 #. i18n: ectx: property (toolTip), widget (QCheckBox, overwriteCheck)
-#: rc.cpp:569
+#: rc.cpp:572
 msgid "If checked, overwrite files of the same name without asking."
 msgstr ""
 "Jei ši parinkis įjungta, perrašyti failus tokiu pačiu pavadinimu be atskiro "
@@ -4558,26 +4597,26 @@ msgstr ""
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:293
 #. i18n: ectx: property (text), widget (QCheckBox, overwriteCheck)
-#: rc.cpp:572
+#: rc.cpp:575
 msgid "Overwrite &Destination"
 msgstr "Perrašyti &paskirties failą"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:17
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
-#: rc.cpp:575
+#: rc.cpp:578
 #, fuzzy
 msgid "Sound system configuration"
 msgstr "Podcast parinktys"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:29
 #. i18n: ectx: property (text), widget (QPushButton, pushButtonPhonon)
-#: rc.cpp:578
+#: rc.cpp:581
 msgid "Configure"
 msgstr "Konfigūruoti"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:40
 #. i18n: ectx: property (whatsThis), widget (QGroupBox, opt_crossfade_2)
-#: rc.cpp:581
+#: rc.cpp:584
 msgid ""
 "<b>Quit Behavior</b>\n"
 "<p>On exit, Amarok can slowly fade the volume of the playing track (which is "
@@ -4589,25 +4628,25 @@ msgstr ""
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:43
 #. i18n: ectx: property (title), widget (QGroupBox, opt_crossfade_2)
-#: rc.cpp:585
+#: rc.cpp:588
 msgid "Fadeout on track end"
 msgstr "Pritildyti baigiant groti dainą"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:49
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_Fadeout)
-#: rc.cpp:588
+#: rc.cpp:591
 msgid "&Fadeout"
 msgstr "&Pritildyti"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:59
 #. i18n: ectx: property (text), widget (QLabel, fadeoutLengthLabel)
-#: rc.cpp:591
+#: rc.cpp:594
 msgid "Fadeout &duration:"
 msgstr "Pritil&dymo trukmė:"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:72
 #. i18n: ectx: property (toolTip), widget (QSpinBox, kcfg_FadeoutLength)
-#: rc.cpp:594
+#: rc.cpp:597
 msgid "The length of the fadeout, in milliseconds."
 msgstr "Pritildymo trukmė milisekundėmis."
 
@@ -4615,31 +4654,31 @@ msgstr "Pritildymo trukmė milisekundėmis."
 #. i18n: ectx: property (suffix), widget (QSpinBox, kcfg_FadeoutLength)
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:81
 #. i18n: ectx: property (suffix), widget (QSpinBox, kcfg_OsdDuration)
-#: rc.cpp:597 rc.cpp:672
+#: rc.cpp:600 rc.cpp:684
 msgid " ms"
 msgstr " ms"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:97
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
-#: rc.cpp:600
+#: rc.cpp:603
 msgid "Miscellaneous"
 msgstr "Įvairūs"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:103
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_FadeoutOnExit)
-#: rc.cpp:603
+#: rc.cpp:606
 msgid "If checked, Amarok will fade out the music on program exit."
 msgstr "Įjungus šią parinktį Amarok pritildys dainą prieš baigdamas darbą."
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:106
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_FadeoutOnExit)
-#: rc.cpp:606
+#: rc.cpp:609
 msgid "Fadeout on e&xit"
 msgstr "P&ritildyti baigiant darbą"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:113
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ResumePlayback)
-#: rc.cpp:609
+#: rc.cpp:612
 msgid ""
 "If checked, Amarok will<br>resume playback from where you left it the "
 "previous session -- just like a tape-player."
@@ -4649,69 +4688,83 @@ msgstr ""
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:116
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ResumePlayback)
-#: rc.cpp:612
+#: rc.cpp:615
 msgid "&Resume playback on start"
 msgstr "&Tęsti grojimą įjungus Amarok"
 
-#. i18n: file: configdialog/dialogs/GeneralConfig.ui:16
+#. i18n: file: configdialog/dialogs/GeneralConfig.ui:17
 #. i18n: ectx: property (title), widget (QGroupBox, generalBox)
-#: rc.cpp:615
+#: rc.cpp:618
 msgid "General Options"
 msgstr "Bendros parinktys"
 
-#. i18n: file: configdialog/dialogs/GeneralConfig.ui:22
+#. i18n: file: configdialog/dialogs/GeneralConfig.ui:23
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ShowSplashscreen)
-#. i18n: file: configdialog/dialogs/GeneralConfig.ui:25
+#. i18n: file: configdialog/dialogs/GeneralConfig.ui:26
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_ShowSplashscreen)
-#: rc.cpp:618 rc.cpp:621
+#: rc.cpp:621 rc.cpp:624
 msgid "Check to enable the splashscreen during Amarok startup."
 msgstr ""
 "Jei ši parinktis įjungta, kiekvieną kartą paleidus Amarok bus rodomas "
 "pasveikinimo ekranas."
 
-#. i18n: file: configdialog/dialogs/GeneralConfig.ui:28
+#. i18n: file: configdialog/dialogs/GeneralConfig.ui:29
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ShowSplashscreen)
-#: rc.cpp:624
+#: rc.cpp:627
 msgid "Sho&w splash-screen on startup"
 msgstr "Rod&yti pasveikinimo ekraną"
 
-#. i18n: file: configdialog/dialogs/GeneralConfig.ui:35
+#. i18n: file: configdialog/dialogs/GeneralConfig.ui:36
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ShowTrayIcon)
-#. i18n: file: configdialog/dialogs/GeneralConfig.ui:38
+#. i18n: file: configdialog/dialogs/GeneralConfig.ui:39
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_ShowTrayIcon)
-#: rc.cpp:627 rc.cpp:630
+#: rc.cpp:630 rc.cpp:633
 msgid "Check to enable the Amarok system tray icon."
 msgstr "Įjungus šią parinktį sistemos dėkle bus rodomas Amarok ženklelis."
 
-#. i18n: file: configdialog/dialogs/GeneralConfig.ui:41
+#. i18n: file: configdialog/dialogs/GeneralConfig.ui:42
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ShowTrayIcon)
-#: rc.cpp:633
+#: rc.cpp:636
 msgid "Show tray &icon"
 msgstr "Rodyti sistemos &dėklo ženklelį"
 
-#. i18n: file: configdialog/dialogs/GeneralConfig.ui:48
+#. i18n: file: configdialog/dialogs/GeneralConfig.ui:49
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AutoGetCoverArt)
-#: rc.cpp:636
+#: rc.cpp:639
 #, fuzzy
 msgid "Automatically retrieve cover art"
 msgstr "&Automatiškai pašalinti podcast"
 
-#. i18n: file: configdialog/dialogs/GeneralConfig.ui:58
+#. i18n: file: configdialog/dialogs/GeneralConfig.ui:56
+#. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_HideContextView)
+#. i18n: file: configdialog/dialogs/GeneralConfig.ui:59
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_HideContextView)
+#: rc.cpp:642 rc.cpp:645
+msgid "Check to hide the context view."
+msgstr ""
+
+#. i18n: file: configdialog/dialogs/GeneralConfig.ui:62
+#. i18n: ectx: property (text), widget (QCheckBox, kcfg_HideContextView)
+#: rc.cpp:648
+msgid "Hide context view"
+msgstr ""
+
+#. i18n: file: configdialog/dialogs/GeneralConfig.ui:77
 #. i18n: ectx: property (title), widget (QGroupBox, playlistBox)
-#: rc.cpp:639
+#: rc.cpp:651
 #, fuzzy
 msgid "Playlist Options"
 msgstr "Grojaraščių failai"
 
-#. i18n: file: configdialog/dialogs/GeneralConfig.ui:64
+#. i18n: file: configdialog/dialogs/GeneralConfig.ui:83
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AutoScrollPlaylist)
-#: rc.cpp:642
+#: rc.cpp:654
 msgid "Automatically scroll playlist to current track"
 msgstr ""
 
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:19
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_OsdEnabled)
-#: rc.cpp:645
+#: rc.cpp:657
 msgid ""
 "Check to enable the On-Screen-Display. <br>The OSD briefly displays track "
 "data when a new track is played."
@@ -4721,7 +4774,7 @@ msgstr ""
 
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:22
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_OsdEnabled)
-#: rc.cpp:648
+#: rc.cpp:660
 msgid ""
 "Check to enable the On-Screen-Display. The OSD briefly displays track data "
 "when a new track is played."
@@ -4731,25 +4784,25 @@ msgstr ""
 
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:25
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_OsdEnabled)
-#: rc.cpp:651
+#: rc.cpp:663
 msgid "&Use On-Screen-Display"
 msgstr "&Įjungti pranešimus"
 
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:35
 #. i18n: ectx: property (title), widget (QGroupBox, mainBox)
-#: rc.cpp:654
+#: rc.cpp:666
 msgid "&Appearance"
 msgstr "Išv&aizda"
 
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:41
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_OsdUseTranslucency)
-#: rc.cpp:657
+#: rc.cpp:669
 msgid "&Translucent"
 msgstr "Perma&tomas"
 
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:50
 #. i18n: ectx: property (text), widget (QLabel, textLabel1)
-#: rc.cpp:660
+#: rc.cpp:672
 msgid "&Duration:"
 msgstr "&Trukmė:"
 
@@ -4757,7 +4810,7 @@ msgstr "&Trukmė:"
 #. i18n: ectx: property (toolTip), widget (QSpinBox, kcfg_OsdDuration)
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:72
 #. i18n: ectx: property (whatsThis), widget (QSpinBox, kcfg_OsdDuration)
-#: rc.cpp:663 rc.cpp:666
+#: rc.cpp:675 rc.cpp:678
 #, fuzzy
 msgid ""
 "The time in milliseconds for which to show the OSD. The value must be "
@@ -4768,13 +4821,13 @@ msgstr ""
 
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:78
 #. i18n: ectx: property (specialValueText), widget (QSpinBox, kcfg_OsdDuration)
-#: rc.cpp:669
+#: rc.cpp:681
 msgid "Forever"
 msgstr "Nuolatos"
 
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:100
 #. i18n: ectx: property (text), widget (QLabel, textLabel2_3)
-#: rc.cpp:675
+#: rc.cpp:687
 msgid "Sc&reen:"
 msgstr "Ek&ranas:"
 
@@ -4782,7 +4835,7 @@ msgstr "Ek&ranas:"
 #. i18n: ectx: property (toolTip), widget (KComboBox, kcfg_OsdScreen)
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:122
 #. i18n: ectx: property (whatsThis), widget (KComboBox, kcfg_OsdScreen)
-#: rc.cpp:678 rc.cpp:681
+#: rc.cpp:690 rc.cpp:693
 msgid "The screen that should display the OSD."
 msgstr "Kuriame ekrane rodyti pranešimą."
 
@@ -4790,13 +4843,13 @@ msgstr "Kuriame ekrane rodyti pranešimą."
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_OsdUseCustomColors)
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:134
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_OsdUseCustomColors)
-#: rc.cpp:684 rc.cpp:687
+#: rc.cpp:696 rc.cpp:699
 msgid "Check to enable custom colors for the On-Screen-Display."
 msgstr "Įjungti pasirinktas pranešimo spalvas."
 
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:137
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_OsdUseCustomColors)
-#: rc.cpp:690
+#: rc.cpp:702
 msgid "Use &custom colors"
 msgstr "Naudoti &pasirinktas spalvas"
 
@@ -4804,73 +4857,73 @@ msgstr "Naudoti &pasirinktas spalvas"
 #. i18n: ectx: property (whatsThis), widget (QLabel, textLabel2)
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:202
 #. i18n: ectx: property (whatsThis), widget (KColorButton, kcfg_OsdTextColor)
-#: rc.cpp:693 rc.cpp:702
+#: rc.cpp:705 rc.cpp:714
 msgid "The color of the OSD text."
 msgstr "Pranešimo teksto spalva."
 
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:177
 #. i18n: ectx: property (text), widget (QLabel, textLabel2)
-#: rc.cpp:696
+#: rc.cpp:708
 msgid "Text color:"
 msgstr "Teksto spalva:"
 
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:199
 #. i18n: ectx: property (toolTip), widget (KColorButton, kcfg_OsdTextColor)
-#: rc.cpp:699
+#: rc.cpp:711
 msgid "Click to select the color of the OSD text."
 msgstr "Parinkite pranešimo teksto spalvą."
 
 #. i18n: file: configdialog/dialogs/CollectionConfig.ui:13
 #. i18n: ectx: property (windowTitle), widget (QWidget, CollectionConfig)
-#: rc.cpp:705
+#: rc.cpp:717
 msgid "Collection Setup"
 msgstr "Fonotekos nustatymai"
 
 #. i18n: file: configdialog/dialogs/CollectionConfig.ui:31
 #. i18n: ectx: property (title), widget (QGroupBox, collectionFoldersBox)
-#: rc.cpp:708
+#: rc.cpp:720
 msgid "Collection Folders"
 msgstr "Fonotekos aplankai"
 
 #. i18n: file: dialogs/deletedialogbase.ui:41
 #. i18n: ectx: property (text), widget (QLabel, ddWarningIcon)
-#: rc.cpp:711
+#: rc.cpp:723
 msgid "Icon Placeholder, not in GUI"
 msgstr "Ženkliuko objektas, nepriklauso grafinei išvaizdai"
 
 #. i18n: file: dialogs/deletedialogbase.ui:56
 #. i18n: ectx: property (text), widget (QLabel, ddDeleteText)
-#: rc.cpp:714
+#: rc.cpp:726
 msgid "Deletion method placeholder, never shown to user."
 msgstr "Šalinimo metodo objektas, naudotojui nematomas."
 
 #. i18n: file: dialogs/deletedialogbase.ui:79
 #. i18n: ectx: property (toolTip), widget (K3ListBox, ddFileList)
-#: rc.cpp:717
+#: rc.cpp:729
 msgid "List of files that are about to be deleted."
 msgstr "Failų, kuriuos ketinama pašalinti, sąrašas."
 
 #. i18n: file: dialogs/deletedialogbase.ui:82
 #. i18n: ectx: property (whatsThis), widget (K3ListBox, ddFileList)
-#: rc.cpp:720
+#: rc.cpp:732
 msgid "This is the list of items that are about to be deleted."
 msgstr "Failus, esančius šiame sąraše, ketinama pašalinti."
 
 #. i18n: file: dialogs/deletedialogbase.ui:89
 #. i18n: ectx: property (text), widget (QLabel, ddNumFiles)
-#: rc.cpp:723
+#: rc.cpp:735
 msgid "Placeholder for number of files, not in GUI"
 msgstr "Failų skaičiaus objektas, nepriklauso grafinei išvaizdai"
 
 #. i18n: file: dialogs/deletedialogbase.ui:102
 #. i18n: ectx: property (text), widget (QCheckBox, ddShouldDelete)
-#: rc.cpp:726
+#: rc.cpp:738
 msgid "&Delete files instead of moving them to the trash"
 msgstr "&Failus pašalinti, į šiukšliadėžę neperkelti"
 
 #. i18n: file: dialogs/deletedialogbase.ui:105
 #. i18n: ectx: property (toolTip), widget (QCheckBox, ddShouldDelete)
-#: rc.cpp:729
+#: rc.cpp:741
 msgid ""
 "If checked, files will be permanently removed instead of being placed in the "
 "Trash Bin"
@@ -4880,7 +4933,7 @@ msgstr ""
 
 #. i18n: file: dialogs/deletedialogbase.ui:110
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, ddShouldDelete)
-#: rc.cpp:732
+#: rc.cpp:744
 msgid ""
 "<qt><p>If this box is checked, files will be <b>permanently removed</b> "
 "instead of being placed in the Trash Bin.</p>\n"
@@ -4896,14 +4949,14 @@ msgstr ""
 
 #. i18n: file: dialogs/PlaylistLayoutEditDialog.ui:14
 #. i18n: ectx: property (windowTitle), widget (QDialog, PlaylistLayoutEditDialog)
-#: rc.cpp:737
+#: rc.cpp:749
 #, fuzzy
 msgid "Playlist Layout Editor"
 msgstr "Grojaraščių failai"
 
 #. i18n: file: dialogs/PlaylistLayoutEditDialog.ui:26
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
-#: rc.cpp:740
+#: rc.cpp:752
 #, fuzzy
 msgid "Available Layouts"
 msgstr "Failo pavadinimo parinktys"
@@ -4912,183 +4965,183 @@ msgstr "Failo pavadinimo parinktys"
 #. i18n: ectx: property (mimeType), widget (TokenPool, tokenPool)
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:88
 #. i18n: ectx: property (mimeType), widget (TokenPool, tokenPool)
-#: rc.cpp:743 rc.cpp:864
+#: rc.cpp:755 rc.cpp:876
 msgid "application/x-amarok-tag-token"
 msgstr ""
 
 #. i18n: file: dialogs/PlaylistLayoutEditDialog.ui:181
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: rc.cpp:749
+#: rc.cpp:761
 msgid "Preview"
 msgstr "Peržiūra"
 
 #. i18n: file: dialogs/EditCoverSearchDialog.ui:25
 #. i18n: ectx: property (windowTitle), widget (QDialog, EditCoverSearchDialog)
-#: rc.cpp:752
+#: rc.cpp:764
 msgid "Dialog"
 msgstr "Langas"
 
 #. i18n: file: dialogs/EditCoverSearchDialog.ui:41
 #. i18n: ectx: property (text), widget (QLabel, localeLabel)
-#: rc.cpp:755
+#: rc.cpp:767
 msgid "Amazon Locale: "
 msgstr "Amazon lokalė:"
 
 #. i18n: file: dialogs/EditCoverSearchDialog.ui:62
 #. i18n: ectx: property (text), item, widget (KComboBox, amazonLocale)
-#: rc.cpp:758
+#: rc.cpp:770
 msgid "International"
 msgstr "Tarptautinė"
 
 #. i18n: file: dialogs/EditCoverSearchDialog.ui:67
 #. i18n: ectx: property (text), item, widget (KComboBox, amazonLocale)
-#: rc.cpp:761 covermanager/CoverManager.cpp:212
+#: rc.cpp:773 covermanager/CoverManager.cpp:212
 msgid "Canada"
 msgstr "Kanada"
 
 #. i18n: file: dialogs/EditCoverSearchDialog.ui:72
 #. i18n: ectx: property (text), item, widget (KComboBox, amazonLocale)
-#: rc.cpp:764 covermanager/CoverManager.cpp:216
+#: rc.cpp:776 covermanager/CoverManager.cpp:216
 msgid "France"
 msgstr "Prancūzija"
 
 #. i18n: file: dialogs/EditCoverSearchDialog.ui:77
 #. i18n: ectx: property (text), item, widget (KComboBox, amazonLocale)
-#: rc.cpp:767 covermanager/CoverManager.cpp:220
+#: rc.cpp:779 covermanager/CoverManager.cpp:220
 msgid "Germany"
 msgstr "Vokietija"
 
 #. i18n: file: dialogs/EditCoverSearchDialog.ui:82
 #. i18n: ectx: property (text), item, widget (KComboBox, amazonLocale)
-#: rc.cpp:770 covermanager/CoverManager.cpp:224
+#: rc.cpp:782 covermanager/CoverManager.cpp:224
 msgid "Japan"
 msgstr "Japonija"
 
 #. i18n: file: dialogs/EditCoverSearchDialog.ui:87
 #. i18n: ectx: property (text), item, widget (KComboBox, amazonLocale)
-#: rc.cpp:773 covermanager/CoverManager.cpp:228
+#: rc.cpp:785 covermanager/CoverManager.cpp:228
 msgid "United Kingdom"
 msgstr "Jungtinės karalystės"
 
 #. i18n: file: dialogs/EditCoverSearchDialog.ui:138
 #. i18n: ectx: property (text), widget (KPushButton, SearchButton)
-#: rc.cpp:777
+#: rc.cpp:789
 msgid "&Search"
 msgstr "&Ieškoti"
 
-#. i18n: file: dialogs/TagDialogBase.ui:19
-#. i18n: ectx: property (windowTitle), widget (QDialog, TagDialogBase)
-#: rc.cpp:780
+#. i18n: file: dialogs/TagDialogBase.ui:20
+#. i18n: ectx: property (windowTitle), widget (QWidget, TagDialogBase)
+#: rc.cpp:792
 msgid "Track Information"
 msgstr "Dainos informacija"
 
-#. i18n: file: dialogs/TagDialogBase.ui:34
+#. i18n: file: dialogs/TagDialogBase.ui:38
 #. i18n: ectx: attribute (title), widget (QWidget, summaryTab)
-#: rc.cpp:783
+#: rc.cpp:795
 msgid "S&ummary"
 msgstr "&Santrauka"
 
-#. i18n: file: dialogs/TagDialogBase.ui:66
+#. i18n: file: dialogs/TagDialogBase.ui:70
 #. i18n: ectx: property (text), widget (QLabel, trackArtistAlbumLabel)
-#. i18n: file: dialogs/TagDialogBase.ui:471
+#. i18n: file: dialogs/TagDialogBase.ui:475
 #. i18n: ectx: property (text), widget (QLabel, trackArtistAlbumLabel2)
-#: rc.cpp:786 rc.cpp:828
+#: rc.cpp:798 rc.cpp:840
 msgid "Track by Artist on Album"
 msgstr "Daina – atlikėjas – albumas"
 
-#. i18n: file: dialogs/TagDialogBase.ui:142
+#. i18n: file: dialogs/TagDialogBase.ui:146
 #. i18n: ectx: attribute (title), widget (QWidget, tagsTab)
-#: rc.cpp:789
+#: rc.cpp:801
 msgid "Ta&gs"
 msgstr "Ž&ymos"
 
-#. i18n: file: dialogs/TagDialogBase.ui:150
+#. i18n: file: dialogs/TagDialogBase.ui:154
 #. i18n: ectx: property (text), widget (QLabel, textLabel1)
-#: rc.cpp:792
+#: rc.cpp:804
 msgid "T&itle:"
 msgstr "&Pavadinimas:"
 
-#. i18n: file: dialogs/TagDialogBase.ui:166
+#. i18n: file: dialogs/TagDialogBase.ui:170
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_2)
-#: rc.cpp:795
+#: rc.cpp:807
 msgid "&Artist:"
 msgstr "&Atlikėjas:"
 
-#. i18n: file: dialogs/TagDialogBase.ui:195
+#. i18n: file: dialogs/TagDialogBase.ui:199
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_3_2)
-#: rc.cpp:798
+#: rc.cpp:810
 msgid "&Composer:"
 msgstr "&Kompozitorius:"
 
-#. i18n: file: dialogs/TagDialogBase.ui:221
+#. i18n: file: dialogs/TagDialogBase.ui:225
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_3)
-#: rc.cpp:801
+#: rc.cpp:813
 msgid "Al&bum:"
 msgstr "Al&bumas:"
 
-#. i18n: file: dialogs/TagDialogBase.ui:252
+#. i18n: file: dialogs/TagDialogBase.ui:256
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_3_2_2)
-#: rc.cpp:804
+#: rc.cpp:816
 msgid "&Disc Number:"
 msgstr "D&iskas:"
 
-#. i18n: file: dialogs/TagDialogBase.ui:298
+#. i18n: file: dialogs/TagDialogBase.ui:302
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_4)
-#: rc.cpp:807
+#: rc.cpp:819
 msgid "&Genre:"
 msgstr "&Žanras:"
 
-#. i18n: file: dialogs/TagDialogBase.ui:327
+#. i18n: file: dialogs/TagDialogBase.ui:331
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_6_6)
-#: rc.cpp:810
+#: rc.cpp:822
 msgid "Trac&k:"
 msgstr "&Daina:"
 
-#. i18n: file: dialogs/TagDialogBase.ui:364
+#. i18n: file: dialogs/TagDialogBase.ui:368
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_5)
-#: rc.cpp:813
+#: rc.cpp:825
 msgid "&Year:"
 msgstr "&Metai:"
 
-#. i18n: file: dialogs/TagDialogBase.ui:398
+#. i18n: file: dialogs/TagDialogBase.ui:402
 #. i18n: ectx: property (text), widget (QLabel, textLabel_comment)
-#: rc.cpp:816
+#: rc.cpp:828
 msgid "Co&mment:"
 msgstr "K&omentaras:"
 
-#. i18n: file: dialogs/TagDialogBase.ui:426
+#. i18n: file: dialogs/TagDialogBase.ui:430
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_guessTags)
-#: rc.cpp:819
+#: rc.cpp:831
 msgid "Guess Tags From &Filename"
 msgstr "Spėti laukelių meta in&formaciją pagal failo pavadinimą"
 
-#. i18n: file: dialogs/TagDialogBase.ui:438
+#. i18n: file: dialogs/TagDialogBase.ui:442
 #. i18n: ectx: attribute (title), widget (QWidget, lyricsTab)
-#: rc.cpp:822
+#: rc.cpp:834
 msgid "L&yrics"
 msgstr "&Tekstai"
 
-#. i18n: file: dialogs/TagDialogBase.ui:455
+#. i18n: file: dialogs/TagDialogBase.ui:459
 #. i18n: ectx: attribute (title), widget (QWidget, statisticsTab)
-#: rc.cpp:825
+#: rc.cpp:837
 msgid "St&atistics"
 msgstr "St&atistika"
 
-#. i18n: file: dialogs/TagDialogBase.ui:606
+#. i18n: file: dialogs/TagDialogBase.ui:610
 #. i18n: ectx: attribute (title), widget (QWidget, labelsTab)
-#: rc.cpp:837
+#: rc.cpp:849
 msgid "La&bels"
 msgstr "&Etiketės"
 
-#. i18n: file: dialogs/TagDialogBase.ui:614
+#. i18n: file: dialogs/TagDialogBase.ui:618
 #. i18n: ectx: property (text), widget (QLabel, labels_favouriteLabels)
-#: rc.cpp:840
+#: rc.cpp:852
 msgid "Your favorite labels:"
 msgstr "Mėgstamiausios etiketės:"
 
-#. i18n: file: dialogs/TagDialogBase.ui:637
+#. i18n: file: dialogs/TagDialogBase.ui:641
 #. i18n: ectx: property (text), widget (QLabel, labels_explanation)
-#: rc.cpp:843
+#: rc.cpp:855
 msgid ""
 "Edit the assigned labels below (multiple labels are separated by commas), or "
 "select a label from above."
@@ -5096,39 +5149,39 @@ msgstr ""
 "Keisti žemiau esančias etiketes (etiketės atskiriamos kableliais) arba "
 "parinkite etiketę iš aukščiau esančio sąrašo."
 
-#. i18n: file: dialogs/TagDialogBase.ui:658
+#. i18n: file: dialogs/TagDialogBase.ui:662
 #. i18n: ectx: property (text), widget (QLabel, locationLabel)
-#: rc.cpp:846
+#: rc.cpp:858
 msgid "Location:"
 msgstr "Vieta:"
 
-#. i18n: file: dialogs/TagDialogBase.ui:695
+#. i18n: file: dialogs/TagDialogBase.ui:702
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_previous)
-#: rc.cpp:849 widgets/ProgressiveSearchWidget.cpp:64
+#: rc.cpp:861 widgets/ProgressiveSearchWidget.cpp:64
 msgid "&Previous"
 msgstr "&Ankstesnė"
 
-#. i18n: file: dialogs/TagDialogBase.ui:705
+#. i18n: file: dialogs/TagDialogBase.ui:712
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_next)
-#: rc.cpp:852 widgets/ProgressiveSearchWidget.cpp:61
+#: rc.cpp:864 widgets/ProgressiveSearchWidget.cpp:61
 msgid "&Next"
 msgstr "&Kita"
 
-#. i18n: file: dialogs/TagDialogBase.ui:715
+#. i18n: file: dialogs/TagDialogBase.ui:719
 #. i18n: ectx: property (text), widget (QCheckBox, checkBox_perTrack)
-#: rc.cpp:855
+#: rc.cpp:867
 msgid "Per Trac&k"
 msgstr "&Dainai"
 
-#. i18n: file: dialogs/TagDialogBase.ui:738
+#. i18n: file: dialogs/TagDialogBase.ui:742
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_ok)
-#: rc.cpp:858
+#: rc.cpp:870
 msgid "Sa&ve && Close"
 msgstr "Į&rašyti ir užverti"
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:113
 #. i18n: ectx: property (text), widget (QLabel, syntaxLabel)
-#: rc.cpp:868
+#: rc.cpp:880
 #, no-c-format
 msgid ""
 "The following tokens can be used to define a filename scheme: <br>%track, %"
@@ -5137,51 +5190,51 @@ msgstr ""
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:254
 #. i18n: ectx: property (text), widget (QCheckBox, cbCase)
-#: rc.cpp:877
+#: rc.cpp:889
 msgid "Edit &case"
 msgstr "Keisti raidžių &dydį"
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:291
 #. i18n: ectx: property (text), widget (QRadioButton, rbTitleCase)
-#: rc.cpp:880
+#: rc.cpp:892
 msgid "&Title case"
 msgstr "Pavadinimo &raidžių dydis"
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:313
 #. i18n: ectx: property (text), widget (QRadioButton, rbFirstLetter)
-#: rc.cpp:883
+#: rc.cpp:895
 msgid "&First letter of every word uppercase"
 msgstr "&Kiekvieno žodžio pirma raidė – didžioji"
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:332
 #. i18n: ectx: property (text), widget (QRadioButton, rbAllUpper)
-#: rc.cpp:886
+#: rc.cpp:898
 msgid "All &uppercase"
 msgstr "&Visos raidės didžiosios"
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:351
 #. i18n: ectx: property (text), widget (QRadioButton, rbAllLower)
-#: rc.cpp:889
+#: rc.cpp:901
 msgid "All &lowercase"
 msgstr "Visos raidės &mažosios"
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:373
 #. i18n: ectx: property (text), widget (QCheckBox, cbEliminateSpaces)
-#: rc.cpp:892
+#: rc.cpp:904
 #, fuzzy
 msgid "Remove trailing &spaces in tags"
 msgstr "Pašalinti meta informacijoje pasikartojančius ir gale esančius &tarpus"
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:389
 #. i18n: ectx: property (text), widget (QCheckBox, cbReplaceUnderscores)
-#: rc.cpp:895
+#: rc.cpp:907
 #, fuzzy
 msgid "Replace &underscores with spaces"
 msgstr "&Keisti tarpus pabraukimo simboliais"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:40
 #. i18n: ectx: property (text), widget (QLabel, mainLabel)
-#: rc.cpp:898
+#: rc.cpp:910
 #, fuzzy
 msgid ""
 "Edit the filter for finding tracks with specific attributes, e.g. a track "
@@ -5192,7 +5245,7 @@ msgstr ""
 
 #. i18n: file: dialogs/EditFilterDialog.ui:54
 #. i18n: ectx: property (whatsThis), widget (QLabel, attributeLabel)
-#: rc.cpp:901
+#: rc.cpp:913
 #, fuzzy
 msgctxt "you can translate the keyword as you will do for the combobox"
 msgid ""
@@ -5232,64 +5285,64 @@ msgstr ""
 
 #. i18n: file: dialogs/EditFilterDialog.ui:57
 #. i18n: ectx: property (text), widget (QLabel, attributeLabel)
-#: rc.cpp:906
+#: rc.cpp:918
 msgid "Attribute"
 msgstr "Atributas"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:67
 #. i18n: ectx: property (toolTip), widget (KComboBox, keywordCombo)
-#: rc.cpp:909
+#: rc.cpp:921
 msgid "Select an attribute for the filter"
 msgstr "Nurodykite filtro kriterijų"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:71
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
-#: rc.cpp:912
+#: rc.cpp:924
 msgid "Simple Search"
 msgstr "Paprasta paieška"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:114
 #. i18n: ectx: property (whatsThis), widget (KLineEdit, editKeywordBox)
-#: rc.cpp:936
+#: rc.cpp:948
 msgid "<p>Type the attribute value or the text to look for here.</p>"
 msgstr "<p>Įrašykite kriterijaus reikšmę arba ieškomą žodį.</p>"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:135
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
-#: rc.cpp:939
+#: rc.cpp:951
 msgid "Attribute value is"
 msgstr "Kriterijaus reikšmė"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:154
 #. i18n: ectx: property (text), item, widget (KComboBox, conditionCombo)
-#: rc.cpp:942
+#: rc.cpp:954
 #, fuzzy
 msgid "Smaller Than"
 msgstr "mažesnė už"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:159
 #. i18n: ectx: property (text), item, widget (KComboBox, conditionCombo)
-#: rc.cpp:945
+#: rc.cpp:957
 #, fuzzy
 msgid "Larger Than"
 msgstr "didesnė už"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:164
 #. i18n: ectx: property (text), item, widget (KComboBox, conditionCombo)
-#: rc.cpp:948
+#: rc.cpp:960
 msgid "Equal To"
 msgstr "lygiai"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:169
 #. i18n: ectx: property (text), item, widget (KComboBox, conditionCombo)
-#: rc.cpp:951
+#: rc.cpp:963
 #, fuzzy
 msgid "Between"
 msgstr "yra tarp"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:184
 #. i18n: ectx: property (text), widget (QLabel, andLabel)
-#: rc.cpp:954 widgets/SmartPlaylistEditor.cpp:935
+#: rc.cpp:966 widgets/SmartPlaylistEditor.cpp:935
 #: widgets/SmartPlaylistEditor.cpp:957 widgets/SmartPlaylistEditor.cpp:985
 #: widgets/SmartPlaylistEditor.cpp:1004
 msgid "and"
@@ -5297,13 +5350,13 @@ msgstr "ir"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:217
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
-#: rc.cpp:957
+#: rc.cpp:969
 msgid "Filter Action"
 msgstr "Filtro veiksmas"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:223
 #. i18n: ectx: property (toolTip), widget (QRadioButton, matchAll)
-#: rc.cpp:960
+#: rc.cpp:972
 #, fuzzy
 msgid ""
 "Check this box to look for the tracks that contain all the words you typed "
@@ -5314,14 +5367,14 @@ msgstr ""
 
 #. i18n: file: dialogs/EditFilterDialog.ui:226
 #. i18n: ectx: property (text), widget (QRadioButton, matchAll)
-#: rc.cpp:963
+#: rc.cpp:975
 #, fuzzy
 msgid "Match All Words"
 msgstr "Atitikti &visas sąlygas"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:233
 #. i18n: ectx: property (toolTip), widget (QRadioButton, matchAny)
-#: rc.cpp:966
+#: rc.cpp:978
 #, fuzzy
 msgid ""
 "Check this box to look for the tracks that contain at least one of the words "
@@ -5332,14 +5385,14 @@ msgstr ""
 
 #. i18n: file: dialogs/EditFilterDialog.ui:236
 #. i18n: ectx: property (text), widget (QRadioButton, matchAny)
-#: rc.cpp:969
+#: rc.cpp:981
 #, fuzzy
 msgid "Match Any Word"
 msgstr "Atitikti &bet kurią sąlygą"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:243
 #. i18n: ectx: property (toolTip), widget (QRadioButton, matchLiteral)
-#: rc.cpp:972
+#: rc.cpp:984
 #, fuzzy
 msgid ""
 "Check this box to look for all the tracks that contain exactly the words you "
@@ -5350,13 +5403,13 @@ msgstr ""
 
 #. i18n: file: dialogs/EditFilterDialog.ui:246
 #. i18n: ectx: property (text), widget (QRadioButton, matchLiteral)
-#: rc.cpp:975
+#: rc.cpp:987
 msgid "Exact Match"
 msgstr "Tikslus atitikmuo"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:253
 #. i18n: ectx: property (toolTip), widget (QRadioButton, matchNot)
-#: rc.cpp:978
+#: rc.cpp:990
 #, fuzzy
 msgid ""
 "Check this box to look for all the tracks that do not contain the words you "
@@ -5367,20 +5420,20 @@ msgstr ""
 
 #. i18n: file: dialogs/EditFilterDialog.ui:256
 #. i18n: ectx: property (text), widget (QRadioButton, matchNot)
-#: rc.cpp:981
+#: rc.cpp:993
 msgid "Exclude"
 msgstr "Išskyrus"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:278
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_3)
-#: rc.cpp:984
+#: rc.cpp:996
 #, fuzzy
 msgid "Appending Condition"
 msgstr "Papildanti sąlyga"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:284
 #. i18n: ectx: property (toolTip), widget (QRadioButton, andButton)
-#: rc.cpp:987
+#: rc.cpp:999
 #, fuzzy
 msgid ""
 "Check this box if you want to add another condition and you want that the "
@@ -5392,13 +5445,13 @@ msgstr ""
 
 #. i18n: file: dialogs/EditFilterDialog.ui:287
 #. i18n: ectx: property (text), widget (QRadioButton, andButton)
-#: rc.cpp:990
+#: rc.cpp:1002
 msgid "AND"
 msgstr "IR"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:294
 #. i18n: ectx: property (toolTip), widget (QRadioButton, orButton)
-#: rc.cpp:993
+#: rc.cpp:1005
 #, fuzzy
 msgid ""
 "Check this box if you want to add another condition and you want that the "
@@ -5410,19 +5463,19 @@ msgstr ""
 
 #. i18n: file: dialogs/EditFilterDialog.ui:297
 #. i18n: ectx: property (text), widget (QRadioButton, orButton)
-#: rc.cpp:996
+#: rc.cpp:1008
 msgid "OR"
 msgstr "ARBA"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:309
 #. i18n: ectx: property (toolTip), widget (QCheckBox, invertButton)
-#: rc.cpp:999
+#: rc.cpp:1011
 msgid "Check this box to negate the defined filter condition"
 msgstr "Pažymėjus šį laukelį sąlyga įgis priešingą reikšmę"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:312
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, invertButton)
-#: rc.cpp:1002
+#: rc.cpp:1014
 msgid ""
 "<p>If this option is checked the defined filter condition will be negated. "
 "This means that, for example, you can define a filter that looks for all "
@@ -5434,63 +5487,63 @@ msgstr ""
 
 #. i18n: file: dialogs/EditFilterDialog.ui:315
 #. i18n: ectx: property (text), widget (QCheckBox, invertButton)
-#: rc.cpp:1005
+#: rc.cpp:1017
 #, fuzzy
 msgid "Invert Condition"
 msgstr "Atvirkštinė sąlyga"
 
 #. i18n: file: dialogs/ScriptManagerBase.ui:29
 #. i18n: ectx: property (text), widget (QLabel, label)
-#: rc.cpp:1008
+#: rc.cpp:1020
 #, fuzzy
 msgid "Installed Amarok Scripts:"
 msgstr "Į&diegti scenarijų"
 
 #. i18n: file: dialogs/ScriptManagerBase.ui:54
 #. i18n: ectx: property (text), widget (QPushButton, installButton)
-#: rc.cpp:1011
+#: rc.cpp:1023
 msgid "&Install Script"
 msgstr "Į&diegti scenarijų"
 
 #. i18n: file: dialogs/ScriptManagerBase.ui:67
 #. i18n: ectx: property (text), widget (QPushButton, uninstallButton)
-#: rc.cpp:1014
+#: rc.cpp:1026
 msgid "&Uninstall"
 msgstr "&Pašalinti"
 
 #. i18n: file: dialogs/ScriptManagerBase.ui:80
 #. i18n: ectx: property (text), widget (QPushButton, retrieveButton)
-#: rc.cpp:1017
+#: rc.cpp:1029
 msgid "&Get More Scripts"
 msgstr "&Gauti daugiau scenarijų"
 
 #. i18n: file: dialogs/ScriptManagerBase.ui:100
 #. i18n: ectx: property (text), widget (QPushButton, okButton)
-#: rc.cpp:1020
+#: rc.cpp:1032
 msgid "&OK"
 msgstr "&Gerai"
 
 #. i18n: file: dialogs/PodcastSettingsBase.ui:23
 #. i18n: ectx: property (windowTitle), widget (QWidget, PodcastSettingsBase)
-#: rc.cpp:1023
+#: rc.cpp:1035
 msgid "Podcast Configuration"
 msgstr "Podcast parinktys"
 
 #. i18n: file: dialogs/PodcastSettingsBase.ui:36
 #. i18n: ectx: property (url), widget (KUrlLabel, m_feedLabel)
-#: rc.cpp:1026
+#: rc.cpp:1038
 msgid "Feed URL"
 msgstr ""
 
 #. i18n: file: dialogs/PodcastSettingsBase.ui:51
 #. i18n: ectx: property (text), widget (QLabel, m_leftClickLabel)
-#: rc.cpp:1029
+#: rc.cpp:1041
 msgid "(left click to copy to clipboard)"
 msgstr ""
 
 #. i18n: file: dialogs/PodcastSettingsBase.ui:65
 #. i18n: ectx: property (text), widget (QLabel, textLabel1)
-#: rc.cpp:1032
+#: rc.cpp:1044
 msgid "Save location:"
 msgstr "Įrašymo vieta:"
 
@@ -5498,19 +5551,19 @@ msgstr "Įrašymo vieta:"
 #. i18n: ectx: property (toolTip), widget (QCheckBox, m_autoFetchCheck)
 #. i18n: file: dialogs/PodcastSettingsBase.ui:83
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, m_autoFetchCheck)
-#: rc.cpp:1035 rc.cpp:1038
+#: rc.cpp:1047 rc.cpp:1050
 msgid "When checked, Amarok will automatically scan the podcast for updates"
 msgstr "Įjungus šią parinktį Amarok automatiškai ieškos podcast atnaujinimų"
 
 #. i18n: file: dialogs/PodcastSettingsBase.ui:86
 #. i18n: ectx: property (text), widget (QCheckBox, m_autoFetchCheck)
-#: rc.cpp:1041
+#: rc.cpp:1053
 msgid "Automatically scan for updates"
 msgstr "Automatiškai ieškoti atnaujinimų"
 
 #. i18n: file: dialogs/PodcastSettingsBase.ui:93
 #. i18n: ectx: property (title), widget (KButtonGroup, kbuttongroup)
-#: rc.cpp:1044
+#: rc.cpp:1056
 msgid "Media Download"
 msgstr "Parsisiųsti muziką"
 
@@ -5518,13 +5571,13 @@ msgstr "Parsisiųsti muziką"
 #. i18n: ectx: property (toolTip), widget (QRadioButton, m_downloadRadio)
 #. i18n: file: dialogs/PodcastSettingsBase.ui:105
 #. i18n: ectx: property (whatsThis), widget (QRadioButton, m_downloadRadio)
-#: rc.cpp:1047 rc.cpp:1050
+#: rc.cpp:1059 rc.cpp:1062
 msgid "Download media as soon as it becomes available"
 msgstr "Parsiųsti įrašus, iškart kai tik įmanoma"
 
 #. i18n: file: dialogs/PodcastSettingsBase.ui:108
 #. i18n: ectx: property (text), widget (QRadioButton, m_downloadRadio)
-#: rc.cpp:1053
+#: rc.cpp:1065
 msgid "Download when a&vailable"
 msgstr "P&arsisiųsti kai įmanoma"
 
@@ -5532,7 +5585,7 @@ msgstr "P&arsisiųsti kai įmanoma"
 #. i18n: ectx: property (toolTip), widget (QRadioButton, m_streamRadio)
 #. i18n: file: dialogs/PodcastSettingsBase.ui:118
 #. i18n: ectx: property (whatsThis), widget (QRadioButton, m_streamRadio)
-#: rc.cpp:1056 rc.cpp:1059
+#: rc.cpp:1068 rc.cpp:1071
 msgid ""
 "Media must be explicitly downloaded, otherwise the podcast will be played "
 "from the remote server."
@@ -5542,7 +5595,7 @@ msgstr ""
 
 #. i18n: file: dialogs/PodcastSettingsBase.ui:121
 #. i18n: ectx: property (text), widget (QRadioButton, m_streamRadio)
-#: rc.cpp:1062
+#: rc.cpp:1074
 msgid "Stream or download on re&quest"
 msgstr "&Parsisiųsti failą arba srautą paprašius"
 
@@ -5550,19 +5603,19 @@ msgstr "&Parsisiųsti failą arba srautą paprašius"
 #. i18n: ectx: property (toolTip), widget (QCheckBox, m_purgeCheck)
 #. i18n: file: dialogs/PodcastSettingsBase.ui:136
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, m_purgeCheck)
-#: rc.cpp:1065 rc.cpp:1068
+#: rc.cpp:1077 rc.cpp:1080
 msgid "If checked, Amarok will throw away old podcast episodes"
 msgstr "Įjungus šią parinktį Amarok šalins senus podcast epizodus"
 
 #. i18n: file: dialogs/PodcastSettingsBase.ui:139
 #. i18n: ectx: property (text), widget (QCheckBox, m_purgeCheck)
-#: rc.cpp:1071
+#: rc.cpp:1083
 msgid "Limit &number of episodes"
 msgstr "Riboti epizodų s&kaičių"
 
 #. i18n: file: dialogs/PodcastSettingsBase.ui:162
 #. i18n: ectx: property (text), widget (QLabel, m_purgeCountLabel)
-#: rc.cpp:1074
+#: rc.cpp:1086
 msgid "Keep maximum of:"
 msgstr "Laikyti daugiausia:"
 
@@ -5570,32 +5623,32 @@ msgstr "Laikyti daugiausia:"
 #. i18n: ectx: property (toolTip), widget (QSpinBox, m_purgeCountSpinBox)
 #. i18n: file: dialogs/PodcastSettingsBase.ui:175
 #. i18n: ectx: property (whatsThis), widget (QSpinBox, m_purgeCountSpinBox)
-#: rc.cpp:1077 rc.cpp:1080
+#: rc.cpp:1089 rc.cpp:1092
 msgid "The maximum number of podcast items to store"
 msgstr "Daugiausiai laikoma podcast"
 
 #. i18n: file: dialogs/PodcastSettingsBase.ui:178
 #. i18n: ectx: property (suffix), widget (QSpinBox, m_purgeCountSpinBox)
-#: rc.cpp:1083
+#: rc.cpp:1095
 msgid " Items"
 msgstr " elementus"
 
 #. i18n: file: browsers/playlistbrowser/PodcastCategoryBase.ui:24
 #. i18n: ectx: property (toolTip), widget (QToolButton, addPodcastButton)
-#: rc.cpp:1086
+#: rc.cpp:1098
 #, fuzzy
 msgid "Add Podcast..."
 msgstr "Įdėti."
 
 #. i18n: file: browsers/playlistbrowser/PodcastCategoryBase.ui:27
 #. i18n: ectx: property (text), widget (QToolButton, addPodcastButton)
-#: rc.cpp:1089
+#: rc.cpp:1101
 msgid "add podcast..."
 msgstr ""
 
 #. i18n: file: browsers/playlistbrowser/PodcastCategoryBase.ui:50
 #. i18n: ectx: property (text), widget (QToolButton, refreshPodcastsButton)
-#: rc.cpp:1092
+#: rc.cpp:1104
 msgid "Refresh All Podcasts"
 msgstr ""
 
@@ -5603,51 +5656,51 @@ msgstr ""
 #. i18n: ectx: property (toolTip), widget (QToolButton, configurePodcastsButton)
 #. i18n: file: browsers/playlistbrowser/PodcastCategoryBase.ui:76
 #. i18n: ectx: property (text), widget (QToolButton, configurePodcastsButton)
-#: rc.cpp:1095 rc.cpp:1098
+#: rc.cpp:1107 rc.cpp:1110
 #, fuzzy
 msgid "Configure Podcasts..."
 msgstr "Konfigūruoti."
 
 #. i18n: file: browsers/playlistbrowser/PodcastCategoryBase.ui:99
 #. i18n: ectx: property (text), widget (QToolButton, podcastsIntervalButton)
-#: rc.cpp:1101
+#: rc.cpp:1113
 msgid "Scan Interval..."
 msgstr "Peržiūros intervalas..."
 
 #. i18n: file: services/lastfm/LastFmConfigWidget.ui:38
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox3)
-#: rc.cpp:1104
+#: rc.cpp:1116
 msgid "Last.fm Profile"
 msgstr "Last.fm profilis"
 
 #. i18n: file: services/lastfm/LastFmConfigWidget.ui:44
 #. i18n: ectx: property (text), widget (QLabel, labelUsername)
-#: rc.cpp:1107
+#: rc.cpp:1119
 msgid "&Username:"
 msgstr "&Naudotojo vardas:"
 
 #. i18n: file: services/lastfm/LastFmConfigWidget.ui:57
 #. i18n: ectx: property (text), widget (QLabel, labelPassword)
-#: rc.cpp:1110
+#: rc.cpp:1122
 msgid "&Password:"
 msgstr "&Slaptažodis:"
 
 #. i18n: file: services/lastfm/LastFmConfigWidget.ui:86
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel1)
-#: rc.cpp:1113
+#: rc.cpp:1125
 msgid "<a href=\"http://www.last.fm:80/signup.php\">Sign up to last.fm</a>"
 msgstr ""
 
 #. i18n: file: services/lastfm/LastFmConfigWidget.ui:96
 #. i18n: ectx: property (text), widget (QPushButton, testLogin)
-#: rc.cpp:1116
+#: rc.cpp:1128
 #, fuzzy
 msgid "&Test Login"
 msgstr "Prisijungti prie Mp3tunes"
 
 #. i18n: file: services/lastfm/LastFmConfigWidget.ui:106
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel2)
-#: rc.cpp:1119
+#: rc.cpp:1131
 #, fuzzy
 msgid ""
 "Why not join the <a href=\"http://www.last.fm:80/group/Amarok+Users\">Amarok "
@@ -5658,50 +5711,50 @@ msgstr ""
 
 #. i18n: file: services/lastfm/LastFmConfigWidget.ui:116
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
-#: rc.cpp:1122
+#: rc.cpp:1134
 msgid "Last.fm Services"
 msgstr "Last.fm paslaugos"
 
 #. i18n: file: services/lastfm/LastFmConfigWidget.ui:125
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_SubmitPlayedSongs)
-#: rc.cpp:1125
+#: rc.cpp:1137
 #, fuzzy
 msgid "&Submit tracks"
 msgstr "Praleisti"
 
 #. i18n: file: services/lastfm/LastFmConfigWidget.ui:135
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_RetrieveSimilarArtists)
-#: rc.cpp:1128
+#: rc.cpp:1140
 msgid "&Retrieve similar artists"
 msgstr "&Sužinoti panašius atlikėjus"
 
 #. i18n: file: services/magnatune/MagnatuneDownloadDialogBase.ui:13
 #. i18n: ectx: property (windowTitle), widget (QDialog, magnatuneDownloadDialogBase)
-#: rc.cpp:1131
+#: rc.cpp:1143
 msgid "Magnatune.com Album Download"
 msgstr "Magnatune.com albumų atsiuntimas"
 
 #. i18n: file: services/magnatune/MagnatuneDownloadDialogBase.ui:19
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox1)
-#: rc.cpp:1134
+#: rc.cpp:1146
 msgid "Download options"
 msgstr "Siuntimo parinktys"
 
 #. i18n: file: services/magnatune/MagnatuneDownloadDialogBase.ui:25
 #. i18n: ectx: property (text), widget (QLabel, textLabel1)
-#: rc.cpp:1137
+#: rc.cpp:1149
 msgid "Select Format:"
 msgstr "Nurodykite formatą:"
 
 #. i18n: file: services/magnatune/MagnatuneDownloadDialogBase.ui:38
 #. i18n: ectx: property (text), widget (QLabel, textLabel2)
-#: rc.cpp:1140
+#: rc.cpp:1152
 msgid "Download to:"
 msgstr "Atsiųsti į:"
 
 #. i18n: file: services/magnatune/MagnatuneDownloadDialogBase.ui:51
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_2)
-#: rc.cpp:1143
+#: rc.cpp:1155
 msgid ""
 "If you download to a location that is already being monitored by Amarok, the "
 "album will automatically be added to your collection."
@@ -5711,226 +5764,226 @@ msgstr ""
 
 #. i18n: file: services/magnatune/MagnatuneDownloadDialogBase.ui:67
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
-#: rc.cpp:1146
+#: rc.cpp:1158
 msgid "Magnatune info"
 msgstr "Magnatune informacija"
 
 #. i18n: file: services/magnatune/MagnatuneDownloadDialogBase.ui:83
 #. i18n: ectx: property (text), widget (QPushButton, downloadButton)
-#: rc.cpp:1149 services/jamendo/JamendoMeta.cpp:139
-#: services/jamendo/JamendoMeta.cpp:366
+#: rc.cpp:1161 services/jamendo/JamendoMeta.cpp:139
+#: services/jamendo/JamendoMeta.cpp:372
 msgid "&Download"
 msgstr "&Atsisiųsti"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:22
 #. i18n: ectx: property (windowTitle), widget (QDialog, magnatunePurchaseDialogBase)
-#: rc.cpp:1152
+#: rc.cpp:1164
 msgid "Purchase Album from Magnatune.com"
 msgstr "Įsigyti albumą iš magnatune.com"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:28
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox1)
-#: rc.cpp:1155
+#: rc.cpp:1167
 msgid "Info"
 msgstr "Informacija"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:34
 #. i18n: ectx: property (text), widget (QLabel, infoLabel)
-#: rc.cpp:1158
+#: rc.cpp:1170
 msgid "You have chosen to purchase the following album from Magnatune.com"
 msgstr "Nurodėte iš magnatune.com įsigyti šį albumą"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:90
 #. i18n: ectx: property (text), widget (QLabel, textLabel13)
-#: rc.cpp:1161
+#: rc.cpp:1173
 msgid "Album:"
 msgstr "Albumas:"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:110
 #. i18n: ectx: property (text), widget (QLabel, textLabel14)
-#: rc.cpp:1164
+#: rc.cpp:1176
 msgid "Artist:"
 msgstr "Atlikėjas:"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:130
 #. i18n: ectx: property (text), widget (QLabel, textLabel15)
-#: rc.cpp:1167
+#: rc.cpp:1179
 msgid "Genre:"
 msgstr "Žanras:"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:150
 #. i18n: ectx: property (text), widget (QLabel, textLabel16)
-#: rc.cpp:1170
+#: rc.cpp:1182
 msgid "Launch Year:"
 msgstr "Išleidimo metai:"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:176
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
-#: rc.cpp:1173
+#: rc.cpp:1185
 msgid "Payment"
 msgstr "Mokėjimas"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:182
 #. i18n: ectx: property (text), widget (QLabel, textLabel8)
-#: rc.cpp:1176
+#: rc.cpp:1188
 msgctxt "The name of the person buying songs from magnatune"
 msgid "Name:"
 msgstr "Vardas:"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:195
 #. i18n: ectx: property (text), widget (QLabel, textLabel9)
-#: rc.cpp:1179
+#: rc.cpp:1191
 msgctxt "The e-mail address of the user"
 msgid "E-mail:"
 msgstr "E. paštas:"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:208
 #. i18n: ectx: property (text), widget (QLabel, label)
-#: rc.cpp:1182
+#: rc.cpp:1194
 msgid "Pay using:"
 msgstr "Atsiskaitymo būdas:"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:231
 #. i18n: ectx: property (text), widget (QRadioButton, ccRadioButton)
-#: rc.cpp:1185
+#: rc.cpp:1197
 msgid "credit card"
 msgstr "Kreditinė kortelė"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:238
 #. i18n: ectx: property (text), widget (QRadioButton, gcRadioButton)
-#: rc.cpp:1188
+#: rc.cpp:1200
 msgid "Magnatune gift card"
 msgstr "Magnatune dovanų kortelė"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:727
 #. i18n: ectx: property (text), widget (QLabel, textLabel2)
-#: rc.cpp:1191
+#: rc.cpp:1203
 msgid "VISA and Mastercard accepted."
 msgstr "Tinka VISA ir Mastercard."
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:737
 #. i18n: ectx: property (text), widget (QLabel, textLabel3)
-#: rc.cpp:1194
+#: rc.cpp:1206
 msgid "Credit card number:"
 msgstr "Kreditinės kortelės numeris:"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:757
 #. i18n: ectx: property (text), widget (QLabel, textLabel4)
-#: rc.cpp:1197
+#: rc.cpp:1209
 msgid "Expiration date:"
 msgstr "Galiojimo laikas:"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:783
 #. i18n: ectx: property (text), widget (QLabel, textLabel6)
-#: rc.cpp:1200
+#: rc.cpp:1212
 msgid "Month (xx):"
 msgstr "Mėnuo (xx):"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:803
 #. i18n: ectx: property (text), widget (QLabel, textLabel5)
-#: rc.cpp:1203
+#: rc.cpp:1215
 msgid "Year (xx):"
 msgstr "Metai (xx):"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:835
 #. i18n: ectx: property (text), widget (QLabel, textLabel3_2)
-#: rc.cpp:1206
+#: rc.cpp:1218
 msgid "Gift card code:"
 msgstr "Dovanų kortelės kodas:"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:852
 #. i18n: ectx: property (text), widget (QLabel, textLabel7)
-#: rc.cpp:1209
+#: rc.cpp:1221
 msgid "Amount to pay (USD):"
 msgstr "Mokama suma (USD):"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:866
 #. i18n: ectx: property (text), item, widget (QComboBox, amountComboBox)
-#: rc.cpp:1212
+#: rc.cpp:1224
 msgid "5"
 msgstr "5"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:871
 #. i18n: ectx: property (text), item, widget (QComboBox, amountComboBox)
-#: rc.cpp:1215
+#: rc.cpp:1227
 msgid "6"
 msgstr "6"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:876
 #. i18n: ectx: property (text), item, widget (QComboBox, amountComboBox)
-#: rc.cpp:1218
+#: rc.cpp:1230
 msgid "7"
 msgstr "7"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:881
 #. i18n: ectx: property (text), item, widget (QComboBox, amountComboBox)
-#: rc.cpp:1221
+#: rc.cpp:1233
 msgid "8"
 msgstr "8"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:886
 #. i18n: ectx: property (text), item, widget (QComboBox, amountComboBox)
-#: rc.cpp:1224
+#: rc.cpp:1236
 msgid "9"
 msgstr "9"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:891
 #. i18n: ectx: property (text), item, widget (QComboBox, amountComboBox)
-#: rc.cpp:1227
+#: rc.cpp:1239
 msgid "10"
 msgstr "10"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:896
 #. i18n: ectx: property (text), item, widget (QComboBox, amountComboBox)
-#: rc.cpp:1230
+#: rc.cpp:1242
 msgid "11"
 msgstr "11"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:901
 #. i18n: ectx: property (text), item, widget (QComboBox, amountComboBox)
-#: rc.cpp:1233
+#: rc.cpp:1245
 msgid "12"
 msgstr "12"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:906
 #. i18n: ectx: property (text), item, widget (QComboBox, amountComboBox)
-#: rc.cpp:1236
+#: rc.cpp:1248
 msgid "13"
 msgstr "13"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:911
 #. i18n: ectx: property (text), item, widget (QComboBox, amountComboBox)
-#: rc.cpp:1239
+#: rc.cpp:1251
 msgid "14"
 msgstr "14"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:916
 #. i18n: ectx: property (text), item, widget (QComboBox, amountComboBox)
-#: rc.cpp:1242
+#: rc.cpp:1254
 msgid "15"
 msgstr "15"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:921
 #. i18n: ectx: property (text), item, widget (QComboBox, amountComboBox)
-#: rc.cpp:1245
+#: rc.cpp:1257
 msgid "16"
 msgstr "16"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:926
 #. i18n: ectx: property (text), item, widget (QComboBox, amountComboBox)
-#: rc.cpp:1248
+#: rc.cpp:1260
 msgid "17"
 msgstr "17"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:931
 #. i18n: ectx: property (text), item, widget (QComboBox, amountComboBox)
-#: rc.cpp:1251
+#: rc.cpp:1263
 msgid "18"
 msgstr "18"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:939
 #. i18n: ectx: property (text), widget (QLabel, textLabel17)
-#: rc.cpp:1254
+#: rc.cpp:1266
 msgid ""
 "The amount you choose to pay will be split 50/50 between the artist and "
 "Magnatune.com. Your personal and credit card information is sent securely to "
@@ -5944,43 +5997,43 @@ msgstr ""
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:979
 #. i18n: ectx: property (text), widget (QPushButton, purchaseButton)
-#: rc.cpp:1257
+#: rc.cpp:1269
 msgid "P&urchase"
 msgstr "&Įsigyti"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:986
 #. i18n: ectx: property (text), widget (QPushButton, cancelButton)
-#: rc.cpp:1260
+#: rc.cpp:1272
 msgid "Ca&ncel"
 msgstr "At&šaukti"
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:16
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
-#: rc.cpp:1263
+#: rc.cpp:1275
 msgid "Membership options"
 msgstr "Narių parinktys"
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:22
 #. i18n: ectx: property (text), widget (QCheckBox, isMemberCheckbox)
-#: rc.cpp:1266
+#: rc.cpp:1278
 msgid "I am a member"
 msgstr "Aš esu narys"
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:42
 #. i18n: ectx: property (text), widget (QLabel, label)
-#: rc.cpp:1269
+#: rc.cpp:1281
 msgid "Membership type:"
 msgstr "Nario tipas:"
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:58
 #. i18n: ectx: property (text), item, widget (QComboBox, typeComboBox)
-#: rc.cpp:1275 services/jamendo/JamendoService.cpp:110
+#: rc.cpp:1287 services/jamendo/JamendoService.cpp:110
 msgid "Download"
 msgstr "Parsisiųsti"
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:66
 #. i18n: ectx: property (text), widget (QLabel, label_2)
-#: rc.cpp:1278
+#: rc.cpp:1290
 msgctxt "Username for logins to Magnatune"
 msgid "Username:"
 msgstr "Naudotojo vardas:"
@@ -5989,13 +6042,13 @@ msgstr "Naudotojo vardas:"
 #. i18n: ectx: property (text), widget (QLabel, label_3)
 #. i18n: file: services/ampache/AmpacheConfigWidget.ui:61
 #. i18n: ectx: property (text), widget (QLabel, label_5)
-#: rc.cpp:1281 rc.cpp:1333
+#: rc.cpp:1293 rc.cpp:1345
 msgid "Password:"
 msgstr "Slaptažodis:"
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:98
 #. i18n: ectx: property (text), widget (QLabel, label_4)
-#: rc.cpp:1284
+#: rc.cpp:1296
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
@@ -6015,128 +6068,128 @@ msgstr ""
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:120
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
-#: rc.cpp:1291
+#: rc.cpp:1303
 #, fuzzy
 msgid "Stream options"
 msgstr "Srautas"
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:126
 #. i18n: ectx: property (text), widget (QLabel, label_5)
-#: rc.cpp:1294
+#: rc.cpp:1306
 msgid "Preview stream type:"
 msgstr ""
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:134
 #. i18n: ectx: property (text), item, widget (QComboBox, streamTypeComboBox)
-#: rc.cpp:1297
+#: rc.cpp:1309
 msgid "Ogg"
 msgstr "Ogg"
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:139
 #. i18n: ectx: property (text), item, widget (QComboBox, streamTypeComboBox)
-#: rc.cpp:1300
+#: rc.cpp:1312
 msgid "High Quality Mp3"
 msgstr "Aukštos kokybės Mp3"
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:144
 #. i18n: ectx: property (text), item, widget (QComboBox, streamTypeComboBox)
-#: rc.cpp:1303
+#: rc.cpp:1315
 msgid "Low Quality Mp3"
 msgstr "Žemos kokybės Mp3"
 
 #. i18n: file: services/magnatune/MagnatuneRedownloadDialogBase.ui:13
 #. i18n: ectx: property (windowTitle), widget (QDialog, magnatuneReDownloadDialogBase)
-#: rc.cpp:1306
+#: rc.cpp:1318
 msgid "Redownload manager"
 msgstr "Pakartotinis siuntimas"
 
 #. i18n: file: services/magnatune/MagnatuneRedownloadDialogBase.ui:19
 #. i18n: ectx: property (text), widget (QLabel, textLabel1)
-#: rc.cpp:1309
+#: rc.cpp:1321
 msgid "These are the albums that you have previously downloaded:"
 msgstr "Šie albumai buvo atsiųsti:"
 
 #. i18n: file: services/magnatune/MagnatuneRedownloadDialogBase.ui:29
 #. i18n: ectx: property (text), widget (QPushButton, redownloadButton)
-#: rc.cpp:1312
+#: rc.cpp:1324
 msgid "Re&download"
 msgstr "&Pakartotinai atsiųsti"
 
 #. i18n: file: services/magnatune/MagnatuneRedownloadDialogBase.ui:60
 #. i18n: ectx: property (text), widget (QTreeWidget, redownloadListView)
-#: rc.cpp:1318
+#: rc.cpp:1330
 msgid "Artist - Album"
 msgstr "Atlikėjas – albumas"
 
 #. i18n: file: services/ampache/AmpacheConfigWidget.ui:25
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
-#: rc.cpp:1321
+#: rc.cpp:1333
 msgid "Server"
 msgstr "Serveris"
 
 #. i18n: file: services/ampache/AmpacheConfigWidget.ui:31
 #. i18n: ectx: property (text), widget (QLabel, label_8)
-#: rc.cpp:1324
+#: rc.cpp:1336
 msgctxt "The user-definable name of an Ampache server"
 msgid "Name:"
 msgstr "Vardas:"
 
 #. i18n: file: services/ampache/AmpacheConfigWidget.ui:41
 #. i18n: ectx: property (text), widget (QLabel, label_7)
-#: rc.cpp:1327
+#: rc.cpp:1339
 msgid "Server:"
 msgstr "Serveris:"
 
 #. i18n: file: services/ampache/AmpacheConfigWidget.ui:51
 #. i18n: ectx: property (text), widget (QLabel, label_6)
-#: rc.cpp:1330
+#: rc.cpp:1342
 msgctxt "The username to use for logins to an Amapche server"
 msgid "Username:"
 msgstr "Naudotojo vardas:"
 
 #. i18n: file: services/ampache/AmpacheConfigWidget.ui:75
 #. i18n: ectx: property (text), widget (QCheckBox, activeCheckBox)
-#: rc.cpp:1336
+#: rc.cpp:1348
 msgctxt "Establish a connection to the Ampache server"
 msgid "Active"
 msgstr "Aktyvus"
 
 #. i18n: file: services/ampache/AmpacheConfigWidget.ui:91
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
-#: rc.cpp:1339
+#: rc.cpp:1351
 msgid "Edit"
 msgstr "Keisti"
 
 #. i18n: file: services/ampache/AmpacheConfigWidget.ui:97
 #. i18n: ectx: property (text), widget (KPushButton, addButton)
-#: rc.cpp:1342 amarokurls/BookmarkManagerWidget.cpp:66
+#: rc.cpp:1354 amarokurls/BookmarkManagerWidget.cpp:66
 #: amarokurls/BookmarkManagerWidget.cpp:138
 msgid "Add"
 msgstr "Įdėti"
 
 #. i18n: file: services/ampache/AmpacheConfigWidget.ui:111
 #. i18n: ectx: property (text), widget (KPushButton, modifyButton)
-#: rc.cpp:1348
+#: rc.cpp:1360
 msgid "Modify"
 msgstr "Keisti"
 
 #. i18n: file: services/mp3tunes/Mp3tunesConfigWidget.ui:16
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
-#: rc.cpp:1351
+#: rc.cpp:1363
 #, fuzzy
 msgid "Mp3tunes Login"
 msgstr "Prisijungti prie Mp3tunes"
 
 #. i18n: file: services/mp3tunes/Mp3tunesConfigWidget.ui:22
 #. i18n: ectx: property (text), widget (QLabel, label)
-#: rc.cpp:1354
+#: rc.cpp:1366
 msgctxt "The e-mail address for Mp3Tunes logins"
 msgid "E-Mail:"
 msgstr "E. paštas:"
 
 #. i18n: file: services/mp3tunes/Mp3tunesConfigWidget.ui:32
 #. i18n: ectx: property (text), widget (QLabel, label_2)
-#: rc.cpp:1357
+#: rc.cpp:1369
 msgctxt "The Mp3Tunes password"
 msgid "Password:"
 msgstr "Slaptažodis:"
@@ -6145,7 +6198,7 @@ msgstr "Slaptažodis:"
 #. i18n: ectx: property (toolTip), widget (QCheckBox, enableHarmony)
 #. i18n: file: services/mp3tunes/Mp3tunesConfigWidget.ui:49
 #. i18n: ectx: property (toolTip), widget (QLabel, label_3)
-#: rc.cpp:1360 rc.cpp:1363
+#: rc.cpp:1372 rc.cpp:1375
 msgid ""
 "AutoSync is a feature from MP3tunes which allows you to automatically move "
 "your music between computers and devices."
@@ -6153,7 +6206,7 @@ msgstr ""
 
 #. i18n: file: services/mp3tunes/Mp3tunesConfigWidget.ui:52
 #. i18n: ectx: property (whatsThis), widget (QLabel, label_3)
-#: rc.cpp:1366
+#: rc.cpp:1378
 msgid ""
 "AutoSync is a feature from MP3tunes which allows you to automatically move "
 "your music between computers and devices. You can upload music from one "
@@ -6162,20 +6215,20 @@ msgstr ""
 
 #. i18n: file: services/mp3tunes/Mp3tunesConfigWidget.ui:55
 #. i18n: ectx: property (text), widget (QLabel, label_3)
-#: rc.cpp:1369
+#: rc.cpp:1381
 msgctxt "Enable harmony"
 msgid "Enable Auto Sync"
 msgstr ""
 
 #. i18n: file: services/mp3tunes/Mp3tunesConfigWidget.ui:62
 #. i18n: ectx: property (text), widget (QLabel, label_4)
-#: rc.cpp:1372
+#: rc.cpp:1384
 msgid " PIN Code:"
 msgstr " PIN kodas:"
 
 #. i18n: file: services/mp3tunes/Mp3tunesConfigWidget.ui:89
 #. i18n: ectx: property (text), widget (QLabel, label_5)
-#: rc.cpp:1375
+#: rc.cpp:1387
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
@@ -7876,63 +7929,63 @@ msgstr "Įrašykite tarpais atskirtus kriterijus paieškai albumuse"
 msgid "Edit filter"
 msgstr "Keisti filtrą"
 
-#: widgets/SliderWidget.cpp:243
+#: widgets/SliderWidget.cpp:247
 msgid "Volume"
 msgstr "Garsumas"
 
-#: widgets/SliderWidget.cpp:244
+#: widgets/SliderWidget.cpp:248
 msgid "100%"
 msgstr "100%"
 
-#: widgets/SliderWidget.cpp:245
+#: widgets/SliderWidget.cpp:249
 msgid "80%"
 msgstr "80%"
 
-#: widgets/SliderWidget.cpp:246
+#: widgets/SliderWidget.cpp:250
 msgid "60%"
 msgstr "60%"
 
-#: widgets/SliderWidget.cpp:247
+#: widgets/SliderWidget.cpp:251
 msgid "40%"
 msgstr "40%"
 
-#: widgets/SliderWidget.cpp:248
+#: widgets/SliderWidget.cpp:252
 msgid "20%"
 msgstr "20%"
 
-#: widgets/SliderWidget.cpp:249
+#: widgets/SliderWidget.cpp:253
 msgid "0%"
 msgstr "0%"
 
-#: widgets/TokenWithLayout.cpp:65
+#: widgets/TokenWithLayout.cpp:67
 msgid "Bold"
 msgstr ""
 
-#: widgets/TokenWithLayout.cpp:70
+#: widgets/TokenWithLayout.cpp:72
 #, fuzzy
 msgid "Italic"
 msgstr "Pašalinti"
 
-#: widgets/TokenWithLayout.cpp:75
+#: widgets/TokenWithLayout.cpp:77
 #, fuzzy
 msgid "Left"
 msgstr "Trukmė"
 
-#: widgets/TokenWithLayout.cpp:76
+#: widgets/TokenWithLayout.cpp:78
 #, fuzzy
 msgid "Center"
 msgstr "Komentaras"
 
-#: widgets/TokenWithLayout.cpp:77
+#: widgets/TokenWithLayout.cpp:79
 msgid "Right"
 msgstr ""
 
-#: widgets/TokenWithLayout.cpp:99
+#: widgets/TokenWithLayout.cpp:101
 #, fuzzy
 msgid "Alignment"
 msgstr "Visi valdikliai"
 
-#: widgets/TokenWithLayout.cpp:170
+#: widgets/TokenWithLayout.cpp:178
 msgid "Layout"
 msgstr "Išdėstymas"
 

@@ -63,7 +63,8 @@ TagDialog::TagDialog( const Meta::TrackList &tracks, QWidget *parent )
 
     setCurrentTrack( m_tracks.first() );
 
-    ui->setupUi( this );
+    ui->setupUi( mainWidget() );
+    resize( minimumSizeHint() ); 
     init();
     startDataQuery();
 }
@@ -83,7 +84,8 @@ TagDialog::TagDialog( Meta::TrackPtr track, QWidget *parent )
     m_tracks.append( track );
     //we changed the list after creating the iterator, so create a new iterator
     m_trackIterator = QListIterator<Meta::TrackPtr >( m_tracks );
-    ui->setupUi( this );
+    ui->setupUi( mainWidget() );
+    resize( minimumSizeHint() ); 
     init();
     startDataQuery();
 }
@@ -99,7 +101,8 @@ TagDialog::TagDialog( QueryMaker *qm )
 {
     DEBUG_BLOCK
 
-    ui->setupUi( this );
+    ui->setupUi( mainWidget() );
+    resize( minimumSizeHint() ); 
     startDataQuery();
     qm->setQueryType( QueryMaker::Track );
     connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( resultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
@@ -1154,7 +1157,7 @@ TagDialog::readMultipleTracks()
 
     ui->trackArtistAlbumLabel2->setText( i18np( "Editing 1 file", "Editing %1 files", songCount ) );
 
-    const QString body = "<tr><td><nobr>%1:</nobr></td><td><b>%2</b></td></tr>";
+    const QString body = "<tr><td><nobr>%1</nobr></td><td><b>%2</b></td></tr>";
     QString statisticsText = "<table>";
 
     statisticsText += body.arg( i18n( "Rated Songs:" ) , QString::number( ratingCount )  );
@@ -1452,7 +1455,7 @@ TagDialog::saveTags()
             emit lyricsChanged( track->uidUrl() );
         }
 
-        Meta::EditCapability *ec = track->as<Meta::EditCapability>();
+        Meta::EditCapability *ec = track->create<Meta::EditCapability>();
         if( !ec )
         {
             debug() << "Track does not have Meta::EditCapability. Aborting loop.";
@@ -1508,7 +1511,7 @@ TagDialog::saveTags()
 
     foreach( Meta::TrackPtr track, m_tracks )
     {
-        Meta::UpdateCapability *uc = track->as<Meta::UpdateCapability>();
+        Meta::UpdateCapability *uc = track->create<Meta::UpdateCapability>();
         if( !uc )
         {
             continue;
@@ -1524,7 +1527,7 @@ TagDialog::saveTags()
 
     foreach( Meta::TrackPtr track, collectionsToUpdateMap.values() )
     {
-        Meta::UpdateCapability *uc = track->as<Meta::UpdateCapability>();
+        Meta::UpdateCapability *uc = track->create<Meta::UpdateCapability>();
 
         uc->collectionUpdated();
     }

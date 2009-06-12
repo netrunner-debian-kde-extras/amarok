@@ -69,11 +69,11 @@ namespace AmarokScript
         The::playlistController()->insertOptioned( track, Playlist::Append );
     }
 
-    void AmarokPlaylistScript::addMediaList( const QList<QUrl> &urls )
+	void AmarokPlaylistScript::addMediaList( const QVariantList &urls )
     {
         KUrl::List list;
-        foreach( const QUrl &url, urls )
-            list << url;
+        foreach( const QVariant &url, urls )
+            list << url.toUrl();
         Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( list );
         The::playlistController()->insertOptioned( tracks, Playlist::Append );
     }

@@ -3,6 +3,50 @@ Amarok ChangeLog
 (C) 2002-2009 the Amarok authors.
 
 
+VERSION 2.1.1
+  FEATURES:
+    * Compilations with more than 60 artists are supported.
+    * Option to hide the context view.
+    * Applets are now laid out according to two criteria: either fixed height
+      or flowing to fill the CV. No more slivers of applets visible at the
+      bottom.
+    * Load contents of an m3u file if specified when running amarok from the
+      command line. File must be local.
+    * Added large source emblem in current track applet.
+
+  CHANGES:
+    * Removed option to purchase Magnatune.com albums using a Credit Card as
+      this is unfortunately no longer supported by Magnatune.com. It is still
+      possible to purchase albums using pre paid gift card codes, and all
+      membership features still work.
+    * Make it possible to delete multiple selected playlists at once from the 
+      "My Playlists" category in the playlist browser.
+    * Show info box in CV if no applets are visible.
+
+  BUGFIXES:
+    * Don't hide the "On/Off" button for Dynamic Playlists if the window is
+      not tall enough. (BR 195886)
+    * Make it possible to change the width of a playlist layout element if the 
+      combined width of items in the row exceeds 100% (BR 195846)
+    * Keep width slider and width display from overlapping when setting
+      attributes on a playlist layout element.
+    * Don't overwrite cached lyrics when lyrics script returns a "Not found" 
+      result. (BR 195213)
+    * Fixed the layout of the "Edit Track Details" dialog, which came up
+      broken under some circumstances. (BR 195081)
+    * Reset total playlist time when the playlist is cleared. (BR 153160)
+    * Don't crash when starting a collection scan after another scan had been
+      aborted. (BR 195242)
+    * Fixed non-UTF8 MPEG tag wrongly shown.
+    * Fix problem with supported filetypes not being copied over to MTP device
+      (BR 186835)
+    * Fix problem with playlist names containing '/' not being saved (BR 975995)
+    * Allow cancelling of rename input box in playlist layout dialog (BR 976409)
+    * Loading playlists from the command line works again. (BR 191347)
+    * Fixed formatting of the debug output when using the -d option.
+    * Detection of compilation cover during the scan works again. (BR 172953)
+
+
 VERSION 2.1
   CHANGES:
     * Removed the "Amarok Handbook" menu entry until the handbook actually

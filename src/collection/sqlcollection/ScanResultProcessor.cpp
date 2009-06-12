@@ -161,7 +161,6 @@ ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
     setupDatabase();
     //using the following heuristics:
     //if more than one album is in the dir, use the artist of each track as albumartist
-    //if more than 60 files are in the dir, use the artist of each track as albumartist
     //if all tracks have the same artist, use it as albumartist
     //try to find the albumartist A: tracks must have the artist A or A feat. B (and variants)
     //if no albumartist could be found, it's a compilation
@@ -178,7 +177,7 @@ ScanResultProcessor::processDirectory( const QList<QVariantMap > &data )
         if( row.value( Field::ALBUM ).toString() != album )
             multipleAlbums = true;
     }
-    if( multipleAlbums || album.isEmpty() || data.count() > 60 || artists.size() == 1 )
+    if( multipleAlbums || album.isEmpty() || artists.size() == 1 )
     {
         foreach( const QVariantMap &row, data )
         {
@@ -204,30 +203,37 @@ QString
 ScanResultProcessor::findAlbumArtist( const QSet<QString> &artists, int trackCount ) const
 {
     QMap<QString, int> artistCount;
+    bool featuring;
+    QStringList trackArtists;
     foreach( const QString &artist, artists )
     {
-        //this needs to be improved
+        featuring = false;
+        trackArtists.clear();
         if( artist.contains( "featuring" ) )
         {
-            QStringList trackArtists = artist.split( "featuring" );
-            //always use the first artist
-            QString tmp = trackArtists[0].simplified();
-            if( tmp.isEmpty() )
-            {
-                //TODO error handling
-            }
-            else
-            {
-                if( artistCount.contains( tmp ) )
-                    artistCount.insert( tmp, artistCount.value( tmp ) + 1 );
-                else
-                    artistCount.insert( tmp, 1 );
-            }
+            featuring = true;
+            trackArtists = artist.split( "featuring" );
         }
         else if( artist.contains( "feat." ) )
         {
-            //FIXME code duplication, refactor!
-            QStringList trackArtists = artist.split( "feat." );
+            featuring = true;
+            trackArtists = artist.split( "feat." );
+        }
+        else if( artist.contains( "ft." ) )
+        {
+            featuring = true;
+            trackArtists = artist.split( "ft." );
+        }
+        else if( artist.contains( "f." ) )
+        {
+            featuring = true;
+            trackArtists = artist.split( "f." );
+        }
+
+        //this needs to be improved
+
+        if( featuring )
+        {
             //always use the first artist
             QString tmp = trackArtists[0].simplified();
             if( tmp.isEmpty() )
@@ -500,7 +506,24 @@ ScanResultProcessor::albumId( const QString &album, int artistId )
     //artistId == 0 means no albumartist
     QPair<QString, int> key( album, artistId );
     if( m_albums.contains( key ) )
-        return m_albums.value( key );
+    {
+        // if we already have the key but the artist == 0,
+        // UPDATE the image field so that we won't forget the cover for a compilation
+        int id = m_albums.value( key );
+        if ( artistId == 0 )
+        {
+            QString select = QString( "SELECT MAX(image) FROM albums_temp WHERE name = '%1';" )
+                .arg( m_collection->escape( album ) );
+            QStringList res = m_collection->query( select );
+            if( !res.isEmpty() )
+            {
+                QString update = QString( "UPDATE albums_temp SET image = %1 WHERE id = %2" )
+                    .arg( res[0] , QString::number( id ) );
+                m_collection->query( update );
+            }
+        }
+        return id;
+    }
 
     QString query;
     if( artistId == 0 )

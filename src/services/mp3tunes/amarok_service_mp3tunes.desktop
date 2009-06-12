@@ -3,6 +3,7 @@ Type=Service
 ServiceTypes=KPluginInfo
 Icon=view-services-mp3tunes-amarok
 Name=Mp3tunes
+Name[bg]=Услуга Mp3tunes
 Name[da]=MP3tunes
 Name[ga]=MP3tunes
 Name[pt]=MP3tunes
@@ -50,7 +51,7 @@ ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-authors=Nikolaj Hald Nielsen
 X-KDE-Amarok-email=nhnFreespirit@gmail.com
-X-KDE-Amarok-framework-version=42
+X-KDE-Amarok-framework-version=43
 X-KDE-Amarok-name=Mp3tunesService
 X-KDE-Amarok-plugintype=service
 X-KDE-Amarok-rank=100

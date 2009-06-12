@@ -483,7 +483,7 @@ Track::hasCapabilityInterface( Meta::Capability::Type type ) const
 }
 
 Meta::Capability*
-Track::asCapabilityInterface( Meta::Capability::Type type )
+Track::createCapabilityInterface( Meta::Capability::Type type )
 {
     switch( type )
     {
@@ -520,6 +520,14 @@ QPixmap LastFm::Track::emblem()
         return QPixmap( KStandardDirs::locate( "data", "amarok/images/emblem-lastfm.png" ) );
     else
         return QPixmap();
+}
+ 
+QString LastFm::Track::scalableEmblem()
+{
+    if ( !d->track.isEmpty() )
+        return KStandardDirs::locate( "data", "amarok/images/emblem-lastfm-scalable.svg" );
+    else
+        return QString();
 }
 
 QList< PopupDropperAction * > LastFm::Track::nowPlayingActions() const
