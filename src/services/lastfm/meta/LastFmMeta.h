@@ -92,13 +92,14 @@ namespace LastFm
 
             virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
 
-            virtual Meta::Capability* asCapabilityInterface( Meta::Capability::Type type );
+            virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
 
             void setTrackInfo( const ::Track &trackInfo );
 
             virtual QString sourceName();
             virtual QString sourceDescription();
             virtual QPixmap emblem();
+            virtual QString scalableEmblem();
 
             QList< PopupDropperAction * > nowPlayingActions() const;
 

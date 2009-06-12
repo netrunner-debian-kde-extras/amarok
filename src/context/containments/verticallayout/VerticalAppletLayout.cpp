@@ -38,15 +38,9 @@ Context::VerticalAppletLayout::~VerticalAppletLayout()
 void 
 Context::VerticalAppletLayout::paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget )
 {
-  //  DEBUG_BLOCK
-    
- //   debug() << "drawing rect:" << boundingRect();
-  /*  painter->save();
-    painter->setPen( QColor( Qt::green ) );   
-    painter->setOpacity( 0.75 ); 
-    painter->drawRect( boundingRect() );
-    painter->restore();
-    */
+    Q_UNUSED( painter )
+    Q_UNUSED( option )
+    Q_UNUSED( widget )
 }
 
 void
@@ -64,6 +58,9 @@ Context::VerticalAppletLayout::addApplet( Plasma::Applet* applet, int location )
 {
     DEBUG_BLOCK
     debug() << "layout told to add applet at" << location;
+    if( m_appletList.size() == 0 )
+        emit noApplets( false );
+    
     if( location < 0 ) // being told to add at end
     {
         m_appletList << applet;
@@ -151,6 +148,10 @@ Context::VerticalAppletLayout::appletRemoved( Plasma::Applet* app )
     if( m_showingIndex > removedIndex )
         m_showingIndex--;
     showAtIndex( minIndexWithAppletOnScreen( m_showingIndex ) );
+
+    debug() << "got " << m_appletList.size() << " applets left";
+    if( m_appletList.size() == 0 )
+        emit noApplets( true );
 }
 
 void
@@ -169,28 +170,61 @@ Context::VerticalAppletLayout::showAtIndex( int index )
     for( int i = index - 1; i >= 0; i-- ) // lay out backwards above the view
     {
         //debug() << "UPWARDS dealing with" << m_appletList[ i ]->name();
-        currentHeight = m_appletList[ i ]->effectiveSizeHint( Qt::PreferredSize, QSizeF( width, -1 ) ).height();
+        currentHeight = m_appletList[ i ]->effectiveSizeHint( Qt::PreferredSize ).height();
+        if( currentHeight < 15 )
+            currentHeight = 250; // if it is one of the expanding applets, give it room for its header
         runningHeight -= currentHeight;
         m_appletList[ i ]->setPos( 0, runningHeight );
         //debug() << "UPWARDS putting applet #" << i << " at" << 0 << runningHeight;
         //debug() << "UPWARDS got applet sizehint height:" << currentHeight;
         m_appletList[ i ]->resize( width, currentHeight );
         m_appletList[ i ]->updateConstraints();
-        m_appletList[ i ]->show();
+        m_appletList[ i ]->hide();
     }
     runningHeight = currentHeight = 0.0;
-    for( int i = index; i < m_appletList.size(); i++ ) // now lay out desired item at top and rest below it
+
+    /**
+      * If an applet has a vertical sizeHint of < 0 (which means effectiveSizeHint < 15  ), then it means it wants to be laid out to maxmize vertical space.
+      * Otherwise, give it the space it asks for.
+      */
+    //debug() << "total of" << m_appletList.size() << "applets";
+    int lastShown = m_appletList.size();
+    for( int i = index; i < lastShown; i++ ) // now lay out desired item at top and rest below it
     {
         //debug() << "dealing with" << m_appletList[ i ]->name();
         //debug() << "putting applet #" << i << " at" << 0 << runningHeight;
         m_appletList[ i ]->setPos( 0, runningHeight );
-        currentHeight = m_appletList[ i ]->effectiveSizeHint( Qt::PreferredSize, QSizeF( width, -1 ) ).height();
-        runningHeight += currentHeight;
-        //debug() << "next applet will go at:" << runningHeight;
-        //debug() << "got applet sizehint height:" << currentHeight;
-        m_appletList[ i ]->resize( width, currentHeight );
-        m_appletList[ i ]->updateConstraints();
-        m_appletList[ i ]->show();
+        qreal height = m_appletList[ i ]->effectiveSizeHint( Qt::PreferredSize ).height();
+        //debug() << "applet has sizeHinte height of:" << height << "preferred  height:" << m_appletList[ i ]->preferredHeight() ;
+        if( height < 15 ) // maximise its space
+        {
+            qreal heightLeft = boundingRect().height() - runningHeight;
+            //debug() << "layout has boundingRect FLOWING" << boundingRect() ;
+            m_appletList[ i ]->resize( width, heightLeft );
+            m_appletList[ i ]->updateConstraints();
+            m_appletList[ i ]->show();
+            lastShown = i;
+        } else
+        {
+            //debug() << "normal applet, moving on with the next one";
+            runningHeight += height;
+            m_appletList[ i ]->resize( width, height );
+            m_appletList[ i ]->updateConstraints();
+            m_appletList[ i ]->show();
+            
+            //debug() << "next applet will go at:" << runningHeight;
+            //debug() << "got applet sizehint height:" << currentHeight;
+        }
+    }
+    // hide the ones that we can't see below
+    for( int i = lastShown + 1; i < m_appletList.size(); i++ )
+    {
+        //debug() << "HIDING NOT VISIBLE APPLET AT INDEX:" << i;
+        // hiding an applet does not hide it's children
+        // so in order to make sure that the applet is not visible,
+        // in the case of misbehaving applets, we also move them out of the way. 
+        m_appletList[ i ]->hide();
+        m_appletList[ i ]->setPos( 0, boundingRect().height() );
     }
     
     m_showingIndex = index;

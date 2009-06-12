@@ -208,7 +208,7 @@ void Track::Private::readMetaData()
                 m_data.artist = strip( flm[ "TPE2" ].front()->toString() );
 
         }
-        else if ( file->ID3v1Tag() && tag )
+        if( tag )
         {
             TagLib::String metaData = tag->title() + tag->artist() + tag->album() + tag->comment();
             const char* buf = metaData.toCString();
@@ -218,28 +218,24 @@ void Track::Private::readMetaData()
             QString track_encoding( prober.encodingName() );
             if ( result != KEncodingProber::NotMe )
             {
-                //http://doc.trolltech.com/4.4/qtextcodec.html
-                //http://www.mozilla.org/projects/intl/chardet.html
-                if ( track_encoding == "x-euc-tw" ) track_encoding = ""; //no match
-                if ( track_encoding == "HZ-GB2312" ) track_encoding = ""; //no match
-                if ( track_encoding == "ISO-2022-CN" ) track_encoding = ""; //no match
-                if ( track_encoding == "ISO-2022-KR" ) track_encoding = ""; //no match
-                if ( track_encoding == "ISO-2022-JP" ) track_encoding = ""; //no match
-                if ( track_encoding == "x-mac-cyrillic" ) track_encoding = ""; //no match
-                if ( track_encoding == "IBM855" ) track_encoding =""; //no match
-                if ( track_encoding == "IBM866" ) track_encoding = "IBM 866";
-                if ( track_encoding == "TIS-620" ) track_encoding = ""; //ISO-8859-11, no match
-                if ( !track_encoding.isEmpty() )
+                /*  for further infomation please refer to:
+                    http://doc.trolltech.com/4.4/qtextcodec.html
+                    http://www.mozilla.org/projects/intl/chardet.html
+                */
+                if ( ( !track_encoding.isEmpty() ) && ( track_encoding.toUtf8() != "UTF-8" ) )
                 {
-                    //FIXME:about 10% tracks cannot be decoded well. It shows blank for now.
-                    debug () << "Final Codec Name:" << track_encoding.toUtf8() <<endl;
+                    debug () << "Final Codec Name:" << track_encoding.toUtf8();
                     QTextCodec *codec = QTextCodec::codecForName( track_encoding.toUtf8() );
                     QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
                     QTextCodec::setCodecForCStrings( utf8codec );
-                    m_data.title = codec->toUnicode( m_data.title.toLatin1() );
-                    m_data.artist = codec->toUnicode( m_data.artist.toLatin1() );
-                    m_data.album = codec->toUnicode( m_data.album.toLatin1() );
-                    m_data.comment = codec->toUnicode( m_data.comment.toLatin1() );
+                    if ( codec != 0 )
+                    {
+                        m_data.title = codec->toUnicode( m_data.title.toLatin1() );
+                        m_data.artist = codec->toUnicode( m_data.artist.toLatin1() );
+                        m_data.album = codec->toUnicode( m_data.album.toLatin1() );
+                        m_data.comment = codec->toUnicode( m_data.comment.toLatin1() );
+                        debug() << "track Info Decoded!";
+                    }
                 }
             }
         }

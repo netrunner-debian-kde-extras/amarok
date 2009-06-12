@@ -104,7 +104,7 @@ App::App()
     PERF_LOG( "Begin Application ctor" )
 
     // required for last.fm plugin to grab app version
-    setApplicationVersion( "2.1-SVN" );
+    setApplicationVersion( APP_VERSION );
 
     if( AmarokConfig::showSplashscreen() && !isSessionRestored() )
     {
@@ -326,8 +326,7 @@ App::handleCliArgs() //static
         if( args->isSet( "play" ) )
             options |= Playlist::DirectPlay;
 
-        Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( list );
-        The::playlistController()->insertOptioned( tracks, options );
+        The::playlistController()->insertOptioned( list, options );
     }
 
     //we shouldn't let the user specify two of these since it is pointless!
@@ -571,6 +570,9 @@ void App::applySettings( bool firstTime )
         PERF_LOG( "done cover handling" )
     }
 
+    // show or hide CV
+    if( mainWindow() )
+        mainWindow()->hideContextView( AmarokConfig::hideContextView() );
     //if ( !firstTime )
         // Bizarrely and ironically calling this causes crashes for
         // some people! FIXME

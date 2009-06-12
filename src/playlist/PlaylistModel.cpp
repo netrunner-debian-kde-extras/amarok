@@ -316,7 +316,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             case Source:
             {
                 QString sourceName;
-                Meta::SourceInfoCapability *sic = m_items.at( row )->track()->as<Meta::SourceInfoCapability>();
+                Meta::SourceInfoCapability *sic = m_items.at( row )->track()->create<Meta::SourceInfoCapability>();
                 if ( sic )
                 {
                     sourceName = sic->sourceName();
@@ -331,7 +331,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             case SourceEmblem:
             {
                 QPixmap emblem;
-                Meta::SourceInfoCapability *sic = m_items.at( row )->track()->as<Meta::SourceInfoCapability>();
+                Meta::SourceInfoCapability *sic = m_items.at( row )->track()->create<Meta::SourceInfoCapability>();
                 if ( sic )
                 {
                     QString source = sic->sourceName();
@@ -805,6 +805,7 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
     if ( cmds.size() == m_items.size() )
     {
         clearCommand();
+        m_totalLength = 0;
         return;
     }
 

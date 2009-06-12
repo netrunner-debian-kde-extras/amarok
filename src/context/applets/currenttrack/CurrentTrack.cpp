@@ -162,7 +162,7 @@ CurrentTrack::contextualActions()
 
     if( album )
     {
-        Meta::CustomActionsCapability *cac = album->as<Meta::CustomActionsCapability>();
+        Meta::CustomActionsCapability *cac = album->create<Meta::CustomActionsCapability>();
         if( cac )
         {
             QList<PopupDropperAction *> pudActions = cac->customActions();
@@ -343,7 +343,7 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     //scale pixmap on demand
     //store the big cover : avoid blur when resizing the applet
     m_bigCover = data[ "albumart" ].value<QPixmap>();
-    m_sourceEmblemPixmap = data[ "source_emblem" ].value<QPixmap>();
+    m_sourceEmblemPath = data[ "source_emblem" ].toString();
 
     // without that the rating doesn't get update for a playing track
     update();
@@ -355,12 +355,9 @@ CurrentTrack::sizeHint( Qt::SizeHint which, const QSizeF & constraint) const
 {
     Q_UNUSED( which )
 
-    if( constraint.height() == -1 && constraint.width() > 0 ) // asking height for given width basically
-        return QSizeF( constraint.width(), 180 );
-//         return QSizeF( constraint.width(), m_aspectRatio * constraint.width() );
-
-    return constraint;
+    return QSizeF( constraint.width(), 180 );
 }
+
 
 void
 CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
@@ -497,38 +494,80 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
         // draw label text
         p->save();
         // draw "Play count"
+        QString playCountText = i18n( "Play count" );
+        QString scoreText = i18n( "Score" );
+        QString lastPlayedText = i18n( "Last Played" );
+        
+        //Align labels taking into account the string widths for each label
+        QFontMetrics fm( this->font() );
+        qreal totalWidth = fm.width( playCountText ) + fm.width( scoreText ) + fm.width( lastPlayedText );
+        qreal factor, prevFactor;
+        factor = fm.width( playCountText ) / totalWidth;
+        prevFactor = factor;
 
         QRectF rect = QRectF(leftEdge, // align vertically with track info text
                             m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8, // align bottom horizontally with top of rating rounded rect
-                            localMaxTextWidth / 3,
+                            localMaxTextWidth * factor,
                             m_ratingWidget->boundingRect().height() - 4 ); // just the "first" row, so go halfway down
+
+        
+        m_playCountLabel = truncateTextToFit( playCountText, this->font(), rect );
         p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_playCountLabel );
-        rect.moveLeft( rect.topLeft().x() + localMaxTextWidth / 3 );
+
+        factor = fm.width( scoreText ) / totalWidth;
+        rect.setWidth( localMaxTextWidth * factor );
+        rect.moveLeft( rect.topLeft().x() + localMaxTextWidth * prevFactor );
+        prevFactor = factor;
+
+        m_scoreLabel = truncateTextToFit( scoreText, this->font(), rect );
         p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_scoreLabel );
-        rect.moveLeft( rect.topLeft().x() + localMaxTextWidth / 3 );
+
+        factor = fm.width( lastPlayedText ) / totalWidth;
+        rect.setWidth( localMaxTextWidth * factor );
+        rect.moveLeft( rect.topLeft().x() + localMaxTextWidth * prevFactor );
+        
+        m_lastPlayedLabel = truncateTextToFit( lastPlayedText, this->font(), rect );
         p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_lastPlayedLabel );
 
+        factor = fm.width( playCountText ) / totalWidth;
+        prevFactor = factor;
         rect = QRectF( leftEdge,
                     m_ratingWidget->pos().y() + 3,
-                    localMaxTextWidth / 3,
+                    localMaxTextWidth * factor,
                     m_ratingWidget->boundingRect().height() - 4 );
         p->drawText( rect,  Qt::AlignCenter | Qt::TextSingleLine, m_numPlayed );
-        rect.moveLeft( rect.topLeft().x() + localMaxTextWidth / 3 );
+        
+        factor = fm.width( scoreText ) / totalWidth;
+        rect.setWidth( localMaxTextWidth * factor );
+        rect.moveLeft( rect.topLeft().x() + localMaxTextWidth * prevFactor );
+        prevFactor = factor;
+
         p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_score );
-        rect.moveLeft( rect.topLeft().x() + localMaxTextWidth / 3 );
+
+        factor = fm.width( lastPlayedText ) / totalWidth;
+        rect.setWidth( localMaxTextWidth * factor );
+        rect.moveLeft( rect.topLeft().x() + localMaxTextWidth * prevFactor );
+
+        m_playedLast = truncateTextToFit( Amarok::verboseTimeSince( m_currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() ), this->font(), rect );
         p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_playedLast );
         p->restore();
     }
     p->restore();
     
     // draw source emblem
-    if( !m_sourceEmblemPixmap.isNull() )
+    if( !m_sourceEmblemPath.isEmpty() )
     {
         p->save();
-        p->setOpacity( .5 );
-        p->drawPixmap(boundingRect().topRight().x() - m_sourceEmblemPixmap.rect().width() - standardPadding(),
-                      standardPadding(),
-                      m_sourceEmblemPixmap );
+        p->setOpacity( .4 );
+        KSvgRenderer svg( m_sourceEmblemPath );
+
+        // paint the emblem half as tall as the applet, anchored at the top-right
+        // assume it is a square emblem
+        qreal height = boundingRect().height() / 2;
+        QRectF rect( boundingRect().width() - standardPadding() - height, ( boundingRect().height() / 2 - ( height / 2 ) ),
+                     height, height );
+        svg.render( p, rect );
+        
         p->restore();
     }
 }

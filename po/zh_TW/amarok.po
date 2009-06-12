@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-05-27 12:31+0200\n"
+"POT-Creation-Date: 2009-06-12 11:25+0200\n"
 "PO-Revision-Date: 2009-01-10 10:16+0800\n"
 "Last-Translator: Frank Weng (a.k.a. Franklin) <franklin at goodhorse dot idv "
 "dot tw>\n"
@@ -26,15 +26,15 @@ msgstr "沒有播放任何曲目"
 msgid "No information available for this track"
 msgstr "這首曲目沒有可用的資訊。"
 
-#: meta/file/File_p.h:324 meta/file/File_p.h:371 meta/file/File_p.h:374
-#: meta/file/File_p.h:412 meta/file/File_p.h:441 meta/file/File_p.h:470
+#: meta/file/File_p.h:320 meta/file/File_p.h:367 meta/file/File_p.h:370
+#: meta/file/File_p.h:408 meta/file/File_p.h:437 meta/file/File_p.h:466
 #: meta/default/DefaultMetaTypes.h:41 meta/default/DefaultMetaTypes.h:81
 #: meta/default/DefaultMetaTypes.h:99
-#: services/scriptable/ScriptableServiceMeta_p.h:105
-#: services/scriptable/ScriptableServiceMeta_p.h:163
-#: services/scriptable/ScriptableServiceMeta_p.h:210
-#: services/scriptable/ScriptableServiceMeta_p.h:253
-#: services/scriptable/ScriptableServiceMeta_p.h:295
+#: services/scriptable/ScriptableServiceMeta_p.h:110
+#: services/scriptable/ScriptableServiceMeta_p.h:168
+#: services/scriptable/ScriptableServiceMeta_p.h:215
+#: services/scriptable/ScriptableServiceMeta_p.h:258
+#: services/scriptable/ScriptableServiceMeta_p.h:300
 msgctxt "The value is not known"
 msgid "Unknown"
 msgstr "未知"
@@ -105,14 +105,13 @@ msgid "Stream (%1)"
 msgstr "串流（%1）"
 
 #: meta/capabilities/TimecodeWriteCapability.cpp:105
-#, fuzzy, kde-format
-#| msgid "%1 - %2"
+#, kde-format
 msgid "%1 - Stopped %2"
-msgstr "%1 - %2"
+msgstr "%1 - 停止 %2"
 
 #: meta/capabilities/TimecodeWriteCapability.cpp:110
 msgid "Playback Ended Markers"
-msgstr ""
+msgstr "播放終止標記"
 
 #: meta/DynamicPlaylist.cpp:38
 msgid "Default Dynamic Playlist"
@@ -151,63 +150,63 @@ msgstr "把曲目傳送至 iPod"
 msgid "Could not copy track from device."
 msgstr "無法複製裝置上的曲目。"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:78
+#: collection/mtpcollection/handler/MtpHandler.cpp:108
 msgid "Could not connect to MTP Device"
 msgstr "無法連接 MTP 裝置"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:316
+#: collection/mtpcollection/handler/MtpHandler.cpp:349
 msgid "Unknown Artist"
 msgstr "未知的演出者"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:325
+#: collection/mtpcollection/handler/MtpHandler.cpp:358
 msgid "Unknown Album"
 msgstr "未知專輯"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:331
+#: collection/mtpcollection/handler/MtpHandler.cpp:364
 msgid "Unknown Genre"
 msgstr "未知的風格"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:578
+#: collection/mtpcollection/handler/MtpHandler.cpp:611
 msgid "Transferring Tracks to MTP"
 msgstr "把曲目傳送至 MTP"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:628
+#: collection/mtpcollection/handler/MtpHandler.cpp:661
 msgid "Could not send track"
 msgstr "無法傳送曲目"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:679
-#: collection/mtpcollection/handler/MtpHandler.cpp:1001
+#: collection/mtpcollection/handler/MtpHandler.cpp:712
+#: collection/mtpcollection/handler/MtpHandler.cpp:1034
 msgid "Unknown title"
 msgstr "未知的標題"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:688
-#: collection/mtpcollection/handler/MtpHandler.cpp:1010
+#: collection/mtpcollection/handler/MtpHandler.cpp:721
+#: collection/mtpcollection/handler/MtpHandler.cpp:1043
 msgid "Unknown album"
 msgstr "未知專輯"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:697
-#: collection/mtpcollection/handler/MtpHandler.cpp:1019
+#: collection/mtpcollection/handler/MtpHandler.cpp:730
+#: collection/mtpcollection/handler/MtpHandler.cpp:1052
 msgid "Unknown artist"
 msgstr "未知的演出者"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:706
-#: collection/mtpcollection/handler/MtpHandler.cpp:1028
+#: collection/mtpcollection/handler/MtpHandler.cpp:739
+#: collection/mtpcollection/handler/MtpHandler.cpp:1061
 msgid "Unknown genre"
 msgstr "未知的風格"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:828
+#: collection/mtpcollection/handler/MtpHandler.cpp:861
 msgid "Deleting Tracks from MTP"
 msgstr "刪除 MTP 上的曲目"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:872
+#: collection/mtpcollection/handler/MtpHandler.cpp:905
 msgid "Could not delete item"
 msgstr "無法刪除項目"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:883
+#: collection/mtpcollection/handler/MtpHandler.cpp:916
 msgid "Delete failed"
 msgstr "刪除失敗"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:1186
+#: collection/mtpcollection/handler/MtpHandler.cpp:1219
 msgid "Transferring Tracks to MTP Device"
 msgstr "把曲目傳送至 MTP 裝置"
 
@@ -237,24 +236,20 @@ msgstr "Nepomuk 收藏（slow, Redland）"
 msgid "Local Collection"
 msgstr "本地收藏"
 
-#: collection/sqlcollection/SqlCollection.cpp:350
-#, fuzzy, kde-format
-#| msgctxt "@info"
-#| msgid "Do you really want to delete these %1 tracks?"
+#: collection/sqlcollection/SqlCollection.cpp:359
+#, kde-format
 msgctxt "@info"
 msgid ""
 "Do you really want to delete these %1 tracks? They will be removed from disk "
 "as well as your collection."
-msgstr "您確定要移除這 %1 個音軌嗎？"
+msgstr "您確定要刪除這 %1 個音軌嗎？它們將會從硬碟中與您的收藏集中移除掉。"
 
-#: collection/sqlcollection/SqlCollection.cpp:354
-#, fuzzy
-#| msgid "Delete failed"
+#: collection/sqlcollection/SqlCollection.cpp:363
 msgid "Delete Files"
-msgstr "刪除失敗"
+msgstr "刪除檔案"
 
 #: collection/sqlcollection/OrganizeCollectionDialog.cpp:165
-#: collection/sqlcollection/ScanManager.cpp:673
+#: collection/sqlcollection/ScanManager.cpp:684
 #: browsers/CollectionTreeItem.cpp:159 covermanager/CoverViewDialog.h:45
 #: covermanager/CoverManager.cpp:855
 msgid "Various Artists"
@@ -299,23 +294,23 @@ msgstr ""
 msgid "Transferring: %1"
 msgstr "傳送中：%1"
 
-#: collection/sqlcollection/ScanManager.cpp:492
+#: collection/sqlcollection/ScanManager.cpp:500
 msgid ""
 "<p>Sorry, the collection scan had to be aborted.</p><p>Too many errors were "
 "encountered during the scan.</p>"
 msgstr "<p>抱歉，收藏掃描必須中止。</p><p>因為掃描時遇到太多錯誤。</p>"
 
-#: collection/sqlcollection/ScanManager.cpp:493
+#: collection/sqlcollection/ScanManager.cpp:501
 msgid "Collection Scan Error"
 msgstr "掃描收藏時發生錯誤："
 
-#: collection/sqlcollection/ScanManager.cpp:581
+#: collection/sqlcollection/ScanManager.cpp:590
 msgid "Scanning music"
 msgstr "掃瞄音樂中"
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:53
 #. i18n: ectx: property (text), item, widget (QComboBox, typeComboBox)
-#: collection/sqlcollection/SqlMeta.cpp:369 rc.cpp:1272
+#: collection/sqlcollection/SqlMeta.cpp:369 rc.cpp:1284
 msgid "Stream"
 msgstr "串流"
 
@@ -345,17 +340,6 @@ msgid ""
 msgstr "<p>您可以在「設定」─「設定 Amarok」─「收藏」中設定 MySQL </p>"
 
 #: collection/CollectionManager.cpp:123
-#, fuzzy
-#| msgid ""
-#| "<p>Amarok could not find any collection plugins. Amarok is now updating "
-#| "the KDE configuration database. Please wait a couple of minutes, then "
-#| "restart Amarok.</p><p>If this does not help, it is likely that Amarok is "
-#| "installed under the wrong prefix, please fix your installation using:<pre>"
-#| "$ cd /path/to/amarok/source-code/<br>$ su -c \"make uninstall\"<br>$ ./"
-#| "configure --prefix=`kde-config --prefix` && su -c \"make install\"<br>$ "
-#| "kbuildsycoca4 --noincremental<br>$ amarok</pre>More information can be "
-#| "found in the README file. For further assistance join us at #amarok on "
-#| "irc.freenode.net.</p>"
 msgid ""
 "<p>Amarok could not find any collection plugins. It is possible that Amarok "
 "is installed under the wrong prefix, please fix your installation using:<pre>"
@@ -365,36 +349,30 @@ msgid ""
 "in the README file. For further assistance join us at #amarok on irc."
 "freenode.net.</p>"
 msgstr ""
-"<p>Amarok 找不到任何收藏外掛程式，因此 Amarok 正在更新 KDE 設定資料庫。請稍候"
-"一會兒，然後重新啟動 AmarkK。</p> <p>如果沒有幫助，有可能是安裝 AmaroK 時使用"
-"了錯誤的 prefix。您可以嘗試這樣做： <pre>$ cd /path/to/amarok/source-code/"
-"<br>$  ./configure --prefix=`kde-config --prefix` && su -c \"make install"
-"\"<br>$ kbuildsycoca4 --noincremental<br>$ amarok</pre> 您也能在 README 中找"
-"到更多資訊。若需要更深入的幫助，請加入我們位於 irc.freenode.net 的 IRC 頻道 "
-"#amarok。</p>"
+"<p>Amarok 找不到任何收藏外掛程式。可能是因為 Amarok 安裝的路徑不正確。您可以"
+"嘗試這樣做： <pre>$ cd /path/to/amarok/source-code/\r<br>$ su -c \"make "
+"uninstall\"<br>$ cmake -DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -"
+"c \"make install\"<br>$ kbuildsycoca4 --noincremental<br>$ amarok</pre>您也能"
+"在 README 檔中找到更多資訊。若需要更深入的幫助，請加入我們位於 irc.freenode."
+"net 的 IRC 頻道 \r#amarok。</p>"
 
 #: context/engines/current/CurrentEngine.cpp:137
 #: context/applets/albums/Albums.cpp:62
 msgid "Recently added albums"
 msgstr "最近加入的專輯"
 
-#: context/engines/current/CurrentEngine.cpp:286
+#: context/engines/current/CurrentEngine.cpp:285
 #, kde-format
 msgid "Albums by %1"
 msgstr "%1 的專輯"
 
 #: context/engines/songkick/SongkickEngine.cpp:45
-#, fuzzy
-#| msgid "Goto"
 msgid "ontour"
-msgstr "跳到"
+msgstr ""
 
 #: context/engines/songkick/SongkickEngine.cpp:45
-#, fuzzy
-#| msgctxt "Fetch new information from the website"
-#| msgid "Update"
 msgid "dates"
-msgstr "更新"
+msgstr ""
 
 #: context/engines/wikipedia/WikipediaEngine.cpp:172
 #: context/engines/wikipedia/WikipediaEngine.cpp:395
@@ -404,7 +382,7 @@ msgstr "取得內容中..."
 #: context/engines/wikipedia/WikipediaEngine.cpp:187
 #, kde-format
 msgid "Unable to retrieve Wikipedia information: %1"
-msgstr ""
+msgstr "無法擷取維基百科上的資訊： %1 "
 
 #: context/engines/wikipedia/WikipediaEngine.cpp:207
 msgid "No information found..."
@@ -433,41 +411,57 @@ msgid "Add Applet..."
 msgstr "加入小程式..."
 
 #: context/toolbar/AppletToolbarAppletItem.cpp:47
-#, fuzzy
-#| msgid "Enter preset name:"
 msgid "no applet name"
-msgstr "請輸入預置名稱："
+msgstr "沒有小程式的名稱"
 
-#: context/LyricsManager.cpp:108
+#: context/LyricsManager.cpp:110
 msgid "Lyrics data could not be parsed"
 msgstr "無法剖析歌詞資料。"
 
+#: context/applets/songkick/SongkickApplet.cpp:173
+msgid "Concert information is being fetched."
+msgstr ""
+
+#: context/applets/songkick/SongkickApplet.cpp:178
+#, fuzzy, kde-format
+#| msgid ""
+#| "Lyrics were not able to be downloaded. Please check your internet "
+#| "connection: %1"
+msgid ""
+"Songkick were not able to be downloaded. Please check your internet "
+"connection: %1"
+msgstr "無法下載歌詞。請檢查您的網路連線：%1"
+
+#: context/applets/songkick/SongkickApplet.cpp:217
+#: context/applets/lyrics/LyricsApplet.cpp:238
+msgid "There were no lyrics found for this track"
+msgstr "找不到這個曲目的歌詞"
+
 #: context/applets/currenttrack/CurrentTrack.cpp:76
-#, fuzzy
-#| msgid "Modify"
 msgctxt "What artist is this track by"
 msgid "By"
-msgstr "變更"
+msgstr ""
 
 #: context/applets/currenttrack/CurrentTrack.cpp:77
-#, fuzzy
-#| msgid "On"
 msgctxt "What album is this track on"
 msgid "On"
-msgstr "開啟"
+msgstr ""
 
 #: context/applets/currenttrack/CurrentTrack.cpp:105
+#: context/applets/currenttrack/CurrentTrack.cpp:497
 msgid "Play count"
 msgstr "播放次數"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:106 Systray.cpp:171
+#: context/applets/currenttrack/CurrentTrack.cpp:106
+#: context/applets/currenttrack/CurrentTrack.cpp:498 Systray.cpp:171
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:253
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:696
 #: playlist/PlaylistModel.cpp:711 widgets/SmartPlaylistEditor.cpp:186
 msgid "Score"
 msgstr "評分"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:107 Systray.cpp:201
+#: context/applets/currenttrack/CurrentTrack.cpp:107
+#: context/applets/currenttrack/CurrentTrack.cpp:499 Systray.cpp:201
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:258
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:701
 msgid "Last Played"
@@ -478,22 +472,20 @@ msgid "Last played"
 msgstr "上一次播放"
 
 #: context/applets/currenttrack/CurrentTrack.cpp:113
-#, fuzzy
-#| msgid "&Submit tracks"
 msgid "Favorite tracks"
-msgstr "提交此曲目(&S)"
+msgstr "我最愛的曲目"
 
 #: context/applets/albums/AlbumsView.cpp:109 Systray.cpp:243
 #: browsers/CollectionTreeView.cpp:716
 #: browsers/filebrowser/MyDirOperator.cpp:271
-#: browsers/playlistbrowser/UserPlaylistModel.cpp:449
+#: browsers/playlistbrowser/UserPlaylistModel.cpp:452
 #: browsers/playlistbrowser/PodcastModel.cpp:693
 #: services/lastfm/LastFmTreeView.cpp:116
 msgid "&Append to Playlist"
 msgstr "新增到播放清單(&A)"
 
 #: context/applets/albums/AlbumsView.cpp:110
-#: browsers/playlistbrowser/UserPlaylistModel.cpp:455
+#: browsers/playlistbrowser/UserPlaylistModel.cpp:458
 #: browsers/playlistbrowser/PodcastModel.cpp:706
 msgctxt "Replace the currently loaded tracks with these"
 msgid "&Load"
@@ -515,7 +507,7 @@ msgid "Disc %1"
 msgstr "碟片 %1"
 
 #: context/applets/albums/AlbumItem.cpp:70 MediaDevicePluginManager.cpp:531
-#: MainWindow.cpp:971
+#: MainWindow.cpp:969
 msgid "Unknown"
 msgstr "未知"
 
@@ -527,7 +519,7 @@ msgstr[0] "%1 首曲目"
 
 #: context/applets/lyrics/LyricsApplet.cpp:38
 #: context/applets/lyrics/LyricsApplet.cpp:59
-#: context/applets/lyrics/LyricsApplet.cpp:227 dialogs/TagDialog.cpp:582
+#: context/applets/lyrics/LyricsApplet.cpp:230 dialogs/TagDialog.cpp:585
 msgid "Lyrics"
 msgstr "歌詞"
 
@@ -535,43 +527,35 @@ msgstr "歌詞"
 msgid "Reload Lyrics"
 msgstr "重新載入歌詞"
 
-#: context/applets/lyrics/LyricsApplet.cpp:181
-#, fuzzy
-#| msgid "No lyrics script is running!"
+#: context/applets/lyrics/LyricsApplet.cpp:184
 msgid "No lyrics script is running."
-msgstr "找不到運行中的歌詞指令稿。"
+msgstr "並未執行任何歌詞指令稿。"
 
-#: context/applets/lyrics/LyricsApplet.cpp:187
+#: context/applets/lyrics/LyricsApplet.cpp:190
 msgid "Lyrics are being fetched."
 msgstr "正抓取歌詞中。"
 
-#: context/applets/lyrics/LyricsApplet.cpp:193
+#: context/applets/lyrics/LyricsApplet.cpp:196
 #, kde-format
 msgid ""
 "Lyrics were not able to be downloaded. Please check your internet "
 "connection: %1"
 msgstr "無法下載歌詞。請檢查您的網路連線：%1"
 
-#: context/applets/lyrics/LyricsApplet.cpp:235
-msgid "There were no lyrics found for this track"
-msgstr "找不到這個曲目的歌詞"
-
 #: context/applets/wikipedia/WikipediaApplet.cpp:80
 msgid "Wikipedia"
 msgstr "Wikipedia"
 
 #: context/applets/wikipedia/WikipediaApplet.cpp:82
-#, fuzzy
-#| msgid "Redownload"
 msgid "Reload"
-msgstr "重新下載"
+msgstr "重新載入"
 
 #: context/applets/playlistinfo/PlaylistInfo.cpp:148
 msgid "Configure Playlist Info Applet"
 msgstr "設定播放清單資訊小程式"
 
 #: context/applets/playlistinfo/PlaylistInfo.cpp:160
-#: widgets/TokenWithLayout.cpp:103
+#: widgets/TokenWithLayout.cpp:105
 msgid "Width"
 msgstr "寬度"
 
@@ -600,26 +584,26 @@ msgstr "下一個群組"
 msgid "Previous Group"
 msgstr "前一個群組"
 
+#: context/containments/verticallayout/VerticalToolbarContainment.cpp:55
+msgid ""
+"Please add some applets from the toolbar at the bottom of the context view."
+msgstr ""
+
 #: context/widgets/ToolBoxMenu.cpp:104
 msgid "Hide menu"
 msgstr "隱藏選單"
 
 #: context/widgets/ToolBoxMenu.cpp:123
-#, fuzzy
-#| msgid "&Install Script"
 msgid "Install Applets"
-msgstr "安裝指令稿(&I)"
+msgstr "安裝小程式"
 
 #: context/widgets/TrackWidget.cpp:37
-#, fuzzy
-#| msgid "Score:"
 msgctxt "Score of a track"
 msgid "Score:"
-msgstr "電腦評分："
+msgstr "評分："
 
 #: context/widgets/TrackWidget.cpp:136
-#, fuzzy, kde-format
-#| msgid "%1 - %2 ( %3 )"
+#, kde-format
 msgid "%1 - %2 (%3)"
 msgstr "%1─%2（%3）"
 
@@ -692,7 +676,7 @@ msgstr "音軌(&T)"
 msgid "&Album"
 msgstr "專輯(&A)"
 
-#: ActionClasses.cpp:359 MainWindow.cpp:829
+#: ActionClasses.cpp:359 MainWindow.cpp:827
 msgid "&Playlist"
 msgstr "播放清單(&P)"
 
@@ -769,15 +753,15 @@ msgstr "一般裝置與音量..."
 msgid "Add Device..."
 msgstr "加入裝置..."
 
-#. i18n: file: amarokconfig.kcfg:293
+#. i18n: file: amarokconfig.kcfg:294
 #. i18n: ectx: label, entry, group (OSD)
-#: configdialog/dialogs/OsdConfig.cpp:39 rc.cpp:279 rc.cpp:1658
+#: configdialog/dialogs/OsdConfig.cpp:39 rc.cpp:282 rc.cpp:1673
 msgid "Use Growl for notifications"
 msgstr "使用咆哮信通知"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:71
 msgid "Sound System - Amarok"
-msgstr ""
+msgstr "音效系統 ─ Amarok"
 
 #: configdialog/ConfigDialog.cpp:54
 msgctxt "Miscellaneous settings"
@@ -968,7 +952,7 @@ msgstr "收藏根目錄"
 #. i18n: file: dialogs/EditFilterDialog.ui:101
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:115 dialogs/FilenameLayoutDialog.cpp:327
-#: rc.cpp:930 services/jamendo/JamendoInfoParser.cpp:112
+#: rc.cpp:942 services/jamendo/JamendoInfoParser.cpp:112
 msgid "Track"
 msgstr "曲目號"
 
@@ -976,7 +960,7 @@ msgstr "曲目號"
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:116 dialogs/FilenameLayoutDialog.cpp:322
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:248
-#: browsers/playlistbrowser/PodcastModel.cpp:282 rc.cpp:927
+#: browsers/playlistbrowser/PodcastModel.cpp:282 rc.cpp:939
 #: playlist/PlaylistModel.cpp:695 widgets/SmartPlaylistEditor.cpp:184
 msgid "Title"
 msgstr "標題"
@@ -988,7 +972,7 @@ msgstr "標題"
 #: browsers/collectionbrowser/CollectionWidget.cpp:87
 #: browsers/collectionbrowser/CollectionWidget.cpp:116
 #: browsers/collectionbrowser/CollectionWidget.cpp:148
-#: browsers/playlistbrowser/DynamicBiasWidgets.cpp:245 rc.cpp:918
+#: browsers/playlistbrowser/DynamicBiasWidgets.cpp:245 rc.cpp:930
 #: services/lastfm/LastFmService.cpp:517
 #: services/magnatune/MagnatuneStore.cpp:194
 #: services/jamendo/JamendoInfoParser.cpp:54 playlist/PlaylistHeader.cpp:42
@@ -1004,7 +988,7 @@ msgstr "演出者"
 #: browsers/collectionbrowser/CollectionWidget.cpp:96
 #: browsers/collectionbrowser/CollectionWidget.cpp:125
 #: browsers/collectionbrowser/CollectionWidget.cpp:157
-#: browsers/playlistbrowser/DynamicBiasWidgets.cpp:246 rc.cpp:921
+#: browsers/playlistbrowser/DynamicBiasWidgets.cpp:246 rc.cpp:933
 #: playlist/PlaylistModel.cpp:698 widgets/SmartPlaylistEditor.cpp:184
 #: widgets/SmartPlaylistEditor.cpp:198
 msgid "Composer"
@@ -1015,7 +999,7 @@ msgstr "作曲家"
 #: dialogs/FilenameLayoutDialog.cpp:119 dialogs/FilenameLayoutDialog.cpp:342
 #: browsers/CollectionTreeItemModelBase.cpp:767
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:250
-#: browsers/playlistbrowser/DynamicBiasWidgets.cpp:693 rc.cpp:933
+#: browsers/playlistbrowser/DynamicBiasWidgets.cpp:693 rc.cpp:945
 #: playlist/PlaylistModel.cpp:699 widgets/SmartPlaylistEditor.cpp:185
 #: widgets/SmartPlaylistEditor.cpp:198 widgets/SmartPlaylistEditor.cpp:922
 msgid "Year"
@@ -1028,7 +1012,7 @@ msgstr "年份"
 #: browsers/collectionbrowser/CollectionWidget.cpp:90
 #: browsers/collectionbrowser/CollectionWidget.cpp:119
 #: browsers/collectionbrowser/CollectionWidget.cpp:151
-#: browsers/playlistbrowser/DynamicBiasWidgets.cpp:247 rc.cpp:915
+#: browsers/playlistbrowser/DynamicBiasWidgets.cpp:247 rc.cpp:927
 #: services/magnatune/MagnatuneStore.cpp:200
 #: services/jamendo/JamendoInfoParser.cpp:86 playlist/PlaylistHeader.cpp:42
 #: playlist/PlaylistModel.cpp:700 widgets/SmartPlaylistEditor.cpp:184
@@ -1049,17 +1033,15 @@ msgstr "評語"
 #: browsers/collectionbrowser/CollectionWidget.cpp:93
 #: browsers/collectionbrowser/CollectionWidget.cpp:122
 #: browsers/collectionbrowser/CollectionWidget.cpp:154
-#: browsers/playlistbrowser/DynamicBiasWidgets.cpp:249 rc.cpp:924
+#: browsers/playlistbrowser/DynamicBiasWidgets.cpp:249 rc.cpp:936
 #: playlist/PlaylistModel.cpp:704 widgets/ProgressiveSearchWidget.cpp:96
 #: widgets/SmartPlaylistEditor.cpp:184 widgets/SmartPlaylistEditor.cpp:198
 msgid "Genre"
 msgstr "風格"
 
 #: dialogs/FilenameLayoutDialog.cpp:130 dialogs/FilenameLayoutDialog.cpp:367
-#, fuzzy
-#| msgid "genre"
 msgid "Ignore"
-msgstr "流派"
+msgstr "忽略"
 
 #: dialogs/FilenameLayoutDialog.cpp:133
 #, no-c-format
@@ -1075,10 +1057,8 @@ msgstr ""
 "%album, %comment, %genre, %ignore。"
 
 #: dialogs/FilenameLayoutDialog.cpp:139 dialogs/FilenameLayoutDialog.cpp:377
-#, fuzzy
-#| msgid "Uninstall"
 msgid "Initial"
-msgstr "解除安裝"
+msgstr ""
 
 #: dialogs/FilenameLayoutDialog.cpp:140 dialogs/FilenameLayoutDialog.cpp:362
 msgid "File type"
@@ -1108,7 +1088,7 @@ msgstr "基本(&B)..."
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:213
 #. i18n: ectx: property (text), widget (KPushButton, kpbAdvanced)
-#: dialogs/FilenameLayoutDialog.cpp:271 rc.cpp:871
+#: dialogs/FilenameLayoutDialog.cpp:271 rc.cpp:883
 msgid "&Advanced..."
 msgstr "進階(&A)..."
 
@@ -1118,154 +1098,112 @@ msgid "composer"
 msgstr "作者"
 
 #: dialogs/FilenameLayoutDialog.cpp:372
-#, fuzzy
-#| msgid "Add Folder"
 msgid "Folder"
-msgstr "加入資料夾"
+msgstr "資料夾"
 
 #. i18n: file: dialogs/PlaylistLayoutEditDialog.ui:171
 #. i18n: ectx: attribute (title), widget (QWidget, tab)
-#: dialogs/PlaylistLayoutEditDialog.cpp:75 rc.cpp:746
+#: dialogs/PlaylistLayoutEditDialog.cpp:75 rc.cpp:758
 msgid "Head"
 msgstr ""
 
 #: dialogs/PlaylistLayoutEditDialog.cpp:76
-#, fuzzy
-#| msgid "Modify"
 msgid "Body"
-msgstr "變更"
+msgstr ""
 
 #: dialogs/PlaylistLayoutEditDialog.cpp:77
-#, fuzzy
-#| msgid "single"
 msgid "Single"
-msgstr "single"
+msgstr ""
 
 #: dialogs/PlaylistLayoutEditDialog.cpp:111
-#, fuzzy
-#| msgid "Playlist name:"
 msgid "New playlist layout"
-msgstr "播放清單名稱："
+msgstr "新增播放清單佈局"
 
 #: dialogs/PlaylistLayoutEditDialog.cpp:116
-#, fuzzy
-#| msgid "Playlist name:"
 msgid "Copy playlist layout"
-msgstr "播放清單名稱："
+msgstr "複製播放清單佈局"
 
 #: dialogs/PlaylistLayoutEditDialog.cpp:121
-#, fuzzy
-#| msgid "Playlist name:"
 msgid "Delete playlist layout"
-msgstr "播放清單名稱："
+msgstr "刪除播放清單佈局"
 
 #: dialogs/PlaylistLayoutEditDialog.cpp:127
-#, fuzzy
-#| msgid "Playlist name:"
 msgid "Rename playlist layout"
-msgstr "播放清單名稱："
+msgstr "重新命名播放清單佈局"
 
 #: dialogs/PlaylistLayoutEditDialog.cpp:144
-#: dialogs/PlaylistLayoutEditDialog.cpp:183
-#, fuzzy
-#| msgid "Enter a name for the playlist:"
+#: dialogs/PlaylistLayoutEditDialog.cpp:188
 msgid "Choose a name for the new playlist layout"
-msgstr "請輸入播放清單的名稱："
+msgstr "請輸入新的播放清單佈局的名稱"
 
 #: dialogs/PlaylistLayoutEditDialog.cpp:145
 msgid "Please enter a name for the playlist layout you are about to define:"
-msgstr ""
+msgstr "請為此播放清單佈局輸入您想定義的名稱："
 
 #: dialogs/PlaylistLayoutEditDialog.cpp:148
-#: dialogs/PlaylistLayoutEditDialog.cpp:153
-#: dialogs/PlaylistLayoutEditDialog.cpp:188
 #: dialogs/PlaylistLayoutEditDialog.cpp:193
-#: dialogs/PlaylistLayoutEditDialog.cpp:237
-#: dialogs/PlaylistLayoutEditDialog.cpp:241
-#: dialogs/PlaylistLayoutEditDialog.cpp:243
-#, fuzzy
-#| msgid "playcount"
-msgid "Layout name error"
-msgstr "播放次數"
-
-#: dialogs/PlaylistLayoutEditDialog.cpp:148
-#: dialogs/PlaylistLayoutEditDialog.cpp:188
-#, fuzzy
-#| msgid ""
-#| "Sorry, you cannot define two devices\n"
-#| "with the same name and mountpoint!"
 msgid "Cannot create a layout with no name."
-msgstr ""
-"對不起，兩個裝置，是不可以擁有\n"
-"相同的名字和掛載點的。"
+msgstr "不能建立沒有名稱的佈局"
+
+#: dialogs/PlaylistLayoutEditDialog.cpp:148
+#: dialogs/PlaylistLayoutEditDialog.cpp:153
+#: dialogs/PlaylistLayoutEditDialog.cpp:158
+#: dialogs/PlaylistLayoutEditDialog.cpp:193
+#: dialogs/PlaylistLayoutEditDialog.cpp:198
+#: dialogs/PlaylistLayoutEditDialog.cpp:249
+#: dialogs/PlaylistLayoutEditDialog.cpp:253
+#: dialogs/PlaylistLayoutEditDialog.cpp:255
+msgid "Layout name error"
+msgstr "佈局名稱錯誤"
 
 #: dialogs/PlaylistLayoutEditDialog.cpp:153
-#: dialogs/PlaylistLayoutEditDialog.cpp:193
-#, fuzzy
-#| msgid ""
-#| "Sorry, you cannot define two devices\n"
-#| "with the same name and mountpoint!"
+#: dialogs/PlaylistLayoutEditDialog.cpp:198
 msgid "Cannot create a layout with the same name as an existing layout."
-msgstr ""
-"對不起，兩個裝置，是不可以擁有\n"
-"相同的名字和掛載點的。"
+msgstr "已經有同名稱的佈局，無法再建立一個。"
 
-#: dialogs/PlaylistLayoutEditDialog.cpp:184
+#: dialogs/PlaylistLayoutEditDialog.cpp:158
+msgid "Cannot create a layout containing '/'."
+msgstr ""
+
+#: dialogs/PlaylistLayoutEditDialog.cpp:189
 #, kde-format
 msgid ""
 "Please enter a name for the playlist layout you are about to define as copy "
 "of the layout '%1':"
+msgstr "請為您要定義的 '%1' 播放清單規劃複本輸入名稱："
+
+#: dialogs/PlaylistLayoutEditDialog.cpp:239
+msgid "Choose a new name for the playlist layout"
 msgstr ""
 
-#: dialogs/PlaylistLayoutEditDialog.cpp:233
-#, fuzzy
-#| msgid "Enter a name for the playlist:"
-msgid "Choose a new name for the playlist layout"
-msgstr "請輸入播放清單的名稱："
-
-#: dialogs/PlaylistLayoutEditDialog.cpp:234
+#: dialogs/PlaylistLayoutEditDialog.cpp:240
 msgid ""
 "Please enter a new name for the playlist layout you are about to rename:"
+msgstr "請為您要重新命名的播放清單規劃輸入新的名稱："
+
+#: dialogs/PlaylistLayoutEditDialog.cpp:249
+msgid "Cannot rename one of the default layouts."
 msgstr ""
 
-#: dialogs/PlaylistLayoutEditDialog.cpp:237
-#, fuzzy
-#| msgid "Enter a name for the playlist:"
-msgid "Cannot rename one of the default layouts."
-msgstr "請輸入播放清單的名稱："
-
-#: dialogs/PlaylistLayoutEditDialog.cpp:241
-#, fuzzy
-#| msgid ""
-#| "Sorry, you cannot define two devices\n"
-#| "with the same name and mountpoint!"
+#: dialogs/PlaylistLayoutEditDialog.cpp:253
 msgid "Cannot rename a layout to have no name."
 msgstr ""
-"對不起，兩個裝置，是不可以擁有\n"
-"相同的名字和掛載點的。"
 
-#: dialogs/PlaylistLayoutEditDialog.cpp:243
-#, fuzzy
-#| msgid ""
-#| "Sorry, you cannot define two devices\n"
-#| "with the same name and mountpoint!"
+#: dialogs/PlaylistLayoutEditDialog.cpp:255
 msgid "Cannot rename a layout to have the same name as an existing layout."
 msgstr ""
-"對不起，兩個裝置，是不可以擁有\n"
-"相同的名字和掛載點的。"
 
-#: dialogs/PlaylistLayoutEditDialog.cpp:345
+#: dialogs/PlaylistLayoutEditDialog.cpp:357
 #, kde-format
 msgid ""
 "The layout '%1' you modified is one of the default layouts and cannot be "
 "overwritten.                 Please select a different name to save a copy."
 msgstr ""
+"您修改的 '%1' 佈局是預設佈局，無法被覆寫。請選用不同的名稱來儲存一個複本。"
 
-#: dialogs/PlaylistLayoutEditDialog.cpp:347
-#, fuzzy
-#| msgid "Current Playlist"
+#: dialogs/PlaylistLayoutEditDialog.cpp:359
 msgid "Reserved Layout Name"
-msgstr "目前的播放清單"
+msgstr ""
 
 #: dialogs/ScriptSelector.cpp:34
 msgid "Search Scripts"
@@ -1295,8 +1233,6 @@ msgid "Banshee"
 msgstr "Banshee"
 
 #: dialogs/DatabaseImporterDialog.cpp:52
-#, fuzzy
-#| msgid "Rythmbox"
 msgid "Rhythmbox"
 msgstr "Rythmbox"
 
@@ -1343,152 +1279,148 @@ msgctxt "Track has been imported, format: Artist - Track (Album)"
 msgid "Imported <b>%1 - %2 (%3)</b>"
 msgstr "已匯入 <b>%1 ─ %2（%3）</b>"
 
-#: dialogs/TagDialog.cpp:489
+#: dialogs/TagDialog.cpp:492
 msgid "Filename Layout Chooser"
 msgstr "檔名佈局選擇器"
 
-#: dialogs/TagDialog.cpp:580 browsers/playlistbrowser/PodcastModel.cpp:283
+#: dialogs/TagDialog.cpp:583 browsers/playlistbrowser/PodcastModel.cpp:283
 msgid "Summary"
 msgstr "概要"
 
-#: dialogs/TagDialog.cpp:581
+#: dialogs/TagDialog.cpp:584
 msgid "Tags"
 msgstr "標籤"
 
-#: dialogs/TagDialog.cpp:583
+#: dialogs/TagDialog.cpp:586
 msgid "Statistics"
 msgstr "統計"
 
-#: dialogs/TagDialog.cpp:585
+#: dialogs/TagDialog.cpp:588
 msgid "Labels"
 msgstr "標記"
 
-#: dialogs/TagDialog.cpp:711
+#: dialogs/TagDialog.cpp:714
 msgctxt "The value for this tag is not known"
 msgid "Unknown"
 msgstr "未知"
 
-#: dialogs/TagDialog.cpp:831
+#: dialogs/TagDialog.cpp:834
 #, kde-format
 msgid "Track Details: %1 by %2"
 msgstr "曲目資訊: %1 by %2"
 
-#: dialogs/TagDialog.cpp:855 dialogs/TagDialog.cpp:865
+#: dialogs/TagDialog.cpp:858 dialogs/TagDialog.cpp:868
 #, kde-format
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> by <b>%2</b>"
 
-#: dialogs/TagDialog.cpp:863
+#: dialogs/TagDialog.cpp:866
 #, kde-format
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 
-#: dialogs/TagDialog.cpp:867
+#: dialogs/TagDialog.cpp:870
 #, kde-format
 msgid "<b>%1</b>"
 msgstr "<b>%1</b>"
 
-#: dialogs/TagDialog.cpp:896
+#: dialogs/TagDialog.cpp:899
 msgid "Length:"
 msgstr "長度："
 
-#: dialogs/TagDialog.cpp:897
-#, fuzzy
-#| msgid "Bitrate:"
+#: dialogs/TagDialog.cpp:900
 msgid "Bit rate:"
 msgstr "位元率："
 
-#: dialogs/TagDialog.cpp:898
-#, fuzzy
-#| msgid "Samplerate:"
+#: dialogs/TagDialog.cpp:901
 msgid "Sample rate:"
 msgstr "取樣頻率："
 
-#: dialogs/TagDialog.cpp:899
+#: dialogs/TagDialog.cpp:902
 msgid "Size:"
 msgstr "大小："
 
-#: dialogs/TagDialog.cpp:900
+#: dialogs/TagDialog.cpp:903
 msgid "Format:"
 msgstr "格式："
 
-#. i18n: file: dialogs/TagDialogBase.ui:502
+#. i18n: file: dialogs/TagDialogBase.ui:506
 #. i18n: ectx: property (text), widget (QLabel, scoreLabel)
-#: dialogs/TagDialog.cpp:903 rc.cpp:831
+#: dialogs/TagDialog.cpp:906 rc.cpp:843
 msgid "Score:"
 msgstr "電腦評分："
 
-#. i18n: file: dialogs/TagDialogBase.ui:531
+#. i18n: file: dialogs/TagDialogBase.ui:535
 #. i18n: ectx: property (text), widget (QLabel, ratingLabel)
-#: dialogs/TagDialog.cpp:905 rc.cpp:834
+#: dialogs/TagDialog.cpp:908 rc.cpp:846
 msgid "Rating:"
 msgstr "用戶評分："
 
-#: dialogs/TagDialog.cpp:907
+#: dialogs/TagDialog.cpp:910
 msgid "Play Count:"
 msgstr "播放次數："
 
-#: dialogs/TagDialog.cpp:910
+#: dialogs/TagDialog.cpp:913
 msgid "First Played:"
 msgstr "第一次播放："
 
-#: dialogs/TagDialog.cpp:911
+#: dialogs/TagDialog.cpp:914
 msgctxt "When this track was first played"
 msgid "Never"
 msgstr "從未"
 
-#: dialogs/TagDialog.cpp:912
+#: dialogs/TagDialog.cpp:915
 msgctxt "a single item (singular)"
 msgid "Last Played:"
 msgstr "上一次播放："
 
-#: dialogs/TagDialog.cpp:913
+#: dialogs/TagDialog.cpp:916
 msgctxt "When this track was last played"
 msgid "Never"
 msgstr "從未"
 
-#: dialogs/TagDialog.cpp:914
+#: dialogs/TagDialog.cpp:917
 msgid "Collection:"
 msgstr "收藏："
 
-#: dialogs/TagDialog.cpp:915
+#: dialogs/TagDialog.cpp:918
 msgctxt "The collection this track is part of"
 msgid "None"
 msgstr "沒有"
 
-#: dialogs/TagDialog.cpp:1040
+#: dialogs/TagDialog.cpp:1043
 #, kde-format
 msgctxt "The amount of tracks being edited"
 msgid "1 Track"
 msgid_plural "Information for %1 Tracks"
 msgstr[0] "%1 首曲目的資訊"
 
-#: dialogs/TagDialog.cpp:1155
+#: dialogs/TagDialog.cpp:1158
 #, kde-format
 msgid "Editing 1 file"
 msgid_plural "Editing %1 files"
 msgstr[0] "正在編輯 %1 個檔案"
 
-#: dialogs/TagDialog.cpp:1160
+#: dialogs/TagDialog.cpp:1163
 msgid "Rated Songs:"
 msgstr "用戶已評分的歌曲："
 
-#: dialogs/TagDialog.cpp:1162
+#: dialogs/TagDialog.cpp:1165
 msgid "Average Rating:"
 msgstr "平均用戶評分："
 
-#: dialogs/TagDialog.cpp:1164
+#: dialogs/TagDialog.cpp:1167
 msgid "Scored Songs:"
 msgstr "有電腦評分的樂曲："
 
-#: dialogs/TagDialog.cpp:1166
+#: dialogs/TagDialog.cpp:1169
 msgid "Average Score:"
 msgstr "平均電腦評分："
 
-#: dialogs/TagDialog.cpp:1464
+#: dialogs/TagDialog.cpp:1467
 msgid ""
 "Writing to file failed. Please check permissions and available disc space."
-msgstr ""
+msgstr "寫入檔案失敗。請檢查您的許可權限，以及是否有可用的磁碟空間。"
 
 #: dialogs/EditFilterDialog.cpp:44
 msgid "Edit Filter"
@@ -1607,7 +1539,7 @@ msgstr "無"
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:236
 #. i18n: ectx: property (title), widget (KButtonGroup, optionsFrame)
-#: dialogs/transferdialog.cpp:112 rc.cpp:874
+#: dialogs/transferdialog.cpp:112 rc.cpp:886
 msgid "Options"
 msgstr "Options"
 
@@ -1615,7 +1547,7 @@ msgstr "Options"
 msgid "Convert spaces to underscores"
 msgstr "把空格以底線替換"
 
-#: dialogs/ScriptManager.cpp:117 MainWindow.cpp:659
+#: dialogs/ScriptManager.cpp:117 MainWindow.cpp:657
 msgid "Script Manager"
 msgstr "指令稿管理員"
 
@@ -1638,14 +1570,10 @@ msgid ""
 msgstr "名為 '%1' 指令稿已被安裝。請先把它解除安裝。"
 
 #: dialogs/ScriptManager.cpp:324 dialogs/ScriptManager.cpp:378
-#, fuzzy
-#| msgid ""
-#| "<p>Script successfully installed.</p><p>Please restart Amarok to start "
-#| "the script!</p>"
 msgid ""
 "<p>Script successfully installed.</p><p>Please restart Amarok to start the "
 "script.</p>"
-msgstr "<p>已成功安裝文稿。</p> <p>請重新啟動 Amarok 來執行此文稿。</p>"
+msgstr ""
 
 #: dialogs/ScriptManager.cpp:330
 msgid ""
@@ -1654,15 +1582,10 @@ msgid ""
 msgstr "<p>指令稿安裝失敗</p><p>請將此錯誤通知套件的維護人員。</p>"
 
 #: dialogs/ScriptManager.cpp:381 dialogs/ScriptManager.cpp:412
-#, fuzzy
-#| msgid ""
-#| "<p>Script successfully uninstalled.</p><p>Please restart Amarok to "
-#| "totally remove the script!</p>"
 msgid ""
 "<p>Script successfully uninstalled.</p><p>Please restart Amarok to totally "
 "remove the script.</p>"
 msgstr ""
-"<p>文稿已成功解除安裝。</p> <p>請重新啟動 Amarok 以完全移除此文稿。</p>"
 
 #: dialogs/ScriptManager.cpp:394
 #, kde-format
@@ -1686,11 +1609,11 @@ msgstr ""
 "稿。</p>"
 
 #: dialogs/ScriptManager.cpp:451
-#, fuzzy, kde-format
-#| msgid "There are exceptions caught in the script. Please refer to the log!"
+#, kde-format
 msgid ""
-"There are exceptions caught in the script '%1'. Please refer to the log."
-msgstr "在文稿中有捕捉到例外狀況。請參考紀錄檔。"
+"There are exceptions caught in the script '%1'. Please refer to the console "
+"debug output for more information."
+msgstr ""
 
 #: App.cpp:93 browsers/playlistbrowser/PodcastModel.cpp:408
 msgid "Amarok"
@@ -1709,15 +1632,7 @@ msgstr ""
 "(C) 2003-2009, Amarok 開發小組"
 
 #: App.cpp:96
-#, fuzzy, kde-format
-#| msgid ""
-#| "IRC:\n"
-#| "irc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n"
-#| "\n"
-#| "Feedback:\n"
-#| "amarok@kde.org\n"
-#| "\n"
-#| "(Build Date: "
+#, kde-format
 msgid ""
 "IRC:\n"
 "irc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n"
@@ -1727,182 +1642,165 @@ msgid ""
 "\n"
 "(Build Date: %1)"
 msgstr ""
-"IRC:\n"
-"irc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n"
-"\n"
-"問題回報:\n"
-"amarok@kde.org\n"
-"\n"
-"(編譯日期: "
 
-#: App.cpp:438
+#: App.cpp:437
 msgid "Files/URLs to open"
 msgstr "要開啟的檔案/URL"
 
-#: App.cpp:440
+#: App.cpp:439
 msgid "Skip backwards in playlist"
 msgstr "在播放清單中往後略過"
 
-#: App.cpp:442
+#: App.cpp:441
 msgid "Start playing current playlist"
 msgstr "開始播放目前的播放清單"
 
-#: App.cpp:444
+#: App.cpp:443
 msgid "Play if stopped, pause if playing"
 msgstr "停止的話就開始播放，播放中的就暫停"
 
-#: App.cpp:445
+#: App.cpp:444
 msgid "Pause playback"
 msgstr "暫停播放"
 
-#: App.cpp:447
+#: App.cpp:446
 msgid "Stop playback"
 msgstr "停止播放"
 
-#: App.cpp:449
+#: App.cpp:448
 msgid "Skip forwards in playlist"
 msgstr "在播放清單中往前略過"
 
-#: App.cpp:450
+#: App.cpp:449
 msgid "Additional options:"
 msgstr "額外設定："
 
-#: App.cpp:452
+#: App.cpp:451
 msgid "Append files/URLs to playlist"
 msgstr "要附加到播放清單的檔案/URL"
 
-#: App.cpp:453
+#: App.cpp:452
 msgid "Queue URLs after the currently playing track"
 msgstr "目前曲目播放完後，仍在佇列中的 URL"
 
-#: App.cpp:455
+#: App.cpp:454
 msgid "Load URLs, replacing current playlist"
 msgstr "載入 URL，會取代掉目前的播放清單"
 
-#: App.cpp:457
+#: App.cpp:456
 msgid "Print verbose debugging information"
 msgstr "印出詳細除錯資訊"
 
-#: App.cpp:459
+#: App.cpp:458
 msgid "Allow running multiple Amarok instances"
 msgstr "允許執行多個 Amarok 實體"
 
-#: App.cpp:460
+#: App.cpp:459
 msgid "Base for relative filenames/URLs"
 msgstr "檔案位置/URL 為相對路徑時它們的基底目錄"
 
-#: App.cpp:689
+#: App.cpp:691
 msgid "Moving files to trash"
 msgstr "正在把檔案移至資源回收筒"
 
-#: App.cpp:791
+#: App.cpp:793
 #, kde-format
 msgctxt "monthname year"
 msgid "%1 %2"
 msgstr "%2年%1"
 
-#: App.cpp:798
+#: App.cpp:800
 #, kde-format
 msgid "One week ago"
 msgid_plural "%1 weeks ago"
 msgstr[0] "%1 星期之前"
 
-#: App.cpp:801 App.cpp:852
+#: App.cpp:803 App.cpp:854
 msgctxt "When this track was last played"
 msgid "Tomorrow"
 msgstr "明天"
 
-#: App.cpp:807
+#: App.cpp:809
 msgid "Yesterday"
 msgstr "昨天"
 
-#: App.cpp:808
+#: App.cpp:810
 #, kde-format
 msgid "One day ago"
 msgid_plural "%1 days ago"
 msgstr[0] "%1 天之前"
 
-#: App.cpp:811
+#: App.cpp:813
 #, kde-format
 msgid "One hour ago"
 msgid_plural "%1 hours ago"
 msgstr[0] "%1 小時之前"
 
-#: App.cpp:817
+#: App.cpp:819
 #, kde-format
 msgid "One minute ago"
 msgid_plural "%1 minutes ago"
 msgstr[0] "%1 分鐘之前"
 
-#: App.cpp:818
+#: App.cpp:820
 msgid "Within the last minute"
 msgstr "一分鐘之內"
 
-#: App.cpp:820
+#: App.cpp:822
 msgid "The future"
 msgstr "未來"
 
-#: App.cpp:826
+#: App.cpp:828
 msgctxt "The amount of time since last played"
 msgid "Never"
 msgstr "從未"
 
-#: App.cpp:836
+#: App.cpp:838
 msgctxt "The amount of time since last played"
 msgid "0"
 msgstr "0"
 
-#: App.cpp:845
+#: App.cpp:847
 #, kde-format
 msgctxt "number of months ago"
 msgid "%1M"
 msgstr "%1月"
 
-#: App.cpp:849
+#: App.cpp:851
 #, kde-format
 msgctxt "w for weeks"
 msgid "%1w"
 msgstr "%1週"
 
-#: App.cpp:858
+#: App.cpp:860
 #, no-c-format, kde-format
 msgctxt "d for days"
 msgid "%1d"
 msgstr "%1天"
 
-#: App.cpp:861
+#: App.cpp:863
 #, kde-format
 msgctxt "h for hours"
 msgid "%1h"
 msgstr "%1小時"
 
-#: App.cpp:870
+#: App.cpp:872
 msgid "0"
 msgstr "0"
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.h:37
 msgid "Local Playlists stored in the database"
-msgstr ""
+msgstr "本地的播放清單儲存在資料庫內"
+
+#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:100
+msgid "Change playlist"
+msgstr "變更播放清單"
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:101
-#, fuzzy
-#| msgid "&Save Playlist"
-msgid "Change playlist"
-msgstr "儲存播放清單(&S)"
-
-#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:102
-#, fuzzy
-#| msgid "Enter a name for the playlist:"
 msgid "Enter new name for playlist:"
-msgstr "請輸入播放清單的名稱："
+msgstr "請輸入播放清單的新名稱："
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:116
-#: equalizerpresetmanager.cpp:59 MediaDevice.cpp:1032
-#: amarokurls/BookmarkTreeView.cpp:120
-msgid "&Delete"
-msgstr "刪除(&D)"
-
-#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:123
 #: equalizerpresetmanager.cpp:58 amarokurls/BookmarkTreeView.cpp:126
 msgid "&Rename"
 msgstr "重新命名(&R)"
@@ -1958,10 +1856,8 @@ msgid "&Remove Subscription"
 msgstr "移除訂閱(&R)"
 
 #: podcasts/sql/SqlPodcastProvider.cpp:435
-#, fuzzy
-#| msgid "&Update All"
 msgid "&Update Channel"
-msgstr "全部更新 (&U)"
+msgstr "更新頻道(&U)"
 
 #: podcasts/sql/SqlPodcastProvider.cpp:593
 msgid "Downloading Podcast Media"
@@ -2008,11 +1904,8 @@ msgid " on <b>%1</b>"
 msgstr "，於 <b>%1</b>"
 
 #: Systray.cpp:161
-#, fuzzy
-#| msgctxt "State, as in, The playback is silent"
-#| msgid "Mute"
 msgid "Muted"
-msgstr "靜音"
+msgstr ""
 
 #: Systray.cpp:189 browsers/playlistbrowser/DynamicBiasWidgets.cpp:252
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:695
@@ -2045,11 +1938,11 @@ msgstr "新增並播放(&P)"
 msgid "&Queue Track"
 msgstr "把曲目放入播放佇列(&Q)"
 
-#. i18n: file: dialogs/TagDialogBase.ui:751
+#. i18n: file: dialogs/TagDialogBase.ui:755
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_cancel)
 #. i18n: file: services/magnatune/MagnatuneRedownloadDialogBase.ui:36
 #. i18n: ectx: property (text), widget (QPushButton, cancelButton)
-#: Systray.cpp:249 rc.cpp:861 rc.cpp:1315
+#: Systray.cpp:249 rc.cpp:873 rc.cpp:1327
 msgid "&Cancel"
 msgstr "取消(&C)"
 
@@ -2142,10 +2035,10 @@ msgstr "連線"
 msgid "Username"
 msgstr "使用者名稱"
 
-#. i18n: file: amarokconfig.kcfg:427
+#. i18n: file: amarokconfig.kcfg:428
 #. i18n: ectx: label, entry, group (Scrobbler)
-#: databaseimporter/amarok14/FastForwardImporterConfig.cpp:51 rc.cpp:405
-#: rc.cpp:1784
+#: databaseimporter/amarok14/FastForwardImporterConfig.cpp:51 rc.cpp:408
+#: rc.cpp:1799
 msgid "Password"
 msgstr "密碼"
 
@@ -2162,19 +2055,17 @@ msgid "Import downloaded artwork"
 msgstr "匯入已下載的美工"
 
 #: databaseimporter/amarok14/FastForwardImporterConfig.cpp:95
-#, fuzzy
-#| msgid "Directory"
 msgid "Artwork directory"
-msgstr "目錄"
+msgstr ""
 
 #: databaseimporter/amarok14/FastForwardWorker.cpp:57
 msgid "No database driver was selected"
-msgstr ""
+msgstr "尚未選取資料庫驅動程式"
 
 #: databaseimporter/amarok14/FastForwardWorker.cpp:64
 #, kde-format
 msgid "Database could not be found at: %1"
-msgstr ""
+msgstr "無法在 %1 找到資料庫"
 
 #: databaseimporter/amarok14/FastForwardWorker.cpp:101
 #, kde-format
@@ -2183,7 +2074,7 @@ msgstr "無法開啟 Amarok 1.4 資料庫：%1"
 
 #: databaseimporter/amarok14/FastForwardWorker.cpp:176
 msgid "Synchronizing Amarok database..."
-msgstr ""
+msgstr "正在同步 Amarok 資料庫…"
 
 #: databaseimporter/amarok14/FastForwardWorker.cpp:184
 msgid "Importing downloaded album art"
@@ -2196,6 +2087,12 @@ msgstr "產生播放清單中..."
 #: equalizerpresetmanager.cpp:38 equalizerpresetmanager.cpp:50
 msgid "Presets"
 msgstr "預置"
+
+#: equalizerpresetmanager.cpp:59
+#: browsers/playlistbrowser/UserPlaylistModel.cpp:464 MediaDevice.cpp:1032
+#: amarokurls/BookmarkTreeView.cpp:120
+msgid "&Delete"
+msgstr "刪除(&D)"
 
 #: equalizerpresetmanager.cpp:107
 msgid "Rename Equalizer Preset"
@@ -2487,11 +2384,9 @@ msgstr "更多..."
 #: browsers/CollectionTreeView.cpp:724
 #: browsers/filebrowser/MyDirOperator.cpp:272
 #: services/lastfm/LastFmTreeView.cpp:124
-#, fuzzy
-#| msgid "Repeat Playlist"
 msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
-msgstr "重覆播放清單"
+msgstr ""
 
 #: browsers/CollectionTreeView.cpp:742
 msgid "&Edit Track Details"
@@ -2548,44 +2443,35 @@ msgstr "音軌數量"
 
 #: browsers/CollectionTreeItemModelBase.cpp:578
 msgid "added"
-msgstr ""
+msgstr "已新增"
 
 #: browsers/CollectionTreeItemModelBase.cpp:584
-#, fuzzy
-#| msgid "Modify"
 msgid "today"
-msgstr "變更"
+msgstr ""
 
 #: browsers/CollectionTreeItemModelBase.cpp:586
 msgid "last week"
-msgstr ""
+msgstr "上週"
 
 #: browsers/CollectionTreeItemModelBase.cpp:588
-#, fuzzy
-#| msgid "Play Count"
 msgid "last month"
-msgstr "播放次數"
+msgstr ""
 
 #: browsers/CollectionTreeItemModelBase.cpp:590
 msgid "two months ago"
-msgstr ""
+msgstr "兩個月前"
 
 #: browsers/CollectionTreeItemModelBase.cpp:592
-#, fuzzy
-#| msgid "One minute ago"
-#| msgid_plural "%1 minutes ago"
 msgid "three months ago"
-msgstr "%1 分鐘之前"
+msgstr ""
 
 #: browsers/CollectionTreeItemModelBase.cpp:763
 msgid "Year - Album"
 msgstr "年份 - 專輯"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:54
-#, fuzzy
-#| msgid "Rescan Collection"
 msgid "Search collection"
-msgstr "重新掃描收藏"
+msgstr ""
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:71
 #: services/magnatune/MagnatuneStore.cpp:197
@@ -2621,18 +2507,14 @@ msgid "Show Years"
 msgstr "顯示年份"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:182
-#, fuzzy
-#| msgid "Show Years"
 msgid "Show Cover Art"
-msgstr "顯示年份"
+msgstr ""
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:256
 #: services/magnatune/MagnatuneStore.cpp:209
 #: services/jamendo/JamendoService.cpp:145
-#, fuzzy
-#| msgid "Options"
 msgid "Sort Options"
-msgstr "Options"
+msgstr ""
 
 #: browsers/filebrowser/FileBrowser.cpp:78 widgets/SearchWidget.cpp:61
 #: covermanager/CoverManager.cpp:173
@@ -2680,7 +2562,7 @@ msgstr "套用最後一個過濾器（%1）"
 msgid "Clear filter"
 msgstr "清除過濾器"
 
-#: browsers/playlistbrowser/UserPlaylistModel.cpp:253
+#: browsers/playlistbrowser/UserPlaylistModel.cpp:254
 #: amarokurls/BookmarkModel.cpp:228
 msgid "Name"
 msgstr "名稱"
@@ -2696,35 +2578,25 @@ msgstr "已變更"
 
 #: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:486
 #: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:506
-#, fuzzy
-#| msgid "File name"
 msgid "New name"
-msgstr "檔名"
+msgstr ""
 
 #: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:487
-#, fuzzy
-#| msgid "Enter new preset name:"
 msgctxt "Enter a new name for a group that already exists"
 msgid "Enter new group name:"
-msgstr "請輸入新的預置名稱："
+msgstr ""
 
 #: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:507
-#, fuzzy
-#| msgid "Enter new preset name:"
 msgid "Enter new group name:"
-msgstr "請輸入新的預置名稱："
+msgstr ""
 
 #: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:526
-#, fuzzy
-#| msgid "&Delete"
 msgid "&Delete group"
-msgstr "刪除(&D)"
+msgstr ""
 
 #: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:533
-#, fuzzy
-#| msgid "&Rename"
 msgid "&Rename group"
-msgstr "重新命名(&R)"
+msgstr ""
 
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:112
 msgid "Add a new bias."
@@ -2835,45 +2707,41 @@ msgstr "開啟"
 msgid "Turn dynamic mode on."
 msgstr "開啟動態模式。"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:66
+#: browsers/playlistbrowser/DynamicCategory.cpp:65
 msgid "Repopulate"
 msgstr "重新填入"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:67
+#: browsers/playlistbrowser/DynamicCategory.cpp:66
 msgid "Replace the upcoming tracks with fresh ones."
 msgstr "以新曲目取代將到的曲目。"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:78
+#: browsers/playlistbrowser/DynamicCategory.cpp:77
 msgid "Playlist:"
 msgstr "播放清單："
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:108
+#: browsers/playlistbrowser/DynamicCategory.cpp:107
 msgid "Save the preset."
 msgstr "儲存此預設。"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:118
+#: browsers/playlistbrowser/DynamicCategory.cpp:117
 msgid "Delete the preset."
 msgstr "刪除此預設。"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:266
+#: browsers/playlistbrowser/DynamicCategory.cpp:265
 msgid "Playlist Name"
 msgstr "播放清單名稱"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:267
+#: browsers/playlistbrowser/DynamicCategory.cpp:266
 msgid "Enter a name for the playlist:"
 msgstr "請輸入播放清單的名稱："
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:277
-#, fuzzy
-#| msgid "Warning!"
+#: browsers/playlistbrowser/DynamicCategory.cpp:276
 msgid "Warning"
-msgstr "警告！"
+msgstr ""
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:277
-#, fuzzy
-#| msgid "Can not overwrite the random playlist."
+#: browsers/playlistbrowser/DynamicCategory.cpp:276
 msgid "Cannot overwrite the random playlist."
-msgstr "無法覆寫隨機播放清單。"
+msgstr ""
 
 #: browsers/playlistbrowser/PlaylistCategory.cpp:75
 #: amarokurls/BookmarkManagerWidget.cpp:44
@@ -2899,18 +2767,14 @@ msgid "Unknown"
 msgstr "未知"
 
 #: browsers/CollectionTreeItem.cpp:170
-#, fuzzy
-#| msgid "Connection"
 msgid "Counting"
-msgstr "連線"
+msgstr ""
 
 #: browsers/CollectionTreeItem.cpp:188 playlist/PlaylistModel.cpp:281
-#, fuzzy, kde-format
-#| msgid "%1 track"
-#| msgid_plural "%1 tracks"
+#, kde-format
 msgid "1 track"
 msgid_plural "%1 tracks"
-msgstr[0] "%1 首曲目"
+msgstr[0] ""
 
 #: firstruntutorial/FirstRunTutorialPage.cpp:59
 msgid "Close"
@@ -2925,16 +2789,10 @@ msgid "Devices"
 msgstr "裝置"
 
 #: MediaDevicePluginManager.cpp:284
-#, fuzzy
-#| msgid ""
-#| "Sorry, you cannot define two devices\n"
-#| "with the same name and mountpoint!"
 msgid ""
 "Cannot define two devices\n"
 "with the same name and mountpoint."
 msgstr ""
-"對不起，兩個裝置，是不可以擁有\n"
-"相同的名字和掛載點的。"
 
 #: MediaDevicePluginManager.cpp:312
 msgid "Add New Device"
@@ -2976,21 +2834,12 @@ msgstr ""
 "少數不需要（如 MTP 裝置）。"
 
 #: MediaDevicePluginManager.cpp:376
-#, fuzzy
-#| msgid ""
-#| "Sorry, every device must have a name and\n"
-#| "you cannot define two devices with the\n"
-#| "same name. These names must be unique\n"
-#| "across autodetected devices as well.\n"
 msgid ""
 "Every device must have a name, and\n"
 "two devices cannot have the same\n"
 "name. These names must be unique\n"
 "across auto-detected devices as well.\n"
 msgstr ""
-"對不起，每個裝置的名字都必須是獨一無二的，\n"
-"您不可以為兩個裝置指定相同的名字。\n"
-"對於自動偵測的裝置也是一樣。\n"
 
 #: MediaDevicePluginManager.cpp:396
 msgid "No mount point needed"
@@ -3058,7 +2907,7 @@ msgstr "不要處理"
 
 #. i18n: file: services/ampache/AmpacheConfigWidget.ui:104
 #. i18n: ectx: property (text), widget (KPushButton, removeButton)
-#: MediaDevicePluginManager.cpp:557 rc.cpp:1345
+#: MediaDevicePluginManager.cpp:557 rc.cpp:1357
 msgid "Remove"
 msgstr "移除"
 
@@ -3086,7 +2935,7 @@ msgstr ""
 
 #: MediaDevicePluginManager.cpp:694
 msgid "Error Creating File"
-msgstr ""
+msgstr "建立檔案時發生錯誤"
 
 #: MediaDevicePluginManager.cpp:704
 #, kde-format
@@ -3100,7 +2949,7 @@ msgstr ""
 
 #: MediaDevicePluginManager.cpp:708
 msgid "Error Removing File"
-msgstr ""
+msgstr "移除檔案時發生錯誤"
 
 #: MainWindow.cpp:280
 msgid "Internet"
@@ -3114,7 +2963,7 @@ msgstr "播放清單"
 msgid "Files"
 msgstr "檔案"
 
-#: MainWindow.cpp:436
+#: MainWindow.cpp:434
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
 "<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
@@ -3123,153 +2972,153 @@ msgstr ""
 "<qt>關閉主視窗不等於關閉 Amarok，它仍會在系統列繼續運作。要完全關閉，您可以在"
 "選單中按<B>離開</B>，或用系統匣圖示來結束應用程式。</qt>"
 
-#: MainWindow.cpp:438
+#: MainWindow.cpp:436
 msgid "Docking in System Tray"
 msgstr "停駐在系統列中"
 
-#: MainWindow.cpp:463
+#: MainWindow.cpp:461
 msgid "Use relative path for &saving"
 msgstr "儲存時使用相對路徑"
 
-#: MainWindow.cpp:468
+#: MainWindow.cpp:466
 msgid "Save As"
 msgstr "另存為"
 
-#: MainWindow.cpp:506
+#: MainWindow.cpp:504
 msgid "Play Media (Files or URLs)"
 msgstr "播放媒體 (檔案或 URL)"
 
-#: MainWindow.cpp:506
+#: MainWindow.cpp:504
 msgid "Add Media (Files or URLs)"
 msgstr "加入媒體 (檔案或 URL)"
 
-#: MainWindow.cpp:521
+#: MainWindow.cpp:519
 msgid "Add Stream"
 msgstr "加入串流"
 
-#: MainWindow.cpp:521
+#: MainWindow.cpp:519
 msgid "Enter Stream URL:"
 msgstr "請輸入串流網址："
 
-#: MainWindow.cpp:615
+#: MainWindow.cpp:613
 msgid "&Add Media..."
 msgstr "加入媒體(&A)..."
 
-#: MainWindow.cpp:620
+#: MainWindow.cpp:618
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "清除播放清單(&C)"
 
-#: MainWindow.cpp:624
+#: MainWindow.cpp:622
 msgid "&Add Stream..."
 msgstr "加入串流(&A)..."
 
-#: MainWindow.cpp:628
+#: MainWindow.cpp:626
 msgid "&Export Playlist As..."
 msgstr "將播放清單匯出為(&E)..."
 
-#: MainWindow.cpp:632
+#: MainWindow.cpp:630
 msgid "&Save Playlist"
 msgstr "儲存播放清單(&S)"
 
-#: MainWindow.cpp:636 covermanager/CoverManager.cpp:98
+#: MainWindow.cpp:634 covermanager/CoverManager.cpp:98
 msgid "Cover Manager"
 msgstr "封面管理員"
 
-#: MainWindow.cpp:648
+#: MainWindow.cpp:646
 msgid "Play Media..."
 msgstr "播放媒體..."
 
-#: MainWindow.cpp:654
+#: MainWindow.cpp:652
 msgid "Play Audio CD"
 msgstr "播放音樂 CD"
 
-#: MainWindow.cpp:663
+#: MainWindow.cpp:661
 msgid "&Seek Forward"
 msgstr "往後搜尋(S)"
 
-#: MainWindow.cpp:669
+#: MainWindow.cpp:667
 msgid "&Seek Backward"
 msgstr "往前搜尋(&S)"
 
-#: MainWindow.cpp:676
+#: MainWindow.cpp:674
 msgid "Update Collection"
 msgstr "更新收藏"
 
-#: MainWindow.cpp:683
+#: MainWindow.cpp:681
 msgid "Previous Track"
 msgstr "上一曲目"
 
-#: MainWindow.cpp:691
+#: MainWindow.cpp:689
 msgid "Next Track"
 msgstr "下一曲目"
 
-#: MainWindow.cpp:694
+#: MainWindow.cpp:692
 msgid "Increase Volume"
 msgstr "增大音量"
 
-#: MainWindow.cpp:700
+#: MainWindow.cpp:698
 msgid "Decrease Volume"
 msgstr "減少音量"
 
-#: MainWindow.cpp:706
+#: MainWindow.cpp:704
 msgid "Toggle Main Window"
 msgstr "切換主視窗"
 
-#: MainWindow.cpp:711
+#: MainWindow.cpp:709
 msgid "Show On Screen Display"
 msgstr "顯示 OSD"
 
-#: MainWindow.cpp:716
+#: MainWindow.cpp:714
 msgid "Mute Volume"
 msgstr "靜止音量"
 
-#: MainWindow.cpp:721
+#: MainWindow.cpp:719
 msgid "Love Current Track"
 msgstr "喜愛目前的曲目"
 
-#: MainWindow.cpp:726
+#: MainWindow.cpp:724
 msgid "Rate Current Track: 1"
 msgstr "目前曲目的用戶評分: 1"
 
-#: MainWindow.cpp:731
+#: MainWindow.cpp:729
 msgid "Rate Current Track: 2"
 msgstr "目前曲目的用戶評分: 2"
 
-#: MainWindow.cpp:736
+#: MainWindow.cpp:734
 msgid "Rate Current Track: 3"
 msgstr "目前曲目的用戶評分: 3"
 
-#: MainWindow.cpp:741
+#: MainWindow.cpp:739
 msgid "Rate Current Track: 4"
 msgstr "目前曲目的用戶評分: 4"
 
-#: MainWindow.cpp:746
+#: MainWindow.cpp:744
 msgid "Rate Current Track: 5"
 msgstr "目前曲目的用戶評分: 5"
 
-#: MainWindow.cpp:807
+#: MainWindow.cpp:805
 msgid "&Music"
 msgstr "音樂(&M)"
 
-#: MainWindow.cpp:811
+#: MainWindow.cpp:809
 msgid "&Amarok"
 msgstr "Amarok(&A)"
 
-#: MainWindow.cpp:852
+#: MainWindow.cpp:850
 msgid "&Tools"
 msgstr "工具(&T)"
 
-#: MainWindow.cpp:863
+#: MainWindow.cpp:861
 msgid "&Settings"
 msgstr "設定(&S)"
 
-#: MainWindow.cpp:959
+#: MainWindow.cpp:957
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "暫停 :: %1"
 
-#: MainWindow.cpp:971
+#: MainWindow.cpp:969
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
@@ -3277,7 +3126,7 @@ msgstr "%1 - %2  ::  %3"
 #: scriptengine/AmarokNetworkScript.cpp:72
 msgctxt "do not translate 'DataDownloader' or 'qt.core'"
 msgid "qt.core must be loaded to use DataDownloader"
-msgstr ""
+msgstr "必須載入 qt.core 才能使用 DataDownloader"
 
 #: k3bexporter.cpp:183
 msgid "Unable to start K3b."
@@ -3309,13 +3158,13 @@ msgstr "檔案模式"
 
 #. i18n: file: amarokconfig.kcfg:13
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:3 rc.cpp:1382
+#: rc.cpp:3 rc.cpp:1394
 msgid "Whether to display a second, left time label."
 msgstr "要不要在左邊顯示第二個時間標記。"
 
 #. i18n: file: amarokconfig.kcfg:14
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:6 rc.cpp:1385
+#: rc.cpp:6 rc.cpp:1397
 msgid ""
 "Set this to display a second time label to the left of the seek slider in "
 "the player window."
@@ -3324,13 +3173,13 @@ msgstr ""
 
 #. i18n: file: amarokconfig.kcfg:18
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:9 rc.cpp:1388
+#: rc.cpp:9 rc.cpp:1400
 msgid "Whether to display remaining track time in the left time label."
 msgstr "要不要在左邊的時間標記顯示剩餘時間。"
 
 #. i18n: file: amarokconfig.kcfg:19
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:12 rc.cpp:1391
+#: rc.cpp:12 rc.cpp:1403
 msgid ""
 "Set this to display remaining track time instead of past track time in the "
 "player window."
@@ -3338,13 +3187,13 @@ msgstr "設定這個可以在播放器中顯示曲目剩餘的時間，而不是
 
 #. i18n: file: amarokconfig.kcfg:23
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:15 rc.cpp:1394
+#: rc.cpp:15 rc.cpp:1406
 msgid "Which track(s) to play repeatedly"
 msgstr "要重覆播放曲目"
 
 #. i18n: file: amarokconfig.kcfg:24
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:18 rc.cpp:1397
+#: rc.cpp:18 rc.cpp:1409
 msgid ""
 "Whether to repeat the current track, the current album, or the current "
 "playlist indefinitely, or neither."
@@ -3352,37 +3201,37 @@ msgstr "是否要不斷重覆播放目前的曲目、專輯或播放清單，或
 
 #. i18n: file: amarokconfig.kcfg:27
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:21 rc.cpp:1400
+#: rc.cpp:21 rc.cpp:1412
 msgid "Do not Repeat"
 msgstr "不重覆"
 
 #. i18n: file: amarokconfig.kcfg:30
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:24 rc.cpp:1403
+#: rc.cpp:24 rc.cpp:1415
 msgid "Repeat Track"
 msgstr "重覆播放曲目"
 
 #. i18n: file: amarokconfig.kcfg:33
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:27 rc.cpp:1406
+#: rc.cpp:27 rc.cpp:1418
 msgid "Repeat Album"
 msgstr "重覆播放專輯"
 
 #. i18n: file: amarokconfig.kcfg:36
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:30 rc.cpp:1409
+#: rc.cpp:30 rc.cpp:1421
 msgid "Repeat Playlist"
 msgstr "重覆播放清單"
 
 #. i18n: file: amarokconfig.kcfg:42
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:33 rc.cpp:1412
+#: rc.cpp:33 rc.cpp:1424
 msgid "Which tracks or albums to favor in Random Mode"
 msgstr "在隨機播放模式中，您較想聽到的曲目或專輯"
 
 #. i18n: file: amarokconfig.kcfg:43
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:36 rc.cpp:1415
+#: rc.cpp:36 rc.cpp:1427
 msgid ""
 "Tracks or albums with the chosen property will be more likely to be chosen "
 "in Random Mode."
@@ -3390,26 +3239,26 @@ msgstr "在隨機播放模式中，具有指定特性的曲目或專輯會更容
 
 #. i18n: file: amarokconfig.kcfg:53
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:39 rc.cpp:1418
+#: rc.cpp:39 rc.cpp:1430
 msgid "Whether to play tracks or albums in random order"
 msgstr "要不要隨機播放曲目或專輯"
 
 #. i18n: file: amarokconfig.kcfg:54
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:42 rc.cpp:1421
+#: rc.cpp:42 rc.cpp:1433
 msgid ""
 "If set, Amarok plays the tracks or albums in the playlist in a random order."
 msgstr "設定後，Amarok 會隨機播放在清單中的曲目或專輯。"
 
 #. i18n: file: amarokconfig.kcfg:63
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:45 rc.cpp:1424
+#: rc.cpp:45 rc.cpp:1436
 msgid "The status of dynamic mode."
 msgstr "動態模式狀態"
 
 #. i18n: file: amarokconfig.kcfg:64
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:48 rc.cpp:1427
+#: rc.cpp:48 rc.cpp:1439
 msgid ""
 "If set, dynamic mode will be on, and tracks will be added according to the "
 "dynamic playlist specified."
@@ -3417,206 +3266,206 @@ msgstr "若設定此項目，則會開啟動態模式，並且會依指定的動
 
 #. i18n: file: amarokconfig.kcfg:68
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:51 rc.cpp:1430
+#: rc.cpp:51 rc.cpp:1442
 msgid "The most recently used Dynamic Mode"
 msgstr "最常使用的動態模式"
 
 #. i18n: file: amarokconfig.kcfg:69
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:54 rc.cpp:1433
+#: rc.cpp:54 rc.cpp:1445
 msgid ""
 "The title of the Dynamic Mode that was most recently loaded in the playlist"
 msgstr "在動態模式中，最近拿來放進播放清單的曲目標題"
 
 #. i18n: file: amarokconfig.kcfg:73
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:57 rc.cpp:1436
+#: rc.cpp:57 rc.cpp:1448
 msgid "Whether to show icon in system tray"
 msgstr "要不要在系統匣中顯示圖示"
 
 #. i18n: file: amarokconfig.kcfg:74
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:60 rc.cpp:1439
+#: rc.cpp:60 rc.cpp:1451
 msgid "Enable/Disable tray icon for Amarok."
 msgstr "啟用/停用系統匣圖示。"
 
 #. i18n: file: amarokconfig.kcfg:78
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:63 rc.cpp:1442
-msgid "Whether to animate the systray icon"
-msgstr "要不要在系統匣圖示顯示動畫"
+#: rc.cpp:63 rc.cpp:1454
+msgid "Whether to hide the context view."
+msgstr "是否要隱藏內文檢視動畫。"
 
 #. i18n: file: amarokconfig.kcfg:79
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:66 rc.cpp:1445
-msgid "Enable/Disable tray icon animation."
-msgstr "啟用/停用系統匣圖示動畫。"
+#: rc.cpp:66 rc.cpp:1457
+msgid "Enable/Disable context view in Amarok."
+msgstr "啟用/停用 Amarok 的內文檢視。"
 
 #. i18n: file: amarokconfig.kcfg:83
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:69 rc.cpp:1448
-msgid "Delay between tracks, in milliseconds"
-msgstr "曲目之間的延遲，單位是 milliseconds"
+#: rc.cpp:69 rc.cpp:1460
+msgid "Whether to animate the systray icon"
+msgstr "要不要在系統匣圖示顯示動畫"
 
 #. i18n: file: amarokconfig.kcfg:84
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:72 rc.cpp:1451
-msgid "Delay between tracks, in milliseconds."
-msgstr "曲目之間的延遲，單位是 milliseconds。"
+#: rc.cpp:72 rc.cpp:1463
+msgid "Enable/Disable tray icon animation."
+msgstr "啟用/停用系統匣圖示動畫。"
 
 #. i18n: file: amarokconfig.kcfg:88
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:75 rc.cpp:1454
-msgid "Number of undo levels in playlist"
-msgstr "播放清單還原功能記錄次數"
+#: rc.cpp:75 rc.cpp:1466
+msgid "Delay between tracks, in milliseconds"
+msgstr "曲目之間的延遲，單位是 milliseconds"
 
 #. i18n: file: amarokconfig.kcfg:89
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:78 rc.cpp:1457
-msgid "The number of undo levels in the playlist."
-msgstr "播放清單中還原功能的動作記錄次數"
+#: rc.cpp:78 rc.cpp:1469
+msgid "Delay between tracks, in milliseconds."
+msgstr "曲目之間的延遲，單位是 milliseconds。"
 
 #. i18n: file: amarokconfig.kcfg:93
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:81 rc.cpp:1460
-msgid "Whether a splash-screen should be displayed on startup"
-msgstr "要不要在啟動時顯示啟動畫面"
+#: rc.cpp:81 rc.cpp:1472
+msgid "Number of undo levels in playlist"
+msgstr "播放清單還原功能記錄次數"
 
 #. i18n: file: amarokconfig.kcfg:94
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:84 rc.cpp:1463
-msgid "Enable/Disable splashscreen during Amarok startup."
-msgstr "啟用/停用啟動畫面"
+#: rc.cpp:84 rc.cpp:1475
+msgid "The number of undo levels in the playlist."
+msgstr "播放清單中還原功能的動作記錄次數"
 
 #. i18n: file: amarokconfig.kcfg:98
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:87 rc.cpp:1466
-msgid "Whether playlists store relative path"
-msgstr "儲存播放清單時要不要使用相對路徑"
+#: rc.cpp:87 rc.cpp:1478
+msgid "Whether a splash-screen should be displayed on startup"
+msgstr "要不要在啟動時顯示啟動畫面"
 
 #. i18n: file: amarokconfig.kcfg:99
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:90 rc.cpp:1469
+#: rc.cpp:90 rc.cpp:1481
+msgid "Enable/Disable splashscreen during Amarok startup."
+msgstr "啟用/停用啟動畫面"
+
+#. i18n: file: amarokconfig.kcfg:103
+#. i18n: ectx: label, entry, group (General Options)
+#: rc.cpp:93 rc.cpp:1484
+msgid "Whether playlists store relative path"
+msgstr "儲存播放清單時要不要使用相對路徑"
+
+#. i18n: file: amarokconfig.kcfg:104
+#. i18n: ectx: whatsthis, entry, group (General Options)
+#: rc.cpp:96 rc.cpp:1487
 msgid ""
 "If set, Amarok's manually saved playlists will contain a relative path to "
 "each track, not an absolute path."
 msgstr "選取後，在手動儲存播放清單時，Amarok 會使用相對路徑，而非絕對路徑。"
 
-#. i18n: file: amarokconfig.kcfg:103
+#. i18n: file: amarokconfig.kcfg:108
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:93 rc.cpp:1472
+#: rc.cpp:99 rc.cpp:1490
 msgid "Whether organize files will overwrite existing files."
 msgstr "組織檔案時要不要覆寫現有檔案。"
 
-#. i18n: file: amarokconfig.kcfg:104
+#. i18n: file: amarokconfig.kcfg:109
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:96 rc.cpp:1475
+#: rc.cpp:102 rc.cpp:1493
 msgid "If set, Organize files will overwrite any existing destination."
 msgstr "選取後，組織檔案時會覆寫所有存在於目的地的檔案。"
 
-#. i18n: file: amarokconfig.kcfg:108
+#. i18n: file: amarokconfig.kcfg:113
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:99 rc.cpp:1478
+#: rc.cpp:105 rc.cpp:1496
 msgid ""
 "Whether organize files will group directories according to their filetype."
 msgstr "組織檔案時要不要把它們以檔案類型分派至不同的目錄。"
 
-#. i18n: file: amarokconfig.kcfg:109
+#. i18n: file: amarokconfig.kcfg:114
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:102 rc.cpp:1481
+#: rc.cpp:108 rc.cpp:1499
 msgid ""
 "If set, Organize files will group directories containing the same filetype."
 msgstr "選取後，組織檔案時會把它們放至同類型檔案的目錄。"
 
-#. i18n: file: amarokconfig.kcfg:113
+#. i18n: file: amarokconfig.kcfg:118
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:105 rc.cpp:1484
-#, fuzzy
-#| msgid ""
-#| "Whether organize files will group artist starting in the same character."
+#: rc.cpp:111 rc.cpp:1502
 msgid ""
 "Whether organize files will group artists whose names start with the same "
 "character."
-msgstr "組織檔案時要不要把它們以演出者首字母順序分組。"
-
-#. i18n: file: amarokconfig.kcfg:114
-#. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:108 rc.cpp:1487
-#, fuzzy
-#| msgid ""
-#| "If set, Organize files will group artist starting in the same character."
-msgid ""
-"If set, Organize files will group artists whose names start with the same "
-"character."
-msgstr "選取後，組織檔案時會把它們以演出者首字母順序分組。"
-
-#. i18n: file: amarokconfig.kcfg:118
-#. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:111 rc.cpp:1490
-msgid "Whether organize files will ignore The in artist names."
-msgstr "組織檔案時要不要忽略演出者名稱中的 'The' 字眼。"
+msgstr ""
 
 #. i18n: file: amarokconfig.kcfg:119
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:114 rc.cpp:1493
-msgid "If set, Organize files will ignore The in artist names."
-msgstr "選取後，組織檔案時會忽略演出者名稱中的 'The' 字眼。"
+#: rc.cpp:114 rc.cpp:1505
+msgid ""
+"If set, Organize files will group artists whose names start with the same "
+"character."
+msgstr ""
 
 #. i18n: file: amarokconfig.kcfg:123
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:117 rc.cpp:1496
-#, fuzzy
-#| msgid ""
-#| "Whether organize files will replace spaces in filenames by an underscore."
-msgid ""
-"Whether organize files will replace spaces in filenames with underscores."
-msgstr "組織檔案時要不要把檔名包含的空格換成底線。"
+#: rc.cpp:117 rc.cpp:1508
+msgid "Whether organize files will ignore The in artist names."
+msgstr "組織檔案時要不要忽略演出者名稱中的 'The' 字眼。"
 
 #. i18n: file: amarokconfig.kcfg:124
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:120 rc.cpp:1499
-#, fuzzy
-#| msgid ""
-#| "If set, Organize files will replace spaces in filenames by an underscore."
-msgid ""
-"If set, Organize files will replace spaces in filenames with underscores."
-msgstr "選取後，組織檔案時會把檔名包含的空格換成底線。"
+#: rc.cpp:120 rc.cpp:1511
+msgid "If set, Organize files will ignore The in artist names."
+msgstr "選取後，組織檔案時會忽略演出者名稱中的 'The' 字眼。"
 
 #. i18n: file: amarokconfig.kcfg:128
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:123 rc.cpp:1502
-msgid "Whether organize files will use cover art as folder icons."
-msgstr "組織檔案時要不要把封面影像用作資料夾的圖示。"
+#: rc.cpp:123 rc.cpp:1514
+msgid ""
+"Whether organize files will replace spaces in filenames with underscores."
+msgstr ""
 
 #. i18n: file: amarokconfig.kcfg:129
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:126 rc.cpp:1505
-msgid "If set, Organize files will use cover art as folder icons."
-msgstr "選取後，組織檔案時會把封面影像用作資料夾的圖示。"
+#: rc.cpp:126 rc.cpp:1517
+msgid ""
+"If set, Organize files will replace spaces in filenames with underscores."
+msgstr ""
 
 #. i18n: file: amarokconfig.kcfg:133
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:129 rc.cpp:1508
-msgid "Index of collection folder destination for Organize files."
-msgstr "組織檔案時存放目錄的索引。"
+#: rc.cpp:129 rc.cpp:1520
+msgid "Whether organize files will use cover art as folder icons."
+msgstr "組織檔案時要不要把封面影像用作資料夾的圖示。"
 
 #. i18n: file: amarokconfig.kcfg:134
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:132 rc.cpp:1511
-msgid "The ID of the collection folder destination for Organize files."
-msgstr "組織檔案時存放目錄的 ID。"
+#: rc.cpp:132 rc.cpp:1523
+msgid "If set, Organize files will use cover art as folder icons."
+msgstr "選取後，組織檔案時會把封面影像用作資料夾的圖示。"
 
 #. i18n: file: amarokconfig.kcfg:138
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:135 rc.cpp:1514
+#: rc.cpp:135 rc.cpp:1526
+msgid "Index of collection folder destination for Organize files."
+msgstr "組織檔案時存放目錄的索引。"
+
+#. i18n: file: amarokconfig.kcfg:139
+#. i18n: ectx: whatsthis, entry, group (General Options)
+#: rc.cpp:138 rc.cpp:1529
+msgid "The ID of the collection folder destination for Organize files."
+msgstr "組織檔案時存放目錄的 ID。"
+
+#. i18n: file: amarokconfig.kcfg:143
+#. i18n: ectx: label, entry, group (General Options)
+#: rc.cpp:141 rc.cpp:1532
 msgid ""
 "Whether organize files will rename files in a manner compatible with vfat "
 "filesystems."
 msgstr "組織檔案時要不要把檔名改成適合 vfat 檔案系統使用的名字。"
 
-#. i18n: file: amarokconfig.kcfg:139
+#. i18n: file: amarokconfig.kcfg:144
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:138 rc.cpp:1517
+#: rc.cpp:144 rc.cpp:1535
 msgid ""
 "If set, Organize files will replace characters that are not compatible with "
 "vfat filesystems (such as ':', '*' and '?')."
@@ -3624,378 +3473,368 @@ msgstr ""
 "啟用後，組織收藏時如果找到有檔名與 VFat 檔案系統不相容(如 ':', '*' 或 '?')，"
 "就把這些字元替換。"
 
-#. i18n: file: amarokconfig.kcfg:143
+#. i18n: file: amarokconfig.kcfg:148
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:141 rc.cpp:1520
+#: rc.cpp:147 rc.cpp:1538
 msgid ""
 "Whether organize files will rename files such that they only contain 7-bit "
 "ASCII characters."
 msgstr "組織檔案時要不要把檔名改成只有 7-bit ASCII 字元的模樣。"
 
-#. i18n: file: amarokconfig.kcfg:144
+#. i18n: file: amarokconfig.kcfg:149
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:144 rc.cpp:1523
+#: rc.cpp:150 rc.cpp:1541
 msgid ""
 "If set, Organize files will replace characters that are not compatible with "
 "the 7-bit ASCII character set."
 msgstr "選取後，組織檔案時會把檔名中不相容 7-bit ASCII 字符集的字元替換。"
 
-#. i18n: file: amarokconfig.kcfg:148
+#. i18n: file: amarokconfig.kcfg:153
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:147 rc.cpp:1526
+#: rc.cpp:153 rc.cpp:1544
 msgid "Whether organize files will use a custom file naming scheme."
 msgstr "組織檔案時要不要使用自訂命名規則。"
 
-#. i18n: file: amarokconfig.kcfg:149
+#. i18n: file: amarokconfig.kcfg:154
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:150 rc.cpp:1529
+#: rc.cpp:156 rc.cpp:1547
 msgid ""
 "If set, Organize files will rename files according to a custom format string."
 msgstr "選取後，組織檔案時會根據此使用者指定的格式把檔案改名。"
 
-#. i18n: file: amarokconfig.kcfg:153
+#. i18n: file: amarokconfig.kcfg:158
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:153 rc.cpp:1532
+#: rc.cpp:159 rc.cpp:1550
 msgid "Format string for Organize files, if a custom naming scheme is used."
 msgstr "當使用自訂命名規則，組織檔案時使用的重新命名格式。"
 
-#. i18n: file: amarokconfig.kcfg:154
+#. i18n: file: amarokconfig.kcfg:159
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:156 rc.cpp:1535
+#: rc.cpp:162 rc.cpp:1553
 msgid ""
 "If the custom filename scheme is enabled, then Organize files will rename "
 "files according to this format string."
 msgstr "如果自訂檔名規則已啟用，那麼組織檔案時會根據此格式把檔案改名。"
 
-#. i18n: file: amarokconfig.kcfg:158
+#. i18n: file: amarokconfig.kcfg:163
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:159 rc.cpp:1538
+#: rc.cpp:165 rc.cpp:1556
 msgid "Regular expression that is to be replaced."
 msgstr "要替換的文字對應的正規表示式。"
 
-#. i18n: file: amarokconfig.kcfg:159
+#. i18n: file: amarokconfig.kcfg:164
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:162 rc.cpp:1541
+#: rc.cpp:168 rc.cpp:1559
 msgid ""
 "Organize files will replace substrings matching this regular expression."
 msgstr "組織檔案時會若檔名包含了與此表示式對應的文字，就把它替換。"
 
-#. i18n: file: amarokconfig.kcfg:163
+#. i18n: file: amarokconfig.kcfg:168
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:165 rc.cpp:1544
+#: rc.cpp:171 rc.cpp:1562
 msgid "Replacing string."
 msgstr "正在替換字串。"
 
-#. i18n: file: amarokconfig.kcfg:164
+#. i18n: file: amarokconfig.kcfg:169
 #. i18n: ectx: whatsthis, entry, group (General Options)
-#: rc.cpp:168 rc.cpp:1547
+#: rc.cpp:174 rc.cpp:1565
 msgid "Organize files will replace matching substrings with this string."
 msgstr "組織檔案時把符合表示式的檔名部份替換成這字串。"
 
-#. i18n: file: amarokconfig.kcfg:168
+#. i18n: file: amarokconfig.kcfg:173
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:171 rc.cpp:1550
+#: rc.cpp:177 rc.cpp:1568
 msgid "Filename of the external web browser to be invoked by Amarok."
 msgstr "被 Amarok 調用的外部網頁瀏覽器的檔案名稱。"
 
-#. i18n: file: amarokconfig.kcfg:172
+#. i18n: file: amarokconfig.kcfg:177
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:174 rc.cpp:1553
+#: rc.cpp:180 rc.cpp:1571
 msgid "Whether to automatically attempt to fetch cover art as needed"
 msgstr "是否自動嘗試抓取封面"
 
-#. i18n: file: amarokconfig.kcfg:176
+#. i18n: file: amarokconfig.kcfg:181
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:177 rc.cpp:1556
+#: rc.cpp:183 rc.cpp:1574
 msgid ""
 "Automatically scroll the playlist to make the currently playing song visible"
-msgstr ""
+msgstr "自動化捲動播放清單，使您可以看到清單內正在播放的曲目"
 
-#. i18n: file: amarokconfig.kcfg:180
+#. i18n: file: amarokconfig.kcfg:185
 #. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:180 rc.cpp:1559
-#, fuzzy
-#| msgid "Whether years are shown in the collection browser."
+#: rc.cpp:186 rc.cpp:1577
 msgid "Show Album art in the Collection Browser"
-msgstr "在收藏瀏覽器中是否要顯示年份。"
-
-#. i18n: file: amarokconfig.kcfg:184
-#. i18n: ectx: label, entry, group (General Options)
-#: rc.cpp:183 rc.cpp:1562
-msgid "Show the Context View"
 msgstr ""
 
-#. i18n: file: amarokconfig.kcfg:191
+#. i18n: file: amarokconfig.kcfg:192
 #. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:186 rc.cpp:1565
+#: rc.cpp:189 rc.cpp:1580
 msgid "Master volume"
 msgstr "主音量"
 
-#. i18n: file: amarokconfig.kcfg:192
+#. i18n: file: amarokconfig.kcfg:193
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: rc.cpp:189 rc.cpp:1568
-#, fuzzy
-#| msgid "The Amarok master volume, a value between 0 (muted) and 100."
+#: rc.cpp:192 rc.cpp:1583
 msgid "The Amarok master volume, a value between 0 and 100."
-msgstr "Amarok 主音量，範圍為 0(靜音) 至 100。"
-
-#. i18n: file: amarokconfig.kcfg:198
-#. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:192 rc.cpp:1571
-msgid "Mute state"
 msgstr ""
 
 #. i18n: file: amarokconfig.kcfg:199
-#. i18n: ectx: whatsthis, entry, group (Playback)
-#: rc.cpp:195 rc.cpp:1574
-msgid "Mute/Unmute sound."
-msgstr ""
-
-#. i18n: file: amarokconfig.kcfg:203
 #. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:198 rc.cpp:1577
+#: rc.cpp:195 rc.cpp:1586
+msgid "Mute state"
+msgstr "靜音狀態"
+
+#. i18n: file: amarokconfig.kcfg:200
+#. i18n: ectx: whatsthis, entry, group (Playback)
+#: rc.cpp:198 rc.cpp:1589
+msgid "Mute/Unmute sound."
+msgstr "靜音/取消靜音。"
+
+#. i18n: file: amarokconfig.kcfg:204
+#. i18n: ectx: label, entry, group (Playback)
+#: rc.cpp:201 rc.cpp:1592
 msgid "Whether to crossfade between tracks"
 msgstr "要不要在曲目之間使用淡入淡出"
 
-#. i18n: file: amarokconfig.kcfg:204
+#. i18n: file: amarokconfig.kcfg:205
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: rc.cpp:201 rc.cpp:1580
+#: rc.cpp:204 rc.cpp:1595
 msgid "Enable/Disable crossfading between track changes."
 msgstr "啟用/停用播放過渡時的淡入淡出"
 
-#. i18n: file: amarokconfig.kcfg:208
+#. i18n: file: amarokconfig.kcfg:209
 #. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:204 rc.cpp:1583
+#: rc.cpp:207 rc.cpp:1598
 msgid "Length of crossfade, in milliseconds"
 msgstr "淡入淡出的時間，單位是 milliseconds"
 
-#. i18n: file: amarokconfig.kcfg:209
+#. i18n: file: amarokconfig.kcfg:210
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: rc.cpp:207 rc.cpp:1586
+#: rc.cpp:210 rc.cpp:1601
 msgid "The length of the crossfade between tracks in milliseconds."
 msgstr "曲目之間的淡入淡出時間，單位是 milliseconds。"
 
-#. i18n: file: amarokconfig.kcfg:214
+#. i18n: file: amarokconfig.kcfg:215
 #. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:210 rc.cpp:1589
+#: rc.cpp:213 rc.cpp:1604
 msgid "When to Crossfade"
 msgstr "何時要淡出淡入"
 
-#. i18n: file: amarokconfig.kcfg:215
+#. i18n: file: amarokconfig.kcfg:216
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: rc.cpp:213 rc.cpp:1592
+#: rc.cpp:216 rc.cpp:1607
 msgid ""
 "Determines whether to crossfade always, or on automatic/manual track changes "
 "only."
 msgstr "決定是否總是要淡出淡入，還是只在自動/手動切換曲目時才淡出淡入。"
 
-#. i18n: file: amarokconfig.kcfg:219
+#. i18n: file: amarokconfig.kcfg:220
 #. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:216 rc.cpp:1595
+#: rc.cpp:219 rc.cpp:1610
 msgid "Whether to fade out tracks when pressing stop."
 msgstr "要不要在按下「停止」時淡出。"
 
-#. i18n: file: amarokconfig.kcfg:220
+#. i18n: file: amarokconfig.kcfg:221
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: rc.cpp:219 rc.cpp:1598
+#: rc.cpp:222 rc.cpp:1613
 msgid "Enable/Disable fadeout."
 msgstr "啟用/停用淡出"
 
-#. i18n: file: amarokconfig.kcfg:224
+#. i18n: file: amarokconfig.kcfg:225
 #. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:222 rc.cpp:1601
+#: rc.cpp:225 rc.cpp:1616
 msgid "Length of fadeout, in milliseconds"
 msgstr "淡出的時間，單位是 milliseconds"
 
-#. i18n: file: amarokconfig.kcfg:225
+#. i18n: file: amarokconfig.kcfg:226
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: rc.cpp:225 rc.cpp:1604
+#: rc.cpp:228 rc.cpp:1619
 msgid "The length of the fadeout in milliseconds."
 msgstr "淡出時間，單位是 milliseconds。"
 
-#. i18n: file: amarokconfig.kcfg:230
+#. i18n: file: amarokconfig.kcfg:231
 #. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:228 rc.cpp:1607
+#: rc.cpp:231 rc.cpp:1622
 msgid "Whether to fade out when exiting the program."
 msgstr "要不要在結束程式時淡出音樂"
 
-#. i18n: file: amarokconfig.kcfg:234
+#. i18n: file: amarokconfig.kcfg:235
 #. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:231 rc.cpp:1610
+#: rc.cpp:234 rc.cpp:1625
 msgid "Enables the equalizer plugin"
 msgstr "啟用等化器外掛程式"
 
-#. i18n: file: amarokconfig.kcfg:235
+#. i18n: file: amarokconfig.kcfg:236
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: rc.cpp:234 rc.cpp:1613
+#: rc.cpp:237 rc.cpp:1628
 msgid "When enabled, an equalizer plugin filters the audio stream."
 msgstr "啟用後，等化器會處理輸出的音訊流，"
 
-#. i18n: file: amarokconfig.kcfg:239
+#. i18n: file: amarokconfig.kcfg:240
 #. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:237 rc.cpp:1616
+#: rc.cpp:240 rc.cpp:1631
 msgid "Equalizer pre-amplification value, range -100..100, 0 is normal."
 msgstr "等化器的前置放大值，範圍是 -100...100，0 則為正常。"
 
-#. i18n: file: amarokconfig.kcfg:245
+#. i18n: file: amarokconfig.kcfg:246
 #. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:240 rc.cpp:1619
+#: rc.cpp:243 rc.cpp:1634
 msgid "Band gains for equalizer, 10 values, range -100..100, 0 is normal."
 msgstr ""
 "等化器的頻帶放大值。分別有 10 個頻帶值，範圍是 -100...100，0 則為正常。"
 
-#. i18n: file: amarokconfig.kcfg:249
+#. i18n: file: amarokconfig.kcfg:250
 #. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:243 rc.cpp:1622
+#: rc.cpp:246 rc.cpp:1637
 msgid "Equalizer preset name."
 msgstr "請輸入等化器預置名稱。"
 
-#. i18n: file: amarokconfig.kcfg:253
-#. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:246 rc.cpp:1625
-msgid "The mode for adjusting playback volume."
-msgstr ""
-
 #. i18n: file: amarokconfig.kcfg:254
+#. i18n: ectx: label, entry, group (Playback)
+#: rc.cpp:249 rc.cpp:1640
+msgid "The mode for adjusting playback volume."
+msgstr "調整播放音量的模式。"
+
+#. i18n: file: amarokconfig.kcfg:255
 #. i18n: ectx: whatsthis, entry, group (Playback)
-#: rc.cpp:249 rc.cpp:1628
+#: rc.cpp:252 rc.cpp:1643
 msgid ""
 "Whether to adjust the volume of tracks to make them sound the same volume, "
 "and if so whether to make the adjustments per-track or per-album."
 msgstr ""
 
-#. i18n: file: amarokconfig.kcfg:257
+#. i18n: file: amarokconfig.kcfg:258
 #. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:252 rc.cpp:1631
+#: rc.cpp:255 rc.cpp:1646
 msgid "Disable replay gain"
 msgstr ""
 
-#. i18n: file: amarokconfig.kcfg:260
+#. i18n: file: amarokconfig.kcfg:261
 #. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:255 rc.cpp:1634
+#: rc.cpp:258 rc.cpp:1649
 msgid "Make each track the same volume"
-msgstr ""
+msgstr "讓每個曲目音量相同"
 
-#. i18n: file: amarokconfig.kcfg:263
+#. i18n: file: amarokconfig.kcfg:264
 #. i18n: ectx: label, entry, group (Playback)
-#: rc.cpp:258 rc.cpp:1637
+#: rc.cpp:261 rc.cpp:1652
 msgid "Make each album the same volume"
-msgstr ""
+msgstr "讓每個專輯音量相同"
 
-#. i18n: file: amarokconfig.kcfg:272
+#. i18n: file: amarokconfig.kcfg:273
 #. i18n: ectx: label, entry, group (Cover Manager)
-#: rc.cpp:261 rc.cpp:1640
+#: rc.cpp:264 rc.cpp:1655
 msgid "Amazon locale for cover retrieval"
 msgstr "接收封面用的 Amazon 地區"
 
-#. i18n: file: amarokconfig.kcfg:273
+#. i18n: file: amarokconfig.kcfg:274
 #. i18n: ectx: whatsthis, entry, group (Cover Manager)
-#: rc.cpp:264 rc.cpp:1643
+#: rc.cpp:267 rc.cpp:1658
 msgid "Determines which Amazon server cover images should be retrieved from."
 msgstr "決定應從哪一個 Amazon 伺服器接收封面影像。"
 
-#. i18n: file: amarokconfig.kcfg:280
+#. i18n: file: amarokconfig.kcfg:281
 #. i18n: ectx: label, entry, group (Wikipedia)
-#: rc.cpp:267 rc.cpp:1646
+#: rc.cpp:270 rc.cpp:1661
 msgid "Wikipedia locale for information retrieval"
 msgstr "接收資訊用的 Wikipedia 地區位置"
 
-#. i18n: file: amarokconfig.kcfg:281
+#. i18n: file: amarokconfig.kcfg:282
 #. i18n: ectx: whatsthis, entry, group (Wikipedia)
-#: rc.cpp:270 rc.cpp:1649
+#: rc.cpp:273 rc.cpp:1664
 msgid ""
 "Determines in which language the information is retrieved from Wikipedia."
 msgstr "決定從 Wikipedia 接收哪種語言的資訊。"
 
-#. i18n: file: amarokconfig.kcfg:288
+#. i18n: file: amarokconfig.kcfg:289
 #. i18n: ectx: label, entry, group (OSD)
-#: rc.cpp:273 rc.cpp:1652
+#: rc.cpp:276 rc.cpp:1667
 msgid "Use On-Screen Display"
 msgstr "使用 OSD (On-Screen Display)"
 
-#. i18n: file: amarokconfig.kcfg:289
+#. i18n: file: amarokconfig.kcfg:290
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: rc.cpp:276 rc.cpp:1655
+#: rc.cpp:279 rc.cpp:1670
 msgid "Enable/Disable the On-Screen Display."
 msgstr "啟用/停用 OSD (On-Screen Display)。"
 
-#. i18n: file: amarokconfig.kcfg:294
+#. i18n: file: amarokconfig.kcfg:295
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: rc.cpp:282 rc.cpp:1661
+#: rc.cpp:285 rc.cpp:1676
 msgid "Enable/Disable use of Growl for notifications."
 msgstr "開啟/關閉使用咆哮信通知。"
 
-#. i18n: file: amarokconfig.kcfg:298
+#. i18n: file: amarokconfig.kcfg:299
 #. i18n: ectx: label, entry, group (OSD)
-#: rc.cpp:285 rc.cpp:1664
+#: rc.cpp:288 rc.cpp:1679
 msgid "Display the same information in the OSD as in the playlist columns."
 msgstr "OSD 顯示與播放清單中各欄相同的資訊"
 
-#. i18n: file: amarokconfig.kcfg:299
+#. i18n: file: amarokconfig.kcfg:300
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: rc.cpp:288 rc.cpp:1667
+#: rc.cpp:291 rc.cpp:1682
 msgid ""
 "If enabled, the OSD will display the same information and in the same order "
 "as the columns in the playlist."
 msgstr "啟用後，OSD 將會顯示與播放清單的次序相同，並一樣的資訊。"
 
-#. i18n: file: amarokconfig.kcfg:303
+#. i18n: file: amarokconfig.kcfg:304
 #. i18n: ectx: label, entry, group (OSD)
-#: rc.cpp:291 rc.cpp:1670
+#: rc.cpp:294 rc.cpp:1685
 msgid "The OSD text to show"
 msgstr "要顯示的的 OSD 文字"
 
-#. i18n: file: amarokconfig.kcfg:304
+#. i18n: file: amarokconfig.kcfg:305
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: rc.cpp:294 rc.cpp:1673
+#: rc.cpp:297 rc.cpp:1688
 msgid "Customize the OSD display text."
 msgstr "自訂 OSD 顯示的文字。"
 
-#. i18n: file: amarokconfig.kcfg:308
+#. i18n: file: amarokconfig.kcfg:309
 #. i18n: ectx: label, entry, group (OSD)
-#: rc.cpp:297 rc.cpp:1676
+#: rc.cpp:300 rc.cpp:1691
 msgid "Font for On-Screen Display"
 msgstr "OSD 字型"
 
-#. i18n: file: amarokconfig.kcfg:309
+#. i18n: file: amarokconfig.kcfg:310
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: rc.cpp:300 rc.cpp:1679
+#: rc.cpp:303 rc.cpp:1694
 msgid "The font to use for the On-Screen Display."
 msgstr "OSD 使用的字型。"
 
-#. i18n: file: amarokconfig.kcfg:313
+#. i18n: file: amarokconfig.kcfg:314
 #. i18n: ectx: label, entry, group (OSD)
-#: rc.cpp:303 rc.cpp:1682
+#: rc.cpp:306 rc.cpp:1697
 msgid "Translucency Toggle"
 msgstr "半透明切換"
 
-#. i18n: file: amarokconfig.kcfg:314
+#. i18n: file: amarokconfig.kcfg:315
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: rc.cpp:306 rc.cpp:1685
+#: rc.cpp:309 rc.cpp:1700
 msgid "Make the background of the OSD translucent."
 msgstr "讓 OSD 的背景成半透明。"
 
-#. i18n: file: amarokconfig.kcfg:318
+#. i18n: file: amarokconfig.kcfg:319
 #. i18n: ectx: label, entry, group (OSD)
-#: rc.cpp:309 rc.cpp:1688
+#: rc.cpp:312 rc.cpp:1703
 msgid "Whether to use custom colors for the OSD"
 msgstr "要不要自訂 OSD 的顏色"
 
-#. i18n: file: amarokconfig.kcfg:319
+#. i18n: file: amarokconfig.kcfg:320
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: rc.cpp:312 rc.cpp:1691
+#: rc.cpp:315 rc.cpp:1706
 msgid "You can use custom colors for the OSD if you set this true."
 msgstr "如果設為真，您可以對 OSD 使用自訂頻色。"
 
-#. i18n: file: amarokconfig.kcfg:323
+#. i18n: file: amarokconfig.kcfg:324
 #. i18n: ectx: label, entry, group (OSD)
-#: rc.cpp:315 rc.cpp:1694
+#: rc.cpp:318 rc.cpp:1709
 msgid "Font Color for On-Screen Display"
 msgstr "OSD 的字型顏色"
 
-#. i18n: file: amarokconfig.kcfg:324
+#. i18n: file: amarokconfig.kcfg:325
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: rc.cpp:318 rc.cpp:1697
+#: rc.cpp:321 rc.cpp:1712
 msgid ""
 "The color of the OSD text. The color is specified in RGB, a comma-separated "
 "list containing three integers between 0 and 255."
@@ -4003,31 +3842,29 @@ msgstr ""
 "OSD 的文字顏色。顏色需要使用 RGB 格式設定：以逗號分開三個數值，範圍為 0 至 "
 "255，分別對應紅、綠和藍。"
 
-#. i18n: file: amarokconfig.kcfg:328
-#. i18n: ectx: label, entry, group (OSD)
-#: rc.cpp:321 rc.cpp:1700
-#, fuzzy
-#| msgid "How many milliseconds the text should be displayed"
-msgid "How many milliseconds the text should be displayed for"
-msgstr "文字顯示的時間(單位是 milliseconds)"
-
 #. i18n: file: amarokconfig.kcfg:329
+#. i18n: ectx: label, entry, group (OSD)
+#: rc.cpp:324 rc.cpp:1715
+msgid "How many milliseconds the text should be displayed for"
+msgstr ""
+
+#. i18n: file: amarokconfig.kcfg:330
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: rc.cpp:324 rc.cpp:1703
+#: rc.cpp:327 rc.cpp:1718
 msgid ""
 "The time in milliseconds to show the OSD. A value of 0 means never hide. The "
 "default value is 5000 ms."
 msgstr "顯示 OSD 的持續時間。預設值為 5000 ms，設定為 0 代表持續顯示不關閉。"
 
-#. i18n: file: amarokconfig.kcfg:334
+#. i18n: file: amarokconfig.kcfg:335
 #. i18n: ectx: label, entry, group (OSD)
-#: rc.cpp:327 rc.cpp:1706
+#: rc.cpp:330 rc.cpp:1721
 msgid "Y position offset"
 msgstr "Y 位置坐標"
 
-#. i18n: file: amarokconfig.kcfg:335
+#. i18n: file: amarokconfig.kcfg:336
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: rc.cpp:330 rc.cpp:1709
+#: rc.cpp:333 rc.cpp:1724
 msgid ""
 "The Y position of the OSD relative to the chosen screen and OSD alignment. "
 "If Top alignment is chosen the Y offset is the space between the upper part "
@@ -4039,245 +3876,245 @@ msgstr ""
 "對齊方式，Y 坐標會用來表示螢幕頂端與 OSD 頂部之間的距離。若使用底部對齊方式，"
 "Y 坐標會用來表示螢幕底部與 OSD 底部之間的距離。"
 
-#. i18n: file: amarokconfig.kcfg:341
+#. i18n: file: amarokconfig.kcfg:342
 #. i18n: ectx: label, entry, group (OSD)
-#: rc.cpp:333 rc.cpp:1712
+#: rc.cpp:336 rc.cpp:1727
 msgid "OSD screen"
 msgstr "OSD 螢幕"
 
-#. i18n: file: amarokconfig.kcfg:342
+#. i18n: file: amarokconfig.kcfg:343
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: rc.cpp:336 rc.cpp:1715
+#: rc.cpp:339 rc.cpp:1730
 msgid ""
 "The screen that should display the OSD. For single-headed environments this "
 "setting should be 0."
 msgstr "用作顯示 OSD 的螢幕。對於單顯示器的環境，這個值應為 0。"
 
-#. i18n: file: amarokconfig.kcfg:346
+#. i18n: file: amarokconfig.kcfg:347
 #. i18n: ectx: label, entry, group (OSD)
-#: rc.cpp:339 rc.cpp:1718
+#: rc.cpp:342 rc.cpp:1733
 msgid "Whether the album cover should be shown"
 msgstr "要不要顯示專輯的封面"
 
-#. i18n: file: amarokconfig.kcfg:347
+#. i18n: file: amarokconfig.kcfg:348
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: rc.cpp:342 rc.cpp:1721
+#: rc.cpp:345 rc.cpp:1736
 msgid "If enabled, shows the album cover in the OSD."
 msgstr "啟用後會在 OSD 顯示專輯的封面"
 
-#. i18n: file: amarokconfig.kcfg:351
+#. i18n: file: amarokconfig.kcfg:352
 #. i18n: ectx: label, entry, group (OSD)
-#: rc.cpp:345 rc.cpp:1724
+#: rc.cpp:348 rc.cpp:1739
 msgid "Align OSD to"
 msgstr "對齊 OSD 到"
 
-#. i18n: file: amarokconfig.kcfg:352
+#. i18n: file: amarokconfig.kcfg:353
 #. i18n: ectx: whatsthis, entry, group (OSD)
-#: rc.cpp:348 rc.cpp:1727
+#: rc.cpp:351 rc.cpp:1742
 msgid ""
 "The relative position of the OSD. Possible choices are Left, Middle, Right "
 "and Center."
 msgstr "OSD 的相對位置。可以選擇：左、中、右。"
 
-#. i18n: file: amarokconfig.kcfg:366
+#. i18n: file: amarokconfig.kcfg:367
 #. i18n: ectx: label, entry, group (Session)
-#: rc.cpp:351 rc.cpp:1730
+#: rc.cpp:354 rc.cpp:1745
 msgid "Resume playback of last played track on startup"
 msgstr "啟動時恢復播放上一次離開時的樂曲"
 
-#. i18n: file: amarokconfig.kcfg:367
+#. i18n: file: amarokconfig.kcfg:368
 #. i18n: ectx: whatsthis, entry, group (Session)
-#: rc.cpp:354 rc.cpp:1733
+#: rc.cpp:357 rc.cpp:1748
 msgid "If set, Amarok resumes playback of the last played track on startup."
 msgstr "設定後，Amarok 會在啟動時恢復播放上一次離開時的樂曲"
 
-#. i18n: file: amarokconfig.kcfg:371
+#. i18n: file: amarokconfig.kcfg:372
 #. i18n: ectx: label, entry, group (Session)
-#: rc.cpp:357 rc.cpp:1736
+#: rc.cpp:360 rc.cpp:1751
 msgid "Track URL to resume upon startup"
 msgstr "啟動時要恢復播放的曲目 URL"
 
-#. i18n: file: amarokconfig.kcfg:372
+#. i18n: file: amarokconfig.kcfg:373
 #. i18n: ectx: whatsthis, entry, group (Session)
-#: rc.cpp:360 rc.cpp:1739
+#: rc.cpp:363 rc.cpp:1754
 msgid "Internal: URL of the track to resume on startup."
 msgstr "內部：啟動時要恢復播放的曲目 URL"
 
-#. i18n: file: amarokconfig.kcfg:375
+#. i18n: file: amarokconfig.kcfg:376
 #. i18n: ectx: label, entry, group (Session)
-#: rc.cpp:363 rc.cpp:1742
+#: rc.cpp:366 rc.cpp:1757
 msgid "Time to resume at, in milliseconds"
 msgstr "恢復播放到曲目的哪一位置，單位是 milliseconds"
 
-#. i18n: file: amarokconfig.kcfg:376
+#. i18n: file: amarokconfig.kcfg:377
 #. i18n: ectx: whatsthis, entry, group (Session)
-#: rc.cpp:366 rc.cpp:1745
+#: rc.cpp:369 rc.cpp:1760
 msgid "Internal: Playback position in the track to resume on startup."
 msgstr "內部：啟動時要恢復播放曲目的時間位置。"
 
-#. i18n: file: amarokconfig.kcfg:379
+#. i18n: file: amarokconfig.kcfg:380
 #. i18n: ectx: label, entry, group (Session)
-#: rc.cpp:369 rc.cpp:1748
+#: rc.cpp:372 rc.cpp:1763
 msgid ""
 "List of bools describing which browsers are visible, from top to bottom."
 msgstr "從上到下列出哪個瀏覽器可見。"
 
-#. i18n: file: amarokconfig.kcfg:382
+#. i18n: file: amarokconfig.kcfg:383
 #. i18n: ectx: label, entry, group (Session)
-#: rc.cpp:372 rc.cpp:1751
+#: rc.cpp:375 rc.cpp:1766
 msgid "Track playing on last exit. Value is -1 if no track was playing."
 msgstr "上次離開時播放的音軌。若為 -1 表示上次離開時並未播放。"
 
-#. i18n: file: amarokconfig.kcfg:386
+#. i18n: file: amarokconfig.kcfg:387
 #. i18n: ectx: label, entry, group (Session)
-#: rc.cpp:375 rc.cpp:1754
+#: rc.cpp:378 rc.cpp:1769
 msgid "Number (from the top) of the last active browser."
 msgstr "上次啟動的瀏覽器編號。"
 
-#. i18n: file: amarokconfig.kcfg:392
+#. i18n: file: amarokconfig.kcfg:393
 #. i18n: ectx: label, entry, group (Collection)
-#: rc.cpp:378 rc.cpp:1757
+#: rc.cpp:381 rc.cpp:1772
 msgid "Whether Collections folders are scanned recursively"
 msgstr "要不要遞迴地掃描收藏的目錄"
 
-#. i18n: file: amarokconfig.kcfg:396
+#. i18n: file: amarokconfig.kcfg:397
 #. i18n: ectx: label, entry, group (Collection)
-#: rc.cpp:381 rc.cpp:1760
+#: rc.cpp:384 rc.cpp:1775
 msgid "Whether Collection folders are rescanned on change"
 msgstr "要不要在收藏的目錄有改變時重新掃描"
 
-#. i18n: file: amarokconfig.kcfg:400
+#. i18n: file: amarokconfig.kcfg:401
 #. i18n: ectx: label, entry, group (Collection)
-#: rc.cpp:384 rc.cpp:1763
+#: rc.cpp:387 rc.cpp:1778
 msgid "List of folders in the Collection"
 msgstr "收藏的目錄清單"
 
-#. i18n: file: amarokconfig.kcfg:403
+#. i18n: file: amarokconfig.kcfg:404
 #. i18n: ectx: label, entry, group (Collection)
-#: rc.cpp:387 rc.cpp:1766
+#: rc.cpp:390 rc.cpp:1781
 msgid "Whether track numbers are shown in the collection browser."
 msgstr "在收藏瀏覽器中是否要顯示音軌編號。"
 
-#. i18n: file: amarokconfig.kcfg:407
+#. i18n: file: amarokconfig.kcfg:408
 #. i18n: ectx: label, entry, group (Collection)
-#: rc.cpp:390 rc.cpp:1769
+#: rc.cpp:393 rc.cpp:1784
 msgid "Whether years are shown in the collection browser."
 msgstr "在收藏瀏覽器中是否要顯示年份。"
 
-#. i18n: file: amarokconfig.kcfg:417
+#. i18n: file: amarokconfig.kcfg:418
 #. i18n: ectx: label, entry, group (Scrobbler)
-#: rc.cpp:393 rc.cpp:1772
+#: rc.cpp:396 rc.cpp:1787
 msgid "Submit played songs"
 msgstr "提交播過的歌"
 
-#. i18n: file: amarokconfig.kcfg:418
+#. i18n: file: amarokconfig.kcfg:419
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
-#: rc.cpp:396 rc.cpp:1775
+#: rc.cpp:399 rc.cpp:1790
 msgid "Whether played songs are submitted to Audioscrobbler"
 msgstr "要不要傳送播放過的樂曲至 Audioscrobbler"
 
-#. i18n: file: amarokconfig.kcfg:422
+#. i18n: file: amarokconfig.kcfg:423
 #. i18n: ectx: label, entry, group (Scrobbler)
-#: rc.cpp:399 rc.cpp:1778
+#: rc.cpp:402 rc.cpp:1793
 msgctxt "Username for audioscrobbler login"
 msgid "Username"
 msgstr "使用者名稱"
 
-#. i18n: file: amarokconfig.kcfg:423
+#. i18n: file: amarokconfig.kcfg:424
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
-#: rc.cpp:402 rc.cpp:1781
+#: rc.cpp:405 rc.cpp:1796
 msgid "The username to use for connecting to Audioscrobbler"
 msgstr "用來連接 Audioscrobbler 的使用者名稱"
 
-#. i18n: file: amarokconfig.kcfg:428
+#. i18n: file: amarokconfig.kcfg:429
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
-#: rc.cpp:408 rc.cpp:1787
+#: rc.cpp:411 rc.cpp:1802
 msgid "The password to use for connecting to Audioscrobbler"
 msgstr "用來連接 Audioscrobbler 的用戶密碼"
 
-#. i18n: file: amarokconfig.kcfg:432
+#. i18n: file: amarokconfig.kcfg:433
 #. i18n: ectx: label, entry, group (Scrobbler)
-#: rc.cpp:411 rc.cpp:1790
+#: rc.cpp:414 rc.cpp:1805
 msgid "Retrieve similar artists"
 msgstr "收集風格相近的演出者(&R)"
 
-#. i18n: file: amarokconfig.kcfg:433
+#. i18n: file: amarokconfig.kcfg:434
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
-#: rc.cpp:414 rc.cpp:1793
+#: rc.cpp:417 rc.cpp:1808
 msgid "Whether similar songs are retrieved from Audioscrobbler"
 msgstr "要不要從 Audioscrobbler 接收風格相近的樂曲"
 
-#. i18n: file: amarokconfig.kcfg:440
+#. i18n: file: amarokconfig.kcfg:441
 #. i18n: ectx: label, entry, group (MediaDevice)
-#: rc.cpp:417 rc.cpp:1796
+#: rc.cpp:420 rc.cpp:1811
 msgid "Device type"
 msgstr "裝置類型"
 
-#. i18n: file: amarokconfig.kcfg:441
+#. i18n: file: amarokconfig.kcfg:442
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
-#: rc.cpp:420 rc.cpp:1799
+#: rc.cpp:423 rc.cpp:1814
 msgid "The type of media device."
 msgstr "媒體裝置的類型"
 
-#. i18n: file: amarokconfig.kcfg:444
+#. i18n: file: amarokconfig.kcfg:445
 #. i18n: ectx: label, entry, group (MediaDevice)
-#: rc.cpp:423 rc.cpp:1802
+#: rc.cpp:426 rc.cpp:1817
 msgid "Mount point"
 msgstr "掛載點"
 
-#. i18n: file: amarokconfig.kcfg:445
+#. i18n: file: amarokconfig.kcfg:446
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
-#: rc.cpp:426 rc.cpp:1805
+#: rc.cpp:429 rc.cpp:1820
 msgid "The mount point used for the media device connection."
 msgstr "連接媒體裝置所用的掛載點。"
 
-#. i18n: file: amarokconfig.kcfg:448
+#. i18n: file: amarokconfig.kcfg:449
 #. i18n: ectx: label, entry, group (MediaDevice)
-#: rc.cpp:429 rc.cpp:1808
+#: rc.cpp:432 rc.cpp:1823
 msgid "Mount command"
 msgstr "掛載指令"
 
-#. i18n: file: amarokconfig.kcfg:449
+#. i18n: file: amarokconfig.kcfg:450
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
-#: rc.cpp:432 rc.cpp:1811
+#: rc.cpp:435 rc.cpp:1826
 msgid "The mount command used for the media device connection."
 msgstr "連接媒體裝置所用的掛載命令。"
 
-#. i18n: file: amarokconfig.kcfg:452
+#. i18n: file: amarokconfig.kcfg:453
 #. i18n: ectx: label, entry, group (MediaDevice)
-#: rc.cpp:435 rc.cpp:1814
+#: rc.cpp:438 rc.cpp:1829
 msgid "UmountCommand"
 msgstr "卸載命令"
 
-#. i18n: file: amarokconfig.kcfg:453
+#. i18n: file: amarokconfig.kcfg:454
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
-#: rc.cpp:438 rc.cpp:1817
+#: rc.cpp:441 rc.cpp:1832
 msgid "The umount command used for the media device connection."
 msgstr "中止連接媒體裝置時所用的卸載命令。"
 
-#. i18n: file: amarokconfig.kcfg:456
+#. i18n: file: amarokconfig.kcfg:457
 #. i18n: ectx: label, entry, group (MediaDevice)
-#: rc.cpp:441 rc.cpp:1820
+#: rc.cpp:444 rc.cpp:1835
 msgid "Auto delete podcasts"
 msgstr "自動刪除 Podcast"
 
-#. i18n: file: amarokconfig.kcfg:457
+#. i18n: file: amarokconfig.kcfg:458
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
-#: rc.cpp:444 rc.cpp:1823
+#: rc.cpp:447 rc.cpp:1838
 msgid ""
 "Whether podcasts shows already played are automatically deleted when media "
 "device is connected."
 msgstr "啟用後所有顯示為已播放的 Podcast 會在連接媒體裝置時被自動刪除。"
 
-#. i18n: file: amarokconfig.kcfg:460
+#. i18n: file: amarokconfig.kcfg:461
 #. i18n: ectx: label, entry, group (MediaDevice)
-#: rc.cpp:447 rc.cpp:1826
+#: rc.cpp:450 rc.cpp:1841
 msgid "Sync stats"
 msgstr "同步處理統計資料"
 
-#. i18n: file: amarokconfig.kcfg:461
+#. i18n: file: amarokconfig.kcfg:462
 #. i18n: ectx: whatsthis, entry, group (MediaDevice)
-#: rc.cpp:450 rc.cpp:1829
+#: rc.cpp:453 rc.cpp:1844
 msgid ""
 "Whether Amarok statistics should be synchronized with play count/ratings on "
 "device and whether tracks played should be submitted to last.fm."
@@ -4285,91 +4122,91 @@ msgstr ""
 "要不要把 Amarok 統計資料與裝置上的播放次數/用戶評分作同步處理，以及要不要把已"
 "播放的曲目傳送至 last.fm。"
 
-#. i18n: file: amarokconfig.kcfg:467
+#. i18n: file: amarokconfig.kcfg:468
 #. i18n: ectx: label, entry, group (Daap)
-#: rc.cpp:453 rc.cpp:1832
+#: rc.cpp:456 rc.cpp:1847
 msgid "Manually added servers"
 msgstr "手動加入的伺服器"
 
-#. i18n: file: amarokconfig.kcfg:468
+#. i18n: file: amarokconfig.kcfg:469
 #. i18n: ectx: whatsthis, entry, group (Daap)
-#: rc.cpp:456 rc.cpp:1835
+#: rc.cpp:459 rc.cpp:1850
 msgid "Music Sharing servers added by the user."
 msgstr "使用者加入的音樂分享伺服器。"
 
-#. i18n: file: amarokconfig.kcfg:471
+#. i18n: file: amarokconfig.kcfg:472
 #. i18n: ectx: label, entry, group (Daap)
-#: rc.cpp:459 rc.cpp:1838
+#: rc.cpp:462 rc.cpp:1853
 msgid "Server passwords"
 msgstr "伺服器密碼"
 
-#. i18n: file: amarokconfig.kcfg:472
+#. i18n: file: amarokconfig.kcfg:473
 #. i18n: ectx: whatsthis, entry, group (Daap)
-#: rc.cpp:462 rc.cpp:1841
+#: rc.cpp:465 rc.cpp:1856
 msgid "Passwords stored by hostname."
 msgstr "主機名稱儲存的密碼。"
 
-#. i18n: file: amarokconfig.kcfg:478
+#. i18n: file: amarokconfig.kcfg:479
 #. i18n: ectx: label, entry, group (Panel Sizes)
-#: rc.cpp:465 rc.cpp:1844
+#: rc.cpp:468 rc.cpp:1859
 msgid "State of main window splitter"
 msgstr "主視窗分割狀態"
 
-#. i18n: file: amarokconfig.kcfg:485
+#. i18n: file: amarokconfig.kcfg:486
 #. i18n: ectx: label, entry, group (Playlist Search)
-#: rc.cpp:468 rc.cpp:1847
+#: rc.cpp:471 rc.cpp:1862
 msgid "Include track names in matching"
 msgstr "比對時包含音軌名稱"
 
-#. i18n: file: amarokconfig.kcfg:489
+#. i18n: file: amarokconfig.kcfg:490
 #. i18n: ectx: label, entry, group (Playlist Search)
-#: rc.cpp:471 rc.cpp:1850
+#: rc.cpp:474 rc.cpp:1865
 msgid "Include album names in matching"
 msgstr "比對時包含專輯名稱"
 
-#. i18n: file: amarokconfig.kcfg:493
+#. i18n: file: amarokconfig.kcfg:494
 #. i18n: ectx: label, entry, group (Playlist Search)
-#: rc.cpp:474 rc.cpp:1853
+#: rc.cpp:477 rc.cpp:1868
 msgid "Include artist names in matching"
 msgstr "比對時包含演出者名稱"
 
-#. i18n: file: amarokconfig.kcfg:497
+#. i18n: file: amarokconfig.kcfg:498
 #. i18n: ectx: label, entry, group (Playlist Search)
-#: rc.cpp:477 rc.cpp:1856
+#: rc.cpp:480 rc.cpp:1871
 msgid "Include genre names in matching"
 msgstr "比對時包含流派名稱"
 
-#. i18n: file: amarokconfig.kcfg:501
+#. i18n: file: amarokconfig.kcfg:502
 #. i18n: ectx: label, entry, group (Playlist Search)
-#: rc.cpp:480 rc.cpp:1859
+#: rc.cpp:483 rc.cpp:1874
 msgid "Include composer names in matching"
 msgstr "比對時包含作曲者名稱"
 
-#. i18n: file: amarokconfig.kcfg:505
+#. i18n: file: amarokconfig.kcfg:506
 #. i18n: ectx: label, entry, group (Playlist Search)
-#. i18n: file: amarokconfig.kcfg:509
+#. i18n: file: amarokconfig.kcfg:510
 #. i18n: ectx: label, entry, group (Playlist Search)
-#. i18n: file: amarokconfig.kcfg:505
+#. i18n: file: amarokconfig.kcfg:506
 #. i18n: ectx: label, entry, group (Playlist Search)
-#. i18n: file: amarokconfig.kcfg:509
+#. i18n: file: amarokconfig.kcfg:510
 #. i18n: ectx: label, entry, group (Playlist Search)
-#: rc.cpp:483 rc.cpp:486 rc.cpp:1862 rc.cpp:1865
+#: rc.cpp:486 rc.cpp:489 rc.cpp:1877 rc.cpp:1880
 msgid "Include years in matching"
 msgstr "比對時包含年份"
 
-#. i18n: file: amarokconfig.kcfg:516
+#. i18n: file: amarokconfig.kcfg:517
 #. i18n: ectx: label, entry, group (Playlist Layout)
-#: rc.cpp:489 rc.cpp:1868
+#: rc.cpp:492 rc.cpp:1883
 msgid "The name of the layout that will be loaded on startup"
 msgstr ""
 
-#: rc.cpp:490
+#: rc.cpp:493
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
 msgstr ""
 "Kenduest Lee,Jouston Huang,Chao-Hsiung Liao, Frank Weng (a.k.a. Franklin)"
 
-#: rc.cpp:491
+#: rc.cpp:494
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
 msgstr ""
@@ -4378,100 +4215,100 @@ msgstr ""
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:20
 #. i18n: ectx: property (windowTitle), widget (QWidget, OrganizeCollectionDialogBase)
-#: rc.cpp:494
+#: rc.cpp:497
 msgid "Organize Files"
 msgstr "組織檔案"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:37
 #. i18n: ectx: property (toolTip), widget (QLabel, folderLabel)
-#: rc.cpp:497
+#: rc.cpp:500
 msgid "Base directory under which to put files"
 msgstr "收藏檔案的底目錄"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:40
 #. i18n: ectx: property (text), widget (QLabel, folderLabel)
-#: rc.cpp:500
+#: rc.cpp:503
 msgid "C&ollection Folder:"
 msgstr "收藏目錄(&O):"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:78
 #. i18n: ectx: attribute (title), widget (QWidget, tab)
-#: rc.cpp:503
+#: rc.cpp:506
 msgid "File Naming Scheme"
 msgstr "檔案名稱組合形式"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:84
 #. i18n: ectx: property (toolTip), widget (QCheckBox, filetypeCheck)
-#: rc.cpp:506
+#: rc.cpp:509
 msgid "If checked, create a directory hierarchy using the filename extension."
 msgstr "剔選後，程式會以檔案的副檔名建立分類目錄。"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:87
 #. i18n: ectx: property (text), widget (QCheckBox, filetypeCheck)
-#: rc.cpp:509
+#: rc.cpp:512
 msgid "Group b&y File Type"
 msgstr "以檔案類型分類(&Y)"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:100
 #. i18n: ectx: property (toolTip), widget (QCheckBox, initialCheck)
-#: rc.cpp:512
+#: rc.cpp:515
 msgid ""
 "If checked, introduce another directory hierarchy for the artists' initials."
 msgstr "剔選後，程式會根據演出者的字母次序建立分類目錄。"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:103
 #. i18n: ectx: property (text), widget (QCheckBox, initialCheck)
-#: rc.cpp:515
+#: rc.cpp:518
 msgid "Group &by Artist's Initial"
 msgstr "以演出者的首字母次序分類(&B)"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:110
 #. i18n: ectx: property (toolTip), widget (QCheckBox, customschemeCheck)
-#: rc.cpp:518
+#: rc.cpp:521
 msgid ""
 "If checked, use a custom format string for naming the files in the collection"
 msgstr "剔選後，程式會使用自訂的格式來命名收藏中的檔案"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:113
 #. i18n: ectx: property (text), widget (QCheckBox, customschemeCheck)
-#: rc.cpp:521
+#: rc.cpp:524
 msgid "Custo&m Format"
 msgstr "自訂格式(&M)"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:134
 #. i18n: ectx: attribute (title), widget (QWidget, tab_2)
-#: rc.cpp:524
+#: rc.cpp:527
 msgid "Character Replacement"
 msgstr "字元替換"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:140
 #. i18n: ectx: property (toolTip), widget (QCheckBox, spaceCheck)
-#: rc.cpp:527
+#: rc.cpp:530
 msgid "If checked, convert spaces to underscores."
 msgstr "選取後，程式會把空白改成底線。"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:143
 #. i18n: ectx: property (text), widget (QCheckBox, spaceCheck)
-#: rc.cpp:530
+#: rc.cpp:533
 msgid "&Replace Spaces with Underscores"
 msgstr "把空白以\"_\"替換(&R)"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:150
 #. i18n: ectx: property (toolTip), widget (QCheckBox, asciiCheck)
-#: rc.cpp:533
+#: rc.cpp:536
 msgid ""
 "If checked, replace characters that are unavailable in the 7-bit ASCII code."
 msgstr "選取後，程式會把非 7-bit ASCII 的字元更換。"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:153
 #. i18n: ectx: property (text), widget (QCheckBox, asciiCheck)
-#: rc.cpp:536
+#: rc.cpp:539
 msgid "Restrict to &ASCII"
 msgstr "限制只使用 &ASCII"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:160
 #. i18n: ectx: property (toolTip), widget (QCheckBox, ignoreTheCheck)
-#: rc.cpp:539
+#: rc.cpp:542
 msgid "If checked, postfix artists' names starting with 'The' with ', The'."
 msgstr ""
 "選擇後，程式會把演出者名字一開始的 'The' 字眼放在後面，變成'演出者名稱, "
@@ -4479,13 +4316,13 @@ msgstr ""
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:163
 #. i18n: ectx: property (text), widget (QCheckBox, ignoreTheCheck)
-#: rc.cpp:542
+#: rc.cpp:545
 msgid "I&gnore 'The' in Artist Names"
 msgstr "忽略演出者名稱的 'The' 字眼(&I)"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:170
 #. i18n: ectx: property (toolTip), widget (QCheckBox, vfatCheck)
-#: rc.cpp:545
+#: rc.cpp:548
 msgid ""
 "If checked, replace characters that are incompatible with MS-DOS/VFAT file "
 "systems."
@@ -4493,77 +4330,73 @@ msgstr "選取後，程式會把與 MS-DOS/VFAT 檔案系統不相容的字元�
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:173
 #. i18n: ectx: property (text), widget (QCheckBox, vfatCheck)
-#: rc.cpp:548
+#: rc.cpp:551
 msgid "VFAT Safe &Names"
 msgstr "VFAT 相容名稱(&N)"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:182
 #. i18n: ectx: property (text), widget (QLabel, textLabel1)
-#: rc.cpp:551
+#: rc.cpp:554
 msgid "Replace"
 msgstr "取代"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:192
 #. i18n: ectx: property (toolTip), widget (KLineEdit, regexpEdit)
-#: rc.cpp:554
+#: rc.cpp:557
 msgid "Regular expression"
 msgstr "正規表示式"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:199
 #. i18n: ectx: property (text), widget (QLabel, textLabel2)
-#: rc.cpp:557
+#: rc.cpp:560
 msgid "with"
 msgstr "成為"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:209
 #. i18n: ectx: property (toolTip), widget (KLineEdit, replaceEdit)
-#: rc.cpp:560
+#: rc.cpp:563
 msgid "Character string"
 msgstr "字串"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:247
 #. i18n: ectx: property (title), widget (QGroupBox, previewBox)
-#: rc.cpp:563
+#: rc.cpp:566
 msgid "Destination Preview"
 msgstr "替換結果"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:259
 #. i18n: ectx: property (toolTip), widget (QLabel, previewText)
-#: rc.cpp:566
+#: rc.cpp:569
 msgid "This is what the file names will look like after renaming."
 msgstr "這些是檔案重新命名後的樣子。"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:290
 #. i18n: ectx: property (toolTip), widget (QCheckBox, overwriteCheck)
-#: rc.cpp:569
+#: rc.cpp:572
 msgid "If checked, overwrite files of the same name without asking."
 msgstr "選取後，覆寫檔案時不需要過問。"
 
 #. i18n: file: collection/sqlcollection/OrganizeCollectionDialogBase.ui:293
 #. i18n: ectx: property (text), widget (QCheckBox, overwriteCheck)
-#: rc.cpp:572
+#: rc.cpp:575
 msgid "Overwrite &Destination"
 msgstr "覆寫目標檔案(&D)"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:17
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
-#: rc.cpp:575
-#, fuzzy
-#| msgid "Podcast Configuration"
+#: rc.cpp:578
 msgid "Sound system configuration"
-msgstr "Podcast 設定"
+msgstr ""
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:29
 #. i18n: ectx: property (text), widget (QPushButton, pushButtonPhonon)
-#: rc.cpp:578
-#, fuzzy
-#| msgid "&Configure"
+#: rc.cpp:581
 msgid "Configure"
-msgstr "設定(&C)..."
+msgstr ""
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:40
 #. i18n: ectx: property (whatsThis), widget (QGroupBox, opt_crossfade_2)
-#: rc.cpp:581
+#: rc.cpp:584
 msgid ""
 "<b>Quit Behavior</b>\n"
 "<p>On exit, Amarok can slowly fade the volume of the playing track (which is "
@@ -4575,25 +4408,25 @@ msgstr ""
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:43
 #. i18n: ectx: property (title), widget (QGroupBox, opt_crossfade_2)
-#: rc.cpp:585
+#: rc.cpp:588
 msgid "Fadeout on track end"
 msgstr "曲目結束時淡出"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:49
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_Fadeout)
-#: rc.cpp:588
+#: rc.cpp:591
 msgid "&Fadeout"
 msgstr "淡出(&F)"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:59
 #. i18n: ectx: property (text), widget (QLabel, fadeoutLengthLabel)
-#: rc.cpp:591
+#: rc.cpp:594
 msgid "Fadeout &duration:"
 msgstr "淡出持續時間(&D)："
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:72
 #. i18n: ectx: property (toolTip), widget (QSpinBox, kcfg_FadeoutLength)
-#: rc.cpp:594
+#: rc.cpp:597
 msgid "The length of the fadeout, in milliseconds."
 msgstr "淡出時間，單位是毫秒。"
 
@@ -4601,31 +4434,31 @@ msgstr "淡出時間，單位是毫秒。"
 #. i18n: ectx: property (suffix), widget (QSpinBox, kcfg_FadeoutLength)
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:81
 #. i18n: ectx: property (suffix), widget (QSpinBox, kcfg_OsdDuration)
-#: rc.cpp:597 rc.cpp:672
+#: rc.cpp:600 rc.cpp:684
 msgid " ms"
 msgstr " ms"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:97
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
-#: rc.cpp:600
+#: rc.cpp:603
 msgid "Miscellaneous"
 msgstr "雜項"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:103
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_FadeoutOnExit)
-#: rc.cpp:603
+#: rc.cpp:606
 msgid "If checked, Amarok will fade out the music on program exit."
 msgstr "選取後，AmaroK 會在結束時把音樂淡出。"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:106
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_FadeoutOnExit)
-#: rc.cpp:606
+#: rc.cpp:609
 msgid "Fadeout on e&xit"
 msgstr "離開時淡出(&X)"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:113
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ResumePlayback)
-#: rc.cpp:609
+#: rc.cpp:612
 msgid ""
 "If checked, Amarok will<br>resume playback from where you left it the "
 "previous session -- just like a tape-player."
@@ -4635,67 +4468,79 @@ msgstr ""
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:116
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ResumePlayback)
-#: rc.cpp:612
+#: rc.cpp:615
 msgid "&Resume playback on start"
 msgstr "啟動時恢復播放(&R)"
 
-#. i18n: file: configdialog/dialogs/GeneralConfig.ui:16
+#. i18n: file: configdialog/dialogs/GeneralConfig.ui:17
 #. i18n: ectx: property (title), widget (QGroupBox, generalBox)
-#: rc.cpp:615
+#: rc.cpp:618
 msgid "General Options"
 msgstr "一般選項"
 
-#. i18n: file: configdialog/dialogs/GeneralConfig.ui:22
+#. i18n: file: configdialog/dialogs/GeneralConfig.ui:23
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ShowSplashscreen)
-#. i18n: file: configdialog/dialogs/GeneralConfig.ui:25
+#. i18n: file: configdialog/dialogs/GeneralConfig.ui:26
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_ShowSplashscreen)
-#: rc.cpp:618 rc.cpp:621
+#: rc.cpp:621 rc.cpp:624
 msgid "Check to enable the splashscreen during Amarok startup."
 msgstr "選取後會啟用 Amarok 啟動畫面。"
 
-#. i18n: file: configdialog/dialogs/GeneralConfig.ui:28
+#. i18n: file: configdialog/dialogs/GeneralConfig.ui:29
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ShowSplashscreen)
-#: rc.cpp:624
+#: rc.cpp:627
 msgid "Sho&w splash-screen on startup"
 msgstr "啟動時顯示啟動畫面(&W)"
 
-#. i18n: file: configdialog/dialogs/GeneralConfig.ui:35
+#. i18n: file: configdialog/dialogs/GeneralConfig.ui:36
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_ShowTrayIcon)
-#. i18n: file: configdialog/dialogs/GeneralConfig.ui:38
+#. i18n: file: configdialog/dialogs/GeneralConfig.ui:39
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_ShowTrayIcon)
-#: rc.cpp:627 rc.cpp:630
+#: rc.cpp:630 rc.cpp:633
 msgid "Check to enable the Amarok system tray icon."
 msgstr "選取後會啟用 Amarok 的系統匣圖示。"
 
-#. i18n: file: configdialog/dialogs/GeneralConfig.ui:41
+#. i18n: file: configdialog/dialogs/GeneralConfig.ui:42
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ShowTrayIcon)
-#: rc.cpp:633
+#: rc.cpp:636
 msgid "Show tray &icon"
 msgstr "顯示系統列圖示(&I)"
 
-#. i18n: file: configdialog/dialogs/GeneralConfig.ui:48
+#. i18n: file: configdialog/dialogs/GeneralConfig.ui:49
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AutoGetCoverArt)
-#: rc.cpp:636
+#: rc.cpp:639
 msgid "Automatically retrieve cover art"
 msgstr "自動取得封面"
 
-#. i18n: file: configdialog/dialogs/GeneralConfig.ui:58
-#. i18n: ectx: property (title), widget (QGroupBox, playlistBox)
-#: rc.cpp:639
-#, fuzzy
-#| msgid "Playlist Files"
-msgid "Playlist Options"
-msgstr "播放清單檔案"
-
-#. i18n: file: configdialog/dialogs/GeneralConfig.ui:64
-#. i18n: ectx: property (text), widget (QCheckBox, kcfg_AutoScrollPlaylist)
-#: rc.cpp:642
-msgid "Automatically scroll playlist to current track"
+#. i18n: file: configdialog/dialogs/GeneralConfig.ui:56
+#. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_HideContextView)
+#. i18n: file: configdialog/dialogs/GeneralConfig.ui:59
+#. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_HideContextView)
+#: rc.cpp:642 rc.cpp:645
+msgid "Check to hide the context view."
 msgstr ""
+
+#. i18n: file: configdialog/dialogs/GeneralConfig.ui:62
+#. i18n: ectx: property (text), widget (QCheckBox, kcfg_HideContextView)
+#: rc.cpp:648
+msgid "Hide context view"
+msgstr ""
+
+#. i18n: file: configdialog/dialogs/GeneralConfig.ui:77
+#. i18n: ectx: property (title), widget (QGroupBox, playlistBox)
+#: rc.cpp:651
+msgid "Playlist Options"
+msgstr ""
+
+#. i18n: file: configdialog/dialogs/GeneralConfig.ui:83
+#. i18n: ectx: property (text), widget (QCheckBox, kcfg_AutoScrollPlaylist)
+#: rc.cpp:654
+msgid "Automatically scroll playlist to current track"
+msgstr "自動化捲動播放清單到現在的曲目"
 
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:19
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_OsdEnabled)
-#: rc.cpp:645
+#: rc.cpp:657
 msgid ""
 "Check to enable the On-Screen-Display. <br>The OSD briefly displays track "
 "data when a new track is played."
@@ -4705,7 +4550,7 @@ msgstr ""
 
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:22
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_OsdEnabled)
-#: rc.cpp:648
+#: rc.cpp:660
 msgid ""
 "Check to enable the On-Screen-Display. The OSD briefly displays track data "
 "when a new track is played."
@@ -4714,25 +4559,25 @@ msgstr ""
 
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:25
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_OsdEnabled)
-#: rc.cpp:651
+#: rc.cpp:663
 msgid "&Use On-Screen-Display"
 msgstr "使用 On-Screen-Display(&U)"
 
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:35
 #. i18n: ectx: property (title), widget (QGroupBox, mainBox)
-#: rc.cpp:654
+#: rc.cpp:666
 msgid "&Appearance"
 msgstr "外觀(&A)"
 
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:41
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_OsdUseTranslucency)
-#: rc.cpp:657
+#: rc.cpp:669
 msgid "&Translucent"
 msgstr "半透明(&T)"
 
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:50
 #. i18n: ectx: property (text), widget (QLabel, textLabel1)
-#: rc.cpp:660
+#: rc.cpp:672
 msgid "&Duration:"
 msgstr "持續時間(&D)："
 
@@ -4740,27 +4585,21 @@ msgstr "持續時間(&D)："
 #. i18n: ectx: property (toolTip), widget (QSpinBox, kcfg_OsdDuration)
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:72
 #. i18n: ectx: property (whatsThis), widget (QSpinBox, kcfg_OsdDuration)
-#: rc.cpp:663 rc.cpp:666
-#, fuzzy
-#| msgid ""
-#| "The time in milliseconds to show the OSD. The value must be between 500 "
-#| "ms and 10000 ms."
+#: rc.cpp:675 rc.cpp:678
 msgid ""
 "The time in milliseconds for which to show the OSD. The value must be "
 "between 500 ms and 10000 ms."
 msgstr ""
-"OSD 每次顯示的持續時間(單位是 milliseconds)。這個數值必須在 500 ms 和 10000 "
-"ms 之間。"
 
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:78
 #. i18n: ectx: property (specialValueText), widget (QSpinBox, kcfg_OsdDuration)
-#: rc.cpp:669
+#: rc.cpp:681
 msgid "Forever"
 msgstr "永遠"
 
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:100
 #. i18n: ectx: property (text), widget (QLabel, textLabel2_3)
-#: rc.cpp:675
+#: rc.cpp:687
 msgid "Sc&reen:"
 msgstr "螢幕(&R)："
 
@@ -4768,7 +4607,7 @@ msgstr "螢幕(&R)："
 #. i18n: ectx: property (toolTip), widget (KComboBox, kcfg_OsdScreen)
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:122
 #. i18n: ectx: property (whatsThis), widget (KComboBox, kcfg_OsdScreen)
-#: rc.cpp:678 rc.cpp:681
+#: rc.cpp:690 rc.cpp:693
 msgid "The screen that should display the OSD."
 msgstr "用來顯示 OSD 的螢幕。"
 
@@ -4776,13 +4615,13 @@ msgstr "用來顯示 OSD 的螢幕。"
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_OsdUseCustomColors)
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:134
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_OsdUseCustomColors)
-#: rc.cpp:684 rc.cpp:687
+#: rc.cpp:696 rc.cpp:699
 msgid "Check to enable custom colors for the On-Screen-Display."
 msgstr "選取後會啟用 OSD 的自訂顏色。"
 
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:137
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_OsdUseCustomColors)
-#: rc.cpp:690
+#: rc.cpp:702
 msgid "Use &custom colors"
 msgstr "使用自訂顏色(&C)"
 
@@ -4790,73 +4629,73 @@ msgstr "使用自訂顏色(&C)"
 #. i18n: ectx: property (whatsThis), widget (QLabel, textLabel2)
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:202
 #. i18n: ectx: property (whatsThis), widget (KColorButton, kcfg_OsdTextColor)
-#: rc.cpp:693 rc.cpp:702
+#: rc.cpp:705 rc.cpp:714
 msgid "The color of the OSD text."
 msgstr "OSD 文字的顏色。"
 
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:177
 #. i18n: ectx: property (text), widget (QLabel, textLabel2)
-#: rc.cpp:696
+#: rc.cpp:708
 msgid "Text color:"
 msgstr "文字顏色："
 
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:199
 #. i18n: ectx: property (toolTip), widget (KColorButton, kcfg_OsdTextColor)
-#: rc.cpp:699
+#: rc.cpp:711
 msgid "Click to select the color of the OSD text."
 msgstr "按一下來選擇 OSD 文字的顏色。"
 
 #. i18n: file: configdialog/dialogs/CollectionConfig.ui:13
 #. i18n: ectx: property (windowTitle), widget (QWidget, CollectionConfig)
-#: rc.cpp:705
+#: rc.cpp:717
 msgid "Collection Setup"
 msgstr "收藏設定"
 
 #. i18n: file: configdialog/dialogs/CollectionConfig.ui:31
 #. i18n: ectx: property (title), widget (QGroupBox, collectionFoldersBox)
-#: rc.cpp:708
+#: rc.cpp:720
 msgid "Collection Folders"
 msgstr "收藏目錄"
 
 #. i18n: file: dialogs/deletedialogbase.ui:41
 #. i18n: ectx: property (text), widget (QLabel, ddWarningIcon)
-#: rc.cpp:711
+#: rc.cpp:723
 msgid "Icon Placeholder, not in GUI"
 msgstr "圖示表示符，非在 GUI"
 
 #. i18n: file: dialogs/deletedialogbase.ui:56
 #. i18n: ectx: property (text), widget (QLabel, ddDeleteText)
-#: rc.cpp:714
+#: rc.cpp:726
 msgid "Deletion method placeholder, never shown to user."
 msgstr "刪除方法表示符，不會給使用者顯示出來。"
 
 #. i18n: file: dialogs/deletedialogbase.ui:79
 #. i18n: ectx: property (toolTip), widget (K3ListBox, ddFileList)
-#: rc.cpp:717
+#: rc.cpp:729
 msgid "List of files that are about to be deleted."
 msgstr "要刪除的檔案清單。"
 
 #. i18n: file: dialogs/deletedialogbase.ui:82
 #. i18n: ectx: property (whatsThis), widget (K3ListBox, ddFileList)
-#: rc.cpp:720
+#: rc.cpp:732
 msgid "This is the list of items that are about to be deleted."
 msgstr "這裏是要刪除的項目清單。"
 
 #. i18n: file: dialogs/deletedialogbase.ui:89
 #. i18n: ectx: property (text), widget (QLabel, ddNumFiles)
-#: rc.cpp:723
+#: rc.cpp:735
 msgid "Placeholder for number of files, not in GUI"
 msgstr "檔案數目的表示符，非在 GUI"
 
 #. i18n: file: dialogs/deletedialogbase.ui:102
 #. i18n: ectx: property (text), widget (QCheckBox, ddShouldDelete)
-#: rc.cpp:726
+#: rc.cpp:738
 msgid "&Delete files instead of moving them to the trash"
 msgstr "不要把它們扔進資源回收筒，而是直接刪除(&D)"
 
 #. i18n: file: dialogs/deletedialogbase.ui:105
 #. i18n: ectx: property (toolTip), widget (QCheckBox, ddShouldDelete)
-#: rc.cpp:729
+#: rc.cpp:741
 msgid ""
 "If checked, files will be permanently removed instead of being placed in the "
 "Trash Bin"
@@ -4864,7 +4703,7 @@ msgstr "選擇後，檔案會永久地刪除，而不是放進資源回收筒"
 
 #. i18n: file: dialogs/deletedialogbase.ui:110
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, ddShouldDelete)
-#: rc.cpp:732
+#: rc.cpp:744
 msgid ""
 "<qt><p>If this box is checked, files will be <b>permanently removed</b> "
 "instead of being placed in the Trash Bin.</p>\n"
@@ -4880,242 +4719,236 @@ msgstr ""
 
 #. i18n: file: dialogs/PlaylistLayoutEditDialog.ui:14
 #. i18n: ectx: property (windowTitle), widget (QDialog, PlaylistLayoutEditDialog)
-#: rc.cpp:737
-#, fuzzy
-#| msgid "Playlist name:"
+#: rc.cpp:749
 msgid "Playlist Layout Editor"
-msgstr "播放清單名稱："
+msgstr ""
 
 #. i18n: file: dialogs/PlaylistLayoutEditDialog.ui:26
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
-#: rc.cpp:740
-#, fuzzy
-#| msgid "Filename Layout Chooser"
+#: rc.cpp:752
 msgid "Available Layouts"
-msgstr "檔名佈局選擇器"
+msgstr ""
 
 #. i18n: file: dialogs/PlaylistLayoutEditDialog.ui:160
 #. i18n: ectx: property (mimeType), widget (TokenPool, tokenPool)
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:88
 #. i18n: ectx: property (mimeType), widget (TokenPool, tokenPool)
-#: rc.cpp:743 rc.cpp:864
+#: rc.cpp:755 rc.cpp:876
 msgid "application/x-amarok-tag-token"
 msgstr ""
 
 #. i18n: file: dialogs/PlaylistLayoutEditDialog.ui:181
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
-#: rc.cpp:749
-#, fuzzy
-#| msgid "Preview Tracks"
+#: rc.cpp:761
 msgid "Preview"
-msgstr "上一曲目"
+msgstr ""
 
 #. i18n: file: dialogs/EditCoverSearchDialog.ui:25
 #. i18n: ectx: property (windowTitle), widget (QDialog, EditCoverSearchDialog)
-#: rc.cpp:752
+#: rc.cpp:764
 msgid "Dialog"
 msgstr "對話框"
 
 #. i18n: file: dialogs/EditCoverSearchDialog.ui:41
 #. i18n: ectx: property (text), widget (QLabel, localeLabel)
-#: rc.cpp:755
+#: rc.cpp:767
 msgid "Amazon Locale: "
 msgstr "Amazon 語系: "
 
 #. i18n: file: dialogs/EditCoverSearchDialog.ui:62
 #. i18n: ectx: property (text), item, widget (KComboBox, amazonLocale)
-#: rc.cpp:758
+#: rc.cpp:770
 msgid "International"
 msgstr "國際"
 
 #. i18n: file: dialogs/EditCoverSearchDialog.ui:67
 #. i18n: ectx: property (text), item, widget (KComboBox, amazonLocale)
-#: rc.cpp:761 covermanager/CoverManager.cpp:212
+#: rc.cpp:773 covermanager/CoverManager.cpp:212
 msgid "Canada"
 msgstr "加拿大"
 
 #. i18n: file: dialogs/EditCoverSearchDialog.ui:72
 #. i18n: ectx: property (text), item, widget (KComboBox, amazonLocale)
-#: rc.cpp:764 covermanager/CoverManager.cpp:216
+#: rc.cpp:776 covermanager/CoverManager.cpp:216
 msgid "France"
 msgstr "法國"
 
 #. i18n: file: dialogs/EditCoverSearchDialog.ui:77
 #. i18n: ectx: property (text), item, widget (KComboBox, amazonLocale)
-#: rc.cpp:767 covermanager/CoverManager.cpp:220
+#: rc.cpp:779 covermanager/CoverManager.cpp:220
 msgid "Germany"
 msgstr "德國"
 
 #. i18n: file: dialogs/EditCoverSearchDialog.ui:82
 #. i18n: ectx: property (text), item, widget (KComboBox, amazonLocale)
-#: rc.cpp:770 covermanager/CoverManager.cpp:224
+#: rc.cpp:782 covermanager/CoverManager.cpp:224
 msgid "Japan"
 msgstr "日本"
 
 #. i18n: file: dialogs/EditCoverSearchDialog.ui:87
 #. i18n: ectx: property (text), item, widget (KComboBox, amazonLocale)
-#: rc.cpp:773 covermanager/CoverManager.cpp:228
+#: rc.cpp:785 covermanager/CoverManager.cpp:228
 msgid "United Kingdom"
 msgstr "英國"
 
 #. i18n: file: dialogs/EditCoverSearchDialog.ui:138
 #. i18n: ectx: property (text), widget (KPushButton, SearchButton)
-#: rc.cpp:777
+#: rc.cpp:789
 msgid "&Search"
 msgstr "搜尋(&S)"
 
-#. i18n: file: dialogs/TagDialogBase.ui:19
-#. i18n: ectx: property (windowTitle), widget (QDialog, TagDialogBase)
-#: rc.cpp:780
+#. i18n: file: dialogs/TagDialogBase.ui:20
+#. i18n: ectx: property (windowTitle), widget (QWidget, TagDialogBase)
+#: rc.cpp:792
 msgid "Track Information"
 msgstr "曲目資訊"
 
-#. i18n: file: dialogs/TagDialogBase.ui:34
+#. i18n: file: dialogs/TagDialogBase.ui:38
 #. i18n: ectx: attribute (title), widget (QWidget, summaryTab)
-#: rc.cpp:783
+#: rc.cpp:795
 msgid "S&ummary"
 msgstr "摘要(&U)"
 
-#. i18n: file: dialogs/TagDialogBase.ui:66
+#. i18n: file: dialogs/TagDialogBase.ui:70
 #. i18n: ectx: property (text), widget (QLabel, trackArtistAlbumLabel)
-#. i18n: file: dialogs/TagDialogBase.ui:471
+#. i18n: file: dialogs/TagDialogBase.ui:475
 #. i18n: ectx: property (text), widget (QLabel, trackArtistAlbumLabel2)
-#: rc.cpp:786 rc.cpp:828
+#: rc.cpp:798 rc.cpp:840
 msgid "Track by Artist on Album"
 msgstr "風格 / 演出者 / 專輯"
 
-#. i18n: file: dialogs/TagDialogBase.ui:142
+#. i18n: file: dialogs/TagDialogBase.ui:146
 #. i18n: ectx: attribute (title), widget (QWidget, tagsTab)
-#: rc.cpp:789
+#: rc.cpp:801
 msgid "Ta&gs"
 msgstr "標籤(&G)"
 
-#. i18n: file: dialogs/TagDialogBase.ui:150
+#. i18n: file: dialogs/TagDialogBase.ui:154
 #. i18n: ectx: property (text), widget (QLabel, textLabel1)
-#: rc.cpp:792
+#: rc.cpp:804
 msgid "T&itle:"
 msgstr "標題(&I)："
 
-#. i18n: file: dialogs/TagDialogBase.ui:166
+#. i18n: file: dialogs/TagDialogBase.ui:170
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_2)
-#: rc.cpp:795
+#: rc.cpp:807
 msgid "&Artist:"
 msgstr "演出者(&A)："
 
-#. i18n: file: dialogs/TagDialogBase.ui:195
+#. i18n: file: dialogs/TagDialogBase.ui:199
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_3_2)
-#: rc.cpp:798
+#: rc.cpp:810
 msgid "&Composer:"
 msgstr "作曲家(&C):"
 
-#. i18n: file: dialogs/TagDialogBase.ui:221
+#. i18n: file: dialogs/TagDialogBase.ui:225
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_3)
-#: rc.cpp:801
+#: rc.cpp:813
 msgid "Al&bum:"
 msgstr "專輯(&B)："
 
-#. i18n: file: dialogs/TagDialogBase.ui:252
+#. i18n: file: dialogs/TagDialogBase.ui:256
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_3_2_2)
-#: rc.cpp:804
+#: rc.cpp:816
 msgid "&Disc Number:"
 msgstr "碟片編號(&D):"
 
-#. i18n: file: dialogs/TagDialogBase.ui:298
+#. i18n: file: dialogs/TagDialogBase.ui:302
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_4)
-#: rc.cpp:807
+#: rc.cpp:819
 msgid "&Genre:"
 msgstr "風格(&G)："
 
-#. i18n: file: dialogs/TagDialogBase.ui:327
+#. i18n: file: dialogs/TagDialogBase.ui:331
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_6_6)
-#: rc.cpp:810
+#: rc.cpp:822
 msgid "Trac&k:"
 msgstr "曲目號(&K)："
 
-#. i18n: file: dialogs/TagDialogBase.ui:364
+#. i18n: file: dialogs/TagDialogBase.ui:368
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_5)
-#: rc.cpp:813
+#: rc.cpp:825
 msgid "&Year:"
 msgstr "年份(&Y)："
 
-#. i18n: file: dialogs/TagDialogBase.ui:398
+#. i18n: file: dialogs/TagDialogBase.ui:402
 #. i18n: ectx: property (text), widget (QLabel, textLabel_comment)
-#: rc.cpp:816
+#: rc.cpp:828
 msgid "Co&mment:"
 msgstr "評語(&C)："
 
-#. i18n: file: dialogs/TagDialogBase.ui:426
+#. i18n: file: dialogs/TagDialogBase.ui:430
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_guessTags)
-#: rc.cpp:819
+#: rc.cpp:831
 msgid "Guess Tags From &Filename"
 msgstr "從檔案名稱推測標籤資料(&F)"
 
-#. i18n: file: dialogs/TagDialogBase.ui:438
+#. i18n: file: dialogs/TagDialogBase.ui:442
 #. i18n: ectx: attribute (title), widget (QWidget, lyricsTab)
-#: rc.cpp:822
+#: rc.cpp:834
 msgid "L&yrics"
 msgstr "歌詞(&Y)"
 
-#. i18n: file: dialogs/TagDialogBase.ui:455
+#. i18n: file: dialogs/TagDialogBase.ui:459
 #. i18n: ectx: attribute (title), widget (QWidget, statisticsTab)
-#: rc.cpp:825
+#: rc.cpp:837
 msgid "St&atistics"
 msgstr "統計(&A)"
 
-#. i18n: file: dialogs/TagDialogBase.ui:606
+#. i18n: file: dialogs/TagDialogBase.ui:610
 #. i18n: ectx: attribute (title), widget (QWidget, labelsTab)
-#: rc.cpp:837
+#: rc.cpp:849
 msgid "La&bels"
 msgstr "標籤(&B)"
 
-#. i18n: file: dialogs/TagDialogBase.ui:614
+#. i18n: file: dialogs/TagDialogBase.ui:618
 #. i18n: ectx: property (text), widget (QLabel, labels_favouriteLabels)
-#: rc.cpp:840
+#: rc.cpp:852
 msgid "Your favorite labels:"
 msgstr "您喜愛的標記："
 
-#. i18n: file: dialogs/TagDialogBase.ui:637
+#. i18n: file: dialogs/TagDialogBase.ui:641
 #. i18n: ectx: property (text), widget (QLabel, labels_explanation)
-#: rc.cpp:843
+#: rc.cpp:855
 msgid ""
 "Edit the assigned labels below (multiple labels are separated by commas), or "
 "select a label from above."
 msgstr ""
 "修改下面已經指定的標記 (要指定多個標記，可以用逗號分開)，或者在上面選一個。"
 
-#. i18n: file: dialogs/TagDialogBase.ui:658
+#. i18n: file: dialogs/TagDialogBase.ui:662
 #. i18n: ectx: property (text), widget (QLabel, locationLabel)
-#: rc.cpp:846
+#: rc.cpp:858
 msgid "Location:"
 msgstr "位置："
 
-#. i18n: file: dialogs/TagDialogBase.ui:695
+#. i18n: file: dialogs/TagDialogBase.ui:702
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_previous)
-#: rc.cpp:849 widgets/ProgressiveSearchWidget.cpp:64
+#: rc.cpp:861 widgets/ProgressiveSearchWidget.cpp:64
 msgid "&Previous"
 msgstr "上一曲目(&P)"
 
-#. i18n: file: dialogs/TagDialogBase.ui:705
+#. i18n: file: dialogs/TagDialogBase.ui:712
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_next)
-#: rc.cpp:852 widgets/ProgressiveSearchWidget.cpp:61
+#: rc.cpp:864 widgets/ProgressiveSearchWidget.cpp:61
 msgid "&Next"
 msgstr "下一曲目(&N)"
 
-#. i18n: file: dialogs/TagDialogBase.ui:715
+#. i18n: file: dialogs/TagDialogBase.ui:719
 #. i18n: ectx: property (text), widget (QCheckBox, checkBox_perTrack)
-#: rc.cpp:855
+#: rc.cpp:867
 msgid "Per Trac&k"
 msgstr "每一曲目(&K)"
 
-#. i18n: file: dialogs/TagDialogBase.ui:738
+#. i18n: file: dialogs/TagDialogBase.ui:742
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_ok)
-#: rc.cpp:858
+#: rc.cpp:870
 msgid "Sa&ve && Close"
 msgstr "儲存並關閉(&V)"
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:113
 #. i18n: ectx: property (text), widget (QLabel, syntaxLabel)
-#: rc.cpp:868
+#: rc.cpp:880
 #, no-c-format
 msgid ""
 "The following tokens can be used to define a filename scheme: <br>%track, %"
@@ -5126,49 +4959,49 @@ msgstr ""
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:254
 #. i18n: ectx: property (text), widget (QCheckBox, cbCase)
-#: rc.cpp:877
+#: rc.cpp:889
 msgid "Edit &case"
 msgstr "編輯大小寫(&C)"
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:291
 #. i18n: ectx: property (text), widget (QRadioButton, rbTitleCase)
-#: rc.cpp:880
+#: rc.cpp:892
 msgid "&Title case"
 msgstr "標題大小寫(&T)"
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:313
 #. i18n: ectx: property (text), widget (QRadioButton, rbFirstLetter)
-#: rc.cpp:883
+#: rc.cpp:895
 msgid "&First letter of every word uppercase"
 msgstr "每個字的第一個字母都大寫(&F)"
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:332
 #. i18n: ectx: property (text), widget (QRadioButton, rbAllUpper)
-#: rc.cpp:886
+#: rc.cpp:898
 msgid "All &uppercase"
 msgstr "全部大寫(&U)"
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:351
 #. i18n: ectx: property (text), widget (QRadioButton, rbAllLower)
-#: rc.cpp:889
+#: rc.cpp:901
 msgid "All &lowercase"
 msgstr "全部小寫(&L)"
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:373
 #. i18n: ectx: property (text), widget (QCheckBox, cbEliminateSpaces)
-#: rc.cpp:892
+#: rc.cpp:904
 msgid "Remove trailing &spaces in tags"
 msgstr "移除標籤尾端的空白(&S)"
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:389
 #. i18n: ectx: property (text), widget (QCheckBox, cbReplaceUnderscores)
-#: rc.cpp:895
+#: rc.cpp:907
 msgid "Replace &underscores with spaces"
 msgstr "把空白以底線替換(&U)"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:40
 #. i18n: ectx: property (text), widget (QLabel, mainLabel)
-#: rc.cpp:898
+#: rc.cpp:910
 msgid ""
 "Edit the filter for finding tracks with specific attributes, e.g. a track "
 "that has a length of three minutes."
@@ -5176,7 +5009,7 @@ msgstr "修改過濾條件，可以尋找具有指定屬性的曲目。例如，
 
 #. i18n: file: dialogs/EditFilterDialog.ui:54
 #. i18n: ectx: property (whatsThis), widget (QLabel, attributeLabel)
-#: rc.cpp:901
+#: rc.cpp:913
 msgctxt "you can translate the keyword as you will do for the combobox"
 msgid ""
 "<p>Here you can choose to <i>Simple Search</i> directly or to use some "
@@ -5212,61 +5045,61 @@ msgstr ""
 
 #. i18n: file: dialogs/EditFilterDialog.ui:57
 #. i18n: ectx: property (text), widget (QLabel, attributeLabel)
-#: rc.cpp:906
+#: rc.cpp:918
 msgid "Attribute"
 msgstr "屬性"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:67
 #. i18n: ectx: property (toolTip), widget (KComboBox, keywordCombo)
-#: rc.cpp:909
+#: rc.cpp:921
 msgid "Select an attribute for the filter"
 msgstr "請給過濾器指定屬性"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:71
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
-#: rc.cpp:912
+#: rc.cpp:924
 msgid "Simple Search"
 msgstr "一般搜尋"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:114
 #. i18n: ectx: property (whatsThis), widget (KLineEdit, editKeywordBox)
-#: rc.cpp:936
+#: rc.cpp:948
 msgid "<p>Type the attribute value or the text to look for here.</p>"
 msgstr "<p>在這裏寫上要尋找的屬性數值或者文字</p>"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:135
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
-#: rc.cpp:939
+#: rc.cpp:951
 msgid "Attribute value is"
 msgstr "屬性數值"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:154
 #. i18n: ectx: property (text), item, widget (KComboBox, conditionCombo)
-#: rc.cpp:942
+#: rc.cpp:954
 msgid "Smaller Than"
 msgstr "小於"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:159
 #. i18n: ectx: property (text), item, widget (KComboBox, conditionCombo)
-#: rc.cpp:945
+#: rc.cpp:957
 msgid "Larger Than"
 msgstr "大於"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:164
 #. i18n: ectx: property (text), item, widget (KComboBox, conditionCombo)
-#: rc.cpp:948
+#: rc.cpp:960
 msgid "Equal To"
 msgstr "等於"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:169
 #. i18n: ectx: property (text), item, widget (KComboBox, conditionCombo)
-#: rc.cpp:951
+#: rc.cpp:963
 msgid "Between"
 msgstr "介於"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:184
 #. i18n: ectx: property (text), widget (QLabel, andLabel)
-#: rc.cpp:954 widgets/SmartPlaylistEditor.cpp:935
+#: rc.cpp:966 widgets/SmartPlaylistEditor.cpp:935
 #: widgets/SmartPlaylistEditor.cpp:957 widgets/SmartPlaylistEditor.cpp:985
 #: widgets/SmartPlaylistEditor.cpp:1004
 msgid "and"
@@ -5274,13 +5107,13 @@ msgstr "和"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:217
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
-#: rc.cpp:957
+#: rc.cpp:969
 msgid "Filter Action"
 msgstr "過濾動作"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:223
 #. i18n: ectx: property (toolTip), widget (QRadioButton, matchAll)
-#: rc.cpp:960
+#: rc.cpp:972
 msgid ""
 "Check this box to look for the tracks that contain all the words you typed "
 "in the related Simple Search edit box"
@@ -5289,13 +5122,13 @@ msgstr ""
 
 #. i18n: file: dialogs/EditFilterDialog.ui:226
 #. i18n: ectx: property (text), widget (QRadioButton, matchAll)
-#: rc.cpp:963
+#: rc.cpp:975
 msgid "Match All Words"
 msgstr "符合所有單字"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:233
 #. i18n: ectx: property (toolTip), widget (QRadioButton, matchAny)
-#: rc.cpp:966
+#: rc.cpp:978
 msgid ""
 "Check this box to look for the tracks that contain at least one of the words "
 "you typed in the related Simple Search edit box"
@@ -5304,13 +5137,13 @@ msgstr ""
 
 #. i18n: file: dialogs/EditFilterDialog.ui:236
 #. i18n: ectx: property (text), widget (QRadioButton, matchAny)
-#: rc.cpp:969
+#: rc.cpp:981
 msgid "Match Any Word"
 msgstr "符合任何單字"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:243
 #. i18n: ectx: property (toolTip), widget (QRadioButton, matchLiteral)
-#: rc.cpp:972
+#: rc.cpp:984
 msgid ""
 "Check this box to look for all the tracks that contain exactly the words you "
 "typed in the related Simple Search edit box"
@@ -5319,13 +5152,13 @@ msgstr ""
 
 #. i18n: file: dialogs/EditFilterDialog.ui:246
 #. i18n: ectx: property (text), widget (QRadioButton, matchLiteral)
-#: rc.cpp:975
+#: rc.cpp:987
 msgid "Exact Match"
 msgstr "完全吻合"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:253
 #. i18n: ectx: property (toolTip), widget (QRadioButton, matchNot)
-#: rc.cpp:978
+#: rc.cpp:990
 msgid ""
 "Check this box to look for all the tracks that do not contain the words you "
 "typed in the related Simple Search edit box"
@@ -5333,19 +5166,19 @@ msgstr "選取這項，可以找出所有不包含「一般搜尋」文字的曲
 
 #. i18n: file: dialogs/EditFilterDialog.ui:256
 #. i18n: ectx: property (text), widget (QRadioButton, matchNot)
-#: rc.cpp:981
+#: rc.cpp:993
 msgid "Exclude"
 msgstr "排除"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:278
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_3)
-#: rc.cpp:984
+#: rc.cpp:996
 msgid "Appending Condition"
 msgstr "附加條件"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:284
 #. i18n: ectx: property (toolTip), widget (QRadioButton, andButton)
-#: rc.cpp:987
+#: rc.cpp:999
 msgid ""
 "Check this box if you want to add another condition and you want that the "
 "filter to match both the previous conditions and this new one"
@@ -5353,13 +5186,13 @@ msgstr "要加入另一條件，並且要過濾器一併考慮之前所定的條
 
 #. i18n: file: dialogs/EditFilterDialog.ui:287
 #. i18n: ectx: property (text), widget (QRadioButton, andButton)
-#: rc.cpp:990
+#: rc.cpp:1002
 msgid "AND"
 msgstr "且（AND）"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:294
 #. i18n: ectx: property (toolTip), widget (QRadioButton, orButton)
-#: rc.cpp:993
+#: rc.cpp:1005
 msgid ""
 "Check this box if you want to add another condition and you want that the "
 "filter to match either the previous conditions or this new one"
@@ -5369,19 +5202,19 @@ msgstr ""
 
 #. i18n: file: dialogs/EditFilterDialog.ui:297
 #. i18n: ectx: property (text), widget (QRadioButton, orButton)
-#: rc.cpp:996
+#: rc.cpp:1008
 msgid "OR"
 msgstr "或（OR）"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:309
 #. i18n: ectx: property (toolTip), widget (QCheckBox, invertButton)
-#: rc.cpp:999
+#: rc.cpp:1011
 msgid "Check this box to negate the defined filter condition"
 msgstr "簨取這項可以把過濾條件完全反轉"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:312
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, invertButton)
-#: rc.cpp:1002
+#: rc.cpp:1014
 msgid ""
 "<p>If this option is checked the defined filter condition will be negated. "
 "This means that, for example, you can define a filter that looks for all "
@@ -5392,61 +5225,61 @@ msgstr ""
 
 #. i18n: file: dialogs/EditFilterDialog.ui:315
 #. i18n: ectx: property (text), widget (QCheckBox, invertButton)
-#: rc.cpp:1005
+#: rc.cpp:1017
 msgid "Invert Condition"
 msgstr "反轉條件"
 
 #. i18n: file: dialogs/ScriptManagerBase.ui:29
 #. i18n: ectx: property (text), widget (QLabel, label)
-#: rc.cpp:1008
+#: rc.cpp:1020
 msgid "Installed Amarok Scripts:"
 msgstr "安裝 Amarok 指令稿："
 
 #. i18n: file: dialogs/ScriptManagerBase.ui:54
 #. i18n: ectx: property (text), widget (QPushButton, installButton)
-#: rc.cpp:1011
+#: rc.cpp:1023
 msgid "&Install Script"
 msgstr "安裝指令稿(&I)"
 
 #. i18n: file: dialogs/ScriptManagerBase.ui:67
 #. i18n: ectx: property (text), widget (QPushButton, uninstallButton)
-#: rc.cpp:1014
+#: rc.cpp:1026
 msgid "&Uninstall"
 msgstr "解除安裝(&U)"
 
 #. i18n: file: dialogs/ScriptManagerBase.ui:80
 #. i18n: ectx: property (text), widget (QPushButton, retrieveButton)
-#: rc.cpp:1017
+#: rc.cpp:1029
 msgid "&Get More Scripts"
 msgstr "取得更多的指令稿(&G)"
 
 #. i18n: file: dialogs/ScriptManagerBase.ui:100
 #. i18n: ectx: property (text), widget (QPushButton, okButton)
-#: rc.cpp:1020
+#: rc.cpp:1032
 msgid "&OK"
 msgstr "確定(&O)"
 
 #. i18n: file: dialogs/PodcastSettingsBase.ui:23
 #. i18n: ectx: property (windowTitle), widget (QWidget, PodcastSettingsBase)
-#: rc.cpp:1023
+#: rc.cpp:1035
 msgid "Podcast Configuration"
 msgstr "Podcast 設定"
 
 #. i18n: file: dialogs/PodcastSettingsBase.ui:36
 #. i18n: ectx: property (url), widget (KUrlLabel, m_feedLabel)
-#: rc.cpp:1026
+#: rc.cpp:1038
 msgid "Feed URL"
 msgstr ""
 
 #. i18n: file: dialogs/PodcastSettingsBase.ui:51
 #. i18n: ectx: property (text), widget (QLabel, m_leftClickLabel)
-#: rc.cpp:1029
+#: rc.cpp:1041
 msgid "(left click to copy to clipboard)"
-msgstr ""
+msgstr "（按下滑鼠左鍵以複製到剪貼簿）"
 
 #. i18n: file: dialogs/PodcastSettingsBase.ui:65
 #. i18n: ectx: property (text), widget (QLabel, textLabel1)
-#: rc.cpp:1032
+#: rc.cpp:1044
 msgid "Save location:"
 msgstr "儲存位置："
 
@@ -5454,19 +5287,19 @@ msgstr "儲存位置："
 #. i18n: ectx: property (toolTip), widget (QCheckBox, m_autoFetchCheck)
 #. i18n: file: dialogs/PodcastSettingsBase.ui:83
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, m_autoFetchCheck)
-#: rc.cpp:1035 rc.cpp:1038
+#: rc.cpp:1047 rc.cpp:1050
 msgid "When checked, Amarok will automatically scan the podcast for updates"
 msgstr "選取後，AmaroK 會自動檢查 Podcast 有沒有更新"
 
 #. i18n: file: dialogs/PodcastSettingsBase.ui:86
 #. i18n: ectx: property (text), widget (QCheckBox, m_autoFetchCheck)
-#: rc.cpp:1041
+#: rc.cpp:1053
 msgid "Automatically scan for updates"
 msgstr "自動檢查更新"
 
 #. i18n: file: dialogs/PodcastSettingsBase.ui:93
 #. i18n: ectx: property (title), widget (KButtonGroup, kbuttongroup)
-#: rc.cpp:1044
+#: rc.cpp:1056
 msgid "Media Download"
 msgstr "媒體下載"
 
@@ -5474,13 +5307,13 @@ msgstr "媒體下載"
 #. i18n: ectx: property (toolTip), widget (QRadioButton, m_downloadRadio)
 #. i18n: file: dialogs/PodcastSettingsBase.ui:105
 #. i18n: ectx: property (whatsThis), widget (QRadioButton, m_downloadRadio)
-#: rc.cpp:1047 rc.cpp:1050
+#: rc.cpp:1059 rc.cpp:1062
 msgid "Download media as soon as it becomes available"
 msgstr "可用的時候立刻下載"
 
 #. i18n: file: dialogs/PodcastSettingsBase.ui:108
 #. i18n: ectx: property (text), widget (QRadioButton, m_downloadRadio)
-#: rc.cpp:1053
+#: rc.cpp:1065
 msgid "Download when a&vailable"
 msgstr "可用的時候下載(&V)"
 
@@ -5488,7 +5321,7 @@ msgstr "可用的時候下載(&V)"
 #. i18n: ectx: property (toolTip), widget (QRadioButton, m_streamRadio)
 #. i18n: file: dialogs/PodcastSettingsBase.ui:118
 #. i18n: ectx: property (whatsThis), widget (QRadioButton, m_streamRadio)
-#: rc.cpp:1056 rc.cpp:1059
+#: rc.cpp:1068 rc.cpp:1071
 msgid ""
 "Media must be explicitly downloaded, otherwise the podcast will be played "
 "from the remote server."
@@ -5496,7 +5329,7 @@ msgstr "必須先下載媒體，否則 Podcast 會從遠端伺服器播放。"
 
 #. i18n: file: dialogs/PodcastSettingsBase.ui:121
 #. i18n: ectx: property (text), widget (QRadioButton, m_streamRadio)
-#: rc.cpp:1062
+#: rc.cpp:1074
 msgid "Stream or download on re&quest"
 msgstr "要求的時候播放/下載串流(&R)"
 
@@ -5504,19 +5337,19 @@ msgstr "要求的時候播放/下載串流(&R)"
 #. i18n: ectx: property (toolTip), widget (QCheckBox, m_purgeCheck)
 #. i18n: file: dialogs/PodcastSettingsBase.ui:136
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, m_purgeCheck)
-#: rc.cpp:1065 rc.cpp:1068
+#: rc.cpp:1077 rc.cpp:1080
 msgid "If checked, Amarok will throw away old podcast episodes"
 msgstr "選取後，AmaroK 會扔掉舊的 Podcast episodes"
 
 #. i18n: file: dialogs/PodcastSettingsBase.ui:139
 #. i18n: ectx: property (text), widget (QCheckBox, m_purgeCheck)
-#: rc.cpp:1071
+#: rc.cpp:1083
 msgid "Limit &number of episodes"
 msgstr "限制 episode 數量(&N)"
 
 #. i18n: file: dialogs/PodcastSettingsBase.ui:162
 #. i18n: ectx: property (text), widget (QLabel, m_purgeCountLabel)
-#: rc.cpp:1074
+#: rc.cpp:1086
 msgid "Keep maximum of:"
 msgstr "保留最多："
 
@@ -5524,31 +5357,31 @@ msgstr "保留最多："
 #. i18n: ectx: property (toolTip), widget (QSpinBox, m_purgeCountSpinBox)
 #. i18n: file: dialogs/PodcastSettingsBase.ui:175
 #. i18n: ectx: property (whatsThis), widget (QSpinBox, m_purgeCountSpinBox)
-#: rc.cpp:1077 rc.cpp:1080
+#: rc.cpp:1089 rc.cpp:1092
 msgid "The maximum number of podcast items to store"
 msgstr "可以儲存的 Podcast 數量上限"
 
 #. i18n: file: dialogs/PodcastSettingsBase.ui:178
 #. i18n: ectx: property (suffix), widget (QSpinBox, m_purgeCountSpinBox)
-#: rc.cpp:1083
+#: rc.cpp:1095
 msgid " Items"
 msgstr " 個項目"
 
 #. i18n: file: browsers/playlistbrowser/PodcastCategoryBase.ui:24
 #. i18n: ectx: property (toolTip), widget (QToolButton, addPodcastButton)
-#: rc.cpp:1086
+#: rc.cpp:1098
 msgid "Add Podcast..."
 msgstr "加入 Podcast..."
 
 #. i18n: file: browsers/playlistbrowser/PodcastCategoryBase.ui:27
 #. i18n: ectx: property (text), widget (QToolButton, addPodcastButton)
-#: rc.cpp:1089
+#: rc.cpp:1101
 msgid "add podcast..."
 msgstr "加入 Podcast..."
 
 #. i18n: file: browsers/playlistbrowser/PodcastCategoryBase.ui:50
 #. i18n: ectx: property (text), widget (QToolButton, refreshPodcastsButton)
-#: rc.cpp:1092
+#: rc.cpp:1104
 msgid "Refresh All Podcasts"
 msgstr "重新整理全部 Podcast"
 
@@ -5556,49 +5389,49 @@ msgstr "重新整理全部 Podcast"
 #. i18n: ectx: property (toolTip), widget (QToolButton, configurePodcastsButton)
 #. i18n: file: browsers/playlistbrowser/PodcastCategoryBase.ui:76
 #. i18n: ectx: property (text), widget (QToolButton, configurePodcastsButton)
-#: rc.cpp:1095 rc.cpp:1098
+#: rc.cpp:1107 rc.cpp:1110
 msgid "Configure Podcasts..."
 msgstr "設定 Podcast..."
 
 #. i18n: file: browsers/playlistbrowser/PodcastCategoryBase.ui:99
 #. i18n: ectx: property (text), widget (QToolButton, podcastsIntervalButton)
-#: rc.cpp:1101
+#: rc.cpp:1113
 msgid "Scan Interval..."
 msgstr "掃描相隔..."
 
 #. i18n: file: services/lastfm/LastFmConfigWidget.ui:38
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox3)
-#: rc.cpp:1104
+#: rc.cpp:1116
 msgid "Last.fm Profile"
 msgstr "Last.fm 設定檔"
 
 #. i18n: file: services/lastfm/LastFmConfigWidget.ui:44
 #. i18n: ectx: property (text), widget (QLabel, labelUsername)
-#: rc.cpp:1107
+#: rc.cpp:1119
 msgid "&Username:"
 msgstr "使用者名稱(&U)："
 
 #. i18n: file: services/lastfm/LastFmConfigWidget.ui:57
 #. i18n: ectx: property (text), widget (QLabel, labelPassword)
-#: rc.cpp:1110
+#: rc.cpp:1122
 msgid "&Password:"
 msgstr "密碼(&P)："
 
 #. i18n: file: services/lastfm/LastFmConfigWidget.ui:86
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel1)
-#: rc.cpp:1113
+#: rc.cpp:1125
 msgid "<a href=\"http://www.last.fm:80/signup.php\">Sign up to last.fm</a>"
 msgstr "<a href=\"http://www.last.fm:80/signup.php\">登入 last.fm</a>"
 
 #. i18n: file: services/lastfm/LastFmConfigWidget.ui:96
 #. i18n: ectx: property (text), widget (QPushButton, testLogin)
-#: rc.cpp:1116
+#: rc.cpp:1128
 msgid "&Test Login"
 msgstr "測試登入(&T)"
 
 #. i18n: file: services/lastfm/LastFmConfigWidget.ui:106
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel2)
-#: rc.cpp:1119
+#: rc.cpp:1131
 msgid ""
 "Why not join the <a href=\"http://www.last.fm:80/group/Amarok+Users\">Amarok "
 "last.fm group</a> and share your musical tastes with other Amarok users?"
@@ -5608,49 +5441,49 @@ msgstr ""
 
 #. i18n: file: services/lastfm/LastFmConfigWidget.ui:116
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
-#: rc.cpp:1122
+#: rc.cpp:1134
 msgid "Last.fm Services"
 msgstr "Last.fm 服務"
 
 #. i18n: file: services/lastfm/LastFmConfigWidget.ui:125
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_SubmitPlayedSongs)
-#: rc.cpp:1125
+#: rc.cpp:1137
 msgid "&Submit tracks"
 msgstr "提交此曲目(&S)"
 
 #. i18n: file: services/lastfm/LastFmConfigWidget.ui:135
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_RetrieveSimilarArtists)
-#: rc.cpp:1128
+#: rc.cpp:1140
 msgid "&Retrieve similar artists"
 msgstr "收集風格相近的演出者(&R)"
 
 #. i18n: file: services/magnatune/MagnatuneDownloadDialogBase.ui:13
 #. i18n: ectx: property (windowTitle), widget (QDialog, magnatuneDownloadDialogBase)
-#: rc.cpp:1131
+#: rc.cpp:1143
 msgid "Magnatune.com Album Download"
 msgstr "Magnatune.com 專輯下載"
 
 #. i18n: file: services/magnatune/MagnatuneDownloadDialogBase.ui:19
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox1)
-#: rc.cpp:1134
+#: rc.cpp:1146
 msgid "Download options"
 msgstr "下載選項"
 
 #. i18n: file: services/magnatune/MagnatuneDownloadDialogBase.ui:25
 #. i18n: ectx: property (text), widget (QLabel, textLabel1)
-#: rc.cpp:1137
+#: rc.cpp:1149
 msgid "Select Format:"
 msgstr "請選擇格式："
 
 #. i18n: file: services/magnatune/MagnatuneDownloadDialogBase.ui:38
 #. i18n: ectx: property (text), widget (QLabel, textLabel2)
-#: rc.cpp:1140
+#: rc.cpp:1152
 msgid "Download to:"
 msgstr "下載至："
 
 #. i18n: file: services/magnatune/MagnatuneDownloadDialogBase.ui:51
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_2)
-#: rc.cpp:1143
+#: rc.cpp:1155
 msgid ""
 "If you download to a location that is already being monitored by Amarok, the "
 "album will automatically be added to your collection."
@@ -5658,226 +5491,226 @@ msgstr "如果您把專輯下載到 Amarok 正在監視的位置，Amarok 會自
 
 #. i18n: file: services/magnatune/MagnatuneDownloadDialogBase.ui:67
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
-#: rc.cpp:1146
+#: rc.cpp:1158
 msgid "Magnatune info"
 msgstr "Magnatune 資訊"
 
 #. i18n: file: services/magnatune/MagnatuneDownloadDialogBase.ui:83
 #. i18n: ectx: property (text), widget (QPushButton, downloadButton)
-#: rc.cpp:1149 services/jamendo/JamendoMeta.cpp:139
-#: services/jamendo/JamendoMeta.cpp:366
+#: rc.cpp:1161 services/jamendo/JamendoMeta.cpp:139
+#: services/jamendo/JamendoMeta.cpp:372
 msgid "&Download"
 msgstr "下載(&D)"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:22
 #. i18n: ectx: property (windowTitle), widget (QDialog, magnatunePurchaseDialogBase)
-#: rc.cpp:1152
+#: rc.cpp:1164
 msgid "Purchase Album from Magnatune.com"
 msgstr "從 Magnatune.com 購買專輯"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:28
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox1)
-#: rc.cpp:1155
+#: rc.cpp:1167
 msgid "Info"
 msgstr "資訊"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:34
 #. i18n: ectx: property (text), widget (QLabel, infoLabel)
-#: rc.cpp:1158
+#: rc.cpp:1170
 msgid "You have chosen to purchase the following album from Magnatune.com"
 msgstr "您已選擇要在 Magnatune.com 購買這張專輯"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:90
 #. i18n: ectx: property (text), widget (QLabel, textLabel13)
-#: rc.cpp:1161
+#: rc.cpp:1173
 msgid "Album:"
 msgstr "專輯："
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:110
 #. i18n: ectx: property (text), widget (QLabel, textLabel14)
-#: rc.cpp:1164
+#: rc.cpp:1176
 msgid "Artist:"
 msgstr "演出者："
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:130
 #. i18n: ectx: property (text), widget (QLabel, textLabel15)
-#: rc.cpp:1167
+#: rc.cpp:1179
 msgid "Genre:"
 msgstr "風格："
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:150
 #. i18n: ectx: property (text), widget (QLabel, textLabel16)
-#: rc.cpp:1170
+#: rc.cpp:1182
 msgid "Launch Year:"
 msgstr "發行年份："
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:176
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
-#: rc.cpp:1173
+#: rc.cpp:1185
 msgid "Payment"
 msgstr "款項"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:182
 #. i18n: ectx: property (text), widget (QLabel, textLabel8)
-#: rc.cpp:1176
+#: rc.cpp:1188
 msgctxt "The name of the person buying songs from magnatune"
 msgid "Name:"
 msgstr "名稱："
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:195
 #. i18n: ectx: property (text), widget (QLabel, textLabel9)
-#: rc.cpp:1179
+#: rc.cpp:1191
 msgctxt "The e-mail address of the user"
 msgid "E-mail:"
 msgstr "電子郵件地址："
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:208
 #. i18n: ectx: property (text), widget (QLabel, label)
-#: rc.cpp:1182
+#: rc.cpp:1194
 msgid "Pay using:"
 msgstr "付款方式："
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:231
 #. i18n: ectx: property (text), widget (QRadioButton, ccRadioButton)
-#: rc.cpp:1185
+#: rc.cpp:1197
 msgid "credit card"
 msgstr "信用卡"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:238
 #. i18n: ectx: property (text), widget (QRadioButton, gcRadioButton)
-#: rc.cpp:1188
+#: rc.cpp:1200
 msgid "Magnatune gift card"
 msgstr "Magnatune 禮物卡"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:727
 #. i18n: ectx: property (text), widget (QLabel, textLabel2)
-#: rc.cpp:1191
+#: rc.cpp:1203
 msgid "VISA and Mastercard accepted."
 msgstr "接受 VISA 與 Mastercard。"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:737
 #. i18n: ectx: property (text), widget (QLabel, textLabel3)
-#: rc.cpp:1194
+#: rc.cpp:1206
 msgid "Credit card number:"
 msgstr "信用卡號碼："
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:757
 #. i18n: ectx: property (text), widget (QLabel, textLabel4)
-#: rc.cpp:1197
+#: rc.cpp:1209
 msgid "Expiration date:"
 msgstr "有效期限："
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:783
 #. i18n: ectx: property (text), widget (QLabel, textLabel6)
-#: rc.cpp:1200
+#: rc.cpp:1212
 msgid "Month (xx):"
 msgstr "月份 (xx)："
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:803
 #. i18n: ectx: property (text), widget (QLabel, textLabel5)
-#: rc.cpp:1203
+#: rc.cpp:1215
 msgid "Year (xx):"
 msgstr "年份 (xx)："
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:835
 #. i18n: ectx: property (text), widget (QLabel, textLabel3_2)
-#: rc.cpp:1206
+#: rc.cpp:1218
 msgid "Gift card code:"
 msgstr "禮物卡號碼："
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:852
 #. i18n: ectx: property (text), widget (QLabel, textLabel7)
-#: rc.cpp:1209
+#: rc.cpp:1221
 msgid "Amount to pay (USD):"
 msgstr "付款金額(美元)："
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:866
 #. i18n: ectx: property (text), item, widget (QComboBox, amountComboBox)
-#: rc.cpp:1212
+#: rc.cpp:1224
 msgid "5"
 msgstr "5"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:871
 #. i18n: ectx: property (text), item, widget (QComboBox, amountComboBox)
-#: rc.cpp:1215
+#: rc.cpp:1227
 msgid "6"
 msgstr "6"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:876
 #. i18n: ectx: property (text), item, widget (QComboBox, amountComboBox)
-#: rc.cpp:1218
+#: rc.cpp:1230
 msgid "7"
 msgstr "7"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:881
 #. i18n: ectx: property (text), item, widget (QComboBox, amountComboBox)
-#: rc.cpp:1221
+#: rc.cpp:1233
 msgid "8"
 msgstr "8"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:886
 #. i18n: ectx: property (text), item, widget (QComboBox, amountComboBox)
-#: rc.cpp:1224
+#: rc.cpp:1236
 msgid "9"
 msgstr "9"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:891
 #. i18n: ectx: property (text), item, widget (QComboBox, amountComboBox)
-#: rc.cpp:1227
+#: rc.cpp:1239
 msgid "10"
 msgstr "10"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:896
 #. i18n: ectx: property (text), item, widget (QComboBox, amountComboBox)
-#: rc.cpp:1230
+#: rc.cpp:1242
 msgid "11"
 msgstr "11"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:901
 #. i18n: ectx: property (text), item, widget (QComboBox, amountComboBox)
-#: rc.cpp:1233
+#: rc.cpp:1245
 msgid "12"
 msgstr "12"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:906
 #. i18n: ectx: property (text), item, widget (QComboBox, amountComboBox)
-#: rc.cpp:1236
+#: rc.cpp:1248
 msgid "13"
 msgstr "13"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:911
 #. i18n: ectx: property (text), item, widget (QComboBox, amountComboBox)
-#: rc.cpp:1239
+#: rc.cpp:1251
 msgid "14"
 msgstr "14"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:916
 #. i18n: ectx: property (text), item, widget (QComboBox, amountComboBox)
-#: rc.cpp:1242
+#: rc.cpp:1254
 msgid "15"
 msgstr "15"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:921
 #. i18n: ectx: property (text), item, widget (QComboBox, amountComboBox)
-#: rc.cpp:1245
+#: rc.cpp:1257
 msgid "16"
 msgstr "16"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:926
 #. i18n: ectx: property (text), item, widget (QComboBox, amountComboBox)
-#: rc.cpp:1248
+#: rc.cpp:1260
 msgid "17"
 msgstr "17"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:931
 #. i18n: ectx: property (text), item, widget (QComboBox, amountComboBox)
-#: rc.cpp:1251
+#: rc.cpp:1263
 msgid "18"
 msgstr "18"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:939
 #. i18n: ectx: property (text), widget (QLabel, textLabel17)
-#: rc.cpp:1254
+#: rc.cpp:1266
 msgid ""
 "The amount you choose to pay will be split 50/50 between the artist and "
 "Magnatune.com. Your personal and credit card information is sent securely to "
@@ -5890,43 +5723,43 @@ msgstr ""
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:979
 #. i18n: ectx: property (text), widget (QPushButton, purchaseButton)
-#: rc.cpp:1257
+#: rc.cpp:1269
 msgid "P&urchase"
 msgstr "購買(&U)"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:986
 #. i18n: ectx: property (text), widget (QPushButton, cancelButton)
-#: rc.cpp:1260
+#: rc.cpp:1272
 msgid "Ca&ncel"
 msgstr "取消(&N)"
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:16
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
-#: rc.cpp:1263
+#: rc.cpp:1275
 msgid "Membership options"
 msgstr "成員選項"
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:22
 #. i18n: ectx: property (text), widget (QCheckBox, isMemberCheckbox)
-#: rc.cpp:1266
+#: rc.cpp:1278
 msgid "I am a member"
 msgstr "我是成員"
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:42
 #. i18n: ectx: property (text), widget (QLabel, label)
-#: rc.cpp:1269
+#: rc.cpp:1281
 msgid "Membership type:"
 msgstr "成員類型："
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:58
 #. i18n: ectx: property (text), item, widget (QComboBox, typeComboBox)
-#: rc.cpp:1275 services/jamendo/JamendoService.cpp:110
+#: rc.cpp:1287 services/jamendo/JamendoService.cpp:110
 msgid "Download"
 msgstr "下載"
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:66
 #. i18n: ectx: property (text), widget (QLabel, label_2)
-#: rc.cpp:1278
+#: rc.cpp:1290
 msgctxt "Username for logins to Magnatune"
 msgid "Username:"
 msgstr "使用者名稱："
@@ -5935,13 +5768,13 @@ msgstr "使用者名稱："
 #. i18n: ectx: property (text), widget (QLabel, label_3)
 #. i18n: file: services/ampache/AmpacheConfigWidget.ui:61
 #. i18n: ectx: property (text), widget (QLabel, label_5)
-#: rc.cpp:1281 rc.cpp:1333
+#: rc.cpp:1293 rc.cpp:1345
 msgid "Password:"
 msgstr "密碼："
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:98
 #. i18n: ectx: property (text), widget (QLabel, label_4)
-#: rc.cpp:1284
+#: rc.cpp:1296
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
@@ -5974,126 +5807,126 @@ msgstr ""
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:120
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
-#: rc.cpp:1291
+#: rc.cpp:1303
 msgid "Stream options"
 msgstr "串流選項"
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:126
 #. i18n: ectx: property (text), widget (QLabel, label_5)
-#: rc.cpp:1294
+#: rc.cpp:1306
 msgid "Preview stream type:"
 msgstr "預覽串流型態："
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:134
 #. i18n: ectx: property (text), item, widget (QComboBox, streamTypeComboBox)
-#: rc.cpp:1297
+#: rc.cpp:1309
 msgid "Ogg"
 msgstr "Ogg"
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:139
 #. i18n: ectx: property (text), item, widget (QComboBox, streamTypeComboBox)
-#: rc.cpp:1300
+#: rc.cpp:1312
 msgid "High Quality Mp3"
 msgstr "高品質 MP3"
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:144
 #. i18n: ectx: property (text), item, widget (QComboBox, streamTypeComboBox)
-#: rc.cpp:1303
+#: rc.cpp:1315
 msgid "Low Quality Mp3"
 msgstr "低品質 MP3"
 
 #. i18n: file: services/magnatune/MagnatuneRedownloadDialogBase.ui:13
 #. i18n: ectx: property (windowTitle), widget (QDialog, magnatuneReDownloadDialogBase)
-#: rc.cpp:1306
+#: rc.cpp:1318
 msgid "Redownload manager"
 msgstr "重下載管理員"
 
 #. i18n: file: services/magnatune/MagnatuneRedownloadDialogBase.ui:19
 #. i18n: ectx: property (text), widget (QLabel, textLabel1)
-#: rc.cpp:1309
+#: rc.cpp:1321
 msgid "These are the albums that you have previously downloaded:"
 msgstr "這些是您曾下載的專輯："
 
 #. i18n: file: services/magnatune/MagnatuneRedownloadDialogBase.ui:29
 #. i18n: ectx: property (text), widget (QPushButton, redownloadButton)
-#: rc.cpp:1312
+#: rc.cpp:1324
 msgid "Re&download"
 msgstr "重新下載(&D)"
 
 #. i18n: file: services/magnatune/MagnatuneRedownloadDialogBase.ui:60
 #. i18n: ectx: property (text), widget (QTreeWidget, redownloadListView)
-#: rc.cpp:1318
+#: rc.cpp:1330
 msgid "Artist - Album"
 msgstr "演出者 - 專輯"
 
 #. i18n: file: services/ampache/AmpacheConfigWidget.ui:25
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
-#: rc.cpp:1321
+#: rc.cpp:1333
 msgid "Server"
 msgstr "伺服器"
 
 #. i18n: file: services/ampache/AmpacheConfigWidget.ui:31
 #. i18n: ectx: property (text), widget (QLabel, label_8)
-#: rc.cpp:1324
+#: rc.cpp:1336
 msgctxt "The user-definable name of an Ampache server"
 msgid "Name:"
 msgstr "名稱："
 
 #. i18n: file: services/ampache/AmpacheConfigWidget.ui:41
 #. i18n: ectx: property (text), widget (QLabel, label_7)
-#: rc.cpp:1327
+#: rc.cpp:1339
 msgid "Server:"
 msgstr "伺服器："
 
 #. i18n: file: services/ampache/AmpacheConfigWidget.ui:51
 #. i18n: ectx: property (text), widget (QLabel, label_6)
-#: rc.cpp:1330
+#: rc.cpp:1342
 msgctxt "The username to use for logins to an Amapche server"
 msgid "Username:"
 msgstr "使用者名稱："
 
 #. i18n: file: services/ampache/AmpacheConfigWidget.ui:75
 #. i18n: ectx: property (text), widget (QCheckBox, activeCheckBox)
-#: rc.cpp:1336
+#: rc.cpp:1348
 msgctxt "Establish a connection to the Ampache server"
 msgid "Active"
 msgstr "啟動"
 
 #. i18n: file: services/ampache/AmpacheConfigWidget.ui:91
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
-#: rc.cpp:1339
+#: rc.cpp:1351
 msgid "Edit"
 msgstr "編輯"
 
 #. i18n: file: services/ampache/AmpacheConfigWidget.ui:97
 #. i18n: ectx: property (text), widget (KPushButton, addButton)
-#: rc.cpp:1342 amarokurls/BookmarkManagerWidget.cpp:66
+#: rc.cpp:1354 amarokurls/BookmarkManagerWidget.cpp:66
 #: amarokurls/BookmarkManagerWidget.cpp:138
 msgid "Add"
 msgstr "加入"
 
 #. i18n: file: services/ampache/AmpacheConfigWidget.ui:111
 #. i18n: ectx: property (text), widget (KPushButton, modifyButton)
-#: rc.cpp:1348
+#: rc.cpp:1360
 msgid "Modify"
 msgstr "變更"
 
 #. i18n: file: services/mp3tunes/Mp3tunesConfigWidget.ui:16
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
-#: rc.cpp:1351
+#: rc.cpp:1363
 msgid "Mp3tunes Login"
 msgstr "MP3tunes 登入"
 
 #. i18n: file: services/mp3tunes/Mp3tunesConfigWidget.ui:22
 #. i18n: ectx: property (text), widget (QLabel, label)
-#: rc.cpp:1354
+#: rc.cpp:1366
 msgctxt "The e-mail address for Mp3Tunes logins"
 msgid "E-Mail:"
 msgstr "電子郵件地址："
 
 #. i18n: file: services/mp3tunes/Mp3tunesConfigWidget.ui:32
 #. i18n: ectx: property (text), widget (QLabel, label_2)
-#: rc.cpp:1357
+#: rc.cpp:1369
 msgctxt "The Mp3Tunes password"
 msgid "Password:"
 msgstr "密碼："
@@ -6102,7 +5935,7 @@ msgstr "密碼："
 #. i18n: ectx: property (toolTip), widget (QCheckBox, enableHarmony)
 #. i18n: file: services/mp3tunes/Mp3tunesConfigWidget.ui:49
 #. i18n: ectx: property (toolTip), widget (QLabel, label_3)
-#: rc.cpp:1360 rc.cpp:1363
+#: rc.cpp:1372 rc.cpp:1375
 msgid ""
 "AutoSync is a feature from MP3tunes which allows you to automatically move "
 "your music between computers and devices."
@@ -6110,7 +5943,7 @@ msgstr "自動同步是 MP3tunes 的功能，讓您可以自動將電腦與裝�
 
 #. i18n: file: services/mp3tunes/Mp3tunesConfigWidget.ui:52
 #. i18n: ectx: property (whatsThis), widget (QLabel, label_3)
-#: rc.cpp:1366
+#: rc.cpp:1378
 msgid ""
 "AutoSync is a feature from MP3tunes which allows you to automatically move "
 "your music between computers and devices. You can upload music from one "
@@ -6121,20 +5954,20 @@ msgstr ""
 
 #. i18n: file: services/mp3tunes/Mp3tunesConfigWidget.ui:55
 #. i18n: ectx: property (text), widget (QLabel, label_3)
-#: rc.cpp:1369
+#: rc.cpp:1381
 msgctxt "Enable harmony"
 msgid "Enable Auto Sync"
 msgstr "開啟自動同步"
 
 #. i18n: file: services/mp3tunes/Mp3tunesConfigWidget.ui:62
 #. i18n: ectx: property (text), widget (QLabel, label_4)
-#: rc.cpp:1372
+#: rc.cpp:1384
 msgid " PIN Code:"
 msgstr "密碼："
 
 #. i18n: file: services/mp3tunes/Mp3tunesConfigWidget.ui:89
 #. i18n: ectx: property (text), widget (QLabel, label_5)
-#: rc.cpp:1375
+#: rc.cpp:1387
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
@@ -6318,14 +6151,13 @@ msgid "ERROR: unknown message"
 msgstr "錯誤：未知的訊息"
 
 #: services/opmldirectory/OpmlDirectoryXmlParser.cpp:63
-#, fuzzy, kde-format
-#| msgid "OpmlDirectory update complete. Added %1 feeds in %2 categories"
+#, kde-format
 msgctxt ""
 "This string is the first part of the following example phrase: Podcast "
 "Directory update complete. Added 4 feeds in 6 categories."
 msgid "Podcast Directory update complete. Added 1 feed in "
 msgid_plural "Podcast Directory update complete. Added %1 feeds in "
-msgstr[0] "OpmlDirectory 更新完成。新增 %1 個 feed 到 %2 個類別中"
+msgstr[0] ""
 
 #: services/opmldirectory/OpmlDirectoryXmlParser.cpp:64
 #, kde-format
@@ -6337,10 +6169,8 @@ msgid_plural "%1 categories."
 msgstr[0] ""
 
 #: services/opmldirectory/OpmlDirectoryService.cpp:40
-#, fuzzy
-#| msgid "Directory"
 msgid "Podcast Directory"
-msgstr "目錄"
+msgstr ""
 
 #: services/opmldirectory/OpmlDirectoryService.cpp:70
 msgid "A large listing of podcasts"
@@ -6357,22 +6187,16 @@ msgid "Subscribe"
 msgstr "訂閱"
 
 #: services/opmldirectory/OpmlDirectoryService.cpp:144
-#, fuzzy
-#| msgid "Downloading OpmlDirectory Database"
 msgid "Downloading Podcast Directory Database"
-msgstr "正在下載 OpmlDirectory 資料庫"
+msgstr ""
 
 #: services/opmldirectory/OpmlDirectoryService.cpp:173
-#, fuzzy
-#| msgid "Updating the local OPML database."
 msgid "Updating the local Podcast database."
-msgstr "正在更新本地端 OPML 資料庫"
+msgstr ""
 
 #: services/opmldirectory/OpmlDirectoryInfoParser.cpp:58
-#, fuzzy
-#| msgid "Fetching Podcast Info"
 msgid "Loading Podcast Info..."
-msgstr "正在取得 Podcast 資訊"
+msgstr ""
 
 #: services/opmldirectory/OpmlDirectoryInfoParser.cpp:67
 msgid "Fetching Podcast Info"
@@ -6515,23 +6339,17 @@ msgid "Last.fm: Love"
 msgstr "Last.fm：喜愛"
 
 #: services/lastfm/LastFmService.cpp:184
-#, fuzzy
-#| msgid "Last.fm: The social music revolution."
 msgid "Last.fm: The social music revolution"
-msgstr "Last.fm：社交音樂變革"
+msgstr ""
 
 #: services/lastfm/LastFmService.cpp:270
 msgid "Ctrl+L"
 msgstr "Ctrl+L"
 
 #: services/lastfm/LastFmService.cpp:305
-#, fuzzy
-#| msgid ""
-#| "Either the username or the password is incorrect, please correct and try "
-#| "again"
 msgctxt "Last.fm: errorMessage"
 msgid "Either the username was not recognized, or the password was incorrect."
-msgstr "使用者名稱或密碼不正確。請修正後再試一次。"
+msgstr ""
 
 #: services/lastfm/LastFmService.cpp:309
 msgctxt "Last.fm: errorMessage"
@@ -6558,43 +6376,32 @@ msgid "Enter a last.fm user name"
 msgstr "請輸入 last.fm 的使用者名稱"
 
 #: services/lastfm/LastFmService.cpp:437
-#, fuzzy
-#| msgctxt "Username for logins to Magnatune"
-#| msgid "Username:"
 msgid "Username: "
-msgstr "使用者名稱："
+msgstr ""
 
 #: services/lastfm/LastFmService.cpp:438
 msgid "Age: "
-msgstr ""
+msgstr "年代："
 
 #: services/lastfm/LastFmService.cpp:439
-#, fuzzy
-#| msgid "Genre:"
 msgid "Gender: "
-msgstr "風格："
+msgstr ""
 
 #: services/lastfm/LastFmService.cpp:446
-#, fuzzy
-#| msgid "Play Count:"
 msgid "Play Count: "
-msgstr "播放次數："
+msgstr ""
 
 #: services/lastfm/LastFmService.cpp:446
-#, fuzzy
-#| msgid "Days"
 msgid " plays"
-msgstr "日"
+msgstr ""
 
 #: services/lastfm/LastFmService.cpp:456
-#, fuzzy
-#| msgid "Device information for "
 msgid "Enter login information for Last.fm"
-msgstr "裝置資訊："
+msgstr ""
 
 #: services/lastfm/LastFmService.cpp:514
 msgid "Create a Custom Last.fm Station"
-msgstr ""
+msgstr "建立自訂的 Last.fm 廣播站台"
 
 #: services/lastfm/LastFmService.cpp:517
 msgid "Tag"
@@ -6605,11 +6412,10 @@ msgid "User"
 msgstr "使用者"
 
 #: services/lastfm/LastFmService.cpp:550 services/lastfm/LastFmService.cpp:563
-#, fuzzy, kde-format
-#| msgid "Loved Tracks"
+#, kde-format
 msgctxt "As in, lastfm"
 msgid "Loved Track: %1"
-msgstr "喜愛的曲目"
+msgstr ""
 
 #: services/lastfm/LastFmServiceSettings.cpp:88
 msgid "Testing..."
@@ -6677,10 +6483,8 @@ msgid "last.fm"
 msgstr "last.fm"
 
 #: services/shoutcast/ShoutcastService.cpp:33
-#, fuzzy
-#| msgid "Directory"
 msgid "Shoutcast Directory"
-msgstr "目錄"
+msgstr ""
 
 #: services/shoutcast/ShoutcastService.cpp:62
 msgid "The biggest list of online radio stations on the Internet"
@@ -6697,10 +6501,8 @@ msgid "Go to artist in %1 service"
 msgstr "跳到 %1 服務內的演出者"
 
 #: services/magnatune/MagnatuneInfoParser.cpp:33
-#, fuzzy
-#| msgid "Loading Thumbnails..."
 msgid "Loading artist info..."
-msgstr "正在載入縮圖..."
+msgstr ""
 
 #: services/magnatune/MagnatuneInfoParser.cpp:45
 #, kde-format
@@ -6708,10 +6510,8 @@ msgid "Fetching %1 Artist Info"
 msgstr "取得 %1 演出者資訊中"
 
 #: services/magnatune/MagnatuneInfoParser.cpp:54
-#, fuzzy
-#| msgid "Loading Thumbnails..."
 msgid "Loading album info..."
-msgstr "正在載入縮圖..."
+msgstr ""
 
 #: services/magnatune/MagnatuneInfoParser.cpp:75
 msgid "Release Year: "
@@ -6726,10 +6526,8 @@ msgid "From Magnatune.com"
 msgstr "從 Magnatune.com"
 
 #: services/magnatune/MagnatuneInfoParser.cpp:159
-#, fuzzy
-#| msgid "Fetching Magnatune.com front page"
 msgid "Loading Magnatune.com frontpage..."
-msgstr "正在取得 Mangnatune.com 封面"
+msgstr ""
 
 #: services/magnatune/MagnatuneInfoParser.cpp:162
 msgid "Fetching Magnatune.com front page"
@@ -6740,21 +6538,12 @@ msgid "Preview Tracks"
 msgstr "上一曲目"
 
 #: services/magnatune/MagnatuneCollectionLocation.cpp:46
-#, fuzzy
-#| msgid ""
-#| "The tracks you are about to copy are Magnatune.com preview streams. For "
-#| "better quality and free streams, consider buying an album download. "
-#| "Remember that when buying from Magnatune the artist gets 50%. Also if you "
-#| "buy using Amarok, you support the Amarok project with 10%."
 msgid ""
 "The tracks you are about to copy are Magnatune.com preview streams. For "
 "better quality and advert free streams, consider buying an album download. "
 "Remember that when buying from Magnatune the artist gets 50%. Also if you "
 "buy using Amarok, you support the Amarok project with 10%."
 msgstr ""
-"您打算複製的為 Magnatune.com 預覽串流。若想取得較好的品質的串流，請考慮購買專"
-"輯下載的授權。若是您向 Magnatune 購買，演出者可以得到五成回饋。若是您使用 "
-"Amarok 購買，Amarok 專案也能得到一成的贊助。"
 
 #: services/magnatune/MagnatuneMeta.cpp:225
 #: services/magnatune/MagnatuneMeta.cpp:449
@@ -6787,71 +6576,55 @@ msgid "Adding album cover to collection"
 msgstr "正在加入專輯的封面到收藏"
 
 #: services/magnatune/MagnatuneXmlParser.cpp:66
-#, fuzzy, kde-format
-#| msgid ""
-#| "Magnatune.com database update complete. Added %1 tracks on %2 albums from "
-#| "%3 artists"
+#, kde-format
 msgctxt ""
 "First part of: Magnatune.com database update complete. Added 3 tracks on 4 "
 "albums from 5 artists."
 msgid "Magnatune.com database update complete. Added 1 track on "
 msgid_plural "Magnatune.com database update complete. Added %1 tracks on "
 msgstr[0] ""
-"Magnatune.com 資料庫更新完成。加入了來自 %2 張專輯的曲目 %1 首，當中演出者共 "
-"%3 人"
 
 #: services/magnatune/MagnatuneXmlParser.cpp:67
-#, fuzzy, kde-format
-#| msgid "1 album"
-#| msgid_plural "%1 albums"
+#, kde-format
 msgctxt ""
 "Middle part of: Magnatune.com database update complete. Added 3 tracks on 4 "
 "albums from 5 artists."
 msgid "1 album from "
 msgid_plural "%1 albums from "
-msgstr[0] "%1 張專輯"
+msgstr[0] ""
 
 #: services/magnatune/MagnatuneXmlParser.cpp:68
-#, fuzzy, kde-format
-#| msgid "artist"
+#, kde-format
 msgctxt ""
 "Last part of: Magnatune.com database update complete. Added 3 tracks on 4 "
 "albums from 5 artists."
 msgid "1 artist."
 msgid_plural "%1 artists."
-msgstr[0] "演出者"
+msgstr[0] ""
 
 #: services/magnatune/MagnatuneRedownloadHandler.cpp:60
-#, fuzzy
-#| msgid "No purchases found!"
 msgid "No purchases found."
-msgstr "找不到購買的記錄！"
+msgstr ""
 
 #: services/magnatune/MagnatuneRedownloadHandler.cpp:61
-#, fuzzy
-#| msgid "No previous purchases have been found. Nothing to redownload..."
 msgid "No previous purchases have been found. Nothing to re-download...."
-msgstr "找不到以前購買的記錄。沒什麼可以重新下載的..."
+msgstr ""
 
 #: services/magnatune/MagnatuneRedownloadHandler.cpp:139
 msgid "Could not re-download album"
 msgstr "無法重新下載專輯"
 
 #: services/magnatune/MagnatuneRedownloadHandler.cpp:140
-#, fuzzy
-#| msgid "There seems to be a problem with the selected redownload info file."
 msgid "There seems to be a problem with the selected re-download info file."
-msgstr "看來選取的重下載資訊檔有問題。"
+msgstr ""
 
 #: services/magnatune/MagnatuneStore.cpp:100
 msgid "The friendly record company with the motto \"We are not evil!\""
 msgstr "友善的唱片公司，有「我們不邪惡」的座右銘"
 
 #: services/magnatune/MagnatuneStore.cpp:221
-#, fuzzy
-#| msgid "Redownload"
 msgid "Re-download"
-msgstr "重新下載"
+msgstr ""
 
 #: services/magnatune/MagnatuneStore.cpp:224
 msgid "Update Database"
@@ -7004,16 +6777,12 @@ msgstr "目前並未載入名為 %1 的服務"
 #: services/scriptable/ScriptableServiceInfoParser.cpp:65
 #: services/scriptable/ScriptableServiceInfoParser.cpp:81
 #: services/scriptable/ScriptableServiceInfoParser.cpp:97
-#, fuzzy
-#| msgid "Loading Thumbnails..."
 msgid "Loading info..."
-msgstr "正在載入縮圖..."
+msgstr ""
 
 #: services/ampache/AmpacheService.cpp:121
-#, fuzzy
-#| msgid "Use Amarok as a seamless frontend to your Ampache server!"
 msgid "Use Amarok as a seamless frontend to your Ampache server."
-msgstr "使用 Amarok 做為您的 Ampache 伺服器前端。"
+msgstr ""
 
 #: services/ampache/AmpacheService.cpp:201
 msgid "Enter the server name and a password"
@@ -7024,10 +6793,8 @@ msgid "Authenticating with Ampache"
 msgstr "正在與 Ampache 進行驗證中"
 
 #: services/ampache/AmpacheService.cpp:288
-#, fuzzy
-#| msgid "Authentication Error!"
 msgid "Authentication Error"
-msgstr "認證錯誤。"
+msgstr ""
 
 #: services/ampache/AmpacheServiceCollection.cpp:56
 #, kde-format
@@ -7180,58 +6947,43 @@ msgid "From Jamendo.com"
 msgstr "從 Jamendo.com"
 
 #: services/jamendo/JamendoXmlParser.cpp:147
-#, fuzzy, kde-format
-#| msgid ""
-#| "Jamendo.com database update complete. Added %1 tracks on %2 albums from %"
-#| "3 artists"
+#, kde-format
 msgctxt ""
 "First part of: Jamendo.com database update complete. Added 3 tracks on 4 "
 "albums from 5 artists."
 msgid "Jamendo.com database update complete. Added 1 track on "
 msgid_plural "Jamendo.com database update complete. Added %1 tracks on "
 msgstr[0] ""
-"Jamendo.com 資料庫更新完成。加入了來自 %2 張專輯的曲目 %1 首，當中演出者共 %"
-"3 人"
 
 #: services/jamendo/JamendoXmlParser.cpp:148
-#, fuzzy, kde-format
-#| msgid "1 album"
-#| msgid_plural "%1 albums"
+#, kde-format
 msgctxt ""
 "Middle part of: Jamendo.com database update complete. Added 3 tracks on 4 "
 "albums from 5 artists."
 msgid "1 album from "
 msgid_plural "%1 albums from "
-msgstr[0] "%1 張專輯"
+msgstr[0] ""
 
 #: services/jamendo/JamendoXmlParser.cpp:149
-#, fuzzy, kde-format
-#| msgid "artist"
+#, kde-format
 msgctxt ""
 "Last part of: Jamendo.com database update complete. Added 3 tracks on 4 "
 "albums from 5 artists."
 msgid "1 artist."
 msgid_plural "%1 artists."
-msgstr[0] "演出者"
+msgstr[0] ""
 
 #: playlist/view/listview/SourceSelectionPopup.cpp:38
-#, fuzzy
-#| msgid "No information available for this track"
 msgid "The following sources are available for this track:"
-msgstr "這首曲目沒有可用的資訊。"
+msgstr ""
 
 #: playlist/view/listview/SourceSelectionPopup.cpp:43
-#, fuzzy
-#| msgctxt "The quality of music"
-#| msgid "Okay"
 msgid "Ok"
-msgstr "一般"
+msgstr ""
 
 #: playlist/view/PlaylistViewCommon.cpp:63
-#, fuzzy
-#| msgid "Stop Playing After Track"
 msgid "Stop Playing After This Track"
-msgstr "此音軌後停止播放"
+msgstr ""
 
 #: playlist/view/PlaylistViewCommon.cpp:70
 msgid "Queue Track"
@@ -7246,10 +6998,8 @@ msgid "Remove From Playlist"
 msgstr "從清單中移除"
 
 #: playlist/view/PlaylistViewCommon.cpp:132
-#, fuzzy
-#| msgid "Select Importer"
 msgid "Select Source"
-msgstr "請選擇匯入器"
+msgstr ""
 
 #: playlist/PlaylistDefines.h:69
 msgctxt "Empty placeholder token used for spacing in playlist layouts"
@@ -7257,76 +7007,56 @@ msgid "Placeholder"
 msgstr ""
 
 #: playlist/PlaylistDefines.h:70
-#, fuzzy
-#| msgid "Album"
 msgctxt "'Album' playlist column name and token for playlist layouts"
 msgid "Album"
-msgstr "專輯"
+msgstr ""
 
 #: playlist/PlaylistDefines.h:71
-#, fuzzy
-#| msgid "Album artist"
 msgctxt "'Album artist' playlist column name and token for playlist layouts"
 msgid "Album artist"
-msgstr "專輯的演出者"
+msgstr ""
 
 #: playlist/PlaylistDefines.h:72
-#, fuzzy
-#| msgid "Artist"
 msgctxt "'Artist' playlist column name and token for playlist layouts"
 msgid "Artist"
-msgstr "演出者"
+msgstr ""
 
 #: playlist/PlaylistDefines.h:73
-#, fuzzy
-#| msgid "Bitrate"
 msgctxt "'Bitrate' playlist column name and token for playlist layouts"
 msgid "Bitrate"
-msgstr "位元率"
+msgstr ""
 
 #: playlist/PlaylistDefines.h:74
-#, fuzzy
-#| msgid "Bpm"
 msgctxt ""
 "'Beats per minute' playlist column name and token for playlist layouts, if "
 "in doubt, dont expand as it needs to be short!!"
 msgid "Bpm"
-msgstr "BPM"
+msgstr ""
 
 #: playlist/PlaylistDefines.h:75
-#, fuzzy
-#| msgid "Comment"
 msgctxt "'Comment' playlist column name and token for playlist layouts"
 msgid "Comment"
-msgstr "評語"
+msgstr ""
 
 #: playlist/PlaylistDefines.h:76
-#, fuzzy
-#| msgid "Composer"
 msgctxt "'Composer' playlist column name and token for playlist layouts"
 msgid "Composer"
-msgstr "作曲家"
+msgstr ""
 
 #: playlist/PlaylistDefines.h:77
-#, fuzzy
-#| msgid "Cover image"
 msgctxt "'Cover image' playlist column name and token for playlist layouts"
 msgid "Cover image"
-msgstr "封面影像"
+msgstr ""
 
 #: playlist/PlaylistDefines.h:78
-#, fuzzy
-#| msgid "Directory"
 msgctxt "'Directory' playlist column name and token for playlist layouts"
 msgid "Directory"
-msgstr "目錄"
+msgstr ""
 
 #: playlist/PlaylistDefines.h:79
-#, fuzzy
-#| msgid "Disc number"
 msgctxt "'Disc number' playlist column name and token for playlist layouts"
 msgid "Disc number"
-msgstr "碟片編號"
+msgstr ""
 
 #: playlist/PlaylistDefines.h:80
 msgctxt ""
@@ -7335,178 +7065,134 @@ msgid "Divider"
 msgstr ""
 
 #: playlist/PlaylistDefines.h:81
-#, fuzzy
-#| msgid "File name"
 msgctxt "'File name' playlist column name and token for playlist layouts"
 msgid "File name"
-msgstr "檔名"
+msgstr ""
 
 #: playlist/PlaylistDefines.h:82
-#, fuzzy
-#| msgid "File size"
 msgctxt "'File size' playlist column name and token for playlist layouts"
 msgid "File size"
-msgstr "檔案大小"
+msgstr ""
 
 #: playlist/PlaylistDefines.h:83
-#, fuzzy
-#| msgid "Genre"
 msgctxt "'Genre' playlist column name and token for playlist layouts"
 msgid "Genre"
-msgstr "風格"
+msgstr ""
 
 #: playlist/PlaylistDefines.h:84
-#, fuzzy
-#| msgid "Groupings"
 msgctxt ""
 "'Group length' (total play time of group) playlist column name and token for "
 "playlist layouts"
 msgid "Group length"
-msgstr "分組"
+msgstr ""
 
 #: playlist/PlaylistDefines.h:85
-#, fuzzy
-#| msgid "tracks"
 msgctxt ""
 "'Group tracks' (number of tracks in group) playlist column name and token "
 "for playlist layouts"
 msgid "Group tracks"
-msgstr "首曲目"
+msgstr ""
 
 #: playlist/PlaylistDefines.h:86
-#, fuzzy
-#| msgid "Last played"
 msgctxt ""
 "'Last played' (when was track last played) playlist column name and token "
 "for playlist layouts"
 msgid "Last played"
-msgstr "上一次播放"
+msgstr ""
 
 #: playlist/PlaylistDefines.h:87
-#, fuzzy
-#| msgid "Length"
 msgctxt ""
 "'Length' (track length) playlist column name and token for playlist layouts"
 msgid "Length"
-msgstr "長度"
+msgstr ""
 
 #: playlist/PlaylistDefines.h:88
-#, fuzzy
-#| msgid "Mood"
 msgctxt "'Mood' playlist column name and token for playlist layouts"
 msgid "Mood"
-msgstr "氣氛"
+msgstr ""
 
 #: playlist/PlaylistDefines.h:89
-#, fuzzy
-#| msgid "Play count"
 msgctxt "'Play count' playlist column name and token for playlist layouts"
 msgid "Play count"
-msgstr "播放次數"
+msgstr ""
 
 #: playlist/PlaylistDefines.h:90
-#, fuzzy
-#| msgid "Rating"
 msgctxt "'Rating' playlist column name and token for playlist layouts"
 msgid "Rating"
-msgstr "用戶評分"
+msgstr ""
 
 #: playlist/PlaylistDefines.h:91
-#, fuzzy
-#| msgid "Sample rate"
 msgctxt "'Sample rate' playlist column name and token for playlist layouts"
 msgid "Sample rate"
-msgstr "取樣頻率"
+msgstr ""
 
 #: playlist/PlaylistDefines.h:92
-#, fuzzy
-#| msgid "Score"
 msgctxt "'Score' playlist column name and token for playlist layouts"
 msgid "Score"
-msgstr "評分"
+msgstr ""
 
 #: playlist/PlaylistDefines.h:93
-#, fuzzy
-#| msgid "Source"
 msgctxt ""
 "'Source' (local collection, Magnatune.com, last.fm, ... ) playlist column "
 "name and token for playlist layouts"
 msgid "Source"
-msgstr "來源"
+msgstr ""
 
 #: playlist/PlaylistDefines.h:94
-#, fuzzy
-#| msgid "SourceEmblem"
 msgctxt "'SourceEmblem' playlist column name and token for playlist layouts"
 msgid "SourceEmblem"
-msgstr "SourceEmblem"
+msgstr ""
 
 #: playlist/PlaylistDefines.h:95
-#, fuzzy
-#| msgid "Title"
 msgctxt ""
 "'Title' (track name) playlist column name and token for playlist layouts"
 msgid "Title"
-msgstr "標題"
+msgstr ""
 
 #: playlist/PlaylistDefines.h:96
-#, fuzzy
-#| msgid "Title (with track number)"
 msgctxt ""
 "'Title (with track number)' (track name prefixed with the track number) "
 "playlist column name and token for playlist layouts"
 msgid "Title (with track number)"
-msgstr "標題（與音軌編號）"
+msgstr ""
 
 #: playlist/PlaylistDefines.h:97
-#, fuzzy
-#| msgid "Track number"
 msgctxt "'Track number' playlist column name and token for playlist layouts"
 msgid "Track number"
-msgstr "音軌編號"
+msgstr ""
 
 #: playlist/PlaylistDefines.h:98
-#, fuzzy
-#| msgid "Type"
 msgctxt ""
 "'Type' (file format) playlist column name and token for playlist layouts"
 msgid "Type"
-msgstr "類型"
+msgstr ""
 
 #: playlist/PlaylistDefines.h:99
-#, fuzzy
-#| msgid "Year"
 msgctxt "'Year' playlist column name and token for playlist layouts"
 msgid "Year"
-msgstr "年份"
+msgstr ""
 
 #: playlist/layouts/LayoutEditWidget.cpp:42
 #: playlist/layouts/LayoutEditWidget.cpp:56
-#, fuzzy
-#| msgid "Show Years"
 msgid "Show Cover"
-msgstr "顯示年份"
+msgstr ""
 
 #: playlist/layouts/LayoutManager.cpp:338
 #, kde-format
 msgid "The layout '%1' is one of the default layouts and cannot be deleted."
-msgstr ""
+msgstr "'%1' 佈局是預設的佈局之一，無法被刪除"
 
 #: playlist/layouts/LayoutManager.cpp:338
 msgid "Cannot Delete Default Layouts"
-msgstr ""
+msgstr "無法刪除預設佈局"
 
 #: playlist/layouts/LayoutConfigAction.cpp:43
-#, fuzzy
-#| msgid "Playlist name:"
 msgid "Playlist layouts"
-msgstr "播放清單名稱："
+msgstr ""
 
 #: playlist/layouts/LayoutConfigAction.cpp:70
-#, fuzzy
-#| msgid "Configure Applets..."
 msgid "Configure playlist layouts..."
-msgstr "設定小程式..."
+msgstr ""
 
 #: playlist/PlaylistHeader.cpp:42
 msgid "Track Number - Title"
@@ -7533,11 +7219,8 @@ msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "播放清單遇到太多錯誤。播放已停止。"
 
 #: playlist/PlaylistModel.cpp:286
-#, fuzzy
-#| msgctxt "When this track was first played"
-#| msgid "Never"
 msgid "Never"
-msgstr "從未"
+msgstr ""
 
 #: playlist/PlaylistModel.cpp:697
 msgid "Album Artist"
@@ -7633,10 +7316,8 @@ msgid "Generate a new ID even if an up-to-date one exists"
 msgstr "即使已經有最新的代碼，仍舊產生新的代碼"
 
 #: afttagger/afttagger_main.cpp:78
-#, fuzzy
-#| msgid "No prompts -- Indicates you agree to the terms of use!"
 msgid "No prompts -- Indicates you agree to the terms of use."
-msgstr "沒有提示 ─ 表示您已同意使用的條件。"
+msgstr ""
 
 #: afttagger/afttagger_main.cpp:79
 msgid "Recursively process files and directories"
@@ -7797,7 +7478,7 @@ msgstr "將此演出者加入書籤"
 
 #: amarokurls/BookmarkMetaActions.cpp:67
 msgid "Add Position Marker"
-msgstr ""
+msgstr "新增定位標記"
 
 #: amarokurls/NavigationUrlGenerator.cpp:227
 #, kde-format
@@ -7820,11 +7501,8 @@ msgid "Artist \"%1\""
 msgstr "演出者「%1」"
 
 #: widgets/VolumeWidget.cpp:36
-#, fuzzy
-#| msgctxt "State, as in, The playback is silent"
-#| msgid "Mute"
 msgid "Mute"
-msgstr "靜音"
+msgstr ""
 
 #: widgets/VolumeWidget.cpp:41
 msgid "Volume Control"
@@ -7835,16 +7513,13 @@ msgid "Rating changed"
 msgstr "用戶評分變更"
 
 #: widgets/Osd.cpp:135
-#, fuzzy, kde-format
-#| msgid "Volume: %1%"
+#, kde-format
 msgid "Volume: %1% %2"
-msgstr "音量：%1%"
+msgstr ""
 
 #: widgets/Osd.cpp:197
-#, fuzzy
-#| msgid "Volume: 100%"
 msgid "Volume: 100% (muted)"
-msgstr "音量：100%"
+msgstr ""
 
 #: widgets/Osd.cpp:428
 msgid "OSD Preview - drag to reposition"
@@ -7856,7 +7531,7 @@ msgstr "已暫停"
 
 #: widgets/ProgressiveSearchWidget.cpp:44
 msgid "Warning: tracks have been hidden in the playlist"
-msgstr ""
+msgstr "警告：曲目已在清單內隱藏"
 
 #: widgets/ProgressiveSearchWidget.cpp:48
 msgid "Search playlist"
@@ -7902,69 +7577,61 @@ msgstr "請輸入字詞(可以空格分開)以尋找專輯。"
 msgid "Edit filter"
 msgstr "編輯過濾器"
 
-#: widgets/SliderWidget.cpp:243
+#: widgets/SliderWidget.cpp:247
 msgid "Volume"
 msgstr "音量"
 
-#: widgets/SliderWidget.cpp:244
+#: widgets/SliderWidget.cpp:248
 msgid "100%"
 msgstr "100%"
 
-#: widgets/SliderWidget.cpp:245
+#: widgets/SliderWidget.cpp:249
 msgid "80%"
 msgstr "80%"
 
-#: widgets/SliderWidget.cpp:246
+#: widgets/SliderWidget.cpp:250
 msgid "60%"
 msgstr "60%"
 
-#: widgets/SliderWidget.cpp:247
+#: widgets/SliderWidget.cpp:251
 msgid "40%"
 msgstr "40%"
 
-#: widgets/SliderWidget.cpp:248
+#: widgets/SliderWidget.cpp:252
 msgid "20%"
 msgstr "20%"
 
-#: widgets/SliderWidget.cpp:249
+#: widgets/SliderWidget.cpp:253
 msgid "0%"
 msgstr "0%"
 
-#: widgets/TokenWithLayout.cpp:65
+#: widgets/TokenWithLayout.cpp:67
 msgid "Bold"
+msgstr "粗體"
+
+#: widgets/TokenWithLayout.cpp:72
+msgid "Italic"
 msgstr ""
 
-#: widgets/TokenWithLayout.cpp:70
-#, fuzzy
-#| msgid "Uninstall"
-msgid "Italic"
-msgstr "解除安裝"
-
-#: widgets/TokenWithLayout.cpp:75
-#, fuzzy
-#| msgid "Length"
-msgid "Left"
-msgstr "長度"
-
-#: widgets/TokenWithLayout.cpp:76
-#, fuzzy
-#| msgid "Comment"
-msgid "Center"
-msgstr "評語"
-
 #: widgets/TokenWithLayout.cpp:77
+msgid "Left"
+msgstr ""
+
+#: widgets/TokenWithLayout.cpp:78
+msgid "Center"
+msgstr ""
+
+#: widgets/TokenWithLayout.cpp:79
 msgid "Right"
 msgstr ""
 
-#: widgets/TokenWithLayout.cpp:99
+#: widgets/TokenWithLayout.cpp:101
 msgid "Alignment"
-msgstr ""
+msgstr "對齊"
 
-#: widgets/TokenWithLayout.cpp:170
-#, fuzzy
-#| msgid "playcount"
+#: widgets/TokenWithLayout.cpp:178
 msgid "Layout"
-msgstr "播放次數"
+msgstr ""
 
 #: widgets/TokenLayoutWidget.cpp:48
 msgid "Drag tokens here to define a filename scheme."
@@ -8434,555 +8101,3 @@ msgstr "封面影像"
 #: covermanager/CoverManager.cpp:876
 msgid "No Artist"
 msgstr "沒有演出者"
-
-#, fuzzy
-#~| msgid "&Save Playlist"
-#~ msgid "Save playlist"
-#~ msgstr "儲存播放清單(&S)"
-
-#, fuzzy
-#~| msgid "Enter a name for the playlist:"
-#~ msgid "Enter name for the new playlist:"
-#~ msgstr "請輸入播放清單的名稱："
-
-#~ msgid "Playlist"
-#~ msgstr "播放清單"
-
-#~ msgid "&Play"
-#~ msgstr "播放(&P)"
-
-#~ msgid "&Pause"
-#~ msgstr "暫停(&P)"
-
-#~ msgid "DirectoryListBase"
-#~ msgstr "DirectoryListBase"
-
-#~ msgid "SQL Podcast"
-#~ msgstr "SQL Podcast"
-
-#~ msgid "Podcast"
-#~ msgstr "Podcast"
-
-#, fuzzy
-#~| msgid "&Save Playlist"
-#~ msgctxt "Replace the currently loaded tracks with these"
-#~ msgid "&Overwrite Playlist"
-#~ msgstr "儲存播放清單(&S)"
-
-#~ msgid "Playcount:"
-#~ msgstr "播放次數："
-
-#, fuzzy
-#~| msgctxt "The amount of tracks being edited"
-#~| msgid "1 Track"
-#~| msgid_plural "Information for %1 Tracks"
-#~ msgid "1 Track"
-#~ msgid_plural "%1 Tracks"
-#~ msgstr[0] "%1 首曲目的資訊"
-
-#~ msgid "Bookmark Position"
-#~ msgstr "書籤位置"
-
-#, fuzzy
-#~| msgid "%1 track"
-#~| msgid_plural "%1 tracks"
-#~ msgid "%1 Tracks"
-#~ msgstr "%1 首曲目"
-
-#~ msgctxt "State, as in, The playback is silent"
-#~ msgid "Mute"
-#~ msgstr "靜音"
-
-#~ msgctxt "State, as in, the playback is silent"
-#~ msgid "Mute"
-#~ msgstr "靜音"
-
-#~ msgid "Queue Manager"
-#~ msgstr "佇列管理員"
-
-#~ msgid "&Remove from iPod"
-#~ msgstr "從 iPod 移除(&R)"
-
-#~ msgid "&Disconnect the iPod"
-#~ msgstr "中斷與 iPod 的連接(&D)"
-
-#~ msgid "Stop Playing After Track"
-#~ msgstr "此音軌後停止播放"
-
-#~ msgid "&Equalizer"
-#~ msgstr "等化器(&E)"
-
-#~ msgid ""
-#~ "Amarok Collection Scanner\n"
-#~ "\n"
-#~ "Note: For debugging purposes this application can be invoked from the "
-#~ "command line, but it will not actually build a collection this way."
-#~ msgstr ""
-#~ "Amarok 收藏掃描器\n"
-#~ "\n"
-#~ "注意: 這個程式有一個指令列模式，是用來除錯的，但是此模式下不會真正建立任何"
-#~ "音樂集。"
-
-#~ msgid "Collection Scanner for Amarok"
-#~ msgstr "Amarok 收藏所使用的掃描器"
-
-#, fuzzy
-#~| msgid "(C) 2003-2008, The Amarok Developers"
-#~ msgid "(C) 2003-2009, The Amarok Developers"
-#~ msgstr "(C) 2003-2008, Amarok 開發人員"
-
-#~ msgid "Scan folders recursively"
-#~ msgstr "遞迴地掃描目錄"
-
-#~ msgid "Incremental Scan (modified folders only)"
-#~ msgstr "增量掃描，不對前一次掃描過的檔案重覆掃描(僅對修改過的資料夾)"
-
-#~ msgid "Import playlist"
-#~ msgstr "匯入播放清單"
-
-#~ msgid "Restart the scanner at last position, after a crash"
-#~ msgstr "若之前當機了，就從當機時的掃描位置繼續下去"
-
-#~ msgid "PID of Amarok instance"
-#~ msgstr "Amarok 實體的行程代碼"
-
-#~ msgid ""
-#~ "The SqlCollection instance to connect to. Must be set for incremental "
-#~ "scans"
-#~ msgstr "要連線的 SqlCollection 實體。若要遞增掃描則必須設定。"
-
-#, fuzzy
-#~| msgid "Configure Playback"
-#~ msgid "Configure Phonon - Amarok"
-#~ msgstr "設定播放"
-
-#, fuzzy
-#~| msgid "Configure Collection"
-#~ msgid "Configure Phonon"
-#~ msgstr "設定收藏"
-
-#~ msgid "Well, we tried..."
-#~ msgstr "好吧，我們試試..."
-
-#~ msgctxt "Last.fm: errorMessage"
-#~ msgid ""
-#~ "Sorry, we don't recognise that username, or you typed the password "
-#~ "wrongly."
-#~ msgstr "抱歉，我們無法辨識此使用者名稱，或是您輸入的密碼錯誤。"
-
-#~ msgid "Default Browser"
-#~ msgstr "預設瀏覽器"
-
-#~ msgid "Default KDE Browser"
-#~ msgstr "KDE 預設瀏覽器"
-
-#~ msgid "External web browser:"
-#~ msgstr "外部網頁瀏覽器："
-
-#~ msgid "Select browser from the list or type in filename of custom browser"
-#~ msgstr "從清單中選擇瀏覽器，或是輸入自訂瀏覽器的檔名"
-
-#~ msgid "Folders to scan"
-#~ msgstr "要掃描的目錄"
-
-#~ msgctxt "@info"
-#~ msgid "Do you really want to delete these %1 tracks?"
-#~ msgstr "您確定要移除這 %1 個音軌嗎？"
-
-#, fuzzy
-#~| msgid "Amarok"
-#~ msgid "Amarok2"
-#~ msgstr "Amarok"
-
-#~ msgid "Amarok Version"
-#~ msgstr "Amarok 版本"
-
-#~ msgid "Amarok version string, used to restart aRts in new installations."
-#~ msgstr "Amarok 版本字串，用來在新安裝時重新啟動 aRts。"
-
-#~ msgid ""
-#~ "Whether to follow symlinks while adding items to playlist recursively"
-#~ msgstr "要不要在遞迴地加入項目到清單時跟蹤符號連結"
-
-#~ msgid ""
-#~ "If set, amarok follows symlinks when adding files or directories to the "
-#~ "playlist."
-#~ msgstr "設定後，Amarok 會在加入檔案或目錄到播放清單時跟蹤符號連結。"
-
-#~ msgid "The most recently used scoring script"
-#~ msgstr "最近使用的評分指令稿"
-
-#~ msgid "The name of the custom scoring script which was most recently loaded"
-#~ msgstr "最近載入的自訂評分指令稿名字"
-
-#~ msgid "Size of the cover previews in Contextbrowser and Covermanager"
-#~ msgstr "系絡瀏覽器及封面管理員預覽封面時的大小"
-
-#~ msgid "Whether to add directories to playlist recursively"
-#~ msgstr "要不要遞迴地把目錄加入到播放清單中"
-
-#~ msgid "Enable/Disable recursive directory adding to the playlist."
-#~ msgstr "啟用/停用遞迴地把目錄加入播放清單"
-
-#~ msgid "Index of current visual analyzer"
-#~ msgstr "目前視像分析器的索引"
-
-#~ msgid "The ID of the visual analyzer to display."
-#~ msgstr "要顯示的視像分析器的 ID。"
-
-#~ msgid "Whether the collection view is in the flat or tree view mode"
-#~ msgstr "收藏瀏覽模式是使用平面模式抑或樹狀模式"
-
-#~ msgid "Whether to use the CoverBling album art visualization."
-#~ msgstr "是否在使用 CoverBling 相簿藝術視覺化。"
-
-#~ msgid "Form"
-#~ msgstr "表單"
-
-#~ msgid "Radio playlist has ended."
-#~ msgstr "頻道播放清單已結束。"
-
-#~ msgctxt "Last.fm: errorMessage"
-#~ msgid "%1: %2 Error code: %3"
-#~ msgstr "%1：%2  錯誤代號：%3"
-
-#~ msgid "Random Playlist"
-#~ msgstr "隨機播放清單"
-
-#~ msgid "Service Info (No service active)"
-#~ msgstr "服務資訊（沒有作用中的服務）"
-
-#~ msgid "Love"
-#~ msgstr "喜愛"
-
-#~ msgid "Ban"
-#~ msgstr "阻擋"
-
-#~ msgid "Skip"
-#~ msgstr "略過"
-
-#~ msgid "Unnamed"
-#~ msgstr "未命名"
-
-#~ msgid "Configuration Definitions"
-#~ msgstr "設定定義"
-
-#~ msgid "Main Script File"
-#~ msgstr "主文稿檔"
-
-#~ msgid "Null Engine"
-#~ msgstr "空引擎"
-
-#~ msgid "Unknown Wallpaper"
-#~ msgstr "未知的桌布"
-
-#~ msgid "no items"
-#~ msgstr "沒有項目"
-
-#~ msgid "Script initialization failed"
-#~ msgstr "文稿初始化失敗"
-
-#~ msgid "Unable to load the widget"
-#~ msgstr "無法載入元件"
-
-#~ msgid "Unknown Activity"
-#~ msgstr "未知的活動"
-
-#~ msgid "%1 Activity"
-#~ msgstr "%1 活動"
-
-#~ msgid "Unknown Widget"
-#~ msgstr "未知的元件"
-
-#~ msgid "Configure..."
-#~ msgstr "設定..."
-
-#~ msgid "Remove this %1"
-#~ msgstr "移除此 %1"
-
-#~ msgid "Activate %1 Widget"
-#~ msgstr "啟動 %1 元件"
-
-#~ msgid "%1 Settings"
-#~ msgstr "%1 設定"
-
-#~ msgctxt "@title:window"
-#~ msgid "%1 Settings"
-#~ msgstr "%1 設定"
-
-#~ msgid "Settings"
-#~ msgstr "設定"
-
-#~ msgid "Could not locate the %1 package required for the %2 widget."
-#~ msgstr "找不到 %2 元件所需要的套件 %1。"
-
-#~ msgid "Could not create a %1 ScriptEngine for the %2 widget."
-#~ msgstr "無法建立 %2 元件所需要的 %1 文稿引擎。"
-
-#~ msgid "Could not open the %1 package required for the %2 widget."
-#~ msgstr "無法開啟 %2 元件所需要的套件 %1。"
-
-#~ msgid "This object could not be created."
-#~ msgstr "無法建立此物件。"
-
-#~ msgid ""
-#~ "This object could not be created for the following reason:<p><b>%1</b></p>"
-#~ msgstr "無法建立此物件，原因為：<p><b>%1</b></p>"
-
-#~ msgid "Invalid"
-#~ msgstr "不合法"
-
-#~ msgid "Expand this widget"
-#~ msgstr "展開此元件"
-
-#~ msgid "Collapse this widget"
-#~ msgstr "折疊此元件"
-
-#~ msgid "This system does not support OpenGL widgets."
-#~ msgstr "此系統不支援 OpenGL 元件。"
-
-#~ msgid "Your machine does not support OpenGL widgets."
-#~ msgstr "您的機器不支援 OpenGL 元件。"
-
-#~ msgid "Next Widget"
-#~ msgstr "下一個元件"
-
-#~ msgid "Previous Widget"
-#~ msgstr "前一個元件"
-
-#~ msgid "Lock Widgets"
-#~ msgstr "鎖定元件"
-
-#~ msgid "Unlock Widgets"
-#~ msgstr "解除鎖定元件"
-
-#~ msgid "Add Activity"
-#~ msgstr "新增活動"
-
-#~ msgid "%1 Options"
-#~ msgstr "%1 個選項"
-
-#~ msgid "Icon"
-#~ msgstr "圖示"
-
-#~ msgid "Do you really want to remove this %1?"
-#~ msgstr "您確定要移除 %1 嗎？"
-
-#~ msgid "Remove %1"
-#~ msgstr "移除 %1"
-
-#~ msgid "Could not find requested component: %1"
-#~ msgstr "找不到需要的組件：%1"
-
-#~ msgid "Images"
-#~ msgstr "影像"
-
-#~ msgid "Executable Scripts"
-#~ msgstr "執行文稿"
-
-#~ msgid "Main Config UI File"
-#~ msgstr "主要設定使用者介面檔"
-
-#~ msgid "Configuration XML file"
-#~ msgstr "設定 XML 檔"
-
-#~ msgid "Installation of <b>%1</b> failed!"
-#~ msgstr "安裝 <b>%1</b> 失敗！"
-
-#~ msgid "Installation Failed"
-#~ msgstr "安裝失敗"
-
-#~ msgid "Images for dialogs"
-#~ msgstr "對話框影像"
-
-#~ msgid "Generic dialog background"
-#~ msgstr "一般對話框主題"
-
-#~ msgid "Theme for the logout dialog"
-#~ msgstr "登出對話框主題"
-
-#~ msgid "Wallpaper packages"
-#~ msgstr "桌布套件"
-
-#~ msgid "Images for widgets"
-#~ msgstr "元件影像"
-
-#~ msgid "Background image for plasmoids"
-#~ msgstr "plasmoids 背景影像"
-
-#~ msgid "Analog clock face"
-#~ msgstr "類比時鐘外觀"
-
-#~ msgid "Background image for panels"
-#~ msgstr "面板背景影像"
-
-#~ msgid "Background for graphing widgets"
-#~ msgstr "背景的圖形元件"
-
-#~ msgid "Background image for tooltips"
-#~ msgstr "工具提示背景影像"
-
-#~ msgid "Opaque images for dialogs"
-#~ msgstr "對話框不透明影像"
-
-#~ msgid "Opaque generic dialog background"
-#~ msgstr "一般對話框不透明背景"
-
-#~ msgid "Opaque theme for the logout dialog"
-#~ msgstr "登出對話框不透明主題"
-
-#~ msgid "Opaque images for widgets"
-#~ msgstr "元件不透明影像"
-
-#~ msgid "Opaque background image for panels"
-#~ msgstr "面板的不透明背景影像"
-
-#~ msgid "Opaque background image for tooltips"
-#~ msgstr "工具提示的不透明背景影像"
-
-#~ msgid "Low color images for dialogs"
-#~ msgstr "對話框低彩影像"
-
-#~ msgid "Low color generic dialog background"
-#~ msgstr "一般對話框低彩背景"
-
-#~ msgid "Low color theme for the logout dialog"
-#~ msgstr "登出對話框低彩主題"
-
-#~ msgid "Low color background image for plasmoids"
-#~ msgstr "plasmoids 低彩背景影像"
-
-#~ msgid "Low color analog clock face"
-#~ msgstr "類比時鐘低彩外觀"
-
-#~ msgid "Low color background image for panels"
-#~ msgstr "面板的低彩背景影像"
-
-#~ msgid "Low color background for graphing widgets"
-#~ msgstr "圖形元件的低彩背景"
-
-#~ msgid "Low color background image for tooltips"
-#~ msgstr "工具提示的低彩背景影像"
-
-#~ msgid "KColorScheme configuration file"
-#~ msgstr "KColorScheme 設定檔"
-
-#~ msgid "Invalid (null) service, can not perform any operations."
-#~ msgstr "不合法的（空白的）服務，無法執行任何操作。"
-
-#~ msgctxt "switch view"
-#~ msgid "Switch Playlist &View"
-#~ msgstr "切換播放清單檢視(&V)"
-
-#~ msgid "Ignore field"
-#~ msgstr "「忽略」（Ignore）欄位"
-
-#~ msgid "Artist initial"
-#~ msgstr "演出者姓名縮寫"
-
-#~ msgid "<space>"
-#~ msgstr "<空白>"
-
-#, fuzzy
-#~| msgid "Bookmarks"
-#~ msgid "Bookmark: %1"
-#~ msgstr "書籤"
-
-#~ msgid "Move Applet"
-#~ msgstr "移動小程式"
-
-#~ msgid "Enter space-separated terms to search in the playlist."
-#~ msgstr "請輸入字詞(可以空格分開)，尋找播放清單的曲目。"
-
-#, fuzzy
-#~| msgid "Click to edit playlist filter"
-#~ msgid "Edit playlist filter"
-#~ msgstr "點擊以編輯播放清單過濾器"
-
-#~ msgid "Actions"
-#~ msgstr "動作"
-
-#~ msgid "Advanced"
-#~ msgstr "進階"
-
-#~ msgid "/"
-#~ msgstr "/"
-
-#~ msgid "Love this track on Last.fm"
-#~ msgstr "喜愛 Last.fm 上的這首曲目"
-
-#~ msgid "Alexandre 'Ain't afraid of no bugs' Oliveira"
-#~ msgstr "Alexandre 'Ain't afraid of no bugs' Oliveira"
-
-#~ msgid "Lydia Pintscher"
-#~ msgstr "Lydia Pintscher"
-
-#~ msgid "_"
-#~ msgstr "_"
-
-#~ msgid "-"
-#~ msgstr "-"
-
-#~ msgid "."
-#~ msgstr "."
-
-#~ msgid "Go"
-#~ msgstr "走"
-
-#~ msgid "The stream URL provided was not valid."
-#~ msgstr "提供的串流網址不合法。"
-
-#~ msgid " on <b>%1</b></center>"
-#~ msgstr " 於 <b>%1</b></center>"
-
-#~ msgid "Page #1"
-#~ msgstr "第 1 頁"
-
-#~ msgid "Page #%1"
-#~ msgstr "第 %1 頁"
-
-#~ msgid "Unit:"
-#~ msgstr "單位:"
-
-#~ msgid "B (1 Byte)"
-#~ msgstr "B (1 Byte 位元)"
-
-#~ msgid "KB (1024 Bytes)"
-#~ msgstr "KB (1024 Bytes 位元)"
-
-#~ msgid "MB (1024 KB)"
-#~ msgstr "MB (1024 KB)"
-
-#~ msgid "Artist / Year - Album"
-#~ msgstr "演出者 / 年份─專輯"
-
-#~ msgid "Toggle Focus"
-#~ msgstr "切換焦點"
-
-#~ msgid "TextLabel"
-#~ msgstr "文字標籤"
-
-#~ msgid ""
-#~ "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
-#~ "REC-html40/strict.dtd\">\n"
-#~ "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-#~ "css\">\n"
-#~ "p, li { white-space: pre-wrap; }\n"
-#~ "</style></head><body style=\" font-family:'DejaVu Sans'; font-size:10pt; "
-#~ "font-weight:400; font-style:normal;\">\n"
-#~ "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#~ "right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"http://www."
-#~ "last.fm:80/signup.php\"><span style=\" text-decoration: underline; color:"
-#~ "#0057ae;\">Sign up to last.fm</span></a>.</p></body></html>"
-#~ msgstr ""
-#~ "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
-#~ "REC-html40/strict.dtd\">\n"
-#~ "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-#~ "css\">\n"
-#~ "p, li { white-space: pre-wrap; }\n"
-#~ "</style></head><body style=\" font-family:'DejaVu Sans'; font-size:10pt; "
-#~ "font-weight:400; font-style:normal;\">\n"
-#~ "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#~ "right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"http://www."
-#~ "last.fm:80/signup.php\"><span style=\" text-decoration: underline; color:"
-#~ "#0057ae;\">簽入 last.fm</span></a>。</p></body></html>"

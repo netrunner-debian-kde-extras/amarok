@@ -91,6 +91,12 @@ void
 SqlCollection::init()
 {
     QTimer::singleShot( 0, this, SLOT( initXesam() ) );
+    if( !m_updater )
+    {
+        debug() << "Could not load updater!";
+        return;
+    }
+
     if( m_updater->needsUpdate() )
         m_updater->update();
     QStringList result = query( "SELECT count(*) FROM tracks" );
@@ -108,13 +114,15 @@ SqlCollection::init()
 void
 SqlCollection::startFullScan()
 {
-    m_scanManager->startFullScan();
+    if( m_scanManager )
+        m_scanManager->startFullScan();
 }
 
 void
 SqlCollection::startIncrementalScan()
 {
-    m_scanManager->startIncrementalScan();
+    if( m_scanManager )
+        m_scanManager->startIncrementalScan();
 }
 
 void
@@ -122,7 +130,8 @@ SqlCollection::stopScan()
 {
     DEBUG_BLOCK
 
-    delete m_scanManager;
+    if( m_scanManager )
+        m_scanManager->abort( "Abort requested from SqlCollection::stopScan()" );
 }
 
 QString
@@ -326,7 +335,7 @@ SqlCollection::hasCapabilityInterface( Meta::Capability::Type type ) const
 }
 
 Meta::Capability*
-SqlCollection::asCapabilityInterface( Meta::Capability::Type type )
+SqlCollection::createCapabilityInterface( Meta::Capability::Type type )
 {
     DEBUG_BLOCK
     switch( type )

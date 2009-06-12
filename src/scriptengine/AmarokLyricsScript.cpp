@@ -29,6 +29,7 @@
 #include <KApplication>
 
 #include <QByteArray>
+#include <QTextDocument>
 
 namespace AmarokScript
 {
@@ -69,9 +70,17 @@ AmarokLyricsScript::showLyricsError( const QString& error ) const
     LyricsManager::self()->lyricsError( error );
 }
 
+
+QString
+AmarokLyricsScript::escape ( const QString& str )
+{
+    return Qt::escape( str );
+}
+
 void
 AmarokLyricsScript::setLyricsForTrack( const QString& trackUrl, const QString& lyrics ) const
 {
+    DEBUG_BLOCK
    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( trackUrl ) );
    if( track )
        track->setCachedLyrics( lyrics );

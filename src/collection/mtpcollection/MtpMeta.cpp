@@ -238,7 +238,9 @@ QString
 MtpTrack::setTempFile( const QString &format )
 {
     m_tempfile.setSuffix( ('.' + format) ); // set suffix based on info from libmtp
-    m_tempfile.open();
+    if (!m_tempfile.open())
+        return QString();
+
     QFileInfo tempFileInfo( m_tempfile ); // get info for path
     QString tempPath = tempFileInfo.absoluteFilePath(); // path
 
@@ -531,7 +533,7 @@ MtpTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
 }
 
 Meta::Capability*
-MtpTrack::asCapabilityInterface( Meta::Capability::Type type )
+MtpTrack::createCapabilityInterface( Meta::Capability::Type type )
 {
         DEBUG_BLOCK
         switch( type )
