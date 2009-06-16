@@ -1,9 +1,9 @@
-amarok (2.1.1-0r1) experimental; urgency=low
+amarok (2.1.1-1) experimental; urgency=low
 
   * New upstream release.
   * Update amarok-common.install.
 
- -- Modestas Vainius <modestas@vainius.eu>  Fri, 12 Jun 2009 23:25:43 +0300
+ -- Modestas Vainius <modestas@vainius.eu>  Tue, 16 Jun 2009 20:27:22 +0300
 
 amarok (2.1-1) experimental; urgency=low
 
