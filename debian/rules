@@ -7,14 +7,13 @@ include /usr/share/quilt/quilt.make
 include /usr/share/topgit/tg2quilt.mk
 endif
 
-DH := dh --with quilt
 DEB_KDE_LINK_WITH_AS_NEEDED := yes
 
 # See debian/patches/debian/aboutdata_add_debian_version_feature.diff
 DEBIAN_PACKAGE_VERSION := $(shell dpkg-parsechangelog | grep '^Version:' | sed 's/^Version:[[:space:]]*\([^[:space:]]\+\).*$$/\1/')
 DEB_CMAKE_CUSTOM_FLAGS += -DDEBIAN_PACKAGE_VERSION="$(DEBIAN_PACKAGE_VERSION)"
 
-include debian/debhelper/kde.mk
+include /usr/share/pkg-kde-tools/makefiles/1/debhelper/kde.mk
 
 override_dh_bugfiles:
 	dh_bugfiles -A
@@ -25,5 +24,8 @@ override_dh_install:
 	if [ -d debian/amarok-common ]; then \
 	    cp -a /usr/share/mysql/english/errmsg.sys debian/amarok-common/usr/share/kde4/apps/amarok/mysqle/; \
 	fi
+
+%:
+	dh --with quilt $@
 
 .PHONY: /usr/share/topgit/tg2quilt.mk

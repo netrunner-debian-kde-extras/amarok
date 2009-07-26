@@ -1,3 +1,13 @@
+amarok (2.1.1-2~pre1) UNRELEASED; urgency=low
+
+  * Make use of debhelper 7.3 cmake support:
+    - build depend on debhelper 7.3;
+    - build depend on pkg-kde-tools 0.4.10, use debhelper/kde.mk from there;
+    - drop custom debian/debhelper snippets;
+    - adjust debian/rules accordingly.
+
+ -- Modestas Vainius <modestas@vainius.eu>  Sun, 26 Jul 2009 12:09:37 +0300
+
 amarok (2.1.1-1) experimental; urgency=low
 
   * New upstream release.
