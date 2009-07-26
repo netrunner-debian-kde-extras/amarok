@@ -18,8 +18,9 @@ amarok (2.1.1-2~pre1) UNRELEASED; urgency=low
   * Merge missing debian/changelog entries from Amarok 1.4.9 and 1.4.10
     package revisions.
   * Remove old cruft (about_version patch related) from debian/rules.
+  * Bump Standards-Version to 3.8.2. No changes needed.
 
- -- Modestas Vainius <modestas@vainius.eu>  Sun, 26 Jul 2009 14:30:27 +0300
+ -- Modestas Vainius <modestas@vainius.eu>  Sun, 26 Jul 2009 14:35:53 +0300
 
 amarok (2.1.1-1) experimental; urgency=low
 
