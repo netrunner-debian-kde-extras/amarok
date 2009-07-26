@@ -1,4 +1,4 @@
-amarok (2.1.1-2~pre1) UNRELEASED; urgency=low
+amarok (2.1.1-2) unstable; urgency=low
 
   * Make use of debhelper 7.3 cmake support:
     - build depend on debhelper 7.3;
@@ -20,8 +20,9 @@ amarok (2.1.1-2~pre1) UNRELEASED; urgency=low
   * Remove old cruft (about_version patch related) from debian/rules.
   * Bump Standards-Version to 3.8.2. No changes needed.
   * Do not run upstream test suite.
+  * Upload to unstable following MySQLe 5.1 upload!
 
- -- Modestas Vainius <modestas@vainius.eu>  Sun, 26 Jul 2009 15:05:25 +0300
+ -- Modestas Vainius <modestas@vainius.eu>  Sun, 26 Jul 2009 15:08:21 +0300
 
 amarok (2.1.1-1) experimental; urgency=low
 
