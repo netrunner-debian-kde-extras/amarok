@@ -21,6 +21,9 @@ override_dh_install:
 	    cp -a /usr/share/mysql/english/errmsg.sys debian/amarok-common/usr/share/kde4/apps/amarok/mysqle/; \
 	fi
 
+override_dh_makeshlibs:
+	dh_makeshlibs "-Xusr/lib/kde4/*"
+
 %:
 	dh --with quilt $@
 

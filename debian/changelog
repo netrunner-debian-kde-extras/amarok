@@ -1,3 +1,10 @@
+amarok (2.1.1-3) unstable; urgency=low
+
+  * Exclude usr/lib/kde4/* from dh_makeshlibs. This is a better fix for
+    unused-shlib-entry-in-control-file lintian warnings.
+
+ -- Modestas Vainius <modestas@vainius.eu>  Sun, 26 Jul 2009 22:15:38 +0300
+
 amarok (2.1.1-2) unstable; urgency=low
 
   * Make use of debhelper 7.3 cmake support:

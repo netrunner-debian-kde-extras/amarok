@@ -1,8 +1,3 @@
 amarok: package-name-doesnt-match-sonames
 amarok: shlib-missing-in-control-file libamarok_service_liblastfm.so for usr/lib/libamarok_service_liblastfm.so
 amarok: shlib-without-versioned-soname usr/lib/libamarok_service_liblastfm.so libamarok_service_liblastfm.so
-amarok: unused-shlib-entry-in-control-file libamarok_collection mtpcollection
-amarok: unused-shlib-entry-in-control-file libamarok_collection sqlcollection
-amarok: unused-shlib-entry-in-control-file libamarok_collection ipodcollection
-amarok: unused-shlib-entry-in-control-file libamarok_massstorage device
-amarok: unused-shlib-entry-in-control-file libamarok_collection daapcollection
