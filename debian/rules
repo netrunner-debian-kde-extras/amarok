@@ -9,10 +9,6 @@ endif
 
 DEB_KDE_LINK_WITH_AS_NEEDED := yes
 
-# See debian/patches/debian/aboutdata_add_debian_version_feature.diff
-DEBIAN_PACKAGE_VERSION := $(shell dpkg-parsechangelog | grep '^Version:' | sed 's/^Version:[[:space:]]*\([^[:space:]]\+\).*$$/\1/')
-DEB_CMAKE_CUSTOM_FLAGS += -DDEBIAN_PACKAGE_VERSION="$(DEBIAN_PACKAGE_VERSION)"
-
 include /usr/share/pkg-kde-tools/makefiles/1/debhelper/kde.mk
 
 override_dh_bugfiles:
