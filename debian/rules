@@ -3,7 +3,7 @@
 # TopGit support
 ifneq (,$(shell which tg))
 TG_BRANCHES := $(filter-out debian/mysqle_linkage_fix debian/aboutdata_add_debian_version_feature,$(shell tg summary -t))
-include /usr/share/quilt/quilt.make
+QUILT_PATCH_DIR := debian/patches
 include /usr/share/topgit/tg2quilt.mk
 endif
 
@@ -27,5 +27,3 @@ override_dh_install:
 
 %:
 	dh --with quilt $@
-
-.PHONY: /usr/share/topgit/tg2quilt.mk
