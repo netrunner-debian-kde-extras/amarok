@@ -2,8 +2,9 @@ amarok (2.1.1-3) unstable; urgency=low
 
   * Exclude usr/lib/kde4/* from dh_makeshlibs. This is a better fix for
     unused-shlib-entry-in-control-file lintian warnings.
+  * Add ${misc:Depends} to Depends of all packages.
 
- -- Modestas Vainius <modestas@vainius.eu>  Sun, 26 Jul 2009 22:15:38 +0300
+ -- Modestas Vainius <modestas@vainius.eu>  Sun, 26 Jul 2009 22:18:22 +0300
 
 amarok (2.1.1-2) unstable; urgency=low
 

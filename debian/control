@@ -20,7 +20,7 @@ Vcs-Browser: http://git.debian.org/?p=users/modax-guest/amarok.git
 
 Package: amarok
 Architecture: any
-Depends: amarok-common (= ${source:Version}), amarok-utils (= ${binary:Version}), ${shlibs:Depends},
+Depends: amarok-common (= ${source:Version}), amarok-utils (= ${binary:Version}), ${shlibs:Depends}, ${misc:Depends},
  libqtscript4-core, libqtscript4-gui, libqtscript4-network, libqtscript4-xml, libqtscript4-sql, libqtscript4-uitools
 Recommends: kdemultimedia-kio-plugins (>= 4:4.2.0)
 Suggests: libqt4-sql-sqlite, libqt4-sql-mysql, libqt4-sql-psql
@@ -55,6 +55,7 @@ Description: easy to use media player based on the KDE 4 technology platform
 
 Package: amarok-common
 Architecture: all
+Depends: ${misc:Depends}
 Recommends: amarok (>= ${source:Version})
 Description: architecture independent files for Amarok
  This package contains architecture independent files needed for Amarok to run
@@ -64,7 +65,7 @@ Description: architecture independent files for Amarok
 Package: amarok-utils
 Section: utils
 Architecture: any
-Depends: ${shlibs:Depends},
+Depends: ${shlibs:Depends}, ${misc:Depends}
 Replaces: amarok (<< 2.0.96-2)
 Description: utilities for Amarok media player
  This package contains command line utilities that are typically used by Amarok
@@ -79,7 +80,7 @@ Package: amarok-dbg
 Priority: extra
 Section: debug
 Architecture: any
-Depends: amarok (= ${binary:Version})
+Depends: amarok (= ${binary:Version}), ${misc:Depends}
 Recommends: kdelibs5-dbg
 Description: debugging symbols for Amarok
  This package provides debugging symbols for all binary packages built from
