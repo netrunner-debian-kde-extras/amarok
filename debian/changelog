@@ -5,8 +5,16 @@ amarok (2.1.1-2~pre1) UNRELEASED; urgency=low
     - build depend on pkg-kde-tools 0.4.10, use debhelper/kde.mk from there;
     - drop custom debian/debhelper snippets;
     - adjust debian/rules accordingly.
+  * Refresh patches.
+  * Use libmysqld-pic from MySQL 5.1.36-2 packages:
+    - replace libmysqlclient15-dev build depend with libmysqld-pic
+      (Closes: #538454);
+    - disable debian/mysqle_link_to_amarok_executable_feature.diff patch;
+    - enable debian/mysqle_linkage_fix.diff patch;
+    - add patch mysqle_look_for_libmysqld_pic.diff patch which makes amarok
+      find libmysqld_pic from the libmysqld-pic package.
 
- -- Modestas Vainius <modestas@vainius.eu>  Sun, 26 Jul 2009 12:09:37 +0300
+ -- Modestas Vainius <modestas@vainius.eu>  Sun, 26 Jul 2009 13:33:03 +0300
 
 amarok (2.1.1-1) experimental; urgency=low
 
