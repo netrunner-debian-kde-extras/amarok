@@ -1,4 +1,4 @@
-amarok (2.1.1-3) unstable; urgency=low
+amarok (2.1.1-3~pre1) UNRELEASED; urgency=low
 
   * Exclude usr/lib/kde4/* from dh_makeshlibs. This is a better fix for
     unused-shlib-entry-in-control-file lintian warnings.
