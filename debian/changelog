@@ -6,8 +6,11 @@ amarok (2.1.1-3~pre1) UNRELEASED; urgency=low
   * Drop shlib-missing-in-control-file from amarok.lintian-overrides. No longer
     needed.
   * Actually ship debugging symbols in amarok-dbg.
+  * Install a bug-control file to all packages which:
+    - lists installed phonon backends;
+    - adds info about amarok and amarok-common package to each bug report.
 
- -- Modestas Vainius <modestas@vainius.eu>  Sun, 26 Jul 2009 23:35:14 +0300
+ -- Modestas Vainius <modestas@vainius.eu>  Mon, 27 Jul 2009 00:49:02 +0300
 
 amarok (2.1.1-2) unstable; urgency=low
 
