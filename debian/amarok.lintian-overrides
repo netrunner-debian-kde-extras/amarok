@@ -1,3 +1,2 @@
 amarok: package-name-doesnt-match-sonames
-amarok: shlib-missing-in-control-file libamarok_service_liblastfm.so for usr/lib/libamarok_service_liblastfm.so
 amarok: shlib-without-versioned-soname usr/lib/libamarok_service_liblastfm.so libamarok_service_liblastfm.so
