@@ -13,8 +13,10 @@ amarok (2.1.1-2~pre1) UNRELEASED; urgency=low
     - enable debian/mysqle_linkage_fix.diff patch;
     - add patch mysqle_look_for_libmysqld_pic.diff patch which makes amarok
       find libmysqld_pic from the libmysqld-pic package.
+  * Add general/armel_ftbfs_fix.diff patch which fixes building failures on
+    armel. Thanks to Michael Casadevall.
 
- -- Modestas Vainius <modestas@vainius.eu>  Sun, 26 Jul 2009 13:33:03 +0300
+ -- Modestas Vainius <modestas@vainius.eu>  Sun, 26 Jul 2009 13:42:00 +0300
 
 amarok (2.1.1-1) experimental; urgency=low
 

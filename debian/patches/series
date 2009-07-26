@@ -2,3 +2,4 @@ debian/disable_qtscriptbindings_check_fix.diff -p1
 debian/mysqle_amarok_local_errmsg_feature.diff -p1
 debian/mysqle_linkage_fix.diff -p1
 debian/mysqle_look_for_libmysqld_pic.diff -p1
+general/armel_ftbfs_fix.diff -p1
