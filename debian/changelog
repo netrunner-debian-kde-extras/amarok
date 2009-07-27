@@ -9,8 +9,9 @@ amarok (2.1.1-3~pre1) UNRELEASED; urgency=low
   * Install a bug-control file to all packages which:
     - lists installed phonon backends;
     - adds info about amarok and amarok-common package to each bug report.
+  * Prefer phonon-backend-xine to other phonon backends (Closes: #538767).
 
- -- Modestas Vainius <modestas@vainius.eu>  Mon, 27 Jul 2009 00:49:02 +0300
+ -- Modestas Vainius <modestas@vainius.eu>  Mon, 27 Jul 2009 12:10:18 +0300
 
 amarok (2.1.1-2) unstable; urgency=low
 
