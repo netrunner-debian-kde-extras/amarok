@@ -1,0 +1,14 @@
+If Amarok does not play anything, you hear no sound or it skips through songs,
+you are probably using Phonon GStreamer backend. To fix this either:
+
+1) Install phonon-backend-xine package and remove
+   phonon-backend-gstreamer package (with your favourite apt package manager).
+
+2) Install phonon-backend-xine package and make sure Xine backend is preferred
+   to GStreamer. To do the latter, go to `[ Menu ] Settings -> Configure Amarok
+   -> Playback -> [ Sound system configuration ] Configure -> [ Tab ] Backend`
+   and move Xine to the top of the list.
+
+Finally, restart Amarok. See [1] for more information.
+
+1. http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=538767
