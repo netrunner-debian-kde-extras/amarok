@@ -1,3 +1,10 @@
+amarok (2.1.1-4) unstable; urgency=medium
+
+  * Add general/mp3tunes_portability_fix patch to fix FTBFS on alpha.
+  * Urgency medium: RC bug fix.
+
+ -- Modestas Vainius <modestas@vainius.eu>  Tue, 04 Aug 2009 10:16:59 +0300
+
 amarok (2.1.1-3) unstable; urgency=low
 
   * Exclude usr/lib/kde4/* from dh_makeshlibs. This is a better fix for

@@ -1,0 +1,36 @@
+From: Modestas Vainius <modestas@vainius.eu>
+Subject: [PATCH] Fix va_list portability issues in mp3tunes service
+
+Fix issue with passing NULL to va_list. This is not portable and triggers
+FTBFS on alpha. Use wrapper API instead.
+
+Signed-off-by: Modestas Vainius <modestas@vainius.eu>
+
+---
+ src/services/mp3tunes/libmp3tunes/locker.c |    4 ++--
+ 1 files changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/src/services/mp3tunes/libmp3tunes/locker.c b/src/services/mp3tunes/libmp3tunes/locker.c
+index e74500d..9b0ebe0 100644
+--- a/src/services/mp3tunes/libmp3tunes/locker.c
++++ b/src/services/mp3tunes/libmp3tunes/locker.c
+@@ -366,7 +366,7 @@ static xml_xpath_t* mp3tunes_locker_api_post_fetch(mp3tunes_locker_object_t *obj
+ 
+     chunk_init(&chunk);
+ 
+-    request = mp3tunes_locker_api_generate_request_valist(obj, server, path, NULL, NULL);
++    request = mp3tunes_locker_api_generate_request(obj, server, path, NULL);
+ 
+     curl_easy_setopt( request->curl, CURLOPT_URL, request->url );
+     curl_easy_setopt( request->curl, CURLOPT_WRITEFUNCTION, write_chunk_callback );
+@@ -465,7 +465,7 @@ int mp3tunes_locker_session_valid(mp3tunes_locker_object_t *obj) {
+ 
+     chunk_init(&chunk);
+ 
+-    request = mp3tunes_locker_api_generate_request_valist(obj, MP3TUNES_SERVER_API, "api/v1/accountData", NULL, NULL);
++    request = mp3tunes_locker_api_generate_request(obj, MP3TUNES_SERVER_API, "api/v1/accountData", NULL);
+ 
+     curl_easy_setopt( request->curl, CURLOPT_URL, request->url );
+     curl_easy_setopt( request->curl, CURLOPT_WRITEFUNCTION, write_chunk_callback );
+-- 
+tg: (89f0302..) general/mp3tunes_portability_fix (depends on: upstream)
