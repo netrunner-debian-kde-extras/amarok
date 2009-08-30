@@ -21,6 +21,8 @@ amarok (2.1.60~git1677+g8e81132-0r1) UNRELEASED; urgency=low
   * Add debian/mysql_linkage_fix patch to linkage against mysql library on
     Debian. OpenSSL is not needed.
   * Update install files.
+  * Drop libamarok_service_liblastfm.so from lintian-overrides. It is no longer
+    shipped inside amarok source.
 
  -- Modestas Vainius <modestas@vainius.eu>  Sun, 30 Aug 2009 20:05:35 +0300
 

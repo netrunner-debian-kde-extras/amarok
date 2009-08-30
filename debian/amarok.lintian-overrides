@@ -1,2 +1,1 @@
 amarok: package-name-doesnt-match-sonames
-amarok: shlib-without-versioned-soname usr/lib/libamarok_service_liblastfm.so libamarok_service_liblastfm.so
