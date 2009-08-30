@@ -1,20 +1,18 @@
-/*
-   Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef AMAROK_SQLSTORAGE_H
 #define AMAROK_SQLSTORAGE_H
@@ -48,7 +46,9 @@ public:
     virtual QString idType() const = 0;
 
     virtual QString textColumnType( int length = 255 ) const = 0;
-    virtual QString exactTextColumnType( int length = 1024 ) const = 0;
+    virtual QString exactTextColumnType( int length = 1000 ) const = 0;
+    //the below value may have to be decreased even more for different indexes; only time will tell
+    virtual QString exactIndexableTextColumnType( int length = 324 ) const = 0;
     virtual QString longTextColumnType() const = 0;
     virtual QString randomFunc() const = 0;
 

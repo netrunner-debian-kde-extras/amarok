@@ -1,22 +1,19 @@
-/***************************************************************************
- *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *             (c) 2008  Jeff Mitchell <kde-dev@emailgoeshere.com>         *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2008 Jeff Mitchell <kde-dev@emailgoeshere.com>                         *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
  
 #include "SvgHandler.h"
 
@@ -280,6 +277,69 @@ QPixmap SvgHandler::addBordersToPixmap( QPixmap orgPixmap, int borderWidth, cons
     }
 
     return pixmap;
+}
+
+
+void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int height, qreal percentage, bool active )
+{
+    int knobSize = height - 4;
+    int sliderRange = width - ( knobSize + 4 );
+    int knobRelPos = x + sliderRange * percentage + 2;
+    int knobY = y + ( height - knobSize ) / 2 + 1;
+
+    int sliderY = y + ( height / 2 ) - 1;
+
+
+    //first draw the played part
+    p->drawPixmap( x, sliderY,
+                   renderSvg(
+                   "new_slider_top_played",
+                   width, 2,
+                   "new_slider_top_played" ),
+                   0, 0, knobRelPos - x, 2 );
+
+    //and then the unplayed part
+    p->drawPixmap( knobRelPos + 1, sliderY,
+                   renderSvg(
+                   "new_slider_top",
+                   width, 2,
+                   "new_slider_top" ),
+                   knobRelPos + 1 - x, 0, -1, 2 );
+
+    //and then the bottom
+    p->drawPixmap( x, sliderY + 2,
+                   renderSvg(
+                   "new_slider_bottom",
+                   width, 2,
+                   "new_slider_bottom" ) );
+
+    //draw end markers
+    p->drawPixmap( x, y,
+                   renderSvg(
+                   "new_slider_end",
+                   2, height,
+                   "new_slider_end" ) );
+
+    p->drawPixmap( x + width - 2, y,
+                   renderSvg(
+                   "new_slider_end",
+                   2, height,
+                   "new_slider_endr" ) );
+
+
+    if ( active )
+        p->drawPixmap( knobRelPos, knobY,
+                       renderSvg(
+                       "new_slider_knob_active",
+                       knobSize, knobSize,
+                       "new_slider_knob_active" ) );
+    else
+        p->drawPixmap( knobRelPos, knobY,
+                       renderSvg(
+                       "new_slider_knob",
+                       knobSize, knobSize,
+                       "new_slider_knob" ) );
+
 }
 
 #include "SvgHandler.moc"

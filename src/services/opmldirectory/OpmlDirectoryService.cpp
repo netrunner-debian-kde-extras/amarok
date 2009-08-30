@@ -1,21 +1,18 @@
-/***************************************************************************
- *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "OpmlDirectoryService.h"
 
@@ -69,6 +66,13 @@ OpmlDirectoryService::OpmlDirectoryService( OpmlDirectoryServiceFactory* parent,
 {
     setShortDescription( i18n( "A large listing of podcasts" ) );
     setIcon( KIcon( "view-services-opml-amarok" ) );
+
+
+    setLongDescription( i18n( "A comprehensive list of searchable podcasts from www.digitalpodcast.com that you can subscribe to directly from within Amarok." ) );
+
+    KIconLoader loader;
+    setImagePath( loader.iconPath( "view-services-opml-amarok", -128, true ) );
+    
     m_serviceready = true;
     emit( ready() );
 }
@@ -231,14 +235,11 @@ void OpmlDirectoryService::itemSelected( CollectionTreeItem * selectedItem ){
 
 void OpmlDirectoryService::subscribe()
 {
-    PlaylistProvider *provider = The::playlistManager()->playlistProvider(
-            PlaylistManager::PodcastChannel, i18n( "Local Podcasts" ) );
-    if( provider )
+    PodcastProvider *podcastProvider = The::playlistManager()->defaultPodcasts();
+    if( podcastProvider )
     {
-        if ( m_currentFeed != 0 ) {
-            PodcastProvider * podcastProvider = The::playlistManager()->defaultPodcasts();
+        if( m_currentFeed != 0 )
             podcastProvider->addPodcast( m_currentFeed->uidUrl() );
-        }
     }
     else
     {

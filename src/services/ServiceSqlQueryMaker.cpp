@@ -1,21 +1,20 @@
-/*
- *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
- *  Copyright (c) 2007 Nikolaj Hald Nielsenn <nhnFreespirit@gmail.com>
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- */
+/****************************************************************************************
+ * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
+ 
 #include "ServiceSqlQueryMaker.h"
 
 #define DEBUG_PREFIX "ServiceSqlQueryMaker"
@@ -51,7 +50,6 @@ class ServiceSqlWorkerThread : public ThreadWeaver::Job
     protected:
         virtual void run()
         {
-            DEBUG_BLOCK
             QString query = m_queryMaker->query();
             QStringList result = m_queryMaker->runQuery( query );
             if( !m_aborted )
@@ -170,7 +168,6 @@ ServiceSqlQueryMaker::done( ThreadWeaver::Job *job )
 QueryMaker*
 ServiceSqlQueryMaker::setQueryType( QueryType type)
 {
-    DEBUG_BLOCK
     switch( type ) {
     case QueryMaker::Track:
         //make sure to keep this method in sync with handleTracks(QStringList) and the SqlTrack ctor
@@ -313,42 +310,54 @@ ServiceSqlQueryMaker::addMatch( const TrackPtr &track )
 QueryMaker*
 ServiceSqlQueryMaker::addMatch( const ArtistPtr &artist )
 {
-    DEBUG_BLOCK
     QString prefix = m_metaFactory->tablePrefix();
+
+    if( !d )
+        return this;
 
     //this should NOT be made into a static cast as this might get called with an incompatible type!
     const ServiceArtist * serviceArtist = dynamic_cast<const ServiceArtist *>( artist.data() );
-    if( !d || !serviceArtist )
-        return this;
-
     d->linkedTables |= Private::ARTISTS_TABLE;
-    d->queryMatch += QString( " AND " + prefix + "_artists.id= '%1'" ).arg( serviceArtist->id() );
+    if( serviceArtist )
+    {
+        d->queryMatch += QString( " AND " + prefix + "_artists.id= '%1'" ).arg( serviceArtist->id() );
+    }
+    else
+    {
+        d->queryMatch += QString( " AND " + prefix + "_artists.name='%1'" ).arg( escape( artist->name() ) );
+    }
     return this;
 }
 
 QueryMaker*
 ServiceSqlQueryMaker::addMatch( const AlbumPtr &album )
 {
-    DEBUG_BLOCK
     QString prefix = m_metaFactory->tablePrefix();
+
+    if( !d )
+        return this;
 
     //this should NOT be made into a static cast as this might get called with an incompatible type!
     const ServiceAlbumPtr serviceAlbum = ServiceAlbumPtr::dynamicCast( album );
-    if( !d || !serviceAlbum )
-        return this;
 
     d->linkedTables |= Private::ALBUMS_TABLE;
     d->linkedTables |= Private::ARTISTS_TABLE;
     if( d->queryType == Private::GENRE )
         d->linkedTables |= Private::GENRE_TABLE;
-    d->queryMatch += QString( " AND " + prefix + "_albums.id = '%1'" ).arg( serviceAlbum->id() );
+    if( serviceAlbum )
+    {
+        d->queryMatch += QString( " AND " + prefix + "_albums.id = '%1'" ).arg( serviceAlbum->id() );
+    }
+    else
+    {
+        d->queryMatch += QString( " AND " + prefix + "_albums.name='%1'" ).arg( escape( album->name() ) );
+    }
     return this;
 }
 
 QueryMaker*
 ServiceSqlQueryMaker::addMatch( const GenrePtr &genre )
 {
-    DEBUG_BLOCK
     QString prefix = m_metaFactory->tablePrefix();
 
     //this should NOT be made into a static cast as this might get called with an incompatible type!
@@ -391,7 +400,6 @@ ServiceSqlQueryMaker::addMatch( const YearPtr &year )
 QueryMaker*
 ServiceSqlQueryMaker::addMatch( const DataPtr &data )
 {
-    //DEBUG_BLOCK
     ( const_cast<DataPtr&>(data) )->addMatchTo( this );
     //TODO needed at all?
     return this;
@@ -546,8 +554,6 @@ ServiceSqlQueryMaker::query()
 QStringList
 ServiceSqlQueryMaker::runQuery( const QString &query )
 {
-    DEBUG_BLOCK
-
    if( d->albumMode == OnlyCompilations )
        return QStringList();
 
@@ -557,7 +563,6 @@ ServiceSqlQueryMaker::runQuery( const QString &query )
 void
 ServiceSqlQueryMaker::handleResult( const QStringList &result )
 {
-    DEBUG_BLOCK
     if( !result.isEmpty() )
     {
         switch( d->queryType ) {
@@ -634,7 +639,6 @@ void ServiceSqlQueryMaker::emitProperResult( const ListType& list )
 void
 ServiceSqlQueryMaker::handleTracks( const QStringList &result )
 {
-    DEBUG_BLOCK
     TrackList tracks;
     //SqlRegistry* reg = m_collection->registry();
     int rowCount = ( m_metaFactory->getTrackSqlRowCount() +
@@ -658,7 +662,6 @@ ServiceSqlQueryMaker::handleTracks( const QStringList &result )
 void
 ServiceSqlQueryMaker::handleArtists( const QStringList &result )
 {
-    DEBUG_BLOCK
     ArtistList artists;
    // SqlRegistry* reg = m_collection->registry();
     int rowCount = m_metaFactory->getArtistSqlRowCount();
@@ -674,7 +677,6 @@ ServiceSqlQueryMaker::handleArtists( const QStringList &result )
 void
 ServiceSqlQueryMaker::handleAlbums( const QStringList &result )
 {
-    DEBUG_BLOCK
     AlbumList albums;
     int rowCount = m_metaFactory->getAlbumSqlRowCount() +  m_metaFactory->getArtistSqlRowCount();
     int resultRows = result.size() / rowCount;
@@ -690,7 +692,6 @@ ServiceSqlQueryMaker::handleAlbums( const QStringList &result )
 void
 ServiceSqlQueryMaker::handleGenres( const QStringList &result )
 {
-    DEBUG_BLOCK
     GenreList genres;
 
     int rowCount = m_metaFactory->getGenreSqlRowCount();
@@ -770,7 +771,6 @@ ServiceSqlQueryMaker::likeCondition( const QString &text, bool anyBegin, bool an
 QueryMaker*
 ServiceSqlQueryMaker::beginAnd()
 {
-    DEBUG_BLOCK
     d->queryFilter += andOr();
     d->queryFilter += " ( 1 ";
     d->andStack.push( true );
@@ -780,7 +780,6 @@ ServiceSqlQueryMaker::beginAnd()
 QueryMaker*
 ServiceSqlQueryMaker::beginOr()
 {
-    DEBUG_BLOCK
     d->queryFilter += andOr();
     d->queryFilter += " ( 0 ";
     d->andStack.push( false );
@@ -790,7 +789,6 @@ ServiceSqlQueryMaker::beginOr()
 QueryMaker*
 ServiceSqlQueryMaker::endAndOr()
 {
-    DEBUG_BLOCK
     d->queryFilter += ')';
     d->andStack.pop();
     return this;
@@ -799,7 +797,6 @@ ServiceSqlQueryMaker::endAndOr()
 QString
 ServiceSqlQueryMaker::andOr() const
 {
-    DEBUG_BLOCK
     return d->andStack.top() ? " AND " : " OR ";
 }
 

@@ -1,21 +1,18 @@
-/***************************************************************************
- *   Copyright (c) 2009  Thomas Lübking <thomas.luebking@web.de>           *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2009 Thomas Lbking <thomas.luebking@web.de>                            *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef TOKENDROPTARGET_H
 #define TOKENDROPTARGET_H
@@ -39,7 +36,7 @@ public:
     void clear();
     virtual inline int count() const { return count( -1 ); }
     virtual int count ( int row ) const;
-    void insertToken( Token*, int row = -1, int col = -1 ); // -1 -> append to last row
+    QPoint index( Token* ) const;
     int row ( Token* ) const;
     int rows() const;
     inline uint rowLimit() const { return m_limits[1]; }
@@ -47,6 +44,8 @@ public:
     void setCustomTokenFactory( TokenFactory * factory );
     QList< Token *> drags( int row = -1 );
 
+public slots:
+    void insertToken( Token*, int row = -1, int col = -1 ); // -1 -> append to last row
 //     inline uint columnLimit() const { return m_limits[0]; }
 //     inline void setColumnLimit( uint c ) { m_limits[0] = c; }
 signals:
@@ -55,6 +54,7 @@ signals:
 
 protected:
     bool eventFilter( QObject *, QEvent * );
+    void paintEvent(QPaintEvent *);
     QBoxLayout *rowBox( QWidget *w, QPoint *idx = 0 ) const;
     QBoxLayout *rowBox( const QPoint &pt ) const;
 protected:

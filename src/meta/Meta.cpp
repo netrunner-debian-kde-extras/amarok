@@ -1,22 +1,20 @@
-/* This file is part of the Amarok project
-   Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
-   Copyright (C) 2007 Ian Monroe <ian@monroe.nu>
-   Copyright (C) 2008 Mark Kretschmann <kretschmann@kde.org>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2007 Ian Monroe <ian@monroe.nu>                                        *
+ * Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>                            *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "Meta.h"
 
@@ -202,6 +200,22 @@ Meta::Observer::metadataChanged( YearPtr year )
     Q_UNUSED( year );
 }
 
+//Meta::MetaCapability
+
+bool
+Meta::MetaCapability::hasCapabilityInterface( Meta::Capability::Type type ) const
+{
+    Q_UNUSED( type );
+    return false;
+}
+
+Meta::Capability*
+Meta::MetaCapability::createCapabilityInterface( Meta::Capability::Type type )
+{
+    Q_UNUSED( type );
+    return 0;
+}
+
 //Meta::MetaBase
 
 void
@@ -216,22 +230,6 @@ Meta::MetaBase::unsubscribe( Observer *observer )
 {
     m_observers.remove( observer );
 }
-
-
-bool
-Meta::MetaBase::hasCapabilityInterface( Meta::Capability::Type type ) const
-{
-    Q_UNUSED( type );
-    return false;
-}
-
-Meta::Capability*
-Meta::MetaBase::createCapabilityInterface( Meta::Capability::Type type )
-{
-    Q_UNUSED( type );
-    return 0;
-}
-
 
 //Meta::Track
 
@@ -273,6 +271,11 @@ Meta::Track::addMatchTo( QueryMaker *qm )
     qm->addMatch( TrackPtr( this ) );
 }
 
+QDateTime
+Meta::Track::createDate() const
+{
+    return QDateTime();
+}
 qreal
 Meta::Track::replayGain( Meta::Track::ReplayGainMode mode ) const
 {
@@ -320,7 +323,7 @@ Meta::Track::operator==( const Meta::Track &track ) const
 }
 
 bool
-Meta::Track::lessThan( const Meta::TrackPtr left, const Meta::TrackPtr right )
+Meta::Track::lessThan( const Meta::TrackPtr& left, const Meta::TrackPtr& right )
 {
     if( !left || !right ) // These should never be 0, but it can apparently happen (http://bugs.kde.org/show_bug.cgi?id=181187)
         return false;
@@ -365,8 +368,6 @@ Meta::Artist::addMatchTo( QueryMaker *qm )
 void
 Meta::Artist::notifyObservers() const
 {
-    DEBUG_BLOCK
-
     foreach( Observer *observer, m_observers )
     {
         if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
@@ -391,8 +392,6 @@ Meta::Album::addMatchTo( QueryMaker *qm )
 void
 Meta::Album::notifyObservers() const
 {
-    DEBUG_BLOCK
-
     foreach( Observer *observer, m_observers )
     {
         if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors

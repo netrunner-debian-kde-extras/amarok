@@ -1,20 +1,18 @@
-/*
- *  Copyright (c) 2007 Jeff Mitchell <kde-dev@emailgoeshere.com>
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- */
+/****************************************************************************************
+ * Copyright (c) 2007 Jeff Mitchell <kde-dev@emailgoeshere.com>                         *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #define DEBUG_PREFIX "MediaDeviceCache"
 
@@ -27,6 +25,7 @@
 #include <solid/device.h>
 #include <solid/deviceinterface.h>
 #include <solid/devicenotifier.h>
+#include <solid/opticaldisc.h>
 #include <solid/portablemediaplayer.h>
 #include <solid/storageaccess.h>
 #include <solid/storagedrive.h>
@@ -80,8 +79,16 @@ MediaDeviceCache::refreshCache()
     {
         debug() << "Found Solid::DeviceInterface::StorageAccess with udi = " << device.udi();
         debug() << "Device name is = " << device.product() << " and was made by " << device.vendor();
+
         Solid::StorageAccess* ssa = device.as<Solid::StorageAccess>();
-        if( ssa )
+        Solid::OpticalDisc * opt = device.as<Solid::OpticalDisc>();
+
+        if ( opt && opt->availableContent() & Solid::OpticalDisc::Audio )
+        {
+            m_type[ device.udi() ] = MediaDeviceCache::SolidAudioCdType;
+            m_name[ device.udi() ] = device.vendor() + " - " + device.product();
+        }
+        else if( ssa )
         {
             if( !m_volumes.contains( device.udi() ) )
             {
@@ -98,6 +105,18 @@ MediaDeviceCache::refreshCache()
             {
                 debug() << "Solid device is not accessible, will wait until it is to consider it added.";
             }
+        }
+    }
+    deviceList = Solid::Device::listFromType( Solid::DeviceInterface::StorageDrive );
+    foreach( const Solid::Device &device, deviceList )
+    {
+        debug() << "Found Solid::DeviceInterface::StorageDrive with udi = " << device.udi();
+        debug() << "Device name is = " << device.product() << " and was made by " << device.vendor();
+
+        if( device.as<Solid::StorageDrive>() )
+        {
+            m_type[device.udi()] = MediaDeviceCache::SolidGenericType;
+            m_name[device.udi()] = device.vendor() + " - " + device.product();
         }
     }
     KConfigGroup config = Amarok::config( "PortableDevices" );
@@ -121,15 +140,27 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
     debug() << "Found new Solid device with udi = " << device.udi();
     debug() << "Device name is = " << device.product() << " and was made by " << device.vendor();
     Solid::StorageAccess *ssa = device.as<Solid::StorageAccess>();
+
+    Solid::OpticalDisc * opt = device.as<Solid::OpticalDisc>();
+
+
     if( m_type.contains( udi ) )
     {
         debug() << "Duplicate UDI trying to be added: " << udi;
         return;
     }
-    if( device.as<Solid::StorageDrive>() )
+
+    if ( opt && opt->availableContent() & Solid::OpticalDisc::Audio )
     {
-        debug() << "Storage drive found, will wait for the volume";
-        return;
+        debug() << "device is an Audio CD";
+        m_type[udi] = MediaDeviceCache::SolidAudioCdType;
+        m_name[udi] = device.vendor() + " - " + device.product();
+    }
+    else if( device.as<Solid::StorageDrive>() )
+    {
+        debug() << "device is a Storage drive, still need a volume";
+        m_type[udi] = MediaDeviceCache::SolidGenericType;
+        m_name[udi] = device.vendor() + " - " + device.product();
     }
     else if( ssa )
     {
@@ -241,6 +272,7 @@ MediaDeviceCache::deviceName( const QString &udi ) const
 bool
 MediaDeviceCache::isGenericEnabled( const QString &udi ) const
 {
+    DEBUG_BLOCK
     if( m_type[udi] != MediaDeviceCache::SolidVolumeType )
     {
         debug() << "Not SolidVolumeType, returning false";
@@ -268,6 +300,7 @@ MediaDeviceCache::isGenericEnabled( const QString &udi ) const
 const QString
 MediaDeviceCache::volumeMountPoint( const QString &udi ) const
 {
+    DEBUG_BLOCK
     Solid::Device device( udi );
     Solid::StorageAccess* ssa = device.as<Solid::StorageAccess>();
     if( !ssa || !ssa->isAccessible() )

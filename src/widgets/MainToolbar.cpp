@@ -1,21 +1,18 @@
-/***************************************************************************
- *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "MainToolbar.h"
 
@@ -30,7 +27,6 @@
 #include "SvgHandler.h"
 #include "VolumeWidget.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "ToolBar.h"
 
 #include <KApplication>
@@ -40,21 +36,26 @@
 #include <QVBoxLayout>
 
 MainToolbar::MainToolbar( QWidget * parent )
-    : KHBox( parent )
+    : QToolBar( i18n( "Main Toolbar" ), parent )
     , EngineObserver( The::engineController() )
     , m_addActionsOffsetX( 0 )
     , m_ignoreCache( false )
 {
     setObjectName( "MainToolbar" );
 
-    setFixedHeight( 67 );
-    setMinimumWidth( 200 );
-    setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
     setContentsMargins( 0, 0, 0, 0 );
-    layout()->setContentsMargins( 0, 0, 0, 0 );
+    setFixedHeight( 67 );
+    setMinimumWidth( 600 );
+    setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
+
     setAutoFillBackground ( false );
 
-    KHBox * hBox = new KHBox( this );
+    KHBox * hBox = new KHBox( 0 );
+    addWidget( hBox );
+    //hBox->setFixedHeight( 67 );
+    //hBox->setMinimumWidth( 594 );
+    hBox->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Fixed );
+    hBox->setContentsMargins( 0, 0, 0, 0 );
 
     m_mainControlsWidget = new MainControlsWidget( hBox );
 
@@ -70,7 +71,7 @@ MainToolbar::MainToolbar( QWidget * parent )
 
     m_addControlsToolbar = new Amarok::ToolBar( topBar );
     m_addControlsToolbar->setToolButtonStyle( Qt::ToolButtonIconOnly );
-    m_addControlsToolbar->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Preferred );
+    m_addControlsToolbar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
     m_addControlsToolbar->setIconDimensions( 16 );
     m_addControlsToolbar->setMovable( false );
     m_addControlsToolbar->setFloatable ( false );
@@ -132,8 +133,8 @@ void MainToolbar::handleAddActions()
         Meta::CurrentTrackActionsCapability *cac = track->create<Meta::CurrentTrackActionsCapability>();
         if( cac )
         {
-            QList<PopupDropperAction *> currentTrackActions = cac->customActions();
-            foreach( PopupDropperAction *action, currentTrackActions )
+            QList<QAction *> currentTrackActions = cac->customActions();
+            foreach( QAction *action, currentTrackActions )
                 m_additionalActions.append( action );
 
             m_addControlsToolbar->adjustSize();

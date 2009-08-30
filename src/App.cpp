@@ -1,19 +1,18 @@
-/***************************************************************************
-                      app.cpp  -  description
-                         -------------------
-begin                : Mit Okt 23 14:35:18 CEST 2002
-copyright            : (C) 2002 by Mark Kretschmann
-email                : markey@web.de
-***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2002 Mark Kretschmann <kretschmann@kde.org>                            *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "App.h"
 
@@ -27,7 +26,6 @@ email                : markey@web.de
 #include "Debug.h"
 #include "EngineController.h"
 #include "firstruntutorial/FirstRunTutorial.h"
-#include "MainWindow.h"
 #include "Meta.h"
 #include "meta/MetaConstants.h"
 #include "MountPointManager.h"
@@ -36,7 +34,7 @@ email                : markey@web.de
 #include "Playlist.h"
 #include "PlaylistFileSupport.h"
 #include "playlist/PlaylistActions.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistModelStack.h"
 #include "playlist/PlaylistController.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "PluginManager.h"
@@ -48,10 +46,10 @@ email                : markey@web.de
 
 #include <iostream>
 
-#include <KAboutData>
 #include <KAction>
 #include <KCalendarSystem>
 #include <KCmdLineArgs>                  //initCliArgs()
+#include <KDirLister>
 #include <KEditToolBar>                  //slotConfigToolbars()
 #include <KGlobalSettings>
 #include <KIO/CopyJob>
@@ -88,6 +86,26 @@ int App::mainThreadId = 0;
 extern void setupEventHandler_mac(long);
 #endif
 
+#ifdef DEBUG
+#include "TestAmarok.h"
+#include "TestCaseConverter.h"
+#include "TestDirectoryLoader.h"
+#include "TestExpression.h"
+#include "TestM3UPlaylist.h"
+#include "TestMetaCueCueFileItem.h"
+#include "TestMetaCueTrack.h"
+#include "TestMetaFileTrack.h"
+#include "TestMetaMultiTrack.h"
+#include "TestMetaTrack.h"
+#include "TestPlaylistFileProvider.h"
+#include "TestPlaylistFileSupport.h"
+#include "TestPLSPlaylist.h"
+#include "TestQStringx.h"
+#include "TestSmartPointerList.h"
+#include "TestSqlUserPlaylistProvider.h"
+#include "TestTimecodeTrackProvider.h"
+#include "TestXSPFPlaylist.h"
+#endif // DEBUG
 
 AMAROK_EXPORT KAboutData aboutData( "amarok", 0,
     ki18n( "Amarok" ), APP_VERSION,
@@ -95,6 +113,8 @@ AMAROK_EXPORT KAboutData aboutData( "amarok", 0,
     ki18n( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2009, The Amarok Development Squad" ),
     ki18n( "IRC:\nirc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org\n\n(Build Date: %1)" ).subs( __DATE__ ),
              ( "http://amarok.kde.org" ) );
+             
+AMAROK_EXPORT OcsData ocsData;
 
 App::App()
         : KUniqueApplication()
@@ -222,7 +242,7 @@ App::~App()
             {
                 AmarokConfig::setResumeTrack( track->playableUrl().prettyUrl() );
                 AmarokConfig::setResumeTime( The::engineController()->trackPosition() * 1000 );
-                AmarokConfig::setLastPlaying( Playlist::Model::instance()->activeRow() );
+                AmarokConfig::setLastPlaying( Playlist::ModelStack::instance()->source()->activeRow() );
             }
         }
         else
@@ -254,17 +274,17 @@ App::~App()
 
     // I tried this in the destructor for the Model but the object is destroyed after the
     // Config is written. Go figure!
-    AmarokConfig::setLastPlaying( Playlist::Model::instance()->rowForTrack( Playlist::Model::instance()->activeTrack() ) );
+    AmarokConfig::setLastPlaying( Playlist::ModelStack::instance()->source()->rowForTrack( Playlist::ModelStack::instance()->source()->activeTrack() ) );
 
     AmarokConfig::self()->writeConfig();
 
-    mainWindow()->deleteBrowsers();
+    //mainWindow()->deleteBrowsers();
     delete mainWindow();
 
     CollectionManager::destroy();
     MountPointManager::destroy();
     Playlist::Actions::destroy();
-    Playlist::Model::destroy();
+    Playlist::ModelStack::destroy();
     PlaylistManager::destroy();
     EngineController::destroy();
     CoverFetcher::destroy();
@@ -364,30 +384,13 @@ App::handleCliArgs() //static
         haveArgs = true;
         The::playlistActions()->back();
     }
-    /*
-    else if (args->isSet("cdplay"))
-    {
-        haveArgs = true;
-        QString device = args->getOption("cdplay");
-        KUrl::List urls;
-        if (The::engineController()->getAudioCDContents(device, urls))
-        {
-            Meta::TrackList tracks = CollectionManager::instance()->tracksForUrls( urls );
-            The::playlistController()->insertOptioned( tracks, Playlist::Replace|Playlist::DirectPlay );
-        }
-        else
-        { // Default behaviour
-            debug() << "Sorry, the engine does not support direct play from AudioCD...";
-        }
-    }
-    */
 
     static bool firstTime = true;
     const bool debugWasJustEnabled = !Amarok::config().readEntry( "Debug Enabled", false ) && args->isSet( "debug" );
     const bool debugIsDisabled = !args->isSet( "debug" );
     //allows debugging on OS X. Bundles have to be started with "open". Therefore it is not possible to pass an argument
     const bool forceDebug = Amarok::config().readEntry( "Force Debug", false );
-    
+
 
     Amarok::config().writeEntry( "Debug Enabled", forceDebug ? true : args->isSet( "debug" ) );
 
@@ -410,8 +413,20 @@ App::handleCliArgs() //static
     }
 
     if( !firstTime && !haveArgs )
-        pApp->mainWindow()->activate();
+    {
+        // mainWindow() can be 0 if another instance is loading, see https://bugs.kde.org/show_bug.cgi?id=202713
+        if( pApp->mainWindow() )
+            pApp->mainWindow()->activate();
+    }
+
     firstTime = false;
+
+#ifdef DEBUG
+    if( args->isSet( "test" ) )
+    {
+        runUnitTests();
+    }
+#endif // DEBUG
 
     args->clear();    //free up memory
 }
@@ -457,7 +472,7 @@ App::initCliArgs() //static
     options.add("m");
     options.add("multipleinstances", ki18n("Allow running multiple Amarok instances"));
     options.add("cwd <directory>", ki18n( "Base for relative filenames/URLs" ));
-    //options.add("cdplay <device>", ki18n("Play an AudioCD from <device> or system:/media/<device>"));
+    options.add("test", ki18n( "Run integrated unit tests, if your build supports it" ));
 
     KCmdLineArgs::addCmdLineOptions( options );   //add our own options
 }
@@ -530,6 +545,10 @@ void App::applySettings( bool firstTime )
     //and always if the trayicon isn't showing
     QWidget* main_window = mainWindow();
 
+    // show or hide CV
+    if( mainWindow() )
+        mainWindow()->hideContextView( AmarokConfig::hideContextView() );
+
     if( ( main_window && firstTime && !Amarok::config().readEntry( "HiddenOnExit", false ) ) || ( main_window && !AmarokConfig::showTrayIcon() ) )
     {
         PERF_LOG( "showing main window again" )
@@ -549,14 +568,9 @@ void App::applySettings( bool firstTime )
 
         if( The::engineController()->isMuted() != AmarokConfig::muteState() )
             The::engineController()->setMuted( AmarokConfig::muteState() );
-
-#if 0
-    // Audio CD is not currently supported
-    Amarok::actionCollection()->action( "play_audiocd" )->setEnabled( false );
-#endif
-
     } //</Engine>
 
+    if( firstTime )
     {   // delete unneeded cover images from cache
         PERF_LOG( "Begin cover handling" )
         const QString size = QString::number( 100 ) + '@';
@@ -569,15 +583,51 @@ void App::applySettings( bool firstTime )
 
         PERF_LOG( "done cover handling" )
     }
-
-    // show or hide CV
-    if( mainWindow() )
-        mainWindow()->hideContextView( AmarokConfig::hideContextView() );
-    //if ( !firstTime )
-        // Bizarrely and ironically calling this causes crashes for
-        // some people! FIXME
-        //AmarokConfig::self()->writeConfig();
 }
+
+#ifdef DEBUG
+//SLOT
+void
+App::runUnitTests()
+{
+    DEBUG_BLOCK
+    QStringList testArgumentList;
+    QString logPath = QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + QDateTime::currentDateTime().toString( "yyyy-MM-dd.HH-mm-ss" ) + '/' );
+    testArgumentList << "amarok" << "-o" << logPath << "-xml" << "-v2";
+
+    // create log folder for this run:
+    QDir logDir( logPath );
+    logDir.mkpath( logPath );
+
+    QFile::remove( QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + "LATEST" ) );
+    QFile::link( logPath, QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + "LATEST" ) );
+
+    PERF_LOG( "Running Unit Tests" )
+    TestAmarok                  testAmarok( testArgumentList );
+    TestCaseConverter           testCaseConverter( testArgumentList );
+    TestExpression              testExpression( testArgumentList );
+    TestM3UPlaylist             testM3UPlaylist( testArgumentList );
+    TestMetaCueCueFileItem      testMetaCueCueFileItem( testArgumentList );
+    TestMetaCueTrack            testMetaCueTrack( testArgumentList );
+    TestMetaFileTrack           testMetaFileTrack( testArgumentList );
+    TestMetaMultiTrack          testMetaMultiTrack( testArgumentList );
+    TestMetaTrack               testMetaTrack( testArgumentList );
+    TestPlaylistFileProvider    testPlaylistFileProvider( testArgumentList );
+    TestPlaylistFileSupport     testPlaylistFileSupport( testArgumentList );
+    TestPLSPlaylist             testPLSPlaylist( testArgumentList );
+    TestQStringx                testQStringx( testArgumentList );
+    TestSmartPointerList        testSmartPointerList( testArgumentList );
+    TestSqlUserPlaylistProvider testSqlUserPlaylistProvider( testArgumentList );
+    TestTimecodeTrackProvider   testTimecodeTrackProvider( testArgumentList );
+    TestXSPFPlaylist            testXSPFPlaylist( testArgumentList );
+
+    // modifies the playlist asynchronously, so run this last to avoid messing other test results
+    TestDirectoryLoader        *testDirectoryLoader = new TestDirectoryLoader( testArgumentList );
+
+    PERF_LOG( "Done Running Unit Tests" )
+    Q_UNUSED( testDirectoryLoader )
+}
+#endif // DEBUG
 
 //SLOT
 void
@@ -724,9 +774,10 @@ bool App::event( QEvent *event )
             QString file = static_cast<QFileOpenEvent*>( event )->file();
             //we are only going to receive local files here
             KUrl url( file );
-            if( PlaylistManager::instance()->isPlaylist( url ) )
+            if( Meta::isPlaylist( url ) )
             {
-                Meta::PlaylistPtr playlist = Meta::loadPlaylist( url );
+                Meta::PlaylistPtr playlist =
+                        Meta::PlaylistPtr::dynamicCast( Meta::loadPlaylistFile( url ) );
                 The::playlistController()->insertOptioned( playlist, Playlist::AppendAndPlay );
             }
             else
@@ -743,10 +794,10 @@ bool App::event( QEvent *event )
 
 namespace Amarok
 {
-    /// @see amarok.h
+    /// @see Amarok.h
 
     /*
-    * Transform to be usable within HTML/HTML attributes
+    * Transform to be usable within HTML/XHTML attributes
     */
     QString escapeHTMLAttr( const QString &s )
     {
@@ -757,29 +808,6 @@ namespace Amarok
     {
         return QString(s).replace( "%3F", "?" ).replace( "%23", "#" ).replace( "%22", "\"" ).
                 replace( "%27", "'" ).replace( "%25", "%" );
-    }
-
-    /**
-     * Function that must be used when separating contextBrowser escaped urls
-     * detail can contain track/discnumber
-     */
-    void albumArtistTrackFromUrl( QString url, QString &artist, QString &album, QString &detail )
-    {
-        if ( !url.contains("@@@") ) return;
-        //KHTML removes the trailing space!
-        if ( url.endsWith( " @@@" ) )
-            url += ' ';
-
-        const QStringList list = url.split( " @@@ ", QString::KeepEmptyParts );
-
-        int size = list.count();
-
-        if( size<=0 )
-            error() << "size<=0";
-
-        artist = size > 0 ? unescapeHTMLAttr( list[0] ) : "";
-        album  = size > 1 ? unescapeHTMLAttr( list[1] ) : "";
-        detail = size > 2 ? unescapeHTMLAttr( list[2] ) : "";
     }
 
     QString verboseTimeSince( const QDateTime &datetime )
@@ -926,56 +954,35 @@ namespace Amarok
 
     QString cleanPath( const QString &path )
     {
+        /* Unicode uses combining characters to form accented versions of other characters.
+         * (Exception: Latin-1 table for compatibility with ASCII.)
+         * Those can be found in the Unicode tables listed at:
+         * http://en.wikipedia.org/w/index.php?title=Combining_character&oldid=255990982
+         * Removing those characters removes accents. :)                                   */
         QString result = path;
-        // german umlauts
+
+        // German umlauts
         result.replace( QChar(0x00e4), "ae" ).replace( QChar(0x00c4), "Ae" );
         result.replace( QChar(0x00f6), "oe" ).replace( QChar(0x00d6), "Oe" );
         result.replace( QChar(0x00fc), "ue" ).replace( QChar(0x00dc), "Ue" );
         result.replace( QChar(0x00df), "ss" );
 
-        // some strange accents
-        result.replace( QChar(0x00e7), "c" ).replace( QChar(0x00c7), "C" );
-        result.replace( QChar(0x00fd), "y" ).replace( QChar(0x00dd), "Y" );
-        result.replace( QChar(0x00f1), "n" ).replace( QChar(0x00d1), "N" );
+        // other special cases
+        result.replace( QChar(0x00C6), "AE" );
+        result.replace( QChar(0x00E6), "ae" );
 
-        // czech letters with carons
-        result.replace( QChar(0x0161), "s" ).replace( QChar(0x0160), "S" );
-        result.replace( QChar(0x010d), "c" ).replace( QChar(0x010c), "C" );
-        result.replace( QChar(0x0159), "r" ).replace( QChar(0x0158), "R" );
-        result.replace( QChar(0x017e), "z" ).replace( QChar(0x017d), "Z" );
-        result.replace( QChar(0x0165), "t" ).replace( QChar(0x0164), "T" );
-        result.replace( QChar(0x0148), "n" ).replace( QChar(0x0147), "N" );
-        result.replace( QChar(0x010f), "d" ).replace( QChar(0x010e), "D" );
+        result.replace( QChar(0x00D8), "OE" );
+        result.replace( QChar(0x00F8), "oe" );
 
-        // accented vowels
-        QChar a[] = { 'a', 0xe0,0xe1,0xe2,0xe3,0xe5, 0 };
-        QChar A[] = { 'A', 0xc0,0xc1,0xc2,0xc3,0xc5, 0 };
-        QChar E[] = { 'e', 0xe8,0xe9,0xea,0xeb,0x11a, 0 };
-        QChar e[] = { 'E', 0xc8,0xc9,0xca,0xcb,0x11b, 0 };
-        QChar i[] = { 'i', 0xec,0xed,0xee,0xef, 0 };
-        QChar I[] = { 'I', 0xcc,0xcd,0xce,0xcf, 0 };
-        QChar o[] = { 'o', 0xf2,0xf3,0xf4,0xf5,0xf8, 0 };
-        QChar O[] = { 'O', 0xd2,0xd3,0xd4,0xd5,0xd8, 0 };
-        QChar u[] = { 'u', 0xf9,0xfa,0xfb,0x16e, 0 };
-        QChar U[] = { 'U', 0xd9,0xda,0xdb,0x16f, 0 };
-        QChar nul[] = { 0 };
-        QChar *replacements[] = { a, A, e, E, i, I, o, O, u, U, nul };
+        // normalize in a form where accents are seperate characters
+        result = result.normalized( QString::NormalizationForm_D );
 
-        for( int i = 0; i < result.length(); i++ )
+        // remove accents from table "Combining Diacritical Marks"
+        for( int i = 0x0300; i <= 0x036F; i++ )
         {
-            QChar c = result[ i ];
-            for( uint n = 0; replacements[n][0] != QChar(0); n++ )
-            {
-                for( uint k=0; replacements[n][k] != QChar(0); k++ )
-                {
-                    if( replacements[n][k] == c )
-                    {
-                        c = replacements[n][0];
-                    }
-                }
-            }
-            result[ i ] = c;
+            result.remove( QChar( i ) );
         }
+
         return result;
     }
 
@@ -998,17 +1005,22 @@ namespace Amarok
     {
         QString s = path;
 
+        if( QDir::separator() == '/' ) // we are on *nix, \ is a valid character in file or directory names, NOT the dir separator
+            s.replace( '\\', '_' );
+        else
+            s.replace( '/', '_' ); // on windows we have to replace / instead
+
         for( int i = 0; i < s.length(); i++ )
         {
             QChar c = s[ i ];
-            if( c < QChar(0x20)
+            if( c < QChar(0x20) || c == QChar(0x7F) // 0x7F = 127 = DEL control character
                     || c=='*' || c=='?' || c=='<' || c=='>'
-                    || c=='|' || c=='"' || c==':' || c=='/'
-                    || c=='\\' )
+                    || c=='|' || c=='"' || c==':' )
                 c = '_';
             s[ i ] = c;
         }
 
+        /* beware of reserved device names */
         uint len = s.length();
         if( len == 3 || (len > 3 && s[3] == '.') )
         {
@@ -1026,16 +1038,29 @@ namespace Amarok
                 s = '_' + s;
         }
 
-        while( s.startsWith( '.' ) )
-            s = s.mid(1);
+        // "clock$" is only allowed WITH extension, according to:
+        // http://en.wikipedia.org/w/index.php?title=Filename&oldid=303934888#Comparison_of_file_name_limitations
+        if( QString::compare( s, "clock$", Qt::CaseInsensitive ) == 0 )
+            s = '_' + s;
 
-        while( s.endsWith( '.' ) )
-            s = s.left( s.length()-1 );
-
+        /* max path length of Windows API */
         s = s.left(255);
+
+        /* whitespaces at the end of folder/file names or extensions are bad */
         len = s.length();
         if( s[len-1] == ' ' )
             s[len-1] = '_';
+
+        int extensionIndex = s.lastIndexOf( '.' ); // correct trailing spaces in file name itself
+        if( ( extensionIndex != -1 ) && ( s.length() > 1 ) )
+            if( s.at( extensionIndex - 1 ) == ' ' )
+                s[extensionIndex - 1] = '_';
+
+        for( int i = 1; i < s.length(); i++ ) // correct trailing whitespaces in folder names
+        {
+            if( ( s.at( i ) == QDir::separator() ) && ( s.at( i - 1 ) == ' ' ) )
+                s[i - 1] = '_';
+        }
 
         return s;
     }
@@ -1060,6 +1085,50 @@ namespace Amarok
     }
 
     KIO::Job *trashFiles( const KUrl::List &files ) { return App::instance()->trashFiles( files ); }
+
+    //this function (C) Copyright 2003-4 Max Howell, (C) Copyright 2004 Mark Kretschmann
+    KUrl::List
+    recursiveUrlExpand ( const KUrl &url )
+    {
+        typedef QMap<QString, KUrl> FileMap;
+
+        KDirLister lister ( false );
+        lister.setAutoUpdate ( false );
+        lister.setAutoErrorHandlingEnabled ( false, 0 );
+        lister.openUrl ( url );
+
+        while ( !lister.isFinished() )
+            kapp->processEvents ( QEventLoop::ExcludeUserInputEvents );
+
+        KFileItemList items = lister.items();
+        KUrl::List urls;
+        FileMap files;
+        foreach ( const KFileItem& it, items )
+        {
+            if ( it.isFile() ) { files[it.name() ] = it.url(); continue; }
+            if ( it.isDir() ) urls += recursiveUrlExpand( it.url() );
+        }
+
+        oldForeachType ( FileMap, files )
+        // users often have playlist files that reflect directories
+        // higher up, or stuff in this directory. Don't add them as
+        // it produces double entries
+        if ( !Meta::isPlaylist( ( *it ).fileName() ) )
+            urls += *it;
+        return urls;
+    }
+
+    KUrl::List
+    recursiveUrlExpand ( const KUrl::List &list )
+    {
+        KUrl::List urls;
+        oldForeachType ( KUrl::List, list )
+        {
+            urls += recursiveUrlExpand ( *it );
+        }
+
+        return urls;
+    }
 }
 
 int App::newInstance()

@@ -1,21 +1,19 @@
-/***************************************************************************
- *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 - 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef AMAROK_PLAYLISTDEFINES_H
 #define AMAROK_PLAYLISTDEFINES_H
@@ -63,6 +61,21 @@ enum Column
     Year,
     NUM_COLUMNS
 };
+//when sorting, Random is -1
+
+//these are the colums that can be directly edited by the user.
+static const QList<int> editableColumns = ( QList<int>() )
+        << Album
+        << Artist
+        << Comment
+        << Composer
+        << DiscNumber
+        << Genre
+        << Rating
+        << Title
+        << TitleWithTrackNum
+        << TrackNumber
+        << Year;
 
 //this is the list of user visible token nemes and hence needs to be translated
 static const QList<const char *> columnNames = ( QList<const char *>()
@@ -100,7 +113,7 @@ static const QList<const char *> columnNames = ( QList<const char *>()
 
 
 //this list is used internally and for reading writing config files and sths shoudl not be translated!
-//must be kept in sunch with the above list though!
+//must be kept in sync with the above list though!
 static const QStringList internalColumnNames = ( QStringList()
         << "Placeholder"
         << "Album"
@@ -132,6 +145,39 @@ static const QStringList internalColumnNames = ( QStringList()
         << "Title (with track number)"
         << "Track number"
         << "Type"
+        << "Year" );
+
+//FIXME: disabled sorting by File size, Group length, Group tracks, Length because
+//       it doesn't work.
+static const QStringList sortableCategories = ( QStringList()
+        << "Album"
+        << "Album artist"
+        << "Artist"
+        << "Bitrate"
+        << "Comment"
+        << "Composer"
+        << "Directory"
+        << "Disc number"
+        << "File name"
+        << "Genre"
+        << "Last played"
+        << "Play count"
+        << "Rating"
+        << "Sample rate"
+        << "Score"
+        << "Source"
+        << "Title"
+        << "Track number"
+        << "Type"
+        << "Year" );
+
+static const QStringList groupableCategories = ( QStringList()
+        << "Album"
+        << "Artist"
+        << "Composer"
+        << "Genre"
+        << "Rating"
+        << "Source"
         << "Year" );
 
 static const QStringList iconNames = ( QStringList()
@@ -178,6 +224,17 @@ enum SearchFields
     MatchYear = 32
 };
 
+enum DataRoles
+{
+    TrackRole = Qt::UserRole,
+    StateRole,
+    UniqueIdRole,
+    ActiveTrackRole,
+    QueuePositionRole,
+    InCollectionRole,
+    MultiSourceRole,
+    StopAfterTrackRole
+};
 
 }
 

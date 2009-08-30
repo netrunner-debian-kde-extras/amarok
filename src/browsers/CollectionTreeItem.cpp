@@ -1,29 +1,30 @@
-/******************************************************************************
- * Copyright (c) 2007 Alexandre Pereira de Oliveira <aleprj@gmail.com>        *
- *           (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>  *
- *           (c) 2009 Seb Ruiz <ruiz@kde.org>                                 *
- *                                                                            *
- * This program is free software; you can redistribute it and/or              *
- * modify it under the terms of the GNU General Public License as             *
- * published by the Free Software Foundation; either version 2 of             *
- * the License, or (at your option) any later version.                        *
- *                                                                            *
- * This program is distributed in the hope that it will be useful,            *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
- * GNU General Public License for more details.                               *
- *                                                                            *
- * You should have received a copy of the GNU General Public License          *
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
- ******************************************************************************/
-
-#include "CollectionTreeItem.h"
+/****************************************************************************************
+ * Copyright (c) 2007 Alexandre Pereira de Oliveira <aleprj@gmail.com>                  *
+ * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2009 Seb Ruiz <ruiz@kde.org>                                           *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "CollectionTreeView.h"
+#include "Debug.h"
 #include "amarokconfig.h"
+
+#include "meta/capabilities/CollectionCapability.h"
 
 #include <KLocale>
 
+Q_DECLARE_METATYPE( QList<QAction*> )
 
 CollectionTreeItem::CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *parent )
     : m_data( data )
@@ -33,6 +34,7 @@ CollectionTreeItem::CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *
     , m_isVariousArtistsNode( false )
     , m_trackCount( -1 )
     , m_isCounting( false )
+    , m_collectionActionsLoaded( false )
 {
     if ( m_parent )
         m_parent->appendChild( this );
@@ -46,6 +48,7 @@ CollectionTreeItem::CollectionTreeItem( Amarok::Collection *parentCollection, Co
     , m_isVariousArtistsNode( false )
     , m_trackCount( -1 )
     , m_isCounting( false )
+    , m_collectionActionsLoaded( false )
 {
     if ( m_parent )
         m_parent->appendChild( this );
@@ -61,6 +64,7 @@ CollectionTreeItem::CollectionTreeItem( const Meta::DataList &data, CollectionTr
     , m_isVariousArtistsNode( true )
     , m_trackCount( -1 )
     , m_isCounting( false )
+    , m_collectionActionsLoaded( false )
 {
     if( m_parent )
         m_parent->m_childItems.insert( 0, this );
@@ -103,7 +107,7 @@ CollectionTreeItem::albumYear() const
     if( Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( m_data ) )
     {
         if( !album->tracks().isEmpty() )
-        {   
+        {
             Meta::TrackPtr track = album->tracks()[0];
             if( track && track->year() )
                 year = track->year()->prettyName();
@@ -135,11 +139,11 @@ CollectionTreeItem::data( int role ) const
                     }
                 }
             }
-            
+
             // Check empty after track logic and before album logic
             if( name.isEmpty() )
                 name = i18nc( "The Name is not known", "Unknown" );
-            
+
             if( AmarokConfig::showYears() )
             {
                 QString year = albumYear();
@@ -187,9 +191,45 @@ CollectionTreeItem::data( int role ) const
 
             return i18np( "1 track", "%1 tracks", m_trackCount );
         }
+        else if( role == CustomRoles::HasCapacityRole )
+        {
+            return m_parentCollection->hasCapacity();
+        }
+        else if( role == CustomRoles::UsedCapacityRole )
+        {
+            if( m_parentCollection->hasCapacity() && m_parentCollection->totalCapacity() > 0 )
+                return m_parentCollection->usedCapacity() * 100 / m_parentCollection->totalCapacity();
+        }
+        else if( role == CustomRoles::HasDecoratorsRole )
+        {
+            return !collectionActions().isEmpty();
+        }
+        else if( role == CustomRoles::DecoratorsRole )
+        {
+            QVariant v;
+            v.setValue( collectionActions() );
+            return v;
+        }
     }
 
     return QVariant();
+}
+
+QList<QAction*>
+CollectionTreeItem::collectionActions() const
+{
+    if( m_collectionActionsLoaded )
+        return m_collectionActions;
+
+    Meta::CollectionCapability *cc = m_parentCollection->create<Meta::CollectionCapability>();
+    if( cc )
+    {
+        m_collectionActions = cc->collectionActions();
+        delete cc;
+    }
+
+    m_collectionActionsLoaded = true;
+    return m_collectionActions;
 }
 
 void
@@ -252,7 +292,7 @@ CollectionTreeItem::queryMaker() const
 {
     if ( m_parentCollection )
         return m_parentCollection->queryMaker();
-        
+
     CollectionTreeItem *tmp = m_parent;
     while( tmp->isDataItem() )
         tmp = tmp->parent();
@@ -309,7 +349,7 @@ CollectionTreeItem::allDescendentTracksLoaded() const
     Meta::TrackPtr track;
     if( isDataItem() && !( track = Meta::TrackPtr::dynamicCast( m_data ) ).isNull() )
         return true;
-    
+
     if( childrenLoaded() )
     {
         foreach( CollectionTreeItem *item, m_childItems )

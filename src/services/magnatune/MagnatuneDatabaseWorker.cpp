@@ -1,21 +1,18 @@
-/***************************************************************************
- *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
  
 #include "MagnatuneDatabaseWorker.h"
 
@@ -38,12 +35,16 @@ MagnatuneDatabaseWorker::~MagnatuneDatabaseWorker()
 void
 MagnatuneDatabaseWorker::run()
 {
+    DEBUG_BLOCK
     switch ( m_task ) {
         case FETCH_MODS:
             doFetchMoodMap();
             break;
         case FETCH_MOODY_TRACKS:
             doFetchTrackswithMood();
+            break;
+        case ALBUM_BY_SKU:
+            doFetchAlbumBySku();
             break;
         default:
             break;
@@ -52,12 +53,16 @@ MagnatuneDatabaseWorker::run()
 
 void MagnatuneDatabaseWorker::completeJob()
 {
+    DEBUG_BLOCK
     switch ( m_task ) {
         case FETCH_MODS:
             emit( gotMoodMap( m_moodMap ) );
             break;
         case FETCH_MOODY_TRACKS:
             emit( gotMoodyTracks( m_moodyTracks ) );
+            break;
+        case ALBUM_BY_SKU:
+            emit( gotAlbumBySku( m_album ) );
             break;
         default:
             break;
@@ -85,6 +90,14 @@ void MagnatuneDatabaseWorker::fetchTrackswithMood( const QString &mood, int noOf
     m_moodyTracks.clear();
 }
 
+void MagnatuneDatabaseWorker::fetchAlbumBySku( const QString & sku, ServiceSqlRegistry * registry )
+{
+    DEBUG_BLOCK
+    m_task = ALBUM_BY_SKU;
+    m_sku = sku;
+    m_registry = registry;
+}
+
 
 void MagnatuneDatabaseWorker::doFetchMoodMap()
 {
@@ -108,7 +121,7 @@ void MagnatuneDatabaseWorker::doFetchTrackswithMood()
 
 
 
-    //ok, a huge joing turned out to be _really_ slow, so lets chop up the query a bit...
+    //ok, a huge join turned out to be _really_ slow, so lets chop up the query a bit...
 
     QString queryString = "SELECT DISTINCT track_id FROM magnatune_moods WHERE mood =\"" + m_mood + "\"  ORDER BY RANDOM() LIMIT " + QString::number( m_noOfTracks, 10 ) + ';';
 
@@ -153,6 +166,36 @@ void MagnatuneDatabaseWorker::doFetchTrackswithMood()
         }
     }
 
+}
+
+void MagnatuneDatabaseWorker::doFetchAlbumBySku()
+{
+    DEBUG_BLOCK
+
+    ServiceMetaFactory * metaFactory = m_registry->factory();
+
+    QString rows = metaFactory->getAlbumSqlRows()
+                 + ','
+                 + metaFactory->getArtistSqlRows();
+    
+    SqlStorage *sqlDb = CollectionManager::instance()->sqlStorage();
+    QString queryString = "SELECT " + rows + " FROM magnatune_albums LEFT JOIN magnatune_artists ON magnatune_albums.artist_id = magnatune_artists.id WHERE album_code = '" + m_sku + "';";
+    debug() << "Querying for album: " << queryString;
+    QStringList result = sqlDb->query( queryString );
+    debug() << "result: " << result;
+
+    if ( result.count() == metaFactory->getAlbumSqlRowCount() + metaFactory->getArtistSqlRowCount() )
+    {
+        Meta::AlbumPtr albumPtr = m_registry->getAlbum( result );
+        //make a magnatune album out of this...
+
+        m_album = dynamic_cast<Meta::MagnatuneAlbum *>( albumPtr.data() );
+
+    }
+    else
+    {
+        m_album = 0;
+    }
 }
 
 #include "MagnatuneDatabaseWorker.moc"

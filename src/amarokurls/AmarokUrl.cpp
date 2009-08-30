@@ -1,21 +1,18 @@
-/***************************************************************************
- *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
  
 #include "AmarokUrl.h"
 
@@ -57,56 +54,60 @@ AmarokUrl::~AmarokUrl()
 void AmarokUrl::initFromString( const QString & urlString )
 {
     //first, strip amarok://
-
     QString strippedUrlString = urlString;
-
     strippedUrlString = strippedUrlString.replace( "amarok://", "" );
 
-    //some poor man's unescaping
-    strippedUrlString = strippedUrlString.replace( "%22", "\"" );
-    strippedUrlString = strippedUrlString.replace( "%20", " " );
-    
-    m_fields = strippedUrlString.split( '/' );
+    //seperate path from arguments
+    QStringList parts = strippedUrlString.split( "?" );
+
+    QString commandAndPath = parts.at( 0 );
+
+    QString argumentsString;
+    if ( parts.size() == 2 )
+        argumentsString = parts.at( 1 );
+
+    if ( !argumentsString.isEmpty() )
+    {
+        parts = argumentsString.split( "&" );
+        
+        foreach( QString argument, parts )
+        {
+            
+            QStringList argParts = argument.split( "=" );
+            debug() << "argument: " << argument << " unescaped: " << unescape( argParts.at( 1 ) );
+            appendArg( argParts.at( 0 ), unescape( argParts.at( 1 ) ) );
+        }
+    }
+
+    //get the command
+
+    parts = commandAndPath.split( "/" );
+    m_command = parts.takeFirst();
+
+    m_path = parts.join( "/" );
+
+    m_path = unescape( m_path );
+
 }
 
 void AmarokUrl::setCommand( const QString & command )
 {
-    if ( m_fields.count() > 0 )
-        m_fields[0] = command;
-    else
-        m_fields << command;
+    m_command = command;
 }
 
-QString AmarokUrl::command()
+QString AmarokUrl::command() const
 {
-    if ( m_fields.count() != 0 )
-        return m_fields[0];
-    else
-        return QString();
+        return m_command;
 }
 
-int AmarokUrl::numberOfArgs()
+QMap<QString, QString> AmarokUrl::args() const
 {
-    if ( m_fields.count() != 0 )
-        return m_fields.count() - 1;
-    else
-        return 0;
+    return m_arguments;
 }
 
-void AmarokUrl::appendArg( const QString & arg )
+void AmarokUrl::appendArg( const QString &name, const QString &value )
 {
-    if ( m_fields.count() > 0 )
-        m_fields << arg;
-    else
-        m_fields << QString() << arg; //reserve space for command
-}
-
-QString AmarokUrl::arg( int arg )
-{
-    if ( m_fields.count() != 0 )
-        return m_fields[arg + 1];
-    else
-        return ""; 
+    m_arguments.insert( name, value );
 }
 
 bool AmarokUrl::run()
@@ -115,17 +116,29 @@ bool AmarokUrl::run()
     return The::amarokUrlHandler()->run( *this );
 }
 
-QString AmarokUrl::url()
+QString AmarokUrl::url() const
 {
-    QString url = "amarok:/";
-    foreach( const QString &field, m_fields ) {
-        url += '/';
-        url += field;
-    }
+    QString url = "amarok://";
+    url += m_command;
+    url += "/";
+    url += escape( m_path );
 
-    //escape it
-    url = url.replace( ' ', "%20" );
-    url = url.replace( "\"", "%22" );
+    if ( url.endsWith( "/" ) )
+        url.chop( 1 );
+
+    if( m_arguments.size() > 0 )
+    {
+    
+        url += "?";
+        foreach( QString argName, m_arguments.keys() )
+        {
+            url += argName;
+            url += "=";
+            url += escape( m_arguments.value( argName ) );
+            url += "&";
+        }
+        url.chop( 1 );
+    }
 
     return url;
 }
@@ -146,7 +159,7 @@ bool AmarokUrl::saveToDb()
         //update existing
         debug() << "Updating bookmark";
         QString query = "UPDATE bookmarks SET parent_id=%1, name='%2', url='%3', description='%4', custom='%5' WHERE id=%6;";
-        query = query.arg( QString::number( parentId ) ).arg( sql->escape( m_name ) ).arg( sql->escape( url() ) ).arg( sql->escape( m_description ) ).arg( sql->escape( m_customValue ) ).arg( QString::number( m_id ) );
+        query = query.arg( QString::number( parentId ) ).arg( sql->escape( m_name ), sql->escape( url() ), sql->escape( m_description ), sql->escape( m_customValue ) , QString::number( m_id ) );
         CollectionManager::instance()->sqlStorage()->query( query );
     }
     else
@@ -154,7 +167,7 @@ bool AmarokUrl::saveToDb()
         //insert new
         debug() << "Creating new bookmark in the db";
         QString query = "INSERT INTO bookmarks ( parent_id, name, url, description, custom ) VALUES ( %1, '%2', '%3', '%4', '%5' );";
-        query = query.arg( QString::number( parentId ) ).arg( sql->escape( m_name ) ).arg( sql->escape( url() ) ).arg( sql->escape( m_description ) ).arg( sql->escape( m_customValue ) );
+        query = query.arg( QString::number( parentId ), sql->escape( m_name ), sql->escape( url() ), sql->escape( m_description ), sql->escape( m_customValue ) );
         m_id = CollectionManager::instance()->sqlStorage()->insert( query, NULL );
     }
 
@@ -195,11 +208,6 @@ void AmarokUrl::rename( const QString &name )
         saveToDb();
 }
 
-bool AmarokUrl::isNull()
-{
-    return m_fields.count() == 0;
-}
-
 void AmarokUrl::reparent( BookmarkGroupPtr parent )
 {
     m_parent = parent;
@@ -211,8 +219,35 @@ void AmarokUrl::setCustomValue( const QString & custom )
     m_customValue = custom;
 }
 
-QString AmarokUrl::customValue()
+QString AmarokUrl::customValue() const
 {
     return m_customValue;
 }
+
+QString AmarokUrl::escape( const QString & in )
+{
+    return QUrl::toPercentEncoding( in.toUtf8() );
+}
+
+QString AmarokUrl::unescape( const QString & in )
+{
+    return QUrl::fromPercentEncoding( in.toUtf8() );
+}
+
+bool AmarokUrl::isNull()
+{
+    return m_command.isEmpty();
+}
+
+QString AmarokUrl::path() const
+{
+    return m_path;
+}
+
+void AmarokUrl::setPath( const QString &path )
+{
+    m_path = path;
+}
+
+
 

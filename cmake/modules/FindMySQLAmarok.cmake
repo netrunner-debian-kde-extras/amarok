@@ -25,7 +25,13 @@ find_path(MYSQL_INCLUDE_DIR mysql.h
    /opt/ports/include/mysql5/mysql
 )
 
-find_library(MYSQL_LIBRARIES NAMES mysqlclient 
+if(WIN32)
+    set(MYSQL_CLIENT_LIBRARY_NAME libmysql)
+else(WIN32)
+    set(MYSQL_CLIENT_LIBRARY_NAME mysqlclient)
+endif(WIN32)
+
+find_library(MYSQL_LIBRARIES NAMES ${MYSQL_CLIENT_LIBRARY_NAME}
    PATHS
    ~/usr/lib/mysql
    /opt/mysql/mysql/lib 
@@ -40,7 +46,7 @@ find_library(MYSQL_LIBRARIES NAMES mysqlclient
    /opt/ports/lib/mysql5/mysql
 )
 
-find_library(MYSQL_EMBEDDED_LIBRARIES NAMES mysqld libmysqld
+find_library(MYSQL_EMBEDDED_LIBRARIES NAMES mysqld_pic mysqld libmysqld
    PATHS
    ~/usr/lib/mysql
    /opt/local/lib/mysql5/mysql

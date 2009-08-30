@@ -1,20 +1,18 @@
-/* This file is part of the KDE project
-   Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef SQLREGISTRY_H
 #define SQLREGISTRY_H
@@ -43,13 +41,15 @@ class SqlRegistry : public QObject
         Meta::TrackPtr getTrack( const QString &url );
         Meta::TrackPtr getTrack( const QStringList &rowData );
         Meta::TrackPtr getTrackFromUid( const QString &uid );
+        void updateCachedUrl( const QPair<QString, QString> &oldnew );
+        void updateCachedUid( const QString &oldUid, const QString &newUid );
         bool checkUidExists( const QString &uid );
 
-        Meta::ArtistPtr getArtist( const QString &name, int id = -1 );
-        Meta::GenrePtr getGenre( const QString &name, int id = -1 );
-        Meta::ComposerPtr getComposer( const QString &name, int id = -1 );
-        Meta::YearPtr getYear( const QString &year, int id = -1 );
-        Meta::AlbumPtr getAlbum( const QString &album, int id = -1, int artist = -1 ); //TODO fix this
+        Meta::ArtistPtr getArtist( const QString &name, int id = -1, bool refresh = false );
+        Meta::GenrePtr getGenre( const QString &name, int id = -1, bool refresh = false );
+        Meta::ComposerPtr getComposer( const QString &name, int id = -1, bool refresh = false );
+        Meta::YearPtr getYear( const QString &year, int id = -1, bool refresh = false );
+        Meta::AlbumPtr getAlbum( const QString &album, int id = -1, int artist = -1, bool refresh = false ); //TODO fix this (Fix what?)
 
 
     private slots:

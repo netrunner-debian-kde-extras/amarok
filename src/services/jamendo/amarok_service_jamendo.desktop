@@ -3,9 +3,9 @@ Type=Service
 ServiceTypes=KPluginInfo
 Icon=view-services-jamendo-amarok
 Name=Jamendo
-Name[bg]=Услуга Jamendo
 Name[pa]=ਜਾਮੀਂਡੋ
 Name[x-test]=xxJamendoxx
+Name[zh_TW]=Jamendo 
 Comment=Listen to and download music uploaded by independent artists
 Comment[bg]=Слушане и сваляне на музика от независими изпълнители
 Comment[ca]=Escolta i baixa música pujada per artistes independents
@@ -24,6 +24,7 @@ Comment[is]=Hlusta á og hala niður tónlist frá sjálfstæðum óhaðum lista
 Comment[it]=Ascoltare e scaricare musica inviata da artisti indipendenti
 Comment[ja]=無所属のアーティストによってアップロードされた音楽を聴いたりダウンロードしたりできます
 Comment[km]=ស្ដាប់ និង​ទាញ​យក​តន្ត្រី​ដែល​បានផ្ទុក​ឡើង​ដោយ​សិល្បករ​ឯករាជ្យ
+Comment[ko]=독립된 가수가 만든 음악을 듣고 내려받기
 Comment[ku]=Muzîkên, alî yê hunermendê azad ve hatine bar kirin, guhdarî bike û bi daxe 
 Comment[lt]=Klausyti ir atsisiųsti muziką, atsiųstą nepriklausomų atlikėjų
 Comment[lv]=Klausieties un lejupielādējiet mūziku, kuru augšupielādē neatkarīgie mākslinieki
@@ -44,6 +45,7 @@ Comment[uk]=Прослухайте і завантажте музику, зап�
 Comment[wa]=Schoûter eyet aberweter del muzike eberwetêye pa des årtisses dislaxhîs
 Comment[x-test]=xxListen to and download music uploaded by independent artistsxx
 Comment[zh_CN]=收听并下载由自由艺术家上传的音乐
+Comment[zh_TW]=聆聽並下載由獨立藝人所上傳的音樂
 
 
 ServiceTypes=Amarok/Plugin
@@ -52,7 +54,7 @@ X-KDE-Library=amarok_service_jamendo
 
 X-KDE-Amarok-authors=Nikolaj Hald Nielsen
 X-KDE-Amarok-email=nhnFreespirit@gmail.com
-X-KDE-Amarok-framework-version=43
+X-KDE-Amarok-framework-version=46
 X-KDE-Amarok-name=JamendoService
 X-KDE-Amarok-plugintype=service
 X-KDE-Amarok-rank=100

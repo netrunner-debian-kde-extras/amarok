@@ -1,22 +1,27 @@
-/***************************************************************************
-* copyright            : (C) 2007 Shane King <kde@dontletsstart.com>      *
-* copyright            : (C) 2008 Leo Franchi <lfranchi@kde.org>          *
-* copyright            : (C) 2009 Casey Link <unnamedrambler@gmail.com>   *
- **************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007 Shane King <kde@dontletsstart.com>                                *
+ * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                                    *
+ * Copyright (c) 2009 Casey Link <unnamedrambler@gmail.com>                             *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "LastFmService.h"
 
 #include "AvatarDownloader.h"
 #include "EngineController.h"
+#include "biases/SimilarArtistsBias.h"
+#include "biases/WeeklyTopBias.h"
 #include "LastFmServiceCollection.h"
 #include "LastFmServiceConfig.h"
 #include "LoveTrackAction.h"
@@ -33,22 +38,24 @@
 #include "meta/LastFmMeta.h"
 #include "playlist/PlaylistController.h"
 #include "widgets/SearchWidget.h"
+#include "CustomBias.h"
 
 #include "kdenetwork/knetworkaccessmanager.h"
 
-#include <lastfm/Scrobbler.h> // from liblastfm
-#include <lastfm/ws/WsAccessManager.h>
-#include <lastfm/ws/WsKeys.h>
-#include <lastfm/ws/WsReply.h>
-#include <lastfm/ws/WsRequestBuilder.h>
+#include <lastfm/Audioscrobbler> // from liblastfm
+#include <lastfm/NetworkAccessManager>
+#include <lastfm/XmlQuery>
 
 #include <KLocale>
 #include <KPasswordDialog>
+#include <KStandardDirs>
 #include <solid/networking.h>
 
 #include <QComboBox>
 #include <QCryptographicHash>
 #include <QGroupBox>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 #include <QPainter>
 #include <QImage>
 #include <QFrame>
@@ -183,6 +190,8 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
 
     setShortDescription( i18n( "Last.fm: The social music revolution" ) );
     setIcon( KIcon( "view-services-lastfm-amarok" ) );
+    setLongDescription( i18n( "Last.fm is a popular online service that provides personal radio stations and music recommendations. A personal listening station is tailored based on your listening habits and provides you with recommendations for new music. It is also possible to play stations with music that is similar to a particular artist as well as listen to streams from people you have added as friends or that last.fm considers your musical \"neighbors\"" ) );
+    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_lastfm.png" ) );
 
     if( !username.isEmpty() && !password.isEmpty() )
         init();
@@ -210,19 +219,19 @@ LastFmService::init()
     const QString password = config.password();
     const QString sessionKey = config.sessionKey();
     // set the global static Lastfm::Ws stuff
-    Ws::ApiKey = "402d3ca8e9bc9d3cf9b85e1202944ca5";
-    Ws::SharedSecret = "fe0dcde9fcd14c2d1d50665b646335e9";
+    lastfm::ws::ApiKey = "402d3ca8e9bc9d3cf9b85e1202944ca5";
+    lastfm::ws::SharedSecret = "fe0dcde9fcd14c2d1d50665b646335e9";
     // testing w/ official keys
     //Ws::SharedSecret = "73582dfc9e556d307aead069af110ab8";
     //Ws::ApiKey = "c8c7b163b11f92ef2d33ba6cd3c2c3c3";
-    Ws::Username = qstrdup( m_userName.toLatin1().data() );
+    lastfm::ws::Username = qstrdup( m_userName.toLatin1().data() );
 
 
     // set up proxy
-    WsAccessManager* qnam = new KNetworkAccessManager( this );
-    WsRequestBuilder::setWAM( qnam );
-
-    debug() << "username:" << QString( QUrl::toPercentEncoding( Ws::Username ) );
+    QNetworkAccessManager* qnam = new KNetworkAccessManager( this );
+    lastfm::setNetworkAccessManager( qnam );
+    
+    debug() << "username:" << QString( QUrl::toPercentEncoding( lastfm::ws::Username ) );
 
     QString authToken =  md5( ( m_userName + md5( password.toUtf8() ) ).toUtf8() );
 
@@ -230,32 +239,41 @@ LastFmService::init()
     if( sessionKey.isEmpty() )
     {
         debug() << "got no saved session key, authenticating with last.fm";
-        WsReply* reply = WsRequestBuilder( "auth.getMobileSession" )
-        .add( "username", m_userName )
-        .add( "authToken", authToken )
-        .add( "api_key", Ws::ApiKey )
-        .get();
+        QMap<QString, QString> query;
+        query[ "method" ] = "auth.getMobileSession";
+        query[ "username" ] = m_userName;
+        query[ "authToken" ] = authToken;
+        m_jobs[ "auth" ] = lastfm::ws::post( query );
 
-        connect( reply, SIGNAL( finished( WsReply* ) ), SLOT( onAuthenticated( WsReply* ) ) );
+        connect( m_jobs[ "auth" ], SIGNAL( finished() ), SLOT( onAuthenticated() ) );
 
     } else
     {
         debug() << "using saved sessionkey from last.fm";
-        Ws::SessionKey = qstrdup( sessionKey.toLatin1().data() );
+        lastfm::ws::SessionKey = qstrdup( sessionKey.toLatin1().data() );
         m_sessionKey = sessionKey;
 
         if( m_scrobble )
             m_scrobbler = new ScrobblerAdapter( this, "ark" );
-        WsReply* getinfo = WsRequestBuilder( "user.getInfo" ).get();
+        QMap< QString, QString > params;
+        params[ "method" ] = "user.getInfo";
+        m_jobs[ "getUserInfo" ] = lastfm::ws::post( params );
 
-        connect( getinfo, SIGNAL( finished( WsReply* ) ), SLOT( onGetUserInfo( WsReply* ) ) );
+        connect( m_jobs[ "getUserInfo" ], SIGNAL( finished() ), SLOT( onGetUserInfo() ) );
     }
 
 
     //We have no use for searching currently..
     m_searchWidget->setVisible( false );
 
+    // enable custom bias
+    Dynamic::SimilarArtistsBiasFactory* similarF = new Dynamic::SimilarArtistsBiasFactory();
+    Dynamic::CustomBias::registerNewBiasFactory( similarF );
 
+    // disable till i figure out how to get what I want from last.fm
+    //Dynamic::WeeklyTopBiasFactory* weeklyF = new Dynamic::WeeklyTopBiasFactory();
+    //Dynamic::CustomBias::registerNewBiasFactory( weeklyF );
+    
     m_collection = new LastFmServiceCollection( m_userName );
     CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
 
@@ -280,93 +298,104 @@ LastFmService::init()
 
 
 void
-LastFmService::onAuthenticated( WsReply* reply )
+LastFmService::onAuthenticated()
 {
-    try
+    if( !m_jobs[ "auth" ] )
     {
-        switch (reply->error())
+        debug() << "WARNING: GOT RESULT but no object";
+        return;
+    }
+
+    switch ( m_jobs[ "auth" ]->error() )
+    {
+        case QNetworkReply::NoError:
         {
-            case Ws::NoError:
+
+            lastfm::XmlQuery lfm = lastfm::XmlQuery( m_jobs[ "auth" ]->readAll() );
+            LastFmServiceConfig config;
+
+            if( lfm.children( "error" ).size() > 0 )
             {
-                m_sessionKey = reply->lfm()["session"]["key"].nonEmptyText();
-                Ws::SessionKey = qstrdup( m_sessionKey.toLatin1().data() );
-                LastFmServiceConfig config;
-                config.setSessionKey( m_sessionKey );
+                debug() << "error from authenticating with last.fm service:" << lfm.text();
+                config.setSessionKey( "" );
                 config.save();
-
-                if( m_scrobble )
-                    m_scrobbler = new ScrobblerAdapter( this, "ark" );
-                WsReply* getinfo = WsRequestBuilder( "user.getInfo" ).get();
-
-                connect( getinfo, SIGNAL( finished( WsReply* ) ), SLOT( onGetUserInfo( WsReply* ) ) );
-
                 break;
-            } case Ws::AuthenticationFailed:
-                The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "Either the username was not recognized, or the password was incorrect." ) );
-                break;
+            }
+            m_sessionKey = lfm[ "session" ][ "key" ].text();
 
-            default:
-                The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "There was a problem communicating with the Last.fm services. Please try again later." ) );
-                break;
+            lastfm::ws::SessionKey = qstrdup( m_sessionKey.toLatin1().data() );
+            config.setSessionKey( m_sessionKey );
+            config.save();
 
-            case Ws::UrProxyIsFuckedLol:
-            case Ws::UrLocalNetworkIsFuckedLol:
-                The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "Last.fm cannot be reached. Please check your firewall settings." ) );
-                break;
-        }
+            if( m_scrobble )
+                m_scrobbler = new ScrobblerAdapter( this, "ark" );
+            QMap< QString, QString > params;
+            params[ "method" ] = "user.getInfo";
+            m_jobs[ "getUserInfo" ] = lastfm::ws::post( params );
+
+            connect( m_jobs[ "getUserInfo" ], SIGNAL( finished() ), SLOT( onGetUserInfo() ) );
+
+            break;
+        } case QNetworkReply::AuthenticationRequiredError:
+            The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "Either the username was not recognized, or the password was incorrect." ) );
+            break;
+
+        default:
+            The::statusBar()->longMessage( i18nc("Last.fm: errorMessage", "There was a problem communicating with the Last.fm services. Please try again later." ) );
+            break;
     }
-    catch (CoreDomElement::Exception& e)
-    {
-        qWarning() << "Caught an exception - perhaps the web service didn't reply?" << e;
-    }
-    reply->deleteLater();
+    m_jobs[ "auth" ]->deleteLater();
 }
 
 void
-LastFmService::onGetUserInfo( WsReply* reply )
+LastFmService::onGetUserInfo()
 {
     DEBUG_BLOCK
-    try
+    if( !m_jobs[ "getUserInfo" ] )
     {
-        switch (reply->error())
+        debug() << "GOT RESULT FROM USER QUERY, but no object..!";
+        return;
+    }
+    switch (m_jobs[ "getUserInfo" ]->error())
+    {
+        case QNetworkReply::NoError:
         {
-            case Ws::NoError:
+            try
             {
-                m_country = reply->lfm()["user"]["country"].nonEmptyText();
-                m_age = reply->lfm()["user"]["age"].nonEmptyText();
-                m_gender = reply->lfm()["user"]["gender"].nonEmptyText();
-                m_playcount = reply->lfm()["user"]["playcount"].nonEmptyText();
-                m_subscriber = reply->lfm()["user"]["subscriber"].nonEmptyText() == "1";
+                lastfm::XmlQuery lfm( m_jobs[ "getUserInfo" ]->readAll() );
+
+                m_country = lfm["user"]["country"].text();
+                m_age = lfm["user"]["age"].text();
+                m_gender = lfm["user"]["gender"].text();
+                m_playcount = lfm["user"]["playcount"].text();
+                m_subscriber = lfm["user"]["subscriber"].text() == "1";
+
                 debug() << "profile info "  << m_country << " " << m_age << " " << m_gender << " " << m_playcount << " " << m_subscriber;
-                if( !reply->lfm()["user"][ "image" ].text().isEmpty() )
+                if( !lfm["user"][ "image" ].text().isEmpty() )
                 {
-                    debug() << "profile avatar: " << reply->lfm()["user"][ "image" ].text();
+                    debug() << "profile avatar: " <<lfm["user"][ "image" ].text();
                     AvatarDownloader* downloader = new AvatarDownloader();
-                    KUrl url( reply->lfm()["user"][ "image" ].text() );
+                    KUrl url( lfm["user"][ "image" ].text() );
                     downloader->downloadAvatar( m_userName,  url);
                     connect( downloader, SIGNAL( signalAvatarDownloaded( QPixmap ) ), SLOT( onAvatarDownloaded( QPixmap ) ) );
                 }
                 updateProfileInfo();
-                break;
-            } case Ws::AuthenticationFailed:
-//             debug() << "Last.fm: errorMessage", "%1: %2", "Last.fm", "Sorry, we don't recognise that username, or you typed the password wrongly.";
+
+            } catch( lastfm::ws::ParseError& e )
+            {
+                debug() << "Got exception in parsing from last.fm:" << e.what();
+            }
+            break;
+        } case QNetworkReply::AuthenticationRequiredError:
+            debug() << "Last.fm: errorMessage: Sorry, we don't recognise that username, or you typed the password incorrectly.";
             break;
 
-            default:
-//                 debug() << "Last.fm: errorMessage", "%1: %2", "Last.fm", "There was a problem communicating with the Last.fm services. Please try again later.";
-                break;
+        default:
+            debug() << "Last.fm: errorMessage: There was a problem communicating with the Last.fm services. Please try again later.";
+            break;
+    }
 
-            case Ws::UrProxyIsFuckedLol:
-            case Ws::UrLocalNetworkIsFuckedLol:
-//                 debug() <<  "Last.fm: errorMessage", "%1: %2", "Last.fm", "Last.fm cannot be reached. Please check your firewall settings.";
-                break;
-        }
-    }
-    catch (CoreDomElement::Exception& e)
-    {
-        qWarning() << "Caught an exception - perhaps the web service didn't reply?" << e;
-    }
-    reply->deleteLater();
+    m_jobs[ "getUserInfo" ]->deleteLater();
 }
 
 void
@@ -433,17 +462,12 @@ LastFmService::updateProfileInfo()
 {
     if( m_userinfo )
     {
-        QString info;
-        info += "<b>" + i18n( "Username: ") + "</b>" + Qt::escape( m_userName ) + "<br>";
-        info += !m_age.isEmpty() ? "<b>" + i18n( "Age: " ) + "</b>" + m_age + "<br>" : QString();
-        info += !m_gender.isEmpty() ? "<b>" + i18n( "Gender: " ) + "</b>" + m_gender + "<br>" : QString();
-        m_userinfo->setText( info );
+        m_userinfo->setText( i18n( "Username: ") + Qt::escape( m_userName ) );
     }
 
     if( m_profile && !m_playcount.isEmpty() )
     {
-        QString playcount = KGlobal::locale()->formatNumber( m_playcount, false );
-        m_profile->setText( "<b>" + i18n( "Play Count: " ) + "</b>" + playcount + i18n( " plays" ) );
+        m_profile->setText( i18np( "Play Count: %1 play", "Play Count: %1 plays", m_playcount.toInt() ) );
     }
 }
 
@@ -495,21 +519,19 @@ LastFmService::polish()
         {
             m_avatarLabel->setPixmap( m_avatar );
             m_avatarLabel->setFixedSize( m_avatar.width(), m_avatar.height() );
+            m_avatarLabel->setMargin( 5 );
         }
-
 
         debug() << m_avatarLabel->margin();
         KVBox * innerProfilebox = new KVBox( outerProfilebox );
-        innerProfilebox->setSpacing(1);
-        innerProfilebox->setMargin(0);
+        innerProfilebox->setSpacing(0);
+        innerProfilebox->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
         m_userinfo = new QLabel(innerProfilebox);
         m_userinfo->setText( m_userName );
-        m_userinfo->setAlignment( Qt::AlignCenter | Qt::AlignHCenter );
-        m_userinfo->setMinimumSize( 230 , 28 );
         m_profile = new QLabel(innerProfilebox);
         m_profile->setText(QString());
-        m_profile->setAlignment( Qt::AlignCenter | Qt::AlignHCenter );
         updateProfileInfo();
+
 
         QGroupBox *customStation = new QGroupBox( i18n( "Create a Custom Last.fm Station" ), m_topPanel );
         m_customStationCombo = new QComboBox;

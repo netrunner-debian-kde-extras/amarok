@@ -1,24 +1,22 @@
-/*
- *  Copyright (c) 2003-2008 Mark Kretschmann <kretschmann@kde.org>
- *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
- *  Copyright (c) 2007 Casey Link <unnamedrambler@gmail.com>
- *  Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>
- *  Copyright (c) 2008-2009 Jeff Mitchell <mitchell@kde.org>
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- */
+/****************************************************************************************
+ * Copyright (c) 2003-2008 Mark Kretschmann <kretschmann@kde.org>                       *
+ * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2007 Casey Link <unnamedrambler@gmail.com>                             *
+ * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                                    *
+ * Copyright (c) 2008-2009 Jeff Mitchell <mitchell@kde.org>                             *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "ScanManager.h"
 
@@ -181,9 +179,7 @@ void ScanManager::startIncrementalScan()
     if( !batchfileExists || !readBatchFile( batchfileLocation )  )
     {
         if( !m_dbusHandler )
-        {
             m_dbusHandler = new SqlCollectionDBusHandler( m_collection );
-        }
         m_scanner = new AmarokProcess( this );
         *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner" << "-i"
                 << "--collectionid" << m_collection->collectionId() << "-p";
@@ -538,6 +534,7 @@ ScanManager::cleanTables()
     m_collection->query( "DELETE FROM composers;" );
     m_collection->query( "DELETE FROM albums;" );
     m_collection->query( "DELETE FROM artists;" );
+    //images table is deleted in DatabaseUpdater::copyToPermanentTables
 }
 
 void
@@ -611,19 +608,16 @@ XmlParseJob::run()
 {
     DEBUG_BLOCK
 
-    QList<QVariantMap > directoryData;
+    QList<QVariantMap> directoryData;
     bool firstTrack = true;
     QString currentDir;
 
     ScanResultProcessor processor( m_collection );
     if( m_isIncremental )
-    {
         processor.setScanType( ScanResultProcessor::IncrementalScan );
-    }
     else
-    {
         processor.setScanType( ScanResultProcessor::FullScan );
-    }
+
     do
     {
         m_abortMutex.lock();
@@ -637,9 +631,7 @@ XmlParseJob::run()
 
         m_mutex.lock();
         if( m_nextData.isEmpty() )
-        {
             m_wait.wait( &m_mutex );
-        }
 
         if( m_nextData.isEmpty() )
             break;
@@ -661,12 +653,14 @@ XmlParseJob::run()
 
                 if( localname == "itemcount" )
                 {
+                    processor.doneWithImages();
 //                     debug() << "Got an itemcount with value: " << localname.toString();
                     if( The::statusBar() )
                         The::statusBar()->incrementProgressTotalSteps( this, m_reader.attributes().value( "count" ).toString().toInt() );
                 }
                 else if( localname == "tags" )
                 {
+                    processor.doneWithImages();
 //                     debug() << "Parsing FILE:\n";
                     QXmlStreamAttributes attrs = m_reader.attributes();
                     QList<QXmlStreamAttribute> list = attrs.toList();
@@ -747,6 +741,7 @@ XmlParseJob::run()
                 }
                 else if( localname == "folder" )
                 {
+                    processor.doneWithImages();
 //                     debug() << "Parsing FOLDER:\n";
                     QXmlStreamAttributes attrs = m_reader.attributes();
                     QList<QXmlStreamAttribute> list = attrs.toList();
@@ -762,6 +757,7 @@ XmlParseJob::run()
                 }
                 else if( localname == "playlist" )
                 {
+                    processor.doneWithImages();
                     //TODO check for duplicates
                     //debug() << "Saving playlist with path: " << m_reader.attributes().value( "path" ).toString();
                     The::playlistManager()->import( m_reader.attributes().value( "path" ).toString() );
@@ -778,7 +774,7 @@ XmlParseJob::run()
 
                     // Deserialize CoverBundle list
                     QStringList list = attrs.value( "list" ).toString().split( "AMAROK_MAGIC" );
-                    QList< QPair<QString, QString> > covers;
+                    QList<QPair<QString, QString> > covers;
 
                     // Don't iterate if the list only has one element
                     if( list.size() > 1 )
@@ -793,7 +789,7 @@ XmlParseJob::run()
         }
         if( m_reader.error() != QXmlStreamReader::PrematureEndOfDocumentError && m_reader.error() != QXmlStreamReader::NoError )
         {
-            debug() << "do-while done with error: " << m_reader.error();
+            error() << "Collection scanner abort error: " << m_reader.error();
             //the error cannot be PrematureEndOfDocumentError, so handle an unrecoverable error here
 
             // At this point, most likely the scanner has crashed and is about to get restarted.

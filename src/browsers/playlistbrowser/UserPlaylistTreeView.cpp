@@ -1,21 +1,18 @@
-/***************************************************************************
- *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "UserPlaylistTreeView.h"
 
@@ -23,7 +20,6 @@
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistController.h"
 #include "context/ContextView.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "MetaPlaylistModel.h"
@@ -32,6 +28,7 @@
 #include "SvgHandler.h"
 #include "statusbar/StatusBar.h"
 #include "UserPlaylistModel.h"
+#include "PlaylistsInGroupsProxy.h"
 
 #include <KAction>
 #include <KMenu>
@@ -42,16 +39,20 @@
 
 #include <typeinfo>
 
-PlaylistBrowserNS::UserPlaylistTreeView::UserPlaylistTreeView( MetaPlaylistModel *model, QWidget *parent )
+PlaylistBrowserNS::UserPlaylistTreeView::UserPlaylistTreeView( QAbstractItemModel *model, QWidget *parent )
     : Amarok::PrettyTreeView( parent )
     , m_model( model )
     , m_pd( 0 )
     , m_addGroupAction( 0 )
 {
+    DEBUG_BLOCK
     setModel( model );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
+    setSelectionBehavior( QAbstractItemView::SelectItems );
     setDragDropMode( QAbstractItemView::DragDrop );
     setAcceptDrops( true );
+    setAnimated( true );
+    setEditTriggers( QAbstractItemView::SelectedClicked | QAbstractItemView::EditKeyPressed );
 
     The::paletteHandler()->updateItemView( this );
 
@@ -69,26 +70,6 @@ PlaylistBrowserNS::UserPlaylistTreeView::~UserPlaylistTreeView()
 {
 }
 
-void PlaylistBrowserNS::UserPlaylistTreeView::mousePressEvent( QMouseEvent * event )
-{
-    if( event->button() == Qt::LeftButton )
-        m_dragStartPosition = event->pos();
-
-    QTreeView::mousePressEvent( event );
-}
-
-void PlaylistBrowserNS::UserPlaylistTreeView::mouseReleaseEvent( QMouseEvent * event )
-{
-    Q_UNUSED( event )
-
-    if( m_pd )
-    {
-        connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( deleteLater() ) );
-        m_pd->hide();
-    }
-    m_pd = 0;
-}
-
 void PlaylistBrowserNS::UserPlaylistTreeView::mouseDoubleClickEvent( QMouseEvent * event )
 {
     QModelIndex index = indexAt( event->pos() );
@@ -97,7 +78,10 @@ void PlaylistBrowserNS::UserPlaylistTreeView::mouseDoubleClickEvent( QMouseEvent
     {
         QModelIndexList list;
         list << index;
-        m_model->loadItems( list, Playlist::LoadAndPlay );
+        MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>(m_model);
+        if( mpm == 0 )
+            return;
+        mpm->loadItems( list, Playlist::LoadAndPlay );
     }
 }
 
@@ -119,9 +103,13 @@ void PlaylistBrowserNS::UserPlaylistTreeView::startDrag( Qt::DropActions support
 
         QModelIndexList indices = selectedIndexes();
 
-        QList<PopupDropperAction*> actions = m_model->actionsFor( indices );
+        MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>(m_model);
+        if( mpm == 0 )
+            return;
+        QList<QAction*> actions = mpm->actionsFor( indices );
 
-        foreach( PopupDropperAction * action, actions ) {
+        foreach( QAction * action, actions )
+        {
             m_pd->addItem( The::popupDropperFactory()->createItem( action ), false );
         }
 
@@ -143,24 +131,12 @@ void PlaylistBrowserNS::UserPlaylistTreeView::startDrag( Qt::DropActions support
 void
 PlaylistBrowserNS::UserPlaylistTreeView::keyPressEvent( QKeyEvent *event )
 {
-    Q_UNUSED( event )
-
     switch( event->key() )
     {
         case Qt::Key_Delete:
         {
-            QModelIndex selectedIdx = selectedIndexes().first();
-            m_model->removeRow( selectedIdx.row(), selectedIdx.parent() );
-            return;
-        }
-
-        case Qt::Key_F2:
-        {
-            //can only rename if one is selected
-            if( selectedIndexes().count() != 1 )
-                return;
-            event->accept();
-            edit( selectedIndexes().first() );
+            foreach( const QModelIndex &selectedIdx, selectedIndexes() )
+                m_model->removeRow( selectedIdx.row(), selectedIdx.parent() );
             return;
         }
      }
@@ -173,13 +149,19 @@ void PlaylistBrowserNS::UserPlaylistTreeView::contextMenuEvent( QContextMenuEven
 
     KMenu menu;
 
-    QList<PopupDropperAction *> actions = m_model->actionsFor( indices );
+    MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>(m_model);
+    if( mpm == 0 )
+        return;
+    QList<QAction *> actions = mpm->actionsFor( indices );
 
     if( actions.isEmpty() )
         return;
 
-    foreach( PopupDropperAction * action, actions )
-        menu.addAction( action );
+    foreach( QAction *action, actions )
+    {
+        if( action )
+            menu.addAction( action );
+    }
 
     if( indices.count() == 0 )
         menu.addAction( m_addGroupAction );
@@ -196,7 +178,10 @@ PlaylistBrowserNS::UserPlaylistTreeView::setNewGroupAction( KAction * action )
 void
 PlaylistBrowserNS::UserPlaylistTreeView::createNewGroup()
 {
-    QModelIndex idx = m_model->createNewGroup( QString("New Folder") );
+    PlaylistsInGroupsProxy *pigp = dynamic_cast<PlaylistsInGroupsProxy *>(m_model);
+    if( pigp == 0 )
+        return;
+    QModelIndex idx = pigp->createNewGroup( QString("New Folder") );
     edit( idx );
 }
 

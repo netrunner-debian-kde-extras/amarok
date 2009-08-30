@@ -1,16 +1,20 @@
-/***************************************************************************
- * copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>        *
- * copyright            : (C) 2008 Mark Kretschmann <kretschmann@kde.org>  *
- **************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007 Leo Franchi <lfranchi@gmail.com>                                  *
+ * Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2009 Simon Esneault <simon.esneault@gmail.com>                         *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef AMAROK_WIKIPEDIA_ENGINE
 #define AMAROK_WIKIPEDIA_ENGINE
@@ -22,6 +26,7 @@
 
 #include <KIO/Job>
 #include <QLocale>
+
 
 /**
     This class provide Wikipedia data for use in Context applets. 
@@ -69,6 +74,8 @@ private:
     QString wikiSiteUrl();
     QString wikiUrl( const QString& item ) const;
     QString wikiLocale() const;
+
+    QString wikiParse();
     
     void reloadWikipedia();
     
@@ -77,15 +84,17 @@ private:
     Meta::TrackPtr m_currentTrack;
         
     QString m_currentSelection;
+    bool m_requested;
+    QStringList m_sources;
     QString m_wiki;
     QString m_wikiCurrentEntry;
+    QString m_wikiCurrentLastEntry;
     QString m_wikiCurrentUrl;
     QString m_wikiLanguages;
     QLocale m_wikiLang;
-    // stores what features are enabled
-    bool m_requested;
-    QStringList m_sources;
-    bool m_triedRefinedSearch;
+    QString m_wikiWideLang;
+    short m_triedRefinedSearch;
+
 };
 
 K_EXPORT_AMAROK_DATAENGINE( wikipedia, WikipediaEngine )

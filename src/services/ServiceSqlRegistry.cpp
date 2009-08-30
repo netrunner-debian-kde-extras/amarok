@@ -1,20 +1,18 @@
-/* This file is part of the KDE project
-   Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #define DEBUG_PREFIX "ServiceSqlRegistry"
 
@@ -189,9 +187,8 @@ ServiceSqlRegistry::getYear( const QString &name, int id )
 }*/
 
 AlbumPtr
-ServiceSqlRegistry::getAlbum(  const QStringList &rowData)
+ServiceSqlRegistry::getAlbum( const QStringList &rowData )
 {
-    DEBUG_BLOCK
     int id = rowData[0].toInt();
     QMutexLocker locker( &m_albumMutex );
     if( m_albumMap.contains( id ) )
@@ -200,7 +197,7 @@ ServiceSqlRegistry::getAlbum(  const QStringList &rowData)
     {
         int index = 0; 
         
-        QStringList testString = rowData.mid(index, m_metaFactory->getAlbumSqlRowCount() );
+        QStringList testString = rowData.mid( index, m_metaFactory->getAlbumSqlRowCount() );
 
         AlbumPtr albumPtr = m_metaFactory->createAlbum( rowData.mid(index, m_metaFactory->getAlbumSqlRowCount() ) );
         m_albumMap.insert( id, albumPtr );
@@ -211,7 +208,7 @@ ServiceSqlRegistry::getAlbum(  const QStringList &rowData)
 
         ArtistPtr artistPtr;
 
-        // we need to set the artist for thsi album
+        // we need to set the artist for this album
         if ( m_artistMap.contains( album->artistId() ) )
             artistPtr = m_artistMap.value( album->artistId() );
         else

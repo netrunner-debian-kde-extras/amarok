@@ -1,21 +1,18 @@
-/***************************************************************************
- *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
  
 #include "GlobalCollectionActions.h"
 #include "Meta.h"
@@ -78,7 +75,7 @@ GlobalCollectionActions::addComposerAction( GlobalCollectionComposerAction * act
     m_composerActions.append( action );
 }
 
-QList< PopupDropperAction * > GlobalCollectionActions::actionsFor( Meta::DataPtr item )
+QList< QAction * > GlobalCollectionActions::actionsFor( Meta::DataPtr item )
 {
 
     Meta::GenrePtr genrePtr = Meta::GenrePtr::dynamicCast( item );
@@ -105,15 +102,15 @@ QList< PopupDropperAction * > GlobalCollectionActions::actionsFor( Meta::DataPtr
     if ( composerPtr )
         return actionsFor( composerPtr );
 
-    QList< PopupDropperAction * > emptyList;
+    QList< QAction * > emptyList;
     return emptyList;
 }
 
 
-QList< PopupDropperAction * >
+QList< QAction * >
 GlobalCollectionActions::actionsFor( Meta::GenrePtr genre )
 {
-    QList< PopupDropperAction * > returnList;
+    QList< QAction * > returnList;
     foreach( GlobalCollectionGenreAction * genreAction, m_genreActions )
     {
         genreAction->setGenre( genre );
@@ -123,10 +120,10 @@ GlobalCollectionActions::actionsFor( Meta::GenrePtr genre )
     return returnList;
 }
 
-QList< PopupDropperAction * >
+QList< QAction * >
 GlobalCollectionActions::actionsFor( Meta::ArtistPtr artist )
 {
-    QList< PopupDropperAction * > returnList;
+    QList< QAction * > returnList;
     foreach( GlobalCollectionArtistAction * artistAction, m_artistActions )
     {
         artistAction->setArtist( artist );
@@ -136,10 +133,10 @@ GlobalCollectionActions::actionsFor( Meta::ArtistPtr artist )
     return returnList;
 }
 
-QList< PopupDropperAction * >
+QList< QAction * >
 GlobalCollectionActions::actionsFor( Meta::AlbumPtr album )
 {
-    QList< PopupDropperAction * > returnList;
+    QList< QAction * > returnList;
     foreach( GlobalCollectionAlbumAction * albumAction, m_albumActions )
     {
         albumAction->setAlbum( album );
@@ -149,10 +146,10 @@ GlobalCollectionActions::actionsFor( Meta::AlbumPtr album )
     return returnList;
 }
 
-QList< PopupDropperAction * >
+QList< QAction * >
 GlobalCollectionActions::actionsFor( Meta::TrackPtr track )
 {
-    QList< PopupDropperAction * > returnList;
+    QList< QAction * > returnList;
     foreach( GlobalCollectionTrackAction * trackAction, m_trackActions )
     {
         trackAction->setTrack( track );
@@ -162,10 +159,10 @@ GlobalCollectionActions::actionsFor( Meta::TrackPtr track )
     return returnList;
 }
 
-QList< PopupDropperAction * >
+QList< QAction * >
 GlobalCollectionActions::actionsFor( Meta::YearPtr year )
 {
-    QList< PopupDropperAction * > returnList;
+    QList< QAction * > returnList;
     foreach( GlobalCollectionYearAction * yearAction, m_yearActions )
     {
         yearAction->setYear( year );
@@ -175,10 +172,10 @@ GlobalCollectionActions::actionsFor( Meta::YearPtr year )
     return returnList;
 }
 
-QList< PopupDropperAction * >
+QList< QAction * >
 GlobalCollectionActions::actionsFor( Meta::ComposerPtr composer )
 {
-    QList< PopupDropperAction * > returnList;
+    QList< QAction * > returnList;
     foreach( GlobalCollectionComposerAction * composerAction, m_composerActions )
     {
         composerAction->setComposer( composer );
@@ -189,7 +186,7 @@ GlobalCollectionActions::actionsFor( Meta::ComposerPtr composer )
 }
 
 GlobalCollectionAction::GlobalCollectionAction( const QString &text, QObject * parent )
-    : PopupDropperAction( text, parent )
+    : QAction( text, parent )
 {
 }
 

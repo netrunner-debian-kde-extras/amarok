@@ -1,21 +1,20 @@
-/*
- *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
- *  Copyright (c) 2007 Casey Link <unnamedrambler@gmail.com>
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- */
+/****************************************************************************************
+ * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2007 Casey Link <unnamedrambler@gmail.com>                             *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
+
 #ifndef AMAROK_COLLECTION_SQLCOLLECTION_H
 #define AMAROK_COLLECTION_SQLCOLLECTION_H
 
@@ -24,22 +23,10 @@
 #include "DatabaseUpdater.h"
 #include "SqlRegistry.h"
 #include "SqlStorage.h"
-#include "amarok_export.h"
 
 #include <QPointer>
 
 #include <KIcon>
-
-class SqlCollectionFactory : public Amarok::CollectionFactory
-{
-    Q_OBJECT
-
-    public:
-        SqlCollectionFactory() {}
-        virtual ~SqlCollectionFactory() {}
-
-        virtual void init();
-};
 
 class CollectionLocation;
 class XesamCollectionBuilder;
@@ -95,7 +82,10 @@ class SqlCollection : public Amarok::Collection, public SqlStorage
 
         virtual QString idType() const;
         virtual QString textColumnType( int length = 255 ) const;
-        virtual QString exactTextColumnType( int length = 1024 ) const;
+        virtual QString exactTextColumnType( int length = 1000 ) const;
+        //the below value may have to be decreased even more for other indexes; only time will tell
+        //in that case bump the db version and alter the affected columns
+        virtual QString exactIndexableTextColumnType( int length = 324 ) const;
         virtual QString longTextColumnType() const;
         virtual QString randomFunc() const;
 
@@ -105,7 +95,7 @@ class SqlCollection : public Amarok::Collection, public SqlStorage
         virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
 
     public slots:
-        void updateTrackUrls( TrackUrls changedUrls );
+        void updateTrackUrlsUids( const ChangedTrackUrls &changedUrls, const TrackUrls & ); //they're not actually track urls
         void deleteTracksSlot( Meta::TrackList tracklist );
 
         void dumpDatabaseContent();

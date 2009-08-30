@@ -1,28 +1,25 @@
-/***************************************************************************
- *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *             (c) 2009  Teo Mrnjavac <teo.mrnjavac@gmail.com>             *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
  
 #include "LayoutConfigAction.h"
 
 #include "Debug.h"
 #include "LayoutManager.h"
-#include "dialogs/PlaylistLayoutEditDialog.h"
+#include "PlaylistLayoutEditDialog.h"
 #include "widgets/EditDeleteDelegate.h"
 #include "widgets/EditDeleteComboBoxView.h"
 #include "MainWindow.h"
@@ -36,11 +33,11 @@ namespace Playlist
 LayoutConfigAction::LayoutConfigAction( QWidget * parent )
     : KAction( parent )
 {
-    KIcon actionIcon( "configure" );    //TEMPORARY ICON
+    KIcon actionIcon( "align-horizontal-left" );    //TEMPORARY ICON
     setIcon( actionIcon );
     m_layoutMenu = new KMenu( parent );
     setMenu( m_layoutMenu );
-    setText( i18n( "Playlist layouts" ) );
+    setText( i18n( "Playlist Layouts" ) );
     m_configAction = new KAction( m_layoutMenu );
     
     m_layoutMenu->addAction( m_configAction );
@@ -55,7 +52,6 @@ LayoutConfigAction::LayoutConfigAction( QWidget * parent )
     }
     m_layoutMenu->addActions( m_layoutActions->actions() );
     int index = LayoutManager::instance()->layouts().indexOf( LayoutManager::instance()->activeLayoutName() );
-    debug() << "About to check layout at index " << index;
     if( index > -1 )    //needed to avoid crash when created a layout which is moved by the LayoutManager when sorting alphabetically.
                         //this should be fixed by itself when layouts ordering will be supported in the LayoutManager
     m_layoutActions->actions()[ index ]->setChecked( true );
@@ -96,19 +92,17 @@ void Playlist::LayoutConfigAction::layoutListChanged()
     m_layoutMenu->clear();
     m_layoutMenu->addAction( m_configAction );
     m_layoutMenu->addSeparator();
+    
     foreach( QAction * action, m_layoutActions->actions() )
-    {
         delete action;
-    }
+    
     QStringList layoutsList( LayoutManager::instance()->layouts() );
-    debug() << "Layouts are " << layoutsList;
     foreach( QString iterator, layoutsList )
-    {
         m_layoutActions->addAction( iterator )->setCheckable( true );
-    }
+    
     m_layoutMenu->addActions( m_layoutActions->actions() );
+    
     int index = LayoutManager::instance()->layouts().indexOf( LayoutManager::instance()->activeLayoutName() );
-    debug() << "About to check layout at index " << index;
     if( index > -1 )    //needed to avoid crash when created a layout which is moved by the LayoutManager when sorting alphabetically.
                         //this should be fixed by itself when layouts ordering will be supported in the LayoutManager
         m_layoutActions->actions()[ index ]->setChecked( true );
@@ -121,7 +115,6 @@ void LayoutConfigAction::onActiveLayoutChanged()
     if( layoutName != QString( "%%PREVIEW%%" ) )           //if it's not just a preview
     {
         int index = LayoutManager::instance()->layouts().indexOf( layoutName );
-        debug() << "Index in the LayoutManager of currently active layout, called " << LayoutManager::instance()->activeLayoutName() << ", is: " << index;
         if( index != -1 && m_layoutActions->actions()[ index ] != m_layoutActions->checkedAction() )
             m_layoutActions->actions()[ index ]->setChecked( true );
     }

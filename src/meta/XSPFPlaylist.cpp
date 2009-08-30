@@ -1,22 +1,20 @@
-/* This file is part of the KDE project
- ******************************************************************************
- * Copyright (C) 2006 Mattias Fliesberg  <mattias.fliesberg@gmail.com>        *
- *           (C) 2007 Ian Monroe <ian@monroe.nu>                              *
- *           (C) 2007 Bart Cerneels <bart.cerneels@kde.org>                   *
- *                                                                            *
- * This program is free software; you can redistribute it and/or              *
- * modify it under the terms of the GNU General Public License as             *
- * published by the Free Software Foundation; either version 2 of             *
- * the License, or (at your option) any later version.                        *
- *                                                                            *
- * This program is distributed in the hope that it will be useful,            *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
- * GNU General Public License for more details.                               *
- *                                                                            *
- * You should have received a copy of the GNU General Public License          *
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
- ******************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2006 Mattias Fliesberg <mattias.fliesberg@gmail.com>                   *
+ * Copyright (c) 2007 Ian Monroe <ian@monroe.nu>                                        *
+ * Copyright (c) 2007 Bart Cerneels <bart.cerneels@kde.org>                             *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "XSPFPlaylist.h"
 
@@ -28,7 +26,12 @@
 #include "meta/capabilities/StreamInfoCapability.h"
 #include "meta/stream/Stream.h"
 #include "meta/file/File.h"
+#include "playlist/PlaylistController.h"
+#include "playlist/PlaylistModelStack.h"
 #include "PlaylistManager.h"
+#include "PlaylistFileSupport.h"
+
+#include "timecode/TimecodeMeta.h"
 
 #include <kurl.h>
 #include <KMessageBox>
@@ -44,9 +47,9 @@ namespace Meta
 {
 
 XSPFPlaylist::XSPFPlaylist()
-    : Meta::Playlist()
+    : PlaylistFile()
     , QDomDocument()
-    , m_url( PlaylistManager::newPlaylistFilePath( "xspf" ) )
+    , m_url( Meta::newPlaylistFilePath( "xspf" ) )
 {
     m_name = m_url.fileName();
     QDomElement root = createElement( "playlist" );
@@ -59,10 +62,11 @@ XSPFPlaylist::XSPFPlaylist()
     appendChild( root );
 }
 
-XSPFPlaylist::XSPFPlaylist( const KUrl &url )
-    : Playlist()
+XSPFPlaylist::XSPFPlaylist( const KUrl &url, bool autoAppend )
+    : PlaylistFile( url )
     , QDomDocument()
     , m_url( url )
+    , m_autoAppendAfterLoad( autoAppend )
 {
     DEBUG_BLOCK
     debug() << "url: " << m_url;
@@ -71,7 +75,7 @@ XSPFPlaylist::XSPFPlaylist( const KUrl &url )
     //check if file is local or remote
     if ( m_url.isLocalFile() )
     {
-        QFile file( m_url.path() );
+        QFile file( m_url.toLocalFile() );
         if( !file.open( QIODevice::ReadOnly ) ) {
             debug() << "cannot open file";
             return;
@@ -84,12 +88,12 @@ XSPFPlaylist::XSPFPlaylist( const KUrl &url )
     }
     else
     {
-        The::playlistManager()->downloadPlaylist( m_url, PlaylistPtr( this ) );
+        The::playlistManager()->downloadPlaylist( m_url, PlaylistFilePtr( this ) );
     }
 }
 
 XSPFPlaylist::XSPFPlaylist( Meta::TrackList list )
-    : Playlist()
+    : PlaylistFile()
     , QDomDocument()
 {
     DEBUG_BLOCK
@@ -109,14 +113,36 @@ XSPFPlaylist::~XSPFPlaylist()
 {}
 
 bool
-XSPFPlaylist::save( const QString &location, bool relative )
+XSPFPlaylist::save( const KUrl &location, bool relative )
 {
     DEBUG_BLOCK
     Q_UNUSED( relative );
 
-    QFile::remove( location );
-    QFile file( location );
+    KUrl savePath = location;
+    //if the location is a directory append the name of this playlist.
+    if( savePath.fileName().isNull() )
+        savePath.setFileName( name() );
 
+    QFile file;
+    
+    if( location.isLocalFile() )
+    {
+        file.setFileName( savePath.toLocalFile() );
+    }
+    else
+    {
+        file.setFileName( savePath.path() );
+    }
+
+    if( file.exists() )
+        //TODO: prompt for overwrite.
+        {
+            if( KUrl( ::Playlist::ModelStack::instance()->source()->defaultPlaylistPath() ) != savePath )
+            {
+                return false;
+            }
+            warning() << "The file" << location << "exists, overwriting...";
+        }
     if( !file.open( QIODevice::WriteOnly ) )
     {
         if( The::mainWindow() ) // MainWindow might already be destroyed at this point (at program shutdown)
@@ -137,6 +163,7 @@ XSPFPlaylist::save( const QString &location, bool relative )
 bool
 XSPFPlaylist::loadXSPF( QTextStream &stream )
 {
+    DEBUG_BLOCK
     QString errorMsg;
     int errorLine, errorColumn;
 
@@ -149,7 +176,8 @@ XSPFPlaylist::loadXSPF( QTextStream &stream )
         return false;
     }
 
-    notifyObservers();
+    if( m_autoAppendAfterLoad )
+        The::playlistController()->insertPlaylist( ::Playlist::ModelStack::instance()->source()->rowCount(), Meta::PlaylistPtr( this ) );
 
     return true;
 }
@@ -185,7 +213,20 @@ XSPFPlaylist::tracks()
                     streamTrack->setAlbum( track.album );
                     streamTrack->setArtist( track.creator );
                 }
-            } 
+            }
+            else if ( typeid( * trackPtr.data() ) == typeid( Meta::TimecodeTrack ) )
+            {
+                Meta::TimecodeTrack * timecodeTrack = dynamic_cast<Meta::TimecodeTrack *> ( trackPtr.data() );
+                if ( timecodeTrack )
+                { 
+                    timecodeTrack->beginMetaDataUpdate();
+                    timecodeTrack->setTitle( track.title );
+                    timecodeTrack->setAlbum( track.album );
+                    timecodeTrack->setArtist( track.creator );
+                    timecodeTrack->endMetaDataUpdate();
+                }
+            }
+            
             tracks << trackPtr;
         }
 
@@ -511,6 +552,7 @@ XSPFPlaylist::trackList()
         subNode = subNode.nextSibling();
     }
 
+    debug() << "returning " << list.size() << "tracks";
     return list;
 }
 
@@ -640,6 +682,19 @@ XSPFPlaylist::createCapabilityInterface( Capability::Type type )
         case Capability::EditablePlaylist: return static_cast<EditablePlaylistCapability *>(this);
         default: return 0;
     }
+}
+
+bool
+XSPFPlaylist::isWritable()
+{
+    return QFile( m_url.path() ).isWritable();
+}
+
+void
+XSPFPlaylist::setName( const QString &name )
+{
+    setTitle( name );
+    //TODO: notify observers
 }
 
 } //namespace Meta

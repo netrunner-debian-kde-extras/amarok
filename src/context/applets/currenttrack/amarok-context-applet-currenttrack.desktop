@@ -1,20 +1,25 @@
 [Desktop Entry]
 Name=Current Track
-Name[bg]=Текущ записа
+Name[bg]=Текущ запис
 Name[ca]=Peça actual
+Name[csb]=Biéżny sztëczk
 Name[da]=Aktuelt spor
 Name[de]=Aktuelles Stück
 Name[el]=Τρέχον κομμάτι
 Name[es]=Pista actual
 Name[et]=Aktiivne pala
 Name[eu]=Uneko pista
+Name[fi]=Soiva kappale
 Name[ga]=An tAmhrán Reatha
+Name[is]=Núverandi lag
 Name[it]=Traccia attuale
 Name[ja]=現在のトラック
 Name[km]=​បទ​បច្ចុប្បន្ន
+Name[ko]=현재 곡
 Name[nb]=Gjeldende spor
 Name[nds]=Aktuell Stück
 Name[nl]=Huidige track
+Name[nn]=Gjeldande spor
 Name[pa]=ਮੌਜੂਦਾ ਟਰੈਕ
 Name[pl]=Bieżący utwór
 Name[pt]=Faixa Actual
@@ -27,6 +32,7 @@ Name[tr]=Geçerli Parça
 Name[uk]=Поточна композиція
 Name[wa]=Boket do moumint
 Name[x-test]=xxCurrent Trackxx
+Name[zh_TW]=現在的曲目
 Type=Service
 ServiceTypes=Plasma/Applet
 

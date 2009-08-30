@@ -1,21 +1,18 @@
-/***************************************************************************
- *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
  
 #include "NavigationUrlGenerator.h"
 #include "AmarokUrl.h"
@@ -41,145 +38,66 @@ NavigationUrlGenerator::~NavigationUrlGenerator()
 AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
 {
     DEBUG_BLOCK
-    //first, which browser is active?
-
-    QString browser = The::mainWindow()->activeBrowserName();
-
 
     AmarokUrl url;
     url.setCommand( "navigate" );
 
-    if ( browser == "Internet" ) {
+    //get the path
+    QString path = The::mainWindow()->browserWidget()->list()->path();
 
-        browser = "service";
+    QStringList pathParts = path.split( '/' );
 
-        QString serviceName = ServiceBrowser::instance()->activeServiceName();
-        debug() << "serviceName: " << serviceName;
-        
-        QString filter = ServiceBrowser::instance()->activeServiceFilter();
-        debug() << "filter: " <<  filter;
-        
-        QList<int> levels = ServiceBrowser::instance()->activeServiceLevels();
-        QString sortMode;
-        
-        foreach( int level, levels ) {
-            switch( level ) {
-                case CategoryId::Genre:
-                    sortMode += "genre-";
-                    break;
-                case CategoryId::Artist:
-                    sortMode += "artist-";
-                    break;
-                case CategoryId::Album:
-                    sortMode += "album-";
-                    break;
-                case CategoryId::Composer:
-                    sortMode += "composer-";
-                    break;
-                case CategoryId::Year:
-                    sortMode += "year-";
-                    break;
-                default:
-                    break;
-            }
-        }
-
-        //we have left a trailing '-' in there, get rid of it!
-        if ( sortMode.size() > 0 )
-            sortMode = sortMode.left( sortMode.size() - 1 );
-
-        debug() << "sortMode: " <<  sortMode;
-
-
-        url.appendArg( browser );
-
-        if ( !serviceName.isEmpty() )
-            url.appendArg( serviceName );
-
-        if ( !sortMode.isEmpty() )
-            url.appendArg( sortMode );
-
-        if ( !filter.isEmpty() )
-            url.appendArg( filter );
-        
-        return url;
+    //we dont use the "Home" part in navigation urls
+    if ( pathParts.at( 0 ) == "root list" )
+        pathParts.removeFirst();
     
+    url.setPath( pathParts.join( "/" ) );
 
-    } else if ( browser == "CollectionBrowser" ) {
-        
-        browser = "collection";
 
-        QString collection; //empty for now... we keep this space reserved if we later want to be able to specify a specific colletion.
+    QString filter = The::mainWindow()->browserWidget()->list()->activeCategoryRecursive()->filter();
 
-        QString filter = The::mainWindow()->collectionBrowser()->filter();
-        debug() << "filter: " <<  filter;
-        
-        QList<int> levels = The::mainWindow()->collectionBrowser()->levels();
-        QString sortMode;
-        
-        foreach( int level, levels ) {
-            switch( level ) {
-                case CategoryId::Genre:
-                    sortMode += "genre-";
-                    break;
-                case CategoryId::Artist:
-                    sortMode += "artist-";
-                    break;
-                case CategoryId::Album:
-                    sortMode += "album-";
-                    break;
-                case CategoryId::Composer:
-                    sortMode += "composer-";
-                    break;
-                case CategoryId::Year:
-                    sortMode += "year-";
-                    break;
-                default:
-                    break;
-            }
+    if ( !filter.isEmpty() )
+        url.appendArg( "filter", filter );
+
+    QList<int> levels = The::mainWindow()->browserWidget()->list()->activeCategoryRecursive()->levels();
+    QString sortMode;
+
+    foreach( int level, levels ) {
+        switch( level ) {
+            case CategoryId::Genre:
+                sortMode += "genre-";
+                break;
+            case CategoryId::Artist:
+                sortMode += "artist-";
+                break;
+            case CategoryId::Album:
+                sortMode += "album-";
+                break;
+            case CategoryId::Composer:
+                sortMode += "composer-";
+                break;
+            case CategoryId::Year:
+                sortMode += "year-";
+                break;
+            default:
+                break;
         }
-
-        //we have left a trailing '-' in there, get rid of it!
-        if ( sortMode.size() > 0 )
-            sortMode = sortMode.left( sortMode.size() - 1 );
-
-        debug() << "sortMode: " <<  sortMode;
-
-        url.appendArg( browser );
-
-        if ( !sortMode.isEmpty() || !filter.isEmpty() )
-            url.appendArg( collection );
-        
-        if ( !sortMode.isEmpty() )
-            url.appendArg( sortMode );
-
-        if ( !filter.isEmpty() )
-            url.appendArg( filter );
-        
-        return url;
-
-    }
-    else if ( browser == "PlaylistBrowser" )
-    {
-        browser = "playlists";
-        url.appendArg( browser );
-
-        int cat = The::mainWindow()->playlistBrowser()->currentCategory();
-        QString catName = The::playlistManager()->typeName( cat );
-
-        url.appendArg( catName );
-        
-        return url;
-
-    }
-    else if ( browser == "FileBrowser::Widget" )
-    {
-        browser = "files";
-        url.appendArg( browser );
-        return url;
     }
 
+    //we have left a trailing '-' in there, get rid of it!
+    if ( sortMode.size() > 0 )
+        sortMode = sortMode.left( sortMode.size() - 1 );
+    
+    if ( !sortMode.isEmpty() )
+        url.appendArg( "levels", sortMode );
+
+
+    //come up with a default name for this url..
+    QString name = The::mainWindow()->browserWidget()->list()->activeCategoryRecursive()->prettyName();
+    url.setName( name );
+    
     return url;
+
 }
 
 AmarokUrl NavigationUrlGenerator::urlFromAlbum( Meta::AlbumPtr album )
@@ -191,26 +109,22 @@ AmarokUrl NavigationUrlGenerator::urlFromAlbum( Meta::AlbumPtr album )
     {
         if( btc->isBookmarkable() ) {
 
-            QString target;
-            if ( btc->browserName()  == "Internet" )
-                target = "service";
-            else 
-                target = "collection";
-
             QString albumName = album->prettyName();
 
             url.setCommand( "navigate" );
-            url.appendArg( target );
-            url.appendArg( btc->collectionName() );
+
+            QString path = btc->browserName();
+            if ( !btc->collectionName().isEmpty() )
+                path += ( "/" + btc->collectionName() );
+            url.setPath( path );
 
             QString filter;
             if ( btc->simpleFiltering() ) {
-                url.appendArg( "" );
                 filter = "\"" + albumName + "\"";
             }
             else
             {
-                url.appendArg( "album" );
+                url.appendArg( "levels", "album" );
 
                 QString artistName;
                 if ( album->albumArtist() )
@@ -221,7 +135,7 @@ AmarokUrl NavigationUrlGenerator::urlFromAlbum( Meta::AlbumPtr album )
                     filter += ( " AND artist:\"" + artistName + "\"" );
             }
 
-            url.appendArg( filter );
+            url.appendArg( "filter", filter );
 
             if ( !btc->collectionName().isEmpty() )
                 url.setName( i18n( "Album \"%1\" from %2", albumName, btc->collectionName() ) );
@@ -232,13 +146,14 @@ AmarokUrl NavigationUrlGenerator::urlFromAlbum( Meta::AlbumPtr album )
         delete btc;
     }
 
-    debug() << "got url: " << url.url();
+    //debug() << "got url: " << url.url();
     return url;
 
 }
 
 AmarokUrl NavigationUrlGenerator::urlFromArtist( Meta::ArtistPtr artist )
 {
+    DEBUG_BLOCK
 
     AmarokUrl url;
 
@@ -247,33 +162,29 @@ AmarokUrl NavigationUrlGenerator::urlFromArtist( Meta::ArtistPtr artist )
     {
         if( btc->isBookmarkable() ) {
 
-            QString target;
-            if ( btc->browserName()  == "Internet" )
-                target = "service";
-            else
-                target = "collection";
-
-            
             QString artistName = artist->prettyName();
 
             url.setCommand( "navigate" );
-            url.appendArg( target );
-            url.appendArg( btc->collectionName() );
             
+            QString path = btc->browserName();
+            if ( !btc->collectionName().isEmpty() )
+                path += ( "/" + btc->collectionName() );
+            url.setPath( path );
+
+            //debug() << "Path: " << url.path();
 
             QString filter;
             if ( btc->simpleFiltering() ) {
                 //for services only suporting simple filtering, do not try to set the sorting mode
-                url.appendArg( "" );
                 filter = "\"" + artistName + "\"";
             }
             else
             {
-                url.appendArg( "artist-album" );
+                url.appendArg( "levels", "artist-album" );
                 filter = ( "artist:\"" + artistName + "\"" );
             }
 
-            url.appendArg( filter );
+            url.appendArg( "filter", filter );
 
             if ( !btc->collectionName().isEmpty() )
                 url.setName( i18n( "Artist \"%1\" from %2", artistName, btc->collectionName() ) );
@@ -284,7 +195,6 @@ AmarokUrl NavigationUrlGenerator::urlFromArtist( Meta::ArtistPtr artist )
         delete btc;
     }
 
-    debug() << "got url: " << url.url();
     return url;
 
 }

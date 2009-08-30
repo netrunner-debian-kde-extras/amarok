@@ -1,23 +1,19 @@
-/***************************************************************************
- *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *             (c) 2007 Adam Pigg <adam@piggz.co.uk>                       *
- *                                                                         *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2007 Adam Pigg <adam@piggz.co.uk>                                      *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "ShoutcastServiceQueryMaker.h"
 
@@ -25,6 +21,7 @@
 #include "Debug.h"
 #include "ServiceMetaBase.h"
 #include "ShoutcastMeta.h"
+#include "StatusBar.h"
 #include "collection/support/MemoryMatcher.h"
 
 #include <kio/job.h>
@@ -44,20 +41,22 @@ struct ShoutcastServiceQueryMaker::Private {
 };
 
 
-ShoutcastServiceQueryMaker::ShoutcastServiceQueryMaker( ShoutcastServiceCollection * collection )
+ShoutcastServiceQueryMaker::ShoutcastServiceQueryMaker( ShoutcastServiceCollection * collection, bool isTop500Query )
  : DynamicServiceQueryMaker()
  , m_storedTransferJob( 0 )
  , d( new Private )
-
 {
     DEBUG_BLOCK
+
     m_collection = collection;
+    m_top500 = isTop500Query;
     reset();
 }
 
-
 ShoutcastServiceQueryMaker::~ShoutcastServiceQueryMaker()
 {
+    DEBUG_BLOCK
+
     delete d;
 }
 
@@ -84,29 +83,33 @@ ShoutcastServiceQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
 void ShoutcastServiceQueryMaker::run()
 {
     DEBUG_BLOCK
+
     if ( d->type == Private::NONE )
         //TODO error handling
         return;
+    else if ( m_top500 )
+        fetchTop500();
     else if (  d->type == Private::GENRE )
         fetchGenres();
     else if (  d->type == Private::TRACK )
         fetchStations();
-    //}
 }
 
 void ShoutcastServiceQueryMaker::runQuery()
 {
     DEBUG_BLOCK
 
-    if ( m_storedTransferJob != 0 )
+    if ( m_storedTransferJob )
         return;
 
     m_collection->acquireReadLock();
     //naive implementation, fix this
     //note: we are not handling filtering yet
-  
+
     //this is where the fun stuff happens
-    if (  d->type == Private::GENRE )       
+    if ( m_top500 )
+        fetchTop500();
+    else if (  d->type == Private::GENRE )
         fetchGenres();
     else if (  d->type == Private::TRACK )
         fetchStations();
@@ -122,7 +125,8 @@ QueryMaker * ShoutcastServiceQueryMaker::setQueryType( QueryType type )
 {
     DEBUG_BLOCK
 
-    switch( type ) {
+    switch( type )
+    {
         case QueryMaker::Track:
             d->type = Private::TRACK;
             return this;
@@ -146,6 +150,7 @@ QueryMaker * ShoutcastServiceQueryMaker::setQueryType( QueryType type )
 QueryMaker * ShoutcastServiceQueryMaker::addMatch(const Meta::GenrePtr & genre)
 {
     DEBUG_BLOCK
+
     m_genreMatch = genre->name();
     return this;
 }
@@ -153,7 +158,10 @@ QueryMaker * ShoutcastServiceQueryMaker::addMatch(const Meta::GenrePtr & genre)
 template<class PointerType, class ListType>
 void ShoutcastServiceQueryMaker::emitProperResult( const ListType& list )
 {
-    if ( d->returnDataPtrs ) {
+    DEBUG_BLOCK
+
+    if ( d->returnDataPtrs )
+    {
         DataList data;
         foreach( PointerType p, list )
             data << DataPtr::staticCast( p );
@@ -167,6 +175,7 @@ void ShoutcastServiceQueryMaker::emitProperResult( const ListType& list )
 void ShoutcastServiceQueryMaker::handleResult()
 {
     DEBUG_BLOCK
+
     switch( d->type )
     {
         case Private::GENRE :
@@ -251,14 +260,31 @@ void ShoutcastServiceQueryMaker::fetchStations()
     }
     else if ( m_filter.isEmpty() )
     {
-        m_storedTransferJob =  KIO::storedGet( KUrl ( "http://www.shoutcast.com/sbin/newxml.phtml?genre=" + m_genreMatch ), KIO::NoReload, KIO::HideProgressInfo );
+        m_storedTransferJob =  KIO::storedGet( "http://www.shoutcast.com/sbin/newxml.phtml?genre=" + m_genreMatch, KIO::NoReload, KIO::HideProgressInfo );
         connect( m_storedTransferJob, SIGNAL( result( KJob * ) ), this, SLOT( stationDownloadComplete(KJob *) ) );
     } else {
 
         debug() << "fetching tracks with filter: " << m_filter << " url: " << "http://www.shoutcast.com/sbin/newxml.phtml?genre=&s=" + m_filter;
-        m_storedTransferJob =  KIO::storedGet( KUrl ( "http://www.shoutcast.com/sbin/newxml.phtml?search=" + m_filter ), KIO::NoReload, KIO::HideProgressInfo );
+        m_storedTransferJob =  KIO::storedGet( "http://www.shoutcast.com/sbin/newxml.phtml?search=" + m_filter, KIO::NoReload, KIO::HideProgressInfo );
         connect( m_storedTransferJob, SIGNAL( result( KJob * ) ), this, SLOT( stationDownloadComplete(KJob *) ) );
 
+    }
+}
+
+void ShoutcastServiceQueryMaker::fetchTop500()
+{
+    DEBUG_BLOCK
+
+    if ( m_filter.isEmpty() )
+    {
+        m_storedTransferJob =  KIO::storedGet( KUrl ( "http://www.shoutcast.com/sbin/newxml.phtml?genre=Top500" ), KIO::NoReload, KIO::HideProgressInfo );
+        connect( m_storedTransferJob, SIGNAL( result( KJob * ) ), this, SLOT( stationDownloadComplete(KJob *) ) );
+    }
+    else
+    {
+        debug() << "fetching tracks with filter: " << m_filter << " url: " << "http://www.shoutcast.com/sbin/newxml.phtml?genre=Top500&search=" + m_filter;
+        m_storedTransferJob =  KIO::storedGet( KUrl ( "http://www.shoutcast.com/sbin/newxml.phtml?genre=Top500&search=" + m_filter ), KIO::NoReload, KIO::HideProgressInfo );
+        connect( m_storedTransferJob, SIGNAL( result( KJob * ) ), this, SLOT( stationDownloadComplete(KJob *) ) );
     }
 }
 
@@ -275,8 +301,13 @@ void ShoutcastServiceQueryMaker::genreDownloadComplete(KJob * job)
         return;
     }
 
-    QDomDocument doc( "genres" );
+    if( m_storedTransferJob->data().contains( "<title>503" ) )
+    {
+        The::statusBar()->longMessage( i18n( "The Shoutcast server is busy.<BR>Please try again later." ) );
+        return;
+    }
 
+    QDomDocument doc( "genres" );
     doc.setContent( m_storedTransferJob->data() );
 
     //debug() << "So far so good... Got this data: " << m_storedTransferJob->data();
@@ -326,24 +357,28 @@ void ShoutcastServiceQueryMaker::genreDownloadComplete(KJob * job)
 
     handleResult();
     emit queryDone();
-
 }
 
 void ShoutcastServiceQueryMaker::stationDownloadComplete( KJob *job )
 {
     DEBUG_BLOCK
-    
+
     if ( job->error() )
     {
         error() << job->error();
         m_storedTransferJob->deleteLater();
         return;
     }
-    
+
+    if( m_storedTransferJob->data().contains( "<title>503" ) )
+    {
+        The::statusBar()->longMessage( i18n( "The Shoutcast server is busy.<BR>Please try again later." ) );
+        return;
+    }
+
     m_currentTrackQueryResults.clear();
 
     QDomDocument doc( "list" );
-
     doc.setContent( m_storedTransferJob->data() );
 
     //Go through the XML file and add all the stations
@@ -357,11 +392,11 @@ void ShoutcastServiceQueryMaker::stationDownloadComplete( KJob *job )
             if( !e.attribute( "name" ).isNull() /*&& ! m_currentTrackQueryResults.contains( e.attribute( "name" ) )*/ )
             {
 
-                QString name =  e.attribute( "name" );
+                QString name = '(' + e.attribute( "lc" ) + ") " +  e.attribute( "name" ); //lc: listeners count
 
                 QString playlistUrl = "http://www.shoutcast.com/sbin/shoutcast-playlist.pls?rn="
                         + e.attribute( "id" ) + "&file=filename.pls";
-                
+
                 ShoutcastTrack * track = new ShoutcastTrack(  name, playlistUrl );
 
                 TrackPtr trackPtr( track );
@@ -369,20 +404,27 @@ void ShoutcastServiceQueryMaker::stationDownloadComplete( KJob *job )
                 m_collection->addTrack( trackPtr );
                 m_collection->releaseLock();
 
-                if ( m_filter.isEmpty() ) {
-                    GenrePtr genrePtr = m_collection->genreMap()[ m_genreMatch ];
-                    ServiceGenre * genre = static_cast<  ServiceGenre * >( genrePtr.data() );
-                    genre->addTrack( trackPtr );
-                    track->setGenre( genrePtr );
-                } else {
-                    GenrePtr genrePtr = m_collection->genreMap()[ "Results for: " + m_filter ];
-                    ServiceGenre * genre = static_cast<  ServiceGenre * >( genrePtr.data() );
+                if ( m_top500 ){
+                    // TODO: Handle filtering when top500 stations are requested...
+                    if ( m_filter.isEmpty() ){
+                    }else{
+                    }
+                }else{
+                    if ( m_filter.isEmpty() ) {
+                        GenrePtr genrePtr = m_collection->genreMap()[ m_genreMatch ];
+                        ServiceGenre * genre = static_cast<  ServiceGenre * >( genrePtr.data() );
+                        genre->addTrack( trackPtr );
+                        track->setGenre( genrePtr );
+                    } else {
+                        GenrePtr genrePtr = m_collection->genreMap()[ "Results for: " + m_filter ];
+                        ServiceGenre * genre = static_cast<  ServiceGenre * >( genrePtr.data() );
 
-                    if ( genre == 0 )  // sanity check as this has been reported to cause crashes
-                        return;
-                    
-                    genre->addTrack( trackPtr );
-                    track->setGenre( genrePtr );
+                        if ( genre == 0 )  // sanity check as this has been reported to cause crashes
+                            return;
+
+                        genre->addTrack( trackPtr );
+                        track->setGenre( genrePtr );
+                    }
                 }
 
                 m_currentTrackQueryResults.push_front( trackPtr );
@@ -423,6 +465,5 @@ QueryMaker * ShoutcastServiceQueryMaker::addFilter(qint64 value, const QString &
 
 
 #include "ShoutcastServiceQueryMaker.moc"
-
 
 

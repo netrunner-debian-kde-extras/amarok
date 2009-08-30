@@ -1,21 +1,20 @@
-/*
- *  Copyright (c) 2007-2008 Maximilian Kossick <maximilian.kossick@googlemail.com>
- *  Copyright (c) 2008 Jason A. Donenfeld <Jason@zx2c4.com>
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- */
+/****************************************************************************************
+ * Copyright (c) 2007-2008 Maximilian Kossick <maximilian.kossick@googlemail.com>       *
+ * Copyright (c) 2008 Jason A. Donenfeld <Jason@zx2c4.com>                              *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
+
 #ifndef AMAROK_COLLECTIONLOCATION_H
 #define AMAROK_COLLECTIONLOCATION_H
 
@@ -76,6 +75,20 @@ class QueryMaker;
     copyUrlsToCollection (destination) (reimplementable)
     slotCopyOperationFinished (destination)
     slotFinishCopy (source)
+
+    To provide removal ability, it is required to reimplement removeUrlsFromCollection,
+    and this function must call slotRemoveOperationFinished() when it is done.  Optionally,
+    showRemoveDialog can be reimplemented to customize the warning displayed before a removal,
+    and this function must call slotShowRemoveDialogDone when finished.
+
+    The methods for remove will be called in the following order:
+    startRemoveWorkflow
+    showRemoveDialog (reimplementable)
+    slotShowRemoveDialogDone
+    slotStartRemove
+    removeUrlsFromCollection (reimplementable)
+    slotRemoveOperationFinished
+    slotFinishRemove
 */
 
 class AMAROK_EXPORT CollectionLocation : public QObject
@@ -144,18 +157,31 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         void prepareMove( QueryMaker *qm, CollectionLocation *destination );
 
         /**
+           method to get tracks from qm to prepare them to be removed
+        */
+        void prepareRemove( const Meta::TrackList &tracks );
+        void prepareRemove( QueryMaker *qm );
+
+        /**
            remove the track from the collection.
            Return true if the removal was successful, false otherwise.
-         */
+        */
+
         virtual bool remove( const Meta::TrackPtr &track );
 
+        /**
+           convenience method for removing multiple tracks,
+           @see remove( const Meta::TrackPtr &track )
+        */
+
+        bool remove( const Meta::TrackList &tracks );
         
         /**
-        * Sets or gets which files the source will potentially need to remove
-        */
-        virtual bool movedByDestination( const Meta::TrackPtr &track ) const;
-        virtual bool consideredByDestination( const Meta::TrackPtr &track ) const;
-        virtual void setMovedByDestination( const Meta::TrackPtr &track, bool removeFromDatabase );
+          explicitly inform the source collection of successful transfer.
+          The source collection will only remove files (if necessary)
+          for which this method was called.
+          */
+        void transferSuccessful( const Meta::TrackPtr &track );
     
         /**
         * tells the source location that an error occurred during the transfer of the file
@@ -172,6 +198,8 @@ class AMAROK_EXPORT CollectionLocation : public QObject
     signals:
         void startCopy( const QMap<Meta::TrackPtr, KUrl> &sources );
         void finishCopy();
+        void startRemove();
+        void finishRemove();
         void prepareOperation( const Meta::TrackList &tracks, bool removeSources );
         void operationPrepared();
         void aborted();
@@ -187,6 +215,14 @@ class AMAROK_EXPORT CollectionLocation : public QObject
          * note: subclasses do not take ownership  of the pointer
          */
         CollectionLocation* source() const;
+
+        /**
+          * allows the source location to access the destination CollectionLocation.
+          * Pointer may be null!
+          * note: subclasses do not take ownership of the pointer
+          */
+        CollectionLocation* destination() const;
+
         /**
             this method is called on the source location, and should return a list of urls
             which the destination location can copy using KIO. You must call 
@@ -203,6 +239,14 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources );
 
         /**
+           this method is called on the collection you want to remove tracks from.  it must
+           be reimplemented if your collection is writeable and you wish to implement
+           removing tracks
+        */
+
+        virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
+        
+        /**
          * this method is called on the source. It allows the source CollectionLocation to
          * show a dialog. Classes that reimplement this method must call 
          * slotShowSourceDialogDone() after they have acquired all necessary information from the user.
@@ -218,6 +262,14 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         virtual void showDestinationDialog( const Meta::TrackList &tracks, bool removeSources );
 
         /**
+         * this methods allows the collection to show a warning dialog before tracks are removed,
+         * rather than using the default provided.  Classes that reimplement this method must call
+         * slotShowRemoveDialogDone() after they are finished.
+        */
+
+        virtual void showRemoveDialog( const Meta::TrackList &tracks );
+
+        /**
         * Sets or gets whether some source files may be removed
         */
         virtual bool isGoingToRemoveSources() const;
@@ -231,7 +283,9 @@ class AMAROK_EXPORT CollectionLocation : public QObject
          */
         void slotGetKIOCopyableUrlsDone( const QMap<Meta::TrackPtr, KUrl> &sources );
         void slotCopyOperationFinished();
+        void slotRemoveOperationFinished();
         void slotShowSourceDialogDone();
+        void slotShowRemoveDialogDone();
         void slotShowDestinationDialogDone();
 
     private slots:
@@ -240,13 +294,18 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         void slotOperationPrepared();
         void slotStartCopy( const QMap<Meta::TrackPtr, KUrl> &sources );
         void slotFinishCopy();
+        void slotStartRemove();
+        void slotFinishRemove();
         void slotAborted();
         void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
         void queryDone();
 
     private:
         void setupConnections();
+        void setupRemoveConnections();
         void startWorkflow( const Meta::TrackList &tracks, bool removeSources );
+        void startRemoveWorkflow( const Meta::TrackList &tracks );
+        void startRemove( const Meta::TrackList &tracks );
         void removeSourceTracks( const Meta::TrackList &tracks );
         void setSource( CollectionLocation *source );
 
@@ -259,7 +318,10 @@ class AMAROK_EXPORT CollectionLocation : public QObject
         const Amarok::Collection* m_parentCollection;
         
         bool m_removeSources;
-        QMap<Meta::TrackPtr, bool> m_tracksRemovedByDestination;
+        bool m_isRemoveAction;
+        //used by the source collection to store the tracks that were successfully
+        //copied by the destination and can be removed as part of a move
+        Meta::TrackList m_tracksSuccessfullyTransferred;
         QMap<Meta::TrackPtr, QString> m_tracksWithError;
 };
 

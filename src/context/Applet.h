@@ -1,15 +1,18 @@
-/***************************************************************************
- * copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>        *
- **************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007 Leo Franchi <lfranchi@gmail.com>                                  *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef AMAROK_APPLET_H
 #define AMAROK_APPLET_H
@@ -24,14 +27,21 @@
 
 class QPainter;
 
+namespace Plasma
+{
+    class FrameSvg;
+    class IconWidget;
+}
+
 namespace Context
 {
 
 class AMAROK_EXPORT Applet : public Plasma::Applet
 {
-
+    Q_OBJECT
     public:
         explicit Applet( QObject* parent, const QVariantList& args = QVariantList() );
+        ~Applet();
 
         //helper functions
         QFont shrinkTextSizeToFit( const QString& text, const QRectF& bounds );
@@ -44,16 +54,47 @@ class AMAROK_EXPORT Applet : public Plasma::Applet
           * Returns a standard CV-wide padding that applets can use for consistency.
           */
         qreal standardPadding();
-        
+
+        /**
+          * Collapse animation
+          */
+        void setCollapseOn();
+        void setCollapseOff();
+        void setCollapseHeight( int );
+
+        /**
+          * sizeHint is reimplemented here only for all the applet.
+          */
+        virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const;
+
+        /**
+          * resize is reimplemented here is reimplemented here only for all the applet.
+          */
+        virtual void   resize( qreal, qreal );
+
+
     public Q_SLOTS:
         virtual void destroy();
+        void animateOn( qreal );
+        void animateOff( qreal );
+        void animateEnd( int );
+
+    protected:
+        Plasma::IconWidget* addAction( QAction *action, const int size = 16 );
+
+        bool m_collapsed;
+        int  m_heightCurrent;
+        int  m_heightCollapseOn;
+        int  m_heightCollapseOff;
+        int  m_animationId;
+        int  m_animFromHeight;
 
     private:
         void cleanUpAndDelete();
 
         bool m_transient;
         qreal m_standardPadding;
-        
+        Plasma::FrameSvg *m_textBackground;
 };
 
 } // Context namespace

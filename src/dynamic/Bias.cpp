@@ -1,22 +1,21 @@
-/***************************************************************************
- * copyright            : (C) 2008 Daniel Jones <danielcjones@gmail.com>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License or (at your option) version 3 or any later version
- * accepted by the membership of KDE e.V. (or its successor approved
- * by the membership of KDE e.V.), which shall act as a proxy
- * defined in Section 14 of version 3 of the license.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- **************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Daniel Jones <danielcjones@gmail.com>                             *
+ * Copyright (c) 2009 Leo Franchi <lfranchi@kde.org>                                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) version 3 or        *
+ * any later version accepted by the membership of KDE e.V. (or its successor approved  *
+ * by the membership of KDE e.V.), which shall act as a proxy defined in Section 14 of  *
+ * version 3 of the license.                                                            *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #define DEBUG_PREFIX "Bias"
 
@@ -24,6 +23,7 @@
 
 #include "Collection.h"
 #include "CollectionManager.h"
+#include "CustomBias.h"
 #include "Debug.h"
 #include "DynamicBiasWidgets.h"
 #include "DynamicModel.h"
@@ -87,6 +87,11 @@ Dynamic::Bias::fromXml( QDomElement e )
         }
 
         return new Dynamic::GlobalBias( weight, filter );
+    }
+    else if( type == "custom" )
+    {
+        // handle whichever type this actually is, pass it off to the CustomBias builder
+        return Dynamic::CustomBias::fromXml( e );
     }
     else if( type == "normal" )
     {
@@ -260,6 +265,18 @@ Dynamic::GlobalBias::setWeight( double weight )
         m_weight = weight;
 }
 
+bool
+Dynamic::GlobalBias::hasCollectionFilterCapability()
+{
+    return true;
+}
+
+Dynamic::CollectionFilterCapability* Dynamic::GlobalBias::collectionFilterCapability()
+{
+    return new Dynamic::GlobalBiasFilterCapability( this );
+}
+
+
 void
 Dynamic::GlobalBias::setQuery( XmlQueryReader::Filter filter )
 {
@@ -274,7 +291,7 @@ Dynamic::GlobalBias::setQuery( XmlQueryReader::Filter filter )
     qm = m_collection->queryMaker();
 
     m_qm = new XmlQueryWriter( qm,
-            PlaylistBrowserNS::DynamicModel::instance()->savedPlaylistDoc() );
+            QDomDocument() );
 
     if( filter.field != 0 )
     {

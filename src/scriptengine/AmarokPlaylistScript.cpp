@@ -1,19 +1,18 @@
-/******************************************************************************
- * Copyright (C) 2008 Peter ZHOU <peterzhoulei@gmail.com>                     *
- *                                                                            *
- * This program is free software; you can redistribute it and/or              *
- * modify it under the terms of the GNU General Public License as             *
- * published by the Free Software Foundation; either version 2 of             *
- * the License, or (at your option) any later version.                        *
- *                                                                            *
- * This program is distributed in the hope that it will be useful,            *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
- * GNU General Public License for more details.                               *
- *                                                                            *
- * You should have received a copy of the GNU General Public License          *
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
- ******************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Peter ZHOU <peterzhoulei@gmail.com>                               *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #define DEBUG_PREFIX "AmarokScript::Playlist"
 
@@ -25,7 +24,7 @@
 #include "MainWindow.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistModelStack.h"
 #include "playlist/view/listview/PrettyListView.h"
 #include "playlist/PlaylistWidget.h"
 
@@ -38,9 +37,10 @@ namespace AmarokScript
         , m_wrapperList( wrapperList )
         , m_scriptEngine( scriptEngine )
     {
-        connect( The::playlistModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT ( slotTrackInserted( const QModelIndex&, int, int ) ) );
-        connect( The::playlistModel(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT ( slotTrackRemoved( const QModelIndex&, int, int ) ) );
-        connect( The::playlistModel(), SIGNAL( activeRowChanged( int ) ), this, SIGNAL( activeRowChanged( int ) ) );
+        //TODO: make this class use The::playlist() for everything.
+        connect( Playlist::ModelStack::instance()->source(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT ( slotTrackInserted( const QModelIndex&, int, int ) ) );
+        connect( Playlist::ModelStack::instance()->source(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT ( slotTrackRemoved( const QModelIndex&, int, int ) ) );
+        connect( Playlist::ModelStack::instance()->source(), SIGNAL( activeRowChanged( int ) ), this, SIGNAL( activeRowChanged( int ) ) );
     }
 
     AmarokPlaylistScript::~AmarokPlaylistScript()
@@ -48,18 +48,18 @@ namespace AmarokScript
 
     int AmarokPlaylistScript::activeIndex()
     {
-        return The::playlistModel()->activeRow();
+        return Playlist::ModelStack::instance()->source()->activeRow();
     }
 
     int AmarokPlaylistScript::totalTrackCount()
     {
-        return The::playlistModel()->rowCount();
+        return Playlist::ModelStack::instance()->source()->rowCount();
     }
 
     QString AmarokPlaylistScript::saveCurrentPlaylist()
     {
-        QString savePath = The::playlistModel()->defaultPlaylistPath();
-        The::playlistModel()->exportPlaylist( savePath );
+        QString savePath = Playlist::ModelStack::instance()->source()->defaultPlaylistPath();
+        Playlist::ModelStack::instance()->source()->exportPlaylist( savePath );
         return savePath;
     }
 
@@ -108,7 +108,7 @@ namespace AmarokScript
 
     void AmarokPlaylistScript::savePlaylist( const QString& path )
     {
-        The::playlistModel()->exportPlaylist( path );
+        The::playlist()->exportPlaylist( path );
     }
 
     void AmarokPlaylistScript::setStopAfterCurrent( bool on )
@@ -124,15 +124,15 @@ namespace AmarokScript
     QStringList AmarokPlaylistScript::filenames()
     {
         QStringList fileNames;
-        for( int i=0; i < The::playlistModel()->rowCount(); i++ )
-            fileNames << The::playlistModel()->trackAt(i)->prettyUrl();
+        for( int i=0; i < Playlist::ModelStack::instance()->source()->rowCount(); i++ )
+            fileNames << Playlist::ModelStack::instance()->source()->trackAt(i)->prettyUrl();
         return fileNames;
     }
 
     QVariant AmarokPlaylistScript::trackAt( int row )
     {
         DEBUG_BLOCK
-        Meta::TrackPtr track = The::playlistModel()->trackAt( row );
+        Meta::TrackPtr track = Playlist::ModelStack::instance()->source()->trackAt( row );
         return QVariant::fromValue( track );;
     }
 
@@ -152,22 +152,19 @@ namespace AmarokScript
         const QList<int> indexes = selectedIndexes();
 
         for( int i=0; i < indexes.size(); i++ )
-            fileNames << The::playlistModel()->trackAt( indexes[i] )->prettyUrl();
+            fileNames << Playlist::ModelStack::instance()->source()->trackAt( indexes[i] )->prettyUrl();
 
         return fileNames;
     }
 
-    // PlaylistModel inserts only one track at a time
-    void AmarokPlaylistScript::slotTrackInserted( const QModelIndex&, int row, int )
+    void AmarokPlaylistScript::slotTrackInserted( const QModelIndex&, int start, int end )
     {
-        Meta::TrackPtr t = The::playlistModel()->trackAt( row );
-        emit trackInserted( QVariant::fromValue( t ), row );
+        emit trackInserted( start, end );
     }
 
-    // PlaylistModel removes only one track at a time
-    void AmarokPlaylistScript::slotTrackRemoved( const QModelIndex&, int row, int )
+    void AmarokPlaylistScript::slotTrackRemoved( const QModelIndex&, int start, int end )
     {
-        emit trackRemoved( row );
+        emit trackRemoved( start, end );
     }
 }
 

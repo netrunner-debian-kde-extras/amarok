@@ -22,6 +22,7 @@
  ***************************************************************************/
 
 #include "CollectionScanner.h"
+#include "AFTUtility.h"
 
 #include "charset-detector/include/chardet.h"
 #include "MetaReplayGain.h"
@@ -52,6 +53,7 @@
 #include <mpegfile.h>
 #include <oggfile.h>
 #include <oggflacfile.h>
+#include <speexfile.h>
 #include <tlist.h>
 #include <tstring.h>
 #include <vorbisfile.h>
@@ -71,20 +73,21 @@
 #include <uniquefileidentifierframe.h>
 #include <xiphcomment.h>
 
+#define Qt4QStringToTString(s) TagLib::String(s.toUtf8().data(), TagLib::String::UTF8)
 
 int
 main( int argc, char *argv[] )
 {
     CollectionScanner scanner( argc, argv );
     return scanner.exec();
-
 }
 
 static QTextStream s_textStream( stderr );
-static QTime s_time;
 
 CollectionScanner::CollectionScanner( int &argc, char **argv )
         : QCoreApplication( argc, argv )
+        , m_collectionId() //UNUSED, problems with DBus
+        , m_amarokPid() //UNUSED, problems with DBus
         , m_batch( false )
         , m_importPlaylists( false )
         , m_batchFolderTime()
@@ -94,10 +97,6 @@ CollectionScanner::CollectionScanner( int &argc, char **argv )
         , m_amarokCollectionInterface( 0 )
 {
     setObjectName( "amarokcollectionscanner" );
-
-    //seed for unique id generation if file lookup fails
-    srand( (unsigned)time( 0 ) );
-    s_time.start();
 
     readArgs();
 
@@ -111,17 +110,11 @@ CollectionScanner::CollectionScanner( int &argc, char **argv )
 
     m_logfile = ( m_batch ? ( m_incremental ? "amarokcollectionscanner_batchincrementalscan.log" : "amarokcollectionscanner_batchfullscan.log" )
                        : m_saveLocation + "collection_scan.log" );
-    
+
     if( !m_restart )
         QFile::remove( m_logfile );
 
-    if( !m_collectionId.isEmpty() )
-    {
-        if( m_amarokPid.isEmpty() )
-            m_amarokCollectionInterface = new QDBusInterface( "org.kde.amarok", "/SqlCollection/" + m_collectionId );
-        else
-            m_amarokCollectionInterface = new QDBusInterface( "org.kde.amarok-" + m_amarokPid, "/SqlCollection/" + m_collectionId );
-    }
+    m_amarokCollectionInterface = new QDBusInterface( "org.kde.amarok", "/SqlCollection" );
 
     if( m_batch && m_incremental )
     {
@@ -149,13 +142,13 @@ CollectionScanner::readBatchIncrementalFile()
         return false;
 
     m_batchFolderTime = QFileInfo( filePath ).lastModified();
-    
+
     QFile folderFile( filePath );
     if( !folderFile.open( QIODevice::ReadOnly ) )
         return false;
 
     m_folders.clear();
-    
+
     QTextStream folderStream;
     folderStream.setDevice( &folderFile );
 
@@ -172,7 +165,7 @@ CollectionScanner::readBatchIncrementalFile()
         //TODO: rpath substitution?
         temp = folderStream.readLine();
     }
-    
+
     folderFile.close();
     return true;
 }
@@ -231,7 +224,7 @@ CollectionScanner::doJob() //SLOT
             // Make sure that all paths are absolute, not relative
             if( QDir::isRelativePath( dir ) )
                 dir = QDir::cleanPath( QDir::currentPath() + '/' + dir );
- 
+
             if( !dir.endsWith( '/' ) )
                 dir += '/';
 
@@ -281,7 +274,7 @@ CollectionScanner::doJob() //SLOT
             QFile::remove( "amarokcollectionscanner_batchfullscan.log" );
         }
     }
-    
+
     quit();
 }
 
@@ -309,6 +302,8 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
     writeElement( "folder", attributes );
     d.setFilter( QDir::NoDotAndDotDot | QDir::Dirs | QDir::Files | QDir::Readable );
     QFileInfoList list = d.entryInfoList();
+ 
+    QStringList recurseDirs;
     foreach( QFileInfo f, list )
     {
         if( !f.exists() )
@@ -316,7 +311,7 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
 
         if( f.isSymLink() )
             f = QFileInfo( f.symLinkTarget() );
-        
+
         if( f.isDir() && m_recursively && !m_scannedFolders.contains( f.canonicalFilePath() ) )
         {
             //The following D-Bus call is used to see if a found folder is new or not
@@ -334,11 +329,13 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
             }
 
             if( !m_incremental || !isInCollection )
-                readDir( f.absoluteFilePath() + '/', entries );
+                recurseDirs << QString( f.absoluteFilePath() + '/' );
         }
         else if( f.isFile() )
             entries.append( f.absoluteFilePath() );
     }
+    foreach( QString directory, recurseDirs )
+        readDir( directory, entries );
 }
 
 
@@ -440,7 +437,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
                 // Serialize CoverBundle list with AMAROK_MAGIC as separator
                 QString string;
 
-                for( QList<CoverBundle>::ConstIterator it2 = covers.begin(); it2 != covers.end(); ++it2 )
+                for( QList<CoverBundle>::ConstIterator it2 = covers.constBegin(); it2 != covers.constEnd(); ++it2 )
                 {
                     string += ( string.isEmpty() ? "" : "AMAROK_MAGIC" ) + (*it2).first + "AMAROK_MAGIC" + (*it2).second;
                 }
@@ -476,152 +473,6 @@ CollectionScanner::scanFiles( const QStringList& entries )
             images.clear();
         }
     }
-}
-
-const QString
-CollectionScanner::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
-{
-    int currentVersion = 1; //TODO: Make this more global?
-    if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
-    {
-        if( !file->ID3v2Tag( false ) )
-            return QString();
-        QString ourId = QString( "Amarok 2 AFTv" + QString::number( currentVersion ) + " - amarok.kde.org" );
-        if( file->ID3v2Tag()->frameListMap()["UFID"].isEmpty() )
-            return QString();
-        TagLib::ID3v2::FrameList frameList = file->ID3v2Tag()->frameListMap()["UFID"];
-        TagLib::ID3v2::FrameList::Iterator iter;
-        for( iter = frameList.begin(); iter != frameList.end(); ++iter )
-        {
-            TagLib::ID3v2::UniqueFileIdentifierFrame* currFrame = dynamic_cast<TagLib::ID3v2::UniqueFileIdentifierFrame*>(*iter);
-            if( currFrame )
-            {
-                QString owner = TStringToQString( currFrame->owner() );
-                if( owner.startsWith( "Amarok 2 AFT" ) )
-                {
-                    int version = owner.at( 13 ).digitValue();
-                    if( version == currentVersion )
-                        return TStringToQString( TagLib::String( currFrame->identifier() ) );
-                }
-            }
-        }
-    }
-    return QString();
-}
-
-const TagLib::ByteVector
-CollectionScanner::generatedUniqueIdHelper( const TagLib::FileRef &fileref )
-{
-    if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
-    {
-        if( file->ID3v2Tag() )
-            return file->ID3v2Tag()->render();
-        else if( file->ID3v1Tag() )
-            return file->ID3v1Tag()->render();
-        else if( file->APETag() )
-            return file->APETag()->render();
-    }
-    else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
-    {
-        if( file->tag() )
-            return file->tag()->render();
-    }
-    else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
-    {
-        if( file->ID3v2Tag() )
-            return file->ID3v2Tag()->render();
-        else if( file->ID3v1Tag() )
-            return file->ID3v1Tag()->render();
-        else if( file->xiphComment() )
-            return file->xiphComment()->render();
-    }
-    else if ( TagLib::Ogg::FLAC::File *file = dynamic_cast<TagLib::Ogg::FLAC::File *>( fileref.file() ) )
-    {
-        if( file->tag() )
-            return file->tag()->render();
-    }
-    else if ( TagLib::MPC::File *file = dynamic_cast<TagLib::MPC::File *>( fileref.file() ) )
-    {
-        if( file->ID3v1Tag() )
-            return file->ID3v1Tag()->render();
-        else if( file->APETag() )
-            return file->APETag()->render();
-    }
-    TagLib::ByteVector bv;
-    return bv;
-}
-
-const QString
-CollectionScanner::randomUniqueId( QCryptographicHash &md5 )
-{
-    //md5 has size of file already added for some little extra randomness for the hash
-    md5.addData( QString::number( s_time.elapsed() ).toAscii() );
-    md5.addData( QString::number( rand() ).toAscii() );
-    md5.addData( QString::number( rand() ).toAscii() );
-    md5.addData( QString::number( rand() ).toAscii() );
-    md5.addData( QString::number( rand() ).toAscii() );
-    md5.addData( QString::number( rand() ).toAscii() );
-    md5.addData( QString::number( s_time.elapsed() ).toAscii() );
-    return QString( md5.result().toHex() );
-}
-
-const QString
-CollectionScanner::readUniqueId( const QString &path )
-{
-#ifdef COMPLEX_TAGLIB_FILENAME
-    const wchar_t * encodedName = reinterpret_cast<const wchar_t *>(path.utf16());
-#else
-    QByteArray fileName = QFile::encodeName( path );
-    const char * encodedName = fileName.constData(); // valid as long as fileName exists
-#endif
-
-    QCryptographicHash md5( QCryptographicHash::Md5 );
-    QFile qfile( path );
-    QByteArray size;
-    md5.addData( size.setNum( qfile.size() ) );
-
-    TagLib::FileRef fileref = TagLib::FileRef( encodedName, true, TagLib::AudioProperties::Fast );
-
-    if( fileref.isNull() )
-    {
-        s_textStream << "Fileref of " << encodedName << " is null, returning random value!";
-        s_textStream.flush();
-        return randomUniqueId( md5 );
-    }
-
-    const QString embeddedString = readEmbeddedUniqueId( fileref );
-    if( !embeddedString.isEmpty() )
-        return embeddedString;
-
-    TagLib::ByteVector bv = CollectionScanner::generatedUniqueIdHelper( fileref );
-
-    md5.addData( bv.data(), bv.size() );
-
-    char databuf[16384];
-    int readlen = 0;
-    QString returnval;
-
-    if( qfile.open( QIODevice::ReadOnly ) )
-    {
-        if( ( readlen = qfile.read( databuf, 16384 ) ) > 0 )
-        {
-            md5.addData( databuf, readlen );
-            qfile.close();
-            return QString( md5.result().toHex() );
-        }
-        else
-        {
-            qfile.close();
-            s_textStream << "Could not read 16384 bytes from " << path << ", returning random value!";
-            s_textStream.flush();
-            return randomUniqueId( md5 );
-        }
-    }
-
-    s_textStream << "Could not open file " << path << ", returning random value!";
-    s_textStream.flush();
-
-    return randomUniqueId( md5 );
 }
 
 AttributeHash
@@ -711,6 +562,9 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
 //                 if( images )
 //                     loadImagesFromTag( *file->ID3v2Tag(), *images );
             }
+// HACK: charset-detector disabled, so all tags assumed utf-8
+// TODO: fix charset-detector to detect encoding with higher accuracy
+
             if( tag )
             {
                 TagLib::String metaData = tag->title() + tag->artist() + tag->album() + tag->comment();
@@ -733,7 +587,9 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
                      http://doc.trolltech.com/4.4/qtextcodec.html
                      http://www.mozilla.org/projects/intl/chardet.html
                      */
-                    if ( ( !track_encoding.isEmpty() ) && ( track_encoding.toUtf8() != "UTF-8" ) )
+                    if ( ( track_encoding.toUtf8() == "gb18030" ) || ( track_encoding.toUtf8() == "big5" )
+                        || ( track_encoding.toUtf8() == "euc-kr" ) || ( track_encoding.toUtf8() == "euc-jp" )
+                        || ( track_encoding.toUtf8() == "koi8-r" ) )
                     {
                         QTextCodec *codec = QTextCodec::codecForName( track_encoding.toUtf8() );
                         QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
@@ -795,16 +651,16 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
             TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
             if( mp4tag )
             {
-                if ( !mp4tag->itemListMap()["\xA9wrt"].toStringList().isEmpty() )
+                if ( mp4tag->itemListMap().contains( "\xA9wrt" ) )
                     attributes["composer"] = TStringToQString( mp4tag->itemListMap()["\xa9wrt"].toStringList().front() );
 
-                if ( !mp4tag->itemListMap()["tmpo"].toStringList().isEmpty() )
+                if ( mp4tag->itemListMap().contains( "tmpo" ) )
                     attributes["bpm"] = QString::number( mp4tag->itemListMap()["tmpo"].toInt() );
 
-                if ( !mp4tag->itemListMap()["disk"].toStringList().isEmpty() )
+                if ( mp4tag->itemListMap().contains( "disk" ) )
                     disc = QString::number( mp4tag->itemListMap()["disk"].toIntPair().first );
 
-                if ( !mp4tag->itemListMap()["cpil"].toStringList().isEmpty() )
+                if ( mp4tag->itemListMap().contains( "cpil" ) )
                     compilation = QString::number( mp4tag->itemListMap()["cpil"].toBool() ? '1' : '0' );
 
 //                 if ( images && mp4tag->cover().size() )
@@ -826,13 +682,15 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
             attributes["discnumber"] = QString::number( discnumber );
         }
 
+        // Sometimes the file is explicitly tagged with compilation details. When it is not,
+        // then we need to delegate checking whether this files is in a compilation to Amarok.
         if ( compilation.isEmpty() )
         {
             // well, it wasn't set, but if the artist is VA assume it's a compilation
             //TODO: If we get pure-Qt translation support, put this back in; else functionality moved to the processor
-	    //if ( attributes["artist"] == QObject::tr( "Various Artists" ) )
-                //attributes["compilation"] = QString::number( 1 );
-	    attributes["compilation"] = "checkforvarious";
+            //if ( attributes["artist"] == QObject::tr( "Various Artists" ) )
+            //    attributes["compilation"] = QString::number( 1 );
+            attributes["compilation"] = "checkforvarious";
         }
         else
         {
@@ -884,7 +742,8 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
     if( size >= 0 )
         attributes["filesize"] =  QString::number( size );
 
-    attributes["uniqueid"] = QString( "amarok-sqltrackuid://" + readUniqueId( path ) );
+    AFTUtility aftutil;
+    attributes["uniqueid"] = QString( "amarok-sqltrackuid://" + aftutil.readUniqueId( path ) );
 
     return attributes;
 }
@@ -992,7 +851,7 @@ CollectionScanner::readArgs()
                     m_collectionId = arg;
                 else
                     displayHelp();
-                    
+
                 rpatharg = false;
                 pidarg = false;
                 savelocationarg = false;
@@ -1036,7 +895,7 @@ CollectionScanner::readArgs()
                 else
                     displayHelp();
             }
-            
+
         }
         else if( arg.startsWith( "-" ) )
         {
@@ -1056,7 +915,7 @@ CollectionScanner::readArgs()
                     m_batch = true;
                 else
                     displayHelp();
-                
+
                 ++pos;
             }
         }
@@ -1079,7 +938,7 @@ CollectionScanner::displayHelp()
     s_textStream << qPrintable( tr( "+Folder(s)            : Folders to scan; when using -b and -i, the path to the file generated by Amarok containing the list of folders" ) ) << endl;
     s_textStream << qPrintable( tr( "-h, --help            : This help text" ) ) << endl;
     s_textStream << qPrintable( tr( "-r, --recursive       : Scan folders recursively" ) ) << endl;
-    s_textStream << qPrintable( tr( "-i, --incremental     : Incremental scan (modified folders only)." ) ) << endl;
+    s_textStream << qPrintable( tr( "-i, --incremental     : Incremental scan (modified folders only)" ) ) << endl;
     s_textStream << qPrintable( tr( "-p, --importplaylists : Import playlists" ) ) << endl;
     s_textStream << qPrintable( tr( "-s, --restart         : After a crash, restart the scanner in its last position" ) ) << endl;
     s_textStream << qPrintable( tr( "-b, --batch           : Run in batch mode" ) ) << endl;

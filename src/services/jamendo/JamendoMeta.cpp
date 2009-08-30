@@ -1,30 +1,28 @@
-/***************************************************************************
- *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "JamendoMeta.h"
 
 #include "JamendoService.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "SvgHandler.h"
 
 #include "Debug.h"
 #include <KStandardDirs>
+
+#include <QAction>
 
 using namespace Meta;
 
@@ -128,15 +126,16 @@ JamendoTrack::JamendoTrack( const QStringList & resultRow )
 {
 }
 
-QList< PopupDropperAction * >
+QList< QAction * >
 Meta::JamendoTrack::customActions()
 {
     DEBUG_BLOCK
-    QList< PopupDropperAction * > actions;
+    QList< QAction * > actions;
 
     if ( !m_downloadCustomAction )
     {
-        m_downloadCustomAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "download",KIcon("download-amarok" ), i18n( "&Download" ), 0 );
+        m_downloadCustomAction = new QAction( KIcon("download-amarok" ), i18n( "&Download" ), 0 );
+        m_downloadCustomAction->setProperty( "popupdropper_svg_id", "download" );
         JamendoAlbum * jAlbum = static_cast<JamendoAlbum *> ( album().data() );
         QObject::connect( m_downloadCustomAction, SIGNAL( activated() ), jAlbum->service(), SLOT( download() ) );
     }
@@ -145,15 +144,16 @@ Meta::JamendoTrack::customActions()
     return actions;
 }
 
-QList< PopupDropperAction * >
+QList< QAction * >
 Meta::JamendoTrack::currentTrackActions()
 {
     DEBUG_BLOCK
-    QList< PopupDropperAction * > actions;
+    QList< QAction * > actions;
 
     if ( !m_downloadCurrentTrackAction )
     {
-        m_downloadCurrentTrackAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "download", KIcon("download-amarok" ), i18n( "Jamendo.com: &Download" ), 0 );
+        m_downloadCurrentTrackAction = new QAction( KIcon("download-amarok" ), i18n( "Jamendo.com: &Download" ), 0 );
+        m_downloadCurrentTrackAction->setProperty( "popupdropper_svg_id", "download" );
         JamendoAlbum * jAlbum = static_cast<JamendoAlbum *> ( album().data() );
         QObject::connect( m_downloadCurrentTrackAction, SIGNAL( activated() ), jAlbum->service(), SLOT( downloadCurrentTrackAlbum() ) );
     }
@@ -194,6 +194,11 @@ void
 Meta::JamendoTrack::setService(JamendoService * service)
 {
     m_service = service;
+}
+
+QString JamendoTrack::type() const
+{
+    return "ogg";
 }
 
 //// JamendoArtist ////
@@ -364,12 +369,13 @@ Meta::JamendoAlbum::service()
     return m_service;
 }
 
-QList< PopupDropperAction * >
+QList< QAction * >
 Meta::JamendoAlbum::customActions()
 {
     DEBUG_BLOCK
-    QList< PopupDropperAction * > actions;
-    PopupDropperAction * action = new PopupDropperAction(  The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "download",  KIcon("download-amarok" ), i18n( "&Download" ), 0 );
+    QList< QAction * > actions;
+    QAction * action = new QAction( KIcon("download-amarok" ), i18n( "&Download" ), 0 );
+    action->setProperty( "popupdropper_svg_id", "download" );
 
     QObject::connect( action, SIGNAL( activated() ) , m_service, SLOT( download() ) );
 

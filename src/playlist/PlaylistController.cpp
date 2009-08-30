@@ -1,25 +1,23 @@
-/***************************************************************************
- * copyright        : (C) 2007-2008 Ian Monroe <ian@monroe.nu>
- *                    (C) 2007-2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
- *                    (C) 2008 Seb Ruiz <ruiz@kde.org>
- *                    (C) 2008 Soren Harward <stharward@gmail.com>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License or (at your option) version 3 or any later version
- * accepted by the membership of KDE e.V. (or its successor approved
- * by the membership of KDE e.V.), which shall act as a proxy
- * defined in Section 14 of version 3 of the license.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- **************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007-2008 Ian Monroe <ian@monroe.nu>                                   *
+ * Copyright (c) 2007-2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>               *
+ * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
+ * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) version 3 or        *
+ * any later version accepted by the membership of KDE e.V. (or its successor approved  *
+ * by the membership of KDE e.V.), which shall act as a proxy defined in Section 14 of  *
+ * version 3 of the license.                                                            *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "PlaylistController.h"
 
@@ -30,8 +28,9 @@
 #include "EngineController.h"
 #include "collection/QueryMaker.h"
 #include "playlist/PlaylistActions.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistModelStack.h"
 #include "playlistmanager/PlaylistManager.h"
+#include "PlaylistFileSupport.h"
 #include "meta/multi/MultiTrack.h"
 
 
@@ -56,10 +55,10 @@ Playlist::Controller::destroy()
 
 Playlist::Controller::Controller( QObject* parent )
         : QObject( parent )
-        , m_model( Model::instance() )
         , m_undoStack( new QUndoStack( this ) )
 {
     s_instance = this;
+    m_topmostModel = Playlist::ModelStack::instance()->top();
 
     m_undoStack->setUndoLimit( 20 );
     connect( m_undoStack, SIGNAL( canRedoChanged( bool ) ), this, SIGNAL( canRedoChanged( bool ) ) );
@@ -93,7 +92,7 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
         while ( i.hasNext() )
         {
             i.next();
-            if ( m_model->containsTrack( i.value() ) )
+            if ( m_topmostModel->containsTrack( i.value() ) )
                 i.remove();
         }
     }
@@ -101,6 +100,8 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
     int firstItemAdded = -1;
     if ( options & Replace )
     {
+        emit replacingPlaylist();
+
         m_undoStack->beginMacro( "Replace playlist" ); // TODO: does this need to be internationalized?
         clear();
         insertionHelper( -1, list );
@@ -109,9 +110,9 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
     }
     else if ( options & Queue )
     {
-        firstItemAdded = m_model->activeRow() + 1;
+        firstItemAdded = m_topmostModel->activeRow() + 1;
         // We want to add the newly queued items after any items which are already queued
-        while( m_model->stateOfRow( firstItemAdded ) & Item::Queued )
+        while( m_topmostModel->stateOfRow( firstItemAdded ) & Item::Queued )
             firstItemAdded++;
 
         insertionHelper( firstItemAdded, list );
@@ -124,7 +125,7 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
     }
     else
     {
-        firstItemAdded = m_model->rowCount();
+        firstItemAdded = m_topmostModel->rowCount();
         insertionHelper( firstItemAdded, list );
     }
 
@@ -275,8 +276,9 @@ Playlist::Controller::removeRows( QList<int>& rows )
     RemoveCmdList cmds;
     foreach( int r, rows )
     {
-        if (( r >= 0 ) && ( r < m_model->rowCount() ) )
-            cmds.append( RemoveCmd( m_model->trackAt( r ), r ) );
+        debug() << "Removing row " << r;
+        if (( r >= 0 ) && ( r < m_topmostModel->rowCount() ) )
+            cmds.append( RemoveCmd( m_topmostModel->trackAt( r ), m_topmostModel->rowToBottomModel( r ) ) );
         else
             warning() << "received command to remove non-existent row" << r;
     }
@@ -346,8 +348,8 @@ Playlist::Controller::moveRows( QList<int>& from, int to )
     DEBUG_BLOCK
     if ( from.size() <= 0 )
         return to;
-    
-    to = ( to == qBound( 0, to, m_model->rowCount() ) ) ? to : m_model->rowCount();
+
+    to = ( to == qBound( 0, to, m_topmostModel->rowCount() ) ) ? to : m_topmostModel->rowCount();
 
     qSort( from.begin(), from.end() );
     from.erase( std::unique( from.begin(), from.end() ), from.end() );
@@ -358,14 +360,14 @@ Playlist::Controller::moveRows( QList<int>& from, int to )
     QList<int> target;
     for ( int i = min; i <= max; i++ )
     {
-        if ( i >=  m_model->rowCount() )
+        if ( i >=  m_topmostModel->rowCount() )
             break; // we are likely moving below the last element, to an index that really does not exist, and thus should not be moved up.
         source.append( i );
         target.append( i );
     }
 
     int originalTo = to;
-    
+
     foreach ( int f, from )
     {
         if ( f < originalTo )
@@ -376,8 +378,8 @@ Playlist::Controller::moveRows( QList<int>& from, int to )
 
     // We iterate through the items in reverse order, as this allows us to keep the target row constant
     // (remember that the item that was originally on the target row is pushed down)
-    QList<int>::const_iterator f_iter = from.end();
-    while( f_iter != from.begin() )
+    QList<int>::const_iterator f_iter = from.constEnd();
+    while( f_iter != from.constBegin() )
     {
         --f_iter;
         source.insert( ( to - min ), *f_iter );
@@ -411,9 +413,9 @@ Playlist::Controller::moveRows( QList<int>& from, QList<int>& to )
     for ( int i = 0; i < from.size(); i++ )
     {
         debug() << "moving rows:" << from.at( i ) << to.at( i );
-        if ( ( from.at( i ) >= 0 ) && ( from.at( i ) < m_model->rowCount() ) )
+        if ( ( from.at( i ) >= 0 ) && ( from.at( i ) < m_topmostModel->rowCount() ) )
             if ( from.at( i ) != to.at( i ) )
-                cmds.append( MoveCmd( from.at( i ), to.at( i ) ) );
+                cmds.append( MoveCmd( m_topmostModel->rowToBottomModel( from.at( i ) ), m_topmostModel->rowToBottomModel( to.at( i ) ) ) );
     }
 
     if ( cmds.size() > 0 )
@@ -436,7 +438,7 @@ void
 Playlist::Controller::clear()
 {
     DEBUG_BLOCK
-    removeRows( 0, Model::instance()->rowCount() );
+    removeRows( 0, Playlist::ModelStack::instance()->source()->rowCount() );
 }
 
 /**************************************************
@@ -488,8 +490,6 @@ Playlist::Controller::slotFinishDirectoryLoader( const Meta::TrackList& tracks )
 void
 Playlist::Controller::insertionHelper( int row, Meta::TrackList& tl )
 {
-    DEBUG_BLOCK
-
     // expand any tracks that are actually playlists
     QMutableListIterator<Meta::TrackPtr> i( tl );
     while ( i.hasNext() )
@@ -498,9 +498,9 @@ Playlist::Controller::insertionHelper( int row, Meta::TrackList& tl )
         Meta::TrackPtr track = i.value();
         if ( track == Meta::TrackPtr() )
             i.remove();
-        else if ( The::playlistManager()->canExpand( track ) )
+        else if( Meta::canExpand( track ) )
         {
-            Meta::PlaylistPtr playlist = The::playlistManager()->expand( track ); //expand() can return 0 if the KIO job times out
+            Meta::PlaylistPtr playlist = Meta::expand( track ); //expand() can return 0 if the KIO job times out
             if ( playlist )
             {
                 //since this is a playlist masqueurading as a single track, make a MultiTrack out of it:
@@ -512,7 +512,8 @@ Playlist::Controller::insertionHelper( int row, Meta::TrackList& tl )
     }
 
     InsertCmdList cmds;
-    row = qBound( 0, Model::instance()->rowCount(), row );
+
+    row = qBound( 0, m_topmostModel->rowToBottomModel( row ), Playlist::ModelStack::instance()->source()->rowCount() );
 
     foreach( Meta::TrackPtr t, tl )
         cmds.append( InsertCmd( t, row++ ) );

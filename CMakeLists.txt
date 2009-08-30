@@ -26,6 +26,21 @@ check_taglib_filename(COMPLEX_TAGLIB_FILENAME)
 
 configure_file(config-amarok.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-amarok.h )
 
+# Needed to conditionally build tests and gui
+if(CMAKE_BUILD_TYPE MATCHES debugfull)
+   add_definitions(-DDEBUG)
+endif(CMAKE_BUILD_TYPE MATCHES debugfull)
+
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
+if (CMAKE_COMPILER_IS_GNUCXX)
+    SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0")
+    if( NOT WIN32 AND NOT APPLE )
+        SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,--as-needed")
+    endif( NOT WIN32 AND NOT APPLE )
+endif (CMAKE_COMPILER_IS_GNUCXX)
+
+include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/shared )
+
 if( WITH_PLAYER )
 #We depend on kde4.2 now.. I believe this is the easiest way to do it.
     set(KDE_MIN_VERSION "4.2.0")
@@ -53,17 +68,29 @@ if( WITH_PLAYER )
     macro_optional_find_package(Strigi)
     macro_log_feature( STRIGI_FOUND "strigi" "Index metadata of files" "http://strigi.sourceforge.net" TRUE "" "" )
 
-    macro_optional_find_package(Ipod)
+    macro_optional_find_package(LibLastFm)
+    macro_log_feature( LIBLASTFM_FOUND "liblastfm" "Enable Last.Fm service, including scrobbling, song submissions, and suggested song dynamic playlists" "http://cdn.last.fm/src/liblastfm-0.3.0.tar.bz2" FALSE "0.3" "" )
+    
+    if (WITH_IPOD)
+	FIND_PACKAGE(Ipod)
+    else (WITH_IPOD)
+	set(IPOD_FOUND)
+	set(IPOD_INCLUDE_DIR)
+	set(IPOD_INCLUDES)
+	set(IPOD_LIBRARY)
+	set(IPOD_LIBRARIES)
+    endif (WITH_IPOD)
+	    
     if(IPOD_FOUND)
-        macro_ensure_version("0.7.0" ${IPOD_VERSION} IPOD_0_7)
+	macro_ensure_version("0.7.0" ${IPOD_VERSION} IPOD_0_7)
     endif(IPOD_FOUND)
     macro_log_feature( IPOD_0_7 "libgpod" "Support Apple iPod audio devices" "http://sourceforge.net/projects/gtkpod/" FALSE "0.7.0" "" )
- 
+		
     if( WITH_Ipod )
-        macro_optional_find_package(Gdk)
-        macro_log_feature( GDK_FOUND "Gdk" "Support for artwork on iPod audio devices via GdkPixbuf" "http://developer.gnome.org/arch/imaging/gdkpixbuf.html" FALSE "2.0.x" "" )
+	macro_optional_find_package(Gdk)
+	macro_log_feature( GDK_FOUND "Gdk" "Support for artwork on iPod audio devices via GdkPixbuf" "http://developer.gnome.org/arch/imaging/gdkpixbuf.html" FALSE "2.0.x" "" )
     endif( WITH_Ipod )
-
+ 
     macro_optional_find_package(Mtp)
     macro_log_feature( MTP_FOUND "libmtp" "Enable Support for portable media devices that use the media transfer protocol" "http://libmtp.sourceforge.net/" FALSE "0.3.0" "")
 
@@ -94,8 +121,8 @@ if( WITH_PLAYER )
     endif( WITH_MP3Tunes )
 
     if( WITH_Ipod OR WITH_MP3Tunes )
-        find_package(GLIB2)
-        macro_log_feature( GLIB2_FOUND "glib2" "Required by libgpod and mp3tunes" "http://www.gtk.org" FALSE "2.x" "")
+	find_package(GLIB2)
+	macro_log_feature( GLIB2_FOUND "glib2" "Required by libgpod and mp3tunes" "http://www.gtk.org" FALSE "2.x" "")
     endif( WITH_Ipod OR WITH_MP3Tunes )
 
     #These two are currently unused
@@ -108,25 +135,23 @@ if( WITH_PLAYER )
 
     include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE4_INCLUDES} ${TAGLIB_INCLUDES})
 
-    add_subdirectory( src )
+if(CMAKE_BUILD_TYPE MATCHES debugfull)
     add_subdirectory( tests )
+endif(CMAKE_BUILD_TYPE MATCHES debugfull)
+
+    add_subdirectory( src )
 
     macro_display_feature_log()
 
     #Do not remove or modify these.  The release script substitutes in for these
     #comments with appropriate doc and translation directories.
-    
-include(MacroOptionalAddSubdirectory)
-macro_optional_add_subdirectory( po )
-
+    #PO_SUBDIR
     #DOC_SUBDIR
-
-    add_executable( bindingstest cmake/modules/QtScriptBindingsTest.cpp )
-    target_link_libraries( bindingstest ${QT_QTSCRIPT_LIBRARY} ${KDE4_KDEUI_LIBS} )
 
 else( WITH_PLAYER )
 
     find_package( Qt4 REQUIRED )
+    set( CMAKE_INCLUDE_CURRENT_DIR ON )
     add_definitions(${QT_DEFINITIONS})
     include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${TAGLIB_INCLUDES})
 
@@ -137,7 +162,4 @@ if( WITH_UTILITIES )
     set(BIN_INSTALL_DIR          "${EXEC_INSTALL_PREFIX}/bin"    CACHE PATH "The subdirectory to the binaries prefix (default prefix/bin)" FORCE)
     add_subdirectory( utilities )
 endif( WITH_UTILITIES )
-
-SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0")
 

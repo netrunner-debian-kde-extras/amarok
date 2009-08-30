@@ -1,17 +1,22 @@
-/*
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 2 of the License, or
- * (at your option) any later version.
- *
- * osd.cpp:   Shows some text in a pretty way independent to the WM
- * begin:     Fre Sep 26 2003
- * copyright: (C) 2004 Christian Muehlhaeuser <chris@chris.de>
- *            (C) 2004-2006 Seb Ruiz <ruiz@kde.org>
- *            (C) 2004, 2005 Max Howell
- *            (C) 2005 Gábor Lehel <illissius@gmail.com>
- *            (C) 2008 Mark Kretschmann <kretschmann@kde.org>
- */
+/****************************************************************************************
+ * Copyright (c) 2004 Christian Muehlhaeuser <chris@chris.de>                           *
+ * Copyright (c) 2004-2006 Seb Ruiz <ruiz@kde.org>                                      *
+ * Copyright (c) 2004,2005 Max Howell <max.howell@methylblue.com>                       *
+ * Copyright (c) 2005 Gabor Lehel <illissius@gmail.com>                                 *
+ * Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>                            *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #define DEBUG_PREFIX "OSD"
 
@@ -27,6 +32,7 @@
 
 #include <KApplication>
 #include <KIcon>
+#include <KWindowSystem>
 
 #include <QDesktopWidget>
 #include <QMouseEvent>
@@ -62,7 +68,7 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
     // The best of both worlds.  On Windows, setting the widget as a popup avoids a task manager entry.  On linux, a popup steals focus.
     // Therefore we go need to do it platform specific :(
     #ifdef Q_OS_WIN
-    flags |= Qt::Popup;
+    flags |= Qt::Tool;
     #else
     flags |= Qt::Window | Qt::X11BypassWindowManagerHint;
     #endif
@@ -70,6 +76,10 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
     setObjectName( name );
     setFocusPolicy( Qt::NoFocus );
     unsetColors();
+
+    #ifdef Q_WS_X11
+    KWindowSystem::setType( winId(), NET::Notification );
+    #endif
 
     m_timer->setSingleShot( true );
 
@@ -132,7 +142,7 @@ OSDWidget::volumeChanged( int volume )
         QString muteState = "";
         m_showVolume = true;
 
-        m_text = i18n("Volume: %1% %2", m_volume, ( The::engineController()->isMuted() ? "(muted)" : "" ) );
+        m_text = i18n("Volume: %1% %2", m_volume, ( The::engineController()->isMuted() ? i18n("(muted)") : "" ) );
 
         show();
     }
@@ -654,10 +664,8 @@ Amarok::OSD::engineStateChanged( Phonon::State state, Phonon::State oldState )
     switch( state )
     {
         case Phonon::PlayingState:
-            unsubscribeFrom( m_currentTrack );
             m_currentTrack = track;
-            subscribeTo( track );
-            metadataChanged( track );
+            show( m_currentTrack );
             m_paused = false;
             break;
 
@@ -670,15 +678,6 @@ Amarok::OSD::engineStateChanged( Phonon::State state, Phonon::State oldState )
         default:
             break;
     }
-}
-
-void
-Amarok::OSD::metadataChanged( Meta::TrackPtr track )
-{
-    Q_UNUSED( track )
-    DEBUG_BLOCK
-
-    show( m_currentTrack );
 }
 
 

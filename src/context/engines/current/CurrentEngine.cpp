@@ -1,15 +1,18 @@
-/***************************************************************************
- * copyright            : (C) 2007 Leo Franchi <lfranchi@gmail.com>        *
- **************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007 Leo Franchi <lfranchi@gmail.com>                                  *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "CurrentEngine.h"
 
@@ -23,13 +26,19 @@
 #include "meta/capabilities/SourceInfoCapability.h"
 
 #include <QVariant>
+#include <Phonon/MediaObject>
+#include <Phonon/Path>
+#include <Phonon/MediaController>
+#include <Phonon/MediaSource> //Needed for the slot
 
 using namespace Context;
 
 CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
     : DataEngine( parent )
     , ContextObserver( ContextView::self() )
+    , EngineObserver( The::engineController() )
     , m_coverWidth( 0 )
+    , m_state( Phonon::StoppedState )
 	, m_qm( 0 )
 	, m_qmTracks( 0 )
 	, m_qmFavTracks( 0 )
@@ -97,6 +106,12 @@ CurrentEngine::sourceRequestEvent( const QString& name )
 }
 
 void
+CurrentEngine::engineStateChanged(Phonon::State newState, Phonon::State )
+{
+    m_state = newState ;
+}
+
+void
 CurrentEngine::message( const ContextState& state )
 {
     DEBUG_BLOCK
@@ -124,7 +139,13 @@ CurrentEngine::stoppedState()
 {
     DEBUG_BLOCK
 
-    m_timer->stop();
+    m_timer->stop();    
+
+    //TODO
+    // if we are in buffering state or loading state, do not show the recently album etc ...
+    if ( m_state == Phonon::BufferingState || m_state== Phonon::LoadingState )
+        return;
+    
     removeAllData( "current" );
     setData( "current", "notrack", i18n( "No track playing") );
     removeAllData( "albums" );
@@ -261,6 +282,7 @@ CurrentEngine::update()
         {
             //is the source defined
             const QString source = sic->sourceName();
+            debug() <<" We have source " <<source;
             if( !source.isEmpty() )
                 setData( "current", "source_emblem", sic->scalableEmblem() );
 

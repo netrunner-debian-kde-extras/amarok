@@ -1,22 +1,20 @@
-/*
-   Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
-   Copyright (C) 2008 Shane King <kde@dontletsstart.com>
-   Copyright (C) 2008 Leo Franchi <lfranchi@kde.org>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2008 Shane King <kde@dontletsstart.com>                                *
+ * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef AMAROK_LASTFMMETA_H
 #define AMAROK_LASTFMMETA_H
@@ -26,7 +24,7 @@
 #include "ServiceMetaBase.h" // for the SourceInfoProvider
 
 
-#include <lastfm/types/Track.h>
+#include <lastfm/Track>
 
 
 #include <QObject>
@@ -42,7 +40,7 @@ namespace LastFm
             class Private;
 
             Track( const QString &lastFmUri );
-            Track( ::Track track ); //Convienience Constructor to allow constructing a Meta::LastFmTrack from a LastFmTrack (confusing?)
+            Track( lastfm::Track track ); //Convienience Constructor to allow constructing a Meta::LastFmTrack from a LastFmTrack (confusing?)
             virtual ~Track();
 
         //methods inherited from Meta::MetaBase
@@ -81,6 +79,7 @@ namespace LastFm
             virtual int sampleRate() const;
             virtual int bitrate() const;
             virtual uint lastPlayed() const;
+            virtual uint firstPlayed() const;
             virtual int playCount() const;
 
             virtual QString type() const;
@@ -94,14 +93,14 @@ namespace LastFm
 
             virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
 
-            void setTrackInfo( const ::Track &trackInfo );
+            void setTrackInfo( const lastfm::Track &trackInfo );
 
             virtual QString sourceName();
             virtual QString sourceDescription();
             virtual QPixmap emblem();
             virtual QString scalableEmblem();
 
-            QList< PopupDropperAction * > nowPlayingActions() const;
+            QList< QAction * > nowPlayingActions() const;
 
         //LastFm specific methods, cast the object to LastFm::Track to use them
         //you can cast the Track when type() returns "stream/lastfm" (or use a dynamic cast:)
@@ -114,8 +113,8 @@ namespace LastFm
             void skip();
 
         private slots:
-            void slotResultReady( WsReply* );
-            void slotWsReply( WsReply* );
+            void slotResultReady();
+            void slotWsReply();
             
         signals:
             void skipTrack(); // needed for communication with multiplayablecapability
@@ -123,7 +122,7 @@ namespace LastFm
             void init( int id = -1 );
             //use a d-pointer because some code is going to work directly with LastFm::Track
             Private * const d;
-            QList< PopupDropperAction * > m_currentTrackActions;
+            QList< QAction * > m_currentTrackActions;
     };
 
     class LastFmProviderCapability : public Meta::Capability

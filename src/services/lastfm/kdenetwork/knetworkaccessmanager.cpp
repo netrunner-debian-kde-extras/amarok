@@ -1,30 +1,25 @@
-/*
- * This file is part of the KDE project.
- *
- * Copyright (C) 2008 Urs Wolfer <uwolfer @ kde.org>
- * Copyright (C) 2007 Trolltech ASA
- *
- * This library is free software; you can redistribute it and/or
- * modify it under the terms of the GNU Library General Public
- * License as published by the Free Software Foundation; either
- * version 2 of the License, or (at your option) any later version.
- *
- * This library is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
- * Library General Public License for more details.
- *
- * You should have received a copy of the GNU Library General Public License
- * along with this library; see the file COPYING.LIB.  If not, write to
- * the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
- * Boston, MA 02110-1301, USA.
- *
- */
+/****************************************************************************************
+ * Copyright (c) 2007 Trolltech ASA <copyright@trolltech.com>                           *
+ * Copyright (c) 2008 Urs Wolfer <uwolfer@kde.org>                                      *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "knetworkaccessmanager.h"
 
 #include "knetworkreply.h"
 
+#include <QBuffer>
 #include <QNetworkRequest>
 #include <QNetworkReply>
 
@@ -38,7 +33,7 @@ public:
 };
 
 KNetworkAccessManager::KNetworkAccessManager(QObject *parent)
-    : WsAccessManager(parent), d(new KNetworkAccessManager::KNetworkAccessManagerPrivate())
+    : QNetworkAccessManager(parent), d(new KNetworkAccessManager::KNetworkAccessManagerPrivate())
 {
 }
 
@@ -74,13 +69,9 @@ QNetworkReply *KNetworkAccessManager::createRequest(Operation op, const QNetwork
             break;
         }
         case PostOperation: {
-        /*    kDebug() << "PostOperation:" << req.url();
-            kDebug() << "post data:" << dynamic_cast<QBuffer*>(outgoingData)->data();
+            kDebug() << "PostOperation:" << req.url();
             kioJob = KIO::http_post(req.url(), outgoingData->readAll(), KIO::HideProgressInfo);
-        
-            break;  */ 
-           return WsAccessManager::createRequest( op, req, outgoingData );
-            
+            break;            
         }
         default:
             kDebug() << "Unknown operation";
@@ -90,6 +81,9 @@ QNetworkReply *KNetworkAccessManager::createRequest(Operation op, const QNetwork
     KNetworkReply *reply = new KNetworkReply(req, kioJob, this);
 
     kioJob->addMetaData(metaDataForRequest(req));
+
+    if ( op == PostOperation && !kioJob->metaData().contains("content-type"))
+        kioJob->addMetaData("content-type", "Content-Type: application/x-www-form-urlencoded" );
 
     connect(kioJob, SIGNAL(data(KIO::Job *, const QByteArray &)),
         reply, SLOT(appendData(KIO::Job *, const QByteArray &)));
@@ -121,7 +115,13 @@ KIO::MetaData KNetworkAccessManager::metaDataForRequest(QNetworkRequest request)
         const QByteArray value = request.rawHeader(headerKey);
         if (value.isNull())
             continue;
-
+// createRequest() checks later for existence "content-type" metadata
+        if (headerKey=="Content-Type")
+        {
+            metaData.insert("content-type", value);
+            continue;
+        }
+        
         if (additionHeaders.length() > 0) {
             additionHeaders += "\r\n";
         }

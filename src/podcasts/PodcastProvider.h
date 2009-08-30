@@ -1,20 +1,18 @@
-/* This file is part of the KDE project
-   Copyright (C) 2007 Bart Cerneels <bart.cerneels@kde.org>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2007 Bart Cerneels <bart.cerneels@kde.org>                             *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef PODCASTPROVIDER_H
 #define PODCASTPROVIDER_H
@@ -27,7 +25,7 @@
 #include <klocale.h>
 
 class KUrl;
-class PopupDropperAction;
+class QAction;
 
 /**
 	@author Bart Cerneels <bart.cerneels@kde.org>
@@ -59,10 +57,16 @@ class AMAROK_EXPORT PodcastProvider : public Amarok::TrackProvider, public Playl
 
         virtual Meta::PlaylistList playlists() = 0;
 
-        virtual QList<PopupDropperAction *> episodeActions( Meta::PodcastEpisodeList )
-            { return QList<PopupDropperAction *>(); }
-        virtual QList<PopupDropperAction *> channelActions( Meta::PodcastChannelList )
-            { return QList<PopupDropperAction *>(); }
+        virtual QList<QAction *> episodeActions( Meta::PodcastEpisodeList )
+            { return QList<QAction *>(); }
+        virtual QList<QAction *> channelActions( Meta::PodcastChannelList )
+            { return QList<QAction *>(); }
+
+        virtual QList<QAction *> playlistActions( Meta::PlaylistPtr playlist )
+                { Q_UNUSED( playlist ) return QList<QAction *>(); }
+        virtual QList<QAction *> trackActions( Meta::PlaylistPtr playlist,
+                                                  int trackIndex )
+                { Q_UNUSED( playlist) Q_UNUSED( trackIndex ) return QList<QAction *>(); }
 
     public slots:
         virtual void updateAll() = 0;

@@ -1,19 +1,18 @@
-/******************************************************************************
- * Copyright (C) 2008 Peter ZHOU <peterzhoulei@gmail.com>                     *
- *                                                                            *
- * This program is free software; you can redistribute it and/or              *
- * modify it under the terms of the GNU General Public License as             *
- * published by the Free Software Foundation; either version 2 of             *
- * the License, or (at your option) any later version.                        *
- *                                                                            *
- * This program is distributed in the hope that it will be useful,            *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
- * GNU General Public License for more details.                               *
- *                                                                            *
- * You should have received a copy of the GNU General Public License          *
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
- ******************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Peter ZHOU <peterzhoulei@gmail.com>                               *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "AmarokEngineScript.h"
 
@@ -23,6 +22,7 @@
 #include "MainWindow.h"
 //#include "mediabrowser.h"
 #include "playlist/PlaylistActions.h"
+#include "playlist/PlaylistModel.h"
 
 
 #include <KSelectAction>
@@ -30,14 +30,10 @@
 namespace AmarokScript
 {
     AmarokEngineScript::AmarokEngineScript( QScriptEngine* ScriptEngine )
-    : QObject( kapp )
+        : QObject( kapp )
+        , EngineObserver( The::engineController() )
     {
         Q_UNUSED( ScriptEngine );
-        connect( The::engineController(), SIGNAL( trackChanged( Meta::TrackPtr ) ), this, SIGNAL( trackChanged() ) );
-        connect( The::engineController(), SIGNAL( trackFinished() ), this, SIGNAL( trackFinished() ) );
-        connect( The::engineController(), SIGNAL( trackSeeked( int ) ), this, SIGNAL( trackSeeked( int ) ) );
-        connect( The::engineController(), SIGNAL( volumeChanged( int ) ), this, SIGNAL( volumeChanged( int ) ) );
-        connect( The::engineController(), SIGNAL( trackPlayPause( int ) ), this, SIGNAL( trackPlayPause( int ) ) );
     }
 
     AmarokEngineScript::~AmarokEngineScript()
@@ -71,11 +67,6 @@ namespace AmarokScript
     void AmarokEngineScript::PlayPause() const
     {
         The::engineController()->playPause();
-    }
-
-    void AmarokEngineScript::PlayAudioCD() const
-    {
-        The::mainWindow()->playAudioCD();
     }
 
     void AmarokEngineScript::Seek( int ms ) const
@@ -129,15 +120,15 @@ namespace AmarokScript
         {
             case Phonon::PlayingState:
             case Phonon::BufferingState:
-                return 0; //Playing
+                return Playing;
             case Phonon::PausedState:
-                return 1; //Paused
+                return Paused;
             case Phonon::LoadingState:
             case Phonon::StoppedState:
-                return 2; //Stopped
+                return Stopped;
             default:
             case Phonon::ErrorState:
-                return -1;
+                return Error;
         };
     }
 
@@ -145,6 +136,31 @@ namespace AmarokScript
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();
         return QVariant::fromValue( track );
+    }
+
+    void AmarokEngineScript::engineVolumeChanged( int newVolume )
+    {
+        emit volumeChanged( newVolume );
+    }
+    void AmarokEngineScript::engineTrackPositionChanged( long position, bool userSeek )
+    {
+        Q_UNUSED( userSeek )
+        emit trackSeeked( position );
+    }
+    void AmarokEngineScript::engineTrackChanged( Meta::TrackPtr track )
+    {
+        emit trackChanged();
+        if ( track.isNull() )
+            emit trackFinished();
+    }
+    void AmarokEngineScript::engineStateChanged( Phonon::State newState, Phonon::State oldState )
+    {
+        Q_UNUSED( oldState );
+
+        if( newState == Phonon::PlayingState )
+            emit trackPlayPause( Playing );
+        else if( newState == Phonon::PausedState )
+            emit trackPlayPause( Paused );
     }
 
     bool AmarokEngineScript::randomMode() const

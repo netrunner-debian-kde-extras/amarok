@@ -1,15 +1,18 @@
-/***************************************************************************
- * copyright            : (C) 2009 Jeff Mitchell <mitchell@kde.org>        *
- **************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2009 Jeff Mitchell <mitchell@kde.org>                                  *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "SongkickApplet.h"
 
@@ -35,7 +38,7 @@
 
 SongkickApplet::SongkickApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
-    , m_titleText( "Songkick Concert Information" )
+    , m_titleText( i18n("Songkick Concert Information") )
     , m_titleLabel( 0 )
     , m_reloadIcon( 0 )
     , m_songkick( 0 )
@@ -55,22 +58,22 @@ SongkickApplet::~ SongkickApplet()
 void SongkickApplet::init()
 {
     QColor highlight = PaletteHandler::highlightColor().darker( 300 );
-    
-    m_titleLabel = new QGraphicsSimpleTextItem( "Concerts", this );
+
+    m_titleLabel = new QGraphicsSimpleTextItem( i18n("Concerts"), this );
     QFont bigger = m_titleLabel->font();
     bigger.setPointSize( bigger.pointSize() + 2 );
     m_titleLabel->setFont( bigger );
     m_titleLabel->setZValue( m_titleLabel->zValue() + 100 );
    // m_titleLabel->setBrush( highlight );
-    
-    QAction* reloadAction = new QAction( "Reload Songkick", this );
+
+    QAction* reloadAction = new QAction( i18n("Reload Songkick"), this );
     reloadAction->setIcon( KIcon( "view-refresh" ) );
     reloadAction->setVisible( true );
     reloadAction->setEnabled( true );
     m_reloadIcon = addAction( reloadAction );
 
     connect( m_reloadIcon, SIGNAL( activated() ), dataEngine( "amarok-songkick" ), SLOT( update() ) );
-    
+
     m_songkickProxy = new QGraphicsProxyWidget( this );
     m_songkick = new QTextBrowser;
     m_songkick->setAttribute( Qt::WA_NoSystemBackground );
@@ -87,8 +90,9 @@ void SongkickApplet::init()
     pal.setBrush( QPalette::Window, brush );
     m_songkick->setPalette( pal );
     m_songkickProxy->setPalette( pal );
-    m_songkick->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" ).arg( PaletteHandler::highlightColor().lighter( 150 ).name() )
-                                                                                                              .arg( PaletteHandler::highlightColor().darker( 400 ).name() ) );
+    m_songkick->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" )
+                                    .arg( PaletteHandler::highlightColor().lighter( 150 ).name() )
+                                    .arg( PaletteHandler::highlightColor().darker( 400 ).name() ) );
 
     connect( dataEngine( "amarok-songkick" ), SIGNAL( sourceAdded( const QString& ) ), this, SLOT( connectSource( const QString& ) ) );
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
@@ -98,45 +102,19 @@ void SongkickApplet::init()
     connectSource( "dates" );
 }
 
-Plasma::IconWidget*
-SongkickApplet::addAction( QAction *action )
-{
-    if ( !action )
-    {
-        debug() << "ERROR!!! PASSED INVALID ACTION";
-        return 0;
-    }
-
-    Plasma::IconWidget *tool = new Plasma::IconWidget( this );
-
-    tool->setAction( action );
-    tool->setText( "" );
-    tool->setToolTip( action->text() );
-    tool->setDrawBackground( false );
-    tool->setOrientation( Qt::Horizontal );
-    QSizeF iconSize = tool->sizeFromIconSize( 16 );
-    tool->setMinimumSize( iconSize );
-    tool->setMaximumSize( iconSize );
-    tool->resize( iconSize );
-
-
-    tool->hide();
-    tool->setZValue( zValue() + 1 );
-
-    return tool;
-}
-
 void SongkickApplet::connectSource( const QString& source )
 {
-    if( source == "ontour" ) {
+    if( source == "ontour" )
+    {
         dataEngine( "amarok-songkick" )->connectSource( source, this );
         dataUpdated( source, dataEngine("amarok-songkick" )->query( "ontour" ) );
-    } else if( source == "dates" )
+    }
+    else if( source == "dates" )
     {
         dataEngine( "amarok-songkick" )->connectSource( source, this );
         dataUpdated( source, dataEngine("amarok-songkick" )->query( "dates" ) );
     }
-} 
+}
 
 void SongkickApplet::constraintsEvent( Plasma::Constraints constraints )
 {
@@ -148,10 +126,10 @@ void SongkickApplet::constraintsEvent( Plasma::Constraints constraints )
     rect.setWidth( rect.width() - 30 );
     m_titleLabel->setText( truncateTextToFit( m_titleText, m_titleLabel->font(), rect ) );
     m_titleLabel->setPos( (size().width() - m_titleLabel->boundingRect().width() ) / 2, standardPadding() + 2 );
-    
+
     m_reloadIcon->setPos( size().width() - m_reloadIcon->size().width() - standardPadding(), standardPadding() );
     m_reloadIcon->show();
-    
+
     //m_songkickProxy->setPos( 0, m_reloadIcon->size().height() );
     m_songkickProxy->setPos( standardPadding(), m_titleLabel->pos().y() + m_titleLabel->boundingRect().height() + standardPadding() );
     QSize songkickSize( size().width() - 2 * standardPadding(), boundingRect().height() - m_songkickProxy->pos().y() - standardPadding() );
@@ -189,7 +167,12 @@ void SongkickApplet::dataUpdated( const QString& name, const Plasma::DataEngine:
                 QString sug = suggestion.toString();
                 //debug() << "parsing suggestion:" << sug;
                 QStringList pieces = sug.split( " - " );
-                QString link = QString( "<a href=\"%1|%2|%3\">%4 - %5</a><br>" ).arg( pieces[ 0 ] ).arg( pieces[ 1 ] ).arg( pieces[ 2 ] ).arg( pieces[ 1 ] ).arg( pieces[ 0 ] );
+                const QString link = QString( "<a href=\"%1|%2|%3\">%4 - %5</a><br>" )
+                                        .arg( pieces[0] )
+                                        .arg( pieces[1] )
+                                        .arg( pieces[2] )
+                                        .arg( pieces[1] )
+                                        .arg( pieces[0] );
                 html += link;
         }
         //debug() << "setting html: " << html;
@@ -207,7 +190,8 @@ void SongkickApplet::dataUpdated( const QString& name, const Plasma::DataEngine:
         m_songkick->show();
         QVariantList lyrics  = data[ "lyrics" ].toList();
 
-        m_titleText = QString( " %1 : %2 - %3" ).arg( "Songkick" ).arg( lyrics[ 0 ].toString() ).arg( lyrics[ 1 ].toString() );
+        m_titleText = QString( "Songkick: %1 - %2" ).arg( lyrics[0].toString() )
+                                                    .arg( lyrics[1].toString() );
         //  need padding for title
         m_songkick->setPlainText( lyrics[ 3 ].toString().trimmed() );
     }
@@ -250,7 +234,7 @@ SongkickApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *opt
     path.addRoundedRect( songkickRect, 5, 5 );
     p->fillPath( path , highlight );
     p->restore();
-    
+
 }
 
 QSizeF SongkickApplet::sizeHint(Qt::SizeHint which, const QSizeF & constraint) const
@@ -267,9 +251,7 @@ QSizeF SongkickApplet::sizeHint(Qt::SizeHint which, const QSizeF & constraint) c
     } else
         return QGraphicsWidget::sizeHint( which, constraint ); */
     return QSizeF( QGraphicsWidget::sizeHint( which, constraint ).width(), 500 );
-    
 }
-
 
 void
 SongkickApplet::paletteChanged( const QPalette & palette )
@@ -278,9 +260,11 @@ SongkickApplet::paletteChanged( const QPalette & palette )
 
     QColor highlight = PaletteHandler::highlightColor().darker( 200 );
     if( m_songkick )
-        m_songkick->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" ).arg( PaletteHandler::highlightColor().lighter( 150 ).name() )
-                                                                                                              .arg( PaletteHandler::highlightColor().darker( 400 ).name() ) );
-    
+        m_songkick->setStyleSheet(
+                        QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" )
+                            .arg( PaletteHandler::highlightColor().lighter( 150 ).name() )
+                            .arg( PaletteHandler::highlightColor().darker( 400 ).name() )
+                            );
 }
 
 #include "SongkickApplet.moc"

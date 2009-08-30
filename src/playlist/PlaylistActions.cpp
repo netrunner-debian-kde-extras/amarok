@@ -1,25 +1,24 @@
-/***************************************************************************
- * copyright        : (C) 2007-2008 Ian Monroe <ian@monroe.nu>
- *                    (C) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
- *                    (C) 2008 Seb Ruiz <ruiz@kde.org>
- *                    (C) 2008 Soren Harward <stharward@gmail.com>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License or (at your option) version 3 or any later version
- * accepted by the membership of KDE e.V. (or its successor approved
- * by the membership of KDE e.V.), which shall act as a proxy
- * defined in Section 14 of version 3 of the license.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- **************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007-2008 Ian Monroe <ian@monroe.nu>                                   *
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
+ * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
+ * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) version 3 or        *
+ * any later version accepted by the membership of KDE e.V. (or its successor approved  *
+ * by the membership of KDE e.V.), which shall act as a proxy defined in Section 14 of  *
+ * version 3 of the license.                                                            *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #define DEBUG_PREFIX "Playlist::Actions"
 
@@ -37,7 +36,8 @@
 #include "navigators/RepeatAlbumNavigator.h"
 #include "navigators/RepeatTrackNavigator.h"
 #include "navigators/StandardTrackNavigator.h"
-#include "PlaylistModel.h"
+#include "navigators/FavoredRandomTrackNavigator.h"
+#include "PlaylistModelStack.h"
 #include "statusbar/StatusBar.h"
 
 
@@ -71,8 +71,13 @@ Playlist::Actions::Actions()
         , m_waitingForNextTrack( false )
 {
     DEBUG_BLOCK
+    m_topmostModel = Playlist::ModelStack::instance()->top();
     playlistModeChanged(); // sets m_navigator.
     m_nextTrackCandidate = m_navigator->requestNextTrack();
+
+    //Stop Amarok from advancing to the next track when play
+    //is pressed.
+    requestTrack( Playlist::ModelStack::instance()->source()->idAt( AmarokConfig::lastPlaying() ) );
 }
 
 Playlist::Actions::~Actions()
@@ -85,21 +90,44 @@ Playlist::Actions::~Actions()
 void
 Playlist::Actions::requestNextTrack()
 {
+    DEBUG_BLOCK
     if ( m_nextTrackCandidate != 0 )
         return;
     if( m_trackError )
         return;
+
+    debug() << "so far so good!";
     m_trackError = false;
-    m_currentTrack = Model::instance()->activeId();
+    m_currentTrack = m_topmostModel->activeId();
     if ( stopAfterMode() == StopAfterQueue && m_currentTrack == m_trackToBeLast )
     {
         setStopAfterMode( StopAfterCurrent );
         m_trackToBeLast = 0;
     }
-    
+
     m_nextTrackCandidate = m_navigator->requestNextTrack();
+
+    if( m_nextTrackCandidate == 0 )
+    {
+
+        debug() << "nothing more to play...";
+        //No more stuff to play. make sure to reset the active track so that
+        //pressing play will start at the top of the playlist (or whereever the navigator wants to start)
+        //instead of just replaying the last track.
+        m_topmostModel->setActiveRow( -1 );
+
+        //We also need to mark all tracks as unplayed or some navigators might be unhappy.
+        m_topmostModel->setAllUnplayed();
+
+        //Make sure that the navigator is reset, otherwise complex navigators might have all tracks marked as
+        //played and will thus be stuck at the last track (or refuse to play any at all) if the playlist is restarted
+        m_navigator->reset();
+
+        return;
+    }
+
     m_currentTrack = m_nextTrackCandidate;
-    
+
     if ( stopAfterMode() == StopAfterCurrent )  //stop after current / stop after track starts here
         setStopAfterMode( StopNever );
     else
@@ -135,7 +163,7 @@ Playlist::Actions::play()
 {
     if( 0 == m_nextTrackCandidate )
     {
-        m_nextTrackCandidate = Model::instance()->activeId();
+        m_nextTrackCandidate = m_topmostModel->activeId();
         if( 0 == m_nextTrackCandidate )
             m_nextTrackCandidate = m_navigator->requestNextTrack();
     }
@@ -156,7 +184,7 @@ Playlist::Actions::play( const QModelIndex& index )
 void
 Playlist::Actions::play( const int row )
 {
-    m_nextTrackCandidate = Model::instance()->idAt( row );
+    m_nextTrackCandidate = m_topmostModel->idAt( row );
     play( m_nextTrackCandidate );
 }
 
@@ -165,9 +193,7 @@ Playlist::Actions::play( const quint64 trackid, bool now )
 {
     DEBUG_BLOCK
 
-    Model* model = Model::instance();
-
-    if ( model->containsId( trackid ) )
+    if ( m_topmostModel->containsId( trackid ) )
     {
         if ( now )
         {
@@ -182,10 +208,10 @@ Playlist::Actions::play( const quint64 trackid, bool now )
                 debug() << "Manually advancing to the next track, calculating previous statistics for track here.  Finished % is: "  << finishedPercent;
                 currentTrack->finishedPlaying( finishedPercent );
             }
-            The::engineController()->play( model->trackForId( trackid ) );
+            The::engineController()->play( m_topmostModel->trackForId( trackid ) );
         }
         else
-            The::engineController()->setNextTrack( model->trackForId( trackid ) );
+            The::engineController()->setNextTrack( m_topmostModel->trackForId( trackid ) );
     }
     else
     {
@@ -237,7 +263,12 @@ Playlist::Actions::playlistModeChanged()
     if ( Amarok::randomEnabled() )
     {
         if ( Amarok::randomTracks() )
-            m_navigator = new RandomTrackNavigator();
+        {
+            if( Amarok::favorNone() )
+                m_navigator = new RandomTrackNavigator();
+            else
+                m_navigator = new FavoredRandomTrackNavigator();
+        }
         else if ( Amarok::randomAlbums() )
             m_navigator = new RandomAlbumNavigator();
         else
@@ -274,11 +305,13 @@ Playlist::Actions::queuePosition( quint64 id )
 void
 Playlist::Actions::queue( QList<int> rows )
 {
+    DEBUG_BLOCK
     foreach( int row, rows )
     {
-        quint64 id = The::playlistModel()->idAt( row );
+        quint64 id = m_topmostModel->idAt( row );
+        debug() << "About to queue proxy row"<< row;
         m_navigator->queueId( id );
-        The::playlistModel()->setRowQueued( row );
+        m_topmostModel->setRowQueued( row );
     }
 }
 
@@ -287,9 +320,9 @@ Playlist::Actions::dequeue( QList<int> rows )
 {
     foreach( int row, rows )
     {
-        quint64 id = The::playlistModel()->idAt( row );
+        quint64 id = m_topmostModel->idAt( row );
         m_navigator->dequeueId( id );
-        The::playlistModel()->setRowDequeued( row );
+        m_topmostModel->setRowDequeued( row );
     }
 }
 
@@ -327,20 +360,20 @@ Playlist::Actions::engineStateChanged( Phonon::State currentState, Phonon::State
 void
 Playlist::Actions::engineNewTrackPlaying()
 {
-    Model* model = Model::instance();
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if ( track )
     {
-        if ( model->containsId( m_nextTrackCandidate ) && track == model->trackForId( m_nextTrackCandidate ) )
-            model->setActiveId( m_nextTrackCandidate );
+        if ( m_topmostModel->containsId( m_nextTrackCandidate )
+             && track == m_topmostModel->trackForId( m_nextTrackCandidate ) )
+            m_topmostModel->setActiveId( m_nextTrackCandidate );
         else {
             warning() << "engineNewTrackPlaying:" << track->prettyName() << "does not match what the playlist controller thought it should be";
-            if ( model->activeTrack() != track )
+            if ( m_topmostModel->activeTrack() != track )
             {
                 if ( AmarokConfig::lastPlaying() > -1 )
-                    model->setActiveRow( AmarokConfig::lastPlaying() );
+                    m_topmostModel->setActiveRow( AmarokConfig::lastPlaying() );
                 else
-                    model->setActiveRow( model->rowForTrack( track ) ); // this will set active row to -1 if the track isn't in the playlist at all
+                    m_topmostModel->setActiveRow( m_topmostModel->rowForTrack( track ) ); // this will set active row to -1 if the track isn't in the playlist at all
             }
         }
     }

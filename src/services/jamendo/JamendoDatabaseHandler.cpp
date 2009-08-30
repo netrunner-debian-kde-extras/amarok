@@ -1,21 +1,18 @@
-/***************************************************************************
- *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "JamendoDatabaseHandler.h"
 
@@ -50,7 +47,7 @@ JamendoDatabaseHandler::createDatabase( )
                           "length INTEGER,"
                           "preview_url " + db->exactTextColumnType() + ',' +
                           "album_id INTEGER,"
-                          "artist_id INTEGER );";
+                          "artist_id INTEGER ) ENGINE = MyISAM;";
 
     debug() << "Creating jamendo_tracks: " << queryString;
 
@@ -70,7 +67,7 @@ JamendoDatabaseHandler::createDatabase( )
                   "genre " + db->exactTextColumnType() + ',' +
                   "artist_id INTEGER, "
                   "mp3_torrent_url " + db->exactTextColumnType() + ',' +
-                  "ogg_torrent_url " + db->exactTextColumnType() + " );";
+                  "ogg_torrent_url " + db->exactTextColumnType() + " ) ENGINE = MyISAM;";
 
     debug() << "Creating jamendo_albums: " << queryString;
 
@@ -88,7 +85,7 @@ JamendoDatabaseHandler::createDatabase( )
                   "country " + db->textColumnType() + ',' +
                   "photo_url " + db->textColumnType() + ',' +
                   "jamendo_url " + db->textColumnType() + ',' +
-                  "home_url " + db->textColumnType() + ");";
+                  "home_url " + db->textColumnType() + ") ENGINE = MyISAM;";
 
     debug() << "Creating jamendo_artists: " << queryString;
 
@@ -101,7 +98,7 @@ JamendoDatabaseHandler::createDatabase( )
     queryString = "CREATE TABLE jamendo_genre ("
                   "id INTEGER PRIMARY KEY " + autoIncrement + ',' +
                   "name " + db->textColumnType() + ',' +
-                  "album_id INTEGER" + ");";
+                  "album_id INTEGER" + ") ENGINE = MyISAM;";
 
     debug() << "Creating jamendo_genres: " << queryString;
 

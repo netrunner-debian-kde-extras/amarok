@@ -1,20 +1,18 @@
-/*
- *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
-*/
+/****************************************************************************************
+ * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "DatabaseUpdater.h"
 
@@ -25,12 +23,13 @@
 #include <QDateTime>
 #include <QDir>
 #include <QFile>
+#include <QMultiMap>
 #include <QTextStream>
 
 #include <KGlobal>
 #include <KMessageBox>
 
-static const int DB_VERSION = 3;
+static const int DB_VERSION = 6;
 
 DatabaseUpdater::DatabaseUpdater( SqlCollection *collection )
     : m_collection( collection )
@@ -65,19 +64,36 @@ DatabaseUpdater::update()
     else if( dbVersion < DB_VERSION )
     {
         debug() << "Database out of date: database version is" << dbVersion << ", current version is" << DB_VERSION;
-        if ( dbVersion == 1 )
+        if ( dbVersion == 1 && dbVersion < DB_VERSION )
         {
             upgradeVersion1to2();
             dbVersion = 2;
         }
-        if ( dbVersion == 2 )
+        if( dbVersion == 2 && dbVersion < DB_VERSION )
         {
             upgradeVersion2to3();
             dbVersion = 3;
         }
+        if( dbVersion == 3 && dbVersion < DB_VERSION )
+        {
+            upgradeVersion3to4();
+            dbVersion = 4;
+        }
+        if( dbVersion == 4 && dbVersion < DB_VERSION )
+        {
+            upgradeVersion4to5();
+            dbVersion = 5;
+        }
+        if( dbVersion == 5 && dbVersion < DB_VERSION )
+        {
+            upgradeVersion5to6();
+            dbVersion = 6;
+        }
         QString query = QString( "UPDATE admin SET version = %1 WHERE component = 'DB_VERSION';" ).arg( dbVersion );
         m_collection->query( query );
-        m_collection->startFullScan();
+
+        //NOTE: A rescan will be triggered automatically as a result of an upgrade.  Don't trigger it here, as the 
+        //collection isn't fully initialized and this will trigger a crash/assert.
     }
     else if( dbVersion > DB_VERSION )
     {
@@ -126,22 +142,223 @@ DatabaseUpdater::upgradeVersion2to3()
 }
 
 void
+DatabaseUpdater::upgradeVersion3to4()
+{
+    m_collection->query( "CREATE TABLE statistics_permanent "
+                         "(url " + m_collection->exactTextColumnType() +
+                         ",firstplayed DATETIME"
+                         ",lastplayed DATETIME"
+                         ",score FLOAT"
+                         ",rating INTEGER DEFAULT 0"
+                         ",playcount INTEGER)" );
+    m_collection->query( "CREATE UNIQUE INDEX ON statistics_permanent(url)" );
+    //Note: the above index query is invalid, but kept here for posterity
+
+    m_collection->query( "CREATE TABLE statistics_tag "
+                         "(name " + m_collection->textColumnType() +
+                         ",artist " + m_collection->textColumnType() +
+                         ",album " + m_collection->textColumnType() +
+                         ",firstplayed DATETIME"
+                         ",lastplayed DATETIME"
+                         ",score FLOAT"
+                         ",rating INTEGER DEFAULT 0"
+                         ",playcount INTEGER)" );
+    m_collection->query( "CREATE UNIQUE INDEX ON statistics_tag(name,artist,album)" );
+    //Note: the above index query is invalid, but kept here for posterity
+}
+
+void
+DatabaseUpdater::upgradeVersion4to5()
+{
+    DEBUG_BLOCK
+    //first the database
+    m_collection->query( "ALTER DATABASE amarok DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci" );
+
+    //now the tables
+
+    //first, drop tables that can easily be recreated by doing an update
+    QStringList dropTables;
+    dropTables << "jamendo_albums" << "jamendo_artists" << "jamendo_genre" << "jamendo_tracks";
+    dropTables << "magnatune_albums" << "magnatune_artists" << "magnatune_genre" << "magnatune_moods" << "magnatune_tracks";
+    dropTables << "opmldirectory_albums" << "opmldirectory_artists" << "opmldirectory_genre" << "opmldirectory_tracks";
+
+    foreach( QString table, dropTables )
+        m_collection->query( "DROP TABLE " + table );
+
+    //now, the rest of them
+    QStringList tables;
+    tables << "admin" << "albums" << "amazon" << "artists" << "bookmark_groups" << "bookmarks";
+    tables << "composers" << "devices" << "directories" << "genres" << "images" << "labels" << "lyrics";
+    tables << "playlist_groups" << "playlist_tracks" << "playlists";
+    tables << "podcastchannels" << "podcastepisodes";
+    tables << "statistics" << "statistics_permanent" << "statistics_tag";
+    tables << "tracks" << "urls" << "urls_labels" << "years";
+
+    foreach( QString table, tables )
+        m_collection->query( "ALTER TABLE " + table + " DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci" );
+
+    //now the columns (ugh)
+    //first, varchar
+    typedef QPair<QString, int> vcpair;
+    QMultiMap<QString, vcpair> columns;
+    columns.insert( "admin", vcpair( "component", 255 ) );
+    columns.insert( "albums", vcpair( "name", 255 ) );
+    columns.insert( "amazon", vcpair( "asin", 20 ) );
+    columns.insert( "amazon", vcpair( "locale", 2 ) );
+    columns.insert( "amazon", vcpair( "filename", 33 ) );
+    columns.insert( "artists", vcpair( "name", 255 ) );
+    columns.insert( "bookmark_groups", vcpair( "name", 255 ) );
+    columns.insert( "bookmark_groups", vcpair( "description", 255 ) );
+    columns.insert( "bookmark_groups", vcpair( "custom", 255 ) );
+    columns.insert( "bookmarks", vcpair( "name", 255 ) );
+    columns.insert( "bookmarks", vcpair( "url", 1024 ) );
+    columns.insert( "bookmarks", vcpair( "description", 1024 ) );
+    columns.insert( "bookmarks", vcpair( "custom", 255 ) );
+    columns.insert( "composers", vcpair( "name", 255 ) );
+    columns.insert( "devices", vcpair( "type", 255 ) );
+    columns.insert( "devices", vcpair( "label", 255 ) );
+    columns.insert( "devices", vcpair( "lastmountpoint", 255 ) );
+    columns.insert( "devices", vcpair( "uuid", 255 ) );
+    columns.insert( "devices", vcpair( "servername", 255 ) );
+    columns.insert( "devices", vcpair( "sharename", 255 ) );
+    columns.insert( "directories", vcpair( "dir", 1024 ) );
+    columns.insert( "genres", vcpair( "name", 255 ) );
+    columns.insert( "images", vcpair( "path", 255 ) );
+    columns.insert( "labels", vcpair( "label", 255 ) );
+    columns.insert( "lyrics", vcpair( "url", 1024 ) );
+    columns.insert( "playlist_groups", vcpair( "name", 255 ) );
+    columns.insert( "playlist_groups", vcpair( "description", 255 ) );
+    columns.insert( "playlist_tracks", vcpair( "url", 1024 ) );
+    columns.insert( "playlist_tracks", vcpair( "title", 255 ) );
+    columns.insert( "playlist_tracks", vcpair( "album", 255 ) );
+    columns.insert( "playlist_tracks", vcpair( "artist", 255 ) );
+    columns.insert( "playlist_tracks", vcpair( "uniqueid", 128 ) );
+    columns.insert( "playlists", vcpair( "name", 255 ) );
+    columns.insert( "playlists", vcpair( "description", 255 ) );
+    columns.insert( "playlists", vcpair( "urlid", 1024 ) );
+    columns.insert( "podcastchannels", vcpair( "copyright", 255 ) );
+    columns.insert( "podcastchannels", vcpair( "directory", 255 ) );
+    columns.insert( "podcastchannels", vcpair( "labels", 255 ) );
+    columns.insert( "podcastchannels", vcpair( "subscribedate", 255 ) );
+    columns.insert( "podcastepisodes", vcpair( "guid", 1024 ) );
+    columns.insert( "podcastepisodes", vcpair( "mimetype", 255 ) );
+    columns.insert( "podcastepisodes", vcpair( "pubdate", 255 ) );
+    columns.insert( "statistics_permanent", vcpair( "url", 1024 ) );
+    columns.insert( "statistics_tag", vcpair( "name", 255 ) );
+    columns.insert( "statistics_tag", vcpair( "artist", 255 ) );
+    columns.insert( "tracks", vcpair( "title", 255 ) );
+    columns.insert( "urls", vcpair( "rpath", 1024 ) );
+    columns.insert( "urls", vcpair( "uniqueid", 128 ) );
+    columns.insert( "years", vcpair( "name", 255 ) );
+
+    QMultiMap<QString, vcpair>::const_iterator i;
+
+    for( i = columns.begin(); i != columns.end(); ++i )
+    {
+        m_collection->query( "ALTER TABLE " + i.key() + " MODIFY " + i.value().first + " VARBINARY(" + QString::number( i.value().second ) + ")" );
+        m_collection->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + \
+            " VARCHAR(" + QString::number( i.value().second ) + ") CHARACTER SET utf8 COLLATE utf8_unicode_ci NOT NULL" );
+    }
+
+    columns.clear();
+    
+    //text fields, not varchars
+    columns.insert( "lyrics", vcpair( "lyrics", 0 ) );
+    columns.insert( "podcastchannels", vcpair( "url", 0 ) );
+    columns.insert( "podcastchannels", vcpair( "title", 0 ) );
+    columns.insert( "podcastchannels", vcpair( "weblink", 0 ) );
+    columns.insert( "podcastchannels", vcpair( "image", 0 ) );
+    columns.insert( "podcastchannels", vcpair( "description", 0 ) );
+    columns.insert( "podcastepisodes", vcpair( "url", 0 ) );
+    columns.insert( "podcastepisodes", vcpair( "localurl", 0 ) );
+    columns.insert( "podcastepisodes", vcpair( "title", 0 ) );
+    columns.insert( "podcastepisodes", vcpair( "subtitle", 0 ) );
+    columns.insert( "podcastepisodes", vcpair( "description", 0 ) );
+    columns.insert( "tracks", vcpair( "comment", 0 ) );
+
+    m_collection->query( "DROP INDEX url_podchannel ON podcastchannels" );
+    m_collection->query( "DROP INDEX url_podepisode ON podcastepisodes" );
+    m_collection->query( "DROP INDEX localurl_podepisode ON podcastepisodes" );   
+    for( i = columns.begin(); i != columns.end(); ++i )
+    {
+        m_collection->query( "ALTER TABLE " + i.key() + " MODIFY " + i.value().first + " BLOB" );
+        m_collection->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + " TEXT CHARACTER SET utf8 NOT NULL" );
+    }
+    m_collection->query( "CREATE FULLTEXT INDEX url_podchannel ON podcastchannels( url )" );
+    m_collection->query( "CREATE FULLTEXT INDEX url_podepisode ON podcastepisodes( url )" );
+    m_collection->query( "CREATE FULLTEXT INDEX localurl_podepisode ON podcastepisodes( localurl )" );
+}
+
+void
+DatabaseUpdater::upgradeVersion5to6()
+{
+    DEBUG_BLOCK
+    //first, drop tables that can easily be recreated by doing an update
+    QStringList dropTables;
+    dropTables << "jamendo_albums" << "jamendo_artists" << "jamendo_genre" << "jamendo_tracks";
+    dropTables << "magnatune_albums" << "magnatune_artists" << "magnatune_genre" << "magnatune_moods" << "magnatune_tracks";
+    dropTables << "opmldirectory_albums" << "opmldirectory_artists" << "opmldirectory_genre" << "opmldirectory_tracks";
+
+    foreach( QString table, dropTables )
+        m_collection->query( "DROP TABLE " + table );
+
+    //now, the rest of them
+    QStringList tables;
+    tables << "admin" << "albums" << "amazon" << "artists" << "bookmark_groups" << "bookmarks";
+    tables << "composers" << "devices" << "directories" << "genres" << "images" << "labels" << "lyrics";
+    tables << "playlist_groups" << "playlist_tracks" << "playlists";
+    tables << "podcastchannels" << "podcastepisodes";
+    tables << "statistics" << "statistics_permanent" << "statistics_tag";
+    tables << "tracks" << "urls" << "urls_labels" << "years";
+
+    foreach( QString table, tables )
+        m_collection->query( "ALTER TABLE " + table + " ENGINE = MyISAM" );
+
+    typedef QPair<QString, int> vcpair;
+    QMultiMap<QString, vcpair> columns;
+    columns.insert( "bookmarks", vcpair( "url", 1000 ) );
+    columns.insert( "bookmarks", vcpair( "description", 1000 ) );
+    columns.insert( "directories", vcpair( "dir", 1000 ) );
+    columns.insert( "lyrics", vcpair( "url", 324 ) );
+    columns.insert( "playlist_tracks", vcpair( "url", 1000 ) );
+    columns.insert( "playlists", vcpair( "urlid", 1000 ) );
+    columns.insert( "podcastepisodes", vcpair( "guid", 1000 ) );
+    columns.insert( "statistics_permanent", vcpair( "url", 324 ) );
+    columns.insert( "urls", vcpair( "rpath", 324 ) );
+    columns.insert( "devices", vcpair( "servername", 80 ) );
+    columns.insert( "devices", vcpair( "sharename", 240 ) );
+    columns.insert( "statistics_tag", vcpair( "name", 108 ) );
+    columns.insert( "statistics_tag", vcpair( "artist", 108 ) );
+    columns.insert( "statistics_tag", vcpair( "album", 108 ) );
+
+    QMultiMap<QString, vcpair>::const_iterator i;
+
+    for( i = columns.begin(); i != columns.end(); ++i )
+        m_collection->query( "ALTER IGNORE TABLE " + i.key() + " MODIFY " + i.value().first + " VARCHAR(" + QString::number( i.value().second ) + ") " );
+
+    m_collection->query( "CREATE INDEX devices_rshare ON devices( servername, sharename );" );
+    m_collection->query( "CREATE UNIQUE INDEX lyrics_url ON lyrics(url);" );
+    m_collection->query( "CREATE UNIQUE INDEX urls_id_rpath ON urls(deviceid, rpath);" );
+    m_collection->query( "CREATE UNIQUE INDEX stats_tag_name_artist_album ON statistics_tag(name,artist,album)" );
+}
+
+void
 DatabaseUpdater::createTemporaryTables()
 {
     DEBUG_BLOCK
 
     //debug stuff
     //removeTemporaryTables();
-            
+
     //this is a copy of the relevant code in createTables()
     //TODO refactor this to make it easier to keep the tables created by those methods in sync
     {
         QString create = "CREATE TEMPORARY TABLE urls_temp "
                          "(id " + m_collection->idType() +
                          ",deviceid INTEGER"
-                         ",rpath " + m_collection->exactTextColumnType() +
+                         ",rpath " + m_collection->exactIndexableTextColumnType() +
                          ",directory INTEGER"
-                         ",uniqueid " + m_collection->exactTextColumnType(128) + " UNIQUE);";
+                         ",uniqueid " + m_collection->exactTextColumnType(128) + " UNIQUE) ENGINE = MyISAM;";
         m_collection->query( create );
         m_collection->query( "CREATE UNIQUE INDEX urls_id_rpath_temp ON urls_temp(deviceid, rpath);" );
         m_collection->query( "CREATE INDEX urls_temp_uniqueid ON urls_temp(uniqueid);" );
@@ -150,14 +367,14 @@ DatabaseUpdater::createTemporaryTables()
         QString create = "CREATE TEMPORARY TABLE directories_temp "
                          "(id " + m_collection->idType() +
                          ",deviceid INTEGER"
-                         ",dir " + m_collection->exactTextColumnType() + 
-                         ",changedate INTEGER);";
+                         ",dir " + m_collection->exactTextColumnType() +
+                         ",changedate INTEGER) ENGINE = MyISAM;";
         m_collection->query( create );
     }
     {
         QString create = "CREATE TEMPORARY TABLE artists_temp "
                          "(id " + m_collection->idType() +
-                         ",name " + m_collection->textColumnType() + " NOT NULL);";
+                         ",name " + m_collection->textColumnType() + " NOT NULL) ENGINE = MyISAM;";
         m_collection->query( create );
         m_collection->query( "CREATE UNIQUE INDEX artists_temp_name ON artists_temp(name);" );
     }
@@ -166,7 +383,7 @@ DatabaseUpdater::createTemporaryTables()
                     "(id " + m_collection->idType() +
                     ",name " + m_collection->textColumnType() + " NOT NULL"
                     ",artist INTEGER" +
-                    ",image INTEGER);";
+                    ",image INTEGER) ENGINE = MyISAM;";
         m_collection->query( c );
         m_collection->query( "CREATE INDEX albums_temp_name ON albums_temp(name);" );
         m_collection->query( "CREATE INDEX albums_temp_artist ON albums_temp(artist);" );
@@ -178,28 +395,28 @@ DatabaseUpdater::createTemporaryTables()
     {
         QString create = "CREATE TEMPORARY TABLE genres_temp "
                          "(id " + m_collection->idType() +
-                         ",name " + m_collection->textColumnType() + " NOT NULL);";
+                         ",name " + m_collection->textColumnType() + " NOT NULL) ENGINE = MyISAM;";
         m_collection->query( create );
         m_collection->query( "CREATE UNIQUE INDEX genres_temp_name ON genres_temp(name);" );
     }
     {
         QString create = "CREATE TEMPORARY TABLE composers_temp "
                          "(id " + m_collection->idType() +
-                         ",name " + m_collection->textColumnType() + " NOT NULL);";
+                         ",name " + m_collection->textColumnType() + " NOT NULL) ENGINE = MyISAM;";
         m_collection->query( create );
         m_collection->query( "CREATE UNIQUE INDEX composers_temp_name ON composers_temp(name);" );
     }
     {
         QString create = "CREATE TEMPORARY TABLE years_temp "
                          "(id " + m_collection->idType() +
-                         ",name " + m_collection->textColumnType() + " NOT NULL);";
+                         ",name " + m_collection->textColumnType() + " NOT NULL) ENGINE = MyISAM;";
         m_collection->query( create );
         m_collection->query( "CREATE UNIQUE INDEX years_temp_name ON years_temp(name);" );
     }
     {
         QString create = "CREATE TEMPORARY TABLE images_temp "
                          "(id " + m_collection->idType() +
-                         ",path " + m_collection->textColumnType() + " NOT NULL);";
+                         ",path " + m_collection->textColumnType() + " NOT NULL) ENGINE = MyISAM;";
         m_collection->query( create );
         m_collection->query( "CREATE UNIQUE INDEX images_temp_name ON images_temp(path);" );
     }
@@ -228,7 +445,7 @@ DatabaseUpdater::createTemporaryTables()
                     ",albumpeakgain FLOAT"
                     ",trackgain FLOAT"
                     ",trackpeakgain FLOAT"
-                    ");";
+                    ") ENGINE = MyISAM;";
 
         m_collection->query( c );
         m_collection->query( "CREATE UNIQUE INDEX tracks_temp_url ON tracks_temp(url);" );
@@ -328,7 +545,7 @@ DatabaseUpdater::copyToPermanentTables()
         artistIds += artistId;
     }
     m_collection->insert( QString ( "INSERT INTO artists SELECT * FROM artists_temp WHERE artists_temp.id NOT IN ( %1 );" ).arg( artistIds ), QString() );
-   
+
     //handle images before albums
     m_collection->query( "DELETE FROM images;" );
     m_collection->insert( "INSERT INTO images SELECT * FROM images_temp;", NULL );
@@ -418,7 +635,7 @@ DatabaseUpdater::createTables() const
     DEBUG_BLOCK
     // see docs/database/amarokTables.svg for documentation about database layout
     {
-        QString c = "CREATE TABLE admin (component " + m_collection->textColumnType() + ", version INTEGER);";
+        QString c = "CREATE TABLE admin (component " + m_collection->textColumnType() + ", version INTEGER) ENGINE = MyISAM;";
         m_collection->query( c );
     }
     {
@@ -428,8 +645,8 @@ DatabaseUpdater::createTables() const
                          ",label " + m_collection->textColumnType() +
                          ",lastmountpoint " + m_collection->textColumnType() +
                          ",uuid " + m_collection->textColumnType() +
-                         ",servername " + m_collection->textColumnType() +
-                         ",sharename " + m_collection->textColumnType() + ");";
+                         ",servername " + m_collection->textColumnType(80) +
+                         ",sharename " + m_collection->textColumnType(240) + ") ENGINE = MyISAM;";
         m_collection->query( create );
         m_collection->query( "CREATE INDEX devices_type ON devices( type );" );
         m_collection->query( "CREATE UNIQUE INDEX devices_uuid ON devices( uuid );" );
@@ -439,9 +656,9 @@ DatabaseUpdater::createTables() const
         QString create = "CREATE TABLE urls "
                          "(id " + m_collection->idType() +
                          ",deviceid INTEGER"
-                         ",rpath " + m_collection->exactTextColumnType() + 
+                         ",rpath " + m_collection->exactIndexableTextColumnType() +
                          ",directory INTEGER"
-                         ",uniqueid " + m_collection->exactTextColumnType(128) + " UNIQUE);";
+                         ",uniqueid " + m_collection->exactTextColumnType(128) + " UNIQUE) ENGINE = MyISAM;";
         m_collection->query( create );
         m_collection->query( "CREATE UNIQUE INDEX urls_id_rpath ON urls(deviceid, rpath);" );
         m_collection->query( "CREATE INDEX urls_uniqueid ON urls(uniqueid);" );
@@ -450,22 +667,22 @@ DatabaseUpdater::createTables() const
         QString create = "CREATE TABLE directories "
                          "(id " + m_collection->idType() +
                          ",deviceid INTEGER"
-                         ",dir " + m_collection->exactTextColumnType() + 
-                         ",changedate INTEGER);";
+                         ",dir " + m_collection->exactTextColumnType() +
+                         ",changedate INTEGER) ENGINE = MyISAM;";
         m_collection->query( create );
         m_collection->query( "CREATE INDEX directories_deviceid ON directories(deviceid);" );
     }
     {
         QString create = "CREATE TABLE artists "
                          "(id " + m_collection->idType() +
-                         ",name " + m_collection->textColumnType() + " NOT NULL);";
+                         ",name " + m_collection->textColumnType() + " NOT NULL) ENGINE = MyISAM;";
         m_collection->query( create );
         m_collection->query( "CREATE UNIQUE INDEX artists_name ON artists(name);" );
     }
     {
         QString create = "CREATE TABLE images "
                          "(id " + m_collection->idType() +
-                         ",path " + m_collection->textColumnType() + " NOT NULL);";
+                         ",path " + m_collection->textColumnType() + " NOT NULL) ENGINE = MyISAM;";
         m_collection->query( create );
         m_collection->query( "CREATE UNIQUE INDEX images_name ON images(path);" );
     }
@@ -474,7 +691,7 @@ DatabaseUpdater::createTables() const
                     "(id " + m_collection->idType() +
                     ",name " + m_collection->textColumnType() + " NOT NULL"
                     ",artist INTEGER" +
-                    ",image INTEGER);";
+                    ",image INTEGER) ENGINE = MyISAM;";
         m_collection->query( c );
         m_collection->query( "CREATE INDEX albums_name ON albums(name);" );
         m_collection->query( "CREATE INDEX albums_artist ON albums(artist);" );
@@ -486,21 +703,21 @@ DatabaseUpdater::createTables() const
     {
         QString create = "CREATE TABLE genres "
                          "(id " + m_collection->idType() +
-                         ",name " + m_collection->textColumnType() + " NOT NULL);";
+                         ",name " + m_collection->textColumnType() + " NOT NULL) ENGINE = MyISAM;";
         m_collection->query( create );
         m_collection->query( "CREATE UNIQUE INDEX genres_name ON genres(name);" );
     }
     {
         QString create = "CREATE TABLE composers "
                          "(id " + m_collection->idType() +
-                         ",name " + m_collection->textColumnType() + " NOT NULL);";
+                         ",name " + m_collection->textColumnType() + " NOT NULL) ENGINE = MyISAM;";
         m_collection->query( create );
         m_collection->query( "CREATE UNIQUE INDEX composers_name ON composers(name);" );
     }
     {
         QString create = "CREATE TABLE years "
                          "(id " + m_collection->idType() +
-                         ",name " + m_collection->textColumnType() + " NOT NULL);";
+                         ",name " + m_collection->textColumnType() + " NOT NULL) ENGINE = MyISAM;";
         m_collection->query( create );
         m_collection->query( "CREATE UNIQUE INDEX years_name ON years(name);" );
     }
@@ -529,7 +746,7 @@ DatabaseUpdater::createTables() const
                     ",albumpeakgain FLOAT" // decibels, relative to albumgain
                     ",trackgain FLOAT"
                     ",trackpeakgain FLOAT" // decibels, relative to trackgain
-                    ");";
+                    ") ENGINE = MyISAM;";
 
         m_collection->query( c );
         m_collection->query( "CREATE UNIQUE INDEX tracks_url ON tracks(url);" );
@@ -552,12 +769,12 @@ DatabaseUpdater::createTables() const
                     ",score FLOAT"
                     ",rating INTEGER DEFAULT 0"
                     ",playcount INTEGER"
-                    ",deleted BOOL DEFAULT " + m_collection->boolFalse() + 
-                    ");";
+                    ",deleted BOOL DEFAULT " + m_collection->boolFalse() +
+                    ") ENGINE = MyISAM;";
         m_collection->query( c );
         m_collection->query( "CREATE UNIQUE INDEX statistics_url ON statistics(url);" );
         QStringList indices;
-        indices << "createdate" << "accessdate" << "score" << "rating" << "playcount" << "uniqueid";
+        indices << "createdate" << "accessdate" << "score" << "rating" << "playcount";
         foreach( const QString &index, indices )
         {
             QString q = QString( "CREATE INDEX statistics_%1 ON statistics(%2);" ).arg( index, index );
@@ -568,7 +785,7 @@ DatabaseUpdater::createTables() const
         QString q = "CREATE TABLE labels "
                     "(id " + m_collection->idType() +
                     ",label " + m_collection->textColumnType() +
-                    ");";
+                    ") ENGINE = MyISAM;";
         m_collection->query( q );
         m_collection->query( "CREATE UNIQUE INDEX labels_label ON labels(label);" );
 
@@ -582,21 +799,46 @@ DatabaseUpdater::createTables() const
                     "asin " + m_collection->textColumnType( 20 ) +
                     ",locale " + m_collection->textColumnType( 2 ) +
                     ",filename " + m_collection->textColumnType( 33 ) +
-                    ",refetchdate INTEGER );";
+                    ",refetchdate INTEGER ) ENGINE = MyISAM;";
         m_collection->query( q );
         m_collection->query( "CREATE INDEX amazon_date ON amazon(refetchdate);" );
     }
     {
         QString q = "CREATE TABLE lyrics ("
                     "id " + m_collection->idType() +
-                    ",url " + m_collection->exactTextColumnType() +
+                    ",url " + m_collection->exactIndexableTextColumnType() +
                     ",lyrics " + m_collection->longTextColumnType() +
-                    ");";
+                    ") ENGINE = MyISAM;";
         m_collection->query( q );
         m_collection->query( "CREATE UNIQUE INDEX lyrics_url ON lyrics(url);" );
     }
     m_collection->query( "INSERT INTO admin(component,version) "
                           "VALUES('AMAROK_TRACK'," + QString::number( DB_VERSION ) + ");" );
+    {
+         m_collection->query( "CREATE TABLE statistics_permanent "
+                            "(url " + m_collection->exactIndexableTextColumnType() +
+                            ",firstplayed DATETIME"
+                            ",lastplayed DATETIME"
+                            ",score FLOAT"
+                            ",rating INTEGER DEFAULT 0"
+                            ",playcount INTEGER) ENGINE = MyISAM;" );
+
+        //Below query is invalid!  Fix it, and then put the proper query in an upgrade function!
+        m_collection->query( "CREATE UNIQUE INDEX stats_perm_url ON statistics_permanent(url)" );
+
+        m_collection->query( "CREATE TABLE statistics_tag "
+                             "(name " + m_collection->textColumnType(108) +
+                             ",artist " + m_collection->textColumnType(108) +
+                             ",album " + m_collection->textColumnType(108) +
+                             ",firstplayed DATETIME"
+                             ",lastplayed DATETIME"
+                             ",score FLOAT"
+                             ",rating INTEGER DEFAULT 0"
+                             ",playcount INTEGER) ENGINE = MyISAM" );
+
+        //Below query is invalid!  Fix it, and then put the proper query in an upgrade function!
+        m_collection->query( "CREATE UNIQUE INDEX stats_tag_name_artist_album ON statistics_tag(name,artist,album)" );
+    }
 }
 
 int
@@ -625,7 +867,7 @@ DatabaseUpdater::removeFilesInDir( int deviceid, const QString &rdir )
     {
         QString id;
         QString ids;
-        QStringList::ConstIterator it = idResult.begin(), end = idResult.end();
+        QStringList::ConstIterator it = idResult.constBegin(), end = idResult.constEnd();
         while( it != end )
         {
             id = (*(it++));

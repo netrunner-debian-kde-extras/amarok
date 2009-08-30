@@ -1,20 +1,19 @@
-/******************************************************************************
- * Copyright (c) 2004 Pierpaolo Di Panfilon <pippo_dp@libero.it>              *
- *           (c) 2007 Dan Meltzer <parallelgrapefruit@gmail.com>            *
- *                                                                            *
- * This program is free software; you can redistribute it and/or              *
- * modify it under the terms of the GNU General Public License as             *
- * published by the Free Software Foundation; either version 2 of             *
- * the License, or (at your option) any later version.                        *
- *                                                                            *
- * This program is distributed in the hope that it will be useful,            *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
- * GNU General Public License for more details.                               *
- *                                                                            *
- * You should have received a copy of the GNU General Public License          *
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
- ******************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2004 Pierpaolo Di Panfilo <pippo_dp@libero.it>                         *
+ * Copyright (c) 2007 Dan Meltzer <parallelgrapefruit@gmail.com>                        *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef COVERMANAGER_H
 #define COVERMANAGER_H
@@ -63,16 +62,12 @@ class CoverManager : public QSplitter, public Meta::Observer
 
         void setStatusText( QString text );
 
-        // Return the top level domain for the current locale
-        static QString amazonTld();
-
         // Reimplemented from Meta::Observer
         using Observer::metadataChanged;
         void metadataChanged( Meta::AlbumPtr album );
 
     public slots:
         void updateStatusBar();
-        void changeLocale( int id );
 
     private slots:
         void slotArtistQueryResult( QString collectionId, Meta::ArtistList artists );
@@ -91,13 +86,6 @@ class CoverManager : public QSplitter, public Meta::Observer
         void slotShowAlbumsWithCover()    { changeView( AlbumsWithCover );    }
         void slotShowAlbumsWithoutCover() { changeView( AlbumsWithoutCover ); }
         void changeView( int id );
-
-        void slotSetLocaleIntl() { changeLocale( CoverFetcher::International ); }
-        void slotSetLocaleCa()   { changeLocale( CoverFetcher::Canada );        }
-        void slotSetLocaleDe()   { changeLocale( CoverFetcher::Germany );       }
-        void slotSetLocaleFr()   { changeLocale( CoverFetcher::France );        }
-        void slotSetLocaleJp()   { changeLocale( CoverFetcher::Japan );         }
-        void slotSetLocaleUk()   { changeLocale( CoverFetcher::UK );            }
         
         void fetchMissingCovers();
         void coverFetched( const QString&, const QString& );
@@ -117,11 +105,8 @@ class CoverManager : public QSplitter, public Meta::Observer
         CoverView        *m_coverView;
         Amarok::LineEdit *m_searchEdit;
         KPushButton      *m_fetchButton;
-        KMenu            *m_amazonLocaleMenu;
         KMenu            *m_viewMenu;
-        QToolButton      *m_amazonLocaleButton;
         QToolButton      *m_viewButton;
-        int               m_currentLocale;
         int               m_currentView;
 
         Meta::ArtistList m_artistList;

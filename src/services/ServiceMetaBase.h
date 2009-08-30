@@ -1,21 +1,19 @@
-/* This file is part of the KDE project
-   Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
-   Copyright (C) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef SERVICEMETABASE_H
 #define SERVICEMETABASE_H
@@ -25,6 +23,7 @@
 #include "Debug.h"
 #include "InfoParserBase.h"
 #include "meta/proxy/MetaProxy.h"
+#include "meta/StatisticsProvider.h"
 #include "meta/capabilities/CustomActionsCapability.h"
 #include "meta/capabilities/SourceInfoCapability.h"
 #include "ServiceBookmarkThisCapability.h"
@@ -83,7 +82,7 @@ class AMAROK_EXPORT CustomActionsProvider
         CustomActionsProvider() {}
         virtual ~CustomActionsProvider() {}
 
-        virtual QList< PopupDropperAction *> customActions() { DEBUG_BLOCK return QList< PopupDropperAction *>(); }
+        virtual QList< QAction *> customActions() { DEBUG_BLOCK return QList< QAction *>(); }
 };
 
 class AMAROK_EXPORT CurrentTrackActionsProvider
@@ -92,7 +91,7 @@ class AMAROK_EXPORT CurrentTrackActionsProvider
         CurrentTrackActionsProvider() {}
         virtual ~CurrentTrackActionsProvider() {}
 
-        virtual QList< PopupDropperAction *> currentTrackActions() { DEBUG_BLOCK return QList< PopupDropperAction *>(); }
+        virtual QList< QAction *> currentTrackActions() { DEBUG_BLOCK return QList< QAction *>(); }
 };
 
 class AMAROK_EXPORT SourceInfoProvider
@@ -117,13 +116,13 @@ class AMAROK_EXPORT BookmarkThisProvider : public QObject
         virtual ~BookmarkThisProvider() {}
 
         virtual bool isBookmarkable() { return false; }
-        virtual QString browserName() { return "Internet"; }
+        virtual QString browserName() { return "internet"; }
         virtual QString collectionName() { return ""; }
         virtual bool simpleFiltering() { return true; }
-        virtual PopupDropperAction * bookmarkAction() { return 0; };
+        virtual QAction * bookmarkAction() { return 0; };
 
     protected:
-        PopupDropperAction * m_bookmarkAction;
+        QAction * m_bookmarkAction;
 };
 
 
@@ -218,7 +217,10 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
         virtual void setDiscNumber( int newDiscNumber );
 
         virtual uint lastPlayed() const;
+        virtual uint firstPlayed() const;
         virtual int playCount() const;
+
+        virtual void finishedPlaying( double playedFraction );
 
         virtual QString type() const;
 
@@ -256,6 +258,7 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
         void setComposer( Meta::ComposerPtr composer );
         void setGenre( Meta::GenrePtr genre );
         void setYear( Meta::YearPtr year );
+        void setStatisticsProvider( StatisticsProvider *provider );
 
         void setLength( int length );
 
@@ -271,6 +274,7 @@ class AMAROK_EXPORT ServiceTrack : public Meta::Track,
         void update( Meta::TrackPtr track );
 
     private:
+        StatisticsProvider* m_provider;
         ArtistPtr   m_artist;
         AlbumPtr    m_album;
         GenrePtr    m_genre;
@@ -331,7 +335,7 @@ class AMAROK_EXPORT ServiceArtist : public Meta::Artist,
             return 0;
         }
 
-        virtual PopupDropperAction * bookmarkAction() {
+        virtual QAction * bookmarkAction() {
 
             if ( isBookmarkable() ) {
                 if ( m_bookmarkAction ==  0)
@@ -402,7 +406,7 @@ class AMAROK_EXPORT ServiceAlbum : public Meta::Album,
             return 0;
         }
 
-        virtual PopupDropperAction * bookmarkAction() {
+        virtual QAction * bookmarkAction() {
 
             if ( isBookmarkable() ) {
                 if ( m_bookmarkAction ==  0)

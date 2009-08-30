@@ -1,31 +1,31 @@
-/***************************************************************************
- * copyright            : (C) 2007 Ian Monroe <ian@monroe.nu>
- *                        (C) 2008-2009 Dan Meltzer <parallelgrapefruit@gmail.com>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License or (at your option) version 3 or any later version
- * accepted by the membership of KDE e.V. (or its successor approved
- * by the membership of KDE e.V.), which shall act as a proxy
- * defined in Section 14 of version 3 of the license.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- **************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007 Ian Monroe <ian@monroe.nu>                                        *
+ * Copyright (c) 2008-2009 Dan Meltzer <parallelgrapefruit@gmail.com>                   *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) version 3 or        *
+ * any later version accepted by the membership of KDE e.V. (or its successor approved  *
+ * by the membership of KDE e.V.), which shall act as a proxy defined in Section 14 of  *
+ * version 3 of the license.                                                            *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "CollectionWidget.h"
 
 #include "CollectionTreeItemModel.h"
 #include "CollectionTreeItemDelegate.h"
 #include "CollectionBrowserTreeView.h"
+#include "collection/proxycollection/ProxyCollection.h"
 #include "Debug.h"
 #include "SearchWidget.h"
+#include "SingleCollectionTreeItemModel.h"
 #include <amarokconfig.h>
 
 #include <KAction>
@@ -33,15 +33,21 @@
 #include <KLocale>
 #include <KMenu>
 #include <KMenuBar>
+#include <KStandardDirs>
 
 #include <QActionGroup>
+#include <QMetaEnum>
+#include <QMetaObject>
+#include <QRect>
+#include <QStackedWidget>
 #include <QToolBar>
 #include <QToolButton>
 
 CollectionWidget *CollectionWidget::s_instance = 0;
 
-CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
-    : KVBox(parent)
+CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
+    : BrowserCategory( name, parent )
+    , m_viewMode( CollectionWidget::NormalCollections )
 {
     s_instance = this;
     setObjectName( name );
@@ -53,7 +59,11 @@ CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
     m_searchWidget = new SearchWidget( hbox );
     m_searchWidget->setClickMessage( i18n( "Search collection" ) );
 
-    m_treeView = new CollectionBrowserTreeView( this );
+    m_stack = new QStackedWidget( this );
+    m_stack->setFrameShape( QFrame::NoFrame );
+
+    m_treeView = new CollectionBrowserTreeView( m_stack );
+    m_stack->addWidget( m_treeView );
     m_treeView->setAlternatingRowColors( true );
     m_treeView->setFrameShape( QFrame::NoFrame );
     m_treeView->setRootIsDecorated( false );
@@ -61,12 +71,36 @@ CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
     CollectionTreeItemDelegate *delegate = new CollectionTreeItemDelegate( m_treeView );
     m_treeView->setItemDelegate( delegate );
 
+    m_singleTreeView = new CollectionBrowserTreeView( m_stack );
+    m_stack->addWidget( m_singleTreeView );
+    m_singleTreeView->setAlternatingRowColors( true );
+    m_singleTreeView->setFrameShape( QFrame::NoFrame );
+
     m_levels = Amarok::config( "Collection Browser" ).readEntry( "TreeCategory", QList<int>() );
     if ( m_levels.isEmpty() )
         m_levels << CategoryId::Artist << CategoryId::Album;
 
-    m_treeView->setModel( new CollectionTreeItemModel( m_levels ) );
-    m_searchWidget->setup( m_treeView );
+    m_multiModel = new CollectionTreeItemModel( m_levels );
+    m_singleModel = new SingleCollectionTreeItemModel( new ProxyCollection::Collection(), m_levels );
+    m_treeView->setModel( m_multiModel );
+    m_singleTreeView->setModel( m_singleModel );
+
+    const QMetaObject *mo = metaObject();
+    const QMetaEnum me = mo->enumerator( mo->indexOfEnumerator( "ViewMode" ) );
+    const QString &value = KGlobal::config()->group( "Collection Browser" ).readEntry( "View Mode" );
+    int enumValue = me.keyToValue( value.toLocal8Bit().constData() );
+    enumValue == -1 ? m_viewMode = NormalCollections : m_viewMode = (ViewMode) enumValue;
+
+    if( m_viewMode == CollectionWidget::NormalCollections )
+    {
+        m_stack->setCurrentWidget( m_treeView );
+        m_searchWidget->setup( m_treeView );
+    }
+    else
+    {
+        m_stack->setCurrentWidget( m_singleTreeView );
+        m_searchWidget->setup( m_singleTreeView );
+    }
 
     QAction *action = new QAction( i18n( "Artist / Album" ), this );
     connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByArtistAlbum() ) );
@@ -184,11 +218,15 @@ CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
     showCovers->setChecked( AmarokConfig::showAlbumArt() );
     connect( showCovers, SIGNAL(toggled(bool)), SLOT( slotShowCovers( bool ) ) );
 
+    //do not use m_levels directly here, otherwise
+    //takeFirst() removes the first item from the list,
+    //but we need the correct m_levels in toggleView()
+    QList<int> levelCopy = m_levels;
     // Preset the checked status properly
-    if( m_levels.size() > 0 )
+    if( levelCopy.size() > 0 )
     {
         //First Category
-        const int i = m_levels.takeFirst();
+        const int i = levelCopy.takeFirst();
         switch( i )
         {
             case CategoryId::Artist:
@@ -205,9 +243,9 @@ CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
                 break;
         }
     }
-    if( m_levels.size() > 0 ) //We have a second level
+    if( levelCopy.size() > 0 ) //We have a second level
     {
-        const int i = m_levels.takeFirst();
+        const int i = levelCopy.takeFirst();
         switch( i )
         {
             case CategoryId::Artist:
@@ -226,9 +264,9 @@ CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
                 secondNullAction->setChecked( true );
         }
     }
-    if( m_levels.size() > 0 ) //We have a third level
+    if( levelCopy.size() > 0 ) //We have a third level
     {
-        const int i = m_levels.takeFirst();
+        const int i = levelCopy.takeFirst();
         switch( i )
         {
             case CategoryId::Artist:
@@ -258,12 +296,21 @@ CollectionWidget::CollectionWidget( const char* name , QWidget *parent )
 
     m_searchWidget->toolBar()->addAction( searchMenuAction );
 
+    //workaround string-freeze for 2.2
+    debug() << i18n( "Toggle unified view mode" );
+    KAction *toggleAction = new KAction( KIcon( "preferences-other" ), i18n( "Toggle unified view mode. This is an experimental feature" ), this );
+    connect( toggleAction, SIGNAL( triggered( bool ) ), SLOT( toggleView() ) );
+    m_searchWidget->toolBar()->addAction( toggleAction );
+
     QToolButton *tbutton = qobject_cast<QToolButton*>( m_searchWidget->toolBar()->widgetForAction( searchMenuAction ) );
     if( tbutton )
         tbutton->setPopupMode( QToolButton::InstantPopup );
+    
+    //TODO: we have a really nice opportunity to make these info blurbs both helpful and pretty
+    setLongDescription( i18n( "This is where you will find your local music, as well as music from mobile audio players and cd's." ) );
 
-    setFrameShape( QFrame::StyledPanel );
-    setFrameShadow( QFrame::Sunken );
+    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_collections.png" ) );
+
 }
 
 void
@@ -287,7 +334,7 @@ CollectionWidget::customFilter( QAction *action )
         m_levels << secondLevel;
     if( thirdLevel != CategoryId::None )
         m_levels << thirdLevel;
-    m_treeView->setLevels( m_levels );
+    setLevels( m_levels );
 }
 
 void
@@ -295,7 +342,7 @@ CollectionWidget::sortByArtistAlbum()
 {
     m_levels.clear();
     m_levels << CategoryId::Artist << CategoryId::Album;
-    m_treeView->setLevels( m_levels );
+    setLevels( m_levels );
 }
 
 void
@@ -303,7 +350,7 @@ CollectionWidget::sortByGenreArtist()
 {
     m_levels.clear();
     m_levels << CategoryId::Genre << CategoryId::Artist;
-    m_treeView->setLevels( m_levels );
+    setLevels( m_levels );
 }
 
 void
@@ -311,35 +358,35 @@ CollectionWidget::sortByGenreArtistAlbum()
 {
     m_levels.clear();
     m_levels << CategoryId::Genre << CategoryId::Artist << CategoryId::Album;
-    m_treeView->setLevels( m_levels );
+    setLevels( m_levels );
 }
 
 void CollectionWidget::sortByAlbum()
 {
     m_levels.clear();
     m_levels << CategoryId::Album;
-    m_treeView->setLevels( m_levels );
+    setLevels( m_levels );
 }
 
 void CollectionWidget::sortByArtist()
 {
     m_levels.clear();
     m_levels << CategoryId::Artist;
-    m_treeView->setLevels( m_levels );
+    setLevels( m_levels );
 }
 
 void
 CollectionWidget::slotShowYears( bool checked )
 {
     AmarokConfig::setShowYears( checked );
-    m_treeView->setLevels( levels() );
+    setLevels( levels() );
 }
 
 void
 CollectionWidget::slotShowCovers(bool checked)
 {
     AmarokConfig::setShowAlbumArt( checked );
-    m_treeView->setLevels( levels() );
+    setLevels( levels() );
 }
 
 
@@ -354,10 +401,43 @@ CollectionWidget::filter() const
     return m_searchWidget->lineEdit()->text();
 }
 
-QList< int >
-CollectionWidget::levels()
+QList<int>
+CollectionWidget::levels() const
 {
-    return m_treeView->levels();
+    return m_viewMode == CollectionWidget::NormalCollections ? m_treeView->levels() : m_singleTreeView->levels();
+}
+
+void CollectionWidget::setLevels( const QList<int> &levels )
+{
+    m_levels = levels;
+    m_viewMode == CollectionWidget::NormalCollections ? m_treeView->setLevels( m_levels ) : m_singleTreeView->setLevels( m_levels );
+}
+
+void CollectionWidget::toggleView()
+{
+    if( m_viewMode == CollectionWidget::NormalCollections )
+    {
+        debug() << "Switching to single tree model";
+        m_searchWidget->disconnect( m_treeView );
+        //m_treeView->hide();
+        m_searchWidget->setup( m_singleTreeView );
+        m_stack->setCurrentWidget( m_singleTreeView );
+        if( m_levels != m_singleTreeView->levels() )
+            m_singleTreeView->setLevels( m_levels );
+        m_viewMode = CollectionWidget::UnifiedCollection;
+    }
+    else
+    {
+        debug() << "switching to multi model";
+        m_searchWidget->disconnect( m_singleTreeView );
+        m_stack->setCurrentWidget( m_treeView );
+        if( m_levels != m_treeView->levels() )
+            m_treeView->setLevels( m_levels );
+        m_viewMode = CollectionWidget::NormalCollections;
+    }
+    const QMetaObject *mo = metaObject();
+    const QMetaEnum me = mo->enumerator( mo->indexOfEnumerator( "ViewMode" ) );
+    KGlobal::config()->group( "Collection Browser" ).writeEntry( "View Mode", me.valueToKey( m_viewMode ) );
 }
 
 #include "CollectionWidget.moc"

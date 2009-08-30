@@ -1,21 +1,19 @@
-/* This file is part of the KDE project
-   Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
-   Copyright (C) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "ServiceMetaBase.h"
 
@@ -113,7 +111,6 @@ ServiceMetaFactory::getGenreSqlRowCount()
 QString
 ServiceMetaFactory::getGenreSqlRows()
 {
-    DEBUG_BLOCK
     //subclasses must not change the order of these items, but only append new ones
     return m_dbTablePrefix + "_genre.id, " +
            m_dbTablePrefix + "_genre.name " ;
@@ -132,6 +129,7 @@ ServiceTrack::ServiceTrack( const QString & name )
     , SourceInfoProvider()
     , CurrentTrackActionsProvider()
     , BookmarkThisProvider()
+    , m_provider( 0 )
     , m_genre( 0 )
     , m_composer( 0 )
     , m_year( 0 )
@@ -156,6 +154,7 @@ ServiceTrack::ServiceTrack( const QStringList & resultRow )
     , SourceInfoProvider()
     , CurrentTrackActionsProvider()
     , BookmarkThisProvider()
+    , m_provider( 0 )
     , m_genre( 0 )
     , m_composer( 0 )
     , m_year( 0 )
@@ -175,7 +174,7 @@ ServiceTrack::ServiceTrack( const QStringList & resultRow )
 
 ServiceTrack::~ServiceTrack()
 {
-    //nothing to do
+    delete m_provider;
 }
 
 void
@@ -381,25 +380,33 @@ ServiceTrack::setDescription( const QString &newDescription )
 double
 ServiceTrack::score() const
 {
-    return 0.0;
+    if( m_provider )
+        return m_provider->score();
+    else
+        return 0.0;
 }
 
 void
 ServiceTrack::setScore( double newScore )
 {
-    Q_UNUSED( newScore )
+    if( m_provider )
+        m_provider->setScore( newScore );
 }
 
 int
 ServiceTrack::rating() const
 {
-    return 0;
+    if( m_provider )
+        return m_provider->rating();
+    else
+        return 0;
 }
 
 void
 ServiceTrack::setRating( int newRating )
 {
-    Q_UNUSED( newRating )
+    if( m_provider )
+        m_provider->setRating( newRating );
 }
 
 int
@@ -453,13 +460,38 @@ ServiceTrack::setDiscNumber( int newDiscNumber )
 int
 ServiceTrack::playCount() const
 {
-    return 0;
+    if( m_provider )
+        return m_provider->playCount();
+    else
+        return 0;
 }
 
 uint
 ServiceTrack::lastPlayed() const
 {
-    return 0;
+    if( m_provider )
+        return m_provider->lastPlayed().toTime_t();
+    else
+        return 0;
+}
+
+uint
+ServiceTrack::firstPlayed() const
+{
+    if( m_provider )
+        return m_provider->firstPlayed().toTime_t();
+    else
+        return 0;
+}
+
+void
+ServiceTrack::finishedPlaying( double playedFraction )
+{
+    if( m_provider )
+    {
+        m_provider->played( playedFraction );
+        notifyObservers();
+    }
 }
 
 QString
@@ -497,6 +529,15 @@ void
 ServiceTrack::setYear( YearPtr year )
 {
     m_year = year;
+}
+
+void
+ServiceTrack::setStatisticsProvider( StatisticsProvider *provider )
+{
+    if( m_provider )
+        delete m_provider;
+
+    m_provider = provider;
 }
 
 void

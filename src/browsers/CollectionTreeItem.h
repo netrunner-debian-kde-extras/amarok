@@ -1,26 +1,26 @@
-/******************************************************************************
- * Copyright (c) 2007 Alexandre Pereira de Oliveira <aleprj@gmail.com>        *
- *           (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>  *
- *                                                                            *
- * This program is free software; you can redistribute it and/or              *
- * modify it under the terms of the GNU General Public License as             *
- * published by the Free Software Foundation; either version 2 of             *
- * the License, or (at your option) any later version.                        *
- *                                                                            *
- * This program is distributed in the hope that it will be useful,            *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
- * GNU General Public License for more details.                               *
- *                                                                            *
- * You should have received a copy of the GNU General Public License          *
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
- ******************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007 Alexandre Pereira de Oliveira <aleprj@gmail.com>                  *
+ * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef COLLECTIONTREEITEM_H
 #define COLLECTIONTREEITEM_H
 
-#include "meta/Meta.h"
 #include "Collection.h"
+
+#include "meta/Meta.h"
 
 #include <QList>
 
@@ -30,7 +30,11 @@ namespace CustomRoles
     {
         SortRole = Qt::UserRole + 1,
         FilterRole = Qt::UserRole + 2,
-        ByLineRole = Qt::UserRole + 3
+        ByLineRole = Qt::UserRole + 3,
+        HasCapacityRole = Qt::UserRole + 4,
+        UsedCapacityRole = Qt::UserRole + 5,
+        HasDecoratorsRole = Qt::UserRole + 6,
+        DecoratorsRole = Qt::UserRole + 7
     };
 }
 
@@ -89,6 +93,7 @@ class CollectionTreeItem : public QObject
 
     private:
         QString albumYear() const;
+        QList<QAction*> collectionActions() const;
 
         Meta::DataPtr m_data;
         CollectionTreeItem *m_parent;
@@ -99,6 +104,9 @@ class CollectionTreeItem : public QObject
         bool m_isVariousArtistsNode;
         int  m_trackCount;
         mutable bool m_isCounting;
+
+        mutable QList<QAction*> m_collectionActions;
+        mutable bool m_collectionActionsLoaded;
 };
 
 #endif

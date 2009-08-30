@@ -1,19 +1,18 @@
-/******************************************************************************
- * Copyright (C) 2008 Peter ZHOU <peterzhoulei@gmail.com>                     *
- *                                                                            *
- * This program is free software; you can redistribute it and/or              *
- * modify it under the terms of the GNU General Public License as             *
- * published by the Free Software Foundation; either version 2 of             *
- * the License, or (at your option) any later version.                        *
- *                                                                            *
- * This program is distributed in the hope that it will be useful,            *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
- * GNU General Public License for more details.                               *
- *                                                                            *
- * You should have received a copy of the GNU General Public License          *
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
- ******************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Peter ZHOU <peterzhoulei@gmail.com>                               *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef METATYPE_EXPORTER_H
 #define METATYPE_EXPORTER_H
@@ -24,7 +23,12 @@
 #include <QObject>
 #include <QScriptable>
 
-class MetaTrackPrototype : public QObject, protected QScriptable
+#ifdef DEBUG
+    class AMAROK_EXPORT
+#else
+    class
+#endif
+MetaTrackPrototype : public QObject, protected QScriptable
 {
     Q_OBJECT
 
@@ -100,7 +104,7 @@ class MetaTrackPrototype : public QObject, protected QScriptable
         void setComment( QString comment );
         void setLyrics( QString lyrics );
         void setTitle( const QString& name );
-        void setImageUrl(const QString& imageUrl);
+        void setImageUrl( const QString& imageUrl );
 };
 
 #endif

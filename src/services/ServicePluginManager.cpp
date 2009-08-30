@@ -1,21 +1,19 @@
-/*
- *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
- *                2007 Nikolaj Hald Nielsen <nhnFreespirit@gamil.com>
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- */
+/****************************************************************************************
+ * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
  
 #include "ServicePluginManager.h"
 
@@ -112,14 +110,14 @@ void
 ServicePluginManager::slotNewService( ServiceBase *newService )
 {
     DEBUG_BLOCK
-    m_serviceBrowser->addService( newService );
+    m_serviceBrowser->addCategory( newService );
 }
 
 void
 ServicePluginManager::slotRemoveService( ServiceBase *removedService )
 {
     DEBUG_BLOCK
-    m_serviceBrowser->removeService( removedService->name() );
+    m_serviceBrowser->removeCategory( removedService->name() );
 }
 
 QMap<QString, ServiceFactory*>
@@ -132,7 +130,7 @@ void
 ServicePluginManager::settingsChanged()
 {
     //for now, just delete and reload everything....
-    QMap<QString, ServiceBase *> activeServices =  m_serviceBrowser->services();
+    QMap<QString, BrowserCategory *> activeServices =  m_serviceBrowser->categories();
     QList<QString> names = activeServices.keys();
 
     foreach( ServiceFactory * factory,  m_factories )
@@ -142,7 +140,7 @@ ServicePluginManager::settingsChanged()
 
     foreach( const QString &serviceName, names )
     {
-        m_serviceBrowser->removeService( serviceName );
+        m_serviceBrowser->removeCategory( serviceName );
     }
 
     m_loadedServices.clear();
@@ -194,7 +192,7 @@ void ServicePluginManager::settingsChanged( const QString & pluginName )
     foreach( ServiceBase * service, factory->activeServices() ) {
 
         debug() << "removing service: " << service->name();
-        m_serviceBrowser->removeService( service->name() );
+        m_serviceBrowser->removeCategory( service->name() );
     }
 
     factory->clearActiveServices();
@@ -218,20 +216,23 @@ ServicePluginManager::loadedServices()
 QStringList
 ServicePluginManager::loadedServiceNames()
 {
-    return m_serviceBrowser->services().keys();
+    return m_serviceBrowser->categories().keys();
 }
 
 QString
 ServicePluginManager::serviceDescription( const QString & serviceName )
 {
     //get named service
-    if ( !m_serviceBrowser->services().contains( serviceName ) )
+    if ( !m_serviceBrowser->categories().contains( serviceName ) )
     {
-        return i18n( "No service named %1 is curretly loaded", serviceName );
+        return i18n( "No service named %1 is currently loaded", serviceName );
     }
 
-    ServiceBase * service = m_serviceBrowser->services().value( serviceName );
+    ServiceBase * service = dynamic_cast<ServiceBase *>( m_serviceBrowser->categories().value( serviceName ) );
 
+    if ( service == 0 )
+        return QString();
+    
     return service->shortDescription();
 }
 
@@ -239,12 +240,15 @@ QString
 ServicePluginManager::serviceMessages( const QString & serviceName )
 {
     //get named service
-    if ( !m_serviceBrowser->services().contains( serviceName ) )
+    if ( !m_serviceBrowser->categories().contains( serviceName ) )
     {
-        return i18n( "No service named %1 is curretly loaded", serviceName );
+        return i18n( "No service named %1 is currently loaded", serviceName );
     }
 
-    ServiceBase * service = m_serviceBrowser->services().value( serviceName );
+    ServiceBase * service = dynamic_cast<ServiceBase *>( m_serviceBrowser->categories().value( serviceName ) );
+
+    if ( service == 0 )
+        return QString();
 
     return service->messages();
 }
@@ -252,12 +256,15 @@ ServicePluginManager::serviceMessages( const QString & serviceName )
 QString ServicePluginManager::sendMessage( const QString & serviceName, const QString & message )
 {
     //get named service
-    if ( !m_serviceBrowser->services().contains( serviceName ) )
+    if ( !m_serviceBrowser->categories().contains( serviceName ) )
     {
-        return i18n( "No service named %1 is curretly loaded", serviceName );
+        return i18n( "No service named %1 is currently loaded", serviceName );
     }
 
-    ServiceBase * service = m_serviceBrowser->services().value( serviceName );
+    ServiceBase * service = dynamic_cast<ServiceBase *>( m_serviceBrowser->categories().value( serviceName ) );
+
+    if ( service == 0 )
+        return QString();
 
     return service->sendMessage( message );
 }
@@ -280,7 +287,7 @@ void ServicePluginManager::checkEnabledStates()
             debug() << "Active services: " << factory->activeServices().count();
             foreach( ServiceBase * service, factory->activeServices() ) {
                 debug() << "removing service: " << service->name();
-                m_serviceBrowser->removeService( service->name() );
+                m_serviceBrowser->removeCategory( service->name() );
             }
             factory->clearActiveServices();
         }

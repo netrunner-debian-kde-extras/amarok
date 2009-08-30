@@ -1,34 +1,28 @@
-/*
- *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
- *  Copyright (c) 2007 Casey Link <unnamedrambler@gmail.com>
- *  Copyright (c) 2008-2009 Jeff Mitchell <mitchell@kde.org>
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- */
+/****************************************************************************************
+ * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2007 Casey Link <unnamedrambler@gmail.com>                             *
+ * Copyright (c) 2008-2009 Jeff Mitchell <mitchell@kde.org>                             *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "SqlCollection.h"
 
-#include "meta/capabilities/CollectionCapability.h"
-#include "SqlCollectionCapability.h"
 #include "DatabaseUpdater.h"
 #include "Debug.h"
-#include "MySqlEmbeddedCollection.h"
 #include "ScanManager.h"
 #include "SqlCollectionLocation.h"
 #include "SqlQueryMaker.h"
-#include "SqliteCollection.h"
 #include "SvgHandler.h"
 
 #ifdef Q_OS_WIN32
@@ -45,31 +39,6 @@ public:
 #include <KIcon>
 #include <KMessageBox> // TODO put the delete confirmation code somewhere else?
 #include <QTimer>
-
-AMAROK_EXPORT_PLUGIN( SqlCollectionFactory )
-
-void
-SqlCollectionFactory::init()
-{
-   Amarok::Collection* collection;
-    /*  
-    switch( CollectionDB::instance()->getDbConnectionType() )
-    {
-        case DbConnection::sqlite :
-            collection = new SqliteCollection( "localCollection", i18n( "Local Collection" ) );
-            break;
-        case DbConnection::mysql :
-            collection = new MySqlCollection( "localCollection", i18n( "Local Collection" ) );
-            break;
-        default :
-            collection = new SqlCollection( "localCollection", i18n( "Local Collection" ) );
-            break;
-    }
-    */
-
-    collection = new MySqlEmbeddedCollection( "localCollection", i18n( "Local Collection" ) );
-    emit newCollection( collection );
-}
 
 SqlCollection::SqlCollection( const QString &id, const QString &prettyName )
     : Collection()
@@ -97,13 +66,17 @@ SqlCollection::init()
         return;
     }
 
+    bool rescanRequired = false;
     if( m_updater->needsUpdate() )
+    {
+        rescanRequired = true;
         m_updater->update();
+    }
     QStringList result = query( "SELECT count(*) FROM tracks" );
     // If database version is updated, the collection needs to be rescanned.
     // Works also if the collection is empty for some other reason
     // (e.g. deleted collection.db)
-    if( !result.isEmpty() && result.first().toInt() == 0 )
+    if( rescanRequired || ( !result.isEmpty() && result.first().toInt() == 0 ) )
     {
         QTimer::singleShot( 0, m_scanManager, SLOT( startFullScan() ) );
     }
@@ -282,6 +255,12 @@ SqlCollection::exactTextColumnType( int length ) const
 }
 
 QString
+SqlCollection::exactIndexableTextColumnType( int length ) const
+{
+    return textColumnType( length );
+}
+
+QString
 SqlCollection::longTextColumnType() const
 {
     return "TEXT";
@@ -300,19 +279,33 @@ SqlCollection::vacuum() const
 }
 
 void
-SqlCollection::updateTrackUrls( TrackUrls changedUrls ) //SLOT
+SqlCollection::updateTrackUrlsUids( const ChangedTrackUrls &changedUrls, const QHash<QString, QString> &changedUids ) //SLOT
 {
     DEBUG_BLOCK
-
+    QHash<QString, KSharedPtr<Meta::SqlTrack> > trackList; //dun want duplicates
     foreach( const QString &key, changedUrls.keys() )
     {
         if( m_registry->checkUidExists( key ) )
         {
+            m_registry->updateCachedUrl( changedUrls.value( key ) );
             Meta::TrackPtr track = m_registry->getTrackFromUid( key );
             if( track )
-                KSharedPtr<Meta::SqlTrack>::staticCast( track )->setUrl( changedUrls[key] );
+                trackList.insert( key, KSharedPtr<Meta::SqlTrack>::staticCast( track ) );
         }
     }
+    foreach( const QString &key, changedUids.keys() )
+    {
+        //old uid is key, new is value
+        if( m_registry->checkUidExists( key ) )
+        {
+            m_registry->updateCachedUid( key, changedUids[key] );
+            Meta::TrackPtr track = m_registry->getTrackFromUid( key );
+            if( track )
+                trackList.insert( changedUids[key], KSharedPtr<Meta::SqlTrack>::staticCast( track ) );
+        }
+    }
+    foreach( QString key, trackList.keys() )
+        trackList[key]->refreshFromDatabase( key, this, true );
 }
 
 void
@@ -327,8 +320,6 @@ SqlCollection::hasCapabilityInterface( Meta::Capability::Type type ) const
     DEBUG_BLOCK
     switch( type )
     {
-        case Meta::Capability::Collection:
-            return true;
         default:
             return false;
     }
@@ -340,8 +331,6 @@ SqlCollection::createCapabilityInterface( Meta::Capability::Type type )
     DEBUG_BLOCK
     switch( type )
     {
-        case Meta::Capability::Collection:
-            return new Meta::SqlCollectionCapability( this );
         default:
             return 0;
     }
@@ -354,16 +343,6 @@ SqlCollection::deleteTracksSlot( Meta::TrackList tracklist )
     QStringList files;
     foreach( Meta::TrackPtr track, tracklist )
         files << track->prettyUrl();
-
-    // TODO put the delete confirmation code somewhere else?
-    const QString text( i18nc( "@info", "Do you really want to delete these %1 tracks? They will be removed from disk as well as your collection.", tracklist.count() ) );
-    const bool del = KMessageBox::warningContinueCancelList(0,
-                                                     text,
-                                                     files,
-                                                     i18n("Delete Files"),
-                                                     KStandardGuiItem::del() ) == KMessageBox::Continue;
-    if( !del )
-        return;
 
 	CollectionLocation *loc = location();
     // remove the tracks from the collection maps

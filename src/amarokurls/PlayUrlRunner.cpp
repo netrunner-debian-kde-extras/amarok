@@ -1,21 +1,18 @@
-/***************************************************************************
-*   Copyright (c) 2009  Casey Link <unnamedrambler@gmail.com>             *
-*                                                                         *
-*   This program is free software; you can redistribute it and/or modify  *
-*   it under the terms of the GNU General Public License as published by  *
-*   the Free Software Foundation; either version 2 of the License, or     *
-*   (at your option) any later version.                                   *
-*                                                                         *
-*   This program is distributed in the hope that it will be useful,       *
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
-*   GNU General Public License for more details.                          *
-*                                                                         *
-*   You should have received a copy of the GNU General Public License     *
-*   along with this program; if not, write to the                         *
-*   Free Software Foundation, Inc.,                                       *
-*   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
-***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2009 Casey Link <unnamedrambler@gmail.com>                             *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "PlayUrlRunner.h"
 
@@ -39,12 +36,19 @@ PlayUrlRunner::~PlayUrlRunner()
 bool PlayUrlRunner::run ( AmarokUrl url )
 {
     DEBUG_BLOCK
-    if ( url.numberOfArgs() == 0 )
+    if ( url.isNull() )
         return false;
 
-    QUrl track_url = QUrl::fromEncoded ( QByteArray::fromBase64 ( url.arg ( 0 ).toUtf8() ) );
+    QUrl track_url = QUrl::fromEncoded ( QByteArray::fromBase64 ( url.path().toUtf8() ) );
     debug() << "decoded track url: " << track_url.toString();
-    int pos = url.arg ( 1 ).toInt() * 1000;
+
+    //get the position
+    int pos = 0;
+    if ( url.args().keys().contains( "pos" ) )
+    {
+        pos = url.args().value( "pos" ).toInt() * 1000;
+    }
+
     debug() << "seek pos: " << pos;
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl ( track_url );
     if ( !track )
@@ -60,9 +64,9 @@ QString PlayUrlRunner::command() const
 {
     return "play";
 }
+
 BookmarkList PlayUrlRunner::bookmarksFromUrl ( KUrl url )
 {
-    DEBUG_BLOCK
     BookmarkList list;
 
     //See PlayUrlGenerator for the description of a 'play' amarokurl
@@ -77,7 +81,6 @@ BookmarkList PlayUrlRunner::bookmarksFromUrl ( KUrl url )
     // the base64 encoded url (minus the '=').
     QString query = "SELECT id, parent_id, name, url, description, custom FROM bookmarks WHERE url LIKE '%%1%'";
     query = query.arg ( track_encoded );
-    debug() << "query: " << query;
     QStringList result = CollectionManager::instance()->sqlStorage()->query ( query );
 
     int resultRows = result.count() / 6;
@@ -89,3 +92,9 @@ BookmarkList PlayUrlRunner::bookmarksFromUrl ( KUrl url )
     }
     return list;
 }
+
+KIcon PlayUrlRunner::icon() const
+{
+    return KIcon( "x-media-podcast-amarok" );
+}
+

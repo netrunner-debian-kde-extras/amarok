@@ -1,0 +1,24 @@
+[Desktop Entry]
+Name=Amarok JavaScript Runner
+Name[bg]=Изпълнение на JavaScript (Amarok)
+Name[csb]=Zrëszôcz JavaScriptu Amaroka
+Name[et]=Amaroki JavaScripti käivitaja
+Name[is]=Amarok JavaScript keyrari
+Name[it]=Esecutore JavaScript di Amarok
+Name[km]=កម្មវិធី​រត់ JavaScript របស់ Amarok
+Name[ko]=Amarok 자바스크립트 실행기
+Name[nb]=Amarok JavaScript-kjører
+Name[nn]=JavaScript-køyrar for Amarok
+Name[pl]=JavaScript Runner Amaroka
+Name[pt]=Execução de JavaScript do Amarok
+Name[pt_BR]=Executor JavaScript do Amarok
+Name[sv]=Amarok Javascript-körprogram
+Name[tr]=Amarok JavaScript Çalıştırıcısı
+Name[uk]=Інструмент запуску JavaScript Amarok
+Name[x-test]=xxAmarok JavaScript Runnerxx
+X-KDE-ServiceTypes=Plasma/ScriptEngine
+Type=Service
+Icon=text-x-script
+X-KDE-Library=amarok_runnerscript_javascript
+X-Plasma-API=amarok_javascript
+X-Plasma-ComponentTypes=Runner

@@ -2,6 +2,7 @@
 Name=Video
 Name[bg]=Видео
 Name[ca]=Vídeo
+Name[csb]=Wideò
 Name[el]=Βίντεο
 Name[es]=Vídeo
 Name[eu]=Bideoa
@@ -13,6 +14,7 @@ Name[hne]=वीडियो
 Name[is]=Vídeó
 Name[ja]=ビデオ
 Name[km]=វីដេអូ
+Name[ko]=동영상
 Name[ku]=Vîdeo
 Name[mai]=वीडियो
 Name[oc]=Vidèo
@@ -26,6 +28,7 @@ Name[uk]=Відео
 Name[wa]=Videyo
 Name[x-test]=xxVideoxx
 Name[zh_CN]=视频
+Name[zh_TW]=影片
 Type=Service
 ServiceTypes=Plasma/Applet
 

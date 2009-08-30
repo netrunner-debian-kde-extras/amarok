@@ -1,23 +1,22 @@
-/***************************************************************************
- * copyright   : (C) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
- *             : (C) 2008 Soren Harward <stharward@gmail.com>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License or (at your option) version 3 or any later version
- * accepted by the membership of KDE e.V. (or its successor approved
- * by the membership of KDE e.V.), which shall act as a proxy
- * defined in Section 14 of version 3 of the license.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- **************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
+ * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) version 3 or        *
+ * any later version accepted by the membership of KDE e.V. (or its successor approved  *
+ * by the membership of KDE e.V.), which shall act as a proxy defined in Section 14 of  *
+ * version 3 of the license.                                                            *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #define DEBUG_PREFIX "Playlist::RepeatAlbumNavigator"
 
@@ -25,25 +24,28 @@
 
 #include "Debug.h"
 #include "Meta.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistModelStack.h"
 
 Playlist::RepeatAlbumNavigator::RepeatAlbumNavigator()
 {
     DEBUG_BLOCK
-    Model* model = Model::instance();
-    connect( model, SIGNAL( insertedIds( const QList<quint64>& ) ), this, SLOT( recvInsertedIds( const QList<quint64>& ) ) );
-    connect( model, SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( recvRemovedIds( const QList<quint64>& ) ) );
-    connect( model, SIGNAL( activeTrackChanged( const quint64 ) ), this, SLOT( recvActiveTrackChanged( const quint64 ) ) );
+    m_model = Playlist::ModelStack::instance()->top();
+    connect( model(), SIGNAL( insertedIds( const QList<quint64>& ) ),
+             this, SLOT( recvInsertedIds( const QList<quint64>& ) ) );
+    connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ),
+             this, SLOT( recvRemovedIds( const QList<quint64>& ) ) );
+    connect( model(), SIGNAL( activeTrackChanged( const quint64 ) ),
+             this, SLOT( recvActiveTrackChanged( const quint64 ) ) );
 
-    for ( int i = 0; i < model->rowCount(); i++ )
+    for ( int i = 0; i < m_model->rowCount(); i++ )
     {
-        Meta::AlbumPtr album = model->trackAt( i )->album();
-        m_albumGroups[album].append( model->idAt( i ) ); // conveniently creates an empty list if none exists
+        Meta::AlbumPtr album = m_model->trackAt( i )->album();
+        m_albumGroups[album].append( m_model->idAt( i ) ); // conveniently creates an empty list if none exists
     }
 
-    Meta::TrackPtr activeTrack = model->activeTrack();
+    Meta::TrackPtr activeTrack = m_model->activeTrack();
     m_currentAlbum = activeTrack ? activeTrack->album() : Meta::AlbumPtr();
-    m_currentTrack = model->activeId();
+    m_currentTrack = m_model->activeId();
 
     dump();
 }
@@ -52,11 +54,10 @@ void
 Playlist::RepeatAlbumNavigator::recvInsertedIds( const QList<quint64>& list )
 {
     DEBUG_BLOCK
-    Model* model = Model::instance();
     Meta::AlbumList modifiedAlbums;
     foreach( quint64 id, list )
     {
-        Meta::AlbumPtr album = model->trackForId( id )->album();
+        Meta::AlbumPtr album = m_model->trackForId( id )->album();
         m_albumGroups[album].append( id ); // conveniently creates an empty list if none exists
     }
 
@@ -117,9 +118,9 @@ Playlist::RepeatAlbumNavigator::recvActiveTrackChanged( const quint64 id )
     if ( id == m_currentTrack )
         return;
 
-    if ( Model::instance()->containsId( id ) )
+    if ( m_model->containsId( id ) )
     {
-        m_currentAlbum = Model::instance()->trackForId( id )->album();
+        m_currentAlbum = m_model->trackForId( id )->album();
     }
     else
     {
@@ -159,11 +160,10 @@ Playlist::RepeatAlbumNavigator::requestLastTrack()
 }
 
 bool
-Playlist::RepeatAlbumNavigator::idLessThan( const quint64 l, const quint64 r )
+Playlist::RepeatAlbumNavigator::idLessThan( const quint64& l, const quint64& r )
 {
-    Model* model = Model::instance();
-    Meta::TrackPtr left = model->trackForId( l );
-    Meta::TrackPtr right = model->trackForId( r );
+    Meta::TrackPtr left = Playlist::ModelStack::instance()->top()->trackForId( l );
+    Meta::TrackPtr right = Playlist::ModelStack::instance()->top()->trackForId( r );
     return Meta::Track::lessThan( left, right );
 }
 
@@ -179,7 +179,6 @@ Playlist::RepeatAlbumNavigator::sortTheseAlbums( const Meta::AlbumList al )
 void
 Playlist::RepeatAlbumNavigator::dump()
 {
-    Model* model = Model::instance();
     debug() << "album groups are as follows:";
     foreach( Meta::AlbumPtr album, m_albumGroups.keys() )
     {
@@ -189,7 +188,7 @@ Playlist::RepeatAlbumNavigator::dump()
             ItemList atl = m_albumGroups.value( album );
             foreach( quint64 id, atl )
             {
-                Meta::TrackPtr track = model->trackForId( id );
+                Meta::TrackPtr track = m_model->trackForId( id );
                 debug() << "      " << track->trackNumber() << track->prettyName() << id;
             }
         }

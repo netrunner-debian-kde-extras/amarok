@@ -1,20 +1,18 @@
-/* This file is part of the KDE project
-   Copyright (C) 2007 Bart Cerneels <bart.cerneels@kde.org>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2007 Bart Cerneels <bart.cerneels@kde.org>                             *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "PodcastModel.h"
 
@@ -22,7 +20,6 @@
 #include "Debug.h"
 #include "PodcastMeta.h"
 #include "PodcastProvider.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "PodcastCategory.h"
@@ -405,7 +402,7 @@ PlaylistBrowserNS::PodcastModel::addPodcast()
     {
         bool ok;
         QString url = QInputDialog::getText( 0,
-                            i18n("Amarok"), i18n("Enter Podcast URL:"), QLineEdit::Normal,
+                            i18n("Add Podcast"), i18n("Enter RSS 2.0 feed URL:"), QLineEdit::Normal,
                             QString(), &ok );
         if ( ok && !url.isEmpty() )
         {
@@ -650,10 +647,10 @@ PlaylistBrowserNS::PodcastModel::emitLayoutChanged()
     emit( layoutChanged() );
 }
 
-QList<PopupDropperAction *>
+QList<QAction *>
 PlaylistBrowserNS::PodcastModel::actionsFor( const QModelIndexList &indices )
 {
-    QList<PopupDropperAction *> actions;
+    QList<QAction *> actions;
 
     m_selectedEpisodes.clear();
     m_selectedChannels.clear();
@@ -678,34 +675,32 @@ PlaylistBrowserNS::PodcastModel::actionsFor( const QModelIndexList &indices )
     return actions;
 }
 
-QList< PopupDropperAction * >
+QList< QAction * >
 PlaylistBrowserNS::PodcastModel::createCommonActions( QModelIndexList indices )
 {
     Q_UNUSED( indices )
-    QList< PopupDropperAction * > actions;
+    QList< QAction * > actions;
 
     if( m_appendAction == 0 )
     {
-        m_appendAction = new PopupDropperAction(
-            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
-            "append",
+        m_appendAction = new QAction(
             KIcon( "media-track-add-amarok" ),
             i18n( "&Append to Playlist" ),
             this
         );
+        m_appendAction->setProperty( "popupdropper_svg_id", "append" );
         connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppend() ) );
     }
 
     if( m_loadAction == 0 )
     {
-        m_loadAction = new PopupDropperAction(
-            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
-            "load",
+        m_loadAction = new QAction(
             KIcon( "folder-open" ),
             i18nc( "Replace the currently loaded tracks with these",
             "&Load" ),
             this
         );
+        m_loadAction->setProperty( "popupdropper_svg_id", "load" );
         connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotLoad() ) );
     }
 

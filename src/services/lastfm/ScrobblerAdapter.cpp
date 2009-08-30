@@ -1,16 +1,19 @@
-/***************************************************************************
-* copyright            : (C) 2007 Shane King <kde@dontletsstart.com>      *
-* copyright            : (C) 2008 Leo Franchi <lfranchi@kde.org>          *
- **************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007 Shane King <kde@dontletsstart.com>                                *
+ * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #define DEBUG_PREFIX "lastfm"
 
@@ -26,13 +29,22 @@
 ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &clientId )
     : QObject( parent ),
       EngineObserver( The::engineController() ),
-      m_scrobbler( new Scrobbler( clientId ) ),
+      m_scrobbler( new lastfm::Audioscrobbler( clientId ) ),
       m_clientId( clientId ),
       m_lastSaved( 0 )
 {
     resetVariables();
 
-    connect( m_scrobbler, SIGNAL( status( int, QVariant ) ), this, SLOT( statusChanged( int, QVariant ) ) );
+    //HACK work around a bug in liblastfm---it doesn't create its config dir, so when it
+    // tries to write the track cache, it fails silently. until we have a fixed version, do this
+    // path finding code taken from liblastfm/src/misc.cpp
+    QString lpath = QDir::home().filePath( ".local/share/Last.fm" );
+    QDir ldir = QDir( lpath );
+    if( !ldir.exists() )
+    {
+        ldir.mkpath( lpath );
+    }
+    
     connect( The::mainWindow(), SIGNAL( loveTrack(Meta::TrackPtr) ), SLOT( loveTrack(Meta::TrackPtr) ) );
 }
 
@@ -71,7 +83,7 @@ ScrobblerAdapter::engineNewTrackPlaying()
         // TODO also set fingerprint... whatever that is :)
         // m_current.setFingerprintId( qstring );
         
-        m_current.setSource( isRadio ? Track::LastFmRadio : Track::Player );
+        m_current.setSource( isRadio ? lastfm::Track::LastFmRadio : lastfm::Track::Player );
         
 
         if( !m_current.isNull() )
@@ -82,7 +94,7 @@ ScrobblerAdapter::engineNewTrackPlaying()
             // When playing Last.fm Radio, we need to submit twice, once in Radio mode and once in Player mode
             // TODO check with mxcl if this is still required
             if( isRadio ) {
-                m_current.setSource( Track::Player );
+                m_current.setSource( lastfm::Track::Player );
                 m_scrobbler->nowPlaying( m_current );
             }
         }
@@ -114,7 +126,7 @@ ScrobblerAdapter::engineNewMetaData( const QHash<qint64, QString> &newMetaData, 
         m_current.setArtist( track->artist()->name() );
         m_current.stamp();
         
-        m_current.setSource( Track::NonPersonalisedBroadcast );
+        m_current.setSource( lastfm::Track::NonPersonalisedBroadcast );
 
         if( !m_current.isNull() )
         {
@@ -183,7 +195,7 @@ ScrobblerAdapter::loveTrack( Meta::TrackPtr track )
 
     if( track )
     {
-        MutableTrack trackInfo;
+        lastfm::MutableTrack trackInfo;
         trackInfo.setTitle( track->name() );
         if( track->artist() )
             trackInfo.setArtist( track->artist()->name() );
@@ -203,18 +215,10 @@ ScrobblerAdapter::ban()
     m_current.ban();
 }
 
-
-void
-ScrobblerAdapter::statusChanged( int statusCode, QVariant /*data*/ )
-{
-    debug() << "statusChanged: statusCode=" << statusCode;
-}
-
-
 void
 ScrobblerAdapter::resetVariables()
 {
-    m_current = MutableTrack();
+    m_current = lastfm::MutableTrack();
     m_totalPlayed = m_lastPosition = 0;
 }
 

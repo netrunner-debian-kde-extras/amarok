@@ -1,13 +1,20 @@
-/***************************************************************************
- *   Copyright (C) 2004 by Max Howell <max.howell@methylblue.com>          *
- *   Copyright (C) 2008 by Mark Kretschmann <kretschmann@kde.org>          *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2004 Max Howell <max.howell@methylblue.com>                            *
+ * Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2009 Artur Szymiec <artur.szymiec@gmail.com>                           *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef AMAROK_ACTIONCLASSES_H
 #define AMAROK_ACTIONCLASSES_H
@@ -58,9 +65,7 @@ namespace Amarok
     {
         public:
             ToggleAction( const QString &text, void ( *f ) ( bool ), KActionCollection* const ac, const char *name, QObject *parent );
-
             virtual void setChecked( bool b );
-
             virtual void setEnabled( bool b );
 
         private:
@@ -114,6 +119,25 @@ namespace Amarok
             ReplayGainModeAction( KActionCollection *ac, QObject* );
     };
 
+    class EqualizerAction : public SelectAction
+    {
+        Q_OBJECT
+
+        public:
+            EqualizerAction( KActionCollection *ac, QObject* );
+
+        public slots:
+            void updateContent();
+            void newList();
+
+        private slots:
+            void actTrigg( int index );
+
+        private:
+            QStringList eqGlobalList();
+            QList<int> eqCfgGetPresetVal( int mPresetNo );
+    };
+
     class BurnMenu : public KMenu
     {
         Q_OBJECT
@@ -145,6 +169,15 @@ namespace Amarok
             virtual void engineStateChanged( Phonon::State, Phonon::State = Phonon::StoppedState );
     };
 
+    class StopPlayingAfterCurrentTrackAction : public KAction, public EngineObserver
+    {
+        Q_OBJECT
+        public:
+            StopPlayingAfterCurrentTrackAction( KActionCollection*, QObject* );
+            virtual void engineStateChanged( Phonon::State, Phonon::State = Phonon::StoppedState );
+        private Q_SLOTS:
+            void stopPlayingAfterCurrentTrack();
+    };
 } /* namespace Amarok */
 
 

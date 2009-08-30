@@ -1,21 +1,20 @@
-/******************************************************************************
- * Copyright (c) 2007 Alexandre Pereira de Oliveira <aleprj@gmail.com>        *
- *           (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>  *
- *           (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>          *
- *                                                                            *
- * This program is free software; you can redistribute it and/or              *
- * modify it under the terms of the GNU General Public License as             *
- * published by the Free Software Foundation; either version 2 of             *
- * the License, or (at your option) any later version.                        *
- *                                                                            *
- * This program is distributed in the hope that it will be useful,            *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
- * GNU General Public License for more details.                               *
- *                                                                            *
- * You should have received a copy of the GNU General Public License          *
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
- ******************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007 Alexandre Pereira de Oliveira <aleprj@gmail.com>                  *
+ * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #define DEBUG_PREFIX "CollectionTreeItemModelBase"
 
@@ -643,7 +642,10 @@ CollectionTreeItemModelBase::queryDone()
 
     //reset icon for this item
     if( item && item != m_rootItem )
+    {
         emit ( dataChanged ( createIndex(item->row(), 0, item), createIndex(item->row(), 0, item) ) );
+        emit ( queryFinished() );
+    }
 
     //stop timer if there are no more animations active
     if( d->m_childQueries.count() == 0 /*&& d->m_compilationQueries.count() == 0 */ )
@@ -708,15 +710,13 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
     {
         CollectionTreeItem *parent = d->m_compilationQueries.value( qm );
         QModelIndex parentIndex;
-        if( parent ) {
+        if( parent )
+        {
             if (parent == m_rootItem ) // will never happen in CollectionTreeItemModel
-            {
                 parentIndex = QModelIndex();
-            }
             else
-            {
                 parentIndex = createIndex( parent->row(), 0, parent );
-            }
+
             //we only insert the "Various Artists" node
             beginInsertRows( parentIndex, 0, 0 );
             CollectionTreeItem *vaItem = new CollectionTreeItem( data, parent );
@@ -727,11 +727,7 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
                 tmp = tmp->parent();
 
             if( m_expandedVariousArtistsNodes.contains( tmp->parentCollection() ) )
-            {
-                debug() << "Expand vanode for collection " << collectionId;
-                QModelIndex vanode = createIndex( 0, 0, vaItem ); //we've just inserted the vaItem at row 0
-                emit expandIndex( vanode );
-            }
+                createIndex( 0, 0, vaItem ); //we've just inserted the vaItem at row 0
 
         }
     }

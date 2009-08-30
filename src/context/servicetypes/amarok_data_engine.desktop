@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Amarok Data Engine
-Name[bg]=Ядро за Amarok
+Name[bg]=Ядро Amarok
 Name[ca]=Motor de dades de l'Amarok
 Name[cs]=Datový nástroj Amarok
 Name[csb]=Mòtór pòdôwków Amaroka
@@ -19,6 +19,7 @@ Name[is]=Amarok gagnavél
 Name[it]=Motore dati di Amarok
 Name[ja]=Amarok データエンジン
 Name[km]=ម៉ាស៊ីន​ទិន្នន័យ Amarok
+Name[ko]=Amarok 데이터 엔진
 Name[ku]=Motora Dane ya Amarok
 Name[lt]=Amarok duomenų sistema
 Name[lv]=Amarok datu dzinējs
@@ -40,11 +41,12 @@ Name[uk]=Рушій даних Amarok
 Name[wa]=Éndjin d' dinêyes Amarok
 Name[x-test]=xxAmarok Data Enginexx
 Name[zh_CN]=Amarok 数据引擎
+Name[zh_TW]=Amarok 資料引擎
 Type=ServiceType
 X-KDE-ServiceType=Plasma/DataEngine
 
 Comment=Amarok Data Engine
-Comment[bg]=Ядро за Amarok
+Comment[bg]=Ядро Amarok
 Comment[ca]=Motor de dades de l'Amarok
 Comment[cs]=Datový nástroj Amarok
 Comment[csb]=Mòtór pòdôwków Amaroka
@@ -86,6 +88,7 @@ Comment[uk]=Рушій даних Amarok
 Comment[wa]=Éndjin d' dinêyes Amarok
 Comment[x-test]=xxAmarok Data Enginexx
 Comment[zh_CN]=Amarok 数据引擎
+Comment[zh_TW]=Amarok 資料引擎
 
 [PropertyDef::X-KDE-PluginInfo-Name]
 Type=QString

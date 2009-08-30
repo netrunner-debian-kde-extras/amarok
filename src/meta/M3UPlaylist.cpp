@@ -1,20 +1,18 @@
-/* This file is part of the KDE project
-   Copyright (C) 2007 Bart Cerneels <bart.cerneels@kde.org>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2007 Bart Cerneels <bart.cerneels@kde.org>                             *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "M3UPlaylist.h"
 
@@ -22,6 +20,7 @@
 #include "CollectionManager.h"
 #include "Debug.h"
 #include "PlaylistManager.h"
+#include "PlaylistFileSupport.h"
 
 #include <KUrl>
 
@@ -32,22 +31,22 @@
 namespace Meta {
 
 M3UPlaylist::M3UPlaylist()
-    : Playlist()
-    , m_url( PlaylistManager::newPlaylistFilePath( "m3u" ) )
+    : PlaylistFile()
+    , m_url( Meta::newPlaylistFilePath( "m3u" ) )
 {
     m_name = m_url.fileName();
 }
 
 M3UPlaylist::M3UPlaylist( Meta::TrackList tracks )
-    : Playlist()
-    , m_url( PlaylistManager::newPlaylistFilePath( "m3u" ) )
+    : PlaylistFile()
+    , m_url( Meta::newPlaylistFilePath( "m3u" ) )
     , m_tracks( tracks )
 {
     m_name = m_url.fileName();
 }
 
 M3UPlaylist::M3UPlaylist( const KUrl &url )
-    : Playlist()
+    : PlaylistFile( url )
     , m_url( url )
 {
     DEBUG_BLOCK
@@ -57,7 +56,7 @@ M3UPlaylist::M3UPlaylist( const KUrl &url )
     //check if file is local or remote
     if ( m_url.isLocalFile() )
     {
-        QFile file( m_url.path() );
+        QFile file( m_url.toLocalFile() );
         if( !file.open( QIODevice::ReadOnly ) ) {
             debug() << "cannot open file";
             return;
@@ -72,7 +71,7 @@ M3UPlaylist::M3UPlaylist( const KUrl &url )
     }
     else
     {
-        The::playlistManager()->downloadPlaylist( m_url, PlaylistPtr( this ) );
+        The::playlistManager()->downloadPlaylist( m_url, PlaylistFilePtr( this ) );
     }
 }
 
@@ -141,13 +140,18 @@ M3UPlaylist::loadM3u( QTextStream &stream )
 }
 
 bool
-M3UPlaylist::save( const QString &location, bool relative )
+M3UPlaylist::save( const KUrl &location, bool relative )
 {
-    QFile file( location );
+    KUrl savePath = location;
+    //if the location is a directory append the name of this playlist.
+    if( savePath.fileName().isNull() )
+        savePath.setFileName( name() );
+
+    QFile file( savePath.path() );
 
     if( !file.open( QIODevice::WriteOnly ) )
     {
-        debug() << "Unable to write to playlist!";
+        debug() << "Unable to write to playlist " << savePath.path();
         return false;
     }
 
@@ -190,6 +194,21 @@ M3UPlaylist::save( const QString &location, bool relative )
     }
 
     return true;
+}
+
+bool
+M3UPlaylist::isWritable()
+{
+    if( m_url.isEmpty() )
+        return false;
+
+    return QFileInfo( m_url.path() ).isWritable();
+}
+
+void
+M3UPlaylist::setName( const QString &name )
+{
+    m_url.setFileName( name );
 }
 
 } //namespace Meta

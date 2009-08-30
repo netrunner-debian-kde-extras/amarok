@@ -1,23 +1,20 @@
-/***************************************************************************
-                        amarokslider.cpp  -  description
-                           -------------------
-  begin                : Dec 15 2003
-  copyright            : (C) 2003-2008 by Mark Kretschmann
-  email                : kretschmann@kde.org
-  copyright            : (C) 2005 by Gábor Lehel
-  email                : illissius@gmail.com
-  copyright            : (C) 2008 by Dan Meltzer
-  email                : parallelgrapefruit@gmail.com
- ***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2003-2008 Mark Kretschmann <kretschmann@kde.org>                       *
+ * Copyright (c) 2005 Gabor Lehel <illissius@gmail.com>                                 *
+ * Copyright (c) 2008 Dan Meltzer <parallelgrapefruit@gmail.com>                        *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "SliderWidget.h"
 
@@ -29,6 +26,7 @@
 #include "BookmarkTriangle.h"
 #include "Debug.h"
 #include "EngineController.h"
+#include "meta/MetaUtility.h"
 #include "SvgHandler.h"
 #include "ProgressWidget.h"
 
@@ -70,7 +68,8 @@ Amarok::Slider::wheelEvent( QWheelEvent *e )
     }
 
     // Position Slider (horizontal)
-    int step = e->delta() / VOLUME_SENSITIVITY;
+    // only used for progress slider now!
+    int step = e->delta() * 24;
     int nval = QSlider::value() + step;
     nval = qMax(nval, minimum());
     nval = qMin(nval, maximum());
@@ -207,7 +206,7 @@ void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, in
         const int sliderLeftWidth = sliderHeight / 3;
         const int sliderRightWidth = sliderLeftWidth;
 
-        int knobX = ( ((double) value() - (double) minimum()) / (maximum() - minimum()) ) * (width - (sliderLeftWidth + sliderRightWidth + m_sliderInsertX * 2) );
+        int knobX = ( ( (double) value() - (double) minimum()) / (maximum() - minimum()) ) * (width - (sliderLeftWidth + sliderRightWidth + m_sliderInsertX * 2) );
 
         const QString barLeft = "slider_bar_left";
         const QString barCenter = "slider_bar_center";
@@ -217,6 +216,13 @@ void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, in
         p->drawPixmap( x + m_sliderInsertX + sliderLeftWidth, y + m_sliderInsertY, The::svgHandler()->renderSvg( barCenter, knobX, sliderHeight, barCenter ) );
         p->drawPixmap( x + m_sliderInsertX + knobX + sliderLeftWidth, y + m_sliderInsertY, The::svgHandler()->renderSvg( barRight, sliderRightWidth, sliderHeight, barRight ) );
     }
+}
+
+void Amarok::Slider::paintCustomSliderNG( QPainter *p, int x, int y, int width, int height, double /*pos*/ )
+{
+    qreal percentage =  ( ( (double) value() - (double) minimum()) / (maximum() - minimum() ) );
+    The::svgHandler()->paintCustomSlider( p,x, y, width, height, percentage, underMouse() );
+
 }
 
 
@@ -316,7 +322,7 @@ void
 Amarok::TimeSlider::paintEvent( QPaintEvent * )
 {
     QPainter p( this );
-    paintCustomSlider( &p, 0, 0, width(), height(), m_knobX );
+    paintCustomSliderNG( &p, 0, 0, width(), height(), m_knobX );
 }
 
 void Amarok::TimeSlider::resizeEvent(QResizeEvent * event)
@@ -358,6 +364,29 @@ void Amarok::TimeSlider::mousePressEvent(QMouseEvent *event )
     if( !The::engineController()->phononMediaObject()->isSeekable() )
         return; // Eat the event,, it's not possible to seek
     Amarok::Slider::mousePressEvent( event );
+}
+
+bool Amarok::TimeSlider::event ( QEvent * event )
+{
+    if ( event->type() == QEvent::ToolTip )
+    {
+
+        //make a QHelpEvent out of this
+        QHelpEvent * helpEvent = dynamic_cast<QHelpEvent *>( event );
+        if ( helpEvent )
+        {
+            //update tooltip to show track position of mouse.
+
+            //figure out "percentage" of mouse position
+            qreal percentage = (qreal) helpEvent->x() / (qreal) width();
+            long trackLength = The::engineController()->trackLength();
+            int positionTime = trackLength * percentage;
+
+            setToolTip( Meta::secToPrettyTime( positionTime ) );
+        }
+            
+    }
+    return QWidget::event( event );
 }
 
 

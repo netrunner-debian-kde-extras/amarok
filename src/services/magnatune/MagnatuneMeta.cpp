@@ -1,28 +1,27 @@
-/***************************************************************************
- *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "MagnatuneMeta.h"
 #include "MagnatuneStore.h"
 
 #include "Amarok.h"
 #include "Debug.h"
-#include "MagnatunePurchaseAction.h"
+#include "MagnatuneActions.h"
+#include "MagnatuneConfig.h"
+#include "meta/support/PermanentUrlStatisticsProvider.h"
 #include "SvgHandler.h"
 
 #include <KLocale>
@@ -61,7 +60,6 @@ int MagnatuneMetaFactory::getTrackSqlRowCount()
 
 QString MagnatuneMetaFactory::getTrackSqlRows()
 {
-    DEBUG_BLOCK
     QString sqlRows = ServiceMetaFactory::getTrackSqlRows();
 
     sqlRows += ", ";
@@ -80,6 +78,7 @@ TrackPtr MagnatuneMetaFactory::createTrack(const QStringList & rows)
     } else if (  m_streamType == LOFI ) {
         track->setUidUrl( track->lofiUrl() );
     }
+    track->setStatisticsProvider( new PermanentUrlStatisticsProvider( track->uidUrl() ) );
 
     if ( !m_membershipPrefix.isEmpty() ) {
         QString url = track->uidUrl();
@@ -140,7 +139,6 @@ int MagnatuneMetaFactory::getArtistSqlRowCount()
 
 QString MagnatuneMetaFactory::getArtistSqlRows()
 {
-    DEBUG_BLOCK
     QString sqlRows = ServiceMetaFactory::getArtistSqlRows();
 
     sqlRows += ", ";
@@ -184,7 +182,6 @@ MagnatuneTrack::MagnatuneTrack(const QStringList & resultRow)
     , m_purchaseAction( 0 )
     , m_showInServiceAction( 0 )
 {
-    DEBUG_BLOCK
     m_lofiUrl = resultRow[7];
     m_oggUrl = resultRow[8];
 }
@@ -215,10 +212,10 @@ void Meta::MagnatuneTrack::setDownloadMembership()
 }
 
 
-QList< PopupDropperAction * > Meta::MagnatuneTrack::customActions()
+QList< QAction * > Meta::MagnatuneTrack::customActions()
 {
     DEBUG_BLOCK
-    QList< PopupDropperAction * > actions;
+    QList< QAction * > actions;
 
     if ( !m_purchaseAction ) {
 
@@ -239,11 +236,11 @@ QList< PopupDropperAction * > Meta::MagnatuneTrack::customActions()
 
 }
 
-QList< PopupDropperAction * > Meta::MagnatuneTrack::currentTrackActions()
+QList< QAction * > Meta::MagnatuneTrack::currentTrackActions()
 {
 
     DEBUG_BLOCK
-    QList< PopupDropperAction * > actions;
+    QList< QAction * > actions;
 
     if ( !m_purchaseAction ) {
 
@@ -309,14 +306,12 @@ void Meta::MagnatuneTrack::purchase()
 
 void Meta::MagnatuneTrack::setAlbumPtr( Meta::AlbumPtr album )
 {
-    DEBUG_BLOCK
     ServiceTrack::setAlbumPtr( album );
 
     //get year from magnatue album:
     MagnatuneAlbum * ma = dynamic_cast<MagnatuneAlbum *>( album.data() );
     if ( ma )
     {
-        debug() << "release year: " << ma->launchYear();
         YearPtr year = YearPtr( new ServiceYear( QString::number( ma->launchYear() ) ) );
         setYear( year );
     }
@@ -371,6 +366,7 @@ MagnatuneAlbum::MagnatuneAlbum( const QString &name )
     , m_store( 0 )
     , m_downloadMembership( false )
     , m_purchaseAction( 0 )
+    , m_addToFavoritesAction( 0 )
 
 {}
 
@@ -378,6 +374,7 @@ MagnatuneAlbum::MagnatuneAlbum(const QStringList & resultRow)
     : ServiceAlbumWithCover( resultRow )
     , m_downloadMembership ( false )
     , m_purchaseAction( 0 )
+    , m_addToFavoritesAction( 0 )
 {
     debug() << "create album from result row: " << resultRow;
 
@@ -439,10 +436,10 @@ void Meta::MagnatuneAlbum::setDownloadMembership()
     m_downloadMembership = true;
 }
 
-QList< PopupDropperAction * > MagnatuneAlbum::customActions()
+QList< QAction * > MagnatuneAlbum::customActions()
 {
     DEBUG_BLOCK
-    QList< PopupDropperAction * > actions;
+    QList< QAction * > actions;
 
     if ( !m_purchaseAction ) {
 
@@ -452,6 +449,16 @@ QList< PopupDropperAction * > MagnatuneAlbum::customActions()
         m_purchaseAction = new MagnatunePurchaseAction( text, this );
     }
 
+    if ( !m_addToFavoritesAction )
+    {
+         QString text = i18n( "Add to Magnatune.com &favorites" );
+         m_addToFavoritesAction = new MagnatuneAddToFavoritesAction( text, this );
+    }
+
+    MagnatuneConfig config;
+    if ( config.isMember() )
+        actions.append( m_addToFavoritesAction );
+    
     actions.append( m_purchaseAction );
 
     return actions;
@@ -464,6 +471,12 @@ void Meta::MagnatuneAlbum::purchase()
         store()->purchase( this );
 }
 
+void Meta::MagnatuneAlbum::addToFavorites()
+{
+    DEBUG_BLOCK
+    if ( store() )
+        store()->addToFavorites( albumCode() );
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 // class MagnatuneGenre
@@ -477,11 +490,4 @@ MagnatuneGenre::MagnatuneGenre( const QStringList & resultRow )
     : ServiceGenre( resultRow )
 {}
 
-
-
 #include "MagnatuneMeta.moc"
-
-
-
-
-

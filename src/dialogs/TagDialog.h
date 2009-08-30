@@ -1,22 +1,21 @@
-/******************************************************************************
- * Copyright (C) 2004 Mark Kretschmann <kretschmann@kde.org>                  *
- *           (C) 2004 Pierpaolo Di Panfilo <pippo_dp@libero.it>               *
- *           (C) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>        *
- *           (C) 2008 Leo Franchi <lfranchi@kde.org>                          *
- *                                                                            *
- * This program is free software; you can redistribute it and/or              *
- * modify it under the terms of the GNU General Public License as             *
- * published by the Free Software Foundation; either version 2 of             *
- * the License, or (at your option) any later version.                        *
- *                                                                            *
- * This program is distributed in the hope that it will be useful,            *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
- * GNU General Public License for more details.                               *
- *                                                                            *
- * You should have received a copy of the GNU General Public License          *
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
- ******************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2004 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2004 Pierpaolo Di Panfilo <pippo_dp@libero.it>                         *
+ * Copyright (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>                  *
+ * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef AMAROK_TAGDIALOG_H
 #define AMAROK_TAGDIALOG_H
@@ -148,12 +147,12 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
 
         QString m_lyrics;
         bool m_perTrack;
-        QMap<Meta::TrackPtr, QVariantMap > storedTags;
-        QMap<Meta::TrackPtr, double> storedScores;
-        QMap<Meta::TrackPtr, int> storedRatings;
-        QMap<Meta::TrackPtr, QString> storedLyrics;
-        QMap<Meta::TrackPtr, QStringList> newLabels;
-        QMap<Meta::TrackPtr, QStringList> originalLabels;
+        QMap<Meta::TrackPtr, QVariantMap > m_storedTags;
+        QMap<Meta::TrackPtr, double> m_storedScores;
+        QMap<Meta::TrackPtr, int> m_storedRatings;
+        QMap<Meta::TrackPtr, QString> m_storedLyrics;
+        QMap<Meta::TrackPtr, QStringList> m_newLabels;
+        QMap<Meta::TrackPtr, QStringList> m_originalLabels;
         QString m_path;
         QString m_currentCover;
         QStringList m_labels;

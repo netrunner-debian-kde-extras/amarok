@@ -1,22 +1,19 @@
-/***************************************************************************
- * Copyright (c) 2008-2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> *
- *           (c) 2009  Seb Ruiz <ruiz@kde.org>                             *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008-2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>               *
+ * Copyright (c) 2009 Seb Ruiz <ruiz@kde.org>                                           *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
  
 #include "LayoutManager.h"
 
@@ -100,7 +97,6 @@ void LayoutManager::loadUserLayouts()
     for ( int i = 0; i < list.size(); ++i )
     {
         QFileInfo fileInfo = list.at(i);
-        debug() << "found user file: " << fileInfo.fileName();
         loadLayouts( layoutsDir.filePath( fileInfo.fileName() ), true );
     }
 }
@@ -108,7 +104,7 @@ void LayoutManager::loadUserLayouts()
 void LayoutManager::loadDefaultLayouts()
 {
     const KUrl url( KStandardDirs::locate( "data", "amarok/data/" ) );
-    QString configFile = url.path() + "DefaultPlaylistLayouts.xml";
+    QString configFile = url.toLocalFile() + "DefaultPlaylistLayouts.xml";
     loadLayouts( configFile, false );
 }
 
@@ -148,8 +144,11 @@ void LayoutManager::loadLayouts( const QString &fileName, bool user )
         index++;
 
         QString layoutName = layout.toElement().attribute( "name", "" );
+        
         PlaylistLayout currentLayout;
         currentLayout.setEditable( user );
+        currentLayout.setInlineControls( layout.toElement().attribute( "inline_controls", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
+        currentLayout.setAllowGrouping(  layout.toElement().attribute( "allow_grouping", "true" ).compare( "true", Qt::CaseInsensitive ) == 0 );
 
         currentLayout.setHead( parseItemConfig( layout.toElement().firstChildElement( "group_head" ) ) );
         currentLayout.setBody( parseItemConfig( layout.toElement().firstChildElement( "group_body" ) ) );
@@ -246,7 +245,13 @@ void LayoutManager::addUserLayout( const QString &name, PlaylistLayout layout )
     newLayout.appendChild( createItemElement( doc, "group_head", layout.head() ) );
     newLayout.appendChild( createItemElement( doc, "group_body", layout.body() ) );
 
-    debug() << doc.toString();
+    if( layout.inlineControls() )
+        newLayout.setAttribute( "inline_controls", "true" ); 
+
+    //allowGrouping defaults to true, so we want to note if false instead of if true
+    if(!layout.allowGrouping() )
+        newLayout.setAttribute( "allow_grouping", "false");
+
     QDir layoutsDir = QDir( Amarok::saveLocation( "playlist_layouts/" ) );
 
     //make sure that this dir exists
@@ -280,6 +285,8 @@ QDomElement LayoutManager::createItemElement( QDomDocument doc, const QString &n
             LayoutItemConfigRowElement element = row.element( j );
             QDomElement elementElement = doc.createElement( "element" );
 
+            elementElement.setAttribute ( "prefix", element.prefix() );
+            elementElement.setAttribute ( "suffix", element.suffix() );
             elementElement.setAttribute ( "value", internalColumnNames[element.value()] );
             elementElement.setAttribute ( "size", QString::number( element.size() ) );
             elementElement.setAttribute ( "bold", element.bold() ? "true" : "false" );
@@ -322,10 +329,9 @@ void LayoutManager::deleteLayout( const QString &layout )
     {
         QDir layoutsDir = QDir( Amarok::saveLocation( "playlist_layouts/" ) );
         QString xmlFile = layoutsDir.path() + '/' + layout + ".xml";
-        debug() << "deleting file: " << xmlFile;
        
         if ( !QFile::remove( xmlFile ) )
-            debug() << "error deleting file....";
+            debug() << "error deleting file" << xmlFile;
 
         m_layouts.remove( layout );
         m_layoutNames.removeAll( layout );

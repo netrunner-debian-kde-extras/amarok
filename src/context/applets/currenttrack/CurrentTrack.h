@@ -1,16 +1,20 @@
-/*****************************************************************************
- * copyright            : (C) 2007-2009 Leo Franchi <lfranchi@gmail.com>     *
- *                      : (C) 2008 William Viana Soares <vianasw@gmail.com>  *
- *****************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007-2009 Leo Franchi <lfranchi@gmail.com>                             *
+ * Copyright (c) 2008 William Viana Soares <vianasw@gmail.com>                          *
+ * Copyright (c) 2009 simon.esneault <simon.esneault@gmail.com>                         *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef CURRENT_TRACK_APPLET_H
 #define CURRENT_TRACK_APPLET_H
@@ -23,6 +27,8 @@
 #include <QAction>
 #include <QList>
 
+class TextScrollingWidget;
+class DropPixmapItem;
 class RatingWidget;
 class QCheckBox;
 class QGraphicsPixmapItem;
@@ -47,9 +53,7 @@ public:
     ~CurrentTrack();
 
     virtual void init();
-
     virtual void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
-    virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint) const;
 
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
@@ -62,6 +66,7 @@ private slots:
     void connectSource( const QString &source );
     void paletteChanged( const QPalette & palette );
     void tabChanged( int index );
+    void coverDropped( QPixmap cover );
 
 private:
     QList<QAction*> contextualActions();
@@ -70,16 +75,16 @@ private:
     // aligns the second QGI to be at the same level as the first (the bottom edges)
     void alignBottomToFirst( QGraphicsItem* a, QGraphicsItem* b );
 
-    QGraphicsSimpleTextItem* m_title;
-    QGraphicsSimpleTextItem* m_artist;
-    QGraphicsSimpleTextItem* m_album;
+    TextScrollingWidget* m_title;
+    TextScrollingWidget* m_artist;
+    TextScrollingWidget* m_album;
     QGraphicsSimpleTextItem* m_noTrack;
     QGraphicsSimpleTextItem* m_byText;
     QGraphicsSimpleTextItem* m_onText;
     int m_rating;
     int m_trackLength;
 
-    QGraphicsPixmapItem* m_albumCover;
+    DropPixmapItem* m_albumCover;
     QPixmap m_bigCover;
     QString m_sourceEmblemPath;
 
@@ -104,6 +109,8 @@ private:
     Meta::TrackList m_lastTracks;
     Meta::TrackList m_favoriteTracks;
     int m_tracksToShow;
+
+    QList<Plasma::IconWidget*> m_trackActions;
 
     Plasma::TabBar *m_tabBar;
 };

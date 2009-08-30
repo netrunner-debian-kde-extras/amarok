@@ -1,17 +1,19 @@
-/***************************************************************************
-  begin                : Fre Nov 15 2002
-  copyright            : (C) Mark Kretschmann <markey@web.de>
-                       : (C) Max Howell <max.howell@methylblue.com>
-***************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2002 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2002 Max Howell <max.howell@methylblue.com>                            *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
@@ -19,7 +21,7 @@
 #include "amarok_export.h"
 #include "meta/Meta.h"
 #include "EngineObserver.h"
-#include "Sidebar.h"
+#include "browsers/BrowserWidget.h"
 
 #include <KMainWindow>
 #include <KVBox>
@@ -29,6 +31,7 @@
 class CollectionWidget;
 class ContextWidget;
 class MainToolbar;
+class MainToolbarNG;
 class MainWindow;
 class PlaylistFileProvider;
 class SearchWidget;
@@ -52,6 +55,10 @@ class QTimer;
 namespace The {
     AMAROK_EXPORT MainWindow* mainWindow();
 }
+
+//This should only change if docks or toolbars are added or removed, and in this case a new src/data/DefaultDockLayyout
+//file should be created as well
+#define LAYOUT_VERSION 1
 
 /**
   * @class MainWindow
@@ -78,10 +85,10 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
 
         void activate();
 
-        SideBar *sideBar() const { return m_browsers; }
+        BrowserWidget *browserWidget() const { return m_browsers; }
         QPointer<KMenu> ToolsMenu() const { return m_toolsMenu; }
         QPointer<KMenu> SettingsMenu() const { return m_settingsMenu; }
-		QPointer<Playlist::Widget> playlistWidget() { return m_playlistWidget; }
+        QPointer<Playlist::Widget> playlistWidget() { return m_playlistWidget; }
         void deleteBrowsers();
 
         QString activeBrowserName();
@@ -96,27 +103,33 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         QRect contextRectGlobal();
         QPoint globalBackgroundOffset();
 
+        bool isLayoutLocked();
+
     signals:
         void loveTrack( Meta::TrackPtr );
 
     public slots:
         void showHide();
         void loveTrack();
-        void playAudioCD();
         void hideContextView( bool hide );
+
+        void setLayoutLocked( bool locked );
+
+        void showAbout();
 
     protected:
         //Reimplemented from EngineObserver
         virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
-
+        virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
+        
         //Reimplemented from Meta::Observer
         using Observer::metadataChanged;
         virtual void metadataChanged( Meta::TrackPtr track );
 
     private slots:
         void slotShrinkBrowsers( int index );
-        void savePlaylist() const;
         void exportPlaylist() const;
+        void slotShowBookmarkManager() const;
         void slotShowCoverManager() const;
         void slotPlayMedia();
         void slotAddLocation( bool directPlay = false );
@@ -142,14 +155,22 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         void init();
         void setRating( int n );
         void showBrowser( const int index );
+        
+        /**
+         * Try to restore saved layout, if this fails, try to use the default layout.
+         */
+        void restoreLayout();
+
+        CollectionWidget * m_collectionBrowser;
+        PlaylistBrowserNS::PlaylistBrowser * m_playlistBrowser;
 
         QPointer<QMenuBar>  m_menubar;
         QPointer<KMenu>     m_toolsMenu;
         QPointer<KMenu>     m_settingsMenu;
-        QPointer<SideBar>   m_browsers;
+        QPointer<BrowserWidget>   m_browsers;
         QStringList         m_browserNames;
         QPointer<KMenu>     m_searchMenu;
-        QPointer<KVBox>     m_statusbarArea;
+        //QPointer<KVBox>     m_statusbarArea;
 
         QPointer<SearchWidget>     m_searchWidget;
         QPointer<MainToolbar>      m_controlBar;
@@ -164,8 +185,18 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         QPointer<Context::ContextView>  m_contextView;
         QPointer<Context::ToolbarView>  m_contextToolbarView;
 
-        PlaylistFileProvider *m_playlistFiles;
         Meta::TrackPtr m_currentTrack;
+
+        QDockWidget * m_browsersDock;
+        QDockWidget * m_contextDock;
+        QDockWidget * m_playlistDock;
+
+        MainToolbarNG * m_newToolbar;
+
+        QWidget *     m_browserDummyTitleBarWidget;
+        QWidget *     m_contextDummyTitleBarWidget;
+        QWidget *     m_playlistDummyTitleBarWidget;
+
 
         void    createActions();
         void    createMenus();
@@ -173,6 +204,8 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         int     m_searchField;
 
         static QPointer<MainWindow> s_instance;
+
+        bool m_layoutLocked;
 
     private slots:
         void createContextView( Plasma::Containment *c );

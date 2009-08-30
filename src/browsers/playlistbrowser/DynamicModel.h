@@ -1,19 +1,18 @@
-/*
-    Copyright (c) 2008 Daniel Jones <danielcjones@gmail.com>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+/****************************************************************************************
+ * Copyright (c) 2008 Daniel Jones <danielcjones@gmail.com>                             *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef DYNAMICMODEL_H
 #define DYNAMICMODEL_H
@@ -55,6 +54,7 @@ class DynamicModel : public QAbstractItemModel
 
         Dynamic::DynamicPlaylistPtr defaultPlaylist();
         Dynamic::DynamicPlaylistPtr activePlaylist();
+        int activePlaylistIndex();
 
         int playlistIndex( const QString& ) const;
 
@@ -76,6 +76,8 @@ class DynamicModel : public QAbstractItemModel
 
         QDomDocument savedPlaylistDoc() { return m_savedPlaylists; }
 
+        void saveCurrent();
+        
     signals:
         void activeChanged(); // active row changed
         void changeActive( int );  // request that active change
@@ -88,13 +90,14 @@ class DynamicModel : public QAbstractItemModel
 
     private slots:
         void universeNeedsUpdate();
+        void savePlaylists( bool final = true );
 
     private:
         Dynamic::DynamicPlaylistPtr createDefaultPlaylist();
         void insertPlaylist( Dynamic::DynamicPlaylistPtr );
         void computeUniverseSet();
-        void savePlaylists();
-
+        void loadAutoSavedPlaylist();
+        
         DynamicModel();
         static DynamicModel* s_instance;
 
@@ -109,6 +112,7 @@ class DynamicModel : public QAbstractItemModel
         QHash< QString, Dynamic::DynamicPlaylistPtr >    m_playlistHash;
         Dynamic::DynamicPlaylistList                     m_playlistList;
         QList<QDomElement>                               m_playlistElements;
+
 };
 
 }

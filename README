@@ -42,18 +42,19 @@ Required
       (Metadata tagging library)
       http://freshmeat.net/projects/taglib
 
-    * TagLib Extras 0.1.3 (or newer)
+    * TagLib Extras 0.1.6 (or newer)
       (Support for metadata reading of additional file types)
-      http://www.kollide.net/~jefferai/taglib-extras-0.1.3.tar.gz
+      http://www.kollide.net/~jefferai/taglib-extras-0.1.6.tar.gz
       svn://anonsvn.kde.org/home/kde/trunk/kdesupport/taglib-extras
 
-    * MySQL 5.0 (possibly 5.1.26rc) Embedded: libmysqld compiled with fPIC
+    * MySQL 5.0 (or newer) Embedded: libmysqld compiled with fPIC
       (In-process database support)
 
     * QtScript Generator, Qt Bindings 0.1.0
       (Qt Bindings for QtScript for Amarok's scripting system)
       http://code.google.com/p/qtscriptgenerator/
       git://labs.trolltech.com/qtscriptgenerator
+
 
 Optional
     * libgpod 0.4.2 (or newer)
@@ -72,6 +73,11 @@ Optional
       * Glib2 http://www.gtk.org
       * Loudmouth, the Jabber library, http://www.loudmouth-project.org/
       * Qt must be compiled with Glib enabled
+
+    * Liblastfm 0.3
+      (For scrobbling, internet radio, and artist info)
+      http://cdn.last.fm/src/liblastfm-0.3.0.tar.bz2
+      http://github.com/mxcl/liblastfm/tree/master
 
 
 Please note, if compiling from source you must also install the devel versions
@@ -122,10 +128,10 @@ homepage (as long as you don't object).
  CONTRIBUTING
 ==============
 
-If you wish to contribute to Amarok, you should build it from SVN and subscribe
+If you wish to contribute to Amarok, you should build it from Git and subscribe
 to the amarok AT kde.org mailing list. The IRC channel is also a place where
 it's  nice  to  be, since you can talk to other developers much easier, and
-get instant notification of commits to the SVN. For instant email notification
+get instant notification of commits to the master git repo. For instant email notification
 of commits, visit http://commitfilter.kde.org/ and http://amarok.be/fisheye
 provides a slightly-less-instant overview.
 

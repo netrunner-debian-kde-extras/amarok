@@ -1,17 +1,20 @@
-/***************************************************************************
- * copyright            : (C) 2008 Shane King <kde@dontletsstart.com>      *
- *            (C) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>      *
- *            (C) 2008 Leo Franchi <lfranchi@gmail.com>                    *
- **************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Shane King <kde@dontletsstart.com>                                *
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2008 Leo Franchi <lfranchi@gmail.com>                                  *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #define DEBUG_PREFIX "lastfm"
 
@@ -22,16 +25,16 @@
 
 #include "collection/support/MemoryQueryMaker.h"
 
-#include <lastfm/ws/WsRequestBuilder.h>
-#include <lastfm/ws/WsReply.h>
-#include <lastfm/ws/WsKeys.h>
+#include <lastfm/ws.h>
+#include <lastfm/XmlQuery>
+
+#include <QNetworkReply>
 
 #include <KLocale>
 
 LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
     : ServiceCollection( 0, "last.fm", "last.fm" )
 {
-
     m_userName = userName;
 
     Meta::ServiceGenre * userStreams = new Meta::ServiceGenre( i18n( "%1's Streams", userName ) );
@@ -64,10 +67,10 @@ LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
 
     foreach( const QString &station, lastfmPersonal )
     {
-            LastFm::Track * track = new LastFm::Track( "lastfm://user/" + userName + "/" + station );
-            Meta::TrackPtr trackPtr( track );
-            userStreams->addTrack( trackPtr );
-            addTrack( trackPtr );
+        LastFm::Track * track = new LastFm::Track( "lastfm://user/" + userName + "/" + station );
+        Meta::TrackPtr trackPtr( track );
+        userStreams->addTrack( trackPtr );
+        addTrack( trackPtr );
     }
 
     QStringList lastfmGenres;
@@ -77,28 +80,28 @@ LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
             << "Rap" << "Rock" << "Soundtrack" << "Techno" << "Trance";
 
 
-    foreach( const QString &genre, lastfmGenres ) {
+    foreach( const QString &genre, lastfmGenres )
+    {
         LastFm::Track * track = new LastFm::Track( "lastfm://globaltags/" + genre );
         Meta::TrackPtr trackPtr( track );
         globalTags->addTrack( trackPtr );
         addTrack( trackPtr );
     }
 
-    WsReply* reply = WsRequestBuilder( "user.getNeighbours" )
-                        .add( "user", userName )
-                        .add( "api_key", QString( Ws::ApiKey ) )
-                        .get();
+    QMap< QString, QString > params;
+    params[ "method" ] = "user.getNeighbours";
+    params[ "user" ] = userName;
+    m_jobs[ "user.getNeighbours" ] = lastfm::ws::post( params );
 
-    connect( reply, SIGNAL( finished( WsReply* ) ), this, SLOT( slotAddNeighboursLoved( WsReply* ) ) );
-    connect( reply, SIGNAL( finished( WsReply* ) ), this, SLOT( slotAddNeighboursPersonal( WsReply* ) ) );
+    connect( m_jobs[ "user.getNeighbours" ], SIGNAL( finished() ), this, SLOT( slotAddNeighboursLoved() ) );
+    //connect( m_jobs[ "user.getNeighbours" ], SIGNAL( finished() ), this, SLOT( slotAddNeighboursPersonal() ) );
+    // TODO TMP HACK why do i get exceptions there...!?
     
-    reply = WsRequestBuilder( "user.getFriends" )
-    .add( "user", userName )
-    .add( "api_key", QString( Ws::ApiKey ) )
-    .get();
-    
-    connect( reply, SIGNAL( finished( WsReply* ) ), this, SLOT( slotAddFriendsLoved( WsReply* ) ) );
-    connect( reply, SIGNAL( finished( WsReply* ) ), this, SLOT( slotAddFriendsPersonal( WsReply* ) ) );
+    params[ "method" ] = "user.getFriends";
+    m_jobs[ "user.getFriends" ] = lastfm::ws::post( params );
+
+    connect( m_jobs[ "user.getFriends" ], SIGNAL( finished() ), this, SLOT( slotAddFriendsLoved() ) );
+    //connect( m_jobs[ "user.getFriends" ], SIGNAL( finished() ), this, SLOT( slotAddFriendsPersonal() ) );
     
     //TODO Automatically add simmilar artist streams for the users favorite artists.
 }
@@ -136,68 +139,188 @@ LastFmServiceCollection::prettyName() const
     return i18n( "last.fm" );
 }
 
-void LastFmServiceCollection::slotAddNeighboursLoved( WsReply* reply )
+void LastFmServiceCollection::slotAddNeighboursLoved()
 {
     DEBUG_BLOCK
-    // iterate through each neighbour
-    foreach( const CoreDomElement &e, reply->lfm()[ "neighbours" ].children( "user" ) )
+    if( !m_jobs[ "user.getNeighbours" ] )
     {
-        QString name = e[ "name" ].text();
-        //debug() << "got neighbour!!! - " << name;
-        LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/loved" );
-        Meta::TrackPtr trackPtr( track );
-        m_neighborsLoved->addTrack( trackPtr );
-        addTrack( trackPtr );
+        debug() << "BAD! got no result object";
+        return;
     }
-    reply->deleteLater();
+    switch (m_jobs[ "user.getNeighbours" ]->error())
+    {
+        case QNetworkReply::NoError:
+        {
+            // iterate through each neighbour
+            try
+            {
+                lastfm::XmlQuery lfm( m_jobs[ "user.getNeighbours" ]->readAll() );
+
+                foreach( lastfm::XmlQuery e, lfm[ "neighbours" ].children( "user" ) )
+                {
+                    QString name = e[ "name" ].text();
+                    //debug() << "got neighbour!!! - " << name;
+                    LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/loved" );
+                    Meta::TrackPtr trackPtr( track );
+                    m_neighborsLoved->addTrack( trackPtr );
+                    addTrack( trackPtr );
+                }
+
+            } catch( lastfm::ws::ParseError& e )
+            {
+                debug() << "Got exception in parsing from last.fm:" << e.what();
+            }
+            break;
+        }
+
+        case QNetworkReply::AuthenticationRequiredError:
+            debug() << "Last.fm: errorMessage: Sorry, we don't recognise that username, or you typed the password incorrectly.";
+            break;
+
+        default:
+            debug() << "Last.fm: errorMessage: There was a problem communicating with the Last.fm services. Please try again later.";
+            break;
+    }
+
+    m_jobs[ "user.getNeighbours" ]->deleteLater();
 }
 
-void LastFmServiceCollection::slotAddNeighboursPersonal( WsReply* reply )
+void LastFmServiceCollection::slotAddNeighboursPersonal()
 {
     DEBUG_BLOCK
-    // iterate through each neighbour
-    foreach( const CoreDomElement &e, reply->lfm()[ "neighbours" ].children( "user" ) )
+    switch (m_jobs[ "user.getNeighbours" ]->error())
     {
-        QString name = e[ "name" ].text();
-        //debug() << "got neighbour!!! - " << name;
-        LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/personal" );
-        Meta::TrackPtr trackPtr( track );
-        m_neighborsPersonal->addTrack( trackPtr );
-        addTrack( trackPtr );
+        case QNetworkReply::NoError:
+        {
+            // iterate through each neighbour
+            try
+            {
+                if( !m_jobs[ "user.getNeighbours" ] )
+                {
+                    debug() << "BAD! got no result object";
+                    return;
+                }
+                lastfm::XmlQuery lfm( m_jobs[ "user.getNeighbours" ]->readAll() );
+
+                // iterate through each neighbour
+                foreach( lastfm::XmlQuery e, lfm[ "neighbours" ].children( "user" ) )
+                {
+                    QString name = e[ "name" ].text();
+                    debug() << "got neighbour!!! - " << name;
+                    LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/personal" );
+                    Meta::TrackPtr trackPtr( track );
+                    m_neighborsPersonal->addTrack( trackPtr );
+                    addTrack( trackPtr );
+                }
+
+
+                // should be safe, as both slots SHOULD get called before we return to the event loop...
+                m_jobs[ "user.getNeighbours" ]->deleteLater();
+            } catch( lastfm::ws::ParseError& e )
+            {
+                debug() << "Got exception in parsing from last.fm:" << e.what();
+            }
+            break;
+        }
+
+        case QNetworkReply::AuthenticationRequiredError:
+            debug() << "Last.fm: errorMessage: Sorry, we don't recognise that username, or you typed the password incorrectly.";
+            break;
+
+        default:
+            debug() << "Last.fm: errorMessage: There was a problem communicating with the Last.fm services. Please try again later.";
+            break;
     }
-    reply->deleteLater();
+
 }
 
-void LastFmServiceCollection::slotAddFriendsLoved( WsReply* reply )
+void LastFmServiceCollection::slotAddFriendsLoved()
 {
     DEBUG_BLOCK
-    // iterate through each friend
-    foreach( const CoreDomElement &e, reply->lfm()[ "friends" ].children( "user" ) )
+    if( !m_jobs[ "user.getFriends" ] )
     {
-        QString name = e[ "name" ].text();
-        //debug() << "got friend!!! - " << name;
-        LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/loved" );
-        Meta::TrackPtr trackPtr( track );
-        m_friendsLoved->addTrack( trackPtr );
-        addTrack( trackPtr );
+        debug() << "BAD! got no result object";
+        return;
     }
-    reply->deleteLater();
+    switch (m_jobs[ "user.getFriends" ]->error())
+    {
+        case QNetworkReply::NoError:
+        {
+            try
+            {
+                lastfm::XmlQuery lfm( m_jobs[ "user.getFriends" ]->readAll() );
+
+                foreach( lastfm::XmlQuery e, lfm[ "friends" ].children( "user" ) )
+                {
+                    QString name = e[ "name" ].text();
+                    LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/loved" );
+                    Meta::TrackPtr trackPtr( track );
+                    m_friendsLoved->addTrack( trackPtr );
+                    addTrack( trackPtr );
+                }
+
+            } catch( lastfm::ws::ParseError& e )
+            {
+                debug() << "Got exception in parsing from last.fm:" << e.what();
+            }
+            break;
+        }
+
+        case QNetworkReply::AuthenticationRequiredError:
+            debug() << "Last.fm: errorMessage: Sorry, we don't recognise that username, or you typed the password incorrectly.";
+            break;
+
+        default:
+            debug() << "Last.fm: errorMessage: There was a problem communicating with the Last.fm services. Please try again later.";
+            break;
+    }
+
+    m_jobs[ "user.getFriends" ]->deleteLater();
 }
 
-void LastFmServiceCollection::slotAddFriendsPersonal( WsReply* reply )
+void LastFmServiceCollection::slotAddFriendsPersonal()
 {
     DEBUG_BLOCK
-    // iterate through each friend
-    foreach( const CoreDomElement &e, reply->lfm()[ "friends" ].children( "user" ) )
+    if( !m_jobs[ "user.getFriends" ] )
     {
-        QString name = e[ "name" ].text();
-        //debug() << "got neighbour!!! - " << name;
-        LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/personal" );
-        Meta::TrackPtr trackPtr( track );
-        m_friendsPersonal->addTrack( trackPtr );
-        addTrack( trackPtr );
+        debug() << "BAD! got no result object";
+        return;
     }
-    reply->deleteLater();
+
+    switch (m_jobs[ "user.getFriends" ]->error())
+    {
+        case QNetworkReply::NoError:
+        {
+            try
+            {
+                lastfm::XmlQuery lfm( m_jobs[ "user.getFriends" ]->readAll() );
+
+                foreach( lastfm::XmlQuery e, lfm[ "friends" ].children( "user" ) )
+                {
+                    QString name = e[ "name" ].text();
+                    LastFm::Track *track = new LastFm::Track( "lastfm://user/" + name + "/personal" );
+                    Meta::TrackPtr trackPtr( track );
+                    m_friendsPersonal->addTrack( trackPtr );
+                    addTrack( trackPtr );
+                }
+
+            } catch( lastfm::ws::ParseError& e )
+            {
+                debug() << "Got exception in parsing from last.fm:" << e.what();
+            }
+            break;
+        }
+
+        case QNetworkReply::AuthenticationRequiredError:
+            debug() << "Last.fm: errorMessage: Sorry, we don't recognise that username, or you typed the password incorrectly.";
+            break;
+
+        default:
+            debug() << "Last.fm: errorMessage: There was a problem communicating with the Last.fm services. Please try again later.";
+            break;
+    }
+
+    m_jobs[ "user.getFriends" ]->deleteLater();
 }
 
 QueryMaker*

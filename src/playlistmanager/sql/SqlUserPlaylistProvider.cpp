@@ -1,28 +1,24 @@
-/***************************************************************************
- *   Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>     *
- *   Copyright (c) 2008 Bart Cerneels <bart.cerneels@kde.org>              *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2008 Bart Cerneels <bart.cerneels@kde.org>                             *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "SqlUserPlaylistProvider.h"
 
 #include "Amarok.h"
 #include "CollectionManager.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "Debug.h"
 #include "meta/M3UPlaylist.h"
 #include "meta/PLSPlaylist.h"
@@ -36,14 +32,20 @@
 #include <KInputDialog>
 #include <KUrl>
 
+#include <QAction>
 #include <QMap>
 
 static const int USERPLAYLIST_DB_VERSION = 2;
 static const QString key("AMAROK_USERPLAYLIST");
 
+typedef QMultiMap<Meta::PlaylistPtr, Meta::TrackPtr> PlaylistTrackMap;
+Q_DECLARE_METATYPE( PlaylistTrackMap )
+
 SqlUserPlaylistProvider::SqlUserPlaylistProvider()
     : UserPlaylistProvider()
     , m_renameAction( 0 )
+    , m_deleteAction( 0 )
+    , m_removeTrackAction( 0 )
 {
     checkTables();
     m_root = Meta::SqlPlaylistGroupPtr( new Meta::SqlPlaylistGroup( "",
@@ -52,10 +54,6 @@ SqlUserPlaylistProvider::SqlUserPlaylistProvider()
 
 SqlUserPlaylistProvider::~SqlUserPlaylistProvider()
 {
-//     foreach( Meta::SqlPlaylistPtr playlist, m_playlists )
-//     {
-//         playlist->saveToDb( true );
-//     }
 }
 
 Meta::PlaylistList
@@ -97,26 +95,84 @@ SqlUserPlaylistProvider::slotRename()
     if( playlist.isNull() )
         return;
     //TODO: inline rename
+    bool ok;
     const QString newName = KInputDialog::getText( i18n("Change playlist"),
-                i18n("Enter new name for playlist:"), playlist->name() );
-    playlist->setName( newName.trimmed() );
+                i18n("Enter new name for playlist:"), playlist->name(),
+                                                   &ok );
+    if ( ok )
+    {
+        playlist->setName( newName.trimmed() );
+        emit( updated() );
+    }
 }
 
-QList<PopupDropperAction *>
-SqlUserPlaylistProvider::playlistActions( Meta::PlaylistList list )
+void
+SqlUserPlaylistProvider::slotRemove()
 {
-    Q_UNUSED( list )
-    QList<PopupDropperAction *> actions;
+    QAction *action = qobject_cast<QAction *>( QObject::sender() );
+    if( action == 0 )
+        return;
+
+    PlaylistTrackMap playlistMap = action->data().value<PlaylistTrackMap>();
+    foreach( Meta::PlaylistPtr playlist, playlistMap.keys() )
+        foreach( Meta::TrackPtr track, playlistMap.values( playlist ) )
+            playlist->removeTrack( playlist->tracks().indexOf( track ) );
+
+    //clear the data
+    action->setData( QVariant() );
+}
+
+QList<QAction *>
+SqlUserPlaylistProvider::playlistActions( Meta::PlaylistPtr playlist )
+{
+    Q_UNUSED( playlist );
+    QList<QAction *> actions;
 
     m_selectedPlaylists.clear();
-    m_selectedPlaylists << toSqlPlaylists( list );
+    m_selectedPlaylists << Meta::SqlPlaylistPtr::dynamicCast( playlist );
 
     if ( m_renameAction == 0 )
     {
-        m_renameAction =  new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "edit", KIcon( "media-track-edit-amarok" ), i18n( "&Rename" ), this );
+        m_renameAction =  new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Rename" ), this );
+        m_renameAction->setProperty( "popupdropper_svg_id", "edit" );
         connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRename() ) );
     }
     actions << m_renameAction;
+
+    if ( m_deleteAction == 0 )
+    {
+        m_deleteAction = new QAction( KIcon( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
+        m_deleteAction->setProperty( "popupdropper_svg_id", "delete" );
+        connect( m_deleteAction, SIGNAL( triggered() ), SLOT( slotDelete() ) );
+    }
+    actions << m_deleteAction;
+
+    return actions;
+}
+
+QList<QAction *>
+SqlUserPlaylistProvider::trackActions( Meta::PlaylistPtr playlist, int trackIndex )
+{
+    Q_UNUSED( trackIndex );
+    QList<QAction *> actions;
+
+    if( m_removeTrackAction == 0 )
+    {
+        m_removeTrackAction = new QAction(
+                    KIcon( "media-track-remove-amarok" ),
+                    i18n( "Remove From Playlist" ),
+                    this
+                );
+        m_removeTrackAction->setProperty( "popupdropper_svg_id", "delete" );
+        connect( m_removeTrackAction, SIGNAL( triggered() ), SLOT( slotRemove() ) );
+    }
+    //Add the playlist/track combination to a QMultiMap that is stored in the action.
+    //In the slot we use this data and use it to remove that track.
+    PlaylistTrackMap playlistMap = m_removeTrackAction->data().value<PlaylistTrackMap>();
+    playlistMap.insert( playlist, playlist->tracks()[trackIndex] );
+    m_removeTrackAction->setData( QVariant::fromValue( playlistMap ) );
+
+    actions << m_removeTrackAction;
 
     return actions;
 }
@@ -161,7 +217,7 @@ SqlUserPlaylistProvider::import( const QString& fromLocation )
 
     KUrl url( fromLocation );
     Meta::Playlist* playlist = 0;
-    Meta::Format format = Meta::getFormat( fromLocation );
+    Meta::PlaylistFormat format = Meta::getFormat( fromLocation );
 
     switch( format )
     {
@@ -241,7 +297,7 @@ SqlUserPlaylistProvider::createTables()
             " id " + sqlStorage->idType() +
             ", parent_id INTEGER"
             ", name " + sqlStorage->textColumnType() +
-            ", description " + sqlStorage->textColumnType() + " );" ) );
+            ", description " + sqlStorage->textColumnType() + " ) ENGINE = MyISAM;" ) );
     sqlStorage->query( "CREATE INDEX parent_podchannel ON playlist_groups( parent_id );" );
 
 
@@ -250,7 +306,7 @@ SqlUserPlaylistProvider::createTables()
             ", parent_id INTEGER"
             ", name " + sqlStorage->textColumnType() +
             ", description " + sqlStorage->textColumnType() +
-            ", urlid " + sqlStorage->exactTextColumnType() + " );" ) );
+            ", urlid " + sqlStorage->exactTextColumnType() + " ) ENGINE = MyISAM;" ) );
     sqlStorage->query( "CREATE INDEX parent_playlist ON playlists( parent_id );" );
 
     sqlStorage->query( QString( "CREATE TABLE playlist_tracks ("
@@ -262,7 +318,7 @@ SqlUserPlaylistProvider::createTables()
             ", album " + sqlStorage->textColumnType() +
             ", artist " + sqlStorage->textColumnType() +
             ", length INTEGER "
-            ", uniqueid " + sqlStorage->textColumnType(128) + ");" ) );
+            ", uniqueid " + sqlStorage->textColumnType(128) + ") ENGINE = MyISAM;" ) );
 
     sqlStorage->query( "CREATE INDEX parent_playlist_tracks ON playlist_tracks( playlist_id );" );
     sqlStorage->query( "CREATE INDEX playlist_tracks_uniqueid ON playlist_tracks( uniqueid );" );

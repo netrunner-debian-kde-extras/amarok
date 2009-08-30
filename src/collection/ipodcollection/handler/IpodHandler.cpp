@@ -1,33 +1,29 @@
-/**************************************************************************
- * Ported to Collection Framework: *
- * copyright            : (C) 2008 Alejandro Wainzinger <aikawarazuni@gmail.com>
- * copyright            : (C) 2009 Seb Ruiz <ruiz@kde.org>
- *
- * Original Work: *
- * copyright            : (C) 2005, 2006 by Martin Aumueller <aumuell@reserv.at>
- * copyright            : (C) 2004 by Christian Muehlhaeuser <chris@chris.de>
- *******************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2005,2006 Martin Aumueller <aumuell@reserv.at>                         *
+ * Copyright (c) 2004 Christian Muehlhaeuser <chris@chris.de>                           *
+ * Copyright (c) 2008 Alejandro Wainzinger <aikawarazuni@gmail.com>                     *
+ * Copyright (c) 2009 Seb Ruiz <ruiz@kde.org>                                           *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #define DEBUG_PREFIX "IpodHandler"
 
 #include "IpodHandler.h"
 
 #include "IpodCollection.h"
-#include "IpodMeta.h"
-#include "../../../statusbar/StatusBar.h"
+#include "CollectionManager.h"
 #include "Debug.h"
-
-#include "MetaQueryMaker.h"
-#include "QueryMaker.h"
 
 #ifdef GDK_FOUND
 extern "C" {
@@ -36,35 +32,57 @@ extern "C" {
 }
 #endif
 
-#include "File.h" // for KIO file handling
+#include "SvgHandler.h"
+
+#include "meta/file/File.h" // for KIO file handling
 
 #include <KCodecs> // KMD5
+#include <kdiskfreespaceinfo.h>
 #include <KIO/Job>
 #include <KIO/CopyJob>
 #include <KIO/DeleteJob>
 #include <KIO/Scheduler>
+#include <KIO/NetAccess>
+#include <kinputdialog.h>
 #include "kjob.h"
-#include <threadweaver/ThreadWeaver.h>
+#include <KMessageBox>
+#include <KPasswordDialog>
 #include <KUrl>
+#include <threadweaver/ThreadWeaver.h>
 
+#include <solid/device.h>
+#include <solid/storageaccess.h>
+
+#include <QAction>
 #include <QDir>
 #include <QFile>
 #include <QFileInfo>
 #include <QMutexLocker>
 #include <QPixmap>
+#include <QProcess>
+#include <QRegExp>
 #include <QString>
 #include <QStringList>
 #include <QTime>
 
-using namespace Ipod;
 using namespace Meta;
 
-IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject *parent )
-    : QObject( parent )
-    , m_memColl( mc )
+/// IpodHandler
+
+IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint )
+    : MediaDeviceHandler( mc )
+    , m_itdb( 0 )
     , m_masterPlaylist( 0 )
+    , m_currtracklist( 0 )
+    , m_currtrack( 0 )
+    , m_staletracksremoved( 0 )
+    , m_orphanedadded( 0 )
+    , m_filepath()
+    , m_capacity( 0.0 )
+    , m_currplaylistlist( 0 )
+    , m_currplaylist( 0 )
     , m_jobcounter( 0 )
-    , m_statusbar( 0 )
+    , m_libtrack( 0 )
     , m_autoConnect( false )
     , m_mountPoint( mountPoint )
     , m_name()
@@ -84,14 +102,44 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject
 {
     DEBUG_BLOCK
 
+    m_copyingthreadsafe = false;
+
     g_type_init();
+    m_success = false;
+}
+
+IpodHandler::~IpodHandler()
+{
+    DEBUG_BLOCK
+    delete m_tempdir;
+    // Write to DB before closing, for ratings updates etc.
+    debug() << "Cleaning up Ipod Database";
+    writeITunesDB( false );
+    if ( m_itdb )
+        itdb_free( m_itdb );
+}
+
+void
+IpodHandler::init()
+{
+    if( m_mountPoint.isEmpty() )
+    {
+        debug() << "Error: empty mountpoint, probably an unmounted iPod, aborting";
+        m_memColl->slotAttemptConnectionDone( false );
+        return;
+    }
 
     GError *err = 0;
-    m_success = false;
+    QString initError = i18n( "iPod was not initialized:" );
+    QString initErrorCaption = i18n( "iPod Initialization Failed" );
+    bool wasInitialized = false;
 
-    // Assuming database exists for now, later will port init db code
+    // First attempt to parse the database
+
     debug() << "Calling the db parser";
     m_itdb = itdb_parse( QFile::encodeName( m_mountPoint ),  &err );
+
+    // If this fails, we will ask the user if he wants to init the device
 
     if( err )
     {
@@ -102,75 +150,392 @@ IpodHandler::IpodHandler( IpodCollection *mc, const QString& mountPoint, QObject
             itdb_free( m_itdb );
             m_itdb = 0;
         }
+
+        // Attempt to init the device
+
+        // TODO: turn into a switch statement, this is too convoluted
+
+        QString msg = i18n(  "Media Device: could not find iTunesDB on device mounted at %1. "
+                             "Should I try to initialize your iPod?" ).arg(  mountPoint() );
+        if( KMessageBox::warningContinueCancel( 0, msg, i18n( "Initialize iPod?" ),
+                                                KGuiItem( i18n( "&Initialize" ), "new" ) ) == KMessageBox::Continue )
+        {
+            QStringList modelList;
+
+            // Pull model information
+
+            const Itdb_IpodInfo *info = itdb_info_get_ipod_info_table();
+
+            if( !info )
+            {
+                debug() << "libgpod failed to get the ipod info table, that's a libgpod bug, should never happen";
+                m_success = false;
+                m_memColl->slotAttemptConnectionDone( m_success );
+                return;
+            }
+
+            // Iterate through the models to prepare model strings to display to the user
+
+            while( info->model_number )
+            {
+                QString mod;
+                QTextStream model( &mod );
+                model << QString::fromUtf8( itdb_info_get_ipod_generation_string( info->ipod_generation) )
+                        << ": "
+                        << QString::number( info->capacity )
+                        << " GB "
+                        << QString::fromUtf8( itdb_info_get_ipod_model_name_string( info->ipod_model ) )
+                        << "(x"
+                        << QString::fromUtf8( info->model_number )
+                        << ")";
+
+
+                modelList << mod;
+
+                info++;
+            }
+
+            bool ok = false;
+
+            // Present the dialog to the user
+
+            QString item = KInputDialog::getItem( i18n( "Set iPod Model"), i18n( "iPod Models" ), modelList, 0, false, &ok, 0 );
+
+            if( !ok )
+            {
+                KMessageBox::error( 0, i18n( "%1 the iPod Model is necessary to initialize the iPod", initError ), initErrorCaption );
+                m_success = false;
+                m_memColl->slotAttemptConnectionDone( m_success );
+                return;
+            }
+
+            // Pull out the model number based on the index
+
+            info = itdb_info_get_ipod_info_table();
+            QString modelnum = QString::fromUtf8( info[ modelList.indexOf( item ) ].model_number );
+
+            debug() << "Model number: " << modelnum;
+
+            // Prepare to create the SysInfo file
+
+            // First, ensure the directories exist
+
+            QDir root( QDir::rootPath() );
+            QDir dir( mountPoint() + "/iPod_Control/Device" );
+            // Check if directory exists
+            if ( !dir.exists() )
+            {
+                debug() << "Creating device dir, since doesn't exist";
+                // If it doesn't exist, make it and the path to it
+                if ( !root.mkpath( dir.absolutePath() ) )
+                {
+                    KMessageBox::error( 0, i18n( "%1 failed to write to iPod, make sure you have write permissions on the iPod", initError ), initErrorCaption );
+                    debug() << "Creating directory failed";
+                    m_success = false;
+                    m_memColl->slotAttemptConnectionDone( m_success );
+                    return;
+                }
+                else
+                    debug() << "Directory created: " << dir.absolutePath();
+            }
+
+            // Now we stick this information into the SysInfo file
+
+            bool wrote = writeToSysInfoFile( "ModelNumStr: x" + modelnum + "\n" );
+
+            if( !wrote )
+            {
+                KMessageBox::error( 0, i18n( "%1 failed to write SysInfo file to iPod, make sure you have write permissions on the iPod", initError ), initErrorCaption );
+                debug() << "Failed to write modelnum to sysinfo file";
+                m_success = false;
+                m_memColl->slotAttemptConnectionDone( m_success );
+                return;
+            }
+
+            // Now we stick in the firewireguid information (if available)
+
+
+            debug() << "Writing the firewireguid";
+            wrote = writeFirewireGuid();
+
+            if( !wrote )
+                debug() << "warning: could not write firewire guid, but perhaps it's just missing";
+
+            if ( !initializeIpod() )
+            {
+                if ( m_itdb )
+                {
+                    itdb_free( m_itdb );
+                    m_itdb = 0;
+                }
+
+                KMessageBox::error( 0, i18n( "%1 failed to initialize the iPod", initError ), initErrorCaption );
+
+                m_success = false;
+                m_memColl->slotAttemptConnectionDone( m_success );
+                return;
+            }
+            else
+            {
+                KMessageBox::information( 0, i18n( "The iPod was successfully initialized!" ), i18n( "iPod Initialized" ) );
+                debug() << "iPod was initialized";
+                wasInitialized = true;
+                m_success = true;
+            }
+        }
+        else
+        {
+            KMessageBox::information( 0, i18n( "%1 you chose not to initialize the iPod. It will not be usable until it is initialized.", initError), initErrorCaption );
+            m_success = false;
+        }
+    }
+    else
+        m_success = true;
+
+    // If failed to parse or init, we have failed, return
+
+    if ( !m_success )
+    {
+        m_memColl->slotAttemptConnectionDone( m_success );
+        return;
+    }
+
+    m_success = true;
+
+    // Either db was parsed, or initialized. Prepare variables, get model info
+
+    m_tempdir->setAutoRemove( true );
+
+    // read device info
+    debug() << "Getting model information";
+    detectModel(); // get relevant info about device
+
+    qsrand( QTime::currentTime().msec() ); // random number used for folder number generation
+
+    // Get storage access for getting device space capacity/usage
+
+    Solid::Device device = Solid::Device(  m_memColl->udi() );
+    if (  device.isValid() )
+    {
+        Solid::StorageAccess *storage = device.as<Solid::StorageAccess>();
+        m_filepath = storage->filePath();
+        m_capacity = KDiskFreeSpaceInfo::freeSpaceInfo( m_filepath ).size();
     }
     else
     {
-        m_tempdir->setAutoRemove( true );
+        m_filepath = "";
+        m_capacity = 0.0;
+    }
 
-        // read device info
-        debug() << "Getting model information";
-        detectModel(); // get relevant info about device
+    debug() << "Succeeded: " << m_success;
 
-        qsrand( QTime::currentTime().msec() ); // random number used for folder number generation
+    m_memColl->slotAttemptConnectionDone( m_success );
+}
 
-        m_success = true;
+bool
+IpodHandler::isWritable() const
+{
+    // TODO: check if read-only
+    return true;
+}
+
+QString
+IpodHandler::prettyName() const
+{
+    return QString::fromUtf8( itdb_playlist_mpl( m_itdb )->name );
+}
+
+QList<QAction *>
+IpodHandler::collectionActions()
+{
+    QList< QAction* > actions;
+
+    if( isWritable() )
+    {
+        QAction *staleOrphanedAction = new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Stale and Orphaned" ), this );
+        staleOrphanedAction->setProperty( "popupdropper_svg_id", "edit" );
+
+        connect( staleOrphanedAction, SIGNAL( triggered() ), this, SLOT( slotStaleOrphaned() ) );
+
+        actions.append( staleOrphanedAction );
+
+        if( m_supportsArtwork )
+        {
+            QAction *syncArtworkAction = new QAction( KIcon( "insert-image" ), i18n( "Synchronise Artwork" ), this );
+            syncArtworkAction->setProperty( "popupdropper_svg_id", "edit" );
+
+            connect( syncArtworkAction, SIGNAL( triggered() ), this, SLOT( slotSyncArtwork() ) );
+
+            actions.append( syncArtworkAction );
+        }
+    }
+
+    return actions;
+}
+
+void
+IpodHandler::slotInitializeIpod()
+{
+    const QString text( i18n( "Do you really want to initialize this iPod? Its database will be cleared of all information, but the files will not be deleted." ) );
+
+    const bool init = KMessageBox::warningContinueCancel(0,
+                                                         text,
+                                                         i18n("Initialize iPod") ) == KMessageBox::Continue;
+    if( init )
+    {
+        const bool success = initializeIpod();
+
+        if ( success )
+            The::statusBar()->shortMessage( i18n( "The iPod has been initialized" ) );
+        else
+            The::statusBar()->shortMessage( i18n( "The iPod was unable to be initialized" ) );
     }
 }
 
-IpodHandler::~IpodHandler()
+void
+IpodHandler::slotStaleOrphaned()
 {
     DEBUG_BLOCK
-    delete m_tempdir;
-    // Write to DB before closing, for ratings updates etc.
-    debug() << "Writing to Ipod DB";
+
+    const QString text( i18n( "Amarok is about to search for stale tracks. This may take a while, do you want to continue?" ) );
+
+    const bool init = KMessageBox::warningContinueCancel(0,
+                                                         text,
+                                                         i18n("Find Stale Tracks") ) == KMessageBox::Continue;
+
+    if( init )
+        ThreadWeaver::Weaver::instance()->enqueue( new OrphanedWorkerThread( this ) );
+}
+
+bool
+IpodHandler::findStale()
+{
+    m_staletracks.clear();
+    m_staletracks = staleTracks();
+
+    return true;
+}
+
+bool
+IpodHandler::findOrphaned()
+{
+    m_orphanedPaths.clear();
+    m_orphanedPaths = orphanedTracks();
+    return true;
+}
+
+bool
+IpodHandler::addNextOrphaned()
+{
+    DEBUG_BLOCK
+    QString realPath;
+    QString path = m_orphanedPaths.takeFirst();
+    if( !pathExists( path, &realPath ) )
+        return false;
+
+    // Create track based on URL
+
+    Meta::TrackPtr filetrack( new MetaFile::Track( realPath ) );
+
+    // Create new track
+
+    Meta::MediaDeviceTrackPtr destTrack ( new Meta::MediaDeviceTrack( m_memColl ) );
+
+    // Create a track struct, associate it to track
+
+    libCreateTrack( destTrack );
+
+    // Fill the track struct of the destTrack with info from the filetrack as source
+
+    setBasicMediaDeviceTrackInfo( filetrack, destTrack );
+
+    // set up the play url
+
+    m_itdbtrackhash[ destTrack ]->ipod_path = g_strdup( path.toLatin1() );
+
+    // Add the track struct into the database
+
+    addTrackInDB( destTrack );
+
+    // A track has been added to the db
+
+    setDatabaseChanged();
+
+    // Add the new Meta::MediaDeviceTrackPtr into the device collection
+
+    // add track to collection
+    addMediaDeviceTrackToCollection( destTrack );
+
+    m_orphanedadded++;
+
+    return true;
+}
+
+void
+IpodHandler::slotOrphaned()
+{
     writeDatabase();
-    debug() << "Cleaning up Ipod Database";
-    if ( m_itdb )
-        itdb_free( m_itdb );
 
-    debug() << "End of destructor reached";
+    const QString msg( i18ncp( "@info", "One stale track removed from the database. Scan for orphaned tracks?",
+                                "%1 tracks removed from the database. Scan for orphaned tracks?", m_staletracksremoved ) );
+
+    const bool init = KMessageBox::warningContinueCancel(0,
+                                                         msg,
+                                                         i18n("Find Orphaned Tracks") ) == KMessageBox::Continue;
+
+    if( init )
+        ThreadWeaver::Weaver::instance()->enqueue( new OrphanedWorkerThread( this ) );
 }
 
-/** Observer Methods **/
-void
-IpodHandler::metadataChanged( TrackPtr track )
+bool
+IpodHandler::syncArtwork()
 {
     DEBUG_BLOCK
 
-    Meta::IpodTrackPtr trackPtr = Meta::IpodTrackPtr::staticCast( track );
-    KUrl trackUrl = KUrl::fromPath( trackPtr->uidUrl() );
+    Amarok::Collection *localCollection = CollectionManager::instance()->primaryCollection();
 
-    updateTrackInDB( trackUrl, track, trackPtr->getIpodTrack() );
+    if( !localCollection )
+        return false;
+
+    Meta::AlbumMap albumMap = m_memColl->albumMap();
+
+    foreach( Meta::AlbumPtr album, albumMap.values() )
+    {
+        debug() << "Updating artwork for" << (album->albumArtist() ? album->albumArtist()->name() : "unknown") << "-" << album->name();
+    }
+
+    return true;
 }
 
 void
-IpodHandler::metadataChanged( ArtistPtr artist )
+IpodHandler::slotSyncArtwork()
 {
-    Q_UNUSED( artist );
+    DEBUG_BLOCK
+
+    const QString text( i18n( "Amarok is about to syncronise artwork on <i>%1</i>. Do you want to continue?", prettyName() ) );
+
+    if( KMessageBox::warningContinueCancel(0, text, i18n("Synchronise Artwork") ) == KMessageBox::Continue )
+        ThreadWeaver::Weaver::instance()->enqueue( new SyncArtworkWorkerThread( this ) );
 }
 
 void
-IpodHandler::metadataChanged( AlbumPtr album )
+IpodHandler::slotSyncArtworkFailed( ThreadWeaver::Job *job )
 {
-    Q_UNUSED( album );
+    Q_UNUSED( job )
+
+    const QString msg( i18n( "iPod artwork could not be synchronised" ) );
+    The::statusBar()->shortMessage( msg );
 }
 
-void
-IpodHandler::metadataChanged( GenrePtr genre )
-{
-    Q_UNUSED( genre );
-}
 
 void
-IpodHandler::metadataChanged( ComposerPtr composer )
+IpodHandler::slotSyncArtworkSucceeded( ThreadWeaver::Job *job )
 {
-    Q_UNUSED( composer );
-}
+    Q_UNUSED( job )
 
-void
-IpodHandler::metadataChanged( YearPtr year )
-{
-    Q_UNUSED( year );
+    writeDatabase();
+    const QString msg( i18n( "Artwork synchronised" ) );
+    The::statusBar()->shortMessage( msg );
 }
 
 bool
@@ -192,7 +557,7 @@ IpodHandler::initializeIpod()
         return false;
 
     // in order to get directories right
-    detectModel();
+    //detectModel();
 
     itdb_set_mountpoint(m_itdb, QFile::encodeName(mountPoint()));
 
@@ -228,11 +593,14 @@ IpodHandler::initializeIpod()
     if( !dir.exists() )
         return false;
 
+    m_dbChanged = true;
+
     // NOTE: writing itunes DB allowed to block since
     // initializing a device is rare, and requires focus
     // to minimize possible error
+    // TODO: database methods abstraction needed
     if( !writeITunesDB( false ) )
-        return false;
+       return false;
 
     return true;
 }
@@ -280,41 +648,44 @@ IpodHandler::detectModel()
             switch( ipodInfo->ipod_model )
             {
             case ITDB_IPOD_MODEL_SHUFFLE:
-
             case ITDB_IPOD_MODEL_SHUFFLE_SILVER:
             case ITDB_IPOD_MODEL_SHUFFLE_PINK:
             case ITDB_IPOD_MODEL_SHUFFLE_BLUE:
             case ITDB_IPOD_MODEL_SHUFFLE_GREEN:
             case ITDB_IPOD_MODEL_SHUFFLE_ORANGE:
             case ITDB_IPOD_MODEL_SHUFFLE_PURPLE:
-
                 m_isShuffle = true;
                 break;
 
             case ITDB_IPOD_MODEL_IPHONE_1:
-            case ITDB_IPOD_MODEL_TOUCH_BLACK:
+            //TODO newer libgpod thinks that an iPod touch is silver, older that it's black
+            //case ITDB_IPOD_MODEL_TOUCH_BLACK:
+            //case ITDB_IPOD_MODEL_TOUCH_SILVER:
                 m_isIPhone = true;
                 debug() << "detected iPhone/iPod Touch" << endl;
                 break;
+
             case ITDB_IPOD_MODEL_CLASSIC_SILVER:
             case ITDB_IPOD_MODEL_CLASSIC_BLACK:
                 debug() << "detected iPod classic";
-
             case ITDB_IPOD_MODEL_VIDEO_WHITE:
             case ITDB_IPOD_MODEL_VIDEO_BLACK:
             case ITDB_IPOD_MODEL_VIDEO_U2:
                 m_supportsVideo = true;
                 debug() << "detected video-capable iPod";
                 break;
+
             case ITDB_IPOD_MODEL_MOBILE_1:
                 m_isMobile = true;
                 debug() << "detected iTunes phone" << endl;
                 break;
+
             case ITDB_IPOD_MODEL_INVALID:
             case ITDB_IPOD_MODEL_UNKNOWN:
                 modelString = 0;
                 guess = true;
                 break;
+
             default:
                 break;
             }
@@ -356,6 +727,7 @@ IpodHandler::detectModel()
     else
     {
         debug() << "iPod type detection failed, no video support";
+        m_needsFirewireGuid = true; // can't read db because no firewire, maybe
         guess = true;
     }
 
@@ -391,11 +763,143 @@ IpodHandler::detectModel()
 }
 
 bool
+IpodHandler::writeToSysInfoFile( const QString &text )
+{
+    DEBUG_BLOCK
+    QFile sysinfofile( mountPoint() + "/iPod_Control/Device/SysInfo" );
+
+    if (!sysinfofile.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        debug() << "Failed to open SysInfo file for writing!";
+        return false;
+    }
+
+    QTextStream out( &sysinfofile );
+
+    out << text;
+
+    sysinfofile.close();
+
+    return true;
+
+}
+
+bool
+IpodHandler::appendToSysInfoFile( const QString &text )
+{
+    DEBUG_BLOCK
+    QFile sysinfofile( mountPoint() + "/iPod_Control/Device/SysInfo" );
+
+    if (!sysinfofile.open(QIODevice::Append | QIODevice::Text))
+    {
+        debug() << "Failed to open SysInfo file for appending!";
+        return false;
+    }
+
+    QTextStream out( &sysinfofile );
+
+    out << text;
+
+    sysinfofile.close();
+
+    return true;
+}
+
+bool
+IpodHandler::writeFirewireGuid()
+{
+    DEBUG_BLOCK
+
+    // HACK: KDesu's SuProcess is not well-documented enough to use
+    // for elevated privileges, so we are assuming the user has sudo set up
+    // for now, which is a _very big_ assumption.
+
+    KPasswordDialog dlg( 0 );
+    dlg.setPrompt(i18n("Amarok requires sudo access to get the FirewireGuid required to connect to your device. Please enter your sudo password"));
+    if( !dlg.exec() )
+    {
+        debug() << "sudo dialog cancelled";
+        return false; //the user canceled
+    }
+
+    //QString program = "sudo";
+
+    //QStringList arguments;
+    //arguments << "lsusb" << "-s" << "-v";
+
+    QProcess lsusb;
+    lsusb.start( "sudo -S lsusb -v" );
+    if (!lsusb.waitForStarted())
+    {
+        debug() << "failed to start sudo lsusb call";
+        return false;
+    }
+
+    // Write the password to run the command
+
+    lsusb.write( dlg.password().toUtf8() );
+    lsusb.closeWriteChannel();
+
+    // Wait until sudo has processed the password
+    if (!lsusb.waitForFinished())
+    {
+        debug() << "failed to write password to sudo";
+        return false;
+    }
+
+    // Check if sudo fails to execute, usually due to wrong password or bad/no sudoers file
+
+    QByteArray lsusbinfoarray = lsusb.readAllStandardOutput();
+
+    QString lsusbinfostring( lsusbinfoarray );
+
+    // If it failed, abort
+    if( lsusbinfostring == "1" )
+    {
+        debug() << "sudo failed to run, probably due to a wrong password";
+        return false;
+    }
+
+    QRegExp rx( "iSerial\\s*[0-9] [0-9A-Z]{5}[0-9A-Z]+" );
+    QString firewireguid;
+
+    int pos = lsusbinfostring.indexOf( rx );
+
+    if( pos != -1 )
+    {
+        QString iserial = rx.capturedTexts().first();
+        rx.setPattern( "[0-9A-Z]{2,}" );
+        pos = iserial.indexOf( rx );
+        if( pos != -1 )
+        {
+            debug() << rx.capturedTexts();
+            firewireguid = "FirewireGuid: 0x" + rx.capturedTexts().first();
+        }
+
+    }
+
+    debug() << "Firewire is: " << firewireguid;
+
+    // If found, write it out to the SysInfo file
+    if( firewireguid.isEmpty() )
+        return false;
+
+    return appendToSysInfoFile( firewireguid );
+}
+
+bool
 IpodHandler::pathExists( const QString &ipodPath, QString *realPath )
 {
     QDir curDir( mountPoint() );
     QString curPath = mountPoint();
-    QStringList components = ipodPath.split( ':' );
+    QStringList components;
+    // HACK: remove a trailing ':' if present. For some inexplicable
+    // reason, splitting when starting with a : fails in Amarok,
+    // even though it works in a small isolated Qt test case.
+    if( ipodPath.at( 0 ) == ':' )
+        components = QString( ipodPath ).remove(0, 1).split(':');
+    else
+        components = ipodPath.split( ':' );
 
     bool found = false;
     QStringList::iterator it = components.begin();
@@ -433,18 +937,16 @@ IpodHandler::writeITunesDB( bool threaded )
     DEBUG_BLOCK
 
     QMutexLocker locker( &m_dbLocker );
-    if(!m_itdb)
+    if( !m_itdb )
         return false;
 
-    if(m_dbChanged)
+    if( m_dbChanged )
     {
         bool ok = false;
         if( !threaded )
         {
             if( !m_itdb )
-            {
                 return false;
-            }
 
             ok = true;
             GError *error = 0;
@@ -480,7 +982,7 @@ IpodHandler::writeITunesDB( bool threaded )
                 }
             }
             // Kill status bar only once DB is written
-            emit endProgressOperation( this );
+            //emit databaseWritten( this );
         }
 
         if( ok )
@@ -491,9 +993,9 @@ IpodHandler::writeITunesDB( bool threaded )
         return ok;
     }
 
-    debug() << "writeItunesDB is returning true";
+    debug() << "Database was not changed, will not flush";
 
-    return true;
+    return false;
 }
 
 QString
@@ -508,491 +1010,65 @@ IpodHandler::itunesDir(const QString &p) const
     return base + p;
 }
 
+/// Finds path to copy track to on Ipod
 void
-IpodHandler::deleteTrackListFromDevice( const Meta::TrackList &tracks )
+IpodHandler::findPathToCopy( const Meta::TrackPtr &srcTrack, const Meta::MediaDeviceTrackPtr &destTrack )
 {
-    DEBUG_BLOCK
+    Q_UNUSED( destTrack )
+        debug() << "Mountpoint is: " << mountPoint();
 
-    // Init the list of tracks to be deleted
-
-    m_tracksToDelete = tracks;
-
-    // Set up statusbar for deletion operation
-
-    m_statusbar = The::statusBar()->newProgressOperation( this, i18n( "Deleting Tracks from iPod" ) );
-
-    m_statusbar->setMaximum( tracks.size() );
-
-    connect( this, SIGNAL( incrementProgress() ),
-             The::statusBar(), SLOT( incrementProgress() ) );
-    connect( this, SIGNAL( endProgressOperation( const QObject*) ),
-             The::statusBar(), SLOT( endProgressOperation( const QObject* ) ) );
-
-    deleteNextTrackFromDevice();
-}
-
-void
-IpodHandler::deleteNextTrackFromDevice()
-{
-    Meta::TrackPtr track;
-    // If there are more tracks to delete, delete the next one
-    if( !m_tracksToDelete.isEmpty() )
-    {
-        // Pop the track off the front of the list
-
-        track = m_tracksToDelete.first();
-        m_tracksToDelete.removeFirst();
-
-        // Delete the track
-
-        privateDeleteTrackFromDevice( track );
-
-        emit incrementProgress();
-    }
-    // No tracks left to delete, emit done
-    else
-    {
-        emit incrementProgress();
-        emit deleteTracksDone();
-    }
-}
-
-void
-IpodHandler::privateDeleteTrackFromDevice( const Meta::TrackPtr &track )
-{
-    Itdb_Track *ipodtrack = Meta::IpodTrackPtr::staticCast(track)->getIpodTrack();
-
-    // delete file
-    KUrl url;
-    url.setPath( realPath( ipodtrack->ipod_path ) );
-    deleteFile( url );
-
-    // remove it from the ipod database, ipod playlists and all
-
-    if ( !removeDBTrack( ipodtrack ) )
-        debug() << "Error: failed to remove track from db";
-
-    // remove from titlemap
-
-    m_titlemap.remove( track->name(), track );
-}
-
-void
-IpodHandler::copyTrackListToDevice( const Meta::TrackList tracklist )
-{
-    DEBUG_BLOCK
-
-    bool isDupe;
-    bool hasDupe;
-    QString format;
-    TrackMap trackMap = m_memColl->trackMap();
-
-    Meta::TrackList tempTrackList;
-
-    // HACK: Copy is said to fail if >=1 tracks isn't copied to device.
-    // This is so that a move operation doesn't attempt to delete
-    // the tracks from the original collection, as some of these tracks
-    // would not have been copied to the device.
-
-    m_copyFailed = false;
-
-    hasDupe = false;
-
-    m_tracksFailed.clear();
-
-    /* Clear Transfer queue */
-
-    m_tracksToCopy.clear();
-
-    /* Check for same tags, don't copy if same tags */
-    /* Also check for compatible format */
-
-    foreach( Meta::TrackPtr track, tracklist )
-    {
-        /* Check for compatible formats: MP3/AAC/MP4 */
-
-        format = track->type().toLower();
-
-        if( !( format == "mp3" || format == "aac" || format == "mp4" ) )
-        {
-            QString error = "Unsupported Ipod format: " + format;
-            m_tracksFailed.insert( track, error );
-            continue;
-        }
-
-        tempTrackList = m_titlemap.values( track->name() );
-
-        /* If no song with same title, already not a dupe */
-
-        if( tempTrackList.isEmpty() )
-        {
-            debug() << "No tracks with same title, track not a dupe";
-            m_tracksToCopy.append( track );
-            continue;
-        }
-
-        /* Songs with same title present, check other tags */
-
-        debug() << "Same title present, checking other tags";
-
-        isDupe = false;
-
-        foreach( Meta::TrackPtr tempTrack, tempTrackList )
-        {
-
-            if( ( tempTrack->artist()->name() != track->artist()->name() )
-                || ( tempTrack->album()->name() != track->album()->name() )
-                || ( tempTrack->genre()->name() != track->genre()->name() )
-                || ( tempTrack->composer()->name() != track->composer()->name() )
-                || ( tempTrack->year()->name() != track->year()->name() ) )
-            {
-                debug() << "Same title, but other tags differ, not a dupe";
-                continue;
-            }
-
-            /* Track is already on there, break */
-
-            isDupe = true;
-            hasDupe = true;
-            break;
-        }
-
-        if( !isDupe )
-            m_tracksToCopy.append( track );
-        else
-        {
-            debug() << "Track " << track->name() << " is a dupe!";
-
-            QString error = "Already on device";
-            m_tracksFailed.insert( track, error );
-        }
-    }
-
-    // NOTE: see comment at top of copyTrackListToDevice
-
-    if( hasDupe )
-        m_copyFailed = true;
-
-    /* List ready, begin copying */
-
-    copyTracksToDevice();
-}
-
-void
-IpodHandler::copyTracksToDevice()
-{
-    DEBUG_BLOCK
-
-    // Do not bother copying 0 tracks
-    // This could happen if all tracks to copy are dupes
-
-    if( m_tracksToCopy.size() == 0 )
-    {
-        emit copyTracksDone( false );
-        return;
-    }
-    debug() << "Copying " << m_tracksToCopy.size() << " tracks";
-
-    m_statusbar = The::statusBar()->newProgressOperation( this, i18n( "Transferring Tracks to iPod" ) );
-
-    m_statusbar->setMaximum( m_tracksToCopy.size() );
-
-    connect( this, SIGNAL( incrementProgress() ),
-            The::statusBar(), SLOT( incrementProgress() ) );
-    connect( this, SIGNAL( endProgressOperation( const QObject*) ),
-            The::statusBar(), SLOT( endProgressOperation( const QObject* ) ) );
-
-    m_jobcounter = 0;
-
-    copyNextTrackToDevice();
-}
-
-void
-IpodHandler::copyNextTrackToDevice()
-{
-    DEBUG_BLOCK
-    Meta::TrackPtr track;
-
-    track = m_tracksToCopy.first();
-    m_tracksToCopy.removeFirst();
-
-    // Copy the track
-    privateCopyTrackToDevice( track );
-
-    emit incrementProgress();
-}
-
-void
-IpodHandler::privateCopyTrackToDevice( const Meta::TrackPtr &track )
-{
-    DEBUG_BLOCK
-
-    debug() << "Mountpoint is: " << mountPoint();
-
-    KUrl url = determineURLOnDevice(track);
+    KUrl url = determineURLOnDevice(srcTrack);
 
     debug() << "Url's path is: " << url.path();
 
-    // check if path exists and make it if needed
     QFileInfo finfo( url.path() );
     QDir dir = finfo.dir();
-    while ( !dir.exists() )
-    {
-        QString path = dir.absolutePath();
-        QDir parentdir;
-        QDir create;
-        do
-        {
-            create.setPath(path);
-            path = path.section('/', 0, path.indexOf('/')-1);
-            parentdir.setPath(path);
-        }
-        while( !path.isEmpty() && !(path==mountPoint()) && !parentdir.exists() );
-        debug() << "trying to create \"" << path << "\"";
-        if( !create.mkdir( create.absolutePath() ) )
-            break;
-    }
+    QDir root( QDir::rootPath() );
+    // Check if directory exists
     if ( !dir.exists() )
     {
-        debug() << "Creating directory failed";
-        return;
-    }
-
-    debug() << "About to copy from: " << track->playableUrl().path();
-
-    if( !kioCopyTrack( KUrl::fromPath( track->playableUrl().path() ), url ) )
-        return;
-
-    // NOTE: PODCASTS NOT YET PORTED
-
-//    PodcastInfo *podcastInfo = 0;
-
-
-    /*
-    if( bundle.podcastBundle() )
-    {
-    PodcastEpisodeBundle *peb = bundle.podcastBundle();
-    podcastInfo = new PodcastInfo;
-    podcastInfo->url = peb->url().url();
-    podcastInfo->description = peb->description();
-    podcastInfo->author = peb->author();
-    podcastInfo->rss = peb->parent().url();
-    podcastInfo->date = peb->dateTime();
-    podcastInfo->listened = !peb->isNew();
-}
-    */
-    insertTrackIntoDB( url, track );
-    if( !m_trackCreated )
-        debug() << "Track failed to create, aborting database write!";
-
-    return;
-}
-
-void
-IpodHandler::insertTrackIntoDB( const KUrl &url, const Meta::TrackPtr &track )
-{
-    DEBUG_BLOCK
-    Itdb_Track *ipodtrack = itdb_track_new();
-
-    updateTrackInDB( url, track, ipodtrack ); // get information from track
-
-    if( m_trackCreated )
-    {
-        debug() << "Adding " << QString::fromUtf8( ipodtrack->artist) << " - " << QString::fromUtf8( ipodtrack->title );
-        addTrackInDB( ipodtrack );
-
-        // add track to collection
-        addIpodTrackToCollection( ipodtrack );
-    }
-    else
-        debug() << "Failed to create track, aborting insertion!";
-}
-
-void
-IpodHandler::updateTrackInDB( const KUrl &url, const Meta::TrackPtr &track, Itdb_Track *existingIpodTrack )
-{
-    DEBUG_BLOCK
-    if( !m_itdb )
-        return;
-
-    m_trackCreated = true;
-
-    QString pathname = url.path();
-
-    Itdb_Track *ipodtrack = 0;
-    if( !existingIpodTrack )
-    {
-        // NOTE: This should never happen!
-        debug() << "No track passed in, failure!";
-        m_trackCreated = false;
-        return;
-    }
-    else
-        ipodtrack = existingIpodTrack;
-
-    QString type = pathname.section('.', -1).toLower();
-    type = type.toLower();
-
-    debug() << "Path before put in ipod_path: " << pathname;
-
-    ipodtrack->ipod_path = g_strdup( ipodPath(pathname).toLatin1() );
-    debug() << "on iPod: " << ipodtrack->ipod_path;
-
-    if( !track->name().isEmpty() )
-        ipodtrack->title = g_strdup( track->name().toUtf8() );
-    else
-        ipodtrack->title = g_strdup( KUrl::fromPath( track->uidUrl() ).fileName().toUtf8() );
-
-    ipodtrack->album = g_strdup( track->album()->name().toUtf8() );
-    ipodtrack->artist = g_strdup( track->artist()->name().toUtf8() );
-    ipodtrack->genre = g_strdup( track->genre()->name().toUtf8() );
-
-    ipodtrack->mediatype = ITDB_MEDIATYPE_AUDIO;
-    bool audiobook = false;
-    if(type=="wav")
-    {
-        ipodtrack->filetype = g_strdup( "wav" );
-    }
-    else if(type=="mp3" || type=="mpeg")
-    {
-        ipodtrack->filetype = g_strdup( "mpeg" );
-    }
-    else if(type=="aac" || type=="m4a" || (!m_supportsVideo && type=="mp4"))
-    {
-        ipodtrack->filetype = g_strdup( "mp4" );
-    }
-    else if(type=="m4b")
-    {
-        audiobook = true;
-        ipodtrack->filetype = g_strdup( "mp4" );
-    }
-    else if(type=="m4v" || type=="mp4v" || type=="mov" || type=="mpg" || type=="mp4")
-    {
-        ipodtrack->filetype = g_strdup( "m4v video" );
-        ipodtrack->movie_flag = 0x01; // for videos
-        ipodtrack->mediatype = ITDB_MEDIATYPE_MOVIE;
-    }
-    // TODO: NYI, TagLib calls need to be ported
-    /*
-    else if(type=="aa")
-    {
-        audiobook = true;
-        ipodtrack->filetype = g_strdup( "audible" );
-
-        TagLib::Audible::File f( QFile::encodeName( url.path() ) );
-        TagLib::Audible::Tag *t = f.getAudibleTag();
-        if( t )
-            ipodtrack->drm_userid = t->userID();
-        // libgpod also tries to set those, but this won't work
-        ipodtrack->unk126 = 0x01;
-        ipodtrack->unk144 = 0x0029;
-
-    }
-    */
-    else
-    {
-        ipodtrack->filetype = g_strdup( type.toUtf8() );
-    }
-
-    QString genre = track->genre()->name();
-    if( genre.startsWith("audiobook", Qt::CaseInsensitive) )
-        audiobook = true;
-    if( audiobook )
-    {
-        ipodtrack->remember_playback_position |= 0x01;
-        ipodtrack->skip_when_shuffling |= 0x01;
-        ipodtrack->mediatype = ITDB_MEDIATYPE_AUDIOBOOK;
-    }
-
-    ipodtrack->composer = g_strdup( track->composer()->name().toUtf8() );
-    ipodtrack->comment = g_strdup( track->comment().toUtf8() );
-    ipodtrack->track_nr = track->trackNumber();
-    ipodtrack->cd_nr = track->discNumber();
-    // BPM isn't present in Amarok 2 at this time Jul. 8 2008
-    // ipodtrack->BPM = static_cast<int>( track->bpm() );
-    bool ok;
-    int year = track->year()->name().toInt( &ok, 10 );
-    if( ok )
-        ipodtrack->year = year;
-    ipodtrack->size = track->filesize();
-    if( ipodtrack->size == 0 )
-    {
-        debug() << "filesize is zero for " << ipodtrack->ipod_path << ", expect strange problems with your ipod";
-    }
-    ipodtrack->bitrate = track->bitrate();
-    ipodtrack->samplerate = track->sampleRate();
-    ipodtrack->tracklen = track->length()*1000;
-
-    // set playcount and rating
-
-    ipodtrack->playcount = track->playCount();
-    // 1 star = 20 internally
-    ipodtrack->rating = ( track->rating() * ITDB_RATING_STEP / 2 );
-
-    m_dbChanged = true;
-
-// TODO: podcasts/compilations NYI
-    /*
-    if(podcastInfo)
-    {
-        ipodtrack->skip_when_shuffling = 0x01; // skip  when shuffling
-        ipodtrack->remember_playback_position = 0x01; // remember playback position
-        // FIXME: ipodtrack->unk176 = 0x00020000; // for podcasts
-        ipodtrack->mark_unplayed = podcastInfo->listened ? 0x01 : 0x02;
-        ipodtrack->mediatype =
-                ipodtrack->mediatype==ITDB_MEDIATYPE_MOVIE
-                ?  ITDB_MEDIATYPE_PODCAST | ITDB_MEDIATYPE_MOVIE
-            : ITDB_MEDIATYPE_PODCAST;
-
-        ipodtrack->flag4 = 0x01; // also show description on iPod
-        QString plaindesc = podcastInfo->description;
-        plaindesc.remove( QRegExp("<[^>]*>") );
-        ipodtrack->description = g_strdup( plaindesc.toUtf8() );
-        ipodtrack->subtitle = g_strdup( plaindesc.toUtf8() );
-        ipodtrack->podcasturl = g_strdup( podcastInfo->url.toUtf8() );
-        ipodtrack->podcastrss = g_strdup( podcastInfo->rss.toUtf8() );
-        //ipodtrack->category = g_strdup( i18n( "Unknown" ) );
-        ipodtrack->time_released = itdb_time_host_to_mac( podcastInfo->date.toTime_t() );
-        //ipodtrack->compilation = 0x01; // this should have made the ipod play a sequence of podcasts
-    }
-    else
-    {
-        if( metaBundle.compilation() == MetaBundle::CompilationYes )
+        // If it doesn't exist, make it and the path to it
+        if ( !root.mkpath( dir.absolutePath() ) )
         {
-            ipodtrack->compilation = 0x01;
+            debug() << "Creating directory failed";
+            url = "";
         }
+        // If fails to create, set its url to blank so the copying will fail
         else
-        {
-            ipodtrack->compilation = 0x00;
-        }
+            debug() << "Directory created!";
     }
-    */
 
-    if( track->album()->hasImage() )
-    {
-        QPixmap image = track->album()->image();
-        debug() << "Got image of height: " << image.height() << "and width: " << image.width();
-        setCoverArt( ipodtrack, image );
-    }
-    else
-        debug() << "No image available";
+    debug() << "About to copy from: " << srcTrack->playableUrl().path();
+    debug() << "to: " << url;
 
-    debug() << "Adding " << QString::fromUtf8( ipodtrack->artist) << " - " << QString::fromUtf8( ipodtrack->title );
+    m_trackdesturl[ srcTrack ] = url;
+}
+
+bool
+IpodHandler::libCopyTrack( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr &destTrack )
+{
+    Q_UNUSED( destTrack )
+    DEBUG_BLOCK
+//    findPathToCopy( srcTrack );
+    KUrl srcurl = KUrl::fromPath( srcTrack->playableUrl().path() );
+    m_trackscopying[ srcurl ] = srcTrack;
+    return kioCopyTrack( srcurl, m_trackdesturl[ srcTrack ] );
 }
 
 void
 IpodHandler::writeDatabase()
 {
+    disconnect( this, SIGNAL( removeTracksDone() ), 0, 0 );
     ThreadWeaver::Weaver::instance()->enqueue( new DBWorkerThread( this ) );
 }
 
 void
-IpodHandler::addTrackInDB( Itdb_Track *ipodtrack )
+IpodHandler::addTrackInDB(const Meta::MediaDeviceTrackPtr& track)
 {
     DEBUG_BLOCK
 
-    debug() << "Adding " << QString::fromUtf8( ipodtrack->artist) << " - " << QString::fromUtf8( ipodtrack->title );
-    itdb_track_add(m_itdb, ipodtrack, -1);
+    debug() << "Adding " << QString::fromUtf8( m_itdbtrackhash[ track ]->artist) << " - " << QString::fromUtf8( m_itdbtrackhash[ track ]->title );
+    itdb_track_add(m_itdb, m_itdbtrackhash[ track ], -1);
 
     // TODO: podcasts NYI
     // if(podcastInfo)
@@ -1020,8 +1096,116 @@ IpodHandler::addTrackInDB( Itdb_Track *ipodtrack )
             itdb_playlist_add( m_itdb, mpl, -1 );
             itdb_playlist_set_mpl( mpl );
         }
-        itdb_playlist_add_track(mpl, ipodtrack, -1);
+        itdb_playlist_add_track(mpl, m_itdbtrackhash[ track ], -1);
     }
+
+
+}
+
+bool
+IpodHandler::libDeleteTrackFile( const Meta::MediaDeviceTrackPtr &track )
+{
+    DEBUG_BLOCK
+    Itdb_Track *ipodtrack = m_itdbtrackhash[ track ];
+
+    // delete file
+    KUrl url;
+    url.setPath( realPath( ipodtrack->ipod_path ) );
+    Meta::TrackPtr trackptr = Meta::TrackPtr::staticCast( track );
+    m_tracksdeleting[ url ] = trackptr;
+    deleteFile( url );
+
+    return true;
+
+}
+
+void
+IpodHandler::libDeleteTrack( const Meta::MediaDeviceTrackPtr &track )
+{
+    DEBUG_BLOCK
+    Itdb_Track *ipodtrack = m_itdbtrackhash[ track ];
+
+    m_itdbtrackhash.remove( track );
+    m_files.remove( QString(ipodtrack->ipod_path).toLower() );
+
+    itdb_track_remove( ipodtrack );
+}
+
+void
+IpodHandler::removeTrackFromDB( const Meta::MediaDeviceTrackPtr &track )
+{
+    DEBUG_BLOCK
+    Itdb_Track *ipodtrack = m_itdbtrackhash[ track ];
+
+    removeDBTrack( ipodtrack );
+}
+
+inline void
+IpodHandler::setDatabaseChanged()
+{
+    m_dbChanged = true;
+}
+
+Meta::TrackList
+IpodHandler::staleTracks()
+{
+    DEBUG_BLOCK
+    Meta::TrackList tracklist;
+
+    Meta::TrackMap trackMap = m_memColl->trackMap();
+
+    foreach( Meta::TrackPtr trk, trackMap.values() )
+    {
+        Meta::MediaDeviceTrackPtr track = Meta::MediaDeviceTrackPtr::staticCast( trk );
+        Itdb_Track *ipodtrack =  m_itdbtrackhash.value( track );
+
+        if( !pathExists(QString::fromUtf8( ipodtrack->ipod_path ) ) )
+        {
+            debug() << "track: " << ipodtrack->artist << " - " << ipodtrack->album << " - " << ipodtrack->title << " is stale: " << ipodtrack->ipod_path << " does not exist" << endl;
+            tracklist << trk;
+        }
+    }
+
+    return tracklist;
+}
+
+QStringList
+IpodHandler::orphanedTracks()
+{
+    DEBUG_BLOCK
+
+    QStringList orphanedTracks;
+    QString musicpath;
+    if (!pathExists( itunesDir( "Music" ), &musicpath ))
+    {
+        debug() << "Music path not found";
+        return QStringList();
+    }
+
+    debug() << "Found path for Music";
+
+    QDir dir( musicpath, QString::null, QDir::Unsorted, QDir::Dirs );
+    for(unsigned i=0; i<dir.count(); i++)
+    {
+        if(dir[i] == "." || dir[i] == "..")
+            continue;
+
+        QString hashpath = musicpath + '/' + dir[i];
+        QDir hashdir( hashpath, QString::null, QDir::Unsorted, QDir::Files );
+        for(unsigned j=0; j<hashdir.count(); j++)
+        {
+            QString filename = hashpath + '/' + hashdir[j];
+            QString ipodPath = itunesDir( "Music:" ) + dir[i] + ':' + hashdir[j];
+            Itdb_Track *track = m_files.value( ipodPath.toLower() );
+            if(!track)
+            {
+                debug() << "file: " << filename << " is orphaned" << endl;
+                orphanedTracks << ipodPath;
+            }
+        }
+    }
+
+    return orphanedTracks;
 }
 
 bool
@@ -1048,9 +1232,6 @@ IpodHandler::removeDBTrack( Itdb_Track *track )
         cur = cur->next;
     }
 
-    // also frees track's memory
-    itdb_track_remove(track);
-
     return true;
 }
 
@@ -1064,8 +1245,15 @@ IpodHandler::kioCopyTrack( const KUrl &src, const KUrl &dst )
     KIO::CopyJob *job = KIO::copy( src, dst, KIO::HideProgressInfo );
     m_jobcounter++;
 
+    if( m_jobcounter < 150 )
+        copyNextTrackToDevice();
+
+
     connect( job, SIGNAL( result( KJob * ) ),
-             this,  SLOT( fileTransferred( KJob * ) ) );
+             this,  SLOT( fileTransferred( KJob * ) ), Qt::QueuedConnection );
+
+    connect( job, SIGNAL( copyingDone(KIO::Job*,KUrl,KUrl,time_t,bool,bool)),
+             this, SLOT(slotCopyingDone(KIO::Job*,KUrl,KUrl,time_t,bool,bool)) );
 
     return true;
 }
@@ -1076,45 +1264,56 @@ IpodHandler::fileTransferred( KJob *job )  //SLOT
     DEBUG_BLOCK
     QMutexLocker locker(&m_joblocker);
 
-    if ( job->error() )
-    {
-        m_copyFailed = true;
-        debug() << "file transfer failed: " << job->errorText();
-    }
     m_wait = false;
 
     m_jobcounter--;
 
-    // Limit max number of jobs to 10, make sure more tracks left
-    // to copy
+    if ( job->error() )
+    {
+        m_copyFailed = true;
+        debug() << "file transfer failed: " << job->errorText();
+        return;
+    }
 
-    if( !m_tracksToCopy.empty() )
+    // Limit max number of jobs to 150, make sure more tracks left
+    // to copy
+    debug() << "Tracks to copy still remain";
+    if( m_jobcounter < 150 )
     {
-        debug() << "Tracks to copy still remain";
-        if( m_jobcounter < 10 )
-        {
-            debug() << "Jobs: " << m_jobcounter;
-            copyNextTrackToDevice();
-        }
+        debug() << "Jobs: " << m_jobcounter;
+        copyNextTrackToDevice();
     }
-    else
-    {
-        debug() << "Tracklist empty";
-        // Empty copy queue, this is last job
-        if( m_jobcounter == 0 )
-        {
-            emit incrementProgress();
-            emit copyTracksDone( !m_copyFailed );
-        }
-    }
+}
+
+void
+IpodHandler::slotCopyingDone( KIO::Job* job, KUrl from, KUrl to, time_t mtime, bool directory, bool renamed)
+{
+    Q_UNUSED( job )
+    Q_UNUSED( to )
+    Q_UNUSED( mtime )
+    Q_UNUSED( directory )
+    Q_UNUSED( renamed )
+
+    DEBUG_BLOCK
+    Meta::TrackPtr track = m_trackscopying[from];
+
+    if( !job->error() )
+        slotFinalizeTrackCopy( track );
 }
 
 void
 IpodHandler::deleteFile( const KUrl &url )
 {
+    DEBUG_BLOCK
     debug() << "deleting " << url.prettyUrl();
 
     KIO::DeleteJob *job = KIO::del( url, KIO::HideProgressInfo );
+
+    m_jobcounter++;
+
+    if( m_jobcounter < 150 )
+        removeNextTrackFromDevice();
+
     connect( job, SIGNAL( result( KJob * ) ),
              this,  SLOT( fileDeleted( KJob * ) ) );
 
@@ -1124,12 +1323,33 @@ IpodHandler::deleteFile( const KUrl &url )
 void
 IpodHandler::fileDeleted( KJob *job )  //SLOT
 {
-    if(job->error())
-    {
+    DEBUG_BLOCK
+    if( job->error() )
         debug() << "file deletion failed: " << job->errorText();
+
+    m_jobcounter--;
+
+    // Limit max number of jobs to 150, make sure more tracks left
+    // to delete
+    debug() << "Tracks to delete still remain";
+    if( m_jobcounter < 150 )
+    {
+        debug() << "Jobs: " << m_jobcounter;
+        removeNextTrackFromDevice();
     }
 
-    deleteNextTrackFromDevice();
+    KIO::DeleteJob *djob = reinterpret_cast<KIO::DeleteJob*> (job);
+
+    if( djob )
+    {
+        KUrl url = djob->urls().first();
+
+        Meta::TrackPtr track = m_tracksdeleting[ url ];
+
+        debug() << "emitting libRemoveTrackDone";
+
+        slotFinalizeTrackRemove( track );
+    }
 }
 
 KUrl
@@ -1202,74 +1422,325 @@ IpodHandler::realPath( const char *ipodPath )
     return path;
 }
 
-void
-IpodHandler::addIpodTrackToCollection( Itdb_Track *ipodtrack )
+
+QString
+IpodHandler::libGetTitle( const Meta::MediaDeviceTrackPtr &track )
 {
-    TrackMap trackMap = m_memColl->trackMap();
-    ArtistMap artistMap = m_memColl->artistMap();
-    AlbumMap albumMap = m_memColl->albumMap();
-    GenreMap genreMap = m_memColl->genreMap();
-    ComposerMap composerMap = m_memColl->composerMap();
-    YearMap yearMap = m_memColl->yearMap();
+    return QString::fromUtf8( m_itdbtrackhash[ track ]->title );
+}
 
-    IpodTrackPtr track( new IpodTrack( m_memColl ) );
+QString
+IpodHandler::libGetAlbum( const Meta::MediaDeviceTrackPtr &track )
+{
+    return QString::fromUtf8( m_itdbtrackhash[ track ]->album );
+}
 
-    /* 1-liner info retrieval */
+QString
+IpodHandler::libGetArtist( const Meta::MediaDeviceTrackPtr &track )
+{
+    return QString::fromUtf8( m_itdbtrackhash[ track ]->artist );
+}
 
-    getBasicIpodTrackInfo( ipodtrack, track );
+QString
+IpodHandler::libGetComposer( const Meta::MediaDeviceTrackPtr &track )
+{
+    return QString::fromUtf8( m_itdbtrackhash[ track ]->composer );
+}
 
-    /* map-related info retrieval */
-    setupArtistMap( ipodtrack, track, artistMap );
-    setupAlbumMap( ipodtrack, track, albumMap );
-    setupGenreMap( ipodtrack, track, genreMap );
-    setupComposerMap( ipodtrack, track, composerMap );
-    setupYearMap( ipodtrack, track, yearMap );
+QString
+IpodHandler::libGetGenre( const Meta::MediaDeviceTrackPtr &track )
+{
+    return QString::fromUtf8( m_itdbtrackhash[ track ]->genre );
+}
 
-    /* trackmap also soon to be subordinated */
+int
+IpodHandler::libGetYear( const Meta::MediaDeviceTrackPtr &track )
+{
+    return m_itdbtrackhash[ track ]->year;
+}
 
-    trackMap.insert( track->uidUrl(), TrackPtr::staticCast( track ) );
+int
+IpodHandler::libGetLength( const Meta::MediaDeviceTrackPtr &track )
+{
+    return ( ( m_itdbtrackhash[ track ]->tracklen ) / 1000 );
+}
 
-    m_titlemap.insert( track->name(), TrackPtr::staticCast( track ) );
+int
+IpodHandler::libGetTrackNumber( const Meta::MediaDeviceTrackPtr &track )
+{
+    return m_itdbtrackhash[ track ]->track_nr;
+}
 
-    track->setIpodTrack( ipodtrack ); // convenience pointer
+QString
+IpodHandler::libGetComment( const Meta::MediaDeviceTrackPtr &track )
+{
+    return QString::fromUtf8( m_itdbtrackhash[ track ]->comment );
+}
 
-    // Finally, assign the created maps to the collection
-    m_memColl->acquireWriteLock();
-    m_memColl->setTrackMap( trackMap );
-    m_memColl->setArtistMap( artistMap );
-    m_memColl->setAlbumMap( albumMap );
-    m_memColl->setGenreMap( genreMap );
-    m_memColl->setComposerMap( composerMap );
-    m_memColl->setYearMap( yearMap );
-    m_memColl->releaseLock();
+int
+IpodHandler::libGetDiscNumber( const Meta::MediaDeviceTrackPtr &track )
+{
+    return m_itdbtrackhash[ track ]->cd_nr;
+}
+
+int
+IpodHandler::libGetBitrate( const Meta::MediaDeviceTrackPtr &track )
+{
+    return m_itdbtrackhash[ track ]->bitrate;
+}
+
+int
+IpodHandler::libGetSamplerate( const Meta::MediaDeviceTrackPtr &track )
+{
+    return m_itdbtrackhash[ track ]->samplerate;
+}
+
+float
+IpodHandler::libGetBpm( const Meta::MediaDeviceTrackPtr &track )
+{
+    return m_itdbtrackhash[ track ]->BPM;
+}
+int
+IpodHandler::libGetFileSize( const Meta::MediaDeviceTrackPtr &track )
+{
+    return m_itdbtrackhash[ track ]->size;
+}
+int
+IpodHandler::libGetPlayCount( const Meta::MediaDeviceTrackPtr &track )
+{
+    return m_itdbtrackhash[ track ]->playcount;
+}
+uint
+IpodHandler::libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track )
+{
+    return m_itdbtrackhash[ track ]->time_played;
+}
+int
+IpodHandler::libGetRating( const Meta::MediaDeviceTrackPtr &track )
+{
+    return ( m_itdbtrackhash[ track ]->rating / ITDB_RATING_STEP * 2 );
+}
+QString
+IpodHandler::libGetType( const Meta::MediaDeviceTrackPtr &track )
+{
+    return QFileInfo( track->playableUrl().path() ).suffix();
+}
+
+KUrl
+IpodHandler::libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track )
+{
+    return KUrl(m_mountPoint + (QString( m_itdbtrackhash[ track ]->ipod_path ).split( ':' ).join( "/" )));
+}
+
+float
+IpodHandler::usedCapacity() const
+{
+    if ( !m_filepath.isEmpty() )
+        return KDiskFreeSpaceInfo::freeSpaceInfo( m_filepath ).used();
+    else
+        return 0.0;
+}
+
+float
+IpodHandler::totalCapacity() const
+{
+    return m_capacity;
+}
+
+/// Sets
+
+void
+IpodHandler::libSetTitle( Meta::MediaDeviceTrackPtr& track, const QString& title )
+{
+    m_itdbtrackhash[ track ]->title = g_strdup( title.toUtf8() );
+    setDatabaseChanged();
+}
+void
+IpodHandler::libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album )
+{
+    m_itdbtrackhash[ track ]->album = g_strdup( album.toUtf8() );
+    setDatabaseChanged();
+}
+void
+IpodHandler::libSetArtist( Meta::MediaDeviceTrackPtr &track, const QString& artist )
+{
+    m_itdbtrackhash[ track ]->artist = g_strdup( artist.toUtf8() );
+    setDatabaseChanged();
+}
+void
+IpodHandler::libSetComposer( Meta::MediaDeviceTrackPtr &track, const QString& composer )
+{
+    m_itdbtrackhash[ track ]->composer = g_strdup( composer.toUtf8() );
+    setDatabaseChanged();
+}
+void
+IpodHandler::libSetGenre( Meta::MediaDeviceTrackPtr &track, const QString& genre )
+{
+    if( genre.startsWith("audiobook", Qt::CaseInsensitive) )
+    {
+        m_itdbtrackhash[ track ]->remember_playback_position |= 0x01;
+        m_itdbtrackhash[ track ]->skip_when_shuffling |= 0x01;
+        m_itdbtrackhash[ track ]->mediatype = ITDB_MEDIATYPE_AUDIOBOOK;
+    }
+
+    m_itdbtrackhash[ track ]->genre = g_strdup( genre.toUtf8() );
+    setDatabaseChanged();
+}
+void
+IpodHandler::libSetYear( Meta::MediaDeviceTrackPtr &track, const QString& year )
+{
+    bool ok;
+    int yr = year.toInt( &ok, 10 );
+    if( ok )
+    {
+        m_itdbtrackhash[ track ]->year = yr;
+        setDatabaseChanged();
+    }
+}
+void
+IpodHandler::libSetLength( Meta::MediaDeviceTrackPtr &track, int length )
+{
+    m_itdbtrackhash[ track ]->tracklen = length*1000;
+    setDatabaseChanged();
+}
+void
+IpodHandler::libSetTrackNumber( Meta::MediaDeviceTrackPtr &track, int tracknum )
+{
+    m_itdbtrackhash[ track ]->track_nr = tracknum;
+    setDatabaseChanged();
+}
+void
+IpodHandler::libSetComment( Meta::MediaDeviceTrackPtr &track, const QString& comment )
+{
+    m_itdbtrackhash[ track ]->comment = g_strdup( comment.toUtf8() );
+    setDatabaseChanged();
+}
+void
+IpodHandler::libSetDiscNumber( Meta::MediaDeviceTrackPtr &track, int discnum )
+{
+    m_itdbtrackhash[ track ]->cd_nr = discnum;
+    setDatabaseChanged();
+}
+void
+IpodHandler::libSetBitrate( Meta::MediaDeviceTrackPtr &track, int bitrate )
+{
+    m_itdbtrackhash[ track ]->bitrate = bitrate;
+    setDatabaseChanged();
+}
+void
+IpodHandler::libSetSamplerate( Meta::MediaDeviceTrackPtr &track, int samplerate )
+{
+    m_itdbtrackhash[ track ]->samplerate = samplerate;
+    setDatabaseChanged();
+}
+void
+IpodHandler::libSetBpm( Meta::MediaDeviceTrackPtr &track, float bpm )
+{
+    m_itdbtrackhash[ track ]->BPM = static_cast<int>( bpm );
+    setDatabaseChanged();
+}
+void
+IpodHandler::libSetFileSize( Meta::MediaDeviceTrackPtr &track, int filesize )
+{
+    m_itdbtrackhash[ track ]->size = filesize;
+    setDatabaseChanged();
+}
+void
+IpodHandler::libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount )
+{
+    m_itdbtrackhash[ track ]->playcount = playcount;
+    setDatabaseChanged();
+}
+void
+IpodHandler::libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed)
+{
+    Q_UNUSED( track )
+    Q_UNUSED( lastplayed )
+}
+void
+IpodHandler::libSetRating( Meta::MediaDeviceTrackPtr &track, int rating )
+{
+    m_itdbtrackhash[ track ]->rating = ( rating * ITDB_RATING_STEP / 2 );
+    setDatabaseChanged();
+}
+void
+IpodHandler::libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type )
+{
+    m_itdbtrackhash[ track ]->mediatype = ITDB_MEDIATYPE_AUDIO;
+    bool audiobook = false;
+
+    if( type == "wav" )
+        m_itdbtrackhash[ track ]->filetype = g_strdup( "wav" );
+
+    else if( type == "aiff" )
+        m_itdbtrackhash[ track ]->filetype = g_strdup( "aiff" );
+
+    else if( type == "mp3" || type == "mpeg")
+        m_itdbtrackhash[ track ]->filetype = g_strdup( "mpeg" );
+
+    else if( type == "aac" || type == "m4a" || (!m_supportsVideo && type == "mp4") )
+        m_itdbtrackhash[ track ]->filetype = g_strdup( "mp4" );
+
+    else if( type == "m4b" )
+    {
+        audiobook = true;
+        m_itdbtrackhash[ track ]->filetype = g_strdup( "mp4" );
+    }
+    else if( type == "m4v" || type == "mp4v" || type == "mov" || type == "mpg" || type == "mp4" )
+    {
+        m_itdbtrackhash[ track ]->filetype = g_strdup( "m4v video" );
+        m_itdbtrackhash[ track ]->movie_flag = 0x01; // for videos
+        m_itdbtrackhash[ track ]->mediatype = ITDB_MEDIATYPE_MOVIE;
+    }
+    // TODO: NYI, TagLib calls need to be ported
+    /*
+    else if(type=="aa")
+    {
+        audiobook = true;
+        m_itdbtrackhash[ track ]->filetype = g_strdup( "audible" );
+
+        TagLib::Audible::File f( QFile::encodeName( url.path() ) );
+        TagLib::Audible::Tag *t = f.getAudibleTag();
+        if( t )
+            m_itdbtrackhash[ track ]->drm_userid = t->userID();
+        // libgpod also tries to set those, but this won't work
+        m_itdbtrackhash[ track ]->unk126 = 0x01;
+        m_itdbtrackhash[ track ]->unk144 = 0x0029;
+
+    }
+    */
+    else
+        m_itdbtrackhash[ track ]->filetype = g_strdup( type.toUtf8() );
+
+    if( audiobook )
+    {
+        m_itdbtrackhash[ track ]->remember_playback_position |= 0x01;
+        m_itdbtrackhash[ track ]->skip_when_shuffling |= 0x01;
+        m_itdbtrackhash[ track ]->mediatype = ITDB_MEDIATYPE_AUDIOBOOK;
+    }
+    setDatabaseChanged();
 }
 
 void
-IpodHandler::getBasicIpodTrackInfo( const Itdb_Track *ipodtrack, Meta::IpodTrackPtr track ) const
+IpodHandler::libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack )
 {
-    /* 1-liner info retrieval */
+    KUrl copyurl = m_trackdesturl[ srcTrack ];
+    QString pathname = copyurl.path();
 
-    track->setTitle( QString::fromUtf8( ipodtrack->title ) );
-    track->setLength( ( ipodtrack->tracklen ) / 1000 );
-    track->setTrackNumber( ipodtrack->track_nr );
-    track->setComment( QString::fromUtf8( ipodtrack->comment ) );
-    track->setDiscNumber( ipodtrack->cd_nr );
-    track->setBitrate( ipodtrack->bitrate );
-    track->setSamplerate( ipodtrack->samplerate );
-    track->setBpm( ipodtrack->BPM );
-    track->setFileSize( ipodtrack->size );
-    track->setPlayCount( ipodtrack->playcount );
-    track->setLastPlayed( ipodtrack->time_played );
-    track->setRating( ipodtrack->rating / ITDB_RATING_STEP * 2 );
+    QString type = pathname.section('.', -1).toLower();
+    type = type.toLower();
 
-    QString path = QString( ipodtrack->ipod_path ).split( ':' ).join( "/" );
-    path = m_mountPoint + path;
-    track->setPlayableUrl( path );
+    debug() << "Path before put in ipod_path: " << pathname;
 
-    const QString filetype = QString::fromUtf8( ipodtrack->filetype );
+    m_itdbtrackhash[ destTrack ]->ipod_path = g_strdup( ipodPath(pathname).toLatin1() );
+    debug() << "on iPod: " << m_itdbtrackhash[ destTrack ]->ipod_path;
+    setDatabaseChanged();
+}
 
-    if( filetype == "mpeg" )
-        track->setType( "mp3" );
+void
+IpodHandler::libCreateTrack( const Meta::MediaDeviceTrackPtr& track )
+{
+    m_itdbtrackhash[ track ] = itdb_track_new();
 }
 
 QString
@@ -1282,41 +1753,30 @@ IpodHandler::ipodArtFilename( const Itdb_Track *ipodtrack ) const
     return m_tempdir->name() + imageKey + ".png";
 }
 
-// TODO: This is sloooow. Need to implement on-demand fetching.
-void
-IpodHandler::getCoverArt( const Itdb_Track *ipodtrack )
+QPixmap
+IpodHandler::libGetCoverArt( const Meta::MediaDeviceTrackPtr &track )
 {
 #ifdef GDK_FOUND
+    Itdb_Track *ipodtrack = m_itdbtrackhash[ track ];
     if( !ipodtrack )
-        return;
+        return QPixmap();
+
+    if( ipodtrack->has_artwork == 0x02 ) // has_artwork: True if set to 0x01, false if set to 0x02.
+        return QPixmap();
 
     const QString filename = ipodArtFilename( ipodtrack );
 
     if( m_coverArt.contains(filename) )
-        return;
-
-    if( ipodtrack->has_artwork == 0x02 )
-        return;
+        return QPixmap(filename);
 
     GdkPixbuf *pixbuf = (GdkPixbuf*) itdb_artwork_get_pixbuf( ipodtrack->itdb->device, ipodtrack->artwork, -1, -1 );
     if( !pixbuf )
-        return;
+        return QPixmap();
 
     gdk_pixbuf_save( pixbuf, QFile::encodeName(filename), "png", NULL, (const char*)(NULL));
     gdk_pixbuf_unref( pixbuf );
 
     m_coverArt.insert( filename );
-#else
-    Q_UNUSED(ipodtrack);
-#endif
-}
-
-QPixmap
-IpodHandler::getCover( Meta::IpodTrackPtr track ) const
-{
-#ifdef GDK_FOUND
-    const Itdb_Track *ipodTrack = track->getIpodTrack();
-    const QString filename = ipodArtFilename( ipodTrack );
     return QPixmap( filename );
 #else
     Q_UNUSED( track );
@@ -1325,17 +1785,19 @@ IpodHandler::getCover( Meta::IpodTrackPtr track ) const
 }
 
 void
-IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QString &path ) const
+IpodHandler::libSetCoverArtPath( Meta::MediaDeviceTrackPtr &track, const QString &path )
 {
 #ifdef GDK_FOUND
-    DEBUG_BLOCK
-
-    if( !m_supportsArtwork )
+    if( path.isEmpty() || !m_supportsArtwork )
         return;
+
+    Itdb_Track *ipodtrack = m_itdbtrackhash[ track ];
 
     itdb_artwork_remove_thumbnails( ipodtrack->artwork );
     itdb_track_set_thumbnails( ipodtrack, QFile::encodeName(path) );
     ipodtrack->has_artwork = 0x01;
+
+    setDatabaseChanged();
 #else
     Q_UNUSED( ipodtrack );
     Q_UNUSED( path );
@@ -1343,20 +1805,24 @@ IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QString &path ) const
 }
 
 void
-IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image ) const
+IpodHandler::libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QPixmap &image )
 {
 #ifdef GDK_FOUND
-    DEBUG_BLOCK
-
     if( image.isNull() || !m_supportsArtwork )
         return;
 
-    const QString filename = ipodArtFilename( ipodtrack );
-    bool saved = image.save( filename );
-    if( !saved )
-        return;
+    Itdb_Track *ipodtrack = m_itdbtrackhash[ track ];
 
-    setCoverArt( ipodtrack, filename );
+    const QString filename = ipodArtFilename( ipodtrack );
+    // Don't write the file if it already exists (we probably just saved it)
+    if( !QFile::exists(filename) )
+    {
+        bool saved = image.save( filename );
+        if( !saved )
+            return;
+    }
+
+    libSetCoverArtPath( track, filename ); // will call setDatabaseChanged() if required
 #else
     Q_UNUSED( ipodtrack );
     Q_UNUSED( image );
@@ -1364,207 +1830,404 @@ IpodHandler::setCoverArt( Itdb_Track *ipodtrack, const QPixmap &image ) const
 }
 
 void
-IpodHandler::setupArtistMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, ArtistMap &artistMap )
+IpodHandler::prepareToParseTracks()
 {
-    QString artist( QString::fromUtf8( ipodtrack->artist ) );
-    IpodArtistPtr artistPtr;
+    m_currtracklist = m_itdb->tracks;
+}
 
-    if ( artistMap.contains( artist ) )
-        artistPtr = IpodArtistPtr::staticCast( artistMap.value( artist ) );
-    else
-    {
-        artistPtr = IpodArtistPtr( new IpodArtist( artist ) );
-        artistMap.insert( artist, ArtistPtr::staticCast( artistPtr ) );
-    }
-
-    artistPtr->addTrack( track );
-    track->setArtist( artistPtr );
+bool
+IpodHandler::isEndOfParseTracksList()
+{
+    return (m_currtracklist ? false : true);
 }
 
 void
-IpodHandler::setupAlbumMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, AlbumMap &albumMap )
+IpodHandler::prepareToParseNextTrack()
 {
-    QString album( QString::fromUtf8( ipodtrack->album ) );
-    IpodAlbumPtr albumPtr;
-
-    if ( albumMap.contains( album ) )
-        albumPtr = IpodAlbumPtr::staticCast( albumMap.value( album ) );
-    else
-    {
-        albumPtr = IpodAlbumPtr( new IpodAlbum( m_memColl, album ) );
-        albumMap.insert( album, AlbumPtr::staticCast( albumPtr ) );
-    }
-
-    albumPtr->addTrack( track );
-    track->setAlbum( albumPtr );
+    m_currtracklist = m_currtracklist->next;
 }
 
 void
-IpodHandler::setupGenreMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, GenreMap &genreMap )
+IpodHandler::nextTrackToParse()
 {
-    QString genre = ipodtrack->genre;
-    IpodGenrePtr genrePtr;
+    m_currtrack = (Itdb_Track*) m_currtracklist->data;
+}
 
-    if ( genreMap.contains( genre ) )
-        genrePtr = IpodGenrePtr::staticCast( genreMap.value( genre ) );
+/// Playlist Parsing
 
-    else
-    {
-        genrePtr = IpodGenrePtr( new IpodGenre( genre ) );
-        genreMap.insert( genre, GenrePtr::staticCast( genrePtr ) );
-    }
+void
+IpodHandler::prepareToParsePlaylists()
+{
+    m_currplaylistlist = m_itdb->playlists;
+}
 
-    genrePtr->addTrack( track );
-    track->setGenre( genrePtr );
+
+bool
+IpodHandler::isEndOfParsePlaylistsList()
+{
+    return (m_currplaylistlist ? false : true);
+}
+
+
+void
+IpodHandler::prepareToParseNextPlaylist()
+{
+    m_currplaylistlist = m_currplaylistlist->next;
+}
+
+
+void
+IpodHandler::nextPlaylistToParse()
+{
+    m_currplaylist = ( Itdb_Playlist * ) m_currplaylistlist->data;
+}
+
+bool
+IpodHandler::shouldNotParseNextPlaylist()
+{
+    // NOTE: skip the master playlist
+    return ( itdb_playlist_is_mpl( m_currplaylist ) || itdb_playlist_is_podcasts( m_currplaylist ) );
+}
+
+
+void
+IpodHandler::prepareToParsePlaylistTracks()
+{
+    m_currtracklist = m_currplaylist->members;
+}
+
+
+bool
+IpodHandler::isEndOfParsePlaylist()
+{
+    return (m_currtracklist ? false : true );
+}
+
+
+void
+IpodHandler::prepareToParseNextPlaylistTrack()
+{
+    prepareToParseNextTrack();
+}
+
+
+void
+IpodHandler::nextPlaylistTrackToParse()
+{
+    nextTrackToParse();
+}
+
+Meta::MediaDeviceTrackPtr
+IpodHandler::libGetTrackPtrForTrackStruct()
+{
+    return m_itdbtrackhash.key( m_currtrack );
+}
+
+QString
+IpodHandler::libGetPlaylistName()
+{
+    return QString::fromUtf8( m_currplaylist->name );
 }
 
 void
-IpodHandler::setupComposerMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, ComposerMap &composerMap )
+IpodHandler::setAssociatePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
 {
-    QString composer ( QString::fromUtf8( ipodtrack->composer ) );
-    IpodComposerPtr composerPtr;
-
-    if ( composerMap.contains( composer ) )
-        composerPtr = IpodComposerPtr::staticCast( composerMap.value( composer ) );
-    else
-    {
-        composerPtr = IpodComposerPtr( new IpodComposer( composer ) );
-        composerMap.insert( composer, ComposerPtr::staticCast( composerPtr ) );
-    }
-
-    composerPtr->addTrack( track );
-    track->setComposer( composerPtr );
+    m_itdbplaylisthash[ playlist ] = m_currplaylist;
 }
 
 void
-IpodHandler::setupYearMap( Itdb_Track *ipodtrack, Meta::IpodTrackPtr track, YearMap &yearMap )
-{
-    QString year;
-    year = year.setNum( ipodtrack->year );
-    IpodYearPtr yearPtr;
-    if ( yearMap.contains( year ) )
-        yearPtr = IpodYearPtr::staticCast( yearMap.value( year ) );
-    else
-    {
-        yearPtr = IpodYearPtr( new IpodYear( year ) );
-        yearMap.insert( year, YearPtr::staticCast( yearPtr ) );
-    }
-    yearPtr->addTrack( track );
-    track->setYear( yearPtr );
-}
-
-void
-IpodHandler::parseTracks()
+IpodHandler::libSavePlaylist( const Meta::MediaDevicePlaylistPtr &playlist, const QString& name )
 {
     DEBUG_BLOCK
+    // Make new playlist
 
-    TrackMap trackMap;
-    ArtistMap artistMap;
-    AlbumMap albumMap;
-    GenreMap genreMap;
-    ComposerMap composerMap;
-    YearMap yearMap;
+    Itdb_Playlist *pl = itdb_playlist_new( name.toUtf8(), 0 );
+    itdb_playlist_add( m_itdb, pl, -1 );
 
-    QMap<Itdb_Track*, IpodTrackPtr> ipodTrackMap;
+    Meta::TrackList tracks = const_cast<Meta::MediaDevicePlaylistPtr&> ( playlist )->tracks();
 
-    GList *cur;
-
-    /* iterate through tracklist and add to appropriate map */
-    for( cur = m_itdb->tracks; cur; cur = cur->next )
+    foreach( const Meta::TrackPtr track, tracks )
     {
-        /* ipodtrack - provides libgpod itdb info */
-        /* track - the new track whose data is being set up */
-        Itdb_Track *ipodtrack = (Itdb_Track*) cur->data;
-
-        getCoverArt( ipodtrack );
-
-        IpodTrackPtr track( new IpodTrack( m_memColl ) );
-
-        getBasicIpodTrackInfo( ipodtrack, track );
-
-        /* map-related info retrieval */
-
-        setupArtistMap( ipodtrack, track, artistMap );
-        setupAlbumMap( ipodtrack, track, albumMap );
-        setupGenreMap( ipodtrack, track, genreMap );
-        setupComposerMap( ipodtrack, track, composerMap );
-        setupYearMap( ipodtrack, track, yearMap );
-
-        /* TrackMap stuff to be subordinated later */
-        trackMap.insert( track->uidUrl(), TrackPtr::staticCast( track ) );
-
-        m_titlemap.insert( track->name(), TrackPtr::staticCast( track ) );
-
-        track->setIpodTrack( ipodtrack ); // convenience pointer
-        ipodTrackMap.insert( ipodtrack, track ); // map for playlist formation
-
-        // Subscribe to Track for metadata updates
-
-        subscribeTo( Meta::TrackPtr::staticCast( track ) );
+        itdb_playlist_add_track( pl, m_itdbtrackhash[ Meta::MediaDeviceTrackPtr::staticCast( track ) ], -1 );
     }
 
-    // Iterate through ipod's playlists to set track's playlists
+    m_itdbplaylisthash[ playlist ] = pl;
 
-    GList *member = 0;
-
-    for ( cur = m_itdb->playlists; cur; cur = cur->next )
-    {
-        Itdb_Playlist *ipodplaylist = ( Itdb_Playlist * ) cur->data;
-        for ( member = ipodplaylist->members; member; member = member->next )
-        {
-            Itdb_Track *ipodtrack = ( Itdb_Track * )member->data;
-            IpodTrackPtr track = ipodTrackMap.value( ipodtrack );
-            track->addIpodPlaylist( ipodplaylist );
-        }
-    }
-
-    // Finally, assign the created maps to the collection
-
-    m_memColl->acquireWriteLock();
-    m_memColl->setTrackMap( trackMap );
-    m_memColl->setArtistMap( artistMap );
-    m_memColl->setAlbumMap( albumMap );
-    m_memColl->setGenreMap( genreMap );
-    m_memColl->setComposerMap( composerMap );
-    m_memColl->setYearMap( yearMap );
-    m_memColl->releaseLock();
+    setDatabaseChanged();
 }
 
+void
+IpodHandler::deletePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
+{
+    DEBUG_BLOCK
+    Itdb_Playlist *pl = m_itdbplaylisthash.value( playlist );
+
+    if( pl )
+    {
+        debug() << "Playlist removed";
+        itdb_playlist_remove( pl );
+        m_itdbplaylisthash.remove( playlist );
+        setDatabaseChanged();
+    }
+}
+
+void
+IpodHandler::renamePlaylist( const Meta::MediaDevicePlaylistPtr &playlist )
+{
+    DEBUG_BLOCK
+    Itdb_Playlist *pl = m_itdbplaylisthash[ playlist ];
+
+    if( pl )
+    {
+        debug() << "Playlist renamed";
+        pl->name = g_strdup( playlist->name().toUtf8() );
+        setDatabaseChanged();
+    }
+}
+
+void
+IpodHandler::setAssociateTrack( const Meta::MediaDeviceTrackPtr track )
+{
+    m_itdbtrackhash[ track ] = m_currtrack;
+    m_files.insert( QString(m_currtrack->ipod_path).toLower(), m_currtrack );
+}
+
+QStringList
+IpodHandler::supportedFormats()
+{
+    return ( QStringList() ) << "mp3" << "aac" << "mp4" << "m4a" << "aiff";
+}
+
+
 /* Private Functions */
+
+void
+IpodHandler::prepareToCopy()
+{
+    // Initialize job counter to prepare to keep track of how many
+    // copy jobs are going on at once
+    //m_jobcounter = 0;
+
+    m_trackdesturl.clear();
+    m_trackscopying.clear();
+}
+
+void
+IpodHandler::prepareToDelete()
+{
+    // Initialize job counter to prepare to keep track of how many
+    // copy jobs are going on at once
+    //m_jobcounter = 0;
+
+    m_tracksdeleting.clear();
+}
 
 void
 IpodHandler::slotDBWriteFailed( ThreadWeaver::Job* job )
 {
     Q_UNUSED( job );
     debug() << "Writing to DB failed!";
+    slotDatabaseWritten( false );
 }
 
 void
 IpodHandler::slotDBWriteSucceeded( ThreadWeaver::Job* job )
 {
     Q_UNUSED( job );
-    debug() << "Writing to DB succeeded!";
+    if( job->success() )
+    {
+        debug() << "Writing to DB succeeded!";
+        slotDatabaseWritten( true );
+    }
+    else
+        debug() << "Writing to DB did not happen or failed";
+}
+
+/// Stale
+
+void
+IpodHandler::slotStaleFailed( ThreadWeaver::Job* job )
+{
+    Q_UNUSED( job );
+    debug() << "Finding stale thread failed";
+    slotOrphaned();
+}
+
+void
+IpodHandler::slotStaleSucceeded( ThreadWeaver::Job* job )
+{
+    if( job->success() )
+    {
+        debug() << "Stale thread succeeded!";
+
+        QStringList staleList;
+        m_staletracksremoved = 0;
+
+        if( m_staletracks.count() > 0 )
+        {
+
+            foreach( Meta::TrackPtr track, m_staletracks )
+            {
+                QString ent;
+                QTextStream entry( &ent );
+                entry << track->artist()->name()
+                        << " - "
+                        << track->album()->name()
+                        << " - "
+                        << track->name();
+
+                staleList << ent;
+            }
+
+            bool ok = false;
+
+            QStringList itemList = KInputDialog::getItemList( i18n( "Select Stale Tracks To Delete" ), i18n( "Stale Tracks" ), staleList, staleList, true /*multiple*/, &ok, 0 );
+
+            if( ok )
+            {
+                Meta::TrackList staleToDelete;
+                foreach( QString item, itemList )
+                {
+                    staleToDelete << m_staletracks[ itemList.indexOf( item ) ];
+                }
+
+                m_staletracksremoved = staleToDelete.count();
+                // HACK: do through signals/slots, which is how CollectionLocation
+                // does deletion of tracks.  Should create protected method to
+                // allow Handlers to delete without hackery.
+                connect( this, SIGNAL( removeTracksDone() ), SLOT( slotOrphaned() ) );
+                removeTrackListFromDevice( staleToDelete );
+            }
+
+        } // endif staletracks
+        else
+        {
+            slotOrphaned();
+        }
+
+    }
+    else
+    {
+        debug() << "Stale thread failed";
+        slotOrphaned();
+    }
+}
+
+/// Orphaned
+
+void
+IpodHandler::slotOrphanedFailed( ThreadWeaver::Job* job )
+{
+    Q_UNUSED( job );
+    debug() << "Finding orphaned thread failed";
+}
+
+void
+IpodHandler::slotOrphanedSucceeded( ThreadWeaver::Job* job )
+{
+    DEBUG_BLOCK
+    if( job->success() )
+    {
+        m_orphanedadded = 0;
+
+        debug() << "Number of paths: " << m_orphanedPaths.count();
+
+        if( !m_orphanedPaths.empty() )
+        {
+            m_statusbar = The::statusBar()->newProgressOperation( this, i18n( "Adding Orphaned Tracks to iPod Database" ) );
+            m_statusbar->setMaximum( m_orphanedPaths.count() );
+
+            ThreadWeaver::Weaver::instance()->enqueue( new AddOrphanedWorkerThread( this ) );
+
+        }
+
+    }
+    else
+    {
+        debug() << "failed to find orphaned tracks";
+    }
+}
+
+/// Add Orphaned
+
+void
+IpodHandler::slotAddOrphanedFailed( ThreadWeaver::Job* job )
+{
+    Q_UNUSED( job );
+    debug() << "Adding orphaned thread failed";
+    if( m_orphanedPaths.count() )
+            ThreadWeaver::Weaver::instance()->enqueue( new AddOrphanedWorkerThread( this ) );
+}
+
+void
+IpodHandler::slotAddOrphanedSucceeded( ThreadWeaver::Job* job )
+{
+    if( job->success() )
+    {
+        emit incrementProgress();
+
+        if( m_orphanedPaths.count() )
+            ThreadWeaver::Weaver::instance()->enqueue( new AddOrphanedWorkerThread( this ) );
+        else
+        {
+            writeDatabase();
+
+            const QString orphmsg( i18ncp( "@info", "One orphaned track added to the database.",
+                                           "%1 tracks added to the database.", m_orphanedadded ) );
+
+            KMessageBox::information(0,
+                                     orphmsg,
+                                     i18n("Orphaned Tracks Added") );
+        }
+    }
+    else
+    {
+        debug() << "failed to add orphaned tracks";
+    }
+}
+
+/// Capability-related functions
+
+bool
+IpodHandler::hasCapabilityInterface( Handler::Capability::Type type ) const
+{
+    switch( type )
+    {
+        case Handler::Capability::Artwork:
+        case Handler::Capability::Readable:
+        case Handler::Capability::Playlist:
+        case Handler::Capability::Writable:
+            return true;
+
+        default:
+            return false;
+    }
+}
+
+Handler::Capability*
+IpodHandler::createCapabilityInterface( Handler::Capability::Type type )
+{
+    switch( type )
+    {
+        case Handler::Capability::Artwork:
+            return new Handler::IpodArtworkCapability( this );
+        case Handler::Capability::Readable:
+            return new Handler::IpodReadCapability( this );
+        case Handler::Capability::Playlist:
+            return new Handler::IpodPlaylistCapability( this );
+        case Handler::Capability::Writable:
+            return new Handler::IpodWriteCapability( this );
+
+        default:
+            return 0;
+    }
 }
 
 DBWorkerThread::DBWorkerThread( IpodHandler* handler )
-    : ThreadWeaver::Job()
-    , m_success( false )
-    , m_handler( handler )
+    : AbstractIpodWorkerThread( handler )
 {
-    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotDBWriteFailed( ThreadWeaver::Job* ) ) );
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotDBWriteSucceeded( ThreadWeaver::Job* ) ) );
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
-}
-
-DBWorkerThread::~DBWorkerThread()
-{
-    //nothing to do
-}
-
-bool
-DBWorkerThread::success() const
-{
-    return m_success;
+    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotDBWriteFailed( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotDBWriteSucceeded( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
 }
 
 void
@@ -1573,6 +2236,65 @@ DBWorkerThread::run()
     m_success = m_handler->writeITunesDB( false );
 }
 
+// stale
+
+StaleWorkerThread::StaleWorkerThread( IpodHandler* handler )
+    : AbstractIpodWorkerThread( handler )
+{
+    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotStaleFailed( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotStaleSucceeded( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+}
+
+void
+StaleWorkerThread::run()
+{
+    m_success = m_handler->findStale();
+}
+
+// Orphaned
+
+OrphanedWorkerThread::OrphanedWorkerThread( IpodHandler* handler )
+    : AbstractIpodWorkerThread( handler )
+{
+    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotOrphanedFailed( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotOrphanedSucceeded( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+}
+
+void
+OrphanedWorkerThread::run()
+{
+    m_success = m_handler->findOrphaned();
+}
+
+// Add Orphaned
+
+AddOrphanedWorkerThread::AddOrphanedWorkerThread( IpodHandler* handler )
+    : AbstractIpodWorkerThread( handler )
+{
+    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotAddOrphanedFailed( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotAddOrphanedSucceeded( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+}
+
+void
+AddOrphanedWorkerThread::run()
+{
+    m_success = m_handler->addNextOrphaned();
+}
+
+// Sync Artwork
+
+SyncArtworkWorkerThread::SyncArtworkWorkerThread( IpodHandler* handler )
+    : AbstractIpodWorkerThread( handler )
+{
+    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotSyncArtworkFailed( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotSyncArtworkSucceeded( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+}
+
+void
+SyncArtworkWorkerThread::run()
+{
+    m_success = m_handler->syncArtwork();
+}
 
 #include "IpodHandler.moc"
 

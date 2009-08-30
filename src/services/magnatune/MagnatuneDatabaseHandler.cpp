@@ -1,22 +1,18 @@
-/***************************************************************************
- *   Copyright (c) 2006, 2007                                              *
- *        Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                   *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2006,2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>               *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "MagnatuneDatabaseHandler.h"
 
@@ -51,7 +47,7 @@ MagnatuneDatabaseHandler::createDatabase( )
                           "artist_id INTEGER,"
                           "preview_lofi " + sqlDb->exactTextColumnType() + ',' +
                           "preview_ogg " + sqlDb->exactTextColumnType() + ',' +
-                          "preview_url " + sqlDb->exactTextColumnType() + ");";
+                          "preview_url " + sqlDb->exactTextColumnType() + ") ENGINE = MyISAM;";
 
     debug() << "Creating mangnatune_tracks: " << queryString;
 
@@ -69,7 +65,7 @@ MagnatuneDatabaseHandler::createDatabase( )
                   "artist_id INTEGER,"
                   "album_code " + sqlDb->textColumnType() + ',' +
                   "cover_url " + sqlDb->exactTextColumnType() + ',' +
-                  "description " + sqlDb->exactTextColumnType() + ");";
+                  "description " + sqlDb->exactTextColumnType() + ") ENGINE = MyISAM;";
 
     debug() << "Creating Mangnatune_albums: " << queryString;
 
@@ -85,7 +81,7 @@ MagnatuneDatabaseHandler::createDatabase( )
                   "name " + sqlDb->textColumnType() + ',' +
                   "artist_page " + sqlDb->exactTextColumnType() + ',' +
                   "description " + sqlDb->textColumnType() + ',' +
-                  "photo_url " + sqlDb->exactTextColumnType() + ");";
+                  "photo_url " + sqlDb->exactTextColumnType() + ") ENGINE = MyISAM;";
 
     debug() << "Creating mangnatune_artist: " << queryString;
 
@@ -97,7 +93,7 @@ MagnatuneDatabaseHandler::createDatabase( )
     queryString = "CREATE TABLE magnatune_genre ("
                   "id INTEGER PRIMARY KEY " + autoIncrement + ',' +
                   "name " + sqlDb->textColumnType() + ',' +
-                  "album_id INTEGER" + ");";
+                  "album_id INTEGER" + ") ENGINE = MyISAM;";
 
     result = sqlDb->query( queryString );
 
@@ -109,7 +105,7 @@ MagnatuneDatabaseHandler::createDatabase( )
      queryString = "CREATE TABLE magnatune_moods ("
                   "id INTEGER PRIMARY KEY " + autoIncrement + ',' +
                   "track_id INTEGER," +
-                  "mood " + sqlDb->textColumnType() + ");";
+                  "mood " + sqlDb->textColumnType() + ") ENGINE = MyISAM;";
 
     debug() << "Creating mangnatune_moods: " << queryString;
 

@@ -1,15 +1,18 @@
-/***************************************************************************
-* copyright            : (C) 2008 Leo Franchi <lfranchi@kde.org>         *
-****************************************************************************/
-
-/***************************************************************************
-*                                                                         *
-*   This program is free software; you can redistribute it and/or modify  *
-*   it under the terms of the GNU General Public License as published by  *
-*   the Free Software Foundation; either version 2 of the License, or     *
-*   (at your option) any later version.                                   *
-*                                                                         *
-***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "VerticalAppletLayout.h"
 
@@ -50,13 +53,11 @@ Context::VerticalAppletLayout::resizeEvent( QGraphicsSceneResizeEvent * event )
     foreach( Plasma::Applet* applet, m_appletList )
         applet->resize( event->newSize().width(), applet->size().height() );
     showAtIndex( m_showingIndex );
-    
 }
 
 void 
 Context::VerticalAppletLayout::addApplet( Plasma::Applet* applet, int location )
 {
-    DEBUG_BLOCK
     debug() << "layout told to add applet at" << location;
     if( m_appletList.size() == 0 )
         emit noApplets( false );
@@ -73,6 +74,9 @@ Context::VerticalAppletLayout::addApplet( Plasma::Applet* applet, int location )
     }
     debug() << "emitting addApplet with location" << location;
     emit appletAdded( applet, location );
+
+    // everytime the geometry change, we will call showapplet ;)
+    connect( applet, SIGNAL( sizeHintChanged( Qt::SizeHint ) ), SLOT( refresh() ) );
 }
 
 
@@ -98,6 +102,7 @@ Context::VerticalAppletLayout::saveToConfig( KConfigGroup &conf )
 void
 Context::VerticalAppletLayout::refresh()
 {
+//    DEBUG_BLOCK
     showAtIndex( m_showingIndex );
 }
 
@@ -116,9 +121,9 @@ Context::VerticalAppletLayout::totalSize()
 void 
 Context::VerticalAppletLayout::showApplet( Plasma::Applet* applet ) // SLOT
 {
+    debug() << " ask for show applet " << applet->name();
     showAtIndex( m_appletList.indexOf( applet ) );
 }
-
 
 void 
 Context::VerticalAppletLayout::moveApplet( Plasma::Applet* applet, int oldLoc, int newLoc)
@@ -157,7 +162,6 @@ Context::VerticalAppletLayout::appletRemoved( Plasma::Applet* app )
 void
 Context::VerticalAppletLayout::showAtIndex( int index )
 {
-    DEBUG_BLOCK
     if( index < 0 || index > m_appletList.size() )
         return;
     
@@ -178,10 +182,10 @@ Context::VerticalAppletLayout::showAtIndex( int index )
         //debug() << "UPWARDS putting applet #" << i << " at" << 0 << runningHeight;
         //debug() << "UPWARDS got applet sizehint height:" << currentHeight;
         m_appletList[ i ]->resize( width, currentHeight );
-        m_appletList[ i ]->updateConstraints();
         m_appletList[ i ]->hide();
     }
-    runningHeight = currentHeight = 0.0;
+    runningHeight = currentHeight = 1.0; // there is a fixed 1px padding on the left and right sides that we can't get rid of, so to keep it
+                                         // consistent and pretty, show it on the top too
 
     /**
       * If an applet has a vertical sizeHint of < 0 (which means effectiveSizeHint < 15  ), then it means it wants to be laid out to maxmize vertical space.
@@ -201,7 +205,6 @@ Context::VerticalAppletLayout::showAtIndex( int index )
             qreal heightLeft = boundingRect().height() - runningHeight;
             //debug() << "layout has boundingRect FLOWING" << boundingRect() ;
             m_appletList[ i ]->resize( width, heightLeft );
-            m_appletList[ i ]->updateConstraints();
             m_appletList[ i ]->show();
             lastShown = i;
         } else
@@ -209,7 +212,6 @@ Context::VerticalAppletLayout::showAtIndex( int index )
             //debug() << "normal applet, moving on with the next one";
             runningHeight += height;
             m_appletList[ i ]->resize( width, height );
-            m_appletList[ i ]->updateConstraints();
             m_appletList[ i ]->show();
             
             //debug() << "next applet will go at:" << runningHeight;
@@ -222,13 +224,17 @@ Context::VerticalAppletLayout::showAtIndex( int index )
         //debug() << "HIDING NOT VISIBLE APPLET AT INDEX:" << i;
         // hiding an applet does not hide it's children
         // so in order to make sure that the applet is not visible,
-        // in the case of misbehaving applets, we also move them out of the way. 
+        // in the case of misbehaving applets, we also move them out of the way.
+        
         m_appletList[ i ]->hide();
         m_appletList[ i ]->setPos( 0, boundingRect().height() );
     }
     
     m_showingIndex = index;
 }
+
+
+
 
 int 
 Context::VerticalAppletLayout::minIndexWithAppletOnScreen( int loc )
