@@ -4,6 +4,7 @@ amarok (2.1.60~git1677+g8e81132-0r1) UNRELEASED; urgency=low
     - commit 8e811321bc6c04d9d593f1b5ec34da8fb924be7f
     - Author: Bart Cerneels
     - Date:   Sun Aug 30 18:21:50 2009 +0200
+  * Build depend on liblastfm-dev.
 
  -- Modestas Vainius <modestas@vainius.eu>  Sun, 30 Aug 2009 20:05:35 +0300
 

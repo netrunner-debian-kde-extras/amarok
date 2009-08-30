@@ -11,7 +11,7 @@ Build-Depends: debhelper (>= 7.3), cmake (>= 2.6.2), quilt (>= 0.4.6-7~), pkg-kd
  libglib2.0-dev, libgpod-nogtk-dev (>= 0.7.0),
  libmysqld-pic (>= 5.1.36-2), libwrap0-dev,
  libqt4-opengl-dev, libcurl4-gnutls-dev, libxml2-dev, libloudmouth1-dev,
- libgtk2.0-dev, kdemultimedia-dev (>= 4:4.2.0), libqca2-dev
+ libgtk2.0-dev, kdemultimedia-dev (>= 4:4.2.0), libqca2-dev, liblastfm-dev
 Build-Depends-Indep: mysql-server-5.1 (>= 5.1.26rc)
 Standards-Version: 3.8.2
 Homepage: http://amarok.kde.org
