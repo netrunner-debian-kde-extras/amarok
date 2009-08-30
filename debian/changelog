@@ -1,3 +1,12 @@
+amarok (2.1.60~git1677+g8e81132-0r1) UNRELEASED; urgency=low
+
+  * New upstream development snapshot (v2.1.1-1677-g8e81132):
+    - commit 8e811321bc6c04d9d593f1b5ec34da8fb924be7f
+    - Author: Bart Cerneels
+    - Date:   Sun Aug 30 18:21:50 2009 +0200
+
+ -- Modestas Vainius <modestas@vainius.eu>  Sun, 30 Aug 2009 20:05:35 +0300
+
 amarok (2.1.1-4) unstable; urgency=medium
 
   * Add general/mp3tunes_portability_fix patch to fix FTBFS on alpha.
