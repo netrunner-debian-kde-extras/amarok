@@ -18,6 +18,8 @@ amarok (2.1.60~git1677+g8e81132-0r1) UNRELEASED; urgency=low
     - general/armel_ftbfs_fix - drop, merged upstream;
     - general/mp3tunes_portability_fix.diff - drop, merged upstream;
   * Pass -DCMAKE_USE_RELATIVE_PATHS=ON to cmake again.
+  * Add debian/mysql_linkage_fix patch to linkage against mysql library on
+    Debian. OpenSSL is not needed.
 
  -- Modestas Vainius <modestas@vainius.eu>  Sun, 30 Aug 2009 20:05:35 +0300
 

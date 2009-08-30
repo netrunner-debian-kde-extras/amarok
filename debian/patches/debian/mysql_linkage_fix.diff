@@ -1,0 +1,25 @@
+From: Modestas Vainius <modestas@vainius.eu>
+Subject: [PATCH] OpenSSL is not needed to link against mysql library
+
+Fix link libraries for MySql from Debian.
+
+Signed-off-by: Modestas Vainius <modestas@vainius.eu>
+
+---
+ .../mysqlservercollection/CMakeLists.txt           |    1 -
+ 1 files changed, 0 insertions(+), 1 deletions(-)
+
+diff --git a/src/collection/mysqlservercollection/CMakeLists.txt b/src/collection/mysqlservercollection/CMakeLists.txt
+index 9f1c390..68d02f3 100755
+--- a/src/collection/mysqlservercollection/CMakeLists.txt
++++ b/src/collection/mysqlservercollection/CMakeLists.txt
+@@ -71,7 +71,6 @@ target_link_libraries(amarok_collection-mysqlservercollection
+ )
+ 
+ if(NOT WIN32)
+-    target_link_libraries(amarok_collection-mysqlservercollection crypto ssl)
+     if(NOT APPLE)
+         target_link_libraries(amarok_collection-mysqlservercollection crypt pthread)
+     endif(NOT APPLE)
+-- 
+tg: (1c6f700..) debian/mysql_linkage_fix (depends on: upstream)
