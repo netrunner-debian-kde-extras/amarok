@@ -10,6 +10,13 @@ amarok (2.1.60~git1677+g8e81132-0r1) UNRELEASED; urgency=low
     - build depend on pkg-kde-tools 0.5;
     - build depend on debhelper 7.3.16;
     - adjust debian/rules;
+  * Resync patches:
+    - debian/disable_qtscriptbindings_check_fix - refresh;
+    - debian/mysqle_amarok_local_errmsg_feature - adapt to upstream changes;
+    - debian/mysqle_linkage_fix - adapt to upstream changes;
+    - debian/mysqle_look_for_libmysqld_pic - drop, merged upstream;
+    - general/armel_ftbfs_fix - drop, merged upstream;
+    - general/mp3tunes_portability_fix.diff - drop, merged upstream;
 
  -- Modestas Vainius <modestas@vainius.eu>  Sun, 30 Aug 2009 20:05:35 +0300
 
