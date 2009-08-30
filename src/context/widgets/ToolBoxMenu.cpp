@@ -1,16 +1,18 @@
-/*******************************************************************************
-* copyright              : (C) 2008 William Viana Soares <vianasw@gmail.com>   *
-*                                                                              *
-********************************************************************************/
-
-/***************************************************************************
-*                                                                         *
-*   This program is free software; you can redistribute it and/or modify  *
-*   it under the terms of the GNU General Public License as published by  *
-*   the Free Software Foundation; either version 2 of the License, or     *
-*   (at your option) any later version.                                   *
-*                                                                         *
-***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 William Viana Soares <vianasw@gmail.com>                          *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "ToolBoxMenu.h"
 
@@ -120,7 +122,7 @@ AmarokToolBoxMenu::init( QMap< QString, QString > allApplets, QStringList applet
     m_installScriptedApplet = new ToolBoxIcon( this );
     m_installScriptedApplet->setDrawBackground( true );
     m_installScriptedApplet->setOrientation( Qt::Horizontal );
-    m_installScriptedApplet->setText( i18n( "Install Applets" ) );
+    m_installScriptedApplet->setText( i18n( "Install New Applets" ) );
     const QSizeF size( ENTRY_WIDTH - 60, ENTRY_HEIGHT - 9 );
     m_installScriptedApplet->setMinimumSize( size );
     m_installScriptedApplet->setMaximumSize( size );
@@ -312,8 +314,8 @@ AmarokToolBoxMenu::show( bool refreshApplets )
     m_hideIcon->show();
     setZValue( zValue() + 10000 );
     
-    //m_installScriptedApplet->setPos( 30, boundingRect().height() - ( ENTRY_HEIGHT + ENTRY_MARGIN ) * m_menuSize - OFFSET_Y + ENTRY_MARGIN * 2 );
-    //m_installScriptedApplet->show();
+    m_installScriptedApplet->setPos( 30, boundingRect().height() - ( ENTRY_HEIGHT + ENTRY_MARGIN ) * m_menuSize - OFFSET_Y + ENTRY_MARGIN * 2 );
+    m_installScriptedApplet->show();
     
     for( int i = m_currentMenu.count() - 1; i >= 0; i-- )
     {

@@ -1,24 +1,24 @@
-/*
-   Copyright (C) 2008 Alejandro Wainzinger <aikawarazuni@gmail.com>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2008 Alejandro Wainzinger <aikawarazuni@gmail.com>                     *
+ * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #define DEBUG_PREFIX "MediaDeviceMonitor"
 
 #include "MediaDeviceMonitor.h"
+#include "ConnectionAssistant.h"
 
 #include "Debug.h"
 
@@ -26,14 +26,25 @@
 
 //solid specific includes
 #include <solid/devicenotifier.h>
+
 #include <solid/device.h>
+#include <solid/opticaldisc.h>
 #include <solid/storageaccess.h>
 #include <solid/storagedrive.h>
 #include <solid/portablemediaplayer.h>
+#include <solid/opticaldrive.h>
+
+#include <QTimer>
 
 MediaDeviceMonitor* MediaDeviceMonitor::s_instance = 0;
 
 MediaDeviceMonitor::MediaDeviceMonitor() : QObject()
+ , m_udiAssistants()
+ , m_assistants()
+ , m_waitingassistants()
+ , m_nextassistant( 0 )
+ // NOTE: commented out, needs porting to new device framework
+ //, m_currentCdId( QString() )
 {
     DEBUG_BLOCK
     s_instance = this;
@@ -69,67 +80,93 @@ MediaDeviceMonitor::getDevices()
 
 }
 
-void
-MediaDeviceMonitor::checkDevices()
-{
-    DEBUG_BLOCK
-    /* poll udi list for supported devices */
-
-    checkDevicesForMtp();
-    checkDevicesForIpod();
-}
-
-void
-MediaDeviceMonitor::checkDevicesForIpod()
-{
-    QStringList udiList = getDevices();
-
-    /* poll udi list for supported devices */
-    foreach(const QString &udi, udiList )
-    {
-        /* if ipod device found, emit signal */
-        if( isIpod( udi ) )
-        {
-            // HACK: Usability: Force auto-connection of device upon detection
-            connectIpod( MediaDeviceCache::instance()->volumeMountPoint(udi), udi );
-            emit ipodDetected( MediaDeviceCache::instance()->volumeMountPoint(udi), udi );
-        }
-    }
-}
-
-void
-MediaDeviceMonitor::checkDevicesForMtp()
-{
-    QStringList udiList = getDevices();
-
-    /* poll udi list for supported devices */
-    foreach(const QString &udi, udiList )
-    {
-        if( isMtp( udi ) )
-        {
-            Solid::PortableMediaPlayer* pmp = Solid::Device( udi ).as<Solid::PortableMediaPlayer>();
-            QString serial = pmp->driverHandle( "mtp" ).toString();
-            debug() << "Serial is: " << serial;
-            // HACK: Usability: Force auto-connection of device upon detection
-            connectMtp( serial, udi );
-            emit mtpDetected( serial, udi );
-        }
-    }
-}
-
-
-
-void
-MediaDeviceMonitor::deviceAdded(  const QString &udi )
+void MediaDeviceMonitor::checkDevice(const QString& udi)
 {
     DEBUG_BLOCK
 
-    QStringList udiList;
+    // First let the higher priority devices check
 
-    debug() << "New device added, testing...";
+    foreach( ConnectionAssistant* assistant, m_assistants )
+    {
+        checkOneDevice( assistant, udi );
+    }
 
-    udiList.append( udi );
-    checkDevices();
+    // Then let the assistants that can wait check
+
+    foreach( ConnectionAssistant* assistant, m_waitingassistants )
+    {
+        checkOneDevice( assistant, udi );
+    }
+
+}
+
+void MediaDeviceMonitor::checkOneDevice( ConnectionAssistant* assistant, const QString& udi )
+{
+    // Ignore already identified devices
+    if( m_udiAssistants.keys().contains( udi ) )
+    {
+        debug() << "Device already identified with udi: " << udi;
+        return;
+    }
+
+    if( assistant->identify( udi ) )
+    {
+        debug() << "Device identified with udi: " << udi;
+        // keep track of which assistant deals with which device
+        m_udiAssistants.insert( udi, assistant );
+        // inform factory of new device identified
+        assistant->tellIdentified( udi );
+        return;
+    }
+}
+
+void MediaDeviceMonitor::checkDevicesFor( ConnectionAssistant* assistant )
+{
+    DEBUG_BLOCK
+
+    QStringList udiList = getDevices();
+
+    foreach( const QString &udi, udiList )
+    {
+        checkOneDevice( assistant, udi );
+    }
+
+}
+
+void
+MediaDeviceMonitor::registerDeviceType( ConnectionAssistant* assistant )
+{
+    DEBUG_BLOCK
+
+    // If the device wants to wait and give other device types
+    // a chance to recognize devices, put it in a queue for
+    // later device checking
+
+    if ( assistant->wait() )
+    {
+        // keep track of this type of device from now on
+        m_waitingassistants << assistant;
+
+        QTimer::singleShot( 1000, this, SLOT( slotDequeueWaitingAssistant() ) );
+    }
+    else
+    {
+        // keep track of this type of device from now on
+        m_assistants << assistant;
+
+        // start initial check for devices of this type
+        checkDevicesFor( assistant );
+    }
+
+}
+
+void
+MediaDeviceMonitor::deviceAdded( const QString &udi )
+{
+    DEBUG_BLOCK
+
+    // check if device is a known device
+    checkDevice( udi );
 }
 
 void
@@ -137,15 +174,24 @@ MediaDeviceMonitor::slotDeviceRemoved( const QString &udi )
 {
     DEBUG_BLOCK
 
-    // NOTE: perhaps a simple forwarding of signals would do
-    // via a connect
+    if ( m_udiAssistants.contains( udi ) )
+    {
 
-    emit deviceRemoved( udi );
+        m_udiAssistants.value( udi )->tellDisconnected( udi );
+
+        m_udiAssistants.remove( udi );
+    }
+
+
+//    emit deviceRemoved( udi );
 }
 
 void
 MediaDeviceMonitor::slotAccessibilityChanged( bool accessible, const QString & udi)
 {
+    // TODO: build a hack to force a device to become accessible or not
+    // This means auto-mounting of Ipod, and ejecting of it too
+
     DEBUG_BLOCK
             debug() << "Accessibility changed to: " << ( accessible ? "true":"false" );
     if ( !accessible )
@@ -154,74 +200,113 @@ MediaDeviceMonitor::slotAccessibilityChanged( bool accessible, const QString & u
         deviceAdded( udi );
 }
 
-bool
-MediaDeviceMonitor::isIpod( const QString &udi )
+void
+MediaDeviceMonitor::slotDequeueWaitingAssistant()
+{
+    checkDevicesFor( m_waitingassistants.at( m_nextassistant++ ) );
+}
+
+/// TODO: all stuff below here is cd-related, needs porting to new framework
+#if 0
+
+void
+MediaDeviceMonitor::checkDevicesForCd()
 {
     DEBUG_BLOCK
 
-    Solid::Device device;
+    QStringList udiList = getDevices();
 
-    device = Solid::Device(udi);
-    /* going until we reach a vendor, e.g. Apple */
-    while ( device.isValid() && device.vendor().isEmpty() )
+    /* poll udi list for supported devices */
+    foreach(const QString &udi, udiList )
     {
-        device = Solid::Device( device.parentUdi() );
+        debug() << "udi: " << udi;
+        if ( isAudioCd( udi ) )
+        {
+            emit audioCdDetected( udi );
+        }
     }
-
-    debug() << "Device udi: " << udi;
-    debug() << "Device name: " << MediaDeviceCache::instance()->deviceName(udi);
-    debug() << "Mount point: " << MediaDeviceCache::instance()->volumeMountPoint(udi);
-    if ( device.isValid() )
-    {
-        debug() << "vendor: " << device.vendor() << ", product: " << device.product();
-    }
-
-    /* if iPod or iPhone found, return true */
-    return device.product() == "iPod" || device.product() == "iPhone";
 }
 
+
 bool
-MediaDeviceMonitor::isMtp( const QString &udi )
+MediaDeviceMonitor::isAudioCd( const QString & udi )
 {
     DEBUG_BLOCK
 
     Solid::Device device;
 
     device = Solid::Device( udi );
-    if( !device.is<Solid::PortableMediaPlayer>() )
+    if( device.is<Solid::OpticalDisc>() )
     {
-        debug() << "Not a PMP";
-        return false;
+        debug() << "OpticalDisc";
+        Solid::OpticalDisc * opt = device.as<Solid::OpticalDisc>();
+        if ( opt->availableContent() & Solid::OpticalDisc::Audio )
+        {
+            debug() << "AudioCd";
+            return true;
+        }
     }
 
-    Solid::PortableMediaPlayer *pmp = device.as<Solid::PortableMediaPlayer>();
+    return false;
+}
 
-    debug() << "Supported Protocols: " << pmp->supportedProtocols();
+QString
+MediaDeviceMonitor::isCdPresent()
+{
+    DEBUG_BLOCK
 
-    return pmp->supportedProtocols().contains( "mtp" );
+    QStringList udiList = getDevices();
+
+    /* poll udi list for supported devices */
+    foreach( const QString &udi, udiList )
+    {
+        debug() << "udi: " << udi;
+        if ( isAudioCd( udi ) )
+        {
+            return udi;
+        }
+    }
+
+    return QString();
 }
 
 void
-MediaDeviceMonitor::connectIpod( const QString &mountpoint, const QString &udi )
+MediaDeviceMonitor::ejectCd( const QString & udi )
 {
-    emit ipodReadyToConnect( mountpoint, udi );
+    DEBUG_BLOCK
+    debug() << "trying to eject udi: " << udi;
+    Solid::Device device = Solid::Device( udi ).parent();
+
+    if ( !device.isValid() ) {
+        debug() << "invalid device, cannot eject";
+        return;
+    }
+
+
+    debug() << "lets tryto get an OpticalDrive out of this thing";
+    if( device.is<Solid::OpticalDrive>() )
+    {
+        debug() << "claims to be an OpticalDrive";
+        Solid::OpticalDrive * drive = device.as<Solid::OpticalDrive>();
+        if ( drive )
+        {
+            debug() << "ejecting the bugger";
+            drive->eject();
+        }
+    }
+}
+
+QString
+MediaDeviceMonitor::currentCdId()
+{
+    return m_currentCdId;
 }
 
 void
-MediaDeviceMonitor::disconnectIpod( const QString &udi )
+MediaDeviceMonitor::setCurrentCdId( const QString & id )
 {
-    emit ipodReadyToDisconnect( udi );
+    m_currentCdId = id;
 }
 
-void
-MediaDeviceMonitor::connectMtp( const QString &serial, const QString &udi )
-{
-    emit mtpReadyToConnect( serial, udi );
-}
 
-void
-MediaDeviceMonitor::disconnectMtp( const QString &udi )
-{
-    emit mtpReadyToDisconnect( udi );
-}
-
+#endif

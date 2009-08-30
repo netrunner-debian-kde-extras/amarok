@@ -1,21 +1,19 @@
-/* This file is part of the KDE project
-   Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
-   Copyright (C) 2008 Daniel Winter <dw@danielwinter.de>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2008 Daniel Winter <dw@danielwinter.de>                                *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "SqlMeta.h"
 
@@ -28,7 +26,6 @@
 #include "SqlCollection.h"
 #include "SqlQueryMaker.h"
 #include "SqlRegistry.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "covermanager/CoverFetcher.h"
 #include "covermanager/CoverFetchingActions.h"
 #include "meta/capabilities/CustomActionsCapability.h"
@@ -43,6 +40,9 @@
 #include "MountPointManager.h"
 //#include "mediadevice/CopyToDeviceAction.h"
 
+#include "AFTUtility.h"
+
+#include <QAction>
 #include <QDateTime>
 #include <QDir>
 #include <QFile>
@@ -227,7 +227,7 @@ SqlTrack::getTrackReturnValues()
            "tracks.filesize, tracks.samplerate, "
            "statistics.createdate, statistics.accessdate, "
            "statistics.playcount, tracks.filetype, tracks.bpm, "
-           "tracks.albumgain, tracks.albumpeakgain, "
+           "tracks.createdate, tracks.albumgain, tracks.albumpeakgain, "
            "tracks.trackgain, tracks.trackpeakgain, "
            "artists.name, artists.id, "
            "albums.name, albums.id, albums.artist, "
@@ -281,11 +281,24 @@ SqlTrack::getTrackFromUid( const QString &uid, SqlCollection* collection )
     return TrackPtr( new SqlTrack( collection, result ) );
 }
 
-SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
-    : Track()
-    , m_collection( QPointer<SqlCollection>( collection ) )
-    , m_batchUpdate( false )
-    , m_writeAllStatisticsFields( false )
+void
+SqlTrack::refreshFromDatabase( const QString &uid, SqlCollection* collection, bool updateObservers )
+{
+    QString query = "SELECT %1 FROM urls %2 "
+                    "WHERE urls.uniqueid = '%3';";
+    query = query.arg( getTrackReturnValues(), getTrackJoinConditions(),
+                       collection->escape( uid ) );
+    QStringList result = collection->query( query );
+    if( result.isEmpty() )
+        return;
+    
+    updateData( result, true );
+    if( updateObservers )
+        notifyObservers();
+}
+
+void
+SqlTrack::updateData( const QStringList &result, bool forceUpdates )
 {
     QStringList::ConstIterator iter = result.constBegin();
     m_deviceid = (*(iter++)).toInt();
@@ -308,6 +321,7 @@ SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
     m_playCount = (*(iter++)).toInt();
     ++iter; //file type
     ++iter; //BPM
+    m_createDate = QDateTime::fromTime_t( (*(iter++)).toUInt() );
 
     // if there is no track gain, we assume a gain of 0
     // if there is no album gain, we use the track gain
@@ -325,25 +339,33 @@ SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
         m_albumGain = albumGain.toDouble();
         m_albumPeakGain = albumPeakGain.toDouble();
     }
-
     SqlRegistry* registry = m_collection->registry();
     QString artist = *(iter++);
     int artistId = (*(iter++)).toInt();
-    m_artist = registry->getArtist( artist, artistId  );
+    m_artist = registry->getArtist( artist, artistId, forceUpdates );
     QString album = *(iter++);
     int albumId =(*(iter++)).toInt();
     int albumArtistId = (*(iter++)).toInt();
-    m_album = registry->getAlbum( album, albumId, albumArtistId );
+    m_album = registry->getAlbum( album, albumId, albumArtistId, forceUpdates );
     QString genre = *(iter++);
     int genreId = (*(iter++)).toInt();
-    m_genre = registry->getGenre( genre, genreId );
+    m_genre = registry->getGenre( genre, genreId, forceUpdates );
     QString composer = *(iter++);
     int composerId = (*(iter++)).toInt();
-    m_composer = registry->getComposer( composer, composerId );
+    m_composer = registry->getComposer( composer, composerId, forceUpdates );
     QString year = *(iter++);
     int yearId = (*(iter++)).toInt();
-    m_year = registry->getYear( year, yearId );
+    m_year = registry->getYear( year, yearId, forceUpdates );
     //Q_ASSERT_X( iter == result.constEnd(), "SqlTrack( SqlCollection*, QStringList )", "number of expected fields did not match number of actual fields: expected " + result.size() );
+}
+
+SqlTrack::SqlTrack( SqlCollection* collection, const QStringList &result )
+    : Track()
+    , m_collection( QPointer<SqlCollection>( collection ) )
+    , m_batchUpdate( false )
+    , m_writeAllStatisticsFields( false )
+{
+    updateData( result, false );
 }
 
 bool
@@ -416,14 +438,19 @@ SqlTrack::prettyName() const
 void
 SqlTrack::setUrl( const QString &url )
 {
+    DEBUG_BLOCK
     m_deviceid = MountPointManager::instance()->getIdForUrl( url );
     m_rpath = MountPointManager::instance()->getRelativePath( m_deviceid, url );
     if( m_batchUpdate )
+    {
+        debug() << "Inserting track into cache";
         m_cache.insert( Meta::Field::URL, MountPointManager::instance()->getAbsolutePath( m_deviceid, m_rpath ) );
+    }
     else
     {
+        debug() << "Doing immediate update";
         m_url = url;
-        writeMetaDataToDb();
+        writeMetaDataToDb( Meta::Field::URL );
         notifyObservers();
     }
 }
@@ -438,7 +465,7 @@ SqlTrack::setUrl( const int deviceid, const QString &rpath )
     else
     {
         m_url = KUrl( MountPointManager::instance()->getAbsolutePath( m_deviceid, m_rpath ) );
-        writeMetaDataToDb();
+        writeMetaDataToDb( Meta::Field::URL );
         notifyObservers();
     }
 }
@@ -458,8 +485,10 @@ SqlTrack::setArtist( const QString &newArtist )
         m_artist = m_collection->registry()->getArtist( newArtist );
         //and the new one
         KSharedPtr<SqlArtist>::staticCast( m_artist )->invalidateCache();
+        m_cache.clear();
+        m_cache.insert( Meta::Field::ARTIST, newArtist );
         writeMetaDataToFile();
-        writeMetaDataToDb();
+        writeMetaDataToDb( Meta::Field::ARTIST );
         notifyObservers();
     }
 }
@@ -477,8 +506,10 @@ SqlTrack::setGenre( const QString &newGenre )
         KSharedPtr<SqlGenre>::staticCast( m_genre )->invalidateCache();
         m_genre = m_collection->registry()->getGenre( newGenre );
         KSharedPtr<SqlGenre>::staticCast( m_genre )->invalidateCache();
+        m_cache.clear();
+        m_cache.insert( Meta::Field::GENRE, newGenre );
         writeMetaDataToFile();
-        writeMetaDataToDb();
+        writeMetaDataToDb( Meta::Field::GENRE );
         notifyObservers();
     }
 }
@@ -496,8 +527,10 @@ SqlTrack::setComposer( const QString &newComposer )
         KSharedPtr<SqlComposer>::staticCast( m_composer )->invalidateCache();
         m_composer = m_collection->registry()->getComposer( newComposer );
         KSharedPtr<SqlComposer>::staticCast( m_composer )->invalidateCache();
+        m_cache.clear();
+        m_cache.insert( Meta::Field::COMPOSER, newComposer );
         writeMetaDataToFile();
-        writeMetaDataToDb();
+        writeMetaDataToDb( Meta::Field::COMPOSER );
         notifyObservers();
     }
 }
@@ -515,8 +548,10 @@ SqlTrack::setYear( const QString &newYear )
         KSharedPtr<SqlYear>::staticCast( m_year )->invalidateCache();
         m_year = m_collection->registry()->getYear( newYear );
         KSharedPtr<SqlYear>::staticCast( m_year )->invalidateCache();
+        m_cache.clear();
+        m_cache.insert( Meta::Field::YEAR, newYear );
         writeMetaDataToFile();
-        writeMetaDataToDb();
+        writeMetaDataToDb( Meta::Field::YEAR );
         notifyObservers();
     }
 }
@@ -538,8 +573,10 @@ SqlTrack::setAlbum( const QString &newAlbum )
             id = artist->id();
         m_album = m_collection->registry()->getAlbum( newAlbum, -1, id );
         KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
+        m_cache.clear();
+        m_cache.insert( Meta::Field::ALBUM, newAlbum );
         writeMetaDataToFile();
-        writeMetaDataToDb();
+        writeMetaDataToDb( Meta::Field::ALBUM );
         notifyObservers();
     }
 }
@@ -552,7 +589,7 @@ SqlTrack::setScore( double newScore )
     else
     {
         m_score = newScore;
-        updateStatisticsInDb();
+        updateStatisticsInDb( Meta::Field::SCORE );
         notifyObservers();
     }
 }
@@ -565,7 +602,7 @@ SqlTrack::setRating( int newRating )
     else
     {
         m_rating = newRating;
-        updateStatisticsInDb();
+        updateStatisticsInDb( Meta::Field::RATING );
         notifyObservers();
     }
 }
@@ -578,8 +615,10 @@ SqlTrack::setTrackNumber( int newTrackNumber )
     else
     {
         m_trackNumber= newTrackNumber;
+        m_cache.clear();
+        m_cache.insert( Meta::Field::TRACKNUMBER, newTrackNumber );
         writeMetaDataToFile();
-        writeMetaDataToDb();
+        writeMetaDataToDb( Meta::Field::TRACKNUMBER );
         notifyObservers();
     }
 }
@@ -592,8 +631,10 @@ SqlTrack::setDiscNumber( int newDiscNumber )
     else
     {
         m_discNumber = newDiscNumber;
+        m_cache.clear();
+        m_cache.insert( Meta::Field::DISCNUMBER, newDiscNumber );
         writeMetaDataToFile();
-        writeMetaDataToDb();
+        writeMetaDataToDb( Meta::Field::DISCNUMBER );
         notifyObservers();
     }
 }
@@ -606,8 +647,10 @@ SqlTrack::setComment( const QString &newComment )
     else
     {
         m_comment = newComment;
+        m_cache.clear();
+        m_cache.insert( Meta::Field::COMMENT, newComment );
         writeMetaDataToFile();
-        writeMetaDataToDb();
+        writeMetaDataToDb( Meta::Field::COMMENT );
         notifyObservers();
     }
 }
@@ -615,13 +658,16 @@ SqlTrack::setComment( const QString &newComment )
 void
 SqlTrack::setTitle( const QString &newTitle )
 {
+    DEBUG_BLOCK
     if( m_batchUpdate )
         m_cache.insert( Meta::Field::TITLE, newTitle );
     else
     {
         m_title = newTitle;
+        m_cache.clear();
+        m_cache.insert( Meta::Field::TITLE, newTitle );
         writeMetaDataToFile();
-        writeMetaDataToDb();
+        writeMetaDataToDb( Meta::Field::TITLE );
         notifyObservers();
     }
 }
@@ -634,7 +680,7 @@ SqlTrack::setLastPlayed( const uint newTime )
     else
     {
         m_lastPlayed = newTime;
-        updateStatisticsInDb();
+        updateStatisticsInDb( Meta::Field::LAST_PLAYED );
         notifyObservers();
     }
 }
@@ -647,7 +693,7 @@ SqlTrack::setFirstPlayed( const uint newTime )
     else
     {
         m_lastPlayed = newTime;
-        updateStatisticsInDb();
+        updateStatisticsInDb( Meta::Field::FIRST_PLAYED );
         notifyObservers();
     }
 }
@@ -660,7 +706,7 @@ SqlTrack::setPlayCount( const int newCount )
     else
     {
         m_playCount = newCount;
-        updateStatisticsInDb();
+        updateStatisticsInDb( Meta::Field::PLAYCOUNT);
         notifyObservers();
     }
 }
@@ -668,11 +714,18 @@ SqlTrack::setPlayCount( const int newCount )
 void
 SqlTrack::setUidUrl( const QString &uid )
 {
+    DEBUG_BLOCK
+    QString newid = uid;
+    if( !newid.startsWith( "amarok-sqltrackuid" ) )
+        newid.prepend( "amarok-sqltrackuid://" );
+
     if( m_batchUpdate )
-        m_cache.insert( Meta::Field::UNIQUEID, uid );
+        m_cache.insert( Meta::Field::UNIQUEID, newid );
     else
     {
-        m_uid = uid;
+        debug() << "setting uidUrl manually...did you really mean to do this?";
+        m_newUid = newid;
+        writeMetaDataToDb( QStringList() );
         notifyObservers();
     }
 }
@@ -708,14 +761,23 @@ SqlTrack::writeMetaDataToFile()
     //read the current filesize so that we can update the db
     QFile file( m_url.path() );
     if( file.exists() )
-    {
         m_filesize = file.size();
-    }
+    AFTUtility aftutil;
+    m_newUid = QString( "amarok-sqltrackuid://" ) + aftutil.readUniqueId( m_url.path() );
+}
+
+void
+SqlTrack::updateFileSize()
+{
+    QFile file( m_url.path() );
+    if( file.exists() )
+        m_filesize = file.size();
 }
 
 void
 SqlTrack::commitMetaDataChanges()
 {
+    DEBUG_BLOCK
     if( m_batchUpdate )
     {
         if( m_cache.contains( Meta::Field::TITLE ) )
@@ -739,7 +801,10 @@ SqlTrack::commitMetaDataChanges()
         if( m_cache.contains( Meta::Field::UNIQUEID ) )
             m_uid = m_cache.value( Meta::Field::UNIQUEID ).toString();
         if( m_cache.contains( Meta::Field::URL ) )
+        {
+            debug() << "m_cache contains a new URL, setting m_url";
             m_url = m_cache.value( Meta::Field::URL ).toString();
+        }
 
         //invalidate the cache of both the old and the new object
         if( m_cache.contains( Meta::Field::ARTIST ) )
@@ -778,41 +843,70 @@ SqlTrack::commitMetaDataChanges()
         //therefore write the tag to the file first, and update the db
         //with the new filesize
         writeMetaDataToFile();
-        writeMetaDataToDb();
-        updateStatisticsInDb();
+        writeMetaDataToDb( m_cache.keys() );
+        updateStatisticsInDb( m_cache.keys() );
     }
 }
 
 void
-SqlTrack::writeMetaDataToDb()
+SqlTrack::writeMetaDataToDb( const QStringList &fields )
 {
+    DEBUG_BLOCK
     //TODO store the tracks id in SqlTrack
-    QString query = "SELECT tracks.id FROM tracks LEFT JOIN urls ON tracks.url = urls.id WHERE urls.uniqueid = '%1';";
-    query = query.arg( m_collection->escape( m_uid ) );
-    QStringList res = m_collection->query( query );
-    if( res.isEmpty() )
+    if( !fields.isEmpty() )
     {
-        debug() << "Could not perform update in writeMetaDataToDb";
-        return;
+        debug() << "looking for UID " << m_uid;
+        QString query = "SELECT tracks.id FROM tracks LEFT JOIN urls ON tracks.url = urls.id WHERE urls.uniqueid = '%1';";
+        query = query.arg( m_collection->escape( m_uid ) );
+        QStringList res = m_collection->query( query );
+        if( res.isEmpty() )
+        {
+            debug() << "Could not perform update in writeMetaDataToDb";
+            return;
+        }
+        int id = res[0].toInt();
+        QString update = "UPDATE tracks SET %1 WHERE id = %2;";
+        //This next line is do-nothing SQLwise but is here to prevent the need for tons of if-else brackets just to keep track of
+        //whether or not commas are needed
+        QString tags = QString( "id=%1" ).arg( id );
+        if( fields.contains( Meta::Field::TITLE ) )
+            tags += QString( ",title='%1'" ).arg( m_collection->escape( m_title ) );
+        if( fields.contains( Meta::Field::COMMENT ) )
+            tags += QString( ",comment='%1'" ).arg( m_collection->escape( m_comment ) );
+        if( fields.contains( Meta::Field::TRACKNUMBER ) )
+            tags += QString( ",tracknumber=%1" ).arg( QString::number( m_trackNumber ) );
+        if( fields.contains( Meta::Field::DISCNUMBER ) )
+            tags += QString( ",discnumber=%1" ).arg( QString::number( m_discNumber ) );
+        if( fields.contains( Meta::Field::ARTIST ) )
+            tags += QString( ",artist=%1" ).arg( QString::number( KSharedPtr<SqlArtist>::staticCast( m_artist )->id() ) );
+        if( fields.contains( Meta::Field::ALBUM ) )
+            tags += QString( ",album=%1" ).arg( QString::number( KSharedPtr<SqlAlbum>::staticCast( m_album )->id() ) );
+        if( fields.contains( Meta::Field::GENRE ) )
+            tags += QString( ",genre=%1" ).arg( QString::number( KSharedPtr<SqlGenre>::staticCast( m_genre )->id() ) );
+        if( fields.contains( Meta::Field::COMPOSER ) )
+            tags += QString( ",composer=%1" ).arg( QString::number( KSharedPtr<SqlComposer>::staticCast( m_composer )->id() ) );
+        if( fields.contains( Meta::Field::YEAR ) )
+            tags += QString( ",year=%1" ).arg( QString::number( KSharedPtr<SqlYear>::staticCast( m_year )->id() ) );
+        updateFileSize();
+        tags += QString( ",filesize=%1" ).arg( m_filesize );
+        update = update.arg( tags, QString::number( id ) );
+        debug() << "Running following update query: " << update;
+        m_collection->query( update );
     }
-    int id = res[0].toInt();
-    QString update = "UPDATE tracks SET %1 WHERE id = %2;";
-    QString tags = "title='%1',comment='%2',tracknumber=%3,discnumber=%4, artist=%5,album=%6,genre=%7,composer=%8,year=%9";
-    QString artist = QString::number( KSharedPtr<SqlArtist>::staticCast( m_artist )->id() );
-    QString album = QString::number( KSharedPtr<SqlAlbum>::staticCast( m_album )->id() );
-    QString genre = QString::number( KSharedPtr<SqlGenre>::staticCast( m_genre )->id() );
-    QString composer = QString::number( KSharedPtr<SqlComposer>::staticCast( m_composer )->id() );
-    QString year = QString::number( KSharedPtr<SqlYear>::staticCast( m_year )->id() );
-    tags = tags.arg( m_collection->escape( m_title ), m_collection->escape( m_comment ),
-              QString::number( m_trackNumber ), QString::number( m_discNumber ),
-              artist, album, genre, composer, year );
-    tags += QString( ",filesize=%1" ).arg( m_filesize );
-    update = update.arg( tags, QString::number( id ) );
-    m_collection->query( update );
+    
+    if( !m_newUid.isEmpty() )
+    {
+        QString update = "UPDATE urls SET uniqueid='%1' WHERE uniqueid='%2';";
+        update = update.arg( m_newUid, m_uid );
+        debug() << "Updating uid from " << m_uid << " to " << m_newUid;
+        m_collection->query( update );
+        m_uid = m_newUid;
+        m_newUid.clear();
+    }
 }
 
 void
-SqlTrack::updateStatisticsInDb()
+SqlTrack::updateStatisticsInDb( const QStringList &fields )
 {
     QString query = "SELECT urls.id FROM urls WHERE urls.deviceid = %1 AND urls.rpath = '%2';";
     query = query.arg( QString::number( m_deviceid ), m_collection->escape( m_rpath ) );
@@ -838,16 +932,20 @@ SqlTrack::updateStatisticsInDb()
     else
     {
         QString update = "UPDATE statistics SET %1 WHERE url = %2;";
-        QString data = "rating=%1, score=%2, playcount=%3, accessdate=%4";
-        data = data.arg( QString::number( m_rating )
-                , QString::number( m_score )
-                , QString::number( m_playCount )
-                , QString::number( m_lastPlayed ) );
+        QString stats = QString( "url=%1" ).arg( QString::number( urlId ) ); //see above function for explanation
+        if( fields.contains( Meta::Field::RATING ) )
+            stats += QString( ",rating=%1" ).arg( QString::number( m_rating ) );
+        if( fields.contains( Meta::Field::SCORE ) )
+            stats += QString( ",score=%1" ).arg( QString::number( m_score ) );
+        if( fields.contains( Meta::Field::PLAYCOUNT ) )
+            stats += QString( ",playcount=%1" ).arg( QString::number( m_playCount ) );
+        if( fields.contains( Meta::Field::LAST_PLAYED ) )
+            stats += QString( ",accessdate=%1" ).arg( QString::number( m_lastPlayed ) );
 
         if( m_writeAllStatisticsFields )
-            data += QString(",createdate=%1").arg( QString::number( m_firstPlayed ) );
+            stats += QString(",createdate=%1").arg( QString::number( m_firstPlayed ) );
 
-        update = update.arg( data, QString::number( urlId ) );
+        update = update.arg( stats, QString::number( urlId ) );
 
         m_collection->query( update );
     }
@@ -869,7 +967,11 @@ SqlTrack::finishedPlaying( double playedFraction )
     }
 
     setScore( Amarok::computeScore( score(), playCount(), playedFraction ) );
-    updateStatisticsInDb();
+    QStringList fields;
+    if( !m_firstPlayed )
+        fields << Meta::Field::FIRST_PLAYED;
+    fields << Meta::Field::LAST_PLAYED << Meta::Field::PLAYCOUNT << Meta::Field::SCORE;
+    updateStatisticsInDb( fields );
     notifyObservers();
 }
 
@@ -888,8 +990,6 @@ SqlTrack::collection() const
 QString
 SqlTrack::cachedLyrics() const
 {
-//     QString query = QString( "SELECT lyrics FROM lyrics WHERE deviceid = %1 AND url = '%2';" )
-//                         .arg( QString::number( m_deviceid ), m_collection->escape( m_rpath ) );
     QString query = QString( "SELECT lyrics FROM lyrics WHERE url = '%1'" )
                         .arg( m_collection->escape( m_rpath ) );
     QStringList result = m_collection->query( query );
@@ -901,8 +1001,6 @@ SqlTrack::cachedLyrics() const
 void
 SqlTrack::setCachedLyrics( const QString &lyrics )
 {
-//     QString query = QString( "SELECT count(*) FROM lyrics WHERE deviceid = %1 AND url = '%2';" )
-//                         .arg( QString::number( m_deviceid ), m_collection->escape( m_rpath ) );
     QString query = QString( "SELECT count(*) FROM lyrics WHERE url = '%1'")
                         .arg( m_collection->escape(m_rpath) );
 
@@ -920,9 +1018,9 @@ SqlTrack::setCachedLyrics( const QString &lyrics )
     }
     else
     {
-        QString update = QString( "UPDATE lyrics SET lyrics = '%3' WHERE url = '%1';" )
-                            .arg( m_collection->escape( m_rpath ),
-                                  m_collection->escape( lyrics ) );
+        QString update = QString( "UPDATE lyrics SET lyrics = '%1' WHERE url = '%2';" )
+                            .arg( m_collection->escape( lyrics ),
+                                  m_collection->escape( m_rpath ) );
         m_collection->query( update );
     }
 }
@@ -962,7 +1060,7 @@ SqlTrack::createCapabilityInterface( Meta::Capability::Type type )
 
         case Meta::Capability::CustomActions:
         {
-            QList<PopupDropperAction*> actions;
+            QList<QAction*> actions;
             //TODO These actions will hang around until m_collection is destructed.
             // Find a better parent to avoid this memory leak.
             //actions.append( new CopyToDeviceAction( m_collection, this ) );
@@ -978,8 +1076,8 @@ SqlTrack::createCapabilityInterface( Meta::Capability::Type type )
 
         case Meta::Capability::CurrentTrackActions:
         {
-            QList< PopupDropperAction * > actions;
-            PopupDropperAction* flag = new BookmarkCurrentTrackPositionAction( m_collection );
+            QList< QAction * > actions;
+            QAction* flag = new BookmarkCurrentTrackPositionAction( m_collection );
             actions << flag;
             debug() << "returning bookmarkcurrenttrack action";
             return new Meta::CurrentTrackActionsCapability( actions );
@@ -1013,6 +1111,15 @@ Meta::SqlArtist::~SqlArtist()
     delete m_bookmarkAction;
 }
 
+void
+SqlArtist::updateData( SqlCollection *collection, int id, const QString &name )
+{
+    m_mutex.lock();
+    m_collection = QPointer<SqlCollection>( collection );
+    m_id = id;
+    m_name = name;
+    m_mutex.unlock();
+}
 
 void
 SqlArtist::invalidateCache()
@@ -1114,12 +1221,12 @@ SqlArtist::createCapabilityInterface( Meta::Capability::Type type )
 
 //---------------Album compilation management actions-----
 
-class CompilationAction : public PopupDropperAction
+class CompilationAction : public QAction
 {
     Q_OBJECT
     public:
         CompilationAction( QObject* parent, SqlAlbum *album )
-            : PopupDropperAction( parent )
+            : QAction( parent )
                 , m_album( album )
                 , m_isCompilation( album->isCompilation() )
             {
@@ -1164,6 +1271,17 @@ SqlAlbum::SqlAlbum( SqlCollection* collection, int id, const QString &name, int 
 Meta::SqlAlbum::~SqlAlbum()
 {
     delete m_bookmarkAction;
+}
+
+void
+SqlAlbum::updateData( SqlCollection *collection, int id, const QString &name, int artist )
+{
+    m_mutex.lock();
+    m_collection = QPointer<SqlCollection>( collection );
+    m_id = id;
+    m_name = name;
+    m_artistId = artist;
+    m_mutex.unlock();
 }
 
 void
@@ -1668,12 +1786,12 @@ SqlAlbum::createCapabilityInterface( Meta::Capability::Type type )
     {
         case Meta::Capability::CustomActions:
         {
-            QList<PopupDropperAction*> actions;
+            QList<QAction*> actions;
             actions.append( new CompilationAction( m_collection, this ) );
 
-            PopupDropperAction *separator          = new PopupDropperAction( m_collection );
-            PopupDropperAction *displayCoverAction = new DisplayCoverAction( m_collection, Meta::AlbumPtr(this) );
-            PopupDropperAction *unsetCoverAction   = new UnsetCoverAction( m_collection, Meta::AlbumPtr(this) );
+            QAction *separator          = new QAction( m_collection );
+            QAction *displayCoverAction = new DisplayCoverAction( m_collection, Meta::AlbumPtr(this) );
+            QAction *unsetCoverAction   = new UnsetCoverAction( m_collection, Meta::AlbumPtr(this) );
 
             separator->setSeparator( true );
             actions.append( separator );
@@ -1710,6 +1828,16 @@ SqlComposer::SqlComposer( SqlCollection* collection, int id, const QString &name
     ,m_mutex( QMutex::Recursive )
 {
     //nothing to do
+}
+
+void
+SqlComposer::updateData( SqlCollection *collection, int id, const QString &name )
+{
+    m_mutex.lock();
+    m_collection = QPointer<SqlCollection>( collection );
+    m_id = id;
+    m_name = name;
+    m_mutex.unlock();
 }
 
 void
@@ -1758,6 +1886,16 @@ SqlGenre::SqlGenre( SqlCollection* collection, int id, const QString &name ) : G
 }
 
 void
+SqlGenre::updateData( SqlCollection *collection, int id, const QString &name )
+{
+    m_mutex.lock();
+    m_collection = QPointer<SqlCollection>( collection );
+    m_id = id;
+    m_name = name;
+    m_mutex.unlock();
+}
+
+void
 SqlGenre::invalidateCache()
 {
     m_mutex.lock();
@@ -1800,6 +1938,16 @@ SqlYear::SqlYear( SqlCollection* collection, int id, const QString &name ) : Yea
     ,m_mutex( QMutex::Recursive )
 {
     //nothing to do
+}
+
+void
+SqlYear::updateData( SqlCollection *collection, int id, const QString &name )
+{
+    m_mutex.lock();
+    m_collection = QPointer<SqlCollection>( collection );
+    m_id = id;
+    m_name = name;
+    m_mutex.unlock();
 }
 
 void

@@ -1,24 +1,22 @@
-/***************************************************************************
- * copyright            : (C) 2007 Ian Monroe <ian@monroe.nu>
- *                      : (C) 2008 - 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
- *                      : (C) 2008 Soren Harward <stharward@gmail.com>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License or (at your option) version 3 or any later version
- * accepted by the membership of KDE e.V. (or its successor approved
- * by the membership of KDE e.V.), which shall act as a proxy
- * defined in Section 14 of version 3 of the license.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- **************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007 Ian Monroe <ian@monroe.nu>                                        *
+ * Copyright (c) 2008-2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>               *
+ * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) version 3 or        *
+ * any later version accepted by the membership of KDE e.V. (or its successor approved  *
+ * by the membership of KDE e.V.), which shall act as a proxy defined in Section 14 of  *
+ * version 3 of the license.                                                            *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #define DEBUG_PREFIX "Playlist::PrettyItemDelegate"
 
@@ -26,11 +24,14 @@
 
 #include "App.h"
 #include "Debug.h"
+#include "EngineController.h"
+#include "InlineEditorWidget.h"
 #include "SvgHandler.h"
 #include "SvgTinter.h"
 #include "meta/Meta.h"
+#include "meta/capabilities/EditCapability.h"
 #include "meta/capabilities/SourceInfoCapability.h"
-#include "playlist/GroupingProxy.h"
+#include "playlist/proxymodels/GroupingProxy.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/layouts/LayoutManager.h"
 
@@ -38,6 +39,7 @@
 
 #include <QFontMetricsF>
 #include <QPainter>
+#include <QAction>
 
 using namespace Playlist;
 
@@ -61,21 +63,21 @@ Playlist::PrettyItemDelegate::PrettyItemDelegate( QObject* parent )
 
 PrettyItemDelegate::~PrettyItemDelegate() { }
 
-QSize
-PrettyItemDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const
+int PrettyItemDelegate::getGroupMode( const QModelIndex &index) const
 {
-    int height = 0;
+    //If this layout doesn't allow grouping, we want to override whatever would be the group mode with "Single"
+    if (LayoutManager::instance()->activeLayout().allowGrouping())
+        return index.data( GroupRole ).toInt();
+    else
+        return None;
+}
 
-    QFontMetricsF nfm( option.font );
-    QFont boldfont( option.font );
-    boldfont.setBold( true );
-    QFontMetricsF bfm( boldfont );
-
-    s_fontHeight = bfm.height();
+int PrettyItemDelegate::rowsForItem( const QModelIndex &index ) const
+{
 
     PlaylistLayout layout = LayoutManager::instance()->activeLayout();
 
-    const int groupMode = index.data( GroupRole ).toInt();
+    const int groupMode = getGroupMode(index);
     int rowCount = 1;
 
     switch ( groupMode )
@@ -98,6 +100,26 @@ PrettyItemDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIn
             break;
     }
 
+    return rowCount;
+}
+
+QSize
+PrettyItemDelegate::sizeHint( const QStyleOptionViewItem& option, const QModelIndex& index ) const
+{
+    int height = 0;
+
+    QFontMetricsF nfm( option.font );
+    QFont boldfont( option.font );
+    boldfont.setBold( true );
+    QFontMetricsF bfm( boldfont );
+
+    s_fontHeight = bfm.height();
+
+    int rowCount = rowsForItem( index );
+
+    if( LayoutManager::instance()->activeLayout().inlineControls() && index.data( ActiveTrackRole ).toBool() )
+        rowCount++; //add room for extras
+
     height = MARGIN * 2 + rowCount * s_fontHeight + ( rowCount - 1 ) * PADDING;
     return QSize( 120, height );
 }
@@ -119,10 +141,39 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
         painter->setPen( App::instance()->palette().text().color() );
 
     // call paint method based on type
-    const int groupMode = index.data( GroupRole ).toInt();
+    const int groupMode = getGroupMode(index);
 
-    if ( groupMode == None )
-        paintItem( layout.single(), painter, option, index );
+    int rowCount = rowsForItem( index );
+    bool paintInlineControls = LayoutManager::instance()->activeLayout().inlineControls() && index.data( ActiveTrackRole ).toBool();
+
+    if ( groupMode == None ||  groupMode == Body || groupMode == Tail )
+    {
+
+        int trackHeight = 0;
+        int extraHeight = 0;
+        QStyleOptionViewItem trackOption( option );
+        if ( paintInlineControls )
+        {
+            int adjustedRowCount = rowCount + 1;
+            trackHeight = ( option.rect.height() * rowCount ) / adjustedRowCount;
+            extraHeight = option.rect.height() - trackHeight;
+            trackOption.rect = QRect( 0, 0, option.rect.width(), trackHeight );
+        }
+
+        if ( groupMode == None )
+            paintItem( layout.single(), painter, trackOption, index );
+        else if ( groupMode == Body )
+            paintItem( layout.body(), painter, trackOption, index );
+        else
+            paintItem( layout.body(), painter, trackOption, index );
+        
+        if (paintInlineControls )
+        {
+            QRect extrasRect( 0, trackHeight, option.rect.width(), extraHeight );
+            paintActiveTrackExtras( extrasRect, painter, index );
+
+        }
+    }
     else if ( groupMode == Head )
     {
         //we need to split up the options for the actual header and the included first track
@@ -135,25 +186,35 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
         QStyleOptionViewItem trackOption( option );
 
         int headRows = layout.head().rows();
-        int headHeight ;
+        int trackRows = layout.body().rows();
+        int totalRows = headRows + trackRows;
+
+        if ( paintInlineControls )
+        {
+            totalRows = totalRows + 1;
+        }
+
+        int headHeight = ( headRows * option.rect.height() ) / totalRows - 1;
+        int trackHeight = ( trackRows * option.rect.height() ) / totalRows;
 
         if ( headRows > 0 )
         {
-            headHeight = MARGIN * 2 + headRows * s_fontHeight + ( headRows - 1 ) * PADDING;
             headOption.rect = QRect( 0, 0, option.rect.width(), headHeight );
             paintItem( layout.head(), painter, headOption, index, true );
-            painter->translate( 0, headHeight - 3 );
+            painter->translate( 0, headHeight );
         } 
 
-        int trackRows = layout.body().rows();
-        int trackHeight = MARGIN * 2 + trackRows * s_fontHeight + ( trackRows - 1 ) * PADDING;
         trackOption.rect = QRect( 0, 0, option.rect.width(), trackHeight );
         paintItem( layout.body(), painter, trackOption, index );
-        
-    } else if ( groupMode == Body )
-        paintItem( layout.body(), painter, option, index );
-    else if ( groupMode == Tail )
-        paintItem( layout.body(), painter, option, index );
+
+        if ( paintInlineControls )
+        {
+            int extraHeight = option.rect.height() - ( headHeight + trackHeight );
+            QRect extrasRect( 0, trackHeight, option.rect.width(), extraHeight );
+            paintActiveTrackExtras( extrasRect, painter, index );
+
+        }
+    } 
     else
         QStyledItemDelegate::paint( painter, option, index );
 
@@ -238,18 +299,24 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
     
     if( index.data( StateRole ).toInt() & Item::Queued && !ignoreQueueMarker )
     {
+        // Check that the queue position is actually valid
         const int queuePosition = index.data( QueuePositionRole ).toInt();
-        const int w = 16, h = 16;
-        const int x = markerOffsetX;
-        const int y = nominalImageRect.y() + ( imageSize - h );
-        const QRect rect( x, y, w, h );
-        painter->drawPixmap( x, y, The::svgHandler()->renderSvg( "queue_marker", w, h, "queue_marker" ) );
-        painter->drawText( rect, Qt::AlignCenter, QString::number( queuePosition ) );
+        if( queuePosition > 0 )
+        {
+            const int w = 16, h = 16;
+            const int x = markerOffsetX;
+            const int y = nominalImageRect.y() + ( imageSize - h );
+            const QRect rect( x, y, w, h );
+            painter->drawPixmap( x, y, The::svgHandler()->renderSvg( "queue_marker", w, h, "queue_marker" ) );
+            painter->drawText( rect, Qt::AlignCenter, QString::number( queuePosition ) );
 
-        markerOffsetX += ( 16 + PADDING );
+            markerOffsetX += ( 16 + PADDING );
 
-        if ( !config.showCover() )
-            rowOffsetX = markerOffsetX;
+            if ( !config.showCover() )
+                rowOffsetX = markerOffsetX;
+        }
+        else
+            warning() << "discrepancy: Item::Queued but queuePosition == 0";
     }
 
     if( index.data( MultiSourceRole ).toBool() && !ignoreQueueMarker )
@@ -350,20 +417,17 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
                 //special case for painting the rating...
                 if ( value == Rating )
                 {
-                    if( textIndex.data( InCollectionRole ).toBool() )
-                    {
-                        int rating = textIndex.data( Qt::DisplayRole ).toInt();
+                    int rating = textIndex.data( Qt::DisplayRole ).toInt();
 
-                        Qt::Alignment ratingAlignment;
-                        if ( alignment & Qt::AlignLeft )
-                            ratingAlignment = Qt::AlignLeft;
-                        else if ( alignment & Qt::AlignRight )
-                            ratingAlignment = Qt::AlignRight;
-                        else
-                            ratingAlignment = Qt::AlignCenter;
+                    Qt::Alignment ratingAlignment;
+                    if ( alignment & Qt::AlignLeft )
+                        ratingAlignment = Qt::AlignLeft;
+                    else if ( alignment & Qt::AlignRight )
+                        ratingAlignment = Qt::AlignRight;
+                    else
+                        ratingAlignment = Qt::AlignCenter;
 
-                        KRatingPainter::paintRating( painter, QRect( currentItemX, rowOffsetY + 1, itemWidth, rowHeight - 2 ), ratingAlignment, rating, rating );
-                    }
+                    KRatingPainter::paintRating( painter, QRect( currentItemX, rowOffsetY + 1, itemWidth, rowHeight - 2 ), ratingAlignment, rating, rating );
 
                 } else if ( value == Divider )
                 {
@@ -406,6 +470,264 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
         }
         rowOffsetY += rowHeight;
     }
+
+}
+
+void Playlist::PrettyItemDelegate::paintActiveTrackExtras( const QRect &rect, QPainter* painter, const QModelIndex& index ) const
+{
+    Q_UNUSED( index );
+    
+    int x = rect.x();
+    int y = rect.y();
+    int width = rect.width();
+    int height = rect.height();
+    int buttonSize = height - 4;
+
+    //just paint some "buttons for now
+
+    int offset = x + MARGINH;
+    painter->drawPixmap( offset, y + 2,
+                         The::svgHandler()->renderSvg(
+                         "back_button",
+                         buttonSize, buttonSize,
+                         "back_button" ) );
+
+    if ( EngineController::instance()->state() == Phonon::PlayingState ||
+         EngineController::instance()->state() == Phonon::PlayingState )
+    {
+        offset += ( buttonSize + MARGINH );
+        painter->drawPixmap( offset, y + 2,
+                            The::svgHandler()->renderSvg(
+                            "pause_button",
+                            buttonSize, buttonSize,
+                            "pause_button" ) );
+
+    }
+    else
+    {
+                              
+    offset += ( buttonSize + MARGINH );
+    painter->drawPixmap( offset, y + 2,
+                            The::svgHandler()->renderSvg(
+                            "play_button",
+                            buttonSize, buttonSize,
+                            "play_button" ) );
+    }
+
+    offset += ( buttonSize + MARGINH );
+    painter->drawPixmap( offset, y + 2,
+                         The::svgHandler()->renderSvg(
+                         "stop_button",
+                         buttonSize, buttonSize,
+                         "stop_button" ) );
+                         
+    offset += ( buttonSize + MARGINH );                        
+    painter->drawPixmap( offset, y + 2,
+                         The::svgHandler()->renderSvg(
+                         "next_button",
+                         buttonSize, buttonSize,
+                         "next_button" ) );
+
+    offset += ( buttonSize + MARGINH );
+
+    long trackLength = EngineController::instance()->trackLength() * 1000;
+    long trackPos = EngineController::instance()->trackPositionMs();
+    qreal trackPercentage = 0.0;
+
+    if ( trackLength > 0 )
+        trackPercentage = ( (qreal) trackPos / (qreal) trackLength );
+
+    int sliderWidth = width - ( offset + MARGINH );
+
+    The::svgHandler()->paintCustomSlider( painter, offset, y, sliderWidth, height, trackPercentage, false );  
+}
+
+bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &itemRect, const QModelIndex& index )
+{
+    
+    //for now, only handle clicks in the currently playing item.
+    if ( !index.data( ActiveTrackRole ).toBool() )
+        return false;
+    
+    int rowCount = rowsForItem( index );
+    int modifiedRowCount = rowCount;
+
+    if( LayoutManager::instance()->activeLayout().inlineControls() && index.data( ActiveTrackRole ).toBool() )
+        modifiedRowCount++; //add room for extras
+
+    int height = itemRect.height();;
+
+    int baseHeight = ( height * rowCount ) / modifiedRowCount;
+    int extrasHeight = height - baseHeight;
+    int extrasOffsetY = height - extrasHeight;
+
+    int buttonSize = extrasHeight - 4;
+
+    int offset = MARGINH;
+    QRect backRect( offset, extrasOffsetY + 2, buttonSize, buttonSize );
+    if( backRect.contains( pos ) )
+    {
+         Amarok::actionCollection()->action( "prev" )->trigger();
+         return true;
+    }
+
+    offset += ( buttonSize + MARGINH ); 
+    QRect playRect( offset, extrasOffsetY + 2, buttonSize, buttonSize );
+    if( playRect.contains( pos ) )
+    {
+         Amarok::actionCollection()->action( "play_pause" )->trigger();
+         return true;
+    }
+
+    offset += ( buttonSize + MARGINH ); 
+    QRect stopRect( offset, extrasOffsetY + 2, buttonSize, buttonSize );
+    if( stopRect.contains( pos ) )
+    {
+         Amarok::actionCollection()->action( "stop" )->trigger();
+         return true;
+    }
+
+
+    offset += ( buttonSize + MARGINH ); 
+    QRect nextRect( offset, extrasOffsetY + 2, buttonSize, buttonSize );
+    if( nextRect.contains( pos ) )
+    {
+         Amarok::actionCollection()->action( "next" )->trigger();
+         return true;
+    }
+    
+    offset += ( buttonSize + MARGINH );
+
+    //handle clicks on the slider
+
+    int sliderWidth = itemRect.width() - ( offset + MARGINH );
+    int knobSize = buttonSize - 2;
+    
+    QRect sliderActiveRect( offset, extrasOffsetY + 3, sliderWidth, knobSize );
+    if( sliderActiveRect.contains( pos ) )
+    {
+        int xSliderPos = pos.x() - offset;
+        long trackLength = EngineController::instance()->trackLength() * 1000;
+
+        qreal percentage = (qreal) xSliderPos / (qreal) sliderWidth;
+        EngineController::instance()->seek( trackLength * percentage );
+        return true;
+
+    }
+    
+
+    return false;
+}
+
+QWidget * Playlist::PrettyItemDelegate::createEditor ( QWidget * parent, const QStyleOptionViewItem & option, const QModelIndex & index ) const
+{
+    Q_UNUSED( option );
+    
+    DEBUG_BLOCK
+    const int groupMode = getGroupMode(index);
+    return new InlineEditorWidget( parent, index, LayoutManager::instance()->activeLayout(), groupMode );
+}
+
+void Playlist::PrettyItemDelegate::setModelData( QWidget * editor, QAbstractItemModel * model, const QModelIndex &index ) const
+{
+    Q_UNUSED( model )
+    DEBUG_BLOCK
+
+    InlineEditorWidget * inlineEditor = dynamic_cast<InlineEditorWidget *>( editor );
+    if( !inlineEditor )
+        return;
+
+    QMap<int, QString> changeMap = inlineEditor->changedValues();
+    
+    debug() << "got inline editor!!";
+    debug() << "changed values map: " << changeMap;
+
+    //ok, now get the track, figure out if it is editable and if so, apply new values.
+    //It's as simple as that! :-)
+
+    Meta::TrackPtr track = index.data( TrackRole ).value<Meta::TrackPtr>();
+    if( !track )
+        return;
+
+    Meta::EditCapability *ec = track->create<Meta::EditCapability>();
+    if( !ec || !ec->isEditable() )
+        return;
+
+    QList<int> columns = changeMap.keys();
+
+    foreach( int column, columns )
+    {
+        QString value = changeMap.value( column );
+        
+        switch( column )
+        {
+            case Album:
+                ec->setAlbum( value );
+                break;
+            case Artist:
+                ec->setArtist( value );
+                break;
+            case Comment:
+                ec->setComment( value );
+                break;
+            case Composer:
+                ec->setComposer( value );
+                break;
+            case DiscNumber:
+                {
+                    int discNumber = value.toInt();
+                    ec->setDiscNumber( discNumber );
+                    break;
+                }
+            case Genre:
+                ec->setGenre( value );
+                break;
+            case Rating:
+                {
+                    int rating = value.toInt();
+                    track->setRating( rating );
+                    break;
+                }
+            case Title:
+                ec->setTitle( value );
+                break;
+            case TitleWithTrackNum:
+                {
+                    debug() << "parse TitleWithTrackNum";
+                    //we need to parse out the track number and the track name (and check
+                    //if the string is even valid...)
+                    //QRegExp rx("(\\d+)\\s-\\s(.*))");
+                    QRegExp rx("(\\d+)(\\s-\\s)(.*)");
+                    if ( rx.indexIn( value ) != -1) {
+                        int trackNumber = rx.cap( 1 ).toInt();
+                        QString trackName = rx.cap( 3 );
+                        debug() << "split TitleWithTrackNum into " << trackNumber << " and " << trackName;
+                        ec->setTrackNumber( trackNumber );
+                        ec->setTitle( trackName );
+                    }
+                    break;
+                }
+            case TrackNumber:
+                {
+                    int TrackNumber = value.toInt();
+                    ec->setTrackNumber( TrackNumber );
+                    break;
+                }
+            case Year:
+                ec->setYear( value );
+                break;
+        }
+
+    }
+}
+
+void
+Playlist::PrettyItemDelegate::updateEditorGeometry( QWidget * editor, const QStyleOptionViewItem & option, const QModelIndex & index ) const
+{
+    Q_UNUSED( index )
+
+    editor->setFixedSize( option.rect.size() );
+    editor->setGeometry( option.rect );
 }
 
 

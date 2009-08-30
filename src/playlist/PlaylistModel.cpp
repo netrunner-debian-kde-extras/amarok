@@ -1,25 +1,23 @@
-/***************************************************************************
- * copyright        : (C) 2007-2008 Ian Monroe <ian@monroe.nu>
- *                    (C) 2007-2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
- *                    (C) 2008 Seb Ruiz <ruiz@kde.org>
- *                    (C) 2008 Soren Harward <stharward@gmail.com>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License or (at your option) version 3 or any later version
- * accepted by the membership of KDE e.V. (or its successor approved
- * by the membership of KDE e.V.), which shall act as a proxy
- * defined in Section 14 of version 3 of the license.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- **************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007-2008 Ian Monroe <ian@monroe.nu>                                   *
+ * Copyright (c) 2007-2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>               *
+ * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
+ * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) version 3 or        *
+ * any later version accepted by the membership of KDE e.V. (or its successor approved  *
+ * by the membership of KDE e.V.), which shall act as a proxy defined in Section 14 of  *
+ * version 3 of the license.                                                            *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #define DEBUG_PREFIX "Playlist::Model"
 
@@ -39,7 +37,6 @@
 #include "UndoCommands.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "services/ServicePluginManager.h" // used in constructor
-#include "GroupingProxy.h"
 
 #include <KGlobal>
 #include <KUrl>
@@ -52,31 +49,12 @@
 
 #include <typeinfo>
 
-Playlist::Model* Playlist::Model::s_instance = 0;
-
-Playlist::Model* Playlist::Model::instance()
-{
-    return ( s_instance ) ? s_instance : new Model();
-}
-
-void
-Playlist::Model::destroy()
-{
-    if ( s_instance )
-    {
-        delete s_instance;
-        s_instance = 0;
-    }
-}
-
-Playlist::Model::Model()
-        : QAbstractListModel( 0 )
+Playlist::Model::Model( QObject *parent )
+        : QAbstractListModel( parent )
         , m_activeRow( -1 )
         , m_totalLength( 0 )
-        , m_currentSearchFields( 0 )
 {
     DEBUG_BLOCK
-    s_instance = this;
 
     /* The ServicePluginManager needs to be loaded up so that it can handle
      * any tracks in the saved playlist that are associated with services.
@@ -93,21 +71,28 @@ Playlist::Model::Model()
 
     if ( QFile::exists( defaultPlaylistPath() ) )
     {
-        Meta::TrackList tracks = Meta::loadPlaylist( KUrl( defaultPlaylistPath() ) )->tracks();
+        Meta::TrackList tracks =
+                Meta::loadPlaylistFile( KUrl( defaultPlaylistPath() ) )->tracks();
 
         QMutableListIterator<Meta::TrackPtr> i( tracks );
         while ( i.hasNext() ) {
             i.next();
             Meta::TrackPtr track = i.value();
-            if ( track == Meta::TrackPtr() ) {
+            if ( track == Meta::TrackPtr() )
+            {
                 i.remove();
-            } else if ( The::playlistManager()->canExpand( track ) ) {
-                Meta::PlaylistPtr playlist = The::playlistManager()->expand( track ); //expand() can return 0 if the KIO job errors out
-                if ( playlist ) {
+            }
+            else if( Meta::canExpand( track ) )
+            {
+                Meta::PlaylistPtr playlist = Meta::expand( track );
+                //expand() can return 0 if the KIO job errors out
+                if( playlist )
+                {
                     i.remove();
                     Meta::TrackList newtracks = playlist->tracks();
-                    foreach( Meta::TrackPtr t, newtracks ) {
-                        if ( t != Meta::TrackPtr() )
+                    foreach( Meta::TrackPtr t, newtracks )
+                    {
+                        if( t != Meta::TrackPtr() )
                             i.insert( t );
                     }
                 }
@@ -131,11 +116,6 @@ Playlist::Model::Model()
 
    if ( playingTrack > -1 )
        setActiveRow( playingTrack );
-
-   //Stop Amarok from advancing to the next track when play
-   //is pressed.
-   Playlist::Actions::instance()->requestTrack( idAt( playingTrack ) );
-
 }
 
 Playlist::Model::~Model()
@@ -143,12 +123,7 @@ Playlist::Model::~Model()
     DEBUG_BLOCK
 
     // Save current playlist
-    Meta::TrackList list;
-    foreach( Item* item, m_items )
-    {
-        list << item->track();
-    }
-    The::playlistManager()->exportPlaylist( list, defaultPlaylistPath() );
+    exportPlaylist( defaultPlaylistPath() );
 }
 
 QVariant
@@ -274,11 +249,11 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case GroupLength:
             {
-                return Meta::secToPrettyTime( GroupingProxy::instance()->lengthOfGroup( row ) );
+                return Meta::secToPrettyTime( 0 );
             }
             case GroupTracks:
             {
-                return i18np ( "1 track", "%1 tracks", GroupingProxy::instance()->tracksInGroup( row ) );
+                return QString();
             }
             case LastPlayed:
             {
@@ -391,7 +366,7 @@ Qt::ItemFlags
 Playlist::Model::flags( const QModelIndex &index ) const
 {
     if ( index.isValid() )
-        return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled );
+        return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled | Qt::ItemIsEditable );
     return Qt::ItemIsDropEnabled;
 }
 
@@ -650,40 +625,18 @@ Playlist::Model::metadataChanged( Meta::AlbumPtr album )
 bool
 Playlist::Model::exportPlaylist( const QString &path ) const
 {
-    Meta::TrackList tl;
-    foreach( Item* item, m_items )
-        tl << item->track();
-
-    return The::playlistManager()->exportPlaylist( tl, path );
-}
-
-bool
-Playlist::Model::savePlaylist() const //SLOT
-{
     DEBUG_BLOCK
-    QString name = QString();
+    debug() << "WARNING: You shouldn't see this at any time except on exit.";
+    return The::playlistManager()->exportPlaylist( tracks(), path );
+}
 
+Meta::TrackList
+Playlist::Model::tracks() const
+{
     Meta::TrackList tl;
     foreach( Item* item, m_items )
         tl << item->track();
-
-    return The::playlistManager()->save( tl, name, true );
-}
-
-void
-Playlist::Model::setPlaylistName( const QString &name, bool proposeOverwriting )
-{
-    m_playlistName = name;
-    m_proposeOverwriting = proposeOverwriting;
-}
-
-void
-Playlist::Model::proposePlaylistName( const QString &name, bool proposeOverwriting )
-{
-    if (( rowCount() == 0 ) || m_playlistName == i18n( "Untitled" ) ) {
-        m_playlistName = name;
-    }
-    m_proposeOverwriting = proposeOverwriting;
+    return tl;
 }
 
 QString
@@ -721,7 +674,7 @@ Playlist::Model::prettyColumnName( Column index ) //static
 
 ////////////
 //Private Methods
-///////////
+////////////
 
 void
 Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
@@ -769,7 +722,6 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
     endInsertRows();
     emit dataChanged( createIndex( min, 0 ), createIndex( max, columnCount() - 1 ) );
     emit insertedIds( newIds );
-    emit itemsAdded( min );
 
     const Meta::TrackPtr currentTrackPtr = The::engineController()->currentTrack();
 
@@ -955,156 +907,8 @@ Playlist::Model::moveTracksCommand( const MoveCmdList& cmds, bool reverse )
     //update the active row
 }
 
-namespace The
+void Playlist::Model::setAllUnplayed()
 {
-    AMAROK_EXPORT Playlist::Model* playlistModel()
-    {
-        return Playlist::Model::instance();
-    }
+    foreach( Item * item, m_items )
+        item->setState( Item::Unplayed );
 }
-
-
-int Playlist::Model::find( const QString & searchTerm, int searchFields )
-{
-    DEBUG_BLOCK
-
-    m_currentSearchTerm = searchTerm;
-    m_currentSearchFields = searchFields;
-    int matchRow = -1;
-    int row = 0;
-    foreach( Item* item, m_items )
-    {
-        Meta::TrackPtr track = item->track();
-
-        if ( trackMatch( track, searchTerm, searchFields ) )
-        {
-            matchRow = row;
-            break;
-        }
-
-        row++;
-    }
-
-    return matchRow;
-}
-
-int Playlist::Model::findNext( const QString & searchTerm, int selectedRow, int searchFields )
-{
-    DEBUG_BLOCK
-
-    m_currentSearchTerm = searchTerm;
-    m_currentSearchFields = searchFields;
-    int row = 0;
-    int firstMatch = -1;
-    foreach( Item* item, m_items )
-    {
-        Meta::TrackPtr track = item->track();
-
-        if ( trackMatch( track, searchTerm, searchFields ) )
-        {
-            if ( firstMatch == -1 )
-                firstMatch = row;
-
-            if ( row > selectedRow )
-                return row;
-        }
-
-        row++;
-    }
-
-    //we have searche through everything and not found anything that matched _below_
-    //the selected index. So return the first one found above it ( wrap around )
-    return firstMatch;
-}
-
-int Playlist::Model::findPrevious( const QString & searchTerm, int selectedRow, int searchFields )
-{
-    DEBUG_BLOCK
-
-    m_currentSearchTerm = searchTerm;
-    m_currentSearchFields = searchFields;
-    int row = m_items.count() -1;
-    int lastMatch = -1;
-
-    QList<Item*> tempItems = m_items;
-    while( tempItems.size() > 0 )
-    {
-        Item* item = tempItems.takeLast();
-
-        Meta::TrackPtr track = item->track();
-
-        if ( trackMatch( track, searchTerm, searchFields ) )
-        {
-            if ( lastMatch == -1 )
-                lastMatch = row;
-
-            if ( row < selectedRow )
-                return row;
-        }
-
-        row--;
-    }
-
-    //we have searched through everything and not found anything that matched _below_
-    //the selected index. So return the first one found above it ( wrap around )
-    return lastMatch;
-}
-
-bool Playlist::Model::trackMatch( Meta::TrackPtr track, const QString &searchTerm, int searchFields ) const
-{
-    if ( searchFields & MatchTrack &&
-        track->prettyName().contains( searchTerm, Qt::CaseInsensitive )
-       )
-        return true;
-
-    if ( searchFields & MatchArtist &&
-         track->artist() &&
-         track->artist()->prettyName().contains( searchTerm, Qt::CaseInsensitive )
-       )
-         return true;
-
-    if ( searchFields & MatchAlbum &&
-         track->album() &&
-         track->album()->prettyName().contains( searchTerm, Qt::CaseInsensitive )
-       )
-         return true;
-
-    if ( searchFields & MatchGenre &&
-         track->genre() &&
-         track->genre()->prettyName().contains( searchTerm, Qt::CaseInsensitive )
-       )
-        return true;
-
-    if ( searchFields & MatchComposer &&
-         track->composer() &&
-         track->composer()->prettyName().contains( searchTerm, Qt::CaseInsensitive )
-       )
-        return true;
-
-    if ( searchFields & MatchYear &&
-         track->year() &&
-         track->year()->prettyName().contains( searchTerm, Qt::CaseInsensitive )
-       )
-        return true;
-
-    return false;
-}
-
-void Playlist::Model::clearSearchTerm()
-{
-    DEBUG_BLOCK
-    m_currentSearchTerm.clear();
-    m_currentSearchFields = 0;
-}
-
-bool Playlist::Model::matchesCurrentSearchTerm( int row ) const
-{
-    if ( rowExists( row ) )
-    {
-        if ( m_currentSearchTerm.isEmpty() )
-            return true;
-        return trackMatch( m_items.at( row )->track(), m_currentSearchTerm, m_currentSearchFields );
-    }
-    return false;
-}
-

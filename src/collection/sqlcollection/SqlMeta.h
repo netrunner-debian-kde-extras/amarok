@@ -1,21 +1,19 @@
-/* This file is part of the KDE project
-   Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
-   Copyright (C) 2007 Alexandre Oliveira <aleprj@gmail.com>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2007 Alexandre Pereira de Oliveira <aleprj@gmail.com>                  *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef SQLMETA_H
 #define SQLMETA_H
@@ -23,14 +21,16 @@
 #include "Meta.h"
 
 #include <QByteArray>
+#include <QDateTime>
 #include <QHash>
 #include <QMap>
 #include <QMutex>
+#include <QString>
 #include <QStringList>
 #include <QVariant>
 
 class SqlCollection;
-class PopupDropperAction;
+class QAction;
 
 namespace Meta
 {
@@ -102,6 +102,7 @@ class SqlTrack : public Meta::Track
         virtual int filesize() const { return m_filesize; }
         virtual int sampleRate() const { return m_sampleRate; }
         virtual int bitrate() const { return m_bitrate; }
+        virtual QDateTime createDate() const { return m_createDate; }
 
         virtual int trackNumber() const { return m_trackNumber; }
         virtual void setTrackNumber( int newTrackNumber );
@@ -147,16 +148,21 @@ class SqlTrack : public Meta::Track
         QString rpath() const { return m_rpath; }
         int trackId() const { return m_trackId; }
         SqlCollection* sqlCollection() const { return m_collection; }
+        void refreshFromDatabase( const QString &uid, SqlCollection* collection, bool updateObservers = true );
+        void updateData( const QStringList &result, bool forceUpdates = false );
 
     protected:
         void commitMetaDataChanges();
         void writeMetaDataToFile();
-        void writeMetaDataToDb();
-        void updateStatisticsInDb();
+        void writeMetaDataToDb( const QStringList &fields );
+        void writeMetaDataToDb( const QString &field ) { writeMetaDataToDb( QStringList( field ) ); }
+        void updateStatisticsInDb( const QStringList &fields );
+        void updateStatisticsInDb( const QString &field ) { updateStatisticsInDb( QStringList( field ) ); }
 
     private:
         /** returns a string of all database joins that are required to fetch all values for a track*/
         static QString getTrackJoinConditions();
+        void updateFileSize();
 
         SqlCollection* m_collection;
 
@@ -168,7 +174,7 @@ class SqlTrack : public Meta::Track
         int m_trackId;
 
         int m_length;
-        int m_filesize;
+        qint64 m_filesize;
         int m_trackNumber;
         int m_discNumber;
         uint m_lastPlayed;
@@ -184,6 +190,7 @@ class SqlTrack : public Meta::Track
         qreal m_albumPeakGain;
         qreal m_trackGain;
         qreal m_trackPeakGain;
+        QDateTime m_createDate;
 
         Meta::AlbumPtr m_album;
         Meta::ArtistPtr m_artist;
@@ -194,6 +201,8 @@ class SqlTrack : public Meta::Track
         bool m_batchUpdate;
         bool m_writeAllStatisticsFields;
         QVariantMap m_cache;
+
+        QString m_newUid;
 };
 
 class SqlArtist : public Meta::Artist
@@ -206,6 +215,7 @@ class SqlArtist : public Meta::Artist
         virtual QString prettyName() const { return m_name; } //change if necessary
         virtual QString sortableName() const;
 
+        void updateData( SqlCollection* collection, int id, const QString &name );
 
         virtual void invalidateCache();
 
@@ -233,7 +243,7 @@ class SqlArtist : public Meta::Artist
         //see http://www.trolltech.com/developer/task-tracker/index_html?method=entry&id=131880
         //switch to QReadWriteLock as soon as it does!
         QMutex m_mutex;
-        PopupDropperAction * m_bookmarkAction;
+        QAction * m_bookmarkAction;
 
 };
 
@@ -245,6 +255,8 @@ class SqlAlbum : public Meta::Album
 
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; }
+
+        void updateData( SqlCollection* collection, int id, const QString &name, int artist );
 
         virtual void invalidateCache();
 
@@ -304,7 +316,7 @@ class SqlAlbum : public Meta::Album
         //switch to QReadWriteLock as soon as it does!
         QMutex m_mutex;
 
-        PopupDropperAction * m_bookmarkAction;
+        QAction * m_bookmarkAction;
 
         //TODO: add album artist
 };
@@ -316,6 +328,8 @@ class SqlComposer : public Meta::Composer
 
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; }
+
+        void updateData( SqlCollection* collection, int id, const QString &name );
 
         virtual void invalidateCache();
 
@@ -344,6 +358,8 @@ class SqlGenre : public Meta::Genre
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; }
 
+        void updateData( SqlCollection* collection, int id, const QString &name );
+
         virtual void invalidateCache();
 
         virtual Meta::TrackList tracks();
@@ -370,6 +386,8 @@ class SqlYear : public Meta::Year
 
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; }
+
+        void updateData( SqlCollection* collection, int id, const QString &name );
 
         virtual void invalidateCache();
 

@@ -1,26 +1,23 @@
-/* This file is part of the KDE project
-   Copyright (C) 2007 Bart Cerneels <bart.cerneels@kde.org>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2007-2009 Bart Cerneels <bart.cerneels@kde.org>                        *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "SqlPodcastProvider.h"
 
 #include "Amarok.h"
 #include "CollectionManager.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "statusbar/StatusBar.h"
@@ -38,6 +35,7 @@
 #include <KIO/Job>
 #include <KUrl>
 
+#include <QAction>
 #include <QFile>
 #include <QDir>
 #include <QTimer>
@@ -126,7 +124,6 @@ SqlPodcastProvider::loadPodcasts()
 bool
 SqlPodcastProvider::possiblyContainsTrack( const KUrl & url ) const
 {
-    DEBUG_BLOCK
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
     QString command = "SELECT title FROM podcastepisodes WHERE url='%1' OR localurl='%1';";
@@ -208,8 +205,8 @@ SqlPodcastProvider::addPodcast(const KUrl & url)
         m_updatingChannels++;
         PodcastReader * podcastReader = new PodcastReader( this );
 
-        connect( podcastReader, SIGNAL( finished( PodcastReader *, bool ) ),
-                SLOT( slotReadResult( PodcastReader *, bool ) ) );
+        connect( podcastReader, SIGNAL( finished( PodcastReader * ) ),
+                SLOT( slotReadResult( PodcastReader * ) ) );
 
         result = podcastReader->read( kurl );
     }
@@ -340,21 +337,20 @@ SqlPodcastProvider::configureChannel( Meta::PodcastChannelPtr channel )
     }
 }
 
-QList<PopupDropperAction *>
+QList<QAction *>
 SqlPodcastProvider::episodeActions( Meta::PodcastEpisodeList episodes )
 {
     DEBUG_BLOCK
-    QList< PopupDropperAction * > actions;
+    QList< QAction * > actions;
 
     if( m_deleteAction == 0 )
     {
-        m_deleteAction = new PopupDropperAction(
-            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
-            "delete",
+        m_deleteAction = new QAction(
             KIcon( "edit-delete" ),
             i18n( "&Delete Downloaded Episode" ),
             this
         );
+        m_deleteAction->setProperty( "popupdropper_svg_id", "delete" );
         connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDeleteEpisodes() ) );
     }
     bool hasDownloaded = false;
@@ -379,13 +375,12 @@ SqlPodcastProvider::episodeActions( Meta::PodcastEpisodeList episodes )
     {
         if ( m_downloadAction == 0 )
         {
-            m_downloadAction = new PopupDropperAction(
-                The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
-                "download",
+            m_downloadAction = new QAction(
                 KIcon( "go-down" ),
                 i18n( "&Download Episode" ),
                 this
             );
+            m_deleteAction->setProperty( "popupdropper_svg_id", "download" );
             connect( m_downloadAction, SIGNAL( triggered() ), this, SLOT( slotDownloadEpisodes() ) );
         }
         actions << m_downloadAction;
@@ -394,47 +389,44 @@ SqlPodcastProvider::episodeActions( Meta::PodcastEpisodeList episodes )
     return actions;
 }
 
-QList<PopupDropperAction *>
+QList<QAction *>
 SqlPodcastProvider::channelActions( Meta::PodcastChannelList )
 {
     DEBUG_BLOCK
-    QList< PopupDropperAction * > actions;
+    QList< QAction * > actions;
 
     if( m_configureAction == 0 )
     {
-        m_configureAction = new PopupDropperAction(
-            The::svgHandler()->getRenderer("amarok/images/pud_items.svg"),
-            "configure",
+        m_configureAction = new QAction(
             KIcon( "configure" ),
             i18n( "&Configure" ),
             this
         );
+        m_deleteAction->setProperty( "popupdropper_svg_id", "configure" );
         connect( m_configureAction, SIGNAL( triggered() ), this, SLOT( slotConfigureChannel() ));
     }
     actions << m_configureAction;
 
     if( m_removeAction == 0 )
     {
-        m_removeAction = new PopupDropperAction(
-            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
-            "remove",
+        m_removeAction = new QAction(
             KIcon( "news-unsubscribe" ),
             i18n( "&Remove Subscription" ),
             this
         );
+        m_deleteAction->setProperty( "popupdropper_svg_id", "remove" );
         connect( m_removeAction, SIGNAL( triggered() ), this, SLOT( slotRemoveChannels() ) );
     }
     actions << m_removeAction;
 
     if( m_updateAction == 0 )
     {
-        m_updateAction = new PopupDropperAction(
-            The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ),
-            "update",
+        m_updateAction = new QAction(
             KIcon( "view-refresh-amarok" ),
             i18n( "&Update Channel" ),
             this
         );
+        m_deleteAction->setProperty( "popupdropper_svg_id", "update" );
         connect( m_updateAction, SIGNAL( triggered() ), this, SLOT( slotUpdateChannels() ) );
     }
     actions << m_updateAction;
@@ -567,8 +559,8 @@ SqlPodcastProvider::update( Meta::PodcastChannelPtr channel )
     m_updatingChannels++;
     PodcastReader * podcastReader = new PodcastReader( this );
 
-    connect( podcastReader, SIGNAL( finished( PodcastReader *, bool ) ),
-             SLOT( slotReadResult( PodcastReader *, bool ) ) );
+    connect( podcastReader, SIGNAL( finished( PodcastReader * ) ),
+             SLOT( slotReadResult( PodcastReader * ) ) );
     //PodcastReader will create a progress bar in The StatusBar.
 
     podcastReader->update( channel );
@@ -611,16 +603,12 @@ SqlPodcastProvider::deleteDownloadedEpisode( Meta::PodcastEpisodePtr episode )
 }
 
 void
-SqlPodcastProvider::slotReadResult( PodcastReader *podcastReader, bool result )
+SqlPodcastProvider::slotReadResult( PodcastReader *podcastReader )
 {
     DEBUG_BLOCK
-    if ( !result )
+    if( podcastReader->error() != QXmlStreamReader::NoError )
     {
-        debug() << "Parse error in podcast "
-            << podcastReader->url() << " line: "
-            << podcastReader->lineNumber() << " column "
-            << podcastReader->columnNumber() << " : "
-            << podcastReader->errorString();
+        debug() << podcastReader->errorString();
     }
     else
     {
@@ -721,7 +709,7 @@ SqlPodcastProvider::createTables() const
                     ",labels " + sqlStorage->textColumnType() +
                     ",subscribedate " + sqlStorage->textColumnType() +
                     ",autoscan BOOL, fetchtype INTEGER"
-                    ",haspurge BOOL, purgecount INTEGER );" ) );
+                    ",haspurge BOOL, purgecount INTEGER ) ENGINE = MyISAM;" ) );
 
     sqlStorage->query( QString( "CREATE TABLE podcastepisodes ("
                     "id " + sqlStorage->idType() +
@@ -737,7 +725,7 @@ SqlPodcastProvider::createTables() const
                     ",pubdate "  + sqlStorage->textColumnType() +
                     ",duration INTEGER"
                     ",filesize INTEGER"
-                    ",isnew BOOL );" ));
+                    ",isnew BOOL ) ENGINE = MyISAM;" ));
 
     sqlStorage->query( "CREATE FULLTEXT INDEX url_podchannel ON podcastchannels( url );" );
     sqlStorage->query( "CREATE FULLTEXT INDEX url_podepisode ON podcastepisodes( url );" );
@@ -776,7 +764,7 @@ SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
                     ",labels " + sqlStorage->textColumnType() +
                     ",subscribedate " + sqlStorage->textColumnType() +
                     ",autoscan BOOL, fetchtype INTEGER"
-                    ",haspurge BOOL, purgecount INTEGER );" ) );
+                    ",haspurge BOOL, purgecount INTEGER ) ENGINE = MyISAM;" ) );
 
         sqlStorage->query( QString( "CREATE TABLE podcastepisodes_temp ("
                     "id " + sqlStorage->idType() +
@@ -792,7 +780,7 @@ SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
                     ",pubdate "  + sqlStorage->textColumnType() +
                     ",duration INTEGER"
                     ",filesize INTEGER"
-                    ",isnew BOOL );" ));
+                    ",isnew BOOL ) ENGINE = MyISAM;" ));
 
         sqlStorage->query( "INSERT INTO podcastchannels_temp SELECT * FROM podcastchannels;" );
         sqlStorage->query( "INSERT INTO podcastepisodes_temp SELECT * FROM podcastepisodes;" );

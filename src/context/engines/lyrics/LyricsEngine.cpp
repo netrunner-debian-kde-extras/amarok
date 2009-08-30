@@ -1,16 +1,19 @@
-/***************************************************************************
- * copyright            : (C) 2007-2008 Leo Franchi <lfranchi@gmail.com>   *
- * copyright            : (C) 2008 Mark Kretschmann <kretschmann@kde.org>  *
- **************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007-2008 Leo Franchi <lfranchi@gmail.com>                             *
+ * Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>                            *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "LyricsEngine.h"
 
@@ -44,6 +47,25 @@ bool LyricsEngine::sourceRequestEvent( const QString& name )
     Q_UNUSED( name )
 
     m_requested = true; // someone is asking for data, so we turn ourselves on :)
+    if( name.contains( "previous lyrics" ) )
+    {
+        removeAllData( "lyrics" );
+        setData( "lyrics", "label", "previous Track Information" );
+        
+        if( m_prevLyricsList.size() == 0 || m_prevSuggestionsList.size() == 0 || m_prevLyrics.contains( "Unavailable" ) )
+            setData( "lyrics", "Unavailable" , "Unavailable" );
+
+        if( m_prevLyricsList.size() > 0 )
+            setData( "lyrics", "lyrics", m_prevLyricsList );
+
+        else if( m_prevLyrics != "" )
+            setData( "lyrics", "html", m_prevLyrics );
+
+        if( m_prevSuggestionsList.size() > 0 )
+            setData( "lyrics", "suggested", m_prevSuggestionsList );
+
+        return true;
+    }
     removeAllData( name );
     setData( name, QVariant());
     update();
@@ -54,15 +76,30 @@ bool LyricsEngine::sourceRequestEvent( const QString& name )
 void LyricsEngine::message( const ContextState& state )
 {
     DEBUG_BLOCK
+    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
+    if( currentTrack && m_currentTrack && currentTrack != m_currentTrack )
+    {
+        m_prevLyrics = m_currentLyrics;
+        m_prevLyricsList = m_currentLyricsList;
+        m_prevSuggestionsList = m_currentSuggestionsList;
 
+        m_currentLyrics.clear();
+        m_currentLyricsList.clear();
+        m_currentSuggestionsList.clear();
+    }
     if( state == Current && m_requested )
+    {
         update();
+    } else if( state == Home )
+    {
+        removeAllData( "lyrics" );
+        setData( "lyrics", "stopped" ,"stopped" );
+    }
+    
 }
 
 void LyricsEngine::metadataChanged( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
-
     const bool hasChanged = track->name() != m_title || 
                             track->artist()->name() != m_artist;
 
@@ -72,8 +109,6 @@ void LyricsEngine::metadataChanged( Meta::TrackPtr track )
 
 void LyricsEngine::update()
 {
-    DEBUG_BLOCK
-
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     if( !currentTrack || !currentTrack->artist() )
         return;
@@ -125,17 +160,19 @@ void LyricsEngine::update()
             info << m_title << m_artist << QString() <<  lyrics;
             newLyrics( info );
         }
-    } else if( !ScriptManager::instance()->lyricsScriptRunning() ) // no lyrics, and no lyrics script!
+    }
+    else if( !ScriptManager::instance()->lyricsScriptRunning() ) // no lyrics, and no lyrics script!
     {
         removeAllData( "lyrics" );
         setData( "lyrics", "noscriptrunning", "noscriptrunning" );
-        return;
+        m_currentLyrics = "Lyrics  Unavailable";
     }
     else
     {
         // fetch by lyrics script
         removeAllData( "lyrics" );
         setData( "lyrics", "fetching", "fetching" );
+        m_currentLyrics = "Lyrics Unavailable";
         ScriptManager::instance()->notifyFetchLyrics( m_artist, m_title );
     }
 }
@@ -146,12 +183,14 @@ void LyricsEngine::newLyrics( QStringList& lyrics )
 
     removeAllData( "lyrics" );
     setData( "lyrics", "lyrics", lyrics );
+    m_currentLyricsList = lyrics;
 }
 
 void LyricsEngine::newLyricsHtml( QString& lyrics )
 {
     removeAllData( "lyrics" );
     setData( "lyrics", "html", lyrics );
+    m_currentLyrics = lyrics;
 }
 
 void LyricsEngine::newSuggestions( QStringList& suggested )
@@ -160,6 +199,7 @@ void LyricsEngine::newSuggestions( QStringList& suggested )
     // each string is in "title - artist <url>" form
     removeAllData( "lyrics" );
     setData( "lyrics", "suggested", suggested );
+    m_currentSuggestionsList = suggested;
 }
 
 void LyricsEngine::lyricsMessage( QString& key, QString &val )

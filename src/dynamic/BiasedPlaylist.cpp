@@ -1,22 +1,20 @@
-/***************************************************************************
- * copyright         : (C) 2008 Daniel Caleb Jones <danielcjones@gmail.com>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License or (at your option) version 3 or any later version
- * accepted by the membership of KDE e.V. (or its successor approved
- * by the membership of KDE e.V.), which shall act as a proxy
- * defined in Section 14 of version 3 of the license.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- **************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Daniel Caleb Jones <danielcjones@gmail.com>                       *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) version 3 or        *
+ * any later version accepted by the membership of KDE e.V. (or its successor approved  *
+ * by the membership of KDE e.V.), which shall act as a proxy defined in Section 14 of  *
+ * version 3 of the license.                                                            *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #define DEBUG_PREFIX "BiasedPlaylist"
 
@@ -28,7 +26,7 @@
 #include "Debug.h"
 #include "DynamicModel.h"
 #include "MetaQueryMaker.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistModelStack.h"
 #include "statusbar/StatusBar.h"
 
 #include <threadweaver/ThreadWeaver.h>
@@ -61,10 +59,21 @@ Dynamic::BiasedPlaylist::fromXml( QDomElement e )
     return new Dynamic::BiasedPlaylist( title, biases );
 }
 
+QString
+Dynamic::BiasedPlaylist::nameFromXml( QDomElement e )
+{
+    if( e.tagName() != "playlist" )
+        return 0;
+
+    QString title = e.attribute( "title" );
+
+    return title;
+}
+
 
 Dynamic::BiasedPlaylist::BiasedPlaylist(
         QString title,
-        QList<Bias*> biases, 
+        QList<Bias*> biases,
         Amarok::Collection* collection )
     : DynamicPlaylist(collection)
     , m_numRequested(0)
@@ -112,7 +121,7 @@ Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
     if( !m_solver )
     {
         BiasSolver::setUniverseCollection( m_collection );
-        m_solver = new BiasSolver( 
+        m_solver = new BiasSolver(
                 BUFFER_SIZE, m_biases, m_context );
         connect( m_solver, SIGNAL(done(ThreadWeaver::Job*)),
                  SLOT(solverFinished(ThreadWeaver::Job*)) );
@@ -169,6 +178,7 @@ Dynamic::BiasedPlaylist::requestTracks( int n )
 void
 Dynamic::BiasedPlaylist::recalculate()
 {
+    DEBUG_BLOCK
     if ( AmarokConfig::dynamicMode() ) {
         m_buffer.clear();
         if ( m_backbufferMutex.tryLock() ) {
@@ -197,6 +207,7 @@ Dynamic::BiasedPlaylist::biases() const
 void
 Dynamic::BiasedPlaylist::handleRequest()
 {
+    DEBUG_BLOCK
     if( m_buffer.isEmpty() )
     {
         m_backbufferMutex.lock();
@@ -262,11 +273,11 @@ Dynamic::BiasedPlaylist::getContext()
 {
     m_context.clear();
 
-    int i = qMax( 0, The::playlistModel()->activeRow() );
+    int i = qMax( 0, The::playlist()->activeRow() );
 
-    for( ; i < The::playlistModel()->rowCount(); ++i )
+    for( ; i < The::playlist()->rowCount(); ++i )
     {
-        m_context.append( The::playlistModel()->trackAt(i) );
+        m_context.append( The::playlist()->trackAt(i) );
     }
 }
 

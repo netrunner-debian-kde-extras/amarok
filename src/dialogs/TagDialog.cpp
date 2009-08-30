@@ -1,23 +1,22 @@
-/******************************************************************************
- * Copyright (C) 2004 Mark Kretschmann <kretschmann@kde.org>                  *
- *           (C) 2004 Pierpaolo Di Panfilo <pippo_dp@libero.it>               *
- *           (C) 2005-2006 Alexandre Pereira de Oliveira <aleprj@gmail.com>   *
- *           (C) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                   *
- *           (C) 2008 Leo Franchi <lfranchi@kde.org>                          *
- *                                                                            *
- * This program is free software; you can redistribute it and/or              *
- * modify it under the terms of the GNU General Public License as             *
- * published by the Free Software Foundation; either version 2 of             *
- * the License, or (at your option) any later version.                        *
- *                                                                            *
- * This program is distributed in the hope that it will be useful,            *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
- * GNU General Public License for more details.                               *
- *                                                                            *
- * You should have received a copy of the GNU General Public License          *
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
- ******************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2004 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2004 Pierpaolo Di Panfilo <pippo_dp@libero.it>                         *
+ * Copyright (c) 2005-2006 Alexandre Pereira de Oliveira <aleprj@gmail.com>             *
+ * Copyright (c) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #define DEBUG_PREFIX "TagDialog"
 
@@ -462,8 +461,8 @@ TagDialog::discNumberModified()
 inline void
 TagDialog::checkModified() //SLOT
 {
-    ui->pushButton_ok->setEnabled( hasChanged() || storedTags.count() > 0 || storedScores.count() > 0
-                               || storedLyrics.count() > 0 || storedRatings.count() > 0 || newLabels.count() > 0 );
+    ui->pushButton_ok->setEnabled( hasChanged() || m_storedTags.count() > 0 || m_storedScores.count() > 0
+                               || m_storedLyrics.count() > 0 || m_storedRatings.count() > 0 || m_newLabels.count() > 0 );
 }
 
 void
@@ -547,7 +546,7 @@ TagDialog::guessFromFilename() //SLOT
         if( !guesser.track().isNull() )
             ui->qSpinBox_track->setValue( guesser.track().toInt() );
         if( !guesser.comment().isNull() )
-            ui->kTextEdit_comment->setText( guesser.comment() );
+            ui->qPlainTextEdit_comment->setPlainText( guesser.comment() );
         if( !guesser.year().isNull() )
             ui->qSpinBox_year->setValue( guesser.year().toInt() );
 
@@ -665,7 +664,7 @@ void TagDialog::init()
     connect( ui->qSpinBox_track,      SIGNAL( valueChanged( int ) ),               SLOT(checkModified()) );
     connect( ui->qSpinBox_year,       SIGNAL( valueChanged( int ) ),               SLOT(yearModified()) );
     connect( ui->qSpinBox_score,      SIGNAL( valueChanged( int ) ),               SLOT(scoreModified()) );
-    connect( ui->kTextEdit_comment,   SIGNAL( textChanged() ),                     SLOT(commentModified()) );
+    connect( ui->qPlainTextEdit_comment,   SIGNAL( textChanged() ),                     SLOT(commentModified()) );
     connect( ui->kTextEdit_lyrics,    SIGNAL( textChanged() ),                     SLOT(checkModified()) );
     connect( ui->kTextEdit_selectedLabels, SIGNAL( textChanged() ),                SLOT(checkModified()) );
     connect( ui->qSpinBox_discNumber, SIGNAL( valueChanged( int ) ),               SLOT(discNumberModified()) );
@@ -888,7 +887,7 @@ void TagDialog::readTags()
         ui->qSpinBox_year->setValue( m_currentTrack->year()->name().toInt() );
     ui->qSpinBox_score->setValue( static_cast<int>(m_currentTrack->score()) );
     ui->qSpinBox_discNumber->setValue( m_currentTrack->discNumber() );
-    ui->kTextEdit_comment->setText( Qt::escape( m_currentTrack->comment() ) );
+    ui->qPlainTextEdit_comment->setPlainText( Qt::escape( m_currentTrack->comment() ) );
 
     QString summaryText, statisticsText;
     const QString body2cols = "<tr><td><nobr>%1</nobr></td><td><b>%2</b></td></tr>";
@@ -904,7 +903,7 @@ void TagDialog::readTags()
 
     summaryText += "</table></td><td width=50%><table>";
     summaryText += body2cols.arg( i18n("Score:"), QString::number( static_cast<int>( m_currentTrack->score() ) ) );
-    // TODO: this should say something pretty like "3½ stars", but that can't happen until after strings are unfrozen
+    // TODO: this should say something pretty like "3 stars", but that can't happen until after strings are unfrozen
     summaryText += body2cols.arg( i18n("Rating:"), QString::number( static_cast<double>(m_currentTrack->rating())/2.0) );
 
     summaryText += body2cols.arg( i18n("Play Count:"), QString::number( m_currentTrack->playCount() ) );
@@ -959,11 +958,11 @@ void TagDialog::readTags()
     ui->qSpinBox_track->setEnabled( editable );
     ui->qSpinBox_discNumber->setEnabled( editable );
     ui->qSpinBox_year->setEnabled( editable );
-    ui->kTextEdit_comment->setEnabled( editable );
+    ui->qPlainTextEdit_comment->setEnabled( editable );
     ui->kTextEdit_selectedLabels->setEnabled( editable );
     m_labelCloud->view()->setEnabled( editable );
-    ui->ratingWidget->setEnabled( editable );
-    ui->qSpinBox_score->setEnabled( editable );
+    ui->ratingWidget->setEnabled( true );
+    ui->qSpinBox_score->setEnabled( true );
     ui->pushButton_guessTags->setEnabled( editable );
 
     if( local )
@@ -977,9 +976,9 @@ void TagDialog::readTags()
     else
         ui->pushButton_open->setEnabled( false );
 
-    ui->pushButton_ok->setEnabled( storedTags.count() > 0 || storedScores.count() > 0
-                              || storedLyrics.count() > 0 || storedRatings.count() > 0
-                              || newLabels.count() > 0 );
+    ui->pushButton_ok->setEnabled( m_storedTags.count() > 0 || m_storedScores.count() > 0
+                              || m_storedLyrics.count() > 0 || m_storedRatings.count() > 0
+                              || m_newLabels.count() > 0 );
 
     //PORT 2.0
 //     if( m_playlistItem ) {
@@ -1000,7 +999,7 @@ TagDialog::setMultipleTracksMode()
     ui->kComboBox_genre->setItemText( ui->kComboBox_genre->currentIndex(), "" );
     ui->kComboBox_composer->setItemText( ui->kComboBox_composer->currentIndex(), "" );
     ui->kLineEdit_title->setText( "" );
-    ui->kTextEdit_comment->setText( "" );
+    ui->qPlainTextEdit_comment->setPlainText( "" );
     ui->qSpinBox_track->setValue( ui->qSpinBox_track->minimum() );
     ui->qSpinBox_discNumber->setValue( ui->qSpinBox_discNumber->minimum() );
     ui->qSpinBox_year->setValue( ui->qSpinBox_year->minimum() );
@@ -1121,7 +1120,7 @@ TagDialog::readMultipleTracks()
     if( comment )
     {
         m_currentData.insert( Meta::Field::COMMENT, first.value( Meta::Field::COMMENT ) );
-        ui->kTextEdit_comment->setText( first.value( Meta::Field::COMMENT ).toString() );
+        ui->qPlainTextEdit_comment->setPlainText( first.value( Meta::Field::COMMENT ).toString() );
     }
     if( composer )
     {
@@ -1219,7 +1218,7 @@ TagDialog::changes()
     modified |= ui->qSpinBox_discNumber->value()  != m_currentData.value( Meta::Field::DISCNUMBER ).toInt();
     modified |= !equalString( ui->kComboBox_composer->lineEdit()->text(), m_currentData.value( Meta::Field::COMPOSER ).toString() );
 
-    modified |= !equalString( ui->kTextEdit_comment->toPlainText(), m_currentData.value( Meta::Field::COMMENT ).toString() );
+    modified |= !equalString( ui->qPlainTextEdit_comment->toPlainText(), m_currentData.value( Meta::Field::COMMENT ).toString() );
 
     if( !m_tracks.count() || m_perTrack )
     { //ignore these on MultipleTracksMode
@@ -1277,8 +1276,8 @@ TagDialog::storeTags( const Meta::TrackPtr &track )
             map.insert( Meta::Field::ARTIST, ui->kComboBox_artist->currentText() );
         if ( !track->album() || ui->kComboBox_album->currentText() != track->album()->name() )
             map.insert( Meta::Field::ALBUM, ui->kComboBox_album->currentText() );
-        if ( ui->kTextEdit_comment->toPlainText() != track->comment() )
-            map.insert( Meta::Field::COMMENT, ui->kTextEdit_comment->toPlainText() );
+        if ( ui->qPlainTextEdit_comment->toPlainText() != track->comment() )
+            map.insert( Meta::Field::COMMENT, ui->qPlainTextEdit_comment->toPlainText() );
         if ( !track->genre() || ui->kComboBox_genre->currentText() != track->genre()->name() )
             map.insert( Meta::Field::GENRE, ui->kComboBox_genre->currentText() );
         if ( ui->qSpinBox_track->value() != track->trackNumber() )
@@ -1288,21 +1287,21 @@ TagDialog::storeTags( const Meta::TrackPtr &track )
         if ( ui->qSpinBox_discNumber->value() != track->discNumber() )
             map.insert( Meta::Field::DISCNUMBER, ui->qSpinBox_discNumber->value() );
 
-        storedTags.remove( track );
-        storedTags.insert( track, map );
+        m_storedTags.remove( track );
+        m_storedTags.insert( track, map );
     }
     if( result & TagDialog::SCORECHANGED )
     {
         debug() << "TagDialog::SCORECHANGED";
-        storedScores.remove( track );
-        storedScores.insert( track, ui->qSpinBox_score->value() );
+        m_storedScores.remove( track );
+        m_storedScores.insert( track, ui->qSpinBox_score->value() );
     }
 
     if( result & TagDialog::RATINGCHANGED )
     {
         debug() << "TagDialog::RATINGCHANGED";
-        storedRatings.remove( track );
-        storedRatings.insert( track, ui->ratingWidget->rating() );
+        m_storedRatings.remove( track );
+        m_storedRatings.insert( track, ui->ratingWidget->rating() );
     }
 
     if( result & TagDialog::LYRICSCHANGED )
@@ -1311,13 +1310,13 @@ TagDialog::storeTags( const Meta::TrackPtr &track )
 
         if ( ui->kTextEdit_lyrics->toHtml().isEmpty() )
         {
-            storedLyrics.remove( track );
-            storedLyrics.insert( track, QString() );
+            m_storedLyrics.remove( track );
+            m_storedLyrics.insert( track, QString() );
         }
         else
         {
-            storedLyrics.remove( track );
-            storedLyrics.insert( track, ui->kTextEdit_lyrics->toHtml() );
+            m_storedLyrics.remove( track );
+            m_storedLyrics.insert( track, ui->kTextEdit_lyrics->toHtml() );
         }
     }
 }
@@ -1327,23 +1326,23 @@ TagDialog::storeTags( const Meta::TrackPtr &track, int changes, const QVariantMa
 {
     if( changes & TagDialog::TAGSCHANGED )
     {
-        storedTags.insert( track, data );
+        m_storedTags.insert( track, data );
     }
     if( changes & TagDialog::SCORECHANGED )
     {
-        storedScores.insert( track, data.value( Meta::Field::SCORE ).toDouble() );
+        m_storedScores.insert( track, data.value( Meta::Field::SCORE ).toDouble() );
     }
     if( changes & TagDialog::RATINGCHANGED )
     {
-        storedRatings.insert( track, data.value( Meta::Field::RATING ).toInt() );
+        m_storedRatings.insert( track, data.value( Meta::Field::RATING ).toInt() );
     }
 }
 
 void
 TagDialog::storeLabels( const Meta::TrackPtr &track, const QStringList &labels )
 {
-    newLabels.remove( track );
-    newLabels.insert( track, labels );
+    m_newLabels.remove( track );
+    m_newLabels.insert( track, labels );
 }
 
 
@@ -1377,8 +1376,8 @@ TagDialog::loadLabels( const Meta::TrackPtr &track )
 QVariantMap
 TagDialog::dataForTrack( const Meta::TrackPtr &track )
 {
-    if( storedTags.contains( track ) )
-        return storedTags[ track ];
+    if( m_storedTags.contains( track ) )
+        return m_storedTags[ track ];
 
     return Meta::Field::mapFromTrack( track );
 }
@@ -1386,8 +1385,8 @@ TagDialog::dataForTrack( const Meta::TrackPtr &track )
 double
 TagDialog::scoreForTrack( const Meta::TrackPtr &track )
 {
-    if( storedScores.contains( track ) )
-        return storedScores[ track ];
+    if( m_storedScores.contains( track ) )
+        return m_storedScores[ track ];
 
     return track->score();
 }
@@ -1395,8 +1394,8 @@ TagDialog::scoreForTrack( const Meta::TrackPtr &track )
 int
 TagDialog::ratingForTrack( const Meta::TrackPtr &track )
 {
-    if( storedRatings.contains( track ) )
-        return storedRatings[ track ];
+    if( m_storedRatings.contains( track ) )
+        return m_storedRatings[ track ];
 
     return track->rating();
 }
@@ -1404,8 +1403,8 @@ TagDialog::ratingForTrack( const Meta::TrackPtr &track )
 QString
 TagDialog::lyricsForTrack( const Meta::TrackPtr &track )
 {
-    if( storedLyrics.contains( track ) )
-        return storedLyrics[ track ];
+    if( m_storedLyrics.contains( track ) )
+        return m_storedLyrics[ track ];
 
     return track->cachedLyrics();
 }
@@ -1414,14 +1413,14 @@ QStringList
 TagDialog::labelsForTrack( const Meta::TrackPtr &track )
 {
     AMAROK_NOTIMPLEMENTED
-    if( newLabels.contains( track ) )
-        return newLabels[ track ];
-    if( originalLabels.contains( track ) )
-        return originalLabels[ track ];
+    if( m_newLabels.contains( track ) )
+        return m_newLabels[ track ];
+    if( m_originalLabels.contains( track ) )
+        return m_originalLabels[ track ];
     //TODO: port 2.0
     //QStringList tmp = CollectionDB::instance()->getLabels( url.path(), CollectionDB::typeUser );
     QStringList tmp;
-    originalLabels[ track ] = tmp;
+    m_originalLabels[ track ] = tmp;
     return tmp;
 }
 
@@ -1441,17 +1440,17 @@ TagDialog::saveTags()
 
     foreach( Meta::TrackPtr track, m_tracks )
     {
-        if( storedScores.contains( track ) )
+        if( m_storedScores.contains( track ) )
         {
-            track->setScore( storedScores[ track ] );
+            track->setScore( m_storedScores[ track ] );
         }
-        if( storedRatings.contains( track ) )
+        if( m_storedRatings.contains( track ) )
         {
-            track->setRating( storedRatings[ track ] );
+            track->setRating( m_storedRatings[ track ] );
         }
-        if( storedLyrics.contains( track ) )
+        if( m_storedLyrics.contains( track ) )
         {
-            track->setCachedLyrics( storedLyrics[ track ] );
+            track->setCachedLyrics( m_storedLyrics[ track ] );
             emit lyricsChanged( track->uidUrl() );
         }
 
@@ -1468,9 +1467,9 @@ TagDialog::saveTags()
             continue;
         }
 
-        QVariantMap data = storedTags[ track ];
+        QVariantMap data = m_storedTags[ track ];
 
-        //there is really no need to write to the file if only info stored in the db has changed
+        //there is really no need to write to the file if only info m_stored in the db has changed
 
         //the if from hell
         if ( data.contains( Meta::Field::TITLE ) || data.contains( Meta::Field::COMMENT ) ||
@@ -1569,7 +1568,7 @@ TagDialog::applyToAllTracks()
 
         if( m_fieldEdited.contains( "comment" ) && m_fieldEdited[ "comment" ] )
         {
-            data.insert( Meta::Field::COMMENT, ui->kTextEdit_comment->toPlainText() );
+            data.insert( Meta::Field::COMMENT, ui->qPlainTextEdit_comment->toPlainText() );
             changed |= TagDialog::TAGSCHANGED;
         }
 

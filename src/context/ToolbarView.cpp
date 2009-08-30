@@ -1,15 +1,18 @@
-/**************************************************************************
-* copyright            : (C) 2008 Leo Franchi <lfranchi@kde.org>          *
-**************************************************************************/
-
-/***************************************************************************
-*                                                                         *
-*   This program is free software; you can redistribute it and/or modify  *
-*   it under the terms of the GNU General Public License as published by  *
-*   the Free Software Foundation; either version 2 of the License, or     *
-*   (at your option) any later version.                                   *
-*                                                                         *
-***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "ToolbarView.h"
 
@@ -19,6 +22,7 @@
 #include "toolbar/AppletToolbar.h"
 #include "toolbar/AppletToolbarAppletItem.h"
 
+#include <knewstuff2/engine.h>
 #include <kfiledialog.h>
 #include <kstandarddirs.h>
 #include <plasma/applet.h>
@@ -32,6 +36,7 @@
 #include <QPalette>
 #include <QSizePolicy>
 #include <QWidget>
+#include <QTimer>
 
 #define TOOLBAR_X_OFFSET 2000
 
@@ -75,6 +80,13 @@ Context::ToolbarView::ToolbarView( Plasma::Containment* containment, QGraphicsSc
        connect( m_toolbar, SIGNAL( moveApplet( Plasma::Applet*, int, int ) ), cont, SLOT( moveApplet( Plasma::Applet*, int, int ) ) );
        connect( m_toolbar, SIGNAL( addAppletToContainment( const QString&, int ) ), cont, SLOT( addApplet( const QString&, int ) ) );
    }
+
+   //make background transparent
+   QPalette p = palette();
+   QColor c = p.color( QPalette::Base );
+   c.setAlpha( 0 );
+   p.setColor( QPalette::Base, c );
+   setPalette( p );
 
 }
 
@@ -242,25 +254,26 @@ void
 Context::ToolbarView::installApplets()
 {
     DEBUG_BLOCK
-    // TODO this hsould open the GHNS dialog, for now just allow user to specify package
-    QString appletFile = KFileDialog::getOpenFileName( KUrl(), "*.amarokapplet.zip", this, "Please select Amarok Applet to install" );
 
-    debug() << "installing amarok applet file:" << appletFile;
-    QString packageRoot = "plasma/plasmoids/";
-    packageRoot = KStandardDirs::locateLocal("data", packageRoot);
-
-    Plasma::PackageStructure* installer = new Plasma::PackageStructure();
-    installer->setServicePrefix( "amarok-context-applet-" );
-    // always uninstall before installing, as it doesn't auto overwrite.
-    installer->setPath( appletFile );
-    Plasma::PackageMetadata metadata = installer->metadata();
-    installer->uninstallPackage( metadata.pluginName(), packageRoot );
-    if( !installer->installPackage( appletFile, packageRoot ) )
-    {
-        debug() << "ERROR in trying to install the package.";
+    KNS::Engine engine(0);
+    if (engine.init("amarokapplets.knsrc")) {
+        KNS::Entry::List entries = engine.downloadDialogModal(this);
     }
+    
+    // give it some time to run, but not too long
+    QTimer::singleShot( 0, this, SLOT( refreshSycoca() ) );
+}
+
+void
+Context::ToolbarView::refreshSycoca()
+{
 
     QDBusInterface dbus("org.kde.kded", "/kbuildsycoca", "org.kde.kbuildsycoca");
     dbus.call(QDBus::Block, "recreate");
+
+    recreateOverlays();
+
 }
+
+
 #include "ToolbarView.moc"

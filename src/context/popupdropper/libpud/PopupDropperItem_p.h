@@ -36,7 +36,7 @@ public:
     
     ~PopupDropperItemPrivate();
 
-    PopupDropperAction* action;
+    QAction* action;
     QString text;
     QTimeLine hoverTimer;
     QString elementId;
@@ -59,14 +59,19 @@ public:
     bool customHoveredTextColor;
     bool customHoveredBorderPen;
     bool customHoveredFillBrush;
-    bool separator;
+    qreal subitemOpacity;
     QString file;
     QRect svgElementRect;
+    QSvgRenderer* sharedRenderer;
     int horizontalOffset;
     int textOffset;
+    bool separator;
+    bool hasLineSeparatorPen;
+    QPen lineSeparatorPen;
     PopupDropperItem::HoverIndicatorShowStyle hoverIndicatorShowStyle;
     PopupDropperItem::Orientation orientation;
     PopupDropperItem::TextProtection textProtection;
+    PopupDropperItem::SeparatorStyle separatorStyle;
     PopupDropper* pd;
 
 private:

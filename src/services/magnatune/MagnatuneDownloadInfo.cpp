@@ -1,23 +1,18 @@
-/***************************************************************************
- *   Copyright (c) 2006, 2007                                              *
- *        Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                   *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
- ***************************************************************************/
-
+/****************************************************************************************
+ * Copyright (c) 2006,2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>               *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "MagnatuneDownloadInfo.h"
 
@@ -208,22 +203,52 @@ bool MagnatuneDownloadInfo::initFromString( const QString &downloadInfoString, b
     return true;
 }
 
-QString MagnatuneDownloadInfo::getUserName( )
+bool MagnatuneDownloadInfo::initFromRedownloadXml( const QDomElement &element )
+{
+
+
+    m_artistName = element.firstChildElement( "artist" ).text();
+    m_albumName = element.firstChildElement( "album" ).text();
+    m_userName = element.firstChildElement( "username" ).text();
+    m_password = element.firstChildElement( "password" ).text();
+
+    //get formats
+    QDomNode formats = element.firstChildElement( "formats" );
+
+    QString wav_url = formats.firstChildElement( "wav_zip" ).text();
+    m_downloadFormats[ "Wav" ] = wav_url;
+    QString mp3_url = formats.firstChildElement( "mp3_zip" ).text();
+    m_downloadFormats[ "128 kbit/s MP3" ] = mp3_url;
+    QString vbr_url = formats.firstChildElement( "vbr_zip" ).text();
+    m_downloadFormats[ "VBR MP3" ] = vbr_url;
+    QString ogg_url = formats.firstChildElement( "ogg_zip" ).text();
+    m_downloadFormats[ "Ogg-Vorbis" ] = ogg_url;
+    QString flac_url = formats.firstChildElement( "flac_zip" ).text();
+    m_downloadFormats[ "FLAC" ] = flac_url;
+    
+
+    m_downloadMessage = i18n( "Redownload of a previously purchased album \"%1\" by \"%2\" from Magnatune.com.\n\nUsername: %3\nPassword: %4\n", m_albumName, m_artistName, m_userName, m_password );
+
+    return true;
+
+}
+
+QString MagnatuneDownloadInfo::userName( )
 {
     return m_userName;
 }
 
-QString MagnatuneDownloadInfo::getPassword( )
+QString MagnatuneDownloadInfo::password( )
 {
     return m_password;
 }
 
-QString MagnatuneDownloadInfo::getDownloadMessage( )
+QString MagnatuneDownloadInfo::downloadMessage( )
 {
     return m_downloadMessage;
 }
 
-DownloadFormatMap MagnatuneDownloadInfo::getFormatMap()
+DownloadFormatMap MagnatuneDownloadInfo::formatMap()
 {
     return m_downloadFormats;
 }
@@ -238,7 +263,7 @@ bool MagnatuneDownloadInfo::isReadyForDownload( )
     return !m_selectedDownloadFormat.isEmpty();
 }
 
-KUrl MagnatuneDownloadInfo::getCompleteDownloadUrl( )
+KUrl MagnatuneDownloadInfo::completeDownloadUrl( )
 {
    QString url =  m_downloadFormats[ m_selectedDownloadFormat ];
    KUrl downloadUrl(url);
@@ -253,7 +278,7 @@ void MagnatuneDownloadInfo::setUnpackUrl( const QString &unpackUrl )
     m_unpackUrl = unpackUrl;
 }
 
-QString MagnatuneDownloadInfo::getUnpackLocation( )
+QString MagnatuneDownloadInfo::unpackLocation( )
 {
     return m_unpackUrl;
 }
@@ -283,4 +308,13 @@ void MagnatuneDownloadInfo::setMembershipInfo( const QString &username, const QS
     m_password = password;
 }
 
+QString MagnatuneDownloadInfo::albumName()
+{
+    return m_albumName; 
+}
+
+QString MagnatuneDownloadInfo::artistName()
+{
+    return m_artistName;
+}
 

@@ -1,17 +1,19 @@
-/*******************************************************************************
-* copyright              : (C) 2008 William Viana Soares <vianasw@gmail.com>   *
-* copyright		 : (C) 2009 Leo Franchi		 <lfranchi@kde.org>    *
-*                                                                              *
-********************************************************************************/
-
-/*******************************************************************************
-*                                                                              *
-*   This program is free software; you can redistribute it and/or modify       *
-*   it under the terms of the GNU General Public License as published by       *
-*   the Free Software Foundation; either version 2 of the License, or          *
-*   (at your option) any later version.                                        *
-*                                                                              *
-********************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 William Viana Soares <vianasw@gmail.com>                          *
+ * Copyright (c) 2009 Leo Franchi <lfranchi@kde.org>                                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "ToolBoxIcon.h"
 
@@ -114,6 +116,7 @@ ToolBoxIcon::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, Q
 
        // draw border
        painter->save();
+       painter->translate(0.5, 0.5);
        painter->setPen( PaletteHandler::highlightColor().darker( 150 ) );
        painter->drawRoundedRect( boundingRect(), 3, 3 );
        painter->restore();

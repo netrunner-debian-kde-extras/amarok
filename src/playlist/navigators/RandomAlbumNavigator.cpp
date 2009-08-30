@@ -1,23 +1,22 @@
-/***************************************************************************
- * copyright   : (C) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
- *             : (C) 2008 Soren Harward <stharward@gmail.com>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License or (at your option) version 3 or any later version
- * accepted by the membership of KDE e.V. (or its successor approved
- * by the membership of KDE e.V.), which shall act as a proxy
- * defined in Section 14 of version 3 of the license.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- **************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
+ * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) version 3 or        *
+ * any later version accepted by the membership of KDE e.V. (or its successor approved  *
+ * by the membership of KDE e.V.), which shall act as a proxy defined in Section 14 of  *
+ * version 3 of the license.                                                            *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #define DEBUG_PREFIX "Playlist::RandomAlbumNavigator"
 
@@ -25,31 +24,21 @@
 
 #include "Debug.h"
 #include "Meta.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistModelStack.h"
 
 #include <algorithm> // STL
 
 Playlist::RandomAlbumNavigator::RandomAlbumNavigator()
 {
-    Model* model = Model::instance();
-    connect( model, SIGNAL( insertedIds( const QList<quint64>& ) ), this, SLOT( recvInsertedIds( const QList<quint64>& ) ) );
-    connect( model, SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( recvRemovedIds( const QList<quint64>& ) ) );
-    connect( model, SIGNAL( activeTrackChanged( const quint64 ) ), this, SLOT( recvActiveTrackChanged( const quint64 ) ) );
+    m_model = Playlist::ModelStack::instance()->top();
+    connect( model(), SIGNAL( insertedIds( const QList<quint64>& ) ),
+             this, SLOT( recvInsertedIds( const QList<quint64>& ) ) );
+    connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ),
+             this, SLOT( recvRemovedIds( const QList<quint64>& ) ) );
+    connect( model(), SIGNAL( activeTrackChanged( const quint64 ) ),
+             this, SLOT( recvActiveTrackChanged( const quint64 ) ) );
 
-    for ( int i = 0; i < model->rowCount(); i++ )
-    {
-        Meta::AlbumPtr album = model->trackAt( i )->album();
-        m_albumGroups[album].append( model->idAt( i ) ); // conveniently creates an empty list if none exists
-    }
-
-    m_unplayedAlbums = m_albumGroups.uniqueKeys();
-    std::random_shuffle( m_unplayedAlbums.begin(), m_unplayedAlbums.end() );
-
-    if ( m_unplayedAlbums.size() )
-        sortTheseAlbums( m_unplayedAlbums );
-
-    m_currentAlbum = Meta::AlbumPtr();
-    m_currentTrack = 0;
+    reset();
 
     //dump();
 }
@@ -57,11 +46,10 @@ Playlist::RandomAlbumNavigator::RandomAlbumNavigator()
 void
 Playlist::RandomAlbumNavigator::recvInsertedIds( const QList<quint64>& list )
 {
-    Model* model = Model::instance();
     Meta::AlbumList modifiedAlbums;
     foreach( quint64 id, list )
     {
-        Meta::AlbumPtr album = model->trackForId( id )->album();
+        Meta::AlbumPtr album = m_model->trackForId( id )->album();
         if ( !m_albumGroups.contains( album ) )
         {
             // TODO: handle already played albums
@@ -78,7 +66,7 @@ Playlist::RandomAlbumNavigator::recvInsertedIds( const QList<quint64>& list )
     if ( m_currentAlbum == Meta::AlbumPtr() && !m_unplayedAlbums.isEmpty() )
     {
         m_currentAlbum = m_unplayedAlbums.takeFirst();
-        m_currentTrack = m_albumGroups.value( m_currentAlbum ).first();
+        m_currentTrack = 0;
     }
 
     //dump();
@@ -99,7 +87,7 @@ Playlist::RandomAlbumNavigator::recvRemovedIds( const QList<quint64>& list )
                 ItemList atl = alb_iter.value();
                 if ( m_currentTrack == id ) {
                     int idx = atl.indexOf( id );
-                    m_currentTrack = ( idx < ( atl.size() - 1 ) ) ? atl.at( idx + 1 ) : 0;
+                    m_currentTrack = ( idx > 0 ) ? atl.at( idx - 1 ) : 0;
                 }
                 atl.removeAll( id );
                 if ( atl.isEmpty() ) {
@@ -157,7 +145,7 @@ Playlist::RandomAlbumNavigator::recvActiveTrackChanged( const quint64 id )
 quint64
 Playlist::RandomAlbumNavigator::requestNextTrack()
 {
-    if ( m_unplayedAlbums.isEmpty() && m_playedAlbums.isEmpty() )
+    if ( m_unplayedAlbums.isEmpty() && m_currentAlbum == Meta::AlbumPtr() )
         return 0;
 
     if ( m_unplayedAlbums.isEmpty() && m_repeatPlaylist )
@@ -203,7 +191,7 @@ Playlist::RandomAlbumNavigator::requestNextTrack()
 quint64
 Playlist::RandomAlbumNavigator::requestLastTrack()
 {
-    if ( m_unplayedAlbums.isEmpty() && m_playedAlbums.isEmpty() )
+    if ( m_unplayedAlbums.isEmpty() && m_currentAlbum == Meta::AlbumPtr() )
         return 0;
 
     if ( m_playedAlbums.isEmpty() && m_repeatPlaylist )
@@ -247,11 +235,10 @@ Playlist::RandomAlbumNavigator::requestLastTrack()
 }
 
 bool
-Playlist::RandomAlbumNavigator::idLessThan( const quint64 l, const quint64 r )
+Playlist::RandomAlbumNavigator::idLessThan( const quint64& l, const quint64& r )
 {
-    Model* model = Model::instance();
-    Meta::TrackPtr left = model->trackForId( l );
-    Meta::TrackPtr right = model->trackForId( r );
+    Meta::TrackPtr left = Playlist::ModelStack::instance()->top()->trackForId( l );
+    Meta::TrackPtr right = Playlist::ModelStack::instance()->top()->trackForId( r );
 
     return Meta::Track::lessThan( left, right );
 }
@@ -268,7 +255,6 @@ Playlist::RandomAlbumNavigator::sortTheseAlbums( const Meta::AlbumList al )
 void
 Playlist::RandomAlbumNavigator::dump()
 {
-    Model* model = Model::instance();
     debug() << "album groups are as follows:";
     debug() << "unplayed:";
     foreach( Meta::AlbumPtr album, m_unplayedAlbums )
@@ -277,7 +263,7 @@ Playlist::RandomAlbumNavigator::dump()
         ItemList atl = m_albumGroups.value( album );
         foreach( quint64 id, atl )
         {
-            Meta::TrackPtr track = model->trackForId( id );
+            Meta::TrackPtr track = m_model->trackForId( id );
             debug() << "      " << track->trackNumber() << track->prettyName() << id;
         }
     }
@@ -288,7 +274,7 @@ Playlist::RandomAlbumNavigator::dump()
         ItemList atl = m_albumGroups.value( m_currentAlbum );
         foreach( quint64 id, atl )
         {
-            Meta::TrackPtr track = model->trackForId( id );
+            Meta::TrackPtr track = m_model->trackForId( id );
             debug() << "      " << track->trackNumber() << track->prettyName() << id << (( id == m_currentTrack ) ? "***" : "" );
         }
     }
@@ -299,8 +285,28 @@ Playlist::RandomAlbumNavigator::dump()
         ItemList atl = m_albumGroups.value( album );
         foreach( quint64 id, atl )
         {
-            Meta::TrackPtr track = model->trackForId( id );
+            Meta::TrackPtr track = m_model->trackForId( id );
             debug() << "      " << track->trackNumber() << track->prettyName() << id;
         }
     }
+}
+
+void Playlist::RandomAlbumNavigator::reset()
+{
+    m_albumGroups.clear();
+
+    for ( int i = 0; i < m_model->rowCount(); i++ )
+    {
+        Meta::AlbumPtr album = m_model->trackAt( i )->album();
+        m_albumGroups[album].append( m_model->idAt( i ) ); // conveniently creates an empty list if none exists
+    }
+
+    m_unplayedAlbums = m_albumGroups.uniqueKeys();
+    std::random_shuffle( m_unplayedAlbums.begin(), m_unplayedAlbums.end() );
+
+    if ( m_unplayedAlbums.size() )
+        sortTheseAlbums( m_unplayedAlbums );
+
+    m_currentAlbum = Meta::AlbumPtr();
+    m_currentTrack = 0;
 }

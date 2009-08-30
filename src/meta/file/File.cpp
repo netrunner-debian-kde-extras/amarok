@@ -1,21 +1,19 @@
-/*
-   Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
-                 2008 Seb Ruiz <ruiz@kde.org>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "File.h"
 #include "File_p.h"
@@ -28,10 +26,11 @@
 #include "meta/capabilities/StatisticsCapability.h"
 #include "meta/capabilities/TimecodeWriteCapability.h"
 #include "meta/capabilities/TimecodeLoadCapability.h"
+#include "meta/support/PermanentUrlStatisticsProvider.h"
 #include "MetaUtility.h"
 #include "amarokurls/PlayUrlRunner.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 
+#include <QAction>
 #include <QList>
 #include <QPointer>
 #include <QString>
@@ -140,6 +139,7 @@ Track::Track( const KUrl &url )
     , d( new Track::Private( this ) )
 {
     d->url = url;
+    d->provider = new PermanentUrlStatisticsProvider( url.url() );
     d->readMetaData();
     d->album = Meta::AlbumPtr( new MetaFile::FileAlbum( QPointer<MetaFile::Track::Private>( d ) ) );
     d->artist = Meta::ArtistPtr( new MetaFile::FileArtist( QPointer<MetaFile::Track::Private>( d ) ) );
@@ -150,6 +150,7 @@ Track::Track( const KUrl &url )
 
 Track::~Track()
 {
+    delete d->provider;
     delete d;
 }
 
@@ -159,10 +160,7 @@ Track::name() const
     if( d )
     {
         const QString trackName = d->m_data.title;
-        if( !trackName.isEmpty() )
-            return trackName;
-        //lets use the filename, or it will look really dull in the playlist
-        return d->url.fileName();
+        return trackName;
     }
     return "This is a bug!";
 }
@@ -195,7 +193,14 @@ Track::playableUrl() const
 QString
 Track::prettyUrl() const
 {
-    return d->url.path();
+    if(d->url.isLocalFile())
+    {
+        return d->url.toLocalFile();
+    }
+    else
+    {
+        return d->url.path();
+    }
 }
 
 QString
@@ -217,11 +222,19 @@ Track::isEditable() const
     DEBUG_BLOCK
 
     //note this probably needs more work on *nix
-    QFile::Permissions p = QFile::permissions( d->url.path() );
+    QFile::Permissions p;
+    if(d->url.isLocalFile())
+    {
+        p = QFile::permissions( d->url.toLocalFile() );
+    }
+    else
+    {
+        p = QFile::permissions( d->url.path() );
+    }
     const bool editable = ( p & QFile::WriteUser ) || ( p & QFile::WriteGroup ) || ( p & QFile::WriteOther );
 
     debug() << d->url.path() << " editable: " << editable;
-    return editable; 
+    return editable;
 }
 
 Meta::AlbumPtr
@@ -351,25 +364,34 @@ Track::setComment( const QString& newComment )
 double
 Track::score() const
 {
-    return 0.0;
+
+    if( d->provider )
+        return d->provider->score();
+    else
+        return 0.0;
 }
 
 void
 Track::setScore( double newScore )
 {
-    d->score = newScore; 
+    if( d->provider )
+        d->provider->setScore( newScore );
 }
 
 int
 Track::rating() const
 {
-    return 0;
+    if( d->provider )
+        return d->provider->rating();
+    else
+        return 0;
 }
 
 void
 Track::setRating( int newRating )
 {
-    d->rating = newRating;
+    if( d->provider )
+        d->provider->setRating( newRating );
 }
 
 int
@@ -441,40 +463,58 @@ Track::bitrate() const
    return bitrate;
 }
 
+QDateTime
+Track::createDate() const
+{
+    return d->m_data.created;
+}
+
 uint
 Track::lastPlayed() const
 {
-    return d->lastPlayed;
+    if( d->provider )
+        return d->provider->lastPlayed().toTime_t();
+    else
+        return 0;
 }
 
 void
 Track::setLastPlayed( uint newTime )
 {
-    d->lastPlayed = newTime;
+    if( d->provider )
+        d->provider->setLastPlayed( QDateTime::fromTime_t( newTime ) );
 }
 
 uint
 Track::firstPlayed() const
 {
-    return d->firstPlayed;
+    if( d->provider )
+        return d->provider->firstPlayed().toTime_t();
+    else
+        return 0;
 }
 
 void
 Track::setFirstPlayed( uint newTime )
 {
-    d->firstPlayed = newTime;
+    if( d->provider )
+        d->provider->setFirstPlayed( QDateTime::fromTime_t( newTime ) );
 }
 
 int
 Track::playCount() const
 {
-    return d->playCount;
+    if( d->provider )
+        return d->provider->playCount();
+    else
+        return 0;
 }
 
 void
 Track::setPlayCount( int newCount )
 {
-    d->playCount = newCount;
+    if( d->provider )
+        d->provider->setPlayCount( newCount );
 }
 
 qreal
@@ -525,8 +565,8 @@ Track::abortMetaDataUpdate()
 void
 Track::finishedPlaying( double playedFraction )
 {
-    Q_UNUSED( playedFraction );
-    //TODO
+    if( d->provider )
+        d->provider->played( playedFraction );
 }
 
 bool
@@ -544,10 +584,10 @@ Track::collection() const
 bool
 Track::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
-    return type == Meta::Capability::Editable || 
-           type == Meta::Capability::Importable || 
-           type == Meta::Capability::CurrentTrackActions || 
-           type == Meta::Capability::WriteTimecode || 
+    return type == Meta::Capability::Editable ||
+           type == Meta::Capability::Importable ||
+           type == Meta::Capability::CurrentTrackActions ||
+           type == Meta::Capability::WriteTimecode ||
            type == Meta::Capability::LoadTimecode;
 }
 
@@ -562,8 +602,8 @@ Track::createCapabilityInterface( Meta::Capability::Type type )
             return new StatisticsCapabilityImpl( this );
         case Meta::Capability::CurrentTrackActions:
             {
-            QList< PopupDropperAction * > actions;
-            PopupDropperAction* flag = new BookmarkCurrentTrackPositionAction( 0 );
+            QList< QAction * > actions;
+            QAction* flag = new BookmarkCurrentTrackPositionAction( 0 );
             actions << flag;
             debug() << "returning bookmarkcurrenttrack action";
             return new Meta::CurrentTrackActionsCapability( actions );

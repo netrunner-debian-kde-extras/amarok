@@ -1,22 +1,20 @@
-/* 
-   Copyright (C) 2006 Ian Monroe <ian@monroe.nu>
-   Copyright (C) 2006 Seb Ruiz <ruiz@kde.org>  
-   Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2006 Ian Monroe <ian@monroe.nu>                                        *
+ * Copyright (c) 2006 Seb Ruiz <ruiz@kde.org>                                           *
+ * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #define DEBUG_PREFIX "DaapCollection"
 
@@ -27,9 +25,12 @@
 #include "Debug.h"
 #include "MemoryQueryMaker.h"
 #include "Reader.h"
+#include "statusbar/StatusBar.h"
 
 #include <QStringList>
 #include <QTimer>
+
+#include <KLocale>
 
 #include <dnssd/remoteservice.h>
 #include <dnssd/servicebase.h>
@@ -79,6 +80,7 @@ DaapCollectionFactory::connectToManualServers()
             
         QString host = current.first();
         quint16 port = current.last().toUShort();
+        The::statusBar()->longMessage( i18n( "Loading remote collection from host %1", host), StatusBar::Information );
 
         int lookup_id = QHostInfo::lookupHost( host, this, SLOT( resolvedManualServerIp(QHostInfo)));
         m_lookupHash.insert( lookup_id, port );
@@ -94,13 +96,9 @@ DaapCollectionFactory::serverOffline( DNSSD::RemoteService::Ptr service )
     {
         DaapCollection *coll = m_collectionMap[ key ];
         if( coll )
-        {
             coll->serverOffline();  //collection will be deleted by collectionmanager
-        }
         else
-        {
             warning() << "collection already null";
-        }
         
         m_collectionMap.remove( key );
 
@@ -121,7 +119,6 @@ DaapCollectionFactory::foundDaap( DNSSD::RemoteService::Ptr service )
 void
 DaapCollectionFactory::resolvedDaap( bool success )
 {
-  //  DEBUG_BLOCK
     const DNSSD::RemoteService* service =  dynamic_cast<const DNSSD::RemoteService*>(sender());
     if( !success || !service ) return;
     debug() << service->serviceName() << ' ' << service->hostName() << ' ' << service->domain() << ' ' << service->type();
@@ -297,6 +294,7 @@ DaapCollection::loadedDataFromServer()
 void
 DaapCollection::parsingFailed()
 {
+    DEBUG_BLOCK
     emit remove();
 }
 

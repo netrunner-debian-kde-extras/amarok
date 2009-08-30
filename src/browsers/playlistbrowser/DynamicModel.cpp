@@ -1,19 +1,18 @@
-/*
-    Copyright (c) 2008 Daniel Jones <danielcjones@gmail.com>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+/****************************************************************************************
+ * Copyright (c) 2008 Daniel Jones <danielcjones@gmail.com>                             *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "DynamicModel.h"
 
@@ -62,20 +61,21 @@ PlaylistBrowserNS::DynamicModel::DynamicModel()
     : QAbstractItemModel()
     , m_activeUnsaved(false)
 {
-    Dynamic::DynamicPlaylistPtr randomPlaylist = createDefaultPlaylist();
+    DEBUG_BLOCK
 
-    insertPlaylist( randomPlaylist );
-    m_playlistElements.append( QDomElement() );
-    m_activePlaylist = m_defaultPlaylist = 0;
-
+    loadAutoSavedPlaylist();
 
     connect( CollectionManager::instance(),
             SIGNAL(collectionDataChanged(Amarok::Collection*)),
             SLOT(universeNeedsUpdate()) );
+
+    connect( this, SIGNAL( activeChanged() ), this, SLOT( savePlaylists() ) );
 }
+
 
 PlaylistBrowserNS::DynamicModel::~DynamicModel()
 {
+    savePlaylists( true );
 }
 
 void
@@ -148,9 +148,17 @@ PlaylistBrowserNS::DynamicModel::setActivePlaylist( int index )
 Dynamic::DynamicPlaylistPtr
 PlaylistBrowserNS::DynamicModel::activePlaylist()
 {
-    return m_playlistList[m_activePlaylist];
+    if( m_activePlaylist >= 0 )
+        return m_playlistList[m_activePlaylist];
+    else
+        return Dynamic::DynamicPlaylistPtr();
 }
 
+int
+PlaylistBrowserNS::DynamicModel::activePlaylistIndex()
+{
+    return m_activePlaylist;
+}
 
 
 Dynamic::DynamicPlaylistPtr
@@ -293,19 +301,30 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists()
         QDomElement e = m_savedPlaylistsRoot.childNodes().at(i).toElement();
         if( e.tagName() == "playlist" )
         {
-            Dynamic::DynamicPlaylistPtr newPlaylist( Dynamic::BiasedPlaylist::fromXml(e) );
-            if( newPlaylist )
+            // we first need to make sure we didn't auto-restore this from last exit
+            if( !m_playlistHash.contains( Dynamic::BiasedPlaylist::nameFromXml( e ) ) )
             {
-                insertPlaylist( newPlaylist );
-                m_playlistElements.append( e );
+                Dynamic::DynamicPlaylistPtr newPlaylist( Dynamic::BiasedPlaylist::fromXml(e) );
+                if( newPlaylist )
+                {
+                    insertPlaylist( newPlaylist );
+                    m_playlistElements.append( e );
+                }
+                else
+                    m_savedPlaylistsRoot.removeChild( e );
             }
-            else
-                m_savedPlaylistsRoot.removeChild( e );
         }
-        // otherwise it shouldn't exist
-        else
-            m_savedPlaylistsRoot.removeChild( e );
     }
+
+    QDomElement lastOpen = m_savedPlaylistsRoot.lastChildElement( "current" );
+    if( ! lastOpen.isNull() && m_playlistHash.contains( lastOpen.attribute( "title" ) ) )
+    {
+        setActivePlaylist( lastOpen.attribute( "title" ) );
+    } else
+    {
+        debug() << "got null last saved node";
+    }
+        
 }
 
 
@@ -429,12 +448,13 @@ PlaylistBrowserNS::DynamicModel::saveActive( const QString& newTitle )
         }
     }
 
-    savePlaylists();
+    savePlaylists( true );
 }
 
 void
-PlaylistBrowserNS::DynamicModel::savePlaylists()
+PlaylistBrowserNS::DynamicModel::savePlaylists( bool final )
 {
+    DEBUG_BLOCK
 
     QFile file( Amarok::saveLocation() + "dynamic.xml" );
     if( !file.open( QIODevice::WriteOnly ) )
@@ -445,7 +465,105 @@ PlaylistBrowserNS::DynamicModel::savePlaylists()
 
     QTextStream stream( &file );
     stream.setCodec( "UTF-8" );
-    m_savedPlaylists.save( stream, 2, QDomNode::EncodingFromTextStream );
+
+    if( final )
+    {
+        QDomElement cur = m_savedPlaylists.createElement( "current" );
+        cur.setAttribute( "title", m_playlistList.at( m_activePlaylist )->title() );
+        m_savedPlaylistsRoot.appendChild( cur );
+
+        m_savedPlaylists.save( stream, 2, QDomNode::EncodingFromTextStream );
+        m_savedPlaylistsRoot.removeChild( cur );
+    } else
+        m_savedPlaylists.save( stream, 2, QDomNode::EncodingFromTextStream );
+
+}
+
+void
+PlaylistBrowserNS::DynamicModel::saveCurrent()
+{
+    DEBUG_BLOCK
+        
+    QFile file( Amarok::saveLocation() + "dynamic_current.xml" );
+    if( !file.open( QIODevice::WriteOnly ) )
+    {
+        error() << "Can not open dynamic_current.xml.";
+        return;
+    }
+
+    QTextStream stream( &file );
+    stream.setCodec( "UTF-8" );
+    QDomDocument doc;
+    QDomElement root = doc.createElement( "biasedplaylists" );
+
+    if( m_activePlaylist != m_defaultPlaylist )
+    {
+        QDomElement e = m_playlistList[m_activePlaylist]->xml();
+        root.appendChild( e );
+    }
+    doc.appendChild( root );
+    doc.save( stream, 2, QDomNode::EncodingFromTextStream );
+    file.close();
+}
+
+void
+PlaylistBrowserNS::DynamicModel::loadAutoSavedPlaylist()
+{
+    DEBUG_BLOCK
+
+    // create the empty default random playlist
+    Dynamic::DynamicPlaylistPtr playlist = createDefaultPlaylist();
+
+    insertPlaylist( playlist );
+    m_playlistElements.append( QDomElement() );
+    m_activePlaylist = m_defaultPlaylist = 0;
+
+#if 0
+    QFile file( Amarok::saveLocation() + "dynamic_current.xml" );
+    if( !file.open( QIODevice::ReadWrite ) )
+    {
+        error() << "Can not open dynamic_current.xml";
+        return;
+    }
+
+    QTextStream stream( &file );
+    stream.setAutoDetectUnicode( true );
+    QString raw = stream.readAll();
+
+    QDomDocument loadedPlaylist;
+
+    //debug() << "got RAW dynamic_current:" << raw;
+    QString errorMsg;
+    int errorLine, errorColumn;
+    if( !loadedPlaylist.setContent( raw, &errorMsg, &errorLine, &errorColumn ) )
+    {
+        error() << "Can not parse dynamic_current.xml, must not have had one saved";
+    } else
+    {
+        QDomElement root = loadedPlaylist.firstChildElement( "biasedplaylists" );
+        if( !root.isNull() ) // ok we actually have a saved playlist
+        {
+            QDomElement e = root.firstChildElement();
+            //debug() << "got root and first child element:" << e.text();
+            if( e.tagName() == "playlist" )
+            {
+                Dynamic::BiasedPlaylist* bp = Dynamic::BiasedPlaylist::fromXml(e);
+
+                //debug() << "got playlist xml, creating new BiasedPlaylist";
+                if( bp )
+                {
+                    //debug() << "successfully restored new biasedplaylist";
+                    if( bp->title() == i18n( "Random" ) )
+                        bp->setTitle( i18n( "Random (modified)" ) );
+                    Dynamic::DynamicPlaylistPtr np( bp );
+                    insertPlaylist( np );
+                    m_playlistElements.append( e );
+                    setActivePlaylist( m_playlistList.indexOf( np ) );
+                }
+            }
+        }
+    }
+#endif
 }
 
 void
@@ -457,12 +575,17 @@ PlaylistBrowserNS::DynamicModel::removeActive()
         return;
 
     beginRemoveRows( QModelIndex(), m_activePlaylist, m_activePlaylist );
-        
+
+    debug() << "playlistHash has keys:" << m_playlistHash.keys() << "playlistList has size:" << m_playlistList.size() << "m_activePlaylist:" << m_activePlaylist;
     m_playlistHash.remove( m_playlistList.takeAt( m_activePlaylist )->title() );
     if( !m_activeUnsaved )
     {
+        debug() << "size of m_playlistElements:" <<  m_playlistElements.size();
+        debug() << "one we are removing:" << m_playlistElements[ m_activePlaylist ].text();
+        //debug() << m_savedPlaylists.toString();
         m_savedPlaylistsRoot.removeChild( m_playlistElements.takeAt( m_activePlaylist ) );
-        savePlaylists();
+        //debug() << m_savedPlaylists.toString();
+        savePlaylists( false );
     }
 
     endRemoveRows();

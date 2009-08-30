@@ -32,7 +32,6 @@ class QSvgRenderer;
 class QTimeLine;
 class QWidget;
 class PopupDropper;
-class PopupDropperAction;
 class PopupDropperItem;
 class PopupDropperPrivate;
 
@@ -71,7 +70,6 @@ public:
     void addOverlay();
 
     PopupDropperItem* addSubmenu( PopupDropper** pd, const QString &text );
-    PopupDropperItem* addSubmenu( PopupDropper** pd, QSvgRenderer* renderer, const QString &elementId, const QString &text );
 
     bool standalone() const;
     
@@ -128,7 +126,7 @@ public:
     const QSize viewSize() const;
 
     void addItem( PopupDropperItem *item, bool useSharedRenderer = true );
-    void addSeparator( PopupDropperAction *separator = 0 );
+    void addSeparator( PopupDropperItem *separator = 0 );
 
 signals:
     void fadeHideFinished();

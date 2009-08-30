@@ -1,23 +1,20 @@
-/***************************************************************************
- *   Copyright (C) 2005 Max Howell <max.howell@methylblue.com>             *
- *   Copyright (C) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>     *
- *   Copyright (C) 2008 Mark Kretschmann <kretschmann@kde.org>             *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2005 Max Howell <max.howell@methylblue.com>                            *
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>                            *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "statusbar/StatusBar.h"
 
@@ -26,7 +23,7 @@
 #include "LongMessageWidget.h"
 #include "meta/MetaUtility.h"
 #include "meta/capabilities/SourceInfoCapability.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistModelStack.h"
 
 #include "KJobProgressBar.h"
 
@@ -90,10 +87,11 @@ StatusBar::StatusBar( QWidget * parent )
     qRegisterMetaType<MessageType>( "MessageType" );
     connect( this, SIGNAL( signalLongMessage( const QString &, MessageType ) ), SLOT( slotLongMessage( const QString &, MessageType ) ), Qt::QueuedConnection );
 
-    connect( The::playlistModel(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateTotalPlaylistLength() ) );
-    connect( The::playlistModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
-    connect( The::playlistModel(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
-    connect( The::playlistModel(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( The::playlist(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( The::playlist(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( The::playlist(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( The::playlist(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( The::playlist(), SIGNAL( layoutChanged() ), this, SLOT( updateTotalPlaylistLength() ) );
 
     updateTotalPlaylistLength();
 }
@@ -332,8 +330,8 @@ void StatusBar::hideLongMessage()
 void
 StatusBar::updateTotalPlaylistLength() //SLOT
 {
-    const int totalLength = The::playlistModel()->totalLength();
-    const int trackCount = The::playlistModel()->rowCount();
+    const int totalLength = The::playlist()->totalLength();
+    const int trackCount = The::playlist()->rowCount();
     const QString totalTime = Meta::secToPrettyTime( totalLength );
 
     if( totalLength > 0 && trackCount > 0 )

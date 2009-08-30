@@ -1,23 +1,22 @@
-/******************************************************************************
- * Copyright (c) 2003 Stanislav Karchebny <berkus@users.sf.net>               *
- * Copyright (c) 2003 Max Howell <max.howell@methylblue.com>                  *
- * Copyright (c) 2004 Enrico Ros <eros.kde@email.it>                          *
- * Copyright (c) 2006 Ian Monroe <ian@monroe.nu>                              *
- * Copyright (c) 2009 Kevin Funk <krf@electrostorm.net>                       *
- *                                                                            *
- * This program is free software; you can redistribute it and/or              *
- * modify it under the terms of the GNU General Public License as             *
- * published by the Free Software Foundation; either version 2 of             *
- * the License, or (at your option) any later version.                        *
- *                                                                            *
- * This program is distributed in the hope that it will be useful,            *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
- * GNU General Public License for more details.                               *
- *                                                                            *
- * You should have received a copy of the GNU General Public License          *
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
- ******************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2003 Stanislav Karchebny <berkus@users.sf.net>                         *
+ * Copyright (c) 2003 Max Howell <max.howell@methylblue.com>                            *
+ * Copyright (c) 2004 Enrico Ros <eros.kde@email.it>                                    *
+ * Copyright (c) 2006 Ian Monroe <ian@monroe.nu>                                        *
+ * Copyright (c) 2009 Kevin Funk <krf@electrostorm.net>                                 *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "Systray.h"
 
@@ -25,14 +24,13 @@
 #include "Debug.h"
 #include "EngineController.h"
 #include "amarokconfig.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "GlobalCurrentTrackActions.h"
 #include "meta/Meta.h"
 #include "meta/MetaConstants.h"
 #include "meta/MetaUtility.h" // for time formatting
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "playlist/PlaylistActions.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistModelStack.h"
 
 #include <KAction>
 #include <KApplication>
@@ -42,6 +40,7 @@
 #include <KMenu>
 #include <KStandardDirs>
 
+#include <QAction>
 #include <QEvent>
 #include <QFontMetrics>
 #include <QMouseEvent>
@@ -86,7 +85,6 @@ Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
     extern void qt_mac_set_dock_menu(QMenu *);
     qt_mac_set_dock_menu( contextMenu() );
     contextMenu()->addAction( ac->action( "playlist_playmedia" ) );
-    contextMenu()->addAction( ac->action( "play_audiocd" ) );
     contextMenu()->addSeparator();
     #endif
 
@@ -242,7 +240,7 @@ Amarok::TrayIcon::event( QEvent *e )
                 KMenu *popup = new KMenu;
                 popup->addAction( KIcon( "media-track-add-amarok" ), i18n( "&Append to Playlist" ), this, SLOT( appendDrops() ) );
                 popup->addAction( KIcon( "media-track-add-amarok" ), i18n( "Append && &Play" ), this, SLOT( appendAndPlayDrops() ) );
-                if( The::playlistModel()->activeRow() >= 0 )
+                if( The::playlist()->activeRow() >= 0 )
                     popup->addAction( KIcon( "go-next-amarok" ), i18n( "&Queue Track" ), this, SLOT( queueDrops() ) );
 
                 popup->addSeparator();
@@ -454,8 +452,8 @@ Amarok::TrayIcon::setupMenu()
         Meta::CurrentTrackActionsCapability *cac = m_track->create<Meta::CurrentTrackActionsCapability>();
         if( cac )
         {
-            QList<PopupDropperAction *> currentTrackActions = cac->customActions();
-            foreach( PopupDropperAction *action, currentTrackActions )
+            QList<QAction *> currentTrackActions = cac->customActions();
+            foreach( QAction *action, currentTrackActions )
                 m_extraActions.append( action );
         }
         delete cac;

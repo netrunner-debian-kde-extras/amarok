@@ -1,13 +1,20 @@
-/***************************************************************************
- *   Copyright (C) 2004 by Max Howell <max.howell@methylblue.com>          *
- *   Copyright (C) 2008 by Mark Kretschmann <kretschmann@kde.org>          *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2004 Max Howell <max.howell@methylblue.com>                            *
+ * Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2009 Artur Szymiec <artur.szymiec@gmail.com>                           *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "ActionClasses.h"
 
@@ -22,14 +29,18 @@
 #include "amarokconfig.h"
 #include "covermanager/CoverManager.h"
 #include "playlist/PlaylistActions.h"
+#include "playlist/PlaylistModelStack.h"
 
 #include <KAuthorized>
 #include <KHelpMenu>
 #include <KLocale>
 #include <KToolBar>
+#include <Osd.h>
+#include <Osd.h>
 
 
 extern KAboutData aboutData;
+extern OcsData ocsData;
 
 namespace Amarok
 {
@@ -94,16 +105,11 @@ Menu::Menu( QWidget* parent )
     addSeparator();
 
     safePlug( ac, "playlist_playmedia", this );
-#if 0
-    // Audio CD is not currently supported
-    safePlug( ac, "play_audiocd", this );
-#endif
 
     addSeparator();
 
     safePlug( ac, "cover_manager", this );
     safePlug( ac, "queue_manager", this );
-    safePlug( ac, "equalizer", this );
     safePlug( ac, "script_manager", this );
 
     addSeparator();
@@ -154,7 +160,11 @@ Menu::helpMenu( QWidget *parent ) //STATIC
     // NOTE: "What's This" isn't currently defined for anything in Amarok, so let's remove that too
     s_helpMenu->action( KHelpMenu::menuWhatsThis )->setVisible( false );
 
+    s_helpMenu->action( KHelpMenu::menuAboutApp )->setVisible( false );
 
+    QAction *extendedAboutAction = new QAction( KIcon( "amarok" ), i18n( "&About Amarok" ), menu ); //translateme
+    menu->insertAction( s_helpMenu->action(KHelpMenu::menuAboutKDE ),extendedAboutAction );
+    connect( extendedAboutAction, SIGNAL(triggered()), The::mainWindow(), SLOT(showAbout()) );
     return menu;
 }
 
@@ -229,8 +239,6 @@ void ToggleAction::setEnabled( bool b )
 {
     const bool announce = b != isEnabled();
 
-    if( !b )
-        setChecked( false );
     KToggleAction::setEnabled( b );
     AmarokConfig::self()->writeConfig(); //So we don't lose the setting when crashing
     if( announce ) emit QAction::triggered( b );
@@ -272,8 +280,6 @@ void SelectAction::setEnabled( bool b )
 {
     const bool announce = b != isEnabled();
 
-    if( !b )
-        setCurrentItem( 0 );
     KSelectAction::setEnabled( b );
     AmarokConfig::self()->writeConfig(); //So we don't lose the setting when crashing
     if( announce ) emit QAction::triggered( b );
@@ -346,7 +352,8 @@ FavorAction::FavorAction( KActionCollection *ac, QObject *parent ) :
                             << i18n( "Not Recently &Played" ) );
 
     setCurrentItem( AmarokConfig::favorTracks() );
-    setEnabled( AmarokConfig::randomMode() );
+    setEnabled( true );
+    connect( this, SIGNAL( triggered( int ) ), The::playlistActions(), SLOT( playlistModeChanged() ) );
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -373,6 +380,81 @@ ReplayGainModeAction::ReplayGainModeAction( KActionCollection *ac, QObject *pare
                             << i18n( "&Album" ) );
     //setIcons( QStringList() << "media-playlist-replaygain-off-amarok" << "media-track-replaygain-amarok" << "media-album-replaygain-amarok" );
     setCurrentItem( AmarokConfig::replayGainMode() );
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// EqualizerAction
+//////////////////////////////////////////////////////////////////////////////////////////
+EqualizerAction::EqualizerAction( KActionCollection *ac, QObject *parent ) :
+    SelectAction( i18n( "&Equalizer" ), &AmarokConfig::setEqualizerMode, ac, "equalizer_mode", parent )
+{
+    newList();
+    updateContent();
+    connect( this, SIGNAL( triggered( int ) ), this, SLOT( actTrigg( int ) ) );
+}
+
+void
+EqualizerAction::updateContent() //SLOT
+{
+    blockSignals( true );
+    setCurrentItem( AmarokConfig::equalizerMode() );
+    blockSignals( false );
+}
+
+void
+EqualizerAction::newList() //SLOT
+{
+    if( !The::engineController()->isEqSupported() )
+    {
+        setEnabled( false );
+        setToolTip( i18n("Your current setup does not support the equalizer feature") );
+        return;
+    }
+    setEnabled( true );
+    setToolTip( QString() );
+    setItems( QStringList() << i18nc( "State, as in, disabled", "&Off" ) << eqGlobalList() );
+}
+
+void
+EqualizerAction::actTrigg( int index ) //SLOT
+{
+    if( The::engineController()->isEqSupported() )
+    {
+        AmarokConfig::setEqualizerGains( eqCfgGetPresetVal( index - 1 ) );
+        The::engineController()->eqUpdate();
+    }
+}
+
+QStringList
+EqualizerAction::eqGlobalList()
+{
+    // Prepare a global list with duplicates removed
+    QStringList mGlobalList;
+    mGlobalList += AmarokConfig::defEqualizerPresetsNames();
+    foreach( QString mUsrName, AmarokConfig::equalizerPresetsNames() )
+    {
+        if( mGlobalList.indexOf( mUsrName ) < 0 )
+            mGlobalList.append( mUsrName );
+    }
+    return mGlobalList;
+}
+
+QList<int>
+EqualizerAction::eqCfgGetPresetVal( int mPresetNo )
+{
+    QList<int> mPresetVal;
+    if( mPresetNo > eqGlobalList().count() ||  mPresetNo < 0 )
+        return mPresetVal;
+    QString mPresetName = eqGlobalList().at(mPresetNo);
+    int idUsr = AmarokConfig::equalizerPresetsNames().indexOf( mPresetName );
+    int idDef = AmarokConfig::defEqualizerPresetsNames().indexOf( mPresetName );
+
+    if( idUsr >= 0 )
+        mPresetVal = AmarokConfig::equalizerPresestValues().mid( idUsr*11,11 );
+    else if( idDef >= 0)
+        mPresetVal = AmarokConfig::defEqualizerPresestValues().mid( idDef*11,11 );
+
+    return mPresetVal;
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -478,6 +560,57 @@ StopAction::engineStateChanged( Phonon::State state,  Phonon::State /*oldState*/
     }
 }
 
+
+//////////////////////////////////////////////////////////////////////////////////////////
+// StopPlayingAfterCurrentTrackAction
+//////////////////////////////////////////////////////////////////////////////////////////
+
+StopPlayingAfterCurrentTrackAction::StopPlayingAfterCurrentTrackAction( KActionCollection *ac, QObject *parent )
+: KAction( parent )
+, EngineObserver( The::engineController() )
+{
+    ac->addAction( "stop_after_current", this );
+    setText( i18n( "Stop after current Track" ) );
+    setIcon( KIcon("media-playback-stop-amarok") );
+    setGlobalShortcut( KShortcut( Qt::META + Qt::SHIFT + Qt::Key_V ) );
+    connect( this, SIGNAL( triggered() ), SLOT( stopPlayingAfterCurrentTrack() ) );
+    setEnabled( false );  // Disable action at startup
+}
+
+void
+StopPlayingAfterCurrentTrackAction::stopPlayingAfterCurrentTrack()
+{
+    if ( !The::playlistActions()->willStopAfterTrack( Playlist::ModelStack::instance()->source()->activeId() ) )
+    {
+        The::playlistActions()->setStopAfterMode( Playlist::StopAfterCurrent );
+        The::playlistActions()->setTrackToBeLast( Playlist::ModelStack::instance()->source()->activeId() );
+        Amarok::OSD::instance()->setImage( QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
+        Amarok::OSD::instance()->OSDWidget::show( i18n( "Stop after current track: On" ) );       
+    } else {
+        The::playlistActions()->setStopAfterMode( Playlist::StopNever );
+        The::playlistActions()->setTrackToBeLast( 0 );
+        Amarok::OSD::instance()->setImage( QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
+        Amarok::OSD::instance()->OSDWidget::show( i18n( "Stop after current track: Off" ) );
+    }
+}
+
+void
+StopPlayingAfterCurrentTrackAction::engineStateChanged( Phonon::State state,  Phonon::State /*oldState*/ )
+{
+    switch( state ) {
+        case Phonon::PlayingState:
+        case Phonon::PausedState:
+        case Phonon::StoppedState:
+            setEnabled( true );
+            break;
+        case Phonon::LoadingState:
+            setDisabled( true );
+            break;
+        case Phonon::ErrorState:
+        case Phonon::BufferingState:
+            break;
+    }
+}
 
 #include "ActionClasses.moc"
 

@@ -1,27 +1,27 @@
-/***************************************************************************
- * copyright         : (C) 2008 Daniel Caleb Jones <danielcjones@gmail.com>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License or (at your option) version 3 or any later version
- * accepted by the membership of KDE e.V. (or its successor approved
- * by the membership of KDE e.V.), which shall act as a proxy
- * defined in Section 14 of version 3 of the license.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- **************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Daniel Caleb Jones <danielcjones@gmail.com>                       *
+ * Copyright (c) 2009 Leo Franchi <lfranchi@kde.org>                                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) version 3 or        *
+ * any later version accepted by the membership of KDE e.V. (or its successor approved  *
+ * by the membership of KDE e.V.), which shall act as a proxy defined in Section 14 of  *
+ * version 3 of the license.                                                            *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "DynamicBiasModel.h"
 
 #include "Debug.h"
 #include "DynamicBiasWidgets.h"
+#include "CustomBias.h"
 #include "BiasedPlaylist.h"
 
 #include <QVariant>
@@ -76,7 +76,7 @@ PlaylistBrowserNS::DynamicBiasModel::setPlaylist( Dynamic::DynamicPlaylistPtr pl
         }
 
         // add the bias adding widgets
-
+        // add Proportional bias
         PlaylistBrowserNS::BiasAddWidget* globalAdder =
             new PlaylistBrowserNS::BiasAddWidget(
                     i18n( "Proportional Bias" ),
@@ -92,8 +92,25 @@ PlaylistBrowserNS::DynamicBiasModel::setPlaylist( Dynamic::DynamicPlaylistPtr pl
         m_widgets.append( globalAdder );
         connect( m_widgets.back(), SIGNAL(widgetChanged(QWidget*)),
                 this, SLOT(widgetChanged(QWidget*)) );
+                
+        // add Custom bias
+        PlaylistBrowserNS::BiasAddWidget* customAdder =
+            new PlaylistBrowserNS::BiasAddWidget(
+                    i18n( "Custom Bias" ),
+                    i18n( "Match a certain portion of the playlist to a custom field." ),
+                    m_listView->viewport() );
+        if( !m_widgets.isEmpty() )
+            customAdder->setAlternate( !m_widgets.back()->alternate() );
 
 
+        connect( customAdder, SIGNAL(addBias()),
+                SLOT(appendCustomBias()) );
+
+        m_widgets.append( customAdder );
+        connect( m_widgets.back(), SIGNAL(widgetChanged(QWidget*)),
+                this, SLOT(widgetChanged(QWidget*)) );
+
+        // add fuzzy bias
         PlaylistBrowserNS::BiasAddWidget* normalAdder =
             new PlaylistBrowserNS::BiasAddWidget(
                     i18n( "Fuzzy Bias" ),
@@ -125,6 +142,15 @@ PlaylistBrowserNS::DynamicBiasModel::appendGlobalBias()
 }
 
 void
+PlaylistBrowserNS::DynamicBiasModel::appendCustomBias()
+{
+    Dynamic::CustomBias* cb = Dynamic::CustomBias::createBias();
+    
+    cb->setActive( true );
+    appendBias( cb );
+}
+
+void
 PlaylistBrowserNS::DynamicBiasModel::appendNormalBias()
 {
     appendBias( new Dynamic::NormalBias() );
@@ -136,7 +162,11 @@ PlaylistBrowserNS::DynamicBiasModel::appendBias( Dynamic::Bias* b )
     if( !m_playlist )
         return;
 
-    beginInsertRows( QModelIndex(), rowCount()-2, rowCount()-2 );
+    // HARDCODED HACK took me a while to figure out---the number of
+    // bias add widgets is hardcoded
+    int numAddBiasWidgets = 3;
+    
+    beginInsertRows( QModelIndex(), rowCount() - numAddBiasWidgets, rowCount() - numAddBiasWidgets );
     m_playlist->biases().append( b );
 
     PlaylistBrowserNS::BiasWidget* widget = b->widget( m_listView->viewport() );
@@ -148,14 +178,14 @@ PlaylistBrowserNS::DynamicBiasModel::appendBias( Dynamic::Bias* b )
     connect( widget, SIGNAL(biasChanged(Dynamic::Bias*)),
             SLOT(biasChanged(Dynamic::Bias*)) );
 
-    if( m_widgets.size() > 2 )
+    if( m_widgets.size() > numAddBiasWidgets )
         widget->setAlternate( !m_widgets.at( m_widgets.size() - 3 )->alternate() );
 
     // toggle the 'add bias' dialog background
-    for( int i = rowCount()-2; i < rowCount(); ++i )
+    for( int i = rowCount()-numAddBiasWidgets; i < rowCount(); ++i )
         m_widgets[i]->toggleAlternate();
 
-    m_widgets.insert( rowCount()-2, widget );
+    m_widgets.insert( rowCount()-numAddBiasWidgets, widget );
     endInsertRows();
 
     // fix a render bug

@@ -1,15 +1,18 @@
-/***************************************************************************
- * copyright            : (C) 2007 Shane King <kde@dontletsstart.com>      *
- **************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007 Shane King <kde@dontletsstart.com>                                *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #define DEBUG_PREFIX "lastfm"
 
@@ -19,12 +22,13 @@
 
 #include "kdenetwork/knetworkaccessmanager.h"
 
-#include <lastfm/Scrobbler.h> // from liblastfm
-#include <lastfm/ws/WsKeys.h>
-#include <lastfm/ws/WsReply.h>
-#include <lastfm/ws/WsRequestBuilder.h>
+#include <lastfm/Audioscrobbler> // from liblastfm
+#include <lastfm/ws.h>
+#include <lastfm/XmlQuery>
 
 #include <QCryptographicHash>
+#include <QNetworkAccessManager>
+#include <QNetworkReply>
 #include <QVBoxLayout>
 #include <QRegExpValidator>
 
@@ -51,6 +55,11 @@ LastFmServiceSettings::LastFmServiceSettings( QWidget *parent, const QVariantLis
     m_configDialog = new Ui::LastFmConfigWidget;
     m_configDialog->setupUi( w );
     l->addWidget( w );
+
+    // whenever this gets opened, we'll assume the user wants to change something,
+    // so blow away the saved session key
+    m_config.setSessionKey( "" );
+    m_config.save();
 
     connect( m_configDialog->kcfg_ScrobblerUsername, SIGNAL( textChanged( const QString & ) ), this, SLOT( settingsChanged() ) );
     connect( m_configDialog->kcfg_ScrobblerPassword, SIGNAL( textChanged( const QString & ) ), this, SLOT( settingsChanged() ) );
@@ -87,67 +96,67 @@ LastFmServiceSettings::testLogin()
     m_configDialog->testLogin->setEnabled( false );
     m_configDialog->testLogin->setText( i18n( "Testing..." ) );
     // set the global static Lastfm::Ws stuff
-    Ws::ApiKey = "402d3ca8e9bc9d3cf9b85e1202944ca5";
-    Ws::SharedSecret = "fe0dcde9fcd14c2d1d50665b646335e9";
-    Ws::Username = qstrdup( m_configDialog->kcfg_ScrobblerUsername->text().toLatin1().data() );
+    lastfm::ws::ApiKey = "402d3ca8e9bc9d3cf9b85e1202944ca5";
+    lastfm::ws::SharedSecret = "fe0dcde9fcd14c2d1d50665b646335e9";
+    lastfm::ws::Username = qstrdup( m_configDialog->kcfg_ScrobblerUsername->text().toLatin1().data() );
     
     // set up proxy
     // NOTE yes we instantiate two KNAMs here, one in this kcm module and one in the servce itself.
     // but there is no way to share the class easily across the lib boundary as they are not guaranteed to
     // always exist at the same time... so 1 class seems to be a relatively minor penalty for a working Test button
-    WsAccessManager* qnam = new KNetworkAccessManager( this );
-    WsRequestBuilder::setWAM( qnam );
+    QNetworkAccessManager* qnam = new KNetworkAccessManager( this );
+    lastfm::setNetworkAccessManager( qnam );
     
-    debug() << "username:" << QString( QUrl::toPercentEncoding( Ws::Username ) );
+    debug() << "username:" << QString( QUrl::toPercentEncoding( lastfm::ws::Username ) );
 
     QString authToken =  md5( ( m_configDialog->kcfg_ScrobblerUsername->text() + md5( m_configDialog->kcfg_ScrobblerPassword->text().toUtf8() ) ).toUtf8() );
     
     // now authenticate w/ last.fm and get our session key
-    WsReply* reply = WsRequestBuilder( "auth.getMobileSession" )
-    .add( "username", m_configDialog->kcfg_ScrobblerUsername->text() )
-    .add( "authToken", authToken )
-    .add( "api_key", Ws::ApiKey )
-    .get();
-    
-    connect( reply, SIGNAL( finished( WsReply* ) ), SLOT( onAuthenticated( WsReply* ) ) );
+    QMap<QString, QString> query;
+    query[ "method" ] = "auth.getMobileSession";
+    query[ "username" ] = m_configDialog->kcfg_ScrobblerUsername->text();
+    query[ "authToken" ] = authToken;
+    m_authQuery = lastfm::ws::post( query );
+
+    connect( m_authQuery, SIGNAL( finished() ), SLOT( onAuthenticated() ) );
 }
 
 void
-LastFmServiceSettings::onAuthenticated( WsReply *reply )
+LastFmServiceSettings::onAuthenticated()
 {
     DEBUG_BLOCK
 
-    switch( reply->error() )
-    {
-        case Ws::NoError:
-            debug() << "NoError";
-            if( reply->lfm().text().contains( "Invalid authentication token" ) )
-            {
-                KMessageBox::error( this, i18n( "Either the username or the password is incorrect, please correct and try again" ), i18n( "Failed" ) );
-                m_configDialog->testLogin->setText( i18n( "Test Login" ) );
-                m_configDialog->testLogin->setEnabled( true );
-            } else
-            {
-                m_configDialog->testLogin->setText( i18nc( "The operation completed as expected", "Success" ) );
-                m_configDialog->testLogin->setEnabled( false );
-            }
-            break;
+    lastfm::XmlQuery lfm = lastfm::XmlQuery( m_authQuery->readAll() );
 
-         case Ws::AuthenticationFailed:
+    switch( m_authQuery->error() )
+    {
+        case QNetworkReply::NoError:
+             debug() << "NoError";
+             if( lfm.children( "error" ).size() > 0 )
+             {
+                 debug() << "ERROR from last.fm:" << lfm.text();
+                 m_configDialog->testLogin->setText( i18nc( "The operation was rejected by the server", "Failed" ) );
+                 m_configDialog->testLogin->setEnabled( true );
+
+             } else
+             {
+                 m_configDialog->testLogin->setText( i18nc( "The operation completed as expected", "Success" ) );
+                 m_configDialog->testLogin->setEnabled( false );
+             }
+             break;
+
+        case QNetworkReply::AuthenticationRequiredError:
             debug() << "AuthenticationFailed";
             KMessageBox::error( this, i18n( "Either the username or the password is incorrect, please correct and try again" ), i18n( "Failed" ) );
             m_configDialog->testLogin->setText( i18n( "Test Login" ) );
             m_configDialog->testLogin->setEnabled( true );
             break;
             
-        case Ws::UrProxyIsFuckedLol:
-        case Ws::UrLocalNetworkIsFuckedLol:
-            KMessageBox::sorry( this, i18n( "Unable to reach the internet, please check your firewall settings and try again" ) );
         default:
-            debug() << "Unhandled WsReply state, probably not important";
+            debug() << "Unhandled QNetworkReply state, probably not important";
             return;
     }
-    reply->deleteLater();
+    m_authQuery->deleteLater();
 }
 
 void 

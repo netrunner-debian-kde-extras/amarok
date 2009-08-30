@@ -1,19 +1,18 @@
-/******************************************************************************
- * Copyright (c) 2007 Alexandre Pereira de Oliveira <aleprj@gmail.com>        *
- *                                                                            *
- * This program is free software; you can redistribute it and/or              *
- * modify it under the terms of the GNU General Public License as             *
- * published by the Free Software Foundation; either version 2 of             *
- * the License, or (at your option) any later version.                        *
- *                                                                            *
- * This program is distributed in the hope that it will be useful,            *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
- * GNU General Public License for more details.                               *
- *                                                                            *
- * You should have received a copy of the GNU General Public License          *
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
- ******************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007 Alexandre Pereira de Oliveira <aleprj@gmail.com>                  *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef COLLECTIONTREEVIEW_H
 #define COLLECTIONTREEVIEW_H
@@ -36,10 +35,10 @@ class QSortFilterProxyModel;
 class CollectionSortFilterProxyModel;
 class CollectionTreeItemModelBase;
 class PopupDropper;
-class PopupDropperAction;
+class QAction;
 class AmarokMimeData;
 
-typedef QList<PopupDropperAction *> PopupDropperActionList;
+typedef QList<QAction *> QActionList;
 
 class CollectionTreeView: public Amarok::PrettyTreeView
 {
@@ -52,7 +51,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         QSortFilterProxyModel* filterModel() const;
 
         AMAROK_EXPORT void setLevels( const QList<int> &levels );
-        QList<int> levels();
+        QList<int> levels() const;
         
         void setLevel( int level, int type );
 
@@ -87,6 +86,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void slotCollapsed( const QModelIndex &index );
         void slotExpanded( const QModelIndex &index );
 
+        void slotCheckAutoExpand();
         void slotClickTimeout();
         
         void slotPlayChildTracks();
@@ -95,6 +95,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void slotEditTracks();
         void slotCopyTracks();
         void slotMoveTracks();
+        void slotRemoveTracks();
         void slotOrganize();
 
     private:
@@ -105,14 +106,16 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void editTracks( const QSet<CollectionTreeItem*> &items ) const;
         void organizeTracks( const QSet<CollectionTreeItem*> &items ) const;
         void copyTracks( const QSet<CollectionTreeItem*> &items, Amarok::Collection *destination, bool removeSources ) const;
-        PopupDropperActionList createBasicActions( const QModelIndexList &indcies );
-        PopupDropperActionList createExtendedActions( const QModelIndexList &indcies );
-        PopupDropperActionList createCollectionActions( const QModelIndexList & indices );
+        void removeTracks( const QSet<CollectionTreeItem*> &items ) const;
+        QActionList createBasicActions( const QModelIndexList &indcies );
+        QActionList createExtendedActions( const QModelIndexList &indcies );
+        QActionList createCollectionActions( const QModelIndexList & indices );
 
         bool onlyOneCollection( const QModelIndexList &indices );
         Amarok::Collection *getCollection( const QModelIndex &index );
-        QHash<PopupDropperAction*, Amarok::Collection*> getCopyActions( const QModelIndexList &indcies );
-        QHash<PopupDropperAction*, Amarok::Collection*> getMoveActions( const QModelIndexList &indcies );
+        QHash<QAction*, Amarok::Collection*> getCopyActions( const QModelIndexList &indcies );
+        QHash<QAction*, Amarok::Collection*> getMoveActions( const QModelIndexList &indcies );
+        QHash<QAction*, Amarok::Collection*> getRemoveActions( const QModelIndexList & indices );
 
         QueryMaker* createMetaQueryFromItems( const QSet<CollectionTreeItem*> &items, bool cleanItems=true ) const;
 
@@ -120,16 +123,17 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         CollectionTreeItemModelBase *m_treeModel;
         QTimer m_filterTimer;
         PopupDropper* m_pd;
-        PopupDropperAction* m_appendAction;
-        PopupDropperAction* m_loadAction;
-        PopupDropperAction* m_editAction;
-        PopupDropperAction* m_organizeAction;
+        QAction* m_appendAction;
+        QAction* m_loadAction;
+        QAction* m_editAction;
+        QAction* m_organizeAction;
 
-        PopupDropperAction * m_caSeperator;
-        PopupDropperAction * m_cmSeperator;
+        QAction * m_caSeperator;
+        QAction * m_cmSeperator;
 
-        QHash<PopupDropperAction*, Amarok::Collection*> m_currentCopyDestination;
-        QHash<PopupDropperAction*, Amarok::Collection*> m_currentMoveDestination;
+        QHash<QAction*, Amarok::Collection*> m_currentCopyDestination;
+        QHash<QAction*, Amarok::Collection*> m_currentMoveDestination;
+        QHash<QAction*, Amarok::Collection*> m_currentRemoveDestination;
 
         QMap<AmarokMimeData*, Playlist::AddOptions> m_playChildTracksMode;
 
@@ -144,6 +148,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
 
     signals:
         void itemSelected( CollectionTreeItem * item );
+        void leavingTree();
 };
 
 #endif

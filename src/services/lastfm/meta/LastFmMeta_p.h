@@ -1,21 +1,19 @@
-/*
-    Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
-    Copyright (C) 2008 Leo Franchi        <lfranchi@kde.org>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef AMAROK_LASTFMMETA_P_H
 #define AMAROK_LASTFMMETA_P_H
@@ -25,12 +23,13 @@
 #include "Amarok.h"
 #include "amarokconfig.h"
 #include "meta/Meta.h"
+#include "meta/StatisticsProvider.h"
+#include "meta/support/TagStatisticsProvider.h"
 
-#include <lastfm/ws/WsKeys.h>
-#include <lastfm/types/Track.h>
-#include <lastfm/ws/WsReply.h>
-#include <lastfm/ws/WsRequestBuilder.h>
-#include <lastfm/radio/Tuner.h>
+#include <lastfm/Track>
+#include <lastfm/ws.h>
+#include <lastfm/RadioTuner>
+#include <lastfm/XmlQuery>
 
 #include <kio/job.h>
 #include <kio/jobclasses.h>
@@ -53,7 +52,7 @@ class Track::Private : public QObject
 
     public:
         Track *t;
-        ::Track lastFmTrack; // this is how we love, ban, etc
+        lastfm::Track lastFmTrack; // this is how we love, ban, etc
         QUrl trackPath;
         QUrl lastFmUri;
 
@@ -75,9 +74,17 @@ class Track::Private : public QObject
         Meta::ComposerPtr composerPtr;
         Meta::YearPtr yearPtr;
 
+        QNetworkReply* trackFetch;
+        QNetworkReply* wsReply;
+
+        Meta::StatisticsProvider *statisticsProvider;
+        uint currentTrackStartTime;
+
     public:
         Private()
             : lastFmUri( QUrl() )
+            , statisticsProvider( 0 )
+            , currentTrackStartTime( 0 )
         {
             artist = QString ( "Last.fm" );
         }
@@ -88,8 +95,14 @@ class Track::Private : public QObject
 
         void notifyObservers();
 
-        void setTrackInfo( const ::Track &trackInfo )
+        void setTrackInfo( const lastfm::Track &trackInfo )
         {
+            DEBUG_BLOCK
+            bool newTrackInfo = artist != trackInfo.artist() ||
+                                album != trackInfo.album() ||
+                                track != trackInfo.title();
+
+
             lastFmTrack = trackInfo;
             artist = trackInfo.artist();
             album = trackInfo.album();
@@ -102,40 +115,58 @@ class Track::Private : public QObject
             trackUrl = "";
             albumArt = QPixmap();
 
+            if( newTrackInfo )
+            {
+                delete statisticsProvider;
+                statisticsProvider = new TagStatisticsProvider( track, artist, album );
+                currentTrackStartTime = QDateTime::currentDateTime().toTime_t();
+            }
+
             notifyObservers();
 
             if( !trackInfo.isNull() )
             {
-                WsReply* reply = WsRequestBuilder( "track.getInfo" )
-                .add( "artist",artist)
-                .add( "track", track )
-                .add( "api_key", QString( Ws::ApiKey ) )
-                .get();
+                QMap< QString, QString > params;
+                params[ "method" ] = "track.getInfo";
+                params[ "artist" ] = artist;
+                params[ "track" ] = track;
 
-                connect( reply, SIGNAL( finished( WsReply* ) ), SLOT( requestResult( WsReply* ) ) );
+                m_userFetch = lastfm::ws::post( params );
+
+                connect( m_userFetch, SIGNAL( finished() ), SLOT( requestResult() ) );
             }
         }
 
     public slots:
-        void requestResult( WsReply *reply )
+        void requestResult( )
         {
-
-            if( reply->error() == Ws::NoError )
+            if( !m_userFetch )
+                return;
+            if( m_userFetch->error() == QNetworkReply::NoError )
             {
-                albumUrl = reply->lfm()[ "track" ][ "album" ][ "url" ].text();
-                trackUrl = reply->lfm()[ "track" ][ "url" ].text();
-                artistUrl = reply->lfm()[ "track" ][ "artist" ][ "url" ].text();
-
-                notifyObservers();
-
-                imageUrl = reply->lfm()[ "track" ][ "album" ][ "image size=large" ].text();
-
-                if( !imageUrl.isEmpty() )
+                try
                 {
-                    KIO::Job* job = KIO::storedGet( KUrl( imageUrl ), KIO::Reload, KIO::HideProgressInfo );
-                    connect( job, SIGNAL( result( KJob* ) ), this, SLOT( fetchImageFinished( KJob* ) ) );
+                    lastfm::XmlQuery lfm( m_userFetch->readAll() );
+                    albumUrl = lfm[ "track" ][ "album" ][ "url" ].text();
+                    trackUrl = lfm[ "track" ][ "url" ].text();
+                    artistUrl = lfm[ "track" ][ "artist" ][ "url" ].text();
+
+                    notifyObservers();
+
+                    imageUrl = lfm[ "track" ][ "album" ][ "image size=large" ].text();
+
+                    if( !imageUrl.isEmpty() )
+                    {
+                        KIO::Job* job = KIO::storedGet( KUrl( imageUrl ), KIO::Reload, KIO::HideProgressInfo );
+                        connect( job, SIGNAL( result( KJob* ) ), this, SLOT( fetchImageFinished( KJob* ) ) );
+                    }
+
+                } catch( lastfm::ws::ParseError& e )
+                {
+                    debug() << "Got exception in parsing from last.fm:" << e.what();
                 }
             }
+
         }
 
         void fetchImageFinished( KJob* job )
@@ -161,6 +192,9 @@ class Track::Private : public QObject
             }
             notifyObservers();
         }
+        
+    private:
+        QNetworkReply* m_userFetch;
 
 };
 

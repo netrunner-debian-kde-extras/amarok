@@ -1,21 +1,18 @@
-/***************************************************************************
- *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef USERPLAYLISTMODEL_H
 #define USERPLAYLISTMODEL_H
@@ -24,21 +21,20 @@
 #include "Meta.h"
 #include "meta/Playlist.h"
 
+#include <QAction>
 #include <QAbstractItemModel>
 #include <QModelIndex>
 #include <QVariant>
 
 #define PLAYLIST_DB_VERSION 1
 
-class PlaylistProvider;
-class PopupDropperAction;
-
 namespace PlaylistBrowserNS {
 
 /**
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
+        @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class UserModel : public MetaPlaylistModel
+class UserModel : public QAbstractItemModel, public MetaPlaylistModel,
+                  public Meta::PlaylistObserver
 {
     Q_OBJECT
     public:
@@ -66,7 +62,7 @@ class UserModel : public MetaPlaylistModel
         virtual bool removeRows( int row, int count, const QModelIndex & parent = QModelIndex() );
 
         virtual Qt::DropActions supportedDropActions() const {
-            return Qt::CopyAction;
+            return Qt::CopyAction | Qt::MoveAction;
         }
 
         virtual Qt::DropActions supportedDragActions() const {
@@ -77,7 +73,7 @@ class UserModel : public MetaPlaylistModel
         QMimeData* mimeData( const QModelIndexList &indexes ) const;
         bool dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent );
 
-        QList<PopupDropperAction *> actionsFor( const QModelIndexList &indexes );
+        QList<QAction *> actionsFor( const QModelIndexList &indexes );
 
         void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
 
@@ -85,9 +81,17 @@ class UserModel : public MetaPlaylistModel
         Meta::PlaylistList selectedPlaylists() { return m_selectedPlaylists; }
         Meta::TrackList selectedTracks() { return m_selectedTracks; }
 
+        /* Meta::PlaylistObserver methods */
+        virtual void trackAdded( Meta::PlaylistPtr playlist, Meta::TrackPtr track,
+                                 int position );
+        virtual void trackRemoved( Meta::PlaylistPtr playlist, int position );
+
     public slots:
         void slotLoad();
         void slotAppend();
+
+        void slotRename();
+        void slotDelete(); // Deletes playlists
 
         void slotUpdate();
         void slotRenamePlaylist( Meta::PlaylistPtr playlist );
@@ -103,10 +107,12 @@ class UserModel : public MetaPlaylistModel
         static UserModel * s_instance;
 
         Meta::PlaylistList m_playlists;
-        QList<PopupDropperAction *> createCommonActions( QModelIndexList indices );
-        PopupDropperAction *m_appendAction;
-        PopupDropperAction *m_loadAction;
-        PopupDropperAction *m_deleteAction;
+        QList<QAction *> createCommonActions( QModelIndexList indices );
+        QList<QAction *> createWriteActions( QModelIndexList indices );
+        QAction *m_appendAction;
+        QAction *m_loadAction;
+        QAction *m_renameAction;
+        QAction *m_deleteAction;
 
         Meta::PlaylistList m_selectedPlaylists;
         Meta::PlaylistList selectedPlaylists( const QModelIndexList &list );

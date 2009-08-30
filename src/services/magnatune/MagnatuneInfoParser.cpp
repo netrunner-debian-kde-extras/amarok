@@ -1,25 +1,23 @@
-/***************************************************************************
- *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "MagnatuneInfoParser.h"
 
 #include "Debug.h"
+#include "MagnatuneConfig.h"
 #include "statusbar/StatusBar.h"
 
 #include <KLocale>
@@ -158,25 +156,96 @@ void MagnatuneInfoParser::getFrontPage()
 {
     showLoading( i18n( "Loading Magnatune.com frontpage..." ) );
     
-    m_frontPageDownloadJob = KIO::storedGet( KUrl( "http://magnatune.com/amarok_frontpage.html" ), KIO::Reload, KIO::HideProgressInfo );
-    The::statusBar()->newProgressOperation( m_frontPageDownloadJob, i18n( "Fetching Magnatune.com front page" ) );
-    connect( m_frontPageDownloadJob, SIGNAL(result(KJob *)), SLOT( frontPageDownloadComplete( KJob*) ) );
+    m_pageDownloadJob = KIO::storedGet( KUrl( "http://magnatune.com/amarok_frontpage.html" ), KIO::Reload, KIO::HideProgressInfo );
+    The::statusBar()->newProgressOperation( m_pageDownloadJob, i18n( "Fetching Magnatune.com front page" ) );
+    connect( m_pageDownloadJob, SIGNAL(result(KJob *)), SLOT( pageDownloadComplete( KJob*) ) );
 }
 
-void MagnatuneInfoParser::frontPageDownloadComplete(KJob * downLoadJob)
+void MagnatuneInfoParser::getFavoritesPage()
 {
+    DEBUG_BLOCK
+
+    MagnatuneConfig config;
+
+    if ( !config.isMember() )
+        return;
+    
+    showLoading( i18n( "Loading your Magnatune.com favorites page..." ) );
+
+    QString type = config.membershipType();
+    QString user = config.username();
+    QString password = config.password();
+
+    QString url = "http://" + user + ":" + password + "@" + type.toLower() + ".magnatune.com/member/amarok_favorites.php";
+   
+    debug() << "loading url: " << url;
+
+    m_pageDownloadJob = KIO::storedGet( KUrl( url ), KIO::Reload, KIO::HideProgressInfo );
+    The::statusBar()->newProgressOperation( m_pageDownloadJob, i18n( "Loading your Magnatune.com favorites page..." ) );
+    connect( m_pageDownloadJob, SIGNAL(result(KJob *)), SLOT( pageDownloadComplete( KJob*) ) );
+}
+
+void MagnatuneInfoParser::getRecommendationsPage()
+{
+    DEBUG_BLOCK
+
+    MagnatuneConfig config;
+
+    if ( !config.isMember() )
+        return;
+
+    showLoading( i18n( "Loading your personal Magnatune.com recommendations page..." ) );
+
+    QString type = config.membershipType();
+    QString user = config.username();
+    QString password = config.password();
+
+    QString url = "http://" + user + ":" + password + "@" + type.toLower() + ".magnatune.com/member/amarok_recommendations.php";
+
+    debug() << "loading url: " << url;
+
+    m_pageDownloadJob = KIO::storedGet( KUrl( url ), KIO::Reload, KIO::HideProgressInfo );
+    The::statusBar()->newProgressOperation( m_pageDownloadJob, i18n( "Loading your personal Magnatune.com recommendations page..." ) );
+    connect( m_pageDownloadJob, SIGNAL(result(KJob *)), SLOT( pageDownloadComplete( KJob*) ) );
+    
+}
+
+void MagnatuneInfoParser::pageDownloadComplete( KJob * downLoadJob )
+{
+    DEBUG_BLOCK
     if ( !downLoadJob->error() == 0 )
     {
         //TODO: error handling here
         return ;
     }
-    if ( downLoadJob != m_frontPageDownloadJob )
+    if ( downLoadJob != m_pageDownloadJob )
         return ; //not the right job, so let's ignore it
 
 
 
     QString infoString = ((KIO::StoredTransferJob* )downLoadJob)->data();
+
+    //insert menu
+    MagnatuneConfig config;
+    if( config.isMember() )
+        infoString.replace( "<!--MENU_TOKEN-->", generateMemberMenu() );
+    
     emit ( info( infoString ) );
+}
+
+QString MagnatuneInfoParser::generateMemberMenu()
+{
+    QString homeUrl = "amarok://service_magnatune?command=show_home";
+    QString favoritesUrl = "amarok://service_magnatune?command=show_favorites";
+    QString recommendationsUrl = "amarok://service_magnatune?command=show_recommendations";
+
+    QString menu = "<div align='right'>"
+                       "[<a href='" + homeUrl + "' >Home</a>]&nbsp;"
+                       "[<a href='" + favoritesUrl + "' >Favorites</a>]&nbsp;"
+                       "[<a href='" + recommendationsUrl + "' >Recommendations</a>]&nbsp;"
+                    "</div>";
+
+    return menu;
 }
 
 

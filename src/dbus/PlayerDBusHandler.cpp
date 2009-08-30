@@ -1,32 +1,33 @@
-/******************************************************************************
- * Copyright (C) 2008 Ian Monroe <ian@monroe.nu>                              *
- *           (C) 2008 Peter ZHOU <peterzhoulei@gmail.com>                     *
- *                                                                            *
- * This program is free software; you can redistribute it and/or              *
- * modify it under the terms of the GNU General Public License as             *
- * published by the Free Software Foundation; either version 2 of             *
- * the License, or (at your option) any later version.                        *
- *                                                                            *
- * This program is distributed in the hope that it will be useful,            *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
- * GNU General Public License for more details.                               *
- *                                                                            *
- * You should have received a copy of the GNU General Public License          *
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
- ******************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Ian Monroe <ian@monroe.nu>                                        *
+ * Copyright (c) 2008 Peter ZHOU <peterzhoulei@gmail.com>                               *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "PlayerDBusHandler.h"
 
 #include "amarokconfig.h"
+#include "ActionClasses.h"
 #include "App.h"
 #include "Debug.h"
 #include "EngineController.h"
 #include "meta/Meta.h"
 #include "PlayerAdaptor.h"
 #include "playlist/PlaylistActions.h"
-#include "playlist/PlaylistModel.h"
-#include "ActionClasses.h"
+#include "playlist/PlaylistModelStack.h"
+#include "Osd.h"
+#include "SvgHandler.h"
 
 // Marshall the DBusStatus data into a D-BUS argument
 QDBusArgument &operator<<(QDBusArgument &argument, const DBusStatus &status)
@@ -69,15 +70,10 @@ namespace Amarok
         new PlayerAdaptor( this );
         QDBusConnection::sessionBus().registerObject("/Player", this);
 
-        connect( The::engineController(), SIGNAL( trackChanged( Meta::TrackPtr ) ), this, SLOT( slotTrackChange() ) );
-        connect( The::engineController(), SIGNAL( trackChanged( Meta::TrackPtr ) ), this, SLOT( slotStatusChange() ) );
-        connect( The::engineController(), SIGNAL( trackFinished() ), this, SLOT( slotStatusChange() ) );
-        connect( The::engineController(), SIGNAL( trackPlayPause( int ) ), this, SLOT( slotStatusChange() ) );
-        connect( this, SIGNAL( StatusChange( DBusStatus ) ), this, SLOT( slotCapsChange() ) );
-
+        //HACK
         SelectAction* repeatAction = qobject_cast<SelectAction*>( Amarok::actionCollection()->action( "repeat" ) );
         Q_ASSERT( repeatAction );
-        connect( repeatAction, SIGNAL( triggered( int ) ), this, SLOT( slotStatusChange() ) );
+        connect( repeatAction, SIGNAL( triggered( int ) ), this, SLOT( updateStatus() ) );
     }
 
     DBusStatus PlayerDBusHandler::GetStatus()
@@ -191,6 +187,16 @@ namespace Amarok
         The::engineController()->toggleMute();
     }
 
+    void PlayerDBusHandler::ShowOSD() const
+    {
+        Amarok::OSD::instance()->show();
+    }
+
+    void PlayerDBusHandler::LoadThemeFile( const QString &path ) const
+    {
+        The::svgHandler()->setThemeFile( path );
+    }
+        
     QVariantMap PlayerDBusHandler::GetMetadata()
     {
         return GetTrackMetadata( The::engineController()->currentTrack() );
@@ -205,7 +211,7 @@ namespace Amarok
         if ( GetStatus().Play == 0 /*playing*/ ) caps |= CAN_PAUSE;
         if ( ( GetStatus().Play == 1 /*paused*/ ) || ( GetStatus().Play == 2 /*stoped*/ ) ) caps |= CAN_PLAY;
         if ( ( GetStatus().Play == 0 /*playing*/ ) || ( GetStatus().Play == 1 /*paused*/ ) ) caps |= CAN_SEEK;
-        if ( ( The::playlistModel()->activeRow() >= 0 ) && ( The::playlistModel()->activeRow() <= The::playlistModel()->rowCount() ) )
+        if ( ( The::playlist()->activeRow() >= 0 ) && ( The::playlist()->activeRow() <= The::playlist()->rowCount() ) )
         {
             caps |= CAN_GO_NEXT;
             caps |= CAN_GO_PREV;
@@ -213,20 +219,11 @@ namespace Amarok
         return caps;
     }
 
-    void PlayerDBusHandler::slotCapsChange()
-    {
-        emit CapsChange( GetCaps() );
-    }
-
-    void PlayerDBusHandler::slotTrackChange()
-    {
-        emit TrackChange( GetMetadata() );
-    }
-
-    void PlayerDBusHandler::slotStatusChange()
+    void PlayerDBusHandler::updateStatus()
     {
         DBusStatus status = GetStatus();
         emit StatusChange( status );
+        emit CapsChange( GetCaps() );
     }
 
     QVariantMap PlayerDBusHandler::GetTrackMetadata( Meta::TrackPtr track )
@@ -268,8 +265,26 @@ namespace Amarok
             map["audio-bitrate"] = track->bitrate();
             map["audio-samplerate"] = track->sampleRate();
             //amarok has no video-bitrate
+
+            // EXTRA Amarok specific
+            const QString lyrics = track->cachedLyrics();
+            if( !lyrics.isEmpty() )
+                map["lyrics"] = lyrics;
         }
         return map;
+    }
+
+    void PlayerDBusHandler::engineTrackChanged( Meta::TrackPtr track )
+    {
+        Q_UNUSED( track );
+        emit TrackChange( GetMetadata() );
+        updateStatus();
+    }
+    void PlayerDBusHandler::engineStateChanged( Phonon::State currentState, Phonon::State oldState )
+    {
+        Q_UNUSED( currentState );
+        Q_UNUSED( oldState );
+        updateStatus();
     }
 } // namespace Amarok
 

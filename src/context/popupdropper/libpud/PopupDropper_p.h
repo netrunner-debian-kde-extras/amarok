@@ -68,7 +68,7 @@ public:
     QList<PopupDropperItem*> pdiItems;
     int overlayLevel;
     bool entered;
-    QMap<PopupDropperAction*, PopupDropperPrivate*> submenuMap;
+    QMap<QAction*, PopupDropperPrivate*> submenuMap;
     bool submenu;
     QList<QGraphicsItem*> allItems;
     bool quitOnDragLeave;

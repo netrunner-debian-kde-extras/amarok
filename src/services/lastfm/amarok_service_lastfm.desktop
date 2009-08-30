@@ -3,8 +3,8 @@ Type=Service
 ServiceTypes=KPluginInfo
 Icon=view-services-lastfm-amarok
 Name=Last.fm
-Name[bg]=Услуга Last.fm
 Name[x-test]=xxLast.fmxx
+Name[zh_TW]=Last.fm 
 Comment=A service that integrates last.fm functionality into Amarok
 Comment[bg]=Интеграция на last.fm с Amarok
 Comment[ca]=Un servei que integra la funcionalitat del last.fm en l'Amarok
@@ -16,6 +16,7 @@ Comment[eo]=Servo kiu aldonas last.fm eblecon al Amarok
 Comment[es]=Un servicio que integra la funcionalidad last.fm en Amarok
 Comment[et]=Last.fm-i funktsioonid Amarokki lõimiv teenus
 Comment[eu]=Last.fm aukerak Amarok-ek integratzen dituen zerbitzua
+Comment[fi]=Last.fm-toimintojen yhdistäminen Amarokiin
 Comment[fr]=Un service qui intègre les fonctionnalités de Last.fm dans Amarok
 Comment[ga]=Seirbhís a chomhtháthaíonn feidhmiúlacht last.fm le hAmarok
 Comment[gl]=Un servizo que integra a funcionalidade de last.fm en Amarok
@@ -44,6 +45,7 @@ Comment[uk]=Служба, яка інтегрує функціональніст
 Comment[wa]=On siervice ki met dins Amarok li fonccionålité di last.fm
 Comment[x-test]=xxA service that integrates last.fm functionality into Amarokxx
 Comment[zh_CN]=一个在 Amarok 中集成 Last.fm 功能的服务
+Comment[zh_TW]=一種將 last.fm 其功能性整合到 Amarok 中的服務
 
 
 ServiceTypes=Amarok/Plugin
@@ -52,7 +54,7 @@ X-KDE-Library=amarok_service_lastfm
 
 X-KDE-Amarok-authors=Shane King
 X-KDE-Amarok-email=kde@dontletsstart.com
-X-KDE-Amarok-framework-version=43
+X-KDE-Amarok-framework-version=46
 X-KDE-Amarok-name=LastFmService
 X-KDE-Amarok-plugintype=service
 X-KDE-Amarok-rank=100

@@ -1,39 +1,38 @@
-/* This file is part of the KDE project
-   Copyright (C) 2009 Bart Cerneels <bart.cerneels@kde.org>
+/****************************************************************************************
+ * Copyright (c) 2009 Bart Cerneels <bart.cerneels@kde.org>                             *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
 #ifndef AMAROK_PLAYLISTSINGROUPSPROXY_H
 #define AMAROK_PLAYLISTSINGROUPSPROXY_H
 
 #include "MetaPlaylistModel.h"
 
-#include "context/popupdropper/libpud/PopupDropperAction.h"
-
+#include <QAction>
 #include <QAbstractProxyModel>
 #include <QModelIndex>
 #include <QMultiHash>
 #include <QStringList>
 
-class PopupDropperAction;
+class QAction;
 
-class PlaylistsInGroupsProxy : public PlaylistBrowserNS::MetaPlaylistModel
+class PlaylistsInGroupsProxy :  public QAbstractProxyModel,
+                                public PlaylistBrowserNS::MetaPlaylistModel
 {
     Q_OBJECT
     public:
-        PlaylistsInGroupsProxy( PlaylistBrowserNS::MetaPlaylistModel *model );
+        PlaylistsInGroupsProxy( QAbstractItemModel *model );
         ~PlaylistsInGroupsProxy();
 
         // functions from QAbstractProxyModel
@@ -55,7 +54,7 @@ class PlaylistsInGroupsProxy : public PlaylistBrowserNS::MetaPlaylistModel
         virtual Qt::DropActions supportedDropActions() const;
         virtual Qt::DropActions supportedDragActions() const;
 
-        QList<PopupDropperAction *> actionsFor( const QModelIndexList &indexes );
+        QList<QAction *> actionsFor( const QModelIndexList &indexes );
 
         void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
 
@@ -71,27 +70,29 @@ class PlaylistsInGroupsProxy : public PlaylistBrowserNS::MetaPlaylistModel
     private slots:
         void modelDataChanged( const QModelIndex&, const QModelIndex& );
         void modelRowsInserted( const QModelIndex&, int, int );
+        void modelRowsAboutToBeRemoved( const QModelIndex&, int, int );
         void modelRowsRemoved( const QModelIndex&, int, int );
         void slotRename( QModelIndex idx );
         void buildTree();
 
-        void slotDeleteGroup();
-        void slotRenameGroup();
-        void slotAddToGroup();
+        void slotDeleteFolder();
+        void slotRenameFolder();
+        void slotAddToFolder();
 
     private:
         bool isGroup( const QModelIndex &index ) const;
         QModelIndexList mapToSource( const QModelIndexList& list ) const;
-        QList<PopupDropperAction *> createGroupActions();
+        QList<QAction *> createGroupActions();
         bool isAGroupSelected( const QModelIndexList& list ) const;
         bool isAPlaylistSelected( const QModelIndexList& list ) const;
         bool changeGroupName( const QString &from, const QString &to );
 
-        void deleteGroup( const QModelIndex &groupIdx );
+        void deleteFolder( const QModelIndex &groupIdx );
 
-        MetaPlaylistModel *m_model;
-        PopupDropperAction *m_renameAction;
-        PopupDropperAction *m_deleteAction;
+        QAbstractItemModel *m_model;
+
+        QAction *m_renameFolderAction;
+        QAction *m_deleteFolderAction;
 
         QMultiHash<quint32, int> m_groupHash;
         QStringList m_groupNames;

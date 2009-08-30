@@ -1,22 +1,20 @@
-/***************************************************************************
- * copyright         : (C) 2008 Daniel Caleb Jones <danielcjones@gmail.com>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License or (at your option) version 3 or any later version
- * accepted by the membership of KDE e.V. (or its successor approved
- * by the membership of KDE e.V.), which shall act as a proxy
- * defined in Section 14 of version 3 of the license.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- **************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Daniel Caleb Jones <danielcjones@gmail.com>                       *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) version 3 or        *
+ * any later version accepted by the membership of KDE e.V. (or its successor approved  *
+ * by the membership of KDE e.V.), which shall act as a proxy defined in Section 14 of  *
+ * version 3 of the license.                                                            *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #define DEBUG_PREFIX "BiasSolver"
 
@@ -581,24 +579,26 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
 
     // this algorithm will produce an optimal solution unless there are
     // non global biases in the system.
-    optimal = (m_biases.size() == m_feasibleGlobalBiases.size());
+    optimal = (m_biases.size() == m_feasibleCollectionFilters.size());
     Meta::TrackList playlist;
 
     // Empty collection
     if( s_universe.isEmpty() )
     {
         optimal = false;
+        debug() << "Empty collection when trying to generate initial playlist...";
         return Meta::TrackList();
     }
 
     // No feasible global biases
-    if( m_feasibleGlobalBiases.size() == 0 )
+    if( m_feasibleCollectionFilters.size() == 0 )
     {
         int n = m_n;
         while( n-- )
             playlist += getRandomTrack( m_domain );
 
         optimal = m_biases.isEmpty();
+        debug() << "No collection filters, returning random initial playlist";
         return playlist;
     }
 
@@ -609,17 +609,18 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
     // As we build up the playlist the weights for each bias will change to
     // reflect what proportion of the tracks that remain to be chosen should
     // have the property in question.
-    double* movingWeights = new double[m_feasibleGlobalBiases.size()];
-    for( int i = 0; i < m_feasibleGlobalBiases.size(); ++i )
-        movingWeights[i] = m_feasibleGlobalBiases[i]->weight();
+    double* movingWeights = new double[m_feasibleCollectionFilters.size()];
+    for( int i = 0; i < m_feasibleCollectionFilters.size(); ++i )
+        movingWeights[i] = m_feasibleCollectionFilters[i]->weight();
 
-
+    debug() << "Just set movingWeights to:" << movingWeights;
+    
     // We use this array of indexes to randomize the order the biases are looked
-    // at. That was we get reasonable results when the system is infeasible.
+    // at. That way we get reasonable results when the system is infeasible.
     // That is, specifying 100% of two mutually exclusive artists, will get you
     // about 50% of each.
     QList<int> indexes;
-    for( int i = 0; i < m_feasibleGlobalBiases.size(); ++i )
+    for( int i = 0; i < m_feasibleCollectionFilters.size(); ++i )
         indexes.append( i );
 
 
@@ -635,7 +636,7 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
 
 
         // Randomize the order.
-        int m = m_feasibleGlobalBiases.size();
+        int m = m_feasibleCollectionFilters.size();
         while( m > 1 )
         {
             int k = KRandom::random() % m;
@@ -645,11 +646,11 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
 
 
         // The bit array represents the choice made at each branch.
-        QBitArray branches( m_feasibleGlobalBiases.size(), 0x0 );
+        QBitArray branches( m_feasibleCollectionFilters.size(), 0x0 );
 
         S.setUniverseSet();
 
-        for( int _i = 0; _i < m_feasibleGlobalBiases.size(); ++_i )
+        for( int _i = 0; _i < m_feasibleCollectionFilters.size(); ++_i )
         {
             int i = indexes[_i];
 
@@ -657,21 +658,26 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
 
             // Decide whether we should 'accept' or 'reject' a bias.
             decider = (double)KRandom::random() / (((double)RAND_MAX) + 1.0);
+            debug() << "decider is set to:" << decider << "movingWeights is:" << movingWeights[ i ];
             if( decider < movingWeights[i] )
             {
+                debug() << "chose track from bias";
                 branches.setBit( i, true );
-                R.intersect( m_feasibleGlobalBiasSets[i] );
+                R.intersect( m_feasibleCollectionFilterSets[i] );
             }
             else
             {
+                debug() << "bias NOT chosen.";
                 branches.setBit( i, false );
-                R.subtract( m_feasibleGlobalBiasSets[i] );
+                R.subtract( m_feasibleCollectionFilterSets[i] );
             }
 
             // Now we have to make sure our decision doesn't land us with an
             // empty set. If that's the case, we have to choose the other
             // branch, even if it does defy the probability. (This is how we
             // deal with infeasible systems.)
+            //debug() << "after set intersection/substraction, R has size:" << R.size();
+
             if( R.size() == 0 )
                 branches.toggleBit( i );
             else
@@ -724,7 +730,7 @@ Dynamic::BiasSolver::getRandomTrack( const QList<QByteArray>& subset )
     int giveup = 50;
     while( giveup-- && !track )
         track = trackForUid( subset[ KRandom::random() % subset.size() ] );
-
+    debug() << "track selected:" << track->name() << track->artist()->name();
     return track;
 }
 
@@ -754,38 +760,44 @@ Dynamic::BiasSolver::trackForUid( const QByteArray& uid )
 void
 Dynamic::BiasSolver::computeDomain()
 {
+    DEBUG_BLOCK
     foreach( Dynamic::Bias* b, m_biases )
     {
-        Dynamic::GlobalBias* gb = dynamic_cast<Dynamic::GlobalBias*>( b );
-
-        if( gb )
+        if( b->hasCollectionFilterCapability() )
         {
-            debug() << "property size: " << gb->propertySet().size();
+            debug() << "Got a bias which says it wants to filter from collection.";
+            Dynamic::CollectionFilterCapability* fc = b->collectionFilterCapability();
+            if( fc )
+            {
+                debug() << "and got a proper collectionfiltercapability from it";
+                debug() << "property size: " << fc->propertySet().size();
 
-            // if the bias is infeasible (i.e. size = 0), just ignore it
-            if( gb->propertySet().size() == 0 )
-            {
-                debug() << "infeasible bias detected";
-                gb->setActive(false);
-            }
-            else
-            {
-                m_feasibleGlobalBiases.append( gb );
-                m_feasibleGlobalBiasSets.append( TrackSet( gb->propertySet() ) );
+                // if the bias is infeasible (i.e. size = 0), just ignore it
+                if( fc->propertySet().size() == 0 )
+                {
+                    debug() << "infeasible bias detected"; // ugly but we're using the higher cast as they don't share a root parent
+                    b->setActive(false);
+                    delete fc;
+                }
+                else
+                {
+                    m_feasibleCollectionFilters.append( fc );
+                    m_feasibleCollectionFilterSets.append( TrackSet( fc->propertySet() ) );
+                }
             }
         }
     }
-
+    
     TrackSet subset;
     subset.setUniverseSet();
 
-    for( int i = 0; i < m_feasibleGlobalBiases.size(); ++i )
+    for( int i = 0; i < m_feasibleCollectionFilters.size(); ++i )
     {
-        if( m_feasibleGlobalBiases.at(i)->weight() == 1.0 )
-            subset.intersect( m_feasibleGlobalBiasSets.at(i) );
+        if( m_feasibleCollectionFilters.at(i)->weight() == 1.0 )
+            subset.intersect( m_feasibleCollectionFilterSets.at(i) );
 
-        if( m_feasibleGlobalBiases.at(i)->weight() == 0.0 )
-            subset.subtract( m_feasibleGlobalBiasSets.at(i) );
+        if( m_feasibleCollectionFilters.at(i)->weight() == 0.0 )
+            subset.subtract( m_feasibleCollectionFilterSets.at(i) );
     }
 
     m_domain = subset.uidList();

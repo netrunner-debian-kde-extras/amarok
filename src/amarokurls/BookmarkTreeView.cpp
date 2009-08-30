@@ -1,31 +1,30 @@
-/***************************************************************************
- *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
  
 #include "BookmarkTreeView.h"
 
 #include "BookmarkModel.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
+#include "dialogs/TagDialog.h"
 #include "PaletteHandler.h"
 #include "AmarokUrl.h"
 #include "BookmarkGroup.h"
+#include "playlist/PlaylistController.h"
 #include "SvgHandler.h"
 #include "statusbar/StatusBar.h"
+#include "timecode/TimecodeMeta.h"
 
 #include <KAction>
 #include <KMenu>
@@ -40,26 +39,16 @@
 #include <typeinfo>
 
 BookmarkTreeView::BookmarkTreeView( QWidget *parent )
-    : Amarok::PrettyTreeView( parent )
+    : QTreeView( parent )
     , m_loadAction( 0 )
     , m_deleteAction( 0 )
     , m_renameAction( 0 )
+    , m_createTimecodeTrackAction( 0 )
     , m_addGroupAction( 0 )
 {
 
-    setEditTriggers( QAbstractItemView::NoEditTriggers );
-
+    setEditTriggers( QAbstractItemView::SelectedClicked );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
-    The::paletteHandler()->updateItemView( this );
-
-    header()->hide();
-    setFrameShape( QFrame::NoFrame );
-
-    //Give line edits a solid background color as any edit delegates will otherwise inherit the transparent base color,
-    //which is bad as the line edit is drawn on top of the original name, leading to double text while editing....
-    QPalette p = The::paletteHandler()->palette();
-    QColor c = p.color( QPalette::Base );
-    setStyleSheet("QLineEdit { background-color: " + c.name() + " }");
 
     setDragEnabled( true );
     setAcceptDrops( true );
@@ -73,7 +62,7 @@ BookmarkTreeView::~BookmarkTreeView()
 
 void BookmarkTreeView::mouseDoubleClickEvent( QMouseEvent * event )
 {
-    QModelIndex index = indexAt( event->pos() );
+    QModelIndex index = m_proxyModel->mapToSource( indexAt( event->pos() ) );
 
     if( index.isValid() )
     {
@@ -106,6 +95,7 @@ BookmarkTreeView::keyPressEvent( QKeyEvent *event )
 QList<KAction *>
 BookmarkTreeView::createCommonActions( QModelIndexList indices )
 {
+    DEBUG_BLOCK
 
     QList< KAction * > actions;
     
@@ -124,7 +114,14 @@ BookmarkTreeView::createCommonActions( QModelIndexList indices )
     if ( m_renameAction == 0 )
     {
         m_renameAction = new KAction( KIcon( "media-track-edit-amarok" ), i18n( "&Rename" ), this );
-        connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRename() ) );
+        connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotCreateTimecodeTrack() ) );
+    }
+
+    if ( m_createTimecodeTrackAction == 0 )
+    {
+        debug() << "creating m_createTimecodeTrackAction";
+        m_createTimecodeTrackAction = new KAction( KIcon( "media-track-edit-amarok" ), i18n( "&Create timecode track" ), this );
+        connect( m_createTimecodeTrackAction, SIGNAL( triggered() ), this, SLOT( slotCreateTimecodeTrack() ) );
     }
     
     if ( indices.count() > 0 )
@@ -137,6 +134,12 @@ BookmarkTreeView::createCommonActions( QModelIndexList indices )
 
     if ( indices.count() == 1 )
         actions << m_renameAction;
+
+    if ( indices.count() == 2 ) {
+        debug() << "adding m_createTimecodeTrackAction";
+        actions << m_createTimecodeTrackAction;
+
+    }
 
 
     return actions;
@@ -193,18 +196,22 @@ void BookmarkTreeView::contextMenuEvent( QContextMenuEvent * event )
     if( indices.count() == 0 )
         menu->addAction( m_addGroupAction );
 
-    debug() << "showing menu at pos:" << event->pos() << "and globalpos:" << event->globalPos();
-    emit showMenu( menu, event->globalPos() );
+    menu->exec( event->globalPos() );
 }
 
 QSet<BookmarkViewItemPtr>
 BookmarkTreeView::selectedItems() const
 {
+    DEBUG_BLOCK
     QSet<BookmarkViewItemPtr> selected;
     foreach( const QModelIndex &index, selectionModel()->selectedIndexes() )
     {
-        if( index.isValid() && index.internalPointer() )
-            selected.insert( BookmarkModel::instance()->data( index, 0xf00d ).value<BookmarkViewItemPtr>() );
+        QModelIndex sourceIndex = m_proxyModel->mapToSource( index );
+        if( sourceIndex.isValid() && sourceIndex.internalPointer() && sourceIndex.column() == 0 )
+        {
+            debug() << "inserting item " << sourceIndex.data( Qt::DisplayRole ).toString();
+            selected.insert( BookmarkModel::instance()->data( sourceIndex, 0xf00d ).value<BookmarkViewItemPtr>() );
+        }
     } 
     return selected;
 }
@@ -219,14 +226,19 @@ void BookmarkTreeView::selectionChanged( const QItemSelection & selected, const 
     DEBUG_BLOCK
     Q_UNUSED( deselected )
     QModelIndexList indexes = selected.indexes();
-    if ( indexes.size() == 1 ) {
-        QModelIndex index = indexes.at( 0 );
-        BookmarkViewItemPtr item = BookmarkModel::instance()->data( index, 0xf00d ).value<BookmarkViewItemPtr>();
+    debug() << indexes.size() << " items selected";
+    foreach( QModelIndex index, indexes )
+    {
+        index = m_proxyModel->mapToSource( index );
+        if( index.column() == 0 )
+        {
+            BookmarkViewItemPtr item = BookmarkModel::instance()->data( index, 0xf00d ).value<BookmarkViewItemPtr>();
 
-        if ( typeid( * item ) == typeid( AmarokUrl ) ) {
-            debug() << "a url was selected...";
-            AmarokUrl bookmark = *static_cast< AmarokUrl* >( item.data() );
-            emit( bookmarkSelected( bookmark ) );
+            if ( typeid( * item ) == typeid( AmarokUrl ) ) {
+                debug() << "a url was selected...";
+                AmarokUrl bookmark = *static_cast< AmarokUrl* >( item.data() );
+                emit( bookmarkSelected( bookmark ) );
+            }
         }
     }
     
@@ -238,7 +250,7 @@ KMenu* BookmarkTreeView::contextMenu( const QPoint& point )
     KMenu* menu = new KMenu( 0 );
 
     debug() << "getting menu for point:" << point;
-    QModelIndex index = indexAt( point );
+    QModelIndex index = m_proxyModel->mapToSource( indexAt( point ) );
     if( index.isValid() )
     {
 
@@ -257,6 +269,103 @@ KMenu* BookmarkTreeView::contextMenu( const QPoint& point )
     }
     
     return menu;
+}
+
+void BookmarkTreeView::slotCreateTimecodeTrack() const
+{
+
+    //TODO: Factor into seperate class
+    
+    QList<BookmarkViewItemPtr> list = selectedItems().toList();
+    if ( list.count() != 2 )
+        return;
+
+    const AmarokUrl * url1 = dynamic_cast<const AmarokUrl *>( list.at( 0 ).data() );
+
+    if ( url1 == 0 )
+        return;
+    if ( url1->command() != "play" )
+        return;
+
+    const AmarokUrl * url2 = dynamic_cast<const AmarokUrl *>( list.at( 1 ).data() );
+
+    if ( url2 == 0 )
+        return;
+    if ( url2->command() != "play" )
+        return;
+
+    if ( url1->path() != url2->path() )
+        return;
+
+    //ok, so we actually have to timecodes from the same base url, not get the
+    //minimum and maximum time:
+
+    int pos1 = 0;
+    int pos2 = 0;
+
+    if ( url1->args().keys().contains( "pos" ) )
+    {
+        pos1 = url1->args().value( "pos" ).toInt();
+    }
+
+    if ( url2->args().keys().contains( "pos" ) )
+    {
+        pos2 = url2->args().value( "pos" ).toInt();
+    }
+
+    if ( pos1 == pos2 )
+        return;
+
+    int start = qMin( pos1, pos2 ) * 1000;
+    int end = qMax( pos1, pos2 ) * 1000;
+
+    //Now we really should pop up a menu to get the user to enter some info about this
+    //new track, but for now, just fake it as this is just for testing anyway
+
+    QString url = QUrl::fromEncoded ( QByteArray::fromBase64 ( url1->path().toUtf8() ) ).toString();
+    
+    Meta::TimecodeTrackPtr track = Meta::TimecodeTrackPtr( new Meta::TimecodeTrack( i18n( "New Timecode Track" ), url, start, end ) );
+    Meta::TimecodeAlbumPtr album = Meta::TimecodeAlbumPtr( new Meta::TimecodeAlbum( i18n( "Unknown" ) ) );
+    Meta::TimecodeArtistPtr artist = Meta::TimecodeArtistPtr( new Meta::TimecodeArtist( i18n(  "Unknown" ) ) );
+    Meta::TimecodeGenrePtr genre = Meta::TimecodeGenrePtr( new Meta::TimecodeGenre( i18n( "Unknown" ) ) );
+
+    
+    album->addTrack( track );
+    artist->addTrack( track );
+    genre->addTrack( track );
+
+    track->setAlbum( album );
+    track->setArtist( artist );
+    track->setGenre( genre );
+
+    album->setAlbumArtist( artist );
+    album->setIsCompilation( false );
+
+    //make the user give us some info about this item...
+
+    Meta::TrackList tl;
+    tl.append( Meta::TrackPtr::staticCast( track ) );
+    TagDialog *dialog = new TagDialog( tl, 0 );
+    dialog->show();
+
+
+    //now add it to the playlist
+
+    The::playlistController()->insertOptioned( Meta::TrackPtr::staticCast( track ), Playlist::AppendAndPlay );
+
+    
+}
+
+void BookmarkTreeView::setProxy( QSortFilterProxyModel *proxy )
+{
+    m_proxyModel = proxy;
+}
+
+void BookmarkTreeView::slotEdit( const QModelIndex &index )
+{
+
+    //translate to proxy terms
+    edit( m_proxyModel->mapFromSource( index ) );
 }
 
 #include "BookmarkTreeView.moc"

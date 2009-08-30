@@ -1,21 +1,18 @@
-/***************************************************************************
- *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "ScriptableServiceManager.h"
 
@@ -59,6 +56,7 @@ bool ScriptableServiceManager::initService( const QString &name, int levels, con
     service->init( levels, rootHtml, showSearchBar );
     m_rootHtml = rootHtml;
 
+    debug() << "emitting scripted service " << name;
     emit addService( service );
 
     return true;
@@ -114,7 +112,7 @@ void ScriptableServiceManager::removeRunningScript(const QString & name)
     m_serviceMap.take( name );
 
     //service gets deleted by serviceBrowser
-    ServiceBrowser::instance()->removeService( name );
+    ServiceBrowser::instance()->removeCategory( name );
 }
 
 void ScriptableServiceManager::setIcon( const QString & serviceName, const QPixmap & icon )

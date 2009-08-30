@@ -1,15 +1,20 @@
-/**************************************************************************
-* copyright            : (C) 2008 Leo Franchi <lfranchi@kde.org  >        *
-**************************************************************************/
-
-/***************************************************************************
-*                                                                         *
-*   This program is free software; you can redistribute it and/or modify  *
-*   it under the terms of the GNU General Public License as published by  *
-*   the Free Software Foundation; either version 2 of the License, or     *
-*   (at your option) any later version.                                   *
-*                                                                         *
-***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                                    *
+ * Copyright (c) 2009 Simon Esneault <simon.esneault@gmail.com>                         *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "AppletToolbarAppletItem.h"
 
@@ -18,8 +23,9 @@
 #include "Debug.h"
 #include "PaletteHandler.h"
 
-#include <plasma/applet.h>
-#include <plasma/widgets/iconwidget.h>
+#include <Plasma/Animator>
+#include <Plasma/Applet>
+#include <Plasma/IconWidget>
 
 #include <KIcon>
 
@@ -45,7 +51,9 @@ Context::AppletToolbarAppletItem::AppletToolbarAppletItem( QGraphicsItem* parent
        m_label->setText( m_applet->name() );
     else
         m_label->setText( i18n("no applet name") );
-        
+
+    setAcceptHoverEvents( true );
+    m_label->setAcceptHoverEvents( true );
     QAction* delApplet = new QAction( i18n( "Remove Applet" ), this );
     delApplet->setIcon( KIcon( "edit-delete" ) );
     delApplet->setVisible( true );
@@ -177,5 +185,30 @@ Context::AppletToolbarAppletItem::addAction( QAction *action, int size )
 
     return tool;
 }
+
+void
+Context::AppletToolbarAppletItem::hoverEnterEvent( QGraphicsSceneHoverEvent * )
+{
+    Plasma::Animator::self()->customAnimation( 20, 300, Plasma::Animator::EaseInCurve, this, "animateHoverIn" );
+}
+
+void
+Context::AppletToolbarAppletItem::hoverLeaveEvent( QGraphicsSceneHoverEvent * )
+{
+    Plasma::Animator::self()->customAnimation( 20, 300, Plasma::Animator::EaseOutCurve, this, "animateHoverOut" );
+}
+
+void
+Context::AppletToolbarAppletItem::animateHoverIn( qreal progress )
+{
+    m_label->setOpacity( 1.0 - progress * 0.5 );
+}
+
+void
+Context::AppletToolbarAppletItem::animateHoverOut( qreal progress )
+{
+    m_label->setOpacity( 0.5 + progress * 0.5 );
+}
+
 
 #include "AppletToolbarAppletItem.moc"

@@ -1,21 +1,19 @@
-/* This file is part of the Amarok project
-   Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
-   Copyright (C) 2008 Mark Kretschmann <kretschmann@kde.org>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>                            *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef AMAROK_META_H
 #define AMAROK_META_H
@@ -24,6 +22,7 @@
 
 #include "meta/Capability.h"
 
+#include <QDateTime>
 #include <QList>
 #include <QMetaType>
 #include <QPixmap>
@@ -101,7 +100,40 @@ namespace Meta
             QSet<YearPtr> m_yearSubscriptions;
     };
 
-    class AMAROK_EXPORT MetaBase : public QSharedData
+    class AMAROK_EXPORT MetaCapability
+    {
+    public:
+        virtual ~MetaCapability() {}
+
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+
+        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+
+        /**
+             * Retrieves a specialized interface which represents a capability of this
+             * MetaBase object.
+             *
+             * @returns a pointer to the capability interface if it exists, 0 otherwise
+             */
+        template <class CapIface> CapIface *create()
+        {
+            Meta::Capability::Type type = CapIface::capabilityInterfaceType();
+            Meta::Capability *iface = createCapabilityInterface(type);
+            return qobject_cast<CapIface *>(iface);
+        }
+
+        /**
+             * Tests if a MetaBase object provides a given capability interface.
+             *
+             * @returns true if the interface is available, false otherwise
+             */
+        template <class CapIface> bool is() const
+        {
+            return hasCapabilityInterface( CapIface::capabilityInterfaceType() );
+        }
+    };
+
+    class AMAROK_EXPORT MetaBase : public QSharedData, public MetaCapability
     {
         friend class Observer;
 
@@ -126,32 +158,7 @@ namespace Meta
 
             virtual void addMatchTo( QueryMaker *qm ) = 0;
 
-            virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
 
-            virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
-
-            /**
-             * Retrieves a specialized interface which represents a capability of this
-             * MetaBase object.
-             *
-             * @returns a pointer to the capability interface if it exists, 0 otherwise
-             */
-            template <class CapIface> CapIface *create()
-            {
-                Meta::Capability::Type type = CapIface::capabilityInterfaceType();
-                Meta::Capability *iface = createCapabilityInterface(type);
-                return qobject_cast<CapIface *>(iface);
-            }
-
-            /**
-             * Tests if a MetaBase object provides a given capability interface.
-             *
-             * @returns true if the interface is available, false otherwise
-             */
-            template <class CapIface> bool is() const
-            {
-                return hasCapabilityInterface( CapIface::capabilityInterfaceType() );
-            }
 
         protected:
             virtual void subscribe( Observer *observer );
@@ -219,6 +226,9 @@ namespace Meta
             virtual int sampleRate() const = 0;
             /** Returns the bitrate o this track */
             virtual int bitrate() const = 0;
+            /** Returns the time when the track was added to the collection,
+                or an invalid QDateTime instance if the time is not known */
+            virtual QDateTime createDate() const;
             /** Returns the track number of this track */
             virtual int trackNumber() const = 0;
             /** Returns the discnumber of this track */
@@ -271,7 +281,7 @@ namespace Meta
 
             virtual bool operator==( const Track &track ) const;
 
-            static bool lessThan( const TrackPtr left, const TrackPtr right );
+            static bool lessThan( const TrackPtr& left, const TrackPtr& right );
 
         protected:
             virtual void notifyObservers() const;

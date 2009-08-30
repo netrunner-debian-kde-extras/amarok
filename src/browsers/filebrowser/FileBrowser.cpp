@@ -1,24 +1,22 @@
-/* This file is part of the KDE project
-   Copyright (C) 2001 Christoph Cullmann <cullmann@kde.org>
-   Copyright (C) 2001 Joseph Wenninger <jowenn@kde.org>
-   Copyright (C) 2001 Anders Lund <anders.lund@lund.tdcadsl.dk>
-   Copyright (C) 2007 Mirko Stocker <me@misto.ch>
-   Copyright (C) 2008-2009 Mark Kretschmann <kretschmann@kde.org>
-
-   This library is free software; you can redistribute it and/or
-   modify it under the terms of the GNU Library General Public
-   License version 2 as published by the Free Software Foundation.
-
-   This library is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-   Library General Public License for more details.
-
-   You should have received a copy of the GNU Library General Public License
-   along with this library; see the file COPYING.LIB.  If not, write to
-   the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
-   Boston, MA 02110-1301, USA.
-*/
+/****************************************************************************************
+ * Copyright (c) 2001 Christoph Cullmann <cullmann@kde.org>                             *
+ * Copyright (c) 2001 Joseph Wenninger <jowenn@kde.org>                                 *
+ * Copyright (c) 2001 Anders Lund <anders.lund@lund.tdcadsl.dk>                         *
+ * Copyright (c) 2007 Mirko Stocker <me@misto.ch>                                       *
+ * Copyright (c) 2008-2009 Mark Kretschmann <kretschmann@kde.org>                       *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "FileBrowser.h"
 
@@ -43,13 +41,15 @@
 #include <KToolBar>
 #include <KUrlCompletion>
 #include <KUrlNavigator>
+#include <KStandardDirs>
 #include <kfileplacesmodel.h>
 
 
 FileBrowser::Widget::Widget( const char * name , QWidget *parent )
-    : KVBox( parent )
+    : BrowserCategory( name, parent )
     , m_bookmarkHandler( 0 )
 {
+    Q_UNUSED( parent )
     DEBUG_BLOCK
 
     setObjectName( name );
@@ -122,6 +122,10 @@ FileBrowser::Widget::Widget( const char * name , QWidget *parent )
     m_actionCollection->addAssociatedWidget( this );
     foreach( QAction* action, m_actionCollection->actions() )
     action->setShortcutContext( Qt::WidgetWithChildrenShortcut );
+
+    setLongDescription( i18n( "The file browser lets you browse files anywhere on your system, regardless of whether these files are part of your local collection. You can then add these files to the playlist as well as perform basic file operations." ) );
+
+    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_files.png" ) );
 }
 
 FileBrowser::Widget::~Widget()
@@ -154,7 +158,11 @@ void FileBrowser::Widget::readConfig()
         m_dirOperator->setView( KFile::DetailTree );
     else
         m_dirOperator->setView( KFile::Simple );
+
+    m_urlNav->setUrlEditable( config.readEntry( "UrlEditable", false ) );
+
     m_dirOperator->view()->setSelectionMode( QAbstractItemView::ExtendedSelection );
+
     if( config.hasKey( "Sorting" ) )
         m_dirOperator->setSorting( static_cast<QDir::SortFlags>( config.readEntry( "Sorting" ).toInt() ) );
 
@@ -169,14 +177,17 @@ void FileBrowser::Widget::writeConfig()
 
     KConfigGroup config = Amarok::config( "File Browser" );
 
-    config.writeEntry( "Current Directory", m_dirOperator->url() );
-    config.writeEntry( "Sorting", QString::number( static_cast<QDir::SortFlags>( m_dirOperator->sorting() ) ) );
+    config.writeEntry( "Current Directory", m_dirOperator->url().toLocalFile() );
     config.writeEntry( "Filter History Length", m_filter->maxCount() );
     config.writeEntry( "Filter History", m_filter->historyItems() );
+    config.writeEntry( "UrlEditable", m_urlNav->isUrlEditable() );
     config.writeEntry( "Last Filter", m_lastFilter );
+    config.writeEntry( "Sorting", QString::number( static_cast<QDir::SortFlags>( m_dirOperator->sorting() ) ) );
 
     // Writes some settings from KDirOperator
     m_dirOperator->writeConfig( config );
+
+    config.sync();
 }
 
 void FileBrowser::Widget::setupToolbar()
@@ -237,7 +248,7 @@ bool isReadable( const KUrl& url )
     if ( !url.isLocalFile() )
         return true; // what else can we say?
 
-    QDir dir( url.path() );
+    QDir dir( url.toLocalFile() );
     return dir.exists();
 }
 

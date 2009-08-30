@@ -40,7 +40,7 @@ class POPUPDROPPER_EXPORT PopupDropperItem : public QObject, public QAbstractGra
     Q_PROPERTY( HoverIndicatorShowStyle hoverIndicatorShowStyle READ hoverIndicatorShowStyle WRITE setHoverIndicatorShowStyle )
     Q_PROPERTY( Orientation orientation READ orientation WRITE setOrientation )
     Q_PROPERTY( TextProtection textProtection READ textProtection WRITE setTextProtection )
-    Q_PROPERTY( PopupDropperAction* action READ action WRITE setAction )
+    Q_PROPERTY( QAction* action READ action WRITE setAction )
     Q_PROPERTY( QString text READ text WRITE setText )
     Q_PROPERTY( QFont font READ font WRITE setFont )
     Q_PROPERTY( QGraphicsTextItem* textItem READ textItem WRITE setTextItem )
@@ -64,6 +64,11 @@ class POPUPDROPPER_EXPORT PopupDropperItem : public QObject, public QAbstractGra
     Q_PROPERTY( bool customHoveredTextColor READ customHoveredTextColor )
     Q_PROPERTY( bool customHoveredBorderPen READ customHoveredBorderPen )
     Q_PROPERTY( bool customHoveredFillBrush READ customHoveredFillBrush )
+    Q_PROPERTY( qreal subitemOpacity READ subitemOpacity WRITE setSubitemOpacity )
+    Q_PROPERTY( bool separator READ isSeparator WRITE setSeparator )
+    Q_PROPERTY( PopupDropperItem::SeparatorStyle separatorStyle READ separatorStyle WRITE setSeparatorStyle )
+    Q_PROPERTY( bool hasLineSeparatorPen READ hasLineSeparatorPen )
+    Q_PROPERTY( QPen lineSeparatorPen READ lineSeparatorPen WRITE setLineSeparatorPen )
 
 public:
     enum HoverIndicatorShowStyle { Never, OnHover, AlwaysShow };
@@ -72,6 +77,8 @@ public:
     Q_ENUMS( Orientation )
     enum TextProtection { NoProtection, MultiLine, ScaleFont };
     Q_ENUMS( TextProtection )
+    enum SeparatorStyle{TextSeparator, LineSeparator};
+    Q_ENUMS( separatorStyle )
 
     PopupDropperItem( QGraphicsItem *parent = 0 );
     explicit PopupDropperItem( const QString &file, QGraphicsItem *parent = 0 );
@@ -79,8 +86,8 @@ public:
 
     void show();
 
-    PopupDropperAction* action() const;
-    void setAction( PopupDropperAction *action );
+    QAction* action() const;
+    void setAction( QAction *action );
 
     HoverIndicatorShowStyle hoverIndicatorShowStyle() const;
     void setHoverIndicatorShowStyle( HoverIndicatorShowStyle hover );
@@ -107,6 +114,8 @@ public:
     bool customHoveredTextColor() const;
     bool customHoveredBorderPen() const;
     bool customHoveredFillBrush() const;
+    void setSubitemOpacity( qreal opacity );
+    qreal subitemOpacity() const;
 
     QGraphicsTextItem* textItem() const;
     void setTextItem( QGraphicsTextItem *textItem );
@@ -127,6 +136,15 @@ public:
     void setHorizontalOffset( int offset );
     int textOffset() const;
     void setTextOffset( int offset );
+
+    bool isSeparator() const;
+    void setSeparator( bool separator );
+    PopupDropperItem::SeparatorStyle separatorStyle() const;
+    void setSeparatorStyle( PopupDropperItem::SeparatorStyle style );
+    bool hasLineSeparatorPen() const;
+    QPen lineSeparatorPen() const;
+    void setLineSeparatorPen( const QPen &pen );
+    void clearLineSeparatorPen();
 
     int hoverMsecs() const;
     void setHoverMsecs( const int msecs );

@@ -1,8 +1,9 @@
 [Desktop Entry]
 Name=Playlist Information
-Name[bg]=Информация за списъка за изпълнение
+Name[bg]=Информация за списъка
 Name[ca]=Informació de la llista de reproducció
 Name[cs]=Informace o seznamu skladeb
+Name[csb]=Wëdowiédza ò lësce graniô
 Name[da]=Spillelisteinformation
 Name[de]=Wiedergabelisten-Information
 Name[el]=Πληροφορίες λίστας αναπαραγωγής
@@ -42,6 +43,7 @@ Name[uk]=Інформація про список композицій
 Name[wa]=Pondants et djondants del djivêye a djouwer
 Name[x-test]=xxPlaylist Informationxx
 Name[zh_CN]=播放列表信息
+Name[zh_TW]=播放清單資訊
 Type=Service
 ServiceTypes=Plasma/Applet
 

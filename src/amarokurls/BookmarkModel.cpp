@@ -1,28 +1,26 @@
-/***************************************************************************
- *   Copyright (c) 2008  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *             (c) 2008  Ian Monroe <imonroe@kde.org>                      *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2008 Ian Monroe <imonroe@kde.org>                                      *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "BookmarkModel.h"
 
 #include "AmarokMimeData.h"
 #include "AmarokUrl.h"
 #include "BookmarkGroup.h"
+#include "AmarokUrlHandler.h"
 #include "Debug.h"
 #include "CollectionManager.h"
 #include "SqlStorage.h"
@@ -62,7 +60,7 @@ BookmarkModel::~BookmarkModel()
 }
 
 QVariant
-BookmarkModel::data(const QModelIndex & index, int role) const
+BookmarkModel::data( const QModelIndex & index, int role ) const
 {
     
     if ( !index.isValid() )
@@ -70,22 +68,53 @@ BookmarkModel::data(const QModelIndex & index, int role) const
 
     BookmarkViewItemPtr item =  m_viewItems.value( index.internalId() );
 
-    if ( role == 0xf00d )
+    if( role == 0xf00d )
         return QVariant::fromValue( item );
-    else if ( role == Qt::DisplayRole || role == Qt::EditRole )
-        return item->name();
-    else if (role == Qt::DecorationRole ) {
-
-        if ( typeid( * item ) == typeid( BookmarkGroup ) )
-            return QVariant( KIcon( "folder-amarok" ) );
-        else if ( typeid( * item ) == typeid( AmarokUrl ) ) {
-            AmarokUrl * url = static_cast<AmarokUrl *>( item.data() );
-            if ( url->command() == "navigate" )
-                return QVariant( KIcon( "flag-amarok" ) );
-            else if ( url->command() == "play" )
-                return QVariant( KIcon( "x-media-podcast-amarok" ) );
-            else
-                return QVariant( KIcon() );
+    else if( role == Qt::DisplayRole || role == Qt::EditRole )
+    {
+        switch( index.column() )
+        {
+            case Name:
+                return item->name();
+                break;
+            case Command:
+            {
+                AmarokUrl * url = dynamic_cast<AmarokUrl *>( item.data() );
+                if ( url )
+                    return url->command();
+                else
+                    return i18n( "group" );
+                break;
+            }
+            case Url:
+            {
+                AmarokUrl * url = dynamic_cast<AmarokUrl *>( item.data() );
+                if ( url )
+                    return url->url();
+                else
+                    return QString();
+                break;
+            }
+            case Description:
+            {
+                return item->description();
+                break;
+            }
+            default:
+                break;
+        }
+    }
+    else if( role == Qt::DecorationRole )
+    {
+        if( index.column() == Name )
+        {
+            if ( typeid( * item ) == typeid( BookmarkGroup ) )
+                return QVariant( KIcon( "folder-bookmark" ) );
+            else if ( typeid( * item ) == typeid( AmarokUrl ) )
+            {
+                AmarokUrl * url = static_cast<AmarokUrl *>( item.data() );
+                return The::amarokUrlHandler()->iconForCommand( url->command() );
+            }
         }
     }
 
@@ -109,7 +138,7 @@ BookmarkModel::createIndex( int row, int column, BookmarkViewItemPtr item ) cons
 }
 
 QModelIndex
-BookmarkModel::index(int row, int column, const QModelIndex & parent) const
+BookmarkModel::index( int row, int column, const QModelIndex & parent ) const
 {
     //DEBUG_BLOCK
 
@@ -198,7 +227,8 @@ BookmarkModel::rowCount( const QModelIndex & parent ) const
 int
 BookmarkModel::columnCount(const QModelIndex & /*parent*/) const
 {
-    return 1;
+    //name, command, url, description
+    return 4;
 }
 
 
@@ -212,11 +242,18 @@ BookmarkModel::flags( const QModelIndex & index ) const
 
     if ( typeid( * item ) == typeid( BookmarkGroup ) )
     {
-        debug() <<  "got a group with ItemIsDropEnabled";
-        return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled;
+        if ( index.column() != Command )
+            return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled;
+        else
+            return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled;
     }
     else
-        return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
+    {
+        if ( index.column() != Command )
+            return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
+        else
+             return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled;
+    }
 }
 
 QVariant
@@ -225,7 +262,10 @@ BookmarkModel::headerData(int section, Qt::Orientation orientation, int role) co
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         switch( section )
         {
-            case 0: return i18n("Name");
+            case Name: return i18n("Name");
+            case Command: return i18n("Type");
+            case Url: return i18n("Url");
+            case Description: return i18n("Description");
             default: return QVariant();
         }
     }
@@ -233,17 +273,48 @@ BookmarkModel::headerData(int section, Qt::Orientation orientation, int role) co
     return QVariant();
 }
 
-bool BookmarkModel::setData(const QModelIndex & index, const QVariant & value, int role)
+bool BookmarkModel::setData( const QModelIndex & index, const QVariant & value, int role )
 {
     if (role != Qt::EditRole)
         return false;
-    if ( index.column() != 0 )
+    if ( index.column() == Command )
         return false;
 
     BookmarkViewItemPtr item = m_viewItems.value( index.internalId() );
 
-    item->rename( value.toString() );
+    switch( index.column() )
+    {
+        case Name:
+            item->rename( value.toString() );
+            emit dataChanged( index, index );
+            break;
+        case Url:
+        {
+            AmarokUrl * url = dynamic_cast<AmarokUrl *>( item.data() );
+            if ( url )
+            {
+                debug() << "writing " << value.toString() << " as new url!";
+                url->initFromString( value.toString() );
+                url->saveToDb();
 
+                emit dataChanged( index, index );
+            }
+            break;
+        }
+        case Description:
+        {
+            item->setDescription( value.toString() );
+            
+            AmarokUrl * url = dynamic_cast<AmarokUrl *>( item.data() );
+            if ( url )
+            {
+                url->saveToDb();
+                emit dataChanged( index, index );
+            }
+
+            break;
+        }
+    }
     return true;
 
 }
@@ -363,7 +434,7 @@ void BookmarkModel::createTables()
             ", parent_id INTEGER"
             ", name " + sqlStorage->textColumnType() +
             ", description " + sqlStorage->textColumnType() +
-            ", custom " + sqlStorage->textColumnType() + " );" ) );
+            ", custom " + sqlStorage->textColumnType() + " ) ENGINE = MyISAM;" ) );
 
     sqlStorage->query( QString( "CREATE TABLE bookmarks ("
             " id " + sqlStorage->idType() +
@@ -371,7 +442,7 @@ void BookmarkModel::createTables()
             ", name " + sqlStorage->textColumnType() +
             ", url " + sqlStorage->exactTextColumnType() +
             ", description " + sqlStorage->exactTextColumnType() +
-            ", custom " + sqlStorage->textColumnType() + " );" ) );
+            ", custom " + sqlStorage->textColumnType() + " ) ENGINE = MyISAM;" ) );
 
 }
 
@@ -412,8 +483,9 @@ void
 BookmarkModel::reloadFromDb()
 {
     DEBUG_BLOCK;
-    reset();
     m_root->clear();
+    reset();
+
 }
 
 void
@@ -452,6 +524,34 @@ BookmarkModel::createNewGroup()
         row++;
     }
 
+}
+
+void
+BookmarkModel::createNewBookmark()
+{
+    DEBUG_BLOCK
+    AmarokUrl * url = new AmarokUrl();
+    url->reparent( m_root );
+    url->setName( i18n( "New Bookmark" ) );
+    url->setCommand( i18n( "none" ) );
+    url->saveToDb();
+    int id = url->id();
+    delete url;
+
+    reloadFromDb();
+
+    debug() << "id of new bookmark: " << id;
+    int row = m_root->childGroups().count();
+    foreach ( AmarokUrlPtr childBookmark, m_root->childBookmarks() ) {
+        debug() << id << " == " << childBookmark->id() << " ? ";
+        if ( childBookmark->id() == id )
+        {
+            debug() << "emmiting edit for " << childBookmark->name() << " id " << childBookmark->id() << " in row " << row;
+            emit editIndex( createIndex( row , 0, BookmarkViewItemPtr::staticCast( childBookmark ) ) );
+        }
+        row++;
+    }
+   
 }
 
 void BookmarkModel::upgradeTables( int from )

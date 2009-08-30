@@ -1,23 +1,26 @@
-/***************************************************************************
-* copyright            : (C) 2008 Shane King <kde@dontletsstart.com>      *
-*                        (C) 2008 Leo Franchi <lfranchi@gmail.com>        *
- **************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Shane King <kde@dontletsstart.com>                                *
+ * Copyright (c) 2008 Leo Franchi <lfranchi@gmail.com>                                  *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef LASTFMSERVICECOLLECTION_H
 #define LASTFMSERVICECOLLECTION_H
 
 #include <ServiceCollection.h>
 
-class WsReply;
+class QNetworkReply;
 
 namespace Meta
 {
@@ -40,12 +43,13 @@ public:
     virtual QueryMaker* queryMaker();
 
 private slots:
-    void slotAddNeighboursLoved( WsReply* reply );
-    void slotAddNeighboursPersonal( WsReply* reply );
-    void slotAddFriendsLoved( WsReply* reply );
-    void slotAddFriendsPersonal( WsReply* reply );
+    void slotAddNeighboursLoved();
+    void slotAddNeighboursPersonal();
+    void slotAddFriendsLoved();
+    void slotAddFriendsPersonal();
     
 private:
+    QMap< QString, QNetworkReply* > m_jobs;
     QString m_userName;
     Meta::ServiceGenre *m_neighborsLoved;
     Meta::ServiceGenre *m_neighborsPersonal;

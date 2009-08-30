@@ -20,11 +20,11 @@
 #include "PopupDropper.h"
 #include "PopupDropperItem.h"
 #include "PopupDropperItem_p.h"
-#include "PopupDropperAction.h"
 
 #include <QtDebug>
 #include <QtSvg/QSvgRenderer>
 #include <QtSvg/QGraphicsSvgItem>
+#include <QAction>
 #include <QFont>
 
 ///////////////////////////////////////////////////////////
@@ -53,14 +53,19 @@ PopupDropperItemPrivate::PopupDropperItemPrivate( PopupDropperItem *parent )
     , customHoveredTextColor( false )
     , customHoveredBorderPen( false )
     , customHoveredFillBrush( false )
-    , separator( false )
+    , subitemOpacity( 0.0 )
     , file( QString() )
     , svgElementRect( 0, 0, 50, 50 )
+    , sharedRenderer( 0 )
     , horizontalOffset( 30 )
     , textOffset( 30 )
+    , separator( false )
+    , hasLineSeparatorPen( false )
+    , lineSeparatorPen()
     , hoverIndicatorShowStyle( PopupDropperItem::Never )
     , orientation( PopupDropperItem::Left )
     , textProtection( PopupDropperItem::ScaleFont )
+    , separatorStyle( PopupDropperItem::TextSeparator )
     , pd( 0 )
     , q( parent )
     {
@@ -108,22 +113,19 @@ void PopupDropperItem::show()
 {
 }
 
-PopupDropperAction* PopupDropperItem::action() const
+QAction* PopupDropperItem::action() const
 {
     return d->action;
 }
 
-//warning: setting a PopupDropperAction will override any currently defined shared renderer
-//and element id, if they exist in the action!
-void PopupDropperItem::setAction( PopupDropperAction *action )
+void PopupDropperItem::setAction( QAction *action )
 {
     if( !action )
         return;
     //note that this also sets the text
     d->action = action;
     d->text = action->text();
-    PopupDropperAction* pudaction = dynamic_cast<PopupDropperAction*>(action);
-    if( pudaction )
+    if( action )
     {
         if( !d->svgItem )
         {
@@ -132,18 +134,24 @@ void PopupDropperItem::setAction( PopupDropperAction *action )
             else
                 d->svgItem = new QGraphicsSvgItem( this );
         }
-        if( pudaction->renderer() && pudaction->renderer()->isValid() )
-            d->svgItem->setSharedRenderer( pudaction->renderer() );
 
-        if( !pudaction->elementId().isEmpty() )
-            d->svgItem->setElementId( pudaction->elementId() );
+        if( d->sharedRenderer )
+            d->svgItem->setSharedRenderer( d->sharedRenderer );
 
-        if( d->svgItem->renderer() && d->svgItem->renderer()->elementExists( pudaction->elementId() ) )
+        if( d->elementId.isEmpty() )
+            d->elementId = action->property( "popupdropper_svg_id" ).toString();
+        if( !d->elementId.isEmpty() )
+        {
+            if( d->svgItem->renderer() && d->svgItem->renderer()->elementExists( d->elementId ) )
+                d->svgItem->setElementId( d->elementId );
+        }
+
+        if( !d->svgItem->elementId().isEmpty() && d->svgItem->renderer()->elementExists( d->svgItem->elementId() ) )
             d->svgItem->show();
-        else if( d->svgItem )
+        else
             d->svgItem->hide();
-
-        if( pudaction->isSeparator() )
+ 
+        if( action->isSeparator() )
             d->separator = true;
         
         scaleAndReposSvgItem();
@@ -354,6 +362,27 @@ bool PopupDropperItem::customHoveredFillBrush() const
     return d->customHoveredFillBrush;
 }
 
+qreal PopupDropperItem::subitemOpacity() const
+{
+    return d->subitemOpacity;
+}
+
+void PopupDropperItem::setSubitemOpacity( qreal opacity )
+{
+#if QT_VERSION >= 0x040500
+    if( d->svgItem )
+        d->svgItem->setOpacity( opacity );
+    if( d->textItem )
+        d->textItem->setOpacity( opacity );
+    if( d->borderRectItem )
+        d->borderRectItem->setOpacity( opacity );
+    if( d->hoverIndicatorRectItem )
+        d->hoverIndicatorRectItem->setOpacity( opacity );
+    if( d->hoverIndicatorRectFillItem )
+        d->hoverIndicatorRectFillItem->setOpacity( opacity );
+#endif
+}
+
 QGraphicsTextItem* PopupDropperItem::textItem() const
 {
     return d->textItem;
@@ -480,7 +509,7 @@ void PopupDropperItem::reposTextItem()
         qreal desiredWidth = d->borderRectItem->sceneBoundingRect().width() - offsetPos;
         while( d->textItem->font().pointSize() > 1 &&
                 ( fm.width( d->textItem->toPlainText() ) > desiredWidth ||
-                  fm.height() > d->textItem->boundingRect().height() ) )
+                  fm.height() > d->textItem->boundingRect().height() ) ) 
         {
             QFont font = d->textItem->font();
             font.setPointSize( font.pointSize() - 1 );
@@ -552,14 +581,12 @@ void PopupDropperItem::reposHoverFillRects()
 
 QSvgRenderer* PopupDropperItem::sharedRenderer() const
 {
-    if( d->svgItem )
-        return d->svgItem->renderer();
-    else
-        return 0;
+    return d->sharedRenderer;
 }
 
 void PopupDropperItem::setSharedRenderer( QSvgRenderer *renderer )
 {
+    d->sharedRenderer = renderer;
     if( renderer && d->svgItem )
     {
         d->svgItem->setSharedRenderer( renderer );
@@ -573,21 +600,23 @@ void PopupDropperItem::setSharedRenderer( QSvgRenderer *renderer )
 
 QString PopupDropperItem::elementId() const
 {
-    if( d->svgItem )
-        return d->svgItem->elementId();
-    else
-        return QString();
+    return d->elementId;
 }
 
 void PopupDropperItem::setElementId( const QString &id )
 {
     //qDebug() << "Element ID being set: " << id;
-    if( d->svgItem && d->svgItem->renderer() && d->svgItem->renderer()->elementExists( id ))
+    d->elementId = id;
+    if( id.isEmpty() )
+    {
+        d->svgItem->hide();
+        fullUpdate();
+    }
+    else if( d->svgItem && d->svgItem->renderer() && d->svgItem->renderer()->elementExists( id ))
     {
         d->svgItem->setElementId( id );
         d->svgItem->show();
-        if( d->pd )
-            d->pd->updateAllOverlays();
+        fullUpdate();
     }
 }
 
@@ -619,6 +648,47 @@ int PopupDropperItem::textOffset() const
 void PopupDropperItem::setTextOffset( int offset )
 {
     d->textOffset = offset;
+}
+
+bool PopupDropperItem::isSeparator() const
+{
+    return d->separator;
+}
+
+void PopupDropperItem::setSeparator( bool separator )
+{
+    d->separator = separator;
+}
+
+PopupDropperItem::SeparatorStyle PopupDropperItem::separatorStyle() const
+{
+    return d->separatorStyle;
+}
+
+void PopupDropperItem::setSeparatorStyle( SeparatorStyle style )
+{
+    d->separatorStyle = style;
+}
+
+bool PopupDropperItem::hasLineSeparatorPen() const
+{
+    return d->hasLineSeparatorPen;
+}
+
+QPen PopupDropperItem::lineSeparatorPen() const
+{
+    return d->lineSeparatorPen;
+}
+
+void PopupDropperItem::setLineSeparatorPen( const QPen &pen )
+{
+    d->lineSeparatorPen = pen;
+}
+
+void PopupDropperItem::clearLineSeparatorPen()
+{
+    d->lineSeparatorPen = QPen();
+    d->hasLineSeparatorPen = false;
 }
 
 int PopupDropperItem::hoverMsecs() const

@@ -1,31 +1,31 @@
-/******************************************************************************
- * Copyright (C) 2008 Peter ZHOU <peterzhoulei@gmail.com>                     *
- *                                                                            *
- * This program is free software; you can redistribute it and/or              *
- * modify it under the terms of the GNU General Public License as             *
- * published by the Free Software Foundation; either version 2 of             *
- * the License, or (at your option) any later version.                        *
- *                                                                            *
- * This program is distributed in the hope that it will be useful,            *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
- * GNU General Public License for more details.                               *
- *                                                                            *
- * You should have received a copy of the GNU General Public License          *
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
- ******************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Peter ZHOU <peterzhoulei@gmail.com>                               *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef AMAROK_ENGINE_SCRIPT_H
 #define AMAROK_ENGINE_SCRIPT_H
 
 #include "MetaTypeExporter.h"
+#include "EngineObserver.h"
 
 #include <QObject>
 #include <QtScript>
 
 namespace AmarokScript
 {
-    class AmarokEngineScript : public QObject
+    class AmarokEngineScript : public QObject, public EngineObserver
     {
         Q_OBJECT
 
@@ -40,6 +40,14 @@ namespace AmarokScript
             AmarokEngineScript( QScriptEngine* ScriptEngine );
             ~AmarokEngineScript();
 
+            enum PlayerStatus
+            {
+                Playing  = 0,
+                Paused   = 1,
+                Stopped  = 2,
+                Error    = -1
+            };
+
         public slots:
             void Play() const;
             void Stop( bool forceInstant = false ) const;
@@ -47,7 +55,6 @@ namespace AmarokScript
             void Next() const;
             void Prev() const;
             void PlayPause() const;
-            void PlayAudioCD() const;
             void Seek( int ms ) const;
             void SeekRelative( int ms ) const;
             void SeekForward( int ms = 10000 ) const;
@@ -61,13 +68,18 @@ namespace AmarokScript
             QVariant currentTrack() const;
 
         signals:
-            void trackFinished();
+            void trackFinished(); // when playback stops altogether
             void trackChanged();
             void trackSeeked( int ); //return relative time in million second
             void volumeChanged( int );
             void trackPlayPause( int );  //Playing: 0, Paused: 1
 
         private:
+            void engineVolumeChanged( int value );
+            void engineTrackPositionChanged( long position, bool userSeek );
+            void engineTrackChanged( Meta::TrackPtr track );
+            void engineStateChanged( Phonon::State currentState, Phonon::State oldState );
+
             bool randomMode() const;
             bool dynamicMode() const;
             bool repeatPlaylist() const;

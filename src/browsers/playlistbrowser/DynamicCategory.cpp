@@ -1,30 +1,32 @@
-/*
-    Copyright (c) 2008 Daniel Jones <danielcjones@gmail.com>
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 2 of the License, or
-    (at your option) any later version.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+/****************************************************************************************
+ * Copyright (c) 2008 Daniel Jones <danielcjones@gmail.com>                             *
+ * Copyright (c) 2009 Leo Franchi <lfranchi@kde.org>                                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "DynamicCategory.h"
 
 #include "Amarok.h"
+#include "CustomBias.h"
 #include "Debug.h"
 #include "DynamicModel.h"
 #include "DynamicBiasDelegate.h"
 #include "DynamicBiasModel.h"
+#include "dynamic/biases/EchoNest.h"
 #include "amarokconfig.h"
 #include "playlist/PlaylistActions.h"
-#include "playlist/PlaylistModel.h"
+#include "playlist/PlaylistModelStack.h"
 #include "PaletteHandler.h"
 
 #include <QInputDialog>
@@ -33,6 +35,7 @@
 
 #include <KHBox>
 #include <KIcon>
+#include <KStandardDirs>
 #include <KToolBar>
 
 
@@ -40,18 +43,42 @@ namespace PlaylistBrowserNS {
 
 
 DynamicCategory::DynamicCategory( QWidget* parent )
-    : QWidget( parent )
+    : BrowserCategory( "dynamic category", parent )
     , m_biasListView( 0 )
     , m_biasModel( 0 )
     , m_biasDelegate( 0 )
 {
+    setPrettyName( i18n( "Dynamic Playlists" ) );
+    setShortDescription( i18n( "Dynamically updating parameter based playlists" ) );
+    setIcon( KIcon( "dynamic-amarok" ) );
+
+    setLongDescription( i18n( "With a dynamic playlist, Amarok becomes your own personal dj, automatically selecting tracks for you, based on a number of parameters that you select." ) );
+
+    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_dynamic_playlists.png" ) );
+
     bool enabled = AmarokConfig::dynamicMode();
 
     setContentsMargins(0,0,0,0);
 
-    m_vLayout = new QVBoxLayout( this );
+    KHBox* controlsLayout = new KHBox( this );
 
-    m_onOffCheckbox = new QCheckBox( this );
+    new QLabel( i18n( "Previous:" ), controlsLayout );
+
+    m_previous = new QSpinBox( controlsLayout );
+    m_previous->setMinimum( 0 );
+    m_previous->setToolTip( i18n( "Number of previous tracks to remain in the playlist." ) );
+    m_previous->setValue( AmarokConfig::previousTracks() );
+    QObject::connect( m_previous, SIGNAL( valueChanged( int ) ), this, SLOT( setPreviousTracks( int ) ) );
+
+    new QLabel( i18n( "Upcoming:" ), controlsLayout );
+
+    m_upcoming = new QSpinBox( controlsLayout );
+    m_upcoming->setMinimum( 1 );
+    m_upcoming->setToolTip( i18n( "Number of upcoming tracks to add to the playlist." ) );
+    m_upcoming->setValue( AmarokConfig::upcomingTracks() );
+    QObject::connect( m_upcoming, SIGNAL( valueChanged( int ) ), this, SLOT( setUpcomingTracks( int ) ) );
+
+    m_onOffCheckbox = new QCheckBox( controlsLayout );
     m_onOffCheckbox->setIcon( KIcon( "dynamic-amarok" ) );
     m_onOffCheckbox->setText( i18n( "On" ) );
     m_onOffCheckbox->setToolTip( i18n( "Turn dynamic mode on." ) );
@@ -138,16 +165,7 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     m_biasDelegate = new DynamicBiasDelegate( m_biasListView );
     m_biasListView->setItemDelegate( m_biasDelegate );
 
-    m_vLayout->addWidget( m_onOffCheckbox );
-    m_vLayout->addWidget( m_repopulateButton );
-    m_vLayout->addWidget( presetLayout );
-    m_vLayout->addWidget( m_biasListView );
-
-    this->setLayout( m_vLayout );
-
-
-    int index = DynamicModel::instance()->playlistIndex( 
-            AmarokConfig::lastDynamicMode() );
+    int index = DynamicModel::instance()->activePlaylistIndex();
 
     debug() << "Setting index: " << index;
     if( index >= 0 )
@@ -162,12 +180,16 @@ DynamicCategory::DynamicCategory( QWidget* parent )
     }
 
     m_onOffCheckbox->setChecked( AmarokConfig::dynamicMode() );
+
+    
+    /// HERE WE ADD ALL GENERAL CUSTOM BIASES
+    Dynamic::CustomBias::registerNewBiasFactory( new Dynamic::EchoNestBiasFactory() );
 }
 
 
 DynamicCategory::~DynamicCategory() 
 {
-
+    saveOnExit();
 }
 
 
@@ -204,7 +226,8 @@ DynamicCategory::On()
 
     //if the playlist is empty, repopulate while we are at it:
 
-    if ( The::playlistModel()->rowCount() == 0 )
+    DynamicModel::instance()->enable( true );
+    if ( Playlist::ModelStack::instance()->source()->rowCount() == 0 )
         The::playlistActions()->repopulateDynamicPlaylist();
 }
 
@@ -214,6 +237,7 @@ DynamicCategory::Off()
     AmarokConfig::setDynamicMode( false );
     // TODO: should we restore the state of other modes?
     AmarokConfig::self()->writeConfig();
+    DynamicModel::instance()->enable( false );
     m_repopulateButton->setEnabled( false );
     The::playlistActions()->playlistModeChanged();
 }
@@ -234,8 +258,23 @@ DynamicCategory::playlistCleared() // SLOT
 }
 
 void
+DynamicCategory::setUpcomingTracks( int n ) // SLOT
+{
+    if( n >= 1 )
+        AmarokConfig::setUpcomingTracks( n );
+}
+
+void
+DynamicCategory::setPreviousTracks( int n ) // SLOT
+{
+    if( n >= 0 )
+        AmarokConfig::setPreviousTracks( n );
+}
+
+void
 DynamicCategory::playlistSelectionChanged( int index )
 {
+    DEBUG_BLOCK
     Dynamic::DynamicPlaylistPtr playlist =
         DynamicModel::instance()->setActivePlaylist( index );
 
@@ -281,7 +320,15 @@ DynamicCategory::save()
     playlistSelectionChanged( DynamicModel::instance()->playlistIndex( title ) );
 }
 
+void
+DynamicCategory::saveOnExit()
+{
+    DEBUG_BLOCK
+
+    DynamicModel::instance()->saveCurrent();
 }
+
+} // namespace
 
 void PlaylistBrowserNS::DynamicCategory::newPalette(const QPalette & palette)
 {
@@ -289,7 +336,6 @@ void PlaylistBrowserNS::DynamicCategory::newPalette(const QPalette & palette)
     The::paletteHandler()->updateItemView( m_biasListView );
     m_biasListView->reset();
 }
-
 
 #include "DynamicCategory.moc"
 

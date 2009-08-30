@@ -1,6 +1,6 @@
 [Desktop Entry]
 Name=Lyrics Data Engine
-Name[bg]=Ядро за текстове на песни
+Name[bg]=Ядро за текстове
 Name[ca]=Motor de dades de lletres
 Name[cs]=Datový nástroj Lyrics
 Name[csb]=Mòtór tekstów
@@ -15,7 +15,7 @@ Name[fr]=Moteur de données pour les paroles
 Name[ga]=Inneall Sonraí Liricí
 Name[gl]=Motor de dados de letras de cancións
 Name[hne]=गीत डाटा इंजिन
-Name[is]=Lagatextagagnarvél
+Name[is]=Lagatextagagnavél
 Name[it]=Motore dati dei testi
 Name[ja]=歌詞データエンジン
 Name[km]=ម៉ាស៊ីន​ទិន្នន័យ​អត្ថបទ​ចម្រៀង
@@ -41,6 +41,7 @@ Name[uk]=Рушій даних слів пісень
 Name[wa]=Éndjin d' dinêyes des paroles
 Name[x-test]=xxLyrics Data Enginexx
 Name[zh_CN]=Lyrics 数据引擎
+Name[zh_TW]=歌詞資料引擎
 X-KDE-ServiceTypes=Plasma/DataEngine
 Type=Service
 Icon=lyrics

@@ -1,34 +1,31 @@
-/* This file is part of the KDE project
-   Copyright (C) 2007 Bart Cerneels <bart.cerneels@kde.org>
-   Copyright (c) 2007-2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
-   Copyright (c) 2007 Henry de Valence <hdevalence@gmail.com>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2007 Bart Cerneels <bart.cerneels@kde.org>                             *
+ * Copyright (c) 2007-2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>               *
+ * Copyright (c) 2007 Henry de Valence <hdevalence@gmail.com>                           *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "PodcastCategory.h"
 
 #include "Amarok.h"
 #include "context/ContextView.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "Debug.h"
 #include "PodcastModel.h"
 #include "PopupDropperFactory.h"
-#include "services/ServiceInfoProxy.h"
+#include "browsers/InfoProxy.h"
 #include "SvgTinter.h"
 #include "SvgHandler.h"
 
@@ -48,6 +45,7 @@
 #include <KAction>
 #include <KMenu>
 #include <KIcon>
+#include <KStandardDirs>
 
 #include <typeinfo>
 
@@ -80,9 +78,17 @@ PodcastCategory::destroy()
 }
 
 PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
-    : QWidget()
+    : BrowserCategory( "podcast category", 0 )
     , m_podcastModel( podcastModel )
 {
+    setPrettyName( i18n( "Podcasts" ) );
+    setShortDescription( i18n( "List of subscribed podcasts and episodes" ) );
+    setIcon( KIcon( "podcast-amarok" ) );
+
+    setLongDescription( i18n( "Manage your podcast subscriptions and browse individual episodes. Downloading episodes to the disk is also done here, or you can tell Amarok to do this automatically." ) );
+
+    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_podcasts.png" ) );
+
     resize(339, 574);
     QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
     sizePolicy.setHorizontalStretch(0);
@@ -91,9 +97,6 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     setSizePolicy(sizePolicy);
 
     setContentsMargins(0,0,0,0);
-
-    QVBoxLayout *vLayout = new QVBoxLayout( this );
-    vLayout->setContentsMargins(0,0,0,0);
 
     QToolBar *toolBar = new QToolBar( this );
     toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
@@ -107,8 +110,6 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     toolBar->addAction( updateAllAction );
     connect( updateAllAction, SIGNAL(triggered( bool )),
              m_podcastModel, SLOT(refreshPodcasts()) );
-
-    vLayout->addWidget( toolBar );
 
     m_podcastTreeView = new PodcastView( podcastModel, this );
     m_podcastTreeView->setFrameShape( QFrame::NoFrame );
@@ -141,8 +142,6 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     sizePolicy1.setHeightForWidth(m_podcastTreeView->sizePolicy().hasHeightForWidth());
     m_podcastTreeView->setSizePolicy(sizePolicy1);
 
-    vLayout->addWidget( m_podcastTreeView );
-
     m_viewKicker = new ViewKicker( m_podcastTreeView );
 
     connect( m_podcastTreeView, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( showInfo( const QModelIndex & ) ) );
@@ -162,7 +161,7 @@ PodcastCategory::showInfo( const QModelIndex & index )
     QVariantMap map;
     map["service_name"] = "Podcasts";
     map["main_info"] = description;
-    The::serviceInfoProxy()->setInfo( map );
+    The::infoProxy()->setInfo( map );
 }
 
 ViewKicker::ViewKicker( QTreeView * treeView )
@@ -374,9 +373,9 @@ PodcastView::startDrag( Qt::DropActions supportedActions )
     if( m_pd && m_pd->isHidden() )
     {
 
-        QList<PopupDropperAction*> actions = m_podcastModel->actionsFor( selectedIndexes() );
+        QList<QAction*> actions = m_podcastModel->actionsFor( selectedIndexes() );
 
-        foreach( PopupDropperAction * action, actions )
+        foreach( QAction * action, actions )
         {
             m_pd->addItem( The::popupDropperFactory()->createItem( action ), false );
         }
@@ -403,13 +402,13 @@ PodcastView::contextMenuEvent( QContextMenuEvent * event )
 
     KMenu menu;
     QModelIndexList indices = selectedIndexes();
-    QList<PopupDropperAction *> actions =
+    QList<QAction *> actions =
             m_podcastModel->actionsFor( indices );
 
     if( actions.isEmpty() )
         return;
 
-    foreach( PopupDropperAction * action, actions )
+    foreach( QAction * action, actions )
     {
         if( action )
             menu.addAction( action );

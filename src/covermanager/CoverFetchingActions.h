@@ -1,27 +1,25 @@
-/***************************************************************************
- *   Copyright (c) 2008  Seb Ruiz <ruiz@kde.org>                           *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
+
 #ifndef COVERFETCHINGACTIONS_H
 #define COVERFETCHINGACTIONS_H
 
-#include "context/popupdropper/libpud/PopupDropperAction.h"
-
 #include "Meta.h"
+
+#include <QAction>
 
 /**
  * This collection of actions handles fetching, displaying and removing of album art
@@ -29,18 +27,18 @@
  * @author Seb Ruiz
  */
 
-class AMAROK_EXPORT BaseCoverAction : public PopupDropperAction
+class AMAROK_EXPORT BaseCoverAction : public QAction
 {
     Q_OBJECT
     public:
         BaseCoverAction( QObject *parent, Meta::AlbumPtr album )
-            : PopupDropperAction( parent )
+            : QAction( parent )
         {
             m_albums.append( album );
             connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
         }
         BaseCoverAction( QObject *parent, Meta::AlbumList albums )
-            : PopupDropperAction( parent )
+            : QAction( parent )
         {
             m_albums = albums;
             connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );

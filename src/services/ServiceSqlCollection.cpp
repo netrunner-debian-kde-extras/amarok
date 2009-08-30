@@ -1,21 +1,19 @@
-/*
- *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
- *  Copyright (c) 2007 Nikolaj Hald Nielsenn <nhnFreespirit@gmail.com>
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- */
+/****************************************************************************************
+ * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "ServiceSqlCollection.h"
 
@@ -80,8 +78,6 @@ ServiceSqlCollection::escape( QString text ) const
 Meta::TrackPtr
 ServiceSqlCollection::trackForUrl(const KUrl & url)
 {
-    DEBUG_BLOCK
-
     if ( !possiblyContainsTrack( url ) ) //do we even bother trying?
         return Meta::TrackPtr();
 
@@ -106,7 +102,7 @@ ServiceSqlCollection::trackForUrl(const KUrl & url)
             .arg( sqlDb->escape( pristineUrl ) )
             .arg( prefix );
 
-    debug() << "Querying for track: " << queryString;
+    //debug() << "Querying for track: " << queryString;
     QStringList result = sqlDb->query( queryString );
     //debug() << "result: " << result;
 
@@ -116,7 +112,6 @@ ServiceSqlCollection::trackForUrl(const KUrl & url)
 bool
 ServiceSqlCollection::possiblyContainsTrack(const KUrl & url) const
 {
-    DEBUG_BLOCK
     return url.url().contains( m_metaFactory->tablePrefix(), Qt::CaseInsensitive );
 }
 

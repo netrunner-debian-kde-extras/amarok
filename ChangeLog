@@ -3,6 +3,152 @@ Amarok ChangeLog
 (C) 2002-2009 the Amarok authors.
 
 
+VERSION 2.2-beta1
+  FEATURES:
+    * Allow pasting an URL from clipboard to playlist with middle mouse click.
+      Patch by Felix Geyer <debfx-kde@fobos.de>.
+    * Support for copying aiff files to iPods. (BR 200820)
+    * Add openDesktop.org support to the About dialog to make it easier
+      to interact with the Amarok team.
+    * Add inline editing of track metadata in the playlist. 
+    * The Playlist supports different grouping modes.
+    * The playlist can be partly or fully randomized (shuffled) by 
+      selecting "random" as a sorting level. 
+    * Info about the categories in the "Browsers" area is now shown in 
+      the info applet on mouse over.
+    * Magnatune.com store: Add support for the personal recommendations
+      featue availalbe to Magnatune.com members. 
+    * Magnatune.com store: Add support for the membership "favorites"
+      feature. Albums can now be marked as favorites using a context 
+      menu action, and the list of favorite albums is availalbe in the
+      info applet. From here cliking links can add albums to the playlist,
+      navigate to the artist or album in the browser, remove an album from
+      favorites and (for download members) start a download.
+    * Add a dbus ShowOSD method to /Player. (BR 213532)
+    * Playlist layouts can now show simple inline playback controls and a
+      progress bar for the currently active track. This can be enabled on 
+      a per layout basis in the playlist layout manager dialog.
+    * Show position in track of the mouse (the position in the track that
+      playback will jump to if pressing the mouse) when hovering over the
+      progress bar.
+    * Amarok File Tracking can now use MusicBrainz track identifiers as
+      embedded IDs.
+    * Allow sorting in the bookmark manager.
+    * Allow filtering in the bookmark manager.
+    * Add colums to the bookmark manger and make it possible to edit items 
+      inline.
+    * Add a small bookmark menu to the browser breadcrumb bar allowing for
+      navigation to a bookmark, as well as creating a new bookmark based on
+      the current "view" or calling up the bookmark manager.
+    * Magnatune.com store: Allow redownloads of any previous Magnatune.com 
+      purchases by a given email, not just purchases made from a specific 
+      instalation of Amarok.
+    * Inline editing of lyrics from the context applet. (BR 201342)
+    * Ipod initialization support when failed to read an iPod database.
+    * Improvements to the "Show Cover" dialog. Resizes to match the image, auto
+      centers on screen, correctly handles images too large for the screen and
+      supports zooming using the mouse wheel. Patch thanks to Pascal Pollet 
+      <pascal@bongosoft.de> (BR 175901)
+    * Automatically expand collection browser search results and make the
+      results keyboard accessible. Patch thanks to Tuomas Nurmi
+      <tuomas@norsumanageri.org>. (BR 172379)
+    * Audio CD support. Audio CDs now show up as a separate collection and
+      tracks from the CD can be freely mixed with any other tracks in the 
+      playlist. Using the "Copy to Collection" menu its possible to copy (rip)
+      tracks directly to the local (or any other writable) collection. 
+    * Sortable playlist. The playlist can now be hierarchical sorted using a 
+      breadcrumb like interface to select sorting levels. Sorting can be
+      easilly reverted.
+    * Improved media device support.
+    * Video applet to show videos from YouTube, Dailymotion and Vimeo.
+      The video can be appended to the playlist, and rendered within the applet.
+    * Photo applet to show images from Flickr, with customizable animations.
+    * Customizable user interface using dock widgets.
+    * Support for external MySQL database.
+    * GHNS integration for downloading and installing Context applets.
+    * Support for Context applets to be written in QtScript.
+    * Custom Dynamic Playlists using Last.fm.
+    * Drag and Drop support for album cover image. (BR 91261)
+    * Upcoming and previous tracks count for dynamic playlist is now
+      configurable. (BR 177540)
+
+  CHANGES:
+    * Hueristics when deciding which album to use in a directory. See comments
+      in (BR 196559)
+    * The "Service Info" applet is now simply called "Info" to reflect that
+      it now shows info from other parts of Amarok as well.
+    * Remove the bookmark manager context applet and add a bookmark manager
+      dialog instead.
+    * Magnatune.com store: Add a link to purchase gift cards to the purhcase 
+      dialog.
+    * Reset playlist filter when using the "replace playlist" action. Patch 
+      by John Atkinson <john@fauxnetic.co.uk> (BR 200709)
+    * Track lyrics are exposed through the DBUS interface.
+    * The database connection and tables now enforce UTF-8 for the character
+      set and collation.
+    * The OSD registers itself as a notification window type on relevant
+      platforms. Patch thanks to Danny Baumann <dannybaumann@web.de>.
+      (BR 194517)
+    * Improvements to the Wikipedia applet. History, language settings
+      and more.
+    * Improvements to the Current applet. Text slides on mouse hover.
+    * New navigation style in the browser sidebar.
+    * Improvements to the Albums applet. Show individual track times and
+      highlight currently playing artist within compilation albums
+    * Removed PlayAudioCD from the scripting interface. It never worked
+      anyway, and audio CDs are just treated as a collection and not a
+      special case like they were in 1.4.
+    * Changed trackInserted and trackRemoved API signals. (BR 194220)
+
+  BUGFIXES:
+    * Improved performance and decreased memory usage when loading music shares
+      (DAAP collections). Patch thanks to Duns <dunsens@web.de>. (BR 173048)
+    * Changing Amarok's settings no longer removes album covers from playlist.
+      (BR 202258)
+    * Fixed crash on startup if another Amarok instance was still loading.
+      (BR 202713)
+    * Fixed some album art in a folder not getting picked up if a subfolder
+      contained any files. (BR 167158)
+    * Fixed broken selection in the "Saved Playlists" category.
+    * Fixed wrong Random Album mode behavior when playlists contains only
+      one album. (BR 194066)
+    * Fixed double playcount increase for last track in queue (BR 188330)
+    * Fixed track drag-and-drop problem when special characters are present
+      in file path. (BR 193878)
+    * Don't crash when trying to load an empty playlist folder. (BR 202643)
+    * Make using the mouse wheel over the progress slider correctly navigate
+      in the currently playing track. (BR 195913)
+    * Correctly strip all formatting from text pasted or dragged to the 
+      comment field in the tag edit dialog. (BR 188270)
+    * Fix incorrect "current item" after deleting track(s) from the playlist
+      causing up and down buttons to not move selection to the expected row.
+      (BR 197203)
+    * Jamendo service: Fix destination filenames when using "copy to 
+      collection". (BR 171839)
+    * Jamendo service: Make torrent downloads work again. (BR 198200)
+    * Remove the video stream from the context view when removing the video 
+      applet during stream playback. (BR 201281)
+    * Fixed locales for Amazon cover fetching. (BR 188446)
+    * Fix crash on trying to edit a playlist layout with an invalid element
+      value in the xml file. (BR 197128)
+    * Fix DBUS xml parsing. Patch thanks to Ryan Bitanga
+      <ryan.bitanga@gmail.com>.
+    * Fix data caching issues causing incorrect values to be stored in the
+      database and in some cases to be written to tags. Fixes multiple bugs.
+    * Correctly enable/disable "Prefer Tracks" menu entry. Patch thanks to
+      Ralf Jung <ralfjung-e@gmx.de>. (BR 191059)
+    * Do not show "%20" at the end of each filter value in the LibriVox 
+      service. (BR 190704)
+    * Cached lyrics will now be shown when offline. (BR 197589)
+    * Fixed pressing play after reaching the end of the playlist not starting
+      the playlist from the top (or whereever the navigator thinks it should 
+      start. (BR 176445)
+    * Fixed local playlists being renamed to blank when user hits cancel
+    * Fixed giant Edit Filter dialog with some translations. (BR 197566)
+    * Files browser remembers its view mode. (BR 197122)
+    * Fixed non-Latin UTF-8 encoding tags not being correctly decoded.
+
+
 VERSION 2.1.1
   FEATURES:
     * Compilations with more than 60 artists are supported.

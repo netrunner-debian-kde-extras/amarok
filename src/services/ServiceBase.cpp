@@ -1,21 +1,18 @@
-/***************************************************************************
- *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "ServiceBase.h"
 
@@ -25,7 +22,7 @@
 
 #include "Collection.h"
 #include "SearchWidget.h"
-#include "ServiceInfoProxy.h"
+#include "browsers/InfoProxy.h"
 
 #include <khbox.h>
 #include <KLineEdit>
@@ -49,7 +46,6 @@ ServiceFactory::~ServiceFactory()
 Meta::TrackPtr
 ServiceFactory::trackForUrl(const KUrl & url)
 {
-    DEBUG_BLOCK
     if ( m_activeServices.size() == 0 ) {
         debug() << "our service (" << name() << ") is needed for a url, so init it!";
         init();
@@ -86,8 +82,6 @@ void ServiceFactory::clearActiveServices()
 
 void ServiceFactory::slotServiceReady()
 {
-    DEBUG_BLOCK
-    debug() << "Found " << m_tracksToLocate.size() << " tracks to locate!";
     while( !m_tracksToLocate.isEmpty() )
     {
         MetaProxy::TrackPtr track = m_tracksToLocate.dequeue();
@@ -99,53 +93,30 @@ void ServiceFactory::slotServiceReady()
 ServiceBase *ServiceBase::s_instance = 0;
 
 ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useCollectionTreeView, const QString &prettyName )
-        : KVBox( 0 )
-        , m_contentView ( 0 )
-        , m_parentFactory( parent )
-        , m_polished( false )
-        , m_serviceready( false )
-        , m_useCollectionTreeView( useCollectionTreeView )
-        , m_infoParser( 0 )
-        , m_model( 0 )
+    : BrowserCategory( name, 0 )
+    , m_contentView ( 0 )
+    , m_parentFactory( parent )
+    , m_polished( false )
+    , m_serviceready( false )
+    , m_useCollectionTreeView( useCollectionTreeView )
+    , m_infoParser( 0 )
+    , m_model( 0 )
 {
     DEBUG_BLOCK
 
-    m_name = name;
-    m_prettyName = prettyName;
+    if ( !prettyName.isEmpty() )
+    {
+        setPrettyName( prettyName );
+    }
+    else
+        setPrettyName( name );
 
-    setContentsMargins( 1, 1, 1, 1 );
     setSpacing( 1 );
 
     m_topPanel = new KVBox( this );
 
-    m_topPanel->setLineWidth( 2 );
-    m_topPanel->setSpacing( 2 );
-    m_topPanel->setMargin( 2 );
-
-    //m_topPanel->setFixedHeight( 50 );
-
-    KHBox * commonPanel = new KHBox ( m_topPanel );
-
-    m_homeButton = new QPushButton( commonPanel );
-    m_homeButton->setIcon( KIcon("go-previous-amarok") );
-    m_homeButton->setIconSize( QSize( 16, 16 ) );
-    m_homeButton->setFixedSize( 28, 28 );
-    connect( m_homeButton, SIGNAL( clicked( bool ) ), this, SLOT( homeButtonClicked( ) ) );
-
-    QLabel * nameLabel = new QLabel( commonPanel );
-    nameLabel->setMinimumSize( 230 , 28 );
-    if( !m_prettyName.isEmpty() )
-        nameLabel->setText( m_prettyName );
-    else
-        nameLabel->setText( m_name );
-
-    QFont nameLabelFont = nameLabel->font();
-    nameLabelFont.setBold( true );
-    nameLabelFont.setPointSize( nameLabelFont.pointSize() + 2 );
-    nameLabel->setFont( nameLabelFont );
-    nameLabel->setAlignment(Qt::AlignCenter | Qt::AlignHCenter);
-
-    if( useCollectionTreeView ) {
+    if( useCollectionTreeView )
+    {
         m_contentView = new ServiceCollectionTreeView( this );
         m_contentView->setFrameShape( QFrame::NoFrame );
         m_contentView->setSortingEnabled( true );
@@ -154,21 +125,13 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
         m_contentView->setDragDropMode ( QAbstractItemView::DragOnly );
         connect( m_contentView, SIGNAL( itemSelected ( CollectionTreeItem * )  ), this, SLOT( itemSelected( CollectionTreeItem * ) ) );
     }
-    //m_contentView->setAlternatingRowColors ( true );
-    //m_contentView->setAnimated( true );
-
-
-
-    //connect( m_contentView, SIGNAL( pressed ( const QModelIndex & ) ), this, SLOT( treeItemSelected( const QModelIndex & ) ) );
-    //connect( m_contentView, SIGNAL( doubleClicked ( const QModelIndex & ) ), this, SLOT( itemActivated ( const QModelIndex & ) ) );
 
     m_bottomPanel = new KVBox( this );
-    //m_bottomPanel->setFixedHeight( 50 );
+
     m_bottomPanel->setFrameStyle( QFrame::NoFrame );
     m_bottomPanel->setLineWidth(2);
     m_bottomPanel->setSpacing( 2 );
     m_bottomPanel->setMargin( 2 );
-
 
     m_filterModel = new QSortFilterProxyModel( this );
     m_filterModel->setSortCaseSensitivity( Qt::CaseInsensitive );
@@ -183,8 +146,6 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
     if ( m_contentView )
         m_searchWidget->setup( m_contentView );
 
-    //setFrameShape( QFrame::StyledPanel );
-    //setFrameShadow( QFrame::Sunken );
 }
 
 ServiceBase::~ServiceBase()
@@ -192,67 +153,10 @@ ServiceBase::~ServiceBase()
     delete m_infoParser;
 }
 
-QString
-ServiceBase::name() const
-{
-    return m_name;
-}
-
-QString
-ServiceBase::prettyName() const
-{
-    if( !m_prettyName.isEmpty() )
-      return m_prettyName;
-    return m_name;
-}
-
 ServiceFactory*
 ServiceBase::parent() const
 {
     return m_parentFactory;
-}
-
-void
-ServiceBase::setShortDescription( const QString &shortDescription )
-{
-    m_shortDescription = shortDescription;
-}
-
-QString
-ServiceBase::shortDescription( ) const
-{
-    return m_shortDescription;
-}
-
-void
-ServiceBase::setLongDescription( const QString &longDescription )
-{
-    m_longDescription = longDescription;
-}
-
-QString
-ServiceBase::longDescription() const
-{
-    return m_longDescription;
-}
-
-void
-ServiceBase::setIcon( const QIcon &icon )
-{
-    DEBUG_BLOCK
-    m_icon = icon;
-}
-
-QIcon
-ServiceBase::icon() const
-{
-    return m_icon;
-}
-
-void
-ServiceBase::homeButtonClicked( ) 
-{
-    emit( home() );
 }
 
 void
@@ -296,24 +200,21 @@ ServiceBase::setView( QTreeView * view )
 bool
 ServiceBase::serviceReady() const
 {
-    DEBUG_BLOCK
     return m_serviceready;
 }
 
 void
 ServiceBase::infoChanged( const QString &infoHtml )
 {
-    DEBUG_BLOCK
     QVariantMap map;
-    map["service_name"] = m_name;
+    map["service_name"] = prettyName();
     map["main_info"] = infoHtml;
-    The::serviceInfoProxy()->setInfo( map );
+    The::infoProxy()->setInfo( map );
 }
 
 void
 ServiceBase::itemSelected( CollectionTreeItem * item )
 {
-    DEBUG_BLOCK
 
     Meta::DataPtr ptr = item->data();
     if ( ( ptr.data() == 0 ) || ( m_infoParser == 0 )) return; 
@@ -330,9 +231,9 @@ void
 ServiceBase::generateWidgetInfo( const QString &html ) const
 {
     QVariantMap map;
-    map["service_name"] = m_name;
+    map["service_name"] = prettyName();
     map["main_info"] = html;
-    The::serviceInfoProxy()->setInfo( map );
+    The::infoProxy()->setInfo( map );
 }
 
 void
@@ -347,37 +248,25 @@ ServiceBase::setPlayableTracks(bool playable)
 void
 ServiceBase::sortByArtist()
 {
-    if( m_useCollectionTreeView ) {
-        if( ServiceCollectionTreeView* view = dynamic_cast<ServiceCollectionTreeView*>(m_contentView) )
-            view->setLevels( QList<int>() << CategoryId::Artist );
-    }
+    setLevels( QList<int>() << CategoryId::Artist );
 }
 
 void
 ServiceBase::sortByArtistAlbum()
 {
-    if( m_useCollectionTreeView ) {
-        if( ServiceCollectionTreeView* view = dynamic_cast<ServiceCollectionTreeView*>(m_contentView) )
-            view->setLevels( QList<int>() << CategoryId::Artist << CategoryId::Album );
-    }
+    setLevels( QList<int>() << CategoryId::Artist << CategoryId::Album );
 }
 
 void
 ServiceBase::sortByAlbum()
 {
-    if( m_useCollectionTreeView ) {
-        if( ServiceCollectionTreeView* view = dynamic_cast<ServiceCollectionTreeView*>(m_contentView) )
-            view->setLevels( QList<int>() << CategoryId::Album );
-    }
+    setLevels( QList<int>() << CategoryId::Album );
 }
 
 void
 ServiceBase::sortByGenreArtist()
 {
-    if( m_useCollectionTreeView ) {
-        if( ServiceCollectionTreeView* view = dynamic_cast<ServiceCollectionTreeView*>(m_contentView) )
-            view->setLevels( QList<int>() << CategoryId::Genre << CategoryId::Artist );
-    }
+    setLevels( QList<int>() << CategoryId::Genre << CategoryId::Artist );
 }
 
 void
@@ -423,20 +312,28 @@ ServiceBase::sendMessage( const QString & message )
     return i18n( "ERROR: unknown message" );
 }
 
-QString ServiceBase::filter()
+QString
+ServiceBase::filter() const
 {
     return m_searchWidget->lineEdit()->text();
 }
 
-QList<int> ServiceBase::levels()
+QList<int>
+ServiceBase::levels() const
 {
     CollectionTreeView *contentView = qobject_cast<CollectionTreeView*>(m_contentView);
-    if( contentView != 0 )
+    if( contentView )
         return contentView->levels();
     return QList<int>();
 }
 
-
+void ServiceBase::setLevels( const QList<int> &levels )
+{
+    if( m_useCollectionTreeView ) {
+        if( ServiceCollectionTreeView* view = dynamic_cast<ServiceCollectionTreeView*>(m_contentView) )
+            view->setLevels( levels );
+    }
+}
 
 
 #include "ServiceBase.moc"

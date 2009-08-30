@@ -1,23 +1,21 @@
-/***************************************************************************
- *   Copyright (C) 2005 Eyal Lotem <eyal.lotem@gmail.com>                  *
- *   Copyright (C) 2005 Alexandre Oliveira <aleprj@gmail.com>              *
- *   Copyright (C) 2007 Seb Ruiz <ruiz@kde.org>                            *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2005 Eyal Lotem <eyal.lotem@gmail.com>                                 *
+ * Copyright (c) 2005 Alexandre Pereira de Oliveira <aleprj@gmail.com>                  *
+ * Copyright (c) 2007 Seb Ruiz <ruiz@kde.org>                                           *
+ * Copyright (c) 2009 Pascal Pollet <pascal@bongosoft.de>                               *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "PixmapViewer.h"
 #include "Debug.h"
@@ -28,54 +26,98 @@
 #include <QMouseEvent>
 #include <QLabel>
 #include <QPixmap>
-#include <QScrollBar>
+#include <QPainter>
+#include <QWheelEvent>
 
-PixmapViewer::PixmapViewer( QWidget *widget, const QPixmap &pixmap )
-    : QScrollArea( widget )
-    , m_isDragging( false )
-    , m_pixmap( pixmap )
+
+PixmapViewer::PixmapViewer( QWidget *widget, const QPixmap pix, int screenNumber)
+        : QWidget( widget )
 {
-    QLabel *imageLabel = new QLabel();
-    imageLabel->setPixmap( pixmap );
-    imageLabel->adjustSize();
 
-    setBackgroundRole( QPalette::Dark );
-    setWidget( imageLabel );
-}
+    m_pixmap = new QPixmap( pix );
+    m_zoomFactor = 1.0; // initial zoom
 
-void PixmapViewer::mousePressEvent(QMouseEvent *event)
-{
-    if( Qt::LeftButton == event->button() )
+    if ( KApplication::desktop()->availableGeometry( screenNumber ).width() < m_pixmap->width() ||
+            KApplication::desktop()->availableGeometry( screenNumber ).height() < m_pixmap->height() )
     {
-        m_currentPos = event->globalPos();
-        m_isDragging = true;
+        float zoomFactorX =
+            ( (float) KApplication::desktop()->availableGeometry( screenNumber ).width() /
+             (float) m_pixmap->width() );
+        float zoomFactorY =
+            ( (float) KApplication::desktop()->availableGeometry( screenNumber ).height() /
+             (float) m_pixmap->height() );
+
+        m_zoomFactor = std::min( zoomFactorX, zoomFactorY ) * 0.8;
     }
+
+    setMinimumSize( m_pixmap->width() * m_zoomFactor, m_pixmap->height() * m_zoomFactor );
+
 }
 
-void PixmapViewer::mouseReleaseEvent(QMouseEvent *event)
+void
+PixmapViewer::setZoomFactor( float f )
 {
-    if( Qt::LeftButton == event->button() )
+    int w, h;
+
+    if ( f == m_zoomFactor )
+        return;
+
+    m_zoomFactor = f;
+    emit( zoomFactorChanged( m_zoomFactor ) );
+
+    w = m_pixmap->width() * m_zoomFactor;
+    h = m_pixmap->height() * m_zoomFactor;
+    setMinimumSize( w, h );
+
+    QWidget *p = dynamic_cast<QWidget*>( parent() );
+    if ( p )
+        resize( p->width(), p->height() );
+
+}
+
+void
+PixmapViewer::paintEvent( QPaintEvent *event )
+{
+    Q_UNUSED(event);
+
+    int xoffset, yoffset;
+
+    if ( width() > m_pixmap->width() * m_zoomFactor )
     {
-        m_currentPos = event->globalPos();
-        m_isDragging = false;
+        xoffset = ( width() - m_pixmap->width() * m_zoomFactor ) / 2;
     }
-}
-
-void PixmapViewer::mouseMoveEvent(QMouseEvent *event)
-{
-    if( m_isDragging )
+    else
     {
-        QPoint delta = m_currentPos - event->globalPos();
-        horizontalScrollBar()->setValue( horizontalScrollBar()->value() + delta.x() );
-        verticalScrollBar()->setValue( verticalScrollBar()->value() + delta.y() );
-        m_currentPos = event->globalPos();
+        xoffset = 0;
     }
+
+    if ( height() > m_pixmap->height()*m_zoomFactor )
+    {
+        yoffset = ( height() - m_pixmap->height() * m_zoomFactor ) / 2;
+    }
+    else
+    {
+        yoffset = 0;
+    }
+    
+    QPainter p( this );
+    p.save();
+    p.translate( xoffset, yoffset );
+    p.scale( m_zoomFactor, m_zoomFactor );
+    p.drawPixmap( 0, 0, *m_pixmap );
+    p.restore();
 }
 
-QSize PixmapViewer::sizeHint() const
+void
+PixmapViewer::wheelEvent( QWheelEvent *event )
 {
-    return QScrollArea::sizeHint().boundedTo( KApplication::desktop()->size() );
+    float f;
+
+    f = m_zoomFactor + 0.001 * event->delta();
+    if ( f < 32.0 / m_pixmap->width() )
+        f = 32.0 / m_pixmap->width();
+
+    setZoomFactor( f );
 }
 
 #include "PixmapViewer.moc"
-

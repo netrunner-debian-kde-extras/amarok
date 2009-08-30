@@ -1,22 +1,21 @@
-/******************************************************************************
- * Copyright (c) 2004 Pierpaolo Di Panfilo <pippo_dp@libero.it>               *
- *           (c) 2005 Isaiah Damron <xepo@trifault.net>                       *
- *           (c) 2007 Dan Meltzer <parallelgrapefruit@gmail.com>            *
- *           (c) 2008 Seb Ruiz <ruiz@kde.org>                                 *
- *                                                                            *
- * This program is free software; you can redistribute it and/or              *
- * modify it under the terms of the GNU General Public License as             *
- * published by the Free Software Foundation; either version 2 of             *
- * the License, or (at your option) any later version.                        *
- *                                                                            *
- * This program is distributed in the hope that it will be useful,            *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
- * GNU General Public License for more details.                               *
- *                                                                            *
- * You should have received a copy of the GNU General Public License          *
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
- ******************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2004 Pierpaolo Di Panfilo <pippo_dp@libero.it>                         *
+ * Copyright (c) 2005 Isaiah Damron <xepo@trifault.net>                                 *
+ * Copyright (c) 2007 Dan Meltzer <parallelgrapefruit@gmail.com>                        *
+ * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "CoverManager.h"
 #include "CoverViewDialog.h"
@@ -32,7 +31,6 @@
 #include <config-amarok.h>
 #include "PixmapViewer.h"
 #include "playlist/PlaylistController.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "widgets/LineEdit.h"
 
 #include <KIO/NetAccess>
@@ -44,6 +42,7 @@
 #include <KToolBar>
 #include <KVBox>
 
+#include <QAction>
 #include <QDesktopWidget>
 #include <QProgressBar>
 #include <QProgressDialog>
@@ -195,53 +194,6 @@ CoverManager::slotContinueConstruction() //SLOT
     viewGroup->addAction( m_selectAlbumsWithoutCover );
     m_selectAllAlbums->setChecked( true );
 
-    // amazon locale menu
-    QString locale = AmarokConfig::amazonLocale();
-    m_currentLocale = CoverFetcher::localeStringToID( locale );
-
-    QAction *a;
-    QActionGroup *localeGroup = new QActionGroup( this );
-    localeGroup->setExclusive( true );
-
-    m_amazonLocaleMenu = new KMenu( this );
-
-    a = m_amazonLocaleMenu->addAction( i18nc( "The locale to use when fetching covers from amazon.com", "International"),  this, SLOT( slotSetLocaleIntl() ) );
-    if( m_currentLocale == CoverFetcher::International ) a->setChecked( true );
-    localeGroup->addAction( a );
-
-    a = m_amazonLocaleMenu->addAction( i18n("Canada"),         this, SLOT( slotSetLocaleCa() )   );
-    if( m_currentLocale == CoverFetcher::Canada ) a->setChecked( true );
-    localeGroup->addAction( a );
-
-    a = m_amazonLocaleMenu->addAction( i18n("France"),         this, SLOT( slotSetLocaleFr() )   );
-    if( m_currentLocale == CoverFetcher::France ) a->setChecked( true );
-    localeGroup->addAction( a );
-
-    a = m_amazonLocaleMenu->addAction( i18n("Germany"),        this, SLOT( slotSetLocaleDe() )   );
-    if( m_currentLocale == CoverFetcher::Germany ) a->setChecked( true );
-    localeGroup->addAction( a );
-
-    a = m_amazonLocaleMenu->addAction( i18n("Japan"),          this, SLOT( slotSetLocaleJp() )   );
-    if( m_currentLocale == CoverFetcher::Japan ) a->setChecked( true );
-    localeGroup->addAction( a );
-
-    a = m_amazonLocaleMenu->addAction( i18n("United Kingdom"), this, SLOT( slotSetLocaleUk() )   );
-    if( m_currentLocale == CoverFetcher::UK ) a->setChecked( true );
-    localeGroup->addAction( a );
-
-    KToolBar* toolBar = new KToolBar( hbox );
-    toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
-    {
-        QAction* viewMenuAction = new QAction( KIcon( "view-list-icons" ), i18nc( "@title buttontext for popup-menu", "View" ), this );
-        viewMenuAction->setMenu( m_viewMenu );
-        toolBar->addAction( viewMenuAction );
-    }
-    {
-        QAction* localeMenuAction = new QAction( KIcon( "preferences-desktop-locale-amarok" ),  i18n( "Amazon Locale" ), this );
-        localeMenuAction->setMenu( m_amazonLocaleMenu );
-        toolBar->addAction( localeMenuAction );
-    }
-
     //fetch missing covers button
     m_fetchButton = new KPushButton( KGuiItem( i18n("Fetch Missing Covers"), "get-hot-new-stuff-amarok" ), hbox );
     connect( m_fetchButton, SIGNAL(clicked()), SLOT(fetchMissingCovers()) );
@@ -333,21 +285,6 @@ void CoverManager::viewCover( Meta::AlbumPtr album, QWidget *parent ) //static
     //QDialog means "escape" works as expected
     QDialog *dialog = new CoverViewDialog( album, parent );
     dialog->show();
-}
-
-
-QString CoverManager::amazonTld() //static
-{
-    if( AmarokConfig::amazonLocale() == "us" )
-        return "com";
-    else if( AmarokConfig::amazonLocale()== "jp" )
-        return "jp";
-    else if( AmarokConfig::amazonLocale() == "uk" )
-        return "co.uk";
-    else if( AmarokConfig::amazonLocale() == "ca" )
-        return "ca";
-    else
-        return AmarokConfig::amazonLocale();
 }
 
 void
@@ -604,14 +541,6 @@ void CoverManager::changeView( int id  ) //SLOT
     m_currentView = id;
 }
 
-void CoverManager::changeLocale( int id ) //SLOT
-{
-    QString locale = CoverFetcher::localeIDToString( id );
-    AmarokConfig::setAmazonLocale( locale );
-    m_currentLocale = id;
-}
-
-
 void CoverManager::coverFetched( const QString &artist, const QString &album ) //SLOT
 {
     loadCover( artist, album );
@@ -823,10 +752,10 @@ void CoverView::contextMenuEvent( QContextMenuEvent *event )
             Meta::CustomActionsCapability *cac = album->create<Meta::CustomActionsCapability>();
             if( cac )
             {
-                QList<PopupDropperAction *> actions = cac->customActions();
+                QList<QAction *> actions = cac->customActions();
 
                 menu.addSeparator();
-                foreach( PopupDropperAction *action, actions )
+                foreach( QAction *action, actions )
                     menu.addAction( action );
             }
         }

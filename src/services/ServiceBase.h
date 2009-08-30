@@ -1,25 +1,23 @@
-/***************************************************************************
- *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef AMAROKSERVICEBASE_H
 #define AMAROKSERVICEBASE_H
 
+#include "browsers/BrowserCategory.h"
 #include "browsers/CollectionTreeItem.h"
 #include "browsers/SingleCollectionTreeItemModel.h"
 #include "Amarok.h"
@@ -149,7 +147,7 @@ A composite widget used as a base for building service browsers. It contains a h
 
 @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
 */
-class AMAROK_EXPORT ServiceBase : public KVBox
+class AMAROK_EXPORT ServiceBase : public BrowserCategory
 {
     Q_OBJECT
 
@@ -164,54 +162,6 @@ public:
      * Destructor.
      */
     ~ServiceBase();
-
-    /**
-     * Get the internal name of this service.
-     * @return The name of the service.
-     */
-    QString name() const;
-
-    /**
-     * Get the user visible name of this service.
-     * @return The name of the service.
-     */
-    QString prettyName() const;
-
-    /**
-     * Set a short description string for this service. This string is used to describe the service in the service browser.
-     * @param shortDescription The description.
-     */
-    void setShortDescription( const QString &shortDescription );
-
-    /**
-     * Get the short description of this service.
-     * @return The short description.
-     */
-    QString shortDescription() const;
-
-    /**
-     * Set a long description of the service. This is for allowing users to get more detailed info a about a service.
-     * @param longDescription The long description.
-     */
-    void setLongDescription( const QString &longDescription );
-
-    /**
-     * Get the long description of this service.
-     * @return The long description.
-     */
-    QString longDescription() const;
-
-    /**
-     * Set the icon that will be used to identify this service.
-     * @param icon The icon to use.
-     */
-    void setIcon( const QIcon &icon );
-
-    /**
-     * Get the icon of this service.
-     * @return The icon
-     */
-    QIcon icon() const;
 
     /**
      * Set the SingleCollectionTreeItemModel that will be used to populate the tree view.
@@ -306,8 +256,8 @@ public:
      */
      ServiceFactory* parent() const;
 
-     QString filter();
-     QList<int> levels();
+     virtual QString filter() const;
+     virtual QList<int> levels() const;
 
 public slots:
     //void treeViewSelectionChanged( const QItemSelection & selected );
@@ -342,6 +292,8 @@ public slots:
      */
     void sortByGenreArtistAlbum();
 
+    void setLevels( const QList<int> &levels );
+
 signals:
     /**
      * Signal emitted when the service wants to be hidden and the service browser list shown instead, for instance when the "Home" button is clicked.
@@ -360,11 +312,6 @@ signals:
      void ready();
 
 protected slots:
-    /**
-     * Slot called when the home button has been clicked
-     */
-    void homeButtonClicked();
-
     /**
      * Slot called when an intem in the tree view has been activated
      * @param index The index of the activated item
@@ -389,17 +336,9 @@ protected:
     QTreeView *m_contentView;
     ServiceFactory *m_parentFactory;
 
-    QPushButton *m_homeButton;
-
     KVBox       *m_topPanel;
     KVBox       *m_bottomPanel;
     bool         m_polished;
-
-    QString      m_name;
-    QString      m_prettyName;
-    QString      m_shortDescription;
-    QString      m_longDescription;
-    QIcon        m_icon;
 
     bool m_serviceready;
     bool m_useCollectionTreeView;

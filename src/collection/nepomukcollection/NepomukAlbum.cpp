@@ -1,20 +1,18 @@
-/* 
-   Copyright (C) 2008 Daniel Winter <dw@danielwinter.de>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2008 Daniel Winter <dw@danielwinter.de>                                *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "NepomukAlbum.h"
 
@@ -27,8 +25,8 @@
 #include "meta/CustomActionsCapability.h"
 #include "Debug.h"
 #include "Meta.h"
-#include "context/popupdropper/PopupDropperAction.h"
 
+#include <QAction>
 #include <QDir>
 #include <QFile>
 #include <QPixmap>
@@ -276,16 +274,16 @@ NepomukAlbum::createCapabilityInterface( Meta::Capability::Type type )
     {
         case Meta::Capability::CustomActions:
         {
-            QList<PopupDropperAction*> actions;
+            QList<QAction*> actions;
             //actions.append( new CopyToDeviceAction( m_collection, this ) );
             //actions.append( new CompilationAction( m_collection, this ) );
-            //PopupDropperAction* separator = new PopupDropperAction( m_collection );
+            //QAction* separator = new QAction( m_collection );
             //separator->setSeparator( true );
             //actions.append( separator );
             actions.append( new FetchCoverAction( m_collection, this ) );
             actions.append( new SetCustomCoverAction( m_collection, this ) );
-            PopupDropperAction *displayCoverAction = new DisplayCoverAction( m_collection, this );
-            PopupDropperAction *unsetCoverAction   = new UnsetCoverAction( m_collection, this );
+            QAction *displayCoverAction = new DisplayCoverAction( m_collection, this );
+            QAction *unsetCoverAction   = new UnsetCoverAction( m_collection, this );
             if( !hasImage() )
             {
                 displayCoverAction->setEnabled( false );

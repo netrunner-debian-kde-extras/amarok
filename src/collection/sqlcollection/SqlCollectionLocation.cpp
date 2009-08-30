@@ -1,29 +1,28 @@
-/*
- *  Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
- *  Copyright (c) 2008 Jason A. Donenfeld <Jason@zx2c4.com>
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- */
+/****************************************************************************************
+ * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2008 Jason A. Donenfeld <Jason@zx2c4.com>                              *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "SqlCollectionLocation.h"
 
+#include "AFTUtility.h"
 #include "Debug.h"
 #include "Meta.h"
 #include "MetaUtility.h"
 #include "MountPointManager.h"
-#include "OrganizeCollectionDialog.h"
+#include "dialogs/OrganizeCollectionDialog.h"
 #include "ScanManager.h"
 #include "ScanResultProcessor.h"
 #include "SqlCollection.h"
@@ -86,13 +85,22 @@ SqlCollectionLocation::remove( const Meta::TrackPtr &track )
     if( sqlTrack && sqlTrack->inCollection() && sqlTrack->collection()->collectionId() == m_collection->collectionId() )
     {
         bool removed;
-        if( !consideredByDestination( track ) )
+        //SqlCollectionLocation uses KIO::move for moving files internally
+        //therefore we check whether the destination CollectionLocation
+        //represents the same collection, and check the existence of the
+        //file. If it does not exist, we assume that it has been moved, and remove it from the database.
+        //at worst we get a warning about a file not in the database. If it still exists, and
+        //this method has been called, do not do anything, as something is wrong.
+        //If the destination location is another collection, remove the file as we expect
+        //the destination to tell us if it is really really sure that it has copied a file.
+        //If we are not copying/moving files destination() will be 0.
+        if( destination() && destination()->collection() == collection() )
         {
-            removed = QFile::remove( sqlTrack->playableUrl().path() );
+            removed = !QFile::exists( sqlTrack->playableUrl().path() );
         }
         else
         {
-            removed = movedByDestination( track );
+            removed = QFile::remove( sqlTrack->playableUrl().path() );
         }
         if( removed )
         {
@@ -137,7 +145,13 @@ void
 SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, bool removeSources )
 {
     setGoingToRemoveSources( removeSources );
-    OrganizeCollectionDialog *dialog = new OrganizeCollectionDialog( tracks );
+    OrganizeCollectionDialog *dialog = new OrganizeCollectionDialog( tracks,
+                MountPointManager::instance()->collectionFolders(),
+                The::mainWindow(), //parent
+                "", //name is unused
+                true, //modal
+                i18n( "Organize Files" ) //caption
+            );
     connect( dialog, SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
     connect( dialog, SIGNAL( rejected() ), SLOT( slotDialogRejected() ) );
     dialog->show();
@@ -171,79 +185,38 @@ SqlCollectionLocation::slotJobFinished( KJob *job )
         source()->transferError(m_jobs.value( job ), KIO::buildErrorString( job->error(), job->errorString() ) );
         m_destinations.remove( m_jobs.value( job ) );
     }
+    //we  assume that KIO works correctly...
+    source()->transferSuccessful( m_jobs.value( job ) );
+
     m_jobs.remove( job );
     job->deleteLater();
-    if( m_jobs.isEmpty() )
+
+    if( !startNextJob() )
     {
         insertTracks( m_destinations );
         insertStatistics( m_destinations );
         m_collection->scanManager()->setBlockScan( false );
         slotCopyOperationFinished();
     }
+
 }
 
 void
 SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources )
 {
     m_collection->scanManager()->setBlockScan( true );  //make sure the collection scanner does not run while we are coyping stuff
-    bool jobsCreated = false;
-    foreach( const Meta::TrackPtr &track, sources.keys() )
-    {
-        KIO::FileCopyJob *job = 0;
-        KUrl dest = m_destinations[ track ];
-        dest.cleanPath();
-        KUrl src = sources[ track ];
-        src.cleanPath();
-        debug() << "copying from " << src << " to " << dest;
-        KIO::JobFlags flags = KIO::HideProgressInfo;
-        if( m_overwriteFiles )
-        {
-            flags |= KIO::Overwrite;
-        }
-        QFileInfo info( dest.pathOrUrl() );
-        QDir dir = info.dir();
-        if( !dir.exists() )
-        {
-            if( !dir.mkpath( "." ) )
-            {
-                warning() << "Could not create directory " << dir;
-                //TODO: might be shown to the user at some point
-                //i18n-ify
-                source()->transferError( track, "Could not create directory " + dir.absolutePath() );
-                continue;
-            }
-        }
-        if( src == dest) {
-            //no changes, so leave the database alone, and don't erase anything
-            source()->setMovedByDestination( track, false );
-            continue;
-        }
-        //we should only move it directly if we're moving within the same collection
-        else if( isGoingToRemoveSources() && source()->collection() == collection() )
-        {
-            job = KIO::file_move( src, dest, -1, flags );
-            source()->setMovedByDestination( track, true );  //remove old location from tracks table
-        }
-        else
-        {
-            //later on in the case that remove is called, the file will be deleted because we didn't apply moveByDestination to the track
-            job = KIO::file_copy( src, dest, -1, flags );
-        }
-        if( job )   //just to be safe
-        {
-            connect( job, SIGNAL( result(KJob*) ), SLOT( slotJobFinished(KJob*) ) );
-            QString name = track->prettyName();
-            if( track->artist() )
-                name = QString( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
 
-            The::statusBar()->newProgressOperation( job, i18n( "Transferring: %1", name ) );
-            m_jobs.insert( job, track );
-            job->start();
-            jobsCreated = true;
-        }
-    }
-    if( !jobsCreated ) //this signal needs to be called no matter what, even if there are no job finishes to call it
+    m_sources = sources;
+
+    if( !startNextJob() ) //this signal needs to be called no matter what, even if there are no job finishes to call it
         slotCopyOperationFinished();
+}
+
+void
+SqlCollectionLocation::removeUrlsFromCollection(  const Meta::TrackList &sources )
+{
+    m_collection->deleteTracksSlot( sources );
+    slotRemoveOperationFinished();
 }
 
 void
@@ -251,10 +224,13 @@ SqlCollectionLocation::insertTracks( const QMap<Meta::TrackPtr, QString> &trackM
 {
     QList<QVariantMap > metadata;
     QStringList urls;
+    AFTUtility aftutil;
     foreach( const Meta::TrackPtr &track, trackMap.keys() )
     {
         QVariantMap trackData = Meta::Field::mapFromTrack( track );
         trackData.insert( Meta::Field::URL, trackMap[ track ] );  //store the new url of the file
+        // overwrite any uidUrl that came with the track with our own sql AFT one
+        trackData.insert( Meta::Field::UNIQUEID, QString( "amarok-sqltrackuid://" ) + aftutil.readUniqueId( trackMap[ track ] ) );
         metadata.append( trackData );
         urls.append( trackMap[ track ] );
     }
@@ -344,6 +320,65 @@ SqlCollectionLocation::insertStatistics( const QMap<Meta::TrackPtr, QString> &tr
                     QString::number( track->playCount() ), QString::number( track->lastPlayed() ), QString::number( track->firstPlayed() ) );
         m_collection->insert( insert.arg( data ), "statistics" );
     }
+}
+
+bool SqlCollectionLocation::startNextJob()
+{
+    DEBUG_BLOCK
+    if ( !m_sources.isEmpty() )
+    {
+        Meta::TrackPtr track = m_sources.keys().first();
+        KUrl src = m_sources.take( track );
+
+        KIO::FileCopyJob *job = 0;
+        KUrl dest = m_destinations[ track ];
+        dest.cleanPath();
+
+        src.cleanPath();
+        debug() << "copying from " << src << " to " << dest;
+        KIO::JobFlags flags = KIO::HideProgressInfo;
+        if( m_overwriteFiles )
+        {
+            flags |= KIO::Overwrite;
+        }
+        QFileInfo info( dest.pathOrUrl() );
+        QDir dir = info.dir();
+        if( !dir.exists() )
+        {
+            if( !dir.mkpath( "." ) )
+            {
+                warning() << "Could not create directory " << dir;
+                source()->transferError(track, i18n( "Could not create directory: %1", dir.path() ) );
+                return false;
+            }
+        }
+        if( src == dest) {
+        //no changes, so leave the database alone, and don't erase anything
+            return false;
+        }
+    //we should only move it directly if we're moving within the same collection
+        else if( isGoingToRemoveSources() && source()->collection() == collection() )
+        {
+            job = KIO::file_move( src, dest, -1, flags );
+        }
+        else
+        {
+        //later on in the case that remove is called, the file will be deleted because we didn't apply moveByDestination to the track
+            job = KIO::file_copy( src, dest, -1, flags );
+        }
+        if( job )   //just to be safe
+        {
+            connect( job, SIGNAL( result(KJob*) ), SLOT( slotJobFinished(KJob*) ) );
+            QString name = track->prettyName();
+            if( track->artist() )
+                name = QString( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
+
+            The::statusBar()->newProgressOperation( job, i18n( "Transferring: %1", name ) );
+            m_jobs.insert( job, track );
+            return true;
+        }
+    }
+    return false;
 }
 
 #include "SqlCollectionLocation.moc"

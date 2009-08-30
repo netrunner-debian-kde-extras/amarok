@@ -1,16 +1,20 @@
-/****************************************************************************
- * copyright            : (C) 2008 Seb Ruiz <ruiz@kde.org>                  *
- *                        (C) 2008 William Viana Soares <vianasw@gmail.com> *
- ****************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
+ * Copyright (c) 2008 William Viana Soares <vianasw@gmail.com>                          *
+ * Copyright (c) 2009 simon.esneault <simon.esneault@gmail.com>                         *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "Albums.h"
 
@@ -23,7 +27,7 @@
 #include "Debug.h"
 #include "EngineController.h"
 #include "context/Svg.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
+#include "context/widgets/TextScrollingWidget.h"
 #include "meta/Meta.h"
 #include "meta/MetaUtility.h"
 #include "playlist/PlaylistModel.h"
@@ -53,7 +57,7 @@ void Albums::init()
 {
     setBackgroundHints( Plasma::Applet::NoBackground );
     
-    m_headerText = new QGraphicsSimpleTextItem( this );
+    m_headerText = new TextScrollingWidget( this );
 
     QFont labelFont;
     labelFont.setPointSize( labelFont.pointSize() + 2 );
@@ -62,7 +66,6 @@ void Albums::init()
     m_headerText->setText( i18n( "Recently added albums" ) );
     
     m_width = globalConfig().readEntry( "width", 500 );
-    m_height = globalConfig().readEntry( "height", 300 );
 
     m_albumsView = new AlbumsView( this );
     m_albumsView->setMinimumSize( 100, 150 );
@@ -71,7 +74,10 @@ void Albums::init()
     m_model->setColumnCount( 1 );
     m_albumsView->setModel( m_model );
     m_albumsView->show();
-    resize( m_width, m_height );
+
+    // properly set the height
+    // -1 means ask for all available space left
+    resize( m_width, -1 );
 
     dataEngine( "amarok-current" )->connectSource( "albums", this );
 
@@ -92,12 +98,17 @@ Albums::contextualActions()
 void Albums::constraintsEvent( Plasma::Constraints constraints )
 {
     Q_UNUSED( constraints )
-    DEBUG_BLOCK
+//    DEBUG_BLOCK
+
+    qreal widmax = boundingRect().width() - 4 * standardPadding();
+    QRectF rect( ( boundingRect().width() - widmax ) / 2, 0 , widmax, 15 );
+
+    m_headerText->setScrollingText( m_headerText->text(), rect );
 
     // here we put all of the text items into the correct locations
-    m_headerText->setPos( size().width() / 2 - m_headerText->boundingRect().width() / 2, standardPadding() + 3 );
+    m_headerText->setPos( ( size().width() - m_headerText->boundingRect().width() ) / 2 , standardPadding() + 3 );
     
-    debug() << "Updating constraints for " << m_albumCount << " album rows";
+ //   debug() << "Updating constraints for " << m_albumCount << " album rows";
     m_albumsView->resize( size().toSize().width() - 2 * standardPadding() , size().toSize().height() - m_headerText->boundingRect().height() - 3 * standardPadding()  );
     m_albumsView->setPos( standardPadding(), m_headerText->pos().y() + m_headerText->boundingRect().height() + standardPadding() );
 
@@ -174,6 +185,10 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
             if( currentTrack == trackPtr )
                 trackItem->italicise();
 
+            // If compilation and same artist, then make bold, but only if there's a current track
+            if( currentTrack && currentTrack->artist() == trackPtr->artist() && albumPtr->isCompilation() )
+                trackItem->bold();           
+            
             albumItem->setChild( childRow++, trackItem );
         }
         
@@ -185,14 +200,6 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
     updateConstraints();
 }
 
-QSizeF 
-Albums::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
-{
-    Q_UNUSED( which )
-
-    return QSizeF( constraint.width(), m_height );
-    
-}
 void Albums::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
 {
     Q_UNUSED( option );
@@ -217,8 +224,9 @@ void Albums::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option
     // tint the whole applet
     addGradientToAppletBackground( p );
 
-    // draw rounded rect around title
-    drawRoundedRectAroundText( p, m_headerText );
+    // draw rounded rect around title if not currently animating
+    if ( !m_headerText->isAnimating() )
+        drawRoundedRectAroundText( p, m_headerText );
 
 }
 

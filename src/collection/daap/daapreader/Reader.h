@@ -1,22 +1,20 @@
-/***************************************************************************
- * copyright            : (C) 2006 Ian Monroe <ian@monroe.nu> 
- * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License or (at your option) version 3 or any later version
- * accepted by the membership of KDE e.V. (or its successor approved
- * by the membership of KDE e.V.), which shall act as a proxy 
- * defined in Section 14 of version 3 of the license.
- * 
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- * 
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- **************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2006 Ian Monroe <ian@monroe.nu>                                        *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) version 3 or        *
+ * any later version accepted by the membership of KDE e.V. (or its successor approved  *
+ * by the membership of KDE e.V.), which shall act as a proxy defined in Section 14 of  *
+ * version 3 of the license.                                                            *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef DAAPREADER_H
 #define DAAPREADER_H
@@ -25,6 +23,7 @@
 
 #include <kurl.h>
 #include <threadweaver/Job.h>
+#include "MemoryCollection.h"
 
 class QString;
 
@@ -94,6 +93,9 @@ namespace Daap
             static Map parse( QDataStream &raw, uint containerLength, bool first = false );
             static void addElement( Map &parentMap, char* tag, QVariant element ); //! supporter function for parse
             static quint32 getTagAndLength( QDataStream &raw, char tag[5] );
+            void addTrack( const QString& itemId, const QString& title, const QString& artist, const QString& composer,
+                           const QString& commment, const QString& album, const QString& genre, const QString& year,
+                           const QString& format, qint32 trackNumber, qint32 songTime );
 
             static QMap<QString, Code> s_codes;
 
@@ -104,7 +106,13 @@ namespace Daap
             QString m_databaseId;
             int m_sessionId;
             QString m_password;
-
+            TrackMap m_trackMap;
+            ArtistMap m_artistMap;
+            AlbumMap m_albumMap;
+            GenreMap m_genreMap;
+            ComposerMap m_composerMap;
+            YearMap m_yearMap;
+            int m_loadedTracks;
     };
 
     class WorkerThread : public ThreadWeaver::Job

@@ -1,23 +1,18 @@
-/***************************************************************************
- *   Copyright (c) 2006, 2007                                              *
- *        Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                   *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
- ***************************************************************************/
-
+/****************************************************************************************
+ * Copyright (c) 2006,2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>               *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef MAGNATUNE_DOWNLOAD_INFO_H
 #define MAGNATUNE_DOWNLOAD_INFO_H
@@ -26,6 +21,7 @@
 
 #include <kurl.h>
 
+#include <QDomElement>
 #include <qmap.h>
 #include <QString>
 
@@ -44,23 +40,27 @@ public:
 
     bool initFromString( const QString &downloadInfoString, bool membershipDownload );
     bool initFromFile( const QString &downloadInfoFileName, bool membershipDownload );
+    bool initFromRedownloadXml( const QDomElement &element );
 
     void setMembershipInfo( const QString &username, const QString &password );
     bool isMembershipDownload();
 
-    DownloadFormatMap getFormatMap();
-    QString getUserName();
-    QString getPassword();
-    QString getDownloadMessage();
+    DownloadFormatMap formatMap();
+    QString userName();
+    QString password();
+    QString downloadMessage();
     Meta::MagnatuneAlbum * album();
 
+    QString albumName();
+    QString artistName();
 
-    void setFormatSelection(const QString &selectedFormat);
-    void setUnpackUrl(const QString &unpackUrl);
+
+    void setFormatSelection( const QString &selectedFormat );
+    void setUnpackUrl( const QString &unpackUrl );
     void setAlbum( Meta::MagnatuneAlbum * album );
     bool isReadyForDownload();
-    KUrl getCompleteDownloadUrl();
-    QString getUnpackLocation();
+    KUrl completeDownloadUrl();
+    QString unpackLocation();
 
 
 
@@ -70,6 +70,9 @@ protected:
     QString m_userName;
     QString m_password;
     QString m_downloadMessage;
+
+    QString m_artistName;
+    QString m_albumName;
 
     Meta::MagnatuneAlbum * m_album;
     bool m_membershipDownload;

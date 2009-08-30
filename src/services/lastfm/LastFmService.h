@@ -1,16 +1,19 @@
-/***************************************************************************
-* copyright            : (C) 2007 Shane King <kde@dontletsstart.com>      *
-* copyright            : (C) 2008 Leo Franchi <lfranchi@kde.org>          *
- **************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007 Shane King <kde@dontletsstart.com>                                *
+ * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef LASTFMSERVICE_H
 #define LASTFMSERVICE_H
@@ -24,7 +27,7 @@ class ScrobblerAdapter;
 class LastFmService;
 class LastFmServiceCollection;
 
-class WsReply;
+class QNetworkReply;
 
 class KHBox;
 
@@ -82,8 +85,8 @@ private slots:
     void playCustomStation();
     void updateEditHint( int index );
 
-    void onAuthenticated( WsReply* );
-    void onGetUserInfo( WsReply* );
+    void onAuthenticated();
+    void onGetUserInfo();
     void onAvatarDownloaded( QPixmap );
 
 private:
@@ -119,6 +122,7 @@ private:
     QPixmap m_avatar;
     bool m_subscriber;
 
+    QMap< QString, QNetworkReply* > m_jobs;
     static LastFmService *ms_service;
 
     friend LastFmService *The::lastFmService();

@@ -1,16 +1,19 @@
-/******************************************************************************************
- * copyright            : (C) 2006 Ian Monroe <ian@monroe.nu>                             *
- *                      : (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com> *
- ******************************************************************************************/
-
-/***************************************************************************
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2006 Ian Monroe <ian@monroe.nu>                                        *
+ * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #define DEBUG_PREFIX "DaapReader"
 
@@ -20,6 +23,7 @@
 #include "DaapCollection.h"
 #include "DaapMeta.h"
 #include "Debug.h"
+#include "statusbar/StatusBar.h"
 
 #include <QByteArray>
 #include <QDateTime>
@@ -34,6 +38,8 @@ using namespace Meta;
 
 QMap<QString, Code> Reader::s_codes;
 
+//#define DEBUGTAG( VAR ) debug() << tag << " has value " << VAR;
+#define DEBUGTAG( VAR )
 
 Reader::Reader( DaapCollection* mc, const QString& host, quint16 port, const QString& password, QObject* parent, const char* name)
     : QObject( parent )
@@ -42,6 +48,7 @@ Reader::Reader( DaapCollection* mc, const QString& host, quint16 port, const QSt
     , m_port( port )
     , m_sessionId( -1 )
     , m_password( password )
+    , m_loadedTracks( 0 )
 {
     setObjectName( name );
     debug() << "Host: " << host << " port: " << port;
@@ -169,6 +176,7 @@ Reader::~Reader()
 void
 Reader::logoutRequest()
 {
+    DEBUG_BLOCK
     ContentFetcher* http = new ContentFetcher( m_host, m_port, m_password, this, "readerLogoutHttp" );
     connect( http, SIGNAL( httpError( const QString& ) ), this, SLOT( fetchingError( const QString& ) ) );
     connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( logoutRequest( int, bool ) ) );
@@ -178,7 +186,8 @@ Reader::logoutRequest()
 void
 Reader::logoutRequest( int, bool )
 {
-     const_cast<QObject*>(sender())->deleteLater();
+    DEBUG_BLOCK
+    const_cast<QObject*>(sender())->deleteLater();
     deleteLater();
 }
 
@@ -222,7 +231,7 @@ Reader::loginFinished( int /* id */, bool error )
         return;
     }
     QDataStream raw( http->results() );
-    Map loginResults = parse( raw , 0 ,true );
+    Map loginResults = parse( raw, 0, true );
     debug() << "list size is " << loginResults["mlog"].toList().size();
     if( loginResults["mlog"].toList().size() == 0 )
         return;
@@ -259,7 +268,6 @@ Reader::updateFinished( int /*id*/, bool error )
 
     connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( databaseIdFinished( int, bool ) ) );
     http->getDaap( "/databases?" + m_loginString );
-
 }
 
 void
@@ -302,170 +310,306 @@ Reader::songListFinished( int /*id*/, bool error )
 bool
 Reader::parseSongList( const QByteArray &data )
 {
+    // The original implementation used parse(), which uses addElement() and
+    // makes heavy usage of QMaps and QList which hurts performance very badly.
+    // Therefore this function parses the daap responses directly into the
+    // DaapCollection which is 27 times faster here and saves a slight bit of
+    // heap space.
+    // parse() and addElement() create a more qt like structure though and might be
+    // kept for other daap tasks.
+
+    DEBUG_BLOCK
     QDataStream raw( data );
-    Map songResults = parse( raw, 0, true );
 
-    TrackMap trackMap;
-    ArtistMap artistMap;
-    AlbumMap albumMap;
-    GenreMap genreMap;
-    ComposerMap composerMap;
-    YearMap yearMap;
+    // Cache for music data
+    uint index = 0;
+    QString itemId;
+    QString format;
+    QString title;
+    QString artist;
+    QString composer;
+    QString comment;
+    QString album;
+    QString genre;
+    QString year;
+    qint32 trackNumber=0;
+    qint32 songTime=0;
+    bool isFirstTrack = false;
+    bool first=true;
+    uint containerLength=0;
 
-    if( songResults["adbs"].toList().size() < 1 ||
-        songResults["adbs"].toList()[0].toMap()["mlcl"].toList().count() < 1 ) {
+    while( (first ? !raw.atEnd() : ( index < containerLength ) ) )
+    {
+        char tag[5];
+        quint32 tagLength = getTagAndLength( raw, tag );
+        if( tagLength == 0 )
+        {
+            index += 8;
+            continue;
+        }
+        switch( s_codes[tag].type )
+        {
+            case CHAR:
+            {
+                qint8 charData;
+                raw >> charData; DEBUGTAG( charData )
+                break;
+            }
+            case SHORT:
+            {
+                qint16 shortData;
+                raw >> shortData; DEBUGTAG( shortData )
+                break;
+            }
+            case LONG:
+            {
+                qint32 longData;
+                raw >> longData; DEBUGTAG( longData )
+                if ( QString( tag ) == "miid" )
+                    itemId = QString::number( longData );
+                if ( QString( tag ) == "astm" )
+                    songTime = tagLength ? longData/1000 : 0;
+                if ( QString( tag ) == "astn" )
+                    trackNumber = tagLength ? longData : 0;
+                break;
+            }
+            case LONGLONG:
+            {
+                qint64 longlongData;
+                raw >> longlongData; DEBUGTAG( longlongData )
+                break;
+            }
+            case STRING:
+            {
+                QByteArray stringData(tagLength, ' ');
+                raw.readRawData( stringData.data(), tagLength ); DEBUGTAG( QString::fromUtf8( stringData, tagLength ) )
+                if ( QString( tag ) == "asfm" )
+                     format = tagLength ? QString::fromUtf8( stringData, tagLength ) : QString();
+                if ( QString( tag ) == "minm" )
+                     title = tagLength ? QString::fromUtf8( stringData, tagLength ): QString();
+                if ( QString( tag ) == "asal" )
+                     album = tagLength ? QString::fromUtf8( stringData, tagLength ): QString();
+                if ( QString( tag ) == "asar" )
+                     artist = tagLength ? QString::fromUtf8( stringData, tagLength ): QString();
+                if ( QString( tag ) == "ascp" )
+                     composer = tagLength ? QString::fromUtf8( stringData, tagLength ): QString();
+                if ( QString( tag ) == "ascm" )
+                     comment = tagLength ? QString::fromUtf8( stringData, tagLength ): QString();
+                if ( QString( tag ) == "asyr" )
+                     year = tagLength ? QString::fromUtf8( stringData, tagLength ): QString();
+                if ( QString( tag ) == "asgn" )
+                     genre = tagLength ? QString::fromUtf8( stringData, tagLength ): QString();
+                break;
+            }
+            case DATE:
+            {
+                qint64 dateData;
+                QDateTime date;
+                raw >> dateData; DEBUGTAG( dateData )
+                date.setTime_t(dateData);
+                break;
+            }
+            case DVERSION:
+            {
+                qint16 major;
+                qint8 minor;
+                qint8 patchLevel;
+                raw >> major >> minor >> patchLevel; DEBUGTAG( patchLevel )
+                break;
+            }
+            case CONTAINER:
+            {
+                if ( !isFirstTrack && QString( tag ) == "mlit" )
+                    addTrack( itemId, title, artist, composer, comment, album, genre, year, format, trackNumber, songTime );
+                else
+                    isFirstTrack=false;
+                break;
+            }
+            default:
+            {
+                warning() << tag << " does not work";
+                break;
+            }
+        }
+        index += tagLength + 8;
+    }
+
+
+    if( isFirstTrack )
+    {
         emit httpError( "Invalid response" ); //it's not a real http error, but the effect is the same
         deleteLater();
         return false;
     }
-
-    QList<QVariant> songList;
-    songList = songResults["adbs"].toList()[0].toMap()["mlcl"].toList()[0].toMap()["mlit"].toList();
-    debug() << "songList.count() = " << songList.count();
-    foreach( const QVariant &var, songList )
-    {
-        //debug() << "begin iteration...";
-        QString itemId = QString::number( var.toMap()["miid"].toList()[0].toInt() );
-        QString format = var.toMap()["asfm"].toList().size() ? var.toMap()["asfm"].toList()[0].toString() : QString();
-        DaapTrackPtr track( new DaapTrack( m_memColl, m_host, m_port, m_databaseId, itemId, format ) );
-        track->setTitle( var.toMap()["minm"].toList().size() ? var.toMap()["minm"].toList()[0].toString() : QString() );
-        track->setLength( var.toMap()["astm"].toList().size() ? var.toMap()["astm"].toList()[0].toInt()/1000 : 0 );
-        track->setTrackNumber( var.toMap()["astn"].toList().size() ? var.toMap()["astn"].toList()[0].toInt() : 0);
-        QString album = var.toMap()["asal"].toList().size() ? var.toMap()["asal"].toList()[0].toString() : QString();
-        DaapAlbumPtr albumPtr;
-        if ( albumMap.contains( album ) )
-            albumPtr = DaapAlbumPtr::staticCast( albumMap.value( album ) );
-        else
-        {
-            albumPtr = DaapAlbumPtr( new DaapAlbum( album ) );
-            albumMap.insert( album, AlbumPtr::staticCast( albumPtr ) );
-        }
-        albumPtr->addTrack( track );
-        track->setAlbum( albumPtr );
-
-        QString artist = var.toMap()["asar"].toList().size() ? var.toMap()["asar"].toList()[0].toString() : QString();
-        DaapArtistPtr artistPtr;
-        if ( artistMap.contains( artist ) )
-            artistPtr = DaapArtistPtr::staticCast( artistMap.value( artist ) );
-        else
-        {
-            artistPtr = DaapArtistPtr( new DaapArtist( artist ) );
-            artistMap.insert( artist, ArtistPtr::staticCast( artistPtr ) );
-        }
-        artistPtr->addTrack( track );
-        track->setArtist( artistPtr );
-
-        QString year = var.toMap()["asyr"].toList().size() ? var.toMap()["asyr"].toList()[0].toString() : QString();
-        DaapYearPtr yearPtr;
-        if ( yearMap.contains( year ) )
-            yearPtr = DaapYearPtr::staticCast( yearMap.value( year ) );
-        else
-        {
-            yearPtr = DaapYearPtr( new DaapYear( year ) );
-            yearMap.insert( year, YearPtr::staticCast( yearPtr ) );
-        }
-        yearPtr->addTrack( track );
-        track->setYear( yearPtr );
-
-        QString genre = var.toMap()["asgn"].toList().size() ? var.toMap()["asgn"].toList()[0].toString() : QString();
-        DaapGenrePtr genrePtr;
-        if ( genreMap.contains( genre ) )
-            genrePtr = DaapGenrePtr::staticCast( genreMap.value( genre ) );
-        else
-        {
-            genrePtr = DaapGenrePtr( new DaapGenre( genre ) );
-            genreMap.insert( genre, GenrePtr::staticCast( genrePtr ) );
-        }
-        genrePtr->addTrack( track );
-        track->setGenre( genrePtr );
-        trackMap.insert( track->uidUrl(), TrackPtr::staticCast( track ) );
-    }
+    else // add the last track which is otherwise lost
+        addTrack( itemId, title, artist, composer, comment, album, genre, year, format, trackNumber, songTime );
 
     m_memColl->acquireWriteLock();
-    m_memColl->setTrackMap( trackMap );
-    m_memColl->setArtistMap( artistMap );
-    m_memColl->setAlbumMap( albumMap );
-    m_memColl->setGenreMap( genreMap );
-    m_memColl->setComposerMap( composerMap );
-    m_memColl->setYearMap( yearMap );
+    m_memColl->setTrackMap( m_trackMap );
+    m_memColl->setArtistMap( m_artistMap );
+    m_memColl->setAlbumMap( m_albumMap );
+    m_memColl->setGenreMap( m_genreMap );
+    m_memColl->setComposerMap( m_composerMap );
+    m_memColl->setYearMap( m_yearMap );
     m_memColl->releaseLock();
+    m_trackMap.clear();
+    m_artistMap.clear();
+    m_albumMap.clear();
+    m_genreMap.clear();
+    m_composerMap.clear();
+    m_yearMap.clear();
+
     return true;
 }
+
+void
+Reader::addTrack( const QString& itemId, const QString& title, const QString& artist, const QString& composer,
+                  const QString& comment, const QString& album, const QString& genre, const QString& year, const QString& format,
+                  qint32 trackNumber, qint32 songTime )
+{
+    DaapTrackPtr track( new DaapTrack( m_memColl, m_host, m_port, m_databaseId, itemId, format ) );
+    track->setTitle( title );
+    track->setLength( songTime );
+    track->setTrackNumber( trackNumber );
+    track->setComment( comment );
+    track->setComment( composer );
+
+    DaapAlbumPtr albumPtr;
+    if ( m_albumMap.contains( album ) )
+        albumPtr = DaapAlbumPtr::staticCast( m_albumMap.value( album ) );
+    else
+    {
+        albumPtr = DaapAlbumPtr( new DaapAlbum( album ) );
+        m_albumMap.insert( album, AlbumPtr::staticCast( albumPtr ) );
+    }
+    albumPtr->addTrack( track );
+    track->setAlbum( albumPtr );
+
+    DaapComposerPtr composerPtr;
+    if ( m_composerMap.contains( composer ) )
+        composerPtr = DaapComposerPtr::staticCast( m_composerMap.value( composer ) );
+    else
+    {
+        composerPtr = DaapComposerPtr( new DaapComposer ( composer ) );
+        m_composerMap.insert( composer, ComposerPtr::staticCast( composerPtr ) );
+    }
+    composerPtr->addTrack( track );
+    track->setComposer ( composerPtr );
+
+    DaapArtistPtr artistPtr;
+    if ( m_artistMap.contains( artist ) )
+        artistPtr = DaapArtistPtr::staticCast( m_artistMap.value( artist ) );
+    else
+    {
+        artistPtr = DaapArtistPtr( new DaapArtist( artist ) );
+        m_artistMap.insert( artist, ArtistPtr::staticCast( artistPtr ) );
+    }
+    artistPtr->addTrack( track );
+    track->setArtist( artistPtr );
+
+    DaapYearPtr yearPtr;
+    if ( m_yearMap.contains( year ) )
+        yearPtr = DaapYearPtr::staticCast( m_yearMap.value( year ) );
+    else
+    {
+        yearPtr = DaapYearPtr( new DaapYear( year ) );
+        m_yearMap.insert( year, YearPtr::staticCast( yearPtr ) );
+    }
+    yearPtr->addTrack( track );
+    track->setYear( yearPtr );
+
+    DaapGenrePtr genrePtr;
+    if ( m_genreMap.contains( genre ) )
+        genrePtr = DaapGenrePtr::staticCast( m_genreMap.value( genre ) );
+    else
+    {
+        genrePtr = DaapGenrePtr( new DaapGenre( genre ) );
+        m_genreMap.insert( genre, GenrePtr::staticCast( genrePtr ) );
+    }
+    genrePtr->addTrack( track );
+    track->setGenre( genrePtr );
+    m_trackMap.insert( track->uidUrl(), TrackPtr::staticCast( track ) );
+}
+
 
 quint32
 Reader::getTagAndLength( QDataStream &raw, char tag[5] )
 {
-   tag[4] = 0;
-   raw.readRawData(tag, 4);
-   quint32 tagLength = 0;
-   raw >> tagLength;
-   return tagLength;
+    tag[4] = 0;
+    raw.readRawData(tag, 4);
+    quint32 tagLength = 0;
+    raw >> tagLength;
+    return tagLength;
 }
 
 Map
 Reader::parse( QDataStream &raw, uint containerLength, bool first )
 {
-//DEBUG_BLOCK
-/* http://daap.sourceforge.net/docs/index.html
-0-3     Content code    OSType (unsigned long), description of the contents of this chunk
-4-7     Length  Length of the contents of this chunk (not the whole chunk)
-8-      Data    The data contained within the chunk */
+    DEBUG_BLOCK
+    /**
+     * http://daap.sourceforge.net/docs/index.html
+     * 0-3     Content code    OSType (unsigned long), description of the contents of this chunk
+     * 4-7     Length  Length of the contents of this chunk (not the whole chunk)
+     * 8-      Data    The data contained within the chunk
+     **/
     Map childMap;
     uint index = 0;
     while( (first ? !raw.atEnd() : ( index < containerLength ) ) )
     {
-    //    debug() << "at index " << index << " of a total container size " << containerLength;
         char tag[5];
         quint32 tagLength = getTagAndLength( raw, tag );
         if( tagLength == 0 )
         {
-//             debug() << "tag " << tag << " has 0 length.";
             index += 8;
             continue;
         }
-//#define DEBUGTAG( VAR ) debug() << tag << " has value " << VAR;
-#define DEBUGTAG( VAR )
         switch( s_codes[tag].type )
         {
-            case CHAR: {
+            case CHAR:
+            {
                 qint8 charData;
                 raw >> charData; DEBUGTAG( charData )
                 addElement( childMap, tag, QVariant( static_cast<int>(charData) ) );
-                }
                 break;
-            case SHORT: {
+            }
+            case SHORT:
+            {
                 qint16 shortData;
                 raw >> shortData; DEBUGTAG( shortData )
                 addElement( childMap, tag, QVariant( static_cast<int>(shortData) ) );
-                }
                 break;
-            case LONG: {
+            }
+            case LONG:
+            {
                 qint32 longData;
                 raw >> longData; DEBUGTAG( longData )
                 addElement( childMap, tag, QVariant( longData ) );
-                }
                 break;
-            case LONGLONG: {
+            }
+            case LONGLONG:
+            {
                 qint64 longlongData;
                 raw >> longlongData; DEBUGTAG( longlongData )
                 addElement( childMap, tag, QVariant( longlongData ) );
-                }
-                break;
-            case STRING: {
+            }
+            case STRING:
+            {
                 QByteArray stringData(tagLength, ' ');
                 raw.readRawData( stringData.data(), tagLength ); DEBUGTAG( QString::fromUtf8( stringData, tagLength ) )
                 addElement( childMap, tag, QVariant( QString::fromUtf8( stringData, tagLength ) ) );
-                }
                 break;
-            case DATE: {
+            }
+            case DATE:
+            {
                 qint64 dateData;
                 QDateTime date;
                 raw >> dateData; DEBUGTAG( dateData )
                 date.setTime_t(dateData);
                 addElement( childMap, tag, QVariant( date ) );
-                }
                 break;
-            case DVERSION: {
+            }
+            case DVERSION:
+            {
                 qint16 major;
                 qint8 minor;
                 qint8 patchLevel;
@@ -473,16 +617,18 @@ Reader::parse( QDataStream &raw, uint containerLength, bool first )
                 QString version("%1.%2.%3");
                 version.arg(major, minor, patchLevel);
                 addElement( childMap, tag, QVariant(version) );
-                }
-                break;
-            case CONTAINER: {
+            }
+            case CONTAINER:
+            {
                 DEBUGTAG( 11 )
                 addElement( childMap, tag, QVariant( parse( raw, tagLength ) ) );
-                }
                 break;
+            }
             default:
+            {
                 warning() << tag << " does not work";
-            break;
+                break;
+            }
         }
         index += tagLength + 8;
     }
@@ -492,17 +638,22 @@ Reader::parse( QDataStream &raw, uint containerLength, bool first )
 void
 Reader::addElement( Map &parentMap, char* tag, QVariant element )
 {
-    if( !parentMap.contains( tag ) )
-        parentMap[tag] = QVariant( QList<QVariant>() );
-
-    QList<QVariant> list = parentMap[tag].toList();
-    list.append( element );
-    parentMap.insert( tag, QVariant( list ) );
+    QList<QVariant> list;
+    Map::Iterator it = parentMap.find( tag );
+    if ( it == parentMap.end() ) {
+        list.append( element );
+        parentMap.insert( tag, QVariant( list ) );
+    } else {
+        list = it.value().toList();
+        list.append( element );
+        it.value() = QVariant( list );
+    }
 }
 
 void
 Reader::fetchingError( const QString& error )
 {
+    DEBUG_BLOCK
     const_cast< QObject* >( sender() )->deleteLater();
     emit httpError( error );
 }

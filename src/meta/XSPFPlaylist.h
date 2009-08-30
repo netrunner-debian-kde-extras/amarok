@@ -1,26 +1,24 @@
-/* This file is part of the KDE project
-   Copyright (C) 2007 Bart Cerneels <bart.cerneels@kde.org>
-   Copyright (C) 2006 Mattias Fliesberg <mattias.fliesberg@gmail.com>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2007 Bart Cerneels <bart.cerneels@kde.org>                             *
+ * Copyright (c) 2006 Mattias Fliesberg <mattias.fliesberg@gmail.com>                   *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef XSPFPLAYLIST_H
 #define XSPFPLAYLIST_H
 
-#include "Playlist.h"
+#include "PlaylistFile.h"
 #include "capabilities/EditablePlaylistCapability.h"
 
 #include <QDomDocument>
@@ -56,20 +54,25 @@ typedef QList<XSPFTrack> XSPFTrackList;
 /**
 	@author Bart Cerneels <bart.cerneels@kde.org>
 */
-class AMAROK_EXPORT XSPFPlaylist : public Playlist, public QDomDocument, public EditablePlaylistCapability
+class AMAROK_EXPORT XSPFPlaylist : public PlaylistFile, public QDomDocument,
+            public EditablePlaylistCapability
 {
 public:
     XSPFPlaylist();
-    XSPFPlaylist( const KUrl &url );
+
+    /**
+    * Creates a new XSPFPlaylist and starts loading the xspf file of the url.
+    * @param url The Ulrf of the xspf file to load.
+    * @param autoAppend Should this playlist automatically append itself to the playlist when loaded (useful when loading a remote url as it
+    * allows the caller to do it in a "one shot" way and not have to worry about waiting untill download and parsing is completed.
+    */
+    XSPFPlaylist( const KUrl &url, bool autoAppend = false );
     XSPFPlaylist( Meta::TrackList list );
 
     ~XSPFPlaylist();
 
     virtual QString name() const { return title(); }
     virtual QString prettyName() const { return name(); }
-
-    bool load( QTextStream &stream ) { return loadXSPF( stream ); }
-    bool save( const QString &location, bool relative );
 
     /** returns all tracks in this playlist */
     TrackList tracks();
@@ -115,11 +118,18 @@ public:
 
     Capability* createCapabilityInterface( Capability::Type type );
 
+    /* PlaylistFile methods */
+    bool isWritable();
+    void setName( const QString &name );
+    bool load( QTextStream &stream ) { return loadXSPF( stream ); }
+    bool save( const KUrl &location, bool relative );
+
 private:
     XSPFTrackList trackList();
     bool loadXSPF( QTextStream& );
 
     KUrl m_url;
+    bool m_autoAppendAfterLoad;
 };
 
 }

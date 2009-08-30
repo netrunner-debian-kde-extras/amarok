@@ -1,21 +1,18 @@
-/***************************************************************************
-*   Copyright (c) 2008  Casey Link <unnamedrambler@gmail.com>             *
-*                                                                         *
-*   This program is free software; you can redistribute it and/or modify  *
-*   it under the terms of the GNU General Public License as published by  *
-*   the Free Software Foundation; either version 2 of the License, or     *
-*   (at your option) any later version.                                   *
-*                                                                         *
-*   This program is distributed in the hope that it will be useful,       *
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
-*   GNU General Public License for more details.                          *
-*                                                                         *
-*   You should have received a copy of the GNU General Public License     *
-*   along with this program; if not, write to the                         *
-*   Free Software Foundation, Inc.,                                       *
-*   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
-***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Casey Link <unnamedrambler@gmail.com>                             *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "LastFmTreeModel.h"
 
@@ -23,16 +20,16 @@
 
 #include "AvatarDownloader.h"
 #include "CollectionManager.h"
-#include <lastfm/ws/WsRequestBuilder.h>
-#include <lastfm/ws/WsReply.h>
-#include <lastfm/ws/WsKeys.h>
-#include <lastfm/types/Tag.h>
-#include <lastfm/core/WeightedStringList.h>
+
+#include <lastfm/ws.h>
+#include <lastfm/Tag>
+#include <lastfm/XmlQuery>
 
 #include <KIcon>
 #include <KLocale>
 
 #include <QMap>
+#include <QNetworkReply>
 #include <QPainter>
 
 using namespace LastFm;
@@ -43,14 +40,17 @@ LastFmTreeModel::LastFmTreeModel ( const QString &username, QObject *parent )
 //     rootData << "Title" << "Summary";
     rootItem = new LastFmTreeItem ( LastFm::Root, "Hello" );
     setupModelData ( rootItem );
-    WsReply* reply = mUser.getNeighbours();
-    connect ( reply, SIGNAL ( finished ( WsReply* ) ), this, SLOT ( slotAddNeighbors ( WsReply* ) ) );
-    reply = mUser.getFriends();
-    connect ( reply, SIGNAL ( finished ( WsReply* ) ), this, SLOT ( slotAddFriends ( WsReply* ) ) );
-    reply = mUser.getTopTags();
-    connect ( reply, SIGNAL ( finished ( WsReply* ) ), this, SLOT ( slotAddTags ( WsReply* ) ) );
-    reply = WsRequestBuilder("user.getTopArtists").add("user", username).add("period", "overall").get();
-    connect ( reply, SIGNAL ( finished ( WsReply* ) ), this, SLOT ( slotAddTopArtists ( WsReply* ) ) );
+    m_jobs[ "getNeighbours" ] = mUser.getNeighbours();
+    connect ( m_jobs[ "getNeighbours" ], SIGNAL ( finished () ), this, SLOT ( slotAddNeighbors () ) );
+    
+    m_jobs[ "getFriends" ] = mUser.getFriends();
+    connect ( m_jobs[ "getFriends" ], SIGNAL ( finished () ), this, SLOT ( slotAddFriends () ) );
+    
+    m_jobs[ "getTopTags" ] = mUser.getTopTags();
+    connect ( m_jobs[ "getTopTags" ], SIGNAL ( finished () ), this, SLOT ( slotAddTags () ) );
+    
+    m_jobs[ "getTopArtists" ] = mUser.getTopArtists(); 
+    connect ( m_jobs[ "getTopArtists" ], SIGNAL ( finished () ), this, SLOT ( slotAddTopArtists () ) );
 
 }
 
@@ -60,76 +60,102 @@ LastFmTreeModel::~LastFmTreeModel()
 }
 
 void
-LastFmTreeModel::slotAddNeighbors ( WsReply* reply )
+LastFmTreeModel::slotAddNeighbors ()
 {
     DEBUG_BLOCK
     // iterate through each neighbour
     QMap<QString, QString> avatarlist;
-    foreach( const CoreDomElement &e, reply->lfm() [ "neighbours" ].children ( "user" ) )
+    
+    try
     {
-        QString name = e[ "name" ].text();
-        mNeighbors << name;
-        LastFmTreeItem* neighbor = new LastFmTreeItem ( mapTypeToUrl ( LastFm::NeighborsChild, name ), LastFm::NeighborsChild, name, mMyNeighbors );
-        mMyNeighbors->appendChild ( neighbor );
-        appendUserStations ( neighbor, name );
-        if ( !e[ "image size=large" ].text().isEmpty() )
+        lastfm::XmlQuery lfm( m_jobs[ "getNeighbours" ]->readAll() );
+        foreach( lastfm::XmlQuery e, lfm[ "neighbours" ].children ( "user" ) )
         {
-            avatarlist.insert ( name, e[ "image size=large" ].text() );
+            QString name = e[ "name" ].text();
+            mNeighbors << name;
+            LastFmTreeItem* neighbor = new LastFmTreeItem ( mapTypeToUrl ( LastFm::NeighborsChild, name ), LastFm::NeighborsChild, name, mMyNeighbors );
+            mMyNeighbors->appendChild ( neighbor );
+            appendUserStations ( neighbor, name );
+            if ( !e[ "image size=large" ].text().isEmpty() )
+            {
+                avatarlist.insert ( name, e[ "image size=large" ].text() );
+            }
         }
+
+    } catch( lastfm::ws::ParseError e )
+    {
+        debug() << "Got exception in parsing from last.fm:" << e.what();
     }
     queueAvatarsDownload ( avatarlist );
     emitRowChanged(LastFm::Neighbors);
-    reply->deleteLater();
+    m_jobs[ "getNeighbours" ]->deleteLater();
 }
 
 void
-LastFmTreeModel::slotAddFriends ( WsReply* reply )
+LastFmTreeModel::slotAddFriends ()
 {
     DEBUG_BLOCK
     // iterate through each friend
     QMap<QString, QString> avatarlist;
-    foreach( const CoreDomElement &e, reply->lfm() [ "friends" ].children ( "user" ) )
+    try
     {
-        QString name = e[ "name" ].text();
-        mFriends << name;
-        LastFmTreeItem* afriend = new LastFmTreeItem ( mapTypeToUrl ( LastFm::FriendsChild, name ), LastFm::FriendsChild, name, mMyFriends );
-        mMyFriends->appendChild ( afriend );
-        appendUserStations ( afriend, name );
-        if ( !e[ "image size=large" ].text().isEmpty() )
+        lastfm::XmlQuery lfm( m_jobs[ "getFriends" ]->readAll() );
+        foreach( lastfm::XmlQuery e, lfm[ "friends" ].children ( "user" ) )
         {
-            avatarlist.insert ( name, e[ "image size=large" ].text() );
+            QString name = e[ "name" ].text();
+            mFriends << name;
+            LastFmTreeItem* afriend = new LastFmTreeItem ( mapTypeToUrl ( LastFm::FriendsChild, name ), LastFm::FriendsChild, name, mMyFriends );
+            mMyFriends->appendChild ( afriend );
+            appendUserStations ( afriend, name );
+            if ( !e[ "image size=large" ].text().isEmpty() )
+            {
+                avatarlist.insert ( name, e[ "image size=large" ].text() );
+            }
         }
+
+    } catch( lastfm::ws::ParseError e )
+    {
+        debug() << "Got exception in parsing from last.fm:" << e.what();
     }
     queueAvatarsDownload ( avatarlist );
     emitRowChanged(LastFm::Friends);
-    reply->deleteLater();
+    m_jobs[ "getFriends" ]->deleteLater();
 }
 
 void
-LastFmTreeModel::slotAddTopArtists ( WsReply* reply )
+LastFmTreeModel::slotAddTopArtists ()
 {
     DEBUG_BLOCK
     // iterate through each neighbour
     QMap<QString, QString> avatarlist;
     WeightedStringList list;
-    foreach( const CoreDomElement &e, reply->lfm() [ "topartists" ].children ( "artist" ) )
+    try
     {
-        QString name = e[ "name" ].text();
-        QString weight = e[ "playcount" ].text();
-        WeightedString s(name, weight.toFloat() );
-        list << s;
-    }
-    list.weightedSort(Qt::DescendingOrder);
-    for ( int i = 0; i < list.count(); i++ )
+        lastfm::XmlQuery lfm( m_jobs[ "getTopArtists" ]->readAll() );
+
+        foreach( lastfm::XmlQuery e, lfm[ "topartists" ].children ( "artist" ) )
+        {
+            QString name = e[ "name" ].text();
+            QString weight = e[ "playcount" ].text();
+            WeightedString s(name, weight.toFloat() );
+            list << s;
+        }
+        list.weightedSort(Qt::DescendingOrder);
+        for ( int i = 0; i < list.count(); i++ )
+        {
+            list[i] += " (" + QVariant ( list.at ( i ).weighting() ).toString() + " plays)";
+            QString actual = list[i];
+            actual = actual.remove ( actual.lastIndexOf ( " (" ), actual.length() );
+            LastFmTreeItem* artist = new LastFmTreeItem ( mapTypeToUrl ( LastFm::ArtistsChild, actual ), LastFm::ArtistsChild, list[i], mMyTopArtists );
+            mMyTopArtists->appendChild ( artist );
+        }
+
+    } catch( lastfm::ws::ParseError e )
     {
-        list[i] += " (" + QVariant ( list.at ( i ).weighting() ).toString() + " plays)";
-        QString actual = list[i];
-        actual = actual.remove ( actual.lastIndexOf ( " (" ), actual.length() );
-        LastFmTreeItem* artist = new LastFmTreeItem ( mapTypeToUrl ( LastFm::ArtistsChild, actual ), LastFm::ArtistsChild, list[i], mMyTopArtists );
-        mMyTopArtists->appendChild ( artist );
+        debug() << "Got exception in parsing from last.fm:" << e.what();
     }
     emitRowChanged(LastFm::TopArtists);
-    reply->deleteLater();
+    m_jobs[ "getTopArtists" ]->deleteLater();
 }
 
 void
@@ -143,13 +169,17 @@ LastFmTreeModel::appendUserStations ( LastFmTreeItem* item, const QString &user 
     item->appendChild ( neigh );
 }
 void
-LastFmTreeModel::slotAddTags ( WsReply* reply )
+LastFmTreeModel::slotAddTags ()
 {
     DEBUG_BLOCK
     mTags.clear();
-    sortTags ( Tag::list ( reply ), Qt::DescendingOrder ) ;
+    QMap< int, QString > listWithWeights = lastfm::Tag::list ( m_jobs[ "getTopTags" ] );
+    WeightedStringList weighted;
+    foreach( int w, listWithWeights.keys() )
+        weighted << WeightedString( listWithWeights[ w ], w );
+    sortTags ( weighted, Qt::DescendingOrder ) ;
     emitRowChanged(LastFm::MyTags);
-    reply->deleteLater();
+    m_jobs[ "getTopTags" ]->deleteLater();
 }
 
 void

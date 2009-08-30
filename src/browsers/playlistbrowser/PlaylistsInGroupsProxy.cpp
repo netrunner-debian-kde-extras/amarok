@@ -1,39 +1,38 @@
-/* This file is part of the KDE project
-   Copyright (C) 2009 Bart Cerneels <bart.cerneels@kde.org>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2009 Bart Cerneels <bart.cerneels@kde.org>                             *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "PlaylistsInGroupsProxy.h"
 
 #include "AmarokMimeData.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "Debug.h"
 #include "meta/Playlist.h"
 #include "SvgHandler.h"
 #include "UserPlaylistModel.h"
+#include "playlist/PlaylistModelStack.h"
 
 #include <KIcon>
 #include <KInputDialog>
 
-PlaylistsInGroupsProxy::PlaylistsInGroupsProxy( PlaylistBrowserNS::MetaPlaylistModel *model )
-    : MetaPlaylistModel()
+PlaylistsInGroupsProxy::PlaylistsInGroupsProxy( QAbstractItemModel *model )
+    : QAbstractProxyModel( model )
     , m_model( model )
-    , m_renameAction( 0 )
-    , m_deleteAction( 0 )
+    , m_renameFolderAction( 0 )
+    , m_deleteFolderAction( 0 )
 {
+    setSourceModel( model );
     // signal proxies
     connect( m_model,
         SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ),
@@ -44,6 +43,8 @@ PlaylistsInGroupsProxy::PlaylistsInGroupsProxy( PlaylistBrowserNS::MetaPlaylistM
         SLOT( modelRowsInserted( const QModelIndex &, int, int ) ) );
     connect( m_model, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ),
         this, SLOT( modelRowsRemoved( const QModelIndex&, int, int ) ) );
+    connect( m_model, SIGNAL( rowsAboutToBeRemoved( const QModelIndex &, int, int ) ),
+             SLOT( modelRowsAboutToBeRemoved( const QModelIndex &, int, int ) ) );
     connect( m_model, SIGNAL( renameIndex( QModelIndex ) ), SLOT( slotRename( QModelIndex ) ) );
     connect( m_model, SIGNAL( layoutChanged() ), SLOT( buildTree() ) );
 
@@ -80,7 +81,7 @@ PlaylistsInGroupsProxy::buildTree()
 
     int max = m_model->rowCount();
     debug() << QString("building tree with %1 leafs.").arg( max );
-    for ( int row = 0; row < max; row++ )
+    for( int row = 0; row < max; row++ )
     {
         QModelIndex idx = m_model->index( row, 0, QModelIndex() );
         //Playlists can be in multiple groups but we only use the first TODO: multigroup
@@ -165,11 +166,9 @@ PlaylistsInGroupsProxy::rowCount( const QModelIndex& index ) const
         qint64 groupIndex = index.row();
         return m_groupHash.count( groupIndex );
     }
-    else
-    {
-        QModelIndex originalIndex = mapToSource( index );
-        return m_model->rowCount( originalIndex );
-    }
+
+    QModelIndex originalIndex = mapToSource( index );
+    return m_model->rowCount( originalIndex );
 }
 
 QVariant
@@ -210,11 +209,14 @@ PlaylistsInGroupsProxy::removeRows( int row, int count, const QModelIndex &paren
     debug() << "in parent " << parent << "remove " << count << " starting at row " << row;
     if( isGroup( parent ) )
     {
-        deleteGroup( parent );
+        deleteFolder( parent );
         return true;
     }
+
     QModelIndex originalIdx = mapToSource( parent );
-    return m_model->removeRows( row, count, originalIdx );
+    bool success = m_model->removeRows( row, count, originalIdx );
+
+    return success;
 }
 
 QStringList
@@ -372,10 +374,10 @@ PlaylistsInGroupsProxy::mapToSource( const QModelIndex& index ) const
     QModelIndex originalParent = mapToSource( proxyParent );
 //    debug() << "originalParent: " << originalParent;
     int originalRow = index.row();
-    if( !originalParent.isValid() )
+    if( !originalParent.isValid() ) //it is a child of the parent's rootnode (1st level)
     {
         int indexInGroup = index.row();
-        if( !proxyParent.isValid() )
+        if( !proxyParent.isValid() ) //it is not in a group so it's after the group items
             indexInGroup -= m_groupNames.count();
 //        debug() << "indexInGroup" << indexInGroup;
         QList<int> childRows = m_groupHash.values( proxyParent.row() );
@@ -402,24 +404,49 @@ PlaylistsInGroupsProxy::mapToSource( const QModelIndexList& list ) const
 }
 
 QModelIndex
-PlaylistsInGroupsProxy::mapFromSource( const QModelIndex& index ) const
+PlaylistsInGroupsProxy::mapFromSource( const QModelIndex& idx ) const
 {
-    if( !index.isValid() )
+    DEBUG_BLOCK
+    debug() << "index: " << idx;
+    if( !idx.isValid() )
         return QModelIndex();
 
-    //TODO: this needs to be extended to work for tree models as well
-    int sourceRow = index.row();
-    int parentRow = m_groupHash.key( sourceRow, -1 );
+    QModelIndex proxyParent;
+    QModelIndex sourceParent = idx.parent();
+    debug() << "sourceParent: " << sourceParent;
+    int proxyRow = idx.row();
+    int sourceRow = idx.row();
 
-    QModelIndex parent = QModelIndex();
-    int proxyRow = m_groupNames.count() + m_groupHash.values( -1 ).indexOf( sourceRow );
-    if( parentRow != -1 )
+    if( sourceParent.isValid() )
     {
-        parent = this->index( parentRow, 0, QModelIndex() );
-        proxyRow = m_groupHash.values( parentRow ).indexOf( sourceRow );
+        //idx is a child of one of the items in the source model
+        proxyParent = mapFromSource( sourceParent );
+    }
+    else
+    {
+        //idx is an item of the top level of the source model (child of the rootnode)
+        int groupRow = m_groupHash.key( sourceRow, -1 );
+
+        if( groupRow != -1 ) //it's in a group, let's find the correct row.
+        {
+            proxyParent = this->index( groupRow, 0, QModelIndex() );
+            proxyRow = m_groupHash.values( groupRow ).indexOf( sourceRow );
+        }
+        else
+        {
+            proxyParent = QModelIndex();
+            // if the proxy item is not in a group it will be below the groups.
+            int groupLength = m_groupNames.count();
+            debug() << "groupNames length: " << groupLength;
+            int i = m_groupHash.values( -1 ).indexOf( sourceRow );
+            debug() << "index in hash: " << i;
+            proxyRow = groupLength + i;
+        }
     }
 
-    return this->index( proxyRow, 0, parent );
+    debug() << "proxyParent: " << proxyParent;
+    debug() << "proxyRow: " << proxyRow;
+    return this->index( proxyRow, 0, proxyParent );
 }
 
 Qt::ItemFlags
@@ -427,7 +454,7 @@ PlaylistsInGroupsProxy::flags( const QModelIndex &index ) const
 {
     if( isGroup( index ) )
         return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable |
-                 Qt::ItemIsDropEnabled );
+                 Qt::ItemIsDropEnabled | Qt::ItemIsDragEnabled );
 
     QModelIndex originalIdx = mapToSource( index );
     Qt::ItemFlags originalItemFlags = m_model->flags( originalIdx );
@@ -439,8 +466,9 @@ PlaylistsInGroupsProxy::flags( const QModelIndex &index ) const
 void
 PlaylistsInGroupsProxy::modelDataChanged( const QModelIndex& start, const QModelIndex& end )
 {
-    Q_UNUSED( start )
-    Q_UNUSED( end )
+    DEBUG_BLOCK
+    //TODO: see if new groups have to be created, deleted or adjusted. Try to avoid buildTree()
+    emit dataChanged( mapFromSource( start ), mapFromSource( end ) );
 }
 
 void
@@ -449,14 +477,37 @@ PlaylistsInGroupsProxy::modelRowsInserted( const QModelIndex& index, int start, 
     Q_UNUSED( index )
     Q_UNUSED( start )
     Q_UNUSED( end )
+    DEBUG_BLOCK
+    //TODO: see if new groups have to be created, deleted or adjusted. Try to avoid buildTree()
+    buildTree();
 }
 
 void
-PlaylistsInGroupsProxy::modelRowsRemoved( const QModelIndex& index, int start, int end )
+PlaylistsInGroupsProxy::modelRowsAboutToBeRemoved( const QModelIndex &sourceParent,
+                                                   int start, int end ) //SLOT
 {
-    Q_UNUSED( index )
-    Q_UNUSED( start )
-    Q_UNUSED( end )
+    DEBUG_BLOCK
+    debug() << "sourceParent: " << sourceParent;
+    debug() << "start: " << start;
+    debug() << "end: " << end;
+    QModelIndex proxyParent = mapFromSource( sourceParent );
+    debug() << "proxyParent: " << proxyParent;
+//HACK: we need to use beginRemoveRows( proxyParent, start, end ); but it's not working
+}
+
+void
+PlaylistsInGroupsProxy::modelRowsRemoved( const QModelIndex &sourceParent, int start,
+                                          int end )
+{
+    DEBUG_BLOCK
+    //TODO: see if groups have to be created or adjusted.
+    debug() << "sourceParent: " << sourceParent;
+    debug() << "start: " << start;
+    debug() << "end: " << end;
+    QModelIndex proxyParent = mapFromSource( sourceParent );
+    debug() << "proxyParent: " << proxyParent;
+//HACK: we need to use endRemoveRows() here, but it's not working. So reset the entire proxy
+    buildTree();
 }
 
 void
@@ -467,26 +518,34 @@ PlaylistsInGroupsProxy::slotRename( QModelIndex sourceIdx )
 }
 
 void
-PlaylistsInGroupsProxy::slotDeleteGroup()
+PlaylistsInGroupsProxy::slotDeleteFolder()
 {
     DEBUG_BLOCK
     if( m_selectedGroups.count() == 0 )
         return;
 
     QModelIndex groupIdx = m_selectedGroups.first();
-    deleteGroup( groupIdx );
+    deleteFolder( groupIdx );
 }
 
 void
-PlaylistsInGroupsProxy::slotRenameGroup()
+PlaylistsInGroupsProxy::slotRenameFolder()
 {
     DEBUG_BLOCK
     //get the name for this new group
     //TODO: do inline rename
+    QModelIndex folder = m_selectedGroups.first();
+    QString folderName = folder.data( Qt::DisplayRole ).toString();
+    bool ok;
     const QString newName = KInputDialog::getText( i18n("New name"),
-                i18nc("Enter a new name for a group that already exists", "Enter new group name:") );
+                i18nc("Enter a new name for a folder that already exists",
+                      "Enter new folder name:"),
+                folderName,
+                &ok );
+    if( !ok || newName == folderName )
+        return;
 
-    foreach( int originalRow, m_groupHash.values( m_selectedGroups.first().row() ) )
+    foreach( int originalRow, m_groupHash.values( folder.row() ) )
     {
         QModelIndex index = m_model->index( originalRow, 0, QModelIndex() );
         Meta::PlaylistPtr playlist = index.data( 0xf00d ).value<Meta::PlaylistPtr>();
@@ -500,7 +559,7 @@ PlaylistsInGroupsProxy::slotRenameGroup()
 }
 
 void
-PlaylistsInGroupsProxy::slotAddToGroup()
+PlaylistsInGroupsProxy::slotAddToFolder()
 {
     DEBUG_BLOCK
     const QString name = KInputDialog::getText( i18n("New name"),
@@ -516,24 +575,26 @@ PlaylistsInGroupsProxy::slotAddToGroup()
     buildTree();
 }
 
-QList<PopupDropperAction *>
+QList<QAction *>
 PlaylistsInGroupsProxy::createGroupActions()
 {
-    QList<PopupDropperAction *> actions;
+    QList<QAction *> actions;
 
-    if ( m_deleteAction == 0 )
+    if ( m_deleteFolderAction == 0 )
     {
-        m_deleteAction = new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "delete_group", KIcon( "media-track-remove-amarok" ), i18n( "&Delete group" ), this );
-        connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDeleteGroup() ) );
+        m_deleteFolderAction = new QAction( KIcon( "media-track-remove-amarok" ), i18n( "&Delete Folder" ), this );
+        m_deleteFolderAction->setProperty( "popupdropper_svg_id", "delete_group" );
+        connect( m_deleteFolderAction, SIGNAL( triggered() ), this, SLOT( slotDeleteGroup() ) );
     }
-    actions << m_deleteAction;
+    actions << m_deleteFolderAction;
 
-    if ( m_renameAction == 0 )
+    if ( m_renameFolderAction == 0 )
     {
-        m_renameAction =  new PopupDropperAction( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ), "edit_group", KIcon( "media-track-edit-amarok" ), i18n( "&Rename group" ), this );
-        connect( m_renameAction, SIGNAL( triggered() ), this, SLOT( slotRenameGroup() ) );
+        m_renameFolderAction =  new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Rename Folder..." ), this );
+        m_renameFolderAction->setProperty( "popupdropper_svg_id", "edit_group" );
+        connect( m_renameFolderAction, SIGNAL( triggered() ), this, SLOT( slotRenameGroup() ) );
     }
-    actions << m_renameAction;
+    actions << m_renameFolderAction;
 
     return actions;
 }
@@ -578,7 +639,7 @@ PlaylistsInGroupsProxy::changeGroupName( const QString &from, const QString &to 
 }
 
 void
-PlaylistsInGroupsProxy::deleteGroup( const QModelIndex &groupIdx )
+PlaylistsInGroupsProxy::deleteFolder( const QModelIndex &groupIdx )
 {
     DEBUG_BLOCK
     //TODO: ask the user for configmation to delete children
@@ -594,14 +655,14 @@ PlaylistsInGroupsProxy::deleteGroup( const QModelIndex &groupIdx )
     buildTree();
 }
 
-QList<PopupDropperAction *>
+QList<QAction *>
 PlaylistsInGroupsProxy::actionsFor( const QModelIndexList &list )
 {
     DEBUG_BLOCK
     bool playlistSelected = isAPlaylistSelected( list );
     bool groupSelected = isAGroupSelected( list );
 
-    QList<PopupDropperAction *> actions;
+    QList<QAction *> actions;
     m_selectedGroups.clear();
     m_selectedPlaylists.clear();
 
@@ -617,15 +678,21 @@ PlaylistsInGroupsProxy::actionsFor( const QModelIndexList &list )
         }
         QModelIndexList originalList = mapToSource( list );
         debug() << originalList.count() << "original indices";
+        MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>(m_model);
+        if( mpm == 0 )
+            return actions;
         if( !originalList.isEmpty() )
-            actions << m_model->actionsFor( originalList );
+            actions << mpm->actionsFor( originalList );
     }
     else if( groupSelected )
     {
         QModelIndexList originalList;
         originalList << m_model->index( 0, 0, QModelIndex() );
         originalList << m_model->index( 1, 0, QModelIndex() );
-        actions << m_model->actionsFor( originalList );
+        MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>(m_model);
+        if( mpm == 0 )
+            return actions;
+        actions << mpm->actionsFor( originalList );
         actions << createGroupActions();
         foreach( const QModelIndex &index, list )
         {
@@ -643,8 +710,10 @@ void
 PlaylistsInGroupsProxy::loadItems( QModelIndexList list, Playlist::AddOptions insertMode )
 {
     QModelIndexList originalList = mapToSource( list );
-
-    m_model->loadItems( originalList, insertMode );
+    MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>(m_model);
+    if( mpm == 0 )
+        return;
+    mpm->loadItems( originalList, insertMode );
 }
 
 QModelIndex

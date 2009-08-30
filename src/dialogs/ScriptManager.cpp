@@ -1,26 +1,23 @@
-/***************************************************************************
- *   Copyright (C) 2004-2007 by Mark Kretschmann <kretschmann@kde.org>     *
- *                 2005-2007 by Seb Ruiz <ruiz@kde.org>                    *
- *                      2006 by Alexandre Oliveira <aleprj@gmail.com>      *
- *                      2006 by Martin Ellis <martin.ellis@kdemail.net>    *
- *                      2007 by Leonardo Franchi <lfranchi@gmail.com>      *
- *                      2008 by Peter ZHOU <peterzhoulei@gmail.com>        *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2004-2007 Mark Kretschmann <kretschmann@kde.org>                       *
+ * Copyright (c) 2005-2007 Seb Ruiz <ruiz@kde.org>                                      *
+ * Copyright (c) 2006 Alexandre Pereira de Oliveira <aleprj@gmail.com>                  *
+ * Copyright (c) 2006 Martin Ellis <martin.ellis@kdemail.net>                           *
+ * Copyright (c) 2007 Leo Franchi <lfranchi@gmail.com>                                  *
+ * Copyright (c) 2008 Peter ZHOU <peterzhoulei@gmail.com>                               *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #define DEBUG_PREFIX "ScriptManager"
 
@@ -71,30 +68,6 @@
 
 #include <sys/stat.h>
 #include <sys/types.h>
-
-namespace Amarok
-{
-    QString
-    proxyForUrl(const QString& url)
-    {
-        KUrl kurl( url );
-
-        QString proxy;
-
-        if ( KProtocolManager::proxyForUrl( kurl ) !=
-                QString::fromLatin1( "DIRECT" ) ) {
-            KProtocolManager::slaveProtocol ( kurl, proxy );
-        }
-
-        return proxy;
-    }
-
-    QString
-    proxyForProtocol(const QString& protocol)
-    {
-        return KProtocolManager::proxyFor( protocol );
-    }
-}
 
 ////////////////////////////////////////////////////////////////////////////////
 // class ScriptManager
@@ -430,7 +403,7 @@ ScriptManager::slotRunScript( QString name, bool silent )
     m_scripts[name].evaluating = true;
     if( m_scripts[name].info.category() == "Lyrics" )
         m_lyricsScript = name;
-   
+
     m_scripts[name].log += time.currentTime().toString() + " Script Started!" + '\n';
     m_scripts[name].engine->setProcessEventsInterval( 100 );
     m_scripts[name].engine->evaluate( scriptFile.readAll() );
@@ -459,9 +432,6 @@ ScriptManager::slotRunScript( QString name, bool silent )
     }
     else
         slotStopScript( name );
-
-
-
 
     return true;
 }
@@ -634,7 +604,7 @@ ScriptManager::startScriptEngine( QString name )
     scriptObject = scriptEngine->newQObject( objectPtr );
     m_global.setProperty( "Script", scriptObject );
     m_scripts[name].wrapperList.append( objectPtr );
-    
+
     objectPtr = new InfoScript( m_scripts[name].url );
     QScriptValue infoContext = scriptEngine->newQObject( objectPtr );
     m_global.setProperty( "Info", infoContext );
@@ -657,7 +627,7 @@ ScriptManager::startScriptEngine( QString name )
     scriptObject = scriptEngine->newQObject( objectPtr );
     m_global.setProperty( "Lyrics", scriptObject );
     m_scripts[name].wrapperList.append( objectPtr );
-    
+
     objectPtr = new AmarokScript::AmarokServicePluginManagerScript( scriptEngine );
     scriptObject = scriptEngine->newQObject( objectPtr );
     m_global.setProperty( "ServicePluginManager", scriptObject );

@@ -1,25 +1,23 @@
-/* This file is part of the KDE project
-   Copyright (C) 2007 Bart Cerneels <bart.cerneels@kde.org>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2007 Bart Cerneels <bart.cerneels@kde.org>                             *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef METAPLSPLAYLIST_H
 #define METAPLSPLAYLIST_H
 
-#include <Playlist.h>
+#include <PlaylistFile.h>
 
 class QTextStream;
 class QFile;
@@ -34,7 +32,7 @@ typedef QList<PLSPlaylistPtr> PLSPlaylistList;
 /**
 	@author Bart Cerneels <bart.cerneels@kde.org>
 */
-class PLSPlaylist : public Playlist
+class PLSPlaylist : public PlaylistFile
 {
     public:
         PLSPlaylist();
@@ -43,22 +41,24 @@ class PLSPlaylist : public Playlist
 
         ~PLSPlaylist();
 
-        bool save( const QString &location, bool relative );
-
         /* Playlist virtual functions */
-        virtual QString name() const { return prettyName(); };
-        virtual QString prettyName() const { return m_url.fileName(); };
+        virtual QString name() const { return prettyName(); }
+        virtual QString prettyName() const { return m_url.fileName(); }
 
         /** returns all tracks in this playlist */
-        TrackList tracks() { return m_tracks; };
+        TrackList tracks() { return m_tracks; }
 
-        bool hasCapabilityInterface( Meta::Capability::Type type ) const { Q_UNUSED( type ); return false; };
+        bool hasCapabilityInterface( Meta::Capability::Type type ) const { Q_UNUSED( type ); return false; }
 
-        Capability* createCapabilityInterface( Capability::Type type ) { Q_UNUSED( type ); return 0; };
+        Capability* createCapabilityInterface( Capability::Type type ) { Q_UNUSED( type ); return 0; }
 
-        KUrl retrievableUrl() { return m_url; };
+        KUrl retrievableUrl() { return m_url; }
 
-        bool load( QTextStream &stream ) { return loadPls( stream ); };
+        /* PlaylistFile methods */
+        bool isWritable();
+        void setName( const QString &name );
+        bool save( const KUrl &location, bool relative );
+        bool load( QTextStream &stream ) { return loadPls( stream ); }
 
     private:
         bool loadPls( QTextStream &stream );
@@ -66,7 +66,6 @@ class PLSPlaylist : public Playlist
 
         Meta::TrackList m_tracks;
         KUrl m_url;
-
 };
 
 }

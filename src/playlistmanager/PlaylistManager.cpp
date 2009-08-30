@@ -1,20 +1,18 @@
-/* This file is part of the KDE project
-   Copyright (C) 2007 Bart Cerneels <bart.cerneels@kde.org>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2007 Bart Cerneels <bart.cerneels@kde.org>                             *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "PlaylistManager.h"
 
@@ -23,20 +21,21 @@
 #include "App.h"
 #include "statusbar/StatusBar.h"
 #include "CollectionManager.h"
+#include "PlaylistFile.h"
+#include "playlist/PlaylistModelStack.h"
 #include "PlaylistFileSupport.h"
 #include "PodcastProvider.h"
+#include "file/PlaylistFileProvider.h"
 #include "sql/SqlPodcastProvider.h"
 #include "sql/SqlUserPlaylistProvider.h"
 #include "Debug.h"
 #include "MainWindow.h"
-#include "meta/M3UPlaylist.h"
-#include "meta/PLSPlaylist.h"
-#include "meta/XSPFPlaylist.h"
 #include "browsers/playlistbrowser/UserPlaylistModel.h"
 
 #include <kdirlister.h>
 #include <kio/jobclasses.h>
 #include <kio/job.h>
+#include <KInputDialog>
 #include <KLocale>
 #include <KUrl>
 
@@ -74,42 +73,16 @@ PlaylistManager::PlaylistManager()
 
     m_defaultUserPlaylistProvider = new SqlUserPlaylistProvider();
     addProvider( m_defaultUserPlaylistProvider, UserPlaylist );
+
+    m_playlistFileProvider = new PlaylistFileProvider();
+    addProvider( m_playlistFileProvider, UserPlaylist );
 }
 
 PlaylistManager::~PlaylistManager()
 {
     delete m_defaultPodcastProvider;
     delete m_defaultUserPlaylistProvider;
-}
-
-bool
-PlaylistManager::isPlaylist( const KUrl & path )
-{
-    const QString ext = Amarok::extension( path.fileName() );
-
-    if( ext == "m3u" ) return true;
-    if( ext == "pls" ) return true;
-    if( ext == "ram" ) return true;
-    if( ext == "smil") return true;
-    if( ext == "asx" || ext == "wax" ) return true;
-    if( ext == "xml" ) return true;
-    if( ext == "xspf" ) return true;
-
-    return false;
-}
-
-KUrl
-PlaylistManager::newPlaylistFilePath( const QString & fileExtension )
-{
-    int trailingNumber = 1;
-    KLocalizedString fileName = ki18n("Playlist_%1");
-    KUrl url( Amarok::saveLocation( "playlists" ) );
-    url.addPath( fileName.subs( trailingNumber ).toString() );
-
-    while( QFileInfo( url.path() ).exists() )
-        url.setFileName( fileName.subs( ++trailingNumber ).toString() );
-
-    return KUrl( url.path() + fileExtension );
+    delete m_playlistFileProvider;
 }
 
 void
@@ -126,6 +99,33 @@ PlaylistManager::addProvider( PlaylistProvider * provider, int category )
 
     if( newCategory )
         emit( categoryAdded( category ) );
+
+    emit( providerAdded( provider, category ) );
+}
+
+void
+PlaylistManager::removeProvider( PlaylistProvider *provider )
+{
+    DEBUG_BLOCK
+
+    if ( !provider )
+        return;
+
+    if ( m_map.values( provider->category() ).contains( provider ) )
+    {
+        debug() << "Providers of this category: " << providersForCategory( provider->category() ).count();
+        debug() << "Removing provider from map";
+        int removed = m_map.remove( provider->category(), provider );
+        debug() << "Removed provider from map:" << ( m_map.contains( provider->category(), provider ) ? "false" : "true" );
+        debug() << "Providers removed: " << removed;
+
+        emit( providerRemoved( provider, provider->category() ) );
+
+        slotUpdated();
+
+    }
+
+
 }
 
 int
@@ -149,12 +149,15 @@ PlaylistManager::slotUpdated( /*PlaylistProvider * provider*/ )
 Meta::PlaylistList
 PlaylistManager::playlistsOfCategory( int playlistCategory )
 {
+    DEBUG_BLOCK
     QList<PlaylistProvider *> providers = m_map.values( playlistCategory );
     QListIterator<PlaylistProvider *> i( providers );
 
     Meta::PlaylistList list;
     while ( i.hasNext() )
+    {
         list << i.next()->playlists();
+    }
 
     return list;
 }
@@ -182,7 +185,7 @@ PlaylistManager::playlistProvider(int category, QString name)
 }
 
 void
-PlaylistManager::downloadPlaylist( const KUrl & path, const Meta::PlaylistPtr playlist )
+PlaylistManager::downloadPlaylist( const KUrl &path, const Meta::PlaylistFilePtr playlist )
 {
     DEBUG_BLOCK
 
@@ -207,7 +210,7 @@ PlaylistManager::downloadComplete( KJob * job )
         return ;
     }
 
-    Meta::PlaylistPtr playlist = m_downloadJobMap.take( job );
+    Meta::PlaylistFilePtr playlist = m_downloadJobMap.take( job );
 
     QString contents = static_cast<KIO::StoredTransferJob *>(job)->data();
     QTextStream stream;
@@ -217,12 +220,12 @@ PlaylistManager::downloadComplete( KJob * job )
 }
 
 QString
-PlaylistManager::typeName( int playlistCategory )
+PlaylistManager::categoryName( int playlistCategory )
 {
     switch( playlistCategory )
     {
         case CurrentPlaylist: return i18n("Current Playlist");
-        case UserPlaylist: return i18n("My Playlists");
+        case UserPlaylist: return i18n("Saved Playlists");
         case PodcastChannel: return i18n("Podcasts");
         case Dynamic: return i18n("Dynamic Playlists");
         case SmartPlaylist: return i18n("Smart Playlist");
@@ -235,43 +238,107 @@ PlaylistManager::typeName( int playlistCategory )
         return QString("!!!Invalid Playlist Category!!!\nPlease Report this at bugs.kde.org.");
 }
 
-bool
-PlaylistManager::save( Meta::TrackList tracks, const QString & name, bool editNow, const QString &fromLocation )
+QString
+PlaylistManager::categoryShortDescription( int playlistCategory )
 {
-    Q_UNUSED( name )
-    Q_UNUSED( fromLocation )
-    SqlUserPlaylistProvider *sqlProvider =
-            dynamic_cast<SqlUserPlaylistProvider *>(m_defaultUserPlaylistProvider);
-    if( !sqlProvider )
-        return false;
-
-    Meta::PlaylistPtr playlist = Meta::PlaylistPtr();
-    if( name.isEmpty() || editNow )
+    switch( playlistCategory )
     {
-        playlist = sqlProvider->save( tracks );
-        AmarokUrl("amarok://navigate/playlists/My Playlists").run();
+        case CurrentPlaylist: return i18n("Current Playlist");
+        case UserPlaylist: return i18n( "User generated and imported playlists" );
+        case PodcastChannel: return i18n("Podcasts");
+        case Dynamic: return i18n("Dynamic Playlists");
+        case SmartPlaylist: return i18n("Smart Playlist");
+    }
+    //if control reaches here playlistCategory is either invalid or a custom category
+    if( m_customCategories.contains( playlistCategory ) )
+        return m_customCategories[playlistCategory];
+    else
+        //note: this shouldn't happen so I'm not translating it to facilitate bug reports
+        return QString("!!!Invalid Playlist Category!!!\nPlease Report this at bugs.kde.org.");
+}
+
+QString
+PlaylistManager::categoryLongDescription( int playlistCategory )
+{
+    switch( playlistCategory )
+    {
+        case CurrentPlaylist: return i18n("Current Playlist");
+        case UserPlaylist:
+            return i18n( "Create, edit, organize and load playlists. "
+        "Amarok automatically adds any playlists found when scanning your collection, "
+        " and any playlists that you save are also shown here." );
+        case PodcastChannel: return i18n("Podcasts");
+        case Dynamic: return i18n("Dynamic Playlists");
+        case SmartPlaylist: return i18n("Smart Playlist");
+    }
+    //if control reaches here playlistCategory is either invalid or a custom category
+    if( m_customCategories.contains( playlistCategory ) )
+        return m_customCategories[playlistCategory];
+    else
+        //note: this shouldn't happen so I'm not translating it to facilitate bug reports
+        return QString("!!!Invalid Playlist Category!!!\nPlease Report this at bugs.kde.org.");
+}
+
+KIcon
+PlaylistManager::categoryIcon( int playlistCategory )
+{
+    switch( playlistCategory )
+    {
+        case CurrentPlaylist: return KIcon( "amarok_playlist" );
+        case UserPlaylist: return KIcon( "amarok_playlist" );
+        case PodcastChannel: return KIcon( "podcast-amarok" );
+        case Dynamic: return KIcon( "dynamic-amarok" );
+        case SmartPlaylist: return KIcon( "dynamic-amarok" );
+    }
+    //if control reaches here playlistCategory is either invalid or a custom category
+//TODO: custom categories
+//    if( m_customCategories.contains( playlistCategory ) )
+//        return m_customCategories[playlistCategory];
+//    else
+        //note: this shouldn't happen so I'm not translating it to facilitate bug reports
+    return KIcon( "amarok_playlist" );
+}
+
+bool
+PlaylistManager::save( Meta::TrackList tracks, const QString &name,
+                       UserPlaylistProvider *toProvider )
+{
+    //if toProvider is 0 use the default UserPlaylistProvider (SQL)
+    UserPlaylistProvider *prov = toProvider ? toProvider : m_defaultUserPlaylistProvider;
+    Meta::PlaylistPtr playlist = Meta::PlaylistPtr();
+    if( name.isEmpty() )
+    {
+        debug() << "Empty name of playlist, or editing now";
+        playlist = prov->save( tracks );
+        AmarokUrl("amarok://navigate/playlists/user playlists").run();
         emit( renamePlaylist( playlist ) );
     }
     else
     {
-        playlist = sqlProvider->save( tracks, name );
+        debug() << "Playlist is being saved with name: " << name;
+        playlist = prov->save( tracks, name );
     }
 
     return !playlist.isNull();
+}
+
+void
+PlaylistManager::saveCurrentPlaylist() //SLOT
+{
+    Meta::TrackList tracks = The::playlist()->tracks();
+    save( tracks );
 }
 
 bool
 PlaylistManager::import( const QString& fromLocation )
 {
     DEBUG_BLOCK
-    SqlUserPlaylistProvider *sqlProvider =
-            dynamic_cast<SqlUserPlaylistProvider *>(m_defaultUserPlaylistProvider);
-    if( !sqlProvider )
+    if( !m_playlistFileProvider )
     {
-        debug() << "ERROR: sqlUserPlaylistProvider was null";
+        debug() << "ERROR: m_playlistFileProvider was null";
         return false;
     }
-    return sqlProvider->import( fromLocation );
+    return m_playlistFileProvider->import( KUrl::fromPath(fromLocation) );
 }
 
 bool
@@ -279,123 +346,136 @@ PlaylistManager::exportPlaylist( Meta::TrackList tracks,
                         const QString &location )
 {
     DEBUG_BLOCK
-
+    debug()<<"About to export playlist to "<< location;
     KUrl url( location );
-    Meta::Playlist *playlist = 0;
 
-    Meta::Format format = Meta::getFormat( location );
-    switch( format )
+    return Meta::exportPlaylistFile( tracks, url );
+}
+
+void
+PlaylistManager::rename( Meta::PlaylistPtr playlist )
+{
+    DEBUG_BLOCK
+
+    if( playlist.isNull() )
+        return;
+
+    UserPlaylistProvider *prov;
+    prov = qobject_cast<UserPlaylistProvider *>( getProviderForPlaylist( playlist ) );
+
+    if( !prov )
+        return;
+
+    bool ok;
+    const QString newName = KInputDialog::getText( i18n("Change playlist"),
+                i18n("Enter new name for playlist:"), playlist->name(),
+                                                   &ok );
+    if ( ok )
     {
-        case Meta::PLS:
-            playlist = new Meta::PLSPlaylist( tracks );
-            break;
-        case Meta::M3U:
-            playlist = new Meta::M3UPlaylist( tracks );
-            break;
-//         case RAM:
-//             playlist = loadRealAudioRam( stream );
-//             break;
-//         case ASX:
-//             playlist = loadASX( stream );
-//             break;
-//         case SMIL:
-//             playlist = loadSMIL( stream );
-//             break;
-        case Meta::XSPF:
-            playlist = new Meta::XSPFPlaylist( tracks );
-            break;
+        debug() << "Changing name from " << playlist->name() << " to " << newName.trimmed();
+        prov->rename( playlist, newName.trimmed() );
+        emit( updated() );
+    }
+}
 
-        default:
-            debug() << "unknown type!";
-            break;
+void
+PlaylistManager::deletePlaylists( Meta::PlaylistList playlistlist )
+{
+    // Map the playlists to their respective providers
+
+    QHash<UserPlaylistProvider*, Meta::PlaylistList> provLists;
+    foreach( Meta::PlaylistPtr playlist, playlistlist )
+    {
+        // Get the providers of the respective playlists
+
+        UserPlaylistProvider *prov = qobject_cast<UserPlaylistProvider *>( getProviderForPlaylist( playlist ) );
+
+        if( prov )
+        {
+            Meta::PlaylistList pllist;
+            pllist << playlist;
+            // If the provider already has at least one playlist to delete, add another to its list
+            if( provLists.contains( prov ) )
+            {
+                provLists[ prov ] << pllist;
+
+            }
+            // If we are adding a new provider, put it in the hash, initialize its list
+            else
+                provLists.insert( prov, pllist );
+        }
     }
 
-    if( !playlist )
-        return false;
+    // Pass each list of playlists to the respective provider for deletion
 
-    playlist->save( location, AmarokConfig::relativePlaylist() );
-    delete playlist;
-
-    return true;
+    foreach( UserPlaylistProvider* prov, provLists.keys() )
+    {
+        prov->deletePlaylists( provLists[ prov ] );
+    }
 }
 
 bool
-PlaylistManager::canExpand( Meta::TrackPtr track )
+PlaylistManager::moveTrack( Meta::PlaylistPtr playlist, int from, int to )
 {
-    if( !track )
+    DEBUG_BLOCK
+    debug() << "in playlist: " << playlist->prettyName();
+    debug() << QString("move track %1 to position %2").arg( from ).arg( to );
+    //TODO: implement
+    return false;
+}
+
+PlaylistProvider*
+PlaylistManager::getProviderForPlaylist( const Meta::PlaylistPtr &playlist )
+{
+    // Iteratively check all providers' playlists for ownership
+    foreach( PlaylistProvider* provider, m_map.values( UserPlaylist ) )
+    {
+        Meta::PlaylistList plistlist = provider->playlists();
+        foreach( const Meta::PlaylistPtr plist, plistlist )
+        {
+            if( plist == playlist )
+                return provider;
+        }
+    }
+    return 0;
+}
+
+
+bool
+PlaylistManager::isWritable( const Meta::PlaylistPtr &playlist )
+{
+    UserPlaylistProvider *prov;
+    prov = qobject_cast<UserPlaylistProvider *>( getProviderForPlaylist( playlist ) );
+
+    if( prov )
+        return prov->isWritable();
+    else
         return false;
-
-    return Meta::getFormat( track->uidUrl() ) != Meta::NotPlaylist;
 }
 
-Meta::PlaylistPtr
-PlaylistManager::expand( Meta::TrackPtr track )
+QList<QAction *>
+PlaylistManager::playlistActions( const Meta::PlaylistList playlists )
 {
-   //this should really be made asyncrhonous
-   return Meta::loadPlaylist( track->uidUrl() );
-}
-
-PlaylistManager::PlaylistFormat
-PlaylistManager::getFormat( const KUrl &path )
-{
-    const QString ext = Amarok::extension( path.fileName() );
-
-    if( ext == "m3u" ) return M3U;
-    if( ext == "pls" ) return PLS;
-    if( ext == "ram" ) return RAM;
-    if( ext == "smil") return SMIL;
-    if( ext == "asx" || ext == "wax" ) return ASX;
-    if( ext == "xml" ) return XML;
-    if( ext == "xspf" ) return XSPF;
-
-    return Unknown;
-}
-
-namespace Amarok
-{
-    //this function (C) Copyright 2003-4 Max Howell, (C) Copyright 2004 Mark Kretschmann
-    KUrl::List
-    recursiveUrlExpand ( const KUrl &url )
+    QList<QAction *> actions;
+    foreach( const Meta::PlaylistPtr playlist, playlists )
     {
-        typedef QMap<QString, KUrl> FileMap;
-
-        KDirLister lister ( false );
-        lister.setAutoUpdate ( false );
-        lister.setAutoErrorHandlingEnabled ( false, 0 );
-        lister.openUrl ( url );
-
-        while ( !lister.isFinished() )
-            kapp->processEvents ( QEventLoop::ExcludeUserInputEvents );
-
-        KFileItemList items = lister.items();
-        KUrl::List urls;
-        FileMap files;
-        foreach ( const KFileItem& it, items )
-        {
-            if ( it.isFile() ) { files[it.name() ] = it.url(); continue; }
-            if ( it.isDir() ) urls += recursiveUrlExpand( it.url() );
-        }
-
-        oldForeachType ( FileMap, files )
-        // users often have playlist files that reflect directories
-        // higher up, or stuff in this directory. Don't add them as
-        // it produces double entries
-        if ( !PlaylistManager::isPlaylist( ( *it ).fileName() ) )
-            urls += *it;
-        return urls;
+        PlaylistProvider *provider = getProviderForPlaylist( playlist );
+        if( provider )
+            actions << provider->playlistActions( playlist );
     }
 
-    KUrl::List
-    recursiveUrlExpand ( const KUrl::List &list )
-    {
-        KUrl::List urls;
-        oldForeachType ( KUrl::List, list )
-        {
-            urls += recursiveUrlExpand ( *it );
-        }
+    return actions;
+}
 
-        return urls;
-    }
+QList<QAction *>
+PlaylistManager::trackActions( const Meta::PlaylistPtr playlist, int trackIndex )
+{
+    QList<QAction *> actions;
+    PlaylistProvider *provider = getProviderForPlaylist( playlist );
+    if( provider )
+        actions << provider->trackActions( playlist, trackIndex );
+
+    return actions;
 }
 
 #include "PlaylistManager.moc"

@@ -1,27 +1,26 @@
-/***************************************************************************
-*   Copyright (c) 2009  Casey Link <unnamedrambler@gmail.com>             *
-*                                                                         *
-*   This program is free software; you can redistribute it and/or modify  *
-*   it under the terms of the GNU General Public License as published by  *
-*   the Free Software Foundation; either version 2 of the License, or     *
-*   (at your option) any later version.                                   *
-*                                                                         *
-*   This program is distributed in the hope that it will be useful,       *
-*   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
-*   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
-*   GNU General Public License for more details.                          *
-*                                                                         *
-*   You should have received a copy of the GNU General Public License     *
-*   along with this program; if not, write to the                         *
-*   Free Software Foundation, Inc.,                                       *
-*   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
-***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2009 Casey Link <unnamedrambler@gmail.com>                             *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef LASTFMTREEMODEL_H
 #define LASTFMTREEMODEL_H
 
 #include "Meta.h"
-#include <lastfm/types/User.h>
+#include "WeightedStringList.h"
+
+#include <lastfm/User>
 
 #include <QAbstractItemModel>
 #include <QHash>
@@ -31,7 +30,7 @@
 #include <QPixmap>
 #include <QVariant>
 
-
+class QNetworkReply;
 
 namespace LastFm
 {
@@ -84,11 +83,14 @@ enum SortOrder
     AscendingOrder,
     DescendingOrder
 };
+
+
 }
+
 class LastFmTreeItem;
 class KUrl;
 class WsReply;
-class WeightedStringList;
+
 
 class LastFmTreeModel : public QAbstractItemModel
 {
@@ -113,10 +115,10 @@ public:
 
 private slots:
     void onAvatarDownloaded ( QPixmap );
-    void slotAddNeighbors ( WsReply* reply );
-    void slotAddFriends ( WsReply* reply );
-    void slotAddTags ( WsReply* reply );
-    void slotAddTopArtists ( WsReply* reply );
+    void slotAddNeighbors ();
+    void slotAddFriends ();
+    void slotAddTags ();
+    void slotAddTopArtists ();
 
 private:
     void setupModelData ( LastFmTreeItem *parent );
@@ -129,7 +131,7 @@ private:
     LastFmTreeItem *mMyTopArtists;
 
     QString mUserName;
-    AuthenticatedUser mUser;
+    lastfm::AuthenticatedUser mUser;
 
     QStringList mFriends;
     QStringList mNeighbors;
@@ -138,6 +140,8 @@ private:
     QPixmap mAvatar;
     QMap<QString, QString> m_avatarQueue;
     QHash<QString, QIcon> m_avatars;
+
+    QMap< QString, QNetworkReply* > m_jobs;
 
     void queueAvatarsDownload ( const QMap<QString, QString>& urls );
     void downloadAvatar ( const QString& user, const KUrl& url );
@@ -176,7 +180,6 @@ private:
     LastFmTreeItem *parentItem;
     QVariant itemData;
     QString mUrl;
-
 
 };
 

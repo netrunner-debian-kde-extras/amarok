@@ -1,22 +1,20 @@
-/*
-   Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
-   Copyright (C) 2008 Peter ZHOU         <peterzhoulei@gmail.com>
-   Copyright (C) 2008 Seb Ruiz           <ruiz@kde.org>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2007-2009 Maximilian Kossick <maximilian.kossick@googlemail.com>       *
+ * Copyright (c) 2008 Peter ZHOU <peterzhoulei@gmail.com>                               *
+ * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef AMAROK_META_FILE_P_H
 #define AMAROK_META_FILE_P_H
@@ -25,8 +23,11 @@
 #include "Meta.h"
 #include "MetaUtility.h"
 #include "MetaReplayGain.h"
+#include "meta/StatisticsProvider.h"
 
+#include <QDateTime>
 #include <QFile>
+#include <QFileInfo>
 #include <QObject>
 #include <QPointer>
 #include <QSet>
@@ -80,6 +81,7 @@ struct MetaData
     QString comment;
     QString composer;
     QString genre;
+    QDateTime created;
     int discNumber;
     int trackNumber;
     int length;
@@ -103,11 +105,7 @@ public:
         , batchUpdate( false )
         , album()
         , artist()
-        , score(0)
-        , rating(0)
-        , lastPlayed(0)
-        , firstPlayed(0)
-        , playCount(0)
+        , provider( 0 )
         , track( t )
     {}
 
@@ -119,17 +117,12 @@ public:
     Meta::GenrePtr genre;
     Meta::ComposerPtr composer;
     Meta::YearPtr year;
+    Meta::StatisticsProvider *provider;
 
     void readMetaData();
     QVariantMap changes;
     void writeMetaData() { DEBUG_BLOCK Meta::Field::writeFields( getFileRef(), changes ); changes.clear(); readMetaData(); }
     MetaData m_data;
-
-    int score;
-    int rating;
-    uint lastPlayed;
-    uint firstPlayed;
-    int playCount;
 
 private:
     TagLib::FileRef getFileRef();
@@ -140,9 +133,25 @@ TagLib::FileRef
 Track::Private::getFileRef()
 {
 #ifdef COMPLEX_TAGLIB_FILENAME
-    const wchar_t * encodedName = reinterpret_cast<const wchar_t *>(url.path().utf16());
+    const wchar_t * encodedName;
+    if(url.isLocalFile())
+    {
+        encodedName = reinterpret_cast<const wchar_t *>(url.toLocalFile().utf16());
+    }
+    else
+    {
+        encodedName = reinterpret_cast<const wchar_t *>(url.path().utf16());
+    }
 #else
-    QByteArray fileName = QFile::encodeName( url.path() );
+    QByteArray fileName;
+    if(url.isLocalFile())
+    {
+        fileName = QFile::encodeName( url.toLocalFile() );
+    }
+    else
+    {
+        fileName = QFile::encodeName( url.path() );
+    }
     const char * encodedName = fileName.constData(); // valid as long as fileName exists
 #endif
     return TagLib::FileRef( encodedName, true, TagLib::AudioProperties::Fast );
@@ -150,6 +159,9 @@ Track::Private::getFileRef()
 
 void Track::Private::readMetaData()
 {
+    QFileInfo fi( url.isLocalFile() ? url.toLocalFile() : url.path() );
+    m_data.created = fi.created();
+
 #define strip( x ) TStringToQString( x ).trimmed()
     TagLib::FileRef fileRef = getFileRef();
 
@@ -222,7 +234,9 @@ void Track::Private::readMetaData()
                     http://doc.trolltech.com/4.4/qtextcodec.html
                     http://www.mozilla.org/projects/intl/chardet.html
                 */
-                if ( ( !track_encoding.isEmpty() ) && ( track_encoding.toUtf8() != "UTF-8" ) )
+                if ( ( track_encoding.toUtf8() == "gb18030" ) || ( track_encoding.toUtf8() == "big5" )
+                    || ( track_encoding.toUtf8() == "euc-kr" ) || ( track_encoding.toUtf8() == "euc-jp" )
+                    || ( track_encoding.toUtf8() == "koi8-r" ) )
                 {
                     debug () << "Final Codec Name:" << track_encoding.toUtf8();
                     QTextCodec *codec = QTextCodec::codecForName( track_encoding.toUtf8() );
@@ -236,6 +250,11 @@ void Track::Private::readMetaData()
                         m_data.comment = codec->toUnicode( m_data.comment.toLatin1() );
                         debug() << "track Info Decoded!";
                     }
+                }
+                else
+                {
+                    debug() << "possible encoding: " << track_encoding.toUtf8();
+                    debug() << "encoding decoded as UTF-8";
                 }
             }
         }
@@ -270,10 +289,10 @@ void Track::Private::readMetaData()
         TagLib::MP4::Tag *mp4tag = dynamic_cast< TagLib::MP4::Tag *>( file->tag() );
         if( mp4tag )
         {
-            if ( !mp4tag->itemListMap()["\xA9wrt"].toStringList().isEmpty() )
+            if ( mp4tag->itemListMap().contains( "\xA9wrt" ) )
                 m_data.composer = strip( mp4tag->itemListMap()["\xA9wrt"].toStringList().front() );
 
-            if ( !mp4tag->itemListMap()["disk"].toStringList().isEmpty() )
+            if ( mp4tag->itemListMap().contains( "disk" ) )
                 disc = QString::number( mp4tag->itemListMap()["disk"].toIntPair().first );
         }
     }
@@ -287,7 +306,14 @@ void Track::Private::readMetaData()
             m_data.discNumber = disc.toInt();
     }
 #undef strip
-    m_data.fileSize = QFile( url.path() ).size();
+    if(url.isLocalFile())
+    {
+        m_data.fileSize = QFile( url.toLocalFile() ).size();
+    }
+    else
+    {
+        m_data.fileSize = QFile( url.path() ).size();
+    }
 
     debug() << "Read metadata from file for: " + m_data.title;
 }
@@ -315,9 +341,7 @@ public:
     QString name() const
     {
         const QString artist = d->m_data.artist;
-        if( !artist.isEmpty() )
-            return artist;
-        return i18nc( "The value is not known", "Unknown" );
+        return artist;
     }
 
     QString prettyName() const
@@ -361,13 +385,10 @@ public:
         if( d )
         {
             const QString albumName = d->m_data.album;
-            if( !albumName.isEmpty() )
-                return albumName;
-            else
-                return i18nc( "The value is not known", "Unknown" );
+            return albumName;
         }
         else
-            return i18nc( "The value is not known", "Unknown" );
+            return QString();
     }
 
     QString prettyName() const
@@ -403,9 +424,7 @@ public:
     QString name() const
     {
         const QString genreName = d->m_data.genre;
-        if( !genreName.isEmpty() )
-            return genreName;
-        return i18nc( "The value is not known", "Unknown" );
+        return genreName;
     }
 
     QString prettyName() const
@@ -432,10 +451,8 @@ public:
     QString name() const
     {
         const QString composer = d->m_data.composer;
-        if( !composer.isEmpty() )
-            return composer;
-        return i18nc( "The value is not known", "Unknown" );
-    }
+        return composer;
+     }
 
     QString prettyName() const
     {
@@ -461,9 +478,7 @@ public:
     QString name() const
     {
         const QString year = QString::number( d->m_data.year );
-        if( !year.isEmpty()  )
-            return year;
-        return i18nc( "The value is not known", "Unknown" );
+        return year;
     }
 
     QString prettyName() const

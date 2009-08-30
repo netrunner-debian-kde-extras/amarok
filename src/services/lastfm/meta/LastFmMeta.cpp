@@ -1,22 +1,20 @@
-/*
-   Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
-   Copyright (C) 2008 Shane King <kde@dontletsstart.com>
-   Copyright (C) 2008 Leo Franchi <lfranchi@kde.org>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2008 Shane King <kde@dontletsstart.com>                                *
+ * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "LastFmMeta.h"
 #include "LastFmMeta_p.h"
@@ -40,10 +38,7 @@
 #include <KSharedPtr>
 #include <KStandardDirs>
 
-#include <lastfm/ws/WsKeys.h>
-#include <lastfm/ws/WsReply.h>
-#include <lastfm/ws/WsRequestBuilder.h>
-#include <lastfm/types/Track.h>
+#include <lastfm/Track>
 
 namespace LastFm {
 
@@ -65,7 +60,7 @@ Track::Track( const QString &lastFmUri )
     init();
 }
 
-Track::Track( ::Track track )
+Track::Track( lastfm::Track track )
     : QObject()
     , Meta::Track()
     , d( new Private() )
@@ -73,13 +68,14 @@ Track::Track( ::Track track )
     d->t = this;
     d->track = track.title();
     d->lastFmTrack = track;
-    WsReply* reply = WsRequestBuilder( "track.getInfo" )
-      .add( "artist", track.artist() )
-      .add( "track", track.title() )
-      .add( "api_key", Ws::ApiKey )
-      .get();
+    QMap< QString, QString > params;
+    params[ "method" ] = "track.getInfo";
+    params[ "artist" ] = track.artist();
+    params[ "track" ]  = track.title();
 
-      connect( reply, SIGNAL( finished( WsReply* ) ), SLOT( slotResultReady( WsReply* ) ) );
+    d->trackFetch = lastfm::ws::post( params );
+
+    connect( d->trackFetch, SIGNAL( finished() ), SLOT( slotResultReady() ) );
 }
 
 
@@ -100,13 +96,13 @@ void Track::init( int id /* = -1*/ )
     d->composerPtr = Meta::ComposerPtr( new LastFmComposer( QPointer<Track::Private>( d ) ) );
     d->yearPtr = Meta::YearPtr( new LastFmYear( QPointer<Track::Private>( d ) ) );
 
-    PopupDropperAction * banAction = new PopupDropperAction( KIcon( "remove-amarok" ), i18n( "Last.fm: &Ban" ), this );
+    QAction * banAction = new QAction( KIcon( "remove-amarok" ), i18n( "Last.fm: &Ban" ), this );
     banAction->setShortcut( i18n( "Ctrl+B" ) );
     banAction->setStatusTip( i18n( "Ban this track" ) );
     connect( banAction, SIGNAL( triggered() ), this, SLOT( ban() ) );
     m_currentTrackActions.append( banAction );
 
-    PopupDropperAction * skipAction = new PopupDropperAction( KIcon( "media-seek-forward-amarok" ), i18n( "Last.fm: &Skip" ), this );
+    QAction * skipAction = new QAction( KIcon( "media-seek-forward-amarok" ), i18n( "Last.fm: &Skip" ), this );
     skipAction->setShortcut( i18n( "Ctrl+S" ) );
     skipAction->setStatusTip( i18n( "Skip this track" ) );
     connect( skipAction, SIGNAL( triggered() ), this, SLOT( skip() ) );
@@ -229,25 +225,39 @@ Track::comment() const
 double
 Track::score() const
 {
-    return 0.0;
+    if( d->statisticsProvider )
+        return d->statisticsProvider->score();
+    else
+        return 0.0;
 }
 
 void
 Track::setScore( double newScore )
 {
-    Q_UNUSED( newScore ); //stream
+    if( d->statisticsProvider )
+    {
+        d->statisticsProvider->setScore( newScore );
+        notifyObservers();
+    }
 }
 
 int
 Track::rating() const
 {
-    return 0;
+    if( d->statisticsProvider )
+        return d->statisticsProvider->rating();
+    else
+        return 0;
 }
 
 void
 Track::setRating( int newRating )
 {
-    Q_UNUSED( newRating ); //stream
+    if( d->statisticsProvider )
+    {
+        d->statisticsProvider->setRating( newRating );
+        notifyObservers();
+    }
 }
 
 int
@@ -289,13 +299,39 @@ Track::bitrate() const
 uint
 Track::lastPlayed() const
 {
-    return 0; //TODO do we need this?
+    if( d->statisticsProvider )
+    {
+        QDateTime dt = d->statisticsProvider->lastPlayed();
+        if( dt.isValid() )
+            return dt.toTime_t();
+        else
+            return 0;
+    }
+    else
+        return 0;
+}
+
+uint
+Track::firstPlayed() const
+{
+    if( d->statisticsProvider )
+    {
+        QDateTime dt = d->statisticsProvider->firstPlayed();
+        if( dt.isValid() )
+            return dt.toTime_t();
+        else
+            return 0;
+    }
+    else
+        return 0;
 }
 
 int
 Track::playCount() const
 {
-    return 0; //TODO do we need this?
+    if( d->statisticsProvider )
+        return d->statisticsProvider->playCount();
+    return 0;
 }
 
 QString
@@ -306,8 +342,11 @@ Track::type() const
 void
 Track::finishedPlaying( double playedFraction )
 {
-    Q_UNUSED( playedFraction );
-    //TODO
+    if( d->statisticsProvider )
+    {
+        d->statisticsProvider->played( playedFraction );
+        notifyObservers();
+    }
 }
 
 bool
@@ -323,7 +362,7 @@ Track::collection() const
 }
 
 void
-Track::setTrackInfo( const ::Track &track )
+Track::setTrackInfo( const lastfm::Track &track )
 {
     d->setTrackInfo( track );
 }
@@ -420,16 +459,16 @@ Track::love()
     DEBUG_BLOCK
 
     debug() << "info:" << d->lastFmTrack.artist() << d->lastFmTrack.title();
-    WsReply* reply = MutableTrack( d->lastFmTrack ).love();
-    connect( reply, SIGNAL( finished( WsReply* ) ), this, SLOT( slotWsReply( WsReply* ) ) );
+    d->wsReply = lastfm::MutableTrack( d->lastFmTrack ).love();
+    connect( d->wsReply, SIGNAL( finished() ), this, SLOT( slotWsReply() ) );
 }
 
 void
 Track::ban()
 {
     DEBUG_BLOCK
-    WsReply* reply = MutableTrack( d->lastFmTrack ).ban();
-    connect( reply, SIGNAL( finished( WsReply* ) ), this, SLOT( slotWsReply( WsReply* ) ) );
+    d->wsReply = lastfm::MutableTrack( d->lastFmTrack ).ban();
+    connect( d->wsReply, SIGNAL( finished() ), this, SLOT( slotWsReply() ) );
     emit( skipTrack() );
 
 }
@@ -442,33 +481,41 @@ Track::skip()
     emit( skipTrack() );
 }
 
-void Track::slotResultReady( WsReply *reply )
+void Track::slotResultReady()
 {
-    if( reply->error() == Ws::NoError )
+    if( d->trackFetch->error() == QNetworkReply::NoError )
     {
-        QString id = reply->lfm()[ "track" ][ "id" ].nonEmptyText();
-        QString streamable = reply->lfm()[ "track" ][ "streamable" ].nonEmptyText();
-        if( streamable.toInt() == 1 )
-            init( id.toInt() );
-        else
-            init();
+        try
+        {
+            lastfm::XmlQuery lfm( d->trackFetch->readAll() );
+            QString id = lfm[ "track" ][ "id" ].text();
+            QString streamable = lfm[ "track" ][ "streamable" ].text();
+            if( streamable.toInt() == 1 )
+                init( id.toInt() );
+            else
+                init();
+
+        } catch( lastfm::ws::ParseError& e )
+        {
+            debug() << "Got exception in parsing from last.fm:" << e.what();
+        }
     } else
     {
         init();
     }
-    reply->deleteLater();
+    d->trackFetch->deleteLater();
 }
 
 
 void
-Track::slotWsReply( WsReply *reply )
+Track::slotWsReply()
 {
-    if( reply->error() == Ws::NoError )
+    if( d->wsReply->error() == QNetworkReply::NoError )
     {
         //debug() << "successfully completed WS transaction";
     } else
     {
-        debug() << "ERROR in last.fm skip or ban!" << reply->error();
+        debug() << "ERROR in last.fm skip or ban!" << d->wsReply->error();
     }
 }
 
@@ -530,7 +577,7 @@ QString LastFm::Track::scalableEmblem()
         return QString();
 }
 
-QList< PopupDropperAction * > LastFm::Track::nowPlayingActions() const
+QList< QAction * > LastFm::Track::nowPlayingActions() const
 {
     return m_currentTrackActions;
 }

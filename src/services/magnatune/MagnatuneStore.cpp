@@ -1,33 +1,32 @@
-/***************************************************************************
- *   Copyright (c) 2006, 2007                                              *
- *        Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                   *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2006,2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>               *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "MagnatuneStore.h"
 
 #include "Amarok.h"
+#include "amarokurls/AmarokUrlHandler.h"
 #include "statusbar/StatusBar.h"
 #include "statusbar/ProgressBar.h"
 #include "EngineController.h"
 #include "MagnatuneConfig.h"
 #include "MagnatuneDatabaseWorker.h"
 #include "MagnatuneInfoParser.h"
-#include "../ServiceInfoProxy.h"
+#include "browsers/InfoProxy.h"
+#include "MagnatuneUrlRunner.h"
+
 #include "../ServiceSqlRegistry.h"
 #include "CollectionManager.h"
 #include "Debug.h"
@@ -97,10 +96,13 @@ MagnatuneStore::MagnatuneStore( MagnatuneServiceFactory* parent, const char *nam
     DEBUG_BLOCK
     //initTopPanel( );
 
-    setShortDescription( i18n( "The friendly record company with the motto \"We are not evil!\"" ) );
+    setShortDescription( i18n( "\"Fair trade\" online music store." ) );
     setIcon( KIcon( "view-services-magnatune-amarok" ) );
 
-    debug() << "Magnatune browser starting...";
+    // xgettext: no-c-format
+    setLongDescription( i18n( "Magnatune.com is a different kind of record company with the motto \"We are not evil!\" 50% of every purchase goes directly to the artist and if you purchase an album through Amarok, the Amarok project receives a 10% commission. Magnatune.com also offers \"all you can eat\" memberships that lets you download as much of their music as you like." ) );
+    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_magnatune.png" ) );
+
 
     //initBottomPanel();
 //    m_currentlySelectedItem = 0;
@@ -125,7 +127,14 @@ MagnatuneStore::MagnatuneStore( MagnatuneServiceFactory* parent, const char *nam
     m_registry = new ServiceSqlRegistry( metaFactory );
     m_collection = new MagnatuneSqlCollection( "magnatune", "Magnatune.com", metaFactory, m_registry );
     m_serviceready = true;
+    CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
     emit( ready() );
+}
+
+MagnatuneStore::~MagnatuneStore()
+{
+    CollectionManager::instance()->removeUnmanagedCollection( m_collection );
+    //hm, memory handling?
 }
 
 
@@ -434,11 +443,25 @@ void MagnatuneStore::polish()
 
         QList<int> levels;
         levels << CategoryId::Genre << CategoryId::Artist << CategoryId::Album;
+
+        m_magnatuneInfoParser = new MagnatuneInfoParser();
         
-        setInfoParser( new MagnatuneInfoParser() );
+        setInfoParser( m_magnatuneInfoParser );
         setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
 
         connect( m_contentView, SIGNAL( itemSelected( CollectionTreeItem * ) ), this, SLOT( itemSelected( CollectionTreeItem * ) ) );
+
+        //add a custom url runner
+
+        MagnatuneUrlRunner * runner = new MagnatuneUrlRunner();
+
+        connect( runner, SIGNAL( showFavorites() ), this, SLOT( showFavoritesPage() ) );
+        connect( runner, SIGNAL( showHome() ), this, SLOT( showHomePage() ) );
+        connect( runner, SIGNAL( showRecommendations() ), this, SLOT( showRecommendationsPage() ) );
+        connect( runner, SIGNAL( buyOrDownload( const QString & ) ), this, SLOT( purchase( const QString & ) ) );
+        connect( runner, SIGNAL( removeFromFavorites( const QString & ) ), this, SLOT( removeFromFavorites( const QString & ) ) );
+        
+        The::amarokUrlHandler()->registerRunner( runner, "service_magnatune" );
     }
 
     const KUrl url( KStandardDirs::locate( "data", "amarok/data/" ) );
@@ -498,7 +521,7 @@ void MagnatuneStore::moodMapReady(QMap< QString, int > map)
     variantMap["cloud_weights"] = QVariant( weights );
     variantMap["cloud_actions"] = QVariant( dbusActions );
     
-    The::serviceInfoProxy()->setCloud( variantMap );
+    The::infoProxy()->setCloud( variantMap );
 }
 
 
@@ -633,6 +656,82 @@ QString MagnatuneStore::sendMessage( const QString & message )
     }
 
     return i18n( "ERROR: Unknown argument." );
+}
+
+void MagnatuneStore::showFavoritesPage()
+{
+    DEBUG_BLOCK
+    m_magnatuneInfoParser->getFavoritesPage();
+}
+
+void MagnatuneStore::showHomePage()
+{
+    DEBUG_BLOCK
+    m_magnatuneInfoParser->getFrontPage();
+}
+
+void MagnatuneStore::showRecommendationsPage()
+{
+    DEBUG_BLOCK
+    m_magnatuneInfoParser->getRecommendationsPage();
+}
+
+void MagnatuneStore::purchase( const QString &sku )
+{
+    DEBUG_BLOCK
+    debug() << "sku: " << sku;
+    MagnatuneDatabaseWorker * databaseWorker = new MagnatuneDatabaseWorker();
+    databaseWorker->fetchAlbumBySku( sku, m_registry );
+    connect( databaseWorker, SIGNAL( gotAlbumBySku( Meta::MagnatuneAlbum * ) ), this, SLOT( purchase( Meta::MagnatuneAlbum * ) ) );
+    
+    ThreadWeaver::Weaver::instance()->enqueue( databaseWorker );
+}
+
+void MagnatuneStore::addToFavorites( const QString &sku )
+{
+    DEBUG_BLOCK
+    MagnatuneConfig config;
+
+    if( !config.isMember() )
+        return;
+
+    QString url = "http://%1:%2@%3.magnatune.com/member/favorites?action=add_api&sku=%4";
+    url = url.arg( config.username(), config.password(), config.membershipType(), sku );
+
+    debug() << "favorites url: " << url;
+
+    m_favoritesJob = KIO::storedGet( KUrl( url ), KIO::Reload, KIO::HideProgressInfo );
+    connect( m_favoritesJob, SIGNAL( result( KJob * ) ), SLOT( favoritesResult( KJob *  ) ) );
+}
+
+void MagnatuneStore::removeFromFavorites( const QString &sku )
+{
+    DEBUG_BLOCK
+    MagnatuneConfig config;
+
+    if( !config.isMember() )
+        return;
+
+    QString url = "http://%1:%2@%3.magnatune.com/member/favorites?action=remove_api&sku=%4";
+    url = url.arg( config.username(), config.password(), config.membershipType(), sku );
+
+    debug() << "favorites url: " << url;
+
+    m_favoritesJob = KIO::storedGet( KUrl( url ), KIO::Reload, KIO::HideProgressInfo );
+    connect( m_favoritesJob, SIGNAL( result( KJob * ) ), SLOT( favoritesResult( KJob *  ) ) );
+}
+
+void MagnatuneStore::favoritesResult( KJob* addToFavoritesJob )
+{
+    if( addToFavoritesJob != m_favoritesJob )
+        return;
+
+    QString result = m_favoritesJob->data();
+
+    The::statusBar()->longMessage( result );
+
+    //show the favorites page
+    showFavoritesPage();
 }
 
 

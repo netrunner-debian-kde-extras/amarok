@@ -1,20 +1,18 @@
-/* This file is part of the KDE project
-   Copyright (C) 2007 Bart Cerneels <bart.cerneels@kde.org>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2007 Bart Cerneels <bart.cerneels@kde.org>                             *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "PodcastReader.h"
 
@@ -31,7 +29,9 @@ using namespace Meta;
 
 PodcastReader::PodcastReader( PodcastProvider * podcastProvider )
         : QXmlStreamReader()
+        , m_feedType( UnknownFeedType )
         , m_podcastProvider( podcastProvider )
+        , m_transferJob( 0 )
         , m_current( 0 )
         , m_parsingImage( false )
 {}
@@ -55,17 +55,17 @@ PodcastReader::read( const KUrl &url )
 
     m_url = url;
 
-    KIO::TransferJob *getJob = KIO::get( m_url, KIO::Reload, KIO::HideProgressInfo );
+    KIO::TransferJob *m_transferJob = KIO::get( m_url, KIO::Reload, KIO::HideProgressInfo );
 
-    connect( getJob, SIGNAL( data( KIO::Job *, const QByteArray & ) ),
+    connect( m_transferJob, SIGNAL( data( KIO::Job *, const QByteArray & ) ),
              SLOT( slotAddData( KIO::Job *, const QByteArray & ) ) );
 
-    connect( getJob, SIGNAL(  result( KJob * ) ),
+    connect( m_transferJob, SIGNAL(  result( KJob * ) ),
              SLOT( downloadResult( KJob * ) ) );
 
-    connect( getJob, SIGNAL( redirection( KIO::Job *, const KUrl & ) ),
+    connect( m_transferJob, SIGNAL( redirection( KIO::Job *, const KUrl & ) ),
              SLOT( slotRedirection( KIO::Job *, const KUrl & ) ) );
-    connect( getJob, SIGNAL( permanentRedirection( KIO::Job *,
+    connect( m_transferJob, SIGNAL( permanentRedirection( KIO::Job *,
              const KUrl &, const KUrl &) ),
              SLOT( slotPermanentRedirection( KIO::Job *, const KUrl &,
              const KUrl &) ) );
@@ -78,10 +78,10 @@ PodcastReader::read( const KUrl &url )
             : i18n("Updating \"%1\"", m_channel->title());
     }
 
-    The::statusBar()->newProgressOperation( getJob, description )
+    The::statusBar()->newProgressOperation( m_transferJob, description )
         ->setAbortSlot( this, SLOT( slotAbort() ) );
 
-    return !getJob->isErrorPage();
+    return true;
 }
 
 void
@@ -101,9 +101,10 @@ PodcastReader::update( PodcastChannelPtr channel )
 }
 
 void
-PodcastReader::slotAddData( KIO::Job *, const QByteArray & data )
+PodcastReader::slotAddData( KIO::Job *job, const QByteArray &data )
 {
     DEBUG_BLOCK
+    Q_UNUSED( job )
 
     QXmlStreamReader::addData( data );
     //parse some more data
@@ -113,9 +114,37 @@ PodcastReader::slotAddData( KIO::Job *, const QByteArray & data )
 void
 PodcastReader::downloadResult( KJob * job )
 {
-    Q_UNUSED( job );
     DEBUG_BLOCK
 
+    KIO::TransferJob *transferJob = dynamic_cast<KIO::TransferJob *>( job );
+    if ( transferJob && transferJob->isErrorPage() )
+    {
+        QString errorMessage =
+                i18n( "Importing podcast from %1 failed with error:\n", m_url.url() );
+        if( m_channel )
+        {
+            errorMessage = m_channel->title().isEmpty()
+                  ? i18n( "Updating podcast from %1 failed with error:\n", m_url.url() )
+                  : i18n( "Updating \"%1\" failed with error:\n", m_channel->title() );
+        }
+        errorMessage = errorMessage.append( job->errorString() );
+
+        The::statusBar()->longMessage( errorMessage, StatusBar::Sorry );
+    }
+    else if( job->error() )
+    {
+        QString errorMessage =
+                i18n( "Importing podcast from %1 failed with error:\n", m_url.url() );
+        if( m_channel )
+        {
+            errorMessage = m_channel->title().isEmpty()
+                  ? i18n( "Updating podcast from %1 failed with error:\n", m_url.url() )
+                  : i18n( "Updating \"%1\" failed with error:\n", m_channel->title() );
+        }
+        errorMessage = errorMessage.append( job->errorString() );
+
+        The::statusBar()->longMessage( errorMessage, StatusBar::Sorry );
+    }
     //parse some more data
     read();
 }
@@ -140,50 +169,35 @@ PodcastReader::read()
             readNext();
         }
         else
-            debug() << "some other error occurred: " << errorString();
-
-        if( !m_current )
         {
-            debug() << "no m_current yet";
+            debug() << "some other error occurred: " << errorString();
+            m_transferJob->kill();
+            m_transferJob = 0;
+            emit finished( this );
+        }
 
+        if( m_feedType == UnknownFeedType )
+        {
             //Pre Channel
-            if ( isStartElement() )
+            if( isStartElement() )
             {
                 debug() << "Initial StartElement: " << QXmlStreamReader::name().toString();
                 debug() << "version: " << attributes().value ( "version" ).toString();
-                if ( QXmlStreamReader::name() == "rss" && attributes().value ( "version" ) == "2.0" )
+                if( QXmlStreamReader::name() == "rss" && attributes().value ( "version" ) == "2.0" )
                 {
-                    while( readNext() == QXmlStreamReader::Characters )
-                    {
-                        debug() << "reading Characters";
-                    }
-
-                    if (isEndElement())
-                    {
-                        debug() << "endElement";
-                        break;
-                    }
-                    if (isStartElement())
-                    {
-                        debug() << "nested StartElement: " << QXmlStreamReader::name().toString();
-                        if ( QXmlStreamReader::name() == "channel" )
-                        {
-                            debug() << "new channel";
-                            m_channel = new Meta::PodcastChannel();
-                            m_channel->setUrl( m_url );
-                            m_channel->setSubscribeDate( QDate::currentDate() );
-                            /* add this new channel to the provider, we get a pointer to a
-                            * PodcastChannelPtr of the correct type which we will use from now on.
-                            */
-                            m_channel = m_podcastProvider->addChannel( m_channel );
-
-                            m_current = static_cast<Meta::PodcastMetaCommon *>( m_channel.data() );
-                        }
-                    }
+                    m_feedType = Rss20FeedType;
+                }
+                else if( QXmlStreamReader::name() == "html" )
+                {
+                    m_feedType = ErrorPageType;
+                    raiseError( i18n( "An HTML page was received. Expected an RSS 2.0 feed" ) );
+                    result = false;
+                    break;
                 }
                 else
                 {
-                    raiseError ( QObject::tr ( "The file is not an RSS version 2.0 file." ) );
+                    //TODO: change this string once we support more
+                    raiseError( i18n( "%1 is not an RSS version 2.0 feed.", m_url.url() ) );
                     result = false;
                     break;
                 }
@@ -211,6 +225,22 @@ PodcastReader::read()
                 {
                     m_parsingImage = true;
                 }
+                else if( QXmlStreamReader::name() == "channel" )
+                {
+                    if( !m_current )
+                    {
+                        debug() << "new channel";
+                        m_channel = new Meta::PodcastChannel();
+                        m_channel->setUrl( m_url );
+                        m_channel->setSubscribeDate( QDate::currentDate() );
+                        /* add this new channel to the provider, we get a pointer to a
+                        * PodcastChannelPtr of the correct type which we will use from now on.
+                        */
+                        m_channel = m_podcastProvider->addChannel( m_channel );
+
+                        m_current = static_cast<Meta::PodcastMetaCommon *>( m_channel.data() );
+                    }
+                }
                 m_currentTag = QXmlStreamReader::name().toString();
             }
             else if( isEndElement() )
@@ -222,7 +252,7 @@ PodcastReader::read()
                 else if( QXmlStreamReader::name() == "channel" )
                 {
                     commitChannel();
-                    emit finished( this, true );
+                    emit finished( this );
                     break;
                 }
                 else if( QXmlStreamReader::name() == "title")
@@ -301,7 +331,7 @@ PodcastReader::read()
 
             if( m_channel )
                 commitChannel();
-            emit finished( this, false );
+            emit finished( this );
         }
     }
     return result;
@@ -366,7 +396,7 @@ PodcastReader::commitChannel()
 {
     Q_ASSERT( m_channel );
     //TODO: we probably need to notify the provider here to we are done updating the channel
-//     emit finished( this, true );
+//     emit finished( this );
 }
 
 void

@@ -1,21 +1,18 @@
-/***************************************************************************
- *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef JAMENDOMETA_H
 #define JAMENDOMETA_H
@@ -80,19 +77,27 @@ public:
     virtual QPixmap emblem();
     virtual QString scalableEmblem();
 
+   /**
+    * Get the file type.
+    * Since jamendo uses interesting redirects, we cannot use the base implementation
+    * which relies on getting the file type from the url.
+    */
+    virtual QString type() const;
+
     virtual bool isBookmarkable() { return true; }
     virtual QString collectionName() { return "Jamendo.com"; }
     virtual bool simpleFiltering() { return false; }
 
-    virtual QList< PopupDropperAction *> customActions();
-    virtual QList< PopupDropperAction * > currentTrackActions();
+    virtual QList< QAction *> customActions();
+    virtual QList< QAction * > currentTrackActions();
+
 
 private:
     
     JamendoService * m_service;
     
-    PopupDropperAction * m_downloadCustomAction;
-    PopupDropperAction * m_downloadCurrentTrackAction;
+    QAction * m_downloadCustomAction;
+    QAction * m_downloadCurrentTrackAction;
     ShowInServiceAction * m_showInServiceAction;
 
 };
@@ -166,7 +171,7 @@ public:
     void setOggTorrentUrl( const QString &url );
     QString oggTorrentUrl();
 
-    virtual QList< PopupDropperAction *> customActions();
+    virtual QList< QAction *> customActions();
 
     void setService( JamendoService * store );
     JamendoService * service();

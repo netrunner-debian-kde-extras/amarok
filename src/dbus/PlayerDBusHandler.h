@@ -1,25 +1,25 @@
-/******************************************************************************
- * Copyright (C) 2008 Ian Monroe <ian@monroe.nu>                              *
- *           (C) 2008 Peter ZHOU <peterzhoulei@gmail.com>                     *
- *                                                                            *
- * This program is free software; you can redistribute it and/or              *
- * modify it under the terms of the GNU General Public License as             *
- * published by the Free Software Foundation; either version 2 of             *
- * the License, or (at your option) any later version.                        *
- *                                                                            *
- * This program is distributed in the hope that it will be useful,            *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of             *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the              *
- * GNU General Public License for more details.                               *
- *                                                                            *
- * You should have received a copy of the GNU General Public License          *
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.      *
- ******************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Ian Monroe <ian@monroe.nu>                                        *
+ * Copyright (c) 2008 Peter ZHOU <peterzhoulei@gmail.com>                               *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef PLAYER_DBUS_HANDLER_H
 #define PLAYER_DBUS_HANDLER_H
 
 #include "meta/Meta.h"
+#include "EngineObserver.h"
 
 #include <QObject>
 #include <QVariantMap>
@@ -50,7 +50,7 @@ const QDBusArgument &operator >> ( const QDBusArgument &argument, DBusStatus &st
 
 namespace Amarok
 {
-    class AMAROK_EXPORT PlayerDBusHandler : public QObject
+    class AMAROK_EXPORT PlayerDBusHandler : public QObject, public EngineObserver
     {
         friend Amarok::PlayerDBusHandler* The::playerDBusHandler();
 
@@ -92,6 +92,9 @@ namespace Amarok
             void VolumeUp( int step ) const;
             void VolumeDown( int step ) const;
             void Mute() const;
+            void ShowOSD() const;
+
+            void LoadThemeFile( const QString &path ) const;
 
         signals:
             void CapsChange( int );
@@ -99,14 +102,15 @@ namespace Amarok
             void StatusChange( DBusStatus );
 
         private slots:
-            void slotCapsChange();
-            void slotTrackChange();
-            void slotStatusChange();
+            void updateStatus();
 
         public:
             QVariantMap GetTrackMetadata( Meta::TrackPtr track );
 
         private:
+            void engineTrackChanged( Meta::TrackPtr track );
+            void engineStateChanged( Phonon::State currentState, Phonon::State oldState );
+
             static PlayerDBusHandler* s_instance;
     };
 

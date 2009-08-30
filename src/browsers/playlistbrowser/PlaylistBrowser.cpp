@@ -1,20 +1,18 @@
-/* This file is part of the KDE project
-   Copyright (C) 2007 Bart Cerneels <bart.cerneels@kde.org>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2007 Bart Cerneels <bart.cerneels@kde.org>                             *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "PlaylistBrowser.h"
 
@@ -30,6 +28,7 @@
 
 #include <kicon.h>
 #include <klocale.h>
+#include <KStandardDirs>
 
 #include <QToolBox>
 #include <QTreeView>
@@ -37,21 +36,18 @@
 namespace PlaylistBrowserNS {
 
 PlaylistBrowser::PlaylistBrowser( const char *name, QWidget *parent )
- : KVBox(parent)
+ : BrowserCategoryList( parent, name )
 {
     DEBUG_BLOCK
 
     //setStyleSheet("QToolBox::tab { border-radius: 5px; border-color: red; border-style: solid }");
 
     setObjectName( name );
-    m_toolBox = new QToolBox( this );
 
     //m_toolBox->setStyleSheet( "{}" );
 
     setMargin( 0 );
     setContentsMargins(0,0,0,0);
-    setFrameShape( QFrame::StyledPanel );
-    setFrameShadow( QFrame::Sunken );
 
     addCategory( PlaylistManager::Dynamic );
 
@@ -67,11 +63,15 @@ PlaylistBrowser::PlaylistBrowser( const char *name, QWidget *parent )
 
     connect( The::playlistManager(), SIGNAL( categoryAdded( int ) ), SLOT( addCategory( int ) ) );
     connect( The::playlistManager(), SIGNAL( showCategory( int ) ), SLOT( showCategory( int ) ) );
+
+    setLongDescription( i18n( "The playlist browser contains your list of imported and saved playlists. It is also where you can specify powerful dynamic playlists and manage your podcast  subscriptions and episodes." ) );
+
+    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_playlists.png" ) );
 }
 
 PlaylistBrowser::~PlaylistBrowser()
 {
-    Amarok::config( "Playlist Browser" ).writeEntry( "Current Category", m_toolBox->currentIndex() );
+    //Amarok::config( "Playlist Browser" ).writeEntry( "Current Category", m_toolBox->currentIndex() );
 }
 
 //SLOT
@@ -79,54 +79,53 @@ void
 PlaylistBrowser::addCategory( int category )
 {
     DEBUG_BLOCK
-    QString typeName = The::playlistManager()->typeName( category );
-    QWidget *widget = 0;
+    QString categoryName = The::playlistManager()->categoryName( category );
+    BrowserCategory *bCategory = 0;
 
-    //TODO: PlaylistBrowser::iconForCategory( int playlistCategory )
-    KIcon icon = KIcon( "view-media-playlist-amarok" );
+    KIcon icon = The::playlistManager()->categoryIcon( category );
 
     switch( category )
     {
         //we don't show the current playlist in the PlaylistBrowser (yet)
         case PlaylistManager::CurrentPlaylist: return;
         //TODO: add the UserPlaylistCategory widget
-        case PlaylistManager::UserPlaylist: widget = new PlaylistCategory( m_toolBox ); break;
-        case PlaylistManager::PodcastChannel: widget = loadPodcastCategory(); break;
-        case PlaylistManager::Dynamic: widget = loadDynamicCategory(); break;
+        case PlaylistManager::UserPlaylist: bCategory = new PlaylistCategory( 0 ); break;
+        case PlaylistManager::PodcastChannel: bCategory = loadPodcastCategory(); break;
+        case PlaylistManager::Dynamic: bCategory = loadDynamicCategory(); break;
         //TODO: add the SmartPlaylistCategory widget
-        case PlaylistManager::SmartPlaylist: widget = new QTreeView( m_toolBox ); break;
+        //case PlaylistManager::SmartPlaylist: bCategory = loadSmartPlaylistCategory(); break;
         //This must be a custom category
         default: break;//TODO: widget = loadCustomCategory( int category );
     }
 
-    m_toolBox->addItem( widget, icon, typeName );
-
-    m_categoryIndexMap.insert( m_toolBox->count() - 1, category );
+    BrowserCategoryList::addCategory( bCategory );
 
 }
 
-QWidget *
+BrowserCategory *
 PlaylistBrowser::loadPodcastCategory()
 {
     return The::podcastCategory();
 }
 
-QWidget*
+BrowserCategory*
 PlaylistBrowser::loadDynamicCategory()
 {
-    return new DynamicCategory( m_toolBox );
+    return new DynamicCategory( 0 );
 }
 
 void
 PlaylistBrowser::showCategory( int category )
 {
+    Q_UNUSED( category )
     DEBUG_BLOCK;
-    m_toolBox->setCurrentIndex( m_categoryIndexMap.key( category ) );
+    //m_toolBox->setCurrentIndex( m_categoryIndexMap.key( category ) );
 }
 
 int PlaylistBrowserNS::PlaylistBrowser::currentCategory()
 {
-    return m_categoryIndexMap.value( m_toolBox->currentIndex() );
+    //return m_categoryIndexMap.value( m_toolBox->currentIndex() );
+    return 0;
 }
 
 }

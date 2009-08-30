@@ -1,20 +1,18 @@
-/* This file is part of the KDE project
-   Copyright (C) 2007 Bart Cerneels <bart.cerneels@kde.org>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2007 Bart Cerneels <bart.cerneels@kde.org>                             *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "PLSPlaylist.h"
 
@@ -23,6 +21,7 @@
 #include "EditCapability.h"
 #include "Meta.h"
 #include "PlaylistManager.h"
+#include "PlaylistFileSupport.h"
 
 #include <KLocale>
 
@@ -34,22 +33,22 @@
 namespace Meta {
 
 PLSPlaylist::PLSPlaylist()
-    : Playlist()
-    , m_url( PlaylistManager::newPlaylistFilePath( "pls" ) )
+    : PlaylistFile()
+    , m_url( Meta::newPlaylistFilePath( "pls" ) )
 {
     m_name = m_url.fileName();
 }
 
 PLSPlaylist::PLSPlaylist( TrackList tracks )
-    : Playlist()
+    : PlaylistFile()
     , m_tracks( tracks )
-    , m_url( PlaylistManager::newPlaylistFilePath( "pls" ) )
+    , m_url( Meta::newPlaylistFilePath( "pls" ) )
 {
     m_name = m_url.fileName();
 }
 
 PLSPlaylist::PLSPlaylist( const KUrl &url )
-    : Playlist()
+    : PlaylistFile( url )
     , m_url( url )
 {
     DEBUG_BLOCK
@@ -60,7 +59,7 @@ PLSPlaylist::PLSPlaylist( const KUrl &url )
     //check if file is local or remote
     if ( m_url.isLocalFile() )
     {
-        QFile file( m_url.path() );
+        QFile file( m_url.toLocalFile() );
         if( !file.open( QIODevice::ReadOnly ) ) {
             debug() << "cannot open file";
             return;
@@ -75,7 +74,7 @@ PLSPlaylist::PLSPlaylist( const KUrl &url )
     }
     else
     {
-        The::playlistManager()->downloadPlaylist( m_url, PlaylistPtr( this ) );
+        The::playlistManager()->downloadPlaylist( m_url, PlaylistFilePtr( this ) );
     }
 }
 
@@ -150,7 +149,7 @@ PLSPlaylist::loadPls( QTextStream &stream )
     /* Now iterate through all beautified lines in the buffer
     * and parse the playlist data.
     */
-    QStringList::const_iterator i = lines.begin(), end = lines.end();
+    QStringList::const_iterator i = lines.constBegin(), end = lines.constEnd();
     for ( ; i != end; ++i) {
         if (!inPlaylistSection && havePlaylistSection) {
             /* The playlist begins with the "[playlist]" tag.
@@ -216,15 +215,20 @@ PLSPlaylist::loadPls( QTextStream &stream )
 }
 
 bool
-PLSPlaylist::save( const QString &location, bool relative )
+PLSPlaylist::save( const KUrl &location, bool relative )
 {
     Q_UNUSED( relative );
 
-    QFile file( location );
+    KUrl savePath = location;
+    //if the location is a directory append the name of this playlist.
+    if( savePath.fileName().isNull() )
+        savePath.setFileName( name() );
+
+    QFile file( savePath.path() );
 
     if( !file.open( QIODevice::WriteOnly ) )
     {
-        debug() << "Unable to open location!";
+        debug() << "Unable to write to playlist " << savePath.path();
         return false;
     }
 
@@ -263,6 +267,18 @@ PLSPlaylist::loadPls_extractIndex( const QString &str ) const
     ret = tmp.trimmed().toUInt(&ok);
     Q_ASSERT(ok);
     return ret;
+}
+
+bool
+PLSPlaylist::isWritable()
+{
+    return QFile( m_url.path() ).isWritable();
+}
+
+void
+PLSPlaylist::setName( const QString &name )
+{
+    m_url.setFileName( name );
 }
 
 }

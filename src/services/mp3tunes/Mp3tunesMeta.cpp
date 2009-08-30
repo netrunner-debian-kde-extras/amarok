@@ -1,30 +1,28 @@
-/***************************************************************************
- *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *                 2007, 2008  Casey Link <unnamedrambler@gmail.com>       *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2007,2008 Casey Link <unnamedrambler@gmail.com>                        *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "Mp3tunesMeta.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 
 #include "Amarok.h"
 
 #include <KIcon>
 #include <KLocale>
+
+#include <QAction>
 using namespace Meta;
 
 Mp3TunesTrack::Mp3TunesTrack( const QString& title )
@@ -73,11 +71,11 @@ QString Mp3TunesAlbum::coverUrl( ) const
     return m_coverURL;
 }
 
-QList< PopupDropperAction * > Meta::Mp3TunesAlbum::customActions()
+QList< QAction * > Meta::Mp3TunesAlbum::customActions()
 {
     DEBUG_BLOCK
-    QList< PopupDropperAction * > actions;
-    //PopupDropperAction * action = new PopupDropperAction( KIcon("get-hot-new-stuff-amarok" ), i18n( "&Download" ), 0 );
+    QList< QAction * > actions;
+    //QAction * action = new QAction( KIcon("get-hot-new-stuff-amarok" ), i18n( "&Download" ), 0 );
 
     //TODO connect some slot to the action, also, give the damn action a parent please
     //actions.append( action );

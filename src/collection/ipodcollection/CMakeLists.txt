@@ -3,8 +3,8 @@ macro_optional_find_package(Ipod)
 macro_optional_find_package(Gdk)
 
 if(NOT GDK_FOUND)
-   SET(GDK_INCLUDE_DIRS "")
-   SET(GDK_LIBRARIES "")
+    SET(GDK_INCLUDE_DIRS "")
+    SET(GDK_LIBRARIES "")
 endif(NOT GDK_FOUND)
 
 if (IPOD_FOUND AND IPOD_0_7 AND WITH_Ipod)
@@ -14,15 +14,21 @@ if (IPOD_FOUND AND IPOD_0_7 AND WITH_Ipod)
    ../../meta/file
    ../../collection
    ../../metadata/audible
+   ../mediadevicecollection
    ../mediadevicecollection/support
+   ../mediadevicecollection/handler
+   ../mediadevicecollection/handler/capabilities
    handler
+   handler/capabilities
+   support
    ${GLIB2_INCLUDE_DIR}
    ${GDK_INCLUDE_DIRS}
    ${IPOD_INCLUDE_DIRS}
    ${CMAKE_CURRENT_BINARY_DIR}/../..
    ${AMAROK_COLLECTION_SUPPORT_DIR}
    ${KDE4_INCLUDE_DIR}
-   ${QT_INCLUDES} )
+   ${QT_INCLUDES}
+)
 
 ########### set GDK var ################
      # Generate config-gdk.h.cmake
@@ -33,15 +39,17 @@ if (IPOD_FOUND AND IPOD_0_7 AND WITH_Ipod)
 ########### next target ################
 
     set(amarok_collection-ipodcollection_PART_SRCS
-	IpodMeta.cpp
 	IpodCollection.cpp
-	IpodCollectionLocation.cpp
 	handler/IpodHandler.cpp
-	CollectionCapabilityIpod.cpp)
-	kde4_add_plugin(amarok_collection-ipodcollection WITH_PREFIX ${amarok_collection-ipodcollection_PART_SRCS})
+	handler/capabilities/IpodArtworkCapability.cpp
+	handler/capabilities/IpodPlaylistCapability.cpp
+	handler/capabilities/IpodReadCapability.cpp
+	handler/capabilities/IpodWriteCapability.cpp	
+	support/IpodDeviceInfo.cpp
+	support/IpodConnectionAssistant.cpp)
+	kde4_add_plugin(amarok_collection-ipodcollection ${amarok_collection-ipodcollection_PART_SRCS})
 
     target_link_libraries(amarok_collection-ipodcollection
-        mediadevicelib
         amaroklib
         amarokpud
         ${KDE4_KDECORE_LIBS}

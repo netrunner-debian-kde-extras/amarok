@@ -1,21 +1,18 @@
-/***************************************************************************
- *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "AmpacheSettings.h"
 
@@ -45,7 +42,7 @@ AmpacheSettings::AmpacheSettings(QWidget * parent, const QVariantList & args)
     connect ( m_configDialog->removeButton, SIGNAL( clicked() ), this, SLOT( remove() ) );
     connect ( m_configDialog->modifyButton, SIGNAL( clicked() ), this, SLOT( modify() ) );
     connect ( m_configDialog->serverList, SIGNAL ( currentTextChanged ( const QString & ) ), this, SLOT( selectedItemChanged( const QString & ) ) );
-
+    connect ( m_configDialog->nameEdit, SIGNAL( textChanged ( const QString & )), this,SLOT(serverNameChanged( const QString & )));
     load();
 }
 
@@ -53,6 +50,11 @@ AmpacheSettings::~AmpacheSettings()
 {
 }
 
+void
+AmpacheSettings::serverNameChanged(const QString & text)
+{
+   m_configDialog->addButton->setEnabled( !text.isEmpty() );
+}
 
 void
 AmpacheSettings::save()
@@ -87,6 +89,8 @@ AmpacheSettings::add()
 
     AmpacheServerEntry server;
     server.name = m_configDialog->nameEdit->text();
+    if( server.name.isEmpty())
+        return;
     server.url = m_configDialog->serverEdit->text();
     server.username = m_configDialog->userEdit->text();
     server.password = m_configDialog->passEdit->text();

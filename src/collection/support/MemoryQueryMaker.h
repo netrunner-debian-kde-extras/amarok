@@ -1,21 +1,19 @@
-/*
-   Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
-             (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef MEMORYQUERYMAKER_H
 #define MEMORYQUERYMAKER_H
@@ -74,6 +72,8 @@ class AMAROK_EXPORT MemoryQueryMaker : public QueryMaker
         virtual QueryMaker* beginOr();
         virtual QueryMaker* endAndOr();
 
+        virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
+
         //MemoryQueryMaker specific methods
         void runQuery();
         void handleResult();
@@ -85,12 +85,6 @@ class AMAROK_EXPORT MemoryQueryMaker : public QueryMaker
     protected:
         template <class PointerType>
         void emitProperResult( const QList<PointerType > &list );
-        
-        template <class PointerType>
-        QList<PointerType > orderListByName( const QList<PointerType > &list, qint64 value ) const;
-        
-        Meta::TrackList orderListByString( const Meta::TrackList &tracks, qint64 value ) const;
-        Meta::TrackList orderListByNumber( const Meta::TrackList &tracks, qint64 value ) const;
 
         MemoryCollection *m_collection;
         struct Private;

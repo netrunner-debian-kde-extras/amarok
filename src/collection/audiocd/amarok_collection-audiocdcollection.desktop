@@ -1,0 +1,52 @@
+[Desktop Entry]
+Type=Service
+Name=AudioCd Collection
+Name[bg]=Колекция с компактдискове
+Name[csb]=Kòlekcëjô AudioCd
+Name[es]=Colección de Cd de audio
+Name[et]=Heli-CD kogu
+Name[fi]=Musiikki-cd-kokoelma
+Name[is]=AudioCd safn
+Name[it]=Collezione CD audio
+Name[km]=សម្រាំងស៊ីឌី​អូឌីយ៉ូ
+Name[ko]=오디오 CD 모음집
+Name[nb]=LydCD-samling
+Name[nn]=Lyd-CD-samling
+Name[pl]=Kolekcja audioCD
+Name[pt]=Colecção de CD's Áudio
+Name[pt_BR]=Coleção de CD de Áudio
+Name[sv]=Ljudcd-samling
+Name[tr]=AudioCd Koleksiyonu
+Name[uk]=Збірка звукових КД
+Name[x-test]=xxAudioCd Collectionxx
+Comment=AudioCd collection plugin for Amarok
+Comment[bg]=Приставка за колекция с компактдискове (Amarok)
+Comment[csb]=Wtëkôcz kòlekcëji AudioCd dlô Amaroka
+Comment[es]=Complemento de colección de Cd de audio para Amarok
+Comment[et]=Amaroki heli-CD kogu plugin
+Comment[fi]=Musiikki-cd-kokoelmaliitännäinen
+Comment[is]=AudioCd safníforrit fyrir Amarok
+Comment[it]=Estensione CD audio della collezione di Amarok
+Comment[km]=កម្មវិធី​ជំនួយ​សម្រាំង​ស៊ីឌី​អូឌីយ៉ូ​​សម្រាប់ Amarok
+Comment[ko]=Amarok의 오디오 CD 모음집 플러그인
+Comment[nb]=LydCD-samling programtillegg for Amarok
+Comment[nn]=Amarok-samlingstillegg for lyd-CD-ar
+Comment[pl]=Wtyczka kolekcji audioCD dla Amaroka
+Comment[pt]=Um 'plugin' da colecção de CD's de áudio para o Amarok
+Comment[pt_BR]=Plugin de coleção de CD de Áudio para o Amarok
+Comment[sv]=Insticksprogram med ljudcd-samling för Amarok
+Comment[tr]=Amarok için AudioCd koleksiyonu eklentisi
+Comment[uk]=Додаток збірки звукових КД для Amarok
+Comment[x-test]=xxAudioCd collection plugin for Amarokxx
+
+ServiceTypes=Amarok/Plugin
+
+X-KDE-Library=amarok_collection-audiocdcollection
+
+X-KDE-Amarok-authors=Nikolaj Hald Nielsen
+X-KDE-Amarok-email=nhnFreespirit@gmail.com
+X-KDE-Amarok-framework-version=46
+X-KDE-Amarok-name=audiocd-collection
+X-KDE-Amarok-plugintype=collection
+X-KDE-Amarok-rank=100
+X-KDE-Amarok-version=1

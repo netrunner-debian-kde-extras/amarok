@@ -1,22 +1,22 @@
-/***************************************************************************
- * copyright            : (C) 2008 Soren Harward <stharward@gmail.com>
- *
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of
- * the License or (at your option) version 3 or any later version
- * accepted by the membership of KDE e.V. (or its successor approved
- * by the membership of KDE e.V.), which shall act as a proxy
- * defined in Section 14 of version 3 of the license.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- **************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
+ * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) version 3 or        *
+ * any later version accepted by the membership of KDE e.V. (or its successor approved  *
+ * by the membership of KDE e.V.), which shall act as a proxy defined in Section 14 of  *
+ * version 3 of the license.                                                            *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #define DEBUG_PREFIX "Playlist::PrettyListView"
 
@@ -24,30 +24,31 @@
 
 #include "amarokconfig.h"
 #include "context/ContextView.h"
-#include "context/popupdropper/libpud/PopupDropperAction.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "Debug.h"
 #include "EngineController.h"
-#include "PrettyItemDelegate.h"
 #include "dialogs/TagDialog.h"
 #include "GlobalCurrentTrackActions.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "meta/capabilities/MultiSourceCapability.h"
 #include "meta/Meta.h"
 #include "PaletteHandler.h"
-#include "playlist/GroupingProxy.h"
+#include "playlist/layouts/LayoutManager.h"
+#include "playlist/proxymodels/GroupingProxy.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
+#include "playlist/PlaylistModelStack.h"
 #include "playlist/view/PlaylistViewCommon.h"
-#include "playlist/navigators/NavigatorFilterProxyModel.h"
 #include "PopupDropperFactory.h"
 #include "SvgHandler.h"
 #include "SourceSelectionPopup.h"
 
 #include <KApplication>
 #include <KMenu>
+#include <KUrl>
 
+#include <QClipboard>
 #include <QContextMenuEvent>
 #include <QDropEvent>
 #include <QItemSelection>
@@ -67,15 +68,18 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
         , m_mousePressInHeader( false )
         , m_skipAutoScroll( false )
         , m_pd( 0 )
+        , m_topmostProxy( Playlist::ModelStack::instance()->top() )
 {
-    setModel( GroupingProxy::instance() );
-    setItemDelegate( new PrettyItemDelegate( this ) );
-    setSelectionMode( QAbstractItemView::ExtendedSelection );
-    setDragDropMode( QAbstractItemView::DragDrop );
+    setModel( Playlist::ModelStack::instance()->top() );
+    m_prettyDelegate = new PrettyItemDelegate( this );
+    setItemDelegate( m_prettyDelegate );
+    setSelectionMode( ExtendedSelection );
+    setDragDropMode( DragDrop );
     setDropIndicatorShown( false ); // we draw our own drop indicator
+    setEditTriggers ( SelectedClicked | EditKeyPressed );
     setAutoScroll( true );
 
-    setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+    setVerticalScrollMode( ScrollPerPixel );
 
     // rendering adjustments
     setFrameShape( QFrame::NoFrame );
@@ -93,7 +97,20 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
     connect( m_proxyUpdateTimer, SIGNAL( timeout() ), this, SLOT( updateProxyTimeout() ) );
 
-    connect( The::playlistModel(), SIGNAL( itemsAdded( int ) ), this, SLOT( itemsAdded( int ) ) );
+    connect( model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( itemsAdded( const QModelIndex&, int, int ) ) );
+
+    connect( model(), SIGNAL( layoutChanged() ), this, SLOT( reset() ) );
+
+     m_animationTimer = new QTimer(this);
+     connect( m_animationTimer, SIGNAL( timeout() ), this, SLOT( redrawActive() ) );
+     m_animationTimer->setInterval( 250 );
+
+     connect( LayoutManager::instance(), SIGNAL( activeLayoutChanged() ), this, SLOT( playlistLayoutChanged() ) );
+     
+     if ( LayoutManager::instance()->activeLayout().inlineControls() )
+         m_animationTimer->start();
+
+     
 }
 
 Playlist::PrettyListView::~PrettyListView() {}
@@ -135,13 +152,24 @@ Playlist::PrettyListView::removeSelection()
     QList<int> sr = selectedRows();
     if( !sr.isEmpty() )
     {
-        qSort( sr );
-        int firstRow = sr.first();
+        // Now that we have the list of selected rows in the topmost proxy, we can perform the
+        // removal.
         Controller::instance()->removeRows( sr );
 
-        //select the track immediately above the cleared are as this is the one that ow has internal focus.
-        firstRow = qBound( 0, firstRow, model()->rowCount() -1 );
-        selectionModel()->select( model()->index( firstRow, 0, QModelIndex() ), QItemSelectionModel::Select );
+        // Next, we look for the first row.
+        int firstRow = sr.first();
+        foreach( int i, sr )
+        {
+            if( i < firstRow )
+                firstRow = i;
+        }
+
+        //Select the track occupied by the first deleted track. Also move the current item to here as
+        //button presses up or down wil otherwise not behave as expected.
+        firstRow = qBound( 0, firstRow, m_topmostProxy->rowCount() -1 );
+        QModelIndex newSelectionIndex = model()->index(  firstRow, 0, QModelIndex() ); 
+        setCurrentIndex( newSelectionIndex );
+        selectionModel()->select( newSelectionIndex, QItemSelectionModel::Select );
     }
 }
 
@@ -169,7 +197,7 @@ void Playlist::PrettyListView::selectSource()
         return;
 
     //get the track...
-    QModelIndex index = GroupingProxy::instance()->index( rows.at( 0 ) );
+    QModelIndex index = model()->index( rows.at( 0 ), 0 );
     Meta::TrackPtr track = index.data( Playlist::TrackRole ).value< Meta::TrackPtr >();
 
     //get multiSource capability:
@@ -196,7 +224,7 @@ Playlist::PrettyListView::scrollToActiveTrack()
         m_skipAutoScroll = false;
         return;
     }
-    QModelIndex activeIndex = model()->index( GroupingProxy::instance()->activeRow(), 0, QModelIndex() );
+    QModelIndex activeIndex = model()->index( m_topmostProxy->activeRow(), 0, QModelIndex() );
     if ( activeIndex.isValid() )
         scrollTo( activeIndex, QAbstractItemView::PositionAtCenter );
 }
@@ -214,7 +242,7 @@ Playlist::PrettyListView::showEvent( QShowEvent* event )
 {
     QTimer::singleShot( 0, this, SLOT( fixInvisible() ) );
 
-    QListView::showEvent( event ); 
+    QListView::showEvent( event );
 }
 
 // This method is a workaround for BUG 184714.
@@ -223,7 +251,7 @@ Playlist::PrettyListView::showEvent( QShowEvent* event )
 // Without this workaround the playlist stays invisible when the application is restored from the tray.
 // This is especially a problem with the Dynamic Playlist mode, which modifies the model without user interaction.
 //
-// The bug only seems to happen with Qt 4.5.x, so it might actually be a bug in Qt. 
+// The bug only seems to happen with Qt 4.5.x, so it might actually be a bug in Qt.
 void
 Playlist::PrettyListView::fixInvisible() //SLOT
 {
@@ -244,12 +272,7 @@ void
 Playlist::PrettyListView::contextMenuEvent( QContextMenuEvent* event )
 {
     DEBUG_BLOCK
-    QModelIndex filteredIndex = indexAt( event->pos() );
-    
-    //translate to real model as we might be looking at a filered list:
-    int sourceRow = NavigatorFilterProxyModel::instance()->rowToSource( filteredIndex.row() );
-
-    QModelIndex index = The::playlistModel()->index( sourceRow );
+    QModelIndex index = indexAt( event->pos() );
 
     if ( !index.isValid() )
         return;
@@ -295,7 +318,7 @@ Playlist::PrettyListView::dragMoveEvent( QDragMoveEvent* event )
         m_dropIndicator = visualRect( index );
     } else {
         // draw it on the bottom of the last item
-        index = model()->index( GroupingProxy::instance()->rowCount() - 1, 0, QModelIndex() );
+        index = model()->index( m_topmostProxy->rowCount() - 1, 0, QModelIndex() );
         m_dropIndicator = visualRect( index );
         m_dropIndicator = m_dropIndicator.translated( 0, m_dropIndicator.height() );
     }
@@ -364,6 +387,25 @@ Playlist::PrettyListView::keyPressEvent( QKeyEvent* event )
 void
 Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
 {
+
+
+    //first of all, if a left click, check if the delegate wants to do something about this click
+    if( event->button() == Qt::LeftButton )
+    {
+
+        //get the item that was clicked
+        QModelIndex index = indexAt( event->pos() );
+
+        //we need to translate the position of the click into something relative to the item that was clicked.
+        QRect itemRect = visualRect( index );
+        QPoint relPos =  event->pos() - itemRect.topLeft();
+        
+        if ( m_prettyDelegate->clicked( relPos, itemRect, index ) )
+            return;  //click already handled...
+
+    }
+
+    
     if ( mouseEventInHeader( event ) && ( event->button() == Qt::LeftButton ) )
     {
         m_mousePressInHeader = true;
@@ -382,6 +424,17 @@ Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
     else
     {
         m_mousePressInHeader = false;
+    }
+
+    if ( event->button() == Qt::MidButton )
+    {
+        KUrl url( QApplication::clipboard()->text() );
+        if ( url.isValid() )
+        {
+            QList<KUrl> list;
+            list.append( url );
+            The::playlistController()->insertOptioned( list, Playlist::AppendAndPlay );
+        }
     }
 
     // This should always be forwarded, as it is used to determine the offset
@@ -470,9 +523,9 @@ Playlist::PrettyListView::startDrag( Qt::DropActions supportedActions )
         qDebug() << "does play exist in renderer? " << ( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" )->elementExists( "load" ) );
         QModelIndexList indices = selectedIndexes();
 
-        QList<PopupDropperAction*> actions =  ViewCommon::actionsFor( this, &indices.first(), true );
+        QList<QAction*> actions =  ViewCommon::actionsFor( this, &indices.first(), true );
 
-        foreach( PopupDropperAction * action, actions )
+        foreach( QAction * action, actions )
             m_pd->addItem( The::popupDropperFactory()->createItem( action ), true );
 
         m_pd->show();
@@ -529,10 +582,7 @@ Playlist::PrettyListView::selectedRows() const
 {
     QList<int> rows;
     foreach( const QModelIndex &idx, selectedIndexes() )
-    {
-        int sourceRow = NavigatorFilterProxyModel::instance()->rowToSource( idx.row() );
-        rows.append( sourceRow );
-    }
+        rows.append( idx.row() );
     return rows;
 }
 
@@ -546,10 +596,10 @@ void Playlist::PrettyListView::newPalette( const QPalette & palette )
 void Playlist::PrettyListView::find( const QString &searchTerm, int fields, bool filter )
 {
     bool updateProxy = false;
-    if ( ( GroupingProxy::instance()->currentSearchFields() != fields ) || ( GroupingProxy::instance()->currentSearchTerm() != searchTerm ) )
+    if ( ( m_topmostProxy->currentSearchFields() != fields ) || ( m_topmostProxy->currentSearchTerm() != searchTerm ) )
         updateProxy = true;
 
-    int row = GroupingProxy::instance()->find( searchTerm, fields );
+    int row = m_topmostProxy->find( searchTerm, fields );
     if( row != -1 )
     {
         //select this track
@@ -587,14 +637,14 @@ void Playlist::PrettyListView::findNext( const QString & searchTerm, int fields 
     QList<int> selected = selectedRows();
 
     bool updateProxy = false;
-    if ( ( GroupingProxy::instance()->currentSearchFields() != fields ) || ( GroupingProxy::instance()->currentSearchTerm() != searchTerm ) )
+    if ( ( m_topmostProxy->currentSearchFields() != fields ) || ( m_topmostProxy->currentSearchTerm() != searchTerm ) )
         updateProxy = true;
 
     int currentRow = -1;
     if( selected.size() > 0 )
         currentRow = selected.last();
 
-    int row = GroupingProxy::instance()->findNext( searchTerm, currentRow, fields );
+    int row = m_topmostProxy->findNext( searchTerm, currentRow, fields );
     if( row != -1 )
     {
         //select this track
@@ -614,7 +664,7 @@ void Playlist::PrettyListView::findNext( const QString & searchTerm, int fields 
         emit( notFound() );
 
     if ( updateProxy )
-        NavigatorFilterProxyModel::instance()->filterUpdated();
+        m_topmostProxy->filterUpdated();
 }
 
 void Playlist::PrettyListView::findPrevious( const QString & searchTerm, int fields )
@@ -623,14 +673,14 @@ void Playlist::PrettyListView::findPrevious( const QString & searchTerm, int fie
     QList<int> selected = selectedRows();
 
     bool updateProxy = false;
-    if ( ( GroupingProxy::instance()->currentSearchFields() != fields ) || ( GroupingProxy::instance()->currentSearchTerm() != searchTerm ) )
+    if ( ( m_topmostProxy->currentSearchFields() != fields ) || ( m_topmostProxy->currentSearchTerm() != searchTerm ) )
         updateProxy = true;
 
-    int currentRow = GroupingProxy::instance()->totalLength();
+    int currentRow = m_topmostProxy->totalLength();
     if( selected.size() > 0 )
         currentRow = selected.first();
 
-    int row = GroupingProxy::instance()->findPrevious( searchTerm, currentRow, fields );
+    int row = m_topmostProxy->findPrevious( searchTerm, currentRow, fields );
     if( row != -1 )
     {
         //select this track
@@ -650,31 +700,32 @@ void Playlist::PrettyListView::findPrevious( const QString & searchTerm, int fie
         emit( notFound() );
 
     if ( updateProxy )
-        NavigatorFilterProxyModel::instance()->filterUpdated();
+        m_topmostProxy->filterUpdated();
 }
 
 void Playlist::PrettyListView::clearSearchTerm()
 {
     DEBUG_BLOCK
-            
+
     //We really do not want to reset the view to the top when the search/filter is cleared, so
     //we store the first shown row and scroll to that once the term is removed.
     QModelIndex index = indexAt( QPoint( 0, 0 ) );
 
-     //ah... but we want the source row and not the one reported by the filter model(s)
-    int row = NavigatorFilterProxyModel::instance()->rowToSource( index.row() );
+    //We don't want to mess around with source rows because this would break our wonderful
+    //lasagna code, but we do want to grab something unique that represents the row, like
+    //its unique 64-bit id.
+    quint64 id = m_topmostProxy->idAt( index.row() );
 
     debug() << "first row in filtered list: " << index.row();
-    debug() << "source row: " << row;
 
-    NavigatorFilterProxyModel::instance()->filterUpdated();
-    GroupingProxy::instance()->clearSearchTerm();
+    m_topmostProxy->filterUpdated();
+    m_topmostProxy->clearSearchTerm();
 
-    //now scroll to the selected row again
-
-    QModelIndex sourceIndex = model()->index( row, 0, QModelIndex() );
-    if ( sourceIndex.isValid() )
-        scrollTo( sourceIndex, QAbstractItemView::PositionAtTop );
+    //Now we scroll to the previously stored row again. Note that it's not the same row in
+    //the topmost model any more, so we need to grab it again using its id.
+    QModelIndex newIndex = model()->index( m_topmostProxy->rowForId( id ), 0, QModelIndex() );
+    if ( newIndex.isValid() )
+        scrollTo( newIndex, QAbstractItemView::PositionAtTop );
 }
 
 void Playlist::PrettyListView::startProxyUpdateTimeout()
@@ -690,26 +741,42 @@ void Playlist::PrettyListView::startProxyUpdateTimeout()
 void Playlist::PrettyListView::updateProxyTimeout()
 {
     DEBUG_BLOCK
-    NavigatorFilterProxyModel::instance()->filterUpdated();
+    m_topmostProxy->filterUpdated();
 }
 
 void Playlist::PrettyListView::showOnlyMatches( bool onlyMatches )
 {
-    NavigatorFilterProxyModel::instance()->setPassThrough( !onlyMatches );
+    m_topmostProxy->showOnlyMatches( onlyMatches );
 }
 
-void Playlist::PrettyListView::itemsAdded( int firstRow )
+void Playlist::PrettyListView::itemsAdded( const QModelIndex& parent, int firstRow, int lastRow )
 {
     DEBUG_BLOCK
+    Q_UNUSED( parent )
+    Q_UNUSED( lastRow )
 
-    QModelIndex index = model()->index( NavigatorFilterProxyModel::instance()->rowFromSource( firstRow ) , 0 );
+    QModelIndex index = model()->index( firstRow, 0);
     if( !index.isValid() )
         return;
 
     debug() << "index has row: " << index.row();
-    //scrollTo( firstItem/*, QAbstractItemView::PositionAtCenter*/ );
     scrollTo( index, QAbstractItemView::PositionAtCenter );
-    
+
+}
+
+void Playlist::PrettyListView::redrawActive()
+{
+    int activeRow = m_topmostProxy->activeRow();
+    QModelIndex index = model()->index( activeRow, 0, QModelIndex() );
+    update( index );
+}
+
+void Playlist::PrettyListView::playlistLayoutChanged()
+{
+    if ( LayoutManager::instance()->activeLayout().inlineControls() )
+        m_animationTimer->start();
+    else
+        m_animationTimer->stop();
 }
 
 

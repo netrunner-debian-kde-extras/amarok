@@ -1,26 +1,25 @@
-/*
-   Copyright (C) 2007-2009 Maximilian Kossick <maximilian.kossick@googlemail.com>
-             (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2007-2009 Maximilian Kossick <maximilian.kossick@googlemail.com>       *
+ * Copyright (c) 2007-2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>               *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "MemoryQueryMaker.h"
 #include "MemoryCustomValue.h"
 #include "MemoryFilter.h"
 #include "MemoryMatcher.h"
+#include "MemoryQueryMakerHelper.h"
 #include "Debug.h"
 
 #include <threadweaver/Job.h>
@@ -74,6 +73,7 @@ struct MemoryQueryMaker::Private {
     qint64 orderByField;
     bool orderDescending;
     bool orderByNumberField;
+    AlbumQueryMode albumQueryMode;
 };
 
 MemoryQueryMaker::MemoryQueryMaker( MemoryCollection *mc, const QString &collectionId )
@@ -115,6 +115,7 @@ MemoryQueryMaker::reset()
     d->orderByField = 0;
     d->orderDescending = false;
     d->orderByNumberField = false;
+    d->albumQueryMode = AllAlbums;
     return this;
 }
 
@@ -210,107 +211,6 @@ static inline QList<T> reverse(const QList<T> &l)
     return ret;
 }
 
-
-template <class PointerType>
-QList<PointerType>
-MemoryQueryMaker::orderListByName( const QList<PointerType> &list, qint64 value ) const
-{
-    QList<PointerType> resultList = list;
-    if( d->orderByField == value )
-    {
-        KSortableList<PointerType, QString> sortList;
-        foreach( PointerType pointer, list )
-        {
-            sortList.insert( pointer->name(), pointer );
-        }
-        sortList.sort();
-        QList<PointerType> tmpList;
-        typedef KSortableItem<PointerType,QString> SortItem;
-        foreach( SortItem item, sortList )
-        {
-           tmpList.append( item.second );
-        }
-        if( d->orderDescending )
-        {
-            //KSortableList uses qSort, which orders a list in ascending order
-            resultList = reverse<PointerType>( tmpList );
-        }
-        else
-        {
-            resultList = tmpList;
-        }
-    }
-    return resultList;
-}
-
-Meta::TrackList
-MemoryQueryMaker::orderListByString( const Meta::TrackList &tracks, qint64 value ) const
-{
-    Meta::TrackList resultList = tracks;
-    CustomReturnValue *crv = CustomValueFactory::returnValue( value );
-    if( crv )
-    {
-        KSortableList<Meta::TrackPtr, QString> sortList;
-        foreach( const Meta::TrackPtr &pointer, tracks )
-        {
-            sortList.insert( crv->value( pointer ), pointer );
-        }
-        sortList.sort();
-        Meta::TrackList tmpList;
-        typedef KSortableItem<Meta::TrackPtr,QString> SortItem;
-        foreach( SortItem item, sortList )
-        {
-           tmpList.append( item.second );
-        }
-        if( d->orderDescending )
-        {
-            //KSortableList uses qSort, which orders a list in ascending order
-            resultList = reverse<Meta::TrackPtr>( tmpList );
-        }
-        else
-        {
-            resultList = tmpList;
-        }
-    }
-    delete crv;
-    return resultList;
-}
-
-Meta::TrackList
-MemoryQueryMaker::orderListByNumber( const Meta::TrackList &tracks, qint64 value ) const
-{
-    Meta::TrackList resultList = tracks;
-    CustomReturnValue *crv = CustomValueFactory::returnValue( value );
-    if( crv )
-    {
-        KSortableList<Meta::TrackPtr, double> sortList;
-        foreach( const Meta::TrackPtr &pointer, tracks )
-        {
-            sortList.insert( crv->value( pointer ).toDouble(), pointer );
-        }
-        sortList.sort();
-        Meta::TrackList tmpList;
-        typedef KSortableItem<Meta::TrackPtr,double> SortItem;
-        foreach( SortItem item, sortList )
-        {
-           tmpList.append( item.second );
-        }
-        if( d->orderDescending )
-        {
-            //KSortableList uses qSort, which orders a list in ascending order
-            resultList = reverse<Meta::TrackPtr>( tmpList );
-        }
-        else
-        {
-            resultList = tmpList;
-        }
-    }
-    delete crv;
-    return resultList;
-}
-
-
-
 void
 MemoryQueryMaker::handleResult()
 {
@@ -334,9 +234,9 @@ MemoryQueryMaker::handleResult()
                 if( d-> orderByField )
                 {
                     if( d->orderByNumberField )
-                        tracks = orderListByNumber( tracks, d->orderByField );
+                        tracks = MemoryQueryMakerHelper::orderListByNumber( tracks, d->orderByField, d->orderDescending );
                     else
-                        tracks = orderListByString( tracks, d->orderByField );
+                        tracks = MemoryQueryMakerHelper::orderListByString( tracks, d->orderByField, d->orderDescending );
                 }
                 if( d->randomize )
                     d->sequence.randomize<Meta::TrackPtr>( tracks );
@@ -359,14 +259,24 @@ MemoryQueryMaker::handleResult()
         }
         case QueryMaker::Track :
         {
-            TrackList tracks = m_collection->trackMap().values();
+            TrackList tracks;
+
+            foreach( TrackPtr track, m_collection->trackMap().values() )
+            {
+                if( d->albumQueryMode == AllAlbums
+                    || ( d->albumQueryMode == OnlyCompilations && track->album()->isCompilation() )
+                    || ( d->albumQueryMode == OnlyNormalAlbums && !track->album()->isCompilation()) )
+                {
+                    tracks.append( track );
+                }
+            }
 
             if( d->orderByField )
             {
                 if( d->orderByNumberField )
-                    tracks = orderListByNumber( tracks, d->orderByField );
+                    tracks = MemoryQueryMakerHelper::orderListByNumber( tracks, d->orderByField, d->orderDescending );
                 else
-                    tracks = orderListByString( tracks, d->orderByField );
+                    tracks = MemoryQueryMakerHelper::orderListByString( tracks, d->orderByField, d->orderDescending );
             }
 
             emitProperResult<TrackPtr>( tracks );
@@ -374,65 +284,113 @@ MemoryQueryMaker::handleResult()
         }
         case QueryMaker::Album :
         {
-            AlbumList albums = m_collection->albumMap().values();
-            albums = orderListByName<Meta::AlbumPtr>( albums, Meta::valAlbum );
+
+            AlbumList albums;
+            foreach( AlbumPtr album, m_collection->albumMap().values() )
+            {
+                if( d->albumQueryMode == AllAlbums
+                    || ( d->albumQueryMode == OnlyCompilations && album->isCompilation() )
+                    || ( d->albumQueryMode == OnlyNormalAlbums && !album->isCompilation()) )
+                {
+                    albums.append( album );
+                    break;
+                }
+            }
+ 
+            albums = MemoryQueryMakerHelper::orderListByName<Meta::AlbumPtr>( albums, d->orderDescending );
 
             emitProperResult<AlbumPtr>( albums );
             break;
         }
         case QueryMaker::Artist :
         {
-            ArtistList artists = m_collection->artistMap().values();
-            artists = orderListByName<Meta::ArtistPtr>( artists, Meta::valArtist );
-
+            ArtistList artists;
+            foreach( ArtistPtr artist, m_collection->artistMap().values() )
+            {
+                TrackList tracks = artist->tracks();
+                foreach( TrackPtr track, tracks )
+                {
+                    if( d->albumQueryMode == AllAlbums
+                        || ( d->albumQueryMode == OnlyCompilations && track->album()->isCompilation() )
+                        || ( d->albumQueryMode == OnlyNormalAlbums && !track->album()->isCompilation()) )
+                    {
+                        artists.append( artist );
+                        break;
+                    }
+                }
+            }
+            artists = MemoryQueryMakerHelper::orderListByName<Meta::ArtistPtr>( artists, d->orderDescending );
             emitProperResult<ArtistPtr>( artists );
             break;
         }
         case QueryMaker::Composer :
         {
-            ComposerList composers = m_collection->composerMap().values();
-            composers = orderListByName<Meta::ComposerPtr>( composers, Meta::valComposer );
+            ComposerList composers;
+            foreach( ComposerPtr composer, m_collection->composerMap().values() )
+            {
+                TrackList tracks = composer->tracks();
+                foreach( TrackPtr track, tracks )
+                {
+                    if( d->albumQueryMode == AllAlbums
+                        || ( d->albumQueryMode == OnlyCompilations && track->album()->isCompilation() )
+                        || ( d->albumQueryMode == OnlyNormalAlbums && !track->album()->isCompilation()) )
+                    {
+                        composers.append( composer );
+                        break;
+                    }
+                }
+            }
+            composers = MemoryQueryMakerHelper::orderListByName<Meta::ComposerPtr>( composers, d->orderDescending );
 
             emitProperResult<ComposerPtr>( composers );
             break;
         }
         case QueryMaker::Genre :
         {
-            GenreList genres = m_collection->genreMap().values();
-            genres = orderListByName<Meta::GenrePtr>( genres, Meta::valGenre );
+            GenreList genres;
+            foreach( GenrePtr genre, m_collection->genreMap().values() )
+            {
+                TrackList tracks = genre->tracks();
+                foreach( TrackPtr track, tracks )
+                {
+                    if( d->albumQueryMode == AllAlbums
+                        || ( d->albumQueryMode == OnlyCompilations && track->album()->isCompilation() )
+                        || ( d->albumQueryMode == OnlyNormalAlbums && !track->album()->isCompilation()) )
+                    {
+                        genres.append( genre );
+                        break;
+                    }
+                }
+            }
+            
+            genres = MemoryQueryMakerHelper::orderListByName<Meta::GenrePtr>( genres, d->orderDescending );
 
             emitProperResult<GenrePtr>( genres );
             break;
         }
         case QueryMaker::Year :
         {
-            YearList years = m_collection->yearMap().values();
+            YearList years;
+            foreach( YearPtr year, m_collection->yearMap().values() )
+            {
+                TrackList tracks = year->tracks();
+                foreach( TrackPtr track, tracks )
+                {
+                    if( d->albumQueryMode == AllAlbums
+                        || ( d->albumQueryMode == OnlyCompilations && track->album()->isCompilation() )
+                        || ( d->albumQueryMode == OnlyNormalAlbums && !track->album()->isCompilation()) )
+                    {
+                        years.append( year );
+                        break;
+                    }
+                }
+            }
         
             //this a special case which requires a bit of code duplication
-            //years have to be ordered as numbers, bu orderListByNumber does not work for Meta::YearPtrs
+            //years have to be ordered as numbers, but orderListByNumber does not work for Meta::YearPtrs
             if( d->orderByField == Meta::valYear )
             {
-                KSortableList<Meta::YearPtr, double> sortList;
-                foreach( Meta::YearPtr pointer, years )
-                {
-                    sortList.insert( pointer->name().toDouble(), pointer );
-                }
-                sortList.sort();
-                QList<Meta::YearPtr> tmpList;
-                typedef KSortableItem<Meta::YearPtr,double> SortItem;
-                foreach( SortItem item, sortList )
-                {
-                    tmpList.append( item.second );
-                }
-                if( d->orderDescending )
-                {
-                    //KSortableList uses qSort, which orders a list in ascending order
-                    years = reverse<Meta::YearPtr>( tmpList );
-                }
-                else
-                {
-                    years = tmpList;                    
-                }
+                years = MemoryQueryMakerHelper::orderListByYear( years, d->orderDescending );
             }
 
             emitProperResult<YearPtr>( years );
@@ -466,9 +424,9 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
                 if( d->orderByField )
                 {
                     if( d->orderByNumberField )
-                        resultTracks = orderListByNumber( resultTracks, d->orderByField );
+                        resultTracks = MemoryQueryMakerHelper::orderListByNumber( resultTracks, d->orderByField, d->orderDescending );
                     else
-                        resultTracks = orderListByString( resultTracks, d->orderByField );
+                        resultTracks = MemoryQueryMakerHelper::orderListByString( resultTracks, d->orderByField, d->orderDescending );
                 }
                 if( d->randomize )
                     d->sequence.randomize<Meta::TrackPtr>( resultTracks );
@@ -496,9 +454,9 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
             if( d->orderByField )
             {
                 if( d->orderByNumberField )
-                    newResult = orderListByNumber( tracks, d->orderByField );
+                    newResult = MemoryQueryMakerHelper::orderListByNumber( tracks, d->orderByField, d->orderDescending );
                 else
-                    newResult = orderListByString( tracks, d->orderByField );
+                    newResult = MemoryQueryMakerHelper::orderListByString( tracks, d->orderByField, d->orderDescending );
             }
             else
                 newResult = tracks;
@@ -511,10 +469,15 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
             QSet<AlbumPtr> albumSet;
             foreach( TrackPtr track, tracks )
             {
-                albumSet.insert( track->album() );
+                if( d->albumQueryMode == AllAlbums
+                    || ( d->albumQueryMode == OnlyCompilations && track->album()->isCompilation() )
+                    || ( d->albumQueryMode == OnlyNormalAlbums && !track->album()->isCompilation()) )
+                {
+                    albumSet.insert( track->album() );
+                }
             }
             AlbumList albumList = albumSet.toList();
-            albumList = orderListByName<Meta::AlbumPtr>( albumList, Meta::valAlbum );
+            albumList = MemoryQueryMakerHelper::orderListByName<Meta::AlbumPtr>( albumList, d->orderDescending );
             emitProperResult<AlbumPtr>( albumList );
             break;
         }
@@ -523,10 +486,15 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
             QSet<ArtistPtr> artistSet;
             foreach( TrackPtr track, tracks )
             {
-                artistSet.insert( track->artist() );
+                if( d->albumQueryMode == AllAlbums
+                    || ( d->albumQueryMode == OnlyCompilations && track->album()->isCompilation() )
+                    || ( d->albumQueryMode == OnlyNormalAlbums && !track->album()->isCompilation()) )
+                {
+                    artistSet.insert( track->artist() );
+                }
             }
             ArtistList list = artistSet.toList();
-            list = orderListByName<Meta::ArtistPtr>( list, Meta::valArtist );
+            list = MemoryQueryMakerHelper::orderListByName<Meta::ArtistPtr>( list, d->orderDescending );
             emitProperResult<ArtistPtr>( list );
             break;
         }
@@ -535,10 +503,15 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
             QSet<GenrePtr> genreSet;
             foreach( TrackPtr track, tracks )
             {
-                genreSet.insert( track->genre() );
+                if( d->albumQueryMode == AllAlbums
+                    || ( d->albumQueryMode == OnlyCompilations && track->album()->isCompilation() )
+                    || ( d->albumQueryMode == OnlyNormalAlbums && !track->album()->isCompilation()) )
+                {
+                    genreSet.insert( track->genre() );
+                }
             }
             GenreList list = genreSet.toList();
-            list = orderListByName<Meta::GenrePtr>( list, Meta::valGenre );
+            list = MemoryQueryMakerHelper::orderListByName<Meta::GenrePtr>( list, d->orderDescending );
             emitProperResult<GenrePtr>( list );
             break;
         }
@@ -547,10 +520,15 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
             QSet<ComposerPtr> composerSet;
             foreach( TrackPtr track, tracks )
             {
-                composerSet.insert( track->composer() );
+                if( d->albumQueryMode == AllAlbums
+                    || ( d->albumQueryMode == OnlyCompilations && track->album()->isCompilation() )
+                    || ( d->albumQueryMode == OnlyNormalAlbums && !track->album()->isCompilation()) )
+                {
+                    composerSet.insert( track->composer() );
+                }
             }
             ComposerList list = composerSet.toList();
-            list = orderListByName<Meta::ComposerPtr>( list, Meta::valComposer );
+            list = MemoryQueryMakerHelper::orderListByName<Meta::ComposerPtr>( list, d->orderDescending );
             emitProperResult<ComposerPtr>( list );
             break;
         }
@@ -562,31 +540,9 @@ MemoryQueryMaker::handleResult( const TrackList &tracks )
                 yearSet.insert( track->year() );
             }
             YearList years = yearSet.toList();
-                        //this a special case which requires a bit of code duplication
-            //years have to be ordered as numbers, bu orderListByNumber does not work for Meta::YearPtrs
-            if( d->orderByField == Meta::valYear)
+            if( d->orderByField == Meta::valYear )
             {
-                KSortableList<Meta::YearPtr, double> sortList;
-                foreach( Meta::YearPtr pointer, years )
-                {
-                    sortList.insert( pointer->name().toDouble(), pointer );
-                }
-                sortList.sort();
-                QList<Meta::YearPtr> tmpList;
-                typedef KSortableItem<Meta::YearPtr,double> SortItem;
-                foreach( SortItem item, sortList )
-                {
-                    tmpList.append( item.second );
-                }
-                if( d->orderDescending )
-                {
-                    //KSortableList uses qSort, which orders a list in ascending order
-                    years = reverse<Meta::YearPtr>( tmpList );
-                }
-                else
-                {
-                    years = tmpList;                    
-                }
+                years = MemoryQueryMakerHelper::orderListByYear( years, d->orderDescending );
             }
 
             emitProperResult<YearPtr>( years );
@@ -903,6 +859,12 @@ MemoryQueryMaker::done( ThreadWeaver::Job *job )
     job->deleteLater();
     d->job = 0;
     emit queryDone();
+}
+
+QueryMaker * MemoryQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
+{
+    d->albumQueryMode = mode;
+    return this;
 }
 
 #include "MemoryQueryMaker.moc"

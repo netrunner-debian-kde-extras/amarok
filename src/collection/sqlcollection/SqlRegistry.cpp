@@ -1,20 +1,18 @@
-/* This file is part of the KDE project
-   Copyright (C) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #define DEBUG_PREFIX "SqlRegistry"
 
@@ -75,10 +73,13 @@ TrackPtr
 SqlRegistry::getTrack( const QStringList &rowData )
 {
     TrackId id( rowData[0].toInt(), rowData[1] );
+    QString uid = rowData[2];
     QMutexLocker locker( &m_trackMutex );
     QMutexLocker locker2( &m_uidMutex );
     if( m_trackMap.contains( id ) )
         return m_trackMap.value( id );
+    else if( m_uidMap.contains( uid ) )
+        return m_uidMap.value( uid );
     else
     {
         TrackPtr track( new SqlTrack( m_collection, rowData ) );
@@ -88,6 +89,38 @@ SqlRegistry::getTrack( const QStringList &rowData )
             m_uidMap.insert( KSharedPtr<SqlTrack>::staticCast( track )->uidUrl(), track );
         }
         return track;
+    }
+}
+
+void
+SqlRegistry::updateCachedUrl( const QPair<QString, QString> &oldnew )
+{
+    QMutexLocker locker( &m_trackMutex );
+    QMutexLocker locker2( &m_uidMutex );
+    int deviceid = MountPointManager::instance()->getIdForUrl( oldnew.first );
+    QString rpath = MountPointManager::instance()->getRelativePath( deviceid, oldnew.first );
+    TrackId id(deviceid, rpath);
+    if( m_trackMap.contains( id ) )
+    {
+        TrackPtr track = m_trackMap[id];
+        m_trackMap.remove( id );
+        int newdeviceid = MountPointManager::instance()->getIdForUrl( oldnew.second );
+        QString newrpath = MountPointManager::instance()->getRelativePath( newdeviceid, oldnew.second );
+        TrackId newid( newdeviceid, newrpath );
+        m_trackMap.insert( newid, track );
+    }
+}
+
+void
+SqlRegistry::updateCachedUid( const QString &oldUid, const QString &newUid )
+{
+    QMutexLocker locker( &m_trackMutex );
+    QMutexLocker locker2( &m_uidMutex );
+    if( m_uidMap.contains( oldUid ) )
+    {
+        TrackPtr track = m_uidMap[oldUid];
+        m_uidMap.remove( oldUid );
+        m_uidMap.insert( newUid, track );
     }
 }
 
@@ -123,10 +156,10 @@ SqlRegistry::checkUidExists( const QString &uid )
 }
 
 ArtistPtr
-SqlRegistry::getArtist( const QString &name, int id )
+SqlRegistry::getArtist( const QString &name, int id, bool refresh )
 {
     QMutexLocker locker( &m_artistMutex );
-    if( m_artistMap.contains( id ) )
+    if( m_artistMap.contains( id ) && !refresh )
         return m_artistMap.value( id );
     else
     {
@@ -146,7 +179,11 @@ SqlRegistry::getArtist( const QString &name, int id )
         }
 
         if( m_artistMap.contains( id ) )
+        {
+            if( refresh )
+                KSharedPtr<SqlArtist>::staticCast( m_artistMap.value( id ) )->updateData( m_collection, id, name );
             return m_artistMap.value( id );
+        }
 
         ArtistPtr artist( new SqlArtist( m_collection, id, name ) );
         m_artistMap.insert( id, artist );
@@ -155,10 +192,10 @@ SqlRegistry::getArtist( const QString &name, int id )
 }
 
 GenrePtr
-SqlRegistry::getGenre( const QString &name, int id )
+SqlRegistry::getGenre( const QString &name, int id, bool refresh )
 {
     QMutexLocker locker( &m_genreMutex );
-    if( m_genreMap.contains( id ) )
+    if( m_genreMap.contains( id ) && !refresh )
         return m_genreMap.value( id );
     else
     {
@@ -178,7 +215,11 @@ SqlRegistry::getGenre( const QString &name, int id )
         }
 
         if( m_genreMap.contains( id ) )
+        {
+            if( refresh )
+                KSharedPtr<SqlGenre>::staticCast( m_genreMap.value( id ) )->updateData( m_collection, id, name );
             return m_genreMap.value( id );
+        }
 
         GenrePtr genre( new SqlGenre( m_collection, id, name ) );
         m_genreMap.insert( id, genre );
@@ -187,10 +228,10 @@ SqlRegistry::getGenre( const QString &name, int id )
 }
 
 ComposerPtr
-SqlRegistry::getComposer( const QString &name, int id )
+SqlRegistry::getComposer( const QString &name, int id, bool refresh )
 {
     QMutexLocker locker( &m_composerMutex );
-    if( m_composerMap.contains( id ) )
+    if( m_composerMap.contains( id ) && !refresh )
         return m_composerMap.value( id );
     else
     {
@@ -210,7 +251,11 @@ SqlRegistry::getComposer( const QString &name, int id )
         }
 
         if( m_composerMap.contains( id ) )
+        {
+            if( refresh )
+                KSharedPtr<SqlComposer>::staticCast( m_composerMap.value( id ) )->updateData( m_collection, id, name );
             return m_composerMap.value( id );
+        }
 
         ComposerPtr composer( new SqlComposer( m_collection, id, name ) );
         m_composerMap.insert( id, composer );
@@ -219,10 +264,10 @@ SqlRegistry::getComposer( const QString &name, int id )
 }
 
 YearPtr
-SqlRegistry::getYear( const QString &name, int id )
+SqlRegistry::getYear( const QString &name, int id, bool refresh )
 {
     QMutexLocker locker( &m_yearMutex );
-    if( m_yearMap.contains( id ) )
+    if( m_yearMap.contains( id ) && !refresh )
         return m_yearMap.value( id );
     else
     {
@@ -242,7 +287,11 @@ SqlRegistry::getYear( const QString &name, int id )
         }
 
         if( m_yearMap.contains( id ) )
+        {
+            if( refresh )
+                KSharedPtr<SqlYear>::staticCast( m_yearMap.value( id ) )->updateData( m_collection, id, name );
             return m_yearMap.value( id );
+        }
 
         YearPtr year( new SqlYear( m_collection, id, name ) );
         m_yearMap.insert( id, year );
@@ -251,10 +300,10 @@ SqlRegistry::getYear( const QString &name, int id )
 }
 
 AlbumPtr
-SqlRegistry::getAlbum( const QString &name, int id, int artist )
+SqlRegistry::getAlbum( const QString &name, int id, int artist, bool refresh )
 {
     QMutexLocker locker( &m_albumMutex );
-    if( m_albumMap.contains( id ) )
+    if( m_albumMap.contains( id ) && !refresh )
         return m_albumMap.value( id );
     else
     {
@@ -282,7 +331,11 @@ SqlRegistry::getAlbum( const QString &name, int id, int artist )
         }
 
         if( m_albumMap.contains( id ) )
+        {
+            if( refresh )
+                KSharedPtr<SqlAlbum>::staticCast( m_albumMap.value( id ) )->updateData( m_collection, id, name, artist );
             return m_albumMap.value( id );
+        }
 
         AlbumPtr album( new SqlAlbum( m_collection, id, name, artist ) );
         m_albumMap.insert( id, album );

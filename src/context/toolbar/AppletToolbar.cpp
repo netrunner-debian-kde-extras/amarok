@@ -1,15 +1,18 @@
-/***************************************************************************
-* copyright            : (C) 2008 Leo Franchi <lfranchi@kde.org>         *
-****************************************************************************/
-
-/***************************************************************************
-*                                                                         *
-*   This program is free software; you can redistribute it and/or modify  *
-*   it under the terms of the GNU General Public License as published by  *
-*   the Free Software Foundation; either version 2 of the License, or     *
-*   (at your option) any later version.                                   *
-*                                                                         *
-***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "AppletToolbar.h"
 
@@ -58,6 +61,7 @@ Context::AppletToolbar::AppletToolbar( QGraphicsItem* parent )
     m_appletLayout->setAlignment( m_addItem, Qt::AlignRight );
     m_appletLayout->setContentsMargins( 3, 3, 3, 3 );
     m_appletLayout->setSpacing( 4 );
+
 }
 
 Context::AppletToolbar::~AppletToolbar()
@@ -71,29 +75,16 @@ Context::AppletToolbar::paint( QPainter * painter, const QStyleOptionGraphicsIte
     Q_UNUSED( widget )
 
     painter->setRenderHint( QPainter::Antialiasing );
-
     painter->save();
-    QPalette p;
-    painter->fillRect( boundingRect(), p.brush( QPalette::Window ) ); // remove white edges behind the toolbar
+
     QColor col = PaletteHandler::highlightColor();
     qreal radius = 6;
-    
-    QPainterPath outline;
-    outline.moveTo( 0, 0);
-    outline.lineTo( boundingRect().width(), 0 );
-    outline.lineTo( boundingRect().width(), boundingRect().height() - radius );
-    outline.quadTo( boundingRect().width(), boundingRect().height(),
-                    boundingRect().width() - radius, boundingRect().height() );
-    outline.lineTo( radius, boundingRect().height() );
-    outline.quadTo( 0, boundingRect().height() ,
-                    0, boundingRect().height() - radius );
-    outline.lineTo( 0, 0 );
 
-    painter->fillPath( outline, col );
+    QPainterPath outline;
+    outline.addRoundedRect( boundingRect(), radius, radius );
+    painter->fillPath( outline, QBrush( col ) );
 
     painter->restore();
-    
-
 }
 
 void

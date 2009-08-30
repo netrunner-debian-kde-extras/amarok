@@ -1,21 +1,18 @@
-/***************************************************************************
- *   Copyright (c) 2009  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
  
 #include "LayoutEditWidget.h"
 #include "TokenDropTarget.h"
@@ -24,6 +21,7 @@
 #include "Debug.h"
 
 #include <KHBox>
+#include <KMessageBox>
 
 #include <QCheckBox>
 #include <QSpinBox>
@@ -39,7 +37,7 @@ LayoutEditWidget::LayoutEditWidget( QWidget *parent )
     connect ( m_dragstack, SIGNAL( focussed(QWidget*) ), this, SIGNAL( focussed(QWidget*) ) );
     connect ( m_dragstack, SIGNAL( changed() ), this, SIGNAL( changed() ) );
     
-    m_showCoverCheckBox = new QCheckBox( i18n( "Show Cover" ) , this );
+    m_showCoverCheckBox = new QCheckBox( i18n( "Show cover" ) , this );
 }
 
 
@@ -50,10 +48,11 @@ LayoutEditWidget::~LayoutEditWidget()
 
 void LayoutEditWidget::readLayout( Playlist::LayoutItemConfig config )
 {
+    DEBUG_BLOCK
     int rowCount = config.rows();
 
     delete m_showCoverCheckBox;
-    m_showCoverCheckBox = new QCheckBox( i18n( "Show Cover" ) , this );
+    m_showCoverCheckBox = new QCheckBox( i18n( "Show cover" ) , this );
     m_showCoverCheckBox->setChecked( config.showCover() );
     connect ( m_showCoverCheckBox, SIGNAL( stateChanged( int ) ), this, SIGNAL( changed() ) );
 
@@ -72,11 +71,27 @@ void LayoutEditWidget::readLayout( Playlist::LayoutItemConfig config )
         for( int j = 0; j < elementCount; j++ )
         {
             Playlist::LayoutItemConfigRowElement element = rowConfig.element( j );
+            //check if the element has a valid value, will crash if trying to use it otherwise
+            debug() << "value: " << element.value();
+            if ( element.value()  == -1 )
+            {
+  
+                error() << "Invalid element value '" << element.value() << "' in playlist layout.";
+                KMessageBox::detailedError( this,
+                                            i18n( "Invalid playlist layout." ),
+                                            i18n( "Encountered an unknown element name while reading layout." ) );
+                m_dragstack->clear();
+                return;
+                
+            }
+            
             TokenWithLayout *token =  new TokenWithLayout( columnNames[element.value()], iconNames[element.value()], element.value() );
             token->setBold( element.bold() );
             token->setItalic( element.italic() );
             token->setAlignment( element.alignment() );
             token->setWidth( element.size() * 100.0 );
+            token->setPrefix( element.prefix() );
+            token->setSuffix( element.suffix() );
             m_dragstack->insertToken( token, i, j );
             // Do all modifications on the token above that line, otherwise the dialog will think it's been modified by the user
             connect ( token, SIGNAL( changed() ), this, SIGNAL( changed() ) );

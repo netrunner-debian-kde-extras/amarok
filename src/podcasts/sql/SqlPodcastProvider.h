@@ -1,20 +1,18 @@
-/* This file is part of the KDE project
-   Copyright (C) 2007 Bart Cerneels <bart.cerneels@kde.org>
-
-   This program is free software; you can redistribute it and/or
-   modify it under the terms of the GNU General Public License
-   as published by the Free Software Foundation; either version 2
-   of the License, or (at your option) any later version.
-
-   This program is distributed in the hope that it will be useful,
-   but WITHOUT ANY WARRANTY; without even the implied warranty of
-   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-   GNU General Public License for more details.
-
-   You should have received a copy of the GNU General Public License
-   along with this program; if not, write to the Free Software
-   Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA
-*/
+/****************************************************************************************
+ * Copyright (c) 2007 Bart Cerneels <bart.cerneels@kde.org>                             *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef SQLPODCASTPROVIDER_H
 #define SQLPODCASTPROVIDER_H
@@ -44,6 +42,8 @@ class SqlPodcastProvider : public PodcastProvider
         Meta::TrackPtr trackForUrl( const KUrl &url );
 
         QString prettyName() const { return i18n("Local Podcasts"); };
+        KIcon icon() const { return KIcon( "server-database" ); }
+
         int category() const { return (int)PlaylistManager::PodcastChannel; };
 
         Meta::PlaylistList playlists();
@@ -61,8 +61,8 @@ class SqlPodcastProvider : public PodcastProvider
         void configureProvider();
         void configureChannel( Meta::PodcastChannelPtr channel );
 
-        QList<PopupDropperAction *> episodeActions( Meta::PodcastEpisodeList );
-        QList<PopupDropperAction *> channelActions( Meta::PodcastChannelList );
+        QList<QAction *> episodeActions( Meta::PodcastEpisodeList );
+        QList<QAction *> channelActions( Meta::PodcastChannelList );
 
         //SqlPodcastProvider specific methods
         Meta::SqlPodcastChannelPtr podcastChannelForId( int podcastChannelDbId );
@@ -74,7 +74,7 @@ class SqlPodcastProvider : public PodcastProvider
         void deleteDownloadedEpisode( Meta::PodcastEpisodePtr episode );
         void slotUpdated();
 
-        void slotReadResult( PodcastReader *podcastReader, bool result );
+        void slotReadResult( PodcastReader *podcastReader );
         void update( Meta::SqlPodcastChannelPtr channel );
         void downloadEpisode( Meta::SqlPodcastEpisodePtr episode );
         void deleteDownloadedEpisode( Meta::SqlPodcastEpisodePtr episode );
@@ -105,12 +105,12 @@ class SqlPodcastProvider : public PodcastProvider
         QTimer *m_updateTimer;
         int m_updatingChannels;
 
-        PopupDropperAction * m_configureAction; //Configure a Channel
-        PopupDropperAction * m_deleteAction; //delete a downloaded Episode
-        PopupDropperAction * m_downloadAction;
-        PopupDropperAction * m_removeAction; //remove a subscription
-        PopupDropperAction * m_renameAction; //rename a Channel or Episode
-        PopupDropperAction * m_updateAction;
+        QAction * m_configureAction; //Configure a Channel
+        QAction * m_deleteAction; //delete a downloaded Episode
+        QAction * m_downloadAction;
+        QAction * m_removeAction; //remove a subscription
+        QAction * m_renameAction; //rename a Channel or Episode
+        QAction * m_updateAction;
 };
 
 #endif

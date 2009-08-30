@@ -1,22 +1,20 @@
-/***************************************************************************
- * Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>      *
- *                                                                         *
- * This program is free software; you can redistribute it and/or           *
- * modify it under the terms of the GNU General Public License as          *
- * published by the Free Software Foundation; either version 2 of          *
- * the License or (at your option) version 3 or any later version          *
- * accepted by the membership of KDE e.V. (or its successor approved       *
- * by the membership of KDE e.V.), which shall act as a proxy              *
- * defined in Section 14 of version 3 of the license.                      *
- *                                                                         *
- * This program is distributed in the hope that it will be useful,         *
- * but WITHOUT ANY WARRANTY; without even the implied warranty of          *
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the           *
- * GNU General Public License for more details.                            *
- *                                                                         *
- * You should have received a copy of the GNU General Public License       *
- * along with this program.  If not, see <http://www.gnu.org/licenses/>.   *
- **************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) version 3 or        *
+ * any later version accepted by the membership of KDE e.V. (or its successor approved  *
+ * by the membership of KDE e.V.), which shall act as a proxy defined in Section 14 of  *
+ * version 3 of the license.                                                            *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "MagnatuneSettingsModule.h"
 
@@ -47,6 +45,7 @@ MagnatuneSettingsModule::MagnatuneSettingsModule( QWidget *parent, const QVarian
     m_configDialog->passwordEdit->setEchoMode( QLineEdit::Password );
     connect ( m_configDialog->usernameEdit, SIGNAL( textChanged ( const QString & ) ), this, SLOT( settingsChanged() ) );
     connect ( m_configDialog->passwordEdit, SIGNAL( textChanged ( const QString & ) ), this, SLOT( settingsChanged() ) );
+    connect ( m_configDialog->emailEdit, SIGNAL( textChanged ( const QString & ) ), this, SLOT( settingsChanged() ) );
     connect ( m_configDialog->typeComboBox, SIGNAL( currentIndexChanged ( int ) ), this, SLOT( settingsChanged() ) );
     connect ( m_configDialog->isMemberCheckbox, SIGNAL( stateChanged ( int ) ), this, SLOT( settingsChanged() ) );
     connect ( m_configDialog->streamTypeComboBox, SIGNAL( currentIndexChanged ( int ) ), this, SLOT( settingsChanged() ) );
@@ -67,6 +66,7 @@ void MagnatuneSettingsModule::save()
     m_config.setMembershipType( m_configDialog->typeComboBox->currentText() );
     m_config.setUsername( m_configDialog->usernameEdit->text() );
     m_config.setPassword( m_configDialog->passwordEdit->text() );
+    m_config.setEmail( m_configDialog->emailEdit->text() );
 
 
     QString streamTypeString = m_configDialog->streamTypeComboBox->currentText();
@@ -91,6 +91,7 @@ void MagnatuneSettingsModule::load()
     m_configDialog->typeComboBox->setCurrentIndex( index );
     m_configDialog->usernameEdit->setText( m_config.username() );
     m_configDialog->passwordEdit->setText( m_config.password() );
+    m_configDialog->emailEdit->setText( m_config.email() );
 
     m_configDialog->streamTypeComboBox->setCurrentIndex( m_config.streamType() );
 

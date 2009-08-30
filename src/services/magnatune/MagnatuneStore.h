@@ -1,22 +1,18 @@
-/***************************************************************************
- *   Copyright (c) 2006, 2007                                              *
- *        Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                   *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.          *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2006,2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>               *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #ifndef AMAROKMAGNATUNESTORE_H
 #define AMAROKMAGNATUNESTORE_H
@@ -41,6 +37,8 @@
 #include <QPushButton>
 #include <kvbox.h>
 
+
+class MagnatuneInfoParser;
 
 class MagnatuneServiceFactory : public ServiceFactory
 {
@@ -77,7 +75,7 @@ public:
     /**
      * Destructor
      */
-    ~MagnatuneStore() { }
+    ~MagnatuneStore();
 
     void setMembership( const QString &type, const QString &username,  const QString &password );
 
@@ -106,12 +104,21 @@ public slots:
     void purchase( Meta::MagnatuneTrack * track );
 
     void purchase( Meta::MagnatuneAlbum * album );
+
+    void showFavoritesPage();
+    void showHomePage();
+    void showRecommendationsPage();
+
+    void addToFavorites( const QString &sku );
+    void removeFromFavorites( const QString &sku );
     
 private slots:
     /**
      * Slot called when the purchase album button is clicked. Starts a purchase
      */
     void purchase();
+
+    void purchase( const QString &sku );
     
     void purchaseCurrentTrackAlbum();
 
@@ -126,7 +133,7 @@ private slots:
      * Triggers a parse of the file to get the info added to the databse
      * @param downLoadJob The calling download Job
      */
-    void listDownloadComplete( KJob* downLoadJob);
+    void listDownloadComplete( KJob* downLoadJob );
 
 
     /**
@@ -166,7 +173,7 @@ private slots:
     void moodyTracksReady( Meta::TrackList tracks );
 
     void timestampDownloadComplete( KJob * job );
-
+    void favoritesResult( KJob* addToFavoritesJob );
 
 private:
     /**
@@ -212,6 +219,7 @@ private:
 
     KIO::FileCopyJob * m_listDownloadJob;
     KIO::StoredTransferJob* m_updateTimestampDownloadJob;
+    KIO::StoredTransferJob* m_favoritesJob;
 
     MagnatuneSqlCollection * m_collection;
 
@@ -226,6 +234,8 @@ private:
 
     qulonglong m_magnatuneTimestamp;
     ServiceSqlRegistry * m_registry;
+
+    MagnatuneInfoParser * m_magnatuneInfoParser;
 };
 
 

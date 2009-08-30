@@ -1,21 +1,18 @@
-/***************************************************************************
- *   Copyright (c) 2007  Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>    *
- *                                                                         *
- *   This program is free software; you can redistribute it and/or modify  *
- *   it under the terms of the GNU General Public License as published by  *
- *   the Free Software Foundation; either version 2 of the License, or     *
- *   (at your option) any later version.                                   *
- *                                                                         *
- *   This program is distributed in the hope that it will be useful,       *
- *   but WITHOUT ANY WARRANTY; without even the implied warranty of        *
- *   MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the         *
- *   GNU General Public License for more details.                          *
- *                                                                         *
- *   You should have received a copy of the GNU General Public License     *
- *   along with this program; if not, write to the                         *
- *   Free Software Foundation, Inc.,                                       *
- *   51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.         *
- ***************************************************************************/
+/****************************************************************************************
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
 
 #include "JamendoService.h"
 
@@ -30,6 +27,7 @@
 #include <KMenuBar>
 #include <KRun>
 #include <KShell>
+#include <KStandardDirs>
 #include <KTemporaryFile>
 #include <threadweaver/ThreadWeaver.h>
 
@@ -77,10 +75,14 @@ JamendoService::JamendoService( JamendoServiceFactory* parent, const QString & n
     setShortDescription(  i18n( "A site where artists can showcase their creations to the world" ) );
     setIcon( KIcon( "view-services-jamendo-amarok" ) );
 
+    setLongDescription( i18n( "Jamendo.com puts artists and music lovers in touch with each other. The sites allows artists to upload their own albums to share them with the world and users to download all of them for free. Listen to and download all Jamendo.com contents from within Amarok." ) );
+
+setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_jamendo.png" ) );
+
     ServiceMetaFactory * metaFactory = new JamendoMetaFactory( "jamendo", this );
     ServiceSqlRegistry * registry = new ServiceSqlRegistry( metaFactory );
     m_collection = new ServiceSqlCollection( "jamendo", "Jamendo.com", metaFactory, registry );
-
+    CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
     m_serviceready = true;
     emit( ready() );
 }
@@ -268,6 +270,7 @@ JamendoService::download()
 
 void JamendoService::download( JamendoAlbum * album )
 {
+    DEBUG_BLOCK
     if ( !m_polished )
         polish();
 
@@ -280,6 +283,7 @@ void JamendoService::download( JamendoAlbum * album )
         return;
 
     m_torrentFileName = tempFile.fileName();
+    debug() << "downloading " << album->oggTorrentUrl() << " to " << m_torrentFileName;
     m_torrentDownloadJob = KIO::file_copy( KUrl( album->oggTorrentUrl() ), KUrl( m_torrentFileName ), 0774 , KIO::Overwrite );
     connect( m_torrentDownloadJob, SIGNAL( result( KJob * ) ),
              this, SLOT( torrentDownloadComplete( KJob * ) ) );
@@ -299,7 +303,16 @@ JamendoService::torrentDownloadComplete(KJob * downloadJob)
 
     debug() << "Torrent downloaded";
 
-    KRun::runUrl( KShell::quoteArg( m_torrentFileName ), "application/x-bittorrent", 0, true );
+    //HACK: since all we get is actually the url of the really real torrent, pass the contents of the file to the system
+    //and not just the filename...
+
+    QFile torrentFile( m_torrentFileName );
+    if ( torrentFile.open( QFile::ReadOnly ) )
+    {
+        QString torrentLink = torrentFile.readAll();
+        KRun::runUrl( KShell::quoteArg( torrentLink ), "application/x-bittorrent", 0, false );
+        torrentFile.close();
+    }
     downloadJob->deleteLater();
     m_torrentDownloadJob = 0;
 }

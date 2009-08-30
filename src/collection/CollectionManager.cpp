@@ -1,20 +1,19 @@
-/*
- *  Copyright (c) 2007-2008 Maximilian Kossick <maximilian.kossick@googlemail.com>
- *
- *  This program is free software; you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation; either version 2 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program; if not, write to the Free Software
- *  Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
- */
+/****************************************************************************************
+ * Copyright (c) 2007-2008 Maximilian Kossick <maximilian.kossick@googlemail.com>       *
+ *                                                                                      *
+ * This program is free software; you can redistribute it and/or modify it under        *
+ * the terms of the GNU General Public License as published by the Free Software        *
+ * Foundation; either version 2 of the License, or (at your option) any later           *
+ * version.                                                                             *
+ *                                                                                      *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
+ * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ *                                                                                      *
+ * You should have received a copy of the GNU General Public License along with         *
+ * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
+ ****************************************************************************************/
+ 
 #define DEBUG_PREFIX "CollectionManager"
 
 #include "CollectionManager.h"
@@ -29,6 +28,7 @@
 #include "meta/stream/Stream.h"
 #include "PluginManager.h"
 #include "SqlStorage.h"
+#include "timecode/TimecodeTrackProvider.h"
 
 #include <QList>
 #include <QMetaEnum>
@@ -78,10 +78,12 @@ CollectionManager::CollectionManager()
     : QObject()
     , d( new Private )
 {
+    d->sqlDatabase = 0;
+    d->primaryCollection = 0;
     s_instance = this;
 
-
     qRegisterMetaType<TrackUrls>( "TrackUrls" );
+    qRegisterMetaType<ChangedTrackUrls>( "ChangedTrackUrls" );
     init();
 }
 
@@ -102,9 +104,6 @@ void
 CollectionManager::init()
 {
     DEBUG_BLOCK
-
-    d->sqlDatabase = 0;
-    d->primaryCollection = 0;
 
     KService::List plugins = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'collection'" );
     debug() << "Received [" << QString::number( plugins.count() ) << "] collection plugin offers";
@@ -135,6 +134,13 @@ CollectionManager::init()
 
     foreach( KService::Ptr service, plugins )
     {
+        if( service->property( "X-KDE-Amarok-name" ).toString() == "mysqlserver-collection" &&
+           !Amarok::config( "MySQL" ).readEntry( "UseServer", false ) )
+                continue;
+        if( service->property( "X-KDE-Amarok-name" ).toString() == "mysqle-collection" &&
+            Amarok::config( "MySQL" ).readEntry( "UseServer", false ) )
+                continue;
+
         Amarok::Plugin *plugin = PluginManager::createFromService( service );
         if ( plugin )
         {
@@ -152,6 +158,11 @@ CollectionManager::init()
             }
         }
     }
+
+    //register the timceode track provider now, as it needs to get added before loading
+    //the stored playlist...
+    TimecodeTrackProvider * provider = new TimecodeTrackProvider();
+    addTrackProvider( provider );
 }
 
 void
@@ -355,9 +366,7 @@ CollectionManager::trackForUrl( const KUrl &url )
     //might be a lastfm track, another stream
     //or a file which is not in any collection
     if( !url.isValid() )
-    {
         return Meta::TrackPtr( 0 );
-    }
 
     foreach( Amarok::TrackProvider *provider, d->trackProviders )
     {
@@ -375,11 +384,8 @@ CollectionManager::trackForUrl( const KUrl &url )
     if( url.protocol() == "file" && EngineController::canDecode( url ) )
     {
         KUrl cuesheet = MetaCue::Track::locateCueSheet( url );
-        if( !cuesheet.isEmpty() ) {
-            debug() << "Creating MetaCue::Track";
+        if( !cuesheet.isEmpty() )
             return Meta::TrackPtr( new MetaCue::Track( url, cuesheet ) );
-        }
-        debug() << "Creating MetaFile::Track";
         return Meta::TrackPtr( new MetaFile::Track( url ) );
     }
 
