@@ -6,6 +6,10 @@ amarok (2.1.60~git1677+g8e81132-0r1) UNRELEASED; urgency=low
     - Date:   Sun Aug 30 18:21:50 2009 +0200
   * Build depend on liblastfm-dev.
   * Bump Standards-Version to 3.8.3, no changes needed.
+  * Use kde dh sequence addon rather than debhelper/kde.mk:
+    - build depend on pkg-kde-tools 0.5;
+    - build depend on debhelper 7.3.16;
+    - adjust debian/rules;
 
  -- Modestas Vainius <modestas@vainius.eu>  Sun, 30 Aug 2009 20:05:35 +0300
 
