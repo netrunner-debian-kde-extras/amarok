@@ -1,11 +1,6 @@
-amarok (2.1.60~git1677+g8e81132-0r1) UNRELEASED; urgency=low
+amarok (2.1.80-0r1) UNRELEASED; urgency=low
 
-  * New upstream development snapshot (v2.1.1-1677-g8e81132):
-    - commit 8e811321bc6c04d9d593f1b5ec34da8fb924be7f
-    - Author: Bart Cerneels
-    - Date:   Sun Aug 30 18:21:50 2009 +0200
-    - Fixed bugs:
-      - imports score from Amarok 1.4 database (Closes: #540100);
+  * New upstream development release (2.2 Beta 1).
   * Build depend on liblastfm-dev (>= 0.3).
   * Bump Standards-Version to 3.8.3, no changes needed.
   * Use kde dh sequence addon rather than debhelper/kde.mk:
