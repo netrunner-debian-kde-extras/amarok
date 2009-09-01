@@ -6,6 +6,7 @@ usr/bin/amarokpkg
 usr/lib/kde4/amarok_appletscript_simple_javascript.so
 usr/lib/kde4/amarok_collection-audiocdcollection.so
 usr/lib/kde4/amarok_collection-daapcollection.so
+usr/lib/kde4/amarok_collection-ipodcollection.so
 usr/lib/kde4/amarok_collection-mtpcollection.so
 usr/lib/kde4/amarok_collection-mysqlecollection.so
 usr/lib/kde4/amarok_collection-mysqlservercollection.so

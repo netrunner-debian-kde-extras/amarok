@@ -1,4 +1,3 @@
-#usr/share/locale/*
 usr/share/icons/hicolor/*
 usr/share/kde4/apps/amarok/data/*
 usr/share/kde4/apps/amarok/icons/*
@@ -43,6 +42,7 @@ usr/share/kde4/services/amarok-scriptengine-applet-simple-javascript.desktop
 usr/share/kde4/services/amarok-scriptengine-runner-javascript.desktop
 usr/share/kde4/services/amarok_collection-audiocdcollection.desktop
 usr/share/kde4/services/amarok_collection-daapcollection.desktop
+usr/share/kde4/services/amarok_collection-ipodcollection.desktop
 usr/share/kde4/services/amarok_collection-mtpcollection.desktop
 usr/share/kde4/services/amarok_collection-mysqlecollection.desktop
 usr/share/kde4/services/amarok_collection-mysqlservercollection.desktop
@@ -64,3 +64,4 @@ usr/share/kde4/servicetypes/amarok_codecinstall.desktop
 usr/share/kde4/servicetypes/amarok_context_applet.desktop
 usr/share/kde4/servicetypes/amarok_data_engine.desktop
 usr/share/kde4/servicetypes/amarok_plugin.desktop
+usr/share/locale/*
