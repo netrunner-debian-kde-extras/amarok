@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -316,9 +316,9 @@ QString BrowserCategoryList::path()
     BrowserCategoryList *childList = dynamic_cast<BrowserCategoryList*>( m_currentCategory );
 
     if ( childList )
-        pathString += "/" + childList->path();
+        pathString += '/' + childList->path();
     else if ( m_currentCategory )
-        pathString += "/" + m_currentCategory->name();
+        pathString += '/' + m_currentCategory->name();
 
     debug() << "path: " << pathString;
     return pathString;

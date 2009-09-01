@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -78,7 +78,7 @@ void VideoItemButton::mouseDoubleClickEvent(QMouseEvent* )
 void VideoItemButton::myMenu(QPoint point)
 {
     DEBUG_BLOCK
-    KAction *appendAction = new KAction( KIcon( "media-track-add-amarok" ), i18n( "&Append to playlist" ), this );
+    KAction *appendAction = new KAction( KIcon( "media-track-add-amarok" ), i18n( "&Add to playlist" ), this );
     KAction *queueAction  = new KAction( KIcon( "media-track-queue-amarok" ), i18n( "&Queue" ), this );
     KAction *appendPlayAction   = new KAction( KIcon( "music-amarok" ), i18n( "Append and &Play" ), this );
     

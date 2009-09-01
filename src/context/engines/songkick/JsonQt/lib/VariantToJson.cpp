@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -25,7 +25,7 @@ namespace JsonQt
 		{
 			members.append(QString("\"%1\": %2").arg(it.key()).arg(parseElement(it.value())));
 		}
-		return "{" + members.join(", ") + "}";
+		return '{' + members.join(", ") + '}';
 	}
 	QString VariantToJson::parseElement(const QVariant& value)
 	{
@@ -48,7 +48,7 @@ namespace JsonQt
 			case QVariant::List:
 				return parseList(value.toList());
 			case QVariant::String:
-				return QString("\"%1\"").arg(value.toString().replace("\\", "\\\\").replace("\"", "\\\""));
+				return QString("\"%1\"").arg(value.toString().replace('\\', "\\\\").replace('"', "\\\""));
 			case QVariant::StringList:
 				return parseStringList(value.toStringList());
 			case QVariant::Invalid:
@@ -65,7 +65,7 @@ namespace JsonQt
 		{
 			parts.append(parseElement(variant));
 		}
-		return "[" + parts.join(", ") + "]";
+		return '[' + parts.join(", ") + ']';
 	}
 	
 	QString VariantToJson::parseStringList(const QStringList& stringList)

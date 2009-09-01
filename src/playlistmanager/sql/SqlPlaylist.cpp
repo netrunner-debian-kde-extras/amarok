@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -27,10 +27,12 @@
 #include <typeinfo>
 
 Meta::SqlPlaylist::SqlPlaylist( const QString & name, const Meta::TrackList
-        &tracks, Meta::SqlPlaylistGroupPtr parent, const QString &urlId )
+        &tracks, Meta::SqlPlaylistGroupPtr parent, PlaylistProvider *provider,
+        const QString &urlId )
     : m_dbId( -1 )
     , m_parent( parent )
     , m_tracks( tracks )
+    , m_provider( provider)
     , m_name( name )
     , m_description( QString() )
     , m_urlId( urlId )
@@ -39,8 +41,11 @@ Meta::SqlPlaylist::SqlPlaylist( const QString & name, const Meta::TrackList
     saveToDb();
 }
 
-Meta::SqlPlaylist::SqlPlaylist( const QStringList & resultRow, Meta::SqlPlaylistGroupPtr parent )
+Meta::SqlPlaylist::SqlPlaylist( const QStringList & resultRow,
+                                Meta::SqlPlaylistGroupPtr parent,
+                                PlaylistProvider *provider )
     : m_parent( parent )
+    , m_provider( provider)
     , m_tracksLoaded( false )
 {
     m_dbId = resultRow[0].toInt();

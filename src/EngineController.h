@@ -12,7 +12,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -43,7 +43,7 @@ namespace Meta { class MultiPlayableCapability; class MultiSourceCapability; }
 namespace Phonon { class AudioOutput; class MediaSource; class VolumeFaderEffect; }
 
 /**
- * A thin wrapper around Phonon that implements Amarok-specific funtionality like
+ * A thin wrapper around Phonon that implements Amarok-specific functionality like
  * replay gain, fade-out on stop and various track capabilities that affect
  * playback.
  */
@@ -142,7 +142,7 @@ public:
 
     /**
      * Phonon kequalizer support is required for Amarok to enable equalizer
-     * this method return whatever ponon support kequalizer effect.
+     * this method return whatever phonon support kequalizer effect.
      *
      * @return @c true if the phonon support kequalizer effect, @c false otherwise
      */
@@ -260,7 +260,7 @@ public slots:
     int setVolume( int percent );
 
     /**
-     * Mutes or unmuted playback
+     * Mutes or unmutes playback
      *
      * @param mute if @c true, audio output will be disabled; if @c false, audio output
      * will be enabled.

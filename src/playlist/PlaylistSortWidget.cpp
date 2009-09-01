@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -134,7 +134,7 @@ SortWidget::sortPath() const
         QString name( qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->name() );
         Qt::SortOrder sortOrder = qobject_cast< BreadcrumbItem * >( m_ribbon->itemAt( i )->widget() )->sortOrder();
         QString level = ( name == "Random" ) ? name : ( name + "_" + ( sortOrder ? "des" : "asc" ) );
-        path.append( ( i == m_ribbon->count() - 1 ) ? level : ( level + "-" ) );
+        path.append( ( i == m_ribbon->count() - 1 ) ? level : ( level + '-' ) );
     }
     return path;
 }

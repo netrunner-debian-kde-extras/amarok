@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -91,10 +91,10 @@ PlaylistManager::addProvider( PlaylistProvider * provider, int category )
     DEBUG_BLOCK
 
     bool newCategory = false;
-    if( !m_map.uniqueKeys().contains( category ) )
+    if( !m_providerMap.uniqueKeys().contains( category ) )
             newCategory = true;
 
-    m_map.insert( category, provider );
+    m_providerMap.insert( category, provider );
     connect( provider, SIGNAL(updated()), SLOT(slotUpdated( /*PlaylistProvider **/ )) );
 
     if( newCategory )
@@ -111,12 +111,12 @@ PlaylistManager::removeProvider( PlaylistProvider *provider )
     if ( !provider )
         return;
 
-    if ( m_map.values( provider->category() ).contains( provider ) )
+    if ( m_providerMap.values( provider->category() ).contains( provider ) )
     {
         debug() << "Providers of this category: " << providersForCategory( provider->category() ).count();
         debug() << "Removing provider from map";
-        int removed = m_map.remove( provider->category(), provider );
-        debug() << "Removed provider from map:" << ( m_map.contains( provider->category(), provider ) ? "false" : "true" );
+        int removed = m_providerMap.remove( provider->category(), provider );
+        debug() << "Removed provider from map:" << ( m_providerMap.contains( provider->category(), provider ) ? "false" : "true" );
         debug() << "Providers removed: " << removed;
 
         emit( providerRemoved( provider, provider->category() ) );
@@ -150,7 +150,7 @@ Meta::PlaylistList
 PlaylistManager::playlistsOfCategory( int playlistCategory )
 {
     DEBUG_BLOCK
-    QList<PlaylistProvider *> providers = m_map.values( playlistCategory );
+    QList<PlaylistProvider *> providers = m_providerMap.values( playlistCategory );
     QListIterator<PlaylistProvider *> i( providers );
 
     Meta::PlaylistList list;
@@ -165,13 +165,13 @@ PlaylistManager::playlistsOfCategory( int playlistCategory )
 PlaylistProviderList
 PlaylistManager::providersForCategory( int playlistCategory )
 {
-    return m_map.values( playlistCategory );
+    return m_providerMap.values( playlistCategory );
 }
 
 PlaylistProvider *
 PlaylistManager::playlistProvider(int category, QString name)
 {
-    QList<PlaylistProvider *> providers( m_map.values( category ) );
+    QList<PlaylistProvider *> providers( m_providerMap.values( category ) );
 
     QListIterator<PlaylistProvider *> i(providers);
     while( i.hasNext() )
@@ -425,17 +425,17 @@ PlaylistManager::moveTrack( Meta::PlaylistPtr playlist, int from, int to )
 }
 
 PlaylistProvider*
-PlaylistManager::getProviderForPlaylist( const Meta::PlaylistPtr &playlist )
+PlaylistManager::getProviderForPlaylist( const Meta::PlaylistPtr playlist )
 {
+    PlaylistProvider* provider = playlist->provider();
+    if( provider )
+        return provider;
+
     // Iteratively check all providers' playlists for ownership
-    foreach( PlaylistProvider* provider, m_map.values( UserPlaylist ) )
+    foreach( PlaylistProvider* provider, m_providerMap.values( UserPlaylist ) )
     {
-        Meta::PlaylistList plistlist = provider->playlists();
-        foreach( const Meta::PlaylistPtr plist, plistlist )
-        {
-            if( plist == playlist )
+        if( provider->playlists().contains( playlist ) );
                 return provider;
-        }
     }
     return 0;
 }
@@ -476,6 +476,19 @@ PlaylistManager::trackActions( const Meta::PlaylistPtr playlist, int trackIndex 
         actions << provider->trackActions( playlist, trackIndex );
 
     return actions;
+}
+
+void
+PlaylistManager::completePodcastDownloads()
+{
+    foreach( PlaylistProvider *prov, providersForCategory( PodcastChannel ) )
+    {
+        PodcastProvider *podcastProvider = dynamic_cast<PodcastProvider *>( prov );
+        if( !podcastProvider )
+            continue;
+
+        podcastProvider->completePodcastDownloads();
+    }
 }
 
 #include "PlaylistManager.moc"

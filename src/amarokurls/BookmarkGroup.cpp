@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -26,13 +26,13 @@
 BookmarkGroup::BookmarkGroup( const QStringList & dbResultRow, BookmarkGroupPtr parent )
     : BookmarkViewItem()
     , m_parent( parent )
+    , m_customType()
     , m_hasFetchedChildGroups( false )
     , m_hasFetchedChildPlaylists( false )
 {
     m_dbId = dbResultRow[0].toInt();
     m_name = dbResultRow[2];
     m_description = dbResultRow[3];
-    m_customType = QString();
 }
 
 BookmarkGroup::BookmarkGroup( const QString & name, BookmarkGroupPtr parent )
@@ -40,8 +40,8 @@ BookmarkGroup::BookmarkGroup( const QString & name, BookmarkGroupPtr parent )
     , m_dbId( -1 )
     , m_parent( parent )
     , m_name( name )
-    , m_description( QString() )
-    , m_customType( QString() )
+    , m_description()
+    , m_customType()
     , m_hasFetchedChildGroups( false )
     , m_hasFetchedChildPlaylists( false )
 {

@@ -10,7 +10,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -235,7 +235,7 @@ LastFmService::init()
 
     QString authToken =  md5( ( m_userName + md5( password.toUtf8() ) ).toUtf8() );
 
-    // now authenticate w/ last.fm and get our session key if we dont have one
+    // now authenticate w/ last.fm and get our session key if we don't have one
     if( sessionKey.isEmpty() )
     {
         debug() << "got no saved session key, authenticating with last.fm";
@@ -270,7 +270,7 @@ LastFmService::init()
     Dynamic::SimilarArtistsBiasFactory* similarF = new Dynamic::SimilarArtistsBiasFactory();
     Dynamic::CustomBias::registerNewBiasFactory( similarF );
 
-    // disable till i figure out how to get what I want from last.fm
+    // disabled until I figure out how to get what I want from last.fm
     //Dynamic::WeeklyTopBiasFactory* weeklyF = new Dynamic::WeeklyTopBiasFactory();
     //Dynamic::CustomBias::registerNewBiasFactory( weeklyF );
     
@@ -657,6 +657,3 @@ Amarok::Collection * LastFmService::collection()
 {
     return m_collection;
 }
-
-
-

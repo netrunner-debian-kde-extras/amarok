@@ -9,7 +9,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -231,8 +231,8 @@ WikipediaApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
         if ( m_current == data[ "page" ].toString() && !m_gotMessage)
             return;
         
-        // save last page, usefull when u where reading but the song change
-        if ( m_current != "" )
+        // save last page, useful when you are reading but the song changes
+        if ( !m_current.isEmpty() )
         {
             m_historyBack.push_front( m_current );
             while ( m_historyBack.size() > 20 )

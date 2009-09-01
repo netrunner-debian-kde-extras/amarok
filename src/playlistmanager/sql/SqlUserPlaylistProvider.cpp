@@ -9,7 +9,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -49,7 +49,7 @@ SqlUserPlaylistProvider::SqlUserPlaylistProvider()
 {
     checkTables();
     m_root = Meta::SqlPlaylistGroupPtr( new Meta::SqlPlaylistGroup( "",
-            Meta::SqlPlaylistGroupPtr() ) );
+            Meta::SqlPlaylistGroupPtr(), this ) );
 }
 
 SqlUserPlaylistProvider::~SqlUserPlaylistProvider()
@@ -100,10 +100,7 @@ SqlUserPlaylistProvider::slotRename()
                 i18n("Enter new name for playlist:"), playlist->name(),
                                                    &ok );
     if ( ok )
-    {
         playlist->setName( newName.trimmed() );
-        emit( updated() );
-    }
 }
 
 void
@@ -160,7 +157,8 @@ SqlUserPlaylistProvider::trackActions( Meta::PlaylistPtr playlist, int trackInde
     {
         m_removeTrackAction = new QAction(
                     KIcon( "media-track-remove-amarok" ),
-                    i18n( "Remove From Playlist" ),
+                    i18nc( "Remove a track from a saved playlist", "Remove From \"%1\"" )
+                        .arg( playlist->name() ),
                     this
                 );
         m_removeTrackAction->setProperty( "popupdropper_svg_id", "delete" );
@@ -190,10 +188,12 @@ SqlUserPlaylistProvider::save( const Meta::TrackList &tracks, const QString& nam
 {
     DEBUG_BLOCK
     debug() << "saving " << tracks.count() << " tracks to db with name" << name;
-    Meta::SqlPlaylistPtr sqlPlaylist = Meta::SqlPlaylistPtr( new Meta::SqlPlaylist( name, tracks,
-            Meta::SqlPlaylistGroupPtr() ) );
+    Meta::SqlPlaylistPtr sqlPlaylist = Meta::SqlPlaylistPtr(
+            new Meta::SqlPlaylist( name, tracks,
+                Meta::SqlPlaylistGroupPtr(),
+                this )
+            );
     reloadFromDb();
-    emit updated();
 
     return Meta::PlaylistPtr::dynamicCast( sqlPlaylist ); //assumes insertion in db was successful!
 }
@@ -243,7 +243,10 @@ SqlUserPlaylistProvider::import( const QString& fromLocation )
 
     Meta::SqlPlaylistPtr sqlPlaylist =
         Meta::SqlPlaylistPtr( new Meta::SqlPlaylist( playlist->name(), tracks,
-                                                     Meta::SqlPlaylistGroupPtr(), fromLocation ) );
+                                                     Meta::SqlPlaylistGroupPtr(),
+                                                     this,
+                                                     fromLocation )
+                              );
     reloadFromDb();
     emit updated();
 
@@ -281,7 +284,7 @@ SqlUserPlaylistProvider::group( const QString &name )
     }
 
     debug() << "Creating a new group " << name;
-    group = new Meta::SqlPlaylistGroup( name, m_root );
+    group = new Meta::SqlPlaylistGroup( name, m_root, this );
     group->save();
 
     return group;

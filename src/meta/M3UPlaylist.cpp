@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -22,6 +22,7 @@
 #include "PlaylistManager.h"
 #include "PlaylistFileSupport.h"
 
+#include <KMimeType>
 #include <KUrl>
 
 #include <QFile>
@@ -77,6 +78,13 @@ M3UPlaylist::M3UPlaylist( const KUrl &url )
 
 M3UPlaylist::~M3UPlaylist()
 {
+}
+
+QString
+M3UPlaylist::description() const
+{
+    KMimeType::Ptr mimeType = KMimeType::mimeType( "audio/x-mpegurl" );
+    return QString( "%1 (%2)").arg( mimeType->name(), mimeType->mainExtension() );
 }
 
 bool

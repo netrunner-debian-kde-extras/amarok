@@ -1,0 +1,89 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Zlatko Popov <zlatkopopov@fsa-bg.org>, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2009-06-28 11:45+0200\n"
+"PO-Revision-Date: 2009-08-10 10:13+0300\n"
+"Last-Translator: Zlatko Popov <zlatkopopov@fsa-bg.org>\n"
+"Language-Team: Bulgarian <dict@fsa-bg.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 1.0\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: simplejavascriptapplet.cpp:512
+msgid "i18n() takes at least one argument"
+msgstr "Трябва поне един аргумент за i18n()"
+
+#: simplejavascriptapplet.cpp:528
+msgid "i18nc() takes at least two arguments"
+msgstr "Трябват поне два аргумента за i18nc()"
+
+#: simplejavascriptapplet.cpp:545
+msgid "i18np() takes at least two arguments"
+msgstr "Трябват поне два аргумента за i18np()"
+
+#: simplejavascriptapplet.cpp:562
+msgid "i18ncp() takes at least three arguments"
+msgstr "Трябват поне три аргумента за i18ncp()"
+
+#: simplejavascriptapplet.cpp:580
+msgid "dataEngine() takes one argument"
+msgstr "Трябва поне един аргумент за dataEngine()"
+
+#: simplejavascriptapplet.cpp:590 simplejavascriptapplet.cpp:615
+#: simplejavascriptapplet.cpp:782
+msgid "Could not extract the AppletObject"
+msgstr "Невъзможно извличане на AppletObject"
+
+#: simplejavascriptapplet.cpp:595 simplejavascriptapplet.cpp:620
+#: simplejavascriptapplet.cpp:787
+msgid "Could not extract the Applet"
+msgstr "Аплетът не може да бъде извлечен"
+
+#: simplejavascriptapplet.cpp:605
+msgid "service() takes two arguments"
+msgstr "Трябват поне два аргумента за service()"
+
+#: simplejavascriptapplet.cpp:633
+msgid "loadui() takes one argument"
+msgstr "Трябва поне един аргумент за loadui()"
+
+#: simplejavascriptapplet.cpp:639
+#, kde-format
+msgid "Unable to open '%1'"
+msgstr "Невъзможно отваряне на \"%1\""
+
+#: simplejavascriptapplet.cpp:679 simplejavascriptapplet.cpp:712
+msgid "Constructor takes at least 1 argument"
+msgstr "Трябва поне един аргумент за конструктора"
+
+#: simplejavascriptapplet.cpp:764
+msgid "CreateWidget takes one argument"
+msgstr "Трябва поне един аргумент за CreateWidget"
+
+#: simplejavascriptapplet.cpp:772
+msgid "The parent must be a QGraphicsWidget"
+msgstr "Родителят трябва да е QGraphicsWidget"
+
+#: simplejavascriptapplet.cpp:817
+#, kde-format
+msgid "This operation was not supported, %1"
+msgstr "Тази операция не се поддържа, %1"
+
+#: simplejavascriptapplet.cpp:824
+msgid "print() takes one argument"
+msgstr "Трябва поне един аргумент за print()"
+
+#: qtgui/linearlayout.cpp:70
+msgid "LinearLayout requires a parent"
+msgstr "Трябва родител за LinearLayout"
+
+#: qtgui/linearlayout.cpp:76
+msgid "The parent must be a QGraphicsLayoutItem"
+msgstr "Рдоителят трябва да е QGraphicsLayoutItem"

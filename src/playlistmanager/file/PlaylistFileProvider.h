@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -34,12 +34,12 @@ class PlaylistFileProvider : public UserPlaylistProvider
 
     public:
         PlaylistFileProvider();
-        ~PlaylistFileProvider();
+        virtual ~PlaylistFileProvider();
 
-        QString prettyName() const;
+        virtual QString prettyName() const;
         virtual KIcon icon() const { return KIcon( "folder-documents" ); }
 
-        int category() const { return PlaylistManager::UserPlaylist; }
+        virtual int category() const { return PlaylistManager::UserPlaylist; }
 
         virtual Meta::PlaylistList playlists();
 
@@ -53,7 +53,7 @@ class PlaylistFileProvider : public UserPlaylistProvider
         virtual Meta::PlaylistPtr save( const Meta::TrackList &tracks,
                                         const QString &name );
 
-        bool import( const KUrl &path );
+        virtual bool import( const KUrl &path );
 
         virtual bool isWritable() { return true; }
         virtual void rename( Meta::PlaylistPtr playlist, const QString &newName );

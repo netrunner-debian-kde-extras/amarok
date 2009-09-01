@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -400,8 +400,8 @@ void VideoclipEngine::resultDailymotion( KJob* job )
         
         // Get all the information
         item->title = xmlNode.firstChildElement( "title" ).text();
-        item->url = xmlNode.firstChildElement( "link" ).text().split( "?" )[ 0 ];
-        item->coverurl = xmlNode.firstChildElement( "media:thumbnail" ).attribute( "url" ).split( "?" )[ 0 ].replace( "/320x240/", "/160x120/" );
+        item->url = xmlNode.firstChildElement( "link" ).text().split( '?' )[ 0 ];
+        item->coverurl = xmlNode.firstChildElement( "media:thumbnail" ).attribute( "url" ).split( '?' )[ 0 ].replace( "/320x240/", "/160x120/" );
         item->length = xmlNode.firstChildElement( "media:group" ).firstChildElement( "media:content" ).attribute( "duration" ).toInt();
         item->duration  = time.addSecs( item->length ).toString( "mm:ss" );
         item->views = xmlNode.firstChildElement( "dm:views" ).text();

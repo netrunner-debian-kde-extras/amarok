@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -39,6 +39,7 @@ class FastForwardWorker : public ThreadWeaver::Job
         void setHostname( const QString &host ) { m_hostname = host; }
         void setUsername( const QString &user ) { m_username = user; }
         void setPassword( const QString &pass ) { m_password = pass; }
+        void setSmartMatch( const bool match ) { m_smartMatch = match; }
         void setImportArtwork( const bool import ) { m_importArtwork = import; }
         void setImportArtworkDir( const QString &dir ) { m_importArtworkDir = dir; }
 
@@ -51,6 +52,13 @@ class FastForwardWorker : public ThreadWeaver::Job
         void importError( QString ); 
         void showMessage( QString );
         void trackAdded( Meta::TrackPtr );
+        void trackDiscarded( QString );
+        void trackMatchFound( Meta::TrackPtr, QString );
+        void trackMatchMultiple( Meta::TrackList, QString );
+
+    private slots:
+        void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
+        void queryDone();
 
     private:
         QSqlDatabase databaseConnection();
@@ -65,8 +73,12 @@ class FastForwardWorker : public ThreadWeaver::Job
         QString m_hostname;
         QString m_username;
         QString m_password;
+        bool m_smartMatch;
         bool m_importArtwork;
         QString m_importArtworkDir;
+
+        Meta::TrackList m_matchTracks;
+        bool m_queryRunning;
 };
 
 #endif // multiple inclusion guard

@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -45,9 +45,9 @@ ViewUrlGenerator::createAmarokUrl()
     QString filterExpr = playlistWidget->searchWidget()->currentFilter();
     QString onlyMatches = playlistWidget->searchWidget()->onlyMatches() ? "true" : "false";
     QString sortPath = playlistWidget->sortWidget()->sortPath();
-        QString prettySortPath = playlistWidget->sortWidget()->prettySortPath();
+    QString prettySortPath = playlistWidget->sortWidget()->prettySortPath();
     QString groupingCategory = playlistWidget->groupingAction()->currentGroupingCategory();
-        QString prettyGroupingCategory = playlistWidget->groupingAction()->prettyGroupingCategory().remove( "&" );
+    QString prettyGroupingCategory = playlistWidget->groupingAction()->prettyGroupingCategory().remove( '&' );
     QString layout = LayoutManager::instance()->activeLayoutName();
     debug()<< "The filter is "<< filterExpr;
     debug()<< "OnlyMatches is "<< onlyMatches;

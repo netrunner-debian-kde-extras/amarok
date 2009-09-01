@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -685,7 +685,7 @@ PlaylistBrowserNS::PodcastModel::createCommonActions( QModelIndexList indices )
     {
         m_appendAction = new QAction(
             KIcon( "media-track-add-amarok" ),
-            i18n( "&Append to Playlist" ),
+            i18n( "&Add to Playlist" ),
             this
         );
         m_appendAction->setProperty( "popupdropper_svg_id", "append" );
@@ -697,7 +697,7 @@ PlaylistBrowserNS::PodcastModel::createCommonActions( QModelIndexList indices )
         m_loadAction = new QAction(
             KIcon( "folder-open" ),
             i18nc( "Replace the currently loaded tracks with these",
-            "&Load" ),
+            "&Replace Playlist" ),
             this
         );
         m_loadAction->setProperty( "popupdropper_svg_id", "load" );

@@ -9,7 +9,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -66,29 +66,32 @@ public:
     * @param autoAppend Should this playlist automatically append itself to the playlist when loaded (useful when loading a remote url as it
     * allows the caller to do it in a "one shot" way and not have to worry about waiting untill download and parsing is completed.
     */
-    XSPFPlaylist( const KUrl &url, bool autoAppend = false );
+    explicit XSPFPlaylist( const KUrl &url, bool autoAppend = false );
     XSPFPlaylist( Meta::TrackList list );
 
     ~XSPFPlaylist();
 
     virtual QString name() const { return title(); }
     virtual QString prettyName() const { return name(); }
+    virtual QString description() const;
 
     /** returns all tracks in this playlist */
     TrackList tracks();
+    virtual void addTrack( Meta::TrackPtr track, int position = -1 );
+    virtual void removeTrack( int position );
 
     /* convenience functions */
     QString title() const;
-    QString creator();
-    QString annotation();
-    KUrl info();
-    KUrl location();
-    QString identifier();
-    KUrl image();
-    QDateTime date();
-    KUrl license();
-    KUrl::List attribution();
-    KUrl link();
+    QString creator() const;
+    QString annotation() const;
+    KUrl info() const;
+    KUrl location() const;
+    QString identifier() const;
+    KUrl image() const;
+    QDateTime date() const;
+    KUrl license() const;
+    KUrl::List attribution() const ;
+    KUrl link() const;
 
     /* EditablePlaylistCapability virtual functions */
     void setTitle( const QString &title );

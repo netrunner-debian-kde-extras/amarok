@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -39,9 +39,9 @@ namespace Meta
     {
         public:
             SqlPlaylistGroup( const QStringList &dbResultRow,
-                    Meta::SqlPlaylistGroupPtr parent );
+                    Meta::SqlPlaylistGroupPtr parent, PlaylistProvider *provider );
             SqlPlaylistGroup( const QString &name,
-                    Meta::SqlPlaylistGroupPtr parent );
+                    Meta::SqlPlaylistGroupPtr parent, PlaylistProvider *provider );
 
             ~SqlPlaylistGroup();
 
@@ -73,6 +73,8 @@ namespace Meta
             QString m_name;
             QString m_description;
             Meta::SqlPlaylistGroupPtr m_parent;
+
+            PlaylistProvider *m_provider;
     };
 }
 

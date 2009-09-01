@@ -187,7 +187,6 @@ set(libconfigdialog_SRCS
     configdialog/dialogs/OsdConfig.cpp
     configdialog/dialogs/PlaybackConfig.cpp
     configdialog/dialogs/ServiceConfig.cpp
-    configdialog/dialogs/DatabaseConfig.cpp
 )
 
 kde4_add_ui_files(libconfigdialog_SRCS
@@ -195,7 +194,6 @@ kde4_add_ui_files(libconfigdialog_SRCS
     configdialog/dialogs/GeneralConfig.ui
     configdialog/dialogs/OsdConfig.ui
     configdialog/dialogs/PlaybackConfig.ui
-    configdialog/dialogs/DatabaseConfig.ui
 )
 
 set(libbrowserframework_SRCS
@@ -761,7 +759,8 @@ install(FILES dbus/org.freedesktop.MediaPlayer.root.xml
 
 
 install(FILES data/DefaultPlaylistLayouts.xml
-              data/DefaultDockLayout
+              data/DefaultDockLayout32
+              data/DefaultDockLayout64
               services/InfoParserLoading.html
               browsers/hover_info_template.html
               DESTINATION ${DATA_INSTALL_DIR}/amarok/data)

@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -74,11 +74,18 @@ FastForwardImporter::import()
     m_worker->setHostname( host );
     m_worker->setUsername( m_config->databaseUser() );
     m_worker->setPassword( m_config->databasePass() );
+    m_worker->setSmartMatch( m_config->smartMatch() );
     m_worker->setImportArtwork( m_config->importArtwork() );
     m_worker->setImportArtworkDir( m_config->importArtworkDir() );
 
     connect( m_worker, SIGNAL( trackAdded( Meta::TrackPtr ) ), 
              this, SIGNAL( trackAdded( Meta::TrackPtr ) ), Qt::QueuedConnection );
+    connect( m_worker, SIGNAL( trackDiscarded( QString ) ),
+             this, SIGNAL( trackDiscarded( QString ) ), Qt::QueuedConnection );
+    connect( m_worker, SIGNAL( trackMatchFound( Meta::TrackPtr, QString ) ),
+             this, SIGNAL( trackMatchFound( Meta::TrackPtr, QString ) ), Qt::QueuedConnection );
+    connect( m_worker, SIGNAL( trackMatchMultiple( Meta::TrackList, QString ) ),
+             this, SIGNAL( trackMatchMultiple( Meta::TrackList, QString ) ), Qt::QueuedConnection );
     connect( m_worker, SIGNAL( importError( QString ) ),
              this, SIGNAL( importError( QString ) ), Qt::QueuedConnection );
     connect( m_worker, SIGNAL( done(ThreadWeaver::Job*) ), 
