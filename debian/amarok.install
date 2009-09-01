@@ -1,6 +1,5 @@
 debian/icons/*                          /usr/share/pixmaps
 usr/bin/amarok
-usr/bin/amarok_afttagger
 usr/bin/amarokmp3tunesharmonydaemon
 usr/bin/amarokpkg
 usr/lib/kde4/amarok_appletscript_simple_javascript.so

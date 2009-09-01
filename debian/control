@@ -67,7 +67,7 @@ Package: amarok-utils
 Section: utils
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
-Replaces: amarok (<< 2.0.96-2)
+Replaces: amarok (<< 2.1.80-1~)
 Description: utilities for Amarok media player
  This package contains command line utilities that are typically used by Amarok
  media player but might also be useful on systems without Amarok installed.
@@ -76,6 +76,8 @@ Description: utilities for Amarok media player
  Currently the package contains the following utilities:
    - amarokcollectionscanner - scans audio files, collects information from
      file tags and prints it in the structured XML format.
+   - amarok_afttagger - a helper program which writes/removes custom tags
+     to/from media files required for embedded "Amarok File Tracking".
 
 Package: amarok-dbg
 Priority: extra

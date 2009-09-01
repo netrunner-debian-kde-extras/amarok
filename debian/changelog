@@ -20,6 +20,8 @@ amarok (2.1.80-0r2) UNRELEASED; urgency=low
   * Update install files.
   * Drop libamarok_service_liblastfm.so from lintian-overrides. It is no longer
     shipped inside amarok source.
+  * Move amarok_afttagger to amarok-utils package. Add appropriate Replaces and
+    adjust Description accordingly.
 
  -- Modestas Vainius <modestas@vainius.eu>  Sun, 30 Aug 2009 20:05:35 +0300
 
