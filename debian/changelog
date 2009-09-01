@@ -1,4 +1,4 @@
-amarok (2.1.80-0r1) UNRELEASED; urgency=low
+amarok (2.1.80-0r2) UNRELEASED; urgency=low
 
   * New upstream development release (2.2 Beta 1).
   * Build depend on liblastfm-dev (>= 0.3).
