@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -250,7 +250,7 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists()
 {
     DEBUG_BLOCK
 
-    const QString currentVersion = "1";
+    const QString currentVersion( '1' );
 
     QFile file( Amarok::saveLocation() + "dynamic.xml" );
     if( !file.open( QIODevice::ReadWrite ) )
@@ -273,6 +273,7 @@ PlaylistBrowserNS::DynamicModel::loadPlaylists()
         error() << QString().sprintf( "Line: %d, Column %d", errorLine, errorColumn );
 
         m_savedPlaylistsRoot = m_savedPlaylists.createElement( "biasedPlaylists" );
+        m_savedPlaylistsRoot.setAttribute( "version", currentVersion );
         m_savedPlaylists.appendChild( m_savedPlaylistsRoot );
         return;
     }

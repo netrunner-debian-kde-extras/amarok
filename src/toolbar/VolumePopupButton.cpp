@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -75,7 +75,7 @@ void VolumePopupButton::engineVolumeChanged( int newVolume )
     else
         setIcon( KIcon( "audio-volume-high" ) );
 
-    m_volumeLabel->setText( QString::number( newVolume ) + "%" );
+    m_volumeLabel->setText( QString::number( newVolume ) + '%' );
     m_volumeSlider->setValue( newVolume );
 
     //make sure to uncheck mute toolbar when moving slider
@@ -117,5 +117,4 @@ void VolumePopupButton::wheelEvent( QWheelEvent * event )
     volume = qBound( 0, volume + event->delta() / 40 , 100 );
     ec->setVolume( volume );
 }
-
 #include "VolumePopupButton.moc"

@@ -9,7 +9,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -368,9 +368,9 @@ Reader::parseSongList( const QByteArray &data )
                 if ( QString( tag ) == "miid" )
                     itemId = QString::number( longData );
                 if ( QString( tag ) == "astm" )
-                    songTime = tagLength ? longData/1000 : 0;
+                    songTime = longData/1000;
                 if ( QString( tag ) == "astn" )
-                    trackNumber = tagLength ? longData : 0;
+                    trackNumber = longData;
                 break;
             }
             case LONGLONG:
@@ -472,7 +472,7 @@ Reader::addTrack( const QString& itemId, const QString& title, const QString& ar
     track->setLength( songTime );
     track->setTrackNumber( trackNumber );
     track->setComment( comment );
-    track->setComment( composer );
+    track->setComposer( composer );
 
     DaapAlbumPtr albumPtr;
     if ( m_albumMap.contains( album ) )
@@ -591,6 +591,7 @@ Reader::parse( QDataStream &raw, uint containerLength, bool first )
                 qint64 longlongData;
                 raw >> longlongData; DEBUGTAG( longlongData )
                 addElement( childMap, tag, QVariant( longlongData ) );
+                break;
             }
             case STRING:
             {

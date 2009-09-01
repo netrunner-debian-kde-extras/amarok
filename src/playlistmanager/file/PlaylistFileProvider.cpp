@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -27,11 +27,13 @@
 #include "playlist/PlaylistModelStack.h"
 #include "StatusBar.h"
 
-#include <QString>
-
+#include <KDialog>
 #include <KInputDialog>
 #include <KLocale>
 #include <KUrl>
+
+#include <QLabel>
+#include <QString>
 
 PlaylistFileProvider::PlaylistFileProvider()
  : UserPlaylistProvider()
@@ -58,7 +60,7 @@ PlaylistFileProvider::PlaylistFileProvider()
         }
 
         if( !groups.isEmpty() && playlist->isWritable() )
-            playlist->setGroups( groups.split( ",",  QString::SkipEmptyParts ) );
+            playlist->setGroups( groups.split( ',',  QString::SkipEmptyParts ) );
 
         m_playlists << Meta::PlaylistPtr::dynamicCast( playlist );
     }
@@ -198,14 +200,26 @@ void
 PlaylistFileProvider::rename( Meta::PlaylistPtr playlist, const QString &newName )
 {
     DEBUG_BLOCK
-    Q_UNUSED(playlist);
-    Q_UNUSED(newName);
+    playlist->setName( newName );
 }
 
 void
 PlaylistFileProvider::deletePlaylists( Meta::PlaylistList playlistList )
 {
     DEBUG_BLOCK
+    KDialog dialog( The::mainWindow() );
+    dialog.setCaption( i18n( "Confirm Delete" ) );
+    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
+    QLabel label( i18np( "Are you sure you want to delete this playlist?",
+                         "Are you sure you want to delete these %1 playlist files?",
+                         playlistList.count() )
+                    , &dialog
+                  );
+    dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from disk." ) );
+    dialog.setMainWidget( &label );
+    if( dialog.exec() != QDialog::Accepted )
+        return;
+
     foreach( Meta::PlaylistPtr playlist, playlistList )
     {
         Meta::PlaylistFilePtr playlistFile = Meta::PlaylistFilePtr::dynamicCast( playlist );

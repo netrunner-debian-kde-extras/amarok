@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -70,7 +70,7 @@ class PlaylistManager : public QObject
         /**
          * @returns all available categories registered at that moment
          */
-        QList<int> availableCategories() { return m_map.uniqueKeys(); };
+        QList<int> availableCategories() { return m_providerMap.uniqueKeys(); };
 
         /**
          * @returns A translated string to identify the category of the Playlist. Always a plural form.
@@ -164,7 +164,7 @@ class PlaylistManager : public QObject
          *  Retrieves the provider owning the given playlist
          *  @arg playlist the playlist whose provider we want
          */
-        PlaylistProvider* getProviderForPlaylist( const Meta::PlaylistPtr &playlist );
+        PlaylistProvider* getProviderForPlaylist( const Meta::PlaylistPtr playlist );
 
         /**
          *  Checks if the provider to whom this playlist belongs supports writing
@@ -177,6 +177,8 @@ class PlaylistManager : public QObject
         QList<QAction *> playlistActions( const Meta::PlaylistList lists );
         QList<QAction *> trackActions( const Meta::PlaylistPtr playlist,
                                                   int trackIndex );
+
+        void completePodcastDownloads();
 
     public slots:
         void saveCurrentPlaylist();
@@ -203,7 +205,7 @@ class PlaylistManager : public QObject
         UserPlaylistProvider *m_defaultUserPlaylistProvider;
         PlaylistFileProvider *m_playlistFileProvider;
 
-        QMultiMap<int, PlaylistProvider*> m_map; //Map PlaylistCategories to providers
+        QMultiMap<int, PlaylistProvider*> m_providerMap; //Map PlaylistCategories to providers
         QMap<int, QString> m_customCategories;
 
         QMap<KJob *, Meta::PlaylistFilePtr> m_downloadJobMap;

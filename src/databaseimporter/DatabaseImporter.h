@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -82,10 +82,14 @@ class DatabaseImporter : public QObject
         void importError( QString );
         void showMessage( QString );
         void trackAdded( Meta::TrackPtr );
+        void trackDiscarded( QString );
+        void trackMatchFound( Meta::TrackPtr, QString );
+        void trackMatchMultiple( Meta::TrackList, QString );
 
     protected slots:
         void importingFinished();
         void trackImported( Meta::TrackPtr track );
+        void trackMatched( Meta::TrackPtr track, QString oldUrl );
 
     protected:
         /**

@@ -12,7 +12,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -61,14 +61,6 @@
 #include "widgets/Splitter.h"
 //#include "mediabrowser.h"
 
-#include <QCheckBox>
-#include <QDesktopServices>
-#include <QDesktopWidget>
-#include <QDockWidget>
-#include <QList>
-#include <QSizeGrip>
-#include <QVBoxLayout>
-
 #include <KAction>          //m_actionCollection
 #include <KActionCollection>
 #include <KApplication>     //kapp
@@ -85,6 +77,15 @@
 #include <kabstractfilewidget.h>
 
 #include <plasma/plasma.h>
+
+#include <QCheckBox>
+#include <QDesktopServices>
+#include <QDesktopWidget>
+#include <QDockWidget>
+#include <QList>
+#include <QSizeGrip>
+#include <QSysInfo>
+#include <QVBoxLayout>
 
 #ifdef Q_WS_X11
 #include <fixx11h.h>
@@ -237,6 +238,7 @@ MainWindow::init()
     m_newToolbar->setMovable ( true );
 
     addToolBar( Qt::TopToolBarArea, m_newToolbar );
+    m_newToolbar->hide();
 
 
     PERF_LOG( "Create sidebar" )
@@ -886,7 +888,7 @@ MainWindow::createMenus()
     m_settingsMenu->addSeparator();
 #endif
 
-    // Add equalizer action - a list with all equalizer presets avaiable
+    // Add equalizer action - a list with all equalizer presets available
     m_settingsMenu->addAction( Amarok::actionCollection()->action("equalizer_mode") );
     m_settingsMenu->addSeparator();
 
@@ -964,7 +966,7 @@ void MainWindow::engineStateChanged( Phonon::State state, Phonon::State oldState
     debug() << "Phonon state: " << state;
 
     Meta::TrackPtr track = The::engineController()->currentTrack();
-    //track is 0 if the engien state is Empty. we check that in the switch
+    //track is 0 if the engine state is Empty. we check that in the switch
     switch( state )
     {
     case Phonon::StoppedState:
@@ -1109,7 +1111,14 @@ void MainWindow::restoreLayout()
     {
 
         const KUrl url( KStandardDirs::locate( "data", "amarok/data/" ) );
-        QFile defaultFile( url.path() + "DefaultDockLayout" );
+
+        QString defaultLayoutFile = "DefaultDockLayout32";
+        if( QSysInfo::WordSize == 64 )
+            defaultLayoutFile = "DefaultDockLayout64";
+
+        debug() << "Loading default layout: " << defaultLayoutFile;
+            
+        QFile defaultFile( url.path() + defaultLayoutFile );
 
         if ( defaultFile.open( QIODevice::ReadOnly ) )
         {
@@ -1121,13 +1130,8 @@ void MainWindow::restoreLayout()
     }
 }
 
-
-
 namespace The {
     MainWindow* mainWindow() { return MainWindow::s_instance; }
 }
-
-
-
 
 #include "MainWindow.moc"

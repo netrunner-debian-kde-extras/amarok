@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -85,6 +85,9 @@ FastForwardImporterConfig::FastForwardImporterConfig( QWidget *parent )
 
     connect( m_connectionCombo, SIGNAL( currentIndexChanged(int) ), SLOT( connectionChanged(int) ) );
     connectionChanged( m_connectionCombo->currentIndex() ); // Make sure we sync the UI as appropriate
+
+    m_smartMatchCheck = new QCheckBox( i18n("Match tracks by meta tags"), this );
+    m_smartMatchCheck->setChecked( true );
 
     m_importArtworkCheck = new QCheckBox( i18n("Import downloaded artwork"), this );
     m_importArtworkCheck->setChecked( true );

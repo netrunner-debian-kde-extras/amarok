@@ -9,7 +9,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -65,7 +65,7 @@ ViewUrlRunner::run( AmarokUrl url )
 
         QString sortPath = args.value( "sort" );
 
-        QStringList levels = sortPath.split( "-" );
+        QStringList levels = sortPath.split( '-' );
         foreach( QString level, levels )
         {
             if( level == QString( "Random" ) )
@@ -73,7 +73,7 @@ ViewUrlRunner::run( AmarokUrl url )
                 playlistWidget->sortWidget()->addLevel( level );
                 break;
             }
-            QStringList levelParts = level.split( "_" );
+            QStringList levelParts = level.split( '_' );
             if( levelParts.count() > 2 )
                 warning() << "Playlist view URL parse error: Invalid sort level " << level;
             if( levelParts.at( 1 ) == QString( "asc" ) )

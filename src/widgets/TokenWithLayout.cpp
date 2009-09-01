@@ -9,7 +9,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -239,7 +239,7 @@ void TokenWithLayout::setPrefix( const QString& string )
     if ( m_prefix == string )
         return;
     if ( string == i18n( "[prefix]" ) )
-        m_prefix = QString();
+        m_prefix.clear();
     else
         m_prefix = string;
     emit changed();
@@ -250,7 +250,7 @@ void TokenWithLayout::setSuffix( const QString& string )
     if ( m_suffix == string )
         return;
     if ( string == i18n( "[suffix]" ) )
-        m_suffix = QString();
+        m_suffix.clear();
     else
         m_suffix = string;
     emit changed();

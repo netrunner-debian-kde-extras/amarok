@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -33,6 +33,7 @@
 #include <kurl.h>
 
 class QTextStream;
+class PlaylistProvider;
 
 namespace Meta
 {
@@ -67,6 +68,8 @@ namespace Meta
             virtual QString name() const = 0;
             virtual QString prettyName() const = 0;
             virtual QString description() const { return QString(); }
+
+            virtual PlaylistProvider *provider() const { return 0; }
 
             /**override showing just the filename */
             virtual void setName( const QString &name ) { m_name = name; }

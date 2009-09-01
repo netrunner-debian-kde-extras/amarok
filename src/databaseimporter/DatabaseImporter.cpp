@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -39,6 +39,7 @@ DatabaseImporter::DatabaseImporter( QObject *parent )
     connect( this, SIGNAL( importSucceeded() ), SLOT( importingFinished() ) );
     connect( this, SIGNAL( importFailed() ), SLOT( importingFinished() ) );
     connect( this, SIGNAL( trackAdded( Meta::TrackPtr ) ), SLOT( trackImported( Meta::TrackPtr ) ) );
+    connect( this, SIGNAL( trackMatchFound( Meta::TrackPtr, QString ) ), SLOT( trackMatched( Meta::TrackPtr, QString ) ) );
 }
 
 DatabaseImporter::~DatabaseImporter()
@@ -73,6 +74,13 @@ void
 DatabaseImporter::trackImported( Meta::TrackPtr track )
 {
     Q_UNUSED( track )
+    ++m_count;
+}
+
+void DatabaseImporter::trackMatched( Meta::TrackPtr track, QString oldUrl )
+{
+    Q_UNUSED( track )
+    Q_UNUSED( oldUrl )
     ++m_count;
 }
 

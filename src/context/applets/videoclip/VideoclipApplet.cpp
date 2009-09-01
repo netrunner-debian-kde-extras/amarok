@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -335,7 +335,7 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
 		else if ( data.contains( "message" ) )
 		{
             //if nothing found, we collapse and inform user
-            m_headerText->setText( i18n( "Video Clip " ) + ":" + i18n( " No information found..." ) );
+            m_headerText->setText( i18n( "Video Clip " ) + ':' + i18n( " No information found..." ) );
             update();
 			setBusy( false );
             m_widget->hide();
@@ -355,7 +355,7 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
             for (int i=0; i< data.size(); i++ )
             {
                 VideoInfo *item = data[ QString ("item:" )+QString().setNum(i) ].value<VideoInfo *>() ;
-                if( item->url != "" ) // prevent some weird stuff ...
+                if( !( item->url.isEmpty() ) ) // prevent some weird stuff ...
                 {
 
                     VideoItemButton *vidButton = new VideoItemButton();

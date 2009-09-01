@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Pulic License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -19,6 +19,8 @@
 
 #include "Playlist.h"
 // #include "playlistmanager/sql/SqlPlaylistGroup.h"
+
+class PlaylistProvider;
 
 namespace Meta
 {
@@ -40,8 +42,10 @@ class SqlPlaylist : public Playlist
     public:
         //SqlPlaylist( int id );
         SqlPlaylist( const QString &name, const TrackList &tracks,
-                SqlPlaylistGroupPtr parent, const QString &urlId = QString() );
-        SqlPlaylist( const QStringList & resultRow, SqlPlaylistGroupPtr parent );
+                SqlPlaylistGroupPtr parent, PlaylistProvider *provider,
+                const QString &urlId = QString() );
+        SqlPlaylist( const QStringList & resultRow, SqlPlaylistGroupPtr parent,
+                     PlaylistProvider *provider );
 
         ~SqlPlaylist();
 
@@ -49,6 +53,9 @@ class SqlPlaylist : public Playlist
         virtual QString name() const { return m_name; }
         virtual QString prettyName() const { return m_name; }
         virtual QString description() const { return m_description; }
+
+        virtual PlaylistProvider *provider() const { return m_provider; }
+
         virtual void setName( const QString &name );
 
         virtual QStringList groups();
@@ -80,6 +87,7 @@ class SqlPlaylist : public Playlist
         int m_dbId;
         Meta::SqlPlaylistGroupPtr m_parent;
         Meta::TrackList m_tracks;
+        PlaylistProvider *m_provider;
         QString m_name;
         QString m_description;
         QString m_urlId;
