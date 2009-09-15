@@ -9,7 +9,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -19,8 +19,8 @@
  * http://www.trolltech.com/products/qt/gplexception/                                   *
  ****************************************************************************************/
 
-#ifndef QTSCRIPTEXTENSIONS_GLOBAL_H
-#define QTSCRIPTEXTENSIONS_GLOBAL_H
+#ifndef SCRIPTENGINE_BACKPORTGLOBAL_H
+#define SCRIPTENGINE_BACKPORTGLOBAL_H
 
 #include <QtCore/QSharedData>
 
@@ -344,4 +344,4 @@ inline QScriptValue wrapGVPointer(QScriptEngine *eng, T *item)
 
 #endif // QGRAPHICSITEM_H
 
-#endif // QTSCRIPTEXTENSIONS_GLOBAL_H
+#endif // SCRIPTENGINE_BACKPORTGLOBAL_H

@@ -10,7 +10,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -19,17 +19,14 @@
 #ifndef AMAROK_COLLECTION_TREE_ITEM_DELEGATE_H
 #define AMAROK_COLLECTION_TREE_ITEM_DELEGATE_H
 
-
 #include <QAction>
-#include <QStyledItemDelegate>
 #include <QFont>
+#include <QPersistentModelIndex>
+#include <QRect>
+#include <QStyledItemDelegate>
 #include <QTreeView>
 
-//Please leave the include style of this item as it is, as the "modern" inlcude style breaks
-//build on *ubunt KDE 4.2.x.
-#include <kwidgetitemdelegate.h>
-
-class CollectionTreeItemDelegate : public KWidgetItemDelegate
+class CollectionTreeItemDelegate : public QStyledItemDelegate
 {
     public:
         CollectionTreeItemDelegate( QTreeView *view );
@@ -38,18 +35,14 @@ class CollectionTreeItemDelegate : public KWidgetItemDelegate
         void paint( QPainter *painter, const QStyleOptionViewItem &option, const QModelIndex &index ) const;
         QSize sizeHint( const QStyleOptionViewItem &option, const QModelIndex &index ) const;
 
-    protected:
-        virtual QList<QWidget*> createItemWidgets() const;
-        virtual void updateItemWidgets( const QList<QWidget*> widgets,
-                                        const QStyleOptionViewItem &option,
-                                        const QPersistentModelIndex &index ) const;
+        static QRect decoratorRect( const QModelIndex &index );
 
     private:
-        QStyledItemDelegate m_styledDelegate;
-
         QTreeView *m_view;
         QFont m_bigFont;
         QFont m_smallFont;
+
+        static QHash<QPersistentModelIndex, QRect> s_indexDecoratorRects;
 };
 
 #endif

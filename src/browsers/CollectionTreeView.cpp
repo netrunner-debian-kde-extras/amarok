@@ -11,7 +11,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -24,6 +24,7 @@
 #include "Debug.h"
 #include "CollectionLocation.h"
 #include "CollectionManager.h"
+#include "browsers/CollectionTreeItem.h"
 #include "browsers/CollectionTreeItemModel.h"
 #include "context/ContextView.h"
 #include "GlobalCollectionActions.h"
@@ -96,9 +97,9 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     connect( &m_clickTimer, SIGNAL( timeout() ), this, SLOT( slotClickTimeout() ) );
 }
 
-void CollectionTreeView::setModel(QAbstractItemModel * model)
+void CollectionTreeView::setModel( QAbstractItemModel * model )
 {
-    m_treeModel = qobject_cast<CollectionTreeItemModelBase *> ( model );
+    m_treeModel = qobject_cast<CollectionTreeItemModelBase*>( model );
     if( !m_treeModel )
         return;
 
@@ -667,9 +668,7 @@ CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem*> &items ) con
 {
     DEBUG_BLOCK
     if( !items.count() )
-    {
         return;
-    }
 
     //Create query based upon items, ensuring that if a parent and child are both selected we ignore the child
     QueryMaker *qm = createMetaQueryFromItems( items, true );
@@ -678,9 +677,8 @@ CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem*> &items ) con
 
     CollectionTreeItem *item = items.toList().first();
     while( item->isDataItem() )
-    {
         item = item->parent();
-    }
+
     Amarok::Collection *coll = item->parentCollection();
     CollectionLocation *location = coll->location();
     if( !location->isOrganizable() )
@@ -754,9 +752,7 @@ CollectionTreeView::removeTracks( const QSet<CollectionTreeItem*> &items ) const
 
     //copied from organizeTracks. create a method for this somewhere
     if( !items.count() )
-    {
         return;
-    }
 
     //Create query based upon items, ensuring that if a parent and child are both selected we ignore the child
     QueryMaker *qm = createMetaQueryFromItems( items, true );
@@ -765,27 +761,23 @@ CollectionTreeView::removeTracks( const QSet<CollectionTreeItem*> &items ) const
 
     CollectionTreeItem *item = items.toList().first();
     while( item->isDataItem() )
-    {
         item = item->parent();
-    }
+    
     Amarok::Collection *coll = item->parentCollection();
 
     if( !coll->isWritable() )
-    {
         return;
-    }
 
     CollectionLocation *source = coll->location();
 
-        if( !source->isWritable() ) //error
-        {
-            warning() << "We can not write to ze source!!! OMGooses!";
-            delete source;
-            delete qm;
-            return;
-        }
-        source->prepareRemove( qm );
-
+    if( !source->isWritable() ) //error
+    {
+        warning() << "We can not write to ze source!!! OMGooses!";
+        delete source;
+        delete qm;
+        return;
+    }
+    source->prepareRemove( qm );
 }
 
 void
@@ -866,9 +858,8 @@ QActionList CollectionTreeView::createExtendedActions( const QModelIndexList & i
                     Q_UNUSED( index )
                     CollectionTreeItem *item = static_cast<CollectionTreeItem*>( indices.first().internalPointer() );
                     while( item->isDataItem() )
-                    {
                         item = item->parent();
-                    }
+
                     onlyOneCollection = item->parentCollection() == collection;
                     if( !onlyOneCollection )
                         break;
@@ -961,7 +952,6 @@ QActionList CollectionTreeView::createExtendedActions( const QModelIndexList & i
 QActionList
 CollectionTreeView::createCollectionActions( const QModelIndexList & indices )
 {
-    DEBUG_BLOCK
     QActionList actions;
     // Extract collection whose constituent was selected
 
@@ -1031,9 +1021,7 @@ QHash<QAction*, Amarok::Collection*> CollectionTreeView::getMoveActions( const Q
         {
             Amarok::Collection *coll = it.key();
             if( coll && coll->isWritable() && coll != collection )
-            {
                 writableCollections.append( coll );
-            }
             ++it;
         }
         if( !writableCollections.isEmpty() )
@@ -1132,15 +1120,17 @@ void CollectionTreeView::slotEditTracks()
 
 void CollectionTreeView::slotCopyTracks()
 {
-    if( sender() ) {
-        if ( QAction * action = dynamic_cast<QAction *>( sender() ) )
+    if( sender() )
+    {
+        if( QAction * action = dynamic_cast<QAction *>( sender() ) )
             copyTracks( m_currentItems, m_currentCopyDestination[ action ], false );
     }
 }
 
 void CollectionTreeView::slotMoveTracks()
 {
-    if( sender() ) {
+    if( sender() )
+    {
         if ( QAction * action = dynamic_cast<QAction *>( sender() ) )
             copyTracks( m_currentItems, m_currentCopyDestination[ action ], true );
     }
@@ -1148,8 +1138,8 @@ void CollectionTreeView::slotMoveTracks()
 
 void CollectionTreeView::slotRemoveTracks()
 {
-
-    if( sender() ) {
+    if( sender() )
+    {
         if ( QAction * action = dynamic_cast<QAction *>( sender() ) )
         {
             Q_UNUSED( action );
@@ -1160,7 +1150,8 @@ void CollectionTreeView::slotRemoveTracks()
 
 void CollectionTreeView::slotOrganize()
 {
-    if( sender() ) {
+    if( sender() )
+    {
         if( QAction * action = dynamic_cast<QAction *>( sender() ) )
         {
             Q_UNUSED( action )
@@ -1179,9 +1170,7 @@ CollectionTreeView::cleanItemSet( const QSet<CollectionTreeItem*> &items )
         while( tmpItem )
         {
             if( items.contains( tmpItem->parent() ) )
-            {
                 tmpItem = tmpItem->parent();
-            }
             else
             {
                 parents.insert( tmpItem );
@@ -1207,10 +1196,10 @@ CollectionTreeView::createMetaQueryFromItems( const QSet<CollectionTreeItem*> &i
         CollectionTreeItem *tmp = item;
         while( tmp->isDataItem() )
         {
-            if ( tmp->data() )
-                qm->addMatch( tmp->data() );
-            else
+            if ( tmp->isVariousArtistItem() )
                 qm->setAlbumQueryMode( QueryMaker::OnlyCompilations );
+            else
+                qm->addMatch( tmp->data() );
             tmp = tmp->parent();
         }
         m_treeModel->addFilters( qm );

@@ -11,7 +11,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -25,12 +25,12 @@
 #include "CollectionManager.h"
 #include "Debug.h"
 
-#ifdef GDK_FOUND
 extern "C" {
 #include <glib-object.h> // g_type_init
+#ifdef GDK_FOUND
 #include <gdk-pixbuf/gdk-pixbuf.h>
-}
 #endif
+}
 
 #include "SvgHandler.h"
 
@@ -314,8 +314,8 @@ IpodHandler::init()
 
     // Get storage access for getting device space capacity/usage
 
-    Solid::Device device = Solid::Device(  m_memColl->udi() );
-    if (  device.isValid() )
+    Solid::Device device = Solid::Device( m_memColl->udi() );
+    if( device.isValid() )
     {
         Solid::StorageAccess *storage = device.as<Solid::StorageAccess>();
         m_filepath = storage->filePath();
@@ -359,6 +359,7 @@ IpodHandler::collectionActions()
 
         actions.append( staleOrphanedAction );
 
+#if 0
         if( m_supportsArtwork )
         {
             QAction *syncArtworkAction = new QAction( KIcon( "insert-image" ), i18n( "Synchronise Artwork" ), this );
@@ -368,6 +369,7 @@ IpodHandler::collectionActions()
 
             actions.append( syncArtworkAction );
         }
+#endif
     }
 
     return actions;
@@ -512,7 +514,7 @@ IpodHandler::slotSyncArtwork()
 {
     DEBUG_BLOCK
 
-    const QString text( i18n( "Amarok is about to syncronise artwork on <i>%1</i>. Do you want to continue?", prettyName() ) );
+    const QString text( i18n( "Amarok is about to synchronize artwork on <i>%1</i>. Do you want to continue?", prettyName() ) );
 
     if( KMessageBox::warningContinueCancel(0, text, i18n("Synchronise Artwork") ) == KMessageBox::Continue )
         ThreadWeaver::Weaver::instance()->enqueue( new SyncArtworkWorkerThread( this ) );
@@ -1799,7 +1801,7 @@ IpodHandler::libSetCoverArtPath( Meta::MediaDeviceTrackPtr &track, const QString
 
     setDatabaseChanged();
 #else
-    Q_UNUSED( ipodtrack );
+    Q_UNUSED( track );
     Q_UNUSED( path );
 #endif
 }
@@ -1824,7 +1826,7 @@ IpodHandler::libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QPixmap &im
 
     libSetCoverArtPath( track, filename ); // will call setDatabaseChanged() if required
 #else
-    Q_UNUSED( ipodtrack );
+    Q_UNUSED( track );
     Q_UNUSED( image );
 #endif
 }

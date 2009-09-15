@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -28,6 +28,7 @@
 #include <QLabel>
 #include <QLineEdit>
 #include <QPainter>
+#include <QPaintEvent>
 
 using namespace Playlist;
 
@@ -114,7 +115,21 @@ void InlineEditorWidget::createChildWidgets()
 
     KHBox * trackBox = new KHBox( this );
 
-    LayoutItemConfig config = m_layout.body();
+    LayoutItemConfig config;
+    switch(m_groupMode)
+    {
+        //For now, we don't allow editing of the "head" data, just the body
+        case Head:
+        case Body:
+        case Tail:
+            config = m_layout.body();
+            break;
+        case None:
+        default:
+            config = m_layout.single();
+            break;
+    }
+
     int rowCount = config.rows();
 
     if ( rowCount == 0 )
@@ -298,7 +313,7 @@ InlineEditorWidget::paintEvent( QPaintEvent * event )
         delegate.paintItem( m_layout.head(), &painter, option, m_index );
     }
 
-    KHBox::paintEvent( event );
+    event->accept();
 }
 
 void InlineEditorWidget::editValueChanged()

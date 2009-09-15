@@ -10,7 +10,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -35,7 +35,6 @@
 #include <KHelpMenu>
 #include <KLocale>
 #include <KToolBar>
-#include <Osd.h>
 #include <Osd.h>
 
 
@@ -388,7 +387,9 @@ ReplayGainModeAction::ReplayGainModeAction( KActionCollection *ac, QObject *pare
 EqualizerAction::EqualizerAction( KActionCollection *ac, QObject *parent ) :
     SelectAction( i18n( "&Equalizer" ), &AmarokConfig::setEqualizerMode, ac, "equalizer_mode", parent )
 {
+    // build a new preset list in menu
     newList();
+    // set selected preset from config
     updateContent();
     connect( this, SIGNAL( triggered( int ) ), this, SLOT( actTrigg( int ) ) );
 }
@@ -396,7 +397,10 @@ EqualizerAction::EqualizerAction( KActionCollection *ac, QObject *parent ) :
 void
 EqualizerAction::updateContent() //SLOT
 {
-    blockSignals( true );
+    // this slot update the content of equalizer main window menu
+    // according to config blocking is neccessary to prevent
+    // circluar loop between menu and config dialog
+    blockSignals( true ); 
     setCurrentItem( AmarokConfig::equalizerMode() );
     blockSignals( false );
 }
@@ -404,6 +408,8 @@ EqualizerAction::updateContent() //SLOT
 void
 EqualizerAction::newList() //SLOT
 {
+    // this slot build a new list of presets in equalizer menu
+    // or disable this menu if equalizer is not supported
     if( !The::engineController()->isEqSupported() )
     {
         setEnabled( false );

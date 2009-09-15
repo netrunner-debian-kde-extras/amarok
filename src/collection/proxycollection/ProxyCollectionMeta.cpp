@@ -414,6 +414,52 @@ ProxyCollection::Track::type() const
     }
 }
 
+Amarok::Collection*
+ProxyCollection::Track::collection() const
+{
+    return m_collection;
+}
+
+bool
+ProxyCollection::Track::hasCapabilityInterface( Meta::Capability::Type type ) const
+{
+    if( m_tracks.count() == 1 )
+    {
+        //if we proxy only one track, simply return the tracks capability directly
+        return m_tracks.at( 0 )->hasCapabilityInterface( type );
+    }
+    else
+    {
+        //if there is more than one track, check all tracks for the given
+        //capability if and only if ProxyCollection::Track supports it as well
+
+        //as there are no supported capabilities yet...
+        return false;
+
+        foreach( const Meta::TrackPtr &track, m_tracks )
+        {
+            if( !track->hasCapabilityInterface( type ) )
+                return false;
+        }
+        return true;
+    }
+}
+
+Meta::Capability*
+ProxyCollection::Track::createCapabilityInterface( Meta::Capability::Type type )
+{
+    if( m_tracks.count() == 1 )
+    {
+        Meta::TrackPtr track = m_tracks.at( 0 );
+        return track->createCapabilityInterface( type );
+    }
+    else
+    {
+        //we should create a ProxyCapability here...
+        return 0;
+    }
+}
+
 
 void
 ProxyCollection::Track::add( const Meta::TrackPtr &track )
@@ -430,7 +476,6 @@ ProxyCollection::Track::add( const Meta::TrackPtr &track )
 void
 ProxyCollection::Track::metadataChanged( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
     if( !track )
         return;
 
@@ -463,6 +508,7 @@ ProxyCollection::Track::metadataChanged( Meta::TrackPtr track )
             }
             else
             {
+                m_name = track->name();
                 if( track->album() )
                      m_album = Meta::AlbumPtr( m_collection->getAlbum( track->album() ) );
                 if( track->artist() )
@@ -527,7 +573,6 @@ ProxyCollection::Album::sortableName() const
 Meta::TrackList
 ProxyCollection::Album::tracks()
 {
-    DEBUG_BLOCK
     QSet<ProxyCollection::Track*> tracks;
     foreach( Meta::AlbumPtr album, m_albums )
     {
@@ -754,7 +799,6 @@ ProxyCollection::Artist::sortableName() const
 Meta::TrackList
 ProxyCollection::Artist::tracks()
 {
-    DEBUG_BLOCK
     QSet<ProxyCollection::Track*> tracks;
     foreach( Meta::ArtistPtr artist, m_artists )
     {
@@ -875,7 +919,6 @@ ProxyCollection::Genre::sortableName() const
 Meta::TrackList
 ProxyCollection::Genre::tracks()
 {
-    DEBUG_BLOCK
     QSet<ProxyCollection::Track*> tracks;
     foreach( Meta::GenrePtr genre, m_genres )
     {
@@ -969,7 +1012,6 @@ ProxyCollection::Composer::sortableName() const
 Meta::TrackList
 ProxyCollection::Composer::tracks()
 {
-    DEBUG_BLOCK
     QSet<ProxyCollection::Track*> tracks;
     foreach( Meta::ComposerPtr composer, m_composers )
     {
@@ -1064,7 +1106,6 @@ ProxyCollection::Year::sortableName() const
 Meta::TrackList
 ProxyCollection::Year::tracks()
 {
-    DEBUG_BLOCK
     QSet<ProxyCollection::Track*> tracks;
     foreach( Meta::YearPtr year, m_years )
     {

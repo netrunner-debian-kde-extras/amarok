@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -664,13 +664,13 @@ PlaylistBrowserNS::PodcastModel::actionsFor( const QModelIndexList &indices )
 
     //HACK: since we only have one PodcastProvider implementation
     PodcastProvider *provider = The::playlistManager()->defaultPodcasts();
-    if( provider )
-    {
-        if( !m_selectedEpisodes.isEmpty() )
-            actions << provider->episodeActions( m_selectedEpisodes );
-        if( !m_selectedChannels.isEmpty() )
-            actions << provider->channelActions( m_selectedChannels );
-    }
+    if( !provider )
+        return actions;
+
+    if( !m_selectedChannels.isEmpty() )
+        actions << provider->channelActions( m_selectedChannels );
+    else if( !m_selectedEpisodes.isEmpty() )
+        actions << provider->episodeActions( m_selectedEpisodes );
 
     return actions;
 }

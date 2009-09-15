@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -115,7 +115,7 @@ AMAROK_EXPORT KAboutData aboutData( "amarok", 0,
     ki18n( "IRC:\nirc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org\n\n(Build Date: %1)" ).subs( __DATE__ ),
              ( "http://amarok.kde.org" ) );
              
-AMAROK_EXPORT OcsData ocsData;
+AMAROK_EXPORT OcsData ocsData( "opendesktop" );
 
 App::App()
         : KUniqueApplication()
@@ -431,6 +431,7 @@ App::handleCliArgs() //static
 
     if( args->isSet( "subscribe" ) )
     {
+        debug() << "Subscribe to " << args->getOption( "subscribe" );
         The::playlistManager()->defaultPodcasts()->addPodcast(
                     KUrl( args->getOption( "subscribe" ) )
                 );
@@ -481,7 +482,7 @@ App::initCliArgs() //static
     options.add("multipleinstances", ki18n("Allow running multiple Amarok instances"));
     options.add("cwd <directory>", ki18n( "Base for relative filenames/URLs" ));
     options.add("test", ki18n( "Run integrated unit tests, if your build supports it" ));
-    options.add("p <feed-url>");
+    options.add("p");
     options.add("subscribe <feed-url>", ki18n( "Subscribe to podcast feed" ) );
 
     KCmdLineArgs::addCmdLineOptions( options );   //add our own options
@@ -708,13 +709,13 @@ App::continueInit()
         FirstRunTutorial *frt = new FirstRunTutorial( mainWindow() );
         QTimer::singleShot( 1000, frt, SLOT( initOverlay() ) );
     }
+#endif
 
     if( config.readEntry( "First Run", true ) )
     {
         slotConfigAmarok( "CollectionConfig" );
         config.writeEntry( "First Run", false );
     }
-#endif
 }
 
 void App::slotConfigEqualizer() //SLOT

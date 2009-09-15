@@ -8,15 +8,15 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#include "PlaylistFileProvider.h"
 #include "App.h"
 #include "amarokconfig.h"
-#include "PlaylistFileProvider.h"
 #include "PlaylistFileSupport.h"
 #include "EditablePlaylistCapability.h"
 #include "Amarok.h"
@@ -37,45 +37,22 @@
 
 PlaylistFileProvider::PlaylistFileProvider()
  : UserPlaylistProvider()
+ , m_playlistsLoaded( false )
  , m_defaultFormat( Meta::XSPF )
 {
-    DEBUG_BLOCK
-    //load the playlists defined in the config
-    QStringList keys = loadedPlaylistsConfig().keyList();
-    debug() << "keys " << keys;
-
-    //ConfigEntry: name, file
-    foreach( const QString &key, keys )
-    {
-        KUrl url( key );
-        QString groups = loadedPlaylistsConfig().readEntry( key );
-        Meta::PlaylistFilePtr playlist = Meta::loadPlaylistFile( url );
-        if( playlist.isNull() )
-        {
-            The::statusBar()->longMessage(
-                    i18n("The playlist file \"%1\" could not be loaded!").arg( url.fileName() ),
-                    StatusBar::Error
-                );
-            continue;
-        }
-
-        if( !groups.isEmpty() && playlist->isWritable() )
-            playlist->setGroups( groups.split( ',',  QString::SkipEmptyParts ) );
-
-        m_playlists << Meta::PlaylistPtr::dynamicCast( playlist );
-    }
+    //playlists are lazy loaded
 }
 
 PlaylistFileProvider::~PlaylistFileProvider()
 {
     DEBUG_BLOCK
+    //remove all, well add them again soon
+    loadedPlaylistsConfig().deleteGroup();
     //Write loaded playlists to config file
     debug() << m_playlists.size()  << " Playlists loaded";
     foreach( Meta::PlaylistPtr playlist, m_playlists )
     {
         KUrl url = playlist->retrievableUrl();
-        if( loadedPlaylistsConfig().keyList().contains( url.url() ) )
-            continue;
         debug() << "storing: " << url.url();
 
         loadedPlaylistsConfig().writeEntry( url.url(), playlist->groups() );
@@ -89,9 +66,20 @@ PlaylistFileProvider::prettyName() const
     return i18n( "Playlist Files on Disk" );
 }
 
+int
+PlaylistFileProvider::playlistCount() const
+{
+    if( m_playlistsLoaded )
+        return m_playlists.count();
+    //count the entries in the config file
+    return loadedPlaylistsConfig().keyList().count();
+}
+
 Meta::PlaylistList
 PlaylistFileProvider::playlists()
 {
+    if( !m_playlistsLoaded )
+        loadPlaylists();
     return m_playlists;
 }
 
@@ -155,6 +143,8 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
     }
     Meta::PlaylistPtr playlistPtr( playlist );
     m_playlists << playlistPtr;
+    //just in case there wasn't one loaded before.
+    m_playlistsLoaded = true;
     emit updated();
 
     return playlistPtr;
@@ -192,6 +182,8 @@ PlaylistFileProvider::import( const KUrl &path )
     if( !playlist )
         return false;
     m_playlists << Meta::PlaylistPtr::dynamicCast( playlist );
+    //just in case there wasn't one loaded before.
+    m_playlistsLoaded = true;
     emit updated();
     return true;
 }
@@ -236,8 +228,39 @@ PlaylistFileProvider::deletePlaylists( Meta::PlaylistList playlistList )
     emit updated();
 }
 
+void
+PlaylistFileProvider::loadPlaylists()
+{
+    DEBUG_BLOCK
+    //load the playlists defined in the config
+    QStringList keys = loadedPlaylistsConfig().keyList();
+    debug() << "keys " << keys;
+
+    //ConfigEntry: name, file
+    foreach( const QString &key, keys )
+    {
+        KUrl url( key );
+        QString groups = loadedPlaylistsConfig().readEntry( key );
+        Meta::PlaylistFilePtr playlist = Meta::loadPlaylistFile( url );
+        if( playlist.isNull() )
+        {
+            The::statusBar()->longMessage(
+                    i18n("The playlist file \"%1\" could not be loaded!").arg( url.fileName() ),
+                    StatusBar::Error
+                );
+            continue;
+        }
+
+        if( !groups.isEmpty() && playlist->isWritable() )
+            playlist->setGroups( groups.split( ',',  QString::SkipEmptyParts ) );
+
+        m_playlists << Meta::PlaylistPtr::dynamicCast( playlist );
+    }
+    m_playlistsLoaded = true;
+}
+
 KConfigGroup
-PlaylistFileProvider::loadedPlaylistsConfig()
+PlaylistFileProvider::loadedPlaylistsConfig() const
 {
     return Amarok::config( "Loaded Playlist Files" );
 }

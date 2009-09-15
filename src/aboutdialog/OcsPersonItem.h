@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -19,7 +19,8 @@
 
 #include "ui_OcsPersonItem.h"
 
-#include "libattica-ocsclient/ocsapi.h"
+#include "libattica-ocsclient/person.h"
+#include "libattica-ocsclient/provider.h"
 #include "OcsData.h"
 
 #include <KAboutPerson>
@@ -49,7 +50,7 @@ public:
 
     QString name();
 
-    void switchToOcs();
+    void switchToOcs( const Attica::Provider &provider );
 
 signals:
     void ocsFetchStarted();

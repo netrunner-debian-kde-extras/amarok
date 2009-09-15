@@ -9,7 +9,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -589,6 +589,35 @@ ServiceSqlQueryMaker::handleResult( const QStringList &result )
             break;*/
 
         case Private::NONE:
+            debug() << "Warning: queryResult with queryType == NONE";
+        }
+    }
+        else
+    {
+        switch( d->queryType ) {
+            case QueryMaker::Custom:
+                emit newResultReady( m_collection->collectionId(), QStringList() );
+                break;
+            case QueryMaker::Track:
+                emit newResultReady( m_collection->collectionId(), Meta::TrackList() );
+                break;
+            case QueryMaker::Artist:
+                emit newResultReady( m_collection->collectionId(), Meta::ArtistList() );
+                break;
+            case QueryMaker::Album:
+                emit newResultReady( m_collection->collectionId(), Meta::AlbumList() );
+                break;
+            case QueryMaker::Genre:
+                emit newResultReady( m_collection->collectionId(), Meta::GenreList() );
+                break;
+            case QueryMaker::Composer:
+                emit newResultReady( m_collection->collectionId(), Meta::ComposerList() );
+                break;
+            case QueryMaker::Year:
+                emit newResultReady( m_collection->collectionId(), Meta::YearList() );
+                break;
+
+        case QueryMaker::None:
             debug() << "Warning: queryResult with queryType == NONE";
         }
     }

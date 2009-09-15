@@ -74,7 +74,6 @@ msgid "-r, --recursive       : Scan folders recursively"
 msgstr "-r, --recursive       : Ordner rekursiv durchsuchen"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:941
-#| msgid "-i, --incremental     : Incremental scan (modified folders only)."
 msgid "-i, --incremental     : Incremental scan (modified folders only)"
 msgstr "-i, --incremental     : Inkrementelle Suche (nur veränderte Ordner)"
 
@@ -102,4 +101,3 @@ msgstr ""
 "--rpath=„<pfad>“        : Im Stapel-Modus für die vollständige Suche wird "
 "hiermit der Pfad angegeben, der den Suchergebnissen vorangestellt wird. Die "
 "Voreinstellung ist der aktuelle Ordner."
-

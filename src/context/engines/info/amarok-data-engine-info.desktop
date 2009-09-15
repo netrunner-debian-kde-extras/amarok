@@ -1,14 +1,24 @@
 [Desktop Entry]
 Name=Info Data Engine
 Name[bg]=Ядро за данни
+Name[ca]=Motor de dades d'informació
+Name[da]=Datamotor til info
+Name[de]=Info-Datenmodul
+Name[es]=Información del motor de datos
+Name[et]=Teabe andmemootor
 Name[is]=Gagnavél fyrir spilun
 Name[it]=Motore dati informazione
+Name[nb]=Informasjonsdatamotor
+Name[nn]=Datamotor for informasjon
 Name[pt]=Motor de Dados da Informação
-Name[pt_BR]=Motor de Dados da Informação
+Name[pt_BR]=Mecanismo de Dados das Informações
+Name[sr]=Датомотор података
+Name[sr@latin]=Datomotor podataka
 Name[sv]=Datagränssnitt för information
 Name[tr]=Bilgi Veri Motoru
 Name[uk]=Рушій інформаційних даних
 Name[x-test]=xxInfo Data Enginexx
+Name[zh_CN]=信息数据引擎
 
 X-KDE-ServiceTypes=Plasma/DataEngine
 Type=Service

@@ -12,7 +12,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -65,11 +65,7 @@ PrettyItemDelegate::~PrettyItemDelegate() { }
 
 int PrettyItemDelegate::getGroupMode( const QModelIndex &index) const
 {
-    //If this layout doesn't allow grouping, we want to override whatever would be the group mode with "Single"
-    if (LayoutManager::instance()->activeLayout().allowGrouping())
-        return index.data( GroupRole ).toInt();
-    else
-        return None;
+    return index.data( GroupRole ).toInt();
 }
 
 int PrettyItemDelegate::rowsForItem( const QModelIndex &index ) const
@@ -188,6 +184,10 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
         int headRows = layout.head().rows();
         int trackRows = layout.body().rows();
         int totalRows = headRows + trackRows;
+
+        //if this layout is completely empty, bail out or we will get in divide-by-zero trouble
+        if ( totalRows == 0 )
+            return;
 
         if ( paintInlineControls )
         {

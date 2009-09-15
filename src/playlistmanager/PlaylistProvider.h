@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -46,6 +46,10 @@ class AMAROK_EXPORT PlaylistProvider : public QObject, public Amarok::Plugin
          */
         virtual int category() const = 0;
 
+        /** @returns the number of playlists this provider as or a negative value if it
+         * can not determine that before loading them all.
+         */
+        virtual int playlistCount() const { return -1; }
         virtual Meta::PlaylistList playlists() = 0;
 
         virtual QList<QAction *> playlistActions( Meta::PlaylistPtr playlist ) = 0;

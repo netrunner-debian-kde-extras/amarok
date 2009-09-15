@@ -9,18 +9,20 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include <KMessageBox> // TODO put the delete confirmation code somewhere else?
-
 #include "CollectionLocation.h"
+
 #include "Collection.h"
 #include "Debug.h"
 #include "QueryMaker.h"
+
+#include <KMessageBox> // TODO put the delete confirmation code somewhere else?
+
 
 CollectionLocation::CollectionLocation()
     :QObject()

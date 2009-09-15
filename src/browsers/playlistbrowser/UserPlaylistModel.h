@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -39,10 +39,9 @@ class UserModel : public QAbstractItemModel, public MetaPlaylistModel,
     Q_OBJECT
     public:
         enum {
-            DescriptionRole = Qt::UserRole + 1,
-            //Where is this Playlist from i.e. which PlaylistProvider
-            OriginRole = Qt::UserRole + 2,
-            GroupRole = Qt::UserRole + 3 //What is the name of the group this Playlist is in.
+            PlaylistColumn = 0, //Data form the playlist itself
+            GroupColumn = 1, //Data form the group (a.k.a. folder) the playlist is in.
+            ProviderColumn = 2 //data form the PlaylistProvider
         };
         static UserModel * instance();
         static void destroy();

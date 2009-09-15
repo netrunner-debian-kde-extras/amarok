@@ -9,7 +9,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -103,11 +103,11 @@ private:
     // holds what is currently being shown
     ContextState m_curState;
 
-    //it seems we get a Phonon::PausedState before whe actually really start to play
-    //anything. Because we generally dont want to update the context view when moving from
+    //it seems we get a Phonon::PausedState before we start to play anything.
+    //Because we generally don't want to update the context view when moving from
     //Paused to Playing state, this causes the CV to not get updated when starting Amarok
     //with a track being resumed (Resume playback enabled in the options). To avoid this,
-     //we always kick the cv on the first play state we recieve, irregardless if the
+     //we always kick the cv on the first play state we receive, irregardless if the
      //previous state was Paused.
     bool m_firstPlayingState;
 };

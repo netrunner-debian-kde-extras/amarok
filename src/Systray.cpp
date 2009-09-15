@@ -12,7 +12,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -160,7 +160,7 @@ Amarok::TrayIcon::setupToolTip()
         else
             volume = QString( "%1%" ).arg( The::engineController()->volume() );
         right << QString("<i>%1</i>").arg( volume );
-        left << "<i>Volume</i>";
+        left << QString( "<i>%1</i>" ).arg( i18n( "Volume" ) );
 
         const float score = m_track->score();
         if( score > 0.f )

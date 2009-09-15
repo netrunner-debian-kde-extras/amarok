@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -16,6 +16,8 @@
 
 #include "ScriptableService.h"
 
+#include "browsers/CollectionTreeItem.h"
+#include "browsers/SingleCollectionTreeItemModel.h"
 #include "ScriptManager.h"
 #include "ServiceBrowser.h"
 #include "ScriptableServiceInfoParser.h"
@@ -219,6 +221,7 @@ int ScriptableService::insertItem( int level, int parentId, const QString & name
 
 int ScriptableService::addTrack( ScriptableServiceTrack * track )
 {
+    DEBUG_BLOCK
 
     int artistId = -1;
     int genreId = -1;

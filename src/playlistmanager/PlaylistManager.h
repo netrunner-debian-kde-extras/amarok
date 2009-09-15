@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -78,7 +78,7 @@ class PlaylistManager : public QObject
         QString categoryName( int playlistCategory );
 
         /**
-         * @returns A short (one sentance) translated description for this category of
+         * @returns A short (one sentence) translated description for this category of
          * playlists.
          */
         QString categoryShortDescription( int playlistCategory );
@@ -153,7 +153,7 @@ class PlaylistManager : public QObject
 
         /**
          *  Moves a track within the playlist to a new position
-         *  @returns true when the move was performed sucessfully
+         *  @returns true when the move was performed successfully
          */
         bool moveTrack( Meta::PlaylistPtr playlist, int from, int to );
 

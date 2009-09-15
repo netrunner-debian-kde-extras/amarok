@@ -9,17 +9,18 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
+
 #include "LayoutManager.h"
 
 #include "Amarok.h"
 #include "Debug.h"
 #include "playlist/PlaylistDefines.h"
+#include "playlist/PlaylistModelStack.h"
 
 #include <KMessageBox>
 #include <KStandardDirs>
@@ -63,15 +64,22 @@ QStringList LayoutManager::layouts() const
 void LayoutManager::setActiveLayout( const QString &layout )
 {
     m_activeLayout = layout;
-    Amarok::config( "Playlist Layout" ).writeEntry( "CurrentLayout", m_activeLayout );
+    Amarok::config( "Playlist Layout" ).writeEntry( "CurrentLayout", m_activeLayout );  
     emit( activeLayoutChanged() );
+
+    //Change the grouping style to that of this layout.
+    Playlist::ModelStack::instance()->top()->setGroupingCategory( activeLayout().groupBy() );
+
 }
 
 void LayoutManager::setPreviewLayout( const PlaylistLayout &layout )
 {
-    m_activeLayout = PREVIEW_LAYOUT; 
+    m_activeLayout = PREVIEW_LAYOUT;
     m_previewLayout = layout;
     emit( activeLayoutChanged() );
+
+    //Change the grouping style to that of this layout.
+    Playlist::ModelStack::instance()->top()->setGroupingCategory( activeLayout().groupBy() );
 }
 
 PlaylistLayout LayoutManager::activeLayout() const
@@ -144,11 +152,13 @@ void LayoutManager::loadLayouts( const QString &fileName, bool user )
         index++;
 
         QString layoutName = layout.toElement().attribute( "name", "" );
-        
+
         PlaylistLayout currentLayout;
         currentLayout.setEditable( user );
         currentLayout.setInlineControls( layout.toElement().attribute( "inline_controls", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
-        currentLayout.setAllowGrouping(  layout.toElement().attribute( "allow_grouping", "true" ).compare( "true", Qt::CaseInsensitive ) == 0 );
+
+        //For backwards compatibility, if a grouping is not set in the XML file assume "group by album" (which was previously the default)
+        currentLayout.setGroupBy( layout.toElement().attribute( "group_by", "Album" ) );
 
         currentLayout.setHead( parseItemConfig( layout.toElement().firstChildElement( "group_head" ) ) );
         currentLayout.setBody( parseItemConfig( layout.toElement().firstChildElement( "group_body" ) ) );
@@ -194,7 +204,7 @@ LayoutItemConfig LayoutManager::parseItemConfig( const QDomElement &elem ) const
             bool italic = ( elementNode.toElement().attribute( "italic", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
             QString alignmentString = elementNode.toElement().attribute( "alignment", "left" );
             Qt::Alignment alignment;
-            
+
 
             if ( alignmentString.compare( "left", Qt::CaseInsensitive ) == 0 )
                 alignment = Qt::AlignLeft | Qt::AlignVCenter;
@@ -246,15 +256,13 @@ void LayoutManager::addUserLayout( const QString &name, PlaylistLayout layout )
     newLayout.appendChild( createItemElement( doc, "group_body", layout.body() ) );
 
     if( layout.inlineControls() )
-        newLayout.setAttribute( "inline_controls", "true" ); 
+        newLayout.setAttribute( "inline_controls", "true" );
 
-    //allowGrouping defaults to true, so we want to note if false instead of if true
-    if(!layout.allowGrouping() )
-        newLayout.setAttribute( "allow_grouping", "false");
+    newLayout.setAttribute( "group_by", layout.groupBy() );
 
     QDir layoutsDir = QDir( Amarok::saveLocation( "playlist_layouts/" ) );
 
-    //make sure that this dir exists
+    //make sure that this directory exists
     if ( !layoutsDir.exists() )
         layoutsDir.mkpath( Amarok::saveLocation( "playlist_layouts/" ) );
 
@@ -299,7 +307,7 @@ QDomElement LayoutManager::createItemElement( QDomDocument doc, const QString &n
                 alignmentString = "right";
             else
                 alignmentString = "center";
-            
+
             elementElement.setAttribute ( "alignment", alignmentString );
 
             rowElement.appendChild( elementElement );
@@ -329,7 +337,7 @@ void LayoutManager::deleteLayout( const QString &layout )
     {
         QDir layoutsDir = QDir( Amarok::saveLocation( "playlist_layouts/" ) );
         QString xmlFile = layoutsDir.path() + '/' + layout + ".xml";
-       
+
         if ( !QFile::remove( xmlFile ) )
             debug() << "error deleting file" << xmlFile;
 
@@ -379,7 +387,7 @@ void LayoutManager::orderLayouts()
 {
     KConfigGroup config = Amarok::config( "Playlist Layout" );
     QString orderString = config.readEntry( "Order", "Default" );
-    
+
     QStringList knownLayouts = m_layouts.keys();
 
     QStringList orderingList = orderString.split( ';', QString::SkipEmptyParts );
@@ -388,7 +396,7 @@ void LayoutManager::orderLayouts()
     {
         if ( knownLayouts.contains( layout ) )
         {
-            //skip any layout names that are in config but that we dont know. Perhaps someone manually deleted a layout file
+            //skip any layout names that are in config but that we don't know. Perhaps someone manually deleted a layout file
             m_layoutNames.append( layout );
             knownLayouts.removeAll( layout );
         }
@@ -414,7 +422,7 @@ void Playlist::LayoutManager::storeLayoutOrdering()
 
     if ( !ordering.isEmpty() )
         ordering.chop( 1 ); //remove trailing;
-    
+
     KConfigGroup config = Amarok::config("Playlist Layout");
     config.writeEntry( "Order", ordering );
 }

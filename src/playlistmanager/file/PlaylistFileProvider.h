@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -41,6 +41,7 @@ class PlaylistFileProvider : public UserPlaylistProvider
 
         virtual int category() const { return PlaylistManager::UserPlaylist; }
 
+        virtual int playlistCount() const;
         virtual Meta::PlaylistList playlists();
 
         virtual QList<QAction *> playlistActions( Meta::PlaylistPtr playlist );
@@ -59,12 +60,15 @@ class PlaylistFileProvider : public UserPlaylistProvider
         virtual void rename( Meta::PlaylistPtr playlist, const QString &newName );
         virtual void deletePlaylists( Meta::PlaylistList playlistList );
 
+        virtual void loadPlaylists();
+
     signals:
             virtual void updated();
 
     private:
-        KConfigGroup loadedPlaylistsConfig();
+        KConfigGroup loadedPlaylistsConfig() const;
 
+        bool m_playlistsLoaded;
         Meta::PlaylistList m_playlists;
         Meta::PlaylistFormat m_defaultFormat;
         QMultiMap<QString, Meta::PlaylistPtr> m_groupMap;

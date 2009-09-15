@@ -12,7 +12,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -265,7 +265,16 @@ void FileBrowser::Widget::setDir( const KUrl& url )
     else
         newurl = url;
 
-    QString pathstr = newurl.path( KUrl::AddTrailingSlash );
+    QString pathstr;
+    
+    #ifdef Q_OS_WIN32
+        if(newurl.isLocalFile())
+        {
+            pathstr = newurl.toLocalFile( KUrl::AddTrailingSlash );
+        }
+    #else
+        pathstr = newurl.path( KUrl::AddTrailingSlash );
+    #endif
     newurl.setPath( pathstr );
 
     if ( !FileBrowser::isReadable( newurl ) )

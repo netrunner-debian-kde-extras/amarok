@@ -24,6 +24,9 @@ install(
         loading2.png
         navigation_arrows.svg
         nocover.png
+        playlist-bookmark-16.png
+        playlist-layouts-22.png
+        playlist-sorting-16.png
         pud_items.svg
         smallstar.png
         splash_screen.jpg
@@ -50,7 +53,7 @@ install(
         hover_info_playlists.png
         hover_info_user_playlists.png
         hover_info_podcasts.png
-	opendesktop.png
+	opendesktop-22.png
         DESTINATION ${DATA_INSTALL_DIR}/amarok/images
 )
 

@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -98,6 +98,9 @@ namespace FilterFactory
                 break;
             case Meta::valCreateDate:
                 result = new CreateDateFilter();
+                break;
+            case Meta::valYear:
+                result = new YearNumberFilter();
                 break;
         }
         Q_ASSERT_X( result, "FilterFactory::numberFilter", "called numberFilter with an illegal value, value was " + value );
@@ -563,4 +566,21 @@ CreateDateFilter::value( const Meta::TrackPtr &track ) const
     return track->createDate().toTime_t();
 }
 
+YearNumberFilter::YearNumberFilter()
+    : NumberMemoryFilter()
+{
+}
+
+YearNumberFilter::~YearNumberFilter()
+{
+}
+
+qint64
+YearNumberFilter::value( const Meta::TrackPtr &track ) const
+{
+    if( !track->year() )
+        return 0;
+
+    return track->year()->name().toInt();
+}
 

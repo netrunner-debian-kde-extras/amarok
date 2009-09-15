@@ -9,7 +9,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -118,6 +118,15 @@ namespace Amarok
         The::engineController()->play();
     }
 
+    void PlayerDBusHandler::PlayPause()
+    {
+        if(The::engineController()->state() == Phonon::PlayingState) {
+            The::engineController()->pause();
+        } else {
+            The::engineController()->play();
+        }
+    }
+
     void PlayerDBusHandler::Next()
     {
         The::playlistActions()->next();
@@ -195,6 +204,18 @@ namespace Amarok
     void PlayerDBusHandler::LoadThemeFile( const QString &path ) const
     {
         The::svgHandler()->setThemeFile( path );
+    }
+
+    void PlayerDBusHandler::Forward( int time )
+    {
+        if ( time > 0 && The::engineController()->state() != Phonon::StoppedState )
+            The::engineController()->seek( The::engineController()->trackPosition() * 1000 + time );
+    }
+
+    void PlayerDBusHandler::Backward( int time )
+    {
+        if ( time > 0 && The::engineController()->state() != Phonon::StoppedState )
+            The::engineController()->seek( The::engineController()->trackPosition() * 1000 - time );
     }
         
     QVariantMap PlayerDBusHandler::GetMetadata()

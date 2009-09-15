@@ -9,7 +9,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -159,7 +159,7 @@ PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
     {
         switch( index.column() )
         {
-            case 0: //playlist
+            case PlaylistColumn: //playlist
                 {
                     food = QVariant::fromValue( playlist );
                     name = playlist->name();
@@ -168,7 +168,7 @@ PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
                     groups = playlist->groups();
                 }
                 break;
-            case 1: //group
+            case GroupColumn: //group
                 {
                     if( !playlist->groups().isEmpty() )
                     {
@@ -177,7 +177,7 @@ PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
                     }
                 }
                 break;
-            case 2: //source
+            case ProviderColumn: //source
                 {
                     PlaylistProvider *provider =
                             The::playlistManager()->getProviderForPlaylist( playlist );
@@ -200,9 +200,7 @@ PlaylistBrowserNS::UserModel::data(const QModelIndex & index, int role) const
         case Qt::EditRole: return name;
         case DescriptionRole:
         case Qt::ToolTipRole: return description;
-        case OriginRole: return QVariant(); //TODO return the provider name
         case Qt::DecorationRole: return QVariant( icon );
-        case GroupRole: return groups;
         default: return QVariant();
     }
 }
@@ -259,10 +257,13 @@ PlaylistBrowserNS::UserModel::rowCount( const QModelIndex & parent ) const
 }
 
 int
-PlaylistBrowserNS::UserModel::columnCount(const QModelIndex & /*parent*/) const
+PlaylistBrowserNS::UserModel::columnCount(const QModelIndex &parent) const
 {
-    //name, group and source
-    return 3;
+    if( !parent.isValid() ) //for playlists (children of root)
+        return 3; //name, group and source
+
+    //for tracks
+    return 1; //only name
 }
 
 Qt::ItemFlags
@@ -284,9 +285,9 @@ PlaylistBrowserNS::UserModel::headerData(int section, Qt::Orientation orientatio
     if (orientation == Qt::Horizontal && role == Qt::DisplayRole) {
         switch( section )
         {
-            case 0: return i18n("Name");
-            case 1: return i18n("Group");
-            case 2: return i18n("Source");
+            case PlaylistColumn: return i18n("Name");
+            case GroupColumn: return i18n("Group");
+            case ProviderColumn: return i18n("Source");
             default: return QVariant();
         }
     }
@@ -295,22 +296,23 @@ PlaylistBrowserNS::UserModel::headerData(int section, Qt::Orientation orientatio
 }
 
 bool
-PlaylistBrowserNS::UserModel::setData(const QModelIndex & index, const QVariant & value, int role)
+PlaylistBrowserNS::UserModel::setData( const QModelIndex &idx, const QVariant &value,
+                                      int role )
 {
     DEBUG_BLOCK
-    switch( role )
+    switch( idx.column() )
     {
-        case Qt::EditRole:
+        case PlaylistColumn:
         {
-            debug() << "setting name of item " << index.internalId() << " to " << value.toString();
-            Meta::PlaylistPtr item = m_playlists.value( index.internalId() );
+            debug() << "setting name of item " << idx.internalId() << " to " << value.toString();
+            Meta::PlaylistPtr item = m_playlists.value( idx.internalId() );
             item->setName( value.toString() );
             break;
         }
-        case GroupRole:
+        case GroupColumn:
         {
-            debug() << "changing group of item " << index.internalId() << " to " << value.toString();
-            Meta::PlaylistPtr item = m_playlists.value( index.internalId() );
+            debug() << "changing group of item " << idx.internalId() << " to " << value.toString();
+            Meta::PlaylistPtr item = m_playlists.value( idx.internalId() );
             item->setGroups( value.toStringList() );
             break;
         }
@@ -343,7 +345,7 @@ PlaylistBrowserNS::UserModel::removeRows( int row, int count, const QModelIndex 
     if( row + count - 1 >= playlist->tracks().count() )
     {
         debug() << "ERROR: tried to remove a track using an index that is not there:";
-        debug() << "row: " << row << " count: " << count << " numbr. of tracks: "
+        debug() << "row: " << row << " count: " << count << " number of tracks: "
                 << playlist->tracks().count();
         return false;
     }
@@ -404,7 +406,7 @@ PlaylistBrowserNS::UserModel::dropMimeData ( const QMimeData *data, Qt::DropActi
         int column, const QModelIndex &parent ) //reimplemented
 {
     DEBUG_BLOCK
-    debug() << "droped on " << QString("row: %1, column: %2, parent:").arg( row ).arg( column );
+    debug() << "dropped on " << QString("row: %1, column: %2, parent:").arg( row ).arg( column );
     debug() << parent;
 
     if( action == Qt::IgnoreAction )

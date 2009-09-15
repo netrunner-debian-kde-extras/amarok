@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -21,7 +21,10 @@
 #include <QScrollArea>
 
 
-OcsPersonListWidget::OcsPersonListWidget( const QList< KAboutPerson > &persons, const OcsData::OcsPersonList *ocsPersons, OcsPersonItem::PersonStatus status, QWidget *parent )
+OcsPersonListWidget::OcsPersonListWidget( const QList< KAboutPerson > &persons,
+                                          const OcsData::OcsPersonList *ocsPersons,
+                                          OcsPersonItem::PersonStatus status,
+                                          QWidget *parent )
     : QWidget( parent )
     , m_status( status )
     , m_fetchCount( 0 )
@@ -55,12 +58,12 @@ OcsPersonListWidget::OcsPersonListWidget( const QList< KAboutPerson > &persons, 
 }
 
 void
-OcsPersonListWidget::switchToOcs()
+OcsPersonListWidget::switchToOcs( const Attica::Provider &provider )
 {
     for( int i = 0; i < m_areaLayout->count(); ++i )
     {
         OcsPersonItem *item = qobject_cast< OcsPersonItem * >( m_areaLayout->itemAt( i )->widget() );
-        item->switchToOcs();
+        item->switchToOcs( provider );
     }
 }
 

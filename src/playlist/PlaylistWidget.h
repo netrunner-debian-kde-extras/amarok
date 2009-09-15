@@ -10,7 +10,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -21,7 +21,6 @@
 
 #include "PlaylistSortWidget.h"
 #include "view/listview/PrettyListView.h"
-#include "playlist/PlaylistGroupingAction.h"
 
 #include <KVBox>
 
@@ -50,7 +49,6 @@ public:
 
     SortWidget * sortWidget() { return m_sortWidget; }
     ProgressiveSearchWidget * searchWidget() { return m_searchWidget; }
-    GroupingAction * groupingAction() { return m_groupingAction; }
 
 public slots:
     void showDynamicHint( bool enabled );
@@ -71,7 +69,6 @@ private:
     PrettyListView* m_playlistView;
     ProgressiveSearchWidget * m_searchWidget;
     SortWidget * m_sortWidget;
-    GroupingAction * m_groupingAction;
     QLabel* m_dynamicHintWidget;
 
 };

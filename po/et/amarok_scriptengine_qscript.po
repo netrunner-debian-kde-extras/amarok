@@ -15,7 +15,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
-"Plural-Forms:  nplurals=2; plural=n != 1;\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #: simplejavascriptapplet.cpp:512
 #, fuzzy
@@ -65,8 +65,7 @@ msgid "loadui() takes one argument"
 msgstr "üks"
 
 #: simplejavascriptapplet.cpp:639
-#, kde-format
-#, fuzzy
+#, fuzzy, kde-format
 msgid "Unable to open '%1'"
 msgstr "'%1' avamine nurjus"
 
@@ -86,8 +85,7 @@ msgid "The parent must be a QGraphicsWidget"
 msgstr "Eellane peab olema QGraphicsWidget"
 
 #: simplejavascriptapplet.cpp:817
-#, kde-format
-#, fuzzy
+#, fuzzy, kde-format
 msgid "This operation was not supported, %1"
 msgstr "mitte 1"
 
@@ -105,4 +103,3 @@ msgstr "a"
 #, fuzzy
 msgid "The parent must be a QGraphicsLayoutItem"
 msgstr "a"
-

@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -118,7 +118,9 @@ AmarokToolBoxMenu::init( QMap< QString, QString > allApplets, QStringList applet
     m_downArrow = new ToolBoxIcon( this );
     createArrow( m_upArrow, "up" );
     createArrow( m_downArrow, "down" );
-    
+   
+/* TODO disabled adding scripted applets. framework is in place, but needs some more 
+    polish before it's ready for a release. so, turning it off for now. 
     m_installScriptedApplet = new ToolBoxIcon( this );
     m_installScriptedApplet->setDrawBackground( true );
     m_installScriptedApplet->setOrientation( Qt::Horizontal );
@@ -131,7 +133,7 @@ AmarokToolBoxMenu::init( QMap< QString, QString > allApplets, QStringList applet
     m_installScriptedApplet->hide();
     
     connect( m_installScriptedApplet, SIGNAL( clicked() ), this, SIGNAL( installApplets() ) );
-    
+    */
 }
 
 void
@@ -314,8 +316,11 @@ AmarokToolBoxMenu::show( bool refreshApplets )
     m_hideIcon->show();
     setZValue( zValue() + 10000 );
     
+#if 0
+    /* TODO disabled adding scripted applets */
     m_installScriptedApplet->setPos( 30, boundingRect().height() - ( ENTRY_HEIGHT + ENTRY_MARGIN ) * m_menuSize - OFFSET_Y + ENTRY_MARGIN * 2 );
     m_installScriptedApplet->show();
+#endif
     
     for( int i = m_currentMenu.count() - 1; i >= 0; i-- )
     {

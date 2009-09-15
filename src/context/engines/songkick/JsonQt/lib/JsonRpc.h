@@ -8,14 +8,14 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef _JSONQT_JSON_RPC_H
-#define _JSONQT_JSON_RPC_H
+#ifndef JSONQT_JSON_RPC_H
+#define JSONQT_JSON_RPC_H
 
 #include "JsonQtExport.h"
 
@@ -104,7 +104,7 @@ namespace JsonQt
 			void sendJson(const QString& json);
 
 			/** A notification has been received from the other peer.
-			 * No reponse is neccessary.
+			 * No response is necessary.
 			 */
 			void notificationReceived(const QString& method, const QVariant& parameters);
 			/** A request has been received from the other peer.
@@ -113,7 +113,7 @@ namespace JsonQt
 			void requestReceived(const QVariant& id, const QString& method, const QVariant& parameters);
 			/// A successful response has been received from the other peer.
 			void responseReceived(const QVariant& id, const QVariant& result);
-			/// An error has been recevied from the other peer.
+			/// An error has been received from the other peer.
 			void errorReceived(const QVariant& id, int errorCode, const QString& message, const QVariant& data);
 	};
 };

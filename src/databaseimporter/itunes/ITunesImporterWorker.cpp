@@ -9,7 +9,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -113,8 +113,11 @@ ITunesImporterWorker::readTrackElement()
                 m_tracksForInsert.insert( track, track->playableUrl().url() );
                 debug() << " inserting track:" << track->playableUrl();
             }
-            else
-                debug() << "track in collection (" << track->collection()->location()->prettyLocation() << "):" << track->playableUrl();
+            else {
+                Amarok::Collection* collection = track->collection();
+                if (collection)
+                    debug() << "track in collection (" << collection->location()->prettyLocation() << "):" << track->playableUrl();
+            }
 
             emit trackAdded( track );
         }
