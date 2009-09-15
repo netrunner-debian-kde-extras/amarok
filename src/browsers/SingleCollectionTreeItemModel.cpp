@@ -10,7 +10,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -44,9 +44,9 @@ SingleCollectionTreeItemModel::setLevels( const QList<int> &levelType )
 {
     delete m_rootItem; //clears the whole tree!
     m_levelType = levelType;
-    m_rootItem = new CollectionTreeItem( m_collection, 0 );
+    m_rootItem = new CollectionTreeItem( m_collection, 0, this );
 
-    d->m_collections.insert( m_collection->collectionId(), CollectionRoot( m_collection, new CollectionTreeItem( Meta::DataPtr(0), 0 ) ) );
+    d->m_collections.insert( m_collection->collectionId(), CollectionRoot( m_collection, m_rootItem ) );
 
     updateHeaderText();
     m_expandedItems.clear();
@@ -65,7 +65,7 @@ SingleCollectionTreeItemModel::data(const QModelIndex &index, int role) const
     if ( item->isDataItem() )
     {
         if ( role == Qt::DecorationRole ) {
-            //don't substract one here like in collectiontreeitemmodel because
+            //don't subtract one here like in collectiontreeitemmodel because
             //there is no collection level here
 
             //check if the item being queried is currently being populated
@@ -80,7 +80,7 @@ SingleCollectionTreeItemModel::data(const QModelIndex &index, int role) const
 
             if ( level < m_levelType.count() )
             {
-                if (  m_levelType[level] == CategoryId::Album ) 
+                if (  m_levelType[level] == CategoryId::Album )
                 {
                     Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( item->data() );
                     if( album)
@@ -88,7 +88,7 @@ SingleCollectionTreeItemModel::data(const QModelIndex &index, int role) const
                     else
                         return iconForLevel( level );
                 }
-                else 
+                else
                     return iconForLevel( level );
             }
         } else if ( role == AlternateCollectionRowRole )
@@ -98,7 +98,7 @@ SingleCollectionTreeItemModel::data(const QModelIndex &index, int role) const
     return item->data( role );
 }
 
-Qt::ItemFlags 
+Qt::ItemFlags
 SingleCollectionTreeItemModel::flags(const QModelIndex &index) const
 {
     Qt::ItemFlags f = CollectionTreeItemModelBase::flags( index );
@@ -106,34 +106,13 @@ SingleCollectionTreeItemModel::flags(const QModelIndex &index) const
 }
 
 bool
-SingleCollectionTreeItemModel::hasChildren ( const QModelIndex & parent ) const
-{
-    CollectionTreeItem *item;
-    if ( !parent.isValid() )
-        item = m_rootItem;  // must be root item!
-    else
-        item = static_cast<CollectionTreeItem*>(parent.internalPointer());
-
-    //we added the collection level so we have to be careful with the item level
-    //return item->childrenLoaded() || item->level() == m_levelType.count();  //that's track level
-    return item->level() < m_levelType.count();
-}
-
-void
-SingleCollectionTreeItemModel::ensureChildrenLoaded( CollectionTreeItem *item ) const
-{
-    if ( !item->childrenLoaded() )
-        listForLevel( item->level() +1, item->queryMaker(), item );
-}
-
-bool
 SingleCollectionTreeItemModel::canFetchMore( const QModelIndex &parent ) const
 {
     if ( !parent.isValid() )
-       return !m_rootItem->childrenLoaded();
+       return m_rootItem->requiresUpdate();
 
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>( parent.internalPointer() );
-    return item->level() < m_levelType.count() && !item->childrenLoaded();
+    return item->level() < m_levelType.count() && item->requiresUpdate();
 }
 
 void
@@ -151,7 +130,8 @@ SingleCollectionTreeItemModel::fetchMore( const QModelIndex &parent )
 void
 SingleCollectionTreeItemModel::filterChildren()
 {
-    m_rootItem->setChildrenLoaded( false );
+    markSubTreeAsDirty( m_rootItem );
+    ensureChildrenLoaded( m_rootItem );
 }
 
 #include "SingleCollectionTreeItemModel.moc"

@@ -14,7 +14,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -43,6 +43,8 @@ Playlist::GroupingProxy::GroupingProxy( Playlist::AbstractModel *belowModel, QOb
     connect( sourceModel(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( modelRowsInserted( const QModelIndex &, int, int ) ) );
     connect( sourceModel(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( modelRowsRemoved( const QModelIndex&, int, int ) ) );
     connect( sourceModel(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SIGNAL( activeTrackChanged( quint64 ) ) );
+    connect( sourceModel(), SIGNAL( metadataUpdated() ), this, SIGNAL( metadataUpdated() ) );
+    connect( this, SIGNAL( metadataUpdated() ), this, SLOT( regroupAll() ) );
 
     connect( sourceModel(), SIGNAL( layoutChanged() ), this, SLOT( regroupAll() ) );
     connect( sourceModel(), SIGNAL( layoutChanged() ), this, SIGNAL( layoutChanged() ) );
@@ -239,6 +241,10 @@ Playlist::GroupingProxy::groupRowCount( int row ) const
 bool
 Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr track2 )
 {
+    //An empty grouping category means "no grouping"
+    if ( m_groupingCategory.isEmpty() )
+        return false;
+
     if( groupableCategories.contains( m_groupingCategory ) )   //sanity
     {
         switch( groupableCategories.indexOf( m_groupingCategory ) )
@@ -329,7 +335,7 @@ Playlist::GroupingProxy::groupingCategory() const
 void
 Playlist::GroupingProxy::setGroupingCategory( const QString &groupingCategory )
 {
-    if( groupableCategories.contains( groupingCategory ) )
+    if( groupableCategories.contains( groupingCategory ) || groupingCategory.isEmpty() )
     {
         m_groupingCategory = groupingCategory;
         regroupAll();

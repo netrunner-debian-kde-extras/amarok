@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -56,6 +56,18 @@ multilevelLessThan::operator()( int rowA, int rowB)
                 verdict = verdict ? 0 : 1;
             break;
         }
+        else
+        {
+            if( m_scheme.level( i ).order() == Qt::DescendingOrder )
+                verdict = 0;
+        }
+    }
+    if( verdict == 2 )
+    {
+        if( m_scheme.level( m_scheme.length() - 1 ).order() == Qt::DescendingOrder )
+            verdict = 1;
+        else
+            verdict = 0;
     }
     return static_cast<bool>( verdict );
 }

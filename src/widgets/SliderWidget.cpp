@@ -10,7 +10,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -53,6 +53,7 @@ Amarok::Slider::Slider( Qt::Orientation orientation, uint max, QWidget *parent )
 {
     setRange( 0, max );
     setFixedHeight( 20 );
+    setAttribute( Qt::WA_NoMousePropagation, true );
 }
 
 void
@@ -322,7 +323,8 @@ void
 Amarok::TimeSlider::paintEvent( QPaintEvent * )
 {
     QPainter p( this );
-    paintCustomSliderNG( &p, 0, 0, width(), height(), m_knobX );
+    paintCustomSlider( &p, 0, 0, width(), height(), m_knobX );
+    //paintCustomSliderNG( &p, 0, 0, width(), height(), m_knobX );
 }
 
 void Amarok::TimeSlider::resizeEvent(QResizeEvent * event)
@@ -331,17 +333,16 @@ void Amarok::TimeSlider::resizeEvent(QResizeEvent * event)
     ProgressWidget::instance()->redrawBookmarks();
 }
 
-void Amarok::TimeSlider::drawTriangle( const QString &name, int seconds )
+void Amarok::TimeSlider::drawTriangle( const QString &name, int miliSeconds )
 {
     DEBUG_BLOCK
-    int ms = seconds * 1000; // convert to milliseconds
     int sliderHeight = height() - ( m_sliderInsertY * 2 );
     int sliderLeftWidth = sliderHeight / 3;
 
     // This mess converts the # of seconds into the pixel width value where the triangle should be drawn
-    int x_pos = ( ( ( double ) ms - ( double ) minimum() ) / ( maximum() - minimum() ) ) * ( width() - ( sliderLeftWidth + sliderLeftWidth + m_sliderInsertX * 2 ) );
+    int x_pos = ( ( ( double ) miliSeconds - ( double ) minimum() ) / ( maximum() - minimum() ) ) * ( width() - ( sliderLeftWidth + sliderLeftWidth + m_sliderInsertX * 2 ) );
     debug() << "drawing triangle at " << x_pos;
-    BookmarkTriangle * tri = new BookmarkTriangle( this, ms, name );
+    BookmarkTriangle * tri = new BookmarkTriangle( this, miliSeconds, name );
     connect( tri, SIGNAL( clicked( int ) ), SLOT( slotTriangleClicked( int ) ) );
     m_triangles << tri;
     tri->setGeometry( x_pos + 6 /* to center the point */, 1 /*y*/, 11, 11 ); // 6 = hard coded border width

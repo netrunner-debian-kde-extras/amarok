@@ -11,7 +11,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -147,9 +147,6 @@ Playlist::Widget::Widget( QWidget* parent )
         QToolButton *tbutton = qobject_cast<QToolButton*>(plBar->widgetForAction( layoutConfigAction ) );
         if( tbutton )
             tbutton->setPopupMode( QToolButton::InstantPopup );
-
-        m_groupingAction = new Playlist::GroupingAction( this );
-        layoutConfigAction->menu()->insertAction( layoutConfigAction->menu()->actions().at( 1 ), m_groupingAction );
 
         plBar->addAction( new KToolBarSpacerAction( this ) );
     } //END Playlist Toolbar

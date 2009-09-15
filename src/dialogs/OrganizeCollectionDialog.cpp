@@ -9,7 +9,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -280,6 +280,7 @@ OrganizeCollectionDialog::cleanPath( const QString &component ) const
     result.simplified();
     if( ui->spaceCheck->isChecked() )
         result.replace( QRegExp( "\\s" ), "_" );
+    debug()<<"I'm about to do Amarok::vfatPath( result ), this is result: "<<result;
     if( ui->vfatCheck->isChecked() )
         result = Amarok::vfatPath( result );
 

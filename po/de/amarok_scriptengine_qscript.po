@@ -87,4 +87,3 @@ msgstr "LinearLayout benötigt ein Eltern-Element (parent)."
 #: qtgui/linearlayout.cpp:76
 msgid "The parent must be a QGraphicsLayoutItem"
 msgstr "Das Eltern-Element (parent) muss vom Typ QGraphicsLayoutItem sein."
-

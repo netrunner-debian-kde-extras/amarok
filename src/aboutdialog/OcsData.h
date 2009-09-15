@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -31,17 +31,19 @@ class AMAROK_EXPORT OcsData
 public:
     typedef QList< QPair< QString, KAboutPerson > > OcsPersonList;
 
-    OcsData();
+    OcsData( const QByteArray &providerId = "opendesktop" );
     virtual ~OcsData();
     void addAuthor( const QString &username, const KAboutPerson &person );
     void addCredit( const QString &username, const KAboutPerson &person );
 
     const OcsPersonList * authors() const { return &m_authors; }
     const OcsPersonList * credits() const { return &m_credits; }
+    const QString providerId() const { return m_providerId; }
 
 private:
     QList< QPair< QString, KAboutPerson > > m_authors;
     QList< QPair< QString, KAboutPerson > > m_credits;
+    QString m_providerId;
 };
 
 #endif //AMAROK_OCSDATA_H

@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -19,7 +19,6 @@
 #include "Debug.h"
 #include "layouts/LayoutManager.h"
 #include "MainWindow.h"
-#include "PlaylistGroupingAction.h"
 #include "PlaylistWidget.h"
 #include "PlaylistSortWidget.h"
 #include "ProgressiveSearchWidget.h"
@@ -46,13 +45,10 @@ ViewUrlGenerator::createAmarokUrl()
     QString onlyMatches = playlistWidget->searchWidget()->onlyMatches() ? "true" : "false";
     QString sortPath = playlistWidget->sortWidget()->sortPath();
     QString prettySortPath = playlistWidget->sortWidget()->prettySortPath();
-    QString groupingCategory = playlistWidget->groupingAction()->currentGroupingCategory();
-    QString prettyGroupingCategory = playlistWidget->groupingAction()->prettyGroupingCategory().remove( '&' );
     QString layout = LayoutManager::instance()->activeLayoutName();
     debug()<< "The filter is "<< filterExpr;
     debug()<< "OnlyMatches is "<< onlyMatches;
     debug()<< "The sortPath is "<< sortPath;
-    debug()<< "The grouping is "<< groupingCategory;
     debug()<< "The layout is "<< layout;
 
     QString prettyUrlName;
@@ -72,13 +68,6 @@ ViewUrlGenerator::createAmarokUrl()
         prettyUrlName.append( ( onlyMatches == QString( "true" ) )
                               ? i18n( "Filter %1", prettyFilterExpr )
                               : i18n( "Search %1", prettyFilterExpr ) );
-    }
-    if( !groupingCategory.isEmpty() )
-    {
-        url.appendArg( "group", groupingCategory );
-        if( !prettyUrlName.isEmpty() )
-            prettyUrlName.append( "  |  " );
-        prettyUrlName.append( i18n( "Group by %1", prettyGroupingCategory ) );
     }
     if( !layout.isEmpty() )
     {

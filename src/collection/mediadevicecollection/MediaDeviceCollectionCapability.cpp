@@ -8,34 +8,41 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef COLLECTIONCAPABILITYMEDIADEVICE_H
-#define COLLECTIONCAPABILITYMEDIADEVICE_H
+#include "MediaDeviceCollectionCapability.h"
+#include "MediaDeviceCollection.h"
+#include "SvgHandler.h"
+#include "MetaQueryMaker.h"
 
-#include "Meta.h"
+#include <KIcon>
 
-#include "meta/capabilities/CollectionCapability.h"
+#include <QAction>
 
-class MediaDeviceCollection;
+using namespace Meta;
 
-namespace Meta
+MediaDeviceCollectionCapability::MediaDeviceCollectionCapability( MediaDeviceCollection *coll )
+    : CollectionCapability()
+    ,  m_coll( coll )
 {
-    class CollectionCapabilityMediaDevice : public CollectionCapability
-    {
-        Q_OBJECT
-
-        public:
-            CollectionCapabilityMediaDevice( MediaDeviceCollection *coll );
-
-            virtual QList<QAction*> collectionActions();
-
-        private:
-            MediaDeviceCollection *m_coll;
-    };
 }
-#endif
+
+
+QList<QAction *>
+MediaDeviceCollectionCapability::collectionActions()
+{
+    // Create Standard Device Actions
+    QList<QAction*> actions;
+    actions.append( m_coll->ejectAction() );
+
+    // Pull in other device actions defined by subclasses
+    actions += m_coll->handler()->collectionActions();  // This can be .append( QList<T> ) when we start depending on Qt>=4.5
+
+    return actions;
+}
+
+#include "MediaDeviceCollectionCapability.moc"

@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007 Alexandre Pereira de Oliveira <aleprj@gmail.com>                  *
- * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2007-2009 Maximilian Kossick <maximilian.kossick@googlemail.com>       *
  * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -10,7 +10,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -39,6 +39,7 @@
 #include <KStandardDirs>
 #include <QPixmap>
 #include <QTimeLine>
+#include <QTimer>
 
 using namespace Meta;
 
@@ -104,19 +105,6 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
             return true;
         }
     }
-    /*else
-    {
-        QModelIndex in = index;
-        while( in.model()->hasChildren( in ) )
-        {
-            int rows = in.model()->rowCount( in );
-            for( int i = 0; i < rows; i++ )
-            {
-                setData( in.child( i, 1 ), value, role );
-                in = in.sibling( in.row() + 1, in.column() );
-            }
-        }
-    }*/
     else if( Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( data ) )
     {
         Meta::TrackList tracks = album->tracks();
@@ -221,16 +209,11 @@ CollectionTreeItemModelBase::index(int row, int column, const QModelIndex & pare
     else
         parentItem = static_cast<CollectionTreeItem*>(parent.internalPointer());
 
-   //if ( parentItem->childrenLoaded() )
-   //{
-        CollectionTreeItem *childItem = parentItem->child(row);
-        if( childItem )
-            return createIndex(row, column, childItem);
-        else
-            return QModelIndex();
-    //}
-    //else
-    //   return QModelIndex();
+    CollectionTreeItem *childItem = parentItem->child(row);
+    if( childItem )
+        return createIndex(row, column, childItem);
+    else
+        return QModelIndex();
 }
 
 QModelIndex
@@ -258,9 +241,7 @@ CollectionTreeItemModelBase::rowCount(const QModelIndex & parent) const
     else
         parentItem = static_cast<CollectionTreeItem*>(parent.internalPointer());
 
-    if( parentItem->childrenLoaded() )
-        return parentItem->childCount();
-    return 0;
+    return parentItem->childCount();
 }
 
 int CollectionTreeItemModelBase::columnCount(const QModelIndex & parent) const
@@ -334,6 +315,27 @@ CollectionTreeItemModelBase::mimeData(const QList<CollectionTreeItem*> & items) 
     return mimeData;
 }
 
+bool
+CollectionTreeItemModelBase::hasChildren ( const QModelIndex & parent ) const
+{
+     if( !parent.isValid() )
+         return true; // must be root item!
+
+    CollectionTreeItem *item = static_cast<CollectionTreeItem*>(parent.internalPointer());
+    //we added the collection level so we have to be careful with the item level
+    return !item->isDataItem() || item->level() + levelModifier() <= m_levelType.count();
+
+}
+
+void
+CollectionTreeItemModelBase::ensureChildrenLoaded( CollectionTreeItem *item )
+{
+    if ( item->requiresUpdate() )
+    {
+        listForLevel( item->level() + levelModifier(), item->queryMaker(), item );
+    }
+}
+
 QPixmap
 CollectionTreeItemModelBase::iconForLevel(int level) const
 {
@@ -360,9 +362,8 @@ CollectionTreeItemModelBase::iconForLevel(int level) const
     return KIconLoader::global()->loadIcon( icon, KIconLoader::Toolbar, KIconLoader::SizeSmall );
 }
 
-void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, CollectionTreeItem * parent) const
+void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, CollectionTreeItem * parent)
 {
-    //DEBUG_BLOCK
     if ( qm && parent )
     {
         //this check should not hurt anyone... needs to check if single... needs it
@@ -372,6 +373,9 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
                 return;             //we are already querying for children of parent
         }
         if ( level > m_levelType.count() )
+            return;
+
+        if( parent->isVariousArtistItem() )
             return;
 
         if ( level == m_levelType.count() )
@@ -384,9 +388,13 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
                     qm->setQueryType( QueryMaker::Album );
                     //restrict query to normal albums if the previous level
                     //was the artist category. in that case we handle compilations below
-                    if( level > 0 && m_levelType[level-1] == CategoryId::Artist )
+                    if( level > 0 && m_levelType[level-1] == CategoryId::Artist && !parent->isVariousArtistItem() )
                     {
                         qm->setAlbumQueryMode( QueryMaker::OnlyNormalAlbums );
+                    }
+                    else
+                    {
+                        qm->setAlbumQueryMode( QueryMaker::OnlyCompilations );
                     }
                     break;
                 case CategoryId::Artist :
@@ -414,8 +422,10 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
         CollectionTreeItem *tmpItem = parent;
         while( tmpItem->isDataItem() )
         {
-            //ignore Various artists node (whichh will not have a data pointer
-            if( tmpItem->data() )
+            //ignore Various artists node (which will not have a data pointer)
+            if( tmpItem->isVariousArtistItem() )
+                qm->setAlbumQueryMode( QueryMaker::OnlyCompilations );
+            else
                 qm->addMatch( tmpItem->data() );
 
             tmpItem = tmpItem->parent();
@@ -425,11 +435,12 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
         connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ), Qt::QueuedConnection );
         connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
         d->m_childQueries.insert( qm, parent );
+        d->m_runningQueries.insert( parent );
         qm->run();
 
-        //start animation
-        if( ( m_timeLine->state() != QTimeLine::Running ) && ( parent != m_rootItem ) )
-            m_timeLine->start();
+        //some very quick queries may be dode so fast that the loading
+        //animation creates an unnecessary flicker, therfore delay it for a bit
+        QTimer::singleShot( 150, this, SLOT( startAnimationTick() ) );
     }
 }
 
@@ -544,7 +555,7 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
                 else if ( lcField.compare( "year", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "year" ), Qt::CaseInsensitive ) == 0)
                 {
                     if ( ( validFilters & QueryMaker::YearFilter ) == 0 ) continue;
-                    ADD_OR_EXCLUDE_FILTER( Meta::valYear, elem.text, false, false );
+                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valYear, elem.text.toInt(), compare );
                 }
                 else if( lcField.compare( "comment", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "comment" ), Qt::CaseInsensitive ) == 0 )
                 {
@@ -643,12 +654,12 @@ CollectionTreeItemModelBase::queryDone()
     //reset icon for this item
     if( item && item != m_rootItem )
     {
-        emit ( dataChanged ( createIndex(item->row(), 0, item), createIndex(item->row(), 0, item) ) );
-        emit ( queryFinished() );
+        emit dataChanged( createIndex(item->row(), 0, item), createIndex(item->row(), 0, item) );
+        emit queryFinished();
     }
 
     //stop timer if there are no more animations active
-    if( d->m_childQueries.count() == 0 /*&& d->m_compilationQueries.count() == 0 */ )
+    if( d->m_runningQueries.count() == 0 )
         m_timeLine->stop();
     qm->deleteLater();
 }
@@ -658,9 +669,6 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
 {
     Q_UNUSED( collectionId )
 
-    if ( data.count() == 0 )
-        return;
-
     //if we are expanding an item, we'll find the sender in m_childQueries
     //otherwise we are filtering all collections
     QueryMaker *qm = qobject_cast<QueryMaker*>( sender() );
@@ -669,76 +677,212 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
 
     if( d->m_childQueries.contains( qm ) )
     {
-        CollectionTreeItem *parent = d->m_childQueries.value( qm );
-        QModelIndex parentIndex;
-        if( parent ) {
-            if( parent == m_rootItem ) // will never happen in CollectionTreeItemModel
-                parentIndex = QModelIndex();
-            else
-                parentIndex = createIndex( parent->row(), 0, parent );
-
-            //add new rows after existing ones here (which means all artists nodes
-            //will be inserted after the "Various Artists" node
-            beginInsertRows( parentIndex, parent->childCount(), parent->childCount() + data.count()-1 );
-            populateChildren( data, parent );
-            endInsertRows();
-
-            for( int count = parent->childCount(), i = 0; i < count; ++i )
-            {
-                CollectionTreeItem *item = parent->child( i );
-                if ( m_expandedItems.contains( item->data() ) ) //item will always be a data item
-                {
-                    listForLevel( item->level(), item->queryMaker(), item );
-                }
-            }
-
-            if ( parent->isDataItem() )
-            {
-                if ( m_expandedItems.contains( parent->data() ) )
-                    emit expandIndex( parentIndex );
-                else
-                    //simply insert the item, nothing will change if it is already in the set
-                    m_expandedItems.insert( parent->data() );
-            }
-            else
-            {
-                m_expandedCollections.insert( parent->parentCollection() );
-            }
-        }
+        handleNormalQueryResult( qm, data );
     }
     else if( d->m_compilationQueries.contains( qm ) )
     {
-        CollectionTreeItem *parent = d->m_compilationQueries.value( qm );
-        QModelIndex parentIndex;
-        if( parent )
-        {
-            if (parent == m_rootItem ) // will never happen in CollectionTreeItemModel
-                parentIndex = QModelIndex();
-            else
-                parentIndex = createIndex( parent->row(), 0, parent );
+        handleCompilationQueryResult( qm, data );
+    }
+}
 
+void
+CollectionTreeItemModelBase::handleCompilationQueryResult( QueryMaker *qm, const Meta::DataList &dataList )
+{
+    CollectionTreeItem *parent = d->m_compilationQueries.value( qm );
+    d->m_runningQueries.remove( parent );
+    QModelIndex parentIndex;
+    if( parent )
+    {
+        if (parent == m_rootItem ) // will never happen in CollectionTreeItemModel
+            parentIndex = QModelIndex();
+        else
+            parentIndex = createIndex( parent->row(), 0, parent );
+
+        //if the compilation query did not return a result we have to remove the
+        //the various artists node itself
+        if( dataList.isEmpty() )
+        {
+            for( int i = 0; i < parent->childCount(); i++ )
+            {
+                CollectionTreeItem *cti = parent->child( i );
+                if( cti->isVariousArtistItem() )
+                {
+                    //found the various artists node
+                    beginRemoveRows( parentIndex, cti->row(), cti->row() );
+                    cti = 0; //will be deleted;
+                    parent->removeChild( i );
+                    endRemoveRows();
+                    break;
+                }
+            }
+            //we have removed the VA node if it existed
+            return;
+        }
+
+        CollectionTreeItem *vaNode = 0;
+        if( parent->childCount() == 0 )
+        {
             //we only insert the "Various Artists" node
             beginInsertRows( parentIndex, 0, 0 );
-            CollectionTreeItem *vaItem = new CollectionTreeItem( data, parent );
+            vaNode = new CollectionTreeItem( dataList, parent, this );
+            //set requiresUpdate, otherwise we will query for the children of vaNode again!
+            vaNode->setRequiresUpdate( false );
             endInsertRows();
+        }
+        else
+        {
+            for( int i = 0; i < parent->childCount(); i++ )
+            {
+                CollectionTreeItem *cti = parent->child( i );
+                if( cti->isVariousArtistItem() )
+                {
+                    //found the various artists node
+                    vaNode = cti;
+                    break;
+                }
+            }
+            if( !vaNode )
+            {
+                //we only insert the "Various Artists" node
+                beginInsertRows( parentIndex, 0, 0 );
+                vaNode = new CollectionTreeItem( dataList, parent, this );
+                //set requiresUpdate, otherwise we will query for the children of vaNode again!
+                vaNode->setRequiresUpdate( false );
+                endInsertRows();
+            }
+            else
+            {
+                //only call populateChildren for the VA node if we have not
+                //created it in this method call. The VA ndoe ctor takes care
+                //of that itself
+                populateChildren( dataList, vaNode, createIndex( vaNode->row(), 0, vaNode ) );
+            }
+            //populate children will call setRequiresUpdate on vaNode
+            //but as the VA query is based on vaNode's parent,
+            //we have to call setRequiresUpdate on the parent too
+            //yes, this will mean we will call setRequiresUpdate twice
+            parent->setRequiresUpdate( false );
 
+            for( int count = vaNode->childCount(), i = 0; i < count; ++i )
+            {
+                CollectionTreeItem *item = vaNode->child( i );
+                if ( m_expandedItems.contains( item->data() ) ) //item will always be a data item
+                {
+                    listForLevel( item->level() + levelModifier(), item->queryMaker(), item );
+                }
+            }
+        }
+
+        //if the va node exists, check if it has to be expanded
+        if(vaNode)
+        {
             CollectionTreeItem *tmp = parent;
             while( tmp->isDataItem() )
                 tmp = tmp->parent();
 
             if( m_expandedVariousArtistsNodes.contains( tmp->parentCollection() ) )
-                createIndex( 0, 0, vaItem ); //we've just inserted the vaItem at row 0
-
+            {
+                emit expandIndex( createIndex( 0, 0, vaNode ) ); //we have just inserted the vaItem at row 0
+            }
         }
     }
 }
 
 void
-CollectionTreeItemModelBase::populateChildren(const DataList & dataList, CollectionTreeItem * parent) const
+CollectionTreeItemModelBase::handleNormalQueryResult( QueryMaker *qm, const Meta::DataList &dataList )
 {
-    foreach( Meta::DataPtr data, dataList )
-        new CollectionTreeItem( data, parent );
-    parent->setChildrenLoaded( true );
+    CollectionTreeItem *parent = d->m_childQueries.value( qm );
+    d->m_runningQueries.remove( parent );
+    QModelIndex parentIndex;
+    if( parent ) {
+        m_rootItem->dumpObjectTree();
+        if( parent == m_rootItem ) // will never happen in CollectionTreeItemModel, but will happen in Single!
+            parentIndex = QModelIndex();
+        else
+            parentIndex = createIndex( parent->row(), 0, parent );
+
+        populateChildren( dataList, parent, parentIndex );
+
+        if ( parent->isDataItem() )
+        {
+            if ( m_expandedItems.contains( parent->data() ) )
+                emit expandIndex( parentIndex );
+            else
+                //simply insert the item, nothing will change if it is already in the set
+                m_expandedItems.insert( parent->data() );
+        }
+        else
+        {
+            m_expandedCollections.insert( parent->parentCollection() );
+        }
+    }
+}
+
+void
+CollectionTreeItemModelBase::populateChildren(const DataList & dataList, CollectionTreeItem * parent, const QModelIndex &parentIndex )
+{
+    //add new rows after existing ones here (which means all artists nodes
+    //will be inserted after the "Various Artists" node)
+    {
+        //figure out which children of parent have to be removed,
+        //which new children have to be added, and preemptively emit dataChanged for the rest
+        //have to check how that influences performance...
+        QHash<Meta::DataPtr, int> dataToIndex;
+        QSet<Meta::DataPtr> childrenSet;
+        foreach( CollectionTreeItem *child, parent->children() )
+        {
+            if( child->isVariousArtistItem() )
+                continue;
+            childrenSet.insert( child->data() );
+            dataToIndex.insert( child->data(), child->row() );
+        }
+        QSet<Meta::DataPtr> dataSet = dataList.toSet();
+        QSet<Meta::DataPtr> dataToBeAdded = dataSet - childrenSet;
+        QSet<Meta::DataPtr> dataToBeRemoved = childrenSet - dataSet;
+
+        QList<int> currentIndices;
+        //first remove all rows that have to be removed
+        //walking through the cildren in reverse order does not screw up the order
+        for( int i = parent->childCount() - 1; i >= 0; i-- )
+        {
+            CollectionTreeItem *child = parent->child( i );
+            bool toBeRemoved = child->isDataItem() && !child->isVariousArtistItem() && dataToBeRemoved.contains( child->data() ) ;
+            if( toBeRemoved )
+            {
+                currentIndices.append( i );
+            }
+            //make sure we remove the rows if the first row (we are using reverse order) has to be removed too!
+            if( ( !toBeRemoved || i == 0 ) && !currentIndices.isEmpty() )
+            {
+                //be careful in which order you insert the rows above!!
+                beginRemoveRows( parentIndex, currentIndices.last(), currentIndices.first() );
+                foreach( int i, currentIndices )
+                {
+                    parent->removeChild( i );
+                }
+                endRemoveRows();
+                currentIndices.clear();
+            }
+        }
+        //hopefully the view has figured out that we've removed rows yet!
+        int lastRow = parent->childCount() - 1;
+        if( lastRow >= 0 )
+        {
+            emit dataChanged( createIndex( 0, 0, parent->child( 0 ) ), createIndex( lastRow, 0, parent->child( lastRow ) ) );
+        }
+        //add the new rows
+        if( !dataToBeAdded.isEmpty() )
+        {
+            //the above check ensures that Qt does not crash on beginInsertRows ( because lastRow+1 > lastRow+0)
+            beginInsertRows( parentIndex, lastRow + 1, lastRow + dataToBeAdded.count() );
+            foreach( Meta::DataPtr data, dataToBeAdded )
+            {
+                new CollectionTreeItem( data, parent, this );
+            }
+            endInsertRows();
+        }
+        parent->setRequiresUpdate( false );
+    }
 }
 
 void
@@ -779,7 +923,7 @@ CollectionTreeItemModelBase::handleCompilations( CollectionTreeItem *parent ) co
     while( tmpItem->isDataItem()  )
     {
         //ignore Various artists node (which will not have a data pointer)
-        if( tmpItem->data() )
+        if( !tmpItem->isVariousArtistItem() )
             qm->addMatch( tmpItem->data() );
         tmpItem = tmpItem->parent();
     }
@@ -788,7 +932,15 @@ CollectionTreeItemModelBase::handleCompilations( CollectionTreeItem *parent ) co
     connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ), Qt::QueuedConnection );
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
     d->m_compilationQueries.insert( qm, parent );
+    d->m_runningQueries.insert( parent );
     qm->run();
+}
+
+void CollectionTreeItemModelBase::startAnimationTick()
+{
+    //start animation
+    if( ( m_timeLine->state() != QTimeLine::Running ) && !d->m_runningQueries.isEmpty() )
+        m_timeLine->start();
 }
 
 void CollectionTreeItemModelBase::loadingAnimationTick()
@@ -801,10 +953,13 @@ void CollectionTreeItemModelBase::loadingAnimationTick()
     m_animFrame = 1 - m_animFrame;
 
     //trigger an update of all items being populated at the moment;
-    QList<CollectionTreeItem* > items = d->m_childQueries.values();
 
-    foreach ( CollectionTreeItem* item, items )
-        emit ( dataChanged ( createIndex(item->row(), 0, item), createIndex(item->row(), 0, item) ) );
+    foreach ( CollectionTreeItem* item, d->m_runningQueries )
+    {
+        if( item == m_rootItem )
+            continue;
+        emit dataChanged ( createIndex(item->row(), 0, item), createIndex(item->row(), 0, item) );
+    }
 }
 
 void
@@ -820,7 +975,7 @@ CollectionTreeItemModelBase::slotFilter()
         return; // we are already busy, do not try to change filters in the middle of everything as that will cause crashes
 
     filterChildren();
-    reset();
+    //reset();
     if ( !m_expandedCollections.isEmpty() )
     {
         foreach( Amarok::Collection *expanded, m_expandedCollections )
@@ -838,11 +993,11 @@ CollectionTreeItemModelBase::slotCollapsed( const QModelIndex &index )
     if ( index.isValid() )      //probably unnecessary, but let's be safe
     {
         CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
-        if ( item->isDataItem() && item->data() )
+        if ( item->isDataItem() && !item->isVariousArtistItem() )
         {
             m_expandedItems.remove( item->data() );
         }
-        else if( item->isDataItem() && !item->data() ) //Various artists nodes
+        else if( item->isVariousArtistItem() ) //Various artists nodes
         {
             CollectionTreeItem *tmp = item->parent();
             while( tmp->isDataItem() )
@@ -890,6 +1045,34 @@ bool CollectionTreeItemModelBase::isQuerying() const
     return !( d->m_childQueries.isEmpty() && d->m_compilationQueries.isEmpty() );
 }
 
+void CollectionTreeItemModelBase::markSubTreeAsDirty( CollectionTreeItem *item )
+{
+    item->setRequiresUpdate( true );
+    for( int i = 0; i < item->childCount(); i++ )
+    {
+        markSubTreeAsDirty( item->child( i ) );
+    }
+}
+
+void CollectionTreeItemModelBase::itemAboutToBeDeleted( CollectionTreeItem *item )
+{
+    if( !d->m_runningQueries.contains( item ) )
+        return;
+    //replace this hack with QWeakPointer as soon as we depend on Qt 4.6
+    d->m_runningQueries.remove( item );
+    QueryMaker *qm = 0;
+    qm = d->m_childQueries.key( item, 0 );
+    if( qm )
+    {
+        d->m_childQueries.remove( qm );
+        //we found the item in this map, it won't be in the other
+        return;
+    }
+
+    qm = d->m_compilationQueries.key( item, 0 );
+    if( qm )
+        d->m_compilationQueries.remove( qm );
+}
 
 #include "CollectionTreeItemModelBase.moc"
 

@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007 Alexandre Pereira de Oliveira <aleprj@gmail.com>                  *
- * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2007-2009 Maximilian Kossick <maximilian.kossick@googlemail.com>       *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -9,7 +9,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -33,20 +33,32 @@ namespace CustomRoles
         ByLineRole = Qt::UserRole + 3,
         HasCapacityRole = Qt::UserRole + 4,
         UsedCapacityRole = Qt::UserRole + 5,
-        HasDecoratorsRole = Qt::UserRole + 6,
-        DecoratorsRole = Qt::UserRole + 7
+        HasDecoratorRole = Qt::UserRole + 6,
+        DecoratorRole = Qt::UserRole + 7
     };
 }
+
+class CollectionTreeItemModelBase;
 
 class CollectionTreeItem : public QObject
 {
     Q_OBJECT
+    Q_ENUMS( Type );
 
     public:
-        CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *parent );
-        CollectionTreeItem( Amarok::Collection *parentCollection, CollectionTreeItem *parent );
+        enum Type
+        {
+            Root,
+            Collection,
+            VariousArtist,
+            Data
+        };
+
+        CollectionTreeItem( CollectionTreeItemModelBase *model ); //root node
+        CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *parent, CollectionTreeItemModelBase *model  ); //data node
+        CollectionTreeItem( Amarok::Collection *parentCollection, CollectionTreeItem *parent, CollectionTreeItemModelBase *model  ); //collection node
         //this ctor creates a "Various Artists" node. do not use it for anything else
-        CollectionTreeItem( const Meta::DataList &data, CollectionTreeItem *parent );
+        CollectionTreeItem( const Meta::DataList &data, CollectionTreeItem *parent, CollectionTreeItemModelBase *model  ); //various artist node
 
         ~CollectionTreeItem();
 
@@ -55,10 +67,11 @@ class CollectionTreeItem : public QObject
         void appendChild( CollectionTreeItem *child );
         void removeChild( int index );
 
-        CollectionTreeItem *child( int row );
+        CollectionTreeItem* child( int row );
 
         int childCount() const { return m_childItems.count(); }
         int columnCount() const { return 1; }
+        QList<CollectionTreeItem*> children() const;
 
         QVariant data( int role ) const;
 
@@ -69,12 +82,11 @@ class CollectionTreeItem : public QObject
         bool isDataItem() const;
         bool isAlbumItem() const;
         bool isTrackItem() const;
+        bool isVariousArtistItem() const;
 
         QueryMaker* queryMaker() const;
 
         bool operator<( const CollectionTreeItem& other ) const;
-        bool childrenLoaded() const { return  m_childrenLoaded; }
-        void setChildrenLoaded( bool childrenLoaded );
 
         const Meta::DataPtr data() const { return m_data; }
         Amarok::Collection* parentCollection() const { return m_parentCollection; }
@@ -83,6 +95,12 @@ class CollectionTreeItem : public QObject
         QList<Meta::TrackPtr> descendentTracks();
 
         bool allDescendentTracksLoaded() const;
+
+        //required to mark a tree item as dirty if the model has to requiry its childre
+
+        Type type() const;
+        bool requiresUpdate() const;
+        void setRequiresUpdate( bool updateRequired );
 
     signals:
         void dataUpdated();
@@ -93,20 +111,22 @@ class CollectionTreeItem : public QObject
 
     private:
         QString albumYear() const;
-        QList<QAction*> collectionActions() const;
+        QAction* decoratorAction() const;
 
         Meta::DataPtr m_data;
         CollectionTreeItem *m_parent;
-        Amarok::Collection* m_parentCollection;
+        CollectionTreeItemModelBase *m_model;
+        Amarok::Collection *m_parentCollection;
 
         QList<CollectionTreeItem*> m_childItems;
-        bool m_childrenLoaded;
-        bool m_isVariousArtistsNode;
+        bool m_updateRequired;
         int  m_trackCount;
+        Type m_type;
+        //QString m_name;
         mutable bool m_isCounting;
 
-        mutable QList<QAction*> m_collectionActions;
-        mutable bool m_collectionActionsLoaded;
+        mutable QAction *m_decoratorAction;
+        mutable bool m_decoratorActionLoaded;
 };
 
 #endif

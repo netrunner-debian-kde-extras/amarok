@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -35,14 +35,12 @@ AudioCdConnectionAssistant::identify( const QString& udi )
 {
     DEBUG_BLOCK
 
-    Solid::Device device;
+    const Solid::Device device = Solid::Device(udi);
 
-    device = Solid::Device(udi);
-    
     if( device.is<Solid::OpticalDisc>() )
     {
         debug() << "OpticalDisc";
-        Solid::OpticalDisc * opt = device.as<Solid::OpticalDisc>();
+        const Solid::OpticalDisc * opt = device.as<Solid::OpticalDisc>();
         if ( opt->availableContent() & Solid::OpticalDisc::Audio )
         {
             debug() << "AudioCd";
@@ -57,11 +55,9 @@ AudioCdConnectionAssistant::identify( const QString& udi )
 MediaDeviceInfo*
 AudioCdConnectionAssistant::deviceInfo( const QString& udi )
 {
+    const QString mountpoint = MediaDeviceCache::instance()->volumeMountPoint(udi);
 
-    QString mountpoint = MediaDeviceCache::instance()->volumeMountPoint(udi);
-
-    MediaDeviceInfo* info = new AudioCdDeviceInfo( mountpoint, udi );
-    return info;
+    return new AudioCdDeviceInfo( mountpoint, udi );
 }
 
 #include "AudioCdConnectionAssistant.moc"

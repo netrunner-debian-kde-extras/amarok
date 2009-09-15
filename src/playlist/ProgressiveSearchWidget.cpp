@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -54,6 +54,7 @@ ProgressiveSearchWidget::ProgressiveSearchWidget( QWidget * parent )
 
     connect( m_searchEdit, SIGNAL( textChanged( const QString & ) ), this, SLOT( slotFilterChanged(  const QString &  ) ) );
     connect( m_searchEdit, SIGNAL( returnPressed( const QString & ) ), this, SIGNAL( activateFilterResult() ) );
+    connect( m_searchEdit, SIGNAL( returnPressed() ), this, SLOT( defocus() ) );
     connect( m_searchEdit, SIGNAL( downPressed() ), this, SIGNAL( downPressed() ) );
 
     QToolBar *toolbar = new QToolBar( searchBox );

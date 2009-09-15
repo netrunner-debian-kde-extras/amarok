@@ -9,7 +9,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -123,7 +123,7 @@ void PhotosScrollWidget::setPixmapList (QList < PhotosInfo * > list)
                 case PHOTOS_MODE_INTERACTIVE :
                 {
 
-                    if ( !m_id ) // carefull we're animating
+                    if ( !m_id ) // careful we're animating
                     {
                         Plasma::Animator::self()->stopCustomAnimation( m_id );
                         m_id = 0;
@@ -409,7 +409,7 @@ void PhotosScrollWidget::animate( qreal anim )
                 
                 m_actualpos--;
                 
-                //this is not totally obvious, but we alrady made number two visual image the current one,
+                //this is not totally obvious, but we already made the number two visual image the current one,
                 //so if we draw this as the first one, there will be no animation...
                 int a = m_lastPix;
                 

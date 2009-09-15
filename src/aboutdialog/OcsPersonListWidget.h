@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -19,17 +19,20 @@
 
 #include "OcsPersonItem.h"
 #include "OcsData.h"
+#include "libattica-ocsclient/provider.h"
 
 class OcsPersonListWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    OcsPersonListWidget( const QList< KAboutPerson > &persons, const OcsData::OcsPersonList *ocsPersons,
-                         OcsPersonItem::PersonStatus status = OcsPersonItem::Author, QWidget *parent = 0 );
+    OcsPersonListWidget( const QList< KAboutPerson > &persons,
+                         const OcsData::OcsPersonList *ocsPersons,
+                         OcsPersonItem::PersonStatus status = OcsPersonItem::Author,
+                         QWidget *parent = 0 );
 
 public slots:
-    void switchToOcs();
+    void switchToOcs( const Attica::Provider &provider );
     void onOcsFetchStarted();
     void onOcsDataFetched( int err );
 

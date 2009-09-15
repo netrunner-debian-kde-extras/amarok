@@ -14,7 +14,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -713,11 +713,11 @@ EngineController::eqBandsFreq() const
         {
             if( rx.cap( 0 ).toInt() < 1000 )
             {
-                mBandsFreq << QString( rx.cap( 0 )).append( " Hz" );
+                mBandsFreq << QString( rx.cap( 0 )).append( "\nHz" );
             }
             else
             {
-                mBandsFreq << QString::number( rx.cap( 0 ).toInt()/1000 ).append( " kHz" );
+                mBandsFreq << QString::number( rx.cap( 0 ).toInt()/1000 ).append( "\nkHz" );
             }
         }
     }

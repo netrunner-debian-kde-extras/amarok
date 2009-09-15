@@ -24,6 +24,10 @@ if( STRIGI_FOUND )
     add_subdirectory( strigi )
 endif( STRIGI_FOUND )
 
+if(APPLE)
+    find_package( SecurityFramework REQUIRED )
+endif(APPLE)
+
 include_directories(
     aboutdialog
     aboutdialog/libattica-ocsclient
@@ -66,6 +70,7 @@ include_directories(
     ${TAGLIB-EXTRAS_INCLUDE_DIR}
     ${QT_INCLUDES}
     ${QT_QTSCRIPT_INCLUDE_DIR}
+    ${APPLE_SECURITY_INCLUDE_DIR}
 )
 
 if ( KDEMULTIMEDIA_FOUND )
@@ -96,7 +101,8 @@ set(libmediadeviceframework_SRCS
   collection/mediadevicecollection/MediaDeviceCollection.cpp
   collection/mediadevicecollection/MediaDeviceCollectionLocation.cpp
   collection/mediadevicecollection/MediaDeviceMeta.cpp  
-  collection/mediadevicecollection/CollectionCapabilityMediaDevice.cpp
+  collection/mediadevicecollection/MediaDeviceCollectionCapability.cpp
+  collection/mediadevicecollection/MediaDeviceDecoratorCapability.cpp
   collection/mediadevicecollection/handler/MediaDeviceHandler.cpp
   collection/mediadevicecollection/handler/MediaDeviceHandlerCapability.cpp
   collection/mediadevicecollection/handler/capabilities/ArtworkCapability.cpp
@@ -111,6 +117,20 @@ set(libmediadeviceframework_SRCS
   collection/mediadevicecollection/support/ConnectionAssistant.cpp
   collection/mediadevicecollection/support/MediaDeviceInfo.cpp
 )
+
+#####################################################################
+# CREDENTIALSTORAGE
+#####################################################################
+
+if(APPLE)
+    set(credentialstorage_SRCS
+        CredentialStorage_mac.cpp
+    )
+else(APPLE)
+    set(credentialstorage_SRCS
+        CredentialStorage.cpp
+    )
+endif(APPLE)
 
 #####################################################################
 # SERVICEFRAMEWORK
@@ -187,6 +207,7 @@ set(libconfigdialog_SRCS
     configdialog/dialogs/OsdConfig.cpp
     configdialog/dialogs/PlaybackConfig.cpp
     configdialog/dialogs/ServiceConfig.cpp
+    configdialog/dialogs/DatabaseConfig.cpp
 )
 
 kde4_add_ui_files(libconfigdialog_SRCS
@@ -194,6 +215,7 @@ kde4_add_ui_files(libconfigdialog_SRCS
     configdialog/dialogs/GeneralConfig.ui
     configdialog/dialogs/OsdConfig.ui
     configdialog/dialogs/PlaybackConfig.ui
+    configdialog/dialogs/DatabaseConfig.ui
 )
 
 set(libbrowserframework_SRCS
@@ -270,6 +292,7 @@ set(meta_SRCS
     meta/capabilities/CollectionCapability.cpp
     meta/capabilities/CurrentTrackActionsCapability.cpp
     meta/capabilities/CustomActionsCapability.cpp
+    meta/capabilities/DecoratorCapability.cpp
     meta/capabilities/EditCapability.cpp
     meta/capabilities/EditablePlaylistCapability.cpp
     meta/capabilities/LastFmCapability.cpp
@@ -361,6 +384,7 @@ set(libplaylistbrowser_SRCS
     browsers/playlistbrowser/DynamicBiasDelegate.cpp
     browsers/playlistbrowser/DynamicBiasModel.cpp
     browsers/playlistbrowser/DynamicBiasWidgets.cpp
+    browsers/playlistbrowser/QtGroupingProxy.cpp
     browsers/playlistbrowser/PlaylistBrowser.cpp
     browsers/playlistbrowser/UserPlaylistModel.cpp
     browsers/playlistbrowser/UserPlaylistTreeView.cpp
@@ -392,7 +416,6 @@ set(libplaylist_SRCS
     playlist/PlaylistBreadcrumbItemSortButton.cpp
     playlist/PlaylistBreadcrumbLevel.cpp
     playlist/PlaylistController.cpp
-    playlist/PlaylistGroupingAction.cpp
     playlist/PlaylistHeader.cpp
     playlist/PlaylistItem.cpp
     playlist/PlaylistModel.cpp
@@ -503,6 +526,7 @@ set(amaroklib_LIB_SRCS
     ${libcontextview_SRCS}
     ${libcollectionbrowser_SRCS}
     ${libconfigdialog_SRCS}
+    ${credentialstorage_SRCS}
     ${libplaylist_SRCS}
     ${libplugin_SRCS}
     ${libproxycollection_SRCS}
@@ -688,6 +712,7 @@ if(WIN32)
     target_link_libraries(amaroklib ${QT_QTWEBKIT_LIBRARY})
 endif(WIN32)
 if(APPLE)
+    target_link_libraries(amaroklib ${APPLE_SECURITY_LIBRARY})
     SET_TARGET_PROPERTIES(amaroklib PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)
 
@@ -759,8 +784,6 @@ install(FILES dbus/org.freedesktop.MediaPlayer.root.xml
 
 
 install(FILES data/DefaultPlaylistLayouts.xml
-              data/DefaultDockLayout32
-              data/DefaultDockLayout64
               services/InfoParserLoading.html
               browsers/hover_info_template.html
               DESTINATION ${DATA_INSTALL_DIR}/amarok/data)

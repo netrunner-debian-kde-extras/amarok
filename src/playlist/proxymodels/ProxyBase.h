@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -349,6 +349,11 @@ signals:
      * @param the id of the new active track.
      */
     void activeTrackChanged( const quint64 );
+
+    /**
+     * Signal forwarded from the source model. Emitted when the metadata of a track changes.
+     */
+    void metadataUpdated();
 
 protected:
     /**

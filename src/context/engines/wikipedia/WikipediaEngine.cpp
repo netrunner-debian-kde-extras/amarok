@@ -10,7 +10,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -531,7 +531,10 @@ WikipediaEngine::wikiTrackPostfix()
 inline QString
 WikipediaEngine::wikiUrl( const QString &item ) const
 {
-    return QString( "http://%1.wikipedia.org/wiki/" ).arg( wikiLocale() ) + KUrl::toPercentEncoding( item, "/" );
+    // We now use:  http://en.wikipedia.org/w/index.php?title=The_Beatles&useskin=monobook
+    // instead of:  http://en.wikipedia.org/wiki/The_Beatles
+    // So that wikipedia skin is forced to default "monoskin", and the page can be parsed correctly (see BUG 205901 )
+    return QString( "http://%1.wikipedia.org/w/index.php?title=" ).arg( wikiLocale() ) + KUrl::toPercentEncoding( item, "/" ) + QString( "&useskin=monobook" );
 }
 
 inline QString

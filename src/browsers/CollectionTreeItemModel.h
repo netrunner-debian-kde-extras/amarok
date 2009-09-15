@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007 Alexandre Pereira de Oliveira <aleprj@gmail.com>                  *
- * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2007-2009 Maximilian Kossick <maximilian.kossick@googlemail.com>       *
  * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -10,7 +10,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -38,7 +38,6 @@ class CollectionTreeItemModel: public CollectionTreeItemModelBase
         ~CollectionTreeItemModel();
 
         virtual QVariant data(const QModelIndex &index, int role) const;
-        virtual bool hasChildren ( const QModelIndex & parent = QModelIndex() ) const;
         virtual bool canFetchMore( const QModelIndex &parent ) const;
         virtual void fetchMore( const QModelIndex &parent );
         virtual void setLevels( const QList<int> &levelType );
@@ -49,13 +48,12 @@ class CollectionTreeItemModel: public CollectionTreeItemModelBase
 
     protected:
         virtual void filterChildren();
+        virtual int levelModifier() const { return 0; }
 
     private slots:
         virtual void requestCollectionsExpansion();
         void update();
 
-    private:
-        void ensureChildrenLoaded( CollectionTreeItem *item ) const;
 };
 
 #endif

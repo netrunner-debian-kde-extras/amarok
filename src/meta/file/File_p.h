@@ -10,7 +10,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -230,7 +230,7 @@ void Track::Private::readMetaData()
             QString track_encoding( prober.encodingName() );
             if ( result != KEncodingProber::NotMe )
             {
-                /*  for further infomation please refer to:
+                /*  for further information please refer to:
                     http://doc.trolltech.com/4.4/qtextcodec.html
                     http://www.mozilla.org/projects/intl/chardet.html
                 */
@@ -313,6 +313,12 @@ void Track::Private::readMetaData()
     else
     {
         m_data.fileSize = QFile( url.path() ).size();
+    }
+
+    //as a last ditch effort, use the filename as the title if nothing else has been found
+    if ( m_data.title.isEmpty() )
+    {
+        m_data.title = url.fileName();
     }
 
     debug() << "Read metadata from file for: " + m_data.title;

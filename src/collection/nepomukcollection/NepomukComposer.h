@@ -8,14 +8,14 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef NEPOMUKCOMPOSER_H_
-#define NEPOMUKCOMPOSER_H_
+#ifndef NEPOMUKCOMPOSER_H
+#define NEPOMUKCOMPOSER_H
 
 #include "Meta.h"
 
@@ -39,4 +39,4 @@ class NepomukComposer : public Composer
 };
 
 }
-#endif /*NEPOMUKCOMPOSER_H_*/
+#endif /*NEPOMUKCOMPOSER_H*/

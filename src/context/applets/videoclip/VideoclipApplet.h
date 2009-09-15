@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -55,8 +55,8 @@ class QHBoxLayout;
 class CustomVideoWidget;
 
 
- /** VideoclipApplet will display videoclip from internet, relatively to the current playing song
-   * If a video is detected in the playlist, it will also play trhe video inside the a VideoWidget.
+ /** VideoclipApplet will display videoclip from the Internet, relative to the current playing song
+   * If a video is detected in the playlist, it will also play the video inside the VideoWidget.
    */
 class VideoclipApplet : public Context::Applet, public EngineObserver
 {

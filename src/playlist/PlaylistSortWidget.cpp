@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -16,8 +16,12 @@
 
 #include "PlaylistSortWidget.h"
 
+#include "Debug.h"
 #include "PlaylistModelStack.h"
 #include "proxymodels/SortScheme.h"
+
+#include <KConfigGroup>
+#include <KStandardDirs>
 
 namespace Playlist
 {
@@ -33,7 +37,9 @@ SortWidget::SortWidget( QWidget *parent )
     m_layout->setSpacing( 0 );
     m_layout->setContentsMargins( 0, 0, 0, 0 );
 
-    BreadcrumbItemButton *rootItem = new BreadcrumbItemButton( KIcon( "format-list-ordered" ), QString(), this );
+    BreadcrumbItemButton *rootItem = new BreadcrumbItemButton(
+            KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/playlist-sorting-16.png" ) ) ),
+            QString(), this );
     rootItem->setFixedWidth( 20 );
     rootItem->setToolTip( i18n( "Clear the playlist sorting configuration." ) );
     m_layout->addWidget( rootItem );
@@ -53,6 +59,30 @@ SortWidget::SortWidget( QWidget *parent )
     m_layout->addWidget( m_urlButton );
 
     connect( m_addButton, SIGNAL( siblingClicked( QString ) ), this, SLOT( addLevel( QString ) ) );
+
+
+    QString sortPath = Amarok::config( "Playlist Sorting" ).readEntry( "SortPath", QString() );
+    if( !sortPath.isEmpty() )
+    {
+        QStringList levels = sortPath.split( '-' );
+        foreach( QString level, levels )
+        {
+            if( level == QString( "Random" ) )
+            {
+                addLevel( level );
+                break;
+            }
+            QStringList levelParts = level.split( '_' );
+            if( levelParts.count() > 2 )
+                warning() << "Playlist sorting load error: Invalid sort level " << level;
+            if( levelParts.at( 1 ) == QString( "asc" ) )
+                addLevel( levelParts.at( 0 ), Qt::AscendingOrder );
+            else if( levelParts.at( 1 ) == QString( "des" ) )
+                addLevel( levelParts.at( 0 ), Qt::DescendingOrder );
+            else
+                warning() << "Playlist sorting load error: Invalid sort order for level " << level;
+        }
+    }
 }
 
 SortWidget::~SortWidget()
@@ -123,6 +153,9 @@ SortWidget::updateSortScheme()
         scheme.addLevel( SortLevel( category, sortOrder ) );
     }
     ModelStack::instance()->sortProxy()->updateSortMap( scheme );
+
+    KConfigGroup config = Amarok::config( "Playlist Sorting" );
+    config.writeEntry( "SortPath", sortPath() );
 }
 
 QString

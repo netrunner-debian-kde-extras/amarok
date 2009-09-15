@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -235,17 +235,17 @@ ProgressWidget::engineTrackLengthChanged( long seconds )
 void
 ProgressWidget::redrawBookmarks()
 {
+    DEBUG_BLOCK
     m_slider->clearTriangles();
 
     if( The::engineController()->currentTrack() )
     {
-        debug() << "here 1";
         Meta::TrackPtr track = The::engineController()->currentTrack();
         if( track->hasCapabilityInterface( Meta::Capability::LoadTimecode ) )
         {
-            debug() << "here 2";
             Meta::TimecodeLoadCapability *tcl = track->create<Meta::TimecodeLoadCapability>();
             BookmarkList list = tcl->loadTimecodes();
+            debug() << "found " << list.count() << " timecodes on this track";
             foreach( AmarokUrlPtr url, list )
             {
                 if( url->command() == "play"  ) {

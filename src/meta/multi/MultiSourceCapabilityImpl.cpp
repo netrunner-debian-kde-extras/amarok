@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -21,7 +21,7 @@ MultiSourceCapabilityImpl::MultiSourceCapabilityImpl(Meta::MultiTrack * track)
     : Meta::MultiSourceCapability()
     , m_track( track )
 {
-    //forward from track, as there might  be several isntances of MultiSourceCapabilityImpl active for one track.
+    //forward from track, as there might  be several instances of MultiSourceCapabilityImpl active for one track.
     connect( m_track, SIGNAL( urlChanged( const KUrl &) ), this, SIGNAL( urlChanged( const KUrl &) ) );
 }
 

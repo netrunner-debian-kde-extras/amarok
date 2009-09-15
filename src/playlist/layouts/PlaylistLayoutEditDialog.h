@@ -9,7 +9,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -122,8 +122,17 @@ class PlaylistLayoutEditDialog : public QDialog, private Ui::PlaylistLayoutEditD
         void setLayoutChanged();
 
     private:
+        /**
+         * Changes which layout tabs are enabled based on the grouping mode selected
+         */
         void setEnabledTabs();
 
+        /**
+         * Populates the grouping mode combo box with options
+         */
+        void setupGroupByCombo(); 
+        
+        
         Playlist::LayoutEditWidget *m_headEdit;
         Playlist::LayoutEditWidget *m_bodyEdit;
         Playlist::LayoutEditWidget *m_singleEdit;

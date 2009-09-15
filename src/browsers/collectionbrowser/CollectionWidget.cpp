@@ -11,7 +11,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -20,6 +20,7 @@
 #include "CollectionWidget.h"
 
 #include "CollectionTreeItemModel.h"
+#include "CollectionTreeItemModelBase.h"
 #include "CollectionTreeItemDelegate.h"
 #include "CollectionBrowserTreeView.h"
 #include "collection/proxycollection/ProxyCollection.h"
@@ -298,7 +299,7 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
 
     //workaround string-freeze for 2.2
     debug() << i18n( "Toggle unified view mode" );
-    KAction *toggleAction = new KAction( KIcon( "preferences-other" ), i18n( "Toggle unified view mode. This is an experimental feature" ), this );
+    KAction *toggleAction = new KAction( KIcon( "view-list-tree" ), i18n( "Toggle unified view mode. This is an experimental feature" ), this );
     connect( toggleAction, SIGNAL( triggered( bool ) ), SLOT( toggleView() ) );
     m_searchWidget->toolBar()->addAction( toggleAction );
 
@@ -419,9 +420,10 @@ void CollectionWidget::toggleView()
     {
         debug() << "Switching to single tree model";
         m_searchWidget->disconnect( m_treeView );
-        //m_treeView->hide();
         m_searchWidget->setup( m_singleTreeView );
         m_stack->setCurrentWidget( m_singleTreeView );
+        m_singleModel->setCurrentFilter( m_searchWidget->lineEdit()->text() );
+        m_singleTreeView->slotFilterNow();
         if( m_levels != m_singleTreeView->levels() )
             m_singleTreeView->setLevels( m_levels );
         m_viewMode = CollectionWidget::UnifiedCollection;
@@ -430,7 +432,10 @@ void CollectionWidget::toggleView()
     {
         debug() << "switching to multi model";
         m_searchWidget->disconnect( m_singleTreeView );
+        m_searchWidget->setup( m_treeView );
         m_stack->setCurrentWidget( m_treeView );
+        m_multiModel->setCurrentFilter( m_searchWidget->lineEdit()->text() );
+        m_treeView->slotFilterNow();
         if( m_levels != m_treeView->levels() )
             m_treeView->setLevels( m_levels );
         m_viewMode = CollectionWidget::NormalCollections;

@@ -9,7 +9,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -22,8 +22,9 @@
 #include "MainWindow.h"
 #include "PlaylistWidget.h"
 #include "ProgressiveSearchWidget.h"
-#include "PlaylistGroupingAction.h"
 #include "layouts/LayoutManager.h"
+
+#include <KStandardDirs>
 
 #include <QList>
 #include <QStringList>
@@ -84,19 +85,7 @@ ViewUrlRunner::run( AmarokUrl url )
                 warning() << "Playlist view URL parse error: Invalid sort order for level " << level;
         }
     }
-    if( args.keys().contains( "group" ) )
-    {
-        QString groupingCategory = args.value( "group" );
-        QList< QAction * > actions = playlistWidget->groupingAction()->groupingActionGroup()->actions();
-        foreach( QAction *action, actions )
-        {
-            if( action->data().toString() == groupingCategory )
-            {
-                action->trigger();
-                break;
-            }
-        }
-    }
+
     if( args.keys().contains( "layout" ) )
     {
         QString layout = args.value( "layout" );
@@ -115,7 +104,7 @@ ViewUrlRunner::command() const
 KIcon
 ViewUrlRunner::icon() const
 {
-    return KIcon( "view-sort-ascending" );
+    return KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/playlist-bookmark-16.png" ) ) );
 }
 
 } //namespace Playlist

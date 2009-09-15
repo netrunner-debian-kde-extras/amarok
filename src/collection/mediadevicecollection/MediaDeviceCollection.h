@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -122,25 +122,20 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
         virtual CollectionLocation* location() const { return new MediaDeviceCollectionLocation(this); }
 
         /** Capability-related methods */
-
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
         virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
 
         /** MediaDeviceCollection methods */
-
-        //void parseDevice();
-
-        //void deviceRemoved() { emit remove(); }
-
         QString udi() const { return m_udi; }
 
-        //void updateTags( Meta::MediaDeviceTrack *track);
         virtual void writeDatabase() {} // threaded
 
         /** MediaDeviceCollection-specific */
         Meta::MediaDeviceHandler* handler();
         void init() { m_handler->init(); } // tell handler to start connection
         void emitCollectionReady();
+
+        virtual QAction *ejectAction() const;
 
     signals:
         void collectionReady( Amarok::Collection* );
@@ -161,6 +156,8 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Amarok::Collec
 
         QString m_udi;
         Meta::MediaDeviceHandler *m_handler;
+
+        mutable QAction *m_ejectAction;
 
         float m_usedCapacity;
         float m_totalCapacity;

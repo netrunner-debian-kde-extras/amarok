@@ -1,15 +1,22 @@
 [Desktop Entry]
 Name=Info
 Name[bg]=Данни
+Name[ca]=Informació
+Name[de]=Information
+Name[es]=Información
+Name[et]=Teave
 Name[fi]=Tiedot
 Name[is]=Upplýsingar
 Name[it]=Informazioni
 Name[pt]=Informação
 Name[pt_BR]=Informação
+Name[sr]=Подаци
+Name[sr@latin]=Podaci
 Name[sv]=Information
 Name[tr]=Bilgiler
 Name[uk]=Інформація
 Name[x-test]=xxInfoxx
+Name[zh_CN]=信息
 Type=Service
 ServiceTypes=Plasma/Applet
 

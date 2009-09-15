@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -74,6 +74,10 @@ namespace Meta
             /**override showing just the filename */
             virtual void setName( const QString &name ) { m_name = name; }
 
+            /** @returns the number of tracks this playlist contains. -1 if this can not
+              * be determined before loading them all.
+              */
+            virtual int trackCount() const { return -1; }
             /** returns all tracks in this playlist */
             virtual TrackList tracks() = 0;
             virtual void addTrack( Meta::TrackPtr track, int position = -1 )

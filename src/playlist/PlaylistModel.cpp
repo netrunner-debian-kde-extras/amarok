@@ -13,7 +13,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -609,6 +609,7 @@ Playlist::Model::metadataChanged( Meta::TrackPtr track )
         if ( m_items.at( i )->track() == track )
         {
             emit dataChanged( createIndex( i, 0 ), createIndex( i, columnCount() - 1 ) );
+            emit metadataUpdated();
             break;
         }
     }
@@ -859,6 +860,8 @@ void Playlist::Model::clearCommand()
     m_items.clear();
     m_itemIds.clear();
     endRemoveRows();
+
+    m_activeRow = -1;
 
     emit removedIds( delIds );
 

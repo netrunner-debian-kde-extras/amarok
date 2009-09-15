@@ -9,7 +9,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -63,7 +63,7 @@ enum Column
 };
 //when sorting, Random is -1
 
-//these are the colums that can be directly edited by the user.
+//these are the columns that can be directly edited by the user.
 static const QList<int> editableColumns = ( QList<int>() )
         << Album
         << Artist
@@ -77,7 +77,7 @@ static const QList<int> editableColumns = ( QList<int>() )
         << TrackNumber
         << Year;
 
-//this is the list of user visible token nemes and hence needs to be translated
+//this is the list of user visible token names and hence needs to be translated
 static const QList<const char *> columnNames = ( QList<const char *>()
         << I18N_NOOP2( "Empty placeholder token used for spacing in playlist layouts", "Placeholder" )
         << I18N_NOOP2( "'Album' playlist column name and token for playlist layouts", "Album" )
@@ -112,7 +112,7 @@ static const QList<const char *> columnNames = ( QList<const char *>()
         << I18N_NOOP2( "'Year' playlist column name and token for playlist layouts", "Year" ) );
 
 
-//this list is used internally and for reading writing config files and sths shoudl not be translated!
+//this list is used internally and for reading writing config files and sths should not be translated!
 //must be kept in sync with the above list though!
 static const QStringList internalColumnNames = ( QStringList()
         << "Placeholder"

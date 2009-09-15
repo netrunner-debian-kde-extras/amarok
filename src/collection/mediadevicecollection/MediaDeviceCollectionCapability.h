@@ -8,47 +8,34 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "CollectionCapabilityMediaDevice.h"
-#include "MediaDeviceCollection.h"
-#include "SvgHandler.h"
-#include "MetaQueryMaker.h"
+#ifndef MEDIADEVICECOLLECTIONCAPABILITY_H
+#define MEDIADEVICECOLLECTIONCAPABILITY_H
 
-#include <KIcon>
+#include "Meta.h"
 
-#include <QAction>
+#include "meta/capabilities/CollectionCapability.h"
 
-using namespace Meta;
+class MediaDeviceCollection;
 
-CollectionCapabilityMediaDevice::CollectionCapabilityMediaDevice( MediaDeviceCollection *coll )
-    : CollectionCapability()
-    ,  m_coll( coll )
+namespace Meta
 {
+    class MediaDeviceCollectionCapability : public CollectionCapability
+    {
+        Q_OBJECT
+
+        public:
+            MediaDeviceCollectionCapability( MediaDeviceCollection *coll );
+
+            virtual QList<QAction*> collectionActions();
+
+        private:
+            MediaDeviceCollection *m_coll;
+    };
 }
-
-
-QList<QAction *>
-CollectionCapabilityMediaDevice::collectionActions()
-{
-    // Create Standard Device Actions
-    QAction *disconnectAction = new QAction( KIcon( "remove-amarok" ), i18n( "&Disconnect Device" ), 0 );
-    disconnectAction->setProperty( "popupdropper_svg_id", "media-eject" );
-
-    connect( disconnectAction, SIGNAL( triggered() ), m_coll, SLOT( disconnectDevice() ) );
-
-    QList<QAction*> actions;
-    actions.append( disconnectAction );
-
-    // Pull in other device actions defined by subclasses
-
-    actions += m_coll->handler()->collectionActions();  // This can be .append( QList<T> ) when we start depending on Qt>=4.5
-
-    return actions;
-}
-
-#include "CollectionCapabilityMediaDevice.moc"
+#endif

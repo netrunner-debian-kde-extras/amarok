@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -18,7 +18,6 @@
 #define COLLECTIONTREEVIEW_H
 
 #include "CollectionSortFilterProxyModel.h"
-#include "CollectionTreeItem.h"
 #include "playlist/PlaylistController.h"
 #include "meta/Meta.h"
 #include "widgets/PrettyTreeView.h"
@@ -34,6 +33,7 @@
 class QSortFilterProxyModel;
 class CollectionSortFilterProxyModel;
 class CollectionTreeItemModelBase;
+class CollectionTreeItem;
 class PopupDropper;
 class QAction;
 class AmarokMimeData;

@@ -8,7 +8,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -140,7 +140,6 @@ Playlist::PlaylistLayout::PlaylistLayout()
     : m_isEditable(false)
     , m_isDirty(false)
     , m_inlineControls(false)
-    , m_allowGrouping(true)
 {}
 
 LayoutItemConfig Playlist::PlaylistLayout::head() const
@@ -202,14 +201,14 @@ void Playlist::PlaylistLayout::setInlineControls( bool inlineControls )
     m_inlineControls = inlineControls;
 }
 
-bool Playlist::PlaylistLayout::allowGrouping()
+QString Playlist::PlaylistLayout::groupBy()
 {
-    return m_allowGrouping;
+    return m_groupBy;
 }
 
-void Playlist::PlaylistLayout::setAllowGrouping(bool allowGrouping)
+void Playlist::PlaylistLayout::setGroupBy(const QString& groupBy)
 {
-    m_allowGrouping = allowGrouping;
+    m_groupBy = groupBy;
 }
 
 }

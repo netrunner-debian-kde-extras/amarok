@@ -9,12 +9,12 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
+
 #include "SqlQueryMaker.h"
 
 #define DEBUG_PREFIX "SqlQueryMaker"
@@ -143,7 +143,7 @@ SqlQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
     // reseting result type without reseting the QM
     if ( d->blocking && d->used )
         return this;
-    
+
     d->resultAsDataPtrs = resultAsDataPtrs;
     return this;
 }
@@ -169,7 +169,7 @@ SqlQueryMaker::run()
         connect( d->worker, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( done( ThreadWeaver::Job* ) ) );
         ThreadWeaver::Weaver::instance()->enqueue( d->worker );
     }
-    else //use it blocking 
+    else //use it blocking
     {
         QString query = this->query();
         QStringList result = runQuery( query );
@@ -194,7 +194,7 @@ SqlQueryMaker::setQueryType( QueryType type )
     // reseting queryType without reseting the QM
     if ( d->blocking && d->used )
         return this;
-    
+
     switch( type ) {
     case QueryMaker::Track:
         //make sure to keep this method in sync with handleTracks(QStringList) and the SqlTrack ctor
@@ -223,7 +223,7 @@ SqlQueryMaker::setQueryType( QueryType type )
             d->queryReturnValues = "artists.name, artists.id";
         }
         return this;
-        
+
     case QueryMaker::Album:
         if( d->queryType == QueryMaker::None )
         {
@@ -690,6 +690,42 @@ SqlQueryMaker::handleResult( const QStringList &result )
             debug() << "Warning: queryResult with queryType == NONE";
         }
     }
+    else
+    {
+        if( d->resultAsDataPtrs )
+        {
+            emit newResultReady( m_collection->collectionId(), Meta::DataList() );
+        }
+        else
+        {
+            switch( d->queryType ) {
+                case QueryMaker::Custom:
+                    emit newResultReady( m_collection->collectionId(), QStringList() );
+                    break;
+                case QueryMaker::Track:
+                    emit newResultReady( m_collection->collectionId(), Meta::TrackList() );
+                    break;
+                case QueryMaker::Artist:
+                    emit newResultReady( m_collection->collectionId(), Meta::ArtistList() );
+                    break;
+                case QueryMaker::Album:
+                    emit newResultReady( m_collection->collectionId(), Meta::AlbumList() );
+                    break;
+                case QueryMaker::Genre:
+                    emit newResultReady( m_collection->collectionId(), Meta::GenreList() );
+                    break;
+                case QueryMaker::Composer:
+                    emit newResultReady( m_collection->collectionId(), Meta::ComposerList() );
+                    break;
+                case QueryMaker::Year:
+                    emit newResultReady( m_collection->collectionId(), Meta::YearList() );
+                    break;
+
+            case QueryMaker::None:
+                debug() << "Warning: queryResult with queryType == NONE";
+            }
+        }
+    }
 
     //queryDone will be emitted in done(Job*)
 }
@@ -816,9 +852,10 @@ SqlQueryMaker::years( const QString &id ) const
 QStringList
 SqlQueryMaker::customData( const QString &id ) const
 {
+    AMAROK_NOTIMPLEMENTED
     Q_UNUSED( id )
     // not implemented yet
-            return QStringList();
+    return QStringList();
 }
 
 QString

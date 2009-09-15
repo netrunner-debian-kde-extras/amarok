@@ -10,7 +10,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -40,7 +40,6 @@ class AMAROK_EXPORT SingleCollectionTreeItemModel: public CollectionTreeItemMode
         SingleCollectionTreeItemModel( Amarok::Collection * collection,  const QList<int> &levelType );
 
         virtual QVariant data(const QModelIndex &index, int role) const;
-        virtual bool hasChildren ( const QModelIndex & parent = QModelIndex() ) const;
         virtual bool canFetchMore( const QModelIndex &parent ) const;
         virtual void fetchMore( const QModelIndex &parent );
         virtual void setLevels( const QList<int> &levelType );
@@ -48,9 +47,9 @@ class AMAROK_EXPORT SingleCollectionTreeItemModel: public CollectionTreeItemMode
 
     protected:
         virtual void filterChildren();
+        virtual int levelModifier() const { return 1; }
 
     private:
-        void ensureChildrenLoaded( CollectionTreeItem *item ) const;
 
         Amarok::Collection* m_collection;
         QueryMaker* m_queryMaker;

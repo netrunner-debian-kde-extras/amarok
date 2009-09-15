@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Seb Ruiz <ruiz@kde.org>                                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -8,7 +9,7 @@
  *                                                                                      *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
  * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.              *
+ * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
  *                                                                                      *
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
@@ -32,6 +33,9 @@
 
 #include <kio/job.h>
 #include <kio/netaccess.h>
+
+#include <solid/device.h>
+#include <solid/opticaldrive.h>
 
 #include <KConfigGroup>
 #include <KEncodingProber>
@@ -75,8 +79,6 @@ AudioCdCollection::AudioCdCollection( MediaDeviceInfo* info )
 
 AudioCdCollection::~AudioCdCollection()
 {
-    //MediaDeviceMonitor::instance()->setCurrentCdId( QString() );
-    //delete m_ejectAction;
 }
 
 void
@@ -85,7 +87,7 @@ AudioCdCollection::readCd()
     DEBUG_BLOCK
 
     //get the CDDB info file if possible.
-    m_cdInfoJob =  KIO::storedGet(  KUrl( "audiocd:/Information/CDDB Information.txt" ), KIO::NoReload, KIO::HideProgressInfo );
+    m_cdInfoJob =  KIO::storedGet( KUrl( "audiocd:/Information/CDDB Information.txt" ), KIO::NoReload, KIO::HideProgressInfo );
     connect( m_cdInfoJob, SIGNAL( result( KJob * ) )
             , this, SLOT( infoFetchComplete( KJob *) ) );
 
@@ -103,7 +105,6 @@ AudioCdCollection::infoFetchComplete( KJob *job )
     }
     else
     {
-
         QString cddbInfo = m_cdInfoJob->data();
 
         KEncodingProber prober;
@@ -303,9 +304,10 @@ AudioCdCollection::cdRemoved()
 QString
 AudioCdCollection::encodingFormat() const
 {
-    switch( m_encodingFormat ) {
+    switch( m_encodingFormat )
+    {
         case WAV:
-            return "vaw";
+            return "wav";
         case FLAC:
             return "flac";
         case OGG:
@@ -319,7 +321,8 @@ AudioCdCollection::encodingFormat() const
 QString
 AudioCdCollection::copyableBasePath() const
 {
-    switch( m_encodingFormat ) {
+    switch( m_encodingFormat )
+    {
         case WAV:
             return "audiocd:/";
         case FLAC:
@@ -348,11 +351,17 @@ void
 AudioCdCollection::eject()
 {
     DEBUG_BLOCK
-    //MediaDeviceMonitor::instance()->ejectCd( m_udi );
+    Solid::Device device = Solid::Device( m_udi );
+
+    Solid::OpticalDrive *drive = device.parent().as<Solid::OpticalDrive>();
+    if( drive )
+        drive->eject();
+    else
+        debug() << "disc has no drive";
 }
 
 QAction *
-AudioCdCollection::ejectAction()
+AudioCdCollection::ejectAction() const
 {
     return m_ejectAction;
 }
@@ -360,7 +369,15 @@ AudioCdCollection::ejectAction()
 bool
 AudioCdCollection::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
-    return type ==  Meta::Capability::Collection;
+    switch( type )
+    {
+        case Meta::Capability::Collection:
+        case Meta::Capability::Decorator:
+            return true;
+
+        default:
+            return false;
+    }
 }
 
 Meta::Capability *
@@ -368,14 +385,12 @@ AudioCdCollection::asCapabilityInterface( Meta::Capability::Type type )
 {
     if ( type == Meta::Capability::Collection )
         return new Meta::AudioCdCollectionCapability( this );
-    else
-        return 0;
+    return 0;
 }
 
 void
 AudioCdCollection::noInfoAvailable()
 {
-
     DEBUG_BLOCK
 
     m_discCddbId = "unknown";
@@ -404,7 +419,6 @@ AudioCdCollection::noInfoAvailable()
 
     while( KIO::NetAccess::exists( "audiocd:/" + trackName + ".wav", KIO::NetAccess::SourceSide,0 ) )
     {
-
         debug() << "got track: " << "audiocd:/" + trackName + ".wav";
 
         QString baseUrl = "audiocd:/" + m_discCddbId + '/' + QString::number( i );
