@@ -1,6 +1,7 @@
 amarok (2.1.85-0r1) UNRELEASED; urgency=low
 
   * New upstream development release (2.2 Beta 2).
+  * Refresh patches.
 
  -- Modestas Vainius <modestas@vainius.eu>  Tue, 15 Sep 2009 21:10:55 +0300
 
