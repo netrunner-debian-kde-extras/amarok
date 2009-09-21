@@ -1,0 +1,89 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: amarok_scriptengine_qscript\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2009-06-28 11:45+0200\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: French <kde-i18n-doc@kde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: simplejavascriptapplet.cpp:512
+msgid "i18n() takes at least one argument"
+msgstr "i18n() attend au moins un argument"
+
+#: simplejavascriptapplet.cpp:528
+msgid "i18nc() takes at least two arguments"
+msgstr "i18nc() attend au moins deux arguments"
+
+#: simplejavascriptapplet.cpp:545
+msgid "i18np() takes at least two arguments"
+msgstr "i18np() attend au moins deux arguments"
+
+#: simplejavascriptapplet.cpp:562
+msgid "i18ncp() takes at least three arguments"
+msgstr "i18cp() attend au moins trois arguments"
+
+#: simplejavascriptapplet.cpp:580
+msgid "dataEngine() takes one argument"
+msgstr "dataEngine() attend un argument"
+
+#: simplejavascriptapplet.cpp:590 simplejavascriptapplet.cpp:615
+#: simplejavascriptapplet.cpp:782
+msgid "Could not extract the AppletObject"
+msgstr "Ne peut pas extraire l'AppletObject"
+
+#: simplejavascriptapplet.cpp:595 simplejavascriptapplet.cpp:620
+#: simplejavascriptapplet.cpp:787
+msgid "Could not extract the Applet"
+msgstr "Ne peut pas extraire l'Applet"
+
+#: simplejavascriptapplet.cpp:605
+msgid "service() takes two arguments"
+msgstr "service() attend deux arguments"
+
+#: simplejavascriptapplet.cpp:633
+msgid "loadui() takes one argument"
+msgstr "loadui() attends un argument"
+
+#: simplejavascriptapplet.cpp:639
+#, kde-format
+msgid "Unable to open '%1'"
+msgstr "Impossible d'ouvrir %1"
+
+#: simplejavascriptapplet.cpp:679 simplejavascriptapplet.cpp:712
+msgid "Constructor takes at least 1 argument"
+msgstr "Le constructeur attend au moins 1 argument"
+
+#: simplejavascriptapplet.cpp:764
+msgid "CreateWidget takes one argument"
+msgstr "CreateWidget attend un argument"
+
+#: simplejavascriptapplet.cpp:772
+msgid "The parent must be a QGraphicsWidget"
+msgstr "Les parent doit être un QGraphicsWidget"
+
+#: simplejavascriptapplet.cpp:817
+#, kde-format
+msgid "This operation was not supported, %1"
+msgstr "Cette operation n'est pas prise en charge, %1"
+
+#: simplejavascriptapplet.cpp:824
+msgid "print() takes one argument"
+msgstr "print() attend un argument"
+
+#: qtgui/linearlayout.cpp:70
+msgid "LinearLayout requires a parent"
+msgstr "LinearLayout requiert un parent"
+
+#: qtgui/linearlayout.cpp:76
+msgid "The parent must be a QGraphicsLayoutItem"
+msgstr "Le parent doit être un QGraphicsLayoutItem"

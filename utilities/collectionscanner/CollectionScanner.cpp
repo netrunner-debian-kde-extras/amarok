@@ -49,6 +49,9 @@
 #include <flacfile.h>
 #include <id3v1tag.h>
 #include <id3v2tag.h>
+#include <mp4file.h>
+#include <mp4tag.h>
+#include <mp4item.h>
 #include <mpcfile.h>
 #include <mpegfile.h>
 #include <oggfile.h>
@@ -58,16 +61,11 @@
 #include <tstring.h>
 #include <vorbisfile.h>
 
-#ifdef TAGLIB_EXTRAS_FOUND
-#include <mp4file.h>
-#include <mp4tag.h>
-#include <mp4item.h>
 #include <audiblefiletyperesolver.h>
-#include <asffiletyperesolver.h>
-#include <wavfiletyperesolver.h>
 #include <realmediafiletyperesolver.h>
-#include <mp4filetyperesolver.h>
-#endif
+#include "shared/taglib_filetype_resolvers/asffiletyperesolver.h"
+#include "shared/taglib_filetype_resolvers/mp4filetyperesolver.h"
+#include "shared/taglib_filetype_resolvers/wavfiletyperesolver.h"
 
 #include <textidentificationframe.h>
 #include <uniquefileidentifierframe.h>
@@ -100,13 +98,11 @@ CollectionScanner::CollectionScanner( int &argc, char **argv )
 
     readArgs();
 
-#ifdef TAGLIB_EXTRAS_FOUND
-    TagLib::FileRef::addFileTypeResolver(new MP4FileTypeResolver);
-    TagLib::FileRef::addFileTypeResolver(new ASFFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new RealMediaFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new AudibleFileTypeResolver);
-    TagLib::FileRef::addFileTypeResolver(new WavFileTypeResolver);
-#endif
+    TagLib::FileRef::addFileTypeResolver(new ASFFileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new MP4FileTypeResolver);
+    TagLib::FileRef::addFileTypeResolver(new WAVFileTypeResolver);
 
     m_logfile = ( m_batch ? ( m_incremental ? "amarokcollectionscanner_batchincrementalscan.log" : "amarokcollectionscanner_batchfullscan.log" )
                        : m_saveLocation + "collection_scan.log" );
@@ -644,7 +640,6 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
 //             if ( images && file->ID3v2Tag() )
 //                 loadImagesFromTag( *file->ID3v2Tag(), *images );
         }
-#ifdef TAGLIB_EXTRAS_FOUND
         else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
         {
             fileType = mp4;
@@ -667,7 +662,6 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
 //                     images->push_back( EmbeddedImage( mp4tag->cover(), "" ) );
             }
         }
-#endif
 
         if ( !disc.isEmpty() )
         {

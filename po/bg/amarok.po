@@ -10,14 +10,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-09-14 06:26+0200\n"
-"PO-Revision-Date: 2009-08-21 10:11+0300\n"
-"Last-Translator: Zlatko Popov <zlatkopopov@fsa-bg.org>\n"
+"POT-Creation-Date: 2009-09-21 06:11+0200\n"
+"PO-Revision-Date: 2009-09-17 15:19+0300\n"
+"Last-Translator: Yasen Pramatarov <yasen@lindeas.com>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 1.0\n"
+"X-Generator: KBabel 1.11.4\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #: mac/GrowlInterface.cpp:37 context/engines/current/CurrentEngine.cpp:150
@@ -46,57 +46,57 @@ msgctxt "The Value is not known"
 msgid "Unknown"
 msgstr "Неизвестно"
 
-#: meta/MetaUtility.cpp:508
+#: meta/MetaUtility.cpp:504
 msgctxt "The quality of music"
 msgid "Awful"
 msgstr "Ужасно"
 
-#: meta/MetaUtility.cpp:509
+#: meta/MetaUtility.cpp:505
 msgctxt "The quality of music"
 msgid "Bad"
 msgstr "Лошо"
 
-#: meta/MetaUtility.cpp:510
+#: meta/MetaUtility.cpp:506
 msgctxt "The quality of music"
 msgid "Barely tolerable"
 msgstr "Горе-долу"
 
-#: meta/MetaUtility.cpp:511
+#: meta/MetaUtility.cpp:507
 msgctxt "The quality of music"
 msgid "Tolerable"
 msgstr "Става"
 
-#: meta/MetaUtility.cpp:512
+#: meta/MetaUtility.cpp:508
 msgctxt "The quality of music"
 msgid "Okay"
 msgstr "ОК"
 
-#: meta/MetaUtility.cpp:513
+#: meta/MetaUtility.cpp:509
 msgctxt "The quality of music"
 msgid "Good"
 msgstr "Добре"
 
-#: meta/MetaUtility.cpp:514
+#: meta/MetaUtility.cpp:510
 msgctxt "The quality of music"
 msgid "Very good"
 msgstr "Много добре"
 
-#: meta/MetaUtility.cpp:515
+#: meta/MetaUtility.cpp:511
 msgctxt "The quality of music"
 msgid "Excellent"
 msgstr "Отлично"
 
-#: meta/MetaUtility.cpp:516
+#: meta/MetaUtility.cpp:512
 msgctxt "The quality of music"
 msgid "Amazing"
 msgstr "Невероятно"
 
-#: meta/MetaUtility.cpp:517
+#: meta/MetaUtility.cpp:513
 msgctxt "The quality of music"
 msgid "Favorite"
 msgstr "Любимото ми"
 
-#: meta/MetaUtility.cpp:518
+#: meta/MetaUtility.cpp:514
 msgctxt "The quality of music"
 msgid "Not rated"
 msgstr "Без оценка"
@@ -106,12 +106,12 @@ msgstr "Без оценка"
 msgid "Stream (%1)"
 msgstr "Поток (%1)"
 
-#: meta/capabilities/TimecodeWriteCapability.cpp:116
+#: meta/capabilities/TimecodeWriteCapability.cpp:112
 #, kde-format
 msgid "%1 - Stopped %2"
 msgstr "%1 - спряно %2"
 
-#: meta/capabilities/TimecodeWriteCapability.cpp:121
+#: meta/capabilities/TimecodeWriteCapability.cpp:117
 msgid "Playback Ended Markers"
 msgstr "Маркер за край на изпълнението"
 
@@ -237,12 +237,12 @@ msgstr ""
 msgid "&Stale and Orphaned"
 msgstr "&Остарели и остатъчни"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:364
-#: collection/ipodcollection/handler/IpodHandler.cpp:517
+#: collection/ipodcollection/handler/IpodHandler.cpp:365
+#: collection/ipodcollection/handler/IpodHandler.cpp:519
 msgid "Synchronise Artwork"
 msgstr ""
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:379
+#: collection/ipodcollection/handler/IpodHandler.cpp:381
 msgid ""
 "Do you really want to initialize this iPod? Its database will be cleared of "
 "all information, but the files will not be deleted."
@@ -250,19 +250,19 @@ msgstr ""
 "Наистина ли искате да инициализирате този iPod? Ще бъде създадена негова БД, "
 "но файловете няма да бъдат изтрити."
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:383
+#: collection/ipodcollection/handler/IpodHandler.cpp:385
 msgid "Initialize iPod"
 msgstr "Инициализиране"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:389
+#: collection/ipodcollection/handler/IpodHandler.cpp:391
 msgid "The iPod has been initialized"
 msgstr "iPod-ът е инициализиран"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:391
+#: collection/ipodcollection/handler/IpodHandler.cpp:393
 msgid "The iPod was unable to be initialized"
 msgstr "iPod-ът не е инициализиран"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:400
+#: collection/ipodcollection/handler/IpodHandler.cpp:402
 msgid ""
 "Amarok is about to search for stale tracks. This may take a while, do you "
 "want to continue?"
@@ -270,11 +270,11 @@ msgstr ""
 "Amarok ще потърси остарели записи, което може да отнеме известно време. "
 "Искате ли да продължите?"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:404
+#: collection/ipodcollection/handler/IpodHandler.cpp:406
 msgid "Find Stale Tracks"
 msgstr "Търсене на остарели записи"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:479
+#: collection/ipodcollection/handler/IpodHandler.cpp:481
 #, kde-format
 msgctxt "@info"
 msgid "One stale track removed from the database. Scan for orphaned tracks?"
@@ -286,11 +286,11 @@ msgstr[1] ""
 "%1 остарели записа бяха премахнати от БД. Искате ли сканиране за остатъчни "
 "записи?"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:484
+#: collection/ipodcollection/handler/IpodHandler.cpp:486
 msgid "Find Orphaned Tracks"
 msgstr "Търсене на остатъчни записи"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:515
+#: collection/ipodcollection/handler/IpodHandler.cpp:517
 #, fuzzy, kde-format
 #| msgid ""
 #| "Amarok is about to search for stale tracks. This may take a while, do you "
@@ -301,17 +301,17 @@ msgstr ""
 "Amarok ще потърси остарели записи, което може да отнеме известно време. "
 "Искате ли да продължите?"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:526
+#: collection/ipodcollection/handler/IpodHandler.cpp:528
 #, fuzzy
 #| msgid "Lyrics data could not be parsed"
 msgid "iPod artwork could not be synchronised"
 msgstr "Данните за текстовете на песните не могат да бъдат обработени"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:537
+#: collection/ipodcollection/handler/IpodHandler.cpp:539
 msgid "Artwork synchronised"
 msgstr ""
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:818
+#: collection/ipodcollection/handler/IpodHandler.cpp:820
 msgid ""
 "Amarok requires sudo access to get the FirewireGuid required to connect to "
 "your device. Please enter your sudo password"
@@ -319,19 +319,19 @@ msgstr ""
 "Amarok изисква \"sudo\" достъп, за да изтегли FirewireGuid, който е "
 "необходим за свързване на устройството. Моля, въведете паролата си."
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:2084
+#: collection/ipodcollection/handler/IpodHandler.cpp:2086
 msgid "Select Stale Tracks To Delete"
 msgstr "Изберете записи за изтриване"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:2084
+#: collection/ipodcollection/handler/IpodHandler.cpp:2086
 msgid "Stale Tracks"
 msgstr "Остарели записи"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:2137
+#: collection/ipodcollection/handler/IpodHandler.cpp:2139
 msgid "Adding Orphaned Tracks to iPod Database"
 msgstr "Добавяне на остатъчни записи към БД на iPod"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:2175
+#: collection/ipodcollection/handler/IpodHandler.cpp:2177
 #, kde-format
 msgctxt "@info"
 msgid "One orphaned track added to the database."
@@ -339,7 +339,7 @@ msgid_plural "%1 tracks added to the database."
 msgstr[0] "Един запис беше добавен към БД."
 msgstr[1] "%1 записа бяха добавени към БД."
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:2180
+#: collection/ipodcollection/handler/IpodHandler.cpp:2182
 msgid "Orphaned Tracks Added"
 msgstr "Добавени са остатъчни записи"
 
@@ -579,17 +579,17 @@ msgstr "Да не се показва в \"Сборни формации\""
 msgid "Show under Various Artists"
 msgstr "Показване в \"Сборни формации\""
 
-#: collection/audiocd/AudioCdCollection.cpp:71
+#: collection/audiocd/AudioCdCollection.cpp:72
 msgid "&Eject"
 msgstr "&Изваждане"
 
-#: collection/audiocd/AudioCdCollection.cpp:400
-#: collection/audiocd/AudioCdCollection.cpp:401
-#: collection/audiocd/AudioCdCollection.cpp:402
-#: collection/audiocd/AudioCdCollection.cpp:403
-#: context/applets/albums/AlbumItem.cpp:72 MainWindow.cpp:1011
-#: amarokurls/BookmarkTreeView.cpp:328 amarokurls/BookmarkTreeView.cpp:329
-#: amarokurls/BookmarkTreeView.cpp:330
+#: collection/audiocd/AudioCdCollection.cpp:412
+#: collection/audiocd/AudioCdCollection.cpp:413
+#: collection/audiocd/AudioCdCollection.cpp:414
+#: collection/audiocd/AudioCdCollection.cpp:415
+#: context/applets/albums/AlbumItem.cpp:72 MainWindow.cpp:1070
+#: amarokurls/BookmarkTreeView.cpp:317 amarokurls/BookmarkTreeView.cpp:318
+#: amarokurls/BookmarkTreeView.cpp:319
 msgid "Unknown"
 msgstr "Неизвестно"
 
@@ -917,34 +917,32 @@ msgid "Settings"
 msgstr "Настройване"
 
 #: context/applets/videoclip/VideoclipApplet.cpp:114
-#: context/applets/videoclip/VideoclipApplet.cpp:327
-#: context/applets/videoclip/VideoclipApplet.cpp:348
+#: context/applets/videoclip/VideoclipApplet.cpp:326
+#: context/applets/videoclip/VideoclipApplet.cpp:347
 msgid "Video Clip"
 msgstr "Видео клип"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:338
+#: context/applets/videoclip/VideoclipApplet.cpp:337
 msgid "Video Clip "
 msgstr "Видео клип"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:338
+#: context/applets/videoclip/VideoclipApplet.cpp:337
 msgid " No information found..."
 msgstr "Няма информация..."
 
-#: context/applets/videoclip/VideoclipApplet.cpp:496
+#: context/applets/videoclip/VideoclipApplet.cpp:495
 msgid "Enter &fullscreen"
 msgstr "&Цял екран"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:502
+#: context/applets/videoclip/VideoclipApplet.cpp:501
 msgid "E&xit fullscreen"
 msgstr "Из&ход от цял екран"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:520
+#: context/applets/videoclip/VideoclipApplet.cpp:519
 msgid "Video Clip Settings"
 msgstr "Настройване на видео клиповете"
 
 #: context/applets/videoclip/VideoItemButton.cpp:81
-#, fuzzy
-#| msgid "&Append to playlist"
 msgid "&Add to playlist"
 msgstr "&Добавяне към списъка"
 
@@ -964,10 +962,8 @@ msgid "Songkick Concert Information"
 msgstr "Данни за приставка"
 
 #: context/applets/songkick/SongkickApplet.cpp:62
-#, fuzzy
-#| msgid "Context"
 msgid "Concerts"
-msgstr "Контекст"
+msgstr "Концерти"
 
 #: context/applets/songkick/SongkickApplet.cpp:69
 #, fuzzy
@@ -1042,8 +1038,6 @@ msgstr "Любими записи"
 #: browsers/playlistbrowser/UserPlaylistModel.cpp:539
 #: browsers/playlistbrowser/PodcastModel.cpp:688
 #: services/lastfm/LastFmTreeView.cpp:112
-#, fuzzy
-#| msgid "&Append to Playlist"
 msgid "&Add to Playlist"
 msgstr "&Добавяне към списъка"
 
@@ -1077,8 +1071,8 @@ msgstr[1] "%1 записа"
 
 #: context/applets/lyrics/LyricsApplet.cpp:45
 #: context/applets/lyrics/LyricsApplet.cpp:77
-#: context/applets/lyrics/LyricsApplet.cpp:212
-#: context/applets/lyrics/LyricsApplet.cpp:266 dialogs/TagDialog.cpp:584
+#: context/applets/lyrics/LyricsApplet.cpp:203
+#: context/applets/lyrics/LyricsApplet.cpp:261 dialogs/TagDialog.cpp:584
 msgid "Lyrics"
 msgstr "Текст"
 
@@ -1094,15 +1088,15 @@ msgstr "Запис на текст"
 msgid "Reload Lyrics"
 msgstr "Презареждане на текст"
 
-#: context/applets/lyrics/LyricsApplet.cpp:207
+#: context/applets/lyrics/LyricsApplet.cpp:198
 msgid "No lyrics script is running."
 msgstr "Не са открити работещи скриптове за текстове."
 
-#: context/applets/lyrics/LyricsApplet.cpp:220
+#: context/applets/lyrics/LyricsApplet.cpp:211
 msgid "Lyrics are being fetched."
 msgstr "Изтегля се текст на песен."
 
-#: context/applets/lyrics/LyricsApplet.cpp:229
+#: context/applets/lyrics/LyricsApplet.cpp:220
 #, fuzzy, kde-format
 #| msgid ""
 #| "Lyrics were not able to be downloaded. Please check your internet "
@@ -1115,7 +1109,7 @@ msgid ""
 msgstr ""
 "Текстът не може да бъде изтеглен. Моля, проверете връзката си с Интернет: %1"
 
-#: context/applets/lyrics/LyricsApplet.cpp:275
+#: context/applets/lyrics/LyricsApplet.cpp:273
 msgid "There were no lyrics found for this track"
 msgstr "Не е открит текст за този запис"
 
@@ -1173,7 +1167,7 @@ msgstr "Следващ"
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: context/applets/wikipedia/WikipediaApplet.cpp:121
 #: dialogs/FilenameLayoutDialog.cpp:125 dialogs/FilenameLayoutDialog.cpp:340
-#: dialogs/transferdialog.cpp:88 browsers/CollectionTreeItemModelBase.cpp:904
+#: dialogs/transferdialog.cpp:88 browsers/CollectionTreeItemModelBase.cpp:902
 #: browsers/collectionbrowser/CollectionWidget.cpp:122
 #: browsers/collectionbrowser/CollectionWidget.cpp:151
 #: browsers/collectionbrowser/CollectionWidget.cpp:183
@@ -1190,7 +1184,7 @@ msgstr "Изпълнител"
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: context/applets/wikipedia/WikipediaApplet.cpp:128
 #: dialogs/FilenameLayoutDialog.cpp:128 dialogs/FilenameLayoutDialog.cpp:355
-#: dialogs/transferdialog.cpp:89 browsers/CollectionTreeItemModelBase.cpp:903
+#: dialogs/transferdialog.cpp:89 browsers/CollectionTreeItemModelBase.cpp:901
 #: browsers/collectionbrowser/CollectionWidget.cpp:125
 #: browsers/collectionbrowser/CollectionWidget.cpp:154
 #: browsers/collectionbrowser/CollectionWidget.cpp:186
@@ -1293,10 +1287,8 @@ msgid "Amarok Menu"
 msgstr "Меню на Amarok"
 
 #: ActionClasses.cpp:164
-#, fuzzy
-#| msgid "&Amarok"
 msgid "&About Amarok"
-msgstr "&Amarok"
+msgstr "Относно &Amarok"
 
 #: ActionClasses.cpp:179
 msgid "Play/Pause"
@@ -1363,7 +1355,7 @@ msgstr "&Запис"
 msgid "&Album"
 msgstr "&Албум"
 
-#: ActionClasses.cpp:365 MainWindow.cpp:840
+#: ActionClasses.cpp:365 MainWindow.cpp:882
 msgid "&Playlist"
 msgstr "&Списък"
 
@@ -1372,10 +1364,8 @@ msgid "&Replay Gain Mode"
 msgstr "&Replay Gain"
 
 #: ActionClasses.cpp:388
-#, fuzzy
-#| msgid "Equalizer"
 msgid "&Equalizer"
-msgstr "Еквалайзер"
+msgstr "&Еквалайзер"
 
 #: ActionClasses.cpp:416
 msgid "Your current setup does not support the equalizer feature"
@@ -1479,9 +1469,6 @@ msgstr ""
 #: configdialog/dialogs/PlaybackConfig.cpp:155
 #: configdialog/dialogs/PlaybackConfig.cpp:243
 #: configdialog/dialogs/PlaybackConfig.cpp:294
-#, fuzzy
-#| msgctxt "State, as in disabled"
-#| msgid "Off"
 msgctxt "State, as in, disabled"
 msgid "Off"
 msgstr "Изкл."
@@ -1534,13 +1521,11 @@ msgid "Error saving preset"
 msgstr "Управление на фиксираните настройки"
 
 #: configdialog/dialogs/DatabaseConfig.cpp:92
-#, fuzzy
-#| msgid "Password"
 msgctxt ""
 "A default password for insertion into an example SQL command (so as not to "
 "print the real one). To be manually replaced by the user."
 msgid "password"
-msgstr "Парола"
+msgstr "парола"
 
 #: configdialog/ConfigDialog.cpp:57
 msgctxt "Miscellaneous settings"
@@ -1789,7 +1774,7 @@ msgstr "Заглавие"
 #. i18n: file: dialogs/EditFilterDialog.ui:90
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:126 dialogs/FilenameLayoutDialog.cpp:345
-#: browsers/CollectionTreeItemModelBase.cpp:905
+#: browsers/CollectionTreeItemModelBase.cpp:903
 #: browsers/collectionbrowser/CollectionWidget.cpp:131
 #: browsers/collectionbrowser/CollectionWidget.cpp:160
 #: browsers/collectionbrowser/CollectionWidget.cpp:192
@@ -1802,7 +1787,7 @@ msgstr "Композитор"
 #. i18n: file: dialogs/EditFilterDialog.ui:120
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:127 dialogs/FilenameLayoutDialog.cpp:350
-#: browsers/CollectionTreeItemModelBase.cpp:907
+#: browsers/CollectionTreeItemModelBase.cpp:905
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:248
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:691 rc.cpp:1166
 #: playlist/PlaylistModel.cpp:653 widgets/SmartPlaylistEditor.cpp:184
@@ -1819,7 +1804,7 @@ msgstr "Коментар"
 #. i18n: file: dialogs/EditFilterDialog.ui:95
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:130 dialogs/FilenameLayoutDialog.cpp:365
-#: dialogs/transferdialog.cpp:90 browsers/CollectionTreeItemModelBase.cpp:906
+#: dialogs/transferdialog.cpp:90 browsers/CollectionTreeItemModelBase.cpp:904
 #: browsers/collectionbrowser/CollectionWidget.cpp:128
 #: browsers/collectionbrowser/CollectionWidget.cpp:157
 #: browsers/collectionbrowser/CollectionWidget.cpp:189
@@ -2107,7 +2092,7 @@ msgctxt "The collection this track is part of"
 msgid "None"
 msgstr "Не"
 
-#: dialogs/TagDialog.cpp:1053
+#: dialogs/TagDialog.cpp:1054
 #, kde-format
 msgctxt "The amount of tracks being edited"
 msgid "1 Track"
@@ -2115,30 +2100,30 @@ msgid_plural "Information for %1 Tracks"
 msgstr[0] "1 запис"
 msgstr[1] "Информация за %1 записа"
 
-#: dialogs/TagDialog.cpp:1168
+#: dialogs/TagDialog.cpp:1169
 #, kde-format
 msgid "Editing 1 file"
 msgid_plural "Editing %1 files"
 msgstr[0] "Редактиране на 1 файл"
 msgstr[1] "Редактиране на %1 файла"
 
-#: dialogs/TagDialog.cpp:1173
+#: dialogs/TagDialog.cpp:1174
 msgid "Rated Songs:"
 msgstr "Оценени песни:"
 
-#: dialogs/TagDialog.cpp:1175
+#: dialogs/TagDialog.cpp:1176
 msgid "Average Rating:"
 msgstr "Средна оценка:"
 
-#: dialogs/TagDialog.cpp:1177
+#: dialogs/TagDialog.cpp:1178
 msgid "Scored Songs:"
 msgstr "Точки на песни:"
 
-#: dialogs/TagDialog.cpp:1179
+#: dialogs/TagDialog.cpp:1180
 msgid "Average Score:"
 msgstr "Точки (средно):"
 
-#: dialogs/TagDialog.cpp:1477
+#: dialogs/TagDialog.cpp:1482
 msgid ""
 "Writing to file failed. Please check permissions and available disc space."
 msgstr ""
@@ -2274,7 +2259,7 @@ msgstr "Опции"
 msgid "Convert spaces to underscores"
 msgstr "Преобразуване на интервалите в долна черта"
 
-#: dialogs/ScriptManager.cpp:90 MainWindow.cpp:667
+#: dialogs/ScriptManager.cpp:90 MainWindow.cpp:709
 msgid "Script Manager"
 msgstr "Управление на скриптовете"
 
@@ -2351,15 +2336,15 @@ msgstr ""
 
 #. i18n: file: collection/audiocd/FormatSelectionDialog.ui:14
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: App.cpp:112 rc.cpp:536
+#: App.cpp:114 rc.cpp:536
 msgid "Amarok"
 msgstr "Amarok"
 
-#: App.cpp:113
+#: App.cpp:115
 msgid "The audio player for KDE"
 msgstr "Аудио плеър за KDE"
 
-#: App.cpp:114
+#: App.cpp:116
 msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2009, The Amarok Development Squad"
@@ -2367,7 +2352,7 @@ msgstr ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2009, екипът на Amarok"
 
-#: App.cpp:115
+#: App.cpp:117
 #, kde-format
 msgid ""
 "IRC:\n"
@@ -2386,154 +2371,154 @@ msgstr ""
 "\n"
 "(Дата:  %1)"
 
-#: App.cpp:461
+#: App.cpp:465
 msgid "Files/URLs to open"
 msgstr "Файлове/адреси за отваряне"
 
-#: App.cpp:463
+#: App.cpp:467
 msgid "Skip backwards in playlist"
 msgstr "Прескачане назад"
 
-#: App.cpp:465
+#: App.cpp:469
 msgid "Start playing current playlist"
 msgstr "Изпълнение на текущия списък със записи"
 
-#: App.cpp:467
+#: App.cpp:471
 msgid "Play if stopped, pause if playing"
 msgstr "Продължаване ако е спряно, и обратно"
 
-#: App.cpp:468
+#: App.cpp:472
 msgid "Pause playback"
 msgstr "Спиране на изпълнението"
 
-#: App.cpp:470
+#: App.cpp:474
 msgid "Stop playback"
 msgstr "Прекратяване на изпълнението"
 
-#: App.cpp:472
+#: App.cpp:476
 msgid "Skip forwards in playlist"
 msgstr "Прескачане напред"
 
-#: App.cpp:473
+#: App.cpp:477
 msgid "Additional options:"
 msgstr "Допълнителни опции:"
 
-#: App.cpp:475
+#: App.cpp:479
 msgid "Append files/URLs to playlist"
 msgstr "Добавяне на файлове/адреси към списъка със записи"
 
-#: App.cpp:476
+#: App.cpp:480
 msgid "Queue URLs after the currently playing track"
 msgstr "Поставяне адресите на опашката след изпълнявания запис"
 
-#: App.cpp:478
+#: App.cpp:482
 msgid "Load URLs, replacing current playlist"
 msgstr "Зареждане на адреси, заместване на текущия списък със записи"
 
-#: App.cpp:480
+#: App.cpp:484
 msgid "Print verbose debugging information"
 msgstr "Отпечатване на информацията за проследяване на грешки"
 
-#: App.cpp:482
+#: App.cpp:486
 msgid "Allow running multiple Amarok instances"
 msgstr "Много работни копия на Amarok"
 
-#: App.cpp:483
+#: App.cpp:487
 msgid "Base for relative filenames/URLs"
 msgstr "Относителни имена на файлове/адреси"
 
-#: App.cpp:484
+#: App.cpp:488
 msgid "Run integrated unit tests, if your build supports it"
 msgstr "Изпълнение на тестове, ако вашата версия го поддържа"
 
-#: App.cpp:486
+#: App.cpp:490
 msgid "Subscribe to podcast feed"
 msgstr ""
 
-#: App.cpp:752
+#: App.cpp:756
 msgid "Moving files to trash"
 msgstr "Преместване на файловете в кошчето"
 
-#: App.cpp:834
+#: App.cpp:837 App.cpp:874
+msgctxt "The amount of time since last played"
+msgid "Never"
+msgstr "никога"
+
+#: App.cpp:842
 #, kde-format
 msgctxt "monthname year"
 msgid "%1 %2"
 msgstr "%1 %2"
 
-#: App.cpp:841
+#: App.cpp:849
 #, kde-format
 msgid "One week ago"
 msgid_plural "%1 weeks ago"
 msgstr[0] "преди седмица"
 msgstr[1] "преди %1 седмици"
 
-#: App.cpp:844 App.cpp:895
-msgctxt "When this track was last played"
-msgid "Tomorrow"
-msgstr "утре"
-
-#: App.cpp:850
+#: App.cpp:855
 msgid "Yesterday"
 msgstr "вчера"
 
-#: App.cpp:851
+#: App.cpp:856
 #, kde-format
 msgid "One day ago"
 msgid_plural "%1 days ago"
 msgstr[0] "преди ден"
 msgstr[1] "преди %1 дена"
 
-#: App.cpp:854
+#: App.cpp:859
 #, kde-format
 msgid "One hour ago"
 msgid_plural "%1 hours ago"
 msgstr[0] "преди час"
 msgstr[1] "преди %1 часа"
 
-#: App.cpp:860
+#: App.cpp:865
 #, kde-format
 msgid "One minute ago"
 msgid_plural "%1 minutes ago"
 msgstr[0] "преди минута"
 msgstr[1] "преди %1 минути"
 
-#: App.cpp:861
+#: App.cpp:866
 msgid "Within the last minute"
 msgstr "през последната минута"
 
-#: App.cpp:863
+#: App.cpp:868
 msgid "The future"
 msgstr "бъдеще"
 
-#: App.cpp:869
-msgctxt "The amount of time since last played"
-msgid "Never"
-msgstr "никога"
-
-#: App.cpp:879
+#: App.cpp:884
 msgctxt "The amount of time since last played"
 msgid "0"
 msgstr "0"
 
-#: App.cpp:888
+#: App.cpp:893
 #, kde-format
 msgctxt "number of months ago"
 msgid "%1M"
 msgstr "%1 м"
 
-#: App.cpp:892
+#: App.cpp:897
 #, kde-format
 msgctxt "w for weeks"
 msgid "%1w"
 msgstr "%1 с"
 
-#: App.cpp:901
+#: App.cpp:900
+msgctxt "When this track was last played"
+msgid "Tomorrow"
+msgstr "утре"
+
+#: App.cpp:906
 #, no-c-format, kde-format
 msgctxt "d for days"
 msgid "%1d"
 msgstr "%1 д"
 
-#: App.cpp:904
+#: App.cpp:909
 #, kde-format
 msgctxt "h for hours"
 msgid "%1h"
@@ -2561,7 +2546,7 @@ msgstr "%1 ч"
 #. i18n: ectx: property (text), widget (QLabel, eqBand8Value)
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:1320
 #. i18n: ectx: property (text), widget (QLabel, eqBand9Value)
-#: App.cpp:913 rc.cpp:680 rc.cpp:686 rc.cpp:692 rc.cpp:698 rc.cpp:704
+#: App.cpp:918 rc.cpp:680 rc.cpp:686 rc.cpp:692 rc.cpp:698 rc.cpp:704
 #: rc.cpp:710 rc.cpp:716 rc.cpp:722 rc.cpp:728 rc.cpp:734 rc.cpp:740
 msgid "0"
 msgstr "0"
@@ -2579,10 +2564,9 @@ msgid ""
 msgstr ""
 
 #: aboutdialog/ExtendedAboutDialog.cpp:91
-#, fuzzy, kde-format
-#| msgid "Album \"%1\""
+#, kde-format
 msgid "About %1"
-msgstr "Албум \"%1\""
+msgstr "Относно %1"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:112
 #, kde-format
@@ -2594,13 +2578,11 @@ msgstr ""
 #: aboutdialog/ExtendedAboutDialog.cpp:152
 #, kde-format
 msgid "License: %1"
-msgstr ""
+msgstr "Лиценз: %1"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:166
-#, fuzzy
-#| msgid "Abort"
 msgid "&About"
-msgstr "Прекъсване"
+msgstr "&Относно"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:183
 msgid "Get data from openDesktop.org to learn more about the team"
@@ -2619,16 +2601,12 @@ msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
 msgstr ""
 
 #: aboutdialog/ExtendedAboutDialog.cpp:225
-#, fuzzy
-#| msgid "Authors"
 msgid "A&uthor"
-msgstr "Автори"
+msgstr "&Автор"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:225
-#, fuzzy
-#| msgid "Authors"
 msgid "A&uthors"
-msgstr "Автори"
+msgstr "&Автори"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:239
 msgid "Get data from openDesktop.org to learn more about contributors"
@@ -2639,10 +2617,8 @@ msgid "&Thanks To"
 msgstr ""
 
 #: aboutdialog/ExtendedAboutDialog.cpp:282
-#, fuzzy
-#| msgid "&Duration:"
 msgid "T&ranslation"
-msgstr "Про&дължителност:"
+msgstr "Пре&вод"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:306
 msgid "License Agreement"
@@ -2653,38 +2629,31 @@ msgid "Internet connection not available"
 msgstr ""
 
 #: aboutdialog/ExtendedAboutDialog.cpp:339
-#, fuzzy
-#| msgid "Framework Version"
 msgid "Network error"
-msgstr "Версия на структурата"
+msgstr "Мрежова грешка"
 
-#: aboutdialog/OcsPersonItem.cpp:89
-#, fuzzy
-#| msgid "Former contributors"
+#: aboutdialog/OcsPersonItem.cpp:91
 msgid "Email contributor"
-msgstr "Бивши сътрудници"
+msgstr "Писане на писмо на сътрудника"
 
-#: aboutdialog/OcsPersonItem.cpp:97
+#: aboutdialog/OcsPersonItem.cpp:99
 msgid "Visit contributor's homepage"
 msgstr ""
 
-#: aboutdialog/OcsPersonItem.cpp:185
+#: aboutdialog/OcsPersonItem.cpp:187
 msgid "IRC channels: "
 msgstr ""
 
-#: aboutdialog/OcsPersonItem.cpp:199
-#, fuzzy
-#| msgctxt "The quality of music"
-#| msgid "Favorite"
+#: aboutdialog/OcsPersonItem.cpp:201
 msgid "Favorite music: "
-msgstr "Любимото ми"
+msgstr "Любима музика: "
 
-#: aboutdialog/OcsPersonItem.cpp:204
+#: aboutdialog/OcsPersonItem.cpp:206
 #, kde-format
 msgid "Visit %1's openDesktop.org profile"
 msgstr ""
 
-#: aboutdialog/OcsPersonItem.cpp:206
+#: aboutdialog/OcsPersonItem.cpp:208
 #, kde-format
 msgid "Visit %1's profile on openDesktop.org"
 msgstr ""
@@ -2704,23 +2673,21 @@ msgstr "Локалните списъци в БД"
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:133
 #: equalizerpresetmanager.cpp:55
 #: browsers/playlistbrowser/UserPlaylistModel.cpp:568
-#: amarokurls/BookmarkTreeView.cpp:116
 msgid "&Rename"
 msgstr "&Преименуване"
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:141
 #: equalizerpresetmanager.cpp:56
 #: browsers/playlistbrowser/UserPlaylistModel.cpp:575
-#: amarokurls/BookmarkTreeView.cpp:110
+#: amarokurls/BookmarkTreeView.cpp:112
 msgid "&Delete"
 msgstr "&Изтриване"
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:160
-#, fuzzy, kde-format
-#| msgid "Remove From Playlist"
+#, kde-format
 msgctxt "Remove a track from a saved playlist"
 msgid "Remove From \"%1\""
-msgstr "Премахване от списъка"
+msgstr "Премахване от \"%1\""
 
 #: playlistmanager/file/PlaylistFileProvider.cpp:66
 #, fuzzy
@@ -3005,7 +2972,7 @@ msgstr "Неизвестно заглавие"
 msgid "A preset with the name %1 already exists. Overwrite?"
 msgstr "Вече има фиксирана настройка с име %1. Искате ли да бъде презаписана?"
 
-#: EngineController.cpp:209
+#: EngineController.cpp:226
 msgid ""
 "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
 "the installation of the backend that phonon uses.</p><p>You may find useful "
@@ -3015,11 +2982,11 @@ msgstr ""
 "да изберете друга звукова система. </p><p>Може да намерите много полезна "
 "информация в раздела <i>ЧЗВ</i> на <i>Ръководство за Amarok</i>.</p>"
 
-#: EngineController.cpp:228
+#: EngineController.cpp:245
 msgid "Install MP3 Support"
 msgstr "Инсталиране поддръжката на MP3"
 
-#: EngineController.cpp:230
+#: EngineController.cpp:247
 msgid ""
 "Amarok currently cannot play MP3 files. Do you want to install support for "
 "MP3?"
@@ -3027,11 +2994,11 @@ msgstr ""
 "В момента Amarok не може да изпълнява MP3 файлове. Искате ли да инсталирате "
 "такава поддръжка?"
 
-#: EngineController.cpp:231
+#: EngineController.cpp:248
 msgid "No MP3 Support"
 msgstr "Няма поддръжка на MP3"
 
-#: EngineController.cpp:710
+#: EngineController.cpp:740
 #, fuzzy
 #| msgid "Pre-amp"
 msgid "Preamp"
@@ -3133,7 +3100,7 @@ msgstr "Съвпадение:"
 msgid "Current Track"
 msgstr "Текущ запис"
 
-#: dynamic/biases/EchoNest.cpp:116 MainWindow.cpp:263
+#: dynamic/biases/EchoNest.cpp:116 MainWindow.cpp:264
 msgid "Playlist"
 msgstr "Списък"
 
@@ -3767,79 +3734,79 @@ msgstr "Филтриране на източници"
 msgid "Previous Browser"
 msgstr "Предишен браузър"
 
-#: browsers/CollectionTreeItemModelBase.cpp:535
+#: browsers/CollectionTreeItemModelBase.cpp:533
 msgid "album"
 msgstr "Албум"
 
-#: browsers/CollectionTreeItemModelBase.cpp:540
+#: browsers/CollectionTreeItemModelBase.cpp:538
 msgid "artist"
 msgstr "Изпълнител"
 
-#: browsers/CollectionTreeItemModelBase.cpp:545
+#: browsers/CollectionTreeItemModelBase.cpp:543
 msgid "genre"
 msgstr "Жанр"
 
-#: browsers/CollectionTreeItemModelBase.cpp:550
+#: browsers/CollectionTreeItemModelBase.cpp:548
 msgid "composer"
 msgstr "Композитор"
 
-#: browsers/CollectionTreeItemModelBase.cpp:555
+#: browsers/CollectionTreeItemModelBase.cpp:553
 msgid "year"
 msgstr "Година"
 
-#: browsers/CollectionTreeItemModelBase.cpp:560
+#: browsers/CollectionTreeItemModelBase.cpp:558
 msgid "comment"
 msgstr "Коментар"
 
-#: browsers/CollectionTreeItemModelBase.cpp:564
+#: browsers/CollectionTreeItemModelBase.cpp:562
 msgid "rating"
 msgstr "Оценка"
 
-#: browsers/CollectionTreeItemModelBase.cpp:568
+#: browsers/CollectionTreeItemModelBase.cpp:566
 msgid "score"
 msgstr "Точки"
 
-#: browsers/CollectionTreeItemModelBase.cpp:572
+#: browsers/CollectionTreeItemModelBase.cpp:570
 msgid "playcount"
 msgstr "Брояч"
 
-#: browsers/CollectionTreeItemModelBase.cpp:576
+#: browsers/CollectionTreeItemModelBase.cpp:574
 msgid "length"
 msgstr "Времетраене"
 
-#: browsers/CollectionTreeItemModelBase.cpp:580
+#: browsers/CollectionTreeItemModelBase.cpp:578
 msgid "discnumber"
 msgstr "Номер на диск"
 
-#: browsers/CollectionTreeItemModelBase.cpp:584
+#: browsers/CollectionTreeItemModelBase.cpp:582
 msgid "tracknumber"
 msgstr "Номер на запис"
 
-#: browsers/CollectionTreeItemModelBase.cpp:588
+#: browsers/CollectionTreeItemModelBase.cpp:586
 msgid "added"
 msgstr "Добавен"
 
-#: browsers/CollectionTreeItemModelBase.cpp:594
+#: browsers/CollectionTreeItemModelBase.cpp:592
 msgid "today"
 msgstr "Днес"
 
-#: browsers/CollectionTreeItemModelBase.cpp:596
+#: browsers/CollectionTreeItemModelBase.cpp:594
 msgid "last week"
 msgstr "Миналата седмица"
 
-#: browsers/CollectionTreeItemModelBase.cpp:598
+#: browsers/CollectionTreeItemModelBase.cpp:596
 msgid "last month"
 msgstr "Миналия месец"
 
-#: browsers/CollectionTreeItemModelBase.cpp:600
+#: browsers/CollectionTreeItemModelBase.cpp:598
 msgid "two months ago"
 msgstr "Преди два месеца"
 
-#: browsers/CollectionTreeItemModelBase.cpp:602
+#: browsers/CollectionTreeItemModelBase.cpp:600
 msgid "three months ago"
 msgstr "Преди три месеца"
 
-#: browsers/CollectionTreeItemModelBase.cpp:903
+#: browsers/CollectionTreeItemModelBase.cpp:901
 msgid "Year - Album"
 msgstr "Година - Албум"
 
@@ -4259,47 +4226,53 @@ msgstr[1] "%1 записа"
 msgid "Close"
 msgstr "Затваряне"
 
-#: MainWindow.cpp:252
+#: MainWindow.cpp:253
 msgid "Browsers"
 msgstr "Браузъри"
 
-#: MainWindow.cpp:286
+#: MainWindow.cpp:287
 msgid "Context"
 msgstr "Контекст"
 
-#: MainWindow.cpp:316
+#: MainWindow.cpp:314
 msgid "Local Music"
 msgstr "Локална музика"
 
-#: MainWindow.cpp:318
+#: MainWindow.cpp:316
 msgid "Local sources of content"
 msgstr "Локални източници"
 
-#: MainWindow.cpp:326
+#: MainWindow.cpp:324
 msgid "Internet"
 msgstr "Интернет"
 
-#: MainWindow.cpp:328
+#: MainWindow.cpp:326
 msgid "Online sources of content"
 msgstr "Интернет източници"
 
-#: MainWindow.cpp:334
+#: MainWindow.cpp:332
 msgid "Playlists"
 msgstr "Списъци със записи"
 
-#: MainWindow.cpp:336
+#: MainWindow.cpp:334
 msgid "Various types of playlists"
 msgstr "Разни слисъци"
 
-#: MainWindow.cpp:343
+#: MainWindow.cpp:341
 msgid "Files"
 msgstr "Файлове"
 
-#: MainWindow.cpp:345
+#: MainWindow.cpp:343
 msgid "Browse local hard drive for content"
 msgstr "Разглеждане съдържанието на твърдия диск"
 
-#: MainWindow.cpp:462
+#. i18n: file: configdialog/dialogs/GeneralConfig.ui:56
+#. i18n: ectx: property (text), widget (QCheckBox, kcfg_LockLayout)
+#: MainWindow.cpp:388 rc.cpp:770
+msgid "Lock layout"
+msgstr "Заключванве на изглед"
+
+#: MainWindow.cpp:504
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
 "<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
@@ -4309,153 +4282,153 @@ msgstr ""
 "системния панел. За да спрете програмата, използвайте <B>\"Изход\"</B> от "
 "менюто или иконата в системния панел.</qt>"
 
-#: MainWindow.cpp:464
+#: MainWindow.cpp:506
 msgid "Docking in System Tray"
 msgstr "Вграждане в системния панел"
 
-#: MainWindow.cpp:489
+#: MainWindow.cpp:531
 msgid "Use relative path for &saving"
 msgstr "Относителен път за &запис"
 
-#: MainWindow.cpp:500
+#: MainWindow.cpp:542
 msgid "Save As"
 msgstr "Запис като"
 
-#: MainWindow.cpp:537
+#: MainWindow.cpp:579
 msgid "Play Media (Files or URLs)"
 msgstr "Изпълнение на записи (файлове или адреси)"
 
-#: MainWindow.cpp:537
+#: MainWindow.cpp:579
 msgid "Add Media (Files or URLs)"
 msgstr "Добавяне на запис (файлове или адреси)"
 
-#: MainWindow.cpp:552
+#: MainWindow.cpp:594
 msgid "Add Stream"
 msgstr "Добавяне на поток"
 
-#: MainWindow.cpp:552
+#: MainWindow.cpp:594
 msgid "Enter Stream URL:"
 msgstr "Въведете адреса на потока:"
 
-#: MainWindow.cpp:630
+#: MainWindow.cpp:672
 msgid "&Add Media..."
 msgstr "&Добавяне на запис..."
 
-#: MainWindow.cpp:635
+#: MainWindow.cpp:677
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "&Изчистване на списъка"
 
-#: MainWindow.cpp:639
+#: MainWindow.cpp:681
 msgid "&Add Stream..."
 msgstr "&Добавяне на поток..."
 
-#: MainWindow.cpp:643
+#: MainWindow.cpp:685
 msgid "&Export Playlist As..."
 msgstr "&Експортиране на списъка като..."
 
-#: MainWindow.cpp:647 MainWindow.cpp:655
+#: MainWindow.cpp:689 MainWindow.cpp:697
 msgid "Bookmark This Location"
 msgstr "Отмятане на местоположението"
 
-#: MainWindow.cpp:651 amarokurls/BookmarkManager.cpp:42
+#: MainWindow.cpp:693 amarokurls/BookmarkManager.cpp:42
 msgid "Bookmark Manager"
 msgstr "Управление на отметките"
 
-#: MainWindow.cpp:659 covermanager/CoverManager.cpp:97
+#: MainWindow.cpp:701 covermanager/CoverManager.cpp:97
 msgid "Cover Manager"
 msgstr "Управление на обложките"
 
-#: MainWindow.cpp:663
+#: MainWindow.cpp:705
 msgid "Play Media..."
 msgstr "Изпълнение на запис..."
 
-#: MainWindow.cpp:671
+#: MainWindow.cpp:713
 msgid "&Seek Forward"
 msgstr "&Търсене напред"
 
-#: MainWindow.cpp:677
+#: MainWindow.cpp:719
 msgid "&Seek Backward"
 msgstr "&Търсене назад"
 
-#: MainWindow.cpp:684
+#: MainWindow.cpp:726
 msgid "Update Collection"
 msgstr "Обновяване на колекцията"
 
-#: MainWindow.cpp:691
+#: MainWindow.cpp:733
 msgid "Previous Track"
 msgstr "Предишен запис"
 
-#: MainWindow.cpp:699
+#: MainWindow.cpp:741
 msgid "Next Track"
 msgstr "Следващ запис"
 
-#: MainWindow.cpp:702
+#: MainWindow.cpp:744
 msgid "Increase Volume"
 msgstr "Увеличаване силата на звука"
 
-#: MainWindow.cpp:708
+#: MainWindow.cpp:750
 msgid "Decrease Volume"
 msgstr "Намаляване силата на звука"
 
-#: MainWindow.cpp:714
+#: MainWindow.cpp:756
 msgid "Toggle Main Window"
 msgstr "Превключване прозореца на списъка"
 
-#: MainWindow.cpp:719
+#: MainWindow.cpp:761
 msgid "Show On Screen Display"
 msgstr "Показване на информационен екран (OSD)"
 
-#: MainWindow.cpp:724
+#: MainWindow.cpp:766
 msgid "Mute Volume"
 msgstr "Заглушаване на звука"
 
-#: MainWindow.cpp:729
+#: MainWindow.cpp:771
 msgid "Love Current Track"
 msgstr "Обичам текущия запис"
 
-#: MainWindow.cpp:734
+#: MainWindow.cpp:776
 msgid "Rate Current Track: 1"
 msgstr "Класиране на текущия запис: 1"
 
-#: MainWindow.cpp:739
+#: MainWindow.cpp:781
 msgid "Rate Current Track: 2"
 msgstr "Класиране на текущия запис: 2"
 
-#: MainWindow.cpp:744
+#: MainWindow.cpp:786
 msgid "Rate Current Track: 3"
 msgstr "Класиране на текущия запис: 3"
 
-#: MainWindow.cpp:749
+#: MainWindow.cpp:791
 msgid "Rate Current Track: 4"
 msgstr "Класиране на текущия запис: 4"
 
-#: MainWindow.cpp:754
+#: MainWindow.cpp:796
 msgid "Rate Current Track: 5"
 msgstr "Класиране на текущия запис: 5"
 
-#: MainWindow.cpp:817
+#: MainWindow.cpp:859
 msgid "&Music"
 msgstr "&Музика"
 
-#: MainWindow.cpp:821
+#: MainWindow.cpp:863
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:864
+#: MainWindow.cpp:906
 msgid "&Tools"
 msgstr "&Инструменти"
 
-#: MainWindow.cpp:877
+#: MainWindow.cpp:919
 msgid "&Settings"
 msgstr "&Настройване"
 
-#: MainWindow.cpp:988
+#: MainWindow.cpp:1046
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Пауза  ::  %1"
 
-#: MainWindow.cpp:1011
+#: MainWindow.cpp:1070
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
@@ -4493,7 +4466,18 @@ msgstr "Аудио CD"
 msgid "Data Mode"
 msgstr "CD с данни"
 
-#: toolbar/MainToolbarNG.cpp:39
+#: toolbar/VolumePopupButton.cpp:97 toolbar/VolumePopupButton.cpp:108
+#: widgets/Osd.cpp:145
+msgid "(muted)"
+msgstr "(заглушено)"
+
+#: toolbar/VolumePopupButton.cpp:97 toolbar/VolumePopupButton.cpp:108
+#: widgets/Osd.cpp:145
+#, kde-format
+msgid "Volume: %1% %2"
+msgstr "Сила на звука: %1% %2"
+
+#: toolbar/MainToolbarNG.cpp:36
 msgid "Main Toolbar NG"
 msgstr "Главна лента с инструменти NG"
 
@@ -6038,12 +6022,6 @@ msgstr "Показване на и&кона в системния панел"
 #: rc.cpp:767
 msgid "Automatically retrieve cover art"
 msgstr "Автоматично сваляне на обложки"
-
-#. i18n: file: configdialog/dialogs/GeneralConfig.ui:56
-#. i18n: ectx: property (text), widget (QCheckBox, kcfg_LockLayout)
-#: rc.cpp:770
-msgid "Lock layout"
-msgstr "Заключванве на изглед"
 
 #. i18n: file: configdialog/dialogs/GeneralConfig.ui:71
 #. i18n: ectx: property (title), widget (QGroupBox, playlistBox)
@@ -8014,9 +7992,13 @@ msgid "Last.fm is cool..."
 msgstr "Last.fm е супер..."
 
 #: services/lastfm/meta/MultiPlayableCapabilityImpl_p.h:107
+#, fuzzy
+#| msgid ""
+#| "Unfortunately, Last.Fm radio streams are only functional for Last.Fm "
+#| "subscribers. All the other Last.Fm features are unaffected."
 msgid ""
-"Unfortunately, Last.Fm radio streams are only functional for Last.Fm "
-"subscribers. All the other Last.Fm features are unaffected."
+"To listen to this stream you need to be a paying Last.Fm subscriber. All the "
+"other Last.Fm features are unaffected."
 msgstr ""
 "За съжаление радиото на Last.Fm е само за членове. Другите фукционалности са "
 "същите."
@@ -8272,8 +8254,8 @@ msgstr "Всички станции"
 msgid "Results for: %1"
 msgstr "Резултат за %1"
 
-#: services/shoutcast/ShoutcastServiceQueryMaker.cpp:306
-#: services/shoutcast/ShoutcastServiceQueryMaker.cpp:375
+#: services/shoutcast/ShoutcastServiceQueryMaker.cpp:314
+#: services/shoutcast/ShoutcastServiceQueryMaker.cpp:383
 msgid "The Shoutcast server is busy.<BR>Please try again later."
 msgstr ""
 
@@ -9412,28 +9394,28 @@ msgstr "група"
 msgid "Url"
 msgstr "Адрес"
 
-#: amarokurls/BookmarkModel.cpp:510
+#: amarokurls/BookmarkModel.cpp:514
 msgid "New Group"
 msgstr "Нова група"
 
-#: amarokurls/BookmarkModel.cpp:535 amarokurls/BookmarkManagerWidget.cpp:47
+#: amarokurls/BookmarkModel.cpp:539 amarokurls/BookmarkManagerWidget.cpp:47
 msgid "New Bookmark"
 msgstr "Нова отметка"
 
-#: amarokurls/BookmarkModel.cpp:536
+#: amarokurls/BookmarkModel.cpp:540
 msgid "none"
 msgstr "Без"
 
-#: amarokurls/BookmarkTreeView.cpp:104
+#: amarokurls/BookmarkTreeView.cpp:106
 msgctxt "Load the view represented by this bookmark"
 msgid "&Load"
 msgstr "&Зареждане"
 
-#: amarokurls/BookmarkTreeView.cpp:123
+#: amarokurls/BookmarkTreeView.cpp:119
 msgid "&Create timecode track"
 msgstr ""
 
-#: amarokurls/BookmarkTreeView.cpp:327
+#: amarokurls/BookmarkTreeView.cpp:316
 msgid "New Timecode Track"
 msgstr ""
 
@@ -9488,15 +9470,6 @@ msgstr "Регулиране нивото на звука"
 #: widgets/Osd.cpp:129
 msgid "Rating changed"
 msgstr "Оценката е променена"
-
-#: widgets/Osd.cpp:145
-msgid "(muted)"
-msgstr "(заглушено)"
-
-#: widgets/Osd.cpp:145
-#, kde-format
-msgid "Volume: %1% %2"
-msgstr "Сила на звука: %1% %2"
 
 #: widgets/Osd.cpp:207
 msgid "Volume: 100% (muted)"
@@ -9971,161 +9944,3 @@ msgstr "Обложка"
 #: covermanager/CoverManager.cpp:805
 msgid "No Artist"
 msgstr "Няма изпълнител"
-
-#~ msgid "Install New Applets"
-#~ msgstr "Инсталиране на нови аплети"
-
-#~ msgid "Enter new group name:"
-#~ msgstr "Въведете ново име на групата:"
-
-#~ msgid "Group by %1"
-#~ msgstr "Групиране по %1"
-
-#, fuzzy
-#~| msgid "Group By"
-#~ msgid "Group &by"
-#~ msgstr "Групиране по"
-
-#~ msgctxt "Replace the currently loaded tracks with these"
-#~ msgid "&Load"
-#~ msgstr "&Зареждане"
-
-#, fuzzy
-#~| msgid "Internal Database"
-#~ msgid "&External database engine:"
-#~ msgstr "Вътрешна БД"
-
-#~ msgid "Playlist Grouping"
-#~ msgstr "Групиране на списъците"
-
-#~ msgid "Enables the equalizer plugin"
-#~ msgstr "Включване на за еквалайзера"
-
-#~ msgid "Band gains for equalizer, 10 values, range -100..100, 0 is normal."
-#~ msgstr ""
-#~ "Честотни ленти на еквалайзера, 10 стойности, вариращи от -100 до 100; 0 е "
-#~ "нормално."
-
-#~ msgid "&Save to %1"
-#~ msgstr "&Запис в %1"
-
-#~ msgid "Enter Podcast URL:"
-#~ msgstr "Въведете адреса на подкаста:"
-
-#~ msgid "&Initialize Device"
-#~ msgstr "&Инициализиране на устройство"
-
-#~ msgid "disc"
-#~ msgstr "диск"
-
-#~ msgid "disk"
-#~ msgstr "диск"
-
-#~ msgid "remaster"
-#~ msgstr "ремастър"
-
-#~ msgid "cd"
-#~ msgstr "CD"
-
-#~ msgid "single"
-#~ msgstr "сингъл"
-
-#~ msgid "soundtrack"
-#~ msgstr "саундтрак"
-
-#~ msgid "part"
-#~ msgstr "част"
-
-#~ msgid "No cover found"
-#~ msgstr "Не е намерена обложка"
-
-#~ msgid "The cover-data produced an invalid image."
-#~ msgstr "Обложката е невалидно изображение."
-
-#~ msgid ""
-#~ "You have seen all the covers Amazon returned using the query below. "
-#~ "Perhaps you can refine it:"
-#~ msgstr ""
-#~ "Видяхте всички обложки от Amazon. Може би искате да бъдете по-конкретни:"
-
-#~ msgid "Amazon Query Editor"
-#~ msgstr "Редактор за заявки към Amazon"
-
-#~ msgid "Ask Amazon for covers using this query:"
-#~ msgstr "Търсене на обложки в Amazon чрез това запитване:"
-
-#~ msgid "Ne&w Search..."
-#~ msgstr "&Ново търсене..."
-
-#~ msgid "&Next Cover"
-#~ msgstr "Следва&ща обложка"
-
-#~ msgctxt "The locale to use when fetching covers from amazon.com"
-#~ msgid "International"
-#~ msgstr "Международно"
-
-#~ msgctxt "@title buttontext for popup-menu"
-#~ msgid "View"
-#~ msgstr "Изглед"
-
-#~ msgid "Amazon Locale"
-#~ msgstr "Амазон"
-
-#~ msgid "Select Collection to Save Playlist"
-#~ msgstr "Изберете колекция, където да бъде записан списъкът"
-
-#~ msgid "Collections"
-#~ msgstr "Колекции"
-
-#~ msgid "&Delete group"
-#~ msgstr "&Изтриване"
-
-#~ msgid "Add Stream Location"
-#~ msgstr "Добавяне на поток"
-
-#~ msgid "Name:"
-#~ msgstr "Име:"
-
-#~ msgid "Stream URL:"
-#~ msgstr "Адреса на потока:"
-
-#~ msgid "Operation complete!"
-#~ msgstr "Опрацията завърши!"
-
-#~ msgid "My Playlists"
-#~ msgstr "Списъци със записи"
-
-#~| msgid "Playlists"
-#~ msgid "User Playlists"
-#~ msgstr "Потребителски списъци"
-
-#~ msgid ""
-#~ "The amount you choose to pay will be split 50/50 between the artist and "
-#~ "Magnatune.com. Your personal and credit card information is sent securely "
-#~ "to Magnatune.com using SSL encryption and is not stored by Amarok or "
-#~ "readable by the Amarok developers."
-#~ msgstr ""
-#~ "Сумата, която ще платите ще бъде поделена 50/50 между изпълнителя и "
-#~ "Magnatune.com. Информацията за кредитната ви карта се изпраща директно до "
-#~ "Magnatune.com чрез използване на SSL шифроване и не се пази от Amarok."
-
-#~ msgid "Get Current"
-#~ msgstr "Текущия"
-
-#~ msgid "Goto"
-#~ msgstr "Навигация"
-
-#~ msgid "Bold"
-#~ msgstr "Получер"
-
-#~ msgid "Italic"
-#~ msgstr "Курсив"
-
-#~ msgid "Left"
-#~ msgstr "Ляво"
-
-#~ msgid "Center"
-#~ msgstr "Центрирано"
-
-#~ msgid "Right"
-#~ msgstr "Дясно"

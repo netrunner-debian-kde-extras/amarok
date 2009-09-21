@@ -7,14 +7,14 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-09-14 06:26+0200\n"
-"PO-Revision-Date: 2009-09-01 14:14+0300\n"
+"POT-Creation-Date: 2009-09-21 06:11+0200\n"
+"PO-Revision-Date: 2009-09-15 03:57+0300\n"
 "Last-Translator: Marek Laane <bald@smail.ee>\n"
 "Language-Team: Estonian <kde-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 1.0\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #: mac/GrowlInterface.cpp:37 context/engines/current/CurrentEngine.cpp:150
@@ -43,57 +43,57 @@ msgctxt "The Value is not known"
 msgid "Unknown"
 msgstr "Tundmatu"
 
-#: meta/MetaUtility.cpp:508
+#: meta/MetaUtility.cpp:504
 msgctxt "The quality of music"
 msgid "Awful"
 msgstr "Kohutav"
 
-#: meta/MetaUtility.cpp:509
+#: meta/MetaUtility.cpp:505
 msgctxt "The quality of music"
 msgid "Bad"
 msgstr "Halb"
 
-#: meta/MetaUtility.cpp:510
+#: meta/MetaUtility.cpp:506
 msgctxt "The quality of music"
 msgid "Barely tolerable"
 msgstr "Vaevutalutav"
 
-#: meta/MetaUtility.cpp:511
+#: meta/MetaUtility.cpp:507
 msgctxt "The quality of music"
 msgid "Tolerable"
 msgstr "Talutav"
 
-#: meta/MetaUtility.cpp:512
+#: meta/MetaUtility.cpp:508
 msgctxt "The quality of music"
 msgid "Okay"
 msgstr "Normaalne"
 
-#: meta/MetaUtility.cpp:513
+#: meta/MetaUtility.cpp:509
 msgctxt "The quality of music"
 msgid "Good"
 msgstr "Hea"
 
-#: meta/MetaUtility.cpp:514
+#: meta/MetaUtility.cpp:510
 msgctxt "The quality of music"
 msgid "Very good"
 msgstr "Väga hea"
 
-#: meta/MetaUtility.cpp:515
+#: meta/MetaUtility.cpp:511
 msgctxt "The quality of music"
 msgid "Excellent"
 msgstr "Suurepärane"
 
-#: meta/MetaUtility.cpp:516
+#: meta/MetaUtility.cpp:512
 msgctxt "The quality of music"
 msgid "Amazing"
 msgstr "Imeline"
 
-#: meta/MetaUtility.cpp:517
+#: meta/MetaUtility.cpp:513
 msgctxt "The quality of music"
 msgid "Favorite"
 msgstr "Lemmik"
 
-#: meta/MetaUtility.cpp:518
+#: meta/MetaUtility.cpp:514
 msgctxt "The quality of music"
 msgid "Not rated"
 msgstr "Pole hinnatud"
@@ -103,12 +103,12 @@ msgstr "Pole hinnatud"
 msgid "Stream (%1)"
 msgstr "Voog (%1)"
 
-#: meta/capabilities/TimecodeWriteCapability.cpp:116
+#: meta/capabilities/TimecodeWriteCapability.cpp:112
 #, kde-format
 msgid "%1 - Stopped %2"
 msgstr "%1 - peatatud %2"
 
-#: meta/capabilities/TimecodeWriteCapability.cpp:121
+#: meta/capabilities/TimecodeWriteCapability.cpp:117
 msgid "Playback Ended Markers"
 msgstr "Esitamise lõpetamise tähised"
 
@@ -127,16 +127,12 @@ msgid "Cannot read playlist (%1)."
 msgstr "Esitusnimekirja (%1) lugemine nurjus."
 
 #: meta/PlaylistFileSupport.cpp:100
-#, fuzzy
-#| msgid "Could not create new playlist on device."
 msgid "Could not create a temporary file to download playlist."
-msgstr "Uue esitusnimekirja loomine seadmel nurjus."
+msgstr "Ajutise faili loomine esitusnimekirja allalaadimiseks nurjus."
 
 #: meta/PlaylistFileSupport.cpp:113
-#, fuzzy
-#| msgid "Downloading Playlist"
 msgid "Downloading remote playlist"
-msgstr "Esitusnimekirja allalaadimine"
+msgstr "Võrgu-esitusnimekirja allalaadimine"
 
 #: meta/PlaylistFileSupport.cpp:196
 #, kde-format
@@ -144,9 +140,9 @@ msgid "Playlist_%1"
 msgstr "Esitusnimekiri_%1"
 
 #: collection/daap/DaapCollection.cpp:83
-#, fuzzy, kde-format
+#, kde-format
 msgid "Loading remote collection from host %1"
-msgstr "Laadimine võrgus   masin 1"
+msgstr "Võrgukogu laadimine masinast %1"
 
 #: collection/daap/DaapCollection.cpp:258
 #, kde-format
@@ -159,16 +155,12 @@ msgid "Local Collection"
 msgstr "Kohalik muusikakogu"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:133
-#, fuzzy
-#| msgid "Initialize iPod?"
 msgid "iPod was not initialized:"
-msgstr "Kas initsialiseerida iPod?"
+msgstr "iPodi ei õnnestunud initsialiseerida:"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:134
-#, fuzzy
-#| msgid "Script initialization failed"
 msgid "iPod Initialization Failed"
-msgstr "Skripti initsialiseerimine nurjus"
+msgstr "iPodi initsialiseerimine nurjus"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:158
 #, kde-format
@@ -184,200 +176,161 @@ msgid "Initialize iPod?"
 msgstr "Kas initsialiseerida iPod?"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:161
-#, fuzzy
-#| msgid "Initial"
 msgid "&Initialize"
-msgstr "Initsiaalid"
+msgstr "&Initsialiseeri"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:202
 msgid "Set iPod Model"
 msgstr "Määra iPodi mudel"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:202
-#, fuzzy
-#| msgid "Set iPod Model"
 msgid "iPod Models"
-msgstr "Määra iPodi mudel"
+msgstr "iPodi mudelid"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:206
-#, fuzzy, kde-format
+#, kde-format
 msgid "%1 the iPod Model is necessary to initialize the iPod"
-msgstr "iPod Mudel on kuni iPod"
+msgstr "%1 iPodi initsialiseerimiseks on vajalik iPodi mudel"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:232
-#, fuzzy, kde-format
-#| msgid ""
-#| "Could not write SysInfo file to iPod (check the permissions of the file "
-#| "\"%1\" on your iPod)"
+#, kde-format
 msgid ""
 "%1 failed to write to iPod, make sure you have write permissions on the iPod"
 msgstr ""
-"SysInfo-faili kirjutamine iPodile nurjus (kontrolli iPodis faili \"%1\" "
-"õigusi)"
+"%1 ei suutnud iPodile kirjutada, palun kontrolli, kas sul on selleks õigusi"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:248
-#, fuzzy, kde-format
-#| msgid ""
-#| "Could not write SysInfo file to iPod (check the permissions of the file "
-#| "\"%1\" on your iPod)"
+#, kde-format
 msgid ""
 "%1 failed to write SysInfo file to iPod, make sure you have write "
 "permissions on the iPod"
 msgstr ""
-"SysInfo-faili kirjutamine iPodile nurjus (kontrolli iPodis faili \"%1\" "
-"õigusi)"
+"%1 ei suutnud SysInfo-faili iPodile kirjutada, palun kontrolli, kas sul on "
+"selleks õigusi"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:272
-#, fuzzy, kde-format
+#, kde-format
 msgid "%1 failed to initialize the iPod"
-msgstr "nurjus kuni iPod"
+msgstr "%1 ei suutnud iPodi initsialiseerida"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:280
-#, fuzzy
-#| msgid "Script successfully installed."
 msgid "The iPod was successfully initialized!"
-msgstr "Skript paigaldati edukalt."
+msgstr "iPod initsialiseeriti edukalt."
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:280
-#, fuzzy
-#| msgid "Initialize iPod?"
 msgid "iPod Initialized"
-msgstr "Kas initsialiseerida iPod?"
+msgstr "iPod on initsialiseeritud"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:288
-#, fuzzy, kde-format
+#, kde-format
 msgid ""
 "%1 you chose not to initialize the iPod. It will not be usable until it is "
 "initialized."
-msgstr "mitte kuni iPod mitte on."
+msgstr ""
+"%1 otsustasid iPodi mitte initsialiseerida. Seda ei saa kasutada, enne kui "
+"see pole initsialiseeritud."
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:355
-#, fuzzy
-#| msgid "Stale and Orphaned"
 msgid "&Stale and Orphaned"
-msgstr "Hangunud ja hüljatud"
+msgstr "&Hangunud ja hüljatud"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:364
-#: collection/ipodcollection/handler/IpodHandler.cpp:517
-#, fuzzy
+#: collection/ipodcollection/handler/IpodHandler.cpp:365
+#: collection/ipodcollection/handler/IpodHandler.cpp:519
 msgid "Synchronise Artwork"
-msgstr "Graafika"
+msgstr "Sünkroniseeri graafika"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:379
-#, fuzzy
+#: collection/ipodcollection/handler/IpodHandler.cpp:381
 msgid ""
 "Do you really want to initialize this iPod? Its database will be cleared of "
 "all information, but the files will not be deleted."
-msgstr "kuni iPod andmebaas  /  kõik info failid mitte kustutatud."
+msgstr ""
+"Kas tõesti initsialiseerida see iPod? Selle andmebaasist puhastatakse kogu "
+"teave, aga faile ei kustutata."
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:383
-#, fuzzy
-#| msgid "Initialize iPod?"
+#: collection/ipodcollection/handler/IpodHandler.cpp:385
 msgid "Initialize iPod"
-msgstr "Kas initsialiseerida iPod?"
-
-#: collection/ipodcollection/handler/IpodHandler.cpp:389
-#, fuzzy
-#| msgid "Initialize iPod?"
-msgid "The iPod has been initialized"
-msgstr "Kas initsialiseerida iPod?"
+msgstr "Initsialiseeri iPod"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:391
-#, fuzzy
-#| msgid "Initialize iPod?"
-msgid "The iPod was unable to be initialized"
-msgstr "Kas initsialiseerida iPod?"
+msgid "The iPod has been initialized"
+msgstr "iPod initsialiseeriti"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:400
-#, fuzzy
+#: collection/ipodcollection/handler/IpodHandler.cpp:393
+msgid "The iPod was unable to be initialized"
+msgstr "iPodi initsialiseerimine nurjus"
+
+#: collection/ipodcollection/handler/IpodHandler.cpp:402
 msgid ""
 "Amarok is about to search for stale tracks. This may take a while, do you "
 "want to continue?"
 msgstr ""
-"Amarok on kuni otsing tingimusel palaga mai a tingimuseni kuni continue?"
+"Amarok hakkab otsima hangunud palasid. See võib võtta aega. Kas soovid "
+"jätkata?"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:404
-#, fuzzy
-#| msgid "Favorite tracks"
+#: collection/ipodcollection/handler/IpodHandler.cpp:406
 msgid "Find Stale Tracks"
-msgstr "Lemmikpalad"
+msgstr "Otsi hangunud palasid"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:479
-#, fuzzy, kde-format
+#: collection/ipodcollection/handler/IpodHandler.cpp:481
+#, kde-format
 msgctxt "@info"
 msgid "One stale track removed from the database. Scan for orphaned tracks?"
 msgid_plural "%1 tracks removed from the database. Scan for orphaned tracks?"
-msgstr[0] "Üks   andmebaas Skaneeri tingimusel palaga?"
-msgstr[1] "Üks   andmebaas Skaneeri tingimusel palaga?"
+msgstr[0] "Andmebaasist eemaldati üks hangunud pala. Kas otsida hüljatud palu?"
+msgstr[1] "Andmebaasist eemaldati %1 hangunud pala. Kas otsida hüljatud palu?"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:484
-#, fuzzy
+#: collection/ipodcollection/handler/IpodHandler.cpp:486
 msgid "Find Orphaned Tracks"
-msgstr "Otsi Rajad"
+msgstr "Otsi hüljatud palasid"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:515
+#: collection/ipodcollection/handler/IpodHandler.cpp:517
 #, kde-format
 msgid ""
 "Amarok is about to synchronize artwork on <i>%1</i>. Do you want to continue?"
-msgstr ""
+msgstr "Amarok hakkab sünkroniseerima <i>%1</i> graafikat. Kas jätkata?"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:526
-#, fuzzy
-#| msgid "Lyrics data could not be parsed"
+#: collection/ipodcollection/handler/IpodHandler.cpp:528
 msgid "iPod artwork could not be synchronised"
-msgstr "Laulusõnade parsimine nurjus"
+msgstr "iPodi graafika sünkroniseerimine nurjus"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:537
-#, fuzzy
+#: collection/ipodcollection/handler/IpodHandler.cpp:539
 msgid "Artwork synchronised"
-msgstr "Graafika"
+msgstr "Graafika sünkroniseeriti"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:818
-#, fuzzy
+#: collection/ipodcollection/handler/IpodHandler.cpp:820
 msgid ""
 "Amarok requires sudo access to get the FirewireGuid required to connect to "
 "your device. Please enter your sudo password"
-msgstr "Amarok sudo kuni nõutav kuni kuni seade sudo parool"
+msgstr ""
+"Amarok vajab sudo ligipääsu FirewireGuidi hankimiseks, mida on vaja seadmega "
+"ühendumiseks. Palun sisesta sudo parool"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:2084
-#, fuzzy
-#| msgid "Selected Tracks"
+#: collection/ipodcollection/handler/IpodHandler.cpp:2086
 msgid "Select Stale Tracks To Delete"
-msgstr "Valitud palad"
+msgstr "Kustutatavate hangunud palade valimine"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:2084
-#, fuzzy
-#| msgid "Selected Tracks"
+#: collection/ipodcollection/handler/IpodHandler.cpp:2086
 msgid "Stale Tracks"
-msgstr "Valitud palad"
+msgstr "Hangunud palad"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:2137
-#, fuzzy
+#: collection/ipodcollection/handler/IpodHandler.cpp:2139
 msgid "Adding Orphaned Tracks to iPod Database"
-msgstr "Rajad kuni iPod Andmebaas"
+msgstr "Hüljatud palade lisamine iPodi andmebaasi"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:2175
-#, fuzzy, kde-format
-#| msgid "One duplicate track not added to database"
-#| msgid_plural "%1 duplicate tracks not added to database"
+#: collection/ipodcollection/handler/IpodHandler.cpp:2177
+#, kde-format
 msgctxt "@info"
 msgid "One orphaned track added to the database."
 msgid_plural "%1 tracks added to the database."
-msgstr[0] "Üht topeltpala ei lisatud andmebaasi"
-msgstr[1] "%1 topeltpala ei lisatud andmebaasi"
+msgstr[0] "Andmebaasi lisati üks hüljatud pala."
+msgstr[1] "Andmebaasi lisati %1 pala."
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:2180
-#, fuzzy
-#| msgid "Tracks Added"
+#: collection/ipodcollection/handler/IpodHandler.cpp:2182
 msgid "Orphaned Tracks Added"
-msgstr "Lisatud palad"
+msgstr "Lisati hüljatud palad"
 
 #: collection/CollectionLocation.cpp:289
-#, fuzzy, kde-format
-#| msgctxt "@info"
-#| msgid ""
-#| "Do you really want to delete these %1 tracks? They will be removed from "
-#| "disk as well as your collection."
+#, kde-format
 msgctxt "@info"
 msgid ""
 "Do you really want to delete this track? It will be removed from disk as "
@@ -386,33 +339,27 @@ msgid_plural ""
 "Do you really want to delete these %1 tracks? They will be removed from disk "
 "as well as your collection."
 msgstr[0] ""
-"Kas tõesti kustutada need %1 pala? Need eemaldatakse nii kogust kui ka "
-"kettal."
+"Kas tõesti kustutada see pala? See eemaldatakse nii kogust kui ka kettalt."
 msgstr[1] ""
 "Kas tõesti kustutada need %1 pala? Need eemaldatakse nii kogust kui ka "
-"kettal."
+"kettalt."
 
 #: collection/CollectionLocation.cpp:294
 msgid "Delete Files"
 msgstr "Failide kustutamine"
 
 #: collection/mysqlservercollection/MySqlServerCollection.cpp:37
-#, fuzzy, kde-format
-#| msgid "Local Collection"
+#, kde-format
 msgid "Local Collection (on %1)"
-msgstr "Kohalik muusikakogu"
+msgstr "Kohalik muusikakogu (masinas %1)"
 
 #: collection/umscollection/handler/UmsHandler.cpp:385
-#, fuzzy
-#| msgid "Media Devices"
 msgid "&Read Device"
-msgstr "Meediaseadmed"
+msgstr "&Loe seade sisse"
 
 #: collection/proxycollection/ProxyCollection.cpp:58
-#, fuzzy
-#| msgid "Collection"
 msgid "Proxy Collection"
-msgstr "Muusikakogu"
+msgstr "Puhverserveri muusikakogu"
 
 #: collection/mtpcollection/handler/MtpHandler.cpp:154
 msgid "Could not connect to MTP Device"
@@ -449,85 +396,63 @@ msgid "Could not save playlist."
 msgstr "Esitusnimekirja salvestamine nurjus."
 
 #: collection/mediadevicecollection/handler/MediaDeviceHandler.cpp:301
-#, fuzzy
-#| msgid "Deleting track(s) failed."
 msgid "Copying Tracks Failed"
-msgstr "Radade kustutamine nurjus."
+msgstr "Palade kopeerimine nurjus"
 
 #: collection/mediadevicecollection/handler/MediaDeviceHandler.cpp:305
-#, fuzzy
 msgid "Tracks not copied: the device is already being copied to"
-msgstr "Rajad mitte seade on kuni"
+msgstr "Palasid ei kopeeritud: seadet juba kopeeritakse"
 
 #: collection/mediadevicecollection/handler/MediaDeviceHandler.cpp:341
-#, fuzzy, kde-format
+#, kde-format
 msgid "Unsupported format: %1"
-msgstr "vormindamine 1"
+msgstr "Toetamata vorming: %1"
 
 #: collection/mediadevicecollection/handler/MediaDeviceHandler.cpp:388
-#, fuzzy
-#| msgid "1 track found on device"
-#| msgid_plural "%1 tracks found on device "
 msgid "Already on device"
-msgstr "1 pala leiti seadmel"
+msgstr "Juba seadmel"
 
 #: collection/mediadevicecollection/handler/MediaDeviceHandler.cpp:404
-#, fuzzy
 msgid "Tracks not copied: the device already has these tracks"
-msgstr "Rajad mitte seade palaga"
+msgstr "Palasid ei kopeeritud: seadmel on juba need palad"
 
 #: collection/mediadevicecollection/handler/MediaDeviceHandler.cpp:425
-#, fuzzy
 msgid "Tracks not copied: the device has insufficient space"
-msgstr "Rajad mitte seade"
+msgstr "Palasid ei kopeeritud: seadmel napib ruumi"
 
 #: collection/mediadevicecollection/handler/MediaDeviceHandler.cpp:434
-#, fuzzy
-#| msgid "Transferring Tracks to MTP Device"
 msgid "Transferring Tracks to Device"
-msgstr "Palade ülekandmine MTP-seadmesse"
+msgstr "Palade ülekandmine seadmesse"
 
 #: collection/mediadevicecollection/handler/MediaDeviceHandler.cpp:554
-#, fuzzy, kde-format
-#| msgid "One track already on media device"
-#| msgid_plural "%1 tracks already on media device"
+#, kde-format
 msgid "%1 track failed to copy to the device"
 msgid_plural "%1 tracks failed to copy to the device"
-msgstr[0] "Üks pala on juba olemas meediaseadmel"
-msgstr[1] "Üks pala on juba olemas meediaseadmel"
+msgstr[0] "%1 pala kopeerimine seadmesse nurjus"
+msgstr[1] "%1 pala kopeerimine seadmesse nurjus"
 
 #: collection/mediadevicecollection/handler/MediaDeviceHandler.cpp:579
-#, fuzzy
-#| msgid "One track already on media device"
-#| msgid_plural "%1 tracks already on media device"
 msgid "The track failed to copy to the device"
-msgstr "Üks pala on juba olemas meediaseadmel"
+msgstr "Pala kopeerimine seadmesse nurjus"
 
 #: collection/mediadevicecollection/handler/MediaDeviceHandler.cpp:589
-#, fuzzy
-#| msgid "Tracks Removed"
 msgid "Tracks not deleted:"
-msgstr "Eemaldatud palad"
+msgstr "Kustutamata palad:"
 
 #: collection/mediadevicecollection/handler/MediaDeviceHandler.cpp:590
-#, fuzzy
-#| msgid "Deleting track(s) failed."
 msgid "Deleting Tracks Failed"
-msgstr "Radade kustutamine nurjus."
+msgstr "Palade kustutamine nurjus"
 
 #: collection/mediadevicecollection/handler/MediaDeviceHandler.cpp:594
-#, fuzzy, kde-format
-#| msgid "Track already exists on device"
+#, kde-format
 msgid "%1 Track is already being deleted from the device"
 msgid_plural "%1 Tracks are already being deleted from the device"
-msgstr[0] "Pala on juba seadmel olemas"
-msgstr[1] "Pala on juba seadmel olemas"
+msgstr[0] "%1 pala on juba seadmest kustutatud"
+msgstr[1] "%1 pala on juba seadmest kustutatud"
 
 #: collection/mediadevicecollection/handler/MediaDeviceHandler.cpp:612
-#, fuzzy
-#| msgid "Deleting Tracks from iPod"
 msgid "Removing Tracks from Device"
-msgstr "Palade kustutamine iPodist"
+msgstr "Palade kustutamine seadmest"
 
 #: collection/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.cpp:111
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:99
@@ -542,16 +467,12 @@ msgid "Enter new name for playlist:"
 msgstr "Esitusnimekirja uus nimi:"
 
 #: collection/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.h:36
-#, fuzzy
-#| msgid "Make Media Device Playlist"
 msgid "Media Device playlists"
-msgstr "Loo meediaseadme esitusnimekiri"
+msgstr "Meediaseadme esitusnimekirjad"
 
 #: collection/mediadevicecollection/MediaDeviceCollection.cpp:279
-#, fuzzy
-#| msgid "&Disconnect the MTP Device"
 msgid "&Disconnect Device"
-msgstr "La&huta MTP-seade"
+msgstr "Lahuta sea&de"
 
 #: collection/nepomukcollection/NepomukCollection.cpp:129
 msgid "Nepomuk Collection"
@@ -562,28 +483,23 @@ msgid "Nepomuk Collection (slow, Redland)"
 msgstr "Nepomuki muusikakogu (aeglane, Redland)"
 
 #: collection/sqlcollection/SqlImportedPlaylistProvider.h:29
-#, fuzzy
-#| msgid "Import playlist"
 msgid "Imported Playlist Files"
-msgstr "Esitusnimekirjade import"
+msgstr "Imporditud esitusnimekirja failid"
 
 #: collection/sqlcollection/ScanResultProcessor.cpp:139
-#, fuzzy
 msgctxt "front"
 msgid "Front cover of an album"
-msgstr "Esikülg  /  album"
+msgstr "Albumi esikaas"
 
 #: collection/sqlcollection/ScanResultProcessor.cpp:151
-#, fuzzy
 msgctxt "cover"
 msgid "(Front) Cover of an album"
-msgstr "Esikülg Plaadiümbris  /  album"
+msgstr "Albumi esikaas"
 
 #: collection/sqlcollection/ScanResultProcessor.cpp:163
-#, fuzzy
 msgctxt "large"
 msgid "(Large front) Cover of an album"
-msgstr "Suur eest Plaadiümbris  /  album"
+msgstr "Albumi esikaas"
 
 #. i18n: file: dialogs/OrganizeCollectionDialogBase.ui:20
 #. i18n: ectx: property (windowTitle), widget (QWidget, OrganizeCollectionDialogBase)
@@ -592,10 +508,9 @@ msgid "Organize Files"
 msgstr "Failide korraldamine"
 
 #: collection/sqlcollection/SqlCollectionLocation.cpp:351
-#, fuzzy, kde-format
-#| msgid "Cannot enter directory: '%1'"
+#, kde-format
 msgid "Could not create directory: %1"
-msgstr "Kataloogi sisenemine nurjus: '%1'"
+msgstr "Kataloogi loomine nurjus: %1"
 
 #: collection/sqlcollection/SqlCollectionLocation.cpp:376
 #, kde-format
@@ -646,69 +561,72 @@ msgstr "Ei näidata mitme esitaja all"
 msgid "Show under Various Artists"
 msgstr "Näidatakse mitme esitaja all"
 
-#: collection/audiocd/AudioCdCollection.cpp:71
-#, fuzzy
+#: collection/audiocd/AudioCdCollection.cpp:72
 msgid "&Eject"
 msgstr "&Väljasta"
 
-#: collection/audiocd/AudioCdCollection.cpp:400
-#: collection/audiocd/AudioCdCollection.cpp:401
-#: collection/audiocd/AudioCdCollection.cpp:402
-#: collection/audiocd/AudioCdCollection.cpp:403
-#: context/applets/albums/AlbumItem.cpp:72 MainWindow.cpp:1011
-#: amarokurls/BookmarkTreeView.cpp:328 amarokurls/BookmarkTreeView.cpp:329
-#: amarokurls/BookmarkTreeView.cpp:330
+#: collection/audiocd/AudioCdCollection.cpp:412
+#: collection/audiocd/AudioCdCollection.cpp:413
+#: collection/audiocd/AudioCdCollection.cpp:414
+#: collection/audiocd/AudioCdCollection.cpp:415
+#: context/applets/albums/AlbumItem.cpp:72 MainWindow.cpp:1070
+#: amarokurls/BookmarkTreeView.cpp:317 amarokurls/BookmarkTreeView.cpp:318
+#: amarokurls/BookmarkTreeView.cpp:319
 msgid "Unknown"
 msgstr "Tundmatu"
 
 #: collection/audiocd/handler/AudioCdHandler.cpp:37
-#, fuzzy
-#| msgid "Play Audio CD"
 msgid "Audio CD"
-msgstr "Mängi audio CD-d"
+msgstr "Audio-CD"
 
 #: collection/audiocd/FormatSelectionDialog.cpp:62
-#, fuzzy
 msgid ""
 "Ogg Vorbis is a fully free and unencumbered compressed audio format that is "
 "perfect for storing your compressed music on your computer. The sound "
 "quality is slightly better than Mp3 at the same bitrate. Note that not all "
 "mobile player support the Ogg Vorbis format"
 msgstr ""
-"Ogg Vorbis on a vaba ja audio vormindamine on tingimusel muusika sees heli "
-"on at Märkus mitte kõik mängija Ogg Vorbis vormindamine"
+"Ogg Vorbis on täiesti vaba tihendatud helivorming, mis sobib suurepäraselt "
+"tihendatud muusika salvestamiseks arvutisse. Helikvaliteet on natuke parem "
+"kui sama bitikiirusega MP3 puhul. Arvesta, et sugugi kõik kaasaskantavad "
+"muusikamängijad ei toeta Ogg Vorbise vormingut."
 
 #: collection/audiocd/FormatSelectionDialog.cpp:68
-#, fuzzy
 msgid ""
 "Flac is a lossless compressed audio format free of any patents or licence "
 "fees. It maintains perfect CD audio quality while reducing file size by "
 "about 50%. Because the filesize is much larger than Ogg Vorbis or Mp3 it is "
 "not recommended if you want to transfer your music to a mobile player."
 msgstr ""
-"on a audio vormindamine vaba  /  iga või CD audio tingimuseni fail suurus x "
-"on Ogg Vorbis või on mitte kui kuni muusika kuni a mängija."
+"Flac on kadudeta tihendatud helivorming, millele ei rakendu mingid patendid "
+"või litsentsitasud. See säilitab hiilgavalt CD helikvaliteedi, on aga mahult "
+"umbes 50% väiksem. Et failisuurus on siiski palju suurem kui Ogg Vorbise või "
+"MP3 puhul, ei ole see soovitatav, kui kavatsed kanda oma muusika üle "
+"kaasaskantavasse muusikamängijasse."
 
 #: collection/audiocd/FormatSelectionDialog.cpp:74
-#, fuzzy
 msgid ""
 "Wav is a basic, uncompressed audio file format. It takes up a lot of space "
 "but maintains perfect quality. It is generally not recommended unless you "
 "know what you are doing. If you want perfect quality, use Flac instead."
-msgstr "on a põhiline audio fail vormindamine a  /  on mitte."
+msgstr ""
+"Wav on lihtne tihendamata helifaili vorming. See võtab palju ruumi, aga "
+"säilitab hiilgavalt kvaliteedi. Üldiselt ei ole see soovitatav, kui sa just "
+"ei tea väga täpselt, mida sa teed. Kui soovid suurepärast kvaliteeti, kasuta "
+"parem Flaci vormingut."
 
 #: collection/audiocd/FormatSelectionDialog.cpp:80
-#, fuzzy
 msgid ""
 "Mp3 is the de facto standard in compressed audio compatible with almost all "
 "mobile players. It is however non free and generally not recommended"
-msgstr "on asukohas audio järgnevaga kõik mängijad on vaba ja mitte"
+msgstr ""
+"MP3 on sisuliselt tihendatud heli standard, mis sobib peaaegu kõigile "
+"kaasaskantavatele muusikamängijatele. See ei ole aga vaba, mistõttu see pole "
+"üldiselt väga soovitatav."
 
 #: collection/audiocd/FormatSelectionDialog.cpp:113
-#, fuzzy
-#| msgid "Sound System - Amarok"
 msgid "Audio CD settings - Amarok"
-msgstr "Helisüsteem - Amarok"
+msgstr "Audio-CD seadistused - Amarok"
 
 #: collection/CollectionManager.cpp:122
 msgid ""
@@ -729,22 +647,16 @@ msgstr ""
 "freenode.net.</p>"
 
 #: context/tools/amarokpkg.cpp:40
-#, fuzzy
-#| msgid "Installed Amarok Scripts:"
 msgid "Install, list, remove Amarok applets"
-msgstr "Paigaldatud Amaroki skriptid:"
+msgstr "Amaroki aplettide paigaldamine, loetlemine ja eemaldamine"
 
 #: context/tools/amarokpkg.cpp:76
-#, fuzzy
-#| msgid "Amarok AFT Tagger"
 msgid "Amarok Applet Manager"
-msgstr "Amaroki AFT sildistaja"
+msgstr "Amaroki apletihaldur"
 
 #: context/tools/amarokpkg.cpp:78
-#, fuzzy
-#| msgid "(C) 2008, Aaron Seigo"
 msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo franchi"
-msgstr "(C) 2008: Aaron Seigo"
+msgstr "(C) 2008: Aaron Seigo, (C) 2009: Leo franchi"
 
 #: context/tools/amarokpkg.cpp:79
 msgid "Aaron Seigo"
@@ -761,80 +673,68 @@ msgstr "Leo Franchi"
 #: context/tools/amarokpkg.cpp:83 main.cpp:88 main.cpp:124 main.cpp:128
 #: main.cpp:130 main.cpp:142 main.cpp:152 main.cpp:158 main.cpp:160
 #: main.cpp:172 main.cpp:178 main.cpp:180 main.cpp:184 main.cpp:192
-#, fuzzy
-#| msgid "Developer (jefferai)"
 msgid "Developer"
-msgstr "Arendaja (jefferai)"
+msgstr "Arendaja"
 
 #: context/tools/amarokpkg.cpp:92
-#, fuzzy
 msgid "For install or remove, operates on applets installed for all users."
-msgstr "või eemalda sees paigaldatud tingimusel kõik."
+msgstr ""
+"Paigaldamise või eemaldamise korral käsitleb aplette, mis on paigaldatud "
+"kõigi kasutajate jaoks."
 
 #: context/tools/amarokpkg.cpp:95
-#, fuzzy
-#| msgid "Install Applets"
 msgctxt "Do not translate <path>"
 msgid "Install the applet at <path>"
-msgstr "Paigalda aplette"
+msgstr "Apleti paigaldamine asukohas <path>"
 
 #: context/tools/amarokpkg.cpp:97
-#, fuzzy
 msgctxt "Do not translate <path>"
 msgid "Upgrade the applet at <path>"
-msgstr "Uuenda at<path>"
+msgstr "Apleti uuendamine asukohas <path>"
 
 #: context/tools/amarokpkg.cpp:99
-#, fuzzy
-#| msgid "Install Applets"
 msgid "List installed applet"
-msgstr "Paigalda aplette"
+msgstr "Paigaldatud aplettide loetlemine"
 
 #: context/tools/amarokpkg.cpp:101
-#, fuzzy
-#| msgid "Remove last appended filter"
 msgctxt "Do not translate <name>"
 msgid "Remove the applet named <name>"
-msgstr "Eemalda viimati lisatud filter"
+msgstr "Apleti <name> eemaldamine"
 
 #: context/tools/amarokpkg.cpp:103
-#, fuzzy
 msgid ""
 "Absolute path to the package root. If not supplied, then the standard data "
 "directories for this KDE session will be searched instead."
 msgstr ""
 "Pakettide juurasukoha absoluutne asukoht. Kui seda ei anta, otsitakse antud "
-"KDE seansi standardsetest amdnekataloogidest."
+"KDE seansi standardsetest andmekataloogidest."
 
 #: context/tools/amarokpkg.cpp:162
-#, fuzzy, kde-format
+#, kde-format
 msgid "Successfully removed %1"
 msgstr "Eemaldati edukalt %1"
 
 #: context/tools/amarokpkg.cpp:164
-#, fuzzy, kde-format
+#, kde-format
 msgid "Removal of %1 failed."
 msgstr "%1 eemaldamine nurjus."
 
 #: context/tools/amarokpkg.cpp:169
-#, fuzzy, kde-format
+#, kde-format
 msgid "Plugin %1 is not installed."
 msgstr "Plugin %1 ei ole paigaldatud."
 
 #: context/tools/amarokpkg.cpp:174
-#, fuzzy, kde-format
-#| msgid "Script successfully installed."
+#, kde-format
 msgid "Successfully installed %1"
-msgstr "Skript paigaldati edukalt."
+msgstr "Paigaldati edukalt %1"
 
 #: context/tools/amarokpkg.cpp:177
-#, fuzzy, kde-format
-#| msgid "Installation of <b>%1</b> failed!"
+#, kde-format
 msgid "Installation of %1 failed."
-msgstr "<b>%1</b> paigaldamine nurjus!"
+msgstr "%1 paigaldamine nurjus."
 
 #: context/tools/amarokpkg.cpp:183
-#, fuzzy
 msgctxt ""
 "No option was given, this is the error message telling the user he needs at "
 "least one, do not translate install, remove, upgrade nor list"
@@ -842,22 +742,18 @@ msgid "One of install, remove, upgrade or list is required."
 msgstr "Nõutav on kas install, remove, upgrade või list."
 
 #: context/engines/videoclip/VideoclipEngine.cpp:216
-#, fuzzy, kde-format
-#| msgid "Unable to retrieve Wikipedia information: %1"
+#, kde-format
 msgid "Unable to retrieve Youtube information: %1"
-msgstr "Wikipedia teabe hankimine nurjus: %1"
+msgstr "Yoitube'i teabe hankimine nurjus: %1"
 
 #: context/engines/videoclip/VideoclipEngine.cpp:380
-#, fuzzy, kde-format
-#| msgid "Unable to retrieve Wikipedia information: %1"
+#, kde-format
 msgid "Unable to retrieve Dailymotion information: %1"
-msgstr "Wikipedia teabe hankimine nurjus: %1"
+msgstr "Dailymotioni teabe hankimine nurjus: %1"
 
 #: context/engines/videoclip/VideoclipEngine.cpp:623
-#, fuzzy
-#| msgid "No information found..."
 msgid "No video clip found..."
-msgstr "Teavet ei leitud..."
+msgstr "Videoklippi ei leitud..."
 
 #: context/engines/current/CurrentEngine.cpp:158
 #: context/applets/albums/Albums.cpp:66
@@ -878,14 +774,10 @@ msgid "dates"
 msgstr "kuupäevad"
 
 #: context/engines/photos/PhotosEngine.cpp:169
-#, fuzzy
-#| msgid "Unable to retrieve Wikipedia information: %1"
 msgid "Unable to retrieve from Flickr.com "
-msgstr "Wikipedia teabe hankimine nurjus: %1"
+msgstr "Hankimine Flickr.com-ist nurjus "
 
 #: context/engines/photos/PhotosEngine.cpp:255
-#, fuzzy
-#| msgid "No information found..."
 msgid "No information found ..."
 msgstr "Teavet ei leitud..."
 
@@ -903,97 +795,79 @@ msgid "Wikipedia Other Languages: <br/>"
 msgstr "Wikipedia muud keeled: <br/>"
 
 #: context/scriptengine/javascript/qtgui/linearlayout.cpp:70
-#, fuzzy
 msgid "LinearLayout requires a parent"
-msgstr "a"
+msgstr "LinearLayout nõuab eellast"
 
 #: context/scriptengine/javascript/qtgui/linearlayout.cpp:76
-#, fuzzy
 msgid "The parent must be a QGraphicsLayoutItem"
-msgstr "a"
+msgstr "Eellane peab olema QGraphicsLayoutItem"
 
 #: context/scriptengine/javascript/simplejavascriptapplet.cpp:512
-#, fuzzy
 msgid "i18n() takes at least one argument"
-msgstr "at üks"
+msgstr "i18n() nõuab vähemalt üht argumenti"
 
 #: context/scriptengine/javascript/simplejavascriptapplet.cpp:528
-#, fuzzy
 msgid "i18nc() takes at least two arguments"
-msgstr "at kaks arguments"
+msgstr "i18nc() nõuab vähemalt kaht argumenti"
 
 #: context/scriptengine/javascript/simplejavascriptapplet.cpp:545
-#, fuzzy
 msgid "i18np() takes at least two arguments"
-msgstr "at kaks arguments"
+msgstr "i18np() nõuab vähemalt kaht argumenti"
 
 #: context/scriptengine/javascript/simplejavascriptapplet.cpp:562
-#, fuzzy
 msgid "i18ncp() takes at least three arguments"
-msgstr "at kolm arguments"
+msgstr "i18ncp() nõuab vähemalt kolme argumenti"
 
 #: context/scriptengine/javascript/simplejavascriptapplet.cpp:580
-#, fuzzy
 msgid "dataEngine() takes one argument"
-msgstr "üks"
+msgstr "dataEngine() nõuab üht argumenti"
 
 #: context/scriptengine/javascript/simplejavascriptapplet.cpp:590
 #: context/scriptengine/javascript/simplejavascriptapplet.cpp:615
 #: context/scriptengine/javascript/simplejavascriptapplet.cpp:782
-#, fuzzy
-#| msgid "Could not reach server"
 msgid "Could not extract the AppletObject"
-msgstr "Ühendumine serveriga nurjus"
+msgstr "AppletObject'i lahtipakkimine nurjus"
 
 #: context/scriptengine/javascript/simplejavascriptapplet.cpp:595
 #: context/scriptengine/javascript/simplejavascriptapplet.cpp:620
 #: context/scriptengine/javascript/simplejavascriptapplet.cpp:787
-#, fuzzy
-#| msgid "Could not read this package."
 msgid "Could not extract the Applet"
-msgstr "Paketi lugemine nurjus."
+msgstr "Applet'i lahtipakkimine nurjus"
 
 #: context/scriptengine/javascript/simplejavascriptapplet.cpp:605
-#, fuzzy
 msgid "service() takes two arguments"
-msgstr "kaks arguments"
+msgstr "service() nõuab kaht argumenti"
 
 #: context/scriptengine/javascript/simplejavascriptapplet.cpp:633
-#, fuzzy
 msgid "loadui() takes one argument"
-msgstr "üks"
+msgstr "loadui() nõuab üht argumenti"
 
 #: context/scriptengine/javascript/simplejavascriptapplet.cpp:639
-#, fuzzy, kde-format
+#, kde-format
 msgid "Unable to open '%1'"
 msgstr "'%1' avamine nurjus"
 
 #: context/scriptengine/javascript/simplejavascriptapplet.cpp:679
 #: context/scriptengine/javascript/simplejavascriptapplet.cpp:712
-#, fuzzy
 msgid "Constructor takes at least 1 argument"
 msgstr "Konstruktor nõuab vähemalt 1 argumenti"
 
 #: context/scriptengine/javascript/simplejavascriptapplet.cpp:764
-#, fuzzy
 msgid "CreateWidget takes one argument"
 msgstr "CreateWidget nõuab üht argumenti"
 
 #: context/scriptengine/javascript/simplejavascriptapplet.cpp:772
-#, fuzzy
 msgid "The parent must be a QGraphicsWidget"
 msgstr "Eellane peab olema QGraphicsWidget"
 
 #: context/scriptengine/javascript/simplejavascriptapplet.cpp:817
-#, fuzzy, kde-format
-#| msgid "Direct copying not supported"
+#, kde-format
 msgid "This operation was not supported, %1"
-msgstr "Otsene kopeerimine ei ole toetatud"
+msgstr "See operatsioon ei ole toetatud, %1"
 
 #: context/scriptengine/javascript/simplejavascriptapplet.cpp:824
-#, fuzzy
 msgid "print() takes one argument"
-msgstr "trükk üks"
+msgstr "print() nõuab üht argumenti"
 
 #: context/toolbar/AppletItemOverlay.cpp:103
 #: context/toolbar/AppletToolbarAppletItem.cpp:57
@@ -1024,53 +898,38 @@ msgstr "Laulusõnade parsimine nurjus"
 #: context/applets/videoclip/VideoclipApplet.cpp:104
 #: context/applets/photos/PhotosApplet.cpp:79
 #: context/applets/wikipedia/WikipediaApplet.cpp:142
-#, fuzzy
-#| msgid "&Settings"
 msgid "Settings"
-msgstr "&Seadistused"
+msgstr "Seadistused"
 
 #: context/applets/videoclip/VideoclipApplet.cpp:114
-#: context/applets/videoclip/VideoclipApplet.cpp:327
-#: context/applets/videoclip/VideoclipApplet.cpp:348
-#, fuzzy
+#: context/applets/videoclip/VideoclipApplet.cpp:326
+#: context/applets/videoclip/VideoclipApplet.cpp:347
 msgid "Video Clip"
-msgstr "Video Kärbi"
+msgstr "Videoklipp"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:338
-#, fuzzy
-#| msgid "Wikipedia"
+#: context/applets/videoclip/VideoclipApplet.cpp:337
 msgid "Video Clip "
-msgstr "Wikipedia"
+msgstr "Videoklipp "
 
-#: context/applets/videoclip/VideoclipApplet.cpp:338
-#, fuzzy
-#| msgid "No information found..."
+#: context/applets/videoclip/VideoclipApplet.cpp:337
 msgid " No information found..."
-msgstr "Teavet ei leitud..."
+msgstr " Teavet ei leitud..."
 
-#: context/applets/videoclip/VideoclipApplet.cpp:496
-#, fuzzy
-#| msgid "Fullscreen"
+#: context/applets/videoclip/VideoclipApplet.cpp:495
 msgid "Enter &fullscreen"
-msgstr "Täisekraan"
+msgstr "&Mine täisekraanirežiimi"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:502
-#, fuzzy
-#| msgid "Fullscreen"
+#: context/applets/videoclip/VideoclipApplet.cpp:501
 msgid "E&xit fullscreen"
-msgstr "Täisekraan"
+msgstr "&Välju täisekraanirežiimist"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:520
-#, fuzzy
-#| msgid "Wikipedia"
+#: context/applets/videoclip/VideoclipApplet.cpp:519
 msgid "Video Clip Settings"
-msgstr "Wikipedia"
+msgstr "Videoklipi seadistused"
 
 #: context/applets/videoclip/VideoItemButton.cpp:81
-#, fuzzy
-#| msgid "Add to playlist"
 msgid "&Add to playlist"
-msgstr "Lisa esitusnimekirja"
+msgstr "Lis&a esitusnimekirja"
 
 #: context/applets/videoclip/VideoItemButton.cpp:82
 #: context/applets/albums/AlbumsView.cpp:114
@@ -1078,49 +937,36 @@ msgid "&Queue"
 msgstr "&Järjekorda"
 
 #: context/applets/videoclip/VideoItemButton.cpp:83
-#, fuzzy
-#| msgid "Append && &Play"
 msgid "Append and &Play"
 msgstr "Lisa ja &mängi"
 
 #: context/applets/songkick/SongkickApplet.cpp:41
-#, fuzzy
-#| msgid "Plugin Information"
 msgid "Songkick Concert Information"
-msgstr "Plugina info"
+msgstr "Songkicki kontserditeave"
 
 #: context/applets/songkick/SongkickApplet.cpp:62
-#, fuzzy
-#| msgid "Context Browser"
 msgid "Concerts"
-msgstr "Kontekstisirvija"
+msgstr "Kontserdid"
 
 #: context/applets/songkick/SongkickApplet.cpp:69
-#, fuzzy
-#| msgid "Reload Lyrics"
 msgid "Reload Songkick"
-msgstr "Laadi sõnad uuesti"
+msgstr "Laadi Songkick uuesti"
 
 #: context/applets/songkick/SongkickApplet.cpp:151
-#, fuzzy
 msgid "Concert information is being fetched."
-msgstr "info on."
+msgstr "Tõmmatakse kontserditeavet."
 
 #: context/applets/songkick/SongkickApplet.cpp:156
-#, fuzzy, kde-format
-#| msgid ""
-#| "Lyrics were not able to be downloaded. Please check your internet "
-#| "connection: %1"
+#, kde-format
 msgid ""
 "Songkick was not able to be downloaded. Please check your internet "
 "connection: %1"
-msgstr "Sõnade tõmbamine nurjus. Palun kontrolli oma internetiühendust: %1"
+msgstr ""
+"Songkicki allalaadimine nurjus. Palun kontrolli oma internetiühendust: %1"
 
 #: context/applets/songkick/SongkickApplet.cpp:201
-#, fuzzy
-#| msgid "There were no lyrics found for this track"
 msgid "There was no information found for this track"
-msgstr "Sellele palale ei leitud sõnu"
+msgstr "Selle pala kohta teavet ei leitud"
 
 #: context/applets/currenttrack/CurrentTrack.cpp:82
 msgctxt "What artist is this track by"
@@ -1168,10 +1014,8 @@ msgstr "Lemmikpalad"
 #: browsers/playlistbrowser/UserPlaylistModel.cpp:539
 #: browsers/playlistbrowser/PodcastModel.cpp:688
 #: services/lastfm/LastFmTreeView.cpp:112
-#, fuzzy
-#| msgid "Add to Playlist"
 msgid "&Add to Playlist"
-msgstr "Lisa esitusnimekirja"
+msgstr "Lis&a esitusnimekirja"
 
 #: context/applets/albums/AlbumsView.cpp:113
 #: browsers/CollectionTreeView.cpp:818
@@ -1203,48 +1047,45 @@ msgstr[1] "%1 pala"
 
 #: context/applets/lyrics/LyricsApplet.cpp:45
 #: context/applets/lyrics/LyricsApplet.cpp:77
-#: context/applets/lyrics/LyricsApplet.cpp:212
-#: context/applets/lyrics/LyricsApplet.cpp:266 dialogs/TagDialog.cpp:584
+#: context/applets/lyrics/LyricsApplet.cpp:203
+#: context/applets/lyrics/LyricsApplet.cpp:261 dialogs/TagDialog.cpp:584
 msgid "Lyrics"
 msgstr "Sõnad"
 
 #: context/applets/lyrics/LyricsApplet.cpp:84
-#, fuzzy
-#| msgid "Lyrics"
 msgid "Edit Lyrics"
-msgstr "Sõnad"
+msgstr "Muuda sõnu"
 
 #: context/applets/lyrics/LyricsApplet.cpp:93
-#, fuzzy
-#| msgid "Lyrics"
 msgid "Save Lyrics"
-msgstr "Sõnad"
+msgstr "Salvesta sõnad"
 
 #: context/applets/lyrics/LyricsApplet.cpp:102
 msgid "Reload Lyrics"
 msgstr "Laadi sõnad uuesti"
 
-#: context/applets/lyrics/LyricsApplet.cpp:207
+#: context/applets/lyrics/LyricsApplet.cpp:198
 msgid "No lyrics script is running."
 msgstr "Ükski sõnadeskript ei tööta."
 
-#: context/applets/lyrics/LyricsApplet.cpp:220
+#: context/applets/lyrics/LyricsApplet.cpp:211
 msgid "Lyrics are being fetched."
 msgstr "Sõnu tõmmatakse."
 
-#: context/applets/lyrics/LyricsApplet.cpp:229
-#, fuzzy, kde-format
-#| msgid ""
-#| "Lyrics were not able to be downloaded. Please check your internet "
-#| "connection: %1"
+#: context/applets/lyrics/LyricsApplet.cpp:220
+#, kde-format
 msgid ""
 "Could not download lyrics.\n"
 "Please check your internet connection.\n"
 "Error message:\n"
 "%1"
-msgstr "Sõnade tõmbamine nurjus. Palun kontrolli oma internetiühendust: %1"
+msgstr ""
+"Sõnade tõmbamine nurjus.\n"
+"Palun kontrolli oma internetiühendust.\n"
+"Veateade:\n"
+"%1"
 
-#: context/applets/lyrics/LyricsApplet.cpp:275
+#: context/applets/lyrics/LyricsApplet.cpp:273
 msgid "There were no lyrics found for this track"
 msgstr "Sellele palale ei leitud sõnu"
 
@@ -1254,10 +1095,8 @@ msgstr "Sellele palale ei leitud sõnu"
 #: context/applets/photos/PhotosApplet.cpp:199
 #: context/applets/photos/PhotosApplet.cpp:209
 #: context/applets/photos/PhotosApplet.cpp:218
-#, fuzzy
-#| msgid "Goto"
 msgid "Photos"
-msgstr "Liigu"
+msgstr "Fotod"
 
 #. i18n: file: context/applets/photos/photosSettings.ui:52
 #. i18n: ectx: property (text), item, widget (KComboBox, animationComboBox)
@@ -1265,59 +1104,46 @@ msgstr "Liigu"
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
 #: context/applets/photos/PhotosApplet.cpp:92
 #: context/applets/wikipedia/WikipediaApplet.cpp:403 rc.cpp:566 rc.cpp:589
-#, fuzzy
 msgid "Automatic"
 msgstr "Automaatne"
 
 #. i18n: file: context/applets/photos/photosSettings.ui:57
 #. i18n: ectx: property (text), item, widget (KComboBox, animationComboBox)
 #: context/applets/photos/PhotosApplet.cpp:95 rc.cpp:569
-#, fuzzy
-#| msgid "International"
 msgid "Interactive"
-msgstr "Rahvusvaheline"
+msgstr "Interaktiivne"
 
 #. i18n: file: context/applets/photos/photosSettings.ui:62
 #. i18n: ectx: property (text), item, widget (KComboBox, animationComboBox)
 #: context/applets/photos/PhotosApplet.cpp:98 rc.cpp:572
-#, fuzzy
-#| msgid "Rating"
 msgid "Fading"
-msgstr "Hinnang"
+msgstr "Hajumine"
 
 #: context/applets/photos/PhotosApplet.cpp:199
-#, fuzzy
-#| msgid "Fetching content.."
 msgid "Fetching ..."
-msgstr "Sisu tõmbamine..."
+msgstr "Tõmbamine..."
 
 #: context/applets/photos/PhotosApplet.cpp:238
-#, fuzzy
-#| msgid "%1 Settings"
 msgid "Photos Settings"
-msgstr "%1 seadistused"
+msgstr "Fotode seadistused"
 
 #: context/applets/wikipedia/WikipediaApplet.cpp:101
 msgid "Wikipedia"
 msgstr "Wikipedia"
 
 #: context/applets/wikipedia/WikipediaApplet.cpp:107
-#, fuzzy
-#| msgid "&Previous"
 msgid "Previous"
-msgstr "&Eelmine"
+msgstr "Eelmine"
 
 #: context/applets/wikipedia/WikipediaApplet.cpp:114
-#, fuzzy
-#| msgid "&Next"
 msgid "Next"
-msgstr "&Järgmine"
+msgstr "Järgmine"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:85
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: context/applets/wikipedia/WikipediaApplet.cpp:121
 #: dialogs/FilenameLayoutDialog.cpp:125 dialogs/FilenameLayoutDialog.cpp:340
-#: dialogs/transferdialog.cpp:88 browsers/CollectionTreeItemModelBase.cpp:904
+#: dialogs/transferdialog.cpp:88 browsers/CollectionTreeItemModelBase.cpp:902
 #: browsers/collectionbrowser/CollectionWidget.cpp:122
 #: browsers/collectionbrowser/CollectionWidget.cpp:151
 #: browsers/collectionbrowser/CollectionWidget.cpp:183
@@ -1334,7 +1160,7 @@ msgstr "Esitaja"
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: context/applets/wikipedia/WikipediaApplet.cpp:128
 #: dialogs/FilenameLayoutDialog.cpp:128 dialogs/FilenameLayoutDialog.cpp:355
-#: dialogs/transferdialog.cpp:89 browsers/CollectionTreeItemModelBase.cpp:903
+#: dialogs/transferdialog.cpp:89 browsers/CollectionTreeItemModelBase.cpp:901
 #: browsers/collectionbrowser/CollectionWidget.cpp:125
 #: browsers/collectionbrowser/CollectionWidget.cpp:154
 #: browsers/collectionbrowser/CollectionWidget.cpp:186
@@ -1361,31 +1187,24 @@ msgstr "Laadi uuesti"
 #. i18n: file: context/applets/wikipedia/wikipediaSettings.ui:29
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
 #: context/applets/wikipedia/WikipediaApplet.cpp:406 rc.cpp:592
-#, fuzzy
 msgid "English"
 msgstr "Inglise"
 
 #. i18n: file: context/applets/wikipedia/wikipediaSettings.ui:34
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
 #: context/applets/wikipedia/WikipediaApplet.cpp:409 rc.cpp:595
-#, fuzzy
-#| msgid "France"
 msgid "French"
 msgstr "Prantsuse"
 
 #. i18n: file: context/applets/wikipedia/wikipediaSettings.ui:39
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
 #: context/applets/wikipedia/WikipediaApplet.cpp:412 rc.cpp:598
-#, fuzzy
-#| msgid "Germany"
 msgid "German"
 msgstr "Saksa"
 
 #: context/applets/wikipedia/WikipediaApplet.cpp:439
-#, fuzzy
-#| msgid "Wikipedia"
 msgid "Wikipedia Settings"
-msgstr "Wikipedia"
+msgstr "Wikipedia seadistused"
 
 #: context/applets/playlistinfo/PlaylistInfo.cpp:151
 msgid "Configure Playlist Info Applet"
@@ -1444,10 +1263,8 @@ msgid "Amarok Menu"
 msgstr "Amaroki menüü"
 
 #: ActionClasses.cpp:164
-#, fuzzy
-#| msgid "&Amarok"
 msgid "&About Amarok"
-msgstr "&Amarok"
+msgstr "&Amaroki teave"
 
 #: ActionClasses.cpp:179
 msgid "Play/Pause"
@@ -1514,23 +1331,21 @@ msgstr "&Pala"
 msgid "&Album"
 msgstr "Al&bum"
 
-#: ActionClasses.cpp:365 MainWindow.cpp:840
+#: ActionClasses.cpp:365 MainWindow.cpp:882
 msgid "&Playlist"
 msgstr "&Esitusnimekiri"
 
 #: ActionClasses.cpp:376
 msgid "&Replay Gain Mode"
-msgstr "Esituse tundlikkuse &režiim"
+msgstr "Helitugevuse parandamise &režiim"
 
 #: ActionClasses.cpp:388
 msgid "&Equalizer"
 msgstr "&Ekvalaiser"
 
 #: ActionClasses.cpp:416
-#, fuzzy
-#| msgid "Your machine does not support OpenGL widgets."
 msgid "Your current setup does not support the equalizer feature"
-msgstr "Sinu masin ei toeta OpenGL vidinaid."
+msgstr "Praegused seadistused ei toeta ekvalaiseri kasutamist"
 
 #: ActionClasses.cpp:472
 msgid "Burn"
@@ -1551,22 +1366,16 @@ msgid "Stop"
 msgstr "Peata"
 
 #: ActionClasses.cpp:579
-#, fuzzy
-#| msgid "After Current Track"
 msgid "Stop after current Track"
-msgstr "Praeguse pala järel"
+msgstr "Peata aktiivse pala järel"
 
 #: ActionClasses.cpp:594
-#, fuzzy
-#| msgid "After Current Track"
 msgid "Stop after current track: On"
-msgstr "Praeguse pala järel"
+msgstr "Peatamine aktiivse pala järel: sees"
 
 #: ActionClasses.cpp:599
-#, fuzzy
-#| msgid "After Current Track"
 msgid "Stop after current track: Off"
-msgstr "Praeguse pala järel"
+msgstr "Peatamine aktiivse pala järel: väljas"
 
 #: PluginManager.cpp:95
 #, kde-format
@@ -1630,85 +1439,64 @@ msgid "Sound System - Amarok"
 msgstr "Helisüsteem - Amarok"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:91
-#, fuzzy
 msgid "Equalizer not supported by Phonon"
-msgstr "Ekvalaiser mitte x Phonon"
+msgstr "Phonon ei toeta ekvalaiserit"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:155
 #: configdialog/dialogs/PlaybackConfig.cpp:243
 #: configdialog/dialogs/PlaybackConfig.cpp:294
-#, fuzzy
-#| msgid "Off"
 msgctxt "State, as in, disabled"
 msgid "Off"
 msgstr "Väljas"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:251
-#, fuzzy
-#| msgid "Delete the preset."
 msgid "Can not delete this preset"
-msgstr "Kustuta valmisseadistus."
+msgstr "Seda valmisseadistust ei saa kustutada"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:252
-#, fuzzy
-#| msgid "Directory cannot be deleted: '%1'"
 msgid "Default presets can not be deleted"
-msgstr "Kataloogi kustutamine nurjus: '%1'"
+msgstr "Vaikimisi valmisseadistusi ei saa kustutada"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:253
-#, fuzzy
-#| msgid "Error Creating File"
 msgid "Error deleting preset"
-msgstr "Viga faili loomisel"
+msgstr "Viga valmisseadistuse kustutamisel"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:263
-#, fuzzy
-#| msgid "Delete the preset."
 msgid "Can not restore this preset"
-msgstr "Kustuta valmisseadistus."
+msgstr "Seda valmisseadistust ei saa taastada"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:264
-#, fuzzy
-#| msgid "Directory cannot be deleted: '%1'"
 msgid "Only default presets can be restored"
-msgstr "Kataloogi kustutamine nurjus: '%1'"
+msgstr "Taastada saab ainult vaikimisi valmisseadistusi"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:265
-#, fuzzy
-#| msgid "Error Creating File"
 msgid "Error restoring preset"
-msgstr "Viga faili loomisel"
+msgstr "Viga valmisseadistuse taastamisel"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:282
-#, fuzzy
-#| msgid "Save the preset."
 msgid "Can not save this preset"
-msgstr "Salvesta valmisseadistus."
+msgstr "Seda valmisseadistust ei saa salvestada"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:283
-#, fuzzy
 msgid ""
 "Preset 'Manual' is reserved for momentary settings.\n"
 "                                               Please choose different name "
 "and try again."
 msgstr ""
-"Üldhäälestus Käsitsi on tingimusel seadistused\n"
-" nimi ja."
+"Valmisseadistus 'Käsitsi' on mõeldud hetkeseadistustele.\n"
+"                                               Palun vali mõni muu nimi ja "
+"proovi uuesti."
 
 #: configdialog/dialogs/PlaybackConfig.cpp:285
-#, fuzzy
-#| msgid "Error Creating File"
 msgid "Error saving preset"
-msgstr "Viga faili loomisel"
+msgstr "Viga valmisseadistuse salvestamisel"
 
 #: configdialog/dialogs/DatabaseConfig.cpp:92
-#, fuzzy
-#| msgid "Password"
 msgctxt ""
 "A default password for insertion into an example SQL command (so as not to "
 "print the real one). To be manually replaced by the user."
 msgid "password"
-msgstr "Parool"
+msgstr "parool"
 
 #: configdialog/ConfigDialog.cpp:57
 msgctxt "Miscellaneous settings"
@@ -1752,16 +1540,12 @@ msgid "Configure On-Screen-Display"
 msgstr "Ekraaniesituse (OSD) seadistamine"
 
 #: configdialog/ConfigDialog.cpp:62
-#, fuzzy
-#| msgid "Database:"
 msgid "Database"
-msgstr "Andmebaas:"
+msgstr "Andmebaas"
 
 #: configdialog/ConfigDialog.cpp:62
-#, fuzzy
-#| msgid "Configure Playback"
 msgid "Configure Database"
-msgstr "Taasesituse seadistamine"
+msgstr "Andmebaasi seadistamine"
 
 #: dialogs/deviceconfiguredialog.cpp:40
 #, kde-format
@@ -1957,7 +1741,7 @@ msgstr "Pealkiri"
 #. i18n: file: dialogs/EditFilterDialog.ui:90
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:126 dialogs/FilenameLayoutDialog.cpp:345
-#: browsers/CollectionTreeItemModelBase.cpp:905
+#: browsers/CollectionTreeItemModelBase.cpp:903
 #: browsers/collectionbrowser/CollectionWidget.cpp:131
 #: browsers/collectionbrowser/CollectionWidget.cpp:160
 #: browsers/collectionbrowser/CollectionWidget.cpp:192
@@ -1970,7 +1754,7 @@ msgstr "Helilooja"
 #. i18n: file: dialogs/EditFilterDialog.ui:120
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:127 dialogs/FilenameLayoutDialog.cpp:350
-#: browsers/CollectionTreeItemModelBase.cpp:907
+#: browsers/CollectionTreeItemModelBase.cpp:905
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:248
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:691 rc.cpp:1166
 #: playlist/PlaylistModel.cpp:653 widgets/SmartPlaylistEditor.cpp:184
@@ -1987,7 +1771,7 @@ msgstr "Kommentaar"
 #. i18n: file: dialogs/EditFilterDialog.ui:95
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:130 dialogs/FilenameLayoutDialog.cpp:365
-#: dialogs/transferdialog.cpp:90 browsers/CollectionTreeItemModelBase.cpp:906
+#: dialogs/transferdialog.cpp:90 browsers/CollectionTreeItemModelBase.cpp:904
 #: browsers/collectionbrowser/CollectionWidget.cpp:128
 #: browsers/collectionbrowser/CollectionWidget.cpp:157
 #: browsers/collectionbrowser/CollectionWidget.cpp:189
@@ -2133,11 +1917,10 @@ msgid "Imported <b>%1 - %2 (%3)</b>"
 msgstr "Imporditi <b>%1 - %2 (%3)</b>"
 
 #: dialogs/DatabaseImporterDialog.cpp:207
-#, fuzzy, kde-format
-#| msgid "<b><font color='red'>Error:</font></b> %1"
+#, kde-format
 msgctxt "Track has been discarded, format: Url"
 msgid "Discarded <b><font color='gray'>%1</font></b>"
-msgstr "<b><font color='red'>Viga:</font></b> %1"
+msgstr "Jäeti välja <b><font color='gray'>%1</font></b>"
 
 #: dialogs/DatabaseImporterDialog.cpp:219
 #, kde-format
@@ -2147,9 +1930,17 @@ msgid ""
 "Imported <b><font color='green'>%1 - %2</font></b><br/>&nbsp;&nbsp;from %"
 "3<br/>&nbsp;&nbsp;to %4"
 msgstr ""
+"Imporditi <b><font color='green'>%1 - %2</font></b><br/>&nbsp;&nbsp;"
+"asukohast %3<br/>&nbsp;&nbsp;asukohta %4"
 
 #: dialogs/DatabaseImporterDialog.cpp:222
-#, kde-format
+#, fuzzy, kde-format
+#| msgctxt ""
+#| "Track has been imported by tags, format: Artist - Track (Album), from "
+#| "Url, to Url"
+#| msgid ""
+#| "Imported <b><font color='green'>%1 - %2 (%3)</font></b><br/>&nbsp;&nbsp;"
+#| "from %4<br/>&nbsp;&nbsp;to %5"
 msgctxt ""
 "Track has been imported by tags, format: Artist - Track (Album), from Url, "
 "to Url"
@@ -2157,13 +1948,14 @@ msgid ""
 "Imported <b><font color='green'>%1 - %2 (%3)</font></b><br/>&nbsp;&nbsp;from "
 "%4<br/>&nbsp;&nbsp;to %5"
 msgstr ""
+"Imporditi <b><font color='green'>1 - %2 (%3)</font></b><br/>&nbsp;&nbsp;"
+"asukohast %%4<br/>&nbsp;&nbsp;asukohta %5"
 
 #: dialogs/DatabaseImporterDialog.cpp:234
-#, fuzzy, kde-format
-#| msgid "<b><font color='red'>Error:</font></b> %1"
+#, kde-format
 msgctxt "Track has been matched ambigously, format: Url"
 msgid "Ambigous Discarded <b><font color='red'>%1</font></b>"
-msgstr "<b><font color='red'>Viga:</font></b> %1"
+msgstr "Jäeti välja kaheldav <b><font color='red'>%1</font></b>"
 
 #: dialogs/TagDialog.cpp:491
 msgid "Filename Layout Chooser"
@@ -2274,7 +2066,7 @@ msgctxt "The collection this track is part of"
 msgid "None"
 msgstr "Puudub"
 
-#: dialogs/TagDialog.cpp:1053
+#: dialogs/TagDialog.cpp:1054
 #, kde-format
 msgctxt "The amount of tracks being edited"
 msgid "1 Track"
@@ -2282,30 +2074,30 @@ msgid_plural "Information for %1 Tracks"
 msgstr[0] "1 pala"
 msgstr[1] "%1 pala info"
 
-#: dialogs/TagDialog.cpp:1168
+#: dialogs/TagDialog.cpp:1169
 #, kde-format
 msgid "Editing 1 file"
 msgid_plural "Editing %1 files"
 msgstr[0] "1 failide muutmine"
 msgstr[1] "%1 faili muutmine"
 
-#: dialogs/TagDialog.cpp:1173
+#: dialogs/TagDialog.cpp:1174
 msgid "Rated Songs:"
 msgstr "Hinnanguga palad:"
 
-#: dialogs/TagDialog.cpp:1175
+#: dialogs/TagDialog.cpp:1176
 msgid "Average Rating:"
 msgstr "Keskmine hinnang:"
 
-#: dialogs/TagDialog.cpp:1177
+#: dialogs/TagDialog.cpp:1178
 msgid "Scored Songs:"
 msgstr "Hindega palad:"
 
-#: dialogs/TagDialog.cpp:1179
+#: dialogs/TagDialog.cpp:1180
 msgid "Average Score:"
 msgstr "Keskmine hinne:"
 
-#: dialogs/TagDialog.cpp:1477
+#: dialogs/TagDialog.cpp:1482
 msgid ""
 "Writing to file failed. Please check permissions and available disc space."
 msgstr ""
@@ -2443,7 +2235,7 @@ msgstr "Valikud"
 msgid "Convert spaces to underscores"
 msgstr "Tühikud asendatakse alakriipsudega"
 
-#: dialogs/ScriptManager.cpp:90 MainWindow.cpp:667
+#: dialogs/ScriptManager.cpp:90 MainWindow.cpp:709
 msgid "Script Manager"
 msgstr "Skriptihaldur"
 
@@ -2521,15 +2313,15 @@ msgstr ""
 
 #. i18n: file: collection/audiocd/FormatSelectionDialog.ui:14
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: App.cpp:112 rc.cpp:536
+#: App.cpp:114 rc.cpp:536
 msgid "Amarok"
 msgstr "Amarok"
 
-#: App.cpp:113
+#: App.cpp:115
 msgid "The audio player for KDE"
 msgstr "KDE muusikamängija"
 
-#: App.cpp:114
+#: App.cpp:116
 msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2009, The Amarok Development Squad"
@@ -2537,7 +2329,7 @@ msgstr ""
 "(C) 2002-2003: Mark Kretschmann\n"
 "(C) 2003-2009: Amaroki arendajad"
 
-#: App.cpp:115
+#: App.cpp:117
 #, kde-format
 msgid ""
 "IRC:\n"
@@ -2556,157 +2348,154 @@ msgstr ""
 "\n"
 "(Versiooni kuupäev: %1)"
 
-#: App.cpp:461
+#: App.cpp:465
 msgid "Files/URLs to open"
 msgstr "Avatavad failid/URL-id"
 
-#: App.cpp:463
+#: App.cpp:467
 msgid "Skip backwards in playlist"
 msgstr "Esitusnimekirjas tagasi"
 
-#: App.cpp:465
+#: App.cpp:469
 msgid "Start playing current playlist"
 msgstr "Aktiivse esitusnimekirja mängimahakkamine"
 
-#: App.cpp:467
+#: App.cpp:471
 msgid "Play if stopped, pause if playing"
 msgstr "Esitus, kui on peatatud, paus, kui mängitakse"
 
-#: App.cpp:468
+#: App.cpp:472
 msgid "Pause playback"
 msgstr "Taasesituse peatamine"
 
-#: App.cpp:470
+#: App.cpp:474
 msgid "Stop playback"
 msgstr "Taasesituse katkestamine"
 
-#: App.cpp:472
+#: App.cpp:476
 msgid "Skip forwards in playlist"
 msgstr "Esitusnimekirjas edasi"
 
-#: App.cpp:473
+#: App.cpp:477
 msgid "Additional options:"
 msgstr "Lisavõtmed:"
 
-#: App.cpp:475
+#: App.cpp:479
 msgid "Append files/URLs to playlist"
 msgstr "Failide/URL-ide lisamine esitusnimekirja"
 
-#: App.cpp:476
+#: App.cpp:480
 msgid "Queue URLs after the currently playing track"
 msgstr "URL-id seatakse järjekorda aktiivse pala taha"
 
-#: App.cpp:478
+#: App.cpp:482
 msgid "Load URLs, replacing current playlist"
 msgstr "URL-ide laadimine, aktiivse esitusnimekirja asendamine"
 
-#: App.cpp:480
+#: App.cpp:484
 msgid "Print verbose debugging information"
 msgstr "Üksikasjaliku silumisinfo näitamine"
 
-#: App.cpp:482
+#: App.cpp:486
 msgid "Allow running multiple Amarok instances"
 msgstr "Mitme Amaroki protsessi töötamise lubamine"
 
-#: App.cpp:483
+#: App.cpp:487
 msgid "Base for relative filenames/URLs"
 msgstr "Suhteliste failinimede/URL-ide baas"
 
-#: App.cpp:484
-#, fuzzy
+#: App.cpp:488
 msgid "Run integrated unit tests, if your build supports it"
-msgstr "Käivita kui ehitamine"
+msgstr "Lõimitud unit-testide käivitamine, kui paigaldus seda toetab"
 
-#: App.cpp:486
-#, fuzzy
-#| msgid "Subscribe to This Podcast"
+#: App.cpp:490
 msgid "Subscribe to podcast feed"
-msgstr "Telli see Podcast"
+msgstr "Podcastivoo tellimine"
 
-#: App.cpp:752
+#: App.cpp:756
 msgid "Moving files to trash"
 msgstr "Failide viskamine prügikasti"
 
-#: App.cpp:834
+#: App.cpp:837 App.cpp:874
+msgctxt "The amount of time since last played"
+msgid "Never"
+msgstr "Mitte kunagi"
+
+#: App.cpp:842
 #, kde-format
 msgctxt "monthname year"
 msgid "%1 %2"
 msgstr "%1 %2"
 
-#: App.cpp:841
+#: App.cpp:849
 #, kde-format
 msgid "One week ago"
 msgid_plural "%1 weeks ago"
 msgstr[0] "Ühe nädala eest"
 msgstr[1] "%1 nädala eest"
 
-#: App.cpp:844 App.cpp:895
-msgctxt "When this track was last played"
-msgid "Tomorrow"
-msgstr "Homme"
-
-#: App.cpp:850
+#: App.cpp:855
 msgid "Yesterday"
 msgstr "Eile"
 
-#: App.cpp:851
+#: App.cpp:856
 #, kde-format
 msgid "One day ago"
 msgid_plural "%1 days ago"
 msgstr[0] "Ühe päeva eest"
 msgstr[1] "%1 päeva eest"
 
-#: App.cpp:854
+#: App.cpp:859
 #, kde-format
 msgid "One hour ago"
 msgid_plural "%1 hours ago"
 msgstr[0] "Ühe tunni eest"
 msgstr[1] "%1 tunni eest"
 
-#: App.cpp:860
+#: App.cpp:865
 #, kde-format
 msgid "One minute ago"
 msgid_plural "%1 minutes ago"
 msgstr[0] "Ühe minuti eest"
 msgstr[1] "%1 minuti eest"
 
-#: App.cpp:861
+#: App.cpp:866
 msgid "Within the last minute"
 msgstr "Viimase minuti jooksul"
 
-#: App.cpp:863
+#: App.cpp:868
 msgid "The future"
 msgstr "Tulevikus"
 
-#: App.cpp:869
-msgctxt "The amount of time since last played"
-msgid "Never"
-msgstr "Mitte kunagi"
-
-#: App.cpp:879
+#: App.cpp:884
 msgctxt "The amount of time since last played"
 msgid "0"
 msgstr "0"
 
-#: App.cpp:888
+#: App.cpp:893
 #, kde-format
 msgctxt "number of months ago"
 msgid "%1M"
 msgstr "%1M"
 
-#: App.cpp:892
+#: App.cpp:897
 #, kde-format
 msgctxt "w for weeks"
 msgid "%1w"
 msgstr "%1w"
 
-#: App.cpp:901
+#: App.cpp:900
+msgctxt "When this track was last played"
+msgid "Tomorrow"
+msgstr "Homme"
+
+#: App.cpp:906
 #, no-c-format, kde-format
 msgctxt "d for days"
 msgid "%1d"
 msgstr "%1d"
 
-#: App.cpp:904
+#: App.cpp:909
 #, kde-format
 msgctxt "h for hours"
 msgid "%1h"
@@ -2734,25 +2523,24 @@ msgstr "%1h"
 #. i18n: ectx: property (text), widget (QLabel, eqBand8Value)
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:1320
 #. i18n: ectx: property (text), widget (QLabel, eqBand9Value)
-#: App.cpp:913 rc.cpp:680 rc.cpp:686 rc.cpp:692 rc.cpp:698 rc.cpp:704
+#: App.cpp:918 rc.cpp:680 rc.cpp:686 rc.cpp:692 rc.cpp:698 rc.cpp:704
 #: rc.cpp:710 rc.cpp:716 rc.cpp:722 rc.cpp:728 rc.cpp:734 rc.cpp:740
 msgid "0"
 msgstr "0"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:73
-#, fuzzy
 msgid ""
 "<qt>No information available.<br />The supplied KAboutData object does not "
 "exist.</qt>"
 msgstr ""
-"<qt>Info puudub.<br />Infot pakkuvat KAboutData objekti ei ole olemas.</qt>"
+"<qt>Teave puudub.<br />Teavet pakkuvat KAboutData objekti ei ole olemas.</qt>"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:82
-#, fuzzy
 msgid ""
 "<qt>No information available.<br />The supplied OcsData object does not "
 "exist.</qt>"
-msgstr "<qt> Ei info<br /> objekt mitte</qt>"
+msgstr ""
+"<qt>Teave puudub.<br />Teavet pakkuvat OcsData objekti ei ole olemas.</qt>"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:91
 #, kde-format
@@ -2760,7 +2548,7 @@ msgid "About %1"
 msgstr "%1 info"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:112
-#, fuzzy, kde-format
+#, kde-format
 msgid ""
 "<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE %3</"
 "html>"
@@ -2768,22 +2556,19 @@ msgstr ""
 "<html><font size=\"5\">%1</font><br /><b>Versioon %2</b><br />KDE %3</html>"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:152
-#, fuzzy, kde-format
-#| msgid "Score: %1"
+#, kde-format
 msgid "License: %1"
-msgstr "Hinne: %1"
+msgstr "Litsents: %1"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:166
 msgid "&About"
 msgstr "&Info"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:183
-#, fuzzy
 msgid "Get data from openDesktop.org to learn more about the team"
-msgstr "  org kuni õpi rohkem"
+msgstr "Hangi openDesktop.org-ist rohkem andmeid meeskonna kohta"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:195
-#, fuzzy
 msgid ""
 "Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to report "
 "bugs.\n"
@@ -2793,164 +2578,123 @@ msgstr ""
 
 #: aboutdialog/ExtendedAboutDialog.cpp:200
 #: aboutdialog/ExtendedAboutDialog.cpp:206
-#, fuzzy, kde-format
+#, kde-format
 msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
 msgstr ""
 "Palun kasuta vigadest teatamiseks aadressi <a href=\"mailto:%1\">%2</a>.\n"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:225
-#, fuzzy
-#| msgid "Authors"
 msgid "A&uthor"
-msgstr "Autorid"
+msgstr "A&utor"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:225
-#, fuzzy
-#| msgid "Authors"
 msgid "A&uthors"
-msgstr "Autorid"
+msgstr "A&utorid"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:239
-#, fuzzy
 msgid "Get data from openDesktop.org to learn more about contributors"
-msgstr "  org kuni õpi rohkem"
+msgstr "Hangi openDesktop.org-ist rohkem andmeid kaasautorite kohta"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:253
-#, fuzzy
 msgid "&Thanks To"
-msgstr "&Tänuavaldused"
+msgstr "&Tänud"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:282
-#, fuzzy
-#| msgid "&Duration:"
 msgid "T&ranslation"
-msgstr "K&estus:"
+msgstr "Tõl&ge"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:306
-#, fuzzy
 msgid "License Agreement"
-msgstr "&Litsentsileping"
+msgstr "Litsentsileping"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:339
-#, fuzzy
 msgid "Internet connection not available"
-msgstr "Internet mitte"
+msgstr "Internetiühendus puudub"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:339
-#, fuzzy
-#| msgid "Framework Version"
 msgid "Network error"
-msgstr "Raamistiku versioon"
+msgstr "Võrgu viga"
 
-#: aboutdialog/OcsPersonItem.cpp:89
-#, fuzzy
-#| msgid "Former contributors"
+#: aboutdialog/OcsPersonItem.cpp:91
 msgid "Email contributor"
-msgstr "Varasemad kaasautorid"
+msgstr "Saada kaasautorile e-kiri"
 
-#: aboutdialog/OcsPersonItem.cpp:97
-#, fuzzy
+#: aboutdialog/OcsPersonItem.cpp:99
 msgid "Visit contributor's homepage"
-msgstr "sek"
+msgstr "Külasta kaasautori kodulehekülge"
 
-#: aboutdialog/OcsPersonItem.cpp:185
-#, fuzzy
+#: aboutdialog/OcsPersonItem.cpp:187
 msgid "IRC channels: "
-msgstr "IRC kanalid "
+msgstr "IRC kanalid: "
 
-#: aboutdialog/OcsPersonItem.cpp:199
-#, fuzzy
-#| msgid "Favorite Albums"
+#: aboutdialog/OcsPersonItem.cpp:201
 msgid "Favorite music: "
-msgstr "Lemmikalbumid"
-
-#: aboutdialog/OcsPersonItem.cpp:204
-#, fuzzy, kde-format
-msgid "Visit %1's openDesktop.org profile"
-msgstr "sek org profiil"
+msgstr "Lemmikmuusika: "
 
 #: aboutdialog/OcsPersonItem.cpp:206
-#, fuzzy, kde-format
+#, kde-format
+msgid "Visit %1's openDesktop.org profile"
+msgstr "Külasta %1 openDesktop.org-i profiili"
+
+#: aboutdialog/OcsPersonItem.cpp:208
+#, kde-format
 msgid "Visit %1's profile on openDesktop.org"
-msgstr "sek profiil sees org"
+msgstr "Külasta %1 openDesktop.org-i profiili"
 
 #: aboutdialog/libattica-ocsclient/personlistjob.cpp:108
-#, fuzzy
-#| msgid "Unable to retrieve Wikipedia information: %1"
 msgid "Unable to parse avatar image data."
-msgstr "Wikipedia teabe hankimine nurjus: %1"
+msgstr "Avatari pildiandmete parsimine nurjus."
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.h:37
-#, fuzzy
-#| msgid "Update Database"
 msgid "Internal Database"
-msgstr "Uuenda andmebaasi"
+msgstr "Sisemine andmebaas"
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.h:38
-#, fuzzy
-#| msgid "Local Playlists stored in the database"
 msgid "Local playlists stored in the database"
 msgstr "Andmebaasi salvestatud kohalikud esitusnimekirjad"
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:133
 #: equalizerpresetmanager.cpp:55
 #: browsers/playlistbrowser/UserPlaylistModel.cpp:568
-#: amarokurls/BookmarkTreeView.cpp:116
 msgid "&Rename"
 msgstr "Nimeta ümbe&r"
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:141
 #: equalizerpresetmanager.cpp:56
 #: browsers/playlistbrowser/UserPlaylistModel.cpp:575
-#: amarokurls/BookmarkTreeView.cpp:110
+#: amarokurls/BookmarkTreeView.cpp:112
 msgid "&Delete"
 msgstr "&Kustuta"
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:160
-#, fuzzy, kde-format
-#| msgid "Remove %1"
+#, kde-format
 msgctxt "Remove a track from a saved playlist"
 msgid "Remove From \"%1\""
-msgstr "Eemalda %1"
+msgstr "Eemalda nimekirjast \"%1\""
 
 #: playlistmanager/file/PlaylistFileProvider.cpp:66
-#, fuzzy
-#| msgid "Playlist Files"
 msgid "Playlist Files on Disk"
-msgstr "Esitusnimekirja failid"
+msgstr "Esitusnimekirja failid kettal"
 
 #: playlistmanager/file/PlaylistFileProvider.cpp:203
-#, fuzzy
-#| msgid "Configure Playback"
 msgid "Confirm Delete"
-msgstr "Taasesituse seadistamine"
+msgstr "Kustutamise kinnitus"
 
 #: playlistmanager/file/PlaylistFileProvider.cpp:205
-#, fuzzy, kde-format
-#| msgctxt "@info"
-#| msgid "Do you really want to delete these %1 tracks?"
+#, kde-format
 msgid "Are you sure you want to delete this playlist?"
 msgid_plural "Are you sure you want to delete these %1 playlist files?"
-msgstr[0] "Kas tõesti kustutada need %1 pala?"
-msgstr[1] "Kas tõesti kustutada need %1 pala?"
+msgstr[0] "Kas tõesti kustutada see esitusnimekiri?"
+msgstr[1] "Kas tõesti kustutada need %1 esitusnimekirja?"
 
 #: playlistmanager/file/PlaylistFileProvider.cpp:210
-#, fuzzy
-#| msgid "Delete from device"
 msgid "Yes, delete from disk."
-msgstr "Kustuta seadmelt"
+msgstr "Jah, kustuta kettalt"
 
 #: playlistmanager/file/PlaylistFileProvider.cpp:248
-#, fuzzy, kde-format
-#| msgid ""
-#| "The playlist could not be read. Error:\n"
-#| "\n"
-#| "%1"
+#, kde-format
 msgid "The playlist file \"%1\" could not be loaded!"
-msgstr ""
-"Esitusnimekirja lugemine nurjus. Viga:\n"
-"\n"
-"%1"
+msgstr "Esitusnimekirja faili \"%1\" laadimine nurjus."
 
 #: playlistmanager/PlaylistManager.cpp:199
 msgid "Downloading Playlist"
@@ -2958,10 +2702,8 @@ msgstr "Esitusnimekirja allalaadimine"
 
 #: playlistmanager/PlaylistManager.cpp:228
 #: browsers/playlistbrowser/PlaylistCategory.cpp:44
-#, fuzzy
-#| msgid "&Save Playlist"
 msgid "Saved Playlists"
-msgstr "&Salvesta esitusnimekiri"
+msgstr "Salvestatud esitusnimekirjad"
 
 #: playlistmanager/PlaylistManager.cpp:229
 #: playlistmanager/PlaylistManager.cpp:248
@@ -2985,18 +2727,19 @@ msgstr "Nutikas esitusnimekiri"
 
 #: playlistmanager/PlaylistManager.cpp:247
 #: browsers/playlistbrowser/PlaylistCategory.cpp:45
-#, fuzzy
 msgid "User generated and imported playlists"
-msgstr "Kasutaja ja"
+msgstr "Kasutaja loodud ja imporditud esitusnimekirjad"
 
 #: playlistmanager/PlaylistManager.cpp:267
 #: browsers/playlistbrowser/PlaylistCategory.cpp:48
-#, fuzzy
 msgid ""
 "Create, edit, organize and load playlists. Amarok automatically adds any "
 "playlists found when scanning your collection,  and any playlists that you "
 "save are also shown here."
-msgstr "Loo redigeerimine ja load Amarok iga ja iga save."
+msgstr ""
+"Esitusnimekirjade loomine, korraldamine ja laadimine. Amarok lisab "
+"muusikakogu uurimisel automaatselt kõik leitud esitusnimekirjad ning siin "
+"näeb ka kõiki esitusnimekirju, mille oled salvestanud."
 
 #: podcasts/sql/SqlPodcastProvider.cpp:209
 #, kde-format
@@ -3024,16 +2767,15 @@ msgid "&Update Channel"
 msgstr "&Uuenda kanalit"
 
 #: podcasts/sql/SqlPodcastProvider.cpp:571
-#, fuzzy
 msgid "Waiting for Podcast Downloads to Finish"
-msgstr "Ootel tingimusel Podcast Allalaadimised kuni Lõpeta"
+msgstr "Podcastide allalaadimise lõpetamise ootamine"
 
 #: podcasts/sql/SqlPodcastProvider.cpp:572
-#, fuzzy, kde-format
+#, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
-msgstr[0] "on a allalaadimine asukohas progress"
-msgstr[1] "on a allalaadimine asukohas progress"
+msgstr[0] "Üks podcasti allalaadimine veel käib"
+msgstr[1] "%1 podcasti allalaadimine veel käib"
 
 #: podcasts/sql/SqlPodcastProvider.cpp:650
 msgid "Downloading Podcast Media"
@@ -3069,30 +2811,28 @@ msgid "Updating \"%1\""
 msgstr "\"%1\" uuendamine"
 
 #: podcasts/PodcastReader.cpp:123 podcasts/PodcastReader.cpp:137
-#, fuzzy, kde-format
-#| msgid "Importing podcast channel from %1"
+#, kde-format
 msgid "Importing podcast from %1 failed with error:\n"
-msgstr "Podcasti kanali import asukohast %1"
+msgstr "Podcasti import asukohast %1 nurjus veaga:\n"
 
 #: podcasts/PodcastReader.cpp:127 podcasts/PodcastReader.cpp:141
-#, fuzzy, kde-format
+#, kde-format
 msgid "Updating podcast from %1 failed with error:\n"
-msgstr "Uuendamine   nurjus järgnevaga viga"
+msgstr "Podcasti uuendamine asukohast %1 nurjus veaga:\n"
 
 #: podcasts/PodcastReader.cpp:128 podcasts/PodcastReader.cpp:142
-#, fuzzy, kde-format
+#, kde-format
 msgid "Updating \"%1\" failed with error:\n"
-msgstr "Uuendamine nurjus järgnevaga viga"
+msgstr "\"%1\" uuendamine nurjus veaga:\n"
 
 #: podcasts/PodcastReader.cpp:193
-#, fuzzy
 msgid "An HTML page was received. Expected an RSS 2.0 feed"
-msgstr "HTML lehekülg Oodatud RSS"
+msgstr "Saadi HTML-lehekülg. Oodati RSS 2.0 voogu"
 
 #: podcasts/PodcastReader.cpp:200
-#, fuzzy, kde-format
+#, kde-format
 msgid "%1 is not an RSS version 2.0 feed."
-msgstr "on mitte RSS versioon."
+msgstr "%1 ei ole RSS 2.0 voog."
 
 #: Systray.cpp:133
 #, kde-format
@@ -3136,10 +2876,8 @@ msgid "Amarok - No track playing"
 msgstr "Amarok - ühtki pala ei esitata."
 
 #: Systray.cpp:242
-#, fuzzy
-#| msgid "Append && &Play"
 msgid "Add && &Play"
-msgstr "Lisa ja &mängi"
+msgstr "Lisa ja &esita"
 
 #: Systray.cpp:244
 msgid "&Queue Track"
@@ -3209,7 +2947,7 @@ msgstr "Pealkirjata"
 msgid "A preset with the name %1 already exists. Overwrite?"
 msgstr "Valmisseadistus nimega %1 on juba olemas. Kas kirjutada see üle?"
 
-#: EngineController.cpp:209
+#: EngineController.cpp:226
 msgid ""
 "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
 "the installation of the backend that phonon uses.</p><p>You may find useful "
@@ -3219,11 +2957,11 @@ msgstr ""
 "Phononi kasutatava taustaprogrammi paigaldust.</p><p>Näpunäiteid selle "
 "probleemi kohta annab <i>Amaroki käsiraamatu</i> <i>KKK</i> peatükk.</p>"
 
-#: EngineController.cpp:228
+#: EngineController.cpp:245
 msgid "Install MP3 Support"
 msgstr "Paigalda MP3 toetus"
 
-#: EngineController.cpp:230
+#: EngineController.cpp:247
 msgid ""
 "Amarok currently cannot play MP3 files. Do you want to install support for "
 "MP3?"
@@ -3231,13 +2969,11 @@ msgstr ""
 "Amarok ei suuda praegu MP3-faile esitada. Kas soovid selle toetuse "
 "paigaldada?"
 
-#: EngineController.cpp:231
+#: EngineController.cpp:248
 msgid "No MP3 Support"
 msgstr "MP3 toetus puudub"
 
-#: EngineController.cpp:710
-#, fuzzy
-#| msgid "Pre-amp"
+#: EngineController.cpp:740
 msgid "Preamp"
 msgstr "Eelmoonutus"
 
@@ -3271,7 +3007,7 @@ msgstr "Masinanimi"
 
 #: databaseimporter/amarok14/FastForwardImporterConfig.cpp:89
 msgid "Match tracks by meta tags"
-msgstr ""
+msgstr "Palade sobitamine metaandmete siltide järgi"
 
 #: databaseimporter/amarok14/FastForwardImporterConfig.cpp:92
 msgid "Import downloaded artwork"
@@ -3296,10 +3032,9 @@ msgid "Could not open Amarok 1.4 database: %1"
 msgstr "Amarok 1.4 andmebaasi avamine nurjus: %1"
 
 #: databaseimporter/amarok14/FastForwardWorker.cpp:146
-#, fuzzy, kde-format
-#| msgid "Cannot enter directory: '%1'"
+#, kde-format
 msgid "Could not execute import query: %1"
-msgstr "Kataloogi sisenemine nurjus: '%1'"
+msgstr "Impordipäringu täitmine nurjus: %1"
 
 #: databaseimporter/amarok14/FastForwardWorker.cpp:315
 msgid "Synchronizing Amarok database..."
@@ -3320,16 +3055,12 @@ msgid "Proportion:"
 msgstr "Proportsioon:"
 
 #: dynamic/CustomBiasEntryWidget.cpp:59
-#, fuzzy
-#| msgid "Match:"
 msgid "Match Type:"
-msgstr "Sobivus:"
+msgstr "Sobivuse tüüp:"
 
 #: dynamic/biases/EchoNest.cpp:52
-#, fuzzy
-#| msgid "Retrieve similar artists"
 msgid "Echo Nest Similar Artists"
-msgstr "Sarnaste esitajate hankimine"
+msgstr "Echo Nesti sarnased esitajad"
 
 #: dynamic/biases/EchoNest.cpp:112
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:203
@@ -3338,20 +3069,16 @@ msgid "Match:"
 msgstr "Sobivus:"
 
 #: dynamic/biases/EchoNest.cpp:115
-#, fuzzy
-#| msgid "Love Current Track"
 msgid "Current Track"
-msgstr "Praegune pala meeldib"
+msgstr "Aktiivne pala"
 
-#: dynamic/biases/EchoNest.cpp:116 MainWindow.cpp:263
+#: dynamic/biases/EchoNest.cpp:116 MainWindow.cpp:264
 msgid "Playlist"
 msgstr "Esitusnimekiri"
 
 #: dynamic/biases/EchoNest.cpp:123
-#, fuzzy
-#| msgid "My Recommendations"
 msgid "Recommendations by Echo Nest."
-msgstr "Minu soovitused"
+msgstr "Echo Nesti soovitused"
 
 #: dynamic/BiasedPlaylist.cpp:131
 msgid "Generating playlist..."
@@ -3381,40 +3108,32 @@ msgid "Alejandro Wainzinger"
 msgstr "Alejandro Wainzinger"
 
 #: main.cpp:36
-#, fuzzy
-#| msgid "Developer (jefferai)"
 msgid "Developer (xevix)"
-msgstr "Arendaja (jefferai)"
+msgstr "Arendaja (xevix)"
 
 #: main.cpp:37
 msgid "Bart 'Where are my toothpicks' Cerneels"
 msgstr "Bart 'Where are my toothpicks' Cerneels"
 
 #: main.cpp:38
-#, fuzzy
-#| msgid "Developer (jefferai)"
 msgid "Developer (Stecchino)"
-msgstr "Arendaja (jefferai)"
+msgstr "Arendaja (Stecchino)"
 
 #: main.cpp:39
 msgid "Dan 'Hey, it compiled...' Meltzer"
 msgstr "Dan 'Hey, it compiled...' Meltzer"
 
 #: main.cpp:40
-#, fuzzy
-#| msgid "Developer (jefferai)"
 msgid "Developer (hydrogen)"
-msgstr "Arendaja (jefferai)"
+msgstr "Arendaja (hydrogen)"
 
 #: main.cpp:41
 msgid "Ian 'The Beard' Monroe"
 msgstr "Ian 'The Beard' Monroe"
 
 #: main.cpp:42
-#, fuzzy
-#| msgid "Developer (jefferai)"
 msgid "Developer (eean)"
-msgstr "Arendaja (jefferai)"
+msgstr "Arendaja (eean)"
 
 #: main.cpp:43
 msgid "Jeff 'IROCKSOHARD' Mitchell"
@@ -3425,10 +3144,8 @@ msgid "Developer (jefferai)"
 msgstr "Arendaja (jefferai)"
 
 #: main.cpp:46
-#, fuzzy
-#| msgid "Developer (jefferai)"
 msgid "Developer (lfranchi)"
-msgstr "Arendaja (jefferai)"
+msgstr "Arendaja (lfranchi)"
 
 #: main.cpp:47
 msgid "Lydia 'is wrong(TM)' Pintscher"
@@ -3436,7 +3153,7 @@ msgstr "Lydia 'is wrong(TM)' Pintscher"
 
 #: main.cpp:48
 msgid "Release Vixen (Nightrose)"
-msgstr ""
+msgstr "Release Vixen (Nightrose)"
 
 #: main.cpp:49
 msgid "Mark 'It's good, but it's not irssi' Kretschmann"
@@ -3444,49 +3161,39 @@ msgstr "Mark 'It's good, but it's not irssi' Kretschmann"
 
 #: main.cpp:50
 msgid "Project founder (markey)"
-msgstr ""
+msgstr "Projekti rajaja (markey)"
 
 #: main.cpp:51
 msgid "Maximilian Kossick"
 msgstr "Maximilian Kossick"
 
 #: main.cpp:52
-#, fuzzy
-#| msgid "Developer (jefferai)"
 msgid "Developer (maxx_k)"
-msgstr "Arendaja (jefferai)"
+msgstr "Arendaja (maxx_k)"
 
 #: main.cpp:53
 msgid "Nikolaj Hald 'Also very hot' Nielsen"
 msgstr "Nikolaj Hald 'Also very hot' Nielsen"
 
 #: main.cpp:54
-#, fuzzy
-#| msgid "Developer (jefferai)"
 msgid "Developer (nhn)"
-msgstr "Arendaja (jefferai)"
+msgstr "Arendaja (nhn)"
 
 #: main.cpp:55
 msgid "Seb 'Surfin' down under' Ruiz"
 msgstr "Seb 'Surfin' down under' Ruiz"
 
 #: main.cpp:56
-#, fuzzy
-#| msgid "Developer (jefferai)"
 msgid "Developer (sebr)"
-msgstr "Arendaja (jefferai)"
+msgstr "Arendaja (sebr)"
 
 #: main.cpp:57
-#, fuzzy
-#| msgid "Teo Mrnjavac"
 msgid "Téo Mrnjavac"
-msgstr "Teo Mrnjavac"
+msgstr "Téo Mrnjavac"
 
 #: main.cpp:58
-#, fuzzy
-#| msgid "Developer (jefferai)"
 msgid "Developer (Teo`)"
-msgstr "Arendaja (jefferai)"
+msgstr "Arendaja (Teo`)"
 
 #: main.cpp:74
 msgid "Alex Merry"
@@ -3494,26 +3201,23 @@ msgstr "Alex Merry"
 
 #: main.cpp:74
 msgid "Developer, Replay gain support"
-msgstr ""
+msgstr "Arendaja, helitugevuse parandamise toetus"
 
 #: main.cpp:76
 msgid "Casey Link"
 msgstr "Casey Link"
 
 #: main.cpp:76
-#, fuzzy
-#| msgid "Mp3tunes Login"
 msgid "MP3tunes integration"
-msgstr "Mp3tunesi kasutajanimi"
+msgstr "MP3tunesi lõimimine"
 
 #: main.cpp:78
-#, fuzzy
 msgid "Casper van Donderen"
-msgstr "Casper"
+msgstr "Casper van Donderen"
 
 #: main.cpp:78
 msgid "Windows porting"
-msgstr ""
+msgstr "Windowsi port"
 
 #: main.cpp:80
 msgid "Christie Harris"
@@ -3521,7 +3225,7 @@ msgstr "Christie Harris"
 
 #: main.cpp:80
 msgid "Rokymoter (dangle)"
-msgstr ""
+msgstr "Rokymoter (dangle)"
 
 #: main.cpp:82
 msgid "Dan Leinir Turthra Jensen"
@@ -3529,31 +3233,27 @@ msgstr "Dan Leinir Turthra Jensen"
 
 #: main.cpp:82
 msgid "Usability"
-msgstr ""
+msgstr "Kasutamismugavus"
 
 #: main.cpp:84
 msgid "Daniel Caleb Jones"
 msgstr "Daniel Caleb Jones"
 
 #: main.cpp:84
-#, fuzzy
-#| msgid "&Save Playlist"
 msgid "Biased playlists"
-msgstr "&Salvesta esitusnimekiri"
+msgstr "Eelistusega esitusnimekirjad"
 
 #: main.cpp:86
 msgid "Daniel Winter"
 msgstr "Daniel Winter"
 
 #: main.cpp:86
-#, fuzzy
-#| msgid "Nepomuk Collection"
 msgid "Nepomuk integration"
-msgstr "Nepomuki muusikakogu"
+msgstr "Nepomuki lõimimine"
 
 #: main.cpp:88
 msgid "Edward \"Hades\" Toroshchin"
-msgstr ""
+msgstr "Edward \"Hades\" Toroshchin"
 
 #: main.cpp:90
 msgid "Greg Meyer"
@@ -3561,7 +3261,7 @@ msgstr "Greg Meyer"
 
 #: main.cpp:90
 msgid "Live CD, Bug squashing (oggb4mp3)"
-msgstr ""
+msgstr "Live-CD, vigade kõrvaldaja (oggb4mp3)"
 
 #: main.cpp:92
 msgid "Harald Sitter"
@@ -3569,17 +3269,15 @@ msgstr "Harald Sitter"
 
 #: main.cpp:92
 msgid "Rokymoter (apachelogger)"
-msgstr ""
+msgstr "Rokymoter (apachelogger)"
 
 #: main.cpp:94
 msgid "Kenneth Wesley Wimer II"
 msgstr "Kenneth Wesley Wimer II"
 
 #: main.cpp:94
-#, fuzzy
-#| msgid "Icon"
 msgid "Icons"
-msgstr "Ikoon"
+msgstr "Ikoonid"
 
 #: main.cpp:96
 msgid "Kevin Funk"
@@ -3587,25 +3285,23 @@ msgstr "Kevin Funk"
 
 #: main.cpp:96
 msgid "Developer, Website theme (KRF)"
-msgstr ""
+msgstr "Arendaja, veebilehekülje teema (KRF)"
 
 #: main.cpp:98
 msgid "Kuba Serafinowski"
-msgstr ""
+msgstr "Kuba Serafinowski"
 
 #: main.cpp:98
 msgid "Rokymoter"
-msgstr ""
+msgstr "Rokymoter"
 
 #: main.cpp:100
 msgid "Lee Olson"
 msgstr "Lee Olson"
 
 #: main.cpp:100 main.cpp:110
-#, fuzzy
-#| msgid "Update Artwork"
 msgid "Artwork"
-msgstr "Värskenda kunsti"
+msgstr "Kunstiline kujundus"
 
 #: main.cpp:102
 msgid "Ljubomir Simin"
@@ -3613,25 +3309,23 @@ msgstr "Ljubomir Simin"
 
 #: main.cpp:102
 msgid "Rokymoter (ljubomir)"
-msgstr ""
+msgstr "Rokymoter (ljubomir)"
 
 #: main.cpp:104
 msgid "Max Howell"
 msgstr "Max Howell"
 
 #: main.cpp:104
-#, fuzzy
-#| msgid "Developer (jefferai)"
 msgid "Developer, Vision"
-msgstr "Arendaja (jefferai)"
+msgstr "Arendaja, visionäär"
 
 #: main.cpp:106
 msgid "Mikko Caldara"
-msgstr ""
+msgstr "Mikko Caldara"
 
 #: main.cpp:106
 msgid "Bug triaging and sanitizing"
-msgstr ""
+msgstr "Veateadete sõelumine ja korrastamine"
 
 #: main.cpp:108
 msgid "Myriam Schweingruber"
@@ -3639,7 +3333,7 @@ msgstr "Myriam Schweingruber"
 
 #: main.cpp:108
 msgid "Rokymoter, bug squashing (Mamarok)"
-msgstr ""
+msgstr "Rokymoter, vigade kõrvaldaja (Mamarok)"
 
 #: main.cpp:110
 msgid "Nuno Pinheiro"
@@ -3651,7 +3345,7 @@ msgstr "Olivier Bédard"
 
 #: main.cpp:112
 msgid "Website hosting"
-msgstr ""
+msgstr "Veebilehekülje ülalpidamine"
 
 #: main.cpp:114
 msgid "Pasi Lalinaho"
@@ -3659,17 +3353,15 @@ msgstr "Pasi Lalinaho"
 
 #: main.cpp:114
 msgid "Rokymoter (emunkki)"
-msgstr ""
+msgstr "Rokymoter (emunkki)"
 
 #: main.cpp:116
 msgid "Peter Zhou Lei"
 msgstr "Peter Zhou Lei"
 
 #: main.cpp:116
-#, fuzzy
-#| msgid "Scripted Services"
 msgid "Scripting interface"
-msgstr "Skriptiteenused"
+msgstr "Skriptimisliides"
 
 #: main.cpp:118
 msgid "Scott Wheeler"
@@ -3677,7 +3369,7 @@ msgstr "Scott Wheeler"
 
 #: main.cpp:118
 msgid "TagLib & ktrm code"
-msgstr ""
+msgstr "TagLib ja ktrm kood"
 
 #: main.cpp:120
 msgid "Shane King"
@@ -3685,15 +3377,15 @@ msgstr "Shane King"
 
 #: main.cpp:120
 msgid "Patches & Windows porting (shakes)"
-msgstr ""
+msgstr "Paigad ja Windowsi port (shakes)"
 
 #: main.cpp:122
 msgid "Simon Esneault"
-msgstr ""
+msgstr "Simon Esneault"
 
 #: main.cpp:122
 msgid "Photos & Videos applets, Context View"
-msgstr ""
+msgstr "Foto- ja videoapletid, kontekstivaade"
 
 #: main.cpp:124
 msgid "Soren Harward"
@@ -3705,38 +3397,31 @@ msgstr "Sven Krohlas"
 
 #: main.cpp:126
 msgid "Rokymoter (sven423)"
-msgstr ""
+msgstr "Rokymoter (sven423)"
 
 #: main.cpp:128
-#, fuzzy
 msgid "Thomas Lübking"
-msgstr "Thomas"
+msgstr "Thomas Lübking"
 
 #: main.cpp:130
 msgid "Valentin Rouet"
-msgstr ""
+msgstr "Valentin Rouet"
 
 #: main.cpp:132
-#, fuzzy
-#| msgid "Lee Olson"
 msgid "Wade Olson"
-msgstr "Lee Olson"
+msgstr "Wade Olson"
 
 #: main.cpp:132
-#, fuzzy
-#| msgid "Sho&w splash-screen on startup"
 msgid "Splash screen artist"
-msgstr "&Käivituslogo näitamine"
+msgstr "Käivitusekraani kunstnik"
 
 #: main.cpp:134
 msgid "William Viana Soares"
 msgstr "William Viana Soares"
 
 #: main.cpp:134
-#, fuzzy
-#| msgid "Hide context view"
 msgid "Context view"
-msgstr "Kontekstivaate peitmine"
+msgstr "Kontekstivaade"
 
 #: main.cpp:136
 msgid "Former contributors"
@@ -3745,6 +3430,7 @@ msgstr "Varasemad kaasautorid"
 #: main.cpp:136
 msgid "People listed below have contributed to Amarok in the past. Thank you!"
 msgstr ""
+"Allpool loetletud inimesed on varem aidanud kaasa Amarokile. Suur tänu teile!"
 
 #: main.cpp:138
 msgid "Adam Pigg"
@@ -3752,17 +3438,15 @@ msgstr "Adam Pigg"
 
 #: main.cpp:138
 msgid "Analyzers, patches, shoutcast"
-msgstr ""
+msgstr "Analüsaatorid, paigad, shoutcast"
 
 #: main.cpp:140
 msgid "Adeodato Simó"
 msgstr "Adeodato Simó"
 
 #: main.cpp:140 main.cpp:148
-#, fuzzy
-#| msgid "dates"
 msgid "Patches"
-msgstr "kuupäevad"
+msgstr "Paigad"
 
 #: main.cpp:142
 msgid "Alexandre Oliveira"
@@ -3774,7 +3458,7 @@ msgstr "Andreas Mair"
 
 #: main.cpp:144
 msgid "MySQL support"
-msgstr ""
+msgstr "MySQL-i toetus"
 
 #: main.cpp:146
 msgid "Andrew de Quincey"
@@ -3782,7 +3466,7 @@ msgstr "Andrew de Quincey"
 
 #: main.cpp:146
 msgid "Postgresql support"
-msgstr ""
+msgstr "Postgresql-i toetus"
 
 #: main.cpp:148
 msgid "Andrew Turner"
@@ -3794,7 +3478,7 @@ msgstr "Andy Kelk"
 
 #: main.cpp:150
 msgid "MTP and Rio Karma media devices, patches"
-msgstr ""
+msgstr "MTP ja Rio Karma meediaseadmed, paigad"
 
 #: main.cpp:152
 msgid "Christian Muehlhaeuser"
@@ -3806,7 +3490,7 @@ msgstr "Derek Nelson"
 
 #: main.cpp:154
 msgid "Graphics, splash-screen"
-msgstr ""
+msgstr "Graafika, käivitusekraan"
 
 #: main.cpp:156
 msgid "Enrico Ros"
@@ -3814,7 +3498,7 @@ msgstr "Enrico Ros"
 
 #: main.cpp:156
 msgid "Analyzers, Context Browser and systray eye-candy"
-msgstr ""
+msgstr "Analüsaatorid, kontekstisirvija ja süsteemisalve ilustamine"
 
 #: main.cpp:158
 msgid "Frederik Holljen"
@@ -3830,17 +3514,15 @@ msgstr "Gérard Dürrmeyer"
 
 #: main.cpp:162
 msgid "Icons and image work"
-msgstr ""
+msgstr "Ikoonid ja pildid"
 
 #: main.cpp:164
 msgid "Giovanni Venturi"
 msgstr "Giovanni Venturi"
 
 #: main.cpp:164
-#, fuzzy
-#| msgid "List of folders in the Collection"
 msgid "Dialog to filter the collection titles"
-msgstr "Muusikakogu kataloogide nimekiri"
+msgstr "Muusikakogu pealkirjade filtreerimise dialoog"
 
 #: main.cpp:166
 msgid "Jarkko Lehti"
@@ -3848,7 +3530,7 @@ msgstr "Jarkko Lehti"
 
 #: main.cpp:166
 msgid "Tester, IRC channel operator, whipping"
-msgstr ""
+msgstr "Testija, IRC kanali operaator, tagantkihutaja"
 
 #: main.cpp:168
 msgid "Jocke Andersson"
@@ -3856,7 +3538,7 @@ msgstr "Jocke Andersson"
 
 #: main.cpp:168
 msgid "Rokymoter, bug fixer (Firetech)"
-msgstr ""
+msgstr "Rokymoter, vigade parandaja (Firetech)"
 
 #: main.cpp:170
 msgid "Marco Gulino"
@@ -3864,7 +3546,7 @@ msgstr "Marco Gulino"
 
 #: main.cpp:170
 msgid "Konqueror Sidebar, some DCOP methods"
-msgstr ""
+msgstr "Konquerori külgriba, mõned DCOP-i meetodid"
 
 #: main.cpp:172
 msgid "Martin Aumueller"
@@ -3876,7 +3558,7 @@ msgstr "Melchior Franz"
 
 #: main.cpp:174
 msgid "FHT routine, bugfixes"
-msgstr ""
+msgstr "FFT rutiin, vigade parandused"
 
 #: main.cpp:176
 msgid "Michael Pyne"
@@ -3884,7 +3566,7 @@ msgstr "Michael Pyne"
 
 #: main.cpp:176
 msgid "K3b export code"
-msgstr ""
+msgstr "K3b ekspordi kood"
 
 #: main.cpp:178
 msgid "Mike Diehl"
@@ -3900,7 +3582,7 @@ msgstr "Peter C. Ndikuwera"
 
 #: main.cpp:182
 msgid "Bugfixes, PostgreSQL support"
-msgstr ""
+msgstr "Veaparandused, Postgresql-i toetus"
 
 #: main.cpp:184
 msgid "Pierpaolo Panfilo"
@@ -3912,7 +3594,7 @@ msgstr "Reigo Reinmets"
 
 #: main.cpp:186
 msgid "Wikipedia support, patches"
-msgstr ""
+msgstr "Wikipedia toetus, paigad"
 
 #: main.cpp:188
 msgid "Roman Becker"
@@ -3920,7 +3602,7 @@ msgstr "Roman Becker"
 
 #: main.cpp:188
 msgid "Former Amarok logo, former splash screen, former icons"
-msgstr ""
+msgstr "Amaroki endine logo, endine käivitusekraan, endised ikoonid"
 
 #: main.cpp:190
 msgid "Sami Nieminen"
@@ -3928,7 +3610,7 @@ msgstr "Sami Nieminen"
 
 #: main.cpp:190
 msgid "Audioscrobbler support"
-msgstr ""
+msgstr "Audioscrobbleri toetus"
 
 #: main.cpp:192
 msgid "Stanislav Karchebny"
@@ -3940,7 +3622,7 @@ msgstr "Stefan Bogner"
 
 #: main.cpp:194
 msgid "Loads of stuff"
-msgstr ""
+msgstr "Mitmesugused asjad"
 
 #: browsers/InfoProxy.cpp:164
 msgid "Home"
@@ -3970,103 +3652,97 @@ msgid "Organize Files"
 msgstr "Failide korraldamine"
 
 #: browsers/CollectionTreeView.cpp:1054
-#, fuzzy
-#| msgid "&Delete Tracks"
 msgid "Delete Tracks"
-msgstr "&Kustuta palad"
+msgstr "Kustuta palad"
 
 #: browsers/BrowserCategoryList.cpp:45
-#, fuzzy
-#| msgid "File Extension of Source"
 msgid "Filter Music Sources"
-msgstr "Allika faililaiend"
+msgstr "Filtreeri muusikaallikaid"
 
 #: browsers/BrowserWidget.cpp:46
-#, fuzzy
-#| msgid "Previous Group"
 msgid "Previous Browser"
-msgstr "Eelmine grupp"
+msgstr "Eelmine sirvija"
 
-#: browsers/CollectionTreeItemModelBase.cpp:535
+#: browsers/CollectionTreeItemModelBase.cpp:533
 msgid "album"
 msgstr "album"
 
-#: browsers/CollectionTreeItemModelBase.cpp:540
+#: browsers/CollectionTreeItemModelBase.cpp:538
 msgid "artist"
 msgstr "esitaja"
 
-#: browsers/CollectionTreeItemModelBase.cpp:545
+#: browsers/CollectionTreeItemModelBase.cpp:543
 msgid "genre"
 msgstr "žanr"
 
-#: browsers/CollectionTreeItemModelBase.cpp:550
+#: browsers/CollectionTreeItemModelBase.cpp:548
 msgid "composer"
 msgstr "helilooja"
 
-#: browsers/CollectionTreeItemModelBase.cpp:555
+#: browsers/CollectionTreeItemModelBase.cpp:553
 msgid "year"
 msgstr "aasta"
 
-#: browsers/CollectionTreeItemModelBase.cpp:560
+#: browsers/CollectionTreeItemModelBase.cpp:558
 msgid "comment"
 msgstr "kommentaar"
 
-#: browsers/CollectionTreeItemModelBase.cpp:564
+#: browsers/CollectionTreeItemModelBase.cpp:562
 msgid "rating"
 msgstr "hinnang"
 
-#: browsers/CollectionTreeItemModelBase.cpp:568
+#: browsers/CollectionTreeItemModelBase.cpp:566
 msgid "score"
 msgstr "hinne"
 
-#: browsers/CollectionTreeItemModelBase.cpp:572
+#: browsers/CollectionTreeItemModelBase.cpp:570
 msgid "playcount"
 msgstr "esitamiste arv"
 
-#: browsers/CollectionTreeItemModelBase.cpp:576
+#: browsers/CollectionTreeItemModelBase.cpp:574
 msgid "length"
 msgstr "pikkus"
 
-#: browsers/CollectionTreeItemModelBase.cpp:580
+#: browsers/CollectionTreeItemModelBase.cpp:578
 msgid "discnumber"
 msgstr "plaadi number"
 
-#: browsers/CollectionTreeItemModelBase.cpp:584
+#: browsers/CollectionTreeItemModelBase.cpp:582
 msgid "tracknumber"
 msgstr "raja number"
 
-#: browsers/CollectionTreeItemModelBase.cpp:588
+#: browsers/CollectionTreeItemModelBase.cpp:586
 msgid "added"
 msgstr "lisatud"
 
-#: browsers/CollectionTreeItemModelBase.cpp:594
+#: browsers/CollectionTreeItemModelBase.cpp:592
 msgid "today"
 msgstr "täna"
 
-#: browsers/CollectionTreeItemModelBase.cpp:596
+#: browsers/CollectionTreeItemModelBase.cpp:594
 msgid "last week"
 msgstr "eelmisel nädalal"
 
-#: browsers/CollectionTreeItemModelBase.cpp:598
+#: browsers/CollectionTreeItemModelBase.cpp:596
 msgid "last month"
 msgstr "eelmisel kuul"
 
-#: browsers/CollectionTreeItemModelBase.cpp:600
+#: browsers/CollectionTreeItemModelBase.cpp:598
 msgid "two months ago"
 msgstr "kahe kuu eest"
 
-#: browsers/CollectionTreeItemModelBase.cpp:602
+#: browsers/CollectionTreeItemModelBase.cpp:600
 msgid "three months ago"
 msgstr "kolme kuu eest"
 
-#: browsers/CollectionTreeItemModelBase.cpp:903
+#: browsers/CollectionTreeItemModelBase.cpp:901
 msgid "Year - Album"
 msgstr "Aasta - Album"
 
 #: browsers/collectionbrowser/CollectionTreeItemDelegate.cpp:143
 #, kde-format
 msgid "%1% used"
-msgstr ""
+msgstr "%1% kasutatud"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:61
 msgid "Search collection"
@@ -4116,22 +3792,20 @@ msgid "Sort Options"
 msgstr "Sortimisvalikud"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:301
-#, fuzzy
 msgid "Toggle unified view mode"
-msgstr "Lülitamine režiim"
+msgstr "Lülitu ühendvaatele"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:302
-#, fuzzy
 msgid "Toggle unified view mode. This is an experimental feature"
-msgstr "Lülitamine režiim on eksperimentaalne"
+msgstr "Lülitu ühendvaatele. See on eksperimentaalne"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:311
-#, fuzzy
 msgid ""
 "This is where you will find your local music, as well as music from mobile "
 "audio players and cd's."
 msgstr ""
-"on where otsimine kohalik muusika kui kui muusika   audio mängijad ja cd sek."
+"Siin leiad oma kohaliku muusika, samuti muusika kaasaskantavatel "
+"muusikamängijatel ja CD-del."
 
 #: browsers/filebrowser/FileBrowser.cpp:78 widgets/SearchWidget.cpp:67
 #: covermanager/CoverManager.cpp:172
@@ -4173,14 +3847,14 @@ msgstr ""
 "sisselülitamisel uuesti viimati kasutatud filtrit.</p>"
 
 #: browsers/filebrowser/FileBrowser.cpp:126
-#, fuzzy
 msgid ""
 "The file browser lets you browse files anywhere on your system, regardless "
 "of whether these files are part of your local collection. You can then add "
 "these files to the playlist as well as perform basic file operations."
 msgstr ""
-"fail brauser failid sees süsteem  /  failid part  /  kohalik Mina lisa "
-"failid kuni kui kui põhiline fail."
+"Failisirvija võimaldab sirvida kõiki süsteemi faile, kuulugu nad sinu "
+"muusikakogusse või mitte. Soovi korral võid lisada faile oma esitusnimekirja "
+"ja võtta nendega ette lihtsamaid failitoiminguid."
 
 #: browsers/filebrowser/FileBrowser.cpp:225
 #, kde-format
@@ -4192,14 +3866,14 @@ msgid "Clear filter"
 msgstr "Puhasta filter"
 
 #: browsers/servicebrowser/ServiceBrowser.cpp:46
-#, fuzzy
 msgid ""
 "The Internet browser lets you browse online sources of content that "
 "integrates directly into Amarok. Amarok ships with a number of these "
 "sources, but many more can be added using scripts."
 msgstr ""
-"Internet brauser võrgus allikad  /  Amarok Amarok järgnevaga a arv  /  "
-"allikad rohkem kasutamine."
+"Internetisisu sirvija võimaldab lehitseda võrguallikaid, mis on lõimitud "
+"otse Amarokki. Amarok pakub mitmeid allikaid, kuid neid saab skriptidega "
+"palju rohkem lisada."
 
 #. i18n: file: aboutdialog/OcsPersonItem.ui:140
 #. i18n: ectx: property (text), widget (QLabel, m_textLabel)
@@ -4209,17 +3883,10 @@ msgid "Name"
 msgstr "Nimi"
 
 #: browsers/playlistbrowser/UserPlaylistModel.cpp:289
-#, fuzzy
-#| msgid "Group By"
 msgid "Group"
-msgstr "Rühmitamise alus"
+msgstr "Grupp"
 
 #: browsers/playlistbrowser/UserPlaylistModel.cpp:290
-#, fuzzy
-#| msgctxt ""
-#| "'Source' (local collection, Magnatune.com, last.fm, ... ) playlist column "
-#| "name and token for playlist layouts"
-#| msgid "Source"
 msgid "Source"
 msgstr "Allikas"
 
@@ -4237,41 +3904,35 @@ msgid "modified"
 msgstr "muudetud"
 
 #: browsers/playlistbrowser/DynamicModel.cpp:558
-#, fuzzy
-#| msgid "modified"
 msgid "Random (modified)"
-msgstr "muudetud"
+msgstr "Juhuslik (muudetud)"
 
 #: browsers/playlistbrowser/PlaylistBrowser.cpp:67
-#, fuzzy
 msgid ""
 "The playlist browser contains your list of imported and saved playlists. It "
 "is also where you can specify powerful dynamic playlists and manage your "
 "podcast  subscriptions and episodes."
-msgstr "brauser sisaldab list  /  ja on where ja ja."
+msgstr ""
+"Esitusnimekirja sirvija sisaldab sinu imporditud ja salvesatud "
+"esitusnimekirju. Samuti saab siin seadistada väga kasulikke dünaamilisi "
+"esitusnimekirju ning hallata podcastide tellimusi ja episoode."
 
 #: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:209
 msgid "New name"
 msgstr "Uus nimi"
 
 #: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:211
-#, fuzzy
-#| msgid "Enter new group name:"
 msgctxt "Enter a new name for a folder that already exists"
 msgid "Enter new folder name:"
-msgstr "Uue grupi nimi:"
+msgstr "Uus kataloogi nimi:"
 
 #: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:234
-#, fuzzy
-#| msgid "Delete Files"
 msgid "&Delete Folder"
-msgstr "Failide kustutamine"
+msgstr "&Kustuta kataloog"
 
 #: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:244
-#, fuzzy
-#| msgid "&Rename group"
 msgid "&Rename Folder..."
-msgstr "Nimeta grupp ümbe&r"
+msgstr "&Muuda kataloogi nime..."
 
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:110
 msgid "Add a new bias."
@@ -4334,16 +3995,12 @@ msgid "Type"
 msgstr "Tüüp"
 
 #: browsers/playlistbrowser/PodcastModel.cpp:405
-#, fuzzy
-#| msgid "&Add Podcast"
 msgid "Add Podcast"
-msgstr "Lis&a podcast"
+msgstr "Podcasti lisamine"
 
 #: browsers/playlistbrowser/PodcastModel.cpp:405
-#, fuzzy
-#| msgid "Enter Stream URL:"
 msgid "Enter RSS 2.0 feed URL:"
-msgstr "Voo URL:"
+msgstr "RSS 2.0 voo URL:"
 
 #: browsers/playlistbrowser/DynamicBiasModel.cpp:82
 msgid "Proportional Bias"
@@ -4354,16 +4011,12 @@ msgid "Match a certain portion of the playlist to a value."
 msgstr "Teatud osa esitusnimekirja sobitamine väärtusega."
 
 #: browsers/playlistbrowser/DynamicBiasModel.cpp:99
-#, fuzzy
-#| msgid "Custom"
 msgid "Custom Bias"
-msgstr "Kohandatud"
+msgstr "Kohandatud eelistus"
 
 #: browsers/playlistbrowser/DynamicBiasModel.cpp:100
-#, fuzzy
-#| msgid "Match a certain portion of the playlist to a value."
 msgid "Match a certain portion of the playlist to a custom field."
-msgstr "Teatud osa esitusnimekirja sobitamine väärtusega."
+msgstr "Teatud osa esitusnimekirja sobitamine kohandatud väljaga."
 
 #: browsers/playlistbrowser/DynamicBiasModel.cpp:116
 msgid "Fuzzy Bias"
@@ -4374,17 +4027,17 @@ msgid "Loosely match the playlist to an approximate value."
 msgstr "Esitusnimekirja lõtv sobitamine ligikaudse väärtusega."
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:85
-#, fuzzy
 msgid "List of subscribed podcasts and episodes"
-msgstr "Nimekiri  /  ja"
+msgstr "Tellitud podcastide ja episoodide nimekiri"
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:88
-#, fuzzy
 msgid ""
 "Manage your podcast subscriptions and browse individual episodes. "
 "Downloading episodes to the disk is also done here, or you can tell Amarok "
 "to do this automatically."
-msgstr "ja Allalaadimine kuni disk on tehtud või Amarok kuni."
+msgstr ""
+"Podcastide tellimuste haldamine ja üksikute episoodide sirvimine. Siin saab "
+"ka episoode kettale alla laadida või lasta seda Amarokil automaatselt teha."
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:104
 msgid "&Add Podcast"
@@ -4395,46 +4048,39 @@ msgid "&Update All"
 msgstr "&Uuenda kõiki"
 
 #: browsers/playlistbrowser/UserPlaylistTreeView.cpp:184
-#, fuzzy, kde-format
-#| msgid "Folder"
+#, kde-format
 msgid "New Folder"
 msgid_plural "New Folder (%1)"
-msgstr[0] "Kataloog"
-msgstr[1] "Kataloog"
+msgstr[0] "Uus kataloog"
+msgstr[1] "Uus kataloog (%1)"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:52
-#, fuzzy
 msgid "Dynamically updating parameter based playlists"
-msgstr "uuendamine"
+msgstr "Parameetrite põhjal dünaamiliselt uuenevad esitusnimekirjad"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:55
-#, fuzzy
 msgid ""
 "With a dynamic playlist, Amarok becomes your own personal dj, automatically "
 "selecting tracks for you, based on a number of parameters that you select."
-msgstr "With a Amarok valimine palaga tingimusel sees a arv  /  Parameetrid."
+msgstr ""
+"Dünaamiliste esitusnimekirjade abil muutub Amarok sinu isiklikuks diskoriks, "
+"valides automaatselt palasid vastavalt sinu valitud parameetritele."
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:65
-#, fuzzy
-#| msgid "&Previous"
 msgid "Previous:"
-msgstr "&Eelmine"
+msgstr "Eelmine:"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:69
-#, fuzzy
-#| msgid "The number of undo levels in the playlist."
 msgid "Number of previous tracks to remain in the playlist."
-msgstr "Tagasivõtmiste arv esitusnimekirjas."
+msgstr "Esitusnimekirja jäetavate varasemate palade arv."
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:73
 msgid "Upcoming:"
-msgstr ""
+msgstr "Järgmine:"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:77
-#, fuzzy
-#| msgid "The number of undo levels in the playlist."
 msgid "Number of upcoming tracks to add to the playlist."
-msgstr "Tagasivõtmiste arv esitusnimekirjas."
+msgstr "Esitusnimekirja lisatavate edasiste palade arv."
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:83
 msgid "On"
@@ -4506,57 +4152,53 @@ msgstr[1] "%1 pala"
 msgid "Close"
 msgstr "Sulge"
 
-#: MainWindow.cpp:252
-#, fuzzy
-#| msgid "Default Browser"
+#: MainWindow.cpp:253
 msgid "Browsers"
-msgstr "Vaikimisi veebilehitseja"
+msgstr "Sirvijad"
 
-#: MainWindow.cpp:286
-#, fuzzy
-#| msgid "Context Browser"
+#: MainWindow.cpp:287
 msgid "Context"
-msgstr "Kontekstisirvija"
+msgstr "Kontekst"
+
+#: MainWindow.cpp:314
+msgid "Local Music"
+msgstr "Kohalik muusika"
 
 #: MainWindow.cpp:316
-#, fuzzy
-msgid "Local Music"
-msgstr "Kohalik Muusika"
-
-#: MainWindow.cpp:318
-#, fuzzy
 msgid "Local sources of content"
-msgstr "Kohalik allikad  / "
+msgstr "Kohalikud allikad"
 
-#: MainWindow.cpp:326
+#: MainWindow.cpp:324
 msgid "Internet"
 msgstr "Internet"
 
-#: MainWindow.cpp:328
-#, fuzzy
+#: MainWindow.cpp:326
 msgid "Online sources of content"
-msgstr "Võrgus allikad  / "
+msgstr "Võrguallikad"
 
-#: MainWindow.cpp:334
+#: MainWindow.cpp:332
 msgid "Playlists"
 msgstr "Esitusnimekirjad"
 
-#: MainWindow.cpp:336
-#, fuzzy
-#| msgid "Various Artists"
+#: MainWindow.cpp:334
 msgid "Various types of playlists"
-msgstr "Mitu esitajat"
+msgstr "Mitmesugused esitusnimekirjad"
 
-#: MainWindow.cpp:343
+#: MainWindow.cpp:341
 msgid "Files"
 msgstr "Failid"
 
-#: MainWindow.cpp:345
-#, fuzzy
+#: MainWindow.cpp:343
 msgid "Browse local hard drive for content"
-msgstr "Sirvi kohalik karm tingimusel"
+msgstr "Kohaliku kõvaketta sirvimine"
 
-#: MainWindow.cpp:462
+#. i18n: file: configdialog/dialogs/GeneralConfig.ui:56
+#. i18n: ectx: property (text), widget (QCheckBox, kcfg_LockLayout)
+#: MainWindow.cpp:388 rc.cpp:770
+msgid "Lock layout"
+msgstr "Paigutuse lukustamine"
+
+#: MainWindow.cpp:504
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
 "<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
@@ -4566,157 +4208,153 @@ msgstr ""
 "väljumiseks vali menüüst või süsteemse salve kontekstimenüüst <B>Välju</B>.</"
 "qt>"
 
-#: MainWindow.cpp:464
+#: MainWindow.cpp:506
 msgid "Docking in System Tray"
 msgstr "Dokkimine süsteemsesse salve"
 
-#: MainWindow.cpp:489
+#: MainWindow.cpp:531
 msgid "Use relative path for &saving"
 msgstr "&Suhtelise asukoha kasutamine salvestamisel"
 
-#: MainWindow.cpp:500
+#: MainWindow.cpp:542
 msgid "Save As"
 msgstr "Salvestamine"
 
-#: MainWindow.cpp:537
+#: MainWindow.cpp:579
 msgid "Play Media (Files or URLs)"
 msgstr "Esitusandmekandja (failid või URL-id)"
 
-#: MainWindow.cpp:537
+#: MainWindow.cpp:579
 msgid "Add Media (Files or URLs)"
 msgstr "Andmekandja lisamine (failid või URL-id)"
 
-#: MainWindow.cpp:552
+#: MainWindow.cpp:594
 msgid "Add Stream"
 msgstr "Raadiovoo lisamine"
 
-#: MainWindow.cpp:552
+#: MainWindow.cpp:594
 msgid "Enter Stream URL:"
 msgstr "Voo URL:"
 
-#: MainWindow.cpp:630
+#: MainWindow.cpp:672
 msgid "&Add Media..."
 msgstr "Lis&a andmekandja..."
 
-#: MainWindow.cpp:635
+#: MainWindow.cpp:677
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "&Puhasta esitusnimekiri"
 
-#: MainWindow.cpp:639
+#: MainWindow.cpp:681
 msgid "&Add Stream..."
 msgstr "Lis&a raadiovoog..."
 
-#: MainWindow.cpp:643
+#: MainWindow.cpp:685
 msgid "&Export Playlist As..."
 msgstr "&Ekspordi esitusnimekiri..."
 
-#: MainWindow.cpp:647 MainWindow.cpp:655
-#, fuzzy
-#| msgid "Bookmark Position"
+#: MainWindow.cpp:689 MainWindow.cpp:697
 msgid "Bookmark This Location"
-msgstr "Järjehoidja asukoht"
+msgstr "Lisa see asukoht järjehoidjatesse"
 
-#: MainWindow.cpp:651 amarokurls/BookmarkManager.cpp:42
-#, fuzzy
-#| msgid "Cover Manager"
+#: MainWindow.cpp:693 amarokurls/BookmarkManager.cpp:42
 msgid "Bookmark Manager"
-msgstr "Kaanepildi haldur"
+msgstr "Järjehoidjate haldur"
 
-#: MainWindow.cpp:659 covermanager/CoverManager.cpp:97
+#: MainWindow.cpp:701 covermanager/CoverManager.cpp:97
 msgid "Cover Manager"
 msgstr "Kaanepildi haldur"
 
-#: MainWindow.cpp:663
+#: MainWindow.cpp:705
 msgid "Play Media..."
 msgstr "Mängi andmekandjat..."
 
-#: MainWindow.cpp:671
+#: MainWindow.cpp:713
 msgid "&Seek Forward"
 msgstr "Ot&sing edasi"
 
-#: MainWindow.cpp:677
+#: MainWindow.cpp:719
 msgid "&Seek Backward"
 msgstr "Ot&sing tagasi"
 
-#: MainWindow.cpp:684
+#: MainWindow.cpp:726
 msgid "Update Collection"
 msgstr "Uuenda muusikakogu"
 
-#: MainWindow.cpp:691
+#: MainWindow.cpp:733
 msgid "Previous Track"
 msgstr "Eelmine pala"
 
-#: MainWindow.cpp:699
+#: MainWindow.cpp:741
 msgid "Next Track"
 msgstr "Järgmine pala"
 
-#: MainWindow.cpp:702
+#: MainWindow.cpp:744
 msgid "Increase Volume"
 msgstr "Heli juurde"
 
-#: MainWindow.cpp:708
+#: MainWindow.cpp:750
 msgid "Decrease Volume"
 msgstr "Heli maha"
 
-#: MainWindow.cpp:714
+#: MainWindow.cpp:756
 msgid "Toggle Main Window"
 msgstr "Peaakna näitamise lülitamine"
 
-#: MainWindow.cpp:719
+#: MainWindow.cpp:761
 msgid "Show On Screen Display"
 msgstr "Ekraaniesituse (OSD) näitamine"
 
-#: MainWindow.cpp:724
+#: MainWindow.cpp:766
 msgid "Mute Volume"
 msgstr "Heli tummaks"
 
-#: MainWindow.cpp:729
+#: MainWindow.cpp:771
 msgid "Love Current Track"
 msgstr "Praegune pala meeldib"
 
-#: MainWindow.cpp:734
+#: MainWindow.cpp:776
 msgid "Rate Current Track: 1"
 msgstr "Hinnang aktiivsele palale: 1"
 
-#: MainWindow.cpp:739
+#: MainWindow.cpp:781
 msgid "Rate Current Track: 2"
 msgstr "Hinnang aktiivsele palale: 2"
 
-#: MainWindow.cpp:744
+#: MainWindow.cpp:786
 msgid "Rate Current Track: 3"
 msgstr "Hinnang aktiivsele palale: 3"
 
-#: MainWindow.cpp:749
+#: MainWindow.cpp:791
 msgid "Rate Current Track: 4"
 msgstr "Hinnang aktiivsele palale: 4"
 
-#: MainWindow.cpp:754
+#: MainWindow.cpp:796
 msgid "Rate Current Track: 5"
 msgstr "Hinnang aktiivsele palale: 5"
 
-#: MainWindow.cpp:817
+#: MainWindow.cpp:859
 msgid "&Music"
 msgstr "&Muusika"
 
-#: MainWindow.cpp:821
+#: MainWindow.cpp:863
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:864
+#: MainWindow.cpp:906
 msgid "&Tools"
 msgstr "&Tööriistad"
 
-#: MainWindow.cpp:877
+#: MainWindow.cpp:919
 msgid "&Settings"
 msgstr "&Seadistused"
 
-#: MainWindow.cpp:988
+#: MainWindow.cpp:1046
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Paus  ::  %1"
 
-#: MainWindow.cpp:1011
+#: MainWindow.cpp:1070
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
@@ -4754,11 +4392,20 @@ msgstr "Audiorežiim"
 msgid "Data Mode"
 msgstr "Andmerežiim"
 
-#: toolbar/MainToolbarNG.cpp:39
-#, fuzzy
-#| msgid "Moodbar"
+#: toolbar/VolumePopupButton.cpp:97 toolbar/VolumePopupButton.cpp:108
+#: widgets/Osd.cpp:145
+msgid "(muted)"
+msgstr "(tumm)"
+
+#: toolbar/VolumePopupButton.cpp:97 toolbar/VolumePopupButton.cpp:108
+#: widgets/Osd.cpp:145
+#, kde-format
+msgid "Volume: %1% %2"
+msgstr "Helitugevus: %1% %2"
+
+#: toolbar/MainToolbarNG.cpp:36
 msgid "Main Toolbar NG"
-msgstr "Tujuriba"
+msgstr "Peamine tööriistariba (uus põlvkond)"
 
 #. i18n: file: amarokconfig.kcfg:13
 #. i18n: ectx: label, entry, group (General Options)
@@ -4880,34 +4527,26 @@ msgstr ""
 #. i18n: file: amarokconfig.kcfg:68
 #. i18n: ectx: label, entry, group (General Options)
 #: rc.cpp:51 rc.cpp:1684
-#, fuzzy
-#| msgid "Previous Track"
 msgid "Previous tracks count."
-msgstr "Eelmine pala"
+msgstr "Eelmiste palade arv."
 
 #. i18n: file: amarokconfig.kcfg:69
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: rc.cpp:54 rc.cpp:1687
-#, fuzzy
-#| msgid "One track was already in the playlist, so it was not added."
-#| msgid_plural ""
-#| "%1 tracks were already in the playlist, so they were not added."
 msgid "Number of tracks to leave in the playlist before the active track."
-msgstr "Üks pala on juba esitusnimekirjas, nii et seda ei lisatud."
+msgstr "Esitusnimekirja aktiivse pala ette jäetavate varasemate palade arv."
 
 #. i18n: file: amarokconfig.kcfg:73
 #. i18n: ectx: label, entry, group (General Options)
 #: rc.cpp:57 rc.cpp:1690
-#, fuzzy
 msgid "Upcoming tracks count."
-msgstr "palaga."
+msgstr "Järgmiste palade arv."
 
 #. i18n: file: amarokconfig.kcfg:74
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: rc.cpp:60 rc.cpp:1693
-#, fuzzy
 msgid "Number of tracks to load into the playlist after the active track."
-msgstr "Arv  /  palaga kuni load active."
+msgstr "Esitusnimekirja aktiivse pala järele lisatavate edasiste palade arv."
 
 #. i18n: file: amarokconfig.kcfg:78
 #. i18n: ectx: label, entry, group (General Options)
@@ -5242,10 +4881,8 @@ msgstr "Kas näidata muusikakogu brauseris kaanepilti."
 #. i18n: file: amarokconfig.kcfg:199
 #. i18n: ectx: label, entry, group (General Options)
 #: rc.cpp:201 rc.cpp:1834
-#, fuzzy
-#| msgid "Check to hide the context view."
 msgid "Show the Context View"
-msgstr "Sisselülitamisel kontekstivaade peidetakse."
+msgstr "Kontekstivaate näitamine"
 
 #. i18n: file: amarokconfig.kcfg:206
 #. i18n: ectx: label, entry, group (Playback)
@@ -5344,9 +4981,8 @@ msgstr "Kas kasutada hääbumist programmist väljumisel."
 #. i18n: file: amarokconfig.kcfg:249
 #. i18n: ectx: label, entry, group (Playback)
 #: rc.cpp:249 rc.cpp:1882
-#, fuzzy
 msgid "Equalizer mode - 0 = off, 1 to n = preset no"
-msgstr "Ekvalaiser režiim väljas kuni ei"
+msgstr "Ekvalaiseri režiim: 0 = väljas, 1 kuni n = valmisseadistuse number"
 
 #. i18n: file: amarokconfig.kcfg:250
 #. i18n: ectx: whatsthis, entry, group (Playback)
@@ -5357,11 +4993,10 @@ msgstr "Märkimisel filtreerib ekvalaiseriplugin audiovoogu."
 #. i18n: file: amarokconfig.kcfg:254
 #. i18n: ectx: label, entry, group (Playback)
 #: rc.cpp:255 rc.cpp:1888
-#, fuzzy
-#| msgid "Equalizer pre-amplification value, range -100..100, 0 is normal."
 msgid "11 Equalizer gains include pre-amp, range -100..100, 0 is normal."
 msgstr ""
-"Ekvalaiseri eelmoonutuse väärtus vahemikus -100 kuni 100 (o on normaalne)."
+"11 ekvalaiseri väärtust sisaldavad eelmoonutust, kõik on vahemikus -100 kuni "
+"100 (0 on normaalne)."
 
 #. i18n: file: amarokconfig.kcfg:258
 #. i18n: ectx: label, entry, group (Playback)
@@ -5372,10 +5007,8 @@ msgstr ""
 #. i18n: file: amarokconfig.kcfg:264
 #. i18n: ectx: label, entry, group (Playback)
 #: rc.cpp:258 rc.cpp:264 rc.cpp:1891 rc.cpp:1897
-#, fuzzy
-#| msgid "Equalizer preset name."
 msgid "List with user equalizer preset names"
-msgstr "Ekvalaiseri valmisseadistuse nimi."
+msgstr "Kasutaja ekvalaiseri valmisseadistuste loend"
 
 #. i18n: file: amarokconfig.kcfg:261
 #. i18n: ectx: label, entry, group (Playback)
@@ -5386,9 +5019,8 @@ msgstr "Ekvalaiseri valmisseadistuse nimi."
 #. i18n: file: amarokconfig.kcfg:289
 #. i18n: ectx: label, entry, group (Playback)
 #: rc.cpp:261 rc.cpp:267 rc.cpp:1894 rc.cpp:1900
-#, fuzzy
 msgid "List with user presets values"
-msgstr "Nimekiri järgnevaga kasutaja"
+msgstr "Kasutaja valmisseadistuste väärtuste loend"
 
 #. i18n: file: amarokconfig.kcfg:293
 #. i18n: ectx: label, entry, group (Playback)
@@ -5410,7 +5042,7 @@ msgstr ""
 #. i18n: ectx: label, entry, group (Playback)
 #: rc.cpp:276 rc.cpp:1909
 msgid "Disable replay gain"
-msgstr "Esituse tundlikkuse keelamine"
+msgstr "Helitugevuse parandamise keelamine"
 
 #. i18n: file: amarokconfig.kcfg:300
 #. i18n: ectx: label, entry, group (Playback)
@@ -5924,20 +5556,19 @@ msgid ""
 "Whether Amarok uses its own internal database, as opposed to an external "
 "engine."
 msgstr ""
+"Kas Amarok peaks kasutama oma sisemist andmebaasi, mitte välist mootorit."
 
 #. i18n: file: amarokconfig.kcfg:567
 #. i18n: ectx: label, entry, group (MySQL)
 #: rc.cpp:519 rc.cpp:2152
-#, fuzzy
-#| msgid "Filename of the external web browser to be invoked by Amarok."
 msgid "The hostname of the external server to connect to."
-msgstr "Amaroki väljakutsutava välise veebilehitseja failinimi."
+msgstr "Välise serveri masinanimi, millega ühendus luua."
 
 #. i18n: file: amarokconfig.kcfg:571
 #. i18n: ectx: label, entry, group (MySQL)
 #: rc.cpp:522 rc.cpp:2155
 msgid "Which server port to connect to the database engine."
-msgstr ""
+msgstr "Millises serveri pordis ühenduda andmebaasi mootoriga."
 
 #. i18n: file: amarokconfig.kcfg:575
 #. i18n: ectx: label, entry, group (MySQL)
@@ -5946,18 +5577,20 @@ msgid ""
 "The name of the database Amarok will use. The user should have sufficient "
 "access permissions."
 msgstr ""
+"Amaroki kasutatava andmebaasi nimi. Kasutajal peavad olema selle jaoks "
+"piisavad õigused."
 
 #. i18n: file: amarokconfig.kcfg:579
 #. i18n: ectx: label, entry, group (MySQL)
 #: rc.cpp:528 rc.cpp:2161
 msgid "Username used to access the external database."
-msgstr ""
+msgstr "Kasutajanimi välise andmebaasi kasutamiseks."
 
 #. i18n: file: amarokconfig.kcfg:583
 #. i18n: ectx: label, entry, group (MySQL)
 #: rc.cpp:531 rc.cpp:2164
 msgid "Password for the external database user."
-msgstr ""
+msgstr "Parool välise andmebaasi kasutamiseks."
 
 #: rc.cpp:532
 msgctxt "NAME OF TRANSLATORS"
@@ -5972,31 +5605,26 @@ msgstr "bald@smail.ee"
 #. i18n: file: collection/audiocd/FormatSelectionDialog.ui:29
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: rc.cpp:539
-#, fuzzy
-#| msgid "Available Layouts"
 msgid "Available formats"
-msgstr "Saadaolevad paigutused"
+msgstr "Saadaolevad vormingud"
 
 #. i18n: file: collection/audiocd/FormatSelectionDialog.ui:35
 #. i18n: ectx: property (text), widget (QRadioButton, oggButton)
 #: rc.cpp:542
-#, fuzzy
 msgid "Ogg Vorbis"
 msgstr "Ogg Vorbis"
 
 #. i18n: file: collection/audiocd/FormatSelectionDialog.ui:42
 #. i18n: ectx: property (text), widget (QRadioButton, flacButton)
 #: rc.cpp:545
-#, fuzzy
-#| msgid "France"
 msgid "Flac"
-msgstr "Prantsuse"
+msgstr "Flac"
 
 #. i18n: file: collection/audiocd/FormatSelectionDialog.ui:49
 #. i18n: ectx: property (text), widget (QRadioButton, wavButton)
 #: rc.cpp:548
 msgid "Wav"
-msgstr ""
+msgstr "Wav"
 
 #. i18n: file: collection/audiocd/FormatSelectionDialog.ui:56
 #. i18n: ectx: property (text), widget (QRadioButton, mp3Button)
@@ -6007,10 +5635,8 @@ msgstr "Mp3"
 #. i18n: file: collection/audiocd/FormatSelectionDialog.ui:66
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
 #: rc.cpp:554 amarokurls/BookmarkModel.cpp:268
-#, fuzzy
-#| msgid "Description:"
 msgid "Description"
-msgstr "Kirjeldus:"
+msgstr "Kirjeldus"
 
 #. i18n: file: collection/audiocd/FormatSelectionDialog.ui:85
 #. i18n: ectx: property (text), widget (QPushButton, advancedButton)
@@ -6022,46 +5648,43 @@ msgstr "Muu"
 #. i18n: ectx: property (text), widget (QCheckBox, checkYoutubeHQ)
 #: rc.cpp:560
 msgid "Youtube HQ"
-msgstr ""
+msgstr "Youtube HQ"
 
 #. i18n: file: context/applets/photos/photosSettings.ui:41
 #. i18n: ectx: property (text), widget (QLabel, animationLabel)
 #: rc.cpp:563
-#, fuzzy
-#| msgid "Configuration"
 msgid "Animation"
-msgstr "Seadistamine"
+msgstr "Animatsioon"
 
 #. i18n: file: context/applets/photos/photosSettings.ui:70
 #. i18n: ectx: property (text), widget (QLabel, numberofphotosLabel)
 #: rc.cpp:575
-#, fuzzy
 msgid "Number of photos"
-msgstr "Arv  / "
+msgstr "Fotode arv"
 
 #. i18n: file: context/applets/photos/photosSettings.ui:93
 #. i18n: ectx: property (text), widget (QLabel, additionalkeywordsLabel)
 #: rc.cpp:578
-#, fuzzy
-#| msgid "Additional options:"
 msgid "Additional key words :"
-msgstr "Lisavõtmed:"
+msgstr "Lisavõtmesõnad: "
 
 #. i18n: file: context/applets/photos/photosSettings.ui:100
 #. i18n: ectx: property (clickMessage), widget (KLineEdit, additionalkeywordsLineEdit)
 #: rc.cpp:581
 msgid "Ex: band live 1977"
-msgstr ""
+msgstr "Nt: bänd live 1977"
 
 #. i18n: file: context/applets/photos/photosSettings.ui:109
 #. i18n: ectx: property (text), widget (QLabel, addsomemorekeynwordstothequerywithaspaceseparatorLabel)
 #: rc.cpp:584
-#, fuzzy
 msgid ""
 "Add some more key words to the Flickr.com\n"
 "query, with a space separator. \n"
 "For example: band live 1977 "
-msgstr "Lisa mingi rohkem võti sõnad kuni Flickr järgnevaga a näidis "
+msgstr ""
+"Lisa võtmesõnu Flickr.com-i päringusse,\n"
+"eraldajaks tühik. \n"
+"Näide: bänd live 1977 "
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:17
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
@@ -6156,17 +5779,14 @@ msgstr "&Käivitamisel taasalustatakse mängimist"
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:151
 #. i18n: ectx: property (toolTip), widget (QComboBox, eqPresets)
 #: rc.cpp:647
-#, fuzzy
-#| msgid "Equalizer preset name."
 msgid "List of available equalizer presets."
-msgstr "Ekvalaiseri valmisseadistuse nimi."
+msgstr "Saadaolevate ekvalaiseri valmisseadistuste loend."
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:167
 #. i18n: ectx: property (toolTip), widget (QPushButton, eqPresetSaveBtn)
 #: rc.cpp:650
-#, fuzzy
 msgid "Save changes of currently selected preset"
-msgstr "Salvesta  / "
+msgstr "Salvesta valitud valmisseadistuse muudatused"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:170
 #. i18n: ectx: property (text), widget (QPushButton, eqPresetSaveBtn)
@@ -6183,8 +5803,6 @@ msgstr "Kustuta EI tingimusel asukohas."
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:186
 #. i18n: ectx: property (text), widget (QPushButton, eqPresetDeleteBtn)
 #: rc.cpp:659
-#, fuzzy
-#| msgid "Delete the preset."
 msgid "Delete preset"
 msgstr "Kustuta valmisseadistus."
 
@@ -6194,39 +5812,38 @@ msgstr "Kustuta valmisseadistus."
 msgid ""
 "Reset selected preset setting to default. Available only for built-in preset."
 msgstr ""
+"Lähtesta valitud valmisseadistus vaikeväärtustele. Kasutatav ainult "
+"rakendusega kaasa tulnud valmisseadistuste puhul."
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:202
 #. i18n: ectx: property (text), widget (QPushButton, eqPresetResetBtn)
 #: rc.cpp:665
-#, fuzzy
 msgid "Reset to default"
-msgstr "Lähtesta kuni vaikimisi"
+msgstr "Lähtesta vaikeväärtustele"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:221
 #. i18n: ectx: property (title), widget (QGroupBox, eqBandsGroupBox)
 #: rc.cpp:668
-#, fuzzy
-#| msgid "and"
 msgid "Bands"
-msgstr "ja"
+msgstr "Sagedused"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:262
 #. i18n: ectx: property (text), widget (QLabel, eqMaxEq)
 #: rc.cpp:671
 msgid "+ dB"
-msgstr ""
+msgstr "+ dB"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:302
 #. i18n: ectx: property (text), widget (QLabel, eqZero)
 #: rc.cpp:674
 msgid "0 dB"
-msgstr ""
+msgstr "0 dB"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:342
 #. i18n: ectx: property (text), widget (QLabel, eqMinEq)
 #: rc.cpp:677
 msgid "- dB"
-msgstr ""
+msgstr "- dB"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:443
 #. i18n: ectx: property (text), widget (QLabel, eqPreampLabel)
@@ -6252,7 +5869,6 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QLabel, eqBand9Label)
 #: rc.cpp:683 rc.cpp:689 rc.cpp:695 rc.cpp:701 rc.cpp:707 rc.cpp:713
 #: rc.cpp:719 rc.cpp:725 rc.cpp:731 rc.cpp:737 rc.cpp:743
-#, fuzzy
 msgid "Hz"
 msgstr "Hz"
 
@@ -6296,14 +5912,6 @@ msgstr "Ikooni näi&tamine süsteemses salves"
 msgid "Automatically retrieve cover art"
 msgstr "Kaanepiltide automaatne tõmbamine"
 
-#. i18n: file: configdialog/dialogs/GeneralConfig.ui:56
-#. i18n: ectx: property (text), widget (QCheckBox, kcfg_LockLayout)
-#: rc.cpp:770
-#, fuzzy
-#| msgid "Layout"
-msgid "Lock layout"
-msgstr "Paigutus"
-
 #. i18n: file: configdialog/dialogs/GeneralConfig.ui:71
 #. i18n: ectx: property (title), widget (QGroupBox, playlistBox)
 #: rc.cpp:773
@@ -6319,34 +5927,26 @@ msgstr "Esitusnimekirja automaatne kerimine aktiivse pala näitamiseks"
 #. i18n: file: configdialog/dialogs/DatabaseConfig.ui:17
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_UseServer)
 #: rc.cpp:779
-#, fuzzy
-#| msgid "Update Database"
 msgid "Use &external MySQL database"
-msgstr "Uuenda andmebaasi"
+msgstr "Välis&e MySQL-i andmebaasi kasutamine"
 
 #. i18n: file: configdialog/dialogs/DatabaseConfig.ui:24
 #. i18n: ectx: property (title), widget (QGroupBox, group_Connection)
 #: rc.cpp:782
-#, fuzzy
-#| msgid "%1 Settings"
 msgid "Connection Settings"
-msgstr "%1 seadistused"
+msgstr "Ühenduse seadistused"
 
 #. i18n: file: configdialog/dialogs/DatabaseConfig.ui:32
 #. i18n: ectx: property (text), widget (QLabel, label_Host)
 #: rc.cpp:785
-#, fuzzy
-#| msgid "Server:"
 msgid "&Server:"
-msgstr "Server:"
+msgstr "&Server:"
 
 #. i18n: file: configdialog/dialogs/DatabaseConfig.ui:61
 #. i18n: ectx: property (text), widget (QLabel, label_Port)
 #: rc.cpp:788
-#, fuzzy
-#| msgid "Port:"
 msgid "P&ort:"
-msgstr "Port:"
+msgstr "P&ort:"
 
 #. i18n: file: configdialog/dialogs/DatabaseConfig.ui:87
 #. i18n: ectx: property (text), widget (QLabel, label_User)
@@ -6367,29 +5967,28 @@ msgstr "&Parool:"
 #. i18n: file: configdialog/dialogs/DatabaseConfig.ui:139
 #. i18n: ectx: property (text), widget (QLabel, label_Database)
 #: rc.cpp:797
-#, fuzzy
-#| msgid "Database:"
 msgid "&Database:"
-msgstr "Andmebaas:"
+msgstr "An&dmebaas:"
 
 #. i18n: file: configdialog/dialogs/DatabaseConfig.ui:178
 #. i18n: ectx: property (text), widget (QLabel, label_Info)
 #: rc.cpp:800
-#, fuzzy
 msgid ""
 "Amarok expects the above database and user account to already exist. This "
 "user also requires full access to the database."
 msgstr ""
-"Amarok andmebaas ja kasutaja konto kuni kasutaja täielikult kuni andmebaas."
+"Amarok eeldab, et määratud andmebaas ja kasutaja on olemas. Kasutajal peab "
+"olema ka andmebaasi täieliku kasutamise õigus."
 
 #. i18n: file: configdialog/dialogs/DatabaseConfig.ui:196
 #. i18n: ectx: property (text), widget (QLabel, label_SQL)
 #: rc.cpp:803
-#, fuzzy
 msgid ""
 "Access rights can be assigned with the following S&QL commands (after "
 "replacing the password with the correct one):"
-msgstr "Ligipääs järgnevaga S&QL käsud parool järgnevaga üks:"
+msgstr ""
+"Kasutusõigusi saab omistada järgmiste S&QL-i käskudega (pärast parooli "
+"asendamist korrektsega):"
 
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:19
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_OsdEnabled)
@@ -7080,8 +6679,6 @@ msgstr "Lihtotsing"
 #. i18n: file: dialogs/EditFilterDialog.ui:100
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: rc.cpp:1154
-#, fuzzy
-#| msgid "Play count"
 msgid "Playcount"
 msgstr "Esitamiste arv"
 
@@ -7693,22 +7290,6 @@ msgstr "18"
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:315
 #. i18n: ectx: property (text), widget (QLabel, textLabel17)
 #: rc.cpp:1469
-#, fuzzy
-#| msgid ""
-#| "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
-#| "REC-html40/strict.dtd\">\n"
-#| "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-#| "css\">\n"
-#| "p, li { white-space: pre-wrap; }\n"
-#| "</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; "
-#| "font-weight:400; font-style:normal;\">\n"
-#| "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#| "right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;\"><span "
-#| "style=\" font-size:9pt;\">For more information about the Magnatune.com "
-#| "memberships, and to sign up, go to  </span><a href=\"http://magnatune.com/"
-#| "compare_plans?referal_id=amarok\"><span style=\" font-size:9pt; text-"
-#| "decoration: underline; color:#0000ff;\">http://magnatune.com/"
-#| "compare_plans</span></a></p></body></html>"
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
@@ -7736,15 +7317,21 @@ msgstr ""
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
 "\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-"
-"weight:400; font-style:normal;\">\n"
+"</style></head><body style=\" font-family:'DejaVu Serif'; font-size:8pt; "
+"font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;\"><span "
-"style=\" font-size:9pt;\">Täpsema teaba hankimiseks Magnatune.com-i "
-"liikmesuse kohta ja sisselogimiseks mine aadressile  </span><a href=\"http://"
-"magnatune.com/compare_plans?referal_id=amarok\"><span style=\" font-"
-"size:9pt; text-decoration: underline; color:#0000ff;\">http://magnatune.com/"
-"compare_plans</span></a></p></body></html>"
+"right:0px; -qt-block-indent:0; text-indent:0px;\">Summa, mida otsustad "
+"maksta, jagatakse pooleks esitaja ja Magnatune.com-i vahel. Teave sinu ja su "
+"krediitkaardi kohta saadetakse Magnatune.com-ile turvaliselt SSL krüptimist "
+"kasutades ning Amarok ei salvesta seda ja Amaroki arendajad ei saa seda "
+"lugeda.</p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
+"margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></"
+"p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"https://"
+"magnatune.com/buy/gc_buy_pp.php\"><span style=\" text-decoration: underline; "
+"color:#0000ff;\">Klõpsa kingikaardi ostmiseks</span></a></p></body></html>"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:358
 #. i18n: ectx: property (text), widget (QPushButton, purchaseButton)
@@ -7761,26 +7348,22 @@ msgstr "&Loobu"
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:17
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_3)
 #: rc.cpp:1484
-#, fuzzy
-#| msgid "Re&download"
 msgid "Redownloads"
-msgstr "Laa&di uuesti alla"
+msgstr "Taasallalaadimised"
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:23
 #. i18n: ectx: property (text), widget (QLabel, label_7)
 #: rc.cpp:1487
-#, fuzzy
 msgid ""
 "Enter your e-mail here to be able to redownload any previous purchase from "
 "Magnatune directly from within Amarok."
-msgstr "Enter kuni kuni iga     Amarok."
+msgstr ""
+"Sisesta oma e-posti aadress varasema Magnatune'i ostu taasallalaadimiseks "
+"otse Amarokis."
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:33
 #. i18n: ectx: property (text), widget (QLabel, label_6)
 #: rc.cpp:1490
-#, fuzzy
-#| msgctxt "The e-mail address of the user"
-#| msgid "E-mail:"
 msgctxt "Username for logins to Magnatune"
 msgid "E-mail:"
 msgstr "E-post:"
@@ -7827,22 +7410,6 @@ msgstr "Parool:"
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:135
 #. i18n: ectx: property (text), widget (QLabel, label_4)
 #: rc.cpp:1514
-#, fuzzy
-#| msgid ""
-#| "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
-#| "REC-html40/strict.dtd\">\n"
-#| "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-#| "css\">\n"
-#| "p, li { white-space: pre-wrap; }\n"
-#| "</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; "
-#| "font-weight:400; font-style:normal;\">\n"
-#| "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#| "right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;\"><span "
-#| "style=\" font-size:9pt;\">For more information about the Magnatune.com "
-#| "memberships, and to sign up, go to  </span><a href=\"http://magnatune.com/"
-#| "compare_plans?referal_id=amarok\"><span style=\" font-size:9pt; text-"
-#| "decoration: underline; color:#0000ff;\">http://magnatune.com/"
-#| "compare_plans</span></a></p></body></html>"
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
@@ -7864,14 +7431,14 @@ msgstr ""
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
 "\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-"
-"weight:400; font-style:normal;\">\n"
+"</style></head><body style=\" font-family:'DejaVu Serif'; font-size:8pt; "
+"font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;\"><span "
-"style=\" font-size:9pt;\">Täpsema teaba hankimiseks Magnatune.com-i "
-"liikmesuse kohta ja sisselogimiseks mine aadressile  </span><a href=\"http://"
-"magnatune.com/compare_plans?referal_id=amarok\"><span style=\" font-"
-"size:9pt; text-decoration: underline; color:#0000ff;\">http://magnatune.com/"
+"right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-"
+"family:'Sans Serif';\">Täpsema teabe hankimiseks Magnatune.com-i liikmesuse "
+"kohta ja sisselogimiseks mine aadressile  </span><a href=\"http://magnatune."
+"com/compare_plans?referal_id=amarok\"><span style=\" font-family:'Sans "
+"Serif'; text-decoration: underline; color:#0000ff;\">http://magnatune.com/"
 "compare_plans</span></a></p></body></html>"
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:157
@@ -7950,9 +7517,6 @@ msgstr "Server:"
 #. i18n: file: services/ampache/AmpacheConfigWidget.ui:51
 #. i18n: ectx: property (text), widget (QLabel, label_6)
 #: rc.cpp:1560
-#, fuzzy
-#| msgctxt "Username for logins to Magnatune"
-#| msgid "Username:"
 msgctxt "The username to use for logins to an Ampache server"
 msgid "Username:"
 msgstr "Kasutajanimi:"
@@ -8102,9 +7666,8 @@ msgstr "Paigutus"
 #. i18n: file: playlist/layouts/PlaylistLayoutEditDialog.ui:191
 #. i18n: ectx: property (text), widget (QCheckBox, inlineControlsChekbox)
 #: rc.cpp:1627
-#, fuzzy
 msgid "Show inline playback controls"
-msgstr "Näita"
+msgstr "Esituse juhtimise võimaldamine otse nimekirjas"
 
 #. i18n: file: playlist/layouts/PlaylistLayoutEditDialog.ui:203
 #. i18n: ectx: property (text), widget (QLabel, label)
@@ -8191,11 +7754,12 @@ msgid "A large listing of podcasts"
 msgstr "Suur podcastide kogu"
 
 #: services/opmldirectory/OpmlDirectoryService.cpp:73
-#, fuzzy
 msgid ""
 "A comprehensive list of searchable podcasts from www.digitalpodcast.com that "
 "you can subscribe to directly from within Amarok."
-msgstr "A list  /    kuni   Amarok."
+msgstr ""
+"Täielik otsitavate podcastide loend www.digitalpodcast.com-ist, mida saab "
+"tellida otse Amarokis."
 
 #: services/opmldirectory/OpmlDirectoryService.cpp:101
 #: services/jamendo/JamendoService.cpp:108
@@ -8312,15 +7876,19 @@ msgstr "Last.fm on lahe..."
 
 #: services/lastfm/meta/MultiPlayableCapabilityImpl_p.h:107
 #, fuzzy
+#| msgid ""
+#| "Unfortunately, Last.Fm radio streams are only functional for Last.Fm "
+#| "subscribers. All the other Last.Fm features are unaffected."
 msgid ""
-"Unfortunately, Last.Fm radio streams are only functional for Last.Fm "
-"subscribers. All the other Last.Fm features are unaffected."
-msgstr "Viimane tingimusel Viimane Kõik muu Viimane omadused."
+"To listen to this stream you need to be a paying Last.Fm subscriber. All the "
+"other Last.Fm features are unaffected."
+msgstr ""
+"Paraku on Last.fm-i raadiovood kättesaadavad ainult Last.fm-i tellijatele. "
+"Teised Last.fm-i võimalused on endiselt kasutatavad kõigile."
 
 #: services/lastfm/meta/MultiPlayableCapabilityImpl_p.h:109
-#, fuzzy
 msgid "Error starting track from Last.Fm radio"
-msgstr "Viga   Viimane"
+msgstr "Viga Last.fm-i raadio pala esitamisel"
 
 #: services/lastfm/LastFmTreeModel.cpp:164
 msgid "Personal Radio"
@@ -8367,33 +7935,26 @@ msgid "Neighbors"
 msgstr "Naabrid"
 
 #: services/lastfm/biases/WeeklyTopBias.cpp:55
-#, fuzzy
-#| msgid "My Top Artists"
 msgid "Weekly Top Artists"
-msgstr "Minu tippesitajad"
+msgstr "Nädala tippesitajad"
 
 #: services/lastfm/biases/WeeklyTopBias.cpp:111
-#, fuzzy
 msgid "Play Top Tracks From"
-msgstr "Esita Ülal Rajad Kellelt"
+msgstr "Tipp-palade esitamine alates"
 
 #: services/lastfm/biases/WeeklyTopBias.cpp:124
-#, fuzzy
-#| msgid "Stop"
 msgctxt "From one date to another, this text is in between"
 msgid "to"
-msgstr "Peata"
+msgstr "kuni"
 
 #: services/lastfm/biases/SimilarArtistsBias.cpp:52
-#, fuzzy
-#| msgid "Similar Artists to \"%1\""
 msgid "Last.Fm Similar Artists"
-msgstr "\"%1\" moodi esitajad"
+msgstr "Last.fm-i sarnased esitajad"
 
 #: services/lastfm/biases/SimilarArtistsBias.cpp:111
-#, fuzzy
 msgid "Adds songs related to currently playing track, recommended by Last.Fm"
-msgstr "kuni mängimine x Viimane"
+msgstr ""
+"Laulude lisamine parajasti esitatavale palale Last.fm-i soovituste kohaselt"
 
 #: services/lastfm/LoveTrackAction.cpp:25
 #: services/lastfm/LastFmService.cpp:288
@@ -8405,7 +7966,6 @@ msgid "Last.fm: The social music revolution"
 msgstr "Last.fm: ühiskondlik muusikarevolutsioon"
 
 #: services/lastfm/LastFmService.cpp:195
-#, fuzzy
 msgid ""
 "Last.fm is a popular online service that provides personal radio stations "
 "and music recommendations. A personal listening station is tailored based on "
@@ -8414,9 +7974,12 @@ msgid ""
 "particular artist as well as listen to streams from people you have added as "
 "friends or that last.fm considers your musical \"neighbors\""
 msgstr ""
-"Viimane on a võrgus tekitab ja muusika A on sees ja tekitab järgnevaga "
-"tingimusel uued muusika on kuni esita järgnevaga muusika on kuni a esitaja "
-"kui kui kuni   kui või"
+"Last.fm on populaarne võrguteenus, mis võimaldab luua isiklikke raadiojaamu "
+"ja pakub välja muusikasoovitusi. Isiklik raadiojaam luuakse sinu "
+"kuulamisharjumuste põhjal, mille järgi ka soovitatakse sulle uut muusikat. "
+"Samuti võib lasta mängida jaamadel, kus kõlab mõnele konkreetsele esitajale "
+"sarnane muusika, või ka kuulata voogusid inimestelt, kelle oled lisanud oma "
+"sõprade hulka või keda Last.fm peab sinu muusikalisteks \"naabriteks\"."
 
 #: services/lastfm/LastFmService.cpp:290
 msgid "Ctrl+L"
@@ -8452,12 +8015,11 @@ msgid "Username: "
 msgstr "Kasutajanimi: "
 
 #: services/lastfm/LastFmService.cpp:472
-#, fuzzy, kde-format
-#| msgid "Play Count: "
+#, kde-format
 msgid "Play Count: %1 play"
 msgid_plural "Play Count: %1 plays"
-msgstr[0] "Esitamiste arv: "
-msgstr[1] "Esitamiste arv: "
+msgstr[0] "Esitamiste arv: %1"
+msgstr[1] "Esitamiste arv: %1"
 
 #: services/lastfm/LastFmService.cpp:482
 msgid "Enter login information for Last.fm"
@@ -8482,25 +8044,22 @@ msgid "Loved Track: %1"
 msgstr "Meeldinud pala: %1"
 
 #: services/lastfm/LastFmServiceConfig.cpp:40
-#, fuzzy
-#| msgid "Last.fm Profile"
 msgid "Last.fm credentials"
-msgstr "last.fm-i profiil"
+msgstr "Last.fm-i kasutajatunnused"
 
 #: services/lastfm/LastFmServiceConfig.cpp:41
-#, fuzzy
 msgid ""
 "No running KWallet found. Would you like Amarok to save your Last.fm "
 "credentials in plaintext?"
-msgstr "Ei töötab KWallet nagu Amarok kuni save Viimane asukohas?"
+msgstr ""
+"Töötavat turvalaegast (KWallet) ei leitud. Kas Amarok peaks salvestama sinu "
+"Last.fm-i kasutajatunnused lihttekstina?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:97
 msgid "Testing..."
 msgstr "Testimine..."
 
 #: services/lastfm/LastFmServiceSettings.cpp:138
-#, fuzzy
-#| msgid "Failed"
 msgctxt "The operation was rejected by the server"
 msgid "Failed"
 msgstr "Nurjumine"
@@ -8567,29 +8126,24 @@ msgid "The biggest list of online radio stations on the Internet"
 msgstr "Internetiraadiote suurim nimekiri terves internetis"
 
 #: services/shoutcast/ShoutcastService.cpp:83
-#, fuzzy
-#| msgid "Wikipedia"
 msgctxt "Fetch the 500 most popular stations"
 msgid "View Top 500 Stations"
-msgstr "Wikipedia"
+msgstr "500 tippjaama"
 
 #: services/shoutcast/ShoutcastService.cpp:89
-#, fuzzy
-#| msgid "Wikipedia"
 msgctxt "Fetch list of all stations by genre"
 msgid "View All Stations"
-msgstr "Wikipedia"
+msgstr "Kõik jaamad"
 
 #: services/shoutcast/ShoutcastServiceQueryMaker.cpp:229
 #, kde-format
 msgid "Results for: %1"
 msgstr "Tulemused %1 jaoks"
 
-#: services/shoutcast/ShoutcastServiceQueryMaker.cpp:306
-#: services/shoutcast/ShoutcastServiceQueryMaker.cpp:375
-#, fuzzy
+#: services/shoutcast/ShoutcastServiceQueryMaker.cpp:314
+#: services/shoutcast/ShoutcastServiceQueryMaker.cpp:383
 msgid "The Shoutcast server is busy.<BR>Please try again later."
-msgstr "server on hõivatud<BR>."
+msgstr "Shoutcasti server on hõivatud.<BR>Palun proovi mõne aja pärast uuesti."
 
 #: services/ShowInServiceAction.cpp:27
 #, kde-format
@@ -8631,17 +8185,13 @@ msgstr "Magnatune.com esilehekülje hankimine"
 
 #: services/magnatune/MagnatuneInfoParser.cpp:173
 #: services/magnatune/MagnatuneInfoParser.cpp:184
-#, fuzzy
-#| msgid "Loading Magnatune.com frontpage..."
 msgid "Loading your Magnatune.com favorites page..."
-msgstr "Magnatune.com esilehekülje laadimine..."
+msgstr "Magnatune.com-i lemmikute lehekülje laadimine..."
 
 #: services/magnatune/MagnatuneInfoParser.cpp:197
 #: services/magnatune/MagnatuneInfoParser.cpp:208
-#, fuzzy
-#| msgid "Loading Magnatune.com frontpage..."
 msgid "Loading your personal Magnatune.com recommendations page..."
-msgstr "Magnatune.com esilehekülje laadimine..."
+msgstr "Magnatune.com-i isiklike soovituste lehekülje laadimine..."
 
 #: services/magnatune/MagnatuneCollectionLocation.cpp:40
 msgid "Preview Tracks"
@@ -8684,20 +8234,23 @@ msgstr ""
 "kuulajatesse"
 
 #: services/magnatune/MagnatuneMeta.cpp:454
-#, fuzzy
-#| msgid "Loading Magnatune.com frontpage..."
 msgid "Add to Magnatune.com &favorites"
-msgstr "Magnatune.com esilehekülje laadimine..."
+msgstr "Lisa Ma&gnatune.com-i lemmikutesse"
 
 #: services/magnatune/MagnatuneDownloadInfo.cpp:230
-#, fuzzy, kde-format
+#, kde-format
 msgid ""
 "Redownload of a previously purchased album \"%1\" by \"%2\" from Magnatune."
 "com.\n"
 "\n"
 "Username: %3\n"
 "Password: %4\n"
-msgstr "Laadi uuesti alla  /  a album x  "
+msgstr ""
+"Esitaja \"%2\" varem ostetud albumi \"%1\" taasallalaadimine Magnatune.com-"
+"ist.\n"
+"\n"
+"Kasutajanimi: %3\n"
+"Parool: %4\n"
 
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:69
 msgid "Downloading album"
@@ -8754,17 +8307,15 @@ msgid "There seems to be a problem with the selected re-download info file."
 msgstr "Valitud taasallalaadimisfailiga paistab olevat mingi probleem."
 
 #: services/magnatune/MagnatuneRedownloadHandler.cpp:214
-#, fuzzy
 msgid "Getting list of previous Magnatune.com purchases"
-msgstr "list  / "
+msgstr "Varasemate Magnatune.com-i ostude loendi hankimine"
 
 #: services/magnatune/MagnatuneStore.cpp:101
-#, fuzzy
 msgid "\"Fair trade\" online music store."
-msgstr "Korralikud võrgus muusika."
+msgstr "\"Õiglase kaubanduse\" võrgumuusikapood."
 
 #: services/magnatune/MagnatuneStore.cpp:105
-#, fuzzy, no-c-format
+#, no-c-format
 msgid ""
 "Magnatune.com is a different kind of record company with the motto \"We are "
 "not evil!\" 50% of every purchase goes directly to the artist and if you "
@@ -8772,8 +8323,11 @@ msgid ""
 "commission. Magnatune.com also offers \"all you can eat\" memberships that "
 "lets you download as much of their music as you like."
 msgstr ""
-"on a tüüp  /  järgnevaga mitte  /  kuni esitaja ja kui album kuni Amarok "
-"Amarok projekt a kõik allalaadimine kui  /  muusika kui nagu."
+"Magnatune.com on iselaadi muusikaettevõte, mille motoks on: \"Meie ei ole "
+"pahad!\" 50% iga ostu pealt läheb otse esitajale ja kui sa ostad albumi "
+"Amaroki kaudu, saab Amaroki projekt 10% komisjonitasu. Magnatune.com pakub "
+"ka \"täiemahulist\" liikmestaatust, mis võimaldab alla laadida nii palju "
+"muusikat, kui sa vaid soovid."
 
 #: services/magnatune/MagnatuneStore.cpp:232
 msgid "Re-download"
@@ -8895,8 +8449,7 @@ msgstr "Allalaadimise töötlemine nurjus"
 
 #: services/ServicePluginManager.cpp:228 services/ServicePluginManager.cpp:245
 #: services/ServicePluginManager.cpp:261
-#, fuzzy, kde-format
-#| msgid "No service named %1 is curretly loaded"
+#, kde-format
 msgid "No service named %1 is currently loaded"
 msgstr "Teenust nimega %1 ei ole praegu laaditud"
 
@@ -8908,18 +8461,16 @@ msgid "Loading info..."
 msgstr "Info laadimine..."
 
 #: services/ampache/AmpacheService.cpp:119
-#, fuzzy
-#| msgid "Use Amarok as a seamless frontend to your Ampache server."
 msgid "Amarok frontend for your Ampache server."
-msgstr "Kasuta Amarokki oma Ampache serveri hõlpsa kasutajaliidesena."
+msgstr "Sinu Ampache serveri Amaroki kasutajaliides."
 
 #: services/ampache/AmpacheService.cpp:121
-#, fuzzy
-#| msgid "Use Amarok as a seamless frontend to your Ampache server."
 msgid ""
 "Use Amarok as a seamless frontend to your Ampache server. This lets you "
 "browse and play all the Ampache contents from within Amarok."
-msgstr "Kasuta Amarokki oma Ampache serveri hõlpsa kasutajaliidesena."
+msgstr ""
+"Amaroki kasutamine oma Ampache serveri hõlpsa kasutajaliidesena. See "
+"võimaldab sirvida ja esitada kogu Ampache sisu otse Amarokis."
 
 #: services/ampache/AmpacheService.cpp:201
 msgid "Enter the server name and a password"
@@ -9067,16 +8618,16 @@ msgid "A site where artists can showcase their creations to the world"
 msgstr "Koht, kus esitajad võivad näidata oma loomingut kogu maailmale"
 
 #: services/jamendo/JamendoService.cpp:80
-#, fuzzy
 msgid ""
 "Jamendo.com puts artists and music lovers in touch with each other. The "
 "sites allows artists to upload their own albums to share them with the world "
 "and users to download all of them for free. Listen to and download all "
 "Jamendo.com contents from within Amarok."
 msgstr ""
-"ja muusika asukohas tippima järgnevaga muu kuni albumid kuni järgnevaga ja "
-"kuni allalaadimine kõik  /  tingimusel vaba kuni ja allalaadimine kõik   "
-"Amarok."
+"Jamendo.com viib esitajad ja muusikasõbrad otse kokku. Veebileheküljed "
+"võimaldavad esitajatel laadida oma albumeid üles kogu maailma jaoks ning "
+"kasutajatel neid vabalt alla laadida. Kuula, naudi ja laadi kogu Jamendo.com-"
+"i sisu alla otse Amarokis."
 
 #: services/jamendo/JamendoService.cpp:179
 msgid "Downloading Jamendo.com Database"
@@ -9156,22 +8707,19 @@ msgid "Select Source"
 msgstr "Vali allikas"
 
 #: playlist/PlaylistViewUrlGenerator.cpp:69
-#, fuzzy, kde-format
-#| msgid "Files"
+#, kde-format
 msgid "Filter %1"
-msgstr "Failid"
+msgstr "Filtreeri %1"
 
 #: playlist/PlaylistViewUrlGenerator.cpp:70
-#, fuzzy, kde-format
-#| msgid "&Search"
+#, kde-format
 msgid "Search %1"
-msgstr "Ot&si"
+msgstr "Otsi %1"
 
 #: playlist/PlaylistViewUrlGenerator.cpp:77
-#, fuzzy, kde-format
-#| msgid " plays"
+#, kde-format
 msgid "%1 layout"
-msgstr " esitus"
+msgstr "%1 paigutus"
 
 #: playlist/PlaylistDefines.h:82
 msgctxt "Empty placeholder token used for spacing in playlist layouts"
@@ -9346,21 +8894,16 @@ msgstr "Aasta"
 
 #: playlist/layouts/LayoutEditWidget.cpp:40
 #: playlist/layouts/LayoutEditWidget.cpp:55
-#, fuzzy
-#| msgid "Show Cover"
 msgid "Show cover"
-msgstr "Näita kaanepilti"
+msgstr "Kaanepildi näitamine"
 
 #: playlist/layouts/LayoutEditWidget.cpp:81
-#, fuzzy
-#| msgid "Rename playlist layout"
 msgid "Invalid playlist layout."
-msgstr "Muuda esitusnimekirja paigutuse nime"
+msgstr "Vigane esitusnimekirja paigutus."
 
 #: playlist/layouts/LayoutEditWidget.cpp:82
-#, fuzzy
 msgid "Encountered an unknown element name while reading layout."
-msgstr "tundmatu element nimi tingimuseni paigutus."
+msgstr "Paigutuse lugemisel esines tundmatu elemendi nimi."
 
 #: playlist/layouts/LayoutManager.cpp:352
 #, kde-format
@@ -9438,7 +8981,7 @@ msgstr "Paigutuse '%1' koopiana kirjeldatatava esitusnimekirja paigutuse nimi:"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:247
 msgid "Choose a new name for the playlist layout"
-msgstr "Vali uue esitusnimekirja paigutuse nimi"
+msgstr "Uue esitusnimekirja paigutuse nimi"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:248
 msgid ""
@@ -9458,11 +9001,7 @@ msgid "Cannot rename a layout to have the same name as an existing layout."
 msgstr "Paigutusele ei saa anda olemasoleva paigutusega sama nime."
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:365
-#, fuzzy, kde-format
-#| msgid ""
-#| "The layout '%1' you modified is one of the default layouts and cannot be "
-#| "overwritten.                 Please select a different name to save a "
-#| "copy."
+#, kde-format
 msgid ""
 "The layout '%1' you modified is one of the default layouts and cannot be "
 "overwritten. Please select a different name to save a copy."
@@ -9475,69 +9014,54 @@ msgid "Reserved Layout Name"
 msgstr "Reserveeritud paigutuse nimi"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:459
-#, fuzzy
-#| msgid "Groupings"
 msgid "No Grouping"
-msgstr "Rühmad"
+msgstr "Rühmitamine puudub"
 
 #: playlist/layouts/LayoutEditDialog.cpp:75
-#, fuzzy
-#| msgid "Configuration"
 msgid "Configuration for"
 msgstr "Seadistamine"
 
 #: playlist/layouts/LayoutEditDialog.cpp:98
-#, fuzzy
-#| msgid "Width"
 msgid "Width: "
-msgstr "Laius"
+msgstr "Laius: "
 
 #: playlist/layouts/LayoutEditDialog.cpp:101
-#, fuzzy
 msgid "custom"
 msgstr "kohandatud"
 
 #: playlist/layouts/LayoutEditDialog.cpp:102
-#, fuzzy
 msgid "A fix absolute or relative value (e.g. 128px or 12%)"
-msgstr "A absoluutne või väärtus g või"
+msgstr "Absoluutne või suhteline väärtus (nt. 128px või 12%)"
 
 #: playlist/layouts/LayoutEditDialog.cpp:105
 msgid "fit content"
-msgstr ""
+msgstr "sisu mahutamine"
 
 #: playlist/layouts/LayoutEditDialog.cpp:106
-#, fuzzy
 msgid "Fit the element text"
-msgstr "Mahutamine element tekst"
+msgstr "Elemendi teksti mahutamine"
 
 #: playlist/layouts/LayoutEditDialog.cpp:108
-#, fuzzy
 msgid "automatic"
 msgstr "automaatne"
 
 #: playlist/layouts/LayoutEditDialog.cpp:109
-#, fuzzy
 msgid ""
 "Take homogeneous part of the space available to all elements with automatic "
 "width"
-msgstr "part  /  kuni kõik elemendid järgnevaga automaatne laius"
+msgstr ""
+"Kõigile automaatse laiusega elementidele saadaolevast ruumiosast ühtlase osa "
+"eraldamine"
 
 #: playlist/layouts/LayoutEditDialog.cpp:144
-#, fuzzy
-#| msgid "Alignment"
 msgid "Alignment: "
-msgstr "Joondus"
+msgstr "Joondus: "
 
 #: playlist/layouts/LayoutEditDialog.cpp:153
-#, fuzzy
-#| msgid "Format:"
 msgid "Font: "
-msgstr "Vorming:"
+msgstr "Font: "
 
 #: playlist/layouts/LayoutConfigAction.cpp:43
-#, fuzzy
-#| msgid "Playlist layouts"
 msgid "Playlist Layouts"
 msgstr "Esitusnimekirja paigutused"
 
@@ -9591,25 +9115,21 @@ msgid "Track Number - Title"
 msgstr "Pala number - pealkiri"
 
 #: playlist/PlaylistWidget.cpp:59
-#, fuzzy
 msgid "Dynamic Mode Enabled"
-msgstr "Dünaamiline Režiim Lubatud"
+msgstr "Dünaamiline režiim lubatud"
 
 #: playlist/PlaylistWidget.cpp:115
 msgid "Show active track"
 msgstr "Näita aktiivset pala"
 
 #: playlist/PlaylistWidget.cpp:124
-#, fuzzy
-#| msgid "Current Playlist"
 msgid "&Save Current Playlist"
-msgstr "Praegune esitusnimekiri"
+msgstr "&Salvesta aktiivne esitusnimekiri"
 
 #: playlist/PlaylistWidget.cpp:179
-#, fuzzy, kde-format
-#| msgid "Save playlist"
+#, kde-format
 msgid "&Save playlist to \"%1\""
-msgstr "Salvesta esitusnimekiri"
+msgstr "&Salvesta esitusnimekiri kui \"%1\""
 
 #: playlist/UndoCommands.cpp:29
 msgid "Tracks Added"
@@ -9628,15 +9148,12 @@ msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "Esitusnimekirjas esines liiga palju vigu. Esitamine peatati."
 
 #: playlist/PlaylistSortWidget.cpp:44
-#, fuzzy
 msgid "Clear the playlist sorting configuration."
-msgstr "Puhasta sortimine seadistamine."
+msgstr "Puhasta esitusnimekirja sortimise seadistus."
 
 #: playlist/PlaylistSortWidget.cpp:54
-#, fuzzy
-#| msgid "Could not update playlist on device."
 msgid "Add a playlist sorting level."
-msgstr "Esitusnimekirja uuendamine seadmel nurjus."
+msgstr "Lisa esitusnimekirja sortimistase."
 
 #: playlist/PlaylistModel.cpp:261
 msgid "Never"
@@ -9686,10 +9203,8 @@ msgid "File Size"
 msgstr "Failisuurus"
 
 #: playlist/PlaylistBreadcrumbItem.cpp:110
-#, fuzzy
-#| msgid "The number of undo levels in the playlist."
 msgid "Add a sorting level to the playlist."
-msgstr "Tagasivõtmiste arv esitusnimekirjas."
+msgstr "Lisa sortimistase esitusnimekirja."
 
 #: statusbar/StatusBar.cpp:216
 msgid "Amarok is paused"
@@ -9750,71 +9265,54 @@ msgstr "Katkesta"
 
 #: statusbar/CompoundProgressBar.cpp:71 statusbar/CompoundProgressBar.cpp:143
 #: statusbar/CompoundProgressBar.cpp:178
-#, fuzzy
-#| msgid "Multiple background-tasks running"
 msgid "Multiple background tasks running"
 msgstr "Taustal töötab mitu protsessi"
 
 #: statusbar/CompoundProgressBar.cpp:72 statusbar/CompoundProgressBar.cpp:144
 #: statusbar/CompoundProgressBar.cpp:179
-#, fuzzy
-#| msgid "Abort all background operations"
 msgid "Abort all background tasks"
 msgstr "Katkesta kõik taustaoperatsioonid"
 
 #: amarokurls/BookmarkModel.cpp:86
-#, fuzzy
-#| msgid "Group By"
 msgid "group"
-msgstr "Rühmitamise alus"
+msgstr "rühm"
 
 #: amarokurls/BookmarkModel.cpp:267
-#, fuzzy
-#| msgid "Url:"
 msgid "Url"
-msgstr "URL:"
+msgstr "URL"
 
-#: amarokurls/BookmarkModel.cpp:510
+#: amarokurls/BookmarkModel.cpp:514
 msgid "New Group"
 msgstr "Uus grupp"
 
-#: amarokurls/BookmarkModel.cpp:535 amarokurls/BookmarkManagerWidget.cpp:47
+#: amarokurls/BookmarkModel.cpp:539 amarokurls/BookmarkManagerWidget.cpp:47
 msgid "New Bookmark"
 msgstr "Uus järjehoidja"
 
-#: amarokurls/BookmarkModel.cpp:536
-#, fuzzy
-#| msgid "None"
+#: amarokurls/BookmarkModel.cpp:540
 msgid "none"
-msgstr "Puudub"
+msgstr "puudub"
 
-#: amarokurls/BookmarkTreeView.cpp:104
+#: amarokurls/BookmarkTreeView.cpp:106
 msgctxt "Load the view represented by this bookmark"
 msgid "&Load"
 msgstr "&Laadi"
 
-#: amarokurls/BookmarkTreeView.cpp:123
-#, fuzzy
+#: amarokurls/BookmarkTreeView.cpp:119
 msgid "&Create timecode track"
-msgstr "Loo"
+msgstr "&Loo ajakoodirada"
 
-#: amarokurls/BookmarkTreeView.cpp:327
-#, fuzzy
-#| msgid "Selected Tracks"
+#: amarokurls/BookmarkTreeView.cpp:316
 msgid "New Timecode Track"
-msgstr "Valitud palad"
+msgstr "Uus ajakoodirada"
 
 #: amarokurls/BookmarkManagerWidget.cpp:53
-#, fuzzy
-#| msgid "New Bookmark"
 msgid "Filter bookmarks"
-msgstr "Uus järjehoidja"
+msgstr "Filtreeri järjehoidjaid"
 
 #: amarokurls/BookmarkManagerWidget.cpp:57
-#, fuzzy
-#| msgid "Start typing to progressively search through the playlist"
 msgid "Start typing to progressively filter the bookmarks"
-msgstr "Esitusnimekirjas otsimiseks hakka lihtsalt kirjutama"
+msgstr "Järjehoidjate filtreerimiseks hakka lihtsalt kirjutama"
 
 #: amarokurls/BookmarkMetaActions.cpp:31
 msgid "Bookmark this Album"
@@ -9860,17 +9358,6 @@ msgstr "Helitugevuse juhtimine"
 msgid "Rating changed"
 msgstr "Hinnang muudetud"
 
-#: widgets/Osd.cpp:145
-#, fuzzy
-#| msgid "Muted"
-msgid "(muted)"
-msgstr "Tumm"
-
-#: widgets/Osd.cpp:145
-#, kde-format
-msgid "Volume: %1% %2"
-msgstr "Helitugevus: %1% %2"
-
 #: widgets/Osd.cpp:207
 msgid "Volume: 100% (muted)"
 msgstr "Helitugevus: 100% (tumm)"
@@ -9884,9 +9371,8 @@ msgid "Paused"
 msgstr "Paus"
 
 #: widgets/TokenDropTarget.cpp:382
-#, fuzzy
 msgid "Drag in and out items from above."
-msgstr "Lohista asukohas ja out elemendid  ."
+msgstr "Lohista elemente ülalt siia või vastupidi."
 
 #: widgets/SearchWidget.cpp:71
 msgid "Enter space-separated terms to search."
@@ -9897,21 +9383,16 @@ msgid "Edit filter"
 msgstr "Muuda filtrit"
 
 #: widgets/BreadcrumbItemButton.cpp:204
-#, fuzzy
 msgid "List and run bookmarks, or create new ones"
-msgstr "Nimekiri ja käivita järjehoidjad või uued"
+msgstr "Järjehoidjate loend ja käivitamine või uute loomine"
 
 #: widgets/BreadcrumbItemButton.cpp:221
-#, fuzzy
-#| msgid "Bookmarks"
 msgid "Amarok Bookmarks"
-msgstr "Järjehoidjad"
+msgstr "Amaroki järjehoidjad"
 
 #: widgets/MainToolbar.cpp:39
-#, fuzzy
-#| msgid "Moodbar"
 msgid "Main Toolbar"
-msgstr "Tujuriba"
+msgstr "Peamine tööriistariba"
 
 #: widgets/SliderWidget.cpp:255
 msgid "100%"
@@ -9939,11 +9420,11 @@ msgstr "0%"
 
 #: widgets/TokenWithLayout.cpp:241
 msgid "[prefix]"
-msgstr ""
+msgstr "[prefiks]"
 
 #: widgets/TokenWithLayout.cpp:252
 msgid "[suffix]"
-msgstr ""
+msgstr "[sufiks]"
 
 #: widgets/AnalyzerWidget.cpp:35
 msgid "Click for more analyzers"
@@ -10213,16 +9694,12 @@ msgid "Fetching Cover"
 msgstr "Kaanepildi tõmbamine"
 
 #: covermanager/CoverFetcher.cpp:206
-#, fuzzy
-#| msgid "There was an error communicating with Amazon."
 msgid "There was an error communicating with last.fm."
-msgstr "Amazoniga suhtlemisel tekkis viga."
+msgstr "Laast.fm-iga suhtlemisel tekkis viga."
 
 #: covermanager/CoverFetcher.cpp:219
-#, fuzzy
-#| msgid "The XML obtained from Amazon is invalid."
 msgid "The XML obtained from Last.fm is invalid."
-msgstr "Amazonist saadud XML on vigane."
+msgstr "Last.fm-ist saadud XML on vigane."
 
 #: covermanager/CoverFetcher.cpp:272
 msgid "The cover could not be retrieved."
