@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-09-14 06:26+0200\n"
-"PO-Revision-Date: 2009-09-12 00:06+0200\n"
+"POT-Creation-Date: 2009-09-21 06:11+0200\n"
+"PO-Revision-Date: 2009-09-18 17:45+0200\n"
 "Last-Translator: Josep Ma. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -45,57 +45,57 @@ msgctxt "The Value is not known"
 msgid "Unknown"
 msgstr "Desconegut"
 
-#: meta/MetaUtility.cpp:508
+#: meta/MetaUtility.cpp:504
 msgctxt "The quality of music"
 msgid "Awful"
 msgstr "Horrible"
 
-#: meta/MetaUtility.cpp:509
+#: meta/MetaUtility.cpp:505
 msgctxt "The quality of music"
 msgid "Bad"
 msgstr "Dolenta"
 
-#: meta/MetaUtility.cpp:510
+#: meta/MetaUtility.cpp:506
 msgctxt "The quality of music"
 msgid "Barely tolerable"
 msgstr "Difícilment tolerable"
 
-#: meta/MetaUtility.cpp:511
+#: meta/MetaUtility.cpp:507
 msgctxt "The quality of music"
 msgid "Tolerable"
 msgstr "Tolerable"
 
-#: meta/MetaUtility.cpp:512
+#: meta/MetaUtility.cpp:508
 msgctxt "The quality of music"
 msgid "Okay"
 msgstr "Acceptable"
 
-#: meta/MetaUtility.cpp:513
+#: meta/MetaUtility.cpp:509
 msgctxt "The quality of music"
 msgid "Good"
 msgstr "Bona"
 
-#: meta/MetaUtility.cpp:514
+#: meta/MetaUtility.cpp:510
 msgctxt "The quality of music"
 msgid "Very good"
 msgstr "Molt bona"
 
-#: meta/MetaUtility.cpp:515
+#: meta/MetaUtility.cpp:511
 msgctxt "The quality of music"
 msgid "Excellent"
 msgstr "Excel·lent"
 
-#: meta/MetaUtility.cpp:516
+#: meta/MetaUtility.cpp:512
 msgctxt "The quality of music"
 msgid "Amazing"
 msgstr "Impressionant"
 
-#: meta/MetaUtility.cpp:517
+#: meta/MetaUtility.cpp:513
 msgctxt "The quality of music"
 msgid "Favorite"
 msgstr "Preferida"
 
-#: meta/MetaUtility.cpp:518
+#: meta/MetaUtility.cpp:514
 msgctxt "The quality of music"
 msgid "Not rated"
 msgstr "Sense valorar"
@@ -103,14 +103,14 @@ msgstr "Sense valorar"
 #: meta/stream/Stream.cpp:53
 #, kde-format
 msgid "Stream (%1)"
-msgstr "Flux (%1)"
+msgstr "Corrent de dades (%1)"
 
-#: meta/capabilities/TimecodeWriteCapability.cpp:116
+#: meta/capabilities/TimecodeWriteCapability.cpp:112
 #, kde-format
 msgid "%1 - Stopped %2"
 msgstr "%1 - Aturat %2"
 
-#: meta/capabilities/TimecodeWriteCapability.cpp:121
+#: meta/capabilities/TimecodeWriteCapability.cpp:117
 msgid "Playback Ended Markers"
 msgstr "Marcadors de final de reproducció"
 
@@ -239,12 +239,12 @@ msgstr ""
 msgid "&Stale and Orphaned"
 msgstr "Antigue&s i orfes"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:364
-#: collection/ipodcollection/handler/IpodHandler.cpp:517
+#: collection/ipodcollection/handler/IpodHandler.cpp:365
+#: collection/ipodcollection/handler/IpodHandler.cpp:519
 msgid "Synchronise Artwork"
 msgstr "Sincronitza les caràtules"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:379
+#: collection/ipodcollection/handler/IpodHandler.cpp:381
 msgid ""
 "Do you really want to initialize this iPod? Its database will be cleared of "
 "all information, but the files will not be deleted."
@@ -252,19 +252,19 @@ msgstr ""
 "Esteu segur que voleu inicialitzar aquest iPod? Es netejarà tota la "
 "informació de les seves bases de dades, però no se suprimiran els fitxers."
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:383
+#: collection/ipodcollection/handler/IpodHandler.cpp:385
 msgid "Initialize iPod"
 msgstr "Inicialitza l'iPod"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:389
+#: collection/ipodcollection/handler/IpodHandler.cpp:391
 msgid "The iPod has been initialized"
 msgstr "S'ha inicialitzat l'iPod"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:391
+#: collection/ipodcollection/handler/IpodHandler.cpp:393
 msgid "The iPod was unable to be initialized"
 msgstr "No s'ha pogut inicialitzar l'iPod"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:400
+#: collection/ipodcollection/handler/IpodHandler.cpp:402
 msgid ""
 "Amarok is about to search for stale tracks. This may take a while, do you "
 "want to continue?"
@@ -272,11 +272,11 @@ msgstr ""
 "L'Amarok està a punt de cercar les peces antigues. Això pot trigar una "
 "estona, voleu continuar?"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:404
+#: collection/ipodcollection/handler/IpodHandler.cpp:406
 msgid "Find Stale Tracks"
 msgstr "Cerca de peces antigues"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:479
+#: collection/ipodcollection/handler/IpodHandler.cpp:481
 #, kde-format
 msgctxt "@info"
 msgid "One stale track removed from the database. Scan for orphaned tracks?"
@@ -287,11 +287,11 @@ msgstr[1] ""
 "S'han eliminat %1 peces antigues de la base de dades. Exploro les peces "
 "orfes?"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:484
+#: collection/ipodcollection/handler/IpodHandler.cpp:486
 msgid "Find Orphaned Tracks"
 msgstr "Cerca de peces orfes"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:515
+#: collection/ipodcollection/handler/IpodHandler.cpp:517
 #, kde-format
 msgid ""
 "Amarok is about to synchronize artwork on <i>%1</i>. Do you want to continue?"
@@ -299,15 +299,15 @@ msgstr ""
 "L'Amarok està a punt per a sincronitzar les caràtules a <i>%1</i>. Voleu "
 "continuar?"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:526
+#: collection/ipodcollection/handler/IpodHandler.cpp:528
 msgid "iPod artwork could not be synchronised"
 msgstr "No s'ha pogut sincronitzar la caràtula de l'iPod"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:537
+#: collection/ipodcollection/handler/IpodHandler.cpp:539
 msgid "Artwork synchronised"
 msgstr "S'ha sincronitzat la caràtula"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:818
+#: collection/ipodcollection/handler/IpodHandler.cpp:820
 msgid ""
 "Amarok requires sudo access to get the FirewireGuid required to connect to "
 "your device. Please enter your sudo password"
@@ -316,19 +316,19 @@ msgstr ""
 "per a connectar-se al dispositiu. Si us plau, introduïu la vostra "
 "contrasenya del «sudo»"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:2084
+#: collection/ipodcollection/handler/IpodHandler.cpp:2086
 msgid "Select Stale Tracks To Delete"
 msgstr "Seleccioneu les peces antigues a suprimir"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:2084
+#: collection/ipodcollection/handler/IpodHandler.cpp:2086
 msgid "Stale Tracks"
 msgstr "Peces antigues"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:2137
+#: collection/ipodcollection/handler/IpodHandler.cpp:2139
 msgid "Adding Orphaned Tracks to iPod Database"
 msgstr "S'estan afegint peces orfes a la base de dades de l'iPod"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:2175
+#: collection/ipodcollection/handler/IpodHandler.cpp:2177
 #, kde-format
 msgctxt "@info"
 msgid "One orphaned track added to the database."
@@ -336,7 +336,7 @@ msgid_plural "%1 tracks added to the database."
 msgstr[0] "S'ha afegit una peça orfe a la base de dades."
 msgstr[1] "S'han afegit %1 peces orfes a la base de dades."
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:2180
+#: collection/ipodcollection/handler/IpodHandler.cpp:2182
 msgid "Orphaned Tracks Added"
 msgstr "S'han afegit les peces orfes"
 
@@ -556,7 +556,7 @@ msgstr "Artistes diversos"
 #. i18n: ectx: property (text), item, widget (QComboBox, typeComboBox)
 #: collection/sqlcollection/SqlMeta.cpp:391 rc.cpp:1502
 msgid "Stream"
-msgstr "Flux"
+msgstr "Corrent de dades"
 
 #: collection/sqlcollection/SqlMeta.cpp:404
 #: services/lastfm/meta/LastFmMeta.cpp:137 covermanager/CoverViewDialog.h:44
@@ -573,17 +573,17 @@ msgstr "No mostris sota Artistes Diversos"
 msgid "Show under Various Artists"
 msgstr "Mostra sota Artistes Diversos"
 
-#: collection/audiocd/AudioCdCollection.cpp:71
+#: collection/audiocd/AudioCdCollection.cpp:72
 msgid "&Eject"
 msgstr "&Expulsa"
 
-#: collection/audiocd/AudioCdCollection.cpp:400
-#: collection/audiocd/AudioCdCollection.cpp:401
-#: collection/audiocd/AudioCdCollection.cpp:402
-#: collection/audiocd/AudioCdCollection.cpp:403
-#: context/applets/albums/AlbumItem.cpp:72 MainWindow.cpp:1011
-#: amarokurls/BookmarkTreeView.cpp:328 amarokurls/BookmarkTreeView.cpp:329
-#: amarokurls/BookmarkTreeView.cpp:330
+#: collection/audiocd/AudioCdCollection.cpp:412
+#: collection/audiocd/AudioCdCollection.cpp:413
+#: collection/audiocd/AudioCdCollection.cpp:414
+#: collection/audiocd/AudioCdCollection.cpp:415
+#: context/applets/albums/AlbumItem.cpp:72 MainWindow.cpp:1070
+#: amarokurls/BookmarkTreeView.cpp:317 amarokurls/BookmarkTreeView.cpp:318
+#: amarokurls/BookmarkTreeView.cpp:319
 msgid "Unknown"
 msgstr "Desconegut"
 
@@ -915,28 +915,28 @@ msgid "Settings"
 msgstr "Arranjament"
 
 #: context/applets/videoclip/VideoclipApplet.cpp:114
-#: context/applets/videoclip/VideoclipApplet.cpp:327
-#: context/applets/videoclip/VideoclipApplet.cpp:348
+#: context/applets/videoclip/VideoclipApplet.cpp:326
+#: context/applets/videoclip/VideoclipApplet.cpp:347
 msgid "Video Clip"
 msgstr "Clip de vídeo"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:338
+#: context/applets/videoclip/VideoclipApplet.cpp:337
 msgid "Video Clip "
 msgstr "Clip de vídeo "
 
-#: context/applets/videoclip/VideoclipApplet.cpp:338
+#: context/applets/videoclip/VideoclipApplet.cpp:337
 msgid " No information found..."
 msgstr " No s'ha trobat informació..."
 
-#: context/applets/videoclip/VideoclipApplet.cpp:496
+#: context/applets/videoclip/VideoclipApplet.cpp:495
 msgid "Enter &fullscreen"
 msgstr "Posa a &pantalla completa"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:502
+#: context/applets/videoclip/VideoclipApplet.cpp:501
 msgid "E&xit fullscreen"
 msgstr "&Surt de pantalla completa"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:520
+#: context/applets/videoclip/VideoclipApplet.cpp:519
 msgid "Video Clip Settings"
 msgstr "Aranjament dels clips de vídeo"
 
@@ -1060,8 +1060,8 @@ msgstr[1] "%1 peces"
 
 #: context/applets/lyrics/LyricsApplet.cpp:45
 #: context/applets/lyrics/LyricsApplet.cpp:77
-#: context/applets/lyrics/LyricsApplet.cpp:212
-#: context/applets/lyrics/LyricsApplet.cpp:266 dialogs/TagDialog.cpp:584
+#: context/applets/lyrics/LyricsApplet.cpp:203
+#: context/applets/lyrics/LyricsApplet.cpp:261 dialogs/TagDialog.cpp:584
 msgid "Lyrics"
 msgstr "Lletres"
 
@@ -1077,15 +1077,15 @@ msgstr "Desa les lletres"
 msgid "Reload Lyrics"
 msgstr "Recarrega les lletres"
 
-#: context/applets/lyrics/LyricsApplet.cpp:207
+#: context/applets/lyrics/LyricsApplet.cpp:198
 msgid "No lyrics script is running."
 msgstr "No s'està executant cap script per a les lletres."
 
-#: context/applets/lyrics/LyricsApplet.cpp:220
+#: context/applets/lyrics/LyricsApplet.cpp:211
 msgid "Lyrics are being fetched."
 msgstr "S'estan recuperant les lletres."
 
-#: context/applets/lyrics/LyricsApplet.cpp:229
+#: context/applets/lyrics/LyricsApplet.cpp:220
 #, kde-format
 msgid ""
 "Could not download lyrics.\n"
@@ -1098,7 +1098,7 @@ msgstr ""
 "Missatge d'error:\n"
 "%1"
 
-#: context/applets/lyrics/LyricsApplet.cpp:275
+#: context/applets/lyrics/LyricsApplet.cpp:273
 msgid "There were no lyrics found for this track"
 msgstr "No s'ha trobat cap lletra per aquesta peça"
 
@@ -1156,7 +1156,7 @@ msgstr "Següent"
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: context/applets/wikipedia/WikipediaApplet.cpp:121
 #: dialogs/FilenameLayoutDialog.cpp:125 dialogs/FilenameLayoutDialog.cpp:340
-#: dialogs/transferdialog.cpp:88 browsers/CollectionTreeItemModelBase.cpp:904
+#: dialogs/transferdialog.cpp:88 browsers/CollectionTreeItemModelBase.cpp:902
 #: browsers/collectionbrowser/CollectionWidget.cpp:122
 #: browsers/collectionbrowser/CollectionWidget.cpp:151
 #: browsers/collectionbrowser/CollectionWidget.cpp:183
@@ -1173,7 +1173,7 @@ msgstr "Artista"
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: context/applets/wikipedia/WikipediaApplet.cpp:128
 #: dialogs/FilenameLayoutDialog.cpp:128 dialogs/FilenameLayoutDialog.cpp:355
-#: dialogs/transferdialog.cpp:89 browsers/CollectionTreeItemModelBase.cpp:903
+#: dialogs/transferdialog.cpp:89 browsers/CollectionTreeItemModelBase.cpp:901
 #: browsers/collectionbrowser/CollectionWidget.cpp:125
 #: browsers/collectionbrowser/CollectionWidget.cpp:154
 #: browsers/collectionbrowser/CollectionWidget.cpp:186
@@ -1346,7 +1346,7 @@ msgstr "&Peça"
 msgid "&Album"
 msgstr "&Àlbum"
 
-#: ActionClasses.cpp:365 MainWindow.cpp:840
+#: ActionClasses.cpp:365 MainWindow.cpp:882
 msgid "&Playlist"
 msgstr "&Llista de reproducció"
 
@@ -1762,7 +1762,7 @@ msgstr "Títol"
 #. i18n: file: dialogs/EditFilterDialog.ui:90
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:126 dialogs/FilenameLayoutDialog.cpp:345
-#: browsers/CollectionTreeItemModelBase.cpp:905
+#: browsers/CollectionTreeItemModelBase.cpp:903
 #: browsers/collectionbrowser/CollectionWidget.cpp:131
 #: browsers/collectionbrowser/CollectionWidget.cpp:160
 #: browsers/collectionbrowser/CollectionWidget.cpp:192
@@ -1775,7 +1775,7 @@ msgstr "Compositor"
 #. i18n: file: dialogs/EditFilterDialog.ui:120
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:127 dialogs/FilenameLayoutDialog.cpp:350
-#: browsers/CollectionTreeItemModelBase.cpp:907
+#: browsers/CollectionTreeItemModelBase.cpp:905
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:248
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:691 rc.cpp:1166
 #: playlist/PlaylistModel.cpp:653 widgets/SmartPlaylistEditor.cpp:184
@@ -1792,7 +1792,7 @@ msgstr "Comentari"
 #. i18n: file: dialogs/EditFilterDialog.ui:95
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:130 dialogs/FilenameLayoutDialog.cpp:365
-#: dialogs/transferdialog.cpp:90 browsers/CollectionTreeItemModelBase.cpp:906
+#: dialogs/transferdialog.cpp:90 browsers/CollectionTreeItemModelBase.cpp:904
 #: browsers/collectionbrowser/CollectionWidget.cpp:128
 #: browsers/collectionbrowser/CollectionWidget.cpp:157
 #: browsers/collectionbrowser/CollectionWidget.cpp:189
@@ -2086,7 +2086,7 @@ msgctxt "The collection this track is part of"
 msgid "None"
 msgstr "Cap"
 
-#: dialogs/TagDialog.cpp:1053
+#: dialogs/TagDialog.cpp:1054
 #, kde-format
 msgctxt "The amount of tracks being edited"
 msgid "1 Track"
@@ -2094,30 +2094,30 @@ msgid_plural "Information for %1 Tracks"
 msgstr[0] "1 peça"
 msgstr[1] "Informació de %1 peces"
 
-#: dialogs/TagDialog.cpp:1168
+#: dialogs/TagDialog.cpp:1169
 #, kde-format
 msgid "Editing 1 file"
 msgid_plural "Editing %1 files"
 msgstr[0] "S'està editant 1 fitxer"
 msgstr[1] "S'estan editant %1 fitxers"
 
-#: dialogs/TagDialog.cpp:1173
+#: dialogs/TagDialog.cpp:1174
 msgid "Rated Songs:"
 msgstr "Cançons valorades:"
 
-#: dialogs/TagDialog.cpp:1175
+#: dialogs/TagDialog.cpp:1176
 msgid "Average Rating:"
 msgstr "Valoració mitjana:"
 
-#: dialogs/TagDialog.cpp:1177
+#: dialogs/TagDialog.cpp:1178
 msgid "Scored Songs:"
 msgstr "Cançons puntuades:"
 
-#: dialogs/TagDialog.cpp:1179
+#: dialogs/TagDialog.cpp:1180
 msgid "Average Score:"
 msgstr "Puntuació mitjana:"
 
-#: dialogs/TagDialog.cpp:1477
+#: dialogs/TagDialog.cpp:1482
 msgid ""
 "Writing to file failed. Please check permissions and available disc space."
 msgstr ""
@@ -2255,7 +2255,7 @@ msgstr "Opcions"
 msgid "Convert spaces to underscores"
 msgstr "Converteix els espais en caràcters de subratllat"
 
-#: dialogs/ScriptManager.cpp:90 MainWindow.cpp:667
+#: dialogs/ScriptManager.cpp:90 MainWindow.cpp:709
 msgid "Script Manager"
 msgstr "Gestor d'scripts"
 
@@ -2335,15 +2335,15 @@ msgstr ""
 
 #. i18n: file: collection/audiocd/FormatSelectionDialog.ui:14
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: App.cpp:112 rc.cpp:536
+#: App.cpp:114 rc.cpp:536
 msgid "Amarok"
 msgstr "Amarok"
 
-#: App.cpp:113
+#: App.cpp:115
 msgid "The audio player for KDE"
 msgstr "El reproductor d'àudio per al KDE"
 
-#: App.cpp:114
+#: App.cpp:116
 msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2009, The Amarok Development Squad"
@@ -2351,7 +2351,7 @@ msgstr ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2009, L'Escamot de Desenvolupament de l'Amarok"
 
-#: App.cpp:115
+#: App.cpp:117
 #, kde-format
 msgid ""
 "IRC:\n"
@@ -2370,154 +2370,154 @@ msgstr ""
 "\n"
 "(Data de compilació: %1)"
 
-#: App.cpp:461
+#: App.cpp:465
 msgid "Files/URLs to open"
 msgstr "Fitxers/URL a obrir"
 
-#: App.cpp:463
+#: App.cpp:467
 msgid "Skip backwards in playlist"
 msgstr "Salta enrere en la llista de reproducció"
 
-#: App.cpp:465
+#: App.cpp:469
 msgid "Start playing current playlist"
 msgstr "Comença reproduint la llista de reproducció actual"
 
-#: App.cpp:467
+#: App.cpp:471
 msgid "Play if stopped, pause if playing"
 msgstr "Reprodueix si aturat, pausa si reproduint"
 
-#: App.cpp:468
+#: App.cpp:472
 msgid "Pause playback"
 msgstr "Pausa la reproducció"
 
-#: App.cpp:470
+#: App.cpp:474
 msgid "Stop playback"
 msgstr "Atura la reproducció"
 
-#: App.cpp:472
+#: App.cpp:476
 msgid "Skip forwards in playlist"
 msgstr "Salta endavant en la llista de reproducció"
 
-#: App.cpp:473
+#: App.cpp:477
 msgid "Additional options:"
 msgstr "Opcions addicionals:"
 
-#: App.cpp:475
+#: App.cpp:479
 msgid "Append files/URLs to playlist"
 msgstr "Afegeix fitxers/URLs a la llista de reproducció"
 
-#: App.cpp:476
+#: App.cpp:480
 msgid "Queue URLs after the currently playing track"
 msgstr "Encua els URL després de la peça actualment en reproducció"
 
-#: App.cpp:478
+#: App.cpp:482
 msgid "Load URLs, replacing current playlist"
 msgstr "Carrega els URL, substituint la llista de reproducció actual"
 
-#: App.cpp:480
+#: App.cpp:484
 msgid "Print verbose debugging information"
 msgstr "Mostra informació detallada de depuració"
 
-#: App.cpp:482
+#: App.cpp:486
 msgid "Allow running multiple Amarok instances"
 msgstr "Permetre l'execució de múltiples instàncies de l'Amarok"
 
-#: App.cpp:483
+#: App.cpp:487
 msgid "Base for relative filenames/URLs"
 msgstr "Base per als noms de fitxers relatius/URLs"
 
-#: App.cpp:484
+#: App.cpp:488
 msgid "Run integrated unit tests, if your build supports it"
 msgstr "Executa les proves unitàries integrades, si la compilació ho permet"
 
-#: App.cpp:486
+#: App.cpp:490
 msgid "Subscribe to podcast feed"
 msgstr "Subscriu a canal de podcast"
 
-#: App.cpp:752
+#: App.cpp:756
 msgid "Moving files to trash"
 msgstr "Llençant els fitxers a la paperera"
 
-#: App.cpp:834
+#: App.cpp:837 App.cpp:874
+msgctxt "The amount of time since last played"
+msgid "Never"
+msgstr "Mai"
+
+#: App.cpp:842
 #, kde-format
 msgctxt "monthname year"
 msgid "%1 %2"
 msgstr "%1 %2"
 
-#: App.cpp:841
+#: App.cpp:849
 #, kde-format
 msgid "One week ago"
 msgid_plural "%1 weeks ago"
 msgstr[0] "Fa 1 setmana"
 msgstr[1] "Fa %1 setmanes"
 
-#: App.cpp:844 App.cpp:895
-msgctxt "When this track was last played"
-msgid "Tomorrow"
-msgstr "Demà"
-
-#: App.cpp:850
+#: App.cpp:855
 msgid "Yesterday"
 msgstr "Ahir"
 
-#: App.cpp:851
+#: App.cpp:856
 #, kde-format
 msgid "One day ago"
 msgid_plural "%1 days ago"
 msgstr[0] "Fa 1 dia"
 msgstr[1] "Fa %1 dies"
 
-#: App.cpp:854
+#: App.cpp:859
 #, kde-format
 msgid "One hour ago"
 msgid_plural "%1 hours ago"
 msgstr[0] "Fa 1 hora"
 msgstr[1] "Fa %1 hores"
 
-#: App.cpp:860
+#: App.cpp:865
 #, kde-format
 msgid "One minute ago"
 msgid_plural "%1 minutes ago"
 msgstr[0] "Fa 1 minut"
 msgstr[1] "Fa %1 minuts"
 
-#: App.cpp:861
+#: App.cpp:866
 msgid "Within the last minute"
 msgstr "En el darrer minut"
 
-#: App.cpp:863
+#: App.cpp:868
 msgid "The future"
 msgstr "El futur"
 
-#: App.cpp:869
-msgctxt "The amount of time since last played"
-msgid "Never"
-msgstr "Mai"
-
-#: App.cpp:879
+#: App.cpp:884
 msgctxt "The amount of time since last played"
 msgid "0"
 msgstr "0"
 
-#: App.cpp:888
+#: App.cpp:893
 #, kde-format
 msgctxt "number of months ago"
 msgid "%1M"
 msgstr "%1M"
 
-#: App.cpp:892
+#: App.cpp:897
 #, kde-format
 msgctxt "w for weeks"
 msgid "%1w"
 msgstr "%1s"
 
-#: App.cpp:901
+#: App.cpp:900
+msgctxt "When this track was last played"
+msgid "Tomorrow"
+msgstr "Demà"
+
+#: App.cpp:906
 #, no-c-format, kde-format
 msgctxt "d for days"
 msgid "%1d"
 msgstr "%1d"
 
-#: App.cpp:904
+#: App.cpp:909
 #, kde-format
 msgctxt "h for hours"
 msgid "%1h"
@@ -2545,7 +2545,7 @@ msgstr "%1h"
 #. i18n: ectx: property (text), widget (QLabel, eqBand8Value)
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:1320
 #. i18n: ectx: property (text), widget (QLabel, eqBand9Value)
-#: App.cpp:913 rc.cpp:680 rc.cpp:686 rc.cpp:692 rc.cpp:698 rc.cpp:704
+#: App.cpp:918 rc.cpp:680 rc.cpp:686 rc.cpp:692 rc.cpp:698 rc.cpp:704
 #: rc.cpp:710 rc.cpp:716 rc.cpp:722 rc.cpp:728 rc.cpp:734 rc.cpp:740
 msgid "0"
 msgstr "0"
@@ -2643,28 +2643,28 @@ msgstr "La connexió a Internet no és disponible"
 msgid "Network error"
 msgstr "Error de xarxa"
 
-#: aboutdialog/OcsPersonItem.cpp:89
+#: aboutdialog/OcsPersonItem.cpp:91
 msgid "Email contributor"
 msgstr "Envieu un correu al col·laborador"
 
-#: aboutdialog/OcsPersonItem.cpp:97
+#: aboutdialog/OcsPersonItem.cpp:99
 msgid "Visit contributor's homepage"
 msgstr "Visiteu la pàgina personal del col·laborador"
 
-#: aboutdialog/OcsPersonItem.cpp:185
+#: aboutdialog/OcsPersonItem.cpp:187
 msgid "IRC channels: "
 msgstr "Canals d'IRC: "
 
-#: aboutdialog/OcsPersonItem.cpp:199
+#: aboutdialog/OcsPersonItem.cpp:201
 msgid "Favorite music: "
 msgstr "Música preferida: "
 
-#: aboutdialog/OcsPersonItem.cpp:204
+#: aboutdialog/OcsPersonItem.cpp:206
 #, kde-format
 msgid "Visit %1's openDesktop.org profile"
 msgstr "Visiteu el perfil openDesktop.org de %1"
 
-#: aboutdialog/OcsPersonItem.cpp:206
+#: aboutdialog/OcsPersonItem.cpp:208
 #, kde-format
 msgid "Visit %1's profile on openDesktop.org"
 msgstr "Visiteu el perfil de %1 a openDesktop.org"
@@ -2684,14 +2684,13 @@ msgstr "Llistes de reproducció locals desades a la base de dades"
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:133
 #: equalizerpresetmanager.cpp:55
 #: browsers/playlistbrowser/UserPlaylistModel.cpp:568
-#: amarokurls/BookmarkTreeView.cpp:116
 msgid "&Rename"
 msgstr "&Reanomena"
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:141
 #: equalizerpresetmanager.cpp:56
 #: browsers/playlistbrowser/UserPlaylistModel.cpp:575
-#: amarokurls/BookmarkTreeView.cpp:110
+#: amarokurls/BookmarkTreeView.cpp:112
 msgid "&Delete"
 msgstr "&Suprimeix"
 
@@ -2977,7 +2976,7 @@ msgstr "Sense títol"
 msgid "A preset with the name %1 already exists. Overwrite?"
 msgstr "Ja existeix un ambient anomenat «%1». El voleu sobreescriure?"
 
-#: EngineController.cpp:209
+#: EngineController.cpp:226
 msgid ""
 "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
 "the installation of the backend that phonon uses.</p><p>You may find useful "
@@ -2987,11 +2986,11 @@ msgstr ""
 "d'examinar l'instal·lació del dorsal que usa el phonon.</p><p> Podeu trobar "
 "informació útil a la secció <i>PMF</i> del <i>manual de l'Amarok</i>.</p>"
 
-#: EngineController.cpp:228
+#: EngineController.cpp:245
 msgid "Install MP3 Support"
 msgstr "Instal·la la implementació per a MP3"
 
-#: EngineController.cpp:230
+#: EngineController.cpp:247
 msgid ""
 "Amarok currently cannot play MP3 files. Do you want to install support for "
 "MP3?"
@@ -2999,11 +2998,11 @@ msgstr ""
 "L'Amarok actualment no pot reproduir fitxers MP3. Voleu instal·lar la "
 "funcionalitat del MP3?"
 
-#: EngineController.cpp:231
+#: EngineController.cpp:248
 msgid "No MP3 Support"
 msgstr "No accepta MP3"
 
-#: EngineController.cpp:710
+#: EngineController.cpp:740
 msgid "Preamp"
 msgstr "Preamplificador"
 
@@ -3104,7 +3103,7 @@ msgstr "Coincidència:"
 msgid "Current Track"
 msgstr "Peça actual"
 
-#: dynamic/biases/EchoNest.cpp:116 MainWindow.cpp:263
+#: dynamic/biases/EchoNest.cpp:116 MainWindow.cpp:264
 msgid "Playlist"
 msgstr "Llista de reproducció"
 
@@ -3140,56 +3139,44 @@ msgid "Alejandro Wainzinger"
 msgstr "Alejandro Wainzinger"
 
 #: main.cpp:36
-#, fuzzy
-#| msgid "Developer"
 msgid "Developer (xevix)"
-msgstr "Desenvolupador"
+msgstr "Desenvolupador (xevix)"
 
 #: main.cpp:37
 msgid "Bart 'Where are my toothpicks' Cerneels"
 msgstr "Bart 'Where are my toothpicks' Cerneels"
 
 #: main.cpp:38
-#, fuzzy
-#| msgid "Developer"
 msgid "Developer (Stecchino)"
-msgstr "Desenvolupador"
+msgstr "Desenvolupador (Stecchino)"
 
 #: main.cpp:39
 msgid "Dan 'Hey, it compiled...' Meltzer"
 msgstr "Dan 'Hey, it compiled...' Meltzer"
 
 #: main.cpp:40
-#, fuzzy
-#| msgid "Developer"
 msgid "Developer (hydrogen)"
-msgstr "Desenvolupador"
+msgstr "Desenvolupador (hydrogen)"
 
 #: main.cpp:41
 msgid "Ian 'The Beard' Monroe"
 msgstr "Ian 'The Beard' Monroe"
 
 #: main.cpp:42
-#, fuzzy
-#| msgid "Developer"
 msgid "Developer (eean)"
-msgstr "Desenvolupador"
+msgstr "Desenvolupador (eean)"
 
 #: main.cpp:43
 msgid "Jeff 'IROCKSOHARD' Mitchell"
 msgstr "Jeff 'IROCKSOHARD' Mitchell"
 
 #: main.cpp:44
-#, fuzzy
-#| msgid "Developer"
 msgid "Developer (jefferai)"
-msgstr "Desenvolupador"
+msgstr "Desenvolupador (jefferai)"
 
 #: main.cpp:46
-#, fuzzy
-#| msgid "Developer"
 msgid "Developer (lfranchi)"
-msgstr "Desenvolupador"
+msgstr "Desenvolupador (lfranchi)"
 
 #: main.cpp:47
 msgid "Lydia 'is wrong(TM)' Pintscher"
@@ -3197,7 +3184,7 @@ msgstr "Lydia 'is wrong(TM)' Pintscher"
 
 #: main.cpp:48
 msgid "Release Vixen (Nightrose)"
-msgstr ""
+msgstr "Release Vixen (Nightrose)"
 
 #: main.cpp:49
 msgid "Mark 'It's good, but it's not irssi' Kretschmann"
@@ -3205,47 +3192,39 @@ msgstr "Mark 'It's good, but it's not irssi' Kretschmann"
 
 #: main.cpp:50
 msgid "Project founder (markey)"
-msgstr ""
+msgstr "Fundador del projecte (markey)"
 
 #: main.cpp:51
 msgid "Maximilian Kossick"
 msgstr "Maximilian Kossick"
 
 #: main.cpp:52
-#, fuzzy
-#| msgid "Developer"
 msgid "Developer (maxx_k)"
-msgstr "Desenvolupador"
+msgstr "Desenvolupador (maxx_k)"
 
 #: main.cpp:53
 msgid "Nikolaj Hald 'Also very hot' Nielsen"
 msgstr "Nikolaj Hald 'Also very hot' Nielsen"
 
 #: main.cpp:54
-#, fuzzy
-#| msgid "Developer"
 msgid "Developer (nhn)"
-msgstr "Desenvolupador"
+msgstr "Desenvolupador (nhn)"
 
 #: main.cpp:55
 msgid "Seb 'Surfin' down under' Ruiz"
 msgstr "Seb 'Surfin' down under' Ruiz"
 
 #: main.cpp:56
-#, fuzzy
-#| msgid "Developer"
 msgid "Developer (sebr)"
-msgstr "Desenvolupador"
+msgstr "Desenvolupador (sebr)"
 
 #: main.cpp:57
 msgid "Téo Mrnjavac"
 msgstr "Téo Mrnjavac"
 
 #: main.cpp:58
-#, fuzzy
-#| msgid "Developer"
 msgid "Developer (Teo`)"
-msgstr "Desenvolupador"
+msgstr "Desenvolupador (Teo`)"
 
 #: main.cpp:74
 msgid "Alex Merry"
@@ -3253,17 +3232,15 @@ msgstr "Alex Merry"
 
 #: main.cpp:74
 msgid "Developer, Replay gain support"
-msgstr ""
+msgstr "Desenvolupador, implementació de guany de repetició"
 
 #: main.cpp:76
 msgid "Casey Link"
 msgstr "Casey Link"
 
 #: main.cpp:76
-#, fuzzy
-#| msgid "Mp3tunes Login"
 msgid "MP3tunes integration"
-msgstr "Identificació a Mp3tunes"
+msgstr "Integració amb Mp3tunes"
 
 #: main.cpp:78
 msgid "Casper van Donderen"
@@ -3271,7 +3248,7 @@ msgstr "Casper van Donderen"
 
 #: main.cpp:78
 msgid "Windows porting"
-msgstr ""
+msgstr "Adaptació a Windows"
 
 #: main.cpp:80
 msgid "Christie Harris"
@@ -3279,7 +3256,7 @@ msgstr "Christie Harris"
 
 #: main.cpp:80
 msgid "Rokymoter (dangle)"
-msgstr ""
+msgstr "Rokymoter (dangle)"
 
 #: main.cpp:82
 msgid "Dan Leinir Turthra Jensen"
@@ -3287,27 +3264,23 @@ msgstr "Dan Leinir Turthra Jensen"
 
 #: main.cpp:82
 msgid "Usability"
-msgstr ""
+msgstr "Usabilitat"
 
 #: main.cpp:84
 msgid "Daniel Caleb Jones"
 msgstr "Daniel Caleb Jones"
 
 #: main.cpp:84
-#, fuzzy
-#| msgid "Saved Playlists"
 msgid "Biased playlists"
-msgstr "Llistes de reproducció desades"
+msgstr "Llistes de reproducció amb influència"
 
 #: main.cpp:86
 msgid "Daniel Winter"
 msgstr "Daniel Winter"
 
 #: main.cpp:86
-#, fuzzy
-#| msgid "Nepomuk Collection"
 msgid "Nepomuk integration"
-msgstr "Col·lecció Nepomuk"
+msgstr "Integració amb el Nepomuk"
 
 #: main.cpp:88
 msgid "Edward \"Hades\" Toroshchin"
@@ -3319,7 +3292,7 @@ msgstr "Greg Meyer"
 
 #: main.cpp:90
 msgid "Live CD, Bug squashing (oggb4mp3)"
-msgstr ""
+msgstr "Live CD, resolució d'errors (oggb4mp3)"
 
 #: main.cpp:92
 msgid "Harald Sitter"
@@ -3327,17 +3300,15 @@ msgstr "Harald Sitter"
 
 #: main.cpp:92
 msgid "Rokymoter (apachelogger)"
-msgstr ""
+msgstr "Rokymoter (apachelogger)"
 
 #: main.cpp:94
 msgid "Kenneth Wesley Wimer II"
 msgstr "Kenneth Wesley Wimer II"
 
 #: main.cpp:94
-#, fuzzy
-#| msgid "Seconds"
 msgid "Icons"
-msgstr "Segons"
+msgstr "Icones"
 
 #: main.cpp:96
 msgid "Kevin Funk"
@@ -3345,7 +3316,7 @@ msgstr "Kevin Funk"
 
 #: main.cpp:96
 msgid "Developer, Website theme (KRF)"
-msgstr ""
+msgstr "Desenvolupador, tema del lloc Web (KRF)"
 
 #: main.cpp:98
 msgid "Kuba Serafinowski"
@@ -3353,17 +3324,15 @@ msgstr "Kuba Serafinowski"
 
 #: main.cpp:98
 msgid "Rokymoter"
-msgstr ""
+msgstr "Rokymoter"
 
 #: main.cpp:100
 msgid "Lee Olson"
 msgstr "Lee Olson"
 
 #: main.cpp:100 main.cpp:110
-#, fuzzy
-#| msgid "Amarok"
 msgid "Artwork"
-msgstr "Amarok"
+msgstr "Grafisme"
 
 #: main.cpp:102
 msgid "Ljubomir Simin"
@@ -3371,17 +3340,15 @@ msgstr "Ljubomir Simin"
 
 #: main.cpp:102
 msgid "Rokymoter (ljubomir)"
-msgstr ""
+msgstr "Rokymoter (ljubomir)"
 
 #: main.cpp:104
 msgid "Max Howell"
 msgstr "Max Howell"
 
 #: main.cpp:104
-#, fuzzy
-#| msgid "Developer"
 msgid "Developer, Vision"
-msgstr "Desenvolupador"
+msgstr "Desenvolupador, Vision"
 
 #: main.cpp:106
 msgid "Mikko Caldara"
@@ -3389,7 +3356,7 @@ msgstr "Mikko Caldara"
 
 #: main.cpp:106
 msgid "Bug triaging and sanitizing"
-msgstr ""
+msgstr "Cerca i extermini d'errors"
 
 #: main.cpp:108
 msgid "Myriam Schweingruber"
@@ -3397,7 +3364,7 @@ msgstr "Myriam Schweingruber"
 
 #: main.cpp:108
 msgid "Rokymoter, bug squashing (Mamarok)"
-msgstr ""
+msgstr "Rokymoter, resolució d'errors (Mamarok)"
 
 #: main.cpp:110
 msgid "Nuno Pinheiro"
@@ -3409,7 +3376,7 @@ msgstr "Olivier Bédard"
 
 #: main.cpp:112
 msgid "Website hosting"
-msgstr ""
+msgstr "Hostatge del lloc Web"
 
 #: main.cpp:114
 msgid "Pasi Lalinaho"
@@ -3417,17 +3384,15 @@ msgstr "Pasi Lalinaho"
 
 #: main.cpp:114
 msgid "Rokymoter (emunkki)"
-msgstr ""
+msgstr "Rokymoter (emunkki)"
 
 #: main.cpp:116
 msgid "Peter Zhou Lei"
 msgstr "Peter Zhou Lei"
 
 #: main.cpp:116
-#, fuzzy
-#| msgid "Script Manager"
 msgid "Scripting interface"
-msgstr "Gestor d'scripts"
+msgstr "Interfície d'scripting"
 
 #: main.cpp:118
 msgid "Scott Wheeler"
@@ -3435,7 +3400,7 @@ msgstr "Scott Wheeler"
 
 #: main.cpp:118
 msgid "TagLib & ktrm code"
-msgstr ""
+msgstr "TagLib & codi ktrm"
 
 #: main.cpp:120
 msgid "Shane King"
@@ -3443,7 +3408,7 @@ msgstr "Shane King"
 
 #: main.cpp:120
 msgid "Patches & Windows porting (shakes)"
-msgstr ""
+msgstr "Pedaços i adaptació a Windows (shakes)"
 
 #: main.cpp:122
 msgid "Simon Esneault"
@@ -3451,7 +3416,7 @@ msgstr "Simon Esneault"
 
 #: main.cpp:122
 msgid "Photos & Videos applets, Context View"
-msgstr ""
+msgstr "Miniaplicacions de fotos i vídeos, vista contextual"
 
 #: main.cpp:124
 msgid "Soren Harward"
@@ -3463,7 +3428,7 @@ msgstr "Sven Krohlas"
 
 #: main.cpp:126
 msgid "Rokymoter (sven423)"
-msgstr ""
+msgstr "Rokymoter (sven423)"
 
 #: main.cpp:128
 msgid "Thomas Lübking"
@@ -3478,20 +3443,16 @@ msgid "Wade Olson"
 msgstr "Wade Olson"
 
 #: main.cpp:132
-#, fuzzy
-#| msgid "Sho&w splash-screen on startup"
 msgid "Splash screen artist"
-msgstr "&Mostra la pantalla flaix a l'inici"
+msgstr "Artista de la pantalla de presentació"
 
 #: main.cpp:134
 msgid "William Viana Soares"
 msgstr "William Viana Soares"
 
 #: main.cpp:134
-#, fuzzy
-#| msgid "Context"
 msgid "Context view"
-msgstr "Context"
+msgstr "Vista contextual"
 
 #: main.cpp:136
 msgid "Former contributors"
@@ -3499,7 +3460,7 @@ msgstr "Antics col·laboradors"
 
 #: main.cpp:136
 msgid "People listed below have contributed to Amarok in the past. Thank you!"
-msgstr ""
+msgstr "Les persones següents han contribuit a l'Amarok en el passat. Gràcies!"
 
 #: main.cpp:138
 msgid "Adam Pigg"
@@ -3507,17 +3468,15 @@ msgstr "Adam Pigg"
 
 #: main.cpp:138
 msgid "Analyzers, patches, shoutcast"
-msgstr ""
+msgstr "Analitzadors, pedaços, shoutcast"
 
 #: main.cpp:140
 msgid "Adeodato Simó"
 msgstr "Adeodato Simó"
 
 #: main.cpp:140 main.cpp:148
-#, fuzzy
-#| msgid "dates"
 msgid "Patches"
-msgstr "dates"
+msgstr "Pedaços"
 
 #: main.cpp:142
 msgid "Alexandre Oliveira"
@@ -3529,7 +3488,7 @@ msgstr "Andreas Mair"
 
 #: main.cpp:144
 msgid "MySQL support"
-msgstr ""
+msgstr "Implementació del MySQL"
 
 #: main.cpp:146
 msgid "Andrew de Quincey"
@@ -3537,7 +3496,7 @@ msgstr "Andrew de Quincey"
 
 #: main.cpp:146
 msgid "Postgresql support"
-msgstr ""
+msgstr "Implementació del Postgresql"
 
 #: main.cpp:148
 msgid "Andrew Turner"
@@ -3549,7 +3508,7 @@ msgstr "Andy Kelk"
 
 #: main.cpp:150
 msgid "MTP and Rio Karma media devices, patches"
-msgstr ""
+msgstr "Dispositius de suports MTP i Rio Karma, pedaços"
 
 #: main.cpp:152
 msgid "Christian Muehlhaeuser"
@@ -3561,7 +3520,7 @@ msgstr "Derek Nelson"
 
 #: main.cpp:154
 msgid "Graphics, splash-screen"
-msgstr ""
+msgstr "Gràfics, pantalla de presentació"
 
 #: main.cpp:156
 msgid "Enrico Ros"
@@ -3569,7 +3528,7 @@ msgstr "Enrico Ros"
 
 #: main.cpp:156
 msgid "Analyzers, Context Browser and systray eye-candy"
-msgstr ""
+msgstr "Analitzadors, navegador contextual i gràfics de la safata del sistema"
 
 #: main.cpp:158
 msgid "Frederik Holljen"
@@ -3585,17 +3544,15 @@ msgstr "Gérard Dürrmeyer"
 
 #: main.cpp:162
 msgid "Icons and image work"
-msgstr ""
+msgstr "Icones i treball d'imatges"
 
 #: main.cpp:164
 msgid "Giovanni Venturi"
 msgstr "Giovanni Venturi"
 
 #: main.cpp:164
-#, fuzzy
-#| msgid "List of folders in the Collection"
 msgid "Dialog to filter the collection titles"
-msgstr "Llista de les carpetes de la col·lecció"
+msgstr "Diàleg per a filtrar els títols de la col·lecció"
 
 #: main.cpp:166
 msgid "Jarkko Lehti"
@@ -3603,7 +3560,7 @@ msgstr "Jarkko Lehti"
 
 #: main.cpp:166
 msgid "Tester, IRC channel operator, whipping"
-msgstr ""
+msgstr "Provador, operador del canal IRC, flagel·lació"
 
 #: main.cpp:168
 msgid "Jocke Andersson"
@@ -3611,7 +3568,7 @@ msgstr "Jocke Andersson"
 
 #: main.cpp:168
 msgid "Rokymoter, bug fixer (Firetech)"
-msgstr ""
+msgstr "Rokymoter, esmena d'errors (Firetech)"
 
 #: main.cpp:170
 msgid "Marco Gulino"
@@ -3619,7 +3576,7 @@ msgstr "Marco Gulino"
 
 #: main.cpp:170
 msgid "Konqueror Sidebar, some DCOP methods"
-msgstr ""
+msgstr "Barra lateral del Konqueror, alguns mètodes del DCOP"
 
 #: main.cpp:172
 msgid "Martin Aumueller"
@@ -3631,7 +3588,7 @@ msgstr "Melchior Franz"
 
 #: main.cpp:174
 msgid "FHT routine, bugfixes"
-msgstr ""
+msgstr "Rutina FHT, esmena d'errors"
 
 #: main.cpp:176
 msgid "Michael Pyne"
@@ -3639,7 +3596,7 @@ msgstr "Michael Pyne"
 
 #: main.cpp:176
 msgid "K3b export code"
-msgstr ""
+msgstr "Codi d'exportació del K3b"
 
 #: main.cpp:178
 msgid "Mike Diehl"
@@ -3655,7 +3612,7 @@ msgstr "Peter C. Ndikuwera"
 
 #: main.cpp:182
 msgid "Bugfixes, PostgreSQL support"
-msgstr ""
+msgstr "Esmena d'errors, implementació del PostgreSQL"
 
 #: main.cpp:184
 msgid "Pierpaolo Panfilo"
@@ -3667,7 +3624,7 @@ msgstr "Reigo Reinmets"
 
 #: main.cpp:186
 msgid "Wikipedia support, patches"
-msgstr ""
+msgstr "Implementació de la Viquipèdia, pedaços"
 
 #: main.cpp:188
 msgid "Roman Becker"
@@ -3676,6 +3633,7 @@ msgstr "Roman Becker"
 #: main.cpp:188
 msgid "Former Amarok logo, former splash screen, former icons"
 msgstr ""
+"Logo antic de l'Amarok, pantalla de presentació antiga, icones antigues"
 
 #: main.cpp:190
 msgid "Sami Nieminen"
@@ -3683,7 +3641,7 @@ msgstr "Sami Nieminen"
 
 #: main.cpp:190
 msgid "Audioscrobbler support"
-msgstr ""
+msgstr "Implementació de l'Audioscrobbler"
 
 #: main.cpp:192
 msgid "Stanislav Karchebny"
@@ -3695,7 +3653,7 @@ msgstr "Stefan Bogner"
 
 #: main.cpp:194
 msgid "Loads of stuff"
-msgstr ""
+msgstr "Càrregues de material"
 
 #: browsers/InfoProxy.cpp:164
 msgid "Home"
@@ -3736,79 +3694,79 @@ msgstr "Filtre d'orígens de música"
 msgid "Previous Browser"
 msgstr "Navegador anterior"
 
-#: browsers/CollectionTreeItemModelBase.cpp:535
+#: browsers/CollectionTreeItemModelBase.cpp:533
 msgid "album"
 msgstr "àlbum"
 
-#: browsers/CollectionTreeItemModelBase.cpp:540
+#: browsers/CollectionTreeItemModelBase.cpp:538
 msgid "artist"
 msgstr "artista"
 
-#: browsers/CollectionTreeItemModelBase.cpp:545
+#: browsers/CollectionTreeItemModelBase.cpp:543
 msgid "genre"
 msgstr "gènere"
 
-#: browsers/CollectionTreeItemModelBase.cpp:550
+#: browsers/CollectionTreeItemModelBase.cpp:548
 msgid "composer"
 msgstr "compositor"
 
-#: browsers/CollectionTreeItemModelBase.cpp:555
+#: browsers/CollectionTreeItemModelBase.cpp:553
 msgid "year"
 msgstr "any"
 
-#: browsers/CollectionTreeItemModelBase.cpp:560
+#: browsers/CollectionTreeItemModelBase.cpp:558
 msgid "comment"
 msgstr "comentari"
 
-#: browsers/CollectionTreeItemModelBase.cpp:564
+#: browsers/CollectionTreeItemModelBase.cpp:562
 msgid "rating"
 msgstr "valoració"
 
-#: browsers/CollectionTreeItemModelBase.cpp:568
+#: browsers/CollectionTreeItemModelBase.cpp:566
 msgid "score"
 msgstr "puntuació"
 
-#: browsers/CollectionTreeItemModelBase.cpp:572
+#: browsers/CollectionTreeItemModelBase.cpp:570
 msgid "playcount"
 msgstr "número de reproduccions"
 
-#: browsers/CollectionTreeItemModelBase.cpp:576
+#: browsers/CollectionTreeItemModelBase.cpp:574
 msgid "length"
 msgstr "durada"
 
-#: browsers/CollectionTreeItemModelBase.cpp:580
+#: browsers/CollectionTreeItemModelBase.cpp:578
 msgid "discnumber"
 msgstr "número de disc"
 
-#: browsers/CollectionTreeItemModelBase.cpp:584
+#: browsers/CollectionTreeItemModelBase.cpp:582
 msgid "tracknumber"
 msgstr "número de peça"
 
-#: browsers/CollectionTreeItemModelBase.cpp:588
+#: browsers/CollectionTreeItemModelBase.cpp:586
 msgid "added"
 msgstr "s'ha afegit"
 
-#: browsers/CollectionTreeItemModelBase.cpp:594
+#: browsers/CollectionTreeItemModelBase.cpp:592
 msgid "today"
 msgstr "avui"
 
-#: browsers/CollectionTreeItemModelBase.cpp:596
+#: browsers/CollectionTreeItemModelBase.cpp:594
 msgid "last week"
 msgstr "darrera setmana"
 
-#: browsers/CollectionTreeItemModelBase.cpp:598
+#: browsers/CollectionTreeItemModelBase.cpp:596
 msgid "last month"
 msgstr "darrer mes"
 
-#: browsers/CollectionTreeItemModelBase.cpp:600
+#: browsers/CollectionTreeItemModelBase.cpp:598
 msgid "two months ago"
 msgstr "fa dos mesos"
 
-#: browsers/CollectionTreeItemModelBase.cpp:602
+#: browsers/CollectionTreeItemModelBase.cpp:600
 msgid "three months ago"
 msgstr "Fa tres mesos"
 
-#: browsers/CollectionTreeItemModelBase.cpp:903
+#: browsers/CollectionTreeItemModelBase.cpp:901
 msgid "Year - Album"
 msgstr "Any - Àlbum"
 
@@ -4237,47 +4195,53 @@ msgstr[1] "%1 peces"
 msgid "Close"
 msgstr "Tanca"
 
-#: MainWindow.cpp:252
+#: MainWindow.cpp:253
 msgid "Browsers"
 msgstr "Navegadors"
 
-#: MainWindow.cpp:286
+#: MainWindow.cpp:287
 msgid "Context"
-msgstr "Context"
+msgstr "Contextual"
 
-#: MainWindow.cpp:316
+#: MainWindow.cpp:314
 msgid "Local Music"
 msgstr "Música local"
 
-#: MainWindow.cpp:318
+#: MainWindow.cpp:316
 msgid "Local sources of content"
 msgstr "Orígens locals de contingut"
 
-#: MainWindow.cpp:326
+#: MainWindow.cpp:324
 msgid "Internet"
 msgstr "Internet"
 
-#: MainWindow.cpp:328
+#: MainWindow.cpp:326
 msgid "Online sources of content"
 msgstr "Orígens en línia de contingut"
 
-#: MainWindow.cpp:334
+#: MainWindow.cpp:332
 msgid "Playlists"
 msgstr "Llistes de reproducció"
 
-#: MainWindow.cpp:336
+#: MainWindow.cpp:334
 msgid "Various types of playlists"
 msgstr "Diversos tipus de llistes de reproducció"
 
-#: MainWindow.cpp:343
+#: MainWindow.cpp:341
 msgid "Files"
 msgstr "Fitxers"
 
-#: MainWindow.cpp:345
+#: MainWindow.cpp:343
 msgid "Browse local hard drive for content"
 msgstr "Navega pel disc dur local cercant contingut"
 
-#: MainWindow.cpp:462
+#. i18n: file: configdialog/dialogs/GeneralConfig.ui:56
+#. i18n: ectx: property (text), widget (QCheckBox, kcfg_LockLayout)
+#: MainWindow.cpp:388 rc.cpp:770
+msgid "Lock layout"
+msgstr "Bloqueja el format"
+
+#: MainWindow.cpp:504
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
 "<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
@@ -4287,153 +4251,153 @@ msgstr ""
 "la safata del sistema. Useu <B>Abandona</B> del menú, o la icona de la "
 "safata del sistema de l'Amarok per sortir del programa.</qt>"
 
-#: MainWindow.cpp:464
+#: MainWindow.cpp:506
 msgid "Docking in System Tray"
 msgstr "Acobla a la safata del sistema"
 
-#: MainWindow.cpp:489
+#: MainWindow.cpp:531
 msgid "Use relative path for &saving"
 msgstr "Utilitza l'adreça relativa per &guardar"
 
-#: MainWindow.cpp:500
+#: MainWindow.cpp:542
 msgid "Save As"
 msgstr "Desa com a"
 
-#: MainWindow.cpp:537
+#: MainWindow.cpp:579
 msgid "Play Media (Files or URLs)"
 msgstr "Reprodueix suports (fitxers o URL)"
 
-#: MainWindow.cpp:537
+#: MainWindow.cpp:579
 msgid "Add Media (Files or URLs)"
 msgstr "Afegeix suports (fitxers o URL)"
 
-#: MainWindow.cpp:552
+#: MainWindow.cpp:594
 msgid "Add Stream"
-msgstr "Afegeix un flux"
+msgstr "Afegeix un corrent de dades"
 
-#: MainWindow.cpp:552
+#: MainWindow.cpp:594
 msgid "Enter Stream URL:"
-msgstr "Introduïu l'URL del flux de reproducció:"
+msgstr "Introduïu l'URL del corrent de dades:"
 
-#: MainWindow.cpp:630
+#: MainWindow.cpp:672
 msgid "&Add Media..."
 msgstr "&Afegeix suports..."
 
-#: MainWindow.cpp:635
+#: MainWindow.cpp:677
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "&Buida la llista de reproducció"
 
-#: MainWindow.cpp:639
+#: MainWindow.cpp:681
 msgid "&Add Stream..."
-msgstr "&Afegeix un flux..."
+msgstr "&Afegeix un corrent de dades..."
 
-#: MainWindow.cpp:643
+#: MainWindow.cpp:685
 msgid "&Export Playlist As..."
 msgstr "&Exporta la llista de reproducció com a..."
 
-#: MainWindow.cpp:647 MainWindow.cpp:655
+#: MainWindow.cpp:689 MainWindow.cpp:697
 msgid "Bookmark This Location"
 msgstr "Desa aquesta localització a les adreces d'interès"
 
-#: MainWindow.cpp:651 amarokurls/BookmarkManager.cpp:42
+#: MainWindow.cpp:693 amarokurls/BookmarkManager.cpp:42
 msgid "Bookmark Manager"
 msgstr "Gestor d'adreces d'interès"
 
-#: MainWindow.cpp:659 covermanager/CoverManager.cpp:97
+#: MainWindow.cpp:701 covermanager/CoverManager.cpp:97
 msgid "Cover Manager"
 msgstr "Gestor de caràtules"
 
-#: MainWindow.cpp:663
+#: MainWindow.cpp:705
 msgid "Play Media..."
 msgstr "Reprodueix suports..."
 
-#: MainWindow.cpp:671
+#: MainWindow.cpp:713
 msgid "&Seek Forward"
 msgstr "&Cerca endavant"
 
-#: MainWindow.cpp:677
+#: MainWindow.cpp:719
 msgid "&Seek Backward"
 msgstr "&Cerca enrere"
 
-#: MainWindow.cpp:684
+#: MainWindow.cpp:726
 msgid "Update Collection"
 msgstr "Actualitza la col·lecció"
 
-#: MainWindow.cpp:691
+#: MainWindow.cpp:733
 msgid "Previous Track"
 msgstr "Peça anterior"
 
-#: MainWindow.cpp:699
+#: MainWindow.cpp:741
 msgid "Next Track"
 msgstr "Peça següent"
 
-#: MainWindow.cpp:702
+#: MainWindow.cpp:744
 msgid "Increase Volume"
 msgstr "Augmenta el volum"
 
-#: MainWindow.cpp:708
+#: MainWindow.cpp:750
 msgid "Decrease Volume"
 msgstr "Disminueix el volum"
 
-#: MainWindow.cpp:714
+#: MainWindow.cpp:756
 msgid "Toggle Main Window"
 msgstr "Commuta la finestra principal"
 
-#: MainWindow.cpp:719
+#: MainWindow.cpp:761
 msgid "Show On Screen Display"
 msgstr "Utilitza el visor en pantalla"
 
-#: MainWindow.cpp:724
+#: MainWindow.cpp:766
 msgid "Mute Volume"
 msgstr "Silencia el volum"
 
-#: MainWindow.cpp:729
+#: MainWindow.cpp:771
 msgid "Love Current Track"
 msgstr "Afegeix la peça actual a les preferides"
 
-#: MainWindow.cpp:734
+#: MainWindow.cpp:776
 msgid "Rate Current Track: 1"
 msgstr "Valora la peça actual: 1"
 
-#: MainWindow.cpp:739
+#: MainWindow.cpp:781
 msgid "Rate Current Track: 2"
 msgstr "Valora la peça actual: 2"
 
-#: MainWindow.cpp:744
+#: MainWindow.cpp:786
 msgid "Rate Current Track: 3"
 msgstr "Valora la peça actual: 3"
 
-#: MainWindow.cpp:749
+#: MainWindow.cpp:791
 msgid "Rate Current Track: 4"
 msgstr "Valora la peça actual: 4"
 
-#: MainWindow.cpp:754
+#: MainWindow.cpp:796
 msgid "Rate Current Track: 5"
 msgstr "Valora la peça actual: 5"
 
-#: MainWindow.cpp:817
+#: MainWindow.cpp:859
 msgid "&Music"
 msgstr "&Música"
 
-#: MainWindow.cpp:821
+#: MainWindow.cpp:863
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:864
+#: MainWindow.cpp:906
 msgid "&Tools"
 msgstr "&Eines"
 
-#: MainWindow.cpp:877
+#: MainWindow.cpp:919
 msgid "&Settings"
 msgstr "A&rranjaments"
 
-#: MainWindow.cpp:988
+#: MainWindow.cpp:1046
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Pausat :: %1"
 
-#: MainWindow.cpp:1011
+#: MainWindow.cpp:1070
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1. %2 - %3"
@@ -4471,7 +4435,18 @@ msgstr "Mode d'àudio"
 msgid "Data Mode"
 msgstr "Mode de dades"
 
-#: toolbar/MainToolbarNG.cpp:39
+#: toolbar/VolumePopupButton.cpp:97 toolbar/VolumePopupButton.cpp:108
+#: widgets/Osd.cpp:145
+msgid "(muted)"
+msgstr "(silenciat)"
+
+#: toolbar/VolumePopupButton.cpp:97 toolbar/VolumePopupButton.cpp:108
+#: widgets/Osd.cpp:145
+#, kde-format
+msgid "Volume: %1% %2"
+msgstr "Volum: %1% %2"
+
+#: toolbar/MainToolbarNG.cpp:36
 msgid "Main Toolbar NG"
 msgstr "Barra d'eines principal NG"
 
@@ -5083,7 +5058,7 @@ msgstr "Mode equalitzador - 0 = inactiu, 1 a n = nbr. d'ambient"
 #. i18n: ectx: whatsthis, entry, group (Playback)
 #: rc.cpp:252 rc.cpp:1885
 msgid "When enabled, an equalizer plugin filters the audio stream."
-msgstr "Si està activat, un equalitzador filtra el flux d'àudio."
+msgstr "Si està activat, un equalitzador filtra el corrent d'àudio."
 
 #. i18n: file: amarokconfig.kcfg:254
 #. i18n: ectx: label, entry, group (Playback)
@@ -6020,12 +5995,6 @@ msgstr "Mostra la &icona a la safata del sistema"
 #: rc.cpp:767
 msgid "Automatically retrieve cover art"
 msgstr "Recupera la caràtula automàticament"
-
-#. i18n: file: configdialog/dialogs/GeneralConfig.ui:56
-#. i18n: ectx: property (text), widget (QCheckBox, kcfg_LockLayout)
-#: rc.cpp:770
-msgid "Lock layout"
-msgstr "Bloqueja el format"
 
 #. i18n: file: configdialog/dialogs/GeneralConfig.ui:71
 #. i18n: ectx: property (title), widget (QGroupBox, playlistBox)
@@ -7089,7 +7058,7 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QRadioButton, m_streamRadio)
 #: rc.cpp:1295
 msgid "Stream or download on re&quest"
-msgstr "Descarrega sota &demanda"
+msgstr "Corrent de dades o descarrega sota &demanda"
 
 #. i18n: file: dialogs/PodcastSettingsBase.ui:133
 #. i18n: ectx: property (toolTip), widget (QCheckBox, m_purgeCheck)
@@ -7575,13 +7544,13 @@ msgstr ""
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
 #: rc.cpp:1521
 msgid "Stream options"
-msgstr "Opcions del flux"
+msgstr "Opcions del corrent de dades"
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:163
 #. i18n: ectx: property (text), widget (QLabel, label_5)
 #: rc.cpp:1524
 msgid "Preview stream type:"
-msgstr "Tipus de previsualització de flux:"
+msgstr "Tipus de previsualització del corrent de dades:"
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:171
 #. i18n: ectx: property (text), item, widget (QComboBox, streamTypeComboBox)
@@ -8011,12 +7980,11 @@ msgstr "Last.fm és atractiu..."
 
 #: services/lastfm/meta/MultiPlayableCapabilityImpl_p.h:107
 msgid ""
-"Unfortunately, Last.Fm radio streams are only functional for Last.Fm "
-"subscribers. All the other Last.Fm features are unaffected."
+"To listen to this stream you need to be a paying Last.Fm subscriber. All the "
+"other Last.Fm features are unaffected."
 msgstr ""
-"Desafortunadament, les transmissions de ràdio de Last.Fm radio només "
-"funcionen pels subscriptors de Last.Fm. La resta de funcionalitats de Last."
-"Fm no estan afectades."
+"Per a escoltar aquest corrent de dades cal pagar una subscripció de Last.Fm. "
+"La resta de funcionalitats de Last.Fm no estan afectades."
 
 #: services/lastfm/meta/MultiPlayableCapabilityImpl_p.h:109
 msgid "Error starting track from Last.Fm radio"
@@ -8276,8 +8244,8 @@ msgstr "Mostra totes les emisores"
 msgid "Results for: %1"
 msgstr "Resultats per: %1"
 
-#: services/shoutcast/ShoutcastServiceQueryMaker.cpp:306
-#: services/shoutcast/ShoutcastServiceQueryMaker.cpp:375
+#: services/shoutcast/ShoutcastServiceQueryMaker.cpp:314
+#: services/shoutcast/ShoutcastServiceQueryMaker.cpp:383
 msgid "The Shoutcast server is busy.<BR>Please try again later."
 msgstr ""
 "El servidor Shoutcast està ocupat.<BR>Si us plau, torneu-ho a intentar més "
@@ -9445,28 +9413,28 @@ msgstr "grup"
 msgid "Url"
 msgstr "URL"
 
-#: amarokurls/BookmarkModel.cpp:510
+#: amarokurls/BookmarkModel.cpp:514
 msgid "New Group"
 msgstr "Grup nou"
 
-#: amarokurls/BookmarkModel.cpp:535 amarokurls/BookmarkManagerWidget.cpp:47
+#: amarokurls/BookmarkModel.cpp:539 amarokurls/BookmarkManagerWidget.cpp:47
 msgid "New Bookmark"
 msgstr "Adreça d'interès nova"
 
-#: amarokurls/BookmarkModel.cpp:536
+#: amarokurls/BookmarkModel.cpp:540
 msgid "none"
 msgstr "cap"
 
-#: amarokurls/BookmarkTreeView.cpp:104
+#: amarokurls/BookmarkTreeView.cpp:106
 msgctxt "Load the view represented by this bookmark"
 msgid "&Load"
 msgstr "&Carrega"
 
-#: amarokurls/BookmarkTreeView.cpp:123
+#: amarokurls/BookmarkTreeView.cpp:119
 msgid "&Create timecode track"
 msgstr "&Crea una peça de codi de temps"
 
-#: amarokurls/BookmarkTreeView.cpp:327
+#: amarokurls/BookmarkTreeView.cpp:316
 msgid "New Timecode Track"
 msgstr "Peça nova de codi de temps"
 
@@ -9521,15 +9489,6 @@ msgstr "Control del volum"
 #: widgets/Osd.cpp:129
 msgid "Rating changed"
 msgstr "S'ha canviat la valoració"
-
-#: widgets/Osd.cpp:145
-msgid "(muted)"
-msgstr "(silenciat)"
-
-#: widgets/Osd.cpp:145
-#, kde-format
-msgid "Volume: %1% %2"
-msgstr "Volum: %1% %2"
 
 #: widgets/Osd.cpp:207
 msgid "Volume: 100% (muted)"
@@ -10004,6 +9963,3 @@ msgstr "Caràtula"
 #: covermanager/CoverManager.cpp:805
 msgid "No Artist"
 msgstr "Cap artista"
-
-#~ msgid "Install New Applets"
-#~ msgstr "Instal·lació de miniaplicacions noves"

@@ -16,8 +16,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-09-14 06:26+0200\n"
-"PO-Revision-Date: 2009-09-10 14:01+0300\n"
+"POT-Creation-Date: 2009-09-21 06:11+0200\n"
+"PO-Revision-Date: 2009-09-22 00:25+0300\n"
 "Last-Translator: Serdar Soytetir <tulliana@gmail.com>\n"
 "Language-Team: Turkish <yerellestirme@kde.org.tr>\n"
 "MIME-Version: 1.0\n"
@@ -52,57 +52,57 @@ msgctxt "The Value is not known"
 msgid "Unknown"
 msgstr "Bilinmeyen"
 
-#: meta/MetaUtility.cpp:508
+#: meta/MetaUtility.cpp:504
 msgctxt "The quality of music"
 msgid "Awful"
 msgstr "Korkunç"
 
-#: meta/MetaUtility.cpp:509
+#: meta/MetaUtility.cpp:505
 msgctxt "The quality of music"
 msgid "Bad"
 msgstr "Kötü"
 
-#: meta/MetaUtility.cpp:510
+#: meta/MetaUtility.cpp:506
 msgctxt "The quality of music"
 msgid "Barely tolerable"
 msgstr "Eh işte"
 
-#: meta/MetaUtility.cpp:511
+#: meta/MetaUtility.cpp:507
 msgctxt "The quality of music"
 msgid "Tolerable"
 msgstr "İdare Eder"
 
-#: meta/MetaUtility.cpp:512
+#: meta/MetaUtility.cpp:508
 msgctxt "The quality of music"
 msgid "Okay"
 msgstr "Tamam"
 
-#: meta/MetaUtility.cpp:513
+#: meta/MetaUtility.cpp:509
 msgctxt "The quality of music"
 msgid "Good"
 msgstr "İyi"
 
-#: meta/MetaUtility.cpp:514
+#: meta/MetaUtility.cpp:510
 msgctxt "The quality of music"
 msgid "Very good"
 msgstr "Çok iyi"
 
-#: meta/MetaUtility.cpp:515
+#: meta/MetaUtility.cpp:511
 msgctxt "The quality of music"
 msgid "Excellent"
 msgstr "Harika"
 
-#: meta/MetaUtility.cpp:516
+#: meta/MetaUtility.cpp:512
 msgctxt "The quality of music"
 msgid "Amazing"
 msgstr "Eğlenceli"
 
-#: meta/MetaUtility.cpp:517
+#: meta/MetaUtility.cpp:513
 msgctxt "The quality of music"
 msgid "Favorite"
 msgstr "Beğenilen"
 
-#: meta/MetaUtility.cpp:518
+#: meta/MetaUtility.cpp:514
 msgctxt "The quality of music"
 msgid "Not rated"
 msgstr "Beğeni belirtilmemiş"
@@ -112,12 +112,12 @@ msgstr "Beğeni belirtilmemiş"
 msgid "Stream (%1)"
 msgstr "Yayın (%1)"
 
-#: meta/capabilities/TimecodeWriteCapability.cpp:116
+#: meta/capabilities/TimecodeWriteCapability.cpp:112
 #, kde-format
 msgid "%1 - Stopped %2"
 msgstr "%1 - Durdu %2"
 
-#: meta/capabilities/TimecodeWriteCapability.cpp:121
+#: meta/capabilities/TimecodeWriteCapability.cpp:117
 msgid "Playback Ended Markers"
 msgstr "Çalma Sonlanma İşaretçileri"
 
@@ -203,8 +203,7 @@ msgstr "%1 iPod modeli iPod aygıtını başlatmak için gerekli"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:232
 #, kde-format
-msgid ""
-"%1 failed to write to iPod, make sure you have write permissions on the iPod"
+msgid "%1 failed to write to iPod, make sure you have write permissions on the iPod"
 msgstr ""
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:248
@@ -238,92 +237,91 @@ msgstr ""
 msgid "&Stale and Orphaned"
 msgstr "&Eski ve Terkedilmiş"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:364
-#: collection/ipodcollection/handler/IpodHandler.cpp:517
+#: collection/ipodcollection/handler/IpodHandler.cpp:365
+#: collection/ipodcollection/handler/IpodHandler.cpp:519
 msgid "Synchronise Artwork"
 msgstr ""
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:379
+#: collection/ipodcollection/handler/IpodHandler.cpp:381
 msgid ""
 "Do you really want to initialize this iPod? Its database will be cleared of "
 "all information, but the files will not be deleted."
 msgstr ""
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:383
+#: collection/ipodcollection/handler/IpodHandler.cpp:385
 msgid "Initialize iPod"
 msgstr "iPod'u Başlat"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:389
+#: collection/ipodcollection/handler/IpodHandler.cpp:391
 msgid "The iPod has been initialized"
 msgstr "iPod başlatıldı"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:391
+#: collection/ipodcollection/handler/IpodHandler.cpp:393
 msgid "The iPod was unable to be initialized"
 msgstr "iPod başlatılamadı"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:400
+#: collection/ipodcollection/handler/IpodHandler.cpp:402
 msgid ""
 "Amarok is about to search for stale tracks. This may take a while, do you "
 "want to continue?"
 msgstr ""
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:404
+#: collection/ipodcollection/handler/IpodHandler.cpp:406
 msgid "Find Stale Tracks"
 msgstr "Eski Parçaları Bul"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:479
+#: collection/ipodcollection/handler/IpodHandler.cpp:481
 #, kde-format
 msgctxt "@info"
 msgid "One stale track removed from the database. Scan for orphaned tracks?"
 msgid_plural "%1 tracks removed from the database. Scan for orphaned tracks?"
 msgstr[0] ""
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:484
+#: collection/ipodcollection/handler/IpodHandler.cpp:486
 msgid "Find Orphaned Tracks"
 msgstr "Terkedilmiş Parçaları Bul"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:515
+#: collection/ipodcollection/handler/IpodHandler.cpp:517
 #, kde-format
-msgid ""
-"Amarok is about to synchronize artwork on <i>%1</i>. Do you want to continue?"
+msgid "Amarok is about to synchronize artwork on <i>%1</i>. Do you want to continue?"
 msgstr ""
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:526
+#: collection/ipodcollection/handler/IpodHandler.cpp:528
 #, fuzzy
 #| msgid "Lyrics data could not be parsed"
 msgid "iPod artwork could not be synchronised"
 msgstr "Şarkı sözleri verisi ayrıştırılamadı"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:537
+#: collection/ipodcollection/handler/IpodHandler.cpp:539
 msgid "Artwork synchronised"
-msgstr ""
+msgstr "Sanatsal işler eşzamanlandı"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:818
+#: collection/ipodcollection/handler/IpodHandler.cpp:820
 msgid ""
 "Amarok requires sudo access to get the FirewireGuid required to connect to "
 "your device. Please enter your sudo password"
 msgstr ""
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:2084
+#: collection/ipodcollection/handler/IpodHandler.cpp:2086
 msgid "Select Stale Tracks To Delete"
 msgstr "Eski Parçaları Silmek için Seç"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:2084
+#: collection/ipodcollection/handler/IpodHandler.cpp:2086
 msgid "Stale Tracks"
 msgstr "Eski Parçalar"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:2137
+#: collection/ipodcollection/handler/IpodHandler.cpp:2139
 msgid "Adding Orphaned Tracks to iPod Database"
 msgstr "Terkedilmiş Dosyalar iPod Veritabanına Ekleniyor"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:2175
+#: collection/ipodcollection/handler/IpodHandler.cpp:2177
 #, kde-format
 msgctxt "@info"
 msgid "One orphaned track added to the database."
 msgid_plural "%1 tracks added to the database."
 msgstr[0] "%1 parça veritabanına eklendi."
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:2180
+#: collection/ipodcollection/handler/IpodHandler.cpp:2182
 msgid "Orphaned Tracks Added"
 msgstr "Terkedilmiş Parçalar Eklendi"
 
@@ -477,10 +475,9 @@ msgid "Nepomuk Collection (slow, Redland)"
 msgstr "Nepomuk Koleksiyonu (yavaş, Redland)"
 
 #: collection/sqlcollection/SqlImportedPlaylistProvider.h:29
-#, fuzzy
 #| msgid "Import playlist"
 msgid "Imported Playlist Files"
-msgstr "Parça listesi al"
+msgstr "İçeriye Aktarılmış Parça Listesi Dosyaları"
 
 #: collection/sqlcollection/ScanResultProcessor.cpp:139
 msgctxt "front"
@@ -557,17 +554,17 @@ msgstr "Çeşitli sanatçılar altında Gösterme"
 msgid "Show under Various Artists"
 msgstr "Çeşitli sanatçılar altında Göster"
 
-#: collection/audiocd/AudioCdCollection.cpp:71
+#: collection/audiocd/AudioCdCollection.cpp:72
 msgid "&Eject"
 msgstr "&Çıkart"
 
-#: collection/audiocd/AudioCdCollection.cpp:400
-#: collection/audiocd/AudioCdCollection.cpp:401
-#: collection/audiocd/AudioCdCollection.cpp:402
-#: collection/audiocd/AudioCdCollection.cpp:403
-#: context/applets/albums/AlbumItem.cpp:72 MainWindow.cpp:1011
-#: amarokurls/BookmarkTreeView.cpp:328 amarokurls/BookmarkTreeView.cpp:329
-#: amarokurls/BookmarkTreeView.cpp:330
+#: collection/audiocd/AudioCdCollection.cpp:412
+#: collection/audiocd/AudioCdCollection.cpp:413
+#: collection/audiocd/AudioCdCollection.cpp:414
+#: collection/audiocd/AudioCdCollection.cpp:415
+#: context/applets/albums/AlbumItem.cpp:72 MainWindow.cpp:1070
+#: amarokurls/BookmarkTreeView.cpp:317 amarokurls/BookmarkTreeView.cpp:318
+#: amarokurls/BookmarkTreeView.cpp:319
 msgid "Unknown"
 msgstr "Bilinmeyen"
 
@@ -880,36 +877,35 @@ msgid "Settings"
 msgstr "Ayarlar"
 
 #: context/applets/videoclip/VideoclipApplet.cpp:114
-#: context/applets/videoclip/VideoclipApplet.cpp:327
-#: context/applets/videoclip/VideoclipApplet.cpp:348
+#: context/applets/videoclip/VideoclipApplet.cpp:326
+#: context/applets/videoclip/VideoclipApplet.cpp:347
 msgid "Video Clip"
 msgstr "Video Klibi"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:338
+#: context/applets/videoclip/VideoclipApplet.cpp:337
 msgid "Video Clip "
 msgstr "Video Klibi "
 
-#: context/applets/videoclip/VideoclipApplet.cpp:338
+#: context/applets/videoclip/VideoclipApplet.cpp:337
 msgid " No information found..."
 msgstr " Bilgi bulunamadı..."
 
-#: context/applets/videoclip/VideoclipApplet.cpp:496
+#: context/applets/videoclip/VideoclipApplet.cpp:495
 msgid "Enter &fullscreen"
 msgstr "&Tam ekrana geç"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:502
+#: context/applets/videoclip/VideoclipApplet.cpp:501
 msgid "E&xit fullscreen"
 msgstr "Tam ekrandan &çık"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:520
+#: context/applets/videoclip/VideoclipApplet.cpp:519
 msgid "Video Clip Settings"
 msgstr "Video Klip Ayarları"
 
 #: context/applets/videoclip/VideoItemButton.cpp:81
-#, fuzzy
 #| msgid "Add to playlist"
 msgid "&Add to playlist"
-msgstr "Parça listesine ekle"
+msgstr "&Parça listesine ekle"
 
 #: context/applets/videoclip/VideoItemButton.cpp:82
 #: context/applets/albums/AlbumsView.cpp:114
@@ -921,22 +917,19 @@ msgid "Append and &Play"
 msgstr "Ekle ve Ç&al"
 
 #: context/applets/songkick/SongkickApplet.cpp:41
-#, fuzzy
 #| msgid "Plugin Information"
 msgid "Songkick Concert Information"
-msgstr "Eklenti Bilgisi"
+msgstr "Songkick Konser Bilgileri"
 
 #: context/applets/songkick/SongkickApplet.cpp:62
-#, fuzzy
 #| msgid "Context"
 msgid "Concerts"
-msgstr "Bağlam"
+msgstr "Konserler"
 
 #: context/applets/songkick/SongkickApplet.cpp:69
-#, fuzzy
 #| msgid "Reload Lyrics"
 msgid "Reload Songkick"
-msgstr "Şarkı Sözlerini Yeniden Yükle"
+msgstr "Songkick'i Yeniden Yükle"
 
 #: context/applets/songkick/SongkickApplet.cpp:151
 msgid "Concert information is being fetched."
@@ -950,8 +943,7 @@ msgstr ""
 msgid ""
 "Songkick was not able to be downloaded. Please check your internet "
 "connection: %1"
-msgstr ""
-"Şarkı sözleri indirilemedi. Lütfen İnternet bağlantınızı kontrol edin: %1"
+msgstr "Şarkı sözleri indirilemedi. Lütfen İnternet bağlantınızı kontrol edin: %1"
 
 #: context/applets/songkick/SongkickApplet.cpp:201
 #, fuzzy
@@ -1005,10 +997,9 @@ msgstr "Beğenilen parçalar"
 #: browsers/playlistbrowser/UserPlaylistModel.cpp:539
 #: browsers/playlistbrowser/PodcastModel.cpp:688
 #: services/lastfm/LastFmTreeView.cpp:112
-#, fuzzy
 #| msgid "Add to Playlist"
 msgid "&Add to Playlist"
-msgstr "Parça Listesine Ekle"
+msgstr "&Parça Listesine Ekle"
 
 #: context/applets/albums/AlbumsView.cpp:113
 #: browsers/CollectionTreeView.cpp:818
@@ -1039,8 +1030,8 @@ msgstr[0] "%1 parça"
 
 #: context/applets/lyrics/LyricsApplet.cpp:45
 #: context/applets/lyrics/LyricsApplet.cpp:77
-#: context/applets/lyrics/LyricsApplet.cpp:212
-#: context/applets/lyrics/LyricsApplet.cpp:266 dialogs/TagDialog.cpp:584
+#: context/applets/lyrics/LyricsApplet.cpp:203
+#: context/applets/lyrics/LyricsApplet.cpp:261 dialogs/TagDialog.cpp:584
 msgid "Lyrics"
 msgstr "Şarkı Sözleri"
 
@@ -1056,15 +1047,15 @@ msgstr "Şarkı Sözlerini Kaydet"
 msgid "Reload Lyrics"
 msgstr "Şarkı Sözlerini Yeniden Yükle"
 
-#: context/applets/lyrics/LyricsApplet.cpp:207
+#: context/applets/lyrics/LyricsApplet.cpp:198
 msgid "No lyrics script is running."
 msgstr "Herhangi bir şarkı sözü betiği çalışmıyor."
 
-#: context/applets/lyrics/LyricsApplet.cpp:220
+#: context/applets/lyrics/LyricsApplet.cpp:211
 msgid "Lyrics are being fetched."
 msgstr "Şarkı sözleri getiriliyor."
 
-#: context/applets/lyrics/LyricsApplet.cpp:229
+#: context/applets/lyrics/LyricsApplet.cpp:220
 #, fuzzy, kde-format
 #| msgid ""
 #| "Lyrics were not able to be downloaded. Please check your internet "
@@ -1074,10 +1065,9 @@ msgid ""
 "Please check your internet connection.\n"
 "Error message:\n"
 "%1"
-msgstr ""
-"Şarkı sözleri indirilemedi. Lütfen İnternet bağlantınızı kontrol edin: %1"
+msgstr "Şarkı sözleri indirilemedi. Lütfen İnternet bağlantınızı kontrol edin: %1"
 
-#: context/applets/lyrics/LyricsApplet.cpp:275
+#: context/applets/lyrics/LyricsApplet.cpp:273
 msgid "There were no lyrics found for this track"
 msgstr "Bu parçanın sözleri bulunamadı."
 
@@ -1135,7 +1125,7 @@ msgstr "Sonraki"
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: context/applets/wikipedia/WikipediaApplet.cpp:121
 #: dialogs/FilenameLayoutDialog.cpp:125 dialogs/FilenameLayoutDialog.cpp:340
-#: dialogs/transferdialog.cpp:88 browsers/CollectionTreeItemModelBase.cpp:904
+#: dialogs/transferdialog.cpp:88 browsers/CollectionTreeItemModelBase.cpp:902
 #: browsers/collectionbrowser/CollectionWidget.cpp:122
 #: browsers/collectionbrowser/CollectionWidget.cpp:151
 #: browsers/collectionbrowser/CollectionWidget.cpp:183
@@ -1152,7 +1142,7 @@ msgstr "Sanatçı"
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: context/applets/wikipedia/WikipediaApplet.cpp:128
 #: dialogs/FilenameLayoutDialog.cpp:128 dialogs/FilenameLayoutDialog.cpp:355
-#: dialogs/transferdialog.cpp:89 browsers/CollectionTreeItemModelBase.cpp:903
+#: dialogs/transferdialog.cpp:89 browsers/CollectionTreeItemModelBase.cpp:901
 #: browsers/collectionbrowser/CollectionWidget.cpp:125
 #: browsers/collectionbrowser/CollectionWidget.cpp:154
 #: browsers/collectionbrowser/CollectionWidget.cpp:186
@@ -1232,8 +1222,7 @@ msgid "Previous Group"
 msgstr "Önceki Grup"
 
 #: context/containments/verticallayout/VerticalToolbarContainment.cpp:58
-msgid ""
-"Please add some applets from the toolbar at the bottom of the context view."
+msgid "Please add some applets from the toolbar at the bottom of the context view."
 msgstr ""
 
 #: context/widgets/ToolBoxMenu.cpp:106
@@ -1323,7 +1312,7 @@ msgstr "&Parça"
 msgid "&Album"
 msgstr "&Albüm"
 
-#: ActionClasses.cpp:365 MainWindow.cpp:840
+#: ActionClasses.cpp:365 MainWindow.cpp:882
 msgid "&Playlist"
 msgstr "&Parça Listesi"
 
@@ -1444,10 +1433,9 @@ msgid "Off"
 msgstr "Kapalı"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:251
-#, fuzzy
 #| msgid "Delete the preset."
 msgid "Can not delete this preset"
-msgstr "Ayarı sil."
+msgstr "Bu ayar silinemiyor"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:252
 #, fuzzy
@@ -1456,16 +1444,14 @@ msgid "Default presets can not be deleted"
 msgstr "Silinemez klasör: '%1'"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:253
-#, fuzzy
 #| msgid "Error Creating File"
 msgid "Error deleting preset"
-msgstr "Dosya Oluşturma Hatası"
+msgstr "Ayar silme hatası"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:263
-#, fuzzy
 #| msgid "Delete the preset."
 msgid "Can not restore this preset"
-msgstr "Ayarı sil."
+msgstr "Bu ayar yeniden yüklenemiyor"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:264
 #, fuzzy
@@ -1491,10 +1477,9 @@ msgid ""
 msgstr ""
 
 #: configdialog/dialogs/PlaybackConfig.cpp:285
-#, fuzzy
 #| msgid "Error Creating File"
 msgid "Error saving preset"
-msgstr "Dosya Oluşturma Hatası"
+msgstr "Ayar kaydetme hatası"
 
 #: configdialog/dialogs/DatabaseConfig.cpp:92
 msgctxt ""
@@ -1628,8 +1613,7 @@ msgstr "Kodlaması değiştirilen dosyaları aktarma işlemi bitince sil"
 
 #: dialogs/deviceconfiguredialog.cpp:111 dialogs/deviceconfiguredialog.cpp:112
 msgid "For this feature, a script of type \"Transcode\" has to be running"
-msgstr ""
-"Bu özellik için, \"Transcode\" tipi bir betik çalışıyor olmak zorundadır"
+msgstr "Bu özellik için, \"Transcode\" tipi bir betik çalışıyor olmak zorundadır"
 
 #: dialogs/PodcastSettingsDialog.cpp:35
 #, kde-format
@@ -1644,8 +1628,7 @@ msgid_plural "<b>%1</b> files selected."
 msgstr[0] "<b>%1</b> dosya seçildi."
 
 #: dialogs/deletedialog.cpp:68
-msgid ""
-"<qt>These items will be <b>permanently deleted</b> from your hard disk.</qt>"
+msgid "<qt>These items will be <b>permanently deleted</b> from your hard disk.</qt>"
 msgstr ""
 "<qt>Bu dosyalar sabit diskinizden <b>geri dönüşü olmaksızın silinecek</b></"
 "qt>"
@@ -1748,7 +1731,7 @@ msgstr "Başlık"
 #. i18n: file: dialogs/EditFilterDialog.ui:90
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:126 dialogs/FilenameLayoutDialog.cpp:345
-#: browsers/CollectionTreeItemModelBase.cpp:905
+#: browsers/CollectionTreeItemModelBase.cpp:903
 #: browsers/collectionbrowser/CollectionWidget.cpp:131
 #: browsers/collectionbrowser/CollectionWidget.cpp:160
 #: browsers/collectionbrowser/CollectionWidget.cpp:192
@@ -1761,7 +1744,7 @@ msgstr "Besteci"
 #. i18n: file: dialogs/EditFilterDialog.ui:120
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:127 dialogs/FilenameLayoutDialog.cpp:350
-#: browsers/CollectionTreeItemModelBase.cpp:907
+#: browsers/CollectionTreeItemModelBase.cpp:905
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:248
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:691 rc.cpp:1166
 #: playlist/PlaylistModel.cpp:653 widgets/SmartPlaylistEditor.cpp:184
@@ -1778,7 +1761,7 @@ msgstr "Açıklama"
 #. i18n: file: dialogs/EditFilterDialog.ui:95
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:130 dialogs/FilenameLayoutDialog.cpp:365
-#: dialogs/transferdialog.cpp:90 browsers/CollectionTreeItemModelBase.cpp:906
+#: dialogs/transferdialog.cpp:90 browsers/CollectionTreeItemModelBase.cpp:904
 #: browsers/collectionbrowser/CollectionWidget.cpp:128
 #: browsers/collectionbrowser/CollectionWidget.cpp:157
 #: browsers/collectionbrowser/CollectionWidget.cpp:189
@@ -1852,8 +1835,7 @@ msgid ""
 msgstr ""
 
 #: dialogs/DatabaseImporterDialog.cpp:43
-msgid ""
-"<br><br>Any statistical data in your database will be <i>overwritten</i>"
+msgid "<br><br>Any statistical data in your database will be <i>overwritten</i>"
 msgstr "<br><br>Veritabanınızdaki tüm verilerin <i>üzerine yazılacak</i>"
 
 #: dialogs/DatabaseImporterDialog.cpp:52
@@ -1894,8 +1876,7 @@ msgstr ""
 #, kde-format
 msgid "<b><font color='green'>Success:</font></b> Imported %1 track"
 msgid_plural "<b><font color='green'>Success:</font></b> Imported %1 tracks"
-msgstr[0] ""
-"<b><font color='green'>Başarılı oldu:</font></b> %1 parça içeriye aktarıldı"
+msgstr[0] "<b><font color='green'>Başarılı oldu:</font></b> %1 parça içeriye aktarıldı"
 
 #: dialogs/DatabaseImporterDialog.cpp:169
 msgid "<b><font color='red'>Failed:</font></b> Unable to import statistics"
@@ -1929,8 +1910,7 @@ msgstr "<b><font color='red'>Hata:</font></b> %1"
 
 #: dialogs/DatabaseImporterDialog.cpp:219
 #, kde-format
-msgctxt ""
-"Track has been imported by tags, format: Artist - Track, from Url, to Url"
+msgctxt "Track has been imported by tags, format: Artist - Track, from Url, to Url"
 msgid ""
 "Imported <b><font color='green'>%1 - %2</font></b><br/>&nbsp;&nbsp;from %"
 "3<br/>&nbsp;&nbsp;to %4"
@@ -1991,8 +1971,7 @@ msgstr "<b>%2</b> tarafından seslendirilen <b>%1</b>"
 #: dialogs/TagDialog.cpp:866
 #, kde-format
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
-msgstr ""
-"<b>%2</b> tarafından seslendirilen <b>%3</b> albümündeki <b>%1</b> parçası"
+msgstr "<b>%2</b> tarafından seslendirilen <b>%3</b> albümündeki <b>%1</b> parçası"
 
 #: dialogs/TagDialog.cpp:870
 #, kde-format
@@ -2063,38 +2042,37 @@ msgctxt "The collection this track is part of"
 msgid "None"
 msgstr "Hiçbiri"
 
-#: dialogs/TagDialog.cpp:1053
+#: dialogs/TagDialog.cpp:1054
 #, kde-format
 msgctxt "The amount of tracks being edited"
 msgid "1 Track"
 msgid_plural "Information for %1 Tracks"
 msgstr[0] "%1 Parça"
 
-#: dialogs/TagDialog.cpp:1168
+#: dialogs/TagDialog.cpp:1169
 #, kde-format
 msgid "Editing 1 file"
 msgid_plural "Editing %1 files"
 msgstr[0] "%1 dosya düzenleniyor"
 
-#: dialogs/TagDialog.cpp:1173
+#: dialogs/TagDialog.cpp:1174
 msgid "Rated Songs:"
 msgstr "Beğeni Belirtilen Parçalar:"
 
-#: dialogs/TagDialog.cpp:1175
+#: dialogs/TagDialog.cpp:1176
 msgid "Average Rating:"
 msgstr "Ortalama Beğeni:"
 
-#: dialogs/TagDialog.cpp:1177
+#: dialogs/TagDialog.cpp:1178
 msgid "Scored Songs:"
 msgstr "Puanlanan Parçalar:"
 
-#: dialogs/TagDialog.cpp:1179
+#: dialogs/TagDialog.cpp:1180
 msgid "Average Score:"
 msgstr "Ortalama Puan:"
 
-#: dialogs/TagDialog.cpp:1477
-msgid ""
-"Writing to file failed. Please check permissions and available disc space."
+#: dialogs/TagDialog.cpp:1482
+msgid "Writing to file failed. Please check permissions and available disc space."
 msgstr ""
 
 #: dialogs/EditFilterDialog.cpp:43
@@ -2227,7 +2205,7 @@ msgstr "Seçenekler"
 msgid "Convert spaces to underscores"
 msgstr "Boşlukları alt çizgilere dönüştür"
 
-#: dialogs/ScriptManager.cpp:90 MainWindow.cpp:667
+#: dialogs/ScriptManager.cpp:90 MainWindow.cpp:709
 msgid "Script Manager"
 msgstr "Betik Yöneticisi"
 
@@ -2245,8 +2223,7 @@ msgstr "Bu paket okunamadı."
 
 #: dialogs/ScriptManager.cpp:286
 #, kde-format
-msgid ""
-"A script with the name '%1' is already installed. Please uninstall it first."
+msgid "A script with the name '%1' is already installed. Please uninstall it first."
 msgstr "'%1' adında bir betik zaten kurulu. Lütfen önce kaldırınız."
 
 #: dialogs/ScriptManager.cpp:297 dialogs/ScriptManager.cpp:351
@@ -2302,15 +2279,15 @@ msgstr ""
 
 #. i18n: file: collection/audiocd/FormatSelectionDialog.ui:14
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: App.cpp:112 rc.cpp:536
+#: App.cpp:114 rc.cpp:536
 msgid "Amarok"
 msgstr "Amarok"
 
-#: App.cpp:113
+#: App.cpp:115
 msgid "The audio player for KDE"
 msgstr "KDE için bir müzik çalıcı"
 
-#: App.cpp:114
+#: App.cpp:116
 msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2009, The Amarok Development Squad"
@@ -2318,7 +2295,7 @@ msgstr ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2009, Amarok Geliştirme Ekibi"
 
-#: App.cpp:115
+#: App.cpp:117
 #, kde-format
 msgid ""
 "IRC:\n"
@@ -2337,152 +2314,152 @@ msgstr ""
 "\n"
 "(İnşa Tarihi: %1)"
 
-#: App.cpp:461
+#: App.cpp:465
 msgid "Files/URLs to open"
 msgstr "Açılacak dosya/adres"
 
-#: App.cpp:463
+#: App.cpp:467
 msgid "Skip backwards in playlist"
 msgstr "Parça listesinde geri git"
 
-#: App.cpp:465
+#: App.cpp:469
 msgid "Start playing current playlist"
 msgstr "Şimdiki parça listesini çal"
 
-#: App.cpp:467
+#: App.cpp:471
 msgid "Play if stopped, pause if playing"
 msgstr "Bekliyorsa çal, çalıyorsa beklet"
 
-#: App.cpp:468
+#: App.cpp:472
 msgid "Pause playback"
 msgstr "Çalmayı duraklat"
 
-#: App.cpp:470
+#: App.cpp:474
 msgid "Stop playback"
 msgstr "Çalmayı durdur"
 
-#: App.cpp:472
+#: App.cpp:476
 msgid "Skip forwards in playlist"
 msgstr "İlerdeki çalma listelerini atla"
 
-#: App.cpp:473
+#: App.cpp:477
 msgid "Additional options:"
 msgstr "Ek seçenekler:"
 
-#: App.cpp:475
+#: App.cpp:479
 msgid "Append files/URLs to playlist"
 msgstr "Parça listesine dosya/adres ekle"
 
-#: App.cpp:476
+#: App.cpp:480
 msgid "Queue URLs after the currently playing track"
 msgstr "Şu anda çalan parçadan sonra adresi kuyruğa ekle"
 
-#: App.cpp:478
+#: App.cpp:482
 msgid "Load URLs, replacing current playlist"
 msgstr "Mevcut şarkı listesinin yerine yükle"
 
-#: App.cpp:480
+#: App.cpp:484
 msgid "Print verbose debugging information"
 msgstr "Ayrıntılı hata ayıklama bilgilerini yazdır"
 
-#: App.cpp:482
+#: App.cpp:486
 msgid "Allow running multiple Amarok instances"
 msgstr "Çoklu Amarok örneğinin çalışmasına izin ver"
 
-#: App.cpp:483
+#: App.cpp:487
 msgid "Base for relative filenames/URLs"
 msgstr "Göreli dosya adı ve adresler için referans kaynağı"
 
-#: App.cpp:484
+#: App.cpp:488
 msgid "Run integrated unit tests, if your build supports it"
 msgstr ""
 
-#: App.cpp:486
+#: App.cpp:490
 #, fuzzy
 #| msgid "Subscribe to This Podcast"
 msgid "Subscribe to podcast feed"
 msgstr "Bu podcasta üye ol"
 
-#: App.cpp:752
+#: App.cpp:756
 msgid "Moving files to trash"
 msgstr "Dosyalar çöpe taşınıyor"
 
-#: App.cpp:834
+#: App.cpp:837 App.cpp:874
+msgctxt "The amount of time since last played"
+msgid "Never"
+msgstr "Asla"
+
+#: App.cpp:842
 #, kde-format
 msgctxt "monthname year"
 msgid "%1 %2"
 msgstr "%1 %2"
 
-#: App.cpp:841
+#: App.cpp:849
 #, kde-format
 msgid "One week ago"
 msgid_plural "%1 weeks ago"
 msgstr[0] "%1 hafta önce"
 
-#: App.cpp:844 App.cpp:895
-msgctxt "When this track was last played"
-msgid "Tomorrow"
-msgstr "Yarın"
-
-#: App.cpp:850
+#: App.cpp:855
 msgid "Yesterday"
 msgstr "Dün"
 
-#: App.cpp:851
+#: App.cpp:856
 #, kde-format
 msgid "One day ago"
 msgid_plural "%1 days ago"
 msgstr[0] "%1 gün önce"
 
-#: App.cpp:854
+#: App.cpp:859
 #, kde-format
 msgid "One hour ago"
 msgid_plural "%1 hours ago"
 msgstr[0] "%1 saat önce"
 
-#: App.cpp:860
+#: App.cpp:865
 #, kde-format
 msgid "One minute ago"
 msgid_plural "%1 minutes ago"
 msgstr[0] "%1 dakika önce"
 
-#: App.cpp:861
+#: App.cpp:866
 msgid "Within the last minute"
 msgstr "Bir dakika önce"
 
-#: App.cpp:863
+#: App.cpp:868
 msgid "The future"
 msgstr "Gelecek"
 
-#: App.cpp:869
-msgctxt "The amount of time since last played"
-msgid "Never"
-msgstr "Asla"
-
-#: App.cpp:879
+#: App.cpp:884
 msgctxt "The amount of time since last played"
 msgid "0"
 msgstr "0"
 
-#: App.cpp:888
+#: App.cpp:893
 #, kde-format
 msgctxt "number of months ago"
 msgid "%1M"
 msgstr "%1A"
 
-#: App.cpp:892
+#: App.cpp:897
 #, kde-format
 msgctxt "w for weeks"
 msgid "%1w"
 msgstr "%1w"
 
-#: App.cpp:901
+#: App.cpp:900
+msgctxt "When this track was last played"
+msgid "Tomorrow"
+msgstr "Yarın"
+
+#: App.cpp:906
 #, no-c-format, kde-format
 msgctxt "d for days"
 msgid "%1d"
 msgstr "%1d"
 
-#: App.cpp:904
+#: App.cpp:909
 #, kde-format
 msgctxt "h for hours"
 msgid "%1h"
@@ -2510,7 +2487,7 @@ msgstr "%1h"
 #. i18n: ectx: property (text), widget (QLabel, eqBand8Value)
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:1320
 #. i18n: ectx: property (text), widget (QLabel, eqBand9Value)
-#: App.cpp:913 rc.cpp:680 rc.cpp:686 rc.cpp:692 rc.cpp:698 rc.cpp:704
+#: App.cpp:918 rc.cpp:680 rc.cpp:686 rc.cpp:692 rc.cpp:698 rc.cpp:704
 #: rc.cpp:710 rc.cpp:716 rc.cpp:722 rc.cpp:728 rc.cpp:734 rc.cpp:740
 msgid "0"
 msgstr "0"
@@ -2596,32 +2573,30 @@ msgstr ""
 msgid "Network error"
 msgstr "Ağ hatası"
 
-#: aboutdialog/OcsPersonItem.cpp:89
-#, fuzzy
+#: aboutdialog/OcsPersonItem.cpp:91
 #| msgid "Former contributors"
 msgid "Email contributor"
-msgstr "Resmi katkıcılar"
+msgstr ""
 
-#: aboutdialog/OcsPersonItem.cpp:97
+#: aboutdialog/OcsPersonItem.cpp:99
 msgid "Visit contributor's homepage"
 msgstr ""
 
-#: aboutdialog/OcsPersonItem.cpp:185
+#: aboutdialog/OcsPersonItem.cpp:187
 msgid "IRC channels: "
 msgstr "IRC kanalları: "
 
-#: aboutdialog/OcsPersonItem.cpp:199
-#, fuzzy
+#: aboutdialog/OcsPersonItem.cpp:201
 #| msgid "Favorite Albums"
 msgid "Favorite music: "
-msgstr "En Beğenilen Albümler"
+msgstr "Beğenilen müzik: "
 
-#: aboutdialog/OcsPersonItem.cpp:204
+#: aboutdialog/OcsPersonItem.cpp:206
 #, kde-format
 msgid "Visit %1's openDesktop.org profile"
 msgstr ""
 
-#: aboutdialog/OcsPersonItem.cpp:206
+#: aboutdialog/OcsPersonItem.cpp:208
 #, kde-format
 msgid "Visit %1's profile on openDesktop.org"
 msgstr ""
@@ -2641,14 +2616,13 @@ msgstr "Veritabanında kayıtlı olan parça listeleri"
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:133
 #: equalizerpresetmanager.cpp:55
 #: browsers/playlistbrowser/UserPlaylistModel.cpp:568
-#: amarokurls/BookmarkTreeView.cpp:116
 msgid "&Rename"
 msgstr "Yeniden Adlandı&r"
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:141
 #: equalizerpresetmanager.cpp:56
 #: browsers/playlistbrowser/UserPlaylistModel.cpp:575
-#: amarokurls/BookmarkTreeView.cpp:110
+#: amarokurls/BookmarkTreeView.cpp:112
 msgid "&Delete"
 msgstr "&Sil"
 
@@ -2861,10 +2835,9 @@ msgid "Amarok - No track playing"
 msgstr "Amarok - Hiçbir parça çalmıyor."
 
 #: Systray.cpp:242
-#, fuzzy
 #| msgid "Append && &Play"
 msgid "Add && &Play"
-msgstr "Ekle && Ç&al"
+msgstr "Ekle ve Ç&al"
 
 #: Systray.cpp:244
 msgid "&Queue Track"
@@ -2934,7 +2907,7 @@ msgstr "Başlıksız"
 msgid "A preset with the name %1 already exists. Overwrite?"
 msgstr "%1 adlı bir ayar zaten var. Üzerine yazılsın mı?"
 
-#: EngineController.cpp:209
+#: EngineController.cpp:226
 msgid ""
 "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
 "the installation of the backend that phonon uses.</p><p>You may find useful "
@@ -2944,23 +2917,21 @@ msgstr ""
 "kullandığı arka ucun kurulumunu kontrol edebilirsiniz.</p><p><i>Amarok "
 "Kılavuzundaki</i> <i>SSS</i> bölümünde yararlı bilgiler bulabilirsiniz.</p>"
 
-#: EngineController.cpp:228
+#: EngineController.cpp:245
 msgid "Install MP3 Support"
 msgstr "MP3 Desteğini Yükle"
 
-#: EngineController.cpp:230
+#: EngineController.cpp:247
 msgid ""
 "Amarok currently cannot play MP3 files. Do you want to install support for "
 "MP3?"
-msgstr ""
-"Amarok şu anda MP3 dosyalarını çalamaz. MP3 desteğini yüklemek ister misiniz?"
+msgstr "Amarok şu anda MP3 dosyalarını çalamaz. MP3 desteğini yüklemek ister misiniz?"
 
-#: EngineController.cpp:231
+#: EngineController.cpp:248
 msgid "No MP3 Support"
 msgstr "MP3 Desteği Yok"
 
-#: EngineController.cpp:710
-#, fuzzy
+#: EngineController.cpp:740
 #| msgid "Pre-amp"
 msgid "Preamp"
 msgstr "ÖnAmfi"
@@ -3061,7 +3032,7 @@ msgstr "Eşle:"
 msgid "Current Track"
 msgstr "Geçerli Parça"
 
-#: dynamic/biases/EchoNest.cpp:116 MainWindow.cpp:263
+#: dynamic/biases/EchoNest.cpp:116 MainWindow.cpp:264
 msgid "Playlist"
 msgstr "Parça listesi"
 
@@ -3086,8 +3057,7 @@ msgid "Enter new preset name:"
 msgstr "Yeni ayar adı girin:"
 
 #: equalizerpresetmanager.cpp:125
-msgid ""
-"All presets will be deleted and defaults will be restored. Are you sure?"
+msgid "All presets will be deleted and defaults will be restored. Are you sure?"
 msgstr "Tüm ayarlar silinecek ve öntanımlı ayarlar kullanılacak. Emin misiniz?"
 
 #: main.cpp:35
@@ -3095,40 +3065,36 @@ msgid "Alejandro Wainzinger"
 msgstr "Alejandro Wainzinger"
 
 #: main.cpp:36
-#, fuzzy
 #| msgid "Developer (jefferai)"
 msgid "Developer (xevix)"
-msgstr "Geliştirici (jefferai)"
+msgstr "Geliştirici (xevix)"
 
 #: main.cpp:37
 msgid "Bart 'Where are my toothpicks' Cerneels"
-msgstr ""
+msgstr "Bart 'Where are my toothpicks' Cerneels"
 
 #: main.cpp:38
-#, fuzzy
 #| msgid "Developer (jefferai)"
 msgid "Developer (Stecchino)"
-msgstr "Geliştirici (jefferai)"
+msgstr "Geliştirici (Stecchino)"
 
 #: main.cpp:39
 msgid "Dan 'Hey, it compiled...' Meltzer"
 msgstr "Dan 'Hey, sonunda derlendi...' Meltzer"
 
 #: main.cpp:40
-#, fuzzy
 #| msgid "Developer (jefferai)"
 msgid "Developer (hydrogen)"
-msgstr "Geliştirici (jefferai)"
+msgstr "Geliştirici (hydrogen)"
 
 #: main.cpp:41
 msgid "Ian 'The Beard' Monroe"
 msgstr "Ian 'The Beard' Monroe"
 
 #: main.cpp:42
-#, fuzzy
 #| msgid "Developer (jefferai)"
 msgid "Developer (eean)"
-msgstr "Geliştirici (jefferai)"
+msgstr "Geliştirici (eean)"
 
 #: main.cpp:43
 msgid "Jeff 'IROCKSOHARD' Mitchell"
@@ -3139,18 +3105,17 @@ msgid "Developer (jefferai)"
 msgstr "Geliştirici (jefferai)"
 
 #: main.cpp:46
-#, fuzzy
 #| msgid "Developer (jefferai)"
 msgid "Developer (lfranchi)"
-msgstr "Geliştirici (jefferai)"
+msgstr "Geliştirici (lfranchi)"
 
 #: main.cpp:47
 msgid "Lydia 'is wrong(TM)' Pintscher"
-msgstr ""
+msgstr "Lydia 'is wrong(TM)' Pintscher"
 
 #: main.cpp:48
 msgid "Release Vixen (Nightrose)"
-msgstr ""
+msgstr "Release Vixen (Nightrose)"
 
 #: main.cpp:49
 msgid "Mark 'It's good, but it's not irssi' Kretschmann"
@@ -3165,40 +3130,36 @@ msgid "Maximilian Kossick"
 msgstr "Maximilian Kossick"
 
 #: main.cpp:52
-#, fuzzy
 #| msgid "Developer (jefferai)"
 msgid "Developer (maxx_k)"
-msgstr "Geliştirici (jefferai)"
+msgstr "Geliştirici (maxx_k)"
 
 #: main.cpp:53
 msgid "Nikolaj Hald 'Also very hot' Nielsen"
 msgstr "Nikolaj Hald 'Also very hot' Nielsen"
 
 #: main.cpp:54
-#, fuzzy
 #| msgid "Developer"
 msgid "Developer (nhn)"
-msgstr "Geliştirici"
+msgstr "Geliştirici (nhn)"
 
 #: main.cpp:55
 msgid "Seb 'Surfin' down under' Ruiz"
 msgstr "Seb 'Surfin' down under' Ruiz"
 
 #: main.cpp:56
-#, fuzzy
 #| msgid "Developer (jefferai)"
 msgid "Developer (sebr)"
-msgstr "Geliştirici (jefferai)"
+msgstr "Geliştirici (sebr)"
 
 #: main.cpp:57
 msgid "Téo Mrnjavac"
 msgstr "Téo Mrnjavac"
 
 #: main.cpp:58
-#, fuzzy
 #| msgid "Developer (jefferai)"
 msgid "Developer (Teo`)"
-msgstr "Geliştirici (jefferai)"
+msgstr "Geliştirici (Teo`)"
 
 #: main.cpp:74
 msgid "Alex Merry"
@@ -3213,20 +3174,18 @@ msgid "Casey Link"
 msgstr "Casey Link"
 
 #: main.cpp:76
-#, fuzzy
 #| msgid "Mp3tunes Login"
 msgid "MP3tunes integration"
-msgstr "Mp3tunes Girişi"
+msgstr "MP3tunes bütünleşmesi"
 
 #: main.cpp:78
 msgid "Casper van Donderen"
 msgstr "Casper van Donderen"
 
 #: main.cpp:78
-#, fuzzy
 #| msgid "Windraw Exception"
 msgid "Windows porting"
-msgstr "Windraw istisnası"
+msgstr "Windows geçişi"
 
 #: main.cpp:80
 msgid "Christie Harris"
@@ -3234,7 +3193,7 @@ msgstr "Christie Harris"
 
 #: main.cpp:80
 msgid "Rokymoter (dangle)"
-msgstr ""
+msgstr "Rokymoter (dangle)"
 
 #: main.cpp:82
 msgid "Dan Leinir Turthra Jensen"
@@ -3242,7 +3201,7 @@ msgstr "Dan Leinir Turthra Jensen"
 
 #: main.cpp:82
 msgid "Usability"
-msgstr ""
+msgstr "Kullanılabilirlik"
 
 #: main.cpp:84
 msgid "Daniel Caleb Jones"
@@ -3259,10 +3218,9 @@ msgid "Daniel Winter"
 msgstr "Daniel Winter"
 
 #: main.cpp:86
-#, fuzzy
 #| msgid "Nepomuk Collection"
 msgid "Nepomuk integration"
-msgstr "Nepomuk Koleksiyonu"
+msgstr "Nepomuk bütünleşmesi"
 
 #: main.cpp:88
 msgid "Edward \"Hades\" Toroshchin"
@@ -3282,17 +3240,16 @@ msgstr "Harald Sitter"
 
 #: main.cpp:92
 msgid "Rokymoter (apachelogger)"
-msgstr ""
+msgstr "Rokymoter (apachelogger)"
 
 #: main.cpp:94
 msgid "Kenneth Wesley Wimer II"
 msgstr "Kenneth Wesley Wimer II"
 
 #: main.cpp:94
-#, fuzzy
 #| msgid "Icon"
 msgid "Icons"
-msgstr "Simge"
+msgstr "Simgeler"
 
 #: main.cpp:96
 msgid "Kevin Funk"
@@ -3304,21 +3261,20 @@ msgstr ""
 
 #: main.cpp:98
 msgid "Kuba Serafinowski"
-msgstr ""
+msgstr "Kuba Serafinowski"
 
 #: main.cpp:98
 msgid "Rokymoter"
-msgstr ""
+msgstr "Rokymoter"
 
 #: main.cpp:100
 msgid "Lee Olson"
 msgstr "Lee Olson"
 
 #: main.cpp:100 main.cpp:110
-#, fuzzy
 #| msgid "Update Artwork"
 msgid "Artwork"
-msgstr "Artwork Güncelle"
+msgstr "Sanatsal İşler"
 
 #: main.cpp:102
 msgid "Ljubomir Simin"
@@ -3326,21 +3282,20 @@ msgstr "Ljubomir Simin"
 
 #: main.cpp:102
 msgid "Rokymoter (ljubomir)"
-msgstr ""
+msgstr "Rokymoter (ljubomir)"
 
 #: main.cpp:104
 msgid "Max Howell"
 msgstr "Max Howell"
 
 #: main.cpp:104
-#, fuzzy
 #| msgid "Developer"
 msgid "Developer, Vision"
-msgstr "Geliştirici"
+msgstr "Geliştirici, Vizyon"
 
 #: main.cpp:106
 msgid "Mikko Caldara"
-msgstr ""
+msgstr "Mikko Caldara"
 
 #: main.cpp:106
 msgid "Bug triaging and sanitizing"
@@ -3352,7 +3307,7 @@ msgstr "Myriam Schweingruber"
 
 #: main.cpp:108
 msgid "Rokymoter, bug squashing (Mamarok)"
-msgstr ""
+msgstr "Rokymoter, bug squashing (Mamarok)"
 
 #: main.cpp:110
 msgid "Nuno Pinheiro"
@@ -3364,7 +3319,7 @@ msgstr "Olivier Bédard"
 
 #: main.cpp:112
 msgid "Website hosting"
-msgstr ""
+msgstr "Web sayfası barındırma"
 
 #: main.cpp:114
 msgid "Pasi Lalinaho"
@@ -3372,17 +3327,16 @@ msgstr "Pasi Lalinaho"
 
 #: main.cpp:114
 msgid "Rokymoter (emunkki)"
-msgstr ""
+msgstr "Rokymoter (emunkki)"
 
 #: main.cpp:116
 msgid "Peter Zhou Lei"
 msgstr "Peter Zhou Lei"
 
 #: main.cpp:116
-#, fuzzy
 #| msgid "Scripted Services"
 msgid "Scripting interface"
-msgstr "Betik Servisleri"
+msgstr "Betikleme arayüzü"
 
 #: main.cpp:118
 msgid "Scott Wheeler"
@@ -3402,7 +3356,7 @@ msgstr ""
 
 #: main.cpp:122
 msgid "Simon Esneault"
-msgstr ""
+msgstr "Simon Esneault"
 
 #: main.cpp:122
 msgid "Photos & Videos applets, Context View"
@@ -3418,35 +3372,31 @@ msgstr "Sven Krohlas"
 
 #: main.cpp:126
 msgid "Rokymoter (sven423)"
-msgstr ""
+msgstr "Rokymoter (sven423)"
 
 #: main.cpp:128
 msgid "Thomas Lübking"
-msgstr ""
+msgstr "Thomas Lübking"
 
 #: main.cpp:130
 msgid "Valentin Rouet"
-msgstr ""
+msgstr "Valentin Rouet"
 
 #: main.cpp:132
 msgid "Wade Olson"
 msgstr "Wade Olson"
 
 #: main.cpp:132
-#, fuzzy
-#| msgid "Sho&w splash-screen on startup"
 msgid "Splash screen artist"
-msgstr "Başlangıçta açı&lış ekranını göster"
+msgstr "Açılış ekranını yapan sanatçı"
 
 #: main.cpp:134
 msgid "William Viana Soares"
 msgstr "William Viana Soares"
 
 #: main.cpp:134
-#, fuzzy
-#| msgid "Context"
 msgid "Context view"
-msgstr "Bağlam"
+msgstr "Bağlam görünümü"
 
 #: main.cpp:136
 msgid "Former contributors"
@@ -3469,10 +3419,8 @@ msgid "Adeodato Simó"
 msgstr "Adeodato Simó"
 
 #: main.cpp:140 main.cpp:148
-#, fuzzy
-#| msgid "dates"
 msgid "Patches"
-msgstr "tarihler"
+msgstr "Yamalar"
 
 #: main.cpp:142
 msgid "Alexandre Oliveira"
@@ -3691,79 +3639,79 @@ msgstr "Müzik Kaynaklarını Filtrele"
 msgid "Previous Browser"
 msgstr "Önceki Tarayıcı"
 
-#: browsers/CollectionTreeItemModelBase.cpp:535
+#: browsers/CollectionTreeItemModelBase.cpp:533
 msgid "album"
 msgstr "albüm"
 
-#: browsers/CollectionTreeItemModelBase.cpp:540
+#: browsers/CollectionTreeItemModelBase.cpp:538
 msgid "artist"
 msgstr "sanatçı"
 
-#: browsers/CollectionTreeItemModelBase.cpp:545
+#: browsers/CollectionTreeItemModelBase.cpp:543
 msgid "genre"
 msgstr "tür"
 
-#: browsers/CollectionTreeItemModelBase.cpp:550
+#: browsers/CollectionTreeItemModelBase.cpp:548
 msgid "composer"
 msgstr "besteci"
 
-#: browsers/CollectionTreeItemModelBase.cpp:555
+#: browsers/CollectionTreeItemModelBase.cpp:553
 msgid "year"
 msgstr "yıl"
 
-#: browsers/CollectionTreeItemModelBase.cpp:560
+#: browsers/CollectionTreeItemModelBase.cpp:558
 msgid "comment"
 msgstr "açıklama"
 
-#: browsers/CollectionTreeItemModelBase.cpp:564
+#: browsers/CollectionTreeItemModelBase.cpp:562
 msgid "rating"
 msgstr "beğeni"
 
-#: browsers/CollectionTreeItemModelBase.cpp:568
+#: browsers/CollectionTreeItemModelBase.cpp:566
 msgid "score"
 msgstr "puan"
 
-#: browsers/CollectionTreeItemModelBase.cpp:572
+#: browsers/CollectionTreeItemModelBase.cpp:570
 msgid "playcount"
 msgstr "çalınma sayısı"
 
-#: browsers/CollectionTreeItemModelBase.cpp:576
+#: browsers/CollectionTreeItemModelBase.cpp:574
 msgid "length"
 msgstr "uzunluk"
 
-#: browsers/CollectionTreeItemModelBase.cpp:580
+#: browsers/CollectionTreeItemModelBase.cpp:578
 msgid "discnumber"
 msgstr "disk numarası"
 
-#: browsers/CollectionTreeItemModelBase.cpp:584
+#: browsers/CollectionTreeItemModelBase.cpp:582
 msgid "tracknumber"
 msgstr "parça numarası"
 
-#: browsers/CollectionTreeItemModelBase.cpp:588
+#: browsers/CollectionTreeItemModelBase.cpp:586
 msgid "added"
 msgstr "eklendi"
 
-#: browsers/CollectionTreeItemModelBase.cpp:594
+#: browsers/CollectionTreeItemModelBase.cpp:592
 msgid "today"
 msgstr "bugün"
 
-#: browsers/CollectionTreeItemModelBase.cpp:596
+#: browsers/CollectionTreeItemModelBase.cpp:594
 msgid "last week"
 msgstr "geçen hafta "
 
-#: browsers/CollectionTreeItemModelBase.cpp:598
+#: browsers/CollectionTreeItemModelBase.cpp:596
 msgid "last month"
 msgstr "geçen ay"
 
-#: browsers/CollectionTreeItemModelBase.cpp:600
+#: browsers/CollectionTreeItemModelBase.cpp:598
 msgid "two months ago"
 msgstr "iki ay önce"
 
-#: browsers/CollectionTreeItemModelBase.cpp:602
+#: browsers/CollectionTreeItemModelBase.cpp:600
 msgid "three months ago"
 msgstr "üç ay önce"
 
-#: browsers/CollectionTreeItemModelBase.cpp:903
+#: browsers/CollectionTreeItemModelBase.cpp:901
 msgid "Year - Album"
 msgstr "Yıl - Albüm"
 
@@ -4017,10 +3965,8 @@ msgid "Add Podcast"
 msgstr "Podcast Ekle"
 
 #: browsers/playlistbrowser/PodcastModel.cpp:405
-#, fuzzy
-#| msgid "Enter Stream URL:"
 msgid "Enter RSS 2.0 feed URL:"
-msgstr "Yayın Adresini Girin:"
+msgstr "RSS 2.0 kaynak adresini girin:"
 
 #: browsers/playlistbrowser/DynamicBiasModel.cpp:82
 msgid "Proportional Bias"
@@ -4166,47 +4112,53 @@ msgstr[0] "%1 parça"
 msgid "Close"
 msgstr "Kapat"
 
-#: MainWindow.cpp:252
+#: MainWindow.cpp:253
 msgid "Browsers"
 msgstr "Tarayıcılar"
 
-#: MainWindow.cpp:286
+#: MainWindow.cpp:287
 msgid "Context"
 msgstr "Bağlam"
 
-#: MainWindow.cpp:316
+#: MainWindow.cpp:314
 msgid "Local Music"
 msgstr "Yerel Müzik"
 
-#: MainWindow.cpp:318
+#: MainWindow.cpp:316
 msgid "Local sources of content"
 msgstr ""
 
-#: MainWindow.cpp:326
+#: MainWindow.cpp:324
 msgid "Internet"
 msgstr "İnternet"
 
-#: MainWindow.cpp:328
+#: MainWindow.cpp:326
 msgid "Online sources of content"
 msgstr ""
 
-#: MainWindow.cpp:334
+#: MainWindow.cpp:332
 msgid "Playlists"
 msgstr "Parça Listeleri"
 
-#: MainWindow.cpp:336
+#: MainWindow.cpp:334
 msgid "Various types of playlists"
 msgstr "Çeşitli parça listesi tipleri"
 
-#: MainWindow.cpp:343
+#: MainWindow.cpp:341
 msgid "Files"
 msgstr "Dosyalar"
 
-#: MainWindow.cpp:345
+#: MainWindow.cpp:343
 msgid "Browse local hard drive for content"
 msgstr ""
 
-#: MainWindow.cpp:462
+#. i18n: file: configdialog/dialogs/GeneralConfig.ui:56
+#. i18n: ectx: property (text), widget (QCheckBox, kcfg_LockLayout)
+#: MainWindow.cpp:388 rc.cpp:770
+msgid "Lock layout"
+msgstr "Düzeni kilitle"
+
+#: MainWindow.cpp:504
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
 "<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
@@ -4216,153 +4168,153 @@ msgstr ""
 "çalışmaya devam eder. Sistem çekmecesi simgesine sağ tıklayarak ya da "
 "Menüden <B>Çık</B>'ı seçerek uygulamayı kapatabilirsiniz.</qt>"
 
-#: MainWindow.cpp:464
+#: MainWindow.cpp:506
 msgid "Docking in System Tray"
 msgstr "Panele ekleniyor"
 
-#: MainWindow.cpp:489
+#: MainWindow.cpp:531
 msgid "Use relative path for &saving"
 msgstr "&Kaydetmek için değişken yol kullan"
 
-#: MainWindow.cpp:500
+#: MainWindow.cpp:542
 msgid "Save As"
 msgstr "Farklı Kaydet"
 
-#: MainWindow.cpp:537
+#: MainWindow.cpp:579
 msgid "Play Media (Files or URLs)"
 msgstr "Medya Çal (Dosyalar ya da URL adresleri)"
 
-#: MainWindow.cpp:537
+#: MainWindow.cpp:579
 msgid "Add Media (Files or URLs)"
 msgstr "Medya Ekle (Dosyalar ya da URL adresleri)"
 
-#: MainWindow.cpp:552
+#: MainWindow.cpp:594
 msgid "Add Stream"
 msgstr "Müzik Yayını Ekle"
 
-#: MainWindow.cpp:552
+#: MainWindow.cpp:594
 msgid "Enter Stream URL:"
 msgstr "Yayın Adresini Girin:"
 
-#: MainWindow.cpp:630
+#: MainWindow.cpp:672
 msgid "&Add Media..."
 msgstr "&Ortam Ekle..."
 
-#: MainWindow.cpp:635
+#: MainWindow.cpp:677
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "Parça Listesini &Temizle"
 
-#: MainWindow.cpp:639
+#: MainWindow.cpp:681
 msgid "&Add Stream..."
 msgstr "&Müzik Yayını Ekle..."
 
-#: MainWindow.cpp:643
+#: MainWindow.cpp:685
 msgid "&Export Playlist As..."
 msgstr "Parça Listesini  Dışarıya Farklı &Aktar..."
 
-#: MainWindow.cpp:647 MainWindow.cpp:655
+#: MainWindow.cpp:689 MainWindow.cpp:697
 msgid "Bookmark This Location"
 msgstr "Bu Konumu Yer İmlerine Ekle"
 
-#: MainWindow.cpp:651 amarokurls/BookmarkManager.cpp:42
+#: MainWindow.cpp:693 amarokurls/BookmarkManager.cpp:42
 msgid "Bookmark Manager"
 msgstr "Yer İmleri Yöneticisi"
 
-#: MainWindow.cpp:659 covermanager/CoverManager.cpp:97
+#: MainWindow.cpp:701 covermanager/CoverManager.cpp:97
 msgid "Cover Manager"
 msgstr "Kapak Yöneticisi"
 
-#: MainWindow.cpp:663
+#: MainWindow.cpp:705
 msgid "Play Media..."
 msgstr "Ortam Çal..."
 
-#: MainWindow.cpp:671
+#: MainWindow.cpp:713
 msgid "&Seek Forward"
 msgstr "&İleri Git"
 
-#: MainWindow.cpp:677
+#: MainWindow.cpp:719
 msgid "&Seek Backward"
 msgstr "&Geri Git"
 
-#: MainWindow.cpp:684
+#: MainWindow.cpp:726
 msgid "Update Collection"
 msgstr "Koleksiyonu Güncelle"
 
-#: MainWindow.cpp:691
+#: MainWindow.cpp:733
 msgid "Previous Track"
 msgstr "Önceki Parça"
 
-#: MainWindow.cpp:699
+#: MainWindow.cpp:741
 msgid "Next Track"
 msgstr "Sonraki Parça"
 
-#: MainWindow.cpp:702
+#: MainWindow.cpp:744
 msgid "Increase Volume"
 msgstr "Sesi Yükselt"
 
-#: MainWindow.cpp:708
+#: MainWindow.cpp:750
 msgid "Decrease Volume"
 msgstr "Sesi Alçalt"
 
-#: MainWindow.cpp:714
+#: MainWindow.cpp:756
 msgid "Toggle Main Window"
 msgstr "Ana Pencereyi Aç/Kapat"
 
-#: MainWindow.cpp:719
+#: MainWindow.cpp:761
 msgid "Show On Screen Display"
 msgstr "Bilgilendirme Ekranında Göster"
 
-#: MainWindow.cpp:724
+#: MainWindow.cpp:766
 msgid "Mute Volume"
 msgstr "Sesi Kapat"
 
-#: MainWindow.cpp:729
+#: MainWindow.cpp:771
 msgid "Love Current Track"
 msgstr "Şimdiki Parçayı Sevdim"
 
-#: MainWindow.cpp:734
+#: MainWindow.cpp:776
 msgid "Rate Current Track: 1"
 msgstr "Çalan Parçaya Oy ver: 1"
 
-#: MainWindow.cpp:739
+#: MainWindow.cpp:781
 msgid "Rate Current Track: 2"
 msgstr "Çalan Parçaya Oy ver: 2"
 
-#: MainWindow.cpp:744
+#: MainWindow.cpp:786
 msgid "Rate Current Track: 3"
 msgstr "Çalan Parçaya Oy ver: 3"
 
-#: MainWindow.cpp:749
+#: MainWindow.cpp:791
 msgid "Rate Current Track: 4"
 msgstr "Çalan Parçaya Oy ver: 4"
 
-#: MainWindow.cpp:754
+#: MainWindow.cpp:796
 msgid "Rate Current Track: 5"
 msgstr "Çalan Parçaya Oy ver: 5"
 
-#: MainWindow.cpp:817
+#: MainWindow.cpp:859
 msgid "&Music"
 msgstr "&Müzik"
 
-#: MainWindow.cpp:821
+#: MainWindow.cpp:863
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:864
+#: MainWindow.cpp:906
 msgid "&Tools"
 msgstr "Ara&çlar"
 
-#: MainWindow.cpp:877
+#: MainWindow.cpp:919
 msgid "&Settings"
 msgstr "A&yarlar"
 
-#: MainWindow.cpp:988
+#: MainWindow.cpp:1046
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Duraklatıldı  ::  %1"
 
-#: MainWindow.cpp:1011
+#: MainWindow.cpp:1070
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
@@ -4400,7 +4352,18 @@ msgstr "Ses Kipi"
 msgid "Data Mode"
 msgstr "Veri Kipi"
 
-#: toolbar/MainToolbarNG.cpp:39
+#: toolbar/VolumePopupButton.cpp:97 toolbar/VolumePopupButton.cpp:108
+#: widgets/Osd.cpp:145
+msgid "(muted)"
+msgstr "(sessiz)"
+
+#: toolbar/VolumePopupButton.cpp:97 toolbar/VolumePopupButton.cpp:108
+#: widgets/Osd.cpp:145
+#, kde-format
+msgid "Volume: %1% %2"
+msgstr "Ses: %1% %2"
+
+#: toolbar/MainToolbarNG.cpp:36
 msgid "Main Toolbar NG"
 msgstr "Yeni Nesil Ana Araç Çubuğu"
 
@@ -4486,8 +4449,7 @@ msgstr "Hangi parçalar ya da albümler rastgele moduna eklensin"
 msgid ""
 "Tracks or albums with the chosen property will be more likely to be chosen "
 "in Random Mode."
-msgstr ""
-"Bu özelliklerle seçilmiş şarkı ya da albüm rastgele seçilmiş olsa da olurdu."
+msgstr "Bu özelliklerle seçilmiş şarkı ya da albüm rastgele seçilmiş olsa da olurdu."
 
 #. i18n: file: amarokconfig.kcfg:53
 #. i18n: ectx: label, entry, group (General Options)
@@ -4498,10 +4460,8 @@ msgstr "Parçaların ya da albümlerin rastgele sırada çalınıp çalınmayaca
 #. i18n: file: amarokconfig.kcfg:54
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: rc.cpp:42 rc.cpp:1675
-msgid ""
-"If set, Amarok plays the tracks or albums in the playlist in a random order."
-msgstr ""
-"Parça listesindeki parçalar rastgele çalınmasını istiyorsanız işaretleyin."
+msgid "If set, Amarok plays the tracks or albums in the playlist in a random order."
+msgstr "Parça listesindeki parçalar rastgele çalınmasını istiyorsanız işaretleyin."
 
 #. i18n: file: amarokconfig.kcfg:63
 #. i18n: ectx: label, entry, group (General Options)
@@ -4552,8 +4512,7 @@ msgstr "En yakın zamanda kullanılan Değişken Kip"
 #. i18n: file: amarokconfig.kcfg:79
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: rc.cpp:66 rc.cpp:1699
-msgid ""
-"The title of the Dynamic Mode that was most recently loaded in the playlist"
+msgid "The title of the Dynamic Mode that was most recently loaded in the playlist"
 msgstr "Çalma Listesinde en sık yüklenmiş Değişken Kipin başlığ"
 
 #. i18n: file: amarokconfig.kcfg:83
@@ -4659,15 +4618,13 @@ msgstr ""
 #. i18n: file: amarokconfig.kcfg:123
 #. i18n: ectx: label, entry, group (General Options)
 #: rc.cpp:117 rc.cpp:1750
-msgid ""
-"Whether organize files will group directories according to their filetype."
+msgid "Whether organize files will group directories according to their filetype."
 msgstr ""
 
 #. i18n: file: amarokconfig.kcfg:124
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: rc.cpp:120 rc.cpp:1753
-msgid ""
-"If set, Organize files will group directories containing the same filetype."
+msgid "If set, Organize files will group directories containing the same filetype."
 msgstr ""
 
 #. i18n: file: amarokconfig.kcfg:128
@@ -4701,15 +4658,13 @@ msgstr ""
 #. i18n: file: amarokconfig.kcfg:138
 #. i18n: ectx: label, entry, group (General Options)
 #: rc.cpp:135 rc.cpp:1768
-msgid ""
-"Whether organize files will replace spaces in filenames with underscores."
+msgid "Whether organize files will replace spaces in filenames with underscores."
 msgstr ""
 
 #. i18n: file: amarokconfig.kcfg:139
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: rc.cpp:138 rc.cpp:1771
-msgid ""
-"If set, Organize files will replace spaces in filenames with underscores."
+msgid "If set, Organize files will replace spaces in filenames with underscores."
 msgstr ""
 
 #. i18n: file: amarokconfig.kcfg:143
@@ -4777,8 +4732,7 @@ msgstr ""
 #. i18n: file: amarokconfig.kcfg:164
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: rc.cpp:168 rc.cpp:1801
-msgid ""
-"If set, Organize files will rename files according to a custom format string."
+msgid "If set, Organize files will rename files according to a custom format string."
 msgstr ""
 
 #. i18n: file: amarokconfig.kcfg:168
@@ -4804,8 +4758,7 @@ msgstr "Değiştirilecek düzenli ifade."
 #. i18n: file: amarokconfig.kcfg:174
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: rc.cpp:180 rc.cpp:1813
-msgid ""
-"Organize files will replace substrings matching this regular expression."
+msgid "Organize files will replace substrings matching this regular expression."
 msgstr ""
 
 #. i18n: file: amarokconfig.kcfg:178
@@ -4835,8 +4788,7 @@ msgstr ""
 #. i18n: file: amarokconfig.kcfg:191
 #. i18n: ectx: label, entry, group (General Options)
 #: rc.cpp:195 rc.cpp:1828
-msgid ""
-"Automatically scroll the playlist to make the currently playing song visible"
+msgid "Automatically scroll the playlist to make the currently playing song visible"
 msgstr ""
 
 #. i18n: file: amarokconfig.kcfg:195
@@ -5044,8 +4996,7 @@ msgstr "Bilgi almak için Wikipedia yereli"
 #. i18n: file: amarokconfig.kcfg:321
 #. i18n: ectx: whatsthis, entry, group (Wikipedia)
 #: rc.cpp:294 rc.cpp:1927
-msgid ""
-"Determines in which language the information is retrieved from Wikipedia."
+msgid "Determines in which language the information is retrieved from Wikipedia."
 msgstr "Wikipedia'dan hangi dilde bilgi alınacağını belirler."
 
 #. i18n: file: amarokconfig.kcfg:328
@@ -5130,8 +5081,7 @@ msgstr "Bilgilendirme Ekranında özel renkler kullan"
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: rc.cpp:336 rc.cpp:1969
 msgid "You can use custom colors for the OSD if you set this true."
-msgstr ""
-"Eğer bunu seçerseniz, bilgilendirme ekranında özel renkler kullanabilirsiniz."
+msgstr "Eğer bunu seçerseniz, bilgilendirme ekranında özel renkler kullanabilirsiniz."
 
 #. i18n: file: amarokconfig.kcfg:363
 #. i18n: ectx: label, entry, group (OSD)
@@ -5241,8 +5191,7 @@ msgstr "Başlangıçta son çalınan şarkıdan devam et"
 #. i18n: ectx: whatsthis, entry, group (Session)
 #: rc.cpp:378 rc.cpp:2011
 msgid "If set, Amarok resumes playback of the last played track on startup."
-msgstr ""
-"Eğer seçili ise Amarok, başlangıçta son kaldığı parçayı çalmaya devam eder."
+msgstr "Eğer seçili ise Amarok, başlangıçta son kaldığı parçayı çalmaya devam eder."
 
 #. i18n: file: amarokconfig.kcfg:411
 #. i18n: ectx: label, entry, group (Session)
@@ -5271,8 +5220,7 @@ msgstr "Dahili: Başlangıçta devam edilecek parçanın çalma konumu."
 #. i18n: file: amarokconfig.kcfg:419
 #. i18n: ectx: label, entry, group (Session)
 #: rc.cpp:393 rc.cpp:2026
-msgid ""
-"List of bools describing which browsers are visible, from top to bottom."
+msgid "List of bools describing which browsers are visible, from top to bottom."
 msgstr ""
 
 #. i18n: file: amarokconfig.kcfg:422
@@ -5291,8 +5239,7 @@ msgstr ""
 #. i18n: ectx: label, entry, group (Collection)
 #: rc.cpp:402 rc.cpp:2035
 msgid "Whether Collections folders are scanned recursively"
-msgstr ""
-"Koleksiyon dizinleri özyinelemeli (altdizinleriyle beraber) olarak taransın"
+msgstr "Koleksiyon dizinleri özyinelemeli (altdizinleriyle beraber) olarak taransın"
 
 #. i18n: file: amarokconfig.kcfg:436
 #. i18n: ectx: label, entry, group (Collection)
@@ -5310,8 +5257,7 @@ msgstr "Koleksiyondaki dizinlerin listesi"
 #. i18n: ectx: label, entry, group (Collection)
 #: rc.cpp:411 rc.cpp:2044
 msgid "Whether track numbers are shown in the collection browser."
-msgstr ""
-"Koleksiyon tarayıcısında parça numaralarının gösterilip gösterilmeyeceği."
+msgstr "Koleksiyon tarayıcısında parça numaralarının gösterilip gösterilmeyeceği."
 
 #. i18n: file: amarokconfig.kcfg:447
 #. i18n: ectx: label, entry, group (Collection)
@@ -5531,10 +5477,8 @@ msgstr ""
 #. i18n: file: amarokconfig.kcfg:567
 #. i18n: ectx: label, entry, group (MySQL)
 #: rc.cpp:519 rc.cpp:2152
-#, fuzzy
-#| msgid "Filename of the external web browser to be invoked by Amarok."
 msgid "The hostname of the external server to connect to."
-msgstr "Amarok tarafından çağrılacak harici internet tarayıcısının dosya adı."
+msgstr "Bağlanılacak dış sunucunun makine adı."
 
 #. i18n: file: amarokconfig.kcfg:571
 #. i18n: ectx: label, entry, group (MySQL)
@@ -5778,8 +5722,7 @@ msgstr "Ayarı sil"
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:199
 #. i18n: ectx: property (toolTip), widget (QPushButton, eqPresetResetBtn)
 #: rc.cpp:662
-msgid ""
-"Reset selected preset setting to default. Available only for built-in preset."
+msgid "Reset selected preset setting to default. Available only for built-in preset."
 msgstr ""
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:202
@@ -5810,7 +5753,7 @@ msgstr "0 dB"
 #. i18n: ectx: property (text), widget (QLabel, eqMinEq)
 #: rc.cpp:677
 msgid "- dB"
-msgstr ""
+msgstr "- dB"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:443
 #. i18n: ectx: property (text), widget (QLabel, eqPreampLabel)
@@ -5837,7 +5780,7 @@ msgstr ""
 #: rc.cpp:683 rc.cpp:689 rc.cpp:695 rc.cpp:701 rc.cpp:707 rc.cpp:713
 #: rc.cpp:719 rc.cpp:725 rc.cpp:731 rc.cpp:737 rc.cpp:743
 msgid "Hz"
-msgstr ""
+msgstr "Hz"
 
 #. i18n: file: configdialog/dialogs/GeneralConfig.ui:17
 #. i18n: ectx: property (title), widget (QGroupBox, generalBox)
@@ -5851,8 +5794,7 @@ msgstr "Genel Ayarlar"
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_ShowSplashscreen)
 #: rc.cpp:749 rc.cpp:752
 msgid "Check to enable the splashscreen during Amarok startup."
-msgstr ""
-"Amarok açılırken çıkan açılış ekranının olmasını istiyorsanız, işaretleyin."
+msgstr "Amarok açılırken çıkan açılış ekranının olmasını istiyorsanız, işaretleyin."
 
 #. i18n: file: configdialog/dialogs/GeneralConfig.ui:29
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ShowSplashscreen)
@@ -5879,12 +5821,6 @@ msgstr "&Panel simgesini göster"
 #: rc.cpp:767
 msgid "Automatically retrieve cover art"
 msgstr "Kapakları otomatik olarak getir"
-
-#. i18n: file: configdialog/dialogs/GeneralConfig.ui:56
-#. i18n: ectx: property (text), widget (QCheckBox, kcfg_LockLayout)
-#: rc.cpp:770
-msgid "Lock layout"
-msgstr "Düzeni kilitle"
 
 #. i18n: file: configdialog/dialogs/GeneralConfig.ui:71
 #. i18n: ectx: property (title), widget (QGroupBox, playlistBox)
@@ -6042,8 +5978,7 @@ msgstr "Bilgilendirme penceresinin hangi ekranda duracağını belirtir."
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, kcfg_OsdUseCustomColors)
 #: rc.cpp:845 rc.cpp:848
 msgid "Check to enable custom colors for the On-Screen-Display."
-msgstr ""
-"Bilgilendirme Ekranı'nda özel renkler kullanabilmek için işaretleyiniz."
+msgstr "Bilgilendirme Ekranı'nda özel renkler kullanabilmek için işaretleyiniz."
 
 #. i18n: file: configdialog/dialogs/OsdConfig.ui:137
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_OsdUseCustomColors)
@@ -6125,8 +6060,7 @@ msgstr "Dosyaları çöpe taşımak yerine &sil"
 msgid ""
 "If checked, files will be permanently removed instead of being placed in the "
 "Trash Bin"
-msgstr ""
-"Bu seçilirse, dosyalar Çöp'e taşınmak yerine geri dönüşü olmaksızın silinir"
+msgstr "Bu seçilirse, dosyalar Çöp'e taşınmak yerine geri dönüşü olmaksızın silinir"
 
 #. i18n: file: dialogs/deletedialogbase.ui:110
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, ddShouldDelete)
@@ -6220,8 +6154,7 @@ msgstr "Dosya Adlandırma Şeması"
 #. i18n: ectx: property (toolTip), widget (QCheckBox, filetypeCheck)
 #: rc.cpp:938
 msgid "If checked, create a directory hierarchy using the filename extension."
-msgstr ""
-"Seçiliyse, dosya uzantılarını temel alan bir dizin hiyerarşisisi oluşturur."
+msgstr "Seçiliyse, dosya uzantılarını temel alan bir dizin hiyerarşisisi oluşturur."
 
 #. i18n: file: dialogs/OrganizeCollectionDialogBase.ui:87
 #. i18n: ectx: property (text), widget (QCheckBox, filetypeCheck)
@@ -6232,8 +6165,7 @@ msgstr "Dosya Türüne &Göre Grupla"
 #. i18n: file: dialogs/OrganizeCollectionDialogBase.ui:100
 #. i18n: ectx: property (toolTip), widget (QCheckBox, initialCheck)
 #: rc.cpp:944
-msgid ""
-"If checked, introduce another directory hierarchy for the artists' initials."
+msgid "If checked, introduce another directory hierarchy for the artists' initials."
 msgstr ""
 "Seçiliyse, Sanatçı Adı baş harfleri için başka bir dizin hiyerarşisisi "
 "oluşturur."
@@ -6247,8 +6179,7 @@ msgstr "Sanatçı Adı &baş harflerine göre grupla"
 #. i18n: file: dialogs/OrganizeCollectionDialogBase.ui:110
 #. i18n: ectx: property (toolTip), widget (QCheckBox, customschemeCheck)
 #: rc.cpp:950
-msgid ""
-"If checked, use a custom format string for naming the files in the collection"
+msgid "If checked, use a custom format string for naming the files in the collection"
 msgstr ""
 "Seçiliyse, koleksiyondaki dosyaları adlandırmak için özel bir biçim dizgesi "
 "kullanır"
@@ -6280,8 +6211,7 @@ msgstr "&Boşlukları Alt Çizgi ile Değiştir"
 #. i18n: file: dialogs/OrganizeCollectionDialogBase.ui:150
 #. i18n: ectx: property (toolTip), widget (QCheckBox, asciiCheck)
 #: rc.cpp:965
-msgid ""
-"If checked, replace characters that are unavailable in the 7-bit ASCII code."
+msgid "If checked, replace characters that are unavailable in the 7-bit ASCII code."
 msgstr "Seçiliyse, 7-bit ASCII kodlarında yer almayan karakterleri değiştirir."
 
 #. i18n: file: dialogs/OrganizeCollectionDialogBase.ui:153
@@ -7658,8 +7588,7 @@ msgctxt ""
 "Directory update complete. Added 4 feeds in 6 categories."
 msgid "Podcast Directory update complete. Added 1 feed in "
 msgid_plural "Podcast Directory update complete. Added %1 feeds in "
-msgstr[0] ""
-"Podcast Dizininin güncellemesi tamamlandı. %1 besleme buraya eklendi "
+msgstr[0] "Podcast Dizininin güncellemesi tamamlandı. %1 besleme buraya eklendi "
 
 #: services/opmldirectory/OpmlDirectoryXmlParser.cpp:61
 #, kde-format
@@ -7799,8 +7728,8 @@ msgstr "Last.fm güzeldir..."
 
 #: services/lastfm/meta/MultiPlayableCapabilityImpl_p.h:107
 msgid ""
-"Unfortunately, Last.Fm radio streams are only functional for Last.Fm "
-"subscribers. All the other Last.Fm features are unaffected."
+"To listen to this stream you need to be a paying Last.Fm subscriber. All the "
+"other Last.Fm features are unaffected."
 msgstr ""
 
 #: services/lastfm/meta/MultiPlayableCapabilityImpl_p.h:109
@@ -7952,10 +7881,8 @@ msgid "Loved Track: %1"
 msgstr "Sevilen Parçalar: %1"
 
 #: services/lastfm/LastFmServiceConfig.cpp:40
-#, fuzzy
-#| msgid "Last.fm Profile"
 msgid "Last.fm credentials"
-msgstr "Last.fm Profili"
+msgstr "Last.fm referansları"
 
 #: services/lastfm/LastFmServiceConfig.cpp:41
 msgid ""
@@ -8049,8 +7976,8 @@ msgstr "Tüm İstasyonları Göster"
 msgid "Results for: %1"
 msgstr "Sonuçlar: %1 için"
 
-#: services/shoutcast/ShoutcastServiceQueryMaker.cpp:306
-#: services/shoutcast/ShoutcastServiceQueryMaker.cpp:375
+#: services/shoutcast/ShoutcastServiceQueryMaker.cpp:314
+#: services/shoutcast/ShoutcastServiceQueryMaker.cpp:383
 msgid "The Shoutcast server is busy.<BR>Please try again later."
 msgstr ""
 
@@ -8167,8 +8094,7 @@ msgctxt ""
 "albums from 5 artists."
 msgid "Magnatune.com database update complete. Added 1 track on "
 msgid_plural "Magnatune.com database update complete. Added %1 tracks on "
-msgstr[0] ""
-"Magnatune.com veritabanı güncellemesi tamamlandı. %1 parça buraya eklendi "
+msgstr[0] "Magnatune.com veritabanı güncellemesi tamamlandı. %1 parça buraya eklendi "
 
 #: services/magnatune/MagnatuneXmlParser.cpp:63
 #, kde-format
@@ -8204,8 +8130,7 @@ msgstr "Albümü tekrar indiremezsiniz"
 
 #: services/magnatune/MagnatuneRedownloadHandler.cpp:141
 msgid "There seems to be a problem with the selected re-download info file."
-msgstr ""
-"Seçili tekrar indirme bilgi dosyası ile ilgili bir sorun var gibi görünüyor."
+msgstr "Seçili tekrar indirme bilgi dosyası ile ilgili bir sorun var gibi görünüyor."
 
 #: services/magnatune/MagnatuneRedownloadHandler.cpp:214
 msgid "Getting list of previous Magnatune.com purchases"
@@ -8539,8 +8464,7 @@ msgctxt ""
 "albums from 5 artists."
 msgid "Jamendo.com database update complete. Added 1 track on "
 msgid_plural "Jamendo.com database update complete. Added %1 tracks on "
-msgstr[0] ""
-"Jamendo.com veritabanı güncellemesi tamamlandı. %1 parça buraya eklendi "
+msgstr[0] "Jamendo.com veritabanı güncellemesi tamamlandı. %1 parça buraya eklendi "
 
 #: services/jamendo/JamendoXmlParser.cpp:145
 #, kde-format
@@ -8661,8 +8585,7 @@ msgid "Disc number"
 msgstr "Disk numarası"
 
 #: playlist/PlaylistDefines.h:93
-msgctxt ""
-"'Divider' token for playlist layouts representing a small visual divider"
+msgctxt "'Divider' token for playlist layouts representing a small visual divider"
 msgid "Divider"
 msgstr "Ayraç"
 
@@ -8703,8 +8626,7 @@ msgid "Last played"
 msgstr "Son çalınma zamanı"
 
 #: playlist/PlaylistDefines.h:100
-msgctxt ""
-"'Length' (track length) playlist column name and token for playlist layouts"
+msgctxt "'Length' (track length) playlist column name and token for playlist layouts"
 msgid "Length"
 msgstr "Uzunluk"
 
@@ -8746,8 +8668,7 @@ msgid "SourceEmblem"
 msgstr "Kaynak Amblemi"
 
 #: playlist/PlaylistDefines.h:108
-msgctxt ""
-"'Title' (track name) playlist column name and token for playlist layouts"
+msgctxt "'Title' (track name) playlist column name and token for playlist layouts"
 msgid "Title"
 msgstr "Başlık"
 
@@ -8764,8 +8685,7 @@ msgid "Track number"
 msgstr "Parça numarası"
 
 #: playlist/PlaylistDefines.h:111
-msgctxt ""
-"'Type' (file format) playlist column name and token for playlist layouts"
+msgctxt "'Type' (file format) playlist column name and token for playlist layouts"
 msgid "Type"
 msgstr "Tür"
 
@@ -8866,8 +8786,7 @@ msgid "Choose a new name for the playlist layout"
 msgstr "Yeni parça listesi düzeni için bir isim seçin"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:248
-msgid ""
-"Please enter a new name for the playlist layout you are about to rename:"
+msgid "Please enter a new name for the playlist layout you are about to rename:"
 msgstr ""
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:257
@@ -8907,7 +8826,7 @@ msgstr "Genişlik: "
 
 #: playlist/layouts/LayoutEditDialog.cpp:101
 msgid "custom"
-msgstr ""
+msgstr "özel"
 
 #: playlist/layouts/LayoutEditDialog.cpp:102
 msgid "A fix absolute or relative value (e.g. 128px or 12%)"
@@ -9005,10 +8924,9 @@ msgid "&Save Current Playlist"
 msgstr "Geçerli Parça Listesini &Kaydet"
 
 #: playlist/PlaylistWidget.cpp:179
-#, fuzzy, kde-format
-#| msgid "Save playlist"
+#, kde-format
 msgid "&Save playlist to \"%1\""
-msgstr "Parça listesini kaydet"
+msgstr "&Parça listesini  \"%1\" konumuna kaydet"
 
 #: playlist/UndoCommands.cpp:29
 msgid "Tracks Added"
@@ -9158,28 +9076,28 @@ msgstr "grup"
 msgid "Url"
 msgstr "Adres"
 
-#: amarokurls/BookmarkModel.cpp:510
+#: amarokurls/BookmarkModel.cpp:514
 msgid "New Group"
 msgstr "Yeni Grup"
 
-#: amarokurls/BookmarkModel.cpp:535 amarokurls/BookmarkManagerWidget.cpp:47
+#: amarokurls/BookmarkModel.cpp:539 amarokurls/BookmarkManagerWidget.cpp:47
 msgid "New Bookmark"
 msgstr "Yeni Yer İmi"
 
-#: amarokurls/BookmarkModel.cpp:536
+#: amarokurls/BookmarkModel.cpp:540
 msgid "none"
 msgstr "hiçbiri"
 
-#: amarokurls/BookmarkTreeView.cpp:104
+#: amarokurls/BookmarkTreeView.cpp:106
 msgctxt "Load the view represented by this bookmark"
 msgid "&Load"
 msgstr "Yük&le"
 
-#: amarokurls/BookmarkTreeView.cpp:123
+#: amarokurls/BookmarkTreeView.cpp:119
 msgid "&Create timecode track"
 msgstr ""
 
-#: amarokurls/BookmarkTreeView.cpp:327
+#: amarokurls/BookmarkTreeView.cpp:316
 msgid "New Timecode Track"
 msgstr ""
 
@@ -9234,15 +9152,6 @@ msgstr "Ses Kontrolü"
 #: widgets/Osd.cpp:129
 msgid "Rating changed"
 msgstr "Beğeni puanları değişti"
-
-#: widgets/Osd.cpp:145
-msgid "(muted)"
-msgstr "(sessiz)"
-
-#: widgets/Osd.cpp:145
-#, kde-format
-msgid "Volume: %1% %2"
-msgstr "Ses: %1% %2"
 
 #: widgets/Osd.cpp:207
 msgid "Volume: 100% (muted)"
@@ -9551,8 +9460,7 @@ msgstr[0] "Bu %1 albümün sanatsal çalışmalarını sil"
 #: covermanager/CoverFetchingActions.cpp:99
 #, kde-format
 msgid "Are you sure you want to remove this cover from the Collection?"
-msgid_plural ""
-"Are you sure you want to delete these %1 covers from the Collection?"
+msgid_plural "Are you sure you want to delete these %1 covers from the Collection?"
 msgstr[0] "Bu %1 kapağı koleksiyondan silmek istediğinizden emin misiniz?"
 
 #: covermanager/CoverFetchingActions.cpp:122

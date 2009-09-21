@@ -8,98 +8,83 @@ msgstr ""
 "Project-Id-Version: amarok_scriptengine_qscript\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-06-28 11:45+0200\n"
-"PO-Revision-Date: 2009-09-01 14:14+0300\n"
+"PO-Revision-Date: 2009-09-14 19:43+0300\n"
 "Last-Translator: Marek Laane <bald@smail.ee>\n"
 "Language-Team: Estonian <kde-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 1.0\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #: simplejavascriptapplet.cpp:512
-#, fuzzy
 msgid "i18n() takes at least one argument"
-msgstr "at üks"
+msgstr "i18n() nõuab vähemalt üht argumenti"
 
 #: simplejavascriptapplet.cpp:528
-#, fuzzy
 msgid "i18nc() takes at least two arguments"
-msgstr "at kaks arguments"
+msgstr "i18nc() nõuab vähemalt kaht argumenti"
 
 #: simplejavascriptapplet.cpp:545
-#, fuzzy
 msgid "i18np() takes at least two arguments"
-msgstr "at kaks arguments"
+msgstr "i18np() nõuab vähemalt kaht argumenti"
 
 #: simplejavascriptapplet.cpp:562
-#, fuzzy
 msgid "i18ncp() takes at least three arguments"
-msgstr "at kolm arguments"
+msgstr "i18ncp() nõuab vähemalt kolme argumenti"
 
 #: simplejavascriptapplet.cpp:580
-#, fuzzy
 msgid "dataEngine() takes one argument"
-msgstr "üks"
+msgstr "dataEngine() nõuab üht argumenti"
 
 #: simplejavascriptapplet.cpp:590 simplejavascriptapplet.cpp:615
 #: simplejavascriptapplet.cpp:782
-#, fuzzy
 msgid "Could not extract the AppletObject"
 msgstr "AppletObject'i lahtipakkimine nurjus"
 
 #: simplejavascriptapplet.cpp:595 simplejavascriptapplet.cpp:620
 #: simplejavascriptapplet.cpp:787
-#, fuzzy
 msgid "Could not extract the Applet"
 msgstr "Applet'i lahtipakkimine nurjus"
 
 #: simplejavascriptapplet.cpp:605
-#, fuzzy
 msgid "service() takes two arguments"
-msgstr "kaks arguments"
+msgstr "service() nõuab kaht argumenti"
 
 #: simplejavascriptapplet.cpp:633
-#, fuzzy
 msgid "loadui() takes one argument"
-msgstr "üks"
+msgstr "loadui() nõuab üht argumenti"
 
 #: simplejavascriptapplet.cpp:639
-#, fuzzy, kde-format
+#, kde-format
 msgid "Unable to open '%1'"
 msgstr "'%1' avamine nurjus"
 
 #: simplejavascriptapplet.cpp:679 simplejavascriptapplet.cpp:712
-#, fuzzy
 msgid "Constructor takes at least 1 argument"
 msgstr "Konstruktor nõuab vähemalt 1 argumenti"
 
 #: simplejavascriptapplet.cpp:764
-#, fuzzy
 msgid "CreateWidget takes one argument"
 msgstr "CreateWidget nõuab üht argumenti"
 
 #: simplejavascriptapplet.cpp:772
-#, fuzzy
 msgid "The parent must be a QGraphicsWidget"
 msgstr "Eellane peab olema QGraphicsWidget"
 
 #: simplejavascriptapplet.cpp:817
-#, fuzzy, kde-format
+#, kde-format
 msgid "This operation was not supported, %1"
-msgstr "mitte 1"
+msgstr "See operatsioon ei ole toetatud, %1"
 
 #: simplejavascriptapplet.cpp:824
-#, fuzzy
 msgid "print() takes one argument"
-msgstr "trükk üks"
+msgstr "print() nõuab üht argumenti"
 
 #: qtgui/linearlayout.cpp:70
-#, fuzzy
 msgid "LinearLayout requires a parent"
-msgstr "a"
+msgstr "LinearLayout nõuab eellast"
 
 #: qtgui/linearlayout.cpp:76
-#, fuzzy
 msgid "The parent must be a QGraphicsLayoutItem"
-msgstr "a"
+msgstr "Eellane peab olema QGraphicsLayoutItem"

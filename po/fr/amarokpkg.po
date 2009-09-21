@@ -1,0 +1,121 @@
+# Copyright (C) YEAR This_file_is_part_of_KDE
+# This file is distributed under the same license as the PACKAGE package.
+#
+# Esneault <simon.esneault@gmail.com>, 2009.
+# Sebastien Renard <Sebastien.Renard@digitalfox.org>, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2009-06-28 11:45+0200\n"
+"PO-Revision-Date: 2009-09-19 12:55+0200\n"
+"Last-Translator: Sebastien Renard <Sebastien.Renard@digitalfox.org>\n"
+"Language-Team: French <kde-francophone@kde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Lokalize 0.3\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: amarokpkg.cpp:40
+msgid "Install, list, remove Amarok applets"
+msgstr "Installe, liste ou supprime les applets d'Amarok"
+
+#: amarokpkg.cpp:76
+msgid "Amarok Applet Manager"
+msgstr "Gestionnaire d'applet d'Amarok"
+
+#: amarokpkg.cpp:78
+msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo franchi"
+msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo franchi"
+
+#: amarokpkg.cpp:79
+msgid "Aaron Seigo"
+msgstr "Aaron Seigo"
+
+#: amarokpkg.cpp:80
+msgid "Original author"
+msgstr "Auteur"
+
+#: amarokpkg.cpp:82
+msgid "Leo Franchi"
+msgstr "Leo Franchi"
+
+#: amarokpkg.cpp:83
+msgid "Developer"
+msgstr "Développeur"
+
+#: amarokpkg.cpp:92
+msgid "For install or remove, operates on applets installed for all users."
+msgstr ""
+"Pour une installation ou une suppression, sélectionne les applets installées "
+"pour tous les utilisateurs"
+
+#: amarokpkg.cpp:95
+msgctxt "Do not translate <path>"
+msgid "Install the applet at <path>"
+msgstr "Installe l'applet située <path>"
+
+#: amarokpkg.cpp:97
+msgctxt "Do not translate <path>"
+msgid "Upgrade the applet at <path>"
+msgstr "Change la version de l'applet située <path>"
+
+#: amarokpkg.cpp:99
+msgid "List installed applet"
+msgstr "Liste les applets installées"
+
+#: amarokpkg.cpp:101
+msgctxt "Do not translate <name>"
+msgid "Remove the applet named <name>"
+msgstr "Supprime l'applet nommée <name>"
+
+#: amarokpkg.cpp:103
+msgid ""
+"Absolute path to the package root. If not supplied, then the standard data "
+"directories for this KDE session will be searched instead."
+msgstr ""
+"Chemin absolu vers la racine du paquetage. Si il n'est pas fourni, les "
+"dossiers de données standard de la session KDE vont alors être utilisés."
+
+#: amarokpkg.cpp:162
+#, kde-format
+msgid "Successfully removed %1"
+msgstr "La suppression de %1 a réussi"
+
+#: amarokpkg.cpp:164
+#, kde-format
+msgid "Removal of %1 failed."
+msgstr "La suppression de %1 a échoué."
+
+#: amarokpkg.cpp:169
+#, kde-format
+msgid "Plugin %1 is not installed."
+msgstr "Le module externe %1 n'est pas installé."
+
+#: amarokpkg.cpp:174
+#, kde-format
+msgid "Successfully installed %1"
+msgstr "L'installation de %1 a réussi."
+
+#: amarokpkg.cpp:177
+#, kde-format
+msgid "Installation of %1 failed."
+msgstr "L'installation d'%1 a échoué."
+
+#: amarokpkg.cpp:183
+msgctxt ""
+"No option was given, this is the error message telling the user he needs at "
+"least one, do not translate install, remove, upgrade nor list"
+msgid "One of install, remove, upgrade or list is required."
+msgstr "Une option est nécessaire parmi install, remove, upgrade ou list."
+
+#: rc.cpp:1
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Simon Esneault"
+
+#: rc.cpp:2
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "simon.esneault@gmail.com"
