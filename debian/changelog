@@ -1,4 +1,4 @@
-amarok (2.2~rc1-0r1) UNRELEASED; urgency=medium
+amarok (2.2~rc1-1) unstable; urgency=medium
 
   * New upstream development release (2.1.90):
     - plays usertags from Last.fm "My tags" (Closes: #541338). Thanks to
@@ -12,7 +12,7 @@ amarok (2.2~rc1-0r1) UNRELEASED; urgency=medium
     questionable license.
   * Update debian/copyright.
 
- -- Modestas Vainius <modestas@vainius.eu>  Tue, 22 Sep 2009 01:32:30 +0300
+ -- Modestas Vainius <modestas@vainius.eu>  Tue, 22 Sep 2009 13:35:53 +0300
 
 amarok (2.1.85-1) experimental; urgency=low
 
