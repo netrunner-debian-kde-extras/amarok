@@ -11,6 +11,7 @@ amarok (2.2~rc1-1) unstable; urgency=medium
   * Urgency medium, because previous release (2.1.1) has a splash screen of
     questionable license.
   * Update debian/copyright.
+  * Fix hyphen-used-as-minus-sign in amarok manual pages.
 
  -- Modestas Vainius <modestas@vainius.eu>  Tue, 22 Sep 2009 13:35:53 +0300
 
