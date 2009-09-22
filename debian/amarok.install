@@ -32,7 +32,6 @@ usr/lib/kde4/amarok_service_lastfm.so
 usr/lib/kde4/amarok_service_magnatunestore.so
 usr/lib/kde4/amarok_service_mp3tunes.so
 usr/lib/kde4/amarok_service_opmldirectory.so
-usr/lib/kde4/amarok_service_shoutcast.so
 usr/lib/kde4/kcm_amarok_service_ampache.so
 usr/lib/kde4/kcm_amarok_service_lastfm.so
 usr/lib/kde4/kcm_amarok_service_magnatunestore.so
