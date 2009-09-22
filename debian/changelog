@@ -1,6 +1,10 @@
 amarok (2.2~rc1-0r1) UNRELEASED; urgency=low
 
-  * New upstream development release (2.1.90).
+  * New upstream development release (2.1.90):
+    - plays usertags from Last.fm "My tags" (Closes: #541338). Thanks to
+      Євгеній Мещеряков for the patch, merged upstream;
+    - fetches covers from Last.fm (Closes: #545384);
+    - lyrics fetching works again (Closes: #545466).
   * Bump build depends to libtag1-dev 1.6-2 (supports ASF and MP4) and
     libtag-extras-dev 1.0.1.
   * Update install files: shoutcast service gone.
