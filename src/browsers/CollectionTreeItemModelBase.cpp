@@ -330,7 +330,8 @@ CollectionTreeItemModelBase::hasChildren ( const QModelIndex & parent ) const
 void
 CollectionTreeItemModelBase::ensureChildrenLoaded( CollectionTreeItem *item )
 {
-    if ( item->requiresUpdate() )
+    //only start a query if necessary and we are not querying for the item's children already
+    if ( item->requiresUpdate() && !d->m_runningQueries.contains( item ) )
     {
         listForLevel( item->level() + levelModifier(), item->queryMaker(), item );
     }
@@ -367,11 +368,9 @@ void CollectionTreeItemModelBase::listForLevel(int level, QueryMaker * qm, Colle
     if ( qm && parent )
     {
         //this check should not hurt anyone... needs to check if single... needs it
-        for( QMapIterator<QueryMaker*, CollectionTreeItem*> iter( d->m_childQueries ); iter.hasNext(); )
-        {
-            if( iter.next().value() == parent )
-                return;             //we are already querying for children of parent
-        }
+        if( d->m_runningQueries.contains( parent ) )
+            return;
+
         if ( level > m_levelType.count() )
             return;
 
@@ -468,7 +467,7 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
                 qm->beginAnd();
             else
                 qm->beginOr();
-            debug() << "field:" << elem.field << "negate?:" << elem.negate << "text:" << elem.text;
+
             if ( elem.field.isEmpty() )
             {
                 foreach ( int level, m_levelType )
@@ -793,7 +792,6 @@ CollectionTreeItemModelBase::handleNormalQueryResult( QueryMaker *qm, const Meta
     d->m_runningQueries.remove( parent );
     QModelIndex parentIndex;
     if( parent ) {
-        m_rootItem->dumpObjectTree();
         if( parent == m_rootItem ) // will never happen in CollectionTreeItemModel, but will happen in Single!
             parentIndex = QModelIndex();
         else
@@ -867,6 +865,12 @@ CollectionTreeItemModelBase::populateChildren(const DataList & dataList, Collect
         if( lastRow >= 0 )
         {
             emit dataChanged( createIndex( 0, 0, parent->child( 0 ) ), createIndex( lastRow, 0, parent->child( lastRow ) ) );
+        }
+        //the remainging child items may be dirty, so refresh them
+        foreach( CollectionTreeItem *item, parent->children() )
+        {
+            if( item->isDataItem() && item->data() && m_expandedItems.contains( item->data() ) )
+                ensureChildrenLoaded( item );
         }
         //add the new rows
         if( !dataToBeAdded.isEmpty() )
@@ -969,11 +973,7 @@ CollectionTreeItemModelBase::setCurrentFilter( const QString &filter )
 void
 CollectionTreeItemModelBase::slotFilter()
 {
-    if ( isQuerying() )
-        return; // we are already busy, do not try to change filters in the middle of everything as that will cause crashes
-
     filterChildren();
-    //reset();
     if ( !m_expandedCollections.isEmpty() )
     {
         foreach( Amarok::Collection *expanded, m_expandedCollections )
@@ -1026,8 +1026,6 @@ CollectionTreeItemModelBase::slotExpanded( const QModelIndex &index )
             while( tmp->isDataItem() )
                 tmp = tmp->parent();
 
-            if( tmp->parentCollection() )
-                debug() << "VA node for collection " << tmp->parentCollection()->collectionId() << " expanded";
             m_expandedVariousArtistsNodes.insert( tmp->parentCollection() );
         }
     }
@@ -1038,14 +1036,11 @@ void CollectionTreeItemModelBase::update()
     reset();
 }
 
-bool CollectionTreeItemModelBase::isQuerying() const
-{
-    return !( d->m_childQueries.isEmpty() && d->m_compilationQueries.isEmpty() );
-}
-
 void CollectionTreeItemModelBase::markSubTreeAsDirty( CollectionTreeItem *item )
 {
-    item->setRequiresUpdate( true );
+    //tracks are the leaves so they are never dirty
+    if( !item->isTrackItem() )
+        item->setRequiresUpdate( true );
     for( int i = 0; i < item->childCount(); i++ )
     {
         markSubTreeAsDirty( item->child( i ) );
@@ -1064,12 +1059,22 @@ void CollectionTreeItemModelBase::itemAboutToBeDeleted( CollectionTreeItem *item
     {
         d->m_childQueries.remove( qm );
         //we found the item in this map, it won't be in the other
-        return;
+        //but we still need to disconnect the qm below
     }
-
-    qm = d->m_compilationQueries.key( item, 0 );
-    if( qm )
-        d->m_compilationQueries.remove( qm );
+    else
+    {
+        qm = d->m_compilationQueries.key( item, 0 );
+        if( qm )
+            d->m_compilationQueries.remove( qm );
+    }
+    //disconnect the model from the querymake so we do not get
+    //notified about the results
+    qm->disconnect( this );
+    //although we could abort the query here,
+    //I strongly suspect that the querymaker's autodelete would not work anymore
+    //(as it has to be implemented in separately in each subclass)
+    //so just let the querymaker run, its result will be ignored
+    qm->setAutoDelete( true );
 }
 
 #include "CollectionTreeItemModelBase.moc"

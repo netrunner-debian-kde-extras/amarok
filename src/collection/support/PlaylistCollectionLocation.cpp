@@ -13,43 +13,59 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
-#ifndef DBUSQUERYHELPER_H
-#define DBUSQUERYHELPER_H
 
-#include "meta/Meta.h"
+#include "PlaylistCollectionLocation.h"
 
-#include <QDBusConnection>
-#include <QDBusMessage>
-#include <QList>
-#include <QMap>
-#include <QObject>
-#include <QString>
-#include <QVariant>
-class QueryMaker;
+#include "meta/Playlist.h"
+#include "PlaylistCollection.h"
 
-typedef QList<QVariantMap> VariantMapList;
-
-class DBusQueryHelper : public QObject
+PlaylistCollectionLocation::PlaylistCollectionLocation( const PlaylistCollection *collection )
+        : CollectionLocation()
+        , m_collection( collection )
 {
-    Q_OBJECT
-    
-    public:
-        DBusQueryHelper( QObject *parent, QueryMaker *qm, const QDBusConnection &conn, const QDBusMessage &msg, bool mprisCompatible );
-        
-    private slots:
-        void slotResultReady( const QString &collectionId, const Meta::TrackList &tracks );
-        
-        void slotQueryDone();
+}
 
-        void abortQuery();
-        
-    private:
-        QDBusConnection m_connection;
-        QDBusMessage m_message;
-        VariantMapList m_result;
-        bool m_mprisCompatibleResult;
-        bool m_timeout;
-};
+QString
+PlaylistCollectionLocation::prettyLocation() const
+{
+    //think of something better
+    return m_collection->prettyName();
+}
 
-#endif
+bool
+PlaylistCollectionLocation::isWritable() const
+{
+    return true;
+}
+
+bool
+PlaylistCollectionLocation::remove( const Meta::TrackPtr &track )
+{
+    Meta::PlaylistPtr playlist = m_collection->playlist();
+    int index = playlist->tracks().indexOf( track );
+    if( index != -1 )
+    {
+        playlist->removeTrack( index );
+    }
+    //always succeed as we are not doing anything dangerous
+    return true;
+}
+
+void
+PlaylistCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources )
+{
+    Meta::PlaylistPtr playlist = m_collection->playlist();
+    foreach( const Meta::TrackPtr &track, sources.keys() )
+    {
+        playlist->addTrack( track );
+    }
+}
+
+void
+PlaylistCollectionLocation::removeUrlsFromCollection( const Meta::TrackList &tracks )
+{
+    foreach( const Meta::TrackPtr &track, tracks )
+    {
+        remove( track );
+    }
+}

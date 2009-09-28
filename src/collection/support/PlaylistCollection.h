@@ -13,43 +13,39 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
-#ifndef DBUSQUERYHELPER_H
-#define DBUSQUERYHELPER_H
 
-#include "meta/Meta.h"
+#ifndef PLAYLISTCOLLECTION_H
+#define PLAYLISTCOLLECTION_H
 
-#include <QDBusConnection>
-#include <QDBusMessage>
-#include <QList>
-#include <QMap>
-#include <QObject>
-#include <QString>
-#include <QVariant>
-class QueryMaker;
+#include "collection/Collection.h"
+#include "MemoryCollection.h"
+#include "meta/Playlist.h"
 
-typedef QList<QVariantMap> VariantMapList;
-
-class DBusQueryHelper : public QObject
+/**
+  * Utility class that wraps a playlist as collection and makes it possible to
+  * query the content of the playlist using QueryMaker.
+  */
+class PlaylistCollection : public Amarok::Collection, public MemoryCollection, public Meta::PlaylistObserver
 {
-    Q_OBJECT
-    
-    public:
-        DBusQueryHelper( QObject *parent, QueryMaker *qm, const QDBusConnection &conn, const QDBusMessage &msg, bool mprisCompatible );
-        
-    private slots:
-        void slotResultReady( const QString &collectionId, const Meta::TrackList &tracks );
-        
-        void slotQueryDone();
+public:
+    PlaylistCollection( const Meta::PlaylistPtr &playlist );
+    virtual ~PlaylistCollection();
 
-        void abortQuery();
-        
-    private:
-        QDBusConnection m_connection;
-        QDBusMessage m_message;
-        VariantMapList m_result;
-        bool m_mprisCompatibleResult;
-        bool m_timeout;
+    virtual QString collectionId() const;
+    virtual QString prettyName() const;
+    virtual QueryMaker* queryMaker();
+    virtual CollectionLocation* location() const;
+
+    KIcon icon() const; //why is this pure virtual?
+
+    virtual void trackAdded( Meta::PlaylistPtr playlist, Meta::TrackPtr track, int position ) = 0;
+    virtual void trackRemoved( Meta::PlaylistPtr playlist, int position ) = 0;
+
+    Meta::PlaylistPtr playlist() const;
+private:
+    void insertTrack( const Meta::TrackPtr &track );
+
+    Meta::PlaylistPtr m_playlist;
 };
 
-#endif
+#endif // PLAYLISTCOLLECTION_H

@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-09-21 06:11+0200\n"
-"PO-Revision-Date: 2009-08-22 23:11+0300\n"
+"POT-Creation-Date: 2009-09-28 06:34+0200\n"
+"PO-Revision-Date: 2009-09-11 15:52+0300\n"
 "Last-Translator: Mikael Lammentausta <mikael.lammentausta+kdetrans@gmail."
 "com>\n"
 "Language-Team: Finnish <fi@li.org>\n"
@@ -46,57 +46,57 @@ msgctxt "The Value is not known"
 msgid "Unknown"
 msgstr "Tuntematon"
 
-#: meta/MetaUtility.cpp:504
+#: meta/MetaUtility.cpp:553
 msgctxt "The quality of music"
 msgid "Awful"
 msgstr "Kauhea"
 
-#: meta/MetaUtility.cpp:505
+#: meta/MetaUtility.cpp:554
 msgctxt "The quality of music"
 msgid "Bad"
 msgstr "Huono"
 
-#: meta/MetaUtility.cpp:506
+#: meta/MetaUtility.cpp:555
 msgctxt "The quality of music"
 msgid "Barely tolerable"
 msgstr "Tuskin siedettävä"
 
-#: meta/MetaUtility.cpp:507
+#: meta/MetaUtility.cpp:556
 msgctxt "The quality of music"
 msgid "Tolerable"
 msgstr "Siedettävä"
 
-#: meta/MetaUtility.cpp:508
+#: meta/MetaUtility.cpp:557
 msgctxt "The quality of music"
 msgid "Okay"
 msgstr "Kelvollinen"
 
-#: meta/MetaUtility.cpp:509
+#: meta/MetaUtility.cpp:558
 msgctxt "The quality of music"
 msgid "Good"
 msgstr "Hyvä"
 
-#: meta/MetaUtility.cpp:510
+#: meta/MetaUtility.cpp:559
 msgctxt "The quality of music"
 msgid "Very good"
 msgstr "Erittäin hyvä"
 
-#: meta/MetaUtility.cpp:511
+#: meta/MetaUtility.cpp:560
 msgctxt "The quality of music"
 msgid "Excellent"
 msgstr "Loistava"
 
-#: meta/MetaUtility.cpp:512
+#: meta/MetaUtility.cpp:561
 msgctxt "The quality of music"
 msgid "Amazing"
 msgstr "Ällistyttävä"
 
-#: meta/MetaUtility.cpp:513
+#: meta/MetaUtility.cpp:562
 msgctxt "The quality of music"
 msgid "Favorite"
 msgstr "Suosikki"
 
-#: meta/MetaUtility.cpp:514
+#: meta/MetaUtility.cpp:563
 msgctxt "The quality of music"
 msgid "Not rated"
 msgstr "Arvostelematon"
@@ -106,12 +106,12 @@ msgstr "Arvostelematon"
 msgid "Stream (%1)"
 msgstr "Virtaustoisto (%1)"
 
-#: meta/capabilities/TimecodeWriteCapability.cpp:112
+#: meta/capabilities/TimecodeWriteCapability.cpp:102
 #, kde-format
 msgid "%1 - Stopped %2"
 msgstr "%1 – keskeytetty %2"
 
-#: meta/capabilities/TimecodeWriteCapability.cpp:117
+#: meta/capabilities/TimecodeWriteCapability.cpp:107
 msgid "Playback Ended Markers"
 msgstr ""
 
@@ -119,7 +119,7 @@ msgstr ""
 msgid "Default Dynamic Playlist"
 msgstr "Elävä soittolista, oletus"
 
-#: meta/XSPFPlaylist.cpp:151
+#: meta/XSPFPlaylist.cpp:159
 #, kde-format
 msgid "Cannot write playlist (%1)."
 msgstr "Soittolistaa ei voitu kirjoittaa: (%1)."
@@ -282,11 +282,8 @@ msgid ""
 msgstr ""
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:528
-#, fuzzy
-#| msgid "Lyrics data could not be parsed"
 msgid "iPod artwork could not be synchronised"
 msgstr ""
-"Sanoitusten käsittelyssä tapahtui virhe (Lyrics data could not be parsed)"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:539
 msgid "Artwork synchronised"
@@ -448,19 +445,19 @@ msgstr[1] "%1 kappaletta on jo poistettu medialaitteelta"
 msgid "Removing Tracks from Device"
 msgstr "Poistetaan kappaleet medialaitteelta"
 
-#: collection/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.cpp:111
+#: collection/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.cpp:113
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:99
 #: playlistmanager/PlaylistManager.cpp:370
 msgid "Change playlist"
 msgstr "Vaihda soittolista"
 
-#: collection/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.cpp:112
+#: collection/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.cpp:114
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:100
 #: playlistmanager/PlaylistManager.cpp:371
 msgid "Enter new name for playlist:"
 msgstr "Anna uusi nimi soittolistalle:"
 
-#: collection/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.h:36
+#: collection/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.h:38
 msgid "Media Device playlists"
 msgstr "Medialaitteen soittolistat"
 
@@ -529,9 +526,9 @@ msgstr "Virhe kokoelman kartoituksessa"
 msgid "Scanning music"
 msgstr "Kartoitetaan kokoelmaa"
 
-#: collection/sqlcollection/ScanManager.cpp:678
+#: collection/sqlcollection/ScanManager.cpp:681
 #: dialogs/OrganizeCollectionDialog.cpp:143
-#: browsers/CollectionTreeItem.cpp:192 covermanager/CoverViewDialog.h:45
+#: browsers/CollectionTreeItem.cpp:198 covermanager/CoverViewDialog.h:45
 #: covermanager/CoverManager.cpp:784
 msgid "Various Artists"
 msgstr "Useita artisteja"
@@ -566,8 +563,8 @@ msgstr "&Poista"
 #: collection/audiocd/AudioCdCollection.cpp:414
 #: collection/audiocd/AudioCdCollection.cpp:415
 #: context/applets/albums/AlbumItem.cpp:72 MainWindow.cpp:1070
-#: amarokurls/BookmarkTreeView.cpp:317 amarokurls/BookmarkTreeView.cpp:318
-#: amarokurls/BookmarkTreeView.cpp:319
+#: amarokurls/BookmarkTreeView.cpp:319 amarokurls/BookmarkTreeView.cpp:320
+#: amarokurls/BookmarkTreeView.cpp:321
 msgid "Unknown"
 msgstr "Tuntematon"
 
@@ -749,11 +746,11 @@ msgstr ""
 msgid "dates"
 msgstr ""
 
-#: context/engines/photos/PhotosEngine.cpp:169
+#: context/engines/photos/PhotosEngine.cpp:181
 msgid "Unable to retrieve from Flickr.com "
 msgstr "Flickr ei antanut kuvaa"
 
-#: context/engines/photos/PhotosEngine.cpp:255
+#: context/engines/photos/PhotosEngine.cpp:267
 msgid "No information found ..."
 msgstr "Tietoja ei löydetty..."
 
@@ -762,11 +759,11 @@ msgstr "Tietoja ei löydetty..."
 msgid "Unable to retrieve Wikipedia information: %1"
 msgstr "Tietoja ei saatu Wikipediasta: %1"
 
-#: context/engines/wikipedia/WikipediaEngine.cpp:232
+#: context/engines/wikipedia/WikipediaEngine.cpp:234
 msgid "No information found..."
 msgstr "Tietoja ei löydetty..."
 
-#: context/engines/wikipedia/WikipediaEngine.cpp:370
+#: context/engines/wikipedia/WikipediaEngine.cpp:372
 msgid "Wikipedia Other Languages: <br/>"
 msgstr "Wikipedia muilla kielillä: <br/>"
 
@@ -920,42 +917,31 @@ msgid "Append and &Play"
 msgstr "Lisää ja &soita"
 
 #: context/applets/songkick/SongkickApplet.cpp:41
-#, fuzzy
-#| msgid "Plugin Information"
 msgid "Songkick Concert Information"
-msgstr "Liitännäisen tiedot"
+msgstr ""
 
 #: context/applets/songkick/SongkickApplet.cpp:62
-#, fuzzy
-#| msgid "Context"
 msgid "Concerts"
-msgstr "Konteksti"
+msgstr ""
 
 #: context/applets/songkick/SongkickApplet.cpp:69
-#, fuzzy
-#| msgid "Reload Lyrics"
 msgid "Reload Songkick"
-msgstr "Lataa sanoitukset uudelleen"
+msgstr ""
 
 #: context/applets/songkick/SongkickApplet.cpp:151
 msgid "Concert information is being fetched."
 msgstr ""
 
 #: context/applets/songkick/SongkickApplet.cpp:156
-#, fuzzy, kde-format
-#| msgid ""
-#| "Lyrics were not able to be downloaded. Please check your internet "
-#| "connection: %1"
+#, kde-format
 msgid ""
 "Songkick was not able to be downloaded. Please check your internet "
 "connection: %1"
-msgstr "Sanoitusta ei voitu ladata. Tarkista Internet-yhteytesi: %1."
+msgstr ""
 
 #: context/applets/songkick/SongkickApplet.cpp:201
-#, fuzzy
-#| msgid "There were no lyrics found for this track"
 msgid "There was no information found for this track"
-msgstr "Kappaleelle ei löytynyt sanoituksia"
+msgstr ""
 
 # Muokkaa sisältökuvauksia -> Sisältökuvaukset -> Tiedostonimityylit
 #: context/applets/currenttrack/CurrentTrack.cpp:82
@@ -980,7 +966,7 @@ msgstr "Soittokertoja"
 #: context/applets/currenttrack/CurrentTrack.cpp:541 Systray.cpp:169
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:251
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:694 rc.cpp:1157
-#: playlist/PlaylistModel.cpp:665 widgets/SmartPlaylistEditor.cpp:185
+#: playlist/PlaylistModel.cpp:669 widgets/SmartPlaylistEditor.cpp:185
 msgid "Score"
 msgstr "Pisteitä"
 
@@ -1003,7 +989,7 @@ msgstr "Suosikit"
 #: browsers/CollectionTreeView.cpp:809
 #: browsers/filebrowser/MyDirOperator.cpp:270
 #: browsers/playlistbrowser/UserPlaylistModel.cpp:539
-#: browsers/playlistbrowser/PodcastModel.cpp:688
+#: browsers/playlistbrowser/PodcastModel.cpp:695
 #: services/lastfm/LastFmTreeView.cpp:112
 #, fuzzy
 #| msgid "&Append to Playlist"
@@ -1014,7 +1000,7 @@ msgstr "Lisää &soittolistaan"
 #: browsers/CollectionTreeView.cpp:818
 #: browsers/filebrowser/MyDirOperator.cpp:271
 #: browsers/playlistbrowser/UserPlaylistModel.cpp:546
-#: browsers/playlistbrowser/PodcastModel.cpp:700
+#: browsers/playlistbrowser/PodcastModel.cpp:707
 #: services/lastfm/LastFmTreeView.cpp:121
 msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
@@ -1066,16 +1052,13 @@ msgid "Lyrics are being fetched."
 msgstr "Haetaan sanoituksia."
 
 #: context/applets/lyrics/LyricsApplet.cpp:220
-#, fuzzy, kde-format
-#| msgid ""
-#| "Lyrics were not able to be downloaded. Please check your internet "
-#| "connection: %1"
+#, kde-format
 msgid ""
 "Could not download lyrics.\n"
 "Please check your internet connection.\n"
 "Error message:\n"
 "%1"
-msgstr "Sanoitusta ei voitu ladata. Tarkista Internet-yhteytesi: %1."
+msgstr "Sanoitusta ei voitu ladata. Tarkista internet-yhteytesi.  Virhe: ”%1”."
 
 #: context/applets/lyrics/LyricsApplet.cpp:273
 msgid "There were no lyrics found for this track"
@@ -1083,10 +1066,10 @@ msgstr "Kappaleelle ei löytynyt sanoituksia"
 
 #: context/applets/photos/PhotosApplet.cpp:68
 #: context/applets/photos/PhotosApplet.cpp:129
-#: context/applets/photos/PhotosApplet.cpp:187
-#: context/applets/photos/PhotosApplet.cpp:199
-#: context/applets/photos/PhotosApplet.cpp:209
-#: context/applets/photos/PhotosApplet.cpp:218
+#: context/applets/photos/PhotosApplet.cpp:188
+#: context/applets/photos/PhotosApplet.cpp:200
+#: context/applets/photos/PhotosApplet.cpp:210
+#: context/applets/photos/PhotosApplet.cpp:224
 msgid "Photos"
 msgstr "Valokuvat"
 
@@ -1111,11 +1094,11 @@ msgstr "Interaktiivinen"
 msgid "Fading"
 msgstr "Häivytys"
 
-#: context/applets/photos/PhotosApplet.cpp:199
+#: context/applets/photos/PhotosApplet.cpp:200
 msgid "Fetching ..."
 msgstr "Noudetaan ..."
 
-#: context/applets/photos/PhotosApplet.cpp:238
+#: context/applets/photos/PhotosApplet.cpp:247
 msgid "Photos Settings"
 msgstr "Valokuvien asetukset"
 
@@ -1135,7 +1118,7 @@ msgstr "Seuraava"
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: context/applets/wikipedia/WikipediaApplet.cpp:121
 #: dialogs/FilenameLayoutDialog.cpp:125 dialogs/FilenameLayoutDialog.cpp:340
-#: dialogs/transferdialog.cpp:88 browsers/CollectionTreeItemModelBase.cpp:902
+#: dialogs/transferdialog.cpp:88 browsers/CollectionTreeItemModelBase.cpp:906
 #: browsers/collectionbrowser/CollectionWidget.cpp:122
 #: browsers/collectionbrowser/CollectionWidget.cpp:151
 #: browsers/collectionbrowser/CollectionWidget.cpp:183
@@ -1143,7 +1126,7 @@ msgstr "Seuraava"
 #: services/lastfm/LastFmService.cpp:541
 #: services/magnatune/MagnatuneStore.cpp:205
 #: services/jamendo/JamendoInfoParser.cpp:51 playlist/PlaylistHeader.cpp:40
-#: playlist/PlaylistModel.cpp:650 widgets/SmartPlaylistEditor.cpp:183
+#: playlist/PlaylistModel.cpp:654 widgets/SmartPlaylistEditor.cpp:183
 #: widgets/SmartPlaylistEditor.cpp:197
 msgid "Artist"
 msgstr "Artisti"
@@ -1152,14 +1135,14 @@ msgstr "Artisti"
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: context/applets/wikipedia/WikipediaApplet.cpp:128
 #: dialogs/FilenameLayoutDialog.cpp:128 dialogs/FilenameLayoutDialog.cpp:355
-#: dialogs/transferdialog.cpp:89 browsers/CollectionTreeItemModelBase.cpp:901
+#: dialogs/transferdialog.cpp:89 browsers/CollectionTreeItemModelBase.cpp:905
 #: browsers/collectionbrowser/CollectionWidget.cpp:125
 #: browsers/collectionbrowser/CollectionWidget.cpp:154
 #: browsers/collectionbrowser/CollectionWidget.cpp:186
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:245 rc.cpp:1142
 #: services/magnatune/MagnatuneStore.cpp:211
 #: services/jamendo/JamendoInfoParser.cpp:83 playlist/PlaylistHeader.cpp:40
-#: playlist/PlaylistModel.cpp:654 widgets/SmartPlaylistEditor.cpp:183
+#: playlist/PlaylistModel.cpp:658 widgets/SmartPlaylistEditor.cpp:183
 #: widgets/SmartPlaylistEditor.cpp:197
 msgid "Album"
 msgstr "Albumi"
@@ -1333,14 +1316,12 @@ msgid "&Replay Gain Mode"
 msgstr "&ReplayGain-voimakkuudentasaus"
 
 #: ActionClasses.cpp:388
-#, fuzzy
-#| msgid "Equalizer"
 msgid "&Equalizer"
-msgstr "Taajuuskorjain"
+msgstr "&Taajuuskorjain"
 
 #: ActionClasses.cpp:416
 msgid "Your current setup does not support the equalizer feature"
-msgstr ""
+msgstr "Järjestelmäsi ei tue taajuuskorjainta"
 
 #: ActionClasses.cpp:472
 msgid "Burn"
@@ -1429,79 +1410,68 @@ msgstr "Lisää laite…"
 msgid "Use Growl for notifications"
 msgstr ""
 
-#: configdialog/dialogs/PlaybackConfig.cpp:74
+#: configdialog/dialogs/PlaybackConfig.cpp:77
 msgid "Sound System - Amarok"
 msgstr "Äänijärjestelmä – Amarok"
 
-#: configdialog/dialogs/PlaybackConfig.cpp:91
+#: configdialog/dialogs/PlaybackConfig.cpp:94
 msgid "Equalizer not supported by Phonon"
-msgstr ""
+msgstr "Phonon ei tue taajuuskorjainta"
 
-#: configdialog/dialogs/PlaybackConfig.cpp:155
-#: configdialog/dialogs/PlaybackConfig.cpp:243
-#: configdialog/dialogs/PlaybackConfig.cpp:294
-#, fuzzy
-#| msgctxt "State, as in disabled"
-#| msgid "Off"
+#: configdialog/dialogs/PlaybackConfig.cpp:161
+#: configdialog/dialogs/PlaybackConfig.cpp:251
+#: configdialog/dialogs/PlaybackConfig.cpp:303
 msgctxt "State, as in, disabled"
 msgid "Off"
-msgstr "Pois"
+msgstr ""
 
-#: configdialog/dialogs/PlaybackConfig.cpp:251
+#: configdialog/dialogs/PlaybackConfig.cpp:259
 #, fuzzy
 #| msgid "Delete the preset."
 msgid "Can not delete this preset"
 msgstr "Poista esiasetus."
 
-#: configdialog/dialogs/PlaybackConfig.cpp:252
+#: configdialog/dialogs/PlaybackConfig.cpp:260
 msgid "Default presets can not be deleted"
 msgstr ""
 
-#: configdialog/dialogs/PlaybackConfig.cpp:253
+#: configdialog/dialogs/PlaybackConfig.cpp:261
 msgid "Error deleting preset"
 msgstr ""
 
-#: configdialog/dialogs/PlaybackConfig.cpp:263
-#, fuzzy
-#| msgid "Delete the preset."
+#: configdialog/dialogs/PlaybackConfig.cpp:271
 msgid "Can not restore this preset"
-msgstr "Poista esiasetus."
+msgstr ""
 
-#: configdialog/dialogs/PlaybackConfig.cpp:264
+#: configdialog/dialogs/PlaybackConfig.cpp:272
 msgid "Only default presets can be restored"
 msgstr ""
 
-#: configdialog/dialogs/PlaybackConfig.cpp:265
+#: configdialog/dialogs/PlaybackConfig.cpp:273
 msgid "Error restoring preset"
 msgstr ""
 
-#: configdialog/dialogs/PlaybackConfig.cpp:282
-#, fuzzy
-#| msgid "Save the preset."
+#: configdialog/dialogs/PlaybackConfig.cpp:290
 msgid "Can not save this preset"
-msgstr "Tallenna esiasetus."
+msgstr ""
 
-#: configdialog/dialogs/PlaybackConfig.cpp:283
+#: configdialog/dialogs/PlaybackConfig.cpp:291
 msgid ""
 "Preset 'Manual' is reserved for momentary settings.\n"
 "                                               Please choose different name "
 "and try again."
 msgstr ""
 
-#: configdialog/dialogs/PlaybackConfig.cpp:285
-#, fuzzy
-#| msgid "Manage presets"
+#: configdialog/dialogs/PlaybackConfig.cpp:293
 msgid "Error saving preset"
-msgstr "Muokkaa tallennettuja esiasetuksia"
+msgstr ""
 
 #: configdialog/dialogs/DatabaseConfig.cpp:92
-#, fuzzy
-#| msgid "Password"
 msgctxt ""
 "A default password for insertion into an example SQL command (so as not to "
 "print the real one). To be manually replaced by the user."
 msgid "password"
-msgstr "Salasana"
+msgstr "salasana"
 
 #: configdialog/ConfigDialog.cpp:57
 msgctxt "Miscellaneous settings"
@@ -1534,7 +1504,7 @@ msgstr "Toisto"
 
 #: configdialog/ConfigDialog.cpp:60
 msgid "Configure Playback"
-msgstr "Musiikin toisto"
+msgstr "Äänentoistoasetukset"
 
 #: configdialog/ConfigDialog.cpp:61
 msgid "On Screen Display"
@@ -1545,21 +1515,17 @@ msgid "Configure On-Screen-Display"
 msgstr "Kuvaruutunäytön asetukset"
 
 #: configdialog/ConfigDialog.cpp:62
-#, fuzzy
-#| msgid "Database Name"
 msgid "Database"
-msgstr "Tietokannan nimi"
+msgstr "Tietokanta"
 
 #: configdialog/ConfigDialog.cpp:62
-#, fuzzy
-#| msgid "Configure Playback"
 msgid "Configure Database"
-msgstr "Musiikin toisto"
+msgstr "Tietokannan asetukset"
 
 #: dialogs/deviceconfiguredialog.cpp:40
-#, kde-format
+#, fuzzy, kde-format
 msgid "Select Plugin for %1"
-msgstr "Valitse liitännäinen %1 varten"
+msgstr "Valitse liitännäinen (%1)"
 
 # näyttäisi olevan dialogin otsikko
 #: dialogs/deviceconfiguredialog.cpp:46
@@ -1749,20 +1715,20 @@ msgstr "Kokoelman juuri"
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:124 dialogs/FilenameLayoutDialog.cpp:330
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:246
-#: browsers/playlistbrowser/PodcastModel.cpp:279 rc.cpp:1160
-#: playlist/PlaylistModel.cpp:649 widgets/SmartPlaylistEditor.cpp:183
+#: browsers/playlistbrowser/PodcastModel.cpp:286 rc.cpp:1160
+#: playlist/PlaylistModel.cpp:653 widgets/SmartPlaylistEditor.cpp:183
 msgid "Title"
 msgstr "Otsikko"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:90
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:126 dialogs/FilenameLayoutDialog.cpp:345
-#: browsers/CollectionTreeItemModelBase.cpp:903
+#: browsers/CollectionTreeItemModelBase.cpp:907
 #: browsers/collectionbrowser/CollectionWidget.cpp:131
 #: browsers/collectionbrowser/CollectionWidget.cpp:160
 #: browsers/collectionbrowser/CollectionWidget.cpp:192
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:244 rc.cpp:1148
-#: playlist/PlaylistModel.cpp:652 widgets/SmartPlaylistEditor.cpp:183
+#: playlist/PlaylistModel.cpp:656 widgets/SmartPlaylistEditor.cpp:183
 #: widgets/SmartPlaylistEditor.cpp:197
 msgid "Composer"
 msgstr "Säveltäjä"
@@ -1770,29 +1736,29 @@ msgstr "Säveltäjä"
 #. i18n: file: dialogs/EditFilterDialog.ui:120
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:127 dialogs/FilenameLayoutDialog.cpp:350
-#: browsers/CollectionTreeItemModelBase.cpp:905
+#: browsers/CollectionTreeItemModelBase.cpp:909
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:248
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:691 rc.cpp:1166
-#: playlist/PlaylistModel.cpp:653 widgets/SmartPlaylistEditor.cpp:184
+#: playlist/PlaylistModel.cpp:657 widgets/SmartPlaylistEditor.cpp:184
 #: widgets/SmartPlaylistEditor.cpp:197 widgets/SmartPlaylistEditor.cpp:921
 msgid "Year"
 msgstr "Vuosi"
 
 #: dialogs/FilenameLayoutDialog.cpp:129 dialogs/FilenameLayoutDialog.cpp:360
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:257
-#: playlist/PlaylistModel.cpp:659 widgets/SmartPlaylistEditor.cpp:184
+#: playlist/PlaylistModel.cpp:663 widgets/SmartPlaylistEditor.cpp:184
 msgid "Comment"
 msgstr "Kommentti"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:95
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:130 dialogs/FilenameLayoutDialog.cpp:365
-#: dialogs/transferdialog.cpp:90 browsers/CollectionTreeItemModelBase.cpp:904
+#: dialogs/transferdialog.cpp:90 browsers/CollectionTreeItemModelBase.cpp:908
 #: browsers/collectionbrowser/CollectionWidget.cpp:128
 #: browsers/collectionbrowser/CollectionWidget.cpp:157
 #: browsers/collectionbrowser/CollectionWidget.cpp:189
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:247 rc.cpp:1151
-#: playlist/ProgressiveSearchWidget.cpp:97 playlist/PlaylistModel.cpp:658
+#: playlist/ProgressiveSearchWidget.cpp:97 playlist/PlaylistModel.cpp:662
 #: widgets/SmartPlaylistEditor.cpp:183 widgets/SmartPlaylistEditor.cpp:197
 msgid "Genre"
 msgstr "Tyylilaji"
@@ -1852,18 +1818,20 @@ msgstr "Kansio"
 
 #: dialogs/ScriptSelector.cpp:31
 msgid "Search Scripts"
-msgstr ""
+msgstr "Hakukomentosarjat"
 
 #: dialogs/DatabaseImporterDialog.cpp:42
 msgid ""
 "This tool allows you to import track information and<br>statistical data "
 "from another music application."
 msgstr ""
+"Tällä tuontityökalulla saat muiden soitto-ohjelmien tilastot käyttöön "
+"Amarokissa."
 
 #: dialogs/DatabaseImporterDialog.cpp:43
 msgid ""
 "<br><br>Any statistical data in your database will be <i>overwritten</i>"
-msgstr ""
+msgstr "<br><br>Kaikki vanhat tilastot tietokannassa <i>tuhotaan</i>"
 
 #: dialogs/DatabaseImporterDialog.cpp:52
 msgid "Amarok 1.4"
@@ -1963,7 +1931,7 @@ msgstr "<b><font color='red'>Virhe:</font></b> %1"
 msgid "Filename Layout Chooser"
 msgstr ""
 
-#: dialogs/TagDialog.cpp:582 browsers/playlistbrowser/PodcastModel.cpp:280
+#: dialogs/TagDialog.cpp:582 browsers/playlistbrowser/PodcastModel.cpp:287
 msgid "Summary"
 msgstr "Yhteenveto"
 
@@ -2213,7 +2181,7 @@ msgstr ""
 
 #: dialogs/transferdialog.cpp:71
 msgid "Groupings"
-msgstr "Ryhmittely"
+msgstr "Lajittelu"
 
 #: dialogs/transferdialog.cpp:74
 msgid "Select first grouping:\n"
@@ -2319,6 +2287,8 @@ msgid ""
 "There are exceptions caught in the script '%1'. Please refer to the console "
 "debug output for more information."
 msgstr ""
+"Komentosarjassa ”%1” on virheitä. Käynnistä Amarok konsolista ja aja "
+"komentosarja uudelleen nähdäksesi virhetulosteen."
 
 #. i18n: file: collection/audiocd/FormatSelectionDialog.ui:14
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
@@ -2392,13 +2362,14 @@ msgstr "Lisäasetukset:"
 msgid "Append files/URLs to playlist"
 msgstr "Lisää tiedostoja tai verkko-osoitteita soittolistaan"
 
+# tätä tässä varmaankin tarkoitetaan
 #: App.cpp:480
 msgid "Queue URLs after the currently playing track"
-msgstr "Lisää osoitteet nyt soivan kappaleen perään"
+msgstr "Lisää virtaustoistot soivan kappaleen perään"
 
 #: App.cpp:482
 msgid "Load URLs, replacing current playlist"
-msgstr "Lataa osoitteet, korvaa nykyisen soittolistan"
+msgstr "Lataa virtaustoistot ja korvaa nykyinen soittolista"
 
 #: App.cpp:484
 msgid "Print verbose debugging information"
@@ -2510,27 +2481,27 @@ msgctxt "h for hours"
 msgid "%1h"
 msgstr "%1 t"
 
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:384
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:399
 #. i18n: ectx: property (text), widget (QLabel, eqPreampValue)
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:498
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:513
 #. i18n: ectx: property (text), widget (QLabel, eqBand0Value)
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:593
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:608
 #. i18n: ectx: property (text), widget (QLabel, eqBand1Value)
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:682
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:697
 #. i18n: ectx: property (text), widget (QLabel, eqBand2Value)
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:774
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:789
 #. i18n: ectx: property (text), widget (QLabel, eqBand3Value)
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:863
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:878
 #. i18n: ectx: property (text), widget (QLabel, eqBand4Value)
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:952
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:967
 #. i18n: ectx: property (text), widget (QLabel, eqBand5Value)
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:1044
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:1059
 #. i18n: ectx: property (text), widget (QLabel, eqBand6Value)
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:1136
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:1151
 #. i18n: ectx: property (text), widget (QLabel, eqBand7Value)
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:1228
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:1243
 #. i18n: ectx: property (text), widget (QLabel, eqBand8Value)
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:1320
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:1335
 #. i18n: ectx: property (text), widget (QLabel, eqBand9Value)
 #: App.cpp:918 rc.cpp:680 rc.cpp:686 rc.cpp:692 rc.cpp:698 rc.cpp:704
 #: rc.cpp:710 rc.cpp:716 rc.cpp:722 rc.cpp:728 rc.cpp:734 rc.cpp:740
@@ -2617,10 +2588,8 @@ msgid "Internet connection not available"
 msgstr ""
 
 #: aboutdialog/ExtendedAboutDialog.cpp:339
-#, fuzzy
-#| msgid "Framework Version"
 msgid "Network error"
-msgstr "Kehyskoodin versio"
+msgstr "Verkkovirhe"
 
 #: aboutdialog/OcsPersonItem.cpp:91
 msgid "Email contributor"
@@ -2635,11 +2604,8 @@ msgid "IRC channels: "
 msgstr ""
 
 #: aboutdialog/OcsPersonItem.cpp:201
-#, fuzzy
-#| msgctxt "The quality of music"
-#| msgid "Favorite"
 msgid "Favorite music: "
-msgstr "Suosikki"
+msgstr "Suosikkimusiikki: "
 
 #: aboutdialog/OcsPersonItem.cpp:206
 #, kde-format
@@ -2653,7 +2619,7 @@ msgstr ""
 
 #: aboutdialog/libattica-ocsclient/personlistjob.cpp:108
 msgid "Unable to parse avatar image data."
-msgstr ""
+msgstr "Käyttäjän avataria ei voitu lukea."
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.h:37
 msgid "Internal Database"
@@ -2672,7 +2638,7 @@ msgstr "&Nimeä uudelleen"
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:141
 #: equalizerpresetmanager.cpp:56
 #: browsers/playlistbrowser/UserPlaylistModel.cpp:575
-#: amarokurls/BookmarkTreeView.cpp:112
+#: amarokurls/BookmarkTreeView.cpp:113
 msgid "&Delete"
 msgstr "&Poista"
 
@@ -2684,16 +2650,14 @@ msgid "Remove From \"%1\""
 msgstr "Poista soittolistalta"
 
 #: playlistmanager/file/PlaylistFileProvider.cpp:66
-#, fuzzy
-#| msgid "Playlist Files"
 msgid "Playlist Files on Disk"
-msgstr "Soittolistatiedostot"
+msgstr "Soittolistatiedostot kiintolevyllä"
 
 #: playlistmanager/file/PlaylistFileProvider.cpp:203
 #, fuzzy
-#| msgid "Configure Playback"
+#| msgid "Configure Database"
 msgid "Confirm Delete"
-msgstr "Musiikin toisto"
+msgstr "Tietokannan asetukset"
 
 #: playlistmanager/file/PlaylistFileProvider.cpp:205
 #, fuzzy, kde-format
@@ -2756,58 +2720,58 @@ msgstr ""
 "Voit luoda, avata, muokata ja järjestellä soittolistoja. Amarok lisää "
 "automaattisesti kaikki kokoelmasi soittolistat."
 
-#: podcasts/sql/SqlPodcastProvider.cpp:209
+#: podcasts/sql/SqlPodcastProvider.cpp:216
 #, kde-format
 msgid "Already subscribed to %1."
 msgstr "Olet jo virittänyt podcastin ”%1”."
 
-#: podcasts/sql/SqlPodcastProvider.cpp:360
+#: podcasts/sql/SqlPodcastProvider.cpp:367
 msgid "&Delete Downloaded Episode"
 msgstr "Poista ladattu l&ähetys"
 
-#: podcasts/sql/SqlPodcastProvider.cpp:390
+#: podcasts/sql/SqlPodcastProvider.cpp:397
 msgid "&Download Episode"
 msgstr "&Lataa lähetys"
 
-#: podcasts/sql/SqlPodcastProvider.cpp:412
+#: podcasts/sql/SqlPodcastProvider.cpp:419
 msgid "&Configure"
 msgstr "&Muokkaa"
 
-#: podcasts/sql/SqlPodcastProvider.cpp:424
+#: podcasts/sql/SqlPodcastProvider.cpp:431
 msgid "&Remove Subscription"
 msgstr "Pura &viritys"
 
-#: podcasts/sql/SqlPodcastProvider.cpp:436
+#: podcasts/sql/SqlPodcastProvider.cpp:443
 msgid "&Update Channel"
 msgstr "&Päivitä kanava"
 
-#: podcasts/sql/SqlPodcastProvider.cpp:571
+#: podcasts/sql/SqlPodcastProvider.cpp:578
 msgid "Waiting for Podcast Downloads to Finish"
 msgstr ""
 
-#: podcasts/sql/SqlPodcastProvider.cpp:572
+#: podcasts/sql/SqlPodcastProvider.cpp:579
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
 msgstr[0] ""
 msgstr[1] ""
 
-#: podcasts/sql/SqlPodcastProvider.cpp:650
+#: podcasts/sql/SqlPodcastProvider.cpp:686
 msgid "Downloading Podcast Media"
 msgstr "Tallennetaan podcast-mediaa"
 
-#: podcasts/sql/SqlPodcastProvider.cpp:650
+#: podcasts/sql/SqlPodcastProvider.cpp:686
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "Tallennetaan podcastia ”%1”"
 
-#: podcasts/sql/SqlPodcastProvider.cpp:744
+#: podcasts/sql/SqlPodcastProvider.cpp:780
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "Podcastin lähetystä ei voitu tallentaa tiedostoon ”%1”"
 
-#: podcasts/sql/SqlPodcastProvider.h:44
-#: browsers/playlistbrowser/PodcastModel.cpp:593
+#: podcasts/sql/SqlPodcastProvider.h:45
+#: browsers/playlistbrowser/PodcastModel.cpp:600
 msgid "Local Podcasts"
 msgstr "Paikalliset podcastit"
 
@@ -2826,20 +2790,19 @@ msgid "Updating \"%1\""
 msgstr "Päivitetään ”%1”"
 
 #: podcasts/PodcastReader.cpp:123 podcasts/PodcastReader.cpp:137
-#, fuzzy, kde-format
-#| msgid "Importing podcast channel from %1"
+#, kde-format
 msgid "Importing podcast from %1 failed with error:\n"
-msgstr "Tuodaan podcast-kanava ”%1”"
+msgstr "Podcastin lataus lähteestä ”%1” keskeytyi virheeseen:\n"
 
 #: podcasts/PodcastReader.cpp:127 podcasts/PodcastReader.cpp:141
 #, kde-format
 msgid "Updating podcast from %1 failed with error:\n"
-msgstr ""
+msgstr "Podcastin päivitys lähteestä ”%1” keskeytyi virheeseen:\n"
 
 #: podcasts/PodcastReader.cpp:128 podcasts/PodcastReader.cpp:142
 #, kde-format
 msgid "Updating \"%1\" failed with error:\n"
-msgstr ""
+msgstr "Päivitys lähteestä ”%1” keskeytyi virheeseen:\n"
 
 #: podcasts/PodcastReader.cpp:193
 msgid "An HTML page was received. Expected an RSS 2.0 feed"
@@ -2866,25 +2829,25 @@ msgstr ""
 msgid "Muted"
 msgstr "Mykistetty"
 
-#: Systray.cpp:163 widgets/SliderWidget.cpp:254
+#: Systray.cpp:163 widgets/SliderWidget.cpp:255
 msgid "Volume"
 msgstr "Äänenvoimakkuus"
 
 #: Systray.cpp:187 browsers/playlistbrowser/DynamicBiasWidgets.cpp:250
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:693
-#: playlist/PlaylistModel.cpp:666 widgets/SmartPlaylistEditor.cpp:185
+#: playlist/PlaylistModel.cpp:670 widgets/SmartPlaylistEditor.cpp:185
 msgid "Rating"
 msgstr "Arvostelu"
 
 #: Systray.cpp:194 browsers/playlistbrowser/DynamicBiasWidgets.cpp:249
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:692
-#: playlist/PlaylistModel.cpp:667
+#: playlist/PlaylistModel.cpp:671
 msgid "Play Count"
 msgstr "Soittokerrat"
 
 #: Systray.cpp:204 browsers/playlistbrowser/DynamicBiasWidgets.cpp:252
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:695
-#: playlist/PlaylistHeader.cpp:40 playlist/PlaylistModel.cpp:662
+#: playlist/PlaylistHeader.cpp:40 playlist/PlaylistModel.cpp:666
 #: widgets/SmartPlaylistEditor.cpp:183
 msgid "Length"
 msgstr "Pituus"
@@ -2917,11 +2880,11 @@ msgstr "&Peruuta"
 msgid "Equalizer"
 msgstr "Taajuuskorjain"
 
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:138
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:150
 #. i18n: ectx: property (text), widget (QLabel, eqPresetslabel)
 #: equalizersetup.cpp:82 rc.cpp:644
 msgid "Presets:"
-msgstr "Esiasetetut:"
+msgstr "Esiasetukset:"
 
 #: equalizersetup.cpp:91
 msgid "Add new preset"
@@ -3073,30 +3036,31 @@ msgstr "Tuodaan ladattuja kansikuvia"
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:195
 msgid "This controls what portion of the playlist should match the criteria"
 msgstr ""
+"Tämä arvo ohjaa, minkä verran kriteeri vaikuttaa soittolistan muodostuksessa"
 
 #: dynamic/CustomBiasEntryWidget.cpp:58
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:202
 msgid "Proportion:"
-msgstr "Osuus:"
+msgstr "Vaikutus:"
 
 #: dynamic/CustomBiasEntryWidget.cpp:59
 msgid "Match Type:"
-msgstr "Tyyppi:"
+msgstr "Suositusten tyyppi:"
 
 #: dynamic/biases/EchoNest.cpp:52
 msgid "Echo Nest Similar Artists"
-msgstr "Echo Nestin artistisuositukset"
+msgstr "Echo Nest"
 
 # elävät soittolistat: vaikutin
 #: dynamic/biases/EchoNest.cpp:112
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:203
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:668
 msgid "Match:"
-msgstr "Vaikutin:"
+msgstr "Kriteeri:"
 
 #: dynamic/biases/EchoNest.cpp:115
 msgid "Current Track"
-msgstr "Nykyinen kappale"
+msgstr "Soiva kappale"
 
 #: dynamic/biases/EchoNest.cpp:116 MainWindow.cpp:264
 msgid "Playlist"
@@ -3104,7 +3068,7 @@ msgstr "Soittolista"
 
 #: dynamic/biases/EchoNest.cpp:123
 msgid "Recommendations by Echo Nest."
-msgstr "Echo Nest-palvelun suositukset."
+msgstr "Echo Nestin suositukset."
 
 # TERM|smart playlist|älykäs soittolista
 #: dynamic/BiasedPlaylist.cpp:131
@@ -3113,7 +3077,7 @@ msgstr "Luodaan soittolistaa…"
 
 #: equalizerpresetmanager.cpp:35 equalizerpresetmanager.cpp:47
 msgid "Presets"
-msgstr "Esiasetukset"
+msgstr ""
 
 #: equalizerpresetmanager.cpp:104
 msgid "Rename Equalizer Preset"
@@ -3169,7 +3133,9 @@ msgid "Developer (eean)"
 msgstr "Kehittäjä"
 
 #: main.cpp:43
-msgid "Jeff 'IROCKSOHARD' Mitchell"
+#, fuzzy
+#| msgid "Jeff 'IROCKSOHARD' Mitchell"
+msgid "Jeff 'IROKSOHARD' Mitchell"
 msgstr "Jeff 'ROKKAAKOVAA' Mitchell"
 
 #: main.cpp:44
@@ -3466,10 +3432,8 @@ msgid "Valentin Rouet"
 msgstr ""
 
 #: main.cpp:132
-#, fuzzy
-#| msgid "Lee Olson"
 msgid "Wade Olson"
-msgstr "Lee Olson"
+msgstr "Wade Olson"
 
 #: main.cpp:132
 #, fuzzy
@@ -3512,7 +3476,7 @@ msgstr "Adeodato Simó"
 #, fuzzy
 #| msgid "Match:"
 msgid "Patches"
-msgstr "Vaikutin:"
+msgstr "Kriteeri:"
 
 #: main.cpp:142
 msgid "Alexandre Oliveira"
@@ -3731,81 +3695,81 @@ msgstr "Hae musiikkilähteitä"
 msgid "Previous Browser"
 msgstr ""
 
-#: browsers/CollectionTreeItemModelBase.cpp:533
+#: browsers/CollectionTreeItemModelBase.cpp:532
 msgid "album"
 msgstr "albumi"
 
-#: browsers/CollectionTreeItemModelBase.cpp:538
+#: browsers/CollectionTreeItemModelBase.cpp:537
 msgid "artist"
 msgstr "artisti"
 
-#: browsers/CollectionTreeItemModelBase.cpp:543
+#: browsers/CollectionTreeItemModelBase.cpp:542
 msgid "genre"
 msgstr "tyylilaji"
 
-#: browsers/CollectionTreeItemModelBase.cpp:548
+#: browsers/CollectionTreeItemModelBase.cpp:547
 msgid "composer"
 msgstr "säveltäjä"
 
-#: browsers/CollectionTreeItemModelBase.cpp:553
+#: browsers/CollectionTreeItemModelBase.cpp:552
 msgid "year"
 msgstr "vuosi"
 
-#: browsers/CollectionTreeItemModelBase.cpp:558
+#: browsers/CollectionTreeItemModelBase.cpp:557
 msgid "comment"
 msgstr "kommentti"
 
-#: browsers/CollectionTreeItemModelBase.cpp:562
+#: browsers/CollectionTreeItemModelBase.cpp:561
 msgid "rating"
 msgstr "arvostelu"
 
-#: browsers/CollectionTreeItemModelBase.cpp:566
+#: browsers/CollectionTreeItemModelBase.cpp:565
 msgid "score"
 msgstr "pisteitä"
 
 # tagi-dialogin eka ruutu, ilman kaksoispistettä
-#: browsers/CollectionTreeItemModelBase.cpp:570
+#: browsers/CollectionTreeItemModelBase.cpp:569
 msgid "playcount"
 msgstr "soittokertoja"
 
-#: browsers/CollectionTreeItemModelBase.cpp:574
+#: browsers/CollectionTreeItemModelBase.cpp:573
 msgid "length"
 msgstr "pituus"
 
-#: browsers/CollectionTreeItemModelBase.cpp:578
+#: browsers/CollectionTreeItemModelBase.cpp:577
 msgid "discnumber"
 msgstr "levynumero"
 
-#: browsers/CollectionTreeItemModelBase.cpp:582
+#: browsers/CollectionTreeItemModelBase.cpp:581
 msgid "tracknumber"
 msgstr "kappaleen numero"
 
-#: browsers/CollectionTreeItemModelBase.cpp:586
+#: browsers/CollectionTreeItemModelBase.cpp:585
 msgid "added"
 msgstr "lisätty"
 
 # Muokkaa sisältökuvauksia -> Sisältökuvaukset -> Tiedostonimityylit
-#: browsers/CollectionTreeItemModelBase.cpp:592
+#: browsers/CollectionTreeItemModelBase.cpp:591
 msgid "today"
 msgstr "tänään"
 
-#: browsers/CollectionTreeItemModelBase.cpp:594
+#: browsers/CollectionTreeItemModelBase.cpp:593
 msgid "last week"
 msgstr "viime viikolla"
 
-#: browsers/CollectionTreeItemModelBase.cpp:596
+#: browsers/CollectionTreeItemModelBase.cpp:595
 msgid "last month"
 msgstr "viime kuussa"
 
-#: browsers/CollectionTreeItemModelBase.cpp:598
+#: browsers/CollectionTreeItemModelBase.cpp:597
 msgid "two months ago"
 msgstr "kaksi kuukautta sitten"
 
-#: browsers/CollectionTreeItemModelBase.cpp:600
+#: browsers/CollectionTreeItemModelBase.cpp:599
 msgid "three months ago"
 msgstr "kolme kuukautta sitten"
 
-#: browsers/CollectionTreeItemModelBase.cpp:901
+#: browsers/CollectionTreeItemModelBase.cpp:905
 msgid "Year - Album"
 msgstr "Vuosi - Albumi"
 
@@ -3861,15 +3825,11 @@ msgstr "Näytä kansikuvat"
 msgid "Sort Options"
 msgstr "Lajitteluasetukset"
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:301
+#: browsers/collectionbrowser/CollectionWidget.cpp:300
 msgid "Toggle unified view mode"
 msgstr ""
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:302
-msgid "Toggle unified view mode. This is an experimental feature"
-msgstr ""
-
-#: browsers/collectionbrowser/CollectionWidget.cpp:311
+#: browsers/collectionbrowser/CollectionWidget.cpp:309
 msgid ""
 "This is where you will find your local music, as well as music from mobile "
 "audio players and cd's."
@@ -3954,7 +3914,7 @@ msgstr "Nimi"
 
 #: browsers/playlistbrowser/UserPlaylistModel.cpp:289
 msgid "Group"
-msgstr ""
+msgstr "Ryhmä"
 
 #: browsers/playlistbrowser/UserPlaylistModel.cpp:290
 msgid "Source"
@@ -4028,7 +3988,7 @@ msgid "First Played"
 msgstr "Ensimmäinen soittokerta"
 
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:258
-#: playlist/PlaylistModel.cpp:648
+#: playlist/PlaylistModel.cpp:652
 msgctxt "The name of the file this track is stored in"
 msgid "Filename"
 msgstr "Tiedostonimi"
@@ -4036,7 +3996,7 @@ msgstr "Tiedostonimi"
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:349
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:707
 msgid "With:"
-msgstr ""
+msgstr "Hakuehto:"
 
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:401
 msgid "less than"
@@ -4054,26 +4014,23 @@ msgstr "on suurempi kuin"
 msgid "This controls how strictly to match the given value."
 msgstr "Valitse kuinka tarkasti arvoa käytetään soittolistan luonnissa."
 
+# strict lienee kyllä tarkka matemaattinen termi. fuzzy bias toimii tilastollisesti.
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:667
 msgid "Strictness:"
-msgstr "Tarkkuus:"
+msgstr "Vaikuttimen ehdottomuus:"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:278
-#: playlist/PlaylistModel.cpp:661 amarokurls/BookmarkModel.cpp:266
+#: browsers/playlistbrowser/PodcastModel.cpp:285
+#: playlist/PlaylistModel.cpp:665 amarokurls/BookmarkModel.cpp:266
 msgid "Type"
 msgstr "Tyyppi"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:405
-#, fuzzy
-#| msgid "&Add Podcast"
+#: browsers/playlistbrowser/PodcastModel.cpp:412
 msgid "Add Podcast"
-msgstr "Lisää pod&cast"
+msgstr "Lisää podcast"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:405
-#, fuzzy
-#| msgid "Enter Stream URL:"
+#: browsers/playlistbrowser/PodcastModel.cpp:412
 msgid "Enter RSS 2.0 feed URL:"
-msgstr "Anna virtaustoiston osoite:"
+msgstr "Syötä RSS 2.0-osoite:"
 
 #: browsers/playlistbrowser/DynamicBiasModel.cpp:82
 msgid "Proportional Bias"
@@ -4207,16 +4164,16 @@ msgstr "Satunnaisen soittolistan päälle ei voi tallentaa."
 msgid "Add Folder"
 msgstr "Lisää kansio"
 
-#: browsers/CollectionTreeItem.cpp:174
+#: browsers/CollectionTreeItem.cpp:180
 msgctxt "The Name is not known"
 msgid "Unknown"
 msgstr "Tuntematon"
 
-#: browsers/CollectionTreeItem.cpp:203
+#: browsers/CollectionTreeItem.cpp:209
 msgid "Counting"
 msgstr "Lasketaan"
 
-#: browsers/CollectionTreeItem.cpp:221
+#: browsers/CollectionTreeItem.cpp:227
 #: playlist/proxymodels/GroupingProxy.cpp:98
 #, kde-format
 msgid "1 track"
@@ -4600,7 +4557,7 @@ msgstr "Elävän soittolistan tila."
 msgid ""
 "If set, dynamic mode will be on, and tracks will be added according to the "
 "dynamic playlist specified."
-msgstr ""
+msgstr "Käynnistä ja sammuta elävä soittolista tästä."
 
 #. i18n: file: amarokconfig.kcfg:68
 #. i18n: ectx: label, entry, group (General Options)
@@ -4612,7 +4569,7 @@ msgstr "Edeltävien kappaleiden lukumäärä."
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: rc.cpp:54 rc.cpp:1687
 msgid "Number of tracks to leave in the playlist before the active track."
-msgstr ""
+msgstr "Kuinka monta soitettua kappaletta jätetään näkyviin."
 
 #. i18n: file: amarokconfig.kcfg:73
 #. i18n: ectx: label, entry, group (General Options)
@@ -4624,7 +4581,7 @@ msgstr "Tulevien kappaleiden lukumäärä."
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: rc.cpp:60 rc.cpp:1693
 msgid "Number of tracks to load into the playlist after the active track."
-msgstr ""
+msgstr "Kuinka monta kappaletta soittolistalla on jatkuvasti tulossa."
 
 #. i18n: file: amarokconfig.kcfg:78
 #. i18n: ectx: label, entry, group (General Options)
@@ -5130,7 +5087,7 @@ msgstr ""
 #. i18n: ectx: label, entry, group (Playback)
 #: rc.cpp:276 rc.cpp:1909
 msgid "Disable replay gain"
-msgstr ""
+msgstr "Poista voimakkuudentasaus käytöstä"
 
 #. i18n: file: amarokconfig.kcfg:300
 #. i18n: ectx: label, entry, group (Playback)
@@ -5865,9 +5822,9 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ResumePlayback)
 #: rc.cpp:638
 msgid "&Resume playback on start"
-msgstr "&Jatka soittoa, kun ohjelma käynnistetään"
+msgstr "&Jatka soittoa kun ohjelma käynnistetään"
 
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:151
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:163
 #. i18n: ectx: property (toolTip), widget (QComboBox, eqPresets)
 #: rc.cpp:647
 #, fuzzy
@@ -5875,99 +5832,95 @@ msgstr "&Jatka soittoa, kun ohjelma käynnistetään"
 msgid "List of available equalizer presets."
 msgstr "Taajuuskorjaimen esiasetettu nimi."
 
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:167
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:179
 #. i18n: ectx: property (toolTip), widget (QPushButton, eqPresetSaveBtn)
 #: rc.cpp:650
 msgid "Save changes of currently selected preset"
 msgstr ""
 
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:170
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:182
 #. i18n: ectx: property (text), widget (QPushButton, eqPresetSaveBtn)
 #: rc.cpp:653
-#, fuzzy
-#| msgid "Save As"
 msgid "Save"
-msgstr "Tallenna nimellä"
+msgstr "Tallenna"
 
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:183
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:195
 #. i18n: ectx: property (toolTip), widget (QPushButton, eqPresetDeleteBtn)
 #: rc.cpp:656
 msgid "Delete currently selected preset. Not available for built-in presets."
 msgstr ""
 
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:186
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:198
 #. i18n: ectx: property (text), widget (QPushButton, eqPresetDeleteBtn)
 #: rc.cpp:659
-#, fuzzy
-#| msgid "Delete the preset."
 msgid "Delete preset"
-msgstr "Poista esiasetus."
+msgstr "Poista"
 
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:199
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:211
 #. i18n: ectx: property (toolTip), widget (QPushButton, eqPresetResetBtn)
 #: rc.cpp:662
 msgid ""
 "Reset selected preset setting to default. Available only for built-in preset."
 msgstr ""
 
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:202
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:214
 #. i18n: ectx: property (text), widget (QPushButton, eqPresetResetBtn)
 #: rc.cpp:665
 msgid "Reset to default"
-msgstr ""
+msgstr "Palauta oletukset"
 
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:221
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:236
 #. i18n: ectx: property (title), widget (QGroupBox, eqBandsGroupBox)
 #: rc.cpp:668
-#, fuzzy
-#| msgid "and"
 msgid "Bands"
-msgstr "ja"
+msgstr "Taajuuskaistat"
 
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:262
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:277
 #. i18n: ectx: property (text), widget (QLabel, eqMaxEq)
 #: rc.cpp:671
 msgid "+ dB"
-msgstr ""
+msgstr "+ dB"
 
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:302
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:317
 #. i18n: ectx: property (text), widget (QLabel, eqZero)
 #: rc.cpp:674
+#, fuzzy
+#| msgid "+ dB"
 msgid "0 dB"
-msgstr ""
+msgstr "+ dB"
 
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:342
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:357
 #. i18n: ectx: property (text), widget (QLabel, eqMinEq)
 #: rc.cpp:677
 msgid "- dB"
-msgstr ""
+msgstr "- dB"
 
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:443
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:458
 #. i18n: ectx: property (text), widget (QLabel, eqPreampLabel)
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:548
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:563
 #. i18n: ectx: property (text), widget (QLabel, eqBand0Label)
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:643
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:658
 #. i18n: ectx: property (text), widget (QLabel, eqBand1Label)
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:732
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:747
 #. i18n: ectx: property (text), widget (QLabel, eqBand2Label)
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:824
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:839
 #. i18n: ectx: property (text), widget (QLabel, eqBand3Label)
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:913
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:928
 #. i18n: ectx: property (text), widget (QLabel, eqBand4Label)
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:1002
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:1017
 #. i18n: ectx: property (text), widget (QLabel, eqBand5Label)
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:1094
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:1109
 #. i18n: ectx: property (text), widget (QLabel, eqBand6Label)
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:1186
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:1201
 #. i18n: ectx: property (text), widget (QLabel, eqBand7Label)
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:1278
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:1293
 #. i18n: ectx: property (text), widget (QLabel, eqBand8Label)
-#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:1370
+#. i18n: file: configdialog/dialogs/PlaybackConfig.ui:1385
 #. i18n: ectx: property (text), widget (QLabel, eqBand9Label)
 #: rc.cpp:683 rc.cpp:689 rc.cpp:695 rc.cpp:701 rc.cpp:707 rc.cpp:713
 #: rc.cpp:719 rc.cpp:725 rc.cpp:731 rc.cpp:737 rc.cpp:743
 msgid "Hz"
-msgstr ""
+msgstr "Hz"
 
 #. i18n: file: configdialog/dialogs/GeneralConfig.ui:17
 #. i18n: ectx: property (title), widget (QGroupBox, generalBox)
@@ -6027,33 +5980,27 @@ msgstr "Vieritä soittolista kullakin hetkellä soivan kappaleen kohdalle"
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_UseServer)
 #: rc.cpp:779
 #, fuzzy
-#| msgid "Internal Database"
+#| msgid "Use &internal database (default)"
 msgid "Use &external MySQL database"
-msgstr "Sisäinen tietokanta"
+msgstr "Käytä &omaa tietokantaa (oletus)"
 
 #. i18n: file: configdialog/dialogs/DatabaseConfig.ui:24
 #. i18n: ectx: property (title), widget (QGroupBox, group_Connection)
 #: rc.cpp:782
-#, fuzzy
-#| msgid "Photos Settings"
 msgid "Connection Settings"
-msgstr "Valokuvien asetukset"
+msgstr "Yhteysasetukset"
 
 #. i18n: file: configdialog/dialogs/DatabaseConfig.ui:32
 #. i18n: ectx: property (text), widget (QLabel, label_Host)
 #: rc.cpp:785
-#, fuzzy
-#| msgid "Server:"
 msgid "&Server:"
-msgstr "Palvelin:"
+msgstr "&Palvelin:"
 
 #. i18n: file: configdialog/dialogs/DatabaseConfig.ui:61
 #. i18n: ectx: property (text), widget (QLabel, label_Port)
 #: rc.cpp:788
-#, fuzzy
-#| msgid "Format:"
 msgid "P&ort:"
-msgstr "Muoto:"
+msgstr "P&ortti:"
 
 #. i18n: file: configdialog/dialogs/DatabaseConfig.ui:87
 #. i18n: ectx: property (text), widget (QLabel, label_User)
@@ -6074,10 +6021,8 @@ msgstr "&Salasana:"
 #. i18n: file: configdialog/dialogs/DatabaseConfig.ui:139
 #. i18n: ectx: property (text), widget (QLabel, label_Database)
 #: rc.cpp:797
-#, fuzzy
-#| msgid "Database Name"
 msgid "&Database:"
-msgstr "Tietokannan nimi"
+msgstr "Tietokannan &nimi:"
 
 #. i18n: file: configdialog/dialogs/DatabaseConfig.ui:178
 #. i18n: ectx: property (text), widget (QLabel, label_Info)
@@ -7738,7 +7683,7 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: rc.cpp:1630 services/ServiceBase.cpp:143
 msgid "Group By"
-msgstr "Ryhmittele"
+msgstr "Lajitteluperuste"
 
 #. i18n: file: playlist/layouts/PlaylistLayoutEditDialog.ui:222
 #. i18n: ectx: property (text), widget (QPushButton, previewButton)
@@ -8013,9 +7958,10 @@ msgid "to"
 msgstr "–"
 
 # alkuperäinen on epälooginen, ks. seuraava msgstr
+# suositukset tulevat ilmi muussa kontekstissa, ks GUI
 #: services/lastfm/biases/SimilarArtistsBias.cpp:52
 msgid "Last.Fm Similar Artists"
-msgstr "Last.fm-suositukset"
+msgstr "Last.fm"
 
 #: services/lastfm/biases/SimilarArtistsBias.cpp:111
 msgid "Adds songs related to currently playing track, recommended by Last.Fm"
@@ -8105,16 +8051,16 @@ msgid "Loved Track: %1"
 msgstr "Suosikkikappaleita: %1"
 
 #: services/lastfm/LastFmServiceConfig.cpp:40
-#, fuzzy
-#| msgid "Last.fm Profile"
 msgid "Last.fm credentials"
-msgstr "Last.fm-profiili"
+msgstr "Last.fm-tunnistautuminen"
 
 #: services/lastfm/LastFmServiceConfig.cpp:41
 msgid ""
 "No running KWallet found. Would you like Amarok to save your Last.fm "
 "credentials in plaintext?"
 msgstr ""
+"KWallet-lompakkoa ei ole saatavilla. Haluatko että Amarok tallentaa "
+"tunnistautumistiedot (myös salasanan) salaamattomasti?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:97
 msgid "Testing..."
@@ -8178,34 +8124,6 @@ msgstr ""
 #: services/lastfm/LastFmServiceCollection.cpp:139
 msgid "last.fm"
 msgstr "Last.fm"
-
-#: services/shoutcast/ShoutcastService.cpp:33
-msgid "Shoutcast Directory"
-msgstr "Shoutcast-hakemisto"
-
-#: services/shoutcast/ShoutcastService.cpp:62
-msgid "The biggest list of online radio stations on the Internet"
-msgstr "Internetin suurin kokoelma radioasemia"
-
-#: services/shoutcast/ShoutcastService.cpp:83
-msgctxt "Fetch the 500 most popular stations"
-msgid "View Top 500 Stations"
-msgstr "Näytä suosituimmat 500 radioasemaa"
-
-#: services/shoutcast/ShoutcastService.cpp:89
-msgctxt "Fetch list of all stations by genre"
-msgid "View All Stations"
-msgstr "Näytä kaikki radioasemat"
-
-#: services/shoutcast/ShoutcastServiceQueryMaker.cpp:229
-#, kde-format
-msgid "Results for: %1"
-msgstr ""
-
-#: services/shoutcast/ShoutcastServiceQueryMaker.cpp:314
-#: services/shoutcast/ShoutcastServiceQueryMaker.cpp:383
-msgid "The Shoutcast server is busy.<BR>Please try again later."
-msgstr ""
 
 #: services/ShowInServiceAction.cpp:27
 #, kde-format
@@ -8750,186 +8668,184 @@ msgstr "Haku %1"
 
 # tagi-dialogin eka ruutu, ilman kaksoispistettä
 #: playlist/PlaylistViewUrlGenerator.cpp:77
-#, kde-format
+#, fuzzy, kde-format
 msgid "%1 layout"
 msgstr "%1-sijoittelu"
 
-#: playlist/PlaylistDefines.h:82
+#: playlist/PlaylistDefines.h:83
 msgctxt "Empty placeholder token used for spacing in playlist layouts"
 msgid "Placeholder"
 msgstr ""
 
-#: playlist/PlaylistDefines.h:83
+#: playlist/PlaylistDefines.h:84
 msgctxt "'Album' playlist column name and token for playlist layouts"
 msgid "Album"
 msgstr "Albumi"
 
-#: playlist/PlaylistDefines.h:84
+#: playlist/PlaylistDefines.h:85
 msgctxt "'Album artist' playlist column name and token for playlist layouts"
 msgid "Album artist"
 msgstr "Albumin artisti"
 
-#: playlist/PlaylistDefines.h:85
+#: playlist/PlaylistDefines.h:86
 msgctxt "'Artist' playlist column name and token for playlist layouts"
 msgid "Artist"
 msgstr "Artisti"
 
-#: playlist/PlaylistDefines.h:86
+#: playlist/PlaylistDefines.h:87
 msgctxt "'Bitrate' playlist column name and token for playlist layouts"
 msgid "Bitrate"
 msgstr "Bittinopeus"
 
-#: playlist/PlaylistDefines.h:87
+#: playlist/PlaylistDefines.h:88
 msgctxt ""
 "'Beats per minute' playlist column name and token for playlist layouts, if "
 "in doubt, dont expand as it needs to be short!!"
 msgid "Bpm"
 msgstr "bpm"
 
-#: playlist/PlaylistDefines.h:88
+#: playlist/PlaylistDefines.h:89
 msgctxt "'Comment' playlist column name and token for playlist layouts"
 msgid "Comment"
 msgstr "Kommentti"
 
-#: playlist/PlaylistDefines.h:89
+#: playlist/PlaylistDefines.h:90
 msgctxt "'Composer' playlist column name and token for playlist layouts"
 msgid "Composer"
 msgstr "Säveltäjä"
 
-#: playlist/PlaylistDefines.h:90
+#: playlist/PlaylistDefines.h:91
 msgctxt "'Cover image' playlist column name and token for playlist layouts"
 msgid "Cover image"
 msgstr "Kansikuva"
 
-#: playlist/PlaylistDefines.h:91
+#: playlist/PlaylistDefines.h:92
 msgctxt "'Directory' playlist column name and token for playlist layouts"
 msgid "Directory"
 msgstr "Kansio"
 
-#: playlist/PlaylistDefines.h:92
+#: playlist/PlaylistDefines.h:93
 msgctxt "'Disc number' playlist column name and token for playlist layouts"
 msgid "Disc number"
 msgstr "Levy#"
 
-#: playlist/PlaylistDefines.h:93
+#: playlist/PlaylistDefines.h:94
 msgctxt ""
 "'Divider' token for playlist layouts representing a small visual divider"
 msgid "Divider"
 msgstr ""
 
-#: playlist/PlaylistDefines.h:94
+#: playlist/PlaylistDefines.h:95
 msgctxt "'File name' playlist column name and token for playlist layouts"
 msgid "File name"
 msgstr "Tiedostonimi"
 
-#: playlist/PlaylistDefines.h:95
+#: playlist/PlaylistDefines.h:96
 msgctxt "'File size' playlist column name and token for playlist layouts"
 msgid "File size"
 msgstr "Tiedostokoko"
 
-#: playlist/PlaylistDefines.h:96
+#: playlist/PlaylistDefines.h:97
 msgctxt "'Genre' playlist column name and token for playlist layouts"
 msgid "Genre"
 msgstr "Tyylilaji"
 
-#: playlist/PlaylistDefines.h:97
+#: playlist/PlaylistDefines.h:98
 msgctxt ""
 "'Group length' (total play time of group) playlist column name and token for "
 "playlist layouts"
 msgid "Group length"
 msgstr "Soittoryhmän kesto"
 
-#: playlist/PlaylistDefines.h:98
+#: playlist/PlaylistDefines.h:99
 msgctxt ""
 "'Group tracks' (number of tracks in group) playlist column name and token "
 "for playlist layouts"
 msgid "Group tracks"
 msgstr "Soittoryhmän kappaleet"
 
-#: playlist/PlaylistDefines.h:99
+#: playlist/PlaylistDefines.h:100
 msgctxt ""
 "'Last played' (when was track last played) playlist column name and token "
 "for playlist layouts"
 msgid "Last played"
 msgstr "Viimeksi soitettu"
 
-#: playlist/PlaylistDefines.h:100
+#: playlist/PlaylistDefines.h:101 playlist/PlaylistDefines.h:102
 msgctxt ""
 "'Length' (track length) playlist column name and token for playlist layouts"
 msgid "Length"
 msgstr "Kesto"
 
-#: playlist/PlaylistDefines.h:101
+#: playlist/PlaylistDefines.h:103
 msgctxt "'Mood' playlist column name and token for playlist layouts"
 msgid "Mood"
 msgstr "Mieliala"
 
 # tagi-dialogin eka ruutu, ilman kaksoispistettä
-#: playlist/PlaylistDefines.h:102
+#: playlist/PlaylistDefines.h:104
 msgctxt "'Play count' playlist column name and token for playlist layouts"
 msgid "Play count"
 msgstr "Soittokertoja"
 
-#: playlist/PlaylistDefines.h:103
+#: playlist/PlaylistDefines.h:105
 msgctxt "'Rating' playlist column name and token for playlist layouts"
 msgid "Rating"
 msgstr "Arvio"
 
-#: playlist/PlaylistDefines.h:104
+#: playlist/PlaylistDefines.h:106
 msgctxt "'Sample rate' playlist column name and token for playlist layouts"
 msgid "Sample rate"
 msgstr "Näytteenottotaajuus"
 
-#: playlist/PlaylistDefines.h:105
+#: playlist/PlaylistDefines.h:107
 msgctxt "'Score' playlist column name and token for playlist layouts"
 msgid "Score"
 msgstr "Pisteet"
 
-#: playlist/PlaylistDefines.h:106
+#: playlist/PlaylistDefines.h:108
 msgctxt ""
 "'Source' (local collection, Magnatune.com, last.fm, ... ) playlist column "
 "name and token for playlist layouts"
 msgid "Source"
 msgstr "Lähde"
 
-#: playlist/PlaylistDefines.h:107
+#: playlist/PlaylistDefines.h:109
 msgctxt "'SourceEmblem' playlist column name and token for playlist layouts"
 msgid "SourceEmblem"
 msgstr ""
 
-#: playlist/PlaylistDefines.h:108
+#: playlist/PlaylistDefines.h:110
 msgctxt ""
 "'Title' (track name) playlist column name and token for playlist layouts"
 msgid "Title"
 msgstr "Otsikko"
 
-#: playlist/PlaylistDefines.h:109
+#: playlist/PlaylistDefines.h:111
 msgctxt ""
 "'Title (with track number)' (track name prefixed with the track number) "
 "playlist column name and token for playlist layouts"
 msgid "Title (with track number)"
 msgstr "Otsikko (kappalenumeron kanssa)"
 
-#: playlist/PlaylistDefines.h:110
+#: playlist/PlaylistDefines.h:112
 msgctxt "'Track number' playlist column name and token for playlist layouts"
 msgid "Track number"
 msgstr "Kappalenumero"
 
-#: playlist/PlaylistDefines.h:111
+#: playlist/PlaylistDefines.h:113
 msgctxt ""
 "'Type' (file format) playlist column name and token for playlist layouts"
 msgid "Type"
 msgstr "Tyyppi"
 
-#: playlist/PlaylistDefines.h:112
+#: playlist/PlaylistDefines.h:114
 msgctxt "'Year' playlist column name and token for playlist layouts"
 msgid "Year"
 msgstr "Vuosi"
 
 #: playlist/layouts/LayoutEditWidget.cpp:40
 #: playlist/layouts/LayoutEditWidget.cpp:55
-#, fuzzy
-#| msgid "Show Cover"
 msgid "Show cover"
 msgstr "Näytä kansikuva"
 
@@ -8941,12 +8857,12 @@ msgstr ""
 msgid "Encountered an unknown element name while reading layout."
 msgstr ""
 
-#: playlist/layouts/LayoutManager.cpp:352
+#: playlist/layouts/LayoutManager.cpp:357
 #, kde-format
 msgid "The layout '%1' is one of the default layouts and cannot be deleted."
 msgstr ""
 
-#: playlist/layouts/LayoutManager.cpp:352
+#: playlist/layouts/LayoutManager.cpp:357
 msgid "Cannot Delete Default Layouts"
 msgstr ""
 
@@ -9053,7 +8969,7 @@ msgstr ""
 #, fuzzy
 #| msgid "Groupings"
 msgid "No Grouping"
-msgstr "Ryhmittely"
+msgstr "Lajittelu"
 
 #: playlist/layouts/LayoutEditDialog.cpp:75
 msgid "Configuration for"
@@ -9163,10 +9079,9 @@ msgid "&Save Current Playlist"
 msgstr "&Tallenna nykyinen soittolista"
 
 #: playlist/PlaylistWidget.cpp:179
-#, fuzzy, kde-format
-#| msgid "&Save to %1"
+#, kde-format
 msgid "&Save playlist to \"%1\""
-msgstr "&Tallenna soittolista %1"
+msgstr "&Tallenna soittolista ”%1”"
 
 #: playlist/UndoCommands.cpp:29
 msgid "Tracks Added"
@@ -9180,7 +9095,7 @@ msgstr "Kappaleita poistettu"
 msgid "Track moved"
 msgstr "Kappale siirretty"
 
-#: playlist/PlaylistActions.cpp:342
+#: playlist/PlaylistActions.cpp:357
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "Soittolistassa on liian monta virhettä. Soitto keskeytetty."
 
@@ -9196,46 +9111,46 @@ msgstr ""
 msgid "Never"
 msgstr "Ei koskaan"
 
-#: playlist/PlaylistModel.cpp:651
+#: playlist/PlaylistModel.cpp:655
 msgid "Album Artist"
 msgstr "Albumin artisti"
 
-#: playlist/PlaylistModel.cpp:655
+#: playlist/PlaylistModel.cpp:659
 msgid "Disc Number"
 msgstr "Levynumero"
 
-#: playlist/PlaylistModel.cpp:656
+#: playlist/PlaylistModel.cpp:660
 msgctxt "The Track number for this item"
 msgid "Track"
 msgstr "Kappale"
 
-#: playlist/PlaylistModel.cpp:657 widgets/SmartPlaylistEditor.cpp:187
+#: playlist/PlaylistModel.cpp:661 widgets/SmartPlaylistEditor.cpp:187
 msgid "BPM"
 msgstr "BPM"
 
-#: playlist/PlaylistModel.cpp:660
+#: playlist/PlaylistModel.cpp:664
 msgctxt "The location on disc of this track"
 msgid "Directory"
 msgstr "Kansio"
 
-#: playlist/PlaylistModel.cpp:663 widgets/SmartPlaylistEditor.cpp:187
+#: playlist/PlaylistModel.cpp:667 widgets/SmartPlaylistEditor.cpp:187
 msgid "Bitrate"
 msgstr "Bittinopeus"
 
-#: playlist/PlaylistModel.cpp:664
+#: playlist/PlaylistModel.cpp:668
 msgid "Sample Rate"
 msgstr "Näytteenottotaajuus"
 
-#: playlist/PlaylistModel.cpp:668
+#: playlist/PlaylistModel.cpp:672
 msgctxt "Column name"
 msgid "Last Played"
 msgstr "Viimeksi soitettu"
 
-#: playlist/PlaylistModel.cpp:669
+#: playlist/PlaylistModel.cpp:673
 msgid "Mood"
 msgstr "Mieliala"
 
-#: playlist/PlaylistModel.cpp:670
+#: playlist/PlaylistModel.cpp:674
 msgid "File Size"
 msgstr "Tiedostokoko"
 
@@ -9314,15 +9229,15 @@ msgstr "Keskeytä kaikki taustatehtävät"
 
 #: amarokurls/BookmarkModel.cpp:86
 msgid "group"
-msgstr ""
+msgstr "kansio"
 
 #: amarokurls/BookmarkModel.cpp:267
 msgid "Url"
-msgstr ""
+msgstr "Verkko-osoite"
 
 #: amarokurls/BookmarkModel.cpp:514
 msgid "New Group"
-msgstr ""
+msgstr "Uusi kansio"
 
 #: amarokurls/BookmarkModel.cpp:539 amarokurls/BookmarkManagerWidget.cpp:47
 msgid "New Bookmark"
@@ -9330,24 +9245,24 @@ msgstr "Uusi kirjanmerkki"
 
 #: amarokurls/BookmarkModel.cpp:540
 msgid "none"
-msgstr "ei mitään"
+msgstr "–"
 
-#: amarokurls/BookmarkTreeView.cpp:106
+#: amarokurls/BookmarkTreeView.cpp:107
 msgctxt "Load the view represented by this bookmark"
 msgid "&Load"
 msgstr "&Lataa"
 
-#: amarokurls/BookmarkTreeView.cpp:119
+#: amarokurls/BookmarkTreeView.cpp:120
 msgid "&Create timecode track"
 msgstr ""
 
-#: amarokurls/BookmarkTreeView.cpp:316
+#: amarokurls/BookmarkTreeView.cpp:318
 msgid "New Timecode Track"
 msgstr ""
 
 #: amarokurls/BookmarkManagerWidget.cpp:53
 msgid "Filter bookmarks"
-msgstr "Hae kirjanmerkki"
+msgstr "Hae kirjanmerkeistä"
 
 #: amarokurls/BookmarkManagerWidget.cpp:57
 msgid "Start typing to progressively filter the bookmarks"
@@ -9424,7 +9339,7 @@ msgstr "Muokkaa suodatinta"
 
 #: widgets/BreadcrumbItemButton.cpp:204
 msgid "List and run bookmarks, or create new ones"
-msgstr ""
+msgstr "Avaa ja hallinnoi kirjanmerkkejä"
 
 #: widgets/BreadcrumbItemButton.cpp:221
 msgid "Amarok Bookmarks"
@@ -9434,27 +9349,27 @@ msgstr "Kirjanmerkit"
 msgid "Main Toolbar"
 msgstr ""
 
-#: widgets/SliderWidget.cpp:255
+#: widgets/SliderWidget.cpp:256
 msgid "100%"
 msgstr "100%"
 
-#: widgets/SliderWidget.cpp:256
+#: widgets/SliderWidget.cpp:257
 msgid "80%"
 msgstr "80%"
 
-#: widgets/SliderWidget.cpp:257
+#: widgets/SliderWidget.cpp:258
 msgid "60%"
 msgstr "60%"
 
-#: widgets/SliderWidget.cpp:258
+#: widgets/SliderWidget.cpp:259
 msgid "40%"
 msgstr "40%"
 
-#: widgets/SliderWidget.cpp:259
+#: widgets/SliderWidget.cpp:260
 msgid "20%"
 msgstr "20%"
 
-#: widgets/SliderWidget.cpp:260
+#: widgets/SliderWidget.cpp:261
 msgid "0%"
 msgstr "0%"
 
@@ -9474,17 +9389,17 @@ msgstr "Napsauta nähdäksesi lisää jäsentelijöitä"
 msgid "&Visualizations"
 msgstr "&Visualisaatiot"
 
-#: widgets/ProgressWidget.cpp:49
+#: widgets/ProgressWidget.cpp:47
 msgid "Track Progress"
 msgstr "Kappaleen eteneminen"
 
-#: widgets/ProgressWidget.cpp:53
+#: widgets/ProgressWidget.cpp:51
 msgid "The amount of time elapsed in current song"
-msgstr ""
+msgstr "Kappale on jo soinut tämän verran"
 
-#: widgets/ProgressWidget.cpp:57
+#: widgets/ProgressWidget.cpp:55
 msgid "The amount of time remaining in current song"
-msgstr ""
+msgstr "Soivan kappaleen jäljellä oleva aika"
 
 #: widgets/BookmarkPopup.cpp:37 widgets/BookmarkPopup.cpp:80
 msgid "Bookmark"
@@ -9875,30 +9790,39 @@ msgstr "Kansikuva"
 msgid "No Artist"
 msgstr "Ei artistia"
 
-#~ msgid "Install New Applets"
-#~ msgstr "Asenna uusia sovelmia"
-
-#, fuzzy
-#~| msgid "Group By"
-#~ msgid "Group &by"
-#~ msgstr "Ryhmittele"
-
 #~ msgctxt "Replace the currently loaded tracks with these"
 #~ msgid "&Load"
 #~ msgstr "&Lataa"
 
-#, fuzzy
+#~ msgid "Install New Applets"
+#~ msgstr "Asenna uusia sovelmia"
+
+#~ msgid "Enter new group name:"
+#~ msgstr "Anna ryhmälle uusi nimi:"
+
+#~ msgid "    0 dB"
+#~ msgstr "    0 dB"
+
+#~ msgid "MySQL"
+#~ msgstr "MySQL"
+
 #~| msgid "Internal Database"
 #~ msgid "&External database engine:"
-#~ msgstr "Sisäinen tietokanta"
+#~ msgstr "Ulkoinen &tietokantamoottori:"
 
-#~ msgid "Enables the equalizer plugin"
-#~ msgstr "Mikäli käytössä, taajuuskorjainliitännäinen suodattaa äänivirtaa."
+#~ msgid "Shoutcast Directory"
+#~ msgstr "Shoutcast-hakemisto"
 
-#~ msgid "Band gains for equalizer, 10 values, range -100..100, 0 is normal."
-#~ msgstr ""
-#~ "Taajuuskorjaimen kaistojen vahvistus, 10 arvoa väliltä -100..100, 0 on "
-#~ "oletus."
+#~ msgid "The biggest list of online radio stations on the Internet"
+#~ msgstr "Internetin suurin kokoelma radioasemia"
 
-#~ msgid "Enter Podcast URL:"
-#~ msgstr "Podcastin osoite:"
+#~ msgctxt "Fetch the 500 most popular stations"
+#~ msgid "View Top 500 Stations"
+#~ msgstr "Näytä suosituimmat 500 radioasemaa"
+
+#~ msgctxt "Fetch list of all stations by genre"
+#~ msgid "View All Stations"
+#~ msgstr "Näytä kaikki radioasemat"
+
+#~ msgid "Group by %1"
+#~ msgstr "Lajitteluperuste %1"
