@@ -22,4 +22,4 @@ index 9f1c390..68d02f3 100755
          target_link_libraries(amarok_collection-mysqlservercollection crypt pthread)
      endif(NOT APPLE)
 -- 
-tg: (bef5f75..) debian/mysql_linkage_fix (depends on: upstream)
+tg: (91cd020..) debian/mysql_linkage_fix (depends on: upstream)
