@@ -266,7 +266,11 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case Length:
             {
-                return  Meta::secToPrettyTime( m_items.at( row )->track()->length() );
+                return Meta::secToPrettyTime( m_items.at( row )->track()->length() );
+            }
+            case LengthInSeconds:
+            {
+                return m_items.at( row )->track()->length();
             }
             case Mood:
             {
@@ -610,6 +614,7 @@ Playlist::Model::metadataChanged( Meta::TrackPtr track )
         {
             emit dataChanged( createIndex( i, 0 ), createIndex( i, columnCount() - 1 ) );
             emit metadataUpdated();
+            debug()<<"Metadata updated for track"<<track->prettyName();
             break;
         }
     }
@@ -621,13 +626,12 @@ Playlist::Model::metadataChanged( Meta::AlbumPtr album )
     Meta::TrackList tracks = album->tracks();
     foreach( Meta::TrackPtr track, tracks )
         metadataChanged( track );
+    debug()<<"Album metadata changed";
 }
 
 bool
 Playlist::Model::exportPlaylist( const QString &path ) const
 {
-    DEBUG_BLOCK
-    debug() << "WARNING: You shouldn't see this at any time except on exit.";
     return The::playlistManager()->exportPlaylist( tracks(), path );
 }
 

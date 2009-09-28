@@ -13,43 +13,38 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
-#ifndef DBUSQUERYHELPER_H
-#define DBUSQUERYHELPER_H
 
-#include "meta/Meta.h"
+#ifndef PLAYLISTCOLLECTIONLOCATION_H
+#define PLAYLISTCOLLECTIONLOCATION_H
 
-#include <QDBusConnection>
-#include <QDBusMessage>
-#include <QList>
-#include <QMap>
-#include <QObject>
-#include <QString>
-#include <QVariant>
-class QueryMaker;
+#include "collection/CollectionLocation.h"
 
-typedef QList<QVariantMap> VariantMapList;
+class PlaylistCollection;
 
-class DBusQueryHelper : public QObject
+/**
+  * Utility class that allows modification of playlists using the standard
+  * CollectionLocation API.
+  * caveat: although it is writable, moving tracks to this "collection" does not
+  * work, as it is just a wrapper around a playlist, which only holds references to tracks
+  *
+  * It is safe though as this collection does not signal that it has copied tracks successfully
+  */
+class PlaylistCollectionLocation : public CollectionLocation
 {
-    Q_OBJECT
-    
-    public:
-        DBusQueryHelper( QObject *parent, QueryMaker *qm, const QDBusConnection &conn, const QDBusMessage &msg, bool mprisCompatible );
-        
-    private slots:
-        void slotResultReady( const QString &collectionId, const Meta::TrackList &tracks );
-        
-        void slotQueryDone();
+public:
+    PlaylistCollectionLocation( const PlaylistCollection *collection );
 
-        void abortQuery();
-        
-    private:
-        QDBusConnection m_connection;
-        QDBusMessage m_message;
-        VariantMapList m_result;
-        bool m_mprisCompatibleResult;
-        bool m_timeout;
+    QString prettyLocation() const;
+    bool isWritable() const;
+    bool remove( const Meta::TrackPtr &track );
+
+protected:
+    void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources );
+    //why is this called "removeUrls" if the argument are only tracks?
+    void removeUrlsFromCollection( const Meta::TrackList &tracks );
+
+private:
+    const PlaylistCollection *m_collection;
 };
 
-#endif
+#endif // PLAYLISTCOLLECTIONLOCATION_H

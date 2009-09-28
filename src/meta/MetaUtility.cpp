@@ -28,6 +28,7 @@
 #include <kio/global.h>
 
 // Taglib
+#include <fileref.h>
 #include <tag.h>
 #include <tlist.h>
 #include <tmap.h>
@@ -121,6 +122,54 @@ Meta::Field::mapFromTrack( const Meta::TrackPtr track )
     map.insert( Meta::Field::PLAYCOUNT, QVariant( track->playCount() ) );
     map.insert( Meta::Field::LAST_PLAYED, QVariant( track->lastPlayed() ) );
 
+    return map;
+}
+
+QVariantMap
+Meta::Field::mprisMapFromTrack( const Meta::TrackPtr track )
+{
+    QVariantMap map;
+    if( track )
+    {
+        // MANDATORY:
+        map["location"] = track->playableUrl().url();
+        // INFORMATIONAL:
+        map["title"] = track->prettyName();
+
+        if( track->artist() )
+            map["artist"] = track->artist()->name();
+
+        if( track->album() )
+            map["album"] = track->album()->name();
+
+        map["tracknumber"] = track->trackNumber();
+        map["time"] = track->length();
+        map["mtime"] = track->length() * 1000;
+
+        if( track->genre() )
+            map["genre"] = track->genre()->name();
+
+        map["comment"] = track->comment();
+        map["rating"] = track->rating()/2;  //out of 5, not 10.
+
+        if( track->year() )
+            map["year"] = track->year()->name();
+
+        if( track->album() )
+            map["arturl"] = track->album()->imageLocation().url();
+
+        //TODO: external service meta info
+
+        // TECHNICAL:
+        map["audio-bitrate"] = track->bitrate();
+        map["audio-samplerate"] = track->sampleRate();
+        //amarok has no video-bitrate
+
+        // EXTRA Amarok specific
+        const QString lyrics = track->cachedLyrics();
+        if( !lyrics.isEmpty() )
+            map["lyrics"] = lyrics;
+    }
     return map;
 }
 

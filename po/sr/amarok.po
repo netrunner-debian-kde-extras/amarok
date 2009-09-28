@@ -6,16 +6,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-09-12 06:55+0200\n"
-"PO-Revision-Date: 2009-09-13 18:40+0200\n"
+"POT-Creation-Date: 2009-09-26 06:24+0200\n"
+"PO-Revision-Date: 2009-09-27 19:22+0200\n"
 "Last-Translator: Slobodan Terzic <githzerai06@gmail.com>\n"
 "Language-Team: Serbian <kde-i18n-sr@kde.org>\n"
 "Language: sr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n%"
-"10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=4; plural=n==1 ? 3 : n%10==1 && n%100!=11 ? 0 : n"
+"%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Accelerator-Marker: &\n"
 "X-Text-Markup: kde4\n"
 "X-Environment: kde\n"
@@ -48,57 +48,57 @@ msgctxt "The Value is not known"
 msgid "Unknown"
 msgstr "непознато"
 
-#: meta/MetaUtility.cpp:508
+#: meta/MetaUtility.cpp:553
 msgctxt "The quality of music"
 msgid "Awful"
 msgstr "грозно"
 
-#: meta/MetaUtility.cpp:509
+#: meta/MetaUtility.cpp:554
 msgctxt "The quality of music"
 msgid "Bad"
 msgstr "лоше"
 
-#: meta/MetaUtility.cpp:510
+#: meta/MetaUtility.cpp:555
 msgctxt "The quality of music"
 msgid "Barely tolerable"
 msgstr "једва подношљиво"
 
-#: meta/MetaUtility.cpp:511
+#: meta/MetaUtility.cpp:556
 msgctxt "The quality of music"
 msgid "Tolerable"
 msgstr "подношљиво"
 
-#: meta/MetaUtility.cpp:512
+#: meta/MetaUtility.cpp:557
 msgctxt "The quality of music"
 msgid "Okay"
 msgstr "у реду"
 
-#: meta/MetaUtility.cpp:513
+#: meta/MetaUtility.cpp:558
 msgctxt "The quality of music"
 msgid "Good"
 msgstr "добро"
 
-#: meta/MetaUtility.cpp:514
+#: meta/MetaUtility.cpp:559
 msgctxt "The quality of music"
 msgid "Very good"
 msgstr "врло добро"
 
-#: meta/MetaUtility.cpp:515
+#: meta/MetaUtility.cpp:560
 msgctxt "The quality of music"
 msgid "Excellent"
 msgstr "изврсно"
 
-#: meta/MetaUtility.cpp:516
+#: meta/MetaUtility.cpp:561
 msgctxt "The quality of music"
 msgid "Amazing"
 msgstr "запањујуће"
 
-#: meta/MetaUtility.cpp:517
+#: meta/MetaUtility.cpp:562
 msgctxt "The quality of music"
 msgid "Favorite"
 msgstr "омиљено"
 
-#: meta/MetaUtility.cpp:518
+#: meta/MetaUtility.cpp:563
 msgctxt "The quality of music"
 msgid "Not rated"
 msgstr "није оцењено"
@@ -108,12 +108,12 @@ msgstr "није оцењено"
 msgid "Stream (%1)"
 msgstr "Ток (%1)"
 
-#: meta/capabilities/TimecodeWriteCapability.cpp:116
+#: meta/capabilities/TimecodeWriteCapability.cpp:112
 #, kde-format
 msgid "%1 - Stopped %2"
 msgstr "%1 — заустављено %2"
 
-#: meta/capabilities/TimecodeWriteCapability.cpp:121
+#: meta/capabilities/TimecodeWriteCapability.cpp:117
 msgid "Playback Ended Markers"
 msgstr "Маркери завршетка пуштања"
 
@@ -121,7 +121,7 @@ msgstr "Маркери завршетка пуштања"
 msgid "Default Dynamic Playlist"
 msgstr "Подразумевана динамичка листа нумера"
 
-#: meta/XSPFPlaylist.cpp:151
+#: meta/XSPFPlaylist.cpp:159
 #, kde-format
 msgid "Cannot write playlist (%1)."
 msgstr "Не могу да упишем листу (%1)."
@@ -242,12 +242,12 @@ msgid "&Stale and Orphaned"
 msgstr "&Устајали и сирочићи"
 
 # >! Contexts.
-#: collection/ipodcollection/handler/IpodHandler.cpp:364
-#: collection/ipodcollection/handler/IpodHandler.cpp:517
+#: collection/ipodcollection/handler/IpodHandler.cpp:365
+#: collection/ipodcollection/handler/IpodHandler.cpp:519
 msgid "Synchronise Artwork"
 msgstr "Синхронизуј графику"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:379
+#: collection/ipodcollection/handler/IpodHandler.cpp:381
 msgid ""
 "Do you really want to initialize this iPod? Its database will be cleared of "
 "all information, but the files will not be deleted."
@@ -256,19 +256,19 @@ msgstr ""
 "потпуно очишћена, али фајлови неће бити брисани."
 
 # >> @title:window
-#: collection/ipodcollection/handler/IpodHandler.cpp:383
+#: collection/ipodcollection/handler/IpodHandler.cpp:385
 msgid "Initialize iPod"
 msgstr "Припремање ~@¦и‑пода¦iPoda¦"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:389
+#: collection/ipodcollection/handler/IpodHandler.cpp:391
 msgid "The iPod has been initialized"
 msgstr "~@¦И‑под¦IPod¦ је припремљен"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:391
+#: collection/ipodcollection/handler/IpodHandler.cpp:393
 msgid "The iPod was unable to be initialized"
 msgstr "~@¦И‑под¦IPod¦ није могао бити припремљен"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:400
+#: collection/ipodcollection/handler/IpodHandler.cpp:402
 msgid ""
 "Amarok is about to search for stale tracks. This may take a while, do you "
 "want to continue?"
@@ -277,11 +277,11 @@ msgstr ""
 "наставите?"
 
 # >> @title:window
-#: collection/ipodcollection/handler/IpodHandler.cpp:404
+#: collection/ipodcollection/handler/IpodHandler.cpp:406
 msgid "Find Stale Tracks"
 msgstr "Тражење устајалих нумера"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:479
+#: collection/ipodcollection/handler/IpodHandler.cpp:481
 #, kde-format
 msgctxt "@info"
 msgid "One stale track removed from the database. Scan for orphaned tracks?"
@@ -292,11 +292,11 @@ msgstr[2] "%1 устајалих нумера уклоњено из базе. П
 msgstr[3] "Једна устајала нумера уклоњена из базе. Потражити нумере сирочиће?"
 
 # >> @title:window
-#: collection/ipodcollection/handler/IpodHandler.cpp:484
+#: collection/ipodcollection/handler/IpodHandler.cpp:486
 msgid "Find Orphaned Tracks"
 msgstr "Тражење нумера сирочића"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:515
+#: collection/ipodcollection/handler/IpodHandler.cpp:517
 #, kde-format
 msgid ""
 "Amarok is about to synchronize artwork on <i>%1</i>. Do you want to continue?"
@@ -304,15 +304,15 @@ msgstr ""
 "Амарок се спрема да синхронизује графику на <i>%1</i>. Желите ли да "
 "наставите?"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:526
+#: collection/ipodcollection/handler/IpodHandler.cpp:528
 msgid "iPod artwork could not be synchronised"
 msgstr "Графика за ~@¦и‑под¦iPod¦ не може да се синхронизује"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:537
+#: collection/ipodcollection/handler/IpodHandler.cpp:539
 msgid "Artwork synchronised"
 msgstr "Графика синхронизована"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:818
+#: collection/ipodcollection/handler/IpodHandler.cpp:820
 msgid ""
 "Amarok requires sudo access to get the FirewireGuid required to connect to "
 "your device. Please enter your sudo password"
@@ -321,19 +321,19 @@ msgstr ""
 "неопходног за повезивање са уређајем. Унесите судо лозинку."
 
 # >> @title:window
-#: collection/ipodcollection/handler/IpodHandler.cpp:2084
+#: collection/ipodcollection/handler/IpodHandler.cpp:2086
 msgid "Select Stale Tracks To Delete"
 msgstr "Избор устајалих нумера за брисање"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:2084
+#: collection/ipodcollection/handler/IpodHandler.cpp:2086
 msgid "Stale Tracks"
 msgstr "Устајале нумере"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:2137
+#: collection/ipodcollection/handler/IpodHandler.cpp:2139
 msgid "Adding Orphaned Tracks to iPod Database"
 msgstr "Додајем нумере сирочиће у базу ~@¦и‑пода¦iPoda¦"
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:2175
+#: collection/ipodcollection/handler/IpodHandler.cpp:2177
 #, kde-format
 msgctxt "@info"
 msgid "One orphaned track added to the database."
@@ -343,7 +343,7 @@ msgstr[1] "%1 нумере сирочади додате у базу."
 msgstr[2] "%1 нумера сирочића додато у базу."
 msgstr[3] "Једна нумера сироче додата у базу."
 
-#: collection/ipodcollection/handler/IpodHandler.cpp:2180
+#: collection/ipodcollection/handler/IpodHandler.cpp:2182
 msgid "Orphaned Tracks Added"
 msgstr "Додате нумере сирочићи"
 
@@ -487,19 +487,19 @@ msgid "Removing Tracks from Device"
 msgstr "Уклањам нумере са уређаја"
 
 # >> @title:window
-#: collection/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.cpp:111
+#: collection/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.cpp:113
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:99
 #: playlistmanager/PlaylistManager.cpp:370
 msgid "Change playlist"
 msgstr "Измена листе нумера"
 
-#: collection/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.cpp:112
+#: collection/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.cpp:114
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:100
 #: playlistmanager/PlaylistManager.cpp:371
 msgid "Enter new name for playlist:"
 msgstr "Унесите нови назив за листу нумера:"
 
-#: collection/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.h:36
+#: collection/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.h:38
 msgid "Media Device playlists"
 msgstr "Листе нумера са мултимедијалног уређаја"
 
@@ -568,7 +568,7 @@ msgstr "Претражујем музику"
 
 #: collection/sqlcollection/ScanManager.cpp:678
 #: dialogs/OrganizeCollectionDialog.cpp:143
-#: browsers/CollectionTreeItem.cpp:192 covermanager/CoverViewDialog.h:45
+#: browsers/CollectionTreeItem.cpp:198 covermanager/CoverViewDialog.h:45
 #: covermanager/CoverManager.cpp:784
 msgid "Various Artists"
 msgstr "Разни извођачи"
@@ -594,18 +594,18 @@ msgstr "Не приказуј под „Разни извођачи“"
 msgid "Show under Various Artists"
 msgstr "Приказуј под „Разни извођачи“"
 
-#: collection/audiocd/AudioCdCollection.cpp:71
+#: collection/audiocd/AudioCdCollection.cpp:72
 msgid "&Eject"
 msgstr "&Избаци"
 
 # >! Contexts.
-#: collection/audiocd/AudioCdCollection.cpp:400
-#: collection/audiocd/AudioCdCollection.cpp:401
-#: collection/audiocd/AudioCdCollection.cpp:402
-#: collection/audiocd/AudioCdCollection.cpp:403
-#: context/applets/albums/AlbumItem.cpp:72 MainWindow.cpp:1011
-#: amarokurls/BookmarkTreeView.cpp:328 amarokurls/BookmarkTreeView.cpp:329
-#: amarokurls/BookmarkTreeView.cpp:330
+#: collection/audiocd/AudioCdCollection.cpp:412
+#: collection/audiocd/AudioCdCollection.cpp:413
+#: collection/audiocd/AudioCdCollection.cpp:414
+#: collection/audiocd/AudioCdCollection.cpp:415
+#: context/applets/albums/AlbumItem.cpp:72 MainWindow.cpp:1076
+#: amarokurls/BookmarkTreeView.cpp:317 amarokurls/BookmarkTreeView.cpp:318
+#: amarokurls/BookmarkTreeView.cpp:319
 msgid "Unknown"
 msgstr "Непознато"
 
@@ -707,7 +707,9 @@ msgstr "Првобитни аутор"
 msgid "Leo Franchi"
 msgstr "Лио Франки (Leo Franchi)"
 
-#: context/tools/amarokpkg.cpp:83
+#: context/tools/amarokpkg.cpp:83 main.cpp:88 main.cpp:124 main.cpp:128
+#: main.cpp:130 main.cpp:142 main.cpp:152 main.cpp:158 main.cpp:160
+#: main.cpp:172 main.cpp:178 main.cpp:180 main.cpp:184 main.cpp:192
 msgid "Developer"
 msgstr "Програмер"
 
@@ -808,11 +810,11 @@ msgstr "са турнеје"
 msgid "dates"
 msgstr "датуми"
 
-#: context/engines/photos/PhotosEngine.cpp:169
+#: context/engines/photos/PhotosEngine.cpp:181
 msgid "Unable to retrieve from Flickr.com "
 msgstr "Не могу да добавим са ~@¦Фликра¦Flickra¦"
 
-#: context/engines/photos/PhotosEngine.cpp:255
+#: context/engines/photos/PhotosEngine.cpp:267
 msgid "No information found ..."
 msgstr "Подаци нису нађени..."
 
@@ -821,11 +823,11 @@ msgstr "Подаци нису нађени..."
 msgid "Unable to retrieve Wikipedia information: %1"
 msgstr "Не могу да добавим податке са ~@¦Википедије¦Wikipedije¦: %1"
 
-#: context/engines/wikipedia/WikipediaEngine.cpp:232
+#: context/engines/wikipedia/WikipediaEngine.cpp:234
 msgid "No information found..."
 msgstr "Подаци нису нађени..."
 
-#: context/engines/wikipedia/WikipediaEngine.cpp:370
+#: context/engines/wikipedia/WikipediaEngine.cpp:372
 msgid "Wikipedia Other Languages: <br/>"
 msgstr "<html>Други језици ~@¦Википедије¦Wikipedije¦: <br/></html>"
 
@@ -942,28 +944,28 @@ msgid "Settings"
 msgstr "Поставке"
 
 #: context/applets/videoclip/VideoclipApplet.cpp:114
-#: context/applets/videoclip/VideoclipApplet.cpp:327
-#: context/applets/videoclip/VideoclipApplet.cpp:348
+#: context/applets/videoclip/VideoclipApplet.cpp:326
+#: context/applets/videoclip/VideoclipApplet.cpp:347
 msgid "Video Clip"
 msgstr "Видео исечак"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:338
+#: context/applets/videoclip/VideoclipApplet.cpp:337
 msgid "Video Clip "
 msgstr "Видео исечак "
 
-#: context/applets/videoclip/VideoclipApplet.cpp:338
+#: context/applets/videoclip/VideoclipApplet.cpp:337
 msgid " No information found..."
 msgstr " Подаци нису нађени...."
 
-#: context/applets/videoclip/VideoclipApplet.cpp:496
+#: context/applets/videoclip/VideoclipApplet.cpp:495
 msgid "Enter &fullscreen"
 msgstr "Преко &целог екрана"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:502
+#: context/applets/videoclip/VideoclipApplet.cpp:501
 msgid "E&xit fullscreen"
 msgstr "&Напусти цео екран"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:520
+#: context/applets/videoclip/VideoclipApplet.cpp:519
 msgid "Video Clip Settings"
 msgstr "Поставке за видео исечке"
 
@@ -1056,7 +1058,7 @@ msgstr "Омиљене нумере"
 #: browsers/CollectionTreeView.cpp:809
 #: browsers/filebrowser/MyDirOperator.cpp:270
 #: browsers/playlistbrowser/UserPlaylistModel.cpp:539
-#: browsers/playlistbrowser/PodcastModel.cpp:688
+#: browsers/playlistbrowser/PodcastModel.cpp:695
 #: services/lastfm/LastFmTreeView.cpp:112
 msgid "&Add to Playlist"
 msgstr "Дод&ај у листу нумера"
@@ -1065,7 +1067,7 @@ msgstr "Дод&ај у листу нумера"
 #: browsers/CollectionTreeView.cpp:818
 #: browsers/filebrowser/MyDirOperator.cpp:271
 #: browsers/playlistbrowser/UserPlaylistModel.cpp:546
-#: browsers/playlistbrowser/PodcastModel.cpp:700
+#: browsers/playlistbrowser/PodcastModel.cpp:707
 #: services/lastfm/LastFmTreeView.cpp:121
 msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
@@ -1093,8 +1095,8 @@ msgstr[3] "1 нумера"
 
 #: context/applets/lyrics/LyricsApplet.cpp:45
 #: context/applets/lyrics/LyricsApplet.cpp:77
-#: context/applets/lyrics/LyricsApplet.cpp:212
-#: context/applets/lyrics/LyricsApplet.cpp:266 dialogs/TagDialog.cpp:584
+#: context/applets/lyrics/LyricsApplet.cpp:203
+#: context/applets/lyrics/LyricsApplet.cpp:261 dialogs/TagDialog.cpp:584
 msgid "Lyrics"
 msgstr "Стихови"
 
@@ -1110,15 +1112,15 @@ msgstr "Сачувај стихове"
 msgid "Reload Lyrics"
 msgstr "Поново учитај стихове"
 
-#: context/applets/lyrics/LyricsApplet.cpp:207
+#: context/applets/lyrics/LyricsApplet.cpp:198
 msgid "No lyrics script is running."
 msgstr "Не извршава се ниједна скрипта за стихове."
 
-#: context/applets/lyrics/LyricsApplet.cpp:220
+#: context/applets/lyrics/LyricsApplet.cpp:211
 msgid "Lyrics are being fetched."
 msgstr "Стихови се добављају."
 
-#: context/applets/lyrics/LyricsApplet.cpp:229
+#: context/applets/lyrics/LyricsApplet.cpp:220
 #, kde-format
 msgid ""
 "Could not download lyrics.\n"
@@ -1131,16 +1133,16 @@ msgstr ""
 "Порука о грешци:\n"
 "%1"
 
-#: context/applets/lyrics/LyricsApplet.cpp:275
+#: context/applets/lyrics/LyricsApplet.cpp:273
 msgid "There were no lyrics found for this track"
 msgstr "Нису нађени стихови за ову нумеру"
 
 #: context/applets/photos/PhotosApplet.cpp:68
 #: context/applets/photos/PhotosApplet.cpp:129
-#: context/applets/photos/PhotosApplet.cpp:187
-#: context/applets/photos/PhotosApplet.cpp:199
-#: context/applets/photos/PhotosApplet.cpp:209
-#: context/applets/photos/PhotosApplet.cpp:218
+#: context/applets/photos/PhotosApplet.cpp:188
+#: context/applets/photos/PhotosApplet.cpp:200
+#: context/applets/photos/PhotosApplet.cpp:210
+#: context/applets/photos/PhotosApplet.cpp:224
 msgid "Photos"
 msgstr "Фотографије"
 
@@ -1165,11 +1167,11 @@ msgstr "у сарадњи"
 msgid "Fading"
 msgstr "с утапањем"
 
-#: context/applets/photos/PhotosApplet.cpp:199
+#: context/applets/photos/PhotosApplet.cpp:200
 msgid "Fetching ..."
 msgstr "Добављам ..."
 
-#: context/applets/photos/PhotosApplet.cpp:238
+#: context/applets/photos/PhotosApplet.cpp:247
 msgid "Photos Settings"
 msgstr "Поставке за фотографије"
 
@@ -1190,7 +1192,7 @@ msgstr "Следеће"
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: context/applets/wikipedia/WikipediaApplet.cpp:121
 #: dialogs/FilenameLayoutDialog.cpp:125 dialogs/FilenameLayoutDialog.cpp:340
-#: dialogs/transferdialog.cpp:88 browsers/CollectionTreeItemModelBase.cpp:904
+#: dialogs/transferdialog.cpp:88 browsers/CollectionTreeItemModelBase.cpp:916
 #: browsers/collectionbrowser/CollectionWidget.cpp:122
 #: browsers/collectionbrowser/CollectionWidget.cpp:151
 #: browsers/collectionbrowser/CollectionWidget.cpp:183
@@ -1208,7 +1210,7 @@ msgstr "извођач"
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: context/applets/wikipedia/WikipediaApplet.cpp:128
 #: dialogs/FilenameLayoutDialog.cpp:128 dialogs/FilenameLayoutDialog.cpp:355
-#: dialogs/transferdialog.cpp:89 browsers/CollectionTreeItemModelBase.cpp:903
+#: dialogs/transferdialog.cpp:89 browsers/CollectionTreeItemModelBase.cpp:915
 #: browsers/collectionbrowser/CollectionWidget.cpp:125
 #: browsers/collectionbrowser/CollectionWidget.cpp:154
 #: browsers/collectionbrowser/CollectionWidget.cpp:186
@@ -1296,10 +1298,6 @@ msgstr "Додајте неке аплете из траке алатки на �
 msgid "Hide menu"
 msgstr "Сакриј мени"
 
-#: context/widgets/ToolBoxMenu.cpp:125
-msgid "Install New Applets"
-msgstr "Инсталирај нови аплет"
-
 #: context/widgets/TrackWidget.cpp:39
 msgctxt "Score of a track"
 msgid "Score:"
@@ -1383,7 +1381,7 @@ msgstr "&Нумера"
 msgid "&Album"
 msgstr "&Албум"
 
-#: ActionClasses.cpp:365 MainWindow.cpp:840
+#: ActionClasses.cpp:365 MainWindow.cpp:887
 msgid "&Playlist"
 msgstr "&Листа нумера"
 
@@ -1755,28 +1753,24 @@ msgstr ""
 msgid "These folders will be scanned for media to make up your collection:"
 msgstr "У овим фасциклама ће бити потражени фајлови за прављење ваше збирке:"
 
-#: dialogs/CollectionSetup.cpp:65
-msgid "Rescan Collection"
-msgstr "Поново претражи збирку"
-
 # >! Contexts.
-#: dialogs/CollectionSetup.cpp:68 dialogs/DatabaseImporterDialog.cpp:37
+#: dialogs/CollectionSetup.cpp:65 dialogs/DatabaseImporterDialog.cpp:37
 msgid "Import Collection"
 msgstr "Увези збирку"
 
-#: dialogs/CollectionSetup.cpp:71
+#: dialogs/CollectionSetup.cpp:68
 msgid "&Scan folders recursively"
 msgstr "&Рекурзивно претражуј фасцикле"
 
-#: dialogs/CollectionSetup.cpp:72
+#: dialogs/CollectionSetup.cpp:69
 msgid "&Watch folders for changes"
 msgstr "&Прати измене у фасциклама"
 
-#: dialogs/CollectionSetup.cpp:76
+#: dialogs/CollectionSetup.cpp:73
 msgid "If selected, Amarok will read all subfolders."
 msgstr "Ако је изабрано, Амарок ће читати и све потфасцикле."
 
-#: dialogs/CollectionSetup.cpp:77
+#: dialogs/CollectionSetup.cpp:74
 msgid ""
 "If selected, folders will automatically get rescanned when the content is "
 "modified, e.g. when a new file was added."
@@ -1793,7 +1787,7 @@ msgstr "Корен збирке"
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:124 dialogs/FilenameLayoutDialog.cpp:330
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:246
-#: browsers/playlistbrowser/PodcastModel.cpp:279 rc.cpp:1160
+#: browsers/playlistbrowser/PodcastModel.cpp:286 rc.cpp:1160
 #: playlist/PlaylistModel.cpp:649 widgets/SmartPlaylistEditor.cpp:183
 msgid "Title"
 msgstr "Наслов"
@@ -1802,7 +1796,7 @@ msgstr "Наслов"
 #. i18n: file: dialogs/EditFilterDialog.ui:90
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:126 dialogs/FilenameLayoutDialog.cpp:345
-#: browsers/CollectionTreeItemModelBase.cpp:905
+#: browsers/CollectionTreeItemModelBase.cpp:917
 #: browsers/collectionbrowser/CollectionWidget.cpp:131
 #: browsers/collectionbrowser/CollectionWidget.cpp:160
 #: browsers/collectionbrowser/CollectionWidget.cpp:192
@@ -1815,7 +1809,7 @@ msgstr "композитор"
 #. i18n: file: dialogs/EditFilterDialog.ui:120
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:127 dialogs/FilenameLayoutDialog.cpp:350
-#: browsers/CollectionTreeItemModelBase.cpp:907
+#: browsers/CollectionTreeItemModelBase.cpp:919
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:248
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:691 rc.cpp:1166
 #: playlist/PlaylistModel.cpp:653 widgets/SmartPlaylistEditor.cpp:184
@@ -1834,7 +1828,7 @@ msgstr "Коментар"
 #. i18n: file: dialogs/EditFilterDialog.ui:95
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:130 dialogs/FilenameLayoutDialog.cpp:365
-#: dialogs/transferdialog.cpp:90 browsers/CollectionTreeItemModelBase.cpp:906
+#: dialogs/transferdialog.cpp:90 browsers/CollectionTreeItemModelBase.cpp:918
 #: browsers/collectionbrowser/CollectionWidget.cpp:128
 #: browsers/collectionbrowser/CollectionWidget.cpp:157
 #: browsers/collectionbrowser/CollectionWidget.cpp:189
@@ -2033,7 +2027,7 @@ msgid "Filename Layout Chooser"
 msgstr "Бирач за шему имена фајла"
 
 # >! Contexts.
-#: dialogs/TagDialog.cpp:582 browsers/playlistbrowser/PodcastModel.cpp:280
+#: dialogs/TagDialog.cpp:582 browsers/playlistbrowser/PodcastModel.cpp:287
 msgid "Summary"
 msgstr "Сажетак"
 
@@ -2141,7 +2135,7 @@ msgctxt "The collection this track is part of"
 msgid "None"
 msgstr "ниједна"
 
-#: dialogs/TagDialog.cpp:1053
+#: dialogs/TagDialog.cpp:1054
 #, kde-format
 msgctxt "The amount of tracks being edited"
 msgid "1 Track"
@@ -2151,7 +2145,7 @@ msgstr[1] "Подаци за %1 нумере"
 msgstr[2] "Подаци за %1 нумера"
 msgstr[3] "Подаци за 1 нумеру"
 
-#: dialogs/TagDialog.cpp:1168
+#: dialogs/TagDialog.cpp:1169
 #, kde-format
 msgid "Editing 1 file"
 msgid_plural "Editing %1 files"
@@ -2160,23 +2154,23 @@ msgstr[1] "Уређујем %1 фајла"
 msgstr[2] "Уређујем %1 фајлова"
 msgstr[3] "Уређујем 1 фајл"
 
-#: dialogs/TagDialog.cpp:1173
+#: dialogs/TagDialog.cpp:1174
 msgid "Rated Songs:"
 msgstr "Песме са рејтингом:"
 
-#: dialogs/TagDialog.cpp:1175
+#: dialogs/TagDialog.cpp:1176
 msgid "Average Rating:"
 msgstr "Просечан рејтинг:"
 
-#: dialogs/TagDialog.cpp:1177
+#: dialogs/TagDialog.cpp:1178
 msgid "Scored Songs:"
 msgstr "Песме са резултатом:"
 
-#: dialogs/TagDialog.cpp:1179
+#: dialogs/TagDialog.cpp:1180
 msgid "Average Score:"
 msgstr "Просечан резултат:"
 
-#: dialogs/TagDialog.cpp:1477
+#: dialogs/TagDialog.cpp:1482
 msgid ""
 "Writing to file failed. Please check permissions and available disc space."
 msgstr ""
@@ -2313,7 +2307,7 @@ msgstr "Опције"
 msgid "Convert spaces to underscores"
 msgstr "Претвори размаке у подвлаке"
 
-#: dialogs/ScriptManager.cpp:90 MainWindow.cpp:667
+#: dialogs/ScriptManager.cpp:90 MainWindow.cpp:709
 msgid "Script Manager"
 msgstr "Менаџер скрипти"
 
@@ -2392,15 +2386,15 @@ msgstr ""
 
 #. i18n: file: collection/audiocd/FormatSelectionDialog.ui:14
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: App.cpp:112 rc.cpp:536
+#: App.cpp:114 rc.cpp:536
 msgid "Amarok"
 msgstr "Амарок"
 
-#: App.cpp:113
+#: App.cpp:115
 msgid "The audio player for KDE"
 msgstr "Аудио плејер за КДЕ"
 
-#: App.cpp:114
+#: App.cpp:116
 msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2009, The Amarok Development Squad"
@@ -2408,7 +2402,7 @@ msgstr ""
 "© 2002-2003, Марк Кречман (Mark Kretschmann)\n"
 "© 2003-2009, Одред за развој Амарока"
 
-#: App.cpp:115
+#: App.cpp:117
 #, kde-format
 msgid ""
 "IRC:\n"
@@ -2427,82 +2421,89 @@ msgstr ""
 "\n"
 "(Датум градње: %1)"
 
-#: App.cpp:461
+#: App.cpp:465
 msgid "Files/URLs to open"
 msgstr "Фајлови/УРЛ‑ови за отварање"
 
-#: App.cpp:463
+#: App.cpp:467
 msgid "Skip backwards in playlist"
 msgstr "Прескочи уназад у листи нумера"
 
-#: App.cpp:465
+#: App.cpp:469
 msgid "Start playing current playlist"
 msgstr "Почни да пушташ текућу листу нумера"
 
-#: App.cpp:467
+#: App.cpp:471
 msgid "Play if stopped, pause if playing"
 msgstr "Пусти ако је заустављено, заустави ако се пушта"
 
-#: App.cpp:468
+#: App.cpp:472
 msgid "Pause playback"
 msgstr "Паузирај пуштање"
 
-#: App.cpp:470
+#: App.cpp:474
 msgid "Stop playback"
 msgstr "Заустави пуштање"
 
-#: App.cpp:472
+#: App.cpp:476
 msgid "Skip forwards in playlist"
 msgstr "Прескочи унапред у листи нумера"
 
-#: App.cpp:473
+#: App.cpp:477
 msgid "Additional options:"
 msgstr "Додатне опције:"
 
-#: App.cpp:475
+#: App.cpp:479
 msgid "Append files/URLs to playlist"
 msgstr "Додај фајлове/УРЛ‑ове у листу нумера"
 
-#: App.cpp:476
+#: App.cpp:480
 msgid "Queue URLs after the currently playing track"
 msgstr "Стави УРЛ‑ове у ред после нумере која се тренутно пушта"
 
-#: App.cpp:478
+#: App.cpp:482
 msgid "Load URLs, replacing current playlist"
 msgstr "Учитај УРЛ‑ове, заменивши текућу листу"
 
-#: App.cpp:480
+#: App.cpp:484
 msgid "Print verbose debugging information"
 msgstr "Исписуј опширне исправљачке податке"
 
-#: App.cpp:482
+#: App.cpp:486
 msgid "Allow running multiple Amarok instances"
 msgstr "Дозволи покретање више примерака Амарока"
 
-#: App.cpp:483
+#: App.cpp:487
 msgid "Base for relative filenames/URLs"
 msgstr "Основа за релативна имена фајлова/УРЛ‑ова"
 
-#: App.cpp:484
+#: App.cpp:488
 msgid "Run integrated unit tests, if your build supports it"
 msgstr "Изврши јединичне пробе (ако су укључене при градњи)"
 
-#: App.cpp:486
+#: App.cpp:490
 msgid "Subscribe to podcast feed"
 msgstr "Претплати се на довод подемисије"
 
-#: App.cpp:752
+#: App.cpp:756
 msgid "Moving files to trash"
 msgstr "Премештам фајлове у смеће"
 
-#: App.cpp:834
+# >> @item
+#: App.cpp:837 App.cpp:874
+msgctxt "The amount of time since last played"
+msgid "Never"
+msgstr "никада"
+
+# >> @item
+#: App.cpp:842
 #, kde-format
 msgctxt "monthname year"
 msgid "%1 %2"
-msgstr "%1 %2"
+msgstr "%1 %2."
 
 # >> @item
-#: App.cpp:841
+#: App.cpp:849
 #, kde-format
 msgid "One week ago"
 msgid_plural "%1 weeks ago"
@@ -2512,18 +2513,12 @@ msgstr[2] "пре %1 недеља"
 msgstr[3] "пре недељу дана"
 
 # >> @item
-#: App.cpp:844 App.cpp:895
-msgctxt "When this track was last played"
-msgid "Tomorrow"
-msgstr "сутра"
-
-# >> @item
-#: App.cpp:850
+#: App.cpp:855
 msgid "Yesterday"
 msgstr "јуче"
 
 # >> @item
-#: App.cpp:851
+#: App.cpp:856
 #, kde-format
 msgid "One day ago"
 msgid_plural "%1 days ago"
@@ -2533,7 +2528,7 @@ msgstr[2] "пре %1 дана"
 msgstr[3] "пре 1 дан"
 
 # >> @item
-#: App.cpp:854
+#: App.cpp:859
 #, kde-format
 msgid "One hour ago"
 msgid_plural "%1 hours ago"
@@ -2543,7 +2538,7 @@ msgstr[2] "пре %1 сати"
 msgstr[3] "пре 1 сат"
 
 # >> @item
-#: App.cpp:860
+#: App.cpp:865
 #, kde-format
 msgid "One minute ago"
 msgid_plural "%1 minutes ago"
@@ -2553,45 +2548,46 @@ msgstr[2] "пре %1 минута"
 msgstr[3] "пре 1 минут"
 
 # >> @item
-#: App.cpp:861
+#: App.cpp:866
 msgid "Within the last minute"
 msgstr "у току последњег минута"
 
 # >> @item
-#: App.cpp:863
+#: App.cpp:868
 msgid "The future"
 msgstr "у будућности"
 
-# >> @item
-#: App.cpp:869
-msgctxt "The amount of time since last played"
-msgid "Never"
-msgstr "никада"
-
-#: App.cpp:879
+#: App.cpp:884
 msgctxt "The amount of time since last played"
 msgid "0"
 msgstr "0"
 
-#: App.cpp:888
+#: App.cpp:893
 #, kde-format
 msgctxt "number of months ago"
 msgid "%1M"
 msgstr "%1 м"
 
-#: App.cpp:892
+#: App.cpp:897
 #, kde-format
 msgctxt "w for weeks"
 msgid "%1w"
 msgstr "%1 н"
 
-#: App.cpp:901
+# >> @item
+#: App.cpp:900
+msgctxt "When this track was last played"
+msgid "Tomorrow"
+msgstr "сутра"
+
+# >> @item
+#: App.cpp:906
 #, no-c-format, kde-format
 msgctxt "d for days"
 msgid "%1d"
 msgstr "%1 д"
 
-#: App.cpp:904
+#: App.cpp:909
 #, kde-format
 msgctxt "h for hours"
 msgid "%1h"
@@ -2619,7 +2615,7 @@ msgstr "%1 ч"
 #. i18n: ectx: property (text), widget (QLabel, eqBand8Value)
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:1320
 #. i18n: ectx: property (text), widget (QLabel, eqBand9Value)
-#: App.cpp:913 rc.cpp:680 rc.cpp:686 rc.cpp:692 rc.cpp:698 rc.cpp:704
+#: App.cpp:918 rc.cpp:680 rc.cpp:686 rc.cpp:692 rc.cpp:698 rc.cpp:704
 #: rc.cpp:710 rc.cpp:716 rc.cpp:722 rc.cpp:728 rc.cpp:734 rc.cpp:740
 msgid "0"
 msgstr "0"
@@ -2713,28 +2709,28 @@ msgstr "Интернет веза није доступна"
 msgid "Network error"
 msgstr "Грешка мреже"
 
-#: aboutdialog/OcsPersonItem.cpp:89
+#: aboutdialog/OcsPersonItem.cpp:91
 msgid "Email contributor"
 msgstr "Е‑пошта за доприносиоца"
 
-#: aboutdialog/OcsPersonItem.cpp:97
+#: aboutdialog/OcsPersonItem.cpp:99
 msgid "Visit contributor's homepage"
 msgstr "Посети домаћу страницу доприносиоца"
 
-#: aboutdialog/OcsPersonItem.cpp:185
+#: aboutdialog/OcsPersonItem.cpp:187
 msgid "IRC channels: "
 msgstr "ИРЦ канали: "
 
-#: aboutdialog/OcsPersonItem.cpp:199
+#: aboutdialog/OcsPersonItem.cpp:201
 msgid "Favorite music: "
 msgstr "Омиљена музика: "
 
-#: aboutdialog/OcsPersonItem.cpp:204
+#: aboutdialog/OcsPersonItem.cpp:206
 #, kde-format
 msgid "Visit %1's openDesktop.org profile"
 msgstr "Посети профил %1 на openDesktop.org"
 
-#: aboutdialog/OcsPersonItem.cpp:206
+#: aboutdialog/OcsPersonItem.cpp:208
 #, kde-format
 msgid "Visit %1's profile on openDesktop.org"
 msgstr "Посети профил %1 на openDesktop.org"
@@ -2754,14 +2750,13 @@ msgstr "Локалне листе нумере складиштене у баз�
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:133
 #: equalizerpresetmanager.cpp:55
 #: browsers/playlistbrowser/UserPlaylistModel.cpp:568
-#: amarokurls/BookmarkTreeView.cpp:116
 msgid "&Rename"
 msgstr "П&реименуј"
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:141
 #: equalizerpresetmanager.cpp:56
 #: browsers/playlistbrowser/UserPlaylistModel.cpp:575
-#: amarokurls/BookmarkTreeView.cpp:110
+#: amarokurls/BookmarkTreeView.cpp:112
 msgid "&Delete"
 msgstr "О&бриши"
 
@@ -2843,36 +2838,36 @@ msgstr ""
 "додаје све листе нумере које пронађе током претраге збирке и све које сте "
 "сачували."
 
-#: podcasts/sql/SqlPodcastProvider.cpp:209
+#: podcasts/sql/SqlPodcastProvider.cpp:216
 #, kde-format
 msgid "Already subscribed to %1."
 msgstr "Већ постоји претплата за %1."
 
-#: podcasts/sql/SqlPodcastProvider.cpp:360
+#: podcasts/sql/SqlPodcastProvider.cpp:367
 msgid "&Delete Downloaded Episode"
 msgstr "&Обриши преузету епизоду"
 
-#: podcasts/sql/SqlPodcastProvider.cpp:390
+#: podcasts/sql/SqlPodcastProvider.cpp:397
 msgid "&Download Episode"
 msgstr "Преузми &епизоду"
 
-#: podcasts/sql/SqlPodcastProvider.cpp:412
+#: podcasts/sql/SqlPodcastProvider.cpp:419
 msgid "&Configure"
 msgstr "По&деси"
 
-#: podcasts/sql/SqlPodcastProvider.cpp:424
+#: podcasts/sql/SqlPodcastProvider.cpp:431
 msgid "&Remove Subscription"
 msgstr "&Уклони претплату"
 
-#: podcasts/sql/SqlPodcastProvider.cpp:436
+#: podcasts/sql/SqlPodcastProvider.cpp:443
 msgid "&Update Channel"
 msgstr "&Ажурирај канал"
 
-#: podcasts/sql/SqlPodcastProvider.cpp:571
+#: podcasts/sql/SqlPodcastProvider.cpp:578
 msgid "Waiting for Podcast Downloads to Finish"
 msgstr "Чекам да се заврше преузимања подемисија"
 
-#: podcasts/sql/SqlPodcastProvider.cpp:572
+#: podcasts/sql/SqlPodcastProvider.cpp:579
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
@@ -2881,22 +2876,22 @@ msgstr[1] "%1 преузимања подемисије још увек у то�
 msgstr[2] "%1 преузимања подемисије још увек у току"
 msgstr[3] "Преузимање подемисије још увек у току"
 
-#: podcasts/sql/SqlPodcastProvider.cpp:650
+#: podcasts/sql/SqlPodcastProvider.cpp:686
 msgid "Downloading Podcast Media"
 msgstr "Преузимам подемисијски медијум"
 
-#: podcasts/sql/SqlPodcastProvider.cpp:650
+#: podcasts/sql/SqlPodcastProvider.cpp:686
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "Преузимам подемисију „%1“"
 
-#: podcasts/sql/SqlPodcastProvider.cpp:744
+#: podcasts/sql/SqlPodcastProvider.cpp:780
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "Не могу да сачувам фајл подемисијине епизоде у %1"
 
-#: podcasts/sql/SqlPodcastProvider.h:44
-#: browsers/playlistbrowser/PodcastModel.cpp:593
+#: podcasts/sql/SqlPodcastProvider.h:45
+#: browsers/playlistbrowser/PodcastModel.cpp:600
 msgid "Local Podcasts"
 msgstr "Локалне подемисије"
 
@@ -3055,7 +3050,7 @@ msgstr "Неименовано"
 msgid "A preset with the name %1 already exists. Overwrite?"
 msgstr "Претподешавање по имену %1 већ постоји. Да га пребришем?"
 
-#: EngineController.cpp:209
+#: EngineController.cpp:226
 msgid ""
 "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
 "the installation of the backend that phonon uses.</p><p>You may find useful "
@@ -3066,11 +3061,11 @@ msgstr ""
 "p><p>Можете наћи корисне информације у ЧПП одељку <i>Приручника за Амарок</"
 "i>.</p>"
 
-#: EngineController.cpp:228
+#: EngineController.cpp:245
 msgid "Install MP3 Support"
 msgstr "Инсталирај подршку за МП3"
 
-#: EngineController.cpp:230
+#: EngineController.cpp:247
 msgid ""
 "Amarok currently cannot play MP3 files. Do you want to install support for "
 "MP3?"
@@ -3078,12 +3073,12 @@ msgstr ""
 "Амарок тренутно не може да пушта МП3 фајлове. Желите ли да инсталирате "
 "подршку за МП3?"
 
-#: EngineController.cpp:231
+#: EngineController.cpp:248
 msgid "No MP3 Support"
 msgstr "Нема подршке за МП3"
 
 # >> @item
-#: EngineController.cpp:710
+#: EngineController.cpp:740
 msgid "Preamp"
 msgstr "претпојачање"
 
@@ -3147,11 +3142,11 @@ msgstr "Не могу да отворим базу из Амарока 1.4: %1"
 msgid "Could not execute import query: %1"
 msgstr "Не могу да извршим упит увоза: %1"
 
-#: databaseimporter/amarok14/FastForwardWorker.cpp:312
+#: databaseimporter/amarok14/FastForwardWorker.cpp:315
 msgid "Synchronizing Amarok database..."
 msgstr "Синхронизујем Амарокову базу..."
 
-#: databaseimporter/amarok14/FastForwardWorker.cpp:320
+#: databaseimporter/amarok14/FastForwardWorker.cpp:323
 msgid "Importing downloaded album art"
 msgstr "Увозим преузете омоте..."
 
@@ -3183,7 +3178,7 @@ msgstr "Поклопи:"
 msgid "Current Track"
 msgstr "Текућа нумера"
 
-#: dynamic/biases/EchoNest.cpp:116 MainWindow.cpp:263
+#: dynamic/biases/EchoNest.cpp:116 MainWindow.cpp:264
 msgid "Playlist"
 msgstr "Листа нумера"
 
@@ -3219,75 +3214,151 @@ msgstr ""
 msgid "Alejandro Wainzinger"
 msgstr "Алехандро Вајнцингер (Alejandro Wainzinger)"
 
+#: main.cpp:36
+msgid "Developer (xevix)"
+msgstr "Програмер (xevix)"
+
 #: main.cpp:37
 msgid "Bart 'Where are my toothpicks' Cerneels"
 msgstr "Барт Кернелс (Bart Cerneels) „Где су ми чачкалице“"
+
+#: main.cpp:38
+msgid "Developer (Stecchino)"
+msgstr "Програмер (Stecchino)"
 
 #: main.cpp:39
 msgid "Dan 'Hey, it compiled...' Meltzer"
 msgstr "Ден Мелцер (Dan Meltzer) „Хеј, компиловање је прошло...“"
 
+#: main.cpp:40
+msgid "Developer (hydrogen)"
+msgstr "Програмер (hydrogen)"
+
 #: main.cpp:41
 msgid "Ian 'The Beard' Monroe"
 msgstr "Ијан Монро (Ian Monroe) „Брада“"
 
+#: main.cpp:42
+msgid "Developer (eean)"
+msgstr "Програмер (eean)"
+
 # well-spelled: РОКАМ
 # ? Кхм, „Бијем ко мећава“ ?
 #: main.cpp:43
-msgid "Jeff 'IROCKSOHARD' Mitchell"
+msgid "Jeff 'IROKSOHARD' Mitchell"
 msgstr "Џеф Мичел (Jeff Mitchell) „ЈАКО РОКАМ“"
+
+#: main.cpp:44
+msgid "Developer (jefferai)"
+msgstr "Програмер (jefferai)"
+
+#: main.cpp:46
+msgid "Developer (lfranchi)"
+msgstr "Програмер (lfranchi)"
 
 #: main.cpp:47
 msgid "Lydia 'is wrong(TM)' Pintscher"
 msgstr "Лидија Пинчер (Lydia Pintscher) „није у праву™“"
 
+#: main.cpp:48
+msgid "Release Vixen (Nightrose)"
+msgstr "Издавачка лија (Nightrose)"
+
 #: main.cpp:49
 msgid "Mark 'It's good, but it's not irssi' Kretschmann"
 msgstr "Марк Кречман (Mark Kretschmann) „Добро је, али није то ~@¦Ирси¦Irssi¦“"
+
+#: main.cpp:50
+msgid "Project founder (markey)"
+msgstr "Оснивач пројекта (markey)"
 
 #: main.cpp:51
 msgid "Maximilian Kossick"
 msgstr "Максимилијан Косик (Maximilian Kossick)"
 
+#: main.cpp:52
+msgid "Developer (maxx_k)"
+msgstr "Програмер (maxx_k)"
+
 #: main.cpp:53
 msgid "Nikolaj Hald 'Also very hot' Nielsen"
 msgstr "Николај Халд Нилсен (Nikolaj Hald Nielsen) „Приде врло врућ“"
+
+#: main.cpp:54
+msgid "Developer (nhn)"
+msgstr "Програмер (nhn)"
 
 #: main.cpp:55
 msgid "Seb 'Surfin' down under' Ruiz"
 msgstr "Себ Руиз (Seb Ruiz) „Сурфује доле јужно“"
 
+#: main.cpp:56
+msgid "Developer (sebr)"
+msgstr "Програмер (sebr)"
+
 #: main.cpp:57
 msgid "Téo Mrnjavac"
 msgstr "Тео Мрњавац (Téo Mrnjavac)"
+
+#: main.cpp:58
+msgid "Developer (Teo`)"
+msgstr "Програмер (Teo`)"
 
 #: main.cpp:74
 msgid "Alex Merry"
 msgstr "Алекс Мери (Alex Merry)"
 
+#: main.cpp:74
+msgid "Developer, Replay gain support"
+msgstr "Програмер, подршка за поновљиво појачање"
+
 #: main.cpp:76
 msgid "Casey Link"
 msgstr "Кејси Линк (Casey Link)"
+
+#: main.cpp:76
+msgid "MP3tunes integration"
+msgstr "Интеграција ~@¦МП3‑тјунса¦MP3Tunesa¦"
 
 #: main.cpp:78
 msgid "Casper van Donderen"
 msgstr "Каспер ван Дондерен (Casper van Donderen)"
 
+#: main.cpp:78
+msgid "Windows porting"
+msgstr "Преношење на ~@¦Виндоуз¦Windows¦"
+
 #: main.cpp:80
 msgid "Christie Harris"
 msgstr "Кристи Харис (Christie Harris)"
+
+#: main.cpp:80
+msgid "Rokymoter (dangle)"
+msgstr "~@¦Рокимотер¦Rokymoter¦ (dangle)"
 
 #: main.cpp:82
 msgid "Dan Leinir Turthra Jensen"
 msgstr "Дан Лејнир Туртра Јенсен (Dan Leinir Turthra Jensen)"
 
+#: main.cpp:82
+msgid "Usability"
+msgstr "Употребљивост"
+
 #: main.cpp:84
 msgid "Daniel Caleb Jones"
 msgstr "Данијел Кејлеб Џоунс (Daniel Caleb Jones)"
 
+#: main.cpp:84
+msgid "Biased playlists"
+msgstr "Листе нумера са одступањем"
+
 #: main.cpp:86
 msgid "Daniel Winter"
 msgstr "Данијел Винтер (Daniel Winter)"
+
+#: main.cpp:86
+msgid "Nepomuk integration"
+msgstr "Интеграција Непомука"
 
 #: main.cpp:88
 msgid "Edward \"Hades\" Toroshchin"
@@ -3299,41 +3370,83 @@ msgstr ""
 msgid "Greg Meyer"
 msgstr "Грег Мејер (Greg Meyer)"
 
+#: main.cpp:90
+msgid "Live CD, Bug squashing (oggb4mp3)"
+msgstr "Живи ЦД, исправке грешака (oggb4mp3)"
+
 #: main.cpp:92
 msgid "Harald Sitter"
 msgstr "Харалд Ситер (Harald Sitter)"
+
+#: main.cpp:92
+msgid "Rokymoter (apachelogger)"
+msgstr "~@¦Рокимотер¦Rokymoter¦ (apachelogger)"
 
 #: main.cpp:94
 msgid "Kenneth Wesley Wimer II"
 msgstr "Кенет Вајмер (Kenneth Wimer)"
 
+# >> @item:inlistbox continuation, e.g. is between 60 and 120 seconds
+#: main.cpp:94
+msgid "Icons"
+msgstr "Иконе"
+
 #: main.cpp:96
 msgid "Kevin Funk"
 msgstr "Кевин Функ (Kevin Funk)"
+
+#: main.cpp:96
+msgid "Developer, Website theme (KRF)"
+msgstr "Програмер, тема за веб сајт (KRF)"
 
 #: main.cpp:98
 msgid "Kuba Serafinowski"
 msgstr "Куба Серафиновски (Kuba Serafinowski)"
 
+#: main.cpp:98
+msgid "Rokymoter"
+msgstr "~@¦Рокимотер¦Rokymoter¦"
+
 #: main.cpp:100
 msgid "Lee Olson"
 msgstr "Ли Олсон (Lee Olson)"
+
+#: main.cpp:100 main.cpp:110
+msgid "Artwork"
+msgstr "Графика"
 
 #: main.cpp:102
 msgid "Ljubomir Simin"
 msgstr "Љубомир Симин (Ljubomir Simin)"
 
+#: main.cpp:102
+msgid "Rokymoter (ljubomir)"
+msgstr "~@¦Рокимотер¦Rokymoter¦ (ljubomir)"
+
 #: main.cpp:104
 msgid "Max Howell"
 msgstr "Макс Хауел (Max Howell)"
+
+#: main.cpp:104
+msgid "Developer, Vision"
+msgstr "Програмер, визија"
 
 #: main.cpp:106
 msgid "Mikko Caldara"
 msgstr "Мико Калдара (Mikko Caldara)"
 
+# rewrite-msgid: /Bug/Bug report/
+#: main.cpp:106
+msgid "Bug triaging and sanitizing"
+msgstr "Тријажирање и допуњавање извештаја о грешкама"
+
 #: main.cpp:108
 msgid "Myriam Schweingruber"
 msgstr "Миријам Швајнгрубер (Myriam Schweingruber)"
+
+#: main.cpp:108
+msgid "Rokymoter, bug squashing (Mamarok)"
+msgstr "~@¦Рокимотерка¦Rokymoterka¦, исправке грешака (Mamarok)"
 
 #: main.cpp:110
 msgid "Nuno Pinheiro"
@@ -3343,25 +3456,50 @@ msgstr "Нуно Пињеиро (Nuno Pinheiro)"
 msgid "Olivier Bédard"
 msgstr "Оливје Бедар (Olivier Bédard)"
 
+#: main.cpp:112
+msgid "Website hosting"
+msgstr "Удомљавање веб сајта"
+
 #: main.cpp:114
 msgid "Pasi Lalinaho"
 msgstr "Паси Лалинахо (Pasi Lalinaho)"
+
+#: main.cpp:114
+msgid "Rokymoter (emunkki)"
+msgstr "~@¦Рокимотер¦Rokymoter¦ (emunkki)"
 
 #: main.cpp:116
 msgid "Peter Zhou Lei"
 msgstr "Питер Џоу Леј (Peter Zhou Lei)"
 
+#: main.cpp:116
+msgid "Scripting interface"
+msgstr "Сучеље за скриптовање"
+
 #: main.cpp:118
 msgid "Scott Wheeler"
 msgstr "Скот Вилер (Scott Wheeler)"
+
+# >> Wtf is ktrm?
+#: main.cpp:118
+msgid "TagLib & ktrm code"
+msgstr "Код за ~@¦Таглиб¦TagLib¦ и ktrm"
 
 #: main.cpp:120
 msgid "Shane King"
 msgstr "Шејн Кинг (Shane King)"
 
+#: main.cpp:120
+msgid "Patches & Windows porting (shakes)"
+msgstr "Закрпе и преношење на ~@¦Виндоуз¦Windows¦ (shakes)"
+
 #: main.cpp:122
 msgid "Simon Esneault"
 msgstr "Симон Еснео (Simon Esneault)"
+
+#: main.cpp:122
+msgid "Photos & Videos applets, Context View"
+msgstr "Аплети за фотографије и видео, приказ контекста"
 
 #: main.cpp:124
 msgid "Soren Harward"
@@ -3370,6 +3508,10 @@ msgstr "Сорен Харвард (Soren Harward)"
 #: main.cpp:126
 msgid "Sven Krohlas"
 msgstr "Свен Кролас (Sven Krohlas)"
+
+#: main.cpp:126
+msgid "Rokymoter (sven423)"
+msgstr "~@¦Рокимотер¦Rokymoter¦ (sven423)"
 
 #: main.cpp:128
 msgid "Thomas Lübking"
@@ -3383,21 +3525,42 @@ msgstr "Валентин Руе (Valentin Rouet)"
 msgid "Wade Olson"
 msgstr "Вејд Олсон (Wade Olson)"
 
+#: main.cpp:132
+msgid "Splash screen artist"
+msgstr "Сликар уводног екрана"
+
 #: main.cpp:134
 msgid "William Viana Soares"
 msgstr "Виљам Вијана Соарес (William Viana Soares)"
+
+# >> @title
+#: main.cpp:134
+msgid "Context view"
+msgstr "Приказ контекста"
 
 #: main.cpp:136
 msgid "Former contributors"
 msgstr "Ранији доприносиоци"
 
+#: main.cpp:136
+msgid "People listed below have contributed to Amarok in the past. Thank you!"
+msgstr "Доле наведени допринели су Амароку у прошлости. Хвала им!"
+
 #: main.cpp:138
 msgid "Adam Pigg"
 msgstr "Адам Пиг (Adam Pigg)"
 
+#: main.cpp:138
+msgid "Analyzers, patches, shoutcast"
+msgstr "Анализатори, закрпе, ~@¦Шауткаст¦SHOUTcast¦"
+
 #: main.cpp:140
 msgid "Adeodato Simó"
 msgstr "Адеодато Симо (Adeodato Simó)"
+
+#: main.cpp:140 main.cpp:148
+msgid "Patches"
+msgstr "Закрпе"
 
 #: main.cpp:142
 msgid "Alexandre Oliveira"
@@ -3407,9 +3570,17 @@ msgstr "Александре Оливеира (Alexandre Oliveira)"
 msgid "Andreas Mair"
 msgstr "Андреас Маир (Andreas Mair)"
 
+#: main.cpp:144
+msgid "MySQL support"
+msgstr "Подршка за ~@¦МајСКуЛ¦MySQL¦"
+
 #: main.cpp:146
 msgid "Andrew de Quincey"
 msgstr "Ендру де Квинси (Andrew de Quincey)"
+
+#: main.cpp:146
+msgid "Postgresql support"
+msgstr "Подршка за ~@¦ПостгреСКуЛ¦PostgreSQL¦"
 
 #: main.cpp:148
 msgid "Andrew Turner"
@@ -3419,6 +3590,10 @@ msgstr "Ендру Тернер (Andrew Turner)"
 msgid "Andy Kelk"
 msgstr "Енди Келк (Andy Kelk)"
 
+#: main.cpp:150
+msgid "MTP and Rio Karma media devices, patches"
+msgstr "МТП медијски уређаји и ~@¦рио карма¦Rio karma¦, закрпе"
+
 #: main.cpp:152
 msgid "Christian Muehlhaeuser"
 msgstr "Кристијан Милхојзер (Christian Mühlhäuser)"
@@ -3427,9 +3602,17 @@ msgstr "Кристијан Милхојзер (Christian Mühlhäuser)"
 msgid "Derek Nelson"
 msgstr "Дерек Нелсон (Derek Nelson)"
 
+#: main.cpp:154
+msgid "Graphics, splash-screen"
+msgstr "Графика, уводни екран"
+
 #: main.cpp:156
 msgid "Enrico Ros"
 msgstr "Енрико Рос (Enrico Ros)"
+
+#: main.cpp:156
+msgid "Analyzers, Context Browser and systray eye-candy"
+msgstr "Анализатори, прегледач контекста и улепшавање системске касете"
 
 #: main.cpp:158
 msgid "Frederik Holljen"
@@ -3443,21 +3626,42 @@ msgstr "Габор Лехел (Gábor Lehel)"
 msgid "Gérard Dürrmeyer"
 msgstr "Жерард Дирмејер (Gérard Dürrmeyer)"
 
+#: main.cpp:162
+msgid "Icons and image work"
+msgstr "Иконе и рад на сликама"
+
 #: main.cpp:164
 msgid "Giovanni Venturi"
 msgstr "Ђовани Вентури (Giovanni Venturi)"
+
+#: main.cpp:164
+msgid "Dialog to filter the collection titles"
+msgstr "Дијалог за филтрирање имена̂ збирки"
 
 #: main.cpp:166
 msgid "Jarkko Lehti"
 msgstr "Јарко Лехти (Jarkko Lehti)"
 
+# >> Wtf is whipping? Like with a bull-whip?
+#: main.cpp:166
+msgid "Tester, IRC channel operator, whipping"
+msgstr "Тестер, оператер ИРЦ канала, упаривање"
+
 #: main.cpp:168
 msgid "Jocke Andersson"
 msgstr "Јоке Андерсон (Jocke Andersson)"
 
+#: main.cpp:168
+msgid "Rokymoter, bug fixer (Firetech)"
+msgstr "~@¦Рокимотер¦Rokymoter¦, исправке грешака (Firetech)"
+
 #: main.cpp:170
 msgid "Marco Gulino"
 msgstr "Марко Гулино (Marco Gulino)"
+
+#: main.cpp:170
+msgid "Konqueror Sidebar, some DCOP methods"
+msgstr "К‑освајачева бочна трака, неки ~@¦ДКОП¦DCOP¦ методи"
 
 #: main.cpp:172
 msgid "Martin Aumueller"
@@ -3467,9 +3671,17 @@ msgstr "Мартин Аумилер (Martin Aumüller)"
 msgid "Melchior Franz"
 msgstr "Мелхиор Франц (Melchior Franz)"
 
+#: main.cpp:174
+msgid "FHT routine, bugfixes"
+msgstr "ФХТ рутина, исправке грешака"
+
 #: main.cpp:176
 msgid "Michael Pyne"
 msgstr "Мајкл Пајн (Michael Pyne)"
+
+#: main.cpp:176
+msgid "K3b export code"
+msgstr "Код за извоз у К3б"
 
 #: main.cpp:178
 msgid "Mike Diehl"
@@ -3483,6 +3695,10 @@ msgstr "Пол Чифарели (Paul Cifarelli)"
 msgid "Peter C. Ndikuwera"
 msgstr "Питер К. Ндикувера (Peter C. Ndikuwera)"
 
+#: main.cpp:182
+msgid "Bugfixes, PostgreSQL support"
+msgstr "Исправке грешака, подршка за ~@¦ПостгреСКуЛ¦PostgreSQL¦"
+
 #: main.cpp:184
 msgid "Pierpaolo Panfilo"
 msgstr "Пјерпаоло ди Панфило (Pierpaolo Di Panfilo)"
@@ -3491,13 +3707,25 @@ msgstr "Пјерпаоло ди Панфило (Pierpaolo Di Panfilo)"
 msgid "Reigo Reinmets"
 msgstr "Рејго Рејнметс (Reigo Reinmets)"
 
+#: main.cpp:186
+msgid "Wikipedia support, patches"
+msgstr "Подршка за ~@¦Википедију¦Wikipediju¦, закрпе"
+
 #: main.cpp:188
 msgid "Roman Becker"
 msgstr "Роман Бекер (Roman Becker)"
 
+#: main.cpp:188
+msgid "Former Amarok logo, former splash screen, former icons"
+msgstr "Претходни Амароков лого, уводни екран и иконе"
+
 #: main.cpp:190
 msgid "Sami Nieminen"
 msgstr "Сами Нијеминен (Sami Nieminen)"
+
+#: main.cpp:190
+msgid "Audioscrobbler support"
+msgstr "Подршка за ~@¦Аудиоскроблер¦Audioscrobbler¦"
 
 #: main.cpp:192
 msgid "Stanislav Karchebny"
@@ -3508,6 +3736,10 @@ msgstr ""
 #: main.cpp:194
 msgid "Stefan Bogner"
 msgstr "Штефан Богнер (Stefan Bogner)"
+
+#: main.cpp:194
+msgid "Loads of stuff"
+msgstr "Много тога"
 
 #: browsers/InfoProxy.cpp:164
 msgid "Home"
@@ -3548,81 +3780,81 @@ msgstr "Филтрирај изворе музике"
 msgid "Previous Browser"
 msgstr "Претходни прегледач"
 
-#: browsers/CollectionTreeItemModelBase.cpp:535
+#: browsers/CollectionTreeItemModelBase.cpp:532
 msgid "album"
 msgstr "албум"
 
-#: browsers/CollectionTreeItemModelBase.cpp:540
+#: browsers/CollectionTreeItemModelBase.cpp:537
 msgid "artist"
 msgstr "извођач"
 
-#: browsers/CollectionTreeItemModelBase.cpp:545
+#: browsers/CollectionTreeItemModelBase.cpp:542
 msgid "genre"
 msgstr "жанр"
 
-#: browsers/CollectionTreeItemModelBase.cpp:550
+#: browsers/CollectionTreeItemModelBase.cpp:547
 msgid "composer"
 msgstr "композитор"
 
-#: browsers/CollectionTreeItemModelBase.cpp:555
+#: browsers/CollectionTreeItemModelBase.cpp:552
 msgid "year"
 msgstr "година"
 
-#: browsers/CollectionTreeItemModelBase.cpp:560
+#: browsers/CollectionTreeItemModelBase.cpp:557
 msgid "comment"
 msgstr "коментар"
 
-#: browsers/CollectionTreeItemModelBase.cpp:564
+#: browsers/CollectionTreeItemModelBase.cpp:561
 msgid "rating"
 msgstr "рејтинг"
 
-#: browsers/CollectionTreeItemModelBase.cpp:568
+#: browsers/CollectionTreeItemModelBase.cpp:565
 msgid "score"
 msgstr "резултат"
 
-#: browsers/CollectionTreeItemModelBase.cpp:572
+#: browsers/CollectionTreeItemModelBase.cpp:569
 msgid "playcount"
 msgstr "број пуштања"
 
-#: browsers/CollectionTreeItemModelBase.cpp:576
+#: browsers/CollectionTreeItemModelBase.cpp:573
 msgid "length"
 msgstr "трајање"
 
-#: browsers/CollectionTreeItemModelBase.cpp:580
+#: browsers/CollectionTreeItemModelBase.cpp:577
 msgid "discnumber"
 msgstr "број диска"
 
-#: browsers/CollectionTreeItemModelBase.cpp:584
+#: browsers/CollectionTreeItemModelBase.cpp:581
 msgid "tracknumber"
 msgstr "број нумере"
 
-#: browsers/CollectionTreeItemModelBase.cpp:588
+#: browsers/CollectionTreeItemModelBase.cpp:585
 msgid "added"
 msgstr "додато"
 
-#: browsers/CollectionTreeItemModelBase.cpp:594
+#: browsers/CollectionTreeItemModelBase.cpp:591
 msgid "today"
 msgstr "данас"
 
-#: browsers/CollectionTreeItemModelBase.cpp:596
+#: browsers/CollectionTreeItemModelBase.cpp:593
 msgid "last week"
 msgstr "прошле недеље"
 
-#: browsers/CollectionTreeItemModelBase.cpp:598
+#: browsers/CollectionTreeItemModelBase.cpp:595
 msgid "last month"
 msgstr "прошлог месеца"
 
-#: browsers/CollectionTreeItemModelBase.cpp:600
+#: browsers/CollectionTreeItemModelBase.cpp:597
 msgid "two months ago"
 msgstr "пре два месеца"
 
-#: browsers/CollectionTreeItemModelBase.cpp:602
+#: browsers/CollectionTreeItemModelBase.cpp:599
 msgid "three months ago"
 msgstr "пре три месеца"
 
-#: browsers/CollectionTreeItemModelBase.cpp:903
+#: browsers/CollectionTreeItemModelBase.cpp:915
 msgid "Year - Album"
-msgstr "Година — Албум"
+msgstr "година — албум"
 
 #: browsers/collectionbrowser/CollectionTreeItemDelegate.cpp:143
 #, kde-format
@@ -3883,17 +4115,17 @@ msgid "Strictness:"
 msgstr "Строгост:"
 
 # >! Contexts.
-#: browsers/playlistbrowser/PodcastModel.cpp:278
+#: browsers/playlistbrowser/PodcastModel.cpp:285
 #: playlist/PlaylistModel.cpp:661 amarokurls/BookmarkModel.cpp:266
 msgid "Type"
 msgstr "Врста"
 
 # >> @title:window
-#: browsers/playlistbrowser/PodcastModel.cpp:405
+#: browsers/playlistbrowser/PodcastModel.cpp:412
 msgid "Add Podcast"
 msgstr "Додавање подемисије"
 
-#: browsers/playlistbrowser/PodcastModel.cpp:405
+#: browsers/playlistbrowser/PodcastModel.cpp:412
 msgid "Enter RSS 2.0 feed URL:"
 msgstr "Унесите УРЛ РСС 2.0 довода:"
 
@@ -4029,16 +4261,16 @@ msgstr "Не могу да пребришем насумичну листу ну
 msgid "Add Folder"
 msgstr "Додај фасциклу"
 
-#: browsers/CollectionTreeItem.cpp:174
+#: browsers/CollectionTreeItem.cpp:180
 msgctxt "The Name is not known"
 msgid "Unknown"
 msgstr "Непознато"
 
-#: browsers/CollectionTreeItem.cpp:203
+#: browsers/CollectionTreeItem.cpp:209
 msgid "Counting"
 msgstr "Бројим..."
 
-#: browsers/CollectionTreeItem.cpp:221
+#: browsers/CollectionTreeItem.cpp:227
 #: playlist/proxymodels/GroupingProxy.cpp:98
 #, kde-format
 msgid "1 track"
@@ -4053,52 +4285,58 @@ msgid "Close"
 msgstr "Затвори"
 
 # >> @title
-#: MainWindow.cpp:252
+#: MainWindow.cpp:253
 msgid "Browsers"
 msgstr "Прегледачи"
 
 # >> @title
-#: MainWindow.cpp:286
+#: MainWindow.cpp:287
 msgid "Context"
 msgstr "Контекст"
 
 # >> @title
-#: MainWindow.cpp:316
+#: MainWindow.cpp:314
 msgid "Local Music"
 msgstr "Локална музика"
 
-#: MainWindow.cpp:318
+#: MainWindow.cpp:316
 msgid "Local sources of content"
 msgstr "Локални извори садржаја"
 
 # >> @title
-#: MainWindow.cpp:326
+#: MainWindow.cpp:324
 msgid "Internet"
 msgstr "Интернет"
 
-#: MainWindow.cpp:328
+#: MainWindow.cpp:326
 msgid "Online sources of content"
 msgstr "Извори садржаја на вези"
 
 # >> @title
-#: MainWindow.cpp:334
+#: MainWindow.cpp:332
 msgid "Playlists"
 msgstr "Листе нумера"
 
-#: MainWindow.cpp:336
+#: MainWindow.cpp:334
 msgid "Various types of playlists"
 msgstr "Разне врсте листи нумера"
 
 # >> @title
-#: MainWindow.cpp:343
+#: MainWindow.cpp:341
 msgid "Files"
 msgstr "Фајлови"
 
-#: MainWindow.cpp:345
+#: MainWindow.cpp:343
 msgid "Browse local hard drive for content"
 msgstr "Прегледајте садржај локалног диска"
 
-#: MainWindow.cpp:462
+#. i18n: file: configdialog/dialogs/GeneralConfig.ui:56
+#. i18n: ectx: property (text), widget (QCheckBox, kcfg_LockLayout)
+#: MainWindow.cpp:388 rc.cpp:770
+msgid "Lock layout"
+msgstr "Закључај распоред"
+
+#: MainWindow.cpp:504
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
 "<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
@@ -4109,155 +4347,159 @@ msgstr ""
 "икону у системској касети да бисте изашли из програма.</qt>"
 
 # >> @title:window
-#: MainWindow.cpp:464
+#: MainWindow.cpp:506
 msgid "Docking in System Tray"
 msgstr "Пристајање у системску касету"
 
-#: MainWindow.cpp:489
+#: MainWindow.cpp:531
 msgid "Use relative path for &saving"
 msgstr "Релативна путања при &уписивању"
 
 # >> @title:window
-#: MainWindow.cpp:500
+#: MainWindow.cpp:542
 msgid "Save As"
 msgstr "Уписивање као"
 
-#: MainWindow.cpp:537
+#: MainWindow.cpp:579
 msgid "Play Media (Files or URLs)"
 msgstr "Пусти медијум (фајлови или УРЛ‑ови)"
 
-#: MainWindow.cpp:537
+#: MainWindow.cpp:579
 msgid "Add Media (Files or URLs)"
 msgstr "Додај медијум (фајлови или УРЛ‑ови)"
 
 # >> @title:window
-#: MainWindow.cpp:552
+#: MainWindow.cpp:594
 msgid "Add Stream"
 msgstr "Додавање тока"
 
-#: MainWindow.cpp:552
+#: MainWindow.cpp:594
 msgid "Enter Stream URL:"
 msgstr "Унесите УРЛ тока:"
 
-#: MainWindow.cpp:630
+#: MainWindow.cpp:672
 msgid "&Add Media..."
 msgstr "&Додај медијум..."
 
-#: MainWindow.cpp:635
+#: MainWindow.cpp:677
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "&Очисти листу нумера"
 
-#: MainWindow.cpp:639
+#: MainWindow.cpp:681
 msgid "&Add Stream..."
 msgstr "&Додај ток..."
 
-#: MainWindow.cpp:643
+#: MainWindow.cpp:685
 msgid "&Export Playlist As..."
 msgstr "Извези листу нумера &као..."
 
-#: MainWindow.cpp:647 MainWindow.cpp:655
+#: MainWindow.cpp:689 MainWindow.cpp:697
 msgid "Bookmark This Location"
 msgstr "Маркирај ову локацију"
 
-#: MainWindow.cpp:651 amarokurls/BookmarkManager.cpp:42
+#: MainWindow.cpp:693 amarokurls/BookmarkManager.cpp:42
 msgid "Bookmark Manager"
 msgstr "Менаџер маркера"
 
-#: MainWindow.cpp:659 covermanager/CoverManager.cpp:97
+#: MainWindow.cpp:701 covermanager/CoverManager.cpp:97
 msgid "Cover Manager"
 msgstr "Менаџер омота"
 
-#: MainWindow.cpp:663
+#: MainWindow.cpp:705
 msgid "Play Media..."
 msgstr "Пусти медијум..."
 
-#: MainWindow.cpp:671
+#: MainWindow.cpp:713
 msgid "&Seek Forward"
 msgstr "&Тражи унапред"
 
-#: MainWindow.cpp:677
+#: MainWindow.cpp:719
 msgid "&Seek Backward"
 msgstr "&Тражи уназад"
 
-#: MainWindow.cpp:684
+#: MainWindow.cpp:726
 msgid "Update Collection"
 msgstr "Ажурирај збирку"
 
-#: MainWindow.cpp:691
+#: MainWindow.cpp:731
+msgid "Rescan Collection"
+msgstr "Поново претражи збирку"
+
+#: MainWindow.cpp:738
 msgid "Previous Track"
 msgstr "Претходна нумера"
 
-#: MainWindow.cpp:699
+#: MainWindow.cpp:746
 msgid "Next Track"
 msgstr "Следећа нумера"
 
-#: MainWindow.cpp:702
+#: MainWindow.cpp:749
 msgid "Increase Volume"
 msgstr "Повећај јачину"
 
-#: MainWindow.cpp:708
+#: MainWindow.cpp:755
 msgid "Decrease Volume"
 msgstr "Смањи јачину"
 
-#: MainWindow.cpp:714
+#: MainWindow.cpp:761
 msgid "Toggle Main Window"
 msgstr "Укључи/искључи главни прозор"
 
-#: MainWindow.cpp:719
+#: MainWindow.cpp:766
 msgid "Show On Screen Display"
 msgstr "Прикажи екрански приказ"
 
-#: MainWindow.cpp:724
+#: MainWindow.cpp:771
 msgid "Mute Volume"
 msgstr "Утишај звук"
 
-#: MainWindow.cpp:729
+#: MainWindow.cpp:776
 msgid "Love Current Track"
 msgstr "Воли текућу нумеру"
 
-#: MainWindow.cpp:734
+#: MainWindow.cpp:781
 msgid "Rate Current Track: 1"
 msgstr "Оцени текућу нумеру: 1"
 
-#: MainWindow.cpp:739
+#: MainWindow.cpp:786
 msgid "Rate Current Track: 2"
 msgstr "Оцени текућу нумеру: 2"
 
-#: MainWindow.cpp:744
+#: MainWindow.cpp:791
 msgid "Rate Current Track: 3"
 msgstr "Оцени текућу нумеру: 3"
 
-#: MainWindow.cpp:749
+#: MainWindow.cpp:796
 msgid "Rate Current Track: 4"
 msgstr "Оцени текућу нумеру: 4"
 
-#: MainWindow.cpp:754
+#: MainWindow.cpp:801
 msgid "Rate Current Track: 5"
 msgstr "Оцени текућу нумеру: 5"
 
-#: MainWindow.cpp:817
+#: MainWindow.cpp:864
 msgid "&Music"
 msgstr "&Музика"
 
-#: MainWindow.cpp:821
+#: MainWindow.cpp:868
 msgid "&Amarok"
 msgstr "Амарок"
 
-#: MainWindow.cpp:864
+#: MainWindow.cpp:911
 msgid "&Tools"
 msgstr "Ала&тке"
 
-#: MainWindow.cpp:877
+#: MainWindow.cpp:925
 msgid "&Settings"
 msgstr "&Подешавање"
 
-#: MainWindow.cpp:988
+#: MainWindow.cpp:1052
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Паузирано  ::  %1"
 
-#: MainWindow.cpp:1011
+#: MainWindow.cpp:1076
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 — %2 ::  %3"
@@ -4298,8 +4540,19 @@ msgstr "Аудио режим"
 msgid "Data Mode"
 msgstr "Режим података"
 
+#: toolbar/VolumePopupButton.cpp:97 toolbar/VolumePopupButton.cpp:108
+#: widgets/Osd.cpp:145
+msgid "(muted)"
+msgstr "(утишано)"
+
+#: toolbar/VolumePopupButton.cpp:97 toolbar/VolumePopupButton.cpp:108
+#: widgets/Osd.cpp:145
+#, kde-format
+msgid "Volume: %1% %2"
+msgstr "Јачина: %1% %2"
+
 # >> NG = Next Generation
-#: toolbar/MainToolbarNG.cpp:39
+#: toolbar/MainToolbarNG.cpp:36
 msgid "Main Toolbar NG"
 msgstr "Главна трака алатки (нг.)"
 
@@ -4475,13 +4728,13 @@ msgstr "Укључите или искључите Амарокову касет
 #. i18n: ectx: label, entry, group (General Options)
 #: rc.cpp:75 rc.cpp:1708
 msgid "Whether to hide the context view."
-msgstr "Да ли сакрити контекстни приказ."
+msgstr "Да ли сакрити приказ контекста."
 
 #. i18n: file: amarokconfig.kcfg:89
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: rc.cpp:78 rc.cpp:1711
 msgid "Enable/Disable context view in Amarok."
-msgstr "Укључите или искључите Амароков контекстни приказ."
+msgstr "Укључите или искључите Амароков приказ контекста."
 
 #. i18n: file: amarokconfig.kcfg:93
 #. i18n: ectx: label, entry, group (General Options)
@@ -4778,7 +5031,7 @@ msgstr "Омоти албума у прегледачу збирке"
 #. i18n: ectx: label, entry, group (General Options)
 #: rc.cpp:201 rc.cpp:1834
 msgid "Show the Context View"
-msgstr "Контекстни приказ"
+msgstr "Приказ контекста"
 
 #. i18n: file: amarokconfig.kcfg:206
 #. i18n: ectx: label, entry, group (Playback)
@@ -5812,12 +6065,6 @@ msgstr "&Касетна икона"
 #: rc.cpp:767
 msgid "Automatically retrieve cover art"
 msgstr "Аутоматски &добави омоте албума"
-
-#. i18n: file: configdialog/dialogs/GeneralConfig.ui:56
-#. i18n: ectx: property (text), widget (QCheckBox, kcfg_LockLayout)
-#: rc.cpp:770
-msgid "Lock layout"
-msgstr "Закључај распоред"
 
 #. i18n: file: configdialog/dialogs/GeneralConfig.ui:71
 #. i18n: ectx: property (title), widget (QGroupBox, playlistBox)
@@ -7779,12 +8026,11 @@ msgstr "~@¦Ласт‑ФМ¦Last.fm¦ је 'ладан..."
 
 #: services/lastfm/meta/MultiPlayableCapabilityImpl_p.h:107
 msgid ""
-"Unfortunately, Last.Fm radio streams are only functional for Last.Fm "
-"subscribers. All the other Last.Fm features are unaffected."
+"To listen to this stream you need to be a paying Last.Fm subscriber. All the "
+"other Last.Fm features are unaffected."
 msgstr ""
-"Нажалост, ~@¦Ласт‑ФМ‑ови¦last.fm‑ovi¦ радио токови доступни су само "
-"претплатницима. То нема утицаја на остале ~@¦Ласт‑ФМ‑ове¦last.fm‑ove¦ "
-"могућности."
+"Да бисте слушали овај ток морате имати плаћену претплату на ~@¦Ласт‑ФМ¦last."
+"fm¦. Ово не утиче на остале ~@¦Ласт‑ФМ‑ове¦last.fm‑ove¦ могућности."
 
 #: services/lastfm/meta/MultiPlayableCapabilityImpl_p.h:109
 msgid "Error starting track from Last.Fm radio"
@@ -8020,36 +8266,6 @@ msgstr "Пријатељев лични радио"
 #: services/lastfm/LastFmServiceCollection.cpp:139
 msgid "last.fm"
 msgstr "~@¦Ласт‑ФМ¦last.fm¦"
-
-# >> Directory as in collection of addresses, not file system directory.
-#: services/shoutcast/ShoutcastService.cpp:33
-msgid "Shoutcast Directory"
-msgstr "~@¦Шауткастов¦SHOUTcastov¦ именик"
-
-# skip-rule: list
-#: services/shoutcast/ShoutcastService.cpp:62
-msgid "The biggest list of online radio stations on the Internet"
-msgstr "Највећа листа радио станица на вези на Интернету"
-
-#: services/shoutcast/ShoutcastService.cpp:83
-msgctxt "Fetch the 500 most popular stations"
-msgid "View Top 500 Stations"
-msgstr "Прикажи 500 најпопуларнијих"
-
-#: services/shoutcast/ShoutcastService.cpp:89
-msgctxt "Fetch list of all stations by genre"
-msgid "View All Stations"
-msgstr "Прикажи све станице"
-
-#: services/shoutcast/ShoutcastServiceQueryMaker.cpp:229
-#, kde-format
-msgid "Results for: %1"
-msgstr "Резултат за %1"
-
-#: services/shoutcast/ShoutcastServiceQueryMaker.cpp:306
-#: services/shoutcast/ShoutcastServiceQueryMaker.cpp:375
-msgid "The Shoutcast server is busy.<BR>Please try again later."
-msgstr "~@¦Шауткастов¦SHOUTcastov¦ сервер је заузет. Покушајте касније."
 
 #: services/ShowInServiceAction.cpp:27
 #, kde-format
@@ -8844,12 +9060,12 @@ msgstr "Неисправан распоред листе нумера."
 msgid "Encountered an unknown element name while reading layout."
 msgstr "Сусретнуто непознато име елемента при читању распореда."
 
-#: playlist/layouts/LayoutManager.cpp:352
+#: playlist/layouts/LayoutManager.cpp:357
 #, kde-format
 msgid "The layout '%1' is one of the default layouts and cannot be deleted."
 msgstr "Распоред „%1“ је један од подразумеваних и не може бити обрисан."
 
-#: playlist/layouts/LayoutManager.cpp:352
+#: playlist/layouts/LayoutManager.cpp:357
 msgid "Cannot Delete Default Layouts"
 msgstr "Не могу да обришем подразумевани распоред"
 
@@ -9097,7 +9313,7 @@ msgstr "Уклоњене нумере"
 msgid "Track moved"
 msgstr "Нумера премештена"
 
-#: playlist/PlaylistActions.cpp:342
+#: playlist/PlaylistActions.cpp:357
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "Сувише грешака у листи нумера. Пуштање заустављено."
 
@@ -9249,30 +9465,30 @@ msgstr "група"
 msgid "Url"
 msgstr "УРЛ"
 
-#: amarokurls/BookmarkModel.cpp:510
+#: amarokurls/BookmarkModel.cpp:514
 msgid "New Group"
 msgstr "Нова група"
 
-#: amarokurls/BookmarkModel.cpp:535 amarokurls/BookmarkManagerWidget.cpp:47
+#: amarokurls/BookmarkModel.cpp:539 amarokurls/BookmarkManagerWidget.cpp:47
 msgid "New Bookmark"
 msgstr "Нови маркер"
 
 # >? Wtf?
-#: amarokurls/BookmarkModel.cpp:536
+#: amarokurls/BookmarkModel.cpp:540
 msgid "none"
 msgstr "ништа"
 
-#: amarokurls/BookmarkTreeView.cpp:104
+#: amarokurls/BookmarkTreeView.cpp:106
 msgctxt "Load the view represented by this bookmark"
 msgid "&Load"
 msgstr "&Учитај"
 
 # http://lists.kde.org/?l=amarok-devel&m=123797522801541&w=2
-#: amarokurls/BookmarkTreeView.cpp:123
+#: amarokurls/BookmarkTreeView.cpp:119
 msgid "&Create timecode track"
 msgstr "&Направи временски ко̂д нумере"
 
-#: amarokurls/BookmarkTreeView.cpp:327
+#: amarokurls/BookmarkTreeView.cpp:316
 msgid "New Timecode Track"
 msgstr "Нови временски ко̂д нумере"
 
@@ -9328,15 +9544,6 @@ msgstr "Контрола јачине"
 msgid "Rating changed"
 msgstr "Рејтинг је измењен"
 
-#: widgets/Osd.cpp:145
-msgid "(muted)"
-msgstr "(утишано)"
-
-#: widgets/Osd.cpp:145
-#, kde-format
-msgid "Volume: %1% %2"
-msgstr "Јачина: %1% %2"
-
 #: widgets/Osd.cpp:207
 msgid "Volume: 100% (muted)"
 msgstr "Јачина: 100% (утишано)"
@@ -9361,9 +9568,10 @@ msgstr "Унесите размаком раздвојене изразе за �
 msgid "Edit filter"
 msgstr "Уреди филтер"
 
+# rewrite-msgid: /List/Browse/
 #: widgets/BreadcrumbItemButton.cpp:204
 msgid "List and run bookmarks, or create new ones"
-msgstr "Испишите, покрените или направите нове маркере."
+msgstr "Прегледајте, покрените или направите нове маркере."
 
 #: widgets/BreadcrumbItemButton.cpp:221
 msgid "Amarok Bookmarks"
