@@ -1,3 +1,6 @@
+Amarok does not play anything
+-----------------------------
+
 If Amarok does not play anything, you hear no sound or it skips through songs,
 you are probably using Phonon GStreamer backend. To fix this either:
 
@@ -12,3 +15,10 @@ you are probably using Phonon GStreamer backend. To fix this either:
 Finally, restart Amarok. See [1] for more information.
 
 1. http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=538767
+
+Amarok does not play MP3 files
+------------------------------
+
+Make sure that the package libxine1-ffmpeg is installed.
+
+  # dpkg -l libxine1-ffmpeg | grep ii || aptitude install libxine1-ffmpeg
