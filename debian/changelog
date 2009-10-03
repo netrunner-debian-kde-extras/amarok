@@ -1,5 +1,7 @@
 amarok (2.2.0-2) UNRELEASED; urgency=low
 
+  * Reformat debian/README.Debian and add a note about
+    /usr/share/bug/amarok/presubj to it.
 
  -- Modestas Vainius <modestas@vainius.eu>  Sat, 03 Oct 2009 11:32:33 +0300
 

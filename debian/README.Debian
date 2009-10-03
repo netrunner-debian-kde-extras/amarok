@@ -1,14 +1,15 @@
 Amarok packages for Debian
-==========================
+--------------------------
 
-  A couple of notes which you may find useful:
+* If you want amarok to be able to play CDs, you need to install the
+  kdemultimedia-kio-plugins package.
+* Amarok 2 features collection importing from Amarok 1.4. Just make sure you
+  have the respective Qt4 SQL plugins installed before using the collection
+  importer:
+  - libqt4-sql-sqlite for SQLite (SQLite database was default in Amarok 1.4).
+  - libqt4-sql-mysql for importing from MySQL.
+  - libqt4-sql-psql for importing from PostgreSQL.
 
-    - if you want amarok to be able to play CDs, you need to install the
-      kdemultimedia-kio-plugins package.
-    - Amarok 2 features collection importing from Amarok 1.4. Just make sure
-      you have the respective Qt4 SQL plugins installed before using the
-      collection importer:
-        * libqt4-sql-sqlite for SQLite (SQLite database was default in
-          Amarok 1.4).
-        * libqt4-sql-mysql for importing from MySQL.
-        * libqt4-sql-psql for importing from PostgreSQL.
+A couple of the most common problems together with solutions are described
+in /usr/share/bug/amarok/presubj. Read it before reporting bugs or asking
+for support.
