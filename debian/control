@@ -41,7 +41,6 @@ Description: easy to use media player based on the KDE 4 technology platform
    - MP3tunes
    - Magnatune
    - OPML Podcast Directory
-   - Shoutcast Radio Directory
  .
  Amarok comes with a lot of features including but not limited to:
    - Scripts - enhance your Amarok experience with community developed scripts.
