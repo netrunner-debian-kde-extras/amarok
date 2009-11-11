@@ -41,15 +41,17 @@ class ProgressWidget : public QWidget, public EngineObserver
         void addBookmark( const QString &name, int milliSeconds );
         void redrawBookmarks();
 
+       Amarok::TimeSlider* slider() const { return m_slider; }
+
     public slots:
         void drawTimeDisplay( int position );
 
     protected:
-        virtual void engineTrackPositionChanged( long position, bool /*userSeek*/ );
+        virtual void engineTrackPositionChanged( qint64 position, bool /*userSeek*/ );
         virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
-        virtual void engineTrackLengthChanged( long seconds );
+        virtual void engineTrackLengthChanged( qint64 milliseconds );
         virtual void engineNewTrackPlaying();
-        virtual void enginePlaybackEnded( int finalPosition, int trackLength, PlaybackEndedReason reason );
+        virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason );
 
     private:
         TimeLabel *m_timeLabelLeft;

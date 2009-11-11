@@ -21,6 +21,7 @@
 #include "Debug.h"
 #include "playlist/PlaylistDefines.h"
 #include "playlist/PlaylistModelStack.h"
+#include "statusbar/StatusBar.h"
 
 #include <KMessageBox>
 #include <KStandardDirs>
@@ -75,12 +76,46 @@ void LayoutManager::setActiveLayout( const QString &layout )
 
 void LayoutManager::setPreviewLayout( const PlaylistLayout &layout )
 {
+    DEBUG_BLOCK
     m_activeLayout = PREVIEW_LAYOUT;
     m_previewLayout = layout;
     emit( activeLayoutChanged() );
 
     //Change the grouping style to that of this layout.
     Playlist::ModelStack::instance()->top()->setGroupingCategory( activeLayout().groupBy() );
+}
+
+void LayoutManager::updateCurrentLayout( const PlaylistLayout &layout )
+{
+    //Do not store preview layouts.
+    if ( m_activeLayout == PREVIEW_LAYOUT )
+        return;
+
+    if ( m_layouts.value( m_activeLayout ).isEditable() )
+    {
+        addUserLayout( m_activeLayout, layout );
+        setActiveLayout( m_activeLayout );
+    }
+    else
+    {
+        //create a writable copy of this layout. (Copy on Write)
+        QString newLayoutName = i18n( "copy of %1", m_activeLayout );
+        QString orgCopyName = newLayoutName;
+
+        int copyNumber = 1;
+        QStringList existingLayouts = LayoutManager::instance()->layouts();
+        while( existingLayouts.contains( newLayoutName ) )
+        {
+            copyNumber++;
+            newLayoutName = i18nc( "adds a copy number to a generated name if the name already exists, for instance 'copy of Foo 2' if 'copy of Foo' is taken", "%1 %2", orgCopyName, copyNumber );
+        }
+                
+
+        The::statusBar()->longMessage( i18n( "Current layout '%1' is read only. Creating a new layout '%2' with your changes and setting this as active", m_activeLayout, newLayoutName ) );
+        
+        addUserLayout( newLayoutName, layout );
+        setActiveLayout( newLayoutName );
+    }
 }
 
 PlaylistLayout LayoutManager::activeLayout() const
@@ -207,6 +242,7 @@ LayoutItemConfig LayoutManager::parseItemConfig( const QDomElement &elem ) const
             qreal size = elementNode.toElement().attribute( "size", "0.0" ).toDouble();
             bool bold = ( elementNode.toElement().attribute( "bold", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
             bool italic = ( elementNode.toElement().attribute( "italic", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
+            bool underline = ( elementNode.toElement().attribute( "underline", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
             QString alignmentString = elementNode.toElement().attribute( "alignment", "left" );
             Qt::Alignment alignment;
 
@@ -218,7 +254,8 @@ LayoutItemConfig LayoutManager::parseItemConfig( const QDomElement &elem ) const
             else
                 alignment = Qt::AlignCenter| Qt::AlignVCenter;
 
-            row.addElement( LayoutItemConfigRowElement( value, size, bold, italic, alignment, prefix, sufix ) );
+            row.addElement( LayoutItemConfigRowElement( value, size, bold, italic, underline,
+                                                        alignment, prefix, sufix ) );
         }
 
         config.addRow( row );
@@ -304,6 +341,7 @@ QDomElement LayoutManager::createItemElement( QDomDocument doc, const QString &n
             elementElement.setAttribute ( "size", QString::number( element.size() ) );
             elementElement.setAttribute ( "bold", element.bold() ? "true" : "false" );
             elementElement.setAttribute ( "italic", element.italic() ? "true" : "false" );
+            elementElement.setAttribute ( "underline", element.underline() ? "true" : "false" );
 
             QString alignmentString;
             if ( element.alignment() & Qt::AlignLeft )

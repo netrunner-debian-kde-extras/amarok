@@ -116,13 +116,12 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     m_podcastTreeView->setContentsMargins(0,0,0,0);
     m_podcastTreeView->setModel( podcastModel );
     m_podcastTreeView->header()->hide();
+    m_podcastTreeView->setIconSize( QSize( 24, 24 ) );
 
     m_podcastTreeView->setAlternatingRowColors( true );
     m_podcastTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
     m_podcastTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
     m_podcastTreeView->setDragEnabled(true);
-    m_podcastTreeView->setAcceptDrops(true);
-    m_podcastTreeView->setDropIndicatorShown(true);
 
     //transparency
     QPalette p = m_podcastTreeView->palette();
@@ -314,33 +313,25 @@ PodcastView::PodcastView( PodcastModel *model, QWidget * parent )
     : Amarok::PrettyTreeView( parent )
     , m_podcastModel( model )
     , m_pd( 0 )
-{
-}
+    , m_ongoingDrag( false )
+    , m_dragMutex()
+{}
 
 PodcastView::~PodcastView()
-{
-}
-
-void
-PodcastView::mousePressEvent( QMouseEvent * event )
-{
-    if( event->button() == Qt::LeftButton )
-        m_dragStartPosition = event->pos();
-
-    QTreeView::mousePressEvent( event );
-}
+{}
 
 void
 PodcastView::mouseReleaseEvent( QMouseEvent * event )
 {
-    Q_UNUSED( event )
-
     if( m_pd )
     {
         connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( deleteLater() ) );
         m_pd->hide();
     }
     m_pd = 0;
+    event->accept();
+
+    Amarok::PrettyTreeView::mouseReleaseEvent( event );
 }
 
 void
@@ -352,8 +343,11 @@ PodcastView::mouseDoubleClickEvent( QMouseEvent * event )
     {
         QModelIndexList indices;
         indices << index;
-        m_podcastModel->loadItems( indices, Playlist::Append );
+        m_podcastModel->loadItems( indices, Playlist::AppendAndPlay );
+        event->accept();
     }
+
+    Amarok::PrettyTreeView::mouseDoubleClickEvent( event );
 }
 
 void
@@ -361,23 +355,26 @@ PodcastView::startDrag( Qt::DropActions supportedActions )
 {
     DEBUG_BLOCK
 
-    //Waah? when a parent item is dragged, startDrag is called a bunch of times
-    static bool ongoingDrags = false;
-    if( ongoingDrags )
+    // When a parent item is dragged, startDrag() is called a bunch of times. Here we prevent that:
+    m_dragMutex.lock();
+    if( m_ongoingDrag )
+    {
+        m_dragMutex.unlock();
         return;
-    ongoingDrags = true;
+    }
+    m_ongoingDrag = true;
+    m_dragMutex.unlock();
 
     if( !m_pd )
         m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
 
     if( m_pd && m_pd->isHidden() )
     {
-
         QList<QAction*> actions = m_podcastModel->actionsFor( selectedIndexes() );
 
         foreach( QAction * action, actions )
         {
-            m_pd->addItem( The::popupDropperFactory()->createItem( action ), false );
+            m_pd->addItem( The::popupDropperFactory()->createItem( action ) );
         }
 
         m_pd->show();
@@ -392,7 +389,9 @@ PodcastView::startDrag( Qt::DropActions supportedActions )
         connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( clear() ) );
         m_pd->hide();
     }
-    ongoingDrags = false;
+    m_dragMutex.lock();
+    m_ongoingDrag = false;
+    m_dragMutex.unlock();
 }
 
 void

@@ -39,8 +39,8 @@ ProgressWidget::ProgressWidget( QWidget *parent )
 
     QHBoxLayout *box = new QHBoxLayout( this );
     setLayout( box );
-    box->setMargin( 1 );
-    box->setSpacing( 3 );
+    box->setMargin( 0 );
+    box->setSpacing( 0 );
 
     m_slider = new Amarok::TimeSlider( this );
     m_slider->setMouseTracking( true );
@@ -95,13 +95,13 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
     int seconds = ms / 1000;
     int seconds2 = seconds; // for the second label
 
-    const uint trackLength = The::engineController()->trackLength();
+    const qint64 trackLength = The::engineController()->trackLength();
 
     // when the left label shows the remaining time and it's not a stream
     if( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
     {
         seconds2 = seconds;
-        seconds = trackLength - seconds;
+        seconds = ( trackLength / 1000 ) - seconds;
     }
 
     // when the left label shows the remaining time and it's a stream
@@ -114,7 +114,7 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
     // when the right label shows the remaining time and it's not a stream
     else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
     {
-        seconds2 = trackLength - seconds;
+        seconds2 = ( trackLength / 1000 ) - seconds;
     }
 
     // when the right label shows the remaining time and it's a stream
@@ -128,14 +128,12 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
     QString s2 = Meta::secToPrettyTime( seconds2 );
 
     // when the left label shows the remaining time and it's not a stream
-    if( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 ) {
+    if( AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
         s1.prepend( '-' );
-    }
+
     // when the right label shows the remaining time and it's not a stream
     else if( !AmarokConfig::leftTimeDisplayRemaining() && trackLength > 0 )
-    {
         s2.prepend( '-' );
-    }
 
     if( m_timeLength > s1.length() )
         s1.prepend( QString( m_timeLength - s1.length(), ' ' ) );
@@ -167,7 +165,7 @@ ProgressWidget::drawTimeDisplay( int ms )  //SLOT
 }
 
 void
-ProgressWidget::engineTrackPositionChanged( long position, bool /*userSeek*/ )
+ProgressWidget::engineTrackPositionChanged( qint64 position, bool /*userSeek*/ )
 {
     //debug() << "POSITION: " << position;
     m_slider->setSliderValue( position );
@@ -179,8 +177,6 @@ ProgressWidget::engineTrackPositionChanged( long position, bool /*userSeek*/ )
 void
 ProgressWidget::engineStateChanged( Phonon::State state, Phonon::State /*oldState*/ )
 {
-    DEBUG_BLOCK
-
     switch ( state )
     {
         case Phonon::LoadingState:
@@ -218,16 +214,16 @@ ProgressWidget::engineStateChanged( Phonon::State state, Phonon::State /*oldStat
 }
 
 void
-ProgressWidget::engineTrackLengthChanged( long seconds )
+ProgressWidget::engineTrackLengthChanged( qint64 milliseconds )
 {
     DEBUG_BLOCK
 
-    debug() << "new length: " << seconds;
+    debug() << "new length: " << milliseconds;
     m_slider->setMinimum( 0 );
-    m_slider->setMaximum( seconds * 1000 );
-    m_slider->setEnabled( seconds > 0 );
+    m_slider->setMaximum( milliseconds );
+    m_slider->setEnabled( milliseconds > 0 );
     debug() << "slider enabled!";
-    m_timeLength = Meta::secToPrettyTime( seconds ).length()+1; // account for - in remaining time
+    m_timeLength = Meta::msToPrettyTime( milliseconds ).length()+1; // account for - in remaining time
 
     //get the urlid of the current track as the engine might stop and start several times
     //when skipping lst.fm tracks, so we need to know if we are still on the same track...
@@ -242,7 +238,6 @@ ProgressWidget::redrawBookmarks()
 {
     DEBUG_BLOCK
     m_slider->clearTriangles();
-
     if( The::engineController()->currentTrack() )
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();
@@ -282,7 +277,7 @@ QSize ProgressWidget::sizeHint() const
     return QSize( width(), 12 );
 }
 
-void ProgressWidget::enginePlaybackEnded( int finalPosition, int trackLength, PlaybackEndedReason reason )
+void ProgressWidget::enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason )
 {
     Q_UNUSED( finalPosition )
     Q_UNUSED( trackLength )

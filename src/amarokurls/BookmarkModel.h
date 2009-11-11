@@ -84,9 +84,11 @@ public:
     //only use the above method
     QModelIndex createIndex( int, int, void * ptr = 0) const { Q_UNUSED( ptr ); Q_ASSERT( 0 );  return QModelIndex(); }
     QModelIndex createIndex( int, int, quint32 ) const { Q_ASSERT( 0 ); return QModelIndex(); }
+
 public slots:
     void createNewGroup();
     void createNewBookmark();
+    void deleteBookmark( const QString& name );
 
 signals:
     void editIndex( const QModelIndex & index );
@@ -98,6 +100,8 @@ private:
     void createTables();
     void deleteTables();
     void upgradeTables( int from );
+
+    bool deleteBookmarkRecursively( BookmarkGroupPtr group, const QString& name );
 
     static BookmarkModel * s_instance;
 

@@ -47,7 +47,7 @@ public:
     BoundedPlaybackCapabilityImpl( TimecodeTrack * track )
         : m_track( track )
     {}
-    
+
     virtual qint64 startPosition();
     virtual qint64 endPosition();
 
@@ -123,7 +123,7 @@ public:
     virtual int rating() const;
     virtual void setRating ( int newRating );
 
-    virtual int length() const;
+    virtual qint64 length() const;
 
     virtual int filesize() const;
     virtual int sampleRate() const;
@@ -171,7 +171,7 @@ private:
     QString m_type;
     qint64 m_start;
     qint64 m_end;
-    int m_length;
+    qint64 m_length;
     int m_trackNumber;
     int m_discNumber;
     QString m_comment;
@@ -208,6 +208,11 @@ public:
 
     virtual AlbumList albums();
 
+    bool operator==( const Meta::Artist &other ) const
+    {
+        return name() == other.name();
+    }
+
     //TimecodeArtist specific methods
     void addTrack( TimecodeTrackPtr track );
 
@@ -243,7 +248,8 @@ public:
     void setAlbumArtist( TimecodeArtistPtr artist );
     void setIsCompilation( bool compilation );
 
-    bool operator==( const Meta::Album &other ) const {
+    bool operator==( const Meta::Album &other ) const
+    {
         return name() == other.name();
     }
 
@@ -274,6 +280,11 @@ public:
 
     virtual TrackList tracks();
 
+    bool operator==( const Meta::Genre &other ) const
+    {
+        return name() == other.name();
+    }
+
     //TimecodeGenre specific methods
     void addTrack( TimecodeTrackPtr track );
 
@@ -293,6 +304,11 @@ public:
 
     virtual TrackList tracks();
 
+    bool operator==( const Meta::Composer &other ) const
+    {
+        return name() == other.name();
+    }
+
     //TimecodeComposer specific methods
     void addTrack( TimecodeTrackPtr track );
 
@@ -311,6 +327,11 @@ public:
     virtual QString prettyName() const;
 
     virtual TrackList tracks();
+
+    bool operator==( const Meta::Year &other ) const
+    {
+        return name() == other.name();
+    }
 
     //TimecodeYear specific methods
     void addTrack( TimecodeTrackPtr track );

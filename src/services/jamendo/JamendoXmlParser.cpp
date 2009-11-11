@@ -34,6 +34,7 @@ JamendoXmlParser::JamendoXmlParser( const QString &filename )
     : ThreadWeaver::Job()
     , n_numberOfTransactions ( 0 )
     , n_maxNumberOfTransactions ( 5000 )
+    , m_aborted( false )
 {
     DEBUG_BLOCK
 
@@ -128,18 +129,25 @@ JamendoXmlParser::JamendoXmlParser( const QString &filename )
 JamendoXmlParser::~JamendoXmlParser()
 {
     DEBUG_BLOCK
+    m_reader.clear();
     delete m_dbHandler;
 }
 
 void
 JamendoXmlParser::run( )
 {
+    if( m_aborted )
+        return;
+    
     readConfigFile( m_sFileName );
 }
 
 void
-JamendoXmlParser::completeJob( )
+JamendoXmlParser::completeJob()
 {
+    if( m_aborted )
+        return;
+    
     The::statusBar() ->longMessage(
           i18ncp( "First part of: Jamendo.com database update complete. Added 3 tracks on 4 albums from 5 artists.", "Jamendo.com database update complete. Added 1 track on ", "Jamendo.com database update complete. Added %1 tracks on ", m_nNumberOfTracks)
         + i18ncp( "Middle part of: Jamendo.com database update complete. Added 3 tracks on 4 albums from 5 artists.", "1 album from ", "%1 albums from ", m_nNumberOfAlbums)
@@ -156,7 +164,9 @@ JamendoXmlParser::completeJob( )
 void
 JamendoXmlParser::readConfigFile( const QString &filename )
 {
-    DEBUG_BLOCK
+    if( m_aborted )
+        return;
+ 
     m_nNumberOfTracks = 0;
     m_nNumberOfAlbums = 0;
     m_nNumberOfArtists = 0;
@@ -176,7 +186,7 @@ JamendoXmlParser::readConfigFile( const QString &filename )
     }
 
     m_reader.setDevice( file );
-    
+
     m_dbHandler->destroyDatabase();
     m_dbHandler->createDatabase();
 
@@ -208,6 +218,9 @@ JamendoXmlParser::readConfigFile( const QString &filename )
 void
 JamendoXmlParser::readArtist()
 {
+    if( m_aborted )
+        return;
+    
     Q_ASSERT( m_reader.isStartElement() && m_reader.name() == "artist" );
 
 //     debug() << "Found artist: ";
@@ -217,11 +230,11 @@ JamendoXmlParser::readArtist()
     QString description;
     QString imageUrl;
     QString jamendoUrl;
-    
+
     while( !m_reader.atEnd() )
     {
         m_reader.readNext();
-        
+
         if( m_reader.isEndElement() && m_reader.name() == "artist" )
             break;
         if( m_reader.isStartElement() )
@@ -262,6 +275,9 @@ JamendoXmlParser::readArtist()
 void
 JamendoXmlParser::readAlbum()
 {
+    if( m_aborted )
+        return;
+    
     Q_ASSERT( m_reader.isStartElement() && m_reader.name() == "album" );
 
     //debug() << "Found album: ";
@@ -330,13 +346,16 @@ JamendoXmlParser::readAlbum()
 void
 JamendoXmlParser::readTrack()
 {
+    if( m_aborted )
+        return;
+    
     Q_ASSERT( m_reader.isStartElement() && m_reader.name() == "track" );
     //debug() << "Found track: ";
     m_nNumberOfTracks++;
 
     QString name;
     QString id;
-    int     length;
+    qint64     length = 0LL;
     QString trackNumber;
     QString genre;
 
@@ -354,7 +373,7 @@ JamendoXmlParser::readTrack()
             else if( localname == "id" )
                 id = m_reader.readElementText();
             else if( localname == "duration" )
-                length = m_reader.readElementText().toInt();
+                length = m_reader.readElementText().toInt() * 1000;
             else if ( localname == "numalbum" )
                 trackNumber = m_reader.readElementText();
             else if ( localname == "id3genre" )
@@ -362,7 +381,7 @@ JamendoXmlParser::readTrack()
         }
     }
     static const QString previewUrl = "http://api.jamendo.com/get2/stream/track/redirect/?id=%1&streamencoding=ogg2";
-    
+
     JamendoTrack currentTrack( name );
     currentTrack.setId( id.toInt() );
     currentTrack.setUidUrl( previewUrl.arg( id ) );
@@ -391,6 +410,12 @@ JamendoXmlParser::countTransaction()
         m_dbHandler->begin();
         n_numberOfTransactions = 0;
     }
+}
+
+void
+JamendoXmlParser::requestAbort()
+{
+    m_aborted = true;
 }
 
 #include "JamendoXmlParser.moc"

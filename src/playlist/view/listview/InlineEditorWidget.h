@@ -22,6 +22,7 @@
 #include <KVBox>
 
 #include <QModelIndex>
+#include <QSplitter>
 
 /**
     An inline editor for a playlist item. Relies on the same item layout configuration as is used by the delegate, and strives to have a simmilar look.
@@ -42,17 +43,11 @@ protected:
 protected slots:
     void editValueChanged();
     void ratingValueChanged();
+    void splitterMoved( int pos, int index );
         
 private:
     void createChildWidgets();
     QPoint centerImage( const QPixmap&, const QRectF& ) const;
-
-    static const qreal ALBUM_WIDTH;
-    static const qreal SINGLE_TRACK_ALBUM_WIDTH;
-    static const qreal MARGIN;
-    static const qreal MARGINH;
-    static const qreal MARGINBODY;
-    static const qreal PADDING;
 
     QModelIndex m_index;
     Playlist::PlaylistLayout m_layout;
@@ -62,6 +57,19 @@ private:
     QMap<int, QString> m_changedValues;
 
     int m_headerHeight;
+
+    QMap<QSplitter *, int> m_splitterRowMap;
+
 };
+
+namespace Playlist
+{
+    extern const qreal ALBUM_WIDTH;
+    extern const qreal SINGLE_TRACK_ALBUM_WIDTH;
+    extern const qreal MARGIN;
+    extern const qreal MARGINH;
+    extern const qreal MARGINBODY;
+    extern const qreal PADDING;
+}
 
 #endif

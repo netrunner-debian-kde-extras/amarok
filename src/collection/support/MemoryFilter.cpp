@@ -54,6 +54,10 @@ namespace FilterFactory
             {
                 result = new CommentMemoryFilter( filter, matchBegin, matchEnd );
             }
+            case Meta::valAlbumArtist:
+            {
+                result = new AlbumArtistMemoryFilter( filter, matchBegin, matchEnd );
+            }
         }
         return result;
     }
@@ -269,7 +273,10 @@ ArtistMemoryFilter::~ArtistMemoryFilter()
 QString
 ArtistMemoryFilter::value( const Meta::TrackPtr &track ) const
 {
-    return track->artist()->name();
+    if( track->artist() )
+        return track->artist()->name();
+    else
+        return QString();
 }
 
 AlbumMemoryFilter::AlbumMemoryFilter( const QString &filter, bool matchBegin, bool matchEnd )
@@ -285,7 +292,29 @@ AlbumMemoryFilter::~AlbumMemoryFilter()
 QString
 AlbumMemoryFilter::value( const Meta::TrackPtr &track ) const
 {
-    return track->album()->name();
+    if( track->album() )
+        return track->album()->name();
+    else
+        return QString();
+}
+
+AlbumArtistMemoryFilter::AlbumArtistMemoryFilter( const QString &filter, bool matchBegin, bool matchEnd )
+    : StringMemoryFilter()
+{
+    setFilter( filter, matchBegin, matchEnd );
+}
+
+AlbumArtistMemoryFilter::~AlbumArtistMemoryFilter()
+{
+}
+
+QString
+AlbumArtistMemoryFilter::value( const Meta::TrackPtr &track ) const
+{
+    if( track->album() && track->album()->hasAlbumArtist() )
+        return track->album()->albumArtist()->name();
+    else
+        return QString();
 }
 
 GenreMemoryFilter::GenreMemoryFilter( const QString &filter, bool matchBegin, bool matchEnd )
@@ -301,7 +330,10 @@ GenreMemoryFilter::~GenreMemoryFilter()
 QString
 GenreMemoryFilter::value( const Meta::TrackPtr &track ) const
 {
-    return track->genre()->name();
+    if( track->genre() )
+        return track->genre()->name();
+    else
+        return QString();
 }
 
 ComposerMemoryFilter::ComposerMemoryFilter( const QString &filter, bool matchBegin, bool matchEnd )
@@ -317,7 +349,10 @@ ComposerMemoryFilter::~ComposerMemoryFilter()
 QString
 ComposerMemoryFilter::value( const Meta::TrackPtr &track ) const
 {
-    return track->composer()->name();
+    if( track->composer() )
+        return track->composer()->name();
+    else
+        return QString();
 }
 
 YearMemoryFilter::YearMemoryFilter( const QString &filter, bool matchBegin, bool matchEnd )

@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2003 Frederik Holljen <fh@ez.no>                                       *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -38,7 +39,7 @@ EngineObserver::EngineObserver()
 
 EngineObserver::~EngineObserver()
 {
-    if (m_subject)
+    if( m_subject )
         m_subject->detach( this );
 }
 
@@ -50,7 +51,7 @@ EngineObserver::engineStateChanged( Phonon::State currentState, Phonon::State ol
 }
 
 void
-EngineObserver::enginePlaybackEnded( int finalPosition, int trackLength, PlaybackEndedReason reason )
+EngineObserver::enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason )
 {
     Q_UNUSED( finalPosition );
     Q_UNUSED( trackLength );
@@ -88,16 +89,16 @@ EngineObserver::engineMuteStateChanged( bool mute )
 }
 
 void
-EngineObserver::engineTrackPositionChanged( long position , bool userSeek )
+EngineObserver::engineTrackPositionChanged( qint64 position , bool userSeek )
 {
     Q_UNUSED( position );
     Q_UNUSED( userSeek );
 }
 
 void
-EngineObserver::engineTrackLengthChanged( long seconds )
+EngineObserver::engineTrackLengthChanged( qint64 milliseconds )
 {
-    Q_UNUSED( seconds );
+    Q_UNUSED( milliseconds );
 }
 
 void
@@ -111,35 +112,37 @@ EngineObserver::engineDeleted()
 //////////////////////////////////////////////////////////////////////////////////////////
 
 EngineSubject::EngineSubject()
-    : m_realState( Phonon::StoppedState )
+    : QObject()
+    , m_realState( Phonon::StoppedState )
 {}
 
 EngineSubject::~EngineSubject()
 {
     // tell any remaining observers that we are gone
     foreach( EngineObserver *observer, Observers )
-    {
         observer->engineDeleted();
-    }
 
     //do not delete the observers, we don't have ownership of them!
 }
 
-
-void EngineSubject::stateChangedNotify( Phonon::State newState, Phonon::State oldState )
+void
+EngineSubject::stateChangedNotify( Phonon::State newState, Phonon::State oldState )
 {
     DEBUG_BLOCK
+
     // We explicitly block notifications where newState == buffering in enginecontroller, so if the old state = buffering we can ignore the playing update.
     if( newState == m_realState && newState != Phonon::PlayingState )  // To prevent Playing->Buffering->Playing->buffering.
         return;
+
+    debug() << "State changed, oldState:" << oldState << "-> newState:" << newState;
+
     foreach( EngineObserver *observer, Observers )
-    {
         observer->engineStateChanged( newState, oldState );
-    }
+
     m_realState = newState;
 }
 
-void EngineSubject::playbackEnded( int finalPosition, int trackLength, EngineObserver::PlaybackEndedReason reason )
+void EngineSubject::playbackEnded( qint64 finalPosition, qint64 trackLength, EngineObserver::PlaybackEndedReason reason )
 {
     foreach( EngineObserver *observer, Observers )
         observer->enginePlaybackEnded( finalPosition, trackLength, reason );
@@ -163,34 +166,26 @@ EngineSubject::newMetaDataNotify( const QHash<qint64, QString> &newMetaData, boo
 void EngineSubject::volumeChangedNotify( int percent )
 {
     foreach( EngineObserver *observer, Observers )
-    {
         observer->engineVolumeChanged( percent );
-    }
 }
 
 void EngineSubject::muteStateChangedNotify( bool mute )
 {
-        foreach( EngineObserver *observer, Observers )
-    {
+    foreach( EngineObserver *observer, Observers )
         observer->engineMuteStateChanged( mute );
-    }
 }
 
-void EngineSubject::trackPositionChangedNotify( long position, bool userSeek )
+void EngineSubject::trackPositionChangedNotify( qint64 position, bool userSeek )
 {
     foreach( EngineObserver *observer, Observers )
-    {
         observer->engineTrackPositionChanged( position, userSeek );
-    }
 }
 
 
-void EngineSubject::trackLengthChangedNotify( long seconds )
+void EngineSubject::trackLengthChangedNotify( qint64 milliseconds )
 {
     foreach( EngineObserver *observer, Observers )
-    {
-        observer->engineTrackLengthChanged( seconds );
-    }
+        observer->engineTrackLengthChanged( milliseconds );
 }
 
 void
@@ -207,21 +202,39 @@ EngineSubject::trackChangedNotify( Meta::TrackPtr track )
         observer->engineTrackChanged( track );
 }
 
-void EngineSubject::attach( EngineObserver *observer )
+void
+EngineSubject::attach( EngineObserver *observer )
 {
-    if( !observer )
+    if( !observer || Observers.contains( observer ) )
         return;
+
+    QObject* object = dynamic_cast<QObject*>( observer );
+    if( object )
+        connect( object, SIGNAL( destroyed( QObject* ) ), this, SLOT( observerDestroyed( QObject* ) ) );
+
     Observers.insert( observer );
 }
 
-
-void EngineSubject::detach( EngineObserver *observer )
+void
+EngineSubject::detach( EngineObserver *observer )
 {
     Observers.remove( observer );
 }
 
+void
+EngineSubject::observerDestroyed( QObject* object ) //SLOT
+{
+    DEBUG_BLOCK
+
+    EngineObserver* observer = reinterpret_cast<EngineObserver*>( object ); // cast is OK, it's guaranteed to be an EngineObserver
+    Observers.remove( observer );
+
+    debug() << "Removed EngineObserver: " << observer;
+}
+
 /* Try to detect MetaData spam in Streams. */
-bool EngineSubject::isMetaDataSpam( QHash<qint64, QString> newMetaData )
+bool
+EngineSubject::isMetaDataSpam( QHash<qint64, QString> newMetaData )
 {
     // search for Metadata in history
     for( int i = 0; i < m_metaDataHistory.size(); i++)

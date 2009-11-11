@@ -36,14 +36,17 @@ endif( NOT TAGLIB_MP4_FOUND )
 set(CMAKE_REQUIRED_INCLUDES)
 set(CMAKE_REQUIRED_LIBRARIES)
 
-find_package(Taglib-Extras 1.0 REQUIRED)
-if( TAGLIB-EXTRAS_FOUND )
-    add_definitions( -DTAGLIB_EXTRAS_FOUND )
-endif( TAGLIB-EXTRAS_FOUND )
+set(TAGLIB-EXTRAS_MIN_VERSION "1.0")
+find_package(Taglib-Extras REQUIRED)
 
 include(CheckTagLibFileName)
 
 check_taglib_filename(COMPLEX_TAGLIB_FILENAME)
+
+execute_process( COMMAND "git" "describe" WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} RESULT_VARIABLE GIT_OUTPUT_VALUE OUTPUT_VARIABLE CURRENT_GIT_VERSION )
+if(GIT_OUTPUT_VALUE EQUAL 0)
+    message(STATUS "Building git version ${CURRENT_GIT_VERSION}")
+endif(GIT_OUTPUT_VALUE EQUAL 0)
 
 configure_file(config-amarok.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-amarok.h )
 
@@ -55,9 +58,9 @@ endif(CMAKE_BUILD_TYPE MATCHES debugfull)
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
 if (CMAKE_COMPILER_IS_GNUCXX)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0")
-    if( NOT WIN32 AND NOT APPLE )
+    if(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
         SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wl,--as-needed")
-    endif( NOT WIN32 AND NOT APPLE )
+    endif(${CMAKE_SYSTEM_NAME} MATCHES "Linux")
 endif (CMAKE_COMPILER_IS_GNUCXX)
 
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/shared )
@@ -85,6 +88,10 @@ if( WITH_PLAYER )
     # zlib is required for mysql embedded
     find_package(ZLIB REQUIRED)
     macro_log_feature( ZLIB_FOUND "zlib" "zlib" "" TRUE "" "" )
+    
+    # QCA2 is required for the Script Updater
+    find_package(QCA2 REQUIRED)
+    macro_log_feature( QCA2_FOUND "qca2" "Qt Cryptographic Architecture" "http://delta.affinix.com/qca/" TRUE "" "" )
 
     macro_optional_find_package(Strigi)
     macro_log_feature( STRIGI_FOUND "strigi" "Index metadata of files" "http://strigi.sourceforge.net" TRUE "" "" )

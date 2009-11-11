@@ -29,6 +29,7 @@ public:
 
     bool needsUpdate() const;
     void update();
+    bool rescanNeeded() const { return m_rescanNeeded; }
 
     void createTemporaryTables();
     void prepareTemporaryTables(); //copies data into temporary tables
@@ -42,15 +43,20 @@ public:
     void upgradeVersion4to5();
     void upgradeVersion5to6();
     void upgradeVersion6to7();
-    
+    void upgradeVersion7to8();
+    void upgradeVersion8to9();
+    void upgradeVersion9to10();
+
     void deleteAllRedundant( const QString &type ); //type is artist,album,genre,composer or year
 
     void removeFilesInDir( int deviceid, const QString &rdir );
     void removeFilesInDirFromTemporaryTables( int deviceid, const QString &rdir );
-    
+
     void cleanupDatabase();
+    void checkTables( bool full = true );
 
     void writeCSVFile( const QString &table, const QString &filename, bool forceDebug = false );
+
 
 private:
     /** creates all the necessary tables, indexes etc. for the database */
@@ -60,6 +66,7 @@ private:
 
     SqlCollection *m_collection;
     bool m_debugDatabaseContent;
+    bool m_rescanNeeded;
 
 };
 

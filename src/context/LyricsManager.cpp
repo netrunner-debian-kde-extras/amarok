@@ -109,7 +109,7 @@ LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
     {
         debug() << "could not read the xml of lyrics, malformed";
         lyricsError( i18n("Lyrics data could not be parsed") );
-        //TODO: how about showing cached lyrics then?
+        // TODO: how about showing cached lyrics then?
         return;
     }
 
@@ -149,23 +149,22 @@ LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
 
         lyrics = el.text();
 
-        if ( lyrics != "Not found" ) //I don't know if this will work with translated stuff, different scripts...
+        // FIXME: lyrics != "Not found" will not work when the lyrics script displays i18n'ed
+        // error messages
+        if ( !lyrics.isEmpty() &&
+              lyrics != "Not found" )
         {
-
-            //BAAAD thing to do indiscriminately as you might be overwriting cached lyric with nothing!
-            debug() << "setting cached lyrics: ";
+            // overwrite cached lyrics (as either there were no lyircs available previously OR
+            // the user exlicitly agreed to overwrite the lyrics)
+            debug() << "setting cached lyrics...";
             The::engineController()->currentTrack()->setCachedLyrics( lyrics ); // TODO: setLyricsByPath?
-
-            //TODO: what is the sane thing to do if we get a valid lyrics result but there is cached lyrics set already?
-            //this entire system needs to be thought through a little better I think -nhn
-
         }
         else if( !The::engineController()->currentTrack()->cachedLyrics().isEmpty() &&
                   The::engineController()->currentTrack()->cachedLyrics() != "Not found" )
         {
-            //we found nothing, so if we have cached lyrics, use it!
+            // we found nothing, so if we have cached lyrics, use it!
+            debug() << "using cached lyrics...";
             lyrics = The::engineController()->currentTrack()->cachedLyrics();
-            //debug() << "using cached lyrics: " << lyrics;
 
             // check if the lyrics data contains "<html" (note the missing closing bracket,
             // this enables XHTML lyrics to be recognized)
@@ -177,15 +176,20 @@ LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
             }
         }
 
-        const QString title = el.attribute( "title" );
+        // only continue if the given lyrics are not empty
+        if ( !lyrics.isEmpty() )
+        {
+            // TODO: why don't we use currentTrack->prettyName() here?
+            const QString title = el.attribute( "title" );
 
-        QStringList lyricsData;
-        lyricsData << title
-            << The::engineController()->currentTrack()->artist()->name()
-            << QString() // TODO lyrics site
-            << lyrics;
+            QStringList lyricsData;
+            lyricsData << title
+                << The::engineController()->currentTrack()->artist()->name()
+                << QString() // TODO lyrics site
+                << lyrics;
 
-        sendNewLyrics( lyricsData );
+            sendNewLyrics( lyricsData );
+        }
     }
 }
 
@@ -200,13 +204,14 @@ LyricsManager::lyricsResultHtml( const QString& lyricsHTML, bool cached )
     // be suggestions. this is for HTML display only
 
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-    if( currentTrack )
+    if( currentTrack &&
+        !lyricsHTML.isEmpty() )
     {
         sendNewLyricsHtml( lyricsHTML );
 
-        // cache the Html anyway.
-        if( currentTrack->cachedLyrics().isEmpty() )
-            currentTrack->setCachedLyrics( lyricsHTML );
+        // overwrite cached lyrics (as either there were no lyircs available previously OR
+        // the user exlicitly agreed to overwrite the lyrics)
+        currentTrack->setCachedLyrics( lyricsHTML );
     }
 }
 
@@ -217,8 +222,8 @@ LyricsManager::lyricsError( const QString &error )
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     if( currentTrack && !currentTrack->cachedLyrics().isEmpty() )
     {
-        //TODO: add some sort of feedback that we could not fetch new ones
-        //so we are showing a cached result
+        // TODO: add some sort of feedback that we could not fetch new ones
+        // so we are showing a cached result
         debug() << "showing cached lyrics!";
 
         // check if the lyrics data contains "<html" (note the missing closing bracket,

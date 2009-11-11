@@ -57,6 +57,14 @@ MySqlServerCollection::MySqlServerCollection( const QString &id, const QString &
         return;
     }
 
+    //first here, the right way for >= 5.1.6
+
+    my_bool reconnect = true;
+    if( mysql_options( m_db, MYSQL_OPT_RECONNECT, &reconnect ) )
+        reportError( "Asking for automatic reconnect did not succeed!" );
+    else
+        debug() << "Automatic reconnect successfully activated";
+
     if( !mysql_real_connect( m_db,
                 Amarok::config( "MySQL" ).readEntry( "Host", "localhost" ).toUtf8(),
                 Amarok::config( "MySQL" ).readEntry( "User", "amarokuser" ).toUtf8(),
@@ -75,16 +83,15 @@ MySqlServerCollection::MySqlServerCollection( const QString &id, const QString &
     }
     else
     {
-        QString databaseName = Amarok::config( "MySQL" ).readEntry( "Database", "amarokdb" );
-        if( mysql_query( m_db, QString( "SET NAMES 'utf8'" ).toUtf8() ) )
-            reportError( "SET NAMES 'utf8' died" );
-        if( mysql_query( m_db, QString( "CREATE DATABASE IF NOT EXISTS %1 DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci" ).arg( databaseName ).toUtf8() ) )
-            reportError( QString( "Could not create %1 database" ).arg( databaseName ) );
-        if( mysql_query( m_db, QString( "ALTER DATABASE %1 DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_unicode_ci" ).arg( databaseName ).toUtf8() ) )
-            reportError( "Could not alter database charset/collation" );
-        if( mysql_query( m_db, QString( "USE %1" ).arg( databaseName ).toUtf8() ) )
-            reportError( "Could not select database" );
+        //but in versions prior to 5.1.6, have to call it after every real_connect
+        my_bool reconnect = true;
+        if( mysql_options( m_db, MYSQL_OPT_RECONNECT, &reconnect ) )
+            reportError( "Asking for automatic reconnect did not succeed!" );
+        else
+            debug() << "Automatic reconnect successfully activated";
 
+        QString databaseName = Amarok::config( "MySQL" ).readEntry( "Database", "amarokdb" );
+        sharedInit( databaseName );
         debug() << "Connected to MySQL server" << mysql_get_server_info( m_db );
     }
 
@@ -101,6 +108,40 @@ QString
 MySqlServerCollection::type() const
 {
     return "MySQL";
+}
+
+QStringList
+MySqlServerCollection::query( const QString &query )
+{
+    MySqlCollection::initThreadInitializer();
+    QMutexLocker locker( &m_mutex );
+    if( !m_db )
+    {
+        error() << "Tried to query an uninitialized m_db!";
+        return QStringList();
+    }
+
+    unsigned long tid = mysql_thread_id( m_db );
+
+    int res = mysql_ping( m_db );
+    if( res )
+    {
+        reportError( "mysql_ping failed!" );
+        return QStringList();
+    }
+
+    if( tid != mysql_thread_id( m_db ) )
+    {
+        debug() << "NOTE: MySQL server had gone away, ping reconnected it";
+        QString databaseName = Amarok::config( "MySQL" ).readEntry( "Database", "amarokdb" );
+        if( mysql_query( m_db, QString( "SET NAMES 'utf8'" ).toUtf8() ) )
+            reportError( "SET NAMES 'utf8' died" );
+        if( mysql_query( m_db, QString( "USE %1" ).arg( databaseName ).toUtf8() ) )
+            reportError( "Could not select database" );
+    }
+
+
+    return MySqlCollection::query( query );
 }
 
 #include "MySqlServerCollection.moc"

@@ -120,7 +120,7 @@ void CollectionTreeView::setModel( QAbstractItemModel * model )
 
     delete oldFilterModel;
 
-    connect( m_treeModel, SIGNAL( expandIndex( const QModelIndex & ) ), SLOT( slotExpand( const QModelIndex & ) ) );
+    QTimer::singleShot( 0, this, SLOT( slotCheckAutoExpand() ) );
 }
 
 
@@ -277,20 +277,20 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
 
 void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
 {
-    QModelIndex origIndex = indexAt( event->pos() );
-    QModelIndex filteredIndex;
-    if( m_filterModel )
-        filteredIndex = m_filterModel->mapToSource( indexAt( event->pos() ) );
-    else
-        filteredIndex = indexAt( event->pos() );
-
-    if( !filteredIndex.isValid() )
+    if( event->button() == Qt::MidButton )
     {
         event->accept();
         return;
     }
 
-    CollectionTreeItem *item = static_cast<CollectionTreeItem*>( filteredIndex.internalPointer() );
+    QModelIndex origIndex = indexAt( event->pos() );
+    CollectionTreeItem *item = getItemFromIndex( origIndex );
+
+    if( !item )
+    {
+        event->accept();
+        return;
+    }
 
     if( event->button() != Qt::LeftButton || event->modifiers()
         || KGlobalSettings::singleClick() || ( item && item->isTrackItem() ) )
@@ -328,6 +328,18 @@ void CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
     m_pd = 0;
 
     setItemsExpandable( true );
+    if( event->button() == Qt::MidButton )
+    {
+        QModelIndex origIndex = indexAt( event->pos() );
+        CollectionTreeItem *item = getItemFromIndex( origIndex );
+        if ( item )
+        {
+            playChildTracks( item, Playlist::AppendAndPlay );
+            update();
+            event->accept();
+            return;
+        }
+    }
     if( event->button() != Qt::LeftButton
             || event->modifiers()
             || selectedIndexes().size() > 1)
@@ -372,6 +384,22 @@ void CollectionTreeView::mouseMoveEvent( QMouseEvent *event )
     }
     else
         Amarok::PrettyTreeView::mouseMoveEvent( event );
+}
+
+CollectionTreeItem* CollectionTreeView::getItemFromIndex( QModelIndex &index )
+{
+    QModelIndex filteredIndex;
+    if( m_filterModel )
+        filteredIndex = m_filterModel->mapToSource( index );
+    else
+        filteredIndex = index;
+
+    if( !filteredIndex.isValid() )
+    {
+        return NULL;
+    }
+
+    return static_cast<CollectionTreeItem*>( filteredIndex.internalPointer() );
 }
 
 void CollectionTreeView::slotClickTimeout()
@@ -479,7 +507,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
         font.setBold( true );
 
         foreach( QAction * action, actions )
-            m_pd->addItem( The::popupDropperFactory()->createItem( action ), false );
+            m_pd->addItem( The::popupDropperFactory()->createItem( action ) );
 
         m_currentCopyDestination = getCopyActions( indices );
         m_currentMoveDestination = getMoveActions( indices );
@@ -501,16 +529,16 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
             morePud = The::popupDropperFactory()->createPopupDropper( 0 );
 
             foreach( QAction * action, actions )
-                morePud->addItem( The::popupDropperFactory()->createItem( action ), false );
+                morePud->addItem( The::popupDropperFactory()->createItem( action ) );
         }
         else
-            m_pd->addItem( The::popupDropperFactory()->createItem( actions[0] ), false );
+            m_pd->addItem( The::popupDropperFactory()->createItem( actions[0] ) );
 
         //TODO: Keep bugging i18n team about problems with 3 dots
         if ( actions.count() > 1 )
         {
             subItem = m_pd->addSubmenu( &morePud, i18n( "More..." )  );
-            The::popupDropperFactory()->adjustSubmenuItem( subItem );
+            The::popupDropperFactory()->adjustItem( subItem );
         }
 
         m_pd->show();
@@ -874,6 +902,7 @@ QActionList CollectionTreeView::createExtendedActions( const QModelIndexList & i
                         connect( m_organizeAction, SIGNAL( triggered() ), this, SLOT( slotOrganize() ) );
                     }
                     actions.append( m_organizeAction );
+                    m_organizeAction->setVisible( false );  //Disabled Organize Collection until we figure out the data loss issues.
                 }
             }
             delete location;

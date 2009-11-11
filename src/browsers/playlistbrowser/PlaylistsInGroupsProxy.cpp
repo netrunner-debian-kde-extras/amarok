@@ -43,16 +43,37 @@ PlaylistsInGroupsProxy::removeRows( int row, int count, const QModelIndex &paren
 {
     DEBUG_BLOCK
     debug() << "in parent " << parent << "remove " << count << " starting at row " << row;
-    if( isGroup( parent ) )
+    if( !parent.isValid() )
     {
-        deleteFolder( parent );
-        return true;
+        QModelIndex folderIdx = index( row, 0, parent );
+        if( isGroup( folderIdx ) )
+        {
+            deleteFolder( folderIdx );
+            return true;
+        }
+
+        //is a playlist not in a folder
+        QModelIndex childIdx = mapToSource( index( row, 0, parent ) );
+        return m_model->removeRow( childIdx.row(), QModelIndex() );
     }
 
-    QModelIndex originalIdx = mapToSource( parent );
-    bool success = m_model->removeRows( row, count, originalIdx );
+    if( isGroup( parent ) )
+    {
+        bool success = true;
+        for( int i = row; i < row + count; i++ )
+        {
+            //individually remove all children of this group in the source model
+            QModelIndex childIdx = mapToSource( index( i, 0, parent ) );
+            //set success to false if removeRows returns false
+            success =
+                m_model->removeRow( childIdx.row(), QModelIndex() ) ? success : false;
+        }
+        return success;
+    }
 
-    return success;
+    //removing a track from a playlist
+    QModelIndex originalIdx = mapToSource( parent );
+    return m_model->removeRows( row, count, originalIdx );
 }
 
 QStringList
@@ -104,59 +125,58 @@ PlaylistsInGroupsProxy::dropMimeData( const QMimeData *data, Qt::DropAction acti
         return true;
     }
 
-    if( !parent.isValid() )
+    if( data->hasFormat( AmarokMimeData::PLAYLIST_MIME ) ||
+        data->hasFormat( AmarokMimeData::PLAYLISTBROWSERGROUP_MIME ) )
     {
-        debug() << "dropped on the root";
+        debug() << "has amarok mime data";
         const AmarokMimeData *amarokMime = dynamic_cast<const AmarokMimeData *>(data);
         if( amarokMime == 0 )
         {
-            debug() << "ERROR: could not cast to amarokMimeData at " << __FILE__ << __LINE__;
+            error() << "could not cast to amarokMimeData";
             return false;
         }
-        Meta::PlaylistList playlists = amarokMime->playlists();
-        foreach( Meta::PlaylistPtr playlist, playlists )
-            playlist->setGroups( QStringList() );
-        buildTree();
-        return true;
-    }
 
-    if( isGroup( parent ) )
-    {
-        debug() << "dropped on a group";
-        if( data->hasFormat( AmarokMimeData::PLAYLIST_MIME ) )
+        if( !parent.isValid() )
         {
-            debug() << "playlist dropped on group";
-            if( parent.row() < 0 || parent.row() >= rowCount( QModelIndex() ) )
-            {
-                debug() << "ERROR: something went seriously wrong in " << __FILE__ << __LINE__;
-                return false;
-            }
-            //apply the new groupname to the source index
-            QString groupName = parent.data( Qt::DisplayRole ).toString();
-            debug() << QString("apply the new groupname %1 to the source index").arg( groupName );
-            const AmarokMimeData *amarokMime = dynamic_cast<const AmarokMimeData *>(data);
-            if( amarokMime == 0 )
-            {
-                debug() << "ERROR: could not cast to amarokMimeData at " << __FILE__ << __LINE__;
-                return false;
-            }
+            debug() << "dropped on the root";
             Meta::PlaylistList playlists = amarokMime->playlists();
             foreach( Meta::PlaylistPtr playlist, playlists )
-                playlist->setGroups( QStringList( groupName ) );
+                playlist->setGroups( QStringList() );
             buildTree();
             return true;
         }
-        else if( data->hasFormat( AmarokMimeData::PLAYLISTBROWSERGROUP_MIME ) )
+
+        if( isGroup( parent ) )
         {
-            debug() << "playlistgroup dropped on group";
-            //TODO: multilevel group support
-            debug() << "ignore drop until we have multilevel group support";
-            return false;
+            debug() << "dropped on a group";
+            if( data->hasFormat( AmarokMimeData::PLAYLIST_MIME ) )
+            {
+                debug() << "playlist dropped on group";
+                if( parent.row() < 0 || parent.row() >= rowCount( QModelIndex() ) )
+                {
+                    debug() << "ERROR: something went seriously wrong in " << __FILE__ << __LINE__;
+                    return false;
+                }
+                //apply the new groupname to the source index
+                QString groupName = parent.data( Qt::DisplayRole ).toString();
+                //TODO: apply the new groupname to the source index
+                Meta::PlaylistList playlists = amarokMime->playlists();
+                foreach( Meta::PlaylistPtr playlist, playlists )
+                    playlist->setGroups( QStringList( groupName ) );
+                buildTree();
+                return true;
+            }
+            else if( data->hasFormat( AmarokMimeData::PLAYLISTBROWSERGROUP_MIME ) )
+            {
+                debug() << "playlistgroup dropped on group";
+                //TODO: multilevel group support
+                debug() << "ignore drop until we have multilevel group support";
+                return false;
+            }
         }
     }
     else
     {
-        debug() << "not dropped on the root or on a group";
         QModelIndex sourceIndex = mapToSource( parent );
         return m_model->dropMimeData( data, action, row, column,
                                sourceIndex );
@@ -261,7 +281,11 @@ void
 PlaylistsInGroupsProxy::deleteFolder( const QModelIndex &groupIdx )
 {
     DEBUG_BLOCK
-    //TODO: make work
+    int childCount = rowCount( groupIdx );
+    if( childCount > 0 )
+        removeRows( 0, childCount, groupIdx );
+    removeGroup( groupIdx );
+    buildTree();
 }
 
 QList<QAction *>

@@ -1327,7 +1327,18 @@ bool
 SqlAlbum::hasImage( int size ) const
 {
     if( !m_hasImageChecked )
-        m_hasImage = ! const_cast<SqlAlbum*>( this )->image( size ).isNull();
+    {
+        m_hasImageChecked = true;
+
+        QString image = const_cast<SqlAlbum*>( this )->findImage( size );
+
+        // The user has explicitly set no cover
+        if( image == AMAROK_UNSET_MAGIC )
+            m_hasImage = false;
+        else
+            m_hasImage = !image.isEmpty();
+    }
+
     return m_hasImage;
 }
 
@@ -1508,7 +1519,7 @@ SqlAlbum::removeImage()
     }
 
     m_images.clear();
-    m_images.insert( 0, AMAROK_UNSET_MAGIC ); // Set the cached image to be the magic value
+    m_hasImage = false;
 
     notifyObservers();
 }

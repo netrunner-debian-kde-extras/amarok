@@ -3,6 +3,140 @@ Amarok ChangeLog
 (C) 2002-2009 the Amarok authors.
 
 
+VERSION 2.2.1
+  FEATURES:
+    * Podcasts will only be automatically updated when there is a network
+      connection (using Solid).
+    * The SMB (Samba) protocol is now supported in the playlist. Patch by 
+      Steven van der Vegt <s.vandervegt@student.utwente.nl>. (BR 178691)
+    * Podcasts have better indication of status with emblem icons.
+      (BR 209433)
+    * The information from the podcast feed can be written to the downloaded
+      files. Both manually and automatically.
+    * Track bookmarks can be removed directly by using the delete icon shown
+      in the popup when the mouse is over it.
+    * Add a menu allowing the creation of any known type of bookmark to the 
+      Bookmark Manager.
+    * CTRL+SHIFT+F toggles full screen mode. Patch by Rick W. Chen
+      <stuffcorpse@archlinux.us>.
+    * Podcast episodes can now be marked as new/old manually.
+    * Podcasts can now be grouped in the playlist and show useful info in the
+      tag editor.
+    * Playlist files can be droped on the "Saved Playlist" category to
+      import them into Amarok. (BR 193476)
+    * Playlist files from the default playlist location are now loaded by
+      default. (BR 209596)
+    * Added view menu to menu bar for ease of use.
+    * Saved playlists and folders can now be deleted with the keyboard.
+    * Added "Copy on Write" when trying to edit a read only (one of the 
+      default) playlist layouts. The changed layout is now simply saved under 
+      a new name. 
+    * Added context view bookmarks, allowing saving and restoring of applet 
+      setups.
+    * Enhanced --debug feature: When a function takes very long to run (> 5s),
+      we print a special message (DELAY) that can be searched easily.
+    * Middle-clicking an item in the Collection Browser appends it to the
+      playlist. Patch by Felix Geyer <debfx-kde@fobos.de>. (BR 197423)
+    * Added feature for removing duplicates from the playlist. Patch by John
+      Atkinson <john@fauxnetic.co.uk>. (BR 200445)
+    * Allow changing of playlist layout item sizes using the inline editor.
+    * Initial KNotify support.
+    * Show total playlist file size in a tooltip when hovering over the total
+      play list time. (BR 91640)
+    * Implemented "Jump To". Press Ctrl+J to focus the playlist search.
+      (BR 92400)
+    * Made Love/Skip/Ban/Enqueue/Dequeue available in Shortcuts configuration
+      dialog. (BR 136232, BR 187542)
+
+  CHANGES:
+    * Do not automatically fetch the entire Jamendo database every time the Jamendo 
+      service is started.
+    * Database now does consistency checks on a semi-regular basis, with full
+      checks upon full rescans.
+    * Removal of most SQL during scan result parsing means enormous speedups
+      during collection scanning. (BR 210201)
+    * Usability improvements for the Videoclip applet.
+    * Restore the proper custom bias when switching between saved biases (BR 209350).
+    * Don't crash when receiving bogus data from Last.Fm when asking for
+      recommended songs (BR 208173).
+    * UMS device plugin now checks MIME types of tracks both by content and
+      filename. Thanks to Aran Cox <aroncox@gmail.com> for the patch.
+    * Some optimization of SQL queries during scan to speed things up. (BR
+      210201)
+    * Use an emblem for indicating a podcast episode is on disk. (BR 209433)
+    * Scanning speedups by getting rid of unnecessary code paths and
+      optimizing some queries. Patch by Egbert König <e.kunig@home.nl>.
+      (BR 209822)
+    * New main toolbar and renaming of ToolbarNG to Slim Toolbar.
+    * Huge performance improvements for the Cover Manager. Thanks to Michael
+      Reiher <redm@gmx.de> for the patch. (BR 210454)
+    * Improved usability and look of main control buttons.
+    * Multiple usability improvements for the Dynamic Playlist UI.
+    * Moved the Podcast category to the top level of the Content panel.
+    * Renamed "Browsers" panel to better suited "Media Sources".
+    * Improvements to the row heights in the playlist, making especially the
+      size of the rating stars more consistent.
+    * Usability improvements in the Context View's applet tab bar.
+    * Collection scanner won't scan a directory more than once if passed in
+      multiple times. Should significantly speed up certain incremental
+      scanning cases.
+    * When doing a recursive incremental scan, the scanner will no longer scan
+      subdirectories of changed directories if those subdirectories' mtimes
+      have not changed, for extremely large speedups in some cases. For very
+      flat collection trees, the difference is basically between a small
+      incremental scan and a near full rescan.
+    * Ask the user for confirmation before refetching lyrics and overwriting
+      cached ones.
+    * It is now possible to stop editing lyrics without saving changes in
+      the lyrics applet.
+
+  BUGFIXES:
+    * Fix issue where data structures were loaded with wrong values. (BR
+      212676)
+    * Videoclip applet didn't work correctly on some systems. Thanks for the
+      patch go to Jacopo De Simoi.
+    * Proportions of layout stay correct after window resizing. (BR 200527)
+    * The GUI layout is now crash persistant. (BR 211509)
+    * Ensure that ReplayGain float values are stored in the database with a
+      period, not a comma. (BR 212676)
+    * Fixed crashes with Icecast Directory script. (BR 206579)
+    * Enabled C++ exceptions handling in Amarok. This fixes various crashes
+      with liblastfm. (BR 212115)
+    * Reversed the priority of repeat and random modes. Repeat now always 
+      takes precedence. (BR 178056)
+    * Fixed crash if closing amarok while the JamendoXmlParser is running.
+      (BR 208468) (BR 211015)
+    * Systray information now updates correctly for streams. (BR 211748)
+    * Made playlist layouts translatable. (BR 189751)
+    * Fixed issue with collection scanner seeing duplicate tracks if they
+      contained the default MusicBrainz UUID. Patch by Egbert König
+      <e.kunig@home.nl>. (BR 209822)
+    * Fixed issues with certain types of tracks not correctly getting grouped
+      together in the playlist when grouping by something other than album.
+    * Splash screen no longer hides KWallet on startup. (BR 210179)
+    * On Screen Display was not shown when cover image changed. (BR 195188)
+    * On Screen Display was not shown on automatic track change. (BR 209376)
+    * Automatic playlist scrolling was broken in some cases. (BR 193459)
+    * The On Screen Display now uses a sane font size with all display
+      resolutions. (BR 195186)
+    * Fix rare regression where inaccessible subfolders (due to permissions)
+      in the collection could not be picked up by an incremental scan when
+      permissions were fixed and their mtime updated, requiring a full rescan.
+    * When using a MySQL server with "Watch Folders For Changes" disabled,
+      very long periods of idle Amarok could allow the server to close the
+      local connection. This is now detected and should be worked around. 
+    * Correctly set the lyrics applet's title when displaying HTML formatted lyrics
+    * Track selection is now correctly preserved when using Dynamic Playlists.
+      Patch by John Atkinson <john@fauxnetic.co.uk>. (BR 208349)
+    * Cover Manager no longer stops when one cover cannot be fetched. Patch by
+      Tycho Andersen <kdebugs@tycho.ws>. (BR 205032)
+    * Magnatune.com store: Fixed problematic use of external unzip command
+      for unpacking downloaded album zip files. (BR 138499)
+    * Magnatune.com store: Download high quality covers when purchasing or 
+      downloading albums. (BR 176177)
+    * Correctly modify the Lyrics Applet's title when its state changes.
+
+
 VERSION 2.2
   CHANGES:
     * The MusicBrainz ID of a track is now scrobbled to Last.fm, if it exists.
@@ -4091,4 +4225,4 @@ VERSION 0.1 - 0.11:
   tried no less then 4 different sound interfaces:
     mpg123, smpeg, alsaplayer, and finally aRts
 
-# vim: expandtab
+# vim: expandtab ts=2 sw=2

@@ -278,6 +278,7 @@ void PlaylistLayoutEditDialog::renameLayout()
  */
 void PlaylistLayoutEditDialog::setLayout( const QString &layoutName )   //SLOT
 {
+    DEBUG_BLOCK
     m_layoutName = layoutName;
 
     if( m_layoutsMap->keys().contains( layoutName ) )   //is the layout exists in the list of loaded layouts
@@ -289,6 +290,10 @@ void PlaylistLayoutEditDialog::setLayout( const QString &layoutName )   //SLOT
         inlineControlsChekbox->setChecked( layout.inlineControls() );
         groupByComboBox->setCurrentIndex( groupByComboBox->findData( layout.groupBy() ) );
         setEnabledTabs();
+        //make sure that it is not marked dirty (it will be because of the changed signal triggereing when loagin it)
+        //unless it is actually changed
+        debug() << "not dirty anyway!!";
+        (*m_layoutsMap)[m_layoutName].setDirty( false ); 
     }
     else
     {
@@ -360,26 +365,34 @@ void PlaylistLayoutEditDialog::apply()  //SLOT
     {
         if( i.value().isDirty() )
         {
+            QString layoutName = i.key();
             if ( LayoutManager::instance()->isDefaultLayout( i.key() ) )
             {
+
+               
+
+                QString newLayoutName = i18n( "copy of %1", layoutName );
+                QString orgCopyName = newLayoutName;
+
+                int copyNumber = 1;
+                QStringList existingLayouts = LayoutManager::instance()->layouts();
+                while( existingLayouts.contains( newLayoutName ) )
+                {
+                    copyNumber++;
+                    newLayoutName = i18nc( "adds a copy number to a generated name if the name already exists, for instance 'copy of Foo 2' if 'copy of Foo' is taken", "%1 %2", orgCopyName, copyNumber );
+                }
+                
                 const QString msg = i18n( "The layout '%1' you modified is one of the default layouts and cannot be overwritten. "
-                                          "Please select a different name to save a copy.", i.key() );
-                KMessageBox::sorry( this, msg, i18n( "Reserved Layout Name" ) );
-                //TODO: handle this on layout switch maybe? this is not the right time to tell users they needed to make a copy in the first place
-                i.value().setHead( LayoutManager::instance()->layout( i.key() ).head() );
-                i.value().setBody( LayoutManager::instance()->layout( i.key() ).body() );
-                i.value().setSingle( LayoutManager::instance()->layout( i.key() ).single() );
-                i.value().setInlineControls( LayoutManager::instance()->layout( i.key() ).inlineControls() );
-                i.value().setGroupBy( LayoutManager::instance()->layout( i.key() ).groupBy() );
-                i.value().setDirty( false );
-                if ( m_layoutName == i.key() )
-                    setLayout( i.key() );
-                return;
+                                          "Saved as new layout '%2'", layoutName, newLayoutName );
+                KMessageBox::sorry( this, msg, i18n( "Default Layout" ) );
+
+                layoutName = newLayoutName;
+                
             }
             i.value().setInlineControls( inlineControlsChekbox->isChecked() );
             i.value().setGroupBy( groupByComboBox->itemData( groupByComboBox->currentIndex() ).toString() );
             i.value().setDirty( false );
-            LayoutManager::instance()->addUserLayout( i.key(), i.value() );
+            LayoutManager::instance()->addUserLayout( layoutName, i.value() );
         }
         i++;
     }
@@ -461,6 +474,8 @@ void PlaylistLayoutEditDialog::setupGroupByCombo()
 
 void PlaylistLayoutEditDialog::setLayoutChanged()
 {
+    DEBUG_BLOCK
+    
     setEnabledTabs();
 
     (*m_layoutsMap)[m_layoutName].setHead( m_headEdit->config() );

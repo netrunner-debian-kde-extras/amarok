@@ -175,9 +175,6 @@ CoverManager::slotContinueConstruction() //SLOT
         m_searchEdit->setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Minimum);
         m_searchEdit->setClearButtonShown( true );
 
-        // TODO FIX FUCKED UP ENGLISH
-        m_searchEdit->setToolTip( i18n( "Enter space-separated terms to search in the albums" ) );
-
         hbox->setStretchFactor( m_searchEdit, 1 );
     } //</Search LineEdit>
 
@@ -438,7 +435,6 @@ void CoverManager::slotArtistSelectedContinueAgain() //SLOT
     {
         CoverViewItem *item = new CoverViewItem( m_coverView, album );
         m_coverItems.append( item );
-        item->loadCover();
 
         if ( ++x % 50 == 0 )
         {
@@ -795,7 +791,6 @@ void CoverView::setStatusText( QListWidgetItem *item )
 CoverViewItem::CoverViewItem( QListWidget *parent, Meta::AlbumPtr album )
     : QListWidgetItem( parent )
     , m_albumPtr( album)
-    , m_coverPixmap()
     , m_parent( parent )
 {
     m_album = album->prettyName();
@@ -825,9 +820,8 @@ void CoverViewItem::loadCover()
 {
     const bool isSuppressing = m_albumPtr->suppressImageAutoFetch();
     m_albumPtr->setSuppressImageAutoFetch( true );
-    m_coverPixmap = m_albumPtr->image();  //create the scaled cover
+    setIcon( m_albumPtr->image( 100 ) );
     m_albumPtr->setSuppressImageAutoFetch( isSuppressing );
-    setIcon( m_coverPixmap );
 }
 
 void CoverViewItem::dragEntered()

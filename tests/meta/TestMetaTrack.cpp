@@ -25,15 +25,19 @@
 
 #include <QtTest/QTest>
 
-TestMetaTrack::TestMetaTrack( QStringList testArgumentList )
+TestMetaTrack::TestMetaTrack( QStringList testArgumentList, bool stdout )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "MetaTrack.xml" );
+    if( !stdout )
+        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "MetaTrack.xml" );
     QTest::qExec( this, testArgumentList );
 }
 
 void TestMetaTrack::initTestCase()
 {
     m_testTrack1 = CollectionManager::instance()->trackForUrl( KStandardDirs::installPath( "data" ) + QDir::toNativeSeparators( "amarok/testdata/cue/test_silence.ogg" ) );
+
+    // If the pointer is 0, it makes no sense to continue. We would crash with a qFatal().
+    QVERIFY2( m_testTrack1, "The pointer to the test track is 0." );
 }
 
 void TestMetaTrack::cleanupTestCase()
@@ -133,7 +137,7 @@ void TestMetaTrack::testSetAndGetRating()
 
 void TestMetaTrack::testLength()
 {
-    QCOMPARE( m_testTrack1->length(), 10800 );
+    QCOMPARE( m_testTrack1->length(), 10800000LL );
 }
 
 void TestMetaTrack::testFilesize()

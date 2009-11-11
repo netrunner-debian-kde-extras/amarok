@@ -3,7 +3,7 @@
  * Copyright (c) 2004-2006 Seb Ruiz <ruiz@kde.org>                                      *
  * Copyright (c) 2004,2005 Max Howell <max.howell@methylblue.com>                       *
  * Copyright (c) 2005 Gabor Lehel <illissius@gmail.com>                                 *
- * Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2008,2009 Mark Kretschmann <kretschmann@kde.org>                       *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -82,8 +82,12 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
     #endif
 
     m_timer->setSingleShot( true );
-
     connect( m_timer, SIGNAL( timeout() ), SLOT( hide() ) );
+
+    QFont f = font();
+    f.setFamily( "Arial" );
+    f.setPointSize( f.pointSize() + 8 );
+    setFont( f );
 
     //or crashes, KWindowSystem bug I think, crashes in QWidget::icon()
     kapp->setTopWidget( this );
@@ -176,7 +180,7 @@ OSDWidget::setVisible( bool visible )
 
         update();
     }
-    else 
+    else
         QWidget::setVisible( visible );
 }
 
@@ -373,7 +377,6 @@ OSDWidget::paintEvent( QPaintEvent *e )
     }
     p.setPen( palette().color( QPalette::Active, QPalette::WindowText ) );
     //p.setPen( Qt::white ); // This too.
-    p.setFont( font() );
     p.drawText( rect, align, m_text );
 
     m_paused = false;
@@ -435,14 +438,11 @@ OSDPreviewWidget::OSDPreviewWidget( QWidget *parent )
         , m_dragging( false )
 {
     setObjectName( "osdpreview" );
-    m_text = i18n( "OSD Preview - drag to reposition" );
+    m_text = i18n( "On-Screen-Display preview\nDrag to reposition" );
     m_duration = 0;
     m_alignment = static_cast<Alignment>( AmarokConfig::osdAlignment() );
     m_y = AmarokConfig::osdYOffset();
     m_cover = Amarok::icon();
-    QFont f = font();
-    f.setPointSize( 16 );
-    setFont( f );
     setTranslucent( AmarokConfig::osdUseTranslucency() );
     setText( m_text );
     setImage( m_cover );
@@ -586,7 +586,7 @@ Amarok::OSD::show( Meta::TrackPtr track ) //slot
         else
             text += '\n';
         if( track->length() > 0 )
-            text += Meta::secToPrettyTime( track->length() );
+            text += Meta::msToPrettyTime( track->length() );
     }
 
     if( text.isEmpty() )
@@ -615,7 +615,6 @@ Amarok::OSD::applySettings()
     setEnabled( AmarokConfig::osdEnabled() );
     setOffset( AmarokConfig::osdYOffset() );
     setScreen( AmarokConfig::osdScreen() );
-    setFont( AmarokConfig::osdFont() );
 
     if( AmarokConfig::osdUseCustomColors() )
         setTextColor( AmarokConfig::osdTextColor() );
@@ -654,19 +653,31 @@ Amarok::OSD::engineMuteStateChanged( bool mute )
 }
 
 void
-Amarok::OSD::engineStateChanged( Phonon::State state, Phonon::State oldState )
+Amarok::OSD::engineNewTrackPlaying()
 {
-    Q_UNUSED( oldState )
     DEBUG_BLOCK
 
-    Meta::TrackPtr track = The::engineController()->currentTrack();
+    if( m_currentTrack )
+        unsubscribeFrom( m_currentTrack->album() );
 
+    if( The::engineController()->currentTrack() )
+    {
+        m_currentTrack = The::engineController()->currentTrack();
+        subscribeTo( m_currentTrack->album() );
+    }
+
+    show( m_currentTrack );
+}
+
+void
+Amarok::OSD::engineStateChanged( Phonon::State state, Phonon::State oldState )
+{
     switch( state )
     {
         case Phonon::PlayingState:
-            m_currentTrack = track;
-            show( m_currentTrack );
             m_paused = false;
+            if( oldState == Phonon::PausedState )
+                show( m_currentTrack );
             break;
 
         case Phonon::PausedState:
@@ -678,6 +689,14 @@ Amarok::OSD::engineStateChanged( Phonon::State state, Phonon::State oldState )
         default:
             break;
     }
+}
+
+void
+Amarok::OSD::metadataChanged( Meta::AlbumPtr album )
+{
+    Q_UNUSED( album )
+
+    show( m_currentTrack );
 }
 
 
@@ -768,4 +787,3 @@ namespace ShadowEngine
 }
 
 #include "Osd.moc"
-

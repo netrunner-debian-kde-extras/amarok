@@ -3,6 +3,7 @@
  * Copyright (c) 2007-2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>               *
  * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
+ * Copyright (c) 2009 John Atkinson <john@fauxnetic.co.uk>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -285,6 +286,41 @@ Playlist::Controller::removeRows( QList<int>& rows )
 
     if ( cmds.size() > 0 )
         m_undoStack->push( new RemoveTracksCmd( 0, cmds ) );
+}
+
+void
+Playlist::Controller::removeDeadAndDuplicates()
+{
+    DEBUG_BLOCK
+
+    QSet<Meta::TrackPtr> uniqueTracks = m_topmostModel->tracks().toSet();
+    QList<int> rowsToRemove;
+
+    foreach( Meta::TrackPtr unique, uniqueTracks )
+    {
+        QList<int> trackRows = m_topmostModel->allRowsForTrack( unique ).toList();
+
+        if( unique->playableUrl().isLocalFile() && !QFile::exists( unique->playableUrl().path() ) )
+        {
+            // Track is Dead
+            // TODO: Check remote files as well
+            rowsToRemove <<  trackRows;
+        }
+        else if( trackRows.size() > 1 )
+        {
+            // Track is Duplicated
+            // Remove all rows except the first
+            for( QList<int>::const_iterator it = ++trackRows.constBegin(); it != trackRows.constEnd(); ++it )
+                rowsToRemove.push_back( *it );
+        }
+    }
+
+    if( !rowsToRemove.empty() )
+    {
+        m_undoStack->beginMacro( "Remove dead and duplicate entries" );     // TODO: Internationalize?
+        removeRows( rowsToRemove );
+        m_undoStack->endMacro();
+    }
 }
 
 void

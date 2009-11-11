@@ -31,12 +31,12 @@
 #include <QMutexLocker>
 
 #include <KRandom>
-#include <threadweaver/ThreadWeaver.h>
 
 
 /* These number are black magic. The best values can only be obtained through
  * exhaustive trial and error or writing another optimization program to
  * optimize this optimization program. They are very sensitive. Be careful */
+#include <threadweaver/Thread.h>
 
 const int    Dynamic::BiasSolver::GA_ITERATION_LIMIT         = 70;
 const int    Dynamic::BiasSolver::GA_POPULATION_SIZE         = 15;
@@ -88,6 +88,7 @@ Dynamic::BiasSolver::BiasSolver( int n, QList<Bias*> biases, Meta::TrackList con
     , m_pendingBiasUpdates(0)
     , m_abortRequested(false)
 {
+    debug() << "CREATING BiasSolver in thread:" << QThread::currentThreadId();
     int i = m_biases.size();
     while( i-- )
     {
@@ -96,6 +97,14 @@ Dynamic::BiasSolver::BiasSolver( int n, QList<Bias*> biases, Meta::TrackList con
     }
     
 }
+
+
+Dynamic::BiasSolver::~BiasSolver()
+{
+    debug() << "DESTROYING BiasSolver in thread:" << QThread::currentThreadId();
+
+}
+
 
 void
 Dynamic::BiasSolver::requestAbort()
@@ -114,9 +123,6 @@ void Dynamic::BiasSolver::prepareToRun()
     DEBUG_BLOCK
 
     // update biases
-
-    QMutexLocker locker( &m_biasMutex );
-
     CollectionDependantBias* cb;
     foreach( Bias* b, m_biases )
     {
@@ -149,7 +155,8 @@ void Dynamic::BiasSolver::prepareToRun()
 void Dynamic::BiasSolver::run()
 {
     DEBUG_BLOCK
-    
+
+    debug() << "BiasSolver::run in thread:" << QThread::currentThreadId();
     computeDomain();
 
     /*
@@ -469,7 +476,6 @@ void
 Dynamic::BiasSolver::biasUpdated()
 {
     DEBUG_BLOCK
-    QMutexLocker locker( &m_biasMutex );
 
     if( m_pendingBiasUpdates <= 0 )
         return;
@@ -717,7 +723,6 @@ Dynamic::BiasSolver::generateInitialPlaylist( bool& optimal )
     return playlist;
 }
 
-
 Meta::TrackPtr
 Dynamic::BiasSolver::getRandomTrack( const QList<QByteArray>& subset )
 {
@@ -730,7 +735,15 @@ Dynamic::BiasSolver::getRandomTrack( const QList<QByteArray>& subset )
     int giveup = 50;
     while( giveup-- && !track )
         track = trackForUid( subset[ KRandom::random() % subset.size() ] );
-    debug() << "track selected:" << track->name() << track->artist()->name();
+
+    if( track )
+    {
+        if( track->artist() )
+            debug() << "track selected:" << track->name() << track->artist()->name();
+    }
+    else
+        error() << "track is 0 in BiasSolver::getRandomTrack()";
+    
     return track;
 }
 
@@ -752,8 +765,7 @@ Dynamic::BiasSolver::getMutation()
 Meta::TrackPtr
 Dynamic::BiasSolver::trackForUid( const QByteArray& uid )
 {
-    return s_universeCollection->trackForUrl( 
-            s_universeCollection->uidUrlProtocol() + "://" + QString(uid.toHex()) );
+    return s_universeCollection->trackForUrl(s_universeCollection->uidUrlProtocol() + "://" + QString(uid.toHex()) );
 }
 
 
@@ -888,7 +900,7 @@ Dynamic::BiasSolver::universeUpdated()
     s_universeOutdated = false;
 
     if( m_pendingBiasUpdates == 0 )
-        return readyToRun();
+        emit(readyToRun());
 }
 
 void

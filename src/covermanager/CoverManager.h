@@ -25,7 +25,6 @@
 #include <QLabel>
 #include <QListWidget>
 #include <QListWidgetItem>
-#include <QPixmap>
 
 namespace Amarok { class LineEdit; }
 
@@ -167,7 +166,6 @@ class CoverViewItem : public QListWidgetItem
         QString artist() const { return m_artist; }
         QString album() const { return m_album; }
         Meta::AlbumPtr albumPtr() const { return m_albumPtr; }
-        QPixmap coverPixmap() const { return m_coverPixmap; }
 
     protected:
         void paintFocus(QPainter *, const QColorGroup &) { }
@@ -179,7 +177,6 @@ class CoverViewItem : public QListWidgetItem
         QString m_artist;
         QString m_album;
         QString m_coverImagePath;
-        QPixmap m_coverPixmap;
         bool    m_embedded;
         QListWidget *m_parent;
 };

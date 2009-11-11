@@ -63,7 +63,7 @@ MainControlsButton::setSvgPrefix(const QString & prefix)
 QRectF 
 MainControlsButton::boundingRect() const
 {
-    return QRectF( 0.0, 0.0, 54.0, 54.0 );
+    return QRectF( 0.0, 0.0, 40.0, 40.0 );
 }
 
 void 

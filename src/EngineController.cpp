@@ -114,6 +114,7 @@ EngineController::initializePhonon()
 {
     DEBUG_BLOCK
 
+    m_path.disconnect();
     delete m_media;
     delete m_controller;
     delete m_audio;
@@ -285,7 +286,7 @@ EngineController::endSession()
     //only update song stats, when we're not going to resume it
     if ( !AmarokConfig::resumePlayback() && m_currentTrack )
     {
-        playbackEnded( trackPosition(), m_currentTrack->length(), EngineObserver::EndedQuit );
+        playbackEnded( trackPositionMs(), m_currentTrack->length(), EngineObserver::EndedQuit );
         trackChangedNotify( Meta::TrackPtr( 0 ) );
     }
 }
@@ -300,12 +301,12 @@ EngineController::play() //SLOT
     DEBUG_BLOCK
 
     // FIXME: what should we do in buffering state?
-    if( m_media->state() == Phonon::PlayingState )
+    if( state() == Phonon::PlayingState )
         return;
 
     resetFadeout();
 
-    if ( m_media->state() == Phonon::PausedState )
+    if ( state() == Phonon::PausedState )
     {
         m_media->play();
     }
@@ -461,8 +462,8 @@ EngineController::stop( bool forceInstant ) //SLOT
     if( m_currentTrack )
     {
         debug() << "m_currentTrack != 0";
-        const int pos = trackPosition();
-        const int length = m_currentTrack->length();
+        const qint64 pos = trackPositionMs();
+        const qint64 length = m_currentTrack->length();
         m_currentTrack->finishedPlaying( double(pos)/double(length) );
         playbackEnded( pos, length, EngineObserver::EndedStopped );
         trackChangedNotify( Meta::TrackPtr( 0 ) );
@@ -495,7 +496,7 @@ EngineController::stop( bool forceInstant ) //SLOT
 bool
 EngineController::isPaused() const
 {
-    return m_media->state() == Phonon::PausedState;
+    return state() == Phonon::PausedState;
 }
 
 void
@@ -504,14 +505,19 @@ EngineController::playPause() //SLOT
     DEBUG_BLOCK
 
     //this is used by the TrayIcon, PlayPauseAction and DBus
-    debug() << "PlayPause: phonon state" << m_media->state();
+    debug() << "PlayPause: EngineController state" << state();
 
-    if( m_media->state() == Phonon::PausedState ||
-        m_media->state() == Phonon::StoppedState ||
-        m_media->state() == Phonon::LoadingState )
-        play();
-    else
-        pause();
+    switch ( state() )
+    {
+        case Phonon::PausedState:
+        case Phonon::StoppedState:
+        case Phonon::LoadingState:
+            play();
+            break;
+        default:
+            pause();
+            break;
+    }
 }
 
 void
@@ -620,7 +626,7 @@ EngineController::currentTrack() const
     return m_currentTrack;
 }
 
-int
+qint64
 EngineController::trackLength() const
 {
     const qint64 phononLength = m_media->totalTime(); //may return -1
@@ -628,7 +634,7 @@ EngineController::trackLength() const
     if( m_currentTrack && m_currentTrack->length() > 0 )   //When starting a last.fm stream, Phonon still shows the old track's length--trust Meta::Track over Phonon
         return m_currentTrack->length();
     else
-        return static_cast<int>( phononLength / 1000 );
+        return phononLength;
 }
 
 void
@@ -647,8 +653,8 @@ EngineController::setNextTrack( Meta::TrackPtr track )
     if( track->playableUrl().isEmpty() )
         return;
 
-    if( m_media->state() == Phonon::PlayingState ||
-        m_media->state() == Phonon::BufferingState )
+    if( state() == Phonon::PlayingState ||
+        state() == Phonon::BufferingState )
     {
         m_media->clearQueue();
         if( track->playableUrl().isLocalFile() )
@@ -881,7 +887,7 @@ EngineController::slotQueueEnded()
 
     if( m_currentTrack && !m_multiPlayback && !m_multiSource )
     {
-        playbackEnded( trackPosition(), m_currentTrack->length(), EngineObserver::EndedStopped );
+        playbackEnded( trackPositionMs(), m_currentTrack->length(), EngineObserver::EndedStopped );
         m_currentTrack = 0;
         trackChangedNotify( m_currentTrack );
     }
@@ -992,7 +998,7 @@ EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldSta
         {
             DEBUG_LINE_INFO
             m_mutex.lock();
-            m_playWhenFetched = false;
+            m_playWhenFetched = true;
             m_mutex.unlock();
             m_multiPlayback->fetchNext();
             debug() << "The queue has: " << m_media->queue().size() << " tracks in it";
@@ -1071,11 +1077,7 @@ EngineController::slotTrackLengthChanged( qint64 milliseconds )
 {
     DEBUG_BLOCK
 
-    //Phonon reports bad info on streams, so call trackLength() to verify
-    milliseconds = trackLength() * 1000;
-
-    if( milliseconds != 0 ) //don't notify for 0 seconds, it's probably just a stream
-        trackLengthChangedNotify( static_cast<long>( milliseconds ) / 1000 );
+    trackLengthChangedNotify( m_multiPlayback ? trackLength() : milliseconds );
 }
 
 void

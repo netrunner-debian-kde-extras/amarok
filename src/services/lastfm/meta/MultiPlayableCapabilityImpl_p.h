@@ -42,6 +42,7 @@ class MultiPlayableCapabilityImpl : public Meta::MultiPlayableCapability, public
             subscribeTo( trackptr );
             
             connect( track, SIGNAL( skipTrack() ), this, SLOT( skip() ) );
+            connect( The::mainWindow(), SIGNAL( skipTrack() ), SLOT( skip() ) );
         }
 
         virtual ~MultiPlayableCapabilityImpl() 
@@ -67,7 +68,6 @@ class MultiPlayableCapabilityImpl : public Meta::MultiPlayableCapability, public
         using Observer::metadataChanged;
         virtual void metadataChanged( Meta::TrackPtr track )
         {
-            DEBUG_BLOCK
             const LastFm::TrackPtr ltrack = LastFm::TrackPtr::dynamicCast( track );
             
             if( ltrack.isNull() )

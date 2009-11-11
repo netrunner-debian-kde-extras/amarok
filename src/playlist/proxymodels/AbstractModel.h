@@ -70,6 +70,14 @@ public:
     virtual Meta::TrackPtr activeTrack() const = 0;
 
     /**
+     * Returns all rows in the current model which match a given track pointer.
+     * @see firstRowForTrack
+     * @param track the track.
+     * @return collection of rows, empty if the track pointer is invalid.
+     */
+    virtual QSet<int> allRowsForTrack( const Meta::TrackPtr track ) const = 0;
+
+    /**
      * Clears the current search term.
      */
     virtual void clearSearchTerm() {}    //dummy, needed by Playlist::Model
@@ -179,6 +187,14 @@ public:
     virtual int findPrevious( const QString &, int, int ) {return -1; }
 
     /**
+     * Returns the first row in the current model which matches a given track pointer.
+     * @see allRowsForTrack
+     * @param track the track.
+     * @return the row, -1 if the track pointer is invalid.
+     */
+    virtual int firstRowForTrack( const Meta::TrackPtr track ) const = 0;
+
+    /**
      * Returns the item flags for the given index.
      * @param index the index to retrieve the flags for.
      * @return the item flags.
@@ -226,13 +242,6 @@ public:
      * @return the row, -1 if the id is invalid.
      */
     virtual int rowForId( const quint64 id ) const = 0;
-
-    /**
-     * Returns the row in the current model for a given track pointer.
-     * @param track the track.
-     * @return the row, -1 if the track pointer is invalid.
-     */
-    virtual int rowForTrack( const Meta::TrackPtr track ) const = 0;
 
     /**
      * Returns the row number of a track in terms of the bottom model.
@@ -298,9 +307,15 @@ public:
 
     /**
      * Asks the model sitting below the total length of the playlist.
-     * @return the total length of the playlist.
+     * @return the total length of the playlist in milliseconds.
      */
-    virtual int totalLength() const = 0;
+    virtual qint64 totalLength() const = 0;
+
+    /**
+     * Asks the model sitting below the total size of the playlist.
+     * @return the total size of the playlist.
+     */
+    virtual quint64 totalSize() const = 0;
 
     /**
      * Returns a pointer to the track at a given row.

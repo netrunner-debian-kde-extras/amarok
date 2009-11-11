@@ -472,7 +472,6 @@ void PopupDropperItem::reposTextItem()
 {
     if( !d->textItem || !d->borderRectItem )
         return;
- 
     d->textItem->setFont( d->font );
 
     qreal item_vert_center = ( d->borderRectItem->sceneBoundingRect().height() / 2 ) + d->borderRectItem->pos().y();
@@ -753,7 +752,7 @@ void PopupDropperItem::setHoverIndicatorRectWidth( int hoverIndicatorRectWidth )
     }
 }
 
-bool PopupDropperItem::submenuTrigger() const
+bool PopupDropperItem::isSubmenuTrigger() const
 {
     return d->submenuTrigger;
 }

@@ -58,7 +58,6 @@ PaletteHandler::setPalette( const QPalette & palette )
 void
 PaletteHandler::updateItemView( QAbstractItemView * view )
 {
-
     QPalette p = m_palette;
 
     QColor c = p.color( QPalette::Base );
@@ -70,7 +69,6 @@ PaletteHandler::updateItemView( QAbstractItemView * view )
     p.setColor( QPalette::AlternateBase, c );
 
     view->setPalette( p );
-    
 }
 
 QPalette
@@ -103,7 +101,32 @@ PaletteHandler::highlightColor( qreal saturationPercent, qreal valuePercent )
     return highlight;
 }
 
-    
+QColor
+PaletteHandler::backgroundColor()
+{
+    QColor bg = App::instance()->palette().highlight().color();
+    qreal value = bg.valueF();
+    value = value > 0.50 ? value * 1.5 : value * 0.5;
+    value = value > 0.99 ? 1.0         : value;
+    value = value < 0.10 ? 0.1         : value;
+    bg.setHsvF( bg.hueF(), 0.10, value, bg.alphaF() );
+
+    return bg;
+}
+
+QColor
+PaletteHandler::backgroundColor( qreal percentSaturation, qreal percentValue )
+{
+    QColor bg = backgroundColor();
+    qreal saturation = bg.saturationF() * percentSaturation / 100.0;
+    qreal value = bg.valueF() * percentValue / 100.0;
+    saturation = saturation > 0.99 ? 1.0 : saturation;
+    saturation = saturation < 0.10 ? 0.1 : saturation;
+    value      = value      > 0.99 ? 1.0 : value;
+    value      = value      < 0.10 ? 0.1 : value;
+    bg.setHsvF( bg.hueF(), saturation, value, bg.alphaF() );
+
+    return bg;
+}
+
 #include "PaletteHandler.moc"
-
-

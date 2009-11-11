@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Daniel Caleb Jones <danielcjones@gmail.com>                       *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -78,7 +79,7 @@ namespace PlaylistBrowserNS
             void clicked();
 
         protected:
-            virtual void mouseReleaseEvent( QMouseEvent* );
+            virtual void mousePressEvent( QMouseEvent* event );
 
         private:
            // KToolBar*    m_addToolbar;

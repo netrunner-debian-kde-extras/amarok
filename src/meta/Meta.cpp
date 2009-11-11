@@ -408,18 +408,18 @@ Meta::Album::image( int size )
         size = 100;
     QString sizeKey = QString::number( size ) + '@';
 
+    m_noCoverImage = true; //FIXME is this correct? Why do we set it unconditionally?
+
     QPixmap pixmap;
     if( cacheCoverDir.exists( sizeKey + "nocover.png" ) )
-         pixmap = QPixmap( cacheCoverDir.filePath( sizeKey + "nocover.png" ) );
+         pixmap.load( cacheCoverDir.filePath( sizeKey + "nocover.png" ) );
     else
     {
-        QPixmap orgPixmap = QPixmap( KStandardDirs::locate( "data", "amarok/images/nocover.png" ) ); //optimize this!
+        QPixmap orgPixmap( KStandardDirs::locate( "data", "amarok/images/nocover.png" ) );
         //scaled() does not change the original image but returns a scaled copy
         pixmap = orgPixmap.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
         pixmap.save( cacheCoverDir.filePath( sizeKey + "nocover.png" ), "PNG" );
     }
-
-    m_noCoverImage = true;
 
     return pixmap;
 }

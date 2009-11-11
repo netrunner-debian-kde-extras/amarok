@@ -116,7 +116,8 @@ OrganizeCollectionDialog::getDestinations()
     QMap<Meta::TrackPtr, QString> destinations;
     foreach( const Meta::TrackPtr &track, m_allTracks )
     {
-        destinations.insert( track, buildDestination( format, track ) );
+        if( track )
+            destinations.insert( track, buildDestination( format, track ) );
     }
     return destinations;
 }
@@ -181,7 +182,7 @@ OrganizeCollectionDialog::buildDestination( const QString &format, const Meta::T
     args["filetype"] = track->type();
     args["rating"] = track->rating();
     args["filesize"] = track->filesize();
-    args["length"] = track->length();
+    args["length"] = track->length() / 1000;
 
     if ( track->trackNumber() )
     {
@@ -259,7 +260,8 @@ OrganizeCollectionDialog::buildFormatString() const
 void
 OrganizeCollectionDialog::preview( const QString &format )
 {
-   emit updatePreview( buildDestination( format, m_previewTrack ) );
+    if( m_previewTrack )
+        emit updatePreview( buildDestination( format, m_previewTrack ) );
 }
 
 
@@ -295,10 +297,13 @@ OrganizeCollectionDialog::update( int dummy )   //why the dummy?
 {
     Q_UNUSED( dummy );
 
-    if( ui->customschemeCheck->isChecked() )
-        emit updatePreview( buildDestination( "%folder/" + m_filenameLayoutDialog->getParsableScheme(), m_previewTrack ) );
-    else
-        emit updatePreview( buildDestination( buildFormatString(), m_previewTrack ) );
+    if( m_previewTrack )
+    {
+        if( ui->customschemeCheck->isChecked() )
+            emit updatePreview( buildDestination( "%folder/" + m_filenameLayoutDialog->getParsableScheme(), m_previewTrack ) );
+        else
+            emit updatePreview( buildDestination( buildFormatString(), m_previewTrack ) );
+    }
 }
 
 

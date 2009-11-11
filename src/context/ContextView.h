@@ -38,6 +38,7 @@
 #include <QGraphicsView>
 
 class QPixmap;
+class ContextUrlRunner;
 
 namespace Context
 {
@@ -68,11 +69,23 @@ public:
         config file using as a key the string parameter.
     */
     void clear( const ContextState& name );
+
+    void clearNoSave();
     
     /** 
         Shows the home state. Loads applets from config file.
     */
     void showHome();
+
+    /**
+        Get the plugin names, in order, of the applets currently in the contextView.
+    */
+    QStringList currentApplets();
+
+    /**
+        Get the user visible applet names, in order, of the applets currently in the contextView.
+    */
+    QStringList currentAppletNames();
 
 
 public slots:
@@ -81,7 +94,7 @@ public slots:
 
 protected:
     
-    virtual void enginePlaybackEnded(int finalPosition, int trackLength, PlaybackEndedReason reason);
+    virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason );
     void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged ); // for stream scrobbling
     virtual void engineNewTrackPlaying();
     
@@ -110,6 +123,8 @@ private:
      //we always kick the cv on the first play state we receive, irregardless if the
      //previous state was Paused.
     bool m_firstPlayingState;
+
+    ContextUrlRunner * m_urlRunner;
 };
 
 } // Context namespace

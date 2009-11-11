@@ -225,7 +225,7 @@ MediaDeviceTrack::setRating( int newRating )
     notifyObservers();
 }
 
-int
+qint64
 MediaDeviceTrack::length() const
 {
     return m_length;
@@ -348,7 +348,9 @@ void
 MediaDeviceTrack::prepareToPlay()
 {
     Meta::MediaDeviceTrackPtr ptr = Meta::MediaDeviceTrackPtr( this );
-    m_collection->handler()->prepareToPlay( ptr );
+
+    if( m_collection && m_collection->handler() )
+        m_collection->handler()->prepareToPlay( ptr );
 }
 
 // TODO: employ observers (e.g. Handler) to take care of updated
@@ -681,7 +683,7 @@ MediaDeviceTrack::setTitle( const QString &title )
 }
 
 void
-MediaDeviceTrack::setLength( int length )
+MediaDeviceTrack::setLength( qint64 length )
 {
     m_length = length;
 }

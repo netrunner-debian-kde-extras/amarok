@@ -51,6 +51,7 @@ class QGraphicsLinearLayout;
 class QGraphicsProxyWidget;
 class QGraphicsWidget;
 class QHBoxLayout;
+class QScrollArea;
 
 class CustomVideoWidget;
 
@@ -74,7 +75,7 @@ class VideoclipApplet : public Context::Applet, public EngineObserver
         // inherited from EngineObserver
         virtual void engineNewTrackPlaying();
         virtual void engineStateChanged(Phonon::State, Phonon::State );
-        virtual void enginePlaybackEnded( int finalPosition, int trackLength, PlaybackEndedReason reason );
+        virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason );
         
     public slots:
         void    setGeom();
@@ -99,6 +100,7 @@ class VideoclipApplet : public Context::Applet, public EngineObserver
         // The two big container, only one who need a resize
         QGraphicsSimpleTextItem *m_headerText;
         QGraphicsProxyWidget    *m_widget;
+        QScrollArea             *m_scroll;
         QHBoxLayout             *m_layout;
         QList<QWidget *>        m_layoutWidgetList;
 

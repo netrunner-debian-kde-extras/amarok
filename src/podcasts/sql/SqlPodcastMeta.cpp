@@ -20,6 +20,7 @@
 #include "amarokurls/PlayUrlRunner.h"
 #include "CollectionManager.h"
 #include "Debug.h"
+#include "EditCapability.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "meta/capabilities/TimecodeLoadCapability.h"
 #include "meta/capabilities/TimecodeWriteCapability.h"
@@ -28,21 +29,6 @@
 
 #include <QDate>
 #include <QFile>
-
-// Taglib Includes
-#include <fileref.h>
-#include <tag.h>
-#include <flacfile.h>
-#include <id3v1tag.h>
-#include <id3v2tag.h>
-#include <mpcfile.h>
-#include <mpegfile.h>
-#include <oggfile.h>
-#include <oggflacfile.h>
-#include <tlist.h>
-#include <tstring.h>
-#include <vorbisfile.h>
-#include <mp4file.h>
 
 class TimecodeWriteCapabilityPodcastImpl : public Meta::TimecodeWriteCapability
 {
@@ -128,6 +114,11 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, Meta::Sql
     m_isNew = sqlStorage->boolTrue() == (*(iter++));
 
     Q_ASSERT_X( iter == result.constEnd(), "SqlPodcastEpisode( PodcastCollection*, QStringList )", "number of expected fields did not match number of actual fields" );
+
+    if( !m_localUrl.isEmpty() && QFileInfo( m_localUrl.toLocalFile() ).exists() )
+    {
+        m_localFile = new MetaFile::Track( m_localUrl );
+    }
 }
 
 Meta::SqlPodcastEpisode::SqlPodcastEpisode( Meta::PodcastEpisodePtr episode )
@@ -149,38 +140,44 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( Meta::PodcastEpisodePtr episode )
 
     //commit to the database
     updateInDb();
+
+    if( !m_localUrl.isEmpty() && QFileInfo( m_localUrl.toLocalFile() ).exists() )
+    {
+        m_localFile = new MetaFile::Track( m_localUrl );
+    }
 }
 
 Meta::SqlPodcastEpisode::~SqlPodcastEpisode()
 {
 }
 
-int
+void
+Meta::SqlPodcastEpisode::setLocalUrl( const KUrl &url )
+{
+    m_localUrl = url;
+
+    if( m_localUrl.isEmpty() && !m_localFile.isNull() )
+    {
+        m_localFile.clear();
+        notifyObservers();
+    }
+    else
+    {
+        //if we had a local file previously it should get deleted by the KSharedPtr.
+        m_localFile = new MetaFile::Track( m_localUrl );
+        if( m_channel->writeTags() )
+            writeTagsToFile();
+    }
+}
+
+qint64
 Meta::SqlPodcastEpisode::length() const
 {
     //if downloaded get the duration from the file, else use the value read from the feed
-    if( m_localUrl.isEmpty() )
-        return m_duration;
+    if( m_localFile.isNull() )
+        return m_duration * 1000;
 
-    int length = -2;
-
-    #ifdef COMPLEX_TAGLIB_FILENAME
-    const wchar_t * encodedName = reinterpret_cast<const wchar_t *>(m_localUrl.path().utf16());
-    #else
-    QByteArray fileName = QFile::encodeName( m_localUrl.path() );
-    const char * encodedName = fileName.constData(); // valid as long as fileName exists
-    #endif
-    TagLib::FileRef fileRef = TagLib::FileRef( encodedName, true, TagLib::AudioProperties::Fast );
-
-
-    if( !fileRef.isNull() )
-        if( fileRef.audioProperties() )
-            length = fileRef.audioProperties()->length();
-
-    if( length == -2 /*Undetermined*/ )
-        return 0;
-
-    return length;
+    return m_localFile->length();
 }
 
 bool
@@ -195,8 +192,8 @@ Meta::SqlPodcastEpisode::hasCapabilityInterface( Meta::Capability::Type type ) c
 //            return !localUrl().isEmpty();
             return true;
             //TODO: downloaded episodes can be edited
-//         case Meta::Capability::Editable:
-//             return isEditable();
+        case Meta::Capability::Editable:
+            return isEditable();
 
         default:
             return false;
@@ -219,9 +216,124 @@ Meta::SqlPodcastEpisode::createCapabilityInterface( Meta::Capability::Type type 
             return new TimecodeWriteCapabilityPodcastImpl( this );
         case Meta::Capability::LoadTimecode:
             return new TimecodeLoadCapabilityPodcastImpl( this );
+        case Meta::Capability::Editable:
+            if( !m_localFile.isNull() )
+                return m_localFile->createCapabilityInterface( type );
         default:
             return 0;
     }
+}
+
+bool
+Meta::SqlPodcastEpisode::isEditable() const
+{
+     if( m_localFile.isNull() )
+         return false;
+
+     return m_localFile->isEditable();
+}
+
+QString
+Meta::SqlPodcastEpisode::name() const
+{
+    if( m_localFile.isNull() )
+        return m_title;
+
+    return m_localFile->name();
+}
+
+QString
+Meta::SqlPodcastEpisode::prettyName() const
+{
+    /*for now just do the same as name, but in the future we might want to used a cleaned
+      up string using some sort of regex tag rewrite for podcasts. decapitateString on
+      steroides. */
+    return name();
+}
+
+void
+Meta::SqlPodcastEpisode::setTitle( const QString &title )
+{
+    if( !m_localFile.isNull() )
+    {
+        m_localFile->setTitle( title );
+    }
+
+    m_title = title;
+}
+
+Meta::AlbumPtr
+Meta::SqlPodcastEpisode::album() const
+{
+    if( m_localFile.isNull() )
+        return m_albumPtr;
+
+    return m_localFile->album();
+}
+
+Meta::ArtistPtr
+Meta::SqlPodcastEpisode::artist() const
+{
+    if( m_localFile.isNull() )
+        return m_artistPtr;
+
+    return m_localFile->artist();
+}
+
+Meta::ComposerPtr
+Meta::SqlPodcastEpisode::composer() const
+{
+    if( m_localFile.isNull() )
+        return m_composerPtr;
+
+    return m_localFile->composer();
+}
+
+Meta::GenrePtr
+Meta::SqlPodcastEpisode::genre() const
+{
+    if( m_localFile.isNull() )
+        return m_genrePtr;
+
+    return m_localFile->genre();
+}
+
+Meta::YearPtr
+Meta::SqlPodcastEpisode::year() const
+{
+    if( m_localFile.isNull() )
+        return m_yearPtr;
+
+    return m_localFile->year();
+}
+
+bool
+Meta::SqlPodcastEpisode::writeTagsToFile()
+{
+    if( m_localFile.isNull() )
+        return false;
+
+    Meta::EditCapability *ec = m_localFile->create<Meta::EditCapability>();
+    if( ec == 0 )
+        return false;
+
+    debug() << "writing tags for podcast episode " << title() << "to " << m_localUrl.url();
+    if( !ec->isEditable() )
+    {
+        debug() << QString( "local file (%1)is not editable!" ).arg( m_localUrl.url() );
+        return false;
+    }
+    ec->beginMetaDataUpdate();
+    ec->setTitle( m_title );
+    ec->setAlbum( m_channel->title() );
+    ec->setArtist( m_channel->author() );
+    ec->setGenre( i18n( "Podcast" ) );
+    ec->setYear( QString::number( m_pubDate.date().year() ) );
+    ec->endMetaDataUpdate();
+
+    notifyObservers();
+
+    return true;
 }
 
 void
@@ -319,6 +431,7 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( const QStringList &result )
     m_fetchType = (*(iter++)).toInt() == DownloadWhenAvailable ? DownloadWhenAvailable : StreamOrDownloadOnDemand;
     m_purge = sqlStorage->boolTrue() == *(iter++);
     m_purgeCount = (*(iter++)).toInt();
+    m_writeTags = sqlStorage->boolTrue() == *(iter++);
     loadEpisodes();
 }
 
@@ -341,12 +454,14 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( PodcastChannelPtr channel )
     m_fetchType = StreamOrDownloadOnDemand;
     m_purge = false;
     m_purgeCount = 10;
+    m_writeTags = true;
 
     updateInDb();
 
-    foreach ( Meta::PodcastEpisodePtr episode, channel->episodes() ) {
+    foreach( Meta::PodcastEpisodePtr episode, channel->episodes() )
+    {
         episode->setChannel( PodcastChannelPtr( this ) );
-        SqlPodcastEpisode * sqlEpisode = new SqlPodcastEpisode( episode );
+        SqlPodcastEpisode *sqlEpisode = new SqlPodcastEpisode( episode );
 
         m_episodes << SqlPodcastEpisodePtr( sqlEpisode );
     }
@@ -375,6 +490,16 @@ Meta::SqlPodcastChannel::sqlEpisodesToPodcastEpisodes( SqlPodcastEpisodeList epi
         sqlEpisodes << Meta::PodcastEpisodePtr::dynamicCast( sqlEpisode );
 
     return sqlEpisodes;
+}
+
+void
+Meta::SqlPodcastChannel::setTitle( const QString &title )
+{
+    /* also change the savelocation if a title is not set yet.
+       This is a special condition that can happen when first fetching a podcast feed */
+    if( m_title.isEmpty() )
+        m_directory.addPath( Amarok::vfatPath( title ) );
+    m_title = title;
 }
 
 Meta::PodcastEpisodeList
@@ -419,13 +544,13 @@ Meta::SqlPodcastChannel::updateInDb()
     #define escape(x) sqlStorage->escape(x)
     QString insert = "INSERT INTO podcastchannels("
     "url,title,weblink,image,description,copyright,directory,labels,"
-    "subscribedate,autoscan,fetchtype,haspurge,purgecount) "
-    "VALUES ( '%1','%2','%3','%4','%5','%6','%7','%8','%9',%10,%11,%12,%13 );";
+    "subscribedate,autoscan,fetchtype,haspurge,purgecount,writetags) "
+    "VALUES ( '%1','%2','%3','%4','%5','%6','%7','%8','%9',%10,%11,%12,%13,%14 );";
 
     QString update = "UPDATE podcastchannels SET url='%1',title='%2'"
     ",weblink='%3',image='%4',description='%5',copyright='%6',directory='%7'"
     ",labels='%8',subscribedate='%9',autoscan=%10,fetchtype=%11,haspurge=%12,"
-    "purgecount=%13 WHERE id=%14;";
+    "purgecount=%13, writetags=%14 WHERE id=%15;";
     //if we don't have a database ID yet we should insert;
     QString command = m_dbId ? update : insert;
 
@@ -445,6 +570,7 @@ Meta::SqlPodcastChannel::updateInDb()
     command = command.arg( QString::number(m_fetchType) ); //%11
     command = command.arg( m_purge ? boolTrue : boolFalse ); //%12
     command = command.arg( QString::number(m_purgeCount) ); //%13
+    command = command.arg( m_writeTags ? boolTrue : boolFalse ); //%14
 
     if( m_dbId )
         sqlStorage->query( command.arg( m_dbId ) );

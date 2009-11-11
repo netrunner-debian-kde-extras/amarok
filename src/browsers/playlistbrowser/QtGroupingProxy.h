@@ -27,7 +27,6 @@
 typedef QMap<int, QVariant> RoleVariantMap;
 typedef QMap<int, RoleVariantMap> ColumnVariantMap;
 
-static bool compareColumnVariantMap( const ColumnVariantMap &a, const ColumnVariantMap &b );
 
 class QtGroupingProxy : public QAbstractProxyModel
 {
@@ -60,6 +59,7 @@ class QtGroupingProxy : public QAbstractProxyModel
 
         /* QtGroupingProxy methods */
         virtual QModelIndex addEmptyGroup( const ColumnVariantMap &data );
+        virtual bool removeGroup( const QModelIndex &idx );
 
     signals:
         void rowsInserted( const QModelIndex&, int, int );

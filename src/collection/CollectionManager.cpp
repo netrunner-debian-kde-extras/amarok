@@ -21,7 +21,6 @@
 #include "Debug.h"
 
 #include "Collection.h"
-#include "EngineController.h"
 #include "MetaQueryMaker.h"
 #include "meta/file/File.h"
 #include "meta/cue/Cue.h"
@@ -39,7 +38,6 @@
 #include <KBuildSycocaProgressDialog>
 #include <KGlobal>
 #include <KMessageBox>
-#include <KRun>
 #include <KService>
 
 #include <cstdlib>
@@ -408,7 +406,7 @@ CollectionManager::trackForUrl( const KUrl &url )
         }
     }
 
-    if( url.protocol() == "http" || url.protocol() == "mms" )
+    if( url.protocol() == "http" || url.protocol() == "mms" || url.protocol() == "smb" )
         return Meta::TrackPtr( new MetaStream::Track( url ) );
 
     if( url.protocol() == "file" && EngineController::canDecode( url ) )

@@ -91,8 +91,6 @@ TrackPtr MagnatuneMetaFactory::createTrack(const QStringList & rows)
         }
         
         track->setUidUrl( url );
-
-        debug()  << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!PREFIX: " << m_membershipPrefix;
         
         if ( m_membershipPrefix == "download" )
             track->setDownloadMembership();
@@ -108,7 +106,6 @@ int MagnatuneMetaFactory::getAlbumSqlRowCount()
 
 QString MagnatuneMetaFactory::getAlbumSqlRows()
 {
-    DEBUG_BLOCK
     QString sqlRows = ServiceMetaFactory::getAlbumSqlRows();
 
     sqlRows += ", ";
@@ -376,8 +373,6 @@ MagnatuneAlbum::MagnatuneAlbum(const QStringList & resultRow)
     , m_purchaseAction( 0 )
     , m_addToFavoritesAction( 0 )
 {
-    debug() << "create album from result row: " << resultRow;
-
     m_coverUrl = resultRow[4];
     m_launchYear = resultRow[5].toInt();
     m_albumCode = resultRow[6];

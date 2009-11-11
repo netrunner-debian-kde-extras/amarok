@@ -29,6 +29,8 @@
 #include "Svg.h"
 #include "Theme.h"
 #include "amarokconfig.h"
+#include "amarokurls/AmarokUrlHandler.h"
+#include "amarokurls/ContextUrlRunner.h"
 
 #include <plasma/dataenginemanager.h>
 
@@ -88,6 +90,9 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
         amarokContainment->setView( this );
     //    amarokContainment->addCurrentTrack();
     }
+
+    m_urlRunner = new ContextUrlRunner();
+    The::amarokUrlHandler()->registerRunner( m_urlRunner, "context" );
 }
 
 ContextView::~ContextView()
@@ -112,6 +117,8 @@ ContextView::~ContextView()
     clear( m_curState );
     //this should be done to prevent a crash on exit
     clearFocus();
+
+    delete m_urlRunner;
 }
 
 
@@ -140,8 +147,13 @@ ContextView::clear( const ContextState& state )
     contextScene()->clearContainments();
 }
 
+void ContextView::clearNoSave()
+{
+    contextScene()->clearContainments();
+}
 
-void ContextView::enginePlaybackEnded( int finalPosition, int trackLength, EngineObserver::PlaybackEndedReason reason )
+
+void ContextView::enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, EngineObserver::PlaybackEndedReason reason )
 {
     Q_UNUSED( finalPosition )
     Q_UNUSED( trackLength )
@@ -246,6 +258,39 @@ ContextView::wheelEvent( QWheelEvent* event )
 {
     if( event->orientation() != Qt::Horizontal )
         QGraphicsView::wheelEvent( event );
+}
+
+QStringList
+ContextView::currentApplets()
+{
+    DEBUG_BLOCK
+    QStringList appletNames;
+    
+    Applet::List applets = containment()->applets();
+    foreach( Plasma::Applet * applet, applets )
+    {
+        appletNames << applet->pluginName();
+    }
+
+    debug() << "current applets: " << appletNames;
+
+    return appletNames;
+}
+
+QStringList ContextView::currentAppletNames()
+{
+    DEBUG_BLOCK
+    QStringList appletNames;
+
+    Applet::List applets = containment()->applets();
+    foreach( Plasma::Applet * applet, applets )
+    {
+        appletNames << applet->name();
+    }
+
+    debug() << "current applets: " << appletNames;
+
+    return appletNames; 
 }
 
 } // Context namespace

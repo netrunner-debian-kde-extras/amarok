@@ -17,21 +17,17 @@
 #ifndef GLOBALCOLLECTIONACTIONS_H
 #define GLOBALCOLLECTIONACTIONS_H
 
-
 #include "amarok_export.h"
 #include "Meta.h"
-
+#include "SmartPointerList.h"
 
 #include <QAction>
 
 
-
-
-
 class AMAROK_EXPORT GlobalCollectionAction : public QAction
 {
-public:
-    GlobalCollectionAction( const QString &text, QObject * parent );
+    public:
+        GlobalCollectionAction( const QString &text, QObject * parent );
 };
 
 
@@ -47,8 +43,8 @@ class AMAROK_EXPORT GlobalCollectionGenreAction : public GlobalCollectionAction
 
     private:
         Meta::GenrePtr m_currentGenre;
-
 };
+
 
 class AMAROK_EXPORT GlobalCollectionArtistAction : public GlobalCollectionAction
 {
@@ -62,7 +58,6 @@ class AMAROK_EXPORT GlobalCollectionArtistAction : public GlobalCollectionAction
 
     private:
         Meta::ArtistPtr m_currentArtist;
-
 };
 
 
@@ -78,8 +73,8 @@ class AMAROK_EXPORT GlobalCollectionAlbumAction : public GlobalCollectionAction
 
     private:
         Meta::AlbumPtr m_currentAlbum;
-
 };
+
 
 class AMAROK_EXPORT GlobalCollectionTrackAction : public GlobalCollectionAction
 {
@@ -123,11 +118,7 @@ class GlobalCollectionComposerAction : public GlobalCollectionAction
 
     private:
         Meta::ComposerPtr m_currentComposer;
-
 };
-
-
-
 
 
 class GlobalCollectionActions;
@@ -137,19 +128,13 @@ namespace The {
 }
 
 /**
-This class keeps track of global context actions that should be added to all genre, artists or another meta type in all collections.
-
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
+  This class keeps track of global context actions that should be added to all genre, artists or another meta type in all collections.
 */
 class AMAROK_EXPORT GlobalCollectionActions
 {
-
     friend GlobalCollectionActions* The::globalCollectionActions();
 
 public:
-
-
-
     QList<QAction *> actionsFor( Meta::DataPtr item );
 
     void addGenreAction( GlobalCollectionGenreAction * action );
@@ -158,8 +143,6 @@ public:
     void addTrackAction( GlobalCollectionTrackAction * action );
     void addYearAction( GlobalCollectionYearAction * action );
     void addComposerAction( GlobalCollectionComposerAction * action );
-  
-
     
 private:
     GlobalCollectionActions();
@@ -172,17 +155,12 @@ private:
     QList<QAction *> actionsFor( Meta::YearPtr year );
     QList<QAction *> actionsFor( Meta::ComposerPtr composer );
 
-    QList<GlobalCollectionGenreAction *> m_genreActions;
-    QList<GlobalCollectionArtistAction *> m_artistActions;
-    QList<GlobalCollectionAlbumAction *> m_albumActions;
-    QList<GlobalCollectionTrackAction *> m_trackActions;
-    QList<GlobalCollectionYearAction *> m_yearActions;
-    QList<GlobalCollectionComposerAction *> m_composerActions;
-
-
-
-    
-
+    SmartPointerList<GlobalCollectionGenreAction> m_genreActions;
+    SmartPointerList<GlobalCollectionArtistAction> m_artistActions;
+    SmartPointerList<GlobalCollectionAlbumAction> m_albumActions;
+    SmartPointerList<GlobalCollectionTrackAction> m_trackActions;
+    SmartPointerList<GlobalCollectionYearAction> m_yearActions;
+    SmartPointerList<GlobalCollectionComposerAction> m_composerActions;
 };
 
 #endif

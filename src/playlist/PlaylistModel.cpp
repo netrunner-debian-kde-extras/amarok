@@ -53,6 +53,7 @@ Playlist::Model::Model( QObject *parent )
         : QAbstractListModel( parent )
         , m_activeRow( -1 )
         , m_totalLength( 0 )
+        , m_totalSize( 0 )
 {
     DEBUG_BLOCK
 
@@ -69,13 +70,14 @@ Playlist::Model::Model( QObject *parent )
      */
     The::playlistManager();
 
-    if ( QFile::exists( defaultPlaylistPath() ) )
+    Meta::PlaylistFilePtr playlist = Meta::loadPlaylistFile( defaultPlaylistPath() );
+    if ( playlist )
     {
-        Meta::TrackList tracks =
-                Meta::loadPlaylistFile( KUrl( defaultPlaylistPath() ) )->tracks();
+        Meta::TrackList tracks = playlist->tracks();
 
         QMutableListIterator<Meta::TrackPtr> i( tracks );
-        while ( i.hasNext() ) {
+        while ( i.hasNext() )
+        {
             i.next();
             Meta::TrackPtr track = i.value();
             if ( track == Meta::TrackPtr() )
@@ -99,8 +101,10 @@ Playlist::Model::Model( QObject *parent )
             }
         }
 
-        foreach( Meta::TrackPtr track, tracks ) {
+        foreach( Meta::TrackPtr track, tracks )
+        {
             m_totalLength += track->length();
+            m_totalSize += track->filesize();
             subscribeTo( track );
             if ( track->album() )
                 subscribeTo( track->album() );
@@ -266,11 +270,11 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case Length:
             {
-                return Meta::secToPrettyTime( m_items.at( row )->track()->length() );
+                return Meta::msToPrettyTime( m_items.at( row )->track()->length() );
             }
             case LengthInSeconds:
             {
-                return m_items.at( row )->track()->length();
+                return m_items.at( row )->track()->length() / 1000;
             }
             case Mood:
             {
@@ -535,7 +539,7 @@ Playlist::Model::containsTrack( const Meta::TrackPtr track ) const
 }
 
 int
-Playlist::Model::rowForTrack( const Meta::TrackPtr track ) const
+Playlist::Model::firstRowForTrack( const Meta::TrackPtr track ) const
 {
     int row = 0;
     foreach( Item* i, m_items )
@@ -545,6 +549,21 @@ Playlist::Model::rowForTrack( const Meta::TrackPtr track ) const
         row++;
     }
     return -1;
+}
+
+QSet<int>
+Playlist::Model::allRowsForTrack( const Meta::TrackPtr track ) const
+{
+    QSet<int> trackRows;
+
+    int row = 0;
+    foreach( Item* i, m_items )
+    {
+        if ( i->track() == track )
+            trackRows.insert( row );
+        row++;
+    }
+    return trackRows;
 }
 
 Meta::TrackPtr
@@ -714,6 +733,7 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
     {
         Meta::TrackPtr track = ic.first;
         m_totalLength += track->length();
+        m_totalSize += track->filesize();
         subscribeTo( track );
 
         if ( track->album() )
@@ -763,8 +783,11 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
     {
         clearCommand();
         m_totalLength = 0;
+        m_totalSize = 0;
         return;
     }
+
+    emit beginRemoveIds();
 
     int min = m_items.size();
     int max = 0;
@@ -805,6 +828,7 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
     {
         Meta::TrackPtr track = rc.first;
         m_totalLength -= track->length();
+        m_totalSize -= track->filesize();
         unsubscribeFrom( track );
         if ( track->album() )
             unsubscribeFrom( track->album() );
