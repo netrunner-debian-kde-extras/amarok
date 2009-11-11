@@ -1,16 +1,29 @@
 From: Modestas Vainius <modestas@vainius.eu>
-Subject: [PATCH] OpenSSL is not needed to link against mysql library
+Subject: [PATCH] OpenSSL is not needed to link against mysql(e) library
 
-Fix link libraries for MySql from Debian.
+Fix link libraries for MySQL(e) from Debian.
 
 Signed-off-by: Modestas Vainius <modestas@vainius.eu>
 
 ---
+ src/collection/mysqlecollection/CMakeLists.txt     |    1 -
  .../mysqlservercollection/CMakeLists.txt           |    1 -
- 1 files changed, 0 insertions(+), 1 deletions(-)
+ 2 files changed, 0 insertions(+), 2 deletions(-)
 
+diff --git a/src/collection/mysqlecollection/CMakeLists.txt b/src/collection/mysqlecollection/CMakeLists.txt
+index 3ee4f3d..2e02937 100755
+--- a/src/collection/mysqlecollection/CMakeLists.txt
++++ b/src/collection/mysqlecollection/CMakeLists.txt
+@@ -72,7 +72,6 @@ target_link_libraries(amarok_collection-mysqlecollection
+ )
+ 
+ if(NOT WIN32)
+-    target_link_libraries(amarok_collection-mysqlecollection crypto ssl)
+     if(NOT APPLE)
+         target_link_libraries(amarok_collection-mysqlecollection crypt pthread)
+     endif(NOT APPLE)
 diff --git a/src/collection/mysqlservercollection/CMakeLists.txt b/src/collection/mysqlservercollection/CMakeLists.txt
-index 9f1c390..68d02f3 100755
+index 5b4360e..9c7307a 100755
 --- a/src/collection/mysqlservercollection/CMakeLists.txt
 +++ b/src/collection/mysqlservercollection/CMakeLists.txt
 @@ -71,7 +71,6 @@ target_link_libraries(amarok_collection-mysqlservercollection
@@ -22,4 +35,4 @@ index 9f1c390..68d02f3 100755
          target_link_libraries(amarok_collection-mysqlservercollection crypt pthread)
      endif(NOT APPLE)
 -- 
-tg: (91cd020..) debian/mysql_linkage_fix (depends on: upstream)
+tg: (aa942d4..) debian/mysql_linkage_fix (depends on: upstream)

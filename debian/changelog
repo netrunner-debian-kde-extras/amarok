@@ -16,6 +16,11 @@ amarok (2.2.1-0r1) UNRELEASED; urgency=low
     - drop quilt from build-depends;
     - drop quilt specific instructions from README.source;
     - use original upstream .tar.bz2 tarball.
+  * Update patches:
+    - debian/disable_qtscriptbindings_check_fix - refresh;
+    - merge debian/mysqle_linkage_fix into debian/mysql_linkage_fix,
+      refresh;
+    - debian/mysqle_amarok_local_errmsg_feature - adapt to upstream changes;
 
  -- Modestas Vainius <modestas@vainius.eu>  Thu, 12 Nov 2009 00:39:30 +0200
 

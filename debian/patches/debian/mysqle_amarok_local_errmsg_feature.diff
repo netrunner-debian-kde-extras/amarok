@@ -12,7 +12,7 @@ Signed-off-by: Modestas Vainius <modestas@vainius.eu>
  1 files changed, 15 insertions(+), 1 deletions(-)
 
 diff --git a/src/collection/mysqlecollection/MySqlEmbeddedCollection.cpp b/src/collection/mysqlecollection/MySqlEmbeddedCollection.cpp
-index 45b659d..9277099 100644
+index 6453278..df80028 100644
 --- a/src/collection/mysqlecollection/MySqlEmbeddedCollection.cpp
 +++ b/src/collection/mysqlecollection/MySqlEmbeddedCollection.cpp
 @@ -25,10 +25,15 @@
@@ -58,7 +58,7 @@ index 45b659d..9277099 100644
 @@ -78,6 +88,8 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id, const QStri
      server_options[7] = const_cast<char*>( "--myisam-recover=FORCE" );
      server_options[8] = const_cast<char*>( "--character-set-server=utf8" );
-     server_options[9] = const_cast<char*>( "--collation-server=utf8_unicode_ci" );
+     server_options[9] = const_cast<char*>( "--collation-server=utf8_bin" );
 +    if (languageLine)
 +        server_options[num_elements-1] = languageLine;
      server_options[num_elements] = 0;
@@ -74,4 +74,4 @@ index 45b659d..9277099 100644
      if( !m_db )
      {
 -- 
-tg: (91cd020..) debian/mysqle_amarok_local_errmsg_feature (depends on: upstream)
+tg: (aa942d4..) debian/mysqle_amarok_local_errmsg_feature (depends on: upstream)
