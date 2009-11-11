@@ -81,7 +81,7 @@ struct MetaData
     QDateTime created;
     int discNumber;
     int trackNumber;
-    int length;
+    qint64 length;
     int fileSize;
     int sampleRate;
     int bitRate;
@@ -182,7 +182,7 @@ void Track::Private::readMetaData()
         {
             m_data.bitRate = fileRef.audioProperties()->bitrate();
             m_data.sampleRate = fileRef.audioProperties()->sampleRate();
-            m_data.length = fileRef.audioProperties()->length();
+            m_data.length = fileRef.audioProperties()->length() * 1000;
         }
 
         Meta::ReplayGainTagMap map = Meta::readReplayGainTags( fileRef );
@@ -350,6 +350,10 @@ public:
         return name();
     }
 
+    bool operator==( const Meta::Artist &other ) const {
+        return name() == other.name();
+    }
+
     QPointer<MetaFile::Track::Private> const d;
 };
 
@@ -433,6 +437,10 @@ public:
         return name();
     }
 
+    bool operator==( const Meta::Genre &other ) const {
+        return name() == other.name();
+    }
+
     QPointer<MetaFile::Track::Private> const d;
 };
 
@@ -460,6 +468,10 @@ public:
         return name();
     }
 
+    bool operator==( const Meta::Composer &other ) const {
+        return name() == other.name();
+    }
+
     QPointer<MetaFile::Track::Private> const d;
 };
 
@@ -485,6 +497,10 @@ public:
     QString prettyName() const
     {
         return name();
+    }
+
+    bool operator==( const Meta::Year &other ) const {
+        return name() == other.name();
     }
 
     QPointer<MetaFile::Track::Private> const d;

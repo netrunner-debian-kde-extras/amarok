@@ -51,6 +51,7 @@ Playlist::GroupingProxy::GroupingProxy( Playlist::AbstractModel *belowModel, QOb
     connect( sourceModel(), SIGNAL( modelReset() ), this, SLOT( regroupAll() ) );
 
     connect( sourceModel(), SIGNAL( insertedIds( const QList<quint64>& ) ), this, SIGNAL( insertedIds( const QList< quint64>& ) ) );
+    connect( sourceModel(), SIGNAL( beginRemoveIds() ), this, SIGNAL( beginRemoveIds() ) );
     connect( sourceModel(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SIGNAL( removedIds( const QList< quint64 >& ) ) );
     connect( sourceModel(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SIGNAL( activeTrackChanged( quint64 ) ) );
 
@@ -91,7 +92,7 @@ Playlist::GroupingProxy::data( const QModelIndex& index, int role ) const
         {
             case GroupLength:
             {
-                return Meta::secToPrettyTime( lengthOfGroup( row ) );
+                return Meta::msToPrettyTime( lengthOfGroup( row ) );
             }
             case GroupTracks:
             {
@@ -313,17 +314,17 @@ int Playlist::GroupingProxy::tracksInGroup( int row ) const
 
 int Playlist::GroupingProxy::lengthOfGroup( int row ) const
 {
-    int totalLenght = 0;
+    int totalLength = 0;
     for ( int i = firstInGroup( row ); i <= lastInGroup( row ); i++ )
     {
         Meta::TrackPtr track = m_belowModel->trackAt( i );
         if ( track )
-            totalLenght += track->length();
+            totalLength += track->length();
         else
             warning() << "Playlist::GroupingProxy::lengthOfGroup(): TrackPtr is 0!  i = " << i << ", rowCount = " << m_belowModel->rowCount();
     }
 
-    return totalLenght;
+    return totalLength;
 }
 
 QString

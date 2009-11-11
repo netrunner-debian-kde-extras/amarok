@@ -30,6 +30,7 @@
 #include "DynamicModel.h"
 #include "EngineController.h"
 #include "EngineObserver.h"
+#include "MainWindow.h"
 #include "navigators/DynamicTrackNavigator.h"
 #include "navigators/RandomAlbumNavigator.h"
 #include "navigators/RandomTrackNavigator.h"
@@ -38,8 +39,8 @@
 #include "navigators/StandardTrackNavigator.h"
 #include "navigators/FavoredRandomTrackNavigator.h"
 #include "PlaylistModelStack.h"
+#include "playlist/PlaylistWidget.h"
 #include "statusbar/StatusBar.h"
-
 
 #include <typeinfo>
 
@@ -204,7 +205,7 @@ Playlist::Actions::play( const quint64 trackid, bool now )
                                || engineState == Phonon::BufferingState ) )
             {
                 //Theres a track playing now, calculate statistics for that track before playing a new one.
-                const double finishedPercent = (double)The::engineController()->trackPosition() / (double)currentTrack->length();
+                const double finishedPercent = (double)The::engineController()->trackPositionMs() / (double)currentTrack->length();
                 debug() << "Manually advancing to the next track, calculating previous statistics for track here.  Finished % is: "  << finishedPercent;
                 currentTrack->finishedPlaying( finishedPercent );
             }
@@ -238,13 +239,13 @@ Playlist::Actions::playlistModeChanged()
 
 
     QQueue<quint64> currentQueue;
-    
+
     if ( m_navigator )
     {
         //HACK: Migrate the queue to the new navigator
         //TODO: The queue really should not be maintained by the navigators in this way
         // but should be handled by a seperate and persistant object.
-        
+
         currentQueue = m_navigator->queue();
         m_navigator->deleteLater();
     }
@@ -271,7 +272,16 @@ Playlist::Actions::playlistModeChanged()
 
     m_navigator = 0;
 
-    if ( Amarok::randomEnabled() )
+    if ( Amarok::repeatEnabled() )
+    {
+        if ( Amarok::repeatTrack() )
+            m_navigator = new RepeatTrackNavigator();
+        else if ( Amarok::repeatAlbum() )
+            m_navigator = new RepeatAlbumNavigator();
+        else
+            m_navigator = new StandardTrackNavigator(); // this navigator handles playlist repeat
+    }
+    else if ( Amarok::randomEnabled() )
     {
         if ( Amarok::randomTracks() )
         {
@@ -285,21 +295,12 @@ Playlist::Actions::playlistModeChanged()
         else
             m_navigator = new StandardTrackNavigator(); // crap -- something went wrong
     }
-    else if ( Amarok::repeatEnabled() )
-    {
-        if ( Amarok::repeatTrack() )
-            m_navigator = new RepeatTrackNavigator();
-        else if ( Amarok::repeatAlbum() )
-            m_navigator = new RepeatAlbumNavigator();
-        else
-            m_navigator = new StandardTrackNavigator(); // this navigator handles playlist repeat
-    }
     else
         m_navigator = new StandardTrackNavigator();
 
 
     m_navigator->queueIds( currentQueue );
-    
+
 }
 
 void
@@ -347,6 +348,8 @@ Playlist::Actions::engineStateChanged( Phonon::State currentState, Phonon::State
     static int failures = 0;
     const int maxFailures = 10;
 
+    m_trackError = false;
+
     if ( currentState == Phonon::ErrorState )
     {
         failures++;
@@ -365,12 +368,10 @@ Playlist::Actions::engineStateChanged( Phonon::State currentState, Phonon::State
         if ( failures > 0 )
         {
             debug() << "Successfully played track. Resetting failure count.";
+            failures = 0;
         }
-        failures = 0;
-        m_trackError = false;
     }
 }
-
 
 void
 Playlist::Actions::engineNewTrackPlaying()
@@ -388,7 +389,7 @@ Playlist::Actions::engineNewTrackPlaying()
                 if ( AmarokConfig::lastPlaying() > -1 )
                     m_topmostModel->setActiveRow( AmarokConfig::lastPlaying() );
                 else
-                    m_topmostModel->setActiveRow( m_topmostModel->rowForTrack( track ) ); // this will set active row to -1 if the track isn't in the playlist at all
+                    m_topmostModel->setActiveRow( m_topmostModel->firstRowForTrack( track ) ); // this will set active row to -1 if the track isn't in the playlist at all
             }
         }
     }
@@ -396,6 +397,9 @@ Playlist::Actions::engineNewTrackPlaying()
         warning() << "engineNewTrackPlaying: not really a track";
 
     m_nextTrackCandidate = 0;
+
+    if( AmarokConfig::autoScrollPlaylist() )
+        The::mainWindow()->playlistWidget()->currentView()->scrollToActiveTrack();
 }
 
 

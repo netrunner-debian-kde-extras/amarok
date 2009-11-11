@@ -16,23 +16,11 @@
  ****************************************************************************************/
 
 #include "GeneralConfig.h"
-#include "Amarok.h"
-#include "amarokconfig.h"
-#include "Debug.h"
-
-#include <config-amarok.h>  
-
-#include <KStandardDirs>
-
-#include <QHBoxLayout>
-#include <QLabel>
-
 
 GeneralConfig::GeneralConfig( QWidget* parent )
     : ConfigDialogBase( parent )
 {
     setupUi( this );
-    connect( kcfg_LockLayout, SIGNAL( stateChanged ( int ) ), this, SLOT( lockStateChanged( int ) ) );
 }
 
 GeneralConfig::~GeneralConfig()
@@ -59,15 +47,4 @@ GeneralConfig::updateSettings() //SLOT
 {
 }
 
-void GeneralConfig::lockStateChanged( int locked )
-{
-    DEBUG_BLOCK
-
-    bool lock = ( locked == Qt::Checked );
-    emit( lockLayout( lock ) );
-    
-}
-
-
 #include "GeneralConfig.moc"
-

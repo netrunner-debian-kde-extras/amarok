@@ -53,10 +53,16 @@ function onFinishedAPI( response )
             // construct a QDomDocument out of the response and extract the <url>...</url> part
             doc = new QDomDocument();
             doc.setContent( response );
-            Amarok.debug( "returned wiki URL: " + doc.elementsByTagName( "url" ).at( 0 ).toElement().text());
             var url = doc.elementsByTagName( "url" ).at( 0 ).toElement().text();
+            Amarok.debug( "returned wiki URL: " + url );
             var url2 = QUrl.fromEncoded( new QByteArray( url ), 1 );
             Amarok.debug( "request no. 3 URL: " + url2.toString() );
+            // if we get redirected to the main page, then obviously no lyrics were found
+            if( url == "http://lyrics.wikia.com" ) {
+                Amarok.Lyrics.showLyricsError( errormsg );
+                Amarok.debug( "Redirected to main page for artist=" + triedArtist + ", song=" + triedSong );
+                return;
+            }
             // access the URL, let the response be handled by onFinished
             new Downloader( url2, onFinished );
         }
@@ -96,11 +102,42 @@ function onFinished( response )
                 Amarok.debug( "No lyrics found for artist=" + triedArtist + ", song=" + triedSong );
                 return;
             }
+            // strip "display:none" parts (they would cause confusion otherwise)
+            while ( response.indexOf( "display:none" ) != -1 ) {
+                var stripstart = response.indexOf( "display:none" );
+                stripstart = response.lastIndexOf( "<", stripstart );
+                var stripend = response.indexOf( " ", stripstart );
+                var element = response.substring( stripstart + 1, stripend );
+                Amarok.debug( "stripping hidden element of type: " + element );
+                stripend = response.indexOf( "</" + element + ">", stripstart );
+                var nextStart = response.indexOf( "<" + element, stripstart + 1 );
+                while ( nextStart != -1 && nextStart < stripend ) {
+                    stripend = response.indexOf( "</" + element + ">", stripend + 1 );
+                    nextStart = response.indexOf( "<" + element, nextStart + 1 );
+                }
+                response = response.substring( 0, stripstart ) + response.substring( stripend + 4 + element.length );
+            }
             // parse the relevant part of the html source of the returned page
-            relevant = /<div[^<>]*['"]lyricbox['"][^<>]*>(.*)<\/div>/.exec(response)[1];
+            var pos = response.indexOf( "lyricbox" );
+            var startPos = response.indexOf( ">", pos ) + 1;
+            var endPos = response.indexOf( "</div>", startPos );
+            var otherDivPos = response.indexOf( "<div", startPos );
+            while ( otherDivPos != -1 && otherDivPos < endPos ) {
+                endPos = response.indexOf( "</div>", endPos + 1 );
+                otherDivPos = response.indexOf( "<div", otherDivPos + 1 );
+            }
+            var relevant = response.substring( startPos, endPos );
             // take care of a few special cases
             relevant = relevant.replace(/<br\s*\/?>/g, "\n") + "\n\n"; // convert <br> to \n
             relevant = relevant.replace( /&mdash;/g, "—" ); // not supported by QDomDocument
+            // strip adverts
+            pos = relevant.indexOf( "rtMatcher" );
+            while( pos != -1 ) {
+                startPos = relevant.lastIndexOf( "<div", pos );
+                endPos = relevant.indexOf( "</div>", pos );
+                relevant = relevant.substring( 0, startPos ) + relevant.substring( endPos + 6 );
+                pos = relevant.indexOf( "rtMatcher" );
+            }
             // construct a QDomDocument to convert special characters in the lyrics text. 
             doc2 = new QDomDocument();
             doc2.setContent( "<?xml version=\"1.0\" encoding=\"UTF-8\"?><lyrics>" + relevant + "</lyrics>" );

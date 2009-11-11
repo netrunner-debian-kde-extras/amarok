@@ -27,8 +27,6 @@
 
 #include "KJobProgressBar.h"
 
-#include <QTextDocument>
-
 #include <cmath>
 
 StatusBar* StatusBar::s_instance = 0;
@@ -194,7 +192,6 @@ void StatusBar::metadataChanged( Meta::TrackPtr track )
 void StatusBar::engineStateChanged( Phonon::State state, Phonon::State oldState )
 {
     Q_UNUSED( oldState )
-    DEBUG_BLOCK
 
     switch ( state )
     {
@@ -204,7 +201,6 @@ void StatusBar::engineStateChanged( Phonon::State state, Phonon::State oldState 
         break;
 
     case Phonon::LoadingState:
-        debug() << "LoadingState: clear text";
         if ( m_currentTrack )
             updateInfo( m_currentTrack );
         else
@@ -218,7 +214,6 @@ void StatusBar::engineStateChanged( Phonon::State state, Phonon::State oldState 
         break;
 
     case Phonon::PlayingState:
-        debug() << "PlayingState: clear text";
         if ( m_currentTrack )
             updateInfo( m_currentTrack );
         //else
@@ -249,39 +244,12 @@ void StatusBar::engineNewTrackPlaying()
 
 void StatusBar::updateInfo( Meta::TrackPtr track )
 {
-    QString title       = Qt::escape( track->name() );
-    QString prettyTitle = Qt::escape( track->prettyName() );
-    QString artist      = track->artist() ? Qt::escape( track->artist()->name() ) : QString();
-    QString album       = track->album() ? Qt::escape( track->album()->name() ) : QString();
-    QString length      = Qt::escape( Meta::secToPrettyTime( track->length() ) );
-
-    // ugly because of translation requirements
-    if ( !title.isEmpty() && !artist.isEmpty() && !album.isEmpty() )
-        title = i18nc( "track by artist on album", "<b>%1</b> by <b>%2</b> on <b>%3</b>", title, artist, album );
-
-    else if ( !title.isEmpty() && !artist.isEmpty() )
-        title = i18nc( "track by artist", "<b>%1</b> by <b>%2</b>", title, artist );
-
-    else if ( !album.isEmpty() )
-        // we try for pretty title as it may come out better
-        title = i18nc( "track on album", "<b>%1</b> on <b>%2</b>", prettyTitle, album );
-    else
-        title = "<b>" + prettyTitle + "</b>";
-
-    if ( title.isEmpty() )
-        title = i18n( "Unknown track" );
-
-
-    // check if we have any source info:
-
+    // Check if we have any source info:
     Meta::SourceInfoCapability *sic = track->create<Meta::SourceInfoCapability>();
     if ( sic )
     {
-        //is the source defined
-        QString source = sic->sourceName();
-        if ( !source.isEmpty() )
+        if ( !sic->sourceName().isEmpty() )
         {
-            title += ' ' + i18n( "from" ) + " <b>" + source + "</b>";
             m_nowPlayingEmblem->setPixmap( sic->emblem() );
             m_nowPlayingEmblem->show();
         }
@@ -292,15 +260,7 @@ void StatusBar::updateInfo( Meta::TrackPtr track )
     else
         m_nowPlayingEmblem->hide();
 
-    // don't show '-' or '?'
-    if ( length.length() > 1 )
-    {
-        title += " (";
-        title += length;
-        title += ')';
-    }
-
-    m_nowPlayingLabel->setText( i18n( "Playing: %1", title ) );
+    m_nowPlayingLabel->setText( i18n( "Playing: %1", Amarok::prettyNowPlaying() ) );
 }
 
 void StatusBar::longMessage( const QString & text, MessageType type )
@@ -331,19 +291,23 @@ void
 StatusBar::updateTotalPlaylistLength() //SLOT
 {
     const int totalLength = The::playlist()->totalLength();
+    const quint64 totalSize = The::playlist()->totalSize();
     const int trackCount = The::playlist()->rowCount();
-    const QString totalTime = Meta::secToPrettyTime( totalLength );
+    const QString prettyTotalLength = Meta::msToPrettyTime( totalLength );
+    const QString prettyTotalSize = Meta::prettyFilesize( totalSize );
 
     if( totalLength > 0 && trackCount > 0 )
     {
-        m_playlistLengthLabel->setText( i18ncp( "%1 is number of tracks, %2 is time", "%1 track (%2)", "%1 tracks (%2)", trackCount, totalTime ) );
+        m_playlistLengthLabel->setText( i18ncp( "%1 is number of tracks, %2 is time", "%1 track (%2)", "%1 tracks (%2)", trackCount, prettyTotalLength ) );
         m_playlistLengthLabel->show();
+        m_playlistLengthLabel->setToolTip( i18n( "Total playlist size: %1", prettyTotalSize ) );
         m_separator->show();
     }
     else if( ( totalLength == 0 ) && ( trackCount > 0 ) )
     {
         m_playlistLengthLabel->setText( i18ncp( "%1 is number of tracks", "%1 track", "%1 tracks", trackCount ) );
         m_playlistLengthLabel->show();
+        m_playlistLengthLabel->setToolTip( 0 );
         m_separator->show();
     }
     //Total Length will not be > 0 if trackCount is 0, so we can ignore it

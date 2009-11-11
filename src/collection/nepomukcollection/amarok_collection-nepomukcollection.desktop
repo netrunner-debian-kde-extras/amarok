@@ -19,6 +19,7 @@ Name[ga]=Bailiúchán Nepomuk
 Name[gl]=Colección de Nepomuk
 Name[he]=אוסף Nepomuk
 Name[hne]=नेपोमक संग्रह
+Name[hu]=Nepomuk-gyűjtemény
 Name[is]=Nepomuk safn
 Name[it]=Collezione Nepomuk
 Name[ja]=Nepomuk コレクション
@@ -56,7 +57,7 @@ X-KDE-Library=amarok_collection-nepomukcollection
 
 X-KDE-Amarok-authors=Daniel Winter
 X-KDE-Amarok-email=dw@danielwinter.de
-X-KDE-Amarok-framework-version=49
+X-KDE-Amarok-framework-version=50
 X-KDE-Amarok-name=nepomuk-collection
 X-KDE-Amarok-plugintype=collection
 X-KDE-Amarok-rank=100

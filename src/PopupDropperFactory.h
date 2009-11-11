@@ -52,12 +52,9 @@ class AMAROK_EXPORT PopupDropperFactory : public QObject
         PopupDropper * createPopupDropper( QWidget * parent );
 
         PopupDropperItem* createItem( QAction * action );
-
-        /**
-         * Adjusts the submenu item given to be like those created in createItem
-         * @param item The item to be adjusted
-         */
-        void adjustSubmenuItem( PopupDropperItem * item );
+        void adjustItems( PopupDropper *pud );
+        void adjustItem( PopupDropperItem *item );
+        static void adjustItemCallback( void *pdi );
 
     private:
         PopupDropperFactory( QObject* parent );

@@ -62,7 +62,7 @@ public:
 
     /**
     * Creates a new XSPFPlaylist and starts loading the xspf file of the url.
-    * @param url The Ulrf of the xspf file to load.
+    * @param url The Url of the xspf file to load.
     * @param autoAppend Should this playlist automatically append itself to the playlist when loaded (useful when loading a remote url as it
     * allows the caller to do it in a "one shot" way and not have to worry about waiting untill download and parsing is completed.
     */
@@ -123,13 +123,18 @@ public:
 
     /* PlaylistFile methods */
     bool isWritable();
+    /** Changes both the filename and the title in XML */
     void setName( const QString &name );
     bool load( QTextStream &stream ) { return loadXSPF( stream ); }
+    /** save to location, relative is unused since XSPF mandates absolute paths */
     bool save( const KUrl &location, bool relative );
 
 private:
     XSPFTrackList trackList();
     bool loadXSPF( QTextStream& );
+    bool m_tracksLoaded;
+    //cache for the tracklist since a tracks() is a called *a lot*.
+    TrackList m_tracks;
 
     KUrl m_url;
     bool m_autoAppendAfterLoad;

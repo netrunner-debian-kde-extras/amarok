@@ -23,8 +23,21 @@
 #include "PlaylistSortWidget.h"
 #include "ProgressiveSearchWidget.h"
 
+#include <KStandardDirs>
+
 namespace Playlist
 {
+
+ViewUrlGenerator * ViewUrlGenerator::s_instance = 0;
+
+ViewUrlGenerator * ViewUrlGenerator::instance()
+{
+    if( s_instance == 0)
+        s_instance = new ViewUrlGenerator();
+
+    return s_instance;
+}
+
 
 ViewUrlGenerator::ViewUrlGenerator()
 {}
@@ -33,7 +46,7 @@ ViewUrlGenerator::~ViewUrlGenerator()
 {}
 
 AmarokUrl
-ViewUrlGenerator::createAmarokUrl()
+ViewUrlGenerator::createUrl()
 {
     DEBUG_BLOCK
     AmarokUrl url;
@@ -80,6 +93,17 @@ ViewUrlGenerator::createAmarokUrl()
     url.setName( prettyUrlName );
     debug()<< "Url is "<<url.url();
     return url;
+}
+
+QString
+ViewUrlGenerator::description()
+{
+    return i18n( "Bookmark Playlist Setup" );
+}
+
+KIcon ViewUrlGenerator::icon()
+{
+    return KIcon( QPixmap( KStandardDirs::locate( "data", "amarok/images/playlist-bookmark-16.png" ) ) );
 }
 
 } //namespace Playlist

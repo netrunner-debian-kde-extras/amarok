@@ -18,6 +18,8 @@
 #define DEBUG_PREFIX "lastfm"
 
 #include "LastFmServiceConfig.h"
+
+#include "App.h"
 #include "Debug.h"
 
 #include <KWallet/Wallet>
@@ -29,13 +31,18 @@ LastFmServiceConfig::LastFmServiceConfig()
     : m_askDiag( 0 )
     , m_wallet( 0 )
 {
-
-    m_wallet = KWallet::Wallet::openWallet( KWallet::Wallet::NetworkWallet(), 0, KWallet::Wallet::Synchronous );
-
     KConfigGroup config = KGlobal::config()->group( configSectionName() );
-    
+
+    // open wallet unless explicitly told not to
+    if( !( config.readEntry( "ignoreWallet", QString() ) == "yes" ) ) {
+        pApp->hideSplashScreen();
+        m_wallet = KWallet::Wallet::openWallet( KWallet::Wallet::NetworkWallet(), 0, KWallet::Wallet::Synchronous );
+    }
+
+    // if it failed and the user hasn't forced us to use the wallet, ask if he wants us to ignore it for the future
     if( !m_wallet && !config.hasKey( "ignoreWallet" ) )
     {
+        pApp->hideSplashScreen();
         m_askDiag = new KDialog( 0 );
         m_askDiag->setCaption( i18n( "Last.fm credentials" ) );
         m_askDiag->setMainWidget( new QLabel( i18n( "No running KWallet found. Would you like Amarok to save your Last.fm credentials in plaintext?" ), m_askDiag ) );
@@ -46,6 +53,7 @@ LastFmServiceConfig::LastFmServiceConfig()
         connect( m_askDiag, SIGNAL( cancelClicked() ), this, SLOT( textDialogCancel() ) );
         m_askDiag->exec();
     }
+
     load();
 }
 
@@ -63,7 +71,6 @@ void
 LastFmServiceConfig::load()
 {
     KConfigGroup config = KGlobal::config()->group( configSectionName() );
-    // delete info from kconfig, as a safety measure
 
     if( m_wallet )
     {
@@ -72,30 +79,20 @@ LastFmServiceConfig::load()
         // do a one-time transfer
         // can remove at some point in the future, post-2.2
         m_wallet->setFolder( "Amarok" );
-        if( config.hasKey( "password" ) )
-        {
-            m_wallet->writePassword( "lastfm_password", config.readEntry( "password" ) );
-            config.deleteEntry( "password" );
-        }
-        if( config.hasKey( "username" ) )
-        {
-            m_wallet->writeEntry( "lastfm_username", config.readEntry( "username" ).toUtf8() );
-            config.deleteEntry( "username" );
-        }
-        
+
         if( m_wallet->readPassword( "lastfm_password", m_password ) > 0 )
             debug() << "Failed to read lastfm password from kwallet!";
         QByteArray rawUsername;
         if( m_wallet->readEntry( "lastfm_username", rawUsername ) > 0 )
             debug() << "failed to read last.fm username from kwallet.. :(";
         else
-            m_username = QString::fromUtf8( rawUsername );   
+            m_username = QString::fromUtf8( rawUsername );
     } else if( config.readEntry( "ignoreWallet", QString() ) == "yes" )
     {
         m_username = config.readEntry( "username", QString() );
         m_password = config.readEntry( "password", QString() );
     }
-    
+
     m_sessionKey = config.readEntry( "sessionKey", QString() );
     m_scrobble = config.readEntry( "scrobble", true );
     m_fetchSimilar = config.readEntry( "fetchSimilar", true );
@@ -110,7 +107,7 @@ void LastFmServiceConfig::save()
     config.writeEntry( "sessionKey", m_sessionKey );
     config.writeEntry( "scrobble", m_scrobble );
     config.writeEntry( "fetchSimilar", m_fetchSimilar );
-        
+
     if( m_wallet )
     {
         m_wallet->setFolder( "Amarok" );

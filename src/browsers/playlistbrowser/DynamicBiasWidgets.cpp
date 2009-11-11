@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Daniel Caleb Jones <danielcjones@gmail.com>                       *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -120,20 +121,25 @@ PlaylistBrowserNS::BiasAddWidget::BiasAddWidget( const QString& caption, const Q
     mainLayout->addWidget( descLabel );
     mainLayout->setStretchFactor( descLabel, 1 );
 
-    connect( this, SIGNAL( clicked() ), SLOT( slotClicked() ) );
-
     setLayout( mainLayout );
 }
 
+// TODO: For some reason this only works with double-click. Also, mouseReleaseEvent() doesn't work at all. Don't know why.
 void
-PlaylistBrowserNS::BiasAddWidget::mouseReleaseEvent( QMouseEvent* )
+PlaylistBrowserNS::BiasAddWidget::mousePressEvent( QMouseEvent* event )
 {
-    emit clicked();
+    DEBUG_BLOCK
+
+    slotClicked();
+
+    BiasBoxWidget::mousePressEvent( event );
 }
 
 void
 PlaylistBrowserNS::BiasAddWidget::slotClicked()
 {
+    DEBUG_BLOCK
+
     emit addBias();
 }
 
@@ -197,7 +203,6 @@ PlaylistBrowserNS::BiasGlobalWidget::BiasGlobalWidget(
             this, SLOT(weightChanged(int)) );
 
     m_fieldSelection = new KComboBox( m_controlFrame );
-    m_fieldSelection->setPalette( QApplication::palette() );
 
     m_controlLayout->addWidget( new QLabel( i18n( "Proportion:" ), m_controlFrame ), 0, 0 );
     m_controlLayout->addWidget( new QLabel( i18n( "Match:" ), m_controlFrame ), 1, 0 );
@@ -396,7 +401,6 @@ void
 PlaylistBrowserNS::BiasGlobalWidget::makeCompareSelection( QWidget* parent )
 {
     m_compareSelection = new KComboBox( parent );
-    m_compareSelection->setPalette( QApplication::palette() );
     m_compareSelection->addItem( "", -1 );
     m_compareSelection->addItem( i18n( "less than" ),    (int)QueryMaker::LessThan );
     m_compareSelection->addItem( i18n( "equal to" ),     (int)QueryMaker::Equals );
@@ -422,7 +426,6 @@ void
 PlaylistBrowserNS::BiasGlobalWidget::makeGenericComboSelection( bool editable, QueryMaker* populateQuery )
 {
     KComboBox* combo = new KComboBox( m_controlFrame );
-    combo->setPalette( QApplication::palette() );
     combo->setSizePolicy( QSizePolicy::Ignored, QSizePolicy::Preferred );
     combo->setEditable( editable );
 
@@ -498,7 +501,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeArtistSelection()
     QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
     qm->setQueryType( QueryMaker::Custom );
     qm->addReturnValue( Meta::valArtist );
-    makeGenericComboSelection( true, qm );
+    makeGenericComboSelection( false, qm );
 }
 
 
@@ -508,7 +511,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeComposerSelection()
     QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
     qm->setQueryType( QueryMaker::Custom );
     qm->addReturnValue( Meta::valComposer );
-    makeGenericComboSelection( true, qm );
+    makeGenericComboSelection( false, qm );
 }
 
 
@@ -518,7 +521,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeAlbumSelection()
     QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
     qm->setQueryType( QueryMaker::Custom );
     qm->addReturnValue( Meta::valAlbum );
-    makeGenericComboSelection( true, qm );
+    makeGenericComboSelection( false, qm );
 }
 
 
@@ -536,7 +539,7 @@ PlaylistBrowserNS::BiasGlobalWidget::makeGenreSelection()
     QueryMaker* qm = new MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
     qm->setQueryType( QueryMaker::Custom );
     qm->addReturnValue( Meta::valGenre );
-    makeGenericComboSelection( true, qm );
+    makeGenericComboSelection( false, qm );
 }
 
 void
@@ -662,7 +665,6 @@ PlaylistBrowserNS::BiasNormalWidget::BiasNormalWidget( Dynamic::NormalBias* bias
             SLOT(scaleChanged(int)) );
 
     m_fieldSelection = new KComboBox( m_controlFrame );
-    m_fieldSelection->setPalette( QApplication::palette() );
 
     m_controlLayout->addWidget( new QLabel( i18n( "Strictness:" ), m_controlFrame ), 0, 0 );
     m_controlLayout->addWidget( new QLabel( i18n( "Match:" ), m_controlFrame ), 1, 0 );

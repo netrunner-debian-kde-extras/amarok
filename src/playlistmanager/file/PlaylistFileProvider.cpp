@@ -35,10 +35,15 @@
 #include <QLabel>
 #include <QString>
 
+//For removing multiple tracks from different playlists with one QAction
+typedef QMultiMap<Meta::PlaylistPtr, Meta::TrackPtr> PlaylistTrackMap;
+Q_DECLARE_METATYPE( PlaylistTrackMap )
+
 PlaylistFileProvider::PlaylistFileProvider()
  : UserPlaylistProvider()
  , m_playlistsLoaded( false )
  , m_defaultFormat( Meta::XSPF )
+ , m_removeTrackAction( 0 )
 {
     //playlists are lazy loaded
 }
@@ -53,7 +58,11 @@ PlaylistFileProvider::~PlaylistFileProvider()
     foreach( Meta::PlaylistPtr playlist, m_playlists )
     {
         KUrl url = playlist->retrievableUrl();
-        debug() << "storing: " << url.url();
+        //only save files NOT in "playlists", those are automatically loaded.
+        if( url.upUrl().equals( Amarok::saveLocation( "playlists" ) ) )
+            continue;
+
+        debug() << "storing to rc-file: " << url.url();
 
         loadedPlaylistsConfig().writeEntry( url.url(), playlist->groups() );
     }
@@ -95,9 +104,47 @@ PlaylistFileProvider::playlistActions( Meta::PlaylistPtr playlist )
 QList<QAction *>
 PlaylistFileProvider::trackActions( Meta::PlaylistPtr playlist, int trackIndex )
 {
-    Q_UNUSED( playlist );
     Q_UNUSED( trackIndex );
     QList<QAction *> actions;
+    //no actions if this is not one of ours
+    if( !m_playlists.contains( playlist ) )
+        return actions;
+
+    if( trackIndex < 0 )
+        return actions;
+
+    int trackCount = playlist->trackCount();
+    if( trackCount == -1 )
+        trackCount = playlist->tracks().size();
+
+    if( trackIndex >= trackCount )
+        return actions;
+
+    if( m_removeTrackAction == 0 )
+    {
+        m_removeTrackAction = new QAction(
+                    KIcon( "media-track-remove-amarok" ),
+                    i18nc( "Remove a track from a saved playlist", "Remove From \"%1\"" )
+                        .arg( playlist->name() ),
+                    this
+                );
+        m_removeTrackAction->setProperty( "popupdropper_svg_id", "delete" );
+        connect( m_removeTrackAction, SIGNAL( triggered() ), SLOT( slotRemove() ) );
+    }
+    //Add the playlist/track combination to a QMultiMap that is stored in the action.
+    //In the slot we use this data to remove that track from the playlist.
+    PlaylistTrackMap playlistMap = m_removeTrackAction->data().value<PlaylistTrackMap>();
+    Meta::TrackPtr track = playlist->tracks()[trackIndex];
+    //only add action to map if playlist/track combo is not in there yet.
+    if( !playlistMap.keys().contains( playlist ) ||
+           !playlistMap.values( playlist ).contains( track )
+      )
+    {
+        playlistMap.insert( playlist, track );
+    }
+    m_removeTrackAction->setData( QVariant::fromValue( playlistMap ) );
+
+    actions << m_removeTrackAction;
 
     return actions;
 }
@@ -106,7 +153,7 @@ PlaylistFileProvider::trackActions( Meta::PlaylistPtr playlist, int trackIndex )
 Meta::PlaylistPtr
 PlaylistFileProvider::save( const Meta::TrackList &tracks )
 {
-    return save( tracks, QDateTime::currentDateTime().toString( "ddd MMMM d yy hh:mm") );
+    return save( tracks, QDateTime::currentDateTime().toString( "ddd MMMM d yy hh:mm") + ".xspf" );
 }
 
 Meta::PlaylistPtr
@@ -122,26 +169,30 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
     }
     QString ext = Amarok::extension( path.fileName() );
     Meta::PlaylistFormat format = m_defaultFormat;
-    if( !ext.isEmpty() )
+    if( !name.isNull() && !ext.isEmpty() )
         format = Meta::getFormat( path );
 
-    Meta::Playlist *playlist = 0;
+    Meta::PlaylistFile *playlistFile = 0;
     switch( format )
     {
         case Meta::PLS:
-            playlist = new Meta::PLSPlaylist( tracks );
+            playlistFile = new Meta::PLSPlaylist( tracks );
             break;
         case Meta::M3U:
-            playlist = new Meta::M3UPlaylist( tracks );
+            playlistFile = new Meta::M3UPlaylist( tracks );
             break;
         case Meta::XSPF:
-            playlist = new Meta::XSPFPlaylist( tracks );
+            playlistFile = new Meta::XSPFPlaylist( tracks );
             break;
         default:
-            debug() << "unknown type!";
-            break;
+            debug() << QString("Do not support filetype with extension \"%1!\"").arg( ext );
+            return Meta::PlaylistPtr();
     }
-    Meta::PlaylistPtr playlistPtr( playlist );
+    playlistFile->setName( name );
+    debug() << "Forcing save of playlist!";
+    playlistFile->save( path, true );
+
+    Meta::PlaylistPtr playlistPtr( playlistFile );
     m_playlists << playlistPtr;
     //just in case there wasn't one loaded before.
     m_playlistsLoaded = true;
@@ -240,12 +291,16 @@ PlaylistFileProvider::loadPlaylists()
     foreach( const QString &key, keys )
     {
         KUrl url( key );
+        //Don't load these from the config file, they are read from the directory anyway
+        if( url.upUrl().equals( Amarok::saveLocation( "playlists" ) ) )
+            continue;
+
         QString groups = loadedPlaylistsConfig().readEntry( key );
         Meta::PlaylistFilePtr playlist = Meta::loadPlaylistFile( url );
         if( playlist.isNull() )
         {
             The::statusBar()->longMessage(
-                    i18n("The playlist file \"%1\" could not be loaded!").arg( url.fileName() ),
+                    i18n("The playlist file \"%1\" could not be loaded.").arg( url.fileName() ),
                     StatusBar::Error
                 );
             continue;
@@ -256,7 +311,44 @@ PlaylistFileProvider::loadPlaylists()
 
         m_playlists << Meta::PlaylistPtr::dynamicCast( playlist );
     }
+
+    QDir playlistDir = QDir( Amarok::saveLocation( "playlists" ), "",
+                             QDir::Name,
+                             QDir::Files | QDir::Readable );
+    foreach( const QString &file, playlistDir.entryList() )
+    {
+        KUrl url( playlistDir.path() );
+        url.addPath( file );
+        debug() << QString( "Trying to open %1 as a playlist file" ).arg( url.url() );
+        Meta::PlaylistFilePtr playlist = Meta::loadPlaylistFile( url );
+        if( playlist.isNull() )
+        {
+            The::statusBar()->longMessage(
+                    i18n("The playlist file \"%1\" could not be loaded.").arg( url.fileName() ),
+                    StatusBar::Error
+                );
+            continue;
+        }
+        m_playlists << Meta::PlaylistPtr::dynamicCast( playlist );
+    }
+
     m_playlistsLoaded = true;
+}
+
+void
+PlaylistFileProvider::slotRemove()
+{
+    QAction *action = qobject_cast<QAction *>( QObject::sender() );
+    if( action == 0 )
+        return;
+
+    PlaylistTrackMap playlistMap = action->data().value<PlaylistTrackMap>();
+    foreach( Meta::PlaylistPtr playlist, playlistMap.uniqueKeys() )
+        foreach( Meta::TrackPtr track, playlistMap.values( playlist ) )
+            playlist->removeTrack( playlist->tracks().indexOf( track ) );
+
+    //clear the data
+    action->setData( QVariant() );
 }
 
 KConfigGroup

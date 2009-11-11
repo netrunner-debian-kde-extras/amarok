@@ -27,9 +27,10 @@
 #include <QtCore/QString>
 #include <QtCore/QDateTime>
 
-TestAmarok::TestAmarok( QStringList testArgumentList )
+TestAmarok::TestAmarok( QStringList testArgumentList, bool stdout )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "Amarok.xml" );
+    if( !stdout )
+        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "Amarok.xml" );
     QTest::qExec( this, testArgumentList );
 }
 
@@ -135,6 +136,7 @@ void TestAmarok::testExtension()
     QCOMPARE( Amarok::extension( "" ), QString( "" ) );
     QCOMPARE( Amarok::extension( "..." ), QString( "" ) );
     QCOMPARE( Amarok::extension( "test" ), QString( "" ) );
+    QCOMPARE( Amarok::extension( "test." ), QString( "" ) );
     QCOMPARE( Amarok::extension( "test.mp3" ), QString( "mp3" ) );
     QCOMPARE( Amarok::extension( "test.mP3" ), QString( "mp3" ) );
     QCOMPARE( Amarok::extension( "test.MP3" ), QString( "mp3" ) );

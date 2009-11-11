@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -18,15 +19,14 @@
 #define MAINCONTROLSWIDGET_H
 
 #include <QGraphicsView>
-#include <QToolButton>
 
 class MainControlsButton;
+class QToolButton;
+
 
 /**
  * A small widget containing the 4 main control buttons. Manages special layout
  * for these buttons
- *
- * @author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>
  */
 class MainControlsWidget : public QGraphicsView
 {
@@ -39,13 +39,11 @@ public:
     void setPauseButton();
 
 private:
-
     MainControlsButton * m_playPauseButton;
     QToolButton * m_prevButton;
     QToolButton * m_playButton;
     QToolButton * m_stopButton;
     QToolButton * m_nextButton;
-
 };
 
 #endif

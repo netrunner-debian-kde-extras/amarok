@@ -82,13 +82,13 @@ void PlaylistBrowserNS::UserPlaylistTreeView::mouseDoubleClickEvent( QMouseEvent
         if( mpm == 0 )
             return;
         mpm->loadItems( list, Playlist::LoadAndPlay );
+        event->accept();
     }
+    Amarok::PrettyTreeView::mouseDoubleClickEvent( event );
 }
 
 void PlaylistBrowserNS::UserPlaylistTreeView::startDrag( Qt::DropActions supportedActions )
 {
-    DEBUG_BLOCK
-
     //Waah? when a parent item is dragged, startDrag is called a bunch of times
     static bool ongoingDrags = false;
     if( ongoingDrags )
@@ -110,7 +110,7 @@ void PlaylistBrowserNS::UserPlaylistTreeView::startDrag( Qt::DropActions support
 
         foreach( QAction * action, actions )
         {
-            m_pd->addItem( The::popupDropperFactory()->createItem( action ), false );
+            m_pd->addItem( The::popupDropperFactory()->createItem( action ) );
         }
 
         m_pd->show();
@@ -140,7 +140,7 @@ PlaylistBrowserNS::UserPlaylistTreeView::keyPressEvent( QKeyEvent *event )
             return;
         }
      }
-     QTreeView::keyPressEvent( event );
+     Amarok::PrettyTreeView::keyPressEvent( event );
 }
 
 void PlaylistBrowserNS::UserPlaylistTreeView::contextMenuEvent( QContextMenuEvent * event )

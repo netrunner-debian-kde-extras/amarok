@@ -60,6 +60,7 @@ PlaylistBrowserNS::PodcastModel::PodcastModel()
  : QAbstractItemModel()
  , m_appendAction( 0 )
  , m_loadAction( 0 )
+ , m_setNewAction( 0 )
 {
     s_instance = this;
     QList<Meta::PlaylistPtr> playlists =
@@ -100,7 +101,17 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
         title = channel->title();
         description = channel->description();
         isChannel = true;
-        icon = KIcon( "podcast-amarok" );
+        QStringList emblems;
+        //TODO: only check visible episodes. For now those are all returned by episodes().
+        foreach( const Meta::PodcastEpisodePtr ep, channel->episodes() )
+        {
+            if( ep->isNew() )
+            {
+                emblems << "rating";
+                break;
+            }
+        }
+        icon = KIcon( "podcast-amarok", 0, emblems );
     }
     else if ( pmc->podcastType() == Meta::EpisodeType )
     {
@@ -108,18 +119,27 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
         title = episode->title();
         description = episode->description();
         isChannel = false;
-        isOnDisk = !episode->localUrl().isEmpty();
-        if( isOnDisk )
+        KUrl episodeFile = episode->localUrl();
+        if( episodeFile.isEmpty() )
         {
-            icon = KIcon( "go-down" );
+            isOnDisk = false;
         }
         else
         {
-            if( episode->isNew() )
-                icon = KIcon( "rating" );
-            else
-                icon = KIcon( "podcast-amarok" );
+            isOnDisk = QFileInfo( episodeFile.toLocalFile() ).exists();
+            //reset localUrl because the file is not there.
+            if( !isOnDisk )
+                episode->setLocalUrl( KUrl() );
         }
+
+        QStringList emblems;
+        if( isOnDisk )
+            emblems << "go-down";
+
+        if( episode->isNew() )
+            icon = KIcon( "rating", 0, emblems );
+        else
+            icon = KIcon( "podcast-amarok", 0, emblems );
     }
     else
     {
@@ -270,8 +290,7 @@ PlaylistBrowserNS::PodcastModel::flags(const QModelIndex & index) const
 {
     if( index.isValid() )
     {
-        return ( Qt::ItemIsEnabled     | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled |
-                 Qt::ItemIsDragEnabled );
+        return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled );
     }
     return Qt::ItemIsDropEnabled;
 }
@@ -677,7 +696,10 @@ PlaylistBrowserNS::PodcastModel::actionsFor( const QModelIndexList &indices )
     if( !m_selectedChannels.isEmpty() )
         actions << provider->channelActions( m_selectedChannels );
     else if( !m_selectedEpisodes.isEmpty() )
+    {
+        actions << createEpisodeActions( m_selectedEpisodes );
         actions << provider->episodeActions( m_selectedEpisodes );
+    }
 
     return actions;
 }
@@ -715,6 +737,42 @@ PlaylistBrowserNS::PodcastModel::createCommonActions( QModelIndexList indices )
     actions << m_loadAction;
 
     return actions;
+}
+
+QList< QAction * >
+PlaylistBrowserNS::PodcastModel::createEpisodeActions( Meta::PodcastEpisodeList episodes )
+{
+    if( m_setNewAction == 0 )
+    {
+        m_setNewAction = new QAction( KIcon( "rating" ),
+                        i18nc( "toggle the \"new\" status of this podcast episode",
+                               "&New" ),
+                                     this
+                                    );
+        m_setNewAction->setProperty( "popupdropper_svg_id", "new" );
+        m_setNewAction->setCheckable( true );
+        connect( m_setNewAction, SIGNAL( triggered( bool ) ), SLOT( slotSetNew( bool ) ) );
+    }
+
+    /* by default a list of podcast episodes can only be changed to isNew = false, except
+       when all selected episodes are the same state */
+    m_setNewAction->setChecked( false );
+    foreach( const Meta::PodcastEpisodePtr episode, episodes )
+    {
+        if( episode->isNew() )
+            m_setNewAction->setChecked( true );
+    }
+
+    return QList< QAction *>() << m_setNewAction;
+}
+
+void
+PlaylistBrowserNS::PodcastModel::slotSetNew( bool newState )
+{
+    foreach( Meta::PodcastEpisodePtr episode, m_selectedEpisodes )
+    {
+        episode->setNew( newState );
+    }
 }
 
 Meta::PodcastChannelList

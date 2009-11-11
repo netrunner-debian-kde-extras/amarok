@@ -33,14 +33,14 @@ public:
     virtual ~TimecodeObserver();
 
     virtual void engineNewTrackPlaying();
-    virtual void enginePlaybackEnded ( int finalPosition, int trackLength, EngineObserver::PlaybackEndedReason reason );
-    virtual void engineTrackPositionChanged ( long position, bool userSeek );
+    virtual void enginePlaybackEnded ( qint64 finalPosition, qint64 trackLength, EngineObserver::PlaybackEndedReason reason );
+    virtual void engineTrackPositionChanged( qint64 position, bool userSeek );
 
 private:
     bool m_trackTimecodeable; //!< stores if current track has the writetimecode capability
-    static const int m_threshold;  //!< the arbitrary minum tracklength threshold in seconds
+    static const qint64 m_threshold;  //!< the arbitrary minum tracklength threshold in milliseconds
     Meta::TrackPtr m_currentTrack; //!< The current/just played track
-    long m_currPos; //!< the position the current track is at
+    qint64 m_currPos; //!< the position the current track is at
 };
 
 #endif // TIMECODEOBSERVER_H

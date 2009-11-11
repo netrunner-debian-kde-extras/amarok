@@ -89,45 +89,44 @@ PopupDropper * PopupDropperFactory::createPopupDropper()
 
 PopupDropperItem * PopupDropperFactory::createItem( QAction * action )
 {
-    QFont font;
-    font.setPointSize( 16 );
-    font.setBold( true );
-
     PopupDropperItem* pdi = new PopupDropperItem();
-    pdi->setSharedRenderer( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" ) );
-
     pdi->setAction( action );
-
     QString text = pdi->text();
     text.remove( QChar('&') );
     pdi->setText( text );
-    pdi->setFont( font );
-    pdi->setHoverMsecs( 800 );
-    QColor hoverIndicatorFillColor( The::paletteHandler()->palette().color( QPalette::Highlight ) );
-    hoverIndicatorFillColor.setAlpha( 96 );
-    QBrush brush = pdi->hoverIndicatorFillBrush();
-    brush.setColor( hoverIndicatorFillColor );
-    pdi->setHoverIndicatorFillBrush( brush );
-
+    adjustItem( pdi );
     return pdi;
 }
 
-void PopupDropperFactory::adjustSubmenuItem( PopupDropperItem *item )
+void PopupDropperFactory::adjustItem( PopupDropperItem *item )
 {
     if( !item )
         return;
-
     QFont font;
     font.setPointSize( 16 );
     font.setBold( true );
-
     item->setFont( font );
     item->setHoverMsecs( 800 );
-    item->setHoverIndicatorShowStyle( PopupDropperItem::OnHover );
     QColor hoverIndicatorFillColor( The::paletteHandler()->palette().color( QPalette::Highlight ) );
     hoverIndicatorFillColor.setAlpha( 96 );
     QBrush brush = item->hoverIndicatorFillBrush();
     brush.setColor( hoverIndicatorFillColor );
     item->setHoverIndicatorFillBrush( brush );
+
+    if( item->isSubmenuTrigger() )
+        item->setHoverIndicatorShowStyle( PopupDropperItem::OnHover );
+ 
+}
+
+void PopupDropperFactory::adjustItems( PopupDropper* pud )
+{
+    if( !pud )
+        return;
+    pud->forEachItem( adjustItemCallback );
+}
+
+void PopupDropperFactory::adjustItemCallback( void *pdi )
+{
+    The::popupDropperFactory()->adjustItem( (PopupDropperItem*)pdi );
 }
 

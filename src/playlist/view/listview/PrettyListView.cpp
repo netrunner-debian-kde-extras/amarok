@@ -2,6 +2,7 @@
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
  * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 John Atkinson <john@fauxnetic.co.uk>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -63,7 +64,6 @@
 
 Playlist::PrettyListView::PrettyListView( QWidget* parent )
         : QListView( parent )
-        , EngineObserver( The::engineController() )
         , m_headerPressIndex( QModelIndex() )
         , m_mousePressInHeader( false )
         , m_skipAutoScroll( false )
@@ -101,26 +101,21 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
     connect( model(), SIGNAL( layoutChanged() ), this, SLOT( reset() ) );
 
-     m_animationTimer = new QTimer(this);
-     connect( m_animationTimer, SIGNAL( timeout() ), this, SLOT( redrawActive() ) );
-     m_animationTimer->setInterval( 250 );
+    m_animationTimer = new QTimer(this);
+    connect( m_animationTimer, SIGNAL( timeout() ), this, SLOT( redrawActive() ) );
+    m_animationTimer->setInterval( 250 );
 
-     connect( LayoutManager::instance(), SIGNAL( activeLayoutChanged() ), this, SLOT( playlistLayoutChanged() ) );
-     
-     if ( LayoutManager::instance()->activeLayout().inlineControls() )
-         m_animationTimer->start();
+    connect( LayoutManager::instance(), SIGNAL( activeLayoutChanged() ), this, SLOT( playlistLayoutChanged() ) );
 
-     
+    if ( LayoutManager::instance()->activeLayout().inlineControls() )
+        m_animationTimer->start();
+
+    connect( model(), SIGNAL( beginRemoveIds() ), this, SLOT( saveTrackSelection() ) );
+    connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( restoreTrackSelection() ) );
 }
 
-Playlist::PrettyListView::~PrettyListView() {}
-
-void
-Playlist::PrettyListView::engineNewTrackPlaying()
-{
-    if( AmarokConfig::autoScrollPlaylist() )
-        scrollToActiveTrack();
-}
+Playlist::PrettyListView::~PrettyListView()
+{}
 
 void
 Playlist::PrettyListView::editTrackInformation()
@@ -185,9 +180,18 @@ Playlist::PrettyListView::dequeueSelection()
     Actions::instance()->dequeue( selectedRows() );
 }
 
+void
+Playlist::PrettyListView::switchQueueState()
+{
+    DEBUG_BLOCK
+
+    const bool isQueued = currentIndex().data( Playlist::StateRole ).toInt() & Item::Queued;
+    isQueued ? dequeueSelection() : queueSelection();
+    update(); // repaint (necessary when using shortcut)
+}
+
 void Playlist::PrettyListView::selectSource()
 {
-
     DEBUG_BLOCK
 
     QList<int> rows = selectedRows();
@@ -210,9 +214,7 @@ void Playlist::PrettyListView::selectSource()
         sourceSelector->show();
         //dialog deletes msc when done with it.
     }
-
 }
-
 
 void
 Playlist::PrettyListView::scrollToActiveTrack()
@@ -314,9 +316,12 @@ void
 Playlist::PrettyListView::dragMoveEvent( QDragMoveEvent* event )
 {
     QModelIndex index = indexAt( event->pos() );
-    if ( index.isValid() ) {
+    if ( index.isValid() )
+    {
         m_dropIndicator = visualRect( index );
-    } else {
+    }
+    else
+    {
         // draw it on the bottom of the last item
         index = model()->index( m_topmostProxy->rowCount() - 1, 0, QModelIndex() );
         m_dropIndicator = visualRect( index );
@@ -387,25 +392,20 @@ Playlist::PrettyListView::keyPressEvent( QKeyEvent* event )
 void
 Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
 {
-
-
     //first of all, if a left click, check if the delegate wants to do something about this click
     if( event->button() == Qt::LeftButton )
     {
-
         //get the item that was clicked
         QModelIndex index = indexAt( event->pos() );
 
         //we need to translate the position of the click into something relative to the item that was clicked.
         QRect itemRect = visualRect( index );
         QPoint relPos =  event->pos() - itemRect.topLeft();
-        
+
         if ( m_prettyDelegate->clicked( relPos, itemRect, index ) )
             return;  //click already handled...
-
     }
 
-    
     if ( mouseEventInHeader( event ) && ( event->button() == Qt::LeftButton ) )
     {
         m_mousePressInHeader = true;
@@ -526,7 +526,7 @@ Playlist::PrettyListView::startDrag( Qt::DropActions supportedActions )
         QList<QAction*> actions =  ViewCommon::actionsFor( this, &indices.first(), true );
 
         foreach( QAction * action, actions )
-            m_pd->addItem( The::popupDropperFactory()->createItem( action ), true );
+            m_pd->addItem( The::popupDropperFactory()->createItem( action ) );
 
         m_pd->show();
     }
@@ -620,7 +620,6 @@ void Playlist::PrettyListView::find( const QString &searchTerm, int fields, bool
     }
     else
         emit( notFound() );
-
 
     //instead of kicking the proxy right away, start a 500msec timeout.
     //this stops us from updating it for each letter of a long search term,
@@ -779,8 +778,25 @@ void Playlist::PrettyListView::playlistLayoutChanged()
         m_animationTimer->stop();
 }
 
+void Playlist::PrettyListView::saveTrackSelection()
+{
+    m_savedTrackSelection.clear();
 
+    foreach( int rowId, selectedRows() )
+        m_savedTrackSelection.append( m_topmostProxy->idAt( rowId ) );
+}
+
+void Playlist::PrettyListView::restoreTrackSelection()
+{
+    selectionModel()->clearSelection();
+
+    foreach( qint64 savedTrackId, m_savedTrackSelection )
+    {
+        QModelIndex restoredIndex = model()->index( m_topmostProxy->rowForId( savedTrackId ), 0, QModelIndex() );
+
+        if( restoredIndex.isValid() )
+            selectionModel()->select( restoredIndex, QItemSelectionModel::Select );
+    }
+}
 
 #include "PrettyListView.moc"
-
-

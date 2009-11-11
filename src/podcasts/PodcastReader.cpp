@@ -21,6 +21,7 @@
 
 #include <kio/job.h>
 #include <kurl.h>
+#include <KDateTime>
 
 #include <QDate>
 #include <time.h>
@@ -340,17 +341,18 @@ PodcastReader::read()
 }
 
 QDateTime
-PodcastReader::parsePubDate( const QString &datestring )
+PodcastReader::parsePubDate( const QString &dateString )
 {
-    struct tm tmp;
+    DEBUG_BLOCK
+    QDateTime pubDate;
 
-    if( datestring.contains( ',' ) )
-        strptime( datestring.toAscii().data(), "%a, %d %b %Y %H:%M:%S %z", &tmp );
+    debug() << "Parsing pubdate: " << dateString;
+    if( dateString.contains( ',' ) )
+        pubDate = KDateTime::fromString( dateString, KDateTime::RFCDateDay ).dateTime();
     else
-        strptime( datestring.toAscii().data(), "%d %b %Y %H:%M:%S %z", &tmp );
+        pubDate = KDateTime::fromString( dateString, KDateTime::RFCDate ).dateTime();
 
-    QDateTime pubDate = QDateTime::fromTime_t( mktime( &tmp ) );
-
+    debug() << "result: " << pubDate.toString();
     return pubDate;
 }
 

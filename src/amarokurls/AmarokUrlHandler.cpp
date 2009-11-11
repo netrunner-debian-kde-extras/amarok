@@ -27,6 +27,8 @@
 #include "BookmarkModel.h"
 #include "SqlStorage.h"
 #include "timecode/TimecodeObserver.h"
+#include "ContextUrlGenerator.h"
+#include "PlayUrlGenerator.h"
 
 #include <KIcon>
 
@@ -61,6 +63,11 @@ AmarokUrlHandler::AmarokUrlHandler()
     registerRunner( m_navigationRunner, m_navigationRunner->command() );
     registerRunner( m_playRunner, m_playRunner->command() );
     registerRunner( m_playlistViewRunner, m_playlistViewRunner->command() );
+
+    registerGenerator( ContextUrlGenerator::instance() );
+    registerGenerator( NavigationUrlGenerator::instance() );
+    registerGenerator( Playlist::ViewUrlGenerator::instance() );
+    registerGenerator( PlayUrlGenerator::instance() );
 }
 
 
@@ -84,6 +91,17 @@ void AmarokUrlHandler::unRegisterRunner( AmarokUrlRunnerBase * runner )
         m_registeredRunners.remove( key );
 }
 
+void AmarokUrlHandler::registerGenerator( AmarokUrlGenerator * generator )
+{
+    if( !m_registeredGenerators.contains( generator ) )
+        m_registeredGenerators.append( generator );
+}
+
+void AmarokUrlHandler::unRegisterGenerator( AmarokUrlGenerator * generator )
+{
+    m_registeredGenerators.removeAll( generator );
+}
+
 bool AmarokUrlHandler::run( AmarokUrl url )
 {
 
@@ -103,15 +121,13 @@ bool AmarokUrlHandler::run( AmarokUrl url )
 
 void AmarokUrlHandler::bookmarkAlbum( Meta::AlbumPtr album ) //slot
 {
-    NavigationUrlGenerator generator;
-    generator.urlFromAlbum( album ).saveToDb();
+    NavigationUrlGenerator::instance()->urlFromAlbum( album ).saveToDb();
     BookmarkModel::instance()->reloadFromDb();
 }
 
 void AmarokUrlHandler::bookmarkArtist( Meta::ArtistPtr artist ) //slot
 {
-    NavigationUrlGenerator generator;
-    generator.urlFromArtist( artist ).saveToDb();
+    NavigationUrlGenerator::instance()->urlFromArtist( artist ).saveToDb();
     BookmarkModel::instance()->reloadFromDb();
 }
 
@@ -119,7 +135,7 @@ BookmarkList AmarokUrlHandler::urlsByCommand( const QString &command )
 {
     DEBUG_BLOCK
 
-    QString query = "SELECT id, parent_id, name, url, description, custom FROM bookmarks where url like 'amarok://%1/%' ORDER BY name;";
+    QString query = "SELECT id, parent_id, name, url, description, custom FROM bookmarks where url like 'amarok://%1%' ORDER BY name;";
     query = query.arg( command );
     QStringList result = CollectionManager::instance()->sqlStorage()->query( query );
 
@@ -138,8 +154,7 @@ BookmarkList AmarokUrlHandler::urlsByCommand( const QString &command )
 
 void AmarokUrlHandler::bookmarkCurrentBrowserView()
 {
-    NavigationUrlGenerator generator;
-    AmarokUrl url = generator.CreateAmarokUrl();
+    AmarokUrl url = NavigationUrlGenerator::instance()->CreateAmarokUrl();
     url.saveToDb();
     BookmarkModel::instance()->reloadFromDb();
 }
@@ -147,10 +162,17 @@ void AmarokUrlHandler::bookmarkCurrentBrowserView()
 void
 AmarokUrlHandler::bookmarkCurrentPlaylistView()
 {
-    Playlist::ViewUrlGenerator generator;
-    AmarokUrl url = generator.createAmarokUrl();
+    AmarokUrl url = Playlist::ViewUrlGenerator::instance()->createUrl();
     url.saveToDb();
     BookmarkModel::instance()->reloadFromDb();
+}
+
+void
+AmarokUrlHandler::bookmarkCurrentContextView()
+{
+    AmarokUrl url = ContextUrlGenerator::instance()->createContextBookmark();
+    url.saveToDb();
+    BookmarkModel::instance()->reloadFromDb(); 
 }
 
 KIcon
@@ -177,7 +199,7 @@ AmarokUrlHandler::unregisterForTimecodes( ProgressWidget * progressWidget )
 
 void AmarokUrlHandler::updateTimecodes()
 {
-        foreach( ProgressWidget * progressWidget, m_progresWidgets )
+    foreach( ProgressWidget * progressWidget, m_progresWidgets )
     {
         progressWidget->redrawBookmarks();
     }

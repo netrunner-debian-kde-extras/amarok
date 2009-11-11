@@ -31,7 +31,8 @@
 class CollectionWidget;
 class ContextWidget;
 class MainToolbar;
-class MainToolbarNG;
+class SlimToolbar;
+class MainToolbar;
 class MainWindow;
 class PlaylistFileProvider;
 class SearchWidget;
@@ -56,9 +57,8 @@ namespace The {
     AMAROK_EXPORT MainWindow* mainWindow();
 }
 
-//This should only change if docks or toolbars are added or removed, and in this case a new src/data/DefaultDockLayyout
-//file should be created as well
-#define LAYOUT_VERSION 1
+//This should only change if docks or toolbars are added or removed
+#define LAYOUT_VERSION 3
 
 /**
   * @class MainWindow
@@ -74,7 +74,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
 
     public:
         MainWindow();
-       ~MainWindow();
+        ~MainWindow();
 
         //allows us to switch browsers from within other browsers etc
         void showBrowser( const QString& name );
@@ -109,11 +109,15 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         bool isLayoutLocked();
 
     signals:
-        void loveTrack( Meta::TrackPtr );
+        void loveTrack( Meta::TrackPtr track );
+        void banTrack();
+        void skipTrack();
+        void switchQueueStateShortcut();
 
     public slots:
         void showHide();
-        void loveTrack();
+        void slotFullScreen();
+        void slotLoveTrack() { emit loveTrack( The::engineController()->currentTrack() ); }
         void hideContextView( bool hide );
 
         void setLayoutLocked( bool locked );
@@ -123,28 +127,38 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
     protected:
         //Reimplemented from EngineObserver
         virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
-        virtual void engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged );
-        
+        virtual void engineNewTrackPlaying();
+
         //Reimplemented from Meta::Observer
         using Observer::metadataChanged;
         virtual void metadataChanged( Meta::TrackPtr track );
 
     private slots:
-        void slotShrinkBrowsers( int index );
         void exportPlaylist() const;
         void slotShowBookmarkManager() const;
         void slotShowCoverManager() const;
         void slotPlayMedia();
         void slotAddLocation( bool directPlay = false );
         void slotAddStream();
+        void slotJumpTo();
         void showScriptSelector();
+        void layoutChanged();
+        void ignoreLayoutChangesTimeout();
+
+        /**
+         * Save state and position of dock widgets.
+         */
+        void saveLayout();
+
+        /**
+         * Try to restore saved layout, if this fails, try to use the default layout.
+         */
+        void restoreLayout();
 
     protected:
         virtual void closeEvent( QCloseEvent* );
         virtual void keyPressEvent( QKeyEvent* );
-        virtual QSize sizeHint() const;
         virtual void resizeEvent ( QResizeEvent * event );
-
         virtual void paletteChange( const QPalette & oldPalette );
 
     private slots:
@@ -158,11 +172,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         void init();
         void setRating( int n );
         void showBrowser( const int index );
-        
-        /**
-         * Try to restore saved layout, if this fails, try to use the default layout.
-         */
-        void restoreLayout();
 
         CollectionWidget * m_collectionBrowser;
         PlaylistBrowserNS::PlaylistBrowser * m_playlistBrowser;
@@ -176,7 +185,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         //QPointer<KVBox>     m_statusbarArea;
 
         QPointer<SearchWidget>     m_searchWidget;
-        QPointer<MainToolbar>      m_controlBar;
         QPointer<Playlist::Widget> m_playlistWidget;
         QPointer<QTimer>           m_timer;  //search filter timer
         QPointer<QSplitter>        m_splitter;
@@ -194,7 +202,8 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         QDockWidget * m_contextDock;
         QDockWidget * m_playlistDock;
 
-        MainToolbarNG * m_newToolbar;
+        QPointer<MainToolbar> m_mainToolbar;
+        QPointer<SlimToolbar> m_slimToolbar;
 
         QWidget *     m_browserDummyTitleBarWidget;
         QWidget *     m_contextDummyTitleBarWidget;
@@ -210,6 +219,10 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
 
         bool m_layoutLocked;
         bool m_dockWidthsLocked;
+        bool m_dockChangesIgnored;
+        QTimer * m_restoreLayoutTimer;
+        QTimer * m_ignoreLayoutChangesTimer;
+        QTimer * m_saveLayoutChangesTimer;
 
     private slots:
         void createContextView( Plasma::Containment *c );

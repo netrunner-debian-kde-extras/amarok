@@ -29,9 +29,10 @@
 #include <QtCore/QDateTime>
 #include <QtCore/QFileInfo>
 
-TestMetaFileTrack::TestMetaFileTrack( QStringList testArgumentList )
+TestMetaFileTrack::TestMetaFileTrack( QStringList testArgumentList, bool stdout )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "MetaFileTrack.xml" );
+    if( !stdout )
+        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "MetaFileTrack.xml" );
     QTest::qExec( this, testArgumentList );
 }
 
@@ -345,7 +346,7 @@ void TestMetaFileTrack::testSetGetDiscNumber()
 
 void TestMetaFileTrack::testLength()
 {
-    QCOMPARE( track->length(), 12 );
+    QCOMPARE( track->length(), 12000LL );
 }
 
 void TestMetaFileTrack::testFilesize()

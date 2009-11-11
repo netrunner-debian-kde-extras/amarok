@@ -264,7 +264,7 @@ BookmarkModel::headerData(int section, Qt::Orientation orientation, int role) co
         {
             case Name: return i18n("Name");
             case Command: return i18n("Type");
-            case Url: return i18n("Url");
+            case Url: return i18n("URL");
             case Description: return i18n("Description");
             default: return QVariant();
         }
@@ -543,7 +543,6 @@ BookmarkModel::createNewBookmark()
     delete url;
 
     reloadFromDb();
-
     debug() << "id of new bookmark: " << id;
     int row = m_root->childGroups().count();
     foreach ( AmarokUrlPtr childBookmark, m_root->childBookmarks() ) {
@@ -556,6 +555,48 @@ BookmarkModel::createNewBookmark()
         row++;
     }
    
+}
+
+void
+BookmarkModel::deleteBookmark( const QString& name )
+{
+    DEBUG_BLOCK
+
+    debug() << "Name: " << name;
+
+    if( deleteBookmarkRecursively( m_root, name ) )
+    {
+        debug() << "Deleted!";
+        reloadFromDb();
+        The::amarokUrlHandler()->updateTimecodes();
+    }
+    else
+        debug() << "No such bookmark found!";
+}
+
+bool
+BookmarkModel::deleteBookmarkRecursively( BookmarkGroupPtr group, const QString& name )
+{
+    foreach( AmarokUrlPtr item, group->childBookmarks() )
+    {
+        debug() << "item->name(): " << item->name();
+        if( item->name() == name )
+        {
+            debug() << "Deleting Bookmark: " << name;
+            item->removeFromDb();
+            return true;
+        }
+    }
+
+    //if not found, recurse through child groups
+    foreach( BookmarkGroupPtr childGroup, group->childGroups() )
+    {
+        if( deleteBookmarkRecursively( childGroup, name ) )
+            return true;
+    }
+
+    return false;
+        
 }
 
 void BookmarkModel::upgradeTables( int from )

@@ -94,6 +94,8 @@ ScanManager::startFullScan()
         debug() << "scanning currently blocked";
         return;
     }
+
+    checkTables( true );
     cleanTables();
 
     if( m_parser )
@@ -106,9 +108,9 @@ ScanManager::startFullScan()
     connect( m_parser, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
     ThreadWeaver::Weaver::instance()->enqueue( m_parser );
 
-    QString batchfileLocation( KGlobal::dirs()->saveLocation( "data", QString("amarok/"), false ) + "amarokcollectionscanner_batchfullscan.xml" );
+    const QString batchfileLocation( KGlobal::dirs()->saveLocation( "data", QString("amarok/"), false ) + "amarokcollectionscanner_batchfullscan.xml" );
     debug() << "Checking for batch file in " << batchfileLocation;
-    
+
     if( !QFile::exists( batchfileLocation ) || !readBatchFile( batchfileLocation )  )
     {
         m_scanner = new AmarokProcess( this );
@@ -117,9 +119,15 @@ ScanManager::startFullScan()
             *m_scanner << "-r";
         *m_scanner << "--savelocation" << KGlobal::dirs()->saveLocation( "data", QString("amarok/"), true );
         debug() << "GOING TO SCAN:";
-        foreach( const QString &dir, MountPointManager::instance()->collectionFolders() )
-            debug() << "    " << dir;
-        *m_scanner << MountPointManager::instance()->collectionFolders();
+        QStringList collectionFolders = MountPointManager::instance()->collectionFolders();
+        if( collectionFolders.size() > 30 )
+            debug() << "(a *lot*)";
+        else
+        {
+            foreach( const QString &dir, MountPointManager::instance()->collectionFolders() )
+                debug() << "    " << dir;
+        }
+        *m_scanner << collectionFolders;
         m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
         connect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
         connect( m_scanner, SIGNAL( finished( int ) ), SLOT( slotFinished(  ) ) );
@@ -142,25 +150,32 @@ void ScanManager::startIncrementalScan()
         return;
     }
 
+    checkTables( false );
+
     QString batchfileLocation( KGlobal::dirs()->saveLocation( "data", QString("amarok/"), false ) + "amarokcollectionscanner_batchincrementalscan.xml" );
     bool batchfileExists = QFile::exists( batchfileLocation );
     if( batchfileExists )
         debug() << "Found batchfile in " << batchfileLocation;
 
     QStringList dirs;
-    
+
     if( !batchfileExists )
     {
         dirs = getDirsToScan();
 
         debug() << "GOING TO SCAN:";
-        foreach( const QString &dir, dirs )
-            debug() << "    " << dir;
+        if( dirs.size() > 30 )
+            debug() << "(a *lot*)";
+        else
+        {
+            foreach( const QString &dir, dirs )
+                debug() << "    " << dir;
+        }
 
+        writeBatchIncrementalInfoFile();
         if( dirs.isEmpty() )
         {
             debug() << "Scanning nothing, return.";
-            writeBatchIncrementalInfoFile();
             return;
         }
 
@@ -188,12 +203,13 @@ void ScanManager::startIncrementalScan()
         *m_scanner << "--savelocation" << KGlobal::dirs()->saveLocation( "data", QString("amarok/"), true );
         if( pApp->isNonUniqueInstance() )
             *m_scanner << "--pid" << QString::number( QApplication::applicationPid() );
-        *m_scanner << dirs;
+        *m_scanner << "--mtime-file" << KGlobal::dirs()->saveLocation( "data", QString("amarok/"), true )
+                + "amarokcollectionscanner_batchincrementalinput.data";
         m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
         connect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
         connect( m_scanner, SIGNAL( finished( int ) ), SLOT( slotFinished() ) );
         connect( m_scanner, SIGNAL( error( QProcess::ProcessError ) ), SLOT( slotError( QProcess::ProcessError ) ) );
-        m_scanner->start();        
+        m_scanner->start();
     }
 }
 
@@ -295,9 +311,6 @@ ScanManager::slotFinished( )
         m_dbusHandler->deleteLater();
         m_dbusHandler = 0;
     }
-
-    if( m_isIncremental )
-        writeBatchIncrementalInfoFile();
 }
 
 void
@@ -322,7 +335,7 @@ ScanManager::abort( const QString &reason )
         debug() << "Scan error: " << reason;
     else
         debug() << "Unknown error: reseting scan manager state";
-    
+
     slotReadReady(); //make sure that we read the complete buffer
 
     disconnect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
@@ -330,7 +343,7 @@ ScanManager::abort( const QString &reason )
     disconnect( m_scanner, SIGNAL( error( QProcess::ProcessError ) ), this, SLOT( slotError( QProcess::ProcessError ) ) );
     m_scanner->deleteLater();
     m_scanner = 0;
-    
+
     stopParser();
 }
 
@@ -344,7 +357,7 @@ ScanManager::readBatchFile( QString fileLocation )
         debug() << "Couldn't open batchscan file, which does exist";
         return false;
     }
-    
+
     QByteArray data;
     data = file.readAll();
 
@@ -384,6 +397,7 @@ ScanManager::getDirsToScan()
 {
     DEBUG_BLOCK
 
+    m_incrementalDirs.clear();
     const IdList list = MountPointManager::instance()->getMountedDeviceIds();
     QString deviceIds;
     foreach( int id, list )
@@ -410,12 +424,9 @@ ScanManager::getDirsToScan()
         QFileInfo info( folder );
         if( info.exists() )
         {
-            m_incrementalDirs << folder;
+            m_incrementalDirs << QString( folder + "_AMAROKMTIME_" + QString::number( mtime ) );
             if( info.lastModified().toTime_t() != mtime )
-            {
-                result << folder;
                 changedFolderIds << id;
-            }
         }
         else
         {
@@ -465,7 +476,7 @@ ScanManager::getDirsToScan()
         }
     }
     //debug() << "Scanning the following dirs: " << result;
-    return result;
+    return m_incrementalDirs;
 }
 
 void
@@ -538,6 +549,36 @@ ScanManager::cleanTables()
 }
 
 void
+ScanManager::checkTables( bool full )
+{
+    DEBUG_BLOCK
+
+    int checkCount = 0; //0 is the default in amarokrc
+    if( !full )
+    {
+        checkCount = Amarok::config( "MySQL" ).readEntry( "CheckCount" ).toInt();
+        if( checkCount != 0 //always run a full one if you don't know the status
+            && checkCount < 30 ) //every 30 mins seems like a good amount
+        {
+            checkCount++;
+            Amarok::config( "MySQL" ).writeEntry( "CheckCount", QString::number( checkCount ) );
+            return;
+        }
+    }
+
+    DatabaseUpdater *dbUpdater = m_collection->dbUpdater();
+    if( !dbUpdater )
+    {
+        debug() << "WOAH, why is there no DB updater?";
+        return;
+    }
+    
+    dbUpdater->checkTables( checkCount == 0 );
+
+    Amarok::config( "MySQL" ).writeEntry( "CheckCount", 1 );
+}
+
+void
 ScanManager::stopParser()
 {
     DEBUG_BLOCK
@@ -569,7 +610,6 @@ ScanManager::writeBatchIncrementalInfoFile()
         stream << m_incrementalDirs.join( "\n" );
         incrementalFile.close();
     }
-    m_incrementalDirs.clear();
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -682,7 +722,7 @@ XmlParseJob::run()
                             compilationValue = QString::number( 1 );
                         else
                             compilationValue.clear();
-                    }                            
+                    }
 
                     QVariantMap data;
                     data.insert( Meta::Field::URL, attrs.value( "path" ).toString() );

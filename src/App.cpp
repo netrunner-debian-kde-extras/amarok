@@ -26,8 +26,11 @@
 #include "Debug.h"
 #include "EngineController.h"
 #include "firstruntutorial/FirstRunTutorial.h"
-#include "Meta.h"
+#include "KNotificationBackend.h"
+#include "meta/capabilities/SourceInfoCapability.h"
 #include "meta/MetaConstants.h"
+#include "Meta.h"
+#include "MetaUtility.h"
 #include "MountPointManager.h"
 #include "Osd.h"
 #include "PlayerDBusHandler.h"
@@ -42,8 +45,8 @@
 #include "RootDBusHandler.h"
 #include "ScriptManager.h"
 #include "statusbar/StatusBar.h"
-#include "Systray.h"
 #include "TracklistDBusHandler.h"
+#include "TrayIcon.h"
 
 #include <iostream>
 
@@ -58,13 +61,13 @@
 #include <KJobUiDelegate>
 #include <KLocale>
 #include <KShortcutsDialog>              //slotConfigShortcuts()
-#include <KSplashScreen>
 #include <KStandardDirs>
 
 #include <QByteArray>
 #include <QFile>
 #include <KPixmapCache>
 #include <QStringList>
+#include <QTextDocument>                // for Qt::escape()
 #include <QTimer>                       //showHyperThreadingWarning()
 #include <QtDBus/QtDBus>
 
@@ -72,11 +75,8 @@
 #include "shared/taglib_filetype_resolvers/mimefiletyperesolver.h"
 #include "shared/taglib_filetype_resolvers/mp4filetyperesolver.h"
 #include "shared/taglib_filetype_resolvers/wavfiletyperesolver.h"
-
-#ifdef TAGLIB_EXTRAS_FOUND
 #include <audiblefiletyperesolver.h>
 #include <realmediafiletyperesolver.h>
-#endif
 
 QMutex Debug::mutex;
 QMutex Amarok::globalDirsMutex;
@@ -121,7 +121,6 @@ AMAROK_EXPORT OcsData ocsData( "opendesktop" );
 
 App::App()
         : KUniqueApplication()
-        , m_splash( 0 )
 {
     DEBUG_BLOCK
     PERF_LOG( "Begin Application ctor" )
@@ -143,7 +142,6 @@ App::App()
         m_splash->show();
     }
 
-#ifdef TAGLIB_EXTRAS_FOUND
     PERF_LOG( "Registering taglib plugins" )
     TagLib::FileRef::addFileTypeResolver(new RealMediaFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new AudibleFileTypeResolver);
@@ -152,7 +150,6 @@ App::App()
     TagLib::FileRef::addFileTypeResolver(new ASFFileTypeResolver);
     TagLib::FileRef::addFileTypeResolver(new MimeFileTypeResolver);
     PERF_LOG( "Done Registering taglib plugins" )
-#endif
 
     qRegisterMetaType<Meta::DataPtr>();
     qRegisterMetaType<Meta::DataList>();
@@ -230,7 +227,6 @@ App::~App()
     DEBUG_BLOCK
 
     delete m_splash;
-    m_splash = 0;
 
     CollectionManager::instance()->stopScan();
 
@@ -245,7 +241,7 @@ App::~App()
             if( track )
             {
                 AmarokConfig::setResumeTrack( track->playableUrl().prettyUrl() );
-                AmarokConfig::setResumeTime( The::engineController()->trackPosition() * 1000 );
+                AmarokConfig::setResumeTime( The::engineController()->trackPositionMs() );
                 AmarokConfig::setLastPlaying( Playlist::ModelStack::instance()->source()->activeRow() );
             }
         }
@@ -278,7 +274,7 @@ App::~App()
 
     // I tried this in the destructor for the Model but the object is destroyed after the
     // Config is written. Go figure!
-    AmarokConfig::setLastPlaying( Playlist::ModelStack::instance()->source()->rowForTrack( Playlist::ModelStack::instance()->source()->activeTrack() ) );
+    AmarokConfig::setLastPlaying( Playlist::ModelStack::instance()->source()->activeRow() );
 
     AmarokConfig::self()->writeConfig();
 
@@ -426,10 +422,10 @@ App::handleCliArgs() //static
     firstTime = false;
 
 #ifdef DEBUG
-    if( args->isSet( "test" ) )
-    {
-        runUnitTests();
-    }
+    if( args->getOption( "test" ) == "log" )
+        runUnitTests( false );
+    else if( args->getOption( "test" ) == "stdout" )
+        runUnitTests( true );
 #endif // DEBUG
 
     if( args->isSet( "subscribe" ) )
@@ -485,7 +481,9 @@ App::initCliArgs() //static
     options.add("m");
     options.add("multipleinstances", ki18n("Allow running multiple Amarok instances"));
     options.add("cwd <directory>", ki18n( "Base for relative filenames/URLs" ));
-    options.add("test", ki18n( "Run integrated unit tests, if your build supports it" ));
+#ifdef DEBUG
+    options.add("test <output>", ki18n( "Run integrated unit tests. Output can be 'log' for logfiles, 'stdout' for stdout." ) );
+#endif // DEBUG
     options.add("p");
     options.add("subscribe <feed-url>", ki18n( "Subscribe to podcast feed" ) );
 
@@ -603,12 +601,16 @@ void App::applySettings( bool firstTime )
 #ifdef DEBUG
 //SLOT
 void
-App::runUnitTests()
+App::runUnitTests( bool stdout )
 {
     DEBUG_BLOCK
     QStringList testArgumentList;
-    QString logPath = QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + QDateTime::currentDateTime().toString( "yyyy-MM-dd.HH-mm-ss" ) + '/' );
-    testArgumentList << "amarok" << "-o" << logPath << "-xml" << "-v2";
+    QString logPath = QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + QDateTime::currentDateTime().toString( "yyyy-MM-dd.HH-mm-ss" ) + "/" );
+
+    if( !stdout )
+        testArgumentList << "amarok" << "-o" << logPath << "-xml" << "-v2";
+    else
+        testArgumentList << "amarok" << "-xml" << "-v2";
 
     // create log folder for this run:
     QDir logDir( logPath );
@@ -618,26 +620,26 @@ App::runUnitTests()
     QFile::link( logPath, QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + "LATEST" ) );
 
     PERF_LOG( "Running Unit Tests" )
-    TestAmarok                  testAmarok( testArgumentList );
-    TestCaseConverter           testCaseConverter( testArgumentList );
-    TestExpression              testExpression( testArgumentList );
-    TestM3UPlaylist             testM3UPlaylist( testArgumentList );
-    TestMetaCueCueFileItem      testMetaCueCueFileItem( testArgumentList );
-    TestMetaCueTrack            testMetaCueTrack( testArgumentList );
-    TestMetaFileTrack           testMetaFileTrack( testArgumentList );
-    TestMetaMultiTrack          testMetaMultiTrack( testArgumentList );
-    TestMetaTrack               testMetaTrack( testArgumentList );
-    TestPlaylistFileProvider    testPlaylistFileProvider( testArgumentList );
-    TestPlaylistFileSupport     testPlaylistFileSupport( testArgumentList );
-    TestPLSPlaylist             testPLSPlaylist( testArgumentList );
-    TestQStringx                testQStringx( testArgumentList );
-    TestSmartPointerList        testSmartPointerList( testArgumentList );
-    TestSqlUserPlaylistProvider testSqlUserPlaylistProvider( testArgumentList );
-    TestTimecodeTrackProvider   testTimecodeTrackProvider( testArgumentList );
-    TestXSPFPlaylist            testXSPFPlaylist( testArgumentList );
+    TestAmarok                  testAmarok( testArgumentList, stdout );
+    TestCaseConverter           testCaseConverter( testArgumentList, stdout );
+    TestExpression              testExpression( testArgumentList, stdout );
+    TestM3UPlaylist             testM3UPlaylist( testArgumentList, stdout );
+    TestMetaCueCueFileItem      testMetaCueCueFileItem( testArgumentList, stdout );
+    TestMetaCueTrack            testMetaCueTrack( testArgumentList, stdout );
+    TestMetaFileTrack           testMetaFileTrack( testArgumentList, stdout );
+    TestMetaMultiTrack          testMetaMultiTrack( testArgumentList, stdout );
+    TestMetaTrack               testMetaTrack( testArgumentList, stdout );
+    TestPlaylistFileProvider    testPlaylistFileProvider( testArgumentList, stdout );
+    TestPlaylistFileSupport     testPlaylistFileSupport( testArgumentList, stdout );
+    TestPLSPlaylist             testPLSPlaylist( testArgumentList, stdout );
+    TestQStringx                testQStringx( testArgumentList, stdout );
+    TestSmartPointerList        testSmartPointerList( testArgumentList, stdout );
+    TestSqlUserPlaylistProvider testSqlUserPlaylistProvider( testArgumentList, stdout );
+    TestTimecodeTrackProvider   testTimecodeTrackProvider( testArgumentList, stdout );
+    TestXSPFPlaylist            testXSPFPlaylist( testArgumentList, stdout);
 
     // modifies the playlist asynchronously, so run this last to avoid messing other test results
-    TestDirectoryLoader        *testDirectoryLoader = new TestDirectoryLoader( testArgumentList );
+    TestDirectoryLoader        *testDirectoryLoader = new TestDirectoryLoader( testArgumentList, stdout );
 
     PERF_LOG( "Done Running Unit Tests" )
     Q_UNUSED( testDirectoryLoader )
@@ -685,7 +687,10 @@ App::continueInit()
     ScriptManager::instance();
     PERF_LOG( "ScriptManager started" )
 
-    if ( AmarokConfig::resumePlayback() && restoreSession && !args->isSet( "stop" ) ) {
+    if( AmarokConfig::kNotifyEnabled() )
+        Amarok::KNotificationBackend::instance();
+
+    if( AmarokConfig::resumePlayback() && restoreSession && !args->isSet( "stop" ) ) {
         //restore session as long as the user didn't specify media to play etc.
         //do this after applySettings() so OSD displays correctly
         The::engineController()->restoreSession();
@@ -832,9 +837,10 @@ namespace Amarok
         const QDateTime now = QDateTime::currentDateTime();
         const int datediff = datetime.daysTo( now );
 
-         // HACK: Fix 203522. Arithmetic overflow? Getting weird values from Plasma::DataEngine (LAST_PLAYED field).
+        // HACK: Fix 203522. Arithmetic overflow?
+        // Getting weird values from Plasma::DataEngine (LAST_PLAYED field).
         if( datediff < 0 )
-            return i18nc( "The amount of time since last played", "Never" );
+            return i18nc( "When this track was last played", "Unknown" );
 
         if( datediff >= 6*7 /*six weeks*/ ) {  // return absolute month/year
             const KCalendarSystem *cal = KGlobal::locale()->calendar();
@@ -916,7 +922,53 @@ namespace Amarok
             return QString("%1\"").arg( ( timediff + 1 )/60 );
 
         return i18n( "0" );
+    }
 
+    QString prettyNowPlaying()
+    {
+        Meta::TrackPtr track = The::engineController()->currentTrack();
+
+        if( track )
+        {
+            QString title       = Qt::escape( track->name() );
+            QString prettyTitle = Qt::escape( track->prettyName() );
+            QString artist      = track->artist() ? Qt::escape( track->artist()->name() ) : QString();
+            QString album       = track->album() ? Qt::escape( track->album()->name() ) : QString();
+            QString length      = Qt::escape( Meta::msToPrettyTime( track->length() ) );
+
+            // ugly because of translation requirements
+            if ( !title.isEmpty() && !artist.isEmpty() && !album.isEmpty() )
+                title = i18nc( "track by artist on album", "<b>%1</b> by <b>%2</b> on <b>%3</b>", title, artist, album );
+
+            else if ( !title.isEmpty() && !artist.isEmpty() )
+                title = i18nc( "track by artist", "<b>%1</b> by <b>%2</b>", title, artist );
+
+            else if ( !album.isEmpty() )
+                // we try for pretty title as it may come out better
+                title = i18nc( "track on album", "<b>%1</b> on <b>%2</b>", prettyTitle, album );
+            else
+                title = "<b>" + prettyTitle + "</b>";
+
+            if ( title.isEmpty() )
+                title = i18n( "Unknown track" );
+
+            Meta::SourceInfoCapability *sic = track->create<Meta::SourceInfoCapability>();
+            if ( sic )
+            {
+                QString source = sic->sourceName();
+                if ( !source.isEmpty() )
+                    title += ' ' + i18nc( "track from source", "from <b>%1</b>", source );
+
+                delete sic;
+            }
+
+            if ( length.length() > 1 )
+                title += " (" + length + ')';
+
+            return title;
+        }
+        else
+            return i18n( "No track playing" );
     }
 
     QWidget *mainWindow()
@@ -1147,7 +1199,7 @@ namespace Amarok
 
         return urls;
     }
-}
+} // End namespace Amarok
 
 int App::newInstance()
 {

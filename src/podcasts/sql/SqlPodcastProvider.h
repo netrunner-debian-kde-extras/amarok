@@ -68,7 +68,7 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
         void completePodcastDownloads();
 
         //EngineObserver methods
-        virtual void engineStateChanged( Phonon::State newState, Phonon::State oldState= Phonon::StoppedState );
+        virtual void engineNewTrackPlaying();
 
         //SqlPodcastProvider specific methods
         Meta::SqlPodcastChannelPtr podcastChannelForId( int podcastChannelDbId );
@@ -95,6 +95,7 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
         void slotRemoveChannels();
         void slotUpdateChannels();
         void slotDownloadProgress( KJob *job, unsigned long percent );
+        void slotWriteTagsToFiles();
 
     signals:
         void updated();
@@ -120,6 +121,7 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
         QAction * m_removeAction; //remove a subscription
         QAction * m_renameAction; //rename a Channel or Episode
         QAction * m_updateAction;
+        QAction * m_writeTagsAction; //write feed information to downloaded file
 };
 
 #endif

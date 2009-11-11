@@ -29,6 +29,7 @@
 
 #include <KGlobalSettings>
 #include <KStandardDirs>
+#include <KMessageBox>
 
 #include <Plasma/IconWidget>
 
@@ -39,6 +40,7 @@
 #include <QTextBrowser>
 #include <QPainter>
 #include <QPoint>
+#include <QScrollBar>
 
 LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
@@ -47,6 +49,7 @@ LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
     , m_saveIcon( 0 )
     , m_editIcon( 0 )
     , m_reloadIcon( 0 )
+    , m_closeIcon( 0 )
     , m_lyrics( 0 )
     , m_suggested( 0 )
     , m_hasLyrics( false )
@@ -85,6 +88,15 @@ void LyricsApplet::init()
 
     connect( m_editIcon, SIGNAL( activated() ), this, SLOT( editLyrics() ) );
 
+    QAction* closeAction = new QAction( this );
+    closeAction->setIcon( KIcon( "document-close" ) );
+    closeAction->setVisible( false );
+    closeAction->setEnabled( false );
+    m_closeIcon = addAction( closeAction );
+    m_closeIcon->setToolTip( i18n( "Close" ) );
+
+    connect( m_closeIcon, SIGNAL( activated() ), this, SLOT( closeLyrics() ) );
+
     QAction* saveAction = new QAction( this );
     saveAction->setIcon( KIcon( "document-save" ) );
     saveAction->setVisible( false );
@@ -104,16 +116,16 @@ void LyricsApplet::init()
     connect( m_reloadIcon, SIGNAL( activated() ), this, SLOT( refreshLyrics() ) );
 
     m_lyricsProxy = new QGraphicsProxyWidget( this );
+    m_lyricsProxy->setAttribute( Qt::WA_NoSystemBackground );
     m_lyrics = new QTextBrowser;
     m_lyrics->setAttribute( Qt::WA_NoSystemBackground );
     m_lyrics->setOpenExternalLinks( true );
+    m_lyrics->setAutoFillBackground( false );
+    m_lyrics->setFrameShape( QFrame::NoFrame );
     m_lyrics->setWordWrapMode( QTextOption::WordWrap );
+    m_lyrics->viewport()->setAttribute( Qt::WA_NoSystemBackground );
     m_lyrics->setTextInteractionFlags( Qt::TextBrowserInteraction | Qt::TextSelectableByKeyboard );
     setEditing( false );
-
-    m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" )
-        .arg( App::instance()->palette().background().color().name() )
-        .arg( App::instance()->palette().text().color().name() ) );
 
     m_lyricsProxy->setWidget( m_lyrics );
 
@@ -169,7 +181,9 @@ void LyricsApplet::constraintsEvent( Plasma::Constraints constraints )
 
     QPoint editIconPos( m_reloadIcon->pos().x() - standardPadding() - iconWidth, standardPadding() );
     m_editIcon->setPos( editIconPos );
-    m_saveIcon->setPos( editIconPos );
+    m_closeIcon->setPos( editIconPos );
+
+    m_saveIcon->setPos( m_editIcon->pos().x() - standardPadding() - iconWidth, standardPadding() );
     
     m_lyricsProxy->setPos( standardPadding(), m_titleLabel->pos().y() + m_titleLabel->boundingRect().height() + standardPadding() );
     
@@ -192,34 +206,35 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
     //debug() << "got lyrics data: " << data;
 
     m_titleLabel->show();
+
+    setBusy( false );
+    
     if( data.contains( "noscriptrunning" ) )
     {
         m_suggested->hide();
-        m_lyrics->show();m_lyrics->setPlainText( i18n( "No lyrics script is running." ) );
+        m_lyrics->show();
+        m_lyrics->setPlainText( i18n( "No lyrics script is running." ) );
     }
     else if( data.contains( "stopped" ) )
     {
         m_lyrics->clear();
         m_titleText = QString( "%1" ).arg( i18n( "Lyrics" ) );
-        setCollapseHeight( 40 );
-        setCollapseOn();
     }
     else if( data.contains( "fetching" ) )
     {
+        setBusy( true );
+        
         m_suggested->hide();
         m_lyrics->show();
+        m_titleText = QString( "%1" ).arg( i18n( "Lyrics" ) );
         m_lyrics->setPlainText( i18n( "Lyrics are being fetched." ) );
-        setCollapseHeight( 80 );
-        debug() << "lyrics small sizehint height:" << m_lyrics->sizeHint().height();
-        setCollapseOn();
     }
     else if( data.contains( "error" ) )
     {
         m_suggested->hide();
         m_lyrics->show();
-        m_lyrics->setPlainText( i18n( "Could not download lyrics.\nPlease check your internet connection.\nError message:\n%1", data["error"].toString() ) );
-        setCollapseHeight( 120 );
-        setCollapseOn();
+        m_titleText = QString( "%1" ).arg( i18n( "Lyrics" ) );
+        m_lyrics->setPlainText( i18n( "Could not download lyrics.\nPlease check your Internet connection.\nError message:\n%1", data["error"].toString() ) );
     }
     else if( data.contains( "suggested" ) )
     {
@@ -240,6 +255,13 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         // adjust to required size
         setCollapseHeight( m_suggested->boundingRect().height() );
         setCollapseOn();
+        // from end of func, want to avoid call to minumum height as that uses m_lyrics rather t han m_suggested
+        setEditing( false );
+
+        updateConstraints();
+        update();
+
+        return;
     }
     else if( data.contains( "html" ) )
     {
@@ -248,7 +270,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         m_suggested->hide();
         m_lyrics->setHtml( data[ "html" ].toString() );
         m_lyrics->show();
-        setCollapseOff();
+        m_titleText = QString( "%1 : %2" ).arg( i18n( "Lyrics" ) ).arg( data[ "html" ].toString().section( "<title>", 1, 1 ).section( "</title>", 0, 0 ) );
         emit sizeHintChanged(Qt::MaximumSize);
     }
     else if( data.contains( "lyrics" ) )
@@ -261,7 +283,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
         m_titleText = QString( " %1 : %2 - %3" ).arg( i18n( "Lyrics" ) ).arg( lyrics[ 0 ].toString() ).arg( lyrics[ 1 ].toString() );
         //  need padding for title
         m_lyrics->setPlainText( lyrics[ 3 ].toString().trimmed() );
-        setCollapseOff();
+
         // the following line is needed to fix the bug of the lyrics applet sometimes not being correctly resized.
         // I don't have the courage to put this into Applet::setCollapseOff(), maybe that would break other applets.
         emit sizeHintChanged(Qt::MaximumSize);
@@ -270,12 +292,11 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
     {
         m_suggested->hide();
         m_lyrics->show();
+        m_titleText = QString( "%1" ).arg( i18n( "Lyrics" ) );
         m_lyrics->setPlainText( i18n( "There were no lyrics found for this track" ) );
-
-        setCollapseHeight( m_lyrics->sizeHint().height() );
-        debug() << "lyrics small sizehint height:" << m_lyrics->sizeHint().height();
-        setCollapseOn();
     }
+
+    collapseToMin();
 
     setEditing( false );
 
@@ -302,19 +323,27 @@ LyricsApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     if ( !m_titleLabel->isAnimating() )
         drawRoundedRectAroundText( p, m_titleLabel );
 
-    //draw background of lyrics text
-    p->save();
+    QColor background;
 
-    QColor background( App::instance()->palette().background().color() );
-    
-    if( !m_lyrics->isReadOnly() )
+    if( m_lyrics->isReadOnly() )
+    {
+        background = The::paletteHandler()->backgroundColor();
+    }
+    else
     {
         // different background color when we're in edit mode
         background = App::instance()->palette().alternateBase().color();
     }
 
-    const QRectF
-      lyricsRect( m_lyricsProxy->pos(), QSizeF( size().width() - 2 * standardPadding(), m_lyricsProxy->boundingRect().height() ) );
+    p->save();
+
+    const QScrollBar *hScrollBar = m_lyrics->horizontalScrollBar();
+    const QScrollBar *vScrollBar = m_lyrics->verticalScrollBar();
+    const qreal hScrollBarHeight = hScrollBar->isVisible() ? hScrollBar->height() + 2 : 0;
+    const qreal vScrollBarWidth  = vScrollBar->isVisible() ? vScrollBar->width()  + 2 : 0;
+    const QSizeF lyricsSize( m_lyrics->width() - vScrollBarWidth,
+                             m_lyricsProxy->boundingRect().height() - hScrollBarHeight );
+    const QRectF lyricsRect( m_lyricsProxy->pos(), lyricsSize );
 
     QPainterPath path;
     path.addRoundedRect( lyricsRect, 5, 5 );
@@ -326,11 +355,6 @@ void
 LyricsApplet::paletteChanged( const QPalette & palette )
 {
     Q_UNUSED( palette )
-
-    if( m_lyrics )
-       m_lyrics->setStyleSheet( QString( "QTextBrowser { background-color: %1; border-width: 0px; border-radius: 0px; color: %2; }" )
-       .arg( App::instance()->palette().background().color().name() )
-       .arg( App::instance()->palette().text().color().name() ) );
 }
 
 void
@@ -348,7 +372,15 @@ LyricsApplet::refreshLyrics()
     if( !curtrack || !curtrack->artist() )
         return;
 
-    ScriptManager::instance()->notifyFetchLyrics( curtrack->artist()->name(), curtrack->name() );
+    bool refetch = true;
+    if( m_hasLyrics )
+    {
+        const QString text( i18nc( "@info", "Do you really want to refetch lyrics for this track ? All changes you may have made will be lost.") );
+        refetch = KMessageBox::warningContinueCancel( 0, text, i18n( "Refetch lyrics" ) ) == KMessageBox::Continue;
+    }
+
+    if( refetch )
+        ScriptManager::instance()->notifyFetchLyrics( curtrack->artist()->name(), curtrack->name() );
 }
 
 void
@@ -361,6 +393,20 @@ LyricsApplet::editLyrics()
     }
 
     setEditing( true );
+}
+
+void
+LyricsApplet::closeLyrics()
+{
+    if( m_hasLyrics )
+    {
+        m_lyrics->setPlainText( The::engineController()->currentTrack()->cachedLyrics() );
+        m_lyrics->show();
+        setCollapseOff();
+        emit sizeHintChanged(Qt::MaximumSize);
+    }
+
+    setEditing( false );
 }
 
 void
@@ -388,10 +434,29 @@ LyricsApplet::setEditing( const bool isEditing )
     m_editIcon->action()->setVisible( !isEditing );
 
     // If we're editing, show and enable the save icon
+    m_closeIcon->action()->setEnabled( isEditing );
+    m_closeIcon->action()->setVisible( isEditing );
+
+    // If we're editing, show and enable the save icon
     m_saveIcon->action()->setEnabled( isEditing );
     m_saveIcon->action()->setVisible( isEditing );
 
     update();
+    collapseToMin();
 }
+
+
+void LyricsApplet::collapseToMin()
+{
+    QGraphicsTextItem testItem;
+    testItem.setHtml( m_lyrics->toHtml() );
+    testItem.setTextWidth( m_lyrics->size().width() );
+
+    qreal contentHeight = testItem.boundingRect().height();
+    contentHeight += 40;
+    setCollapseHeight( contentHeight );
+    setCollapseOn();
+}
+
 
 #include "LyricsApplet.moc"

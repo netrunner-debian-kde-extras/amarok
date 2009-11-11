@@ -18,7 +18,7 @@
 #define SQLPODCASTMETA_H
 
 #include "PodcastMeta.h"
-
+#include "meta/file/File.h"
 
 namespace Meta
 {
@@ -44,15 +44,27 @@ class SqlPodcastEpisode : public PodcastEpisode
         ~SqlPodcastEpisode();
 
         //PodcastEpisode methods
-        PodcastChannelPtr channel() { return PodcastChannelPtr::dynamicCast( m_channel ); }
+        PodcastChannelPtr channel() const { return PodcastChannelPtr::dynamicCast( m_channel ); }
         virtual bool isNew() const { return m_isNew; }
+        virtual void setLocalUrl( const KUrl &url );
 
         //Track Methods
-        virtual int length() const;
+        virtual QString name() const;
+        virtual QString prettyName() const;
+        virtual void setTitle( const QString &title );
+        virtual qint64 length() const;
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
         virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+        virtual bool isEditable() const;
+
+        virtual AlbumPtr album() const;
+        virtual ArtistPtr artist() const;
+        virtual ComposerPtr composer() const;
+        virtual GenrePtr genre() const;
+        virtual YearPtr year() const;
 
         //SqlPodcastEpisode specific methods
+        bool writeTagsToFile();
         int dbId() const { return m_dbId; };
 
         void updateInDb();
@@ -63,6 +75,8 @@ class SqlPodcastEpisode : public PodcastEpisode
 
         int m_dbId; //database ID
         SqlPodcastChannelPtr m_channel; //the parent of this episode
+
+        MetaFile::TrackPtr m_localFile;
 };
 
 class SqlPodcastChannel : public PodcastChannel
@@ -82,13 +96,17 @@ class SqlPodcastChannel : public PodcastChannel
         TrackList tracks() { return sqlEpisodesToTracks( m_episodes ); }
 
         //Meta::PodcastChannel methods
-        Meta::PodcastEpisodeList episodes();
+        virtual void setTitle( const QString &title );
+        virtual Meta::PodcastEpisodeList episodes();
 
         PodcastEpisodePtr addEpisode( PodcastEpisodePtr episode );
+
         //SqlPodcastChannel specific methods
         int dbId() const { return m_dbId; }
         void addEpisode( SqlPodcastEpisodePtr episode ) { m_episodes << episode; }
 
+        bool writeTags() const { return m_writeTags; }
+        void setWriteTags( bool writeTags ) { m_writeTags = writeTags; }
         void updateInDb();
         void deleteFromDb();
 
@@ -97,7 +115,7 @@ class SqlPodcastChannel : public PodcastChannel
         void loadEpisodes();
 
     private:
-
+        bool m_writeTags;
         int m_dbId; //database ID
 
         SqlPodcastEpisodeList m_episodes;

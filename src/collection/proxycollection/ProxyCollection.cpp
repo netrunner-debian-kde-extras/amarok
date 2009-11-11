@@ -404,7 +404,7 @@ ProxyCollection::Collection::removeTrack( const TrackKey &key )
 ProxyCollection::Track*
 ProxyCollection::Collection::getTrack( Meta::TrackPtr track )
 {
-    const TrackKey key = ProxyCollection::keyFromTrack( track );
+    const TrackKey key = Meta::keyFromTrack( track );
     m_trackLock.lockForRead();
     if( m_trackMap.contains( key ) )
     {
@@ -430,7 +430,7 @@ void
 ProxyCollection::Collection::setTrack( ProxyCollection::Track *track )
 {
     Meta::TrackPtr ptr( track );
-    const TrackKey key = ProxyCollection::keyFromTrack( ptr );
+    const TrackKey key = Meta::keyFromTrack( ptr );
     m_trackLock.lockForWrite();
     m_trackMap.insert( key, KSharedPtr<ProxyCollection::Track>( track ) );
     m_trackLock.unlock();
@@ -443,24 +443,10 @@ ProxyCollection::Collection::hasTrack( const TrackKey &key )
     return m_trackMap.contains( key );
 }
 
-TrackKey
-ProxyCollection::keyFromTrack( const Meta::TrackPtr &track )
-{
-    TrackKey k;
-    k.trackName = track->name();
-    if( track->artist() )
-        k.artistName = track->artist()->name();
-
-    if( track->album() )
-        k.albumName = track->album()->name();
-
-    return k;
-}
-
 void
 ProxyCollection::Collection::emptyCache()
 {
-    bool hasTrack, hasAlbum, hasArtist, hasYear, hasGenre, hasComposer, hasUid;
+    bool hasTrack, hasAlbum, hasArtist, hasYear, hasGenre, hasComposer;
     hasTrack = hasAlbum = hasArtist = hasYear = hasGenre = hasComposer = false;
 
     //try to avoid possible deadlocks by aborting when we can't get all locks

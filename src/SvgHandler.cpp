@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
  * Copyright (c) 2008 Jeff Mitchell <kde-dev@emailgoeshere.com>                         *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -23,6 +24,8 @@
 #include "PaletteHandler.h"
 #include "SvgTinter.h"
 
+#include <KColorScheme>
+#include <KColorUtils>
 #include <KStandardDirs>
 
 #include <QHash>
@@ -48,6 +51,7 @@ namespace The {
 SvgHandler::SvgHandler( QObject* parent )
     : QObject( parent )
     , m_cache( new KPixmapCache( "Amarok-pixmaps" ) )
+    , m_sliderHandleCache( new KPixmapCache( "Amarok-Slider-pixmaps" ) )
     , m_themeFile( "amarok/images/default-theme-clean.svg" )  // //use default theme
     , m_customTheme( false )
 {
@@ -61,6 +65,8 @@ SvgHandler::~SvgHandler()
 
     m_cache->deleteCache( "Amarok-pixmaps" ); 
     delete m_cache;
+    m_sliderHandleCache->deleteCache( "Amarok-Slider-pixmaps" );
+    delete m_sliderHandleCache;
 
     The::s_SvgHandler_instance = 0;
 }
@@ -116,14 +122,16 @@ KSvgRenderer * SvgHandler::getRenderer()
 QPixmap SvgHandler::renderSvg( const QString &name, const QString& keyname, int width, int height, const QString& element )
 {
     QPixmap pixmap( width, height );
-    pixmap.fill( Qt::transparent );
 
     QReadLocker readLocker( &m_lock );
     if( ! m_renderers[name] )
     {
         readLocker.unlock();
         if( !loadSvg( name ) )
+        {
+            pixmap.fill( Qt::transparent );
             return pixmap;
+        }
         readLocker.relock();
     }
 
@@ -136,6 +144,7 @@ QPixmap SvgHandler::renderSvg( const QString &name, const QString& keyname, int 
     if ( !m_cache->find( key, pixmap ) ) {
 //         debug() << QString("svg %1 not in cache...").arg( key );
 
+        pixmap.fill( Qt::transparent );
         QPainter pt( &pixmap );
         if ( element.isEmpty() )
             m_renderers[name]->render( &pt, QRectF( 0, 0, width, height ) );
@@ -159,14 +168,16 @@ QPixmap SvgHandler::renderSvgWithDividers(const QString & keyname, int width, in
     QString name = m_themeFile;
     
     QPixmap pixmap( width, height );
-    pixmap.fill( Qt::transparent );
 
     QReadLocker readLocker( &m_lock );
     if( ! m_renderers[name] )
     {
         readLocker.unlock();
         if( ! loadSvg( name ) )
+        {
+            pixmap.fill( Qt::transparent );
             return pixmap;
+        }
         readLocker.relock();
     }
 
@@ -179,6 +190,7 @@ QPixmap SvgHandler::renderSvgWithDividers(const QString & keyname, int width, in
     if ( !m_cache->find( key, pixmap ) ) {
 //         debug() << QString("svg %1 not in cache...").arg( key );
 
+        pixmap.fill( Qt::transparent );
         QPainter pt( &pixmap );
         if ( element.isEmpty() )
             m_renderers[name]->render( &pt, QRectF( 0, 0, width, height ) );
@@ -188,7 +200,7 @@ QPixmap SvgHandler::renderSvgWithDividers(const QString & keyname, int width, in
 
         //add dividers. 5% spacing on each side
         int margin = width / 20;
-        
+
         m_renderers[name]->render( &pt, "divider_top", QRectF( margin, 0 , width - 1 * margin, 1 ) );
         m_renderers[name]->render( &pt, "divider_bottom", QRectF( margin, height - 1 , width - 2 * margin, 1 ) );
     
@@ -196,7 +208,6 @@ QPixmap SvgHandler::renderSvgWithDividers(const QString & keyname, int width, in
     }
 
     return pixmap;
-
 }
 
 
@@ -232,14 +243,16 @@ QPixmap SvgHandler::addBordersToPixmap( QPixmap orgPixmap, int borderWidth, cons
     int newHeight = orgPixmap.height() + borderWidth *2;
 
     QPixmap pixmap( newWidth, newHeight );
-    pixmap.fill( Qt::transparent );
     
     QReadLocker readLocker( &m_lock );
     if( !m_renderers[m_themeFile] )
     {
         readLocker.unlock();
         if( !loadSvg( m_themeFile ) )
+        {
+            pixmap.fill( Qt::transparent );
             return pixmap;
+        }
         readLocker.relock();
     }
 
@@ -255,10 +268,10 @@ QPixmap SvgHandler::addBordersToPixmap( QPixmap orgPixmap, int borderWidth, cons
 
         //whoops... if skipCache is true, we might actually already have fetched the image, including borders from the cache....
         //so we really need to create a blank pixmap here so we don't paint several layers of borders on top of each other
-        if ( skipCache ) {
+        if ( skipCache )
             pixmap = QPixmap( newWidth, newHeight );
-            pixmap.fill( Qt::transparent );
-        }
+        
+        pixmap.fill( Qt::transparent );
         
         QPainter pt( &pixmap );
 
@@ -279,7 +292,7 @@ QPixmap SvgHandler::addBordersToPixmap( QPixmap orgPixmap, int borderWidth, cons
     return pixmap;
 }
 
-
+#if 0
 void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int height, qreal percentage, bool active )
 {
     int knobSize = height - 4;
@@ -339,7 +352,88 @@ void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int he
                        "new_slider_knob",
                        knobSize, knobSize,
                        "new_slider_knob" ) );
-
 }
+#endif
+
+QRect SvgHandler::sliderKnobRect( const QRect &slider, qreal percent )
+{
+    //NOTICE Vertical sliders are atm not supported by the API at all, neither is rtl
+    const int knobSize = slider.height() - 4;
+    QRect ret( 0, 0, knobSize, knobSize );
+    ret.moveTo( slider.x() + qRound( ( slider.width() - knobSize ) * percent ), slider.y() + 1 );
+    return ret;
+}
+
+// Experimental, using a mockup from Nuno Pinheiro (new_slider_nuno)
+void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int height, qreal percentage, bool active )
+{
+    QRect knob = sliderKnobRect( QRect( x, y, width, height), percentage );
+
+    //debug() << "rel: " << knobRelPos << ", width: " << width << ", height:" << height << ", %: " << percentage;
+
+    // Draw the slider background in 3 parts
+
+    int sliderHeight = height - 6;
+
+    p->drawPixmap( x, y + 2,
+                   renderSvg(
+                   "progress_slider_left",
+                   sliderHeight, sliderHeight,
+                   "progress_slider_left" ) );
+
+    p->drawPixmap( x + sliderHeight, y + 2,
+                   renderSvg(
+                   "progress_slider_mid",
+                   width - sliderHeight * 2, sliderHeight,
+                   "progress_slider_mid" ) );
+
+    p->drawPixmap( x + width - sliderHeight, y + 2,
+                   renderSvg(
+                   "progress_slider_right",
+                   sliderHeight, sliderHeight,
+                   "progress_slider_right" ) );
+
+    //draw the played background.
+
+    int playedBarHeight = sliderHeight - 6;
+
+    int sizeOfLeftPlayed = qBound( 0, knob.x() - 2, playedBarHeight );
+
+    if( sizeOfLeftPlayed > 0 ) {
+
+        p->drawPixmap( x + 3, y + 5,
+                        renderSvg(
+                        "progress_slider_played_left",
+                        playedBarHeight, playedBarHeight,
+                        "progress_slider_played_left" ), 0, 0, sizeOfLeftPlayed + 3, playedBarHeight );
+
+        int playedBarMidWidth = knob.x() - ( x + 3 + playedBarHeight );
+
+        //Add 5 more pixels to avoid a "gap" between it and the top and botton of the round knob.
+        playedBarMidWidth += 5;
+
+        p->drawPixmap( x + 3 + playedBarHeight, y + 5,
+                        renderSvg(
+                        "progress_slider_played_mid",
+                        playedBarMidWidth, playedBarHeight,
+                        "progress_slider_played_mid" ) );
+    }
+
+
+    // Draw the knob (handle)
+    if ( active )
+        p->drawPixmap( knob.x(), knob.y(),
+                       renderSvg(
+                       "slider_knob_200911_active",
+                       knob.width(), knob.height(),
+                       "slider_knob_200911_active" ) );
+    else
+        p->drawPixmap( knob.x(), knob.y(),
+                       renderSvg(
+                       "slider_knob_200911",
+                       knob.width(), knob.height(),
+                       "slider_knob_200911" ) );
+}
+
 
 #include "SvgHandler.moc"

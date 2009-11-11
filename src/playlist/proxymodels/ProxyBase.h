@@ -70,6 +70,14 @@ public:
     virtual Meta::TrackPtr activeTrack() const;
 
     /**
+     * Returns all rows in the current model which match a given track pointer.
+     * @see firstRowForTrack
+     * @param track the track.
+     * @return collection of rows, empty if the track pointer is invalid.
+     */
+    virtual QSet<int> allRowsForTrack( const Meta::TrackPtr track ) const;
+
+    /**
      * Clears the current search term.
      */
     virtual void clearSearchTerm();
@@ -180,6 +188,14 @@ public:
     virtual int findPrevious( const QString &searchTerm, int selectedRow, int searchFields );
 
     /**
+     * Returns the first row in the current model which matches a given track pointer.
+     * @see allRowsForTrack
+     * @param track the track.
+     * @return the row, -1 if the track pointer is invalid.
+     */
+    virtual int firstRowForTrack( const Meta::TrackPtr track ) const;
+
+    /**
      * Returns the item flags for the given index.
      * @param index the index to retrieve the flags for.
      * @return the item flags.
@@ -228,13 +244,6 @@ public:
      * @return the row, -1 if the id is invalid.
      */
     virtual int rowForId( const quint64 id ) const;
-
-    /**
-     * Returns the row in the current model for a given track pointer.
-     * @param track the track.
-     * @return the row, -1 if the track pointer is invalid.
-     */
-    virtual int rowForTrack( const Meta::TrackPtr track ) const;
 
     /**
      * Returns the row number of a track in terms of the bottom model.
@@ -304,9 +313,17 @@ public:
      * Returns the total length of the playlist.
      * The default implementation forwards the total time from the proxy or model below the
      * current proxy.
-     * @return the total length of the playlist.
+     * @return the total length of the playlist in milliseconds.
      */
-    virtual int totalLength() const;
+    virtual qint64 totalLength() const;
+
+    /**
+     * Returns the total size of the playlist.
+     * The default implementation forwards the total size from the proxy or model below the
+     * current proxy.
+     * @return the total size of the playlist.
+     */
+    virtual quint64 totalSize() const;
 
     /**
      * Returns a pointer to the track at a given row in the current proxy.
@@ -335,6 +352,12 @@ signals:
      * @param the list of id's added that are also represented by this proxy.
      */
     void insertedIds( const QList<quint64>& );
+
+    /**
+     * Signal forwarded from the source model.
+     * Emitted before items are removed from the model.
+     */
+    void beginRemoveIds();
 
     /**
      * Signal forwarded from the source model. IDs are unique so they shouldn't be modified

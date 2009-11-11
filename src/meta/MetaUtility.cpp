@@ -143,8 +143,8 @@ Meta::Field::mprisMapFromTrack( const Meta::TrackPtr track )
             map["album"] = track->album()->name();
 
         map["tracknumber"] = track->trackNumber();
-        map["time"] = track->length();
-        map["mtime"] = track->length() * 1000;
+        map["time"] = track->length() / 1000;
+        map["mtime"] = track->length();
 
         if( track->genre() )
             map["genre"] = track->genre()->name();
@@ -234,7 +234,7 @@ Meta::Field::writeFields( TagLib::FileRef fileref, const QVariantMap &changes )
 {
     if( fileref.isNull() || changes.isEmpty() )
         return;
-    
+
     TagLib::Tag *tag = fileref.tag();
     if( !tag )
         return;
@@ -494,7 +494,7 @@ Meta::Field::xesamFullToPrettyFieldName( const QString &name )
 
 
 QString
-Meta::msToPrettyTime( int ms )
+Meta::msToPrettyTime( qint64 ms )
 {
     return Meta::secToPrettyTime( ms / 1000 );
 }
@@ -525,7 +525,7 @@ Meta::secToPrettyTime( int seconds )
 }
 
 QString
-Meta::prettyFilesize( int size )
+Meta::prettyFilesize( quint64 size )
 {
     return KIO::convertSize( size );
 }
@@ -563,4 +563,18 @@ Meta::prettyRating( int rating )
         case 0: default: return i18nc( "The quality of music", "Not rated" ); // assume weird values as not rated
     }
     return "if you can see this, then that's a bad sign.";
+}
+
+TrackKey
+Meta::keyFromTrack( const Meta::TrackPtr &track )
+{
+    TrackKey k;
+    k.trackName = track->name();
+    if( track->artist() )
+        k.artistName = track->artist()->name();
+
+    if( track->album() )
+        k.albumName = track->album()->name();
+
+    return k;
 }

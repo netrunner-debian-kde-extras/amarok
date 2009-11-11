@@ -20,6 +20,7 @@
 #include "PlaylistWidget.h"
 
 #include "ActionClasses.h"
+#include "amarokconfig.h"
 #include "App.h"
 #include "Debug.h"
 #include "DynamicModel.h"
@@ -41,8 +42,6 @@
 
 #include <QHBoxLayout>
 
-#include <amarokconfig.h>
-
 Playlist::Widget::Widget( QWidget* parent )
         : KVBox( parent )
 {
@@ -58,8 +57,17 @@ Playlist::Widget::Widget( QWidget* parent )
     connect( PlaylistBrowserNS::DynamicModel::instance(), SIGNAL( enableDynamicMode( bool ) ), SLOT( showDynamicHint( bool ) ) );
     m_dynamicHintWidget = new QLabel( i18n( "Dynamic Mode Enabled" ), this );
     m_dynamicHintWidget->setAlignment( Qt::AlignCenter );
-    m_dynamicHintWidget->setStyleSheet( QString( "QLabel { background-color: %1; } " ).arg( PaletteHandler::highlightColor().name() ) );
+    m_dynamicHintWidget->setStyleSheet( QString( "QLabel { background-color: %1; color: %2; border-radius: 3px; } " )
+                                                 .arg( PaletteHandler::highlightColor().name() )
+                                                 .arg( The::paletteHandler()->palette().highlightedText().color().name() ) );
+    QFont dynamicHintWidgetFont = m_dynamicHintWidget->font();
+    dynamicHintWidgetFont.setPointSize( dynamicHintWidgetFont.pointSize() + 1 );
+    m_dynamicHintWidget->setFont( dynamicHintWidgetFont );
+
     showDynamicHint( AmarokConfig::dynamicMode() );
+
+    paletteChanged( App::instance()->palette() );
+    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
 
     QWidget * layoutHolder = new QWidget( this );
 
@@ -76,6 +84,8 @@ Playlist::Widget::Widget( QWidget* parent )
     connect( m_searchWidget, SIGNAL( showOnlyMatches( bool ) ), m_playlistView, SLOT( showOnlyMatches( bool ) ) );
     connect( m_searchWidget, SIGNAL( activateFilterResult() ), m_playlistView, SLOT( playFirstSelected() ) );
     connect( m_searchWidget, SIGNAL( downPressed() ), m_playlistView, SLOT( setFocus() ) );
+
+    connect( The::mainWindow(), SIGNAL( switchQueueStateShortcut() ), m_playlistView, SLOT( switchQueueState() ) );
 
     KConfigGroup searchConfig = Amarok::config("Playlist Search");
     m_playlistView->showOnlyMatches( searchConfig.readEntry( "ShowOnlyMatches", false ) );
@@ -102,8 +112,7 @@ Playlist::Widget::Widget( QWidget* parent )
     // to make sure that it's been constructed and the the actions registered
     Controller::instance();
 
-    {
-        //START Playlist toolbar
+    { // START Playlist toolbar
         plBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
         plBar->setIconDimensions( 22 );
         plBar->setMovable( false );
@@ -111,14 +120,6 @@ Playlist::Widget::Widget( QWidget* parent )
 
         plBar->addAction( Amarok::actionCollection()->action( "playlist_clear" ) );
 
-        //FIXME this action should go in ActionController, but we don't have any visibility to the view
-        KAction *action = new KAction( KIcon( "music-amarok" ), i18n("Show active track"), this );
-        connect( action, SIGNAL( triggered( bool ) ), m_playlistView, SLOT( scrollToActiveTrack() ) );
-        plBar->addAction( action );
-
-        plBar->addSeparator();
-        plBar->addAction( Amarok::actionCollection()->action( "playlist_undo" ) );
-        plBar->addAction( Amarok::actionCollection()->action( "playlist_redo" ) );
         plBar->addSeparator();
 
         m_savePlaylistMenu = new KActionMenu( KIcon( "document-save-amarok" ), i18n("&Save Current Playlist"), this );
@@ -141,6 +142,18 @@ Playlist::Widget::Widget( QWidget* parent )
                  );
 
         plBar->addAction( m_savePlaylistMenu );
+        
+        plBar->addSeparator();
+        plBar->addAction( Amarok::actionCollection()->action( "playlist_undo" ) );
+        plBar->addAction( Amarok::actionCollection()->action( "playlist_redo" ) );
+        plBar->addSeparator();
+
+        //FIXME this action should go in ActionController, but we don't have any visibility to the view
+        KAction *action = new KAction( KIcon( "music-amarok" ), i18n("Show active track"), this );
+        connect( action, SIGNAL( triggered( bool ) ), m_playlistView, SLOT( scrollToActiveTrack() ) );
+        plBar->addAction( action );
+
+        plBar->addSeparator();
 
         Playlist::LayoutConfigAction *layoutConfigAction = new Playlist::LayoutConfigAction( this );
         plBar->addAction( layoutConfigAction );
@@ -149,19 +162,28 @@ Playlist::Widget::Widget( QWidget* parent )
             tbutton->setPopupMode( QToolButton::InstantPopup );
 
         plBar->addAction( new KToolBarSpacerAction( this ) );
-    } //END Playlist Toolbar
+    } // END Playlist Toolbar
 
     setFrameShape( QFrame::NoFrame );
 
     // If it is active, clear the search filter before replacing the playlist. Fixes Bug #200709.
     connect( The::playlistController(), SIGNAL( replacingPlaylist() ), this, SLOT( clearFilterIfActive() ) );
-
 }
 
 QSize
 Playlist::Widget::sizeHint() const
 {
     return QSize( static_cast<QWidget*>( parent() )->size().width() / 4 , 300 );
+}
+
+
+void
+Playlist::Widget::paletteChanged( const QPalette& palette )
+{
+    m_dynamicHintWidget->setStyleSheet( QString( "QLabel { background-color: %1; color: %2; } " )
+                                        .arg( PaletteHandler::highlightColor().name() )
+                                        .arg( palette.highlightedText().color().name() ) );
+
 }
 
 void
@@ -213,9 +235,10 @@ Playlist::Widget::slotSaveCurrentPlaylist()
 }
 
 void
-Playlist::Widget::showDynamicHint( bool enabled )
+Playlist::Widget::showDynamicHint( bool enabled ) // slot
 {
     DEBUG_BLOCK
+
     if( enabled )
         m_dynamicHintWidget->show();
     else
@@ -223,7 +246,7 @@ Playlist::Widget::showDynamicHint( bool enabled )
 }
 
 void
-Playlist::Widget::clearFilterIfActive()
+Playlist::Widget::clearFilterIfActive() // slot
 {
     DEBUG_BLOCK
     KConfigGroup config = Amarok::config( "Playlist Search" );
@@ -231,5 +254,4 @@ Playlist::Widget::clearFilterIfActive()
 
     if( filterActive )
         m_searchWidget->slotFilterClear();
-
 }

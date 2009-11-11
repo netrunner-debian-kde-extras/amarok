@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2003 Christian Muehlhaeuser <chris@chris.de>                           *
- * Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2008,2009 Mark Kretschmann <kretschmann@kde.org>                       *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -155,7 +155,7 @@ private:
 
 namespace Amarok
 {
-    class OSD : public OSDWidget, public EngineObserver
+    class OSD : public OSDWidget, public EngineObserver, public Meta::Observer
     {
         Q_OBJECT
 
@@ -173,7 +173,12 @@ namespace Amarok
         // Reimplemented from EngineObserver
         virtual void engineVolumeChanged( int );
         virtual void engineMuteStateChanged( bool );
+        virtual void engineNewTrackPlaying();
         virtual void engineStateChanged( Phonon::State state, Phonon::State oldState );
+
+        // Reimplemented from Meta::Observer
+        using Observer::metadataChanged;
+        virtual void metadataChanged( Meta::AlbumPtr album );
 
     public slots:
         /**

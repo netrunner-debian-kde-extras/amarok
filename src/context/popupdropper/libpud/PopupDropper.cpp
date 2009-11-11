@@ -26,6 +26,7 @@
 #include <QGraphicsScene>
 #include <QtSvg/QSvgRenderer>
 #include <QAction>
+#include <QMenu>
 #include <QPalette>
 #include <QTimeLine>
 #include <QWidget>
@@ -382,6 +383,8 @@ PopupDropperItem* PopupDropper::addSubmenu( PopupDropper** pd, const QString &te
     d->submenuMap[action] = newD;
     delete (*pd);
     (*pd) = 0;
+    foreach( PopupDropperItem* item, newD->pdiItems )
+        item->setPopupDropper( this );
     //qDebug() << "d->submenuMap[pda] = " << d->submenuMap[pda];
     addItem( pdi );
     return pdi;
@@ -399,6 +402,37 @@ void PopupDropper::activateSubmenu()
         addItem( item, false, false );
     oldd->view->deactivateHover();
     show();
+}
+
+bool PopupDropper::addMenu( const QMenu *menu )
+{
+    Q_UNUSED(menu)
+    if( !menu )
+        return false;
+        
+    if( menu->actions().size() == 0 )
+        return true;
+
+    PopupDropperItem *pdi = 0;
+    foreach( QAction *action, menu->actions() )
+    {
+        if( !action->menu() )
+        {
+            pdi = new PopupDropperItem();
+            pdi->setAction( action );
+            addItem( pdi );
+        }
+        else
+        {
+            PopupDropper *pd = new PopupDropper( 0 );
+            bool success = pd->addMenu( action->menu() );
+            if( success )
+                pdi = addSubmenu( &pd, action->text() );
+        }
+        pdi = 0;
+    }
+    
+    return true;
 }
 
 bool PopupDropper::standalone() const
@@ -558,7 +592,7 @@ void PopupDropper::clear()
         {
             if( dynamic_cast<PopupDropperItem*>(item) )
             {
-                if( dynamic_cast<PopupDropperItem*>(item)->submenuTrigger() )
+                if( dynamic_cast<PopupDropperItem*>(item)->isSubmenuTrigger() )
                 {
                     //qDebug() << "Disconnecting action";
                     disconnect( dynamic_cast<PopupDropperItem*>(item)->action(), SIGNAL( hovered() ), this, SLOT( activateSubmenu() ) );
@@ -866,6 +900,45 @@ void PopupDropper::addItem( PopupDropperItem *item, bool useSharedRenderer, bool
     d->reposItems();
     pItem->setPopupDropper( this );
     d->scene->addItem( pItem );
+}
+
+QList<PopupDropperItem*> PopupDropper::items() const
+{
+    QList<PopupDropperItem*> list;
+    foreach( PopupDropperItem *item, d->pdiItems )
+        list.append( item );
+
+    return list;
+}
+
+//Won't currently work for > 1 level of submenu!
+//TODO: Figure out a better way. (Does anything else work > 1 level?)
+QList<PopupDropperItem*> PopupDropper::submenuItems( const PopupDropperItem *item ) const
+{
+    QList<PopupDropperItem*> list;
+    if( !item || !item->isSubmenuTrigger() || !d->submenuMap.contains( item->action() ) )
+        return list;
+
+    PopupDropperPrivate *pdp = d->submenuMap[item->action()];
+    foreach( PopupDropperItem *pdi, pdp->pdiItems )
+        list.append( pdi );
+
+    return list;
+}
+
+//Goes through and calls the callback on all items, including submenuItems
+//which can be adjusted differently by checking isSubmenuTrigger()
+void PopupDropper::forEachItem( void callback(void*) )
+{
+    forEachItemPrivate( d, callback );
+}
+
+void PopupDropper::forEachItemPrivate( PopupDropperPrivate *pdp, void callback(void* item) )
+{
+    foreach( PopupDropperItem *item, pdp->pdiItems )
+        callback( item );
+    foreach( QAction *action, pdp->submenuMap.keys() )
+        forEachItemPrivate( pdp->submenuMap[action], callback );
 }
 
 void PopupDropper::addSeparator( PopupDropperItem* separator )

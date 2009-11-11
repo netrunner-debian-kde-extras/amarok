@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
  * Copyright (c) 2008 Jeff Mitchell <kde-dev@emailgoeshere.com>                         *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -26,7 +27,6 @@
 
 #include <QPixmap>
 #include <QString>
-
 
 class SvgHandler;
 
@@ -101,6 +101,12 @@ class AMAROK_EXPORT SvgHandler : public QObject
         void paintCustomSlider( QPainter *p, int x, int y, int width, int height, qreal percentage, bool active );
 
         /**
+         * Calculate the visual slider knob rect from its value, use it instead the QStyle functions
+         * QStyle::sliderPositionFromValue() and QStyle::subControlRect();
+         */
+        QRect sliderKnobRect( const QRect &slider, qreal percent );
+
+        /**
          * Get the path of the currently used svg theme file.
          *
          * @return the path of the currently used theme file.
@@ -124,7 +130,13 @@ class AMAROK_EXPORT SvgHandler : public QObject
 
         bool loadSvg( const QString& name );
 
+        QPixmap sliderHandle( const QColor &color, bool pressed, int size );
+        QColor calcLightColor(const QColor &color) const;
+        QColor calcDarkColor(const QColor &color) const;
+        bool lowThreshold(const QColor &color) const;
+
         KPixmapCache * m_cache;
+        KPixmapCache * m_sliderHandleCache;
 
         QHash<QString,KSvgRenderer*> m_renderers;
         QReadWriteLock m_lock;

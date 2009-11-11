@@ -266,7 +266,7 @@ PlaylistManager::categoryLongDescription( int playlistCategory )
         case UserPlaylist:
             return i18n( "Create, edit, organize and load playlists. "
         "Amarok automatically adds any playlists found when scanning your collection, "
-        " and any playlists that you save are also shown here." );
+        "and any playlists that you save are also shown here." );
         case PodcastChannel: return i18n("Podcasts");
         case Dynamic: return i18n("Dynamic Playlists");
         case SmartPlaylist: return i18n("Smart Playlist");
@@ -310,6 +310,9 @@ PlaylistManager::save( Meta::TrackList tracks, const QString &name,
     {
         debug() << "Empty name of playlist, or editing now";
         playlist = prov->save( tracks );
+        if( playlist.isNull() )
+            return false;
+
         AmarokUrl("amarok://navigate/playlists/user playlists").run();
         emit( renamePlaylist( playlist ) );
     }
@@ -338,7 +341,7 @@ PlaylistManager::import( const QString& fromLocation )
         debug() << "ERROR: m_playlistFileProvider was null";
         return false;
     }
-    return m_playlistFileProvider->import( KUrl::fromPath(fromLocation) );
+    return m_playlistFileProvider->import( KUrl(fromLocation) );
 }
 
 bool

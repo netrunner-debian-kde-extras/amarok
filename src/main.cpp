@@ -91,6 +91,8 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( "oggb4mp3", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Harald Sitter"), ki18n("Rokymoter (apachelogger)"), "harald.sitter@kdemail.net" );
         ocsData.addCredit( "apachelogger", aboutData.credits().last() );
+    aboutData.addCredit( ki18n("John Atkinson"), ki18n(( "Assorted patches" )), "john@fauxnetic.co.uk" );
+        ocsData.addCredit( "fauxnetic", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Kenneth Wesley Wimer II"), ki18n("Icons"), "kwwii@bootsplash.org" );
         ocsData.addCredit( "kwwii", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Kevin Funk"), ki18n("Developer, Website theme (KRF)"), "krf@electrostorm.net" );
@@ -123,8 +125,8 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( "Takahani", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Soren Harward"), ki18n("Developer"), "stharward@gmail.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Sven Krohlas"), ki18n("Rokymoter (sven423)"), "sven@asbest-online.de" );
-        ocsData.addCredit( QString(), aboutData.credits().last() );
+    aboutData.addCredit( ki18n("Sven Krohlas"), ki18n("Rokymoter, Developer (sven423)"), "sven@asbest-online.de" );
+        ocsData.addCredit( "krohlas", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Thomas Lübking"), ki18n("Developer"), "thomas.luebking@web.de" );
         ocsData.addCredit( "thomas12777", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Valentin Rouet"), ki18n("Developer"), "v.rouet@gmail.com" );

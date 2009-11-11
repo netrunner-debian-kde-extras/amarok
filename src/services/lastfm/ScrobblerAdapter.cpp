@@ -33,6 +33,8 @@ ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &clientId )
       m_clientId( clientId ),
       m_lastSaved( 0 )
 {
+    DEBUG_BLOCK
+
     resetVariables();
 
     //HACK work around a bug in liblastfm---it doesn't create its config dir, so when it
@@ -45,7 +47,8 @@ ScrobblerAdapter::ScrobblerAdapter( QObject *parent, const QString &clientId )
         ldir.mkpath( lpath );
     }
     
-    connect( The::mainWindow(), SIGNAL( loveTrack(Meta::TrackPtr) ), SLOT( loveTrack(Meta::TrackPtr) ) );
+    connect( The::mainWindow(), SIGNAL( loveTrack( Meta::TrackPtr) ), SLOT( loveTrack( Meta::TrackPtr ) ) );
+    connect( The::mainWindow(), SIGNAL( banTrack() ), SLOT( banTrack() ) );
 }
 
 
@@ -71,7 +74,7 @@ ScrobblerAdapter::engineNewTrackPlaying()
         m_current.stamp();
         
         m_current.setTitle( track->name() );
-        m_current.setDuration( track->length() );
+        m_current.setDuration( track->length() / 1000 );
         if( track->artist() )
             m_current.setArtist( track->artist()->name() );
         if( track->album() )
@@ -141,9 +144,12 @@ ScrobblerAdapter::engineNewMetaData( const QHash<qint64, QString> &newMetaData, 
 }
 
 void
-ScrobblerAdapter::enginePlaybackEnded( int finalPosition, int /*trackLength*/, PlaybackEndedReason /*reason*/ )
+ScrobblerAdapter::enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason )
 {
+    Q_UNUSED( trackLength )
+    Q_UNUSED( reason )
     DEBUG_BLOCK
+
     engineTrackPositionChanged( finalPosition, false );
     checkScrobble();
     resetVariables();
@@ -151,7 +157,7 @@ ScrobblerAdapter::enginePlaybackEnded( int finalPosition, int /*trackLength*/, P
 
 
 void
-ScrobblerAdapter::engineTrackPositionChanged( long position, bool userSeek )
+ScrobblerAdapter::engineTrackPositionChanged( qint64 position, bool userSeek )
 {
     // HACK enginecontroller is fscked. it sends engineTrackPositionChanged messages
     // with info for the last track even after engineNewTrackPlaying. this means that
@@ -159,6 +165,7 @@ ScrobblerAdapter::engineTrackPositionChanged( long position, bool userSeek )
     // workaround for 2.1.0 until i can rewrite this class properly to not need to do it
     // this way.
     //debug() << "m_lastPosition:" << m_lastPosition << "position:" << position << "m_lastSaved:" << m_lastSaved;
+
     if( m_lastPosition == 0 && m_lastSaved != 0 && position > m_lastSaved ) // this is probably when the fucked up info came through, ignore
         return;
     m_lastSaved = 0;
@@ -193,7 +200,7 @@ ScrobblerAdapter::love()
 }
 
 void
-ScrobblerAdapter::loveTrack( Meta::TrackPtr track )
+ScrobblerAdapter::loveTrack( Meta::TrackPtr track ) // slot
 {
     DEBUG_BLOCK
 
@@ -210,6 +217,13 @@ ScrobblerAdapter::loveTrack( Meta::TrackPtr track )
     }
 }
 
+void
+ScrobblerAdapter::banTrack() // slot
+{
+    DEBUG_BLOCK
+
+    m_current.ban();
+}
 
 void
 ScrobblerAdapter::ban()
@@ -233,7 +247,7 @@ ScrobblerAdapter::checkScrobble()
     DEBUG_BLOCK
     // note: in the 1.2 protocol submits are always done at end of file
     debug() << "total played" << m_totalPlayed << "duration" << m_current.duration() * 1000 / 2 << "isNull" << m_current.isNull() << "submit?" << AmarokConfig::submitPlayedSongs();
-    if( ( m_totalPlayed >= m_current.duration() * 1000 / 2 ) && !m_current.isNull() && AmarokConfig::submitPlayedSongs() )
+    if( ( m_totalPlayed > m_current.duration() * 1000 / 2 ) && !m_current.isNull() && AmarokConfig::submitPlayedSongs() )
     {
         debug() << "scrobble: " << m_current.artist() << " - " << m_current.album() << " - " << m_current.title();
         m_scrobbler->cache( m_current );

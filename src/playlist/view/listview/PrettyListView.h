@@ -20,7 +20,6 @@
 #ifndef PRETTYLISTVIEW_H
 #define PRETTYLISTVIEW_H
 
-#include "EngineObserver.h"
 #include "PrettyItemDelegate.h"
 #include "playlist/proxymodels/GroupingProxy.h"
 
@@ -44,7 +43,7 @@ class QTimer;
 
 namespace Playlist
 {
-class PrettyListView : public QListView, public EngineObserver
+class PrettyListView : public QListView
 {
     Q_OBJECT
 
@@ -62,6 +61,10 @@ public slots:
     void playFirstSelected();
     void dequeueSelection();
     void queueSelection();
+
+    /* Switch queue state for selected rows in playlist */
+    void switchQueueState();
+
     void removeSelection();
     void stopAfterTrack();
     void scrollToActiveTrack();
@@ -75,10 +78,11 @@ public slots:
 
     void itemsAdded( const QModelIndex& parent, int firstRow, int lastRow );
 
-    virtual void engineNewTrackPlaying(); // from EngineObserver
-
 protected slots:
     void newPalette( const QPalette & palette );
+
+    void saveTrackSelection();
+    void restoreTrackSelection();
 
 private slots:
     void trackActivated( const QModelIndex& );
@@ -119,6 +123,8 @@ private:
     PrettyItemDelegate * m_prettyDelegate;
 
     QTimer *m_animationTimer;
+
+    QList<qint64> m_savedTrackSelection;
 
 public:
     QList<int> selectedRows() const;

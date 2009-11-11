@@ -150,7 +150,7 @@ QColor BreadcrumbItemButton::foregroundColor() const
 
     QColor foregroundColor = palette().color( foregroundRole() );
     if( !isActive && !isHighlighted )
-        foregroundColor.setAlpha( 60 );
+        foregroundColor.setAlpha( 180 );
 
     return foregroundColor;
 }
@@ -226,6 +226,11 @@ void BreadcrumbUrlMenuButton::generateMenu( const QPoint &pos )
     {
         menu->addAction( Amarok::actionCollection()->action( "bookmark_playlistview" ) );
         debug()<<"Adding bookmark playlist action";
+    }
+    else if( m_urlsCommand == "context" )
+    {
+        menu->addAction( Amarok::actionCollection()->action( "bookmark_contextview" ) );
+        debug()<<"Adding bookmark context view action";
     }
     else
         warning()<<"Bad URL command.";

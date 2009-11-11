@@ -54,6 +54,17 @@ ProxyBase::activeTrack() const
     return m_belowModel->activeTrack();
 }
 
+QSet<int>
+ProxyBase::allRowsForTrack( const Meta::TrackPtr track ) const
+{
+    QSet<int> trackRows;
+
+    foreach( int row, m_belowModel->allRowsForTrack( track ) )
+        trackRows.insert( rowFromSource( row ) );
+
+    return trackRows;
+}
+
 int
 ProxyBase::columnCount( const QModelIndex& i ) const
 {
@@ -162,6 +173,12 @@ ProxyBase::findPrevious( const QString &searchTerm, int selectedRow, int searchF
     return rowFromSource( proxyBase->findPrevious( searchTerm, selectedRow, searchFields ) );
 }
 
+int
+ProxyBase::firstRowForTrack( const Meta::TrackPtr track ) const
+{
+    return rowFromSource( m_belowModel->firstRowForTrack( track ) );
+}
+
 Qt::ItemFlags
 ProxyBase::flags( const QModelIndex &index ) const
 {
@@ -207,12 +224,6 @@ int
 ProxyBase::rowForId( const quint64 id ) const
 {
     return rowFromSource( m_belowModel->rowForId( id ) );
-}
-
-int
-ProxyBase::rowForTrack( const Meta::TrackPtr track ) const
-{
-    return rowFromSource( m_belowModel->rowForTrack( track ) );
 }
 
 int
@@ -279,10 +290,16 @@ ProxyBase::supportedDropActions() const
     return m_belowModel->supportedDropActions();
 }
 
-int
+qint64
 ProxyBase::totalLength() const
 {
     return m_belowModel->totalLength();
+}
+
+quint64
+ProxyBase::totalSize() const
+{
+    return m_belowModel->totalSize();
 }
 
 Meta::TrackPtr

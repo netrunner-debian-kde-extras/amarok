@@ -139,8 +139,8 @@ UmsHandler::init()
             << "mp4" << "mp2" << "ac3";
 
 */
-    m_mimetypes << "audio/mpeg" << "audio/x-wav" << "video/x-ms-asf" << "audio/flac"
-            << "audio/x-ms-wma" << "application/x-ogg" << "audio/x-aac" << "audio/mp4a-latm"
+    m_mimetypes << "audio/mpeg" << "audio/x-wav" << "video/x-ms-asf" << "audio/x-flac"
+            << "audio/x-ms-wma" << "application/ogg" << "audio/mp4" << "audio/mp4a-latm"
             << "video/mp4" << "audio/ac3";
 
 
@@ -301,7 +301,15 @@ UmsHandler::addPath( const QString &path )
     DEBUG_BLOCK
     int acc = 0;
     KMimeType::Ptr mime = KMimeType::findByFileContent( path, &acc );
-    debug() << "Got type: " << mime->name();
+    if( !mime || mime->name() == KMimeType::defaultMimeType() )
+    {
+        debug() << "Trying again with findByPath:" ;
+        mime = KMimeType::findByPath( path, 0, true, &acc );
+        if( mime->name() == KMimeType::defaultMimeType() )
+            return 0;
+    }
+    debug() << "Got type: " << mime->name() << "For file: " << path << ", with accuracy: " << acc;
+
     QFileInfo info( path );
     if( info.isDir() )
     {
@@ -317,7 +325,7 @@ UmsHandler::addPath( const QString &path )
 
         foreach( QString mimetype, m_mimetypes )
         {
-            if( mime->name() == mimetype )
+            if( mime->is( mimetype ) )
             {
                 m_currtracklist << info.canonicalFilePath();
                 return 2;

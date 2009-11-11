@@ -68,7 +68,8 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         void metadataChanged( Meta::TrackPtr track );
         void metadataChanged( Meta::AlbumPtr album );
 
-        int totalLength() const { return m_totalLength; }
+        qint64 totalLength() const { return m_totalLength; }
+        quint64 totalSize() const { return m_totalSize; }
 
         // convenience access methods
         bool rowExists( int row ) const { return (( row >= 0 ) && ( row < m_items.size() ) ); }
@@ -79,7 +80,9 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         Item::State stateOfRow( int row ) const;
 
         bool containsTrack( const Meta::TrackPtr track ) const;
-        int rowForTrack( const Meta::TrackPtr track ) const;
+        int firstRowForTrack( const Meta::TrackPtr track ) const;
+        QSet<int> allRowsForTrack( const Meta::TrackPtr track ) const;
+
         Meta::TrackPtr trackAt( int row ) const;
         Meta::TrackPtr activeTrack() const;
 
@@ -136,6 +139,7 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
 
     signals:
         void insertedIds( const QList<quint64>& );
+        void beginRemoveIds();
         void removedIds( const QList<quint64>& );
         void activeTrackChanged( quint64 );
         void activeRowChanged( int );
@@ -159,7 +163,8 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         QHash<quint64, Item*> m_itemIds; //! maps track id's to items
         int m_activeRow;                 //! the row being played
 
-        int m_totalLength;
+        qint64 m_totalLength;
+        quint64 m_totalSize;
 
         QString m_playlistName;
         bool m_proposeOverwriting;

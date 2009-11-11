@@ -86,6 +86,7 @@ QThreadStorage< ThreadInitializer* > ThreadInitializer::storage;
 MySqlCollection::MySqlCollection( const QString &id, const QString &prettyName )
     : SqlCollection( id, prettyName )
     , m_db( 0 )
+    , m_mutex( QMutex::Recursive )
 {
     //Relevant code must be implemented in subclasses
 }
@@ -106,7 +107,7 @@ QStringList MySqlCollection::query( const QString& statement )
     //DEBUG_BLOCK
     //debug() << "[ATTN!] MySql::query( " << statement << " )";
 
-    ThreadInitializer::init();
+    initThreadInitializer();
     QMutexLocker locker( &m_mutex );
 
     QStringList values;
@@ -159,7 +160,7 @@ int MySqlCollection::insert( const QString& statement, const QString& /* table *
     //DEBUG_BLOCK
     //debug() << "[ATTN!] MySql::insert( " << statement << " )";
 
-    ThreadInitializer::init();
+    initThreadInitializer();
     QMutexLocker locker( &m_mutex );
 
     if( !m_db )
@@ -221,6 +222,21 @@ void
 MySqlCollection::initThreadInitializer()
 {
     ThreadInitializer::init();
+}
+
+void
+MySqlCollection::sharedInit( const QString &databaseName )
+{
+    if( mysql_query( m_db, QString( "SET NAMES 'utf8'" ).toUtf8() ) )
+        reportError( "SET NAMES 'utf8' died" );
+    if( mysql_query( m_db, QString( "CREATE DATABASE IF NOT EXISTS %1 DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin" ).arg( databaseName ).toUtf8() ) )
+        reportError( QString( "Could not create %1 database" ).arg( databaseName ) );
+    if( mysql_query( m_db, QString( "ALTER DATABASE %1 DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin" ).arg( databaseName ).toUtf8() ) )
+        reportError( "Could not alter database charset/collation" );
+    if( mysql_query( m_db, QString( "USE %1" ).arg( databaseName ).toUtf8() ) )
+        reportError( "Could not select database" );
+
+    debug() << "Connected to MySQL server" << mysql_get_server_info( m_db );
 }
 
 #include "MySqlCollection.moc"

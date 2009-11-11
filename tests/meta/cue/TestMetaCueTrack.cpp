@@ -26,9 +26,10 @@
 #include <QtCore/QString>
 
 
-TestMetaCueTrack::TestMetaCueTrack( QStringList testArgumentList )
+TestMetaCueTrack::TestMetaCueTrack( QStringList testArgumentList, bool stdout )
 {
-    testArgumentList.replace( 2, testArgumentList.at( 2 ) + "MetaCueTrack.xml" );
+    if( !stdout )
+        testArgumentList.replace( 2, testArgumentList.at( 2 ) + "MetaCueTrack.xml" );
     QTest::qExec( this, testArgumentList );
 }
 
@@ -125,7 +126,7 @@ void TestMetaCueTrack::testTrackNumber()
 
 void TestMetaCueTrack::testLength()
 {
-    QCOMPARE( m_testTrack1->length(), 0 ); // why?
+    QCOMPARE( m_testTrack1->length(), qint64(0) ); // why?
 }
 
 void TestMetaCueTrack::testAlbum()

@@ -1,4 +1,4 @@
-ADD_DEFINITIONS(${TAGLIB_CFLAGS})
+ADD_DEFINITIONS(${TAGLIB_CFLAGS} ${TAGLIB-EXTRAS_CFLAGS})
 
 if(APPLE)
     set(mac_SRCS
@@ -23,10 +23,6 @@ add_subdirectory( aboutdialog/libattica-ocsclient )
 if( STRIGI_FOUND )
     add_subdirectory( strigi )
 endif( STRIGI_FOUND )
-
-if(APPLE)
-    find_package( SecurityFramework REQUIRED )
-endif(APPLE)
 
 include_directories(
     aboutdialog
@@ -55,6 +51,7 @@ include_directories(
     plugin
     podcasts
     statusbar
+    synchronization
     timecode
     widgets
     ../tests/
@@ -68,9 +65,10 @@ include_directories(
     ../tests/timecode/
     ${KDE4_INCLUDE_DIR}
     ${TAGLIB-EXTRAS_INCLUDE_DIR}
+    ${TAGLIB-EXTRAS_INCLUDES}
     ${QT_INCLUDES}
     ${QT_QTSCRIPT_INCLUDE_DIR}
-    ${APPLE_SECURITY_INCLUDE_DIR}
+    ${QCA2_INCLUDE_DIR}
 )
 
 if ( KDEMULTIMEDIA_FOUND )
@@ -100,7 +98,7 @@ set(libproxycollection_SRCS
 set(libmediadeviceframework_SRCS
   collection/mediadevicecollection/MediaDeviceCollection.cpp
   collection/mediadevicecollection/MediaDeviceCollectionLocation.cpp
-  collection/mediadevicecollection/MediaDeviceMeta.cpp  
+  collection/mediadevicecollection/MediaDeviceMeta.cpp
   collection/mediadevicecollection/MediaDeviceCollectionCapability.cpp
   collection/mediadevicecollection/MediaDeviceDecoratorCapability.cpp
   collection/mediadevicecollection/handler/MediaDeviceHandler.cpp
@@ -117,20 +115,6 @@ set(libmediadeviceframework_SRCS
   collection/mediadevicecollection/support/ConnectionAssistant.cpp
   collection/mediadevicecollection/support/MediaDeviceInfo.cpp
 )
-
-#####################################################################
-# CREDENTIALSTORAGE
-#####################################################################
-
-if(APPLE)
-    set(credentialstorage_SRCS
-        CredentialStorage_mac.cpp
-    )
-else(APPLE)
-    set(credentialstorage_SRCS
-        CredentialStorage.cpp
-    )
-endif(APPLE)
 
 #####################################################################
 # SERVICEFRAMEWORK
@@ -169,6 +153,9 @@ set(libamarokurl_SRCS
     amarokurls/AmarokUrl.cpp
     amarokurls/AmarokUrlAction.cpp
     amarokurls/AmarokUrlHandler.cpp
+    amarokurls/BookmarkCurrentButton.cpp
+    amarokurls/ContextUrlGenerator.cpp
+    amarokurls/ContextUrlRunner.cpp
     amarokurls/NavigationUrlRunner.cpp
     amarokurls/NavigationUrlGenerator.cpp
     amarokurls/PlayUrlRunner.cpp
@@ -204,7 +191,7 @@ set(libconfigdialog_SRCS
     configdialog/ConfigDialogBase.cpp
     configdialog/dialogs/CollectionConfig.cpp
     configdialog/dialogs/GeneralConfig.cpp
-    configdialog/dialogs/OsdConfig.cpp
+    configdialog/dialogs/NotificationsConfig.cpp
     configdialog/dialogs/PlaybackConfig.cpp
     configdialog/dialogs/ServiceConfig.cpp
     configdialog/dialogs/DatabaseConfig.cpp
@@ -213,7 +200,7 @@ set(libconfigdialog_SRCS
 kde4_add_ui_files(libconfigdialog_SRCS
     configdialog/dialogs/CollectionConfig.ui
     configdialog/dialogs/GeneralConfig.ui
-    configdialog/dialogs/OsdConfig.ui
+    configdialog/dialogs/NotificationsConfig.ui
     configdialog/dialogs/PlaybackConfig.ui
     configdialog/dialogs/DatabaseConfig.ui
 )
@@ -243,6 +230,16 @@ set(libcollectionbrowser_SRCS
     browsers/collectionbrowser/CollectionTreeItemDelegate.cpp
     browsers/collectionbrowser/CollectionBrowserTreeView.cpp
     browsers/collectionbrowser/CollectionWidget.cpp
+)
+
+#####################################################################
+# SYNCHRONIZATION
+#####################################################################
+set(libsynchronization_SRCS
+    synchronization/MasterSlaveSynchronizationJob.cpp
+    synchronization/OneWaySynchronizationJob.cpp
+    synchronization/SynchronizationBaseJob.cpp
+    synchronization/UnionJob.cpp
 )
 
 #####################################################################
@@ -282,6 +279,7 @@ set(meta_SRCS
     meta/Meta.cpp
     meta/MetaUtility.cpp
     ../shared/MetaReplayGain.cpp
+    meta/Playlist.cpp
     meta/PLSPlaylist.cpp
     meta/StatisticsProvider.cpp
     meta/PlaylistFileSupport.cpp
@@ -330,6 +328,8 @@ set(collection_SRCS
     collection/support/MemoryMatcher.cpp
     collection/support/MemoryQueryMaker.cpp
     collection/support/MemoryQueryMakerHelper.cpp
+    collection/support/PlaylistCollection.cpp
+    collection/support/PlaylistCollectionLocation.cpp
     collection/support/XmlQueryReader.cpp
     collection/support/XmlQueryWriter.cpp
     collection/support/FileCollectionLocation.cpp
@@ -371,8 +371,10 @@ set( libcontextview_SRCS
 #####################################################################
 set(libpodcasts_SRCS
     podcasts/PodcastReader.cpp
+    podcasts/PodcastMeta.cpp
     podcasts/sql/SqlPodcastMeta.cpp
     podcasts/sql/SqlPodcastProvider.cpp
+    podcasts/sql/PodcastSettingsDialog.cpp
 )
 
 #####################################################################
@@ -537,7 +539,6 @@ set(amaroklib_LIB_SRCS
     ${libcontextview_SRCS}
     ${libcollectionbrowser_SRCS}
     ${libconfigdialog_SRCS}
-    ${credentialstorage_SRCS}
     ${libplaylist_SRCS}
     ${libplugin_SRCS}
     ${libproxycollection_SRCS}
@@ -557,6 +558,7 @@ set(amaroklib_LIB_SRCS
     ${libstatusbar_SRCS}
     ${libamarokurl_SRCS}
     ${taglib_filetype_resolver_SRCS}
+    ${libsynchronization_SRCS}
     aboutdialog/AnimatedBarWidget.cpp
     aboutdialog/AnimatedWidget.cpp
     aboutdialog/ExtendedAboutDialog.cpp
@@ -573,6 +575,7 @@ set(amaroklib_LIB_SRCS
     EngineController.cpp
     EngineObserver.cpp
     Expression.cpp
+    KNotificationBackend.cpp
     MainWindow.cpp
     MediaDeviceCache.cpp
     MediaDeviceMonitor.cpp
@@ -596,9 +599,9 @@ set(amaroklib_LIB_SRCS
     dialogs/EditFilterDialog.cpp
     dialogs/FilenameLayoutDialog.cpp
     dialogs/OrganizeCollectionDialog.cpp
-    dialogs/PodcastSettingsDialog.cpp
     dialogs/ScriptSelector.cpp
     dialogs/ScriptManager.cpp
+    dialogs/ScriptUpdater.cpp
     dialogs/TagDialog.cpp
     dialogs/TagGuesser.cpp
     browsers/filebrowser/FileBrowser.cpp
@@ -609,10 +612,12 @@ set(amaroklib_LIB_SRCS
     MountPointManager.cpp
     PaletteHandler.cpp
     PopupDropperFactory.cpp
-    Systray.cpp
     toolbar/CurrentTrackToolbar.cpp
-    toolbar/MainToolbarNG.cpp
+    toolbar/MainToolbar.cpp
+    toolbar/SlimToolbar.cpp
     toolbar/VolumePopupButton.cpp
+    TrayIcon.cpp
+    widgets/AmarokDockWidget.cpp
     widgets/BreadcrumbItemButton.cpp
     widgets/hintlineedit.cpp
     widgets/kdatecombo.cpp
@@ -628,7 +633,6 @@ set(amaroklib_LIB_SRCS
     widgets/LineEdit.cpp
     widgets/MainControlsButton.cpp
     widgets/MainControlsWidget.cpp
-    widgets/MainToolbar.cpp
     widgets/Osd.cpp
     widgets/PixmapViewer.cpp
     widgets/PrettyTreeView.cpp
@@ -688,7 +692,7 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     dialogs/FilenameLayoutDialog.ui
     dialogs/OrganizeCollectionDialogBase.ui
     playlist/layouts/PlaylistLayoutEditDialog.ui
-    dialogs/PodcastSettingsBase.ui
+    podcasts/sql/PodcastSettingsBase.ui
     browsers/playlistbrowser/PodcastCategoryBase.ui
 )
 
@@ -702,6 +706,7 @@ target_link_libraries(amaroklib
     ${KDE4_KFILE_LIBS}
     ${KDE4_THREADWEAVER_LIBRARIES}
     ${KDE4_KNEWSTUFF2_LIBS}
+    ${KDE4_KNOTIFYCONFIG_LIBS}
     ${KDE4_PHONON_LIBRARY}
     ${KDE4_PLASMA_LIBS}
     ${KDE4_SOLID_LIBRARY}
@@ -710,6 +715,7 @@ target_link_libraries(amaroklib
     ${QT_QTSCRIPT_LIBRARY}
     ${QT_QTSQL_LIBRARY}
     ${QT_QTWEBKIT_LIBRARY}
+    ${QCA2_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
     ${EXTRA_LIBS}
     amarokpud
@@ -724,7 +730,6 @@ if(WIN32)
     target_link_libraries(amaroklib ${QT_QTWEBKIT_LIBRARY})
 endif(WIN32)
 if(APPLE)
-    target_link_libraries(amaroklib ${APPLE_SECURITY_LIBRARY})
     SET_TARGET_PROPERTIES(amaroklib PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
 endif(APPLE)
 
@@ -751,10 +756,11 @@ install(TARGETS amaroklib ${INSTALL_TARGETS_DEFAULT_ARGS} )
 #####################################################################
 
 set(amarok_SRCS main.cpp )
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
 
 kde4_add_app_icon(amarok_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/images/hi*-app-amarok.png)
 
-if(Q_WS_MAC)    
+if(Q_WS_MAC)
     kde4_add_executable(Amarok ${amarok_SRCS})
     target_link_libraries(Amarok ${KDE4_KDECORE_LIBS} amaroklib )
     SET_TARGET_PROPERTIES(Amarok PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
@@ -766,7 +772,8 @@ if(Q_WS_MAC)
     install(TARGETS Amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
 else(Q_WS_MAC)
     kde4_add_executable(amarok ${amarok_SRCS})
-    target_link_libraries(amarok ${KDE4_KDEUI_LIBS} amaroklib )
+    target_link_libraries(amarok ${KDE4_KDEUI_LIBS} amaroklib ${TAGLIB_LIBRARIES} ${TAGLIB-EXTRAS_LIBRARIES} )
+
     install(TARGETS amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
 endif(Q_WS_MAC)
 
@@ -801,6 +808,7 @@ install(FILES data/DefaultPlaylistLayouts.xml
               DESTINATION ${DATA_INSTALL_DIR}/amarok/data)
 
 install( FILES data/amarok_homerc DESTINATION ${CONFIG_INSTALL_DIR} )
+install( FILES data/amarok.notifyrc DESTINATION ${DATA_INSTALL_DIR}/amarok )
 
 kde4_install_icons( ${ICON_INSTALL_DIR} )
 

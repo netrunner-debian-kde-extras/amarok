@@ -323,6 +323,13 @@
     </entry>
 </group>
 
+<group name="KNotify">
+    <entry key="KNotify Enabled" type="Bool">
+        <label>Use KNotify support</label>
+        <default>false</default>
+    </entry>
+</group>
+
 <group name="OSD">
     <entry key="Osd Enabled" type="Bool">
         <label>Use On-Screen Display</label>
@@ -343,11 +350,6 @@
         <label>The OSD text to show</label>
         <whatsthis>Customize the OSD display text.</whatsthis>
         <default>%artist - %title {(%length)}\n%album</default>
-    </entry>
-    <entry key="Osd Font" type="Font">
-        <label>Font for On-Screen Display</label>
-        <whatsthis>The font to use for the On-Screen Display.</whatsthis>
-        <default code="true">QFont("Arial",16)</default>
     </entry>
     <entry key="Osd Use Translucency" type="Bool">
         <label>Translucency Toggle</label>
@@ -447,9 +449,6 @@
         <label>Whether years are shown in the collection browser.</label>
         <default>true</default>
     </entry>
-</group>
-
-<group name="MySQLe">
 </group>
 
 <group name="Scrobbler">
@@ -582,6 +581,18 @@
     <entry key="Password" type="String">
         <label>Password for the external database user.</label>
         <default></default>
+    </entry>
+    <entry key="CheckCount" type="Int">
+        <label>Keeps a running count to know when run a CHECK.</label>
+        <default>0</default>
+    </entry>
+</group>
+
+<group name="ScriptManager">
+    <entry key="AutoUpdateScripts" type="Bool">
+        <label>Whether to automatically update built-in scripts</label>
+        <whatsthis>Enable/Disable automatic update for built-in scripts.</whatsthis>
+        <default>true</default>
     </entry>
 </group>
 

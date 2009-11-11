@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                                    *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -123,8 +124,6 @@ Context::AppletToolbar::appletRemoved( Plasma::Applet* applet )
         AppletToolbarAppletItem* app = dynamic_cast< AppletToolbarAppletItem* >( m_appletLayout->itemAt( i ) );
         if( app && app->applet() == applet )
         {
-            if( m_configMode ) // also remove one of the now-extra config icons
-                deleteAddItem( i + 1 );
             m_appletLayout->removeItem( app );
             app->deleteLater();
         }
@@ -163,6 +162,7 @@ Context::AppletToolbar::addApplet( const QString& pluginName, Context::AppletToo
     DEBUG_BLOCK
     
     int loc = -1; // -1  means at end
+    
     if( m_configMode )
     {
         for( int i = 0; i < m_appletLayout->count(); i++ )
@@ -175,9 +175,8 @@ Context::AppletToolbar::addApplet( const QString& pluginName, Context::AppletToo
             warning() << "HELP GOT ADD REQUEST FROM NON-EXISTENT LOCATION";
             return;
         }
-        // since we inserted a bunch of placeholder add icons, our real index is half
-        loc /= 2;
     }
+    
     debug() << "ADDING APPLET AT LOC:" << loc;
     emit addAppletToContainment( pluginName, loc );
 }
@@ -196,7 +195,7 @@ Context::AppletToolbar::appletAdded( Plasma::Applet* applet, int loc ) // SLOT
         m_appletLayout->addItem( m_configItem );
         m_appletLayout->setAlignment( m_configItem, Qt::AlignRight );
     }
-    
+  
     if( m_configMode )
     {
         // loc doesn't take into account additional + icons, also we need to add 1 more + icon
@@ -204,14 +203,10 @@ Context::AppletToolbar::appletAdded( Plasma::Applet* applet, int loc ) // SLOT
         item->setConfigEnabled( true );
         connect( item, SIGNAL( appletChosen( Plasma::Applet* ) ), this, SIGNAL( showApplet( Plasma::Applet* ) ) );
         
-        loc *= 2;
-        
-        // add the real item
+        // add the item
         m_appletLayout->insertItem( loc, item );
-        
-        // add the extra +
-        newAddItem( loc );
-    } else
+    }
+    else
     {
         Context::AppletToolbarAppletItem* item = new Context::AppletToolbarAppletItem( this, applet );
         connect( item, SIGNAL( appletChosen( Plasma::Applet* ) ), this, SIGNAL( showApplet( Plasma::Applet* ) ) );
@@ -226,7 +221,6 @@ Context::AppletToolbar::appletAdded( Plasma::Applet* applet, int loc ) // SLOT
     emit appletAddedToToolbar( applet, loc );
 }
 
-
 void 
 Context::AppletToolbar::toggleConfigMode() // SLOT
 {
@@ -234,20 +228,26 @@ Context::AppletToolbar::toggleConfigMode() // SLOT
     if( !m_configMode )
     {
         // place add icons in all possible places that the user can add an icon
-        
+
         m_configMode = true;
-        
+
+        int loc = -1;                        // location of the configure icon
         int count = m_appletLayout->count(); // save now so we don't check count after adding :)
         for( int i = 0; i < count; i++ ) // tell each applet we are configuring
         {
-            Context::AppletToolbarAppletItem* appletItem = dynamic_cast< Context::AppletToolbarAppletItem* >( m_appletLayout->itemAt( i ) );
+            QGraphicsLayoutItem *item = m_appletLayout->itemAt( i );
+
+            Context::AppletToolbarAppletItem* appletItem = dynamic_cast< Context::AppletToolbarAppletItem* >( item );
             if( appletItem )
                 appletItem->setConfigEnabled( true );
+
+            Context::AppletToolbarConfigItem* configItem = dynamic_cast< Context::AppletToolbarConfigItem* >( item );
+            if( configItem )
+                loc = i;
         }
-        
-        for( int i = 0; i < count; i++ )
-            newAddItem( i * 2 );
-            
+
+        if( loc >= 0 )
+            newAddItem( loc );
     }
     else
     {
@@ -274,30 +274,24 @@ Context::AppletToolbar::toggleConfigMode() // SLOT
 void
 Context::AppletToolbar::refreshAddIcons() // SLOT
 {
-     foreach( AppletToolbarAddItem* item, m_configAddIcons )
+    foreach( AppletToolbarAddItem* item, m_configAddIcons )
     {
         m_appletLayout->removeItem( item );
         item->deleteLater();
     }
     m_configAddIcons.clear();
-    
-    int count = m_appletLayout->count(); // save now so we don't check count after adding :)
-    for( int i = 0; i < count; i++ )
-        newAddItem( i * 2 );
-}
 
-void 
-Context::AppletToolbar::deleteAddItem( int loc )
-{ 
-    DEBUG_BLOCK
-    if( !m_configMode )
-        return;
-    Context::AppletToolbarAddItem* tmpItem = dynamic_cast< Context::AppletToolbarAddItem* >( m_appletLayout->itemAt( loc ) );
-    if( !tmpItem )
-        debug() << "GOT NON-ADDITEM";
-    m_appletLayout->removeItem( tmpItem );
-    m_configAddIcons.removeAll( tmpItem );
-    tmpItem->deleteLater();
+    int loc = -1;
+    for( int i = 0; i < m_appletLayout->count(); ++i )
+    {
+        QGraphicsLayoutItem *item = m_appletLayout->itemAt( i );
+        Context::AppletToolbarConfigItem* configItem = dynamic_cast< Context::AppletToolbarConfigItem* >( item );
+        if( configItem )
+            loc = i;
+    }
+
+    if( loc >=0 )
+        newAddItem( loc );
 }
 
 void 

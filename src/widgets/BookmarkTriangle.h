@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Casey Link <unnamedrambler@gmail.com>                             *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -34,24 +35,30 @@ class BookmarkTriangle : public QWidget
 public:
     BookmarkTriangle ( QWidget *parent, int milliseconds, QString name );
     ~BookmarkTriangle();
-    virtual QSize sizeHint () const;
+    virtual QSize sizeHint() const;
     virtual QSizePolicy sizePolicy() const;
-    virtual QSize minimumSizeHint () const;
+    virtual QSize minimumSizeHint() const;
 
     virtual void mousePressEvent ( QMouseEvent * event );
-    virtual void mouseReleaseEvent ( QMouseEvent * event );
+    virtual void mouseReleaseEvent  (QMouseEvent *);
     virtual void enterEvent ( QEvent * event );
     virtual void leaveEvent ( QEvent * event );
 
     virtual void paintEvent ( QPaintEvent* );
+    virtual void timerEvent ( QTimerEvent * event );
+
+    virtual void hidePopup();
+    virtual void deleteBookmark();
+    virtual int getTimeValue();
 
 signals:
-    void clicked( int );
+    void clicked ( int );
+    void focused ( int );
 
 private:
     int m_mseconds;
     QString m_name;
     BookmarkPopup* m_tooltip;
+    int m_timerId;
 };
-
 #endif // BOOKMARKTRIANGLE_H

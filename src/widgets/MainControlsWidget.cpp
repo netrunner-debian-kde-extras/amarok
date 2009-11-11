@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -25,18 +26,20 @@
 
 #include <QGraphicsSvgItem>
 #include <QGraphicsScene>
-
+#include <QToolButton>
 
 
 MainControlsWidget::MainControlsWidget( QWidget * parent )
     : QGraphicsView( parent )
 {
-    setFixedHeight( 67 );
-    setFixedWidth( 183 );
+    const float aspectRatio = 3.02;
+    const int ourHeight = 50;
+    setFixedHeight( ourHeight );
+    setFixedWidth( int( ourHeight * aspectRatio ) );
+
     setContentsMargins( 0, 0, 0, 0 );
 
     setFrameStyle( QFrame::NoFrame );
-
     setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
 
     setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
@@ -48,39 +51,37 @@ MainControlsWidget::MainControlsWidget( QWidget * parent )
     p.setColor( QPalette::Base, c );
     setPalette( p );
 
-    QGraphicsScene   *scene  = new QGraphicsScene();
-    QGraphicsSvgItem *shadow = new QGraphicsSvgItem( KStandardDirs::locate( "data", "amarok/images/default-theme-clean.svg" ), 0 );
+    QGraphicsScene *scene  = new QGraphicsScene();
 
-    shadow->setElementId( QLatin1String("main_button_shadows") );
-    shadow->moveBy( 0.0, 4.0 );
-    shadow->setZValue( 1 );
-    scene->addItem( shadow );
+    const float startX = 0.0;
+    const float gapX = 34.5;
+    const float startY = 0.0;
 
     MainControlsButton * backButton = new MainControlsButton( 0 );
     backButton->setSvgPrefix( "back_button" );
     backButton->setAction( Amarok::actionCollection()->action( "prev" ) );
-    backButton->moveBy( 3.0, 6.5 );
+    backButton->moveBy( startX + gapX * 0, startY );
     backButton->setZValue( 2 );
     scene->addItem( backButton );
 
     m_playPauseButton = new MainControlsButton( 0 );
     m_playPauseButton->setSvgPrefix( "play_button" );
     m_playPauseButton->setAction( Amarok::actionCollection()->action( "play_pause" ) );
-    m_playPauseButton->moveBy( 43.0, 6.5 );
+    m_playPauseButton->moveBy( startX + gapX * 1, startY );
     m_playPauseButton->setZValue( 10 );
     scene->addItem( m_playPauseButton );
 
     MainControlsButton * stopButton = new MainControlsButton( 0 );
     stopButton->setSvgPrefix( "stop_button" );
     stopButton->setAction( Amarok::actionCollection()->action( "stop" ) );
-    stopButton->moveBy( 83.0, 6.5 );
+    stopButton->moveBy( startX + gapX * 2, startY );
     stopButton->setZValue( 5 );
     scene->addItem( stopButton );
 
     MainControlsButton * nextButton = new MainControlsButton( 0 );
     nextButton->setSvgPrefix( "next_button" );
     nextButton->setAction( Amarok::actionCollection()->action( "next" ) );
-    nextButton->moveBy( 123.0, 6.5 );
+    nextButton->moveBy( startX + gapX * 3, startY );
     nextButton->setZValue( 2 );
     scene->addItem( nextButton );
 
@@ -91,17 +92,18 @@ MainControlsWidget::MainControlsWidget( QWidget * parent )
 
 
 MainControlsWidget::~MainControlsWidget()
-{
-}
+{}
 
 /* Changes the PlayPause button icon to use the play icon. */
-void MainControlsWidget::setPlayButton()
+void
+MainControlsWidget::setPlayButton()
 {
     m_playPauseButton->setSvgPrefix( "play_button" );
 }
 
 /* Changes the PlayPause button icon to use the pause icon. */
-void MainControlsWidget::setPauseButton()
+void
+MainControlsWidget::setPauseButton()
 {
     m_playPauseButton->setSvgPrefix( "pause_button" );
 }
