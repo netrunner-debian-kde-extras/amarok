@@ -11,6 +11,11 @@ amarok (2.2.1-0r1) UNRELEASED; urgency=low
   * Remove Shoutcast service from the package description. It is no longer
     available.
   * Update DESCRIPTION section of amarok manual page. It was really obsolete.
+  * Switch to dpkg-source format 3.0 (quilt):
+    - do not use quilt dh addon in debian/rules;
+    - drop quilt from build-depends;
+    - drop quilt specific instructions from README.source;
+    - use original upstream .tar.bz2 tarball.
 
  -- Modestas Vainius <modestas@vainius.eu>  Thu, 12 Nov 2009 00:39:30 +0200
 
