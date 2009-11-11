@@ -1,5 +1,8 @@
-amarok (2.2.0-2) UNRELEASED; urgency=low
+amarok (2.2.1-0r1) UNRELEASED; urgency=low
 
+  * New upstream release.
+    - This particular crash with dynamic playlists has been fixed upstream
+      (Closes: #547946).
   * Reformat debian/README.Debian and add a note about
     /usr/share/bug/amarok/presubj to it.
   * Add a note about libxine1-ffmpeg to /usr/share/bug/amarok/presubj. That's a
@@ -9,7 +12,7 @@ amarok (2.2.0-2) UNRELEASED; urgency=low
     available.
   * Update DESCRIPTION section of amarok manual page. It was really obsolete.
 
- -- Modestas Vainius <modestas@vainius.eu>  Sat, 03 Oct 2009 11:32:33 +0300
+ -- Modestas Vainius <modestas@vainius.eu>  Thu, 12 Nov 2009 00:39:30 +0200
 
 amarok (2.2.0-1) unstable; urgency=low
 
