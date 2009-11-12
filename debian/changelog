@@ -1,4 +1,4 @@
-amarok (2.2.1-0r1) UNRELEASED; urgency=low
+amarok (2.2.1-0r2) UNRELEASED; urgency=low
 
   * New upstream release.
     - This particular crash with dynamic playlists has been fixed upstream
