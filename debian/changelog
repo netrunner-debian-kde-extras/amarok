@@ -21,6 +21,7 @@ amarok (2.2.1-0r2) UNRELEASED; urgency=low
     - merge debian/mysqle_linkage_fix into debian/mysql_linkage_fix,
       refresh;
     - debian/mysqle_amarok_local_errmsg_feature - adapt to upstream changes;
+  * Update install files.
 
  -- Modestas Vainius <modestas@vainius.eu>  Thu, 12 Nov 2009 00:39:30 +0200
 
