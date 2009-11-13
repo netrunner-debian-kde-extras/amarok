@@ -1,4 +1,4 @@
-amarok (2.2.1-0r2) UNRELEASED; urgency=low
+amarok (2.2.1-1) unstable; urgency=low
 
   * New upstream release.
     - This particular crash with dynamic playlists has been fixed upstream
@@ -23,7 +23,7 @@ amarok (2.2.1-0r2) UNRELEASED; urgency=low
     - debian/mysqle_amarok_local_errmsg_feature - adapt to upstream changes;
   * Update install files.
 
- -- Modestas Vainius <modestas@vainius.eu>  Thu, 12 Nov 2009 00:39:30 +0200
+ -- Modestas Vainius <modestas@vainius.eu>  Fri, 13 Nov 2009 22:01:41 +0200
 
 amarok (2.2.0-1) unstable; urgency=low
 
