@@ -1,0 +1,191 @@
+From: Rick W. Chen <stuffcorpse@archlinux.us>
+Subject: [PATCH] Fix playback of songs in random order
+ After todays upgrade amarok started to play songs in playlist order.
+ Earlier it was possible to play them in random order. I tried to choose
+ randomization by composition, album or off. Nothing works.
+ .
+ The patch fixes:
+ .
+ * Made sure random mode works if repeat is on. (BR 214559)
+ * Fixed random mode behaviour when "going back". (BR 208892)
+ * Made random mode work. (BR 212910)
+Origin: upstream, http://bugs.kde.org/show_bug.cgi?id=214559#c7
+Bug: http://bugs.kde.org/show_bug.cgi?id=214559
+Bug-Debian: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=556239
+
+---
+ src/playlist/PlaylistActions.cpp                 |   24 ++++++++--------
+ src/playlist/navigators/RandomTrackNavigator.cpp |   34 ++++++++++++++++------
+ src/playlist/navigators/RandomTrackNavigator.h   |   13 ++++++++
+ 3 files changed, 50 insertions(+), 21 deletions(-)
+
+diff --git a/src/playlist/PlaylistActions.cpp b/src/playlist/PlaylistActions.cpp
+index 54eabfb..4411626 100644
+--- a/src/playlist/PlaylistActions.cpp
++++ b/src/playlist/PlaylistActions.cpp
+@@ -272,16 +272,7 @@ Playlist::Actions::playlistModeChanged()
+ 
+     m_navigator = 0;
+ 
+-    if ( Amarok::repeatEnabled() )
+-    {
+-        if ( Amarok::repeatTrack() )
+-            m_navigator = new RepeatTrackNavigator();
+-        else if ( Amarok::repeatAlbum() )
+-            m_navigator = new RepeatAlbumNavigator();
+-        else
+-            m_navigator = new StandardTrackNavigator(); // this navigator handles playlist repeat
+-    }
+-    else if ( Amarok::randomEnabled() )
++    if ( Amarok::randomEnabled() ) // random track navigators need to deal with repeat
+     {
+         if ( Amarok::randomTracks() )
+         {
+@@ -295,12 +286,21 @@ Playlist::Actions::playlistModeChanged()
+         else
+             m_navigator = new StandardTrackNavigator(); // crap -- something went wrong
+     }
++    else if ( Amarok::repeatEnabled() )
++    {
++        if ( Amarok::repeatTrack() )
++            m_navigator = new RepeatTrackNavigator();
++        else if ( Amarok::repeatAlbum() )
++            m_navigator = new RepeatAlbumNavigator();
++        else
++            m_navigator = new StandardTrackNavigator(); // this navigator handles playlist repeat
++    }
+     else
++    {
+         m_navigator = new StandardTrackNavigator();
+-
++    }
+ 
+     m_navigator->queueIds( currentQueue );
+-
+ }
+ 
+ void
+diff --git a/src/playlist/navigators/RandomTrackNavigator.cpp b/src/playlist/navigators/RandomTrackNavigator.cpp
+index b4ffb5a..2cf8ae5 100644
+--- a/src/playlist/navigators/RandomTrackNavigator.cpp
++++ b/src/playlist/navigators/RandomTrackNavigator.cpp
+@@ -75,7 +75,11 @@ Playlist::RandomTrackNavigator::recvRemovedIds( const QList<quint64>& list )
+ void
+ Playlist::RandomTrackNavigator::recvActiveTrackChanged( const quint64 id )
+ {
+-    if ( m_unplayedRows.contains( id ) )
++    if( m_replayedRows.contains( id ) )
++    {
++        m_playedRows.prepend( m_replayedRows.takeAt( m_replayedRows.indexOf( id ) ) );
++    }
++    else if( m_unplayedRows.contains( id ) )
+     {
+         m_playedRows.prepend( m_unplayedRows.takeAt( m_unplayedRows.indexOf( id ) ) );
+     }
+@@ -86,6 +90,7 @@ Playlist::RandomTrackNavigator::requestNextTrack()
+ {
+     if( !m_queue.isEmpty() )
+         return m_queue.takeFirst();
++
+     if( m_unplayedRows.isEmpty() && m_playedRows.isEmpty() )
+         return 0;
+     else if( m_unplayedRows.isEmpty() && !m_repeatPlaylist )
+@@ -106,17 +111,26 @@ Playlist::RandomTrackNavigator::requestNextTrack()
+             // remove the id from the unplayed rows list
+             m_unplayedRows.removeAll( requestedTrack );
+         }
+-        else if ( !m_unplayedRows.isEmpty() )
++        else if( !m_replayedRows.isEmpty() )
++        {
++            requestedTrack = m_replayedRows.takeFirst();
++        }
++        else if( !m_unplayedRows.isEmpty() )
++        {
+             requestedTrack = m_unplayedRows.takeFirst();
++        }
+ 
+-        if ( requestedTrack == m_model->activeId())
++        if( requestedTrack == m_model->activeId() )
+         {
+             m_playedRows.prepend( requestedTrack );
+-            if ( !m_unplayedRows.isEmpty() )
++
++            if( !m_replayedRows.isEmpty() )
++                requestedTrack = m_replayedRows.takeFirst();
++            else if( !m_unplayedRows.isEmpty() )
+                 requestedTrack = m_unplayedRows.takeFirst();
+         }
+-
+         m_playedRows.prepend( requestedTrack );
++
+         return requestedTrack;
+     }
+ }
+@@ -124,7 +138,7 @@ Playlist::RandomTrackNavigator::requestNextTrack()
+ quint64
+ Playlist::RandomTrackNavigator::requestLastTrack()
+ {
+-    if ( m_unplayedRows.isEmpty() && m_playedRows.isEmpty() )
++    if ( m_model->tracks().isEmpty() )
+         return 0;
+     else if ( m_playedRows.isEmpty() && !m_repeatPlaylist )
+         return 0;
+@@ -133,19 +147,20 @@ Playlist::RandomTrackNavigator::requestLastTrack()
+         if ( m_playedRows.isEmpty() )
+         {
+             m_playedRows = m_unplayedRows;
++            m_replayedRows.clear();
+             m_unplayedRows.clear();
+         }
+ 
+         quint64 requestedTrack =  !m_playedRows.isEmpty() ? m_playedRows.takeFirst() : 0;
+ 
+-        if ( requestedTrack == m_model->activeId())
++        if( requestedTrack == m_model->activeId() )
+         {
+-            m_unplayedRows.prepend( requestedTrack );
++            m_replayedRows.prepend( requestedTrack );
+             if ( !m_playedRows.isEmpty() )
+                 requestedTrack = m_playedRows.takeFirst();
+         }
++        m_replayedRows.prepend( requestedTrack );
+ 
+-        m_unplayedRows.prepend( requestedTrack );
+         return requestedTrack;
+     }
+ }
+@@ -155,6 +170,7 @@ void Playlist::RandomTrackNavigator::reset()
+     DEBUG_BLOCK
+ 
+     m_unplayedRows.clear();
++    m_replayedRows.clear();
+     m_playedRows.clear();
+ 
+     const int max = m_model->rowCount();
+diff --git a/src/playlist/navigators/RandomTrackNavigator.h b/src/playlist/navigators/RandomTrackNavigator.h
+index e484b21..f04a1be 100644
+--- a/src/playlist/navigators/RandomTrackNavigator.h
++++ b/src/playlist/navigators/RandomTrackNavigator.h
+@@ -47,7 +47,20 @@ namespace Playlist
+         void modelLayoutChanged();
+ 
+     private:
++        /**
++         * List of tracks already played.
++         */
+         QList<quint64> m_playedRows;
++
++        /**
++         * List of tracks that have played before but due to requests
++         * of previous tracks these will be queued next.
++         */
++        QList<quint64> m_replayedRows;
++
++        /**
++         * List of tracks that have never been played.
++         */
+         QList<quint64> m_unplayedRows;
+ 
+     };
+-- 
+tg: (aa942d4..) general/random_mode_fix (depends on: upstream)

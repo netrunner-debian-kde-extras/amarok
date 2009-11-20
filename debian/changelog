@@ -1,5 +1,8 @@
 amarok (2.2.1-2~pre1) UNRELEASED; urgency=low
 
+  * Fix no default playlist layout on start bug (patch
+    general/playlist_default_layout_fix).
+  * Fix playback of songs in random order (Closes: #556239).
 
  -- Modestas Vainius <modestas@vainius.eu>  Sat, 21 Nov 2009 01:16:26 +0200
 

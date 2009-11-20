@@ -1,3 +1,5 @@
 debian/disable_qtscriptbindings_check_fix.diff -p1
 debian/mysql_linkage_fix.diff -p1
 debian/mysqle_amarok_local_errmsg_feature.diff -p1
+general/playlist_default_layout_fix.diff -p1
+general/random_mode_fix.diff -p1
