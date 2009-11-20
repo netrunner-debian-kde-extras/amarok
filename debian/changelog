@@ -1,3 +1,8 @@
+amarok (2.2.1-2~pre1) UNRELEASED; urgency=low
+
+
+ -- Modestas Vainius <modestas@vainius.eu>  Sat, 21 Nov 2009 01:16:26 +0200
+
 amarok (2.2.1-1) unstable; urgency=low
 
   * New upstream release.
