@@ -4,6 +4,9 @@ amarok (2.2.1-2~pre1) UNRELEASED; urgency=medium
     general/playlist_default_layout_fix).
   * Fix playback of songs in random order (Closes: #556239).
   * Urgency medium due to RC bug fix.
+  * Add notes to NEWS.Debian and README.Debian that full collection
+    rescan might be needed when upgrading from 2.2.0 or earlier
+    (Closes: #556621).
 
  -- Modestas Vainius <modestas@vainius.eu>  Sat, 21 Nov 2009 01:16:26 +0200
 

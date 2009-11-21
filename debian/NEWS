@@ -1,3 +1,12 @@
+amarok (2.2.1-2) unstable; urgency=medium
+
+  * When upgrading from earlier version of the 2.x series, fully rescan local
+    collection (Menu -> Settings -> Configure Amarok -> Collection -> Fully
+    Rescan Collection) and restart Amarok. Otherwise, you may experience weird
+    problems like 0:00 track lengths. See README.Debian for more information.
+
+ -- Modestas Vainius <modestas@vainius.eu>  Sat, 21 Nov 2009 02:06:36 +0200
+
 amarok (2.1.80-1) experimental; urgency=low
 
   * Amarok database schema has changed in 2.2 Beta 1. Therefore, once you run

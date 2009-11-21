@@ -13,3 +13,18 @@ Amarok packages for Debian
 A couple of the most common problems together with solutions are described
 in /usr/share/bug/amarok/presubj. Read it before reporting bugs or asking
 for support.
+
+Upgrading from earlier 2.x versions to 2.2.1 or later
+-----------------------------------------------------
+
+If you experience weird problems like 0:00 track lengths or last.fm scrobbling
+problems after upgrading from earlier version of the 2.x series, full rescan of
+the local collection may help. Go to menu -> Settings -> Configure Amarok, open
+"Collection" tab and click "Fully Rescan Collection" button. Wait while
+scanning process is complete and restart Amarok. You will not lose any
+statistics in the process.
+
+Visit the following URLs for more information about related issues:
+
+https://bugs.kde.org/show_bug.cgi?id=207153
+http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=556621
