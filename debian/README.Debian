@@ -1,27 +1,36 @@
-Amarok packages for Debian
---------------------------
+General notes
+-------------
 
+* A couple of the most common problems together with solutions are described
+  in /usr/share/bug/amarok/presubj. Read it before reporting bugs or asking for
+  support.
 * If you want amarok to be able to play CDs, you need to install the
   kdemultimedia-kio-plugins package.
-* Amarok 2 features collection importing from Amarok 1.4. Just make sure you
-  have the respective Qt4 SQL plugins installed before using the collection
-  importer:
-  - libqt4-sql-sqlite for SQLite (SQLite database was default in Amarok 1.4).
-  - libqt4-sql-mysql for importing from MySQL.
-  - libqt4-sql-psql for importing from PostgreSQL.
+* Amarok 2 stores local collection in the internal MySQL Embedded (MySQLe)
+  database by default. However, as of 2.2, you may also use an external MySQL
+  server.
 
-A couple of the most common problems together with solutions are described
-in /usr/share/bug/amarok/presubj. Read it before reporting bugs or asking
-for support.
+Importing Amarok 1.4 database to Amarok 2
+-----------------------------------------
+
+Amarok 2 features collection importer from Amarok 1.4. You may open it by going
+to "Settings" menu, opening "Configure Amarok" dialog, "Collection" tab and
+clicking on the "Import Collection" button. Depeding on the database backend
+you used with Amarok 1.4, make sure you have the respective Qt4 SQL plugins
+installed before using the collection importer:
+
+- libqt4-sql-sqlite for SQLite (SQLite database was default in Amarok 1.4).
+- libqt4-sql-mysql for importing from MySQL.
+- libqt4-sql-psql for importing from PostgreSQL.
 
 Upgrading from earlier 2.x versions to 2.2.1 or later
 -----------------------------------------------------
 
 If you experience weird problems like 0:00 track lengths or last.fm scrobbling
 problems after upgrading from earlier version of the 2.x series, full rescan of
-the local collection may help. Go to menu -> Settings -> Configure Amarok, open
-"Collection" tab and click "Fully Rescan Collection" button. Wait while
-scanning process is complete and restart Amarok. You will not lose any
+the local collection may help. Go to "Settings" menu, select "Configure
+Amarok", open "Collection" tab and click "Fully Rescan Collection" button. Wait
+while scanning process is complete and restart Amarok. You will not lose any
 statistics in the process.
 
 Visit the following URLs for more information about related issues:
