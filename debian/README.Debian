@@ -26,7 +26,7 @@ installed before using the collection importer:
 Upgrading from earlier 2.x versions to 2.2.1 or later
 -----------------------------------------------------
 
-If you experience weird problems like 0:00 track lengths or last.fm scrobbling
+If you experience weird issues like 0:00 track lengths or last.fm scrobbling
 problems after upgrading from earlier version of the 2.x series, full rescan of
 the local collection may help. Go to "Settings" menu, select "Configure
 Amarok", open "Collection" tab and click "Fully Rescan Collection" button. Wait
