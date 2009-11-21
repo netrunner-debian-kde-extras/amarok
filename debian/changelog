@@ -1,4 +1,4 @@
-amarok (2.2.1-2~pre2) UNRELEASED; urgency=medium
+amarok (2.2.1-2) unstable; urgency=medium
 
   * Fix "No default playlist layout on start bug" (patch
     general/playlist_default_layout_fix).
@@ -10,7 +10,7 @@ amarok (2.2.1-2~pre2) UNRELEASED; urgency=medium
     (Closes: #556621).
   * Reformat README.Debian a bit.
 
- -- Modestas Vainius <modestas@vainius.eu>  Sat, 21 Nov 2009 01:16:26 +0200
+ -- Modestas Vainius <modestas@vainius.eu>  Sat, 21 Nov 2009 11:04:41 +0200
 
 amarok (2.2.1-1) unstable; urgency=low
 
