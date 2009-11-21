@@ -5,7 +5,7 @@ amarok (2.2.1-2~pre2) UNRELEASED; urgency=medium
   * Fix random order playback (patch general/random_mode_fix.diff)
     (Closes: #556239).
   * Urgency medium due to RC bug fix.
-  * Add notes to NEWS.Debian and README.Debian that full collection
+  * Add notes to NEWS.Debian, README.Debian and presubj that full collection
     rescan might be needed when upgrading from 2.2.0 or earlier
     (Closes: #556621).
   * Reformat README.Debian a bit.
