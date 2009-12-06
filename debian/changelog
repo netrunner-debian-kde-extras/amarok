@@ -1,6 +1,8 @@
 amarok (2.2.1-3) UNRELEASED; urgency=low
 
   * Remove DMUA field from debian/control. No longer needed.
+  * Git repository moved to my new DD account on alioth. Change Vcs fields in
+    debian/control accordingly.
 
  -- Modestas Vainius <modestas@vainius.eu>  Sun, 06 Dec 2009 21:37:12 +0200
 
