@@ -1,4 +1,4 @@
-amarok (2.2.2~beta1-0r1) UNRELEASED; urgency=low
+amarok (2.2.2~beta1-1) experimental; urgency=low
 
   * New upstream release.
   * Remove DMUA field from debian/control. No longer needed.
@@ -13,7 +13,7 @@ amarok (2.2.2~beta1-0r1) UNRELEASED; urgency=low
     - general/playlist_default_layout_fix.diff - remove, upstream;
     - general/random_mode_fix.diff - remove, upstream;
 
- -- Modestas Vainius <modax@debian.org>  Thu, 10 Dec 2009 15:47:53 +0200
+ -- Modestas Vainius <modax@debian.org>  Thu, 10 Dec 2009 19:28:47 +0200
 
 amarok (2.2.1-2) unstable; urgency=medium
 
