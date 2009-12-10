@@ -6,15 +6,31 @@ Fix link libraries for MySQL(e) from Debian.
 Signed-off-by: Modestas Vainius <modestas@vainius.eu>
 
 ---
- src/collection/mysqlecollection/CMakeLists.txt     |    1 -
- .../mysqlservercollection/CMakeLists.txt           |    1 -
- 2 files changed, 0 insertions(+), 2 deletions(-)
+ src/collection/mysqlecollection/CMakeLists.txt     |    3 ---
+ .../mysqlservercollection/CMakeLists.txt           |    3 ---
+ 2 files changed, 0 insertions(+), 6 deletions(-)
 
 diff --git a/src/collection/mysqlecollection/CMakeLists.txt b/src/collection/mysqlecollection/CMakeLists.txt
-index 0193a5a..73078cd 100755
+index 0193a5a..11dab5c 100755
 --- a/src/collection/mysqlecollection/CMakeLists.txt
 +++ b/src/collection/mysqlecollection/CMakeLists.txt
-@@ -75,7 +75,6 @@ target_link_libraries(amarok_collection-mysqlecollection
+@@ -13,7 +13,6 @@ include_directories(
+         ${KDE4_INCLUDE_DIR}
+         ${STRIGI_INCLUDE_DIR}
+         ${QT_INCLUDES}
+-	${OPENSSL_INCLUDE_DIR}
+         ${MYSQL_INCLUDE_DIR}
+         ${TAGLIB_INCLUDES}
+         ${TAGLIB-EXTRAS_INCLUDES}
+@@ -66,7 +65,6 @@ target_link_libraries(amarok_collection-mysqlecollection
+     ${KDE4_KDEUI_LIBS}
+     ${KDE4_KIO_LIBS}
+     ${KDE4_THREADWEAVER_LIBRARIES}
+-    ${OPENSSL_LIBRARIES}
+     ${MYSQL_EMBEDDED_LIBRARIES}
+     ${CMAKE_DL_LIBS}
+     ${ZLIB_LIBRARIES}
+@@ -75,7 +73,6 @@ target_link_libraries(amarok_collection-mysqlecollection
  )
  
  if(NOT WIN32)
@@ -23,10 +39,26 @@ index 0193a5a..73078cd 100755
          target_link_libraries(amarok_collection-mysqlecollection crypt pthread)
      endif(NOT APPLE)
 diff --git a/src/collection/mysqlservercollection/CMakeLists.txt b/src/collection/mysqlservercollection/CMakeLists.txt
-index 940bf6d..2edde73 100755
+index 940bf6d..9a0eddb 100755
 --- a/src/collection/mysqlservercollection/CMakeLists.txt
 +++ b/src/collection/mysqlservercollection/CMakeLists.txt
-@@ -75,7 +75,6 @@ target_link_libraries(amarok_collection-mysqlservercollection
+@@ -13,7 +13,6 @@ include_directories(
+         ${KDE4_INCLUDE_DIR}
+         ${STRIGI_INCLUDE_DIR}
+         ${QT_INCLUDES}
+-	${OPENSSL_INCLUDE_DIR}
+         ${MYSQL_INCLUDE_DIR}
+         ${TAGLIB_INCLUDES}
+         ${TAGLIB-EXTRAS_INCLUDES}
+@@ -66,7 +65,6 @@ target_link_libraries(amarok_collection-mysqlservercollection
+     ${KDE4_KDEUI_LIBS}
+     ${KDE4_KIO_LIBS}
+     ${KDE4_THREADWEAVER_LIBRARIES}
+-    ${OPENSSL_LIBRARIES}
+     ${MYSQL_LIBRARIES}
+     ${CMAKE_DL_LIBS}
+     ${ZLIB_LIBRARIES}
+@@ -75,7 +73,6 @@ target_link_libraries(amarok_collection-mysqlservercollection
  )
  
  if(NOT WIN32)
