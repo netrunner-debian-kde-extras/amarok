@@ -11,10 +11,10 @@ Signed-off-by: Modestas Vainius <modestas@vainius.eu>
  2 files changed, 0 insertions(+), 2 deletions(-)
 
 diff --git a/src/collection/mysqlecollection/CMakeLists.txt b/src/collection/mysqlecollection/CMakeLists.txt
-index 3ee4f3d..2e02937 100755
+index 0193a5a..73078cd 100755
 --- a/src/collection/mysqlecollection/CMakeLists.txt
 +++ b/src/collection/mysqlecollection/CMakeLists.txt
-@@ -72,7 +72,6 @@ target_link_libraries(amarok_collection-mysqlecollection
+@@ -75,7 +75,6 @@ target_link_libraries(amarok_collection-mysqlecollection
  )
  
  if(NOT WIN32)
@@ -23,10 +23,10 @@ index 3ee4f3d..2e02937 100755
          target_link_libraries(amarok_collection-mysqlecollection crypt pthread)
      endif(NOT APPLE)
 diff --git a/src/collection/mysqlservercollection/CMakeLists.txt b/src/collection/mysqlservercollection/CMakeLists.txt
-index 5b4360e..9c7307a 100755
+index 940bf6d..2edde73 100755
 --- a/src/collection/mysqlservercollection/CMakeLists.txt
 +++ b/src/collection/mysqlservercollection/CMakeLists.txt
-@@ -71,7 +71,6 @@ target_link_libraries(amarok_collection-mysqlservercollection
+@@ -75,7 +75,6 @@ target_link_libraries(amarok_collection-mysqlservercollection
  )
  
  if(NOT WIN32)
@@ -35,4 +35,4 @@ index 5b4360e..9c7307a 100755
          target_link_libraries(amarok_collection-mysqlservercollection crypt pthread)
      endif(NOT APPLE)
 -- 
-tg: (aa942d4..) debian/mysql_linkage_fix (depends on: upstream)
+tg: (0b83eb7..) debian/mysql_linkage_fix (depends on: upstream)

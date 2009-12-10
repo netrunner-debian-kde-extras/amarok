@@ -6,6 +6,10 @@ amarok (2.2.2~beta1-0r1) UNRELEASED; urgency=low
     debian/control accordingly.
   * Use @debian.org address in the Maintainer field.
   * Enable parallel building - pass --parallel option to dh.
+  * Resync patches:
+    - debian/*.diff - refresh offsets;
+    - general/playlist_default_layout_fix.diff - remove, upstream;
+    - general/random_mode_fix.diff - remove, upstream;
 
  -- Modestas Vainius <modax@debian.org>  Thu, 10 Dec 2009 15:47:53 +0200
 
