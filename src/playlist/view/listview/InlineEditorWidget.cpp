@@ -17,6 +17,7 @@
 #include "InlineEditorWidget.h"
 
 #include "Debug.h"
+#include "moodbar/MoodbarManager.h"
 #include "playlist/layouts/LayoutManager.h"
 #include "PrettyItemDelegate.h"
 #include "SvgHandler.h"
@@ -26,6 +27,8 @@
 #include <KHBox>
 #include <KVBox>
 
+#include <QEvent>
+#include <QKeyEvent>
 #include <QLabel>
 #include <QLineEdit>
 #include <QPainter>
@@ -45,6 +48,7 @@ InlineEditorWidget::InlineEditorWidget( QWidget * parent, const QModelIndex &ind
     , m_index( index )
     , m_layout( layout )
     , m_groupMode( groupMode )
+    , m_layoutChanged( false )
 {
     setContentsMargins( 0, 0, 0, 0 );
     setSpacing( 0 );
@@ -90,7 +94,6 @@ InlineEditorWidget::InlineEditorWidget( QWidget * parent, const QModelIndex &ind
         m_headerHeight = ( height * layout.head().rows() ) / rowCount - 1;
 
     //prevent editor closing when cliking a rating widget or pressing return in a line edit.
-    
     setFocusPolicy( Qt::StrongFocus );
 
     createChildWidgets();
@@ -216,6 +219,7 @@ void InlineEditorWidget::createChildWidgets()
 
             QModelIndex textIndex = m_index.model()->index( m_index.row(), value );
             QString text = textIndex.data( Qt::DisplayRole ).toString();
+            m_orgValues.insert( value, text );
 
             qreal itemWidth = 0.0;
 
@@ -273,12 +277,35 @@ void InlineEditorWidget::createChildWidgets()
                     dividerLabel->setAlignment( element.alignment() );
                     rowWidget->setStretchFactor( itemIndex, itemWidth );
                 }
-                else
+                else if( value == Moodbar )
+                {
+                    //we cannot ask the model for the moodbar directly as we have no
+                    //way of asking for a specific size. Instead just get the track from
+                    //the model and ask the moodbar manager ourselves.
+
+
+                    debug() << "painting moodbar in PrettyItemDelegate::paintItem";
+
+                    Meta::TrackPtr track = m_index.data( TrackRole ).value<Meta::TrackPtr>();
+
+                    if( The::moodbarManager()->hasMoodbar( track ) )
+                    {
+                        QPixmap moodbar = The::moodbarManager()->getMoodbar( track, itemWidth, rowHeight - 8 );
+
+                        QLabel * moodbarLabel = new QLabel( 0 );
+                        moodbarLabel->setScaledContents( true );
+                        rowWidget->addWidget( moodbarLabel );
+                        moodbarLabel->setPixmap( moodbar );
+                        rowWidget->setStretchFactor( itemIndex, itemWidth );
+                    }
+                }
+                else          
                 {
                      QLineEdit * edit = new QLineEdit( text, 0 );
                      rowWidget->addWidget( edit );
                      rowWidget->setStretchFactor( itemIndex, itemWidth );
                      edit->setAlignment( element.alignment() );
+                     edit->installEventFilter(this);
 
                      connect( edit, SIGNAL( editingFinished() ), this, SLOT( editValueChanged() ) );
 
@@ -346,7 +373,15 @@ void InlineEditorWidget::editValueChanged()
         return;
 
     int role = m_editorRoleMap.value( edit );
-    m_changedValues.insert( role, edit->text() );
+
+    //only save values if something has actually changed.
+    if( m_orgValues.value( role ) != edit->text() )
+    {
+        debug() << "Storing changed value: " << edit->text();
+        m_changedValues.insert( role, edit->text() );
+    }
+    
+    
 }
 
 void InlineEditorWidget::ratingValueChanged()
@@ -366,7 +401,8 @@ void InlineEditorWidget::ratingValueChanged()
 QMap<int, QString> InlineEditorWidget::changedValues()
 {
     DEBUG_BLOCK
-    LayoutManager::instance()->updateCurrentLayout( m_layout );
+    if( m_layoutChanged )
+        LayoutManager::instance()->updateCurrentLayout( m_layout );
     return m_changedValues;
 }
 
@@ -456,4 +492,44 @@ void InlineEditorWidget::splitterMoved( int pos, int index )
             m_layout.setSingle( newItemConfig );
             break;
     }
+    
+    m_layoutChanged = true;
 }
+
+bool
+InlineEditorWidget::eventFilter( QObject *obj, QEvent *event )
+{
+    QList<QWidget *> editWidgets = m_editorRoleMap.keys();
+
+    QWidget * widget = qobject_cast<QWidget *>( obj );
+
+    if( editWidgets.contains( widget ) )
+    {
+        if( event->type() == QEvent::KeyPress )
+        {
+            QKeyEvent * keyEvent = dynamic_cast<QKeyEvent *>( event );
+            if( keyEvent && keyEvent->key() == Qt::Key_Return )
+            {
+                debug() << "InlineEditorWidget ate a return press for a child widget";
+                if( widget )
+                {
+                    widget->clearFocus ();
+                    debug() << "emitting editingDone!";
+                    emit editingDone( this );
+                }
+                
+                return true;
+            }
+            else
+                return false;
+        }
+        else
+            return false;
+
+    }
+    else
+        return KVBox::eventFilter( obj, event );
+}
+
+#include "InlineEditorWidget.moc"
+

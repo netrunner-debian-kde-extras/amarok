@@ -429,6 +429,9 @@ void BookmarkModel::createTables()
     DEBUG_BLOCK
 
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    if( !sqlStorage )
+        return;
+
     sqlStorage->query( QString( "CREATE TABLE bookmark_groups ("
             " id " + sqlStorage->idType() +
             ", parent_id INTEGER"
@@ -452,6 +455,8 @@ void BookmarkModel::deleteTables()
     DEBUG_BLOCK
     
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    if( !sqlStorage )
+        return;
 
     sqlStorage->query( "DROP TABLE bookmark_groups;" );
     sqlStorage->query( "DROP TABLE bookmarks;" );
@@ -464,6 +469,9 @@ void BookmarkModel::checkTables()
     DEBUG_BLOCK
             
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    if( !sqlStorage )
+        return;
+
     QStringList values = sqlStorage->query( QString("SELECT version FROM admin WHERE component = '%1';").arg(sqlStorage->escape( key ) ) );
 
     //also check if the db  version is correct but the table is simply missing... can happen due to a bug in 2.2.0 beta1 and beta2
@@ -574,6 +582,25 @@ BookmarkModel::deleteBookmark( const QString& name )
         debug() << "No such bookmark found!";
 }
 
+void
+BookmarkModel::renameBookmark( const QString& oldName, const QString& newName )
+{
+    DEBUG_BLOCK
+
+    debug() << "OldName: " << oldName << " NewName: " << newName;
+
+    if( renameBookmarkRecursively( m_root, oldName, newName ) )
+    {
+        debug() << "Renamed!!";
+        reloadFromDb();
+        const QString* name = &newName;
+        The::amarokUrlHandler()->updateTimecodes( name );
+    }
+    else
+        debug() << "No such bookmark found!";
+}
+
+
 bool
 BookmarkModel::deleteBookmarkRecursively( BookmarkGroupPtr group, const QString& name )
 {
@@ -596,12 +623,39 @@ BookmarkModel::deleteBookmarkRecursively( BookmarkGroupPtr group, const QString&
     }
 
     return false;
-        
+
+}
+
+bool
+BookmarkModel::renameBookmarkRecursively( BookmarkGroupPtr group, const QString& oldName, const QString& newName )
+{
+    foreach( AmarokUrlPtr item, group->childBookmarks() )
+    {
+        debug() << "item->name(): " << item->name();
+        if( item->name() == oldName)
+        {
+            debug() << "Renaming Bookmark: " << oldName;
+            item->rename(newName);
+            return true;
+        }
+    }
+
+    //if not found, recurse through child groups
+    foreach( BookmarkGroupPtr childGroup, group->childGroups() )
+    {
+        if( renameBookmarkRecursively( childGroup, oldName, newName ) )
+            return true;
+    }
+
+    return false;
+
 }
 
 void BookmarkModel::upgradeTables( int from )
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    if( !sqlStorage )
+        return;
     
     if ( from == 2 ) {
         sqlStorage->query( "ALTER TABLE bookmarks ADD custom " + sqlStorage->textColumnType() + ';' );

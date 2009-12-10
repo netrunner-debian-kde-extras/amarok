@@ -20,6 +20,7 @@
 #include "Debug.h"
 #include "meta/stream/Stream.h"
 #include "SqlStorage.h"
+#include "timecode/TimecodeMeta.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "playlistmanager/sql/SqlPlaylistGroup.h"
 #include "playlistmanager/sql/SqlUserPlaylistProvider.h"
@@ -185,11 +186,12 @@ Meta::SqlPlaylist::saveTracks()
 
     foreach( Meta::TrackPtr trackPtr, m_tracks )
     {
+        debug() << "saving track with url " << trackPtr->uidUrl();
         if ( trackPtr && trackPtr->album() && trackPtr->artist() )
         {
             QString query = "INSERT INTO playlist_tracks ( playlist_id, track_num, url, title, album, artist, length, uniqueid ) VALUES ( %1, %2, '%3', '%4', '%5', '%6', %7, '%8' );";
             query = query.arg( QString::number( m_dbId ), QString::number( trackNum ),
-                        sql->escape( trackPtr->playableUrl().url() ),
+                        sql->escape( trackPtr->uidUrl() ),
                         sql->escape( trackPtr->prettyName() ),
                         sql->escape( trackPtr->album()->prettyName() ),
                         sql->escape( trackPtr->artist()->prettyName() ),
@@ -255,18 +257,34 @@ Meta::SqlPlaylist::loadTracks()
 
         if ( trackPtr ) {
 
-            if ( typeid( * trackPtr.data() ) == typeid( MetaStream::Track ) )  {
+            if ( typeid( * trackPtr.data() ) == typeid( MetaStream::Track ) )
+            {
 
                 debug() << "got stream from trackForUrl, setting album to " << row[4];
 
                 MetaStream::Track * streamTrack = dynamic_cast<MetaStream::Track *> ( trackPtr.data() );
+                
 
                 if ( streamTrack ) {
                     streamTrack->setTitle( row[3] );
                     streamTrack->setAlbum( row[4] );
                     streamTrack->setArtist( row[5] );
                 }
+            }
+            else if ( typeid( * trackPtr.data() ) == typeid( Meta::TimecodeTrack ) )
+            {
 
+                Meta::TimecodeTrack * timecodeTrack = dynamic_cast<Meta::TimecodeTrack *> ( trackPtr.data() );
+
+                if ( timecodeTrack )
+                {
+                    debug() << "setting stored meta values on timecode track";
+                    timecodeTrack->beginMetaDataUpdate();
+                    timecodeTrack->setTitle( row[3] );
+                    timecodeTrack->setAlbum( row[4] );
+                    timecodeTrack->setArtist( row[5] );
+                    timecodeTrack->endMetaDataUpdate();
+                }
             }
 
             m_tracks << trackPtr;

@@ -54,7 +54,7 @@ bool WikipediaEngine::sourceRequestEvent( const QString& name )
     DEBUG_BLOCK
 
     m_requested = true; // someone is asking for data, so we turn ourselves on :)
-    QStringList tokens = name.split( ':' );
+    QStringList tokens = name.split( ":AMAROK_TOKEN:" );
 
     // User has requested a reload
     if( tokens.contains( "reload" ) && tokens.size() > 1 )
@@ -69,9 +69,9 @@ bool WikipediaEngine::sourceRequestEvent( const QString& name )
     // User has clicked on a link, let's fetch the page
     if( tokens.contains( "get" ) && tokens.size() > 1 )
     {
-        if ( ( tokens.at( 1 ) == QString( "get" ) ) && ( tokens.size() > 3 ) )
-        {            
-            m_wikiCurrentUrl = tokens.at( 2 ) + QString( ":" ) + tokens.at( 3 );
+        if ( ( tokens.at( 1 ) == QString( "get" ) ) && ( tokens.size() > 2 ) )
+        {
+            m_wikiCurrentUrl = tokens.at( 2 ) ;
         
             removeSource( "wikipedia" );
             setData( "wikipedia", "busy", "busy" );
@@ -137,6 +137,13 @@ void WikipediaEngine::update()
     {
         if( currentTrack->artist() )
         {
+            if ( currentTrack->artist()->prettyName().isEmpty() )
+            {
+                debug() << "Requesting an empty string, skipping !";
+                removeAllData( "wikipedia" );
+                setData( "wikipedia", "message", i18n( "No information found..." ) );
+                return;
+            }
             if ( ( currentTrack->playableUrl().protocol() == "lastfm" ) ||
                 ( currentTrack->playableUrl().protocol() == "daap" ) ||
                 !The::engineController()->isStream() )
@@ -149,6 +156,13 @@ void WikipediaEngine::update()
     {
         if ( currentTrack->album() )
         {
+            if ( currentTrack->album()->prettyName().isEmpty() )
+            {
+                debug() << "Requesting an empty string, skipping !";
+                removeAllData( "wikipedia" );
+                setData( "wikipedia", "message", i18n( "No information found..." ) );
+                return;
+            }
             if ( ( currentTrack->playableUrl().protocol() == "lastfm" ) ||
                 ( currentTrack->playableUrl().protocol() == "daap" ) ||
                 !The::engineController()->isStream() )
@@ -158,6 +172,13 @@ void WikipediaEngine::update()
     }
     else if ( selection() == "track" )
     {
+        if ( currentTrack->prettyName().isEmpty() )
+        {
+            debug() << "Requesting an empty string, skipping !";
+            removeAllData( "wikipedia" );
+            setData( "wikipedia", "message", i18n( "No information found..." ) );
+            return;
+        }
         tmpWikiStr = currentTrack->prettyName() + wikiTrackPostfix();
     }
     //Hack to make wiki searches work with magnatune preview tracks
@@ -175,7 +196,6 @@ void WikipediaEngine::update()
         debug() << "Same entry requested again. Ignoring.";
         return;
     }
-
     
     removeAllData( "wikipedia" );
 

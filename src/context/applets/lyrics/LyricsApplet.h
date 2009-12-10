@@ -22,8 +22,9 @@
 #include "context/DataEngine.h"
 #include "context/Svg.h"
 
+#include <ui_lyricsSettings.h>
+
 class TextScrollingWidget;
-class QGraphicsSimpleTextItem;
 class QGraphicsProxyWidget;
 class QTextBrowser;
 
@@ -52,7 +53,7 @@ public:
 public slots:
     void connectSource( const QString& source );
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
-    void suggestionChosen( const QString& link );
+    void suggestionChosen( const QUrl& link );
     void refreshLyrics();
     
 private slots:
@@ -60,6 +61,11 @@ private slots:
     void editLyrics();
     void closeLyrics();
     void saveLyrics();
+    void changeLyricsFont();
+
+protected:
+    void createConfigurationInterface( KConfigDialog *parent );
+    void keyPressEvent( QKeyEvent *e );
 
 private:
     void setEditing( const bool isEditing );
@@ -72,14 +78,18 @@ private:
     Plasma::IconWidget*  m_editIcon;
     Plasma::IconWidget*  m_reloadIcon;
     Plasma::IconWidget*  m_closeIcon;
+    Plasma::IconWidget*  m_settingsIcon;
 
     // holds main body
     QGraphicsProxyWidget *m_lyricsProxy;
-    QTextBrowser* m_lyrics;
-    QGraphicsTextItem* m_suggested;
+    QTextBrowser         *m_lyrics;
+    QGraphicsProxyWidget *m_suggestedProxy;
+    QTextBrowser         *m_suggested;
 
-    QString m_lyricsTmpContent;
+    Ui::lyricsSettings    ui_Settings;
+
     bool m_hasLyrics;
+    bool m_isRichText;
 };
 
 K_EXPORT_AMAROK_APPLET( lyrics, LyricsApplet )

@@ -46,6 +46,7 @@
 #include "context/ContextView.h"
 #include "context/ToolbarView.h"
 #include "covermanager/CoverManager.h" // for actions
+#include "playlist/layouts/LayoutConfigAction.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
@@ -305,7 +306,7 @@ MainWindow::init()
 
     addDockWidget( Qt::LeftDockWidgetArea, m_browsersDock );
     addDockWidget( Qt::LeftDockWidgetArea, m_contextDock, Qt::Horizontal );
-    addDockWidget( Qt::RightDockWidgetArea, m_playlistDock );
+    addDockWidget( Qt::LeftDockWidgetArea, m_playlistDock, Qt::Horizontal );
 
     setLayoutLocked( AmarokConfig::lockLayout() );
 
@@ -363,6 +364,23 @@ MainWindow::init()
     }
 
     The::amarokUrlHandler(); //Instantiate
+
+
+    // Runtime check for Qt 4.6 here.
+    // We delete the layout file once, because of binary incompatibility with older Qt version.
+    // @see: https://bugs.kde.org/show_bug.cgi?id=213990
+    const QChar major = qVersion()[0];
+    const QChar minor = qVersion()[2];
+    if( major.digitValue() >= 4 && minor.digitValue() > 5 )
+    {
+        KConfigGroup config = Amarok::config();
+        if( !config.readEntry( "LayoutFileDeleted", false ) )
+        {
+            QFile::remove( Amarok::saveLocation() + "layout" );
+            config.writeEntry( "LayoutFileDeleted", true );
+            config.sync();
+        }
+    }
 
     //restore the layout
     restoreLayout();
@@ -715,6 +733,9 @@ MainWindow::createActions()
     connect( action, SIGNAL( triggered( bool ) ), pc, SLOT( removeDeadAndDuplicates() ) );
     ac->addAction( "playlist_remove_dead_and_duplicates", action );
 
+    action = new Playlist::LayoutConfigAction( this );
+    ac->addAction( "playlist_layout", action );
+
     action = new KAction( KIcon( "folder-amarok" ), i18n("&Add Stream..."), this );
     connect( action, SIGNAL( triggered(bool) ), this, SLOT( slotAddStream() ) );
     ac->addAction( "stream_add", action );
@@ -723,7 +744,7 @@ MainWindow::createActions()
     connect( action, SIGNAL( triggered(bool) ), this, SLOT( exportPlaylist() ) );
     ac->addAction( "playlist_export", action );
 
-    action = new KAction( KIcon( "bookmark-new" ), i18n( "Bookmark This Location" ), this );
+    action = new KAction( KIcon( "bookmark-new" ), i18n( "Bookmark Media Sources View" ), this );
     ac->addAction( "bookmark_browser", action );
     connect( action, SIGNAL( triggered() ), The::amarokUrlHandler(), SLOT( bookmarkCurrentBrowserView() ) );
 
@@ -731,7 +752,7 @@ MainWindow::createActions()
     ac->addAction( "bookmark_manager", action );
     connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowBookmarkManager() ) );
 
-    action = new KAction( KIcon( "bookmark-new" ), i18n( "Bookmark This Location" ), this );
+    action = new KAction( KIcon( "bookmark-new" ), i18n( "Bookmark Playlist Setup" ), this );
     ac->addAction( "bookmark_playlistview", action );
     connect( action, SIGNAL( triggered() ), The::amarokUrlHandler(), SLOT( bookmarkCurrentPlaylistView() ) );
 
@@ -887,9 +908,6 @@ MainWindow::createActions()
     new Amarok::StopAction( ac, this );
     new Amarok::StopPlayingAfterCurrentTrackAction( ac, this );
     new Amarok::PlayPauseAction( ac, this );
-    new Amarok::RepeatAction( ac, this );
-    new Amarok::RandomAction( ac, this );
-    new Amarok::FavorAction( ac, this );
     new Amarok::ReplayGainModeAction( ac, this );
     new Amarok::EqualizerAction( ac, this);
 
@@ -962,17 +980,7 @@ MainWindow::createMenus()
     playlistMenu->addSeparator();
     playlistMenu->addAction( Amarok::actionCollection()->action("playlist_clear") );
     playlistMenu->addAction( Amarok::actionCollection()->action("playlist_remove_dead_and_duplicates") );
-    playlistMenu->addSeparator();
-
-    QAction *repeat = Amarok::actionCollection()->action("repeat");
-    playlistMenu->addAction( repeat );
-
-    KSelectAction *random = static_cast<KSelectAction*>( Amarok::actionCollection()->action("random_mode") );
-    playlistMenu->addAction( random );
-    random->menu()->addSeparator();
-    random->menu()->addAction( Amarok::actionCollection()->action("favor_tracks") );
-
-    playlistMenu->addSeparator();
+    playlistMenu->addAction( Amarok::actionCollection()->action("playlist_layout") );
     //END Playlist menu
 
     //BEGIN Tools menu

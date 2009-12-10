@@ -34,9 +34,18 @@ multilevelLessThan::operator()( int rowA, int rowB)
         QVariant dataB = m_sourceProxy->index( rowB, currentCategory ).data();  //or better, are you sure those rowA and rowB don't need a rowToSource around them?
         if( m_scheme.level( i ).isString() )
         {
-            if( dataA.toString() < dataB.toString() )
+            if( dataA.toString().toLower() < dataB.toString().toLower() )
                 verdict = 1;
-            else if( dataA.toString() > dataB.toString() )
+            else if( dataA.toString().toLower() > dataB.toString().toLower() )
+                verdict = 0;
+            else
+                verdict = 2;
+        }
+        else if( m_scheme.level( i ).isFloat() )
+        {
+            if( dataA.toDouble() < dataB.toDouble() )
+                verdict = 1;
+            else if( dataA.toDouble() > dataB.toDouble() )
                 verdict = 0;
             else
                 verdict = 2;

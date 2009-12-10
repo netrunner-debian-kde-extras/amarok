@@ -87,11 +87,11 @@ class PodcastMetaCommon
 
     protected:
         QString m_title; //the title
-        QString m_description; //a longer description, possibly with HTML markup
-        QStringList m_keywords;
+        QString m_description; //a longer description, with HTML markup
+        QStringList m_keywords; // TODO: save to DB
         QString m_subtitle; //a short description
         QString m_summary;
-        QString m_author;
+        QString m_author; // TODO: save to DB
 };
 
 class PodcastEpisode : public PodcastMetaCommon, public Track
@@ -121,6 +121,8 @@ class PodcastEpisode : public PodcastMetaCommon, public Track
 
         virtual void setTitle( const QString &title ) { m_title = title; }
 
+        virtual float bpm() const { return -1.0; }
+
         virtual QString comment() const { return QString(); }
         virtual void setComment( const QString &newComment ) { Q_UNUSED( newComment ); }
         virtual double score() const { return 0; }
@@ -137,6 +139,7 @@ class PodcastEpisode : public PodcastMetaCommon, public Track
         virtual void setDiscNumber( int newDiscNumber ) { Q_UNUSED( newDiscNumber ); }
         virtual uint lastPlayed() const { return 0; }
         virtual int playCount() const { return 0; }
+        virtual QString mimeType() const { return m_mimeType; }
 
         virtual QString type() const
         {
@@ -161,17 +164,19 @@ class PodcastEpisode : public PodcastMetaCommon, public Track
         virtual QString guid() const { return m_guid; }
         virtual bool isNew() const { return m_isNew; }
 
-        void setUidUrl( const KUrl &url ) { m_url = url; }
-        void setPubDate( const QDateTime &pubDate ) { m_pubDate = pubDate; }
-        void setDuration( int duration ) { m_duration = duration; }
-        void setGuid( const QString &guid ) { m_guid = guid; }
-        void setNew( bool isNew ) { m_isNew = isNew; }
+        virtual void setFilesize( int fileSize ) { m_fileSize = fileSize; }
+        virtual void setMimeType( const QString &mimeType ) { m_mimeType = mimeType; }
+        virtual void setUidUrl( const KUrl &url ) { m_url = url; }
+        virtual void setPubDate( const QDateTime &pubDate ) { m_pubDate = pubDate; }
+        virtual void setDuration( int duration ) { m_duration = duration; }
+        virtual void setGuid( const QString &guid ) { m_guid = guid; }
+        virtual void setNew( bool isNew ) { m_isNew = isNew; }
 
         virtual int sequenceNumber() const { return m_sequenceNumber; }
-        void setSequenceNumber( int sequenceNumber ) { m_sequenceNumber = sequenceNumber; }
+        virtual void setSequenceNumber( int sequenceNumber ) { m_sequenceNumber = sequenceNumber; }
 
         virtual PodcastChannelPtr channel() const { return m_channel; }
-        void setChannel( const PodcastChannelPtr channel ) { m_channel = channel; }
+        virtual void setChannel( const PodcastChannelPtr channel ) { m_channel = channel; }
 
     protected:
         PodcastChannelPtr m_channel;
@@ -232,20 +237,23 @@ class PodcastChannel : public PodcastMetaCommon, public Playlist
         virtual QString description() const { return m_description; }
 
         //PodcastChannel specific methods
-        KUrl url() const { return m_url; }
-        KUrl webLink() const { return m_webLink; }
-        QPixmap image() const { return m_image; }
-        QString copyright() { return m_copyright; }
-        QStringList labels() const { return m_labels; }
-        QDate subscribeDate() const { return m_subscribeDate; }
+        virtual KUrl url() const { return m_url; }
+        virtual KUrl webLink() const { return m_webLink; }
+        virtual bool hasImage() const { return !m_image.isNull(); }
+        virtual KUrl imageUrl() const { return m_imageUrl; }
+        virtual QPixmap image() const { return m_image; }
+        virtual QString copyright() { return m_copyright; }
+        virtual QStringList labels() const { return m_labels; }
+        virtual QDate subscribeDate() const { return m_subscribeDate; }
 
-        void setUrl( const KUrl &url ) { m_url = url; }
-        void setWebLink( const KUrl &link ) { m_webLink = link; }
-        void setImage( const QPixmap &image ) { m_image = image; }
-        void setCopyright( const QString &copyright ) { m_copyright = copyright; }
-        void setLabels( const QStringList &labels ) { m_labels = labels; }
-        void addLabel( const QString &label ) { m_labels << label; }
-        void setSubscribeDate( const QDate &date ) { m_subscribeDate = date; }
+        virtual void setUrl( const KUrl &url ) { m_url = url; }
+        virtual void setWebLink( const KUrl &link ) { m_webLink = link; }
+        virtual void setImage( const QPixmap &image ) { m_image = image; }
+        virtual void setImageUrl( const KUrl &imageUrl ) { m_imageUrl = imageUrl; }
+        virtual void setCopyright( const QString &copyright ) { m_copyright = copyright; }
+        virtual void setLabels( const QStringList &labels ) { m_labels = labels; }
+        virtual void addLabel( const QString &label ) { m_labels << label; }
+        virtual void setSubscribeDate( const QDate &date ) { m_subscribeDate = date; }
 
         virtual Meta::PodcastEpisodePtr addEpisode( PodcastEpisodePtr episode )
                 { m_episodes << episode; return episode; }
@@ -274,6 +282,7 @@ class PodcastChannel : public PodcastMetaCommon, public Playlist
         KUrl m_url;
         KUrl m_webLink;
         QPixmap m_image;
+        KUrl m_imageUrl;
         QStringList m_labels;
         QDate m_subscribeDate;
         QString m_copyright;
@@ -309,8 +318,11 @@ public:
 
     QString name() const
     {
-        const QString artist = episode->channel()->author();
-        return artist;
+        QString author;
+        if( episode && episode->channel() )
+            author = episode->channel()->author();
+
+        return author;
     }
 
     QString prettyName() const
@@ -372,7 +384,8 @@ public:
 
     QPixmap image( int size )
     {
-        return Meta::Album::image( size );
+        QPixmap image = episode->channel()->image();
+        return image.scaledToHeight( size );
     }
 
     bool operator==( const Meta::Album &other ) const
@@ -492,6 +505,7 @@ public:
 
 }
 
+Q_DECLARE_METATYPE( Meta::PodcastMetaCommon* )
 Q_DECLARE_METATYPE( Meta::PodcastEpisodePtr )
 Q_DECLARE_METATYPE( Meta::PodcastEpisodeList )
 Q_DECLARE_METATYPE( Meta::PodcastChannelPtr )

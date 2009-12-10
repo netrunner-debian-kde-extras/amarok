@@ -31,6 +31,7 @@ typedef QHash<QString, QPair<QString, QString> > ChangedTrackUrls;
 
 class SqlStorage;
 class CollectionManagerSingleton;
+class TimecodeTrackProvider;
 
 class AMAROK_EXPORT CollectionManager : public QObject
 {
@@ -120,6 +121,8 @@ class AMAROK_EXPORT CollectionManager : public QObject
          */
         void removeTrackProvider( Amarok::TrackProvider *provider );
 
+        bool haveEmbeddedMysql() { return m_haveEmbeddedMysql; }
+
     public slots:
         void startFullScan();
         void stopScan();
@@ -161,6 +164,9 @@ class AMAROK_EXPORT CollectionManager : public QObject
         Meta::ArtistList m_resultArtistList;
         bool             m_resultEmitted;
         int              m_maxArtists;
+
+        bool             m_haveEmbeddedMysql;
+        TimecodeTrackProvider *m_timecodeTrackProvider;
 
         struct Private;
         Private * const d;

@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007-2008 Ian Monroe <ian@monroe.nu>                                   *
- * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2007-2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>               *
  * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
  * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
@@ -26,6 +26,7 @@
 
 #include "Amarok.h"
 #include "amarokconfig.h"
+#include "dbus/PlayerDBusHandler.h"
 #include "Debug.h"
 #include "DynamicModel.h"
 #include "EngineController.h"
@@ -251,10 +252,6 @@ Playlist::Actions::playlistModeChanged()
     }
 
     debug() << "Dynamic mode:   " << AmarokConfig::dynamicMode();
-    debug() << "Repeat enabled: " << Amarok::repeatEnabled();
-    debug() << "Random enabled: " << Amarok::randomEnabled();
-    debug() << "Track mode:     " << ( Amarok::repeatTrack() || Amarok::randomTracks() );
-    debug() << "Album mode:     " << ( Amarok::repeatAlbum() || Amarok::randomAlbums() );
 
     if ( AmarokConfig::dynamicMode() )
     {
@@ -272,35 +269,36 @@ Playlist::Actions::playlistModeChanged()
 
     m_navigator = 0;
 
-    if ( Amarok::repeatEnabled() )
-    {
-        if ( Amarok::repeatTrack() )
-            m_navigator = new RepeatTrackNavigator();
-        else if ( Amarok::repeatAlbum() )
-            m_navigator = new RepeatAlbumNavigator();
-        else
-            m_navigator = new StandardTrackNavigator(); // this navigator handles playlist repeat
-    }
-    else if ( Amarok::randomEnabled() )
-    {
-        if ( Amarok::randomTracks() )
-        {
-            if( Amarok::favorNone() )
-                m_navigator = new RandomTrackNavigator();
-            else
-                m_navigator = new FavoredRandomTrackNavigator();
-        }
-        else if ( Amarok::randomAlbums() )
-            m_navigator = new RandomAlbumNavigator();
-        else
-            m_navigator = new StandardTrackNavigator(); // crap -- something went wrong
-    }
-    else
-        m_navigator = new StandardTrackNavigator();
 
+    switch( AmarokConfig::trackProgression() )
+    {
+
+        case AmarokConfig::EnumTrackProgression::RepeatTrack:
+            m_navigator = new RepeatTrackNavigator();
+            break;
+            
+        case AmarokConfig::EnumTrackProgression::RepeatAlbum:
+            m_navigator = new RepeatAlbumNavigator();
+            break;
+
+        case AmarokConfig::EnumTrackProgression::RandomTrack:
+            m_navigator = new RandomTrackNavigator();
+            break;
+            
+        case AmarokConfig::EnumTrackProgression::RandomAlbum:
+            m_navigator = new RandomAlbumNavigator();
+            break;
+
+        //repeat playlist, standard and fallback are all the normal navigator.
+        case AmarokConfig::EnumTrackProgression::RepeatPlaylist:
+        case AmarokConfig::EnumTrackProgression::Normal:
+        default:
+            m_navigator = new StandardTrackNavigator();
+            break;
+    }
 
     m_navigator->queueIds( currentQueue );
-
+    The::playerDBusHandler()->updateStatus();
 }
 
 void

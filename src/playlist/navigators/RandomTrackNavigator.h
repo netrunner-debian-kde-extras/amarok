@@ -44,10 +44,21 @@ namespace Playlist
         void recvRemovedIds( const QList<quint64>& );
         void recvActiveTrackChanged( const quint64 );
 
-        void modelLayoutChanged();
-
     private:
+        /**
+         * List of tracks already played.
+         */
         QList<quint64> m_playedRows;
+
+        /**
+         * List of tracks that have played before but due to requests
+         * of previous tracks these will be queued next.
+         */
+        QList<quint64> m_replayedRows;
+
+        /**
+         * List of tracks that have never been played.
+         */
         QList<quint64> m_unplayedRows;
 
     };

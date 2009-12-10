@@ -16,6 +16,7 @@
 
 #include "DatabaseUpdater.h"
 
+#include "amarokconfig.h"
 #include "Debug.h"
 #include "MountPointManager.h"
 #include "SqlCollection.h"
@@ -29,7 +30,7 @@
 #include <KGlobal>
 #include <KMessageBox>
 
-static const int DB_VERSION = 10;
+static const int DB_VERSION = 11;
 
 DatabaseUpdater::DatabaseUpdater( SqlCollection *collection )
     : m_collection( collection )
@@ -118,6 +119,11 @@ DatabaseUpdater::update()
             upgradeVersion9to10();
             dbVersion = 10;
             m_rescanNeeded = true;
+        }
+        if( dbVersion == 10 && dbVersion < DB_VERSION )
+        {
+            upgradeVersion10to11();
+            dbVersion = 11;
         }
         /*
         if( dbVersion == X && dbVersion < DB_VERSION )
@@ -561,6 +567,15 @@ DatabaseUpdater::upgradeVersion9to10()
     m_collection->query( "CREATE FULLTEXT INDEX localurl_podepisode ON podcastepisodes( localurl )" );
 }
 
+void
+DatabaseUpdater::upgradeVersion10to11()
+{
+    DEBUG_BLOCK
+    //OK, this isn't really a database upgrade, but it does affect scanning.
+    //New default is for the charset detector not to run; but those that have existing collection
+    //won't like it if suddenly that changes their behavior, so set to true for existing collections
+    AmarokConfig::setUseCharsetDetector( true );
+}
 
 void
 DatabaseUpdater::createTemporaryTables()

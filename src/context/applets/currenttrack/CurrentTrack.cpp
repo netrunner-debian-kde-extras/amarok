@@ -603,7 +603,7 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     if( !m_sourceEmblemPath.isEmpty() )
     {
         p->save();
-        p->setOpacity( 0.4 );
+        p->setOpacity( 0.19 );
         KSvgRenderer svg( m_sourceEmblemPath );
 
         // paint the emblem half as tall as the applet, anchored at the top-right
@@ -681,6 +681,8 @@ CurrentTrack::paletteChanged( const QPalette & palette )
     m_artist->setBrush( palette.text() );
     m_album->setBrush( palette.text() );
     m_noTrack->setBrush( palette.text() );
+    m_byText->setBrush( palette.text() );
+    m_onText->setBrush( palette.text() );
 }
 
 void

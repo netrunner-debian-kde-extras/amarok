@@ -23,7 +23,9 @@
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "Debug.h"
+#include "MetaUtility.h"
 #include "PodcastModel.h"
+#include "PodcastMeta.h"
 #include "PopupDropperFactory.h"
 #include "browsers/InfoProxy.h"
 #include "SvgTinter.h"
@@ -40,12 +42,16 @@
 #include <QToolBar>
 #include <QVBoxLayout>
 #include <QWebFrame>
+#include <QTextDocument>
 #include <qnamespace.h>
 
 #include <KAction>
 #include <KMenu>
 #include <KIcon>
 #include <KStandardDirs>
+#include <KUrlRequesterDialog>
+#include <KGlobal>
+#include <KLocale>
 
 #include <typeinfo>
 
@@ -78,7 +84,7 @@ PodcastCategory::destroy()
 }
 
 PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
-    : BrowserCategory( "podcast category", 0 )
+    : BrowserCategory( "podcasts", 0 )
     , m_podcastModel( podcastModel )
 {
     setPrettyName( i18n( "Podcasts" ) );
@@ -111,17 +117,36 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     connect( updateAllAction, SIGNAL(triggered( bool )),
              m_podcastModel, SLOT(refreshPodcasts()) );
 
+    //a QWidget with minimumExpanding makes the next button right aligned.
+    QWidget *spacerWidget = new QWidget( this );
+    spacerWidget->setSizePolicy( QSizePolicy::MinimumExpanding,
+                                 QSizePolicy::MinimumExpanding );
+    toolBar->addWidget( spacerWidget );
+
+    QAction *importOpmlAction = new QAction( KIcon("document-import")
+                                             , QString()
+                                             , toolBar
+                                         );
+    importOpmlAction->setToolTip( i18n( "Import OPML File" ) );
+    toolBar->addAction( importOpmlAction );
+    connect( importOpmlAction, SIGNAL( triggered() ), SLOT( slotImportOpml() ) );
+
     m_podcastTreeView = new PodcastView( podcastModel, this );
     m_podcastTreeView->setFrameShape( QFrame::NoFrame );
     m_podcastTreeView->setContentsMargins(0,0,0,0);
     m_podcastTreeView->setModel( podcastModel );
     m_podcastTreeView->header()->hide();
-    m_podcastTreeView->setIconSize( QSize( 24, 24 ) );
+    m_podcastTreeView->setIconSize( QSize( 32, 32 ) );
 
     m_podcastTreeView->setAlternatingRowColors( true );
     m_podcastTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
     m_podcastTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
-    m_podcastTreeView->setDragEnabled(true);
+    m_podcastTreeView->setDragEnabled( true );
+
+    for( int column = 1; column < podcastModel->columnCount(); ++ column )
+    {
+        m_podcastTreeView->hideColumn( column );
+    }
 
     //transparency
     QPalette p = m_podcastTreeView->palette();
@@ -148,19 +173,154 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
 
 PodcastCategory::~PodcastCategory()
 {
+    delete m_viewKicker;
 }
 
 void
 PodcastCategory::showInfo( const QModelIndex & index )
 {
-    QString description = index.data( ShortDescriptionRole ).toString();
-    description.replace( QRegExp("\n "), "\n" );
-    description.replace( QRegExp("\n+"), "\n" );
-
     QVariantMap map;
-    map["service_name"] = "Podcasts";
+    const int row = index.row();
+    QString description;
+    QString title( index.data( Qt::DisplayRole ).toString() );
+    QString subtitle( index.sibling( row, SubtitleColumn ).data( Qt::DisplayRole ).toString() );
+    KUrl imageUrl( qvariant_cast<KUrl>(
+        index.sibling( row, ImageColumn ).data( Qt::DisplayRole )
+    ) );
+    QString author( index.sibling( row, AuthorColumn ).data( Qt::DisplayRole ).toString() );
+    QStringList keywords( qvariant_cast<QStringList>(
+        index.sibling( row, KeywordsColumn ).data( Qt::DisplayRole )
+    ) );
+    bool isEpisode = index.sibling( row, IsEpisodeColumn ).data( Qt::DisplayRole ).toBool();
+    QString authorAndPubDate;
+    
+    if( !author.isEmpty() )
+    {
+        authorAndPubDate = QString( "<b>%1</b> %2 " )
+            .arg( i18n( "By" ) )
+            .arg( Qt::escape( author ) );
+    }
+
+    if( !subtitle.isEmpty() )
+    {
+        description += QString( "<h1 class=\"subtitle\">%1</h1>" )
+            .arg( Qt::escape( subtitle ) );
+    }
+
+    if( !imageUrl.isEmpty() )
+    {
+        description += QString( "<p style=\"float:right;\"><img src=\"%1\" onclick=\""
+            "if (this.style.width=='150px') {"
+                "this.style.width='auto';"
+                "this.style.height='auto';"
+                "this.style.marginLeft='0em';"
+                "this.style.cursor='-webkit-zoom-in';"
+                "this.parentNode.style.float='inherit';"
+                "this.parentNode.style.textAlign='center';"
+            "} else {"
+                "this.style.width='150px';"
+                "this.style.height='150px';"
+                "this.style.marginLeft='1em';"
+                "this.style.cursor='-webkit-zoom-out';"
+                "this.parentNode.style.float='right';"
+                "this.parentNode.style.textAlign='inherit';"
+            "}\""
+            " style=\"width: 150px; height: 150px; margin-left: 1em;"
+            " margin-right: 0em; cursor: -webkit-zoom-in;\""
+            "/></p>" )
+            .arg( Qt::escape( imageUrl.url() ) );
+    }
+
+    if( isEpisode )
+    {
+        QDateTime pubDate( index.sibling( row, DateColumn ).data( Qt::DisplayRole ).toDateTime() );
+        
+        if( pubDate.isValid() )
+        {
+            authorAndPubDate += QString( "<b>%1</b> %2" )
+                .arg( i18n( "On" ) )
+                .arg( KGlobal::locale()->formatDateTime( pubDate, KLocale::FancyShortDate ) );
+        }
+    }
+
+    if( !authorAndPubDate.isEmpty() )
+    {
+        description += QString( "<p>%1</p>" )
+            .arg( authorAndPubDate );
+    }
+
+    if( isEpisode )
+    {
+        int fileSize = index.sibling( row, FilesizeColumn ).data( Qt::DisplayRole ).toInt();
+
+        if( fileSize != 0 )
+        {
+            description += QString( "<p><b>%1</b> %2</p>" )
+                .arg( i18n( "File Size:" ) )
+                .arg( Meta::prettyFilesize( fileSize ) );
+        }
+
+    }
+    else
+    {
+        QDate subsDate( index.sibling( row, DateColumn ).data( Qt::DisplayRole ).toDate() );
+        
+        if( subsDate.isValid() )
+        {
+            description += QString( "<p><b>%1</b> %2</p>" )
+                .arg( i18n( "Subscription Date:" ) )
+                .arg( KGlobal::locale()->formatDate( subsDate, KLocale::FancyShortDate ) );
+        }
+    }
+
+    if( !keywords.isEmpty() )
+    {
+        description += QString( "<p><b>%1</b> %2</p>" )
+            .arg( i18n( "Keywords:" ) )
+            .arg( Qt::escape( keywords.join( ", " ) ) );
+    }
+
+    description += index.data( ShortDescriptionRole ).toString();
+    
+    description = QString(
+        "<html>"
+        "    <head>"
+        "        <title>%1</title>"
+        "        <style type=\"text/css\">"
+        "h1 {text-align:center; font-size: 1.2em;}"
+        "h1.subtitle {text-align:center; font-size: 1em; font-weight: normal;}"
+        "        </style>"
+        "    </head>"
+        "    <body>"
+        "        <h1>%1</h1>"
+        "        %2"
+        "    </body>"
+        "</html>")
+        .arg( Qt::escape( title ) )
+        .arg( description );
+    
+    map["service_name"] = title;
     map["main_info"] = description;
     The::infoProxy()->setInfo( map );
+}
+
+void
+PodcastCategory::slotImportOpml()
+{
+    DEBUG_BLOCK
+    KUrl url = KUrlRequesterDialog::getUrl( QString(), this
+                                            , i18n( "Select OPML file to import" )
+                                            );
+    if( !url.isEmpty() )
+    {
+        // user entered something and pressed OK
+        m_podcastModel->importOpml( url );
+    }
+    else
+    {
+        // user entered nothing or pressed Cancel
+        debug() << "invalid input or cancel";
+    }
 }
 
 ViewKicker::ViewKicker( QTreeView * treeView )
@@ -302,7 +462,7 @@ PodcastCategoryDelegate::sizeHint(const QStyleOptionViewItem & option, const QMo
         height = fm.boundingRect ( 0, 0, width - ( 32 + m_view->indentation() ), 1000,
                                    Qt::AlignHCenter | Qt::AlignTop | Qt::TextWordWrap ,
                                    description ).height() + 40;
-	    debug() << "Option is selected, height = " << height;*/
+        debug() << "Option is selected, height = " << height;*/
 
     }
 

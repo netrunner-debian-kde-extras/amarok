@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarokcollectionscanner_qt\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2009-09-29 06:20+0200\n"
+"POT-Creation-Date: 2009-11-13 06:22+0100\n"
 "PO-Revision-Date: 2009-03-23 22:28+0100\n"
 "Last-Translator: Sébastien Renard <Sebastien.Renard@NewArch.fr>\n"
 "Language-Team: French <kde-i18n-doc@kde.org>\n"
@@ -17,11 +17,11 @@ msgstr ""
 "X-Generator: Lokalize 0.3\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:1002
+#: utilities/collectionscanner/CollectionScanner.cpp:1005
 msgid "Amarok Collection Scanner"
 msgstr "Analyseur de collection Amarok"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:1003
+#: utilities/collectionscanner/CollectionScanner.cpp:1006
 msgid ""
 "Note: For debugging purposes this application can be invoked from the "
 "command line,\n"
@@ -32,7 +32,7 @@ msgstr ""
 "débogage,\n"
 "mais elle ne créera pas dans ce cas de collection"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:1004
+#: utilities/collectionscanner/CollectionScanner.cpp:1007
 msgid ""
 "IRC:\n"
 "server: irc.freenode.net / channels: #amarok, #amarok.de, #amarok.es, "
@@ -48,17 +48,17 @@ msgstr ""
 "Réactions :\n"
 "amarok@kde.org"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:1005
+#: utilities/collectionscanner/CollectionScanner.cpp:1008
 #, fuzzy
 #| msgid "Usage: amarokcollectionscanner [options] +Folder(s)"
 msgid "Usage: amarokcollectionscanner [options] <Folder(s)>"
 msgstr "Usage : amarokcollectionscanner [options] +Dossier(s)"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:1006
+#: utilities/collectionscanner/CollectionScanner.cpp:1009
 msgid "User-modifiable Options:"
 msgstr "Options modifiables par l'utilisateur :"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:1007
+#: utilities/collectionscanner/CollectionScanner.cpp:1010
 #, fuzzy
 #| msgid ""
 #| "+Folder(s)            : Folders to scan; when using -b and -i, the path "
@@ -71,15 +71,15 @@ msgstr ""
 "+Dossier(s) : dossier à parcourir. Avec -b et -i, l'emplacement vers le "
 "fichier généré par Amarok contenant la liste des dossiers"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:1008
+#: utilities/collectionscanner/CollectionScanner.cpp:1011
 msgid "-h, --help            : This help text"
 msgstr "-h, --help            : cette aide"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:1009
+#: utilities/collectionscanner/CollectionScanner.cpp:1012
 msgid "-r, --recursive       : Scan folders recursively"
 msgstr "-r, --recursive       : analyse le dossier récursivement"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:1010
+#: utilities/collectionscanner/CollectionScanner.cpp:1013
 #, fuzzy
 #| msgid ""
 #| "-i, --incremental     : Incremental scan (modified folders only).  Only "
@@ -89,11 +89,11 @@ msgstr ""
 "-i, --incremental     : analyse incrémentale (dossiers modifiés seulement).  "
 "Utiliser uniquement en mode de traitement par lot."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:1011
+#: utilities/collectionscanner/CollectionScanner.cpp:1014
 msgid "-p, --importplaylists : Import playlists"
 msgstr "-p, --importplaylists : importe les listes de lecture"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:1012
+#: utilities/collectionscanner/CollectionScanner.cpp:1015
 #, fuzzy
 #| msgid ""
 #| "-s, --restart         : Restart the scanner in its last position, after a "
@@ -105,11 +105,15 @@ msgstr ""
 "-s, --restart         : redémarre l'analyse à sa dernière position, après un "
 "plantage"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:1013
+#: utilities/collectionscanner/CollectionScanner.cpp:1016
 msgid "-b, --batch           : Run in batch mode"
 msgstr "-b, --batch           : mode traitement par lot"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:1014
+#: utilities/collectionscanner/CollectionScanner.cpp:1017
+msgid "-c, --nocharset       : Use the charset detector on ID3 tags"
+msgstr ""
+
+#: utilities/collectionscanner/CollectionScanner.cpp:1018
 #, fuzzy
 #| msgid ""
 #| "--rpath <path>        : In full-scan batch mode, specifies the path to "

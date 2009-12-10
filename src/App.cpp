@@ -48,6 +48,10 @@
 #include "TracklistDBusHandler.h"
 #include "TrayIcon.h"
 
+#ifdef NO_MYSQL_EMBEDDED
+#include "MySqlServerTester.h"
+#endif
+
 #include <iostream>
 
 #include <KAction>
@@ -60,6 +64,7 @@
 #include <KJob>
 #include <KJobUiDelegate>
 #include <KLocale>
+#include <KMessageBox>
 #include <KShortcutsDialog>              //slotConfigShortcuts()
 #include <KStandardDirs>
 
@@ -320,16 +325,18 @@ App::handleCliArgs() //static
         {
             KUrl url = args->url( i );
             //TODO:PORTME
-//             if( url.protocol() == "itpc" || url.protocol() == "pcast" )
-//                 PlaylistBrowserNS::instance()->addPodcast( url );
-//             else
-
-            if ( url.protocol() == "amarok" ) {
-
+            if( PodcastProvider::couldBeFeed( url.url() ) )
+            {
+                KUrl feedUrl = PodcastProvider::toFeedUrl( url.url() );
+                The::playlistManager()->defaultPodcasts()->addPodcast( feedUrl );
+            }
+            else if( url.protocol() == "amarok" )
+            {
                 AmarokUrl aUrl( url.url() );
                 aUrl.run();
-
-            } else {
+            }
+            else
+            {
                 list << url;
                 DEBUG_LINE_INFO
             }
@@ -428,14 +435,6 @@ App::handleCliArgs() //static
         runUnitTests( true );
 #endif // DEBUG
 
-    if( args->isSet( "subscribe" ) )
-    {
-        debug() << "Subscribe to " << args->getOption( "subscribe" );
-        The::playlistManager()->defaultPodcasts()->addPodcast(
-                    KUrl( args->getOption( "subscribe" ) )
-                );
-    }
-
     args->clear();    //free up memory
 }
 
@@ -484,8 +483,6 @@ App::initCliArgs() //static
 #ifdef DEBUG
     options.add("test <output>", ki18n( "Run integrated unit tests. Output can be 'log' for logfiles, 'stdout' for stdout." ) );
 #endif // DEBUG
-    options.add("p");
-    options.add("subscribe <feed-url>", ki18n( "Subscribe to podcast feed" ) );
 
     KCmdLineArgs::addCmdLineOptions( options );   //add our own options
 }
@@ -720,10 +717,35 @@ App::continueInit()
     }
 #endif
 
-    if( config.readEntry( "First Run", true ) )
+#ifdef NO_MYSQL_EMBEDDED
+    bool useServer = true;
+    if( !AmarokConfig::useServer() )
     {
-        slotConfigAmarok( "CollectionConfig" );
-        config.writeEntry( "First Run", false );
+        useServer = false;
+        AmarokConfig::setUseServer( true );
+    }
+    if( !MySqlServerTester::testSettings(
+             AmarokConfig::host(),
+             AmarokConfig::user(),
+             AmarokConfig::password(),
+             AmarokConfig::port()
+         )
+    )
+    {
+        KMessageBox::messageBox( 0, KMessageBox::Information,
+                ( !useServer ? i18n( "The embedded database was not found; you must set up a database server connection.\nYou must restart Amarok after doing this." ) :
+                              i18n( "The connection details for the database server were invalid.\nYou must enter correct settings and restart Amarok after doing this." ) ),
+                i18n( "Database Error" ) );
+        slotConfigAmarok( "DatabaseConfig" );
+    }
+    else
+#endif
+    {
+        if( config.readEntry( "First Run", true ) )
+        {
+            slotConfigAmarok( "CollectionConfig" );
+            config.writeEntry( "First Run", false );
+        }
     }
 }
 

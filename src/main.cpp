@@ -83,10 +83,15 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( "leinir", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Daniel Caleb Jones"), ki18n("Biased playlists"), "danielcjones@gmail.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
+    aboutData.addCredit( ki18n("Daniel Dewald"), ki18n("Tag Guesser, Labels"), "Daniel.Dewald@time-shift.de" );
+        ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("Daniel Winter"), ki18n("Nepomuk integration"), "dw@danielwinter.de" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("Edward \"Hades\" Toroshchin"), ki18n("Developer"), "edward.hades@gmail.com" );
         ocsData.addCredit( "hadeschief", aboutData.credits().last() );
+    aboutData.addCredit( ki18n("Frank Meerkötter"), ki18n("Podcast improvements"),
+                         "frank@meerkoetter.org" );
+        ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("Greg Meyer"), ki18n("Live CD, Bug squashing (oggb4mp3)"), "greg@gkmweb.com" );
         ocsData.addCredit( "oggb4mp3", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Harald Sitter"), ki18n("Rokymoter (apachelogger)"), "harald.sitter@kdemail.net" );
@@ -103,6 +108,8 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("Ljubomir Simin"), ki18n("Rokymoter (ljubomir)"), "ljubomir.simin@gmail.com" );
         ocsData.addCredit( "ljubomir", aboutData.credits().last() );
+    aboutData.addCredit( ki18n("Mathias Panzenböck"), ki18n("Podcast improvements"), "" );
+        ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("Max Howell"), ki18n("Developer, Vision"), "max.howell@methylblue.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("Mikko Caldara"), ki18n("Bug triaging and sanitizing"), "mikko.cal@gmail.com" );
@@ -209,7 +216,8 @@ int main( int argc, char *argv[] )
 
     if( !KUniqueApplication::start( startFlag ) ) {
         QList<QByteArray> instanceOptions;
-        instanceOptions << "previous" << "play" << "play-pause" << "stop" << "next" << "append" << "queue" << "load" << "subscribe";
+        instanceOptions << "previous" << "play" << "play-pause" << "stop" << "next"
+                << "append" << "queue" << "load";
 
         // Check if an option for a running instance is set
         bool isSet = false;

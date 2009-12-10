@@ -31,6 +31,7 @@
 #include "meta/Meta.h"
 #include "meta/capabilities/EditCapability.h"
 #include "meta/capabilities/SourceInfoCapability.h"
+#include "moodbar/MoodbarManager.h"
 #include "playlist/proxymodels/GroupingProxy.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/layouts/LayoutManager.h"
@@ -407,6 +408,24 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
                         painter->drawPixmap( center + 1, rowOffsetY, right );
                     }
                 }
+                else if( value == Moodbar )
+                {
+                    //we cannot ask the model for the moodbar directly as we have no
+                    //way of asking for a specific size. Instead just get the track from
+                    //the model and ask the moodbar manager ourselves.
+
+
+                    debug() << "painting moodbar in PrettyItemDelegate::paintItem";
+         
+                    Meta::TrackPtr track = index.data( TrackRole ).value<Meta::TrackPtr>();
+
+                    if( The::moodbarManager()->hasMoodbar( track ) )
+                    {
+                        QPixmap moodbar = The::moodbarManager()->getMoodbar( track, itemWidth, rowHeight - 8 );
+
+                        painter->drawPixmap( currentItemX, rowOffsetY + 4, moodbar );
+                    }
+                }
                 else
                 {
                     text = QFontMetricsF( font ).elidedText( text, Qt::ElideRight, itemWidth );
@@ -646,7 +665,9 @@ QWidget * Playlist::PrettyItemDelegate::createEditor ( QWidget * parent, const Q
 
     DEBUG_BLOCK
     const int groupMode = getGroupMode(index);
-    return new InlineEditorWidget( parent, index, LayoutManager::instance()->activeLayout(), groupMode );
+    InlineEditorWidget * editor = new InlineEditorWidget( parent, index, LayoutManager::instance()->activeLayout(), groupMode );
+    connect( editor, SIGNAL( editingDone( InlineEditorWidget *) ), this, SLOT( editorDone(  InlineEditorWidget *) ) );
+    return editor;
 }
 
 void Playlist::PrettyItemDelegate::setModelData( QWidget * editor, QAbstractItemModel * model, const QModelIndex &index ) const
@@ -737,6 +758,9 @@ void Playlist::PrettyItemDelegate::setModelData( QWidget * editor, QAbstractItem
             case Year:
                 ec->setYear( value );
                 break;
+            case Bpm:
+                ec->setBpm( value.toFloat() );
+                break;
         }
 
     }
@@ -749,6 +773,13 @@ Playlist::PrettyItemDelegate::updateEditorGeometry( QWidget * editor, const QSty
 
     editor->setFixedSize( option.rect.size() );
     editor->setGeometry( option.rect );
+}
+
+void
+Playlist::PrettyItemDelegate::editorDone( InlineEditorWidget * editor )
+{
+    DEBUG_BLOCK;
+    emit commitData( editor );
 }
 
 

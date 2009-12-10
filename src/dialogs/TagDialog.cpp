@@ -4,6 +4,8 @@
  * Copyright (c) 2005-2006 Alexandre Pereira de Oliveira <aleprj@gmail.com>             *
  * Copyright (c) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                                    *
+ * Copyright (c) 2009 Daniel Dewald <Daniel.Dewald@time-shift.de>                       *
+ * Copyright (c) 2009 Pierre Dumuid <pmdumuid@gmail.com>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -25,6 +27,7 @@
 #include "Amarok.h"
 #include "amarokconfig.h"
 #include "CollectionManager.h"
+#include "SqlStorage.h"
 #include "covermanager/CoverFetcher.h"
 #include "covermanager/CoverFetchingActions.h"
 #include "Debug.h"
@@ -33,6 +36,8 @@
 #include "MainWindow.h"
 #include "MetaQueryMaker.h"
 #include "MetaUtility.h"
+#include "meta/capabilities/ReadLabelCapability.h"
+#include "meta/capabilities/WriteLabelCapability.h"
 #include "QueryMaker.h"
 #include "statusbar/StatusBar.h"       //for status messages
 #include "TagGuesser.h"
@@ -45,7 +50,6 @@
 #include <KMenu>
 #include <KRun>
 
-#include <qdom.h>
 #include <QMap>
 #include <QPair>
 #include <QTimer>
@@ -82,7 +86,7 @@ TagDialog::TagDialog( Meta::TrackPtr track, QWidget *parent )
 
     m_tracks.append( track );
     //we changed the list after creating the iterator, so create a new iterator
-    m_trackIterator = QListIterator<Meta::TrackPtr >( m_tracks );
+    m_trackIterator = QListIterator< Meta::TrackPtr >( m_tracks );
     ui->setupUi( mainWidget() );
     resize( minimumSizeHint() );
     init();
@@ -118,14 +122,6 @@ TagDialog::~TagDialog()
     if( m_currentTrack && m_currentTrack->album() )
         unsubscribeFrom( m_currentTrack->album() );
 
-    // NOTE: temporary crash prevention.  TreeView should _always_ be updated
-    // if tags have changed.
-
-    if ( !m_tracks.isEmpty() )
-        delete m_labelCloud;
-    else
-        debug() << "Empty tracklist?  Must mean TreeView has not been updated!";
-
     delete ui;
 }
 
@@ -160,11 +156,6 @@ TagDialog::resultReady( const QString &collectionId, const Meta::TrackList &trac
     Q_UNUSED( collectionId )
 
     m_tracks << tracks;
-    foreach( Meta::TrackPtr d_track, tracks )
-    {
-        if ( d_track && d_track->artist() )
-            debug() << "Artist is: " << d_track->artist()->name();
-    }
 }
 
 void
@@ -173,7 +164,7 @@ TagDialog::queryDone()
     DEBUG_BLOCK
 
     delete m_queryMaker;
-    m_trackIterator = QListIterator<Meta::TrackPtr >( m_tracks );
+    m_trackIterator = QListIterator<Meta::TrackPtr>( m_tracks );
     if( m_tracks.size() )
     {
         setCurrentTrack( m_tracks.first() );
@@ -191,7 +182,7 @@ TagDialog::resultReady( const QString &collectionId, const Meta::AlbumList &albu
 {
     Q_UNUSED( collectionId )
 
-    foreach( Meta::AlbumPtr album, albums )
+    foreach( const Meta::AlbumPtr &album, albums )
     {
         if( !album->name().isEmpty() )
             m_albums << album->name();
@@ -205,7 +196,7 @@ TagDialog::resultReady( const QString &collectionId, const Meta::ArtistList &art
 {
     Q_UNUSED( collectionId )
 
-    foreach( Meta::ArtistPtr artist, artists )
+    foreach( const Meta::ArtistPtr &artist, artists )
     {
         if( !artist->name().isEmpty() )
             m_artists << artist->name();
@@ -219,7 +210,7 @@ TagDialog::resultReady( const QString &collectionId, const Meta::ComposerList &c
 {
     Q_UNUSED( collectionId )
 
-    foreach( Meta::ComposerPtr composer, composers )
+    foreach( const Meta::ComposerPtr &composer, composers )
     {
         if( !composer->name().isEmpty() )
             m_composers << composer->name();
@@ -233,7 +224,7 @@ TagDialog::resultReady( const QString &collectionId, const Meta::GenreList &genr
 {
     Q_UNUSED( collectionId )
 
-    foreach( Meta::GenrePtr genre, genres )
+    foreach( const Meta::GenrePtr &genre, genres )
     {
         if( !genre->name().isEmpty() )  // Where the heck do the empty genres come from?
             m_genres << genre->name();
@@ -263,21 +254,25 @@ TagDialog::dataQueryDone()
     QString saveText( ui->kComboBox_artist->lineEdit()->text() );
     ui->kComboBox_artist->clear();
     ui->kComboBox_artist->insertItems( 0, m_artists );
+    ui->kComboBox_artist->completionObject()->setItems( m_artists );
     ui->kComboBox_artist->lineEdit()->setText( saveText );
 
     saveText = ui->kComboBox_album->lineEdit()->text();
     ui->kComboBox_album->clear();
     ui->kComboBox_album->insertItems( 0, m_albums );
+    ui->kComboBox_album->completionObject()->setItems( m_albums );
     ui->kComboBox_album->lineEdit()->setText( saveText );
 
     saveText = ui->kComboBox_composer->lineEdit()->text();
     ui->kComboBox_composer->clear();
     ui->kComboBox_composer->insertItems( 0, m_composers );
+    ui->kComboBox_composer->completionObject()->setItems( m_composers );
     ui->kComboBox_composer->lineEdit()->setText( saveText );
 
     saveText = ui->kComboBox_genre->lineEdit()->text();
     ui->kComboBox_genre->clear();
     ui->kComboBox_genre->insertItems( 0, m_genres );
+    ui->kComboBox_genre->completionObject()->setItems( m_genres );
     ui->kComboBox_genre->lineEdit()->setText( saveText );
 
 
@@ -295,6 +290,66 @@ TagDialog::dataQueryDone()
     }
 
     m_fieldEdited = m_fieldEditedSave;
+}
+
+void
+TagDialog::removeLabelPressed() //SLOT
+{
+    DEBUG_BLOCK
+
+    if ( ui->labelsList->selectionModel()->hasSelection() )
+    {
+        QModelIndexList idxList = ui->labelsList->selectionModel()->selectedRows();
+        QStringList selection;
+
+        for (int x = 0; x < idxList.size(); ++x)
+        {
+            QString label = idxList.at(x).data( Qt::DisplayRole ).toString();
+            selection.append( label );
+
+            if ( ( !m_removedLabels.contains( label ) ) && ( m_labels.contains( label ) ) )
+            {
+                if ( m_newLabels.contains( label ) )
+                    m_newLabels.removeAll( label );
+                else
+                    m_removedLabels.append( label );
+
+                m_labels.removeAll( label );
+            }
+        }
+
+        m_labelModel->removeLabels( selection );
+
+        ui->labelsList->selectionModel()->reset();
+        labelSelected();
+    }
+}
+
+void
+TagDialog::addLabelPressed() //SLOT
+{
+    DEBUG_BLOCK
+
+    QString label = ui->kComboBox_label->currentText();
+
+    if ( !label.isEmpty() )
+    {
+        if ( ( !m_newLabels.contains( label ) ) && ( !m_labels.contains( label ) ) )
+        {
+            if ( m_removedLabels.contains( label ) )
+                m_removedLabels.removeAll( label );
+            else
+                m_newLabels.append( label );
+
+            m_labels.append( label );
+        }
+        m_labelModel->addLabel( label );
+        ui->kComboBox_label->setCurrentIndex( -1 );
+        ui->kComboBox_label->completionObject()->insertItems( QStringList( label ) );
+
+        if ( !ui->kComboBox_label->contains( label ) )
+            ui->kComboBox_label->addItem( label );
+    }
 }
 
 void
@@ -330,6 +385,9 @@ inline void
 TagDialog::previousTrack()
 {
     storeTags( m_currentTrack );
+    storeLabels( m_currentTrack, m_removedLabels, m_newLabels );
+    m_removedLabels.clear();
+    m_newLabels.clear();
 
     if( m_trackIterator.hasPrevious() )
     {
@@ -348,6 +406,9 @@ inline void
 TagDialog::nextTrack()
 {
     storeTags( m_currentTrack );
+    storeLabels( m_currentTrack, m_removedLabels, m_newLabels );
+    m_removedLabels.clear();
+    m_newLabels.clear();
 
     if( m_trackIterator.hasNext() )
     {
@@ -376,6 +437,9 @@ TagDialog::perTrack()
     }
     else
     {
+        storeLabels( m_currentTrack, m_removedLabels, m_newLabels );
+        m_removedLabels.clear();
+        m_newLabels.clear();
         storeTags( m_currentTrack );
         setMultipleTracksMode();
         readMultipleTracks();
@@ -423,6 +487,13 @@ TagDialog::genreModified()
 }
 
 inline void
+TagDialog::bpmModified()
+{
+    m_fieldEdited[ "bpm" ] = true;
+    checkModified();
+}
+
+inline void
 TagDialog::ratingModified()
 {
     m_fieldEdited[ "rating" ] = true;
@@ -462,7 +533,20 @@ inline void
 TagDialog::checkModified() //SLOT
 {
     ui->pushButton_ok->setEnabled( hasChanged() || m_storedTags.count() > 0 || m_storedScores.count() > 0
-                               || m_storedLyrics.count() > 0 || m_storedRatings.count() > 0 || m_newLabels.count() > 0 );
+                               || m_storedLyrics.count() > 0 || m_storedRatings.count() > 0 || m_newLabels.count() > 0
+                               || m_removedLabels.count() > 0 );
+}
+
+inline void
+TagDialog::labelModified() //SLOT
+{
+    ui->addButton->setEnabled( ui->kComboBox_label->currentText().length()>0 );
+}
+
+inline void
+TagDialog::labelSelected() //SLOT
+{
+    ui->removeButton->setEnabled( ui->labelsList->selectionModel()->hasSelection() );
 }
 
 void
@@ -473,7 +557,7 @@ TagDialog::loadCover()
 
     const int s = 100; // Image preview size
 
-    ui->pixmap_cover->setPixmap( m_currentTrack->album()->image(s) );
+    ui->pixmap_cover->setPixmap( m_currentTrack->album()->image( s ) );
     QString artist = m_currentTrack->artist() ? m_currentTrack->artist()->name() : QString();
     ui->pixmap_cover->setInformation( artist, m_currentTrack->album()->name() );
 
@@ -491,6 +575,7 @@ TagDialog::guessFromFilename() //SLOT
     dialog->setCaption( i18n( "Filename Layout Chooser" ) );
     dialog->setButtons( KDialog::Ok | KDialog::Cancel );
     FilenameLayoutDialog *widget = new FilenameLayoutDialog( dialog );
+    widget->setFileName( m_currentTrack->playableUrl().path() );
     dialog->setMainWidget( widget );
     connect( dialog, SIGNAL( accepted() ),
              widget, SLOT( onAccept() ) );
@@ -521,49 +606,65 @@ TagDialog::guessFromFilename() //SLOT
     }
     else
     {
-        TagGuesser::setSchemeStrings( schemes );
-        debug() << "Sent scheme to TagGuesser, let's see what he does with it...";
-
     //here starts the old guessFromFilename() code
         int cur = 0;
 
-        TagGuesser guesser( m_currentTrack->playableUrl().path(), widget );
-        if( !guesser.title().isNull() )
-            ui->kLineEdit_title->setText( guesser.title() );
+        QFileInfo fi( m_currentTrack->playableUrl().path() );
 
-        if( !guesser.artist().isNull() )
+        TagGuesser guesser;
+        guesser.setFilename( fi.fileName() );
+        guesser.setSchema( schemeFromDialog );
+        guesser.setCaseType( widget->getCaseOptions() );
+        guesser.setConvertUnderscores( widget->getUnderscoreOptions() );
+        guesser.setCutTrailingSpaces( widget->getWhitespaceOptions() );
+
+        if( guesser.guess() )
         {
-            cur = ui->kComboBox_artist->currentIndex();
-            ui->kComboBox_artist->setItemText( cur, guesser.artist() );
+            QMap<QString,QString> Tags = guesser.tags();
+            
+            if( Tags.contains("title") )
+                ui->kLineEdit_title->setText( Tags["title"] );
+
+            if( Tags.contains("artist") )
+            {
+                cur = ui->kComboBox_artist->currentIndex();
+                ui->kComboBox_artist->setItemText( cur, Tags["artist"] );
+            }
+
+            if( Tags.contains("album") )
+            {
+                cur = ui->kComboBox_album->currentIndex();
+                ui->kComboBox_album->setItemText( cur, Tags["album"] );
+            }
+
+            if( Tags.contains("track") )
+                ui->qSpinBox_track->setValue( Tags["track"].toInt() );
+            
+            if( Tags.contains("comment") )
+                ui->qPlainTextEdit_comment->setPlainText( Tags["comment"] );
+            
+            if( Tags.contains("year") )
+                ui->qSpinBox_year->setValue( Tags["year"].toInt() );
+
+            if( Tags.contains("composer") )
+            {
+                cur = ui->kComboBox_composer->currentIndex();
+                ui->kComboBox_composer->setItemText( cur, Tags["composer"] );
+            }
+
+            if( Tags.contains("genre") )
+            {
+                cur = ui->kComboBox_genre->currentIndex();
+                ui->kComboBox_genre->setItemText( cur, Tags["genre"] );
+            }
         }
-
-        if( !guesser.album().isNull() )
+        else
         {
-            cur = ui->kComboBox_album->currentIndex();
-            ui->kComboBox_album->setItemText( cur, guesser.album() );
-        }
-
-        if( !guesser.track().isNull() )
-            ui->qSpinBox_track->setValue( guesser.track().toInt() );
-        if( !guesser.comment().isNull() )
-            ui->qPlainTextEdit_comment->setPlainText( guesser.comment() );
-        if( !guesser.year().isNull() )
-            ui->qSpinBox_year->setValue( guesser.year().toInt() );
-
-        if( !guesser.composer().isNull() )
-        {
-            cur = ui->kComboBox_composer->currentIndex();
-            ui->kComboBox_composer->setItemText( cur, guesser.composer() );
-        }
-
-        if( !guesser.genre().isNull() )
-        {
-            cur = ui->kComboBox_genre->currentIndex();
-            ui->kComboBox_genre->setItemText( cur, guesser.genre() );
+            debug() << "guessing tags from filename failed" << endl;
         }
     }
-    delete widget;
-    delete dialog;
+    widget->deleteLater();
+    dialog->deleteLater();
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -583,10 +684,21 @@ void TagDialog::init()
     ui->kTabWidget->addTab( ui->tagsTab      , i18n( "Tags" ) );
     ui->kTabWidget->addTab( ui->lyricsTab    , i18n( "Lyrics" ) );
     ui->kTabWidget->addTab( ui->statisticsTab, i18n( "Statistics" ) );
+    ui->kTabWidget->addTab( ui->labelsTab , i18n( "Labels" ) );
 
-    const int labelsIndex = ui->kTabWidget->addTab( ui->labelsTab    , i18n( "Labels" ) );
-    ui->labelsTab->setEnabled( false );
-    ui->kTabWidget->removeTab( labelsIndex ); //Labels are not yet implemented, therefore disable the tab for now
+    ui->kComboBox_label->completionObject()->setIgnoreCase( true );
+    ui->kComboBox_label->setCompletionMode( KGlobalSettings::CompletionPopup );
+
+    m_newLabels.clear();
+    m_removedLabels.clear();
+    m_labels.clear();
+
+    m_labelModel = new LabelListModel( m_labels );
+
+    ui->labelsList->setModel( m_labelModel );
+    ui->labelsTab->setEnabled( m_currentTrack->is<Meta::ReadLabelCapability>() );
+
+    loadGlobalLabels();
 
     ui->kTabWidget->setCurrentIndex( config.readEntry( "CurrentTab", 0 ) );
 
@@ -602,21 +714,8 @@ void TagDialog::init()
     ui->kComboBox_genre->completionObject()->setIgnoreCase( true );
     ui->kComboBox_genre->setCompletionMode( KGlobalSettings::CompletionPopup );
 
-//     const QStringList labels = CollectionDB::instance()->labelList();
-    const QStringList labels;
-    //TODO: figure out a way to add auto-completion support to kTestEdit_selectedLabels
-
-    m_labelCloud = new KHTMLPart( ui->labels_favouriteLabelsFrame );
-    QSizePolicy policy(QSizePolicy::Ignored, QSizePolicy::Ignored);
-    m_labelCloud->view()->setSizePolicy(policy);
-
-    new QVBoxLayout( ui->labels_favouriteLabelsFrame );
-    //labels_favouriteLabelsFrame->layout()->addWidget( m_labelCloud->view() );
-    //const QStringList favoriteLabels = CollectionDB::instance()->favoriteLabels();
-    //QString html = generateHTML( favoriteLabels );
-    //m_labelCloud->write( html );
-    //connect( m_labelCloud->browserExtension(), SIGNAL( openUrlRequest( const KUrl &, const KParts::OpenUrlArguments&, const KParts::BrowserArguments& ) ),
-    //         this,                             SLOT( openUrlRequest( const KUrl & ) ) );
+    ui->addButton->setEnabled( false );
+    ui->removeButton->setEnabled( false );
 
     // looks better to have a blank label than 0, we can't do this in
     // the UI file due to bug in Designer
@@ -644,8 +743,6 @@ void TagDialog::init()
         ui->pushButton_previous->hide();
         ui->pushButton_next->hide();
 
-        loadLyrics( m_currentTrack );
-        loadLabels( m_currentTrack );
         loadTags( m_currentTrack );
         readTags();
     }
@@ -661,13 +758,13 @@ void TagDialog::init()
     connect( ui->kComboBox_album,     SIGNAL( editTextChanged( const QString& ) ), SLOT(albumModified()) );
     connect( ui->kComboBox_genre,     SIGNAL( activated( int ) ),                  SLOT(checkModified()) );
     connect( ui->kComboBox_genre,     SIGNAL( editTextChanged( const QString& ) ), SLOT(genreModified()) );
+    connect( ui->kLineEdit_Bpm,       SIGNAL( textChanged( const QString& ) )    , SLOT(bpmModified()) );
     connect( ui->ratingWidget,        SIGNAL( ratingChanged( int ) ),              SLOT(ratingModified()) );
     connect( ui->qSpinBox_track,      SIGNAL( valueChanged( int ) ),               SLOT(checkModified()) );
     connect( ui->qSpinBox_year,       SIGNAL( valueChanged( int ) ),               SLOT(yearModified()) );
     connect( ui->qSpinBox_score,      SIGNAL( valueChanged( int ) ),               SLOT(scoreModified()) );
-    connect( ui->qPlainTextEdit_comment,   SIGNAL( textChanged() ),                     SLOT(commentModified()) );
-    connect( ui->kTextEdit_lyrics,    SIGNAL( textChanged() ),                     SLOT(checkModified()) );
-    connect( ui->kTextEdit_selectedLabels, SIGNAL( textChanged() ),                SLOT(checkModified()) );
+    connect( ui->qPlainTextEdit_comment,   SIGNAL( textChanged() ),                SLOT(commentModified()) );
+    connect( ui->kRichTextEdit_lyrics,    SIGNAL( textChanged() ),                 SLOT(checkModified()) );
     connect( ui->qSpinBox_discNumber, SIGNAL( valueChanged( int ) ),               SLOT(discNumberModified()) );
 
     connect( ui->pushButton_cancel,   SIGNAL( clicked() ), SLOT( cancelPressed() ) );
@@ -676,6 +773,16 @@ void TagDialog::init()
     connect( ui->pushButton_previous, SIGNAL( clicked() ), SLOT( previousTrack() ) );
     connect( ui->pushButton_next,     SIGNAL( clicked() ), SLOT( nextTrack() ) );
     connect( ui->checkBox_perTrack,   SIGNAL( clicked() ), SLOT( perTrack() ) );
+
+    connect( ui->addButton,           SIGNAL( clicked() ),                          SLOT( addLabelPressed() ) );
+    connect( ui->addButton,           SIGNAL( clicked() ),                          SLOT( checkModified() ) );
+    connect( ui->removeButton,        SIGNAL( clicked() ),                          SLOT( removeLabelPressed() ) );
+    connect( ui->removeButton,        SIGNAL( clicked() ),                          SLOT( checkModified() ) );
+    connect( ui->kComboBox_label,     SIGNAL( activated( int ) ),                   SLOT( labelModified() ) );
+    connect( ui->kComboBox_label,     SIGNAL( editTextChanged( const QString& ) ),  SLOT( labelModified() ) );
+    connect( ui->kComboBox_label,     SIGNAL( returnPressed() ),                    SLOT( addLabelPressed() ) );
+    connect( ui->kComboBox_label,     SIGNAL( returnPressed() ),                    SLOT( checkModified() ) );
+    connect( ui->labelsList,          SIGNAL( pressed( const QModelIndex& ) ),      SLOT( labelSelected() ) );
 
     ui->pixmap_cover->setContextMenuPolicy( Qt::CustomContextMenu );
     connect( ui->pixmap_cover, SIGNAL( customContextMenuRequested(const QPoint &) ), SLOT( showCoverMenu(const QPoint &) ) );
@@ -708,7 +815,8 @@ TagDialog::startDataQuery()
 }
 
 
-inline const QString TagDialog::unknownSafe( QString s )
+inline const QString
+TagDialog::unknownSafe( const QString &s )
 {
     return ( s.isNull() || s.isEmpty() || s == "?" || s == "-" )
            ? i18nc( "The value for this tag is not known", "Unknown" )
@@ -718,18 +826,12 @@ inline const QString TagDialog::unknownSafe( QString s )
 void
 TagDialog::metadataChanged( Meta::AlbumPtr album )
 {
-    DEBUG_BLOCK
-
     if( !m_currentTrack || !m_currentTrack->album() )
         return;
 
-    debug() << "setting album cover?";
-
+    // If the metadata of the current album has changed, reload the cover
     if( album == m_currentTrack->album() )
-    {
-        debug() << "yep";
         loadCover();
-    }
 }
 
 void
@@ -759,61 +861,69 @@ TagDialog::showCoverMenu( const QPoint &pos )
 
 const QStringList TagDialog::statisticsData()
 {
-    AMAROK_NOTIMPLEMENTED
+    QStringList data;
+    QueryMaker *qm = 0;
+    Amarok::Collection *coll = m_currentTrack->collection();
+    if( coll )
+        qm = coll->queryMaker();
 
-    QStringList data, values;
-    //TODO: port
-    /*
-    const uint artist_id = CollectionDB::instance()->artistID( m_bundle.artist() );
-    const uint album_id  = CollectionDB::instance()->albumID ( m_bundle.album() );
-
-    QueryBuilder qb;
-
-    if ( !m_bundle.artist().isEmpty() ) {
-        // tracks by this artist
-        qb.clear();
-        qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabSong, QueryBuilder::valTitle );
-        qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
-        values = qb.run();
+    Meta::ArtistPtr trackArtist = m_currentTrack->artist();
+    if( trackArtist )
+    {
+        // Tracks by this artist
+        Meta::TrackList tracks = trackArtist->tracks();
+        QStringList ret;
+        foreach( Meta::TrackPtr track, tracks )
+            ret.append( track->prettyName() );
         data += i18n( "Tracks by this Artist" );
-        data += values[0];
-
+        data += QString::number( ret.count() );
 
         // albums by this artist
-        qb.clear();
-        qb.addReturnFunctionValue( QueryBuilder::funcCount, QueryBuilder::tabAlbum, QueryBuilder::valID );
-        qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
-        qb.groupBy( QueryBuilder::tabSong, QueryBuilder::valAlbumID );
-        qb.excludeMatch( QueryBuilder::tabAlbum, i18n( "Unknown" ) );
-        qb.setOptions( QueryBuilder::optNoCompilations );
-        values = qb.run();
+        Meta::AlbumList albums = trackArtist->albums();
+        ret.clear();
+        foreach( Meta::AlbumPtr album, albums )
+            ret.append( album->prettyName() );
         data += i18n( "Albums by this Artist" );
-        data += QString::number( values.count() );
-
-
-        // Favorite track by this artist
-        qb.clear();
-        qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
-        qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
-        qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valArtistID, QString::number( artist_id ) );
-        qb.sortByFavorite();
-        qb.setLimit( 0, 1 );
-        values = qb.run();
-        data += i18n( "Favorite by this Artist" );
-        data += values.isEmpty() ? QString() : values[0];
-
-        if ( !m_bundle.album().isEmpty() ) {
-            // Favorite track on this album
-            qb.clear();
-            qb.addReturnValue( QueryBuilder::tabSong, QueryBuilder::valTitle );
-            qb.addReturnValue( QueryBuilder::tabStats, QueryBuilder::valScore );
-            qb.addMatch( QueryBuilder::tabSong, QueryBuilder::valAlbumID, QString::number( album_id ) );
-            qb.sortByFavorite();
-            qb.setLimit( 0, 1 );
-            values = qb.run();
-            data += i18n( "Favorite on this Album" );
-            data += values.isEmpty() ? QString() : values[0];
+        data += QString::number( ret.count() );
+        
+/*
+        // FIXME Code disabled because of crash with media devices.
+        // @see: https://bugs.kde.org/show_bug.cgi?id=217143
+        if( qm )
+        {
+            // favorite track by this artist
+            qm->setQueryType( QueryMaker::Custom );
+            qm->addReturnValue( Meta::valTitle );
+            qm->addMatch( trackArtist );
+            qm->orderBy( Meta::valPlaycount );
+            qm->limitMaxResultSize( 1 );
+            qm->run();
+//            data += i18n( "Favorite by this Artist" );
+//            data += "Lorem ipsum";
         }
+*/
+    }
+/*
+    Meta::AlbumPtr trackAlbum = m_currentTrack->album();
+    if( trackAlbum )
+    {
+        if( qm )
+        {
+            // Favorite track on this album
+            qm->reset();
+            qm->setQueryType( QueryMaker::Custom );
+            qm->addReturnValue( Meta::valTitle );
+            qm->addMatch( trackAlbum );
+            qm->orderBy( Meta::valPlaycount );
+            qm->limitMaxResultSize( 1 );
+            qm->run();
+//            data += i18n( "Favorite on this Album" );
+//            data += "Lorem ipsum";
+        }
+    }
+*/
+    //TODO: port
+    /*
 
         // Related Artists
         const QString sArtists = CollectionDB::instance()->similarArtists( m_bundle.artist(), 4 ).join(", ");
@@ -821,7 +931,8 @@ const QStringList TagDialog::statisticsData()
             data += i18n( "Related Artists" );
             data += sArtists;
         }
-    }*/
+    }
+    */
     return data;
 }
 
@@ -885,6 +996,10 @@ void TagDialog::readTags()
         selectOrInsertText( m_currentData.value( Meta::Field::GENRE ).toString(), ui->kComboBox_genre );
     else
         selectOrInsertText( QString(), ui->kComboBox_genre );
+    if( m_currentData.contains( Meta::Field::BPM ) )
+        ui->kLineEdit_Bpm->setText( m_currentData.value( Meta::Field::BPM ).toString() );
+    else
+        ui->kLineEdit_Bpm->setText( "" );
     if( m_currentData.contains( Meta::Field::COMPOSER ) )
         selectOrInsertText( m_currentData.value( Meta::Field::COMPOSER ).toString(), ui->kComboBox_composer );
     else
@@ -924,8 +1039,13 @@ void TagDialog::readTags()
                    m_currentTrack->playCount() ? KGlobal::locale()->formatDate( firstPlayed, KLocale::ShortDate ) : i18nc( "When this track was first played", "Never") );
     summaryText += body2cols.arg( i18nc("a single item (singular)", "Last Played:"),
                    m_currentTrack->playCount() ? KGlobal::locale()->formatDate( lastPlayed, KLocale::ShortDate ) : i18nc( "When this track was last played", "Never") );
-    summaryText += body2cols.arg( i18n("Collection:"),
-                                  m_currentTrack->inCollection() ? m_currentTrack->collection()->prettyName() : i18nc( "The collection this track is part of", "None") );
+
+    if( m_currentTrack && m_currentTrack->collection() )
+    {
+        summaryText += body2cols.arg( i18n("Collection:"),
+                    m_currentTrack->inCollection() ? m_currentTrack->collection()->prettyName() :
+                    i18nc( "The collection this track is part of", "None") );
+    }
 
     summaryText += "</table></td></tr></table>";
     ui->summaryLabel->setText( summaryText );
@@ -943,13 +1063,7 @@ void TagDialog::readTags()
     ui->statisticsLabel->setText( statisticsText );
     ui->kLineEdit_location->setText( m_currentTrack->prettyUrl() );
 
-    //lyrics
-    // check if the lyrics data contains "<html" (note the missing closing bracket,
-    // this enables XHTML lyrics to be recognized) - otherwise the data is plaintext
-    if( m_lyrics.contains( "<html" , Qt::CaseInsensitive ) )
-        ui->kTextEdit_lyrics->setHtml( m_lyrics );
-    else
-         ui->kTextEdit_lyrics->setPlainText( m_lyrics );
+    ui->kRichTextEdit_lyrics->setTextOrHtml( m_lyrics );
 
     loadCover();
 
@@ -966,13 +1080,15 @@ void TagDialog::readTags()
     enableOrDisable( kComboBox_composer );
     enableOrDisable( kComboBox_album );
     enableOrDisable( kComboBox_genre );
+
+    ui->kLineEdit_Bpm->setEnabled( editable );
+    ui->kLineEdit_Bpm->setClearButtonShown( editable );
+
 #undef enableOrDisable
     ui->qSpinBox_track->setEnabled( editable );
     ui->qSpinBox_discNumber->setEnabled( editable );
     ui->qSpinBox_year->setEnabled( editable );
     ui->qPlainTextEdit_comment->setEnabled( editable );
-    ui->kTextEdit_selectedLabels->setEnabled( editable );
-    m_labelCloud->view()->setEnabled( editable );
     ui->ratingWidget->setEnabled( true );
     ui->qSpinBox_score->setEnabled( true );
     ui->pushButton_guessTags->setEnabled( editable );
@@ -1056,6 +1172,8 @@ TagDialog::readMultipleTracks()
     //Check which fields are the same for all selected tracks
     QListIterator< Meta::TrackPtr > it( m_tracks );
 
+    QStringList validLabels = labelsForTrack( it.peekNext() );
+
     m_currentData = QVariantMap();
 
     QVariantMap first = dataForTrack( it.peekNext() );
@@ -1066,7 +1184,16 @@ TagDialog::readMultipleTracks()
     double scoreSum = 0.f;
     while( it.hasNext() )
     {
-        QVariantMap data = dataForTrack( it.next() );
+        Meta::TrackPtr next = it.next();
+        QStringList labels = labelsForTrack( next );
+
+        for ( int x = 0; x < validLabels.count(); x++ )
+        {
+            if ( !labels.contains( validLabels.at( x ) ) )
+                validLabels.removeAt( x );
+        }
+
+        QVariantMap data = dataForTrack( next );
         songCount++;
         if ( data.value( Meta::Field::RATING ).toInt() )
         {
@@ -1106,6 +1233,10 @@ TagDialog::readMultipleTracks()
         if ( rating && data.value( Meta::Field::RATING ).toInt() != first.value( Meta::Field::RATING ).toInt() )
             rating = false;
     }
+
+    m_labels = validLabels;
+    m_labelModel->setLabels( m_labels );
+
     // Set them in the dialog and in the track ( so we don't break hasChanged() )
     int cur_item;
     if( artist )
@@ -1184,26 +1315,8 @@ TagDialog::readMultipleTracks()
 
     ui->statisticsLabel->setText( statisticsText );
 
-    QStringList commonLabels = getCommonLabels();
-    QString text;
-    oldForeach ( commonLabels )
-    {
-        if ( !text.isEmpty() )
-            text.append( ", " );
-        text.append( *it );
-    }
-    ui->kTextEdit_selectedLabels->setText( text );
-    m_commaSeparatedLabels = text;
-
     // This will reset a wrongly enabled Ok button
     checkModified();
-}
-
-QStringList
-TagDialog::getCommonLabels()
-{
-    AMAROK_NOTIMPLEMENTED
-    return QStringList();
 }
 
 inline bool
@@ -1227,6 +1340,7 @@ TagDialog::changes()
     modified |= !equalString( ui->kComboBox_album->lineEdit()->text(), m_currentData.value( Meta::Field::ALBUM ).toString() );
     modified |= !equalString( ui->kComboBox_genre->lineEdit()->text(), m_currentData.value( Meta::Field::GENRE ).toString() );
     modified |= ui->qSpinBox_year->value()  != m_currentData.value( Meta::Field::YEAR ).toInt();
+    modified |= !equalString( ui->kLineEdit_Bpm->text() , m_currentData.value( Meta::Field::BPM ).toString() );
     modified |= ui->qSpinBox_discNumber->value()  != m_currentData.value( Meta::Field::DISCNUMBER ).toInt();
     modified |= !equalString( ui->kComboBox_composer->lineEdit()->text(), m_currentData.value( Meta::Field::COMPOSER ).toString() );
 
@@ -1248,12 +1362,9 @@ TagDialog::changes()
 
     if( !m_tracks.count() || m_perTrack )
     { //ignore these on MultipleTracksMode
-        if ( !equalString( ui->kTextEdit_lyrics->toPlainText(), m_lyrics ) )
+        if ( !equalString( ui->kRichTextEdit_lyrics->textOrHtml(), m_lyrics ) )
             result |= TagDialog::LYRICSCHANGED;
     }
-
-    if( !equalString( ui->kTextEdit_selectedLabels->toPlainText(), m_commaSeparatedLabels ) )
-        result |= TagDialog::LABELSCHANGED;
 
     return result;
 }
@@ -1298,6 +1409,8 @@ TagDialog::storeTags( const Meta::TrackPtr &track )
             map.insert( Meta::Field::YEAR, ui->qSpinBox_year->value() );
         if ( ui->qSpinBox_discNumber->value() != track->discNumber() )
             map.insert( Meta::Field::DISCNUMBER, ui->qSpinBox_discNumber->value() );
+        if ( ui->kLineEdit_Bpm->text().toDouble() != track->bpm() )
+            map.insert( Meta::Field::BPM, ui->kLineEdit_Bpm->text() );
 
         m_storedTags.remove( track );
         m_storedTags.insert( track, map );
@@ -1320,7 +1433,7 @@ TagDialog::storeTags( const Meta::TrackPtr &track )
     {
         debug() << "TagDialog::LYRICSCHANGED";
 
-        if ( ui->kTextEdit_lyrics->toHtml().isEmpty() )
+        if ( ui->kRichTextEdit_lyrics->textOrHtml().isEmpty() )
         {
             m_storedLyrics.remove( track );
             m_storedLyrics.insert( track, QString() );
@@ -1328,11 +1441,7 @@ TagDialog::storeTags( const Meta::TrackPtr &track )
         else
         {
             m_storedLyrics.remove( track );
-
-            // don't call toHtml() here as it would break user-supplied HTML code
-            // (since the HTML code would be escaped, the plain HTML code would
-            // be shown in the lyrics applet)
-            m_storedLyrics.insert( track, ui->kTextEdit_lyrics->toPlainText() );
+            m_storedLyrics.insert( track, ui->kRichTextEdit_lyrics->textOrHtml() );
         }
     }
 }
@@ -1355,10 +1464,23 @@ TagDialog::storeTags( const Meta::TrackPtr &track, int changes, const QVariantMa
 }
 
 void
-TagDialog::storeLabels( const Meta::TrackPtr &track, const QStringList &labels )
+TagDialog::storeLabels( Meta::TrackPtr track, const QStringList &removedLabels, const QStringList &newLabels )
 {
-    m_newLabels.remove( track );
-    m_newLabels.insert( track, labels );
+    DEBUG_BLOCK
+
+    Meta::WriteLabelCapability *wlc = track->create<Meta::WriteLabelCapability>();
+
+    if( !wlc )
+    {
+        debug() << "Unable to get a write label capability, aborting";
+        return;
+    }
+    wlc->setLabels( removedLabels, newLabels );
+    delete wlc;
+
+    Meta::ReadLabelCapability *rlc = track->create<Meta::ReadLabelCapability>();
+    if( rlc )
+        rlc->fetchLabels(); // If new labels are set, we need to fetchLabels() again to update the cache.  This should probably be done centrally..
 }
 
 
@@ -1375,19 +1497,73 @@ TagDialog::loadLyrics( const Meta::TrackPtr &track )
 {
     QString html = lyricsForTrack( track );
 
-    QDomDocument doc;
     if( !html.isEmpty() )
         m_lyrics = html;
     else
         m_lyrics.clear();
 }
 
-void
-TagDialog::loadLabels( const Meta::TrackPtr &track )
+QStringList
+TagDialog::labelsForTrack( Meta::TrackPtr track )
 {
-    Q_UNUSED( track )
-    AMAROK_NOTIMPLEMENTED
+    DEBUG_BLOCK
+
+    Meta::ReadLabelCapability *ric = track->create<Meta::ReadLabelCapability>();
+    if( !ric )
+    {
+        debug() << "No Read Label Capability found, no labels available.";
+        return QStringList();
+    }
+    const QStringList labels = ric->labels();
+    return labels;
 }
+
+void
+TagDialog::loadLabels( Meta::TrackPtr track )
+{
+    Meta::ReadLabelCapability *ric = track->create<Meta::ReadLabelCapability>();
+    if( !ric )
+    {
+        debug() << "No Read Label Capability found, no labels available.";
+        return;
+    }
+    connect( ric, SIGNAL(labelsFetched(QStringList)), SLOT(trackLabelsFetched(QStringList)));
+    ric->fetchLabels();
+}
+
+void
+TagDialog::loadGlobalLabels()
+{
+    Meta::ReadLabelCapability *ric = m_currentTrack->create<Meta::ReadLabelCapability>();
+    if( !ric )
+    {
+        debug() << "No Read Label Capability found, no labels available.";
+        return;
+    }
+    connect( ric, SIGNAL(labelsFetched(QStringList)), SLOT(globalLabelsFetched(QStringList)));
+    ric->fetchGlobalLabels();
+}
+
+
+void
+TagDialog::trackLabelsFetched( QStringList labels )
+{
+    sender()->deleteLater();
+    m_labels = labels;
+    m_labelModel->setLabels( labels );
+    ui->labelsList->update();
+}
+
+void
+TagDialog::globalLabelsFetched( QStringList labels )
+{
+    sender()->deleteLater();
+    ui->kComboBox_label->addItems( labels );
+    ui->kComboBox_label->completionObject()->insertItems( labels );
+    ui->kComboBox_label->update();
+    ui->kComboBox_label->setCurrentIndex( -1 );
+}
+
 
 QVariantMap
 TagDialog::dataForTrack( const Meta::TrackPtr &track )
@@ -1425,21 +1601,6 @@ TagDialog::lyricsForTrack( const Meta::TrackPtr &track )
     return track->cachedLyrics();
 }
 
-QStringList
-TagDialog::labelsForTrack( const Meta::TrackPtr &track )
-{
-    AMAROK_NOTIMPLEMENTED
-    if( m_newLabels.contains( track ) )
-        return m_newLabels[ track ];
-    if( m_originalLabels.contains( track ) )
-        return m_originalLabels[ track ];
-    //TODO: port 2.0
-    //QStringList tmp = CollectionDB::instance()->getLabels( url.path(), CollectionDB::typeUser );
-    QStringList tmp;
-    m_originalLabels[ track ] = tmp;
-    return tmp;
-}
-
 void
 TagDialog::saveTags()
 {
@@ -1451,6 +1612,9 @@ TagDialog::saveTags()
     }
     else
     {
+        storeLabels( m_currentTrack, m_removedLabels, m_newLabels );
+        m_removedLabels.clear();
+        m_newLabels.clear();
         storeTags();
     }
 
@@ -1492,7 +1656,9 @@ TagDialog::saveTags()
              data.contains( Meta::Field::ARTIST ) || data.contains( Meta::Field::ALBUM ) ||
              data.contains( Meta::Field::GENRE ) || data.contains( Meta::Field::COMPOSER ) ||
              data.contains( Meta::Field::YEAR ) || data.contains( Meta::Field::TRACKNUMBER ) ||
-             data.contains( Meta::Field::TRACKNUMBER ) || data.contains( Meta::Field::DISCNUMBER ) )
+             data.contains( Meta::Field::TRACKNUMBER ) || data.contains( Meta::Field::DISCNUMBER ) ||
+             data.contains( Meta::Field::BPM )
+             )
         {
 
             debug() << "File info changed....";
@@ -1516,6 +1682,8 @@ TagDialog::saveTags()
                 ec->setTrackNumber( data.value( Meta::Field::TRACKNUMBER ).toInt() );
             if( data.contains( Meta::Field::DISCNUMBER ) )
                 ec->setDiscNumber( data.value( Meta::Field::DISCNUMBER ).toInt() );
+            if( data.contains( Meta::Field::BPM ) )
+                ec->setBpm( data.value( Meta::Field::BPM ).toDouble() );
             ec->endMetaDataUpdate();
         }
     }
@@ -1557,8 +1725,6 @@ TagDialog::applyToAllTracks()
 {
     DEBUG_BLOCK
             debug() << m_fieldEdited;
-
-    generateDeltaForLabelList( labelListFromText( ui->kTextEdit_selectedLabels->toPlainText() ) );
 
     foreach( Meta::TrackPtr track, m_tracks )
     {
@@ -1622,113 +1788,15 @@ TagDialog::applyToAllTracks()
             changed |= TagDialog::RATINGCHANGED;
         }
 
+        if( m_fieldEdited.contains( "bpm" ) && m_fieldEdited[ "bpm" ] )
+        {
+            data.insert( Meta::Field::BPM, ui->kLineEdit_Bpm->text() );
+            changed |= TagDialog::TAGSCHANGED;
+        }
+
         storeTags( track, changed, data );
 
-        QStringList tmpLabels = labelsForTrack( track );
-        //apply delta
-        foreach( const QString &label, m_removedLabels )
-        {
-            tmpLabels.removeAll( label );
-        }
-        foreach( const QString &label, m_addedLabels )
-        {
-            tmpLabels.append( label );
-        }
-        storeLabels( track, tmpLabels );
-    }
-}
-
-QStringList
-TagDialog::labelListFromText( const QString &text )
-{
-    const QStringList tmp = text.split(',', QString::SkipEmptyParts);
-    //insert each string into a map to remove duplicates
-    QMap<QString, int> map;
-    oldForeach( tmp )
-    {
-        QString tmpString = (*it).trimmed();
-        if ( !tmpString.isEmpty() )
-        {
-            map.remove( tmpString );
-            map.insert( tmpString, 0 );
-        }
-    }
-    QStringList result;
-    QMap<QString, int>::ConstIterator endMap( map.constEnd() );
-    for(QMap<QString, int>::ConstIterator it = map.constBegin(); it != endMap; ++it )
-    {
-        result.append( it.key() );
-    }
-    return result;
-}
-
-void
-TagDialog::generateDeltaForLabelList( const QStringList &list )
-{
-    m_addedLabels.clear();
-    m_removedLabels.clear();
-    oldForeach( list )
-    {
-        if ( !m_labels.contains( *it ) )
-            m_addedLabels.append( *it );
-    }
-    oldForeach( m_labels )
-    {
-        if ( !list.contains( *it ) )
-            m_removedLabels.append( *it );
-    }
-    m_labels = list;
-}
-
-QString
-TagDialog::generateHTML( const QStringList &labels )
-{
-    //the first column of each row is the label name, the second the number of assigned songs
-    //loop through it to find the highest number of songs, can be removed if somebody figures out a better sql query
-    QMap<QString, QPair<QString, int> > mapping;
-    QStringList sortedLabels;
-    int max = 1;
-    oldForeach( labels )
-    {
-        QString label = *it;
-        sortedLabels << label.toLower();
-        ++it;
-        int value = ( *it ).toInt();
-        if ( value > max )
-            max = value;
-        mapping[label.toLower()] = QPair<QString, int>( label, value );
-    }
-    sortedLabels.sort();
-    QString html = "<html><body>";
-    oldForeach( sortedLabels )
-    {
-        QString key = *it;
-        //generate a number in the range 1..10 based on  how much the label is used
-        int labelUse = ( mapping[key].second * 10 ) / max;
-        if ( labelUse == 0 )
-            labelUse = 1;
-        html.append( QString( "<span class='label size%1'><a href=\"label:%2\">%3</a></span> " )
-                              .arg( QString::number( labelUse ), mapping[key].first, mapping[key].first ) );
-    }
-    html.append( "</body></html>" );
-    debug() << "Dumping HTML for label cloud: " << html;
-    return html;
-}
-
-void
-TagDialog::openUrlRequest(const KUrl &url )         //SLOT
-{
-    DEBUG_BLOCK
-    if ( url.protocol() == "label" )
-    {
-        QString text = ui->kTextEdit_selectedLabels->toPlainText();
-        QStringList currentLabels = labelListFromText( text );
-        if ( currentLabels.contains( url.path() ) )
-            return;
-        if ( !text.isEmpty() )
-            text.append( ", " );
-        text.append( url.path() );
-        ui->kTextEdit_selectedLabels->setText( text );
+        storeLabels( track, m_removedLabels, m_newLabels );
     }
 }
 

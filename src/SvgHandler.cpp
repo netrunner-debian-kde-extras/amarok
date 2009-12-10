@@ -20,7 +20,9 @@
 
 #include "App.h"
 #include "Debug.h"
+#include "EngineController.h"
 #include "MainWindow.h"
+#include "moodbar/MoodbarManager.h"
 #include "PaletteHandler.h"
 #include "SvgTinter.h"
 
@@ -67,6 +69,12 @@ SvgHandler::~SvgHandler()
     delete m_cache;
     m_sliderHandleCache->deleteCache( "Amarok-Slider-pixmaps" );
     delete m_sliderHandleCache;
+
+    foreach( KSvgRenderer* item, m_renderers )
+    {
+        delete item;
+    }
+    m_renderers.clear();
 
     The::s_SvgHandler_instance = 0;
 }
@@ -355,70 +363,111 @@ void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int he
 }
 #endif
 
-QRect SvgHandler::sliderKnobRect( const QRect &slider, qreal percent )
+QRect SvgHandler::sliderKnobRect( const QRect &slider, qreal percent ) const
 {
     //NOTICE Vertical sliders are atm not supported by the API at all, neither is rtl
     const int knobSize = slider.height() - 4;
     QRect ret( 0, 0, knobSize, knobSize );
     ret.moveTo( slider.x() + qRound( ( slider.width() - knobSize ) * percent ), slider.y() + 1 );
+
     return ret;
 }
 
 // Experimental, using a mockup from Nuno Pinheiro (new_slider_nuno)
-void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int height, qreal percentage, bool active )
+void SvgHandler::paintCustomSlider( QPainter *p, int x, int y, int width, int height, qreal percentage, bool active, bool paintMoodbar )
 {
     QRect knob = sliderKnobRect( QRect( x, y, width, height), percentage );
 
     //debug() << "rel: " << knobRelPos << ", width: " << width << ", height:" << height << ", %: " << percentage;
 
-    // Draw the slider background in 3 parts
-
     int sliderHeight = height - 6;
 
-    p->drawPixmap( x, y + 2,
-                   renderSvg(
-                   "progress_slider_left",
-                   sliderHeight, sliderHeight,
-                   "progress_slider_left" ) );
 
-    p->drawPixmap( x + sliderHeight, y + 2,
-                   renderSvg(
-                   "progress_slider_mid",
-                   width - sliderHeight * 2, sliderHeight,
-                   "progress_slider_mid" ) );
+    //if we should paint moodbar, paint this as the bottom layer
 
-    p->drawPixmap( x + width - sliderHeight, y + 2,
-                   renderSvg(
-                   "progress_slider_right",
-                   sliderHeight, sliderHeight,
-                   "progress_slider_right" ) );
+    bool moodbarPainted = false;
+    if( paintMoodbar )
+    {
+        Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
+        if( currentTrack )
+        {
+            if( The::moodbarManager()->hasMoodbar( currentTrack ) )
+            {
 
-    //draw the played background.
+                QPixmap moodbar = The::moodbarManager()->getMoodbar( currentTrack, width - sliderHeight, sliderHeight );
 
-    int playedBarHeight = sliderHeight - 6;
+       
+                 p->drawPixmap( x, y + 2,
+                                renderSvg(
+                                "moodbar_end_left",
+                                sliderHeight / 2, sliderHeight,
+                                "moodbar_end_left" ) );
+                                
+                p->drawPixmap( x + ( sliderHeight / 2 ), y + 2, moodbar );
 
-    int sizeOfLeftPlayed = qBound( 0, knob.x() - 2, playedBarHeight );
+                p->drawPixmap( x + ( width - sliderHeight / 2  ) , y + 2,
+                                renderSvg(
+                                "moodbar_end_right",
+                                sliderHeight / 2, sliderHeight,
+                                "moodbar_end_right" ) );
 
-    if( sizeOfLeftPlayed > 0 ) {
-
-        p->drawPixmap( x + 3, y + 5,
-                        renderSvg(
-                        "progress_slider_played_left",
-                        playedBarHeight, playedBarHeight,
-                        "progress_slider_played_left" ), 0, 0, sizeOfLeftPlayed + 3, playedBarHeight );
-
-        int playedBarMidWidth = knob.x() - ( x + 3 + playedBarHeight );
-
-        //Add 5 more pixels to avoid a "gap" between it and the top and botton of the round knob.
-        playedBarMidWidth += 5;
-
-        p->drawPixmap( x + 3 + playedBarHeight, y + 5,
-                        renderSvg(
-                        "progress_slider_played_mid",
-                        playedBarMidWidth, playedBarHeight,
-                        "progress_slider_played_mid" ) );
+                moodbarPainted = true;
+                  
+            }
+        }
     }
 
+    if( !moodbarPainted )
+    {
+    
+
+        // Draw the slider background in 3 parts
+
+        p->drawPixmap( x, y + 2,
+                    renderSvg(
+                    "progress_slider_left",
+                    sliderHeight, sliderHeight,
+                    "progress_slider_left" ) );
+
+        p->drawPixmap( x + sliderHeight, y + 2,
+                    renderSvg(
+                    "progress_slider_mid",
+                    width - sliderHeight * 2, sliderHeight,
+                    "progress_slider_mid" ) );
+
+        p->drawPixmap( x + width - sliderHeight, y + 2,
+                    renderSvg(
+                    "progress_slider_right",
+                    sliderHeight, sliderHeight,
+                    "progress_slider_right" ) );
+
+        //draw the played background.
+
+        int playedBarHeight = sliderHeight - 6;
+
+        int sizeOfLeftPlayed = qBound( 0, knob.x() - 2, playedBarHeight );
+
+        if( sizeOfLeftPlayed > 0 ) {
+
+            p->drawPixmap( x + 3, y + 5,
+                            renderSvg(
+                            "progress_slider_played_left",
+                            playedBarHeight, playedBarHeight,
+                            "progress_slider_played_left" ), 0, 0, sizeOfLeftPlayed + 3, playedBarHeight );
+
+            int playedBarMidWidth = knob.x() - ( x + 3 + playedBarHeight );
+
+            //Add 5 more pixels to avoid a "gap" between it and the top and botton of the round knob.
+            playedBarMidWidth += 5;
+
+            p->drawPixmap( x + 3 + playedBarHeight, y + 5,
+                            renderSvg(
+                            "progress_slider_played_mid",
+                            playedBarMidWidth, playedBarHeight,
+                            "progress_slider_played_mid" ) );               
+        }
+
+    }
 
     // Draw the knob (handle)
     if ( active )

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2003-2008 Mark Kretschmann <kretschmann@kde.org>                       *
+ * Copyright (c) 2003-2009 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2005 Gabor Lehel <illissius@gmail.com>                                 *
  * Copyright (c) 2008 Dan Meltzer <parallelgrapefruit@gmail.com>                        *
  *                                                                                      *
@@ -51,8 +51,26 @@ Amarok::Slider::Slider( Qt::Orientation orientation, uint max, QWidget *parent )
     , m_needsResize( true )
 {
     setRange( 0, max );
-    setFixedHeight( 20 );
     setAttribute( Qt::WA_NoMousePropagation, true );
+
+    m_moodbarManager = The::moodbarManager();
+}
+
+QRect
+Amarok::Slider::sliderHandleRect( const QRect &slider, qreal percent ) const
+{
+    QRect rect;
+
+    if( m_usingCustomStyle)
+        rect = The::svgHandler()->sliderKnobRect( slider, percent );
+    else
+    {
+        const int handleSize = style()->pixelMetric( QStyle::PM_SliderControlThickness );
+        rect = QRect( 0, 0, handleSize, handleSize );
+        rect.moveTo( slider.x() + qRound( ( slider.width() - handleSize ) * percent ), slider.y() + 1 );
+    }
+
+    return rect;
 }
 
 void
@@ -70,7 +88,7 @@ Amarok::Slider::wheelEvent( QWheelEvent *e )
     // Position Slider (horizontal)
     // only used for progress slider now!
     int step = e->delta() * 24;
-    int nval = QSlider::value() + step;
+    int nval = adjustValue( QSlider::value() + step );
     nval = qMax(nval, minimum());
     nval = qMin(nval, maximum());
 
@@ -113,7 +131,7 @@ Amarok::Slider::slideEvent( QMouseEvent *e )
 {
     QRect knob;
     if ( maximum() > minimum() )
-        knob = The::svgHandler()->sliderKnobRect( rect(), ((qreal)value()) / ( maximum() - minimum() ) );
+        knob = sliderHandleRect( rect(), ((qreal)value()) / ( maximum() - minimum() ) );
 
     int position;
     int span;
@@ -137,11 +155,11 @@ void
 Amarok::Slider::mousePressEvent( QMouseEvent *e )
 {
     m_sliding   = true;
-    m_prevValue = QSlider::value();
+    m_prevValue = adjustValue( QSlider::value() );
 
     QRect knob;
     if ( maximum() > minimum() )
-        knob = The::svgHandler()->sliderKnobRect( rect(), ((qreal)value()) / ( maximum() - minimum() ) );
+        knob = sliderHandleRect( rect(), ((qreal)value()) / ( maximum() - minimum() ) );
     if ( !knob.contains( e->pos() ) )
         mouseMoveEvent( e );
 }
@@ -149,7 +167,7 @@ Amarok::Slider::mousePressEvent( QMouseEvent *e )
 void
 Amarok::Slider::mouseReleaseEvent( QMouseEvent* )
 {
-    if( !m_outside && QSlider::value() != m_prevValue )
+    if( !m_outside && adjustValue( QSlider::value() ) != m_prevValue )
        emit sliderReleased( value() );
 
     m_sliding = false;
@@ -163,11 +181,11 @@ Amarok::Slider::setValue( int newValue )
     if ( !m_sliding || m_outside )
         QSlider::setValue( adjustValue( newValue ) );
     else
-        m_prevValue = newValue;
+        m_prevValue = adjustValue( newValue );
 }
 
 
-void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, int height, double /*pos*/ )
+void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, int height, bool drawMoodbar )
 {
     const QString prefix = "slider_bg_";
 
@@ -193,6 +211,27 @@ void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, in
         m_needsResize = false;
     }
 
+
+    //HACK: just for testing/fun
+    if( drawMoodbar )
+    {
+
+        int moodWidth = width - ( 2 * m_borderWidth );
+        int moodHeight = height - 8;
+
+        if ( m_currentMoodBar.width() != moodWidth )
+            {
+            Meta::TrackPtr track = The::engineController()->currentTrack();
+            if ( track && m_moodbarManager->hasMoodbar( track ) )
+            {
+                m_currentMoodBar = m_moodbarManager->getMoodbar( track, moodWidth, moodHeight );
+            }
+        }
+
+        if ( !m_currentMoodBar.isNull() )
+            p->drawPixmap( x + m_borderWidth, y + 4, m_currentMoodBar );
+    }
+
     p->drawPixmap( x, y, m_topLeft );
     p->drawPixmap( x + m_borderWidth, y, m_top );
     p->drawPixmap( x + ( width - m_borderWidth ), y, m_topRight );
@@ -208,6 +247,7 @@ void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, in
         const int sliderLeftWidth = sliderHeight / 3;
         const int sliderRightWidth = sliderLeftWidth;
 
+        
         int knobX = ( ( (double) value() - (double) minimum()) / (maximum() - minimum()) ) * (width - (sliderLeftWidth + sliderRightWidth + m_sliderInsertX * 2) );
 
         const QString barLeft = "slider_bar_left";
@@ -220,13 +260,12 @@ void Amarok::Slider::paintCustomSlider( QPainter *p, int x, int y, int width, in
     }
 }
 
-void Amarok::Slider::paintCustomSliderNG( QPainter *p, int x, int y, int width, int height, double /*pos*/ )
+void Amarok::Slider::paintCustomSliderNG( QPainter *p, int x, int y, int width, int height, double /*pos*/, bool paintMoodbar )
 {
     qreal percent = 0.0;
     if ( maximum() > minimum() )
         percent = ((qreal)value()) / ( maximum() - minimum() );
-    The::svgHandler()->paintCustomSlider( p, x, y, width, height, percent, underMouse() );
-
+    The::svgHandler()->paintCustomSlider( p,x, y, width, height, percent, underMouse(), paintMoodbar );
 }
 
 
@@ -234,10 +273,17 @@ void Amarok::Slider::paintCustomSliderNG( QPainter *p, int x, int y, int width, 
 /// CLASS VolumeSlider
 //////////////////////////////////////////////////////////////////////////////////////////
 
-Amarok::VolumeSlider::VolumeSlider( uint max, QWidget *parent )
-    : Amarok::Slider( Qt::Horizontal, max, parent )
+Amarok::VolumeSlider::VolumeSlider( uint max, QWidget *parent, bool customStyle )
+    : Amarok::Slider( customStyle ? Qt::Horizontal : Qt::Vertical, max, parent )
 {
+    m_usingCustomStyle = customStyle;
     setFocusPolicy( Qt::NoFocus );
+
+    if( !customStyle )
+    {
+        setInvertedAppearance( true );
+        setInvertedControls( true );
+    }
 }
 
 void
@@ -290,16 +336,17 @@ Amarok::VolumeSlider::wheelEvent( QWheelEvent *e )
 }
 
 void
-Amarok::VolumeSlider::paintEvent( QPaintEvent * )
+Amarok::VolumeSlider::paintEvent( QPaintEvent *event )
 {
-    QPainter p( this );
-    paintCustomSliderNG( &p, 0, 2, width(), height() );
-    p.end();
-}
+    if( m_usingCustomStyle )
+    {
+        QPainter p( this );
+        paintCustomSliderNG( &p, 0, 2, width(), height() );
+        p.end();
+        return;
+    }
 
-void Amarok::VolumeSlider::resizeEvent(QResizeEvent * event)
-{
-    Amarok::Slider::resizeEvent( event );
+    QSlider::paintEvent( event );
 }
 
 
@@ -312,6 +359,7 @@ Amarok::TimeSlider::TimeSlider( QWidget *parent )
     , m_triangles()
     , m_knobX( 0.0 )
 {
+    m_usingCustomStyle = true;
     setFocusPolicy( Qt::NoFocus );
 }
 
@@ -326,9 +374,11 @@ Amarok::TimeSlider::paintEvent( QPaintEvent *pe )
 {
     QPainter p( this );
     //paintCustomSlider( &p, 0, 0, width(), height(), m_knobX );
+
     p.setClipRegion(pe->region());
-    paintCustomSliderNG( &p, 0, 0, width(), height(), m_knobX );
+    paintCustomSliderNG( &p, 0, 0, width(), height(), m_knobX, AmarokConfig::showMoodbarInSlider() );
     p.end();
+
 }
 
 void Amarok::TimeSlider::resizeEvent(QResizeEvent * event)
@@ -357,7 +407,7 @@ void Amarok::TimeSlider::sliderChange( SliderChange change )
         Amarok::Slider::sliderChange( change ); // calls update()
 }
 
-void Amarok::TimeSlider::drawTriangle( const QString &name, int milliSeconds )
+void Amarok::TimeSlider::drawTriangle( const QString& name, int milliSeconds, bool showPopup )
 {
     DEBUG_BLOCK
     int sliderHeight = height() - ( m_sliderInsertY * 2 );
@@ -366,7 +416,7 @@ void Amarok::TimeSlider::drawTriangle( const QString &name, int milliSeconds )
     // This mess converts the # of seconds into the pixel width value where the triangle should be drawn
     int x_pos = ( ( ( double ) milliSeconds - ( double ) minimum() ) / ( maximum() - minimum() ) ) * ( width() - ( sliderLeftWidth + sliderLeftWidth + m_sliderInsertX * 2 ) );
     debug() << "drawing triangle at " << x_pos;
-    BookmarkTriangle * tri = new BookmarkTriangle( this, milliSeconds, name );
+    BookmarkTriangle * tri = new BookmarkTriangle( this, milliSeconds, name, showPopup );
     connect( tri, SIGNAL( clicked( int ) ), SLOT( slotTriangleClicked( int ) ) );
     connect( tri, SIGNAL( focused( int ) ), SLOT( slotTriangleFocused( int ) ) );
     m_triangles << tri;
@@ -408,22 +458,16 @@ bool Amarok::TimeSlider::event( QEvent * event )
 {
     if( event->type() == QEvent::ToolTip )
     {
-
-        //make a QHelpEvent out of this
+        // Make a QHelpEvent out of this
         QHelpEvent * helpEvent = dynamic_cast<QHelpEvent *>( event );
         if( helpEvent )
         {
-            //update tooltip to show track position of mouse.
-
-            //figure out "percentage" of mouse position
-            qreal percentage = (qreal) helpEvent->x() / (qreal) width();
-            long trackLength = The::engineController()->trackLength();
-            int trackPosition = trackLength * percentage;
-
-            setToolTip( Meta::msToPrettyTime( trackPosition ) );
+            // Update tooltip to show the current track time position
+            const int trackPosition = The::engineController()->trackPosition();
+            setToolTip( i18n( "Time position: %1", Meta::secToPrettyTime( trackPosition ) ) );
         }
-            
     }
+
     return QWidget::event( event );
 }
 

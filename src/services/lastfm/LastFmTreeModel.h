@@ -1,5 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2009 Casey Link <unnamedrambler@gmail.com>                             *
+ * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -95,6 +97,7 @@ class WsReply;
 class LastFmTreeModel : public QAbstractItemModel
 {
     Q_OBJECT
+
 public:
     explicit LastFmTreeModel ( const QString &username, QObject *parent = 0 );
     ~LastFmTreeModel();
@@ -114,6 +117,8 @@ public:
     void sortTags ( WeightedStringList tagsToSort, Qt::SortOrder sortOrder );
     void sortTags ( Qt::SortOrder sortOrder );
 
+    virtual QMimeData* mimeData( const QModelIndexList &indices ) const;
+
 private slots:
     void onAvatarDownloaded ( QPixmap );
     void slotAddNeighbors ();
@@ -122,21 +127,21 @@ private slots:
     void slotAddTopArtists ();
 
 private:
-    void setupModelData ( LastFmTreeItem *parent );
-    void emitRowChanged(int parent, int child = -1);
+    void setupModelData( LastFmTreeItem *parent );
+    void emitRowChanged( int parent, int child = -1 );
 
-    LastFmTreeItem *rootItem;
-    LastFmTreeItem *mMyTags;
-    LastFmTreeItem *mMyFriends;
-    LastFmTreeItem *mMyNeighbors;
-    LastFmTreeItem *mMyTopArtists;
+    LastFmTreeItem *m_rootItem;
+    LastFmTreeItem *m_myTags;
+    LastFmTreeItem *m_myFriends;
+    LastFmTreeItem *m_myNeighbors;
+    LastFmTreeItem *m_myTopArtists;
 
-    QString mUserName;
-    lastfm::AuthenticatedUser mUser;
+    QString m_userName;
+    lastfm::AuthenticatedUser m_user;
 
-    QStringList mFriends;
-    QStringList mNeighbors;
-    WeightedStringList mTags;
+    QStringList m_friends;
+    QStringList m_neighbors;
+    WeightedStringList m_tags;
 
     QPixmap mAvatar;
     QMap<QString, QString> m_avatarQueue;
@@ -150,7 +155,6 @@ private:
     QString mapTypeToUrl ( LastFm::Type type, const QString &key = "" );
 
     void appendUserStations ( LastFmTreeItem* item, const QString& user );
-
 };
 
 class LastFmTreeItem
@@ -182,7 +186,6 @@ private:
     LastFmTreeItem *parentItem;
     QVariant itemData;
     QString mUrl;
-
 };
 
 #endif

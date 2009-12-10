@@ -57,17 +57,13 @@ class PodcastCategory : public BrowserCategory
         PodcastCategory( PlaylistBrowserNS::PodcastModel *podcastModel );
         ~PodcastCategory();
 
-        QToolButton *m_addPodcastButton;
-        QToolButton *m_refreshPodcastsButton;
-        QToolButton *m_configurePodcastsButton;
-        QToolButton *m_podcastsIntervalButton;
-
         PodcastModel *m_podcastModel;
         PodcastView *m_podcastTreeView;
         ViewKicker * m_viewKicker;
 
     private slots:
         void showInfo( const QModelIndex & index );
+        void slotImportOpml();
 };
 
 class ViewKicker : public QObject

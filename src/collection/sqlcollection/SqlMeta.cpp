@@ -25,7 +25,9 @@
 #include "SqlBookmarkThisCapability.h"
 #include "SqlCollection.h"
 #include "SqlQueryMaker.h"
+#include "SqlReadLabelCapability.h"
 #include "SqlRegistry.h"
+#include "SqlWriteLabelCapability.h"
 #include "covermanager/CoverFetcher.h"
 #include "covermanager/CoverFetchingActions.h"
 #include "meta/capabilities/CustomActionsCapability.h"
@@ -69,6 +71,7 @@ class EditCapabilityImpl : public Meta::EditCapability
         virtual void setComposer( const QString &newComposer ) { m_track->setComposer( newComposer ); }
         virtual void setGenre( const QString &newGenre ) { m_track->setGenre( newGenre ); }
         virtual void setYear( const QString &newYear ) { m_track->setYear( newYear ); }
+        virtual void setBpm( const float newBpm ) { m_track->setBpm( newBpm ); }
         virtual void setTitle( const QString &newTitle ) { m_track->setTitle( newTitle ); }
         virtual void setComment( const QString &newComment ) { m_track->setComment( newComment ); }
         virtual void setTrackNumber( int newTrackNumber ) { m_track->setTrackNumber( newTrackNumber ); }
@@ -291,7 +294,7 @@ SqlTrack::refreshFromDatabase( const QString &uid, SqlCollection* collection, bo
     QStringList result = collection->query( query );
     if( result.isEmpty() )
         return;
-    
+
     updateData( result, true );
     if( updateObservers )
         notifyObservers();
@@ -320,7 +323,7 @@ SqlTrack::updateData( const QStringList &result, bool forceUpdates )
     m_lastPlayed = (*(iter++)).toUInt();
     m_playCount = (*(iter++)).toInt();
     ++iter; //file type
-    ++iter; //BPM
+    m_bpm = (*(iter++)).toFloat();
     m_createDate = QDateTime::fromTime_t( (*(iter++)).toUInt() );
 
     // if there is no track gain, we assume a gain of 0
@@ -552,6 +555,25 @@ SqlTrack::setYear( const QString &newYear )
         m_cache.insert( Meta::Field::YEAR, newYear );
         writeMetaDataToFile();
         writeMetaDataToDb( Meta::Field::YEAR );
+        notifyObservers();
+    }
+}
+
+void
+SqlTrack::setBpm( const float newBpm )
+{
+    if ( m_bpm && m_bpm == newBpm )
+        return;
+
+    if( m_batchUpdate )
+        m_cache.insert( Meta::Field::BPM, newBpm );
+    else
+    {
+        m_bpm = newBpm;
+        m_cache.clear();
+        m_cache.insert( Meta::Field::BPM, newBpm );
+        writeMetaDataToFile();
+        writeMetaDataToDb( Meta::Field::BPM );
         notifyObservers();
     }
 }
@@ -839,6 +861,9 @@ SqlTrack::commitMetaDataChanges()
             KSharedPtr<SqlYear>::staticCast( m_year )->invalidateCache();
         }
 
+        if( m_cache.contains( Meta::Field::BPM ) )
+            m_bpm = m_cache.value( Meta::Field::BPM ).toDouble();
+
         //updating the tags of the file might change the filesize
         //therefore write the tag to the file first, and update the db
         //with the new filesize
@@ -887,13 +912,15 @@ SqlTrack::writeMetaDataToDb( const QStringList &fields )
             tags += QString( ",composer=%1" ).arg( QString::number( KSharedPtr<SqlComposer>::staticCast( m_composer )->id() ) );
         if( fields.contains( Meta::Field::YEAR ) )
             tags += QString( ",year=%1" ).arg( QString::number( KSharedPtr<SqlYear>::staticCast( m_year )->id() ) );
+        if( fields.contains( Meta::Field::BPM ) )
+            tags += QString( ",bpm=%1" ).arg( QString::number( m_bpm ) );
         updateFileSize();
         tags += QString( ",filesize=%1" ).arg( m_filesize );
         update = update.arg( tags, QString::number( id ) );
         debug() << "Running following update query: " << update;
         m_collection->query( update );
     }
-    
+
     if( !m_newUid.isEmpty() )
     {
         QString update = "UPDATE urls SET uniqueid='%1' WHERE uniqueid='%2';";
@@ -1037,6 +1064,8 @@ SqlTrack::hasCapabilityInterface( Meta::Capability::Type type ) const
         case Meta::Capability::CurrentTrackActions:
         case Meta::Capability::WriteTimecode:
         case Meta::Capability::LoadTimecode:
+        case Meta::Capability::ReadLabel:
+        case Meta::Capability::WriteLabel:
             return true;
 
         case Meta::Capability::Editable:
@@ -1086,6 +1115,10 @@ SqlTrack::createCapabilityInterface( Meta::Capability::Type type )
             return new TimecodeWriteCapabilityImpl( this );
         case Meta::Capability::LoadTimecode:
             return new TimecodeLoadCapabilityImpl( this );
+        case Meta::Capability::ReadLabel:
+            return new SqlReadLabelCapability( this, m_collection );
+        case Meta::Capability::WriteLabel:
+            return new SqlWriteLabelCapability( this, m_collection );
 
         default:
             return 0;
@@ -1749,17 +1782,41 @@ SqlAlbum::setCompilation( bool compilation )
     {
         if( compilation )
         {
+            // A compilation is an album where artist is NULL. Set the album's artist to NULL when the album is set to compilation.
             debug() << "User selected album as compilation";
+            /* Old behavior, potentially caused multiple entries of the same album under compilations.
             m_artistId = 0;
             m_artist = Meta::ArtistPtr();
 
             QString update = "UPDATE albums SET artist = NULL WHERE id = %1;";
             m_collection->query( update.arg( m_id ) );
+            */
+            m_artistId = 0;
+            m_artist = Meta::ArtistPtr();
+
+            // Check to see if another album with the same name is already an collection?
+            QString select = "SELECT id FROM albums WHERE name = '%1' AND id != %2 AND artist IS NULL";
+            QStringList albumId = m_collection->query( select.arg( name() ).arg( m_id ) );
+            if( !albumId.empty() ) {
+                // Another album with the same name is already a collection, move all the tracks from the old album to the existing one and
+                // delete the current one. This avoids duplicate entries in the compilation list.
+                int otherId = albumId[0].toInt();
+                QString update = "UPDATE tracks SET album = %1 WHERE album = %2";
+                m_collection->query( update.arg( otherId ).arg( m_id ) );
+                
+                QString delete_album = "DELETE FROM albums WHERE id = %1";
+                m_collection->query( delete_album.arg( m_id ) );
+
+                m_id = otherId;
+            } else {
+                QString update = "UPDATE albums SET artist = NULL WHERE id = %1;";
+                m_collection->query( update.arg( m_id ) );
+            }
         }
         else
         {
             debug() << "User selected album as non-compilation";
-
+            /*  Old behavior - UPDATE-query potentially causes an duplicate key error from mysql, if another album with the same title and artist exists.
             QString select = "SELECT artist FROM tracks WHERE album = %1";
             QStringList artistid = m_collection->query( select.arg( m_id ) );
 
@@ -1770,6 +1827,64 @@ SqlAlbum::setCompilation( bool compilation )
             QString update = "UPDATE albums SET artist = %1 WHERE id = %2;";
             update = update.arg( m_artistId ).arg( m_id );
             m_collection->query( update );
+            */
+
+            // The artists for all the tracks in this album
+            QString select = "SELECT GROUP_CONCAT( CONCAT( artist ) ) FROM tracks WHERE album = %1";
+            QStringList artists = m_collection->query( select.arg( m_id ) );
+
+            QSet< int > artistIds;
+            foreach ( const QString & artist, artists[0].split( ",", QString::SkipEmptyParts ) ) {
+                artistIds.insert( artist.toInt( ) );
+            }
+
+            debug() << "Found these artists" << artistIds;
+
+            bool done = false;
+            if( artistIds.size( ) == 1 ) {
+                // All the tracks have the same artist, see it there is another album with the same name for this artist.
+                select = "SELECT id FROM albums WHERE name = '%1' AND id != %2 AND artist = %3";
+                QStringList albumId = m_collection->query( select.arg( name() ).arg( m_id ).arg( *artistIds.begin() ) );
+                if( albumId.empty( ) ) {
+                    m_artistId = *artistIds.begin();
+
+                    // There isn't another album with the same name and artist, just change the artist on the album
+                    QString update = "UPDATE albums SET artist = %1 WHERE id = %2";
+                    m_collection->query( update.arg( m_artistId ).arg( m_id ) );
+                    done = true;
+                }
+            }
+
+            if( !done ) {
+                foreach( const int artistId, artistIds ) {
+                    debug() << "Look for album '" << name() << "' for artist " << artistId;
+                    // Does there exist another album with the same name and the same artist as some of the tracks in this album?
+                    select = "SELECT id FROM albums WHERE name = '%1' AND id != %2 AND artist = %3";
+                    QStringList otherAlbumIdStr = m_collection->query( select.arg( name() ).arg( m_id ).arg( artistId ) );
+                    int otherAlbumId = 0;
+                    if( otherAlbumIdStr.empty( ) ) {
+                        debug() << "Didn't find an album";
+                        // Create new album for the tracks for this artist.
+                        QString insert = "INSERT INTO albums( artist, name ) VALUES ( %1, '%2');";
+                        otherAlbumId = m_collection->insert( insert.arg( artistId ).arg( m_collection->escape( name() ) ), "albums" );
+                    } else {
+                        debug() << "Found album " << otherAlbumIdStr;
+                        // We found an album with the same name as the compilation album and the same artist as some of the tracks.
+                        // Move all the tracks for this artist from the compilation album to the existing album.
+                        otherAlbumId = otherAlbumIdStr[0].toInt();
+                    }
+
+                    if ( otherAlbumId > 0 ) {
+                        QString update = "UPDATE tracks SET album = %1 WHERE album = %2 AND artist = %3";
+                        m_collection->query( update.arg( otherAlbumId ).arg( m_id ).arg( artistId ) );
+                    }
+                }
+
+                // Remove the existing compilation album, since we have move all tracks to a new album.
+                QString delete_album = "DELETE FROM albums WHERE id = %1";
+                m_collection->query( delete_album.arg( m_id ) );
+                m_id = 0;
+            }
         }
         notifyObservers();
         m_collection->sendChangedSignal();

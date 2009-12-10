@@ -20,6 +20,7 @@
 
 #include "Amarok.h"
 #include "BookmarkMetaActions.h"
+#include <config-amarok.h>
 #include "Meta.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "meta/capabilities/EditCapability.h"
@@ -35,6 +36,9 @@
 #include <QPointer>
 #include <QString>
 
+#ifdef HAVE_LIBLASTFM
+  #include "LastfmReadLabelCapability.h"
+#endif
 using namespace MetaFile;
 
 class EditCapabilityImpl : public Meta::EditCapability
@@ -52,6 +56,7 @@ class EditCapabilityImpl : public Meta::EditCapability
         virtual void setComposer( const QString &newComposer ) { m_track->setComposer( newComposer ); }
         virtual void setGenre( const QString &newGenre ) { m_track->setGenre( newGenre ); }
         virtual void setYear( const QString &newYear ) { m_track->setYear( newYear ); }
+        virtual void setBpm( const float newBpm ) { m_track->setBpm( newBpm ); }
         virtual void setTitle( const QString &newTitle ) { m_track->setTitle( newTitle ); }
         virtual void setComment( const QString &newComment ) { m_track->setComment( newComment ); }
         virtual void setTrackNumber( int newTrackNumber ) { m_track->setTrackNumber( newTrackNumber ); }
@@ -340,6 +345,25 @@ Track::setTitle( const QString &newTitle )
     }
 }
 
+void
+Track::setBpm( const float newBpm )
+{
+    d->changes.insert( Meta::Field::BPM, QVariant( newBpm ) );
+    if( !d->batchUpdate )
+    {
+        d->m_data.bpm = newBpm;
+        d->writeMetaData();
+        notifyObservers();
+    }
+}
+
+float
+Track::bpm() const
+{
+    const float bpm = d->m_data.bpm;
+    return bpm;
+}
+
 QString
 Track::comment() const
 {
@@ -584,11 +608,16 @@ Track::collection() const
 bool
 Track::hasCapabilityInterface( Meta::Capability::Type type ) const
 {
+    bool readlabel = false;
+#ifdef HAVE_LIBLASTFM
+    readlabel = true;
+#endif
     return type == Meta::Capability::Editable ||
            type == Meta::Capability::Importable ||
            type == Meta::Capability::CurrentTrackActions ||
            type == Meta::Capability::WriteTimecode ||
-           type == Meta::Capability::LoadTimecode;
+           type == Meta::Capability::LoadTimecode ||
+           ( type == Meta::Capability::ReadLabel && readlabel );
 }
 
 Meta::Capability*
@@ -612,6 +641,12 @@ Track::createCapabilityInterface( Meta::Capability::Type type )
             return new TimecodeWriteCapabilityImpl( this );
         case Meta::Capability::LoadTimecode:
             return new TimecodeLoadCapabilityImpl( this );
+#if HAVE_LIBLASTFM
+       case Meta::Capability::ReadLabel:
+           if( !d->readLabelCapability )
+               d->readLabelCapability = new Meta::LastfmReadLabelCapability( this );
+           return d->readLabelCapability;
+#endif
         default:
             return 0;
     }
