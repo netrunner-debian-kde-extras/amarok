@@ -2,13 +2,13 @@ project(Amarok)
 
 cmake_minimum_required(VERSION 2.6.2)
 
-set( CMAKE_MODULE_PATH    ${CMAKE_MODULE_PATH}
-                          ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )
+set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )
 
 option(WITH_UTILITIES "Enable building of utilities" ON)
 option(WITH_PLAYER "Enable building of main Amarok player" ON)
 option(WITH_MP3Tunes "Enable mp3tunes in the Amarok player, requires multiple extra dependencies" ON)
 option(WITH_IPOD "Enable iPod support in Amarok" ON)
+option(WITH_MYSQL_EMBEDDED "Build the embedded database library -- highly recommended" ON)
 
 include(CheckLibraryExists)
 check_library_exists(dl dlopen "" LIBDL_FOUND)
@@ -25,13 +25,13 @@ check_cxx_source_compiles("#include <asftag.h>
 int main() { TagLib::ASF::Tag tag; return 0;}" TAGLIB_ASF_FOUND)
 if( NOT TAGLIB_ASF_FOUND )
     message(FATAL_ERROR "TagLib does not have ASF support compiled in.")
-endif( NOT TAGLIB_ASF_FOUND ) 
+endif( NOT TAGLIB_ASF_FOUND )
 
 check_cxx_source_compiles("#include <mp4tag.h>
 int main() { TagLib::MP4::Tag tag(0, 0); return 0;}" TAGLIB_MP4_FOUND)
 if( NOT TAGLIB_MP4_FOUND )
     message(FATAL_ERROR "TagLib does not have MP4 support compiled in.")
-endif( NOT TAGLIB_MP4_FOUND ) 
+endif( NOT TAGLIB_MP4_FOUND )
 
 set(CMAKE_REQUIRED_INCLUDES)
 set(CMAKE_REQUIRED_LIBRARIES)
@@ -48,7 +48,6 @@ if(GIT_OUTPUT_VALUE EQUAL 0)
     message(STATUS "Building git version ${CURRENT_GIT_VERSION}")
 endif(GIT_OUTPUT_VALUE EQUAL 0)
 
-configure_file(config-amarok.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-amarok.h )
 
 # Needed to conditionally build tests and gui
 if(CMAKE_BUILD_TYPE MATCHES debugfull)
@@ -66,8 +65,7 @@ endif (CMAKE_COMPILER_IS_GNUCXX)
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/shared )
 
 if( WITH_PLAYER )
-#We depend on kde4.2 now.. I believe this is the easiest way to do it.
-    set(KDE_MIN_VERSION "4.2.0")
+    set(KDE_MIN_VERSION "4.3.0")
     find_package( KDE4 REQUIRED )
     include (KDE4Defaults)
     include (MacroLibrary)
@@ -75,7 +73,7 @@ if( WITH_PLAYER )
     include(MacroBoolTo01)
     include(MacroLogFeature)
 
-    macro_log_feature( KDE4_FOUND "kdelibs" "The toolkit Amarok uses to build" "http://www.kde.org" TRUE "4.2.0" "" )
+    macro_log_feature( KDE4_FOUND "kdelibs" "The toolkit Amarok uses to build" "http://www.kde.org" TRUE "4.3.0" "" )
 
     find_package( QtScriptQtBindings REQUIRED )
     macro_log_feature( QTSCRIPTQTBINDINGS_FOUND "qtscript-qt" "QtScript Qt Bindings" "http://code.google.com/p/qtscriptgenerator/" TRUE "" "" )
@@ -83,12 +81,18 @@ if( WITH_PLAYER )
     add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 
     find_package(MySQLAmarok REQUIRED)
-    macro_log_feature( MYSQL_EMBEDDED_FOUND "mysqld" "Embedded MySQL" "http://www.mysql.com" TRUE "" "" )
+    if( WITH_MYSQL_EMBEDDED )
+        set( BUILD_MYSQLE_COLLECTION TRUE )
+        macro_log_feature( MYSQL_EMBEDDED_FOUND "mysqld" "Embedded MySQL Libraries" "http://www.mysql.com" TRUE "" "" )
+    else( WITH_MYSQL_EMBEDDED )
+        add_definitions( "-DNO_MYSQL_EMBEDDED" )
+    endif( WITH_MYSQL_EMBEDDED )
+    macro_log_feature( MYSQL_FOUND "mysql" "MySQL Server Libraries" "http://www.mysql.com" TRUE "" "" )
 
     # zlib is required for mysql embedded
     find_package(ZLIB REQUIRED)
     macro_log_feature( ZLIB_FOUND "zlib" "zlib" "" TRUE "" "" )
-    
+
     # QCA2 is required for the Script Updater
     find_package(QCA2 REQUIRED)
     macro_log_feature( QCA2_FOUND "qca2" "Qt Cryptographic Architecture" "http://delta.affinix.com/qca/" TRUE "" "" )
@@ -98,9 +102,9 @@ if( WITH_PLAYER )
 
     macro_optional_find_package(LibLastFm)
     macro_log_feature( LIBLASTFM_FOUND "liblastfm" "Enable Last.Fm service, including scrobbling, song submissions, and suggested song dynamic playlists" "http://cdn.last.fm/src/liblastfm-0.3.0.tar.bz2" FALSE "0.3" "" )
-    
+    macro_bool_to_01( LIBLASTFM_FOUND HAVE_LIBLASTFM )
 
-		
+
     if( WITH_IPOD )
         find_package(Ipod)
         if( IPOD_FOUND )
@@ -110,7 +114,7 @@ if( WITH_PLAYER )
 	macro_optional_find_package(Gdk)
 	macro_log_feature( GDK_FOUND "Gdk" "Support for artwork on iPod audio devices via GdkPixbuf" "http://developer.gnome.org/arch/imaging/gdkpixbuf.html" FALSE "2.0.x" "" )
     endif( WITH_IPOD )
- 
+
     macro_optional_find_package(Mtp)
     macro_log_feature( MTP_FOUND "libmtp" "Enable Support for portable media devices that use the media transfer protocol" "http://libmtp.sourceforge.net/" FALSE "0.3.0" "")
 
@@ -153,6 +157,8 @@ if( WITH_PLAYER )
 
     macro_bool_to_01(LIBVISUAL_FOUND HAVE_LIBVISUAL)
 
+    configure_file(config-amarok.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-amarok.h )
+
     include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE4_INCLUDES} ${TAGLIB_INCLUDES})
 
 if(CMAKE_BUILD_TYPE MATCHES debugfull)
@@ -185,4 +191,3 @@ if( WITH_UTILITIES )
     set(BIN_INSTALL_DIR          "${EXEC_INSTALL_PREFIX}/bin"    CACHE PATH "The subdirectory to the binaries prefix (default prefix/bin)" FORCE)
     add_subdirectory( utilities )
 endif( WITH_UTILITIES )
-

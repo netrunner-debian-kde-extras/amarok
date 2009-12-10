@@ -35,10 +35,8 @@
 #include "widgets/kratingwidget.h"
 
 // KDE
-#include <KAction>
 #include <KColorScheme>
 #include <KConfigDialog>
-#include <KMenu>
 #include <KStandardDirs>
 #include <KVBox>
 #include <Plasma/Theme>
@@ -102,8 +100,8 @@ VideoclipApplet::init()
     langAction->setIcon( KIcon( "preferences-system" ) );
     langAction->setVisible( true );
     langAction->setEnabled( true );
+    langAction->setText( i18n( "Settings" ) );
     m_settingsIcon = addAction( langAction );
-    m_settingsIcon->setToolTip( i18n( "Settings" ) );
     connect( m_settingsIcon, SIGNAL( activated() ), this, SLOT( showConfigurationInterface() ) );
 
     
@@ -133,7 +131,6 @@ VideoclipApplet::init()
     m_scroll = new QScrollArea();
     m_scroll->setMaximumHeight( m_height - m_headerText->boundingRect().height() - 4*standardPadding() );
     m_scroll->setWidget( window );
-    m_scroll->setFrameShape( QFrame::NoFrame );
     m_scroll->setAttribute( Qt::WA_NoSystemBackground );
     m_scroll->viewport()->setAttribute( Qt::WA_NoSystemBackground );
 
@@ -288,19 +285,26 @@ VideoclipApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *op
     // draw rounded rect around title
     drawRoundedRectAroundText( p, m_headerText );
 
-    p->save();
+    if( m_widget->isVisible() )
+    {
+        p->save();
 
-    const QScrollBar *scrollBar = m_scroll->horizontalScrollBar();
-    const qreal scrollBarHeight = scrollBar->isVisible() ? scrollBar->height() + 2 : 0;
-    const QSizeF proxySize = m_widget->size();
-    const QSizeF widgetSize( proxySize.width(), proxySize.height() - scrollBarHeight );
-    const QRectF widgetRect( m_widget->pos(), widgetSize );
+        const int frameWidth        = m_scroll->frameWidth();
+        const QScrollBar *scrollBar = m_scroll->horizontalScrollBar();
+        const qreal scrollBarHeight = scrollBar->isVisible() ? scrollBar->height() + 2 : 0;
+        const QSizeF proxySize = m_widget->size();
+        const QSizeF widgetSize( proxySize.width()  - frameWidth * 2,
+                                 proxySize.height() - frameWidth * 2 - scrollBarHeight );
+        const QPointF widgetPos( m_widget->pos().x() + frameWidth,
+                                 m_widget->pos().y() + frameWidth );
+        const QRectF widgetRect( widgetPos, widgetSize );
 
-    QPainterPath path;
-    path.addRoundedRect( widgetRect, 5, 5 );
-    p->fillPath( path, The::paletteHandler()->backgroundColor() );
+        QPainterPath path;
+        path.addRoundedRect( widgetRect, 2, 2 );
+        p->fillPath( path, The::paletteHandler()->backgroundColor() );
 
-    p->restore();
+        p->restore();
+    }
 }
 
 void
@@ -374,7 +378,7 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
                 if( !( item->url.isEmpty() ) ) // prevent some weird stuff ...
                 {
 
-                    VideoItemButton *vidButton = new VideoItemButton();
+                    VideoItemButton *vidButton = new VideoItemButton( this );
                     vidButton->setVideoInfo( item ); 
                     
                     connect ( vidButton, SIGNAL( appendRequested( VideoInfo * ) ), this, SLOT ( appendVideoClip( VideoInfo * ) ) );
@@ -440,6 +444,26 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
             }
         }
     }
+
+    // FIXME This should be in engineStateChanged(), but for now it help fixing the bug 210332
+    else if ( The::engineController()->phononMediaObject()->hasVideo()
+        && The::engineController()->phononMediaObject()->state() != Phonon::BufferingState
+        && The::engineController()->phononMediaObject()->state() != Phonon::LoadingState )
+    {
+        setBusy( false );
+        debug() << " VideoclipApplet | Show VideoWidget";
+        m_widget->hide();
+        m_videoWidget->show();
+        m_videoWidget->activateWindow();
+        if ( m_videoWidget->inputPaths().isEmpty() )
+            Phonon::createPath( const_cast<Phonon::MediaObject*>( The::engineController()->phononMediaObject() ), m_videoWidget );
+        if( m_videoWidget->isActiveWindow() )
+        {
+            QContextMenuEvent e( QContextMenuEvent::Other, QPoint() );
+            QApplication::sendEvent( m_videoWidget, &e );
+        }
+    }
+    
     updateConstraints();
 }
 
@@ -501,25 +525,6 @@ VideoclipApplet::appendPlayVideoClip( VideoInfo *info )
         //append to the playlist the newly retrieved
         The::playlistController()->insertOptioned(track , Playlist::AppendAndPlay);
     }
-}
-
-void
-VideoclipApplet::videoMenu( QPoint point )
-{
-    KMenu *men = new KMenu(m_videoWidget);
-    if ( !m_videoWidget->isFullScreen() )
-    {
-        KAction *toggle = new KAction( KIcon( "view-fullscreen" ), i18n( "Enter &fullscreen" ), this );
-        men->addAction( toggle );
-        connect( toggle, SIGNAL( triggered(bool) ), m_videoWidget, SLOT( exitFullScreen() ) );
-    }
-    else
-    {
-        KAction *toggle = new KAction( KIcon( "edit-undo" ), i18n( "E&xit fullscreen" ), this );
-        men->addAction( toggle );
-        connect( toggle, SIGNAL( triggered(bool) ), m_videoWidget, SLOT( exitFullScreen() ) );
-    }   
-    men->exec( m_videoWidget->mapToGlobal( point ) );
 }
 
 void

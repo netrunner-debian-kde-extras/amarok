@@ -19,11 +19,16 @@
 
 #include <QDesktopWidget>
 
-#include <KIcon>
+#include <KDirOperator>
 #include <KFile>
 #include <KFileDialog>
+#include <KFileWidget>
+#include <KIcon>
+#include <KImageIO>
 #include <KLocale>
 #include <KMessageBox>
+#include <KTempDir>
+#include <kio/netaccess.h>
 #include <ksharedptr.h>
 
 #include "CoverFetcher.h"
@@ -136,15 +141,55 @@ void SetCustomCoverAction::init()
 void
 SetCustomCoverAction::slotTriggered()
 {
-    if( m_albums.first() && !m_albums.first()->tracks().isEmpty() )
+    if( !m_albums.first() || m_albums.first()->tracks().isEmpty() )
+        return;
+
+    const QString& startPath = m_albums.first()->tracks().first()->playableUrl().directory();
+    const QStringList mimetypes( KImageIO::mimeTypes( KImageIO::Reading ) );
+    KFileDialog dlg( startPath,
+                     mimetypes.join(" "),
+                     qobject_cast<QWidget*>( parent() ) );
+
+    dlg.setOperationMode( KFileDialog::Opening );
+    dlg.setMode( KFile::File );
+    dlg.setCaption( i18n("Select Cover Image File") );
+    dlg.setInlinePreviewShown( true );
+
+    KFileWidget *fileWidget = dynamic_cast<KFileWidget*>( dlg.fileWidget() );
+    KDirLister *dirLister = fileWidget->dirOperator()->dirLister();
+    dirLister->setAutoErrorHandlingEnabled( false, qobject_cast<QWidget*>( parent() ) );
+
+    dlg.exec();
+    KUrl file = dlg.selectedUrl();
+
+    if( !file.isEmpty() )
     {
-        const QString startPath = m_albums.first()->tracks().first()->playableUrl().directory();
+        QPixmap pixmap;
 
-        KUrl file = KFileDialog::getImageOpenUrl( startPath, qobject_cast<QWidget*>( parent() ), i18n( "Select Cover Image File" ) );
-        if( !file.isEmpty() )
+        if( file.isLocalFile() )
         {
-            QPixmap pixmap( file.path() );
+            pixmap.load( file.path() );
 
+        }
+        else
+        {
+            debug() << "Custom Cover Fetch: " << file.prettyUrl() << endl;
+
+            KTempDir tempDir;
+            tempDir.setAutoRemove( true );
+
+            const QString coverDownloadPath = tempDir.name() + file.fileName();
+
+            bool ret = KIO::NetAccess::file_copy( file,
+                                                  KUrl( coverDownloadPath ),
+                                                  qobject_cast<QWidget*>( parent() ) );
+
+            if( ret )
+                pixmap.load( coverDownloadPath );
+        }
+
+        if( !pixmap.isNull() )
+        {
             foreach( Meta::AlbumPtr album, m_albums )
             {
                 if( album && album->canUpdateImage() )

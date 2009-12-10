@@ -76,13 +76,17 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     m_vector.push_back( "Simple Search" );
     m_vector.push_back( "album" );
     m_vector.push_back( "artist" );
+    m_vector.push_back( "bitrate" );
     m_vector.push_back( "composer" );
     m_vector.push_back( "genre" );
     m_vector.push_back( "playcount" );
+    m_vector.push_back( "rating" );
+    m_vector.push_back( "samplerate" );
     m_vector.push_back( "score" );
     m_vector.push_back( "title" );
     m_vector.push_back( "track" );
     m_vector.push_back( "year" );
+    m_vector.push_back( "bpm" );
 
     // the "Simple Search" text is selected in the comboKeyword
     m_selectedIndex = 0;
@@ -188,6 +192,20 @@ QString EditFilterDialog::keywordConditionString( const QString& keyword ) const
     switch(m_ui.conditionCombo->currentIndex())
     {
         case 0:
+            // equal to...
+            //if (keyword == "length")
+                //result = m_strPrefixNOT + "length:" + QString::number( m_ui.minimum1->value() * 60
+                        //+ m_ui.minimum2->value() ) + unit;
+            //else
+            {
+                if( m_strPrefixNOT.isEmpty() )
+                    result = keyword + ":" + QString::number( m_ui.minimum1->value() ) + unit;
+                else
+                    result = keyword + ":<" + QString::number(m_ui.minimum1->value()) + unit +
+                        " OR " + keyword + ":>" + QString::number(m_ui.minimum1->value()) + unit;
+            }
+            break;
+        case 1:
             // less than...
             result = m_strPrefixNOT + keyword + ":<";
             //if (keyword == "length")
@@ -195,28 +213,13 @@ QString EditFilterDialog::keywordConditionString( const QString& keyword ) const
             //else
                 result += m_ui.minimum1->text() + unit;
             break;
-        case 1:
+        case 2:
             // greater than...
             result = m_strPrefixNOT + keyword + ":>";
             //if (keyword == "length")
                 //result += QString::number( m_ui.minimum1->value() * 60 + m_ui.minimum2->value() ) + unit;
             //else
                 result += m_ui.minimum1->text() + unit;
-            break;
-        case 2:
-            // equal to...
-            //if (keyword == "length")
-                //result = m_strPrefixNOT + "length:" + QString::number( m_ui.minimum1->value() * 60
-                        //+ m_ui.minimum2->value() ) + unit;
-            //else
-            {
-                if (m_strPrefixNOT.isEmpty())
-                    result = keyword + ":>" + QString::number(m_ui.minimum1->value() - 1) + unit +
-                        ' ' + keyword + ":<" + QString::number(m_ui.minimum1->value() + 1) + unit;
-                else
-                    result = keyword + ":<" + QString::number(m_ui.minimum1->value()) + unit +
-                        " OR " + keyword + ":>" + QString::number(m_ui.minimum1->value()) + unit;
-            }
             break;
         case 3:
             // between...
@@ -288,6 +291,13 @@ void EditFilterDialog::selectedKeyword(int index) // SLOT
         m_ui.maximum1->setValue( QDate::currentDate().year() );
         valueWanted();
     }
+    else if( key == "bpm" )
+    {
+        // bpm: set useful values for the spinboxes
+        m_ui.minimum1->setValue( 60 );
+        m_ui.maximum1->setValue( 120 );
+        valueWanted();
+    }
     else if( key == "track" || key == "disc" || key == "discnumber" )
     {
         // track/disc: set useful values for the spinboxes
@@ -301,9 +311,13 @@ void EditFilterDialog::selectedKeyword(int index) // SLOT
         m_ui.maximum1->setValue( 100 );
         valueWanted();
     }
-    else if(   key == "lastplayed"
-            || key == "rating"
-            || key == "bpm" )
+    else if( key == "rating" )
+    {
+        m_ui.minimum1->setValue( 0 );
+        m_ui.maximum1->setValue( 10 );
+        valueWanted();
+    }
+    else if( key == "lastplayed" || key == "bpm" )
     {
         valueWanted();
     }
@@ -495,7 +509,8 @@ void EditFilterDialog::slotDefault() // SLOT
             || key=="score"
             || key=="filesize" || key=="size"
             || key=="track"
-            || key=="year" )
+            || key=="year" 
+            || key=="bpm" )
     {
         m_filterText += keywordConditionString( m_vector[m_selectedIndex] );
     }

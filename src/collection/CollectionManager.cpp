@@ -79,6 +79,7 @@ CollectionManager::CollectionManager()
     d->sqlDatabase = 0;
     d->primaryCollection = 0;
     s_instance = this;
+    m_haveEmbeddedMysql = false;
 
     qRegisterMetaType<TrackUrls>( "TrackUrls" );
     qRegisterMetaType<ChangedTrackUrls>( "ChangedTrackUrls" );
@@ -89,6 +90,7 @@ CollectionManager::~CollectionManager()
 {
     DEBUG_BLOCK
 
+    delete m_timecodeTrackProvider;
     d->collections.clear();
     d->unmanagedCollections.clear();
     d->trackProviders.clear();
@@ -102,6 +104,11 @@ void
 CollectionManager::init()
 {
     DEBUG_BLOCK
+
+    //register the timecode track provider now, as it needs to get added before loading
+    //the stored playlist... Since it can have playable urls that might also match other providers, it needs to get added first.
+    m_timecodeTrackProvider = new TimecodeTrackProvider();
+    addTrackProvider( m_timecodeTrackProvider );
 
     KService::List plugins = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'collection'" );
     debug() << "Received [" << QString::number( plugins.count() ) << "] collection plugin offers";
@@ -151,6 +158,8 @@ CollectionManager::init()
                     connect( factory, SIGNAL( newCollection( Amarok::Collection* ) ), this, SLOT( slotNewCollection( Amarok::Collection* ) ) );
                     d->factories.append( factory );
                     factory->init();
+                    if( name == "mysqle-collection" )
+                        m_haveEmbeddedMysql = true;
                 }
                 else
                 {
@@ -187,10 +196,7 @@ CollectionManager::init()
         }
     }
 
-    //register the timceode track provider now, as it needs to get added before loading
-    //the stored playlist...
-    TimecodeTrackProvider * provider = new TimecodeTrackProvider();
-    addTrackProvider( provider );
+
 }
 
 void

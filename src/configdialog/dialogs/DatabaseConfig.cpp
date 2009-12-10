@@ -18,6 +18,7 @@
 
 #include "Amarok.h"
 #include "Debug.h"
+#include "CollectionManager.h"
 
 #include <KCMultiDialog>
 
@@ -40,12 +41,18 @@ DatabaseConfig::DatabaseConfig( QWidget* parent )
     connect( kcfg_Host,     SIGNAL( textChanged(const QString &) ), SLOT( updateSQLQuery() ) );
 
     toggleExternalConfigAvailable( kcfg_UseServer->checkState() );
+
     updateSQLQuery();
 }
 
 DatabaseConfig::~DatabaseConfig()
 {}
 
+void
+DatabaseConfig::toggleExternalConfigAvailable( const int checkBoxState ) //SLOT
+{
+    group_Connection->setEnabled( checkBoxState == Qt::Checked );
+}
 
 ///////////////////////////////////////////////////////////////
 // REIMPLEMENTED METHODS from ConfigDialogBase
@@ -71,12 +78,6 @@ DatabaseConfig::updateSettings()
 ///////////////////////////////////////////////////////////////
 // PRIVATE METHODS
 ///////////////////////////////////////////////////////////////
-
-void
-DatabaseConfig::toggleExternalConfigAvailable( const int checkBoxState ) //SLOT
-{
-    group_Connection->setEnabled( checkBoxState == Qt::Checked );
-}
 
 void
 DatabaseConfig::updateSQLQuery() //SLOT

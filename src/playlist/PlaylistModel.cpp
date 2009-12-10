@@ -48,6 +48,7 @@
 
 
 #include <typeinfo>
+#include <ReadLabelCapability.h>
 
 Playlist::Model::Model( QObject *parent )
         : QAbstractListModel( parent )
@@ -204,7 +205,9 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case Bpm:
             {
-                return 0;
+                if ( m_items.at( row )->track()->bpm() > 0.0 )
+                    return QString::number( m_items.at( row )->track()->bpm() );
+                return QString();
             }
             case Comment:
             {
@@ -257,6 +260,20 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case GroupTracks:
             {
+                return QString();
+            }
+            case Labels:
+            {
+                Meta::TrackPtr track = m_items.at( row )->track();
+                if( track )
+                {
+                    Meta::ReadLabelCapability *rlc = track->create<Meta::ReadLabelCapability>();
+                    if( rlc )
+                    {
+                        const QStringList labels = rlc->labels();
+                        return rlc->labels().join( ", " );
+                    }
+                }
                 return QString();
             }
             case LastPlayed:
@@ -403,6 +420,7 @@ Playlist::Model::mimeData( const QModelIndexList &indexes ) const
 bool
 Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int, const QModelIndex& parent )
 {
+    DEBUG_BLOCK
     if ( action == Qt::IgnoreAction )
         return true;
 
@@ -416,6 +434,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
 
     if( data->hasFormat( AmarokMimeData::TRACK_MIME ) )
     {
+        debug() << "this is a track";
         const AmarokMimeData* trackListDrag = dynamic_cast<const AmarokMimeData*>( data );
         if( trackListDrag )
         {
@@ -429,6 +448,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
     }
     else if( data->hasFormat( AmarokMimeData::PLAYLIST_MIME ) )
     {
+        debug() << "this is a playlist";
         const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
         if( dragList )
             Controller::instance()->insertPlaylists( beginRow, dragList->playlists() );
@@ -436,6 +456,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
     }
     else if( data->hasFormat( AmarokMimeData::PODCASTEPISODE_MIME ) )
     {
+        debug() << "this is a podcast episode";
         const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
         if( dragList )
         {
@@ -448,6 +469,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
     }
     else if( data->hasFormat( AmarokMimeData::PODCASTCHANNEL_MIME ) )
     {
+        debug() << "this is a podcast channel";
         const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
         if( dragList )
         {
@@ -461,11 +483,14 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
     }
     else if( data->hasUrls() )
     {
+        debug() << "this is _something_ with a url....";
         DirectoryLoader* dl = new DirectoryLoader(); //this deletes itself
         dl->insertAtRow( beginRow );
         dl->init( data->urls() );
         return true;
     }
+
+    debug() << "I have no idea what the hell this is...";
     return false;
 }
 
@@ -502,6 +527,7 @@ Playlist::Model::setRowQueued( int row )
         else
             state = (Item::State) ( state | Item::Queued );
         setStateOfRow( row, state );
+        emit queueChanged();
     }
 }
 
@@ -516,6 +542,7 @@ Playlist::Model::setRowDequeued( int row )
         else
             state = (Item::State) ( stateOfRow(row) & ~Item::Queued );
         setStateOfRow( row, state );
+        emit queueChanged();
     }
 }
 

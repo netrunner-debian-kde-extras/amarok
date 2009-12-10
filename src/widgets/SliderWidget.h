@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2003-2008 Mark Kretschmann <kretschmann@kde.org>                       *
+ * Copyright (c) 2003-2009 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2005 Gabor Lehel <illissius@gmail.com>                                 *
  * Copyright (c) 2008 Dan Meltzer <parallelgrapefruit@gmail.com>                        *
  *                                                                                      *
@@ -18,6 +18,8 @@
 
 #ifndef SLIDERWIDGET_H
 #define SLIDERWIDGET_H
+
+#include "moodbar/MoodbarManager.h"
 
 #include <QList>
 #include <QPixmap>
@@ -58,16 +60,17 @@ namespace Amarok
             virtual void slideEvent( QMouseEvent* );
             virtual void resizeEvent( QResizeEvent * ) { m_needsResize = true; }
 
-            void paintCustomSlider( QPainter *p, int x, int y, int width, int height, double pos = -1.0 );
-            void paintCustomSliderNG( QPainter *p, int x, int y, int width, int height, double pos = -1.0 );
+            void paintCustomSlider( QPainter *p, int x, int y, int width, int height, bool drawMoodbar = false );
+            void paintCustomSliderNG( QPainter *p, int x, int y, int width, int height, double pos = -1.0, bool paintMoodbar = false );
 
             bool m_sliding;
+            bool m_usingCustomStyle;
 
             /// we flip the value for vertical sliders
             int adjustValue( int v ) const
             {
-               int mp = ( minimum() + maximum() ) / 2;
-               return orientation() == Qt::Vertical ? mp - ( v - mp ) : v;
+                int mp = ( minimum() + maximum() ) / 2;
+                return orientation() == Qt::Vertical ? mp - ( v - mp ) : v;
             }
 
             static const int m_borderWidth = 6;
@@ -77,6 +80,8 @@ namespace Amarok
             static const int m_sliderInsertY = 5;
 
         private:
+            QRect sliderHandleRect( const QRect &slider, qreal percent ) const;
+
             bool m_outside;
             int  m_prevValue;
             bool m_needsResize;
@@ -90,6 +95,9 @@ namespace Amarok
             QPixmap m_bottom;
             QPixmap m_left;
 
+            MoodbarManager * m_moodbarManager;
+            QPixmap m_currentMoodBar;
+
             Q_DISABLE_COPY( Slider )
     };
 
@@ -98,7 +106,7 @@ namespace Amarok
         Q_OBJECT
 
         public:
-            explicit VolumeSlider( uint max, QWidget *parent = 0 );
+            explicit VolumeSlider( uint max, QWidget *parent, bool customStyle = true );
 
         protected:
             virtual void paintEvent( QPaintEvent* );
@@ -106,7 +114,6 @@ namespace Amarok
             virtual void mousePressEvent( QMouseEvent* );
             virtual void contextMenuEvent( QContextMenuEvent* );
             virtual void wheelEvent( QWheelEvent *e );
-            virtual void resizeEvent(QResizeEvent * event);
 
         private:
             Q_DISABLE_COPY( VolumeSlider )
@@ -120,7 +127,7 @@ namespace Amarok
             TimeSlider( QWidget *parent );
 
             void setSliderValue( int value );
-            void drawTriangle( const QString &name, int milliSeconds );
+            void drawTriangle( const QString &name, int milliSeconds, bool showPopup = false);
             void clearTriangles();
 
         public slots:

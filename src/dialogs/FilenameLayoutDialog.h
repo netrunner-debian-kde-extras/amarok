@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Daniel Dewald <Daniel.Dewald@time-shift.de>                       *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -19,9 +20,9 @@
 
 #include "amarok_export.h"
 #include "ui_FilenameLayoutDialog.h"
+#include "TagGuesser.h"
 
 #include <QWidget>
-
 
 static const QStringList typeElements = ( QStringList()
 << ""
@@ -82,8 +83,13 @@ class FilenameLayoutDialog
         AMAROK_EXPORT explicit FilenameLayoutDialog( QWidget *parent = 0, bool isOrganizeCollection = 0 ); // Could I have exported the whole class? I don't see how
         AMAROK_EXPORT QString getParsableScheme();
         int getCaseOptions();
-        int getWhitespaceOptions();
-        int getUnderscoreOptions();
+        bool getWhitespaceOptions();
+        bool getUnderscoreOptions();
+
+        /**
+        *   Sets the filename to show colored preview from
+        */
+        void setFileName( QString FileName );
 
     public slots:
         void onAccept();
@@ -94,15 +100,25 @@ class FilenameLayoutDialog
     private slots:
         void editStateEnable( bool checked );
         void toggleAdvancedMode();
+        void updatePreview();
     
     private:
         void setAdvancedMode( bool isAdvanced );
         QString parsableScheme() const;
         void inferScheme( const QString &scheme );
         
+        QString m_filename;                         //! Filename to guess from
         bool m_isOrganizeCollection;
         bool m_advancedMode;
         TokenDropTarget *m_dropTarget;
+        QColor m_color_Track;
+        QColor m_color_Title;
+        QColor m_color_Artist;
+        QColor m_color_Composer;
+        QColor m_color_Year;
+        QColor m_color_Album;
+        QColor m_color_Comment;
+        QColor m_color_Genre;
         
         QList<QRadioButton*> m_caseEditRadioButtons;
 };

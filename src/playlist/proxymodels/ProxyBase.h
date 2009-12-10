@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                *
+ * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -377,6 +377,11 @@ signals:
      * Signal forwarded from the source model. Emitted when the metadata of a track changes.
      */
     void metadataUpdated();
+
+    /**
+     * Signal forwarded from the source model. Emitted when tracks are (de)queued in the playlist.
+     */
+    void queueChanged();
 
 protected:
     /**

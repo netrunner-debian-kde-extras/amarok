@@ -103,51 +103,51 @@ WikipediaApplet::init()
     QAction* backwardAction = new QAction( this );
     backwardAction->setIcon( KIcon( "go-previous" ) );
     backwardAction->setEnabled( false );
+    backwardAction->setText( i18n( "Back" ) );
     m_backwardIcon = addAction( backwardAction );
-    m_backwardIcon->setToolTip( i18n( "Previous" ) );
     connect( backwardAction, SIGNAL( activated() ), this, SLOT( goBackward() ) );
     
     QAction* forwardAction = new QAction( this );
     forwardAction->setIcon( KIcon( "go-next" ) );
     forwardAction->setEnabled( false );
+    forwardAction->setText( i18n( "Forward" ) );
     m_forwardIcon = addAction( forwardAction );
-    m_forwardIcon->setToolTip( i18n( "Next" ) );
     connect( m_forwardIcon, SIGNAL( activated() ), this, SLOT( goForward() ) );
 
     QAction* artistAction = new QAction( this );
     artistAction->setIcon( KIcon( "filename-artist-amarok" ) );
     artistAction->setEnabled( false );
+    artistAction->setText( i18n( "Artist" ) );
     m_artistIcon = addAction( artistAction );
-    m_artistIcon->setToolTip( i18n( "Artist" ) );
     connect( m_artistIcon, SIGNAL( activated() ), this, SLOT( gotoArtist() ) );
     
     QAction* albumAction = new QAction( this );
     albumAction->setIcon( KIcon( "filename-album-amarok" ) );
     albumAction->setEnabled( false );
+    albumAction->setText( i18n( "Album" ) );
     m_albumIcon = addAction( albumAction );
-    m_albumIcon->setToolTip( i18n( "Album" ) );
     connect( m_albumIcon, SIGNAL( activated() ), this, SLOT( gotoAlbum() ) );
 
     QAction* trackAction = new QAction( this );
     trackAction->setIcon( KIcon( "filename-title-amarok" ) );
     trackAction->setEnabled( false );
+    trackAction->setText( i18n( "Track" ) );
     m_trackIcon = addAction( trackAction );
-    m_trackIcon->setToolTip( i18n( "Track" ) );
     connect( m_trackIcon, SIGNAL( activated() ), this, SLOT( gotoTrack() ) );
 
     QAction* langAction = new QAction( this );
     langAction->setIcon( KIcon( "preferences-system" ) );
     langAction->setEnabled( true );
+    langAction->setText( i18n( "Settings" ) );
     m_settingsIcon = addAction( langAction );
-    m_settingsIcon->setToolTip( i18n( "Settings" ) );
     connect( m_settingsIcon, SIGNAL( activated() ), this, SLOT( switchLang() ) );
     
     QAction* reloadAction = new QAction( this );
     reloadAction->setIcon( KIcon( "view-refresh" ) );
     reloadAction->setEnabled( false );
+    reloadAction->setText( i18n( "Reload" ) );
     m_reloadIcon = addAction( reloadAction );
-    m_reloadIcon->setToolTip( i18n( "Reload" ) );
-    connect( m_reloadIcon, SIGNAL( activated() ), this, SLOT( reloadWikipedia() ) );    
+    connect( m_reloadIcon, SIGNAL( activated() ), this, SLOT( reloadWikipedia() ) );
 
     connectSource( "wikipedia" );
     connect( dataEngine( "amarok-wikipedia" ), SIGNAL( sourceAdded( const QString & ) ), SLOT( connectSource( const QString & ) ) );
@@ -157,7 +157,7 @@ WikipediaApplet::init()
     // Read config and inform the engine.
     KConfigGroup config = Amarok::config("Wikipedia Applet");
     m_wikiPreferredLang = config.readEntry( "PreferredLang", "aut" );
-    dataEngine( "amarok-wikipedia" )->query( QString( "wikipedia:lang:" ) + m_wikiPreferredLang );
+    dataEngine( "amarok-wikipedia" )->query( QString( "wikipedia:AMAROK_TOKEN:lang:AMAROK_TOKEN:" ) + m_wikiPreferredLang );
 }
 
 void
@@ -344,21 +344,21 @@ void
 WikipediaApplet::gotoArtist()
 {
     DEBUG_BLOCK
-    dataEngine( "amarok-wikipedia" )->query( "wikipedia:goto:artist" );
+    dataEngine( "amarok-wikipedia" )->query( "wikipedia:AMAROK_TOKEN:goto:AMAROK_TOKEN:artist" );
 }
 
 void
 WikipediaApplet::gotoAlbum()
 {
     DEBUG_BLOCK
-    dataEngine( "amarok-wikipedia" )->query( "wikipedia:goto:album" );
+    dataEngine( "amarok-wikipedia" )->query( "wikipedia:AMAROK_TOKEN:goto:AMAROK_TOKEN:album" );
 }
 
 void
 WikipediaApplet::gotoTrack()
 {
     DEBUG_BLOCK
-    dataEngine( "amarok-wikipedia" )->query( "wikipedia:goto:track" );
+    dataEngine( "amarok-wikipedia" )->query( "wikipedia:AMAROK_TOKEN:goto:AMAROK_TOKEN:track" );
 }
 
 void
@@ -367,7 +367,7 @@ WikipediaApplet::linkClicked( const QUrl &url )
     DEBUG_BLOCK
     if ( url.toString().contains( "wikipedia.org/" ) )
     {
-        dataEngine( "amarok-wikipedia" )->query( QString( "wikipedia:get:" ) + url.toString() );
+        dataEngine( "amarok-wikipedia" )->query( QString( "wikipedia:AMAROK_TOKEN:get:AMAROK_TOKEN:" ) + url.toString() );
         if( m_backwardIcon->action() && !m_backwardIcon->action()->isEnabled() )
             m_backwardIcon->action()->setEnabled( true );
 
@@ -383,7 +383,7 @@ void
 WikipediaApplet::reloadWikipedia()
 {
     DEBUG_BLOCK
-    dataEngine( "amarok-wikipedia" )->query( "wikipedia:reload" );
+    dataEngine( "amarok-wikipedia" )->query( "wikipedia:AMAROK_TOKEN:reload" );
 }
 
 void
@@ -410,11 +410,11 @@ WikipediaApplet::switchToLang(QString lang)
     else if (lang == i18n("German") )
         m_wikiPreferredLang = "de";
 
-    dataEngine( "amarok-wikipedia" )->query( QString( "wikipedia:lang:" ) + m_wikiPreferredLang );
+    dataEngine( "amarok-wikipedia" )->query( QString( "wikipedia:AMAROK_TOKEN:lang:AMAROK_TOKEN:" ) + m_wikiPreferredLang );
 
     KConfigGroup config = Amarok::config("Wikipedia Applet");
     config.writeEntry( "PreferredLang", m_wikiPreferredLang );
-    dataEngine( "amarok-wikipedia" )->query( QString( "wikipedia:lang:" ) + m_wikiPreferredLang );
+    dataEngine( "amarok-wikipedia" )->query( QString( "wikipedia:AMAROK_TOKEN:lang:AMAROK_TOKEN:" ) + m_wikiPreferredLang );
 }
 
 void
@@ -445,19 +445,19 @@ WikipediaApplet::paletteChanged( const QPalette & palette )
     QFile file( KStandardDirs::locate("data", "amarok/data/WikipediaCustomStyle.css" ) );
     if( file.open(QIODevice::ReadOnly | QIODevice::Text) )
     {
-        QColor highlight( The::paletteHandler()->backgroundColor() );
-
         QString contents = QString( file.readAll() );
-        //debug() << "setting background:" << Amarok::highlightColor().lighter( 130 ).name();
-        contents.replace( "{text_background_color}", highlight.name() );
-        contents.replace( "{border_color}", highlight.name() );
+
+        const QColor bg = The::paletteHandler()->backgroundColor();
+        contents.replace( "{text_background_color}", bg.name() );
         contents.replace( "{text_color}", palette.text().color().name() );
         contents.replace( "{link_color}", palette.link().color().name() );
-        contents.replace( "{link_hover_color}", palette.light().color().name() );
-        highlight = The::paletteHandler()->backgroundColor( 300, 300 );
-        contents.replace( "{shaded_text_background_color}", highlight.name() );
-        contents.replace( "{table_background_color}", highlight.name() );
-        contents.replace( "{headings_background_color}", highlight.name() );
+        contents.replace( "{link_hover_color}", palette.linkVisited().color().name() );
+
+        const QString abgName = The::paletteHandler()->alternateBackgroundColor().name();
+        contents.replace( "{shaded_text_background_color}", abgName );
+        contents.replace( "{table_background_color}", abgName );
+        contents.replace( "{border_color}", abgName );
+        contents.replace( "{headings_background_color}", abgName );
 
         delete m_css;
         m_css = new KTemporaryFile();

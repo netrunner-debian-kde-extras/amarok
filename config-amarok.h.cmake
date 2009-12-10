@@ -22,7 +22,7 @@
 /* #undef HAVE_SYSTEMS_H */
 
 /* have TagLib */
-#define HAVE_TAGLIB 1
+#cmakedefine HAVE_TAGLIB 1
 
 /* MySql database support enabled */
 #cmakedefine USE_MYSQL 1
@@ -35,3 +35,6 @@
 
 /* The Git version being compiled, if any. undef means not running from Git. */
 #cmakedefine CURRENT_GIT_VERSION ${CURRENT_GIT_VERSION}
+
+/* If liblastfm is found */
+#cmakedefine HAVE_LIBLASTFM 1

@@ -46,6 +46,7 @@ class SqlPodcastEpisode : public PodcastEpisode
         //PodcastEpisode methods
         PodcastChannelPtr channel() const { return PodcastChannelPtr::dynamicCast( m_channel ); }
         virtual bool isNew() const { return m_isNew; }
+        virtual void setNew( bool isNew );
         virtual void setLocalUrl( const KUrl &url );
 
         //Track Methods
@@ -98,6 +99,11 @@ class SqlPodcastChannel : public PodcastChannel
         //Meta::PodcastChannel methods
         virtual void setTitle( const QString &title );
         virtual Meta::PodcastEpisodeList episodes();
+        virtual bool hasImage() const { return !m_image.isNull(); }
+        virtual void setImage( const QPixmap &image );
+        virtual QPixmap image() const { return m_image; }
+        virtual KUrl imageUrl() const { return m_imageUrl; }
+        virtual void setImageUrl( const KUrl &imageUrl );
 
         PodcastEpisodePtr addEpisode( PodcastEpisodePtr episode );
 

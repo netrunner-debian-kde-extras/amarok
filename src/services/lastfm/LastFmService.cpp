@@ -183,7 +183,10 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
       m_profile( 0 ),
       m_userinfo( 0 ),
       m_userName( username ),
-      m_sessionKey( sessionKey )
+      m_sessionKey( sessionKey ),
+      m_userNameArray( 0 ),
+      m_sessionKeyArray( 0 ),
+      m_similarArtistsBiasFactory( 0 )
 {
     DEBUG_BLOCK
 
@@ -205,7 +208,11 @@ LastFmService::~LastFmService()
 {
     DEBUG_BLOCK
 
-    if( m_collection )
+    delete m_similarArtistsBiasFactory;
+    delete[] m_userNameArray;
+    delete[] m_sessionKeyArray;
+
+    if( m_collection && CollectionManager::instance() )
     {
         CollectionManager::instance()->removeUnmanagedCollection( m_collection );
         delete m_collection;
@@ -221,18 +228,19 @@ LastFmService::init()
     const QString password = config.password();
     const QString sessionKey = config.sessionKey();
     // set the global static Lastfm::Ws stuff
-    lastfm::ws::ApiKey = "402d3ca8e9bc9d3cf9b85e1202944ca5";
+    lastfm::ws::ApiKey = Amarok::lastfmApiKey();
     lastfm::ws::SharedSecret = "fe0dcde9fcd14c2d1d50665b646335e9";
     // testing w/ official keys
     //Ws::SharedSecret = "73582dfc9e556d307aead069af110ab8";
     //Ws::ApiKey = "c8c7b163b11f92ef2d33ba6cd3c2c3c3";
-    lastfm::ws::Username = qstrdup( m_userName.toLatin1().data() );
+    m_userNameArray = qstrdup( m_userName.toLatin1().data() );
+    lastfm::ws::Username = m_userNameArray;
 
 
     // set up proxy
     QNetworkAccessManager* qnam = new KNetworkAccessManager( this );
     lastfm::setNetworkAccessManager( qnam );
-    
+
     debug() << "username:" << QString( QUrl::toPercentEncoding( lastfm::ws::Username ) );
 
     QString authToken =  md5( ( m_userName + md5( password.toUtf8() ) ).toUtf8() );
@@ -252,7 +260,8 @@ LastFmService::init()
     } else
     {
         debug() << "using saved sessionkey from last.fm";
-        lastfm::ws::SessionKey = qstrdup( sessionKey.toLatin1().data() );
+        m_sessionKeyArray = qstrdup( sessionKey.toLatin1().data() );
+        lastfm::ws::SessionKey = m_sessionKeyArray;
         m_sessionKey = sessionKey;
 
         if( m_scrobble )
@@ -269,13 +278,13 @@ LastFmService::init()
     m_searchWidget->setVisible( false );
 
     // enable custom bias
-    Dynamic::SimilarArtistsBiasFactory* similarF = new Dynamic::SimilarArtistsBiasFactory();
-    Dynamic::CustomBias::registerNewBiasFactory( similarF );
+    m_similarArtistsBiasFactory = new Dynamic::SimilarArtistsBiasFactory();
+    Dynamic::CustomBias::registerNewBiasFactory( m_similarArtistsBiasFactory );
 
     // disabled until I figure out how to get what I want from last.fm
     //Dynamic::WeeklyTopBiasFactory* weeklyF = new Dynamic::WeeklyTopBiasFactory();
     //Dynamic::CustomBias::registerNewBiasFactory( weeklyF );
-    
+
     m_collection = new LastFmServiceCollection( m_userName );
     CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
 
@@ -325,7 +334,8 @@ LastFmService::onAuthenticated()
             }
             m_sessionKey = lfm[ "session" ][ "key" ].text();
 
-            lastfm::ws::SessionKey = qstrdup( m_sessionKey.toLatin1().data() );
+            m_sessionKeyArray = qstrdup( m_sessionKey.toLatin1().data() );
+            lastfm::ws::SessionKey = m_sessionKeyArray;
             config.setSessionKey( m_sessionKey );
             config.save();
 

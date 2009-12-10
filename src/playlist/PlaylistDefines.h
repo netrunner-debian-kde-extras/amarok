@@ -45,10 +45,12 @@ enum Column
     Genre,
     GroupLength,
     GroupTracks,
+    Labels,
     LastPlayed,
     Length,
     LengthInSeconds,
     Mood,
+    Moodbar,
     PlayCount,
     Rating,
     SampleRate,
@@ -76,7 +78,8 @@ static const QList<int> editableColumns = ( QList<int>() )
         << Title
         << TitleWithTrackNum
         << TrackNumber
-        << Year;
+        << Year
+        << Bpm;
 
 //this is the list of user visible token names and hence needs to be translated
 static const QList<const char *> columnNames = ( QList<const char *>()
@@ -85,7 +88,7 @@ static const QList<const char *> columnNames = ( QList<const char *>()
         << I18N_NOOP2( "'Album artist' playlist column name and token for playlist layouts", "Album artist" )
         << I18N_NOOP2( "'Artist' playlist column name and token for playlist layouts", "Artist" )
         << I18N_NOOP2( "'Bitrate' playlist column name and token for playlist layouts", "Bitrate" )
-        << I18N_NOOP2( "'Beats per minute' playlist column name and token for playlist layouts, if in doubt, dont expand as it needs to be short!!", "Bpm" )
+        << I18N_NOOP2( "'Beats per minute' playlist column name and token for playlist layouts", "BPM" )
         << I18N_NOOP2( "'Comment' playlist column name and token for playlist layouts", "Comment" )
         << I18N_NOOP2( "'Composer' playlist column name and token for playlist layouts", "Composer" )
         << I18N_NOOP2( "'Cover image' playlist column name and token for playlist layouts", "Cover image" )
@@ -97,10 +100,12 @@ static const QList<const char *> columnNames = ( QList<const char *>()
         << I18N_NOOP2( "'Genre' playlist column name and token for playlist layouts", "Genre" )
         << I18N_NOOP2( "'Group length' (total play time of group) playlist column name and token for playlist layouts", "Group length" )
         << I18N_NOOP2( "'Group tracks' (number of tracks in group) playlist column name and token for playlist layouts", "Group tracks" )
+        << I18N_NOOP2( "'Labels' playlist column name and token for playlist layouts", "Labels" )
         << I18N_NOOP2( "'Last played' (when was track last played) playlist column name and token for playlist layouts", "Last played" )
         << I18N_NOOP2( "'Length' (track length) playlist column name and token for playlist layouts", "Length" )
         << I18N_NOOP2( "'Length' (track length) playlist column name and token for playlist layouts", "Length" )
         << I18N_NOOP2( "'Mood' playlist column name and token for playlist layouts", "Mood" )
+        << I18N_NOOP2( "'Moodbar' playlist column name and token for playlist layouts", "Moodbar" )
         << I18N_NOOP2( "'Play count' playlist column name and token for playlist layouts", "Play count" )
         << I18N_NOOP2( "'Rating' playlist column name and token for playlist layouts", "Rating" )
         << I18N_NOOP2( "'Sample rate' playlist column name and token for playlist layouts", "Sample rate" )
@@ -134,10 +139,12 @@ static const QStringList internalColumnNames = ( QStringList()
         << "Genre"
         << "Group length"
         << "Group tracks"
+        << "Labels"
         << "Last played"
         << "Length"
         << "Length (seconds)"
         << "Mood"
+        << "Moodbar"
         << "Play count"
         << "Rating"
         << "Sample rate"
@@ -157,6 +164,7 @@ static const QStringList sortableCategories = ( QStringList()
         << "Album artist"
         << "Artist"
         << "Bitrate"
+        << "Bpm"
         << "Comment"
         << "Composer"
         << "Directory"
@@ -190,7 +198,7 @@ static const QStringList iconNames = ( QStringList()
         << "filename-artist-amarok"
         << "filename-artist-amarok"
         << "application-octet-stream"
-        << ""
+        << "filename-bpm-amarok"
         << "filename-comment-amarok"
         << "filename-composer-amarok"
         << ""
@@ -202,10 +210,12 @@ static const QStringList iconNames = ( QStringList()
         << "filename-genre-amarok"
         << "filename-group-length"
         << "filename-group-tracks"
+        << "filename-labels-amarok"
         << "filename-last-played"
         << "chronometer"
         << "chronometer"
         << ""
+        << "filename-moodbar"
         << "amarok_playcount"
         << "rating"
         << "filename-sample-rate"
@@ -226,7 +236,8 @@ enum SearchFields
     MatchAlbum = 4,
     MatchGenre = 8,
     MatchComposer = 16,
-    MatchYear = 32
+    MatchYear = 32,
+    MatchRating = 64
 };
 
 enum DataRoles

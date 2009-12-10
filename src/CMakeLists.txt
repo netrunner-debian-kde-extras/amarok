@@ -42,6 +42,7 @@ include_directories(
     configdialog/dialogs
     context
     context/widgets
+    context/widgets/appletexplorer/
     dbus
     dialogs
     dynamic
@@ -66,10 +67,12 @@ include_directories(
     ${KDE4_INCLUDE_DIR}
     ${TAGLIB-EXTRAS_INCLUDE_DIR}
     ${TAGLIB-EXTRAS_INCLUDES}
+    ${MYSQL_INCLUDE_DIR}
     ${QT_INCLUDES}
     ${QT_QTSCRIPT_INCLUDE_DIR}
     ${QCA2_INCLUDE_DIR}
 )
+
 
 if ( KDEMULTIMEDIA_FOUND )
     include_directories( ${KDEMULTIMEDIA_INCLUDE_DIR} )
@@ -297,12 +300,14 @@ set(meta_SRCS
     meta/capabilities/MultiPlayableCapability.cpp
     meta/capabilities/MultiSourceCapability.cpp
     meta/capabilities/OrganiseCapability.cpp
+    meta/capabilities/ReadLabelCapability.cpp
     meta/capabilities/SourceInfoCapability.cpp
     meta/capabilities/StatisticsCapability.cpp
     meta/capabilities/StreamInfoCapability.cpp
     meta/capabilities/TimecodeLoadCapability.cpp
     meta/capabilities/TimecodeWriteCapability.cpp
     meta/capabilities/UpdateCapability.cpp
+    meta/capabilities/WriteLabelCapability.cpp
     meta/file/File.cpp
     meta/multi/MultiTrack.cpp
     meta/multi/MultiSourceCapabilityImpl.cpp
@@ -356,13 +361,17 @@ set( libcontextview_SRCS
     context/toolbar/AppletToolbarAppletItem.cpp
     context/toolbar/AppletToolbarBase.cpp
     context/toolbar/AppletToolbarConfigItem.cpp
+    context/widgets/AmarokWebView.cpp
     context/widgets/RatingWidget.cpp
     context/widgets/TextScrollingWidget.cpp
     context/widgets/DropPixmapItem.cpp
     context/widgets/ToolBoxIcon.cpp
     context/widgets/ContainmentArrow.cpp
     context/widgets/ContainmentSelectionLayer.cpp
-    context/widgets/ToolBoxMenu.cpp
+    context/widgets/appletexplorer/AppletExplorer.cpp
+    context/widgets/appletexplorer/AppletIcon.cpp
+    context/widgets/appletexplorer/AppletItemModel.cpp
+    context/widgets/appletexplorer/AppletsList.cpp
     context/widgets/TrackWidget.cpp
 )
 
@@ -372,6 +381,8 @@ set( libcontextview_SRCS
 set(libpodcasts_SRCS
     podcasts/PodcastReader.cpp
     podcasts/PodcastMeta.cpp
+    podcasts/PodcastImageFetcher.cpp
+    podcasts/PodcastProvider.cpp
     podcasts/sql/SqlPodcastMeta.cpp
     podcasts/sql/SqlPodcastProvider.cpp
     podcasts/sql/PodcastSettingsDialog.cpp
@@ -436,6 +447,7 @@ set(libplaylist_SRCS
     playlist/layouts/PlaylistLayoutEditDialog.cpp
     playlist/navigators/DynamicTrackNavigator.cpp
     playlist/navigators/FavoredRandomTrackNavigator.cpp
+    playlist/navigators/NavigatorConfigAction.cpp
     playlist/navigators/RandomAlbumNavigator.cpp
     playlist/navigators/RandomTrackNavigator.cpp
     playlist/navigators/RepeatAlbumNavigator.cpp
@@ -604,12 +616,14 @@ set(amaroklib_LIB_SRCS
     dialogs/ScriptUpdater.cpp
     dialogs/TagDialog.cpp
     dialogs/TagGuesser.cpp
+    dialogs/LabelListModel.cpp
     browsers/filebrowser/FileBrowser.cpp
     browsers/filebrowser/MyDirOperator.cpp
     browsers/filebrowser/kbookmarkhandler.cpp
     firstruntutorial/FirstRunTutorial.cpp
     firstruntutorial/FirstRunTutorialPage.cpp
     MountPointManager.cpp
+    OpmlParser.cpp
     PaletteHandler.cpp
     PopupDropperFactory.cpp
     toolbar/CurrentTrackToolbar.cpp
@@ -648,7 +662,16 @@ set(amaroklib_LIB_SRCS
     widgets/BookmarkPopup.cpp
     GlobalCollectionActions.cpp
     GlobalCurrentTrackActions.cpp
+    moodbar/MoodbarManager.cpp
 )
+
+if( BUILD_MYSQLE_COLLECTION )
+else( BUILD_MYSQLE_COLLECTION )
+        set(amaroklib_LIB_SRCS
+            ${amaroklib_LIB_SRCS}
+            MySqlServerTester.cpp
+           )
+endif( BUILD_MYSQLE_COLLECTION )
 
 if(CMAKE_BUILD_TYPE MATCHES debugfull)
     set(amaroklib_LIB_SRCS
@@ -673,6 +696,14 @@ if(CMAKE_BUILD_TYPE MATCHES debugfull)
         ../tests/TestSmartPointerList.cpp
     )
 endif(CMAKE_BUILD_TYPE MATCHES debugfull)
+if( LIBLASTFM_FOUND )
+    set(amaroklib_LIB_SRCS
+        ${amaroklib_LIB_SRCS}
+        LastfmReadLabelCapability.cpp
+    )
+    include_directories( ${LIBLASTFM_INCLUDE_DIR}/..  ${LIBLASTFM_INCLUDE_DIR})
+    set( EXTRA_LIBS ${LIBLASTFM_LIBRARY} )
+endif( LIBLASTFM_FOUND )
 
 qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.root.xml RootDBusHandler.h Amarok::RootDBusHandler RootAdaptor RootAdaptor)
 qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.player.xml PlayerDBusHandler.h Amarok::PlayerDBusHandler PlayerAdaptor PlayerAdaptor)
@@ -725,6 +756,11 @@ target_link_libraries(amaroklib
 if(CMAKE_BUILD_TYPE MATCHES debugfull)
     target_link_libraries(amaroklib ${QT_QTTEST_LIBRARY})
 endif(CMAKE_BUILD_TYPE MATCHES debugfull)
+
+if( BUILD_MYSQLE_COLLECTION )
+else( BUILD_MYSQLE_COLLECTION )
+    target_link_libraries(amaroklib ${MYSQL_LIBRARIES} ${ZLIB_LIBRARIES})
+endif( BUILD_MYSQLE_COLLECTION )
 
 if(WIN32)
     target_link_libraries(amaroklib ${QT_QTWEBKIT_LIBRARY})
@@ -815,7 +851,5 @@ kde4_install_icons( ${ICON_INSTALL_DIR} )
 ############ amarok protocol handler ###########
 
 install( FILES amarokurls/amarok.protocol  DESTINATION  ${SERVICES_INSTALL_DIR} )
-
-
 
 

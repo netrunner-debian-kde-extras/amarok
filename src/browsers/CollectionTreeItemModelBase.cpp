@@ -544,7 +544,12 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
                     if ( ( validFilters & QueryMaker::GenreFilter ) == 0 ) continue;
                     ADD_OR_EXCLUDE_FILTER( Meta::valGenre, elem.text, false, false );
                 }
-                else if ( lcField.compare( "composer", Qt::CaseInsensitive ) == 0|| lcField.compare( i18n( "composer" ), Qt::CaseInsensitive ) == 0 )
+                else if ( lcField.compare( "title", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "title" ), Qt::CaseInsensitive ) == 0 )
+                {
+                    if ( ( validFilters & QueryMaker::TitleFilter ) == 0 ) continue;
+                    ADD_OR_EXCLUDE_FILTER( Meta::valTitle, elem.text, false, false );
+                }
+                else if ( lcField.compare( "composer", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "composer" ), Qt::CaseInsensitive ) == 0 )
                 {
                     if ( ( validFilters & QueryMaker::ComposerFilter ) == 0 ) continue;
                     ADD_OR_EXCLUDE_FILTER( Meta::valComposer, elem.text, false, false );
@@ -554,9 +559,17 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
                     if ( ( validFilters & QueryMaker::YearFilter ) == 0 ) continue;
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valYear, elem.text.toInt(), compare );
                 }
+                else if ( lcField.compare( "bpm", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "bpm" ), Qt::CaseInsensitive ) == 0)
+                {
+                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valBpm, elem.text.toInt(), compare );
+                }
                 else if( lcField.compare( "comment", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "comment" ), Qt::CaseInsensitive ) == 0 )
                 {
                     ADD_OR_EXCLUDE_FILTER( Meta::valYear, elem.text, false, false );
+                }
+                else if( lcField.compare( "bitrate", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "bitrate" ), Qt::CaseInsensitive ) == 0 )
+                {
+                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valBitrate, elem.text.toInt(), compare );
                 }
                 else if( lcField.compare( "rating", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "rating" ), Qt::CaseInsensitive ) == 0 )
                 {
@@ -569,6 +582,10 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
                 else if( lcField.compare( "playcount", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "playcount" ), Qt::CaseInsensitive ) == 0 )
                 {
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valPlaycount, elem.text.toInt(), compare );
+                }
+                else if( lcField.compare( "samplerate", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "samplerate" ), Qt::CaseInsensitive ) == 0 )
+                {
+                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valSamplerate, elem.text.toInt(), compare );
                 }
                 else if( lcField.compare( "length", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "length" ), Qt::CaseInsensitive ) == 0 )
                 {
@@ -642,8 +659,6 @@ CollectionTreeItemModelBase::addFilters( QueryMaker * qm ) const
 void
 CollectionTreeItemModelBase::queryDone()
 {
-    DEBUG_BLOCK
-
     QueryMaker *qm = qobject_cast<QueryMaker*>( sender() );
     if( !qm )
         return;
@@ -1050,8 +1065,6 @@ void CollectionTreeItemModelBase::markSubTreeAsDirty( CollectionTreeItem *item )
 
 void CollectionTreeItemModelBase::itemAboutToBeDeleted( CollectionTreeItem *item )
 {
-    DEBUG_BLOCK
-
     if( !d->m_runningQueries.contains( item ) )
         return;
     //replace this hack with QWeakPointer as soon as we depend on Qt 4.6

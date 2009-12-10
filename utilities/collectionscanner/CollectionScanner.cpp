@@ -87,6 +87,7 @@ CollectionScanner::CollectionScanner( int &argc, char **argv )
         , m_collectionId() //UNUSED, problems with DBus
         , m_amarokPid() //UNUSED, problems with DBus
         , m_batch( false )
+        , m_charset( false )
         , m_importPlaylists( false )
         , m_batchFolderTime()
         , m_recursively( false )
@@ -609,7 +610,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
                     disc = TStringToQString( file->ID3v2Tag()->frameListMap()["TPOS"].front()->toString() ).trimmed();
 
                 if ( !file->ID3v2Tag()->frameListMap()["TBPM"].isEmpty() )
-                    attributes["bpm"] = TStringToQString( file->ID3v2Tag()->frameListMap()["TBPM"].front()->toString() ).trimmed().toFloat();
+                    attributes["bpm"] = TStringToQString( file->ID3v2Tag()->frameListMap()[ "TBPM" ].front()->toString() ).trimmed();
 
                 if ( !file->ID3v2Tag()->frameListMap()["TCOM"].isEmpty() )
                     attributes["composer"] = TStringToQString( file->ID3v2Tag()->frameListMap()["TCOM"].front()->toString() ).trimmed();
@@ -627,7 +628,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
 // HACK: charset-detector disabled, so all tags assumed utf-8
 // TODO: fix charset-detector to detect encoding with higher accuracy
 
-            if( tag )
+            if( m_charset && tag )
             {
                 TagLib::String metaData = tag->title() + tag->artist() + tag->album() + tag->comment();
                 const char* buf = metaData.toCString();
@@ -677,7 +678,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
                     attributes["composer"] = TStringToQString( file->tag()->fieldListMap()["COMPOSER"].front() ).trimmed();
 
                 if ( !file->tag()->fieldListMap()[ "BPM" ].isEmpty() )
-                    attributes["bpm"] = TStringToQString( file->tag()->fieldListMap()["BPM"].front() ).trimmed().toFloat();
+                    attributes["bpm"] = TStringToQString( file->tag()->fieldListMap()["BPM"].front() ).trimmed();
 
                 if ( !file->tag()->fieldListMap()[ "DISCNUMBER" ].isEmpty() )
                     disc = TStringToQString( file->tag()->fieldListMap()["DISCNUMBER"].front() ).trimmed();
@@ -958,9 +959,9 @@ CollectionScanner::readArgs()
                 else if( myarg == "restart" )
                     m_restart = true;
                 else if( myarg == "batch" )
-                {
                     m_batch = true;
-                }
+                else if( myarg == "charset" )
+                    m_charset = true;
                 else
                     displayHelp();
             }
@@ -982,6 +983,8 @@ CollectionScanner::readArgs()
                     m_restart = true;
                 else if( myarg[pos] == 'b' )
                     m_batch = true;
+                else if( myarg[pos] == 'c' )
+                    m_charset = true;
                 else
                     displayHelp();
 
@@ -1011,6 +1014,7 @@ CollectionScanner::displayHelp()
     s_textStream << qPrintable( tr( "-p, --importplaylists : Import playlists" ) ) << endl;
     s_textStream << qPrintable( tr( "-s, --restart         : After a crash, restart the scanner in its last position" ) ) << endl;
     s_textStream << qPrintable( tr( "-b, --batch           : Run in batch mode" ) ) << endl;
+    s_textStream << qPrintable( tr( "-c, --nocharset       : Use the charset detector on ID3 tags" ) ) << endl;
     s_textStream << qPrintable( tr( "--rpath=\"<path>\"      : In full-scan batch mode, specifies a path to prepend to entries (default is the current directory)" ) ) << endl;
     s_textStream.flush();
     ::exit(0);

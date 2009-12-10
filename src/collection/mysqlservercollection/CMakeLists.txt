@@ -13,6 +13,7 @@ include_directories(
         ${KDE4_INCLUDE_DIR}
         ${STRIGI_INCLUDE_DIR}
         ${QT_INCLUDES}
+	${OPENSSL_INCLUDE_DIR}
         ${MYSQL_INCLUDE_DIR}
         ${TAGLIB_INCLUDES}
         ${TAGLIB-EXTRAS_INCLUDES}
@@ -35,8 +36,10 @@ set(amarok_collection-mysqlservercollection_PART_SRCS
     ../sqlcollection/SqlCollectionDBusHandler.cpp
     ../sqlcollection/SqlCollectionLocation.cpp
     ../sqlcollection/SqlQueryMaker.cpp
+    ../sqlcollection/SqlReadLabelCapability.cpp
     ../sqlcollection/SqlRegistry.cpp
     ../sqlcollection/SqlMeta.cpp
+    ../sqlcollection/SqlWriteLabelCapability.cpp
     ../mysql-shared/MySqlCollection.cpp
     MySqlServerCollection.cpp
     ../../../utilities/collectionscanner/AFTUtility.cpp
@@ -63,6 +66,7 @@ target_link_libraries(amarok_collection-mysqlservercollection
     ${KDE4_KDEUI_LIBS}
     ${KDE4_KIO_LIBS}
     ${KDE4_THREADWEAVER_LIBRARIES}
+    ${OPENSSL_LIBRARIES}
     ${MYSQL_LIBRARIES}
     ${CMAKE_DL_LIBS}
     ${ZLIB_LIBRARIES}

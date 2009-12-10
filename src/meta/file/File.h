@@ -19,6 +19,7 @@
 
 #include "Meta.h"
 
+
 namespace MetaFile
 {
     class Track;
@@ -58,6 +59,9 @@ namespace MetaFile
             virtual void setYear( const QString &newYear );
 
             virtual void setTitle( const QString &newTitle );
+
+            virtual void setBpm( const float newBpm );
+            virtual float bpm() const;
 
             virtual QString comment() const;
             virtual void setComment( const QString &newComment );

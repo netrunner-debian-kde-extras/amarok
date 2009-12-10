@@ -121,22 +121,42 @@ Meta::SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, Meta::Sql
     }
 }
 
+// XXX: why do PodcastMetaCommon and PodcastEpisode not have an apropriate copy constructor?
 Meta::SqlPodcastEpisode::SqlPodcastEpisode( Meta::PodcastEpisodePtr episode )
     : Meta::PodcastEpisode()
     , m_dbId( 0 )
 {
-    m_url = KUrl( episode->uidUrl() );
     m_channel = SqlPodcastChannelPtr::dynamicCast( episode->channel() );
 
-    if ( !m_channel && episode->channel()) {
+    if( !m_channel && episode->channel() )
+    {
         debug() << "BUG: creating SqlEpisode but not an sqlChannel!!!";
         debug() <<  episode->channel()->title();
     }
 
-    m_localUrl = episode->localUrl();
+    // PodcastMetaCommon
     m_title = episode->title();
+    m_description = episode->description();
+    m_keywords = episode->keywords();
+    m_subtitle = episode->subtitle();
+    m_summary = episode->summary();
+    m_author = episode->author();
+    
+    // PodcastEpisode
     m_guid = episode->guid();
+    m_url = KUrl( episode->uidUrl() );
+    m_localUrl = episode->localUrl();
+    m_mimeType = episode->mimeType();
     m_pubDate = episode->pubDate();
+    m_duration = episode->duration();
+    m_fileSize = episode->filesize();
+    m_sequenceNumber = episode->sequenceNumber();
+    m_isNew = episode->isNew();
+
+    // The album, artist, composer, genre and year fields
+    // contain proxy objects with internal references to this.
+    // These proxies are created by Meta::PodcastEpisode(), so
+    // these fields don't have to be set here.
 
     //commit to the database
     updateInDb();
@@ -152,9 +172,17 @@ Meta::SqlPodcastEpisode::~SqlPodcastEpisode()
 }
 
 void
+Meta::SqlPodcastEpisode::setNew( bool isNew )
+{
+    m_isNew = isNew;
+    updateInDb();
+}
+
+void
 Meta::SqlPodcastEpisode::setLocalUrl( const KUrl &url )
 {
     m_localUrl = url;
+    updateInDb();
 
     if( m_localUrl.isEmpty() && !m_localFile.isNull() )
     {
@@ -421,7 +449,7 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( const QStringList &result )
     m_url = KUrl( *(iter++) );
     m_title = *(iter++);
     m_webLink = *(iter++);
-    QString imageUrl = *(iter++);
+    m_imageUrl = *(iter++);
     m_description = *(iter++);
     m_copyright = *(iter++);
     m_directory = KUrl( *(iter++) );
@@ -439,13 +467,24 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( PodcastChannelPtr channel )
     : Meta::PodcastChannel()
     , m_dbId( 0 )
 {
-    m_url = channel->url();
+    // PodcastMetaCommon
     m_title = channel->title();
-    m_webLink = channel->webLink();
     m_description = channel->description();
-    m_copyright = channel->copyright();
+    m_keywords = channel->keywords();
+    m_subtitle = channel->subtitle();
+    m_summary = channel->summary();
+    m_author = channel->author();
+    
+    // PodcastChannel
+    m_url = channel->url();
+    m_webLink = channel->webLink();
+    m_imageUrl = channel->imageUrl();
     m_labels = channel->labels();
     m_subscribeDate = channel->subscribeDate();
+    m_copyright = channel->copyright();
+    
+    if( channel->hasImage() )
+        m_image = channel->image();
 
     //Default Settings
     m_directory = KUrl( Amarok::saveLocation("podcasts") );
@@ -508,6 +547,30 @@ Meta::SqlPodcastChannel::episodes()
     return sqlEpisodesToPodcastEpisodes( m_episodes );
 }
 
+void
+Meta::SqlPodcastChannel::setImage( const QPixmap &image )
+{
+    DEBUG_BLOCK
+
+    m_image = image;
+}
+
+void
+Meta::SqlPodcastChannel::setImageUrl( const KUrl &imageUrl )
+{
+    DEBUG_BLOCK
+    debug() << imageUrl;
+    m_imageUrl = imageUrl;
+
+    if( imageUrl.isLocalFile() )
+    {
+        m_image = QPixmap( imageUrl.path() );
+        return;
+    }
+
+    debug() << "Image is remote, handled by podcastImageFetcher.";
+}
+
 Meta::PodcastEpisodePtr
 Meta::SqlPodcastChannel::addEpisode( PodcastEpisodePtr episode )
 {
@@ -557,8 +620,7 @@ Meta::SqlPodcastChannel::updateInDb()
     command = command.arg( escape(m_url.url()) ); //%1
     command = command.arg( escape(m_title) ); //%2
     command = command.arg( escape(m_webLink.url()) ); //%3
-    //TODO:m_image.url()
-    command = command.arg( escape(QString("")) ); //image  //%4
+    command = command.arg( escape(m_imageUrl.url()) ); //image  //%4
     command = command.arg( escape(m_description) ); //%5
     command = command.arg( escape(m_copyright) ); //%6
     command = command.arg( escape(m_directory.url()) ); //%7

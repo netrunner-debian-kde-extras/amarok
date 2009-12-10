@@ -24,6 +24,7 @@
 
 #include "amarok_export.h"
 #include "playlist/PlaylistItem.h"
+#include "LabelListModel.h"
 
 #include "meta/Meta.h"
 
@@ -70,9 +71,6 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
     signals:
         void lyricsChanged( const QString& );
 
-    public slots:
-        void openUrlRequest(const KUrl &url );
-
     private slots:
         void accept();
         void cancelPressed();
@@ -82,9 +80,22 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         void perTrack();
         void checkModified();
 
+        /**
+        *   removes selected label from list
+        */
+        void removeLabelPressed();
+
+        /**
+        *   adds label to list
+        */
+        void addLabelPressed();
+
         void showCoverMenu( const QPoint &pos );
         void loadCover();
 
+        /**
+        *   Shows FileNameLayoutDialog to guess tags from filename
+        */
         void guessFromFilename();
 
         void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
@@ -95,19 +106,40 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         void resultReady( const QString &collectionId, const Meta::ComposerList &composers );
         void resultReady( const QString &collectionId, const Meta::GenreList &genres );
         void dataQueryDone();
-        
+
         //individual item-specific slots, so we know which have been changed by the user
         // useful when editing multiple tracks and we can't compare against the tag itself
         void composerModified();
         void artistModified();
         void albumModified();
         void genreModified();
+        void bpmModified();
         void ratingModified();
         void yearModified();
         void scoreModified();
         void commentModified();
         void discNumberModified();
-        
+
+        /**
+        * Updates Add label button
+        */
+        void labelModified();
+
+        /**
+        * Updates Remove label button
+        */
+        void labelSelected();
+
+        /**
+        *   Updates track label list
+        */
+        void trackLabelsFetched( QStringList labels );
+
+        /**
+        *   Updates global label list
+        */
+        void globalLabelsFetched( QStringList labels );
+
     private:
         void init();
         void setCurrentTrack( Meta::TrackPtr track );
@@ -122,26 +154,49 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         void storeTags();
         void storeTags( const Meta::TrackPtr &track );
         void storeTags( const Meta::TrackPtr &track, int changes, const QVariantMap &data );
-        void storeLabels( const Meta::TrackPtr &track, const QStringList &labels );
+
+        /**
+        * Stores changes to labels for a specific track
+        * @arg track Track to store the labels to
+        * @arg removedlabels Labels to be removed from track
+        * @arg newlabels Labels to be added to track
+        */
+        void storeLabels( Meta::TrackPtr track, const QStringList &removedlabels, const QStringList &newlabels );
+
+        /**
+        * Loads labels from a specific track to edit gui
+        * @arg track Track to load labels for
+        */
+        void loadLabels( Meta::TrackPtr track );
+
+        /**
+        * Loads all labels to auto completion list
+        */
+        void loadGlobalLabels();
+
         void loadTags( const Meta::TrackPtr &track );
         void loadLyrics( const Meta::TrackPtr &track );
-        void loadLabels( const Meta::TrackPtr &track );
         QVariantMap dataForTrack( const Meta::TrackPtr &track );
         double scoreForTrack( const Meta::TrackPtr &track );
         int ratingForTrack( const Meta::TrackPtr &track );
+
+        /**
+        * @returns Labels for a specific track
+        * @arg track Track to load labels for
+        */
+        QStringList labelsForTrack( Meta::TrackPtr track );
+        
         QString lyricsForTrack( const Meta::TrackPtr &track );
-        QStringList labelsForTrack( const Meta::TrackPtr &track );
-        QStringList getCommonLabels();
         void saveTags();
-        const QString unknownSafe( QString );
+        /**
+        * Returns "Unknown" if the value is null or not known
+        * Otherwise returns the string
+        */
+        const QString unknownSafe( const QString & );
         const QStringList statisticsData();
         void applyToAllTracks();
 
         const QStringList filenameSchemes();
-
-        QStringList labelListFromText( const QString &text );
-        void generateDeltaForLabelList( const QStringList &list );
-        QString generateHTML( const QStringList &labels );
 
         void selectOrInsertText( const QString &text, QComboBox *comboBox );
 
@@ -151,15 +206,12 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         QMap<Meta::TrackPtr, double> m_storedScores;
         QMap<Meta::TrackPtr, int> m_storedRatings;
         QMap<Meta::TrackPtr, QString> m_storedLyrics;
-        QMap<Meta::TrackPtr, QStringList> m_newLabels;
-        QMap<Meta::TrackPtr, QStringList> m_originalLabels;
         QString m_path;
         QString m_currentCover;
-        QStringList m_labels;
-        QStringList m_addedLabels;
-        QStringList m_removedLabels;
-        QString m_commaSeparatedLabels;
-        KHTMLPart *m_labelCloud;
+        LabelListModel *m_labelModel;               //! Model MVC Class for Track label list
+        QStringList m_newLabels;                    //! List of added labels
+        QStringList m_removedLabels;                //! List of removed labels
+        QStringList m_labels;                       //! List of track labels
 
         //2.0 stuff
         Meta::TrackList m_tracks;
@@ -175,6 +227,7 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         QStringList m_genres;
 
         Ui::TagDialogBase *ui;
+
 };
 
 

@@ -117,16 +117,11 @@ ScanManager::startFullScan()
         *m_scanner << m_amarokCollectionScanDir + "amarokcollectionscanner" << "-p";
         if( AmarokConfig::scanRecursively() )
             *m_scanner << "-r";
+        if( AmarokConfig::useCharsetDetector() )
+            *m_scanner << "-c";
         *m_scanner << "--savelocation" << KGlobal::dirs()->saveLocation( "data", QString("amarok/"), true );
-        debug() << "GOING TO SCAN:";
+
         QStringList collectionFolders = MountPointManager::instance()->collectionFolders();
-        if( collectionFolders.size() > 30 )
-            debug() << "(a *lot*)";
-        else
-        {
-            foreach( const QString &dir, MountPointManager::instance()->collectionFolders() )
-                debug() << "    " << dir;
-        }
         *m_scanner << collectionFolders;
         m_scanner->setOutputChannelMode( KProcess::OnlyStdoutChannel );
         connect( m_scanner, SIGNAL( readyReadStandardOutput() ), this, SLOT( slotReadReady() ) );
@@ -200,6 +195,8 @@ void ScanManager::startIncrementalScan()
                 << "--collectionid" << m_collection->collectionId() << "-p";
         if( AmarokConfig::scanRecursively() )
             *m_scanner << "-r";
+        if( AmarokConfig::useCharsetDetector() )
+            *m_scanner << "-c";
         *m_scanner << "--savelocation" << KGlobal::dirs()->saveLocation( "data", QString("amarok/"), true );
         if( pApp->isNonUniqueInstance() )
             *m_scanner << "--pid" << QString::number( QApplication::applicationPid() );
@@ -572,7 +569,7 @@ ScanManager::checkTables( bool full )
         debug() << "WOAH, why is there no DB updater?";
         return;
     }
-    
+
     dbUpdater->checkTables( checkCount == 0 );
 
     Amarok::config( "MySQL" ).writeEntry( "CheckCount", 1 );

@@ -24,6 +24,8 @@
 #include <kio/jobclasses.h>
 #include <klocale.h>
 
+class PodcastImageFetcher;
+
 class KUrl;
 class PodcastReader;
 class SqlStorage;
@@ -87,9 +89,10 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
 
     private slots:
         void downloadResult( KJob * );
+        void addData( KIO::Job * job, const QByteArray & data );
         void redirected( KIO::Job *, const KUrl& );
         void autoUpdate();
-        void slotDeleteEpisodes();
+        void slotDeleteSelectedEpisodes();
         void slotDownloadEpisodes();
         void slotConfigureChannel();
         void slotRemoveChannels();
@@ -101,19 +104,47 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
         void updated();
         void totalPodcastDownloadProgress( int progress );
 
+    private slots:
+        void channelImageReady( Meta::PodcastChannelPtr, QPixmap );
+        void podcastImageFetcherDone( PodcastImageFetcher * );
+
     private:
         /** creates all the necessary tables, indexes etc. for the database */
         void createTables() const;
         void loadPodcasts();
         void updateDatabase( int fromVersion, int toVersion );
+        void fetchImage( Meta::SqlPodcastChannelPtr channel );
+
+        /** shows a modal dialog asking the user if he really wants to unsubscribe
+            and if he wants to keep the podcast media */
+        QPair<bool, bool> confirmUnsubscribe(Meta::PodcastChannelPtr channel);
+
+        /** remove the episodes in the list from the filesystem */
+        void deleteEpisodes( Meta::PodcastEpisodeList & episodes );
+
+        void subscribe( const KUrl &url );
+        QFile* createTmpFile ( KJob* job );
+        void cleanupDownload( KJob* job, bool downloadFailed );
+
+        /** returns true if the file that is downloaded by 'job' is already locally available */
+        bool checkEnclosureLocallyAvailable( KIO::Job *job );
 
         Meta::SqlPodcastChannelList m_channels;
 
+        QTimer *m_updateTimer;
+        unsigned int m_autoUpdateInterval; //interval between autoupdate attempts in minutes
+        unsigned int m_updatingChannels;
+        unsigned int m_maxConcurrentUpdates;
+        Meta::PodcastChannelList m_updateQueue;
+        QList<KUrl> m_subscribeQueue;
+
         QHash<KJob *, Meta::SqlPodcastEpisode *> m_downloadJobMap;
         QHash<KJob *, QString> m_fileNameMap;
-        QTimer *m_updateTimer;
-        int m_updatingChannels;
-        unsigned int m_completedDownloads;
+        QHash<KJob *, QFile*> m_tmpFileMap;
+
+        Meta::SqlPodcastEpisodeList m_downloadQueue;
+        int m_maxConcurrentDownloads;
+        int m_completedDownloads;
 
         QAction * m_configureAction; //Configure a Channel
         QAction * m_deleteAction; //delete a downloaded Episode
@@ -122,6 +153,8 @@ class SqlPodcastProvider : public PodcastProvider, public EngineObserver
         QAction * m_renameAction; //rename a Channel or Episode
         QAction * m_updateAction;
         QAction * m_writeTagsAction; //write feed information to downloaded file
+
+        PodcastImageFetcher *m_podcastImageFetcher;
 };
 
 #endif

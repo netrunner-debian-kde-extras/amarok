@@ -220,6 +220,8 @@ namespace Amarok
      */
     AMAROK_EXPORT void manipulateThe( QString &str, bool reverse );
 
+    inline const char* lastfmApiKey() { return "402d3ca8e9bc9d3cf9b85e1202944ca5"; }
+
 }
 
 
@@ -261,7 +263,7 @@ namespace Amarok
 //#ifdef CURRENT_GIT_VERSION
 //#define APP_VERSION #CURRENT_GIT_VERSION
 //#else
-#define APP_VERSION "2.2.1"
+#define APP_VERSION "2.2.1.90"
 //#endif
 
 #endif

@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007-2009 Bart Cerneels <bart.cerneels@kde.org>                        *
+ * Copyright (c) 2009 Frank Meerkoetter <frank@meerkoetter.org>                         *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -23,6 +24,7 @@
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "Debug.h"
 #include "EngineController.h"
+#include "PodcastImageFetcher.h"
 #include "PodcastModel.h"
 #include "PodcastReader.h"
 #include "PodcastSettingsDialog.h"
@@ -36,6 +38,7 @@
 #include <KIO/DeleteJob>
 #include <KIO/Job>
 #include <KIO/NetAccess>
+#include <KStandardDirs>
 #include <KUrl>
 #include <Solid/Networking>
 
@@ -43,23 +46,26 @@
 #include <QFile>
 #include <QDir>
 #include <QTimer>
+#include <QCheckBox>
 
 using namespace Meta;
 
 static const int PODCAST_DB_VERSION = 4;
-static const QString key("AMAROK_PODCAST");
+static const QString key( "AMAROK_PODCAST" );
+static const QString PODCAST_TMP_POSTFIX( ".tmp" );
 
 SqlPodcastProvider::SqlPodcastProvider()
-    : m_updateTimer( new QTimer(this) )
-    , m_updatingChannels( 0 )
-    , m_completedDownloads( 0 )
-    , m_configureAction( 0 )
-    , m_deleteAction( 0 )
-    , m_downloadAction( 0 )
-    , m_removeAction( 0 )
-    , m_renameAction( 0 )
-    , m_updateAction( 0 )
-    , m_writeTagsAction( 0 )
+        : m_updateTimer( new QTimer( this ) )
+        , m_updatingChannels( 0 )
+        , m_completedDownloads( 0 )
+        , m_configureAction( 0 )
+        , m_deleteAction( 0 )
+        , m_downloadAction( 0 )
+        , m_removeAction( 0 )
+        , m_renameAction( 0 )
+        , m_updateAction( 0 )
+        , m_writeTagsAction( 0 )
+        , m_podcastImageFetcher( 0 )
 {
     connect( m_updateTimer, SIGNAL( timeout() ), SLOT( autoUpdate() ) );
 
@@ -70,18 +76,27 @@ SqlPodcastProvider::SqlPodcastProvider()
         error() << "Could not get a SqlStorage instance";
         return;
     }
+
+    m_autoUpdateInterval = Amarok::config( "Podcasts" )
+                           .readEntry( "AutoUpdate Interval", 30 );
+    m_maxConcurrentDownloads = Amarok::config( "Podcasts" )
+                               .readEntry( "Maximum Simultaneous Downloads", 4 );
+    m_maxConcurrentUpdates = Amarok::config( "Podcasts" )
+                             .readEntry( "Maximum Simultaneous Updates", 4 );
+
     QStringList values;
 
     values = sqlStorage->query(
-                QString("SELECT version FROM admin WHERE component = '%1';")
-                    .arg(sqlStorage->escape( key ) )
-            );
+                 QString( "SELECT version FROM admin WHERE component = '%1';" )
+                    .arg( sqlStorage->escape( key ) )
+             );
     if( values.isEmpty() )
     {
         debug() << "creating Podcast Tables";
         createTables();
         sqlStorage->query( "INSERT INTO admin(component,version) "
-                       "VALUES('" + key + "'," + QString::number( PODCAST_DB_VERSION ) + ");" );
+                           "VALUES('" + key + "',"
+                           + QString::number( PODCAST_DB_VERSION ) + ");" );
     }
     else
     {
@@ -99,7 +114,7 @@ SqlPodcastProvider::SqlPodcastProvider()
         if( startAutoRefreshTimer )
         {
             float interval = 1.0;
-            m_updateTimer->start( interval * 1000 * 60 * 30 );
+            m_updateTimer->start( interval * 1000 * 60 * m_autoUpdateInterval );
         }
 
     }
@@ -107,15 +122,20 @@ SqlPodcastProvider::SqlPodcastProvider()
 
 SqlPodcastProvider::~SqlPodcastProvider()
 {
-    foreach(Meta::SqlPodcastChannelPtr channel, m_channels)
+    foreach( Meta::SqlPodcastChannelPtr channel, m_channels )
     {
         channel->updateInDb();
-        foreach(Meta::SqlPodcastEpisodePtr episode, channel->sqlEpisodes())
-        {
+        foreach( Meta::SqlPodcastEpisodePtr episode, channel->sqlEpisodes() )
             episode->updateInDb();
-        }
     }
     m_channels.clear();
+
+    Amarok::config( "Podcasts" )
+        .writeEntry( "AutoUpdate Interval", m_autoUpdateInterval );
+    Amarok::config( "Podcasts" )
+        .writeEntry( "Maximum Simultaneous Downloads", m_maxConcurrentDownloads );
+    Amarok::config( "Podcasts" )
+        .writeEntry( "Maximum Simultaneous Updates", m_maxConcurrentUpdates );
 }
 
 void
@@ -123,17 +143,26 @@ SqlPodcastProvider::loadPodcasts()
 {
     m_channels.clear();
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    if( !sqlStorage )
+        return;
 
     QStringList results = sqlStorage->query( "SELECT id, url, title, weblink, image"
         ", description, copyright, directory, labels, subscribedate, autoscan, fetchtype"
         ", haspurge, purgecount, writetags FROM podcastchannels;" );
 
     int rowLength = 15;
-    for(int i=0; i < results.size(); i+=rowLength)
+    for( int i = 0; i < results.size(); i += rowLength )
     {
         QStringList channelResult = results.mid( i, rowLength );
-        m_channels << SqlPodcastChannelPtr( new SqlPodcastChannel( channelResult ) );
+        SqlPodcastChannelPtr channel =
+                SqlPodcastChannelPtr( new SqlPodcastChannel( channelResult ) );
+        if( channel->image().isNull() )
+            fetchImage( channel );
+
+        m_channels << channel;
     }
+    if( m_podcastImageFetcher )
+        m_podcastImageFetcher->run();
     emit( updated() );
 }
 
@@ -141,8 +170,11 @@ bool
 SqlPodcastProvider::possiblyContainsTrack( const KUrl & url ) const
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    if( !sqlStorage )
+        return false;
 
-    QString command = "SELECT title FROM podcastepisodes WHERE url='%1' OR localurl='%1';";
+    QString command = "SELECT title FROM podcastepisodes WHERE guid='%1' OR url='%1' "
+                      "OR localurl='%1';";
     command = command.arg( sqlStorage->escape( url.url() ) );
 
     QStringList dbResult = sqlStorage->query( command );
@@ -153,22 +185,41 @@ Meta::TrackPtr
 SqlPodcastProvider::trackForUrl( const KUrl & url )
 {
     DEBUG_BLOCK
-            
-    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
-    QString command = "SELECT id,channel FROM podcastepisodes WHERE url='%1' OR localurl='%1';";
+    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    if( !sqlStorage )
+        return TrackPtr();
+
+    QString command = "SELECT id, url, channel, localurl, guid, "
+            "title, subtitle, sequencenumber, description, mimetype, pubdate, "
+            "duration, filesize, isnew FROM podcastepisodes "
+            "WHERE guid='%1' OR url='%1' OR localurl='%1';";
     command = command.arg( sqlStorage->escape( url.url() ) );
     QStringList dbResult = sqlStorage->query( command );
 
+    if( dbResult.isEmpty() )
+        return TrackPtr();
+
     int episodeId = dbResult[0].toInt();
-    int channelId = dbResult[1].toInt();
+    int channelId = dbResult[2].toInt();
+    bool found = false;
     Meta::SqlPodcastChannelPtr channel;
     foreach( channel, m_channels )
+    {
         if( channel->dbId() == channelId )
+        {
+            found = true;
             break;
+        }
+    }
 
-    if( channel.isNull() )
+    if( !found )
+    {
+        error() << QString( "There is a track in the database with url/guid=%1 (%2) "
+                            "but there is no channel with dbId=%3 in our list!" )
+                .arg( url.url() ).arg( episodeId ).arg( channelId );
         return TrackPtr();
+    }
 
     Meta::SqlPodcastEpisodePtr episode;
     foreach( episode, channel->sqlEpisodes() )
@@ -176,9 +227,13 @@ SqlPodcastProvider::trackForUrl( const KUrl & url )
         if( episode->dbId() == episodeId )
         {
             debug() << "found it!";
-            break;
+            return Meta::TrackPtr::dynamicCast( episode );
         }
     }
+
+    //The episode was found in the database but it's channel didn't have it in it's list.
+    //That probably is because it's beyond the purgecount limit.
+    episode = new Meta::SqlPodcastEpisode( dbResult.mid( 0, 14 ), channel );
 
     return Meta::TrackPtr::dynamicCast( episode );
 }
@@ -200,14 +255,11 @@ void
 SqlPodcastProvider::addPodcast( const KUrl &url )
 {
     KUrl kurl = KUrl( url );
-    if( kurl.protocol() == "itpc" )
-    {
-        debug() << "Importing an itpc:// url";
-        kurl.setProtocol( "http" );
-    }
     debug() << "importing " << kurl.url();
 
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    if( !sqlStorage )
+        return;
 
     QString command = "SELECT title FROM podcastchannels WHERE url='%1';";
     command = command.arg( sqlStorage->escape( kurl.url() ) );
@@ -218,20 +270,37 @@ SqlPodcastProvider::addPodcast( const KUrl &url )
         //Already subscribed to this Channel
         //notify the user.
         The::statusBar()->longMessage(
-            i18n("Already subscribed to %1.", dbResult.first())
+            i18n( "Already subscribed to %1.", dbResult.first() )
             , StatusBar::Error );
     }
     else
     {
-        bool result = false;
-        m_updatingChannels++;
-        PodcastReader * podcastReader = new PodcastReader( this );
-
-        connect( podcastReader, SIGNAL( finished( PodcastReader * ) ),
-                SLOT( slotReadResult( PodcastReader * ) ) );
-
-        result = podcastReader->read( kurl );
+        subscribe( kurl );
     }
+}
+
+void
+SqlPodcastProvider::subscribe( const KUrl &url )
+{
+    if( !url.isValid() )
+        return;
+
+    if( m_updatingChannels >= m_maxConcurrentUpdates )
+    {
+        debug() << QString( "Maximum concurrent updates (%1) reached. "
+                            "Queueing \"%2\" for subscribing." )
+                        .arg( m_maxConcurrentUpdates )
+                        .arg( url.url() );
+        m_subscribeQueue << url;
+        return;
+    }
+
+    PodcastReader * podcastReader = new PodcastReader( this );
+    connect( podcastReader, SIGNAL( finished( PodcastReader * ) ),
+             SLOT( slotReadResult( PodcastReader * ) ) );
+
+    m_updatingChannels++;
+    podcastReader->read( url );
 }
 
 Meta::PodcastChannelPtr
@@ -246,10 +315,11 @@ Meta::PodcastEpisodePtr
 SqlPodcastProvider::addEpisode( Meta::PodcastEpisodePtr episode )
 {
     DEBUG_BLOCK
-    Meta::SqlPodcastEpisodePtr sqlEpisode
-            = Meta::SqlPodcastEpisodePtr::dynamicCast( episode );
+    Meta::SqlPodcastEpisodePtr sqlEpisode =
+            Meta::SqlPodcastEpisodePtr::dynamicCast( episode );
     if( sqlEpisode.isNull() )
         return Meta::PodcastEpisodePtr();
+
     if( sqlEpisode->channel().isNull() )
     {
         debug() << "channel is null";
@@ -265,7 +335,7 @@ Meta::PodcastChannelList
 SqlPodcastProvider::channels()
 {
     PodcastChannelList list;
-    QListIterator<SqlPodcastChannelPtr> i(m_channels);
+    QListIterator<SqlPodcastChannelPtr> i( m_channels );
     while( i.hasNext() )
     {
         list << PodcastChannelPtr::dynamicCast( i.next() );
@@ -301,6 +371,7 @@ SqlPodcastProvider::configureChannel( Meta::PodcastChannelPtr channel )
     if( !sqlChannel )
         return;
 
+    KUrl oldUrl = sqlChannel->url();
     KUrl oldSaveLocation = sqlChannel->saveLocation();
     bool oldHasPurge = sqlChannel->hasPurge();
     int oldPurgeCount = sqlChannel->purgeCount();
@@ -315,7 +386,8 @@ SqlPodcastProvider::configureChannel( Meta::PodcastChannelPtr channel )
         int toPurge = sqlChannel->purgeCount();
         if( !oldHasPurge || ( oldPurgeCount != toPurge && toPurge > 0 ) )
         {
-            debug() << "purge to " << toPurge <<" newest episodes for " << sqlChannel->title();
+            debug() << "purge to " << toPurge << " newest episodes for "
+                    << sqlChannel->title();
             foreach( Meta::SqlPodcastEpisodePtr episode, sqlChannel->sqlEpisodes() )
             {
                 if( --toPurge < 0 )
@@ -336,9 +408,9 @@ SqlPodcastProvider::configureChannel( Meta::PodcastChannelPtr channel )
 
     if( oldSaveLocation != channel->saveLocation() )
     {
-        debug() << QString("We need to move downloaded episodes of \"%1\" to %2")
-            .arg( sqlChannel->title())
-            .arg( sqlChannel->saveLocation().prettyUrl() );
+        debug() << QString( "We need to move downloaded episodes of \"%1\" to %2" )
+                .arg( sqlChannel->title() )
+                .arg( sqlChannel->saveLocation().prettyUrl() );
 
         KUrl::List filesToMove;
         foreach( Meta::SqlPodcastEpisodePtr episode, sqlChannel->sqlEpisodes() )
@@ -355,16 +427,17 @@ SqlPodcastProvider::configureChannel( Meta::PodcastChannelPtr channel )
                                                KIO::HideProgressInfo );
                 //wait until job is finished.
                 if( KIO::NetAccess::synchronousRun( moveJob, The::mainWindow() ) )
-                {
                     episode->setLocalUrl( newLocation );
-                    episode->updateInDb();
-                }
             }
         }
 
         if( !QDir().rmdir( oldSaveLocation.toLocalFile() ) )
-            debug() << "Could not remove old directory "<< oldSaveLocation.toLocalFile();
+            debug() << "Could not remove old directory " << oldSaveLocation.toLocalFile();
     }
+
+    //if the url changed force an update.
+    if( oldUrl != channel->url() )
+        update( channel );
 }
 
 QList<QAction *>
@@ -381,7 +454,7 @@ SqlPodcastProvider::episodeActions( Meta::PodcastEpisodeList episodes )
             this
         );
         m_deleteAction->setProperty( "popupdropper_svg_id", "delete" );
-        connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDeleteEpisodes() ) );
+        connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDeleteSelectedEpisodes() ) );
     }
 
     if( m_writeTagsAction == 0 )
@@ -416,7 +489,7 @@ SqlPodcastProvider::episodeActions( Meta::PodcastEpisodeList episodes )
     }
     else
     {
-        if ( m_downloadAction == 0 )
+        if( m_downloadAction == 0 )
         {
             m_downloadAction = new QAction(
                 KIcon( "go-down" ),
@@ -446,7 +519,7 @@ SqlPodcastProvider::channelActions( Meta::PodcastChannelList )
             this
         );
         m_configureAction->setProperty( "popupdropper_svg_id", "configure" );
-        connect( m_configureAction, SIGNAL( triggered() ), this, SLOT( slotConfigureChannel() ));
+        connect( m_configureAction, SIGNAL( triggered() ), this, SLOT( slotConfigureChannel() ) );
     }
     actions << m_configureAction;
 
@@ -478,10 +551,8 @@ SqlPodcastProvider::channelActions( Meta::PodcastChannelList )
 }
 
 void
-SqlPodcastProvider::slotDeleteEpisodes()
+SqlPodcastProvider::deleteEpisodes( Meta::PodcastEpisodeList & episodes )
 {
-    DEBUG_BLOCK
-    Meta::PodcastEpisodeList episodes = The::podcastModel()->selectedEpisodes();
     foreach( Meta::PodcastEpisodePtr episode, episodes )
     {
         Meta::SqlPodcastEpisodePtr sqlEpisode =
@@ -494,6 +565,14 @@ SqlPodcastProvider::slotDeleteEpisodes()
 }
 
 void
+SqlPodcastProvider::slotDeleteSelectedEpisodes()
+{
+    DEBUG_BLOCK
+    Meta::PodcastEpisodeList episodes = The::podcastModel()->selectedEpisodes();
+    deleteEpisodes(episodes);
+}
+
+void
 SqlPodcastProvider::slotDownloadEpisodes()
 {
     DEBUG_BLOCK
@@ -503,11 +582,36 @@ SqlPodcastProvider::slotDownloadEpisodes()
     {
         Meta::SqlPodcastEpisodePtr sqlEpisode =
                 Meta::SqlPodcastEpisodePtr::dynamicCast( episode );
-         if( !sqlEpisode )
-             continue;
+        if( !sqlEpisode )
+            continue;
 
         downloadEpisode( sqlEpisode );
     }
+}
+
+QPair<bool, bool>
+SqlPodcastProvider::confirmUnsubscribe( Meta::PodcastChannelPtr channel )
+{
+    KDialog unsubscribeDialog;
+    unsubscribeDialog.setCaption( i18n( "Unsubscribe" ) );
+
+    KVBox *vbox = new KVBox( &unsubscribeDialog );
+
+    QString question( i18n( "Do you really want to unsubscribe from ") + "\"" );
+    question += channel->title();
+    question += "\"?";
+    QLabel *label = new QLabel( question, vbox );
+    label->setWordWrap( true );
+    label->setMaximumWidth( 400 );
+
+    QCheckBox *deleteMediaCheckBox = new QCheckBox( i18n( "Delete downloaded episodes" ), vbox );
+    unsubscribeDialog.setMainWidget( vbox );
+    unsubscribeDialog.setButtons( KDialog::Ok | KDialog::Cancel );
+    
+    QPair<bool, bool> result;
+    result.first = unsubscribeDialog.exec() == QDialog::Accepted;
+    result.second = deleteMediaCheckBox->isChecked();
+    return result;
 }
 
 void
@@ -519,8 +623,18 @@ SqlPodcastProvider::slotRemoveChannels()
         Meta::SqlPodcastChannelPtr sqlChannel =
             Meta::SqlPodcastChannelPtr::dynamicCast( channel );
 
-        //TODO:request confirmation and ask if the files have to be deleted as well
-        removeSubscription( channel );
+        QPair<bool, bool> result = confirmUnsubscribe( channel );        
+        if( result.first )
+        {
+            debug() << "unsubscribing " << channel->title();
+            if( result.second )
+            {
+                debug() << "removing all episodes";
+                PodcastEpisodeList episodes = channel->episodes();
+                deleteEpisodes(episodes);
+            }
+            removeSubscription( channel );
+        }
     }
 }
 
@@ -551,7 +665,7 @@ SqlPodcastProvider::slotDownloadProgress( KJob *job, unsigned long percent )
     totalDownloadPercentage += m_completedDownloads * 100;
 
     emit totalPodcastDownloadProgress(
-            totalDownloadPercentage / (m_downloadJobMap.count() + m_completedDownloads) );
+        totalDownloadPercentage / ( m_downloadJobMap.count() + m_completedDownloads ) );
 }
 
 void
@@ -563,8 +677,8 @@ SqlPodcastProvider::slotWriteTagsToFiles()
     {
         Meta::SqlPodcastEpisodePtr sqlEpisode =
                 Meta::SqlPodcastEpisodePtr::dynamicCast( episode );
-         if( !sqlEpisode )
-             continue;
+        if( !sqlEpisode )
+            continue;
 
         sqlEpisode->writeTagsToFile();
     }
@@ -590,7 +704,6 @@ SqlPodcastProvider::deleteDownloadedEpisode( Meta::SqlPodcastEpisodePtr episode 
     KIO::del( episode->localUrl(), KIO::HideProgressInfo );
 
     episode->setLocalUrl( KUrl() );
-    episode->updateInDb();
     emit( updated() );
 }
 
@@ -613,31 +726,30 @@ SqlPodcastProvider::completePodcastDownloads()
     //check to see if there are still downloads in progress
     if( !m_downloadJobMap.isEmpty() )
     {
-        debug() << QString("There are still %1 podcast download jobs running!")
+        debug() << QString( "There are still %1 podcast download jobs running!" )
                 .arg( m_downloadJobMap.count() );
         KProgressDialog progressDialog( The::mainWindow(),
-                            i18n( "Waiting for Podcast Downloads to Finish" ),
-                            i18np( "There is still a podcast download in progress",
-                                "There are still %1 podcast downloads in progress",
-                                m_downloadJobMap.count() )
-                       );
+                                i18n( "Waiting for Podcast Downloads to Finish" ),
+                                i18np( "There is still a podcast download in progress",
+                                       "There are still %1 podcast downloads in progress",
+                                       m_downloadJobMap.count() )
+                                      );
         progressDialog.setButtonText( "Cancel Download and Quit." );
 
         m_completedDownloads = 0;
         foreach( KJob *job, m_downloadJobMap.keys() )
         {
             connect( job, SIGNAL( percent( KJob *, unsigned long ) ),
-                 SLOT( slotDownloadProgress( KJob *, unsigned long ) )
+                    SLOT( slotDownloadProgress( KJob *, unsigned long ) )
                    );
         }
         connect( this, SIGNAL( totalPodcastDownloadProgress( int ) ),
-                         progressDialog.progressBar(), SLOT( setValue( int ) ) );
+                 progressDialog.progressBar(), SLOT( setValue( int ) ) );
         int result = progressDialog.exec();
         if( result == QDialog::Rejected )
         {
             foreach( KJob *job, m_downloadJobMap.keys() )
             {
-                debug() << "Stopping download of " << m_downloadJobMap[ job ]->title();
                 job->kill();
             }
         }
@@ -667,7 +779,8 @@ void
 SqlPodcastProvider::autoUpdate()
 {
     DEBUG_BLOCK
-    if( Solid::Networking::status() != Solid::Networking::Connected )
+    if( Solid::Networking::status() != Solid::Networking::Connected
+            && Solid::Networking::status() != Solid::Networking::Unknown )
     {
         debug() << "Solid reports we are not online, canceling podcast auto-update";
         return;
@@ -683,14 +796,82 @@ SqlPodcastProvider::autoUpdate()
 void
 SqlPodcastProvider::update( Meta::PodcastChannelPtr channel )
 {
-    m_updatingChannels++;
-    PodcastReader * podcastReader = new PodcastReader( this );
+    if( channel.isNull() )
+        return;
+    if( m_updatingChannels >= m_maxConcurrentUpdates )
+    {
+        debug() << QString( "Maximum concurrent updates (%1) reached. "
+                            "Queueing \"%2\" for download." )
+                .arg( m_maxConcurrentUpdates )
+                .arg( channel->title() );
+        m_updateQueue << channel;
+        return;
+    }
+
+    PodcastReader *podcastReader = new PodcastReader( this );
 
     connect( podcastReader, SIGNAL( finished( PodcastReader * ) ),
              SLOT( slotReadResult( PodcastReader * ) ) );
     //PodcastReader will create a progress bar in The StatusBar.
 
+    m_updatingChannels++;
     podcastReader->update( channel );
+}
+
+void
+SqlPodcastProvider::update( Meta::SqlPodcastChannelPtr channel )
+{
+    update( PodcastChannelPtr::dynamicCast( channel ) );
+}
+
+void
+SqlPodcastProvider::slotReadResult( PodcastReader *podcastReader )
+{
+    DEBUG_BLOCK
+    if( podcastReader->error() != QXmlStreamReader::NoError )
+    {
+        debug() << podcastReader->errorString();
+        The::statusBar()->longMessage( podcastReader->errorString(), StatusBar::Error );
+    }
+    debug() << "Finished updating: " << podcastReader->url();
+    --m_updatingChannels;
+    debug() << "Updating counter reached " << m_updatingChannels;
+
+    Meta::SqlPodcastChannelPtr channel =
+            Meta::SqlPodcastChannelPtr::dynamicCast( podcastReader->channel() );
+
+    if( channel.isNull() )
+    {
+        error() << "Could not cast to SqlPodcastChannel " << __FILE__ << ":" << __LINE__;
+        return;
+    }
+
+    if( channel->image().isNull() )
+    {
+        fetchImage( channel );
+    }
+
+    channel->updateInDb();
+
+    podcastReader->deleteLater();
+
+    emit( updated() );
+
+    //first we work through the list of new subscriptions
+    if( !m_subscribeQueue.isEmpty() )
+    {
+        subscribe( m_subscribeQueue.takeFirst() );
+    }
+    else if( !m_updateQueue.isEmpty() )
+    {
+        update( m_updateQueue.takeFirst() );
+    }
+    else if( m_updatingChannels == 0 )
+    {
+        //TODO: start downloading episodes here.
+        if( m_podcastImageFetcher )
+            m_podcastImageFetcher->run();
+    }
 }
 
 void
@@ -708,26 +889,178 @@ SqlPodcastProvider::downloadEpisode( Meta::SqlPodcastEpisodePtr sqlEpisode )
         return;
     }
 
-    KIO::StoredTransferJob *storedTransferJob =
-            KIO::storedGet( sqlEpisode->uidUrl(), KIO::Reload, KIO::HideProgressInfo );
+    if( m_downloadJobMap.size() >= m_maxConcurrentDownloads )
+    {
+        debug() << QString( "Maximum concurrent downloads (%1) reached. "
+                            "Queueing \"%2\" for download." )
+                .arg( m_maxConcurrentDownloads )
+                .arg( sqlEpisode->title() );
+        //put into a FIFO which is used in downloadResult() to start a new download
+        m_downloadQueue << sqlEpisode;
+        return;
+    }
 
-    m_downloadJobMap[storedTransferJob] = sqlEpisode.data();
-    m_fileNameMap[storedTransferJob] = KUrl( sqlEpisode->uidUrl() ).fileName();
+    KIO::TransferJob *transferJob =
+            KIO::get( sqlEpisode->uidUrl(), KIO::Reload, KIO::HideProgressInfo );
 
-    debug() << "starting download for " << sqlEpisode->title() << " url: " << sqlEpisode->prettyUrl();
-    The::statusBar()->newProgressOperation( storedTransferJob, sqlEpisode->title().isEmpty()
-            ? i18n("Downloading Podcast Media") : i18n("Downloading Podcast \"%1\"", sqlEpisode->title()) )
-            ->setAbortSlot( this, SLOT( abortDownload()) );
+    m_downloadJobMap[transferJob] = sqlEpisode.data();
+    m_fileNameMap[transferJob] = KUrl( sqlEpisode->uidUrl() ).fileName();
 
-    connect( storedTransferJob, SIGNAL(  finished( KJob * ) ), SLOT( downloadResult( KJob * ) ) );
-    connect( storedTransferJob, SIGNAL( redirection( KIO::Job *, const KUrl& ) ),
-             SLOT( redirected( KIO::Job *,const KUrl& ) ) );
+    debug() << "starting download for " << sqlEpisode->title()
+            << " url: " << sqlEpisode->prettyUrl();
+    The::statusBar()->newProgressOperation( transferJob
+                                            , sqlEpisode->title().isEmpty()
+                                            ? i18n( "Downloading Podcast Media" )
+                                            : i18n( "Downloading Podcast \"%1\""
+                                                    , sqlEpisode->title() )
+                                          )->setAbortSlot( transferJob, SLOT( kill() ) );
+
+    connect( transferJob, SIGNAL( data( KIO::Job *, const QByteArray & ) ),
+             SLOT( addData( KIO::Job *, const QByteArray & ) ) );
+    //need to connect to finished instead of result because it's always emited.
+    //We need to cleanup after a download is cancled regardless of the argument in
+    //KJob::kill()
+    connect( transferJob, SIGNAL( finished( KJob * ) ),
+             SLOT( downloadResult( KJob * ) ) );
+    connect( transferJob, SIGNAL( redirection( KIO::Job *, const KUrl& ) ),
+             SLOT( redirected( KIO::Job *, const KUrl& ) ) );
 }
 
 void
 SqlPodcastProvider::downloadEpisode( Meta::PodcastEpisodePtr episode )
 {
     downloadEpisode( SqlPodcastEpisodePtr::dynamicCast( episode ) );
+}
+
+void
+SqlPodcastProvider::cleanupDownload( KJob *job, bool downloadFailed )
+{
+    DEBUG_BLOCK
+
+    QFile *tmpFile = m_tmpFileMap.value( job );
+
+    if( downloadFailed && tmpFile )
+    {
+        debug() << "deleting temporary podcast file: " << tmpFile->fileName();
+        tmpFile->remove();
+    }
+    m_downloadJobMap.remove( job );
+    m_fileNameMap.remove( job );
+    m_tmpFileMap.remove( job );
+
+    delete tmpFile;
+}
+
+QFile*
+SqlPodcastProvider::createTmpFile( KJob *job )
+{
+    DEBUG_BLOCK
+
+    Meta::SqlPodcastEpisode *sqlEpisode = m_downloadJobMap.value( job );
+    if( sqlEpisode == 0 )
+    {
+        error() << "sqlEpisodePtr is NULL after download";
+        return 0;
+    }
+    Meta::SqlPodcastChannelPtr sqlChannel =
+            Meta::SqlPodcastChannelPtr::dynamicCast( sqlEpisode->channel() );
+    if( !sqlChannel )
+    {
+        error() << "sqlChannelPtr is NULL after download";
+        return 0;
+    }
+
+    QDir dir( sqlChannel->saveLocation().path() );
+    dir.mkpath( "." );  // ensure that the path is there
+
+    KUrl localUrl = KUrl::fromPath( dir.absolutePath() );
+    QString tmpFileName = m_fileNameMap.value( job );
+    localUrl.addPath( tmpFileName + PODCAST_TMP_POSTFIX );
+
+    QFile *tmpFile = new QFile( localUrl.path() );
+    if( tmpFile->open( QIODevice::WriteOnly ) )
+    {
+        debug() << "podcast tmpfile created: " << localUrl.path();
+        return tmpFile;
+    }
+    else
+    {
+        The::statusBar()->longMessage( i18n( "Unable to save podcast episode file to %1",
+                                             localUrl.prettyUrl() ) );
+        delete tmpFile;
+        return 0;
+    }
+}
+
+bool
+SqlPodcastProvider::checkEnclosureLocallyAvailable( KIO::Job *job )
+{
+    Meta::SqlPodcastEpisode *sqlEpisode = m_downloadJobMap.value( job );
+    if( sqlEpisode == 0 )
+    {
+        error() << "sqlEpisodePtr is NULL after download";
+        return false;
+    }
+    Meta::SqlPodcastChannelPtr sqlChannel =
+            Meta::SqlPodcastChannelPtr::dynamicCast( sqlEpisode->channel() );
+    if( !sqlChannel )
+    {
+        error() << "sqlChannelPtr is NULL after download";
+        return false;
+    }
+
+    QString fileName = sqlChannel->saveLocation().path(KUrl::AddTrailingSlash);
+    fileName += m_fileNameMap.value( job );
+    debug() << "checking " << fileName;
+    QFileInfo fileInfo( fileName );
+    if ( !fileInfo.exists() )
+    {
+        return false;
+    }
+
+    debug() << fileName << " already exists, no need to redownload";
+    // NOTE: we need to emit because the KJobProgressBar relies on it to clean up
+    job->kill(KJob::EmitResult);
+    sqlEpisode->setLocalUrl( fileName );
+    emit( updated() );  // repaint icons
+    return true;
+}
+
+void
+SqlPodcastProvider::addData( KIO::Job *job, const QByteArray &data )
+{
+    if( !data.size() )
+    {
+        return; // EOF
+    }
+
+    QFile *tmpFile = m_tmpFileMap.value( job );
+
+    // NOTE: if there is a tmpfile we are already downloading, no need to
+    // checkEnclosureLocallyAvailable() on every data chunk. performance optimization.
+    if ( !tmpFile && checkEnclosureLocallyAvailable( job ) )
+    {
+        return;
+    }
+
+    if( !tmpFile )
+    {
+        tmpFile = createTmpFile( job );
+        if( !tmpFile )
+        {
+            debug() << "failed to create tmpfile for podcast download";
+            job->kill();
+            return;
+        }
+        m_tmpFileMap[job] = tmpFile;
+    }
+
+    if( tmpFile->write( data ) == -1 )
+    {
+        error() << "write error for " << tmpFile->fileName() << ": " <<
+        tmpFile->errorString();
+        job->kill();
+    }
 }
 
 void
@@ -738,52 +1071,32 @@ SqlPodcastProvider::deleteDownloadedEpisode( Meta::PodcastEpisodePtr episode )
 }
 
 void
-SqlPodcastProvider::slotReadResult( PodcastReader *podcastReader )
-{
-    DEBUG_BLOCK
-    if( podcastReader->error() != QXmlStreamReader::NoError )
-    {
-        debug() << podcastReader->errorString();
-        The::statusBar()->longMessage( podcastReader->errorString(), StatusBar::Error );
-    }
-    else
-    {
-        debug() << "Finished updating: " << podcastReader->url();
-        debug() << "Updating counter reached " << m_updatingChannels-1;
-        //decrement the counter and load podcasts if needed.
-        if( --m_updatingChannels == 0 )
-        {
-            //TODO: start downloading episodes here.
-        }
-    }
-
-    podcastReader->deleteLater();
-    emit( updated() );
-}
-
-void
-SqlPodcastProvider::update( Meta::SqlPodcastChannelPtr channel )
-{
-    update( PodcastChannelPtr::dynamicCast( channel ) );
-}
-
-void
 SqlPodcastProvider::slotUpdated()
 {
     emit updated();
 }
 
 void
-SqlPodcastProvider::downloadResult( KJob * job )
+SqlPodcastProvider::downloadResult( KJob *job )
 {
+    QFile *tmpFile = m_tmpFileMap.value( job );
+    bool downloadFailed = false;
+
     if( job->error() )
     {
-        The::statusBar()->longMessage( job->errorText() );
+        // NOTE: prevents empty error notifications from popping up
+        // in the statusbar when the user cancels a download
+        if( job->error() != KJob::KilledJobError )
+        {
+            The::statusBar()->longMessage( job->errorText() );
+        }
         debug() << "Unable to retrieve podcast media. KIO Error: " << job->errorText();
+        downloadFailed = true;
     }
-    else if( ! m_downloadJobMap.contains( job ) )
+    else if( !m_downloadJobMap.contains( job ) )
     {
         warning() << "Download is finished for a job that was not added to m_downloadJobMap. Waah?";
+        downloadFailed = true;
     }
     else
     {
@@ -791,27 +1104,25 @@ SqlPodcastProvider::downloadResult( KJob * job )
         if( sqlEpisode == 0 )
         {
             error() << "sqlEpisodePtr is NULL after download";
+            cleanupDownload( job, true );
             return;
         }
         Meta::SqlPodcastChannelPtr sqlChannel =
-                Meta::SqlPodcastChannelPtr::dynamicCast( sqlEpisode->channel() );
+            Meta::SqlPodcastChannelPtr::dynamicCast( sqlEpisode->channel() );
         if( !sqlChannel )
         {
             error() << "sqlChannelPtr is NULL after download";
+            cleanupDownload( job, true );
             return;
         }
 
-        QDir dir( sqlChannel->saveLocation().path() );
-        dir.mkpath( "." );
-        KUrl localUrl = KUrl::fromPath( dir.absolutePath() );
-        localUrl.addPath( m_fileNameMap[job] );
-
-        QFile *localFile = new QFile( localUrl.path() );
-        if( localFile->open( QIODevice::WriteOnly ) &&
-            localFile->write( (static_cast<KIO::StoredTransferJob *>(job))->data() ) != -1 )
+        QString finalName = tmpFile->fileName();
+        finalName.chop( PODCAST_TMP_POSTFIX.length() );
+        if( tmpFile->rename( finalName ) )
         {
-            debug() << "successfully written Podcast Episode " << sqlEpisode->title() << " to " << localUrl.path();
-            sqlEpisode->setLocalUrl( localUrl );
+            debug() << "successfully written Podcast Episode " << sqlEpisode->title()
+                    << " to " << finalName;
+            sqlEpisode->setLocalUrl( finalName );
 
             if( sqlChannel->writeTags() )
                 sqlEpisode->writeTagsToFile();
@@ -820,21 +1131,26 @@ SqlPodcastProvider::downloadResult( KJob * job )
         }
         else
         {
-            The::statusBar()->longMessage( i18n("Unable to save podcast episode file to %1",
-                            localUrl.prettyUrl()) );
+            The::statusBar()->longMessage( i18n( "Unable to save podcast episode file to %1",
+                                                 finalName ) );
+            downloadFailed = true;
         }
-        localFile->close();
     }
+
     //remove it from the jobmap
     m_completedDownloads++;
-    m_downloadJobMap.remove( job );
-    m_fileNameMap.remove( job );
+    cleanupDownload( job, downloadFailed );
+
+    //start a new download. We just finished one so there is at least one slot free.
+    if( !m_downloadQueue.isEmpty() )
+        downloadEpisode( m_downloadQueue.takeFirst() );
 }
 
 void
 SqlPodcastProvider::redirected( KIO::Job *job, const KUrl & redirectedUrl )
 {
-    debug() << "redirecting to " << redirectedUrl << ". filename: " << redirectedUrl.fileName();
+    debug() << "redirecting to " << redirectedUrl << ". filename: "
+            << redirectedUrl.fileName();
     m_fileNameMap[job] = redirectedUrl.fileName();
 }
 
@@ -844,91 +1160,100 @@ SqlPodcastProvider::createTables() const
     DEBUG_BLOCK
 
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    if( !sqlStorage )
+        return;
+
     sqlStorage->query( QString( "CREATE TABLE podcastchannels ("
-                    "id " + sqlStorage->idType() +
-                    ",url " + sqlStorage->longTextColumnType() +
-                    ",title " + sqlStorage->longTextColumnType() +
-                    ",weblink " + sqlStorage->longTextColumnType() +
-                    ",image " + sqlStorage->longTextColumnType() +
-                    ",description " + sqlStorage->longTextColumnType() +
-                    ",copyright "  + sqlStorage->textColumnType() +
-                    ",directory "  + sqlStorage->textColumnType() +
-                    ",labels " + sqlStorage->textColumnType() +
-                    ",subscribedate " + sqlStorage->textColumnType() +
-                    ",autoscan BOOL, fetchtype INTEGER"
-                    ",haspurge BOOL, purgecount INTEGER"
-                    ",writetags BOOL ) ENGINE = MyISAM;" ) );
+                                "id " + sqlStorage->idType() +
+                                ",url " + sqlStorage->longTextColumnType() +
+                                ",title " + sqlStorage->longTextColumnType() +
+                                ",weblink " + sqlStorage->longTextColumnType() +
+                                ",image " + sqlStorage->longTextColumnType() +
+                                ",description " + sqlStorage->longTextColumnType() +
+                                ",copyright "  + sqlStorage->textColumnType() +
+                                ",directory "  + sqlStorage->textColumnType() +
+                                ",labels " + sqlStorage->textColumnType() +
+                                ",subscribedate " + sqlStorage->textColumnType() +
+                                ",autoscan BOOL, fetchtype INTEGER"
+                                ",haspurge BOOL, purgecount INTEGER"
+                                ",writetags BOOL ) ENGINE = MyISAM;" ) );
 
     sqlStorage->query( QString( "CREATE TABLE podcastepisodes ("
-                    "id " + sqlStorage->idType() +
-                    ",url " + sqlStorage->longTextColumnType() +
-                    ",channel INTEGER"
-                    ",localurl " + sqlStorage->longTextColumnType() +
-                    ",guid " + sqlStorage->exactTextColumnType() +
-                    ",title " + sqlStorage->longTextColumnType() +
-                    ",subtitle " + sqlStorage->longTextColumnType() +
-                    ",sequencenumber INTEGER" +
-                    ",description " + sqlStorage->longTextColumnType() +
-                    ",mimetype "  + sqlStorage->textColumnType() +
-                    ",pubdate "  + sqlStorage->textColumnType() +
-                    ",duration INTEGER"
-                    ",filesize INTEGER"
-                    ",isnew BOOL ) ENGINE = MyISAM;" ));
+                                "id " + sqlStorage->idType() +
+                                ",url " + sqlStorage->longTextColumnType() +
+                                ",channel INTEGER"
+                                ",localurl " + sqlStorage->longTextColumnType() +
+                                ",guid " + sqlStorage->exactTextColumnType() +
+                                ",title " + sqlStorage->longTextColumnType() +
+                                ",subtitle " + sqlStorage->longTextColumnType() +
+                                ",sequencenumber INTEGER" +
+                                ",description " + sqlStorage->longTextColumnType() +
+                                ",mimetype "  + sqlStorage->textColumnType() +
+                                ",pubdate "  + sqlStorage->textColumnType() +
+                                ",duration INTEGER"
+                                ",filesize INTEGER"
+                                ",isnew BOOL ) ENGINE = MyISAM;" ) );
 
     sqlStorage->query( "CREATE FULLTEXT INDEX url_podchannel ON podcastchannels( url );" );
     sqlStorage->query( "CREATE FULLTEXT INDEX url_podepisode ON podcastepisodes( url );" );
-    sqlStorage->query( "CREATE FULLTEXT INDEX localurl_podepisode ON podcastepisodes( localurl );" );
+    sqlStorage->query(
+            "CREATE FULLTEXT INDEX localurl_podepisode ON podcastepisodes( localurl );" );
 }
 
 void
 SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
 {
-    debug() << QString( "Updating Podcast tables from version %1 to version %2" ).arg(fromVersion).arg(toVersion);
+    debug() << QString( "Updating Podcast tables from version %1 to version %2" )
+            .arg( fromVersion ).arg( toVersion );
 
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
-    #define escape(x) sqlStorage->escape(x)
+    if( !sqlStorage )
+        return;
+#define escape(x) sqlStorage->escape(x)
 
     if( fromVersion == 1 && toVersion == 2 )
     {
         QString updateChannelQuery = QString( "ALTER TABLE podcastchannels"
-            " ADD subscribedate " + sqlStorage->textColumnType() + ';' );
+                                              " ADD subscribedate " + sqlStorage->textColumnType() + ';' );
 
         sqlStorage->query( updateChannelQuery );
 
-        QString setDateQuery = QString( "UPDATE podcastchannels SET subscribedate='%1' WHERE subscribedate='';" ).arg( escape(QDate::currentDate().toString()) );
+        QString setDateQuery = QString(
+                "UPDATE podcastchannels SET subscribedate='%1' WHERE subscribedate='';" )
+                .arg( escape( QDate::currentDate().toString() ) );
         sqlStorage->query( setDateQuery );
     }
-    else if ( fromVersion < 3 && toVersion == 3 )
+    else if( fromVersion < 3 && toVersion == 3 )
     {
         sqlStorage->query( QString( "CREATE TABLE podcastchannels_temp ("
-                    "id " + sqlStorage->idType() +
-                    ",url " + sqlStorage->exactTextColumnType() + " UNIQUE"
-                    ",title " + sqlStorage->textColumnType() +
-                    ",weblink " + sqlStorage->exactTextColumnType() +
-                    ",image " + sqlStorage->exactTextColumnType() +
-                    ",description " + sqlStorage->longTextColumnType() +
-                    ",copyright "  + sqlStorage->textColumnType() +
-                    ",directory "  + sqlStorage->textColumnType() +
-                    ",labels " + sqlStorage->textColumnType() +
-                    ",subscribedate " + sqlStorage->textColumnType() +
-                    ",autoscan BOOL, fetchtype INTEGER"
-                    ",haspurge BOOL, purgecount INTEGER ) ENGINE = MyISAM;" ) );
+                                    "id " + sqlStorage->idType() +
+                                    ",url " + sqlStorage->exactTextColumnType() + " UNIQUE"
+                                    ",title " + sqlStorage->textColumnType() +
+                                    ",weblink " + sqlStorage->exactTextColumnType() +
+                                    ",image " + sqlStorage->exactTextColumnType() +
+                                    ",description " + sqlStorage->longTextColumnType() +
+                                    ",copyright "  + sqlStorage->textColumnType() +
+                                    ",directory "  + sqlStorage->textColumnType() +
+                                    ",labels " + sqlStorage->textColumnType() +
+                                    ",subscribedate " + sqlStorage->textColumnType() +
+                                    ",autoscan BOOL, fetchtype INTEGER"
+                                    ",haspurge BOOL, purgecount INTEGER ) ENGINE = MyISAM;" ) );
 
         sqlStorage->query( QString( "CREATE TABLE podcastepisodes_temp ("
-                    "id " + sqlStorage->idType() +
-                    ",url " + sqlStorage->exactTextColumnType() + " UNIQUE"
-                    ",channel INTEGER"
-                    ",localurl " + sqlStorage->exactTextColumnType() +
-                    ",guid " + sqlStorage->exactTextColumnType() +
-                    ",title " + sqlStorage->textColumnType() +
-                    ",subtitle " + sqlStorage->textColumnType() +
-                    ",sequencenumber INTEGER" +
-                    ",description " + sqlStorage->longTextColumnType() +
-                    ",mimetype "  + sqlStorage->textColumnType() +
-                    ",pubdate "  + sqlStorage->textColumnType() +
-                    ",duration INTEGER"
-                    ",filesize INTEGER"
-                    ",isnew BOOL ) ENGINE = MyISAM;" ));
+                                    "id " + sqlStorage->idType() +
+                                    ",url " + sqlStorage->exactTextColumnType() + " UNIQUE"
+                                    ",channel INTEGER"
+                                    ",localurl " + sqlStorage->exactTextColumnType() +
+                                    ",guid " + sqlStorage->exactTextColumnType() +
+                                    ",title " + sqlStorage->textColumnType() +
+                                    ",subtitle " + sqlStorage->textColumnType() +
+                                    ",sequencenumber INTEGER" +
+                                    ",description " + sqlStorage->longTextColumnType() +
+                                    ",mimetype "  + sqlStorage->textColumnType() +
+                                    ",pubdate "  + sqlStorage->textColumnType() +
+                                    ",duration INTEGER"
+                                    ",filesize INTEGER"
+                                    ",isnew BOOL ) ENGINE = MyISAM;" ) );
 
         sqlStorage->query( "INSERT INTO podcastchannels_temp SELECT * FROM podcastchannels;" );
         sqlStorage->query( "INSERT INTO podcastepisodes_temp SELECT * FROM podcastepisodes;" );
@@ -948,7 +1273,7 @@ SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
     if( fromVersion < 4 && toVersion == 4 )
     {
         QString updateChannelQuery = QString( "ALTER TABLE podcastchannels"
-            " ADD writetags BOOL;" );
+                                              " ADD writetags BOOL;" );
         sqlStorage->query( updateChannelQuery );
         QString setWriteTagsQuery = QString( "UPDATE podcastchannels SET writetags=" +
                                              sqlStorage->boolTrue() +
@@ -958,9 +1283,48 @@ SqlPodcastProvider::updateDatabase( int fromVersion, int toVersion )
 
 
     QString updateAdmin = QString( "UPDATE admin SET version=%1 WHERE component='%2';" );
-    sqlStorage->query( updateAdmin.arg( toVersion ).arg( escape(key) ) );
+    sqlStorage->query( updateAdmin.arg( toVersion ).arg( escape( key ) ) );
 
     loadPodcasts();
+}
+
+void
+SqlPodcastProvider::fetchImage( SqlPodcastChannelPtr channel )
+{
+    DEBUG_BLOCK
+
+    if( m_podcastImageFetcher == 0 )
+    {
+        m_podcastImageFetcher = new PodcastImageFetcher();
+        connect( m_podcastImageFetcher,
+                 SIGNAL( imageReady( Meta::PodcastChannelPtr, QPixmap ) ),
+                 SLOT( channelImageReady( Meta::PodcastChannelPtr, QPixmap ) )
+               );
+        connect( m_podcastImageFetcher,
+                 SIGNAL( done( PodcastImageFetcher * ) ),
+                 SLOT( podcastImageFetcherDone( PodcastImageFetcher * ) )
+               );
+    }
+
+    m_podcastImageFetcher->addChannel( PodcastChannelPtr::dynamicCast( channel ) );
+}
+
+void
+SqlPodcastProvider::channelImageReady( Meta::PodcastChannelPtr channel, QPixmap pixmap )
+{
+    DEBUG_BLOCK
+    debug() << "channel: " << channel->title();
+    if( pixmap.isNull() )
+        return;
+
+    channel->setImage( pixmap );
+}
+
+void
+SqlPodcastProvider::podcastImageFetcherDone( PodcastImageFetcher *fetcher )
+{
+    fetcher->deleteLater();
+    m_podcastImageFetcher = 0;
 }
 
 #include "SqlPodcastProvider.moc"
