@@ -1,5 +1,6 @@
 amarok (2.2.2~beta1-2) UNRELEASED; urgency=low
 
+  * Suggest moodbar, add a note about it to README.Debian.
 
  -- Modestas Vainius <modax@debian.org>  Tue, 05 Jan 2010 13:05:04 +0200
 
