@@ -1,5 +1,6 @@
-amarok (2.2.2~beta1-2) UNRELEASED; urgency=low
+amarok (2.2.2-0r1) UNRELEASED; urgency=low
 
+  * New upstream release.
   * Suggest moodbar, add a note about it to README.Debian.
   * Replace "KDE 4 technology platform" with official "KDE Platform" in amarok
     package description.
