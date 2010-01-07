@@ -25,6 +25,7 @@
 #include <QLabel>
 #include <QListWidget>
 #include <QListWidgetItem>
+#include <QAction>
 
 namespace Amarok { class LineEdit; }
 
@@ -102,6 +103,9 @@ class CoverManager : public QSplitter, public Meta::Observer
 
         QTreeWidget      *m_artistView;
         CoverView        *m_coverView;
+
+        //hack to have something to show while the real list is hidden when loading thumbnails
+        CoverView        *m_coverViewSpacer;
         Amarok::LineEdit *m_searchEdit;
         KPushButton      *m_fetchButton;
         KMenu            *m_viewMenu;
@@ -179,6 +183,28 @@ class CoverViewItem : public QListWidgetItem
         QString m_coverImagePath;
         bool    m_embedded;
         QListWidget *m_parent;
+};
+
+/**
+*   Wrapper class to connect multiple actions to a single entry
+*/
+class MultipleAction : public QAction
+{
+    Q_OBJECT
+    public:
+        MultipleAction( QObject *parent, QList<QAction *> actions )
+            : QAction( parent )
+        {
+            foreach( QAction *action, actions )
+                connect( this, SIGNAL( triggered( bool ) ), action, SLOT( trigger() ) );
+
+            if ( actions.count() > 0 )
+            {
+                setText( actions.first()->text() );
+                setIcon( actions.first()->icon() );
+                setToolTip( actions.first()->toolTip() );
+            }
+        }
 };
 
 #endif

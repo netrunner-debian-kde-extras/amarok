@@ -244,7 +244,7 @@ WikipediaEngine::wikiResult( KJob* job )
 
     // FIXME: For now we test if we got an article or not with a test on this string "wgArticleId=0"
     // This is bad
-    if( m_wiki.contains( "wgArticleId=0" ) ) // The article does not exist
+    if( m_wiki.contains( "wgArticleId=0" ) && m_wiki.contains( "wgNamespaceNumber=0" ) ) // The article does not exist
     {
         // Refined search is done here 
         if ( m_triedRefinedSearch == -1 )
@@ -278,6 +278,7 @@ WikipediaEngine::wikiResult( KJob* job )
     // We've find a page
     removeAllData( "wikipedia" );
     setData( "wikipedia", "page", wikiParse() );
+    setData( "wikipedia", "url", m_wikiCurrentUrl );
 
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     if( currentTrack )
@@ -349,6 +350,13 @@ WikipediaEngine::wikiParse()
     QString protecend = "</a></div>" ;
     while ( m_wiki.indexOf( protec ) != -1 )
         m_wiki.remove( m_wiki.indexOf( protec ), m_wiki.mid( m_wiki.indexOf( protec ) ).indexOf( protecend ) + protecend.size() );
+
+    // lets also remove the "lock" image
+    QString topicon = "<div class=\"metadata topicon\" " ;
+    QString topiconend = "</a></div>";
+     while ( m_wiki.indexOf( topicon ) != -1 )
+        m_wiki.remove( m_wiki.indexOf( topicon ), m_wiki.mid( m_wiki.indexOf( topicon ) ).indexOf( topiconend ) + topiconend.size() );
+    
     
     // Adding back style and license information
     m_wiki = "<div id=\"bodyContent\"" + m_wiki;
@@ -380,10 +388,6 @@ WikipediaEngine::wikiParse()
     m_wiki.remove( "</option>\n"  );
     m_wiki.remove( QRegExp( "<textarea[^>]*>" ) );
     m_wiki.remove( "</textarea>" );
-    
-    // Make sure that the relative links inside the wikipedia HTML is forcibly made into absolute links (yes, this is deep linking, but we're showing wikipedia data as wikipedia data, not stealing any credz here)
-    m_wiki.replace( QRegExp( "href= *\"/" ), "href=\"" + wikiSiteUrl() );
-    m_wiki.replace( QRegExp( "src= *\"/" ), "src=\"" + wikiSiteUrl() );
     
     QString m_wikiHTMLSource = "<html><body>\n";
     m_wikiHTMLSource.append( m_wiki );

@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-12-10 06:47+0100\n"
-"PO-Revision-Date: 2009-12-08 09:41+0100\n"
+"POT-Creation-Date: 2010-01-05 06:35+0100\n"
+"PO-Revision-Date: 2009-12-29 15:27+0100\n"
 "Last-Translator: Martin Schlander <mschlander@opensuse.org>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "MIME-Version: 1.0\n"
@@ -19,8 +19,9 @@ msgstr ""
 "X-Generator: Lokalize 1.0\n"
 
 #: mac/GrowlInterface.cpp:37 context/engines/current/CurrentEngine.cpp:150
-#: context/applets/currenttrack/CurrentTrack.cpp:109
-#: context/applets/photos/PhotosApplet.cpp:132 App.cpp:993 widgets/Osd.cpp:578
+#: context/applets/currenttrack/CurrentTrack.cpp:110
+#: context/applets/photos/PhotosApplet.cpp:132 App.cpp:1009
+#: widgets/Osd.cpp:578
 msgid "No track playing"
 msgstr "Intet spor afspilles"
 
@@ -365,37 +366,37 @@ msgstr "&Læs enhed"
 msgid "Proxy Collection"
 msgstr "Proxy-samling"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:154
+#: collection/mtpcollection/handler/MtpHandler.cpp:151
 msgid "Could not connect to MTP Device"
 msgstr "Kunne ikke forbinde til MTP-enhed"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:375
+#: collection/mtpcollection/handler/MtpHandler.cpp:374
 msgid "Could not copy track from device."
 msgstr "Kunne ikke kopiere spor fra enhed."
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:418
+#: collection/mtpcollection/handler/MtpHandler.cpp:417
 msgid "Unknown Artist"
 msgstr "Ukendt kunstner"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:428
+#: collection/mtpcollection/handler/MtpHandler.cpp:427
 msgid "Unknown Album"
 msgstr "Ukendt album"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:434
+#: collection/mtpcollection/handler/MtpHandler.cpp:433
 msgid "Unknown Genre"
 msgstr "Ukendt genre"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:590
-#: collection/mtpcollection/handler/MtpHandler.cpp:741
-#: collection/mtpcollection/handler/MtpHandler.cpp:922
+#: collection/mtpcollection/handler/MtpHandler.cpp:589
+#: collection/mtpcollection/handler/MtpHandler.cpp:740
+#: collection/mtpcollection/handler/MtpHandler.cpp:923
 msgid "Could not delete item"
 msgstr "Kunne ikke slette punkt"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:601
+#: collection/mtpcollection/handler/MtpHandler.cpp:600
 msgid "Delete failed"
 msgstr "Sletning mislykkedes"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:895
+#: collection/mtpcollection/handler/MtpHandler.cpp:896
 msgid "Could not save playlist."
 msgstr "Kunne ikke gemme spilleliste"
 
@@ -544,7 +545,7 @@ msgstr "Scanner musik"
 #: collection/sqlcollection/ScanManager.cpp:718
 #: dialogs/OrganizeCollectionDialog.cpp:144
 #: browsers/CollectionTreeItem.cpp:201 covermanager/CoverViewDialog.h:45
-#: covermanager/CoverManager.cpp:780
+#: covermanager/CoverManager.cpp:816
 msgid "Various Artists"
 msgstr "Diverse kunstnere"
 
@@ -556,7 +557,7 @@ msgstr "Stream"
 
 #: collection/sqlcollection/SqlMeta.cpp:407
 #: services/lastfm/meta/LastFmMeta.cpp:137 covermanager/CoverViewDialog.h:44
-#: covermanager/CoverManager.cpp:780
+#: covermanager/CoverManager.cpp:816
 #, kde-format
 msgid "%1 - %2"
 msgstr "%1 - %2"
@@ -577,7 +578,7 @@ msgstr "S&kub ud"
 #: collection/audiocd/AudioCdCollection.cpp:413
 #: collection/audiocd/AudioCdCollection.cpp:414
 #: collection/audiocd/AudioCdCollection.cpp:415
-#: context/applets/albums/AlbumItem.cpp:73 MainWindow.cpp:1148
+#: context/applets/albums/AlbumItem.cpp:73 MainWindow.cpp:1158
 #: amarokurls/BookmarkTreeView.cpp:319 amarokurls/BookmarkTreeView.cpp:320
 #: amarokurls/BookmarkTreeView.cpp:321
 msgid "Unknown"
@@ -802,7 +803,7 @@ msgstr "Ingen information fundet..."
 msgid "Unable to retrieve Wikipedia information: %1"
 msgstr "Kan ikke hente Wikipedia-information: %1"
 
-#: context/engines/wikipedia/WikipediaEngine.cpp:392
+#: context/engines/wikipedia/WikipediaEngine.cpp:396
 msgid "Wikipedia Other Languages: <br/>"
 msgstr "Andre sprog på Wikipedia: <br/>"
 
@@ -907,41 +908,41 @@ msgstr "intet navn på applet"
 msgid "Lyrics data could not be parsed"
 msgstr "Sangtekstdata kunne ikke fortolkes"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:103
+#: context/applets/videoclip/VideoclipApplet.cpp:107
 #: context/applets/lyrics/LyricsApplet.cpp:130
 #: context/applets/photos/PhotosApplet.cpp:78
 #: context/applets/wikipedia/WikipediaApplet.cpp:141
 msgid "Settings"
 msgstr "Indstillinger"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:114
-#: context/applets/videoclip/VideoclipApplet.cpp:347
-#: context/applets/videoclip/VideoclipApplet.cpp:368
+#: context/applets/videoclip/VideoclipApplet.cpp:118
+#: context/applets/videoclip/VideoclipApplet.cpp:357
+#: context/applets/videoclip/VideoclipApplet.cpp:378
 msgid "Video Clip"
 msgstr "Videoklip"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:358
+#: context/applets/videoclip/VideoclipApplet.cpp:368
 msgid "Video Clip "
 msgstr "Videoklip "
 
-#: context/applets/videoclip/VideoclipApplet.cpp:358
+#: context/applets/videoclip/VideoclipApplet.cpp:368
 msgid " No information found..."
 msgstr " Ingen information fundet..."
 
-#: context/applets/videoclip/VideoclipApplet.cpp:541
+#: context/applets/videoclip/VideoclipApplet.cpp:551
 msgid "Video Clip Settings"
 msgstr "Indstillinger for videoklip"
 
-#: context/applets/videoclip/VideoItemButton.cpp:98
+#: context/applets/videoclip/VideoItemButton.cpp:96
 msgid "&Add to playlist"
 msgstr "&Føj til spilleliste"
 
-#: context/applets/videoclip/VideoItemButton.cpp:99
+#: context/applets/videoclip/VideoItemButton.cpp:97
 #: context/applets/albums/AlbumsView.cpp:114
 msgid "&Queue"
 msgstr "Sæt i &kø"
 
-#: context/applets/videoclip/VideoItemButton.cpp:100
+#: context/applets/videoclip/VideoItemButton.cpp:98
 msgid "Append and &Play"
 msgstr "Tilføj og &afspil"
 
@@ -980,25 +981,25 @@ msgstr "Songkick kunne ikke downloades. Tjek din internetforbindelse: %1"
 msgid "There was no information found for this track"
 msgstr "Der blev ikke fundet nogen information til dette spor"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:82
+#: context/applets/currenttrack/CurrentTrack.cpp:83
 msgctxt "What artist is this track by"
 msgid "By"
 msgstr "Af"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:83
+#: context/applets/currenttrack/CurrentTrack.cpp:84
 msgctxt "What album is this track on"
 msgid "On"
 msgstr "Fra"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:115
-#: context/applets/currenttrack/CurrentTrack.cpp:542
+#: context/applets/currenttrack/CurrentTrack.cpp:116
+#: context/applets/currenttrack/CurrentTrack.cpp:557
 msgid "Play count"
 msgstr "Afspilninger"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:120
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
-#: context/applets/currenttrack/CurrentTrack.cpp:116
-#: context/applets/currenttrack/CurrentTrack.cpp:543
+#: context/applets/currenttrack/CurrentTrack.cpp:117
+#: context/applets/currenttrack/CurrentTrack.cpp:558
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:256
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:695 rc.cpp:1249
 #: playlist/PlaylistModel.cpp:715 widgets/SmartPlaylistEditor.cpp:185
@@ -1006,18 +1007,18 @@ msgstr "Afspilninger"
 msgid "Score"
 msgstr "Score"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:117
-#: context/applets/currenttrack/CurrentTrack.cpp:544
+#: context/applets/currenttrack/CurrentTrack.cpp:118
+#: context/applets/currenttrack/CurrentTrack.cpp:559
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:261
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:700 TrayIcon.cpp:189
 msgid "Last Played"
 msgstr "Sidst afspillet"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:122
+#: context/applets/currenttrack/CurrentTrack.cpp:123
 msgid "Last played"
 msgstr "Sidst afspillet"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:123
+#: context/applets/currenttrack/CurrentTrack.cpp:124
 msgid "Favorite tracks"
 msgstr "Favoritspor"
 
@@ -1129,7 +1130,7 @@ msgstr "Hent sangtekst igen"
 #. i18n: ectx: property (windowTitle), widget (QWidget, lyricsSettings)
 #: context/applets/lyrics/LyricsApplet.cpp:454 rc.cpp:563
 msgid "Lyrics Settings"
-msgstr "Indstilling af sangtekst"
+msgstr "Indstillinger for sangtekst"
 
 #: context/applets/photos/PhotosApplet.cpp:68
 #: context/applets/photos/PhotosApplet.cpp:132
@@ -1145,7 +1146,7 @@ msgstr "Fotos"
 #. i18n: file: context/applets/wikipedia/wikipediaSettings.ui:24
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
 #: context/applets/photos/PhotosApplet.cpp:92
-#: context/applets/wikipedia/WikipediaApplet.cpp:401 rc.cpp:569 rc.cpp:592
+#: context/applets/wikipedia/WikipediaApplet.cpp:406 rc.cpp:569 rc.cpp:592
 msgid "Automatic"
 msgstr "Automatisk"
 
@@ -1185,7 +1186,7 @@ msgstr "Frem"
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: context/applets/wikipedia/WikipediaApplet.cpp:120
 #: dialogs/FilenameLayoutDialog.cpp:170 dialogs/FilenameLayoutDialog.cpp:497
-#: dialogs/transferdialog.cpp:88 browsers/CollectionTreeItemModelBase.cpp:922
+#: dialogs/transferdialog.cpp:88 browsers/CollectionTreeItemModelBase.cpp:928
 #: browsers/collectionbrowser/CollectionWidget.cpp:122
 #: browsers/collectionbrowser/CollectionWidget.cpp:151
 #: browsers/collectionbrowser/CollectionWidget.cpp:183
@@ -1202,7 +1203,7 @@ msgstr "Kunstner"
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: context/applets/wikipedia/WikipediaApplet.cpp:127
 #: dialogs/FilenameLayoutDialog.cpp:182 dialogs/FilenameLayoutDialog.cpp:518
-#: dialogs/transferdialog.cpp:89 browsers/CollectionTreeItemModelBase.cpp:921
+#: dialogs/transferdialog.cpp:89 browsers/CollectionTreeItemModelBase.cpp:927
 #: browsers/collectionbrowser/CollectionWidget.cpp:125
 #: browsers/collectionbrowser/CollectionWidget.cpp:154
 #: browsers/collectionbrowser/CollectionWidget.cpp:186
@@ -1229,23 +1230,23 @@ msgstr "Genindlæs"
 
 #. i18n: file: context/applets/wikipedia/wikipediaSettings.ui:29
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
-#: context/applets/wikipedia/WikipediaApplet.cpp:404 rc.cpp:595
+#: context/applets/wikipedia/WikipediaApplet.cpp:409 rc.cpp:595
 msgid "English"
 msgstr "Engelsk"
 
 #. i18n: file: context/applets/wikipedia/wikipediaSettings.ui:34
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
-#: context/applets/wikipedia/WikipediaApplet.cpp:407 rc.cpp:598
+#: context/applets/wikipedia/WikipediaApplet.cpp:412 rc.cpp:598
 msgid "French"
 msgstr "Fransk"
 
 #. i18n: file: context/applets/wikipedia/wikipediaSettings.ui:39
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
-#: context/applets/wikipedia/WikipediaApplet.cpp:410 rc.cpp:601
+#: context/applets/wikipedia/WikipediaApplet.cpp:415 rc.cpp:601
 msgid "German"
 msgstr "Tysk"
 
-#: context/applets/wikipedia/WikipediaApplet.cpp:437
+#: context/applets/wikipedia/WikipediaApplet.cpp:442
 msgid "Wikipedia Settings"
 msgstr "Indstillinger for Wikipedia"
 
@@ -1288,7 +1289,7 @@ msgid ""
 msgstr "Tilføj nogle applets fra værktøjslinjen i bunden af kontekstvisningen."
 
 #: context/widgets/ToolBoxMenu.cpp:107
-#: context/widgets/appletexplorer/AppletExplorer.cpp:88
+#: context/widgets/appletexplorer/AppletExplorer.cpp:90
 msgid "Hide menu"
 msgstr "Skjul menu"
 
@@ -1732,8 +1733,8 @@ msgid ""
 "If selected, Amarok will use Mozilla's Character Set Detector to attempt to "
 "automatically guess the character sets used in ID3 tags."
 msgstr ""
-"Hvis markeret, vil Amarok bruge Mozillas Character Set Detector til at "
-"forsøge automatisk at gætte de tegnsæt der bruges i ID3-mærker."
+"Hvis markeret, vil Amarok bruge Mozillas detektion af tegnsæt til at forsøge "
+"automatisk at gætte de tegnsæt der bruges i ID3-mærker."
 
 #: dialogs/FilenameLayoutDialog.cpp:117
 msgid "Collection root"
@@ -1751,7 +1752,7 @@ msgstr "Titel"
 #. i18n: file: dialogs/EditFilterDialog.ui:95
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:174 dialogs/FilenameLayoutDialog.cpp:504
-#: browsers/CollectionTreeItemModelBase.cpp:923
+#: browsers/CollectionTreeItemModelBase.cpp:929
 #: browsers/collectionbrowser/CollectionWidget.cpp:131
 #: browsers/collectionbrowser/CollectionWidget.cpp:160
 #: browsers/collectionbrowser/CollectionWidget.cpp:192
@@ -1764,7 +1765,7 @@ msgstr "Komponist"
 #. i18n: file: dialogs/EditFilterDialog.ui:135
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:178 dialogs/FilenameLayoutDialog.cpp:511
-#: browsers/CollectionTreeItemModelBase.cpp:925
+#: browsers/CollectionTreeItemModelBase.cpp:931
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:253
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:692 rc.cpp:1258
 #: playlist/PlaylistModel.cpp:703 widgets/SmartPlaylistEditor.cpp:184
@@ -1781,7 +1782,7 @@ msgstr "Kommentar"
 #. i18n: file: dialogs/EditFilterDialog.ui:100
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:190 dialogs/FilenameLayoutDialog.cpp:532
-#: dialogs/transferdialog.cpp:90 browsers/CollectionTreeItemModelBase.cpp:924
+#: dialogs/transferdialog.cpp:90 browsers/CollectionTreeItemModelBase.cpp:930
 #: browsers/collectionbrowser/CollectionWidget.cpp:128
 #: browsers/collectionbrowser/CollectionWidget.cpp:157
 #: browsers/collectionbrowser/CollectionWidget.cpp:189
@@ -1810,7 +1811,7 @@ msgid ""
 "color=\"%7\">%comment</font>, <font color=\"%8\">%genre</"
 "font>,                                      %ignore."
 msgstr ""
-"Følgende symboler kan bruges til at definere et filnavnskema:"
+"Følgende symboler kan bruges til at definere en filnavnskabelon:"
 "<br>                                      <font color=\"%1\">%track</font>, "
 "<font color=\"%2\">%title</font>,                                      <font "
 "color=\"%3\">%artist</font>, <font color=\"%4\">%composer</"
@@ -1842,10 +1843,10 @@ msgid ""
 "composer, %year, %album, %comment, %genre, %initial, %folder, %filetype, %"
 "discnumber."
 msgstr ""
-"Følgende symboler kan bruges til at definere et filnavn-"
-"skema:                                      <br>%track, %title, %artist, %"
-"composer, %year, %album, %comment, %genre, %initial, %folder, %filetype, %"
-"discnumber."
+"Følgende symboler kan bruges til at definere en "
+"filnavnskabelon:                                      <br>%track, %title, %"
+"artist, %composer, %year, %album, %comment, %genre, %initial, %folder, %"
+"filetype, %discnumber."
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:564
 #. i18n: ectx: property (text), widget (QLabel, Title_result)
@@ -2149,7 +2150,7 @@ msgstr "Sange med score:"
 msgid "Average Score:"
 msgstr "Gennemsnitsscore:"
 
-#: dialogs/TagDialog.cpp:1646
+#: dialogs/TagDialog.cpp:1649
 msgid ""
 "Writing to file failed. Please check permissions and available disc space."
 msgstr "Skrivning til fil mislykkedes. Tjek rettigheder og ledig diskplads."
@@ -2283,29 +2284,30 @@ msgstr "Indstillinger"
 msgid "Convert spaces to underscores"
 msgstr "Konvertér mellemrum til understregningstegn"
 
-#: dialogs/ScriptManager.cpp:92 MainWindow.cpp:771
+#: dialogs/ScriptManager.cpp:106 MainWindow.cpp:775
 msgid "Script Manager"
 msgstr "Håndtering af scripts"
 
-#: dialogs/ScriptManager.cpp:292
+#: dialogs/ScriptManager.cpp:306
 msgid ""
 "Script Packages (*.amarokscript.tar, *.amarokscript.tar.bz2, *.amarokscript."
 "tar.gz)"
 msgstr ""
 "Script-pakker (*.amarokscript.tar, *.amarokscript.tar.bz2, *.amarokscript. tar.gz)"
 
-#: dialogs/ScriptManager.cpp:300
+#: dialogs/ScriptManager.cpp:314
 msgid "Could not read this package."
 msgstr "Kunne ikke læse denne pakke."
 
-#: dialogs/ScriptManager.cpp:311
+#: dialogs/ScriptManager.cpp:325
 #, kde-format
 msgid ""
 "A script with the name '%1' is already installed. Please uninstall it first."
 msgstr ""
 "Et script med navnet \"%1\" er allerede installeret. Afinstallér det først."
 
-#: dialogs/ScriptManager.cpp:322 dialogs/ScriptManager.cpp:376
+#: dialogs/ScriptManager.cpp:336 dialogs/ScriptManager.cpp:382
+#: dialogs/ScriptManager.cpp:403
 msgid ""
 "<p>Script successfully installed.</p><p>Please restart Amarok to start the "
 "script.</p>"
@@ -2313,7 +2315,7 @@ msgstr ""
 "<p>Installation af script gennemført.</p><p>Genstart Amarok for at starte "
 "scriptet.</p>"
 
-#: dialogs/ScriptManager.cpp:328
+#: dialogs/ScriptManager.cpp:342
 msgid ""
 "<p>Script installation failed.</p><p>Please inform the package maintainer "
 "about this error.</p>"
@@ -2321,7 +2323,8 @@ msgstr ""
 "<p>Installation af script fejlede.</p><p>Underret venligst "
 "pakkevedligeholderen  om denne fejl.</p>"
 
-#: dialogs/ScriptManager.cpp:379 dialogs/ScriptManager.cpp:410
+#: dialogs/ScriptManager.cpp:385 dialogs/ScriptManager.cpp:406
+#: dialogs/ScriptManager.cpp:438
 msgid ""
 "<p>Script successfully uninstalled.</p><p>Please restart Amarok to totally "
 "remove the script.</p>"
@@ -2329,27 +2332,27 @@ msgstr ""
 "<p>Afinstallation af script gennemført.</p><p>Genstart Amarok for at fjerne "
 "scriptet helt.</p>"
 
-#: dialogs/ScriptManager.cpp:392
+#: dialogs/ScriptManager.cpp:420
 #, kde-format
 msgid "Are you sure you want to uninstall the script '%1'?"
 msgstr "Er du sikker på at du ønsker  at afinstallere scriptet '%1'?"
 
-#: dialogs/ScriptManager.cpp:392
+#: dialogs/ScriptManager.cpp:420
 msgid "Uninstall Script"
 msgstr "Afinstallér script"
 
-#: dialogs/ScriptManager.cpp:392
+#: dialogs/ScriptManager.cpp:420
 msgid "Uninstall"
 msgstr "Afinstallér"
 
-#: dialogs/ScriptManager.cpp:401
+#: dialogs/ScriptManager.cpp:429
 msgid ""
 "<p>Could not uninstall this script.</p><p>The ScriptManager can only "
 "uninstall scripts which have been installed as packages.</p>"
 msgstr ""
 "<p>Kunne ikke afinstallere dette script.</p><p>Scripthåndteringen kan kun  afinstallere scripts, som er blevet installeret som pakker.</p>"
 
-#: dialogs/ScriptManager.cpp:449
+#: dialogs/ScriptManager.cpp:477
 #, kde-format
 msgid ""
 "There are exceptions caught in the script '%1'. Please refer to the console "
@@ -2467,7 +2470,7 @@ msgid ""
 msgstr ""
 "Den indlejrede database blev ikke fundet, du skal sætte en forbindelse til "
 "en database-server op.\n"
-"Du skal genstarte Amarok efter det er gjort."
+"Du er nødt til at genstarte Amarok efter det er gjort."
 
 #: App.cpp:737
 msgid ""
@@ -2485,91 +2488,91 @@ msgstr "Databasefejl"
 msgid "Moving files to trash"
 msgstr "Flytter filer til papirkurven"
 
-#: App.cpp:865
+#: App.cpp:881
 msgctxt "When this track was last played"
 msgid "Unknown"
 msgstr "Ukendt"
 
-#: App.cpp:870
+#: App.cpp:886
 #, kde-format
 msgctxt "monthname year"
 msgid "%1 %2"
 msgstr "%1 %2"
 
-#: App.cpp:877
+#: App.cpp:893
 #, kde-format
 msgid "One week ago"
 msgid_plural "%1 weeks ago"
 msgstr[0] "En uge siden"
 msgstr[1] "%1 uger siden"
 
-#: App.cpp:883
+#: App.cpp:899
 msgid "Yesterday"
 msgstr "I går"
 
-#: App.cpp:884
+#: App.cpp:900
 #, kde-format
 msgid "One day ago"
 msgid_plural "%1 days ago"
 msgstr[0] "En dag siden"
 msgstr[1] "%1 dage siden"
 
-#: App.cpp:887
+#: App.cpp:903
 #, kde-format
 msgid "One hour ago"
 msgid_plural "%1 hours ago"
 msgstr[0] "En time siden"
 msgstr[1] "%1 timer siden"
 
-#: App.cpp:893
+#: App.cpp:909
 #, kde-format
 msgid "One minute ago"
 msgid_plural "%1 minutes ago"
 msgstr[0] "Et minut siden"
 msgstr[1] "%1 minutter siden"
 
-#: App.cpp:894
+#: App.cpp:910
 msgid "Within the last minute"
 msgstr "Indenfor det seneste minut"
 
-#: App.cpp:896
+#: App.cpp:912
 msgid "The future"
 msgstr "Fremtiden"
 
-#: App.cpp:902
+#: App.cpp:918
 msgctxt "The amount of time since last played"
 msgid "Never"
 msgstr "Aldrig"
 
-#: App.cpp:912
+#: App.cpp:928
 msgctxt "The amount of time since last played"
 msgid "0"
 msgstr "0"
 
-#: App.cpp:921
+#: App.cpp:937
 #, kde-format
 msgctxt "number of months ago"
 msgid "%1M"
 msgstr "%1M"
 
-#: App.cpp:925
+#: App.cpp:941
 #, kde-format
 msgctxt "w for weeks"
 msgid "%1w"
 msgstr "%1u"
 
-#: App.cpp:928
+#: App.cpp:944
 msgctxt "When this track was last played"
 msgid "Tomorrow"
 msgstr "I morgen"
 
-#: App.cpp:934
+#: App.cpp:950
 #, no-c-format, kde-format
 msgctxt "d for days"
 msgid "%1d"
 msgstr "%1d"
 
-#: App.cpp:937
+#: App.cpp:953
 #, kde-format
 msgctxt "h for hours"
 msgid "%1h"
@@ -2597,34 +2600,34 @@ msgstr "%1t"
 #. i18n: ectx: property (text), widget (QLabel, eqBand8Value)
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:1329
 #. i18n: ectx: property (text), widget (QLabel, eqBand9Value)
-#: App.cpp:946 rc.cpp:737 rc.cpp:743 rc.cpp:749 rc.cpp:755 rc.cpp:761
+#: App.cpp:962 rc.cpp:737 rc.cpp:743 rc.cpp:749 rc.cpp:755 rc.cpp:761
 #: rc.cpp:767 rc.cpp:773 rc.cpp:779 rc.cpp:785 rc.cpp:791 rc.cpp:797
 msgid "0"
 msgstr "0"
 
-#: App.cpp:963
+#: App.cpp:979
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> af <b>%2</b> fra <b>%3</b>"
 
-#: App.cpp:966
+#: App.cpp:982
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> af <b>%2</b>"
 
-#: App.cpp:970
+#: App.cpp:986
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> fra <b>%2</b>"
 
-#: App.cpp:975
+#: App.cpp:991
 msgid "Unknown track"
 msgstr "Ukendt spor"
 
-#: App.cpp:982
+#: App.cpp:998
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -2926,7 +2929,7 @@ msgstr "Allerede abonnent på %1."
 
 #: podcasts/sql/SqlPodcastProvider.cpp:453
 msgid "&Delete Downloaded Episode"
-msgstr "&Slet downloadet episode"
+msgstr "&Slet downloadet afsnit"
 
 #: podcasts/sql/SqlPodcastProvider.cpp:464
 msgid "&Write Feed Information to File"
@@ -2934,7 +2937,7 @@ msgstr "Skri&v feed-information til filen"
 
 #: podcasts/sql/SqlPodcastProvider.cpp:496
 msgid "&Download Episode"
-msgstr "&Download episode"
+msgstr "&Download afsnit"
 
 #: podcasts/sql/SqlPodcastProvider.cpp:518
 msgid "&Configure"
@@ -2958,7 +2961,7 @@ msgstr "Vil du virkelig afmelde "
 
 #: podcasts/sql/SqlPodcastProvider.cpp:607
 msgid "Delete downloaded episodes"
-msgstr "Slet downloadede episoder"
+msgstr "Slet downloadede afsnit"
 
 #: podcasts/sql/SqlPodcastProvider.cpp:732
 msgid "Waiting for Podcast Downloads to Finish"
@@ -3030,9 +3033,9 @@ msgid ""
 "While parsing %1, a feed was expected but an HTML page was received.\n"
 "Did you enter the correct URL?"
 msgstr ""
-"Under fortolkning af %1, var et feed forventet, men en HTML-side blev "
+"Under fortolkning af %1 var et feed forventet, men en HTML-side blev "
 "modtaget.\n"
-"Angiv du den korrekte URL?"
+"Angav du den korrekte URL?"
 
 #: podcasts/PodcastReader.cpp:1004
 #, kde-format
@@ -3118,7 +3121,7 @@ msgstr "Unavngivet"
 msgid "A preset with the name %1 already exists. Overwrite?"
 msgstr "En forudindstilling med navnet %1 findes allerede. Overskriv?"
 
-#: EngineController.cpp:227
+#: EngineController.cpp:237
 msgid ""
 "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
 "the installation of the backend that phonon uses.</p><p>You may find useful "
@@ -3129,22 +3132,22 @@ msgstr ""
 "måske finde nyttig information i <i>FAQ</i>-sektionen i <i>Amarok-håndbogen</"
 "i>.</p>"
 
-#: EngineController.cpp:246
+#: EngineController.cpp:256
 msgid "Install MP3 Support"
 msgstr "Installér MP3-understøttelse"
 
-#: EngineController.cpp:248
+#: EngineController.cpp:258
 msgid ""
 "Amarok currently cannot play MP3 files. Do you want to install support for "
 "MP3?"
 msgstr ""
 "Amarok kan aktuelt ikke afspille MP3-filer. Vil du installere understøttelse  af MP3?"
 
-#: EngineController.cpp:249
+#: EngineController.cpp:259
 msgid "No MP3 Support"
 msgstr "Ingen understøttelse for MP3"
 
-#: EngineController.cpp:743
+#: EngineController.cpp:760
 msgid "Preamp"
 msgstr "Forforstærkning"
 
@@ -3251,7 +3254,7 @@ msgstr "Spilleliste"
 msgid "Recommendations by Echo Nest."
 msgstr "Anbefalinger af Echo Nest."
 
-#: dynamic/BiasedPlaylist.cpp:141
+#: dynamic/BiasedPlaylist.cpp:145
 msgid "Generating playlist..."
 msgstr "Genererer spilleliste..."
 
@@ -3857,95 +3860,95 @@ msgstr "Filtrér musikkilder"
 msgid "Previous Browser"
 msgstr "Forrige browser"
 
-#: browsers/CollectionTreeItemModelBase.cpp:532
+#: browsers/CollectionTreeItemModelBase.cpp:538
 msgid "album"
 msgstr "album"
 
-#: browsers/CollectionTreeItemModelBase.cpp:537
+#: browsers/CollectionTreeItemModelBase.cpp:543
 msgid "artist"
 msgstr "kunstner"
 
-#: browsers/CollectionTreeItemModelBase.cpp:542
+#: browsers/CollectionTreeItemModelBase.cpp:548
 msgid "genre"
 msgstr "genre"
 
-#: browsers/CollectionTreeItemModelBase.cpp:547
+#: browsers/CollectionTreeItemModelBase.cpp:553
 msgid "title"
 msgstr "titel"
 
-#: browsers/CollectionTreeItemModelBase.cpp:552
+#: browsers/CollectionTreeItemModelBase.cpp:558
 msgid "composer"
 msgstr "komponist"
 
-#: browsers/CollectionTreeItemModelBase.cpp:557
+#: browsers/CollectionTreeItemModelBase.cpp:563
 msgid "year"
 msgstr "år"
 
-#: browsers/CollectionTreeItemModelBase.cpp:562
+#: browsers/CollectionTreeItemModelBase.cpp:568
 msgid "bpm"
 msgstr "bpm"
 
-#: browsers/CollectionTreeItemModelBase.cpp:566
+#: browsers/CollectionTreeItemModelBase.cpp:572
 msgid "comment"
 msgstr "kommentar"
 
-#: browsers/CollectionTreeItemModelBase.cpp:570
+#: browsers/CollectionTreeItemModelBase.cpp:576
 msgid "bitrate"
 msgstr "bitrate"
 
-#: browsers/CollectionTreeItemModelBase.cpp:574
+#: browsers/CollectionTreeItemModelBase.cpp:580
 msgid "rating"
 msgstr "vurdering"
 
-#: browsers/CollectionTreeItemModelBase.cpp:578
+#: browsers/CollectionTreeItemModelBase.cpp:584
 msgid "score"
 msgstr "score"
 
-#: browsers/CollectionTreeItemModelBase.cpp:582
+#: browsers/CollectionTreeItemModelBase.cpp:588
 msgid "playcount"
 msgstr "afspilningstæller"
 
-#: browsers/CollectionTreeItemModelBase.cpp:586
+#: browsers/CollectionTreeItemModelBase.cpp:592
 msgid "samplerate"
 msgstr "samplingsrate"
 
-#: browsers/CollectionTreeItemModelBase.cpp:590
+#: browsers/CollectionTreeItemModelBase.cpp:596
 msgid "length"
 msgstr "længde"
 
-#: browsers/CollectionTreeItemModelBase.cpp:594
+#: browsers/CollectionTreeItemModelBase.cpp:600
 msgid "discnumber"
 msgstr "disknummer"
 
-#: browsers/CollectionTreeItemModelBase.cpp:598
+#: browsers/CollectionTreeItemModelBase.cpp:604
 msgid "tracknumber"
 msgstr "spornummer"
 
-#: browsers/CollectionTreeItemModelBase.cpp:602
+#: browsers/CollectionTreeItemModelBase.cpp:608
 msgid "added"
 msgstr "tilføjet"
 
-#: browsers/CollectionTreeItemModelBase.cpp:608
+#: browsers/CollectionTreeItemModelBase.cpp:614
 msgid "today"
 msgstr "i dag"
 
-#: browsers/CollectionTreeItemModelBase.cpp:610
+#: browsers/CollectionTreeItemModelBase.cpp:616
 msgid "last week"
 msgstr "sidste uge"
 
-#: browsers/CollectionTreeItemModelBase.cpp:612
+#: browsers/CollectionTreeItemModelBase.cpp:618
 msgid "last month"
 msgstr "sidste måned"
 
-#: browsers/CollectionTreeItemModelBase.cpp:614
+#: browsers/CollectionTreeItemModelBase.cpp:620
 msgid "two months ago"
 msgstr "to måneder siden"
 
-#: browsers/CollectionTreeItemModelBase.cpp:616
+#: browsers/CollectionTreeItemModelBase.cpp:622
 msgid "three months ago"
 msgstr "tre måneder siden"
 
-#: browsers/CollectionTreeItemModelBase.cpp:921
+#: browsers/CollectionTreeItemModelBase.cpp:927
 msgid "Year - Album"
 msgstr "År - Album"
 
@@ -4119,22 +4122,22 @@ msgid ""
 msgstr ""
 "Spilleliste-browseren indeholder din liste over importerede og gemte "
 "spillelister. Det er også her du kan angive funktionsrige dynamiske "
-"spillelister og håndtere dine podcast-abonnementer og -episoder."
+"spillelister og håndtere dine podcast-abonnementer og -afsnit."
 
-#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:229
+#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:238
 msgid "New name"
 msgstr "Nyt navn"
 
-#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:231
+#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:240
 msgctxt "Enter a new name for a folder that already exists"
 msgid "Enter new folder name:"
 msgstr "Angiv nyt mappenavn:"
 
-#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:254
+#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:263
 msgid "&Delete Folder"
 msgstr "S&let mappe"
 
-#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:264
+#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:273
 msgid "&Rename Folder..."
 msgstr "&Omdøb mappe..."
 
@@ -4259,7 +4262,7 @@ msgstr "Match løseligt spillelisten med en cirka-værdi."
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:91
 msgid "List of subscribed podcasts and episodes"
-msgstr "Liste over podcasts der abonneres på og episoder"
+msgstr "Liste over podcasts der abonneres på og afsnit"
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:94
 msgid ""
@@ -4267,8 +4270,8 @@ msgid ""
 "Downloading episodes to the disk is also done here, or you can tell Amarok "
 "to do this automatically."
 msgstr ""
-"Håndtér dine podcast-abonnementer og gennemse enkelte episoder. Download af "
-"episoder til disken foretages også her, eller du kan bede Amarok om at gøre "
+"Håndtér dine podcast-abonnementer og gennemse enkelte afsnit. Download af "
+"afsnit til disken foretages også her, eller du kan bede Amarok om at gøre "
 "det automatisk."
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:110
@@ -4287,24 +4290,24 @@ msgstr "Importér OPML-fil"
 msgid "By"
 msgstr "Af"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:241
+#: browsers/playlistbrowser/PodcastCategory.cpp:239
 #: browsers/playlistbrowser/DynamicCategory.cpp:70
 msgid "On"
 msgstr "Til"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:259
+#: browsers/playlistbrowser/PodcastCategory.cpp:257
 msgid "File Size:"
 msgstr "Filstørrelse:"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:271
+#: browsers/playlistbrowser/PodcastCategory.cpp:269
 msgid "Subscription Date:"
 msgstr "Abonnementsdato:"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:279
+#: browsers/playlistbrowser/PodcastCategory.cpp:277
 msgid "Keywords:"
 msgstr "Nøgleord:"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:312
+#: browsers/playlistbrowser/PodcastCategory.cpp:310
 msgid "Select OPML file to import"
 msgstr "Vælg OPML-fil der skal importeres"
 
@@ -4355,31 +4358,31 @@ msgstr "Forestående:"
 msgid "Number of upcoming tracks to add to the playlist."
 msgstr "Antal forestående spor der skal føjes til spillelisten."
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:114
+#: browsers/playlistbrowser/DynamicCategory.cpp:116
 msgid "Playlist:"
 msgstr "Spilleliste:"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:143
+#: browsers/playlistbrowser/DynamicCategory.cpp:145
 msgid "Save the preset."
 msgstr "Gem forudindstilling."
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:153
+#: browsers/playlistbrowser/DynamicCategory.cpp:155
 msgid "Delete the preset."
 msgstr "Slet forudindstilling."
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:314
+#: browsers/playlistbrowser/DynamicCategory.cpp:316
 msgid "Playlist Name"
 msgstr "Spillelistens navn"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:315
+#: browsers/playlistbrowser/DynamicCategory.cpp:317
 msgid "Enter a name for the playlist:"
 msgstr "Angiv et navn for spillelisten:"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:325
+#: browsers/playlistbrowser/DynamicCategory.cpp:327
 msgid "Warning"
 msgstr "Advarsel"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:325
+#: browsers/playlistbrowser/DynamicCategory.cpp:327
 msgid "Cannot overwrite the random playlist."
 msgstr "Kan ikke overskrive den tilfældige spilleliste."
 
@@ -4445,16 +4448,16 @@ msgstr "Filer"
 msgid "Browse local hard drive for content"
 msgstr "Gennemse lokal harddisk for indhold"
 
-#: MainWindow.cpp:414
+#: MainWindow.cpp:417
 msgctxt "@item:inmenu"
 msgid "&View"
 msgstr "&Vis"
 
-#: MainWindow.cpp:417
+#: MainWindow.cpp:420
 msgid "Lock layout"
 msgstr "Lås layout"
 
-#: MainWindow.cpp:529
+#: MainWindow.cpp:532
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
 "<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
@@ -4464,194 +4467,194 @@ msgstr ""
 "Brug <B>Afslut</B> fra menuen, eller Amaroks statusikon, til at lukke "
 "programmet.</qt>"
 
-#: MainWindow.cpp:531
+#: MainWindow.cpp:534
 msgid "Docking in System Tray"
 msgstr "Dokker i statusområdet"
 
-#: MainWindow.cpp:549
+#: MainWindow.cpp:552
 msgid "Use relative path for &saving"
 msgstr "Brug relativ sti til at &gemme"
 
-#: MainWindow.cpp:560
+#: MainWindow.cpp:563
 msgid "Save As"
 msgstr "Gem som"
 
-#: MainWindow.cpp:597
+#: MainWindow.cpp:600
 msgid "Play Media (Files or URLs)"
 msgstr "Afspil medie (filer eller URL'er)"
 
-#: MainWindow.cpp:597
+#: MainWindow.cpp:600
 msgid "Add Media (Files or URLs)"
 msgstr "Tilføj medie (filer eller URL'er)"
 
-#: MainWindow.cpp:612
+#: MainWindow.cpp:615
 msgid "Add Stream"
 msgstr "Tilføj stream"
 
-#: MainWindow.cpp:612
+#: MainWindow.cpp:615
 msgid "Enter Stream URL:"
 msgstr "Angiv URL til stream:"
 
-#: MainWindow.cpp:723
+#: MainWindow.cpp:726
 msgid "&Add Media..."
 msgstr "Tilføj &medie..."
 
-#: MainWindow.cpp:728
+#: MainWindow.cpp:731
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "&Ryd Spilleliste"
 
-#: MainWindow.cpp:732
+#: MainWindow.cpp:735
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "Fjer&n duplikater"
 
-#: MainWindow.cpp:739
+#: MainWindow.cpp:742
 msgid "&Add Stream..."
 msgstr "Tilføj &stream..."
 
-#: MainWindow.cpp:743
+#: MainWindow.cpp:746
 msgid "&Export Playlist As..."
 msgstr "&Eksportér spilleliste som..."
 
-#: MainWindow.cpp:747 amarokurls/NavigationUrlGenerator.cpp:216
+#: MainWindow.cpp:750 amarokurls/NavigationUrlGenerator.cpp:216
 msgid "Bookmark Media Sources View"
 msgstr "Sæt bogmærke ved mediekilder-visning"
 
-#: MainWindow.cpp:751 amarokurls/BookmarkManager.cpp:42
+#: MainWindow.cpp:754 amarokurls/BookmarkManager.cpp:42
 msgid "Bookmark Manager"
 msgstr "Håndtering af bogmærker"
 
-#: MainWindow.cpp:755 playlist/PlaylistViewUrlGenerator.cpp:101
+#: MainWindow.cpp:758 playlist/PlaylistViewUrlGenerator.cpp:101
 msgid "Bookmark Playlist Setup"
 msgstr "Sæt bogmærke ved spilleliste-opsætning"
 
-#: MainWindow.cpp:759
+#: MainWindow.cpp:762
 msgid "Bookmark Context Applets"
 msgstr "Sæt bogmærke ved kontekstapplets"
 
-#: MainWindow.cpp:763 covermanager/CoverManager.cpp:97
+#: MainWindow.cpp:766 covermanager/CoverManager.cpp:97
 msgid "Cover Manager"
 msgstr "Håndtering af omslag"
 
-#: MainWindow.cpp:767
+#: MainWindow.cpp:770
 msgid "Play Media..."
 msgstr "Afspil medie..."
 
-#: MainWindow.cpp:775
+#: MainWindow.cpp:779
 msgid "&Seek Forward"
 msgstr "Søg &fremad"
 
-#: MainWindow.cpp:781
+#: MainWindow.cpp:785
 msgid "&Seek Backward"
 msgstr "Søg &tilbage"
 
-#: MainWindow.cpp:788
+#: MainWindow.cpp:792
 msgid "Update Collection"
 msgstr "Opdatér samling"
 
-#: MainWindow.cpp:795 widgets/MainControlsWidget.cpp:62
+#: MainWindow.cpp:799 widgets/MainControlsWidget.cpp:62
 msgid "Previous Track"
 msgstr "Forrige spor"
 
-#: MainWindow.cpp:801
+#: MainWindow.cpp:805
 msgid "Repopulate Playlist"
 msgstr "Genudfyld spilleliste"
 
-#: MainWindow.cpp:809 widgets/MainControlsWidget.cpp:86
+#: MainWindow.cpp:819 widgets/MainControlsWidget.cpp:86
 msgid "Next Track"
 msgstr "Næste spor"
 
-#: MainWindow.cpp:812
+#: MainWindow.cpp:822
 msgid "Increase Volume"
 msgstr "Forøg lydstyrken"
 
-#: MainWindow.cpp:818
+#: MainWindow.cpp:828
 msgid "Decrease Volume"
 msgstr "Formindsk lydstyrken"
 
-#: MainWindow.cpp:824
+#: MainWindow.cpp:834
 msgid "Toggle Main Window"
 msgstr "Slå hovedvinduet til og fra"
 
-#: MainWindow.cpp:829
+#: MainWindow.cpp:839
 msgid "Toggle Full Screen"
 msgstr "Slå fuldskærm til/fra"
 
-#: MainWindow.cpp:834
+#: MainWindow.cpp:844
 msgid "Jump to"
 msgstr "Gå til"
 
-#: MainWindow.cpp:839
+#: MainWindow.cpp:849
 msgid "Show On Screen Display"
 msgstr "Brug on-screen-display"
 
-#: MainWindow.cpp:844
+#: MainWindow.cpp:854
 msgid "Mute Volume"
 msgstr "Sæt på lydløs"
 
-#: MainWindow.cpp:849
+#: MainWindow.cpp:859
 msgid "Last.fm: Love Current Track"
 msgstr "Last.fm: Elsk dette spor"
 
-#: MainWindow.cpp:854
+#: MainWindow.cpp:864
 msgid "Last.fm: Ban Current Track"
 msgstr "Last.fm: Bandlys dette spor"
 
-#: MainWindow.cpp:859
+#: MainWindow.cpp:869
 msgid "Last.fm: Skip Current Track"
 msgstr "Last.fm: Skip dette spor"
 
-#: MainWindow.cpp:864 playlist/view/PlaylistViewCommon.cpp:111
+#: MainWindow.cpp:874 playlist/view/PlaylistViewCommon.cpp:111
 msgid "Queue Track"
 msgstr "Sæt spor i kø"
 
-#: MainWindow.cpp:869
+#: MainWindow.cpp:879
 msgid "Rate Current Track: 1"
 msgstr "Vurdér dette spor: 1"
 
-#: MainWindow.cpp:874
+#: MainWindow.cpp:884
 msgid "Rate Current Track: 2"
 msgstr "Vurdér dette spor: 2"
 
-#: MainWindow.cpp:879
+#: MainWindow.cpp:889
 msgid "Rate Current Track: 3"
 msgstr "Vurdér dette spor: 3"
 
-#: MainWindow.cpp:884
+#: MainWindow.cpp:894
 msgid "Rate Current Track: 4"
 msgstr "Vurdér dette spor: 4"
 
-#: MainWindow.cpp:889
+#: MainWindow.cpp:899
 msgid "Rate Current Track: 5"
 msgstr "Vurdér dette spor: 5"
 
-#: MainWindow.cpp:949
+#: MainWindow.cpp:959
 msgid "&Music"
 msgstr "&Musik"
 
-#: MainWindow.cpp:953
+#: MainWindow.cpp:963
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:972
+#: MainWindow.cpp:982
 msgid "&Playlist"
 msgstr "S&pilleliste"
 
-#: MainWindow.cpp:988
+#: MainWindow.cpp:998
 msgid "&Tools"
 msgstr "Værk&tøjer"
 
-#: MainWindow.cpp:999
+#: MainWindow.cpp:1009
 msgid "&Settings"
 msgstr "&Indstillinger"
 
-#: MainWindow.cpp:1129
+#: MainWindow.cpp:1139
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Pause  ::  %1"
 
-#: MainWindow.cpp:1148
+#: MainWindow.cpp:1158
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
@@ -4693,12 +4696,12 @@ msgstr "Datatilstand"
 msgid "Slim Toolbar"
 msgstr "Slank værktøjslinje"
 
-#: toolbar/VolumePopupButton.cpp:99 toolbar/VolumePopupButton.cpp:110
+#: toolbar/VolumePopupButton.cpp:102 toolbar/VolumePopupButton.cpp:113
 #: widgets/Osd.cpp:151
 msgid "(muted)"
 msgstr "(lydløs)"
 
-#: toolbar/VolumePopupButton.cpp:99 toolbar/VolumePopupButton.cpp:110
+#: toolbar/VolumePopupButton.cpp:102 toolbar/VolumePopupButton.cpp:113
 #: widgets/Osd.cpp:151
 #, kde-format
 msgid "Volume: %1% %2"
@@ -5080,8 +5083,8 @@ msgid ""
 "If the custom filename scheme is enabled, then Organize files will rename "
 "files according to this format string."
 msgstr ""
-"Hvis skemaet til brugerdefineret filnavn er aktiveret, vil Organisér filer "
-"omdøbe filer i henhold til denne formatstreng."
+"Hvis skabelonen til brugerdefineret filnavn er aktiveret, vil Organisér "
+"filer omdøbe filer i henhold til denne formatstreng."
 
 #. i18n: file: amarokconfig.kcfg:157
 #. i18n: ectx: label, entry, group (General Options)
@@ -5604,7 +5607,7 @@ msgid ""
 "Whether to use Mozilla's Character Set Detector to try to guess ID3 tag "
 "encodings."
 msgstr ""
-"Om Mozillas Character Set Detector skal bruges til at prøve at gætte tegnsæt "
+"Om Mozillas detektion af tegnsæt skal bruges til at prøve at gætte tegnsæt "
 "for ID3-mærker."
 
 #. i18n: file: amarokconfig.kcfg:444
@@ -6581,7 +6584,7 @@ msgstr "Samlings&mappe:"
 #. i18n: ectx: attribute (title), widget (QWidget, tab)
 #: rc.cpp:950
 msgid "File Naming Scheme"
-msgstr "Filnavnsskema"
+msgstr "Filnavnsskabelon"
 
 #. i18n: file: dialogs/OrganizeCollectionDialogBase.ui:84
 #. i18n: ectx: property (toolTip), widget (QCheckBox, filetypeCheck)
@@ -6851,7 +6854,7 @@ msgstr "Etiket:"
 #. i18n: ectx: property (toolTip), widget (KComboBox, kComboBox_label)
 #: rc.cpp:1088
 msgid "Insert your custom label here or select one from the list."
-msgstr "Indsæt din brugervalgt etiket her eller vælg en fra listen."
+msgstr "Indsæt din brugervalgte etiket her eller vælg en fra listen."
 
 #. i18n: file: dialogs/TagDialogBase.ui:780
 #. i18n: ectx: property (text), widget (QLabel, label_2)
@@ -6949,7 +6952,7 @@ msgstr ""
 "font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">Følgende symboler kan "
-"bruges til at definere et filnavnskema: %track, %title, </p>\n"
+"bruges til at definere en filnavnsskabelon: %track, %title, </p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">%artist, %composer, %year, "
 "%album, %comment, %genre<br /></p></body></html>"
@@ -7453,13 +7456,13 @@ msgstr "Stream eller download efter ø&nske"
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, m_purgeCheck)
 #: rc.cpp:1405 rc.cpp:1408
 msgid "If checked, Amarok will throw away old podcast episodes"
-msgstr "Hvis markeret, smider Amarok gamle podcast-episoder ud"
+msgstr "Hvis markeret, smider Amarok gamle podcast-afsnit ud"
 
 #. i18n: file: podcasts/sql/PodcastSettingsBase.ui:139
 #. i18n: ectx: property (text), widget (QCheckBox, m_purgeCheck)
 #: rc.cpp:1411
 msgid "Limit &number of episodes"
-msgstr "&Begræns antal episoder"
+msgstr "&Begræns antal afsnit"
 
 #. i18n: file: podcasts/sql/PodcastSettingsBase.ui:162
 #. i18n: ectx: property (text), widget (QLabel, m_purgeCountLabel)
@@ -9671,7 +9674,7 @@ msgstr "Spor fjernet"
 msgid "Track moved"
 msgstr "Spor flyttet"
 
-#: playlist/PlaylistActions.cpp:358
+#: playlist/PlaylistActions.cpp:362
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "For mange fejl fundet i spillelisten. Afspilning stoppet."
 
@@ -9768,7 +9771,7 @@ msgstr[1] "%1 spor"
 
 #: statusbar/ProgressBar.cpp:47 statusbar/CompoundProgressBar.cpp:68
 #: statusbar/CompoundProgressBar.cpp:139 statusbar/CompoundProgressBar.cpp:175
-#: covermanager/CoverManager.cpp:211
+#: covermanager/CoverManager.cpp:213
 msgid "Abort"
 msgstr "Afbryd"
 
@@ -9880,7 +9883,7 @@ msgstr "Lydstyrke: %1%"
 
 #: widgets/VolumeWidget.cpp:89
 msgid "Volume: <i>Muted</i>"
-msgstr "Lydstyrke: <i>På lydløs</i>"
+msgstr "Lydstyrke: <i>Lydløs</i>"
 
 #: widgets/Osd.cpp:135
 msgid "Rating changed"
@@ -9888,7 +9891,7 @@ msgstr "Vurdering ændret"
 
 #: widgets/Osd.cpp:213
 msgid "Volume: 100% (muted)"
-msgstr "Lydstyrke: 100% (lydløs til)"
+msgstr "Lydstyrke: 100% (lydløs)"
 
 #: widgets/Osd.cpp:443
 msgid ""
@@ -10238,28 +10241,28 @@ msgstr "Der opstod en kommunikationsfejl med last.fm."
 msgid "The XML obtained from Last.fm is invalid."
 msgstr "XML modtaget fra Last.fm er ugyldig."
 
-#: covermanager/CoverFetcher.cpp:281 covermanager/CoverFetcher.cpp:282
+#: covermanager/CoverFetcher.cpp:283 covermanager/CoverFetcher.cpp:284
 msgid "The cover could not be retrieved."
 msgstr "Omslaget kunne ikke hentes."
 
-#: covermanager/CoverFetcher.cpp:335
+#: covermanager/CoverFetcher.cpp:337
 msgid "Aborted."
 msgstr "Afbrudt."
 
-#: covermanager/CoverFetcher.cpp:344
+#: covermanager/CoverFetcher.cpp:346
 msgid "Retrieved cover successfully"
 msgstr "Hentning af omslag gennemført"
 
-#: covermanager/CoverFetcher.cpp:379
+#: covermanager/CoverFetcher.cpp:381
 msgid "Unable to find a cover for the specified song."
 msgstr "Kan ikke finde et omslag til den angivne sang."
 
-#: covermanager/CoverFetcher.cpp:382
+#: covermanager/CoverFetcher.cpp:384
 #, kde-format
 msgid "Unable to find a cover for %1."
 msgstr "Kan ikke finde et omslag til %1."
 
-#: covermanager/CoverFetcher.cpp:427
+#: covermanager/CoverFetcher.cpp:429
 msgid "Cover Found"
 msgstr "Omslag fundet"
 
@@ -10267,7 +10270,7 @@ msgstr "Omslag fundet"
 msgid "Albums By"
 msgstr "Albummer af"
 
-#: covermanager/CoverManager.cpp:112 covermanager/CoverManager.cpp:293
+#: covermanager/CoverManager.cpp:112 covermanager/CoverManager.cpp:295
 msgid "All Artists"
 msgstr "Alle kunstnere"
 
@@ -10287,89 +10290,89 @@ msgstr "Albummer uden omslag"
 msgid "Fetch Missing Covers"
 msgstr "Hent manglende omslag"
 
-#: covermanager/CoverManager.cpp:369
+#: covermanager/CoverManager.cpp:371
 msgid "Loading Thumbnails..."
 msgstr "Indlæser miniaturer..."
 
-#: covermanager/CoverManager.cpp:624
+#: covermanager/CoverManager.cpp:637
 msgctxt "The fetching is done."
 msgid "Finished."
 msgstr "Færdig."
 
-#: covermanager/CoverManager.cpp:626
+#: covermanager/CoverManager.cpp:639
 #, kde-format
 msgid " Cover not found"
 msgid_plural " <b>%1</b> covers not found"
 msgstr[0] " Omslag ikke fundet"
 msgstr[1] " <b>%1</b> omslag ikke fundet"
 
-#: covermanager/CoverManager.cpp:639
+#: covermanager/CoverManager.cpp:652
 #, kde-format
 msgid "Fetching cover for %1..."
 msgstr "Henter omslag for %1..."
 
-#: covermanager/CoverManager.cpp:641
+#: covermanager/CoverManager.cpp:654
 #, kde-format
 msgid "Fetching cover for %1 - %2..."
 msgstr "Henter omslag for %1 - %2..."
 
-#: covermanager/CoverManager.cpp:648
+#: covermanager/CoverManager.cpp:661
 #, kde-format
 msgid "Fetching 1 cover: "
 msgid_plural "Fetching <b>%1</b> covers... : "
 msgstr[0] "Henter 1 omslag:"
 msgstr[1] "Henter <b>%1</b> omslag...:"
 
-#: covermanager/CoverManager.cpp:650
+#: covermanager/CoverManager.cpp:663
 #, kde-format
 msgid "1 fetched"
 msgid_plural "%1 fetched"
 msgstr[0] "1 hentet"
 msgstr[1] "%1 hentede"
 
-#: covermanager/CoverManager.cpp:654
+#: covermanager/CoverManager.cpp:667
 msgid " - "
 msgstr " - "
 
-#: covermanager/CoverManager.cpp:655
+#: covermanager/CoverManager.cpp:668
 #, kde-format
 msgid "1 not found"
 msgid_plural "%1 not found"
 msgstr[0] "1 ikke fundet"
 msgstr[1] "%1 ikke fundne"
 
-#: covermanager/CoverManager.cpp:658
+#: covermanager/CoverManager.cpp:671
 msgid "Connecting..."
 msgstr "Forbinder..."
 
-#: covermanager/CoverManager.cpp:683
+#: covermanager/CoverManager.cpp:696
 #, kde-format
 msgid "1 result for \"%2\""
 msgid_plural "%1 results for \"%2\""
 msgstr[0] "1 resultat for \"%2\""
 msgstr[1] "%1 resultater for \"%2\""
 
-#: covermanager/CoverManager.cpp:686
+#: covermanager/CoverManager.cpp:699
 #, kde-format
 msgid "1 album"
 msgid_plural "%1 albums"
 msgstr[0] "1 album"
 msgstr[1] "%1 albummer"
 
-#: covermanager/CoverManager.cpp:692
+#: covermanager/CoverManager.cpp:705
 msgid " by "
 msgstr " af "
 
-#: covermanager/CoverManager.cpp:697
+#: covermanager/CoverManager.cpp:710
 #, kde-format
 msgid " - ( <b>%1</b> without cover )"
 msgstr " - ( <b>%1</b> uden omslag )"
 
-#: covermanager/CoverManager.cpp:743
+#: covermanager/CoverManager.cpp:758
 msgid "Cover Image"
 msgstr "Omslagsbillede"
 
-#: covermanager/CoverManager.cpp:800
+#: covermanager/CoverManager.cpp:836
 msgid "No Artist"
 msgstr "Ingen kunstner"
 

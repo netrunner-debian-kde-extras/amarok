@@ -10,13 +10,13 @@ msgstr ""
 "Project-Id-Version: amarokcollectionscanner_qt\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-11-13 06:22+0100\n"
-"PO-Revision-Date: 2009-09-30 22:07+0200\n"
-"Last-Translator: Freek de Kruijf <f.de.kruijf@gmail.com>\n"
-"Language-Team: Dutch <kde-i18n-nl@kde.org>\n"
+"PO-Revision-Date: 2009-12-28 14:44+0100\n"
+"Last-Translator: Freek de Kruijf <f.de.kruijf@hetnet.nl>\n"
+"Language-Team: Dutch <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 1.0\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:1005
@@ -65,7 +65,7 @@ msgid ""
 "folders"
 msgstr ""
 "Map(pen)             : spatiegescheiden lijst van te doorlopen mappen; bij "
-"bebruik van -b en -i, het pad naar het bestand dat door Amarok is "
+"gebruik van -b en -i, het pad naar het bestand dat door Amarok is "
 "gegenereerd die de lijst met mappen bevat"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:1011
@@ -98,7 +98,7 @@ msgstr "-b, --batch           : Uitvoeren in batchmodus"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:1017
 msgid "-c, --nocharset       : Use the charset detector on ID3 tags"
-msgstr ""
+msgstr "-c, --nocharset       : De karaktersetdetector op ID3-tags gebruiken"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:1018
 msgid ""

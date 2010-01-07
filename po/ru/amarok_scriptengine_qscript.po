@@ -2,13 +2,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Artem Sereda <overmind88@gmail.com>, 2009.
+# Alexander Potashev <aspotashev@gmail.com>, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2009-06-28 11:45+0200\n"
-"PO-Revision-Date: 2009-08-27 14:26+0300\n"
-"Last-Translator: Artem Sereda <overmind88@gmail.com>\n"
+"PO-Revision-Date: 2009-12-27 22:19+0300\n"
+"Last-Translator: Alexander Potashev <aspotashev@gmail.com>\n"
 "Language-Team: Russian <kde-russian@lists.kde.ru>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -19,72 +20,72 @@ msgstr ""
 
 #: simplejavascriptapplet.cpp:512
 msgid "i18n() takes at least one argument"
-msgstr ""
+msgstr "i18n() требует хотя бы один аргумент"
 
 #: simplejavascriptapplet.cpp:528
 msgid "i18nc() takes at least two arguments"
-msgstr ""
+msgstr "i18nc() требует хотя бы два аргумента"
 
 #: simplejavascriptapplet.cpp:545
 msgid "i18np() takes at least two arguments"
-msgstr ""
+msgstr "i18np() требует хотя бы два аргумента"
 
 #: simplejavascriptapplet.cpp:562
 msgid "i18ncp() takes at least three arguments"
-msgstr ""
+msgstr "i18ncp() требует хотя бы три аргумента"
 
 #: simplejavascriptapplet.cpp:580
 msgid "dataEngine() takes one argument"
-msgstr ""
+msgstr "dataEngine() требует один аргумент"
 
 #: simplejavascriptapplet.cpp:590 simplejavascriptapplet.cpp:615
 #: simplejavascriptapplet.cpp:782
 msgid "Could not extract the AppletObject"
-msgstr "Невозможно извлечь AppletObject"
+msgstr "Не удалось извлечь AppletObject"
 
 #: simplejavascriptapplet.cpp:595 simplejavascriptapplet.cpp:620
 #: simplejavascriptapplet.cpp:787
 msgid "Could not extract the Applet"
-msgstr "Невозможно извлечь аплет"
+msgstr "Не удалось извлечь аплет"
 
 #: simplejavascriptapplet.cpp:605
 msgid "service() takes two arguments"
-msgstr ""
+msgstr "service() требует два аргумента"
 
 #: simplejavascriptapplet.cpp:633
 msgid "loadui() takes one argument"
-msgstr ""
+msgstr "loadui() требует один аргумент"
 
 #: simplejavascriptapplet.cpp:639
 #, kde-format
 msgid "Unable to open '%1'"
-msgstr "Невозможно открыть «%1»"
+msgstr "Не удалось открыть «%1»"
 
 #: simplejavascriptapplet.cpp:679 simplejavascriptapplet.cpp:712
 msgid "Constructor takes at least 1 argument"
-msgstr "Для конструктора необходимо передать как минимум один аргумент"
+msgstr "Конструктор требует хотя бы один аргумент"
 
 #: simplejavascriptapplet.cpp:764
 msgid "CreateWidget takes one argument"
-msgstr ""
+msgstr "CreateWidget требует один аргумент"
 
 #: simplejavascriptapplet.cpp:772
 msgid "The parent must be a QGraphicsWidget"
-msgstr "Родительский элемент должен иметь тип QGraphicsWidget"
+msgstr "Родительский объект должен иметь тип QGraphicsWidget"
 
 #: simplejavascriptapplet.cpp:817
 #, kde-format
 msgid "This operation was not supported, %1"
-msgstr ""
+msgstr "Эта операция не поддерживается, %1"
 
 #: simplejavascriptapplet.cpp:824
 msgid "print() takes one argument"
-msgstr ""
+msgstr "print() требует один аргумент"
 
 #: qtgui/linearlayout.cpp:70
 msgid "LinearLayout requires a parent"
-msgstr ""
+msgstr "LinearLayout требует родительский объект"
 
 #: qtgui/linearlayout.cpp:76
 msgid "The parent must be a QGraphicsLayoutItem"
-msgstr ""
+msgstr "Родительский объект должен иметь тип QGraphicsLayoutItem"

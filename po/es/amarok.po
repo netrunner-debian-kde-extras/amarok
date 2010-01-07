@@ -10,25 +10,26 @@
 # Eloy Cuadra <ecuadra@eloihr.net>, 2008, 2009.
 # Danilo Vasquez <danilo.vasquez@gmail.com>, 2008.
 # Enrique Matias Sanchez <cronopios@gmail.com>, 2009.
-# Javier Vinal <fjvinal@gmail.com>, 2009.
+# Javier Vinal <fjvinal@gmail.com>, 2009, 2010.
 # javier Vinal <fjvinal@gmail.com>, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-12-10 06:47+0100\n"
-"PO-Revision-Date: 2009-11-29 09:24+0100\n"
+"POT-Creation-Date: 2010-01-05 06:35+0100\n"
+"PO-Revision-Date: 2010-01-04 13:07+0100\n"
 "Last-Translator: Javier Vinal <fjvinal@gmail.com>\n"
-"Language-Team:  <es@li.org>\n"
+"Language-Team: Español <kde-l10n-es@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 1.0\n"
 
 #: mac/GrowlInterface.cpp:37 context/engines/current/CurrentEngine.cpp:150
-#: context/applets/currenttrack/CurrentTrack.cpp:109
-#: context/applets/photos/PhotosApplet.cpp:132 App.cpp:993 widgets/Osd.cpp:578
+#: context/applets/currenttrack/CurrentTrack.cpp:110
+#: context/applets/photos/PhotosApplet.cpp:132 App.cpp:1009
+#: widgets/Osd.cpp:578
 msgid "No track playing"
 msgstr "Ninguna pista en reproducción"
 
@@ -374,37 +375,37 @@ msgstr "Lee&r dispositivo"
 msgid "Proxy Collection"
 msgstr "Colección de proxy"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:154
+#: collection/mtpcollection/handler/MtpHandler.cpp:151
 msgid "Could not connect to MTP Device"
 msgstr "No se pudo conectar al dispositivo MTP"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:375
+#: collection/mtpcollection/handler/MtpHandler.cpp:374
 msgid "Could not copy track from device."
 msgstr "No se pudo copiar la pista del dispositivo."
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:418
+#: collection/mtpcollection/handler/MtpHandler.cpp:417
 msgid "Unknown Artist"
 msgstr "Artista desconocido"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:428
+#: collection/mtpcollection/handler/MtpHandler.cpp:427
 msgid "Unknown Album"
 msgstr "Álbum desconocido"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:434
+#: collection/mtpcollection/handler/MtpHandler.cpp:433
 msgid "Unknown Genre"
 msgstr "Género desconocido"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:590
-#: collection/mtpcollection/handler/MtpHandler.cpp:741
-#: collection/mtpcollection/handler/MtpHandler.cpp:922
+#: collection/mtpcollection/handler/MtpHandler.cpp:589
+#: collection/mtpcollection/handler/MtpHandler.cpp:740
+#: collection/mtpcollection/handler/MtpHandler.cpp:923
 msgid "Could not delete item"
 msgstr "No se ha podido eliminar el elemento"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:601
+#: collection/mtpcollection/handler/MtpHandler.cpp:600
 msgid "Delete failed"
 msgstr "Fallo al borrar"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:895
+#: collection/mtpcollection/handler/MtpHandler.cpp:896
 msgid "Could not save playlist."
 msgstr "No se pudo guardar la lista de reproducción."
 
@@ -553,7 +554,7 @@ msgstr "Buscando música"
 #: collection/sqlcollection/ScanManager.cpp:718
 #: dialogs/OrganizeCollectionDialog.cpp:144
 #: browsers/CollectionTreeItem.cpp:201 covermanager/CoverViewDialog.h:45
-#: covermanager/CoverManager.cpp:780
+#: covermanager/CoverManager.cpp:816
 msgid "Various Artists"
 msgstr "Varios artistas"
 
@@ -565,7 +566,7 @@ msgstr "Flujo"
 
 #: collection/sqlcollection/SqlMeta.cpp:407
 #: services/lastfm/meta/LastFmMeta.cpp:137 covermanager/CoverViewDialog.h:44
-#: covermanager/CoverManager.cpp:780
+#: covermanager/CoverManager.cpp:816
 #, kde-format
 msgid "%1 - %2"
 msgstr "%1 - %2"
@@ -586,7 +587,7 @@ msgstr "&Expulsar"
 #: collection/audiocd/AudioCdCollection.cpp:413
 #: collection/audiocd/AudioCdCollection.cpp:414
 #: collection/audiocd/AudioCdCollection.cpp:415
-#: context/applets/albums/AlbumItem.cpp:73 MainWindow.cpp:1148
+#: context/applets/albums/AlbumItem.cpp:73 MainWindow.cpp:1158
 #: amarokurls/BookmarkTreeView.cpp:319 amarokurls/BookmarkTreeView.cpp:320
 #: amarokurls/BookmarkTreeView.cpp:321
 msgid "Unknown"
@@ -604,10 +605,9 @@ msgid ""
 "mobile players support the Ogg Vorbis format."
 msgstr ""
 "Ogg Vorbis es un formato de audio comprimido completamente libre que es "
-"perfecto para guardar música comprimida en sus ordenador. La calidad de "
-"sonido es algo mayor que la del MP3 para la misma tasa de bits. Tenga en "
-"cuenta que no todos los reproductores portátiles admiten el formato Ogg "
-"Vorbis."
+"perfecto para guardar música comprimida en su equipo. La calidad de sonido "
+"es algo mayor que la del MP3 para la misma tasa de bits. Tenga en cuenta que "
+"no todos los reproductores portátiles admiten el formato Ogg Vorbis."
 
 #: collection/audiocd/FormatSelectionDialog.cpp:68
 msgid ""
@@ -814,7 +814,7 @@ msgstr "No se ha encontrado información..."
 msgid "Unable to retrieve Wikipedia information: %1"
 msgstr "No es posible obtener información de la Wikipedia: %1"
 
-#: context/engines/wikipedia/WikipediaEngine.cpp:392
+#: context/engines/wikipedia/WikipediaEngine.cpp:396
 msgid "Wikipedia Other Languages: <br/>"
 msgstr "Otros idiomas de Wikipedia: <br/>"
 
@@ -869,7 +869,7 @@ msgstr "loadui() necesita un argumento"
 #: context/scriptengine/javascript/simplejavascriptapplet.cpp:639
 #, kde-format
 msgid "Unable to open '%1'"
-msgstr "No se pudo abrir '%1'"
+msgstr "No se pudo abrir «%1»"
 
 #: context/scriptengine/javascript/simplejavascriptapplet.cpp:679
 #: context/scriptengine/javascript/simplejavascriptapplet.cpp:712
@@ -919,41 +919,41 @@ msgstr "sin nombre de miniaplicación"
 msgid "Lyrics data could not be parsed"
 msgstr "No fue posible analizar los datos de las letras"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:103
+#: context/applets/videoclip/VideoclipApplet.cpp:107
 #: context/applets/lyrics/LyricsApplet.cpp:130
 #: context/applets/photos/PhotosApplet.cpp:78
 #: context/applets/wikipedia/WikipediaApplet.cpp:141
 msgid "Settings"
 msgstr "Preferencias"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:114
-#: context/applets/videoclip/VideoclipApplet.cpp:347
-#: context/applets/videoclip/VideoclipApplet.cpp:368
+#: context/applets/videoclip/VideoclipApplet.cpp:118
+#: context/applets/videoclip/VideoclipApplet.cpp:357
+#: context/applets/videoclip/VideoclipApplet.cpp:378
 msgid "Video Clip"
 msgstr "Vídeo clip"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:358
+#: context/applets/videoclip/VideoclipApplet.cpp:368
 msgid "Video Clip "
 msgstr "Vídeo clip"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:358
+#: context/applets/videoclip/VideoclipApplet.cpp:368
 msgid " No information found..."
 msgstr "No se ha encontrado información..."
 
-#: context/applets/videoclip/VideoclipApplet.cpp:541
+#: context/applets/videoclip/VideoclipApplet.cpp:551
 msgid "Video Clip Settings"
 msgstr "Preferencias de vídeo clip"
 
-#: context/applets/videoclip/VideoItemButton.cpp:98
+#: context/applets/videoclip/VideoItemButton.cpp:96
 msgid "&Add to playlist"
 msgstr "&Añadir a lista de reproducción"
 
-#: context/applets/videoclip/VideoItemButton.cpp:99
+#: context/applets/videoclip/VideoItemButton.cpp:97
 #: context/applets/albums/AlbumsView.cpp:114
 msgid "&Queue"
 msgstr "&Cola"
 
-#: context/applets/videoclip/VideoItemButton.cpp:100
+#: context/applets/videoclip/VideoItemButton.cpp:98
 msgid "Append and &Play"
 msgstr "Añadir y &reproducir"
 
@@ -993,25 +993,25 @@ msgstr ""
 msgid "There was no information found for this track"
 msgstr "No se encontró ninguna información para esta pista"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:82
+#: context/applets/currenttrack/CurrentTrack.cpp:83
 msgctxt "What artist is this track by"
 msgid "By"
 msgstr "Por"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:83
+#: context/applets/currenttrack/CurrentTrack.cpp:84
 msgctxt "What album is this track on"
 msgid "On"
 msgstr "En"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:115
-#: context/applets/currenttrack/CurrentTrack.cpp:542
+#: context/applets/currenttrack/CurrentTrack.cpp:116
+#: context/applets/currenttrack/CurrentTrack.cpp:557
 msgid "Play count"
 msgstr "Número de reproducciones"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:120
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
-#: context/applets/currenttrack/CurrentTrack.cpp:116
-#: context/applets/currenttrack/CurrentTrack.cpp:543
+#: context/applets/currenttrack/CurrentTrack.cpp:117
+#: context/applets/currenttrack/CurrentTrack.cpp:558
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:256
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:695 rc.cpp:1249
 #: playlist/PlaylistModel.cpp:715 widgets/SmartPlaylistEditor.cpp:185
@@ -1019,18 +1019,18 @@ msgstr "Número de reproducciones"
 msgid "Score"
 msgstr "Puntuación"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:117
-#: context/applets/currenttrack/CurrentTrack.cpp:544
+#: context/applets/currenttrack/CurrentTrack.cpp:118
+#: context/applets/currenttrack/CurrentTrack.cpp:559
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:261
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:700 TrayIcon.cpp:189
 msgid "Last Played"
 msgstr "Última reproducida"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:122
+#: context/applets/currenttrack/CurrentTrack.cpp:123
 msgid "Last played"
 msgstr "Última reproducción"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:123
+#: context/applets/currenttrack/CurrentTrack.cpp:124
 msgid "Favorite tracks"
 msgstr "Pistas favoritas"
 
@@ -1101,10 +1101,8 @@ msgid "No lyrics script is running."
 msgstr "No se está ejecutando el guión lyrics."
 
 #: context/applets/lyrics/LyricsApplet.cpp:264
-#, fuzzy
-#| msgid "Fetching ..."
 msgid "Lyrics : Fetching ..."
-msgstr "Recuperando ..."
+msgstr "Letras: Recuperando ..."
 
 #: context/applets/lyrics/LyricsApplet.cpp:265
 msgid "Lyrics are being fetched."
@@ -1143,10 +1141,8 @@ msgstr "Volver a obtener letras"
 #. i18n: file: context/applets/lyrics/lyricsSettings.ui:26
 #. i18n: ectx: property (windowTitle), widget (QWidget, lyricsSettings)
 #: context/applets/lyrics/LyricsApplet.cpp:454 rc.cpp:563
-#, fuzzy
-#| msgid "Settings"
 msgid "Lyrics Settings"
-msgstr "Preferencias"
+msgstr "Preferencias de letras"
 
 #: context/applets/photos/PhotosApplet.cpp:68
 #: context/applets/photos/PhotosApplet.cpp:132
@@ -1162,7 +1158,7 @@ msgstr "Fotos"
 #. i18n: file: context/applets/wikipedia/wikipediaSettings.ui:24
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
 #: context/applets/photos/PhotosApplet.cpp:92
-#: context/applets/wikipedia/WikipediaApplet.cpp:401 rc.cpp:569 rc.cpp:592
+#: context/applets/wikipedia/WikipediaApplet.cpp:406 rc.cpp:569 rc.cpp:592
 msgid "Automatic"
 msgstr "Automático"
 
@@ -1202,7 +1198,7 @@ msgstr "Adelante"
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: context/applets/wikipedia/WikipediaApplet.cpp:120
 #: dialogs/FilenameLayoutDialog.cpp:170 dialogs/FilenameLayoutDialog.cpp:497
-#: dialogs/transferdialog.cpp:88 browsers/CollectionTreeItemModelBase.cpp:922
+#: dialogs/transferdialog.cpp:88 browsers/CollectionTreeItemModelBase.cpp:928
 #: browsers/collectionbrowser/CollectionWidget.cpp:122
 #: browsers/collectionbrowser/CollectionWidget.cpp:151
 #: browsers/collectionbrowser/CollectionWidget.cpp:183
@@ -1219,7 +1215,7 @@ msgstr "Artista"
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: context/applets/wikipedia/WikipediaApplet.cpp:127
 #: dialogs/FilenameLayoutDialog.cpp:182 dialogs/FilenameLayoutDialog.cpp:518
-#: dialogs/transferdialog.cpp:89 browsers/CollectionTreeItemModelBase.cpp:921
+#: dialogs/transferdialog.cpp:89 browsers/CollectionTreeItemModelBase.cpp:927
 #: browsers/collectionbrowser/CollectionWidget.cpp:125
 #: browsers/collectionbrowser/CollectionWidget.cpp:154
 #: browsers/collectionbrowser/CollectionWidget.cpp:186
@@ -1246,23 +1242,23 @@ msgstr "Recargar"
 
 #. i18n: file: context/applets/wikipedia/wikipediaSettings.ui:29
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
-#: context/applets/wikipedia/WikipediaApplet.cpp:404 rc.cpp:595
+#: context/applets/wikipedia/WikipediaApplet.cpp:409 rc.cpp:595
 msgid "English"
 msgstr "Ingles"
 
 #. i18n: file: context/applets/wikipedia/wikipediaSettings.ui:34
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
-#: context/applets/wikipedia/WikipediaApplet.cpp:407 rc.cpp:598
+#: context/applets/wikipedia/WikipediaApplet.cpp:412 rc.cpp:598
 msgid "French"
 msgstr "Francés"
 
 #. i18n: file: context/applets/wikipedia/wikipediaSettings.ui:39
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
-#: context/applets/wikipedia/WikipediaApplet.cpp:410 rc.cpp:601
+#: context/applets/wikipedia/WikipediaApplet.cpp:415 rc.cpp:601
 msgid "German"
 msgstr "Alemán"
 
-#: context/applets/wikipedia/WikipediaApplet.cpp:437
+#: context/applets/wikipedia/WikipediaApplet.cpp:442
 msgid "Wikipedia Settings"
 msgstr "Preferencias de Wikipedia"
 
@@ -1307,7 +1303,7 @@ msgstr ""
 "de abajo de la vista de contexto."
 
 #: context/widgets/ToolBoxMenu.cpp:107
-#: context/widgets/appletexplorer/AppletExplorer.cpp:88
+#: context/widgets/appletexplorer/AppletExplorer.cpp:90
 msgid "Hide menu"
 msgstr "Ocultar el menú"
 
@@ -1318,10 +1314,8 @@ msgid "Track rating: %1"
 msgstr "Valoración de la pista: %1"
 
 #: context/widgets/appletexplorer/AppletItemModel.cpp:93
-#, fuzzy
-#| msgid "contains"
 msgid "Containments"
-msgstr "contiene"
+msgstr "Contenedores"
 
 #: context/widgets/TrackWidget.cpp:39
 msgctxt "Score of a track"
@@ -1347,16 +1341,13 @@ msgstr "Reproducir/Pausa"
 
 #: ActionClasses.cpp:306
 msgid "Click to change"
-msgstr "Haga clic para cambiar"
+msgstr "Pulse para cambiar"
 
 #: ActionClasses.cpp:323
 msgid "&Replay Gain Mode"
 msgstr "Modo de &repetición de ganancia"
 
 #: ActionClasses.cpp:325
-#, fuzzy
-#| msgctxt "State, as in, disabled"
-#| msgid "&Off"
 msgctxt "Replay Gain state, as in, disabled"
 msgid "&Off"
 msgstr "Desactivad&o"
@@ -1379,9 +1370,6 @@ msgid "Your current setup does not support the equalizer feature"
 msgstr "Su configuración actual no admite la característica de ecualizador"
 
 #: ActionClasses.cpp:368
-#, fuzzy
-#| msgctxt "State, as in, disabled"
-#| msgid "&Off"
 msgctxt "Equalizer state, as in, disabled"
 msgid "&Off"
 msgstr "Desactivad&o"
@@ -1469,9 +1457,6 @@ msgstr "Ecualizador no implementado por Phonon"
 #: configdialog/dialogs/PlaybackConfig.cpp:161
 #: configdialog/dialogs/PlaybackConfig.cpp:251
 #: configdialog/dialogs/PlaybackConfig.cpp:303
-#, fuzzy
-#| msgctxt "State, as in, disabled"
-#| msgid "Off"
 msgctxt "Equalizer state, as in, disabled"
 msgid "Off"
 msgstr "Desactivado"
@@ -1786,7 +1771,7 @@ msgstr "Título"
 #. i18n: file: dialogs/EditFilterDialog.ui:95
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:174 dialogs/FilenameLayoutDialog.cpp:504
-#: browsers/CollectionTreeItemModelBase.cpp:923
+#: browsers/CollectionTreeItemModelBase.cpp:929
 #: browsers/collectionbrowser/CollectionWidget.cpp:131
 #: browsers/collectionbrowser/CollectionWidget.cpp:160
 #: browsers/collectionbrowser/CollectionWidget.cpp:192
@@ -1799,7 +1784,7 @@ msgstr "Compositor"
 #. i18n: file: dialogs/EditFilterDialog.ui:135
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:178 dialogs/FilenameLayoutDialog.cpp:511
-#: browsers/CollectionTreeItemModelBase.cpp:925
+#: browsers/CollectionTreeItemModelBase.cpp:931
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:253
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:692 rc.cpp:1258
 #: playlist/PlaylistModel.cpp:703 widgets/SmartPlaylistEditor.cpp:184
@@ -1816,7 +1801,7 @@ msgstr "Comentario"
 #. i18n: file: dialogs/EditFilterDialog.ui:100
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:190 dialogs/FilenameLayoutDialog.cpp:532
-#: dialogs/transferdialog.cpp:90 browsers/CollectionTreeItemModelBase.cpp:924
+#: dialogs/transferdialog.cpp:90 browsers/CollectionTreeItemModelBase.cpp:930
 #: browsers/collectionbrowser/CollectionWidget.cpp:128
 #: browsers/collectionbrowser/CollectionWidget.cpp:157
 #: browsers/collectionbrowser/CollectionWidget.cpp:189
@@ -2190,7 +2175,7 @@ msgstr "Canciones puntuadas:"
 msgid "Average Score:"
 msgstr "Puntuación media:"
 
-#: dialogs/TagDialog.cpp:1646
+#: dialogs/TagDialog.cpp:1649
 msgid ""
 "Writing to file failed. Please check permissions and available disc space."
 msgstr ""
@@ -2212,7 +2197,7 @@ msgid ""
 "add more than one condition to create a more complex filtering condition.</"
 "p></qt>"
 msgstr ""
-"<qt> <p>Haciendo clic aquí puede añadir la condición definida. El botón \"OK"
+"<qt> <p>Pulsando aquí puede añadir la condición definida. El botón \"Aceptar"
 "\" cerrará el diálogo y aplicará el filtro definido. Con este botón puede "
 "añadir mas de una condición y crear condiciones de filtrado mas complejas.</"
 "p></qt>"
@@ -2230,8 +2215,8 @@ msgid ""
 "<p>By clicking here you will clear the filter. If you intend to undo the "
 "last appending just click on the \"Undo\" button.</p>"
 msgstr ""
-"<p>Haciendo clic aquí vaciará el filtro. Si intenta deshacer el último "
-"cambio, sólo haga clic en el botón \"Deshacer\".</p>"
+"<p>Pulsando aquí vaciará el filtro. Si intenta deshacer el último cambio, "
+"sólo pulse en el botón «Deshacer».</p>"
 
 #: dialogs/EditFilterDialog.cpp:63
 msgid "Clear the filter"
@@ -2250,8 +2235,8 @@ msgid ""
 "<p>Clicking here will remove the last appended filter. You cannot undo more "
 "than one action.</p>"
 msgstr ""
-"<p>Haciendo clic aquí eliminará el último filtro añadido. No puede deshacer "
-"mas de una acción.</p>"
+"<p>Pulsando aquí eliminará el último filtro añadido. No puede deshacer mas "
+"de una acción.</p>"
 
 #: dialogs/EditFilterDialog.cpp:71
 msgid "Remove last appended filter"
@@ -2329,11 +2314,11 @@ msgstr "Opciones"
 msgid "Convert spaces to underscores"
 msgstr "Convertir espacios a subrayados"
 
-#: dialogs/ScriptManager.cpp:92 MainWindow.cpp:771
+#: dialogs/ScriptManager.cpp:106 MainWindow.cpp:775
 msgid "Script Manager"
 msgstr "Gestor de guiones"
 
-#: dialogs/ScriptManager.cpp:292
+#: dialogs/ScriptManager.cpp:306
 msgid ""
 "Script Packages (*.amarokscript.tar, *.amarokscript.tar.bz2, *.amarokscript."
 "tar.gz)"
@@ -2341,18 +2326,19 @@ msgstr ""
 "Paquetes de guiones (*.amarokscript.tar, *.amarokscript.tar.bz2, *."
 "amarokscript.tar.gz)"
 
-#: dialogs/ScriptManager.cpp:300
+#: dialogs/ScriptManager.cpp:314
 msgid "Could not read this package."
 msgstr "No se pudo leer este paquete."
 
-#: dialogs/ScriptManager.cpp:311
+#: dialogs/ScriptManager.cpp:325
 #, kde-format
 msgid ""
 "A script with the name '%1' is already installed. Please uninstall it first."
 msgstr ""
 "Ya está instalado un guión con nombre «%1». Por favor, desinstálelo primero."
 
-#: dialogs/ScriptManager.cpp:322 dialogs/ScriptManager.cpp:376
+#: dialogs/ScriptManager.cpp:336 dialogs/ScriptManager.cpp:382
+#: dialogs/ScriptManager.cpp:403
 msgid ""
 "<p>Script successfully installed.</p><p>Please restart Amarok to start the "
 "script.</p>"
@@ -2360,7 +2346,7 @@ msgstr ""
 "<p>Guión instalado correctamente.</p><p>Por favor reinicie Amarok para "
 "lanzar el guión</p>"
 
-#: dialogs/ScriptManager.cpp:328
+#: dialogs/ScriptManager.cpp:342
 msgid ""
 "<p>Script installation failed.</p><p>Please inform the package maintainer "
 "about this error.</p>"
@@ -2368,7 +2354,8 @@ msgstr ""
 "<p>Fallo al instalar el guión.</p><p>Por favor, informe al encargado del "
 "paquete de este error.</p>"
 
-#: dialogs/ScriptManager.cpp:379 dialogs/ScriptManager.cpp:410
+#: dialogs/ScriptManager.cpp:385 dialogs/ScriptManager.cpp:406
+#: dialogs/ScriptManager.cpp:438
 msgid ""
 "<p>Script successfully uninstalled.</p><p>Please restart Amarok to totally "
 "remove the script.</p>"
@@ -2376,20 +2363,20 @@ msgstr ""
 "<p>Guión desinstalado correctamente.</p><p>Por favor reinicie Amarok para "
 "eliminar totalmente guión</p>"
 
-#: dialogs/ScriptManager.cpp:392
+#: dialogs/ScriptManager.cpp:420
 #, kde-format
 msgid "Are you sure you want to uninstall the script '%1'?"
 msgstr "¿Seguro que desea desinstalar el guión «%1»?"
 
-#: dialogs/ScriptManager.cpp:392
+#: dialogs/ScriptManager.cpp:420
 msgid "Uninstall Script"
 msgstr "Desinstalar el guión"
 
-#: dialogs/ScriptManager.cpp:392
+#: dialogs/ScriptManager.cpp:420
 msgid "Uninstall"
 msgstr "Desinstalar"
 
-#: dialogs/ScriptManager.cpp:401
+#: dialogs/ScriptManager.cpp:429
 msgid ""
 "<p>Could not uninstall this script.</p><p>The ScriptManager can only "
 "uninstall scripts which have been installed as packages.</p>"
@@ -2397,13 +2384,13 @@ msgstr ""
 "<p>No se pudo desinstalar este guión.</p> <p> El gestor de guiones sólo "
 "puede desinstalar guiones que hayan sido instalados como paquetes.</p>"
 
-#: dialogs/ScriptManager.cpp:449
+#: dialogs/ScriptManager.cpp:477
 #, kde-format
 msgid ""
 "There are exceptions caught in the script '%1'. Please refer to the console "
 "debug output for more information."
 msgstr ""
-"Hay excepciones en el guión '%1'. Consulte la salida de depuración de la "
+"Hay excepciones en el guión «%1». Consulte la salida de depuración de la "
 "consola para mas información."
 
 #. i18n: file: collection/audiocd/FormatSelectionDialog.ui:14
@@ -2534,91 +2521,91 @@ msgstr "Error de base de datos"
 msgid "Moving files to trash"
 msgstr "Moviendo archivos a la papelera"
 
-#: App.cpp:865
+#: App.cpp:881
 msgctxt "When this track was last played"
 msgid "Unknown"
 msgstr "Desconocido"
 
-#: App.cpp:870
+#: App.cpp:886
 #, kde-format
 msgctxt "monthname year"
 msgid "%1 %2"
 msgstr "%1 %2"
 
-#: App.cpp:877
+#: App.cpp:893
 #, kde-format
 msgid "One week ago"
 msgid_plural "%1 weeks ago"
 msgstr[0] "Hace una semana"
 msgstr[1] "Hace %1 semanas"
 
-#: App.cpp:883
+#: App.cpp:899
 msgid "Yesterday"
 msgstr "Ayer"
 
-#: App.cpp:884
+#: App.cpp:900
 #, kde-format
 msgid "One day ago"
 msgid_plural "%1 days ago"
 msgstr[0] "Hace un día"
 msgstr[1] "Hace %1 días"
 
-#: App.cpp:887
+#: App.cpp:903
 #, kde-format
 msgid "One hour ago"
 msgid_plural "%1 hours ago"
 msgstr[0] "Hace una hora"
 msgstr[1] "Hace %1 horas"
 
-#: App.cpp:893
+#: App.cpp:909
 #, kde-format
 msgid "One minute ago"
 msgid_plural "%1 minutes ago"
 msgstr[0] "Hace un minuto"
 msgstr[1] "Hace %1 minutos"
 
-#: App.cpp:894
+#: App.cpp:910
 msgid "Within the last minute"
 msgstr "En el último minuto"
 
-#: App.cpp:896
+#: App.cpp:912
 msgid "The future"
 msgstr "El futuro"
 
-#: App.cpp:902
+#: App.cpp:918
 msgctxt "The amount of time since last played"
 msgid "Never"
 msgstr "Nunca"
 
-#: App.cpp:912
+#: App.cpp:928
 msgctxt "The amount of time since last played"
 msgid "0"
 msgstr "0"
 
-#: App.cpp:921
+#: App.cpp:937
 #, kde-format
 msgctxt "number of months ago"
 msgid "%1M"
 msgstr "%1M"
 
-#: App.cpp:925
+#: App.cpp:941
 #, kde-format
 msgctxt "w for weeks"
 msgid "%1w"
 msgstr "%1w"
 
-#: App.cpp:928
+#: App.cpp:944
 msgctxt "When this track was last played"
 msgid "Tomorrow"
 msgstr "Mañana"
 
-#: App.cpp:934
+#: App.cpp:950
 #, no-c-format, kde-format
 msgctxt "d for days"
 msgid "%1d"
 msgstr "%1d"
 
-#: App.cpp:937
+#: App.cpp:953
 #, kde-format
 msgctxt "h for hours"
 msgid "%1h"
@@ -2646,34 +2633,34 @@ msgstr "%1h"
 #. i18n: ectx: property (text), widget (QLabel, eqBand8Value)
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:1329
 #. i18n: ectx: property (text), widget (QLabel, eqBand9Value)
-#: App.cpp:946 rc.cpp:737 rc.cpp:743 rc.cpp:749 rc.cpp:755 rc.cpp:761
+#: App.cpp:962 rc.cpp:737 rc.cpp:743 rc.cpp:749 rc.cpp:755 rc.cpp:761
 #: rc.cpp:767 rc.cpp:773 rc.cpp:779 rc.cpp:785 rc.cpp:791 rc.cpp:797
 msgid "0"
 msgstr "0"
 
-#: App.cpp:963
+#: App.cpp:979
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> de <b>%2</b> en <b>%3</b>"
 
-#: App.cpp:966
+#: App.cpp:982
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> de <b>%2</b>"
 
-#: App.cpp:970
+#: App.cpp:986
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> en <b>%2</b>"
 
-#: App.cpp:975
+#: App.cpp:991
 msgid "Unknown track"
 msgstr "Pista desconocida"
 
-#: App.cpp:982
+#: App.cpp:998
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -3002,20 +2989,16 @@ msgid "&Update Channel"
 msgstr "Act&ualizar canal"
 
 #: podcasts/sql/SqlPodcastProvider.cpp:596
-#, fuzzy
-#| msgid "Subscribe"
 msgid "Unsubscribe"
-msgstr "Suscribir"
+msgstr "Darse de baja"
 
 #: podcasts/sql/SqlPodcastProvider.cpp:600
 msgid "Do you really want to unsubscribe from "
-msgstr ""
+msgstr "Realmente quiere darse de baja de "
 
 #: podcasts/sql/SqlPodcastProvider.cpp:607
-#, fuzzy
-#| msgid "&Delete Downloaded Episode"
 msgid "Delete downloaded episodes"
-msgstr "&Borrar episodio descargado"
+msgstr "Borrar episodios descargados"
 
 #: podcasts/sql/SqlPodcastProvider.cpp:732
 msgid "Waiting for Podcast Downloads to Finish"
@@ -3082,16 +3065,13 @@ msgid "Updating \"%1\" failed with error:\n"
 msgstr "Fallo actualizando \"%1\" con error:\n"
 
 #: podcasts/PodcastReader.cpp:997
-#, fuzzy, kde-format
-#| msgid ""
-#| "An HTML page was received but expected a feed while parsing %1.\n"
-#| "Did you enter the corrent URL?"
+#, kde-format
 msgid ""
 "While parsing %1, a feed was expected but an HTML page was received.\n"
 "Did you enter the correct URL?"
 msgstr ""
-"Se recibió una página HTML pero se esperaba una fuente mientras se analizaba "
-"%1.\n"
+"Mientras se analizaba %1, se esperaba una fuente pero se recibió una página "
+"HTML.\n"
 "¿Introdujo usted una URL correcta?"
 
 #: podcasts/PodcastReader.cpp:1004
@@ -3178,7 +3158,7 @@ msgstr "Sin título"
 msgid "A preset with the name %1 already exists. Overwrite?"
 msgstr "Ya existe una predefinición con el nombre %1. ¿Sobrescribir?"
 
-#: EngineController.cpp:227
+#: EngineController.cpp:237
 msgid ""
 "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
 "the installation of the backend that phonon uses.</p><p>You may find useful "
@@ -3189,11 +3169,11 @@ msgstr ""
 "información útil en la sección de <i>Preguntas más frecuentes</i> del "
 "<i>Manual de Amarok</i>.</p>"
 
-#: EngineController.cpp:246
+#: EngineController.cpp:256
 msgid "Install MP3 Support"
 msgstr "Instalar soporte para MP3"
 
-#: EngineController.cpp:248
+#: EngineController.cpp:258
 msgid ""
 "Amarok currently cannot play MP3 files. Do you want to install support for "
 "MP3?"
@@ -3201,11 +3181,11 @@ msgstr ""
 "Amarok no puede reproducir archivos MP3 actualmente ¿Desea instalar el "
 "soporte para MP3?"
 
-#: EngineController.cpp:249
+#: EngineController.cpp:259
 msgid "No MP3 Support"
 msgstr "No hay soporte para MP3"
 
-#: EngineController.cpp:743
+#: EngineController.cpp:760
 msgid "Preamp"
 msgstr "Preamplificación"
 
@@ -3314,7 +3294,7 @@ msgstr "Lista de reproducción"
 msgid "Recommendations by Echo Nest."
 msgstr "Recomendaciones de Echo Nest."
 
-#: dynamic/BiasedPlaylist.cpp:141
+#: dynamic/BiasedPlaylist.cpp:145
 msgid "Generating playlist..."
 msgstr "Creando lista de reproducción..."
 
@@ -3499,7 +3479,7 @@ msgstr "Edward \"Hades\" Toroshchin"
 
 #: main.cpp:92
 msgid "Frank Meerkötter"
-msgstr ""
+msgstr "Frank Meerkötter"
 
 #: main.cpp:92 main.cpp:111
 msgid "Podcast improvements"
@@ -3921,100 +3901,95 @@ msgstr "Filtrar orígenes de música"
 msgid "Previous Browser"
 msgstr "Navegador anterior"
 
-#: browsers/CollectionTreeItemModelBase.cpp:532
+#: browsers/CollectionTreeItemModelBase.cpp:538
 msgid "album"
 msgstr "álbum"
 
-#: browsers/CollectionTreeItemModelBase.cpp:537
+#: browsers/CollectionTreeItemModelBase.cpp:543
 msgid "artist"
 msgstr "artista"
 
-#: browsers/CollectionTreeItemModelBase.cpp:542
+#: browsers/CollectionTreeItemModelBase.cpp:548
 msgid "genre"
 msgstr "género"
 
-#: browsers/CollectionTreeItemModelBase.cpp:547
+#: browsers/CollectionTreeItemModelBase.cpp:553
 msgid "title"
 msgstr "título"
 
-#: browsers/CollectionTreeItemModelBase.cpp:552
+#: browsers/CollectionTreeItemModelBase.cpp:558
 msgid "composer"
 msgstr "compositor"
 
-#: browsers/CollectionTreeItemModelBase.cpp:557
+#: browsers/CollectionTreeItemModelBase.cpp:563
 msgid "year"
 msgstr "año"
 
-#: browsers/CollectionTreeItemModelBase.cpp:562
+#: browsers/CollectionTreeItemModelBase.cpp:568
 msgid "bpm"
 msgstr "bpm"
 
-#: browsers/CollectionTreeItemModelBase.cpp:566
+#: browsers/CollectionTreeItemModelBase.cpp:572
 msgid "comment"
 msgstr "comentario"
 
-#: browsers/CollectionTreeItemModelBase.cpp:570
-#, fuzzy
-#| msgid "Bitrate"
+#: browsers/CollectionTreeItemModelBase.cpp:576
 msgid "bitrate"
-msgstr "Tasa de bits"
+msgstr "tasa de bits"
 
-#: browsers/CollectionTreeItemModelBase.cpp:574
+#: browsers/CollectionTreeItemModelBase.cpp:580
 msgid "rating"
 msgstr "valoración"
 
-#: browsers/CollectionTreeItemModelBase.cpp:578
+#: browsers/CollectionTreeItemModelBase.cpp:584
 msgid "score"
 msgstr "puntuación"
 
-#: browsers/CollectionTreeItemModelBase.cpp:582
+#: browsers/CollectionTreeItemModelBase.cpp:588
 msgid "playcount"
 msgstr "contador de reproducciones"
 
-#: browsers/CollectionTreeItemModelBase.cpp:586
-#, fuzzy
-#| msgctxt "'Sample rate' playlist column name and token for playlist layouts"
-#| msgid "Sample rate"
+#: browsers/CollectionTreeItemModelBase.cpp:592
 msgid "samplerate"
-msgstr "Tasa de muestreo"
+msgstr "tasa de muestreo"
 
-#: browsers/CollectionTreeItemModelBase.cpp:590
+#: browsers/CollectionTreeItemModelBase.cpp:596
 msgid "length"
 msgstr "duración"
 
-#: browsers/CollectionTreeItemModelBase.cpp:594
+#: browsers/CollectionTreeItemModelBase.cpp:600
 msgid "discnumber"
 msgstr "número de disco"
 
-#: browsers/CollectionTreeItemModelBase.cpp:598
+#: browsers/CollectionTreeItemModelBase.cpp:604
 msgid "tracknumber"
 msgstr "número de pista"
 
-#: browsers/CollectionTreeItemModelBase.cpp:602
+#: browsers/CollectionTreeItemModelBase.cpp:608
 msgid "added"
 msgstr "Añadido"
 
-#: browsers/CollectionTreeItemModelBase.cpp:608
+#: browsers/CollectionTreeItemModelBase.cpp:614
 msgid "today"
 msgstr "hoy"
 
-#: browsers/CollectionTreeItemModelBase.cpp:610
+#: browsers/CollectionTreeItemModelBase.cpp:616
 msgid "last week"
 msgstr "última semana"
 
-#: browsers/CollectionTreeItemModelBase.cpp:612
+#: browsers/CollectionTreeItemModelBase.cpp:618
 msgid "last month"
 msgstr "último mes"
 
-#: browsers/CollectionTreeItemModelBase.cpp:614
+#: browsers/CollectionTreeItemModelBase.cpp:620
 msgid "two months ago"
 msgstr "hace dos semanas"
 
-#: browsers/CollectionTreeItemModelBase.cpp:616
+#: browsers/CollectionTreeItemModelBase.cpp:622
 msgid "three months ago"
 msgstr "hace tres meses"
 
-#: browsers/CollectionTreeItemModelBase.cpp:921
+#: browsers/CollectionTreeItemModelBase.cpp:927
 msgid "Year - Album"
 msgstr "Año - Álbum"
 
@@ -4195,20 +4170,20 @@ msgstr ""
 "importadas o guardadas. Es aquí también donde puede especificar poderosas "
 "listas dinámicas y gestionar sus subscripciones a podcast y episodios."
 
-#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:229
+#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:238
 msgid "New name"
 msgstr "Nuevo nombre"
 
-#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:231
+#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:240
 msgctxt "Enter a new name for a folder that already exists"
 msgid "Enter new folder name:"
 msgstr "Introduzca el nuevo nombre de carpeta:"
 
-#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:254
+#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:263
 msgid "&Delete Folder"
 msgstr "&Borrar carpeta"
 
-#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:264
+#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:273
 msgid "&Rename Folder..."
 msgstr "&Renombrar carpeta..."
 
@@ -4362,34 +4337,27 @@ msgid "Import OPML File"
 msgstr "Importar archivos OPML"
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:200
-#, fuzzy
-#| msgctxt "What artist is this track by"
-#| msgid "By"
 msgid "By"
 msgstr "Por"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:241
+#: browsers/playlistbrowser/PodcastCategory.cpp:239
 #: browsers/playlistbrowser/DynamicCategory.cpp:70
 msgid "On"
 msgstr "Activado"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:259
-#, fuzzy
-#| msgid "File Size"
+#: browsers/playlistbrowser/PodcastCategory.cpp:257
 msgid "File Size:"
-msgstr "Tamaño del archivo"
+msgstr "Tamaño de archivo:"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:271
-#, fuzzy
-#| msgid "Description:"
+#: browsers/playlistbrowser/PodcastCategory.cpp:269
 msgid "Subscription Date:"
-msgstr "Descripción:"
+msgstr "Fecha de suscripción:"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:279
+#: browsers/playlistbrowser/PodcastCategory.cpp:277
 msgid "Keywords:"
 msgstr "Palabras clave:"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:312
+#: browsers/playlistbrowser/PodcastCategory.cpp:310
 msgid "Select OPML file to import"
 msgstr "Seleccione el archivo OPML a importar"
 
@@ -4441,31 +4409,31 @@ msgstr "Próximo:"
 msgid "Number of upcoming tracks to add to the playlist."
 msgstr "Número de pistas próximas a añadir a la lista de reproducción."
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:114
+#: browsers/playlistbrowser/DynamicCategory.cpp:116
 msgid "Playlist:"
 msgstr "Lista de reproducción:"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:143
+#: browsers/playlistbrowser/DynamicCategory.cpp:145
 msgid "Save the preset."
 msgstr "Guardar la predefinición."
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:153
+#: browsers/playlistbrowser/DynamicCategory.cpp:155
 msgid "Delete the preset."
 msgstr "Eliminar la predefinición."
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:314
+#: browsers/playlistbrowser/DynamicCategory.cpp:316
 msgid "Playlist Name"
 msgstr "Nombre de la lista de reproducción"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:315
+#: browsers/playlistbrowser/DynamicCategory.cpp:317
 msgid "Enter a name for the playlist:"
 msgstr "Introduzca un nombre para la lista de reproducción:"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:325
+#: browsers/playlistbrowser/DynamicCategory.cpp:327
 msgid "Warning"
 msgstr "Aviso"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:325
+#: browsers/playlistbrowser/DynamicCategory.cpp:327
 msgid "Cannot overwrite the random playlist."
 msgstr "No se puede sobrescribir la lista de reproducción aleatoria."
 
@@ -4531,16 +4499,16 @@ msgstr "Archivos"
 msgid "Browse local hard drive for content"
 msgstr "Navegar por el disco local por contenido"
 
-#: MainWindow.cpp:414
+#: MainWindow.cpp:417
 msgctxt "@item:inmenu"
 msgid "&View"
 msgstr "&Ver"
 
-#: MainWindow.cpp:417
+#: MainWindow.cpp:420
 msgid "Lock layout"
 msgstr "Bloquear diseño"
 
-#: MainWindow.cpp:529
+#: MainWindow.cpp:532
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
 "<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
@@ -4550,194 +4518,194 @@ msgstr ""
 "bandeja del sistema. Utilice <b>Salir</b> desde el menú, o el icono de la "
 "bandeja del sistema para salir de la aplicación.</qt>"
 
-#: MainWindow.cpp:531
+#: MainWindow.cpp:534
 msgid "Docking in System Tray"
 msgstr "Acoplando en la bandeja del sistema"
 
-#: MainWindow.cpp:549
+#: MainWindow.cpp:552
 msgid "Use relative path for &saving"
 msgstr "Utilice una ruta relativa para &guardar"
 
-#: MainWindow.cpp:560
+#: MainWindow.cpp:563
 msgid "Save As"
 msgstr "Guardar como"
 
-#: MainWindow.cpp:597
+#: MainWindow.cpp:600
 msgid "Play Media (Files or URLs)"
 msgstr "Reproducir medio (archivos o URL)"
 
-#: MainWindow.cpp:597
+#: MainWindow.cpp:600
 msgid "Add Media (Files or URLs)"
 msgstr "Añadir medio (archivos o URL)"
 
-#: MainWindow.cpp:612
+#: MainWindow.cpp:615
 msgid "Add Stream"
 msgstr "Añadir flujo"
 
-#: MainWindow.cpp:612
+#: MainWindow.cpp:615
 msgid "Enter Stream URL:"
 msgstr "Introducir URL del flujo:"
 
-#: MainWindow.cpp:723
+#: MainWindow.cpp:726
 msgid "&Add Media..."
 msgstr "&Añadir medio..."
 
-#: MainWindow.cpp:728
+#: MainWindow.cpp:731
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "&Borrar lista de reproducción"
 
-#: MainWindow.cpp:732
+#: MainWindow.cpp:735
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "Eli&minar duplicados"
 
-#: MainWindow.cpp:739
+#: MainWindow.cpp:742
 msgid "&Add Stream..."
 msgstr "&Añadir flujo..."
 
-#: MainWindow.cpp:743
+#: MainWindow.cpp:746
 msgid "&Export Playlist As..."
 msgstr "&Exportar lista de reproducción como..."
 
-#: MainWindow.cpp:747 amarokurls/NavigationUrlGenerator.cpp:216
+#: MainWindow.cpp:750 amarokurls/NavigationUrlGenerator.cpp:216
 msgid "Bookmark Media Sources View"
 msgstr "Añadir a marcadores la vista de fuentes de medios"
 
-#: MainWindow.cpp:751 amarokurls/BookmarkManager.cpp:42
+#: MainWindow.cpp:754 amarokurls/BookmarkManager.cpp:42
 msgid "Bookmark Manager"
 msgstr "Gestor de marcadores"
 
-#: MainWindow.cpp:755 playlist/PlaylistViewUrlGenerator.cpp:101
+#: MainWindow.cpp:758 playlist/PlaylistViewUrlGenerator.cpp:101
 msgid "Bookmark Playlist Setup"
 msgstr "Configuración de los marcadores de lista de reproducción"
 
-#: MainWindow.cpp:759
+#: MainWindow.cpp:762
 msgid "Bookmark Context Applets"
-msgstr "Complementos de contexto de marcadores"
+msgstr "Miniaplicaciones de contexto de marcadores"
 
-#: MainWindow.cpp:763 covermanager/CoverManager.cpp:97
+#: MainWindow.cpp:766 covermanager/CoverManager.cpp:97
 msgid "Cover Manager"
 msgstr "Gestor de carátulas"
 
-#: MainWindow.cpp:767
+#: MainWindow.cpp:770
 msgid "Play Media..."
 msgstr "Reproducir medio..."
 
-#: MainWindow.cpp:775
+#: MainWindow.cpp:779
 msgid "&Seek Forward"
 msgstr "Buscar hacia &delante"
 
-#: MainWindow.cpp:781
+#: MainWindow.cpp:785
 msgid "&Seek Backward"
 msgstr "Buscar hacia &atrás"
 
-#: MainWindow.cpp:788
+#: MainWindow.cpp:792
 msgid "Update Collection"
 msgstr "Actualizar colección"
 
-#: MainWindow.cpp:795 widgets/MainControlsWidget.cpp:62
+#: MainWindow.cpp:799 widgets/MainControlsWidget.cpp:62
 msgid "Previous Track"
 msgstr "Pista anterior"
 
-#: MainWindow.cpp:801
+#: MainWindow.cpp:805
 msgid "Repopulate Playlist"
 msgstr "Repoblar lista de reproducción"
 
-#: MainWindow.cpp:809 widgets/MainControlsWidget.cpp:86
+#: MainWindow.cpp:819 widgets/MainControlsWidget.cpp:86
 msgid "Next Track"
 msgstr "Pista siguiente"
 
-#: MainWindow.cpp:812
+#: MainWindow.cpp:822
 msgid "Increase Volume"
 msgstr "Subir el volumen"
 
-#: MainWindow.cpp:818
+#: MainWindow.cpp:828
 msgid "Decrease Volume"
 msgstr "Bajar el volumen"
 
-#: MainWindow.cpp:824
+#: MainWindow.cpp:834
 msgid "Toggle Main Window"
 msgstr "Mostrar u ocultar la ventana principal"
 
-#: MainWindow.cpp:829
+#: MainWindow.cpp:839
 msgid "Toggle Full Screen"
 msgstr "Cambiar a pantalla completa"
 
-#: MainWindow.cpp:834
+#: MainWindow.cpp:844
 msgid "Jump to"
 msgstr "Saltar a"
 
-#: MainWindow.cpp:839
+#: MainWindow.cpp:849
 msgid "Show On Screen Display"
 msgstr "Mostrar pantalla de información"
 
-#: MainWindow.cpp:844
+#: MainWindow.cpp:854
 msgid "Mute Volume"
 msgstr "Silenciar volumen"
 
-#: MainWindow.cpp:849
+#: MainWindow.cpp:859
 msgid "Last.fm: Love Current Track"
 msgstr "Last.fm: Preferir pista actual"
 
-#: MainWindow.cpp:854
+#: MainWindow.cpp:864
 msgid "Last.fm: Ban Current Track"
 msgstr "Last.fm: Prohibir pista actual"
 
-#: MainWindow.cpp:859
+#: MainWindow.cpp:869
 msgid "Last.fm: Skip Current Track"
 msgstr "Last.fm: Saltar pista actual"
 
-#: MainWindow.cpp:864 playlist/view/PlaylistViewCommon.cpp:111
+#: MainWindow.cpp:874 playlist/view/PlaylistViewCommon.cpp:111
 msgid "Queue Track"
 msgstr "Encolar pista"
 
-#: MainWindow.cpp:869
+#: MainWindow.cpp:879
 msgid "Rate Current Track: 1"
 msgstr "Valorar pista actual: 1"
 
-#: MainWindow.cpp:874
+#: MainWindow.cpp:884
 msgid "Rate Current Track: 2"
 msgstr "Valorar pista actual: 2"
 
-#: MainWindow.cpp:879
+#: MainWindow.cpp:889
 msgid "Rate Current Track: 3"
 msgstr "Valorar pista actual: 3"
 
-#: MainWindow.cpp:884
+#: MainWindow.cpp:894
 msgid "Rate Current Track: 4"
 msgstr "Valorar pista actual: 4"
 
-#: MainWindow.cpp:889
+#: MainWindow.cpp:899
 msgid "Rate Current Track: 5"
 msgstr "Valorar pista actual: 5"
 
-#: MainWindow.cpp:949
+#: MainWindow.cpp:959
 msgid "&Music"
 msgstr "&Música"
 
-#: MainWindow.cpp:953
+#: MainWindow.cpp:963
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:972
+#: MainWindow.cpp:982
 msgid "&Playlist"
 msgstr "Lista de re&producción"
 
-#: MainWindow.cpp:988
+#: MainWindow.cpp:998
 msgid "&Tools"
 msgstr "Herramien&tas"
 
-#: MainWindow.cpp:999
+#: MainWindow.cpp:1009
 msgid "&Settings"
 msgstr "&Preferencias"
 
-#: MainWindow.cpp:1129
+#: MainWindow.cpp:1139
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "En pausa  ::  %1"
 
-#: MainWindow.cpp:1148
+#: MainWindow.cpp:1158
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
@@ -4761,7 +4729,7 @@ msgid ""
 "for computers and other digital music players?"
 msgstr ""
 "¿Crear un CD de audio (adecuado para reproductores de CD) o un CD de datos "
-"(adecuado para computadoras y otros reproductores de música digitales)?"
+"(adecuado para PC y otros reproductores de música digitales)?"
 
 #: k3bexporter.cpp:243
 msgid "Create K3b Project"
@@ -4779,12 +4747,12 @@ msgstr "Modo de datos"
 msgid "Slim Toolbar"
 msgstr "Adelgazar barra de herramientas "
 
-#: toolbar/VolumePopupButton.cpp:99 toolbar/VolumePopupButton.cpp:110
+#: toolbar/VolumePopupButton.cpp:102 toolbar/VolumePopupButton.cpp:113
 #: widgets/Osd.cpp:151
 msgid "(muted)"
 msgstr "(silenciado)"
 
-#: toolbar/VolumePopupButton.cpp:99 toolbar/VolumePopupButton.cpp:110
+#: toolbar/VolumePopupButton.cpp:102 toolbar/VolumePopupButton.cpp:113
 #: widgets/Osd.cpp:151
 #, kde-format
 msgid "Volume: %1% %2"
@@ -5883,7 +5851,7 @@ msgstr "Contraseñas del servidor"
 #. i18n: ectx: whatsthis, entry, group (Daap)
 #: rc.cpp:468 rc.cpp:2205
 msgid "Passwords stored by hostname."
-msgstr "Contraseñas almacenadas por el nombre del host."
+msgstr "Contraseñas almacenadas por nombre de servidor."
 
 #. i18n: file: amarokconfig.kcfg:505
 #. i18n: ectx: label, entry, group (Panel Sizes)
@@ -7274,10 +7242,8 @@ msgstr "Búsqueda simple"
 #. i18n: file: dialogs/EditFilterDialog.ui:90
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: rc.cpp:1231
-#, fuzzy
-#| msgid "Bit rate:"
 msgid "Bit Rate"
-msgstr "Tasa de bit:"
+msgstr "Tasa de bit"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:105
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
@@ -7964,7 +7930,8 @@ msgstr ""
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"https://"
 "magnatune.com/buy/gc_buy_pp.php\"><span style=\" text-decoration: underline; "
-"color:#0000ff;\">Click here to buy gift cards</span></a></p></body></html>"
+"color:#0000ff;\">Pulse aquí para comprar tarjetas regalo</span></a></p></"
+"body></html>"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:358
 #. i18n: ectx: property (text), widget (QPushButton, purchaseButton)
@@ -8196,7 +8163,7 @@ msgid ""
 "your music between computers and devices."
 msgstr ""
 "AutoSync es una característica de MP3tunes que te permite mover tu música "
-"automáticamente entre computadoras y dispositivos."
+"automáticamente entre equipos y dispositivos."
 
 #. i18n: file: services/mp3tunes/Mp3tunesConfigWidget.ui:52
 #. i18n: ectx: property (whatsThis), widget (QLabel, label_3)
@@ -8207,8 +8174,8 @@ msgid ""
 "location and have it download instantly to other locations."
 msgstr ""
 "AutoSync es una característica de MP3tunes que te permite mover tu música "
-"automáticamente entre computadoras y dispositivos. Puedes subir música desde "
-"una ubicación y descargarla instantáneamente a otras ubicaciones."
+"automáticamente entre equipos y dispositivos. Puedes subir música desde una "
+"ubicación y descargarla instantáneamente a otras ubicaciones."
 
 #. i18n: file: services/mp3tunes/Mp3tunesConfigWidget.ui:55
 #. i18n: ectx: property (text), widget (QLabel, label_3)
@@ -8863,7 +8830,7 @@ msgstr ""
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:64
 #, kde-format
 msgid "Downloading '%1' by %2 from Magnatune.com"
-msgstr "Descargando '%1' de '%2' desde Magnatune.com"
+msgstr "Descargando «%1» de «%2» desde Magnatune.com"
 
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:66
 msgid "Downloading album from Magnatune.com"
@@ -9566,7 +9533,7 @@ msgstr ""
 #: playlist/layouts/LayoutManager.cpp:397
 #, kde-format
 msgid "The layout '%1' is one of the default layouts and cannot be deleted."
-msgstr "El diseño '%1' es uno de los diseños por defecto y no puede borrarse."
+msgstr "El diseño «%1» es uno de los diseños por defecto y no puede borrarse."
 
 #: playlist/layouts/LayoutManager.cpp:397
 msgid "Cannot Delete Default Layouts"
@@ -9639,7 +9606,7 @@ msgid ""
 "of the layout '%1':"
 msgstr ""
 "Por favor introduzca un nombre para el diseño de lista de reproducción que "
-"va a definir como copia de '%1':"
+"va a definir como copia de «%1»:"
 
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:279
 msgid "Choose a new name for the playlist layout"
@@ -9850,7 +9817,7 @@ msgstr "Pistas eliminadas"
 msgid "Track moved"
 msgstr "Pista movida"
 
-#: playlist/PlaylistActions.cpp:358
+#: playlist/PlaylistActions.cpp:362
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr ""
 "Se encontraron demasiados errores en la lista de reproducción. Reproducción "
@@ -9949,7 +9916,7 @@ msgstr[1] "%1 pistas"
 
 #: statusbar/ProgressBar.cpp:47 statusbar/CompoundProgressBar.cpp:68
 #: statusbar/CompoundProgressBar.cpp:139 statusbar/CompoundProgressBar.cpp:175
-#: covermanager/CoverManager.cpp:211
+#: covermanager/CoverManager.cpp:213
 msgid "Abort"
 msgstr "Interrumpir"
 
@@ -10420,28 +10387,28 @@ msgstr "Ha ocurrido un error al comunicarse con last.fm."
 msgid "The XML obtained from Last.fm is invalid."
 msgstr "El XML obtenido de Last.fm no es válido."
 
-#: covermanager/CoverFetcher.cpp:281 covermanager/CoverFetcher.cpp:282
+#: covermanager/CoverFetcher.cpp:283 covermanager/CoverFetcher.cpp:284
 msgid "The cover could not be retrieved."
 msgstr "La carátula no se ha podido descargar."
 
-#: covermanager/CoverFetcher.cpp:335
+#: covermanager/CoverFetcher.cpp:337
 msgid "Aborted."
 msgstr "Interrumpido."
 
-#: covermanager/CoverFetcher.cpp:344
+#: covermanager/CoverFetcher.cpp:346
 msgid "Retrieved cover successfully"
 msgstr "Carátula extraída correctamente"
 
-#: covermanager/CoverFetcher.cpp:379
+#: covermanager/CoverFetcher.cpp:381
 msgid "Unable to find a cover for the specified song."
 msgstr "No se pudo recuperar una carátula para la canción especificada."
 
-#: covermanager/CoverFetcher.cpp:382
+#: covermanager/CoverFetcher.cpp:384
 #, kde-format
 msgid "Unable to find a cover for %1."
 msgstr "No se pudo recuperar una carátula para %1."
 
-#: covermanager/CoverFetcher.cpp:427
+#: covermanager/CoverFetcher.cpp:429
 msgid "Cover Found"
 msgstr "Carátula encontrada"
 
@@ -10449,7 +10416,7 @@ msgstr "Carátula encontrada"
 msgid "Albums By"
 msgstr "Álbumes por"
 
-#: covermanager/CoverManager.cpp:112 covermanager/CoverManager.cpp:293
+#: covermanager/CoverManager.cpp:112 covermanager/CoverManager.cpp:295
 msgid "All Artists"
 msgstr "Todos los artistas"
 
@@ -10469,89 +10436,89 @@ msgstr "Álbumes sin carátula"
 msgid "Fetch Missing Covers"
 msgstr "Descargar las carátulas que faltan"
 
-#: covermanager/CoverManager.cpp:369
+#: covermanager/CoverManager.cpp:371
 msgid "Loading Thumbnails..."
 msgstr "Cargando las miniaturas..."
 
-#: covermanager/CoverManager.cpp:624
+#: covermanager/CoverManager.cpp:637
 msgctxt "The fetching is done."
 msgid "Finished."
 msgstr "Finalizado."
 
-#: covermanager/CoverManager.cpp:626
+#: covermanager/CoverManager.cpp:639
 #, kde-format
 msgid " Cover not found"
 msgid_plural " <b>%1</b> covers not found"
 msgstr[0] " Carátula no encontrada"
 msgstr[1] " <b>%1</b> carátulas no encontradas"
 
-#: covermanager/CoverManager.cpp:639
+#: covermanager/CoverManager.cpp:652
 #, kde-format
 msgid "Fetching cover for %1..."
 msgstr "Descargando la carátula de %1..."
 
-#: covermanager/CoverManager.cpp:641
+#: covermanager/CoverManager.cpp:654
 #, kde-format
 msgid "Fetching cover for %1 - %2..."
 msgstr "Descargando la carátula de %1 - %2..."
 
-#: covermanager/CoverManager.cpp:648
+#: covermanager/CoverManager.cpp:661
 #, kde-format
 msgid "Fetching 1 cover: "
 msgid_plural "Fetching <b>%1</b> covers... : "
 msgstr[0] "Obteniendo 1 carátula: "
 msgstr[1] "Obteniendo <b>%1</b> carátulas... : "
 
-#: covermanager/CoverManager.cpp:650
+#: covermanager/CoverManager.cpp:663
 #, kde-format
 msgid "1 fetched"
 msgid_plural "%1 fetched"
 msgstr[0] "1 obtenida"
 msgstr[1] "%1 obtenidas"
 
-#: covermanager/CoverManager.cpp:654
+#: covermanager/CoverManager.cpp:667
 msgid " - "
 msgstr " - "
 
-#: covermanager/CoverManager.cpp:655
+#: covermanager/CoverManager.cpp:668
 #, kde-format
 msgid "1 not found"
 msgid_plural "%1 not found"
 msgstr[0] "1 no encontrada"
 msgstr[1] "%1 no encontradas"
 
-#: covermanager/CoverManager.cpp:658
+#: covermanager/CoverManager.cpp:671
 msgid "Connecting..."
 msgstr "Conectando..."
 
-#: covermanager/CoverManager.cpp:683
+#: covermanager/CoverManager.cpp:696
 #, kde-format
 msgid "1 result for \"%2\""
 msgid_plural "%1 results for \"%2\""
 msgstr[0] "1 resultado para \"%2\""
 msgstr[1] "%1 resultados para \"%2\""
 
-#: covermanager/CoverManager.cpp:686
+#: covermanager/CoverManager.cpp:699
 #, kde-format
 msgid "1 album"
 msgid_plural "%1 albums"
 msgstr[0] "1 álbum"
 msgstr[1] "%1 álbumes"
 
-#: covermanager/CoverManager.cpp:692
+#: covermanager/CoverManager.cpp:705
 msgid " by "
 msgstr " por "
 
-#: covermanager/CoverManager.cpp:697
+#: covermanager/CoverManager.cpp:710
 #, kde-format
 msgid " - ( <b>%1</b> without cover )"
 msgstr " - (<b>%1</b> sin carátula)"
 
-#: covermanager/CoverManager.cpp:743
+#: covermanager/CoverManager.cpp:758
 msgid "Cover Image"
 msgstr "Imagen de la carátula"
 
-#: covermanager/CoverManager.cpp:800
+#: covermanager/CoverManager.cpp:836
 msgid "No Artist"
 msgstr "Sin artista"
 
@@ -10569,11 +10536,6 @@ msgstr "&Encolar pista"
 
 #~ msgid "Bookmark This Location"
 #~ msgstr "Añadir esta ubicación a marcadores"
-
-#, fuzzy
-#~| msgid "Album"
-#~ msgid " Album"
-#~ msgstr "Álbum"
 
 #~ msgid "No purchases found."
 #~ msgstr "No se encontraron compras."

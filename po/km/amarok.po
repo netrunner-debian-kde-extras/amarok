@@ -4,14 +4,15 @@
 #
 # Auk Piseth <piseth_dv@khmeros.info>, 2008, 2009.
 # Khoem Sokhem <khoemsokhem@khmeros.info>, 2008, 2009.
+# Seng Sutha, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-12-10 06:47+0100\n"
-"PO-Revision-Date: 2009-06-23 08:10+0700\n"
-"Last-Translator: Khoem Sokhem <khoemsokhem@khmeros.info>\n"
-"Language-Team: Khmer <support@khmeros.info>\n"
+"POT-Creation-Date: 2010-01-05 06:35+0100\n"
+"PO-Revision-Date: 2009-12-24 17:03+0700\n"
+"Last-Translator: Seng Sutha\n"
+"Language-Team: Khmer <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -35,11 +36,12 @@ msgstr ""
 "\n"
 "\n"
 "\n"
-"X-Generator: KBabel 1.11.4\n"
+"X-Generator: Lokalize 1.0\n"
 
 #: mac/GrowlInterface.cpp:37 context/engines/current/CurrentEngine.cpp:150
-#: context/applets/currenttrack/CurrentTrack.cpp:109
-#: context/applets/photos/PhotosApplet.cpp:132 App.cpp:993 widgets/Osd.cpp:578
+#: context/applets/currenttrack/CurrentTrack.cpp:110
+#: context/applets/photos/PhotosApplet.cpp:132 App.cpp:1009
+#: widgets/Osd.cpp:578
 msgid "No track playing"
 msgstr "មិន​កំពុង​ចាក់​បទ​អ្វី​ទាំងអស់​​​"
 
@@ -147,14 +149,15 @@ msgid "Cannot read playlist (%1)."
 msgstr "មិនអាច​អាន​បញ្ជី​ចាក់ (%1) បានទេ ។"
 
 #: meta/PlaylistFileSupport.cpp:100
+#, fuzzy
 msgid "Could not create a temporary file to download playlist."
-msgstr ""
+msgstr "មិន​គួរ​បង្កើត​ឯកសារ​បណ្តុះអាសន្នដែល​ទាញយក​ពីបញ្ជីចាក់ ។"
 
 #: meta/PlaylistFileSupport.cpp:113
 #, fuzzy
 #| msgid "Downloading Playlist"
 msgid "Downloading remote playlist"
-msgstr "ទាញយក​បញ្ជីចាក់"
+msgstr "ការ​ទាញ​យ​បញ្ជីចាក់​ពី​ចម្ងាយ"
 
 #: meta/PlaylistFileSupport.cpp:196
 #, kde-format
@@ -162,9 +165,9 @@ msgid "Playlist_%1"
 msgstr "បញ្ជីចាក់ %1"
 
 #: collection/daap/DaapCollection.cpp:83
-#, kde-format
+#, fuzzy, kde-format
 msgid "Loading remote collection from host %1"
-msgstr ""
+msgstr "ការផ្ទុកសម្រាំង​ឆ្ងាយពី​ម៉ាស៊ីន​​ការ​ជ្រើស​រើស %1"
 
 #: collection/daap/DaapCollection.cpp:258
 #, kde-format
@@ -180,13 +183,13 @@ msgstr "សម្រាំង​មូលដ្ឋាន"
 #, fuzzy
 #| msgid "Initial"
 msgid "iPod was not initialized:"
-msgstr "ដំបូង"
+msgstr "មិន​បាន​ចាប់​ផ្តើម​ iPod ៖"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:134
 #, fuzzy
 #| msgid "Initial"
 msgid "iPod Initialization Failed"
-msgstr "ដំបូង"
+msgstr "បានបរា​ជ័យ​ការ​ចាប់​ផ្តើម​ iPod "
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:158
 #, kde-format
@@ -194,109 +197,116 @@ msgid ""
 "Media Device: could not find iTunesDB on device mounted at %1. Attempt to "
 "initialize your iPod?"
 msgstr ""
+"Media Device: could not find iTunesDB on device mounted at %1. Attempt to "
+"initialize your iPod?"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:160
 #, fuzzy
 #| msgid "Initial"
 msgid "Initialize iPod?"
-msgstr "ដំបូង"
+msgstr "ចាប់​ផ្តើម​ iPod ?"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:161
 #, fuzzy
 #| msgid "Initial"
 msgid "&Initialize"
-msgstr "ដំបូង"
+msgstr "ចាប់​ផ្តើម"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:202
 msgid "Set iPod Model"
-msgstr ""
+msgstr "កំណត់ iPod Model"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:202
 #, fuzzy
 #| msgid "Audio Mode"
 msgid "iPod Models"
-msgstr "របៀប​អូឌីយ៉ូ"
+msgstr "ម៉ូដែល iPod "
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:206
-#, kde-format
+#, fuzzy, kde-format
 msgid "%1 the iPod Model is necessary to initialize the iPod"
-msgstr ""
+msgstr "%1 ម៉ូលដែល iPod គឺ​សំខាន់ដើម្បី​ចាប់​ផ្តើម​ iPod"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:232
 #, kde-format
 msgid ""
 "%1 failed to write to iPod, make sure you have write permissions on the iPod"
-msgstr ""
+msgstr "%1បរាជ័យដើម្បី​សរសេរ iPod ប្រាកដ ​អ្នកបានសរសេរ​សិទ្ធិលើ iPod"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:248
-#, kde-format
+#, fuzzy, kde-format
 msgid ""
 "%1 failed to write SysInfo file to iPod, make sure you have write "
 "permissions on the iPod"
-msgstr ""
+msgstr "%1​ បាន​បរាជ័យដើម្បី​សរសេរឯកសារ​ SysInfoទៅ iPod ប្រាកដថា អ្នកបាន​សរសេរ​សិទ្ឋិលើ iPod"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:272
-#, kde-format
+#, fuzzy, kde-format
 msgid "%1 failed to initialize the iPod"
-msgstr ""
+msgstr "%1 បរាជ័យ​ដើម្បី​ចាប់ផ្តើម​ iPod"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:280
 #, fuzzy
 #| msgid "Successfully installed %1"
 msgid "The iPod was successfully initialized."
-msgstr "បាន​ដំឡើង %1 ដោយ​ជោគជ័យ"
+msgstr "បាន​ចាប់ផ្តើម​​ ipod ដោយ​ជោគជ័យ"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:280
 #, fuzzy
 #| msgid "Initial"
 msgid "iPod Initialized"
-msgstr "ដំបូង"
+msgstr "ចាប់​ផ្តើម​ iPod "
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:288
-#, kde-format
+#, fuzzy, kde-format
 msgid ""
 "%1 you chose not to initialize the iPod. It will not be usable until it is "
 "initialized."
-msgstr ""
+msgstr "%1អ្នក​មិន​បាន​សម្រេច​ដើម្បី​ចាប់ផ្តើម iPod ។វានឹង​មិន​អាច​ប្រើ​បាន ​រហូត​ដល់វា​បាន​ចាប់​ផ្តើម​ ។ "
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:355
 msgid "&Stale and Orphaned"
-msgstr ""
+msgstr "&Stale and Orphaned"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:365
 #: collection/ipodcollection/handler/IpodHandler.cpp:519
+#, fuzzy
 msgid "Synchronize Artwork"
-msgstr ""
+msgstr "  ធ្វើ​សមកាលកម្ម ការងារ​សិល្បៈ"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:381
+#, fuzzy
 msgid ""
 "Do you really want to initialize this iPod? Its database will be cleared of "
 "all information, but the files will not be deleted."
 msgstr ""
+"តើ​អ្នកចង់​ប្រាកដ​ទេ​ ដើម្បី​ចាប់​ផ្តើម​ iPod នេះ ?មូល​ដ្ឋាន​ទិន្នន័យ​វា​នឹង​បាន​សម្អាត់នៃ​ព័ត៌មាន​ទាំង​អស់ ប៉ុន្តែ​"
+"ឯកសារ​នឹង​មិន​ត្រូវ​បាន​លុប ។ "
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:385
 #, fuzzy
 #| msgid "Initial"
 msgid "Initialize iPod"
-msgstr "ដំបូង"
+msgstr "ចាប់​ផ្តើម​ iPod"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:391
 #, fuzzy
 #| msgid "Initial"
 msgid "The iPod has been initialized"
-msgstr "ដំបូង"
+msgstr " iPod បាន​ចាប់​ផ្តើម​"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:393
 #, fuzzy
 #| msgid "Initial"
 msgid "The iPod was unable to be initialized"
-msgstr "ដំបូង"
+msgstr " iPod មិន​​អាច​ចាប់​ផ្តើម​"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:402
+#, fuzzy
 msgid ""
 "Amarok is about to search for stale tracks. This may take a while, do you "
 "want to continue?"
-msgstr ""
+msgstr "Amarok គឺស្រាវជ្រាវ​អំពី​ការ​តាម​ដាន​ចាស់ៗ​តើ​អ្នក​ចង់​បន្ត នូវអំឡុងពេលនេះ ? "
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:406
 #, fuzzy
@@ -309,17 +319,17 @@ msgstr "បទ​សំណព្វ"
 msgctxt "@info"
 msgid "One stale track removed from the database. Scan for orphaned tracks?"
 msgid_plural "%1 tracks removed from the database. Scan for orphaned tracks?"
-msgstr[0] ""
+msgstr[0] "%1 tracks removed from the database. Scan for orphaned tracks?"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:486
 msgid "Find Orphaned Tracks"
-msgstr ""
+msgstr "Find Orphaned Tracks"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:517
 #, kde-format
 msgid ""
 "Amarok is about to synchronize artwork on <i>%1</i>. Do you want to continue?"
-msgstr ""
+msgstr "Amarok គឺអំពីធ្វើ​សម​កាល​កម្ម​ការ​ងារ​សិល្បៈ  <i>%1</i> ។តើ​អ្នក​ចង់​បន្ត ?"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:528
 #, fuzzy
@@ -334,10 +344,13 @@ msgid "Artwork synchronized"
 msgstr "មិនអាច​ញែក​ទិន្នន័យ​អត្ថបទ​ចម្រៀង​បាន​ទេ"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:820
+#, fuzzy
 msgid ""
 "Amarok requires sudo access to get the FirewireGuid required to connect to "
 "your device. Please enter your sudo password"
 msgstr ""
+"Amarok ដំណើរការតម្រូវ​ការ​របស់ sudo ដើម្បី​ទទួល FirewireGuid តម្រូវការ​ដើម្បី​តភ្ជាប់ឧបករណ៍​របស់​"
+"អ្នក ។សូម​បញ្ចូល​ពាក្យ​សម្ងាត់របស់ sudo "
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:2086
 #, fuzzy
@@ -352,15 +365,16 @@ msgid "Stale Tracks"
 msgstr "បទ​ដែល​បាន​ជ្រើស"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:2139
+#, fuzzy
 msgid "Adding Orphaned Tracks to iPod Database"
-msgstr ""
+msgstr "ការ​បន្ថែម​ Orphaned តាម​ដាន​ទៅ​មូល​ដ្ឋាន​ទិន្នន័យ iPod "
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:2177
-#, kde-format
+#, fuzzy, kde-format
 msgctxt "@info"
 msgid "One orphaned track added to the database."
 msgid_plural "%1 tracks added to the database."
-msgstr[0] ""
+msgstr[0] "%1 បាន​បន្ថែម​ការ​តាម​ដាន​ទៅមូល​ដាន​ទិន្នន័យ ។"
 
 #: collection/ipodcollection/handler/IpodHandler.cpp:2182
 #, fuzzy
@@ -406,74 +420,78 @@ msgstr "ឧបករណ៍​ផ្ទុក"
 msgid "Proxy Collection"
 msgstr "សម្រាំង"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:154
+#: collection/mtpcollection/handler/MtpHandler.cpp:151
 msgid "Could not connect to MTP Device"
 msgstr "មិន​អាច​តភ្ជាប់​ទៅ​ឧបករណ៍ MTP បានទេ"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:375
+#: collection/mtpcollection/handler/MtpHandler.cpp:374
 msgid "Could not copy track from device."
 msgstr "មិន​អាច​ចម្លង​បទ​ពី​ឧបករណ៍​បានទេ ។"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:418
+#: collection/mtpcollection/handler/MtpHandler.cpp:417
 msgid "Unknown Artist"
 msgstr "មិន​ស្គាល់​សិល្បករ"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:428
+#: collection/mtpcollection/handler/MtpHandler.cpp:427
 msgid "Unknown Album"
 msgstr "មិន​ស្គាល់​អាល់ប៊ុម"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:434
+#: collection/mtpcollection/handler/MtpHandler.cpp:433
 msgid "Unknown Genre"
 msgstr "មិន​ស្គាល់​ចង្វាក់"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:590
-#: collection/mtpcollection/handler/MtpHandler.cpp:741
-#: collection/mtpcollection/handler/MtpHandler.cpp:922
+#: collection/mtpcollection/handler/MtpHandler.cpp:589
+#: collection/mtpcollection/handler/MtpHandler.cpp:740
+#: collection/mtpcollection/handler/MtpHandler.cpp:923
 msgid "Could not delete item"
 msgstr "មិន​អាច​លុប​ធាតុ​បានទេ"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:601
+#: collection/mtpcollection/handler/MtpHandler.cpp:600
 msgid "Delete failed"
 msgstr "ការ​លុប​បាន​បរាជ័យ"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:895
+#: collection/mtpcollection/handler/MtpHandler.cpp:896
 #, fuzzy
 #| msgid "Could not process payment"
 msgid "Could not save playlist."
 msgstr "មិន​អាច​ដំណើរការ​ចំណាយ​បាន​ទេ"
 
 #: collection/mediadevicecollection/handler/MediaDeviceHandler.cpp:301
+#, fuzzy
 msgid "Copying Tracks Failed"
-msgstr ""
+msgstr "រក្សាសិទ្ធិបានបរាជ័យតាម​ដាន"
 
 #: collection/mediadevicecollection/handler/MediaDeviceHandler.cpp:305
+#, fuzzy
 msgid "Tracks not copied: the device is already being copied to"
-msgstr ""
+msgstr "តាម​ដាន​មិន​បាន​រក្សា​សិទ្ធិ​៖ ឧបករណ៍​បាន​​រក្សា​សិទ្ធិ​ហើយ "
 
 #: collection/mediadevicecollection/handler/MediaDeviceHandler.cpp:341
-#, kde-format
+#, fuzzy, kde-format
 msgid "Unsupported format: %1"
-msgstr ""
+msgstr "ទ្រង់​ទ្រាយ​មិន​បាន​គាំ​ទ្រ ៖ %1"
 
 #: collection/mediadevicecollection/handler/MediaDeviceHandler.cpp:388
 #, fuzzy
 #| msgid "Track already on media device: %1"
 msgid "Already on device"
-msgstr "បទ​ដែល​មាន​រួច​លើ​ឧបករណ៍​​ផ្ទុក ៖ %1"
+msgstr "​​មាន​រួច​លើ​ឧបករណ៍​​ផ្ទុក ៖ %1"
 
 #: collection/mediadevicecollection/handler/MediaDeviceHandler.cpp:404
+#, fuzzy
 msgid "Tracks not copied: the device already has these tracks"
-msgstr ""
+msgstr "ការតាម​ដានមិន​បាន​ចម្លង​​៖ ឧបករណ៍តាម​ដាន​ទាំង​នេះរួច​ហើយ "
 
 #: collection/mediadevicecollection/handler/MediaDeviceHandler.cpp:425
+#, fuzzy
 msgid "Tracks not copied: the device has insufficient space"
-msgstr ""
+msgstr "តាម​ដាន​មិន​បាន​ចម្លង​៖ ឧបករណ៍មានទំហំ​​មិន​គ្រប់គ្រាន់"
 
 #: collection/mediadevicecollection/handler/MediaDeviceHandler.cpp:434
 #, fuzzy
 #| msgid "Transferring Tracks to MTP Device"
 msgid "Transferring Tracks to Device"
-msgstr "ការ​ទ្វេរ​បទ​ទៅ​ឧបករណ៍ MTP"
+msgstr "ការ​ផ្ទេរ​ឧបករ​ណ៍​តាម​ដាន"
 
 #: collection/mediadevicecollection/handler/MediaDeviceHandler.cpp:554
 #, fuzzy, kde-format
@@ -481,28 +499,28 @@ msgstr "ការ​ទ្វេរ​បទ​ទៅ​ឧបករណ៍ MTP"
 #| msgid_plural "%1 tracks already on media device"
 msgid "%1 track failed to copy to the device"
 msgid_plural "%1 tracks failed to copy to the device"
-msgstr[0] "មាន %1 បទ​នៅ​លើ​ឧបករណ៍​ផ្ទុក​រួចហើយ"
+msgstr[0] " %1 បរាជ័យតាម​ដាន​ដើម្បីផ្ទេរឧបករណ៍​"
 
 #: collection/mediadevicecollection/handler/MediaDeviceHandler.cpp:579
 #, fuzzy
 #| msgid "One track already on media device"
 #| msgid_plural "%1 tracks already on media device"
 msgid "The track failed to copy to the device"
-msgstr "មាន %1 បទ​នៅ​លើ​ឧបករណ៍​ផ្ទុក​រួចហើយ"
+msgstr " %1 បរាជ័យតាមដាន​ដើម្បី​ផ្ទេរ​ឧបករណ៍"
 
 #: collection/mediadevicecollection/handler/MediaDeviceHandler.cpp:589
 #, fuzzy
 #| msgid "Tracks Removed"
 msgid "Track not deleted:"
 msgid_plural "Tracks not deleted:"
-msgstr[0] "បាន​យកបទ​ចេញ"
+msgstr[0] "តាម​ដាន​មិន​បាន​លុប​"
 
 #: collection/mediadevicecollection/handler/MediaDeviceHandler.cpp:590
 #, fuzzy
 #| msgid "Deleting Tracks from MTP"
 msgid "Deleting Track Failed"
 msgid_plural "Deleting Tracks Failed"
-msgstr[0] "លុប​បទ​ពី MTP"
+msgstr[0] "បរា​ជ័យតាម​ដាន​ការ​លុប"
 
 #: collection/mediadevicecollection/handler/MediaDeviceHandler.cpp:594
 #, fuzzy, kde-format
@@ -534,13 +552,13 @@ msgstr "បញ្ចូល​ឈ្មោះ​សម្រាប់​បញ្
 #, fuzzy
 #| msgid "Media Devices"
 msgid "Media Device playlists"
-msgstr "ឧបករណ៍​ផ្ទុក"
+msgstr "ឧបករណ៍​បញ្ជីចាក់​មេឌៀ "
 
 #: collection/mediadevicecollection/MediaDeviceCollection.cpp:279
 #, fuzzy
 #| msgid "&Disconnect the MTP Device"
 msgid "&Disconnect Device"
-msgstr "ផ្ដាច់​ឧបករណ៍ MTP"
+msgstr "ឧបករណ៍​មិន​តភ្ជាប់"
 
 #: collection/nepomukcollection/NepomukCollection.cpp:129
 msgid "Nepomuk Collection"
@@ -554,22 +572,25 @@ msgstr "សម្រាំង​របស់ Nepomuk (យឺត Redland)"
 #, fuzzy
 #| msgid "&Export Playlist As..."
 msgid "Imported Playlist Files"
-msgstr "នាំចេញ​បញ្ជី​ចាក់​ជា..."
+msgstr "ឯកសារ​បញ្ចីចាក់​បាន​នាំ​ចូល"
 
 #: collection/sqlcollection/ScanResultProcessor.cpp:145
+#, fuzzy
 msgctxt "front"
 msgid "Front cover of an album"
-msgstr ""
+msgstr "​គម្រប​មុខ​របស់​របស់ album"
 
 #: collection/sqlcollection/ScanResultProcessor.cpp:157
+#, fuzzy
 msgctxt "cover"
 msgid "(Front) Cover of an album"
-msgstr ""
+msgstr "គម្រប​​(មុខ)​របស់ album"
 
 #: collection/sqlcollection/ScanResultProcessor.cpp:169
+#, fuzzy
 msgctxt "large"
 msgid "(Large front) Cover of an album"
-msgstr ""
+msgstr "គម្រប​​(មុខធំ)​​របស់ album"
 
 #. i18n: file: dialogs/OrganizeCollectionDialogBase.ui:20
 #. i18n: ectx: property (windowTitle), widget (QWidget, OrganizeCollectionDialogBase)
@@ -607,7 +628,7 @@ msgstr "កំពុង​ស្កេន​តន្ត្រី"
 #: collection/sqlcollection/ScanManager.cpp:718
 #: dialogs/OrganizeCollectionDialog.cpp:144
 #: browsers/CollectionTreeItem.cpp:201 covermanager/CoverViewDialog.h:45
-#: covermanager/CoverManager.cpp:780
+#: covermanager/CoverManager.cpp:816
 msgid "Various Artists"
 msgstr "សិល្បករ​ផ្សេងៗ"
 
@@ -619,7 +640,7 @@ msgstr "ស្ទ្រីម"
 
 #: collection/sqlcollection/SqlMeta.cpp:407
 #: services/lastfm/meta/LastFmMeta.cpp:137 covermanager/CoverViewDialog.h:44
-#: covermanager/CoverManager.cpp:780
+#: covermanager/CoverManager.cpp:816
 #, kde-format
 msgid "%1 - %2"
 msgstr "%1 - %2"
@@ -640,7 +661,7 @@ msgstr "ច្រានចេញ"
 #: collection/audiocd/AudioCdCollection.cpp:413
 #: collection/audiocd/AudioCdCollection.cpp:414
 #: collection/audiocd/AudioCdCollection.cpp:415
-#: context/applets/albums/AlbumItem.cpp:73 MainWindow.cpp:1148
+#: context/applets/albums/AlbumItem.cpp:73 MainWindow.cpp:1158
 #: amarokurls/BookmarkTreeView.cpp:319 amarokurls/BookmarkTreeView.cpp:320
 #: amarokurls/BookmarkTreeView.cpp:321
 msgid "Unknown"
@@ -891,7 +912,7 @@ msgstr "រក​មិនឃើញ​ព័ត៌មាន..."
 msgid "Unable to retrieve Wikipedia information: %1"
 msgstr "មិនអាច​ទៅ​យក​ព័ត៌មាន Wikipedia ៖ %1"
 
-#: context/engines/wikipedia/WikipediaEngine.cpp:392
+#: context/engines/wikipedia/WikipediaEngine.cpp:396
 msgid "Wikipedia Other Languages: <br/>"
 msgstr "វីគីភីឌៀ​ជា​​​ភាសា​ផ្សេង ៖ <br/>"
 
@@ -996,7 +1017,7 @@ msgstr "គ្មាន​ឈ្មោះអាប់ភ្លេត​ទេ"
 msgid "Lyrics data could not be parsed"
 msgstr "មិនអាច​ញែក​ទិន្នន័យ​អត្ថបទ​ចម្រៀង​បាន​ទេ"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:103
+#: context/applets/videoclip/VideoclipApplet.cpp:107
 #: context/applets/lyrics/LyricsApplet.cpp:130
 #: context/applets/photos/PhotosApplet.cpp:78
 #: context/applets/wikipedia/WikipediaApplet.cpp:141
@@ -1005,42 +1026,42 @@ msgstr "មិនអាច​ញែក​ទិន្នន័យ​អត្ថ
 msgid "Settings"
 msgstr "ការ​កំណត់"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:114
-#: context/applets/videoclip/VideoclipApplet.cpp:347
-#: context/applets/videoclip/VideoclipApplet.cpp:368
+#: context/applets/videoclip/VideoclipApplet.cpp:118
+#: context/applets/videoclip/VideoclipApplet.cpp:357
+#: context/applets/videoclip/VideoclipApplet.cpp:378
 msgid "Video Clip"
 msgstr "ឈុត​វីដេអូ"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:358
+#: context/applets/videoclip/VideoclipApplet.cpp:368
 #, fuzzy
 #| msgid "Video Clip"
 msgid "Video Clip "
 msgstr "ឈុត​វីដេអូ"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:358
+#: context/applets/videoclip/VideoclipApplet.cpp:368
 #, fuzzy
 #| msgid "No information found..."
 msgid " No information found..."
 msgstr "រក​មិនឃើញ​ព័ត៌មាន..."
 
-#: context/applets/videoclip/VideoclipApplet.cpp:541
+#: context/applets/videoclip/VideoclipApplet.cpp:551
 #, fuzzy
 #| msgid "Video Clip"
 msgid "Video Clip Settings"
 msgstr "ឈុត​វីដេអូ"
 
-#: context/applets/videoclip/VideoItemButton.cpp:98
+#: context/applets/videoclip/VideoItemButton.cpp:96
 #, fuzzy
 #| msgid "&Append to playlist"
 msgid "&Add to playlist"
 msgstr "បន្ថែម​ទៅ​ខាង​ចុង​បញ្ជីចាក់"
 
-#: context/applets/videoclip/VideoItemButton.cpp:99
+#: context/applets/videoclip/VideoItemButton.cpp:97
 #: context/applets/albums/AlbumsView.cpp:114
 msgid "&Queue"
 msgstr "រៀប​បទ​ជា​ជួរ"
 
-#: context/applets/videoclip/VideoItemButton.cpp:100
+#: context/applets/videoclip/VideoItemButton.cpp:98
 msgid "Append and &Play"
 msgstr "បន្ថែម​ខាង​ចុង ហើយ​ចាក់"
 
@@ -1071,8 +1092,9 @@ msgid "Reload Songkick"
 msgstr "ផ្ទុក​អត្ថបទ​ចម្រៀង"
 
 #: context/applets/songkick/SongkickApplet.cpp:151
+#, fuzzy
 msgid "Concert information is being fetched."
-msgstr ""
+msgstr "ព័ត៌មាន​អំពី​តន្ត្រី​គឺបាន​យក ។"
 
 #: context/applets/songkick/SongkickApplet.cpp:156
 #, fuzzy, kde-format
@@ -1090,25 +1112,25 @@ msgstr "មិនអាច​ទាញយក​អត្ថបទ​ចម្រ
 msgid "There was no information found for this track"
 msgstr "រក​មិនឃើញ​អត្ថបទ​ចម្រៀង​សម្រាប់​បទ​នេះ"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:82
+#: context/applets/currenttrack/CurrentTrack.cpp:83
 msgctxt "What artist is this track by"
 msgid "By"
 msgstr "ដោយ"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:83
+#: context/applets/currenttrack/CurrentTrack.cpp:84
 msgctxt "What album is this track on"
 msgid "On"
 msgstr "បើក"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:115
-#: context/applets/currenttrack/CurrentTrack.cpp:542
+#: context/applets/currenttrack/CurrentTrack.cpp:116
+#: context/applets/currenttrack/CurrentTrack.cpp:557
 msgid "Play count"
 msgstr "ចំនួន​ចាក់"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:120
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
-#: context/applets/currenttrack/CurrentTrack.cpp:116
-#: context/applets/currenttrack/CurrentTrack.cpp:543
+#: context/applets/currenttrack/CurrentTrack.cpp:117
+#: context/applets/currenttrack/CurrentTrack.cpp:558
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:256
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:695 rc.cpp:1249
 #: playlist/PlaylistModel.cpp:715 widgets/SmartPlaylistEditor.cpp:185
@@ -1116,18 +1138,18 @@ msgstr "ចំនួន​ចាក់"
 msgid "Score"
 msgstr "ពិន្ទុ"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:117
-#: context/applets/currenttrack/CurrentTrack.cpp:544
+#: context/applets/currenttrack/CurrentTrack.cpp:118
+#: context/applets/currenttrack/CurrentTrack.cpp:559
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:261
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:700 TrayIcon.cpp:189
 msgid "Last Played"
 msgstr "ចាក់​ចុងក្រោយ"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:122
+#: context/applets/currenttrack/CurrentTrack.cpp:123
 msgid "Last played"
 msgstr "បាន​ចាក់​ចុងក្រោយ"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:123
+#: context/applets/currenttrack/CurrentTrack.cpp:124
 msgid "Favorite tracks"
 msgstr "បទ​សំណព្វ"
 
@@ -1229,11 +1251,13 @@ msgid "There were no lyrics found for this track"
 msgstr "រក​មិនឃើញ​អត្ថបទ​ចម្រៀង​សម្រាប់​បទ​នេះ"
 
 #: context/applets/lyrics/LyricsApplet.cpp:422
+#, fuzzy
 msgctxt "@info"
 msgid ""
 "Do you really want to refetch lyrics for this track ? All changes you may "
 "have made will be lost."
 msgstr ""
+"តើ​អ្នក​ពិត​ជា​ចង់​យក refetch lyrics សម្រាប់​តាម​ដាន ? រាល់​ការ​ផ្លាស់​ប្តូរ​អ្នក​និង​អាច​បាត់​បង់ ។"
 
 #: context/applets/lyrics/LyricsApplet.cpp:423
 #, fuzzy
@@ -1265,7 +1289,7 @@ msgstr "ទៅ​កាន់"
 #. i18n: file: context/applets/wikipedia/wikipediaSettings.ui:24
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
 #: context/applets/photos/PhotosApplet.cpp:92
-#: context/applets/wikipedia/WikipediaApplet.cpp:401 rc.cpp:569 rc.cpp:592
+#: context/applets/wikipedia/WikipediaApplet.cpp:406 rc.cpp:569 rc.cpp:592
 msgid "Automatic"
 msgstr "ដោយ​ស្វ័យ​ប្រវត្តិ"
 
@@ -1317,7 +1341,7 @@ msgstr "ស្វែងរក​ទៅ​មុខ"
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: context/applets/wikipedia/WikipediaApplet.cpp:120
 #: dialogs/FilenameLayoutDialog.cpp:170 dialogs/FilenameLayoutDialog.cpp:497
-#: dialogs/transferdialog.cpp:88 browsers/CollectionTreeItemModelBase.cpp:922
+#: dialogs/transferdialog.cpp:88 browsers/CollectionTreeItemModelBase.cpp:928
 #: browsers/collectionbrowser/CollectionWidget.cpp:122
 #: browsers/collectionbrowser/CollectionWidget.cpp:151
 #: browsers/collectionbrowser/CollectionWidget.cpp:183
@@ -1334,7 +1358,7 @@ msgstr "សិល្បករ"
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: context/applets/wikipedia/WikipediaApplet.cpp:127
 #: dialogs/FilenameLayoutDialog.cpp:182 dialogs/FilenameLayoutDialog.cpp:518
-#: dialogs/transferdialog.cpp:89 browsers/CollectionTreeItemModelBase.cpp:921
+#: dialogs/transferdialog.cpp:89 browsers/CollectionTreeItemModelBase.cpp:927
 #: browsers/collectionbrowser/CollectionWidget.cpp:125
 #: browsers/collectionbrowser/CollectionWidget.cpp:154
 #: browsers/collectionbrowser/CollectionWidget.cpp:186
@@ -1361,23 +1385,23 @@ msgstr "ផ្ទុក​ឡើងវិញ"
 
 #. i18n: file: context/applets/wikipedia/wikipediaSettings.ui:29
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
-#: context/applets/wikipedia/WikipediaApplet.cpp:404 rc.cpp:595
+#: context/applets/wikipedia/WikipediaApplet.cpp:409 rc.cpp:595
 msgid "English"
 msgstr "អង់គ្លេស"
 
 #. i18n: file: context/applets/wikipedia/wikipediaSettings.ui:34
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
-#: context/applets/wikipedia/WikipediaApplet.cpp:407 rc.cpp:598
+#: context/applets/wikipedia/WikipediaApplet.cpp:412 rc.cpp:598
 msgid "French"
 msgstr "បារាំង"
 
 #. i18n: file: context/applets/wikipedia/wikipediaSettings.ui:39
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
-#: context/applets/wikipedia/WikipediaApplet.cpp:410 rc.cpp:601
+#: context/applets/wikipedia/WikipediaApplet.cpp:415 rc.cpp:601
 msgid "German"
 msgstr "អាល្លឺម៉ង់"
 
-#: context/applets/wikipedia/WikipediaApplet.cpp:437
+#: context/applets/wikipedia/WikipediaApplet.cpp:442
 msgid "Wikipedia Settings"
 msgstr "ការ​កំណត់​វិគីផេឌៀ"
 
@@ -1420,7 +1444,7 @@ msgid ""
 msgstr "សូម​បន្ថែម​អាប់ភ្លេត​មួយ​ចំនួន​ពី​របារ​ឧបករណ៍​នៅ​ខាងក្រោម​ទិដ្ឋភាព​បរិបទ ។"
 
 #: context/widgets/ToolBoxMenu.cpp:107
-#: context/widgets/appletexplorer/AppletExplorer.cpp:88
+#: context/widgets/appletexplorer/AppletExplorer.cpp:90
 msgid "Hide menu"
 msgstr "លាក់​ម៉ឺនុយ"
 
@@ -1493,8 +1517,9 @@ msgid "&Equalizer"
 msgstr "អេហ្គុយ"
 
 #: ActionClasses.cpp:363
+#, fuzzy
 msgid "Your current setup does not support the equalizer feature"
-msgstr ""
+msgstr "ការ​រៀបចំ​របស់​អ្នក​ពេល​បច្ចប្បន្ន​មិន​​គាំទ្រលើ​លក្ខណៈ​ពិសេស​របស់​អេហ្គុយ"
 
 #: ActionClasses.cpp:368
 #, fuzzy
@@ -1587,8 +1612,9 @@ msgid "Sound System - Amarok"
 msgstr "ប្រព័ន្ធ​សំឡេង - Amarok"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:94
+#, fuzzy
 msgid "Equalizer not supported by Phonon"
-msgstr ""
+msgstr "អេហ្គុយ​មិន​បាន​គាំទ្រ​ដោយ​ Phonon"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:161
 #: configdialog/dialogs/PlaybackConfig.cpp:251
@@ -1607,8 +1633,9 @@ msgid "Cannot delete this preset"
 msgstr "លុប​កា​រកំណត់​ជាមុន ។"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:260
+#, fuzzy
 msgid "Default presets can not be deleted"
-msgstr ""
+msgstr "ការកំណត់​លំនាំដើម​មិន​អាច​លុប"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:261
 #, fuzzy
@@ -1623,8 +1650,9 @@ msgid "Cannot restore this preset"
 msgstr "លុប​កា​រកំណត់​ជាមុន ។"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:272
+#, fuzzy
 msgid "Only default presets can be restored"
-msgstr ""
+msgstr "ការ​កំណត់​លំនាំដើម​តែ​មួយ​អាចធ្វើ​ឲ្យ​ដូច​ដើម​"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:273
 #, fuzzy
@@ -1639,11 +1667,14 @@ msgid "Cannot save this preset"
 msgstr "រក្សាទុក​កា​រកំណត់​ជា​មុន ។"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:291
+#, fuzzy
 msgid ""
 "Preset 'Manual' is reserved for momentary settings.\n"
 "                                               Please choose different name "
 "and try again."
 msgstr ""
+"ការ​កំណត់ស្រេច 'Manual' គឺ​បម្រុង​ការ​កំណត់​ពេល​ដ៏​ខ្លី ។​\n"
+"  សូម​ជ្រើសរើស​ឈ្នោះ​ខុស​គ្នា ហើយ​ព្យាយាម្តង​ទៀត ។"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:293
 #, fuzzy
@@ -1883,8 +1914,9 @@ msgid "&Watch folders for changes"
 msgstr "ឃ្លាំមើល​ការ​ផ្លាស់​ប្ដូរ​ថត"
 
 #: dialogs/CollectionSetup.cpp:73
+#, fuzzy
 msgid "&Enable character set detection in ID3 tags"
-msgstr ""
+msgstr "អនុញ្ញត​ឲ្យសំណុំតួអក្សរ​​រកឃើញ​ក្នុង​ស្លាក ID3 "
 
 #: dialogs/CollectionSetup.cpp:78
 msgid "If selected, Amarok will read all subfolders."
@@ -1899,10 +1931,13 @@ msgstr ""
 "បន្ថែម​ឯកសារ​ថ្មី ។"
 
 #: dialogs/CollectionSetup.cpp:80
+#, fuzzy
 msgid ""
 "If selected, Amarok will use Mozilla's Character Set Detector to attempt to "
 "automatically guess the character sets used in ID3 tags."
 msgstr ""
+"ប្រ​សិន​បើ​បានជ្រើស​​ Amarok នឹង​ប្រើកម្មវិធីស្វែងរកសំណុំ​តួអក្សរ​​​​របស់ ​Mozilla​ ដើម្បីទាយ​​​សំណុំតួរ​អក្សរដោយ​"
+"ស្វ័យប្រ​វត្តិ​​​ ដែល​បាន​ប្រើ​ក្នុង​ស្លាក ID3 ។"
 
 #: dialogs/FilenameLayoutDialog.cpp:117
 msgid "Collection root"
@@ -1920,7 +1955,7 @@ msgstr "ចំណង​ជើង"
 #. i18n: file: dialogs/EditFilterDialog.ui:95
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:174 dialogs/FilenameLayoutDialog.cpp:504
-#: browsers/CollectionTreeItemModelBase.cpp:923
+#: browsers/CollectionTreeItemModelBase.cpp:929
 #: browsers/collectionbrowser/CollectionWidget.cpp:131
 #: browsers/collectionbrowser/CollectionWidget.cpp:160
 #: browsers/collectionbrowser/CollectionWidget.cpp:192
@@ -1933,7 +1968,7 @@ msgstr "កម្មវិធី​តែង"
 #. i18n: file: dialogs/EditFilterDialog.ui:135
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:178 dialogs/FilenameLayoutDialog.cpp:511
-#: browsers/CollectionTreeItemModelBase.cpp:925
+#: browsers/CollectionTreeItemModelBase.cpp:931
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:253
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:692 rc.cpp:1258
 #: playlist/PlaylistModel.cpp:703 widgets/SmartPlaylistEditor.cpp:184
@@ -1950,7 +1985,7 @@ msgstr "សេចក្តី​អធិប្បាយ"
 #. i18n: file: dialogs/EditFilterDialog.ui:100
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:190 dialogs/FilenameLayoutDialog.cpp:532
-#: dialogs/transferdialog.cpp:90 browsers/CollectionTreeItemModelBase.cpp:924
+#: dialogs/transferdialog.cpp:90 browsers/CollectionTreeItemModelBase.cpp:930
 #: browsers/collectionbrowser/CollectionWidget.cpp:128
 #: browsers/collectionbrowser/CollectionWidget.cpp:157
 #: browsers/collectionbrowser/CollectionWidget.cpp:189
@@ -1965,7 +2000,7 @@ msgid "Ignore"
 msgstr "មិនអើពើ"
 
 #: dialogs/FilenameLayoutDialog.cpp:204
-#, no-c-format, kde-format
+#, fuzzy, no-c-format, kde-format
 msgctxt ""
 "Please do not translate the %foo words as they define a syntax used "
 "internally by a parser to describe a filename."
@@ -1979,6 +2014,14 @@ msgid ""
 "color=\"%7\">%comment</font>, <font color=\"%8\">%genre</"
 "font>,                                      %ignore."
 msgstr ""
+"ការ​បំ​ពេញ​ថូខឹង​អាច​ប្រើ​បាន​ដើម្បី​កំនត់ឲ្យ​ច្បាស់​​លាស់គ្រោង​ការណ៍​ឯក​សារ ៖"
+"<br>                                      <font color=\"%1\">%track</font>, "
+"<font color=\"%2\">%title</font>,                                      <font "
+"color=\"%3\">%artist</font>, <font color=\"%4\">%composer</"
+"font>,                                      <font color=\"%5\">%year</font>, "
+"<font color=\"%6\">%album</font>,                                      <font "
+"color=\"%7\">%comment</font>, <font color=\"%8\">%genre</"
+"font>,                                      %ignore."
 
 #: dialogs/FilenameLayoutDialog.cpp:216 dialogs/FilenameLayoutDialog.cpp:554
 msgid "Initial"
@@ -2030,8 +2073,9 @@ msgstr ""
 #: dialogs/FilenameLayoutDialog.cpp:336 dialogs/FilenameLayoutDialog.cpp:341
 #: rc.cpp:1184 rc.cpp:1187 rc.cpp:1190 rc.cpp:1193 rc.cpp:1196 rc.cpp:1199
 #: rc.cpp:1202 rc.cpp:1205
+#, fuzzy
 msgid "<empty>"
-msgstr ""
+msgstr "<សម្អាត>"
 
 #: dialogs/FilenameLayoutDialog.cpp:422
 msgid "&Basic..."
@@ -2129,16 +2173,18 @@ msgid "Discarded <b><font color='gray'>%1</font></b>"
 msgstr "<b><font color='red'>កំហុស ៖</font></b> %1"
 
 #: dialogs/DatabaseImporterDialog.cpp:219
-#, kde-format
+#, fuzzy, kde-format
 msgctxt ""
 "Track has been imported by tags, format: Artist - Track, from Url, to Url"
 msgid ""
 "Imported <b><font color='green'>%1 - %2</font></b><br/>&nbsp;&nbsp;from %"
 "3<br/>&nbsp;&nbsp;to %4"
 msgstr ""
+"ដែល​បាន​នាំចូល <b><font color='green'>%1 - %2</font></b><br/>&nbsp;&nbsp; ពី %"
+"3<br/>&nbsp;&nbsp; ទៅ %4"
 
 #: dialogs/DatabaseImporterDialog.cpp:222
-#, kde-format
+#, fuzzy, kde-format
 msgctxt ""
 "Track has been imported by tags, format: Artist - Track (Album), from Url, "
 "to Url"
@@ -2146,6 +2192,8 @@ msgid ""
 "Imported <b><font color='green'>%1 - %2 (%3)</font></b><br/>&nbsp;&nbsp;from "
 "%4<br/>&nbsp;&nbsp;to %5"
 msgstr ""
+"ដែល​បាននាំចូល​ <b><font color='green'>%1 - %2 (%3)</font></b><br/>&nbsp;&nbsp; ពី%"
+"4<br/>&nbsp;&nbsp; ទៅ %5"
 
 #: dialogs/DatabaseImporterDialog.cpp:234
 #, fuzzy, kde-format
@@ -2306,7 +2354,7 @@ msgstr "ចម្រៀង​ដែលមាន​ពិន្ទុ ៖"
 msgid "Average Score:"
 msgstr "ពិន្ទុ​មធ្យម ៖"
 
-#: dialogs/TagDialog.cpp:1646
+#: dialogs/TagDialog.cpp:1649
 msgid ""
 "Writing to file failed. Please check permissions and available disc space."
 msgstr "បានបរាជ័យ​ក្នុងការ​សរសរ​ទៅកាន់​ឯកសារ ។ សូម​ពិនិត្យ​មើល​សិទ្ធិ និងទំហំ​ថាស​ដែល​អាច​ប្រើបាន ។"
@@ -2441,61 +2489,63 @@ msgstr "ជម្រើស​"
 msgid "Convert spaces to underscores"
 msgstr "បម្លែង​ដកឃ្លា​ទៅ​ជា​សញ្ញាគូសក្រោម"
 
-#: dialogs/ScriptManager.cpp:92 MainWindow.cpp:771
+#: dialogs/ScriptManager.cpp:106 MainWindow.cpp:775
 msgid "Script Manager"
 msgstr "កម្មវិធី​គ្រប់គ្រង​ស្គ្រីប"
 
-#: dialogs/ScriptManager.cpp:292
+#: dialogs/ScriptManager.cpp:306
 msgid ""
 "Script Packages (*.amarokscript.tar, *.amarokscript.tar.bz2, *.amarokscript."
 "tar.gz)"
 msgstr ""
 "កញ្ចប់​ស្គ្រីប (*.amarokscript.tar, *.amarokscript.tar.bz2, *.amarokscript.tar.gz)"
 
-#: dialogs/ScriptManager.cpp:300
+#: dialogs/ScriptManager.cpp:314
 msgid "Could not read this package."
 msgstr "មិន​អាច​អាន​កញ្ចប់​នេះ​បាន​ឡើយ ។"
 
-#: dialogs/ScriptManager.cpp:311
+#: dialogs/ScriptManager.cpp:325
 #, kde-format
 msgid ""
 "A script with the name '%1' is already installed. Please uninstall it first."
 msgstr "បាន​ដំឡើង​ស្គ្រីប '%1' រួច​ហើយ ។ សូម​លុប​វា​ជាមុន​សិន ។"
 
-#: dialogs/ScriptManager.cpp:322 dialogs/ScriptManager.cpp:376
+#: dialogs/ScriptManager.cpp:336 dialogs/ScriptManager.cpp:382
+#: dialogs/ScriptManager.cpp:403
 msgid ""
 "<p>Script successfully installed.</p><p>Please restart Amarok to start the "
 "script.</p>"
 msgstr ""
 "<p>បាន​ដំឡើង​ស្គ្រីប​ដោយ​ជោគជ័យ ។</p><p>សូម​ចាប់ផ្ដើម​ Amarok ឡើង​វិញ​ដើម្បី​ចាប់ផ្ដើម​ស្គ្រីប ។</p>"
 
-#: dialogs/ScriptManager.cpp:328
+#: dialogs/ScriptManager.cpp:342
 msgid ""
 "<p>Script installation failed.</p><p>Please inform the package maintainer "
 "about this error.</p>"
 msgstr "<p>បាន​បរាជ័យ​ក្នុងកា​រដំឡើង​ស្គ្រីប ។</p><p>សូម​ប្រាប់​អ្នក​ថែរក្សា​កញ្ចប់​អំពី​កំហុស​នេះ ។</p>"
 
-#: dialogs/ScriptManager.cpp:379 dialogs/ScriptManager.cpp:410
+#: dialogs/ScriptManager.cpp:385 dialogs/ScriptManager.cpp:406
+#: dialogs/ScriptManager.cpp:438
 msgid ""
 "<p>Script successfully uninstalled.</p><p>Please restart Amarok to totally "
 "remove the script.</p>"
 msgstr ""
 "<p>បានលុប​ស្គ្រីប​ដោយ​ជោគជ័យ ។</p><p>សូម​ចាប់ផ្ដើម​ Amarok ឡើង​វិញ ដើម្បី​យក​ស្គ្រីប​ចេញ​ទាំងស្រុង ។</p>"
 
-#: dialogs/ScriptManager.cpp:392
+#: dialogs/ScriptManager.cpp:420
 #, kde-format
 msgid "Are you sure you want to uninstall the script '%1'?"
 msgstr "តើ​អ្នក​ពិត​ជា​ចង់​លុប​ស្គ្រីប '%1' ឬ ?"
 
-#: dialogs/ScriptManager.cpp:392
+#: dialogs/ScriptManager.cpp:420
 msgid "Uninstall Script"
 msgstr "លុប​ស្គ្រីប"
 
-#: dialogs/ScriptManager.cpp:392
+#: dialogs/ScriptManager.cpp:420
 msgid "Uninstall"
 msgstr "លុប"
 
-#: dialogs/ScriptManager.cpp:401
+#: dialogs/ScriptManager.cpp:429
 msgid ""
 "<p>Could not uninstall this script.</p><p>The ScriptManager can only "
 "uninstall scripts which have been installed as packages.</p>"
@@ -2503,7 +2553,7 @@ msgstr ""
 "<p>មិន​អាច​លុប​ស្គ្រីប​នេះ​បាន​ឡើយ ។</p><p>កម្មវិធី​គ្រប់គ្រង​ស្គ្រីប អាច​លុប​តែ​ស្គ្រីប​ដែល​បាន​ដំឡើង​ជា​កញ្ចប់​"
 "ប៉ុណ្ណោះ ។</p>"
 
-#: dialogs/ScriptManager.cpp:449
+#: dialogs/ScriptManager.cpp:477
 #, kde-format
 msgid ""
 "There are exceptions caught in the script '%1'. Please refer to the console "
@@ -2604,23 +2654,32 @@ msgid "Base for relative filenames/URLs"
 msgstr "គោល​សម្រាប់​ឈ្មោះ​ឯកសារ​/​URL ប្រែប្រួល"
 
 #: App.cpp:484
+#, fuzzy
 msgid ""
 "Run integrated unit tests. Output can be 'log' for logfiles, 'stdout' for "
 "stdout."
 msgstr ""
+"រត់ការ​​ឯកតា​ដែល​បាន​បញ្ចូលសាក​ល្បង ។ កន្លែង​បញ្ចេញ​អាច 'log'  សម្រាប់ ​ឯកសារ​កំណត់ហេតុ 'stdout' "
+"សំម្រាប់ stdout ."
 
 #: App.cpp:736
+#, fuzzy
 msgid ""
 "The embedded database was not found; you must set up a database server "
 "connection.\n"
 "You must restart Amarok after doing this."
 msgstr ""
+"មូលដ្ឋាន​ទិន្នន័យ​ដែល​បាន​បង្កប់​មិន​បាន​ស្វែង​រក​ អ្នក​ត្រូវតែ​រៀប​ចំមូល​ដ្ឋាន​ទិន្នន័យ​តភ្ជាប់ម៉ាស៊ីន​បម្រើ ។ \n"
+"​អ្នក​ត្រូវ​តែ​ចាប់​ផ្តើម​ឡើង​​វិញ​ Amarok ក្រោយ​ពេល​ធ្វើវា ។ "
 
 #: App.cpp:737
+#, fuzzy
 msgid ""
 "The connection details for the database server were invalid.\n"
 "You must enter correct settings and restart Amarok after doing this."
 msgstr ""
+"ការ​តភ្ជាប់​សេចក្តី​រាយការណ៍យ៉ាង​ល្អិត​ល្អន់​សម្រាប់មូល​ដ្ឋាន​ទិន្នន័យ​ម៉ាស៊ីន​បម្រើ​មិន​ត្រឹម​ត្រួវ​ ។ \n"
+"អ្នក​ត្រួវ​តែ​បញ្ចូលការ​កំណត់​ឲ្យ​បាន​ត្រឹម​ត្រូវ ហើយចាប់​ផ្តើម​Amarok​​ឡើង​វិញ ក្រោយ​ពេល​ធ្វើវា ។ "
 
 #: App.cpp:738
 #, fuzzy
@@ -2632,89 +2691,89 @@ msgstr "ឈ្មោះ​មូលដ្ឋាន​ទិន្នន័យ"
 msgid "Moving files to trash"
 msgstr "កំពុង​ផ្លាស់ទី​ឯកសារ​ទៅ​ធុងសំរាម"
 
-#: App.cpp:865
+#: App.cpp:881
 #, fuzzy
 #| msgid "Unknown"
 msgctxt "When this track was last played"
 msgid "Unknown"
 msgstr "មិន​ស្គាល់"
 
-#: App.cpp:870
+#: App.cpp:886
 #, kde-format
 msgctxt "monthname year"
 msgid "%1 %2"
 msgstr "%1 %2"
 
-#: App.cpp:877
+#: App.cpp:893
 #, kde-format
 msgid "One week ago"
 msgid_plural "%1 weeks ago"
 msgstr[0] "%1 ​សប្ដាហ៍​កន្លង​ទៅ"
 
-#: App.cpp:883
+#: App.cpp:899
 msgid "Yesterday"
 msgstr "ម្សិលម៉ិញ"
 
-#: App.cpp:884
+#: App.cpp:900
 #, kde-format
 msgid "One day ago"
 msgid_plural "%1 days ago"
 msgstr[0] "%1 ​ថ្ងៃ​កន្លង​ទៅ"
 
-#: App.cpp:887
+#: App.cpp:903
 #, kde-format
 msgid "One hour ago"
 msgid_plural "%1 hours ago"
 msgstr[0] "%1 ​ម៉ោង​កន្លង​ទៅ"
 
-#: App.cpp:893
+#: App.cpp:909
 #, kde-format
 msgid "One minute ago"
 msgid_plural "%1 minutes ago"
 msgstr[0] "%1 នាទី​កន្លង​ទៅ"
 
-#: App.cpp:894
+#: App.cpp:910
 msgid "Within the last minute"
 msgstr "ក្នុង​នាទី​ចុងក្រោយ"
 
-#: App.cpp:896
+#: App.cpp:912
 msgid "The future"
 msgstr "អនាគត"
 
-#: App.cpp:902
+#: App.cpp:918
 msgctxt "The amount of time since last played"
 msgid "Never"
 msgstr "កុំ"
 
-#: App.cpp:912
+#: App.cpp:928
 msgctxt "The amount of time since last played"
 msgid "0"
 msgstr "០"
 
-#: App.cpp:921
+#: App.cpp:937
 #, kde-format
 msgctxt "number of months ago"
 msgid "%1M"
 msgstr "%1M"
 
-#: App.cpp:925
+#: App.cpp:941
 #, kde-format
 msgctxt "w for weeks"
 msgid "%1w"
 msgstr "%1w"
 
-#: App.cpp:928
+#: App.cpp:944
 msgctxt "When this track was last played"
 msgid "Tomorrow"
 msgstr "ស្អែក"
 
-#: App.cpp:934
+#: App.cpp:950
 #, no-c-format, kde-format
 msgctxt "d for days"
 msgid "%1d"
 msgstr "%1d"
 
-#: App.cpp:937
+#: App.cpp:953
 #, kde-format
 msgctxt "h for hours"
 msgid "%1h"
@@ -2742,34 +2801,34 @@ msgstr "%1h"
 #. i18n: ectx: property (text), widget (QLabel, eqBand8Value)
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:1329
 #. i18n: ectx: property (text), widget (QLabel, eqBand9Value)
-#: App.cpp:946 rc.cpp:737 rc.cpp:743 rc.cpp:749 rc.cpp:755 rc.cpp:761
+#: App.cpp:962 rc.cpp:737 rc.cpp:743 rc.cpp:749 rc.cpp:755 rc.cpp:761
 #: rc.cpp:767 rc.cpp:773 rc.cpp:779 rc.cpp:785 rc.cpp:791 rc.cpp:797
 msgid "0"
 msgstr "០"
 
-#: App.cpp:963
+#: App.cpp:979
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> ច្រៀង​ដោយ <b>%2</b> នៅ <b>%3</b>"
 
-#: App.cpp:966
+#: App.cpp:982
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> ច្រៀង​ដោយ <b>%2</b>"
 
-#: App.cpp:970
+#: App.cpp:986
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> នៅ <b>%2</b>"
 
-#: App.cpp:975
+#: App.cpp:991
 msgid "Unknown track"
 msgstr "មិន​ស្គាល់​បទ"
 
-#: App.cpp:982
+#: App.cpp:998
 #, fuzzy, kde-format
 #| msgid " on <b>%1</b>"
 msgctxt "track from source"
@@ -2777,56 +2836,66 @@ msgid "from <b>%1</b>"
 msgstr " ដោយ <b>%1</b>"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:73
+#, fuzzy
 msgid ""
 "<qt>No information available.<br />The supplied KAboutData object does not "
 "exist.</qt>"
 msgstr ""
+"<qt>មិន​មាន​ព័ត៌មានដែល​អាច​រក​បាន​ ។ <br /> ដែលផ្គត់ផ្គង់ KAboutData គម្រោង​គឺមិន​បាន​ចេញ ។ </"
+"qt>"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:82
+#, fuzzy
 msgid ""
 "<qt>No information available.<br />The supplied OcsData object does not "
 "exist.</qt>"
 msgstr ""
+"<qt>មិន​មាន​ព័ត៌មាន​ដែល​អាច​រក​បាន​ ។ <br /> ដែល​ផ្គត់​ផ្គង់ OcsData គម្រោង​គឺមិន​ចេញ ។ </qt>"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:91
 #, fuzzy, kde-format
 #| msgid "Album \"%1\""
 msgid "About %1"
-msgstr "អាល់ប៊ុម \"%1\""
+msgstr "អំពី %1"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:112
-#, kde-format
+#, fuzzy, kde-format
 msgid ""
 "<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE %3</"
 "html>"
 msgstr ""
+"<html><font size=\"5\">%1</font><br /><b កំណែ %2</b><br /> ប្រើ KDE %3</html>"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:152
-#, kde-format
+#, fuzzy, kde-format
 msgid "License: %1"
-msgstr ""
+msgstr "អាជ្ញាបណ្ណ៖ %1"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:166
 #, fuzzy
 #| msgid "Abort"
 msgid "&About"
-msgstr "បោះបង់"
+msgstr "អំ​ពី"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:183
+#, fuzzy
 msgid "Get data from openDesktop.org to learn more about the team"
-msgstr ""
+msgstr "យកទិន្នន័យ openDesktop.org ដើម្បី​សិក្សា​បន្ថែម​អំពីក្រុម"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:195
+#, fuzzy
 msgid ""
 "Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to report "
 "bugs.\n"
 msgstr ""
+"សូមប្រើ <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> ដើម្បី​រាយ​"
+"ការណ៍កំហុស ។ \n"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:200
 #: aboutdialog/ExtendedAboutDialog.cpp:206
 #, kde-format
 msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
-msgstr ""
+msgstr "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:225
 #, fuzzy
@@ -2841,131 +2910,151 @@ msgid "A&uthors"
 msgstr "អ្នក​និពន្ធ"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:239
+#, fuzzy
 msgid "Get data from openDesktop.org to learn more about contributors"
-msgstr ""
+msgstr "យក​ទិន្នន័យ​ពី​ openDesktop.org ដើម្បី​រៀន​បន្ថែម​អំពី​អ្នក​ចូល​រួម"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:253
+#, fuzzy
 msgid "&Thanks To"
-msgstr ""
+msgstr "អគុណ​ទៅ"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:282
 #, fuzzy
 #| msgid "&Duration:"
 msgid "T&ranslation"
-msgstr "ថិរវេលា ៖"
+msgstr "ការ​បក់​ប្រែ"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:306
+#, fuzzy
 msgid "License Agreement"
-msgstr ""
+msgstr "កិច្ច​ព្រម​ព្រៀង​អាជ្ញា​បណ្ណ"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:339
+#, fuzzy
 msgid "Internet connection not available"
-msgstr ""
+msgstr "ការ​តភ្ជាប់​អ៊ិនធឺណិត​មិន​អនុញ្ញាត"
 
 #: aboutdialog/ExtendedAboutDialog.cpp:339
 #, fuzzy
 #| msgid "Framework Version"
 msgid "Network error"
-msgstr "កំណែ​គ្រោងការណ៍"
+msgstr "កំហុស​បណ្តាញ"
 
 #: aboutdialog/OcsPersonItem.cpp:94
 #, fuzzy
 #| msgid "Former contributors"
 msgid "Email contributor"
-msgstr "អ្នក​ចែកចាយ​ពី​មុន"
+msgstr "អ្នក​ចែក​ចាយ​អ៊ីមែល"
 
 #: aboutdialog/OcsPersonItem.cpp:102 aboutdialog/OcsPersonItem.cpp:267
+#, fuzzy
 msgid "Visit contributor's homepage"
-msgstr ""
+msgstr "ទស្សនា​គេហទំព័រ​របស់​អ្នកចែកចាយ"
 
 #: aboutdialog/OcsPersonItem.cpp:191
+#, fuzzy
 msgid "IRC channels: "
-msgstr ""
+msgstr "ឆានែល IRC៖ "
 
 #: aboutdialog/OcsPersonItem.cpp:205
 #, fuzzy
 #| msgctxt "The quality of music"
 #| msgid "Favorite"
 msgid "Favorite music: "
-msgstr "សំណព្វ"
+msgstr "តន្រីសំណប់"
 
 #: aboutdialog/OcsPersonItem.cpp:210
-#, kde-format
+#, fuzzy, kde-format
 msgid "Visit %1's openDesktop.org profile"
-msgstr ""
+msgstr "ទស្សនា​ទម្រង់របស់ %1 openDesktop.org "
 
 #: aboutdialog/OcsPersonItem.cpp:212
-#, kde-format
+#, fuzzy, kde-format
 msgid "Visit %1's profile on openDesktop.org"
-msgstr ""
+msgstr "ទស្សនាទម្រង់​របស់ %1 នៅលើ openDesktop.org"
 
 #: aboutdialog/OcsPersonItem.cpp:246
 #, fuzzy
 #| msgid "Former contributors"
 msgid "Visit contributor's blog"
-msgstr "អ្នក​ចែកចាយ​ពី​មុន"
+msgstr "ទស្សនា blog របស់​អ្នកចែក​ចាយ"
 
 #: aboutdialog/OcsPersonItem.cpp:251
+#, fuzzy
 msgid "Visit contributor's del.icio.us profile"
-msgstr ""
+msgstr "ទស្សនាទម្រង់​ del.icio.us របស់​អ្នកចែក​ចាយ "
 
 #: aboutdialog/OcsPersonItem.cpp:256
+#, fuzzy
 msgid "Visit contributor's Digg profile"
-msgstr ""
+msgstr "ទស្សនា​ទម្រង់ Digg របស់​អ្នក​ចែក​ចាយ"
 
 #: aboutdialog/OcsPersonItem.cpp:261
+#, fuzzy
 msgid "Visit contributor's Facebook profile"
-msgstr ""
+msgstr "ទស្សនាទម្រង់​​ Facebook របស់​អ្នក​ចែក​ចាយ "
 
 #: aboutdialog/OcsPersonItem.cpp:277
 #, fuzzy
 #| msgid "Former contributors"
 msgid "Visit contributor's Last.fm profile"
-msgstr "អ្នក​ចែកចាយ​ពី​មុន"
+msgstr "ទស្សនាទម្រង់​ Last.fm របស់​អ្នក​ចែក​ចាយ"
 
 #: aboutdialog/OcsPersonItem.cpp:285
+#, fuzzy
 msgid "Visit contributor's LinkedIn profile"
-msgstr ""
+msgstr "ទស្សនា​ទម្រង់​​ LinkedIn​ របស់​អ្នក​ចែក​ចាយ"
 
 #: aboutdialog/OcsPersonItem.cpp:290
+#, fuzzy
 msgid "Visit contributor's MySpace homepage"
-msgstr ""
+msgstr "ទស្សនា​គេហទំព័រ MySpace របស់​អ្នក​ចែក​ចាយ​"
 
 #: aboutdialog/OcsPersonItem.cpp:295
+#, fuzzy
 msgid "Visit contributor's Reddit profile"
-msgstr ""
+msgstr "ទស្សនាទម្រង់​ Reddit របស់​អ្នក​ចែក​ចាយ"
 
 #: aboutdialog/OcsPersonItem.cpp:300
+#, fuzzy
 msgid "Visit contributor's YouTube profile"
-msgstr ""
+msgstr "ទស្សនា​ទម្រង់ YouTube របស់​អ្នក​ចែក​ចាយ"
 
 #: aboutdialog/OcsPersonItem.cpp:305
+#, fuzzy
 msgid "Visit contributor's Twitter feed"
-msgstr ""
+msgstr "ទស្សនា​មតិព័ត៌នា Twitter  របស់​អ្នកចែកចាយ"
 
 #: aboutdialog/OcsPersonItem.cpp:310
+#, fuzzy
 msgid "Visit contributor's Wikipedia profile"
-msgstr ""
+msgstr "ទស្សនា​ទម្រង់​ Wikipedia របស់​អ្នក​ចែក​ចាយ "
 
 #: aboutdialog/OcsPersonItem.cpp:315
+#, fuzzy
 msgid "Visit contributor's Xing profile"
-msgstr ""
+msgstr "ទស្សនា​ទម្រង់​ Xing របស់​អ្នក​ចែកចាយ"
 
 #: aboutdialog/OcsPersonItem.cpp:320
+#, fuzzy
 msgid "Visit contributor's identi.ca feed"
-msgstr ""
+msgstr "ទស្សនា​មតិ​ព័ត៌មាន​ identi.ca របស់​អ្នក​ចែក​ចាយ"
 
 #: aboutdialog/OcsPersonItem.cpp:325
+#, fuzzy
 msgid "Visit contributor's libre.fm profile"
-msgstr ""
+msgstr "ទស្សនាទម្រង់ libre.fm របស់​អ្នកចែក​ចាយ"
 
 #: aboutdialog/OcsPersonItem.cpp:330
+#, fuzzy
 msgid "Visit contributor's StackOverflow profile"
-msgstr ""
+msgstr "ទស្សនា​ទម្រង់​ StackOverflow របស់​អ្នក​ចែក​ចាយ"
 
 #: aboutdialog/libattica-ocsclient/personlistjob.cpp:108
+#, fuzzy
 msgid "Unable to parse avatar image data."
-msgstr ""
+msgstr "មិន​​អាច​ញែក​បាន​អវតារ​ទិន្នន័យ​រូប​ភាព"
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.h:37
 #, fuzzy
@@ -3005,7 +3094,7 @@ msgstr "យក​ចេញពី​បញ្ជីចាក់"
 #, fuzzy
 #| msgid "Configure Playback"
 msgid "Confirm Delete"
-msgstr "កំណត់​រចនាសម្ព័ន្ធ​ការ​ចាក់​សារ​ថ្មី"
+msgstr "លុប​ការ​អះអាង"
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:182
 #: playlistmanager/file/PlaylistFileProvider.cpp:256
@@ -3017,7 +3106,7 @@ msgstr[0] "តើ​អ្នក​ពិត​ជា​ចង់​លុប​
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:187
 msgid "Yes, delete from database."
-msgstr ""
+msgstr "បាទ/ចាស លុប​ពី​មូល​ដ្ឋាន​ទិន្នន័យ ។"
 
 #: playlistmanager/file/PlaylistFileProvider.cpp:75
 #, fuzzy
@@ -3026,14 +3115,15 @@ msgid "Playlist Files on Disk"
 msgstr "ឯកសារ​បញ្ជី​ចាក់"
 
 #: playlistmanager/file/PlaylistFileProvider.cpp:261
+#, fuzzy
 msgid "Yes, delete from disk."
-msgstr ""
+msgstr "បាទ​/​ចាស​ លុប​ពី​​​ថាស ។"
 
 #: playlistmanager/file/PlaylistFileProvider.cpp:303
 #: playlistmanager/file/PlaylistFileProvider.cpp:327
-#, kde-format
+#, fuzzy, kde-format
 msgid "The playlist file \"%1\" could not be loaded."
-msgstr ""
+msgstr "ឯកសារ​បញ្ជីចាក់ \"%1\"មិន​អាចផ្ទុក​បាន ។ "
 
 #: playlistmanager/PlaylistManager.cpp:199
 msgid "Downloading Playlist"
@@ -3102,8 +3192,9 @@ msgid "&Delete Downloaded Episode"
 msgstr "លុប Episode ដែល​បាន​ទាញ​យក"
 
 #: podcasts/sql/SqlPodcastProvider.cpp:464
+#, fuzzy
 msgid "&Write Feed Information to File"
-msgstr ""
+msgstr "ឯក​សារ​សរសេរ​មតិ​ព័ត៌មាន​"
 
 #: podcasts/sql/SqlPodcastProvider.cpp:496
 msgid "&Download Episode"
@@ -3128,8 +3219,9 @@ msgid "Unsubscribe"
 msgstr "ជាវ​ជា​ប្រចាំ"
 
 #: podcasts/sql/SqlPodcastProvider.cpp:600
+#, fuzzy
 msgid "Do you really want to unsubscribe from "
-msgstr ""
+msgstr "តើ​អ្នកពិត​ជា​ចង់​ឈប់​ជាវ​ពី"
 
 #: podcasts/sql/SqlPodcastProvider.cpp:607
 #, fuzzy
@@ -3138,14 +3230,15 @@ msgid "Delete downloaded episodes"
 msgstr "លុប Episode ដែល​បាន​ទាញ​យក"
 
 #: podcasts/sql/SqlPodcastProvider.cpp:732
+#, fuzzy
 msgid "Waiting for Podcast Downloads to Finish"
-msgstr ""
+msgstr "រង់​ចាំឲ្យ Podcast ទាញយក​ចប់"
 
 #: podcasts/sql/SqlPodcastProvider.cpp:733
-#, kde-format
+#, fuzzy, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
-msgstr[0] ""
+msgstr[0] "នៅ​តែ​មាន %1 podcast ទាញ​យក​កំពុង​​ដំ​ណើរ​ការ "
 
 #: podcasts/sql/SqlPodcastProvider.cpp:913
 msgid "Downloading Podcast Media"
@@ -3194,45 +3287,48 @@ msgid "Importing podcast from %1 failed with error:\n"
 msgstr "នាំចូល​ឆានែល​ផតខាស់​ពី %1"
 
 #: podcasts/PodcastReader.cpp:512 podcasts/PodcastReader.cpp:526
-#, kde-format
+#, fuzzy, kde-format
 msgid "Updating podcast from %1 failed with error:\n"
-msgstr ""
+msgstr "ការ​ធ្វើឲ្យ​ទាន់​សម័យ podcast ពី %1 ដែល​បរាជ័យ​ជា​មួយនិង​កំហុស៖ \n"
 
 #: podcasts/PodcastReader.cpp:513 podcasts/PodcastReader.cpp:527
-#, kde-format
+#, fuzzy, kde-format
 msgid "Updating \"%1\" failed with error:\n"
-msgstr ""
+msgstr "ការ​ធ្វើ​ឲ្យ​ទាន់​សម័យ \"%1\"ដែល​បរាជ័យ​ជា​មួយនិង​កំហុស៖ \n"
 
 #: podcasts/PodcastReader.cpp:997
-#, kde-format
+#, fuzzy, kde-format
 msgid ""
 "While parsing %1, a feed was expected but an HTML page was received.\n"
 "Did you enter the correct URL?"
 msgstr ""
+" មតិ​ព័ត៌មាន​បាន​រំពឹង អំ​ឡុង​ពេល​ការ​ញែក %1 ប៉ុន្តែ ទំព័រ​HTML មិន​បាន​ទទួល \n"
+"តើ​អ្នក​បាន​បញ្ចូល URL ត្រឹម​ត្រួវហើយ​ឬ ?"
 
 #: podcasts/PodcastReader.cpp:1004
-#, kde-format
+#, fuzzy, kde-format
 msgid "Feed has an unknown type: %1"
-msgstr ""
+msgstr "​មតិ​ព័ត៌មាន​មិន​បាន​ដឹងប្រ​ភេទ៖​​ %1 "
 
 #: podcasts/PodcastReader.cpp:1013
-#, kde-format
+#, fuzzy, kde-format
 msgid "%1 is not an RSS version 2.0 feed."
-msgstr ""
+msgstr "%1 មិន​​មែន​ជា​មតិ​ត្រឹម​ត្រូវរបស់ RSS កំណែ 2.0 ។"
 
 #: podcasts/PodcastReader.cpp:1043
-#, kde-format
+#, fuzzy, kde-format
 msgid "%1 is not a valid RSS version 1.0 feed."
-msgstr ""
+msgstr "%1 ​មិនមែនជា​មតិព័ត៌មានត្រឹម​ត្រូវ​របស់ RSS​ កំណែ 1.0  ។"
 
 #: podcasts/PodcastReader.cpp:1051
-#, kde-format
+#, fuzzy, kde-format
 msgid "%1 is not a valid Atom feed."
-msgstr ""
+msgstr "%1មិន​មែន​ជាមតិ​ត្រឹម​ត្រូវ​របស់ Atom ។"
 
 #: podcasts/PodcastReader.cpp:1134
+#, fuzzy
 msgid "Alternative Enclosures:"
-msgstr ""
+msgstr "Alternative Enclosures:"
 
 #: podcasts/PodcastReader.cpp:1144
 #, fuzzy
@@ -3296,7 +3392,7 @@ msgstr "គ្មាន​ចំណងជើង"
 msgid "A preset with the name %1 already exists. Overwrite?"
 msgstr "មាន​ការ​កំណត់​ជាមុន %1 រួច​ហើយ ។ សរសេរ​ជាន់​លើ​ឬ ?"
 
-#: EngineController.cpp:227
+#: EngineController.cpp:237
 msgid ""
 "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
 "the installation of the backend that phonon uses.</p><p>You may find useful "
@@ -3306,22 +3402,22 @@ msgstr ""
 "ផ្នែក​ខាង​ក្រោយ​ដែល​ phonon ប្រើ ។</p><p>អ្នក​អាច​រក​ព័ត៌មាន​ដែល​មាន​ប្រយោជន៍​នៅ​ក្នុង​ផ្នែក <i>FAQ</"
 "i> របស់<i>សៀវភៅ​ដៃ Amarok​</i> ។</p>"
 
-#: EngineController.cpp:246
+#: EngineController.cpp:256
 msgid "Install MP3 Support"
 msgstr "ដំឡើង​ការ​គាំទ្រ MP3"
 
-#: EngineController.cpp:248
+#: EngineController.cpp:258
 msgid ""
 "Amarok currently cannot play MP3 files. Do you want to install support for "
 "MP3?"
 msgstr ""
 "បច្ចុប្បន្ន Amarok មិនអាច​ចាក់​ឯកសារ MP3 បានទេ ។ តើ​អ្នក​ចង់​ដំឡើង​ការ​គាំទ្រ​សម្រាប់ MP3 ឬទេ ?"
 
-#: EngineController.cpp:249
+#: EngineController.cpp:259
 msgid "No MP3 Support"
 msgstr "គ្មាន​ការ​គាំទ្រ MP3 ទេ"
 
-#: EngineController.cpp:743
+#: EngineController.cpp:760
 #, fuzzy
 #| msgid "Pre-amp"
 msgid "Preamp"
@@ -3356,8 +3452,9 @@ msgid "Hostname"
 msgstr "ឈ្មោះ​ម៉ាស៊ីន"
 
 #: databaseimporter/amarok14/FastForwardImporterConfig.cpp:89
+#, fuzzy
 msgid "Match tracks by meta tags"
-msgstr ""
+msgstr "ផ្គូផ្គងតាម​ដានដោយ​ស្លាក​មេតា"
 
 #: databaseimporter/amarok14/FastForwardImporterConfig.cpp:92
 msgid "Import downloaded artwork"
@@ -3431,7 +3528,7 @@ msgstr "បញ្ជីចាក់"
 msgid "Recommendations by Echo Nest."
 msgstr "កា​រផ្ដល់​អនុសាសន៍​ដោយ Echo Nest ។"
 
-#: dynamic/BiasedPlaylist.cpp:141
+#: dynamic/BiasedPlaylist.cpp:145
 msgid "Generating playlist..."
 msgstr "កំពុង​បង្កើត​បញ្ជី​ចាក់..."
 
@@ -3462,7 +3559,7 @@ msgstr "Alejandro Wainzinger"
 #, fuzzy
 #| msgid "Developer"
 msgid "Developer (xevix)"
-msgstr "អ្នក​អភិវឌ្ឍន៍"
+msgstr "អ្នក​អភិវឌ្ឍន៍ (xevix)"
 
 #: main.cpp:37
 msgid "Bart 'Where are my toothpicks' Cerneels"
@@ -3472,7 +3569,7 @@ msgstr "Bart 'Where are my toothpicks' Cerneels"
 #, fuzzy
 #| msgid "Developer"
 msgid "Developer (Stecchino)"
-msgstr "អ្នក​អភិវឌ្ឍន៍"
+msgstr "អ្នក​អភិវឌ្ឍន៍ (Stecchino)"
 
 #: main.cpp:39
 msgid "Dan 'Hey, it compiled...' Meltzer"
@@ -3482,7 +3579,7 @@ msgstr "Dan 'Hey, it compiled...' Meltzer"
 #, fuzzy
 #| msgid "Developer"
 msgid "Developer (hydrogen)"
-msgstr "អ្នក​អភិវឌ្ឍន៍"
+msgstr "អ្នក​អភិវឌ្ឍន៍ (hydrogen)"
 
 #: main.cpp:41
 msgid "Ian 'The Beard' Monroe"
@@ -3492,7 +3589,7 @@ msgstr "Ian 'The Beard' Monroe"
 #, fuzzy
 #| msgid "Developer"
 msgid "Developer (eean)"
-msgstr "អ្នក​អភិវឌ្ឍន៍"
+msgstr "អ្នក​អភិវឌ្ឍន៍ (eean)"
 
 #: main.cpp:43
 #, fuzzy
@@ -3504,31 +3601,35 @@ msgstr "Jeff 'IROCKSOHARD' Mitchell"
 #, fuzzy
 #| msgid "Developer"
 msgid "Developer (jefferai)"
-msgstr "អ្នក​អភិវឌ្ឍន៍"
+msgstr "អ្នក​អភិវឌ្ឍន៍ (jefferai)"
 
 #: main.cpp:46
 #, fuzzy
 #| msgid "Developer"
 msgid "Developer (lfranchi)"
-msgstr "អ្នក​អភិវឌ្ឍន៍"
+msgstr "អ្នកអភិវឌ្ឍន៍ (lfranchi)"
 
 #: main.cpp:47
+#, fuzzy
 msgid "Lydia 'is wrong(TM)' Pintscher"
-msgstr "Lydia 'មិន​ត្រឹមត្រូវ (TM)' Pintscher"
+msgstr "Lydia 'is wrong(TM)' Pintscher"
 
 #: main.cpp:48
+#, fuzzy
 msgid "Release Vixen (Nightrose)"
-msgstr ""
+msgstr "ការចេញផ្សាយ Vixen (Nightrose)"
 
 #: main.cpp:49
 msgid "Mark 'It's good, but it's not irssi' Kretschmann"
 msgstr "Mark 'It's good, but it's not irssi' Kretschmann"
 
 #: main.cpp:50
+#, fuzzy
 msgid "Project founder (markey)"
-msgstr ""
+msgstr "គម្រោង​អ្នក​បង្កើត (markey)"
 
 #: main.cpp:51
+#, fuzzy
 msgid "Maximilian Kossick"
 msgstr "Maximilian Kossick"
 
@@ -3536,9 +3637,10 @@ msgstr "Maximilian Kossick"
 #, fuzzy
 #| msgid "Developer"
 msgid "Developer (maxx_k)"
-msgstr "អ្នក​អភិវឌ្ឍន៍"
+msgstr "អ្នក​អភិវឌ្ឍន័ (maxx_k)"
 
 #: main.cpp:53
+#, fuzzy
 msgid "Nikolaj Hald 'Also very hot' Nielsen"
 msgstr "Nikolaj Hald 'Also very hot' Nielsen"
 
@@ -3546,9 +3648,10 @@ msgstr "Nikolaj Hald 'Also very hot' Nielsen"
 #, fuzzy
 #| msgid "Developer"
 msgid "Developer (nhn)"
-msgstr "អ្នក​អភិវឌ្ឍន៍"
+msgstr "អ្នក​អភិវឌ្ឍន៍ (nhn)"
 
 #: main.cpp:55
+#, fuzzy
 msgid "Seb 'Surfin' down under' Ruiz"
 msgstr "Seb 'Surfin' down under' Ruiz"
 
@@ -3556,7 +3659,7 @@ msgstr "Seb 'Surfin' down under' Ruiz"
 #, fuzzy
 #| msgid "Developer"
 msgid "Developer (sebr)"
-msgstr "អ្នក​អភិវឌ្ឍន៍"
+msgstr "អ្នក​អភិវឌ្ឍន៍ (sebr)"
 
 #: main.cpp:57
 #, fuzzy
@@ -3568,17 +3671,20 @@ msgstr "Teo Mrnjavac"
 #, fuzzy
 #| msgid "Developer"
 msgid "Developer (Teo`)"
-msgstr "អ្នក​អភិវឌ្ឍន៍"
+msgstr "អ្នក​អភិវឌ្ឍន៍ (Teo`)"
 
 #: main.cpp:74
+#, fuzzy
 msgid "Alex Merry"
 msgstr "Alex Merry"
 
 #: main.cpp:74
+#, fuzzy
 msgid "Developer, Replay gain support"
-msgstr ""
+msgstr "អ្នកអភិវឌ្ឍន៍ ឆ្លើយ​តប​​ការ​គាំទ្រ​កើន​ឡើង"
 
 #: main.cpp:76
+#, fuzzy
 msgid "Casey Link"
 msgstr "Casey Link"
 
@@ -3589,30 +3695,37 @@ msgid "MP3tunes integration"
 msgstr "ការ​ចូល Mp3tunes"
 
 #: main.cpp:78
+#, fuzzy
 msgid "Casper van Donderen"
-msgstr ""
+msgstr "Casper van Donderen"
 
 #: main.cpp:78
+#, fuzzy
 msgid "Windows porting"
-msgstr ""
+msgstr "ការ​ប្តូរ​វីនដូ"
 
 #: main.cpp:80
+#, fuzzy
 msgid "Christie Harris"
 msgstr "Christie Harris"
 
 #: main.cpp:80
+#, fuzzy
 msgid "Rokymoter (dangle)"
-msgstr ""
+msgstr "Rokymoter (dangle)"
 
 #: main.cpp:82
+#, fuzzy
 msgid "Dan Leinir Turthra Jensen"
 msgstr "Dan Leinir Turthra Jensen"
 
 #: main.cpp:82
+#, fuzzy
 msgid "Usability"
-msgstr ""
+msgstr "Usability"
 
 #: main.cpp:84
+#, fuzzy
 msgid "Daniel Caleb Jones"
 msgstr "Daniel Caleb Jones"
 
@@ -3629,10 +3742,12 @@ msgid "Daniel Dewald"
 msgstr "Daniel Winter"
 
 #: main.cpp:86
+#, fuzzy
 msgid "Tag Guesser, Labels"
-msgstr ""
+msgstr "Tag Guesser, Labels"
 
 #: main.cpp:88
+#, fuzzy
 msgid "Daniel Winter"
 msgstr "Daniel Winter"
 
@@ -3643,12 +3758,14 @@ msgid "Nepomuk integration"
 msgstr "សម្រាំង​របស់ Nepomuk"
 
 #: main.cpp:90
+#, fuzzy
 msgid "Edward \"Hades\" Toroshchin"
-msgstr ""
+msgstr "Edward \"Hades\" Toroshchin"
 
 #: main.cpp:92
+#, fuzzy
 msgid "Frank Meerkötter"
-msgstr ""
+msgstr "Frank Meerkötter"
 
 #: main.cpp:92 main.cpp:111
 #, fuzzy
@@ -3661,20 +3778,23 @@ msgid "Greg Meyer"
 msgstr "Greg Meyer"
 
 #: main.cpp:95
+#, fuzzy
 msgid "Live CD, Bug squashing (oggb4mp3)"
-msgstr ""
+msgstr "ស៊ីឌី​បន្ត​ផ្ទាល់ កំហុស squashing (oggb4mp3)"
 
 #: main.cpp:97
 msgid "Harald Sitter"
 msgstr "Harald Sitter"
 
 #: main.cpp:97
+#, fuzzy
 msgid "Rokymoter (apachelogger)"
-msgstr ""
+msgstr "Rokymoter (apachelogger)"
 
 #: main.cpp:99
+#, fuzzy
 msgid "John Atkinson"
-msgstr ""
+msgstr "John Atkinson"
 
 #: main.cpp:101
 msgid "Kenneth Wesley Wimer II"
@@ -3684,23 +3804,26 @@ msgstr "Kenneth Wesley Wimer II"
 #, fuzzy
 #| msgid "Seconds"
 msgid "Icons"
-msgstr "វិនាទី"
+msgstr "រូប​តំ​ណាង"
 
 #: main.cpp:103
 msgid "Kevin Funk"
 msgstr "Kevin Funk"
 
 #: main.cpp:103
+#, fuzzy
 msgid "Developer, Website theme (KRF)"
-msgstr ""
+msgstr "អ្នក​បង្កើត​ ស្បែក​តំបន់​បណ្តាញ (KRF)"
 
 #: main.cpp:105
+#, fuzzy
 msgid "Kuba Serafinowski"
-msgstr ""
+msgstr "Kuba Serafinowski"
 
 #: main.cpp:105
+#, fuzzy
 msgid "Rokymoter"
-msgstr ""
+msgstr "Rokymoter"
 
 #: main.cpp:107
 msgid "Lee Olson"
@@ -3717,12 +3840,14 @@ msgid "Ljubomir Simin"
 msgstr "Ljubomir Simin"
 
 #: main.cpp:109
+#, fuzzy
 msgid "Rokymoter (ljubomir)"
-msgstr ""
+msgstr "Rokymoter (ljubomir)"
 
 #: main.cpp:111
+#, fuzzy
 msgid "Mathias Panzenböck"
-msgstr ""
+msgstr "Mathias Panzenböck"
 
 #: main.cpp:113
 msgid "Max Howell"
@@ -3735,20 +3860,23 @@ msgid "Developer, Vision"
 msgstr "អ្នក​អភិវឌ្ឍន៍"
 
 #: main.cpp:115
+#, fuzzy
 msgid "Mikko Caldara"
-msgstr ""
+msgstr "Mikko Caldara"
 
 #: main.cpp:115
+#, fuzzy
 msgid "Bug triaging and sanitizing"
-msgstr ""
+msgstr "កំហុស triaging ហើយ sanitizing"
 
 #: main.cpp:117
 msgid "Myriam Schweingruber"
 msgstr "Myriam Schweingruber"
 
 #: main.cpp:117
+#, fuzzy
 msgid "Rokymoter, bug squashing (Mamarok)"
-msgstr ""
+msgstr "Rokymoter កំហុល squashing (Mamarok)"
 
 #: main.cpp:119
 msgid "Nuno Pinheiro"
@@ -3759,16 +3887,18 @@ msgid "Olivier Bédard"
 msgstr "Olivier Bédard"
 
 #: main.cpp:121
+#, fuzzy
 msgid "Website hosting"
-msgstr ""
+msgstr "ម៉ាស៊ីន​តំបន់​បណ្តាញ"
 
 #: main.cpp:123
 msgid "Pasi Lalinaho"
 msgstr "Pasi Lalinaho"
 
 #: main.cpp:123
+#, fuzzy
 msgid "Rokymoter (emunkki)"
-msgstr ""
+msgstr "Rokymoter (emunkki)"
 
 #: main.cpp:125
 msgid "Peter Zhou Lei"
@@ -3785,24 +3915,28 @@ msgid "Scott Wheeler"
 msgstr "Scott Wheeler"
 
 #: main.cpp:127
+#, fuzzy
 msgid "TagLib & ktrm code"
-msgstr ""
+msgstr "កូដ TagLib  ktrm "
 
 #: main.cpp:129
 msgid "Shane King"
 msgstr "Shane King"
 
 #: main.cpp:129
+#, fuzzy
 msgid "Patches & Windows porting (shakes)"
-msgstr ""
+msgstr "Patches & Windows porting (shakes)"
 
 #: main.cpp:131
+#, fuzzy
 msgid "Simon Esneault"
-msgstr ""
+msgstr "Simon Esneault"
 
 #: main.cpp:131
+#, fuzzy
 msgid "Photos & Videos applets, Context View"
-msgstr ""
+msgstr "រូប​ថត វីដីអូ applets ទិដ្ឋ​ភាព​បរិបទ "
 
 #: main.cpp:133
 msgid "Soren Harward"
@@ -3816,15 +3950,17 @@ msgstr "Sven Krohlas"
 #, fuzzy
 #| msgid "Developer"
 msgid "Rokymoter, Developer (sven423)"
-msgstr "អ្នក​អភិវឌ្ឍន៍"
+msgstr "អ្នក​អភិវឌ្ឍន៍  Rokymoter  (sven423)"
 
 #: main.cpp:137
+#, fuzzy
 msgid "Thomas Lübking"
-msgstr ""
+msgstr "Thomas Lübking"
 
 #: main.cpp:139
+#, fuzzy
 msgid "Valentin Rouet"
-msgstr ""
+msgstr "Valentin Rouet"
 
 #: main.cpp:141
 #, fuzzy
@@ -3846,23 +3982,25 @@ msgstr "William Viana Soares"
 #, fuzzy
 #| msgid "Context"
 msgid "Context view"
-msgstr "បរិបទ"
+msgstr "ទិដ្ឋ​ភាព​បរិបទ"
 
 #: main.cpp:145
 msgid "Former contributors"
 msgstr "អ្នក​ចែកចាយ​ពី​មុន"
 
 #: main.cpp:145
+#, fuzzy
 msgid "People listed below have contributed to Amarok in the past. Thank you!"
-msgstr ""
+msgstr "បញ្ជី​ឈ្មោះមនុស្ស​ខាង​ក្រោម​បាន​ចែក​ចាយ​ទៅ Amarok ក្នុង​អតី​កាល​ ។ អរគុណ!"
 
 #: main.cpp:147
 msgid "Adam Pigg"
 msgstr "Adam Pigg"
 
 #: main.cpp:147
+#, fuzzy
 msgid "Analyzers, patches, shoutcast"
-msgstr ""
+msgstr "អ្នក​វិភាគ បំណះ shoutcast"
 
 #: main.cpp:149
 msgid "Adeodato Simó"
@@ -3883,16 +4021,18 @@ msgid "Andreas Mair"
 msgstr "Andreas Mair"
 
 #: main.cpp:153
+#, fuzzy
 msgid "MySQL support"
-msgstr ""
+msgstr "គាំទ្រ MySQL "
 
 #: main.cpp:155
 msgid "Andrew de Quincey"
 msgstr "Andrew de Quincey"
 
 #: main.cpp:155
+#, fuzzy
 msgid "Postgresql support"
-msgstr ""
+msgstr "គាំ​ទ្រ Postgresql"
 
 #: main.cpp:157
 msgid "Andrew Turner"
@@ -3904,7 +4044,7 @@ msgstr "Andy Kelk"
 
 #: main.cpp:159
 msgid "MTP and Rio Karma media devices, patches"
-msgstr ""
+msgstr "MTP and Rio Karma media devices, patches"
 
 #: main.cpp:161
 msgid "Christian Muehlhaeuser"
@@ -3915,16 +4055,18 @@ msgid "Derek Nelson"
 msgstr "Derek Nelson"
 
 #: main.cpp:163
+#, fuzzy
 msgid "Graphics, splash-screen"
-msgstr ""
+msgstr "Graphics, splash-screen"
 
 #: main.cpp:165
 msgid "Enrico Ros"
 msgstr "Enrico Ros"
 
 #: main.cpp:165
+#, fuzzy
 msgid "Analyzers, Context Browser and systray eye-candy"
-msgstr ""
+msgstr "អ្នក​ធ្វើ​វិភាគ​ បរិបទ​រុក​រក​ហើយ​ថាស​ប្រព័ន្ធ eye-candy"
 
 #: main.cpp:167
 msgid "Frederik Holljen"
@@ -3939,8 +4081,9 @@ msgid "Gérard Dürrmeyer"
 msgstr "Gérard Dürrmeyer"
 
 #: main.cpp:171
+#, fuzzy
 msgid "Icons and image work"
-msgstr ""
+msgstr "រូប​តំណាង​ហើយ​ការងារ​រូប​ភាព"
 
 #: main.cpp:173
 msgid "Giovanni Venturi"
@@ -3957,24 +4100,27 @@ msgid "Jarkko Lehti"
 msgstr "Jarkko Lehti"
 
 #: main.cpp:175
+#, fuzzy
 msgid "Tester, IRC channel operator, whipping"
-msgstr ""
+msgstr "មុខ​របរ​ អ្នក​បញ្ជាឆា​នែល IRC  ជំនួស​អ្នក​ណា​ម្នាក់​ទៀត"
 
 #: main.cpp:177
 msgid "Jocke Andersson"
 msgstr "Jocke Andersson"
 
 #: main.cpp:177
+#, fuzzy
 msgid "Rokymoter, bug fixer (Firetech)"
-msgstr ""
+msgstr "Rokymoter កំហុស​អ្នកជួស​ជុល (Firetech)"
 
 #: main.cpp:179
 msgid "Marco Gulino"
 msgstr "Marco Gulino"
 
 #: main.cpp:179
+#, fuzzy
 msgid "Konqueror Sidebar, some DCOP methods"
-msgstr ""
+msgstr "របារ​ចំហៀរ Konqueror វិធីសាស្ត្រខ្លះ​របស់ DCOP "
 
 #: main.cpp:181
 msgid "Martin Aumueller"
@@ -3985,16 +4131,18 @@ msgid "Melchior Franz"
 msgstr "Melchior Franz"
 
 #: main.cpp:183
+#, fuzzy
 msgid "FHT routine, bugfixes"
-msgstr ""
+msgstr "ទម្រង់​ការ FHT ជូស​ជុលកំហុស"
 
 #: main.cpp:185
 msgid "Michael Pyne"
 msgstr "Michael Pyne"
 
 #: main.cpp:185
+#, fuzzy
 msgid "K3b export code"
-msgstr ""
+msgstr "កូដ​នាំ​ចេញ K3b "
 
 #: main.cpp:187
 msgid "Mike Diehl"
@@ -4009,8 +4157,9 @@ msgid "Peter C. Ndikuwera"
 msgstr "Peter C. Ndikuwera"
 
 #: main.cpp:191
+#, fuzzy
 msgid "Bugfixes, PostgreSQL support"
-msgstr ""
+msgstr "គាំ​ទ្រ Bugfixes, PostgreSQL "
 
 #: main.cpp:193
 msgid "Pierpaolo Panfilo"
@@ -4021,24 +4170,27 @@ msgid "Reigo Reinmets"
 msgstr "Reigo Reinmets"
 
 #: main.cpp:195
+#, fuzzy
 msgid "Wikipedia support, patches"
-msgstr ""
+msgstr "គាំទ្របំណះ​របស់ Wikipedia"
 
 #: main.cpp:197
 msgid "Roman Becker"
 msgstr "Roman Becker"
 
 #: main.cpp:197
+#, fuzzy
 msgid "Former Amarok logo, former splash screen, former icons"
-msgstr ""
+msgstr " រូប​សញ្ជា Amarok ពីមុន បាច​សាច​ពេញ​អេ​ក្រង់​ រូប​តំណាង"
 
 #: main.cpp:199
 msgid "Sami Nieminen"
 msgstr "Sami Nieminen"
 
 #: main.cpp:199
+#, fuzzy
 msgid "Audioscrobbler support"
-msgstr ""
+msgstr "គាំទ្រ Audioscrobbler"
 
 #: main.cpp:201
 msgid "Stanislav Karchebny"
@@ -4049,8 +4201,9 @@ msgid "Stefan Bogner"
 msgstr "Stefan Bogner"
 
 #: main.cpp:203
+#, fuzzy
 msgid "Loads of stuff"
-msgstr ""
+msgstr "ផ្ទុក​ធាតុ"
 
 #: browsers/InfoProxy.cpp:164
 msgid "Home"
@@ -4083,7 +4236,7 @@ msgstr "រៀបចំ​ឯកសារ"
 #, fuzzy
 #| msgid "&Delete Tracks"
 msgid "Delete Tracks"
-msgstr "លុប​បទ"
+msgstr "លុប​ការ​តាម​ដាន"
 
 #: browsers/BrowserCategoryList.cpp:45
 #, fuzzy
@@ -4097,33 +4250,33 @@ msgstr "កន្ទុយ​ឯកសារ​របស់​ប្រភព"
 msgid "Previous Browser"
 msgstr "ក្រុមមុន"
 
-#: browsers/CollectionTreeItemModelBase.cpp:532
+#: browsers/CollectionTreeItemModelBase.cpp:538
 msgid "album"
 msgstr "អាល់ប៊ុម"
 
-#: browsers/CollectionTreeItemModelBase.cpp:537
+#: browsers/CollectionTreeItemModelBase.cpp:543
 msgid "artist"
 msgstr "សិល្បករ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:542
+#: browsers/CollectionTreeItemModelBase.cpp:548
 msgid "genre"
 msgstr "ចង្វាក់"
 
-#: browsers/CollectionTreeItemModelBase.cpp:547
+#: browsers/CollectionTreeItemModelBase.cpp:553
 #, fuzzy
 #| msgid "Title"
 msgid "title"
 msgstr "ចំណង​ជើង"
 
-#: browsers/CollectionTreeItemModelBase.cpp:552
+#: browsers/CollectionTreeItemModelBase.cpp:558
 msgid "composer"
 msgstr "កម្មវិធី​តែង"
 
-#: browsers/CollectionTreeItemModelBase.cpp:557
+#: browsers/CollectionTreeItemModelBase.cpp:563
 msgid "year"
 msgstr "ឆ្នាំ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:562
+#: browsers/CollectionTreeItemModelBase.cpp:568
 #, fuzzy
 #| msgctxt ""
 #| "'Beats per minute' playlist column name and token for playlist layouts, "
@@ -4132,79 +4285,79 @@ msgstr "ឆ្នាំ"
 msgid "bpm"
 msgstr "Bpm"
 
-#: browsers/CollectionTreeItemModelBase.cpp:566
+#: browsers/CollectionTreeItemModelBase.cpp:572
 msgid "comment"
 msgstr "សេចក្តី​អធិប្បាយ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:570
+#: browsers/CollectionTreeItemModelBase.cpp:576
 #, fuzzy
 #| msgid "Bitrate"
 msgid "bitrate"
 msgstr "អត្រា​ប៊ីត"
 
-#: browsers/CollectionTreeItemModelBase.cpp:574
+#: browsers/CollectionTreeItemModelBase.cpp:580
 msgid "rating"
 msgstr "អត្រា"
 
-#: browsers/CollectionTreeItemModelBase.cpp:578
+#: browsers/CollectionTreeItemModelBase.cpp:584
 msgid "score"
 msgstr "ពិន្ទុ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:582
+#: browsers/CollectionTreeItemModelBase.cpp:588
 msgid "playcount"
 msgstr "ចំនួន​ចាក់"
 
-#: browsers/CollectionTreeItemModelBase.cpp:586
+#: browsers/CollectionTreeItemModelBase.cpp:592
 #, fuzzy
 #| msgctxt "'Sample rate' playlist column name and token for playlist layouts"
 #| msgid "Sample rate"
 msgid "samplerate"
 msgstr "អត្រាគំរូ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:590
+#: browsers/CollectionTreeItemModelBase.cpp:596
 msgid "length"
 msgstr "ប្រវែង"
 
-#: browsers/CollectionTreeItemModelBase.cpp:594
+#: browsers/CollectionTreeItemModelBase.cpp:600
 msgid "discnumber"
 msgstr "លេខ​ថាស"
 
-#: browsers/CollectionTreeItemModelBase.cpp:598
+#: browsers/CollectionTreeItemModelBase.cpp:604
 msgid "tracknumber"
 msgstr "លេខ​បទ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:602
+#: browsers/CollectionTreeItemModelBase.cpp:608
 msgid "added"
 msgstr "បានបន្ថែម"
 
-#: browsers/CollectionTreeItemModelBase.cpp:608
+#: browsers/CollectionTreeItemModelBase.cpp:614
 msgid "today"
 msgstr "ថ្ងៃ​នេះ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:610
+#: browsers/CollectionTreeItemModelBase.cpp:616
 msgid "last week"
 msgstr "សប្ដាហ៍​មុន"
 
-#: browsers/CollectionTreeItemModelBase.cpp:612
+#: browsers/CollectionTreeItemModelBase.cpp:618
 msgid "last month"
 msgstr "ខែ​មុន"
 
-#: browsers/CollectionTreeItemModelBase.cpp:614
+#: browsers/CollectionTreeItemModelBase.cpp:620
 msgid "two months ago"
 msgstr "ពីរ​ខែ​កន្លង​ទៅ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:616
+#: browsers/CollectionTreeItemModelBase.cpp:622
 msgid "three months ago"
 msgstr "បី​ខែ​កន្លង​ទៅ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:921
+#: browsers/CollectionTreeItemModelBase.cpp:927
 msgid "Year - Album"
 msgstr "ឆ្នាំ - អាល់ប៊ុម"
 
 #: browsers/collectionbrowser/CollectionTreeItemDelegate.cpp:143
-#, kde-format
+#, fuzzy, kde-format
 msgid "%1% used"
-msgstr ""
+msgstr "បាន​ប្រើ %1% "
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:61
 msgid "Search collection"
@@ -4254,8 +4407,9 @@ msgid "Sort Options"
 msgstr "ជម្រើស​តម្រៀប​"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:300
+#, fuzzy
 msgid "Toggle unified view mode"
-msgstr ""
+msgstr "រូម​គ្នា​បិទ/បើក របៀប​ទិដ្ឋ​ភាព"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:309
 msgid ""
@@ -4383,24 +4537,24 @@ msgstr ""
 "កម្មវិធី​រុករក​បញ្ជីចាក់​មាន​បញ្ជី​​នាំចូល​ និង​រក្សាទុក​របស់​អ្នក ។ វា​ជា​កន្លែង​ដែល​អ្នកអាច​បញ្ជាក់​បញ្ជី​ចាក់​"
 "ឋាមវន្ត​ដ៏​មានអនុភាព​​ដែរ និង​គ្រប់គ្រង​ការ​ជាវ​​ផតខាស​ និង episodes ។"
 
-#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:229
+#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:238
 msgid "New name"
 msgstr "ឈ្មោះ​ថ្មី"
 
-#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:231
+#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:240
 #, fuzzy
 #| msgid "Enter new group name:"
 msgctxt "Enter a new name for a folder that already exists"
 msgid "Enter new folder name:"
 msgstr "បញ្ចូល​ឈ្មោះក្រុម​ថ្មី ៖"
 
-#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:254
+#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:263
 #, fuzzy
 #| msgid "Delete Files"
 msgid "&Delete Folder"
 msgstr "លុប​ឯកសារ"
 
-#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:264
+#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:273
 #, fuzzy
 #| msgid "&Rename group"
 msgid "&Rename Folder..."
@@ -4570,30 +4724,32 @@ msgstr "នាំចេញ​បញ្ជី​ចាក់​ជា..."
 msgid "By"
 msgstr "ដោយ"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:241
+#: browsers/playlistbrowser/PodcastCategory.cpp:239
 #: browsers/playlistbrowser/DynamicCategory.cpp:70
 msgid "On"
 msgstr "បើក"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:259
+#: browsers/playlistbrowser/PodcastCategory.cpp:257
 #, fuzzy
 #| msgid "File Size"
 msgid "File Size:"
 msgstr "ទំហំ​ឯកសារ"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:271
+#: browsers/playlistbrowser/PodcastCategory.cpp:269
 #, fuzzy
 #| msgid "Description:"
 msgid "Subscription Date:"
 msgstr "សេចក្ដី​ពិពណ៌នា ៖"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:279
+#: browsers/playlistbrowser/PodcastCategory.cpp:277
+#, fuzzy
 msgid "Keywords:"
-msgstr ""
+msgstr "ពាក្យ​​ន្លឹះ ៖"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:312
+#: browsers/playlistbrowser/PodcastCategory.cpp:310
+#, fuzzy
 msgid "Select OPML file to import"
-msgstr ""
+msgstr "ជ្រើ​រើស​ឯកសារ OPML ដើម្បី​នាំចូល"
 
 #: browsers/playlistbrowser/UserPlaylistTreeView.cpp:184
 #, fuzzy, kde-format
@@ -4640,39 +4796,39 @@ msgstr "ចំនួន​កម្រិត​មិន​ធ្វើ​វិ
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:99
 msgid "Upcoming:"
-msgstr ""
+msgstr "មាន​ឆាប់ៗ ៖ "
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:103
 #, fuzzy
 #| msgid "The number of undo levels in the playlist."
 msgid "Number of upcoming tracks to add to the playlist."
-msgstr "ចំនួន​កម្រិត​មិន​ធ្វើ​វិញ នៅ​ក្នុង​បញ្ជី​ចាក់ ។"
+msgstr "ចំនួន​តាម​ដាន​មាន​ឆាប់ៗ នៅ​ក្នុង​បញ្ជី​ចាក់ ។"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:114
+#: browsers/playlistbrowser/DynamicCategory.cpp:116
 msgid "Playlist:"
 msgstr "បញ្ជីចាក់ ៖"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:143
+#: browsers/playlistbrowser/DynamicCategory.cpp:145
 msgid "Save the preset."
 msgstr "រក្សាទុក​កា​រកំណត់​ជា​មុន ។"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:153
+#: browsers/playlistbrowser/DynamicCategory.cpp:155
 msgid "Delete the preset."
 msgstr "លុប​កា​រកំណត់​ជាមុន ។"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:314
+#: browsers/playlistbrowser/DynamicCategory.cpp:316
 msgid "Playlist Name"
 msgstr "ឈ្មោះ​បញ្ជី​ចាក់"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:315
+#: browsers/playlistbrowser/DynamicCategory.cpp:317
 msgid "Enter a name for the playlist:"
 msgstr "បញ្ចូល​ឈ្មោះ​សម្រាប់​បញ្ជីចាក់ ៖"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:325
+#: browsers/playlistbrowser/DynamicCategory.cpp:327
 msgid "Warning"
 msgstr "ការ​ព្រមាន !"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:325
+#: browsers/playlistbrowser/DynamicCategory.cpp:327
 msgid "Cannot overwrite the random playlist."
 msgstr "មិនអាច​សរសេរ​ជាន់លើ​បញ្ជី​ចាក់​ចៃដន្យ​បានទេ ។"
 
@@ -4708,8 +4864,9 @@ msgid "Context"
 msgstr "បរិបទ"
 
 #: MainWindow.cpp:319
+#, fuzzy
 msgid "Local Music"
-msgstr ""
+msgstr " ​តន្ត្រី​មូល​ដ្ឋាន"
 
 #: MainWindow.cpp:321
 #, fuzzy
@@ -4735,17 +4892,18 @@ msgstr "បញ្ជី​ចាក់"
 #, fuzzy
 #| msgid "Various Artists"
 msgid "Various types of playlists"
-msgstr "សិល្បករ​ផ្សេងៗ"
+msgstr "ប្រ​ភេទ​ផ្សេង​គ្នា​នៃ​បញ្ជីចាក់"
 
 #: MainWindow.cpp:346
 msgid "Files"
 msgstr "ឯកសារ"
 
 #: MainWindow.cpp:348
+#, fuzzy
 msgid "Browse local hard drive for content"
-msgstr ""
+msgstr " រកមើលដ្រាយថាស​រឹងជា​មូលដ្ឋានក្នុង​តារាងមាតាកា​"
 
-#: MainWindow.cpp:414
+#: MainWindow.cpp:417
 #, fuzzy
 #| msgctxt "@title buttontext for popup-menu"
 #| msgid "View"
@@ -4753,11 +4911,11 @@ msgctxt "@item:inmenu"
 msgid "&View"
 msgstr "ទិដ្ឋភាព"
 
-#: MainWindow.cpp:417
+#: MainWindow.cpp:420
 msgid "Lock layout"
 msgstr "ចាក់សោ​ប្លង់"
 
-#: MainWindow.cpp:529
+#: MainWindow.cpp:532
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
 "<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
@@ -4766,213 +4924,215 @@ msgstr ""
 "<qt>បិទ​បង្អួច​មេ​នឹង​​ទុក​ឲ្យ Amarok រត់​នៅ​ក្នុង​ថាស​ប្រព័ន្ធ ។ ប្រើ<B>ចេញ</B> ពី​ម៉ឺនុយ ឬ​រូបតំណាង​ថាស "
 "Amarok ដើម្បី​ចាកចេញ​ពី​កម្មវិធី ។</qt>"
 
-#: MainWindow.cpp:531
+#: MainWindow.cpp:534
 msgid "Docking in System Tray"
 msgstr "ចត​ក្នុង​ថាស​ប្រព័ន្ធ"
 
-#: MainWindow.cpp:549
+#: MainWindow.cpp:552
 msgid "Use relative path for &saving"
 msgstr "ប្រើ​ផ្លូវ​ទំនាក់ទំនង​​សម្រាប់​រក្សាទុក"
 
-#: MainWindow.cpp:560
+#: MainWindow.cpp:563
 msgid "Save As"
 msgstr "រក្សាទុក​ជា"
 
-#: MainWindow.cpp:597
+#: MainWindow.cpp:600
 msgid "Play Media (Files or URLs)"
 msgstr "ចាក់​មេឌៀ (ឯកសារ ឬ URL)"
 
-#: MainWindow.cpp:597
+#: MainWindow.cpp:600
 msgid "Add Media (Files or URLs)"
 msgstr "បន្ថែម​មេឌៀ (ឯកសារ ឬ URL)"
 
-#: MainWindow.cpp:612
+#: MainWindow.cpp:615
 msgid "Add Stream"
 msgstr "បន្ថែម​ស្ទ្រីម​"
 
-#: MainWindow.cpp:612
+#: MainWindow.cpp:615
 msgid "Enter Stream URL:"
 msgstr "បញ្ចូល​ URL ស្ទ្រីម ៖"
 
-#: MainWindow.cpp:723
+#: MainWindow.cpp:726
 msgid "&Add Media..."
 msgstr "បន្ថែម​មេឌៀ..."
 
-#: MainWindow.cpp:728
+#: MainWindow.cpp:731
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "ជម្រះ​បញ្ជី​ចាក់"
 
-#: MainWindow.cpp:732
+#: MainWindow.cpp:735
 #, fuzzy
 #| msgid "Remove Applet"
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "យក​អាប់ភ្លេត​ចេញ"
 
-#: MainWindow.cpp:739
+#: MainWindow.cpp:742
 msgid "&Add Stream..."
 msgstr "បន្ថែម​ស្ទ្រីម​..."
 
-#: MainWindow.cpp:743
+#: MainWindow.cpp:746
 msgid "&Export Playlist As..."
 msgstr "នាំចេញ​បញ្ជី​ចាក់​ជា..."
 
-#: MainWindow.cpp:747 amarokurls/NavigationUrlGenerator.cpp:216
+#: MainWindow.cpp:750 amarokurls/NavigationUrlGenerator.cpp:216
 #, fuzzy
 #| msgid "Bookmark"
 msgid "Bookmark Media Sources View"
-msgstr "ចំណាំ"
+msgstr "ចំណាំធនធាន​ទិនដ្ឋ​ភាពមេឌៀ"
 
-#: MainWindow.cpp:751 amarokurls/BookmarkManager.cpp:42
+#: MainWindow.cpp:754 amarokurls/BookmarkManager.cpp:42
 #, fuzzy
 #| msgid "Cover Manager"
 msgid "Bookmark Manager"
-msgstr "កម្មវិធី​គ្រប់គ្រង​គម្រប"
+msgstr "ចំណាំលើ​គ្រប់គ្រង​"
 
-#: MainWindow.cpp:755 playlist/PlaylistViewUrlGenerator.cpp:101
+#: MainWindow.cpp:758 playlist/PlaylistViewUrlGenerator.cpp:101
 #, fuzzy
 #| msgid "Smart Playlist"
 msgid "Bookmark Playlist Setup"
-msgstr "បញ្ជីចាក់​ឆ្លាត"
+msgstr "ចំណាំ​បង្កើត​បញ្ជី​ចាក់"
 
-#: MainWindow.cpp:759
+#: MainWindow.cpp:762
 #, fuzzy
 #| msgid "Bookmark this Artist"
 msgid "Bookmark Context Applets"
 msgstr "ចំណាំ​សិល្បករ​នេះ"
 
-#: MainWindow.cpp:763 covermanager/CoverManager.cpp:97
+#: MainWindow.cpp:766 covermanager/CoverManager.cpp:97
 msgid "Cover Manager"
 msgstr "កម្មវិធី​គ្រប់គ្រង​គម្រប"
 
-#: MainWindow.cpp:767
+#: MainWindow.cpp:770
 msgid "Play Media..."
 msgstr "ចាក់​មេឌៀ..."
 
-#: MainWindow.cpp:775
+#: MainWindow.cpp:779
 msgid "&Seek Forward"
 msgstr "ស្វែងរក​ទៅ​មុខ"
 
-#: MainWindow.cpp:781
+#: MainWindow.cpp:785
 msgid "&Seek Backward"
 msgstr "ស្វែងរក​ថយ​ក្រោយ"
 
-#: MainWindow.cpp:788
+#: MainWindow.cpp:792
 msgid "Update Collection"
 msgstr "ធ្វើ​ឲ្យ​សម្រាំង​ទាន់សម័យ"
 
-#: MainWindow.cpp:795 widgets/MainControlsWidget.cpp:62
+#: MainWindow.cpp:799 widgets/MainControlsWidget.cpp:62
 msgid "Previous Track"
 msgstr "បទ​មុន"
 
-#: MainWindow.cpp:801
+#: MainWindow.cpp:805
 #, fuzzy
 #| msgctxt "Replace the currently loaded tracks with these"
 #| msgid "&Replace Playlist"
 msgid "Repopulate Playlist"
 msgstr "ជំនួស​​បញ្ជីចាក់​"
 
-#: MainWindow.cpp:809 widgets/MainControlsWidget.cpp:86
+#: MainWindow.cpp:819 widgets/MainControlsWidget.cpp:86
 msgid "Next Track"
 msgstr "បទ​បន្ទាប់"
 
-#: MainWindow.cpp:812
+#: MainWindow.cpp:822
 msgid "Increase Volume"
 msgstr "បង្កើន​កម្រិត​សំឡេង"
 
-#: MainWindow.cpp:818
+#: MainWindow.cpp:828
 msgid "Decrease Volume"
 msgstr "បន្ថយ​កម្រិត​សំឡេង"
 
-#: MainWindow.cpp:824
+#: MainWindow.cpp:834
 msgid "Toggle Main Window"
 msgstr "បិទ/​បើក​បង្អួច​បញ្ជី​ចាក់"
 
-#: MainWindow.cpp:829
-msgid "Toggle Full Screen"
-msgstr ""
-
-#: MainWindow.cpp:834
-msgid "Jump to"
-msgstr ""
-
 #: MainWindow.cpp:839
+#, fuzzy
+msgid "Toggle Full Screen"
+msgstr "បិទ/បើ​ពេញអែក្រង់ "
+
+#: MainWindow.cpp:844
+#, fuzzy
+msgid "Jump to"
+msgstr "លោត​ទៅ"
+
+#: MainWindow.cpp:849
 msgid "Show On Screen Display"
 msgstr "បង្ហាញលើ​ការ​បង្ហាញ​របស់​អេក្រង់"
 
-#: MainWindow.cpp:844
+#: MainWindow.cpp:854
 msgid "Mute Volume"
 msgstr "បិទ​សំឡេង"
 
-#: MainWindow.cpp:849
+#: MainWindow.cpp:859
 #, fuzzy
 #| msgid "Love Current Track"
 msgid "Last.fm: Love Current Track"
 msgstr "ចូលចិត្ត​បទ​បច្ចុប្បន្ន​"
 
-#: MainWindow.cpp:854
+#: MainWindow.cpp:864
 #, fuzzy
 #| msgid "Love Current Track"
 msgid "Last.fm: Ban Current Track"
 msgstr "ចូលចិត្ត​បទ​បច្ចុប្បន្ន​"
 
-#: MainWindow.cpp:859
+#: MainWindow.cpp:869
 #, fuzzy
 #| msgid "Love Current Track"
 msgid "Last.fm: Skip Current Track"
 msgstr "ចូលចិត្ត​បទ​បច្ចុប្បន្ន​"
 
-#: MainWindow.cpp:864 playlist/view/PlaylistViewCommon.cpp:111
+#: MainWindow.cpp:874 playlist/view/PlaylistViewCommon.cpp:111
 msgid "Queue Track"
 msgstr "រៀបបទ​ជា​ជួរ"
 
-#: MainWindow.cpp:869
+#: MainWindow.cpp:879
 msgid "Rate Current Track: 1"
 msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន ៖ ១"
 
-#: MainWindow.cpp:874
+#: MainWindow.cpp:884
 msgid "Rate Current Track: 2"
 msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន ៖ ២"
 
-#: MainWindow.cpp:879
+#: MainWindow.cpp:889
 msgid "Rate Current Track: 3"
 msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន ៖ ៣"
 
-#: MainWindow.cpp:884
+#: MainWindow.cpp:894
 msgid "Rate Current Track: 4"
 msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន ៖ ៤"
 
-#: MainWindow.cpp:889
+#: MainWindow.cpp:899
 msgid "Rate Current Track: 5"
 msgstr "វាយតម្លៃ​បទ​បច្ចុប្បន្ន ៖ ៥"
 
-#: MainWindow.cpp:949
+#: MainWindow.cpp:959
 msgid "&Music"
 msgstr "តន្ត្រី"
 
-#: MainWindow.cpp:953
+#: MainWindow.cpp:963
 msgid "&Amarok"
 msgstr "Amarok"
 
-#: MainWindow.cpp:972
+#: MainWindow.cpp:982
 msgid "&Playlist"
 msgstr "បញ្ជីចាក់"
 
-#: MainWindow.cpp:988
+#: MainWindow.cpp:998
 msgid "&Tools"
 msgstr "ឧបករណ៍"
 
-#: MainWindow.cpp:999
+#: MainWindow.cpp:1009
 msgid "&Settings"
 msgstr "ការ​កំណត់"
 
-#: MainWindow.cpp:1129
+#: MainWindow.cpp:1139
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "បាន​ផ្អាក  ::  %1"
 
-#: MainWindow.cpp:1148
+#: MainWindow.cpp:1158
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
@@ -5016,12 +5176,12 @@ msgstr "របៀប​ទិន្នន័យ"
 msgid "Slim Toolbar"
 msgstr "របារ​ឧបករណ៍​មេ"
 
-#: toolbar/VolumePopupButton.cpp:99 toolbar/VolumePopupButton.cpp:110
+#: toolbar/VolumePopupButton.cpp:102 toolbar/VolumePopupButton.cpp:113
 #: widgets/Osd.cpp:151
 msgid "(muted)"
 msgstr "(ស្ងាត់)"
 
-#: toolbar/VolumePopupButton.cpp:99 toolbar/VolumePopupButton.cpp:110
+#: toolbar/VolumePopupButton.cpp:102 toolbar/VolumePopupButton.cpp:113
 #: widgets/Osd.cpp:151
 #, kde-format
 msgid "Volume: %1% %2"
@@ -5085,8 +5245,9 @@ msgstr "ចាប់ផ្ដើម​វាយ​ដើម្បី​ស្វ
 #. i18n: file: amarokconfig.kcfg:35
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: rc.cpp:24 rc.cpp:1761
+#, fuzzy
 msgid "Determines how amarok will progress through the tracks in the playlist"
-msgstr ""
+msgstr "កំណត់​ amarok ដូច​ម្តេច​និង​វិឌ្ឍនៈភាព​ផ្តល់​ឲ្យ​តាម​ដាន​ក្នុង​ប​ញ្ជីចាក់ "
 
 #. i18n: file: amarokconfig.kcfg:47
 #. i18n: ectx: label, entry, group (General Options)
@@ -5115,20 +5276,23 @@ msgstr "បទ​មុន"
 #. i18n: file: amarokconfig.kcfg:53
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: rc.cpp:36 rc.cpp:1773
+#, fuzzy
 msgid "Number of tracks to leave in the playlist before the active track."
-msgstr ""
+msgstr "ចំនួន​តាម​ដាន​ចាក់ចេញ​​ក្នុង​​បញ្ជីចាក់​មុន​ពេលតាមដាន​សកម្ម ។"
 
 #. i18n: file: amarokconfig.kcfg:57
 #. i18n: ectx: label, entry, group (General Options)
 #: rc.cpp:39 rc.cpp:1776
+#, fuzzy
 msgid "Upcoming tracks count."
-msgstr ""
+msgstr "ចំនួនបទ​ដែល​និង​មាន​ឆាប់​​ ។"
 
 #. i18n: file: amarokconfig.kcfg:58
 #. i18n: ectx: whatsthis, entry, group (General Options)
 #: rc.cpp:42 rc.cpp:1779
+#, fuzzy
 msgid "Number of tracks to load into the playlist after the active track."
-msgstr ""
+msgstr "ចំ​នួន​តាមដានដែល​ផ្ទុកនៅ​ក្នុងបញ្ជីចាក់ក្រោយ​ពេល​តាម​ដាន​​សកម្ម ។"
 
 #. i18n: file: amarokconfig.kcfg:62
 #. i18n: ectx: label, entry, group (General Options)
@@ -5537,8 +5701,9 @@ msgstr "ថាតើ​ត្រូវ​លិច​បន្តិចម្ដ
 #. i18n: file: amarokconfig.kcfg:233
 #. i18n: ectx: label, entry, group (Playback)
 #: rc.cpp:231 rc.cpp:1968
+#, fuzzy
 msgid "Equalizer mode - 0 = off, 1 to n = preset no"
-msgstr ""
+msgstr "របៀប​អេ​ហ្គុយ - 0 = បិត 1 ទៅ n = កំណត់​ស្រេច​លើ"
 
 #. i18n: file: amarokconfig.kcfg:234
 #. i18n: ectx: whatsthis, entry, group (Playback)
@@ -5577,8 +5742,9 @@ msgstr "ឈ្មោះ​កំណត់​ជាមុនរបស់​អេ
 #. i18n: file: amarokconfig.kcfg:273
 #. i18n: ectx: label, entry, group (Playback)
 #: rc.cpp:243 rc.cpp:249 rc.cpp:1980 rc.cpp:1986
+#, fuzzy
 msgid "List with user presets values"
-msgstr ""
+msgstr "បញ្ជីអ្នក​ប្រើលើ​តម្លៃកំណត់រួច​ជាស្រេច ។"
 
 #. i18n: file: amarokconfig.kcfg:277
 #. i18n: ectx: label, entry, group (Playback)
@@ -5600,7 +5766,7 @@ msgstr ""
 #. i18n: ectx: label, entry, group (Playback)
 #: rc.cpp:258 rc.cpp:1995
 msgid "Disable replay gain"
-msgstr "​"
+msgstr "Disable replay gain"
 
 #. i18n: file: amarokconfig.kcfg:284
 #. i18n: ectx: label, entry, group (Playback)
@@ -5642,8 +5808,9 @@ msgstr "កំណត់​ភាសា​សម្រាប់​ព័ត៌ម
 #. i18n: file: amarokconfig.kcfg:312
 #. i18n: ectx: label, entry, group (KNotify)
 #: rc.cpp:279 rc.cpp:2016
+#, fuzzy
 msgid "Use KNotify support"
-msgstr ""
+msgstr "គាំទ្រ​ការ​ប្រើ​ KNotify "
 
 #. i18n: file: amarokconfig.kcfg:319
 #. i18n: ectx: label, entry, group (OSD)
@@ -5895,10 +6062,11 @@ msgstr "ថាតើ​ឆ្នាំ​ត្រូ​វបានបង្ហ
 #. i18n: file: amarokconfig.kcfg:437
 #. i18n: ectx: label, entry, group (Collection)
 #: rc.cpp:396 rc.cpp:2133
+#, fuzzy
 msgid ""
 "Whether to use Mozilla's Character Set Detector to try to guess ID3 tag "
 "encodings."
-msgstr ""
+msgstr "ទោះ​បី​ប្រើ​ឧបករណ៍​ស្វែង​រក​សំណុំ​តួ​អក្សរ​របស់ Mozilla ដើម្បី​ព្យាយាម​ស្មាន​ ID3 ស្លាការអ៊ិនកូដ ។ "
 
 #. i18n: file: amarokconfig.kcfg:444
 #. i18n: ectx: label, entry, group (Scrobbler)
@@ -6102,10 +6270,11 @@ msgstr "ឈ្មោះ​ប្លង់​ដែលនឹង​ត្រូ​
 #. i18n: file: amarokconfig.kcfg:550
 #. i18n: ectx: label, entry, group (MySQL)
 #: rc.cpp:498 rc.cpp:2235
+#, fuzzy
 msgid ""
 "Whether Amarok uses its own internal database, as opposed to an external "
 "engine."
-msgstr ""
+msgstr "ទោះ​បី​ជា​ប្រើ Amarok វា​ជា​មូល​ដ្ឋាន​ទិន្នន័យខាង​ក្នុង​ផ្ទាល់ ព្រោះ​ថា​មិន​ស្រប​នឹង​ម៉ាស៊ីន​ខាង​ក្រៅ ។ "
 
 #. i18n: file: amarokconfig.kcfg:554
 #. i18n: ectx: label, entry, group (MySQL)
@@ -6118,34 +6287,39 @@ msgstr "ឈ្មោះ​របស់​កម្មវិធី​រុករ
 #. i18n: file: amarokconfig.kcfg:558
 #. i18n: ectx: label, entry, group (MySQL)
 #: rc.cpp:504 rc.cpp:2241
+#, fuzzy
 msgid "Which server port to connect to the database engine."
-msgstr ""
+msgstr "ច្រក​ម៉ាស៊ីនបម្រើណា​មួយ​ដែល​តភ្ជាប់ទៅម៉ាស៊ីនមូល​ដ្ឋាន​ទិន្នន័យ ។​"
 
 #. i18n: file: amarokconfig.kcfg:562
 #. i18n: ectx: label, entry, group (MySQL)
 #: rc.cpp:507 rc.cpp:2244
+#, fuzzy
 msgid ""
 "The name of the database Amarok will use. The user should have sufficient "
 "access permissions."
-msgstr ""
+msgstr "ឈ្មោះរបស់មូល​ដ្ឋាន​ទិន្នន័យ Amarok និង​ប្រើ ។ អ្នក​ប្រើ​គួរ​តែ​បាន​សិទ្ឋិ​ដំ​​ណើរ​ការ​គ្រប់​គ្រាន់ ។ "
 
 #. i18n: file: amarokconfig.kcfg:566
 #. i18n: ectx: label, entry, group (MySQL)
 #: rc.cpp:510 rc.cpp:2247
+#, fuzzy
 msgid "Username used to access the external database."
-msgstr ""
+msgstr "ឈ្នោះ​អ្នក​បាន​ប្រើដំ​ណើរ​ការ​​មូល​ដ្ឋាន​ខាង​ក្រៅ ។"
 
 #. i18n: file: amarokconfig.kcfg:570
 #. i18n: ectx: label, entry, group (MySQL)
 #: rc.cpp:513 rc.cpp:2250
+#, fuzzy
 msgid "Password for the external database user."
-msgstr ""
+msgstr "ពាក្យ​សម្ងាត់​សម្រាប់​អ្នក​ប្រើ​​មូល​ដ្ឋាន​ទិន្នន័យ​ខាង​ក្រៅ ។"
 
 #. i18n: file: amarokconfig.kcfg:574
 #. i18n: ectx: label, entry, group (MySQL)
 #: rc.cpp:516 rc.cpp:2253
+#, fuzzy
 msgid "Keeps a running count to know when run a CHECK."
-msgstr ""
+msgstr "រក្សា​រាប់​ការ​រត់​ដើម្បី​ដឹង​នៅ​ពេល​ដែល​ CHECK រត់ ។"
 
 #. i18n: file: amarokconfig.kcfg:581
 #. i18n: ectx: label, entry, group (ScriptManager)
@@ -6158,22 +6332,26 @@ msgstr "ថាតើ​ត្រូវ​ទៅ​យក​​សិល្បៈ
 #. i18n: file: amarokconfig.kcfg:582
 #. i18n: ectx: whatsthis, entry, group (ScriptManager)
 #: rc.cpp:522 rc.cpp:2259
+#, fuzzy
 msgid "Enable/Disable automatic update for built-in scripts."
-msgstr ""
+msgstr "អនុញ្ញាត/មិន​អនុ​ញ្ញាត ធ្វើឲ្យ​ល្អ​ប្រ​សើរ​ឡើង​ជា​ស្វ័យ​ប្រ​វត្តិ​សម្រាប់​ជាប់​ស្គ្រីប ។"
 
 #. i18n: file: amarokconfig.kcfg:589
 #. i18n: ectx: label, entry, group (Moodbar)
 #: rc.cpp:525 rc.cpp:2262
+#, fuzzy
 msgid ""
 "Whether to show the moodbar of the current track, if available, in the "
 "progress slider"
 msgstr ""
+"ថា​តើ​ដើម្បី​បង្ហាញ moodbar របស់​អ្នក​តាម​ដាន​ ប្រ​សិន​បើ​អាច​តាម​ដាន​ កំ​ពុង​ដំ​ពើរ​ការ​​គ្រាប់​រំកិល ។ "
 
 #. i18n: file: amarokconfig.kcfg:590
 #. i18n: ectx: whatsthis, entry, group (Moodbar)
 #: rc.cpp:528 rc.cpp:2265
+#, fuzzy
 msgid "Enable/Disable showing moodbar, if available, in the progress slider."
-msgstr ""
+msgstr "អនុ​ញ្ញាត​/​មិន​អនុញ្ញាត​ការ​បង្ហាញ moodbar ប្រ​សិន​បើ​អាច​រក​បាន​ កំពុង​តែ​ដំ​ណើរ​ការ​គ្រាប់​រំកិល ។ "
 
 #. i18n: file: amarokconfig.kcfg:594
 #. i18n: ectx: label, entry, group (Moodbar)
@@ -6238,8 +6416,9 @@ msgstr "កម្រិត​ខ្ពស់"
 #. i18n: file: context/applets/videoclip/videoclipSettings.ui:23
 #. i18n: ectx: property (text), widget (QCheckBox, checkYoutubeHQ)
 #: rc.cpp:560
+#, fuzzy
 msgid "Youtube HQ"
-msgstr ""
+msgstr "Youtube HQ"
 
 #. i18n: file: context/applets/photos/photosSettings.ui:41
 #. i18n: ectx: property (text), widget (QLabel, animationLabel)
@@ -6252,8 +6431,9 @@ msgstr "ការ​កំណត់​រចនាសម្ព័ន្ធ"
 #. i18n: file: context/applets/photos/photosSettings.ui:70
 #. i18n: ectx: property (text), widget (QLabel, numberofphotosLabel)
 #: rc.cpp:578
+#, fuzzy
 msgid "Number of photos"
-msgstr ""
+msgstr "ចំ​នួន​រូបថត"
 
 #. i18n: file: context/applets/photos/photosSettings.ui:93
 #. i18n: ectx: property (text), widget (QLabel, additionalkeywordsLabel)
@@ -6266,17 +6446,22 @@ msgstr "ជម្រើស​បន្ថែម ៖"
 #. i18n: file: context/applets/photos/photosSettings.ui:100
 #. i18n: ectx: property (clickMessage), widget (KLineEdit, additionalkeywordsLineEdit)
 #: rc.cpp:584
+#, fuzzy
 msgid "Ex: band live 1977"
-msgstr ""
+msgstr "ឧទាហរណ៍៖ក្រុម​បន្តផ្ទាល់ 1977"
 
 #. i18n: file: context/applets/photos/photosSettings.ui:109
 #. i18n: ectx: property (text), widget (QLabel, addsomemorekeynwordstothequerywithaspaceseparatorLabel)
 #: rc.cpp:587
+#, fuzzy
 msgid ""
 "Add some more key words to the Flickr.com\n"
 "query, with a space separator. \n"
 "For example: band live 1977 "
 msgstr ""
+"បន្ថែម​ពាក្យ​គន្លឹះ​ឲ្យ​បាន​ច្រើន​ទៅសូរ Flickr.com\n"
+" ជា​មួយទំហំ​សញ្ញា​បំបែកចន្លោះ ។ \n"
+" ឧទាហរណ៍​៖ ក្រុម​បន្ត​ផ្ទាល់ 1977 "
 
 #. i18n: file: configdialog/dialogs/NotificationsConfig.ui:17
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
@@ -6392,8 +6577,9 @@ msgstr "ល្អក់"
 #. i18n: file: configdialog/dialogs/NotificationsConfig.ui:215
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_KNotifyEnabled)
 #: rc.cpp:658
+#, fuzzy
 msgid "Use KNotify"
-msgstr ""
+msgstr "ប្រើ​ KNotify"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:15
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_FadeoutOnExit)
@@ -6478,8 +6664,9 @@ msgstr "ឈ្មោះ​កំណត់​ជាមុនរបស់​អេ
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:166
 #. i18n: ectx: property (toolTip), widget (QPushButton, eqPresetSaveBtn)
 #: rc.cpp:704
+#, fuzzy
 msgid "Save changes of currently selected preset"
-msgstr ""
+msgstr "ការ​ផ្លាស់​ប្តូរ​រក្សា​ទុក​បាន​កំណត់​ជ្រើស​​ជា​ស្រេច​ពេល​បច្ចុប្បន្ន ។"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:169
 #. i18n: ectx: property (text), widget (QPushButton, eqPresetSaveBtn)
@@ -6490,8 +6677,9 @@ msgstr "រក្សាទុក"
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:182
 #. i18n: ectx: property (toolTip), widget (QPushButton, eqPresetDeleteBtn)
 #: rc.cpp:710
+#, fuzzy
 msgid "Delete currently selected preset. Not available for built-in presets."
-msgstr ""
+msgstr "លុប​បាន​កំណត់​ជ្រើស​ជា​ស្រេច​ ។មិន​អាច​រក​បាន​​​ជាប់​ការ​កំ​ណត់​ជា​ស្រេច​ ។​"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:185
 #. i18n: ectx: property (text), widget (QPushButton, eqPresetDeleteBtn)
@@ -6504,16 +6692,19 @@ msgstr "លុប​កា​រកំណត់​ជាមុន ។"
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:198
 #. i18n: ectx: property (toolTip), widget (QPushButton, eqPresetResetBtn)
 #: rc.cpp:716
+#, fuzzy
 msgid ""
 "Reset selected preset setting to default. Available only for built-in "
 "presets."
 msgstr ""
+"បាន​ជ្រើស​​រើស​កំ​ណត់​ឡើង​វិញ​ការ​កំ​ណត់​ជា​ស្រេច​ទៅ​លំ​នាំដើម​ ។ដែល​អាច​រក​បាន​សម្រាប់ជាប់​កំណត់​ជា​ស្រេច ។ "
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:201
 #. i18n: ectx: property (text), widget (QPushButton, eqPresetResetBtn)
 #: rc.cpp:719
+#, fuzzy
 msgid "Reset to default"
-msgstr ""
+msgstr "ការ​កំ​ណត់​ស្រេច​ទៅ​លំ​នាំ​ដើម​"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:230
 #. i18n: ectx: property (title), widget (QGroupBox, eqBandsGroupBox)
@@ -6521,25 +6712,28 @@ msgstr ""
 #, fuzzy
 #| msgid "and"
 msgid "Bands"
-msgstr "និង"
+msgstr "ក្រុម​ភ្លេង"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:271
 #. i18n: ectx: property (text), widget (QLabel, eqMaxEq)
 #: rc.cpp:728
+#, fuzzy
 msgid "+ dB"
-msgstr ""
+msgstr "+ dB"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:311
 #. i18n: ectx: property (text), widget (QLabel, eqZero)
 #: rc.cpp:731
+#, fuzzy
 msgid "0 dB"
-msgstr ""
+msgstr "0 dB"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:351
 #. i18n: ectx: property (text), widget (QLabel, eqMinEq)
 #: rc.cpp:734
+#, fuzzy
 msgid "- dB"
-msgstr ""
+msgstr "- dB"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:452
 #. i18n: ectx: property (text), widget (QLabel, eqPreampLabel)
@@ -6565,8 +6759,9 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QLabel, eqBand9Label)
 #: rc.cpp:740 rc.cpp:746 rc.cpp:752 rc.cpp:758 rc.cpp:764 rc.cpp:770
 #: rc.cpp:776 rc.cpp:782 rc.cpp:788 rc.cpp:794 rc.cpp:800
+#, fuzzy
 msgid "Hz"
-msgstr ""
+msgstr "Hz"
 
 #. i18n: file: configdialog/dialogs/GeneralConfig.ui:17
 #. i18n: ectx: property (title), widget (QGroupBox, generalBox)
@@ -6631,14 +6826,16 @@ msgstr "ជម្រើស​តម្រៀប​"
 #. i18n: file: configdialog/dialogs/GeneralConfig.ui:81
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ShowMoodbarInSlider)
 #: rc.cpp:836
+#, fuzzy
 msgid "Show Moodbar in Progress Slider"
-msgstr ""
+msgstr "បង្ហាញ Moodbar កំពុង​ដំណើរ​ការ​គ្រាប់​រំ​កិល "
 
 #. i18n: file: configdialog/dialogs/GeneralConfig.ui:88
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: rc.cpp:839
+#, fuzzy
 msgid "Moodbar style"
-msgstr ""
+msgstr "រចនាបត្ម័ Moodbar "
 
 #. i18n: file: configdialog/dialogs/GeneralConfig.ui:96
 #. i18n: ectx: property (text), item, widget (QComboBox, kcfg_MoodbarPaintStyle)
@@ -6653,8 +6850,9 @@ msgstr "ប្លង់​បញ្ជី​ចាក់"
 #. i18n: file: configdialog/dialogs/GeneralConfig.ui:101
 #. i18n: ectx: property (text), item, widget (QComboBox, kcfg_MoodbarPaintStyle)
 #: rc.cpp:845
+#, fuzzy
 msgid "Angry"
-msgstr ""
+msgstr "ខឹង"
 
 #. i18n: file: configdialog/dialogs/GeneralConfig.ui:106
 #. i18n: ectx: property (text), item, widget (QComboBox, kcfg_MoodbarPaintStyle)
@@ -6662,13 +6860,14 @@ msgstr ""
 #, fuzzy
 #| msgid "French"
 msgid "Frozen"
-msgstr "បារាំង"
+msgstr "កក"
 
 #. i18n: file: configdialog/dialogs/GeneralConfig.ui:111
 #. i18n: ectx: property (text), item, widget (QComboBox, kcfg_MoodbarPaintStyle)
 #: rc.cpp:851
+#, fuzzy
 msgid "Happy"
-msgstr ""
+msgstr "សប្បាយ"
 
 #. i18n: file: configdialog/dialogs/DatabaseConfig.ui:9
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_UseServer)
@@ -6724,24 +6923,29 @@ msgstr "ពាក្យ​សម្ងាត់ ៖"
 #, fuzzy
 #| msgid "Database Name"
 msgid "&Database:"
-msgstr "ឈ្មោះ​មូលដ្ឋាន​ទិន្នន័យ"
+msgstr "មូលដ្ឋាន​ទិន្នន័យ"
 
 #. i18n: file: configdialog/dialogs/DatabaseConfig.ui:165
 #. i18n: ectx: property (text), widget (QLabel, label_Info)
 #: rc.cpp:875
+#, fuzzy
 msgid ""
 "Amarok expects the above database and user account to already exist. This "
 "user also requires full access to the database. You MUST restart Amarok "
 "after changing these settings."
 msgstr ""
+"រំពឹងAmarok មូល​ដ្ឋាន​ទិន្ន​ន័យ​ខាង​លើ​ហើយគណនី​អ្នក​ប្រើ​បាន​ចេញ​ហើយ​ ។ តំរូវការ​អ្នក​ប្រើ​នេះ​ចូល​ដំ​ណើរ​ការ​ពេញ​"
+"លេញ​ទៅ​មូល​ដ្ឋាន​ទិន្ន​ន័យ ។ អ្នក​ត្រូវ​តែចាប់​ផ្តើម​ Amarok ឡើង​វិញ​ក្រោយ​ពេល​ផ្លាស់​ប្តូរ​ការ​កំ​ណត់​នេះ ។ "
 
 #. i18n: file: configdialog/dialogs/DatabaseConfig.ui:175
 #. i18n: ectx: property (text), widget (QLabel, label_SQL)
 #: rc.cpp:878
+#, fuzzy
 msgid ""
 "Access rights can be assigned with the following S&QL commands (after "
 "replacing the password with the correct one):"
 msgstr ""
+"ដំណើរ​ការ​ត្រឹម​ត្រូវ​អាច​ផ្តល់​ជា​មួយ​ការ​បំ​ពេញ បញ្ជា SQL ( ក្រោយ​ពេល​ការ​ជំនួល​ពាក្យ​សម្ងាត់​ត្រឹម​ត្រូវ)៖"
 
 #. i18n: file: configdialog/dialogs/CollectionConfig.ui:14
 #. i18n: ectx: property (windowTitle), widget (QWidget, CollectionConfig)
@@ -7089,8 +7293,9 @@ msgstr "លេខ​ថាស ៖"
 #. i18n: file: dialogs/TagDialogBase.ui:363
 #. i18n: ectx: property (text), widget (QLabel, textLabel_BPM)
 #: rc.cpp:1049
+#, fuzzy
 msgid "B&eats Per Minute:"
-msgstr ""
+msgstr "B eats កំណត់​ហេតុ​ប្រ​ជុំ ៖"
 
 #. i18n: file: dialogs/TagDialogBase.ui:437
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_4)
@@ -7151,14 +7356,16 @@ msgstr "ស្លាក"
 #. i18n: file: dialogs/TagDialogBase.ui:749
 #. i18n: ectx: property (toolTip), widget (KComboBox, kComboBox_label)
 #: rc.cpp:1088
+#, fuzzy
 msgid "Insert your custom label here or select one from the list."
-msgstr ""
+msgstr "បញ្ចុល​ស្លាក​ផ្ទាល់​ខ្លួន​របស់​អ្នក​នៅ​ទី​​នេះ ឬជ្រើស​រើស​បញ្ជីចាក់មួយ ។"
 
 #. i18n: file: dialogs/TagDialogBase.ui:780
 #. i18n: ectx: property (text), widget (QLabel, label_2)
 #: rc.cpp:1091
+#, fuzzy
 msgid "Custom labels for this item:"
-msgstr ""
+msgstr "ស្លាក​ផ្ទាល់​ខ្លួន​សម្រាប់​ធាតុ ៖ "
 
 #. i18n: file: dialogs/TagDialogBase.ui:809
 #. i18n: ectx: property (text), widget (QPushButton, addButton)
@@ -7339,7 +7546,7 @@ msgstr "សិល្បករ ៖"
 #, fuzzy
 #| msgid "&Composer:"
 msgid "Composer:"
-msgstr "អ្នក​និពន្ធ​បទភ្លេង ៖"
+msgstr "កម្មវិធី​តែង ៖ "
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:506
 #. i18n: ectx: property (text), widget (QLabel, label_3)
@@ -7713,8 +7920,9 @@ msgstr "ការ​កំណត់​រចនាសម្ព័ន្ធ​ផ
 #. i18n: file: podcasts/sql/PodcastSettingsBase.ui:46
 #. i18n: ectx: property (text), widget (QLabel, m_urlLabel)
 #: rc.cpp:1369
+#, fuzzy
 msgid "URL:"
-msgstr ""
+msgstr "URL:"
 
 #. i18n: file: podcasts/sql/PodcastSettingsBase.ui:56
 #. i18n: ectx: property (text), widget (QLabel, m_saveLocationlabel)
@@ -7811,17 +8019,21 @@ msgstr " ធាតុ"
 #. i18n: file: podcasts/sql/PodcastSettingsBase.ui:192
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, m_writeTagsCheck)
 #: rc.cpp:1426
+#, fuzzy
 msgid ""
 "The RSS feed and the tags in the downloaded file sometimes do not contain "
 "the same information. Writing the tags ensures the information in the "
 "playlist and on media devices will be the same as in the feed."
 msgstr ""
+"មតិ​ព័ត៌មាន​ RSS ហើយ​ស្លា​ក្នុង​ឯកសារ​ដែល​បាន​ទាញ​យក​ពេល​ខ្លះមិន​មាន​ព័ត៌មាន​មួយ​ចំនួន ។ការ​សរសេរ​ស្លាក​ធ្វើឲ្យ​"
+"ប្រាកដ​ព័ត៌មាន​ក្នុង​បញ្ចី​ចាក់​​ហើយ​​ឧបករណ៍មេ​ឌៀនឹង​អាច​ដូច​ក្នុងមតិ​ព័ត៌មា​ន​ ។"
 
 #. i18n: file: podcasts/sql/PodcastSettingsBase.ui:195
 #. i18n: ectx: property (text), widget (QCheckBox, m_writeTagsCheck)
 #: rc.cpp:1429
+#, fuzzy
 msgid "Write feed information to tags after downloading."
-msgstr ""
+msgstr "សរសេរ​មតិ​ព័ត៌មាន​ស្លាក​​ក្រោយ​ពេល​ការ​ទាញ​យក​ ។"
 
 #. i18n: file: browsers/playlistbrowser/PodcastCategoryBase.ui:24
 #. i18n: ectx: property (toolTip), widget (QToolButton, addPodcastButton)
@@ -8134,14 +8346,21 @@ msgstr ""
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
 "\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-"
-"weight:400; font-style:normal;\">\n"
+"</style></head><body style=\" font-family:'DejaVu Serif'; font-size:8pt; "
+"font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;\"><span "
-"style=\" font-size:9pt;\">ចំពោះ​ព័ត៌មាន​បន្ថែម​អំពី​សមាជិក Magnatune.com និង​ត្រូវ​ចុះឈ្មោះ ទៅ​"
-"កាន់  </span><a href=\"http://magnatune.com/compare_plans?referal_id=amarok"
-"\"><span style=\" font-size:9pt; text-decoration: underline; color:#0000ff;"
-"\">http://magnatune.com/compare_plans</span></a></p></body></html>"
+"right:0px; -qt-block-indent:0; text-indent:0px;\">The amount you choose to "
+"pay will be split 50/50 between the artist and Magnatune.com. Your personal "
+"and credit card information is sent securely to Magnatune.com using SSL "
+"encryption and is not stored by Amarok or readable by the Amarok developers."
+"</p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
+"margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></"
+"p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"https://"
+"magnatune.com/buy/gc_buy_pp.php\"><span style=\" text-decoration: underline; "
+"color:#0000ff;\">Click here to buy gift cards</span></a></p></body></html>"
 
 #. i18n: file: services/magnatune/MagnatunePurchaseDialogBase.ui:358
 #. i18n: ectx: property (text), widget (QPushButton, purchaseButton)
@@ -8166,10 +8385,11 @@ msgstr "ទាញយក​ម្ដង​ទៀត"
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:23
 #. i18n: ectx: property (text), widget (QLabel, label_7)
 #: rc.cpp:1594
+#, fuzzy
 msgid ""
 "Enter your e-mail here to be able to redownload any previous purchase from "
 "Magnatune directly from within Amarok."
-msgstr ""
+msgstr "បញ្ចូល​អ៊ីមែល​របស់​អ្នក​នៅ​ទីនេះដើម្បី​ទាញ​យក​សំ​ទេញ​មុន​ពី​ Magnatune ដោយ​ផ្ទាល់​ពី​ Amarok ។"
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:33
 #. i18n: ectx: property (text), widget (QLabel, label_6)
@@ -8474,8 +8694,9 @@ msgstr "ប្លង់"
 #. i18n: file: playlist/layouts/PlaylistLayoutEditDialog.ui:191
 #. i18n: ectx: property (text), widget (QCheckBox, inlineControlsChekbox)
 #: rc.cpp:1731
+#, fuzzy
 msgid "Show inline playback controls"
-msgstr ""
+msgstr "បង្ហាញ​ការ​ត្រួត​ពិនិត្យ​ចាក់​សារ​ថ្មី​ក្នុង​តួ​"
 
 #. i18n: file: playlist/layouts/PlaylistLayoutEditDialog.ui:203
 #. i18n: ectx: property (text), widget (QLabel, label)
@@ -8503,13 +8724,14 @@ msgstr "ដាក់​​ជា​​ក្រុម"
 #, fuzzy
 #| msgid "Groupings"
 msgid "No Grouping (Single Line)"
-msgstr "ដាក់​​ជា​​ក្រុម"
+msgstr "ដាក់​ជា​ក្រុម (Single Line)"
 
 #. i18n: tag layout attribute name
 #. i18n: file: data/DefaultPlaylistLayouts.xml:70
 #: rc.cpp:2280
+#, fuzzy
 msgid "Verbose"
-msgstr ""
+msgstr "បរិយាយ"
 
 #: analyzers/blockanalyzer.cpp:446
 msgid "Framerate"
@@ -8880,10 +9102,13 @@ msgid "Last.fm credentials"
 msgstr "ទម្រង់ last.fm"
 
 #: services/lastfm/LastFmServiceConfig.cpp:48
+#, fuzzy
 msgid ""
 "No running KWallet found. Would you like Amarok to save your Last.fm "
 "credentials in plaintext?"
 msgstr ""
+"គ្មាន​កា​ររត់​ស្វែង​រក​ KWallet  ។ តើ​អ្នក​ចង់​ឲ្យ Amarok រក្សាទុក Last.fm របស់អ្នក​ជាសម្ងាត់​ក្នុង​​"
+"អត្ថបទធម្មតាឬ ?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:98
 msgid "Testing..."
@@ -9040,7 +9265,7 @@ msgid "Add to Magnatune.com &favorites"
 msgstr "កំពុង​ផ្ទុក​ទំព័រ​សំណព្វ​ Magnatune.com របស់​អ្នក..."
 
 #: services/magnatune/MagnatuneDownloadInfo.cpp:209
-#, kde-format
+#, fuzzy, kde-format
 msgid ""
 "Redownload of a previously purchased album \"%1\" by \"%2\" from Magnatune."
 "com.\n"
@@ -9048,6 +9273,10 @@ msgid ""
 "Username: %3\n"
 "Password: %4\n"
 msgstr ""
+"ទាញ​យក​អាល់ប៊ុម​ដែល​បាន​ទិញ​ពី​មុនម្តង​ទៀត​ \"%1\" ដោយ \"%2\" ពី Magnatune.com.\n"
+"\n"
+"ឈ្មោះ​អ្នក​ប្រើ ​៖ %3\n"
+"និង​ពាក្យ​សម្ងាត់ ៖ %4\n"
 
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:64
 #, fuzzy, kde-format
@@ -9062,8 +9291,9 @@ msgid "Downloading album from Magnatune.com"
 msgstr "ជាវ​អាល់ប៊ុម​ពី Magnatune.com"
 
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:95
+#, fuzzy
 msgid "Magnatune download seems to have failed. Cannot read zip file"
-msgstr ""
+msgstr "ទាញយក​ Magnatune បាន​បរា​ជ័យ ។មិន​អាច​អាន​ឯកសារហ្ស៊ីប"
 
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:104
 #, fuzzy
@@ -9103,8 +9333,9 @@ msgid_plural "%1 artists."
 msgstr[0] "សិល្បករ %1"
 
 #: services/magnatune/MagnatuneRedownloadHandler.cpp:150
+#, fuzzy
 msgid "Getting list of previous Magnatune.com purchases"
-msgstr ""
+msgstr "យក​បញ្ជី​ទិញ​របស់ Magnatune.com ពីមុន"
 
 #: services/magnatune/MagnatuneStore.cpp:101
 msgid "\"Fair trade\" online music store."
@@ -9512,20 +9743,20 @@ msgstr "ជ្រើស​ប្រភព"
 #, fuzzy, kde-format
 #| msgid "Filter Action"
 msgid "Filter %1"
-msgstr "សកម្មភាព​តម្រង"
+msgstr "ត្រង %1"
 
 #: playlist/PlaylistViewUrlGenerator.cpp:83
 #, fuzzy, kde-format
 #| msgid "&Search"
 msgid "Search %1"
-msgstr "ស្វែង​រក"
+msgstr "ស្វែង​រក %1"
 
 #: playlist/PlaylistViewUrlGenerator.cpp:90
 #, fuzzy, kde-format
 #| msgid "%1 play"
 #| msgid_plural "%1 plays"
 msgid "%1 layout"
-msgstr "%1 ចាក់"
+msgstr "ប្លង់ %1 "
 
 #: playlist/PlaylistDefines.h:86
 msgctxt "Empty placeholder token used for spacing in playlist layouts"
@@ -9728,14 +9959,15 @@ msgid "Invalid playlist layout."
 msgstr "ប្ដូរ​ឈ្មោះ​ប្លង់​បញ្ជី​ចាក់"
 
 #: playlist/layouts/LayoutEditWidget.cpp:82
+#, fuzzy
 msgid "Encountered an unknown element name while reading layout."
-msgstr ""
+msgstr "ដែល​ជួប​ប្រ​ទះ​មិន​ដឹង​ឈ្មោះ​ធាតុ​​អំ​ឡុង​ពេល​ការ​អាន​ប្លង់ ។"
 
 #: playlist/layouts/LayoutManager.cpp:104
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:406
-#, kde-format
+#, fuzzy, kde-format
 msgid "copy of %1"
-msgstr ""
+msgstr "ចម្លង​របស់ %1"
 
 #: playlist/layouts/LayoutManager.cpp:112
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:414
@@ -9749,11 +9981,13 @@ msgid "%1 %2"
 msgstr "%1 %2"
 
 #: playlist/layouts/LayoutManager.cpp:116
-#, kde-format
+#, fuzzy, kde-format
 msgid ""
 "Current layout '%1' is read only. Creating a new layout '%2' with your "
 "changes and setting this as active"
 msgstr ""
+"ប្លង់​បច្ចុប្បន្ន '%1' គឺ​អាន​តែមួយ ។ការ​បង្កើត​ប្លង់​ថ្មី '%2' ជាមួយ​ការ​ផ្លាស់​ប្តូរ​របស់​អ្នក​ហើយ​ការ​កំណត់​ដូច​"
+"សកម្ម​នេះ"
 
 #: playlist/layouts/LayoutManager.cpp:397
 #, kde-format
@@ -9882,21 +10116,25 @@ msgid "Width: "
 msgstr "ទទឹង​"
 
 #: playlist/layouts/LayoutEditDialog.cpp:101
+#, fuzzy
 msgid "custom"
-msgstr ""
+msgstr "ផ្ទាល់​ខ្លួន"
 
 #: playlist/layouts/LayoutEditDialog.cpp:102
 msgid ""
 "Either a fixed (absolute) value, or a relative value (e.g. 128px or 12%.)"
 msgstr ""
+"Either a fixed (absolute) value, or a relative value (e.g. 128px or 12%.)"
 
 #: playlist/layouts/LayoutEditDialog.cpp:105
+#, fuzzy
 msgid "fit content"
-msgstr ""
+msgstr "សម​មាតិកា"
 
 #: playlist/layouts/LayoutEditDialog.cpp:106
+#, fuzzy
 msgid "Fit the element text"
-msgstr ""
+msgstr "អត្ថបទ​ធាតុ​សម"
 
 #: playlist/layouts/LayoutEditDialog.cpp:108
 #, fuzzy
@@ -9905,10 +10143,13 @@ msgid "automatic"
 msgstr "ដោយ​ស្វ័យ​ប្រវត្តិ"
 
 #: playlist/layouts/LayoutEditDialog.cpp:109
+#, fuzzy
 msgid ""
 "Take homogeneous part of the space available to all elements with automatic "
 "width"
 msgstr ""
+"Take homogeneous part of the space available to all elements with automatic "
+"width"
 
 #: playlist/layouts/LayoutEditDialog.cpp:144
 #, fuzzy
@@ -9985,7 +10226,7 @@ msgstr "វឌ្ឍនភាព​បទ"
 
 #: playlist/navigators/NavigatorConfigAction.cpp:38
 msgid "Standard"
-msgstr ""
+msgstr "ស្តង់​ដារ"
 
 #: playlist/navigators/NavigatorConfigAction.cpp:47
 msgid "Repeat Track"
@@ -10015,7 +10256,7 @@ msgstr "ចាក់​អាល់ប៊ុម​ឡើង​វិញ"
 #, fuzzy
 #| msgid "&Favor"
 msgid "Favor"
-msgstr "សំណព្វ"
+msgstr "លំអៀង​ទៅ"
 
 #: playlist/navigators/NavigatorConfigAction.cpp:79
 #, fuzzy
@@ -10053,7 +10294,7 @@ msgstr "បង្ហាញបទ​សកម្ម"
 #, fuzzy, kde-format
 #| msgid "&Save Playlist"
 msgid "&Save playlist to \"%1\""
-msgstr "រក្សាទុក​បញ្ជី​ចាក់​ជា"
+msgstr "រក្សា​បញ្ជីចាក់​​ទុក​ជា to \"%1\""
 
 #: playlist/UndoCommands.cpp:29
 msgid "Tracks Added"
@@ -10067,17 +10308,19 @@ msgstr "បាន​យកបទ​ចេញ"
 msgid "Track moved"
 msgstr "បាន​យក​បទ​ចេញ"
 
-#: playlist/PlaylistActions.cpp:358
+#: playlist/PlaylistActions.cpp:362
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "បាន​ជួប​ប្រទះ​កំហុស​​ច្រើន​ពេក​នៅ​ក្នុង​បញ្ជី​ចាក់ ។ បាន​បញ្ឈប់​ការ​ចាក់​ឡើង​វិញ ។"
 
 #: playlist/PlaylistSortWidget.cpp:43
+#, fuzzy
 msgid "Clear the playlist sorting configuration."
-msgstr ""
+msgstr "ជម្រះ​ការ​តម្រៀប​រចនា​សម្ពន្ឋ័​បញ្ជីចាក់ ។"
 
 #: playlist/PlaylistSortWidget.cpp:53
+#, fuzzy
 msgid "Add a playlist sorting level."
-msgstr ""
+msgstr "បន្ថែម​កម្រិត​ការ​តម្រៀប​បញ្ជី​ចាក់ ។"
 
 #: playlist/PlaylistModel.cpp:282
 msgid "Never"
@@ -10147,14 +10390,14 @@ msgid "Total playlist size: %1"
 msgstr "រក្សាទុក​បញ្ជី​ចាក់​ជា"
 
 #: statusbar/StatusBar.cpp:327
-#, kde-format
+#, fuzzy, kde-format
 msgid "Queue size: %1"
-msgstr ""
+msgstr "ទំហំ​រៀប​ជា​ជួរ ៖ %1"
 
 #: statusbar/StatusBar.cpp:328
-#, kde-format
+#, fuzzy, kde-format
 msgid "Queue length: %1"
-msgstr ""
+msgstr " ប្រវែង​ទំហំ ៖ %1"
 
 #: statusbar/StatusBar.cpp:340
 #, kde-format
@@ -10165,7 +10408,7 @@ msgstr[0] "%1 បទ"
 
 #: statusbar/ProgressBar.cpp:47 statusbar/CompoundProgressBar.cpp:68
 #: statusbar/CompoundProgressBar.cpp:139 statusbar/CompoundProgressBar.cpp:175
-#: covermanager/CoverManager.cpp:211
+#: covermanager/CoverManager.cpp:213
 msgid "Abort"
 msgstr "បោះបង់"
 
@@ -10194,8 +10437,9 @@ msgid "group"
 msgstr "ដាក់​ជា​ក្រុម​តាម"
 
 #: amarokurls/BookmarkModel.cpp:267
+#, fuzzy
 msgid "URL"
-msgstr ""
+msgstr "URL"
 
 #: amarokurls/BookmarkModel.cpp:522
 msgid "New Group"
@@ -10321,7 +10565,7 @@ msgstr "បាន​ផ្អាក"
 
 #: widgets/TokenDropTarget.cpp:386
 msgid "Drag in and out items from above."
-msgstr ""
+msgstr "អូស​​ក្នុង​និង​ក្រៅ​ធាតុ​ពី​ខាង​លើ ។"
 
 #: widgets/SearchWidget.cpp:70
 msgid "Enter space-separated terms to search."
@@ -10332,8 +10576,9 @@ msgid "Edit filter"
 msgstr "កែសម្រួល​តម្រង"
 
 #: widgets/BreadcrumbItemButton.cpp:203
+#, fuzzy
 msgid "List and run bookmarks, or create new ones"
-msgstr ""
+msgstr "រាយ​ហើយ​ចំណាំ​រត់​ ឬបង្កើត​ថ្មី​មួយ "
 
 #: widgets/BreadcrumbItemButton.cpp:220
 #, fuzzy
@@ -10370,17 +10615,19 @@ msgid "0%"
 msgstr "០%"
 
 #: widgets/SliderWidget.cpp:467
-#, kde-format
+#, fuzzy, kde-format
 msgid "Time position: %1"
-msgstr ""
+msgstr "ឋានៈ​ពេល​ ៖ %1"
 
 #: widgets/TokenWithLayout.cpp:242
+#, fuzzy
 msgid "[prefix]"
-msgstr ""
+msgstr "[បុព្វ​បទ]"
 
 #: widgets/TokenWithLayout.cpp:253
+#, fuzzy
 msgid "[suffix]"
-msgstr ""
+msgstr "[បច្ច័យ]"
 
 #: widgets/AnalyzerWidget.cpp:35
 msgid "Click for more analyzers"
@@ -10655,29 +10902,30 @@ msgstr "មាន​កំហុស នៅពេល​ទាក់ទង​ទ�
 msgid "The XML obtained from Last.fm is invalid."
 msgstr "XML ដែល​បាន​ទទួល​ពី Amazon គឺ​មិន​ត្រឹមត្រូវ​ឡើយ ។"
 
-#: covermanager/CoverFetcher.cpp:281 covermanager/CoverFetcher.cpp:282
+#: covermanager/CoverFetcher.cpp:283 covermanager/CoverFetcher.cpp:284
 msgid "The cover could not be retrieved."
 msgstr "មិន​អាច​ទៅ​យក​គម្រប​បាន​ឡើយ ។"
 
-#: covermanager/CoverFetcher.cpp:335
+#: covermanager/CoverFetcher.cpp:337
 msgid "Aborted."
 msgstr "បាន​បញ្ឈប់"
 
-#: covermanager/CoverFetcher.cpp:344
+#: covermanager/CoverFetcher.cpp:346
 msgid "Retrieved cover successfully"
 msgstr "បាន​ទៅ​យក​គម្រប​ដោយ​ជោគជ័យ"
 
-#: covermanager/CoverFetcher.cpp:379
+#: covermanager/CoverFetcher.cpp:381
+#, fuzzy
 msgid "Unable to find a cover for the specified song."
-msgstr ""
+msgstr "មិន​អាច​ស្វែង​រក​បទ​ចំរៀង​ដែល​បាន​លាក់ ។"
 
-#: covermanager/CoverFetcher.cpp:382
+#: covermanager/CoverFetcher.cpp:384
 #, fuzzy, kde-format
 #| msgid "Fetching cover for %1..."
 msgid "Unable to find a cover for %1."
 msgstr "កំពុង​ទៅ​ប្រមូល​យក​គម្រប​របស់ %1..."
 
-#: covermanager/CoverFetcher.cpp:427
+#: covermanager/CoverFetcher.cpp:429
 msgid "Cover Found"
 msgstr "បាន​រកឃើញ​គម្រប"
 
@@ -10685,7 +10933,7 @@ msgstr "បាន​រកឃើញ​គម្រប"
 msgid "Albums By"
 msgstr "អាល់ប៊ុម​ដោយ"
 
-#: covermanager/CoverManager.cpp:112 covermanager/CoverManager.cpp:293
+#: covermanager/CoverManager.cpp:112 covermanager/CoverManager.cpp:295
 msgid "All Artists"
 msgstr "សិល្បករ​ទាំងអស់"
 
@@ -10705,83 +10953,84 @@ msgstr "អាល់ប៊ុម​គ្មាន​គម្រប"
 msgid "Fetch Missing Covers"
 msgstr "ទៅ​យក​គម្រប​ដែល​បាត់"
 
-#: covermanager/CoverManager.cpp:369
+#: covermanager/CoverManager.cpp:371
 msgid "Loading Thumbnails..."
 msgstr "កំពុង​ផ្ទុក​រូបភាព​តូច..."
 
-#: covermanager/CoverManager.cpp:624
+#: covermanager/CoverManager.cpp:637
 msgctxt "The fetching is done."
 msgid "Finished."
 msgstr "បាន​បញ្ចប់ ។"
 
-#: covermanager/CoverManager.cpp:626
+#: covermanager/CoverManager.cpp:639
 #, kde-format
 msgid " Cover not found"
 msgid_plural " <b>%1</b> covers not found"
 msgstr[0] " រកមិនឃើញ​គម្រប <b>%1</b> ទេ"
 
-#: covermanager/CoverManager.cpp:639
+#: covermanager/CoverManager.cpp:652
 #, kde-format
 msgid "Fetching cover for %1..."
 msgstr "កំពុង​ទៅ​ប្រមូល​យក​គម្រប​របស់ %1..."
 
-#: covermanager/CoverManager.cpp:641
+#: covermanager/CoverManager.cpp:654
 #, kde-format
 msgid "Fetching cover for %1 - %2..."
 msgstr "កំពុង​ទៅ​ប្រមូលយក​គម្រប​របស់ %1 - %2..."
 
-#: covermanager/CoverManager.cpp:648
+#: covermanager/CoverManager.cpp:661
 #, kde-format
 msgid "Fetching 1 cover: "
 msgid_plural "Fetching <b>%1</b> covers... : "
 msgstr[0] "កំពុង​ទៅ​ប្រមូលយក​គម្រប <b>%1</b>... ៖ "
 
-#: covermanager/CoverManager.cpp:650
+#: covermanager/CoverManager.cpp:663
 #, kde-format
 msgid "1 fetched"
 msgid_plural "%1 fetched"
 msgstr[0] "បាន​ទៅ​យក %1"
 
-#: covermanager/CoverManager.cpp:654
+#: covermanager/CoverManager.cpp:667
+#, fuzzy
 msgid " - "
 msgstr " - "
 
-#: covermanager/CoverManager.cpp:655
+#: covermanager/CoverManager.cpp:668
 #, kde-format
 msgid "1 not found"
 msgid_plural "%1 not found"
 msgstr[0] "រក​មិនឃើញ %1"
 
-#: covermanager/CoverManager.cpp:658
+#: covermanager/CoverManager.cpp:671
 msgid "Connecting..."
 msgstr "កំពុង​តភ្ជាប់..."
 
-#: covermanager/CoverManager.cpp:683
+#: covermanager/CoverManager.cpp:696
 #, kde-format
 msgid "1 result for \"%2\""
 msgid_plural "%1 results for \"%2\""
 msgstr[0] "%1 លទ្ធផល​សម្រាប់ \"%2\""
 
-#: covermanager/CoverManager.cpp:686
+#: covermanager/CoverManager.cpp:699
 #, kde-format
 msgid "1 album"
 msgid_plural "%1 albums"
 msgstr[0] "%1 អាល់ប៊ុម"
 
-#: covermanager/CoverManager.cpp:692
+#: covermanager/CoverManager.cpp:705
 msgid " by "
 msgstr " ដោយ "
 
-#: covermanager/CoverManager.cpp:697
+#: covermanager/CoverManager.cpp:710
 #, kde-format
 msgid " - ( <b>%1</b> without cover )"
 msgstr " - ( <b>%1</b> គ្មាន​គម្រប )"
 
-#: covermanager/CoverManager.cpp:743
+#: covermanager/CoverManager.cpp:758
 msgid "Cover Image"
 msgstr "រូបភាព​គម្រប"
 
-#: covermanager/CoverManager.cpp:800
+#: covermanager/CoverManager.cpp:836
 msgid "No Artist"
 msgstr "សិល្បករ"
 
@@ -10798,663 +11047,3 @@ msgstr "បន្ថែម​ខាង​ចុង និងចាក់"
 #: TrayIcon.cpp:224
 msgid "&Queue Track"
 msgstr "រៀប​បទ​ជា​ជួរ"
-
-#, fuzzy
-#~| msgid "Bookmark this Artist"
-#~ msgid "Bookmark This Location"
-#~ msgstr "ចំណាំ​សិល្បករ​នេះ"
-
-#, fuzzy
-#~| msgid "Album"
-#~ msgid " Album"
-#~ msgstr "អាល់ប៊ុម"
-
-#~ msgid "No purchases found."
-#~ msgstr "រក​មិន​ឃើញ​ការ​ទិញ !"
-
-#~ msgid "No previous purchases have been found. Nothing to re-download...."
-#~ msgstr "រក​មិន​ឃើញ​កា​រទិញ​ពីមុន ។ គ្មាន​អ្វី​ត្រូវ​ទាញ​យក​ម្ដង​ទៀត..."
-
-#~ msgid "Could not re-download album"
-#~ msgstr "មិនអាច​ទាញយក​អាល់ប៊ុម​ម្ដង​ទៀត"
-
-#~ msgid "There seems to be a problem with the selected re-download info file."
-#~ msgstr "ហាក់បី​ដូច​ជា​មាន​បញ្ហា​ជា​មួយ​នឹង​ឯកសារ​ព័ត៌មាន​ទាញយក​ឡើងវិញ​ដែល​បាន​ជ្រើស ។"
-
-#, fuzzy
-#~| msgid "Authors"
-#~ msgid "Author:"
-#~ msgstr "អ្នក​និពន្ធ"
-
-#~ msgid "Feed URL"
-#~ msgstr "URL របស់​មតិព័ត៌មាន"
-
-#~ msgid "(left click to copy to clipboard)"
-#~ msgstr "(ចុច​កណ្ដុរ​ឆ្វេង​ដើម្បី​ចម្លង​ទៅ​ក្ដារតម្បៀតខ្ពស់)"
-
-#~ msgid "Downloading album"
-#~ msgstr "កំពុង​ទាញយក​អាល់ប៊ុម"
-
-#~ msgid "Ra&ndom"
-#~ msgstr "ចៃដន្យ"
-
-#~ msgctxt "State, as in disabled"
-#~ msgid "&Off"
-#~ msgstr "បិទ"
-
-#~ msgctxt "Items, as in music"
-#~ msgid "&Tracks"
-#~ msgstr "បទ"
-
-#~ msgid "&Albums"
-#~ msgstr "អាល់ប៊ុម"
-
-#~ msgctxt "State, as in disabled"
-#~ msgid "Off"
-#~ msgstr "បិទ"
-
-#~ msgid "&Repeat"
-#~ msgstr "ចាក់​ឡើង​វិញ"
-
-#~ msgid "Which track(s) to play repeatedly"
-#~ msgstr "បទ​ណា​មួយ​ដែល​ត្រូវ​ចាក់​ឡើង​វិញ"
-
-#~ msgid ""
-#~ "Whether to repeat the current track, the current album, or the current "
-#~ "playlist indefinitely, or neither."
-#~ msgstr ""
-#~ "ថា​តើ​ត្រូវ​ចាក់​បទ​បច្ចុប្បន្ន អាល់ប៊ុម​បច្ចុប្បន្ន ឬ​បញ្ជី​ចាក់​បច្ចុប្បន្ន​ឡើង​វិញ​រហូត​ឬ​ទេ ឬ​ក៏​មិន​ចាក់ ។"
-
-#~ msgid "Do not Repeat"
-#~ msgstr "កុំ​ចាក់​ឡើងវិញ"
-
-#~ msgid "Whether to play tracks or albums in random order"
-#~ msgstr "ថា​តើ​ត្រូវ​ចាក់​បទ ឬ​អាល់ប៊ុម​តាម​លំដាប់​ចៃដន្យ"
-
-#~ msgid ""
-#~ "If set, Amarok plays the tracks or albums in the playlist in a random "
-#~ "order."
-#~ msgstr "បើ​បាន​កំណត់ នោះ Amarok នឹង​ចាក់​បទ ឬ​អាល់ប៊ុម​នៅ​ក្នុង​បញ្ជី​ចាក់ តាម​លំដាប់​ចៃដន្យ ។"
-
-#~ msgid "Volume Control"
-#~ msgstr "ការ​បញ្ជា​ឧបករណ៍​សំឡេង"
-
-#~ msgid "Previous"
-#~ msgstr "មុន"
-
-#~ msgid "Next"
-#~ msgstr "បន្ទាប់"
-
-#~ msgctxt ""
-#~ "Please do not translate the %foo words as they define a syntax used "
-#~ "internally by a parser to describe a filename."
-#~ msgid ""
-#~ "The following tokens can be used to define a filename "
-#~ "scheme:                                      <br>%track, %title, %artist, "
-#~ "%composer, %year, %album, %comment, %genre, %ignore."
-#~ msgstr ""
-#~ "ថូខឹន​ដូច​ខាងក្រោម​​អាច​ត្រូវ​បាន​ប្រើ​ដើម្បី​កំណត់​គ្រោងការណ៍​ឈ្មោះ​"
-#~ "ឯកសារ ៖                                      <br>%track, %title, %artist, "
-#~ "%composer, %year, %album, %comment, %genre, %ignore ។"
-
-#~ msgid ""
-#~ "The following tokens can be used to define a filename scheme: <br>%track, "
-#~ "%title, %artist, %composer, %year, %album, %comment, %genre<br>"
-#~ msgstr ""
-#~ "ថូខឹន​ដូច​ខាងក្រោម​អាច​​ត្រូវ​បានប្រើ​ដើម្បី​កំណត់​គ្រោងការណ៍​ឈ្មោះ​ឯកសារ ៖ <br>%track, %title, %"
-#~ "artist, %composer, %year, %album, %comment, %genre<br>"
-
-#~ msgctxt "Establish a connection to the Ampache server"
-#~ msgid "Active"
-#~ msgstr "សកម្ម"
-
-#, fuzzy
-#~| msgid "Bookmark this Artist"
-#~ msgid "Favorite by this Artist"
-#~ msgstr "ចំណាំ​សិល្បករ​នេះ"
-
-#, fuzzy
-#~| msgid "Bookmark this Album"
-#~ msgid "Favorite on this Album"
-#~ msgstr "ចំណាំ​អាល់ប៊ុម​នេះ"
-
-#~ msgid "Your favorite labels:"
-#~ msgstr "ស្លាក​សំណព្វ​របស់​អ្នក ៖"
-
-#~ msgid ""
-#~ "Edit the assigned labels below (multiple labels are separated by commas), "
-#~ "or select a label from above."
-#~ msgstr ""
-#~ "កែសម្រួល​ស្លាក​ដែល​បានផ្ដល់​ខាង​ក្រោម (ស្លាក​ច្រើន​ត្រូវ​បាន​បំបែក​ដោយ​សញ្ញាក្បៀស) ឬ​ជ្រើស​ស្លាក​ពី​ខា​"
-#~ "ងលើ ។"
-
-#, fuzzy
-#~| msgid "New Bookmark"
-#~ msgid "Remove Bookmark"
-#~ msgstr "ចំណាំ​ថ្មី"
-
-#, fuzzy
-#~| msgid "Url:"
-#~ msgid "Url"
-#~ msgstr "Url ៖"
-
-#~ msgid "On Screen Display"
-#~ msgstr "បង្ហាញ​លើ​អេក្រង់​មួយ"
-
-#~ msgid "Configure On-Screen-Display"
-#~ msgstr "កំណត់​រចនាសម្ព័ន្ធ​ការ​បង្ហាញ​លើ​អេក្រង់"
-
-#, fuzzy
-#~| msgid "from"
-#~ msgctxt "track from source"
-#~ msgid "from"
-#~ msgstr "ពី"
-
-#, fuzzy
-#~| msgid "Bookmarks"
-#~ msgid "Context Bookmarks"
-#~ msgstr "កន្លែង​ចំណាំ"
-
-#, fuzzy
-#~| msgid "Main Toolbar"
-#~ msgid "Main Toolbar NG"
-#~ msgstr "របារ​ឧបករណ៍​មេ"
-
-#, fuzzy
-#~| msgid "Main Toolbar"
-#~ msgid "Main Toolbar NNG"
-#~ msgstr "របារ​ឧបករណ៍​មេ"
-
-#~ msgid "&Fadeout"
-#~ msgstr "លិចបន្តិចម្ដង"
-
-#~ msgid "Miscellaneous"
-#~ msgstr "ផ្សេងៗ"
-
-#~ msgid ""
-#~ "Check to enable the On-Screen-Display. <br>The OSD briefly displays track "
-#~ "data when a new track is played."
-#~ msgstr ""
-#~ "ធីក ដើម្បី​អនុញ្ញាត​ការ​បង្ហាញ​លើ​អេក្រង់ ។<br>ការ​បង្ហាញ​លើ​អេក្រង់​នឹង​បង្ហាញ​ទិន្នន័យ​សង្ខេបៗ​អំពី​បទ នៅ​"
-#~ "ពេល​ចាក់​បទ​ថ្មី ។"
-
-#~ msgid "&Appearance"
-#~ msgstr "រូបរាង"
-
-#~ msgid ""
-#~ "<p>KLibLoader could not load the plugin:<br/><i>%1</i></p><p>Error "
-#~ "message:<br/><i>%2</i></p>"
-#~ msgstr ""
-#~ "<p>KLibLoader មិន​អាច​ផ្ទុក​កម្មវិធី​ជំនួយ ៖<br/><i>%1</i> បាន​ឡើយ</p><p>សារ​កំហុស​គឺ ៖<br/"
-#~ "><i>%2</i></p>"
-
-#~ msgid "Enter space-separated terms to search in the albums"
-#~ msgstr "បញ្ចូល​ពាក្យ​ដែល​បំបែក​ដោយ​ចន្លោះ​ដើម្បី​ស្វែងរក​នៅ​ក្នុង​អាល់ប៊ុម"
-
-#~ msgid "Browsers"
-#~ msgstr "កម្មវិធី​រុករក"
-
-#~ msgid "Font for On-Screen Display"
-#~ msgstr "ពុម្ពអក្សរ​សម្រាប់​ការ​បង្ហាញ​លើ​អេក្រង់"
-
-#~ msgid "The font to use for the On-Screen Display."
-#~ msgstr "ពុម្ពអក្សរ ដែល​ត្រូវ​ប្រើ​សម្រាប់​ការ​បង្ហាញ​លើ​អេក្រង់ ។"
-
-#~ msgid "Reserved Layout Name"
-#~ msgstr "ឈ្មោះប្លង់​ដែល​បានដាក់​បញ្ច្រាស"
-
-#, fuzzy
-#~| msgid "Dequeue Track"
-#~ msgid "Enqueue Track"
-#~ msgstr "មិន​រៀប​​បទ​ជា​ជួរ"
-
-#~ msgid " by <b>%1</b>"
-#~ msgstr " ដោយ <b>%1</b>"
-
-#~ msgid "Amarok - No track playing"
-#~ msgstr "Amarok - គ្មាន​បទ​កំពុង​ចាក់​ទេ ។"
-
-#~ msgid "Fadeout on track end"
-#~ msgstr "លិចបន្តិចម្ដងនៅ​ពេល​ដល់​បទ​ចុង"
-
-#~ msgid "Shoutcast Directory"
-#~ msgstr "ថត​ Shoutcast"
-
-#~ msgid "The biggest list of online radio stations on the Internet"
-#~ msgstr "បញ្ជី​​ធំ​បំផុត​​របស់​​ស្ថានីយ​វិទ្យុ​​លើ​បណ្ដាញ​នៅ​លើ​អ៊ីនធឺណិត"
-
-#, fuzzy
-#~| msgid "Video Clip"
-#~ msgctxt "Fetch the 500 most popular stations"
-#~ msgid "View Top 500 Stations"
-#~ msgstr "ឈុត​វីដេអូ"
-
-#, fuzzy
-#~| msgid "Video Clip"
-#~ msgctxt "Fetch list of all stations by genre"
-#~ msgid "View All Stations"
-#~ msgstr "ឈុត​វីដេអូ"
-
-#~ msgid "Results for: %1"
-#~ msgstr "លទ្ធផល​សម្រាប់ ៖ %1"
-
-#~ msgid "Install New Applets"
-#~ msgstr "ដំឡើង​អាប់ភ្លេត​ថ្មី"
-
-#~ msgid "Enter new group name:"
-#~ msgstr "បញ្ចូល​ឈ្មោះក្រុម​ថ្មី ៖"
-
-#, fuzzy
-#~| msgid "Group By"
-#~ msgid "Group by %1"
-#~ msgstr "ដាក់​ជា​ក្រុម​តាម"
-
-#, fuzzy
-#~| msgid "Group By"
-#~ msgid "Group &by"
-#~ msgstr "ដាក់​ជា​ក្រុម​តាម"
-
-#~ msgctxt "Replace the currently loaded tracks with these"
-#~ msgid "&Load"
-#~ msgstr "ផ្ទុក"
-
-#, fuzzy
-#~| msgid "Update Database"
-#~ msgid "&External database engine:"
-#~ msgstr "ធ្វើ​ឲ្យ​មូលដ្ឋាន​ទិន្នន័យ​ទាន់សម័យ"
-
-#, fuzzy
-#~| msgid "Playlist Options"
-#~ msgid "Playlist Grouping"
-#~ msgstr "ជម្រើស​បញ្ជី​ចាក់"
-
-#~ msgid "Enables the equalizer plugin"
-#~ msgstr "អនុញ្ញាត​កម្មវិធី​ជំនួយ​អេហ្គុយ"
-
-#~ msgid "Band gains for equalizer, 10 values, range -100..100, 0 is normal."
-#~ msgstr "Band gains សម្រាប់​អេហ្គុយ ។ តម្លៃ​គឺ 10 ជួរ​ពី -100..100, 0 ធម្មតា ។"
-
-#~ msgid "Enter Podcast URL:"
-#~ msgstr "បញ្ចូល URL របស់​ផតខាស់ ៖"
-
-#~ msgid "disc"
-#~ msgstr "ថាស"
-
-#~ msgid "disk"
-#~ msgstr "ថាស"
-
-#~ msgid "remaster"
-#~ msgstr "remaster"
-
-#~ msgid "cd"
-#~ msgstr "ស៊ីឌី"
-
-#~ msgid "single"
-#~ msgstr "ទោល"
-
-#~ msgid "soundtrack"
-#~ msgstr "បទចម្រៀង"
-
-#~ msgid "part"
-#~ msgstr "ផ្នែក"
-
-#~ msgid "No cover found"
-#~ msgstr "រក​មិន​ឃើញ​គម្រប​ឡើយ"
-
-#~ msgid "The cover-data produced an invalid image."
-#~ msgstr "ទិន្នន័យ​គម្រប​បាន​បង្កើត​រូបភាព​មិន​ត្រឹមត្រូវ ។"
-
-#~ msgid ""
-#~ "You have seen all the covers Amazon returned using the query below. "
-#~ "Perhaps you can refine it:"
-#~ msgstr ""
-#~ "អ្នក​បាន​ឃើញ​គម្រប​ទាំងអស់​ដែល Amazon បាន​ត្រឡប់​ដោយ​ប្រើ​សំណួរ​ខាង​ក្រោម ។ ប្រហែល​ជា​អ្នក​អាច​កំណត់​វា​"
-#~ "ឡើង​វិញ​បាន ៖"
-
-#~ msgid "Amazon Query Editor"
-#~ msgstr "កម្មវិធី​និពន្ធ​សំណួរ​របស់ Amazon"
-
-#~ msgid "Ask Amazon for covers using this query:"
-#~ msgstr "សួរ​រក​គម្រប​ពី Amazon ដោយ​ប្រើ​សំណួរ​នេះ ៖"
-
-#~ msgid "Ne&w Search..."
-#~ msgstr "កា​រស្វែងរក​ថ្មី..."
-
-#~ msgid "&Next Cover"
-#~ msgstr "គម្រប​បន្ទាប់"
-
-#~ msgctxt "The locale to use when fetching covers from amazon.com"
-#~ msgid "International"
-#~ msgstr "អន្តរជាតិ"
-
-#~ msgid "Amazon Locale"
-#~ msgstr "មូលដ្ឋាន Amazon"
-
-#~ msgid "Collections"
-#~ msgstr "សម្រាំង"
-
-#~ msgid "&Delete group"
-#~ msgstr "លុបក្រុម"
-
-#~ msgid "Add Stream Location"
-#~ msgstr "បន្ថែម​ទីតាំង​ស្ទ្រីម"
-
-#~ msgid "Name:"
-#~ msgstr "ឈ្មោះ ៖"
-
-#~ msgid "Stream URL:"
-#~ msgstr "URL ស្ទ្រីម ៖"
-
-#~ msgid "My Playlists"
-#~ msgstr "បញ្ជីចាក់​របស់​ខ្ញុំ"
-
-#~ msgid "User Playlists"
-#~ msgstr "បញ្ជី​ចាក់​អ្នកប្រើ"
-
-#, fuzzy
-#~| msgid "New Bookmark"
-#~ msgid "New bookmark"
-#~ msgstr "ចំណាំ​ថ្មី"
-
-#~ msgid "Bold"
-#~ msgstr "ដិត"
-
-#~ msgid "Italic"
-#~ msgstr "ទ្រេត"
-
-#~ msgid "Left"
-#~ msgstr "ឆ្វេង"
-
-#~ msgid "Center"
-#~ msgstr "កណ្ដាល"
-
-#~ msgid "Right"
-#~ msgstr "ស្ដាំ"
-
-#~ msgid ""
-#~ "The amount you choose to pay will be split 50/50 between the artist and "
-#~ "Magnatune.com. Your personal and credit card information is sent securely "
-#~ "to Magnatune.com using SSL encryption and is not stored by Amarok or "
-#~ "readable by the Amarok developers."
-#~ msgstr ""
-#~ "ចំនួន​សរុប​ដែល​អ្នក​ត្រូវ​ចំណាយ នឹង​ត្រូវចែក​ជា ៥០/៥០ រវាង​សិល្បករ និង Magnatune.com ។ ព័ត៌មាន​"
-#~ "ផ្ទាល់ខ្លួន និង​ប័ណ្ណឥណទាន​របស់​អ្នក គឺ​ត្រូវបាន​ផ្ញើ​ទៅកាន់ Magnatune.com យ៉ាង​មាន​សុវត្ថិភាព "
-#~ "ដោយប្រើ​ការ​អ៊ិនគ្រីប SSL ហើយ Amarok មិនអាច​ទុក​វា​បាន ​ឬអ្នក​អភិវឌ្ឍន៍ Amarok ក៏​មិនអាច​អាន​វា​"
-#~ "បានដែរ ។"
-
-#~ msgid "Get Current"
-#~ msgstr "ទទួល​យក​បច្ចុប្បន្ន"
-
-#~ msgid "Goto"
-#~ msgstr "ទៅ​កាន់"
-
-#~ msgctxt "Enter a new name for a group that already exists"
-#~ msgid "Enter new group name:"
-#~ msgstr "បញ្ចូល​ឈ្មោះ​ក្រុម​ថ្មី ៖"
-
-#~ msgid "No service named %1 is curretly loaded"
-#~ msgstr "គ្មាន​សេវា​ដែល​មាន​ឈ្មោះ %1 បច្ចុប្បន្ន​ត្រូវ​បានផ្ទុក"
-
-#, fuzzy
-#~| msgid "One track already on media device"
-#~| msgid_plural "%1 tracks already on media device"
-#~ msgid "The tracks to copy are already on the device!"
-#~ msgstr "មាន %1 បទ​នៅ​លើ​ឧបករណ៍​ផ្ទុក​រួចហើយ"
-
-#~ msgid "The list of available collections"
-#~ msgstr "បញ្ជី​សម្រាំង​ដែលអាច​ប្រើបាន"
-
-#~ msgid "Different kinds of playlists"
-#~ msgstr "ប្រភេទ​បញ្ជីចាក់​ផ្សេង​គ្នា"
-
-#~ msgid "Browse local files"
-#~ msgstr "រកមើល​ឯកសារ​មូលដ្ឋាន"
-
-#, fuzzy
-#~| msgid "Single"
-#~ msgid "Scrolling"
-#~ msgstr "តែ​មួយ"
-
-#, fuzzy
-#~| msgid "Move to Collection"
-#~ msgid "Remove From Collection"
-#~ msgstr "ផ្លាស់ទី​ទៅ​សម្រាំង"
-
-#~ msgid "Unknown album"
-#~ msgstr "មិន​ស្គាល់​អាល់ប៊ុម"
-
-#~ msgid "Unknown artist"
-#~ msgstr "មិន​ស្គាល់​សិល្បករ"
-
-#~ msgid "Unknown genre"
-#~ msgstr "មិនស្គាល់​ចង្វាក់"
-
-#~ msgid "Transferring Tracks to MTP Device"
-#~ msgstr "ការ​ទ្វេរ​បទ​ទៅ​ឧបករណ៍ MTP"
-
-#, fuzzy
-#~| msgid "Unknown Genre"
-#~ msgid "Unknown composer"
-#~ msgstr "មិន​ស្គាល់​ចង្វាក់"
-
-#~ msgid "Lang"
-#~ msgstr "ភាសា"
-
-#~ msgid "Drag tokens here to define a filename scheme."
-#~ msgstr "អូស​ថូខឹន​​នៅ​ទីនេះ ដើម្បី​កំណត់​គ្រោងការណ៍​ឈ្មោះ​ឯកសារ ។"
-
-#~ msgid "Transferring Tracks to iPod"
-#~ msgstr "ការ​ផ្ទេរ​បទ​ទៅ iPod"
-
-#~ msgid "Local Collection (via database at %1)"
-#~ msgstr "សម្រាំង​មូលដ្ឋាន (តាម​រយៈ​មូលដ្ឋាន​ទិន្នន័យ​នៅ %1)"
-
-#~ msgid "Transferring Tracks to MTP"
-#~ msgstr "ផ្ទេរ​បទ​ទៅ MTP"
-
-#~ msgid "Could not send track"
-#~ msgstr "មិន​អាច​ផ្ញើ​បទ"
-
-#~ msgid "&Remove from MTP Device"
-#~ msgstr "យក​ចេញ​ពី​ឧបករណ៍ MTP"
-
-#~ msgid "The MTP device %1 is connected"
-#~ msgstr "ឧបករណ៍ MTP %1 ត្រូវ​បាន​តភ្ជាប់"
-
-#~ msgid "Manage Devices and Plugins"
-#~ msgstr "គ្រប់គ្រង​ឧបករណ៍ និង​កម្មវិធី​ជំនួយ"
-
-#~ msgid "Devices"
-#~ msgstr "ឧបករណ៍"
-
-#~ msgid ""
-#~ "Cannot define two devices\n"
-#~ "with the same name and mountpoint."
-#~ msgstr ""
-#~ "មិនអាច​កំណត់ឧបករណ៍​ពីរ​\n"
-#~ "ដែល​មានឈ្មោះ និងចំណុច​ម៉ោន​ដូច​គ្នា​បាន​ទេ ។"
-
-#~ msgid "Add New Device"
-#~ msgstr "បន្ថែម​ឧបករណ៍​ថ្មី"
-
-#~ msgid "Select the plugin to use with this device:"
-#~ msgstr "ជ្រើស​កម្មវិធី​ជំនួយ​ដែលត្រូវ​ប្រើ​ជាមួយ​ឧបករណ៍​នេះ ៖"
-
-#~ msgid "Enter a &name for this device (required):"
-#~ msgstr "បញ្ចូល​ឈ្មោះ​ឲ្យ​ឧបករណ៍​នេះ (ចាំបាច់) ៖"
-
-#~ msgid "Example: My_Ipod"
-#~ msgstr "ឧទាហរណ៍ ៖ My_Ipod"
-
-#~ msgid ""
-#~ "Enter a name for the device.  The name must be unique across all manually "
-#~ "added devices.  It must not contain the pipe ( | ) character."
-#~ msgstr ""
-#~ "បញ្ចូល​ឈ្មោះ​ឲ្យ​ឧបករណ៍ ។ ឈ្មោះ​ត្រូវតែ​មានតែមួយ ក្នុង​ចំណោម​ឧបករណ៍​ដែល​បញ្ចូល​ដោយ​ដៃ​ទាំងអស់ ។ វា​មិនត្រូវ​"
-#~ "មាន​តួអក្សរ​ \"|\" ទេ ។"
-
-#~ msgid "Enter the &mount point of the device, if applicable:"
-#~ msgstr "សូម​បញ្ចូល​ចំណុច​ម៉ោន​របស់​ឧបករណ៍ បើ​អាច​បញ្ចូល​បាន ៖"
-
-#~ msgid "Example: /mnt/ipod"
-#~ msgstr "ឧទាហរណ៍ ៖ /mnt/ipod"
-
-#~ msgid ""
-#~ "Enter the device's mount point.  Some devices (such as MTP devices) may "
-#~ "not have a mount point and this can be ignored.  All other devices "
-#~ "(iPods, UMS/VFAT devices) should enter the mount point here."
-#~ msgstr ""
-#~ "បញ្ចូល​ចំណុចម៉ោន​របស់​ឧបករណ៍ ។ ឧបករណ៍​មួយ​ចំនួន (ដូចជា​ឧបករណ៍ MTP) គឺ​មិនអាច​មាន​ចំណុចម៉ោន​ទេ ហើយ​វា​អាច​"
-#~ "ត្រូវបាន​មិនអើពើ​ផងដែរ ។ ឧបករណ៍​ផ្សេងទៀត​ទាំងអស់ (ឧបករណ៍ iPods, UMS/VFAT) គឺគួរតែ​បញ្ចូល​ចំណុច​"
-#~ "ម៉ោន​នៅ​ទីនេះ ។"
-
-#~ msgid ""
-#~ "Every device must have a name, and\n"
-#~ "two devices cannot have the same\n"
-#~ "name. These names must be unique\n"
-#~ "across auto-detected devices as well.\n"
-#~ msgstr ""
-#~ "ឧបករណ៍​ទាំងអស់​ត្រូវ​តែ​មាន​ឈ្មោះ\n"
-#~ "ហើយ​អ្នក​មិន​អាច​កំណត់​ឧបករណ៍​ពីរ​ឲ្យ​មាន​ឈ្មោះ\n"
-#~ "ដូច​គ្នា​បាន​ឡើយ ។ ឈ្មោះ​ទាំងនេះ​ត្រូវ​តែ​មាន​តែ​មួយ​គត់\n"
-#~ "រួម​ទាំង​ឧបករណ៍​ដែល​មិន​បាន​រកឃើញ​ផង​ដែរ ។\n"
-
-#~ msgid "No mount point needed"
-#~ msgstr "មិនមាន​ចំណុច​ម៉ោន"
-
-#~ msgid "The device name cannot contain the '|' character"
-#~ msgstr "ឈ្មោះ​ឧបករណ៍ មិនអាច​មាន​តួអក្សរ '|' ឡើយ"
-
-#~ msgid "Autodetected:"
-#~ msgstr "រកឃើញ​ស្វ័យប្រវត្តិ ៖"
-
-#~ msgid "Yes"
-#~ msgstr "បាទ"
-
-#~ msgid "No"
-#~ msgstr "ទេ"
-
-#~ msgid "Unique ID:"
-#~ msgstr "លេខ​សម្គាល់​មាន​តែ​មួយគត់ ៖"
-
-#~ msgid "Vendor:"
-#~ msgstr "ក្រុមហ៊ុន​លក់ ៖"
-
-#~ msgid "Product:"
-#~ msgstr "ផលិតផល ៖"
-
-#~ msgid "Mount Point:"
-#~ msgstr "ចំណុចម៉ោន ៖"
-
-#~ msgid "Not Mounted"
-#~ msgstr "មិនបាន​ម៉ោន"
-
-#~ msgid "Device information for "
-#~ msgstr "ព័ត៌មាន​ឧបករណ៍​សម្រាប់ "
-
-#~ msgid "Name: "
-#~ msgstr "ឈ្មោះ ៖ "
-
-#~ msgid "Details"
-#~ msgstr "សេចក្ដី​លម្អិត"
-
-#~ msgid "Plugin:"
-#~ msgstr "កម្មវិធី​ជំនួយ ៖"
-
-#~ msgid "Generic Audio Player"
-#~ msgstr "កម្មវិធី​ចាក់អូឌីយ៉ូ​ទូទៅ"
-
-#~ msgid "Do not handle"
-#~ msgstr "កុំ​ដោះស្រាយ"
-
-#~ msgid "Remove entries corresponding to this device from configuration file"
-#~ msgstr "យក​ធាតុ​ដែល​ត្រូវ​នឹង​ឧបករណ៍​នេះ​ចេញ​ពី​ឯកសារ​កំណត់រចនាសម្ព័ន្ធ"
-
-#~ msgid "Mark Volumes as Media Devices"
-#~ msgstr "សម្គាល់​កម្រិត​សំឡេង​ជា​ឧបករណ៍​មេឌៀ"
-
-#~ msgid "Mark?"
-#~ msgstr "សម្គាល់​ឬ ?"
-
-#~ msgid ""
-#~ "Could not create the marking file at %1.\n"
-#~ "Ensure that you have the correct permissions\n"
-#~ "to create that file."
-#~ msgstr ""
-#~ "មិនអាច​បង្កើត​ឯកសារ​សម្គាល់​នៅ %1 បានទេ ។\n"
-#~ "ត្រូវប្រាកដ​ថា អ្នក​មាន​សិទ្ធិ​ត្រឹមត្រូវ​ក្នុងការ​បង្កើត​ឯកសារ​នោះ ។"
-
-#~ msgid ""
-#~ "Could not remove the marking file at %1.\n"
-#~ "Ensure that you have the correct permissions\n"
-#~ "to remove that file."
-#~ msgstr ""
-#~ "មិនអាច​យក​ឯកសារ​សម្គាល់​​នៅ %1 ចេញ​បានឡើយ ។\n"
-#~ "ត្រូវប្រាកដ​ថា អ្នក​មាន​សិទ្ធិ​ត្រឹមត្រូវ\n"
-#~ "ក្នុងការ​យក​ឯកសារ​នោះចេញ ។"
-
-#~ msgid "Error Removing File"
-#~ msgstr "កំហុស​ក្នុងកា​រយក​ឯកសារ"
-
-#~ msgid "Media Device: Copying %1 to %2 failed"
-#~ msgstr "ឧបករណ៍​​ផ្ទុក ៖ ការ​ចម្លង %1 ទៅ %2 បាន​បរាជ័យ"
-
-#~ msgid "Media Device: Reading tags from %1 failed"
-#~ msgstr "ឧបករណ៍​​ផ្ទុក ៖ ការ​អាន​ស្លាក​ពី %1 បាន​បរាជ័យ"
-
-#~ msgid "1 track to be deleted"
-#~ msgid_plural "%1 tracks to be deleted"
-#~ msgstr[0] "%1 បទ​ដែលត្រូវ​លុប"
-
-#~ msgid "Failed to purge podcasts already played"
-#~ msgstr "បរាជ័យ​ក្នុង​ការ​លុបបំបាត់​ផតខាស់​ដែល​បាន​ចាក់​រួច"
-
-#~ msgid "Purged 1 podcasts already played"
-#~ msgid_plural "Purged %1 podcasts already played"
-#~ msgstr[0] "ផតខាស់ %1 ដែល​បាន​លុប​បំបាត់​គឺ​ចាក់​រួចហើយ"
-
-#~ msgid "Device successfully connected"
-#~ msgstr "បាន​តភ្ជាប់​ឧបករណ៍​ដោយ​ជោគជ័យ"
-
-#~ msgid ""
-#~ "Post-disconnect command failed, before removing device, please make sure "
-#~ "that it is safe to do so."
-#~ msgstr ""
-#~ "ពាក្យ​បញ្ជា​ផ្ដាច់​​បន្ទាប់​បាន​បរាជ័យ មុន​ពេល​យក​ឧបករណ៍​ចេញ សូម​ប្រាកដ​ថាវា​មាន​សុវត្ថិភាព​ដើម្បីធ្វើ​"
-#~ "ដូច្នេះ ។"
-
-#~ msgid "Device successfully disconnected"
-#~ msgstr "បាន​ផ្ដាច់​ឧបករណ៍​ដោយ​ជោគជ័យ"
-
-#~ msgid "Track not playable on media device: %1"
-#~ msgstr "បទ​ដែល​មិន​អាច​ចាក់​បាន​លើ​ឧបករណ៍​​ផ្ទុក​ ៖ %1"
-
-#~ msgid "Failed to copy track to media device: %1"
-#~ msgstr "​បរាជ័យ​ក្នុង​ការ​ចម្លង​បទ​ទៅ​ឧបករណ៍​​ផ្ទុក ៖ %1"
-
-#~ msgid "One track not playable on media device"
-#~ msgid_plural "%1 tracks not playable on media device"
-#~ msgstr[0] "%1 បទ គឺ​មិនអាច​ចាក់​នៅលើ​ឧបករណ៍​ផ្ទុក​បានទេ"
-
-#~ msgid ", one track already on media device"
-#~ msgid_plural ", %1 tracks already on media device"
-#~ msgstr[0] " មាន %1 បទ​នៅ​លើ​ឧបករណ៍​ផ្ទុក​រួចហើយ"
-
-#~ msgid "One track was not transcoded"
-#~ msgid_plural "%1 tracks were not transcoded"
-#~ msgstr[0] "%1 បទ​មិនអាច​បម្លែង​ជា​កូដ​បានទេ"
-
-#~ msgid ", one track was not transcoded"
-#~ msgid_plural ", %1 tracks were not transcoded"
-#~ msgstr[0] " %1 បទ​គឺ​មិនអាច​បម្លែង​កូដ​បានទេ"
-
-#~ msgid " (no transcode script running)"
-#~ msgstr " (មិនកំពុង​រត់​ស្គ្រីប​បម្លែង)"
-
-#~ msgid "The following tracks were not transferred: "
-#~ msgstr "មិន​បាន​បញ្ជូន​បទ​ខាង​ក្រោម​ឡើយ ៖"
-
-#~ msgid "<p>You have selected 1 track to be <b>irreversibly</b> deleted.</p>"
-#~ msgid_plural ""
-#~ "<p>You have selected %1 tracks to be <b>irreversibly</b> deleted.</p>"
-#~ msgstr[0] "<p>អ្នក​បាន​ជ្រើស %1 បទ​ដើម្បី​លុបជា<b>រៀង​រហូត</b> ។</p>"

@@ -2,7 +2,7 @@
 # Copyright (C) YEAR This_file_is_part_of_KDE
 # This file is distributed under the same license as the PACKAGE package.
 #
-# A S Alam <aalam@users.sf.net>, 2007, 2008, 2009.
+# A S Alam <aalam@users.sf.net>, 2007, 2008, 2009, 2010.
 # AP S Alam <aalam@users.sf.net>, 2007.
 # ASB <aalam@users.sf.net>, 2007.
 # Amanpreet Singh <aalam@users.sf.net>, 2008.
@@ -11,10 +11,10 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-12-10 06:47+0100\n"
-"PO-Revision-Date: 2009-12-06 08:55+0530\n"
+"POT-Creation-Date: 2010-01-05 06:35+0100\n"
+"PO-Revision-Date: 2010-01-02 08:31+0530\n"
 "Last-Translator: A S Alam <aalam@users.sf.net>\n"
-"Language-Team: Punjabi/Panjabi <punjabi-users@lists.sf.net>\n"
+"Language-Team: Punjabi/Panjabi <punjab-l10n@list.sf.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -22,8 +22,9 @@ msgstr ""
 "X-Generator: Lokalize 1.0\n"
 
 #: mac/GrowlInterface.cpp:37 context/engines/current/CurrentEngine.cpp:150
-#: context/applets/currenttrack/CurrentTrack.cpp:109
-#: context/applets/photos/PhotosApplet.cpp:132 App.cpp:993 widgets/Osd.cpp:578
+#: context/applets/currenttrack/CurrentTrack.cpp:110
+#: context/applets/photos/PhotosApplet.cpp:132 App.cpp:1009
+#: widgets/Osd.cpp:578
 msgid "No track playing"
 msgstr "ਕੋਈ ਗਾਣਾ ਨਹੀਂ ਚੱਲਦਾ"
 
@@ -146,7 +147,7 @@ msgstr "ਪਲੇਅ-ਲਿਸਟ_%1"
 #: collection/daap/DaapCollection.cpp:83
 #, kde-format
 msgid "Loading remote collection from host %1"
-msgstr ""
+msgstr "ਹੋਸਟ %1 ਤੋਂ ਰਿਮੋਟ ਭੰਡਾਰ ਲੋਡ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
 
 #: collection/daap/DaapCollection.cpp:258
 #, kde-format
@@ -325,11 +326,7 @@ msgid "Orphaned Tracks Added"
 msgstr "ਲਾਵਰਿਸ ਟਰੈਕ ਸ਼ਾਮਲ ਕੀਤੇ"
 
 #: collection/CollectionLocation.cpp:289
-#, fuzzy, kde-format
-#| msgctxt "@info"
-#| msgid ""
-#| "Do you really want to delete these %1 tracks? They will be removed from "
-#| "disk as well as your collection."
+#, kde-format
 msgctxt "@info"
 msgid ""
 "Do you really want to delete this track? It will be removed from disk as "
@@ -360,37 +357,37 @@ msgstr "ਜੰਤਰ ਪੜ੍ਹੋ(&R)"
 msgid "Proxy Collection"
 msgstr "ਪਰਾਕਸੀ ਭੰਡਾਰ"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:154
+#: collection/mtpcollection/handler/MtpHandler.cpp:151
 msgid "Could not connect to MTP Device"
 msgstr "MTP ਜੰਤਰ ਨਾਲ ਜੁੜਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:375
+#: collection/mtpcollection/handler/MtpHandler.cpp:374
 msgid "Could not copy track from device."
 msgstr "ਜੰਤਰ ਤੋਂ ਟਰੈਕ ਕਾਪੀ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ ਹੈ।"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:418
+#: collection/mtpcollection/handler/MtpHandler.cpp:417
 msgid "Unknown Artist"
 msgstr "ਅਣਜਾਣ ਕਲਾਕਾਰ"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:428
+#: collection/mtpcollection/handler/MtpHandler.cpp:427
 msgid "Unknown Album"
 msgstr "ਅਣਜਾਣ ਐਲਬਮ"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:434
+#: collection/mtpcollection/handler/MtpHandler.cpp:433
 msgid "Unknown Genre"
 msgstr "ਅਣਜਾਣ ਧੁਨ"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:590
-#: collection/mtpcollection/handler/MtpHandler.cpp:741
-#: collection/mtpcollection/handler/MtpHandler.cpp:922
+#: collection/mtpcollection/handler/MtpHandler.cpp:589
+#: collection/mtpcollection/handler/MtpHandler.cpp:740
+#: collection/mtpcollection/handler/MtpHandler.cpp:923
 msgid "Could not delete item"
 msgstr "ਆਈਟਮ ਹਟਾਈ ਨਹੀਂ ਜਾ ਸਕੀ"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:601
+#: collection/mtpcollection/handler/MtpHandler.cpp:600
 msgid "Delete failed"
 msgstr "ਹਟਾਉਣਾ ਫੇਲ੍ਹ"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:895
+#: collection/mtpcollection/handler/MtpHandler.cpp:896
 msgid "Could not save playlist."
 msgstr "ਪਲੇਅਲਿਸਟ ਸੰਭਾਲੀ ਨਹੀਂ ਜਾ ਸਕੀ।"
 
@@ -424,13 +421,11 @@ msgid "Transferring Tracks to Device"
 msgstr "ਟਰੈਕ ਜੰਤਰ ਉੱਤੇ ਭੇਜੇ ਜਾ ਰਹੇ ਹਨ"
 
 #: collection/mediadevicecollection/handler/MediaDeviceHandler.cpp:554
-#, fuzzy, kde-format
-#| msgid "One track already on media device"
-#| msgid_plural "%1 tracks already on media device"
+#, kde-format
 msgid "%1 track failed to copy to the device"
 msgid_plural "%1 tracks failed to copy to the device"
-msgstr[0] "ਇੱਕ ਟਰੈਕ ਪਹਿਲਾਂ ਹੀ ਮੀਡਿਆ ਜੰਤਰ ਉੱਤੇ ਹੈ"
-msgstr[1] "ਇੱਕ ਟਰੈਕ ਪਹਿਲਾਂ ਹੀ ਮੀਡਿਆ ਜੰਤਰ ਉੱਤੇ ਹੈ"
+msgstr[0] "%1 ਟਰੈਕ ਜੰਤਰ ਉੱਤੇ ਕਾਪੀ ਕਰਨ ਲਈ ਫੇਲ੍ਹ"
+msgstr[1] "%1 ਟਰੈਕ ਜੰਤਰ ਉੱਤੇ ਕਾਪੀ ਕਰਨ ਲਈ ਫੇਲ੍ਹ"
 
 #: collection/mediadevicecollection/handler/MediaDeviceHandler.cpp:579
 msgid "The track failed to copy to the device"
@@ -541,7 +536,7 @@ msgstr "ਸੰਗੀਤ ਸਕੈਨ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ"
 #: collection/sqlcollection/ScanManager.cpp:718
 #: dialogs/OrganizeCollectionDialog.cpp:144
 #: browsers/CollectionTreeItem.cpp:201 covermanager/CoverViewDialog.h:45
-#: covermanager/CoverManager.cpp:780
+#: covermanager/CoverManager.cpp:816
 msgid "Various Artists"
 msgstr "ਕਈ ਕਲਾਕਾਰ"
 
@@ -553,7 +548,7 @@ msgstr "ਸਟਰੀਮ"
 
 #: collection/sqlcollection/SqlMeta.cpp:407
 #: services/lastfm/meta/LastFmMeta.cpp:137 covermanager/CoverViewDialog.h:44
-#: covermanager/CoverManager.cpp:780
+#: covermanager/CoverManager.cpp:816
 #, kde-format
 msgid "%1 - %2"
 msgstr "%1 - %2"
@@ -574,7 +569,7 @@ msgstr "ਬਾਹਰ ਕੱਢੋ(&E)"
 #: collection/audiocd/AudioCdCollection.cpp:413
 #: collection/audiocd/AudioCdCollection.cpp:414
 #: collection/audiocd/AudioCdCollection.cpp:415
-#: context/applets/albums/AlbumItem.cpp:73 MainWindow.cpp:1148
+#: context/applets/albums/AlbumItem.cpp:73 MainWindow.cpp:1158
 #: amarokurls/BookmarkTreeView.cpp:319 amarokurls/BookmarkTreeView.cpp:320
 #: amarokurls/BookmarkTreeView.cpp:321
 msgid "Unknown"
@@ -781,7 +776,7 @@ msgstr "ਕੋਈ ਜਾਣਕਾਰੀ ਨਹੀਂ ਲੱਭੀ..."
 msgid "Unable to retrieve Wikipedia information: %1"
 msgstr "ਵਿਕਿਪੀਡਿਆ ਜਾਣਕਾਰੀ ਲੈਣ ਲਈ ਅਸਮਰੱਥ: %1"
 
-#: context/engines/wikipedia/WikipediaEngine.cpp:392
+#: context/engines/wikipedia/WikipediaEngine.cpp:396
 msgid "Wikipedia Other Languages: <br/>"
 msgstr "ਹੋਰ ਭਾਸ਼ਾਵਾਂ ਵਿੱਚ ਵਿਕਿਪੀਡਿਆ: <br/ >"
 
@@ -886,41 +881,41 @@ msgstr "ਐਪਲਿਟ ਨਾਂ ਨਹੀਂ"
 msgid "Lyrics data could not be parsed"
 msgstr "ਬੋਲ ਡਾਟਾ ਪਾਰਸ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:103
+#: context/applets/videoclip/VideoclipApplet.cpp:107
 #: context/applets/lyrics/LyricsApplet.cpp:130
 #: context/applets/photos/PhotosApplet.cpp:78
 #: context/applets/wikipedia/WikipediaApplet.cpp:141
 msgid "Settings"
 msgstr "ਸੈਟਿੰਗ"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:114
-#: context/applets/videoclip/VideoclipApplet.cpp:347
-#: context/applets/videoclip/VideoclipApplet.cpp:368
+#: context/applets/videoclip/VideoclipApplet.cpp:118
+#: context/applets/videoclip/VideoclipApplet.cpp:357
+#: context/applets/videoclip/VideoclipApplet.cpp:378
 msgid "Video Clip"
 msgstr "ਵਿਡੀਓ ਕਲਿੱਪ"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:358
+#: context/applets/videoclip/VideoclipApplet.cpp:368
 msgid "Video Clip "
 msgstr "ਵਿਡੀਓ ਕਲਿੱਪ"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:358
+#: context/applets/videoclip/VideoclipApplet.cpp:368
 msgid " No information found..."
 msgstr " ਕੋਈ ਜਾਣਕਾਰੀ ਨਹੀਂ ਲੱਭੀ..."
 
-#: context/applets/videoclip/VideoclipApplet.cpp:541
+#: context/applets/videoclip/VideoclipApplet.cpp:551
 msgid "Video Clip Settings"
 msgstr "ਵਿਡੀਓ ਕਲਿੱਪ ਸੈਟਿੰਗ"
 
-#: context/applets/videoclip/VideoItemButton.cpp:98
+#: context/applets/videoclip/VideoItemButton.cpp:96
 msgid "&Add to playlist"
 msgstr "ਪਲੇਅਲਿਸਟ ਵਿੱਚ ਸ਼ਾਮਲ(&A)"
 
-#: context/applets/videoclip/VideoItemButton.cpp:99
+#: context/applets/videoclip/VideoItemButton.cpp:97
 #: context/applets/albums/AlbumsView.cpp:114
 msgid "&Queue"
 msgstr "ਕਤਾਰ(&Q)"
 
-#: context/applets/videoclip/VideoItemButton.cpp:100
+#: context/applets/videoclip/VideoItemButton.cpp:98
 msgid "Append and &Play"
 msgstr "ਸ਼ਾਮਿਲ ਅਤੇ ਚਲਾਓ(&P)"
 
@@ -945,48 +940,43 @@ msgid "Concerts"
 msgstr "ਪਰਸੰਗ"
 
 #: context/applets/songkick/SongkickApplet.cpp:69
-#, fuzzy
-#| msgid "Reload Lyrics"
 msgid "Reload Songkick"
-msgstr "ਬੋਲ ਮੁੜ-ਲੋਡ"
+msgstr "ਸਾਂਗਕਿਕ  ਮੁੜਲੋਡ"
 
 #: context/applets/songkick/SongkickApplet.cpp:151
 msgid "Concert information is being fetched."
 msgstr ""
 
 #: context/applets/songkick/SongkickApplet.cpp:156
-#, fuzzy, kde-format
-#| msgid ""
-#| "Lyrics were not able to be downloaded. Please check your internet "
-#| "connection: %1"
+#, kde-format
 msgid ""
 "Songkick was not able to be downloaded. Please check your Internet "
 "connection: %1"
-msgstr "ਬੋਲ ਡਾਊਨਲੋਡ ਨਹੀਂ ਕੀਤੇ ਜਾ ਸਕੇ ਸਨ। ਆਪਣਾ ਇੰਟਰਨੈੱਟ ਕੁਨੈਕਸ਼ਨ ਚੈੱਕ ਕਰੋ ਜੀ: %1"
+msgstr "ਸਾਂਗਕਿਕ ਡਾਊਨਲੋਡ ਨਹੀਂ ਕੀਤਾ ਜਾ ਸਕਿਆ। ਆਪਣਾ ਇੰਟਰਨੈੱਟ ਕੁਨੈਕਸ਼ਨ ਚੈੱਕ ਕਰੋ ਜੀ: %1"
 
 #: context/applets/songkick/SongkickApplet.cpp:201
 msgid "There was no information found for this track"
 msgstr "ਇਹ ਟਰੈਕ ਲਈ ਕੋਈ ਜਾਣਕਾਰੀ ਨਹੀਂ ਮਿਲੀ"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:82
+#: context/applets/currenttrack/CurrentTrack.cpp:83
 msgctxt "What artist is this track by"
 msgid "By"
 msgstr "ਵਲੋਂ"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:83
+#: context/applets/currenttrack/CurrentTrack.cpp:84
 msgctxt "What album is this track on"
 msgid "On"
 msgstr "ਚਾਲੂ"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:115
-#: context/applets/currenttrack/CurrentTrack.cpp:542
+#: context/applets/currenttrack/CurrentTrack.cpp:116
+#: context/applets/currenttrack/CurrentTrack.cpp:557
 msgid "Play count"
 msgstr "ਚੱਲਣ ਗਿਣਤੀ"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:120
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
-#: context/applets/currenttrack/CurrentTrack.cpp:116
-#: context/applets/currenttrack/CurrentTrack.cpp:543
+#: context/applets/currenttrack/CurrentTrack.cpp:117
+#: context/applets/currenttrack/CurrentTrack.cpp:558
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:256
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:695 rc.cpp:1249
 #: playlist/PlaylistModel.cpp:715 widgets/SmartPlaylistEditor.cpp:185
@@ -994,18 +984,18 @@ msgstr "ਚੱਲਣ ਗਿਣਤੀ"
 msgid "Score"
 msgstr "ਸਕੋਰ"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:117
-#: context/applets/currenttrack/CurrentTrack.cpp:544
+#: context/applets/currenttrack/CurrentTrack.cpp:118
+#: context/applets/currenttrack/CurrentTrack.cpp:559
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:261
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:700 TrayIcon.cpp:189
 msgid "Last Played"
 msgstr "ਆਖਰੀ ਸੁਣਿਆ"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:122
+#: context/applets/currenttrack/CurrentTrack.cpp:123
 msgid "Last played"
 msgstr "ਆਖਰੀ ਚਲਾਇਆ"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:123
+#: context/applets/currenttrack/CurrentTrack.cpp:124
 msgid "Favorite tracks"
 msgstr "ਪਸੰਦੀਦਾ ਟਰੈਕ"
 
@@ -1108,10 +1098,8 @@ msgid ""
 msgstr ""
 
 #: context/applets/lyrics/LyricsApplet.cpp:423
-#, fuzzy
-#| msgid "Repeat Playlist"
 msgid "Refetch lyrics"
-msgstr "ਪਲੇਅ-ਲਿਸਟ ਮੁੜ-ਚਲਾਓ"
+msgstr "ਬੋਲ ਮੁੜ-ਲਵੋ"
 
 #. i18n: file: context/applets/lyrics/lyricsSettings.ui:26
 #. i18n: ectx: property (windowTitle), widget (QWidget, lyricsSettings)
@@ -1133,7 +1121,7 @@ msgstr "ਫੋਟੋ"
 #. i18n: file: context/applets/wikipedia/wikipediaSettings.ui:24
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
 #: context/applets/photos/PhotosApplet.cpp:92
-#: context/applets/wikipedia/WikipediaApplet.cpp:401 rc.cpp:569 rc.cpp:592
+#: context/applets/wikipedia/WikipediaApplet.cpp:406 rc.cpp:569 rc.cpp:592
 msgid "Automatic"
 msgstr "ਆਟੋਮੈਟਿਕ"
 
@@ -1173,7 +1161,7 @@ msgstr "ਅੱਗੇ"
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: context/applets/wikipedia/WikipediaApplet.cpp:120
 #: dialogs/FilenameLayoutDialog.cpp:170 dialogs/FilenameLayoutDialog.cpp:497
-#: dialogs/transferdialog.cpp:88 browsers/CollectionTreeItemModelBase.cpp:922
+#: dialogs/transferdialog.cpp:88 browsers/CollectionTreeItemModelBase.cpp:928
 #: browsers/collectionbrowser/CollectionWidget.cpp:122
 #: browsers/collectionbrowser/CollectionWidget.cpp:151
 #: browsers/collectionbrowser/CollectionWidget.cpp:183
@@ -1190,7 +1178,7 @@ msgstr "ਕਲਾਕਾਰ"
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: context/applets/wikipedia/WikipediaApplet.cpp:127
 #: dialogs/FilenameLayoutDialog.cpp:182 dialogs/FilenameLayoutDialog.cpp:518
-#: dialogs/transferdialog.cpp:89 browsers/CollectionTreeItemModelBase.cpp:921
+#: dialogs/transferdialog.cpp:89 browsers/CollectionTreeItemModelBase.cpp:927
 #: browsers/collectionbrowser/CollectionWidget.cpp:125
 #: browsers/collectionbrowser/CollectionWidget.cpp:154
 #: browsers/collectionbrowser/CollectionWidget.cpp:186
@@ -1217,23 +1205,23 @@ msgstr "ਮੁੜ-ਲੋਡ"
 
 #. i18n: file: context/applets/wikipedia/wikipediaSettings.ui:29
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
-#: context/applets/wikipedia/WikipediaApplet.cpp:404 rc.cpp:595
+#: context/applets/wikipedia/WikipediaApplet.cpp:409 rc.cpp:595
 msgid "English"
 msgstr "ਅੰਗਰੇਜ਼ੀ"
 
 #. i18n: file: context/applets/wikipedia/wikipediaSettings.ui:34
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
-#: context/applets/wikipedia/WikipediaApplet.cpp:407 rc.cpp:598
+#: context/applets/wikipedia/WikipediaApplet.cpp:412 rc.cpp:598
 msgid "French"
 msgstr "ਫਰੈਂਚ"
 
 #. i18n: file: context/applets/wikipedia/wikipediaSettings.ui:39
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
-#: context/applets/wikipedia/WikipediaApplet.cpp:410 rc.cpp:601
+#: context/applets/wikipedia/WikipediaApplet.cpp:415 rc.cpp:601
 msgid "German"
 msgstr "ਜਰਮਨ"
 
-#: context/applets/wikipedia/WikipediaApplet.cpp:437
+#: context/applets/wikipedia/WikipediaApplet.cpp:442
 msgid "Wikipedia Settings"
 msgstr "ਵਿਕਿਪੀਡਿਆ ਸੈਟਿੰਗ"
 
@@ -1276,7 +1264,7 @@ msgid ""
 msgstr ""
 
 #: context/widgets/ToolBoxMenu.cpp:107
-#: context/widgets/appletexplorer/AppletExplorer.cpp:88
+#: context/widgets/appletexplorer/AppletExplorer.cpp:90
 msgid "Hide menu"
 msgstr "ਮੇਨੂ ਓਹਲੇ"
 
@@ -1442,7 +1430,7 @@ msgstr "ਇਹ ਪ੍ਰੀਸੈੱਟ ਨਹੀਂ ਹਟਾਇਆ ਜਾ ਸ�
 
 #: configdialog/dialogs/PlaybackConfig.cpp:260
 msgid "Default presets can not be deleted"
-msgstr ""
+msgstr "ਡਿਫਾਲਟ ਪ੍ਰੀਸੈੱਟ ਹਟਾਏ ਨਹੀਂ ਜਾ ਸਕਦੇ"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:261
 msgid "Error deleting preset"
@@ -1729,7 +1717,7 @@ msgstr "ਟਾਈਟਲ"
 #. i18n: file: dialogs/EditFilterDialog.ui:95
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:174 dialogs/FilenameLayoutDialog.cpp:504
-#: browsers/CollectionTreeItemModelBase.cpp:923
+#: browsers/CollectionTreeItemModelBase.cpp:929
 #: browsers/collectionbrowser/CollectionWidget.cpp:131
 #: browsers/collectionbrowser/CollectionWidget.cpp:160
 #: browsers/collectionbrowser/CollectionWidget.cpp:192
@@ -1742,7 +1730,7 @@ msgstr "ਸੰਗੀਤਕਾਰ"
 #. i18n: file: dialogs/EditFilterDialog.ui:135
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:178 dialogs/FilenameLayoutDialog.cpp:511
-#: browsers/CollectionTreeItemModelBase.cpp:925
+#: browsers/CollectionTreeItemModelBase.cpp:931
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:253
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:692 rc.cpp:1258
 #: playlist/PlaylistModel.cpp:703 widgets/SmartPlaylistEditor.cpp:184
@@ -1759,7 +1747,7 @@ msgstr "ਟਿੱਪਣੀ"
 #. i18n: file: dialogs/EditFilterDialog.ui:100
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:190 dialogs/FilenameLayoutDialog.cpp:532
-#: dialogs/transferdialog.cpp:90 browsers/CollectionTreeItemModelBase.cpp:924
+#: dialogs/transferdialog.cpp:90 browsers/CollectionTreeItemModelBase.cpp:930
 #: browsers/collectionbrowser/CollectionWidget.cpp:128
 #: browsers/collectionbrowser/CollectionWidget.cpp:157
 #: browsers/collectionbrowser/CollectionWidget.cpp:189
@@ -2114,7 +2102,7 @@ msgstr "ਸਕੋਰ ਗੀਤ:"
 msgid "Average Score:"
 msgstr "ਔਸਤ ਸਕੋਰ:"
 
-#: dialogs/TagDialog.cpp:1646
+#: dialogs/TagDialog.cpp:1649
 msgid ""
 "Writing to file failed. Please check permissions and available disc space."
 msgstr "ਫਾਇਲ ਲਿਖਣ ਲਈ ਫੇਲ੍ਹ ਹੈ। ਅਧਿਕਾਰ ਅਤੇ ਉਪਲੱਬਦ ਡਿਸਕ ਥਾਂ ਦੀ ਜਾਂਚ ਕਰੋ ਜੀ।"
@@ -2241,11 +2229,11 @@ msgstr "ਚੋਣ"
 msgid "Convert spaces to underscores"
 msgstr "ਖਾਲੀ ਥਾਂ ਨੂੰ _ ਨਾਲ ਬਦਲੋ"
 
-#: dialogs/ScriptManager.cpp:92 MainWindow.cpp:771
+#: dialogs/ScriptManager.cpp:106 MainWindow.cpp:775
 msgid "Script Manager"
 msgstr "ਸਕ੍ਰਿਪਟ ਮੈਨੇਜਰ"
 
-#: dialogs/ScriptManager.cpp:292
+#: dialogs/ScriptManager.cpp:306
 msgid ""
 "Script Packages (*.amarokscript.tar, *.amarokscript.tar.bz2, *.amarokscript."
 "tar.gz)"
@@ -2253,17 +2241,18 @@ msgstr ""
 "ਸਕ੍ਰਿਪਟ ਪੈਕੇਜ (*.amarokscript.tar, *.amarokscript.tar.bz2, *.amarokscript.tar."
 "gz)"
 
-#: dialogs/ScriptManager.cpp:300
+#: dialogs/ScriptManager.cpp:314
 msgid "Could not read this package."
 msgstr "ਇਹ ਪੈਕੇਜ ਪੜ੍ਹਿਆ ਨਹੀਂ ਜਾ ਸਕਿਆ ਹੈ।"
 
-#: dialogs/ScriptManager.cpp:311
+#: dialogs/ScriptManager.cpp:325
 #, kde-format
 msgid ""
 "A script with the name '%1' is already installed. Please uninstall it first."
 msgstr "ਸਕ੍ਰਿਪਟ ਨਾਂ '%1' ਨਾਲ ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ। ਕਿਰਪਾ ਕਰਕੇ ਪਹਿਲਾਂ ਇਸ ਨੂੰ ਹਟਾਓ।"
 
-#: dialogs/ScriptManager.cpp:322 dialogs/ScriptManager.cpp:376
+#: dialogs/ScriptManager.cpp:336 dialogs/ScriptManager.cpp:382
+#: dialogs/ScriptManager.cpp:403
 msgid ""
 "<p>Script successfully installed.</p><p>Please restart Amarok to start the "
 "script.</p>"
@@ -2271,13 +2260,14 @@ msgstr ""
 "<p>ਸਕ੍ਰਿਪਟ ਠੀਕ ਤਰ੍ਹਾਂ ਇੰਸਟਾਲ ਹੋ ਗਈ ਹੈ</p><p>ਸਕ੍ਰਿਪਟ ਸ਼ੁਰੂ ਕਰਨ ਵਾਸਤੇ ਅਮਰੋਕ ਨੂੰ ਮੁੜ-ਚਾਲੂ ਕਰੋ।</"
 "p>"
 
-#: dialogs/ScriptManager.cpp:328
+#: dialogs/ScriptManager.cpp:342
 msgid ""
 "<p>Script installation failed.</p><p>Please inform the package maintainer "
 "about this error.</p>"
 msgstr "<p>ਸਕ੍ਰਿਪਟ ਇੰਸਟਾਲੇਸ਼ਨ ਅਸਫ਼ਲ ਹੈ।</p><p>ਪੈਕੇਜ ਪ੍ਰਬੰਧਕ ਨੂੰ ਇਸ ਬਾਰੇ ਜਾਣਕਾਰੀ ਦਿਓ ਜੀ।</p>"
 
-#: dialogs/ScriptManager.cpp:379 dialogs/ScriptManager.cpp:410
+#: dialogs/ScriptManager.cpp:385 dialogs/ScriptManager.cpp:406
+#: dialogs/ScriptManager.cpp:438
 msgid ""
 "<p>Script successfully uninstalled.</p><p>Please restart Amarok to totally "
 "remove the script.</p>"
@@ -2285,20 +2275,20 @@ msgstr ""
 "<p>ਸਕ੍ਰਿਪਟ ਠੀਕ ਤਰ੍ਹਾਂ ਅਣ-ਇੰਸਟਾਲ ਕੀਤੀ ਗਈ।</p><p>ਸਕ੍ਰਿਪਟ ਨੂੰ ਪੂਰੀ ਤਰ੍ਹਾਂ ਹਟਾਉਣ ਲਈ ਅਮਰੋਕ ਨੂੰ "
 "ਮੁੜ-ਚਾਲੂ ਕਰੋ।</p>"
 
-#: dialogs/ScriptManager.cpp:392
+#: dialogs/ScriptManager.cpp:420
 #, kde-format
 msgid "Are you sure you want to uninstall the script '%1'?"
 msgstr "ਕੀ ਤੁਸੀਂ '%1' ਸਕ੍ਰਿਪਟ ਹਟਾਉਣ ਲਈ ਸਹਿਮਤ ਹੋ?"
 
-#: dialogs/ScriptManager.cpp:392
+#: dialogs/ScriptManager.cpp:420
 msgid "Uninstall Script"
 msgstr "ਸਕ੍ਰਿਪਟ ਹਟਾਓ"
 
-#: dialogs/ScriptManager.cpp:392
+#: dialogs/ScriptManager.cpp:420
 msgid "Uninstall"
 msgstr "ਹਟਾਓ"
 
-#: dialogs/ScriptManager.cpp:401
+#: dialogs/ScriptManager.cpp:429
 msgid ""
 "<p>Could not uninstall this script.</p><p>The ScriptManager can only "
 "uninstall scripts which have been installed as packages.</p>"
@@ -2306,7 +2296,7 @@ msgstr ""
 "<p>ਇਸ ਸਕ੍ਰਿਪਟ ਹਟਾਈ ਨਹੀਂ ਜਾ ਸਕੀ।</p> <p>ਸਕ੍ਰਿਪਟ ਮੈਨੇਜਰ ਸਕ੍ਰਿਪਟਾਂ ਨੂੰ ਹਟਾ ਨਹੀਂ ਸਕਦਾ ਹੈ, ਜੋ "
 "ਕਿ ਪੈਕੇਜ ਦੇ ਤੌਰ 'ਤੇ ਇੰਸਟਾਲ ਹੋਈਆਂ ਹਨ।</p>"
 
-#: dialogs/ScriptManager.cpp:449
+#: dialogs/ScriptManager.cpp:477
 #, kde-format
 msgid ""
 "There are exceptions caught in the script '%1'. Please refer to the console "
@@ -2433,91 +2423,91 @@ msgstr "ਡਾਟਾਬੇਸ ਗਲਤੀ"
 msgid "Moving files to trash"
 msgstr "ਫਾਇਲਾਂ ਰੱਦੀ ਵਿੱਚ ਭੇਜੀਆਂ ਜਾਂਦੀਆਂ ਹਨ"
 
-#: App.cpp:865
+#: App.cpp:881
 msgctxt "When this track was last played"
 msgid "Unknown"
 msgstr "ਅਣਜਾਣ"
 
-#: App.cpp:870
+#: App.cpp:886
 #, kde-format
 msgctxt "monthname year"
 msgid "%1 %2"
 msgstr "%1 %2"
 
-#: App.cpp:877
+#: App.cpp:893
 #, kde-format
 msgid "One week ago"
 msgid_plural "%1 weeks ago"
 msgstr[0] "1 ਹਫ਼ਤਾ ਪਹਿਲਾਂ"
 msgstr[1] "%1 ਹਫ਼ਤੇ ਪਹਿਲਾਂ"
 
-#: App.cpp:883
+#: App.cpp:899
 msgid "Yesterday"
 msgstr "ਕੱਲ੍ਹ"
 
-#: App.cpp:884
+#: App.cpp:900
 #, kde-format
 msgid "One day ago"
 msgid_plural "%1 days ago"
 msgstr[0] "1 ਦਿਨ ਪਹਿਲਾਂ"
 msgstr[1] "%1 ਦਿਨ ਪਹਿਲਾਂ"
 
-#: App.cpp:887
+#: App.cpp:903
 #, kde-format
 msgid "One hour ago"
 msgid_plural "%1 hours ago"
 msgstr[0] "1 ਘੰਟਾ ਪਹਿਲਾਂ"
 msgstr[1] "%1 ਘੰਟੇ ਪਹਿਲਾਂ"
 
-#: App.cpp:893
+#: App.cpp:909
 #, kde-format
 msgid "One minute ago"
 msgid_plural "%1 minutes ago"
 msgstr[0] "ਇੱਕ ਮਿੰਟ ਪਹਿਲਾਂ"
 msgstr[1] "%1 ਮਿੰਟ ਪਹਿਲਾਂ"
 
-#: App.cpp:894
+#: App.cpp:910
 msgid "Within the last minute"
 msgstr "ਆਖਰੀ ਮਿੰਟ ਵਿੱਚ"
 
-#: App.cpp:896
+#: App.cpp:912
 msgid "The future"
 msgstr "ਭਵਿੱਖ"
 
-#: App.cpp:902
+#: App.cpp:918
 msgctxt "The amount of time since last played"
 msgid "Never"
 msgstr "ਕਦੇ ਨਹੀਂ"
 
-#: App.cpp:912
+#: App.cpp:928
 msgctxt "The amount of time since last played"
 msgid "0"
 msgstr "0"
 
-#: App.cpp:921
+#: App.cpp:937
 #, kde-format
 msgctxt "number of months ago"
 msgid "%1M"
 msgstr "%1M"
 
-#: App.cpp:925
+#: App.cpp:941
 #, kde-format
 msgctxt "w for weeks"
 msgid "%1w"
 msgstr "%1w"
 
-#: App.cpp:928
+#: App.cpp:944
 msgctxt "When this track was last played"
 msgid "Tomorrow"
 msgstr "ਭਲਕ"
 
-#: App.cpp:934
+#: App.cpp:950
 #, no-c-format, kde-format
 msgctxt "d for days"
 msgid "%1d"
 msgstr "%1d"
 
-#: App.cpp:937
+#: App.cpp:953
 #, kde-format
 msgctxt "h for hours"
 msgid "%1h"
@@ -2545,34 +2535,34 @@ msgstr "%1h"
 #. i18n: ectx: property (text), widget (QLabel, eqBand8Value)
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:1329
 #. i18n: ectx: property (text), widget (QLabel, eqBand9Value)
-#: App.cpp:946 rc.cpp:737 rc.cpp:743 rc.cpp:749 rc.cpp:755 rc.cpp:761
+#: App.cpp:962 rc.cpp:737 rc.cpp:743 rc.cpp:749 rc.cpp:755 rc.cpp:761
 #: rc.cpp:767 rc.cpp:773 rc.cpp:779 rc.cpp:785 rc.cpp:791 rc.cpp:797
 msgid "0"
 msgstr "0"
 
-#: App.cpp:963
+#: App.cpp:979
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%3</b> ਵਿੱਚ <b>%2</b> ਵਲੋਂ <b>%1</b>"
 
-#: App.cpp:966
+#: App.cpp:982
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%2</b> ਵਲੋਂ <b>%1</b>"
 
-#: App.cpp:970
+#: App.cpp:986
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%2</b> ਵਿੱਚੋਂ <b>%1</b>"
 
-#: App.cpp:975
+#: App.cpp:991
 msgid "Unknown track"
 msgstr "ਅਣਜਾਣ ਟਰੈਕ"
 
-#: App.cpp:982
+#: App.cpp:998
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -3057,7 +3047,7 @@ msgstr "ਬਿਨ-ਟਾਇਟਲ"
 msgid "A preset with the name %1 already exists. Overwrite?"
 msgstr "ਪਹਿਲਾਂ-ਸੈੱਟ ਨਾਂ %1 ਪਹਿਲਾਂ ਹੀ ਮੌਜੂਦ ਹੈ। ਕੀ ਉੱਤੇ ਹੀ ਲਿਖਣਾ ਹੈ?"
 
-#: EngineController.cpp:227
+#: EngineController.cpp:237
 msgid ""
 "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
 "the installation of the backend that phonon uses.</p><p>You may find useful "
@@ -3067,22 +3057,22 @@ msgstr ""
 "ਦੀ ਇੰਸਟਾਲੇਸ਼ਨ ਵੇਖਣੀ ਚਾਹੋਗੇ।</p><p>ਤੁਸੀਂ ਲੋੜੀਦੀ ਜਾਣਕਾਰੀ <i>amaroK HandBook</i> ਵਿੱਚ "
 "<i>FAQ</i> ਭਾਗ ਵੇਖ ਸਕਦੇ ਹੋ।</p>"
 
-#: EngineController.cpp:246
+#: EngineController.cpp:256
 msgid "Install MP3 Support"
 msgstr "MP3 ਸਹਿਯੋਗ ਇੰਸਟਾਲ ਕਰੋ"
 
-#: EngineController.cpp:248
+#: EngineController.cpp:258
 msgid ""
 "Amarok currently cannot play MP3 files. Do you want to install support for "
 "MP3?"
 msgstr ""
 "ਅਮਰੋਕ ਇਸ ਸਮੇਂ MP3 ਫਾਇਲਾਂ ਖੋਲ੍ਹ ਨਹੀਂ ਸਕਦਾ ਹੈ। ਕੀ ਤੁਸੀਂ MP3 ਲਈ ਸਹਿਯੋਗ ਇੰਸਟਾਲ ਕਰਨਾ ਚਾਹੋਗੇ?"
 
-#: EngineController.cpp:249
+#: EngineController.cpp:259
 msgid "No MP3 Support"
 msgstr "ਕੋਈ MP3 ਸਹਿਯੋਗ ਨਹੀਂ ਹੈ"
 
-#: EngineController.cpp:743
+#: EngineController.cpp:760
 msgid "Preamp"
 msgstr "Preamp"
 
@@ -3194,7 +3184,7 @@ msgstr "ਪਲੇਅ-ਲਿਸਟ"
 msgid "Recommendations by Echo Nest."
 msgstr "ਮੇਰੀਆਂ ਸਿਫਾਰਸ਼ੀ"
 
-#: dynamic/BiasedPlaylist.cpp:141
+#: dynamic/BiasedPlaylist.cpp:145
 msgid "Generating playlist..."
 msgstr "ਪਲੇਅ-ਲਿਸਟ ਬਣਾਈ ਜਾ ਰਹੀ ਹੈ.."
 
@@ -3257,10 +3247,8 @@ msgid "Developer (jefferai)"
 msgstr "ਡਿਵੈਲਪਰ (jefferai)"
 
 #: main.cpp:46
-#, fuzzy
-#| msgid "Developer (jefferai)"
 msgid "Developer (lfranchi)"
-msgstr "ਡਿਵੈਲਪਰ (jefferai)"
+msgstr "ਡਿਵੈਲਪਰ(lfranchi)"
 
 #: main.cpp:47
 msgid "Lydia 'is wrong(TM)' Pintscher"
@@ -3283,40 +3271,32 @@ msgid "Maximilian Kossick"
 msgstr "Maximilian Kossick"
 
 #: main.cpp:52
-#, fuzzy
-#| msgid "Developer (jefferai)"
 msgid "Developer (maxx_k)"
-msgstr "ਡਿਵੈਲਪਰ (jefferai)"
+msgstr "ਡਿਵੈਲਪਰ (maxx_k)"
 
 #: main.cpp:53
 msgid "Nikolaj Hald 'Also very hot' Nielsen"
 msgstr ""
 
 #: main.cpp:54
-#, fuzzy
-#| msgid "Developer"
 msgid "Developer (nhn)"
-msgstr "ਡਿਵੈਲਪਰ"
+msgstr "ਡਿਵੈਲਪਰ (nhn)"
 
 #: main.cpp:55
 msgid "Seb 'Surfin' down under' Ruiz"
 msgstr ""
 
 #: main.cpp:56
-#, fuzzy
-#| msgid "Developer (jefferai)"
 msgid "Developer (sebr)"
-msgstr "ਡਿਵੈਲਪਰ (jefferai)"
+msgstr "ਡਿਵੈਲਪਰ (sebr)"
 
 #: main.cpp:57
 msgid "Téo Mrnjavac"
 msgstr "Téo Mrnjavac"
 
 #: main.cpp:58
-#, fuzzy
-#| msgid "Developer (jefferai)"
 msgid "Developer (Teo`)"
-msgstr "ਡਿਵੈਲਪਰ (jefferai)"
+msgstr "ਡਿਵੈਲਪਰ (Teo`)"
 
 #: main.cpp:74
 msgid "Alex Merry"
@@ -3340,7 +3320,7 @@ msgstr ""
 
 #: main.cpp:78
 msgid "Windows porting"
-msgstr ""
+msgstr "ਵਿੰਡੋਜ਼ ਪੋਰਟਿੰਗ"
 
 #: main.cpp:80
 msgid "Christie Harris"
@@ -3356,7 +3336,7 @@ msgstr "Dan Leinir Turthra Jensen"
 
 #: main.cpp:82
 msgid "Usability"
-msgstr ""
+msgstr "ਵਰਤੋਂਯੋਗਤਾ"
 
 #: main.cpp:84
 msgid "Daniel Caleb Jones"
@@ -3369,10 +3349,8 @@ msgid "Biased playlists"
 msgstr "ਸੰਭਾਲੀ ਪਲੇਅ-ਲਿਸਟ"
 
 #: main.cpp:86
-#, fuzzy
-#| msgid "Daniel Winter"
 msgid "Daniel Dewald"
-msgstr "Daniel Winter"
+msgstr "Daniel Dewald"
 
 #: main.cpp:86
 msgid "Tag Guesser, Labels"
@@ -3383,10 +3361,8 @@ msgid "Daniel Winter"
 msgstr "Daniel Winter"
 
 #: main.cpp:88
-#, fuzzy
-#| msgid "Nepomuk Collection"
 msgid "Nepomuk integration"
-msgstr "Nepomuk ਭੰਡਾਰ"
+msgstr "ਨਿਪੋਮੁਕ ਐਂਟੀਗਰੇਸ਼ਨ"
 
 #: main.cpp:90
 msgid "Edward \"Hades\" Toroshchin"
@@ -3397,10 +3373,8 @@ msgid "Frank Meerkötter"
 msgstr ""
 
 #: main.cpp:92 main.cpp:111
-#, fuzzy
-#| msgid "Podcast Directory"
 msgid "Podcast improvements"
-msgstr "ਪੋਡਕਾਸਟ ਡਾਇਰੈਕਟਰੀ"
+msgstr "ਪੋਡਕਾਸਟ ਸੁਧਾਰ"
 
 #: main.cpp:95
 msgid "Greg Meyer"
@@ -3517,10 +3491,8 @@ msgid "Peter Zhou Lei"
 msgstr "Peter Zhou Lei"
 
 #: main.cpp:125
-#, fuzzy
-#| msgid "Script Manager"
 msgid "Scripting interface"
-msgstr "ਸਕ੍ਰਿਪਟ ਮੈਨੇਜਰ"
+msgstr "ਸਕ੍ਰਿਪਟ ਇੰਟਰਫੇਸ"
 
 #: main.cpp:127
 msgid "Scott Wheeler"
@@ -3575,10 +3547,8 @@ msgid "Wade Olson"
 msgstr "ਲੀ ਓਲਸਨ"
 
 #: main.cpp:141
-#, fuzzy
-#| msgid "Sho&w splash-screen on startup"
 msgid "Splash screen artist"
-msgstr "ਸ਼ੁਰੂ ਵੇਲੇ ਝਲਕ ਵੇਖੋ(&w)"
+msgstr "ਸ਼ੁਰੂਆਤੀ ਸਕਰੀਨ ਕਲਾਕਾਰ"
 
 #: main.cpp:143
 msgid "William Viana Soares"
@@ -3622,7 +3592,7 @@ msgstr "Andreas Mair"
 
 #: main.cpp:153
 msgid "MySQL support"
-msgstr ""
+msgstr "MySQL ਸਹਿਯੋਗ"
 
 #: main.cpp:155
 msgid "Andrew de Quincey"
@@ -3630,7 +3600,7 @@ msgstr "Andrew de Quincey"
 
 #: main.cpp:155
 msgid "Postgresql support"
-msgstr ""
+msgstr "Postgresql ਸਹਿਯੋਗ"
 
 #: main.cpp:157
 msgid "Andrew Turner"
@@ -3654,7 +3624,7 @@ msgstr "Derek Nelson"
 
 #: main.cpp:163
 msgid "Graphics, splash-screen"
-msgstr ""
+msgstr "ਗਰਾਫਿਕਸ, ਸਵਾਗਤੀ ਸਕਰੀਨ"
 
 #: main.cpp:165
 msgid "Enrico Ros"
@@ -3678,7 +3648,7 @@ msgstr "Gérard Dürrmeyer"
 
 #: main.cpp:171
 msgid "Icons and image work"
-msgstr ""
+msgstr "ਆਈਕਾਨ ਤੇ ਚਿੱਤਰਕਾਰੀ"
 
 #: main.cpp:173
 msgid "Giovanni Venturi"
@@ -3732,7 +3702,7 @@ msgstr "ਮਾਈਕਲ ਪੇਯਨੀ"
 
 #: main.cpp:185
 msgid "K3b export code"
-msgstr ""
+msgstr "K3b ਐਕਸਪੋਰਟ ਕੋਡ"
 
 #: main.cpp:187
 msgid "Mike Diehl"
@@ -3831,98 +3801,95 @@ msgstr "ਸਰੋਤ ਦੀ ਫਾਇਲ ਐਕਸ਼ਟੇਸ਼ਨ"
 msgid "Previous Browser"
 msgstr "ਬਰਾਊਜ਼ਰ ਪਿੱਛੇ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:532
+#: browsers/CollectionTreeItemModelBase.cpp:538
 msgid "album"
 msgstr "ਐਲਬਮ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:537
+#: browsers/CollectionTreeItemModelBase.cpp:543
 msgid "artist"
 msgstr "ਕਲਾਕਾਰ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:542
+#: browsers/CollectionTreeItemModelBase.cpp:548
 msgid "genre"
 msgstr "ਧੁਨ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:547
+#: browsers/CollectionTreeItemModelBase.cpp:553
 msgid "title"
 msgstr "ਟਾਇਟਲ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:552
+#: browsers/CollectionTreeItemModelBase.cpp:558
 msgid "composer"
 msgstr "ਸੰਗੀਤਕਾਰ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:557
+#: browsers/CollectionTreeItemModelBase.cpp:563
 msgid "year"
 msgstr "ਸਾਲ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:562
+#: browsers/CollectionTreeItemModelBase.cpp:568
 msgid "bpm"
 msgstr "bpm"
 
-#: browsers/CollectionTreeItemModelBase.cpp:566
+#: browsers/CollectionTreeItemModelBase.cpp:572
 msgid "comment"
 msgstr "ਟਿੱਪਣੀ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:570
+#: browsers/CollectionTreeItemModelBase.cpp:576
 msgid "bitrate"
 msgstr "ਬਿੱਟਰੇਟ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:574
+#: browsers/CollectionTreeItemModelBase.cpp:580
 msgid "rating"
 msgstr "ਰੇਟਿੰਗ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:578
+#: browsers/CollectionTreeItemModelBase.cpp:584
 msgid "score"
 msgstr "ਅੰਕ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:582
+#: browsers/CollectionTreeItemModelBase.cpp:588
 msgid "playcount"
 msgstr "ਚਲਾਉਣ ਗਿਣਤੀ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:586
-#, fuzzy
-#| msgctxt "'Sample rate' playlist column name and token for playlist layouts"
-#| msgid "Sample rate"
+#: browsers/CollectionTreeItemModelBase.cpp:592
 msgid "samplerate"
 msgstr "ਸੈਂਪਲ ਰੇਟ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:590
+#: browsers/CollectionTreeItemModelBase.cpp:596
 msgid "length"
 msgstr "ਲੰਬਾਈ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:594
+#: browsers/CollectionTreeItemModelBase.cpp:600
 msgid "discnumber"
 msgstr "ਡਿਸਕ ਨੰਬਰ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:598
+#: browsers/CollectionTreeItemModelBase.cpp:604
 msgid "tracknumber"
 msgstr "ਟਰੈਕ ਨੰਬਰ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:602
+#: browsers/CollectionTreeItemModelBase.cpp:608
 msgid "added"
 msgstr "ਸ਼ਾਮਲ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:608
+#: browsers/CollectionTreeItemModelBase.cpp:614
 msgid "today"
 msgstr "ਅੱਜ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:610
+#: browsers/CollectionTreeItemModelBase.cpp:616
 msgid "last week"
 msgstr "ਪਿਛਲੇ ਹਫ਼ਤੇ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:612
+#: browsers/CollectionTreeItemModelBase.cpp:618
 msgid "last month"
 msgstr "ਪਿਛਲੇ ਮਹੀਨੇ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:614
+#: browsers/CollectionTreeItemModelBase.cpp:620
 msgid "two months ago"
 msgstr "ਦੋ ਮਹੀਨੇ ਪਹਿਲਾਂ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:616
+#: browsers/CollectionTreeItemModelBase.cpp:622
 msgid "three months ago"
 msgstr "ਤਿੰਨ ਮਹੀਨੇ ਪਹਿਲਾਂ"
 
-#: browsers/CollectionTreeItemModelBase.cpp:921
+#: browsers/CollectionTreeItemModelBase.cpp:927
 msgid "Year - Album"
 msgstr "ਸਾਲ - ਐਲਬਮ"
 
@@ -4080,20 +4047,20 @@ msgid ""
 "podcast subscriptions and episodes."
 msgstr ""
 
-#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:229
+#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:238
 msgid "New name"
 msgstr "ਨਵਾਂ ਨਾਂ"
 
-#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:231
+#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:240
 msgctxt "Enter a new name for a folder that already exists"
 msgid "Enter new folder name:"
 msgstr "ਫੋਲਡਰ ਲਈ ਨਵਾਂ ਨਾਂ ਦਿਓ:"
 
-#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:254
+#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:263
 msgid "&Delete Folder"
 msgstr "ਫੋਲਡਰ ਹਟਾਓ(&D)"
 
-#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:264
+#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:273
 msgid "&Rename Folder..."
 msgstr "ਫੋਲਡਰ ਨਾਂ ਬਦਲੋ(&R)..."
 
@@ -4255,24 +4222,24 @@ msgstr "ਪਲੇਅ-ਲਿਸਟਾਂ ਇੰਪੋਰਟ"
 msgid "By"
 msgstr "ਵਲੋਂ"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:241
+#: browsers/playlistbrowser/PodcastCategory.cpp:239
 #: browsers/playlistbrowser/DynamicCategory.cpp:70
 msgid "On"
 msgstr "ਚਾਲੂ"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:259
+#: browsers/playlistbrowser/PodcastCategory.cpp:257
 msgid "File Size:"
 msgstr "ਫਾਇਲ ਆਕਾਰ:"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:271
+#: browsers/playlistbrowser/PodcastCategory.cpp:269
 msgid "Subscription Date:"
 msgstr "ਮੈਂਬਰੀ ਮਿਤੀ:"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:279
+#: browsers/playlistbrowser/PodcastCategory.cpp:277
 msgid "Keywords:"
 msgstr "ਸ਼ਬਦ:"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:312
+#: browsers/playlistbrowser/PodcastCategory.cpp:310
 msgid "Select OPML file to import"
 msgstr ""
 
@@ -4325,31 +4292,31 @@ msgstr "ਆ ਰਹੇ:"
 msgid "Number of upcoming tracks to add to the playlist."
 msgstr "ਪਲੇਅ-ਲਿਸਟ ਵਿੱਚ ਵਾਪਿਸ ਚੱਲਣ ਦੇ ਪੱਧਰ ਦੀ ਗਿਣਤੀ ਹੈ।"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:114
+#: browsers/playlistbrowser/DynamicCategory.cpp:116
 msgid "Playlist:"
 msgstr "ਪਲੇਅ-ਲਿਸਟ:"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:143
+#: browsers/playlistbrowser/DynamicCategory.cpp:145
 msgid "Save the preset."
 msgstr "ਪਹਿਲਾਂ-ਸੈੱਟ ਸੰਭਾਲੋ"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:153
+#: browsers/playlistbrowser/DynamicCategory.cpp:155
 msgid "Delete the preset."
 msgstr "ਪ੍ਰੀਸੈੱਟ ਹਟਾਓ।"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:314
+#: browsers/playlistbrowser/DynamicCategory.cpp:316
 msgid "Playlist Name"
 msgstr "ਪਲੇਅ-ਲਿਸਟ ਨਾਂ"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:315
+#: browsers/playlistbrowser/DynamicCategory.cpp:317
 msgid "Enter a name for the playlist:"
 msgstr "ਪਲੇਅ ਲਿਸਟ ਲਈ ਇੱਕ ਨਾਂ ਦਿਓ:"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:325
+#: browsers/playlistbrowser/DynamicCategory.cpp:327
 msgid "Warning"
 msgstr "ਚੇਤਾਵਨੀ"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:325
+#: browsers/playlistbrowser/DynamicCategory.cpp:327
 #, fuzzy
 #| msgid "Can not overwrite the random playlist."
 msgid "Cannot overwrite the random playlist."
@@ -4417,16 +4384,16 @@ msgstr "ਫਾਇਲਾਂ"
 msgid "Browse local hard drive for content"
 msgstr "ਲੋਕਲ ਡਰਾਇਵ ਦੀ ਸਮੱਗਰੀ ਵੇਖੋ"
 
-#: MainWindow.cpp:414
+#: MainWindow.cpp:417
 msgctxt "@item:inmenu"
 msgid "&View"
 msgstr "ਵੇਖੋ(&V)"
 
-#: MainWindow.cpp:417
+#: MainWindow.cpp:420
 msgid "Lock layout"
 msgstr "ਲੇਆਉਟ ਲਾਕ ਕਰੋ"
 
-#: MainWindow.cpp:529
+#: MainWindow.cpp:532
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
 "<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
@@ -4435,205 +4402,202 @@ msgstr ""
 "<qt>ਮੁੱਖ ਵਿੰਡੋ ਨੂੰ ਬੰਦ ਕਰਨ ਉੱਤੇ ਵੀ ਅਮੋਰਕ ਸਿਸਟਮ ਟਰੇ 'ਚ ਚੱਲਦਾ ਰਹੇਗਾ। ਐਪਲੀਕੇਸ਼ਨ ਨੂੰ ਬੰਦ ਕਰਨ ਲਈ "
 "ਅਮਰੋਕ ਟਰੇ ਆਈਕਾਨ ਵਿੱਚ ਬਾਹਰ ਜਾਂ ਮੇਨੂ ਵਿੱਚੋਂ <B>ਬਾਹਰ</B> ਦੀ ਚੋਣ ਕਰੋ।</qt>"
 
-#: MainWindow.cpp:531
+#: MainWindow.cpp:534
 msgid "Docking in System Tray"
 msgstr "ਸਿਸਟਮ ਟਰੇ ਵਿੱਚ ਡੌਕ ਕਰੋ"
 
-#: MainWindow.cpp:549
+#: MainWindow.cpp:552
 msgid "Use relative path for &saving"
 msgstr "ਸੰਭਾਲਣ ਲਈ ਅਨੁਸਾਰੀ ਪਾਥ ਵਰਤੋਂ(&s)"
 
-#: MainWindow.cpp:560
+#: MainWindow.cpp:563
 msgid "Save As"
 msgstr "ਇੰਝ ਸੰਭਾਲੋ"
 
-#: MainWindow.cpp:597
+#: MainWindow.cpp:600
 msgid "Play Media (Files or URLs)"
 msgstr "ਮੀਡਿਆ ਚਲਾਓ (ਫਾਇਲਾਂ ਜਾਂ URL)"
 
-#: MainWindow.cpp:597
+#: MainWindow.cpp:600
 msgid "Add Media (Files or URLs)"
 msgstr "ਮੀਡਿਆ ਸ਼ਾਮਲ (ਫਾਇਲਾਂ ਜਾਂ URL)"
 
-#: MainWindow.cpp:612
+#: MainWindow.cpp:615
 msgid "Add Stream"
 msgstr "ਸਟਰੀਮ ਸ਼ਾਮਲ"
 
-#: MainWindow.cpp:612
+#: MainWindow.cpp:615
 msgid "Enter Stream URL:"
 msgstr "ਸਟਰੀਮ URL ਦਿਓ:"
 
-#: MainWindow.cpp:723
+#: MainWindow.cpp:726
 msgid "&Add Media..."
 msgstr "ਮੀਡਿਆ ਸ਼ਾਮਲ(&A)..."
 
-#: MainWindow.cpp:728
+#: MainWindow.cpp:731
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "ਪਲੇਅਲਿਸਟ ਸਾਫ਼ ਕਰੋ(&C)"
 
-#: MainWindow.cpp:732
+#: MainWindow.cpp:735
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "ਡੁਪਲੀਕੇਟ ਹਟਾਓ(&m)"
 
-#: MainWindow.cpp:739
+#: MainWindow.cpp:742
 msgid "&Add Stream..."
 msgstr "ਸਟਰੀਮ ਸ਼ਾਮਲ(&A)..."
 
-#: MainWindow.cpp:743
+#: MainWindow.cpp:746
 msgid "&Export Playlist As..."
 msgstr "ਪਲੇਅ-ਲਿਸਟ ਇੰਝ ਐਕਸਪੋਰਟ(&E)..."
 
-#: MainWindow.cpp:747 amarokurls/NavigationUrlGenerator.cpp:216
+#: MainWindow.cpp:750 amarokurls/NavigationUrlGenerator.cpp:216
 msgid "Bookmark Media Sources View"
 msgstr "ਬੁੱਕਮਾਰਕ ਮੀਡਿਆ ਸਰੋਤ ਝਲਕ"
 
-#: MainWindow.cpp:751 amarokurls/BookmarkManager.cpp:42
+#: MainWindow.cpp:754 amarokurls/BookmarkManager.cpp:42
 msgid "Bookmark Manager"
 msgstr "ਬੁੱਕਮਾਰਕ ਮੈਨੇਜਰ"
 
-#: MainWindow.cpp:755 playlist/PlaylistViewUrlGenerator.cpp:101
+#: MainWindow.cpp:758 playlist/PlaylistViewUrlGenerator.cpp:101
 msgid "Bookmark Playlist Setup"
 msgstr "ਬੁੱਕਮਾਰਕ ਪਲੇਅਲਿਸਟ ਸੈੱਟਅੱਪ"
 
-#: MainWindow.cpp:759
+#: MainWindow.cpp:762
 #, fuzzy
 #| msgid "Bookmark this Artist"
 msgid "Bookmark Context Applets"
 msgstr "ਇਹ ਕਲਾਕਾਰ ਬੁੱਕਮਾਰਕ ਕਰੋ"
 
-#: MainWindow.cpp:763 covermanager/CoverManager.cpp:97
+#: MainWindow.cpp:766 covermanager/CoverManager.cpp:97
 msgid "Cover Manager"
 msgstr "ਕਵਰ ਮੈਨੇਜਰ"
 
-#: MainWindow.cpp:767
+#: MainWindow.cpp:770
 msgid "Play Media..."
 msgstr "ਮੀਡਿਆ ਚਲਾਓ..."
 
-#: MainWindow.cpp:775
+#: MainWindow.cpp:779
 msgid "&Seek Forward"
 msgstr "ਅੱਗੇ ਕਰੋ(&S)"
 
-#: MainWindow.cpp:781
+#: MainWindow.cpp:785
 msgid "&Seek Backward"
 msgstr "ਪਿੱਛੇ ਕਰੋ(&S)"
 
-#: MainWindow.cpp:788
+#: MainWindow.cpp:792
 msgid "Update Collection"
 msgstr "ਭੰਡਾਰ ਅੱਪਡੇਟ ਕਰੋ"
 
-#: MainWindow.cpp:795 widgets/MainControlsWidget.cpp:62
+#: MainWindow.cpp:799 widgets/MainControlsWidget.cpp:62
 msgid "Previous Track"
 msgstr "ਪਿਛਲਾ ਟਰੈਕ"
 
-#: MainWindow.cpp:801
-#, fuzzy
-#| msgctxt "Replace the currently loaded tracks with these"
-#| msgid "&Replace Playlist"
+#: MainWindow.cpp:805
 msgid "Repopulate Playlist"
-msgstr "ਪਲੇਅਲਿਸਟ ਬਦਲੋ(&R)"
+msgstr "ਪਲੇਅਲਿਸਟ ਮੁੜ-ਤਿਆਰ"
 
-#: MainWindow.cpp:809 widgets/MainControlsWidget.cpp:86
+#: MainWindow.cpp:819 widgets/MainControlsWidget.cpp:86
 msgid "Next Track"
 msgstr "ਅਗਲਾ ਟਰੈਕ"
 
-#: MainWindow.cpp:812
+#: MainWindow.cpp:822
 msgid "Increase Volume"
 msgstr "ਆਵਾਜ਼ ਵਧਾਓ"
 
-#: MainWindow.cpp:818
+#: MainWindow.cpp:828
 msgid "Decrease Volume"
 msgstr "ਆਵਾਜ਼ ਘਟਾਓ"
 
-#: MainWindow.cpp:824
+#: MainWindow.cpp:834
 msgid "Toggle Main Window"
 msgstr "ਪਲੇਅ-ਲਿਸਟ ਵਿੰਡੋ ਬਦਲੋ"
 
-#: MainWindow.cpp:829
+#: MainWindow.cpp:839
 msgid "Toggle Full Screen"
 msgstr "ਪੂਰੀ ਸਕਰੀਨ ਬਦਲੋ"
 
-#: MainWindow.cpp:834
+#: MainWindow.cpp:844
 msgid "Jump to"
 msgstr "ਜਾਓ"
 
-#: MainWindow.cpp:839
+#: MainWindow.cpp:849
 msgid "Show On Screen Display"
 msgstr "ਆਨ-ਸਕਰੀਨ-ਡਿਸਪਲੇਅ ਵੇਖੋ"
 
-#: MainWindow.cpp:844
+#: MainWindow.cpp:854
 msgid "Mute Volume"
 msgstr "ਆਵਾਜ਼ ਬੰਦ"
 
-#: MainWindow.cpp:849
+#: MainWindow.cpp:859
 #, fuzzy
 #| msgid "Love Current Track"
 msgid "Last.fm: Love Current Track"
 msgstr "ਮੌਜੂਦਾ ਟਰੈਕ ਪਿਆਰ"
 
-#: MainWindow.cpp:854
+#: MainWindow.cpp:864
 #, fuzzy
 #| msgid "Love Current Track"
 msgid "Last.fm: Ban Current Track"
 msgstr "ਮੌਜੂਦਾ ਟਰੈਕ ਪਿਆਰ"
 
-#: MainWindow.cpp:859
+#: MainWindow.cpp:869
 #, fuzzy
 #| msgid "Love Current Track"
 msgid "Last.fm: Skip Current Track"
 msgstr "ਮੌਜੂਦਾ ਟਰੈਕ ਪਿਆਰ"
 
-#: MainWindow.cpp:864 playlist/view/PlaylistViewCommon.cpp:111
+#: MainWindow.cpp:874 playlist/view/PlaylistViewCommon.cpp:111
 msgid "Queue Track"
 msgstr "ਟਰੈਕ ਕਤਾਰ ਵਿੱਚ ਲਾਓ"
 
-#: MainWindow.cpp:869
+#: MainWindow.cpp:879
 msgid "Rate Current Track: 1"
 msgstr "ਮੌਜੂਦਾ ਟਰੈਕ ਰੇਟ: ੧"
 
-#: MainWindow.cpp:874
+#: MainWindow.cpp:884
 msgid "Rate Current Track: 2"
 msgstr "ਮੌਜੂਦਾ ਟਰੈਕ ਰੇਟ: ੨"
 
-#: MainWindow.cpp:879
+#: MainWindow.cpp:889
 msgid "Rate Current Track: 3"
 msgstr "ਮੌਜੂਦਾ ਟਰੈਕ ਰੇਟ: ੩"
 
-#: MainWindow.cpp:884
+#: MainWindow.cpp:894
 msgid "Rate Current Track: 4"
 msgstr "ਮੌਜੂਦਾ ਟਰੈਕ ਰੇਟ: ੪"
 
-#: MainWindow.cpp:889
+#: MainWindow.cpp:899
 msgid "Rate Current Track: 5"
 msgstr "ਮੌਜੂਦਾ ਟਰੈਕ ਰੇਟ: ੫"
 
-#: MainWindow.cpp:949
+#: MainWindow.cpp:959
 msgid "&Music"
 msgstr "ਸੰਗੀਤ(&M)"
 
-#: MainWindow.cpp:953
+#: MainWindow.cpp:963
 msgid "&Amarok"
 msgstr "ਅਮਰੋਕ(&A)"
 
-#: MainWindow.cpp:972
+#: MainWindow.cpp:982
 msgid "&Playlist"
 msgstr "ਪਲੇਅ-ਲਿਸਟ(&P)"
 
-#: MainWindow.cpp:988
+#: MainWindow.cpp:998
 msgid "&Tools"
 msgstr "ਟੂਲ(&T)"
 
-#: MainWindow.cpp:999
+#: MainWindow.cpp:1009
 msgid "&Settings"
 msgstr "ਸੈਟਿੰਗ(&S)"
 
-#: MainWindow.cpp:1129
+#: MainWindow.cpp:1139
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "ਵਿਰਾਮ  ::  %1"
 
-#: MainWindow.cpp:1148
+#: MainWindow.cpp:1158
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
@@ -4675,12 +4639,12 @@ msgstr "ਡਾਟਾ ਮੋਡ"
 msgid "Slim Toolbar"
 msgstr "ਹਲਕੀ ਟੂਲਬਾਰ"
 
-#: toolbar/VolumePopupButton.cpp:99 toolbar/VolumePopupButton.cpp:110
+#: toolbar/VolumePopupButton.cpp:102 toolbar/VolumePopupButton.cpp:113
 #: widgets/Osd.cpp:151
 msgid "(muted)"
 msgstr "(ਚੁੱਪ ਕੀਤਾ)"
 
-#: toolbar/VolumePopupButton.cpp:99 toolbar/VolumePopupButton.cpp:110
+#: toolbar/VolumePopupButton.cpp:102 toolbar/VolumePopupButton.cpp:113
 #: widgets/Osd.cpp:151
 #, kde-format
 msgid "Volume: %1% %2"
@@ -6169,7 +6133,7 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QPushButton, eqPresetResetBtn)
 #: rc.cpp:719
 msgid "Reset to default"
-msgstr ""
+msgstr "ਡਿਫਾਲਟ ਲਈ ਮੁੜ-ਸੈੱਟ ਕਰੋ"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:230
 #. i18n: ectx: property (title), widget (QGroupBox, eqBandsGroupBox)
@@ -6309,10 +6273,8 @@ msgstr "ਗੁੱਸੇ"
 #. i18n: file: configdialog/dialogs/GeneralConfig.ui:106
 #. i18n: ectx: property (text), item, widget (QComboBox, kcfg_MoodbarPaintStyle)
 #: rc.cpp:848
-#, fuzzy
-#| msgid "French"
 msgid "Frozen"
-msgstr "ਫਰੈਂਚ"
+msgstr "ਸਥਿਰ"
 
 #. i18n: file: configdialog/dialogs/GeneralConfig.ui:111
 #. i18n: ectx: property (text), item, widget (QComboBox, kcfg_MoodbarPaintStyle)
@@ -6323,10 +6285,8 @@ msgstr "ਖੁਸ਼"
 #. i18n: file: configdialog/dialogs/DatabaseConfig.ui:9
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_UseServer)
 #: rc.cpp:854
-#, fuzzy
-#| msgid "Internal Database"
 msgid "Use &external MySQL database"
-msgstr "ਅੰਦਰੂਨੀ ਡਾਟਾਬੇਸ"
+msgstr "ਬਾਹਰੀ MySQL ਡਾਟਾਬੇਸ ਵਰਤੋਂ(&e)"
 
 #. i18n: file: configdialog/dialogs/DatabaseConfig.ui:16
 #. i18n: ectx: property (title), widget (QGroupBox, group_Connection)
@@ -7283,7 +7243,7 @@ msgstr "ਪੋਡਕਾਸਟ ਸੰਰਚਨਾ"
 #. i18n: ectx: property (text), widget (QLabel, m_urlLabel)
 #: rc.cpp:1369
 msgid "URL:"
-msgstr ""
+msgstr "URL:"
 
 #. i18n: file: podcasts/sql/PodcastSettingsBase.ui:56
 #. i18n: ectx: property (text), widget (QLabel, m_saveLocationlabel)
@@ -7972,7 +7932,7 @@ msgstr "ਲੇਆਉਟ"
 #. i18n: ectx: property (text), widget (QCheckBox, inlineControlsChekbox)
 #: rc.cpp:1731
 msgid "Show inline playback controls"
-msgstr ""
+msgstr "ਲਾਈਨ ਵਿੱਚ ਪਲੇਅਬੈਕ ਕੰਟਰੋਲ ਵੇਖੋ"
 
 #. i18n: file: playlist/layouts/PlaylistLayoutEditDialog.ui:203
 #. i18n: ectx: property (text), widget (QLabel, label)
@@ -7989,18 +7949,14 @@ msgstr "ਝਲਕ"
 #. i18n: tag layout attribute name
 #. i18n: file: data/DefaultPlaylistLayouts.xml:29
 #: rc.cpp:2274 playlist/layouts/PlaylistLayoutEditDialog.cpp:507
-#, fuzzy
-#| msgid "Groupings"
 msgid "No Grouping"
-msgstr "ਗਰੁਪਿੰਗ"
+msgstr "ਗਰੁੱਪ ਨਹੀਂ"
 
 #. i18n: tag layout attribute name
 #. i18n: file: data/DefaultPlaylistLayouts.xml:53
 #: rc.cpp:2277
-#, fuzzy
-#| msgid "Groupings"
 msgid "No Grouping (Single Line)"
-msgstr "ਗਰੁਪਿੰਗ"
+msgstr "ਗਰੁੱਪ ਨਹੀਂ (ਇੱਕ ਲਾਈਨ)"
 
 #. i18n: tag layout attribute name
 #. i18n: file: data/DefaultPlaylistLayouts.xml:70
@@ -8359,16 +8315,16 @@ msgid "Loved Track: %1"
 msgstr "ਲਵ ਕੀਤੇ ਟਰੈਕ: %1"
 
 #: services/lastfm/LastFmServiceConfig.cpp:47
-#, fuzzy
-#| msgid "Last.fm Profile"
 msgid "Last.fm credentials"
-msgstr "Last.fm ਪਰੋਫਾਇਲ"
+msgstr "Last.fm ਸਨਦ"
 
 #: services/lastfm/LastFmServiceConfig.cpp:48
 msgid ""
 "No running KWallet found. Would you like Amarok to save your Last.fm "
 "credentials in plaintext?"
 msgstr ""
+"ਕੋਈ ਕੇਵਾਲਿਟ ਨਹੀਂ ਚੱਲਦਾ ਹੈ। ਕੀ ਤੁਸੀਂ ਅਮਰੋਕ ਨੂੰ ਤੁਹਾਡੀ Last.fm ਸਨਦ ਨੂੰ ਸਧਾਰਨ ਟੈਕਸਟ ਵਿੱਚ ਸੰਭਾਲਣ "
+"ਦੇਣਾ ਚਾਹੁੰਦੇ ਹੋ?"
 
 #: services/lastfm/LastFmServiceSettings.cpp:98
 msgid "Testing..."
@@ -8535,10 +8491,8 @@ msgid "Downloading '%1' by %2 from Magnatune.com"
 msgstr ""
 
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:66
-#, fuzzy
-#| msgid "Purchase Album from Magnatune.com"
 msgid "Downloading album from Magnatune.com"
-msgstr "Magnatune.com ਤੋਂ ਐਲਬਮ ਖਰੀਦੋ"
+msgstr "Magnatune.com ਤੋਂ ਐਲਬਮ ਡਾਊਨਲੋਡ ਕੀਤੀ ਜਾ ਰਹੀ ਹੈ"
 
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:95
 msgid "Magnatune download seems to have failed. Cannot read zip file"
@@ -8700,7 +8654,7 @@ msgstr ""
 
 #: services/magnatune/MagnatunePurchaseHandler.cpp:238
 msgid "Could not process payment"
-msgstr ""
+msgstr "ਅਦਾਇਗੀ ਨਹੀਂ ਕੀਤੀ ਜਾ ਸਕੀ"
 
 #: services/magnatune/MagnatunePurchaseHandler.cpp:244
 msgid ""
@@ -8989,7 +8943,7 @@ msgstr "%1 ਚੱਲਦਾ ਹੈ"
 #: playlist/PlaylistDefines.h:86
 msgctxt "Empty placeholder token used for spacing in playlist layouts"
 msgid "Placeholder"
-msgstr ""
+msgstr "ਥਾਂ"
 
 #: playlist/PlaylistDefines.h:87
 msgctxt "'Album' playlist column name and token for playlist layouts"
@@ -9485,7 +9439,7 @@ msgstr "ਹਟਾਏ ਟਰੈਕ"
 msgid "Track moved"
 msgstr "ਹਿਲਾਏ ਟਰੈਕ"
 
-#: playlist/PlaylistActions.cpp:358
+#: playlist/PlaylistActions.cpp:362
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "ਪਲੇਅ-ਲਿਸਟ ਵਿੱਚ ਬਹੁਤ ਹੀ ਗਲਤੀਆਂ ਆਈਆਂ ਹਨ। ਪਲੇਅਬੈਕ ਰੋਕਿਆ।"
 
@@ -9582,7 +9536,7 @@ msgstr[1] "%1 ਟਰੈਕ"
 
 #: statusbar/ProgressBar.cpp:47 statusbar/CompoundProgressBar.cpp:68
 #: statusbar/CompoundProgressBar.cpp:139 statusbar/CompoundProgressBar.cpp:175
-#: covermanager/CoverManager.cpp:211
+#: covermanager/CoverManager.cpp:213
 msgid "Abort"
 msgstr "ਛੱਡੋ"
 
@@ -10056,28 +10010,28 @@ msgstr "Last.fm ਨਾਲ ਸੰਚਾਰ ਦੌਰਾਨ ਗਲਤੀ ਹੈ।
 msgid "The XML obtained from Last.fm is invalid."
 msgstr "Last.fm ਤੋਂ ਪਰਾਪਤ XML ਗਲਤ ਹੈ।"
 
-#: covermanager/CoverFetcher.cpp:281 covermanager/CoverFetcher.cpp:282
+#: covermanager/CoverFetcher.cpp:283 covermanager/CoverFetcher.cpp:284
 msgid "The cover could not be retrieved."
 msgstr "ਕਵਰ ਮਿਲ ਨਹੀਂ ਸਕਿਆ ਹੈ।"
 
-#: covermanager/CoverFetcher.cpp:335
+#: covermanager/CoverFetcher.cpp:337
 msgid "Aborted."
 msgstr "ਅਧੂਰਾ ਛੱਡਿਆ।"
 
-#: covermanager/CoverFetcher.cpp:344
+#: covermanager/CoverFetcher.cpp:346
 msgid "Retrieved cover successfully"
 msgstr "ਕਵਰ ਲਿਆ ਗਿਆ"
 
-#: covermanager/CoverFetcher.cpp:379
+#: covermanager/CoverFetcher.cpp:381
 msgid "Unable to find a cover for the specified song."
 msgstr ""
 
-#: covermanager/CoverFetcher.cpp:382
+#: covermanager/CoverFetcher.cpp:384
 #, kde-format
 msgid "Unable to find a cover for %1."
 msgstr "%1 ਲਈ ਕਵਰ ਖੋਜ ਲਈ ਅਸਮਰੱਥ.."
 
-#: covermanager/CoverFetcher.cpp:427
+#: covermanager/CoverFetcher.cpp:429
 msgid "Cover Found"
 msgstr "ਕਵਰ ਮਿਲਿਆ"
 
@@ -10085,7 +10039,7 @@ msgstr "ਕਵਰ ਮਿਲਿਆ"
 msgid "Albums By"
 msgstr "ਐਲਬਮ"
 
-#: covermanager/CoverManager.cpp:112 covermanager/CoverManager.cpp:293
+#: covermanager/CoverManager.cpp:112 covermanager/CoverManager.cpp:295
 msgid "All Artists"
 msgstr "ਸਭ ਕਲਾਕਾਰ"
 
@@ -10105,89 +10059,89 @@ msgstr "ਕਵਰ ਬਿਨਾਂ ਐਲਬਮ"
 msgid "Fetch Missing Covers"
 msgstr "ਗੁੰਮ ਕਵਰ ਪ੍ਰਾਪਤ ਕਰੋ"
 
-#: covermanager/CoverManager.cpp:369
+#: covermanager/CoverManager.cpp:371
 msgid "Loading Thumbnails..."
 msgstr "ਥੰਮਨੇਲ ਲੋਡ ਕੀਤੇ ਜਾ ਰਹੇ ਹਨ..."
 
-#: covermanager/CoverManager.cpp:624
+#: covermanager/CoverManager.cpp:637
 msgctxt "The fetching is done."
 msgid "Finished."
 msgstr "ਮੁਕੰਮਲ।"
 
-#: covermanager/CoverManager.cpp:626
+#: covermanager/CoverManager.cpp:639
 #, kde-format
 msgid " Cover not found"
 msgid_plural " <b>%1</b> covers not found"
 msgstr[0] "ਕਵਰ ਨਹੀਂ ਲੱਭਿਆ"
 msgstr[1] " <b>%1</b> ਕਵਰ ਨਹੀਂ ਲੱਭੇ"
 
-#: covermanager/CoverManager.cpp:639
+#: covermanager/CoverManager.cpp:652
 #, kde-format
 msgid "Fetching cover for %1..."
 msgstr "%1 ਲਈ ਕਵਰ ਖੋਜ ਜਾਰੀ..."
 
-#: covermanager/CoverManager.cpp:641
+#: covermanager/CoverManager.cpp:654
 #, kde-format
 msgid "Fetching cover for %1 - %2..."
 msgstr "%1 - %2 ਲਈ ਖੋਜ ਜਾਰੀ..."
 
-#: covermanager/CoverManager.cpp:648
+#: covermanager/CoverManager.cpp:661
 #, kde-format
 msgid "Fetching 1 cover: "
 msgid_plural "Fetching <b>%1</b> covers... : "
 msgstr[0] "1 ਕਵਰ ਲਿਆ ਜਾ ਰਿਹਾ ਹੈ:"
 msgstr[1] "<b>%1</b> ਕਵਰ ਲਏ ਜਾ ਰਹੇ ਹਨ... : "
 
-#: covermanager/CoverManager.cpp:650
+#: covermanager/CoverManager.cpp:663
 #, kde-format
 msgid "1 fetched"
 msgid_plural "%1 fetched"
 msgstr[0] "1 ਲਿਆ"
 msgstr[1] "%1 ਲਏ"
 
-#: covermanager/CoverManager.cpp:654
+#: covermanager/CoverManager.cpp:667
 msgid " - "
 msgstr " - "
 
-#: covermanager/CoverManager.cpp:655
+#: covermanager/CoverManager.cpp:668
 #, kde-format
 msgid "1 not found"
 msgid_plural "%1 not found"
 msgstr[0] "1 ਨਹੀਂ ਲੱਭਿਆ"
 msgstr[1] "%1 ਨਹੀਂ ਲੱਭੇ"
 
-#: covermanager/CoverManager.cpp:658
+#: covermanager/CoverManager.cpp:671
 msgid "Connecting..."
 msgstr "ਕੁਨੈਕਟ ਕੀਤਾ ਜਾ ਰਿਹਾ ਹੈ..."
 
-#: covermanager/CoverManager.cpp:683
+#: covermanager/CoverManager.cpp:696
 #, kde-format
 msgid "1 result for \"%2\""
 msgid_plural "%1 results for \"%2\""
 msgstr[0] "\"%2\" ਲਈ 1 ਨਤੀਜਾ"
 msgstr[1] "\"%2\" ਲਈ %1  ਨਤੀਜੇ"
 
-#: covermanager/CoverManager.cpp:686
+#: covermanager/CoverManager.cpp:699
 #, kde-format
 msgid "1 album"
 msgid_plural "%1 albums"
 msgstr[0] "1 ਐਲਬਮ"
 msgstr[1] "%1 ਐਲਬਮ"
 
-#: covermanager/CoverManager.cpp:692
+#: covermanager/CoverManager.cpp:705
 msgid " by "
 msgstr " ਵਲੋਂ"
 
-#: covermanager/CoverManager.cpp:697
+#: covermanager/CoverManager.cpp:710
 #, kde-format
 msgid " - ( <b>%1</b> without cover )"
 msgstr " - ( <b>%1</b> ਬਿਨਾਂ ਕਵਰ ਹੈ)"
 
-#: covermanager/CoverManager.cpp:743
+#: covermanager/CoverManager.cpp:758
 msgid "Cover Image"
 msgstr "ਢੱਕਣ ਚਿੱਤਰ"
 
-#: covermanager/CoverManager.cpp:800
+#: covermanager/CoverManager.cpp:836
 msgid "No Artist"
 msgstr "ਕਲਾਕਾਰ ਨਹੀਂ"
 

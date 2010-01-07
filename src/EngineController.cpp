@@ -4,7 +4,7 @@
  * Copyright (c) 2004-2008 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2006,2008 Ian Monroe <ian@monroe.nu>                                   *
  * Copyright (c) 2008 Jason A. Donenfeld <Jason@zx2c4.com>                              *
- * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2009 Artur Szymiec <artur.szymiec@gmail.com>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -76,6 +76,7 @@ EngineController::EngineController()
     : m_playWhenFetched( true )
     , m_fadeoutTimer( new QTimer( this ) )
     , m_volume( 0 )
+    , m_currentIsAudioCd( false )
 {
     DEBUG_BLOCK
 
@@ -218,11 +219,20 @@ EngineController::canDecode( const KUrl &url ) //static
     mimeTable << "audio/x-m4b"; // MP4 Audio Books have a different extension that KFileItem/Phonon don't grok
     //mimeTable << "?/?"; //Add comment
 
-    const QString mimeType = item.mimetype();
-    const bool valid = mimeTable.contains( mimeType, Qt::CaseInsensitive );
+    const KMimeType::Ptr mimeType = item.mimeTypePtr();
+    
+    bool valid = false;
+    foreach( const QString &type, mimeTable )
+    {
+        if( mimeType->is( type ) )
+        {
+            valid = true;
+            break;
+        }
+    }
 
-    //we special case this as otherwise users hate us
-    if ( !valid && ( mimeType == "audio/mp3" || mimeType == "audio/x-mp3" ) && !installDistroCodec() )
+    // We special case this, as otherwise the users would hate us
+    if ( !valid && ( mimeType->is( "audio/mp3" ) || mimeType->is( "audio/x-mp3" ) ) && !installDistroCodec() )
         The::statusBar()->longMessage(
                 i18n( "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
                       "the installation of the backend that phonon uses.</p>"
@@ -325,6 +335,7 @@ EngineController::play( const Meta::TrackPtr& track, uint offset )
         return;
 
     m_currentTrack = track;
+    m_currentIsAudioCd = false;
     delete m_boundedPlayback;
     delete m_multiPlayback;
     delete m_multiSource;
@@ -376,6 +387,8 @@ EngineController::playUrl( const KUrl &url, uint offset )
 
     if ( url.url().startsWith( "audiocd:/" ) )
     {
+
+        m_currentIsAudioCd = true;
         //disconnect this signal for now or it will cause a loop that will cause a mutex lockup
         disconnect( m_controller, SIGNAL( titleChanged( int ) ), this, SLOT( slotTitleChanged( int ) ) );
 
@@ -448,6 +461,7 @@ EngineController::stop( bool forceInstant ) //SLOT
 {
     DEBUG_BLOCK
 
+    m_currentIsAudioCd = false;
     // need to get a new instance of multi if played again
     delete m_multiPlayback;
     delete m_multiSource;
@@ -488,7 +502,10 @@ EngineController::stop( bool forceInstant ) //SLOT
         stateChangedNotify( Phonon::StoppedState, m_media->state() ); //immediately disable Stop action
     }
     else
+    {
         m_media->stop();
+        m_media->setCurrentSource( Phonon::MediaSource() );
+    }
 
     m_currentTrack = 0;
 }
@@ -872,7 +889,7 @@ EngineController::slotAboutToFinish()
     else if ( m_currentTrack && m_currentTrack->playableUrl().url().startsWith( "audiocd:/" ) )
     {
         debug() << "finished a CD track, don't care if queue is not empty, just get new track...";
-        //m_media->stop();
+
         The::playlistActions()->requestNextTrack();
         slotQueueEnded();
     }
@@ -887,6 +904,7 @@ EngineController::slotQueueEnded()
 
     if( m_currentTrack && !m_multiPlayback && !m_multiSource )
     {
+        m_media->setCurrentSource( Phonon::MediaSource() );
         playbackEnded( trackPositionMs(), m_currentTrack->length(), EngineObserver::EndedStopped );
         m_currentTrack = 0;
         trackChangedNotify( m_currentTrack );
@@ -918,7 +936,12 @@ void
 EngineController::slotNewTrackPlaying( const Phonon::MediaSource &source )
 {
     DEBUG_BLOCK
-    Q_UNUSED( source );
+
+    if( source.type() == Phonon::MediaSource::Empty )
+    {
+        debug() << "Empty MediaSource (engine stop)";
+        return;
+    }
 
     // the new track was taken from the queue, so clear these fields
     if( m_nextTrack )
@@ -1135,6 +1158,7 @@ EngineController::slotStopFadeout() //SLOT
     DEBUG_BLOCK
 
     m_media->stop();
+    m_media->setCurrentSource( Phonon::MediaSource() );
     resetFadeout();
 }
 
@@ -1155,6 +1179,11 @@ void EngineController::slotTitleChanged( int titleNumber )
     Q_UNUSED( titleNumber );
 
     slotAboutToFinish();
+}
+
+bool EngineController::isPlayingAudioCd()
+{
+    return m_currentIsAudioCd;
 }
 
 #include "EngineController.moc"

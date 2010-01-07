@@ -1,15 +1,15 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
-# A S Alam <aalam@users.sf.net>, 2009.
+# A S Alam <aalam@users.sf.net>, 2009, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2009-11-13 06:22+0100\n"
-"PO-Revision-Date: 2009-08-16 07:43+0530\n"
+"PO-Revision-Date: 2010-01-02 08:32+0530\n"
 "Last-Translator: A S Alam <aalam@users.sf.net>\n"
-"Language-Team: Punjabi/Panjabi <punjabi-users@lists.sf.net>\n"
+"Language-Team: Punjabi/Panjabi <punjab-l10n@list.sf.net>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -45,10 +45,8 @@ msgstr ""
 "amarok@kde.org"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:1008
-#, fuzzy
-#| msgid "Usage: amarokcollectionscanner [options] +Folder(s)"
 msgid "Usage: amarokcollectionscanner [options] <Folder(s)>"
-msgstr "ਵਰਤੋਂ: amarokcollectionscanner [options] +Folder(s)"
+msgstr "ਵਰਤੋਂ: amarokcollectionscanner [options] <Folder(s)>"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:1009
 msgid "User-modifiable Options:"
@@ -63,36 +61,40 @@ msgstr ""
 
 #: utilities/collectionscanner/CollectionScanner.cpp:1011
 msgid "-h, --help            : This help text"
-msgstr ""
+msgstr "-h, --help            : This help text"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:1012
 msgid "-r, --recursive       : Scan folders recursively"
-msgstr ""
+msgstr "-r, --recursive       : Scan folders recursively"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:1013
 msgid "-i, --incremental     : Incremental scan (modified folders only)"
-msgstr ""
+msgstr "-i, --incremental     : Incremental scan (modified folders only)"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:1014
 msgid "-p, --importplaylists : Import playlists"
-msgstr ""
+msgstr "-p, --importplaylists : Import playlists"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:1015
 msgid ""
 "-s, --restart         : After a crash, restart the scanner in its last "
 "position"
 msgstr ""
+"-s, --restart         : After a crash, restart the scanner in its last "
+"position"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:1016
 msgid "-b, --batch           : Run in batch mode"
-msgstr ""
+msgstr "-b, --batch           : Run in batch mode"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:1017
 msgid "-c, --nocharset       : Use the charset detector on ID3 tags"
-msgstr ""
+msgstr "-c, --nocharset       : Use the charset detector on ID3 tags"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:1018
 msgid ""
 "--rpath=\"<path>\"      : In full-scan batch mode, specifies a path to "
 "prepend to entries (default is the current directory)"
 msgstr ""
+"--rpath=\"<path>\"      : In full-scan batch mode, specifies a path to "
+"prepend to entries (default is the current directory)"
