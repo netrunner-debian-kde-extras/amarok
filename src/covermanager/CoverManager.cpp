@@ -197,6 +197,8 @@ CoverManager::slotContinueConstruction() //SLOT
 
     //cover view
     m_coverView = new CoverView( vbox );
+    m_coverViewSpacer = new CoverView( vbox );
+    m_coverViewSpacer->hide();
 
     //status bar
     KStatusBar *m_statusBar = new KStatusBar( vbox );
@@ -431,22 +433,33 @@ void CoverManager::slotArtistSelectedContinueAgain() //SLOT
     m_progressDialog->setMaximum( m_albumList.count() );
 
     uint x = 0;
+
+    //the process events calls below causes massive flickering in the m_albumList
+    //so we hide this view and only show it when all items has been inserted. This
+    //also provides quite a massive speed improvement when loading covers.
+    m_coverView->hide();
+    m_coverViewSpacer->show();
     foreach( Meta::AlbumPtr album, m_albumList )
     {
         CoverViewItem *item = new CoverViewItem( m_coverView, album );
         m_coverItems.append( item );
 
-        if ( ++x % 50 == 0 )
+        kapp->processEvents(); // QProgressDialog also calls this, but not always due to Qt bug!
+
+         //only worth testing for after processEvents() is called
+        if( m_progressDialog->wasCanceled() )
+        {
+            break;
+        }
+        
+        if ( ++x % 10 == 0 )
         {
             m_progressDialog->setValue( x );
-            kapp->processEvents(); // QProgressDialog also calls this, but not always due to Qt bug!
-
-            //only worth testing for after processEvents() is called
-            if( m_progressDialog->wasCanceled() )
-               break;
         }
     }
 
+    m_coverViewSpacer->hide();
+    m_coverView->show();
     updateStatusBar();
     delete m_progressDialog;
 }
@@ -736,23 +749,47 @@ CoverView::CoverView( QWidget *parent, const char *name, Qt::WFlags f )
 
 void CoverView::contextMenuEvent( QContextMenuEvent *event )
 {
-    CoverViewItem* item = dynamic_cast<CoverViewItem*>( itemAt( event->pos() ) );
-    if( item )
+    QList<QListWidgetItem*> items = selectedItems();
+
+    if( items.count() > 0 )
     {
+        QMap<QString,QList<QAction *> >  cacs;
         KMenu menu;
         menu.addTitle( i18n( "Cover Image" ) );
-
-        Meta::AlbumPtr album = item->albumPtr();
-        if( album )
+        
+        for (int x = 0; x < items.count(); ++x)
         {
-            Meta::CustomActionsCapability *cac = album->create<Meta::CustomActionsCapability>();
-            if( cac )
+            CoverViewItem *item = dynamic_cast<CoverViewItem*>(items.value(x));
+            Meta::AlbumPtr album = item->albumPtr();
+            if( album )
             {
-                QList<QAction *> actions = cac->customActions();
+                Meta::CustomActionsCapability *cac = album->create<Meta::CustomActionsCapability>();
+                if( cac )
+                {
+                    QList<QAction *> actions = cac->customActions();
 
-                menu.addSeparator();
-                foreach( QAction *action, actions )
-                    menu.addAction( action );
+                    foreach( QAction *action, actions )
+                    {
+                        if( !action->text().isEmpty() )
+                        {
+                            cacs[action->text()].append(action);
+                        }
+                    }
+                }
+            }
+        }
+
+        if( cacs.count() > 0 )
+        {
+            menu.addSeparator();
+
+            foreach ( QList<QAction *> actionList, cacs )
+            {
+                if( actionList.count() == items.count() )
+                {
+                    MultipleAction *maction = new MultipleAction( this, actionList );
+                    menu.addAction( maction );
+                }
             }
         }
         menu.exec( event->globalPos() );
@@ -760,7 +797,6 @@ void CoverView::contextMenuEvent( QContextMenuEvent *event )
     else
         QListView::contextMenuEvent( event );
     // TODO
-    // Multiple selections
     // Play, Load and Append to playlist actions
     // Set custom cover action
 }

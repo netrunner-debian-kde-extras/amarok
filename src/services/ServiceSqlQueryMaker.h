@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
- * Copyright (c) 2007 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -90,6 +90,7 @@ class ServiceSqlQueryMaker : public QueryMaker
         void linkTables();
         void buildQuery();
 
+        bool isValidValue( qint64 value );
         QString nameForValue( qint64 value );
         QString andOr() const;
 

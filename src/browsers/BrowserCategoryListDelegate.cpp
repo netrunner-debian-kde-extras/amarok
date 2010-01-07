@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2007-2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>               *
+ * Copyright (c) 2007-2009 Nikolaj Hald Nielsen <nhn@kde.org>                           *
  * Copyright (c) 2008 Mark Kretschmann <kretschmann@kde.org>                            *
  * Copyright (c) 2009 Seb Ruiz <ruiz@kde.org>                                           *
  *                                                                                      *
@@ -57,7 +57,6 @@ BrowserCategoryListDelegate::paint( QPainter * painter, const QStyleOptionViewIt
     const int iconWidth = 32;
     const int iconHeight = 32;
     const int iconPadX = 4;
-    const int iconPadY = 4;
 
     painter->save();
 
@@ -98,13 +97,14 @@ BrowserCategoryListDelegate::paint( QPainter * painter, const QStyleOptionViewIt
     textRect.setLeft( QApplication::isRightToLeft() ? 0 : iconRight );
     textRect.setTop( option.rect.top() + iconYPadding + bigFm.boundingRect( collectionName ).height() );
     textRect.setWidth( width - iconRight );
-    textRect.setHeight( height - ( iconHeight + iconPadY ) );
+    textRect.setHeight( textRect.top() + smallFm.height() );
 
     painter->setFont( m_smallFont );
 
     QString shortDescription = index.data( CustomCategoryRoles::ShortDescriptionRole ).toString();
     shortDescription = smallFm.elidedText( shortDescription, Qt::ElideRight, textRect.width() );
 
+    
     painter->drawText( textRect, shortDescription );
     painter->restore();
 }

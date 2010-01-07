@@ -30,6 +30,9 @@ BreadcrumbItemSortButton::BreadcrumbItemSortButton( QWidget *parent )
     , m_order( Qt::AscendingOrder )
     , m_noArrows( false )
     , m_arrowPressed( false )
+    , m_arrowHovered( false )
+    , m_arrowWidth( 11 )
+    , m_arrowHeight( 13 )
 {
     init();
 }
@@ -39,6 +42,9 @@ BreadcrumbItemSortButton::BreadcrumbItemSortButton( const QIcon &icon, const QSt
     , m_order( Qt::AscendingOrder )
     , m_noArrows( noArrows )
     , m_arrowPressed( false )
+    , m_arrowHovered( false )
+    , m_arrowWidth( 11 )
+    , m_arrowHeight( 13 )
 {
     init();
 }
@@ -49,6 +55,7 @@ BreadcrumbItemSortButton::~BreadcrumbItemSortButton()
 void
 BreadcrumbItemSortButton::init()
 {
+    setMouseTracking( true );
     emit arrowToggled( m_order );
     repaint();
 }
@@ -72,13 +79,11 @@ BreadcrumbItemSortButton::paintEvent( QPaintEvent *event )
         getContentsMargins ( &left, &top, &right, &bottom );
         const int padding = 2;
 
-        const int arrowWidth = 10;
-        const int arrowHeight = 10;
-        const int arrowLeft = buttonWidth - arrowWidth - padding;
-        const int arrowTop = ( ( buttonHeight - top - bottom) - arrowHeight )/2;
-        m_arrowRect = QRect( arrowLeft, arrowTop, arrowWidth, arrowHeight );
+        const int arrowLeft = buttonWidth - m_arrowWidth - padding;
+        const int arrowTop = ( ( buttonHeight - top - bottom) - m_arrowHeight )/2;
+        m_arrowRect = QRect( arrowLeft, arrowTop, m_arrowWidth, m_arrowHeight );
 
-        drawHoverBackground(&painter);
+        drawHoverBackground( &painter );
 
         const QColor fgColor = foregroundColor();
         QStyleOption option;
@@ -94,12 +99,43 @@ BreadcrumbItemSortButton::paintEvent( QPaintEvent *event )
         else
             style()->drawPrimitive( QStyle::PE_IndicatorArrowUp, &option, &painter, this );
 
-        QRect newPaintRect( 0, 0, buttonWidth - arrowWidth - padding, buttonHeight );
+        QRect newPaintRect( 0, 0, buttonWidth - m_arrowWidth - padding, buttonHeight );
         QPaintEvent *newEvent = new QPaintEvent( newPaintRect );
         BreadcrumbItemButton::paintEvent( newEvent );
     }
     else
         BreadcrumbItemButton::paintEvent( event );
+}
+
+void
+BreadcrumbItemSortButton::drawHoverBackground( QPainter *painter )
+{
+    const bool isHovered = isDisplayHintEnabled( HoverHint );
+    if( isHovered )
+    {
+        QColor backgroundColor = palette().color(QPalette::Highlight);
+        QStyleOptionViewItemV4 option;
+        option.initFrom(this);
+        option.state = QStyle::State_Enabled | QStyle::State_MouseOver;
+        option.viewItemPosition = QStyleOptionViewItemV4::OnlyOne;
+
+        if( m_arrowHovered )
+        {
+            option.rect = m_arrowRect;
+        }
+
+        style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter, this );
+    }
+}
+
+void
+BreadcrumbItemSortButton::mouseMoveEvent( QMouseEvent *e )
+{
+    bool oldArrowHovered = m_arrowHovered;
+    m_arrowHovered = m_arrowRect.contains( e->pos() );
+    if( oldArrowHovered != m_arrowHovered )
+        repaint();
+    BreadcrumbItemButton::mouseMoveEvent( e );
 }
 
 void
@@ -140,7 +176,7 @@ BreadcrumbItemSortButton::sizeHint() const
     if( !m_noArrows )
     {
         QSize size = BreadcrumbItemButton::sizeHint();
-        size.setWidth( size.width() + 10 ); //+arrow width
+        size.setWidth( size.width() + m_arrowWidth );
         return size;
     }
     else

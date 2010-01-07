@@ -753,6 +753,10 @@ target_link_libraries(amaroklib
     amarokocsclient
 )
 
+if (KDE_VERSION VERSION_GREATER "4.3.80")
+    target_link_libraries(amaroklib ${KDE4_KNEWSTUFF3_LIBS})
+endif (KDE_VERSION VERSION_GREATER "4.3.80")
+
 if(CMAKE_BUILD_TYPE MATCHES debugfull)
     target_link_libraries(amaroklib ${QT_QTTEST_LIBRARY})
 endif(CMAKE_BUILD_TYPE MATCHES debugfull)

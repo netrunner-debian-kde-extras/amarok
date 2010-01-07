@@ -2,24 +2,26 @@
 # Copyright (C) 2008, 2009 Free Software Foundation, Inc.
 # This file is distributed under the same license as the amarok package.
 # Funda Wang <fundawang@linux.net.cn>, 2004, 2005, 2008.
-# Ni Hui <shuizhuyuanluo@126.com>, 2008, 2009.
+# Ni Hui <shuizhuyuanluo@126.com>, 2008, 2009, 2010.
 # Aron Xu <happyaron.xu@gmail.com>, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-12-09 08:06+0100\n"
-"PO-Revision-Date: 2009-11-07 15:46+0800\n"
+"POT-Creation-Date: 2010-01-05 06:35+0100\n"
+"PO-Revision-Date: 2010-01-04 16:08+0800\n"
 "Last-Translator: Ni Hui <shuizhuyuanluo@126.com>\n"
-"Language-Team: 简体中文 <kde-china@kde.org>\n"
+"Language-Team: Chinese Simplified <kde-china@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
+"X-Generator: Lokalize 1.0\n"
 
 #: mac/GrowlInterface.cpp:37 context/engines/current/CurrentEngine.cpp:150
-#: context/applets/currenttrack/CurrentTrack.cpp:109
-#: context/applets/photos/PhotosApplet.cpp:132 App.cpp:993 widgets/Osd.cpp:578
+#: context/applets/currenttrack/CurrentTrack.cpp:110
+#: context/applets/photos/PhotosApplet.cpp:132 App.cpp:1009
+#: widgets/Osd.cpp:578
 msgid "No track playing"
 msgstr "没有播放中的音轨"
 
@@ -345,37 +347,37 @@ msgstr "读取设备(&R)"
 msgid "Proxy Collection"
 msgstr "代理收藏"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:154
+#: collection/mtpcollection/handler/MtpHandler.cpp:151
 msgid "Could not connect to MTP Device"
 msgstr "无法连接到 MTP 设备"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:375
+#: collection/mtpcollection/handler/MtpHandler.cpp:374
 msgid "Could not copy track from device."
 msgstr "无法从设备复制音轨。"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:418
+#: collection/mtpcollection/handler/MtpHandler.cpp:417
 msgid "Unknown Artist"
 msgstr "未知艺人"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:428
+#: collection/mtpcollection/handler/MtpHandler.cpp:427
 msgid "Unknown Album"
 msgstr "未知专辑"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:434
+#: collection/mtpcollection/handler/MtpHandler.cpp:433
 msgid "Unknown Genre"
 msgstr "未知流派"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:590
-#: collection/mtpcollection/handler/MtpHandler.cpp:741
-#: collection/mtpcollection/handler/MtpHandler.cpp:922
+#: collection/mtpcollection/handler/MtpHandler.cpp:589
+#: collection/mtpcollection/handler/MtpHandler.cpp:740
+#: collection/mtpcollection/handler/MtpHandler.cpp:923
 msgid "Could not delete item"
 msgstr "无法删除项目"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:601
+#: collection/mtpcollection/handler/MtpHandler.cpp:600
 msgid "Delete failed"
 msgstr "删除失败"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:895
+#: collection/mtpcollection/handler/MtpHandler.cpp:896
 msgid "Could not save playlist."
 msgstr "无法保存播放列表。"
 
@@ -518,7 +520,7 @@ msgstr "正在扫描音乐"
 #: collection/sqlcollection/ScanManager.cpp:718
 #: dialogs/OrganizeCollectionDialog.cpp:144
 #: browsers/CollectionTreeItem.cpp:201 covermanager/CoverViewDialog.h:45
-#: covermanager/CoverManager.cpp:780
+#: covermanager/CoverManager.cpp:816
 msgid "Various Artists"
 msgstr "多位艺人"
 
@@ -530,7 +532,7 @@ msgstr "流媒体"
 
 #: collection/sqlcollection/SqlMeta.cpp:407
 #: services/lastfm/meta/LastFmMeta.cpp:137 covermanager/CoverViewDialog.h:44
-#: covermanager/CoverManager.cpp:780
+#: covermanager/CoverManager.cpp:816
 #, kde-format
 msgid "%1 - %2"
 msgstr "%1 - %2"
@@ -551,7 +553,7 @@ msgstr "弹出(&E)"
 #: collection/audiocd/AudioCdCollection.cpp:413
 #: collection/audiocd/AudioCdCollection.cpp:414
 #: collection/audiocd/AudioCdCollection.cpp:415
-#: context/applets/albums/AlbumItem.cpp:73 MainWindow.cpp:1148
+#: context/applets/albums/AlbumItem.cpp:73 MainWindow.cpp:1158
 #: amarokurls/BookmarkTreeView.cpp:319 amarokurls/BookmarkTreeView.cpp:320
 #: amarokurls/BookmarkTreeView.cpp:321
 msgid "Unknown"
@@ -760,7 +762,7 @@ msgstr "未找到信息..."
 msgid "Unable to retrieve Wikipedia information: %1"
 msgstr "无法获取维基百科信息：%1"
 
-#: context/engines/wikipedia/WikipediaEngine.cpp:392
+#: context/engines/wikipedia/WikipediaEngine.cpp:396
 msgid "Wikipedia Other Languages: <br/>"
 msgstr "维基百科其它语言：<br/>"
 
@@ -865,41 +867,41 @@ msgstr "无小程序名称"
 msgid "Lyrics data could not be parsed"
 msgstr "无法分析歌词数据"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:103
+#: context/applets/videoclip/VideoclipApplet.cpp:107
 #: context/applets/lyrics/LyricsApplet.cpp:130
 #: context/applets/photos/PhotosApplet.cpp:78
 #: context/applets/wikipedia/WikipediaApplet.cpp:141
 msgid "Settings"
 msgstr "设置"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:114
-#: context/applets/videoclip/VideoclipApplet.cpp:347
-#: context/applets/videoclip/VideoclipApplet.cpp:368
+#: context/applets/videoclip/VideoclipApplet.cpp:118
+#: context/applets/videoclip/VideoclipApplet.cpp:357
+#: context/applets/videoclip/VideoclipApplet.cpp:378
 msgid "Video Clip"
 msgstr "视频剪辑"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:358
+#: context/applets/videoclip/VideoclipApplet.cpp:368
 msgid "Video Clip "
 msgstr "视频剪辑 "
 
-#: context/applets/videoclip/VideoclipApplet.cpp:358
+#: context/applets/videoclip/VideoclipApplet.cpp:368
 msgid " No information found..."
 msgstr " 未找到信息..."
 
-#: context/applets/videoclip/VideoclipApplet.cpp:541
+#: context/applets/videoclip/VideoclipApplet.cpp:551
 msgid "Video Clip Settings"
 msgstr "视频剪辑设置"
 
-#: context/applets/videoclip/VideoItemButton.cpp:98
+#: context/applets/videoclip/VideoItemButton.cpp:96
 msgid "&Add to playlist"
 msgstr "添加到播放列表(&A)"
 
-#: context/applets/videoclip/VideoItemButton.cpp:99
+#: context/applets/videoclip/VideoItemButton.cpp:97
 #: context/applets/albums/AlbumsView.cpp:114
 msgid "&Queue"
 msgstr "队列(&Q)"
 
-#: context/applets/videoclip/VideoItemButton.cpp:100
+#: context/applets/videoclip/VideoItemButton.cpp:98
 msgid "Append and &Play"
 msgstr "追加并播放(&P)"
 
@@ -938,25 +940,25 @@ msgstr "无法下载 Songkick。请检查您的网络链接：%1"
 msgid "There was no information found for this track"
 msgstr "未发现此音轨的任何信息"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:82
+#: context/applets/currenttrack/CurrentTrack.cpp:83
 msgctxt "What artist is this track by"
 msgid "By"
 msgstr "由"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:83
+#: context/applets/currenttrack/CurrentTrack.cpp:84
 msgctxt "What album is this track on"
 msgid "On"
 msgstr "于"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:115
-#: context/applets/currenttrack/CurrentTrack.cpp:542
+#: context/applets/currenttrack/CurrentTrack.cpp:116
+#: context/applets/currenttrack/CurrentTrack.cpp:557
 msgid "Play count"
 msgstr "播放次数"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:120
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
-#: context/applets/currenttrack/CurrentTrack.cpp:116
-#: context/applets/currenttrack/CurrentTrack.cpp:543
+#: context/applets/currenttrack/CurrentTrack.cpp:117
+#: context/applets/currenttrack/CurrentTrack.cpp:558
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:256
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:695 rc.cpp:1249
 #: playlist/PlaylistModel.cpp:715 widgets/SmartPlaylistEditor.cpp:185
@@ -964,18 +966,18 @@ msgstr "播放次数"
 msgid "Score"
 msgstr "计分"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:117
-#: context/applets/currenttrack/CurrentTrack.cpp:544
+#: context/applets/currenttrack/CurrentTrack.cpp:118
+#: context/applets/currenttrack/CurrentTrack.cpp:559
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:261
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:700 TrayIcon.cpp:189
 msgid "Last Played"
 msgstr "上次播放"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:122
+#: context/applets/currenttrack/CurrentTrack.cpp:123
 msgid "Last played"
 msgstr "上次播放"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:123
+#: context/applets/currenttrack/CurrentTrack.cpp:124
 msgid "Favorite tracks"
 msgstr "最爱音轨"
 
@@ -1000,11 +1002,11 @@ msgstr "替换播放列表(&R)"
 
 #: context/applets/albums/AlbumsView.cpp:115
 #: browsers/filebrowser/MyDirOperator.cpp:274
-#: playlist/view/PlaylistViewCommon.cpp:198
+#: playlist/view/PlaylistViewCommon.cpp:203
 msgid "Edit Track Details"
 msgstr "编辑音轨详情"
 
-#: context/applets/albums/Albums.cpp:178
+#: context/applets/albums/Albums.cpp:182
 #, kde-format
 msgid "Disc %1"
 msgstr "盘片 %1"
@@ -1045,10 +1047,8 @@ msgid "No lyrics script is running."
 msgstr "没有歌词脚本正在运行。"
 
 #: context/applets/lyrics/LyricsApplet.cpp:264
-#, fuzzy
-#| msgid "Fetching ..."
 msgid "Lyrics : Fetching ..."
-msgstr "正在获取..."
+msgstr "Lyrics：正在获取..."
 
 #: context/applets/lyrics/LyricsApplet.cpp:265
 msgid "Lyrics are being fetched."
@@ -1085,10 +1085,8 @@ msgstr "重新获取歌词"
 #. i18n: file: context/applets/lyrics/lyricsSettings.ui:26
 #. i18n: ectx: property (windowTitle), widget (QWidget, lyricsSettings)
 #: context/applets/lyrics/LyricsApplet.cpp:454 rc.cpp:563
-#, fuzzy
-#| msgid "Settings"
 msgid "Lyrics Settings"
-msgstr "设置"
+msgstr "Lyrics 设置"
 
 #: context/applets/photos/PhotosApplet.cpp:68
 #: context/applets/photos/PhotosApplet.cpp:132
@@ -1104,7 +1102,7 @@ msgstr "照片"
 #. i18n: file: context/applets/wikipedia/wikipediaSettings.ui:24
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
 #: context/applets/photos/PhotosApplet.cpp:92
-#: context/applets/wikipedia/WikipediaApplet.cpp:401 rc.cpp:569 rc.cpp:592
+#: context/applets/wikipedia/WikipediaApplet.cpp:406 rc.cpp:569 rc.cpp:592
 msgid "Automatic"
 msgstr "自动"
 
@@ -1133,22 +1131,18 @@ msgid "Wikipedia"
 msgstr "维基百科"
 
 #: context/applets/wikipedia/WikipediaApplet.cpp:106
-#, fuzzy
-#| msgid "Track"
 msgid "Back"
-msgstr "音轨"
+msgstr "后退"
 
 #: context/applets/wikipedia/WikipediaApplet.cpp:113
-#, fuzzy
-#| msgid "&Seek Forward"
 msgid "Forward"
-msgstr "快进(&S)"
+msgstr "前进"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:85
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: context/applets/wikipedia/WikipediaApplet.cpp:120
 #: dialogs/FilenameLayoutDialog.cpp:170 dialogs/FilenameLayoutDialog.cpp:497
-#: dialogs/transferdialog.cpp:88 browsers/CollectionTreeItemModelBase.cpp:922
+#: dialogs/transferdialog.cpp:88 browsers/CollectionTreeItemModelBase.cpp:928
 #: browsers/collectionbrowser/CollectionWidget.cpp:122
 #: browsers/collectionbrowser/CollectionWidget.cpp:151
 #: browsers/collectionbrowser/CollectionWidget.cpp:183
@@ -1165,13 +1159,14 @@ msgstr "艺人"
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: context/applets/wikipedia/WikipediaApplet.cpp:127
 #: dialogs/FilenameLayoutDialog.cpp:182 dialogs/FilenameLayoutDialog.cpp:518
-#: dialogs/transferdialog.cpp:89 browsers/CollectionTreeItemModelBase.cpp:921
+#: dialogs/transferdialog.cpp:89 browsers/CollectionTreeItemModelBase.cpp:927
 #: browsers/collectionbrowser/CollectionWidget.cpp:125
 #: browsers/collectionbrowser/CollectionWidget.cpp:154
 #: browsers/collectionbrowser/CollectionWidget.cpp:186
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:250 rc.cpp:1225
 #: services/magnatune/MagnatuneStore.cpp:211
-#: services/jamendo/JamendoInfoParser.cpp:83 playlist/PlaylistHeader.cpp:40
+#: services/jamendo/JamendoInfoParser.cpp:83
+#: playlist/view/PlaylistViewCommon.cpp:52 playlist/PlaylistHeader.cpp:40
 #: playlist/PlaylistModel.cpp:704 widgets/SmartPlaylistEditor.cpp:183
 #: widgets/SmartPlaylistEditor.cpp:197
 msgid "Album"
@@ -1191,23 +1186,23 @@ msgstr "重新装入"
 
 #. i18n: file: context/applets/wikipedia/wikipediaSettings.ui:29
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
-#: context/applets/wikipedia/WikipediaApplet.cpp:404 rc.cpp:595
+#: context/applets/wikipedia/WikipediaApplet.cpp:409 rc.cpp:595
 msgid "English"
 msgstr "英语"
 
 #. i18n: file: context/applets/wikipedia/wikipediaSettings.ui:34
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
-#: context/applets/wikipedia/WikipediaApplet.cpp:407 rc.cpp:598
+#: context/applets/wikipedia/WikipediaApplet.cpp:412 rc.cpp:598
 msgid "French"
 msgstr "法语"
 
 #. i18n: file: context/applets/wikipedia/wikipediaSettings.ui:39
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
-#: context/applets/wikipedia/WikipediaApplet.cpp:410 rc.cpp:601
+#: context/applets/wikipedia/WikipediaApplet.cpp:415 rc.cpp:601
 msgid "German"
 msgstr "德语"
 
-#: context/applets/wikipedia/WikipediaApplet.cpp:437
+#: context/applets/wikipedia/WikipediaApplet.cpp:442
 msgid "Wikipedia Settings"
 msgstr "维基百科设置"
 
@@ -1250,20 +1245,17 @@ msgid ""
 msgstr "请从上下文视图底部的工具栏中添加一些小程序。"
 
 #: context/widgets/ToolBoxMenu.cpp:107
-#: context/widgets/appletexplorer/AppletExplorer.cpp:88
+#: context/widgets/appletexplorer/AppletExplorer.cpp:90
 msgid "Hide menu"
 msgstr "隐藏菜单"
 
 #: context/widgets/RatingWidget.cpp:66 context/widgets/RatingWidget.cpp:217
 #: context/widgets/RatingWidget.cpp:243
-#, fuzzy, kde-format
-#| msgid "Transferring: %1"
+#, kde-format
 msgid "Track rating: %1"
-msgstr "正在传送：%1"
+msgstr "音轨评分：%1"
 
 #: context/widgets/appletexplorer/AppletItemModel.cpp:93
-#, fuzzy
-#| msgid "contains"
 msgid "Containments"
 msgstr "包含"
 
@@ -1298,12 +1290,9 @@ msgid "&Replay Gain Mode"
 msgstr "回放增益模式(&R)"
 
 #: ActionClasses.cpp:325
-#, fuzzy
-#| msgctxt "State, as in, disabled"
-#| msgid "&Off"
 msgctxt "Replay Gain state, as in, disabled"
 msgid "&Off"
-msgstr "关(&O)"
+msgstr "关闭(&O)"
 
 #: ActionClasses.cpp:325
 msgctxt "Item, as in, music"
@@ -1323,12 +1312,9 @@ msgid "Your current setup does not support the equalizer feature"
 msgstr "您当前的设置不支持均衡器特性"
 
 #: ActionClasses.cpp:368
-#, fuzzy
-#| msgctxt "State, as in, disabled"
-#| msgid "&Off"
 msgctxt "Equalizer state, as in, disabled"
 msgid "&Off"
-msgstr "关(&O)"
+msgstr "关闭(&O)"
 
 #: ActionClasses.cpp:419
 msgid "Burn"
@@ -1413,12 +1399,9 @@ msgstr "Phonon 不支持均衡器"
 #: configdialog/dialogs/PlaybackConfig.cpp:161
 #: configdialog/dialogs/PlaybackConfig.cpp:251
 #: configdialog/dialogs/PlaybackConfig.cpp:303
-#, fuzzy
-#| msgctxt "State, as in, disabled"
-#| msgid "Off"
 msgctxt "Equalizer state, as in, disabled"
 msgid "Off"
-msgstr "关"
+msgstr "关闭"
 
 #: configdialog/dialogs/PlaybackConfig.cpp:259
 msgid "Cannot delete this preset"
@@ -1682,7 +1665,7 @@ msgstr "监视文件夹的更改(&W)"
 
 #: dialogs/CollectionSetup.cpp:73
 msgid "&Enable character set detection in ID3 tags"
-msgstr ""
+msgstr "启用 ID3 标签字符集探测(&E)"
 
 #: dialogs/CollectionSetup.cpp:78
 msgid "If selected, Amarok will read all subfolders."
@@ -1718,7 +1701,7 @@ msgstr "标题"
 #. i18n: file: dialogs/EditFilterDialog.ui:95
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:174 dialogs/FilenameLayoutDialog.cpp:504
-#: browsers/CollectionTreeItemModelBase.cpp:923
+#: browsers/CollectionTreeItemModelBase.cpp:929
 #: browsers/collectionbrowser/CollectionWidget.cpp:131
 #: browsers/collectionbrowser/CollectionWidget.cpp:160
 #: browsers/collectionbrowser/CollectionWidget.cpp:192
@@ -1731,7 +1714,7 @@ msgstr "作曲"
 #. i18n: file: dialogs/EditFilterDialog.ui:135
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:178 dialogs/FilenameLayoutDialog.cpp:511
-#: browsers/CollectionTreeItemModelBase.cpp:925
+#: browsers/CollectionTreeItemModelBase.cpp:931
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:253
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:692 rc.cpp:1258
 #: playlist/PlaylistModel.cpp:703 widgets/SmartPlaylistEditor.cpp:184
@@ -1748,7 +1731,7 @@ msgstr "注释"
 #. i18n: file: dialogs/EditFilterDialog.ui:100
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:190 dialogs/FilenameLayoutDialog.cpp:532
-#: dialogs/transferdialog.cpp:90 browsers/CollectionTreeItemModelBase.cpp:924
+#: dialogs/transferdialog.cpp:90 browsers/CollectionTreeItemModelBase.cpp:930
 #: browsers/collectionbrowser/CollectionWidget.cpp:128
 #: browsers/collectionbrowser/CollectionWidget.cpp:157
 #: browsers/collectionbrowser/CollectionWidget.cpp:189
@@ -1828,7 +1811,7 @@ msgstr ""
 #: rc.cpp:1184 rc.cpp:1187 rc.cpp:1190 rc.cpp:1193 rc.cpp:1196 rc.cpp:1199
 #: rc.cpp:1202 rc.cpp:1205
 msgid "<empty>"
-msgstr ""
+msgstr "<empty>"
 
 #: dialogs/FilenameLayoutDialog.cpp:422
 msgid "&Basic..."
@@ -1948,12 +1931,12 @@ msgstr ""
 "4<br/>&nbsp;&nbsp;到 %5"
 
 #: dialogs/DatabaseImporterDialog.cpp:234
-#, fuzzy, kde-format
+#, kde-format
 msgctxt "Track has been matched ambigously, format: Url"
 msgid ""
 "Multiple ambiguous matches found for <b><font color='red'>%1</font></b>, has "
 "been discarded."
-msgstr "歧义，已丢弃 <b><font color='red'>%1</font></b>"
+msgstr "歧义，已丢弃 <b><font color='red'>%1</font></b>。"
 
 #: dialogs/TagDialog.cpp:575
 msgid "Filename Layout Chooser"
@@ -1981,16 +1964,12 @@ msgid "Unknown"
 msgstr "未知"
 
 #: dialogs/TagDialog.cpp:878
-#, fuzzy
-#| msgid "Bookmark this Artist"
 msgid "Tracks by this Artist"
-msgstr "将此艺人加入书签"
+msgstr "此艺人的音轨"
 
 #: dialogs/TagDialog.cpp:886
-#, fuzzy
-#| msgid "Album Artist"
 msgid "Albums by this Artist"
-msgstr "专辑艺人"
+msgstr "此艺人的专辑"
 
 #: dialogs/TagDialog.cpp:945
 #, kde-format
@@ -2105,7 +2084,7 @@ msgstr "计分歌曲："
 msgid "Average Score:"
 msgstr "平均计分："
 
-#: dialogs/TagDialog.cpp:1646
+#: dialogs/TagDialog.cpp:1649
 msgid ""
 "Writing to file failed. Please check permissions and available disc space."
 msgstr "写入文件失败。请检查权限和可用的磁盘空间。"
@@ -2236,65 +2215,67 @@ msgstr "选项"
 msgid "Convert spaces to underscores"
 msgstr "将空格转换为下划线"
 
-#: dialogs/ScriptManager.cpp:92 MainWindow.cpp:771
+#: dialogs/ScriptManager.cpp:106 MainWindow.cpp:775
 msgid "Script Manager"
 msgstr "脚本管理器"
 
-#: dialogs/ScriptManager.cpp:292
+#: dialogs/ScriptManager.cpp:306
 msgid ""
 "Script Packages (*.amarokscript.tar, *.amarokscript.tar.bz2, *.amarokscript."
 "tar.gz)"
 msgstr ""
 "脚本包(*.amarokscript.tar, *.amarokscript.tar.bz2, *.amarokscript.tar.gz)"
 
-#: dialogs/ScriptManager.cpp:300
+#: dialogs/ScriptManager.cpp:314
 msgid "Could not read this package."
 msgstr "无法读取此包。"
 
-#: dialogs/ScriptManager.cpp:311
+#: dialogs/ScriptManager.cpp:325
 #, kde-format
 msgid ""
 "A script with the name '%1' is already installed. Please uninstall it first."
 msgstr "已经安装了名为“%1”的脚本。请先卸载该脚本。"
 
-#: dialogs/ScriptManager.cpp:322 dialogs/ScriptManager.cpp:376
+#: dialogs/ScriptManager.cpp:336 dialogs/ScriptManager.cpp:382
+#: dialogs/ScriptManager.cpp:403
 msgid ""
 "<p>Script successfully installed.</p><p>Please restart Amarok to start the "
 "script.</p>"
 msgstr "<p>脚本安装成功。</p><p>请重启 Amarok 以启动脚本。</p>"
 
-#: dialogs/ScriptManager.cpp:328
+#: dialogs/ScriptManager.cpp:342
 msgid ""
 "<p>Script installation failed.</p><p>Please inform the package maintainer "
 "about this error.</p>"
 msgstr "<p>脚本安装失败。</p><p>请将此错误反馈给包维护者。</p>"
 
-#: dialogs/ScriptManager.cpp:379 dialogs/ScriptManager.cpp:410
+#: dialogs/ScriptManager.cpp:385 dialogs/ScriptManager.cpp:406
+#: dialogs/ScriptManager.cpp:438
 msgid ""
 "<p>Script successfully uninstalled.</p><p>Please restart Amarok to totally "
 "remove the script.</p>"
 msgstr "<p>脚本卸载成功。</p><p>请重启 Amarok 以完全删除脚本。</p>"
 
-#: dialogs/ScriptManager.cpp:392
+#: dialogs/ScriptManager.cpp:420
 #, kde-format
 msgid "Are you sure you want to uninstall the script '%1'?"
 msgstr "您确定想要卸载脚本“%1”吗？"
 
-#: dialogs/ScriptManager.cpp:392
+#: dialogs/ScriptManager.cpp:420
 msgid "Uninstall Script"
 msgstr "卸载脚本"
 
-#: dialogs/ScriptManager.cpp:392
+#: dialogs/ScriptManager.cpp:420
 msgid "Uninstall"
 msgstr "卸载"
 
-#: dialogs/ScriptManager.cpp:401
+#: dialogs/ScriptManager.cpp:429
 msgid ""
 "<p>Could not uninstall this script.</p><p>The ScriptManager can only "
 "uninstall scripts which have been installed as packages.</p>"
 msgstr "<p>无法卸载脚本。</p><p>脚本管理器只能卸载以包形式安装的脚本。</p>"
 
-#: dialogs/ScriptManager.cpp:449
+#: dialogs/ScriptManager.cpp:477
 #, kde-format
 msgid ""
 "There are exceptions caught in the script '%1'. Please refer to the console "
@@ -2414,96 +2395,94 @@ msgid ""
 msgstr ""
 
 #: App.cpp:738
-#, fuzzy
-#| msgid "Database"
 msgid "Database Error"
-msgstr "数据库"
+msgstr "数据库错误"
 
 #: App.cpp:783
 msgid "Moving files to trash"
 msgstr "将文件移入回收站"
 
-#: App.cpp:865
+#: App.cpp:881
 msgctxt "When this track was last played"
 msgid "Unknown"
 msgstr "未知"
 
-#: App.cpp:870
+#: App.cpp:886
 #, kde-format
 msgctxt "monthname year"
 msgid "%1 %2"
 msgstr "%2年%1月"
 
-#: App.cpp:877
+#: App.cpp:893
 #, kde-format
 msgid "One week ago"
 msgid_plural "%1 weeks ago"
 msgstr[0] "%1 周前"
 
-#: App.cpp:883
+#: App.cpp:899
 msgid "Yesterday"
 msgstr "昨天"
 
-#: App.cpp:884
+#: App.cpp:900
 #, kde-format
 msgid "One day ago"
 msgid_plural "%1 days ago"
 msgstr[0] "%1 天前"
 
-#: App.cpp:887
+#: App.cpp:903
 #, kde-format
 msgid "One hour ago"
 msgid_plural "%1 hours ago"
 msgstr[0] "%1 小时前"
 
-#: App.cpp:893
+#: App.cpp:909
 #, kde-format
 msgid "One minute ago"
 msgid_plural "%1 minutes ago"
 msgstr[0] "%1 分钟前"
 
-#: App.cpp:894
+#: App.cpp:910
 msgid "Within the last minute"
 msgstr "不到一分钟"
 
-#: App.cpp:896
+#: App.cpp:912
 msgid "The future"
 msgstr "未来"
 
-#: App.cpp:902
+#: App.cpp:918
 msgctxt "The amount of time since last played"
 msgid "Never"
 msgstr "从不"
 
-#: App.cpp:912
+#: App.cpp:928
 msgctxt "The amount of time since last played"
 msgid "0"
 msgstr "0"
 
-#: App.cpp:921
+#: App.cpp:937
 #, kde-format
 msgctxt "number of months ago"
 msgid "%1M"
 msgstr "%1个月"
 
-#: App.cpp:925
+#: App.cpp:941
 #, kde-format
 msgctxt "w for weeks"
 msgid "%1w"
 msgstr "%1周"
 
-#: App.cpp:928
+#: App.cpp:944
 msgctxt "When this track was last played"
 msgid "Tomorrow"
 msgstr "明天"
 
-#: App.cpp:934
+#: App.cpp:950
 #, no-c-format, kde-format
 msgctxt "d for days"
 msgid "%1d"
 msgstr "%1天"
 
-#: App.cpp:937
+#: App.cpp:953
 #, kde-format
 msgctxt "h for hours"
 msgid "%1h"
@@ -2531,34 +2510,34 @@ msgstr "%1小时"
 #. i18n: ectx: property (text), widget (QLabel, eqBand8Value)
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:1329
 #. i18n: ectx: property (text), widget (QLabel, eqBand9Value)
-#: App.cpp:946 rc.cpp:737 rc.cpp:743 rc.cpp:749 rc.cpp:755 rc.cpp:761
+#: App.cpp:962 rc.cpp:737 rc.cpp:743 rc.cpp:749 rc.cpp:755 rc.cpp:761
 #: rc.cpp:767 rc.cpp:773 rc.cpp:779 rc.cpp:785 rc.cpp:791 rc.cpp:797
 msgid "0"
 msgstr "0"
 
-#: App.cpp:963
+#: App.cpp:979
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%2</b> 在 <b>%3</b> 中的 <b>%1</b>"
 
-#: App.cpp:966
+#: App.cpp:982
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%2</b> 的 <b>%1</b>"
 
-#: App.cpp:970
+#: App.cpp:986
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%2</b> 中的 <b>%1</b>"
 
-#: App.cpp:975
+#: App.cpp:991
 msgid "Unknown track"
 msgstr "未知音轨"
 
-#: App.cpp:982
+#: App.cpp:998
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -2875,20 +2854,16 @@ msgid "&Update Channel"
 msgstr "更新频道(&U)"
 
 #: podcasts/sql/SqlPodcastProvider.cpp:596
-#, fuzzy
-#| msgid "Subscribe"
 msgid "Unsubscribe"
-msgstr "订阅"
+msgstr "取消订阅"
 
 #: podcasts/sql/SqlPodcastProvider.cpp:600
 msgid "Do you really want to unsubscribe from "
-msgstr ""
+msgstr "您确实想要取消订阅 "
 
 #: podcasts/sql/SqlPodcastProvider.cpp:607
-#, fuzzy
-#| msgid "&Delete Downloaded Episode"
 msgid "Delete downloaded episodes"
-msgstr "删除已下载的片断(&D)"
+msgstr "删除已下载的片断"
 
 #: podcasts/sql/SqlPodcastProvider.cpp:732
 msgid "Waiting for Podcast Downloads to Finish"
@@ -2963,7 +2938,7 @@ msgstr ""
 #: podcasts/PodcastReader.cpp:1004
 #, kde-format
 msgid "Feed has an unknown type: %1"
-msgstr ""
+msgstr "种子的类型未知：%1"
 
 #: podcasts/PodcastReader.cpp:1013
 #, kde-format
@@ -2971,26 +2946,22 @@ msgid "%1 is not an RSS version 2.0 feed."
 msgstr "%1 不是一个 RSS 2.0 版本的种子。"
 
 #: podcasts/PodcastReader.cpp:1043
-#, fuzzy, kde-format
-#| msgid "%1 is not an RSS version 2.0 feed."
+#, kde-format
 msgid "%1 is not a valid RSS version 1.0 feed."
-msgstr "%1 不是一个 RSS 2.0 版本的种子。"
+msgstr "%1 不是有效的 RSS 1.0 版本的种子。"
 
 #: podcasts/PodcastReader.cpp:1051
-#, fuzzy, kde-format
-#| msgid "%1 is not an RSS version 2.0 feed."
+#, kde-format
 msgid "%1 is not a valid Atom feed."
-msgstr "%1 不是一个 RSS 2.0 版本的种子。"
+msgstr "%1 不是有效的 Atom 种子。"
 
 #: podcasts/PodcastReader.cpp:1134
 msgid "Alternative Enclosures:"
 msgstr ""
 
 #: podcasts/PodcastReader.cpp:1144
-#, fuzzy
-#| msgid "Unknown Genre"
 msgid "unknown type"
-msgstr "未知流派"
+msgstr "未知类型"
 
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:126
 #. i18n: ectx: property (title), widget (QGroupBox, EqualizerGroupBox)
@@ -3048,7 +3019,7 @@ msgstr "无标题"
 msgid "A preset with the name %1 already exists. Overwrite?"
 msgstr "已存在名为 %1 的预设。是否覆盖？"
 
-#: EngineController.cpp:227
+#: EngineController.cpp:237
 msgid ""
 "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
 "the installation of the backend that phonon uses.</p><p>You may find useful "
@@ -3058,21 +3029,21 @@ msgstr ""
 "装情况。</p><p>您可以在 <i>Amarok 手册</i>的<i>常见问题解答</i>中获得更多信"
 "息。</p>"
 
-#: EngineController.cpp:246
+#: EngineController.cpp:256
 msgid "Install MP3 Support"
 msgstr "安装 MP3 支持"
 
-#: EngineController.cpp:248
+#: EngineController.cpp:258
 msgid ""
 "Amarok currently cannot play MP3 files. Do you want to install support for "
 "MP3?"
 msgstr "Amarok 目前无法播放 MP3 文件。您想要安装 MP3 支持吗？"
 
-#: EngineController.cpp:249
+#: EngineController.cpp:259
 msgid "No MP3 Support"
 msgstr "没有 MP3 支持"
 
-#: EngineController.cpp:743
+#: EngineController.cpp:760
 msgid "Preamp"
 msgstr "前置放大"
 
@@ -3179,7 +3150,7 @@ msgstr "播放列表"
 msgid "Recommendations by Echo Nest."
 msgstr "Echo Nest 所推荐。"
 
-#: dynamic/BiasedPlaylist.cpp:141
+#: dynamic/BiasedPlaylist.cpp:145
 msgid "Generating playlist..."
 msgstr "正在生成播放列表..."
 
@@ -3341,14 +3312,12 @@ msgid "Biased playlists"
 msgstr "交互式播放列表"
 
 #: main.cpp:86
-#, fuzzy
-#| msgid "Daniel Winter"
 msgid "Daniel Dewald"
-msgstr "Daniel Winter"
+msgstr "Daniel Dewald"
 
 #: main.cpp:86
 msgid "Tag Guesser, Labels"
-msgstr ""
+msgstr "标签探测、标签"
 
 #: main.cpp:88
 msgid "Daniel Winter"
@@ -3364,13 +3333,11 @@ msgstr "Edward “阎王” Toroshchin"
 
 #: main.cpp:92
 msgid "Frank Meerkötter"
-msgstr ""
+msgstr "Frank Meerkötter"
 
 #: main.cpp:92 main.cpp:111
-#, fuzzy
-#| msgid "Podcast Directory"
 msgid "Podcast improvements"
-msgstr "播客目录"
+msgstr "播客改进"
 
 #: main.cpp:95
 msgid "Greg Meyer"
@@ -3434,7 +3401,7 @@ msgstr "推广大使(ljubomir)"
 
 #: main.cpp:111
 msgid "Mathias Panzenböck"
-msgstr ""
+msgstr "Mathias Panzenböck"
 
 #: main.cpp:113
 msgid "Max Howell"
@@ -3787,33 +3754,31 @@ msgstr "过滤音乐来源"
 msgid "Previous Browser"
 msgstr "前一个浏览器"
 
-#: browsers/CollectionTreeItemModelBase.cpp:532
+#: browsers/CollectionTreeItemModelBase.cpp:538
 msgid "album"
 msgstr "专辑"
 
-#: browsers/CollectionTreeItemModelBase.cpp:537
+#: browsers/CollectionTreeItemModelBase.cpp:543
 msgid "artist"
 msgstr "艺人"
 
-#: browsers/CollectionTreeItemModelBase.cpp:542
+#: browsers/CollectionTreeItemModelBase.cpp:548
 msgid "genre"
 msgstr "流派"
 
-#: browsers/CollectionTreeItemModelBase.cpp:547
-#, fuzzy
-#| msgid "Title"
+#: browsers/CollectionTreeItemModelBase.cpp:553
 msgid "title"
 msgstr "标题"
 
-#: browsers/CollectionTreeItemModelBase.cpp:552
+#: browsers/CollectionTreeItemModelBase.cpp:558
 msgid "composer"
 msgstr "作曲"
 
-#: browsers/CollectionTreeItemModelBase.cpp:557
+#: browsers/CollectionTreeItemModelBase.cpp:563
 msgid "year"
 msgstr "年份"
 
-#: browsers/CollectionTreeItemModelBase.cpp:562
+#: browsers/CollectionTreeItemModelBase.cpp:568
 #, fuzzy
 #| msgctxt ""
 #| "'Beats per minute' playlist column name and token for playlist layouts, "
@@ -3822,72 +3787,67 @@ msgstr "年份"
 msgid "bpm"
 msgstr "Bpm"
 
-#: browsers/CollectionTreeItemModelBase.cpp:566
+#: browsers/CollectionTreeItemModelBase.cpp:572
 msgid "comment"
 msgstr "注释"
 
-#: browsers/CollectionTreeItemModelBase.cpp:570
-#, fuzzy
-#| msgid "Bitrate"
+#: browsers/CollectionTreeItemModelBase.cpp:576
 msgid "bitrate"
 msgstr "比特率"
 
-#: browsers/CollectionTreeItemModelBase.cpp:574
+#: browsers/CollectionTreeItemModelBase.cpp:580
 msgid "rating"
 msgstr "评分"
 
-#: browsers/CollectionTreeItemModelBase.cpp:578
+#: browsers/CollectionTreeItemModelBase.cpp:584
 msgid "score"
 msgstr "计分"
 
-#: browsers/CollectionTreeItemModelBase.cpp:582
+#: browsers/CollectionTreeItemModelBase.cpp:588
 msgid "playcount"
 msgstr "播放次数"
 
-#: browsers/CollectionTreeItemModelBase.cpp:586
-#, fuzzy
-#| msgctxt "'Sample rate' playlist column name and token for playlist layouts"
-#| msgid "Sample rate"
+#: browsers/CollectionTreeItemModelBase.cpp:592
 msgid "samplerate"
 msgstr "采样率"
 
-#: browsers/CollectionTreeItemModelBase.cpp:590
+#: browsers/CollectionTreeItemModelBase.cpp:596
 msgid "length"
 msgstr "长度"
 
-#: browsers/CollectionTreeItemModelBase.cpp:594
+#: browsers/CollectionTreeItemModelBase.cpp:600
 msgid "discnumber"
 msgstr "盘片编号"
 
-#: browsers/CollectionTreeItemModelBase.cpp:598
+#: browsers/CollectionTreeItemModelBase.cpp:604
 msgid "tracknumber"
 msgstr "音轨编号"
 
-#: browsers/CollectionTreeItemModelBase.cpp:602
+#: browsers/CollectionTreeItemModelBase.cpp:608
 msgid "added"
 msgstr "已添加"
 
-#: browsers/CollectionTreeItemModelBase.cpp:608
+#: browsers/CollectionTreeItemModelBase.cpp:614
 msgid "today"
 msgstr "今天"
 
-#: browsers/CollectionTreeItemModelBase.cpp:610
+#: browsers/CollectionTreeItemModelBase.cpp:616
 msgid "last week"
 msgstr "上周"
 
-#: browsers/CollectionTreeItemModelBase.cpp:612
+#: browsers/CollectionTreeItemModelBase.cpp:618
 msgid "last month"
 msgstr "上个月"
 
-#: browsers/CollectionTreeItemModelBase.cpp:614
+#: browsers/CollectionTreeItemModelBase.cpp:620
 msgid "two months ago"
 msgstr "两个月前"
 
-#: browsers/CollectionTreeItemModelBase.cpp:616
+#: browsers/CollectionTreeItemModelBase.cpp:622
 msgid "three months ago"
 msgstr "三个月前"
 
-#: browsers/CollectionTreeItemModelBase.cpp:921
+#: browsers/CollectionTreeItemModelBase.cpp:927
 msgid "Year - Album"
 msgstr "年份 - 专辑"
 
@@ -4051,20 +4011,20 @@ msgstr ""
 "播放列表浏览器包含您导入和保存播放列表的清单。这里也是指定强大的动态播放列表"
 "和管理您的播客订阅和片段的地方。"
 
-#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:229
+#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:238
 msgid "New name"
 msgstr "新名称"
 
-#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:231
+#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:240
 msgctxt "Enter a new name for a folder that already exists"
 msgid "Enter new folder name:"
 msgstr "输入新文件夹名称："
 
-#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:254
+#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:263
 msgid "&Delete Folder"
 msgstr "删除文件夹(&D)"
 
-#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:264
+#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:273
 msgid "&Rename Folder..."
 msgstr "重命名文件夹(&R)..."
 
@@ -4209,10 +4169,8 @@ msgid "&Update All"
 msgstr "全部更新(&U)"
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:130
-#, fuzzy
-#| msgid "Imported Playlist Files"
 msgid "Import OPML File"
-msgstr "导入的播放列表文件"
+msgstr "导入 OPML 文件"
 
 #: browsers/playlistbrowser/PodcastCategory.cpp:200
 #, fuzzy
@@ -4221,30 +4179,26 @@ msgstr "导入的播放列表文件"
 msgid "By"
 msgstr "由"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:241
+#: browsers/playlistbrowser/PodcastCategory.cpp:239
 #: browsers/playlistbrowser/DynamicCategory.cpp:70
 msgid "On"
 msgstr "开启"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:259
-#, fuzzy
-#| msgid "File Size"
+#: browsers/playlistbrowser/PodcastCategory.cpp:257
 msgid "File Size:"
-msgstr "文件大小"
+msgstr "文件大小："
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:271
-#, fuzzy
-#| msgid "Description:"
+#: browsers/playlistbrowser/PodcastCategory.cpp:269
 msgid "Subscription Date:"
-msgstr "描述："
+msgstr "订阅日期："
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:279
+#: browsers/playlistbrowser/PodcastCategory.cpp:277
 msgid "Keywords:"
-msgstr ""
+msgstr "关键字："
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:312
+#: browsers/playlistbrowser/PodcastCategory.cpp:310
 msgid "Select OPML file to import"
-msgstr ""
+msgstr "选择要导入的 OPML 文件"
 
 #: browsers/playlistbrowser/UserPlaylistTreeView.cpp:184
 #, kde-format
@@ -4290,31 +4244,31 @@ msgstr "即将播放："
 msgid "Number of upcoming tracks to add to the playlist."
 msgstr "添加到播放列表中的即将播放音轨的数量。"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:114
+#: browsers/playlistbrowser/DynamicCategory.cpp:116
 msgid "Playlist:"
 msgstr "播放列表："
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:143
+#: browsers/playlistbrowser/DynamicCategory.cpp:145
 msgid "Save the preset."
 msgstr "保存预设。"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:153
+#: browsers/playlistbrowser/DynamicCategory.cpp:155
 msgid "Delete the preset."
 msgstr "删除预设。"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:314
+#: browsers/playlistbrowser/DynamicCategory.cpp:316
 msgid "Playlist Name"
 msgstr "播放列表名称"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:315
+#: browsers/playlistbrowser/DynamicCategory.cpp:317
 msgid "Enter a name for the playlist:"
 msgstr "输入播放列表的名称："
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:325
+#: browsers/playlistbrowser/DynamicCategory.cpp:327
 msgid "Warning"
 msgstr "警告"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:325
+#: browsers/playlistbrowser/DynamicCategory.cpp:327
 msgid "Cannot overwrite the random playlist."
 msgstr "无法覆盖随机播放列表。"
 
@@ -4379,16 +4333,16 @@ msgstr "文件"
 msgid "Browse local hard drive for content"
 msgstr "浏览本地硬盘上的内容"
 
-#: MainWindow.cpp:414
+#: MainWindow.cpp:417
 msgctxt "@item:inmenu"
 msgid "&View"
 msgstr "视图(&V)"
 
-#: MainWindow.cpp:417
+#: MainWindow.cpp:420
 msgid "Lock layout"
 msgstr "锁定布局"
 
-#: MainWindow.cpp:529
+#: MainWindow.cpp:532
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
 "<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
@@ -4397,190 +4351,194 @@ msgstr ""
 "<qt>关闭主窗口将会使 Amarok 在系统托盘中运行。请使用用菜单中的<B>退出</B>，"
 "或 Amarok 托盘图标来退出应用程序。</qt>"
 
-#: MainWindow.cpp:531
+#: MainWindow.cpp:534
 msgid "Docking in System Tray"
 msgstr "在系统托盘停靠"
 
-#: MainWindow.cpp:549
+#: MainWindow.cpp:552
 msgid "Use relative path for &saving"
 msgstr "使用相对路径保存(&S)"
 
-#: MainWindow.cpp:560
+#: MainWindow.cpp:563
 msgid "Save As"
 msgstr "另存为"
 
-#: MainWindow.cpp:597
+#: MainWindow.cpp:600
 msgid "Play Media (Files or URLs)"
 msgstr "播放媒体(文件或 URL)"
 
-#: MainWindow.cpp:597
+#: MainWindow.cpp:600
 msgid "Add Media (Files or URLs)"
 msgstr "添加媒体(文件或 URL)"
 
-#: MainWindow.cpp:612
+#: MainWindow.cpp:615
 msgid "Add Stream"
 msgstr "添加流媒体"
 
-#: MainWindow.cpp:612
+#: MainWindow.cpp:615
 msgid "Enter Stream URL:"
 msgstr "输入流媒体 URL："
 
-#: MainWindow.cpp:723
+#: MainWindow.cpp:726
 msgid "&Add Media..."
 msgstr "添加媒体(&A)..."
 
-#: MainWindow.cpp:728
+#: MainWindow.cpp:731
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "清空播放列表(&C)"
 
-#: MainWindow.cpp:732
+#: MainWindow.cpp:735
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "删除重复项(&M)"
 
-#: MainWindow.cpp:739
+#: MainWindow.cpp:742
 msgid "&Add Stream..."
 msgstr "添加流媒体(&A)..."
 
-#: MainWindow.cpp:743
+#: MainWindow.cpp:746
 msgid "&Export Playlist As..."
 msgstr "导出播放列表(&E)..."
 
-#: MainWindow.cpp:747 MainWindow.cpp:755
-msgid "Bookmark This Location"
-msgstr "将此位置加入书签"
+#: MainWindow.cpp:750 amarokurls/NavigationUrlGenerator.cpp:216
+msgid "Bookmark Media Sources View"
+msgstr "将媒体来源视图加入书签"
 
-#: MainWindow.cpp:751 amarokurls/BookmarkManager.cpp:42
+#: MainWindow.cpp:754 amarokurls/BookmarkManager.cpp:42
 msgid "Bookmark Manager"
 msgstr "书签管理器"
 
-#: MainWindow.cpp:759
+#: MainWindow.cpp:758 playlist/PlaylistViewUrlGenerator.cpp:101
+msgid "Bookmark Playlist Setup"
+msgstr "播放列表书签设置"
+
+#: MainWindow.cpp:762
 msgid "Bookmark Context Applets"
 msgstr "将上下文小程序加入书签"
 
-#: MainWindow.cpp:763 covermanager/CoverManager.cpp:97
+#: MainWindow.cpp:766 covermanager/CoverManager.cpp:97
 msgid "Cover Manager"
 msgstr "封面管理器"
 
-#: MainWindow.cpp:767
+#: MainWindow.cpp:770
 msgid "Play Media..."
 msgstr "播放媒体..."
 
-#: MainWindow.cpp:775
+#: MainWindow.cpp:779
 msgid "&Seek Forward"
 msgstr "快进(&S)"
 
-#: MainWindow.cpp:781
+#: MainWindow.cpp:785
 msgid "&Seek Backward"
 msgstr "快退(&S)"
 
-#: MainWindow.cpp:788
+#: MainWindow.cpp:792
 msgid "Update Collection"
 msgstr "更新收藏"
 
-#: MainWindow.cpp:795 widgets/MainControlsWidget.cpp:62
+#: MainWindow.cpp:799 widgets/MainControlsWidget.cpp:62
 msgid "Previous Track"
 msgstr "上一音轨"
 
-#: MainWindow.cpp:801
+#: MainWindow.cpp:805
 msgid "Repopulate Playlist"
 msgstr "重复罗列播放列表"
 
-#: MainWindow.cpp:809 widgets/MainControlsWidget.cpp:86
+#: MainWindow.cpp:819 widgets/MainControlsWidget.cpp:86
 msgid "Next Track"
 msgstr "下一音轨"
 
-#: MainWindow.cpp:812
+#: MainWindow.cpp:822
 msgid "Increase Volume"
 msgstr "增加音量"
 
-#: MainWindow.cpp:818
+#: MainWindow.cpp:828
 msgid "Decrease Volume"
 msgstr "降低音量"
 
-#: MainWindow.cpp:824
+#: MainWindow.cpp:834
 msgid "Toggle Main Window"
 msgstr "切换主窗口"
 
-#: MainWindow.cpp:829
+#: MainWindow.cpp:839
 msgid "Toggle Full Screen"
 msgstr "切换全屏"
 
-#: MainWindow.cpp:834
+#: MainWindow.cpp:844
 msgid "Jump to"
 msgstr "跳转到"
 
-#: MainWindow.cpp:839
+#: MainWindow.cpp:849
 msgid "Show On Screen Display"
 msgstr "显示屏幕显示"
 
-#: MainWindow.cpp:844
+#: MainWindow.cpp:854
 msgid "Mute Volume"
 msgstr "静音"
 
-#: MainWindow.cpp:849
+#: MainWindow.cpp:859
 msgid "Last.fm: Love Current Track"
 msgstr "Last.fm：最爱当前音轨"
 
-#: MainWindow.cpp:854
+#: MainWindow.cpp:864
 msgid "Last.fm: Ban Current Track"
 msgstr "Last.fm：禁止当前音轨"
 
-#: MainWindow.cpp:859
+#: MainWindow.cpp:869
 msgid "Last.fm: Skip Current Track"
 msgstr "Last.fm：跳过当前音轨"
 
-#: MainWindow.cpp:864 playlist/view/PlaylistViewCommon.cpp:106
+#: MainWindow.cpp:874 playlist/view/PlaylistViewCommon.cpp:111
 msgid "Queue Track"
 msgstr "音轨排队"
 
-#: MainWindow.cpp:869
+#: MainWindow.cpp:879
 msgid "Rate Current Track: 1"
 msgstr "对当前音轨评分：1"
 
-#: MainWindow.cpp:874
+#: MainWindow.cpp:884
 msgid "Rate Current Track: 2"
 msgstr "对当前音轨评分：2"
 
-#: MainWindow.cpp:879
+#: MainWindow.cpp:889
 msgid "Rate Current Track: 3"
 msgstr "对当前音轨评分：3"
 
-#: MainWindow.cpp:884
+#: MainWindow.cpp:894
 msgid "Rate Current Track: 4"
 msgstr "对当前音轨评分：4"
 
-#: MainWindow.cpp:889
+#: MainWindow.cpp:899
 msgid "Rate Current Track: 5"
 msgstr "对当前音轨评分：5"
 
-#: MainWindow.cpp:949
+#: MainWindow.cpp:959
 msgid "&Music"
 msgstr "音乐(&M)"
 
-#: MainWindow.cpp:953
+#: MainWindow.cpp:963
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:972
+#: MainWindow.cpp:982
 msgid "&Playlist"
 msgstr "播放列表(&P)"
 
-#: MainWindow.cpp:988
+#: MainWindow.cpp:998
 msgid "&Tools"
 msgstr "工具(&T)"
 
-#: MainWindow.cpp:999
+#: MainWindow.cpp:1009
 msgid "&Settings"
 msgstr "设置(&S)"
 
-#: MainWindow.cpp:1129
+#: MainWindow.cpp:1139
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "已暂停  ::  %1"
 
-#: MainWindow.cpp:1148
+#: MainWindow.cpp:1158
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
@@ -4619,16 +4577,15 @@ msgid "Data Mode"
 msgstr "数据模式"
 
 #: toolbar/SlimToolbar.cpp:36
-#, fuzzy
 msgid "Slim Toolbar"
-msgstr "主工具栏"
+msgstr "简版工具栏"
 
-#: toolbar/VolumePopupButton.cpp:99 toolbar/VolumePopupButton.cpp:110
+#: toolbar/VolumePopupButton.cpp:102 toolbar/VolumePopupButton.cpp:113
 #: widgets/Osd.cpp:151
 msgid "(muted)"
 msgstr "(已静音)"
 
-#: toolbar/VolumePopupButton.cpp:99 toolbar/VolumePopupButton.cpp:110
+#: toolbar/VolumePopupButton.cpp:102 toolbar/VolumePopupButton.cpp:113
 #: widgets/Osd.cpp:151
 #, kde-format
 msgid "Volume: %1% %2"
@@ -5485,7 +5442,7 @@ msgstr "是否在收藏浏览器中显示年份。"
 msgid ""
 "Whether to use Mozilla's Character Set Detector to try to guess ID3 tag "
 "encodings."
-msgstr ""
+msgstr "是否使用 Mozilla 的字符集探测器来尝试猜测 ID3 标签的编码。"
 
 #. i18n: file: amarokconfig.kcfg:444
 #. i18n: ectx: label, entry, group (Scrobbler)
@@ -5756,7 +5713,7 @@ msgstr ""
 #. i18n: ectx: whatsthis, entry, group (Moodbar)
 #: rc.cpp:528 rc.cpp:2265
 msgid "Enable/Disable showing moodbar, if available, in the progress slider."
-msgstr ""
+msgstr "启用/禁用显示心情栏，如果可用，显示在进度滑块中。"
 
 #. i18n: file: amarokconfig.kcfg:594
 #. i18n: ectx: label, entry, group (Moodbar)
@@ -6193,10 +6150,8 @@ msgstr "自动滚动播放列表使当前播放音轨可见"
 #. i18n: file: configdialog/dialogs/GeneralConfig.ui:75
 #. i18n: ectx: property (title), widget (QGroupBox, moodbarBox)
 #: rc.cpp:833
-#, fuzzy
-#| msgid "Sort Options"
 msgid "Moodbar Options"
-msgstr "排序选项"
+msgstr "心情栏选项"
 
 #. i18n: file: configdialog/dialogs/GeneralConfig.ui:81
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ShowMoodbarInSlider)
@@ -6705,10 +6660,8 @@ msgstr "标签(&B)"
 #. i18n: file: dialogs/TagDialogBase.ui:739
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: rc.cpp:1085
-#, fuzzy
-#| msgid "Label"
 msgid "Label:"
-msgstr "标签"
+msgstr "标签："
 
 #. i18n: file: dialogs/TagDialogBase.ui:749
 #. i18n: ectx: property (toolTip), widget (KComboBox, kComboBox_label)
@@ -6873,18 +6826,14 @@ msgstr "将下划线替换为空格(&U)"
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:468
 #. i18n: ectx: property (title), widget (QGroupBox, resultGroupBox)
 #: rc.cpp:1157
-#, fuzzy
-#| msgid "Destination Preview"
 msgid "Result Preview"
-msgstr "目标预览"
+msgstr "结果预览"
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:485
 #. i18n: ectx: property (text), widget (QLabel, label_5)
 #: rc.cpp:1160
-#, fuzzy
-#| msgid "T&itle:"
 msgid "Title:"
-msgstr "标题(&I)："
+msgstr "标题："
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:492
 #. i18n: ectx: property (text), widget (QLabel, label_4)
@@ -6897,26 +6846,20 @@ msgstr "艺人："
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:499
 #. i18n: ectx: property (text), widget (QLabel, label_2)
 #: rc.cpp:1166
-#, fuzzy
-#| msgid "&Composer:"
 msgid "Composer:"
-msgstr "作曲(&C)："
+msgstr "作曲："
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:506
 #. i18n: ectx: property (text), widget (QLabel, label_3)
 #: rc.cpp:1169
-#, fuzzy
-#| msgid "&Year:"
 msgid "Year:"
-msgstr "年份(&Y)："
+msgstr "年份："
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:513
 #. i18n: ectx: property (text), widget (QLabel, label_9)
 #: rc.cpp:1172
-#, fuzzy
-#| msgid "Trac&k:"
 msgid "Track:"
-msgstr "音轨(&K)："
+msgstr "音轨："
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:520
 #. i18n: ectx: property (text), widget (QLabel, label_10)
@@ -6929,10 +6872,8 @@ msgstr "专辑："
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:527
 #. i18n: ectx: property (text), widget (QLabel, label_11)
 #: rc.cpp:1178
-#, fuzzy
-#| msgid "Co&mment:"
 msgid "Comment:"
-msgstr "注释(&M)："
+msgstr "注释："
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:534
 #. i18n: ectx: property (text), widget (QLabel, label_12)
@@ -6994,10 +6935,8 @@ msgstr "简单搜索"
 #. i18n: file: dialogs/EditFilterDialog.ui:90
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: rc.cpp:1231
-#, fuzzy
-#| msgid "Bit rate:"
 msgid "Bit Rate"
-msgstr "比特率："
+msgstr "比特率"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:105
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
@@ -7246,16 +7185,12 @@ msgstr "播客配置"
 #. i18n: file: podcasts/sql/PodcastSettingsBase.ui:46
 #. i18n: ectx: property (text), widget (QLabel, m_urlLabel)
 #: rc.cpp:1369
-#, fuzzy
-#| msgid "URL"
 msgid "URL:"
-msgstr "URL"
+msgstr "URL："
 
 #. i18n: file: podcasts/sql/PodcastSettingsBase.ui:56
 #. i18n: ectx: property (text), widget (QLabel, m_saveLocationlabel)
 #: rc.cpp:1372
-#, fuzzy
-#| msgid "Save location:"
 msgid "Save Location:"
 msgstr "保存位置："
 
@@ -8500,16 +8435,13 @@ msgid ""
 msgstr ""
 
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:64
-#, fuzzy, kde-format
-#| msgid "Downloading Magnatune.com Database"
+#, kde-format
 msgid "Downloading '%1' by %2 from Magnatune.com"
-msgstr "正在下载 Magnatune.com 数据库"
+msgstr "正在从 Magnatune.com 下载 %2 的“%1”"
 
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:66
-#, fuzzy
-#| msgid "Purchase Album from Magnatune.com"
 msgid "Downloading album from Magnatune.com"
-msgstr "从 Magnatune.com 购买专辑"
+msgstr "正在从 Magnatune.com 下载专辑"
 
 #: services/magnatune/MagnatuneAlbumDownloader.cpp:95
 msgid "Magnatune download seems to have failed. Cannot read zip file"
@@ -8533,13 +8465,13 @@ msgid_plural "Magnatune.com database update complete. Added %1 tracks on "
 msgstr[0] "Magnatune.com 数据库更新完成。已添加 %1 条音轨于 "
 
 #: services/magnatune/MagnatuneXmlParser.cpp:63
-#, fuzzy, kde-format
+#, kde-format
 msgctxt ""
 "Middle part of: Magnatune.com database update complete. Added 3 tracks on 4 "
 "albums from 5 artists."
 msgid "1 album from "
 msgid_plural "%1 albums from "
-msgstr[0] "%1 专辑来自 "
+msgstr[0] "%1 张专辑来自 "
 
 #: services/magnatune/MagnatuneXmlParser.cpp:64
 #, kde-format
@@ -8694,22 +8626,16 @@ msgid "Loading info..."
 msgstr "正在装入信息..."
 
 #: services/ampache/LastfmInfoParser.cpp:65
-#, fuzzy
-#| msgid "There was no information found for this track"
 msgid "<p>No information found for this track.</p>"
-msgstr "未发现此音轨的任何信息"
+msgstr "<p>未发现此音轨的任何信息。</p>"
 
 #: services/ampache/LastfmInfoParser.cpp:115
-#, fuzzy
-#| msgid "There was no information found for this track"
 msgid "<p>No information found for this album.</p>"
-msgstr "未发现此音轨的任何信息"
+msgstr "<p>未发现此专辑的任何信息。</p>"
 
 #: services/ampache/LastfmInfoParser.cpp:167
-#, fuzzy
-#| msgid "There was no information found for this track"
 msgid "<p>No information found for this artist.</p>"
-msgstr "未发现此音轨的任何信息"
+msgstr "<p>未发现此艺人的任何信息。</p>"
 
 #: services/ampache/AmpacheService.cpp:125
 msgid "Amarok frontend for your Ampache server."
@@ -8923,25 +8849,19 @@ msgstr "这条音轨有如下可用资源："
 msgid "Ok"
 msgstr "完成"
 
-#: playlist/view/PlaylistViewCommon.cpp:48
-#, fuzzy
-#| msgid "Album"
-msgid " Album"
-msgstr "专辑"
-
-#: playlist/view/PlaylistViewCommon.cpp:99
+#: playlist/view/PlaylistViewCommon.cpp:104
 msgid "Stop Playing After This Track"
 msgstr "播放完此音轨后停止"
 
-#: playlist/view/PlaylistViewCommon.cpp:106
+#: playlist/view/PlaylistViewCommon.cpp:111
 msgid "Dequeue Track"
 msgstr "音轨出列"
 
-#: playlist/view/PlaylistViewCommon.cpp:117
+#: playlist/view/PlaylistViewCommon.cpp:122
 msgid "Remove From Playlist"
 msgstr "从播放列表删除"
 
-#: playlist/view/PlaylistViewCommon.cpp:181
+#: playlist/view/PlaylistViewCommon.cpp:186
 msgid "Select Source"
 msgstr "选择来源"
 
@@ -8959,10 +8879,6 @@ msgstr "搜索 %1"
 #, kde-format
 msgid "%1 layout"
 msgstr "%1 布局"
-
-#: playlist/PlaylistViewUrlGenerator.cpp:101
-msgid "Bookmark Playlist Setup"
-msgstr "播放列表书签设置"
 
 #: playlist/PlaylistDefines.h:86
 msgctxt "Empty placeholder token used for spacing in playlist layouts"
@@ -8990,8 +8906,6 @@ msgid "Bitrate"
 msgstr "比特率"
 
 #: playlist/PlaylistDefines.h:91
-#, fuzzy
-#| msgid "BPM"
 msgctxt ""
 "'Beats per minute' playlist column name and token for playlist layouts"
 msgid "BPM"
@@ -9058,8 +8972,6 @@ msgid "Group tracks"
 msgstr "组中音轨数"
 
 #: playlist/PlaylistDefines.h:103
-#, fuzzy
-#| msgid "Labels"
 msgctxt "'Labels' playlist column name and token for playlist layouts"
 msgid "Labels"
 msgstr "标签"
@@ -9084,11 +8996,9 @@ msgstr "心情"
 
 #: playlist/PlaylistDefines.h:108
 #: playlist/layouts/PlaylistLayoutEditDialog.cpp:72
-#, fuzzy
-#| msgid "Mood"
 msgctxt "'Moodbar' playlist column name and token for playlist layouts"
 msgid "Moodbar"
-msgstr "心情"
+msgstr "心情栏"
 
 #: playlist/PlaylistDefines.h:109
 msgctxt "'Play count' playlist column name and token for playlist layouts"
@@ -9177,7 +9087,7 @@ msgctxt ""
 "adds a copy number to a generated name if the name already exists, for "
 "instance 'copy of Foo 2' if 'copy of Foo' is taken"
 msgid "%1 %2"
-msgstr ""
+msgstr "%1 %2"
 
 #: playlist/layouts/LayoutManager.cpp:116
 #, kde-format
@@ -9398,7 +9308,7 @@ msgstr "音轨进度"
 
 #: playlist/navigators/NavigatorConfigAction.cpp:38
 msgid "Standard"
-msgstr ""
+msgstr "标准"
 
 #: playlist/navigators/NavigatorConfigAction.cpp:47
 msgid "Repeat Track"
@@ -9413,40 +9323,28 @@ msgid "Repeat Playlist"
 msgstr "重复播放列表"
 
 #: playlist/navigators/NavigatorConfigAction.cpp:63
-#, fuzzy
-#| msgid "Stale Tracks"
 msgid "Random Tracks"
-msgstr "失效的音轨"
+msgstr "随机音轨"
 
 #: playlist/navigators/NavigatorConfigAction.cpp:67
-#, fuzzy
-#| msgid "Repeat Album"
 msgid "Random Albums"
-msgstr "重复专辑"
+msgstr "随机专辑"
 
 #: playlist/navigators/NavigatorConfigAction.cpp:73
-#, fuzzy
-#| msgid "&Favor"
 msgid "Favor"
-msgstr "最爱(&F)"
+msgstr "最爱"
 
 #: playlist/navigators/NavigatorConfigAction.cpp:79
-#, fuzzy
-#| msgid "Higher &Scores"
 msgid "Higher Scores"
-msgstr "计分较高(&S)"
+msgstr "计分较高"
 
 #: playlist/navigators/NavigatorConfigAction.cpp:82
-#, fuzzy
-#| msgid "Higher &Ratings"
 msgid "Higher Ratings"
-msgstr "评分较高(&R)"
+msgstr "评分较高"
 
 #: playlist/navigators/NavigatorConfigAction.cpp:85
-#, fuzzy
-#| msgid "Not Recently &Played"
 msgid "Not Recently Played"
-msgstr "最近未放(&P)"
+msgstr "最近未放"
 
 #: playlist/PlaylistWidget.cpp:58
 msgid "Dynamic Mode Enabled"
@@ -9477,7 +9375,7 @@ msgstr "音轨已删除"
 msgid "Track moved"
 msgstr "音轨已移动"
 
-#: playlist/PlaylistActions.cpp:358
+#: playlist/PlaylistActions.cpp:362
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "播放列表中遇到太多错误。播放已停止。"
 
@@ -9556,12 +9454,12 @@ msgstr "播放列表总大小：%1"
 #: statusbar/StatusBar.cpp:327
 #, kde-format
 msgid "Queue size: %1"
-msgstr ""
+msgstr "队列大小：%1"
 
 #: statusbar/StatusBar.cpp:328
 #, kde-format
 msgid "Queue length: %1"
-msgstr ""
+msgstr "队列长度：%1"
 
 #: statusbar/StatusBar.cpp:340
 #, kde-format
@@ -9572,7 +9470,7 @@ msgstr[0] "%1 条音轨"
 
 #: statusbar/ProgressBar.cpp:47 statusbar/CompoundProgressBar.cpp:68
 #: statusbar/CompoundProgressBar.cpp:139 statusbar/CompoundProgressBar.cpp:175
-#: covermanager/CoverManager.cpp:211
+#: covermanager/CoverManager.cpp:213
 msgid "Abort"
 msgstr "中止"
 
@@ -9672,26 +9570,19 @@ msgstr "%2 的艺人“%1”"
 msgid "Artist \"%1\""
 msgstr "艺人“%1”"
 
-#: amarokurls/NavigationUrlGenerator.cpp:216
-msgid "Bookmark Media Sources View"
-msgstr "将媒体来源视图加入书签"
-
 #: widgets/VolumeWidget.cpp:48
 msgid "Mute"
 msgstr "静音"
 
 #: widgets/VolumeWidget.cpp:53 widgets/VolumeWidget.cpp:79
 #: widgets/VolumeWidget.cpp:91
-#, fuzzy, kde-format
-#| msgid "Volume: %1% %2"
+#, kde-format
 msgid "Volume: %1%"
-msgstr "音量：%1% %2"
+msgstr "音量：%1%"
 
 #: widgets/VolumeWidget.cpp:89
-#, fuzzy
-#| msgid "Volume: 100% (muted)"
 msgid "Volume: <i>Muted</i>"
-msgstr "音量：100% (静音)"
+msgstr "音量：<i>已静音</i>"
 
 #: widgets/Osd.cpp:135
 msgid "Rating changed"
@@ -9764,7 +9655,7 @@ msgstr "0%"
 #: widgets/SliderWidget.cpp:467
 #, kde-format
 msgid "Time position: %1"
-msgstr ""
+msgstr "时间位置：%1"
 
 #: widgets/TokenWithLayout.cpp:242
 msgid "[prefix]"
@@ -10043,28 +9934,28 @@ msgstr "与 last.fm 通信时出现了一个错误。"
 msgid "The XML obtained from Last.fm is invalid."
 msgstr "从 Last.fm 获取的 XML 是无效的。"
 
-#: covermanager/CoverFetcher.cpp:281 covermanager/CoverFetcher.cpp:282
+#: covermanager/CoverFetcher.cpp:283 covermanager/CoverFetcher.cpp:284
 msgid "The cover could not be retrieved."
 msgstr "无法获取封面。"
 
-#: covermanager/CoverFetcher.cpp:335
+#: covermanager/CoverFetcher.cpp:337
 msgid "Aborted."
 msgstr "已中止。"
 
-#: covermanager/CoverFetcher.cpp:344
+#: covermanager/CoverFetcher.cpp:346
 msgid "Retrieved cover successfully"
 msgstr "获取封面成功"
 
-#: covermanager/CoverFetcher.cpp:379
+#: covermanager/CoverFetcher.cpp:381
 msgid "Unable to find a cover for the specified song."
 msgstr "无法找到指定曲目的封面。"
 
-#: covermanager/CoverFetcher.cpp:382
+#: covermanager/CoverFetcher.cpp:384
 #, kde-format
 msgid "Unable to find a cover for %1."
 msgstr "无法找到 %1 的封面。"
 
-#: covermanager/CoverFetcher.cpp:427
+#: covermanager/CoverFetcher.cpp:429
 msgid "Cover Found"
 msgstr "找到了封面"
 
@@ -10072,7 +9963,7 @@ msgstr "找到了封面"
 msgid "Albums By"
 msgstr "专辑属于"
 
-#: covermanager/CoverManager.cpp:112 covermanager/CoverManager.cpp:293
+#: covermanager/CoverManager.cpp:112 covermanager/CoverManager.cpp:295
 msgid "All Artists"
 msgstr "全部艺人"
 
@@ -10092,83 +9983,83 @@ msgstr "不带封面的专辑"
 msgid "Fetch Missing Covers"
 msgstr "获取缺少的封面"
 
-#: covermanager/CoverManager.cpp:369
+#: covermanager/CoverManager.cpp:371
 msgid "Loading Thumbnails..."
 msgstr "正在装入缩略图..."
 
-#: covermanager/CoverManager.cpp:624
+#: covermanager/CoverManager.cpp:637
 msgctxt "The fetching is done."
 msgid "Finished."
 msgstr "已完成。"
 
-#: covermanager/CoverManager.cpp:626
+#: covermanager/CoverManager.cpp:639
 #, kde-format
 msgid " Cover not found"
 msgid_plural " <b>%1</b> covers not found"
 msgstr[0] " 未找到 <b>%1</b> 张封面"
 
-#: covermanager/CoverManager.cpp:639
+#: covermanager/CoverManager.cpp:652
 #, kde-format
 msgid "Fetching cover for %1..."
 msgstr "正在获取 %1 的封面..."
 
-#: covermanager/CoverManager.cpp:641
+#: covermanager/CoverManager.cpp:654
 #, kde-format
 msgid "Fetching cover for %1 - %2..."
 msgstr "正在获取 %1 - %2 的封面..."
 
-#: covermanager/CoverManager.cpp:648
+#: covermanager/CoverManager.cpp:661
 #, kde-format
 msgid "Fetching 1 cover: "
 msgid_plural "Fetching <b>%1</b> covers... : "
 msgstr[0] "正在获取 <b>%1</b> 张封面...： "
 
-#: covermanager/CoverManager.cpp:650
+#: covermanager/CoverManager.cpp:663
 #, kde-format
 msgid "1 fetched"
 msgid_plural "%1 fetched"
 msgstr[0] "获取了 %1 张"
 
-#: covermanager/CoverManager.cpp:654
+#: covermanager/CoverManager.cpp:667
 msgid " - "
 msgstr " - "
 
-#: covermanager/CoverManager.cpp:655
+#: covermanager/CoverManager.cpp:668
 #, kde-format
 msgid "1 not found"
 msgid_plural "%1 not found"
 msgstr[0] "没有找到 %1"
 
-#: covermanager/CoverManager.cpp:658
+#: covermanager/CoverManager.cpp:671
 msgid "Connecting..."
 msgstr "正在连接..."
 
-#: covermanager/CoverManager.cpp:683
+#: covermanager/CoverManager.cpp:696
 #, kde-format
 msgid "1 result for \"%2\""
 msgid_plural "%1 results for \"%2\""
 msgstr[0] "“%2”的 %1 个结果"
 
-#: covermanager/CoverManager.cpp:686
+#: covermanager/CoverManager.cpp:699
 #, kde-format
 msgid "1 album"
 msgid_plural "%1 albums"
 msgstr[0] "%1 张专辑"
 
-#: covermanager/CoverManager.cpp:692
+#: covermanager/CoverManager.cpp:705
 msgid " by "
 msgstr " 由 "
 
-#: covermanager/CoverManager.cpp:697
+#: covermanager/CoverManager.cpp:710
 #, kde-format
 msgid " - ( <b>%1</b> without cover )"
 msgstr " - ( <b>%1</b> 没有封面 )"
 
-#: covermanager/CoverManager.cpp:743
+#: covermanager/CoverManager.cpp:758
 msgid "Cover Image"
 msgstr "封面图像"
 
-#: covermanager/CoverManager.cpp:800
+#: covermanager/CoverManager.cpp:836
 msgid "No Artist"
 msgstr "无艺人"
 
@@ -10183,6 +10074,14 @@ msgstr "添加并播放(&P)"
 #: TrayIcon.cpp:224
 msgid "&Queue Track"
 msgstr "音轨排队(&Q)"
+
+#~ msgid "Bookmark This Location"
+#~ msgstr "将此位置加入书签"
+
+#, fuzzy
+#~| msgid "Album"
+#~ msgid " Album"
+#~ msgstr "专辑"
 
 #~ msgid "No purchases found."
 #~ msgstr "未找到订购。"

@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007-2008 Ian Monroe <ian@monroe.nu>                                   *
- * Copyright (c) 2007-2008 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>               *
+ * Copyright (c) 2007-2008 Nikolaj Hald Nielsen <nhn@kde.org>                           *
  * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
  * Copyright (c) 2009 John Atkinson <john@fauxnetic.co.uk>                              *
@@ -36,6 +36,7 @@
 
 
 #include <algorithm> // STL
+#include <QAction>
 
 Playlist::Controller* Playlist::Controller::s_instance = 0;
 
@@ -105,9 +106,14 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
 
         m_undoStack->beginMacro( "Replace playlist" ); // TODO: does this need to be internationalized?
         clear();
+        
+        //make sure that we turn off dynamic mode.
+        Amarok::actionCollection()->action( "disable_dynamic" )->trigger();
+        
         insertionHelper( -1, list );
         m_undoStack->endMacro();
         firstItemAdded = 0;
+
     }
     else if ( options & Queue )
     {

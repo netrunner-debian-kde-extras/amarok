@@ -1,3 +1,4 @@
+# translation of amarok.po to Polish
 # translation of amarok.po to
 # Cezary Morga <cezarym@pf.pl>, 2004, 2005.
 # Michal Rudolf <mrudolf@kdewebdev.org>, 2004, 2005.
@@ -8,12 +9,13 @@
 # Michał Smoczyk <msmoczyk@wp.pl>, 2009.
 # Łukasz Derkacz <lderkacz@gmail.com>, 2009.
 # Maciej Wikło <maciej.wiklo@wp.pl>, 2009.
+# Marta Rybczynska <kde-i18n@rybczynska.net>, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-12-09 08:06+0100\n"
-"PO-Revision-Date: 2009-11-30 14:20+0100\n"
+"POT-Creation-Date: 2010-01-05 06:35+0100\n"
+"PO-Revision-Date: 2009-12-29 12:14+0100\n"
 "Last-Translator: Maciej Wikło <maciej.wiklo@wp.pl>\n"
 "Language-Team: Polish <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -24,8 +26,9 @@ msgstr ""
 "|| n%100>=20) ? 1 : 2);\n"
 
 #: mac/GrowlInterface.cpp:37 context/engines/current/CurrentEngine.cpp:150
-#: context/applets/currenttrack/CurrentTrack.cpp:109
-#: context/applets/photos/PhotosApplet.cpp:132 App.cpp:993 widgets/Osd.cpp:578
+#: context/applets/currenttrack/CurrentTrack.cpp:110
+#: context/applets/photos/PhotosApplet.cpp:132 App.cpp:1009
+#: widgets/Osd.cpp:578
 msgid "No track playing"
 msgstr "Nie jest odtwarzany żaden utwór"
 
@@ -380,37 +383,37 @@ msgstr "&Czytaj urządzenie"
 msgid "Proxy Collection"
 msgstr "Kolekcja proxy"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:154
+#: collection/mtpcollection/handler/MtpHandler.cpp:151
 msgid "Could not connect to MTP Device"
 msgstr "Nie można było podłączyć się do urządzenia MTP"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:375
+#: collection/mtpcollection/handler/MtpHandler.cpp:374
 msgid "Could not copy track from device."
 msgstr "Nie można było skopiować utworu z urządzenia."
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:418
+#: collection/mtpcollection/handler/MtpHandler.cpp:417
 msgid "Unknown Artist"
 msgstr "Nieznany wykonawca"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:428
+#: collection/mtpcollection/handler/MtpHandler.cpp:427
 msgid "Unknown Album"
 msgstr "Nieznany album"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:434
+#: collection/mtpcollection/handler/MtpHandler.cpp:433
 msgid "Unknown Genre"
 msgstr "Nieznany gatunek"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:590
-#: collection/mtpcollection/handler/MtpHandler.cpp:741
-#: collection/mtpcollection/handler/MtpHandler.cpp:922
+#: collection/mtpcollection/handler/MtpHandler.cpp:589
+#: collection/mtpcollection/handler/MtpHandler.cpp:740
+#: collection/mtpcollection/handler/MtpHandler.cpp:923
 msgid "Could not delete item"
 msgstr "Nie można było usunąć elementu"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:601
+#: collection/mtpcollection/handler/MtpHandler.cpp:600
 msgid "Delete failed"
 msgstr "Usuwanie nie powiodło się"
 
-#: collection/mtpcollection/handler/MtpHandler.cpp:895
+#: collection/mtpcollection/handler/MtpHandler.cpp:896
 msgid "Could not save playlist."
 msgstr "Nie można było zapisać listy odtwarzania."
 
@@ -563,7 +566,7 @@ msgstr "Przeszukiwanie muzyki"
 #: collection/sqlcollection/ScanManager.cpp:718
 #: dialogs/OrganizeCollectionDialog.cpp:144
 #: browsers/CollectionTreeItem.cpp:201 covermanager/CoverViewDialog.h:45
-#: covermanager/CoverManager.cpp:780
+#: covermanager/CoverManager.cpp:816
 msgid "Various Artists"
 msgstr "Różni wykonawcy"
 
@@ -575,7 +578,7 @@ msgstr "Strumień"
 
 #: collection/sqlcollection/SqlMeta.cpp:407
 #: services/lastfm/meta/LastFmMeta.cpp:137 covermanager/CoverViewDialog.h:44
-#: covermanager/CoverManager.cpp:780
+#: covermanager/CoverManager.cpp:816
 #, kde-format
 msgid "%1 - %2"
 msgstr "%1 - %2"
@@ -596,7 +599,7 @@ msgstr "&Wysuń"
 #: collection/audiocd/AudioCdCollection.cpp:413
 #: collection/audiocd/AudioCdCollection.cpp:414
 #: collection/audiocd/AudioCdCollection.cpp:415
-#: context/applets/albums/AlbumItem.cpp:73 MainWindow.cpp:1148
+#: context/applets/albums/AlbumItem.cpp:73 MainWindow.cpp:1158
 #: amarokurls/BookmarkTreeView.cpp:319 amarokurls/BookmarkTreeView.cpp:320
 #: amarokurls/BookmarkTreeView.cpp:321
 msgid "Unknown"
@@ -824,7 +827,7 @@ msgstr "Nie znaleziono informacji..."
 msgid "Unable to retrieve Wikipedia information: %1"
 msgstr "Nie udało się pobrać informacji z Wikipedii: %1"
 
-#: context/engines/wikipedia/WikipediaEngine.cpp:392
+#: context/engines/wikipedia/WikipediaEngine.cpp:396
 msgid "Wikipedia Other Languages: <br/>"
 msgstr "Inne języki Wikipedii: <br/>"
 
@@ -929,41 +932,41 @@ msgstr "brak nazwy apletu"
 msgid "Lyrics data could not be parsed"
 msgstr "Nie można było przetworzyć danych o słowach utworu"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:103
+#: context/applets/videoclip/VideoclipApplet.cpp:107
 #: context/applets/lyrics/LyricsApplet.cpp:130
 #: context/applets/photos/PhotosApplet.cpp:78
 #: context/applets/wikipedia/WikipediaApplet.cpp:141
 msgid "Settings"
 msgstr "Ustawienia"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:114
-#: context/applets/videoclip/VideoclipApplet.cpp:347
-#: context/applets/videoclip/VideoclipApplet.cpp:368
+#: context/applets/videoclip/VideoclipApplet.cpp:118
+#: context/applets/videoclip/VideoclipApplet.cpp:357
+#: context/applets/videoclip/VideoclipApplet.cpp:378
 msgid "Video Clip"
 msgstr "Klip wideo"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:358
+#: context/applets/videoclip/VideoclipApplet.cpp:368
 msgid "Video Clip "
 msgstr "Klip wideo"
 
-#: context/applets/videoclip/VideoclipApplet.cpp:358
+#: context/applets/videoclip/VideoclipApplet.cpp:368
 msgid " No information found..."
 msgstr "Nie znaleziono informacji..."
 
-#: context/applets/videoclip/VideoclipApplet.cpp:541
+#: context/applets/videoclip/VideoclipApplet.cpp:551
 msgid "Video Clip Settings"
 msgstr "Ustawienia klipów wideo"
 
-#: context/applets/videoclip/VideoItemButton.cpp:98
+#: context/applets/videoclip/VideoItemButton.cpp:96
 msgid "&Add to playlist"
 msgstr "&Dodaj do listy odtwarzania"
 
-#: context/applets/videoclip/VideoItemButton.cpp:99
+#: context/applets/videoclip/VideoItemButton.cpp:97
 #: context/applets/albums/AlbumsView.cpp:114
 msgid "&Queue"
 msgstr "&Kolejkuj utwór"
 
-#: context/applets/videoclip/VideoItemButton.cpp:100
+#: context/applets/videoclip/VideoItemButton.cpp:98
 msgid "Append and &Play"
 msgstr "Dołącz i &odtwarzaj"
 
@@ -1004,25 +1007,25 @@ msgstr ""
 msgid "There was no information found for this track"
 msgstr "Nie znaleziono informacji dla tego utworu"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:82
+#: context/applets/currenttrack/CurrentTrack.cpp:83
 msgctxt "What artist is this track by"
 msgid "By"
 msgstr "Przez"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:83
+#: context/applets/currenttrack/CurrentTrack.cpp:84
 msgctxt "What album is this track on"
 msgid "On"
 msgstr "Na"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:115
-#: context/applets/currenttrack/CurrentTrack.cpp:542
+#: context/applets/currenttrack/CurrentTrack.cpp:116
+#: context/applets/currenttrack/CurrentTrack.cpp:557
 msgid "Play count"
 msgstr "Licznik odtworzeń"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:120
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
-#: context/applets/currenttrack/CurrentTrack.cpp:116
-#: context/applets/currenttrack/CurrentTrack.cpp:543
+#: context/applets/currenttrack/CurrentTrack.cpp:117
+#: context/applets/currenttrack/CurrentTrack.cpp:558
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:256
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:695 rc.cpp:1249
 #: playlist/PlaylistModel.cpp:715 widgets/SmartPlaylistEditor.cpp:185
@@ -1030,18 +1033,18 @@ msgstr "Licznik odtworzeń"
 msgid "Score"
 msgstr "Punktacja"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:117
-#: context/applets/currenttrack/CurrentTrack.cpp:544
+#: context/applets/currenttrack/CurrentTrack.cpp:118
+#: context/applets/currenttrack/CurrentTrack.cpp:559
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:261
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:700 TrayIcon.cpp:189
 msgid "Last Played"
 msgstr "Ostatnio odtwarzane"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:122
+#: context/applets/currenttrack/CurrentTrack.cpp:123
 msgid "Last played"
 msgstr "Ostatnio odtwarzane"
 
-#: context/applets/currenttrack/CurrentTrack.cpp:123
+#: context/applets/currenttrack/CurrentTrack.cpp:124
 msgid "Favorite tracks"
 msgstr "Ulubione utwory"
 
@@ -1066,11 +1069,11 @@ msgstr "&Zamień listę odtwarzania"
 
 #: context/applets/albums/AlbumsView.cpp:115
 #: browsers/filebrowser/MyDirOperator.cpp:274
-#: playlist/view/PlaylistViewCommon.cpp:198
+#: playlist/view/PlaylistViewCommon.cpp:203
 msgid "Edit Track Details"
 msgstr "Edytuj informacje o utworze"
 
-#: context/applets/albums/Albums.cpp:178
+#: context/applets/albums/Albums.cpp:182
 #, kde-format
 msgid "Disc %1"
 msgstr "Płyta %1"
@@ -1170,7 +1173,7 @@ msgstr "Zdjęcia"
 #. i18n: file: context/applets/wikipedia/wikipediaSettings.ui:24
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
 #: context/applets/photos/PhotosApplet.cpp:92
-#: context/applets/wikipedia/WikipediaApplet.cpp:401 rc.cpp:569 rc.cpp:592
+#: context/applets/wikipedia/WikipediaApplet.cpp:406 rc.cpp:569 rc.cpp:592
 msgid "Automatic"
 msgstr "Automatyczne"
 
@@ -1210,7 +1213,7 @@ msgstr "Naprzód"
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: context/applets/wikipedia/WikipediaApplet.cpp:120
 #: dialogs/FilenameLayoutDialog.cpp:170 dialogs/FilenameLayoutDialog.cpp:497
-#: dialogs/transferdialog.cpp:88 browsers/CollectionTreeItemModelBase.cpp:922
+#: dialogs/transferdialog.cpp:88 browsers/CollectionTreeItemModelBase.cpp:928
 #: browsers/collectionbrowser/CollectionWidget.cpp:122
 #: browsers/collectionbrowser/CollectionWidget.cpp:151
 #: browsers/collectionbrowser/CollectionWidget.cpp:183
@@ -1227,13 +1230,14 @@ msgstr "Wykonawca"
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: context/applets/wikipedia/WikipediaApplet.cpp:127
 #: dialogs/FilenameLayoutDialog.cpp:182 dialogs/FilenameLayoutDialog.cpp:518
-#: dialogs/transferdialog.cpp:89 browsers/CollectionTreeItemModelBase.cpp:921
+#: dialogs/transferdialog.cpp:89 browsers/CollectionTreeItemModelBase.cpp:927
 #: browsers/collectionbrowser/CollectionWidget.cpp:125
 #: browsers/collectionbrowser/CollectionWidget.cpp:154
 #: browsers/collectionbrowser/CollectionWidget.cpp:186
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:250 rc.cpp:1225
 #: services/magnatune/MagnatuneStore.cpp:211
-#: services/jamendo/JamendoInfoParser.cpp:83 playlist/PlaylistHeader.cpp:40
+#: services/jamendo/JamendoInfoParser.cpp:83
+#: playlist/view/PlaylistViewCommon.cpp:52 playlist/PlaylistHeader.cpp:40
 #: playlist/PlaylistModel.cpp:704 widgets/SmartPlaylistEditor.cpp:183
 #: widgets/SmartPlaylistEditor.cpp:197
 msgid "Album"
@@ -1253,23 +1257,23 @@ msgstr "Pobierz ponownie"
 
 #. i18n: file: context/applets/wikipedia/wikipediaSettings.ui:29
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
-#: context/applets/wikipedia/WikipediaApplet.cpp:404 rc.cpp:595
+#: context/applets/wikipedia/WikipediaApplet.cpp:409 rc.cpp:595
 msgid "English"
 msgstr "Angielski"
 
 #. i18n: file: context/applets/wikipedia/wikipediaSettings.ui:34
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
-#: context/applets/wikipedia/WikipediaApplet.cpp:407 rc.cpp:598
+#: context/applets/wikipedia/WikipediaApplet.cpp:412 rc.cpp:598
 msgid "French"
 msgstr "Francuski"
 
 #. i18n: file: context/applets/wikipedia/wikipediaSettings.ui:39
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
-#: context/applets/wikipedia/WikipediaApplet.cpp:410 rc.cpp:601
+#: context/applets/wikipedia/WikipediaApplet.cpp:415 rc.cpp:601
 msgid "German"
 msgstr "Niemiecki"
 
-#: context/applets/wikipedia/WikipediaApplet.cpp:437
+#: context/applets/wikipedia/WikipediaApplet.cpp:442
 msgid "Wikipedia Settings"
 msgstr "Ustawienia Wikipedii"
 
@@ -1313,7 +1317,7 @@ msgstr ""
 "Proszę dodać kilka apletów z paska narzędzi na dole widoku kontekstowego."
 
 #: context/widgets/ToolBoxMenu.cpp:107
-#: context/widgets/appletexplorer/AppletExplorer.cpp:88
+#: context/widgets/appletexplorer/AppletExplorer.cpp:90
 msgid "Hide menu"
 msgstr "Ukryj menu"
 
@@ -1324,10 +1328,8 @@ msgid "Track rating: %1"
 msgstr "Notowanie utworu: %1"
 
 #: context/widgets/appletexplorer/AppletItemModel.cpp:93
-#, fuzzy
-#| msgid "Context"
 msgid "Containments"
-msgstr "Kontekst"
+msgstr "Zabezpieczenia"
 
 #: context/widgets/TrackWidget.cpp:39
 msgctxt "Score of a track"
@@ -1782,7 +1784,7 @@ msgstr "Tytuł"
 #. i18n: file: dialogs/EditFilterDialog.ui:95
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:174 dialogs/FilenameLayoutDialog.cpp:504
-#: browsers/CollectionTreeItemModelBase.cpp:923
+#: browsers/CollectionTreeItemModelBase.cpp:929
 #: browsers/collectionbrowser/CollectionWidget.cpp:131
 #: browsers/collectionbrowser/CollectionWidget.cpp:160
 #: browsers/collectionbrowser/CollectionWidget.cpp:192
@@ -1795,7 +1797,7 @@ msgstr "Kompozytor"
 #. i18n: file: dialogs/EditFilterDialog.ui:135
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:178 dialogs/FilenameLayoutDialog.cpp:511
-#: browsers/CollectionTreeItemModelBase.cpp:925
+#: browsers/CollectionTreeItemModelBase.cpp:931
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:253
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:692 rc.cpp:1258
 #: playlist/PlaylistModel.cpp:703 widgets/SmartPlaylistEditor.cpp:184
@@ -1812,7 +1814,7 @@ msgstr "Komentarz"
 #. i18n: file: dialogs/EditFilterDialog.ui:100
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: dialogs/FilenameLayoutDialog.cpp:190 dialogs/FilenameLayoutDialog.cpp:532
-#: dialogs/transferdialog.cpp:90 browsers/CollectionTreeItemModelBase.cpp:924
+#: dialogs/transferdialog.cpp:90 browsers/CollectionTreeItemModelBase.cpp:930
 #: browsers/collectionbrowser/CollectionWidget.cpp:128
 #: browsers/collectionbrowser/CollectionWidget.cpp:157
 #: browsers/collectionbrowser/CollectionWidget.cpp:189
@@ -2185,7 +2187,7 @@ msgstr "Punktowane piosenki:"
 msgid "Average Score:"
 msgstr "Średnia punktacja:"
 
-#: dialogs/TagDialog.cpp:1646
+#: dialogs/TagDialog.cpp:1649
 msgid ""
 "Writing to file failed. Please check permissions and available disc space."
 msgstr ""
@@ -2324,11 +2326,11 @@ msgstr "Opcje"
 msgid "Convert spaces to underscores"
 msgstr "Zamień spacje na podkreślniki"
 
-#: dialogs/ScriptManager.cpp:92 MainWindow.cpp:771
+#: dialogs/ScriptManager.cpp:106 MainWindow.cpp:775
 msgid "Script Manager"
 msgstr "Menedżer skryptów"
 
-#: dialogs/ScriptManager.cpp:292
+#: dialogs/ScriptManager.cpp:306
 msgid ""
 "Script Packages (*.amarokscript.tar, *.amarokscript.tar.bz2, *.amarokscript."
 "tar.gz)"
@@ -2336,18 +2338,19 @@ msgstr ""
 "Pakiety skryptów (*.amarokscript.tar, *.amarokscript.tar.bz2, *.amarokscript."
 "tar.gz)"
 
-#: dialogs/ScriptManager.cpp:300
+#: dialogs/ScriptManager.cpp:314
 msgid "Could not read this package."
 msgstr "Nie można odczytać tego pakietu."
 
-#: dialogs/ScriptManager.cpp:311
+#: dialogs/ScriptManager.cpp:325
 #, kde-format
 msgid ""
 "A script with the name '%1' is already installed. Please uninstall it first."
 msgstr ""
 "Skrypt o nazwie \"%1\" jest już zainstalowany. Proszę go wpierw odinstalować."
 
-#: dialogs/ScriptManager.cpp:322 dialogs/ScriptManager.cpp:376
+#: dialogs/ScriptManager.cpp:336 dialogs/ScriptManager.cpp:382
+#: dialogs/ScriptManager.cpp:403
 msgid ""
 "<p>Script successfully installed.</p><p>Please restart Amarok to start the "
 "script.</p>"
@@ -2355,7 +2358,7 @@ msgstr ""
 "<p>Skrypt zainstalowany pomyślnie.</p><p>Proszę uruchomić Amaroka ponownie, "
 "aby skrypt zaczął działać.</p>"
 
-#: dialogs/ScriptManager.cpp:328
+#: dialogs/ScriptManager.cpp:342
 msgid ""
 "<p>Script installation failed.</p><p>Please inform the package maintainer "
 "about this error.</p>"
@@ -2363,7 +2366,8 @@ msgstr ""
 "<p>Instalacja skryptu nie powiodła się.</p><p>Proszę poinformować opiekuna "
 "tego skryptu o tym błędzie.</p>"
 
-#: dialogs/ScriptManager.cpp:379 dialogs/ScriptManager.cpp:410
+#: dialogs/ScriptManager.cpp:385 dialogs/ScriptManager.cpp:406
+#: dialogs/ScriptManager.cpp:438
 msgid ""
 "<p>Script successfully uninstalled.</p><p>Please restart Amarok to totally "
 "remove the script.</p>"
@@ -2371,20 +2375,20 @@ msgstr ""
 "<p>Skrypt odinstalowany pomyślnie.</p><p>Proszę uruchomić Amaroka ponownie, "
 "aby całkowicie usunąć skrypt.</p>"
 
-#: dialogs/ScriptManager.cpp:392
+#: dialogs/ScriptManager.cpp:420
 #, kde-format
 msgid "Are you sure you want to uninstall the script '%1'?"
 msgstr "Czy na pewno odinstalować skrypt \"%1\"?"
 
-#: dialogs/ScriptManager.cpp:392
+#: dialogs/ScriptManager.cpp:420
 msgid "Uninstall Script"
 msgstr "Odinstaluj skrypt"
 
-#: dialogs/ScriptManager.cpp:392
+#: dialogs/ScriptManager.cpp:420
 msgid "Uninstall"
 msgstr "Odinstaluj"
 
-#: dialogs/ScriptManager.cpp:401
+#: dialogs/ScriptManager.cpp:429
 msgid ""
 "<p>Could not uninstall this script.</p><p>The ScriptManager can only "
 "uninstall scripts which have been installed as packages.</p>"
@@ -2392,7 +2396,7 @@ msgstr ""
 "<p>Nie można było odinstalować tego skryptu.</p><p>Menedżer skryptów może "
 "odinstalować tylko skrypty, które zostały zainstalowane jako pakiet.</p>"
 
-#: dialogs/ScriptManager.cpp:449
+#: dialogs/ScriptManager.cpp:477
 #, kde-format
 msgid ""
 "There are exceptions caught in the script '%1'. Please refer to the console "
@@ -2529,18 +2533,18 @@ msgstr "Błąd bazy danych"
 msgid "Moving files to trash"
 msgstr "Przenoszenie plików do kosza"
 
-#: App.cpp:865
+#: App.cpp:881
 msgctxt "When this track was last played"
 msgid "Unknown"
 msgstr "Nieznany"
 
-#: App.cpp:870
+#: App.cpp:886
 #, kde-format
 msgctxt "monthname year"
 msgid "%1 %2"
 msgstr "%1 %2"
 
-#: App.cpp:877
+#: App.cpp:893
 #, kde-format
 msgid "One week ago"
 msgid_plural "%1 weeks ago"
@@ -2548,11 +2552,11 @@ msgstr[0] "tydzień temu"
 msgstr[1] "%1 tygodnie temu"
 msgstr[2] "%1 tygodni temu"
 
-#: App.cpp:883
+#: App.cpp:899
 msgid "Yesterday"
 msgstr "Wczoraj"
 
-#: App.cpp:884
+#: App.cpp:900
 #, kde-format
 msgid "One day ago"
 msgid_plural "%1 days ago"
@@ -2560,7 +2564,7 @@ msgstr[0] "%1 dzień temu"
 msgstr[1] "%1 dni temu"
 msgstr[2] "%1 dni temu"
 
-#: App.cpp:887
+#: App.cpp:903
 #, kde-format
 msgid "One hour ago"
 msgid_plural "%1 hours ago"
@@ -2568,7 +2572,7 @@ msgstr[0] "%1 godzinę temu"
 msgstr[1] "%1 godziny temu"
 msgstr[2] "%1 godzin temu"
 
-#: App.cpp:893
+#: App.cpp:909
 #, kde-format
 msgid "One minute ago"
 msgid_plural "%1 minutes ago"
@@ -2576,48 +2580,48 @@ msgstr[0] "%1 minutę temu"
 msgstr[1] "%1 minuty temu"
 msgstr[2] "%1 minut temu"
 
-#: App.cpp:894
+#: App.cpp:910
 msgid "Within the last minute"
 msgstr "W przeciągu ostatniej minuty"
 
-#: App.cpp:896
+#: App.cpp:912
 msgid "The future"
 msgstr "Przyszłość"
 
-#: App.cpp:902
+#: App.cpp:918
 msgctxt "The amount of time since last played"
 msgid "Never"
 msgstr "Nigdy"
 
-#: App.cpp:912
+#: App.cpp:928
 msgctxt "The amount of time since last played"
 msgid "0"
 msgstr "0"
 
-#: App.cpp:921
+#: App.cpp:937
 #, kde-format
 msgctxt "number of months ago"
 msgid "%1M"
 msgstr "%1m"
 
-#: App.cpp:925
+#: App.cpp:941
 #, kde-format
 msgctxt "w for weeks"
 msgid "%1w"
 msgstr "%1t"
 
-#: App.cpp:928
+#: App.cpp:944
 msgctxt "When this track was last played"
 msgid "Tomorrow"
 msgstr "Jutro"
 
-#: App.cpp:934
+#: App.cpp:950
 #, no-c-format, kde-format
 msgctxt "d for days"
 msgid "%1d"
 msgstr "%1d"
 
-#: App.cpp:937
+#: App.cpp:953
 #, kde-format
 msgctxt "h for hours"
 msgid "%1h"
@@ -2645,34 +2649,34 @@ msgstr "%1g"
 #. i18n: ectx: property (text), widget (QLabel, eqBand8Value)
 #. i18n: file: configdialog/dialogs/PlaybackConfig.ui:1329
 #. i18n: ectx: property (text), widget (QLabel, eqBand9Value)
-#: App.cpp:946 rc.cpp:737 rc.cpp:743 rc.cpp:749 rc.cpp:755 rc.cpp:761
+#: App.cpp:962 rc.cpp:737 rc.cpp:743 rc.cpp:749 rc.cpp:755 rc.cpp:761
 #: rc.cpp:767 rc.cpp:773 rc.cpp:779 rc.cpp:785 rc.cpp:791 rc.cpp:797
 msgid "0"
 msgstr "0"
 
-#: App.cpp:963
+#: App.cpp:979
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> wykonywane przez <b>%2</b> z albumu <b>%3</b>"
 
-#: App.cpp:966
+#: App.cpp:982
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> wykonywane przez <b>%2</b>"
 
-#: App.cpp:970
+#: App.cpp:986
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> wykonywane przez <b>%2</b>"
 
-#: App.cpp:975
+#: App.cpp:991
 msgid "Unknown track"
 msgstr "Nieznany utwór"
 
-#: App.cpp:982
+#: App.cpp:998
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -3166,7 +3170,7 @@ msgstr "Nieznany tytuł"
 msgid "A preset with the name %1 already exists. Overwrite?"
 msgstr "Zestaw o nazwie %1 już istnieje. Zastąpić?"
 
-#: EngineController.cpp:227
+#: EngineController.cpp:237
 msgid ""
 "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
 "the installation of the backend that phonon uses.</p><p>You may find useful "
@@ -3177,11 +3181,11 @@ msgstr ""
 "p><p>Użyteczne informacje można znaleźć w części <i>FAQ podręcznika Amaroka</"
 "i>.</p>"
 
-#: EngineController.cpp:246
+#: EngineController.cpp:256
 msgid "Install MP3 Support"
 msgstr "Zainstaluj wsparcie MP3"
 
-#: EngineController.cpp:248
+#: EngineController.cpp:258
 msgid ""
 "Amarok currently cannot play MP3 files. Do you want to install support for "
 "MP3?"
@@ -3189,11 +3193,11 @@ msgstr ""
 "Obecnie Amarok nie jest w stanie odtwarzać plików MP3. Czy chcesz pobrać "
 "wsparcie dla MP3?"
 
-#: EngineController.cpp:249
+#: EngineController.cpp:259
 msgid "No MP3 Support"
 msgstr "Brak obsługi MP3"
 
-#: EngineController.cpp:743
+#: EngineController.cpp:760
 msgid "Preamp"
 msgstr "Wzmocnienie"
 
@@ -3300,7 +3304,7 @@ msgstr "Lista odtwarzania"
 msgid "Recommendations by Echo Nest."
 msgstr "Rekomendacje przez Echo Nest."
 
-#: dynamic/BiasedPlaylist.cpp:141
+#: dynamic/BiasedPlaylist.cpp:145
 msgid "Generating playlist..."
 msgstr "Tworzenie listy odtwarzania..."
 
@@ -3900,106 +3904,101 @@ msgstr "Usuń utwory"
 
 #: browsers/BrowserCategoryList.cpp:45
 msgid "Filter Music Sources"
-msgstr "Filtruje źródła muzyki"
+msgstr "Filtruj źródła muzyki"
 
 #: browsers/BrowserWidget.cpp:44
 msgid "Previous Browser"
 msgstr "Poprzednia przeglądarka"
 
-#: browsers/CollectionTreeItemModelBase.cpp:532
+#: browsers/CollectionTreeItemModelBase.cpp:538
 msgid "album"
 msgstr "album"
 
-#: browsers/CollectionTreeItemModelBase.cpp:537
+#: browsers/CollectionTreeItemModelBase.cpp:543
 msgid "artist"
 msgstr "wykonawca"
 
-#: browsers/CollectionTreeItemModelBase.cpp:542
+#: browsers/CollectionTreeItemModelBase.cpp:548
 msgid "genre"
 msgstr "gatunek"
 
-#: browsers/CollectionTreeItemModelBase.cpp:547
+#: browsers/CollectionTreeItemModelBase.cpp:553
 msgid "title"
 msgstr "tytuł"
 
-#: browsers/CollectionTreeItemModelBase.cpp:552
+#: browsers/CollectionTreeItemModelBase.cpp:558
 msgid "composer"
 msgstr "kompozytor"
 
-#: browsers/CollectionTreeItemModelBase.cpp:557
+#: browsers/CollectionTreeItemModelBase.cpp:563
 msgid "year"
 msgstr "rok"
 
-#: browsers/CollectionTreeItemModelBase.cpp:562
+#: browsers/CollectionTreeItemModelBase.cpp:568
 msgid "bpm"
 msgstr "bpm"
 
-#: browsers/CollectionTreeItemModelBase.cpp:566
+#: browsers/CollectionTreeItemModelBase.cpp:572
 msgid "comment"
 msgstr "komentarz"
 
-#: browsers/CollectionTreeItemModelBase.cpp:570
-#, fuzzy
-#| msgid "Bitrate"
+#: browsers/CollectionTreeItemModelBase.cpp:576
 msgid "bitrate"
-msgstr "Szybkość transmisji"
+msgstr "szybkość transmisji"
 
-#: browsers/CollectionTreeItemModelBase.cpp:574
+#: browsers/CollectionTreeItemModelBase.cpp:580
 msgid "rating"
 msgstr "notowania"
 
-#: browsers/CollectionTreeItemModelBase.cpp:578
+#: browsers/CollectionTreeItemModelBase.cpp:584
 msgid "score"
 msgstr "punktacja"
 
-#: browsers/CollectionTreeItemModelBase.cpp:582
+#: browsers/CollectionTreeItemModelBase.cpp:588
 msgid "playcount"
 msgstr "licznik odtwarzania"
 
-#: browsers/CollectionTreeItemModelBase.cpp:586
-#, fuzzy
-#| msgctxt "'Sample rate' playlist column name and token for playlist layouts"
-#| msgid "Sample rate"
+#: browsers/CollectionTreeItemModelBase.cpp:592
 msgid "samplerate"
-msgstr "Próbkowanie"
+msgstr "próbkowanie"
 
-#: browsers/CollectionTreeItemModelBase.cpp:590
+#: browsers/CollectionTreeItemModelBase.cpp:596
 msgid "length"
 msgstr "długość"
 
-#: browsers/CollectionTreeItemModelBase.cpp:594
+#: browsers/CollectionTreeItemModelBase.cpp:600
 msgid "discnumber"
 msgstr "numer płyty"
 
-#: browsers/CollectionTreeItemModelBase.cpp:598
+#: browsers/CollectionTreeItemModelBase.cpp:604
 msgid "tracknumber"
 msgstr "numer ścieżki"
 
-#: browsers/CollectionTreeItemModelBase.cpp:602
+#: browsers/CollectionTreeItemModelBase.cpp:608
 msgid "added"
 msgstr "dodano"
 
-#: browsers/CollectionTreeItemModelBase.cpp:608
+#: browsers/CollectionTreeItemModelBase.cpp:614
 msgid "today"
 msgstr "dzisiaj"
 
-#: browsers/CollectionTreeItemModelBase.cpp:610
+#: browsers/CollectionTreeItemModelBase.cpp:616
 msgid "last week"
 msgstr "ostatni tydzień"
 
-#: browsers/CollectionTreeItemModelBase.cpp:612
+#: browsers/CollectionTreeItemModelBase.cpp:618
 msgid "last month"
 msgstr "ostatni miesiąc"
 
-#: browsers/CollectionTreeItemModelBase.cpp:614
+#: browsers/CollectionTreeItemModelBase.cpp:620
 msgid "two months ago"
 msgstr "dwa miesiące temu"
 
-#: browsers/CollectionTreeItemModelBase.cpp:616
+#: browsers/CollectionTreeItemModelBase.cpp:622
 msgid "three months ago"
 msgstr "trzy miesiące temu"
 
-#: browsers/CollectionTreeItemModelBase.cpp:921
+#: browsers/CollectionTreeItemModelBase.cpp:927
 msgid "Year - Album"
 msgstr "Rok - Album"
 
@@ -4177,20 +4176,20 @@ msgstr ""
 "list odtwarzania. To także miejsce, w którym możesz określić potężne "
 "dynamiczne listy odtwarzania i zarządzać podcastami i ich subskrypcjami."
 
-#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:229
+#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:238
 msgid "New name"
 msgstr "Nowa nazwa"
 
-#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:231
+#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:240
 msgctxt "Enter a new name for a folder that already exists"
 msgid "Enter new folder name:"
 msgstr "Podaj nową nazwę katalogu:"
 
-#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:254
+#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:263
 msgid "&Delete Folder"
 msgstr "&Usuń katalog"
 
-#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:264
+#: browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp:273
 msgid "&Rename Folder..."
 msgstr "&Zmień nazwę katalogu..."
 
@@ -4343,24 +4342,24 @@ msgstr "Importuj plik OPML"
 msgid "By"
 msgstr "Przez"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:241
+#: browsers/playlistbrowser/PodcastCategory.cpp:239
 #: browsers/playlistbrowser/DynamicCategory.cpp:70
 msgid "On"
 msgstr "Włącz"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:259
+#: browsers/playlistbrowser/PodcastCategory.cpp:257
 msgid "File Size:"
 msgstr "Rozmiar pliku:"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:271
+#: browsers/playlistbrowser/PodcastCategory.cpp:269
 msgid "Subscription Date:"
 msgstr "Data subskrypcji:"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:279
+#: browsers/playlistbrowser/PodcastCategory.cpp:277
 msgid "Keywords:"
 msgstr "Słowa kluczowe:"
 
-#: browsers/playlistbrowser/PodcastCategory.cpp:312
+#: browsers/playlistbrowser/PodcastCategory.cpp:310
 msgid "Select OPML file to import"
 msgstr "Wybierz plik OPML do zaimportowania"
 
@@ -4413,31 +4412,31 @@ msgstr "Nadchodzące:"
 msgid "Number of upcoming tracks to add to the playlist."
 msgstr "Liczba nadchodzących utworów do dodania do listy odtwarzania."
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:114
+#: browsers/playlistbrowser/DynamicCategory.cpp:116
 msgid "Playlist:"
 msgstr "Lista odtwarzania:"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:143
+#: browsers/playlistbrowser/DynamicCategory.cpp:145
 msgid "Save the preset."
 msgstr "Zapisz ustawienie."
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:153
+#: browsers/playlistbrowser/DynamicCategory.cpp:155
 msgid "Delete the preset."
 msgstr "Usuń ustawienie."
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:314
+#: browsers/playlistbrowser/DynamicCategory.cpp:316
 msgid "Playlist Name"
 msgstr "Nazwa listy odtwarzania"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:315
+#: browsers/playlistbrowser/DynamicCategory.cpp:317
 msgid "Enter a name for the playlist:"
 msgstr "Podaj nazwę dla tej listy odtwarzania:"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:325
+#: browsers/playlistbrowser/DynamicCategory.cpp:327
 msgid "Warning"
 msgstr "Ostrzeżenie"
 
-#: browsers/playlistbrowser/DynamicCategory.cpp:325
+#: browsers/playlistbrowser/DynamicCategory.cpp:327
 msgid "Cannot overwrite the random playlist."
 msgstr "Nie można nadpisać losowej listy odtwarzania."
 
@@ -4504,16 +4503,16 @@ msgstr "Pliki"
 msgid "Browse local hard drive for content"
 msgstr "Przeglądaj lokalny twardy dysk w poszukiwaniu zawartości"
 
-#: MainWindow.cpp:414
+#: MainWindow.cpp:417
 msgctxt "@item:inmenu"
 msgid "&View"
 msgstr "&Widok"
 
-#: MainWindow.cpp:417
+#: MainWindow.cpp:420
 msgid "Lock layout"
 msgstr "Zablokuj układ"
 
-#: MainWindow.cpp:529
+#: MainWindow.cpp:532
 msgid ""
 "<qt>Closing the main window will keep Amarok running in the System Tray. Use "
 "<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
@@ -4523,190 +4522,194 @@ msgstr ""
 "systemowej. Użyj <B>Zakończ</B> z menu albo ikony Amaroka z tacki "
 "systemowej, aby wyjść z programu.</qt>"
 
-#: MainWindow.cpp:531
+#: MainWindow.cpp:534
 msgid "Docking in System Tray"
 msgstr "Dokowanie na tacce systemowej"
 
-#: MainWindow.cpp:549
+#: MainWindow.cpp:552
 msgid "Use relative path for &saving"
 msgstr "Użyj względnej ścieżki przy &zapisywaniu"
 
-#: MainWindow.cpp:560
+#: MainWindow.cpp:563
 msgid "Save As"
 msgstr "Zapisz jako"
 
-#: MainWindow.cpp:597
+#: MainWindow.cpp:600
 msgid "Play Media (Files or URLs)"
 msgstr "Odtwarzaj media (pliki lub adresy URL)"
 
-#: MainWindow.cpp:597
+#: MainWindow.cpp:600
 msgid "Add Media (Files or URLs)"
 msgstr "Dodaj media (pliki lub adresy URL)"
 
-#: MainWindow.cpp:612
+#: MainWindow.cpp:615
 msgid "Add Stream"
 msgstr "Dodaj strumień"
 
-#: MainWindow.cpp:612
+#: MainWindow.cpp:615
 msgid "Enter Stream URL:"
 msgstr "Podaj adres URL podcastu:"
 
-#: MainWindow.cpp:723
+#: MainWindow.cpp:726
 msgid "&Add Media..."
 msgstr "&Dodaj multimedia..."
 
-#: MainWindow.cpp:728
+#: MainWindow.cpp:731
 msgctxt "clear playlist"
 msgid "&Clear Playlist"
 msgstr "&Wyczyść listę odtwarzania"
 
-#: MainWindow.cpp:732
+#: MainWindow.cpp:735
 msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
 msgid "Re&move Duplicates"
 msgstr "&Usuń duplikaty"
 
-#: MainWindow.cpp:739
+#: MainWindow.cpp:742
 msgid "&Add Stream..."
 msgstr "&Dodaj strumień..."
 
-#: MainWindow.cpp:743
+#: MainWindow.cpp:746
 msgid "&Export Playlist As..."
 msgstr "&Eksportuj listę odtwarzania jako..."
 
-#: MainWindow.cpp:747 MainWindow.cpp:755
-msgid "Bookmark This Location"
-msgstr "Dodaj to do zakładek"
+#: MainWindow.cpp:750 amarokurls/NavigationUrlGenerator.cpp:216
+msgid "Bookmark Media Sources View"
+msgstr "Dodaj do zakładek widok źródeł multimediów"
 
-#: MainWindow.cpp:751 amarokurls/BookmarkManager.cpp:42
+#: MainWindow.cpp:754 amarokurls/BookmarkManager.cpp:42
 msgid "Bookmark Manager"
 msgstr "Menedżer zakładek"
 
-#: MainWindow.cpp:759
+#: MainWindow.cpp:758 playlist/PlaylistViewUrlGenerator.cpp:101
+msgid "Bookmark Playlist Setup"
+msgstr "Ustawienia zakładek listy odtwarzania"
+
+#: MainWindow.cpp:762
 msgid "Bookmark Context Applets"
 msgstr "Aplety zakładek"
 
-#: MainWindow.cpp:763 covermanager/CoverManager.cpp:97
+#: MainWindow.cpp:766 covermanager/CoverManager.cpp:97
 msgid "Cover Manager"
 msgstr "Menedżer okładek"
 
-#: MainWindow.cpp:767
+#: MainWindow.cpp:770
 msgid "Play Media..."
 msgstr "Odtwarzaj multimedia..."
 
-#: MainWindow.cpp:775
+#: MainWindow.cpp:779
 msgid "&Seek Forward"
 msgstr "Prze&szukaj do przodu"
 
-#: MainWindow.cpp:781
+#: MainWindow.cpp:785
 msgid "&Seek Backward"
 msgstr "Przes&zukaj w tył"
 
-#: MainWindow.cpp:788
+#: MainWindow.cpp:792
 msgid "Update Collection"
 msgstr "Uaktualnij kolekcję"
 
-#: MainWindow.cpp:795 widgets/MainControlsWidget.cpp:62
+#: MainWindow.cpp:799 widgets/MainControlsWidget.cpp:62
 msgid "Previous Track"
 msgstr "Poprzedni utwór"
 
-#: MainWindow.cpp:801
+#: MainWindow.cpp:805
 msgid "Repopulate Playlist"
 msgstr "Zapełnij listę odtwarzania"
 
-#: MainWindow.cpp:809 widgets/MainControlsWidget.cpp:86
+#: MainWindow.cpp:819 widgets/MainControlsWidget.cpp:86
 msgid "Next Track"
 msgstr "Następny utwór"
 
-#: MainWindow.cpp:812
+#: MainWindow.cpp:822
 msgid "Increase Volume"
 msgstr "Zwiększ głośność"
 
-#: MainWindow.cpp:818
+#: MainWindow.cpp:828
 msgid "Decrease Volume"
 msgstr "Przycisz"
 
-#: MainWindow.cpp:824
+#: MainWindow.cpp:834
 msgid "Toggle Main Window"
 msgstr "Przełącz okno listy odtwarzania"
 
-#: MainWindow.cpp:829
+#: MainWindow.cpp:839
 msgid "Toggle Full Screen"
 msgstr "Włącz/wyłącz pełny ekran"
 
-#: MainWindow.cpp:834
+#: MainWindow.cpp:844
 msgid "Jump to"
 msgstr "Idź do"
 
-#: MainWindow.cpp:839
+#: MainWindow.cpp:849
 msgid "Show On Screen Display"
 msgstr "Wyświetlanie-na-ekranie (OSD)"
 
-#: MainWindow.cpp:844
+#: MainWindow.cpp:854
 msgid "Mute Volume"
 msgstr "Wyłącz dźwięk"
 
-#: MainWindow.cpp:849
+#: MainWindow.cpp:859
 msgid "Last.fm: Love Current Track"
 msgstr "Last.fm: Dodaj bieżący utwór do ulubionych"
 
-#: MainWindow.cpp:854
+#: MainWindow.cpp:864
 msgid "Last.fm: Ban Current Track"
 msgstr "Last.fm: Zablokuj bieżący utwór"
 
-#: MainWindow.cpp:859
+#: MainWindow.cpp:869
 msgid "Last.fm: Skip Current Track"
 msgstr "Last.fm: Pomiń bieżący utwór"
 
-#: MainWindow.cpp:864 playlist/view/PlaylistViewCommon.cpp:106
+#: MainWindow.cpp:874 playlist/view/PlaylistViewCommon.cpp:111
 msgid "Queue Track"
 msgstr "Kolejkuj utwór"
 
-#: MainWindow.cpp:869
+#: MainWindow.cpp:879
 msgid "Rate Current Track: 1"
 msgstr "Oceń bieżący utwór: 1"
 
-#: MainWindow.cpp:874
+#: MainWindow.cpp:884
 msgid "Rate Current Track: 2"
 msgstr "Oceń bieżący utwór: 2"
 
-#: MainWindow.cpp:879
+#: MainWindow.cpp:889
 msgid "Rate Current Track: 3"
 msgstr "Oceń bieżący utwór: 3"
 
-#: MainWindow.cpp:884
+#: MainWindow.cpp:894
 msgid "Rate Current Track: 4"
 msgstr "Oceń bieżący utwór: 4"
 
-#: MainWindow.cpp:889
+#: MainWindow.cpp:899
 msgid "Rate Current Track: 5"
 msgstr "Oceń bieżący utwór: 5"
 
-#: MainWindow.cpp:949
+#: MainWindow.cpp:959
 msgid "&Music"
 msgstr "&Muzyka"
 
-#: MainWindow.cpp:953
+#: MainWindow.cpp:963
 msgid "&Amarok"
 msgstr "&Amarok"
 
-#: MainWindow.cpp:972
+#: MainWindow.cpp:982
 msgid "&Playlist"
 msgstr "&Lista odtwarzania"
 
-#: MainWindow.cpp:988
+#: MainWindow.cpp:998
 msgid "&Tools"
 msgstr "&Narzędzia"
 
-#: MainWindow.cpp:999
+#: MainWindow.cpp:1009
 msgid "&Settings"
 msgstr "&Ustawienia"
 
-#: MainWindow.cpp:1129
+#: MainWindow.cpp:1139
 #, kde-format
 msgid "Paused  ::  %1"
 msgstr "Pauza  ::  %1"
 
-#: MainWindow.cpp:1148
+#: MainWindow.cpp:1158
 #, kde-format
 msgid "%1 - %2  ::  %3"
 msgstr "%1 - %2  ::  %3"
@@ -4749,12 +4752,12 @@ msgstr "Tryb danych"
 msgid "Slim Toolbar"
 msgstr "Cienki pasek narzędzi"
 
-#: toolbar/VolumePopupButton.cpp:99 toolbar/VolumePopupButton.cpp:110
+#: toolbar/VolumePopupButton.cpp:102 toolbar/VolumePopupButton.cpp:113
 #: widgets/Osd.cpp:151
 msgid "(muted)"
 msgstr "(wyciszony)"
 
-#: toolbar/VolumePopupButton.cpp:99 toolbar/VolumePopupButton.cpp:110
+#: toolbar/VolumePopupButton.cpp:102 toolbar/VolumePopupButton.cpp:113
 #: widgets/Osd.cpp:151
 #, kde-format
 msgid "Volume: %1% %2"
@@ -7207,10 +7210,8 @@ msgstr "Proste wyszukiwanie"
 #. i18n: file: dialogs/EditFilterDialog.ui:90
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
 #: rc.cpp:1231
-#, fuzzy
-#| msgid "Bit rate:"
 msgid "Bit Rate"
-msgstr "Szybkość transmisji:"
+msgstr "Szybkość transmisji"
 
 #. i18n: file: dialogs/EditFilterDialog.ui:105
 #. i18n: ectx: property (text), item, widget (KComboBox, keywordCombo)
@@ -9252,25 +9253,19 @@ msgstr "Dla tego utworu są dostępne następujące źródła:"
 msgid "Ok"
 msgstr "Ok"
 
-#: playlist/view/PlaylistViewCommon.cpp:48
-#, fuzzy
-#| msgid "Album"
-msgid " Album"
-msgstr "Album"
-
-#: playlist/view/PlaylistViewCommon.cpp:99
+#: playlist/view/PlaylistViewCommon.cpp:104
 msgid "Stop Playing After This Track"
 msgstr "Zatrzymaj odtwarzanie po tym utworze"
 
-#: playlist/view/PlaylistViewCommon.cpp:106
+#: playlist/view/PlaylistViewCommon.cpp:111
 msgid "Dequeue Track"
 msgstr "Usuń utwór z kolejki"
 
-#: playlist/view/PlaylistViewCommon.cpp:117
+#: playlist/view/PlaylistViewCommon.cpp:122
 msgid "Remove From Playlist"
 msgstr "Usuń z listy odtwarzania"
 
-#: playlist/view/PlaylistViewCommon.cpp:181
+#: playlist/view/PlaylistViewCommon.cpp:186
 msgid "Select Source"
 msgstr "Wybierz źródło"
 
@@ -9288,10 +9283,6 @@ msgstr "Szukaj %1"
 #, kde-format
 msgid "%1 layout"
 msgstr "układ %1"
-
-#: playlist/PlaylistViewUrlGenerator.cpp:101
-msgid "Bookmark Playlist Setup"
-msgstr "Ustawienia zakładek listy odtwarzania"
 
 #: playlist/PlaylistDefines.h:86
 msgctxt "Empty placeholder token used for spacing in playlist layouts"
@@ -9796,7 +9787,7 @@ msgstr "Utwory usunięte"
 msgid "Track moved"
 msgstr "Utwór przeniesiony"
 
-#: playlist/PlaylistActions.cpp:358
+#: playlist/PlaylistActions.cpp:362
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr ""
 "Napotkano zbyt wiele błędów w liście odtwarzania. Odtwarzanie zatrzymane."
@@ -9896,7 +9887,7 @@ msgstr[2] "%1 utworów"
 
 #: statusbar/ProgressBar.cpp:47 statusbar/CompoundProgressBar.cpp:68
 #: statusbar/CompoundProgressBar.cpp:139 statusbar/CompoundProgressBar.cpp:175
-#: covermanager/CoverManager.cpp:211
+#: covermanager/CoverManager.cpp:213
 msgid "Abort"
 msgstr "Anuluj"
 
@@ -9995,10 +9986,6 @@ msgstr "Wykonawca \"%1\" z %2"
 #, kde-format
 msgid "Artist \"%1\""
 msgstr "Wykonawca \"%1\""
-
-#: amarokurls/NavigationUrlGenerator.cpp:216
-msgid "Bookmark Media Sources View"
-msgstr "Dodaj do zakładek widok źródeł multimediów"
 
 #: widgets/VolumeWidget.cpp:48
 msgid "Mute"
@@ -10376,28 +10363,28 @@ msgstr "Wystąpił błąd podczas komunikacji z Last.fm."
 msgid "The XML obtained from Last.fm is invalid."
 msgstr "XML otrzymany od Last.fm jest nieprawidłowy."
 
-#: covermanager/CoverFetcher.cpp:281 covermanager/CoverFetcher.cpp:282
+#: covermanager/CoverFetcher.cpp:283 covermanager/CoverFetcher.cpp:284
 msgid "The cover could not be retrieved."
 msgstr "Nie można było pobrać okładki."
 
-#: covermanager/CoverFetcher.cpp:335
+#: covermanager/CoverFetcher.cpp:337
 msgid "Aborted."
 msgstr "Porzucono."
 
-#: covermanager/CoverFetcher.cpp:344
+#: covermanager/CoverFetcher.cpp:346
 msgid "Retrieved cover successfully"
 msgstr "Poprawnie pobrano okładkę"
 
-#: covermanager/CoverFetcher.cpp:379
+#: covermanager/CoverFetcher.cpp:381
 msgid "Unable to find a cover for the specified song."
 msgstr "Nie można znaleźć okładki dla podanej piosenki."
 
-#: covermanager/CoverFetcher.cpp:382
+#: covermanager/CoverFetcher.cpp:384
 #, kde-format
 msgid "Unable to find a cover for %1."
 msgstr "Nie można znaleźć okładki dla %1."
 
-#: covermanager/CoverFetcher.cpp:427
+#: covermanager/CoverFetcher.cpp:429
 msgid "Cover Found"
 msgstr "Znaleziono okładkę"
 
@@ -10405,7 +10392,7 @@ msgstr "Znaleziono okładkę"
 msgid "Albums By"
 msgstr "Albumy wykonawcy"
 
-#: covermanager/CoverManager.cpp:112 covermanager/CoverManager.cpp:293
+#: covermanager/CoverManager.cpp:112 covermanager/CoverManager.cpp:295
 msgid "All Artists"
 msgstr "Wszyscy wykonawcy"
 
@@ -10425,16 +10412,16 @@ msgstr "Albumy bez okładek"
 msgid "Fetch Missing Covers"
 msgstr "Pobierz brakujące okładki"
 
-#: covermanager/CoverManager.cpp:369
+#: covermanager/CoverManager.cpp:371
 msgid "Loading Thumbnails..."
 msgstr "Wczytywanie miniatur..."
 
-#: covermanager/CoverManager.cpp:624
+#: covermanager/CoverManager.cpp:637
 msgctxt "The fetching is done."
 msgid "Finished."
 msgstr "Zakończono."
 
-#: covermanager/CoverManager.cpp:626
+#: covermanager/CoverManager.cpp:639
 #, kde-format
 msgid " Cover not found"
 msgid_plural " <b>%1</b> covers not found"
@@ -10442,17 +10429,17 @@ msgstr[0] "Nie znaleziono okładki"
 msgstr[1] "Nie znaleziono <b>%1</b> okładek"
 msgstr[2] "Nie znaleziono <b>%1</b> okładek"
 
-#: covermanager/CoverManager.cpp:639
+#: covermanager/CoverManager.cpp:652
 #, kde-format
 msgid "Fetching cover for %1..."
 msgstr "Pobieranie okładki dla %1..."
 
-#: covermanager/CoverManager.cpp:641
+#: covermanager/CoverManager.cpp:654
 #, kde-format
 msgid "Fetching cover for %1 - %2..."
 msgstr "Pobieranie okładki dla %1 - %2..."
 
-#: covermanager/CoverManager.cpp:648
+#: covermanager/CoverManager.cpp:661
 #, kde-format
 msgid "Fetching 1 cover: "
 msgid_plural "Fetching <b>%1</b> covers... : "
@@ -10460,7 +10447,7 @@ msgstr[0] "Pobieranie okładki: "
 msgstr[1] "Pobieranie <b>%1</b> okładek... : "
 msgstr[2] "Pobieranie <b>%1</b> okładek... : "
 
-#: covermanager/CoverManager.cpp:650
+#: covermanager/CoverManager.cpp:663
 #, kde-format
 msgid "1 fetched"
 msgid_plural "%1 fetched"
@@ -10468,11 +10455,11 @@ msgstr[0] "Pobrano jedną"
 msgstr[1] "Pobrano %1"
 msgstr[2] "Pobrano %1"
 
-#: covermanager/CoverManager.cpp:654
+#: covermanager/CoverManager.cpp:667
 msgid " - "
 msgstr " - "
 
-#: covermanager/CoverManager.cpp:655
+#: covermanager/CoverManager.cpp:668
 #, kde-format
 msgid "1 not found"
 msgid_plural "%1 not found"
@@ -10480,11 +10467,11 @@ msgstr[0] "1 nie znaleziony"
 msgstr[1] "%1 nie znalezione"
 msgstr[2] "%1 nie znalezionych"
 
-#: covermanager/CoverManager.cpp:658
+#: covermanager/CoverManager.cpp:671
 msgid "Connecting..."
 msgstr "Łączenie..."
 
-#: covermanager/CoverManager.cpp:683
+#: covermanager/CoverManager.cpp:696
 #, kde-format
 msgid "1 result for \"%2\""
 msgid_plural "%1 results for \"%2\""
@@ -10492,7 +10479,7 @@ msgstr[0] "Jeden wynik dla \"%2\""
 msgstr[1] "%1 wyniki dla \"%2\""
 msgstr[2] "%1 wyników dla \"%2\""
 
-#: covermanager/CoverManager.cpp:686
+#: covermanager/CoverManager.cpp:699
 #, kde-format
 msgid "1 album"
 msgid_plural "%1 albums"
@@ -10500,20 +10487,20 @@ msgstr[0] "1 album"
 msgstr[1] "%1 albumy"
 msgstr[2] "%1 albumów"
 
-#: covermanager/CoverManager.cpp:692
+#: covermanager/CoverManager.cpp:705
 msgid " by "
 msgstr " wykonawcy "
 
-#: covermanager/CoverManager.cpp:697
+#: covermanager/CoverManager.cpp:710
 #, kde-format
 msgid " - ( <b>%1</b> without cover )"
 msgstr " - ( <b>%1</b> bez okładki )"
 
-#: covermanager/CoverManager.cpp:743
+#: covermanager/CoverManager.cpp:758
 msgid "Cover Image"
 msgstr "Okładka"
 
-#: covermanager/CoverManager.cpp:800
+#: covermanager/CoverManager.cpp:836
 msgid "No Artist"
 msgstr "Brak wykonawcy"
 
@@ -10528,880 +10515,3 @@ msgstr "Dołącz i &odtwarzaj"
 #: TrayIcon.cpp:224
 msgid "&Queue Track"
 msgstr "&Kolejkuj utwór"
-
-#~ msgid "No purchases found."
-#~ msgstr "Nie znaleziono żadnych zakupów."
-
-#~ msgid "No previous purchases have been found. Nothing to re-download...."
-#~ msgstr ""
-#~ "Nie znaleziono żadnych poprzednich zakupów. Nie ma nic do ponownego "
-#~ "pobrania..."
-
-#~ msgid "Could not re-download album"
-#~ msgstr "Nie można było ponownie pobrać albumu"
-
-#~ msgid "There seems to be a problem with the selected re-download info file."
-#~ msgstr ""
-#~ "Wygląda na to, że jest jakiś problem z wybranym plikiem informacji o "
-#~ "ponownym pobraniu."
-
-#~| msgid "Authors"
-#~ msgid "Author:"
-#~ msgstr "Autor:"
-
-#~ msgid "Subscribe to podcast feed"
-#~ msgstr "Subskrybuj źródło podcastu"
-
-#, fuzzy
-#~| msgid "An HTML page was received. Expected an RSS 2.0 feed"
-#~ msgid "A HTML page was received. Expected an RSS 2.0 feed"
-#~ msgstr "Otrzymano stronę HTML. Oczekiwano źródło RSS 2.0"
-
-#~ msgid "Feed URL"
-#~ msgstr "URL źródła"
-
-#~ msgid "(left click to copy to clipboard)"
-#~ msgstr "(lewy przycisk myszy aby skopiować do schowka)"
-
-#~ msgid "Downloading album"
-#~ msgstr "Pobieranie albumu"
-
-#~ msgid "Ra&ndom"
-#~ msgstr "Lo&sowo"
-
-#~ msgctxt "State, as in disabled"
-#~ msgid "&Off"
-#~ msgstr "&Wyłączony"
-
-#~ msgctxt "Items, as in music"
-#~ msgid "&Tracks"
-#~ msgstr "&Utwory"
-
-#~ msgid "&Albums"
-#~ msgstr "&Albumy"
-
-#~ msgctxt "State, as in disabled"
-#~ msgid "Off"
-#~ msgstr "Wyłączony"
-
-#~ msgid "&Repeat"
-#~ msgstr "&Powtórz"
-
-#~ msgid "Which track(s) to play repeatedly"
-#~ msgstr "Jakie utwory powtarzać"
-
-#~ msgid ""
-#~ "Whether to repeat the current track, the current album, or the current "
-#~ "playlist indefinitely, or neither."
-#~ msgstr ""
-#~ "Czy powtarzać bieżący utwór, bieżący album lub bieżącą listę odtwarzania "
-#~ "nieokreśloną liczbę razy lub wcale."
-
-#~ msgid "Do not Repeat"
-#~ msgstr "Nie powtarzaj"
-
-#~ msgid "Whether to play tracks or albums in random order"
-#~ msgstr "Czy odtwarzać utwory lub albumy w kolejności losowej"
-
-#~ msgid ""
-#~ "If set, Amarok plays the tracks or albums in the playlist in a random "
-#~ "order."
-#~ msgstr ""
-#~ "Jeśli ta opcja jest włączona, Amarok odtwarza utwory lub albumy z listy "
-#~ "odtwarzania w sposób losowy."
-
-#~ msgid "Volume Control"
-#~ msgstr "Regulacja głośności"
-
-#~ msgid "Previous"
-#~ msgstr "Poprzedni"
-
-#~ msgid "Next"
-#~ msgstr "Następny"
-
-#, fuzzy
-#~| msgid "Bugfixes, PostgreSQL support"
-#~ msgid "Bugfixes, Label Support"
-#~ msgstr "Łatki błędów, wsparcie PostgreSQL"
-
-#~ msgctxt ""
-#~ "Please do not translate the %foo words as they define a syntax used "
-#~ "internally by a parser to describe a filename."
-#~ msgid ""
-#~ "The following tokens can be used to define a filename "
-#~ "scheme:                                      <br>%track, %title, %artist, "
-#~ "%composer, %year, %album, %comment, %genre, %ignore."
-#~ msgstr ""
-#~ "Następujące znaczniki mogą zostać użyte do określenia nazwy "
-#~ "pliku:                                       <br>%track, %title, %artist, "
-#~ "%composer, %year, %album, %comment, %genre, %ignore."
-
-#~ msgid ""
-#~ "The following tokens can be used to define a filename scheme: <br>%track, "
-#~ "%title, %artist, %composer, %year, %album, %comment, %genre<br>"
-#~ msgstr ""
-#~ "Następujące znaczniki mogą zostać użyte do określenia nazwy pliku: <br>%"
-#~ "track, %title, %artist, %composer, %year, %album, %comment, %genre<br>"
-
-#~ msgctxt "Establish a connection to the Ampache server"
-#~ msgid "Active"
-#~ msgstr "Aktywne"
-
-#, fuzzy
-#~| msgid "Bookmark this Artist"
-#~ msgid "Favorite by this Artist"
-#~ msgstr "Dodaj tego wykonawcę do zakładek"
-
-#, fuzzy
-#~| msgid "Bookmark this Album"
-#~ msgid "Favorite on this Album"
-#~ msgstr "Dodaj ten album do zakładek"
-
-#~ msgid "Your favorite labels:"
-#~ msgstr "Ulubione etykiety:"
-
-#~ msgid ""
-#~ "Edit the assigned labels below (multiple labels are separated by commas), "
-#~ "or select a label from above."
-#~ msgstr ""
-#~ "Możesz zmienić przypisane etykiety poniżej (wiele etykiet oddziel "
-#~ "przecinkami), lub wybierz etykietę z powyższych."
-
-#~ msgid "Remove Bookmark"
-#~ msgstr "Usuń zakładkę"
-
-#~ msgid "Url"
-#~ msgstr "Url"
-
-#~| msgid "Bookmarks"
-#~ msgid "Context Bookmarks"
-#~ msgstr "Zakładki"
-
-#~ msgid ""
-#~ "<p>KLibLoader could not load the plugin:<br/><i>%1</i></p><p>Error "
-#~ "message:<br/><i>%2</i></p>"
-#~ msgstr ""
-#~ "<p>KLibLoader nie mógł wczytać wtyczki:<br/><i>%1</i></p><p>Komunikat "
-#~ "błędu:<br/><i>%2</i></p>"
-
-#~ msgid "On Screen Display"
-#~ msgstr "Wyświetlanie-na-ekranie (OSD)"
-
-#~ msgid "Configure On-Screen-Display"
-#~ msgstr "Konfiguracja wyświetlania-na-ekranie (OSD)"
-
-#~ msgid "from"
-#~ msgstr "z"
-
-#~ msgid "Main Toolbar NG"
-#~ msgstr "Główny pasek narzędzi NG"
-
-#~| msgid "Main Toolbar NG"
-#~ msgid "Main Toolbar NNG"
-#~ msgstr "Główny pasek narzędzi NNG"
-
-#~ msgid "&Fadeout"
-#~ msgstr "&Wyciszenie"
-
-#~ msgid "Miscellaneous"
-#~ msgstr "Różne"
-
-#~ msgid ""
-#~ "Check to enable the On-Screen-Display. <br>The OSD briefly displays track "
-#~ "data when a new track is played."
-#~ msgstr ""
-#~ "Zaznacz aby włączyć wyświetlanie-na-ekranie. (OSD) <br>OSD na krótko "
-#~ "wyświetla dane utworu w momencie gdy nowy utwór jest odtwarzany."
-
-#~ msgid "&Appearance"
-#~ msgstr "&Wygląd"
-
-#~ msgid "Enter space-separated terms to search in the albums"
-#~ msgstr "Podaj, oddzielone spacjami, kryteria przeszukiwania albumów"
-
-#~ msgid "Run integrated unit tests, if your build supports it"
-#~ msgstr "Uruchom zintegrowane unit testy, jeśli twój build je wspiera"
-
-#~ msgid "Browsers"
-#~ msgstr "Przeglądarki"
-
-#~ msgid "Font for On-Screen Display"
-#~ msgstr "Czcionka wyświetlania-na-ekranie"
-
-#~ msgid "The font to use for the On-Screen Display."
-#~ msgstr "Czcionka używana w wyświetlaniu-na-ekranie."
-
-#~ msgid "Reserved Layout Name"
-#~ msgstr "Zarezerwowana nazwa układu"
-
-#, fuzzy
-#~| msgid "Dequeue Track"
-#~ msgid "Enqueue Track"
-#~ msgstr "Usuń utwór z kolejki"
-
-#~ msgid " by <b>%1</b>"
-#~ msgstr " wykonywane przez <b>%1</b>"
-
-#~ msgid "Amarok - No track playing"
-#~ msgstr "Amarok - Nie jest odtwarzany żaden utwór"
-
-#~ msgid "Fadeout on track end"
-#~ msgstr "Wycisz przy końcu utworzy"
-
-#~ msgid "Toggle unified view mode. This is an experimental feature"
-#~ msgstr ""
-#~ "Przełącza zunifikowany tryb wyglądu. To jest dodatek eksperymentalny"
-
-#~ msgid "Shoutcast Directory"
-#~ msgstr "Katalog Shoutcast"
-
-#~ msgid "The biggest list of online radio stations on the Internet"
-#~ msgstr "Największa lista strumieni radiowych w internecie"
-
-#~ msgctxt "Fetch the 500 most popular stations"
-#~ msgid "View Top 500 Stations"
-#~ msgstr "Zobacz najlepsze 500 stacji"
-
-#~ msgctxt "Fetch list of all stations by genre"
-#~ msgid "View All Stations"
-#~ msgstr "Zobacz wszystkie stacje"
-
-#~ msgid "Results for: %1"
-#~ msgstr "Wyniki dla: %1"
-
-#~ msgid "The Shoutcast server is busy.<BR>Please try again later."
-#~ msgstr "Serwer Shoutcast jest zajęty.<br>Proszę spróbować ponownie później."
-
-#~ msgid "Install New Applets"
-#~ msgstr "Zainstaluj nowe applety"
-
-#~ msgid "Enter new group name:"
-#~ msgstr "Podaj nową nazwę grupy:"
-
-#, fuzzy
-#~| msgid "Group By"
-#~ msgid "Group by %1"
-#~ msgstr "Grupuj wg"
-
-#, fuzzy
-#~| msgid "Group By"
-#~ msgid "Group &by"
-#~ msgstr "Grupuj wg"
-
-#~ msgctxt "Replace the currently loaded tracks with these"
-#~ msgid "&Load"
-#~ msgstr "&Wczytaj"
-
-#, fuzzy
-#~| msgid "Update Database"
-#~ msgid "&External database engine:"
-#~ msgstr "Uaktualnij bazę danych"
-
-#, fuzzy
-#~| msgid "Playlist Options"
-#~ msgid "Playlist Grouping"
-#~ msgstr "Opcje listy odtwarzania"
-
-#~ msgid ""
-#~ "Lyrics were not able to be downloaded. Please check your internet "
-#~ "connection: %1"
-#~ msgstr ""
-#~ "Nie można było pobrać słów utworu. Proszę sprawdzić swoje połączenie z "
-#~ "internetem: %1"
-
-#~ msgid "Enables the equalizer plugin"
-#~ msgstr "Uruchamia wtyczkę korektora"
-
-#~ msgid "Band gains for equalizer, 10 values, range -100..100, 0 is normal."
-#~ msgstr ""
-#~ "Przedziały nasycenia korektora, 10 wartości, w przedziale od -100 do 100, "
-#~ "0 jest neutralne."
-
-#~ msgid "Enter Podcast URL:"
-#~ msgstr "Podaj adres URL podcastu:"
-
-#~ msgid "&Initialize Device"
-#~ msgstr "&Inicjalizuj urządzenie"
-
-#~ msgid "disc"
-#~ msgstr "płyta"
-
-#~ msgid "disk"
-#~ msgstr "dysk"
-
-#~ msgid "remaster"
-#~ msgstr "ponowne wydanie"
-
-#~ msgid "cd"
-#~ msgstr "cd"
-
-#~ msgid "single"
-#~ msgstr "singiel"
-
-#~ msgid "soundtrack"
-#~ msgstr "ścieżka filmowa"
-
-#~ msgid "part"
-#~ msgstr "część"
-
-#~ msgid "No cover found"
-#~ msgstr "Nie znaleziono żadnej okładki"
-
-#~ msgid "The cover-data produced an invalid image."
-#~ msgstr "Dane okładki tworzą nieprawidłowy obrazek."
-
-#~ msgid ""
-#~ "You have seen all the covers Amazon returned using the query below. "
-#~ "Perhaps you can refine it:"
-#~ msgstr ""
-#~ "Widziałeś wszystkie okładki, które zwrócił Amazon używając poniższego "
-#~ "zapytania. Być może da się je sprecyzować:"
-
-#~ msgid "Amazon Query Editor"
-#~ msgstr "Edytor zapytania Amazon"
-
-#~ msgid "Ask Amazon for covers using this query:"
-#~ msgstr "Przeszukaj bazę okładek Amazon z tym zapytaniem:"
-
-#~ msgid "Ne&w Search..."
-#~ msgstr "Nowe &wyszukiwanie..."
-
-#~ msgid "&Next Cover"
-#~ msgstr "&Następna okładka"
-
-#~ msgctxt "The locale to use when fetching covers from amazon.com"
-#~ msgid "International"
-#~ msgstr "Międzynarodowe"
-
-#~ msgid "Amazon Locale"
-#~ msgstr "Ustawienia regionalne Amazon"
-
-#, fuzzy
-#~| msgid "Collection"
-#~ msgid "Collections"
-#~ msgstr "Kolekcja"
-
-#~ msgid "&Delete group"
-#~ msgstr "&Usuń grupę"
-
-#~ msgid "Add Stream Location"
-#~ msgstr "Dodaj miejsce strumienia"
-
-#~ msgid "Name:"
-#~ msgstr "Nazwisko:"
-
-#~ msgid "Stream URL:"
-#~ msgstr "Adres URL strumienia:"
-
-#~ msgid "My Playlists"
-#~ msgstr "Moje listy odtwarzania"
-
-#~ msgid "User Playlists"
-#~ msgstr "Listy odtwarzania użytkownika"
-
-#, fuzzy
-#~| msgid "New Bookmark"
-#~ msgid "New bookmark"
-#~ msgstr "Nowa zakładka"
-
-#~ msgid "Bold"
-#~ msgstr "Pogrubienie"
-
-#~ msgid "Italic"
-#~ msgstr "Kursywa"
-
-#~ msgid "Left"
-#~ msgstr "Lewo"
-
-#~ msgid "Center"
-#~ msgstr "Środek"
-
-#~ msgid "Right"
-#~ msgstr "Prawo"
-
-#~ msgid ""
-#~ "The amount you choose to pay will be split 50/50 between the artist and "
-#~ "Magnatune.com. Your personal and credit card information is sent securely "
-#~ "to Magnatune.com using SSL encryption and is not stored by Amarok or "
-#~ "readable by the Amarok developers."
-#~ msgstr ""
-#~ "Suma, którą wybrano do zapłaty zostanie podzielona 50/50 pomiędzy "
-#~ "wykonawcę i Magnatune.com. Informacja o Tobie i Twojej karcie kredytowej "
-#~ "jest wysyłana bezpośrednio do Magnatune.com zaszyfrowana za pomocą SSL i "
-#~ "nie jest zapisywana przez Amarok ani możliwa do odczytania przez jego "
-#~ "twórców."
-
-#~ msgid "Operation complete!"
-#~ msgstr "Operacja zakończona!"
-
-#~ msgid "Get Current"
-#~ msgstr "Pobież bieżące"
-
-#~ msgid "Goto"
-#~ msgstr "Idź do"
-
-#~| msgid "One track already on media device"
-#~| msgid_plural "%1 tracks already on media device"
-#~ msgid "The tracks to copy are already on the device!"
-#~ msgstr "Utowy do skopiowania już istnieją na urządzeniu!"
-
-#~ msgctxt "Enter a new name for a group that already exists"
-#~ msgid "Enter new group name:"
-#~ msgstr "Podaj nową nazwę grupy:"
-
-#~ msgid "No service named %1 is curretly loaded"
-#~ msgstr "Żadna usługa o nazwie %1 nie jest obecnie wczytana"
-
-#, fuzzy
-#~| msgid "Single"
-#~ msgid "Scrolling"
-#~ msgstr "Singiel"
-
-#, fuzzy
-#~| msgid "Move to Collection"
-#~ msgid "Remove From Collection"
-#~ msgstr "Przenieś do kolekcji"
-
-#~ msgid "Unknown album"
-#~ msgstr "Nieznany album"
-
-#~ msgid "Unknown artist"
-#~ msgstr "Nieznany wykonawca"
-
-#~ msgid "Unknown genre"
-#~ msgstr "Nieznany gatunek"
-
-#~ msgid "Transferring Tracks to MTP Device"
-#~ msgstr "Przenoszenie utworów na urządzenie MTP"
-
-#, fuzzy
-#~| msgid "Unknown Genre"
-#~ msgid "Unknown composer"
-#~ msgstr "Nieznany gatunek"
-
-#, fuzzy
-#~| msgid "Rating"
-#~ msgid "Lang"
-#~ msgstr "Notowania"
-
-#~ msgid "Drag tokens here to define a filename scheme."
-#~ msgstr "Przeciągnij znaczniki tutaj, aby zdefiniować schemat nazwy pliku."
-
-#~ msgid "Transferring Tracks to iPod"
-#~ msgstr "Przenoszenie utworów na iPoda"
-
-#, fuzzy
-#~| msgid "Local Collection"
-#~ msgid "Local Collection (via database at %1)"
-#~ msgstr "Lokalna kolekcja"
-
-#~ msgid "Transferring Tracks to MTP"
-#~ msgstr "Przenoszenie utworów na urządzenie MTP"
-
-#~ msgid "Could not send track"
-#~ msgstr "Nie można było wysłać utworu"
-
-#~ msgid "&Remove from MTP Device"
-#~ msgstr "&Usuń z urządzenia MTP"
-
-#~ msgid "The MTP device %1 is connected"
-#~ msgstr "Urządzenie MTP %1 zostało podłączone"
-
-#~ msgid "Manage Devices and Plugins"
-#~ msgstr "Zarządzaj urządzeniami i wtyczkami"
-
-#~ msgid "Devices"
-#~ msgstr "Urządzenia"
-
-#~ msgid ""
-#~ "Cannot define two devices\n"
-#~ "with the same name and mountpoint."
-#~ msgstr ""
-#~ "Nie możesz podać dwóch urządzeń \n"
-#~ "z tą samą nazwą i punktem montowania."
-
-#~ msgid "Add New Device"
-#~ msgstr "Dodaj nowe urządzenie"
-
-#~ msgid "Select the plugin to use with this device:"
-#~ msgstr "Wybierz wtyczkę, której używać dla tego urządzenia:"
-
-#~ msgid "Enter a &name for this device (required):"
-#~ msgstr "Podaj &nazwę dla tego urządzenia (wymagane):"
-
-#~ msgid "Example: My_Ipod"
-#~ msgstr "Przykład: Moj_Ipod"
-
-#~ msgid ""
-#~ "Enter a name for the device.  The name must be unique across all manually "
-#~ "added devices.  It must not contain the pipe ( | ) character."
-#~ msgstr ""
-#~ "Podaj nazwę dla urządzenia. Nazwa musi być unikatowa pośród urządzeń "
-#~ "dodawanych ręcznie. Nie może zawierać znaku strumienia ( | )."
-
-#~ msgid "Enter the &mount point of the device, if applicable:"
-#~ msgstr "Podaj punkt &montowania urządzenia, jeśli to potrzebne:"
-
-#~ msgid "Example: /mnt/ipod"
-#~ msgstr "Przykład: /mnt/ipod"
-
-#~ msgid ""
-#~ "Enter the device's mount point.  Some devices (such as MTP devices) may "
-#~ "not have a mount point and this can be ignored.  All other devices "
-#~ "(iPods, UMS/VFAT devices) should enter the mount point here."
-#~ msgstr ""
-#~ "Podaj miejsce montowania urządzenia. Niektóre urządzenia (takie jak "
-#~ "urządzenia MTP) mogą nie posiadać miejsc montowania i wtedy można to pole "
-#~ "pominąć. Wszystkie inne urządzenia (iPody, urządzenia UMS/VFAT) powinny "
-#~ "mieć tutaj podane miejsce montowania."
-
-#~ msgid ""
-#~ "Every device must have a name, and\n"
-#~ "two devices cannot have the same\n"
-#~ "name. These names must be unique\n"
-#~ "across auto-detected devices as well.\n"
-#~ msgstr ""
-#~ "Każde urządzenie musi posiadać nazwę i \n"
-#~ "nie można zdefiniować dwóch urządzeń \n"
-#~ "o tej samej nazwie. Nazwy muszą być unikalne \n"
-#~ "również dla automatycznie wykrywanych urządzeń.\n"
-
-#~ msgid "No mount point needed"
-#~ msgstr "Punkt montowania nie jest wymagany"
-
-#~ msgid "The device name cannot contain the '|' character"
-#~ msgstr "Nazwa urządzenia nie może zawierać znaku \"|\""
-
-#~ msgid "Autodetected:"
-#~ msgstr "Wykryte automatycznie:"
-
-#~ msgid "Yes"
-#~ msgstr "Tak"
-
-#~ msgid "No"
-#~ msgstr "Nie"
-
-#~ msgid "Unique ID:"
-#~ msgstr "Unikatowy ID:"
-
-#~ msgid "Vendor:"
-#~ msgstr "Dostawca:"
-
-#~ msgid "Product:"
-#~ msgstr "Produkt:"
-
-#~ msgid "Mount Point:"
-#~ msgstr "Punkt montowania:"
-
-#~ msgid "Not Mounted"
-#~ msgstr "Nie zamontowany"
-
-#~ msgid "Device information for "
-#~ msgstr "Informacja o urządzeniu dla "
-
-#~ msgid "Name: "
-#~ msgstr "Nazwa: "
-
-#~ msgid "Details"
-#~ msgstr "Szczegóły "
-
-#~ msgid "Plugin:"
-#~ msgstr "Wtyczka:"
-
-#~ msgid "Generic Audio Player"
-#~ msgstr "Ogólny odtwarzacz audio"
-
-#~ msgid "Do not handle"
-#~ msgstr "Nie obsługuj"
-
-#~ msgid "Remove entries corresponding to this device from configuration file"
-#~ msgstr ""
-#~ "Usuń wpisy odnoszące się do tego urządzenia z pliku konfiguracyjnego"
-
-#~ msgid "Mark Volumes as Media Devices"
-#~ msgstr "Oznacz woluminy jako Urządzenia mediów"
-
-#~ msgid "Mark?"
-#~ msgstr "Zaznaczyć?"
-
-#~ msgid ""
-#~ "Could not create the marking file at %1.\n"
-#~ "Ensure that you have the correct permissions\n"
-#~ "to create that file."
-#~ msgstr ""
-#~ "Nie można było utworzyć pliku znacznika w %1.\n"
-#~ "Upewnij się, że masz odpowiednie uprawnienia\n"
-#~ "do utworzenia tego pliku."
-
-#~ msgid ""
-#~ "Could not remove the marking file at %1.\n"
-#~ "Ensure that you have the correct permissions\n"
-#~ "to remove that file."
-#~ msgstr ""
-#~ "Nie można było usunąć pliku znacznika w %1.\n"
-#~ "Upewnij się, że masz odpowiednie uprawnienia\n"
-#~ "do utworzenia tego pliku."
-
-#~ msgid "Error Removing File"
-#~ msgstr "Błąd podczas usuwania pliku"
-
-#~ msgid "Media Device: Copying %1 to %2 failed"
-#~ msgstr "Urządzenie mediów: Kopiowanie %1 do %2 nie powiodło się"
-
-#~ msgid "Media Device: Reading tags from %1 failed"
-#~ msgstr "Urządzenie mediów: Odczytywanie znaczników z %1 nie powiodło się"
-
-#~ msgid "Failed to purge podcasts already played"
-#~ msgstr "Nie udało się wyczyścić podcastów już odtworzonych"
-
-#~ msgid "Purged 1 podcasts already played"
-#~ msgid_plural "Purged %1 podcasts already played"
-#~ msgstr[0] "Wyczyszczono jeden podcast już odtworzony"
-#~ msgstr[1] "Wyczyszczono %1 podcasty już odtworzone"
-#~ msgstr[2] "Wyczyszczono %1 podcastów już odtworzonych"
-
-#~ msgid "Device successfully connected"
-#~ msgstr "Urządzenie zostało pomyślnie podłączone"
-
-#~ msgid ""
-#~ "Post-disconnect command failed, before removing device, please make sure "
-#~ "that it is safe to do so."
-#~ msgstr ""
-#~ "Wykonanie komendy po rozłączeniu nie powiodło się. Przed odłączeniem "
-#~ "urządzenia proszę się upewnić, że uczynienie tego jest bezpieczne."
-
-#~ msgid "Track not playable on media device: %1"
-#~ msgstr "Utwór nie nadaje się do odtworzenia na urządzeniu mediów: %1"
-
-#~ msgid "Failed to copy track to media device: %1"
-#~ msgstr "Nie udało się skopiować utworu na urządzenie mediów: %1"
-
-#~ msgid "One track not playable on media device"
-#~ msgid_plural "%1 tracks not playable on media device"
-#~ msgstr[0] "Jeden utwór nie nadaje się do odtworzenia na urządzeniu mediów"
-#~ msgstr[1] "%1 utwory nie nadają się do odtworzenia na urządzeniu mediów"
-#~ msgstr[2] "%1 utworów nie nadaje się do odtworzenia na urządzeniu mediów"
-
-#~ msgid ", one track already on media device"
-#~ msgid_plural ", %1 tracks already on media device"
-#~ msgstr[0] ", jeden utwór już istnieje na urządzeniu mediów"
-#~ msgstr[1] ", %1 utwory już istnieją na urządzeniu mediów"
-#~ msgstr[2] ", %1 utworów już istnieje na urządzeniu mediów"
-
-#~ msgid "One track was not transcoded"
-#~ msgid_plural "%1 tracks were not transcoded"
-#~ msgstr[0] "%1 utwór nie został przekonwertowany"
-#~ msgstr[1] "%1 utwory nie zostały przekonwertowane"
-#~ msgstr[2] "%1 utworów nie zostało przekonwertowanych"
-
-#~ msgid ", one track was not transcoded"
-#~ msgid_plural ", %1 tracks were not transcoded"
-#~ msgstr[0] ", %1 utwór nie został przekonwertowany"
-#~ msgstr[1] ", %1 utwory nie zostały przekonwertowane"
-#~ msgstr[2] ", %1 utworów nie zostało przekonwertowanych"
-
-#~ msgid " (no transcode script running)"
-#~ msgstr " (nie jest uruchomiony żaden skrypt konwertujący)"
-
-#~ msgid "The following tracks were not transferred: "
-#~ msgstr "Poniższe utwory nie zostały przeniesione: "
-
-#~ msgid "<p>You have selected 1 track to be <b>irreversibly</b> deleted.</p>"
-#~ msgid_plural ""
-#~ "<p>You have selected %1 tracks to be <b>irreversibly</b> deleted.</p>"
-#~ msgstr[0] "<p>Wybrałeś 1 utwór do <b>nieodwracalnego</b> usunięcia.</p>"
-#~ msgstr[1] "<p>Wybrałeś %1 utwory do <b>nieodwracalnego</b> usunięcia.</p>"
-#~ msgstr[2] "<p>Wybrałeś %1 utworów do <b>nieodwracalnego</b> usunięcia.</p>"
-
-#, fuzzy
-#~| msgid "Wikipedia"
-#~ msgid "wikipediaSettings"
-#~ msgstr "Wikipedia"
-
-#~ msgid "Age: "
-#~ msgstr "Wiek:"
-
-#~ msgid "Gender: "
-#~ msgstr "Płeć: "
-
-#~ msgid "MySQL reported the following error:<br/>"
-#~ msgstr "MySQL zgłosił następujący błąd:<br/>"
-
-#~ msgid ""
-#~ "<p>You can configure MySQL in the Collection section under Settings-"
-#~ ">Configure Amarok</p>"
-#~ msgstr ""
-#~ "<p>Możesz skonfigurować MySQL w dziale kolekcja w Ustawienia-"
-#~ ">Konfiguracja Amarok</p>"
-
-#, fuzzy
-#~| msgid "Unable to retrieve Wikipedia information: %1"
-#~ msgid "Unable to retrieve one Vimeo song information: %1"
-#~ msgstr "Nie udało się pobrać informacji z Wikipedii: %1"
-
-#, fuzzy
-#~| msgid "Description:"
-#~ msgid "Descripton"
-#~ msgstr "Opis:"
-
-#~ msgctxt "The username to use for logins to an Amapche server"
-#~ msgid "Username:"
-#~ msgstr "Nazwa użytkownika:"
-
-#~ msgid "Amarok AFT Tagger"
-#~ msgstr "Marker AFT Amaroka"
-
-#~ msgid "AFT Tagging helper application for Amarok"
-#~ msgstr "Markująca aplikacja pomocnicza AFT dla Amaroka"
-
-#~ msgid "(C) 2008, Jeff Mitchell"
-#~ msgstr "(C) 2008, Jeff Mitchell"
-
-#~ msgid ""
-#~ "IRC:\n"
-#~ "irc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n"
-#~ "\n"
-#~ "Feedback:\n"
-#~ "amarok@kde.org\n"
-#~ "\n"
-#~ "(Build Date: "
-#~ msgstr ""
-#~ "IRC:\n"
-#~ "irc.freenode.net - #amarok #amarok.de #amarok.es, #amarok.fr\n"
-#~ "\n"
-#~ "Wsparcie:\n"
-#~ "amarok@kde.org\n"
-#~ "\n"
-#~ "(Data zbudowania: "
-
-#~ msgid "Jeff Mitchell"
-#~ msgstr "Jeff Mitchell"
-
-#~ msgid "Files/Directories to tag"
-#~ msgstr "Pliki/Katalogi do oznakowania"
-
-#~ msgid "Delete AFT IDs from the files"
-#~ msgstr "Usuń identyfikatory AFT z plików"
-
-#~ msgid "Generate a new ID even if an up-to-date one exists"
-#~ msgstr "Utwórz nowy identyfikator, nawet gdy istnieje jakiś aktualny"
-
-#~ msgid "No prompts -- Indicates you agree to the terms of use."
-#~ msgstr "Brak uwag -- Oznacza to, że zgadzasz się na warunki użytkowania."
-
-#~ msgid "Recursively process files and directories"
-#~ msgstr "Rekursywnie operuj na plikach i katalogach"
-
-#~ msgid "More verbose output"
-#~ msgstr "Bardziej szczegółowe wyniki"
-
-#~ msgid ""
-#~ "TERMS OF USE:\n"
-#~ "\n"
-#~ "This program has been extensively tested and errs on the side of safety "
-#~ "wherever possible.\n"
-#~ "\n"
-#~ "With that being said, since this program can modify thousands or hundreds "
-#~ "of thousands of files\n"
-#~ "at a time, here is the obligatory warning text:\n"
-#~ "\n"
-#~ "This program makes use of multiple libraries not written by the author, "
-#~ "and as such neither the\n"
-#~ "the author nor the Amarok project can or do take any responsibility for "
-#~ "any damage that may\n"
-#~ "occur to your files through the use of this program.\n"
-#~ "\n"
-#~ "If you want more information, please see http://amarok.kde.org/wiki/AFT\n"
-#~ "\n"
-#~ "If you agree to be bound by these terms of use, enter 'y' or 'Y', or "
-#~ "anything else to exit:\n"
-#~ msgstr ""
-#~ "WARUNKI UŻYTKOWANIA:\n"
-#~ "\n"
-#~ "Ten program został dokładnie przetestowany oraz sprawdzony pod kątem "
-#~ "błędów bezpieczeństwa, tak jak to tylko było możliwe.\n"
-#~ "\n"
-#~ "Mając to na uwadze, i ponieważ ten program może modyfikować tysiące lub "
-#~ "setki tysięcy plików na raz,\n"
-#~ " pojawia się ten obowiązkowy tekst:\n"
-#~ "\n"
-#~ "Ten program używa wielu bibliotek, które nie były pisane przez autora. Z "
-#~ "tego powodu ani autor\n"
-#~ "ani projekt Amarok nie biorą żadnej odpowiedzialności za jakiekolwiek "
-#~ "zniszczenia, które mogą się\n"
-#~ " zdarzyć Twoim plikom poprzez użytkowanie tego programu.\n"
-#~ "\n"
-#~ "Jeśli potrzebujesz więcej informacji, zajrzyj na http://amarok.kde.org/"
-#~ "wiki/AFT\n"
-#~ "\n"
-#~ "Jeśli zgadzasz się na te warunki, wpisz \"y\" lub \"Y\", albo cokolwiek "
-#~ "innego aby zrezygnować:\n"
-
-#~ msgctxt ""
-#~ "translate this according to what you translated in TERMS OF USE sentence"
-#~ msgid "y"
-#~ msgstr "t"
-
-#~ msgctxt ""
-#~ "translate this according to what you translated in TERMS OF USE sentence"
-#~ msgid "Y"
-#~ msgstr "T"
-
-#~ msgid "Pay using:"
-#~ msgstr "Zapłać poprzez:"
-
-#~ msgid "credit card"
-#~ msgstr "kartę kredytową"
-
-#~ msgid "Magnatune gift card"
-#~ msgstr "karta prezentów Magnatune "
-
-#~ msgid "VISA and Mastercard accepted."
-#~ msgstr "VISA i Mastercard są akceptowane."
-
-#~ msgid "Credit card number:"
-#~ msgstr "Numer karty kredytowej:"
-
-#~ msgid "Expiration date:"
-#~ msgstr "Data ważności:"
-
-#~ msgid "Month (xx):"
-#~ msgstr "Miesiąc (xx):"
-
-#~ msgid "Year (xx):"
-#~ msgstr "Rok (xx):"
-
-#~ msgctxt "Last.fm: errorMessage"
-#~ msgid "Last.fm cannot be reached. Please check your firewall settings."
-#~ msgstr ""
-#~ "Nie można połączyć się z Last.fm. Sprawdź proszę swoje ustawienia zapory "
-#~ "sieciowej."
-
-#~ msgid ""
-#~ "Unable to reach the internet, please check your firewall settings and try "
-#~ "again"
-#~ msgstr ""
-#~ "Nie można połączyć się z siecią internet, sprawdź proszę swoje ustawienia "
-#~ "zapory sieciowej i spróbuj ponownie"
-
-#~ msgid "The friendly record company with the motto \"We are not evil!\""
-#~ msgstr ""
-#~ "Przyjazna wytwórnia nagrań, której motto brzmi \"Nie jesteśmy źli!\""
-
-#~ msgid "The credit card number entered does not appear to be valid"
-#~ msgstr "Numer karty kredytowej, który wprowadzono nie wygląda na prawidłowy"
-
-#~ msgid "Invalid credit card number"
-#~ msgstr "Niepoprawny numer karty kredytowej"
-
-#~ msgid "The credit card expiration month does not appear to be valid"
-#~ msgstr "Miesiąc ważności karty kredytowej wygląda na niepoprawny"
-
-#~ msgid "Invalid expiration month"
-#~ msgstr "Niepoprawny miesiąc ważności"
-
-#~ msgid "The credit card expiration year does not appear to be valid"
-#~ msgstr "Rok ważności karty kredytowej wygląda na niepoprawny"
-
-#~ msgid "Invalid expiration year"
-#~ msgstr "Niepoprawny rok ważności"

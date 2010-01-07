@@ -2,7 +2,7 @@
  * Copyright (c) 2002-2009 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2002 Max Howell <max.howell@methylblue.com>                            *
  * Copyright (c) 2002 Gabor Lehel <illissius@gmail.com>                                 *
- * Copyright (c) 2002 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2002 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2009 Artur Szymiec <artur.szymiec@gmail.com>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -399,6 +399,9 @@ MainWindow::createContextView( Plasma::Containment *containment )
     m_contextView->setFrameShape( QFrame::NoFrame );
     m_contextToolbarView = new Context::ToolbarView( containment, m_corona, m_contextWidget );
     m_contextToolbarView->setFrameShape( QFrame::NoFrame );
+
+    connect( m_contextToolbarView, SIGNAL( hideAppletExplorer() ), m_contextView, SLOT( hideAppletExplorer() ) );
+    connect( m_contextToolbarView, SIGNAL( showAppletExplorer() ), m_contextView, SLOT( showAppletExplorer() ) );
     m_contextView->showHome();
     PERF_LOG( "ContexView created" )
 
@@ -764,9 +767,10 @@ MainWindow::createActions()
     connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowCoverManager() ) );
     ac->addAction( "cover_manager", action );
 
-    action = new KAction( KIcon("folder-amarok"), i18n("Play Media..."), this );
-    connect(action, SIGNAL(triggered(bool)), SLOT(slotPlayMedia()));
+    action = new KAction( KIcon("folder-amarok"), i18n("Play Media..."), this );    
     ac->addAction( "playlist_playmedia", action );
+    action->setShortcut( Qt::CTRL + Qt::Key_O );
+    connect(action, SIGNAL(triggered(bool)), SLOT(slotPlayMedia()));
 
     action = new KAction( KIcon("preferences-plugin-script-amarok"), i18n("Script Manager"), this );
     connect(action, SIGNAL(triggered(bool)), SLOT(showScriptSelector()));
@@ -801,6 +805,12 @@ MainWindow::createActions()
     action->setText( i18n( "Repopulate Playlist" ) );
     action->setIcon( KIcon("view-refresh-amarok") );
     connect( action, SIGNAL(triggered(bool)), pa, SLOT( repopulateDynamicPlaylist() ) );
+
+    action = new KAction( this );
+    ac->addAction( "disable_dynamic", action );
+    action->setText( QString() ); //TODO; Give a propper string if we want to use it for anything user visible
+    action->setIcon( KIcon("edit-delete-amarok") );
+    //this is connected inside the dynamic playlist category
 
     action = new KAction( this );
     ac->addAction( "next", action );

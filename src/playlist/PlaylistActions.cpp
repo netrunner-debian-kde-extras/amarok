@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007-2008 Ian Monroe <ian@monroe.nu>                                   *
- * Copyright (c) 2007-2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>               *
+ * Copyright (c) 2007-2009 Nikolaj Hald Nielsen <nhn@kde.org>                           *
  * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
  * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
@@ -124,6 +124,10 @@ Playlist::Actions::requestNextTrack()
         //Make sure that the navigator is reset, otherwise complex navigators might have all tracks marked as
         //played and will thus be stuck at the last track (or refuse to play any at all) if the playlist is restarted
         m_navigator->reset();
+
+        //if what is currently playing is a cd track, we need to stop playback as the cd will otherwise continue playing
+        if( The::engineController()->isPlayingAudioCd() )
+            The::engineController()->stop();
 
         return;
     }
@@ -396,7 +400,8 @@ Playlist::Actions::engineNewTrackPlaying()
 
     m_nextTrackCandidate = 0;
 
-    if( AmarokConfig::autoScrollPlaylist() )
+    // mainWindow() can be 0 on startup, so we have to check for it
+    if( The::mainWindow() && AmarokConfig::autoScrollPlaylist() )
         The::mainWindow()->playlistWidget()->currentView()->scrollToActiveTrack();
 }
 

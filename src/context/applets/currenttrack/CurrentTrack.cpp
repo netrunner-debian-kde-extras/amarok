@@ -23,6 +23,7 @@
 #include "collection/CollectionManager.h"
 #include "Debug.h"
 #include "EngineController.h"
+#include "GlobalCurrentTrackActions.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
 #include "meta/MetaUtility.h"
 #include "PaletteHandler.h"
@@ -154,6 +155,9 @@ CurrentTrack::changeTrackRating( int rating )
     DEBUG_BLOCK
     Meta::TrackPtr track = The::engineController()->currentTrack();
 
+    if( !track )
+        return;
+
     // Inform collections of end of a metadata update
     Meta::UpdateCapability *uc = track->create<Meta::UpdateCapability>();
     if( !uc )
@@ -264,6 +268,7 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
         iconPos.setY( iconPos.y() + m_album->boundingRect().height() );
         foreach( Plasma::IconWidget *icon, m_trackActions )
         {
+            debug() << "painting action: " << icon->text();
             const int iconSize = icon->size().width();
             icon->setPos( iconPos );
             iconPos.rx() += iconSize + 4;
@@ -381,6 +386,16 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( track )
     {
+
+        //first, add any global CurrentTrackActions (iow, actions that are shown for all tracks)
+
+        foreach( QAction* action, The::globalCurrentTrackActions()->actions() )
+        {
+            Plasma::IconWidget *icon = addAction( action, 24 );
+            icon->setText( QString() );
+            m_trackActions << icon;
+        }
+        
         bool localCollectionTrack = track->collection() == CollectionManager::instance()->primaryCollection();
         if( !localCollectionTrack && track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
         {

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Nikolaj Hald Nielsen <nhnFreespirit@gmail.com>                    *
+ * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -18,7 +18,7 @@
 #define GLOBALCURRENTTRACKACTIONS_H
 
 #include "amarok_export.h"
-#include "Meta.h"
+#include "meta/Meta.h"
 #include "SmartPointerList.h"
 
 #include <QAction>
@@ -33,7 +33,7 @@ namespace The {
 /**
 A global list of actions that is made available to all playing tracks.
 
-	@author Nikolaj Hald Nielsen <nhnFreespirit@gmail.com> 
+	@author Nikolaj Hald Nielsen <nhn@kde.org> 
 */
 class AMAROK_EXPORT GlobalCurrentTrackActions
 {
