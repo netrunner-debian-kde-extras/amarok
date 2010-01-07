@@ -4,6 +4,7 @@ amarok (2.2.2-0r1) UNRELEASED; urgency=low
   * Suggest moodbar, add a note about it to README.Debian.
   * Replace "KDE 4 technology platform" with official "KDE Platform" in amarok
     package description.
+  * Refresh patches.
 
  -- Modestas Vainius <modax@debian.org>  Tue, 05 Jan 2010 13:05:04 +0200
 

@@ -11,7 +11,7 @@ Signed-off-by: Modestas Vainius <modestas@vainius.eu>
  2 files changed, 0 insertions(+), 6 deletions(-)
 
 diff --git a/src/collection/mysqlecollection/CMakeLists.txt b/src/collection/mysqlecollection/CMakeLists.txt
-index 0193a5a..11dab5c 100755
+index 3d28353..7c0dca9 100755
 --- a/src/collection/mysqlecollection/CMakeLists.txt
 +++ b/src/collection/mysqlecollection/CMakeLists.txt
 @@ -13,7 +13,6 @@ include_directories(
@@ -22,7 +22,7 @@ index 0193a5a..11dab5c 100755
          ${MYSQL_INCLUDE_DIR}
          ${TAGLIB_INCLUDES}
          ${TAGLIB-EXTRAS_INCLUDES}
-@@ -66,7 +65,6 @@ target_link_libraries(amarok_collection-mysqlecollection
+@@ -67,7 +66,6 @@ target_link_libraries(amarok_collection-mysqlecollection
      ${KDE4_KDEUI_LIBS}
      ${KDE4_KIO_LIBS}
      ${KDE4_THREADWEAVER_LIBRARIES}
@@ -30,7 +30,7 @@ index 0193a5a..11dab5c 100755
      ${MYSQL_EMBEDDED_LIBRARIES}
      ${CMAKE_DL_LIBS}
      ${ZLIB_LIBRARIES}
-@@ -75,7 +73,6 @@ target_link_libraries(amarok_collection-mysqlecollection
+@@ -76,7 +74,6 @@ target_link_libraries(amarok_collection-mysqlecollection
  )
  
  if(NOT WIN32)
@@ -39,7 +39,7 @@ index 0193a5a..11dab5c 100755
          target_link_libraries(amarok_collection-mysqlecollection crypt pthread)
      endif(NOT APPLE)
 diff --git a/src/collection/mysqlservercollection/CMakeLists.txt b/src/collection/mysqlservercollection/CMakeLists.txt
-index 940bf6d..9a0eddb 100755
+index 8686ff2..8365b16 100755
 --- a/src/collection/mysqlservercollection/CMakeLists.txt
 +++ b/src/collection/mysqlservercollection/CMakeLists.txt
 @@ -13,7 +13,6 @@ include_directories(
@@ -50,7 +50,7 @@ index 940bf6d..9a0eddb 100755
          ${MYSQL_INCLUDE_DIR}
          ${TAGLIB_INCLUDES}
          ${TAGLIB-EXTRAS_INCLUDES}
-@@ -66,7 +65,6 @@ target_link_libraries(amarok_collection-mysqlservercollection
+@@ -67,7 +66,6 @@ target_link_libraries(amarok_collection-mysqlservercollection
      ${KDE4_KDEUI_LIBS}
      ${KDE4_KIO_LIBS}
      ${KDE4_THREADWEAVER_LIBRARIES}
@@ -58,7 +58,7 @@ index 940bf6d..9a0eddb 100755
      ${MYSQL_LIBRARIES}
      ${CMAKE_DL_LIBS}
      ${ZLIB_LIBRARIES}
-@@ -75,7 +73,6 @@ target_link_libraries(amarok_collection-mysqlservercollection
+@@ -76,7 +74,6 @@ target_link_libraries(amarok_collection-mysqlservercollection
  )
  
  if(NOT WIN32)
@@ -67,4 +67,4 @@ index 940bf6d..9a0eddb 100755
          target_link_libraries(amarok_collection-mysqlservercollection crypt pthread)
      endif(NOT APPLE)
 -- 
-tg: (0b83eb7..) debian/mysql_no_openssl_fix (depends on: upstream)
+tg: (ef61bc6..) debian/mysql_no_openssl_fix (depends on: upstream)
