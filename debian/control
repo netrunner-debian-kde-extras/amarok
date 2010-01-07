@@ -25,11 +25,11 @@ Depends: amarok-common (= ${source:Version}), amarok-utils (= ${binary:Version})
 Recommends: kdemultimedia-kio-plugins (>= 4:4.2.0)
 Suggests: libxine1-ffmpeg, libqt4-sql-sqlite, libqt4-sql-mysql, libqt4-sql-psql, moodbar
 Conflicts: amarok-engine-xine (<< 2), amarok-engine-yauap (<< 2)
-Description: easy to use media player based on the KDE 4 technology platform
+Description: easy to use media player based on the KDE Platform
  Amarok is a powerful music player with an intuitive interface. It makes
  playing the music you love and discovering new music easier than ever before
  and it looks good doing it! Amarok is based on the powerful Qt4 / KDE4
- technology platform and nicely integrates with KDE desktop.
+ Platform and nicely integrates with KDE desktop.
  .
  Much work has been invested into integrating Amarok 2 with various Web
  services:
