@@ -11,7 +11,7 @@ Signed-off-by: Modestas Vainius <modestas@vainius.eu>
  1 files changed, 0 insertions(+), 3 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index c905b4f..2ab8b0b 100644
+index 15b35c5..716d37c 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
 @@ -76,9 +76,6 @@ if( WITH_PLAYER )
@@ -25,4 +25,4 @@ index c905b4f..2ab8b0b 100644
  
      find_package(MySQLAmarok REQUIRED)
 -- 
-tg: (ef61bc6..) debian/disable_qtscriptbindings_check_fix (depends on: upstream)
+tg: (68ac3b4..) debian/disable_qtscriptbindings_check_fix (depends on: upstream)

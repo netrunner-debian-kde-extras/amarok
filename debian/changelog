@@ -1,6 +1,11 @@
 amarok (2.3~beta1-0r1) UNRELEASED; urgency=low
 
   * New upstream development release (2.2.2.90).
+  * Resync patches:
+    - general/scanning_crash_backport.diff - drop, stolen from upstream;
+    - debian/disable_qtscriptbindings_check_fix.diff - refresh;
+    - debian/mysql_no_openssl_fix.diff - adapt to upstream changes;
+    - debian/mysqle_amarok_local_errmsg_feature.diff - refresh.
 
  -- Modestas Vainius <modax@debian.org>  Sat, 13 Feb 2010 21:11:07 +0200
 

@@ -8,14 +8,14 @@ might not be available if mysql-server is not installed.
 Signed-off-by: Modestas Vainius <modestas@vainius.eu>
 
 ---
- .../mysqlecollection/MySqlEmbeddedCollection.cpp   |   16 +++++++++++++++-
+ .../mysqlecollection/MySqlEmbeddedStorage.cpp      |   16 +++++++++++++++-
  1 files changed, 15 insertions(+), 1 deletions(-)
 
-diff --git a/src/collection/mysqlecollection/MySqlEmbeddedCollection.cpp b/src/collection/mysqlecollection/MySqlEmbeddedCollection.cpp
-index 0cf27ce..1a8136f 100644
---- a/src/collection/mysqlecollection/MySqlEmbeddedCollection.cpp
-+++ b/src/collection/mysqlecollection/MySqlEmbeddedCollection.cpp
-@@ -25,10 +25,15 @@
+diff --git a/src/collection/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp b/src/collection/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
+index d387580..5966c61 100644
+--- a/src/collection/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
++++ b/src/collection/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
+@@ -27,10 +27,15 @@
  #include <QThreadStorage>
  #include <QVarLengthArray>
  
@@ -23,18 +23,18 @@ index 0cf27ce..1a8136f 100644
 +
  #include <mysql.h>
  
- AMAROK_EXPORT_PLUGIN( MySqlEmbeddedCollectionFactory )
- 
+ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
+     : MySqlStorage()
 +#define MYSQLE_ERRMSG_FILENAME "errmsg.sys"
 +#define MYSQLE_ERRMSG_LOCAL_DIR "amarok/mysqle"
 +
- void
- MySqlEmbeddedCollectionFactory::init()
  {
-@@ -48,9 +53,12 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id, const QStri
  
-     const QString defaultsFile = Amarok::config( "MySQLe" ).readEntry( "config", Amarok::saveLocation() + "my.cnf" ); 
-     const QString databaseDir = Amarok::config( "MySQLe" ).readEntry( "data", Amarok::saveLocation() + "mysqle" );
+     m_debugIdent = "MySQLe";
+@@ -49,9 +54,12 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
+         defaultsFile = QDir::cleanPath( dir.absoluteFilePath( "my.cnf" ) );
+         databaseDir = dir.absolutePath() + QDir::separator() + "mysqle";
+     }
 +    QString languageDataDir = KGlobal::dirs()->findResourceDir( "data", MYSQLE_ERRMSG_LOCAL_DIR "/" MYSQLE_ERRMSG_FILENAME );
  
      char* defaultsLine = qstrdup( QString( "--defaults-file=%1" ).arg( defaultsFile ).toAscii().data() );
@@ -44,7 +44,7 @@ index 0cf27ce..1a8136f 100644
  
      if( !QFile::exists( defaultsFile ) )
      {
-@@ -67,7 +75,9 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id, const QStri
+@@ -68,7 +76,9 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
          dir.mkpath( "." );
      }
  
@@ -55,7 +55,7 @@ index 0cf27ce..1a8136f 100644
      char **server_options = new char* [ num_elements + 1 ];
      server_options[0] = const_cast<char*>( "amarokmysqld" );
      server_options[1] = defaultsLine;
-@@ -81,6 +91,8 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id, const QStri
+@@ -82,6 +92,8 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
      server_options[7] = const_cast<char*>( "--myisam-recover=FORCE" );
      server_options[8] = const_cast<char*>( "--character-set-server=utf8" );
      server_options[9] = const_cast<char*>( "--collation-server=utf8_bin" );
@@ -64,7 +64,7 @@ index 0cf27ce..1a8136f 100644
      server_options[num_elements] = 0;
  
      char **server_groups = new char* [ 3 ];
-@@ -100,6 +112,8 @@ MySqlEmbeddedCollection::MySqlEmbeddedCollection( const QString &id, const QStri
+@@ -101,6 +113,8 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
      delete [] server_groups;
      delete [] defaultsLine;
      delete [] databaseLine;
@@ -74,4 +74,4 @@ index 0cf27ce..1a8136f 100644
      if( !m_db )
      {
 -- 
-tg: (ef61bc6..) debian/mysqle_amarok_local_errmsg_feature (depends on: upstream)
+tg: (68ac3b4..) debian/mysqle_amarok_local_errmsg_feature (depends on: upstream)
