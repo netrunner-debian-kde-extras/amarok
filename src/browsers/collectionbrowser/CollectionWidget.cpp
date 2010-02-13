@@ -23,6 +23,7 @@
 #include "CollectionTreeItemModelBase.h"
 #include "CollectionTreeItemDelegate.h"
 #include "CollectionBrowserTreeView.h"
+#include "collection/CollectionManager.h"
 #include "collection/proxycollection/ProxyCollection.h"
 #include "Debug.h"
 #include "SearchWidget.h"
@@ -82,7 +83,16 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
         m_levels << CategoryId::Artist << CategoryId::Album;
 
     m_multiModel = new CollectionTreeItemModel( m_levels );
-    m_singleModel = new SingleCollectionTreeItemModel( new ProxyCollection::Collection(), m_levels );
+
+    ProxyCollection::Collection *proxyColl = new ProxyCollection::Collection();
+    connect( CollectionManager::instance(), SIGNAL(collectionAdded(Amarok::Collection*,CollectionManager::CollectionStatus)), proxyColl, SLOT(addCollection(Amarok::Collection*,CollectionManager::CollectionStatus)));
+    connect( CollectionManager::instance(), SIGNAL(collectionRemoved(QString)), proxyColl, SLOT(removeCollection(QString)));
+    foreach( Amarok::Collection* coll, CollectionManager::instance()->viewableCollections() )
+    {
+        proxyColl->addCollection( coll, CollectionManager::CollectionViewable );
+    }
+
+    m_singleModel = new SingleCollectionTreeItemModel( proxyColl, m_levels );
     m_treeView->setModel( m_multiModel );
     m_singleTreeView->setModel( m_singleModel );
 
@@ -91,17 +101,6 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     const QString &value = KGlobal::config()->group( "Collection Browser" ).readEntry( "View Mode" );
     int enumValue = me.keyToValue( value.toLocal8Bit().constData() );
     enumValue == -1 ? m_viewMode = NormalCollections : m_viewMode = (ViewMode) enumValue;
-
-    if( m_viewMode == CollectionWidget::NormalCollections )
-    {
-        m_stack->setCurrentWidget( m_treeView );
-        m_searchWidget->setup( m_treeView );
-    }
-    else
-    {
-        m_stack->setCurrentWidget( m_singleTreeView );
-        m_searchWidget->setup( m_singleTreeView );
-    }
 
     QAction *action = new QAction( i18n( "Artist / Album" ), this );
     connect( action, SIGNAL( triggered( bool ) ), SLOT( sortByArtistAlbum() ) );
@@ -297,8 +296,10 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
 
     m_searchWidget->toolBar()->addAction( searchMenuAction );
 
-    KAction *toggleAction = new KAction( KIcon( "view-list-tree" ), i18n( "Toggle unified view mode" ), this );
-    connect( toggleAction, SIGNAL( triggered( bool ) ), SLOT( toggleView() ) );
+    KAction *toggleAction = new KAction( KIcon( "view-list-tree" ), i18n( "Merged View" ), this );
+    toggleAction->setCheckable( true );
+    toggleView( m_viewMode == CollectionWidget::UnifiedCollection );
+    connect( toggleAction, SIGNAL( triggered( bool ) ), SLOT( toggleView( bool ) ) );
     m_searchWidget->toolBar()->addAction( toggleAction );
 
     QToolButton *tbutton = qobject_cast<QToolButton*>( m_searchWidget->toolBar()->widgetForAction( searchMenuAction ) );
@@ -412,11 +413,11 @@ void CollectionWidget::setLevels( const QList<int> &levels )
     m_viewMode == CollectionWidget::NormalCollections ? m_treeView->setLevels( m_levels ) : m_singleTreeView->setLevels( m_levels );
 }
 
-void CollectionWidget::toggleView()
+void CollectionWidget::toggleView( bool merged )
 {
-    if( m_viewMode == CollectionWidget::NormalCollections )
+    if( merged )
     {
-        debug() << "Switching to single tree model";
+        debug() << "Switching to merged model";
         m_searchWidget->disconnect( m_treeView );
         m_searchWidget->setup( m_singleTreeView );
         m_stack->setCurrentWidget( m_singleTreeView );
@@ -438,9 +439,11 @@ void CollectionWidget::toggleView()
             m_treeView->setLevels( m_levels );
         m_viewMode = CollectionWidget::NormalCollections;
     }
+
     const QMetaObject *mo = metaObject();
     const QMetaEnum me = mo->enumerator( mo->indexOfEnumerator( "ViewMode" ) );
-    KGlobal::config()->group( "Collection Browser" ).writeEntry( "View Mode", me.valueToKey( m_viewMode ) );
+    KGlobal::config()->group( "Collection Browser" ).writeEntry( "View Mode",
+                                                                 me.valueToKey( m_viewMode ) );
 }
 
 #include "CollectionWidget.moc"

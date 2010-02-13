@@ -27,6 +27,7 @@
 #include "Amarok.h"
 #include "amarokconfig.h"
 #include "collection/CollectionManager.h"
+#include "Components.h"
 #include "statusbar/StatusBar.h"
 #include "Debug.h"
 #include "MainWindow.h"
@@ -57,19 +58,16 @@ namespace The {
     EngineController* engineController() { return EngineController::instance(); }
 }
 
-EngineController* EngineController::s_instance = 0;
-
 EngineController*
 EngineController::instance()
 {
-    return s_instance ? s_instance : new EngineController();
+    return Amarok::Components::engineController();
 }
 
 void
 EngineController::destroy()
 {
-    delete s_instance;
-    s_instance = 0;
+    //nothing to do?
 }
 
 EngineController::EngineController()
@@ -85,8 +83,6 @@ EngineController::EngineController()
     m_fadeoutTimer->setSingleShot( true );
 
     connect( m_fadeoutTimer, SIGNAL( timeout() ), SLOT( slotStopFadeout() ) );
-
-    s_instance = this;
 }
 
 EngineController::~EngineController()
@@ -133,7 +129,7 @@ EngineController::initializePhonon()
 
     //Add an equalizer effect if available
     QList<Phonon::EffectDescription> mEffectDescriptions = Phonon::BackendCapabilities::availableAudioEffects();
-    foreach ( Phonon::EffectDescription mDescr, mEffectDescriptions ) {
+    foreach ( const Phonon::EffectDescription &mDescr, mEffectDescriptions ) {
         if ( mDescr.name() == QLatin1String( "KEqualizer" ) ) {
             m_equalizer = new Phonon::Effect( mDescr );
             eqUpdate();
@@ -212,12 +208,7 @@ EngineController::canDecode( const KUrl &url ) //static
         return true;
 
     // Filter the available mime types to only include audio and video, as amarok does not intend to play photos
-    static QStringList mimeTable = Phonon::BackendCapabilities::availableMimeTypes().filter( "audio/", Qt::CaseInsensitive ) +
-                                   Phonon::BackendCapabilities::availableMimeTypes().filter( "video/", Qt::CaseInsensitive );
-
-    // Add whitelist hacks
-    mimeTable << "audio/x-m4b"; // MP4 Audio Books have a different extension that KFileItem/Phonon don't grok
-    //mimeTable << "?/?"; //Add comment
+    static QStringList mimeTable = supportedMimeTypes();
 
     const KMimeType::Ptr mimeType = item.mimeTypePtr();
     
@@ -231,14 +222,31 @@ EngineController::canDecode( const KUrl &url ) //static
         }
     }
 
+    return valid;
+}
+
+QStringList
+EngineController::supportedMimeTypes()
+{
+    //NOTE this function must be thread-safe
+    // Filter the available mime types to only include audio and video, as amarok does not intend to play photos
+    static QStringList mimeTable = Phonon::BackendCapabilities::availableMimeTypes().filter( "audio/", Qt::CaseInsensitive ) +
+                                   Phonon::BackendCapabilities::availableMimeTypes().filter( "video/", Qt::CaseInsensitive );
+
+    // Add whitelist hacks
+    mimeTable << "audio/x-m4b"; // MP4 Audio Books have a different extension that KFileItem/Phonon don't grok
+
     // We special case this, as otherwise the users would hate us
-    if ( !valid && ( mimeType->is( "audio/mp3" ) || mimeType->is( "audio/x-mp3" ) ) && !installDistroCodec() )
+    if( ( !mimeTable.contains( "audio/mp3" ) || !mimeTable.contains( "audio/x-mp3" ) ) && !installDistroCodec() )
+    {
         The::statusBar()->longMessage(
                 i18n( "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
                       "the installation of the backend that phonon uses.</p>"
                       "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok Handbook</i>.</p>" ), StatusBar::Error );
+        mimeTable << "audio/mp3" << "audio/x-mp3";
+    }
 
-    return valid;
+    return mimeTable;
 }
 
 bool
@@ -384,6 +392,7 @@ EngineController::playUrl( const KUrl &url, uint offset )
     resetFadeout();
 
     debug() << "URL: " << url.url();
+    debug() << "offset: " << offset;
 
     if ( url.url().startsWith( "audiocd:/" ) )
     {
@@ -416,8 +425,11 @@ EngineController::playUrl( const KUrl &url, uint offset )
         int trackNumber = parts.at( 1 ).toInt();
 
         debug() << "3.2.1...";
-        m_media->clear();
-        m_media->setCurrentSource( Phonon::Cd );
+        if( m_media->currentSource().type() != Phonon::MediaSource::Disc )
+        {
+            m_media->clear();
+            m_media->setCurrentSource( Phonon::Cd );
+        }
         debug() << "boom?";
         m_controller->setCurrentTitle( trackNumber );
         debug() << "no boom?";
@@ -444,10 +456,15 @@ EngineController::playUrl( const KUrl &url, uint offset )
 
     if( offset )
     {
+        debug() << "seeking to " << offset;
         m_media->pause();
         m_media->seek( offset );
     }
     m_media->play();
+
+    debug() << "track pos after play: " << trackPositionMs();
+
+
 }
 
 void
@@ -549,7 +566,13 @@ EngineController::seek( int ms ) //SLOT
         int seekTo;
 
         if ( m_boundedPlayback )
+        {
             seekTo = m_boundedPlayback->startPosition() + ms;
+            if( seekTo < m_boundedPlayback->startPosition() )
+                seekTo = m_boundedPlayback->startPosition();
+            else if( seekTo > m_boundedPlayback->startPosition() + trackLength() )
+                seekTo = m_boundedPlayback->startPosition() + trackLength();
+        }
         else
             seekTo = ms;
 
@@ -753,9 +776,9 @@ EngineController::eqBandsFreq() const
     if( mEqPar.isEmpty() )
        return mBandsFreq;
     QRegExp rx( "\\d+(?=Hz)" );
-    foreach( Phonon::EffectParameter mParam, mEqPar )
+    foreach( const Phonon::EffectParameter &mParam, mEqPar )
     {
-    if( mParam.name().contains( QString( "pre-amp" ) ) )
+        if( mParam.name().contains( QString( "pre-amp" ) ) )
         {
             mBandsFreq << i18n( "Preamp" );
         }
@@ -795,7 +818,7 @@ EngineController::eqUpdate() //SLOT
 
         QListIterator<int> mEqParNewIt( mEqParCfg );
         double scaledVal; // Scaled value to set from universal -100 - 100 range to plugin scale
-        foreach( Phonon::EffectParameter mParam, mEqPar )
+        foreach( const Phonon::EffectParameter &mParam, mEqPar )
         {
             scaledVal = mEqParNewIt.hasNext() ? mEqParNewIt.next() : 0;
             scaledVal *= ( fabs(mParam.maximumValue().toDouble() ) +  fabs( mParam.minimumValue().toDouble() ) );

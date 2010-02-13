@@ -1,0 +1,90 @@
+# Translation of amarok_scriptengine_qscript.po to Catalan
+# Copyright (C) 2009 This_file_is_part_of_KDE
+# This file is distributed under the license LGPL version 2 or later.
+#
+# Josep Ma. Ferrer <txemaq@gmail.com>, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: amarok_scriptengine_qscript\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2009-06-28 11:45+0200\n"
+"PO-Revision-Date: 2009-09-12 00:08+0200\n"
+"Last-Translator: Josep Ma. Ferrer <txemaq@gmail.com>\n"
+"Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: KBabel 1.11.4\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: simplejavascriptapplet.cpp:512
+msgid "i18n() takes at least one argument"
+msgstr "«i18n()» té un argument com a mínim"
+
+#: simplejavascriptapplet.cpp:528
+msgid "i18nc() takes at least two arguments"
+msgstr "«i18nc()» té dos arguments com a mínim"
+
+#: simplejavascriptapplet.cpp:545
+msgid "i18np() takes at least two arguments"
+msgstr "«i18np()» té dos arguments com a mínim"
+
+#: simplejavascriptapplet.cpp:562
+msgid "i18ncp() takes at least three arguments"
+msgstr "«i18ncp()» té tres arguments com a mínim"
+
+#: simplejavascriptapplet.cpp:580
+msgid "dataEngine() takes one argument"
+msgstr "«dataEngine()» té un argument"
+
+#: simplejavascriptapplet.cpp:590 simplejavascriptapplet.cpp:615
+#: simplejavascriptapplet.cpp:782
+msgid "Could not extract the AppletObject"
+msgstr "No s'ha pogut extreure el «AppletObject»"
+
+#: simplejavascriptapplet.cpp:595 simplejavascriptapplet.cpp:620
+#: simplejavascriptapplet.cpp:787
+msgid "Could not extract the Applet"
+msgstr "No s'ha pogut extreure el «Applet»"
+
+#: simplejavascriptapplet.cpp:605
+msgid "service() takes two arguments"
+msgstr "«service()» té dos arguments"
+
+#: simplejavascriptapplet.cpp:633
+msgid "loadui() takes one argument"
+msgstr "«loadui()» té un argument"
+
+#: simplejavascriptapplet.cpp:639
+#, kde-format
+msgid "Unable to open '%1'"
+msgstr "No s'ha pogut obrir '%1'"
+
+#: simplejavascriptapplet.cpp:679 simplejavascriptapplet.cpp:712
+msgid "Constructor takes at least 1 argument"
+msgstr "El constructor té com a mínim 1 argument"
+
+#: simplejavascriptapplet.cpp:764
+msgid "CreateWidget takes one argument"
+msgstr "«CreateWidget» té un argument"
+
+#: simplejavascriptapplet.cpp:772
+msgid "The parent must be a QGraphicsWidget"
+msgstr "El superior ha de ser un «QGraphicsWidget»"
+
+#: simplejavascriptapplet.cpp:817
+#, kde-format
+msgid "This operation was not supported, %1"
+msgstr "Esta operació no està implementada, %1"
+
+#: simplejavascriptapplet.cpp:824
+msgid "print() takes one argument"
+msgstr "«print()» té un argument"
+
+#: qtgui/linearlayout.cpp:70
+msgid "LinearLayout requires a parent"
+msgstr "«LinearLayout» requereix un element superior"
+
+#: qtgui/linearlayout.cpp:76
+msgid "The parent must be a QGraphicsLayoutItem"
+msgstr "El l'element superior ha de ser un «QGraphicsLayoutItem»"

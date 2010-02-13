@@ -18,6 +18,7 @@
 #define SQLREGISTRY_H
 
 #include "SqlMeta.h"
+#include "amarok_sqlcollection_export.h"
 
 #include <QHash>
 #include <QMutex>
@@ -27,10 +28,14 @@
 #include <QList>
 
 class SqlCollection;
+class SqlStorage;
+class AlbumCapabilityDelegate;
+class ArtistCapabilityDelegate;
+class TrackCapabilityDelegate;
 
 typedef QPair<int, QString> TrackId;
 
-class SqlRegistry : public QObject
+class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlRegistry : public QObject
 {
     Q_OBJECT
 
@@ -51,6 +56,13 @@ class SqlRegistry : public QObject
         Meta::YearPtr getYear( const QString &year, int id = -1, bool refresh = false );
         Meta::AlbumPtr getAlbum( const QString &album, int id = -1, int artist = -1, bool refresh = false ); //TODO fix this (Fix what?)
 
+        //DI setter
+        void setStorage( SqlStorage *storage ) { m_storage = storage; }
+
+    protected:
+        virtual AlbumCapabilityDelegate *createAlbumDelegate() const;
+        virtual ArtistCapabilityDelegate *createArtistDelegate() const;
+        virtual TrackCapabilityDelegate *createTrackDelegate() const;
 
     private slots:
         void emptyCache();
@@ -77,6 +89,7 @@ class SqlRegistry : public QObject
         QTimer *m_timer;
 
         SqlCollection *m_collection;
+        SqlStorage *m_storage;
 };
 
 #endif /* SQLREGISTRY_H */

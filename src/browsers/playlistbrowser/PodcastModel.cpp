@@ -83,7 +83,9 @@ PlaylistBrowserNS::PodcastModel::PodcastModel()
 
     qSort(m_channels.begin(), m_channels.end(), lessThanChannelTitles);
 
-    connect( The::playlistManager(), SIGNAL(updated()), SLOT(slotUpdate()));
+    connect( The::playlistManager(), SIGNAL( updated() ), SLOT( slotUpdate() ) );
+    connect( The::playlistManager(), SIGNAL( providerRemoved( PlaylistProvider*, int ) ),
+             SLOT( slotUpdate() ) );
 }
 
 PlaylistBrowserNS::PodcastModel::~PodcastModel()
@@ -145,7 +147,9 @@ PlaylistBrowserNS::PodcastModel::icon( Meta::PodcastMetaCommon *pmc ) const
                 int y = 32 / 2 - size.height() / 2;
 
                 QPainter p( &pixmap );
-                p.drawPixmap( x, y, channel->image().scaled( size ) );
+                p.drawPixmap( x, y, channel->image().scaled( size,
+                                                             Qt::KeepAspectRatio,
+                                                             Qt::SmoothTransformation ) );
                 
                 // if it's a new episode draw the overlay:
                 if( !emblems.isEmpty() )
@@ -171,9 +175,9 @@ PlaylistBrowserNS::PodcastModel::icon( Meta::PodcastMetaCommon *pmc ) const
                 emblems << "go-down";
 
             if( episode->isNew() )
-                return KIcon( "rating", 0, emblems ).pixmap( 32, 32 );
+                return KIcon( "rating", 0, emblems ).pixmap( 24, 24 );
             else
-                return KIcon( "podcast-amarok", 0, emblems ).pixmap( 32, 32 );        
+                return KIcon( "podcast-amarok", 0, emblems ).pixmap( 24, 24 );
     }
 
     return QVariant();
@@ -218,7 +222,8 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
                 case ImageColumn:
                     if( pmc->podcastType() == Meta::ChannelType )
                     {
-                        Meta::PodcastChannel *pc = static_cast<Meta::PodcastChannel *>( pmc );
+                        Meta::PodcastChannel *pc =
+                                static_cast<Meta::PodcastChannel *>( pmc );
                         KUrl imageUrl( PodcastImageFetcher::cachedImagePath( pc ) );
 
                         if( !QFile( imageUrl.toLocalFile() ).exists() )
@@ -239,6 +244,18 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
 
                 case IsEpisodeColumn:
                     return bool( pmc->podcastType() == Meta::EpisodeType );
+
+                case ProviderColumn:
+                {
+                    PlaylistProvider *provider = providerForPmc( pmc );
+                    if( !provider )
+                        break;
+
+                    return provider->prettyName();
+                }
+
+                case OnDiskColumn:
+                    return isOnDisk( pmc );
             }
             break;
 
@@ -248,14 +265,65 @@ PlaylistBrowserNS::PodcastModel::data(const QModelIndex & index, int role) const
             break;
 
         case Qt::DecorationRole:
-            if( index.column() == TitleColumn )
-                return icon( pmc );
-            break;
+        {
+            switch( index.column() )
+            {
+                case TitleColumn:
+                    return icon( pmc );
+                case ProviderColumn:
+                {
+                    PlaylistProvider *provider = providerForPmc(
+                            static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() ) );
 
-        case OnDiskRole:
-            if( index.column() == TitleColumn )
-                return isOnDisk( pmc );
+                    if( !provider )
+                        return KIcon( "server-database" );
+
+                    return provider->icon();
+                }
+            }
             break;
+        }
+
+        case PlaylistBrowserNS::MetaPlaylistModel::ByLineRole:
+        {
+            if( index.column() == ProviderColumn )
+            {
+                PlaylistProvider *provider = providerForPmc(
+                        static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() ) );
+
+                if( !provider )
+                    return QString();
+
+                //TODO: first check playlistCount and show "loading"
+                int playlistCount = provider->playlists().count();
+
+                return i18ncp( "number of podcasts from one source", "One channel",
+                               "%1 channels", playlistCount );
+            }
+            return QString();
+        }
+
+        case PlaylistBrowserNS::MetaPlaylistModel::ActionCountRole:
+        {
+            if( index.column() == ProviderColumn )
+            {
+                PlaylistProvider *provider = providerForPmc(
+                        static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() ) );
+                if( provider )
+                    return provider->providerActions().count();
+            }
+        }
+
+        case PlaylistBrowserNS::MetaPlaylistModel::ActionRole:
+        {
+            if( index.column() == ProviderColumn )
+            {
+                PlaylistProvider *provider = providerForPmc(
+                        static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() ) );
+                if( provider )
+                    return QVariant::fromValue( provider->providerActions() );
+            }
+        }
     }
 
     return QVariant();
@@ -549,7 +617,7 @@ PlaylistBrowserNS::PodcastModel::slotUpdate()
     The::playlistManager()->playlistsOfCategory( PlaylistManager::PodcastChannel );
     QListIterator<Meta::PlaylistPtr> i(playlists);
     m_channels.clear();
-    while (i.hasNext())
+    while( i.hasNext() )
     {
         Meta::PodcastChannelPtr channel = Meta::PodcastChannelPtr::staticCast( i.next() );
         m_channels << channel;
@@ -574,7 +642,7 @@ PlaylistBrowserNS::PodcastModel::addPodcast()
         bool ok;
         QString url = QInputDialog::getText( 0,
                             i18n("Add Podcast"),
-                            i18n("Enter RSS 2.0 feed URL:"),
+                            i18n("Enter RSS 1.0/2.0 or Atom feed URL:"),
                             QLineEdit::Normal,
                             QString(),
                             &ok );
@@ -620,6 +688,25 @@ PlaylistBrowserNS::PodcastModel::loadItems( QModelIndexList list, Playlist::AddO
     }
     The::playlistController()->insertOptioned( episodes, insertMode );
     The::playlistController()->insertOptioned( channels, insertMode );
+}
+
+void
+PlaylistBrowserNS::PodcastModel::trackAdded( Meta::PlaylistPtr playlist, Meta::TrackPtr track,
+                                 int position )
+{
+    DEBUG_BLOCK
+    debug() << "From playlist: " << playlist->prettyName();
+    debug() << "Track: " << track->prettyName() << "position: " << position;
+    //TODO: rowInserted()
+}
+
+void
+PlaylistBrowserNS::PodcastModel::trackRemoved( Meta::PlaylistPtr playlist, int position )
+{
+    DEBUG_BLOCK
+    debug() << "From playlist: " << playlist->prettyName();
+    debug() << "position: " << position;
+    //TODO: beginRemoveRows() && endRemoveRows()
 }
 
 void
@@ -868,9 +955,9 @@ PlaylistBrowserNS::PodcastModel::slotOpmlOutlineParsed( OpmlOutline *outline )
     if( outline->hasChildren() )
         return; //TODO grouping handling once PodcastCategory has it.
 
-    if( outline->attributes().contains( "url" ) )
+    if( outline->attributes().contains( "xmlUrl" ) )
     {
-        KUrl url( outline->attributes().value( "url" ).trimmed() );
+        KUrl url( outline->attributes().value( "xmlUrl" ).trimmed() );
         if( !url.isValid() )
         {
             debug() << "OPML outline contained an invalid url: " << url;
@@ -920,17 +1007,42 @@ PlaylistBrowserNS::PodcastModel::actionsFor( const QModelIndexList &indices )
 
     actions << createCommonActions( indices );
 
-    //HACK: since we only have one PodcastProvider implementation
-    PodcastProvider *provider = The::playlistManager()->defaultPodcasts();
-    if( !provider )
-        return actions;
-
     if( !m_selectedChannels.isEmpty() )
-        actions << provider->channelActions( m_selectedChannels );
+    {
+        QMultiMap<PodcastProvider *,Meta::PodcastChannelPtr> channelMap;
+        foreach( Meta::PodcastChannelPtr channel, m_selectedChannels )
+        {
+            PodcastProvider *provider = dynamic_cast<PodcastProvider *>( channel->provider() );
+            if( !provider )
+                continue;
+
+            channelMap.insert( provider, channel );
+        }
+
+        foreach( PodcastProvider *provider, channelMap.keys() )
+            actions << provider->channelActions( channelMap.values( provider ) );
+    }
     else if( !m_selectedEpisodes.isEmpty() )
     {
         actions << createEpisodeActions( m_selectedEpisodes );
-        actions << provider->episodeActions( m_selectedEpisodes );
+
+        QMultiMap<PodcastProvider *,Meta::PodcastEpisodePtr> episodeMap;
+        foreach( Meta::PodcastEpisodePtr episode, m_selectedEpisodes )
+        {
+            Meta::PodcastChannelPtr channel = episode->channel();
+            if( !channel )
+                continue;
+
+            PodcastProvider *provider = dynamic_cast<PodcastProvider *>( channel->provider() );
+            if( !provider )
+                continue;
+
+            episodeMap.insert( provider, episode );
+        }
+
+        foreach( PodcastProvider *provider, episodeMap.keys() )
+            actions << provider->episodeActions( episodeMap.values( provider ) );
+
     }
 
     return actions;
@@ -1088,4 +1200,26 @@ PlaylistBrowserNS::PodcastModel::podcastEpisodesToTracks( Meta::PodcastEpisodeLi
         tracks << Meta::TrackPtr::staticCast( episode );
     return tracks;
 }
+
+PodcastProvider *
+PlaylistBrowserNS::PodcastModel::providerForPmc( Meta::PodcastMetaCommon *pmc ) const
+{
+    PlaylistProvider *provider = 0;
+    if( pmc->podcastType() == Meta::ChannelType )
+    {
+        Meta::PodcastChannel *pc =
+                static_cast<Meta::PodcastChannel *>( pmc );
+        provider = pc->provider();
+    }
+    else if( pmc->podcastType() == Meta::EpisodeType )
+    {
+        Meta::PodcastEpisode *pe =
+                static_cast<Meta::PodcastEpisode *>( pmc );
+        if( pe->channel().isNull() )
+            return 0;
+        provider = pe->channel()->provider();
+    }
+    return dynamic_cast<PodcastProvider *>( provider );
+}
+
 #include "PodcastModel.moc"

@@ -20,11 +20,14 @@
 #include <QHash>
 #include <QString>
 
+#include "amarok_sqlcollection_export.h"
+
+class SqlStorage;
 class SqlCollection;
 
-class DatabaseUpdater {
+class AMAROK_SQLCOLLECTION_EXPORT_TESTS DatabaseUpdater {
 public:
-    DatabaseUpdater( SqlCollection *collection );
+    DatabaseUpdater();
     ~DatabaseUpdater();
 
     bool needsUpdate() const;
@@ -60,6 +63,8 @@ public:
 
     void writeCSVFile( const QString &table, const QString &filename, bool forceDebug = false );
 
+    void setStorage( SqlStorage *storage );
+    void setCollection( SqlCollection *collection) { m_collection = collection; }
 
 private:
     /** creates all the necessary tables, indexes etc. for the database */
@@ -68,6 +73,7 @@ private:
     int adminValue( const QString &key ) const;
 
     SqlCollection *m_collection;
+    SqlStorage *m_storage;
     bool m_debugDatabaseContent;
     bool m_rescanNeeded;
 

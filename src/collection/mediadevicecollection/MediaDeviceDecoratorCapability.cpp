@@ -17,6 +17,8 @@
 #include "MediaDeviceDecoratorCapability.h"
 #include "MediaDeviceCollection.h"
 
+#include "meta/capabilities/CollectionCapability.h"
+
 #include <QAction>
 
 using namespace Meta;
@@ -28,10 +30,19 @@ MediaDeviceDecoratorCapability::MediaDeviceDecoratorCapability( MediaDeviceColle
 }
 
 
-QAction *
-MediaDeviceDecoratorCapability::decoratorAction()
+QList<QAction*>
+MediaDeviceDecoratorCapability::decoratorActions()
 {
-    return m_coll->ejectAction();
+    QList<QAction*> actions;
+    CollectionCapability *collCap =
+            dynamic_cast<CollectionCapability *>(
+                    m_coll->createCapabilityInterface( Meta::Capability::Collection ) );
+    if( collCap )
+        actions << collCap->collectionActions();
+    else
+        actions << m_coll->ejectAction(); //fallback
+
+    return actions;
 }
 
 #include "MediaDeviceDecoratorCapability.moc"

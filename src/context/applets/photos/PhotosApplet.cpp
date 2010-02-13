@@ -128,7 +128,7 @@ PhotosApplet::enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, Pla
     Q_UNUSED( trackLength )
     DEBUG_BLOCK
 
-    m_stoppedstate = true;;
+    m_stoppedstate = true;
     m_headerText->setText( i18n( "Photos" ) + QString( " : " ) + i18n( "No track playing" ) );
     m_widget->clear();
     m_widget->hide();
@@ -207,7 +207,8 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
         setCollapseOff();
         m_widget->clear();
         m_widget->hide();
-        setBusy( true );
+        if( canAnimate() )
+            setBusy( true );
     }
     else if ( data.contains( "message" ) && data["message"].toString().contains("NA_Collapse") )
     {

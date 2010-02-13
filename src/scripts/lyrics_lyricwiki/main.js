@@ -59,7 +59,7 @@ function onFinishedAPI( response )
             Amarok.debug( "request no. 3 URL: " + url2.toString() );
             // if we get redirected to the main page, then obviously no lyrics were found
             if( url == "http://lyrics.wikia.com" ) {
-                Amarok.Lyrics.showLyricsError( errormsg );
+                Amarok.Lyrics.showLyricsNotFound( errormsg );
                 Amarok.debug( "Redirected to main page for artist=" + triedArtist + ", song=" + triedSong );
                 return;
             }
@@ -98,7 +98,7 @@ function onFinished( response )
                     return;
                 }
                 // despite second attempt no lyrics were found. print an error message. 
-                Amarok.Lyrics.showLyricsError( errormsg );
+                Amarok.Lyrics.showLyricsNotFound( errormsg );
                 Amarok.debug( "No lyrics found for artist=" + triedArtist + ", song=" + triedSong );
                 return;
             }
@@ -115,7 +115,7 @@ function onFinished( response )
                     stripend = response.indexOf( "</" + element + ">", stripend + 1 );
                     nextStart = response.indexOf( "<" + element, nextStart + 1 );
                 }
-                response = response.substring( 0, stripstart ) + response.substring( stripend + 4 + element.length );
+                response = response.substring( 0, stripstart ) + response.substring( stripend + 3 + element.length );
             }
             // parse the relevant part of the html source of the returned page
             var pos = response.indexOf( "lyricbox" );

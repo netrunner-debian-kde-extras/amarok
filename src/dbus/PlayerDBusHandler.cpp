@@ -95,7 +95,7 @@ namespace Amarok
             status.Random = 1;
         else
             status.Random = 0;
-        
+
         if ( AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RepeatTrack  )
             status.Repeat = 1;
         else
@@ -175,6 +175,11 @@ namespace Amarok
     void PlayerDBusHandler::Stop()
     {
         The::engineController()->stop();
+    }
+
+    void PlayerDBusHandler::StopAfterCurrent()
+    {
+        The::playlistActions()->setStopAfterMode( Playlist::StopAfterCurrent );
     }
 
     int PlayerDBusHandler::VolumeGet()
@@ -277,7 +282,7 @@ namespace The {
     {
         if( Amarok::PlayerDBusHandler::s_instance == 0 )
             Amarok::PlayerDBusHandler::s_instance = new Amarok::PlayerDBusHandler();
-        
+
         return Amarok::PlayerDBusHandler::s_instance;
     }
 }

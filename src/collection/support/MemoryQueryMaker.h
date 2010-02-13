@@ -21,7 +21,7 @@
 #include "amarok_export.h"
 
 #include "MemoryCollection.h"
-#include "QueryMaker.h"
+#include "collection/QueryMaker.h"
 
 
 namespace ThreadWeaver
@@ -74,17 +74,10 @@ class AMAROK_EXPORT MemoryQueryMaker : public QueryMaker
 
         virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
 
-        //MemoryQueryMaker specific methods
-        void runQuery();
-        void handleResult();
-        void handleResult( const Meta::TrackList &tracks );
-
     private slots:
         void done( ThreadWeaver::Job * job );
 
     protected:
-        template <class PointerType>
-        void emitProperResult( const QList<PointerType > &list );
 
         MemoryCollection *m_collection;
         struct Private;

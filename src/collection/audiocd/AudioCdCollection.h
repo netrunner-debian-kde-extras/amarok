@@ -35,7 +35,7 @@ class AudioCdCollectionFactory : public MediaDeviceCollectionFactory<AudioCdColl
 {
     Q_OBJECT
 public:
-    AudioCdCollectionFactory();
+    AudioCdCollectionFactory( QObject *parent, const QVariantList &args );
     virtual ~AudioCdCollectionFactory() {};
 
 /*    virtual void init();
@@ -93,6 +93,8 @@ public:
     virtual void startFullScan(); //Override this one as I really don't want to move parsing to the handler atm.
     virtual void startFullScanDevice() { startFullScan(); }
 
+    bool isReady();
+
 public slots:
     void infoFetchComplete( KJob *job );
     void eject();
@@ -124,6 +126,8 @@ private:
     QString m_albumNamePattern;
 
     QMap<KUrl, MetaProxy::Track*> m_proxyMap;
+
+    bool m_ready;
 };
 
 #endif

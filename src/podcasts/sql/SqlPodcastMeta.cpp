@@ -38,17 +38,17 @@ class TimecodeWriteCapabilityPodcastImpl : public Meta::TimecodeWriteCapability
             , m_episode( episode )
         {}
 
-    virtual bool writeTimecode ( int seconds )
+    virtual bool writeTimecode ( qint64 miliseconds )
     {
         DEBUG_BLOCK
-        return Meta::TimecodeWriteCapability::writeTimecode( seconds,
+        return Meta::TimecodeWriteCapability::writeTimecode( miliseconds,
                 Meta::TrackPtr::dynamicCast( m_episode ) );
     }
 
-    virtual bool writeAutoTimecode ( int seconds )
+    virtual bool writeAutoTimecode ( qint64 miliseconds )
     {
         DEBUG_BLOCK
-        return Meta::TimecodeWriteCapability::writeAutoTimecode( seconds,
+        return Meta::TimecodeWriteCapability::writeAutoTimecode( miliseconds,
                 Meta::TrackPtr::dynamicCast( m_episode ) );
     }
 
@@ -261,6 +261,15 @@ Meta::SqlPodcastEpisode::isEditable() const
      return m_localFile->isEditable();
 }
 
+void
+Meta::SqlPodcastEpisode::finishedPlaying( double playedFraction )
+{
+    if( length() <= 0 || playedFraction >= 0.1 )
+        setNew( false );
+
+    PodcastEpisode::finishedPlaying( playedFraction );
+}
+
 QString
 Meta::SqlPodcastEpisode::name() const
 {
@@ -440,8 +449,10 @@ Meta::SqlPodcastEpisode::deleteFromDb()
         QString( "DELETE FROM podcastepisodes WHERE id = %1;" ).arg( dbId() ) );
 }
 
-Meta::SqlPodcastChannel::SqlPodcastChannel( const QStringList &result )
+Meta::SqlPodcastChannel::SqlPodcastChannel( SqlPodcastProvider *provider,
+                                            const QStringList &result )
     : Meta::PodcastChannel()
+    , m_provider( provider )
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
     QStringList::ConstIterator iter = result.constBegin();
@@ -463,9 +474,11 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( const QStringList &result )
     loadEpisodes();
 }
 
-Meta::SqlPodcastChannel::SqlPodcastChannel( PodcastChannelPtr channel )
+Meta::SqlPodcastChannel::SqlPodcastChannel( SqlPodcastProvider *provider,
+                                            PodcastChannelPtr channel )
     : Meta::PodcastChannel()
     , m_dbId( 0 )
+    , m_provider( provider )
 {
     // PodcastMetaCommon
     m_title = channel->title();
@@ -487,7 +500,8 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( PodcastChannelPtr channel )
         m_image = channel->image();
 
     //Default Settings
-    m_directory = KUrl( Amarok::saveLocation("podcasts") );
+
+    m_directory = KUrl( m_provider->baseDownloadDir() );
     m_directory.addPath( Amarok::vfatPath( m_title ) );
     m_autoScan = true;
     m_fetchType = StreamOrDownloadOnDemand;
@@ -504,6 +518,12 @@ Meta::SqlPodcastChannel::SqlPodcastChannel( PodcastChannelPtr channel )
 
         m_episodes << SqlPodcastEpisodePtr( sqlEpisode );
     }
+}
+
+PlaylistProvider *
+Meta::SqlPodcastChannel::provider() const
+{
+    return dynamic_cast<PlaylistProvider *>( m_provider );
 }
 
 Meta::SqlPodcastChannel::~SqlPodcastChannel()

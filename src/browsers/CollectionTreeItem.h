@@ -33,7 +33,7 @@ namespace CustomRoles
         ByLineRole = Qt::UserRole + 3,
         HasCapacityRole = Qt::UserRole + 4,
         UsedCapacityRole = Qt::UserRole + 5,
-        HasDecoratorRole = Qt::UserRole + 6,
+        DecoratorRoleCount = Qt::UserRole + 6,
         DecoratorRole = Qt::UserRole + 7
     };
 }
@@ -111,7 +111,7 @@ class CollectionTreeItem : public QObject
 
     private:
         QString albumYear() const;
-        QAction* decoratorAction() const;
+        QList<QAction*> decoratorActions() const;
         void prepareForRemoval();
 
         Meta::DataPtr m_data;
@@ -125,9 +125,6 @@ class CollectionTreeItem : public QObject
         Type m_type;
         //QString m_name;
         mutable bool m_isCounting;
-
-        mutable QAction *m_decoratorAction;
-        mutable bool m_decoratorActionLoaded;
 };
 
 #endif

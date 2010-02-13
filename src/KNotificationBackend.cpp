@@ -16,7 +16,6 @@
 
 #include "KNotificationBackend.h"
 
-#include "amarokconfig.h"
 #include "Amarok.h"
 #include "Debug.h"
 #include "EngineController.h"
@@ -45,17 +44,29 @@ namespace Amarok
 
 Amarok::KNotificationBackend::KNotificationBackend()
     : EngineObserver( The::engineController() )
+    , m_notify( 0 )
+    , m_enabled( false )
 {
     DEBUG_BLOCK
 
     m_timer = new QTimer( this );
     m_timer->setSingleShot( true );
-    connect( m_timer, SIGNAL( timeout() ), this, SLOT( slotShowCurrentTrack() ) );
+    connect( m_timer, SIGNAL( timeout() ), this, SLOT( showCurrentTrack() ) );
 }
 
 Amarok::KNotificationBackend::~KNotificationBackend()
 {
     DEBUG_BLOCK
+
+    if (m_notify)
+        m_notify->close();
+}
+
+void
+Amarok::KNotificationBackend::notificationClosed()
+{
+    if( sender() == m_notify )
+        m_notify = 0;
 }
 
 void
@@ -85,22 +96,30 @@ Amarok::KNotificationBackend::engineNewTrackPlaying()
 }
 
 void
-Amarok::KNotificationBackend::slotShowCurrentTrack()
+Amarok::KNotificationBackend::showCurrentTrack() // slot
 {
     DEBUG_BLOCK
+
+    if( !m_enabled )
+        return;
 
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( track )
     {
-        KNotification* notify = new KNotification( "trackChange" );
+        if( m_notify ) {
+            m_notify->close(); // Close old notification when switching quickly between tracks
+        }
+
+        m_notify = new KNotification( "trackChange" );
+        connect( m_notify, SIGNAL(closed()), this, SLOT(notificationClosed()) );
 
         if( track->album() )
-            notify->setPixmap( track->album()->imageWithBorder( 80 ) );
+            m_notify->setPixmap( track->album()->imageWithBorder( 80 ) );
 
-        notify->setTitle( i18n( "Now playing" ) );
+        m_notify->setTitle( i18n( "Now playing" ) );
 
-        notify->setText( Amarok::prettyNowPlaying() );
-        notify->sendEvent();
+        m_notify->setText( Amarok::prettyNowPlaying() );
+        m_notify->sendEvent();
     }
 }
 

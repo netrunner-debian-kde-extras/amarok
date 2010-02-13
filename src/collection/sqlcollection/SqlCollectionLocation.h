@@ -18,7 +18,7 @@
 #ifndef AMAROK_SQLCOLLECTIONLOCATION_H
 #define AMAROK_SQLCOLLECTIONLOCATION_H
 
-#include "CollectionLocation.h"
+#include "collection/CollectionLocation.h"
 
 #include <QSet>
 #include <QMap>
@@ -30,6 +30,7 @@ class KJob;
 class SqlCollectionLocation : public CollectionLocation
 {
     Q_OBJECT
+
     public:
         SqlCollectionLocation( SqlCollection const *collection );
         virtual ~SqlCollectionLocation();
@@ -38,6 +39,13 @@ class SqlCollectionLocation : public CollectionLocation
         virtual QStringList actualLocation() const;
         virtual bool isWritable() const;
         virtual bool isOrganizable() const;
+
+        /**
+         * Removes a track from the database ONLY if the file does NOT exist on disk.
+         * Do not call this method directly. Use the prepareRemove() method.
+         * @param track a track that does not exist on disk to be removed from the database
+         * @return true if the database entry was removed
+         */
         virtual bool remove( const Meta::TrackPtr &track );
         virtual void insertTracks( const QMap<Meta::TrackPtr, QString> &trackMap );
         virtual void insertStatistics( const QMap<Meta::TrackPtr, QString> &trackMap );
@@ -45,23 +53,34 @@ class SqlCollectionLocation : public CollectionLocation
     protected:
         virtual void showDestinationDialog( const Meta::TrackList &tracks, bool removeSources );
         virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources );
-	virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
+        virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
 
     private slots:
         void slotDialogAccepted();
         void slotDialogRejected();
         void slotJobFinished( KJob *job );
+        void slotRemoveJobFinished( KJob *job );
 
     private:
         bool startNextJob();
-        
+        bool startNextRemoveJob();
+
         QMap<QString, uint> updatedMtime( const QStringList &urls );
 
         SqlCollection *m_collection;
         QMap<Meta::TrackPtr, QString> m_destinations;
         QMap<Meta::TrackPtr, KUrl> m_sources;
+        Meta::TrackList m_removetracks;
         bool m_overwriteFiles;
         QMap<KJob*, Meta::TrackPtr> m_jobs;
+        QMap<KJob*, Meta::TrackPtr> m_removejobs;
+};
+
+class SqlCollectionLocationFactory
+{
+    public:
+        virtual SqlCollectionLocation* createSqlCollectionLocation() const = 0;
+        virtual ~SqlCollectionLocationFactory() {};
 };
 
 #endif

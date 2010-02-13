@@ -32,7 +32,7 @@ namespace ProxyCollection
 {
     class Collection;
 
-    class Track : public Meta::Track, private Meta::Observer
+    class AMAROK_EXPORT_TESTS Track : public Meta::Track, private Meta::Observer
     {
         public:
             Track( Collection *coll, const Meta::TrackPtr &track );
@@ -96,7 +96,7 @@ namespace ProxyCollection
             Meta::YearPtr m_year;
     };
 
-    class Album : public Meta::Album, private Meta::Observer
+    class AMAROK_EXPORT_TESTS Album : public Meta::Album, private Meta::Observer
     {
         public:
         Album( Collection *coll, Meta::AlbumPtr album );
@@ -110,6 +110,9 @@ namespace ProxyCollection
         Meta::ArtistPtr albumArtist() const;
         bool isCompilation() const;
         bool hasAlbumArtist() const;
+
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
 
         void add( Meta::AlbumPtr album );
 
@@ -142,7 +145,7 @@ namespace ProxyCollection
         Meta::ArtistPtr m_albumArtist;
     };
 
-    class Artist : public Meta::Artist, private Meta::Observer
+    class AMAROK_EXPORT_TESTS Artist : public Meta::Artist, private Meta::Observer
     {
         public:
         Artist( Collection *coll, Meta::ArtistPtr artist );
@@ -156,6 +159,9 @@ namespace ProxyCollection
 
         Meta::AlbumList albums();
 
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+
         void add( Meta::ArtistPtr artist );
 
         protected:
@@ -168,7 +174,7 @@ namespace ProxyCollection
         QString m_name;
     };
 
-    class Genre : public Meta::Genre, private Meta::Observer
+    class AMAROK_EXPORT_TESTS Genre : public Meta::Genre, private Meta::Observer
     {
         public:
         Genre( Collection *coll, Meta::GenrePtr genre );
@@ -179,6 +185,9 @@ namespace ProxyCollection
         virtual QString sortableName() const;
 
         Meta::TrackList tracks();
+
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
 
         void add( Meta::GenrePtr genre );
 
@@ -192,7 +201,7 @@ namespace ProxyCollection
         QString m_name;
     };
 
-    class Composer : public Meta::Composer, private Meta::Observer
+    class AMAROK_EXPORT_TESTS Composer : public Meta::Composer, private Meta::Observer
     {
         public:
         Composer( Collection *coll, Meta::ComposerPtr composer );
@@ -203,6 +212,9 @@ namespace ProxyCollection
         virtual QString sortableName() const;
 
         Meta::TrackList tracks();
+
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
 
         void add( Meta::ComposerPtr composer );
 
@@ -216,7 +228,7 @@ namespace ProxyCollection
         QString m_name;
     };
 
-    class Year : public Meta::Year, private Meta::Observer
+    class AMAROK_EXPORT_TESTS Year : public Meta::Year, private Meta::Observer
     {
         public:
         Year( Collection * coll, Meta::YearPtr year );
@@ -227,6 +239,9 @@ namespace ProxyCollection
         virtual QString sortableName() const;
 
         Meta::TrackList tracks();
+
+        virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+        virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
 
         /**
           * adds another Meta::Year instance to be proxied.

@@ -3,6 +3,7 @@
  * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2009 John Atkinson <john@fauxnetic.co.uk>                              *
+ * Copyright (c) 2009 Oleksandr Khayrullin <saniokh@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -32,18 +33,19 @@
 #include "dialogs/TagDialog.h"
 #include "GlobalCurrentTrackActions.h"
 #include "meta/capabilities/CurrentTrackActionsCapability.h"
+#include "meta/capabilities/FindInSourceCapability.h"
 #include "meta/capabilities/MultiSourceCapability.h"
 #include "meta/Meta.h"
 #include "PaletteHandler.h"
 #include "playlist/layouts/LayoutManager.h"
 #include "playlist/proxymodels/GroupingProxy.h"
 #include "playlist/PlaylistActions.h"
-#include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlist/view/PlaylistViewCommon.h"
 #include "PopupDropperFactory.h"
 #include "SvgHandler.h"
 #include "SourceSelectionPopup.h"
+#include "tooltips/ToolTipManager.h"
 
 #include <KApplication>
 #include <KMenu>
@@ -65,11 +67,13 @@
 
 Playlist::PrettyListView::PrettyListView( QWidget* parent )
         : QListView( parent )
+        , ViewCommon()
         , m_headerPressIndex( QModelIndex() )
         , m_mousePressInHeader( false )
         , m_skipAutoScroll( false )
         , m_pd( 0 )
         , m_topmostProxy( Playlist::ModelStack::instance()->top() )
+        , m_toolTipManager(0)
 {
     setModel( Playlist::ModelStack::instance()->top() );
     m_prettyDelegate = new PrettyItemDelegate( this );
@@ -79,6 +83,7 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
     setDropIndicatorShown( false ); // we draw our own drop indicator
     setEditTriggers ( SelectedClicked | EditKeyPressed );
     setAutoScroll( true );
+    setMouseTracking( true );
 
     setVerticalScrollMode( ScrollPerPixel );
 
@@ -113,6 +118,8 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
     connect( model(), SIGNAL( beginRemoveIds() ), this, SLOT( saveTrackSelection() ) );
     connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( restoreTrackSelection() ) );
+
+    m_toolTipManager = new ToolTipManager(this);
 }
 
 Playlist::PrettyListView::~PrettyListView()
@@ -159,7 +166,7 @@ Playlist::PrettyListView::removeSelection()
     {
         // Now that we have the list of selected rows in the topmost proxy, we can perform the
         // removal.
-        Controller::instance()->removeRows( sr );
+        The::playlistController()->removeRows( sr );
 
         // Next, we look for the first row.
         int firstRow = sr.first();
@@ -172,7 +179,7 @@ Playlist::PrettyListView::removeSelection()
         //Select the track occupied by the first deleted track. Also move the current item to here as
         //button presses up or down wil otherwise not behave as expected.
         firstRow = qBound( 0, firstRow, m_topmostProxy->rowCount() -1 );
-        QModelIndex newSelectionIndex = model()->index(  firstRow, 0, QModelIndex() ); 
+        QModelIndex newSelectionIndex = model()->index(  firstRow, 0, QModelIndex() );
         setCurrentIndex( newSelectionIndex );
         selectionModel()->select( newSelectionIndex, QItemSelectionModel::Select );
     }
@@ -191,7 +198,7 @@ Playlist::PrettyListView::dequeueSelection()
 }
 
 void
-Playlist::PrettyListView::switchQueueState()
+Playlist::PrettyListView::switchQueueState() // slot
 {
     DEBUG_BLOCK
 
@@ -293,7 +300,7 @@ Playlist::PrettyListView::contextMenuEvent( QContextMenuEvent* event )
     if( event->modifiers() & Qt::ControlModifier )
         return;
 
-    ViewCommon::trackMenu( this, &index, event->globalPos(), true );
+    trackMenu( this, &index, event->globalPos(), true );
     event->accept();
 }
 
@@ -319,6 +326,27 @@ Playlist::PrettyListView::stopAfterTrack()
     {
         Actions::instance()->setStopAfterMode( StopAfterQueue );
         Actions::instance()->setTrackToBeLast( id );
+    }
+}
+
+void
+Playlist::PrettyListView::findInSource()
+{
+    DEBUG_BLOCK
+    const qint64 id = currentIndex().data( UniqueIdRole ).value<quint64>();
+    if( id != -1 )
+    {
+        Meta::TrackPtr track = m_topmostProxy->trackForId( id );
+
+        if( track->hasCapabilityInterface( Meta::Capability::FindInSource ) )
+        {
+            Meta::FindInSourceCapability *fis = track->create<Meta::FindInSourceCapability>();
+            if ( fis )
+            {
+                fis->findInSource();
+            }
+            delete fis;
+        }
     }
 }
 
@@ -352,7 +380,7 @@ Playlist::PrettyListView::dropEvent( QDropEvent* event )
         int targetRow = indexAt( event->pos() ).row();
         targetRow = ( targetRow < 0 ) ? plModel->rowCount() : targetRow; // target of < 0 means we dropped on the end of the playlist
         QList<int> sr = selectedRows();
-        int realtarget = Controller::instance()->moveRows( sr, targetRow );
+        int realtarget = The::playlistController()->moveRows( sr, targetRow );
         QItemSelection selItems;
         foreach( int row, sr )
         {
@@ -402,12 +430,12 @@ Playlist::PrettyListView::keyPressEvent( QKeyEvent* event )
 void
 Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
 {
+    //get the item that was clicked
+    QModelIndex index = indexAt( event->pos() );
+
     //first of all, if a left click, check if the delegate wants to do something about this click
     if( event->button() == Qt::LeftButton )
     {
-        //get the item that was clicked
-        QModelIndex index = indexAt( event->pos() );
-
         //we need to translate the position of the click into something relative to the item that was clicked.
         QRect itemRect = visualRect( index );
         QPoint relPos =  event->pos() - itemRect.topLeft();
@@ -419,7 +447,6 @@ Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
     if ( mouseEventInHeader( event ) && ( event->button() == Qt::LeftButton ) )
     {
         m_mousePressInHeader = true;
-        QModelIndex index = indexAt( event->pos() );
         m_headerPressIndex = QPersistentModelIndex( index );
         int rows = index.data( GroupedTracksRole ).toInt();
         QModelIndex bottomIndex = model()->index( index.row() + rows - 1, 0 );
@@ -454,7 +481,18 @@ Playlist::PrettyListView::mousePressEvent( QMouseEvent* event )
     // This must go after the call to the super class as the current index is not yet selected otherwise
     // Queueing support for Ctrl Right click
     if( event->button() == Qt::RightButton && event->modifiers() & Qt::ControlModifier )
-        queueSelection();
+    {
+        // HACK: Implement a nicer way in Actions class to queue just one row
+        // TODO: Make it possible to enqueue multiple rows. Tricky.
+        QList<int> list;
+        list.append( index.row() );
+
+        if( index.data( Playlist::StateRole ).toInt() & Item::Queued )
+            Actions::instance()->dequeue( list );
+        else
+            Actions::instance()->queue( list );
+        update();
+    }
 }
 
 void
@@ -533,10 +571,10 @@ Playlist::PrettyListView::startDrag( Qt::DropActions supportedActions )
         qDebug() << "does play exist in renderer? " << ( The::svgHandler()->getRenderer( "amarok/images/pud_items.svg" )->elementExists( "load" ) );
         QModelIndexList indices = selectedIndexes();
 
-        QList<QAction*> actions =  ViewCommon::actionsFor( this, &indices.first(), true );
+        QList<QAction*> actions =  actionsFor( this, &indices.first(), true );
 
         foreach( QAction * action, actions )
-            m_pd->addItem( The::popupDropperFactory()->createItem( action ) );
+            m_pd->addItem( The::popupDropperFactory()->createItem( action ), true );
 
         m_pd->show();
     }
@@ -613,13 +651,12 @@ void Playlist::PrettyListView::find( const QString &searchTerm, int fields, bool
     if( row != -1 )
     {
         //select this track
+        QModelIndex index = model()->index( row, 0 );
+        QItemSelection selItems( index, index );
+        selectionModel()->select( selItems, QItemSelectionModel::SelectCurrent );
 
         if ( !filter )
         {
-            QModelIndex index = model()->index( row, 0 );
-            QItemSelection selItems( index, index );
-            selectionModel()->select( selItems, QItemSelectionModel::SelectCurrent );
-
             QModelIndex foundIndex = model()->index( row, 0, QModelIndex() );
             setCurrentIndex( foundIndex );
             if ( foundIndex.isValid() )
