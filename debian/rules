@@ -24,6 +24,10 @@ override_dh_install:
 override_dh_makeshlibs:
 	dh_makeshlibs "-Xusr/lib/kde4/*"
 
+override_dh_builddeb:
+	dh_builddeb -pamarok-dbg -- -Zbzip2
+	dh_builddeb --remaining-packages
+
 %:
 	dh --with kde --parallel --dbg-package=amarok-dbg $@
 
