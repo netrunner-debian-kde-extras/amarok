@@ -20,6 +20,8 @@
 #include "PodcastMeta.h"
 #include "meta/file/File.h"
 
+class SqlPodcastProvider;
+
 namespace Meta
 {
 
@@ -57,6 +59,7 @@ class SqlPodcastEpisode : public PodcastEpisode
         virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
         virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
         virtual bool isEditable() const;
+        virtual void finishedPlaying( double playedFraction );
 
         virtual AlbumPtr album() const;
         virtual ArtistPtr artist() const;
@@ -66,7 +69,7 @@ class SqlPodcastEpisode : public PodcastEpisode
 
         //SqlPodcastEpisode specific methods
         bool writeTagsToFile();
-        int dbId() const { return m_dbId; };
+        int dbId() const { return m_dbId; }
 
         void updateInDb();
         void deleteFromDb();
@@ -86,15 +89,16 @@ class SqlPodcastChannel : public PodcastChannel
         static TrackList sqlEpisodesToTracks( SqlPodcastEpisodeList episodes );
         static PodcastEpisodeList sqlEpisodesToPodcastEpisodes( SqlPodcastEpisodeList episodes );
 
-        SqlPodcastChannel( const QStringList &queryResult );
+        SqlPodcastChannel( SqlPodcastProvider *provider, const QStringList &queryResult );
 
         /** Copy a PodcastChannel
         */
-        SqlPodcastChannel( PodcastChannelPtr channel );
+        SqlPodcastChannel( SqlPodcastProvider *provider, PodcastChannelPtr channel );
 
         ~SqlPodcastChannel();
         // Meta::Playlist methods
-        TrackList tracks() { return sqlEpisodesToTracks( m_episodes ); }
+        virtual TrackList tracks() { return sqlEpisodesToTracks( m_episodes ); }
+        virtual PlaylistProvider *provider() const;
 
         //Meta::PodcastChannel methods
         virtual void setTitle( const QString &title );
@@ -125,6 +129,7 @@ class SqlPodcastChannel : public PodcastChannel
         int m_dbId; //database ID
 
         SqlPodcastEpisodeList m_episodes;
+        SqlPodcastProvider *m_provider;
 };
 
 }

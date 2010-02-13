@@ -29,6 +29,7 @@
 #include "Amarok.h"
 #include "Debug.h"
 #include "EngineController.h" //for actions in ctor
+#include "KNotificationBackend.h"
 #include "Osd.h"
 #include "PaletteHandler.h"
 #include "ScriptManager.h"
@@ -46,6 +47,8 @@
 #include "context/ContextView.h"
 #include "context/ToolbarView.h"
 #include "covermanager/CoverManager.h" // for actions
+#include "dialogs/EqualizerDialog.h"
+#include "moodbar/MoodbarManager.h"
 #include "playlist/layouts/LayoutConfigAction.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
@@ -58,8 +61,8 @@
 #include "services/ServicePluginManager.h"
 #include "services/scriptable/ScriptableService.h"
 #include "statusbar/StatusBar.h"
-#include "toolbar/MainToolbar.h"
 #include "toolbar/SlimToolbar.h"
+#include "toolbar/MainToolbar.h"
 #include "SvgHandler.h"
 #include "widgets/Splitter.h"
 #include "widgets/AmarokDockWidget.h"
@@ -98,12 +101,8 @@
 #include "mac/GrowlInterface.h"
 #endif
 
-// Let people know OS X and Windows versions are still work-in-progress
-#if defined(Q_WS_MAC) || defined(Q_WS_WIN)
-#define AMAROK_CAPTION "Amarok 2 beta"
-#else
 #define AMAROK_CAPTION "Amarok"
-#endif
+
 
 extern KAboutData aboutData;
 extern OcsData ocsData;
@@ -132,6 +131,7 @@ MainWindow::MainWindow()
     , m_lastBrowser( 0 )
     , m_dockWidthsLocked( false )
     , m_dockChangesIgnored( false )
+    , m_waitingForCd( false )
 {
     DEBUG_BLOCK
 
@@ -184,7 +184,7 @@ MainWindow::MainWindow()
     //restore active category ( as well as filters and levels and whatnot.. )
     const QString path = config.readEntry( "Browser Path", QString() );
     if ( !path.isEmpty() )
-        browserWidget()->list()->navigate( path );
+        m_browsers->list()->navigate( path );
 }
 
 MainWindow::~MainWindow()
@@ -196,7 +196,7 @@ MainWindow::~MainWindow()
     config.writeEntry( "MainWindow Position", pos() );
 
     //save currently active category
-    config.writeEntry( "Browser Path", browserWidget()->list()->path() );
+    config.writeEntry( "Browser Path", m_browsers->list()->path() );
 
     QList<int> sPanels;
 
@@ -238,11 +238,13 @@ MainWindow::init()
     m_mainToolbar->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
     m_mainToolbar->setMovable ( true );
     addToolBar( Qt::TopToolBarArea, m_mainToolbar );
+    m_mainToolbar->hide();
 
     //create slim toolbar
     m_slimToolbar = new SlimToolbar( 0 );
     m_slimToolbar->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
     m_slimToolbar->setMovable ( true );
+    connect( The::moodbarManager(), SIGNAL( moodbarStyleChanged() ), m_slimToolbar, SLOT( repaint() ) );
     addToolBar( Qt::TopToolBarArea, m_slimToolbar );
     m_slimToolbar->hide();
 
@@ -342,11 +344,13 @@ MainWindow::init()
 
 
         PERF_LOG( "Creating FileBrowser" )
-        FileBrowser::Widget * fileBrowser = new FileBrowser::Widget( "files", 0 );
-        fileBrowser->setPrettyName( i18n("Files") );
-        fileBrowser->setIcon( KIcon( "folder-amarok" ) );
-        fileBrowser->setShortDescription( i18n( "Browse local hard drive for content" ) );
-        m_browsers->list()->addCategory( fileBrowser );
+        FileBrowser * fileBrowserMkII = new FileBrowser( "files", 0 );
+        fileBrowserMkII->setPrettyName( i18n("Files") );
+        fileBrowserMkII->setIcon( KIcon( "folder-amarok" ) );
+        fileBrowserMkII->setShortDescription( i18n( "Browse local hard drive for content" ) );
+        m_browsers->list()->addCategory( fileBrowserMkII );
+
+        
         PERF_LOG( "Created FileBrowser" )
 
         PERF_LOG( "Initialising ServicePluginManager" )
@@ -430,7 +434,6 @@ MainWindow::createPopupMenu()
 
     foreach( QDockWidget* dockWidget, dockwidgets )
     {
-        debug() << "RM: " << dockWidget->accessibleName();
         if( dockWidget->parentWidget() == this )
             menu->addAction( dockWidget->toggleViewAction());
     }
@@ -574,6 +577,12 @@ MainWindow::exportPlaylist() const //SLOT
 }
 
 void
+MainWindow::slotShowActiveTrack() const
+{
+    m_playlistWidget->showActiveTrack();
+}
+
+void
 MainWindow::slotShowCoverManager() const //SLOT
 {
     CoverManager::showOnce();
@@ -582,6 +591,11 @@ MainWindow::slotShowCoverManager() const //SLOT
 void MainWindow::slotShowBookmarkManager() const
 {
     The::bookmarkManager()->showOnce();
+}
+
+void MainWindow::slotShowEqualizer() const
+{
+    The::equalizer()->showOnce();
 }
 
 void
@@ -674,6 +688,16 @@ MainWindow::showHide() //SLOT
 }
 
 void
+MainWindow::showNotificationPopup() // slot
+{
+    if ( Amarok::KNotificationBackend::instance()->isEnabled()
+            && !Amarok::OSD::instance()->isEnabled() )
+        Amarok::KNotificationBackend::instance()->showCurrentTrack();
+    else
+        Amarok::OSD::instance()->forceToggleOSD();
+}
+
+void
 MainWindow::slotFullScreen() // slot
 {
     setWindowState( windowState() ^ Qt::WindowFullScreen );
@@ -700,7 +724,7 @@ bool
 MainWindow::isReallyShown() const
 {
 #ifdef Q_WS_X11
-    const KWindowInfo info = KWindowSystem::windowInfo( winId(), 0, 0 );
+    const KWindowInfo info = KWindowSystem::windowInfo( winId(), NET::WMDesktop, 0 );
     return !isHidden() && !info.isMinimized() && info.isOnDesktop( KWindowSystem::currentDesktop() );
 #else
     return !isHidden();
@@ -754,6 +778,10 @@ MainWindow::createActions()
     action = new KAction( KIcon( "bookmarks-organize" ), i18n( "Bookmark Manager" ), this );
     ac->addAction( "bookmark_manager", action );
     connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowBookmarkManager() ) );
+
+    action = new KAction( /*KIcon( "bookmarks-organize" ),*/ i18n( "Equalizer" ), this );
+    ac->addAction( "equalizer_dialog", action );
+    connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowEqualizer() ) );
 
     action = new KAction( KIcon( "bookmark-new" ), i18n( "Bookmark Playlist Setup" ), this );
     ac->addAction( "bookmark_playlistview", action );
@@ -812,11 +840,9 @@ MainWindow::createActions()
     action->setIcon( KIcon("edit-delete-amarok") );
     //this is connected inside the dynamic playlist category
 
-    action = new KAction( this );
+    action = new KAction( KIcon("media-skip-forward-amarok"), i18n( "Next Track" ), this );
     ac->addAction( "next", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_B ) );
-    action->setIcon( KIcon("media-skip-forward-amarok") );
-    action->setText( i18n( "Next Track" ) );
     connect( action, SIGNAL(triggered(bool)), pa, SLOT( next() ) );
 
     action = new KAction( i18n( "Increase Volume" ), this );
@@ -846,10 +872,14 @@ MainWindow::createActions()
     action->setShortcut( KShortcut( Qt::CTRL + Qt::Key_J ) );
     connect( action, SIGNAL( triggered() ), SLOT( slotJumpTo() ) );
 
-    action = new KAction( i18n( "Show On Screen Display" ), this );
-    ac->addAction( "showOsd", action );
+    action = new KAction( KIcon( "music-amarok" ), i18n("Show active track"), this );
+    ac->addAction( "show_active_track", action );
+    connect( action, SIGNAL( triggered( bool ) ), SLOT( slotShowActiveTrack() ) );
+
+    action = new KAction( i18n( "Show Notification Popup" ), this );
+    ac->addAction( "showNotificationPopup", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_O ) );
-    connect( action, SIGNAL( triggered() ), Amarok::OSD::instance(), SLOT( forceToggleOSD() ) );
+    connect( action, SIGNAL( triggered() ), SLOT( showNotificationPopup() ) );
 
     action = new KAction( i18n( "Mute Volume" ), this );
     ac->addAction( "mute", action );
@@ -999,6 +1029,7 @@ MainWindow::createMenus()
 
     m_toolsMenu->addAction( Amarok::actionCollection()->action("bookmark_manager") );
     m_toolsMenu->addAction( Amarok::actionCollection()->action("cover_manager") );
+    m_toolsMenu->addAction( Amarok::actionCollection()->action("equalizer_dialog") );
     m_toolsMenu->addAction( Amarok::actionCollection()->action("script_manager") );
     m_toolsMenu->addSeparator();
     m_toolsMenu->addAction( Amarok::actionCollection()->action("update_collection") );
@@ -1019,10 +1050,6 @@ MainWindow::createMenus()
     m_settingsMenu->addAction( Amarok::actionCollection()->action("replay_gain_mode") );
     m_settingsMenu->addSeparator();
 #endif
-
-    // Add equalizer action - a list with all equalizer presets available
-    m_settingsMenu->addAction( Amarok::actionCollection()->action("equalizer_mode") );
-    m_settingsMenu->addSeparator();
 
     m_settingsMenu->addAction( Amarok::actionCollection()->action(KStandardAction::name(KStandardAction::KeyBindings)) );
     m_settingsMenu->addAction( Amarok::actionCollection()->action(KStandardAction::name(KStandardAction::Preferences)) );
@@ -1208,11 +1235,11 @@ void MainWindow::setLayoutLocked( bool locked )
         m_playlistDock->setFeatures( features );
         m_playlistDock->setTitleBarWidget( m_playlistDummyTitleBarWidget );
 
-        m_mainToolbar->setFloatable( false );
-        m_mainToolbar->setMovable( false );
-
         m_slimToolbar->setFloatable( false );
         m_slimToolbar->setMovable( false );
+
+        m_mainToolbar->setFloatable( false );
+        m_mainToolbar->setMovable( false );
     }
     else
     {
@@ -1228,11 +1255,11 @@ void MainWindow::setLayoutLocked( bool locked )
         m_contextDock->setTitleBarWidget( 0 );
         m_playlistDock->setTitleBarWidget( 0 );
 
-        m_mainToolbar->setFloatable( true );
-        m_mainToolbar->setMovable( true );
-
         m_slimToolbar->setFloatable( true );
         m_slimToolbar->setMovable( true );
+
+        m_mainToolbar->setFloatable( true );
+        m_mainToolbar->setMovable( true );
     }
 
     AmarokConfig::setLockLayout( locked );
@@ -1300,10 +1327,13 @@ MainWindow::restoreLayout()
     else
         m_dockChangesIgnored = false;
 
-
     // Ensure that only one toolbar is visible
     if( !m_mainToolbar->isHidden() && !m_slimToolbar->isHidden() )
         m_slimToolbar->hide();
+
+    // Ensure that we don't end up without any toolbar (can happen after upgrading)
+    if( m_mainToolbar->isHidden() && m_slimToolbar->isHidden() )
+        m_mainToolbar->show();
 }
 
 void MainWindow::layoutChanged()
@@ -1323,6 +1353,55 @@ void MainWindow::ignoreLayoutChangesTimeout()
 {
     DEBUG_BLOCK
     m_dockChangesIgnored = false;
+}
+
+bool MainWindow::playAudioCd()
+{
+    DEBUG_BLOCK
+    //drop whatever we are doing and play auidocd
+    
+    QList<Amarok::Collection*> collections = CollectionManager::instance()->viewableCollections();
+
+    foreach( Amarok::Collection *collection, collections )
+    {
+        if( collection->collectionId() == "AudioCd" )
+        {
+
+            debug() << "got audiocd collection";
+
+            MemoryCollection * cdColl = dynamic_cast<MemoryCollection *>( collection );
+
+            
+            
+            if( !cdColl || cdColl->trackMap().count() == 0 )
+            {
+                debug() << "cd collection not ready yet (track count = 0 )";
+                m_waitingForCd = true;
+                return false;
+            }
+
+            The::engineController()->stop( true );
+            The::playlistController()->clear();
+
+            QueryMaker * qm = collection->queryMaker();
+            qm->setQueryType( QueryMaker::Track );
+            The::playlistController()->insertOptioned( qm, Playlist::DirectPlay );
+
+            m_waitingForCd = false;
+            return true;
+        }
+    }
+
+    debug() << "waiting for cd...";
+    m_waitingForCd = true;
+    return false;
+}
+
+bool MainWindow::isWaitingForCd()
+{
+    DEBUG_BLOCK
+    debug() << "waiting?: " << m_waitingForCd;
+    return m_waitingForCd;
 }
 
 #include "MainWindow.moc"

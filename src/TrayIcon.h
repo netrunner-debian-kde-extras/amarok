@@ -16,17 +16,16 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_SYSTRAY_H
-#define AMAROK_SYSTRAY_H
+#ifndef AMAROK_TRAYICON_H
+#define AMAROK_TRAYICON_H
 
 #include "EngineObserver.h" //baseclass
 #include "meta/Meta.h"
 #include "SmartPointerList.h"
 
-#include <QPointer>
-
-#include <KAction>
 #include <KSystemTrayIcon> //baseclass
+
+#include <QPointer>
 
 class QEvent;
 class App;
@@ -81,4 +80,4 @@ private:
 
 }
 
-#endif // AMAROK_SYSTRAY_H
+#endif // AMAROK_TRAYICON_H

@@ -19,13 +19,13 @@
 
 #include "collection/QueryMaker.h"
 
-#include "amarok_export.h"
+#include "amarok_sqlcollection_export.h"
 
 #include <threadweaver/Job.h>
 
 class SqlCollection;
 
-class /*AMAROK_EXPORT*/ SqlQueryMaker : public QueryMaker
+class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlQueryMaker : public QueryMaker
 {
     Q_OBJECT
 
@@ -131,10 +131,7 @@ class SqlQueryMakerFactory
 {
 public:
     virtual SqlQueryMaker* createQueryMaker() const = 0;
-
-private:
     virtual ~SqlQueryMakerFactory() {};
 };
-
 
 #endif /* AMAROK_COLLECTION_SQLQUERYMAKER_H */

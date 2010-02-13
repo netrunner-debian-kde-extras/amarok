@@ -417,7 +417,7 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
 
 
                     debug() << "painting moodbar in PrettyItemDelegate::paintItem";
-         
+
                     Meta::TrackPtr track = index.data( TrackRole ).value<Meta::TrackPtr>();
 
                     if( The::moodbarManager()->hasMoodbar( track ) )
@@ -596,7 +596,7 @@ bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &item
     int rowCount = rowsForItem( index );
     int modifiedRowCount = rowCount + 1;
 
-    int height = itemRect.height();;
+    int height = itemRect.height();
 
     int baseHeight = ( height * rowCount ) / modifiedRowCount + 3;
     int extrasHeight = height - baseHeight;

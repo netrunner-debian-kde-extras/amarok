@@ -34,7 +34,7 @@
 #include "meta/capabilities/CollectionCapability.h"
 #include "meta/capabilities/CustomActionsCapability.h"
 #include "PaletteHandler.h"
-#include "playlist/PlaylistController.h"
+#include "playlist/PlaylistModelStack.h"
 #include "PopupDropperFactory.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
@@ -706,6 +706,7 @@ CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem*> &items ) con
     CollectionLocation *location = coll->location();
     if( !location->isOrganizable() )
     {
+        debug() << "Collection not organizable";
         //how did we get here??
         delete location;
         delete qm;
@@ -785,7 +786,7 @@ CollectionTreeView::removeTracks( const QSet<CollectionTreeItem*> &items ) const
     CollectionTreeItem *item = items.toList().first();
     while( item->isDataItem() )
         item = item->parent();
-    
+
     Amarok::Collection *coll = item->parentCollection();
 
     if( !coll->isWritable() )
@@ -897,7 +898,6 @@ QActionList CollectionTreeView::createExtendedActions( const QModelIndexList & i
                         connect( m_organizeAction, SIGNAL( triggered() ), this, SLOT( slotOrganize() ) );
                     }
                     actions.append( m_organizeAction );
-                    m_organizeAction->setVisible( false );  //Disabled Organize Collection until we figure out the data loss issues.
                 }
             }
             delete location;

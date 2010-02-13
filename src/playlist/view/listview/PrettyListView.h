@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
  * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Oleksandr Khayrullin <saniokh@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -23,6 +24,10 @@
 #include "PrettyItemDelegate.h"
 #include "playlist/proxymodels/GroupingProxy.h"
 
+#include "playlist/view/PlaylistViewCommon.h"
+#include "tooltips/ToolTipManager.h"
+
+
 #include <QListView>
 #include <QModelIndex>
 #include <QPersistentModelIndex>
@@ -43,7 +48,7 @@ class QTimer;
 
 namespace Playlist
 {
-class PrettyListView : public QListView
+class PrettyListView : public QListView, public ViewCommon
 {
     Q_OBJECT
 
@@ -53,7 +58,7 @@ public:
 
 protected:
     int verticalOffset() const;
-    
+
 signals:
     void found();
     void notFound();
@@ -93,6 +98,7 @@ private slots:
     void fixInvisible(); // Workaround for BUG 184714; see implementation for more comments.
     void redrawActive();
     void playlistLayoutChanged();
+    void findInSource();
 
 private:
     void showEvent( QShowEvent* );
@@ -105,7 +111,6 @@ private:
     void mouseReleaseEvent( QMouseEvent* );
     void paintEvent( QPaintEvent* );
     void startDrag( Qt::DropActions supportedActions );
-
 
     bool mouseEventInHeader( const QMouseEvent* ) const;
     QItemSelectionModel::SelectionFlags headerPressSelectionCommand( const QModelIndex&, const QMouseEvent* ) const;
@@ -128,6 +133,8 @@ private:
     QTimer *m_animationTimer;
 
     QList<qint64> m_savedTrackSelection;
+
+    ToolTipManager * m_toolTipManager;
 
 public:
     QList<int> selectedRows() const;

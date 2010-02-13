@@ -15,12 +15,14 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "App.h"
 #include "Applet.h"
-#include "Containment.h"
-#include "Debug.h"
 
+#include "App.h"
+#include "Containment.h"
+#include "ContextView.h"
+#include "Debug.h"
 #include "PaletteHandler.h"
+
 #include <Plasma/Animator>
 #include <Plasma/FrameSvg>
 #include <Plasma/IconWidget>
@@ -30,7 +32,7 @@
 #include <QGraphicsScene>
 #include <QFontMetrics>
 #include <QPainter>
-#include "ContextView.h"
+#include <KServiceTypeTrader>
 
 namespace Context
 {
@@ -46,7 +48,11 @@ Context::Applet::Applet( QObject * parent, const QVariantList& args )
     , m_standardPadding( 6.0 )
     , m_textBackground( 0 )
 {
-    connect ( Plasma::Animator::self(), SIGNAL(customAnimationFinished ( int ) ), this, SLOT( animateEnd( int ) ) );
+    KService::List offers = KServiceTypeTrader::self()->query("Plasma/Animator", QString());
+    m_canAnimate = !offers.isEmpty();
+
+    if( m_canAnimate )
+        connect ( Plasma::Animator::self(), SIGNAL(customAnimationFinished ( int ) ), this, SLOT( animateEnd( int ) ) );
     setBackgroundHints(NoBackground);
 
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
@@ -211,7 +217,7 @@ Context::Applet::resize( qreal wid, qreal hei)
 {
     m_heightCollapseOff = hei;
     m_heightCurrent = hei;
-    QGraphicsWidget::resize( wid, hei );
+    Plasma::Applet::resize( wid, hei );
 }
 
 Plasma::IconWidget*
@@ -238,6 +244,12 @@ Context::Applet::addAction( QAction *action, const int size )
 void
 Context::Applet::setCollapseOn()
 {
+
+    if( !m_canAnimate ) {
+        resize( size().width(), m_heightCollapseOn );
+        return;
+    }
+
     // We are asked to collapse, but the applet is already animating to collapse, do nothing
     if ( m_animationIdOn != 0 )
         return;
@@ -267,6 +279,11 @@ Context::Applet::setCollapseOff()
 {
     DEBUG_BLOCK
 
+    if( !m_canAnimate ) {
+        resize( size().width(), m_heightCollapseOff );
+        return;
+    }
+    
     // We are asked to extend, but the applet is already animating to extend, do nothing
     if ( m_animationIdOff != 0 )
         return;
@@ -357,6 +374,11 @@ void
 Context::Applet::paletteChanged( const QPalette & palette )
 {
     Q_UNUSED( palette )
+}
+
+bool Context::Applet::canAnimate()
+{
+    return m_canAnimate;
 }
 
 #include "Applet.moc"

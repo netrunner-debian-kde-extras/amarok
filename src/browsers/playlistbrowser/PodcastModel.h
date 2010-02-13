@@ -18,8 +18,9 @@
 #define PLAYLISTBROWSERNSPODCASTMODEL_H
 
 #include "PodcastMeta.h"
-#include "playlist/PlaylistModel.h"
-#include "playlist/PlaylistController.h"
+
+#include "MetaPlaylistModel.h"
+#include "playlist/PlaylistModelStack.h"
 
 #include <QAbstractItemModel>
 #include <QModelIndex>
@@ -27,16 +28,13 @@
 #include <QVariant>
 
 class OpmlOutline;
-class QAction;
+class PodcastProvider;
 
 namespace PlaylistBrowserNS {
 
 enum {
     ShortDescriptionRole = Qt::UserRole + 1,
-    LongDescriptionRole,
-    //Where is this Playlist from (collection, service, device)
-    OriginRole = Qt::UserRole,
-    OnDiskRole = Qt::UserRole //Is the PodcastEpisode downloaded to disk?
+    LongDescriptionRole
 };
 
 enum
@@ -49,13 +47,16 @@ enum
     ImageColumn,    // channel only (for now)
     DateColumn,
     IsEpisodeColumn,
+    ProviderColumn,
+    OnDiskColumn,
     ColumnCount
 };
 
 /**
     @author Bart Cerneels
 */
-class PodcastModel : public QAbstractItemModel
+class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel,
+                     public Meta::PlaylistObserver
 {
     Q_OBJECT
     public:
@@ -73,12 +74,20 @@ class PodcastModel : public QAbstractItemModel
         virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
         virtual QStringList mimeTypes() const;
-        QMimeData* mimeData( const QModelIndexList &indexes ) const;
-        bool dropMimeData ( const QMimeData * data, Qt::DropAction action, int row, int column, const QModelIndex & parent );
+        virtual QMimeData* mimeData( const QModelIndexList &indexes ) const;
+        virtual bool dropMimeData( const QMimeData * data, Qt::DropAction action, int row,
+                                   int column, const QModelIndex & parent );
 
-        QList<QAction *> actionsFor( const QModelIndexList &indexes );
+        //MetaPlaylistModel methods
+        virtual QList<QAction *> actionsFor( const QModelIndexList &indexes );
+        virtual void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
 
-        void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
+        /* Meta::PlaylistObserver methods */
+        virtual void trackAdded( Meta::PlaylistPtr playlist, Meta::TrackPtr track,
+                                 int position );
+        virtual void trackRemoved( Meta::PlaylistPtr playlist, int position );
+
+        //Own methods
         void downloadItems(  QModelIndexList list );
         void deleteItems(  QModelIndexList list );
         void refreshItems( QModelIndexList list );
@@ -132,6 +141,9 @@ class PodcastModel : public QAbstractItemModel
         static Meta::TrackList
         podcastEpisodesToTracks(
             Meta::PodcastEpisodeList episodes );
+
+        /** Get the provider associated with a PodcastMetaCommon object */
+        PodcastProvider *providerForPmc( Meta::PodcastMetaCommon *pmc ) const;
 
         void downloadEpisode( Meta::PodcastEpisodePtr episode );
         void deleteDownloadedEpisode( Meta::PodcastEpisodePtr episode );

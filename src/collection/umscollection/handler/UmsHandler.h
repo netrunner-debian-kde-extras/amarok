@@ -54,9 +54,12 @@ namespace Solid {
 
 class UmsCollection;
 
+class KDialog;
 class KDirLister;
 class KFileItem;
 class KUrl;
+
+class UmsPodcastProvider;
 
 class QAction;
 class QString;
@@ -99,6 +102,8 @@ class UmsHandler : public Meta::MediaDeviceHandler
         QMap<Meta::TrackPtr, QString> tracksFailed() const { return m_tracksFailed; }
         QString mountPoint() const { return m_mountPoint; }
         void setMountPoint( const QString &mp ) { m_mountPoint = mp; }
+
+        QStringList mimetypes() { return m_mimetypes; }
 
     public slots:
 
@@ -147,6 +152,10 @@ class UmsHandler : public Meta::MediaDeviceHandler
         virtual void libSetCoverArt( Itdb_Track *umstrack, const QPixmap &image );
         virtual void setCoverArt( Itdb_Track *umstrack, const QString &path );
 #endif
+    private slots:
+        void slotConfigure();
+        void slotConfigChanged();
+
     private:
         enum FileType
         {
@@ -254,6 +263,13 @@ class UmsHandler : public Meta::MediaDeviceHandler
         // tempdir for covers
         KTempDir *m_tempdir;
         QSet<QString> m_coverArt;
+
+        //direct implementation of a podcast provider NOT using the MD::Capabilities
+        UmsPodcastProvider *m_podcastProvider;
+        QAction *m_configureAction;
+        QString m_podcastPath;
+
+        KDialog *m_umsSettingsDialog;
 
     private slots:
         void slotCreateEntry( const QString &path );

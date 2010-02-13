@@ -18,7 +18,7 @@
 #ifndef AMAROK_SQL_SCANRESULTPROCESSOR_H
 #define AMAROK_SQL_SCANRESULTPROCESSOR_H
 
-#include "CollectionManager.h"
+#include "SqlCollection.h"
 
 #include <QFileInfo>
 #include <QList>
@@ -28,9 +28,11 @@
 #include <QStringList>
 #include <QVariant>
 
-class SqlCollection;
+#include "amarok_sqlcollection_export.h"
 
-class ScanResultProcessor : public QObject
+class SqlStorage;
+
+class AMAROK_SQLCOLLECTION_EXPORT_TESTS ScanResultProcessor : public QObject
 {
     Q_OBJECT
 
@@ -51,6 +53,8 @@ class ScanResultProcessor : public QObject
         void processDirectory( const QList<QVariantMap > &data );
         void commit();
         void rollback();
+
+        void setSqlStorage( SqlStorage *storage ) { m_storage = storage; }
 
     signals:
         void changedTrackUrlsUids( const ChangedTrackUrls &, const TrackUrls & ); //not really track urls
@@ -82,6 +86,7 @@ class ScanResultProcessor : public QObject
 
     private:
         SqlCollection *m_collection;
+        SqlStorage *m_storage;
         bool m_setupComplete;
 
         QHash<QString, int> m_artists;
@@ -94,6 +99,7 @@ class ScanResultProcessor : public QObject
         QMap<QString, int> m_directories;
         QMap<QString, QList< QPair< QString, QString > > > m_imageMap;
 
+        QSet<QString> m_uidsSeenThisScan;
         QHash<QString, uint> m_filesInDirs;
 
         TrackUrls m_changedUids; //not really track urls

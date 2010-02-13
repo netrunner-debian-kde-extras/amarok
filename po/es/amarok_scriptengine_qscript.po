@@ -57,7 +57,7 @@ msgstr "loadui() necesita un argumento"
 #: simplejavascriptapplet.cpp:639
 #, kde-format
 msgid "Unable to open '%1'"
-msgstr "No se pudo abrir '%1'"
+msgstr "No se pudo abrir «%1»"
 
 #: simplejavascriptapplet.cpp:679 simplejavascriptapplet.cpp:712
 msgid "Constructor takes at least 1 argument"

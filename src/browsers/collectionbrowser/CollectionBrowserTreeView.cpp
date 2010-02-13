@@ -25,6 +25,7 @@
 #include <QMouseEvent>
 
 Q_DECLARE_METATYPE( QAction* )
+Q_DECLARE_METATYPE( QList<QAction*> )
 
 CollectionBrowserTreeView::CollectionBrowserTreeView( QWidget *parent )
     : CollectionTreeView( parent )
@@ -60,8 +61,8 @@ CollectionBrowserTreeView::mousePressEvent( QMouseEvent *event )
     }
 
     // Only forward the press event if we aren't on an action (which gets triggered on a release)
-    const bool hasAction = index.data( CustomRoles::HasDecoratorRole ).toBool();
-    if( hasAction )
+    const int actionsCount = index.data( CustomRoles::DecoratorRoleCount ).toInt();
+    if( actionsCount > 0 )
     {
         const QRect rect = CollectionTreeItemDelegate::decoratorRect( index );
         if( rect.contains( event->pos() ) )
@@ -81,18 +82,27 @@ CollectionBrowserTreeView::mouseReleaseEvent( QMouseEvent *event )
         return;
     }
 
-    const bool hasAction = index.data( CustomRoles::HasDecoratorRole ).toBool();
-    if( hasAction )
+    const int actionsCount = index.data( CustomRoles::DecoratorRoleCount ).toInt();
+    if( actionsCount > 0 )
     {
         const QRect rect = CollectionTreeItemDelegate::decoratorRect( index );
         if( rect.contains( event->pos() ) )
         {
-            QAction* action = index.data( CustomRoles::DecoratorRole ).value<QAction*>();
-            if( action )
+            QList<QAction*> actions =
+                    index.data( CustomRoles::DecoratorRole ).value<QList<QAction*> >();
+            //hack: rect height == the width of one action's area.
+            int indexOfActionToTrigger
+                = ( event->pos().x() - rect.left() ) / rect.height();
+            debug() << "triggering action " << indexOfActionToTrigger;
+            if( indexOfActionToTrigger >= actions.count() )
             {
-                action->trigger();
+                debug() << "no such action";
                 return;
             }
+            QAction *action = actions.value( indexOfActionToTrigger );
+            if( action )
+                action->trigger();
+            return;
         }
     }
     CollectionTreeView::mouseReleaseEvent( event );

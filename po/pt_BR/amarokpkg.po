@@ -20,7 +20,7 @@ msgstr ""
 
 #: amarokpkg.cpp:40
 msgid "Install, list, remove Amarok applets"
-msgstr "Instala, lista e remove miniaplicativos do Amarok"
+msgstr "Instalar, listar e remover miniaplicativos do Amarok"
 
 #: amarokpkg.cpp:76
 msgid "Amarok Applet Manager"
