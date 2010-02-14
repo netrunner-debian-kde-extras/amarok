@@ -1,4 +1,4 @@
-amarok (2.3~beta1-0r2) UNRELEASED; urgency=low
+amarok (2.3~beta1-1) experimental; urgency=low
 
   * New upstream development release (2.2.2.90).
   * Resync patches:
@@ -11,7 +11,7 @@ amarok (2.3~beta1-0r2) UNRELEASED; urgency=low
   * Compress amarok-dbg with bzip2.
   * Bump KDE build depends to 4:4.3.0.
 
- -- Modestas Vainius <modax@debian.org>  Sat, 13 Feb 2010 21:11:07 +0200
+ -- Modestas Vainius <modax@debian.org>  Sun, 14 Feb 2010 03:35:21 +0200
 
 amarok (2.2.2-1) unstable; urgency=low
 
