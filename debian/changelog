@@ -9,6 +9,7 @@ amarok (2.3~beta1-0r2) UNRELEASED; urgency=low
   * Update Standards-Version to 3.8.4: no changes needed.
   * Update install files.
   * Compress amarok-dbg with bzip2.
+  * Bump KDE build depends to 4:4.3.0.
 
  -- Modestas Vainius <modax@debian.org>  Sat, 13 Feb 2010 21:11:07 +0200
 
