@@ -74,4 +74,4 @@ index d387580..5966c61 100644
      if( !m_db )
      {
 -- 
-tg: (68ac3b4..) debian/mysqle_amarok_local_errmsg_feature (depends on: upstream)
+tg: (ad61c61..) debian/mysqle_amarok_local_errmsg_feature (depends on: upstream)

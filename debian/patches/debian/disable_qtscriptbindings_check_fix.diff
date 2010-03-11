@@ -25,4 +25,4 @@ index 15b35c5..716d37c 100644
  
      find_package(MySQLAmarok REQUIRED)
 -- 
-tg: (68ac3b4..) debian/disable_qtscriptbindings_check_fix (depends on: upstream)
+tg: (ad61c61..) debian/disable_qtscriptbindings_check_fix (depends on: upstream)

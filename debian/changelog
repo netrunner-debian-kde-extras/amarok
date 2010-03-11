@@ -1,6 +1,7 @@
 amarok (2.3.0-0r1) UNRELEASED; urgency=low
 
   * New upstream release.
+  * Refresh patches.
 
  -- Modestas Vainius <modax@debian.org>  Thu, 11 Mar 2010 12:03:14 +0200
 
