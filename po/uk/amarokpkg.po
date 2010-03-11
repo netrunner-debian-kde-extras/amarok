@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarokpkg\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-06-28 11:45+0200\n"
-"PO-Revision-Date: 2010-01-27 18:05+0200\n"
+"POT-Creation-Date: 2010-03-02 04:26+0100\n"
+"PO-Revision-Date: 2010-03-02 09:18+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <translation@linux.org.ua>\n"
 "MIME-Version: 1.0\n"
@@ -27,7 +27,7 @@ msgid "Amarok Applet Manager"
 msgstr "Керування аплетами Amarok"
 
 #: amarokpkg.cpp:78
-msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo franchi"
+msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
 msgstr "© Aaron Seigo, 2008, © Leo Franchi, 2009"
 
 #: amarokpkg.cpp:79
@@ -63,7 +63,7 @@ msgid "Upgrade the applet at <path>"
 msgstr "Оновити аплет у <path>"
 
 #: amarokpkg.cpp:99
-msgid "List installed applet"
+msgid "List installed applets"
 msgstr "Показати список встановлених аплетів"
 
 #: amarokpkg.cpp:101

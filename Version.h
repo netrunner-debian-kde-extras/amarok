@@ -22,7 +22,7 @@
 //#ifdef CURRENT_GIT_VERSION
 //#define AMAROK_VERSION #CURRENT_GIT_VERSION
 //#else
-#define AMAROK_VERSION "2.2.2.90"
+#define AMAROK_VERSION "2.3.0"
 //#endif
 
 

@@ -3,13 +3,13 @@
 # This file is distributed under the license LGPL version 2 or later
 #
 # Joan Maspons <joanmaspons@gmail.com>, 2009.
-# Josep Ma. Ferrer <txemaq@gmail.com>, 2009.
+# Josep Ma. Ferrer <txemaq@gmail.com>, 2009, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarokcollectionscanner_qt\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-01-24 06:23+0100\n"
-"PO-Revision-Date: 2009-11-29 11:57+0100\n"
+"PO-Revision-Date: 2010-02-12 23:34+0100\n"
 "Last-Translator: Josep Ma. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -73,7 +73,7 @@ msgstr "-h, --help            : Este text d'ajuda"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:1028
 msgid "-v, --version         : Print the version of this tool"
-msgstr ""
+msgstr "-v, --version         : Imprimeix la versió d'esta eina"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:1029
 msgid "-r, --recursive       : Scan folders recursively"
@@ -112,7 +112,7 @@ msgstr ""
 
 #: utilities/collectionscanner/CollectionScanner.cpp:1035
 msgid "--savelocation        : Internal command used by Amarok"
-msgstr ""
+msgstr "--savelocation        : Orde interna utilitzada per l'Amarok"
 
 #~ msgid "-c, --nocharset       : Use the charset detector on ID3 tags"
 #~ msgstr ""

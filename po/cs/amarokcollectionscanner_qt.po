@@ -1,20 +1,20 @@
-# SOME DESCRIPTIVE TITLE.
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+# Vít Pelčák <vit@pelcak.org>, 2010.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-01-24 06:23+0100\n"
-"PO-Revision-Date: 2009-11-13 16:41+0100\n"
+"PO-Revision-Date: 2010-03-10 13:45+0100\n"
 "Last-Translator: Vít Pelčák <vit@pelcak.org>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 0 : (n>=2 && n<=4) ? 1 : 2;\n"
+"X-Generator: Lokalize 1.0\n"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:1021
 msgid "Amarok Collection Scanner"
@@ -64,7 +64,7 @@ msgstr "-h, --help            : Tato nápověda"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:1028
 msgid "-v, --version         : Print the version of this tool"
-msgstr ""
+msgstr "-v, --version         : Vypíše verzi tohoto nástroje"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:1029
 msgid "-r, --recursive       : Scan folders recursively"

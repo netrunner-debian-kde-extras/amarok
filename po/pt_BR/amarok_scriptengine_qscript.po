@@ -63,7 +63,7 @@ msgstr "Não foi possível abrir '%1'"
 
 #: simplejavascriptapplet.cpp:679 simplejavascriptapplet.cpp:712
 msgid "Constructor takes at least 1 argument"
-msgstr "Constructor aceita pelo menos um argumento"
+msgstr "Construtor aceita pelo menos um argumento"
 
 #: simplejavascriptapplet.cpp:764
 msgid "CreateWidget takes one argument"

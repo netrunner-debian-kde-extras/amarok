@@ -2,13 +2,13 @@
 # Copyright (C) 2009 This_file_is_part_of_KDE
 # This file is distributed under the same license as the Amarok package.
 #
-# Arpad Biro <biro.arpad gmail>, 2009.
+# Arpad Biro <biro.arpad gmail>, 2009, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarokcollectionscanner_qt\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-01-24 06:23+0100\n"
-"PO-Revision-Date: 2009-10-02 13:55+0200\n"
+"PO-Revision-Date: 2010-02-17 19:45+0100\n"
 "Last-Translator: Arpad Biro <biro.arpad gmail>\n"
 "Language-Team: Hungarian\n"
 "MIME-Version: 1.0\n"
@@ -71,7 +71,7 @@ msgstr "-h, --help            : ezen segítség"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:1028
 msgid "-v, --version         : Print the version of this tool"
-msgstr ""
+msgstr "-v, --version         : ezen eszköz verziójának megjelenítése"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:1029
 msgid "-r, --recursive       : Scan folders recursively"
@@ -109,4 +109,4 @@ msgstr ""
 
 #: utilities/collectionscanner/CollectionScanner.cpp:1035
 msgid "--savelocation        : Internal command used by Amarok"
-msgstr ""
+msgstr "--savelocation        : az Amarok által használt belső parancs"
