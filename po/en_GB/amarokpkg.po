@@ -1,13 +1,13 @@
 # Copyright (C) YEAR This_file_is_part_of_KDE
 # This file is distributed under the same license as the PACKAGE package.
 #
-# Andrew Coles <andrew_coles@yahoo.co.uk>, 2009.
+# Andrew Coles <andrew_coles@yahoo.co.uk>, 2009, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-06-28 11:45+0200\n"
-"PO-Revision-Date: 2009-10-19 22:40+0100\n"
+"POT-Creation-Date: 2010-03-02 04:26+0100\n"
+"PO-Revision-Date: 2010-03-10 00:05+0000\n"
 "Last-Translator: Andrew Coles <andrew_coles@yahoo.co.uk>\n"
 "Language-Team: British English <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -25,8 +25,8 @@ msgid "Amarok Applet Manager"
 msgstr "Amarok Applet Manager"
 
 #: amarokpkg.cpp:78
-msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo franchi"
-msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo franchi"
+msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
 
 #: amarokpkg.cpp:79
 msgid "Aaron Seigo"
@@ -59,8 +59,8 @@ msgid "Upgrade the applet at <path>"
 msgstr "Upgrade the applet at <path>"
 
 #: amarokpkg.cpp:99
-msgid "List installed applet"
-msgstr "List installed applet"
+msgid "List installed applets"
+msgstr "List installed applets"
 
 #: amarokpkg.cpp:101
 msgctxt "Do not translate <name>"

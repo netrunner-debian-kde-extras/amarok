@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Bonne Eggleston <b.eggleston@gmail.com>                           *
  * Copyright (c) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2010 Casey Link <unnamedrambler@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -24,7 +25,6 @@
 #include "Debug.h"
 #include "amarokconfig.h"
 #include "file/File.h"
-#include "MountPointManager.h"
 #include "QStringx.h"
 #include "ui_OrganizeCollectionDialogBase.h"
 
@@ -80,7 +80,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     ui->replaceEdit->setText( AmarokConfig::replacementString() );
 
     ui->previewTableWidget->horizontalHeader()->setResizeMode( QHeaderView::ResizeToContents );
-    ui->conflictLabel->hide();
+    ui->conflictLabel->setText("");
     QPalette p = ui->conflictLabel->palette();
     KColorScheme::adjustForeground( p, KColorScheme::NegativeText ); // TODO this isn't working, the color is still normal
     ui->conflictLabel->setPalette( p );
@@ -138,14 +138,10 @@ OrganizeCollectionDialog::overwriteDestinations() const
 QString
 OrganizeCollectionDialog::buildDestination( const QString &format, const Meta::TrackPtr &track ) const
 {
-    //TODO: handle if track==NULL to avoid bug 169684
-    //This could maybe happen with an empty collection, when the TrackList is empty and then m_previewTrack is null.
-    //FIXME: 169684
-
     bool isCompilation = track->album() && track->album()->isCompilation();
 
     QMap<QString, QString> args;
-    QString artist = track->artist()->name();
+    QString artist = track->artist() ? track->artist()->name() : QString();
     QString albumartist;
     if( isCompilation )
         albumartist = i18n( "Various Artists" );
@@ -315,12 +311,13 @@ OrganizeCollectionDialog::preview( const QString &format )
     }
     if( conflict )
     {
-        ui->conflictLabel->show();
         if( ui->overwriteCheck->isChecked() )
             ui->conflictLabel->setText( i18n( "There is a filename conflict, existing files will be overwritten." ) );
         else
             ui->conflictLabel->setText( i18n( "There is a filename conflict, existing files will not be changed." ) );
     }
+    else
+        ui->conflictLabel->setText(""); // we clear the text instead of hiding it to retain the layout spacing
 }
 
 

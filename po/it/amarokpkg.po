@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarokpkg\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-06-28 11:45+0200\n"
+"POT-Creation-Date: 2010-03-02 04:26+0100\n"
 "PO-Revision-Date: 2009-06-16 13:56+0100\n"
 "Last-Translator: Vincenzo Reale <smart2128@baslug.org>\n"
 "Language-Team: Italian <kde-i18n-it@kde.org>\n"
@@ -25,7 +25,9 @@ msgid "Amarok Applet Manager"
 msgstr "Gestore applet di Amarok"
 
 #: amarokpkg.cpp:78
-msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo franchi"
+#, fuzzy
+#| msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo franchi"
+msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
 msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
 
 #: amarokpkg.cpp:79
@@ -61,7 +63,9 @@ msgid "Upgrade the applet at <path>"
 msgstr "Aggiorna l'applet in <path>"
 
 #: amarokpkg.cpp:99
-msgid "List installed applet"
+#, fuzzy
+#| msgid "List installed applet"
+msgid "List installed applets"
 msgstr "Elenca le applet installate"
 
 #: amarokpkg.cpp:101

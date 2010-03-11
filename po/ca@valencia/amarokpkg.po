@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarokpkg\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-06-28 11:45+0200\n"
+"POT-Creation-Date: 2010-03-02 04:26+0100\n"
 "PO-Revision-Date: 2009-09-12 00:06+0200\n"
 "Last-Translator: Josep Ma. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
@@ -26,7 +26,9 @@ msgid "Amarok Applet Manager"
 msgstr "Gestor de miniaplicacions de l'Amarok"
 
 #: amarokpkg.cpp:78
-msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo franchi"
+#, fuzzy
+#| msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo franchi"
+msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
 msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
 
 #: amarokpkg.cpp:79
@@ -62,7 +64,9 @@ msgid "Upgrade the applet at <path>"
 msgstr "Actualitza la miniaplicació a <path>"
 
 #: amarokpkg.cpp:99
-msgid "List installed applet"
+#, fuzzy
+#| msgid "List installed applet"
+msgid "List installed applets"
 msgstr "Llista les miniaplicacions instal·lades"
 
 #: amarokpkg.cpp:101

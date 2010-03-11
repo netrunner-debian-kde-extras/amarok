@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
  * Copyright (c) 2008 Jason A. Donenfeld <Jason@zx2c4.com>                              *
+ * Copyright (c) 2010 Casey Link <unnamedrambler@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -53,6 +54,7 @@ SqlCollectionLocation::SqlCollectionLocation( SqlCollection const *collection )
     : CollectionLocation( collection )
     , m_collection( const_cast<SqlCollection*>( collection ) )
     , m_overwriteFiles( false )
+    , m_transferjob( 0 )
 {
     //nothing to do
 }
@@ -77,6 +79,7 @@ SqlCollectionLocation::actualLocation() const
 bool
 SqlCollectionLocation::isWritable() const
 {
+    DEBUG_BLOCK
     // The collection is writeable if there exists a path that has less than
     // 95% free space.
     bool path_exists_with_space = false;
@@ -86,17 +89,23 @@ SqlCollectionLocation::isWritable() const
     {
         float used = KDiskFreeSpaceInfo::freeSpaceInfo( path ).used();
         float total = KDiskFreeSpaceInfo::freeSpaceInfo( path ).size();
+	debug() << path;
+	debug() << "\tused: " << used;
+	debug() << "\ttotal: " << total;
 
         if( total <= 0 ) // protect against div by zero
             continue; //How did this happen?
 
-        float percentage_used = used / total;
-        if( percentage_used < 0.95 )
+        float free_space = total - used;
+        debug() <<"\tfree space: " << free_space;
+        if( free_space >= 500*1000*1000 ) // ~500 megabytes
             path_exists_with_space = true;
 
         QFileInfo info( path );
         if( info.isWritable() )
             path_exists_writeable = true;
+	debug() << "\tpath_exists_writeable" << path_exists_writeable;
+	debug() << "\tpath_exists_with_space" << path_exists_with_space;
     }
     return path_exists_with_space && path_exists_writeable;
 }
@@ -193,16 +202,13 @@ SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, boo
         if( totalCapacity <= 0 ) // protect against div by zero
             continue; //How did this happen?
 
-        double percentageUsedAfter = double( used + transferSize ) / totalCapacity;
-        debug() << "percentage used after" << percentageUsedAfter;
-
         QFileInfo info( path );
 
-        // since bad things happen when drives become totally full, we define full as 95% capacity used
-        // also we make sure there is at least 5 megabytes free
+        // since bad things happen when drives become totally full
+	// we make sure there is at least ~500MB left
         // finally, ensure the path is writeable
         debug() << ( freeSpace - transferSize );
-        if( ( freeSpace - transferSize ) > 1024*1024*5 && ( percentageUsedAfter < 0.95 ) && info.isWritable() )
+        if( ( freeSpace - transferSize ) > 1000*1000*500 && info.isWritable() )
             available_folders << path;
     }
 
@@ -272,22 +278,6 @@ SqlCollectionLocation::slotJobFinished( KJob *job )
     m_jobs.remove( job );
     job->deleteLater();
 
-    if( !startNextJob() )
-    {
-        // filter the list of destinations to only include tracks
-        // that were successfully copied
-        foreach( const Meta::TrackPtr &track, m_destinations.keys() )
-        {
-            if( !QFileInfo( m_destinations[ track ] ).exists() )
-                m_destinations.remove( track );
-        }
-        The::statusBar()->endProgressOperation( this );
-        insertTracks( m_destinations );
-        insertStatistics( m_destinations );
-        m_collection->scanManager()->setBlockScan( false );
-        slotCopyOperationFinished();
-    }
-
 }
 
 void
@@ -315,11 +305,50 @@ SqlCollectionLocation::slotRemoveJobFinished( KJob *job )
     if( !startNextRemoveJob() )
     {
         m_collection->scanManager()->setBlockScan( false );
-//         collection()->collectionUpdated();
         slotRemoveOperationFinished();
     }
 
 }
+
+void SqlCollectionLocation::slotTransferJobFinished( KJob* job )
+{
+    DEBUG_BLOCK
+    if( job->error() )
+    {
+        debug() << job->errorText();
+    }
+    // filter the list of destinations to only include tracks
+    // that were successfully copied
+    foreach( const Meta::TrackPtr &track, m_destinations.keys() )
+    {
+        if( !QFileInfo( m_destinations[ track ] ).exists() )
+            m_destinations.remove( track );
+    }
+    insertTracks( m_destinations );
+    insertStatistics( m_destinations );
+    m_collection->scanManager()->setBlockScan( false );
+    slotCopyOperationFinished();
+}
+
+void SqlCollectionLocation::slotTransferJobAborted()
+{
+    DEBUG_BLOCK
+    if( !m_transferjob )
+        return;
+    m_transferjob->kill();
+    // filter the list of destinations to only include tracks
+    // that were successfully copied
+    foreach( const Meta::TrackPtr &track, m_destinations.keys() )
+    {
+        if( !QFileInfo( m_destinations[ track ] ).exists() )
+            m_destinations.remove( track );
+    }
+    insertTracks( m_destinations );
+    insertStatistics( m_destinations );
+    m_collection->scanManager()->setBlockScan( false );
+    abort();
+}
+
 
 void
 SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources )
@@ -337,15 +366,10 @@ SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
     else
         statusBarTxt = i18n( "Copying tracks" );
 
-    The::statusBar()->newProgressOperation( this, statusBarTxt );
-    The::statusBar()->incrementProgressTotalSteps( this, m_sources.size() );
-
-    if( !startNextJob() ) //this signal needs to be called no matter what, even if there are no job finishes to call it
-    {
-        The::statusBar()->endProgressOperation( this );
-        m_collection->scanManager()->setBlockScan( false ); //unblock scanning if we encountered an error while copying as well
-        slotCopyOperationFinished();
-    }
+    m_transferjob = new TransferJob( this );
+    The::statusBar()->newProgressOperation( m_transferjob, statusBarTxt )->setAbortSlot( this, SLOT( slotTransferJobAborted() ) );
+    connect( m_transferjob, SIGNAL( result( KJob * ) ), this, SLOT( slotTransferJobFinished( KJob * ) ) );
+    m_transferjob->start();
 }
 
 void
@@ -359,7 +383,6 @@ SqlCollectionLocation::removeUrlsFromCollection(  const Meta::TrackList &sources
 
     if( !startNextRemoveJob() ) //this signal needs to be called no matter what, even if there are no job finishes to call it
     {
-//         collection()->collectionUpdated();
         m_collection->scanManager()->setBlockScan( false );
         slotRemoveOperationFinished();
     }
@@ -472,7 +495,7 @@ SqlCollectionLocation::insertStatistics( const QMap<Meta::TrackPtr, QString> &tr
 bool SqlCollectionLocation::startNextJob()
 {
     DEBUG_BLOCK
-    while ( !m_sources.isEmpty() )
+    if( !m_sources.isEmpty() )
     {
         Meta::TrackPtr track = m_sources.keys().first();
         KUrl src = m_sources.take( track );
@@ -496,12 +519,12 @@ bool SqlCollectionLocation::startNextJob()
             {
                 warning() << "Could not create directory " << dir;
                 source()->transferError(track, i18n( "Could not create directory: %1", dir.path() ) );
-                continue; // Attempt to copy/move the next item in m_sources
+                return true; // Attempt to copy/move the next item in m_sources
             }
         }
         if( src == dest) {
         //no changes, so leave the database alone, and don't erase anything
-            continue; // Attempt to copy/move the next item in m_sources
+            return true; // Attempt to copy/move the next item in m_sources
         }
         //we should only move it directly if we're moving within the same collection
         else if( isGoingToRemoveSources() && source()->collection() == collection() )
@@ -516,16 +539,18 @@ bool SqlCollectionLocation::startNextJob()
         }
         if( job )   //just to be safe
         {
-            connect( job, SIGNAL( result(KJob*) ), SLOT( slotJobFinished(KJob*) ) );
+            connect( job, SIGNAL( result( KJob* ) ), SLOT( slotJobFinished( KJob* ) ) );
+            connect( job, SIGNAL( result( KJob* ) ), m_transferjob, SLOT( slotJobFinished( KJob* ) ) );
+            m_transferjob->addSubjob( job );
             QString name = track->prettyName();
             if( track->artist() )
                 name = QString( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
 
-//            The::statusBar()->newProgressOperation( job, i18n( "Transferring: %1", name ) );
+            m_transferjob->emitInfo( i18n( "Transferring: %1", name ) );
             m_jobs.insert( job, track );
             return true;
         }
-        break;
+        debug() << "JOB NULL OMG!11";
     }
     return false;
 }
@@ -558,6 +583,83 @@ bool SqlCollectionLocation::startNextRemoveJob()
         break;
     }
     return false;
+}
+
+
+TransferJob::TransferJob( SqlCollectionLocation * location )
+    : KCompositeJob( 0 )
+    , m_location( location )
+    , m_killed( false )
+{
+    setCapabilities( KJob::Killable );
+}
+
+bool TransferJob::addSubjob(KJob* job)
+{
+    return KCompositeJob::addSubjob(job);
+}
+
+void TransferJob::emitInfo(const QString& message)
+{
+    emit infoMessage( this, message );
+}
+
+
+void TransferJob::start()
+{
+    DEBUG_BLOCK
+    if( m_location == 0 )
+    {
+        setError( 1 );
+        setErrorText( "Location is null!" );
+        emitResult();
+        return;
+    }
+    QTimer::singleShot( 0, this, SLOT( doWork() ) );
+}
+
+void TransferJob::doWork()
+{
+    DEBUG_BLOCK
+    setTotalAmount(  KJob::Files, m_location->m_sources.size() );
+    setProcessedAmount( KJob::Files, 0 );
+    if( !m_location->startNextJob() )
+    {
+        if( hasSubjobs() )
+            emitResult();
+    }
+}
+
+void TransferJob::slotJobFinished( KJob* job )
+{
+    Q_UNUSED( job );
+    DEBUG_BLOCK
+    if( m_killed )
+    {
+        debug() << "slotJobFinished entered, but it should be killed!";
+        return;
+    }
+    setProcessedAmount( KJob::Files, processedAmount( KJob::Files ) + 1 );
+    emitPercent( processedAmount( KJob::Files ), totalAmount( KJob::Files ) );
+    debug() << "processed" << processedAmount( KJob::Files ) << " totalAmount" << totalAmount( KJob::Files );
+    if( !m_location->startNextJob() )
+    {
+        // don't quit if there are still subjobs
+        if( hasSubjobs() )
+            emitResult();
+    }
+}
+
+bool TransferJob::doKill()
+{
+    DEBUG_BLOCK
+    m_killed = true;
+    foreach( KJob* job, subjobs() )
+    {
+        job->kill();
+    }
+    clearSubjobs();
+    return KJob::doKill();
 }
 
 #include "SqlCollectionLocation.moc"

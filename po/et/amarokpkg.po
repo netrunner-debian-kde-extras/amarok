@@ -2,13 +2,13 @@
 # Copyright (C) YEAR This_file_is_part_of_KDE
 # This file is distributed under the same license as the PACKAGE package.
 #
-# Marek Laane <bald@smail.ee>, 2009.
+# Marek Laane <bald@smail.ee>, 2009, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarokpkg\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-06-28 11:45+0200\n"
-"PO-Revision-Date: 2009-09-14 20:10+0300\n"
+"POT-Creation-Date: 2010-03-02 04:26+0100\n"
+"PO-Revision-Date: 2010-03-09 02:34+0200\n"
 "Last-Translator: Marek Laane <bald@smail.ee>\n"
 "Language-Team: Estonian <kde-et@linux.ee>\n"
 "MIME-Version: 1.0\n"
@@ -26,8 +26,8 @@ msgid "Amarok Applet Manager"
 msgstr "Amaroki apletihaldur"
 
 #: amarokpkg.cpp:78
-msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo franchi"
-msgstr "(C) 2008: Aaron Seigo, (C) 2009: Leo franchi"
+msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+msgstr "(C) 2008: Aaron Seigo, (C) 2009: Leo Franchi"
 
 #: amarokpkg.cpp:79
 msgid "Aaron Seigo"
@@ -62,7 +62,7 @@ msgid "Upgrade the applet at <path>"
 msgstr "Apleti uuendamine asukohas <path>"
 
 #: amarokpkg.cpp:99
-msgid "List installed applet"
+msgid "List installed applets"
 msgstr "Paigaldatud aplettide loetlemine"
 
 #: amarokpkg.cpp:101

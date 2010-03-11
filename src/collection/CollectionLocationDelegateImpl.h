@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2010 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
+ * Copyright (c) 2010 Casey Link <unnamedrambler@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -30,6 +31,16 @@ public:
     virtual bool reallyMove(CollectionLocation* loc, const Meta::TrackList& tracks) const;
     virtual void errorDeleting( CollectionLocation* loc, const Meta::TrackList& tracks ) const;
     virtual void notWriteable(CollectionLocation* loc) const;
+
+ private:
+    /**
+     * Builds a string of the format "ARTIST - TITLE",
+     * for media device tracks.
+     * @param track Pointer of the Meta::Track item
+     * @return String with artist and title
+     */
+    virtual QString realTrackName( const Meta::TrackPtr track ) const;
 };
+
 
 #endif

@@ -2,14 +2,14 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
-# Ni Hui <shuizhuyuanluo@126.com>, 2009.
+# Ni Hui <shuizhuyuanluo@126.com>, 2009, 2010.
 # Funda Wang <fundawang@gmail.com, 2009.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarokcollectionscanner_qt\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2010-01-24 06:23+0100\n"
-"PO-Revision-Date: 2009-12-03 12:41+0800\n"
+"PO-Revision-Date: 2010-02-26 11:29+0800\n"
 "Last-Translator: Ni Hui <shuizhuyuanluo@126.com>\n"
 "Language-Team: Chinese Simplified <kde-china@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -71,7 +71,7 @@ msgstr "-h, --help            ：本帮助文本"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:1028
 msgid "-v, --version         : Print the version of this tool"
-msgstr ""
+msgstr "-v, --version         ：显示本工具的版本"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:1029
 msgid "-r, --recursive       : Scan folders recursively"
@@ -105,7 +105,7 @@ msgstr ""
 
 #: utilities/collectionscanner/CollectionScanner.cpp:1035
 msgid "--savelocation        : Internal command used by Amarok"
-msgstr ""
+msgstr "--savelocation        ：Amarok 内部使用的命令"
 
 #~ msgid "-c, --nocharset       : Use the charset detector on ID3 tags"
 #~ msgstr "-c, --nocharset       ：对 ID3 标签使用字符集探测"

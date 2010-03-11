@@ -64,8 +64,6 @@ ToolTipManager::ToolTipManager(QAbstractItemView* parent) :
 
     m_previewTimer = new QTimer(this);
     m_previewTimer->setSingleShot(true);
-    connect(m_previewTimer, SIGNAL(timeout()),
-            this, SLOT(startPreviewJob()));
 
     m_waitOnPreviewTimer = new QTimer(this);
     m_waitOnPreviewTimer->setSingleShot(true);
@@ -147,7 +145,7 @@ void ToolTipManager::prepareToolTip()
     else
         image = QPixmap();
 
-    QString text = QString();
+    QString text;
     if (m_track->name() != "")
     {
         text += "<tr><td align=\"right\"><b>"+i18n("Title")+"</b>:</td><td align=\"left\">"+breakLongLinesHTML(m_track->prettyName())+"</td></tr>";

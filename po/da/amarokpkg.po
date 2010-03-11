@@ -1,13 +1,13 @@
 # Copyright (C) YEAR This_file_is_part_of_KDE
 # This file is distributed under the same license as the PACKAGE package.
 #
-# Martin Schlander <mschlander@opensuse.org>, 2009.
+# Martin Schlander <mschlander@opensuse.org>, 2009, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2009-06-28 11:45+0200\n"
-"PO-Revision-Date: 2009-09-05 13:21+0200\n"
+"POT-Creation-Date: 2010-03-02 04:26+0100\n"
+"PO-Revision-Date: 2010-03-08 14:45+0100\n"
 "Last-Translator: Martin Schlander <mschlander@opensuse.org>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "MIME-Version: 1.0\n"
@@ -25,8 +25,8 @@ msgid "Amarok Applet Manager"
 msgstr "Håndtering af Amarok-applets"
 
 #: amarokpkg.cpp:78
-msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo franchi"
-msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo franchi"
+msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
 
 #: amarokpkg.cpp:79
 msgid "Aaron Seigo"
@@ -61,8 +61,8 @@ msgid "Upgrade the applet at <path>"
 msgstr "Opgradér appletten til <path>"
 
 #: amarokpkg.cpp:99
-msgid "List installed applet"
-msgstr "Vis liste over installerede applets"
+msgid "List installed applets"
+msgstr "Oplist installerede appletter"
 
 #: amarokpkg.cpp:101
 msgctxt "Do not translate <name>"
