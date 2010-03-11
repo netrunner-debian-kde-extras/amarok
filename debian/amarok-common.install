@@ -59,6 +59,7 @@ usr/share/kde4/services/amarok_service_magnatunestore_config.desktop
 usr/share/kde4/services/amarok_service_mp3tunes.desktop
 usr/share/kde4/services/amarok_service_mp3tunes_config.desktop
 usr/share/kde4/services/amarok_service_opmldirectory.desktop
+usr/share/kde4/services/amarokitpc.protocol
 usr/share/kde4/services/amaroklastfm.protocol
 usr/share/kde4/servicetypes/amarok_codecinstall.desktop
 usr/share/kde4/servicetypes/amarok_context_applet.desktop

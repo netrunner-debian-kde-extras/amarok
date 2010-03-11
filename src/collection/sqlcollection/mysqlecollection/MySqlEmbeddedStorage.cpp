@@ -27,10 +27,15 @@
 #include <QThreadStorage>
 #include <QVarLengthArray>
 
+#include <KStandardDirs>
+
 #include <mysql.h>
 
 MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
     : MySqlStorage()
+#define MYSQLE_ERRMSG_FILENAME "errmsg.sys"
+#define MYSQLE_ERRMSG_LOCAL_DIR "amarok/mysqle"
+
 {
 
     m_debugIdent = "MySQLe";
@@ -49,9 +54,12 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
         defaultsFile = QDir::cleanPath( dir.absoluteFilePath( "my.cnf" ) );
         databaseDir = dir.absolutePath() + QDir::separator() + "mysqle";
     }
+    QString languageDataDir = KGlobal::dirs()->findResourceDir( "data", MYSQLE_ERRMSG_LOCAL_DIR "/" MYSQLE_ERRMSG_FILENAME );
 
     char* defaultsLine = qstrdup( QString( "--defaults-file=%1" ).arg( defaultsFile ).toAscii().data() );
     char* databaseLine = qstrdup( QString( "--datadir=%1" ).arg( databaseDir ).toAscii().data() );
+    char* languageLine = (languageDataDir.isNull()) ? NULL :
+        qstrdup( QString( "--language=%1/%2" ).arg( languageDataDir ).arg( MYSQLE_ERRMSG_LOCAL_DIR ).toAscii().data() );
 
     if( !QFile::exists( defaultsFile ) )
     {
@@ -68,7 +76,9 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
         dir.mkpath( "." );
     }
 
-    static const int num_elements = 10;
+    int num_elements = 10;
+    if (languageLine)
+        num_elements++;
     char **server_options = new char* [ num_elements + 1 ];
     server_options[0] = const_cast<char*>( "amarokmysqld" );
     server_options[1] = defaultsLine;
@@ -82,6 +92,8 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
     server_options[7] = const_cast<char*>( "--myisam-recover=FORCE" );
     server_options[8] = const_cast<char*>( "--character-set-server=utf8" );
     server_options[9] = const_cast<char*>( "--collation-server=utf8_bin" );
+    if (languageLine)
+        server_options[num_elements-1] = languageLine;
     server_options[num_elements] = 0;
 
     char **server_groups = new char* [ 3 ];
@@ -101,6 +113,8 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
     delete [] server_groups;
     delete [] defaultsLine;
     delete [] databaseLine;
+    if (languageLine)
+        delete [] languageLine;
 
     if( !m_db )
     {

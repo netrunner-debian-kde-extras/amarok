@@ -6,7 +6,6 @@ include_directories(
         ..
         ${CMAKE_SOURCE_DIR}/src
         ${QT_QTCORE_INCLUDES}
-        ${OPENSSL_INCLUDE_DIR}
         ${MYSQL_INCLUDE_DIR}
         )
 
@@ -32,14 +31,12 @@ target_link_libraries(amarok_collection-mysqlecollection
     ${KDE4_KDECORE_LIBS}
     ${QT_QTCORE_LIBRARY}
     ${QT_QTGUI_LIBRARY}
-    ${OPENSSL_LIBRARIES}
     ${MYSQL_EMBEDDED_LIBRARIES}
     ${CMAKE_DL_LIBS}
     ${ZLIB_LIBRARIES}
 )
 
 if(NOT WIN32)
-    target_link_libraries(amarok_collection-mysqlecollection crypto ssl)
     if(NOT APPLE)
         target_link_libraries(amarok_collection-mysqlecollection crypt pthread)
     endif(NOT APPLE)
