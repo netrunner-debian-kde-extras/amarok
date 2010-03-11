@@ -3,6 +3,7 @@ amarok (2.3.0-0r1) UNRELEASED; urgency=low
   * New upstream release.
   * Refresh patches.
   * Update amarok-common.install.
+  * Fix hyphen-used-as-minus-sign usr/share/man/man1/amarok.1.gz:149.
 
  -- Modestas Vainius <modax@debian.org>  Thu, 11 Mar 2010 12:03:14 +0200
 
