@@ -1,4 +1,4 @@
-amarok (2.3.0-0r1) UNRELEASED; urgency=low
+amarok (2.3.0-1) unstable; urgency=low
 
   * New upstream release.
   * Refresh patches.
@@ -6,7 +6,7 @@ amarok (2.3.0-0r1) UNRELEASED; urgency=low
   * Fix hyphen-used-as-minus-sign usr/share/man/man1/amarok.1.gz:149.
   * Do not use asterisks in debian/NEWS, use normal paragraphs instead.
 
- -- Modestas Vainius <modax@debian.org>  Thu, 11 Mar 2010 12:03:14 +0200
+ -- Modestas Vainius <modax@debian.org>  Mon, 15 Mar 2010 01:33:17 +0200
 
 amarok (2.3~beta1-1) experimental; urgency=low
 
