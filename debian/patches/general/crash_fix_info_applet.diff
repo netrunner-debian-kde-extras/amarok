@@ -1,0 +1,88 @@
+From: Mark Kretschmann <kretschmann@kde.org>
+Subject: [PATCH] Patch for crash on startup with Info applet
+ Since Amarok 2.3.0 had been released we were struggling with one very
+ bizarre bug, a crash on startup induced by the "Info" applet. As it
+ turns out, this is really a bug in Qt, and it will be fixed in Qt
+ 4.6.3.
+ .
+ However, we were able to make a simple workaround that fixes the issue
+ directly in Amarok, and this workaround does not have any side
+ effects. Some of you packagers have asked us for this patch, so I'm
+ attaching it here to this mail. You could either decide to patch Qt,
+ or Amarok, or maybe both (the crash might also affect other Plasma
+ applets). But I would personally recommend patching Amarok in any
+ case, as this is just safer.
+Bug: https://bugs.kde.org/show_bug.cgi?id=227639
+Bug: https://bugs.kde.org/show_bug.cgi?id=229756
+Origin: upstream
+
+Signed-off-by: Modestas Vainius <modestas@vainius.eu>
+
+---
+ src/context/applets/info/InfoApplet.cpp |   19 +++++++++++++------
+ src/context/applets/info/InfoApplet.h   |    2 ++
+ 2 files changed, 15 insertions(+), 6 deletions(-)
+
+diff --git a/src/context/applets/info/InfoApplet.cpp b/src/context/applets/info/InfoApplet.cpp
+index 166da4c..e415e98 100644
+--- a/src/context/applets/info/InfoApplet.cpp
++++ b/src/context/applets/info/InfoApplet.cpp
+@@ -40,18 +40,30 @@ QString InfoApplet::s_defaultHtml = "<html>"
+ 
+ InfoApplet::InfoApplet( QObject* parent, const QVariantList& args )
+     : Context::Applet( parent, args )
++    , m_webView( 0 )
+     , m_initialized( false )
+     , m_currentPlaylist( 0 )
++   
+ {
+     setHasConfigurationInterface( false );
+     setBackgroundHints( Plasma::Applet::NoBackground );
++}
++
++InfoApplet::~InfoApplet()
++{
++    delete m_webView;
++}
++
++
++void  InfoApplet::init()
++{
+ 
+     dataEngine( "amarok-info" )->connectSource( "info", this );
+ 
+     m_webView = new AmarokWebView( this );
+ 
+     resize( 500, -1 );
+-    
++
+     QPalette p = m_webView->palette();
+     p.setColor( QPalette::Dark, QColor( 255, 255, 255, 0)  );
+     p.setColor( QPalette::Window, QColor( 255, 255, 255, 0)  );
+@@ -62,11 +74,6 @@ InfoApplet::InfoApplet( QObject* parent, const QVariantList& args )
+     constraintsEvent();
+ }
+ 
+-InfoApplet::~InfoApplet()
+-{
+-    delete m_webView;
+-}
+-
+ void InfoApplet::constraintsEvent( Plasma::Constraints constraints )
+ {
+     Q_UNUSED( constraints )
+diff --git a/src/context/applets/info/InfoApplet.h b/src/context/applets/info/InfoApplet.h
+index 4be28fc..775ea7c 100644
+--- a/src/context/applets/info/InfoApplet.h
++++ b/src/context/applets/info/InfoApplet.h
+@@ -48,6 +48,8 @@ public:
+     InfoApplet( QObject* parent, const QVariantList& args );
+     virtual ~InfoApplet();
+ 
++    void init();
++
+     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
+     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
+ 
+-- 
+tg: (ad61c61..) general/crash_fix_info_applet (depends on: upstream)
