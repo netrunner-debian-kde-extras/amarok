@@ -8,6 +8,7 @@ amarok (2.3.1~beta1-0r1) UNRELEASED; urgency=low
    - debian/mysql_no_openssl_fix.diff - adapt to upstream changes;
    - debian/mysqle_amarok_local_errmsg_feature.diff - adapt to upstream
      changes;
+  * Update install files.
 
  -- Modestas Vainius <modax@debian.org>  Thu, 15 Apr 2010 22:36:22 +0300
 
