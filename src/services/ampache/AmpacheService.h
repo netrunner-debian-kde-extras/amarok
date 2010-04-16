@@ -62,7 +62,7 @@ public:
     void polish();
     void reauthenticate();
 
-    virtual Amarok::Collection * collection() { return m_collection; }
+    virtual Collections::Collection * collection() { return m_collection; }
 
 private slots:
     void authenticate(KJob *job);
@@ -82,7 +82,7 @@ private:
 
     InfoParserBase *m_infoParser;
 
-    AmpacheServiceCollection *  m_collection;
+    Collections::AmpacheServiceCollection *  m_collection;
 
     // Disable copy constructor and assignment
     AmpacheService( const AmpacheService& );

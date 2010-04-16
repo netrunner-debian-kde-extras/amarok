@@ -17,9 +17,9 @@
 #include "CollectionDBusHandler.h"
 
 #include "CollectionAdaptor.h"
-#include "collection/support/XmlQueryReader.h"
+#include "core-impl/collections/support/XmlQueryReader.h"
 #include "dbus/DBusQueryHelper.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 class QueryMaker;
 
@@ -41,7 +41,7 @@ CollectionDBusHandler::Query( const QString &xmlQuery )
     if( !calledFromDBus() )
         return VariantMapList();
 
-    QueryMaker* qm = XmlQueryReader::getQueryMaker( xmlQuery, XmlQueryReader::IgnoreReturnValues );
+    Collections::QueryMaker* qm = XmlQueryReader::getQueryMaker( xmlQuery, XmlQueryReader::IgnoreReturnValues );
     
     //probably invalid XML
     if( !qm )
@@ -64,7 +64,7 @@ CollectionDBusHandler::MprisQuery( const QString &xmlQuery )
     if( !calledFromDBus() )
         return VariantMapList();
 
-    QueryMaker* qm = XmlQueryReader::getQueryMaker( xmlQuery, XmlQueryReader::IgnoreReturnValues );
+    Collections::QueryMaker* qm = XmlQueryReader::getQueryMaker( xmlQuery, XmlQueryReader::IgnoreReturnValues );
 
     //probably invalid XML
     if( !qm )

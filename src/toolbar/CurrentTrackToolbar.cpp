@@ -18,12 +18,12 @@
 
 #include "EngineController.h"
 #include "GlobalCurrentTrackActions.h"
-#include "meta/capabilities/CurrentTrackActionsCapability.h"
+#include "core/capabilities/CurrentTrackActionsCapability.h"
 
 
 CurrentTrackToolbar::CurrentTrackToolbar( QWidget * parent )
     : QToolBar( parent )
-    , EngineObserver( The::engineController() )
+    , Engine::EngineObserver( The::engineController() )
 {
     setToolButtonStyle( Qt::ToolButtonIconOnly );
     setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
@@ -51,9 +51,9 @@ void CurrentTrackToolbar::handleAddActions()
     foreach( QAction* action, The::globalCurrentTrackActions()->actions() )
         addAction( action );
     
-    if( track && track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
+    if( track && track->hasCapabilityInterface( Capabilities::Capability::CurrentTrackActions ) )
     {
-        Meta::CurrentTrackActionsCapability *cac = track->create<Meta::CurrentTrackActionsCapability>();
+        Capabilities::CurrentTrackActionsCapability *cac = track->create<Capabilities::CurrentTrackActionsCapability>();
         if( cac )
         {
             QList<QAction *> currentTrackActions = cac->customActions();

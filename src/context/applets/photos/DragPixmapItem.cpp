@@ -16,7 +16,7 @@
 
 #include "DragPixmapItem.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 // KDE
 #include <KIcon>
@@ -34,7 +34,6 @@
 DragPixmapItem::DragPixmapItem( QGraphicsItem* parent )
     : QGraphicsPixmapItem( parent )
     , m_dragPos( QPoint() )
-    , m_url( 0 )
 {
     setAcceptDrops( true );
     setCursor( Qt::PointingHandCursor );

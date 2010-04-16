@@ -3,7 +3,7 @@
  * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
- * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
  * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -25,21 +25,18 @@
 
 #include "GroupingProxy.h"
 
-#include "Debug.h"
-#include "Collection.h"
-#include "meta/MetaUtility.h"
-#include "meta/capabilities/SourceInfoCapability.h"
+#include "core/support/Debug.h"
+#include "core/collections/Collection.h"
+#include "core/meta/support/MetaUtility.h"
+#include "core/capabilities/SourceInfoCapability.h"
 #include "playlist/PlaylistDefines.h"
 
 #include <QVariant>
 
 
 Playlist::GroupingProxy::GroupingProxy( Playlist::AbstractModel *belowModel, QObject *parent )
-    : ProxyBase( parent )
+    : ProxyBase( belowModel, parent )
 {
-    m_belowModel = belowModel;
-    setSourceModel( dynamic_cast< QAbstractItemModel * >( m_belowModel ) );
-
     setGroupingCategory( QString( "Album" ) );
 
 
@@ -68,16 +65,6 @@ Playlist::GroupingProxy::GroupingProxy( Playlist::AbstractModel *belowModel, QOb
     connect( this, SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( proxyRowsInserted( const QModelIndex &, int, int ) ) );
     connect( this, SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( proxyRowsRemoved( const QModelIndex&, int, int ) ) );
 
-
-    // Proxy the Playlist::AbstractModel signals
-    connect( sourceModel(), SIGNAL( metadataUpdated() ), this, SIGNAL( metadataUpdated() ) );  // Planned for removal, but handle for now 2010-02-11
-    connect( this, SIGNAL( metadataUpdated() ), this, SLOT( proxyLayoutChanged() ) );          // Planned for removal, but handle for now 2010-02-11
-
-    connect( sourceModel(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SIGNAL( activeTrackChanged( quint64 ) ) );
-    connect( sourceModel(), SIGNAL( beginRemoveIds() ), this, SIGNAL( beginRemoveIds() ) );
-    connect( sourceModel(), SIGNAL( insertedIds( const QList<quint64>& ) ), this, SIGNAL( insertedIds( const QList< quint64>& ) ) );
-    connect( sourceModel(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SIGNAL( removedIds( const QList< quint64 >& ) ) );
-    connect( sourceModel(), SIGNAL( queueChanged() ), this, SIGNAL( queueChanged() ) );
 
     // No need to scan the pre-existing entries in sourceModel(), because we build our
     // internal state on-the-fly.
@@ -115,15 +102,15 @@ Playlist::GroupingProxy::setGroupingCategory( const QString &groupingCategory )
 bool
 Playlist::GroupingProxy::isFirstInGroup( const QModelIndex & index )
 {
-    GroupMode mode = groupModeForIndex( index );
-    return ( (mode == Head) || (mode == None) );
+    Grouping::GroupMode mode = groupModeForIndex( index );
+    return ( (mode == Grouping::Head) || (mode == Grouping::None) );
 }
 
 bool
 Playlist::GroupingProxy::isLastInGroup( const QModelIndex & index )
 {
-    GroupMode mode = groupModeForIndex( index );
-    return ( (mode == Tail) || (mode == None) );
+    Grouping::GroupMode mode = groupModeForIndex( index );
+    return ( (mode == Grouping::Tail) || (mode == Grouping::None) );
 }
 
 QModelIndex
@@ -256,14 +243,14 @@ Playlist::GroupingProxy::proxyRowsRemoved( const QModelIndex& parent, int proxyS
 }
 
 
-Playlist::GroupMode
+Playlist::Grouping::GroupMode
 Playlist::GroupingProxy::groupModeForIndex( const QModelIndex & thisIndex )
 {
-    GroupMode groupMode;
+    Grouping::GroupMode groupMode;
 
-    groupMode = m_cachedGroupModeForRow.value( thisIndex.row(), Invalid );    // Try to get from cache
+    groupMode = m_cachedGroupModeForRow.value( thisIndex.row(), Grouping::Invalid );    // Try to get from cache
 
-    if ( groupMode == Invalid )
+    if ( groupMode == Grouping::Invalid )
     {   // Not in our cache
         QModelIndex prevIndex = thisIndex.sibling( thisIndex.row() - 1, thisIndex.column() );    // May be invalid, if 'thisIndex' is the first playlist item.
         QModelIndex nextIndex = thisIndex.sibling( thisIndex.row() + 1, thisIndex.column() );    // May be invalid, if 'thisIndex' is the last playlist item.
@@ -276,13 +263,13 @@ Playlist::GroupingProxy::groupModeForIndex( const QModelIndex & thisIndex )
         bool matchAfter  = shouldBeGrouped( thisTrack, nextTrack );    //
 
         if ( !matchBefore && matchAfter )
-            groupMode = Head;
+            groupMode = Grouping::Head;
         else if ( matchBefore && matchAfter )
-            groupMode = Body;
+            groupMode = Grouping::Body;
         else if ( matchBefore && !matchAfter )
-            groupMode = Tail;
+            groupMode = Grouping::Tail;
         else
-            groupMode = None;
+            groupMode = Grouping::None;
 
         m_cachedGroupModeForRow.insert( thisIndex.row(), groupMode );    // Cache our decision
     }
@@ -323,8 +310,8 @@ Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr 
             {
                 QString source1, source2;
 
-                Meta::SourceInfoCapability *sic1 = track1->create< Meta::SourceInfoCapability >();
-                Meta::SourceInfoCapability *sic2 = track2->create< Meta::SourceInfoCapability >();
+                Capabilities::SourceInfoCapability *sic1 = track1->create< Capabilities::SourceInfoCapability >();
+                Capabilities::SourceInfoCapability *sic2 = track2->create< Capabilities::SourceInfoCapability >();
                 if( sic1 && sic2)
                 {
                     source1 = sic1->sourceName();

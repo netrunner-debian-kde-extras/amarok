@@ -22,8 +22,9 @@
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
 
-#include "Debug.h"
-using namespace Meta;
+#include "core/support/Debug.h"
+
+using namespace Collections;
 
 Mp3tunesServiceCollectionLocation::Mp3tunesServiceCollectionLocation( Mp3tunesServiceCollection const *parentCollection )
     : ServiceCollectionLocation()

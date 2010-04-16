@@ -15,16 +15,18 @@
  ****************************************************************************************/
  
 #include "NavigationUrlGenerator.h"
+#include <amarokconfig.h>
 #include "AmarokUrl.h"
 #include "AmarokUrlHandler.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "MainWindow.h"
 #include "ServiceBrowser.h"
-#include "SourceInfoCapability.h"
+#include "core/capabilities/SourceInfoCapability.h"
 #include "browsers/CollectionTreeItemModelBase.h"
 #include "browsers/collectionbrowser/CollectionWidget.h"
 #include "browsers/playlistbrowser/PlaylistBrowser.h"
-#include "collection/sqlcollection/SqlMeta.h"
+#include "browsers/filebrowser/FileBrowser.h"
+#include "core-impl/collections/sqlcollection/SqlMeta.h"
 #include "PlaylistManager.h"
 
 NavigationUrlGenerator * NavigationUrlGenerator::s_instance = 0;
@@ -103,8 +105,40 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
         url.appendArg( "levels", sortMode );
 
 
+    //if in the local collection view, also store "show covers" and "show years"
+    if( url.path().endsWith( "collections", Qt::CaseInsensitive ) )
+    {
+        debug() << "bookmarking in local collection";
+
+        if( AmarokConfig::showAlbumArt() )
+            url.appendArg( "show_cover", "true" );
+        else
+            url.appendArg( "show_cover", "false" );
+
+        if(  AmarokConfig::showYears() )
+            url.appendArg( "show_years", "true" );
+        else
+            url.appendArg( "show_years", "false" );
+    }
+
     //come up with a default name for this url..
     QString name = The::mainWindow()->browserWidget()->list()->activeCategoryRecursive()->prettyName();
+
+    //if in the file browser, also store the file path
+    if( url.path().endsWith( "files", Qt::CaseInsensitive ) )
+    {
+
+        //Give a proper name since it will return "/" as that is what is used in the breadcrumb.
+        name = i18n( "Files" );
+
+        FileBrowser * fileBrowser = dynamic_cast<FileBrowser *>( The::mainWindow()->browserWidget()->list()->activeCategory() );
+        if( fileBrowser )
+        {
+            url.appendArg( "path", fileBrowser->currentDir() );
+            name = i18n( "Files (%1)", fileBrowser->currentDir() );
+        }
+    }
+
     url.setName( name );
     
     return url;
@@ -115,7 +149,7 @@ AmarokUrl NavigationUrlGenerator::urlFromAlbum( Meta::AlbumPtr album )
 {
     AmarokUrl url;
 
-    Meta::BookmarkThisCapability *btc = album->create<Meta::BookmarkThisCapability>();
+    Capabilities::BookmarkThisCapability *btc = album->create<Capabilities::BookmarkThisCapability>();
     if( btc )
     {
         if( btc->isBookmarkable() ) {
@@ -168,7 +202,7 @@ AmarokUrl NavigationUrlGenerator::urlFromArtist( Meta::ArtistPtr artist )
 
     AmarokUrl url;
 
-    Meta::BookmarkThisCapability *btc = artist->create<Meta::BookmarkThisCapability>();
+    Capabilities::BookmarkThisCapability *btc = artist->create<Capabilities::BookmarkThisCapability>();
     if( btc )
     {
         if( btc->isBookmarkable() ) {

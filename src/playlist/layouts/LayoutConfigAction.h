@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
- * Copyright (c) 2009 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,7 +14,7 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
+
 #ifndef LAYOUTCONFIGACTION_H
 #define LAYOUTCONFIGACTION_H
 
@@ -23,9 +23,10 @@
 #include <KMenu>
 
 class QComboBox;
-class PlaylistLayoutEditDialog;
 
 namespace Playlist {
+
+class PlaylistLayoutEditDialog;
 
 /**
  * Action used to show a menu for selecting active playlist layout. Also contains an entry for showing the
@@ -61,12 +62,12 @@ class LayoutConfigAction : public KAction
          * and refetches it from the LayoutManager.
          */
         void layoutListChanged();
-        
+
         /**
          * Launch the playlist layout editor.
          */
         void configureLayouts();
-        
+
         /**
          * The active layout has changed. Update the selected item to represent this.
          */

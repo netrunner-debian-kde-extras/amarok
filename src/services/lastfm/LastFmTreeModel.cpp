@@ -18,10 +18,10 @@
 
 #include "LastFmTreeModel.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include "AvatarDownloader.h"
-#include "CollectionManager.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "AmarokMimeData.h"
 
 #include <lastfm/ws.h>

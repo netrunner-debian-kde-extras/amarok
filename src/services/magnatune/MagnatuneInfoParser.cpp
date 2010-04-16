@@ -16,9 +16,10 @@
 
 #include "MagnatuneInfoParser.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
+#include "core/support/Components.h"
+#include "core/interfaces/Logger.h"
 #include "MagnatuneConfig.h"
-#include "statusbar/StatusBar.h"
 
 #include <KLocale>
 
@@ -40,7 +41,7 @@ void MagnatuneInfoParser::getInfo(ArtistPtr artist)
     QString orgHtml;*/
 
     m_infoDownloadJob = KIO::storedGet( magnatuneArtist->magnatuneUrl(), KIO::Reload, KIO::HideProgressInfo );
-    The::statusBar()->newProgressOperation( m_infoDownloadJob, i18n( "Fetching %1 Artist Info", magnatuneArtist->prettyName() ) );
+    Amarok::Components::logger()->newProgressOperation( m_infoDownloadJob, i18n( "Fetching %1 Artist Info", magnatuneArtist->prettyName() ) );
     connect( m_infoDownloadJob, SIGNAL(result(KJob *)), SLOT( artistInfoDownloadComplete( KJob*) ) );
 
 }
@@ -58,6 +59,7 @@ void MagnatuneInfoParser::getInfo(AlbumPtr album)
     QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" "
                        "CONTENT=\"text/html; charset=utf-8\"></HEAD><BODY>";
 
+    infoHtml += generateHomeLink();
     infoHtml += "<div align=\"center\"><strong>";
     infoHtml += artistName;
     infoHtml += "</strong><br><em>";
@@ -144,7 +146,7 @@ MagnatuneInfoParser::extractArtistInfo( const QString &artistPage )
 
     QString infoHtml = "<HTML><HEAD><META HTTP-EQUIV=\"Content-Type\" "
                        "CONTENT=\"text/html; charset=iso-8859-1\"></HEAD><BODY>";
-
+    infoHtml += generateHomeLink();
     infoHtml += trimmedHtml;
     infoHtml += "</BODY></HTML>";
 
@@ -154,11 +156,18 @@ MagnatuneInfoParser::extractArtistInfo( const QString &artistPage )
 
 void MagnatuneInfoParser::getFrontPage()
 {
+
+    if( !m_cachedFrontpage.isEmpty() )
+    {
+        emit ( info( m_cachedFrontpage ) );
+        return;
+    }
+
     showLoading( i18n( "Loading Magnatune.com frontpage..." ) );
     
     m_pageDownloadJob = KIO::storedGet( KUrl( "http://magnatune.com/amarok_frontpage.html" ), KIO::Reload, KIO::HideProgressInfo );
-    The::statusBar()->newProgressOperation( m_pageDownloadJob, i18n( "Fetching Magnatune.com front page" ) );
-    connect( m_pageDownloadJob, SIGNAL(result(KJob *)), SLOT( pageDownloadComplete( KJob*) ) );
+    Amarok::Components::logger()->newProgressOperation( m_pageDownloadJob, i18n( "Fetching Magnatune.com front page" ) );
+    connect( m_pageDownloadJob, SIGNAL(result( KJob * ) ), SLOT( frontpageDownloadComplete( KJob*) ) );
 }
 
 void MagnatuneInfoParser::getFavoritesPage()
@@ -186,8 +195,8 @@ void MagnatuneInfoParser::getFavoritesPage()
     debug() << "loading url: " << url;
 
     m_pageDownloadJob = KIO::storedGet( KUrl( url ), KIO::Reload, KIO::HideProgressInfo );
-    The::statusBar()->newProgressOperation( m_pageDownloadJob, i18n( "Loading your Magnatune.com favorites page..." ) );
-    connect( m_pageDownloadJob, SIGNAL(result(KJob *)), SLOT( pageDownloadComplete( KJob*) ) );
+    Amarok::Components::logger()->newProgressOperation( m_pageDownloadJob, i18n( "Loading your Magnatune.com favorites page..." ) );
+    connect( m_pageDownloadJob, SIGNAL(result(KJob *)), SLOT( userPageDownloadComplete( KJob*) ) );
 }
 
 void MagnatuneInfoParser::getRecommendationsPage()
@@ -215,12 +224,39 @@ void MagnatuneInfoParser::getRecommendationsPage()
     debug() << "loading url: " << url;
 
     m_pageDownloadJob = KIO::storedGet( KUrl( url ), KIO::Reload, KIO::HideProgressInfo );
-    The::statusBar()->newProgressOperation( m_pageDownloadJob, i18n( "Loading your personal Magnatune.com recommendations page..." ) );
-    connect( m_pageDownloadJob, SIGNAL(result(KJob *)), SLOT( pageDownloadComplete( KJob*) ) );
+    Amarok::Components::logger()->newProgressOperation( m_pageDownloadJob, i18n( "Loading your personal Magnatune.com recommendations page..." ) );
+    connect( m_pageDownloadJob, SIGNAL(result(KJob *)), SLOT( userPageDownloadComplete( KJob*) ) );
     
 }
 
-void MagnatuneInfoParser::pageDownloadComplete( KJob * downLoadJob )
+void MagnatuneInfoParser::frontpageDownloadComplete( KJob * downLoadJob )
+{
+    DEBUG_BLOCK
+    if ( !downLoadJob->error() == 0 )
+    {
+        //TODO: error handling here
+        return ;
+    }
+    if ( downLoadJob != m_pageDownloadJob )
+        return ; //not the right job, so let's ignore it
+
+    QString infoString = ((KIO::StoredTransferJob* )downLoadJob)->data();
+
+    //insert menu
+    MagnatuneConfig config;
+    if( config.isMember() )
+        infoString.replace( "<!--MENU_TOKEN-->", generateMemberMenu() );
+
+    //insert fancy amarok url links to the artists
+    infoString = createArtistLinks( infoString );
+
+    if( m_cachedFrontpage.isEmpty() )
+        m_cachedFrontpage = infoString;
+
+    emit ( info( infoString ) );
+}
+
+void MagnatuneInfoParser::userPageDownloadComplete( KJob * downLoadJob )
 {
     DEBUG_BLOCK
     if ( !downLoadJob->error() == 0 )
@@ -239,15 +275,19 @@ void MagnatuneInfoParser::pageDownloadComplete( KJob * downLoadJob )
     MagnatuneConfig config;
     if( config.isMember() )
         infoString.replace( "<!--MENU_TOKEN-->", generateMemberMenu() );
-    
+
+    //make sure that any pages that use the old command name "service_magnatune" replaces it with "service-magnatune"
+    infoString.replace( "service_magnatune", "service-magnatune" );
+
     emit ( info( infoString ) );
 }
 
+
 QString MagnatuneInfoParser::generateMemberMenu()
 {
-    QString homeUrl = "amarok://service_magnatune?command=show_home";
-    QString favoritesUrl = "amarok://service_magnatune?command=show_favorites";
-    QString recommendationsUrl = "amarok://service_magnatune?command=show_recommendations";
+    QString homeUrl = "amarok://service-magnatune?command=show_home";
+    QString favoritesUrl = "amarok://service-magnatune?command=show_favorites";
+    QString recommendationsUrl = "amarok://service-magnatune?command=show_recommendations";
 
     QString menu = "<div align='right'>"
                        "[<a href='" + homeUrl + "' >Home</a>]&nbsp;"
@@ -256,6 +296,61 @@ QString MagnatuneInfoParser::generateMemberMenu()
                     "</div>";
 
     return menu;
+}
+
+QString
+MagnatuneInfoParser::generateHomeLink()
+{
+    QString homeUrl = "amarok://service-magnatune?command=show_home";
+    QString link = "<div align='right'>"
+                    "[<a href='" + homeUrl + "' >Home</a>]&nbsp;"
+                   "</div>";
+
+    return link;
+}
+
+QString
+MagnatuneInfoParser::createArtistLinks( const QString &page )
+{
+    DEBUG_BLOCK
+    //the artist name is wrapped in <!--ARTIST_TOKEN-->artist<!--/ARTIST_TOKEN-->
+
+    QString returnPage = page;
+
+    int startTokenLength = QString( "<!--ARTIST_TOKEN-->" ).length();
+    int endTokenLength = QString( "<!--/ARTIST_TOKEN-->" ).length();
+
+    int offset = 0;
+    int startTokenIndex = page.indexOf( "<!--ARTIST_TOKEN-->", offset );
+    int endTokenIndex = 0;
+
+    while( startTokenIndex != -1 )
+    {
+        endTokenIndex = page.indexOf( "<!--/ARTIST_TOKEN-->", startTokenIndex );
+        if( endTokenIndex == -1 )
+            break; //bail out
+
+        offset = endTokenIndex;
+
+        //get the artist namespace
+
+        int artistLength = endTokenIndex - ( startTokenIndex + startTokenLength );
+        QString artist = page.mid( startTokenIndex + startTokenLength, artistLength );
+
+        debug() << "got artist " << artist;
+
+        //replace in the artist amarok url
+
+        QString replaceString = "<!--ARTIST_TOKEN-->" + artist + "<!--/ARTIST_TOKEN-->";
+        QString artistLink = "<a href='amarok://navigate/internet/Magnatune.com?filter=artist:%22" + artist + "%22&levels=artist-album'>" + artist + "</a>";
+
+        debug() << "replacing " <<  replaceString << " with " << artistLink;
+        returnPage = returnPage.replace( replaceString, artistLink );
+
+        startTokenIndex = page.indexOf( "<!--ARTIST_TOKEN-->", offset );
+    }
+
+    return returnPage;
 }
 
 

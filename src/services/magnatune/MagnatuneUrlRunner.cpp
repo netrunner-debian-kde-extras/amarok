@@ -28,7 +28,12 @@ MagnatuneUrlRunner::~MagnatuneUrlRunner()
 
 QString MagnatuneUrlRunner::command() const
 {
-    return "service_magnatune";
+    return "service-magnatune";
+}
+
+QString MagnatuneUrlRunner::prettyCommand() const
+{
+    return i18nc( "A type of command that triggers an action in the integrated Magnatune.com service", "Magnatune" );
 }
 
 KIcon MagnatuneUrlRunner::icon() const

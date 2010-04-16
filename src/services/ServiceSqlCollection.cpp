@@ -17,13 +17,13 @@
 
 #include "ServiceSqlCollection.h"
 
-#include "CollectionManager.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "ServiceSqlQueryMaker.h"
-#include "SqlStorage.h"
+#include "core/collections/support/SqlStorage.h"
 
 #include <klocale.h>
 
-
+using namespace Collections;
 
 ServiceSqlCollection::ServiceSqlCollection( const QString &id, const QString &prettyName, ServiceMetaFactory * metaFactory, ServiceSqlRegistry * registry )
     : ServiceCollection()

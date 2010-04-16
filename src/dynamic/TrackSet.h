@@ -19,7 +19,7 @@
 #ifndef AMAROK_TRACKSET_H
 #define AMAROK_TRACKSET_H
 
-#include "Meta.h"
+#include "core/meta/Meta.h"
 
 #include <QBitArray>
 
@@ -41,8 +41,8 @@ namespace Dynamic
 
             int size() const;
 
-            void clear(); //! make this the empty set
-            void setUniverseSet(); //! make this the universe set
+            void clear(); //!< make this the empty set
+            void setUniverseSet(); //!< make this the universe set
 
 
             void setTracks( const QList<QByteArray>& );

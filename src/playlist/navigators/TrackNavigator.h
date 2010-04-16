@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2007 Ian Monroe <ian@monroe.nu>                                        *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
- * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -79,11 +79,6 @@ namespace Playlist
             virtual quint64 requestLastTrack() = 0;
 
             /**
-             * Reset this navigator. Called when the end of a playlist is reached.
-             */
-            virtual void reset() = 0;
-
-            /**
              * Find the position of the id in the queue
              * @return the position, or -1 if non in queue
              */
@@ -99,18 +94,24 @@ namespace Playlist
             /**
              * Queues the specified id and schedules it to be played.
              */
-            virtual bool queueIds( const QList<quint64> &ids );
-            virtual bool queueId( const quint64 id );
+            virtual void queueIds( const QList<quint64> &ids );
+            virtual void queueId( const quint64 id );
 
             /**
              * Dequeue the specified id from the queue list
              */
-            virtual bool dequeueIds( const QList<quint64> &ids );
-            virtual bool dequeueId( const quint64 id );
+            virtual void dequeueId( const quint64 id );
+
+        private slots:
+            void slotModelReset();
+            void slotRowsAboutToBeRemoved( const QModelIndex& parent, int start, int end );
 
         protected:
-            // repeat the entire playlist when we've reached the end
-            bool m_repeatPlaylist;
+            /**
+             * Choose the most reasonable fallback item in case a navigator wants to play
+             * something, but doesn't have a good choice itself.
+             */
+            quint64 bestFallbackItem();
 
             // Holds the list of tracks to be played next. General
             // workflow should dictate that the TrackAdvancer should
@@ -122,9 +123,6 @@ namespace Playlist
             QQueue<quint64> m_queue;
 
             AbstractModel *m_model;
-
-            // Needed for QObject::connect()
-            virtual QAbstractItemModel * model(){ return dynamic_cast<QAbstractItemModel *>( m_model ); }
     };
 }
 

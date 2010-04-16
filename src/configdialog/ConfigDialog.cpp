@@ -16,9 +16,9 @@
 
 #include "ConfigDialog.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "amarokconfig.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include "CollectionConfig.h"
 #include "DatabaseConfig.h"

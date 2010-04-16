@@ -17,13 +17,13 @@
 
 #include "ITunesImporterWorker.h"
 
-#include "Amarok.h"
-#include "CollectionManager.h"
-#include "CollectionLocation.h"
-#include "Debug.h"
-#include "collection/support/FileCollectionLocation.h"
-#include "StatisticsCapability.h"
-#include "meta/file/File.h"
+#include "core/support/Amarok.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core/collections/CollectionLocation.h"
+#include "core/support/Debug.h"
+#include "core-impl/collections/support/FileCollectionLocation.h"
+#include "core/capabilities/StatisticsCapability.h"
+#include "core-impl/meta/file/File.h"
 
 #include <kio/job.h>
 #include <kio/jobclasses.h>
@@ -96,7 +96,7 @@ ITunesImporterWorker::readTrackElement()
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
     if( track )
     {
-        Meta::StatisticsCapability *ec = track->create<Meta::StatisticsCapability>();
+        Capabilities::StatisticsCapability *ec = track->create<Capabilities::StatisticsCapability>();
         if( ec )
         {   
             ec->beginStatisticsUpdate();
@@ -114,7 +114,7 @@ ITunesImporterWorker::readTrackElement()
                 debug() << " inserting track:" << track->playableUrl();
             }
             else {
-                Amarok::Collection* collection = track->collection();
+                Collections::Collection* collection = track->collection();
                 if (collection)
                     debug() << "track in collection (" << collection->location()->prettyLocation() << "):" << track->playableUrl();
             }
@@ -162,7 +162,7 @@ ITunesImporterWorker::run()
             readNext();
             readNext(); // this skips the first all-encompassing <dict> tag 
             debug() << "got start of tracks";
-            while( !atEnd() )
+            while( !atEnd() && !( isEndElement() && name() == "dict" ) )
             {
                 if( m_aborted )
                     return;
@@ -179,7 +179,7 @@ ITunesImporterWorker::run()
 
     if( m_tracksForInsert.size() > 0 )
     {
-        CollectionLocation *location = CollectionManager::instance()->primaryCollection()->location();
+        Collections::CollectionLocation *location = CollectionManager::instance()->primaryCollection()->location();
         location->insertTracks( m_tracksForInsert );
         location->insertStatistics( m_tracksForInsert );
     }

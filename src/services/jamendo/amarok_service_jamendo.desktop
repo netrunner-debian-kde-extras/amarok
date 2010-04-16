@@ -6,6 +6,7 @@ Name=Jamendo
 Name[bg]=Jamendo
 Name[ca]=Jamendo
 Name[ca@valencia]=Jamendo
+Name[cs]=Jamendo
 Name[csb]=Jamendo
 Name[da]=Jamendo
 Name[de]=Jamendo
@@ -104,7 +105,7 @@ X-KDE-Library=amarok_service_jamendo
 
 X-KDE-Amarok-authors=Nikolaj Hald Nielsen
 X-KDE-Amarok-email=nhnFreespirit@gmail.com
-X-KDE-Amarok-framework-version=54
+X-KDE-Amarok-framework-version=55
 X-KDE-Amarok-name=JamendoService
 X-KDE-Amarok-plugintype=service
 X-KDE-Amarok-rank=100

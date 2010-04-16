@@ -17,12 +17,12 @@
 #include <Carbon/Carbon.h>
 
 #include "amarokurls/AmarokUrl.h"
-#include "CollectionManager.h"
-#include "Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core/support/Debug.h"
 #include "DirectoryLoader.h"
-#include "Meta.h"
-#include "Playlist.h"
-#include "PlaylistFileSupport.h"
+#include "core/meta/Meta.h"
+#include "core/playlists/Playlist.h"
+#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "playlist/PlaylistController.h"
 
 

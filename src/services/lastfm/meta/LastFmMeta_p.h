@@ -18,13 +18,13 @@
 #ifndef AMAROK_LASTFMMETA_P_H
 #define AMAROK_LASTFMMETA_P_H
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "amarokconfig.h"
-#include "meta/Meta.h"
-#include "meta/StatisticsProvider.h"
-#include "meta/support/TagStatisticsProvider.h"
+#include "core/meta/Meta.h"
+#include "core/statistics/StatisticsProvider.h"
+#include "core-impl/statistics/providers/tag/TagStatisticsProvider.h"
 
 #include <lastfm/Track>
 #include <lastfm/ws.h>
@@ -77,7 +77,7 @@ class Track::Private : public QObject
         QNetworkReply* trackFetch;
         QNetworkReply* wsReply;
 
-        Meta::StatisticsProvider *statisticsProvider;
+        Statistics::StatisticsProvider *statisticsProvider;
         uint currentTrackStartTime;
 
     public:
@@ -292,7 +292,6 @@ public:
                 pixmap.save( cacheCoverDir.filePath( sizeKey + "lastfm-default-cover.png" ), "PNG" );
             }
 
-            m_noCoverImage = true;
             return pixmap;
         }
 

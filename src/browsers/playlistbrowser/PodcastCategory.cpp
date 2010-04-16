@@ -18,15 +18,15 @@
 
 #include "PodcastCategory.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "App.h"
 #include "context/ContextView.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
-#include "Debug.h"
-#include "MetaUtility.h"
+#include "core/support/Debug.h"
+#include "core/meta/support/MetaUtility.h"
 #include "PodcastModel.h"
-#include "PodcastMeta.h"
+#include "core/podcasts/PodcastMeta.h"
 #include "PopupDropperFactory.h"
 #include "PlaylistsByProviderProxy.h"
 #include "PlaylistTreeItemDelegate.h"
@@ -136,11 +136,11 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
     m_defaultItemDelegate = m_podcastTreeView->itemDelegate();
 
     m_byProviderProxy = new PlaylistsByProviderProxy( podcastModel,
-                                                      PlaylistBrowserNS::ProviderColumn );
+                                                      MetaPlaylistModel::ProviderColumn );
     m_byProviderDelegate = new PlaylistTreeItemDelegate( m_podcastTreeView );
 
     m_podcastTreeView->setFrameShape( QFrame::NoFrame );
-    m_podcastTreeView->setContentsMargins(0,0,0,0);
+    m_podcastTreeView->setContentsMargins( 0, 0, 0, 0 );
 
     KAction *toggleAction = new KAction( KIcon( "view-list-tree" ), QString(), toolBar );
     toggleAction->setToolTip( i18n( "Merged View" ) );
@@ -155,7 +155,7 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
 
     m_podcastTreeView->setAlternatingRowColors( true );
     m_podcastTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
-    m_podcastTreeView->setSelectionBehavior( QAbstractItemView::SelectRows );
+    m_podcastTreeView->setSelectionBehavior( QAbstractItemView::SelectItems );
     m_podcastTreeView->setDragEnabled( true );
     m_podcastTreeView->setAcceptDrops( true );
     m_podcastTreeView->setDropIndicatorShown( true );
@@ -240,13 +240,13 @@ PodcastCategory::showInfo( const QModelIndex & index )
             "if (this.style.width=='150px') {"
                 "this.style.width='auto';"
                 "this.style.marginLeft='0em';"
-                "this.style.cursor='-webkit-zoom-in';"
+                "this.style.cursor='-webkit-zoom-out';"
                 "this.parentNode.style.float='inherit';"
                 "this.parentNode.style.textAlign='center';"
             "} else {"
                 "this.style.width='150px';"
                 "this.style.marginLeft='1em';"
-                "this.style.cursor='-webkit-zoom-out';"
+                "this.style.cursor='-webkit-zoom-in';"
                 "this.parentNode.style.float='right';"
                 "this.parentNode.style.textAlign='inherit';"
             "}\""
@@ -396,8 +396,8 @@ PodcastCategoryDelegate::~PodcastCategoryDelegate()
 }
 
 void
-PodcastCategoryDelegate::paint( QPainter * painter, const QStyleOptionViewItem & option,
-                                const QModelIndex & index ) const
+PodcastCategoryDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option,
+                                const QModelIndex &index ) const
 {
     DEBUG_BLOCK
 
@@ -499,7 +499,7 @@ PodcastCategoryDelegate::sizeHint(const QStyleOptionViewItem & option, const QMo
     int width = m_view->viewport()->size().width() - 4;
 
     //todo: the height should be defined the way it is in the delegate: iconpadY*2 + iconheight
-    //Meta::PodcastMetaCommon* pmc = static_cast<Meta::PodcastMetaCommon *>( index.internalPointer() );
+    //Podcasts::PodcastMetaCommon* pmc = static_cast<Podcasts::PodcastMetaCommon *>( index.internalPointer() );
     int height = 24;
 
     if( /*option.state & QStyle::State_HasFocus*/ m_view->currentIndex() == index )
@@ -531,12 +531,14 @@ PodcastView::PodcastView( PodcastModel *model, QWidget * parent )
 PodcastView::~PodcastView()
 {}
 
-void PodcastView::mousePressEvent( QMouseEvent *event )
+void
+PodcastView::mousePressEvent( QMouseEvent *event )
 {
     QModelIndex index = indexAt( event->pos() );
     if( KGlobalSettings::singleClick() )
         setItemsExpandable( false );
-    if( !index.parent().isValid() ) //not a root element, don't bother checking actions
+    //not a provider item, don't bother checking actions
+    if( model() == m_podcastModel || index.parent().isValid() )
     {
         Amarok::PrettyTreeView::mousePressEvent( event );
         return;
@@ -644,12 +646,14 @@ PodcastView::mouseDoubleClickEvent( QMouseEvent * event )
 
     if( index.isValid() )
     {
-        QModelIndexList indices;
-        indices << index;
-        MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>( model() );
-        if( mpm )
-            mpm->loadItems( indices, Playlist::AppendAndPlay );
-        event->accept();
+        QList<QAction *> actions =
+         index.data( PlaylistBrowserNS::MetaPlaylistModel::ActionRole ).value<QList<QAction *> >();
+        if( actions.count() > 0 )
+        {
+            //HACK execute the first action assuming it's load
+            actions.first()->trigger();
+            actions.first()->setData( QVariant() );
+        }
     }
 
     m_clickTimer.stop();
@@ -657,7 +661,8 @@ PodcastView::mouseDoubleClickEvent( QMouseEvent * event )
     //comes through, but after the mouseDoubleClickEvent, so we need to tell
     //mouseReleaseEvent to ignore that one event
     m_justDoubleClicked = true;
-    setExpanded( index, !isExpanded( index ) );
+    if( model()->hasChildren( index ) )
+        setExpanded( index, !isExpanded( index ) );
 
     event->accept();
 }
@@ -684,14 +689,10 @@ PodcastView::startDrag( Qt::DropActions supportedActions )
 
     if( m_pd && m_pd->isHidden() )
     {
-        MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>( model() );
-        if( mpm )
-            actions = mpm->actionsFor( selectedIndexes() );
+        actions = actionsFor( selectedIndexes() );
 
-        foreach( QAction * action, actions )
-        {
+        foreach( QAction *action, actions )
             m_pd->addItem( The::popupDropperFactory()->createItem( action ) );
-        }
 
         m_pd->show();
     }
@@ -715,22 +716,34 @@ PodcastView::startDrag( Qt::DropActions supportedActions )
     m_dragMutex.unlock();
 }
 
-void
-PodcastView::contextMenuEvent( QContextMenuEvent * event )
+QList<QAction *>
+PodcastView::actionsFor( QModelIndexList indexes )
 {
-    DEBUG_BLOCK
-
-    KMenu menu;
-    QModelIndexList indices = selectedIndexes();
     QList<QAction *> actions;
-    MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>( model() );
-    if( mpm )
-        actions = mpm->actionsFor( indices );
+    foreach( QModelIndex idx, indexes )
+    {
+        QList<QAction *> idxActions =
+         idx.data( PlaylistBrowserNS::MetaPlaylistModel::ActionRole ).value<QList<QAction *> >();
+        //only add unique actions model is responsible for making them unique
+        foreach( QAction *action, idxActions )
+        {
+            if( !actions.contains( action ) )
+                actions << action;
+        }
+    }
+    return actions;
+}
+
+void
+PodcastView::contextMenuEvent( QContextMenuEvent *event )
+{
+    QList<QAction *> actions = actionsFor( selectedIndexes() );
 
     if( actions.isEmpty() )
         return;
 
-    foreach( QAction * action, actions )
+    KMenu menu;
+    foreach( QAction *action, actions )
     {
         if( action )
             menu.addAction( action );
@@ -749,7 +762,8 @@ PodcastView::slotClickTimeout()
     m_clickTimer.stop();
     if( m_savedClickIndex.isValid() && KGlobalSettings::singleClick() )
     {
-        setExpanded( m_savedClickIndex, !isExpanded( m_savedClickIndex ) );
+        if( model()->hasChildren( m_savedClickIndex ) )
+            setExpanded( m_savedClickIndex, !isExpanded( m_savedClickIndex ) );
     }
     m_savedClickIndex = QModelIndex();
 }

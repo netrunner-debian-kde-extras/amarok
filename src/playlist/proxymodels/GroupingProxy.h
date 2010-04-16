@@ -3,7 +3,7 @@
  * Copyright (c) 2007 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
- * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
  * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -25,7 +25,7 @@
 #define AMAROK_PLAYLISTGROUPINGPROXY_H
 
 #include "ProxyBase.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 #include <QHash>
 #include <QModelIndex>
@@ -40,6 +40,8 @@ enum GroupDataRoles
     GroupedTracksRole, // deprecated
 };
 
+namespace Grouping
+{
 enum GroupMode
 {
     None = 1,
@@ -50,6 +52,7 @@ enum GroupMode
     Collapsed, // deprecated
     Invalid
 };
+}
 
 class GroupingProxy : public ProxyBase
 {
@@ -126,7 +129,7 @@ private:
     /**
      * This function determines the "Status within the group" of a model row.
      */
-    GroupMode groupModeForIndex( const QModelIndex & index );
+    Grouping::GroupMode groupModeForIndex( const QModelIndex & index );
 
     /**
      * This function is used to determine if 2 tracks belong in the same group.
@@ -145,7 +148,7 @@ private:
     QString m_groupingCategory;
     int m_groupingCategoryIndex;
 
-    QHash<int, GroupMode> m_cachedGroupModeForRow;
+    QHash<int, Grouping::GroupMode> m_cachedGroupModeForRow;
 };
 
 } // namespace Playlist

@@ -18,9 +18,9 @@
 
 #include "AmarokUrlHandler.h"
 #include "BookmarkGroup.h"
-#include "CollectionManager.h"
-#include "Debug.h"
-#include "SqlStorage.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core/support/Debug.h"
+#include "core/collections/support/SqlStorage.h"
 
 #include <QUrl>
 
@@ -100,6 +100,12 @@ QString AmarokUrl::command() const
         return m_command;
 }
 
+QString
+AmarokUrl::prettyCommand() const
+{
+    return The::amarokUrlHandler()->prettyCommand( command() );
+}
+
 QMap<QString, QString> AmarokUrl::args() const
 {
     return m_arguments;
@@ -121,7 +127,7 @@ QString AmarokUrl::url() const
     QString url = "amarok://";
     url += m_command;
     url += '/';
-    url += escape( m_path );
+    url += m_path;
 
     if ( url.endsWith( '/' ) )
         url.chop( 1 );
@@ -130,17 +136,20 @@ QString AmarokUrl::url() const
     {
     
         url += '?';
-        foreach( const QString &argName, m_arguments.keys() )
+        const QStringList args = m_arguments.keys();
+        foreach( const QString &argName, args )
         {
             url += argName;
             url += '=';
-            url += escape( m_arguments.value( argName ) );
+            url += m_arguments.value( argName );
             url += '&';
         }
         url.chop( 1 );
     }
 
-    return url;
+    QUrl qUrl( url );
+
+    return QString( qUrl.toEncoded() );
 }
 
 bool AmarokUrl::saveToDb()

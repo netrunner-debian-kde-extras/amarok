@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2007 Urs Wolfer <uwolfer at kde.org>                                   *
  * Copyright (c) 2008 Friedrich W. H. Kossebau <kossebau@kde.org>                       *
- * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
  *                                                                                      *
  * Parts of this class have been take from the KAboutApplication class, which was       *
  * Copyright (c) 2000 Waldo Bastian (bastian@kde.org) and Espen Sand (espen@kde.org)    *
@@ -22,7 +22,7 @@
 #ifndef AMAROK_EXTENDEDABOUTDIALOG_H
 #define AMAROK_EXTENDEDABOUTDIALOG_H
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "amarok_export.h"
 #include "App.h"
 #include "OcsPersonListWidget.h"

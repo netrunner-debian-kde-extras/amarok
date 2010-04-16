@@ -16,11 +16,11 @@
 
 #include "WeeklyTopBias.h"
 
-#include "Collection.h"
-#include "CollectionManager.h"
-#include "Debug.h"
-#include "Meta.h"
-#include "QueryMaker.h"
+#include "core/collections/Collection.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core/support/Debug.h"
+#include "core/meta/Meta.h"
+#include "core/collections/QueryMaker.h"
 
 #include <lastfm/Artist>
 #include <lastfm/ws.h>
@@ -472,7 +472,7 @@ void Dynamic::WeeklyTopBias::updateDB()
     m_qm->endAndOr();
 
 
-    m_qm->setQueryType( QueryMaker::Custom );
+    m_qm->setQueryType( Collections::QueryMaker::Custom );
     m_qm->addReturnValue( Meta::valUniqueId );
     m_qm->orderByRandom(); // as to not affect the amortized time
 

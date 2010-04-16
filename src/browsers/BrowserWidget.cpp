@@ -17,8 +17,8 @@
  
 #include "BrowserWidget.h"
 
-#include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 #include "widgets/HorizontalDivider.h"
 
 #include "KIcon"
@@ -26,6 +26,7 @@
 BrowserWidget::BrowserWidget( QWidget * parent )
     : KVBox( parent )
 {
+    DEBUG_BLOCK
     m_breadcrumbWidget = new BrowserBreadcrumbWidget( this );
     new HorizontalDivider( this );
     

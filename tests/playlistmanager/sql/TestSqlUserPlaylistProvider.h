@@ -20,26 +20,31 @@
 #ifndef TESTSQLUSERPLAYLISTPROVIDER_H
 #define TESTSQLUSERPLAYLISTPROVIDER_H
 
-#include "playlistmanager/sql/SqlUserPlaylistProvider.h"
-#include "TestBase.h"
+#include <QtCore/QObject>
+#include <QtCore/QString>
 
-#include <QtCore/QStringList>
+namespace Playlists {
+    class SqlUserPlaylistProvider;
+}
 
-class TestSqlUserPlaylistProvider : public TestBase
+class TestSqlUserPlaylistProvider : public QObject
 {
 Q_OBJECT
 
 public:
-    TestSqlUserPlaylistProvider( const QStringList args, const QString &logPath );
+    TestSqlUserPlaylistProvider();
 
 private slots:
+    void initTestCase();
+    void cleanupTestCase();
     void testPlaylists();
     void testSave();
     void testImportAndDeletePlaylists();
     void testRename();
 
 private:
-    SqlUserPlaylistProvider m_testSqlUserPlaylistProvider;
+    Playlists::SqlUserPlaylistProvider *m_testSqlUserPlaylistProvider;
+    QString dataPath( const QString &relPath );
 };
 
 #endif // TESTSQLUSERPLAYLISTPROVIDER_H

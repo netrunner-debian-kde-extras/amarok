@@ -20,14 +20,14 @@
 
 #include <config-amarok.h>
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "amarokurls/AmarokUrlHandler.h"
 #include "amarokconfig.h"
 #include "App.h"
 #include "BookmarkTriangle.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
-#include "meta/MetaUtility.h"
+#include "core/meta/support/MetaUtility.h"
 #include "SvgHandler.h"
 #include "ProgressWidget.h"
 

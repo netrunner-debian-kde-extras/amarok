@@ -21,31 +21,32 @@
 #include "AlbumItem.h"
 #include "AlbumsView.h"
 #include "AlbumsModel.h"
-#include "Amarok.h"
-#include "collection/Collection.h"
-#include "collection/CollectionManager.h"
-#include "Debug.h"
+#include "core/support/Amarok.h"
+#include "core/collections/Collection.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "context/Svg.h"
 #include "context/widgets/TextScrollingWidget.h"
-#include "meta/Meta.h"
-#include "meta/MetaUtility.h"
+#include "core/meta/Meta.h"
+#include "core/meta/support/MetaUtility.h"
 #include "playlist/PlaylistModel.h"
 #include "TrackItem.h"
 
 #include <plasma/theme.h>
+#include <KConfigDialog>
 
-
+#include <QFormLayout>
 #include <QPainter>
+#include <QSpinBox>
 #include <QTreeView>
 
 Albums::Albums( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
-    , m_configLayout( 0 )
-    , m_width( 0 )
     , m_albumWidth( 50 )
+    , m_recentCount( Amarok::config("Albums Applet").readEntry("RecentlyAdded", 5) )
 {
-    setHasConfigurationInterface( false );
+    setHasConfigurationInterface( true );
 }
 
 Albums::~Albums()
@@ -65,8 +66,6 @@ void Albums::init()
     m_headerText->setFont( labelFont );
     m_headerText->setText( i18n( "Recently added albums" ) );
     
-    m_width = globalConfig().readEntry( "width", 500 );
-
     m_albumsView = new AlbumsView( this );
     m_albumsView->setMinimumSize( 100, 150 );
     
@@ -77,7 +76,7 @@ void Albums::init()
 
     // properly set the height
     // -1 means ask for all available space left
-    resize( m_width, -1 );
+    resize( globalConfig().readEntry( "width", 500 ), -1 );
 
     dataEngine( "amarok-current" )->connectSource( "albums", this );
 
@@ -85,14 +84,6 @@ void Albums::init()
              this, SLOT( connectSource( const QString& ) ) );
 
     updateConstraints();
-}
-
-
-QList<QAction*>
-Albums::contextualActions()
-{
-    QList<QAction*> actions;
-    return actions;
 }
 
 void Albums::constraintsEvent( Plasma::Constraints constraints )
@@ -108,7 +99,6 @@ void Albums::constraintsEvent( Plasma::Constraints constraints )
     // here we put all of the text items into the correct locations
     m_headerText->setPos( ( size().width() - m_headerText->boundingRect().width() ) / 2 , standardPadding() + 3 );
     
- //   debug() << "Updating constraints for " << m_albumCount << " album rows";
     m_albumsView->resize( size().toSize().width() - 2 * standardPadding() , size().toSize().height() - m_headerText->boundingRect().height() - 3 * standardPadding()  );
     m_albumsView->setPos( standardPadding(), m_headerText->pos().y() + m_headerText->boundingRect().height() + standardPadding() );
 
@@ -120,17 +110,18 @@ void Albums::dataUpdated( const QString& name, const Plasma::DataEngine::Data& d
     Q_UNUSED( name );
    
     m_albums = data[ "albums" ].value<Meta::AlbumList>();
-    if( m_albums.isEmpty() )
-        return;
-
     debug() << "Received" << m_albums.count() << "albums";
-
     m_headerText->setText( data[ "headerText" ].toString() );
 
     //Update the applet (render properly the header)
     update();
-
     m_model->clear();
+
+    if( m_albums.isEmpty() )
+    {
+        //Don't keep showing the albums for the artist of the last track that had album in the collection
+        return;
+    }
        
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     Meta::AlbumPtr currentAlbum;
@@ -231,14 +222,29 @@ void Albums::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option
     // draw rounded rect around title if not currently animating
     if ( !m_headerText->isAnimating() )
         drawRoundedRectAroundText( p, m_headerText );
-
 }
 
-void Albums::showConfigurationInterface()
-{}
+void Albums::createConfigurationInterface( KConfigDialog *parent )
+{
+    QSpinBox *spinBox = new QSpinBox;
+    spinBox->setRange( 1, 100 );
+    spinBox->setValue( m_recentCount );
+    connect( spinBox, SIGNAL(valueChanged(int)), SLOT(setRecentCount(int)) );
 
-void Albums::configAccepted() // SLOT
-{}
+    QFormLayout *formLayout = new QFormLayout;
+    formLayout->addRow( i18n("Number of recently added albums:"), spinBox );
+
+    QWidget *config = new QWidget;
+    config->setLayout( formLayout );
+
+    parent->addPage( config, i18n( "Albums Applet Settings" ), "preferences-system");
+    connect( parent, SIGNAL( accepted() ), this, SLOT( saveConfiguration() ) );
+}
+
+void Albums::setRecentCount( int val )
+{
+    m_recentCount = val;
+}
 
 void Albums::connectSource( const QString &source )
 {
@@ -247,6 +253,17 @@ void Albums::connectSource( const QString &source )
         dataEngine( "amarok-current" )->connectSource( source, this );
         dataUpdated( source, dataEngine("amarok-current" )->query( "albums" ) ); // get data initially
     }
+}
+
+void Albums::saveConfiguration()
+{
+    Amarok::config("Albums Applet").writeEntry( "RecentlyAdded", QString::number( m_recentCount ) );
+
+    dataEngine( "amarok-current" )->disconnectSource( "albums", this );
+    dataEngine( "amarok-current" )->connectSource( "albums", this );
+
+    connect( dataEngine( "amarok-current" ), SIGNAL( sourceAdded( const QString& ) ),
+             this, SLOT( connectSource( const QString& ) ) );
 }
 
 #include "Albums.moc"

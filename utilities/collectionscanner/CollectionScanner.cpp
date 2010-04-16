@@ -26,7 +26,7 @@
 #include "AFTUtility.h"
 #include "charset-detector/include/chardet.h"
 #include "MetaReplayGain.h"
-#include "Version.h"  // for AMAROK_VERSION
+#include "shared/Version.h"  // for AMAROK_VERSION
 
 #include <cerrno>
 #include <cstdlib>
@@ -408,7 +408,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
     typedef QPair<QString, QString> CoverBundle;
 
     QStringList validImages;    validImages    << "jpg" << "png" << "gif" << "jpeg" << "bmp";
-    QStringList validPlaylists; validPlaylists << "m3u" << "pls";
+    QStringList validPlaylists; validPlaylists << "m3u" << "pls" << "xspf";
 
     QList<CoverBundle> covers;
     QStringList images;
@@ -550,12 +550,15 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
     //  Average                     Untested
     //  Accurate                    Untested
 
-
+#ifdef Q_OS_WIN32
+	const wchar_t * encodedName = reinterpret_cast<const wchar_t *>(path.utf16());
+#else
 #ifdef COMPLEX_TAGLIB_FILENAME
     const wchar_t * encodedName = reinterpret_cast<const wchar_t *>(path.utf16());
 #else
     QByteArray fileName = QFile::encodeName( path );
     const char * encodedName = fileName.constData(); // valid as long as fileName exists
+#endif
 #endif
 
     TagLib::FileRef fileref;

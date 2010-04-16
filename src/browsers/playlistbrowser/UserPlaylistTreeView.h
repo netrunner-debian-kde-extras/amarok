@@ -43,9 +43,6 @@ public:
 
     void setNewGroupAction( KAction * action );
 
-public slots:
-    void createNewGroup();
-
 protected:
     virtual void keyPressEvent( QKeyEvent *event );
     virtual void mousePressEvent( QMouseEvent *event );
@@ -60,6 +57,8 @@ private slots:
     void slotClickTimeout();
 
 private:
+    QList<QAction *> actionsFor( QModelIndexList indexes );
+
     PopupDropper* m_pd;
 
     KAction *m_addGroupAction;

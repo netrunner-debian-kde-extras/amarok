@@ -18,10 +18,10 @@
 
 #include "CollectionTreeItem.h"
 #include "CollectionTreeItemModelBase.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "amarokconfig.h"
 
-#include "meta/capabilities/DecoratorCapability.h"
+#include "core/capabilities/DecoratorCapability.h"
 
 #include <KLocale>
 
@@ -56,7 +56,7 @@ CollectionTreeItem::CollectionTreeItem( Meta::DataPtr data, CollectionTreeItem *
         m_parent->appendChild( this );
 }
 
-CollectionTreeItem::CollectionTreeItem( Amarok::Collection *parentCollection, CollectionTreeItem *parent, CollectionTreeItemModelBase *model  )
+CollectionTreeItem::CollectionTreeItem( Collections::Collection *parentCollection, CollectionTreeItem *parent, CollectionTreeItemModelBase *model  )
     : m_data( 0 )
     , m_parent( parent )
     , m_model( model )
@@ -73,15 +73,14 @@ CollectionTreeItem::CollectionTreeItem( Amarok::Collection *parentCollection, Co
     connect( parentCollection, SIGNAL( updated() ), SLOT( collectionUpdated() ) );
 }
 
-CollectionTreeItem::CollectionTreeItem( const Meta::DataList &data, CollectionTreeItem *parent, CollectionTreeItemModelBase *model  )
+CollectionTreeItem::CollectionTreeItem( Type type, const Meta::DataList &data, CollectionTreeItem *parent, CollectionTreeItemModelBase *model  )
     : m_data( 0 )
     , m_parent( parent )
     , m_model( model )
     , m_parentCollection( 0 )
     , m_updateRequired( false )  //the node already has all children
     , m_trackCount( -1 )
-    , m_type( VariousArtist )
-    //, m_name("VA")
+    , m_type( type )
     , m_isCounting( false )
 {
     DEBUG_BLOCK
@@ -194,6 +193,12 @@ CollectionTreeItem::data( int role ) const
             return i18n( "Various Artists" );
         return QVariant();
     }
+    else if( isNoLabelItem() )
+    {
+        if( role == Qt::DisplayRole )
+            return i18nc( "No labels are assigned to the given item are any of its subitems", "No Labels" );
+        return QVariant();
+    }
     else if( m_parentCollection )
     {
         if ( m_parentCollection && ( role == Qt::DisplayRole || role == CustomRoles::FilterRole ) )
@@ -209,12 +214,12 @@ CollectionTreeItem::data( int role ) const
             {
                 m_isCounting = true;
 
-                QueryMaker *qm = m_parentCollection->queryMaker();
+                Collections::QueryMaker *qm = m_parentCollection->queryMaker();
                 connect( qm, SIGNAL( newResultReady(QString, QStringList) ), SLOT( tracksCounted(QString, QStringList) ) );
 
                 qm->setAutoDelete( true )
-                  ->setQueryType( QueryMaker::Custom )
-                  ->addReturnFunction( QueryMaker::Count, Meta::valUrl )
+                  ->setQueryType( Collections::QueryMaker::Custom )
+                  ->addReturnFunction( Collections::QueryMaker::Count, Meta::valUrl )
                   ->run();
 
                 return counting;
@@ -250,7 +255,7 @@ QList<QAction*>
 CollectionTreeItem::decoratorActions() const
 {
     QList<QAction*> decoratorActions;
-    Meta::DecoratorCapability *dc = m_parentCollection->create<Meta::DecoratorCapability>();
+    Capabilities::DecoratorCapability *dc = m_parentCollection->create<Capabilities::DecoratorCapability>();
     if( dc )
     {
         decoratorActions = dc->decoratorActions();
@@ -307,6 +312,12 @@ CollectionTreeItem::isVariousArtistItem() const
 }
 
 bool
+CollectionTreeItem::isNoLabelItem() const
+{
+    return m_type == CollectionTreeItem::NoLabel;
+}
+
+bool
 CollectionTreeItem::isAlbumItem() const
 {
     return isDataItem() && !isVariousArtistItem() && !Meta::AlbumPtr::dynamicCast( m_data ).isNull();
@@ -318,7 +329,7 @@ CollectionTreeItem::isTrackItem() const
     return isDataItem() && !isVariousArtistItem() && !Meta::TrackPtr::dynamicCast( m_data ).isNull();
 }
 
-QueryMaker*
+Collections::QueryMaker*
 CollectionTreeItem::queryMaker() const
 {
     if ( m_parentCollection )
@@ -327,7 +338,7 @@ CollectionTreeItem::queryMaker() const
     CollectionTreeItem *tmp = m_parent;
     while( tmp->isDataItem() )
         tmp = tmp->parent();
-    QueryMaker *qm = 0;
+    Collections::QueryMaker *qm = 0;
     if( tmp->parentCollection() )
         qm = tmp->parentCollection()->queryMaker();
     return qm;

@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
- * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
  * Copyright (c) 2009 Oleksandr Khayrullin <saniokh@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -23,9 +23,8 @@
 
 #include "PrettyItemDelegate.h"
 #include "playlist/proxymodels/GroupingProxy.h"
-
 #include "playlist/view/PlaylistViewCommon.h"
-#include "tooltips/ToolTipManager.h"
+#include "playlist/view/tooltips/ToolTipManager.h"
 
 
 #include <QListView>
@@ -88,15 +87,14 @@ public slots:
     void clearSearchTerm();
     void showOnlyMatches( bool onlyMatches );
 
-    void itemsAdded( const QModelIndex& parent, int firstRow, int lastRow );
-
 protected slots:
     void newPalette( const QPalette & palette );
 
-    void saveTrackSelection();
-    void restoreTrackSelection();
-
 private slots:
+    void slotPlaylistActiveTrackChanged();
+    void bottomModelRowsInserted( const QModelIndex& parent, int start, int end );
+    void bottomModelRowsInsertedScroll();
+
     void trackActivated( const QModelIndex& );
     void updateProxyTimeout();
     void fixInvisible(); // Workaround for BUG 184714; see implementation for more comments.
@@ -125,7 +123,10 @@ private:
     QRect                 m_dropIndicator;
     QPersistentModelIndex m_headerPressIndex;
     bool                  m_mousePressInHeader;
+
     bool                  m_skipAutoScroll;
+    bool                  m_firstScrollToActiveTrack;
+    quint64               m_rowsInsertedScrollItem;
 
     QTimer       *m_proxyUpdateTimer;
     PopupDropper *m_pd;
@@ -136,9 +137,9 @@ private:
 
     QTimer *m_animationTimer;
 
-    QList<qint64> m_savedTrackSelection;
-
     ToolTipManager * m_toolTipManager;
+
+    void excludeFieldsFromTooltip( const Playlist::LayoutItemConfig& item , bool single );
 
 public:
     QList<int> selectedRows() const;

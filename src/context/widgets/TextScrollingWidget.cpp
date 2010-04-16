@@ -16,7 +16,7 @@
 
 #include "TextScrollingWidget.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <QFont>
 #include <QFontMetrics>
@@ -35,7 +35,6 @@
 TextScrollingWidget::TextScrollingWidget( QGraphicsItem* parent )
     : QGraphicsTextItem( parent )
     , m_fm( 0 )
-    , m_text( 0 )
     , m_delta( 0 )
     , m_currentDelta( 0. )
     , m_animfor( 0 )
@@ -77,7 +76,7 @@ TextScrollingWidget::setScrollingText( const QString text, QRectF rect )
 void
 TextScrollingWidget::setText( const QString &text )
 {
-    setHtml( text );
+    setPlainText( text );
 }
 
 QString

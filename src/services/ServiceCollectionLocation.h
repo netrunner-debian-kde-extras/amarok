@@ -17,7 +17,7 @@
 #ifndef AMAROK_SERVICECOLLECTIONLOCATION_H
 #define AMAROK_SERVICECOLLECTIONLOCATION_H
 
-#include "CollectionLocation.h"
+#include "core/collections/CollectionLocation.h"
 #include "amarok_export.h"
 #include "ServiceCollection.h"
 
@@ -25,6 +25,7 @@
 #include <QMap>
 #include <QString>
 
+namespace Collections {
 
 class AMAROK_EXPORT ServiceCollectionLocation : public CollectionLocation
 {
@@ -46,5 +47,7 @@ class AMAROK_EXPORT ServiceCollectionLocation : public CollectionLocation
         bool m_removeSources;    //used by the destination to remember the value, needed in copyurlsToCollection
         bool m_overwriteFiles;
 };
+
+} //namespace Collections
 
 #endif

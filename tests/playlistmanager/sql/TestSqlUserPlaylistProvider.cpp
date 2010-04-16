@@ -18,23 +18,46 @@
  ***************************************************************************/
 
 #include "TestSqlUserPlaylistProvider.h"
-#include "collection/CollectionManager.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "config-amarok-test.h"
+#include "playlistmanager/sql/SqlUserPlaylistProvider.h"
+#include "core/support/Components.h"
+#include "EngineController.h"
 
 #include <QtTest/QTest>
 #include <QtCore/QDir>
 
-TestSqlUserPlaylistProvider::TestSqlUserPlaylistProvider( const QStringList args, const QString &logPath )
-    : TestBase( "SqlUserPlaylistProvider" )
+#include <qtest_kde.h>
+
+QTEST_KDEMAIN( TestSqlUserPlaylistProvider, GUI )
+
+TestSqlUserPlaylistProvider::TestSqlUserPlaylistProvider()
+{}
+
+QString
+TestSqlUserPlaylistProvider::dataPath( const QString &relPath )
 {
-    QStringList combinedArgs = args;
-    addLogging( combinedArgs, logPath );
-    QTest::qExec( this, combinedArgs );
+    return QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + '/' + relPath );
 }
 
+void TestSqlUserPlaylistProvider::initTestCase()
+{
+    //apparently the engine controller is needed somewhere, or we will get a crash...
+    EngineController *controller = new EngineController();
+    Amarok::Components::setEngineController( controller );
+
+    m_testSqlUserPlaylistProvider = new Playlists::SqlUserPlaylistProvider( true );
+    m_testSqlUserPlaylistProvider->deletePlaylists( m_testSqlUserPlaylistProvider->playlists() );
+}
+
+void TestSqlUserPlaylistProvider::cleanupTestCase()
+{
+    delete m_testSqlUserPlaylistProvider;
+}
 
 void TestSqlUserPlaylistProvider::testPlaylists()
 {
-    Meta::PlaylistList tempList = m_testSqlUserPlaylistProvider.playlists();
+    Playlists::PlaylistList tempList = m_testSqlUserPlaylistProvider->playlists();
     QCOMPARE( tempList.size(), 0 );
 }
 
@@ -42,10 +65,10 @@ void TestSqlUserPlaylistProvider::testSave()
 {
     Meta::TrackList tempTrackList;
     KUrl trackUrl;
-    trackUrl = dataPath( "amarok/testdata/audio/Platz 01.mp3" );
+    trackUrl = dataPath( "data/audio/Platz 01.mp3" );
     tempTrackList.append( CollectionManager::instance()->trackForUrl( trackUrl ) );
 
-    Meta::PlaylistPtr testPlaylist = m_testSqlUserPlaylistProvider.save( tempTrackList, "Amarok Test Playlist" );
+    Playlists::PlaylistPtr testPlaylist = m_testSqlUserPlaylistProvider->save( tempTrackList, "Amarok Test Playlist" );
 
     QCOMPARE( testPlaylist->name(), QString( "Amarok Test Playlist" ) );
     QCOMPARE( testPlaylist->tracks().size(), 1 );
@@ -53,26 +76,29 @@ void TestSqlUserPlaylistProvider::testSave()
 
 void TestSqlUserPlaylistProvider::testImportAndDeletePlaylists()
 {
-    QVERIFY( m_testSqlUserPlaylistProvider.import( dataPath( "amarok/testdata/playlists/test.m3u" ) ) );
+    QVERIFY( m_testSqlUserPlaylistProvider->import( dataPath( "data/playlists/test.xspf" ) ) );
 
-    Meta::PlaylistList tempList = m_testSqlUserPlaylistProvider.playlists();
-    QCOMPARE( tempList.size(), 1 ); // iow: use it with a clean profile
+    Playlists::PlaylistList tempList = m_testSqlUserPlaylistProvider->playlists();
+    QCOMPARE( tempList.size(), 2 );
 
-    m_testSqlUserPlaylistProvider.deletePlaylists( tempList );
-    tempList = m_testSqlUserPlaylistProvider.playlists();
-    QCOMPARE( tempList.size(), 0 );
+    QVERIFY( m_testSqlUserPlaylistProvider->import( dataPath( "data/playlists/test.pls" ) ) );
+    QCOMPARE( m_testSqlUserPlaylistProvider->playlists().size(), 3 );
+
+    m_testSqlUserPlaylistProvider->deletePlaylists( tempList );
+    QCOMPARE( m_testSqlUserPlaylistProvider->playlists().size(), 1 );
 }
 
 void TestSqlUserPlaylistProvider::testRename()
 {
-    QVERIFY( m_testSqlUserPlaylistProvider.import( dataPath( "amarok/testdata/playlists/test.m3u" ) ) );
+    QVERIFY( m_testSqlUserPlaylistProvider->import( dataPath( "data/playlists/test.xspf" ) ) );
 
-    Meta::PlaylistList tempList = m_testSqlUserPlaylistProvider.playlists();
-    QCOMPARE( tempList.size(), 1 );
+    Playlists::PlaylistList tempList = m_testSqlUserPlaylistProvider->playlists();
+    QCOMPARE( tempList.size(), 2 );
 
-    m_testSqlUserPlaylistProvider.rename( tempList.at( 0 ), "New Test Name" );
-    tempList = m_testSqlUserPlaylistProvider.playlists();
+    m_testSqlUserPlaylistProvider->rename( tempList.at( 0 ), "New Test Name" );
+    tempList = m_testSqlUserPlaylistProvider->playlists();
     QCOMPARE( tempList.at( 0 )->name(), QString( "New Test Name" ) );
 
-    m_testSqlUserPlaylistProvider.deletePlaylists( tempList );
+    m_testSqlUserPlaylistProvider->deletePlaylists( tempList );
+    QCOMPARE( m_testSqlUserPlaylistProvider->playlists().size(), 0 );
 }

@@ -18,11 +18,11 @@
 #include "AlbumsView.h"
 
 #include "AlbumItem.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "SvgHandler.h"
 #include "TrackItem.h"
 #include "dialogs/TagDialog.h"
-#include "meta/capabilities/CustomActionsCapability.h"
+#include "core/capabilities/CustomActionsCapability.h"
 #include "playlist/PlaylistModelStack.h"
 #include "widgets/PrettyTreeView.h"
 
@@ -50,12 +50,8 @@ class AlbumsTreeView : public Amarok::PrettyTreeView
             setDragDropMode( QAbstractItemView::DragOnly );
             setSelectionMode( QAbstractItemView::ExtendedSelection );
             setSelectionBehavior( QAbstractItemView::SelectItems );
-            #if QT_VERSION >= 0x040500
             setAnimated( true );
-            #endif
-            
             setRootIsDecorated( false );
-
             setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
             setVerticalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
         }
@@ -134,7 +130,7 @@ AlbumsView::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
         if( album )
         {
             Meta::AlbumPtr albumPtr = album->album();
-            Meta::CustomActionsCapability *cac = albumPtr->create<Meta::CustomActionsCapability>();
+            Capabilities::CustomActionsCapability *cac = albumPtr->create<Capabilities::CustomActionsCapability>();
             if( cac )
             {
                 QList<QAction *> actions = cac->customActions();

@@ -19,8 +19,8 @@
 #ifndef AMAROK_LASTFMMETA_H
 #define AMAROK_LASTFMMETA_H
 
-#include "meta/Meta.h"
-#include "meta/Capability.h"
+#include "core/meta/Meta.h"
+#include "core/capabilities/Capability.h"
 #include "ServiceMetaBase.h" // for the SourceInfoProvider
 
 
@@ -62,7 +62,7 @@ namespace LastFm
             virtual Meta::ComposerPtr composer() const;
             virtual Meta::YearPtr year() const;
 
-            virtual float bpm() const;
+            virtual qreal bpm() const;
 
             virtual QString comment() const;
 
@@ -89,11 +89,11 @@ namespace LastFm
             virtual void finishedPlaying( double playedFraction );
 
             virtual bool inCollection() const;
-            virtual Amarok::Collection *collection() const;
+            virtual Collections::Collection *collection() const;
 
-            virtual bool hasCapabilityInterface( Meta::Capability::Type type ) const;
+            virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
 
-            virtual Meta::Capability* createCapabilityInterface( Meta::Capability::Type type );
+            virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
             void setTrackInfo( const lastfm::Track &trackInfo );
 
@@ -127,7 +127,7 @@ namespace LastFm
             QList< QAction * > m_currentTrackActions;
     };
 
-    class LastFmProviderCapability : public Meta::Capability
+    class LastFmProviderCapability : public Capabilities::Capability
     {
         public:
             LastFmProviderCapability();

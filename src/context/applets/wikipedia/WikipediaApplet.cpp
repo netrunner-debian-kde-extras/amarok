@@ -17,9 +17,9 @@
 
 #include "WikipediaApplet.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "App.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "context/Svg.h"
 #include "context/ContextView.h"
 #include "EngineController.h"
@@ -43,6 +43,7 @@
 #include <QMenu>
 #include <QWebHistory>
 #include <QWebPage>
+#include <QWebFrame>
 
 
 WikipediaApplet::WikipediaApplet( QObject* parent, const QVariantList& args )
@@ -105,7 +106,7 @@ WikipediaApplet::init()
     backwardAction->setEnabled( false );
     backwardAction->setText( i18n( "Back" ) );
     m_backwardIcon = addAction( backwardAction );
-    connect( backwardAction, SIGNAL( activated() ), this, SLOT( goBackward() ) );
+    connect( m_backwardIcon, SIGNAL( activated() ), this, SLOT( goBackward() ) );
     
     QAction* forwardAction = new QAction( this );
     forwardAction->setIcon( KIcon( "go-next" ) );
@@ -404,7 +405,7 @@ WikipediaApplet::switchToLang(QString lang)
 {
     DEBUG_BLOCK
     // TODO change this b/c it's BAAADDD !!!
-    if (lang == i18n("Automatic") )
+    if (lang == i18nc("automatic language selection", "Automatic") )
         m_wikiPreferredLang = "aut";
     
     else if (lang == i18n("English") )
@@ -473,10 +474,16 @@ WikipediaApplet::paletteChanged( const QPalette & palette )
         {
             m_css->write( contents.toLatin1() );
 
-            QString filename = m_css->fileName();
+            // NOTE shall we keep this commented out, and bring it back later or the base64 is just what we need ?
+            //   QString filename = m_css->fileName();
             m_css->close(); // flush buffer to disk
-            debug() << "set user stylesheet to:" << "file://" + filename;
-            m_webView->page()->settings()->setUserStyleSheetUrl( "file://" + filename );
+            //   debug() << "set user stylesheet to:" << "file://" + filename;
+            //   m_webView->page()->settings()->setUserStyleSheetUrl( "file://" + filename );
+
+
+            //NOTE  We give it encoded on a base64
+            // as it is currently broken on QtWebkit (see https://bugs.webkit.org/show_bug.cgi?id=34884 )
+            m_webView->mainFrame()->page()->settings()->setUserStyleSheetUrl( QUrl( QString( "data:text/css;charset=utf-8;base64," + QString( QByteArray( contents.toLatin1() ).toBase64().data() ) ) ) );
         }
     }
 }

@@ -22,6 +22,9 @@
 
 #include "PlaylistModelStack.h"
 
+#include "core/support/Debug.h"
+
+
 /************************
  * Insert
  ************************/
@@ -33,13 +36,15 @@ Playlist::InsertTracksCmd::InsertTracksCmd( QUndoCommand* parent, const InsertCm
 void
 Playlist::InsertTracksCmd::redo()
 {
-    Playlist::ModelStack::instance()->source()->insertTracksCommand( m_cmdlist );
+    DEBUG_BLOCK
+    Playlist::ModelStack::instance()->bottom()->insertTracksCommand( m_cmdlist );
 }
 
 void
 Playlist::InsertTracksCmd::undo()
 {
-    Playlist::ModelStack::instance()->source()->removeTracksCommand( m_cmdlist );
+    DEBUG_BLOCK
+    Playlist::ModelStack::instance()->bottom()->removeTracksCommand( m_cmdlist );
 }
 
 /************************
@@ -53,13 +58,15 @@ Playlist::RemoveTracksCmd::RemoveTracksCmd( QUndoCommand* parent, const RemoveCm
 void
 Playlist::RemoveTracksCmd::redo()
 {
-    Playlist::ModelStack::instance()->source()->removeTracksCommand( m_cmdlist );
+    DEBUG_BLOCK
+    Playlist::ModelStack::instance()->bottom()->removeTracksCommand( m_cmdlist );
 }
 
 void
 Playlist::RemoveTracksCmd::undo()
 {
-    Playlist::ModelStack::instance()->source()->insertTracksCommand( m_cmdlist );
+    DEBUG_BLOCK
+    Playlist::ModelStack::instance()->bottom()->insertTracksCommand( m_cmdlist );
 }
 
 /************************
@@ -73,11 +80,13 @@ Playlist::MoveTracksCmd::MoveTracksCmd( QUndoCommand* parent, const MoveCmdList&
 void
 Playlist::MoveTracksCmd::redo()
 {
-    Playlist::ModelStack::instance()->source()->moveTracksCommand( m_cmdlist, false );
+    DEBUG_BLOCK
+    Playlist::ModelStack::instance()->bottom()->moveTracksCommand( m_cmdlist, false );
 }
 
 void
 Playlist::MoveTracksCmd::undo()
 {
-    Playlist::ModelStack::instance()->source()->moveTracksCommand( m_cmdlist, true );
+    DEBUG_BLOCK
+    Playlist::ModelStack::instance()->bottom()->moveTracksCommand( m_cmdlist, true );
 }

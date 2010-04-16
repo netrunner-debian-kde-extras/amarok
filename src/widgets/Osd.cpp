@@ -22,13 +22,13 @@
 
 #include "Osd.h"
 
-#include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "StarManager.h"
 #include "SvgHandler.h"
 #include "amarokconfig.h"
-#include "meta/MetaUtility.h"
+#include "core/meta/support/MetaUtility.h"
 
 #include <KApplication>
 #include <KIcon>
@@ -93,6 +93,8 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
 
     //or crashes, KWindowSystem bug I think, crashes in QWidget::icon()
     kapp->setTopWidget( this );
+
+    m_volume = The::engineController()->volume();
 }
 
 OSDWidget::~OSDWidget()
@@ -559,7 +561,7 @@ Amarok::OSD::destroy()
 
 Amarok::OSD::OSD()
     : OSDWidget( 0 )
-    , EngineObserver( The::engineController() )
+    , Engine::EngineObserver( The::engineController() )
 {
     s_instance = this;
 }
@@ -602,7 +604,7 @@ Amarok::OSD::show( Meta::TrackPtr track ) //slot
 
     QImage image;
     if( track && track->album() )
-        image = track->album()->imageWithBorder( 100, 5 ).toImage();
+        image = The::svgHandler()->imageWithBorder( track->album(), 100, 5 ).toImage();
 
     OSDWidget::show( text, image );
 }

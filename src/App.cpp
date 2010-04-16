@@ -16,41 +16,47 @@
 
 #include "App.h"
 
-#include "Amarok.h"
+#include <config-amarok.h>
+
+#include "core/support/Amarok.h"
 #include "amarokconfig.h"
 #include "amarokurls/AmarokUrl.h"
-#include "CollectionManager.h"
-#include "Components.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core/support/Components.h"
+#include "core/interfaces/Logger.h"
 #include "ConfigDialog.h"
 #include "covermanager/CoverFetcher.h"
 #include "dialogs/EqualizerDialog.h"
 #include "dbus/CollectionDBusHandler.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "firstruntutorial/FirstRunTutorial.h"
 #include "KNotificationBackend.h"
-#include "meta/capabilities/SourceInfoCapability.h"
-#include "meta/MetaConstants.h"
-#include "Meta.h"
-#include "MetaUtility.h"
+#include "core/capabilities/SourceInfoCapability.h"
+#include "core/meta/support/MetaConstants.h"
+#include "core/meta/Meta.h"
+#include "core/meta/support/MetaUtility.h"
 #include "Osd.h"
 #include "PlaybackConfig.h"
 #include "PlayerDBusHandler.h"
-#include "Playlist.h"
-#include "PlaylistFileSupport.h"
+#include "core/playlists/Playlist.h"
+#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlist/PlaylistController.h"
 #include "playlistmanager/PlaylistManager.h"
-#include "PluginManager.h"
-#include "podcasts/PodcastProvider.h"
+#include "core/plugins/PluginManager.h"
+#include "core/podcasts/PodcastProvider.h"
 #include "RootDBusHandler.h"
 #include "ScriptManager.h"
 #include "statemanagement/ApplicationController.h"
 #include "statemanagement/DefaultApplicationController.h"
-#include "statusbar/StatusBar.h"
 #include "TracklistDBusHandler.h"
+#ifdef HAVE_KSTATUSNOTIFIERITEM
 #include "TrayIcon.h"
+#else
+#include "TrayIconLegacy.h"
+#endif
 
 #ifdef NO_MYSQL_EMBEDDED
 #include "MySqlServerTester.h"
@@ -88,7 +94,10 @@
 #include <audiblefiletyperesolver.h>
 #include <realmediafiletyperesolver.h>
 
+#ifdef DESKTOP_UI
 QMutex Debug::mutex;
+#endif
+
 int App::mainThreadId = 0;
 
 #ifdef Q_WS_MAC
@@ -97,21 +106,10 @@ extern void setupEventHandler_mac(long);
 #endif
 
 #ifdef DEBUG
-#include "TestAmarok.h"
 #include "TestDirectoryLoader.h"
-#include "TestM3UPlaylist.h"
-#include "TestMetaCueCueFileItem.h"
-#include "TestMetaCueTrack.h"
-#include "TestMetaFileTrack.h"
-#include "TestMetaMultiTrack.h"
-#include "TestMetaTrack.h"
-#include "TestPlaylistFileProvider.h"
-#include "TestPlaylistFileSupport.h"
-#include "TestPLSPlaylist.h"
-#include "TestSqlUserPlaylistProvider.h"
-#include "TestTimecodeTrackProvider.h"
-#include "TestXSPFPlaylist.h"
 #endif // DEBUG
+
+QStringList App::s_delayedAmarokUrls = QStringList();
 
 AMAROK_EXPORT KAboutData aboutData( "amarok", 0,
     ki18n( "Amarok" ), AMAROK_VERSION,
@@ -124,6 +122,7 @@ AMAROK_EXPORT OcsData ocsData( "opendesktop" );
 
 App::App()
         : KUniqueApplication()
+        , m_tray(0)
 {
     DEBUG_BLOCK
     PERF_LOG( "Begin Application ctor" )
@@ -220,23 +219,23 @@ App::~App()
     // Hiding the OSD before exit prevents crash
     Amarok::OSD::instance()->hide();
 
+    // This following can't go in the PlaylistModel destructor, because by the time that
+    // happens, the Config has already been written.
+
+    // Use the bottom model because that provides the most dependable/invariable row
+    // number to save in an external file.
+    AmarokConfig::setLastPlaying( Playlist::ModelStack::instance()->bottom()->activeRow() );
+
     if ( AmarokConfig::resumePlayback() )
     {
-        if ( The::engineController()->state() != Phonon::StoppedState )
+        Meta::TrackPtr engineTrack = The::engineController()->currentTrack();
+        if( engineTrack )
         {
-            Meta::TrackPtr track = The::engineController()->currentTrack();
-            if( track )
-            {
-                AmarokConfig::setResumeTrack( track->playableUrl().prettyUrl() );
-                AmarokConfig::setResumeTime( The::engineController()->trackPositionMs() );
-                AmarokConfig::setLastPlaying( Playlist::ModelStack::instance()->source()->activeRow() );
-            }
+            AmarokConfig::setResumeTrack( engineTrack->playableUrl().prettyUrl() );
+            AmarokConfig::setResumeTime( The::engineController()->trackPositionMs() );
         }
         else
-        {
             AmarokConfig::setResumeTrack( QString() ); //otherwise it'll play previous resume next time!
-            AmarokConfig::setLastPlaying( -1 );
-        }
     }
 
     The::engineController()->endSession(); //records final statistics
@@ -260,18 +259,14 @@ App::~App()
     Amarok::OSD::destroy();
     Amarok::KNotificationBackend::destroy();
 
-    // I tried this in the destructor for the Model but the object is destroyed after the
-    // Config is written. Go figure!
-    AmarokConfig::setLastPlaying( Playlist::ModelStack::instance()->source()->activeRow() );
-
     AmarokConfig::self()->writeConfig();
 
     //mainWindow()->deleteBrowsers();
     delete mainWindow();
 
     CollectionManager::destroy();
-    Playlist::Actions::destroy();
     Playlist::ModelStack::destroy();
+    Playlist::Actions::destroy();
     PlaylistManager::destroy();
     CoverFetcher::destroy();
 
@@ -307,15 +302,14 @@ App::handleCliArgs() //static
         {
             KUrl url = args->url( i );
             //TODO:PORTME
-            if( PodcastProvider::couldBeFeed( url.url() ) )
+            if( Podcasts::PodcastProvider::couldBeFeed( url.url() ) )
             {
-                KUrl feedUrl = PodcastProvider::toFeedUrl( url.url() );
+                KUrl feedUrl = Podcasts::PodcastProvider::toFeedUrl( url.url() );
                 The::playlistManager()->defaultPodcasts()->addPodcast( feedUrl );
             }
             else if( url.protocol() == "amarok" )
             {
-                AmarokUrl aUrl( url.url() );
-                aUrl.run();
+                s_delayedAmarokUrls.append( url.url() );
             }
             else
             {
@@ -428,8 +422,8 @@ App::handleCliArgs() //static
         if( format == "xml" || format == "lightxml" )
             testOpt << QString( '-' + format );
 
-        const bool stdout = ( args->getOption( "output" ) == "log" ) ? false : true;
-        runUnitTests( testOpt, stdout );
+        const bool _stdout = ( args->getOption( "output" ) == "log" ) ? false : true;
+        runUnitTests( testOpt, _stdout );
     }
 #endif // DEBUG
 
@@ -551,7 +545,12 @@ void App::applySettings( bool firstTime )
 
     DEBUG_BLOCK
 
-    m_tray->setVisible( AmarokConfig::showTrayIcon() );
+    if ( AmarokConfig::showTrayIcon() && ! m_tray ) {
+        m_tray = new Amarok::TrayIcon( mainWindow() );
+    } else if ( !AmarokConfig::showTrayIcon() && m_tray ) {
+        delete m_tray;
+        m_tray = 0;
+    }
 
     //on startup we need to show the window, but only if it wasn't hidden on exit
     //and always if the trayicon isn't showing
@@ -586,12 +585,12 @@ void App::applySettings( bool firstTime )
 #ifdef DEBUG
 //SLOT
 void
-App::runUnitTests( const QStringList options, bool stdout )
+App::runUnitTests( const QStringList options, bool _stdout )
 {
     DEBUG_BLOCK
 
     QString logPath;
-    if( !stdout )
+    if( !_stdout )
     {
         const QString location = Amarok::saveLocation( "testresults/" );
         const QString stamp    = QDateTime::currentDateTime().toString( "yyyy-MM-dd.HH-mm-ss" );
@@ -613,19 +612,6 @@ App::runUnitTests( const QStringList options, bool stdout )
     }
 
     PERF_LOG( "Running Unit Tests" )
-    TestAmarok                  test001( options, logPath );
-    TestM3UPlaylist             test003( options, logPath );
-    TestMetaCueCueFileItem      test004( options, logPath );
-    TestMetaCueTrack            test005( options, logPath );
-    TestMetaFileTrack           test006( options, logPath );
-    TestMetaMultiTrack          test007( options, logPath );
-    TestMetaTrack               test008( options, logPath );
-    TestPlaylistFileProvider    test009( options, logPath );
-    TestPlaylistFileSupport     test010( options, logPath );
-    TestPLSPlaylist             test011( options, logPath );
-    TestSqlUserPlaylistProvider test012( options, logPath );
-    TestTimecodeTrackProvider   test013( options, logPath );
-    TestXSPFPlaylist            test014( options, logPath );
 
     // modifies the playlist asynchronously, so run this last to avoid messing other test results
     TestDirectoryLoader        *test015 = new TestDirectoryLoader( options, logPath );
@@ -664,7 +650,9 @@ App::continueInit()
     m_mainWindow = new MainWindow();
     PERF_LOG( "Done creating MainWindow" )
 
-    m_tray = new Amarok::TrayIcon( mainWindow() );
+    if ( AmarokConfig::showTrayIcon() ) {
+        m_tray = new Amarok::TrayIcon( mainWindow() );
+    }
 
     PERF_LOG( "Creating DBus handlers" )
     new Amarok::RootDBusHandler();
@@ -796,6 +784,15 @@ App::continueInit()
 
     // Using QTimer, so that we won't block the GUI
     QTimer::singleShot( 0, this, SLOT( checkCollectionScannerVersion() ) );
+
+    //and now we can run any amarokurls provided on startup, as all components should be initialized by now!
+    foreach( QString urlString, s_delayedAmarokUrls )
+    {
+        AmarokUrl aUrl( urlString );
+        aUrl.run();
+    }
+    s_delayedAmarokUrls.clear();
+    
 }
 
 void App::checkCollectionScannerVersion()  // SLOT
@@ -819,7 +816,7 @@ void App::checkCollectionScannerVersion()  // SLOT
 
 QString App::collectionScannerLocation()  // static
 {
-    QString scannerPath = KStandardDirs::findExe( "amarokcollectionscanner" );
+    QString scannerPath = KStandardDirs::locate( "exe", "amarokcollectionscanner" );
 
     // If the binary is not in $PATH, then search in the application folder too
     if( scannerPath.isEmpty() )
@@ -852,7 +849,7 @@ void App::slotConfigShortcuts()
 KIO::Job *App::trashFiles( const KUrl::List &files )
 {
     KIO::Job *job = KIO::trash( files );
-    The::statusBar()->newProgressOperation( job, i18n("Moving files to trash") );
+    Amarok::Components::logger()->newProgressOperation( job, i18n("Moving files to trash") );
     connect( job, SIGNAL( result( KJob* ) ), this, SLOT( slotTrashResult( KJob* ) ) );
     return job;
 }
@@ -889,10 +886,10 @@ bool App::event( QEvent *event )
             QString file = static_cast<QFileOpenEvent*>( event )->file();
             //we are only going to receive local files here
             KUrl url( file );
-            if( Meta::isPlaylist( url ) )
+            if( Playlists::isPlaylist( url ) )
             {
-                Meta::PlaylistPtr playlist =
-                        Meta::PlaylistPtr::dynamicCast( Meta::loadPlaylistFile( url ) );
+                Playlists::PlaylistPtr playlist =
+                        Playlists::PlaylistPtr::dynamicCast( Playlists::loadPlaylistFile( url ) );
                 The::playlistController()->insertOptioned( playlist, Playlist::AppendAndPlay );
             }
             else

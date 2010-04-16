@@ -17,10 +17,10 @@
 
 #include "InfoApplet.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "App.h"
 #include "amarokurls/AmarokUrl.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "PaletteHandler.h"
 #include "playlist/PlaylistController.h"
 
@@ -40,18 +40,30 @@ QString InfoApplet::s_defaultHtml = "<html>"
 
 InfoApplet::InfoApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
+    , m_webView( 0 )
     , m_initialized( false )
     , m_currentPlaylist( 0 )
+   
 {
     setHasConfigurationInterface( false );
     setBackgroundHints( Plasma::Applet::NoBackground );
+}
+
+InfoApplet::~InfoApplet()
+{
+    delete m_webView;
+}
+
+
+void  InfoApplet::init()
+{
 
     dataEngine( "amarok-info" )->connectSource( "info", this );
 
     m_webView = new AmarokWebView( this );
 
     resize( 500, -1 );
-    
+
     QPalette p = m_webView->palette();
     p.setColor( QPalette::Dark, QColor( 255, 255, 255, 0)  );
     p.setColor( QPalette::Window, QColor( 255, 255, 255, 0)  );
@@ -60,11 +72,6 @@ InfoApplet::InfoApplet( QObject* parent, const QVariantList& args )
     connect( m_webView->page(), SIGNAL( linkClicked ( const QUrl & ) ), SLOT( linkClicked ( const QUrl & ) ) );
 
     constraintsEvent();
-}
-
-InfoApplet::~InfoApplet()
-{
-    delete m_webView;
 }
 
 void InfoApplet::constraintsEvent( Plasma::Constraints constraints )
@@ -85,8 +92,6 @@ void InfoApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
 
     if( data.isEmpty() )
         return;
-
-    debug() << "got data from engine: " << data[ "subject_name" ].toString();
 
     if  ( m_initialized )
     {
@@ -141,6 +146,7 @@ void InfoApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *op
 
 void InfoApplet::linkClicked( const QUrl & url )
 {
+    DEBUG_BLOCK
     debug() << "Link clicked: " << url.toString();
 
     if ( url.toString().startsWith( "amarok://", Qt::CaseInsensitive ) )
@@ -150,7 +156,7 @@ void InfoApplet::linkClicked( const QUrl & url )
     }
     else if ( url.toString().contains( ".xspf", Qt::CaseInsensitive ) )
     {
-        new Meta::XSPFPlaylist( url, true );
+        new Playlists::XSPFPlaylist( url, true );
     }
     else
         QDesktopServices::openUrl( url.toString() );

@@ -17,21 +17,23 @@
 #ifndef COLLECTIONTESTIMPL_H
 #define COLLECTIONTESTIMPL_H
 
-#include "collection/Collection.h"
-#include "collection/support/MemoryCollection.h"
-#include "collection/support/MemoryQueryMaker.h"
+#include "core/collections/Collection.h"
+#include "core-impl/collections/support/MemoryCollection.h"
+#include "core-impl/collections/support/MemoryQueryMaker.h"
 
 #include <QSharedPointer>
 
-//simple Amarok::Collection implementation based on MemoryCollection
+//simple Collections::Collection implementation based on MemoryCollection
 
 class CollectionLocationTestImpl;
 
-class CollectionTestImpl : public Amarok::Collection
+namespace Collections {
+
+class CollectionTestImpl : public Collections::Collection
 {
 public:
     CollectionTestImpl( const QString &collectionId )
-        : Amarok::Collection(), mc( new MemoryCollection() )
+        : Collections::Collection(), mc( new MemoryCollection() )
     { this->id = collectionId; }
 
     QueryMaker* queryMaker() { return new MemoryQueryMaker( mc.toWeakRef(), id ); }
@@ -46,5 +48,7 @@ public:
     QSharedPointer<MemoryCollection> mc;
 
 };
+
+} //namespace Collections
 
 #endif

@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2007 Urs Wolfer <uwolfer at kde.org>                                   *
  * Copyright (c) 2008 Friedrich W. H. Kossebau <kossebau@kde.org>                       *
- * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
  *                                                                                      *
  * Parts of this class have been take from the KAboutApplication class, which was       *
  * Copyright (c) 2000 Waldo Bastian (bastian@kde.org) and Espen Sand (espen@kde.org)    *
@@ -21,8 +21,8 @@
 
 #include "ExtendedAboutDialog.h"
 
-#include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 #include "OcsPersonItem.h"
 #include "libattica-ocsclient/providerinitjob.h"
 

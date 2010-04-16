@@ -20,12 +20,11 @@
 
 #include <config-amarok.h>
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "App.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "MainWindow.h"
-#include "statusbar/StatusBar.h"
 #include "amarokconfig.h"
 #include "covermanager/CoverManager.h"
 #include "playlist/PlaylistActions.h"
@@ -51,11 +50,11 @@ namespace Amarok
 
     bool entireAlbums()   { return AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RepeatAlbum ||
                                    AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RandomAlbum; }
-                                   
+
     bool repeatEnabled()  { return AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RepeatTrack ||
                                    AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RepeatAlbum  ||
                                    AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RepeatPlaylist; }
-                                   
+
     bool randomEnabled()  { return AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RandomTrack ||
                                    AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RandomAlbum; }
 }
@@ -152,6 +151,9 @@ Menu::helpMenu( QWidget *parent ) //STATIC
 
     KMenu* menu = s_helpMenu->menu();
 
+    // NOTE: We hide "Report Bug..." because we need to add it on our own to name the dialog
+    // so it can be blacklisted from LikeBack.
+    s_helpMenu->action( KHelpMenu::menuReportBug )->setVisible( false );
 
     // NOTE: We hide the "Amarok Handbook" entry until the handbook actually exists (WIP)
     s_helpMenu->action( KHelpMenu::menuHelpContents )->setVisible( false );
@@ -161,9 +163,6 @@ Menu::helpMenu( QWidget *parent ) //STATIC
 
     s_helpMenu->action( KHelpMenu::menuAboutApp )->setVisible( false );
 
-    QAction *extendedAboutAction = new QAction( KIcon( "amarok" ), i18n( "&About Amarok" ), menu ); //translateme
-    menu->insertAction( s_helpMenu->action(KHelpMenu::menuAboutKDE ),extendedAboutAction );
-    connect( extendedAboutAction, SIGNAL(triggered()), The::mainWindow(), SLOT(showAbout()) );
     return menu;
 }
 
@@ -173,7 +172,7 @@ Menu::helpMenu( QWidget *parent ) //STATIC
 
 PlayPauseAction::PlayPauseAction( KActionCollection *ac, QObject *parent )
         : KToggleAction( parent )
-        , EngineObserver( The::engineController() )
+        , Engine::EngineObserver( The::engineController() )
 {
     ac->addAction( "play_pause", this );
     setText( i18n( "Play/Pause" ) );
@@ -347,7 +346,7 @@ EqualizerAction::updateContent() //SLOT
     // this slot update the content of equalizer main window menu
     // according to config blocking is neccessary to prevent
     // circluar loop between menu and config dialog
-    blockSignals( true ); 
+    blockSignals( true );
     setCurrentItem( AmarokConfig::equalizerMode() );
     blockSignals( false );
 }
@@ -485,13 +484,13 @@ BurnMenu::slotBurnSelectedTracks() //SLOT
 
 StopAction::StopAction( KActionCollection *ac, QObject *parent )
   : KAction( parent )
-  , EngineObserver( The::engineController() )
+  , Engine::EngineObserver( The::engineController() )
 {
     ac->addAction( "stop", this );
     setText( i18n( "Stop" ) );
     setIcon( KIcon("media-playback-stop-amarok") );
     setGlobalShortcut( KShortcut( Qt::Key_MediaStop ) );
-    connect( this, SIGNAL( triggered() ), The::engineController(), SLOT( stop() ) );
+    connect( this, SIGNAL( triggered() ), this, SLOT( stop() ) );
     setEnabled( false );  // Disable action at startup
 }
 
@@ -513,6 +512,18 @@ StopAction::engineStateChanged( Phonon::State state,  Phonon::State /*oldState*/
     }
 }
 
+void
+StopAction::stop()
+{
+    if( The::playlistActions()->stopAfterMode() )
+    {
+        The::playlistActions()->setStopAfterMode( Playlist::StopNever );
+        The::playlistActions()->setTrackToBeLast( 0 );
+        The::playlistActions()->repaintPlaylist();
+    }
+    The::engineController()->stop();
+}
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // StopPlayingAfterCurrentTrackAction
@@ -520,7 +531,7 @@ StopAction::engineStateChanged( Phonon::State state,  Phonon::State /*oldState*/
 
 StopPlayingAfterCurrentTrackAction::StopPlayingAfterCurrentTrackAction( KActionCollection *ac, QObject *parent )
 : KAction( parent )
-, EngineObserver( The::engineController() )
+, Engine::EngineObserver( The::engineController() )
 {
     ac->addAction( "stop_after_current", this );
     setText( i18n( "Stop after current Track" ) );
@@ -533,15 +544,17 @@ StopPlayingAfterCurrentTrackAction::StopPlayingAfterCurrentTrackAction( KActionC
 void
 StopPlayingAfterCurrentTrackAction::stopPlayingAfterCurrentTrack()
 {
-    if ( !The::playlistActions()->willStopAfterTrack( Playlist::ModelStack::instance()->source()->activeId() ) )
+    if ( !The::playlistActions()->willStopAfterTrack( Playlist::ModelStack::instance()->bottom()->activeId() ) )
     {
         The::playlistActions()->setStopAfterMode( Playlist::StopAfterCurrent );
-        The::playlistActions()->setTrackToBeLast( Playlist::ModelStack::instance()->source()->activeId() );
+        The::playlistActions()->setTrackToBeLast( Playlist::ModelStack::instance()->bottom()->activeId() );
+        The::playlistActions()->repaintPlaylist();
         Amarok::OSD::instance()->setImage( QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
-        Amarok::OSD::instance()->OSDWidget::show( i18n( "Stop after current track: On" ) );       
+        Amarok::OSD::instance()->OSDWidget::show( i18n( "Stop after current track: On" ) );
     } else {
         The::playlistActions()->setStopAfterMode( Playlist::StopNever );
         The::playlistActions()->setTrackToBeLast( 0 );
+        The::playlistActions()->repaintPlaylist();
         Amarok::OSD::instance()->setImage( QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
         Amarok::OSD::instance()->OSDWidget::show( i18n( "Stop after current track: Off" ) );
     }

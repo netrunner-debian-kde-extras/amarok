@@ -19,10 +19,10 @@
 #ifndef AMAROK_STATUS_BAR_H
 #define AMAROK_STATUS_BAR_H
 
-#include "EngineObserver.h"
+#include "core/engine/EngineObserver.h"
 #include "MainWindow.h"
 #include "amarok_export.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 #include "statusbar/CompoundProgressBar.h"
 
 #include <KJob>
@@ -46,7 +46,7 @@ A new, much simpler status bar as the old one really did not survive the porting
 
 	@author
 */
-class AMAROK_EXPORT StatusBar : public KStatusBar, public EngineObserver, public Meta::Observer
+class AMAROK_EXPORT StatusBar : public KStatusBar, public Engine::EngineObserver, public Meta::Observer
 {
     Q_OBJECT
     //friend StatusBar* The::statusBar();

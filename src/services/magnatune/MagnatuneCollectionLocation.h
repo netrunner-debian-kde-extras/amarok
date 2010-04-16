@@ -20,7 +20,7 @@
 #include "MagnatuneSqlCollection.h"
 #include "ServiceCollectionLocation.h"
 
-
+namespace Collections {
 
 /**
 A ServiceCollectionLocation subclass responsible for showing a small Magnatune specific dialog when copying tracks from Magnatune
@@ -37,5 +37,7 @@ public:
     virtual void showSourceDialog( const Meta::TrackList &tracks, bool removeSources );
 
 };
+
+} //namespace Collections
 
 #endif

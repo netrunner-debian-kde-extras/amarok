@@ -23,7 +23,7 @@
 #include "meta/LastFmMeta.h"
 #include "ServiceMetaBase.h"
 
-#include "collection/support/MemoryQueryMaker.h"
+#include "core-impl/collections/support/MemoryQueryMaker.h"
 
 #include <lastfm/ws.h>
 #include <lastfm/XmlQuery>
@@ -31,6 +31,8 @@
 #include <QNetworkReply>
 
 #include <KLocale>
+
+using namespace Collections;
 
 LastFmServiceCollection::LastFmServiceCollection( const QString& userName )
     : ServiceCollection( 0, "last.fm", "last.fm" )

@@ -18,8 +18,8 @@
 #ifndef PLAYER_DBUS_HANDLER_H
 #define PLAYER_DBUS_HANDLER_H
 
-#include "meta/Meta.h"
-#include "EngineObserver.h"
+#include "core/meta/Meta.h"
+#include "core/engine/EngineObserver.h"
 
 #include <QObject>
 #include <QVariantMap>
@@ -50,7 +50,7 @@ const QDBusArgument &operator >> ( const QDBusArgument &argument, DBusStatus &st
 
 namespace Amarok
 {
-    class AMAROK_EXPORT PlayerDBusHandler : public QObject, public EngineObserver
+    class AMAROK_EXPORT PlayerDBusHandler : public QObject, public Engine::EngineObserver
     {
         friend Amarok::PlayerDBusHandler* The::playerDBusHandler();
 

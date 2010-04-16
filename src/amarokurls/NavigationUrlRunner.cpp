@@ -16,7 +16,8 @@
 
 #include "NavigationUrlRunner.h"
 
-#include "Debug.h"
+#include <amarokconfig.h>
+#include "core/support/Debug.h"
 
 #include "AmarokUrlHandler.h"
 
@@ -24,6 +25,7 @@
 #include "PlaylistManager.h"
 #include "browsers/CollectionTreeItemModelBase.h"
 #include "browsers/collectionbrowser/CollectionWidget.h"
+#include "browsers/filebrowser/FileBrowser.h"
 #include "browsers/playlistbrowser/PlaylistBrowser.h"
 #include "browsers/servicebrowser/ServiceBrowser.h"
 #include "services/ServiceBase.h"
@@ -75,6 +77,41 @@ NavigationUrlRunner::run( AmarokUrl url )
 
     }
 
+
+    //if we are activating the local collection, check if we need to restore "show cover" and "show year"
+    //if in the local collection view, also store "show covers" and "show years"
+    if( url.path().endsWith( "collections", Qt::CaseInsensitive ) )
+    {
+        if ( args.keys().contains( "show_cover" ) )
+        {
+            if( args.value( "show_cover" ).compare( "true", Qt::CaseInsensitive ) == 0 )
+                AmarokConfig::setShowAlbumArt( true );
+            else if( args.value( "show_cover" ).compare( "false", Qt::CaseInsensitive ) == 0 )
+                AmarokConfig::setShowAlbumArt( false );
+        }
+
+        if ( args.keys().contains( "show_years" ) )
+        {
+            if( args.value( "show_years" ).compare( "true", Qt::CaseInsensitive ) == 0 )
+                AmarokConfig::setShowYears( true );
+            else if( args.value( "show_years" ).compare( "false", Qt::CaseInsensitive ) == 0 )
+                AmarokConfig::setShowYears( false );
+        }
+    }
+
+    //also set the correct path if we are navigating to the file browser
+    if( url.path().endsWith( "files", Qt::CaseInsensitive ) )
+    {
+        FileBrowser * fileBrowser = dynamic_cast<FileBrowser *>( The::mainWindow()->browserWidget()->list()->activeCategory() );
+        if( fileBrowser )
+        {
+            if( args.keys().contains( "path" ) )
+            {
+                fileBrowser->setDir( args.value( "path" ) );
+            }
+        }
+    }
+
     if ( args.keys().contains( "filter" ) )
         active->setFilter( args.value( "filter" ) );
 
@@ -84,6 +121,11 @@ NavigationUrlRunner::run( AmarokUrl url )
 QString NavigationUrlRunner::command() const
 {
     return "navigate";
+}
+
+QString NavigationUrlRunner::prettyCommand() const
+{
+    return i18nc( "A type of command that affects the view in the browser category", "Navigate" );
 }
 
 KIcon NavigationUrlRunner::icon() const

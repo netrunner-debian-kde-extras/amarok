@@ -18,14 +18,14 @@
 #define AMAROK_ENGINE_SCRIPT_H
 
 #include "MetaTypeExporter.h"
-#include "EngineObserver.h"
+#include "core/engine/EngineObserver.h"
 
 #include <QObject>
 #include <QtScript>
 
 namespace AmarokScript
 {
-    class AmarokEngineScript : public QObject, public EngineObserver
+    class AmarokEngineScript : public QObject, public Engine::EngineObserver
     {
         Q_OBJECT
 
@@ -79,6 +79,7 @@ namespace AmarokScript
             void engineVolumeChanged( int value );
             void engineTrackPositionChanged( qint64 position, bool userSeek );
             void engineTrackChanged( Meta::TrackPtr track );
+            void engineTrackFinished( Meta::TrackPtr track );
             void engineNewMetaData( const QHash<qint64, QString> &newData, bool trackChanged );
             void engineStateChanged( Phonon::State currentState, Phonon::State oldState );
 

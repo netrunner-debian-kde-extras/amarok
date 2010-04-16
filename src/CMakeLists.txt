@@ -11,7 +11,7 @@ if(APPLE)
 endif(APPLE)
 
 # add_subdirectory( playlistmanager )
-add_subdirectory( collection )
+add_subdirectory( core-impl/collections )
 #dont use our own libplasma anymore, but still pick up our applets/engines/containments
 add_subdirectory( context )
 add_subdirectory( images )
@@ -33,13 +33,13 @@ include_directories(
     browsers/playlistbrowser
     browsers/servicebrowser
     browsers/servicebrowser/scriptableservice
-    collection
-    collection/support
-    collection/mediadevicecollection
-    collection/mediadevicecollection/handler  # for Handler
-    collection/mediadevicecollection/support  # for MediaDeviceInfo
-    collection/mediadevicecollection/playlist # for MediaDevicePlaylist etc.
-    collection/mediadevicecollection/podcast
+    core-impl/collections
+    core-impl/collections/support
+    core-impl/collections/mediadevicecollection
+    core-impl/collections/mediadevicecollection/handler  # for Handler
+    core-impl/collections/mediadevicecollection/support  # for MediaDeviceInfo
+    core-impl/collections/mediadevicecollection/playlist # for MediaDevicePlaylist etc.
+    core-impl/collections/mediadevicecollection/podcast
     configdialog
     configdialog/dialogs
     context
@@ -48,11 +48,8 @@ include_directories(
     dbus
     dialogs
     dynamic
-    meta
-    meta/capabilities
+    likeback
     playlistmanager
-    plugin
-    podcasts
     statusbar
     synchronization
     timecode
@@ -72,46 +69,56 @@ if ( KDEMULTIMEDIA_FOUND )
 endif ( KDEMULTIMEDIA_FOUND )
 
 #####################################################################
+# LIKEBACK
+#####################################################################
+set(likeback_SRCS
+    likeback/LikeBack.cpp
+    likeback/LikeBackBar.cpp
+    likeback/LikeBackDialog.cpp
+)
+
+#####################################################################
 # PLUGIN
 #####################################################################
 set(libplugin_SRCS
-    plugin/plugin.cpp
-    plugin/pluginconfig.cpp
+    core/plugins/Plugin.cpp
+    core/plugins/PluginManager.cpp
+    core/plugins/PluginConfig.cpp
 )
 
 #####################################################################
 # PROXYCOLLECTION
 #####################################################################
 set(libproxycollection_SRCS
-    collection/proxycollection/ProxyCollection.cpp
-    collection/proxycollection/ProxyCollectionMeta.cpp
-    collection/proxycollection/ProxyCollectionQueryMaker.cpp
+    core-impl/collections/proxycollection/ProxyCollection.cpp
+    core-impl/collections/proxycollection/ProxyCollectionMeta.cpp
+    core-impl/collections/proxycollection/ProxyCollectionQueryMaker.cpp
 )
 
 #####################################################################
 # MEDIADEVICEFRAMEWORK
 #####################################################################
 set(libmediadeviceframework_SRCS
-  collection/mediadevicecollection/MediaDeviceCollection.cpp
-  collection/mediadevicecollection/MediaDeviceCollectionLocation.cpp
-  collection/mediadevicecollection/MediaDeviceMeta.cpp
-  collection/mediadevicecollection/MediaDeviceCollectionCapability.cpp
-  collection/mediadevicecollection/MediaDeviceDecoratorCapability.cpp
-  collection/mediadevicecollection/handler/MediaDeviceHandler.cpp
-  collection/mediadevicecollection/handler/MediaDeviceHandlerCapability.cpp
-  collection/mediadevicecollection/handler/capabilities/ArtworkCapability.cpp
-  collection/mediadevicecollection/handler/capabilities/CustomReadCapability.cpp
-  collection/mediadevicecollection/handler/capabilities/PlaylistCapability.cpp
-  collection/mediadevicecollection/handler/capabilities/PodcastCapability.cpp
-  collection/mediadevicecollection/handler/capabilities/ReadCapability.cpp
-  collection/mediadevicecollection/handler/capabilities/ReadCapabilityBase.cpp
-  collection/mediadevicecollection/handler/capabilities/WriteCapability.cpp
-  collection/mediadevicecollection/handler/capabilities/WriteCapabilityBase.cpp
-  collection/mediadevicecollection/playlist/MediaDevicePlaylist.cpp
-  collection/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.cpp
-  collection/mediadevicecollection/podcast/MediaDevicePodcastProvider.cpp
-  collection/mediadevicecollection/support/ConnectionAssistant.cpp
-  collection/mediadevicecollection/support/MediaDeviceInfo.cpp
+  core-impl/collections/mediadevicecollection/MediaDeviceCollection.cpp
+  core-impl/collections/mediadevicecollection/MediaDeviceCollectionLocation.cpp
+  core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp
+  core-impl/collections/mediadevicecollection/MediaDeviceCollectionCapability.cpp
+  core-impl/collections/mediadevicecollection/MediaDeviceDecoratorCapability.cpp
+  core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp
+  core-impl/collections/mediadevicecollection/handler/MediaDeviceHandlerCapability.cpp
+  core-impl/collections/mediadevicecollection/handler/capabilities/ArtworkCapability.cpp
+  core-impl/collections/mediadevicecollection/handler/capabilities/CustomReadCapability.cpp
+  core-impl/collections/mediadevicecollection/handler/capabilities/PlaylistCapability.cpp
+  core-impl/collections/mediadevicecollection/handler/capabilities/PodcastCapability.cpp
+  core-impl/collections/mediadevicecollection/handler/capabilities/ReadCapability.cpp
+  core-impl/collections/mediadevicecollection/handler/capabilities/ReadCapabilityBase.cpp
+  core-impl/collections/mediadevicecollection/handler/capabilities/WriteCapability.cpp
+  core-impl/collections/mediadevicecollection/handler/capabilities/WriteCapabilityBase.cpp
+  core-impl/collections/mediadevicecollection/playlist/MediaDevicePlaylist.cpp
+  core-impl/collections/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.cpp
+  core-impl/collections/mediadevicecollection/podcast/MediaDevicePodcastProvider.cpp
+  core-impl/collections/mediadevicecollection/support/ConnectionAssistant.cpp
+  core-impl/collections/mediadevicecollection/support/MediaDeviceInfo.cpp
 )
 
 #####################################################################
@@ -160,10 +167,7 @@ set(libamarokurl_SRCS
     amarokurls/BookmarkModel.cpp
     amarokurls/BookmarkTreeView.cpp
     amarokurls/BookmarkMetaActions.cpp
-    timecode/TimecodeObserver.cpp
-    timecode/TimecodeMeta.cpp
-    timecode/TimecodeTrackProvider.cpp
-)
+    )
 
 #####################################################################
 # SCRIPTABLESERVICE
@@ -213,6 +217,7 @@ set(libbrowserframework_SRCS
     browsers/CollectionTreeItemModel.cpp
     browsers/CollectionTreeItemModelBase.cpp
     browsers/CollectionTreeView.cpp
+    browsers/CollectionTreeViewSimple.cpp
     browsers/InfoProxy.cpp
     browsers/SingleCollectionTreeItemModel.cpp
 )
@@ -265,74 +270,86 @@ set(libstatusbar_SRCS
 )
 
 #####################################################################
+# CORE INTERFACES
+#####################################################################
+set(core_interfaces_SRCS
+    core/interfaces/Logger.cpp
+)
+
+
+#####################################################################
 # META
 #####################################################################
-set(meta_SRCS
-    meta/Capability.cpp
-    meta/M3UPlaylist.cpp
-    meta/Meta.cpp
-    meta/MetaUtility.cpp
-    meta/TagLibUtils.cpp
+set(core_SRCS
+    core/capabilities/Capability.cpp
+    core-impl/playlists/types/file/m3u/M3UPlaylist.cpp
+    core/meta/Meta.cpp
+    core/meta/support/MetaUtility.cpp
+    core-impl/meta/file/TagLibUtils.cpp
     ../shared/MetaReplayGain.cpp
-    meta/Playlist.cpp
-    meta/PLSPlaylist.cpp
-    meta/StatisticsProvider.cpp
-    meta/PlaylistFileSupport.cpp
-    meta/PrivateMetaRegistry.cpp
-    meta/XSPFPlaylist.cpp
-    meta/capabilities/BookmarkThisCapability.cpp
-    meta/capabilities/BoundedPlaybackCapability.cpp
-    meta/capabilities/CollectionCapability.cpp
-    meta/capabilities/CurrentTrackActionsCapability.cpp
-    meta/capabilities/CustomActionsCapability.cpp
-    meta/capabilities/DecoratorCapability.cpp
-    meta/capabilities/EditCapability.cpp
-    meta/capabilities/EditablePlaylistCapability.cpp
-    meta/capabilities/FindInSourceCapability.cpp
-    meta/capabilities/LastFmCapability.cpp
-    meta/capabilities/MultiPlayableCapability.cpp
-    meta/capabilities/MultiSourceCapability.cpp
-    meta/capabilities/OrganiseCapability.cpp
-    meta/capabilities/ReadLabelCapability.cpp
-    meta/capabilities/SourceInfoCapability.cpp
-    meta/capabilities/StatisticsCapability.cpp
-    meta/capabilities/StreamInfoCapability.cpp
-    meta/capabilities/TimecodeLoadCapability.cpp
-    meta/capabilities/TimecodeWriteCapability.cpp
-    meta/capabilities/UpdateCapability.cpp
-    meta/capabilities/WriteLabelCapability.cpp
-    meta/file/File.cpp
-    meta/multi/MultiTrack.cpp
-    meta/multi/MultiSourceCapabilityImpl.cpp
-    meta/cue/CueFileSupport.cpp
-    meta/proxy/MetaProxy.cpp
-    meta/stream/Stream.cpp
-    meta/support/PermanentUrlStatisticsProvider.cpp
-    meta/support/TagStatisticsProvider.cpp
+    core/playlists/Playlist.cpp
+    core-impl/playlists/types/file/pls/PLSPlaylist.cpp
+    core/statistics/StatisticsProvider.cpp
+    core/playlists/PlaylistProvider.cpp
+    core-impl/playlists/providers/user/UserPlaylistProvider.cpp
+    core-impl/playlists/types/file/PlaylistFileSupport.cpp
+    core/meta/support/PrivateMetaRegistry.cpp
+    core-impl/playlists/types/file/xspf/XSPFPlaylist.cpp
+    core/capabilities/BookmarkThisCapability.cpp
+    core/capabilities/BoundedPlaybackCapability.cpp
+    core/capabilities/CollectionCapability.cpp
+    core/capabilities/CurrentTrackActionsCapability.cpp
+    core/capabilities/CustomActionsCapability.cpp
+    core/capabilities/DecoratorCapability.cpp
+    core/capabilities/EditCapability.cpp
+    core/capabilities/EditablePlaylistCapability.cpp
+    core/capabilities/FindInSourceCapability.cpp
+    core/capabilities/LastFmCapability.cpp
+    core/capabilities/MultiPlayableCapability.cpp
+    core/capabilities/MultiSourceCapability.cpp
+    core/capabilities/OrganiseCapability.cpp
+    core/capabilities/ReadLabelCapability.cpp
+    core/capabilities/SourceInfoCapability.cpp
+    core/capabilities/StatisticsCapability.cpp
+    core/capabilities/StreamInfoCapability.cpp
+    core-impl/capabilities/timecode/TimecodeBoundedPlaybackCapability.cpp
+    core-impl/capabilities/timecode/TimecodeEditCapability.cpp
+    core-impl/capabilities/timecode/TimecodeLoadCapability.cpp
+    core-impl/capabilities/timecode/TimecodeWriteCapability.cpp
+    core/capabilities/UpdateCapability.cpp
+    core/capabilities/WriteLabelCapability.cpp
+    core-impl/capabilities/multisource/MultiSourceCapabilityImpl.cpp
+    core-impl/meta/file/File.cpp
+    core-impl/meta/multi/MultiTrack.cpp
+    core-impl/meta/cue/CueFileSupport.cpp
+    core-impl/meta/proxy/MetaProxy.cpp
+    core-impl/meta/stream/Stream.cpp
+    core-impl/statistics/providers/url/PermanentUrlStatisticsProvider.cpp
+    core-impl/statistics/providers/tag/TagStatisticsProvider.cpp
 )
 
 #####################################################################
 # COLLECTION
 #####################################################################
 set(collection_SRCS
-    collection/Collection.cpp
-    collection/CollectionManager.cpp
-    collection/CollectionLocation.cpp
-    collection/CollectionLocationDelegateImpl.cpp
-    collection/MetaQueryMaker.cpp
-    collection/QueryMaker.cpp
-    collection/TrackForUrlWorker.cpp
-    collection/support/MemoryCustomValue.cpp
-    collection/support/MemoryFilter.cpp
-    collection/support/MemoryMatcher.cpp
-    collection/support/MemoryQueryMaker.cpp
-    collection/support/MemoryQueryMakerInternal.cpp
-    collection/support/MemoryQueryMakerHelper.cpp
-    collection/support/PlaylistCollection.cpp
-    collection/support/PlaylistCollectionLocation.cpp
-    collection/support/XmlQueryReader.cpp
-    collection/support/XmlQueryWriter.cpp
-    collection/support/FileCollectionLocation.cpp
+    core/collections/Collection.cpp
+    core-impl/collections/support/CollectionManager.cpp
+    core/collections/CollectionLocation.cpp
+    core-impl/collections/support/CollectionLocationDelegateImpl.cpp
+    core/collections/MetaQueryMaker.cpp
+    core/collections/QueryMaker.cpp
+    core/collections/support/TrackForUrlWorker.cpp
+    core-impl/collections/support/MemoryCustomValue.cpp
+    core-impl/collections/support/MemoryFilter.cpp
+    core-impl/collections/support/MemoryMatcher.cpp
+    core-impl/collections/support/MemoryQueryMaker.cpp
+    core-impl/collections/support/MemoryQueryMakerInternal.cpp
+    core-impl/collections/support/MemoryQueryMakerHelper.cpp
+    core-impl/collections/support/PlaylistCollection.cpp
+    core-impl/collections/support/PlaylistCollectionLocation.cpp
+    core-impl/collections/support/XmlQueryReader.cpp
+    core-impl/collections/support/XmlQueryWriter.cpp
+    core-impl/collections/support/FileCollectionLocation.cpp
 )
 
 #####################################################################
@@ -374,34 +391,36 @@ set( libcontextview_SRCS
 # PODCASTS
 #####################################################################
 set(libpodcasts_SRCS
-    podcasts/PodcastReader.cpp
-    podcasts/PodcastMeta.cpp
-    podcasts/PodcastImageFetcher.cpp
-    podcasts/PodcastProvider.cpp
-    podcasts/sql/SqlPodcastMeta.cpp
-    podcasts/sql/SqlPodcastProvider.cpp
-    podcasts/sql/PodcastSettingsDialog.cpp
+    core/podcasts/PodcastReader.cpp
+    core/podcasts/PodcastMeta.cpp
+    core/podcasts/PodcastImageFetcher.cpp
+    core/podcasts/PodcastProvider.cpp
+    core-impl/podcasts/sql/SqlPodcastMeta.cpp
+    core-impl/podcasts/sql/SqlPodcastProvider.cpp
+    core-impl/podcasts/sql/PodcastSettingsDialog.cpp
 )
 
 #####################################################################
 # PLAYLISTBROWSER
 #####################################################################
 set(libplaylistbrowser_SRCS
+    browsers/playlistbrowser/APGCategory.cpp
     browsers/playlistbrowser/DynamicModel.cpp
     browsers/playlistbrowser/DynamicCategory.cpp
     browsers/playlistbrowser/DynamicBiasDelegate.cpp
     browsers/playlistbrowser/DynamicBiasModel.cpp
     browsers/playlistbrowser/DynamicBiasWidgets.cpp
+    browsers/playlistbrowser/MetaPlaylistModel.cpp
     browsers/playlistbrowser/QtGroupingProxy.cpp
     browsers/playlistbrowser/PlaylistBrowser.cpp
-    browsers/playlistbrowser/UserPlaylistModel.cpp
-    browsers/playlistbrowser/UserPlaylistTreeView.cpp
-    browsers/playlistbrowser/PlaylistCategory.cpp
+    browsers/playlistbrowser/UserPlaylistCategory.cpp
     browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp
     browsers/playlistbrowser/PlaylistTreeItemDelegate.cpp
     browsers/playlistbrowser/PlaylistsByProviderProxy.cpp
     browsers/playlistbrowser/PodcastModel.cpp
     browsers/playlistbrowser/PodcastCategory.cpp
+    browsers/playlistbrowser/UserPlaylistModel.cpp
+    browsers/playlistbrowser/UserPlaylistTreeView.cpp
 )
 
 #####################################################################
@@ -409,8 +428,6 @@ set(libplaylistbrowser_SRCS
 #####################################################################
 set(libplaylistmanager_SRCS
     playlistmanager/PlaylistManager.cpp
-    playlistmanager/PlaylistProvider.cpp
-    playlistmanager/UserPlaylistProvider.cpp
     playlistmanager/file/PlaylistFileProvider.cpp
     playlistmanager/sql/SqlUserPlaylistProvider.cpp
     playlistmanager/sql/SqlPlaylist.cpp
@@ -421,12 +438,12 @@ set(libplaylistmanager_SRCS
 # TOOLTIPS
 #####################################################################
 set(libtooltip_SRCS
-    tooltips/AmarokToolTip.cpp
-    tooltips/KToolTip.cpp
-    tooltips/KToolTipDelegate.cpp
-    tooltips/KToolTipItem.cpp
-    tooltips/KFormattedBalloonTipDelegate.cpp
-    tooltips/ToolTipManager.cpp
+    playlist/view/tooltips/AmarokToolTip.cpp
+    playlist/view/tooltips/KToolTip.cpp
+    playlist/view/tooltips/KToolTipDelegate.cpp
+    playlist/view/tooltips/KToolTipItem.cpp
+    playlist/view/tooltips/KFormattedBalloonTipDelegate.cpp
+    playlist/view/tooltips/ToolTipManager.cpp
 )
 
 #####################################################################
@@ -454,9 +471,11 @@ set(libplaylist_SRCS
     playlist/layouts/LayoutItemConfig.cpp
     playlist/layouts/LayoutManager.cpp
     playlist/layouts/PlaylistLayoutEditDialog.cpp
+    playlist/navigators/AlbumNavigator.cpp
     playlist/navigators/DynamicTrackNavigator.cpp
     playlist/navigators/FavoredRandomTrackNavigator.cpp
     playlist/navigators/NavigatorConfigAction.cpp
+    playlist/navigators/NonlinearTrackNavigator.cpp
     playlist/navigators/RandomAlbumNavigator.cpp
     playlist/navigators/RandomTrackNavigator.cpp
     playlist/navigators/RepeatAlbumNavigator.cpp
@@ -468,11 +487,10 @@ set(libplaylist_SRCS
     playlist/view/listview/PrettyItemDelegate.cpp
     playlist/view/listview/PrettyListView.cpp
     playlist/view/listview/SourceSelectionPopup.cpp
-    playlist/proxymodels/FilterProxy.cpp
     playlist/proxymodels/GroupingProxy.cpp
     playlist/proxymodels/ProxyBase.cpp
     playlist/proxymodels/SortAlgorithms.cpp
-    playlist/proxymodels/SortProxy.cpp
+    playlist/proxymodels/SortFilterProxy.cpp
     playlist/proxymodels/SortScheme.cpp
     playlist/proxymodels/SearchProxy.cpp
 )
@@ -483,10 +501,28 @@ set(libplaylist_SRCS
 
 if(KDEMULTIMEDIA_FOUND)
     set(audiocdsupport_SRCS
-        meta/audiocd/AudioCdTrackProvider.cpp
-        meta/audiocd/AudioCdTrackProvider_p.cpp
+        core-impl/meta/cdda/AudioCdTrackProvider.cpp
+        core-impl/meta/cdda/AudioCdTrackProvider_p.cpp
        )
 endif(KDEMULTIMEDIA_FOUND)
+
+#####################################################################
+# DYNAMIC
+#####################################################################
+set(libdynamic_SRCS
+    dynamic/Bias.cpp
+    dynamic/BiasedPlaylist.cpp
+    dynamic/BiasSolver.cpp
+    dynamic/CustomBias.cpp
+    dynamic/CustomBiasEntry.cpp
+    dynamic/CustomBiasEntryWidget.cpp
+    dynamic/DynamicPlaylist.cpp
+    dynamic/TrackSet.cpp
+    dynamic/gsl/gauss.c
+
+    # biases
+    dynamic/biases/EchoNest.cpp
+)
 
 #####################################################################
 # DBUS
@@ -522,21 +558,38 @@ set(scriptengine_SRCS
 )
 
 #####################################################################
-# DYNAMIC
+# PLAYLIST GENERATOR
 #####################################################################
-set(libdynamic_SRCS
-    dynamic/BiasedPlaylist.cpp
-    dynamic/DynamicPlaylist.cpp
-    dynamic/Bias.cpp
-    dynamic/CustomBias.cpp
-    dynamic/CustomBiasEntry.cpp
-    dynamic/CustomBiasEntryWidget.cpp
-    dynamic/BiasSolver.cpp
-    dynamic/TrackSet.cpp
-    dynamic/gsl/gauss.c
+set(apg_SRCS
+    playlistgenerator/Constraint.cpp
+    playlistgenerator/ConstraintGroup.cpp
+    playlistgenerator/ConstraintFactory.cpp
+    playlistgenerator/ConstraintNode.cpp
+    playlistgenerator/ConstraintSolver.cpp
+    playlistgenerator/ConstraintTester.cpp
+    playlistgenerator/ConstraintTestWrapper.cpp
+    playlistgenerator/Preset.cpp
+    playlistgenerator/PresetEditDialog.cpp
+    playlistgenerator/PresetModel.cpp
+    playlistgenerator/TreeController.cpp
+    playlistgenerator/TreeModel.cpp
+    playlistgenerator/constraints/Checkpoint.cpp
+    playlistgenerator/constraints/CheckpointHandlers.cpp
+    playlistgenerator/constraints/Matching.cpp
+    playlistgenerator/constraints/PlaylistLength.cpp
+    playlistgenerator/constraints/PreventDuplicates.cpp
+    playlistgenerator/constraints/TagMatch.cpp
+    playlistgenerator/constraints/TagMatchFieldsModel.cpp
+    playlistgenerator/constraints/TrackSpreader.cpp
+)
 
-    # biases
-    dynamic/biases/EchoNest.cpp
+kde4_add_ui_files(apg_SRCS
+    playlistgenerator/ConstraintGroupEditWidget.ui
+    playlistgenerator/PresetEditDialog.ui
+    playlistgenerator/constraints/CheckpointEditWidget.ui
+    playlistgenerator/constraints/PlaylistLengthEditWidget.ui
+    playlistgenerator/constraints/PreventDuplicatesEditWidget.ui
+    playlistgenerator/constraints/TagMatchEditWidget.ui
 )
 
 #####################################################################
@@ -569,7 +622,10 @@ set(amaroklib_LIB_SRCS
     ${libserviceframework_SRCS}
     ${libservicebrowser_SRCS}
     ${libdynamic_SRCS}
-    ${meta_SRCS}
+    ${likeback_SRCS}
+    ${core_SRCS}
+    ${core_interfaces_SRCS}
+    ${apg_SRCS}
     ${collection_SRCS}
     ${mac_SRCS}
     ${libplaylistbrowser_SRCS}
@@ -581,6 +637,7 @@ set(amaroklib_LIB_SRCS
     ${libamarokurl_SRCS}
     ${taglib_filetype_resolver_SRCS}
     ${libsynchronization_SRCS}
+    core-impl/logger/ProxyLogger.cpp
     aboutdialog/AnimatedBarWidget.cpp
     aboutdialog/AnimatedWidget.cpp
     aboutdialog/ExtendedAboutDialog.cpp
@@ -589,25 +646,27 @@ set(amaroklib_LIB_SRCS
     aboutdialog/OcsPersonItem.cpp
     aboutdialog/OcsPersonListWidget.cpp
     ActionClasses.cpp
-    Amarok.cpp
+    core/support/Amarok.cpp
     AmarokMimeData.cpp
     AmarokProcess.cpp
     App.cpp
     CaseConverter.cpp
-    Components.cpp
+    core/support/Components.cpp
     DirectoryLoader.cpp
     EngineController.cpp
-    EngineObserver.cpp
+    core/engine/EngineObserver.cpp
     Expression.cpp
     KNotificationBackend.cpp
     MainWindow.cpp
     MediaDeviceCache.cpp
     MediaDeviceMonitor.cpp
-    PluginManager.cpp
-    SmartPointerList.cpp
+    core/support/SmartPointerList.cpp
     StarManager.cpp
     SvgHandler.cpp
     SvgTinter.cpp
+    core-impl/meta/timecode/TimecodeObserver.cpp
+    core-impl/meta/timecode/TimecodeMeta.cpp
+    core-impl/meta/timecode/TimecodeTrackProvider.cpp
     covermanager/CoverFetcher.cpp
     covermanager/CoverFetchingActions.cpp
     covermanager/CoverFetchQueue.cpp
@@ -647,7 +706,7 @@ set(amaroklib_LIB_SRCS
     toolbar/SlimToolbar.cpp
     toolbar/VolumePopupButton.cpp
     toolbar/MainToolbar.cpp
-    TrayIcon.cpp
+    widgets/AlbumBreadcrumbWidget.cpp
     widgets/AmarokDockWidget.cpp
     widgets/AnimatedLabelStack.cpp
     widgets/BreadcrumbItemButton.cpp
@@ -683,10 +742,23 @@ set(amaroklib_LIB_SRCS
     widgets/TrackActionButton.cpp
     widgets/BookmarkTriangle.cpp
     widgets/BookmarkPopup.cpp
+    widgets/TrackSelectWidget.cpp
     GlobalCollectionActions.cpp
     GlobalCurrentTrackActions.cpp
     moodbar/MoodbarManager.cpp
 )
+
+if(KSTATUSNOTIFIERITEM_FOUND)
+    set(amaroklib_LIB_SRCS
+        ${amaroklib_LIB_SRCS}
+        TrayIcon.cpp
+        )
+else(KSTATUSNOTIFIERITEM_FOUND)
+    set(amaroklib_LIB_SRCS
+        ${amaroklib_LIB_SRCS}
+        TrayIconLegacy.cpp
+        )
+endif(KSTATUSNOTIFIERITEM_FOUND)
 
 if( BUILD_MYSQLE_COLLECTION )
 else( BUILD_MYSQLE_COLLECTION )
@@ -699,24 +771,15 @@ endif( BUILD_MYSQLE_COLLECTION )
 if(KDE4_BUILD_TESTS)
     set(amaroklib_LIB_SRCS
         ${amaroklib_LIB_SRCS}
-        ../tests/meta/TestM3UPlaylist.cpp
-        ../tests/meta/TestMetaTrack.cpp
-        ../tests/meta/TestPLSPlaylist.cpp
-        ../tests/meta/TestPlaylistFileSupport.cpp
-        ../tests/meta/TestXSPFPlaylist.cpp
-        ../tests/meta/cue/TestMetaCueCueFileItem.cpp
-        ../tests/meta/cue/TestMetaCueTrack.cpp
-        ../tests/meta/file/TestMetaFileTrack.cpp
-        ../tests/meta/multi/TestMetaMultiTrack.cpp
-        ../tests/playlistmanager/file/TestPlaylistFileProvider.cpp
-        ../tests/playlistmanager/sql/TestSqlUserPlaylistProvider.cpp
-        ../tests/timecode/TestTimecodeTrackProvider.cpp
-        ../tests/TestAmarok.cpp
         ../tests/TestBase.cpp
         ../tests/TestDirectoryLoader.cpp
     )
     include_directories(
         ../tests/
+        ../tests/context/
+        ../tests/context/engines/
+        ../tests/context/engines/upcomingevents/
+        ../tests/context/engines/similarartists/
         ../tests/meta/
         ../tests/meta/cue/
         ../tests/meta/file/
@@ -750,16 +813,17 @@ add_custom_target(amarokconfig_h DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/amarokconfi
 
 kde4_add_ui_files(amaroklib_LIB_SRCS
     aboutdialog/OcsPersonItem.ui
-    dialogs/EditCoverSearchDialog.ui
     dialogs/EditFilterDialog.ui
     dialogs/EqualizerDialog.ui
     dialogs/ScriptManagerBase.ui
     dialogs/TagDialogBase.ui
     dialogs/FilenameLayoutDialog.ui
     dialogs/OrganizeCollectionDialogBase.ui
+    likeback/LikeBackBar.ui
+    likeback/LikeBackDialog.ui
     playlist/layouts/PlaylistLayoutEditDialog.ui
-    podcasts/sql/PodcastSettingsBase.ui
-    podcasts/sql/SqlPodcastProviderSettingsWidget.ui
+    core-impl/podcasts/sql/PodcastSettingsBase.ui
+    core-impl/podcasts/sql/SqlPodcastProviderSettingsWidget.ui
     browsers/playlistbrowser/PodcastCategoryBase.ui
 )
 

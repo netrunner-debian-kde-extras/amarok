@@ -16,19 +16,21 @@
 
 #include "SqlPlaylist.h"
 
-#include "CollectionManager.h"
-#include "Debug.h"
-#include "meta/stream/Stream.h"
-#include "SqlStorage.h"
-#include "timecode/TimecodeMeta.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core/support/Debug.h"
+#include "core-impl/meta/stream/Stream.h"
+#include "core/collections/support/SqlStorage.h"
+#include "core-impl/meta/timecode/TimecodeMeta.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "playlistmanager/sql/SqlPlaylistGroup.h"
 #include "playlistmanager/sql/SqlUserPlaylistProvider.h"
 
 #include <typeinfo>
 
-Meta::SqlPlaylist::SqlPlaylist( const QString & name, const Meta::TrackList
-        &tracks, Meta::SqlPlaylistGroupPtr parent, PlaylistProvider *provider,
+namespace Playlists {
+
+SqlPlaylist::SqlPlaylist( const QString & name, const Meta::TrackList
+        &tracks, SqlPlaylistGroupPtr parent, PlaylistProvider *provider,
         const QString &urlId )
     : m_dbId( -1 )
     , m_parent( parent )
@@ -42,8 +44,8 @@ Meta::SqlPlaylist::SqlPlaylist( const QString & name, const Meta::TrackList
     saveToDb();
 }
 
-Meta::SqlPlaylist::SqlPlaylist( const QStringList & resultRow,
-                                Meta::SqlPlaylistGroupPtr parent,
+SqlPlaylist::SqlPlaylist( const QStringList & resultRow,
+                                SqlPlaylistGroupPtr parent,
                                 PlaylistProvider *provider )
     : m_parent( parent )
     , m_provider( provider)
@@ -53,25 +55,21 @@ Meta::SqlPlaylist::SqlPlaylist( const QStringList & resultRow,
     m_name = resultRow[2];
     m_description = resultRow[3];
     m_urlId = resultRow[4];
-
-    //loadTracks();
-
-    //debug() << m_name << " created with pointer " << this << " and parent " << this->parent();
 }
 
 
-Meta::SqlPlaylist::~SqlPlaylist()
+SqlPlaylist::~SqlPlaylist()
 {
 }
 
-Meta::SqlPlaylistGroupPtr
-Meta::SqlPlaylist::parent() const
+SqlPlaylistGroupPtr
+SqlPlaylist::parent() const
 {
     return m_parent;
 }
 
 QStringList
-Meta::SqlPlaylist::groups()
+SqlPlaylist::groups()
 {
     QStringList groups;
     if( m_parent && !m_parent->name().isNull() )
@@ -80,36 +78,32 @@ Meta::SqlPlaylist::groups()
 }
 
 void
-Meta::SqlPlaylist::setGroups( const QStringList &groups )
+SqlPlaylist::setGroups( const QStringList &groups )
 {
-    DEBUG_BLOCK
-    debug() << groups;
-    //HACK: fix this to use m_provider;
-    SqlUserPlaylistProvider *provider = dynamic_cast<SqlUserPlaylistProvider *>(The::playlistManager()->defaultUserPlaylists());
-    if( !provider )
+    SqlUserPlaylistProvider *userPlaylistProvider =
+            dynamic_cast<SqlUserPlaylistProvider *>( m_provider );
+    if( !userPlaylistProvider )
     {
-        debug() << "ERROR: could not cast the default UserPlaylistProvider" << __FILE__ << __LINE__;
+        error() << "Provider could not be cast to SqlUserPlaylistProvider";
         return;
     }
 
     if( groups.isEmpty() )
-        m_parent = Meta::SqlPlaylistGroupPtr();
+        m_parent = SqlPlaylistGroupPtr();
     else
-        m_parent = provider->group( groups.first() );
+        m_parent = userPlaylistProvider->group( groups.first() );
 
     saveToDb();
 }
 
 bool
-Meta::SqlPlaylist::saveToDb( bool tracks )
+SqlPlaylist::saveToDb( bool tracks )
 {
-    DEBUG_BLOCK
-
     int parentId = -1;
     if( m_parent )
         parentId = m_parent->id();
 
-    SqlStorage * sql =  CollectionManager::instance()->sqlStorage();
+    SqlStorage *sql = CollectionManager::instance()->sqlStorage();
 
     //figure out if we have a urlId and if this id is already in the db, if so, update it instead of creating a new one.
     if( !m_urlId.isEmpty() )
@@ -142,7 +136,6 @@ Meta::SqlPlaylist::saveToDb( bool tracks )
         if( tracks )
         {
             //delete existing tracks and insert all
-            debug() << "Updating existing playlist";
             query = "DELETE FROM playlist_tracks where playlist_id=%1;";
             query = query.arg( QString::number( m_dbId ) );
             CollectionManager::instance()->sqlStorage()->query( query );
@@ -152,19 +145,20 @@ Meta::SqlPlaylist::saveToDb( bool tracks )
     else
     {
         //insert new
-        debug() << "Creating new playlist";
-        QString query = "INSERT INTO playlists ( parent_id, name, description, urlid ) VALUES ( %1, '%2', '%3', '%4' );";
+        QString query = "INSERT INTO playlists ( parent_id, name, description, urlid ) "
+                        "VALUES ( %1, '%2', '%3', '%4' );";
         query = query.arg( QString::number( parentId ) )
                 .arg( sql->escape( m_name ) )
                 .arg( sql->escape( m_description ) )
                 .arg( sql->escape( m_urlId ) );
-        m_dbId = CollectionManager::instance()->sqlStorage()->insert( query, NULL );
-        if ( tracks )
+        m_dbId = CollectionManager::instance()->sqlStorage()->insert( query, "playlists" );
+        if( tracks )
             saveTracks();
     }
 
-    //HACK! if this has just been added from the collection scanner, the list is full of "dirty" tracks that might not all have been
-    //properly trackForUrl'ed, so clear the track list so we reload if we ever need them!
+    //HACK! if this has just been added from the collection scanner, the list is full of "dirty"
+    //tracks that might not all have been properly trackForUrl'ed, so clear the track list so we
+    //reload if we ever need them!
     if( !m_urlId.isEmpty() )
     {
         m_tracks.clear();
@@ -179,25 +173,27 @@ Meta::SqlPlaylist::saveToDb( bool tracks )
 }
 
 void
-Meta::SqlPlaylist::saveTracks()
+SqlPlaylist::saveTracks()
 {
     int trackNum = 1;
-    SqlStorage * sql =  CollectionManager::instance()->sqlStorage();
+    SqlStorage *sql = CollectionManager::instance()->sqlStorage();
 
     foreach( Meta::TrackPtr trackPtr, m_tracks )
     {
-        if ( trackPtr && trackPtr->album() && trackPtr->artist() )
+        if( trackPtr )
         {
             debug() << "saving track with url " << trackPtr->uidUrl();
-            QString query = "INSERT INTO playlist_tracks ( playlist_id, track_num, url, title, album, artist, length, uniqueid ) VALUES ( %1, %2, '%3', '%4', '%5', '%6', %7, '%8' );";
+            QString query = "INSERT INTO playlist_tracks ( playlist_id, track_num, url, title, "
+                            "album, artist, length, uniqueid ) VALUES ( %1, %2, '%3', '%4', '%5', "
+                            "'%6', %7, '%8' );";
             query = query.arg( QString::number( m_dbId ), QString::number( trackNum ),
                         sql->escape( trackPtr->uidUrl() ),
                         sql->escape( trackPtr->prettyName() ),
-                        sql->escape( trackPtr->album()->prettyName() ),
-                        sql->escape( trackPtr->artist()->prettyName() ),
+                        trackPtr->album() ? sql->escape( trackPtr->album()->prettyName() ) : "",
+                        trackPtr->artist()? sql->escape( trackPtr->artist()->prettyName() ) : "",
                         QString::number( trackPtr->length() ),
                         sql->escape( trackPtr->uidUrl() ) );
-            sql->insert( query, NULL );
+            sql->insert( query, "playlist_tracks" );
 
             trackNum++;
         }
@@ -205,42 +201,54 @@ Meta::SqlPlaylist::saveTracks()
 }
 
 Meta::TrackList
-Meta::SqlPlaylist::tracks()
+SqlPlaylist::tracks()
 {
-    //DEBUG_BLOCK
     if ( !m_tracksLoaded )
         loadTracks();
 
-    //debug() << "track count: " << m_tracks.count();
     return m_tracks;
 }
 
 void
-Meta::SqlPlaylist::addTrack( Meta::TrackPtr track, int position )
+SqlPlaylist::addTrack( Meta::TrackPtr track, int position )
 {
-    DEBUG_BLOCK
     int insertAt = (position == -1) ? m_tracks.count() : position;
+    subscribeTo( track ); //keep track of metadata changes.
     m_tracks.insert( insertAt, track );
     saveToDb( true );
     notifyObserversTrackAdded( track, position );
 }
 
 void
-Meta::SqlPlaylist::removeTrack( int position )
+SqlPlaylist::removeTrack( int position )
 {
-    DEBUG_BLOCK
-    debug() << "position: " << position;
     if( position < 0 || position >= m_tracks.size() )
         return;
-    m_tracks.removeAt( position );
+    Meta::TrackPtr track = m_tracks.takeAt( position );
+    unsubscribeFrom( track );
     saveToDb( true );
     notifyObserversTrackRemoved( position );
 }
 
 void
-Meta::SqlPlaylist::loadTracks()
+SqlPlaylist::metadataChanged( Meta::TrackPtr track )
 {
-    QString query = "SELECT playlist_id, track_num, url, title, album, artist, length FROM playlist_tracks WHERE playlist_id=%1 ORDER BY track_num";
+    //When AFT detects a moved file it will update the track and make it signal it's observers.
+    if( !m_tracks.contains( track ) )
+    {
+        error() << "Got a metadataChanged for a track that is not in the playlist.";
+        return;
+    }
+
+    //force update of tracks in database
+    saveToDb();
+}
+
+void
+SqlPlaylist::loadTracks()
+{
+    QString query = "SELECT playlist_id, track_num, url, title, album, artist, length FROM "
+                    "playlist_tracks WHERE playlist_id=%1 ORDER BY track_num";
     query = query.arg( QString::number( m_dbId ) );
 
     QStringList result = CollectionManager::instance()->sqlStorage()->query( query );
@@ -251,34 +259,33 @@ Meta::SqlPlaylist::loadTracks()
     {
         QStringList row = result.mid( i*7, 7 );
         KUrl url = KUrl( row[2] );
-        //debug() << "url: " << url.url();
 
         Meta::TrackPtr trackPtr = CollectionManager::instance()->trackForUrl( url );
 
-        if ( trackPtr ) {
-
-            if ( typeid( * trackPtr.data() ) == typeid( MetaStream::Track ) )
+        if( trackPtr )
+        {
+            if( typeid( * trackPtr.data() ) == typeid( MetaStream::Track ) )
             {
 
                 debug() << "got stream from trackForUrl, setting album to " << row[4];
 
-                MetaStream::Track * streamTrack = dynamic_cast<MetaStream::Track *> ( trackPtr.data() );
+                MetaStream::Track * streamTrack =
+                        dynamic_cast<MetaStream::Track *> ( trackPtr.data() );
                 
-
-                if ( streamTrack ) {
+                if( streamTrack )
+                {
                     streamTrack->setTitle( row[3] );
                     streamTrack->setAlbum( row[4] );
                     streamTrack->setArtist( row[5] );
                 }
             }
-            else if ( typeid( * trackPtr.data() ) == typeid( Meta::TimecodeTrack ) )
+            else if( typeid( * trackPtr.data() ) == typeid( Meta::TimecodeTrack ) )
             {
+                Meta::TimecodeTrack * timecodeTrack =
+                        dynamic_cast<Meta::TimecodeTrack *> ( trackPtr.data() );
 
-                Meta::TimecodeTrack * timecodeTrack = dynamic_cast<Meta::TimecodeTrack *> ( trackPtr.data() );
-
-                if ( timecodeTrack )
+                if( timecodeTrack )
                 {
-                    debug() << "setting stored meta values on timecode track";
                     timecodeTrack->beginMetaDataUpdate();
                     timecodeTrack->setTitle( row[3] );
                     timecodeTrack->setAlbum( row[4] );
@@ -287,9 +294,8 @@ Meta::SqlPlaylist::loadTracks()
                 }
             }
 
+            subscribeTo( trackPtr );
             m_tracks << trackPtr;
-            //debug() << "added track: " << trackPtr->name();
-
         }
     }
 
@@ -297,16 +303,15 @@ Meta::SqlPlaylist::loadTracks()
 }
 
 void
-Meta::SqlPlaylist::setName( const QString & name )
+SqlPlaylist::setName( const QString &name )
 {
     m_name = name;
     saveToDb( false ); //no need to resave all tracks
 }
 
 void
-Meta::SqlPlaylist::removeFromDb()
+SqlPlaylist::removeFromDb()
 {
-    DEBUG_BLOCK
     QString query = "DELETE FROM playlist_tracks WHERE playlist_id=%1";
     query = query.arg( QString::number( m_dbId ) );
     CollectionManager::instance()->sqlStorage()->query( query );
@@ -317,7 +322,10 @@ Meta::SqlPlaylist::removeFromDb()
 }
 
 int
-Meta::SqlPlaylist::id()
+SqlPlaylist::id()
 {
     return m_dbId;
 }
+
+} //namespace Playlists
+

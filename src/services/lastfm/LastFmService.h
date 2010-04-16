@@ -25,7 +25,10 @@
 #include <QLabel>
 class ScrobblerAdapter;
 class LastFmService;
-class LastFmServiceCollection;
+
+namespace Collections {
+    class LastFmServiceCollection;
+}
 
 class QNetworkReply;
 
@@ -78,7 +81,7 @@ public:
 
     ScrobblerAdapter *scrobbler() { return m_scrobbler; }
 
-    virtual Amarok::Collection * collection();
+    virtual Collections::Collection * collection();
 
     void love( Meta::TrackPtr track );
 
@@ -100,7 +103,7 @@ private:
     bool m_inited;
     bool m_scrobble;
     ScrobblerAdapter *m_scrobbler;
-    LastFmServiceCollection *m_collection;
+    Collections::LastFmServiceCollection *m_collection;
 
     void playLastFmStation( const KUrl &url );
     void updateProfileInfo();

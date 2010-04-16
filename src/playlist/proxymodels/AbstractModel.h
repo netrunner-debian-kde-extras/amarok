@@ -1,5 +1,6 @@
 /****************************************************************************************
- * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
+ * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -17,7 +18,7 @@
 #ifndef AMAROK_PLAYLISTABSTRACTMODEL_H
 #define AMAROK_PLAYLISTABSTRACTMODEL_H
 
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 #include "playlist/PlaylistDefines.h"
 #include "playlist/PlaylistItem.h"
 
@@ -29,7 +30,7 @@ namespace Playlist
 /**
  * An abstract base class that defines a common interface of any playlist model.
  * Members declared here must be implemented by Playlist::Model and all proxies.
- * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
+ * @author Téo Mrnjavac <teo@kde.org>
  */
 
 //NOTE: While AbstractModel is ideally and logically an abstract base class with all pure
@@ -49,11 +50,27 @@ class AbstractModel
 {
 public:
 
+    //! Management of objects and inheritance
+
     /**
      * Virtual destructor
      * (Make it OK to delete an instance of a derived class through a pointer to this base class.)
      */
     virtual ~AbstractModel() { };
+
+    /**
+     * If you need QAbstractItemModel functions, access them through this pointer.
+     *
+     * This is a work-around for Qt's poor support for multiple inheritance and/or templates.
+     * If Qt supported the full C++ inheritance system well, this class could have inherited
+     * from QAbstractItemModel, and our descendants could have inherited from more specific
+     * implementations of QAbstractItemModel, like QSortFilterProxyModel.
+     * In the current Qt reality, that causes clashes.
+     */
+    virtual QAbstractItemModel* qaim() const = 0;
+
+
+    //! Playlist-specific API; the functions QAbstractItemModel doesn't already offer.
 
     /**
      * Returns the unique playlist item id of the active track
@@ -86,22 +103,11 @@ public:
 
     /**
      * Clears the current search term.
+     *
+     * Filtering MUST adapt its filter parameters to this call, but SHOULD delay doing
+     * any work until it gets a 'filterUpdated()' call.
      */
     virtual void clearSearchTerm() {}    //dummy, needed by Playlist::Model
-
-    /**
-     * Returns the number of columns exposed by the current model.
-     * @param parent the parent of the columns to count.
-     * @return the number of columns.
-     */
-    virtual int columnCount( const QModelIndex& parent = QModelIndex() ) const = 0;
-
-    /**
-     * Reports if the current model exposes a given id.
-     * @param id the id to check for.
-     * @return true if the id is present, otherwise false.
-     */
-    virtual bool containsId( const quint64 id ) const = 0;
 
     /**
      * Reports if the current model exposes a given track.
@@ -123,25 +129,6 @@ public:
     virtual QString currentSearchTerm() { return QString(); }   //dummy, needed by Playlist::Model
 
     /**
-     * Forwards the request down the proxy stack and gets the data at an index.
-     * @param index the index for which to retrieve the data from the model.
-     * @return the data from the model.
-     */
-    virtual QVariant data( const QModelIndex& index, int role ) const = 0;
-
-    /**
-     * Handles the data supplied by a drag and drop operation that ended with the given
-     * action.
-     * @param data the MIME data.
-     * @param action the drop action of the current drag and drop operation.
-     * @param row the row where the operation ended.
-     * @param column the column where the operation ended.
-     * @param parent the parent index.
-     * @return true if the data and action can be handled by the model; otherwise false.
-     */
-    virtual bool dropMimeData( const QMimeData* data, Qt::DropAction action, int row, int column, const QModelIndex& parent) = 0;
-
-    /**
      * Saves a playlist to a specified location.
      * @param path the path of the playlist file, as chosen by a FileDialog in MainWindow.
      */
@@ -159,6 +146,10 @@ public:
      * Find the first track in the playlist that matches the search term in one of the
      * specified search fields. Playlist::Model::find() emits found() or notFound() depending
      * on whether a match is found.
+     *
+     * Filtering MUST take its filter parameters from this call, but SHOULD delay doing
+     * any work until it gets a 'filterUpdated()' call.
+     *
      * @param searchTerm The term to search for.
      * @param searchFields A bitmask specifying the fields to look in.
      * @return The row of the first found match, -1 if no match is found.
@@ -197,16 +188,9 @@ public:
      * Returns the first row in the current model which matches a given track pointer.
      * @see allRowsForTrack
      * @param track the track.
-     * @return the row, -1 if the track pointer is invalid.
+     * @return the row, or -1 if the track pointer is not found.
      */
     virtual int firstRowForTrack( const Meta::TrackPtr track ) const = 0;
-
-    /**
-     * Returns the item flags for the given index.
-     * @param index the index to retrieve the flags for.
-     * @return the item flags.
-     */
-    virtual Qt::ItemFlags flags( const QModelIndex& index ) const = 0;
 
     /**
      * Returns the unique 64-bit id for the given row in the current model.
@@ -214,27 +198,6 @@ public:
      * @return the unique id.
      */
     virtual quint64 idAt( const int row ) const = 0;
-
-    /**
-     * Returns an object that contains serialized items of data corresponding to the list of indexes specified.
-     * @param indexes a list of indexes.
-     * @return the MIME data corresponding to the indexes.
-     */
-    virtual QMimeData* mimeData( const QModelIndexList &indexes ) const = 0;
-
-    /**
-     * Returns a list of MIME types that can be used to describe a list of model indexes.
-     * @return a QStringList of MIME types.
-     */
-    virtual QStringList mimeTypes() const = 0;
-
-    /**
-     * Forwards the number of rows from the FilterProxy as SortProxy by definition shouldn't
-     * change the row count.
-     * @param parent the parent of the rows to count.
-     * @return the number of rows.
-     */
-    virtual int rowCount( const QModelIndex &parent = QModelIndex() ) const = 0;
 
     /**
      * Checks if a row exists in the current model or proxy.
@@ -305,12 +268,6 @@ public:
      * @return The state of the track at the row.
      */
     virtual Item::State stateOfRow( int row ) const = 0;
-
-    /**
-     * Returns the drop actions supported by this model.
-     * @return the drop actions.
-     */
-    virtual Qt::DropActions supportedDropActions() const = 0;
 
     /**
      * Asks the model sitting below the total length of the playlist.

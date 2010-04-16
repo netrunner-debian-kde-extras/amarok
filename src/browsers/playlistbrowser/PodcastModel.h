@@ -17,7 +17,8 @@
 #ifndef PLAYLISTBROWSERNSPODCASTMODEL_H
 #define PLAYLISTBROWSERNSPODCASTMODEL_H
 
-#include "PodcastMeta.h"
+#include "core/podcasts/PodcastMeta.h"
+#include "core/podcasts/PodcastProvider.h"
 
 #include "MetaPlaylistModel.h"
 #include "playlist/PlaylistModelStack.h"
@@ -28,35 +29,32 @@
 #include <QVariant>
 
 class OpmlOutline;
-class PodcastProvider;
 
 namespace PlaylistBrowserNS {
 
 enum {
-    ShortDescriptionRole = Qt::UserRole + 1,
+    ShortDescriptionRole = MetaPlaylistModel::CustomRoleOffset,
     LongDescriptionRole
 };
 
+/* TODO: these should be replaced with custom roles for PlaylistColumn so all data of a playlist can
+   be fetched at once with itemData() */
 enum
 {
-    TitleColumn,
-    SubtitleColumn,
+    SubtitleColumn = MetaPlaylistModel::CustomColumOffset,
     AuthorColumn,
     KeywordsColumn,
     FilesizeColumn, // episode only
     ImageColumn,    // channel only (for now)
     DateColumn,
     IsEpisodeColumn,
-    ProviderColumn,
-    OnDiskColumn,
     ColumnCount
 };
 
 /**
     @author Bart Cerneels
 */
-class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel,
-                     public Meta::PlaylistObserver
+class PodcastModel : public MetaPlaylistModel
 {
     Q_OBJECT
     public:
@@ -69,40 +67,7 @@ class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel,
         virtual Qt::ItemFlags flags(const QModelIndex &index) const;
         virtual QVariant headerData(int section, Qt::Orientation orientation,
                             int role = Qt::DisplayRole) const;
-        virtual QModelIndex index(int row, int column,
-                        const QModelIndex &parent = QModelIndex()) const;
-        virtual QModelIndex parent(const QModelIndex &index) const;
-        virtual int rowCount(const QModelIndex &parent = QModelIndex()) const;
         virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
-
-        virtual QStringList mimeTypes() const;
-        virtual QMimeData* mimeData( const QModelIndexList &indexes ) const;
-        virtual bool dropMimeData( const QMimeData * data, Qt::DropAction action, int row,
-                                   int column, const QModelIndex & parent );
-
-        //MetaPlaylistModel methods
-        virtual QList<QAction *> actionsFor( const QModelIndexList &indexes );
-        virtual void loadItems( QModelIndexList list, Playlist::AddOptions insertMode );
-
-        /* Meta::PlaylistObserver methods */
-        virtual void trackAdded( Meta::PlaylistPtr playlist, Meta::TrackPtr track,
-                                 int position );
-        virtual void trackRemoved( Meta::PlaylistPtr playlist, int position );
-
-        //Own methods
-        void downloadItems(  QModelIndexList list );
-        void deleteItems(  QModelIndexList list );
-        void refreshItems( QModelIndexList list );
-        void removeSubscription( QModelIndexList list );
-
-        /** @returns all channels currently selected
-        **/
-        Meta::PodcastChannelList selectedChannels() { return m_selectedChannels; }
-
-        /** @returns all episodes currently selected, this includes children of a selected
-        * channel
-        **/
-        Meta::PodcastEpisodeList selectedEpisodes() { return m_selectedEpisodes; }
 
         void importOpml( const KUrl &url );
 
@@ -110,58 +75,39 @@ class PodcastModel : public QAbstractItemModel, public MetaPlaylistModel,
         void renameIndex( const QModelIndex &index ); // TODO: this signal is not being used atm
 
     public slots:
-        void slotUpdate();
         void addPodcast();
         void refreshPodcasts();
-        void setPodcastsInterval();
-        void emitLayoutChanged();
 
     private slots:
-        void slotAppend();
-        void slotLoad();
         void slotSetNew( bool newState );
         void slotOpmlOutlineParsed( OpmlOutline* );
         void slotOpmlParsingDone();
+
+    protected:
+        virtual QActionList actionsFor( const QModelIndex &idx ) const;
 
     private:
         static PodcastModel* s_instance;
         PodcastModel();
         ~PodcastModel();
-        static int podcastItemType( const QModelIndex &index );
-        static Meta::PodcastChannelPtr channelForIndex( const QModelIndex &index );
-        static Meta::PodcastEpisodePtr episodeForIndex( const QModelIndex &index );
+
+        int podcastItemType( const QModelIndex &idx ) const;
+
+        Podcasts::PodcastChannelPtr channelForIndex( const QModelIndex &index ) const;
+        Podcasts::PodcastEpisodePtr episodeForIndex( const QModelIndex &index ) const;
 
         Q_DISABLE_COPY( PodcastModel )
 
-        PlaylistProvider *getProviderByName( const QString &name );
-        Meta::PodcastChannelList selectedChannels( const QModelIndexList &indices );
-        Meta::PodcastEpisodeList selectedEpisodes( const QModelIndexList &indices );
-        QList<QAction *> createCommonActions( QModelIndexList indices );
-        QList< QAction * > createEpisodeActions( Meta::PodcastEpisodeList epsiodes );
-        QAction * m_appendAction;
-        QAction * m_loadAction;
         QAction *m_setNewAction;
-        Meta::PodcastEpisodeList m_selectedEpisodes;
-        Meta::PodcastChannelList m_selectedChannels;
 
         /** A convenience function to convert a PodcastEpisodeList into a TrackList.
         **/
         static Meta::TrackList
         podcastEpisodesToTracks(
-            Meta::PodcastEpisodeList episodes );
+            Podcasts::PodcastEpisodeList episodes );
 
-        /** Get the provider associated with a PodcastMetaCommon object */
-        PodcastProvider *providerForPmc( Meta::PodcastMetaCommon *pmc ) const;
-
-        void downloadEpisode( Meta::PodcastEpisodePtr episode );
-        void deleteDownloadedEpisode( Meta::PodcastEpisodePtr episode );
-        void refreshPodcast( Meta::PodcastChannelPtr channel );
-        Meta::PodcastChannelList m_channels;
-        void removeSubscription( Meta::PodcastChannelPtr channel );
-        void configureChannel( Meta::PodcastChannelPtr channel );
-
-        bool isOnDisk( Meta::PodcastMetaCommon *pmc ) const;
-        QVariant icon( Meta::PodcastMetaCommon *pmc ) const;
+        bool isOnDisk( Podcasts::PodcastMetaCommon *pmc ) const;
+        QVariant icon( Podcasts::PodcastMetaCommon *pmc ) const;
 };
 
 }

@@ -18,17 +18,68 @@
 
 #include "statusbar/StatusBar.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "LongMessageWidget.h"
-#include "meta/MetaUtility.h"
-#include "meta/capabilities/SourceInfoCapability.h"
+#include "core/meta/support/MetaUtility.h"
+#include "core/capabilities/SourceInfoCapability.h"
+#include "core/interfaces/Logger.h"
+#include "core/support/Components.h"
+#include "core-impl/logger/ProxyLogger.h"
 #include "playlist/PlaylistItem.h"
 #include "playlist/PlaylistModelStack.h"
 
 #include "KJobProgressBar.h"
 
+#include <QVariant>
+
 #include <cmath>
+
+
+class LoggerAdaptor : public Amarok::Logger
+{
+public:
+    LoggerAdaptor( StatusBar *bar )
+        : m_statusBar( bar )
+    {
+        setParent( bar );
+    }
+
+    virtual void shortMessage( const QString &text )
+    {
+        m_statusBar->shortMessage( text );
+    }
+
+    virtual void longMessage( const QString &text, MessageType type )
+    {
+        StatusBar::MessageType otherType;
+        switch( type )
+        {
+        case Amarok::Logger::Information:
+            otherType = StatusBar::Information;
+            break;
+        case Amarok::Logger::Warning:
+            otherType = StatusBar::Warning;
+            break;
+        case Amarok::Logger::Error:
+            otherType = StatusBar::Error;
+            break;
+        }
+        m_statusBar->longMessage( text, otherType );
+    }
+
+    virtual void newProgressOperation( KJob *job, const QString &text, QObject *obj, const char *slot, Qt::ConnectionType type )
+    {
+        ProgressBar *bar = m_statusBar->newProgressOperation( job, text );
+        if( obj )
+        {
+            bar->setAbortSlot( obj, slot, type );
+        }
+    }
+
+private:
+    StatusBar *m_statusBar;
+};
 
 StatusBar* StatusBar::s_instance = 0;
 
@@ -42,7 +93,7 @@ namespace The
 
 StatusBar::StatusBar( QWidget * parent )
         : KStatusBar( parent )
-        , EngineObserver( The::engineController() )
+        , Engine::EngineObserver( The::engineController() )
         , m_progressBar( new CompoundProgressBar( this ) )
         , m_busy( false )
         , m_shortMessageTimer( new QTimer( this ) )
@@ -86,14 +137,26 @@ StatusBar::StatusBar( QWidget * parent )
     qRegisterMetaType<MessageType>( "MessageType" );
     connect( this, SIGNAL( signalLongMessage( const QString &, MessageType ) ), SLOT( slotLongMessage( const QString &, MessageType ) ), Qt::QueuedConnection );
 
-    connect( The::playlist(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateTotalPlaylistLength() ) );
-    connect( The::playlist(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
-    connect( The::playlist(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
-    connect( The::playlist(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( updateTotalPlaylistLength() ) );
-    connect( The::playlist(), SIGNAL( layoutChanged() ), this, SLOT( updateTotalPlaylistLength() ) );
-    connect( The::playlist(), SIGNAL( queueChanged() ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( The::playlist()->qaim(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateTotalPlaylistLength() ) );
+    // Ignore The::playlist() layoutChanged: rows moving around does not change the total playlist length.
+    connect( The::playlist()->qaim(), SIGNAL( modelReset() ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( The::playlist()->qaim(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( The::playlist()->qaim(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
+
+    connect( The::playlist()->qaim(), SIGNAL( queueChanged() ), this, SLOT( updateTotalPlaylistLength() ) );
 
     updateTotalPlaylistLength();
+
+    Amarok::Logger *logger = Amarok::Components::logger();
+    ProxyLogger *proxy = qobject_cast<ProxyLogger*>( logger );
+    if( proxy )
+    {
+        proxy->setLogger( new LoggerAdaptor( this ) );
+    }
+    else
+    {
+        warning() << "Was not able to register statusbar as logger";
+    }
 }
 
 
@@ -247,7 +310,7 @@ void StatusBar::engineNewTrackPlaying()
 void StatusBar::updateInfo( Meta::TrackPtr track )
 {
     // Check if we have any source info:
-    Meta::SourceInfoCapability *sic = track->create<Meta::SourceInfoCapability>();
+    Capabilities::SourceInfoCapability *sic = track->create<Capabilities::SourceInfoCapability>();
     if ( sic )
     {
         if ( !sic->sourceName().isEmpty() )
@@ -262,7 +325,7 @@ void StatusBar::updateInfo( Meta::TrackPtr track )
     else
         m_nowPlayingEmblem->hide();
 
-    m_nowPlayingLabel->setText( i18n( "Playing: %1", Amarok::prettyNowPlaying() ) );
+    m_nowPlayingLabel->setText( i18n( "Playing: %1", The::engineController()->prettyNowPlaying() ) );
 }
 
 void StatusBar::longMessage( const QString & text, MessageType type )
@@ -292,9 +355,11 @@ void StatusBar::hideLongMessage()
 void
 StatusBar::updateTotalPlaylistLength() //SLOT
 {
+    DEBUG_BLOCK
+
     const quint64 totalLength = The::playlist()->totalLength();
     const quint64 totalSize = The::playlist()->totalSize();
-    const int trackCount = The::playlist()->rowCount();
+    const int trackCount = The::playlist()->qaim()->rowCount();
     const QString prettyTotalLength = Meta::msToPrettyTime( totalLength );
     const QString prettyTotalSize = Meta::prettyFilesize( totalSize );
 

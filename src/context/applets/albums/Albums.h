@@ -23,21 +23,10 @@
 
 #include <context/Applet.h>
 #include <context/DataEngine.h>
-#include <meta/Meta.h>
+#include "core/meta/Meta.h"
 
-#include <KDialog>
-
-#include <QList>
-#include <QAction>
-#include <QGraphicsSceneHoverEvent>
-#include <QGraphicsSceneMouseEvent>
-#include <QGraphicsItem>
-#include <QStandardItemModel>
-
+class QStandardItemModel;
 class TextScrollingWidget;
-class QGraphicsPixmapItem;
-class QLabel;
-class QHBoxLayout;
 
 class Albums : public Context::Applet
 {
@@ -54,31 +43,22 @@ public:
 
 public slots:
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
-    void showConfigurationInterface();
 
+protected:
+    void createConfigurationInterface( KConfigDialog *parent );
 
 private slots:
-    void configAccepted();
     void connectSource( const QString &source );
+    void saveConfiguration();
+    void setRecentCount( int val );
 
 private:
-    void prepareElements();
-    QList<QAction*> contextualActions();
-
-    QHBoxLayout* m_configLayout;
-    int m_width;
     const qreal m_albumWidth;
-
+    int m_recentCount;
     Meta::AlbumList m_albums;
-    int m_albumCount;
-
-    int m_maxTextWidth;
     QStandardItemModel *m_model;
-
     AlbumsView *m_albumsView;
-
     TextScrollingWidget *m_headerText;
-    QVariantList m_albumsTracks;
 };
 
 K_EXPORT_AMAROK_APPLET( albums, Albums )

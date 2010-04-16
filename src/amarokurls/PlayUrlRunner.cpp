@@ -16,16 +16,16 @@
 
 #include "PlayUrlRunner.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "amarokconfig.h"
 #include "AmarokUrl.h"
 #include "AmarokUrlHandler.h"
-#include "collection/CollectionManager.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "EngineController.h"
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlist/proxymodels/AbstractModel.h"
-#include "SqlStorage.h"
+#include "core/collections/support/SqlStorage.h"
 
 PlayUrlRunner::PlayUrlRunner() : AmarokUrlRunnerBase()
 {
@@ -61,22 +61,27 @@ bool PlayUrlRunner::run ( AmarokUrl url )
 
     Playlist::AbstractModel *model = Playlist::ModelStack::instance()->top();
 
-    if( model->containsTrack( track ) )
-    {
-        model->setActiveRow( model->firstRowForTrack( track ) );
-    }
+    int row = model->firstRowForTrack( track );
+    if( row != -1 )
+        model->setActiveRow( row );
     else
     {
-        const int row = AmarokConfig::dynamicMode() ? model->activeRow() + 1 : model->rowCount();
+        row = AmarokConfig::dynamicMode() ? model->activeRow() + 1 : model->qaim()->rowCount();
         The::playlistController()->insertTrack( row, track );
         model->setActiveRow( row );
     }
+
     return true;
 }
 
 QString PlayUrlRunner::command() const
 {
     return "play";
+}
+
+QString PlayUrlRunner::prettyCommand() const
+{
+    return i18nc( "A type of command that starts playing at a specific position in a track", "Play" );
 }
 
 BookmarkList PlayUrlRunner::bookmarksFromUrl( KUrl url )

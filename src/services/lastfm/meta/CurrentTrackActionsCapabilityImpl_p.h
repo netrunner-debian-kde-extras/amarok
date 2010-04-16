@@ -18,16 +18,16 @@
 #define AMAROK_CURRENTTRACKACTIONSCAPABILITYIMPL_P_H
 
 
-#include "meta/capabilities/CurrentTrackActionsCapability.h"
+#include "core/capabilities/CurrentTrackActionsCapability.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
-class CurrentTrackActionsCapabilityImpl : public Meta::CurrentTrackActionsCapability
+class CurrentTrackActionsCapabilityImpl : public Capabilities::CurrentTrackActionsCapability
 {
     Q_OBJECT
     public:
         CurrentTrackActionsCapabilityImpl( LastFm::Track *track )
-            : Meta::CurrentTrackActionsCapability()
+            : Capabilities::CurrentTrackActionsCapability()
             , m_track( track )
             {}
 

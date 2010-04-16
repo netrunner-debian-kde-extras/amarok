@@ -17,20 +17,19 @@
 #ifndef DYNAMICSERVICEQUERYMAKER_H
 #define DYNAMICSERVICEQUERYMAKER_H
 
-#include "Meta.h"
-#include "QueryMaker.h"
+#include "core/meta/Meta.h"
+#include "core/collections/QueryMaker.h"
 #include "ServiceCollection.h"
 #include "amarok_export.h"
 
 #include <kio/jobclasses.h>
-
-class ServiceCollection;
 
 namespace ThreadWeaver
 {
     class Job;
 }
 
+namespace Collections {
 
 /**
 A base class for implementing custom querymakers that fetch data from an external source.
@@ -90,5 +89,7 @@ public:
 
     static Meta::AlbumList matchAlbums( ServiceCollection *coll, const Meta::ArtistPtr &artist );
 };
+
+} //namespace Collections
 
 #endif

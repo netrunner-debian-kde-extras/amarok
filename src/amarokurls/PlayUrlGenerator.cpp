@@ -18,9 +18,9 @@
 
 #include "AmarokUrl.h"
 #include "AmarokUrlHandler.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
-#include "MetaUtility.h"
+#include "core/meta/support/MetaUtility.h"
 
 PlayUrlGenerator * PlayUrlGenerator::s_instance = 0;
 

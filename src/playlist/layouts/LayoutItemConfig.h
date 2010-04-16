@@ -1,5 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
+ * Copyright (c) 2010 Oleksandr Khayrullin <saniokh@gmail.com>                          *
+ * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -18,6 +20,7 @@
 #define LAYOUTITEMCONFIG_H
 
 #include <QList>
+#include <QModelIndex>
 #include <QString>
 
 namespace Playlist {
@@ -225,28 +228,18 @@ class LayoutItemConfig
 class PlaylistLayout
 {
     public:
+        enum Part {
+            Head = 0,
+            StandardBody,
+            VariousArtistsBody,
+            Single,
+            NumParts    // The number of Part values
+        };
+
         /**
         * Default Constructor
         */
         PlaylistLayout();
-
-        /**
-         * Get the config to use for painting group headers.
-         * @return The config for group headers.
-         */
-        LayoutItemConfig head() const;
-
-        /**
-         * Get the config to use for painting group members.
-         * @return The config for group member tracks.
-         */
-        LayoutItemConfig body() const;
-
-        /**
-         * Get the config to use for painting single (non grouped) tracks.
-         * @return The config for non grouped tracks.
-         */
-        LayoutItemConfig single() const;
 
         /**
          * Get whether this config can be edited/deleted. The default layouts shipped with Amarok are read only,
@@ -262,22 +255,25 @@ class PlaylistLayout
         bool isDirty() const;
 
         /**
-         * Set the head config for this layout.
-         * @param head The head config.
+         * Determine the layout config for an item in a QAbstractItemModel.
+         * Convenience function.
          */
-        void setHead( LayoutItemConfig head );
+        LayoutItemConfig layoutForItem( const QModelIndex &index ) const { return layoutForPart( partForItem( index ) ); }
 
         /**
-         * Set the body config for this layout.
-         * @param body The body config.
+         * Determine the part type for an item in a QAbstractItemModel.
          */
-        void setBody( LayoutItemConfig body );
+        Part partForItem( const QModelIndex &index ) const;
 
         /**
-         * Set the single track config for this layout.
-         * @param single The single track config.
+         * Get the layout config for the specified part type.
          */
-        void setSingle( LayoutItemConfig single );
+        LayoutItemConfig layoutForPart( Part part ) const;
+
+        /**
+         * Set the layout config for the specified part type.
+         */
+        void setLayoutForPart( Part part, LayoutItemConfig itemConfig );
 
         /**
          * Set whether this config can be edited by the user.
@@ -294,16 +290,19 @@ class PlaylistLayout
         bool inlineControls();
         void setInlineControls( bool inlineControls );
 
+        bool tooltips();
+        void setTooltips( bool tooltips );
+
         QString groupBy();
         void setGroupBy( const QString & );
 
     private:
-        LayoutItemConfig m_head;
-        LayoutItemConfig m_body;
-        LayoutItemConfig m_single;
+        LayoutItemConfig m_layoutItemConfigs[NumParts];
+
         bool m_isEditable;
         bool m_isDirty;
         bool m_inlineControls;
+        bool m_tooltips;
 
         QString m_groupBy;
 };

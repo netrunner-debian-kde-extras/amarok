@@ -22,7 +22,7 @@
 #include "Bias.h"
 #include "BiasSolver.h"
 #include "DynamicPlaylist.h"
-#include "Meta.h"
+#include "core/meta/Meta.h"
 
 #include <QDomElement>
 #include <QObject>
@@ -39,7 +39,7 @@ namespace Dynamic
             static BiasedPlaylist* fromXml( QDomElement );
             static QString nameFromXml( QDomElement );
 
-            BiasedPlaylist( QString title, QList<Bias*>, Amarok::Collection* m_collection = 0 );
+            BiasedPlaylist( QString title, QList<Bias*>, Collections::Collection* m_collection = 0 );
             ~BiasedPlaylist();
 
             QDomElement xml() const;

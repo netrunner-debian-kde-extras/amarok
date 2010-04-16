@@ -19,10 +19,10 @@
 
 #include "amarok_export.h"
 #include "amarokurls/BookmarkGroup.h"
-#include "meta/Meta.h"
-#include "meta/Playlist.h"
-#include "podcasts/PodcastMeta.h"
-#include "collection/QueryMaker.h"
+#include "core/meta/Meta.h"
+#include "core/playlists/Playlist.h"
+#include "core/podcasts/PodcastMeta.h"
+#include "core/collections/QueryMaker.h"
 
 #include <QList>
 #include <QMap>
@@ -53,25 +53,25 @@ class AMAROK_EXPORT AmarokMimeData : public QMimeData
         void setTracks( const Meta::TrackList &tracks );
         void addTracks( const Meta::TrackList &tracks );
 
-        Meta::PlaylistList playlists() const;
-        void setPlaylists( const Meta::PlaylistList &playlists );
-        void addPlaylists( const Meta::PlaylistList &playlists );
+        Playlists::PlaylistList playlists() const;
+        void setPlaylists( const Playlists::PlaylistList &playlists );
+        void addPlaylists( const Playlists::PlaylistList &playlists );
 
         QStringList playlistGroups() const;
         void setPlaylistGroups( const QStringList &groups );
         void addPlaylistGroup( const QString &group );
 
-        Meta::PodcastChannelList podcastChannels() const;
-        void setPodcastChannels( const Meta::PodcastChannelList &channels );
-        void addPodcastChannels( const Meta::PodcastChannelList &channels );
+        Podcasts::PodcastChannelList podcastChannels() const;
+        void setPodcastChannels( const Podcasts::PodcastChannelList &channels );
+        void addPodcastChannels( const Podcasts::PodcastChannelList &channels );
 
-        Meta::PodcastEpisodeList podcastEpisodes() const;
-        void setPodcastEpisodes( const Meta::PodcastEpisodeList &episodes );
-        void addPodcastEpisodes( const Meta::PodcastEpisodeList &episodes );
+        Podcasts::PodcastEpisodeList podcastEpisodes() const;
+        void setPodcastEpisodes( const Podcasts::PodcastEpisodeList &episodes );
+        void addPodcastEpisodes( const Podcasts::PodcastEpisodeList &episodes );
 
-        QList<QueryMaker*> queryMakers();
-        void addQueryMaker( QueryMaker *queryMaker );
-        void setQueryMakers( const QList<QueryMaker*> &queryMakers );
+        QList<Collections::QueryMaker*> queryMakers();
+        void addQueryMaker( Collections::QueryMaker *queryMaker );
+        void setQueryMakers( const QList<Collections::QueryMaker*> &queryMakers );
 
         BookmarkList bookmarks() const;
         void setBookmarks( const BookmarkList &bookmarks );

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -66,8 +66,8 @@ private:
     const KAboutPerson *m_person;
     QString m_ocsUsername;
     QString m_aboutText;
-    KToolBar *m_iconsBar;   //! holds the icons for email, homepage and oD.o profile
-    KToolBar *m_snBar;      //! holds any other icons for social network profiles
+    KToolBar *m_iconsBar;   //!< holds the icons for email, homepage and oD.o profile
+    KToolBar *m_snBar;      //!< holds any other icons for social network profiles
     PersonStatus m_status;
     State m_state;
 /*

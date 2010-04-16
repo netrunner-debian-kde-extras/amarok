@@ -20,7 +20,7 @@
 #include "amarok_export.h"
 #include "AmarokUrlGenerator.h"
 #include "AmarokUrlRunnerBase.h"
-#include "Meta.h"
+#include "core/meta/Meta.h"
 #include "playlist/PlaylistViewUrlRunner.h"
 
 #include <KIcon>
@@ -65,6 +65,12 @@ public:
     void paintNewTimecode( const QString &name, int pos );
 
     QList<AmarokUrlGenerator *> generators() { return m_registeredGenerators; }
+
+    AmarokUrl createBrowserViewBookmark();
+    AmarokUrl createPlaylistViewBookmark();
+    AmarokUrl createContextViewBookmark();
+
+    QString prettyCommand( const QString &command ); 
 
 
 public slots:

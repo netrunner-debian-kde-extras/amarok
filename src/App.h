@@ -86,7 +86,7 @@ class AMAROK_EXPORT App : public KUniqueApplication
     public slots:
         void applySettings( bool firstTime = false );
 #ifdef DEBUG
-        static void runUnitTests( const QStringList options, bool stdout );
+        static void runUnitTests( const QStringList options, bool _stdout );
 #endif // DEBUG
         void slotConfigAmarok( const QString& page = QString() );
         void slotConfigShortcuts();
@@ -112,6 +112,8 @@ class AMAROK_EXPORT App : public KUniqueApplication
         QPointer<MainWindow>    m_mainWindow;
         Amarok::TrayIcon        *m_tray;
         MediaDeviceManager      *m_mediaDeviceManager;
+
+        static QStringList       s_delayedAmarokUrls;
 };
 
 #define pApp static_cast<App*>(kapp)

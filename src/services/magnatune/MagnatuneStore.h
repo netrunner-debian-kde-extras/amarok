@@ -18,9 +18,8 @@
 #define AMAROKMAGNATUNESTORE_H
 
 
-#include "Amarok.h"
-//#include "MagnatunePurchaseDialog.h"
-#include "MagnatunePurchaseHandler.h"
+#include "core/support/Amarok.h"
+#include "MagnatuneDownloadHandler.h"
 #include "MagnatuneRedownloadHandler.h"
 #include "MagnatuneXmlParser.h"
 #include "MagnatuneDatabaseHandler.h"
@@ -90,7 +89,7 @@ public:
     void polish();
    // bool updateContextView();
 
-    virtual Amarok::Collection * collection() { return m_collection; }
+    virtual Collections::Collection * collection() { return m_collection; }
 
     virtual QString messages();
     virtual QString sendMessage( const QString &message );
@@ -101,9 +100,9 @@ public slots:
     */
     void listDownloadCancelled();
 
-    void purchase( Meta::MagnatuneTrack * track );
+    void download( Meta::MagnatuneTrack * track );
 
-    void purchase( Meta::MagnatuneAlbum * album );
+    void download( Meta::MagnatuneAlbum * album );
 
     void showFavoritesPage();
     void showHomePage();
@@ -114,13 +113,13 @@ public slots:
     
 private slots:
     /**
-     * Slot called when the purchase album button is clicked. Starts a purchase
+     * Slot called when the download album button is clicked. Starts a download
      */
-    void purchase();
+    void download();
 
-    void purchase( const QString &sku );
+    void download( const QString &sku );
     
-    void purchaseCurrentTrackAlbum();
+    void downloadCurrentTrackAlbum();
 
     /**
      * Slot for recieving notification that the update button has been clicked.
@@ -148,10 +147,10 @@ private slots:
     void processRedownload();
 
     /**
-     * Slot for recieving notifications of completed purchase operations
+     * Slot for recieving notifications of completed download operations
      * @param success Was the operation a success?
      */
-    void purchaseCompleted( bool success );
+    void downloadCompleted( bool success );
 
 
     /**
@@ -162,7 +161,7 @@ private slots:
 
 
      /**
-     * Checks if purchase button should be enabled
+     * Checks if download button should be enabled
      * @param selection the new selection
      * @param deseleted items that were previously selected but have been deselected
      */
@@ -201,19 +200,21 @@ private:
      */
     //void addTrackToPlaylist ( Meta::MagnatuneTrack  *item );
 
+    void showSignupDialog();
+
     static MagnatuneStore *s_instance;
 
     QString m_currentInfoUrl;
     QMenu *m_popupMenu;
-    MagnatunePurchaseHandler *m_purchaseHandler;
+    MagnatuneDownloadHandler *m_downloadHandler;
     MagnatuneRedownloadHandler *m_redownloadHandler;
 
-    QPushButton *m_purchaseAlbumButton;
+    QPushButton *m_downloadAlbumButton;
 
     QAction * m_updateAction;
 
     QComboBox   *m_genreComboBox;
-    bool         m_purchaseInProgress;
+    bool         m_downloadInProgress;
 
     Meta::MagnatuneAlbum * m_currentAlbum;
 
@@ -221,7 +222,7 @@ private:
     KIO::StoredTransferJob* m_updateTimestampDownloadJob;
     KIO::StoredTransferJob* m_favoritesJob;
 
-    MagnatuneSqlCollection * m_collection;
+    Collections::MagnatuneSqlCollection * m_collection;
 
     QString m_tempFileName;
 
@@ -236,6 +237,8 @@ private:
     ServiceSqlRegistry * m_registry;
 
     MagnatuneInfoParser * m_magnatuneInfoParser;
+
+    QDialog *m_signupInfoWidget;
 };
 
 

@@ -19,7 +19,7 @@
 
 #include "CustomBiasEntry.h"
 #include "CustomBiasEntryFactory.h"
-#include "EngineObserver.h"
+#include "core/engine/EngineObserver.h"
 
 #include <QNetworkReply>
 
@@ -30,9 +30,10 @@
 
 class KComboBox;
 
-namespace Amarok
+namespace Collections
 {
-class Collection;
+    class Collection;
+    class QueryMaker;
 }
 
 namespace Dynamic
@@ -51,7 +52,7 @@ class LastFmBiasFactory : public CustomBiasEntryFactory
 };
 
 // this order of inheritance is a bit screwy, but moc wants the QObject-derived class to be first always
-class LastFmBias : public CustomBiasEntry, public EngineObserver
+class LastFmBias : public CustomBiasEntry, public Engine::EngineObserver
 {
     Q_OBJECT
 public:
@@ -97,9 +98,9 @@ private:
     QString m_currentTrack;
     QNetworkReply* m_artistQuery;
     QNetworkReply* m_trackQuery;
-    QueryMaker* m_qm; // stored so it can be refreshed
+    Collections::QueryMaker* m_qm; // stored so it can be refreshed
     // if the collection changes
-    Amarok::Collection* m_collection; // null => all queryable collections
+    Collections::Collection* m_collection; // null => all queryable collections
     bool m_needsUpdating;
     QMutex m_mutex;
 

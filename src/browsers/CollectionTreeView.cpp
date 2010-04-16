@@ -19,26 +19,26 @@
 
 #include "CollectionTreeView.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "AmarokMimeData.h"
-#include "Debug.h"
-#include "CollectionLocation.h"
-#include "CollectionManager.h"
+#include "core/support/Debug.h"
+#include "core/collections/CollectionLocation.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "browsers/CollectionTreeItem.h"
 #include "browsers/CollectionTreeItemModel.h"
 #include "context/ContextView.h"
 #include "GlobalCollectionActions.h"
-#include "Meta.h"
-#include "MetaQueryMaker.h"
-#include "meta/capabilities/BookmarkThisCapability.h"
-#include "meta/capabilities/CollectionCapability.h"
-#include "meta/capabilities/CustomActionsCapability.h"
+#include "core/meta/Meta.h"
+#include "core/collections/MetaQueryMaker.h"
+#include "core/capabilities/BookmarkThisCapability.h"
+#include "core/capabilities/CollectionCapability.h"
+#include "core/capabilities/CustomActionsCapability.h"
 #include "PaletteHandler.h"
 #include "playlist/PlaylistModelStack.h"
 #include "PopupDropperFactory.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
-#include "QueryMaker.h"
+#include "core/collections/QueryMaker.h"
 #include "SvgHandler.h"
 #include "TagDialog.h"
 
@@ -693,7 +693,7 @@ CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem*> &items ) con
         return;
 
     //Create query based upon items, ensuring that if a parent and child are both selected we ignore the child
-    QueryMaker *qm = createMetaQueryFromItems( items, true );
+    Collections::QueryMaker *qm = createMetaQueryFromItems( items, true );
     if( !qm )
         return;
 
@@ -701,8 +701,8 @@ CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem*> &items ) con
     while( item->isDataItem() )
         item = item->parent();
 
-    Amarok::Collection *coll = item->parentCollection();
-    CollectionLocation *location = coll->location();
+    Collections::Collection *coll = item->parentCollection();
+    Collections::CollectionLocation *location = coll->location();
     if( !location->isOrganizable() )
     {
         debug() << "Collection not organizable";
@@ -715,7 +715,7 @@ CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem*> &items ) con
 }
 
 void
-CollectionTreeView::copyTracks( const QSet<CollectionTreeItem*> &items, Amarok::Collection *destination, bool removeSources ) const
+CollectionTreeView::copyTracks( const QSet<CollectionTreeItem*> &items, Collections::Collection *destination, bool removeSources ) const
 {
     DEBUG_BLOCK
     if( !destination->isWritable() )
@@ -731,7 +731,7 @@ CollectionTreeView::copyTracks( const QSet<CollectionTreeItem*> &items, Amarok::
     }
 
     //Create query based upon items, ensuring that if a parent and child are both selected we ignore the child
-    QueryMaker *qm = createMetaQueryFromItems( items, true );
+    Collections::QueryMaker *qm = createMetaQueryFromItems( items, true );
     if( !qm )
     {
         warning() << "could not get qm!";
@@ -743,9 +743,9 @@ CollectionTreeView::copyTracks( const QSet<CollectionTreeItem*> &items, Amarok::
     {
         item = item->parent();
     }
-    Amarok::Collection *coll = item->parentCollection();
-    CollectionLocation *source = coll->location();
-    CollectionLocation *dest = destination->location();
+    Collections::Collection *coll = item->parentCollection();
+    Collections::CollectionLocation *source = coll->location();
+    Collections::CollectionLocation *dest = destination->location();
     if( removeSources )
     {
         if( !source->isWritable() ) //error
@@ -778,7 +778,7 @@ CollectionTreeView::removeTracks( const QSet<CollectionTreeItem*> &items ) const
         return;
 
     //Create query based upon items, ensuring that if a parent and child are both selected we ignore the child
-    QueryMaker *qm = createMetaQueryFromItems( items, true );
+    Collections::QueryMaker *qm = createMetaQueryFromItems( items, true );
     if( !qm )
         return;
 
@@ -786,12 +786,12 @@ CollectionTreeView::removeTracks( const QSet<CollectionTreeItem*> &items ) const
     while( item->isDataItem() )
         item = item->parent();
 
-    Amarok::Collection *coll = item->parentCollection();
+    Collections::Collection *coll = item->parentCollection();
 
     if( !coll->isWritable() )
         return;
 
-    CollectionLocation *source = coll->location();
+    Collections::CollectionLocation *source = coll->location();
 
     if( !source->isWritable() ) //error
     {
@@ -807,7 +807,7 @@ void
 CollectionTreeView::editTracks( const QSet<CollectionTreeItem*> &items ) const
 {
     //Create query based upon items, ensuring that if a parent and child are both selected we ignore the child
-    QueryMaker *qm = createMetaQueryFromItems( items, true );
+    Collections::QueryMaker *qm = createMetaQueryFromItems( items, true );
     if( !qm )
         return;
 
@@ -870,8 +870,8 @@ QActionList CollectionTreeView::createExtendedActions( const QModelIndexList & i
                 item = item->parent();
             }
 
-            Amarok::Collection *collection = item->parentCollection();
-            const CollectionLocation* location = collection->location();
+            Collections::Collection *collection = item->parentCollection();
+            const Collections::CollectionLocation* location = collection->location();
 
             if( location->isOrganizable() )
             {
@@ -928,7 +928,7 @@ QActionList CollectionTreeView::createExtendedActions( const QModelIndexList & i
                 Meta::DataPtr data = static_cast<CollectionTreeItem*>( indices.first().internalPointer() )->data();
                 if( data )
                 {
-                    Meta::CustomActionsCapability *cac = data->create<Meta::CustomActionsCapability>();
+                    Capabilities::CustomActionsCapability *cac = data->create<Capabilities::CustomActionsCapability>();
                     if( cac )
                     {
                         if ( m_caSeperator == 0 ) {
@@ -950,7 +950,7 @@ QActionList CollectionTreeView::createExtendedActions( const QModelIndexList & i
                         delete cac;
                     }
                     //check if this item can be bookmarked...
-                    Meta::BookmarkThisCapability *btc = data->create<Meta::BookmarkThisCapability>();
+                    Capabilities::BookmarkThisCapability *btc = data->create<Capabilities::BookmarkThisCapability>();
                     if( btc )
                     {
                         if( btc->isBookmarkable() ) {
@@ -984,11 +984,11 @@ CollectionTreeView::createCollectionActions( const QModelIndexList & indices )
     if( item->isDataItem() )
         return actions;
 
-    Amarok::Collection *collection = item->parentCollection();
+    Collections::Collection *collection = item->parentCollection();
 
     // Generate CollectionCapability, test for existence
 
-    Meta::CollectionCapability *cc = collection->create<Meta::CollectionCapability>();
+    Capabilities::CollectionCapability *cc = collection->create<Capabilities::CollectionCapability>();
 
     if( cc )
     {
@@ -1000,24 +1000,26 @@ CollectionTreeView::createCollectionActions( const QModelIndexList & indices )
 }
 
 
-QHash<QAction*, Amarok::Collection*> CollectionTreeView::getCopyActions(const QModelIndexList & indices )
+QHash<QAction*, Collections::Collection*> CollectionTreeView::getCopyActions(const QModelIndexList & indices )
 {
-    QHash<QAction*, Amarok::Collection*> m_currentCopyDestination;
+    QHash<QAction*, Collections::Collection*> m_currentCopyDestination;
 
     if( onlyOneCollection( indices) )
     {
-        Amarok::Collection *collection = getCollection( indices.first() );
-        QList<Amarok::Collection*> writableCollections;
-        foreach( Amarok::Collection *coll, CollectionManager::instance()->collections().keys() )
+        Collections::Collection *collection = getCollection( indices.first() );
+        QList<Collections::Collection*> writableCollections;
+        QHash<Collections::Collection*, CollectionManager::CollectionStatus> hash = CollectionManager::instance()->collections();
+        QHash<Collections::Collection*, CollectionManager::CollectionStatus>::const_iterator it = hash.constBegin();
+        while ( it != hash.constEnd() )
         {
+            Collections::Collection *coll = it.key();
             if( coll && coll->isWritable() && coll != collection )
-            {
                 writableCollections.append( coll );
-            }
+            ++it;
         }
         if( !writableCollections.isEmpty() )
         {
-            foreach( Amarok::Collection *coll, writableCollections )
+            foreach( Collections::Collection *coll, writableCollections )
             {
                 QAction *action = new QAction( QIcon(), coll->prettyName(), 0 );
                 action->setProperty( "popupdropper_svg_id", "collection" );
@@ -1030,19 +1032,19 @@ QHash<QAction*, Amarok::Collection*> CollectionTreeView::getCopyActions(const QM
     return m_currentCopyDestination;
 }
 
-QHash<QAction*, Amarok::Collection*> CollectionTreeView::getMoveActions( const QModelIndexList & indices )
+QHash<QAction*, Collections::Collection*> CollectionTreeView::getMoveActions( const QModelIndexList & indices )
 {
-    QHash<QAction*, Amarok::Collection*> m_currentMoveDestination;
+    QHash<QAction*, Collections::Collection*> m_currentMoveDestination;
 
     if( onlyOneCollection( indices) )
     {
-        Amarok::Collection *collection = getCollection( indices.first() );
-        QList<Amarok::Collection*> writableCollections;
-        QHash<Amarok::Collection*, CollectionManager::CollectionStatus> hash = CollectionManager::instance()->collections();
-        QHash<Amarok::Collection*, CollectionManager::CollectionStatus>::const_iterator it = hash.constBegin();
+        Collections::Collection *collection = getCollection( indices.first() );
+        QList<Collections::Collection*> writableCollections;
+        QHash<Collections::Collection*, CollectionManager::CollectionStatus> hash = CollectionManager::instance()->collections();
+        QHash<Collections::Collection*, CollectionManager::CollectionStatus>::const_iterator it = hash.constBegin();
         while ( it != hash.constEnd() )
         {
-            Amarok::Collection *coll = it.key();
+            Collections::Collection *coll = it.key();
             if( coll && coll->isWritable() && coll != collection )
                 writableCollections.append( coll );
             ++it;
@@ -1051,7 +1053,7 @@ QHash<QAction*, Amarok::Collection*> CollectionTreeView::getMoveActions( const Q
         {
             if( collection->isWritable() )
             {
-                foreach( Amarok::Collection *coll, writableCollections )
+                foreach( Collections::Collection *coll, writableCollections )
                 {
                     QAction *action = new QAction( QIcon(), coll->prettyName(), 0 );
                     action->setProperty( "popupdropper_svg_id", "collection" );
@@ -1064,13 +1066,13 @@ QHash<QAction*, Amarok::Collection*> CollectionTreeView::getMoveActions( const Q
     return m_currentMoveDestination;
 }
 
-QHash<QAction*, Amarok::Collection*> CollectionTreeView::getRemoveActions( const QModelIndexList & indices )
+QHash<QAction*, Collections::Collection*> CollectionTreeView::getRemoveActions( const QModelIndexList & indices )
 {
-    QHash<QAction*, Amarok::Collection*> m_currentRemoveDestination;
+    QHash<QAction*, Collections::Collection*> m_currentRemoveDestination;
 
     if( onlyOneCollection( indices) )
     {
-        Amarok::Collection *collection = getCollection( indices.first() );
+        Collections::Collection *collection = getCollection( indices.first() );
         if( collection && collection->isWritable() )
         {
             //writableCollections.append( collection );
@@ -1093,10 +1095,10 @@ bool CollectionTreeView::onlyOneCollection( const QModelIndexList & indices )
 
     if( !indices.isEmpty() )
     {
-        Amarok::Collection *collection = getCollection( indices.first() );
+        Collections::Collection *collection = getCollection( indices.first() );
         foreach( const QModelIndex &index, indices )
         {
-            Amarok::Collection *currentCollection = getCollection( index );
+            Collections::Collection *currentCollection = getCollection( index );
             if( collection != currentCollection )
                 return false;
         }
@@ -1105,9 +1107,9 @@ bool CollectionTreeView::onlyOneCollection( const QModelIndexList & indices )
     return true;
 }
 
-Amarok::Collection * CollectionTreeView::getCollection( const QModelIndex & index )
+Collections::Collection * CollectionTreeView::getCollection( const QModelIndex & index )
 {
-    Amarok::Collection *collection = 0;
+    Collections::Collection *collection = 0;
     if( index.isValid() )
     {
         CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
@@ -1204,7 +1206,7 @@ CollectionTreeView::cleanItemSet( const QSet<CollectionTreeItem*> &items )
     return parents;
 }
 
-QueryMaker*
+Collections::QueryMaker*
 CollectionTreeView::createMetaQueryFromItems( const QSet<CollectionTreeItem*> &items, bool cleanItems ) const
 {
     if( !m_treeModel )
@@ -1212,15 +1214,15 @@ CollectionTreeView::createMetaQueryFromItems( const QSet<CollectionTreeItem*> &i
 
     QSet<CollectionTreeItem*> parents = cleanItems ? cleanItemSet( items ) : items;
 
-    QList<QueryMaker*> queryMakers;
+    QList<Collections::QueryMaker*> queryMakers;
     foreach( CollectionTreeItem *item, parents )
     {
-        QueryMaker *qm = item->queryMaker();
+        Collections::QueryMaker *qm = item->queryMaker();
         CollectionTreeItem *tmp = item;
         while( tmp->isDataItem() )
         {
             if ( tmp->isVariousArtistItem() )
-                qm->setAlbumQueryMode( QueryMaker::OnlyCompilations );
+                qm->setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
             else
                 qm->addMatch( tmp->data() );
             tmp = tmp->parent();
@@ -1228,7 +1230,7 @@ CollectionTreeView::createMetaQueryFromItems( const QSet<CollectionTreeItem*> &i
         m_treeModel->addFilters( qm );
         queryMakers.append( qm );
     }
-    return new MetaQueryMaker( queryMakers );
+    return new Collections::MetaQueryMaker( queryMakers );
 }
 
 

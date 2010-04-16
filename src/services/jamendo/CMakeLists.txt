@@ -1,9 +1,7 @@
         include_directories(
             ../
             ../../
-            ../../plugin
-            ../../meta
-            ../../collection
+            ../../core-impl/collections
             ../../servicebrowser
             ../../statusbar
             ${CMAKE_CURRENT_BINARY_DIR}/../..

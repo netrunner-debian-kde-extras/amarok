@@ -17,8 +17,8 @@
 #include "FastForwardImporter.h"
 #include "FastForwardImporterConfig.h"
 #include "FastForwardWorker.h"
-#include "CollectionManager.h"
-#include "Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core/support/Debug.h"
 
 
 FastForwardImporter::FastForwardImporter( QObject *parent )

@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
- * Copyright (c) 2009 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
+ * Copyright (c) 2010 Oleksandr Khayrullin <saniokh@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -17,7 +18,7 @@
 
 #include "PlaylistLayoutEditDialog.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include "playlist/layouts/LayoutManager.h"
 #include "playlist/PlaylistDefines.h"
@@ -26,9 +27,8 @@
 
 #include <KInputDialog>
 #include <QLineEdit>
-using namespace Playlist;
 
-PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
+Playlist::PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     : QDialog( parent )
 {
     setupUi( this );
@@ -96,14 +96,14 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     m_firstActiveLayout = LayoutManager::instance()->activeLayoutName();
 
     //add an editor to each tab
-    m_headEdit = new Playlist::LayoutEditWidget( this );
-    m_bodyEdit = new Playlist::LayoutEditWidget( this );
-    m_singleEdit = new Playlist::LayoutEditWidget( this );
+    for( int part = 0; part < PlaylistLayout::NumParts; part++ )
+        m_partsEdit[part] = new Playlist::LayoutEditWidget( this );
     m_layoutsMap = new QMap<QString, PlaylistLayout>();
 
-    elementTabs->addTab( m_headEdit, i18n( "Head" ) );
-    elementTabs->addTab( m_bodyEdit, i18n( "Body" ) );
-    elementTabs->addTab( m_singleEdit, i18n( "Single" ) );
+    elementTabs->addTab( m_partsEdit[PlaylistLayout::Head], i18n( "Head" ) );
+    elementTabs->addTab( m_partsEdit[PlaylistLayout::StandardBody], i18n( "Body" ) );
+    elementTabs->addTab( m_partsEdit[PlaylistLayout::VariousArtistsBody], i18n( "Body (Various artists)" ) );
+    elementTabs->addTab( m_partsEdit[PlaylistLayout::Single], i18n( "Single" ) );
 
     QStringList layoutNames = LayoutManager::instance()->layouts();
     foreach( const QString &layoutName, layoutNames )
@@ -158,19 +158,20 @@ PlaylistLayoutEditDialog::PlaylistLayoutEditDialog( QWidget *parent )
     toggleEditButtons();
     toggleUpDownButtons();
 
-    connect( m_headEdit, SIGNAL( changed() ), this, SLOT( setLayoutChanged() ) );
-    connect( m_bodyEdit, SIGNAL( changed() ), this, SLOT( setLayoutChanged() ) );
-    connect( m_singleEdit, SIGNAL( changed() ), this, SLOT( setLayoutChanged() ) );
+    for( int part = 0; part < PlaylistLayout::NumParts; part++ )
+        connect( m_partsEdit[part], SIGNAL( changed() ), this, SLOT( setLayoutChanged() ) );
     connect( inlineControlsChekbox, SIGNAL( stateChanged( int ) ), this, SLOT( setLayoutChanged() ) );
+    connect( tooltipsCheckbox, SIGNAL( stateChanged( int ) ), this, SLOT( setLayoutChanged() ) );
     connect( groupByComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( setLayoutChanged() ) );
 }
 
 
-PlaylistLayoutEditDialog::~PlaylistLayoutEditDialog()
+Playlist::PlaylistLayoutEditDialog::~PlaylistLayoutEditDialog()
 {
 }
 
-void PlaylistLayoutEditDialog::newLayout()      //SLOT
+void
+Playlist::PlaylistLayoutEditDialog::newLayout()      //SLOT
 {
     bool ok;
     QString layoutName = KInputDialog::getText( i18n( "Choose a name for the new playlist layout" ),
@@ -199,12 +200,11 @@ void PlaylistLayoutEditDialog::newLayout()      //SLOT
 
     layoutListWidget->addItem( layoutName );
     layoutListWidget->setCurrentItem( (layoutListWidget->findItems( layoutName, Qt::MatchExactly ) ).first() );
-    m_headEdit->clear();
-    m_bodyEdit->clear();
-    m_singleEdit->clear();
-    layout.setHead( m_headEdit->config() );
-    layout.setBody( m_bodyEdit->config() );
-    layout.setSingle( m_singleEdit->config() );
+    for( int part = 0; part < PlaylistLayout::NumParts; part++ )
+    {
+        m_partsEdit[part]->clear();
+        layout.setLayoutForPart( (PlaylistLayout::Part)part, m_partsEdit[part]->config() );
+    }
     m_layoutsMap->insert( layoutName, layout );
 
     LayoutManager::instance()->addUserLayout( layoutName, layout );
@@ -212,11 +212,12 @@ void PlaylistLayoutEditDialog::newLayout()      //SLOT
     setLayout( layoutName );
 }
 
-void PlaylistLayoutEditDialog::copyLayout()
+void
+Playlist::PlaylistLayoutEditDialog::copyLayout()
 {
-    LayoutItemConfig headConfig = m_headEdit->config();
-    LayoutItemConfig bodyConfig = m_bodyEdit->config();
-    LayoutItemConfig singleConfig = m_singleEdit->config();
+    LayoutItemConfig configs[PlaylistLayout::NumParts];
+    for( int part = 0; part < PlaylistLayout::NumParts; part++ )
+        configs[part] = m_partsEdit[part]->config();
 
     QString layoutName = layoutListWidget->currentItem()->text();
 
@@ -242,12 +243,12 @@ void PlaylistLayoutEditDialog::copyLayout()
     layout.setEditable( true );      //Should I use true, TRUE or 1?
     layout.setDirty( true );
 
-    headConfig.setActiveIndicatorRow( -1 );
-    layout.setHead( headConfig );
-    layout.setBody( bodyConfig );
-    layout.setSingle( singleConfig );
+    configs[PlaylistLayout::Head].setActiveIndicatorRow( -1 );
+    for( int part = 0; part < PlaylistLayout::NumParts; part++ )
+        layout.setLayoutForPart( (PlaylistLayout::Part)part, configs[part] );
 
     layout.setInlineControls( inlineControlsChekbox->isChecked() );
+    layout.setTooltips( tooltipsCheckbox->isChecked() );
     layout.setGroupBy( groupByComboBox->itemData( groupByComboBox->currentIndex() ).toString() );
 
     LayoutManager::instance()->addUserLayout( layoutName, layout );
@@ -261,7 +262,8 @@ void PlaylistLayoutEditDialog::copyLayout()
     setLayout( layoutName );
 }
 
-void PlaylistLayoutEditDialog::deleteLayout()   //SLOT
+void
+Playlist::PlaylistLayoutEditDialog::deleteLayout()   //SLOT
 {
     m_layoutsMap->remove( layoutListWidget->currentItem()->text() );
     if( LayoutManager::instance()->layouts().contains( layoutListWidget->currentItem()->text() ) )  //if the layout is already saved in the LayoutManager
@@ -269,7 +271,8 @@ void PlaylistLayoutEditDialog::deleteLayout()   //SLOT
     delete layoutListWidget->currentItem();
 }
 
-void PlaylistLayoutEditDialog::renameLayout()
+void
+Playlist::PlaylistLayoutEditDialog::renameLayout()
 {
     PlaylistLayout layout = m_layoutsMap->value( layoutListWidget->currentItem()->text() );
 
@@ -304,7 +307,8 @@ void PlaylistLayoutEditDialog::renameLayout()
  * Loads the configuration of the layout layoutName from the m_layoutsMap to the LayoutItemConfig area.
  * @param layoutName the name of the PlaylistLayout to be loaded for configuration
  */
-void PlaylistLayoutEditDialog::setLayout( const QString &layoutName )   //SLOT
+void
+Playlist::PlaylistLayoutEditDialog::setLayout( const QString &layoutName )   //SLOT
 {
     DEBUG_BLOCK
     m_layoutName = layoutName;
@@ -312,10 +316,10 @@ void PlaylistLayoutEditDialog::setLayout( const QString &layoutName )   //SLOT
     if( m_layoutsMap->keys().contains( layoutName ) )   //is the layout exists in the list of loaded layouts
     {
         PlaylistLayout layout = m_layoutsMap->value( layoutName );
-        m_headEdit->readLayout( layout.head() );
-        m_bodyEdit->readLayout( layout.body() );
-        m_singleEdit->readLayout( layout.single() );
+        for( int part = 0; part < PlaylistLayout::NumParts; part++ )
+            m_partsEdit[part]->readLayout( layout.layoutForPart( (PlaylistLayout::Part)part ) );
         inlineControlsChekbox->setChecked( layout.inlineControls() );
+        tooltipsCheckbox->setChecked( layout.tooltips() );
         groupByComboBox->setCurrentIndex( groupByComboBox->findData( layout.groupBy() ) );
         setEnabledTabs();
         //make sure that it is not marked dirty (it will be because of the changed signal triggereing when loagin it)
@@ -325,29 +329,33 @@ void PlaylistLayoutEditDialog::setLayout( const QString &layoutName )   //SLOT
     }
     else
     {
-        m_headEdit->clear();
-        m_bodyEdit->clear();
-        m_singleEdit->clear();
+        for( int part = 0; part < PlaylistLayout::NumParts; part++ )
+            m_partsEdit[part]->clear();
     }
 }
 
-void PlaylistLayoutEditDialog::preview()
+void
+Playlist::PlaylistLayoutEditDialog::preview()
 {
     PlaylistLayout layout;
 
-    LayoutItemConfig headConfig = m_headEdit->config() ;
-    headConfig.setActiveIndicatorRow( -1 );
+    for( int part = 0; part < PlaylistLayout::NumParts; part++ )
+    {
+        LayoutItemConfig config = m_partsEdit[part]->config();
+        if( part == PlaylistLayout::Head )
+            config.setActiveIndicatorRow( -1 );
+        layout.setLayoutForPart( (PlaylistLayout::Part)part, config );
+    }
 
-    layout.setHead( headConfig );
-    layout.setBody( m_bodyEdit->config() );
-    layout.setSingle( m_singleEdit->config() );
     layout.setInlineControls( inlineControlsChekbox->isChecked() );
+    layout.setTooltips( tooltipsCheckbox->isChecked() );
     layout.setGroupBy( groupByComboBox->itemData( groupByComboBox->currentIndex() ).toString() );
 
     LayoutManager::instance()->setPreviewLayout( layout );
 }
 
-void PlaylistLayoutEditDialog::toggleEditButtons() //SLOT
+void
+Playlist::PlaylistLayoutEditDialog::toggleEditButtons() //SLOT
 {
     if ( !layoutListWidget->currentItem() ) {
         deleteLayoutButton->setEnabled( 0 );
@@ -361,7 +369,8 @@ void PlaylistLayoutEditDialog::toggleEditButtons() //SLOT
     }
 }
 
-void PlaylistLayoutEditDialog::toggleUpDownButtons()
+void
+Playlist::PlaylistLayoutEditDialog::toggleUpDownButtons()
 {
     if ( !layoutListWidget->currentItem() )
     {
@@ -390,7 +399,8 @@ void PlaylistLayoutEditDialog::toggleUpDownButtons()
 
 }
 
-void PlaylistLayoutEditDialog::apply()  //SLOT
+void
+Playlist::PlaylistLayoutEditDialog::apply()  //SLOT
 {
     QMap<QString, PlaylistLayout>::Iterator i = m_layoutsMap->begin();
     while( i != m_layoutsMap->end() )
@@ -423,6 +433,7 @@ void PlaylistLayoutEditDialog::apply()  //SLOT
                 setLayout( layoutName );
             }
             i.value().setInlineControls( inlineControlsChekbox->isChecked() );
+            i.value().setTooltips( tooltipsCheckbox->isChecked() );
             i.value().setGroupBy( groupByComboBox->itemData( groupByComboBox->currentIndex() ).toString() );
             i.value().setDirty( false );
             LayoutManager::instance()->addUserLayout( layoutName, i.value() );
@@ -432,13 +443,15 @@ void PlaylistLayoutEditDialog::apply()  //SLOT
     LayoutManager::instance()->setActiveLayout( layoutListWidget->currentItem()->text() );  //important to override the previewed layout if preview is used
 }
 
-void PlaylistLayoutEditDialog::accept()     //SLOT
+void
+Playlist::PlaylistLayoutEditDialog::accept()     //SLOT
 {
     apply();
     QDialog::accept();
 }
 
-void PlaylistLayoutEditDialog::reject()     //SLOT
+void
+Playlist::PlaylistLayoutEditDialog::reject()     //SLOT
 {
     DEBUG_BLOCK
 
@@ -451,7 +464,8 @@ void PlaylistLayoutEditDialog::reject()     //SLOT
     QDialog::reject();
 }
 
-void PlaylistLayoutEditDialog::moveUp()
+void
+Playlist::PlaylistLayoutEditDialog::moveUp()
 {
     int newRow = LayoutManager::instance()->moveUp( m_layoutName );
 
@@ -461,7 +475,8 @@ void PlaylistLayoutEditDialog::moveUp()
     layoutListWidget->setCurrentRow( newRow );
 }
 
-void PlaylistLayoutEditDialog::moveDown()
+void
+Playlist::PlaylistLayoutEditDialog::moveDown()
 {
     int newRow = LayoutManager::instance()->moveDown( m_layoutName );
 
@@ -471,29 +486,31 @@ void PlaylistLayoutEditDialog::moveDown()
     layoutListWidget->setCurrentRow( newRow );
 }
 
-void PlaylistLayoutEditDialog::setEnabledTabs()
+void
+Playlist::PlaylistLayoutEditDialog::setEnabledTabs()
 {
+    DEBUG_BLOCK
+
     //Enable or disable tabs depending on whether grouping is allowed.
-    //An empty QString is used to specify no grouping
-    if ( !groupByComboBox->itemData( groupByComboBox->currentIndex() ).toString().isEmpty() )
-    {
-        //Grouping allowed - enable all tabs
-        elementTabs->setTabEnabled(elementTabs->indexOf(m_headEdit), true);
-        elementTabs->setTabEnabled(elementTabs->indexOf(m_bodyEdit), true);
-    }
-    else
-    {
-        //Disable the head and body tabs, leaving only the single tab
-        elementTabs->setTabEnabled(elementTabs->indexOf(m_headEdit), false);
-        elementTabs->setTabEnabled(elementTabs->indexOf(m_bodyEdit), false);
-        elementTabs->setCurrentWidget(m_singleEdit);
-    }
+    QString grouping = groupByComboBox->itemData( groupByComboBox->currentIndex() ).toString();
+    bool groupingEnabled = ( !grouping.isEmpty() && grouping != "None" );
+
+    if ( !groupingEnabled )
+        elementTabs->setCurrentWidget( m_partsEdit[PlaylistLayout::Single] );
+
+    debug() << groupByComboBox->itemData( groupByComboBox->currentIndex() ).toString();
+    debug() << groupingEnabled;
+
+    elementTabs->setTabEnabled( elementTabs->indexOf( m_partsEdit[PlaylistLayout::Head] ), groupingEnabled );
+    elementTabs->setTabEnabled( elementTabs->indexOf( m_partsEdit[PlaylistLayout::StandardBody] ), groupingEnabled );
+    elementTabs->setTabEnabled( elementTabs->indexOf( m_partsEdit[PlaylistLayout::VariousArtistsBody] ), groupingEnabled );
 }
 
 //Sets up a combo box that presents the possible grouping categories, as well as the option
 //to perform no grouping.
 //We'll use the "user data" to store the un-i18n-ized category name for internal use.
-void PlaylistLayoutEditDialog::setupGroupByCombo()
+void
+Playlist::PlaylistLayoutEditDialog::setupGroupByCombo()
 {
     foreach ( const QString &it, Playlist::groupableCategories )
     {
@@ -507,17 +524,18 @@ void PlaylistLayoutEditDialog::setupGroupByCombo()
     groupByComboBox->addItem( i18n( "No Grouping" ), QVariant( "None" ) );
 }
 
-void PlaylistLayoutEditDialog::setLayoutChanged()
+void
+Playlist::PlaylistLayoutEditDialog::setLayoutChanged()
 {
     DEBUG_BLOCK
 
     setEnabledTabs();
 
-    (*m_layoutsMap)[m_layoutName].setHead( m_headEdit->config() );
-    (*m_layoutsMap)[m_layoutName].setBody( m_bodyEdit->config() );
-    (*m_layoutsMap)[m_layoutName].setSingle( m_singleEdit->config() );
+    for( int part = 0; part < PlaylistLayout::NumParts; part++ )
+        (*m_layoutsMap)[m_layoutName].setLayoutForPart( (PlaylistLayout::Part)part, m_partsEdit[part]->config() );
 
     (*m_layoutsMap)[m_layoutName].setInlineControls( inlineControlsChekbox->isChecked() );
+    (*m_layoutsMap)[m_layoutName].setTooltips( tooltipsCheckbox->isChecked() );
     (*m_layoutsMap)[m_layoutName].setGroupBy( groupByComboBox->itemData( groupByComboBox->currentIndex() ).toString() );
     (*m_layoutsMap)[m_layoutName].setDirty( true );
 }

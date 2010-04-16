@@ -18,9 +18,9 @@
 
 #include "CoverBling.h"
 
-#include "Debug.h"
-#include "collection/CollectionManager.h"
-#include "meta/Meta.h"
+#include "core/support/Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core/meta/Meta.h"
 
 #include <math.h>
 #ifdef Q_WS_MAC
@@ -46,7 +46,7 @@ CoverBling::CoverBling( QWidget* parent )
 
     setFixedHeight( 200 );
 
-    Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
+    Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
     QueryMaker *qm = coll->queryMaker();
     qm->setQueryType( QueryMaker::Album );
     qm->limitMaxResultSize( 10 );

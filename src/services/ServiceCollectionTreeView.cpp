@@ -17,8 +17,8 @@
 #include "ServiceCollectionTreeView.h"
 
 #include "browsers/CollectionTreeItem.h"
-#include "Debug.h"
-#include "../meta/capabilities/CustomActionsCapability.h"
+#include "core/support/Debug.h"
+#include "core/capabilities/CustomActionsCapability.h"
 
 #include <KMenu>
 
@@ -73,7 +73,7 @@ ServiceCollectionTreeView::contextMenuEvent( QContextMenuEvent * event )
                     Meta::DataPtr data = static_cast<CollectionTreeItem*>( indices.first().internalPointer() )->data();
                     if( data )
                     {
-                        Meta::CustomActionsCapability *cac = data->create<Meta::CustomActionsCapability>();
+                        Capabilities::CustomActionsCapability *cac = data->create<Capabilities::CustomActionsCapability>();
                         if( cac )
                         {
                             QList<QAction*> actions = cac->customActions();

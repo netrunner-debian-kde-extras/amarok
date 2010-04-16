@@ -17,7 +17,7 @@
 #include "BrowserCategoryList.h"
 
 #include "App.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "BrowserCategoryListDelegate.h"
 #include "context/ContextView.h"
 #include "InfoProxy.h"
@@ -81,7 +81,7 @@ BrowserCategoryList::BrowserCategoryList( QWidget * parent, const QString& name,
         m_categoryListView->sortByColumn( 0 );
     }
 
-    connect( m_categoryListView, SIGNAL( activated( const QModelIndex & ) ), this, SLOT( categoryActivated( const QModelIndex & ) ) );
+    connect( m_categoryListView, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( categoryActivated( const QModelIndex & ) ) );
 
     connect( m_categoryListView, SIGNAL( entered( const QModelIndex & ) ), this, SLOT( categoryEntered( const QModelIndex & ) ) );
 
@@ -398,7 +398,7 @@ void BrowserCategoryList::categoryEntered( const QModelIndex & index )
 
         currentHtml.replace( "%%NAME%%", category->prettyName() );
         currentHtml.replace( "%%DESCRIPTION%%", category->longDescription() );
-        currentHtml.replace( "%%IMAGE_PATH%%", category->imagePath() );
+        currentHtml.replace( "%%IMAGE_PATH%%", "file://" + category->imagePath() );
 
         QVariantMap variantMap;
         variantMap["main_info"] = QVariant( currentHtml );

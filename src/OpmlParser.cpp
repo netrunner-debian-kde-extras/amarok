@@ -17,9 +17,8 @@
 
 #include "OpmlParser.h"
 
-#include "Amarok.h"
-#include "Debug.h"
-#include "statusbar/StatusBar.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 
 #include <QDomDocument>
 #include <QFile>
@@ -33,8 +32,6 @@ OpmlOutline::OpmlOutline( OpmlOutline *parent )
         , m_hasChildren( false )
 {
 }
-
-using namespace Meta;
 
 const QString OpmlParser::OPML_MIME = "text/x-opml+xml";
 

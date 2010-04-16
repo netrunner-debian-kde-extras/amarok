@@ -16,8 +16,8 @@
 
 #include "TestUnionJob.h"
 
-#include "Debug.h"
-#include "collection/CollectionLocation.h"
+#include "core/support/Debug.h"
+#include "core/collections/CollectionLocation.h"
 #include "synchronization/UnionJob.h"
 
 #include "CollectionTestImpl.h"
@@ -41,10 +41,12 @@ using ::testing::AnyNumber;
 
 static QList<int> trackCopyCount;
 
+namespace Collections {
+
 class MyCollectionLocation : public CollectionLocation
 {
 public:
-    CollectionTestImpl *coll;
+    Collections::CollectionTestImpl *coll;
 
     QString prettyLocation() const { return "foo"; }
     bool isWritable() const { return true; }
@@ -81,7 +83,9 @@ public:
     }
 };
 
-void addMockTrack( CollectionTestImpl *coll, const QString &trackName, const QString &artistName, const QString &albumName )
+} //namespace Collections
+
+void addMockTrack( Collections::CollectionTestImpl *coll, const QString &trackName, const QString &artistName, const QString &albumName )
 {
     Meta::MockTrack *track = new Meta::MockTrack();
     ::testing::Mock::AllowLeak( track );
@@ -163,8 +167,8 @@ TestUnionJob::init()
 void
 TestUnionJob::testEmptyA()
 {
-    CollectionTestImpl *collA = new MyCollectionTestImpl("A");
-    CollectionTestImpl *collB = new MyCollectionTestImpl("B");
+    Collections::CollectionTestImpl *collA = new Collections::MyCollectionTestImpl("A");
+    Collections::CollectionTestImpl *collB = new Collections::MyCollectionTestImpl("B");
 
     addMockTrack( collB, "track1", "artist1", "album1" );
     QCOMPARE( collA->mc->trackMap().count(), 0 );
@@ -187,8 +191,8 @@ TestUnionJob::testEmptyA()
 void
 TestUnionJob::testEmptyB()
 {
-    CollectionTestImpl *collA = new MyCollectionTestImpl("A");
-    CollectionTestImpl *collB = new MyCollectionTestImpl("B");
+    Collections::CollectionTestImpl *collA = new Collections::MyCollectionTestImpl("A");
+    Collections::CollectionTestImpl *collB = new Collections::MyCollectionTestImpl("B");
 
     addMockTrack( collA, "track1", "artist1", "album1" );
     QCOMPARE( collA->mc->trackMap().count(), 1 );
@@ -211,8 +215,8 @@ TestUnionJob::testEmptyB()
 void
 TestUnionJob::testAddTrackToBoth()
 {
-    CollectionTestImpl *collA = new MyCollectionTestImpl("A");
-    CollectionTestImpl *collB = new MyCollectionTestImpl("B");
+    Collections::CollectionTestImpl *collA = new Collections::MyCollectionTestImpl("A");
+    Collections::CollectionTestImpl *collB = new Collections::MyCollectionTestImpl("B");
 
     addMockTrack( collA, "track1", "artist1", "album1" );
     addMockTrack( collB, "track2", "artist2", "album2" );
@@ -237,8 +241,8 @@ TestUnionJob::testAddTrackToBoth()
 void
 TestUnionJob::testTrackAlreadyInBoth()
 {
-    CollectionTestImpl *collA = new MyCollectionTestImpl("A");
-    CollectionTestImpl *collB = new MyCollectionTestImpl("B");
+    Collections::CollectionTestImpl *collA = new Collections::MyCollectionTestImpl("A");
+    Collections::CollectionTestImpl *collB = new Collections::MyCollectionTestImpl("B");
 
     addMockTrack( collA, "track1", "artist1", "album1" );
     addMockTrack( collB, "track1", "artist1", "album1" );

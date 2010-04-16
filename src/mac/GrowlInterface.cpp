@@ -18,9 +18,11 @@
 
 #include "amarokconfig.h"
 #include "App.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
-#include "MetaUtility.h" // for secToPrettyTime
+#include "core/meta/Meta.h"
+#include "core/meta/support/MetaUtility.h" // for secToPrettyTime
+#include "SvgHandler.h"
 #include "TrayIcon.h"
 
 GrowlInterface::GrowlInterface( QString appName ) :
@@ -59,10 +61,11 @@ GrowlInterface::show( Meta::TrackPtr track )
 
     if( App::instance()->trayIcon() )
     {
-        App::instance()->trayIcon()->setVisible( true );
         if( track && track->album() )
-            App::instance()->trayIcon()->setIcon( QIcon( track->album()->imageWithBorder( 100, 5 ) ) );
-        App::instance()->trayIcon()->showMessage( "Amarok", text );
+        {
+            App::instance()->trayIcon()->setIconByPixmap( The::svgHandler()->imageWithBorder( track->album(), 100, 5 ) );
+        }
+        App::instance()->trayIcon()->showMessage( "Amarok", text, QString() );
     }
 
 }

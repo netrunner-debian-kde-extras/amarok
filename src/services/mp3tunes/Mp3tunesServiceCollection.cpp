@@ -22,11 +22,13 @@
 #include "Mp3tunesServiceCollectionLocation.h"
 #include "Mp3tunesServiceQueryMaker.h"
 #include "Mp3tunesWorkers.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <threadweaver/ThreadWeaver.h>
 
 #include <QRegExp>
+
+using namespace Collections;
 
 Mp3tunesServiceCollection::Mp3tunesServiceCollection( ServiceBase * service, const QString
 &sessionId, Mp3tunesLocker * locker )

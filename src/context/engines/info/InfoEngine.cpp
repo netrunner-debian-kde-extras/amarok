@@ -17,8 +17,8 @@
 
 #include "InfoEngine.h"
 
-#include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 #include "ContextObserver.h"
 #include "ContextView.h"
 #include "browsers/InfoProxy.h"
@@ -61,7 +61,6 @@ bool InfoEngine::sourceRequestEvent( const QString& name )
 
 void InfoEngine::message( const ContextState& state )
 {
-    DEBUG_BLOCK;
     if( state == Current && m_requested ) {
         m_storedInfo = The::infoProxy()->info();
         update();

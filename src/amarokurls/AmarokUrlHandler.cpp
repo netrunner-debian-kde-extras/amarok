@@ -17,16 +17,16 @@
 #include "AmarokUrlHandler.h"
 
 #include "BookmarkMetaActions.h"
-#include "CollectionManager.h"
-#include "Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core/support/Debug.h"
 #include "GlobalCurrentTrackActions.h"
 #include "NavigationUrlGenerator.h"
 #include "NavigationUrlRunner.h"
 #include "PlayUrlRunner.h"
 #include "playlist/PlaylistViewUrlGenerator.h"
 #include "BookmarkModel.h"
-#include "SqlStorage.h"
-#include "timecode/TimecodeObserver.h"
+#include "core/collections/support/SqlStorage.h"
+#include "core-impl/meta/timecode/TimecodeObserver.h"
 #include "ContextUrlGenerator.h"
 #include "PlayUrlGenerator.h"
 
@@ -152,9 +152,27 @@ BookmarkList AmarokUrlHandler::urlsByCommand( const QString &command )
     return resultList;
 }
 
+AmarokUrl
+AmarokUrlHandler::createBrowserViewBookmark()
+{
+    return NavigationUrlGenerator::instance()->CreateAmarokUrl();;
+}
+
+AmarokUrl
+AmarokUrlHandler::createPlaylistViewBookmark()
+{
+    return Playlist::ViewUrlGenerator::instance()->createUrl();
+}
+
+AmarokUrl
+AmarokUrlHandler::createContextViewBookmark()
+{
+    return ContextUrlGenerator::instance()->createContextBookmark();
+}
+
 void AmarokUrlHandler::bookmarkCurrentBrowserView()
 {
-    AmarokUrl url = NavigationUrlGenerator::instance()->CreateAmarokUrl();
+    AmarokUrl url = createBrowserViewBookmark();
     url.saveToDb();
     BookmarkModel::instance()->reloadFromDb();
 }
@@ -162,7 +180,7 @@ void AmarokUrlHandler::bookmarkCurrentBrowserView()
 void
 AmarokUrlHandler::bookmarkCurrentPlaylistView()
 {
-    AmarokUrl url = Playlist::ViewUrlGenerator::instance()->createUrl();
+    AmarokUrl url = createPlaylistViewBookmark();
     url.saveToDb();
     BookmarkModel::instance()->reloadFromDb();
 }
@@ -170,7 +188,7 @@ AmarokUrlHandler::bookmarkCurrentPlaylistView()
 void
 AmarokUrlHandler::bookmarkCurrentContextView()
 {
-    AmarokUrl url = ContextUrlGenerator::instance()->createContextBookmark();
+    AmarokUrl url = createContextViewBookmark();
     url.saveToDb();
     BookmarkModel::instance()->reloadFromDb(); 
 }
@@ -193,6 +211,15 @@ void
 AmarokUrlHandler::paintNewTimecode( const QString &name, int pos )
 {
     emit timecodeAdded( name, pos );
+}
+
+QString
+AmarokUrlHandler::prettyCommand( const QString &command )
+{
+    if( m_registeredRunners.keys().contains( command ) )
+        return m_registeredRunners.value( command )->prettyCommand();
+
+    return i18nc( "The command type of this url is not known", "Unknown" );
 }
 
 

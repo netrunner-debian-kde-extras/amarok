@@ -19,7 +19,7 @@
 #include "DragPixmapItem.h"
 
 // Amarok
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "SvgHandler.h"
 
 // KDE
@@ -454,8 +454,6 @@ void PhotosScrollWidget::animate( qreal anim )
             break;
         }
 
-// setOpacity is a 4.5 method
-#if QT_VERSION >= 0x040500
         case PHOTOS_MODE_FADING :
         {
             if ( !m_pixmaplist.empty() ) // just for prevention, this should never appears
@@ -467,7 +465,6 @@ void PhotosScrollWidget::animate( qreal anim )
 
             break;
         }
-#endif
     }        
 }
 

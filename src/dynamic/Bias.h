@@ -20,17 +20,19 @@
 #ifndef AMAROK_BIAS_H
 #define AMAROK_BIAS_H
 
-#include "Meta.h"
-#include "collection/support/XmlQueryReader.h"
+#include "core/meta/Meta.h"
+#include "core-impl/collections/support/XmlQueryReader.h"
 
 #include <QDomElement>
 #include <QMutex>
 #include <QObject>
 #include <QSet>
 
-class Collection;
-class QueryMaker;
-class XmlQueryWriter;
+namespace Collections {
+    class Collection;
+    class QueryMaker;
+    class XmlQueryWriter;
+}
 
 namespace PlaylistBrowserNS
 {
@@ -130,7 +132,7 @@ namespace Dynamic
 
         public:
             CollectionDependantBias();
-            CollectionDependantBias( Amarok::Collection* );
+            CollectionDependantBias( Collections::Collection* );
 
             /**
              * This gets called when the collection changes. It's expected to
@@ -146,7 +148,7 @@ namespace Dynamic
             void collectionUpdated();
 
         protected:
-            Amarok::Collection* m_collection; // null => all queryable collections
+            Collections::Collection* m_collection; // null => all queryable collections
             bool m_needsUpdating;
             QMutex m_mutex;
     };
@@ -190,7 +192,7 @@ namespace Dynamic
                 
         public:
             GlobalBias( double weight, XmlQueryReader::Filter );
-            GlobalBias( Amarok::Collection* coll, double weight, XmlQueryReader::Filter query );
+            GlobalBias( Collections::Collection* coll, double weight, XmlQueryReader::Filter query );
             
             ~GlobalBias();
 
@@ -221,9 +223,9 @@ namespace Dynamic
             void updateFinished();
 
         private:
-            double m_weight; /// range: [0,1]
+            double m_weight; ///< range: [0,1]
             QSet<QByteArray> m_property;
-            XmlQueryWriter* m_qm;
+            Collections::XmlQueryWriter* m_qm;
             XmlQueryReader::Filter m_filter;
 
             // Disable copy constructor and assignment
@@ -292,8 +294,8 @@ namespace Dynamic
 
             double m_scale;
 
-            double m_mu;    //! mean
-            double m_sigma; //! standard deviation
+            double m_mu;    //!< mean
+            double m_sigma; //!< standard deviation
 
             qint64 m_field;
     };

@@ -22,8 +22,7 @@
 #include "OpmlDirectoryDatabaseHandler.h"
 #include "ServiceSqlCollection.h"
 
-#include "Amarok.h"
-#include "statusbar/StatusBar.h"
+#include "core/support/Amarok.h"
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 
@@ -59,7 +58,7 @@ public:
 
     void polish();
 
-    virtual Amarok::Collection * collection() { return m_collection; }
+    virtual Collections::Collection * collection() { return m_collection; }
 
 private slots:
 
@@ -84,7 +83,7 @@ private:
     QPushButton *m_subscribeButton;
     KIO::FileCopyJob * m_listDownloadJob;
     OpmlDirectoryDatabaseHandler * m_dbHandler;
-    ServiceSqlCollection * m_collection;
+    Collections::ServiceSqlCollection * m_collection;
     Meta::OpmlDirectoryFeed * m_currentFeed;
     QString m_tempFileName;
     int m_currentCategoryId;

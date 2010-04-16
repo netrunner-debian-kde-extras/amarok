@@ -21,11 +21,12 @@
 #ifndef AMAROK_PLAYLISTACTIONS_H
 #define AMAROK_PLAYLISTACTIONS_H
 
-#include "Debug.h"
-#include "EngineObserver.h"
-#include "meta/Playlist.h"
+#include "core/support/Debug.h"
+#include "core/engine/EngineObserver.h"
+#include "core/playlists/Playlist.h"
 #include "proxymodels/AbstractModel.h"
 
+#include <QQueue>
 
 namespace Playlist
 {
@@ -49,7 +50,13 @@ enum StopAfterMode
 };
 
 
-class AMAROK_EXPORT Actions : public QObject, public EngineObserver
+/**
+ * This class is a central hub between the playlist model stack, the playlist navigators,
+ * and the track playback engine. It ties them together to provide simple "Play", "Play
+ * Next", etc. commands to the GUI code.
+ */
+
+class AMAROK_EXPORT Actions : public QObject, public Engine::EngineObserver
 {
     Q_OBJECT
 
@@ -99,6 +106,11 @@ public:
     // This shouldn't be in Actions, it doesn't make sense
     int queuePosition( quint64 id );
 
+    // nor should this, ideally this and queuePosition
+    // should be in TrackNavigator and TrackNavigator
+    // should be publicly accessible
+    QQueue<quint64> queue();
+
 public slots:
     void play();
     void play( const int row );
@@ -106,10 +118,17 @@ public slots:
     void play( const quint64 id, bool now = true );
     void next();
     void back();
-    void playlistModeChanged(); //! Changes the tracknavigator
+    void playlistModeChanged(); //!< Changes the tracknavigator
     void repopulateDynamicPlaylist();
     void queue( QList<int> rows );
     void dequeue( QList<int> rows );
+    void restoreDefaultPlaylist();
+
+    /**
+    * Repaint the playlist.
+    * Useful when triggering a change that will modify the visual appearance of one or more items in the playlist
+    */
+    void repaintPlaylist();
 
 signals:
     void navigatorChanged();
@@ -122,16 +141,15 @@ private:
     void engineNewTrackPlaying(); //from EngineObserver
 
     quint64 m_nextTrackCandidate;
-    quint64 m_currentTrack;
     quint64 m_trackToBeLast;
-    TrackNavigator* m_navigator;                //! the strategy of what to do when a track finishes playing
+    TrackNavigator* m_navigator;                //!< the strategy of what to do when a track finishes playing
     Playlist::StopAfterMode m_stopAfterMode;
     bool m_trackError;
     bool m_waitingForNextTrack;
 
     AbstractModel *m_topmostModel;
 
-    static Actions* s_instance; //! instance variable
+    static Actions* s_instance; //!< instance variable
 };
 } // namespace Playlist
 

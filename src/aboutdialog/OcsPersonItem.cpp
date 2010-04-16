@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -16,7 +16,7 @@
 
 #include "OcsPersonItem.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "libattica-ocsclient/provider.h"
 #include "libattica-ocsclient/providerinitjob.h"
 #include "libattica-ocsclient/personjob.h"

@@ -22,8 +22,7 @@
 #include "JamendoXmlParser.h"
 #include "ServiceSqlCollection.h"
 
-#include "Amarok.h"
-#include "statusbar/StatusBar.h"
+#include "core/support/Amarok.h"
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 
@@ -52,7 +51,7 @@ public:
     ~JamendoService();
 
     void polish();
-    virtual Amarok::Collection * collection() { return m_collection; }
+    virtual Collections::Collection * collection() { return m_collection; }
 
 private slots:
     void updateButtonClicked();
@@ -64,7 +63,7 @@ private slots:
     void doneParsing();
 
     /**
-    * Checks if purchase button should be enabled
+    * Checks if download button should be enabled
     * @param selection the new selection
     */
     void itemSelected( CollectionTreeItem * selectedItem );
@@ -81,7 +80,7 @@ private:
     JamendoDatabaseHandler * m_dbHandler;
     QString m_tempFileName;
     QString m_torrentFileName;
-    ServiceSqlCollection * m_collection;
+    Collections::ServiceSqlCollection * m_collection;
     Meta::JamendoAlbum * m_currentAlbum;
 
     JamendoXmlParser * m_xmlParser;

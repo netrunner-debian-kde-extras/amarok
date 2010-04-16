@@ -20,7 +20,7 @@
 #define SERVICECOLLECTION_H
 
 #include "amarok_export.h"
-#include "Collection.h"
+#include "core/collections/Collection.h"
 #include "support/MemoryCollection.h"
 #include "ServiceBase.h"
 
@@ -34,12 +34,14 @@ typedef QMap<int, Meta::ArtistPtr> ArtistIdMap;
 typedef QMap<int, Meta::AlbumPtr> AlbumIdMap;
 typedef QMap<int, Meta::GenrePtr> GenreIdMap;
 
+namespace Collections {
+
 /**
  *  This is a specialized collection that can be used by services who dynamically
  *  fetch their data from somewhere ( a web service, an external program, etc....)
  */
 
-class AMAROK_EXPORT ServiceCollection : public Amarok::Collection
+class AMAROK_EXPORT ServiceCollection : public Collections::Collection
 {
     Q_OBJECT
     public:
@@ -48,7 +50,7 @@ class AMAROK_EXPORT ServiceCollection : public Amarok::Collection
         virtual ~ServiceCollection();
 
         virtual void startFullScan();
-        virtual QueryMaker* queryMaker();
+        virtual Collections::QueryMaker* queryMaker();
 
         virtual QString collectionId() const;
         virtual QString prettyName() const;
@@ -111,5 +113,7 @@ class AMAROK_EXPORT ServiceCollection : public Amarok::Collection
         AlbumIdMap m_albumIdMap;
         GenreIdMap m_genreIdMap;
 };
+
+} //namespace Collections
 
 #endif

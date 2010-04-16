@@ -20,8 +20,8 @@
 
 #include "CollectionSetup.h"
 
-#include "CollectionManager.h"
-#include "Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core/support/Debug.h"
 #include "MainWindow.h"
 #include "amarokconfig.h"
 #include "dialogs/DatabaseImporterDialog.h"
@@ -64,7 +64,7 @@ CollectionSetupTreeView::slotPressed( const QModelIndex &index )
         QDBusReply<bool> reply = interface.call( "isDirInCollection", m_currDir );
         if( reply.isValid() && reply.value() )
         {
-            m_rescanDirAction->setText( i18n( "Rescan '%1'" ).arg( m_currDir ) );
+            m_rescanDirAction->setText( i18n( "Rescan '%1'", m_currDir ) );
             QMenu menu;
             menu.addAction( m_rescanDirAction );
             menu.exec( QCursor::pos() );
@@ -92,11 +92,13 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     setObjectName( "CollectionSetup" );
     s_instance = this;
 
-    (new QLabel( i18n(
+    QLabel* descriptionLabel = new QLabel( i18n( 
         "These folders will be scanned for "
-        "media to make up your collection. You can\n"
+        "media to make up your collection. You can "
         "right-click on a folder to individually "
-        "rescan it, if it was previously selected:"), this ))->setAlignment( Qt::AlignJustify );
+        "rescan it, if it was previously selected:" ), this );
+    descriptionLabel->setAlignment( Qt::AlignJustify );
+    descriptionLabel->setWordWrap( true );
 
     m_view  = new CollectionSetupTreeView( this );
     m_view->setHeaderHidden( true );
@@ -139,7 +141,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_view->setRootIndex( m_model->setRootPath( m_model->myComputer().toString() ) );
     #endif
     
-    Amarok::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
+    Collections::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
     QStringList dirs = primaryCollection ? primaryCollection->property( "collectionFolders" ).toStringList() : QStringList();
     m_model->setDirectories( dirs );
     
@@ -158,7 +160,7 @@ CollectionSetup::hasChanged() const
 {
     DEBUG_BLOCK
 
-    Amarok::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
+    Collections::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
     QStringList collectionFolders = primaryCollection ? primaryCollection->property( "collectionFolders" ).toStringList() : QStringList();
     const bool foldersChanged = m_model->directories() != collectionFolders;
     const bool recursiveChanged = m_recursive->isChecked() != AmarokConfig::scanRecursively();
@@ -177,7 +179,7 @@ CollectionSetup::writeConfig()
     AmarokConfig::setMonitorChanges( monitor() );
     AmarokConfig::setUseCharsetDetector( charset() );
 
-    Amarok::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
+    Collections::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
     QStringList collectionFolders = primaryCollection ? primaryCollection->property( "collectionFolders" ).toStringList() : QStringList();
 
     if( m_model->directories() != collectionFolders )
