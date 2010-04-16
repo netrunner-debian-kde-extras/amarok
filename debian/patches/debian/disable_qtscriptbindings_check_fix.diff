@@ -11,10 +11,10 @@ Signed-off-by: Modestas Vainius <modestas@vainius.eu>
  1 files changed, 0 insertions(+), 3 deletions(-)
 
 diff --git a/CMakeLists.txt b/CMakeLists.txt
-index 15b35c5..716d37c 100644
+index 1029dca..3fb0b04 100644
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -76,9 +76,6 @@ if( WITH_PLAYER )
+@@ -80,9 +80,6 @@ if( WITH_PLAYER )
  
      macro_log_feature( KDE4_FOUND "kdelibs" "The toolkit Amarok uses to build" "http://www.kde.org" TRUE "4.3.0" "" )
  
@@ -25,4 +25,4 @@ index 15b35c5..716d37c 100644
  
      find_package(MySQLAmarok REQUIRED)
 -- 
-tg: (ad61c61..) debian/disable_qtscriptbindings_check_fix (depends on: upstream)
+tg: (7c3cfa4..) debian/disable_qtscriptbindings_check_fix (depends on: upstream)

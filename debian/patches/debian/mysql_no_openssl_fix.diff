@@ -10,10 +10,10 @@ Signed-off-by: Modestas Vainius <modestas@vainius.eu>
  .../mysqlservercollection/CMakeLists.txt           |    3 ---
  2 files changed, 0 insertions(+), 6 deletions(-)
 
-diff --git a/src/collection/sqlcollection/mysqlecollection/CMakeLists.txt b/src/collection/sqlcollection/mysqlecollection/CMakeLists.txt
-index 3f6d951..4a1ac94 100755
---- a/src/collection/sqlcollection/mysqlecollection/CMakeLists.txt
-+++ b/src/collection/sqlcollection/mysqlecollection/CMakeLists.txt
+diff --git a/src/core-impl/collections/sqlcollection/mysqlecollection/CMakeLists.txt b/src/core-impl/collections/sqlcollection/mysqlecollection/CMakeLists.txt
+index 3f6d951..4a1ac94 100644
+--- a/src/core-impl/collections/sqlcollection/mysqlecollection/CMakeLists.txt
++++ b/src/core-impl/collections/sqlcollection/mysqlecollection/CMakeLists.txt
 @@ -6,7 +6,6 @@ include_directories(
          ..
          ${CMAKE_SOURCE_DIR}/src
@@ -37,10 +37,10 @@ index 3f6d951..4a1ac94 100755
      if(NOT APPLE)
          target_link_libraries(amarok_collection-mysqlecollection crypt pthread)
      endif(NOT APPLE)
-diff --git a/src/collection/sqlcollection/mysqlservercollection/CMakeLists.txt b/src/collection/sqlcollection/mysqlservercollection/CMakeLists.txt
-index 456659f..fbcd827 100755
---- a/src/collection/sqlcollection/mysqlservercollection/CMakeLists.txt
-+++ b/src/collection/sqlcollection/mysqlservercollection/CMakeLists.txt
+diff --git a/src/core-impl/collections/sqlcollection/mysqlservercollection/CMakeLists.txt b/src/core-impl/collections/sqlcollection/mysqlservercollection/CMakeLists.txt
+index 456659f..fbcd827 100644
+--- a/src/core-impl/collections/sqlcollection/mysqlservercollection/CMakeLists.txt
++++ b/src/core-impl/collections/sqlcollection/mysqlservercollection/CMakeLists.txt
 @@ -7,7 +7,6 @@ include_directories(
          ${CMAKE_SOURCE_DIR}/src
          ${CMAKE_BINARY_DIR}/src
@@ -65,4 +65,4 @@ index 456659f..fbcd827 100755
          target_link_libraries(amarok_collection-mysqlservercollection crypt pthread)
      endif(NOT APPLE)
 -- 
-tg: (ad61c61..) debian/mysql_no_openssl_fix (depends on: upstream)
+tg: (7c3cfa4..) debian/mysql_no_openssl_fix (depends on: upstream)

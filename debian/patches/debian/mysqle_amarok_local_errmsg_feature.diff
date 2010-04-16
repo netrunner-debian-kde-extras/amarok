@@ -8,13 +8,13 @@ might not be available if mysql-server is not installed.
 Signed-off-by: Modestas Vainius <modestas@vainius.eu>
 
 ---
- .../mysqlecollection/MySqlEmbeddedStorage.cpp      |   16 +++++++++++++++-
- 1 files changed, 15 insertions(+), 1 deletions(-)
+ .../mysqlecollection/MySqlEmbeddedStorage.cpp      |   17 ++++++++++++++++-
+ 1 files changed, 16 insertions(+), 1 deletions(-)
 
-diff --git a/src/collection/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp b/src/collection/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
-index d387580..5966c61 100644
---- a/src/collection/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
-+++ b/src/collection/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
+diff --git a/src/core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp b/src/core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
+index 2a03002..0be1988 100644
+--- a/src/core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
++++ b/src/core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
 @@ -27,10 +27,15 @@
  #include <QThreadStorage>
  #include <QVarLengthArray>
@@ -44,27 +44,28 @@ index d387580..5966c61 100644
  
      if( !QFile::exists( defaultsFile ) )
      {
-@@ -68,7 +76,9 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
+@@ -68,7 +76,10 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
          dir.mkpath( "." );
      }
  
--    static const int num_elements = 10;
-+    int num_elements = 10;
+-    static const int num_elements = 9;
++    int num_elements = 9;
 +    if (languageLine)
 +        num_elements++;
++
      char **server_options = new char* [ num_elements + 1 ];
      server_options[0] = const_cast<char*>( "amarokmysqld" );
      server_options[1] = defaultsLine;
-@@ -82,6 +92,8 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
-     server_options[7] = const_cast<char*>( "--myisam-recover=FORCE" );
-     server_options[8] = const_cast<char*>( "--character-set-server=utf8" );
-     server_options[9] = const_cast<char*>( "--collation-server=utf8_bin" );
+@@ -82,6 +93,8 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
+     server_options[7] = const_cast<char*>( "--character-set-server=utf8" );
+     server_options[8] = const_cast<char*>( "--collation-server=utf8_bin" );
+     server_options[num_elements] = 0;
 +    if (languageLine)
 +        server_options[num_elements-1] = languageLine;
-     server_options[num_elements] = 0;
  
      char **server_groups = new char* [ 3 ];
-@@ -101,6 +113,8 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
+     server_groups[0] = const_cast<char*>( "amarokserver" );
+@@ -100,6 +113,8 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
      delete [] server_groups;
      delete [] defaultsLine;
      delete [] databaseLine;
@@ -74,4 +75,4 @@ index d387580..5966c61 100644
      if( !m_db )
      {
 -- 
-tg: (ad61c61..) debian/mysqle_amarok_local_errmsg_feature (depends on: upstream)
+tg: (7c3cfa4..) debian/mysqle_amarok_local_errmsg_feature (depends on: upstream)

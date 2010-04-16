@@ -1,4 +1,3 @@
 debian/disable_qtscriptbindings_check_fix.diff -p1
 debian/mysql_no_openssl_fix.diff -p1
 debian/mysqle_amarok_local_errmsg_feature.diff -p1
-general/crash_fix_info_applet.diff -p1
