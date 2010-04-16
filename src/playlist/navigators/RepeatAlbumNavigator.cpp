@@ -1,7 +1,8 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
- * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
+ * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -22,199 +23,35 @@
 
 #include "RepeatAlbumNavigator.h"
 
-#include "Debug.h"
-#include "Meta.h"
-#include "playlist/PlaylistModelStack.h"
+#include "core/support/Debug.h"
+#include "core/meta/Meta.h"
+
 
 Playlist::RepeatAlbumNavigator::RepeatAlbumNavigator()
 {
-    DEBUG_BLOCK
-    m_model = Playlist::ModelStack::instance()->top();
-    connect( model(), SIGNAL( insertedIds( const QList<quint64>& ) ),
-             this, SLOT( recvInsertedIds( const QList<quint64>& ) ) );
-    connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ),
-             this, SLOT( recvRemovedIds( const QList<quint64>& ) ) );
-    connect( model(), SIGNAL( activeTrackChanged( const quint64 ) ),
-             this, SLOT( recvActiveTrackChanged( const quint64 ) ) );
-
-    for ( int i = 0; i < m_model->rowCount(); i++ )
-    {
-        Meta::AlbumPtr album = m_model->trackAt( i )->album();
-        m_albumGroups[album].append( m_model->idAt( i ) ); // conveniently creates an empty list if none exists
-    }
-
-    Meta::TrackPtr activeTrack = m_model->activeTrack();
-    m_currentAlbum = activeTrack ? activeTrack->album() : Meta::AlbumPtr();
-    m_currentTrack = m_model->activeId();
-
-    dump();
+    loadFromSourceModel();
 }
 
 void
-Playlist::RepeatAlbumNavigator::recvInsertedIds( const QList<quint64>& list )
+Playlist::RepeatAlbumNavigator::planOne()
 {
     DEBUG_BLOCK
-    Meta::AlbumList modifiedAlbums;
-    foreach( quint64 id, list )
+
+    if ( m_plannedItems.isEmpty() )
     {
-        Meta::AlbumPtr album = m_model->trackForId( id )->album();
-        m_albumGroups[album].append( id ); // conveniently creates an empty list if none exists
-    }
+        ItemList itemsInAlbum = m_itemsPerAlbum.value( currentAlbum() );    // May be default-constructed empty list.
 
-    sortTheseAlbums( modifiedAlbums );
-}
-
-void
-Playlist::RepeatAlbumNavigator::recvRemovedIds( const QList<quint64>& list )
-{
-    DEBUG_BLOCK
-    QList<quint64>::const_iterator id_iter;
-    for ( id_iter = list.begin(); id_iter != list.end(); ++id_iter )
-    {
-        quint64 id = *id_iter;
-        debug() << "removing" << id;
-        QHash<Meta::AlbumPtr, ItemList>::iterator alb_iter = m_albumGroups.begin();
-
-        while ( alb_iter != m_albumGroups.end() )
+        int currentRow = itemsInAlbum.indexOf( currentItem() );
+        if ( currentRow != -1 )
         {
-            if ( alb_iter->contains( id ) )
-            {
-
-                if( alb_iter.key() )
-                    debug() << "    from" << alb_iter.key()->prettyName();
-                else
-                    debug() << "    which is not in any album";
-
-                Meta::AlbumPtr album = alb_iter.key();
-                ItemList atl = alb_iter.value();
-                if ( m_currentTrack == id )
-                {
-                    int idx = atl.indexOf( id );
-                    m_currentTrack = ( idx < ( atl.size() - 1 ) ) ? atl.at( idx + 1 ) : 0;
-                }
-                atl.removeAll( id );
-                if ( atl.isEmpty() )
-                {
-                    if( album )
-                        debug() << album->prettyName() << "is now empty";
-                    alb_iter = m_albumGroups.erase( alb_iter );
-                    if ( album == m_currentAlbum )
-                    {
-                        m_currentAlbum = Meta::AlbumPtr();
-                        m_currentTrack = 0;
-                    }
-                }
-                else
-                {
-                    ++alb_iter;
-                    m_albumGroups.insert( album, atl );
-                }
-                break;
-            }
-            else
-                ++alb_iter;
+            int nextRow = (currentRow + 1) % itemsInAlbum.size();    // Circulate within same album
+            m_plannedItems.append( itemsInAlbum.at( nextRow ) );
+        }
+        else    // This happens if 'currentItem() == 0'.
+        {
+            quint64 item = bestFallbackItem();
+            if ( item )
+                m_plannedItems.append( item );
         }
     }
 }
-
-void
-Playlist::RepeatAlbumNavigator::recvActiveTrackChanged( const quint64 id )
-{
-    DEBUG_BLOCK
-    if ( id == m_currentTrack )
-        return;
-
-    if ( m_model->containsId( id ) )
-    {
-        m_currentAlbum = m_model->trackForId( id )->album();
-    }
-    else
-    {
-        m_currentAlbum = Meta::AlbumPtr();
-    }
-    m_currentTrack = id;
-}
-
-
-quint64
-Playlist::RepeatAlbumNavigator::likelyNextTrack()
-{
-    DEBUG_BLOCK
-    if ( m_currentAlbum != Meta::AlbumPtr() )
-    {
-        ItemList atl = m_albumGroups.value( m_currentAlbum );
-        int row = atl.indexOf( m_currentTrack ) + 1;
-        row = ( row < atl.size() ) ? row : 0;
-        return atl.at( row );
-    }
-    return 0;
-}
-
-quint64
-Playlist::RepeatAlbumNavigator::likelyLastTrack()
-{
-    DEBUG_BLOCK
-    if ( m_currentAlbum != Meta::AlbumPtr() )
-    {
-        ItemList atl = m_albumGroups.value( m_currentAlbum );
-        int row = atl.indexOf( m_currentTrack ) - 1;
-        row = ( row >= 0 ) ? row : atl.size() - 1;
-        return atl.at( row );
-    }
-    return 0;
-}
-
-quint64
-Playlist::RepeatAlbumNavigator::requestNextTrack()
-{
-    quint64 track = likelyNextTrack();
-    if ( track )
-        m_currentTrack = track;
-    return track;
-}
-
-quint64
-Playlist::RepeatAlbumNavigator::requestLastTrack()
-{
-    quint64 track = likelyLastTrack();
-    if ( track )
-        m_currentTrack = track;
-    return track;
-}
-
-bool
-Playlist::RepeatAlbumNavigator::idLessThan( const quint64& l, const quint64& r )
-{
-    Meta::TrackPtr left = Playlist::ModelStack::instance()->top()->trackForId( l );
-    Meta::TrackPtr right = Playlist::ModelStack::instance()->top()->trackForId( r );
-    return Meta::Track::lessThan( left, right );
-}
-
-void
-Playlist::RepeatAlbumNavigator::sortTheseAlbums( const Meta::AlbumList al )
-{
-    foreach( Meta::AlbumPtr a, al )
-    {
-        qStableSort( m_albumGroups[a].begin(), m_albumGroups[a].end(), idLessThan );
-    }
-}
-
-void
-Playlist::RepeatAlbumNavigator::dump()
-{
-    debug() << "album groups are as follows:";
-    foreach( Meta::AlbumPtr album, m_albumGroups.keys() )
-    {
-        if( album )
-        {
-            debug() << "   in" << album->prettyName();
-            ItemList atl = m_albumGroups.value( album );
-            foreach( quint64 id, atl )
-            {
-                Meta::TrackPtr track = m_model->trackForId( id );
-                debug() << "      " << track->trackNumber() << track->prettyName() << id;
-            }
-        }
-    }
-}
-

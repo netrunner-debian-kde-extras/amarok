@@ -18,10 +18,10 @@
 
 #include "amarokconfig.h"
 #include "App.h"
-#include "collection/CollectionManager.h"
-#include "collection/SqlStorage.h"
-#include "collection/sqlcollection/SqlCollectionLocation.h"
-#include "Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core/collections/support/SqlStorage.h"
+#include "core-impl/collections/sqlcollection/SqlCollectionLocation.h"
+#include "core/support/Debug.h"
 
 
 namespace AmarokScript
@@ -84,7 +84,7 @@ namespace AmarokScript
 
     QStringList AmarokCollectionScript::collectionLocation() const
     {
-        CollectionLocation *location = CollectionManager::instance()->primaryCollection()->location();
+        Collections::CollectionLocation *location = CollectionManager::instance()->primaryCollection()->location();
         QStringList result = location->actualLocation();
         delete location;
         return result;

@@ -18,9 +18,9 @@
 
 #include "DynamicCategory.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "CustomBias.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "DynamicModel.h"
 #include "DynamicBiasDelegate.h"
 #include "DynamicBiasModel.h"
@@ -239,7 +239,7 @@ DynamicCategory::On()
     //if the playlist is empty, repopulate while we are at it:
 
     DynamicModel::instance()->enable( true );
-    if ( Playlist::ModelStack::instance()->source()->rowCount() == 0 )
+    if ( Playlist::ModelStack::instance()->bottom()->rowCount() == 0 )
         The::playlistActions()->repopulateDynamicPlaylist();
 }
 

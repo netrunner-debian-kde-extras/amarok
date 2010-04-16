@@ -20,19 +20,19 @@
 
 #include "CoverFetcher.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
+#include "core/support/Components.h"
+#include "core/interfaces/Logger.h"
 #include "amarokconfig.h"
 #include "CoverFetchQueue.h"
 #include "CoverFoundDialog.h"
-#include "Debug.h"
-#include "statusbar/StatusBar.h"
-#include "ui_EditCoverSearchDialog.h"
 
 #include <KIO/Job>
 #include <KLocale>
 #include <KUrl>
 
 #define DEBUG_PREFIX "CoverFetcher"
+#include "core/support/Debug.h"
 
 CoverFetcher* CoverFetcher::s_instance = 0;
 
@@ -56,7 +56,6 @@ CoverFetcher::CoverFetcher()
     , m_limit( 10 )
     , m_dialog( 0 )
 {
-    DEBUG_FUNC_INFO
     setObjectName( "CoverFetcher" );
 
     m_queue = new CoverFetchQueue( this );
@@ -68,14 +67,13 @@ CoverFetcher::CoverFetcher()
 
 CoverFetcher::~CoverFetcher()
 {
-    DEBUG_FUNC_INFO
 }
 
 void
 CoverFetcher::manualFetch( Meta::AlbumPtr album )
 {
-    DEBUG_BLOCK
     m_queue->add( album, CoverFetch::Interactive );
+    debug() << "Adding interactive cover fetch for:" << album->name();
 }
 
 void
@@ -85,6 +83,7 @@ CoverFetcher::queueAlbum( Meta::AlbumPtr album )
         m_queueLater.append( album );
     else
         m_queue->add( album, CoverFetch::Automatic );
+    debug() << "Queueing interactive cover fetch for:" << album->name();
 }
 
 void
@@ -100,23 +99,26 @@ CoverFetcher::queueAlbums( Meta::AlbumList albums )
 }
 
 void
-CoverFetcher::queueQuery( const QString &query )
+CoverFetcher::queueQuery( const QString &query, unsigned int page )
 {
-    m_queue->addSearch( query );
+    m_queue->addQuery( query, fetchSource(), page );
+    debug() << "Queueing interactive cover fetch for query:" << query << "(page" << page << ')';
 }
 
 void
 CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
 {
-    DEBUG_BLOCK
+    if( !unit )
+        return;
+
     const CoverFetchPayload *payload = unit->payload();
-    const KUrl::List urls = payload->urls();
+    const CoverFetch::Urls urls = payload->urls();
 
     if( urls.isEmpty() )
     {
-        if( unit->isInteractive() )
+        if( unit->isInteractive() && !m_dialog )
         {
-            The::statusBar()->shortMessage( i18n( "No covers found." ) );
+            Amarok::Components::logger()->shortMessage( i18n( "No covers found." ) );
             showCover( unit );
         }
         else
@@ -126,7 +128,8 @@ CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
         return;
     }
 
-    foreach( const KUrl &url, urls )
+    const KUrl::List uniqueUrls = urls.uniqueKeys();
+    foreach( const KUrl &url, uniqueUrls )
     {
         KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
         connect( job, SIGNAL(result( KJob* )), SLOT(slotResult( KJob* )) );
@@ -134,7 +137,7 @@ CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
 
         if( unit->isInteractive() )
         {
-            The::statusBar()->newProgressOperation( job, i18n( "Fetching Cover" ) );
+            Amarok::Components::logger()->newProgressOperation( job, i18n( "Fetching Cover" ) );
         }
         else if( payload->type() == CoverFetchPayload::Art )
         {
@@ -147,48 +150,42 @@ CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
 void
 CoverFetcher::slotResult( KJob *job )
 {
-    DEBUG_BLOCK
     const CoverFetchUnit::Ptr unit( m_jobs.take( job ) );
+
+    if( !unit )
+        return;
 
     if( job && job->error() )
     {
-        finish( unit, Error, i18n( "There was an error communicating with last.fm." ) );
+        finish( unit, Error, i18n( "There was an error communicating with cover provider." ) );
         return;
     }
 
     KIO::StoredTransferJob *const storedJob = static_cast<KIO::StoredTransferJob*>( job );
     const QByteArray data = storedJob->data();
-    storedJob->deleteLater();
-    
     const CoverFetchPayload *payload = unit->payload();
 
     switch( payload->type() )
     {
     case CoverFetchPayload::Info:
-        m_queue->add( unit->album(), unit->options(), data );
+        m_queue->add( unit->album(), unit->options(), unit->payload()->source(), data );
         m_queue->remove( unit );
         break;
 
     case CoverFetchPayload::Search:
-        m_queue->add( Meta::AlbumPtr( 0 ), unit->options(), data, true );
+        m_queue->add( unit->options(), fetchSource(), data );
         m_queue->remove( unit );
         break;
 
     case CoverFetchPayload::Art:
         QPixmap pixmap;
-
         if( pixmap.loadFromData( data ) )
         {
-            QList< QPixmap > list;
-            if( m_pixmaps.contains( unit ) )
-            {
-                list = m_pixmaps.take( unit );
-            }
-            m_pixmaps.insert( unit, list << pixmap );
-
             if( unit->isInteractive() )
             {
-                showCover( unit );
+                const KUrl url = storedJob->url();
+                const CoverFetch::Metadata metadata = payload->urls().value( url );
+                showCover( unit, pixmap, metadata );
             }
             else
             {
@@ -198,41 +195,85 @@ CoverFetcher::slotResult( KJob *job )
         }
         break;
     }
-    The::statusBar()->endProgressOperation( job ); //just to be safe...
+    storedJob->deleteLater();
 }
 
 void
-CoverFetcher::showCover( const CoverFetchUnit::Ptr unit )
+CoverFetcher::slotDialogFinished()
 {
-    DEBUG_BLOCK
-    QList< QPixmap > pixmaps = m_pixmaps.take( unit );
+    const CoverFetchUnit::Ptr unit = m_dialog->unit();
+    switch( m_dialog->result() )
+    {
+    case KDialog::Accepted:
+        m_selectedPixmaps.insert( unit, m_dialog->image() );
+        finish( unit );
+        break;
 
+    case KDialog::Rejected:
+    default:
+        finish( unit, Cancelled );
+        break;
+    }
+
+    /*
+     * Remove all manual fetch jobs from the queue if the user accepts, cancels,
+     * or closes the cover found dialog. This way, the dialog will not reappear
+     * if there are still covers yet to be retrieved.
+     */
+    QList< CoverFetchUnit::Ptr > units = m_jobs.values();
+    foreach( const CoverFetchUnit::Ptr &unit, units )
+    {
+        if( unit->isInteractive() )
+        {
+            m_queue->remove( unit );
+            m_queueLater.removeAll( unit->album() );
+            m_selectedPixmaps.remove( unit );
+
+            const KJob *job = m_jobs.key( unit );
+            const_cast< KJob* >( job )->deleteLater();
+            m_jobs.remove( job );
+        }
+    }
+
+    m_dialog->delayedDestruct();
+}
+
+void
+CoverFetcher::showCover( CoverFetchUnit::Ptr unit, const QPixmap cover, CoverFetch::Metadata data )
+{
     if( !m_dialog )
     {
-        m_dialog = new CoverFoundDialog( static_cast<QWidget*>( parent() ), unit->album(), pixmaps );
-
-        connect( m_dialog, SIGNAL(newCustomQuery(const QString&)),
-                 this,     SLOT(queueQuery(const QString&)) );
-
-        switch( m_dialog->exec() )
+        const Meta::AlbumPtr album = unit->album();
+        if( !album )
         {
-        case KDialog::Accepted:
-            m_selectedPixmaps.insert( unit, m_dialog->image() );
-            finish( unit );
-            break;
-
-        case KDialog::Rejected: //make sure we do not show any more dialogs
-        default:
-            finish( unit, Cancelled );
-            break;
+            finish( unit, Error );
+            return;
         }
 
-        delete m_dialog;
-        m_dialog = 0;
+        m_dialog = new CoverFoundDialog( unit, cover, data, static_cast<QWidget*>( parent() ) );
+        connect( m_dialog, SIGNAL(newCustomQuery(const QString&, unsigned int)),
+                           SLOT(queueQuery(const QString&, unsigned int)) );
+        connect( m_dialog, SIGNAL(accepted()), SLOT(slotDialogFinished()) );
+        connect( m_dialog, SIGNAL(rejected()), SLOT(slotDialogFinished()) );
+
+        QString query( album->name() );
+        if( album->hasAlbumArtist() )
+            query += ' ' + album->albumArtist()->name();
+        queueQuery( query, 0 );
+
+        m_dialog->show();
+        m_dialog->raise();
+        m_dialog->activateWindow();
     }
     else
     {
-        m_dialog->add( pixmaps );
+        if( !cover.isNull() )
+        {
+            typedef CoverFetchArtPayload CFAP;
+            const CFAP *payload = dynamic_cast< const CFAP* >( unit->payload() );
+            const CoverFetch::ImageSize imageSize = payload->imageSize();
+            m_dialog->add( cover, data, imageSize );
+        }
     }
 }
 
@@ -241,43 +282,54 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
                       CoverFetcher::FinishState state,
                       const QString &message )
 {
-    DEBUG_BLOCK
-
-    const QString albumName = unit->album() ? unit->album()->name() : QString();
+    Meta::AlbumPtr album = unit->album();
+    const bool isInteractive = unit->isInteractive();
+    const QString albumName = album ? album->name() : QString();
 
     switch( state )
     {
-        case Success:
+    case Success:
+        if( !isInteractive && !albumName.isEmpty() )
         {
             const QString text = i18n( "Retrieved cover successfully for '%1'.", albumName );
-            The::statusBar()->shortMessage( text );
-            unit->album()->setImage( m_selectedPixmaps.take( unit ) );
-            break;
+            Amarok::Components::logger()->shortMessage( text );
+            debug() << "Finished successfully for album" << albumName;
         }
+        album->setImage( m_selectedPixmaps.take( unit ) );
+        break;
 
-        case Error:
+    case Error:
+        if( !isInteractive && !albumName.isEmpty() )
         {
             const QString text = i18n( "Fetching cover for '%1' failed.", albumName );
-            The::statusBar()->shortMessage( text );
-            m_errors += message;
-            break;
+            Amarok::Components::logger()->shortMessage( text );
+            QString debugMessage;
+            if( !message.isEmpty() )
+                debugMessage = '[' + message + ']';
+            debug() << "Finished with errors for album" << albumName << debugMessage;
         }
+        m_errors += message;
+        break;
 
-        case Cancelled:
+    case Cancelled:
+        if( !albumName.isEmpty() )
         {
             const QString text = i18n( "Canceled fetching cover for '%1'.", albumName );
-            The::statusBar()->shortMessage( text );
-            break;
+            Amarok::Components::logger()->shortMessage( text );
+            debug() << "Finished, cancelled by user for album" << albumName;
         }
+        break;
 
-        case NotFound:
+    case NotFound:
+        if( !albumName.isEmpty() )
         {
             const QString text = i18n( "Unable to find a cover for '%1'.", albumName );
             //FIXME: Not visible behind cover manager
-            The::statusBar()->shortMessage( text );
+            Amarok::Components::logger()->shortMessage( text );
             m_errors += text;
-            break;
+            debug() << "Finished due to cover not found for album" << albumName;
         }
+        break;
     }
 
     m_queue->remove( unit );
@@ -290,12 +342,30 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
             for( int i = 0; i < diff && !m_queueLater.isEmpty(); ++i )
             {
                 Meta::AlbumPtr album = m_queueLater.takeFirst();
-                m_queue->add( album, CoverFetch::Automatic );
+                // automatic fetching only uses Last.fm as source
+                m_queue->add( album, CoverFetch::Automatic, CoverFetch::LastFm );
             }
         }
     }
 
     emit finishedSingle( static_cast< int >( state ) );
+}
+
+CoverFetch::Source
+CoverFetcher::fetchSource() const
+{
+    const KConfigGroup config = Amarok::config( "Cover Fetcher" );
+    const QString sourceEntry = config.readEntry( "Interactive Image Source", "LastFm" );
+    CoverFetch::Source source;
+    if( sourceEntry == "LastFm" )
+        source = CoverFetch::LastFm;
+    else if( sourceEntry == "Google" )
+        source = CoverFetch::Google;
+    else if( sourceEntry == "Discogs" )
+        source = CoverFetch::Discogs;
+    else
+        source = CoverFetch::Yahoo;
+    return source;
 }
 
 #include "CoverFetcher.moc"

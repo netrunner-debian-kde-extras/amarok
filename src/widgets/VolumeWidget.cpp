@@ -18,7 +18,7 @@
 
 #include "VolumeWidget.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "amarokconfig.h"
 #include "EngineController.h"
 #include "SliderWidget.h"
@@ -32,7 +32,7 @@
 
 VolumeWidget::VolumeWidget( QWidget *parent )
     : Amarok::ToolBar( parent )
-    , EngineObserver( The::engineController() )
+    , Engine::EngineObserver( The::engineController() )
 {
     setIconDimensions( 16 );
     setToolButtonStyle( Qt::ToolButtonIconOnly );

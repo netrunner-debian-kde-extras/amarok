@@ -23,8 +23,8 @@
 #include <context/DataEngine.h>
 #include <context/Svg.h>
 
-#include "meta/XSPFPlaylist.h"
-#include "meta/Playlist.h"
+#include "core-impl/playlists/types/file/xspf/XSPFPlaylist.h"
+#include "core/playlists/Playlist.h"
 
 #include <Plasma/FrameSvg>
  
@@ -48,6 +48,8 @@ public:
     InfoApplet( QObject* parent, const QVariantList& args );
     virtual ~InfoApplet();
 
+    void init();
+
     void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
 
@@ -60,7 +62,7 @@ private slots:
 private:
     AmarokWebView * m_webView;
     bool m_initialized;
-    Meta::XSPFPlaylist * m_currentPlaylist;
+    Playlists::XSPFPlaylist * m_currentPlaylist;
 
     static QString s_defaultHtml;
 };

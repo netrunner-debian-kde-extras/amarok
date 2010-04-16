@@ -22,11 +22,11 @@
 
 #include "amarokconfig.h"
 #include "App.h"
-#include "Collection.h"
-#include "CollectionManager.h"
-#include "Debug.h"
+#include "core/collections/Collection.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core/support/Debug.h"
 #include "DynamicModel.h"
-#include "MetaQueryMaker.h"
+#include "core/collections/MetaQueryMaker.h"
 #include "playlist/PlaylistModelStack.h"
 #include "statusbar/StatusBar.h"
 
@@ -70,7 +70,7 @@ Dynamic::BiasedPlaylist::nameFromXml( QDomElement e )
 }
 
 
-Dynamic::BiasedPlaylist::BiasedPlaylist( QString title, QList<Bias*> biases, Amarok::Collection* collection )
+Dynamic::BiasedPlaylist::BiasedPlaylist( QString title, QList<Bias*> biases, Collections::Collection* collection )
     : DynamicPlaylist(collection)
     , m_numRequested( 0 )
     , m_biases( biases )
@@ -130,7 +130,7 @@ Dynamic::BiasedPlaylist::startSolver( bool withStatusBar )
 {
     DEBUG_BLOCK
     debug() << "BiasedPlaylist in:" << QThread::currentThreadId();
-    
+
     if( !m_solver )
     {
         BiasSolver::setUniverseCollection( m_collection );
@@ -296,7 +296,7 @@ Dynamic::BiasedPlaylist::getContext()
 
     int i = qMax( 0, The::playlist()->activeRow() );
 
-    for( ; i < The::playlist()->rowCount(); ++i )
+    for( ; i < The::playlist()->qaim()->rowCount(); ++i )
     {
         m_context.append( The::playlist()->trackAt(i) );
     }

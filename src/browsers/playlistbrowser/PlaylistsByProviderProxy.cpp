@@ -19,7 +19,7 @@
 #include "AmarokMimeData.h"
 #include "UserPlaylistModel.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 const QString PlaylistsByProviderProxy::AMAROK_PROVIDERPROXY_INDEXES =
         "application/x-amarok-providerproxy-indexes";
@@ -36,7 +36,7 @@ PlaylistsByProviderProxy::removeRows( int row, int count, const QModelIndex &par
     DEBUG_BLOCK
     bool result;
     debug() << "in parent " << parent << "remove " << count << " starting at row " << row;
-    beginRemoveRows( parent, row, row + count );
+    beginRemoveRows( parent, row, row + count - 1 );
     QModelIndex originalIdx = mapToSource( parent );
     result = m_model->removeRows( row, count, originalIdx );
     endRemoveRows();
@@ -199,42 +199,6 @@ PlaylistsByProviderProxy::supportedDragActions() const
 {
     //always add CopyAction because playlists can be put into a different group
     return m_model->supportedDragActions() | Qt::CopyAction;
-}
-
-QList<QAction *>
-PlaylistsByProviderProxy::actionsFor( const QModelIndexList &list )
-{
-    DEBUG_BLOCK
-    QList<QAction *> actions;
-    if( isAGroupSelected( list ) )
-    {
-        //TODO: get provider actions
-        return actions;
-    }
-
-    QModelIndexList originalList = mapToSource( list );
-    debug() << originalList.count() << "original indices";
-    MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>( m_model );
-    if( mpm == 0 )
-        return actions;
-    if( !originalList.isEmpty() )
-        actions << mpm->actionsFor( originalList );
-
-    return actions;
-}
-
-void
-PlaylistsByProviderProxy::loadItems( QModelIndexList list, Playlist::AddOptions insertMode )
-{
-    if( isAGroupSelected( list ) )
-        return;
-    QModelIndexList originalList = mapToSource( list );
-    debug() << originalList.count() << "original indices";
-    MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>( m_model );
-    if( mpm == 0 )
-        return;
-    if( !originalList.isEmpty() )
-        mpm->loadItems( originalList, insertMode );
 }
 
 void

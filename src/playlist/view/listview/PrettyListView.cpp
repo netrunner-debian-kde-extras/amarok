@@ -1,9 +1,10 @@
 /****************************************************************************************
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
- * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2009 John Atkinson <john@fauxnetic.co.uk>                              *
- * Copyright (c) 2009 Oleksandr Khayrullin <saniokh@gmail.com>                          *
+ * Copyright (c) 2009-2010 Oleksandr Khayrullin <saniokh@gmail.com>                     *
+ * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -28,24 +29,25 @@
 #include "context/ContextView.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "dialogs/TagDialog.h"
 #include "GlobalCurrentTrackActions.h"
-#include "meta/capabilities/CurrentTrackActionsCapability.h"
-#include "meta/capabilities/FindInSourceCapability.h"
-#include "meta/capabilities/MultiSourceCapability.h"
-#include "meta/Meta.h"
+#include "core/capabilities/CurrentTrackActionsCapability.h"
+#include "core/capabilities/FindInSourceCapability.h"
+#include "core/capabilities/MultiSourceCapability.h"
+#include "core/meta/Meta.h"
 #include "PaletteHandler.h"
 #include "playlist/layouts/LayoutManager.h"
 #include "playlist/proxymodels/GroupingProxy.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlist/view/PlaylistViewCommon.h"
+#include "playlist/PlaylistDefines.h"
 #include "PopupDropperFactory.h"
 #include "SvgHandler.h"
 #include "SourceSelectionPopup.h"
-#include "tooltips/ToolTipManager.h"
+#include "playlist/view/tooltips/ToolTipManager.h"
 
 #include <KApplication>
 #include <KMenu>
@@ -71,11 +73,14 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
         , m_headerPressIndex( QModelIndex() )
         , m_mousePressInHeader( false )
         , m_skipAutoScroll( false )
+        , m_firstScrollToActiveTrack( true )
+        , m_rowsInsertedScrollItem( 0 )
         , m_pd( 0 )
         , m_topmostProxy( Playlist::ModelStack::instance()->top() )
         , m_toolTipManager(0)
 {
-    setModel( Playlist::ModelStack::instance()->top() );
+    // QAbstractItemView basics
+    setModel( m_topmostProxy->qaim() );
     m_prettyDelegate = new PrettyItemDelegate( this );
     setItemDelegate( m_prettyDelegate );
     setSelectionMode( ExtendedSelection );
@@ -86,7 +91,10 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
     setVerticalScrollMode( ScrollPerPixel );
 
-    // rendering adjustments
+    setMouseTracking( true );
+
+
+    // Rendering adjustments
     setFrameShape( QFrame::NoFrame );
     setAlternatingRowColors( true) ;
     The::paletteHandler()->updateItemView( this );
@@ -94,31 +102,42 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
     setAutoFillBackground( false );
 
-    // signal connections
+
+    // Signal connections
     connect( this, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( trackActivated( const QModelIndex& ) ) );
 
+    connect( LayoutManager::instance(), SIGNAL( activeLayoutChanged() ), this, SLOT( playlistLayoutChanged() ) );
+
+    connect( model(), SIGNAL( activeTrackChanged( const quint64 ) ), this, SLOT( slotPlaylistActiveTrackChanged() ) );
+
+    //   Warning, this one doesn't connect to the normal 'model()' (i.e. '->top()'), but to '->bottom()'.
+    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( bottomModelRowsInserted( const QModelIndex &, int, int ) ) );
+
+
+    // Timers
     m_proxyUpdateTimer = new QTimer( this );
     m_proxyUpdateTimer->setSingleShot( true );
-
     connect( m_proxyUpdateTimer, SIGNAL( timeout() ), this, SLOT( updateProxyTimeout() ) );
-
-    connect( model(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( itemsAdded( const QModelIndex&, int, int ) ) );
-
-    connect( model(), SIGNAL( layoutChanged() ), this, SLOT( reset() ) );
 
     m_animationTimer = new QTimer(this);
     connect( m_animationTimer, SIGNAL( timeout() ), this, SLOT( redrawActive() ) );
     m_animationTimer->setInterval( 250 );
 
-    connect( LayoutManager::instance(), SIGNAL( activeLayoutChanged() ), this, SLOT( playlistLayoutChanged() ) );
 
-    if ( LayoutManager::instance()->activeLayout().inlineControls() )
-        m_animationTimer->start();
-
-    connect( model(), SIGNAL( beginRemoveIds() ), this, SLOT( saveTrackSelection() ) );
-    connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ), this, SLOT( restoreTrackSelection() ) );
-
+    // Tooltips
     m_toolTipManager = new ToolTipManager(this);
+
+
+    playlistLayoutChanged();
+
+    // We do the following call here to be formally correct, but note:
+    //   - It happens to be redundant, because 'playlistLayoutChanged()' already schedules
+    //     another one, via a QTimer( 0 ).
+    //   - Both that one and this one don't work right (they scroll like 'PositionAtTop',
+    //     not 'PositionAtCenter'). This is probably because MainWindow changes its
+    //     geometry in a QTimer( 0 )? As a fix, MainWindow does a 'slotShowActiveTrack()'
+    //     at the end of its QTimer slot, which will finally scroll to the right spot.
+    slotPlaylistActiveTrackChanged();
 }
 
 Playlist::PrettyListView::~PrettyListView()
@@ -177,8 +196,8 @@ Playlist::PrettyListView::removeSelection()
 
         //Select the track occupied by the first deleted track. Also move the current item to here as
         //button presses up or down wil otherwise not behave as expected.
-        firstRow = qBound( 0, firstRow, m_topmostProxy->rowCount() -1 );
-        QModelIndex newSelectionIndex = model()->index(  firstRow, 0 );
+        firstRow = qBound( 0, firstRow, model()->rowCount() - 1 );
+        QModelIndex newSelectionIndex = model()->index( firstRow, 0 );
         setCurrentIndex( newSelectionIndex );
         selectionModel()->select( newSelectionIndex, QItemSelectionModel::Select );
     }
@@ -222,7 +241,7 @@ void Playlist::PrettyListView::selectSource()
 
     //get multiSource capability:
 
-    Meta::MultiSourceCapability *msc = track->create<Meta::MultiSourceCapability>();
+    Capabilities::MultiSourceCapability *msc = track->create<Capabilities::MultiSourceCapability>();
     if ( msc )
     {
         debug() << "sources: " << msc->sources();
@@ -236,15 +255,34 @@ void
 Playlist::PrettyListView::scrollToActiveTrack()
 {
     DEBUG_BLOCK
-        debug() << "skipping scroll?" << m_skipAutoScroll;
+
     if( m_skipAutoScroll )
     {
         m_skipAutoScroll = false;
         return;
     }
+
     QModelIndex activeIndex = model()->index( m_topmostProxy->activeRow(), 0, QModelIndex() );
     if ( activeIndex.isValid() )
+    {
         scrollTo( activeIndex, QAbstractItemView::PositionAtCenter );
+        m_firstScrollToActiveTrack = false;
+        m_rowsInsertedScrollItem = 0;    // This "new active track" scroll supersedes a pending "rows inserted" scroll.
+    }
+}
+
+void
+Playlist::PrettyListView::slotPlaylistActiveTrackChanged()
+{
+    DEBUG_BLOCK
+
+    // A playlist 'activeTrackChanged' signal happens:
+    //   - During startup, on "saved playlist" load. (Might happen before this view exists)
+    //   - When Amarok starts playing a new item in the playlist.
+    //     In that case, don't auto-scroll if the user doesn't like us to.
+
+    if( AmarokConfig::autoScrollPlaylist() || m_firstScrollToActiveTrack )
+        scrollToActiveTrack();
 }
 
 void
@@ -346,7 +384,7 @@ void
 Playlist::PrettyListView::stopAfterTrack()
 {
     DEBUG_BLOCK
-    const qint64 id = currentIndex().data( UniqueIdRole ).value<quint64>();
+    const quint64 id = currentIndex().data( UniqueIdRole ).value<quint64>();
     if( Actions::instance()->willStopAfterTrack( id ) )
     {
         Actions::instance()->setStopAfterMode( StopNever );
@@ -363,14 +401,13 @@ void
 Playlist::PrettyListView::findInSource()
 {
     DEBUG_BLOCK
-    const qint64 id = currentIndex().data( UniqueIdRole ).value<quint64>();
-    if( id != -1 )
-    {
-        Meta::TrackPtr track = m_topmostProxy->trackForId( id );
 
-        if( track->hasCapabilityInterface( Meta::Capability::FindInSource ) )
+    Meta::TrackPtr track = currentIndex().data( TrackRole ).value<Meta::TrackPtr>();
+    if ( track )
+    {
+        if( track->hasCapabilityInterface( Capabilities::Capability::FindInSource ) )
         {
-            Meta::FindInSourceCapability *fis = track->create<Meta::FindInSourceCapability>();
+            Capabilities::FindInSourceCapability *fis = track->create<Capabilities::FindInSourceCapability>();
             if ( fis )
             {
                 fis->findInSource();
@@ -391,7 +428,7 @@ Playlist::PrettyListView::dragMoveEvent( QDragMoveEvent* event )
     else
     {
         // draw it on the bottom of the last item
-        index = model()->index( m_topmostProxy->rowCount() - 1, 0, QModelIndex() );
+        index = model()->index( model()->rowCount() - 1, 0, QModelIndex() );
         m_dropIndicator = visualRect( index );
         m_dropIndicator = m_dropIndicator.translated( 0, m_dropIndicator.height() );
     }
@@ -552,7 +589,7 @@ bool
 Playlist::PrettyListView::mouseEventInHeader( const QMouseEvent* event ) const
 {
     QModelIndex index = indexAt( event->pos() );
-    if ( index.data( GroupRole ).toInt() == Head )
+    if ( index.data( GroupRole ).toInt() == Grouping::Head )
     {
         QPoint mousePressPos = event->pos();
         mousePressPos.rx() += horizontalOffset();
@@ -699,7 +736,7 @@ void Playlist::PrettyListView::find( const QString &searchTerm, int fields, bool
     else
         emit( notFound() );
 
-    //instead of kicking the proxy right away, start a 500msec timeout.
+    //instead of kicking the proxy right away, start a small timeout.
     //this stops us from updating it for each letter of a long search term,
     //and since it does not affect any views, this is fine. Worst case is that
     //a navigator skips to a track form the old search if the track change happens
@@ -753,7 +790,7 @@ void Playlist::PrettyListView::findPrevious( const QString & searchTerm, int fie
     if ( ( m_topmostProxy->currentSearchFields() != fields ) || ( m_topmostProxy->currentSearchTerm() != searchTerm ) )
         updateProxy = true;
 
-    int currentRow = m_topmostProxy->totalLength();
+    int currentRow = model()->rowCount();
     if( selected.size() > 0 )
         currentRow = selected.first();
 
@@ -784,25 +821,24 @@ void Playlist::PrettyListView::clearSearchTerm()
 {
     DEBUG_BLOCK
 
-    //We really do not want to reset the view to the top when the search/filter is cleared, so
-    //we store the first shown row and scroll to that once the term is removed.
-    QModelIndex index = indexAt( QPoint( 0, 0 ) );
+    // Choose a focus item, to scroll to later.
+    QModelIndex focusIndex;
+    QModelIndexList selected = selectedIndexes();
+    if( !selected.isEmpty() )
+        focusIndex = selected.first();
+    else
+        focusIndex = indexAt( QPoint( 0, 0 ) );
 
-    //We don't want to mess around with source rows because this would break our wonderful
-    //lasagna code, but we do want to grab something unique that represents the row, like
-    //its unique 64-bit id.
-    quint64 id = m_topmostProxy->idAt( index.row() );
+    // Remember the focus item id, because the row numbers change when we reset the filter.
+    quint64 focusItemId = m_topmostProxy->idAt( focusIndex.row() );
 
-    debug() << "first row in filtered list: " << index.row();
-
-    m_topmostProxy->filterUpdated();
     m_topmostProxy->clearSearchTerm();
+    m_topmostProxy->filterUpdated();
 
-    //Now we scroll to the previously stored row again. Note that it's not the same row in
-    //the topmost model any more, so we need to grab it again using its id.
-    QModelIndex newIndex = model()->index( m_topmostProxy->rowForId( id ), 0, QModelIndex() );
+    // Now scroll to the focus item.
+    QModelIndex newIndex = model()->index( m_topmostProxy->rowForId( focusItemId ), 0, QModelIndex() );
     if ( newIndex.isValid() )
-        scrollTo( newIndex, QAbstractItemView::PositionAtTop );
+        scrollTo( newIndex, QAbstractItemView::PositionAtCenter );
 }
 
 void Playlist::PrettyListView::startProxyUpdateTimeout()
@@ -811,7 +847,7 @@ void Playlist::PrettyListView::startProxyUpdateTimeout()
     if ( m_proxyUpdateTimer->isActive() )
         m_proxyUpdateTimer->stop();
 
-    m_proxyUpdateTimer->setInterval( 500 );
+    m_proxyUpdateTimer->setInterval( 200 );
     m_proxyUpdateTimer->start();
 }
 
@@ -826,19 +862,39 @@ void Playlist::PrettyListView::showOnlyMatches( bool onlyMatches )
     m_topmostProxy->showOnlyMatches( onlyMatches );
 }
 
-void Playlist::PrettyListView::itemsAdded( const QModelIndex& parent, int firstRow, int lastRow )
+// Handle scrolling to newly inserted playlist items.
+// Warning, this slot is connected to the 'rowsInserted' signal of the *bottom* model,
+// not the normal top model.
+// The reason: FilterProxy can emit *A LOT* (thousands) of 'rowsInserted' signals when its
+// search string changes. For that case we don't want to do any scrollTo() at all.
+void
+Playlist::PrettyListView::bottomModelRowsInserted( const QModelIndex& parent, int start, int end )
+{
+    Q_UNUSED( parent )
+    Q_UNUSED( end )
+
+    if( m_rowsInsertedScrollItem == 0 )
+    {
+        m_rowsInsertedScrollItem = Playlist::ModelStack::instance()->bottom()->idAt( start );
+        QTimer::singleShot( 0, this, SLOT( bottomModelRowsInsertedScroll() ) );
+    }
+}
+
+void Playlist::PrettyListView::bottomModelRowsInsertedScroll()
 {
     DEBUG_BLOCK
-    Q_UNUSED( parent )
-    Q_UNUSED( lastRow )
 
-    QModelIndex index = model()->index( firstRow, 0);
-    if( !index.isValid() )
-        return;
+    if( m_rowsInsertedScrollItem )
+    {   // Note: we don't bother handling the case "first inserted item in bottom model
+        // does not have a row in the top 'model()' due to FilterProxy" nicely.
+        int firstRowInserted = m_topmostProxy->rowForId( m_rowsInsertedScrollItem );    // In the *top* model.
+        QModelIndex index = model()->index( firstRowInserted, 0 );
 
-    debug() << "index has row: " << index.row();
-    scrollTo( index, QAbstractItemView::PositionAtCenter );
+        if( index.isValid() )
+            scrollTo( index, QAbstractItemView::PositionAtCenter );
 
+        m_rowsInsertedScrollItem = 0;
+    }
 }
 
 void Playlist::PrettyListView::redrawActive()
@@ -854,26 +910,37 @@ void Playlist::PrettyListView::playlistLayoutChanged()
         m_animationTimer->start();
     else
         m_animationTimer->stop();
-}
 
-void Playlist::PrettyListView::saveTrackSelection()
-{
-    m_savedTrackSelection.clear();
-
-    foreach( int rowId, selectedRows() )
-        m_savedTrackSelection.append( m_topmostProxy->idAt( rowId ) );
-}
-
-void Playlist::PrettyListView::restoreTrackSelection()
-{
-    selectionModel()->clearSelection();
-
-    foreach( qint64 savedTrackId, m_savedTrackSelection )
+    // Indicate to the tooltip manager what to display based on the layout
+    // That way, we avoid doing it every time we want to display the tooltip
+    // This will be done every time the layout will be changed
+    m_toolTipManager->cancelExclusions();
+    for( int part = 0; part < PlaylistLayout::NumParts; part++ )
     {
-        QModelIndex restoredIndex = model()->index( m_topmostProxy->rowForId( savedTrackId ), 0, QModelIndex() );
+        bool single = ( part == PlaylistLayout::Single );
+        PlaylistLayout layout = LayoutManager::instance()->activeLayout();
+        excludeFieldsFromTooltip( layout.layoutForPart( (PlaylistLayout::Part)part ), single );
+    }
 
-        if( restoredIndex.isValid() )
-            selectionModel()->select( restoredIndex, QItemSelectionModel::Select );
+    update();
+
+    // Schedule a re-scroll to the active playlist row. Assumption: Qt will run this *after* the repaint.
+    QTimer::singleShot( 0, this, SLOT( slotPlaylistActiveTrackChanged() ) );
+}
+
+void Playlist::PrettyListView::excludeFieldsFromTooltip( const Playlist::LayoutItemConfig& item, bool single )
+{
+    for (int activeRow = 0; activeRow < item.rows(); activeRow++)
+    {
+        for (int activeElement = 0; activeElement < item.row(activeRow).count();activeElement++)
+        {
+            Playlist::Column column = (Playlist::Column)item.row(activeRow).element(activeElement).value();
+            m_toolTipManager->excludeField( column , single );
+        }
+    }
+    if (item.showCover())
+    {
+        m_toolTipManager->excludeCover( single );
     }
 }
 

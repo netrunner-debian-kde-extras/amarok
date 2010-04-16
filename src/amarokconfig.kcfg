@@ -110,12 +110,6 @@
         <label>Automatically scroll the playlist to make the currently playing song visible</label>
         <default>true</default>
     </entry>
-
-    <entry key="EnableToolTips" type="Bool">
-        <label>Whether to display tooltips for the song in the playlist</label>
-        <default>false</default>
-    </entry>
-
     <entry key="Show Album Art" type="Bool">
         <label>Show Album art in the Collection Browser</label>
         <default>true</default>
@@ -260,7 +254,7 @@
     </entry>
     <entry key="DefEqualizerPresetsNames" type="StringList">
         <label>List with user equalizer preset names</label>
-        <default>Manual,Classical,Club,Dance,Full Bass,Full Treble,Full Bass + Treble,Laptop/Headphones,Large Hall,Live,Party,Pop,Reggae,Rock,Soft,Ska,Soft Rock,Techno,Zero</default>
+        <default>Manual,Classical,Club,Dance,Full Bass,Full Treble,Full Bass +  Treble,Laptop/Headphones,Large Hall,Live,Party,Pop,Reggae,Rock,Soft,Ska,Soft Rock,Techno,Zero</default>
     </entry>
     <entry key="DefEqualizerPresestValues" type="IntList">
         <default>
@@ -335,9 +329,9 @@
         <default>true</default>
     </entry>
     <entry key="Growl Enabled" type="Bool">
-	<label>Use Growl for notifications</label>
-	<whatsthis>Enable/Disable use of Growl for notifications.</whatsthis>
-	<default>false</default>
+    <label>Use Growl for notifications</label>
+    <whatsthis>Enable/Disable use of Growl for notifications.</whatsthis>
+    <default>false</default>
     </entry>
     <entry key="Osd Use Playlist Columns" type="Bool">
         <label>Display the same information in the OSD as in the playlist columns.</label>
@@ -637,6 +631,11 @@
     </entry>
 </group>
 
-
-
+<group name="PlaylistGenerator">
+    <entry key="qualityFactorAPG" type="Int">
+        <label>Quality factor for Automated Playlist Generator</label>
+        <whatsthis>A value between 0 and 10 that controls whether the Automated Playlist Generator tries to optimize for speed (0) or accuracy (10).</whatsthis>
+        <default>7</default>
+    </entry>
+</group>
 </kcfg>

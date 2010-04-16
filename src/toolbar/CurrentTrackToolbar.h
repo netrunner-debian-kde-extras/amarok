@@ -17,14 +17,14 @@
 #ifndef CURRENTTRACKTOOLBAR_H
 #define CURRENTTRACKTOOLBAR_H
 
-#include "EngineObserver.h" //baseclass
+#include "core/engine/EngineObserver.h" //baseclass
 
 #include <QToolBar>
 
 /**
 A toolbar that contains the CurrentTrackActions of the currently playing track.
 */
-class CurrentTrackToolbar : public QToolBar, public EngineObserver
+class CurrentTrackToolbar : public QToolBar, public Engine::EngineObserver
 {
 public:
     CurrentTrackToolbar( QWidget * parent );

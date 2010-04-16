@@ -17,7 +17,7 @@
 #ifndef AMAROK_PROGRESSWIDGET_H
 #define AMAROK_PROGRESSWIDGET_H
 
-#include "EngineObserver.h"
+#include "core/engine/EngineObserver.h"
 
 #include <unistd.h>
 
@@ -29,7 +29,7 @@
 class TimeLabel;
 namespace Amarok { class TimeSlider; }
 
-class ProgressWidget : public QWidget, public EngineObserver
+class ProgressWidget : public QWidget, public Engine::EngineObserver
 {
     Q_OBJECT
     public:

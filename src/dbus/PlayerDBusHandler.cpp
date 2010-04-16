@@ -20,10 +20,10 @@
 #include "amarokconfig.h"
 #include "ActionClasses.h"
 #include "App.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
-#include "meta/Meta.h"
-#include "meta/MetaUtility.h"
+#include "core/meta/Meta.h"
+#include "core/meta/support/MetaUtility.h"
 #include "PlayerAdaptor.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
@@ -61,7 +61,8 @@ namespace Amarok
     PlayerDBusHandler *PlayerDBusHandler::s_instance = 0;
 
     PlayerDBusHandler::PlayerDBusHandler()
-        : QObject(kapp)
+        : QObject(kapp),
+          EngineObserver( The::engineController() )
     {
         qDBusRegisterMetaType<DBusStatus>();
 
@@ -243,7 +244,7 @@ namespace Amarok
         if ( GetStatus().Play == 0 /*playing*/ ) caps |= CAN_PAUSE;
         if ( ( GetStatus().Play == 1 /*paused*/ ) || ( GetStatus().Play == 2 /*stoped*/ ) ) caps |= CAN_PLAY;
         if ( ( GetStatus().Play == 0 /*playing*/ ) || ( GetStatus().Play == 1 /*paused*/ ) ) caps |= CAN_SEEK;
-        if ( ( The::playlist()->activeRow() >= 0 ) && ( The::playlist()->activeRow() <= The::playlist()->rowCount() ) )
+        if ( ( The::playlist()->activeRow() >= 0 ) && ( The::playlist()->activeRow() <= The::playlist()->qaim()->rowCount() ) )
         {
             caps |= CAN_GO_NEXT;
             caps |= CAN_GO_PREV;

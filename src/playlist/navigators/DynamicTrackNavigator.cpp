@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Daniel Jones <danielcjones@gmail.com>                             *
- * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -19,10 +19,10 @@
 
 #include "DynamicTrackNavigator.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "DynamicModel.h"
 #include "DynamicPlaylist.h"
-#include "Meta.h"
+#include "core/meta/Meta.h"
 #include "amarokconfig.h"
 #include "playlist/PlaylistModelStack.h"
 
@@ -33,10 +33,10 @@ Playlist::DynamicTrackNavigator::DynamicTrackNavigator( Dynamic::DynamicPlaylist
         : m_playlist( p )
 {
     DEBUG_BLOCK
-    m_model = Playlist::ModelStack::instance()->top();
+
     connect( m_playlist.data(), SIGNAL( tracksReady( Meta::TrackList ) ), SLOT( receiveTracks( Meta::TrackList ) ) );
-    connect( model(), SIGNAL( activeTrackChanged( quint64 ) ), SLOT( trackChanged() ) );
-    connect( model(), SIGNAL( modelReset() ), SLOT( repopulate() ) );
+    connect( m_model->qaim(), SIGNAL( activeTrackChanged( quint64 ) ), SLOT( trackChanged() ) );
+    connect( m_model->qaim(), SIGNAL( modelReset() ), SLOT( repopulate() ) );
     connect( PlaylistBrowserNS::DynamicModel::instance(), SIGNAL( activeChanged() ), SLOT( activePlaylistChanged() ) );
 }
 
@@ -60,7 +60,7 @@ Playlist::DynamicTrackNavigator::appendUpcoming()
     DEBUG_BLOCK
 
     int updateRow = m_model->activeRow() + 1;
-    int rowCount = m_model->rowCount();
+    int rowCount = m_model->qaim()->rowCount();
     int upcomingCountLag = AmarokConfig::upcomingTracks() - ( rowCount - updateRow );
 
     if ( upcomingCountLag > 0 && !m_playlist.isNull() )
@@ -124,7 +124,7 @@ Playlist::DynamicTrackNavigator::repopulate()
             rows << row;
         row++;
     }
-    while( row < m_model->rowCount() );
+    while( row < m_model->qaim()->rowCount() );
 
     if( !rows.isEmpty() )
         The::playlistController()->removeRows( rows );

@@ -17,9 +17,9 @@
  
 #include "ServicePluginManager.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "ServiceBrowser.h"
-#include "PluginManager.h"
+#include "core/plugins/PluginManager.h"
 
 #include <KService>
 
@@ -28,6 +28,7 @@ ServicePluginManager * ServicePluginManager::m_instance = 0;
 
 ServicePluginManager * ServicePluginManager::instance()
 {
+    DEBUG_BLOCK
     if ( m_instance == 0 )
         m_instance = new ServicePluginManager();
 
@@ -58,11 +59,11 @@ ServicePluginManager::collect()
 {
     DEBUG_BLOCK
 
-    KService::List plugins = PluginManager::query( "[X-KDE-Amarok-plugintype] == 'service'" );
+    KService::List plugins = Plugins::PluginManager::query( "[X-KDE-Amarok-plugintype] == 'service'" );
     debug() << "Received [" << QString::number( plugins.count() ) << "] collection plugin offers";
     foreach( KService::Ptr service, plugins )
     {
-        Amarok::Plugin *plugin = PluginManager::createFromService( service );
+        Plugins::Plugin *plugin = Plugins::PluginManager::createFromService( service );
         if ( plugin )
         {
             debug() << "Got hold of a valid plugin";
@@ -90,7 +91,7 @@ ServicePluginManager::collect()
 void
 ServicePluginManager::init()
 {
-    foreach( ServiceFactory* factory,  m_factories.values() ) {
+    foreach( ServiceFactory* factory,  m_factories ) {
 
         if ( !factory->isInitialized() ) {
             //check if this service is enabled
@@ -152,7 +153,7 @@ ServicePluginManager::settingsChanged()
     /*QMap<QString, ServiceBase *> activeServices =  m_serviceBrowser->services();
     QList<QString> names = activeServices.keys();
 
-    foreach( ServiceFactory* factory,  m_factories.values() ) {
+    foreach( ServiceFactory* factory,  m_factories ) {
 
         //check if this service is enabled in the config
         QString pluginName = factory->info().pluginName();
@@ -271,7 +272,7 @@ QString ServicePluginManager::sendMessage( const QString & serviceName, const QS
 
 void ServicePluginManager::checkEnabledStates()
 {
-    foreach( ServiceFactory* factory,  m_factories.values() ) {
+    foreach( ServiceFactory* factory,  m_factories ) {
 
         //check if this service is enabled
         QString pluginName = factory->info().pluginName();

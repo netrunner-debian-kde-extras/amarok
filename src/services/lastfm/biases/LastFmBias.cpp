@@ -16,12 +16,12 @@
 
 #include "LastFmBias.h"
 
-#include "Collection.h"
-#include "CollectionManager.h"
-#include "Debug.h"
+#include "core/collections/Collection.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
-#include "Meta.h"
-#include "QueryMaker.h"
+#include "core/meta/Meta.h"
+#include "core/collections/QueryMaker.h"
 
 #include "lastfm/Artist"
 #include "lastfm/ws.h"
@@ -84,7 +84,7 @@ Dynamic::LastFmBiasFactory::newCustomBiasEntry( QDomElement e )
 
 Dynamic::LastFmBias::LastFmBias( bool similarArtists )
     : Dynamic::CustomBiasEntry()
-    , EngineObserver( The::engineController() )
+    , Engine::EngineObserver( The::engineController() )
     , m_similarArtists( similarArtists )
     , m_artistQuery( 0 )
     , m_qm( 0 )
@@ -267,7 +267,7 @@ Dynamic::LastFmBias::artistQueryDone() // slot
     }
     m_qm->endAndOr();
     
-    m_qm->setQueryType( QueryMaker::Custom );
+    m_qm->setQueryType( Collections::QueryMaker::Custom );
     m_qm->addReturnValue( Meta::valUniqueId );
     m_qm->orderByRandom(); // as to not affect the amortized time
 
@@ -338,7 +338,7 @@ void Dynamic::LastFmBias::trackQueryDone()
     }
     m_qm->endAndOr();
 
-    m_qm->setQueryType( QueryMaker::Custom );
+    m_qm->setQueryType( Collections::QueryMaker::Custom );
     m_qm->addReturnValue( Meta::valUniqueId );
     m_qm->orderByRandom(); // as to not affect the amortized time
 
@@ -464,7 +464,6 @@ Dynamic::LastFmBias::numTracksThatSatisfy( const Meta::TrackList& tracks )
     }
     
     return satisfy;
-
 }
 
 QDomElement
@@ -485,10 +484,10 @@ Dynamic::LastFmBias::saveDataToFile()
     QFile file( Amarok::saveLocation() + "dynamic_lastfm_similarartists.xml" );
     file.open( QIODevice::Truncate | QIODevice::WriteOnly | QIODevice::Text );
     QTextStream out( &file );
-    foreach( QString key, m_savedArtists.keys() )
+    foreach( const QString& key, m_savedArtists.keys() )
     {
         out << key << "#";
-        foreach( QByteArray uid, m_savedArtists[ key ] )
+        foreach( const QByteArray& uid, m_savedArtists[ key ] )
         {
             out << uid << "^";
         }
@@ -499,10 +498,10 @@ Dynamic::LastFmBias::saveDataToFile()
     QFile file2( Amarok::saveLocation() + "dynamic_lastfm_similartracks.xml" );
     file2.open( QIODevice::Truncate | QIODevice::WriteOnly | QIODevice::Text );
     QTextStream out2( &file2 );
-    foreach( QString key, m_savedTracks.keys() )
+    foreach( const QString& key, m_savedTracks.keys() )
     {
         out2 << key << "#";
-        foreach( QByteArray uid, m_savedTracks[ key ] )
+        foreach( const QByteArray& uid, m_savedTracks[ key ] )
         {
             out2 << uid << "^";
         }
@@ -524,7 +523,7 @@ Dynamic::LastFmBias::loadFromFile()
         QString key = line.split( "#" )[ 0 ];
         QStringList uids = line.split( "#" )[ 1 ].split( "^" );
         QSet<QByteArray> u;
-        foreach( QString uid, uids )
+        foreach( const QString& uid, uids )
         {
             if( !uid.isEmpty() )
                 u.insert( uid.toUtf8() );
@@ -542,7 +541,7 @@ Dynamic::LastFmBias::loadFromFile()
         QString key = line.split( "#" )[ 0 ];
         QStringList uids = line.split( "#" )[ 1 ].split( "^" );
         QSet<QByteArray> u;
-        foreach( QString uid, uids )
+        foreach( const QString& uid, uids )
         {
             if( !uid.isEmpty() )
                 u.insert( uid.toUtf8() );

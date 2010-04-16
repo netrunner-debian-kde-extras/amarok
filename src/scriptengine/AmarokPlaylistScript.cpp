@@ -19,7 +19,7 @@
 #include "AmarokPlaylistScript.h"
 
 #include "App.h"
-#include "collection/CollectionManager.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "EngineController.h"
 #include "MainWindow.h"
 #include "playlist/PlaylistActions.h"
@@ -37,9 +37,8 @@ namespace AmarokScript
         , m_wrapperList( wrapperList )
         , m_scriptEngine( scriptEngine )
     {
-        connect( The::playlist(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT ( slotTrackInserted( const QModelIndex&, int, int ) ) );
-        connect( The::playlist(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT ( slotTrackRemoved( const QModelIndex&, int, int ) ) );
-        //connect( The::playlist(), SIGNAL( activeRowChanged( int ) ), this, SIGNAL( activeRowChanged( int ) ) ); // FIXME: still needed?
+        connect( The::playlist()->qaim(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT ( slotTrackInserted( const QModelIndex&, int, int ) ) );
+        connect( The::playlist()->qaim(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT ( slotTrackRemoved( const QModelIndex&, int, int ) ) );
     }
 
     AmarokPlaylistScript::~AmarokPlaylistScript()
@@ -52,12 +51,12 @@ namespace AmarokScript
 
     int AmarokPlaylistScript::totalTrackCount()
     {
-        return The::playlist()->rowCount();
+        return The::playlist()->qaim()->rowCount();
     }
 
     QString AmarokPlaylistScript::saveCurrentPlaylist()
     {
-        QString savePath = Playlist::ModelStack::instance()->source()->defaultPlaylistPath();
+        QString savePath = Playlist::ModelStack::instance()->bottom()->defaultPlaylistPath();
         The::playlist()->exportPlaylist( savePath );
         return savePath;
     }
@@ -115,6 +114,11 @@ namespace AmarokScript
         The::playlistActions()->setStopAfterMode( on ? Playlist::StopAfterCurrent : Playlist::StopNever );
     }
 
+    bool AmarokPlaylistScript::stopAfterCurrent()
+    {
+        return The::playlistActions()->stopAfterMode();
+    }
+
     void AmarokPlaylistScript::togglePlaylist()
     {
         The::mainWindow()->showHide();
@@ -123,7 +127,7 @@ namespace AmarokScript
     QStringList AmarokPlaylistScript::filenames()
     {
         QStringList fileNames;
-        for( int i=0; i < The::playlist()->rowCount(); i++ )
+        for( int i=0; i < The::playlist()->qaim()->rowCount(); i++ )
             fileNames << The::playlist()->trackAt(i)->prettyUrl();
         return fileNames;
     }

@@ -20,15 +20,15 @@
 #include "CoverManager.h"
 #include "CoverViewDialog.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "amarokconfig.h"
-#include "collection/Collection.h"
-#include "CollectionManager.h"
+#include "core/collections/Collection.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "CompoundProgressBar.h"
-#include "Debug.h"
-#include "meta/capabilities/CurrentTrackActionsCapability.h"
-#include "meta/Meta.h"
-#include "QueryMaker.h"
+#include "core/support/Debug.h"
+#include "core/capabilities/CurrentTrackActionsCapability.h"
+#include "core/meta/Meta.h"
+#include "core/collections/QueryMaker.h"
 #include <config-amarok.h>
 #include "PixmapViewer.h"
 #include "playlist/PlaylistModelStack.h"
@@ -119,11 +119,11 @@ CoverManager::CoverManager()
     item->setIcon(0, SmallIcon( "media-optical-audio-amarok" ) );
     m_items.append( item );
 
-    Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
-    QueryMaker *qm = coll->queryMaker();
+    Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
+    Collections::QueryMaker *qm = coll->queryMaker();
     qm->setAutoDelete( true );
-    qm->setQueryType( QueryMaker::Artist );
-    qm->setAlbumQueryMode( QueryMaker::OnlyNormalAlbums );
+    qm->setQueryType( Collections::QueryMaker::Artist );
+    qm->setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
     qm->orderBy( Meta::valArtist );
 
     connect( qm, SIGNAL( newResultReady( QString, Meta::ArtistList ) ),
@@ -357,11 +357,11 @@ CoverManager::slotArtistSelected() //SLOT
     //this can be a bit slow
     QApplication::setOverrideCursor( Qt::WaitCursor );
 
-    Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
+    Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
 
-    QueryMaker *qm = coll->queryMaker();
+    Collections::QueryMaker *qm = coll->queryMaker();
     qm->setAutoDelete( true );
-    qm->setQueryType( QueryMaker::Album );
+    qm->setQueryType( Collections::QueryMaker::Album );
     qm->orderBy( Meta::valAlbum );
 
     qm->beginOr();
@@ -611,8 +611,8 @@ CoverManager::loadCover( const QString &artist, const QString &album )
 void
 CoverManager::playSelectedAlbums()
 {
-    Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
-    QueryMaker *qm = coll->queryMaker();
+    Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
+    Collections::QueryMaker *qm = coll->queryMaker();
     foreach( CoverViewItem *item, selectedItems() )
     {
         qm->addMatch( item->albumPtr() );
@@ -770,6 +770,7 @@ CoverView::CoverView( QWidget *parent, const char *name, Qt::WFlags f )
     setGridSize( QSize(120, 160) );
     setTextElideMode( Qt::ElideRight );
     setContextMenuPolicy( Qt::DefaultContextMenu );
+    setMouseTracking( true ); // required for setting status text when itemEntered signal is emitted
 
     connect( this, SIGNAL( itemEntered( QListWidgetItem * ) ), SLOT( setStatusText( QListWidgetItem * ) ) );
     connect( this, SIGNAL( viewportEntered() ), CoverManager::instance(), SLOT( updateStatusBar() ) );
@@ -792,7 +793,7 @@ CoverView::contextMenuEvent( QContextMenuEvent *event )
             Meta::AlbumPtr album = item->albumPtr();
             if( album )
             {
-                Meta::CustomActionsCapability *cac = album->create<Meta::CustomActionsCapability>();
+                Capabilities::CustomActionsCapability *cac = album->create<Capabilities::CustomActionsCapability>();
                 if( cac )
                 {
                     QList<QAction *> actions = cac->customActions();
@@ -837,16 +838,9 @@ CoverView::setStatusText( QListWidgetItem *item )
     if ( !item )
         return;
 
-    bool sampler = false;
-    //compilations have valDummy for artist.  see QueryBuilder::addReturnValue(..) for explanation
-    //FIXME: Don't rely on other independent code, use an sql query
-    if( item->artist().isEmpty() )
-        sampler = true;
-
-    QString tipContent = i18n( "%1 - %2", sampler ? i18n("Various Artists") : item->artist() , item->album() );
-
+    const QString artist = item->albumPtr()->isCompilation() ? i18n( "Various Artists" ) : item->artist();
+    const QString tipContent = i18n( "%1 - %2", artist , item->album() );
     CoverManager::instance()->setStatusText( tipContent );
-
     #undef item
 }
 

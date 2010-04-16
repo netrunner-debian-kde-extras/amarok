@@ -24,6 +24,8 @@
 #include "widgets/SearchWidget.h"
 
 #include <KDirModel>
+#include <KFilePlacesModel>
+
 #include <QTimer>
 
 class FileBrowser : public BrowserCategory
@@ -43,6 +45,11 @@ public:
     */
     void setDir( const QString &dir );
 
+    /**
+     * Return the path of the currently shown dir.
+     */
+    QString currentDir();
+
 protected slots:
     void itemActivated( const QModelIndex &index );
     
@@ -60,23 +67,53 @@ protected slots:
      */
     void toggleColumn( bool toggled);
 
+    /**
+     * Navigates up one level in the path shown
+     */
+    void up();
+
+    /**
+     * Navigates to home directory
+     */
+    void home();
+
+    /**
+     * Navigates to home directory
+     */
+    void showPlaces();
+
+    /**
+     * Handle results of tryiong to setup an item in "places" that needed mouting or other
+     * special setup.
+     * @param index the index that we tried to setup
+     * @param success did the setup succeed?
+     */
+    void setupDone( const QModelIndex & index, bool success );    
 
 private:
     void readConfig();
     void writeConfig();
 
-    QList< QAction * >       m_columnActions; //! Maintains the mapping action<->column
+    QList< QAction * >       m_columnActions; //!< Maintains the mapping action<->column
 
     QStringList siblingsForDir( const QString &path );
     
     SearchWidget             *m_searchWidget;
     KDirModel                *m_kdirModel;
+    KFilePlacesModel         *m_placesModel;
+    
     MimeTypeFilterProxyModel *m_mimeFilterProxyModel;
 
     QTimer                    m_filterTimer;
     QString                   m_currentFilter;
     QString                   m_currentPath;
     FileView                 *m_fileView;
+
+    QAction                  *m_upAction;
+    QAction                  *m_homeAction;
+    QAction                  *m_placesAction;
+
+    bool                      m_showingPlaces;
         
 };
 

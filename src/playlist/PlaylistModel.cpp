@@ -3,6 +3,7 @@
  * Copyright (c) 2007-2009 Nikolaj Hald Nielsen <nhn@kde.org>                           *
  * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
+ * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -23,30 +24,32 @@
 
 #include "PlaylistModel.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
+#include "SvgHandler.h"
 #include "amarokconfig.h"
 #include "AmarokMimeData.h"
-#include "Debug.h"
+#include "core/capabilities/ReadLabelCapability.h"
+#include "core/support/Debug.h"
 #include "DirectoryLoader.h"
 #include "EngineController.h"
-#include "MetaUtility.h"
+#include "core/capabilities/SourceInfoCapability.h"
+#include "core/collections/Collection.h"
+#include "core/meta/support/MetaUtility.h"
 #include "PlaylistActions.h"
 #include "PlaylistModelStack.h"
 #include "PlaylistItem.h"
-#include "PlaylistFileSupport.h"
+#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "UndoCommands.h"
-#include "playlistmanager/PlaylistManager.h"
-#include "services/ServicePluginManager.h" // used in constructor
 
 #include <KGlobal>
 #include <KUrl>
 
+#include <QAction>
 #include <QDate>
 #include <QStringList>
 #include <QTextDocument>
 
 #include <typeinfo>
-#include <ReadLabelCapability.h>
 
 
 Playlist::Model::Model( QObject *parent )
@@ -57,66 +60,6 @@ Playlist::Model::Model( QObject *parent )
         , m_setStateOfItem_batchMinRow( -1 )
 {
     DEBUG_BLOCK
-
-    /* The ServicePluginManager needs to be loaded up so that it can handle
-     * any tracks in the saved playlist that are associated with services.
-     * Eg, if the playlist has a Magnatune track in it when Amarok is
-     * closed, then the Magnatune service needs to be initialized before the
-     * playlist is loaded here. */
-
-    ServicePluginManager::instance();
-
-    /* The PlaylistManager needs to be loaded or podcast episodes and other
-     * non-collection Tracks will not be loaded correctly.
-     */
-    The::playlistManager();
-
-    Meta::PlaylistFilePtr playlist = Meta::loadPlaylistFile( defaultPlaylistPath() );
-    if ( playlist )
-    {
-        Meta::TrackList tracks = playlist->tracks();
-
-        QMutableListIterator<Meta::TrackPtr> i( tracks );
-        while ( i.hasNext() )
-        {
-            i.next();
-            Meta::TrackPtr track = i.value();
-            if ( ! track )
-                i.remove();
-            else if( Meta::canExpand( track ) )
-            {
-                Meta::PlaylistPtr playlist = Meta::expand( track );
-                //expand() can return 0 if the KIO job errors out
-                if( playlist )
-                {
-                    i.remove();
-                    Meta::TrackList newtracks = playlist->tracks();
-                    foreach( Meta::TrackPtr t, newtracks )
-                        if( t )
-                            i.insert( t );
-                }
-            }
-        }
-
-        foreach( Meta::TrackPtr track, tracks )
-        {
-            m_totalLength += track->length();
-            m_totalSize += track->filesize();
-            subscribeTo( track );
-            if ( track->album() )
-                subscribeTo( track->album() );
-
-            Item* i = new Item( track );
-            m_items.append( i );
-            m_itemIds.insert( i->id(), i );
-        }
-    }
-
-   //Select previously saved track
-   const int playingTrack = AmarokConfig::lastPlaying();
-
-   if ( playingTrack > -1 )
-       setActiveRow( playingTrack );
 }
 
 Playlist::Model::~Model()
@@ -165,7 +108,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
         return  m_items.at( row )->track()->inCollection();
 
     else if ( role == MultiSourceRole )
-        return  m_items.at( row )->track()->hasCapabilityInterface( Meta::Capability::MultiSource );
+        return  m_items.at( row )->track()->hasCapabilityInterface( Capabilities::Capability::MultiSource );
 
     else if ( role == StopAfterTrackRole )
         return Actions::instance()->willStopAfterTrack( idAt( row ) );
@@ -218,7 +161,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             case CoverImage:
             {
                 if ( m_items.at( row )->track()->album() )
-                    return m_items.at( row )->track()->album()->imageWithBorder( 100 ); //FIXME:size?
+                    return The::svgHandler()->imageWithBorder( m_items.at( row )->track()->album(), 100 ); //FIXME:size?
                 return QImage();
             }
             case Directory:
@@ -263,12 +206,12 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
                 Meta::TrackPtr track = m_items.at( row )->track();
                 if( track )
                 {
-                    Meta::ReadLabelCapability *rlc = track->create<Meta::ReadLabelCapability>();
-                    if( rlc )
+                    QStringList labelNames;
+                    foreach( const Meta::LabelPtr &label, track->labels() )
                     {
-                        const QStringList labels = rlc->labels();
-                        return rlc->labels().join( ", " );
+                        labelNames << label->prettyName();
                     }
+                    return labelNames.join( ", " );
                 }
                 return QString();
             }
@@ -312,7 +255,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             case Source:
             {
                 QString sourceName;
-                Meta::SourceInfoCapability *sic = m_items.at( row )->track()->create<Meta::SourceInfoCapability>();
+                Capabilities::SourceInfoCapability *sic = m_items.at( row )->track()->create<Capabilities::SourceInfoCapability>();
                 if ( sic )
                 {
                     sourceName = sic->sourceName();
@@ -327,7 +270,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             case SourceEmblem:
             {
                 QPixmap emblem;
-                Meta::SourceInfoCapability *sic = m_items.at( row )->track()->create<Meta::SourceInfoCapability>();
+                Capabilities::SourceInfoCapability *sic = m_items.at( row )->track()->create<Capabilities::SourceInfoCapability>();
                 if ( sic )
                 {
                     QString source = sic->sourceName();
@@ -457,7 +400,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
         if( dragList )
         {
             Meta::TrackList tracks;
-            foreach( Meta::PodcastEpisodePtr episode, dragList->podcastEpisodes() )
+            foreach( Podcasts::PodcastEpisodePtr episode, dragList->podcastEpisodes() )
                 tracks << Meta::TrackPtr::staticCast( episode );
             The::playlistController()->insertTracks( beginRow, tracks );
         }
@@ -470,8 +413,8 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
         if( dragList )
         {
             Meta::TrackList tracks;
-            foreach( Meta::PodcastChannelPtr channel, dragList->podcastChannels() )
-                foreach( Meta::PodcastEpisodePtr episode, channel->episodes() )
+            foreach( Podcasts::PodcastChannelPtr channel, dragList->podcastChannels() )
+                foreach( Podcasts::PodcastEpisodePtr episode, channel->episodes() )
                     tracks << Meta::TrackPtr::staticCast( episode );
             The::playlistController()->insertTracks( beginRow, tracks );
         }
@@ -497,7 +440,6 @@ Playlist::Model::setActiveRow( int row )
     {
         setStateOfRow( row, Item::Played );
         m_activeRow = row;
-
         emit activeTrackChanged( m_items.at( row )->id() );
     }
     else
@@ -505,7 +447,6 @@ Playlist::Model::setActiveRow( int row )
         m_activeRow = -1;
         emit activeTrackChanged( 0 );
     }
-    emit activeRowChanged( m_activeRow );
 }
 
 void
@@ -607,17 +548,15 @@ Playlist::Model::activeTrack() const
 int
 Playlist::Model::rowForId( const quint64 id ) const
 {
-    if ( containsId( id ) )
-        return rowForItem( m_itemIds.value( id ) );
-    else
-        return -1;
+    return m_items.indexOf( m_itemIds.value( id ) );    // Returns -1 on miss, same as our API.
 }
 
 Meta::TrackPtr
 Playlist::Model::trackForId( const quint64 id ) const
 {
-    if ( containsId( id ) )
-        return m_itemIds.value( id )->track();
+    Item* item = m_itemIds.value( id, 0 );
+    if ( item )
+        return item->track();
     else
         return Meta::TrackPtr();
 }
@@ -643,8 +582,9 @@ Playlist::Model::activeId() const
 Playlist::Item::State
 Playlist::Model::stateOfId( quint64 id ) const
 {
-    if ( containsId( id ) )
-        return m_itemIds.value( id )->state();
+    Item* item = m_itemIds.value( id, 0 );
+    if ( item )
+        return item->state();
     else
         return Item::Invalid;
 }
@@ -652,13 +592,14 @@ Playlist::Model::stateOfId( quint64 id ) const
 void
 Playlist::Model::metadataChanged( Meta::TrackPtr track )
 {
+    DEBUG_BLOCK
+
     const int size = m_items.size();
     for ( int i = 0; i < size; i++ )
     {
         if ( m_items.at( i )->track() == track )
         {
-            emit dataChanged( createIndex( i, 0 ), createIndex( i, columnCount() - 1 ) );
-            emit metadataUpdated();
+            emit dataChanged( index( i, 0 ), index( i, columnCount() - 1 ) );
             debug()<<"Metadata updated for track"<<track->prettyName();
             break;
         }
@@ -668,6 +609,8 @@ Playlist::Model::metadataChanged( Meta::TrackPtr track )
 void
 Playlist::Model::metadataChanged( Meta::AlbumPtr album )
 {
+    DEBUG_BLOCK
+
     Meta::TrackList tracks = album->tracks();
     foreach( Meta::TrackPtr track, tracks )
         metadataChanged( track );
@@ -677,7 +620,13 @@ Playlist::Model::metadataChanged( Meta::AlbumPtr album )
 bool
 Playlist::Model::exportPlaylist( const QString &path ) const
 {
-    return Meta::exportPlaylistFile( tracks(), path );
+    // check queue state
+    QQueue<quint64> queueIds = The::playlistActions()->queue();
+    QList<int> queued;
+    foreach( quint64 id, queueIds ) {
+      queued << rowForId( id );
+    }
+    return Playlists::exportPlaylistFile( tracks(), path, queued );
 }
 
 Meta::TrackList
@@ -739,7 +688,6 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
     int min = m_items.size() + cmds.size();
     int max = 0;
     int begin = cmds.at( 0 ).second;
-    QList<quint64> newIds;
     foreach( const InsertCmd &ic, cmds )
     {
         min = qMin( min, ic.second );
@@ -762,34 +710,22 @@ Playlist::Model::insertTracksCommand( const InsertCmdList& cmds )
         Item* newitem = new Item( track );
         m_items.insert( ic.second, newitem );
         m_itemIds.insert( newitem->id(), newitem );
-        newIds.append( newitem->id() );
     }
     endInsertRows();
-    emit dataChanged( createIndex( min, 0 ), createIndex( max, columnCount() - 1 ) );
-    emit insertedIds( newIds );
-
-    const Meta::TrackPtr currentTrackPtr = The::engineController()->currentTrack();
-
-    if ( currentTrackPtr && m_activeRow == -1 ) // if we currently do not have a row marked as currently playing...
-    {
-        //Check if one of the tracks in the playlist is the currently playing one, and if so make it active
-        for ( int i = 0; i < m_items.size(); i++ )
-        {
-            if ( m_items.at( i )->track()->uidUrl() == currentTrackPtr->uidUrl() ) {
-                m_activeRow = i;
-                break;  // if same track is added multiple times, skip after the first one...
-            }
-        }
-    }
 
     if( m_activeRow >= 0 )
         m_activeRow += activeShift;
     else
-        m_activeRow = -1;
-
-    if( Amarok::actionCollection()->action( "playlist_clear" ) )
-        Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
-    //Amarok::actionCollection()->action( "play_pause" )->setEnabled( !activeTrack().isNull() );
+    {
+         // If one of the inserted tracks is currently playing, choose it as the active track.
+        const Meta::TrackPtr engineTrack = The::engineController()->currentTrack();
+        if( engineTrack )
+        {
+            int engineRow = firstRowForTrack( engineTrack );
+            if( engineRow > -1 )
+                setActiveRow( engineRow );
+        }
+    }
 }
 
 
@@ -803,22 +739,13 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
     if ( cmds.size() == m_items.size() )
     {
         clearCommand();
-        m_totalLength = 0;
-        m_totalSize = 0;
         return;
     }
 
-    emit beginRemoveIds();
-
-    int min = m_items.size();
-    int max = 0;
     int activeShift = 0;
     bool activeDeleted = false;
-    QList<quint64> delIds;
     foreach( const RemoveCmd &rc, cmds )
     {
-        min = qMin( min, rc.second );
-        max = qMax( max, rc.second );
         activeShift += ( rc.second < m_activeRow ) ? 1 : 0;
         if ( rc.second == m_activeRow )
             activeDeleted = true;
@@ -860,7 +787,6 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
             beginRemoveRows(QModelIndex(), idx, idx);
             delitems.append(item);
             m_items.removeAll( item );
-            delIds.append( item->id() );
             m_itemIds.remove( item->id() );
             endRemoveRows();
         } else {
@@ -870,15 +796,6 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
 
     qDeleteAll(delitems);
     delitems.clear();
-
-    if ( m_items.size() > 0 )
-    {
-        min = qMin( min, m_items.size() -1 );
-        max = ( max < m_items.size() ) ? max : m_items.size() - 1;
-        emit dataChanged( createIndex( min, 0 ), createIndex( max, columnCount() - 1 ) );
-    }
-
-    emit removedIds( delIds );
 
     //update the active row
     if ( !activeDeleted && ( m_activeRow >= 0 ) )
@@ -890,9 +807,6 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
         m_activeRow = -1;
     }
 
-    Amarok::actionCollection()->action( "playlist_clear" )->setEnabled( !m_items.isEmpty() );
-    //Amarok::actionCollection()->action( "play_pause" )->setEnabled( !activeTrack().isNull() );
-
     //make sure that there are enough tracks if we just removed from a dynamic playlist.
     Playlist::Actions::instance()->normalizeDynamicPlaylist();
 }
@@ -900,23 +814,33 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
 
 void Playlist::Model::clearCommand()
 {
-    QList<quint64> delIds = m_itemIds.keys();
+    setActiveRow( -1 );
 
     beginRemoveRows( QModelIndex(), 0, rowCount() - 1 );
+
+    m_totalLength = 0;
+    m_totalSize = 0;
+
     qDeleteAll( m_items );
     m_items.clear();
     m_itemIds.clear();
+
     endRemoveRows();
-
-    m_activeRow = -1;
-
-    emit removedIds( delIds );
 }
 
+
+// Note: this function depends on 'MoveCmdList' to be a complete "cycle", in the sense
+// that if row A is moved to row B, another row MUST be moved to row A.
+// Very strange API design IMHO, because it forces our caller to e.g. move ALL ROWS in
+// the playlist to move row 0 to the last row. This function should just have been
+// equivalent to a 'removeTracks()' followed by an 'insertTracks()' IMHO.  --Nanno
 
 void
 Playlist::Model::moveTracksCommand( const MoveCmdList& cmds, bool reverse )
 {
+    DEBUG_BLOCK
+    debug()<<"moveTracksCommand:"<<cmds.size()<<reverse;
+
     if ( cmds.size() < 1 )
         return;
 
@@ -950,10 +874,15 @@ Playlist::Model::moveTracksCommand( const MoveCmdList& cmds, bool reverse )
                 newActiveRow = mc.second;
         }
     }
-    m_activeRow = newActiveRow;
-    emit dataChanged( createIndex( min, 0 ), createIndex( max, columnCount() - 1 ) );
+
+    // We have 3 choices:
+    //   - Qt 4.6 'beginMoveRows()' / 'endMoveRows()'. Drawback: we'd need to do N of them, all causing resorts etc.
+    //   - Emit 'layoutAboutToChange' / 'layoutChanged'. Drawback: unspecific, 'changePersistentIndex()' complications.
+    //   - Emit 'dataChanged'. Drawback: a bit inappropriate. But not wrong.
+    emit dataChanged( index( min, 0 ), index( max, columnCount() - 1 ) );
 
     //update the active row
+    m_activeRow = newActiveRow;
 }
 
 

@@ -54,15 +54,21 @@ public:
 private slots:
 
     void artistInfoDownloadComplete( KJob *downLoadJob );
-    void pageDownloadComplete( KJob *downLoadJob );
+    void frontpageDownloadComplete( KJob *downLoadJob );
+    void userPageDownloadComplete( KJob *downLoadJob );
 
 private:
 
+    QString extractArtistInfo( const QString &artistPage );
+    QString generateMemberMenu();
+    QString generateHomeLink();
+    QString createArtistLinks( const QString &page );
+    
     KJob * m_infoDownloadJob;
     KJob * m_pageDownloadJob;
 
-    QString extractArtistInfo( const QString &artistPage );
-    QString generateMemberMenu();
+    QString m_cachedFrontpage;
+
 
 };
 

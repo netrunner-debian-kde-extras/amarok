@@ -18,8 +18,8 @@
 #include "Mp3tunesService.h"
 
 #include "browsers/SingleCollectionTreeItemModel.h"
-#include "CollectionManager.h"
-#include "Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core/support/Debug.h"
 #include "Mp3tunesConfig.h"
 #include "statusbar/StatusBar.h"
 
@@ -263,7 +263,7 @@ void Mp3tunesService::authenticationComplete( const QString & sessionId )
     debug() << "Authentication reply: " << sessionId;
     if ( sessionId.isEmpty() )
     {
-        QString error = i18n("Mp3tunes failed to Authenticate.");
+        QString error = i18n("MP3tunes failed to Authenticate.");
         if ( !m_locker->errorMessage().isEmpty() )
         {
             error = m_locker->errorMessage(); // Not sure how to i18n this
@@ -279,7 +279,7 @@ void Mp3tunesService::authenticationComplete( const QString & sessionId )
         m_sessionId = sessionId;
         m_authenticated = true;
 
-        m_collection = new Mp3tunesServiceCollection( this, m_sessionId, m_locker );
+        m_collection = new Collections::Mp3tunesServiceCollection( this, m_sessionId, m_locker );
         CollectionManager::instance()->addUnmanagedCollection( m_collection,
                                     CollectionManager::CollectionDisabled );
         QList<int> levels;
@@ -343,22 +343,22 @@ void Mp3tunesService::harmonyError( const QString &error )
 {
     DEBUG_BLOCK
     debug() << "Harmony Error: " << error;
-    The::statusBar()->longMessage( i18n( "Mp3tunes Harmony Error\n%1", error ) );
+    The::statusBar()->longMessage( i18n( "MP3tunes Harmony Error\n%1", error ) );
 }
 
 void Mp3tunesService::harmonyDownloadReady( const QVariantMap &download )
 {
     DEBUG_BLOCK
     debug() << "Got message about ready: " << download["trackTitle"].toString() << " by " << download["artistName"].toString() << " on " << download["albumTitle"].toString();
-    foreach( Amarok::Collection *coll, CollectionManager::instance()->collections().keys() ) {
+    foreach( Collections::Collection *coll, CollectionManager::instance()->collections().keys() ) {
         if( coll && coll->isWritable() && m_collection )
         {
             debug() << "got collection" << coll->prettyName();
             if ( coll->prettyName() == "Local Collection")
             { //TODO Allow user to choose which collection to sync down to.
                 debug() << "got local collection";
-                CollectionLocation *dest = coll->location();
-                CollectionLocation *source = m_collection->location();
+                Collections::CollectionLocation *dest = coll->location();
+                Collections::CollectionLocation *source = m_collection->location();
                 if( !m_collection->possiblyContainsTrack( download["url"].toString() ) )
                     return; //TODO some sort of error handling
                 Meta::TrackPtr track( m_collection->trackForUrl( download["url"].toString() ) );

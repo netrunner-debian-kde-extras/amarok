@@ -20,11 +20,12 @@
 #ifndef AMAROK_COVERFETCHER_H
 #define AMAROK_COVERFETCHER_H
 
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 #include "CoverFetchUnit.h"
 
 #include <QHash>
 #include <QObject>      //baseclass
+#include <QPointer>
 #include <QStringList>  //stack allocated
 
 class CoverFetchQueue;
@@ -41,7 +42,6 @@ public:
     AMAROK_EXPORT static CoverFetcher* instance();
     AMAROK_EXPORT static void destroy();
 
-    /// Main fetch methods
     AMAROK_EXPORT void manualFetch( Meta::AlbumPtr album );
     AMAROK_EXPORT void queueAlbum( Meta::AlbumPtr album );
     AMAROK_EXPORT void queueAlbums( Meta::AlbumList albums );
@@ -51,7 +51,7 @@ public:
     enum FinishState { Success, Error, NotFound, Cancelled };
 
 public slots:
-    AMAROK_EXPORT void queueQuery( const QString &query );
+    AMAROK_EXPORT void queueQuery( const QString &query, unsigned int page = 0 );
 
 signals:
     void finishedSingle( int state );
@@ -60,24 +60,28 @@ private slots:
 
     /// Fetch a cover
     void slotFetch( const CoverFetchUnit::Ptr unit );
+
+    /// Handle result of a fetch job
     void slotResult( KJob *job );
+
+    /// Cover found dialog is closed by the user
+    void slotDialogFinished();
 
 private:
     static CoverFetcher* s_instance;
     CoverFetcher();
     ~CoverFetcher();
 
-    const int        m_limit;      /// maximum number of concurrent fetches
-    CoverFetchQueue *m_queue;      /// current fetch queue
-    Meta::AlbumList  m_queueLater; /// put here if m_queue exceeds m_limit
+    const int m_limit;            //!< maximum number of concurrent fetches
+    CoverFetchQueue *m_queue;     //!< current fetch queue
+    Meta::AlbumList m_queueLater; //!< put here if m_queue exceeds m_limit
 
     QHash< const KJob*, CoverFetchUnit::Ptr > m_jobs;
-    QHash< const CoverFetchUnit::Ptr, QList< QPixmap > > m_pixmaps;
     QHash< const CoverFetchUnit::Ptr, QPixmap > m_selectedPixmaps;
 
     QStringList m_errors;
 
-    CoverFoundDialog *m_dialog;
+    QPointer<CoverFoundDialog> m_dialog;
 
     /// cleanup depending on the fetch result
     void finish( const CoverFetchUnit::Ptr unit,
@@ -85,7 +89,11 @@ private:
                  const QString &message = QString() );
 
     /// Show the cover that has been found
-    void showCover( const CoverFetchUnit::Ptr unit );
+    void showCover( CoverFetchUnit::Ptr unit,
+                    const QPixmap cover = QPixmap(),
+                    CoverFetch::Metadata data = CoverFetch::Metadata() );
+
+    CoverFetch::Source fetchSource() const;
 };
 
 namespace The

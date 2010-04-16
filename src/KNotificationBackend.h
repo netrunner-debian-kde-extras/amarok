@@ -17,7 +17,7 @@
 #ifndef AMAROK_KNOTIFICATIONBACKEND_H
 #define AMAROK_KNOTIFICATIONBACKEND_H
 
-#include "EngineObserver.h"
+#include "core/engine/EngineObserver.h"
 
 #include <KNotification>
 
@@ -27,7 +27,7 @@ namespace Amarok {
  * A class for accessing KNotify in KDE
  *
  **/
-class KNotificationBackend : public QObject, public EngineObserver
+class KNotificationBackend : public QObject, public Engine::EngineObserver
 {
     Q_OBJECT
 

@@ -22,10 +22,10 @@
 
 #include "ContextView.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "Context.h"
 #include "ContextScene.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "Svg.h"
 #include "Theme.h"
 #include "amarokconfig.h"
@@ -47,7 +47,7 @@ ContextView* ContextView::s_self = 0;
 
 ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWidget* parent )
     : Plasma::View( cont, parent )
-    , EngineObserver( The::engineController() )
+    , Engine::EngineObserver( The::engineController() )
     , m_curState( Home )
     , m_firstPlayingState( true )
     , m_appletExplorer( 0 )

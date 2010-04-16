@@ -16,14 +16,14 @@
 
 #include "FastForwardWorker.h"
 
-#include "Amarok.h"
-#include "CollectionManager.h"
-#include "CollectionLocation.h"
-#include "Debug.h"
-#include "collection/support/FileCollectionLocation.h"
-#include "StatisticsCapability.h"
-#include "meta/file/File.h"
-#include "MetaConstants.h"
+#include "core/support/Amarok.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core/collections/CollectionLocation.h"
+#include "core/support/Debug.h"
+#include "core-impl/collections/support/FileCollectionLocation.h"
+#include "core/capabilities/StatisticsCapability.h"
+#include "core-impl/meta/file/File.h"
+#include "core/meta/support/MetaConstants.h"
 
 #include <kio/job.h>
 #include <kio/jobclasses.h>
@@ -190,7 +190,7 @@ FastForwardWorker::run()
                 debug() << c << " inserting track:" << track->playableUrl();
             }
             else {
-                Amarok::Collection* collection = track->collection();
+                Collections::Collection* collection = track->collection();
                 if (collection)
                     debug() << c << " track in collection (" << track->collection()->location()->prettyLocation() << "):" << track->playableUrl();
             }
@@ -207,7 +207,7 @@ FastForwardWorker::run()
 
                 debug() << c << " trying to find matching track in collection by tags:" << title << ":" << artist << ":" << album << ": etc...";
 
-                Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
+                Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
                 if( !coll )
                     continue;
 
@@ -216,7 +216,7 @@ FastForwardWorker::run()
                 // state var to make the query synchronous (not exactly elegant, but'll do..)
                 m_queryRunning = true;
 
-                QueryMaker *qm_track = coll->queryMaker()->setQueryType( QueryMaker::Track );
+                Collections::QueryMaker *qm_track = coll->queryMaker()->setQueryType( Collections::QueryMaker::Track );
 
                 // set matching criteria to narrow down the corresponding track in
                 // the new collection as good as possible
@@ -228,10 +228,10 @@ FastForwardWorker::run()
                 qm_track->addFilter( Meta::valArtist, artist, true, true );
                 qm_track->addFilter( Meta::valComposer, composer, true, true );
                 qm_track->addFilter( Meta::valGenre, genre, true, true );
-                qm_track->addNumberFilter( Meta::valYear, year, QueryMaker::Equals );
-                qm_track->addNumberFilter( Meta::valTrackNr, trackNr, QueryMaker::Equals );
-                qm_track->addNumberFilter( Meta::valDiscNr, discNr, QueryMaker::Equals );
-                qm_track->addNumberFilter( Meta::valFilesize, filesize, QueryMaker::Equals );
+                qm_track->addNumberFilter( Meta::valYear, year, Collections::QueryMaker::Equals );
+                qm_track->addNumberFilter( Meta::valTrackNr, trackNr, Collections::QueryMaker::Equals );
+                qm_track->addNumberFilter( Meta::valDiscNr, discNr, Collections::QueryMaker::Equals );
+                qm_track->addNumberFilter( Meta::valFilesize, filesize, Collections::QueryMaker::Equals );
 
                 connect( qm_track, SIGNAL( queryDone() ), SLOT( queryDone() ) );
                 connect( qm_track, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( resultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
@@ -291,7 +291,7 @@ FastForwardWorker::run()
         if( track )
         {
             // import statistics
-            Meta::StatisticsCapability *ec = track->create<Meta::StatisticsCapability>();
+            Capabilities::StatisticsCapability *ec = track->create<Capabilities::StatisticsCapability>();
             if( !ec )
                 continue;
 
@@ -311,7 +311,7 @@ FastForwardWorker::run()
     if( tracksForInsert.size() > 0 )
     {
         emit showMessage( i18n( "Synchronizing Amarok database..." ) );
-        CollectionLocation *location = CollectionManager::instance()->primaryCollection()->location();
+        Collections::CollectionLocation *location = CollectionManager::instance()->primaryCollection()->location();
         location->insertTracks( tracksForInsert );
         location->insertStatistics( tracksForInsert );
     }

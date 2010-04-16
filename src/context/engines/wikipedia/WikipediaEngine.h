@@ -20,12 +20,14 @@
 #define AMAROK_WIKIPEDIA_ENGINE
 
 #include "ContextObserver.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
-#include <context/DataEngine.h>
+#include "context/DataEngine.h"
 
 #include <KIO/Job>
+
 #include <QLocale>
+#include <QPointer>
 
 
 /**
@@ -79,7 +81,7 @@ private:
     
     void reloadWikipedia();
     
-    KJob* m_wikiJob;
+    QPointer<KJob> m_wikiJob;
 
     Meta::TrackPtr m_currentTrack;
         

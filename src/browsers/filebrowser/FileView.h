@@ -15,10 +15,10 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef FILETREEVIEW_H
-#define FILETREEVIEW_H
+#ifndef AMAROK_FILEVIEW_H
+#define AMAROK_FILEVIEW_H
 
-#include "collection/Collection.h"
+#include "core/collections/Collection.h"
 #include "widgets/PrettyTreeView.h"
 
 #include <KFileItem>
@@ -36,20 +36,20 @@ class PopupDropper;
 class CollectionAction : public QAction
 {
     public:
-        explicit CollectionAction( Amarok::Collection *coll, QObject *parent = 0 )
+        explicit CollectionAction( Collections::Collection *coll, QObject *parent = 0 )
         : QAction( parent )
         , m_collection( coll )
         {
             setText( m_collection->prettyName() );
         }
 
-        Amarok::Collection *collection() const
+        Collections::Collection *collection() const
         {
             return m_collection;
         }
 
     private:
-        Amarok::Collection *m_collection;
+        Collections::Collection *m_collection;
 };
 
 
@@ -98,4 +98,4 @@ private:
     CollectionAction* m_copyAction;
 };
 
-#endif // FILETREEVIEW_H
+#endif // end include guard

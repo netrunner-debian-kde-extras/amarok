@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -17,7 +17,7 @@
 #ifndef AMAROK_OCSDATA_H
 #define AMAROK_OCSDATA_H
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "amarok_export.h"
 
 #include "kaboutdata.h"

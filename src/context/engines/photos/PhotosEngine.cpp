@@ -17,10 +17,10 @@
 #include "PhotosEngine.h"
 
 // Amarok
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "ContextObserver.h"
 #include "ContextView.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 
 // KDE

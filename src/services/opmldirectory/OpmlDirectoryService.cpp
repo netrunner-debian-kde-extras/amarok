@@ -16,13 +16,15 @@
 
 #include "OpmlDirectoryService.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
+#include "core/support/Components.h"
+#include "core/interfaces/Logger.h"
 #include "browsers/CollectionTreeItem.h"
 #include "browsers/SingleCollectionTreeItemModel.h"
 #include "OpmlDirectoryInfoParser.h"
 #include "OpmlParser.h"
 #include "playlistmanager/PlaylistManager.h"
-#include "podcasts/PodcastProvider.h"
+#include "core/podcasts/PodcastProvider.h"
 #include "ServiceSqlRegistry.h"
 
 #include <KTemporaryFile>
@@ -123,7 +125,7 @@ void OpmlDirectoryService::polish()
 
     ServiceMetaFactory * metaFactory = new OpmlDirectoryMetaFactory( "opmldirectory", this );
     ServiceSqlRegistry * registry = new ServiceSqlRegistry( metaFactory );
-    m_collection = new ServiceSqlCollection( "opmldirectory", "opmldirectory", metaFactory, registry );
+    m_collection = new Collections::ServiceSqlCollection( "opmldirectory", "opmldirectory", metaFactory, registry );
 
     setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
 
@@ -148,8 +150,7 @@ void OpmlDirectoryService::updateButtonClicked()
 
     m_tempFileName = tempFile.fileName();
     m_listDownloadJob = KIO::file_copy( KUrl( "http://www.digitalpodcast.com/opml/digitalpodcastnoadult.opml" ), KUrl( m_tempFileName ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
-    The::statusBar() ->newProgressOperation( m_listDownloadJob, i18n( "Downloading Podcast Directory Database" ) )
-    ->setAbortSlot( this, SLOT( listDownloadCancelled() ) );
+    Amarok::Components::logger()->newProgressOperation( m_listDownloadJob, i18n( "Downloading Podcast Directory Database" ), this, SLOT( listDownloadCancelled() ) );
 
     connect( m_listDownloadJob, SIGNAL( result( KJob * ) ),
             this, SLOT( listDownloadComplete( KJob * ) ) );
@@ -177,7 +178,7 @@ void OpmlDirectoryService::listDownloadComplete(KJob * downloadJob)
     }
 
 
-    The::statusBar()->shortMessage( i18n( "Updating the local Podcast database."  ) );
+    Amarok::Components::logger()->shortMessage( i18n( "Updating the local Podcast database."  ) );
     debug() << "OpmlDirectoryService: create xml parser";
     //reset counters
     n_numberOfTransactions = m_numberOfCategories = m_numberOfFeeds = 0;
@@ -214,7 +215,7 @@ void OpmlDirectoryService::doneParsing()
     debug() << "OpmlDirectoryService: done parsing";
     m_dbHandler->commit(); //complete transaction
 
-    The::statusBar()->longMessage(
+    Amarok::Components::logger()->longMessage(
             i18ncp( "This string is the first part of the following example phrase: "
                 "Podcast Directory update complete. Added 4 feeds in 6 categories.",
                 "Podcast Directory update complete. Added 1 feed in ",
@@ -224,7 +225,7 @@ void OpmlDirectoryService::doneParsing()
                   "Podcast Directory update complete. Added 4 feeds in 6 categories.",
                   "1 category.", "%1 categories.", m_numberOfCategories
                 ),
-            StatusBar::Information
+            Amarok::Logger::Information
         );
 
 
@@ -317,7 +318,7 @@ void OpmlDirectoryService::itemSelected( CollectionTreeItem * selectedItem ){
 
 void OpmlDirectoryService::subscribe()
 {
-    PodcastProvider *podcastProvider = The::playlistManager()->defaultPodcasts();
+    Podcasts::PodcastProvider *podcastProvider = The::playlistManager()->defaultPodcasts();
     if( podcastProvider )
     {
         if( m_currentFeed != 0 )

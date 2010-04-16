@@ -16,15 +16,15 @@
  
 #include "DBusQueryHelper.h"
 
-#include "Debug.h"
-#include "collection/QueryMaker.h"
-#include "meta/MetaUtility.h"
+#include "core/support/Debug.h"
+#include "core/collections/QueryMaker.h"
+#include "core/meta/support/MetaUtility.h"
 
 #include <QTimer>
 
 Q_DECLARE_METATYPE( VariantMapList )
  
-DBusQueryHelper::DBusQueryHelper( QObject *parent, QueryMaker *qm, const QDBusConnection &conn, const QDBusMessage &msg, bool mprisCompatible )
+DBusQueryHelper::DBusQueryHelper( QObject *parent, Collections::QueryMaker *qm, const QDBusConnection &conn, const QDBusMessage &msg, bool mprisCompatible )
     : QObject( parent )
     , m_connection( conn )
     , m_message( msg )
@@ -32,7 +32,7 @@ DBusQueryHelper::DBusQueryHelper( QObject *parent, QueryMaker *qm, const QDBusCo
     , m_timeout( false )
 {
     qm->setAutoDelete( true );
-    qm->setQueryType( QueryMaker::Track );
+    qm->setQueryType( Collections::QueryMaker::Track );
     connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( slotResultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
     connect( qm, SIGNAL( queryDone() ), this, SLOT( slotQueryDone() ), Qt::QueuedConnection );
     qm->run();

@@ -21,8 +21,8 @@
 #include "ScriptManager.h"
 #include "ServiceBrowser.h"
 #include "ScriptableServiceInfoParser.h"
-#include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 #include "SearchWidget.h"
 
 #include <KStandardDirs>
@@ -58,14 +58,14 @@ void ScriptableService::init( int levels, const QString & rootHtml, bool showSea
     m_hasSearchBar = showSearchBar;
     m_searchWidget->showAdvancedButton( false );
     setInfoParser( new ScriptableServiceInfoParser( m_name ) );
-    m_collection = new ScriptableServiceCollection( m_name );
+    m_collection = new Collections::ScriptableServiceCollection( m_name );
     m_collection->setLevels( levels );
 
     if ( !showSearchBar )
         m_searchWidget->hide();
 }
 
-ServiceCollection * ScriptableService::collection()
+Collections::ServiceCollection * ScriptableService::collection()
 {
     return m_collection;
 }

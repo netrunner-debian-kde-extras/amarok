@@ -19,7 +19,7 @@
 #ifndef VOLUMEWIDGET_H
 #define VOLUMEWIDGET_H
 
-#include "EngineObserver.h"
+#include "core/engine/EngineObserver.h"
 #include "SliderWidget.h"
 #include "ToolBar.h"
 
@@ -31,7 +31,7 @@
 /**
 * A custom widget that serves as our volume slider within Amarok.
 */
-class VolumeWidget : public Amarok::ToolBar, public EngineObserver
+class VolumeWidget : public Amarok::ToolBar, public Engine::EngineObserver
 {
     Q_OBJECT
 public:

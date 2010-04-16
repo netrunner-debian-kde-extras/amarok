@@ -19,9 +19,9 @@
 #define DEBUG_PREFIX "BiasSolver"
 
 #include "BiasSolver.h"
-#include "CollectionManager.h"
-#include "Debug.h"
-#include "MetaConstants.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core/support/Debug.h"
+#include "core/meta/support/MetaConstants.h"
 #include "TrackSet.h"
 
 #include <cmath>
@@ -53,8 +53,8 @@ const int    Dynamic::BiasSolver::SA_GIVE_UP_LIMIT       = 250;
 
 QList<QByteArray> Dynamic::BiasSolver::s_universe;
 QMutex            Dynamic::BiasSolver::s_universeMutex;
-QueryMaker*       Dynamic::BiasSolver::s_universeQuery = 0;
-Amarok::Collection*       Dynamic::BiasSolver::s_universeCollection = 0;
+Collections::QueryMaker*       Dynamic::BiasSolver::s_universeQuery = 0;
+Collections::Collection*       Dynamic::BiasSolver::s_universeCollection = 0;
 bool              Dynamic::BiasSolver::s_universeOutdated = true;
 unsigned int      Dynamic::BiasSolver::s_uidUrlProtocolPrefixLength = 0;
 
@@ -828,7 +828,7 @@ Dynamic::BiasSolver::updateUniverse()
 {
     DEBUG_BLOCK
 
-    disconnect( CollectionManager::instance(), SIGNAL(collectionAdded(Amarok::Collection*,CollectionStatus)), this, SLOT(updateUniverse()) );
+    disconnect( CollectionManager::instance(), SIGNAL(collectionAdded(Collections::Collection*,CollectionManager::CollectionStatus)), this, SLOT(updateUniverse()) );
 
     /* TODO: Using multiple collections.
      * One problem with just using MetaQueryMaker is that we can't store uids as
@@ -852,12 +852,12 @@ Dynamic::BiasSolver::updateUniverse()
             s_universeCollection = CollectionManager::instance()->primaryCollection();
         if( !s_universeCollection ) // WTF we really can't get a primarycollection?
         {                           //  whenever a collection is added lets check again, so we catch the loading of the primary colletion
-            connect( CollectionManager::instance(), SIGNAL(collectionAdded(Amarok::Collection*,CollectionStatus)), this, SLOT(updateUniverse()) );
+            connect( CollectionManager::instance(), SIGNAL(collectionAdded(Collections::Collection*,CollectionManager::CollectionStatus)), this, SLOT(updateUniverse()) );
             return;
         }
         
         s_universeQuery = s_universeCollection->queryMaker();
-        s_universeQuery->setQueryType( QueryMaker::Custom );
+        s_universeQuery->setQueryType( Collections::QueryMaker::Custom );
         s_universeQuery->addReturnValue( Meta::valUniqueId );
     }
 
@@ -918,7 +918,7 @@ Dynamic::BiasSolver::outdateUniverse()
 }
 
 void
-Dynamic::BiasSolver::setUniverseCollection( Amarok::Collection* coll )
+Dynamic::BiasSolver::setUniverseCollection( Collections::Collection* coll )
 {
     QMutexLocker locker( &s_universeMutex );
 

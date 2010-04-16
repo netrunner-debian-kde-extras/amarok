@@ -16,7 +16,7 @@
 
 #include "statusbar/ProgressBar.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "MainWindow.h"
 
 #include <QTimer>
@@ -79,7 +79,7 @@ ProgressBar::setDescription( const QString & description )
 }
 
 ProgressBar *
-ProgressBar::setAbortSlot( QObject * receiver, const char * slot )
+ProgressBar::setAbortSlot( QObject * receiver, const char * slot, Qt::ConnectionType type )
 {
     DEBUG_BLOCK
 
@@ -89,7 +89,7 @@ ProgressBar::setAbortSlot( QObject * receiver, const char * slot )
 
 
     debug() << "connecting to " << slot;
-    connect( this, SIGNAL( cancelled() ), receiver, slot );
+    connect( this, SIGNAL( cancelled() ), receiver, slot, type );
     connect( cancelButton(), SIGNAL( clicked() ), this, SLOT( cancel() ) );
 
 

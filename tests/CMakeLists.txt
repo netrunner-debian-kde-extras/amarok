@@ -15,12 +15,32 @@ include_directories( .
                      ${AMAROK_SOURCE_TREE}
 )
 
+add_subdirectory( amarokurls )
 add_subdirectory( data )
-add_subdirectory( collection )
-add_subdirectory( meta )
+add_subdirectory( context )
+add_subdirectory( core )
+add_subdirectory( core-impl )
+add_subdirectory( playlist )
 add_subdirectory( playlistmanager )
 add_subdirectory( timecode )
 add_subdirectory( synchronization )
+
+#------------------------ Test Amarok namespace -----------------------------
+
+set( testamarok_SRCS
+        TestAmarok.cpp
+        ${AMAROK_SOURCE_TREE}/core/support/Amarok.cpp
+    )
+
+kde4_add_unit_test( testamarok ${testamarok_SRCS} )
+
+target_link_libraries( testamarok
+    ${KDE4_KDECORE_LIBS}
+    ${KDE4_KDEUI_LIBS}
+    ${KDE4_KIO_LIBS}
+    ${QT_QTTEST_LIBRARY}
+    amaroklib
+    )
 
 #------------------------ Test CaseConverter -----------------------------
 
@@ -58,7 +78,7 @@ target_link_libraries(testqstringx ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY})
 
 set( testsmartpointerlist_SRCS
         TestSmartPointerList.cpp
-        ${AMAROK_SOURCE_TREE}/SmartPointerList.cpp
+        ${AMAROK_SOURCE_TREE}/core/support/SmartPointerList.cpp
     )
 
 kde4_add_unit_test( testsmartpointerlist  ${testsmartpointerlist_SRCS} )

@@ -16,9 +16,9 @@
 
 #include "MasterSlaveSynchronizationJob.h"
 
-#include "collection/Collection.h"
-#include "collection/CollectionLocation.h"
-#include "Debug.h"
+#include "core/collections/Collection.h"
+#include "core/collections/CollectionLocation.h"
+#include "core/support/Debug.h"
 
 MasterSlaveSynchronizationJob::MasterSlaveSynchronizationJob()
         : SynchronizationBaseJob()
@@ -33,21 +33,21 @@ MasterSlaveSynchronizationJob::~MasterSlaveSynchronizationJob()
 }
 
 void
-MasterSlaveSynchronizationJob::setMaster( Amarok::Collection *master )
+MasterSlaveSynchronizationJob::setMaster( Collections::Collection *master )
 {
     m_master = master;
     setCollectionA( master );
 }
 
 void
-MasterSlaveSynchronizationJob::setSlave( Amarok::Collection *slave )
+MasterSlaveSynchronizationJob::setSlave( Collections::Collection *slave )
 {
     m_slave = slave;
     setCollectionB( slave );
 }
 
 void
-MasterSlaveSynchronizationJob::doSynchronization( const Meta::TrackList &tracks, InSet syncDirection, Amarok::Collection *collA, Amarok::Collection *collB )
+MasterSlaveSynchronizationJob::doSynchronization( const Meta::TrackList &tracks, InSet syncDirection, Collections::Collection *collA, Collections::Collection *collB )
 {
     DEBUG_BLOCK
     if( !( syncDirection == OnlyInA || syncDirection == OnlyInB ) )
@@ -68,8 +68,8 @@ MasterSlaveSynchronizationJob::doSynchronization( const Meta::TrackList &tracks,
     if( ( syncDirection == OnlyInA && collA == m_master ) || ( syncDirection == OnlyInB && collB == m_master ) )
     {
         debug() << "Master " << m_master->collectionId() << " has to sync " << tracks.count() << " track(s) to " << m_slave->collectionId();
-        CollectionLocation *masterLoc = m_master->location();
-        CollectionLocation *slaveLoc = m_slave->location();
+        Collections::CollectionLocation *masterLoc = m_master->location();
+        Collections::CollectionLocation *slaveLoc = m_slave->location();
         masterLoc->prepareCopy( tracks, slaveLoc );
     }
     else
@@ -78,7 +78,7 @@ MasterSlaveSynchronizationJob::doSynchronization( const Meta::TrackList &tracks,
         //so these are definitely the tracks that have to be removed from the slave
         debug() << "Delete " << tracks.count() << " track(s) from slave " << m_slave->collectionId();
         //do some more stuff, and *really* show a confirmation dialog
-        CollectionLocation *slaveLoc = m_slave->location();
+        Collections::CollectionLocation *slaveLoc = m_slave->location();
         slaveLoc->prepareRemove( tracks );
     }
 }

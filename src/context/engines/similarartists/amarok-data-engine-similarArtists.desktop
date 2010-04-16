@@ -1,0 +1,28 @@
+[Desktop Entry]
+Name=Upcoming Events Data Engine
+Name[ca]=Motor de dades de propers esdeveniments
+Name[ca@valencia]=Motor de dades de propers esdeveniments
+Name[cs]=Datový nástroj nadcházejících událostí
+Name[de]=Datenmodul für anstehende Ereignisse
+Name[en_GB]=Upcoming Events Data Engine
+Name[es]=Motor de datos de próximos eventos
+Name[et]=Tulevaste sündmuste andmete mootor
+Name[it]=Motore dati Prossimi eventi
+Name[nb]=Datamotor for kommende hendelser
+Name[nds]=Datenkarn för anstahn Begeefnissen
+Name[pt]=Motor de Dados dos Próximos Eventos
+Name[pt_BR]=Mecanismo de Dados dos Próximos Eventos
+Name[sr]=Датомотор предстојећих догађаја
+Name[sr@ijekavian]=Датомотор предстојећих догађаја
+Name[sr@ijekavianlatin]=Datomotor predstojećih događaja
+Name[sr@latin]=Datomotor predstojećih događaja
+Name[sv]=Datagränssnitt för kommande händelser
+Name[uk]=Рушій розкладу найближчих подій
+Name[x-test]=xxUpcoming Events Data Enginexx
+X-KDE-ServiceTypes=Plasma/DataEngine
+Type=Service
+Icon=amarok
+X-KDE-Library=amarok_data_engine_similarArtists
+X-KDE-PluginInfo-Name=amarok-similarArtists
+X-KDE-ParentApp=Amarok
+

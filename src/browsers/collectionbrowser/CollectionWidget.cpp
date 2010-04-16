@@ -23,9 +23,9 @@
 #include "CollectionTreeItemModelBase.h"
 #include "CollectionTreeItemDelegate.h"
 #include "CollectionBrowserTreeView.h"
-#include "collection/CollectionManager.h"
-#include "collection/proxycollection/ProxyCollection.h"
-#include "Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/collections/proxycollection/ProxyCollection.h"
+#include "core/support/Debug.h"
 #include "SearchWidget.h"
 #include "SingleCollectionTreeItemModel.h"
 #include <amarokconfig.h>
@@ -84,10 +84,10 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
 
     m_multiModel = new CollectionTreeItemModel( m_levels );
 
-    ProxyCollection::Collection *proxyColl = new ProxyCollection::Collection();
-    connect( CollectionManager::instance(), SIGNAL(collectionAdded(Amarok::Collection*,CollectionManager::CollectionStatus)), proxyColl, SLOT(addCollection(Amarok::Collection*,CollectionManager::CollectionStatus)));
+    Collections::ProxyCollection *proxyColl = new Collections::ProxyCollection();
+    connect( CollectionManager::instance(), SIGNAL(collectionAdded(Collections::Collection*,CollectionManager::CollectionStatus)), proxyColl, SLOT(addCollection(Collections::Collection*,CollectionManager::CollectionStatus)));
     connect( CollectionManager::instance(), SIGNAL(collectionRemoved(QString)), proxyColl, SLOT(removeCollection(QString)));
-    foreach( Amarok::Collection* coll, CollectionManager::instance()->viewableCollections() )
+    foreach( Collections::Collection* coll, CollectionManager::instance()->viewableCollections() )
     {
         proxyColl->addCollection( coll, CollectionManager::CollectionViewable );
     }
@@ -130,16 +130,21 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     QAction *firstComposerAction = m_firstLevel->addAction( i18n( "Composer" ) );
     firstComposerAction->setData( CategoryId::Composer );
 
+    QAction *firstLabelAction = m_firstLevel->addAction( i18n( "Label" ) );
+    firstLabelAction->setData( CategoryId::Label );
+
     firstArtistAction->setCheckable  ( true );
     firstAlbumAction->setCheckable   ( true );
     firstGenreAction->setCheckable   ( true );
     firstComposerAction->setCheckable( true );
+    firstLabelAction->setCheckable( true );
 
     QActionGroup *firstGroup = new QActionGroup( this );
     firstGroup->addAction( firstArtistAction );
     firstGroup->addAction( firstAlbumAction );
     firstGroup->addAction( firstGenreAction );
     firstGroup->addAction( firstComposerAction );
+    firstGroup->addAction( firstLabelAction );
 
     connect( m_firstLevel, SIGNAL( triggered( QAction *) ), SLOT( customFilter( QAction * ) ) );
 
@@ -159,11 +164,15 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     QAction *secondComposerAction = m_secondLevel->addAction( i18n( "Composer" ) );
     secondComposerAction->setData( CategoryId::Composer );
 
+    QAction *secondLabelAction = m_secondLevel->addAction( i18n( "Label" ) );
+    secondLabelAction->setData( CategoryId::Label );
+
     secondNullAction->setCheckable    ( true );
     secondArtistAction->setCheckable  ( true );
     secondAlbumAction->setCheckable   ( true );
     secondGenreAction->setCheckable   ( true );
     secondComposerAction->setCheckable( true );
+    secondLabelAction->setCheckable( true );
 
     QActionGroup *secondGroup = new QActionGroup( this );
     secondGroup->addAction( secondNullAction );
@@ -171,6 +180,7 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     secondGroup->addAction( secondAlbumAction );
     secondGroup->addAction( secondGenreAction );
     secondGroup->addAction( secondComposerAction );
+    secondGroup->addAction( secondLabelAction );
     secondNullAction->setChecked( true );
 
     connect( m_secondLevel, SIGNAL( triggered( QAction *) ), SLOT( customFilter( QAction * ) ) );
@@ -191,11 +201,15 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     QAction *thirdComposerAction = m_thirdLevel->addAction( i18n( "Composer" ) );
     thirdComposerAction->setData( CategoryId::Composer );
 
+    QAction *thirdLabelAction = m_thirdLevel->addAction( i18n( "Label" ) );
+    thirdLabelAction->setData( CategoryId::Label );
+
     thirdNullAction->setCheckable    ( true );
     thirdArtistAction->setCheckable  ( true );
     thirdAlbumAction->setCheckable   ( true );
     thirdGenreAction->setCheckable   ( true );
     thirdComposerAction->setCheckable( true );
+    thirdLabelAction->setCheckable( true );
 
     QActionGroup *thirdGroup = new QActionGroup( this );
     thirdGroup->addAction( thirdNullAction );
@@ -203,6 +217,7 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     thirdGroup->addAction( thirdAlbumAction );
     thirdGroup->addAction( thirdGenreAction );
     thirdGroup->addAction( thirdComposerAction );
+    thirdGroup->addAction( thirdLabelAction );
     thirdNullAction->setChecked( true );
 
     connect( m_thirdLevel, SIGNAL( triggered( QAction *) ), SLOT( customFilter( QAction * ) ) );
@@ -238,6 +253,9 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
             case CategoryId::Genre:
                 firstGenreAction->setChecked( true );
                 break;
+            case CategoryId::Label:
+                firstLabelAction->setChecked( true );
+                break;
             default: //as good a fall through as any, here
                 firstComposerAction->setChecked( true );
                 break;
@@ -260,6 +278,9 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
             case CategoryId::Composer:
                 secondComposerAction->setChecked( true );
                 break;
+            case CategoryId::Label:
+                secondLabelAction->setChecked( true );
+                break;
             default:
                 secondNullAction->setChecked( true );
         }
@@ -281,6 +302,10 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
             case CategoryId::Composer:
                 thirdComposerAction->setChecked( true );
                 break;
+            case CategoryId::Label:
+                thirdLabelAction->setChecked( true );
+                break;
+
             default:
                 thirdNullAction->setChecked( true );
         }
@@ -307,7 +332,7 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
         tbutton->setPopupMode( QToolButton::InstantPopup );
     
     //TODO: we have a really nice opportunity to make these info blurbs both helpful and pretty
-    setLongDescription( i18n( "This is where you will find your local music, as well as music from mobile audio players and cd's." ) );
+    setLongDescription( i18n( "This is where you will find your local music, as well as music from mobile audio players and CDs." ) );
 
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_collections.png" ) );
 

@@ -17,13 +17,13 @@
 #ifndef AMAROK_LASTFMSTREAMINFOCAPABILITY_H
 #define AMAROK_LASTFMSTREAMINFOCAPABILITY_H
 
-#include "meta/capabilities/StreamInfoCapability.h"
+#include "core/capabilities/StreamInfoCapability.h"
 
 namespace LastFm
 {
     class Track;
 }
-class LastFmStreamInfoCapability : public Meta::StreamInfoCapability
+class LastFmStreamInfoCapability : public Capabilities::StreamInfoCapability
 {
     Q_OBJECT
     public:

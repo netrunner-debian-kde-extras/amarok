@@ -18,7 +18,7 @@
 #ifndef VOLUMEPOPUPBUTTON_H
 #define VOLUMEPOPUPBUTTON_H
 
-#include "EngineObserver.h"
+#include "core/engine/EngineObserver.h"
 
 #include <QToolButton>
 
@@ -32,7 +32,7 @@ class QWheelEvent;
 namespace Amarok { class VolumeSlider; }
 
 
-class VolumePopupButton : public QToolButton, public EngineObserver
+class VolumePopupButton : public QToolButton, public Engine::EngineObserver
 {
     Q_OBJECT
 

@@ -1,0 +1,37 @@
+[Desktop Entry]
+Name=Similar Artists
+Name[ca]=Artistes semblants
+Name[ca@valencia]=Artistes semblants
+Name[cs]=Podobní umělci
+Name[de]=Ähnliche Interpreten
+Name[en_GB]=Similar Artists
+Name[es]=Artistas similares
+Name[et]=Sarnased esitajad
+Name[it]=Artisti simili
+Name[nb]=Liknende artister
+Name[nds]=Lieke Künstlers
+Name[pt]=Artistas Semelhantes
+Name[pt_BR]=Artistas parecidos
+Name[sr]=Слични извођачи
+Name[sr@ijekavian]=Слични извођачи
+Name[sr@ijekavianlatin]=Slični izvođači
+Name[sr@latin]=Slični izvođači
+Name[sv]=Liknande artister
+Name[uk]=Подібні виконавці
+Name[x-test]=xxSimilar Artistsxx
+Type=Service
+ServiceTypes=Plasma/Applet
+Icon=similarartists-amarok
+
+X-KDE-Library=amarok_context_applet_similarArtists
+X-KDE-PluginInfo-Author=Joffrey Clavel
+X-KDE-PluginInfo-Email=jclavel@clabert.info
+X-KDE-PluginInfo-Name=similarArtists
+X-KDE-PluginInfo-Version=0.1
+X-KDE-PluginInfo-Website=
+X-KDE-PluginInfo-Depends=
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=true
+X-KDE-ParentApp=amarok
+X-KDE-PluginInfo-Category=Current
+

@@ -16,7 +16,7 @@
 
 #include "UserPlaylistTreeView.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "playlist/PlaylistModel.h"
 #include "playlist/PlaylistController.h"
 #include "context/ContextView.h"
@@ -27,7 +27,6 @@
 #include "PopupDropperFactory.h"
 #include "PlaylistTreeItemDelegate.h"
 #include "SvgHandler.h"
-#include "statusbar/StatusBar.h"
 #include "UserPlaylistModel.h"
 #include "PlaylistsInGroupsProxy.h"
 
@@ -195,13 +194,14 @@ PlaylistBrowserNS::UserPlaylistTreeView::mouseDoubleClickEvent( QMouseEvent * ev
 
     if( index.isValid() )
     {
-        QModelIndexList list;
-        list << index;
-        MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>( model() );
-        if( mpm == 0 )
-            return;
-        mpm->loadItems( list, Playlist::LoadAndPlay );
-        event->accept();
+        QList<QAction *> actions =
+         index.data( PlaylistBrowserNS::MetaPlaylistModel::ActionRole ).value<QList<QAction *> >();
+        if( actions.count() > 0 )
+        {
+            //HACK execute the first action assuming it's load
+            actions.first()->trigger();
+            actions.first()->setData( QVariant() );
+        }
     }
 
     m_clickTimer.stop();
@@ -209,7 +209,8 @@ PlaylistBrowserNS::UserPlaylistTreeView::mouseDoubleClickEvent( QMouseEvent * ev
     //comes through, but after the mouseDoubleClickEvent, so we need to tell
     //mouseReleaseEvent to ignore that one event
     m_justDoubleClicked = true;
-    setExpanded( index, !isExpanded( index ) );
+    if( model()->hasChildren( index ) )
+        setExpanded( index, !isExpanded( index ) );
 
     event->accept();
 }
@@ -229,22 +230,14 @@ void PlaylistBrowserNS::UserPlaylistTreeView::startDrag( Qt::DropActions support
     if( !m_pd )
         m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
 
-    QList<QAction*> actions;
+    QList<QAction *> actions;
 
     if( m_pd && m_pd->isHidden() )
     {
+        actions = actionsFor( selectedIndexes() );
 
-        QModelIndexList indices = selectedIndexes();
-
-        MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>( model() );
-        if( mpm == 0 )
-            return;
-        actions = mpm->actionsFor( indices );
-
-        foreach( QAction * action, actions )
-        {
+        foreach( QAction *action, actions )
             m_pd->addItem( The::popupDropperFactory()->createItem( action ) );
-        }
 
         m_pd->show();
     }
@@ -287,16 +280,12 @@ void PlaylistBrowserNS::UserPlaylistTreeView::contextMenuEvent( QContextMenuEven
 {
     QModelIndexList indices = selectionModel()->selectedIndexes();
 
-    KMenu menu;
-
-    MetaPlaylistModel *mpm = dynamic_cast<MetaPlaylistModel *>( model() );
-    if( mpm == 0 )
-        return;
-    QList<QAction *> actions = mpm->actionsFor( indices );
+    QList<QAction *> actions = actionsFor( indices );
 
     if( actions.isEmpty() )
         return;
 
+    KMenu menu;
     foreach( QAction *action, actions )
     {
         if( action )
@@ -320,25 +309,34 @@ PlaylistBrowserNS::UserPlaylistTreeView::slotClickTimeout()
     m_clickTimer.stop();
     if( m_savedClickIndex.isValid() && KGlobalSettings::singleClick() )
     {
-        setExpanded( m_savedClickIndex, !isExpanded( m_savedClickIndex ) );
+        if( model()->hasChildren( m_savedClickIndex ) )
+            setExpanded( m_savedClickIndex, !isExpanded( m_savedClickIndex ) );
     }
     m_savedClickIndex = QModelIndex();
+}
+
+QList<QAction *>
+PlaylistBrowserNS::UserPlaylistTreeView::actionsFor( QModelIndexList indexes )
+{
+    QList<QAction *> actions;
+    foreach( QModelIndex idx, indexes )
+    {
+        QList<QAction *> idxActions =
+         idx.data( PlaylistBrowserNS::MetaPlaylistModel::ActionRole ).value<QList<QAction *> >();
+        //only add unique actions model is responsible for making them unique
+        foreach( QAction *action, idxActions )
+        {
+            if( !actions.contains( action ) )
+                actions << action;
+        }
+    }
+    return actions;
 }
 
 void
 PlaylistBrowserNS::UserPlaylistTreeView::setNewGroupAction( KAction * action )
 {
     m_addGroupAction = action;
-}
-
-void
-PlaylistBrowserNS::UserPlaylistTreeView::createNewGroup()
-{
-    PlaylistsInGroupsProxy *pigp = qobject_cast<PlaylistsInGroupsProxy *>( model() );
-    if( pigp == 0 )
-        return;
-    QModelIndex idx = pigp->createNewGroup( i18np( "New Folder", "New Folder (%1)", 1 ) );
-    edit( idx );
 }
 
 #include "UserPlaylistTreeView.moc"

@@ -21,8 +21,8 @@
 
 #include "context/Applet.h"
 #include "context/DataEngine.h"
-#include "EngineObserver.h"
-#include "SmartPointerList.h"
+#include "core/engine/EngineObserver.h"
+#include "core/support/SmartPointerList.h"
 
 #include "VideoclipInfo.h"
 
@@ -65,7 +65,7 @@ class VideoItemButton;
  /** VideoclipApplet will display videoclip from the Internet, relative to the current playing song
    * If a video is detected in the playlist, it will also play the video inside the VideoWidget.
    */
-class VideoclipApplet : public Context::Applet, public EngineObserver
+class VideoclipApplet : public Context::Applet, public Engine::EngineObserver
 {
         Q_OBJECT
 

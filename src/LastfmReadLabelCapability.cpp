@@ -16,17 +16,17 @@
 
 #include "LastfmReadLabelCapability.h"
 
-#include "Debug.h"
-#include "meta/Meta.h"
+#include "core/support/Debug.h"
+#include "core/meta/Meta.h"
 
 #include <QMap>
 #include <QNetworkReply>
 
 #include <lastfm/XmlQuery>
 #include <ws.h>
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 
-namespace Meta
+namespace Capabilities
 {
 LastfmReadLabelCapability::LastfmReadLabelCapability( Meta::Track *track )
     : ReadLabelCapability()

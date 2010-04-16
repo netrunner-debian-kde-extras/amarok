@@ -23,11 +23,11 @@
 #include "VideoItemButton.h"
 
 // Amarok
-#include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
-#include "meta/stream/Stream.h"
-#include "collection/CollectionManager.h"
+#include "core-impl/meta/stream/Stream.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "context/ContextView.h"
 #include "context/Svg.h"
 #include "playlist/PlaylistModelStack.h"
@@ -70,7 +70,7 @@ K_EXPORT_AMAROK_APPLET( videoclip, VideoclipApplet )
 
 VideoclipApplet::VideoclipApplet( QObject* parent, const QVariantList& args )
         : Context::Applet( parent, args )
-        , EngineObserver( The::engineController() )
+        , Engine::EngineObserver( The::engineController() )
         , m_settingsIcon( 0 )
         , m_youtubeHQ( false )
 {
@@ -565,4 +565,4 @@ VideoclipApplet::saveSettings()
 }
 
 #include "VideoclipApplet.moc"
-#include "../../../SmartPointerList.moc"
+#include "../../../core/support/SmartPointerList.moc"

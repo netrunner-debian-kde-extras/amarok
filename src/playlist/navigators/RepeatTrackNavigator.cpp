@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2007 Dan Meltzer <parallelgrapefruit@gmail.com>                        *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
- * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -22,9 +22,8 @@
 
 Playlist::RepeatTrackNavigator::RepeatTrackNavigator()
 {
-    m_model = Playlist::ModelStack::instance()->top();
     m_trackid = m_model->activeId();
 
-    connect( model(), SIGNAL( activeTrackChanged( const quint64 ) ),
+    connect( m_model->qaim(), SIGNAL( activeTrackChanged( const quint64 ) ),
              this, SLOT( recvActiveTrackChanged( const quint64 ) ) );
 }

@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007 Ian Monroe <ian@monroe.nu>                                        *
+ * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -23,22 +24,32 @@
 
 namespace Playlist
 {
-/**
- * Simply plays the next track and stops playing when the playlist is finished.
- */
-class StandardTrackNavigator : public TrackNavigator
-{
-public:
-    StandardTrackNavigator() : TrackNavigator() { }
+    /**
+     * Simply plays the next track.
+     */
+    class StandardTrackNavigator : public TrackNavigator
+    {
+        public:
+            StandardTrackNavigator();
 
-    quint64 likelyNextTrack();
-    quint64 likelyLastTrack();
-    quint64 requestNextTrack();
-    quint64 requestUserNextTrack() { return requestNextTrack(); }
-    quint64 requestLastTrack();
+            virtual quint64 likelyNextTrack() { return chooseNextTrack( m_repeatPlaylist ); }
+            virtual quint64 likelyLastTrack();
+            virtual quint64 requestNextTrack();
+            virtual quint64 requestUserNextTrack();
+            virtual quint64 requestLastTrack();
 
-    void reset() {};
-};
+        private:
+            /**
+             * This function does the same job as 'likelyNextTrack()'. It exists as a
+             * distinct function because 'requestNextTrack()' should not call
+             * 'likelyNextTrack()': a child class can override that to do something
+             * unexpected (e.g. child class 'RepeatTrackNavigator').
+             */
+            quint64 chooseNextTrack( bool repeatPlaylist );
+
+            // repeat the entire playlist when we've reached the end
+            bool m_repeatPlaylist;
+    };
 
 }
 

@@ -18,25 +18,26 @@
 
 #include "CurrentTrack.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "App.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "GlobalCurrentTrackActions.h"
-#include "meta/capabilities/CurrentTrackActionsCapability.h"
-#include "meta/MetaUtility.h"
+#include "core/capabilities/CurrentTrackActionsCapability.h"
+#include "core/meta/support/MetaUtility.h"
 #include "PaletteHandler.h"
 #include "SvgHandler.h"
 #include "context/widgets/RatingWidget.h"
 #include "context/widgets/TextScrollingWidget.h"
 #include "context/widgets/DropPixmapItem.h"
-#include "UpdateCapability.h"
+#include "core/capabilities/UpdateCapability.h"
 
 #include <plasma/theme.h>
 #include <plasma/widgets/tabbar.h>
 
 #include <KColorScheme>
 #include <KConfigDialog>
+#include <KGlobalSettings>
 
 #include <QFont>
 #include <QGraphicsLinearLayout>
@@ -96,30 +97,20 @@ CurrentTrack::init()
 
     // Read config
     KConfigGroup config = Amarok::config("Current Track Applet");
-    QFont configFont( config.readEntry( "Font", QString() ),
-                config.readEntry( "Size", -1 ) );
+    const QString fontDesc = config.readEntry( "Font", QString() );
+    QFont font;
 
-    if( configFont.family().isEmpty() )
-    {
-        QFont bigFont;
-        bigFont.setPointSize( bigFont.pointSize() +  3 );
-
-        m_noTrack->setFont( bigFont );
-        m_title->setFont( bigFont );
-        m_artist->setFont( bigFont );
-        m_album->setFont( bigFont );
-    }
+    if( !fontDesc.isEmpty() )
+        font.fromString( fontDesc );
     else
-    {
-        m_noTrack->setFont( configFont );
-        m_title->setFont( configFont );
-        m_artist->setFont( configFont );
-        m_album->setFont( configFont );
-    }
+        font.setPointSize( font.pointSize() + 3 );
 
-    QFont tinyFont;
-    //tinyFont.setPointSize( tinyFont.pointSize() - 2 );
+    m_noTrack->setFont( font );
+    m_title->setFont( font );
+    m_artist->setFont( font );
+    m_album->setFont( font );
 
+    const QFont tinyFont = KGlobalSettings::smallestReadableFont();
     m_byText->setFont( tinyFont );
     m_onText->setFont( tinyFont );
 
@@ -180,7 +171,7 @@ CurrentTrack::changeTrackRating( int rating )
         return;
 
     // Inform collections of end of a metadata update
-    Meta::UpdateCapability *uc = track->create<Meta::UpdateCapability>();
+    Capabilities::UpdateCapability *uc = track->create<Capabilities::UpdateCapability>();
     if( !uc )
         return;
 
@@ -205,7 +196,7 @@ CurrentTrack::contextualActions()
 
     if( album )
     {
-        Meta::CustomActionsCapability *cac = album->create<Meta::CustomActionsCapability>();
+        Capabilities::CustomActionsCapability *cac = album->create<Capabilities::CustomActionsCapability>();
         if( cac )
         {
             QList<QAction *> customActions = cac->customActions();
@@ -228,7 +219,8 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     // guess what: the height is fixed. so that's a waste of hard-working gerbils
     const qreal textHeight = 30;
     const qreal albumWidth = 135;
-    const QPointF albumCoverPos( standardPadding() + 5, standardPadding() );
+    const qreal padding = standardPadding();
+    const QPointF albumCoverPos( padding + 5, padding );
 
     resizeCover( m_bigCover, albumWidth, albumCoverPos );
 
@@ -236,13 +228,13 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     m_ratingWidget->setMaximumSize( albumWidth + 10, textHeight );
 
     //place directly above the bottom of the applet
-    const qreal x = standardPadding();
-    const qreal y = boundingRect().height() - m_ratingWidget->boundingRect().height() - standardPadding();
+    const qreal x = padding;
+    const qreal y = boundingRect().height() - m_ratingWidget->boundingRect().height() - padding;
     m_ratingWidget->setPos( x, y );
 
     /* this is the pos of the albumcover */
-    const qreal textX =  albumCoverPos.x() +  albumWidth + standardPadding();
-    const qreal textWidth = size().toSize().width() - ( textX + standardPadding() * 2 + 23 );
+    const qreal textX =  albumCoverPos.x() + albumWidth + padding;
+    const qreal textWidth = size().toSize().width() - ( textX + padding * 2 + 23 );
     const qreal textY = albumCoverPos.y() + 20;
 
     // calculate font sizes
@@ -250,42 +242,47 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
     qreal lineSpacing = fm.height() + 4;
     m_maxTextWidth = textWidth;
 
+    const qreal byTextWidth = m_byText->boundingRect().width();
+    const qreal onTextWidth = m_onText->boundingRect().width();
+    const QPointF artistPos = m_artist->pos();
+    const QPointF albumPos  = m_album->pos();
+
     // align to either the album or artist line, depending if "On" or "By" is longer in this current translation
     // i18n makes things complicated :P
-    if( m_byText->boundingRect().width() > m_onText->boundingRect().width() )
+    if( byTextWidth > onTextWidth )
     {
         // align to location of on text
-        m_byText->setPos( textX, textY + lineSpacing + 3  );
-        m_artist->setPos( m_byText->pos().x() + m_byText->boundingRect().width() + 5, 0 );
+        m_byText->setPos( textX, textY + lineSpacing + 3 );
+        m_artist->setPos( m_byText->pos().x() + byTextWidth + 5, 0 );
         alignBottomToFirst( m_byText, m_artist );
-        m_album->setPos( m_artist->pos().x(), 0 );
-        m_onText->setPos( m_album->pos().x() - m_onText->boundingRect().width() - 5, textY + lineSpacing * 2 + 3 );
+        m_album->setPos( artistPos.x(), 0 );
+        m_onText->setPos( albumPos.x() - onTextWidth - 5, textY + lineSpacing * 2 + 3 );
         alignBottomToFirst( m_onText, m_album );
     }
     else
     {
         // align to location/width of by text
         m_onText->setPos( textX, textY + lineSpacing * 2 + 3 );
-        m_album->setPos( m_onText->pos().x() + m_onText->boundingRect().width() + 5, 0 );
+        m_album->setPos( m_onText->pos().x() + onTextWidth + 5, 0 );
         alignBottomToFirst( m_onText, m_album );
-        m_artist->setPos( m_album->pos().x(), 0 );
-        m_byText->setPos( m_artist->pos().x() - m_byText->boundingRect().width() - 5, textY + lineSpacing + 3 );
+        m_artist->setPos( albumPos.x(), 0 );
+        m_byText->setPos( artistPos.x() - byTextWidth - 5, textY + lineSpacing + 3 );
         alignBottomToFirst( m_byText, m_artist );
     }
 
-    m_title->setPos( m_artist->pos().x(), textY );
+    m_title->setPos( artistPos.x(), artistPos.y() - lineSpacing );
 
     const QString title = m_currentInfo[ Meta::Field::TITLE ].toString();
     const QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
     const QString album = m_currentInfo.contains( Meta::Field::ALBUM ) ? m_currentInfo[ Meta::Field::ALBUM ].toString() : QString();
 
     m_title->setScrollingText( title, QRectF( m_title->pos().x(), textY, textWidth, 30 ) );
-    m_artist->setScrollingText( artist, QRectF( m_artist->pos().x(), textY, textWidth, 30 ) );
-    m_album->setScrollingText( album, QRectF( m_album->pos().x(), textY, textWidth, 30 ) );
+    m_artist->setScrollingText( artist, QRectF( artistPos.x(), textY, textWidth, 30 ) );
+    m_album->setScrollingText( album, QRectF( albumPos.x(), textY, textWidth, 30 ) );
 
     if( !m_trackActions.isEmpty() )
     {
-        QPointF iconPos = m_album->pos();
+        QPointF iconPos = albumPos;
         iconPos.setY( iconPos.y() + m_album->boundingRect().height() );
         foreach( Plasma::IconWidget *icon, m_trackActions )
         {
@@ -293,9 +290,7 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
             const int iconSize = icon->size().width();
             icon->setPos( iconPos );
             iconPos.rx() += iconSize + 4;
-#if QT_VERSION >= 0x040500
 	        icon->setOpacity( .72 );
-#endif
         }
     }
 
@@ -417,9 +412,9 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
             m_trackActions << icon;
         }
         
-        if( track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
+        if( track->hasCapabilityInterface( Capabilities::Capability::CurrentTrackActions ) )
         {
-            Meta::CurrentTrackActionsCapability *cac = track->create<Meta::CurrentTrackActionsCapability>();
+            Capabilities::CurrentTrackActionsCapability *cac = track->create<Capabilities::CurrentTrackActionsCapability>();
             if( cac )
             {
                 QList<QAction*> actions = cac->customActions();
@@ -502,7 +497,7 @@ CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *optio
     if( track )
     {
         // Don't show collection actions for local tracks
-        Meta::UpdateCapability *uc = track->create<Meta::UpdateCapability>();
+        Capabilities::UpdateCapability *uc = track->create<Capabilities::UpdateCapability>();
         if( uc )
             updatable = true;
 
@@ -702,12 +697,9 @@ CurrentTrack::changeTitleFont()
     m_album->setFont( font );
 
     KConfigGroup config = Amarok::config("Current Track Applet");
-    config.writeEntry( "Font", font.family() );
-    config.writeEntry( "Size", font.pointSize() );
+    config.writeEntry( "Font", font.toString() );
 
     constraintsEvent();
-
-    debug() << "Setting Lyrics Applet font: " << font.family() << " " << font.pointSize();
 }
 
 void

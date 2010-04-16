@@ -18,15 +18,16 @@
 
 #include "SingleCollectionTreeItemModel.h"
 
-#include "Amarok.h"
-#include "Collection.h"
+#include "core/support/Amarok.h"
+#include "SvgHandler.h"
+#include "core/collections/Collection.h"
 #include "CollectionTreeItem.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <KLocale>
 
 
-SingleCollectionTreeItemModel::SingleCollectionTreeItemModel( Amarok::Collection * collection, const QList<int> &levelType )
+SingleCollectionTreeItemModel::SingleCollectionTreeItemModel( Collections::Collection * collection, const QList<int> &levelType )
     :CollectionTreeItemModelBase( )
 {
     m_collection = collection;
@@ -82,7 +83,7 @@ SingleCollectionTreeItemModel::data(const QModelIndex &index, int role) const
                 {
                     Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( item->data() );
                     if( album)
-                        return album->imageWithBorder( 32, 2 );
+                        return The::svgHandler()->imageWithBorder( album, 32, 2 );
                     else
                         return iconForLevel( level );
                 }

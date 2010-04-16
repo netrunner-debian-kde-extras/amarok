@@ -26,7 +26,7 @@
 #include "playlist/PlaylistItem.h"
 #include "LabelListModel.h"
 
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 #include <khtml_part.h>
 #include <KDialog>
@@ -35,6 +35,7 @@
 #include <QLabel>
 #include <QListIterator>
 #include <QMap>
+#include <QSet>
 #include <QVariant>
 #include <QtGui/QWidget>
 
@@ -43,7 +44,10 @@ namespace Ui
     class TagDialogBase;
 }
 
-class QueryMaker;
+namespace Collections {
+    class QueryMaker;
+}
+
 class QComboBox;
 
 class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
@@ -57,7 +61,7 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
 
         explicit TagDialog( const Meta::TrackList &tracks, QWidget *parent = 0 );
         explicit TagDialog( Meta::TrackPtr track, QWidget *parent = 0 );
-        explicit TagDialog( QueryMaker *qm );
+        explicit TagDialog( Collections::QueryMaker *qm );
         ~TagDialog();
 
         void setTab( int id );
@@ -105,6 +109,10 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         void resultReady( const QString &collectionId, const Meta::ArtistList &artists );
         void resultReady( const QString &collectionId, const Meta::ComposerList &composers );
         void resultReady( const QString &collectionId, const Meta::GenreList &genres );
+        /**
+        *   Updates global label list by querying all collections for all existing labels.
+        */
+        void resultReady( const QString &collectionId, const Meta::LabelList &labels );
         void dataQueryDone();
 
         //individual item-specific slots, so we know which have been changed by the user
@@ -135,11 +143,6 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         */
         void trackLabelsFetched( QStringList labels );
 
-        /**
-        *   Updates global label list
-        */
-        void globalLabelsFetched( QStringList labels );
-
     private:
         void init();
         void setCurrentTrack( Meta::TrackPtr track );
@@ -168,11 +171,6 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         * @arg track Track to load labels for
         */
         void loadLabels( Meta::TrackPtr track );
-
-        /**
-        * Loads all labels to auto completion list
-        */
-        void loadGlobalLabels();
 
         void loadTags( const Meta::TrackPtr &track );
         void loadLyrics( const Meta::TrackPtr &track );
@@ -208,10 +206,10 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         QMap<Meta::TrackPtr, QString> m_storedLyrics;
         QString m_path;
         QString m_currentCover;
-        LabelListModel *m_labelModel;               //! Model MVC Class for Track label list
-        QStringList m_newLabels;                    //! List of added labels
-        QStringList m_removedLabels;                //! List of removed labels
-        QStringList m_labels;                       //! List of track labels
+        LabelListModel *m_labelModel;               //!< Model MVC Class for Track label list
+        QStringList m_newLabels;                    //!< List of added labels
+        QStringList m_removedLabels;                //!< List of removed labels
+        QStringList m_labels;                       //!< List of track labels
 
         //2.0 stuff
         Meta::TrackList m_tracks;
@@ -219,12 +217,12 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         QListIterator<Meta::TrackPtr > m_trackIterator;
         QMap< QString, bool > m_fieldEdited;
         QVariantMap m_currentData;
-        QueryMaker *m_queryMaker;
-        QueryMaker *m_dataQueryMaker;
-        QStringList m_artists;
-        QStringList m_albums;
-        QStringList m_composers;
-        QStringList m_genres;
+        Collections::QueryMaker *m_queryMaker;
+        QSet<QString> m_artists;
+        QSet<QString> m_albums;
+        QSet<QString> m_composers;
+        QSet<QString> m_genres;
+        QSet<QString> m_allLabels; //! all labels known to currently active collections, used for autocompletion
 
         Ui::TagDialogBase *ui;
 

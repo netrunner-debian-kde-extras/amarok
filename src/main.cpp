@@ -14,7 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "App.h"
 #include "aboutdialog/OcsData.h"
 
@@ -46,8 +46,8 @@ int main( int argc, char *argv[] )
             ki18n("Developer (lfranchi)"), "lfranchi@kde.org" );
     aboutData.addAuthor( ki18n("Lydia 'is wrong(TM)' Pintscher"),
             ki18n("Release Vixen (Nightrose)"), "lydia@kde.org" );
-    aboutData.addAuthor( ki18n("Mark 'It's good, but it's not irssi' Kretschmann"), //krazy:exclude=contractions
-            ki18n("Project founder (markey)"), "kretschmann@kde.org" );
+    aboutData.addAuthor( ki18n("Mark 'It's good, but it's not irssi' Kretschmann" ), //krazy:exclude=contractions
+            ki18n("Project founder (markey)"), "kretschmann@kde.org", "http://amarok.kde.org/blog/categories/1-markey" );
     aboutData.addAuthor( ki18n("Maximilian Kossick"),
             ki18n("Developer (maxx_k)"), "maximilian.kossick@gmail.com" );
     aboutData.addAuthor( ki18n("Nikolaj Hald 'Also very hot' Nielsen"),
@@ -55,7 +55,7 @@ int main( int argc, char *argv[] )
     aboutData.addAuthor( ki18n("Seb 'Surfin' down under' Ruiz"),
             ki18n("Developer (sebr)"), "ruiz@kde.org", "http://www.sebruiz.net" );
     aboutData.addAuthor( ki18n("Téo Mrnjavac"),
-            ki18n("Developer (Teo`)"), "teo.mrnjavac@gmail.com", "http://teom.wordpress.com/" );
+            ki18n("Developer (Teo`)"), "teo@kde.org", "http://teom.wordpress.com/" );
 
     ocsData.addAuthor( "xevix", aboutData.authors().at( 0 ) );
     ocsData.addAuthor( "Stecchino", aboutData.authors().at( 1 ) );
@@ -132,7 +132,7 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("Simon Esneault"), ki18n("Photos & Videos applets, Context View"), "simon.esneault@gmail.com" );
         ocsData.addCredit( "Takahani", aboutData.credits().last() );
-    aboutData.addCredit( ki18n("Soren Harward"), ki18n("Developer"), "stharward@gmail.com" );
+    aboutData.addCredit( ki18n("Soren Harward"), ki18n("Developer, Automated Playlist Generator"), "stharward@gmail.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("Sven Krohlas"), ki18n("Rokymoter, Developer (sven423)"), "sven@asbest-online.de" );
         ocsData.addCredit( "krohlas", aboutData.credits().last() );

@@ -18,8 +18,8 @@
 #ifndef LASTFMSCROBBLERADAPTER_H
 #define LASTFMSCROBBLERADAPTER_H
 
-#include "EngineObserver.h"
-#include "meta/Meta.h"
+#include "core/engine/EngineObserver.h"
+#include "core/meta/Meta.h"
 
 #include <lastfm/Audioscrobbler>
 #include <lastfm/Track>
@@ -27,7 +27,7 @@
 #include <QVariant>
 
 
-class ScrobblerAdapter : public QObject, public EngineObserver
+class ScrobblerAdapter : public QObject, public Engine::EngineObserver
 {
     Q_OBJECT
 

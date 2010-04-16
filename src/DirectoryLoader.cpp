@@ -18,9 +18,9 @@
 
 #include "DirectoryLoader.h"
 
-#include "Debug.h"
-#include "CollectionManager.h"
-#include "meta/PlaylistFileSupport.h"
+#include "core/support/Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlistmanager/PlaylistManager.h"
 
@@ -83,9 +83,9 @@ DirectoryLoader::init( const QList<KUrl>& urls )
         }
         else
         {
-            if( Meta::isPlaylist( kurl ) )
+            if( Playlists::isPlaylist( kurl ) )
             {
-                Meta::PlaylistFilePtr playlist = Meta::loadPlaylistFile( kurl );
+                Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( kurl );
                 if( playlist )
                     m_tracks << playlist->tracks();
             }

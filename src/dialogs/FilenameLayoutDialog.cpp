@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2008 Téo Mrnjavac <teo@kde.org>                                        *
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2009 Daniel Dewald <Daniel.Dewald@time.shift.de>                       *
  *                                                                                      *
@@ -19,8 +19,8 @@
 #include "FilenameLayoutDialog.h"
 #include "TokenDropTarget.h"
 
-#include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 
 #include <KConfig>
 #include <KColorScheme>

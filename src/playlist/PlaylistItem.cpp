@@ -20,7 +20,7 @@
 #define DEBUG_PREFIX "Playlist::Item"
 
 #include "PlaylistItem.h"
-#include "meta/capabilities/SourceInfoCapability.h"
+#include "core/capabilities/SourceInfoCapability.h"
 
 #include <KRandom>
 
@@ -32,3 +32,17 @@ Playlist::Item::Item( Meta::TrackPtr track )
 
 Playlist::Item::~Item()
 { }
+
+
+// Does the same thing as:
+//     foreach( quint64 val, set )
+//         target.removeAll( val )
+// but with O(n * log n) performance instead of O(n^2) if 'target' and 'set' are similar-sized.
+void
+Playlist::Item::listRemove( QList<quint64> &target, QSet<quint64> &removeSet )
+{
+    QMutableListIterator<quint64> iter( target );
+    while ( iter.hasNext() )
+        if ( removeSet.contains( iter.next() ) )
+            iter.remove();
+}

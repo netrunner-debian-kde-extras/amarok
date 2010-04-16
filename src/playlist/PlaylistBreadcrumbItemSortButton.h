@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -26,7 +26,7 @@ namespace Playlist
 
 /**
  * A button that implements the non-menu part of the playlist breadcrumb item.
- * @author Téo Mrnjavac <teo.mrnjavac@gmail.com>
+ * @author Téo Mrnjavac <teo@kde.org>
  */
 class BreadcrumbItemSortButton : public BreadcrumbItemButton
 {
@@ -117,10 +117,10 @@ private:
     void init();
     Qt::SortOrder m_order;
     bool m_noArrows;
-    QRect m_arrowRect;      //! the QRect that contains the order inversion arrow primitive.
-    QPoint m_pressedPos;    //! the position of the last mousePressEvent, for handling clicks.
+    QRect m_arrowRect;      //!< the QRect that contains the order inversion arrow primitive.
+    QPoint m_pressedPos;    //!< the position of the last mousePressEvent, for handling clicks.
     bool m_arrowPressed;
-    bool m_arrowHovered;    //! is the arrow rect hovered?
+    bool m_arrowHovered;    //!< is the arrow rect hovered?
     int m_arrowWidth;
     int m_arrowHeight;
 };

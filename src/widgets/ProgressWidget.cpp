@@ -16,13 +16,13 @@
 
 #include "ProgressWidget.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "SliderWidget.h"
 #include "TimeLabel.h"
 #include "amarokconfig.h"
-#include "meta/MetaUtility.h"
-#include "meta/capabilities/TimecodeLoadCapability.h"
+#include "core/meta/support/MetaUtility.h"
+#include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
 #include "amarokurls/AmarokUrl.h"
 #include "amarokurls/AmarokUrlHandler.h"
 
@@ -32,7 +32,7 @@
 
 ProgressWidget::ProgressWidget( QWidget *parent )
         : QWidget( parent )
-        , EngineObserver( The::engineController() )
+        , Engine::EngineObserver( The::engineController() )
 {
 
     QHBoxLayout *box = new QHBoxLayout( this );
@@ -270,9 +270,9 @@ ProgressWidget::redrawBookmarks( const QString *BookmarkName )
     if ( The::engineController()->currentTrack() )
     {
         Meta::TrackPtr track = The::engineController()->currentTrack();
-        if ( track->hasCapabilityInterface( Meta::Capability::LoadTimecode ) )
+        if ( track->hasCapabilityInterface( Capabilities::Capability::LoadTimecode ) )
         {
-            Meta::TimecodeLoadCapability *tcl = track->create<Meta::TimecodeLoadCapability>();
+            Capabilities::TimecodeLoadCapability *tcl = track->create<Capabilities::TimecodeLoadCapability>();
             BookmarkList list = tcl->loadTimecodes();
             debug() << "found " << list.count() << " timecodes on this track";
             foreach( AmarokUrlPtr url, list )

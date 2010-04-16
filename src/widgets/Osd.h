@@ -18,8 +18,8 @@
 #ifndef AMAROK_OSD_H
 #define AMAROK_OSD_H
 
-#include "EngineObserver.h"
-#include "meta/Meta.h"
+#include "core/engine/EngineObserver.h"
+#include "core/meta/Meta.h"
 
 #include <QImage>
 #include <QList>
@@ -155,7 +155,7 @@ private:
 
 namespace Amarok
 {
-    class OSD : public OSDWidget, public EngineObserver, public Meta::Observer
+    class OSD : public OSDWidget, public Engine::EngineObserver, public Meta::Observer
     {
         Q_OBJECT
 

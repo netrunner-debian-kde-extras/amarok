@@ -21,16 +21,19 @@
 
 #include "TrayIcon.h"
 
-#include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "amarokconfig.h"
 #include "GlobalCurrentTrackActions.h"
-#include "meta/MetaConstants.h"
-#include "meta/capabilities/CurrentTrackActionsCapability.h"
+#include "core/meta/support/MetaConstants.h"
+#include "core/capabilities/CurrentTrackActionsCapability.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
+#include "SvgHandler.h"
+#include <KAboutData>
 #include <KAction>
+#include <KCmdLineArgs>
 #include <KIcon>
 #include <KIconEffect>
 #include <KLocale>
@@ -46,22 +49,9 @@
 #include <QTime>
 #include <QToolTip>
 
-namespace Amarok
-{
-    static QPixmap
-    loadOverlay( const QString &iconName )
-    {
-        KIcon icon( iconName );
-        if ( !icon.isNull() )
-            return icon.pixmap( 10, 10 ); // overlay size, adjust here
-
-        return 0;
-    }
-}
-
-Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
-        : KSystemTrayIcon( playerWidget )
-        , EngineObserver( The::engineController() )
+Amarok::TrayIcon::TrayIcon( QObject *parent )
+        : KStatusNotifierItem( parent )
+        , Engine::EngineObserver( The::engineController() )
         , m_trackLength( 0 )
         , m_separator( 0 )
 {
@@ -69,6 +59,8 @@ Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
 
     PERF_LOG( "Beginning TrayIcon Constructor" );
     KActionCollection* const ac = Amarok::actionCollection();
+
+    setStatus( KStatusNotifierItem::Active );
 
     PERF_LOG( "Before adding actions" );
 
@@ -84,57 +76,47 @@ Amarok::TrayIcon::TrayIcon( QWidget *playerWidget )
     contextMenu()->addAction( ac->action( "play_pause" ) );
     contextMenu()->addAction( ac->action( "stop"       ) );
     contextMenu()->addAction( ac->action( "next"       ) );
-
-    m_playOverlay = loadOverlay( "media-playback-start" );
-    m_pauseOverlay = loadOverlay( "media-playback-pause" );
+    contextMenu()->setObjectName( "TrayIconContextMenu" );
 
     PERF_LOG( "Adding system tray icon" );
     paintIcon();
 
     setupToolTip();
 
-    connect( this, SIGNAL( activated( QSystemTrayIcon::ActivationReason ) ), SLOT( slotActivated( QSystemTrayIcon::ActivationReason ) ) );
-    #ifdef Q_WS_MAC
-    KSystemTrayIcon::setVisible( false );
-    #endif
-}
-
-void
-Amarok::TrayIcon::setVisible( bool visible )
-{
-    #ifdef Q_WS_MAC
-    Q_UNUSED( visible )
-    #else
-    KSystemTrayIcon::setVisible( visible );
-    #endif
+    connect( this, SIGNAL( scrollRequested( int, Qt::Orientation ) ), SLOT( slotScrollRequested(int, Qt::Orientation) ) );
+    connect( this, SIGNAL( secondaryActivateRequested( const QPoint & ) ), SLOT( slotActivated() ) );
 }
 
 void
 Amarok::TrayIcon::setupToolTip()
 {
-    QString tooltip;
-
-    tooltip = "<center>";
-    tooltip += Amarok::prettyNowPlaying();
-    tooltip += "</center>";
-
     if( m_track )
     {
-        tooltip += "<table cellspacing='2' align='center' width='100%'>";
+        setToolTipTitle( The::engineController()->prettyNowPlaying() );
 
-        // HACK: This block is inefficient and more or less stupid
-        // (Unnecessary I/O on disk. Workaround?)
+        QStringList tooltip;
         // TODO: Use Observer to get notified about changed album art
-        const QString tmpFilename = Amarok::saveLocation() + "tooltipcover.png";
         if( m_track->album() )
         {
-            const QPixmap image = m_track->album()->imageWithBorder( 100, 5 );
-            if ( !image.isNull() ) // cover available?
-            {
-                image.save( tmpFilename, "PNG" );
-                tooltip += "<tr><td width='10' align='left' valign='bottom' rowspan='9'>";
-                tooltip += "<img src='"+tmpFilename+"' /></td></tr>";
+            const QString uid = m_track->uidUrl();
+            if ( uid != m_toolTipIconUid ) {
+                const QPixmap image = The::svgHandler()->imageWithBorder( m_track->album(), KIconLoader::SizeLarge, 5 );
+                if ( image.isNull() )
+                {
+                    setToolTipIconByName( "amarok" );
+                    m_toolTipIconUid.clear();
+                }
+                else
+                {
+                    setToolTipIconByPixmap( image );
+                    m_toolTipIconUid = uid;
+                }
             }
+        }
+        else
+        {
+            setToolTipIconByName( "amarok" );
+            m_toolTipIconUid.clear();
         }
 
         QStringList left, right;
@@ -185,81 +167,28 @@ Amarok::TrayIcon::setupToolTip()
         left << i18n( "Last Played" );
 
         // NOTE: It seems to be necessary to <center> each element indivdually
-        const QString tableRow = "<tr><td align='right'>%1: </td><td align='left'>%2</td></tr>";
+        const QString row = "- %1: %2";
         for( int x = 0; x < left.count(); ++x )
             if ( !right[x].isEmpty() )
-                tooltip += tableRow.arg( left[x] ).arg( right[x] );
+                tooltip << row.arg( left[x] ).arg( right[x] );
 
-        tooltip += "</table>";
+        setToolTipSubTitle( tooltip.join("<br>") );
     }
-
-    setToolTip( tooltip );
+    else
+    {
+        setToolTipIconByName( "amarok" );
+        m_toolTipIconUid.clear();
+        setToolTipTitle( KCmdLineArgs::aboutData()->programName() );
+        setToolTipSubTitle( The::engineController()->prettyNowPlaying() );
+    }
 }
 
-bool
-Amarok::TrayIcon::event( QEvent *e )
+void
+Amarok::TrayIcon::slotScrollRequested( int delta, Qt::Orientation orientation )
 {
-    static QTime lastEventCall = QTime();
+    Q_UNUSED( orientation )
 
-    switch( e->type() )
-    {
-    case QEvent::DragEnter:
-        #define e static_cast<QDragEnterEvent*>(e)
-        e->setAccepted( KUrl::List::canDecode( e->mimeData() ) );
-        break;
-        #undef e
-
-    case QEvent::Drop:
-        #define e static_cast<QDropEvent*>(e)
-        {
-            const KUrl::List list = KUrl::List::fromMimeData( e->mimeData() );
-            if( !list.isEmpty() )
-            {
-                KMenu *popup = new KMenu;
-                popup->addAction( KIcon( "media-track-add-amarok" ), i18n( "&Add to Playlist" ), this, SLOT( appendDrops() ) );
-                popup->addAction( KIcon( "media-track-add-amarok" ), i18n( "Add && &Play" ), this, SLOT( appendAndPlayDrops() ) );
-                if( The::playlist()->activeRow() >= 0 )
-                    popup->addAction( KIcon( "go-next-amarok" ), i18n( "&Queue Track" ), this, SLOT( queueDrops() ) );
-
-                popup->addSeparator();
-                popup->addAction( i18n( "&Cancel" ) );
-                popup->exec( e->pos() );
-            }
-            break;
-        }
-        #undef e
-
-    case QEvent::Wheel:
-        #define e static_cast<QWheelEvent*>(e)
-        if( e->modifiers() == Qt::ControlModifier || e->orientation() == Qt::Horizontal )
-        {
-            if (lastEventCall.elapsed() < 500) // block event for some ms
-                break;
-
-            lastEventCall.restart();
-
-            if( e->delta() > 0 ) // up
-                The::playlistActions()->back();
-            else
-                The::playlistActions()->next();
-            break;
-        }
-        else if( e->modifiers() == Qt::ShiftModifier )
-        {
-            The::engineController()->seekRelative( (e->delta() / 120) * 5000 ); // 5 seconds for keyboard seeking
-            break;
-        }
-        else
-            The::engineController()->increaseVolume( e->delta() / Amarok::VOLUME_SENSITIVITY );
-
-        e->accept();
-        #undef e
-        break;
-
-    default:
-        return KSystemTrayIcon::event( e );
-    }
-    return true;
+    The::engineController()->increaseVolume( delta / Amarok::VOLUME_SENSITIVITY );
 }
 
 void
@@ -288,7 +217,7 @@ Amarok::TrayIcon::engineStateChanged( Phonon::State state, Phonon::State /*oldSt
             break;
 
         case Phonon::PausedState:
-            blendOverlay( m_pauseOverlay );
+            setOverlayIconByName( "media-playback-pause" );
             break;
 
         case Phonon::LoadingState:
@@ -363,9 +292,9 @@ Amarok::TrayIcon::paintIcon( qint64 trackPosition )
     // TODO: Move these two blocks to ctor (warning: might get some regressions)
     if( m_baseIcon.isNull() )
     {
-        QIcon icon = KSystemTrayIcon::loadIcon( "amarok" );
-        m_baseIcon = icon.pixmap( geometry().size() );
-        setIcon( icon ); // show icon
+        m_baseIcon = KIconLoader::global()->loadIcon( "amarok", KIconLoader::Panel );
+        setIconByPixmap( m_baseIcon ); // show icon
+        setOverlayIconByName( QString() );
         return; // HACK: return because m_baseIcon is still null after first startup (why?)
     }
 
@@ -379,7 +308,8 @@ Amarok::TrayIcon::paintIcon( qint64 trackPosition )
     if( trackPosition < 0 )
     {
         oldMergePos = -1;
-        setIcon( m_baseIcon );
+        setIconByPixmap( m_baseIcon );
+        setOverlayIconByName( QString() );
         return;
     }
 
@@ -387,11 +317,12 @@ Amarok::TrayIcon::paintIcon( qint64 trackPosition )
     if( !m_trackLength )
     {
         m_icon = m_baseIcon;
-        blendOverlay( m_playOverlay );
+        setIconByPixmap( m_icon );
+        setOverlayIconByName( "media-playback-start" );
         return;
     }
 
-    const qint64 mergePos = ( float( trackPosition ) / m_trackLength ) * geometry().height();
+    const qint64 mergePos = ( float( trackPosition ) / m_trackLength ) * m_icon.height();
 
     // return if pixmap would stay the same
     if( oldMergePos == mergePos )
@@ -400,27 +331,13 @@ Amarok::TrayIcon::paintIcon( qint64 trackPosition )
     // draw m_baseIcon on top of the gray version
     m_icon = m_grayedIcon; // copies object
     QPainter p( &m_icon );
-    p.drawPixmap( 0, 0, m_baseIcon, 0, 0, 0, geometry().height() - mergePos );
+    p.drawPixmap( 0, 0, m_baseIcon, 0, 0, 0, m_icon.height() - mergePos );
     p.end();
 
     oldMergePos = mergePos;
 
-    blendOverlay( m_playOverlay );
-}
-
-void
-Amarok::TrayIcon::blendOverlay( const QPixmap &overlay )
-{
-    if ( !overlay.isNull() )
-    {
-        // draw overlay at bottom right
-        const int x = geometry().size().width() - overlay.size().width();
-        const int y = geometry().size().height() - overlay.size().width();
-        QPainter p( &m_icon );
-        p.drawPixmap( x, y, overlay );
-        p.end();
-        setIcon( m_icon );
-    }
+    setIconByPixmap( m_icon );
+    setOverlayIconByName( "media-playback-start" );
 }
 
 void
@@ -440,9 +357,9 @@ Amarok::TrayIcon::setupMenu()
     foreach( QAction *action, The::globalCurrentTrackActions()->actions() )
         m_extraActions.append( action );
 
-    if ( m_track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
+    if ( m_track->hasCapabilityInterface( Capabilities::Capability::CurrentTrackActions ) )
     {
-        Meta::CurrentTrackActionsCapability *cac = m_track->create<Meta::CurrentTrackActionsCapability>();
+        Capabilities::CurrentTrackActionsCapability *cac = m_track->create<Capabilities::CurrentTrackActionsCapability>();
         if( cac )
         {
             QList<QAction *> currentTrackActions = cac->customActions();
@@ -469,10 +386,9 @@ Amarok::TrayIcon::setupMenu()
 }
 
 void
-Amarok::TrayIcon::slotActivated( QSystemTrayIcon::ActivationReason reason )
+Amarok::TrayIcon::slotActivated()
 {
-    if( reason == QSystemTrayIcon::MiddleClick )
-        The::engineController()->playPause();
+    The::engineController()->playPause();
 }
 
 #include "TrayIcon.moc"

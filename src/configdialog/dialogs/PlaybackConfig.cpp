@@ -18,10 +18,10 @@
 #include "PlaybackConfig.h"
 
 #include "amarokconfig.h"
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "ActionClasses.h"
 #include "EngineController.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <KCMultiDialog>
 #include <kmessagebox.h>
@@ -34,7 +34,6 @@ PlaybackConfig::PlaybackConfig( QWidget* parent )
     kcfg_FadeoutOnExit->setHidden( true );
 
     connect( findChild<QPushButton*>( "pushButtonPhonon" ), SIGNAL( clicked() ), SLOT( configurePhonon() ) );
-    connect( findChild<QPushButton*>( "equalizerButton" ), SIGNAL( clicked() ), SLOT( configureEqualizer() ) );
 }
 
 PlaybackConfig::~PlaybackConfig()

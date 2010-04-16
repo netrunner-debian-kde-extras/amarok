@@ -16,11 +16,11 @@
 
 #include "UnionJob.h"
 
-#include "collection/Collection.h"
-#include "collection/CollectionLocation.h"
-#include "Debug.h"
+#include "core/collections/Collection.h"
+#include "core/collections/CollectionLocation.h"
+#include "core/support/Debug.h"
 
-UnionJob::UnionJob( Amarok::Collection *collA, Amarok::Collection *collB )
+UnionJob::UnionJob( Collections::Collection *collA, Collections::Collection *collB )
         : SynchronizationBaseJob()
 {
     DEBUG_BLOCK
@@ -34,7 +34,7 @@ UnionJob::~UnionJob()
 }
 
 void
-UnionJob::doSynchronization( const Meta::TrackList &tracks, InSet syncDirection, Amarok::Collection *collA, Amarok::Collection *collB )
+UnionJob::doSynchronization( const Meta::TrackList &tracks, InSet syncDirection, Collections::Collection *collA, Collections::Collection *collB )
 {
     DEBUG_BLOCK
     if( !( syncDirection == OnlyInA || syncDirection == OnlyInB ) )
@@ -42,13 +42,13 @@ UnionJob::doSynchronization( const Meta::TrackList &tracks, InSet syncDirection,
         debug() << "warning, received an unexpected syncDirection";
         return;
     }
-    Amarok::Collection *from = ( syncDirection == OnlyInA ? collA : collB );
-    Amarok::Collection *to = ( syncDirection == OnlyInA ? collB : collA );
+    Collections::Collection *from = ( syncDirection == OnlyInA ? collA : collB );
+    Collections::Collection *to = ( syncDirection == OnlyInA ? collB : collA );
 
     debug() << "Collection " << from->collectionId() << " has to sync " << tracks.count() << " track(s) to " << to->collectionId();
     //show confirmation dialog, actually do stuff
-    CollectionLocation *fromLoc = from->location();
-    CollectionLocation *toLoc = to->location();
+    Collections::CollectionLocation *fromLoc = from->location();
+    Collections::CollectionLocation *toLoc = to->location();
 
     if( !toLoc->isWritable() )
     {

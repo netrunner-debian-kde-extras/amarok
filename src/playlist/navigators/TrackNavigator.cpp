@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2007 Ian Monroe <ian@monroe.nu>                                        *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
- * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -19,9 +19,12 @@
  ****************************************************************************************/
 
 #include "TrackNavigator.h"
-#include "Amarok.h"
-#include "amarokconfig.h"
+
 #include "playlist/PlaylistModelStack.h"
+
+#include "core/support/Amarok.h"
+#include "amarokconfig.h"
+#include "core/support/Debug.h"
 
 #include <QQueue>
 
@@ -29,20 +32,24 @@
 Playlist::TrackNavigator::TrackNavigator()
 {
     m_model = Playlist::ModelStack::instance()->top();
-    m_repeatPlaylist = ( AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RepeatPlaylist );
-    connect( model(), SIGNAL( removedIds( const QList<quint64>& ) ),
-             this, SLOT( dequeueIds( const QList<quint64>& ) ) );
+
+    // Connect to the QAbstractItemModel signals of the source model.
+    //   Ignore SIGNAL dataChanged: we don't need to know when a playlist item changes.
+    //   Ignore SIGNAL layoutChanged: we don't need to know when rows are moved around.
+    connect( m_model->qaim(), SIGNAL( modelReset() ), this, SLOT( slotModelReset() ) );
+    //   Ignore SIGNAL rowsInserted.
+    connect( m_model->qaim(), SIGNAL( rowsAboutToBeRemoved( const QModelIndex&, int, int ) ), this, SLOT( slotRowsAboutToBeRemoved( const QModelIndex&, int, int ) ) );
 }
 
-bool
+void
 Playlist::TrackNavigator::queueId( const quint64 id )
 {
     QList<quint64> ids;
     ids << id;
-    return queueIds( ids );
+    queueIds( ids );
 }
 
-bool
+void
 Playlist::TrackNavigator::queueIds( const QList<quint64> &ids )
 {
     foreach( quint64 id, ids )
@@ -50,23 +57,12 @@ Playlist::TrackNavigator::queueIds( const QList<quint64> &ids )
         if( !m_queue.contains( id ) )
             m_queue.enqueue( id );
     }
-    return true;
 }
 
-bool
+void
 Playlist::TrackNavigator::dequeueId( const quint64 id )
 {
-    QList<quint64> ids;
-    ids << id;
-    return dequeueIds( ids );
-}
-
-bool
-Playlist::TrackNavigator::dequeueIds( const QList<quint64> &ids )
-{
-    foreach( quint64 id, ids )
-        m_queue.removeAll( id );
-    return true;
+    m_queue.removeAll( id );
 }
 
 int
@@ -80,3 +76,32 @@ QQueue<quint64> Playlist::TrackNavigator::queue()
     return m_queue;
 }
 
+void
+Playlist::TrackNavigator::slotModelReset()
+{
+    DEBUG_BLOCK
+    m_queue.clear();    // We should check 'm_model's new contents, but this is unlikely to bother anyone.
+}
+
+// This function can get called thousands of times during a single FilterProxy change.
+// Be very efficient here! (e.g. no DEBUG_BLOCK)
+void
+Playlist::TrackNavigator::slotRowsAboutToBeRemoved( const QModelIndex& parent, int startRow, int endRow )
+{
+    Q_UNUSED( parent );
+
+    for (int row = startRow; row <= endRow; row++)
+        dequeueId( m_model->idAt( row ) );
+}
+
+quint64
+Playlist::TrackNavigator::bestFallbackItem()
+{
+    quint64 item = m_model->activeId();
+
+    if ( !item )
+        if ( m_model->qaim()->rowCount() > 0 )
+            item = m_model->idAt( 0 );
+
+    return item;
+}

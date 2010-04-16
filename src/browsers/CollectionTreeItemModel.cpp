@@ -22,12 +22,13 @@
 
 #include <amarokconfig.h>
 #include "CollectionTreeItem.h"
-#include "Debug.h"
-#include "Amarok.h"
-#include "Collection.h"
-#include "CollectionManager.h"
+#include "core/support/Debug.h"
+#include "core/support/Amarok.h"
+#include "SvgHandler.h"
+#include "core/collections/Collection.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "covermanager/CoverFetcher.h"
-#include "QueryMaker.h"
+#include "core/collections/QueryMaker.h"
 
 #include <KLocale>
 #include <QTimer>
@@ -37,13 +38,13 @@ CollectionTreeItemModel::CollectionTreeItemModel( const QList<int> &levelType )
     : CollectionTreeItemModelBase()
 {
     CollectionManager* collMgr = CollectionManager::instance();
-    connect( collMgr, SIGNAL( collectionAdded( Amarok::Collection* ) ), this, SLOT( collectionAdded( Amarok::Collection* ) ), Qt::QueuedConnection );
+    connect( collMgr, SIGNAL( collectionAdded( Collections::Collection* ) ), this, SLOT( collectionAdded( Collections::Collection* ) ), Qt::QueuedConnection );
     connect( collMgr, SIGNAL( collectionRemoved( QString ) ), this, SLOT( collectionRemoved( QString ) ) );
     //delete m_rootItem; //clears the whole tree!
     m_rootItem = new CollectionTreeItem( this );
     d->m_collections.clear();
-    QList<Amarok::Collection*> collections = CollectionManager::instance()->viewableCollections();
-    foreach( Amarok::Collection *coll, collections )
+    QList<Collections::Collection*> collections = CollectionManager::instance()->viewableCollections();
+    foreach( Collections::Collection *coll, collections )
     {
         connect( coll, SIGNAL( updated() ), this, SLOT( slotFilter() ) ) ;
         d->m_collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem, this ) ) );
@@ -69,8 +70,8 @@ CollectionTreeItemModel::setLevels( const QList<int> &levelType )
     delete m_rootItem; //clears the whole tree!
     m_rootItem = new CollectionTreeItem( this );
     d->m_collections.clear();
-    QList<Amarok::Collection*> collections = CollectionManager::instance()->viewableCollections();
-    foreach( Amarok::Collection *coll, collections )
+    QList<Collections::Collection*> collections = CollectionManager::instance()->viewableCollections();
+    foreach( Collections::Collection *coll, collections )
     {
         connect( coll, SIGNAL( updated() ), this, SLOT( slotFilter() ) ) ;
         d->m_collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem, this ) ) );
@@ -114,7 +115,7 @@ CollectionTreeItemModel::data(const QModelIndex &index, int role) const
                     {
                         Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( item->data() );
                         if( album )
-                            return album->imageWithBorder( 32, 2 );
+                            return The::svgHandler()->imageWithBorder( album, 32, 2 );
                         return iconForLevel( level  );
                     }
                 }
@@ -148,7 +149,7 @@ CollectionTreeItemModel::fetchMore( const QModelIndex &parent )
 }
 
 void
-CollectionTreeItemModel::collectionAdded( Amarok::Collection *newCollection )
+CollectionTreeItemModel::collectionAdded( Collections::Collection *newCollection )
 {
     DEBUG_BLOCK
     if ( !newCollection )
@@ -208,34 +209,6 @@ CollectionTreeItemModel::requestCollectionsExpansion()
     for( int i = 0, count = m_rootItem->childCount(); i < count; i++ )
     {
         emit expandIndex( createIndex( i, 0, m_rootItem->child( i ) ) );
-    }
-}
-
-
-namespace Amarok {
-    // TODO Internationlise
-    void manipulateThe( QString &str, bool reverse )
-    {
-        if( reverse )
-        {
-            if( !str.startsWith( "the ", Qt::CaseInsensitive ) )
-                return;
-
-            QString begin = str.left( 3 );
-            str = str.append( ", %1" ).arg( begin );
-            str = str.mid( 4 );
-            return;
-        }
-
-        if( !str.endsWith( ", the", Qt::CaseInsensitive ) )
-            return;
-
-        QString end = str.right( 3 );
-        str = str.prepend( "%1 " ).arg( end );
-
-        uint newLen = str.length() - end.length() - 2;
-
-        str.truncate( newLen );
     }
 }
 

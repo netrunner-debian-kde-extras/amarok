@@ -1,5 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
+ * Copyright (c) 2010 Oleksandr Khayrullin <saniokh@gmail.com>                          *
+ * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -13,8 +15,10 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
+
 #include "LayoutItemConfig.h"
+
+#include "playlist/proxymodels/GroupingProxy.h"    // For 'GroupMode'
 
 namespace Playlist {
 
@@ -154,36 +158,42 @@ Playlist::PlaylistLayout::PlaylistLayout()
     : m_isEditable(false)
     , m_isDirty(false)
     , m_inlineControls(false)
+    , m_tooltips(false)
 {}
 
-LayoutItemConfig Playlist::PlaylistLayout::head() const
+Playlist::PlaylistLayout::Part
+Playlist::PlaylistLayout::partForItem( const QModelIndex &index ) const
 {
-    return m_head;
+    switch ( index.data( GroupRole ).toInt() )
+    {
+        case Grouping::Head:    // GroupMode
+        case Grouping::Body:
+        case Grouping::Tail:
+        {
+            Meta::TrackPtr track = index.data( TrackRole ).value<Meta::TrackPtr>();
+
+            if( !track->artist() || !track->album() || !track->album()->albumArtist() || ( track->artist()->name() != track->album()->albumArtist()->name() ) )
+                return VariousArtistsBody;
+            else
+                return StandardBody;
+        }
+
+        case Grouping::None:
+        default:
+            return Single;
+    }
 }
 
-LayoutItemConfig Playlist::PlaylistLayout::body() const
+LayoutItemConfig
+Playlist::PlaylistLayout::layoutForPart( Part part ) const
 {
-    return m_body;
+    return m_layoutItemConfigs[part];
 }
 
-LayoutItemConfig Playlist::PlaylistLayout::single() const
+void
+Playlist::PlaylistLayout::setLayoutForPart( Part part, LayoutItemConfig itemConfig )
 {
-    return m_single;
-}
-
-void Playlist::PlaylistLayout::setHead( LayoutItemConfig head )
-{
-    m_head = head;
-}
-
-void Playlist::PlaylistLayout::setBody( LayoutItemConfig body )
-{
-    m_body = body;
-}
-
-void Playlist::PlaylistLayout::setSingle( LayoutItemConfig single )
-{
-    m_single = single;
+    m_layoutItemConfigs[part] = itemConfig;
 }
 
 bool Playlist::PlaylistLayout::isEditable() const
@@ -213,6 +223,15 @@ bool Playlist::PlaylistLayout::inlineControls()
 void Playlist::PlaylistLayout::setInlineControls( bool inlineControls )
 {
     m_inlineControls = inlineControls;
+}
+
+bool Playlist::PlaylistLayout::tooltips()
+{
+   return m_tooltips;
+}
+void Playlist::PlaylistLayout::setTooltips( bool tooltips )
+{
+    m_tooltips = tooltips;
 }
 
 QString Playlist::PlaylistLayout::groupBy()

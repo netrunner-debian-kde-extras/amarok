@@ -21,9 +21,9 @@
 #include "AmarokUrl.h"
 #include "BookmarkGroup.h"
 #include "AmarokUrlHandler.h"
-#include "Debug.h"
-#include "CollectionManager.h"
-#include "SqlStorage.h"
+#include "core/support/Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core/collections/support/SqlStorage.h"
 
 #include <KIcon>
 
@@ -81,9 +81,9 @@ BookmarkModel::data( const QModelIndex & index, int role ) const
             {
                 AmarokUrl * url = dynamic_cast<AmarokUrl *>( item.data() );
                 if ( url )
-                    return url->command();
+                    return url->prettyCommand();
                 else
-                    return i18n( "group" );
+                    return i18n( "Group" );
                 break;
             }
             case Url:

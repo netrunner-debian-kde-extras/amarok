@@ -18,7 +18,7 @@
 #include "SlimToolbar.h"
 
 #include "ActionClasses.h"
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "EngineController.h"
 #include "VolumePopupButton.h"
 
@@ -34,7 +34,7 @@
 
 SlimToolbar::SlimToolbar( QWidget * parent )
     : QToolBar( i18n( "Slim Toolbar" ), parent )
-    , EngineObserver( The::engineController() )
+    , Engine::EngineObserver( The::engineController() )
     , m_currentTrackToolbar( 0 )
     , m_volumePopupButton( 0 )
 {

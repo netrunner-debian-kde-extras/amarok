@@ -20,7 +20,7 @@
 #ifndef AMAROKPLAYLISTITEM_H
 #define AMAROKPLAYLISTITEM_H
 
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 namespace Playlist
 {
@@ -35,6 +35,9 @@ namespace Playlist
                 Played,
                 Queued
             };
+
+            static void listRemove( QList<quint64> &target, QSet<quint64> &removeSet );
+
 
             Item() : m_track ( 0 ), m_state ( Invalid ), m_id ( 0 ) { }
             Item ( Meta::TrackPtr track );

@@ -19,12 +19,13 @@
 #ifndef AMAROK_TRAYICON_H
 #define AMAROK_TRAYICON_H
 
-#include "EngineObserver.h" //baseclass
-#include "meta/Meta.h"
-#include "SmartPointerList.h"
+#include "core/engine/EngineObserver.h" //baseclass
+#include "core/meta/Meta.h"
+#include "core/support/SmartPointerList.h"
 
-#include <KSystemTrayIcon> //baseclass
+#include <KStatusNotifierItem> //baseclass
 
+#include <QAction>
 #include <QPointer>
 
 class QEvent;
@@ -33,12 +34,12 @@ class App;
 
 namespace Amarok {
 
-class TrayIcon : public KSystemTrayIcon, public EngineObserver, public Meta::Observer
+class TrayIcon : public KStatusNotifierItem, public Engine::EngineObserver, public Meta::Observer
 {
     Q_OBJECT
 
 public:
-    TrayIcon( QWidget *widget );
+    TrayIcon( QObject *parent );
     friend class ::App;
     
     void setVisible( bool visible );
@@ -59,21 +60,20 @@ protected:
     virtual void paletteChange( const QPalette & oldPalette );
 
 private slots:
-    void slotActivated( QSystemTrayIcon::ActivationReason reason );
+    void slotActivated();
+    void slotScrollRequested( int delta, Qt::Orientation orientation );
 
 private:
-    virtual bool event( QEvent *e );
     void setupMenu();
     void setupToolTip();
 
     void paintIcon( qint64 trackPosition = -1 );
-    void blendOverlay( const QPixmap &overlay );
 
     Meta::TrackPtr m_track;
     qint64 m_trackLength;
+    QString m_toolTipIconUid;
 
     QPixmap m_baseIcon, m_grayedIcon, m_icon;
-    QPixmap m_playOverlay, m_pauseOverlay;
     SmartPointerList<QAction> m_extraActions;
     QPointer<QAction> m_separator;
 };

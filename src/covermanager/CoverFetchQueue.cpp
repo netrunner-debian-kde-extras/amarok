@@ -15,9 +15,6 @@
  ****************************************************************************************/
 
 #include "CoverFetchQueue.h"
-#include "Debug.h"
-
-#define DEBUG_PREFIX "CoverFetchQueue"
 
 CoverFetchQueue::CoverFetchQueue( QObject *parent )
     : QObject( parent )
@@ -28,39 +25,75 @@ CoverFetchQueue::~CoverFetchQueue()
 {
 }
 
-bool
+void
 CoverFetchQueue::add( const CoverFetchUnit::Ptr unit )
 {
-    DEBUG_BLOCK
     m_queue.append( unit );
     emit fetchUnitAdded( unit );
-    return true;
 }
 
-bool
+void
 CoverFetchQueue::add( const Meta::AlbumPtr album,
-                      CoverFetch::Options opt,
-                      const QByteArray &xml, bool wild )
+                      const CoverFetch::Option opt,
+                      const CoverFetch::Source src,
+                      const QByteArray &xml )
 {
     CoverFetchPayload *payload;
     if( xml.isEmpty() )
     {
-        payload = new CoverFetchInfoPayload( album );
+        payload = new CoverFetchInfoPayload( album, src );
     }
     else
     {
-        CoverFetchArtPayload *art = new CoverFetchArtPayload( album, wild );
+        CoverFetch::ImageSize imageSize;
+        if( opt == CoverFetch::Automatic )
+            imageSize = CoverFetch::NormalSize;
+        else
+            imageSize = CoverFetch::ThumbSize;
+
+        const bool wild = ( opt == CoverFetch::WildInteractive ) ? true : false;
+        CoverFetchArtPayload *art = new CoverFetchArtPayload( album, imageSize, src, wild );
         art->setXml( xml );
         payload = art;
     }
-    return add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( album, payload, opt ) ) );
+    add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( album, payload, opt ) ) );
 }
 
-bool
-CoverFetchQueue::addSearch( const QString &query )
+void
+CoverFetchQueue::add( const CoverFetch::Option opt,
+                      const CoverFetch::Source src,
+                      const QByteArray &xml )
 {
-    CoverFetchSearchPayload *payload = new CoverFetchSearchPayload( query );
-    return add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( payload ) ) );
+    switch( src )
+    {
+        default:
+        case CoverFetch::Google:
+        case CoverFetch::Yahoo:
+        case CoverFetch::LastFm:
+        {
+            typedef CoverFetchArtPayload CFAP;
+            const bool wild = ( opt == CoverFetch::WildInteractive ) ? true : false;
+            CFAP *payload = new CFAP( CoverFetch::ThumbSize, src, wild );
+            payload->setXml( xml );
+            add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( payload, opt ) ) );
+        }
+        break;
+
+        case CoverFetch::Discogs:
+        {
+            typedef CoverFetchInfoPayload CFIP;
+            CFIP *payload = new CFIP( src, xml );
+            add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( payload, opt ) ) );
+        }
+        break;
+    }
+}
+
+void
+CoverFetchQueue::addQuery( const QString &query, const CoverFetch::Source src, unsigned int page )
+{
+    CoverFetchSearchPayload *payload = new CoverFetchSearchPayload( query, src, page );
+    add( KSharedPtr< CoverFetchUnit >( new CoverFetchUnit( payload ) ) );
 }
 
 int

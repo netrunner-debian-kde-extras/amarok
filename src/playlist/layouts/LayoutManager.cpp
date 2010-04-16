@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008-2009 Nikolaj Hald Nielsen <nhn@kde.org>                           *
  * Copyright (c) 2009 Seb Ruiz <ruiz@kde.org>                                           *
+ * Copyright (c) 2010 Oleksandr Khayrullin <saniokh@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -17,11 +18,12 @@
 
 #include "LayoutManager.h"
 
-#include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Amarok.h"
+#include "core/support/Components.h"
+#include "core/support/Debug.h"
+#include "core/interfaces/Logger.h"
 #include "playlist/PlaylistDefines.h"
 #include "playlist/PlaylistModelStack.h"
-#include "statusbar/StatusBar.h"
 
 #include <KMessageBox>
 #include <KStandardDirs>
@@ -57,7 +59,7 @@ LayoutManager::LayoutManager()
     m_activeLayout = config.readEntry( "CurrentLayout", "Default" );
     if( !layouts().contains( m_activeLayout ) )
         m_activeLayout = "Default";
-    Playlist::ModelStack::instance()->top()->setGroupingCategory( activeLayout().groupBy() );
+    Playlist::ModelStack::instance()->groupingProxy()->setGroupingCategory( activeLayout().groupBy() );
 }
 
 QStringList LayoutManager::layouts() const
@@ -68,11 +70,11 @@ QStringList LayoutManager::layouts() const
 void LayoutManager::setActiveLayout( const QString &layout )
 {
     m_activeLayout = layout;
-    Amarok::config( "Playlist Layout" ).writeEntry( "CurrentLayout", m_activeLayout );  
+    Amarok::config( "Playlist Layout" ).writeEntry( "CurrentLayout", m_activeLayout );
     emit( activeLayoutChanged() );
 
     //Change the grouping style to that of this layout.
-    Playlist::ModelStack::instance()->top()->setGroupingCategory( activeLayout().groupBy() );
+    Playlist::ModelStack::instance()->groupingProxy()->setGroupingCategory( activeLayout().groupBy() );
 
 }
 
@@ -84,7 +86,7 @@ void LayoutManager::setPreviewLayout( const PlaylistLayout &layout )
     emit( activeLayoutChanged() );
 
     //Change the grouping style to that of this layout.
-    Playlist::ModelStack::instance()->top()->setGroupingCategory( activeLayout().groupBy() );
+    Playlist::ModelStack::instance()->groupingProxy()->setGroupingCategory( activeLayout().groupBy() );
 }
 
 void LayoutManager::updateCurrentLayout( const PlaylistLayout &layout )
@@ -111,10 +113,10 @@ void LayoutManager::updateCurrentLayout( const PlaylistLayout &layout )
             copyNumber++;
             newLayoutName = i18nc( "adds a copy number to a generated name if the name already exists, for instance 'copy of Foo 2' if 'copy of Foo' is taken", "%1 %2", orgCopyName, copyNumber );
         }
-                
 
-        The::statusBar()->longMessage( i18n( "Current layout '%1' is read only. Creating a new layout '%2' with your changes and setting this as active", m_activeLayout, newLayoutName ) );
-        
+
+        Amarok::Components::logger()->longMessage( i18n( "Current layout '%1' is read only. Creating a new layout '%2' with your changes and setting this as active", m_activeLayout, newLayoutName ) );
+
         addUserLayout( newLayoutName, layout );
         setActiveLayout( newLayoutName );
     }
@@ -196,15 +198,21 @@ void LayoutManager::loadLayouts( const QString &fileName, bool user )
         PlaylistLayout currentLayout;
         currentLayout.setEditable( user );
         currentLayout.setInlineControls( layout.toElement().attribute( "inline_controls", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
+        currentLayout.setTooltips( layout.toElement().attribute( "tooltips", "false" ).compare( "true", Qt::CaseInsensitive ) == 0 );
 
         //For backwards compatibility, if a grouping is not set in the XML file assume "group by album" (which was previously the default)
         currentLayout.setGroupBy( layout.toElement().attribute( "group_by", "Album" ) );
         debug() << "grouping mode is: " << layout.toElement().attribute( "group_by", "Album" );
-        
 
-        currentLayout.setHead( parseItemConfig( layout.toElement().firstChildElement( "group_head" ) ) );
-        currentLayout.setBody( parseItemConfig( layout.toElement().firstChildElement( "group_body" ) ) );
-        currentLayout.setSingle( parseItemConfig( layout.toElement().firstChildElement( "single_track" ) ) );
+
+        currentLayout.setLayoutForPart( PlaylistLayout::Head, parseItemConfig( layout.toElement().firstChildElement( "group_head" ) ) );
+        currentLayout.setLayoutForPart( PlaylistLayout::StandardBody, parseItemConfig( layout.toElement().firstChildElement( "group_body" ) ) );
+        QDomElement variousArtistsXML = layout.toElement().firstChildElement( "group_variousArtistsBody" );
+        if ( !variousArtistsXML.isNull() )
+            currentLayout.setLayoutForPart( PlaylistLayout::VariousArtistsBody, parseItemConfig( variousArtistsXML ) );
+        else    // Handle old custom layout XMLs
+            currentLayout.setLayoutForPart( PlaylistLayout::VariousArtistsBody, parseItemConfig( layout.toElement().firstChildElement( "group_body" ) ) );
+        currentLayout.setLayoutForPart( PlaylistLayout::Single, parseItemConfig( layout.toElement().firstChildElement( "single_track" ) ) );
 
         if ( !layoutName.isEmpty() )
             m_layouts.insert( layoutName, currentLayout );
@@ -295,12 +303,16 @@ void LayoutManager::addUserLayout( const QString &name, PlaylistLayout layout )
     QDomElement body = doc.createElement( "body" );
     QDomElement single = doc.createElement( "single" );
 
-    newLayout.appendChild( createItemElement( doc, "single_track", layout.single() ) );
-    newLayout.appendChild( createItemElement( doc, "group_head", layout.head() ) );
-    newLayout.appendChild( createItemElement( doc, "group_body", layout.body() ) );
+    newLayout.appendChild( createItemElement( doc, "single_track", layout.layoutForPart( PlaylistLayout::Single ) ) );
+    newLayout.appendChild( createItemElement( doc, "group_head", layout.layoutForPart( PlaylistLayout::Head ) ) );
+    newLayout.appendChild( createItemElement( doc, "group_body", layout.layoutForPart( PlaylistLayout::StandardBody ) ) );
+    newLayout.appendChild( createItemElement( doc, "group_variousArtistsBody", layout.layoutForPart( PlaylistLayout::VariousArtistsBody ) ) );
 
     if( layout.inlineControls() )
         newLayout.setAttribute( "inline_controls", "true" );
+
+    if( layout.tooltips() )
+        newLayout.setAttribute( "tooltips", "true" );
 
     newLayout.setAttribute( "group_by", layout.groupBy() );
 

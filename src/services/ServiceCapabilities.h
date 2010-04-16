@@ -22,11 +22,11 @@
 #include "amarok_export.h"
 #include "amarokurls/AmarokUrl.h"
 
-#include "meta/capabilities/BookmarkThisCapability.h"
-#include "meta/capabilities/CurrentTrackActionsCapability.h"
-#include "meta/capabilities/CustomActionsCapability.h"
-#include "meta/capabilities/FindInSourceCapability.h"
-#include "meta/capabilities/SourceInfoCapability.h"
+#include "core/capabilities/BookmarkThisCapability.h"
+#include "core/capabilities/CurrentTrackActionsCapability.h"
+#include "core/capabilities/CustomActionsCapability.h"
+#include "core/capabilities/FindInSourceCapability.h"
+#include "core/capabilities/SourceInfoCapability.h"
 
 
 class BookmarkThisProvider;
@@ -45,7 +45,7 @@ A service specific implementation of the BookmarkThisCapability
 
     @author Nikolaj Hald Nielsen <nhn@kde.org>
 */
-class AMAROK_EXPORT ServiceBookmarkThisCapability : public Meta::BookmarkThisCapability {
+class AMAROK_EXPORT ServiceBookmarkThisCapability : public Capabilities::BookmarkThisCapability {
 public:
     ServiceBookmarkThisCapability( BookmarkThisProvider * provider );
 
@@ -64,7 +64,7 @@ private:
 
 
 
-class AMAROK_EXPORT ServiceCurrentTrackActionsCapability : public Meta::CurrentTrackActionsCapability {
+class AMAROK_EXPORT ServiceCurrentTrackActionsCapability : public Capabilities::CurrentTrackActionsCapability {
     Q_OBJECT
     public:
         ServiceCurrentTrackActionsCapability( CurrentTrackActionsProvider * currentTrackActionsProvider  );
@@ -77,7 +77,7 @@ class AMAROK_EXPORT ServiceCurrentTrackActionsCapability : public Meta::CurrentT
 
 
 
-class AMAROK_EXPORT ServiceCustomActionsCapability : public Meta::CustomActionsCapability
+class AMAROK_EXPORT ServiceCustomActionsCapability : public Capabilities::CustomActionsCapability
 {
     Q_OBJECT
 
@@ -92,7 +92,7 @@ class AMAROK_EXPORT ServiceCustomActionsCapability : public Meta::CustomActionsC
 
 
 
-class AMAROK_EXPORT ServiceSourceInfoCapability : public Meta::SourceInfoCapability
+class AMAROK_EXPORT ServiceSourceInfoCapability : public Capabilities::SourceInfoCapability
 {
 public:
     ServiceSourceInfoCapability( SourceInfoProvider * sourceInfoProvider );
@@ -111,7 +111,7 @@ private:
 
 
 
-class AMAROK_EXPORT ServiceFindInSourceCapability : public Meta::FindInSourceCapability
+class AMAROK_EXPORT ServiceFindInSourceCapability : public Capabilities::FindInSourceCapability
 {
     Q_OBJECT
     public:

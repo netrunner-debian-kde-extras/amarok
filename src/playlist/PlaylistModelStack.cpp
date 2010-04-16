@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -16,14 +16,14 @@
 
 #include "PlaylistModelStack.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "PlaylistActions.h"
 #include "amarokconfig.h"
 
 
 namespace The
 {
-    AMAROK_EXPORT Playlist::GroupingProxy* playlist()
+    AMAROK_EXPORT Playlist::AbstractModel* playlist()
     {
         return Playlist::ModelStack::instance()->top();
     }
@@ -60,10 +60,10 @@ ModelStack::destroy()
 ModelStack::ModelStack()
     : QObject()
 {
+    DEBUG_BLOCK
     m_model = new Model( this );
-    m_filter = new FilterProxy( m_model, this );
-    m_sort = new SortProxy( m_filter, this );
-    m_search = new SearchProxy( m_sort, this );
+    m_sortfilter = new SortFilterProxy( m_model, this );
+    m_search = new SearchProxy( m_sortfilter, this );
     m_grouping = new GroupingProxy( m_search, this );
 
     m_controller = new Controller( m_model, m_grouping, this );
@@ -71,31 +71,43 @@ ModelStack::ModelStack()
 
 ModelStack::~ModelStack()
 {
-    delete m_controller;  //destroyed first because it points to models
+    // Delete everything in reverse order of the constructor.
+    delete m_controller;
 
     delete m_grouping;
     delete m_search;
-    delete m_sort;
-    delete m_filter;
+    delete m_sortfilter;
     delete m_model;
 }
 
-GroupingProxy *
+Playlist::AbstractModel *
 ModelStack::top()
 {
     return m_grouping;
 }
 
-Model *
-ModelStack::source()
+GroupingProxy *
+ModelStack::groupingProxy()
 {
-    return m_model;
+    return m_grouping;
 }
 
-SortProxy *
+SortFilterProxy *
 ModelStack::sortProxy()
 {
-    return m_sort;
+    return m_sortfilter;
+}
+
+SortFilterProxy *
+ModelStack::filterProxy()
+{
+    return m_sortfilter;
+}
+
+Playlist::Model *
+ModelStack::bottom()
+{
+    return m_model;
 }
 
 Controller *
@@ -105,4 +117,3 @@ ModelStack::controller()
 }
 
 }   //namespace Playlist
-

@@ -20,90 +20,178 @@
 #ifndef AMAROK_COVERFOUNDDIALOG_H
 #define AMAROK_COVERFOUNDDIALOG_H
 
-#include "meta/Meta.h"
+#include "CoverFetchUnit.h"
+#include "core/meta/Meta.h"
 
 #include <KDialog>
-#include <KPushButton>
+#include <KVBox>
 
-#include <QHash>
 #include <QLabel>
 #include <QList>
+#include <QListWidgetItem>
 #include <QObject>
 #include <QPixmap>
+#include <QPointer>
 
-class KHBox;
+class CoverFoundItem;
+class CoverFoundSideBar;
+class KDialog;
+class KJob;
+class KJobProgressBar;
 class KLineEdit;
+class KListWidget;
 class KPushButton;
+class QFrame;
 class QGridLayout;
+class QTabWidget;
 
 class CoverFoundDialog : public KDialog
 {
     Q_OBJECT
 
 public:
-    explicit CoverFoundDialog( QWidget *parent,
-                               Meta::AlbumPtr album = KSharedPtr< Meta::Album >(),
-                               const QList< QPixmap > &covers = QList< QPixmap >() );
+    explicit CoverFoundDialog( const CoverFetchUnit::Ptr unit,
+                               const QPixmap cover = QPixmap(),
+                               const CoverFetch::Metadata data = CoverFetch::Metadata(),
+                               QWidget *parent = 0 );
+    ~CoverFoundDialog();
 
     /**
-    *   @returns the currently selected cover image
-    */
-    const QPixmap image() { return *m_labelPixmap->pixmap(); }
+     * @returns the currently selected cover image
+     */
+    const QPixmap image() const { return m_pixmap; }
+
+    const CoverFetchUnit::Ptr unit() const { return m_unit; }
 
 signals:
-    void newCustomQuery( const QString & );
+    void newCustomQuery( const QString &query, unsigned int page );
 
 public slots:
-    virtual void accept();
-
-    void add( QPixmap cover );
-    void add( QList< QPixmap > covers );
+    void add( const QPixmap cover,
+              const CoverFetch::Metadata metadata,
+              const CoverFetch::ImageSize imageSize = CoverFetch::NormalSize );
 
 protected:
-    void keyPressEvent( QKeyEvent *event );
-    void resizeEvent( QResizeEvent *event );
-    void closeEvent( QCloseEvent *event );
-    void wheelEvent( QWheelEvent *event );
+    void hideEvent( QHideEvent *event );
 
 private slots:
-    /**
-    *   Switch picture label and current index to next cover
-    */
-    void nextPix();
-
-    /**
-    *   Switch picture label and current index to previous cover
-    */
-    void prevPix();
+    void addToCustomSearch( const QString &text );
+    void clearQueryButtonClicked();
+    void clearView();
+    void itemSelected();
+    void itemDoubleClicked( QListWidgetItem *item );
+    void itemMenuRequested( const QPoint &pos );
+    void processQuery();
+    void processQuery( const QString &query );
+    void saveAs();
+    void saveRequested();
+    void selectDiscogs();
+    void selectLastFm();
+    void selectGoogle();
+    void selectYahoo();
+    void sortingTriggered( bool checked );
+    void updateSearchButton( const QString &text );
 
 private:
+    void addToView( CoverFoundItem *const item );
+    void setupSearchToolTip();
+    void sortCoversBySize();
     void updateGui();
-    void updatePixmap();
-    void updateButtons();
-    void updateDetails();
     void updateTitle();
 
-    QPixmap noCover( int size = 300 );
-    QPixmap m_noCover;               //! nocover.png cache
-
-    QLabel         *m_labelPixmap;   //! Pixmap container
-    QFrame         *m_details;       //! Details widget
-    QGridLayout    *m_detailsLayout; //! Details widget layout
-    KLineEdit      *m_search;        //! Custom search input
-    KPushButton    *m_next;          //! Next Button
-    KPushButton    *m_prev;          //! Back Button
-    KPushButton    *m_save;          //! Save Button
-
-    //! Album associated with the covers
-    Meta::AlbumPtr m_album;
-
-    //! Retrieved covers for the album
-    QList< QPixmap > m_covers;
-
-    //! Current position indices for m_covers
-    int m_index;
+    CoverFoundSideBar *m_sideBar;     //!< View of selected cover and its metadata
+    KLineEdit *m_search;              //!< Custom search input
+    KListWidget *m_view;              //!< View of retrieved covers
+    KPushButton *m_save;              //!< Save Button
+    KPushButton *m_searchButton;      //!< Button to start search or get more results for last query
+    Meta::AlbumPtr m_album;           //!< Album associated with @ref m_unit;
+    QAction *m_sortAction;            //!< Action to sort covers by size
+    QList< int > m_sortSizes;         //!< List of sorted cover sizes used for indexing
+    QPixmap m_pixmap;                 //!< Currently selected cover image
+    QString m_query;                  //!< Cache for the last entered custom query
+    bool m_isSorted;                  //!< Are the covers sorted in the view?
+    bool m_sortEnabled;               //!< Sort covers by size
+    const CoverFetchUnit::Ptr m_unit; //!< Cover fetch unit that initiated this dialog
+    unsigned int m_queryPage;         //!< Cache for the page number associated with @ref m_query
 
     Q_DISABLE_COPY( CoverFoundDialog );
+};
+
+class CoverFoundSideBar : public KVBox
+{
+    Q_OBJECT
+
+public:
+    explicit CoverFoundSideBar( const Meta::AlbumPtr album, QWidget *parent = 0 );
+    ~CoverFoundSideBar();
+
+public slots:
+    void clear();
+    void setPixmap( const QPixmap pixmap, CoverFetch::Metadata metadata );
+    void setPixmap( const QPixmap pixmap );
+
+private:
+    Meta::AlbumPtr        m_album;
+    QLabel               *m_notes;
+    QLabel               *m_cover;
+    QPixmap               m_pixmap;
+    QTabWidget           *m_tabs;
+    QWidget              *m_metaTable;
+    CoverFetch::Metadata  m_metadata;
+
+    void updateNotes();
+    void updateMetaTable();
+    void clearMetaTable();
+
+    Q_DISABLE_COPY( CoverFoundSideBar );
+};
+
+class CoverFoundItem : public QObject, public QListWidgetItem
+{
+    Q_OBJECT
+
+public:
+    explicit CoverFoundItem( const QPixmap cover,
+                             const CoverFetch::Metadata data,
+                             const CoverFetch::ImageSize imageSize = CoverFetch::NormalSize,
+                             QListWidget *parent = 0 );
+    ~CoverFoundItem();
+
+    bool fetchBigPix(); ///< returns true if full-size image is fetched successfully
+
+    const CoverFetch::Metadata metadata() const { return m_metadata; }
+    const QPixmap bigPix() const { return m_bigPix; }
+    const QPixmap thumb() const { return m_thumb; }
+
+    bool hasBigPix() const { return !m_bigPix.isNull(); }
+
+    void setBigPix( const QPixmap &pixmap ) { m_bigPix = pixmap; }
+
+signals:
+    void pixmapChanged( const QPixmap pixmap );
+
+public slots:
+    /**
+     * Opens a pixmap viewer
+     */
+    void display();
+
+    /**
+     * saveAs opens a dialog for choosing where to save the pixmap
+     * @param album used for dialog's start url
+     */
+    void saveAs( Meta::AlbumPtr album );
+
+    void slotFetchResult( KJob *job );
+
+private:
+    void setCaption();
+
+    CoverFetch::Metadata m_metadata;
+    QPixmap m_thumb;
+    QPixmap m_bigPix;
+    QPointer<KDialog> m_dialog;
+    QPointer<KJobProgressBar> m_progress;
 };
 
 #endif /* AMAROK_COVERFOUNDDIALOG_H */

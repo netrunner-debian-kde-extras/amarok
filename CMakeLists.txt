@@ -9,6 +9,7 @@ option(WITH_PLAYER "Enable building of main Amarok player" ON)
 option(WITH_MP3Tunes "Enable mp3tunes in the Amarok player, requires multiple extra dependencies" ON)
 option(WITH_IPOD "Enable iPod support in Amarok" ON)
 option(WITH_MYSQL_EMBEDDED "Build the embedded database library -- highly recommended" ON)
+option(WITH_DESKTOP_UI "For development purposes only, don't toggle this off unless you know what you are doing!" ON)
 
 include(CheckLibraryExists)
 check_library_exists(dl dlopen "" LIBDL_FOUND)
@@ -55,6 +56,9 @@ if(KDE4_BUILD_TESTS)
    add_definitions(-DDEBUG)
 endif()
 
+if(WITH_DESKTOP_UI)
+    add_definitions(-DDESKTOP_UI)
+endif()
 SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -fmessage-length=0")
 if (CMAKE_COMPILER_IS_GNUCXX)
     SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fmessage-length=0")
@@ -157,14 +161,17 @@ if( WITH_PLAYER )
 
     macro_bool_to_01(LIBVISUAL_FOUND HAVE_LIBVISUAL)
 
+    macro_ensure_version("4.3.80" ${KDE_VERSION} KSTATUSNOTIFIERITEM_FOUND)
+    macro_bool_to_01(KSTATUSNOTIFIERITEM_FOUND HAVE_KSTATUSNOTIFIERITEM)
+
     configure_file(config-amarok.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-amarok.h )
 
     include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE4_INCLUDES} ${TAGLIB_INCLUDES})
 
-    if( KDE4_BUILD_TESTS )
+    if( KDE4_BUILD_TESTS AND NOT WIN32 )
         ENABLE_TESTING()
         add_subdirectory( tests )
-    endif( KDE4_BUILD_TESTS )
+    endif( KDE4_BUILD_TESTS AND NOT WIN32 )
 
     add_subdirectory( src )
 

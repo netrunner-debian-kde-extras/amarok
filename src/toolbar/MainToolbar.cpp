@@ -20,7 +20,7 @@
 #include "amarokconfig.h"
 
 #include "ActionClasses.h"
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "EngineController.h"
 #include "GlobalCurrentTrackActions.h"
 #include "MainWindow.h"
@@ -31,9 +31,9 @@
 
 #include "browsers/collectionbrowser/CollectionWidget.h"
 
-#include "meta/capabilities/CurrentTrackActionsCapability.h"
-#include "meta/MetaUtility.h"
-#include "meta/capabilities/TimecodeLoadCapability.h"
+#include "core/capabilities/CurrentTrackActionsCapability.h"
+#include "core/meta/support/MetaUtility.h"
+#include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
 
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
@@ -76,7 +76,7 @@ static const int track_action_spacing = 6;
 
 MainToolbar::MainToolbar( QWidget *parent )
     : QToolBar( i18n( "Main Toolbar" ), parent )
-    , EngineObserver( The::engineController() )
+    , Engine::EngineObserver( The::engineController() )
     , m_lastTime( -1 )
 {
     setObjectName( "MainToolbar" );
@@ -105,7 +105,7 @@ MainToolbar::MainToolbar( QWidget *parent )
     if ( fnt.pointSize() > 0 )
         fnt.setPointSize( qRound(fnt.pointSize() * track_fontsize_factor) );
     const int fntH = QFontMetrics( QApplication::font() ).height();
-    
+
     m_skip_left = The::svgHandler()->renderSvg( "tiny_skip_left", 80*fntH/128, fntH, "tiny_skip_left" );
     m_skip_right = The::svgHandler()->renderSvg( "tiny_skip_right", 80*fntH/128, fntH, "tiny_skip_right" );
 
@@ -158,7 +158,7 @@ MainToolbar::MainToolbar( QWidget *parent )
 
     m_timeLabel = new QLabel( info );
     m_timeLabel->setAlignment( Qt::AlignVCenter | Qt::AlignRight );
-    
+
     m_slider = new Amarok::TimeSlider( info );
     connect( m_slider, SIGNAL( sliderReleased( int ) ), The::engineController(), SLOT( seek( int ) ) );
     connect( m_slider, SIGNAL( valueChanged( int ) ), SLOT( setLabelTime( int ) ) );
@@ -169,7 +169,7 @@ MainToolbar::MainToolbar( QWidget *parent )
 
     const int pbsH = qMax( m_timeLabel->sizeHint().height(), m_slider->sizeHint().height() );
     vl->addItem( m_progressBarSpacer = new QSpacerItem(0, pbsH, QSizePolicy::MinimumExpanding, QSizePolicy::Fixed ) );
-    
+
     addWidget( info );
 
     m_volume = new VolumeDial( this );
@@ -218,11 +218,11 @@ MainToolbar::animateTrackLabels()
     m_prev.label->setOpacity( prevOpacity );
     if (done)
         done = m_prev.label->geometry().x() == m_prev.rect.x() + off;
-    
+
     adjustLabelPos( m_current.label, m_current.rect.x() + off );
     if (done)
         done = m_current.label->geometry().x() == m_current.rect.x() + off;
-    
+
     adjustLabelPos( m_next.label, m_next.rect.x() + off );
     m_next.label->setOpacity( nextOpacity );
     if (done)
@@ -233,7 +233,7 @@ MainToolbar::animateTrackLabels()
         m_dummy.label->hide();
     else
         done = false;
-    
+
     if ( done )
     {
         killTimer( m_trackBarAnimationTimer );
@@ -383,6 +383,9 @@ MainToolbar::layoutTrackBar()
     setCurrentTrackActionsVisible( true );
 }
 
+// The metadata (title, album) of 'currentTrack()' may have changed.
+// A bit crude because this triggers on any change of any track in the playlist, but that's
+// not a problem. Nicer but more complex approach: use 'Meta::Observer::subscribeTo()'.
 void MainToolbar::updateLabels()
 {
     engineTrackChanged( The::engineController()->currentTrack() );
@@ -406,9 +409,9 @@ MainToolbar::updateCurrentTrackActions()
         actions << action;
 
     Meta::TrackPtr track = The::engineController()->currentTrack();
-    if( track && track->hasCapabilityInterface( Meta::Capability::CurrentTrackActions ) )
+    if( track && track->hasCapabilityInterface( Capabilities::Capability::CurrentTrackActions ) )
     {
-        Meta::CurrentTrackActionsCapability *cac = track->create<Meta::CurrentTrackActionsCapability>();
+        Capabilities::CurrentTrackActionsCapability *cac = track->create<Capabilities::CurrentTrackActionsCapability>();
         if ( cac )
         {
             QList<QAction *> currentTrackActions = cac->customActions();
@@ -585,9 +588,9 @@ MainToolbar::updateBookmarks( const QString *BookmarkName )
     m_slider->clearTriangles();
     if ( Meta::TrackPtr track = The::engineController()->currentTrack() )
     {
-        if ( track->hasCapabilityInterface( Meta::Capability::LoadTimecode ) )
+        if ( track->hasCapabilityInterface( Capabilities::Capability::LoadTimecode ) )
         {
-            Meta::TimecodeLoadCapability *tcl = track->create<Meta::TimecodeLoadCapability>();
+            Capabilities::TimecodeLoadCapability *tcl = track->create<Capabilities::TimecodeLoadCapability>();
             BookmarkList list = tcl->loadTimecodes();
             debug() << "found " << list.count() << " timecodes on this track";
             foreach( AmarokUrlPtr url, list )
@@ -607,7 +610,7 @@ MainToolbar::updateBookmarks( const QString *BookmarkName )
 void
 MainToolbar::engineTrackChanged( Meta::TrackPtr track )
 {
-    if ( !isVisible() )
+    if ( !isVisible() || (m_trackBarAnimationTimer && track && track.data() == m_current.key) )
         return;
     if ( m_trackBarAnimationTimer )
     {
@@ -642,7 +645,7 @@ MainToolbar::engineTrackChanged( Meta::TrackPtr track )
             if ( m_current.key == m_next.key && m_current.key != m_prev.key )
             {
                 setCurrentTrackActionsVisible( false );
-                
+
                 // left
                 m_dummy.targetX = r.x() - d;
 //                 if ( d < 0 ) // rtl
@@ -666,7 +669,7 @@ MainToolbar::engineTrackChanged( Meta::TrackPtr track )
             else if ( m_current.key == m_prev.key )
             {
                 setCurrentTrackActionsVisible( false );
-                
+
                 // left
                 m_prev.label->setGeometry( r );
                 m_current.label->setGeometry( r );
@@ -734,8 +737,8 @@ MainToolbar::hideEvent( QHideEvent *ev )
 {
     QToolBar::hideEvent( ev );
     disconnect ( The::playlistController(), SIGNAL( changed()), this, SLOT( updatePrevAndNext() ) );
-    disconnect ( Playlist::ModelStack::instance()->source(), SIGNAL( queueChanged() ), this, SLOT( updatePrevAndNext() ) );
-    disconnect ( Playlist::ModelStack::instance()->source(), SIGNAL( metadataUpdated() ), this, SLOT( updateLabels() ) );
+    disconnect ( Playlist::ModelStack::instance()->bottom(), SIGNAL( queueChanged() ), this, SLOT( updatePrevAndNext() ) );
+    disconnect ( Playlist::ModelStack::instance()->bottom(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateLabels() ) );
     disconnect ( The::playlistActions(), SIGNAL( navigatorChanged()), this, SLOT( updatePrevAndNext() ) );
     disconnect ( The::amarokUrlHandler(), SIGNAL( timecodesUpdated(const QString*) ),
                  this, SLOT( updateBookmarks(const QString*) ) );
@@ -755,7 +758,7 @@ MainToolbar::paintEvent( QPaintEvent *ev )
     QPainter p( this );
     Skip *left = &m_prev;
     Skip *right = &m_next;
-    
+
     if ( layoutDirection() == Qt::RightToLeft )
     {
         left = &m_next;
@@ -827,10 +830,10 @@ MainToolbar::setLabelTime( int ms )
     }
     else if ( isVisible() ) // no need to do expensive stuff - it's updated every second anyway
     {
-        
+
         const int secs = ms/1000;
         const int remainingSecs =  m_slider->maximum() > 0 ? (m_slider->maximum() - ms) / 1000 : 0;
-        
+
         if ( secs == m_lastTime && remainingSecs == m_lastRemainingTime )
             return;
 
@@ -864,7 +867,7 @@ MainToolbar::setLabelTime( int ms )
         m_lastRemainingTime = remainingSecs;
 
     }
-    
+
     if (relayout)
         layoutProgressBar();
 }
@@ -882,8 +885,8 @@ void
 MainToolbar::showEvent( QShowEvent *ev )
 {
     connect ( The::playlistController(), SIGNAL( changed()), this, SLOT( updatePrevAndNext() ) );
-    connect ( Playlist::ModelStack::instance()->source(), SIGNAL( queueChanged() ), this, SLOT( updatePrevAndNext() ) );
-    connect ( Playlist::ModelStack::instance()->source(), SIGNAL( metadataUpdated() ), this, SLOT( updateLabels() ) );
+    connect ( Playlist::ModelStack::instance()->bottom(), SIGNAL( queueChanged() ), this, SLOT( updatePrevAndNext() ) );
+    connect ( Playlist::ModelStack::instance()->bottom(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateLabels() ) );
     connect ( The::playlistActions(), SIGNAL( navigatorChanged()), this, SLOT( updatePrevAndNext() ) );
     connect ( The::amarokUrlHandler(), SIGNAL( timecodesUpdated(const QString*) ),
               this, SLOT( updateBookmarks(const QString*) ) );

@@ -21,16 +21,16 @@
 
 #include "Bias.h"
 
-#include "Collection.h"
-#include "CollectionManager.h"
+#include "core/collections/Collection.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "CustomBias.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "DynamicBiasWidgets.h"
 #include "DynamicModel.h"
-#include "MetaConstants.h"
-#include "MetaQueryMaker.h"
-#include "QueryMaker.h"
-#include "collection/support/XmlQueryWriter.h"
+#include "core/meta/support/MetaConstants.h"
+#include "core/collections/MetaQueryMaker.h"
+#include "core/collections/QueryMaker.h"
+#include "core-impl/collections/support/XmlQueryWriter.h"
 
 #include <QMutexLocker>
 
@@ -67,7 +67,7 @@ Dynamic::Bias::fromXml( QDomElement e )
         if( !queryElement.isNull() )
         {
             // I don't actually need a qm from XmlQueryReader, I just want the filters.
-            QueryMaker* dummyQM = new MetaQueryMaker( QList<QueryMaker*>() );
+            Collections::QueryMaker* dummyQM = new Collections::MetaQueryMaker( QList<Collections::QueryMaker*>() );
 
             QString rawXml;
             QTextStream rawXmlStream( &rawXml );
@@ -174,11 +174,11 @@ Dynamic::CollectionDependantBias::CollectionDependantBias()
     : m_collection(0)
     , m_needsUpdating( true )
 {
-    connect( CollectionManager::instance(), SIGNAL(collectionDataChanged(Amarok::Collection*)),
+    connect( CollectionManager::instance(), SIGNAL(collectionDataChanged(Collections::Collection*)),
             this, SLOT(collectionUpdated()) );
 }
 
-Dynamic::CollectionDependantBias::CollectionDependantBias( Amarok::Collection* coll )
+Dynamic::CollectionDependantBias::CollectionDependantBias( Collections::Collection* coll )
     : m_collection(coll)
     , m_needsUpdating( true )
 {
@@ -204,7 +204,7 @@ Dynamic::GlobalBias::GlobalBias( double weight, XmlQueryReader::Filter filter )
     setQuery( filter );
 }
 
-Dynamic::GlobalBias::GlobalBias( Amarok::Collection* coll, double weight, XmlQueryReader::Filter filter )
+Dynamic::GlobalBias::GlobalBias( Collections::Collection* coll, double weight, XmlQueryReader::Filter filter )
     : CollectionDependantBias( coll )
     , m_qm(0)
 {
@@ -283,14 +283,14 @@ Dynamic::GlobalBias::setQuery( XmlQueryReader::Filter filter )
     DEBUG_BLOCK
     QMutexLocker locker( &m_mutex );
 
-    QueryMaker* qm;
+    Collections::QueryMaker* qm;
 
     if( !m_collection )
         m_collection = CollectionManager::instance()->primaryCollection();
 
     qm = m_collection->queryMaker();
 
-    m_qm = new XmlQueryWriter( qm,
+    m_qm = new Collections::XmlQueryWriter( qm,
             QDomDocument() );
 
     if( filter.field != 0 )
@@ -299,10 +299,10 @@ Dynamic::GlobalBias::setQuery( XmlQueryReader::Filter filter )
             m_qm->addFilter( filter.field, filter.value );
         else
             m_qm->addNumberFilter( filter.field, filter.value.toLongLong(),
-                    (QueryMaker::NumberComparison)filter.compare );
+                    (Collections::QueryMaker::NumberComparison)filter.compare );
     }
 
-    m_qm->setQueryType( QueryMaker::Custom );
+    m_qm->setQueryType( Collections::QueryMaker::Custom );
     m_qm->addReturnValue( Meta::valUniqueId );
     m_qm->orderByRandom(); // as to not affect the amortized time
 

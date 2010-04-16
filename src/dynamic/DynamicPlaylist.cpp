@@ -17,11 +17,11 @@
  ****************************************************************************************/
 
 #include "DynamicPlaylist.h"
-#include "CollectionManager.h"
+#include "core-impl/collections/support/CollectionManager.h"
 
 
 
-Dynamic::DynamicPlaylist::DynamicPlaylist( Amarok::Collection* coll )
+Dynamic::DynamicPlaylist::DynamicPlaylist( Collections::Collection* coll )
      : m_collection(coll), m_active(true)
 {
     if( !m_collection )

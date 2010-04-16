@@ -15,8 +15,9 @@
  ****************************************************************************************/
 
 #include "ServiceCollectionLocation.h"
-#include "Debug.h"
-using namespace Meta;
+#include "core/support/Debug.h"
+
+using namespace Collections;
 
 ServiceCollectionLocation::ServiceCollectionLocation()
     : CollectionLocation()
@@ -56,7 +57,7 @@ ServiceCollectionLocation::getKIOCopyableUrls( const Meta::TrackList &tracks )
     QMap<Meta::TrackPtr, KUrl> urls;
     foreach( Meta::TrackPtr track, tracks )
     {
-        ServiceTrack *servtrack = static_cast<ServiceTrack *>( track.data() );
+        Meta::ServiceTrack *servtrack = static_cast<Meta::ServiceTrack *>( track.data() );
         if( servtrack->isPlayable() )
             urls.insert( track, servtrack->downloadableUrl() );
     }

@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2004 Frederik Holljen <fh@ez.no>                                       *
  * Copyright (c) 2004,2005 Max Howell <max.howell@methylblue.com>                       *
- * Copyright (c) 2004-2008 Mark Kretschmann <kretschmann@kde.org>                       *
+ * Copyright (c) 2004-2010 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2006,2008 Ian Monroe <ian@monroe.nu>                                   *
  * Copyright (c) 2008 Jason A. Donenfeld <Jason@zx2c4.com>                              *
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
@@ -24,21 +24,23 @@
 
 #include "EngineController.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 #include "amarokconfig.h"
-#include "collection/CollectionManager.h"
-#include "Components.h"
-#include "statusbar/StatusBar.h"
-#include "Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core/support/Components.h"
+#include "core/interfaces/Logger.h"
+#include "core/support/Debug.h"
 #include "MainWindow.h"
 #include "MediaDeviceMonitor.h"
-#include "meta/Meta.h"
-#include "meta/MetaConstants.h"
-#include "meta/capabilities/MultiPlayableCapability.h"
-#include "meta/capabilities/MultiSourceCapability.h"
+#include "core/meta/Meta.h"
+#include "core/meta/support/MetaConstants.h"
+#include "core/meta/support/MetaUtility.h"
+#include "core/capabilities/MultiPlayableCapability.h"
+#include "core/capabilities/MultiSourceCapability.h"
+#include "core/capabilities/SourceInfoCapability.h"
 #include "playlist/PlaylistActions.h"
-#include "PlaylistFileSupport.h"
-#include "PluginManager.h"
+#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
+#include "core/plugins/PluginManager.h"
 
 #include <KFileItem>
 #include <KIO/Job>
@@ -50,6 +52,7 @@
 #include <Phonon/MediaObject>
 #include <Phonon/VolumeFaderEffect>
 
+#include <QTextDocument>
 #include <QTimer>
 
 #include <cmath>
@@ -75,6 +78,11 @@ EngineController::EngineController()
     , m_fadeoutTimer( new QTimer( this ) )
     , m_volume( 0 )
     , m_currentIsAudioCd( false )
+    , m_ignoreVolumeChangeAction ( false )
+    , m_ignoreVolumeChangeObserve ( false )
+    , m_tickInterval( 0 )
+    , m_lastTickPosition( -1 )
+    , m_lastTickCount( 0 )
 {
     DEBUG_BLOCK
 
@@ -155,22 +163,28 @@ EngineController::initializePhonon()
     }
 
     m_media->setTickInterval( 100 );
-    debug() << "Tick Interval (actual): " << m_media->tickInterval();
+    m_tickInterval = m_media->tickInterval();
+    debug() << "Tick Interval (actual): " << m_tickInterval;
     PERF_LOG( "EngineController: loaded phonon objects" )
 
     // Get the next track when there is 2 seconds left on the current one.
     m_media->setPrefinishMark( 2000 );
 
     connect( m_media, SIGNAL( finished() ), SLOT( slotQueueEnded() ) );
-    connect( m_media, SIGNAL( aboutToFinish()), SLOT( slotAboutToFinish() ) );
+    connect( m_media, SIGNAL( aboutToFinish() ), SLOT( slotAboutToFinish() ) );
     connect( m_media, SIGNAL( metaDataChanged() ), SLOT( slotMetaDataChanged() ) );
     connect( m_media, SIGNAL( stateChanged( Phonon::State, Phonon::State ) ), SLOT( slotStateChanged( Phonon::State, Phonon::State ) ) );
     connect( m_media, SIGNAL( tick( qint64 ) ), SLOT( slotTick( qint64 ) ) );
     connect( m_media, SIGNAL( totalTimeChanged( qint64 ) ), SLOT( slotTrackLengthChanged( qint64 ) ) );
     connect( m_media, SIGNAL( currentSourceChanged( const Phonon::MediaSource & ) ), SLOT( slotNewTrackPlaying( const Phonon::MediaSource & ) ) );
 
+    connect( m_audio, SIGNAL( volumeChanged( qreal ) ), SLOT( slotVolumeChanged( qreal ) ) );
+    connect( m_audio, SIGNAL( mutedChanged( bool ) ), SLOT( slotMutedChanged( bool ) ) );
+
     connect( m_controller, SIGNAL( titleChanged( int ) ), SLOT( slotTitleChanged( int ) ) );
 
+    // Read the volume from phonon
+    m_volume = qBound<qreal>( 0, qRound(m_audio->volume()*100), 100 );
 
     if( AmarokConfig::trackDelayLength() > -1 )
         m_media->setTransitionTime( AmarokConfig::trackDelayLength() ); // Also Handles gapless.
@@ -189,7 +203,7 @@ EngineController::canDecode( const KUrl &url ) //static
    //NOTE this function must be thread-safe
 
     // We can't use playlists in the engine
-    if( Meta::isPlaylist( url ) )
+    if( Playlists::isPlaylist( url ) )
         return false;
 
     KFileItem item( KFileItem::Unknown, KFileItem::Unknown, url );
@@ -235,12 +249,12 @@ EngineController::supportedMimeTypes()
     mimeTable << "audio/x-m4b"; // MP4 Audio Books have a different extension that KFileItem/Phonon don't grok
 
     // We special case this, as otherwise the users would hate us
-    if( ( !mimeTable.contains( "audio/mp3" ) || !mimeTable.contains( "audio/x-mp3" ) ) && !installDistroCodec() )
+    if( ( !mimeTable.contains( "audio/mp3" ) && !mimeTable.contains( "audio/x-mp3" ) ) && !installDistroCodec() )
     {
-        The::statusBar()->longMessage(
+        Amarok::Components::logger()->longMessage(
                 i18n( "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
                       "the installation of the backend that phonon uses.</p>"
-                      "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok Handbook</i>.</p>" ), StatusBar::Error );
+                      "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok Handbook</i>.</p>" ), Amarok::Logger::Error );
         mimeTable << "audio/mp3" << "audio/x-mp3";
     }
 
@@ -302,7 +316,7 @@ EngineController::endSession()
     //only update song stats, when we're not going to resume it
     if ( !AmarokConfig::resumePlayback() && m_currentTrack )
     {
-        playbackEnded( trackPositionMs(), m_currentTrack->length(), EngineObserver::EndedQuit );
+        playbackEnded( trackPositionMs(), m_currentTrack->length(), Engine::EngineObserver::EndedQuit );
         trackChangedNotify( Meta::TrackPtr( 0 ) );
     }
 }
@@ -345,9 +359,9 @@ EngineController::play( const Meta::TrackPtr& track, uint offset )
     delete m_boundedPlayback;
     delete m_multiPlayback;
     delete m_multiSource;
-    m_boundedPlayback = m_currentTrack->create<Meta::BoundedPlaybackCapability>();
-    m_multiPlayback = m_currentTrack->create<Meta::MultiPlayableCapability>();
-    m_multiSource  = m_currentTrack->create<Meta::MultiSourceCapability>();
+    m_boundedPlayback = m_currentTrack->create<Capabilities::BoundedPlaybackCapability>();
+    m_multiPlayback = m_currentTrack->create<Capabilities::MultiPlayableCapability>();
+    m_multiSource  = m_currentTrack->create<Capabilities::MultiSourceCapability>();
 
 
     m_nextTrack.clear();
@@ -479,6 +493,13 @@ EngineController::playUrl( const KUrl &url, uint offset )
 void
 EngineController::pause() //SLOT
 {
+    if( m_currentTrack && m_currentTrack->type() == "stream" ) // SHOUTcast doesn't support pausing, so we stop.
+    {
+        debug() << "This is a stream that cannot be paused. Stopping instead.";
+        stop();
+        return;
+    }
+
     m_media->pause();
 }
 
@@ -505,7 +526,7 @@ EngineController::stop( bool forceInstant ) //SLOT
         const qint64 pos = trackPositionMs();
         const qint64 length = m_currentTrack->length();
         m_currentTrack->finishedPlaying( double(pos)/double(length) );
-        playbackEnded( pos, length, EngineObserver::EndedStopped );
+        playbackEnded( pos, length, Engine::EngineObserver::EndedStopped );
         trackChangedNotify( Meta::TrackPtr( 0 ) );
     }
 
@@ -554,9 +575,11 @@ EngineController::playPause() //SLOT
     {
         case Phonon::PausedState:
         case Phonon::StoppedState:
+
         case Phonon::LoadingState:
             play();
             break;
+
         default:
             pause();
             break;
@@ -631,13 +654,16 @@ EngineController::setVolume( int percent ) //SLOT
     percent = qBound<qreal>( 0, percent, 100 );
     m_volume = percent;
 
-    // Phonon stays completely mute if the volume is lower than 0.05, so we shift and limit the range
-    qreal newVolume =  ( percent + 4 ) / 100.0;
-    newVolume = qBound<qreal>( 0.04, newVolume, 1.0 );
-    m_audio->setVolume( newVolume );
+    const qreal volume =  percent / 100.0;
+    if ( !m_ignoreVolumeChangeAction && m_audio->volume() != volume )
+    {
+        m_ignoreVolumeChangeObserve = true;
+        m_audio->setVolume( volume );
 
-    AmarokConfig::setMasterVolume( percent );
-    volumeChangedNotify( percent );
+        AmarokConfig::setMasterVolume( percent );
+        volumeChangedNotify( percent );
+    }
+    m_ignoreVolumeChangeAction = false;
 
     return percent;
 }
@@ -858,10 +884,23 @@ EngineController::slotTick( qint64 position )
 {
     if ( m_boundedPlayback )
     {
+        qint64 newPosition = position;
         trackPositionChangedNotify( static_cast<long>( position - m_boundedPlayback->startPosition() ), false );
 
+        // Calculate a better position.  Sometimes the position doesn't update
+        // with a good resolution (for example, 1 sec for TrueAudio files in the
+        // Xine-1.1.18 backend).  This tick function, in those cases, just gets
+        // called multiple times with the same position.  We count how many
+        // times this has been called prior, and adjust for it.
+        if ( position == m_lastTickPosition )
+            newPosition += ++m_lastTickCount * m_tickInterval;
+        else
+            m_lastTickCount = 0;
+
+        m_lastTickPosition = position;
+
         //don't go beyond the stop point
-        if ( position >= m_boundedPlayback->endPosition() )
+        if ( newPosition >= m_boundedPlayback->endPosition() )
         {
             slotAboutToFinish();
         }
@@ -879,7 +918,10 @@ EngineController::slotAboutToFinish()
     debug() << "Track finished completely, updating statistics";
 
     if( m_currentTrack ) // not sure why this should not be the case, but sometimes happens. don't crash.
+    {
         m_currentTrack->finishedPlaying( 1.0 ); // If we reach aboutToFinish, the track is done as far as we are concerned.
+        trackFinishedNotify( m_currentTrack );
+    }
     if( m_multiPlayback )
     {
         DEBUG_LINE_INFO
@@ -937,7 +979,7 @@ EngineController::slotQueueEnded()
     if( m_currentTrack && !m_multiPlayback && !m_multiSource )
     {
         m_media->setCurrentSource( Phonon::MediaSource() );
-        playbackEnded( trackPositionMs(), m_currentTrack->length(), EngineObserver::EndedStopped );
+        playbackEnded( trackPositionMs(), m_currentTrack->length(), Engine::EngineObserver::EndedStopped );
         m_currentTrack = 0;
         trackChangedNotify( m_currentTrack );
     }
@@ -1025,22 +1067,6 @@ void
 EngineController::slotStateChanged( Phonon::State newState, Phonon::State oldState ) //SLOT
 {
     DEBUG_BLOCK
-
-    // HACK:
-    // The following check is an attempt to fix http://bugs.kde.org/show_bug.cgi?id=180339
-    // ("amarok stops playing tracks") and other issues with Phonon.
-    // The theory:
-    // It has been observed that Phonon will sometimes emit a stateChanged() with
-    // _both_ oldState and newState == 0, which makes little sense. After that it goes
-    // berserk, until you restart Amarok.
-    // Now we try to detect this weird state, and then try to destroy and recreate all
-    // Phonon objects, in the hope of fixing the situation. Fingers crossed.
-    if( newState == Phonon::LoadingState && oldState == Phonon::LoadingState )
-    {
-        warning() << "Trying to re-initialize Phonon. Fingers crossed.";
-        initializePhonon();
-        newState = Phonon::ErrorState;  // Indicate error
-    }
 
     // Sanity checks:
     if( newState == oldState )
@@ -1213,9 +1239,81 @@ void EngineController::slotTitleChanged( int titleNumber )
     slotAboutToFinish();
 }
 
+void EngineController::slotVolumeChanged( qreal newVolume )
+{
+    int percent = qBound<qreal>( 0, qRound(newVolume * 100), 100 );
+
+    if ( !m_ignoreVolumeChangeObserve && m_volume != percent )
+    {
+        m_ignoreVolumeChangeAction = true;
+
+        m_volume = percent;
+        AmarokConfig::setMasterVolume( percent );
+        volumeChangedNotify( percent );
+    }
+    else
+        m_volume = percent;
+
+    m_ignoreVolumeChangeObserve = false;
+}
+
+void EngineController::slotMutedChanged( bool mute )
+{
+    AmarokConfig::setMuteState( mute );
+    muteStateChangedNotify( mute );
+}
+
+
 bool EngineController::isPlayingAudioCd()
 {
     return m_currentIsAudioCd;
+}
+
+QString EngineController::prettyNowPlaying()
+{
+    Meta::TrackPtr track = currentTrack();
+
+    if( track )
+    {
+        QString title       = Qt::escape( track->name() );
+        QString prettyTitle = Qt::escape( track->prettyName() );
+        QString artist      = track->artist() ? Qt::escape( track->artist()->name() ) : QString();
+        QString album       = track->album() ? Qt::escape( track->album()->name() ) : QString();
+        QString length      = Qt::escape( Meta::msToPrettyTime( track->length() ) );
+
+        // ugly because of translation requirements
+        if ( !title.isEmpty() && !artist.isEmpty() && !album.isEmpty() )
+            title = i18nc( "track by artist on album", "<b>%1</b> by <b>%2</b> on <b>%3</b>", title, artist, album );
+
+        else if ( !title.isEmpty() && !artist.isEmpty() )
+            title = i18nc( "track by artist", "<b>%1</b> by <b>%2</b>", title, artist );
+
+        else if ( !album.isEmpty() )
+            // we try for pretty title as it may come out better
+            title = i18nc( "track on album", "<b>%1</b> on <b>%2</b>", prettyTitle, album );
+        else
+            title = "<b>" + prettyTitle + "</b>";
+
+        if ( title.isEmpty() )
+            title = i18n( "Unknown track" );
+
+        Capabilities::SourceInfoCapability *sic = track->create<Capabilities::SourceInfoCapability>();
+        if ( sic )
+        {
+            QString source = sic->sourceName();
+            if ( !source.isEmpty() )
+                title += ' ' + i18nc( "track from source", "from <b>%1</b>", source );
+
+            delete sic;
+        }
+
+        if ( length.length() > 1 )
+            title += " (" + length + ')';
+
+        return title;
+    }
+    else
+        return i18n( "No track playing" );
 }
 
 #include "EngineController.moc"

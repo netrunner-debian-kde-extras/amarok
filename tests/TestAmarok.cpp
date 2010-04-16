@@ -18,19 +18,24 @@
  ***************************************************************************/
 
 #include "TestAmarok.h"
-#include "Amarok.h"
+#include "core/support/Amarok.h"
+#include "config-amarok-test.h"
 
 #include <QtTest/QTest>
 #include <QtCore/QDir>
-#include <QtCore/QString>
 #include <QtCore/QDateTime>
 
-TestAmarok::TestAmarok( const QStringList args, const QString &logPath )
-    : TestBase( "Amarok" )
+#include <qtest_kde.h>
+
+QTEST_KDEMAIN_CORE( TestAmarok )
+
+TestAmarok::TestAmarok()
+{}
+
+QString
+TestAmarok::dataPath( const QString &relPath )
 {
-    QStringList combinedArgs = args;
-    addLogging( combinedArgs, logPath );
-    QTest::qExec( this, combinedArgs );
+    return QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + '/' + relPath );
 }
 
 void TestAmarok::testAsciiPath()
@@ -38,13 +43,13 @@ void TestAmarok::testAsciiPath()
     QCOMPARE( Amarok::asciiPath( "" ), QString( "" ) );
     QCOMPARE( Amarok::asciiPath( "/home/sven" ), QString( "/home/sven" ) );
 
-    QCOMPARE( Amarok::asciiPath( "/äöü" ), QString( "/___" ) );
-    QCOMPARE( Amarok::asciiPath( "/äöütest" ), QString( "/___test" ) );
-    QCOMPARE( Amarok::asciiPath( "/äöü/test" ), QString( "/___/test" ) );
-    QCOMPARE( Amarok::asciiPath( "/123/" ), QString( "/123/" ) );
-    QCOMPARE( Amarok::asciiPath( "/.hidden" ), QString( "/.hidden" ) );
-    QCOMPARE( Amarok::asciiPath( "/here be dragons" ), QString( "/here be dragons" ) );
-    QCOMPARE( Amarok::asciiPath( "/!important/some%20stuff/what's this?" ), QString( "/!important/some%20stuff/what's this?" ) );
+    QCOMPARE( Amarok::asciiPath( QString::fromUtf8( "/äöü" ) ), QString( "/___" ) );
+    QCOMPARE( Amarok::asciiPath( QString::fromUtf8( "/äöütest" ) ), QString( "/___test" ) );
+    QCOMPARE( Amarok::asciiPath( QString::fromUtf8( "/äöü/test" ) ), QString( "/___/test" ) );
+    QCOMPARE( Amarok::asciiPath( QString::fromUtf8( "/123/" ) ), QString( "/123/" ) );
+    QCOMPARE( Amarok::asciiPath( QString::fromUtf8( "/.hidden" ) ), QString( "/.hidden" ) );
+    QCOMPARE( Amarok::asciiPath( QString::fromUtf8( "/here be dragons" ) ), QString( "/here be dragons" ) );
+    QCOMPARE( Amarok::asciiPath( QString::fromUtf8( "/!important/some%20stuff/what's this?" ) ), QString( "/!important/some%20stuff/what's this?" ) );
 
     /* 0x7F = 127 = DEL control character, explicitly ok on *nix file systems */
     QCOMPARE( Amarok::asciiPath( QString( "/abc" ) + QChar( 0x7F ) + ".1" ), QString( QString( "/abc" ) + QChar( 0x7F ) + ".1" ) );
@@ -65,28 +70,28 @@ void TestAmarok::testCleanPath()
     QCOMPARE( Amarok::cleanPath( QString( "/\\.,-+" ) ), QString( "/\\.,-+" ) );
 
     /* German */
-    QCOMPARE( Amarok::cleanPath( QString( "äöüß" ) ), QString( "aeoeuess" ) );
-    QCOMPARE( Amarok::cleanPath( QString( "ÄÖÜß" ) ), QString( "AeOeUess" ) ); // capital ß only exists in theory in the German language, but had been defined some time ago, iirc
+    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "äöüß" ) ), QString( "aeoeuess" ) );
+    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "ÄÖÜß" ) ), QString( "AeOeUess" ) ); // capital ß only exists in theory in the German language, but had been defined some time ago, iirc
 
     /* French */
-    QCOMPARE( Amarok::cleanPath( QString( "áàéèêô" ) ), QString( "aaeeeo" ) );
-    QCOMPARE( Amarok::cleanPath( QString( "ÁÀÉÈÊÔ" ) ), QString( "AAEEEO" ) );
-    QCOMPARE( Amarok::cleanPath( QString( "æ" ) ), QString( "ae" ) );
-    QCOMPARE( Amarok::cleanPath( QString( "Æ" ) ), QString( "AE" ) );
+    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "áàéèêô" ) ), QString( "aaeeeo" ) );
+    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "ÁÀÉÈÊÔ" ) ), QString( "AAEEEO" ) );
+    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "æ" ) ), QString( "ae" ) );
+    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "Æ" ) ), QString( "AE" ) );
 
     /* Czech and other east European languages */
-    QCOMPARE( Amarok::cleanPath( QString( "çńǹýỳź" ) ), QString( "cnnyyz" ) );
-    QCOMPARE( Amarok::cleanPath( QString( "ÇŃǸÝỲŹ" ) ), QString( "CNNYYZ" ) );
-    QCOMPARE( Amarok::cleanPath( QString( "ěĺľôŕřůž" ) ), QString( "ellorruz" ) );
-    QCOMPARE( Amarok::cleanPath( QString( "ÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ" ) ), QString( "ACDEEINORSTUUYZ" ) );
+    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "çńǹýỳź" ) ), QString( "cnnyyz" ) );
+    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "ÇŃǸÝỲŹ" ) ), QString( "CNNYYZ" ) );
+    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "ěĺľôŕřůž" ) ), QString( "ellorruz" ) );
+    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "ÁČĎÉĚÍŇÓŘŠŤÚŮÝŽ" ) ), QString( "ACDEEINORSTUUYZ" ) );
 
     /* Skandinavian languages */
-    QCOMPARE( Amarok::cleanPath( QString( "åø" ) ), QString( "aoe" ) );
-    QCOMPARE( Amarok::cleanPath( QString( "ÅØ" ) ), QString( "AOE" ) );
+    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "åø" ) ), QString( "aoe" ) );
+    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "ÅØ" ) ), QString( "AOE" ) );
 
     /* Spanish */
-    QCOMPARE( Amarok::cleanPath( QString( "ñóÿ" ) ), QString( "noy" ) );
-    QCOMPARE( Amarok::cleanPath( QString( "ÑÓŸ" ) ), QString( "NOY" ) );
+    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "ñóÿ" ) ), QString( "noy" ) );
+    QCOMPARE( Amarok::cleanPath( QString::fromUtf8( "ÑÓŸ" ) ), QString( "NOY" ) );
 
     /* add missing ones here */
 }
@@ -142,8 +147,8 @@ void TestAmarok::testExtension()
     QCOMPARE( Amarok::extension( "test.longextension" ), QString( "longextension" ) );
     QCOMPARE( Amarok::extension( "test.long.extension" ), QString( "extension" ) );
     QCOMPARE( Amarok::extension( "test.m" ), QString( "m" ) );
-    QCOMPARE( Amarok::extension( "test.äöü" ), QString( "äöü" ) );
-    QCOMPARE( Amarok::extension( "test.ÄÖÜ" ), QString( "äöü" ) );
+    QCOMPARE( Amarok::extension( QString::fromUtf8( "test.äöü" ) ), QString::fromUtf8( "äöü" ) );
+    QCOMPARE( Amarok::extension( QString::fromUtf8( "test.ÄÖÜ" ) ), QString::fromUtf8( "äöü" ) );
     QCOMPARE( Amarok::extension( "..test.mp3" ), QString( "mp3" ) );
     QCOMPARE( Amarok::extension( "..te st.mp3" ), QString( "mp3" ) );
     QCOMPARE( Amarok::extension( "..te st.m p3" ), QString( "m p3" ) );
@@ -189,8 +194,8 @@ void TestAmarok::testManipulateThe()
     Amarok::manipulateThe( teststring = "The Äöü", true );
     QCOMPARE( teststring, QString( "Äöü, The" ) );
 
-    Amarok::manipulateThe( teststring = "Äöü, The", false );
-    QCOMPARE( teststring, QString( "The Äöü" ) );
+    Amarok::manipulateThe( teststring = QString::fromUtf8( "Äöü, The" ), false );
+    QCOMPARE( teststring, QString::fromUtf8( "The Äöü" ) );
 }
 
 void TestAmarok::testRecursiveUrlExpand()
@@ -200,40 +205,45 @@ void TestAmarok::testRecursiveUrlExpand()
     KUrl::List urlList, resultList;
 
     resultList = Amarok::recursiveUrlExpand( url );
-    QCOMPARE( resultList.isEmpty(), true );
+    QVERIFY( resultList.isEmpty() );
 
     resultList = Amarok::recursiveUrlExpand( urlList );
-    QCOMPARE( resultList.isEmpty(), true );
+    QVERIFY( resultList.isEmpty() );
 
     urlList.append( url );
     resultList = Amarok::recursiveUrlExpand( urlList );
-    QCOMPARE( resultList.isEmpty(), true );
+    QVERIFY( resultList.isEmpty() );
 
-    url = dataPath( "amarok/testdata/playlists/" );
+    url = dataPath( "data/playlists/" );
     resultList = Amarok::recursiveUrlExpand( url );
-    QCOMPARE( resultList.size(), 1 );
-    QCOMPARE( resultList.at( 0 ).pathOrUrl(), url.pathOrUrl() + QString( "no-playlist.png" ) ); // only non-playlist file in that dir
+    QCOMPARE( resultList.size(), 2 ); // there are two files that are not playlists
+    QCOMPARE( resultList.at( 0 ).pathOrUrl(), url.pathOrUrl() + QString( "CMakeLists.txt" ) );
 
-    url = dataPath( "amarok/testdata/" );
+
+    url = dataPath( "data/" );
     resultList = Amarok::recursiveUrlExpand( url );
-    QCOMPARE( resultList.size(), 17 );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "cue/test_silence.ogg" ) ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "cue/testsheet01-iso8859-1.cue" ) ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "cue/testsheet01-utf8.cue" ) ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "playlists/no-playlist.png" ) ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "audio/Platz 01.mp3" ) ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "audio/Platz 02.mp3" ) ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "audio/Platz 03.mp3" ) ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "audio/Platz 04.mp3" ) ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "audio/Platz 05.mp3" ) ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "audio/Platz 06.mp3" ) ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "audio/Platz 07.mp3" ) ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "audio/Platz 08.mp3" ) ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "audio/Platz 09.mp3" ) ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "audio/Platz 10.mp3" ) ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "album/Track01.ogg" ) ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "album/Track02.ogg" ) ) ) );
-    QVERIFY( resultList.contains( url.pathOrUrl() + QString( QDir::toNativeSeparators( "album/Track03.ogg" ) ) ) );
+    QCOMPARE( resultList.size(), 23 );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "cue/invalid.cue" ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "cue/test_silence.ogg" ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "cue/testsheet01-iso8859-1.cue" ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "cue/testsheet01-utf8.cue" ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "playlists/no-playlist.png" ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "audio/Platz 01.mp3" ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "audio/Platz 02.mp3" ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "audio/Platz 03.mp3" ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "audio/Platz 04.mp3" ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "audio/Platz 05.mp3" ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "audio/Platz 06.mp3" ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "audio/Platz 07.mp3" ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "audio/Platz 08.mp3" ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "audio/Platz 09.mp3" ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "audio/Platz 10.mp3" ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "audio/album/Track01.ogg" ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "audio/album/Track02.ogg" ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "audio/album/Track03.ogg" ) ) );
+    QVERIFY( resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "playlists/CMakeLists.txt" ) ) );
+    QVERIFY( !resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "playlists/test.xspf" ) ) );
+    QVERIFY( !resultList.contains( url.pathOrUrl() + QDir::toNativeSeparators( "playlists/test.pls" ) ) );
 }
 
 void TestAmarok::testSaveLocation()
@@ -286,7 +296,7 @@ void TestAmarok::testVfatPath()
     QCOMPARE( Amarok::vfatPath( "! # $ % & ' ( ) - @ ^ _ ` { } ~" ), QString( "! # $ % & ' ( ) - @ ^ _ ` { } ~" ) );
 
     /* only allowed in long file names */
-    QCOMPARE( Amarok::vfatPath( "+,.;=[]" ), QString( "+,.;=[]" ) );
+    QCOMPARE( Amarok::vfatPath( "+,.;=[]" ), QString( "+,.;=()" ) );
 
     /* illegal characters, without / and \ (see later tests) */
     QCOMPARE( Amarok::vfatPath( "\"_*_:_<_>_?_|" ), QString( "_____________" ) );

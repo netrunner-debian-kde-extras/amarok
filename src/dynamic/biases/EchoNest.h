@@ -20,17 +20,18 @@
 #include "CustomBiasEntry.h"
 #include "CustomBiasEntryFactory.h"
 #include <QNetworkReply>
-#include "EngineObserver.h"
+#include "core/engine/EngineObserver.h"
 
 /**
 *  This is a bias which adds the suggested songs to the playlist.
 *
 */
 
-namespace Amarok
-{
+namespace Collections {
     class Collection;
+    class QueryMaker;
 }
+
 namespace KIO {
     class StoredTransferJob;
 }
@@ -54,7 +55,7 @@ namespace Dynamic
     };
     
     // this order of inheritance is a bit screwy, but moc wants the QObject-derived class to be first always
-    class EchoNestBias : public CustomBiasEntry, public EngineObserver
+    class EchoNestBias : public CustomBiasEntry, public Engine::EngineObserver
     {
         Q_OBJECT
         public:
@@ -95,9 +96,9 @@ namespace Dynamic
             
             QMap< KIO::StoredTransferJob*, QString> m_artistNameQueries;
             KIO::StoredTransferJob* m_artistSuggestedQuery;
-            QueryMaker* m_qm; // stored so it can be refreshed
+            Collections::QueryMaker* m_qm; // stored so it can be refreshed
             // if the collection changes
-            Amarok::Collection* m_collection; // null => all queryable collections
+            Collections::Collection* m_collection; // null => all queryable collections
             bool m_needsUpdating;
             QMutex m_mutex;
             

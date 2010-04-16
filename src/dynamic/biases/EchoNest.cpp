@@ -16,12 +16,12 @@
 
 #include "EchoNest.h"
 
-#include "Collection.h"
-#include "CollectionManager.h"
-#include "Debug.h"
+#include "core/collections/Collection.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
-#include "Meta.h"
-#include "QueryMaker.h"
+#include "core/meta/Meta.h"
+#include "core/collections/QueryMaker.h"
 #include "playlist/PlaylistModelStack.h"
 
 #include <kio/job.h>
@@ -81,7 +81,7 @@ Dynamic::EchoNestBiasFactory::newCustomBiasEntry( QDomElement e )
 
 Dynamic::EchoNestBias::EchoNestBias()
     : Dynamic::CustomBiasEntry()
-    , EngineObserver( The::engineController() )
+    , Engine::EngineObserver( The::engineController() )
     , m_artistSuggestedQuery( 0 )
     , m_qm( 0 )
     , m_currentOnly( true )
@@ -155,7 +155,7 @@ Dynamic::EchoNestBias::engineNewTrackPlaying()
             { // mode is set to whole playlist, so check if any tracks in the playlist aren't saved as Ids yet and query those
                 QList< Meta::TrackPtr > playlist;
                 m_currentPlaylist.clear(); // for searching in later
-                for( int i = 0; i < The::playlist()->rowCount(); i++ )
+                for( int i = 0; i < The::playlist()->qaim()->rowCount(); i++ )
                 {
                     Meta::TrackPtr t = The::playlist()->trackAt( i );
                     playlist << t;
@@ -248,7 +248,7 @@ Dynamic::EchoNestBias::artistNameQueryDone( KJob* job )
         if( ! m_currentOnly )
         {
             // check our map, see if there are any we are still waiting for. if not, do the query
-            foreach( const QString &result, m_artistIds.values() )
+            foreach( const QString &result, m_artistIds )
             {
                 if( result == "-1" ) // still waiting
                 {
@@ -258,7 +258,8 @@ Dynamic::EchoNestBias::artistNameQueryDone( KJob* job )
                     return;
                 }
             }
-            foreach( const QString &key, m_artistIds.keys() )
+            const QStringList keys = m_artistIds.keys();
+            foreach( const QString &key, keys )
                 toQuery << key;
             // ok we're not, update our list and do it!
         } else
@@ -330,7 +331,7 @@ Dynamic::EchoNestBias::artistSuggestedQueryDone( KJob* job ) // slot
     }
     m_qm->endAndOr();
 
-    m_qm->setQueryType( QueryMaker::Custom );
+    m_qm->setQueryType( Collections::QueryMaker::Custom );
     m_qm->addReturnValue( Meta::valUniqueId );
     m_qm->orderByRandom(); // as to not affect the amortized time
 

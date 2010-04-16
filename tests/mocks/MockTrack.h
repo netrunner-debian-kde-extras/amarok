@@ -19,7 +19,7 @@
 
 #include <gmock/gmock.h>
 
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 using ::testing::Return;
 
@@ -49,7 +49,7 @@ class MockTrack : public Meta::Track
     MOCK_CONST_METHOD0( composer, Meta::ComposerPtr() );
     MOCK_CONST_METHOD0( genre, Meta::GenrePtr() );
     MOCK_CONST_METHOD0( year, Meta::YearPtr() );
-    MOCK_CONST_METHOD0( bpm, float() );
+    MOCK_CONST_METHOD0( bpm, qreal() );
     MOCK_CONST_METHOD0( comment, QString() );
     MOCK_CONST_METHOD0( score, double() );
     MOCK_METHOD1( setScore, void(double score) );
@@ -71,7 +71,7 @@ class MockTrack : public Meta::Track
     MOCK_METHOD0( prepareToPlay, void() );
     MOCK_METHOD1( finishedPlaying, void( double playedFraction ) );
     MOCK_CONST_METHOD0( inCollection, bool() );
-    MOCK_CONST_METHOD0( collection, Amarok::Collection*() );
+    MOCK_CONST_METHOD0( collection, Collections::Collection*() );
     MOCK_CONST_METHOD0( cachedLyrics, QString() );
 };
 }

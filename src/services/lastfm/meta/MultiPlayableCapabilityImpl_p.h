@@ -17,10 +17,10 @@
 #ifndef AMAROK_MULTIPLAYABLECAPABILITYIMPL_P_H
 #define AMAROK_MULTIPLAYABLECAPABILITYIMPL_P_H
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "LastFmMeta.h"
-#include "Meta.h"
-#include "meta/capabilities/MultiPlayableCapability.h"
+#include "core/meta/Meta.h"
+#include "core/capabilities/MultiPlayableCapability.h"
 #include "StatusBar.h"
 
 #include <lastfm/Track>
@@ -28,12 +28,12 @@
 #include <lastfm/ws.h>
 
 
-class MultiPlayableCapabilityImpl : public Meta::MultiPlayableCapability, public Meta::Observer
+class MultiPlayableCapabilityImpl : public Capabilities::MultiPlayableCapability, public Meta::Observer
 {
     Q_OBJECT
     public:
         MultiPlayableCapabilityImpl( LastFm::Track *track )
-            : Meta::MultiPlayableCapability()
+            : Capabilities::MultiPlayableCapability()
             , m_url( track->internalUrl() )
             , m_track( track )
             , m_currentTrack( lastfm::Track() )

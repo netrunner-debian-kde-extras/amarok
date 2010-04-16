@@ -24,12 +24,13 @@
 #include <QSet>
 #include <QString>
 
+namespace Collections {
 
 class Mp3tunesServiceCollectionLocation : public ServiceCollectionLocation
 {
     Q_OBJECT
     public:
-        Mp3tunesServiceCollectionLocation(Mp3tunesServiceCollection const *parentCollection);
+        Mp3tunesServiceCollectionLocation( Mp3tunesServiceCollection const *parentCollection );
         virtual ~Mp3tunesServiceCollectionLocation();
 
         
@@ -41,5 +42,7 @@ class Mp3tunesServiceCollectionLocation : public ServiceCollectionLocation
     private:
         Mp3tunesServiceCollection *m_collection;
 };
+
+} //namespace Collections
 
 #endif

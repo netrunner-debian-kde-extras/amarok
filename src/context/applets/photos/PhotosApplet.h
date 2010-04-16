@@ -21,7 +21,7 @@
 
 #include "context/Applet.h"
 #include "context/DataEngine.h"
-#include "EngineObserver.h"
+#include "core/engine/EngineObserver.h"
 
 #include "../../engines/photos/PhotosInfo.h"
 
@@ -39,7 +39,7 @@ namespace Plasma
 
  /** PhotosApplet will display photos from the Internet, relative to the current playing song
    */
-class PhotosApplet : public Context::Applet, public EngineObserver
+class PhotosApplet : public Context::Applet, public Engine::EngineObserver
 {
         Q_OBJECT
 

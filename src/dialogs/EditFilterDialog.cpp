@@ -17,9 +17,9 @@
 #include "EditFilterDialog.h"
 
 #include "amarokconfig.h"
-#include "Debug.h"
-#include "collection/CollectionManager.h"
-#include "collection/MetaQueryMaker.h"
+#include "core/support/Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core/collections/MetaQueryMaker.h"
 
 #include <KGlobal>
 #include <KLineEdit>
@@ -138,21 +138,21 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     connect( this, SIGNAL( user1Clicked() ), this, SLOT( slotUser1() ) );
     connect( this, SIGNAL( user2Clicked() ), this, SLOT( slotUser2() ) );
     
-    Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
+    Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
     if( !coll )
         return;
 
-    QueryMaker *artist = coll->queryMaker()->setQueryType( QueryMaker::Artist );
-    QueryMaker *album = coll->queryMaker()->setQueryType( QueryMaker::Album );
-    QueryMaker *composer = coll->queryMaker()->setQueryType( QueryMaker::Composer );
-    QueryMaker *genre = coll->queryMaker()->setQueryType( QueryMaker::Genre );
-    QList<QueryMaker*> queries;
+    Collections::QueryMaker *artist = coll->queryMaker()->setQueryType( Collections::QueryMaker::Artist );
+    Collections::QueryMaker *album = coll->queryMaker()->setQueryType( Collections::QueryMaker::Album );
+    Collections::QueryMaker *composer = coll->queryMaker()->setQueryType( Collections::QueryMaker::Composer );
+    Collections::QueryMaker *genre = coll->queryMaker()->setQueryType( Collections::QueryMaker::Genre );
+    QList<Collections::QueryMaker*> queries;
     queries << artist << album << composer << genre;
 
     //MetaQueryMaker will run multiple different queries just fine as long as we do not use it
     //to set the query type. Configuring the queries is ok though
 
-    MetaQueryMaker *dataQueryMaker = new MetaQueryMaker( queries );
+    Collections::MetaQueryMaker *dataQueryMaker = new Collections::MetaQueryMaker( queries );
     connect( dataQueryMaker, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), SLOT( resultReady( QString, Meta::ArtistList ) ), Qt::QueuedConnection );
     connect( dataQueryMaker, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), SLOT( resultReady( QString, Meta::AlbumList ) ), Qt::QueuedConnection );
     connect( dataQueryMaker, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), SLOT( resultReady( QString, Meta::ComposerList ) ), Qt::QueuedConnection );

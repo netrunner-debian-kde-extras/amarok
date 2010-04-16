@@ -19,16 +19,17 @@
 #include "amarokurls/AmarokUrl.h"
 #include "amarokconfig.h"
 #include "App.h"
-#include "statusbar/StatusBar.h"
-#include "CollectionManager.h"
-#include "PlaylistFile.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/playlists/types/file/PlaylistFile.h"
 #include "playlist/PlaylistModelStack.h"
-#include "PlaylistFileSupport.h"
-#include "PodcastProvider.h"
+#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
+#include "core/podcasts/PodcastProvider.h"
 #include "file/PlaylistFileProvider.h"
-#include "sql/SqlPodcastProvider.h"
-#include "sql/SqlUserPlaylistProvider.h"
-#include "Debug.h"
+#include "core-impl/podcasts/sql/SqlPodcastProvider.h"
+#include "playlistmanager/sql/SqlUserPlaylistProvider.h"
+#include "core/support/Debug.h"
+#include "core/support/Components.h"
+#include "core/interfaces/Logger.h"
 #include "MainWindow.h"
 #include "browsers/playlistbrowser/UserPlaylistModel.h"
 
@@ -67,14 +68,14 @@ PlaylistManager::PlaylistManager()
 {
     s_instance = this;
 
-    m_defaultPodcastProvider = new SqlPodcastProvider();
+    m_defaultPodcastProvider = new Podcasts::SqlPodcastProvider();
     addProvider( m_defaultPodcastProvider, PlaylistManager::PodcastChannel );
     CollectionManager::instance()->addTrackProvider( m_defaultPodcastProvider );
 
-    m_defaultUserPlaylistProvider = new SqlUserPlaylistProvider();
+    m_defaultUserPlaylistProvider = new Playlists::SqlUserPlaylistProvider();
     addProvider( m_defaultUserPlaylistProvider, UserPlaylist );
 
-    m_playlistFileProvider = new PlaylistFileProvider();
+    m_playlistFileProvider = new Playlists::PlaylistFileProvider();
     addProvider( m_playlistFileProvider, UserPlaylist );
 }
 
@@ -86,10 +87,8 @@ PlaylistManager::~PlaylistManager()
 }
 
 void
-PlaylistManager::addProvider( PlaylistProvider * provider, int category )
+PlaylistManager::addProvider( Playlists::PlaylistProvider * provider, int category )
 {
-    DEBUG_BLOCK
-
     bool newCategory = false;
     if( !m_providerMap.uniqueKeys().contains( category ) )
             newCategory = true;
@@ -105,14 +104,12 @@ PlaylistManager::addProvider( PlaylistProvider * provider, int category )
 }
 
 void
-PlaylistManager::removeProvider( PlaylistProvider *provider )
+PlaylistManager::removeProvider( Playlists::PlaylistProvider *provider )
 {
-    DEBUG_BLOCK
-
-    if ( !provider )
+    if( !provider )
         return;
 
-    if ( m_providerMap.values( provider->category() ).contains( provider ) )
+    if( m_providerMap.values( provider->category() ).contains( provider ) )
     {
         debug() << "Providers of this category: " << providersForCategory( provider->category() ).count();
         debug() << "Removing provider from map";
@@ -123,31 +120,24 @@ PlaylistManager::removeProvider( PlaylistProvider *provider )
         emit( providerRemoved( provider, provider->category() ) );
 
         slotUpdated();
-
     }
-
-
 }
 
 void
 PlaylistManager::slotUpdated( /*PlaylistProvider * provider*/ )
 {
-    DEBUG_BLOCK
-    emit(updated());
+    emit( updated() );
 }
 
-Meta::PlaylistList
+Playlists::PlaylistList
 PlaylistManager::playlistsOfCategory( int playlistCategory )
 {
-    DEBUG_BLOCK
-    QList<PlaylistProvider *> providers = m_providerMap.values( playlistCategory );
-    QListIterator<PlaylistProvider *> i( providers );
+    QList<Playlists::PlaylistProvider *> providers = m_providerMap.values( playlistCategory );
+    QListIterator<Playlists::PlaylistProvider *> i( providers );
 
-    Meta::PlaylistList list;
-    while ( i.hasNext() )
-    {
+    Playlists::PlaylistList list;
+    while( i.hasNext() )
         list << i.next()->playlists();
-    }
 
     return list;
 }
@@ -158,15 +148,15 @@ PlaylistManager::providersForCategory( int playlistCategory )
     return m_providerMap.values( playlistCategory );
 }
 
-PlaylistProvider *
+Playlists::PlaylistProvider *
 PlaylistManager::playlistProvider(int category, QString name)
 {
-    QList<PlaylistProvider *> providers( m_providerMap.values( category ) );
+    QList<Playlists::PlaylistProvider *> providers( m_providerMap.values( category ) );
 
-    QListIterator<PlaylistProvider *> i(providers);
+    QListIterator<Playlists::PlaylistProvider *> i(providers);
     while( i.hasNext() )
     {
-        PlaylistProvider * p = static_cast<PlaylistProvider *>( i.next() );
+        Playlists::PlaylistProvider * p = static_cast<Playlists::PlaylistProvider *>( i.next() );
         if( p->prettyName() == name )
             return p;
     }
@@ -175,32 +165,28 @@ PlaylistManager::playlistProvider(int category, QString name)
 }
 
 void
-PlaylistManager::downloadPlaylist( const KUrl &path, const Meta::PlaylistFilePtr playlist )
+PlaylistManager::downloadPlaylist( const KUrl &path, const Playlists::PlaylistFilePtr playlist )
 {
-    DEBUG_BLOCK
-
-    KIO::StoredTransferJob * downloadJob =  KIO::storedGet( path );
+    KIO::StoredTransferJob *downloadJob =  KIO::storedGet( path );
 
     m_downloadJobMap[downloadJob] = playlist;
 
     connect( downloadJob, SIGNAL( result( KJob * ) ),
              this, SLOT( downloadComplete( KJob * ) ) );
 
-    The::statusBar()->newProgressOperation( downloadJob, i18n( "Downloading Playlist" ) );
+    Amarok::Components::logger()->newProgressOperation( downloadJob, i18n( "Downloading Playlist" ) );
 }
 
 void
-PlaylistManager::downloadComplete( KJob * job )
+PlaylistManager::downloadComplete( KJob *job )
 {
-    DEBUG_BLOCK
-
-    if ( !job->error() == 0 )
+    if( !job->error() == 0 )
     {
         //TODO: error handling here
         return ;
     }
 
-    Meta::PlaylistFilePtr playlist = m_downloadJobMap.take( job );
+    Playlists::PlaylistFilePtr playlist = m_downloadJobMap.take( job );
 
     QString contents = static_cast<KIO::StoredTransferJob *>(job)->data();
     QTextStream stream;
@@ -211,13 +197,13 @@ PlaylistManager::downloadComplete( KJob * job )
 
 bool
 PlaylistManager::save( Meta::TrackList tracks, const QString &name,
-                       UserPlaylistProvider *toProvider )
+                       Playlists::UserPlaylistProvider *toProvider )
 {
     AMAROK_DEPRECATED
     // used by: Playlist::Widget::slotSaveCurrentPlaylist()
-    //if toProvider is 0 use the default UserPlaylistProvider (SQL)
-    UserPlaylistProvider *prov = toProvider ? toProvider : m_defaultUserPlaylistProvider;
-    Meta::PlaylistPtr playlist = Meta::PlaylistPtr();
+    //if toProvider is 0 use the default Playlists::UserPlaylistProvider (SQL)
+    Playlists::UserPlaylistProvider *prov = toProvider ? toProvider : m_defaultUserPlaylistProvider;
+    Playlists::PlaylistPtr playlist = Playlists::PlaylistPtr();
     if( name.isEmpty() )
     {
         debug() << "Empty name of playlist, or editing now";
@@ -252,46 +238,42 @@ PlaylistManager::import( const QString& fromLocation )
 }
 
 void
-PlaylistManager::rename( Meta::PlaylistPtr playlist )
+PlaylistManager::rename( Playlists::PlaylistPtr playlist )
 {
-    DEBUG_BLOCK
-
     if( playlist.isNull() )
         return;
 
-    UserPlaylistProvider *prov;
-    prov = qobject_cast<UserPlaylistProvider *>( getProviderForPlaylist( playlist ) );
+    Playlists::UserPlaylistProvider *provider
+            = qobject_cast<Playlists::UserPlaylistProvider *>( getProviderForPlaylist( playlist ) );
 
-    if( !prov )
+    if( !provider )
         return;
 
     bool ok;
     const QString newName = KInputDialog::getText( i18n("Change playlist"),
                 i18n("Enter new name for playlist:"), playlist->name(),
                                                    &ok );
-    if ( ok )
+    if( ok )
     {
         debug() << "Changing name from " << playlist->name() << " to " << newName.trimmed();
-        prov->rename( playlist, newName.trimmed() );
+        provider->rename( playlist, newName.trimmed() );
         emit( updated() );
     }
 }
 
 void
-PlaylistManager::deletePlaylists( Meta::PlaylistList playlistlist )
+PlaylistManager::deletePlaylists( Playlists::PlaylistList playlistlist )
 {
     // Map the playlists to their respective providers
-
-    QHash<UserPlaylistProvider*, Meta::PlaylistList> provLists;
-    foreach( Meta::PlaylistPtr playlist, playlistlist )
+    QHash<Playlists::UserPlaylistProvider*, Playlists::PlaylistList> provLists;
+    foreach( Playlists::PlaylistPtr playlist, playlistlist )
     {
         // Get the providers of the respective playlists
-
-        UserPlaylistProvider *prov = qobject_cast<UserPlaylistProvider *>( getProviderForPlaylist( playlist ) );
+        Playlists::UserPlaylistProvider *prov = qobject_cast<Playlists::UserPlaylistProvider *>( getProviderForPlaylist( playlist ) );
 
         if( prov )
         {
-            Meta::PlaylistList pllist;
+            Playlists::PlaylistList pllist;
             pllist << playlist;
             // If the provider already has at least one playlist to delete, add another to its list
             if( provLists.contains( prov ) )
@@ -307,24 +289,25 @@ PlaylistManager::deletePlaylists( Meta::PlaylistList playlistlist )
 
     // Pass each list of playlists to the respective provider for deletion
 
-    foreach( UserPlaylistProvider* prov, provLists.keys() )
+    foreach( Playlists::UserPlaylistProvider* prov, provLists.keys() )
     {
-        prov->deletePlaylists( provLists[ prov ] );
+        prov->deletePlaylists( provLists.value( prov ) ); //TODO: test
     }
 }
 
-PlaylistProvider*
-PlaylistManager::getProviderForPlaylist( const Meta::PlaylistPtr playlist )
+Playlists::PlaylistProvider*
+PlaylistManager::getProviderForPlaylist( const Playlists::PlaylistPtr playlist )
 {
     if( !playlist )
         return 0;
 
-    PlaylistProvider* provider = playlist->provider();
+    Playlists::PlaylistProvider* provider = playlist->provider();
     if( provider )
         return provider;
 
     // Iteratively check all providers' playlists for ownership
-    foreach( PlaylistProvider* provider, m_providerMap.values( UserPlaylist ) )
+    QList< Playlists::PlaylistProvider* > userPlaylists = m_providerMap.values( UserPlaylist );
+    foreach( Playlists::PlaylistProvider* provider, userPlaylists )
     {
         if( provider->playlists().contains( playlist ) )
                 return provider;
@@ -334,24 +317,24 @@ PlaylistManager::getProviderForPlaylist( const Meta::PlaylistPtr playlist )
 
 
 bool
-PlaylistManager::isWritable( const Meta::PlaylistPtr &playlist )
+PlaylistManager::isWritable( const Playlists::PlaylistPtr &playlist )
 {
-    UserPlaylistProvider *prov;
-    prov = qobject_cast<UserPlaylistProvider *>( getProviderForPlaylist( playlist ) );
+    Playlists::UserPlaylistProvider *provider
+            = qobject_cast<Playlists::UserPlaylistProvider *>( getProviderForPlaylist( playlist ) );
 
-    if( prov )
-        return prov->isWritable();
+    if( provider )
+        return provider->isWritable();
     else
         return false;
 }
 
 QList<QAction *>
-PlaylistManager::playlistActions( const Meta::PlaylistList playlists )
+PlaylistManager::playlistActions( const Playlists::PlaylistList playlists )
 {
     QList<QAction *> actions;
-    foreach( const Meta::PlaylistPtr playlist, playlists )
+    foreach( const Playlists::PlaylistPtr playlist, playlists )
     {
-        PlaylistProvider *provider = getProviderForPlaylist( playlist );
+        Playlists::PlaylistProvider *provider = getProviderForPlaylist( playlist );
         if( !provider )
             continue;
 
@@ -368,10 +351,10 @@ PlaylistManager::playlistActions( const Meta::PlaylistList playlists )
 }
 
 QList<QAction *>
-PlaylistManager::trackActions( const Meta::PlaylistPtr playlist, int trackIndex )
+PlaylistManager::trackActions( const Playlists::PlaylistPtr playlist, int trackIndex )
 {
     QList<QAction *> actions;
-    PlaylistProvider *provider = getProviderForPlaylist( playlist );
+    Playlists::PlaylistProvider *provider = getProviderForPlaylist( playlist );
     if( provider )
         actions << provider->trackActions( playlist, trackIndex );
 
@@ -381,9 +364,9 @@ PlaylistManager::trackActions( const Meta::PlaylistPtr playlist, int trackIndex 
 void
 PlaylistManager::completePodcastDownloads()
 {
-    foreach( PlaylistProvider *prov, providersForCategory( PodcastChannel ) )
+    foreach( Playlists::PlaylistProvider *prov, providersForCategory( PodcastChannel ) )
     {
-        PodcastProvider *podcastProvider = dynamic_cast<PodcastProvider *>( prov );
+        Podcasts::PodcastProvider *podcastProvider = dynamic_cast<Podcasts::PodcastProvider *>( prov );
         if( !podcastProvider )
             continue;
 

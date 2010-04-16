@@ -18,8 +18,8 @@
 
 #include "WikipediaEngine.h"
 
-#include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 #include "ContextObserver.h"
 #include "ContextView.h"
 #include "EngineController.h"
@@ -42,6 +42,13 @@ WikipediaEngine::WikipediaEngine( QObject* parent, const QList<QVariant>& /*args
 WikipediaEngine::~WikipediaEngine()
 {
     DEBUG_BLOCK
+
+    // Ensure that no KIO job keeps running
+    if( m_wikiJob )
+    {
+        m_wikiJob->kill();
+        delete m_wikiJob;
+    }
 }
 
 QStringList WikipediaEngine::sources() const

@@ -7,7 +7,7 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2010-03-02 04:26+0100\n"
-"PO-Revision-Date: 2010-03-08 14:45+0100\n"
+"PO-Revision-Date: 2010-03-23 10:48+0100\n"
 "Last-Translator: Martin Schlander <mschlander@opensuse.org>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "MIME-Version: 1.0\n"
@@ -47,7 +47,7 @@ msgstr "Udvikler"
 #: amarokpkg.cpp:92
 msgid "For install or remove, operates on applets installed for all users."
 msgstr ""
-"Til at installere eller fjerne, påvirker applets installeret for alle "
+"Til at installere eller fjerne. Påvirker applets installeret for alle "
 "brugere."
 
 #: amarokpkg.cpp:95
@@ -107,7 +107,7 @@ msgctxt ""
 "No option was given, this is the error message telling the user he needs at "
 "least one, do not translate install, remove, upgrade nor list"
 msgid "One of install, remove, upgrade or list is required."
-msgstr "Enten \"install\", \"remove\", \"upgrade\" eller \"list\" er påkrævet."
+msgstr "Enten \"install\", \"remove\", \"upgrade\" eller \"list\" påkræves."
 
 #: rc.cpp:1
 msgctxt "NAME OF TRANSLATORS"

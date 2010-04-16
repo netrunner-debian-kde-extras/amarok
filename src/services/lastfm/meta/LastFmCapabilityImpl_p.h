@@ -17,14 +17,14 @@
 #ifndef AMAROK_LASTFMCAPABILITYIMPL_P_H
 #define AMAROK_LASTFMCAPABILITYIMPL_P_H
 
-#include "meta/capabilities/LastFmCapability.h"
+#include "core/capabilities/LastFmCapability.h"
 
-class LastFmCapabilityImpl : public Meta::LastFmCapability
+class LastFmCapabilityImpl : public Capabilities::LastFmCapability
 {
     Q_OBJECT
     public:
         LastFmCapabilityImpl( LastFm::Track *track )
-            : Meta::LastFmCapability()
+            : Capabilities::LastFmCapability()
             , m_track( track ) {}
 
         virtual ~LastFmCapabilityImpl() {};

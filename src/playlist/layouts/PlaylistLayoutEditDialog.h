@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Nikolaj Hald Nielsen <nhn@kde.org>                                *
- * Copyright (c) 2009 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,15 +14,18 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
+
 #ifndef PLAYLISTLAYOUTEDITDIALOG_H
 #define PLAYLISTLAYOUTEDITDIALOG_H
 
 #include "playlist/layouts/LayoutEditWidget.h"
+#include "playlist/layouts/LayoutItemConfig.h"
 
 #include <QDialog>
 
 #include "ui_PlaylistLayoutEditDialog.h"
+
+namespace Playlist {
 
 /**
  *  Dialog for adding, deleting, copying and editing playlist layouts. The order in which the layouts are
@@ -130,18 +133,18 @@ class PlaylistLayoutEditDialog : public QDialog, private Ui::PlaylistLayoutEditD
         /**
          * Populates the grouping mode combo box with options
          */
-        void setupGroupByCombo(); 
-        
-        
-        Playlist::LayoutEditWidget *m_headEdit;
-        Playlist::LayoutEditWidget *m_bodyEdit;
-        Playlist::LayoutEditWidget *m_singleEdit;
+        void setupGroupByCombo();
 
-        QMap<QString, Playlist::PlaylistLayout> *m_layoutsMap;
+
+        Playlist::LayoutEditWidget *m_partsEdit[Playlist::PlaylistLayout::NumParts];
+
+        QMap<QString, PlaylistLayout> *m_layoutsMap;
 
         QString m_layoutName;
 
         QString m_firstActiveLayout;
 };
+
+}
 
 #endif

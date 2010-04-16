@@ -20,9 +20,11 @@
 
 #include "ServiceMetaBase.h"
 #include "ServiceSqlRegistry.h"
-#include "QueryMaker.h"
+#include "core/collections/QueryMaker.h"
 
 #include <threadweaver/Job.h>
+
+namespace Collections {
 
 class ServiceSqlCollection;
 
@@ -109,5 +111,7 @@ class ServiceSqlQueryMaker : public QueryMaker
         Private * const d;
 
 };
+
+} //namespace Collections
 
 #endif /* AMAROK_COLLECTION_SQLQUERYBUILDER_H */

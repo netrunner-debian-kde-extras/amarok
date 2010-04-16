@@ -16,11 +16,12 @@
 
 #include "PlaylistBrowser.h"
 
-#include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
+#include "APGCategory.h"
 #include "DynamicCategory.h"
-#include "Playlist.h"
-#include "PlaylistCategory.h"
+#include "core/playlists/Playlist.h"
+#include "UserPlaylistCategory.h"
 #include "PlaylistManager.h"
 
 #include <klocale.h>
@@ -40,7 +41,8 @@ PlaylistBrowserNS::PlaylistBrowser::PlaylistBrowser( const char *name, QWidget *
     setContentsMargins(0,0,0,0);
 
     BrowserCategoryList::addCategory( new DynamicCategory( 0 ) );
-    BrowserCategoryList::addCategory( new PlaylistCategory( 0 ) );
+    BrowserCategoryList::addCategory( new UserPlaylistCategory( 0 ) );
+    BrowserCategoryList::addCategory( new APGCategory( 0 ) );
 
     connect( The::playlistManager(), SIGNAL( categoryAdded( int ) ), SLOT( addCategory( int ) ) );
 
@@ -58,9 +60,6 @@ void
 PlaylistBrowserNS::PlaylistBrowser::addCategory( int )
 {
     DEBUG_BLOCK
-    //AMAROK_DEPRECATED // maybe? -- sth
-    BrowserCategoryList::addCategory( new PlaylistCategory( 0 ) );
-
 }
 
 #include "PlaylistBrowser.moc"

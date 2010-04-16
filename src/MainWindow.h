@@ -19,8 +19,8 @@
 #define MAINWINDOW_H
 
 #include "amarok_export.h"
-#include "meta/Meta.h"
-#include "EngineObserver.h"
+#include "core/meta/Meta.h"
+#include "core/engine/EngineObserver.h"
 #include "browsers/BrowserWidget.h"
 
 #include <KMainWindow>
@@ -65,7 +65,7 @@ namespace The {
   *
   * This is the main window widget.
   */
-class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, public Meta::Observer
+class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserver, public Meta::Observer
 {
     friend MainWindow* The::mainWindow();
 
@@ -131,6 +131,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         void setLayoutLocked( bool locked );
 
         void showAbout();
+        void showReportBug();
 
     protected:
         //Reimplemented from EngineObserver
@@ -152,8 +153,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         void slotAddStream();
         void slotJumpTo();
         void showScriptSelector();
-        void layoutChanged();
-        void ignoreLayoutChangesTimeout();
 
         /**
          * Save state and position of dock widgets.
@@ -166,6 +165,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         void restoreLayout();
 
     protected:
+        bool eventFilter(QObject *, QEvent *);
         virtual void closeEvent( QCloseEvent* );
         virtual void keyPressEvent( QKeyEvent* );
         virtual void resizeEvent ( QResizeEvent * event );
@@ -228,15 +228,33 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public EngineObserver, publ
         static QPointer<MainWindow> s_instance;
 
         bool m_layoutLocked;
-        bool m_dockWidthsLocked;
-        bool m_dockChangesIgnored;
-        QTimer * m_restoreLayoutTimer;
-        QTimer * m_ignoreLayoutChangesTimer;
-        QTimer * m_saveLayoutChangesTimer;
 
         bool m_waitingForCd;
 
+        // Layout hack -----------------
+        typedef struct Ratio {
+            float x,y;
+        } Ratio;
+        Ratio m_browsersRatio;
+        Ratio m_contextRatio;
+        Ratio m_playlistRatio;
+        QRect m_dockingRect;
+        bool m_mouseDown;
+        bool m_LH_initialized;
+        QTimer * m_saveLayoutChangesTimer;
+
+        bool LH_isIrrelevant( const QDockWidget *dock );
+        QTabBar *LH_dockingTabbar();
+        void LH_extend( QRect &target, const QDockWidget *dock );
+        QSize LH_desiredSize( QDockWidget *dock, const QRect &area, float rx, float ry, int splitter );
+        bool LH_fuzzyMatch( const QSize &sz1, const QSize &sz2 );
+        bool LH_isConstrained( const QDockWidget *dock );
+
     private slots:
+        void updateDockRatio();
+        void updateDockRatio(QDockWidget*);
+        void initLayoutHack();
+        // ------------------------------
         void createContextView( Plasma::Containment *c );
 };
 

@@ -2,6 +2,7 @@
  * Copyright (c) 2007 Ian Monroe <ian@monroe.nu>                                        *
  * Copyright (c) 2008-2009 Nikolaj Hald Nielsen <nhn@kde.org>                           *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
+ * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -23,14 +24,14 @@
 #include "PrettyItemDelegate.h"
 
 #include "App.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "InlineEditorWidget.h"
 #include "SvgHandler.h"
 #include "SvgTinter.h"
-#include "meta/Meta.h"
-#include "meta/capabilities/EditCapability.h"
-#include "meta/capabilities/SourceInfoCapability.h"
+#include "core/meta/Meta.h"
+#include "core/capabilities/EditCapability.h"
+#include "core/capabilities/SourceInfoCapability.h"
 #include "moodbar/MoodbarManager.h"
 #include "playlist/proxymodels/GroupingProxy.h"
 #include "playlist/PlaylistModel.h"
@@ -58,38 +59,21 @@ Playlist::PrettyItemDelegate::PrettyItemDelegate( QObject* parent )
 
 PrettyItemDelegate::~PrettyItemDelegate() { }
 
-int PrettyItemDelegate::getGroupMode( const QModelIndex &index) const
+int PrettyItemDelegate::getGroupMode( const QModelIndex &index)
 {
     return index.data( GroupRole ).toInt();
 }
 
-int PrettyItemDelegate::rowsForItem( const QModelIndex &index ) const
+int
+PrettyItemDelegate::rowsForItem( const QModelIndex &index )
 {
-
     PlaylistLayout layout = LayoutManager::instance()->activeLayout();
+    int rowCount = 0;
 
-    const int groupMode = getGroupMode(index);
-    int rowCount = 1;
+    if( getGroupMode( index ) == Grouping::Head )
+        rowCount += layout.layoutForPart( PlaylistLayout::Head ).rows();
 
-    switch ( groupMode )
-    {
-        case Head:
-            rowCount = layout.head().rows() + layout.body().rows();
-            break;
-
-        case Body:
-            rowCount = layout.body().rows();
-            break;
-
-        case Tail:
-            rowCount = layout.body().rows();
-            break;
-
-        case None:
-        default:
-            rowCount = layout.single().rows();
-            break;
-    }
+    rowCount += layout.layoutForItem( index ).rows();
 
     return rowCount;
 }
@@ -137,9 +121,8 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
     int rowCount = rowsForItem( index );
     bool paintInlineControls = LayoutManager::instance()->activeLayout().inlineControls() && index.data( ActiveTrackRole ).toBool();
 
-    if ( groupMode == None ||  groupMode == Body || groupMode == Tail )
+    if ( groupMode == Grouping::None ||  groupMode == Grouping::Body || groupMode == Grouping::Tail )
     {
-
         int trackHeight = 0;
         int extraHeight = 0;
         QStyleOptionViewItem trackOption( option );
@@ -151,12 +134,7 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
             trackOption.rect = QRect( 0, 0, option.rect.width(), trackHeight );
         }
 
-        if ( groupMode == None )
-            paintItem( layout.single(), painter, trackOption, index );
-        else if ( groupMode == Body )
-            paintItem( layout.body(), painter, trackOption, index );
-        else
-            paintItem( layout.body(), painter, trackOption, index );
+        paintItem( layout.layoutForItem( index ), painter, trackOption, index );
 
         if (paintInlineControls )
         {
@@ -165,7 +143,7 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
 
         }
     }
-    else if ( groupMode == Head )
+    else if ( groupMode == Grouping::Head )
     {
         //we need to split up the options for the actual header and the included first track
 
@@ -176,13 +154,16 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
         QStyleOptionViewItem headOption( option );
         QStyleOptionViewItem trackOption( option );
 
-        int headRows = layout.head().rows();
-        int trackRows = layout.body().rows();
+        int headRows = layout.layoutForPart( PlaylistLayout::Head ).rows();
+        int trackRows = layout.layoutForItem( index ).rows();
         int totalRows = headRows + trackRows;
 
         //if this layout is completely empty, bail out or we will get in divide-by-zero trouble
         if ( totalRows == 0 )
+        {
+            painter->restore();
             return;
+        }
 
         if ( paintInlineControls )
         {
@@ -195,12 +176,12 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
         if ( headRows > 0 )
         {
             headOption.rect = QRect( 0, 0, option.rect.width(), headHeight );
-            paintItem( layout.head(), painter, headOption, index, true );
+            paintItem( layout.layoutForPart( PlaylistLayout::Head ), painter, headOption, index, true );
             painter->translate( 0, headHeight );
         }
 
         trackOption.rect = QRect( 0, 0, option.rect.width(), trackHeight );
-        paintItem( layout.body(), painter, trackOption, index );
+        paintItem( layout.layoutForItem( index ), painter, trackOption, index );
 
         if ( paintInlineControls )
         {
@@ -219,7 +200,7 @@ PrettyItemDelegate::paint( QPainter* painter, const QStyleOptionViewItem& option
 bool
 PrettyItemDelegate::insideItemHeader( const QPoint& pt, const QRect& rect )
 {
-    int headRows = LayoutManager::instance()->activeLayout().head().rows();
+    int headRows = LayoutManager::instance()->activeLayout().layoutForPart( PlaylistLayout::Head ).rows();
 
     if ( headRows < 1 )
         return false;
@@ -665,10 +646,10 @@ bool Playlist::PrettyItemDelegate::clicked( const QPoint &pos, const QRect &item
 QWidget * Playlist::PrettyItemDelegate::createEditor ( QWidget * parent, const QStyleOptionViewItem & option, const QModelIndex & index ) const
 {
     Q_UNUSED( option );
-
     DEBUG_BLOCK
-    const int groupMode = getGroupMode(index);
-    InlineEditorWidget * editor = new InlineEditorWidget( parent, index, LayoutManager::instance()->activeLayout(), groupMode );
+
+    bool hasHeader = ( getGroupMode( index ) == Grouping::Head );
+    InlineEditorWidget * editor = new InlineEditorWidget( parent, index, LayoutManager::instance()->activeLayout(), hasHeader );
     connect( editor, SIGNAL( editingDone( InlineEditorWidget *) ), this, SLOT( editorDone(  InlineEditorWidget *) ) );
     return editor;
 }
@@ -694,7 +675,7 @@ void Playlist::PrettyItemDelegate::setModelData( QWidget * editor, QAbstractItem
     if( !track )
         return;
 
-    Meta::EditCapability *ec = track->create<Meta::EditCapability>();
+    Capabilities::EditCapability *ec = track->create<Capabilities::EditCapability>();
     if( !ec || !ec->isEditable() )
         return;
 

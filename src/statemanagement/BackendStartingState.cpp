@@ -17,7 +17,7 @@
 #include "BackendStartingState.h"
 
 #include "EngineController.h"
-#include "CollectionManager.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "MountPointManager.h"
 
 Amarok::BackendStartingState::BackendStartingState

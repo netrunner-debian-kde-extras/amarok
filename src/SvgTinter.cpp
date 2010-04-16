@@ -18,7 +18,7 @@
 #include "SvgTinter.h"
 
 #include "App.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include <QBuffer>
 #include <KFilterDev>
@@ -65,7 +65,8 @@ SvgTinter::tint(QString filename)
     }
 
     QString svg_string( svg_source );
-    foreach ( const QString &colorName, m_tintMap.keys() ) {
+    const QStringList tintKeys = m_tintMap.keys();
+    foreach ( const QString &colorName, tintKeys ) {
         //debug() << "replace " <<  colorName << " with " << m_tintMap.value( colorName );
         svg_string.replace( colorName, m_tintMap.value( colorName ) );
     }

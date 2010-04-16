@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
- * Copyright (c) 2009 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -17,7 +17,7 @@
  
 #include "LayoutConfigAction.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "LayoutManager.h"
 #include "PlaylistLayoutEditDialog.h"
 #include "widgets/EditDeleteDelegate.h"
@@ -67,7 +67,7 @@ LayoutConfigAction::LayoutConfigAction( QWidget * parent )
 
     const KIcon configIcon( "configure" );
     m_configAction->setIcon( configIcon );
-    m_configAction->setText( i18n( "Configure playlist layouts..." ) );
+    m_configAction->setText( i18n( "Configure Playlist Layouts..." ) );
 
     connect( m_configAction, SIGNAL( triggered() ), this, SLOT( configureLayouts() ) );
 }

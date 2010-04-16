@@ -71,7 +71,7 @@ msgstr "CreateWidget aceita um argumento"
 
 #: simplejavascriptapplet.cpp:772
 msgid "The parent must be a QGraphicsWidget"
-msgstr "O pai deve ser um QGraphicsWidget"
+msgstr "O parente dever ser um QGraphicsWidget"
 
 #: simplejavascriptapplet.cpp:817
 #, kde-format
@@ -88,4 +88,4 @@ msgstr "LinearLayout exige um pai"
 
 #: qtgui/linearlayout.cpp:76
 msgid "The parent must be a QGraphicsLayoutItem"
-msgstr "O pai deve ser um QGraphicsLayoutItem"
+msgstr "O parente dever ser um QGraphicsLayoutItem"

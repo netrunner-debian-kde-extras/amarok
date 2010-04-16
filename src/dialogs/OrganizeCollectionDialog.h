@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2006 Mike Diehl <madpenguin8@yahoo.com>                                *
- * Copyright (c) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2008 Téo Mrnjavac <teo@kde.org>                                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -19,7 +19,7 @@
 #define AMAROK_ORGANIZECOLLECTIONDIALOG_H
 
 #include "amarok_export.h"
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 #include "FilenameLayoutDialog.h"
 #include "widgets/TokenPool.h"
 

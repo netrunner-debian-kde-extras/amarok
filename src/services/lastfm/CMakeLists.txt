@@ -2,8 +2,7 @@
 include_directories(
         ../
         ../../
-        ../../collection
-        ../../meta
+        ../../core-impl/collections
         ../../statusbar
         ../../widgets
         ../../context
@@ -47,6 +46,7 @@ include_directories(
         )
 
         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
+	remove_definitions(-DQT_NO_HTTP)
 
         kde4_add_plugin(amarok_service_lastfm ${amarok_service_lastfm_PART_SRCS})
         target_link_libraries(amarok_service_lastfm

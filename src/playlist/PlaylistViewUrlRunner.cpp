@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
- * Copyright (c) 2009 Téo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -18,7 +18,7 @@
 #include "PlaylistViewUrlRunner.h"
 
 #include "AmarokUrlHandler.h"
-#include "Debug.h"
+#include "core/support/Debug.h"
 #include "MainWindow.h"
 #include "PlaylistWidget.h"
 #include "ProgressiveSearchWidget.h"
@@ -99,6 +99,12 @@ QString
 ViewUrlRunner::command() const
 {
     return "playlist";
+}
+
+QString
+ViewUrlRunner::prettyCommand() const
+{
+    return i18nc( "A type of command that affects the sorting, layout and filtering int he Playlist", "Playlist" );
 }
 
 KIcon

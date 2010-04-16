@@ -16,13 +16,13 @@
 
 #include "ServiceBase.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
 
-#include "Debug.h"
+#include "core/support/Debug.h"
 
 #include "browsers/CollectionTreeItem.h"
 #include "browsers/CollectionTreeItemModelBase.h"
-#include "Collection.h"
+#include "core/collections/Collection.h"
 #include "SearchWidget.h"
 #include "browsers/InfoProxy.h"
 
@@ -339,6 +339,4 @@ void ServiceBase::setLevels( const QList<int> &levels )
 
 
 #include "ServiceBase.moc"
-
-
 

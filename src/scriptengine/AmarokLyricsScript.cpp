@@ -17,12 +17,12 @@
 
 #include "AmarokLyricsScript.h"
 
-#include "Amarok.h"
-#include "CollectionManager.h"
-#include "Debug.h"
+#include "core/support/Amarok.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "LyricsManager.h"
-#include "Meta.h"
+#include "core/meta/Meta.h"
 #include "ScriptManager.h"
 
 #include <KApplication>

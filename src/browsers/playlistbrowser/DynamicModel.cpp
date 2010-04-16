@@ -20,13 +20,13 @@
 #include "Bias.h"
 #include "BiasSolver.h"
 #include "BiasedPlaylist.h"
-#include "Collection.h"
-#include "CollectionManager.h"
-#include "MetaQueryMaker.h"
-#include "Debug.h"
+#include "core/collections/Collection.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core/collections/MetaQueryMaker.h"
+#include "core/support/Debug.h"
 #include "DynamicPlaylist.h"
-#include "collection/support/XmlQueryReader.h"
-#include "collection/support/XmlQueryWriter.h"
+#include "core-impl/collections/support/XmlQueryReader.h"
+#include "core-impl/collections/support/XmlQueryWriter.h"
 
 #include <QFile>
 #include <QVariant>
@@ -67,7 +67,7 @@ PlaylistBrowserNS::DynamicModel::DynamicModel()
     loadAutoSavedPlaylist();
 
     connect( CollectionManager::instance(),
-            SIGNAL(collectionDataChanged(Amarok::Collection*)),
+            SIGNAL(collectionDataChanged(Collections::Collection*)),
             SLOT(universeNeedsUpdate()) );
 
     connect( this, SIGNAL( activeChanged() ), this, SLOT( savePlaylists() ) );

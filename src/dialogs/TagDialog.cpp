@@ -2,7 +2,7 @@
  * Copyright (c) 2004 Mark Kretschmann <kretschmann@kde.org>                            *
  * Copyright (c) 2004 Pierpaolo Di Panfilo <pippo_dp@libero.it>                         *
  * Copyright (c) 2005-2006 Alexandre Pereira de Oliveira <aleprj@gmail.com>             *
- * Copyright (c) 2008 Teo Mrnjavac <teo.mrnjavac@gmail.com>                             *
+ * Copyright (c) 2008 Téo Mrnjavac <teo@kde.org>                                        *
  * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                                    *
  * Copyright (c) 2009 Daniel Dewald <Daniel.Dewald@time-shift.de>                       *
  * Copyright (c) 2009 Pierre Dumuid <pmdumuid@gmail.com>                                *
@@ -24,25 +24,26 @@
 
 #include "TagDialog.h"
 
-#include "Amarok.h"
+#include "core/support/Amarok.h"
+#include "core/support/Components.h"
 #include "amarokconfig.h"
-#include "CollectionManager.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "CoverLabel.h"
-#include "SqlStorage.h"
+#include "core/collections/support/SqlStorage.h"
 #include "covermanager/CoverFetchingActions.h"
-#include "Debug.h"
-#include "EditCapability.h"
+#include "core/support/Debug.h"
+#include "core/capabilities/EditCapability.h"
 #include "FilenameLayoutDialog.h"
 #include "MainWindow.h"
-#include "MetaQueryMaker.h"
-#include "MetaUtility.h"
-#include "meta/capabilities/ReadLabelCapability.h"
-#include "meta/capabilities/WriteLabelCapability.h"
-#include "QueryMaker.h"
-#include "statusbar/StatusBar.h"       //for status messages
+#include "core/collections/MetaQueryMaker.h"
+#include "core/meta/support/MetaUtility.h"
+#include "core/capabilities/ReadLabelCapability.h"
+#include "core/capabilities/WriteLabelCapability.h"
+#include "core/collections/QueryMaker.h"
 #include "TagGuesser.h"
 #include "ui_TagDialogBase.h"
-#include "UpdateCapability.h"
+#include "core/capabilities/UpdateCapability.h"
+#include "core/interfaces/Logger.h"
 
 #include <KGlobal>
 #include <KHTMLView>
@@ -93,7 +94,7 @@ TagDialog::TagDialog( Meta::TrackPtr track, QWidget *parent )
     startDataQuery();
 }
 
-TagDialog::TagDialog( QueryMaker *qm )
+TagDialog::TagDialog( Collections::QueryMaker *qm )
     : KDialog( The::mainWindow() )
     , m_currentCover()
     , m_tracks()
@@ -107,7 +108,7 @@ TagDialog::TagDialog( QueryMaker *qm )
     ui->setupUi( mainWidget() );
     resize( minimumSizeHint() );
     startDataQuery();
-    qm->setQueryType( QueryMaker::Track );
+    qm->setQueryType( Collections::QueryMaker::Track );
     connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( resultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
     connect( qm, SIGNAL( queryDone() ), this, SLOT( queryDone() ), Qt::QueuedConnection );
     qm->run();
@@ -187,8 +188,6 @@ TagDialog::resultReady( const QString &collectionId, const Meta::AlbumList &albu
         if( !album->name().isEmpty() )
             m_albums << album->name();
     }
-
-    m_albums.sort();
 }
 
 void
@@ -201,8 +200,6 @@ TagDialog::resultReady( const QString &collectionId, const Meta::ArtistList &art
         if( !artist->name().isEmpty() )
             m_artists << artist->name();
     }
-
-    m_artists.sort();
 }
 
 void
@@ -215,8 +212,6 @@ TagDialog::resultReady( const QString &collectionId, const Meta::ComposerList &c
         if( !composer->name().isEmpty() )
             m_composers << composer->name();
     }
-
-    m_composers.sort();
 }
 
 void
@@ -229,17 +224,25 @@ TagDialog::resultReady( const QString &collectionId, const Meta::GenreList &genr
         if( !genre->name().isEmpty() )  // Where the heck do the empty genres come from?
             m_genres << genre->name();
     }
+}
 
-    m_genres.sort();
+
+void
+TagDialog::resultReady( const QString &collectionId, const Meta::LabelList &labels )
+{
+    Q_UNUSED( collectionId )
+
+    foreach( const Meta::LabelPtr &label, labels )
+    {
+        if( !label->name().isEmpty() )
+            m_allLabels << label->name();
+    }
 }
 
 void
 TagDialog::dataQueryDone()
 {
     DEBUG_BLOCK
-
-    m_dataQueryMaker->deleteLater();
-    m_dataQueryMaker = 0;
 
     // basically we want to ignore the fact that the fields are being
     // edited because we do it not the user, so it results in empty
@@ -252,30 +255,44 @@ TagDialog::dataQueryDone()
     // we do this because if we insert items and the contents of the textbox
     // are not in the list, it clears the textbox. which is bad --lfranchi 2.22.09
     QString saveText( ui->kComboBox_artist->lineEdit()->text() );
+    QStringList artists = m_artists.toList();
+    artists.sort();
     ui->kComboBox_artist->clear();
-    ui->kComboBox_artist->insertItems( 0, m_artists );
-    ui->kComboBox_artist->completionObject()->setItems( m_artists );
+    ui->kComboBox_artist->insertItems( 0, artists );
+    ui->kComboBox_artist->completionObject()->setItems( artists );
     ui->kComboBox_artist->lineEdit()->setText( saveText );
 
     saveText = ui->kComboBox_album->lineEdit()->text();
+    QStringList albums = m_albums.toList();
+    albums.sort();
     ui->kComboBox_album->clear();
-    ui->kComboBox_album->insertItems( 0, m_albums );
-    ui->kComboBox_album->completionObject()->setItems( m_albums );
+    ui->kComboBox_album->insertItems( 0, albums );
+    ui->kComboBox_album->completionObject()->setItems( albums );
     ui->kComboBox_album->lineEdit()->setText( saveText );
 
     saveText = ui->kComboBox_composer->lineEdit()->text();
+    QStringList composers = m_composers.toList();
+    composers.sort();
     ui->kComboBox_composer->clear();
-    ui->kComboBox_composer->insertItems( 0, m_composers );
-    ui->kComboBox_composer->completionObject()->setItems( m_composers );
+    ui->kComboBox_composer->insertItems( 0, composers );
+    ui->kComboBox_composer->completionObject()->setItems( composers );
     ui->kComboBox_composer->lineEdit()->setText( saveText );
 
     saveText = ui->kComboBox_genre->lineEdit()->text();
+    QStringList genres = m_genres.toList();
+    genres.sort();
     ui->kComboBox_genre->clear();
-    ui->kComboBox_genre->insertItems( 0, m_genres );
-    ui->kComboBox_genre->completionObject()->setItems( m_genres );
+    ui->kComboBox_genre->insertItems( 0, genres );
+    ui->kComboBox_genre->completionObject()->setItems( genres );
     ui->kComboBox_genre->lineEdit()->setText( saveText );
 
-
+    saveText = ui->kComboBox_label->lineEdit()->text();
+    QStringList labels = m_allLabels.toList();
+    labels.sort();
+    ui->kComboBox_label->clear();
+    ui->kComboBox_label->insertItems( 0, labels );
+    ui->kComboBox_label->completionObject()->setItems( labels );
+    ui->kComboBox_label->lineEdit()->setText( saveText );
 
     if( !m_queryMaker )  //track query complete or not necessary
     {
@@ -692,9 +709,7 @@ void TagDialog::init()
     m_labelModel = new LabelListModel( m_labels );
 
     ui->labelsList->setModel( m_labelModel );
-    ui->labelsTab->setEnabled( m_currentTrack->is<Meta::ReadLabelCapability>() );
-
-    loadGlobalLabels();
+    ui->labelsTab->setEnabled( true );
 
     ui->kTabWidget->setCurrentIndex( config.readEntry( "CurrentTab", 0 ) );
 
@@ -709,6 +724,9 @@ void TagDialog::init()
 
     ui->kComboBox_genre->completionObject()->setIgnoreCase( true );
     ui->kComboBox_genre->setCompletionMode( KGlobalSettings::CompletionPopup );
+
+    ui->kComboBox_label->completionObject()->setIgnoreCase( true );
+    ui->kComboBox_label->setCompletionMode( KGlobalSettings::CompletionPopup );
 
     ui->addButton->setEnabled( false );
     ui->removeButton->setEnabled( false );
@@ -787,27 +805,29 @@ void TagDialog::init()
 void
 TagDialog::startDataQuery()
 {
-    Amarok::Collection *coll = CollectionManager::instance()->primaryCollection();
-    if( !coll )
-        return;
+    Collections::QueryMaker *artist = CollectionManager::instance()->queryMaker()->setQueryType( Collections::QueryMaker::Artist );
+    Collections::QueryMaker *album = CollectionManager::instance()->queryMaker()->setQueryType( Collections::QueryMaker::Album );
+    Collections::QueryMaker *composer = CollectionManager::instance()->queryMaker()->setQueryType( Collections::QueryMaker::Composer );
+    Collections::QueryMaker *genre = CollectionManager::instance()->queryMaker()->setQueryType( Collections::QueryMaker::Genre );
+    Collections::QueryMaker *label = CollectionManager::instance()->queryMaker()->setQueryType( Collections::QueryMaker::Label );
 
-    QueryMaker *artist = coll->queryMaker()->setQueryType( QueryMaker::Artist );
-    QueryMaker *album = coll->queryMaker()->setQueryType( QueryMaker::Album );
-    QueryMaker *composer = coll->queryMaker()->setQueryType( QueryMaker::Composer );
-    QueryMaker *genre = coll->queryMaker()->setQueryType( QueryMaker::Genre );
-    QList<QueryMaker*> queries;
-    queries << artist << album << composer << genre;
+    QList<Collections::QueryMaker*> queries;
+    queries << artist << album << composer << genre << label;
 
     //MetaQueryMaker will run multiple different queries just fine as long as we do not use it
     //to set the query type. Configuring the queries is ok though
 
-    m_dataQueryMaker = new MetaQueryMaker( queries );
-    connect( m_dataQueryMaker, SIGNAL( queryDone() ), SLOT( dataQueryDone() ) );
-    connect( m_dataQueryMaker, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), SLOT( resultReady( QString, Meta::ArtistList ) ), Qt::QueuedConnection );
-    connect( m_dataQueryMaker, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), SLOT( resultReady( QString, Meta::AlbumList ) ), Qt::QueuedConnection );
-    connect( m_dataQueryMaker, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), SLOT( resultReady( QString, Meta::ComposerList ) ), Qt::QueuedConnection );
-    connect( m_dataQueryMaker, SIGNAL( newResultReady( QString, Meta::GenreList ) ), SLOT( resultReady( QString, Meta::GenreList ) ), Qt::QueuedConnection );
-    m_dataQueryMaker->run();
+    Collections::QueryMaker *mqm = new Collections::MetaQueryMaker( queries );
+    connect( mqm, SIGNAL( queryDone() ), SLOT( dataQueryDone() ) );
+    connect( mqm, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), SLOT( resultReady( QString, Meta::ArtistList ) ), Qt::QueuedConnection );
+    connect( mqm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), SLOT( resultReady( QString, Meta::AlbumList ) ), Qt::QueuedConnection );
+    connect( mqm, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), SLOT( resultReady( QString, Meta::ComposerList ) ), Qt::QueuedConnection );
+    connect( mqm, SIGNAL( newResultReady( QString, Meta::GenreList ) ), SLOT( resultReady( QString, Meta::GenreList ) ), Qt::QueuedConnection );
+    connect( mqm, SIGNAL( newResultReady( QString, Meta::LabelList ) ), SLOT( resultReady( QString; Meta::LabelList ) ), Qt::DirectConnection );
+
+    mqm->setAutoDelete( true );
+
+    mqm->run();
 }
 
 
@@ -858,8 +878,8 @@ TagDialog::showCoverMenu( const QPoint &pos )
 const QStringList TagDialog::statisticsData()
 {
     QStringList data;
-    QueryMaker *qm = 0;
-    Amarok::Collection *coll = m_currentTrack->collection();
+    Collections::QueryMaker *qm = 0;
+    Collections::Collection *coll = m_currentTrack->collection();
     if( coll )
         qm = coll->queryMaker();
 
@@ -888,7 +908,7 @@ const QStringList TagDialog::statisticsData()
         if( qm )
         {
             // favorite track by this artist
-            qm->setQueryType( QueryMaker::Custom );
+            qm->setQueryType( Collections::QueryMaker::Custom );
             qm->addReturnValue( Meta::valTitle );
             qm->addMatch( trackArtist );
             qm->orderBy( Meta::valPlaycount );
@@ -907,7 +927,7 @@ const QStringList TagDialog::statisticsData()
         {
             // Favorite track on this album
             qm->reset();
-            qm->setQueryType( QueryMaker::Custom );
+            qm->setQueryType( Collections::QueryMaker::Custom );
             qm->addReturnValue( Meta::valTitle );
             qm->addMatch( trackAlbum );
             qm->orderBy( Meta::valPlaycount );
@@ -1068,7 +1088,7 @@ void TagDialog::readTags()
     ui->X->setEnabled( editable ); \
     qobject_cast<KLineEdit*>(ui->X->lineEdit())->setClearButtonShown( editable )
 
-    const bool editable = m_currentTrack->hasCapabilityInterface( Meta::Capability::Editable );
+    const bool editable = m_currentTrack->hasCapabilityInterface( Capabilities::Capability::Editable );
     ui->kLineEdit_title->setEnabled( editable );
     ui->kLineEdit_title->setClearButtonShown( editable );
 
@@ -1234,26 +1254,19 @@ TagDialog::readMultipleTracks()
     m_labelModel->setLabels( m_labels );
 
     // Set them in the dialog and in the track ( so we don't break hasChanged() )
-    int cur_item;
     if( artist )
     {
-        cur_item = ui->kComboBox_artist->currentIndex();
         m_currentData.insert( Meta::Field::ARTIST, first.value( Meta::Field::ARTIST ) );
-        ui->kComboBox_artist->completionObject()->insertItems( m_artists );
         selectOrInsertText( first.value( Meta::Field::ARTIST ).toString(), ui->kComboBox_artist );
     }
     if( album )
     {
-        cur_item = ui->kComboBox_album->currentIndex();
         m_currentData.insert( Meta::Field::ALBUM, first.value( Meta::Field::ALBUM ) );
-        ui->kComboBox_album->completionObject()->insertItems( m_albums );
         selectOrInsertText( first.value( Meta::Field::ALBUM ).toString(), ui->kComboBox_album );
     }
     if( genre )
     {
-        cur_item = ui->kComboBox_genre->currentIndex();
         m_currentData.insert( Meta::Field::GENRE, first.value( Meta::Field::GENRE ) );
-        ui->kComboBox_genre->completionObject()->insertItems( m_genres );
         selectOrInsertText( first.value( Meta::Field::GENRE ).toString(), ui->kComboBox_genre );
     }
     if( comment )
@@ -1263,9 +1276,7 @@ TagDialog::readMultipleTracks()
     }
     if( composer )
     {
-        cur_item = ui->kComboBox_composer->currentIndex();
         m_currentData.insert( Meta::Field::COMPOSER, first.value( Meta::Field::COMPOSER ) );
-        ui->kComboBox_composer->completionObject()->insertItems( m_composers );
         selectOrInsertText( first.value( Meta::Field::COMPOSER ).toString(), ui->kComboBox_composer );
     }
     if( year )
@@ -1468,19 +1479,31 @@ TagDialog::storeLabels( Meta::TrackPtr track, const QStringList &removedLabels, 
 {
     DEBUG_BLOCK
 
-    Meta::WriteLabelCapability *wlc = track->create<Meta::WriteLabelCapability>();
-
-    if( !wlc )
+    if( track )
     {
-        debug() << "Unable to get a write label capability, aborting";
-        return;
-    }
-    wlc->setLabels( removedLabels, newLabels );
-    delete wlc;
+        QHash<QString, Meta::LabelPtr> labelMap;
+        foreach( const Meta::LabelPtr &label, track->labels() )
+        {
+            labelMap.insert( label->name(), label );
+        }
 
-    Meta::ReadLabelCapability *rlc = track->create<Meta::ReadLabelCapability>();
-    if( rlc )
-        rlc->fetchLabels(); // If new labels are set, we need to fetchLabels() again to update the cache.  This should probably be done centrally..
+        foreach( const QString &oldLabel, removedLabels )
+        {
+            if( labelMap.contains( oldLabel ) )
+            {
+                Meta::LabelPtr label = labelMap.value( oldLabel );
+                track->removeLabel( label );
+            }
+        }
+
+        foreach( const QString &newLabel, newLabels )
+        {
+            if( !labelMap.contains( newLabel ) )
+            {
+                track->addLabel( newLabel );
+            }
+        }
+    }
 }
 
 
@@ -1508,7 +1531,7 @@ TagDialog::labelsForTrack( Meta::TrackPtr track )
 {
     DEBUG_BLOCK
 
-    Meta::ReadLabelCapability *ric = track->create<Meta::ReadLabelCapability>();
+    Capabilities::ReadLabelCapability *ric = track->create<Capabilities::ReadLabelCapability>();
     if( !ric )
     {
         debug() << "No Read Label Capability found, no labels available.";
@@ -1523,30 +1546,16 @@ TagDialog::loadLabels( Meta::TrackPtr track )
 {
     if( track )
     {
-        Meta::ReadLabelCapability *ric = track->create<Meta::ReadLabelCapability>();
-        if( !ric )
+        QStringList labelNames;
+        foreach( const Meta::LabelPtr &label, track->labels() )
         {
-            debug() << "No Read Label Capability found, no labels available.";
-            return;
+            labelNames << label->name();
         }
-        connect( ric, SIGNAL(labelsFetched(QStringList)), SLOT(trackLabelsFetched(QStringList)));
-        ric->fetchLabels();
+        m_labels = labelNames;
+        m_labelModel->setLabels( labelNames );
+        ui->labelsList->update();
     }
 }
-
-void
-TagDialog::loadGlobalLabels()
-{
-    Meta::ReadLabelCapability *ric = m_currentTrack->create<Meta::ReadLabelCapability>();
-    if( !ric )
-    {
-        debug() << "No Read Label Capability found, no labels available.";
-        return;
-    }
-    connect( ric, SIGNAL(labelsFetched(QStringList)), SLOT(globalLabelsFetched(QStringList)));
-    ric->fetchGlobalLabels();
-}
-
 
 void
 TagDialog::trackLabelsFetched( QStringList labels )
@@ -1556,17 +1565,6 @@ TagDialog::trackLabelsFetched( QStringList labels )
     m_labelModel->setLabels( labels );
     ui->labelsList->update();
 }
-
-void
-TagDialog::globalLabelsFetched( QStringList labels )
-{
-    sender()->deleteLater();
-    ui->kComboBox_label->addItems( labels );
-    ui->kComboBox_label->completionObject()->insertItems( labels );
-    ui->kComboBox_label->update();
-    ui->kComboBox_label->setCurrentIndex( -1 );
-}
-
 
 QVariantMap
 TagDialog::dataForTrack( const Meta::TrackPtr &track )
@@ -1637,16 +1635,16 @@ TagDialog::saveTags()
             emit lyricsChanged( track->uidUrl() );
         }
 
-        Meta::EditCapability *ec = track->create<Meta::EditCapability>();
+        Capabilities::EditCapability *ec = track->create<Capabilities::EditCapability>();
         if( !ec )
         {
-            debug() << "Track does not have Meta::EditCapability. Aborting loop.";
+            debug() << "Track does not have Capabilities::EditCapability. Aborting loop.";
             continue;
         }
         if( !ec->isEditable() )
         {
             debug() << "Track not editable. Aborting loop.";
-            The::statusBar()->shortMessage( i18n( "Writing to file failed. Please check permissions and available disc space." ) );
+            Amarok::Components::logger()->shortMessage( i18n( "Writing to file failed. Please check permissions and available disc space." ) );
             continue;
         }
 
@@ -1697,7 +1695,7 @@ TagDialog::saveTags()
 
     foreach( Meta::TrackPtr track, m_tracks )
     {
-        Meta::UpdateCapability *uc = track->create<Meta::UpdateCapability>();
+        Capabilities::UpdateCapability *uc = track->create<Capabilities::UpdateCapability>();
         if( !uc )
         {
             continue;
@@ -1715,9 +1713,9 @@ TagDialog::saveTags()
 
     // use the representative tracks to send updated signals
 
-    foreach( Meta::TrackPtr track, collectionsToUpdateMap.values() )
+    foreach( Meta::TrackPtr track, collectionsToUpdateMap )
     {
-        Meta::UpdateCapability *uc = track->create<Meta::UpdateCapability>();
+        Capabilities::UpdateCapability *uc = track->create<Capabilities::UpdateCapability>();
 
         uc->collectionUpdated();
     }

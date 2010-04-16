@@ -19,7 +19,7 @@
 
 #include "SynchronizationBaseJob.h"
 
-#include "meta/Meta.h"
+#include "core/meta/Meta.h"
 
 #include <QMap>
 #include <QPair>
@@ -41,11 +41,11 @@ class UnionJob : public SynchronizationBaseJob
 {
     Q_OBJECT
     public:
-        UnionJob( Amarok::Collection *collA, Amarok::Collection *collB );
+        UnionJob( Collections::Collection *collA, Collections::Collection *collB );
         virtual ~UnionJob();
 
     protected:
-        void doSynchronization( const Meta::TrackList &tracks, InSet syncDirection, Amarok::Collection *collA, Amarok::Collection *collB );
+        void doSynchronization( const Meta::TrackList &tracks, InSet syncDirection, Collections::Collection *collA, Collections::Collection *collB );
 };
 
 

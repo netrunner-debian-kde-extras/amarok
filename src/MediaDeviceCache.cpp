@@ -18,8 +18,8 @@
 
 #include "MediaDeviceCache.h"
 
-#include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 
 #include <KConfig>
 #include <solid/device.h>
@@ -144,8 +144,8 @@ MediaDeviceCache::refreshCache()
         }
     }
     KConfigGroup config = Amarok::config( "PortableDevices" );
-    QMap<QString, QString> manualDevices = config.entryMap();
-    foreach( const QString &udi, manualDevices.keys() )
+    const QStringList manualDeviceKeys = config.entryMap().keys();
+    foreach( const QString &udi, manualDeviceKeys )
     {
         if( udi.startsWith( "manual" ) )
         {

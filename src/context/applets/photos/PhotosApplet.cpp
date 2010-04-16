@@ -18,8 +18,9 @@
 #include "PhotosScrollWidget.h"
 
 // Amarok
-#include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Amarok.h"
+#include "EngineController.h"
+#include "core/support/Debug.h"
 #include "context/ContextView.h"
 #include "context/widgets/TextScrollingWidget.h"
 
@@ -43,6 +44,7 @@
 
 PhotosApplet::PhotosApplet( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
+    , Engine::EngineObserver( The::engineController() )
     , m_stoppedstate( false )
     , m_settingsIcon( 0 )
 {
@@ -89,7 +91,7 @@ PhotosApplet::init()
     m_KeyWords = config.readEntry( "KeyWords", "" );
     
 
-    if ( m_Animation == i18n( "Automatic" ) )
+    if ( m_Animation == i18nc( "animation type", "Automatic" ) )
         m_widget->setMode( 0 );
     
     if ( m_Animation == i18n( "Interactive" ) )

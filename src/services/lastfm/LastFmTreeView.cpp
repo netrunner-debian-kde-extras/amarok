@@ -18,8 +18,8 @@
 
 #include "LastFmTreeView.h"
 
-#include "Amarok.h"
-#include "Debug.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 #include "LastFmTreeModel.h" //FIXME just for enums
 #include "PopupDropperFactory.h"
 #include "SvgHandler.h"

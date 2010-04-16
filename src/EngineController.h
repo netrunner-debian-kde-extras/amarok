@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2004 Frederik Holljen <fh@ez.no>                                       *
  * Copyright (c) 2004,2005 Max Howell <max.howell@methylblue.com>                       *
- * Copyright (c) 2004-2008 Mark Kretschmann <kretschmann@kde.org>                       *
+ * Copyright (c) 2004-2010 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2008 Jason A. Donenfeld <Jason@zx2c4.com>                              *
  * Copyright (c) 2009 Artur Szymiec <artur.szymiec@gmail.com>                           *
  *                                                                                      *
@@ -21,9 +21,9 @@
 #ifndef AMAROK_ENGINECONTROLLER_H
 #define AMAROK_ENGINECONTROLLER_H
 
-#include "meta/capabilities/BoundedPlaybackCapability.h"
-#include "EngineObserver.h"
-#include "meta/Meta.h"
+#include "core/capabilities/BoundedPlaybackCapability.h"
+#include "core/engine/EngineObserver.h"
+#include "core/meta/Meta.h"
 
 #include <QMap>
 #include <QMutex>
@@ -39,7 +39,7 @@
 class QTimer;
 
 namespace KIO { class Job; }
-namespace Meta { class MultiPlayableCapability; class MultiSourceCapability; }
+namespace Capabilities { class MultiPlayableCapability; class MultiSourceCapability; }
 namespace Phonon { class AudioOutput; class MediaSource; class VolumeFaderEffect; }
 
 /**
@@ -47,7 +47,7 @@ namespace Phonon { class AudioOutput; class MediaSource; class VolumeFaderEffect
  * replay gain, fade-out on stop and various track capabilities that affect
  * playback.
  */
-class AMAROK_EXPORT EngineController : public EngineSubject
+class AMAROK_EXPORT EngineController : public Engine::EngineSubject
 {
     Q_OBJECT
 
@@ -179,6 +179,11 @@ public:
     * @return whether the currently playing track is from an audiocd
     */
     bool isPlayingAudioCd();
+
+    /**
+     * @return QString with a pretty name for the current track
+     */
+    QString prettyNowPlaying();
 
 public slots:
     /**
@@ -321,6 +326,12 @@ private slots:
     void slotStopFadeout(); //called after the fade-out has finished
 
     /**
+     * For volume/mute changes from the phonon side
+     */
+    void slotVolumeChanged( qreal );
+    void slotMutedChanged( bool );
+
+    /**
      *  Notify the engine that a new title has been reached when playing a cd. This
      *  is needed as a cd counts as basically one lone track, and we want to be able
      *  to play something else once one track has finished
@@ -353,13 +364,24 @@ private:
     Meta::TrackPtr  m_lastTrack;
     Meta::TrackPtr  m_nextTrack;
     KUrl            m_nextUrl;
-    QPointer<Meta::BoundedPlaybackCapability> m_boundedPlayback;
-    QPointer<Meta::MultiPlayableCapability> m_multiPlayback;
-    QPointer<Meta::MultiSourceCapability> m_multiSource;
+    QPointer<Capabilities::BoundedPlaybackCapability> m_boundedPlayback;
+    QPointer<Capabilities::MultiPlayableCapability> m_multiPlayback;
+    QPointer<Capabilities::MultiSourceCapability> m_multiSource;
     bool m_playWhenFetched;
     QTimer* m_fadeoutTimer;
     int m_volume;
     bool m_currentIsAudioCd;
+
+    /**
+     * Some flags to prevent feedback loops in volume updates
+     */
+    bool m_ignoreVolumeChangeAction;
+    bool m_ignoreVolumeChangeObserve;
+
+    // Used to get a more accurate estimate of the position for slotTick
+    int m_tickInterval;
+    qint64 m_lastTickPosition;
+    qint64 m_lastTickCount;
 
     QMutex m_mutex;
 };
