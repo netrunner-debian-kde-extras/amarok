@@ -1,5 +1,7 @@
 amarok (2.3.1~beta1-2) UNRELEASED; urgency=low
 
+  * Add libgpod-dev as an alternative to libgpod-nogtk-dev in Build-Depends
+    (Closes: #580057).
 
  -- Modestas Vainius <modax@debian.org>  Mon, 03 May 2010 19:26:16 +0300
 
