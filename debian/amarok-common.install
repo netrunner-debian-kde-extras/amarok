@@ -27,7 +27,6 @@ usr/share/kde4/config/amarokapplets.knsrc
 usr/share/kde4/services/ServiceMenus/*
 usr/share/kde4/services/amarok-containment-vertical.desktop
 usr/share/kde4/services/amarok-context-applet-albums.desktop
-usr/share/kde4/services/amarok-context-applet-coverbling.desktop
 usr/share/kde4/services/amarok-context-applet-currenttrack.desktop
 usr/share/kde4/services/amarok-context-applet-info.desktop
 usr/share/kde4/services/amarok-context-applet-lyrics.desktop

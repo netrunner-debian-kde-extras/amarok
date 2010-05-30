@@ -12,7 +12,6 @@ usr/lib/kde4/amarok_collection-mysqlservercollection.so
 usr/lib/kde4/amarok_collection-umscollection.so
 usr/lib/kde4/amarok_containment_vertical.so
 usr/lib/kde4/amarok_context_applet_albums.so
-usr/lib/kde4/amarok_context_applet_coverbling.so
 usr/lib/kde4/amarok_context_applet_currenttrack.so
 usr/lib/kde4/amarok_context_applet_info.so
 usr/lib/kde4/amarok_context_applet_lyrics.so
@@ -42,6 +41,7 @@ usr/lib/kde4/kcm_amarok_service_lastfm.so
 usr/lib/kde4/kcm_amarok_service_magnatunestore.so
 usr/lib/kde4/kcm_amarok_service_mp3tunes.so
 usr/lib/libamarok-sqlcollection.so.1*
+usr/lib/libamarokcore.so.1*
 usr/lib/libamaroklib.so.1*
 usr/lib/libamarokocsclient.so.4*
 usr/lib/libamarokpud.so.1*
