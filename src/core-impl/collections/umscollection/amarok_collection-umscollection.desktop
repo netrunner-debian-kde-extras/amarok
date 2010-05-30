@@ -13,6 +13,8 @@ Name[et]=Universaalse massmäluseadme kogu
 Name[hu]=Univerzális tárolóhoz (UMS) tartozó gyűjtemény
 Name[is]=Universal Mass Storage safn
 Name[it]=Collezione universale di memorizzazione di massa
+Name[ja]=Universal Mass Storage コレクション
+Name[km]=ការ​ប្រមូល​ផ្ដុំ​ឧបករណ៍​ផ្ទុក​ធំ​សកល
 Name[lv]=Universal Mass Storage kolekcija
 Name[nb]=Universell masselagersamling
 Name[nds]=Allmeen Bültspieker-Sammeln
@@ -35,6 +37,7 @@ Name[tr]=Evrensel Yığın Depolama Koleksiyonu
 Name[uk]=Універсальна збірка на носії даних
 Name[x-test]=xxUniversal Mass Storage Collectionxx
 Name[zh_CN]=通用大容量存储收藏
+Name[zh_TW]=通用大容量儲存裝置收藏
 
 ServiceTypes=Amarok/Plugin
 
@@ -42,7 +45,7 @@ X-KDE-Library=amarok_collection-umscollection
 
 X-KDE-Amarok-authors=Alejandro Wainzinger
 X-KDE-Amarok-email=aikawarazuni@gmail.com
-X-KDE-Amarok-framework-version=55
+X-KDE-Amarok-framework-version=56
 X-KDE-Amarok-name=ums-collection
 X-KDE-Amarok-plugintype=collection
 X-KDE-Amarok-rank=100

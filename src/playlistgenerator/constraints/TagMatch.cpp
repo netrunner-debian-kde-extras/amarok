@@ -24,8 +24,9 @@
 #include "core/collections/QueryMaker.h"
 #include "core/support/Debug.h"
 
+#include <KRandom>
+
 #include <QtGlobal>
-#include <QtGui>
 
 #include <math.h>
 #include <stdlib.h>
@@ -147,9 +148,7 @@ void
 ConstraintTypes::TagMatch::toXml( QDomDocument& doc, QDomElement& elem ) const
 {
     QDomElement c = doc.createElement( "constraint" );
-    QDomText t = doc.createTextNode( getName() );
 
-    c.appendChild( t );
     c.setAttribute( "type", "TagMatch" );
     c.setAttribute( "field", m_field );
     c.setAttribute( "comparison", m_comparison );
@@ -190,11 +189,11 @@ ConstraintTypes::TagMatch::initQueryMaker( Collections::QueryMaker* qm ) const
         int range;
         if ( m_field != "length" ) {
             // compute fuzzy ranges -- this marks the boundary beyond which the fuzzy match probability is less than 1%
-            factor = exp( 2.0 * m_strictness ) / ( sqrt(( double )v ) + 1.0 ); // duplicated from Constraint::compare()
+            factor = exp( Constraint::magicStrictnessWeight * m_strictness ) / ( sqrt(( double )v ) + 1.0 ); // duplicated from Constraint::compare()
             range = (int)ceil( 4.6051702 / factor );
         } else {
             // small kludge to get fuzziness to play better in the case of track lengths
-            factor = exp( 2.0 * m_strictness ) / ( sqrt(( double )v/1000.0 ) + 1.0 );
+            factor = exp( Constraint::magicStrictnessWeight * m_strictness ) / ( sqrt(( double )v/1000.0 ) + 1.0 );
             range = (int)ceil( 4605.1702 / factor );
         }
         if ( m_comparison == Constraint::CompareNumEquals ) {
@@ -244,18 +243,17 @@ ConstraintTypes::TagMatch::initQueryMaker( Collections::QueryMaker* qm ) const
             DateRange r = m_value.value<DateRange>();
             switch ( r.second ) {
                 case 0:
-                    now.addDays( -1 * r.first );
+                    referenceDate = now.addDays( -1 * r.first ).toTime_t();
                     break;
                 case 1:
-                    now.addMonths( -1 * r.first );
+                    referenceDate = now.addMonths( -1 * r.first ).toTime_t();
                     break;
                 case 2:
-                    now.addYears( -1 * r.first );
+                    referenceDate = now.addYears( -1 * r.first ).toTime_t();
                     break;
                 default:
                     break;
             }
-            referenceDate = now.toTime_t();
             if ( m_invert )
                 qm->excludeNumberFilter( m_fieldsModel->meta_value_of( m_field ), referenceDate + range, Collections::QueryMaker::GreaterThan );
             else
@@ -367,6 +365,39 @@ ConstraintTypes::TagMatch::deleteTrack( const Meta::TrackList& tl, const int i )
 void
 ConstraintTypes::TagMatch::swapTracks( const Meta::TrackList&, const int, const int ) {}
 
+ConstraintNode::Vote*
+ConstraintTypes::TagMatch::vote( const Meta::TrackList& playlist, const Meta::TrackList& domain ) const
+{
+    ConstraintNode::Vote* v = new ConstraintNode::Vote();
+    v->operation = ConstraintNode::OperationReplace;
+    v->place = -1;
+    v->track = Meta::TrackPtr();
+
+    // find a non-matching track in the playlist
+    for ( int i = 0; i < playlist.length() ; i++ ) {
+        if ( !matches( playlist.at( i ) ) ) {
+            v->place = i;
+            break;
+        }
+    }
+    if ( v->place < 0 ) {
+        delete v;
+        return 0;
+    }
+
+    // replace it with a track from the domain that matches
+    for ( int i = 0; i < 100; i++ ) {
+        v->track = domain.at( KRandom::random() % domain.size() );
+        if ( matches( v->track ) ) {
+            return v;
+        }
+    }
+
+    delete v;
+    return 0;
+}
+
+
 const QBitArray
 ConstraintTypes::TagMatch::whatTracksMatch( const Meta::TrackList& tl )
 {
@@ -396,18 +427,17 @@ ConstraintTypes::TagMatch::dateComparison( uint trackDate ) const
         DateRange r = m_value.value<DateRange>();
         switch ( r.second ) {
             case 0:
-                now.addDays( -1 * r.first );
+                referenceDate = now.addDays( -1 * r.first ).toTime_t();
                 break;
             case 1:
-                now.addMonths( -1 * r.first );
+                referenceDate = now.addMonths( -1 * r.first ).toTime_t();
                 break;
             case 2:
-                now.addYears( -1 * r.first );
+                referenceDate = now.addYears( -1 * r.first ).toTime_t();
                 break;
             default:
                 break;
         }
-        referenceDate = now.toTime_t();
     } else {
         comp = m_comparison;
         referenceDate = m_value.toDateTime().toTime_t();
@@ -445,7 +475,6 @@ ConstraintTypes::TagMatch::dateComparison( uint trackDate ) const
 double
 ConstraintTypes::TagMatch::labelComparison( Meta::TrackPtr t ) const
 {
-    DEBUG_BLOCK
     Meta::LabelList labelList = t->labels();
 
     double v = 0.0;

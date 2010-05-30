@@ -48,12 +48,16 @@ namespace TagLib
 void
 Meta::Field::writeFields(const QString &filename, const QVariantMap &changes )
 {
+    Q_UNUSED( filename )
+    Q_UNUSED( changes )
     return;
 }
 
 void
 Meta::Field::writeFields(TagLib::FileRef fileref, const QVariantMap &changes)
 {
+    Q_UNUSED( fileref )
+    Q_UNUSED( changes )
     return;
 }
 
@@ -1145,6 +1149,41 @@ TestSqlQueryMaker::testLabelQueryMode()
 
     QCOMPARE( qm.data().count(), result );
 
+}
+
+void
+TestSqlQueryMaker::testResetRunningQuery()
+{
+    for( int i = 0; i < 10; i++ )
+    {
+    int iteration = 0;
+    bool queryNotDoneYet = true;
+    Collections::SqlQueryMaker *qm = new Collections::SqlQueryMaker( m_collection );
+
+    //wait one second per query in total, that should be enough for it to complete
+    do
+    {
+        QSignalSpy spy( qm, SIGNAL(queryDone()) );
+        qm->setQueryType( Collections::QueryMaker::Track );
+        qm->addFilter( Meta::valTitle, QString::number( iteration), false, false );
+        qm->run();
+        //wait 2 msec more per iteration, might have to be tweaked
+        if( iteration > 0 )
+        {
+            QTest::qWait( 2 * iteration );
+        }
+        qm->reset();
+        queryNotDoneYet = ( spy.count() == 0 );
+        if( iteration > 50 )
+        {
+            break;
+        }
+        QTest::qWait( 1000 - 2 * iteration );
+        iteration++;
+    } while ( queryNotDoneYet );
+    //delete qm;
+    qDebug() << "Iterations: " << iteration;
+    }
 }
 
 #include "TestSqlQueryMaker.moc"

@@ -28,7 +28,7 @@ This capability exposes a method that shows this track (or the closest possible 
     @author Nikolaj Hald Nielsen <nhn@kde.org>
 */
 
-class AMAROK_EXPORT FindInSourceCapability : public Capabilities::Capability
+class AMAROK_CORE_EXPORT FindInSourceCapability : public Capabilities::Capability
 {
     Q_OBJECT
 public: 
@@ -43,6 +43,6 @@ public:
     static Type capabilityInterfaceType() { return Capabilities::Capability::FindInSource; }
 };
 
-};
+}
 
 #endif // FINDINSOURCECAPABILITY_H

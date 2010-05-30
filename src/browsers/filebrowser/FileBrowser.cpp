@@ -50,15 +50,15 @@ FileBrowser::FileBrowser( const char * name, QWidget *parent )
     navigationToolbar->setIconDimensions( 16 );
 
     //add navigation actions
-    m_upAction = new QAction( KIcon( "go-up" ), "Up one level", this );
+    m_upAction = new QAction( KIcon( "go-up" ), i18nc( "Go one level up in the directory hierarchy", "Up one level" ), this );
     navigationToolbar->addAction( m_upAction );
     connect( m_upAction, SIGNAL( triggered( bool) ), this, SLOT( up() ) );
 
-    m_homeAction = new QAction( KIcon( "user-home" ), "Home", this );
+    m_homeAction = new QAction( KIcon( "user-home" ), i18nc( "Go to the home directory",  "Home" ), this );
     navigationToolbar->addAction( m_homeAction );
     connect( m_homeAction, SIGNAL( triggered( bool) ), this, SLOT( home() ) );
 
-    m_placesAction = new QAction( KIcon( "folder-remote" ), "Places", this );
+    m_placesAction = new QAction( KIcon( "folder-remote" ), i18nc( "Show Dolphin Places the user configured", "Places" ), this );
     navigationToolbar->addAction( m_placesAction );
     connect( m_placesAction, SIGNAL( triggered( bool) ), this, SLOT( showPlaces() ) );
 
@@ -74,7 +74,7 @@ FileBrowser::FileBrowser( const char * name, QWidget *parent )
     m_mimeFilterProxyModel->setSourceModel( m_kdirModel );
     m_mimeFilterProxyModel->setSortCaseSensitivity( Qt::CaseInsensitive );
     m_mimeFilterProxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
-    m_mimeFilterProxyModel->sort( 0 );
+    m_mimeFilterProxyModel->setDynamicSortFilter( true );
 
     debug() << "home path: " <<  QDir::homePath();
 
@@ -382,7 +382,19 @@ FileBrowser::setDir( const QString &dir )
     if( dir == "places:" )
         showPlaces();
     else
+    {
+        
+       //if we are currently showing "places" we need to remember to change the model
+       //back to the regular file model
+       if( m_showingPlaces )
+       {
+           m_fileView->setModel( m_mimeFilterProxyModel );
+           m_showingPlaces = false;
+       }
+           
        addItemActivated( dir );  //This function just happens to do exactly what we need
+
+    }
 }
 
 void
@@ -420,6 +432,7 @@ FileBrowser::showPlaces()
     if( !m_placesModel )
     {
         m_placesModel = new KFilePlacesModel( this );
+        m_placesModel->setObjectName( "PLACESMODEL");
         connect( m_placesModel, SIGNAL( setupDone( const QModelIndex &, bool ) ), this, SLOT( setupDone( const QModelIndex &, bool ) ) );
     }
 

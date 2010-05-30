@@ -22,14 +22,23 @@
 #include <QList>   //baseclass
 #include <QObject> //baseclass
 
+#include "shared/amarok_export.h"
 
+#ifdef Q_CC_MSVC
 class SmartPointerListDaddy : public QObject
+#else
+class AMAROK_CORE_EXPORT SmartPointerListDaddy : public QObject
+#endif
 {
     Q_OBJECT
     QList<QObject*>& m_list;
 
 public:
-    SmartPointerListDaddy( QList<QObject*>* list ) : m_list( *list )
+#ifdef Q_CC_MSVC
+    AMAROK_CORE_EXPORT SmartPointerListDaddy( QList<QObject*>* list ) : m_list( *list )
+#else
+	SmartPointerListDaddy( QList<QObject*>* list ) : m_list( *list )
+#endif
     {}
 
 private slots:

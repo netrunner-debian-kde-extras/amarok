@@ -32,21 +32,6 @@ class QFile;
 
 namespace Playlists
 {
-    enum PlaylistFormat
-    {
-        M3U,
-        PLS,
-        XML,
-        RAM,
-        SMIL,
-        ASX,
-        XSPF,
-        Unknown,
-        NotPlaylist = Unknown
-    };
-    PlaylistFormat getFormat( const KUrl &path );
-    AMAROK_EXPORT bool isPlaylist( const KUrl &path );
-
     AMAROK_EXPORT PlaylistFilePtr loadPlaylistFile( const KUrl &url );
     bool exportPlaylistFile( const Meta::TrackList &list, const KUrl &path );
     bool exportPlaylistFile( const Meta::TrackList &list, const KUrl &path, const QList<int> &queued );

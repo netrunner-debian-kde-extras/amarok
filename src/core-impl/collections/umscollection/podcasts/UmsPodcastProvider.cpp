@@ -94,6 +94,7 @@ UmsPodcastProvider::addEpisode( PodcastEpisodePtr episode )
             .arg( destination.path() );
     KIO::FileCopyJob *copyJob = KIO::file_copy( localFilePath, destination );
     connect( copyJob, SIGNAL( result( KJob * ) ), SLOT( slotCopyComplete( KJob * ) ) );
+    copyJob->start();
     //we have not copied the data over yet so we can't return an episode yet
     //TODO: return a proxy for the episode we are still copying.
     return PodcastEpisodePtr();
@@ -166,7 +167,6 @@ UmsPodcastProvider::playlists()
     Playlists::PlaylistList playlists;
     foreach( UmsPodcastChannelPtr channel, m_umsChannels )
         playlists << Playlists::PlaylistPtr::dynamicCast( channel );
-    debug() << "there are " << playlists.count() << " channels";
     return playlists;
 }
 
@@ -247,7 +247,7 @@ UmsPodcastProvider::deleteEpisodes( UmsPodcastEpisodeList umsEpisodes )
     foreach( UmsPodcastEpisodePtr umsEpisode, umsEpisodes )
         urlsToDelete << umsEpisode->playableUrl();
 
-    KDialog dialog( The::mainWindow() );
+    KDialog dialog;
     dialog.setCaption( i18n( "Confirm Delete" ) );
     dialog.setButtons( KDialog::Ok | KDialog::Cancel );
     QLabel label( i18np( "Are you sure you want to delete this episode?",
@@ -382,9 +382,15 @@ UmsPodcastProvider::playlistActions( Playlists::PlaylistPtr playlist )
 QList<QAction *>
 UmsPodcastProvider::trackActions( Playlists::PlaylistPtr playlist, int trackIndex )
 {
-    Q_UNUSED( playlist)
-    Q_UNUSED( trackIndex )
-    return episodeActions( PodcastEpisodeList() );
+    if( playlist->tracks().count() > trackIndex )
+    {
+        PodcastEpisodeList episodes;
+        episodes << UmsPodcastEpisode::toPodcastEpisodePtr(
+                    UmsPodcastEpisode::fromTrackPtr( playlist->tracks()[trackIndex] )
+                );
+        return episodeActions( episodes );
+    }
+    return QList<QAction *>();
 }
 
 void

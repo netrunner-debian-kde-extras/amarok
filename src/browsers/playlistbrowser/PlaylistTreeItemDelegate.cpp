@@ -92,22 +92,33 @@ PlaylistTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
                          .value<QIcon>().pixmap( iconWidth, iconHeight ) );
 
     QStyleOption expanderOption( option );
+    QStyle::PrimitiveElement expandedPrimitive;
     if( isRTL )
-        expanderOption.rect.setLeft( iconPadX );
-    else
-        expanderOption.rect.setLeft( option.rect.right() - iconPadX - iconWidth );
-
-    expanderOption.rect.setWidth( iconWidth );
-    if( m_view->model()->hasChildren( index ) )
-        expanderOption.state |= QStyle::State_Children;
-    if( m_view->isExpanded( index ) )
     {
-        expanderOption.state |= QStyle::State_Open;
-        //when expanded the sibling indicator (a vertical line down) goes nowhere
-        expanderOption.state &= ~QStyle::State_Sibling;
+        expandedPrimitive = QStyle::PE_IndicatorArrowLeft;
+        expanderOption.rect.setLeft( iconPadX );
+    }
+    else
+    {
+        expandedPrimitive = QStyle::PE_IndicatorArrowRight;
+        expanderOption.rect.setLeft( option.rect.right() - iconPadX - iconWidth );
     }
 
-    QApplication::style()->drawPrimitive( QStyle::PE_IndicatorBranch, &expanderOption, painter );
+    expanderOption.rect.setWidth( iconWidth );
+    //FIXME: CollectionTreeItemModelBase::hasChildren() returns true for root items regardless
+    if( m_view->model()->hasChildren( index ) )
+    {
+        if( m_view->isExpanded( index ) )
+        {
+            QApplication::style()->drawPrimitive( QStyle::PE_IndicatorArrowDown, &expanderOption,
+                                                  painter );
+        }
+        else
+        {
+            QApplication::style()->drawPrimitive( expandedPrimitive, &expanderOption,
+                                                  painter );
+        }
+    }
 
     const QString collectionName = index.data( Qt::DisplayRole ).toString();
     const QString bylineText = index.data(

@@ -83,7 +83,7 @@ CoverFetcher::queueAlbum( Meta::AlbumPtr album )
         m_queueLater.append( album );
     else
         m_queue->add( album, CoverFetch::Automatic );
-    debug() << "Queueing interactive cover fetch for:" << album->name();
+    debug() << "Queueing automatic cover fetch for:" << album->name();
 }
 
 void
@@ -102,7 +102,7 @@ void
 CoverFetcher::queueQuery( const QString &query, unsigned int page )
 {
     m_queue->addQuery( query, fetchSource(), page );
-    debug() << "Queueing interactive cover fetch for query:" << query << "(page" << page << ')';
+    debug() << QString( "Queueing cover fetch query: '%1' (page %2)" ).arg( query ).arg( page );
 }
 
 void
@@ -210,9 +210,11 @@ CoverFetcher::slotDialogFinished()
         break;
 
     case KDialog::Rejected:
-    default:
         finish( unit, Cancelled );
         break;
+
+    default:
+        finish( unit, Error );
     }
 
     /*
@@ -224,15 +226,7 @@ CoverFetcher::slotDialogFinished()
     foreach( const CoverFetchUnit::Ptr &unit, units )
     {
         if( unit->isInteractive() )
-        {
-            m_queue->remove( unit );
-            m_queueLater.removeAll( unit->album() );
-            m_selectedPixmaps.remove( unit );
-
-            const KJob *job = m_jobs.key( unit );
-            const_cast< KJob* >( job )->deleteLater();
-            m_jobs.remove( job );
-        }
+            abortFetch( unit );
     }
 
     m_dialog->delayedDestruct();
@@ -278,28 +272,40 @@ CoverFetcher::showCover( CoverFetchUnit::Ptr unit, const QPixmap cover, CoverFet
 }
 
 void
+CoverFetcher::abortFetch( CoverFetchUnit::Ptr unit )
+{
+    Meta::AlbumPtr album = unit->album();
+    m_queue->remove( album );
+    m_queueLater.removeAll( album );
+    m_selectedPixmaps.remove( unit );
+    const KJob *job = m_jobs.key( unit );
+    const_cast<KJob*>( job )->deleteLater();
+    m_jobs.remove( job );
+}
+
+void
 CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
                       CoverFetcher::FinishState state,
                       const QString &message )
 {
     Meta::AlbumPtr album = unit->album();
-    const bool isInteractive = unit->isInteractive();
     const QString albumName = album ? album->name() : QString();
 
     switch( state )
     {
     case Success:
-        if( !isInteractive && !albumName.isEmpty() )
+        if( !albumName.isEmpty() )
         {
             const QString text = i18n( "Retrieved cover successfully for '%1'.", albumName );
             Amarok::Components::logger()->shortMessage( text );
             debug() << "Finished successfully for album" << albumName;
         }
         album->setImage( m_selectedPixmaps.take( unit ) );
+        abortFetch( unit );
         break;
 
     case Error:
-        if( !isInteractive && !albumName.isEmpty() )
+        if( !albumName.isEmpty() )
         {
             const QString text = i18n( "Fetching cover for '%1' failed.", albumName );
             Amarok::Components::logger()->shortMessage( text );

@@ -40,6 +40,7 @@
 #include "PlaybackConfig.h"
 #include "PlayerDBusHandler.h"
 #include "core/playlists/Playlist.h"
+#include "core/playlists/PlaylistFormat.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
@@ -93,10 +94,6 @@
 #include "shared/taglib_filetype_resolvers/wavfiletyperesolver.h"
 #include <audiblefiletyperesolver.h>
 #include <realmediafiletyperesolver.h>
-
-#ifdef DESKTOP_UI
-QMutex Debug::mutex;
-#endif
 
 int App::mainThreadId = 0;
 
@@ -552,6 +549,9 @@ void App::applySettings( bool firstTime )
         m_tray = 0;
     }
 
+    if( !firstTime ) // prevent OSD from popping up during startup
+        Amarok::OSD::instance()->applySettings();
+
     //on startup we need to show the window, but only if it wasn't hidden on exit
     //and always if the trayicon isn't showing
     QWidget* main_window = mainWindow();
@@ -786,13 +786,12 @@ App::continueInit()
     QTimer::singleShot( 0, this, SLOT( checkCollectionScannerVersion() ) );
 
     //and now we can run any amarokurls provided on startup, as all components should be initialized by now!
-    foreach( QString urlString, s_delayedAmarokUrls )
+    foreach( const QString& urlString, s_delayedAmarokUrls )
     {
         AmarokUrl aUrl( urlString );
         aUrl.run();
     }
     s_delayedAmarokUrls.clear();
-    
 }
 
 void App::checkCollectionScannerVersion()  // SLOT
@@ -901,22 +900,6 @@ bool App::event( QEvent *event )
         }
         default:
             return KUniqueApplication::event( event );
-    }
-}
-
-bool App::notify( QObject *receiver, QEvent *event )
-{
-    // Here we try to catch exceptions from LiblastFm, which Qt can't handle, except in this method.
-    // @see: https://bugs.kde.org/show_bug.cgi?id=212115
-
-    try
-    {
-        return QApplication::notify( receiver, event );
-    }
-    catch(...)
-    {
-        error() << "Caught an exception, probably from LibLastfm. Ignoring.";
-        return false;
     }
 }
 
