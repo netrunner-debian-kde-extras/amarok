@@ -1,5 +1,6 @@
-amarok (2.3.1~beta1-2) UNRELEASED; urgency=low
+amarok (2.3.1-0r1) UNRELEASED; urgency=low
 
+  * New upstream release.
   * Add libgpod-dev as an alternative to libgpod-nogtk-dev in Build-Depends
     (Closes: #580057).
 
