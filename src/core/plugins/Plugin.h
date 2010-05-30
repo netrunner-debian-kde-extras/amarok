@@ -33,11 +33,11 @@ class QWidget;
 namespace Plugins
 {
     /** Bump this number whenever the plugin framework gets incompatible with older versions */
-    static const int PluginFrameworkVersion = 55;
+    static const int PluginFrameworkVersion = 56;
 
     class PluginConfig;
 
-    class AMAROK_EXPORT Plugin
+    class AMAROK_CORE_EXPORT Plugin
     {
         public:
             virtual ~Plugin();

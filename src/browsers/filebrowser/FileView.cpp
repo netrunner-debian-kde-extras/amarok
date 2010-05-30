@@ -28,6 +28,7 @@
 #include "EngineController.h"
 #include "MainWindow.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
+#include "core/playlists/PlaylistFormat.h"
 #include "PaletteHandler.h"
 #include "playlist/PlaylistModelStack.h"
 #include "PopupDropperFactory.h"
@@ -76,8 +77,20 @@ void
 FileView::contextMenuEvent ( QContextMenuEvent * e )
 {
 
+    DEBUG_BLOCK
+
     if( !model() )
         return;
+
+
+    //trying to do fancy stuff while showing places only leads to tears!
+    debug() << model()->objectName();
+    if( model()->objectName() == "PLACESMODEL" )
+    {
+        e->accept();
+        return;
+    }
+    
 
     QModelIndexList indices = selectedIndexes();
 
@@ -413,7 +426,7 @@ FileView::selectedItems() const
     if( indices.isEmpty() )
         return items;
 
-    foreach( QModelIndex index, indices )
+    foreach( const QModelIndex& index, indices )
     {
         KFileItem item = index.data( KDirModel::FileItemRole ).value<KFileItem>();
         items << item;
@@ -432,8 +445,8 @@ FileView::tracksForEdit() const
     if( indices.isEmpty() )
         return tracks;
 
-    foreach( QModelIndex index, indices )
-    {
+    foreach( const QModelIndex& index, indices )
+    {   
         KFileItem item = index.data( KDirModel::FileItemRole ).value<KFileItem>();
         Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( item.url() );
         if( track )
@@ -468,7 +481,7 @@ FileView::slotDelete()
     
     QList<KUrl> urls;
 
-    foreach( QModelIndex index, indices )
+    foreach( const QModelIndex& index, indices )
     {
         KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
         debug() << "file path: " << file.url();

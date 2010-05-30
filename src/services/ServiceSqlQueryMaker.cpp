@@ -269,6 +269,7 @@ ServiceSqlQueryMaker::setQueryType( QueryType type)
         d->queryType = Private::CUSTOM;*/
         return this;
     
+    case QueryMaker::Label:
     case QueryMaker::None:
         return this;
     }
@@ -395,6 +396,14 @@ QueryMaker*
 ServiceSqlQueryMaker::addMatch( const Meta::YearPtr &year )
 {
     Q_UNUSED( year );
+    //TODO
+    return this;
+}
+
+QueryMaker*
+ServiceSqlQueryMaker::addMatch( const Meta::LabelPtr &label )
+{
+    Q_UNUSED( label );
     //TODO
     return this;
 }

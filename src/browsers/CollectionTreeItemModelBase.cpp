@@ -625,7 +625,7 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
                 }
                 else if( lcField.compare( "comment", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "comment" ), Qt::CaseInsensitive ) == 0 )
                 {
-                    ADD_OR_EXCLUDE_FILTER( Meta::valYear, elem.text, false, false );
+                    ADD_OR_EXCLUDE_FILTER( Meta::valComment, elem.text, false, false );
                 }
                 else if( lcField.compare( "bitrate", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "bitrate" ), Qt::CaseInsensitive ) == 0 )
                 {
@@ -649,7 +649,7 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
                 }
                 else if( lcField.compare( "length", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "length" ), Qt::CaseInsensitive ) == 0 )
                 {
-                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valLength, elem.text.toInt(), compare );
+                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valLength, elem.text.toInt() * 1000, compare );
                 }
                 else if( lcField.compare( "discnumber", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "discnumber" ), Qt::CaseInsensitive ) == 0 )
                 {

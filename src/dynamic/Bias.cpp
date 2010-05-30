@@ -160,7 +160,7 @@ Dynamic::Bias::active()
 
 double
 Dynamic::Bias::reevaluate( double oldEnergy, const Meta::TrackList& oldPlaylist,
-        Meta::TrackPtr newTrack, int newTrackPos, const Meta::TrackList& context )
+        Meta::TrackPtr newTrack, int newTrackPos, const Meta::TrackList& context ) const
 {
     Q_UNUSED( oldEnergy );
     // completely reevaluate by default
@@ -283,14 +283,13 @@ Dynamic::GlobalBias::setQuery( XmlQueryReader::Filter filter )
     DEBUG_BLOCK
     QMutexLocker locker( &m_mutex );
 
-    Collections::QueryMaker* qm;
-
     if( !m_collection )
         m_collection = CollectionManager::instance()->primaryCollection();
 
-    qm = m_collection->queryMaker();
+    if (m_qm)
+        delete m_qm;
 
-    m_qm = new Collections::XmlQueryWriter( qm,
+    m_qm = new Collections::XmlQueryWriter( m_collection->queryMaker(),
             QDomDocument() );
 
     if( filter.field != 0 )
@@ -311,13 +310,15 @@ Dynamic::GlobalBias::setQuery( XmlQueryReader::Filter filter )
     connect( m_qm, SIGNAL(queryDone()), SLOT(updateFinished()), Qt::DirectConnection );
 
     m_filter = filter;
+    locker.unlock(); // because collectionUpdate also want's a lock
+
     collectionUpdated(); // force an update
 }
 
 
 
 double
-Dynamic::GlobalBias::energy( const Meta::TrackList& playlist, const Meta::TrackList& context )
+Dynamic::GlobalBias::energy( const Meta::TrackList& playlist, const Meta::TrackList& context ) const
 {
     Q_UNUSED( context );
 
@@ -333,7 +334,7 @@ Dynamic::GlobalBias::energy( const Meta::TrackList& playlist, const Meta::TrackL
 
 
 double Dynamic::GlobalBias::reevaluate( double oldEnergy, const Meta::TrackList& oldPlaylist,
-        Meta::TrackPtr newTrack, int newTrackPos, const Meta::TrackList& context )
+        Meta::TrackPtr newTrack, int newTrackPos, const Meta::TrackList& context ) const
 {
     Q_UNUSED( context );
 
@@ -350,14 +351,13 @@ double Dynamic::GlobalBias::reevaluate( double oldEnergy, const Meta::TrackList&
 }
 
 
-bool Dynamic::GlobalBias::trackSatisfies( Meta::TrackPtr t )
+bool Dynamic::GlobalBias::trackSatisfies( Meta::TrackPtr t ) const
 {
-    QMutexLocker locker( &m_mutex );
-
     // we only want the uid part:
-    const QString uidString = t->uidUrl().mid( t->uidUrl().lastIndexOf( '/' ) );
+    const QString uidString = t->uidUrl().mid( t->uidUrl().lastIndexOf( '/' ) + 1 );
     const QByteArray uid = uidString.toAscii();
 
+    QMutexLocker locker( &((const_cast<GlobalBias *>(this))->m_mutex) );
     return m_property.contains( uid );
 }
 
@@ -369,6 +369,15 @@ void Dynamic::GlobalBias::update()
         return;
 
     m_qm->run();
+}
+
+void
+Dynamic::GlobalBias::collectionUpdated()
+{
+    QMutexLocker locker( &m_mutex );
+    m_property.clear();
+
+    CollectionDependantBias::collectionUpdated();
 }
 
 void
@@ -491,7 +500,7 @@ Dynamic::NormalBias::scale()
 
 
 double
-Dynamic::NormalBias::energy( const Meta::TrackList& playlist, const Meta::TrackList& context )
+Dynamic::NormalBias::energy( const Meta::TrackList& playlist, const Meta::TrackList& context ) const
 {
     Q_UNUSED(context)
 
@@ -522,7 +531,7 @@ Dynamic::NormalBias::energy( const Meta::TrackList& playlist, const Meta::TrackL
 }
 
 double
-Dynamic::NormalBias::relevantField( Meta::TrackPtr track )
+Dynamic::NormalBias::relevantField( Meta::TrackPtr track ) const
 {
     if( !track )
         return m_mu;
