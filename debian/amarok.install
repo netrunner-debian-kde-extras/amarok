@@ -14,6 +14,7 @@ usr/lib/kde4/amarok_containment_vertical.so
 usr/lib/kde4/amarok_context_applet_albums.so
 usr/lib/kde4/amarok_context_applet_currenttrack.so
 usr/lib/kde4/amarok_context_applet_info.so
+usr/lib/kde4/amarok_context_applet_labels.so
 usr/lib/kde4/amarok_context_applet_lyrics.so
 usr/lib/kde4/amarok_context_applet_photos.so
 usr/lib/kde4/amarok_context_applet_similarArtists.so
@@ -22,6 +23,7 @@ usr/lib/kde4/amarok_context_applet_videoclip.so
 usr/lib/kde4/amarok_context_applet_wikipedia.so
 usr/lib/kde4/amarok_data_engine_current.so
 usr/lib/kde4/amarok_data_engine_info.so
+usr/lib/kde4/amarok_data_engine_labels.so
 usr/lib/kde4/amarok_data_engine_lyrics.so
 usr/lib/kde4/amarok_data_engine_photos.so
 usr/lib/kde4/amarok_data_engine_similarArtists.so
@@ -48,4 +50,5 @@ usr/lib/libamarokpud.so.1*
 usr/lib/strigi/strigita_audible.so
 usr/lib/strigi/strigita_mp4.so
 usr/share/applications/kde4/amarok.desktop
+usr/share/applications/kde4/amarok_containers.desktop
 usr/share/kde4/services/amarok.protocol
