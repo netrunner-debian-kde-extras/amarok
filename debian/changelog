@@ -12,6 +12,7 @@ amarok (2.3.2-0r1) UNRELEASED; urgency=low
     amarok-utils.
   * Backport FLAC BPM tag fix as requested by upstream (patch
     backport_FLAC_BPM_tags_fix.diff).
+  * Bump libmtp-dev dependency to 1.0.0 (following upstream requirement).
 
  -- Modestas Vainius <modax@debian.org>  Sat, 18 Sep 2010 22:35:36 +0300
 
