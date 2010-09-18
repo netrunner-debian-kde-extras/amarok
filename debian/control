@@ -12,7 +12,7 @@ Build-Depends: debhelper (>= 7.3.16), cmake (>= 2.6.2), pkg-kde-tools (>= 0.5),
  libqt4-opengl-dev, libcurl4-gnutls-dev, libxml2-dev, libloudmouth1-dev,
  libgtk2.0-dev, kdemultimedia-dev (>= 4:4.2.0), libqca2-dev, liblastfm-dev (>= 0.3)
 Build-Depends-Indep: mysql-server-5.1 (>= 5.1.26rc)
-Standards-Version: 3.8.4
+Standards-Version: 3.9.1
 Homepage: http://amarok.kde.org
 Vcs-Git: git://git.debian.org/git/users/modax/amarok.git
 Vcs-Browser: http://git.debian.org/?p=users/modax/amarok.git
@@ -66,6 +66,7 @@ Section: utils
 Architecture: any
 Depends: ${shlibs:Depends}, ${misc:Depends}
 Replaces: amarok (<< 2.1.80-1~)
+Breaks: amarok (<< 2.1.80-1~)
 Description: utilities for Amarok media player
  This package contains command line utilities that are typically used by Amarok
  media player but might also be useful on systems without Amarok installed.
