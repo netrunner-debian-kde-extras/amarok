@@ -10,6 +10,8 @@ amarok (2.3.2-0r1) UNRELEASED; urgency=low
     instead.
   * Bump Standards-Version to 3.9.1: add Breaks next to Replaces for
     amarok-utils.
+  * Backport FLAC BPM tag fix as requested by upstream (patch
+    backport_FLAC_BPM_tags_fix.diff).
 
  -- Modestas Vainius <modax@debian.org>  Sat, 18 Sep 2010 22:35:36 +0300
 
