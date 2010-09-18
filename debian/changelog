@@ -3,6 +3,8 @@ amarok (2.3.2-0r1) UNRELEASED; urgency=low
   * New upstream release.
   * Drop debian/mysql_no_openssl_fix.diff patch, the problem was fixed upstream
     differently.
+  * Adapt debian/mysqle_amarok_local_errmsg_feature.diff patch to upstream
+    changes.
 
  -- Modestas Vainius <modax@debian.org>  Sat, 18 Sep 2010 22:35:36 +0300
 

@@ -1,2 +1,2 @@
 debian/disable_qtscriptbindings_check_fix.diff -p1
-debian/mysqle_amarok_local_errmsg_feature.diff -p1
+debian/mysqle_amarok_local_errmsg_feature.diff

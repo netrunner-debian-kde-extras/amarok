@@ -11,68 +11,42 @@ Signed-off-by: Modestas Vainius <modestas@vainius.eu>
  .../mysqlecollection/MySqlEmbeddedStorage.cpp      |   17 ++++++++++++++++-
  1 files changed, 16 insertions(+), 1 deletions(-)
 
-diff --git a/src/core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp b/src/core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
-index 2a03002..0be1988 100644
 --- a/src/core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
 +++ b/src/core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
-@@ -27,10 +27,15 @@
+@@ -27,6 +27,11 @@
  #include <QThreadStorage>
  #include <QVarLengthArray>
  
 +#include <KStandardDirs>
 +
- #include <mysql.h>
- 
- MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
-     : MySqlStorage()
 +#define MYSQLE_ERRMSG_FILENAME "errmsg.sys"
 +#define MYSQLE_ERRMSG_LOCAL_DIR "amarok/mysqle"
 +
- {
+ #include <mysql.h>
  
-     m_debugIdent = "MySQLe";
-@@ -49,9 +54,12 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
+ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
+@@ -37,6 +42,7 @@ MySqlEmbeddedStorage::MySqlEmbeddedStora
+ 
+     QString defaultsFile;
+     QString databaseDir;
++    QString languageDataDir;
+     if( storageLocation.isEmpty() )
+     {
+         defaultsFile = Amarok::config( "MySQLe" ).readEntry( "config", Amarok::saveLocation() + "my.cnf" );
+@@ -49,6 +55,7 @@ MySqlEmbeddedStorage::MySqlEmbeddedStora
          defaultsFile = QDir::cleanPath( dir.absoluteFilePath( "my.cnf" ) );
          databaseDir = dir.absolutePath() + QDir::separator() + "mysqle";
      }
-+    QString languageDataDir = KGlobal::dirs()->findResourceDir( "data", MYSQLE_ERRMSG_LOCAL_DIR "/" MYSQLE_ERRMSG_FILENAME );
++    languageDataDir = KGlobal::dirs()->findResourceDir( "data", MYSQLE_ERRMSG_LOCAL_DIR "/" MYSQLE_ERRMSG_FILENAME );
  
-     char* defaultsLine = qstrdup( QString( "--defaults-file=%1" ).arg( defaultsFile ).toAscii().data() );
-     char* databaseLine = qstrdup( QString( "--datadir=%1" ).arg( databaseDir ).toAscii().data() );
-+    char* languageLine = (languageDataDir.isNull()) ? NULL :
-+        qstrdup( QString( "--language=%1/%2" ).arg( languageDataDir ).arg( MYSQLE_ERRMSG_LOCAL_DIR ).toAscii().data() );
- 
-     if( !QFile::exists( defaultsFile ) )
+     if( !Amarok::config( "MySQLe" ).readEntry( "keepUserMyCnf", false ) )
      {
-@@ -68,7 +76,10 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
-         dir.mkpath( "." );
-     }
- 
--    static const int num_elements = 9;
-+    int num_elements = 9;
-+    if (languageLine)
-+        num_elements++;
-+
-     char **server_options = new char* [ num_elements + 1 ];
-     server_options[0] = const_cast<char*>( "amarokmysqld" );
-     server_options[1] = defaultsLine;
-@@ -82,6 +93,8 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
-     server_options[7] = const_cast<char*>( "--character-set-server=utf8" );
-     server_options[8] = const_cast<char*>( "--collation-server=utf8_bin" );
-     server_options[num_elements] = 0;
-+    if (languageLine)
-+        server_options[num_elements-1] = languageLine;
- 
-     char **server_groups = new char* [ 3 ];
-     server_groups[0] = const_cast<char*>( "amarokserver" );
-@@ -100,6 +113,8 @@ MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
-     delete [] server_groups;
-     delete [] defaultsLine;
-     delete [] databaseLine;
-+    if (languageLine)
-+        delete [] languageLine;
- 
-     if( !m_db )
-     {
--- 
-tg: (7c3cfa4..) debian/mysqle_amarok_local_errmsg_feature (depends on: upstream)
+@@ -68,6 +75,8 @@ MySqlEmbeddedStorage::MySqlEmbeddedStora
+         out << "myisam-recover = FORCE" << endl;
+         out << "character-set-server = utf8" << endl;
+         out << "collation-server = utf8_bin" << endl;
++        if (!languageDataDir.isNull())
++            out << "language = " << languageDataDir.toAscii() << MYSQLE_ERRMSG_LOCAL_DIR << endl;
+         //If the file is world-writable MySQL won't even read it
+         df.setPermissions( QFile::ReadOwner | QFile::WriteOwner | QFile::ReadGroup | QFile::ReadOther );
+         df.close();
