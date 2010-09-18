@@ -5,12 +5,6 @@ This patch makes Amarok MySQLe use locally installed errsys.msg
 (by amarok-common package) instead of global MySQL one which
 might not be available if mysql-server is not installed.
 
-Signed-off-by: Modestas Vainius <modestas@vainius.eu>
-
----
- .../mysqlecollection/MySqlEmbeddedStorage.cpp      |   17 ++++++++++++++++-
- 1 files changed, 16 insertions(+), 1 deletions(-)
-
 --- a/src/core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
 +++ b/src/core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
 @@ -27,6 +27,11 @@
