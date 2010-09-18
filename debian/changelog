@@ -5,6 +5,7 @@ amarok (2.3.2-0r1) UNRELEASED; urgency=low
     differently.
   * Adapt debian/mysqle_amarok_local_errmsg_feature.diff patch to upstream
     changes.
+  * Refresh disable_qtscriptbindings_check_fix.diff patch.
 
  -- Modestas Vainius <modax@debian.org>  Sat, 18 Sep 2010 22:35:36 +0300
 
