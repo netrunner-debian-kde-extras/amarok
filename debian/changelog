@@ -1,3 +1,9 @@
+amarok (2.3.2-0r1) UNRELEASED; urgency=low
+
+  * New upstream release.
+
+ -- Modestas Vainius <modax@debian.org>  Sat, 18 Sep 2010 22:35:36 +0300
+
 amarok (2.3.1-1) unstable; urgency=low
 
   * New upstream release.
