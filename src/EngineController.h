@@ -183,7 +183,7 @@ public:
     /**
      * @return QString with a pretty name for the current track
      */
-    QString prettyNowPlaying();
+    QString prettyNowPlaying() const;
 
 public slots:
     /**
@@ -199,6 +199,13 @@ public slots:
      * This happens asynchronously.  Use EngineObserver to find out when it actually happens.
      */
     void play( const Meta::TrackPtr&, uint offset = 0 );
+
+    /**
+     * Replays the current track
+     *
+     * This is a convenience method, calls seek( 0 ) actually
+     */
+    void replay();
 
     /**
      * Pauses the current track

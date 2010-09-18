@@ -32,17 +32,26 @@ LastFmServiceConfig::LastFmServiceConfig()
 {
     KConfigGroup config = KGlobal::config()->group( configSectionName() );
 
-    // open wallet unless explicitly told not to
-    if( !( config.readEntry( "ignoreWallet", QString() ) == "yes" ) ) {
-        m_wallet = KWallet::Wallet::openWallet( KWallet::Wallet::NetworkWallet(), 0, KWallet::Wallet::Synchronous );
-    }
 
+    // we only want to load the wallet if the user has enabled features that require a user/pass
+    bool scrobble = config.readEntry( "scrobble", false );
+    bool fetch_sim = config.readEntry( "fetchSimilar", false );
+
+    if( scrobble || fetch_sim ) // if either of these are true we need the wallet.
+    {
+        // open wallet unless explicitly told not to
+        if( !( config.readEntry( "ignoreWallet", QString() ) == "yes" ) ) {
+            m_wallet = KWallet::Wallet::openWallet( KWallet::Wallet::NetworkWallet(), 0, KWallet::Wallet::Synchronous );
+        }
+    }
     load();
 }
 
 
 LastFmServiceConfig::~LastFmServiceConfig()
 {
+    DEBUG_BLOCK
+
     if( m_askDiag )
         m_askDiag->deleteLater();
     if( m_wallet )
@@ -112,6 +121,7 @@ void LastFmServiceConfig::save()
     {
         debug() << "Could not access the wallet to save the last.fm credentials";
     }
+    config.sync();
 }
 
 void
@@ -133,8 +143,8 @@ LastFmServiceConfig::askAboutMissingKWallet()
         m_askDiag->setButtons( KDialog::Yes | KDialog::No );
         m_askDiag->setModal( true );
 
-        connect( m_askDiag, SIGNAL( okClicked() ), this, SLOT( textDialogOK() ) );
-        connect( m_askDiag, SIGNAL( cancelClicked() ), this, SLOT( textDialogCancel() ) );
+        connect( m_askDiag, SIGNAL( yesClicked() ), this, SLOT( textDialogYes() ) );
+        connect( m_askDiag, SIGNAL( noClicked() ), this, SLOT( textDialogNo() ) );
     }
     m_askDiag->exec();
 }
@@ -147,14 +157,16 @@ LastFmServiceConfig::reset()
     m_username = "";
     m_password = "";
     m_sessionKey = "";
-    m_scrobble = true;
-    m_fetchSimilar = true;
+    m_scrobble = false;
+    m_fetchSimilar = false;
 }
 
 
 void
-LastFmServiceConfig::textDialogOK()
+LastFmServiceConfig::textDialogYes() //SLOT
 {
+    DEBUG_BLOCK
+
     KConfigGroup config = KGlobal::config()->group( configSectionName() );
     config.writeEntry( "ignoreWallet", "yes" );
     config.sync();
@@ -162,8 +174,10 @@ LastFmServiceConfig::textDialogOK()
 
 
 void
-LastFmServiceConfig::textDialogCancel()
+LastFmServiceConfig::textDialogNo() //SLOT
 {
+    DEBUG_BLOCK
+
     KConfigGroup config = KGlobal::config()->group( configSectionName() );
     config.writeEntry( "ignoreWallet", "no" );
     config.sync();

@@ -2,13 +2,13 @@
 # Copyright (C) 2009 This_file_is_part_of_KDE
 # This file is distributed under the same license as the Amarok package.
 #
-# Arpad Biro <biro.arpad gmail>, 2009.
+# Arpad Biro <biro.arpad gmail>, 2009, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarokpkg\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2010-05-03 05:06+0200\n"
-"PO-Revision-Date: 2009-10-02 14:48+0200\n"
+"PO-Revision-Date: 2010-06-23 22:00+0200\n"
 "Last-Translator: Arpad Biro <biro.arpad gmail>\n"
 "Language-Team: Hungarian\n"
 "MIME-Version: 1.0\n"
@@ -26,8 +26,6 @@ msgid "Amarok Applet Manager"
 msgstr "Kisalkalmazás-kezelő az Amarokhoz"
 
 #: amarokpkg.cpp:78
-#, fuzzy
-#| msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo franchi"
 msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
 msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
 
@@ -64,8 +62,6 @@ msgid "Upgrade the applet at <path>"
 msgstr "A <path> helyen levő kisalkalmazás frissítése"
 
 #: amarokpkg.cpp:99
-#, fuzzy
-#| msgid "List installed applet"
 msgid "List installed applets"
 msgstr "Telepített kisalkalmazások listázása"
 

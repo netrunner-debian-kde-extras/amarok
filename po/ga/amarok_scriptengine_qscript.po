@@ -1,0 +1,89 @@
+# Irish translation of amarok_scriptengine_qscript
+# Copyright (C) 2009 This_file_is_part_of_KDE
+# This file is distributed under the same license as the amarok_scriptengine_qscript package.
+# Kevin Scannell <kscanne@gmail.com>, 2009.
+msgid ""
+msgstr ""
+"Project-Id-Version: amarok_scriptengine_qscript\n"
+"Report-Msgid-Bugs-To: http://bugs.kde.org\n"
+"POT-Creation-Date: 2010-05-03 05:06+0200\n"
+"PO-Revision-Date: 2009-12-24 06:59-0500\n"
+"Last-Translator: Kevin Scannell <kscanne@gmail.com>\n"
+"Language-Team: Irish <gaeilge-gnulinux@lists.sourceforge.net>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=5; plural=n==1 ? 0 : n==2 ? 1 : n<7 ? 2 : n < 11 ? "
+"3 : 4\n"
+
+#: simplejavascriptapplet.cpp:512
+msgid "i18n() takes at least one argument"
+msgstr ""
+
+#: simplejavascriptapplet.cpp:528
+msgid "i18nc() takes at least two arguments"
+msgstr ""
+
+#: simplejavascriptapplet.cpp:545
+msgid "i18np() takes at least two arguments"
+msgstr ""
+
+#: simplejavascriptapplet.cpp:562
+msgid "i18ncp() takes at least three arguments"
+msgstr ""
+
+#: simplejavascriptapplet.cpp:580
+msgid "dataEngine() takes one argument"
+msgstr "Glacann dataEngine() le hargóint amháin"
+
+#: simplejavascriptapplet.cpp:590 simplejavascriptapplet.cpp:615
+#: simplejavascriptapplet.cpp:782
+msgid "Could not extract the AppletObject"
+msgstr "Níorbh fhéidir an AppletObject a bhaint amach"
+
+#: simplejavascriptapplet.cpp:595 simplejavascriptapplet.cpp:620
+#: simplejavascriptapplet.cpp:787
+msgid "Could not extract the Applet"
+msgstr "Níorbh fhéidir an Feidhmchláirín a bhaint amach"
+
+#: simplejavascriptapplet.cpp:605
+msgid "service() takes two arguments"
+msgstr "Glacann service() le dhá argóint"
+
+#: simplejavascriptapplet.cpp:633
+msgid "loadui() takes one argument"
+msgstr "Glacann loadui() le hargóint amháin"
+
+#: simplejavascriptapplet.cpp:639
+#, kde-format
+msgid "Unable to open '%1'"
+msgstr "Ní féidir '%1' a oscailt"
+
+#: simplejavascriptapplet.cpp:679 simplejavascriptapplet.cpp:712
+msgid "Constructor takes at least 1 argument"
+msgstr "Glacann an cruthaitheoir le hargóint amháin ar a laghad"
+
+#: simplejavascriptapplet.cpp:764
+msgid "CreateWidget takes one argument"
+msgstr "Glacann CreateWidget le hargóint amháin"
+
+#: simplejavascriptapplet.cpp:772
+msgid "The parent must be a QGraphicsWidget"
+msgstr "Ní mór don mháthair bheith ina QGraphicsWidget"
+
+#: simplejavascriptapplet.cpp:817
+#, kde-format
+msgid "This operation was not supported, %1"
+msgstr "Níor tacaíodh leis an oibríocht seo, %1"
+
+#: simplejavascriptapplet.cpp:824
+msgid "print() takes one argument"
+msgstr "Glacann print() le hargóint amháin"
+
+#: qtgui/linearlayout.cpp:70
+msgid "LinearLayout requires a parent"
+msgstr "Máthair de dhíth ar LinearLayout"
+
+#: qtgui/linearlayout.cpp:76
+msgid "The parent must be a QGraphicsLayoutItem"
+msgstr "Ní mór don mháthair bheith ina QGraphicsLayoutItem"

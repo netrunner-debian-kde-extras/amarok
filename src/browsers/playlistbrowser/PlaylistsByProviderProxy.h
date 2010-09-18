@@ -17,7 +17,7 @@
 #define PLAYLISTSBYPROVIDERPROXY_H
 
 #include "QtGroupingProxy.h"
-#include "MetaPlaylistModel.h"
+#include "PlaylistBrowserModel.h"
 
 #include <QAction>
 
@@ -38,6 +38,10 @@ class PlaylistsByProviderProxy : public QtGroupingProxy
 
         PlaylistsByProviderProxy( QAbstractItemModel *model, int column );
         ~PlaylistsByProviderProxy() {}
+
+        /* QtGroupingProxy methods */
+        /* reimplement to handle tracks with multiple providers (synced) */
+        virtual QVariant data( const QModelIndex &idx, int role ) const;
 
         /* QAbstractModel methods */
         virtual bool removeRows( int row, int count,

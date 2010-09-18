@@ -28,11 +28,11 @@
 #include "core/support/Components.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "amarokconfig.h"
-#include "dbus/PlayerDBusHandler.h"
 #include "core/support/Debug.h"
 #include "DynamicModel.h"
 #include "EngineController.h"
 #include "core/engine/EngineObserver.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "core/interfaces/Logger.h"
 #include "MainWindow.h"
 #include "navigators/DynamicTrackNavigator.h"
@@ -43,9 +43,10 @@
 #include "navigators/StandardTrackNavigator.h"
 #include "navigators/FavoredRandomTrackNavigator.h"
 #include "PlaylistModelStack.h"
-#include "playlist/PlaylistWidget.h"
+#include "playlist/PlaylistDock.h"
 #include "playlistmanager/PlaylistManager.h"
 
+#include <KStandardDirs>
 #include <typeinfo>
 
 Playlist::Actions* Playlist::Actions::s_instance = 0;
@@ -75,10 +76,7 @@ Playlist::Actions::Actions()
         , m_waitingForNextTrack( false )
 {
     DEBUG_BLOCK
-
-    m_topmostModel = Playlist::ModelStack::instance()->top();
     playlistModeChanged(); // sets m_navigator.
-
     restoreDefaultPlaylist();
 }
 
@@ -92,13 +90,13 @@ Playlist::Actions::~Actions()
 Meta::TrackPtr
 Playlist::Actions::likelyNextTrack()
 {
-    return m_topmostModel->trackForId( m_navigator->likelyNextTrack() );
+    return The::playlist()->trackForId( m_navigator->likelyNextTrack() );
 }
 
 Meta::TrackPtr
 Playlist::Actions::likelyPrevTrack()
 {
-    return m_topmostModel->trackForId( m_navigator->likelyLastTrack() );
+    return The::playlist()->trackForId( m_navigator->likelyLastTrack() );
 }
 
 void
@@ -112,14 +110,13 @@ Playlist::Actions::requestNextTrack()
 
     debug() << "so far so good!";
     m_trackError = false;
-    if ( stopAfterMode() == StopAfterQueue && m_topmostModel->activeId() == m_trackToBeLast )
+    if( stopAfterMode() == StopAfterQueue && The::playlist()->activeId() == m_trackToBeLast )
     {
         setStopAfterMode( StopAfterCurrent );
         m_trackToBeLast = 0;
     }
 
     m_nextTrackCandidate = m_navigator->requestNextTrack();
-
     if( m_nextTrackCandidate == 0 )
     {
 
@@ -127,10 +124,10 @@ Playlist::Actions::requestNextTrack()
         //No more stuff to play. make sure to reset the active track so that
         //pressing play will start at the top of the playlist (or whereever the navigator wants to start)
         //instead of just replaying the last track.
-        m_topmostModel->setActiveRow( -1 );
+        The::playlist()->setActiveRow( -1 );
 
         //We also need to mark all tracks as unplayed or some navigators might be unhappy.
-        m_topmostModel->setAllUnplayed();
+        The::playlist()->setAllUnplayed();
 
         //if what is currently playing is a cd track, we need to stop playback as the cd will otherwise continue playing
         if( The::engineController()->isPlayingAudioCd() )
@@ -139,10 +136,15 @@ Playlist::Actions::requestNextTrack()
         return;
     }
 
-    if ( stopAfterMode() == StopAfterCurrent )  //stop after current / stop after track starts here
+    if( stopAfterMode() == StopAfterCurrent )  //stop after current / stop after track starts here
+    {
+        The::playlist()->setActiveId( m_nextTrackCandidate );
         setStopAfterMode( StopNever );
+    }
     else
+    {
         play( m_nextTrackCandidate, false );
+    }
 }
 
 void
@@ -176,7 +178,7 @@ Playlist::Actions::play()
 
     if( 0 == m_nextTrackCandidate )
     {
-        m_nextTrackCandidate = m_topmostModel->activeId();
+        m_nextTrackCandidate = The::playlist()->activeId();
         if( 0 == m_nextTrackCandidate )
             m_nextTrackCandidate = m_navigator->requestNextTrack();
     }
@@ -201,7 +203,7 @@ Playlist::Actions::play( const int row )
 {
     DEBUG_BLOCK
 
-    m_nextTrackCandidate = m_topmostModel->idAt( row );
+    m_nextTrackCandidate = The::playlist()->idAt( row );
     play( m_nextTrackCandidate );
 }
 
@@ -210,7 +212,7 @@ Playlist::Actions::play( const quint64 trackid, bool now )
 {
     DEBUG_BLOCK
 
-    Meta::TrackPtr track = m_topmostModel->trackForId( trackid );
+    Meta::TrackPtr track = The::playlist()->trackForId( trackid );
     if ( track )
     {
         if ( now )
@@ -332,8 +334,6 @@ Playlist::Actions::playlistModeChanged()
 
     m_navigator->queueIds( currentQueue );
 
-    The::playerDBusHandler()->updateStatus();
-
     emit navigatorChanged();
 }
 
@@ -367,10 +367,10 @@ Playlist::Actions::queue( QList<int> rows )
 
     foreach( int row, rows )
     {
-        quint64 id = m_topmostModel->idAt( row );
+        quint64 id = The::playlist()->idAt( row );
         debug() << "About to queue proxy row"<< row;
         m_navigator->queueId( id );
-        m_topmostModel->setRowQueued( row );
+        The::playlist()->setRowQueued( row );
     }
 }
 
@@ -381,9 +381,9 @@ Playlist::Actions::dequeue( QList<int> rows )
 
     foreach( int row, rows )
     {
-        quint64 id = m_topmostModel->idAt( row );
+        quint64 id = The::playlist()->idAt( row );
         m_navigator->dequeueId( id );
-        m_topmostModel->setRowDequeued( row );
+        The::playlist()->setRowDequeued( row );
     }
 }
 
@@ -426,22 +426,22 @@ Playlist::Actions::engineNewTrackPlaying()
     Meta::TrackPtr engineTrack = The::engineController()->currentTrack();
     if ( engineTrack )
     {
-        Meta::TrackPtr candidateTrack = m_topmostModel->trackForId( m_nextTrackCandidate );    // May be 0.
+        Meta::TrackPtr candidateTrack = The::playlist()->trackForId( m_nextTrackCandidate );    // May be 0.
         if ( engineTrack == candidateTrack )
         {   // The engine is playing what we planned: everything is OK.
-            m_topmostModel->setActiveId( m_nextTrackCandidate );
+            The::playlist()->setActiveId( m_nextTrackCandidate );
         }
         else
         {
             warning() << "engineNewTrackPlaying:" << engineTrack->prettyName() << "does not match what the playlist controller thought it should be";
-            if ( m_topmostModel->activeTrack() != engineTrack )
+            if ( The::playlist()->activeTrack() != engineTrack )
             {
                  // this will set active row to -1 if the track isn't in the playlist at all
-                int row = m_topmostModel->firstRowForTrack( engineTrack );
+                int row = The::playlist()->firstRowForTrack( engineTrack );
                 if( row != -1 )
-                    m_topmostModel->setActiveRow( row );
+                    The::playlist()->setActiveRow( row );
                 else
-                    m_topmostModel->setActiveRow( AmarokConfig::lastPlaying() );
+                    The::playlist()->setActiveRow( AmarokConfig::lastPlaying() );
             }
             //else
             //  Engine and playlist are in sync even though we didn't plan it; do nothing
@@ -466,7 +466,7 @@ Playlist::Actions::normalizeDynamicPlaylist()
 void
 Playlist::Actions::repaintPlaylist()
 {
-    The::mainWindow()->playlistWidget()->currentView()->repaint();
+    The::mainWindow()->playlistDock()->currentView()->repaint();
 }
 
 void
@@ -478,9 +478,8 @@ Playlist::Actions::restoreDefaultPlaylist()
     // non-collection Tracks will not be loaded correctly.
     The::playlistManager();
 
-
     Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( Playlist::ModelStack::instance()->bottom()->defaultPlaylistPath() );
-    if ( playlist )
+    if ( playlist && playlist->tracks().count() > 0 )
     {
         Meta::TrackList tracks = playlist->tracks();
 
@@ -515,6 +514,14 @@ Playlist::Actions::restoreDefaultPlaylist()
         const int lastPlayingRow = AmarokConfig::lastPlaying();
         if( lastPlayingRow >= 0 )
             Playlist::ModelStack::instance()->bottom()->setActiveRow( lastPlayingRow );
+    }
+    //Check if we should load the first run jingle, since there is no saved playlist to load
+    else if( AmarokConfig::playFirstRunJingle() )
+    {
+        QString jingle = KStandardDirs::locate( "data", "amarok/data/first_run_jingle.ogg" );
+        The::playlistController()->clear();
+        The::playlistController()->insertTrack( 0, CollectionManager::instance()->trackForUrl( jingle ) );
+        AmarokConfig::setPlayFirstRunJingle( false );
     }
 }
 

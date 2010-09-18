@@ -23,7 +23,6 @@
 #include "App.h"
 #include "context/ContextView.h"
 #include "core/support/Debug.h"
-#include "context/widgets/DropPixmapItem.h"
 #include "context/applets/upcomingevents/LastFmEvent.h"
 #include "PaletteHandler.h"
 #include "context/Svg.h"
@@ -226,7 +225,7 @@ UpcomingEventsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
             widget->setName( events.at( i ).name() );
             widget->setDate( KDateTime( events.at( i ).date() ) );
             widget->setLocation( events.at( i ).location() );
-            !artistList.isEmpty() ? widget->setParticipants( artistList ) : widget->setParticipants( "No other participants" );
+            widget->setParticipants( artistList );
             widget->setUrl( events.at( i ).url() );
             widget->setImage( events.at( i ).smallImageUrl() );
             m_widgets.insert( i, widget );

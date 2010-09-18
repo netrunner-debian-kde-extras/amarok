@@ -35,6 +35,8 @@
 #include <QGridLayout>
 #include <QGraphicsScene>
 #include <QGraphicsProxyWidget>
+#include <QNetworkReply>
+#include <QNetworkRequest>
 #include <QPushButton>
 #include <QLabel>
 #include <QDesktopServices>
@@ -139,7 +141,6 @@ ArtistWidget::~ArtistWidget()
     delete m_nameLabel;
     delete m_genre;
     delete m_topTrack;
-    delete m_imageJob;
     delete m_desc;
 }
 
@@ -165,60 +166,45 @@ ArtistWidget::setPhoto( const KUrl& urlPhoto )
     m_image->clear();
     m_image->setText( i18n( "Loading the picture..." ) );
 
-    m_imageJob = KIO::storedGet( urlPhoto, KIO::NoReload, KIO::HideProgressInfo );
-    connect( m_imageJob, SIGNAL( result( KJob* ) )
-             , SLOT( setImageFromInternet( KJob* ) ) );
+    m_url = urlPhoto;
+    The::networkAccessManager()->getData( urlPhoto, this,
+         SLOT(setImageFromInternet(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
-
 
 /**
  * Put the image of the artist in the QPixMap
- * @param job, pointer to the job which get the pixmap from the web
+ * @param reply, reply from the network request
  */
 void
-ArtistWidget::setImageFromInternet( KJob *job )
+ArtistWidget::setImageFromInternet( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    if ( !m_imageJob ) return; //track changed while we were fetching
+    if( m_url != url )
+        return;
 
-    // It's the correct job but it errored out
-    if ( job->error() != KJob::NoError && job == m_imageJob )
+    m_url.clear();
+    if( e.code != QNetworkReply::NoError )
     {
         m_image->clear();
-        m_image->setText( i18n( "Unable to fetch the picture" ) );
-        m_imageJob = 0; // clear job
+        m_image->setText( i18n( "Unable to fetch the picture: %1", e.description ) );
         return;
     }
 
-    // not the right job, so let's ignore it
-    if ( job != m_imageJob )
-        return;
+    QPixmap image;
+    image.loadFromData( data );
 
-    if ( job )
+    if( image.width() > 100 )
     {
-        KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
-        QPixmap image;
-        image.loadFromData( storedJob->data() );
-        if ( image.width() > 100 )
-        {
-            image = image.scaledToWidth( 100, Qt::SmoothTransformation );
-        }
-
-        if ( image.height() > 100 )
-        {
-            image = image.scaledToHeight( 100, Qt::SmoothTransformation );
-        }
-        m_image->clear();
-        m_image->setPixmap( The::svgHandler()->addBordersToPixmap( image, 5, QString(), true ) );
-        //the height of the widget depends on the height of the artist picture
-        //setMaximumHeight(image.height());
-    }
-    else
-    {
-        m_image->clear();
-        m_image->setText( i18n( "No picture" ) );
+        image = image.scaledToWidth( 100, Qt::SmoothTransformation );
     }
 
-    m_imageJob = 0;
+    if( image.height() > 100 )
+    {
+        image = image.scaledToHeight( 100, Qt::SmoothTransformation );
+    }
+    m_image->clear();
+    m_image->setPixmap( The::svgHandler()->addBordersToPixmap( image, 5, QString(), true ) );
+    //the height of the widget depends on the height of the artist picture
+    //setMaximumHeight(image.height());
 }
 
  /**
@@ -316,7 +302,7 @@ ArtistWidget::setTopTrack(const QString &topTrack)
     {
         m_topTrack->setText(i18n("Top track not found"));
     } else {
-        m_topTrack->setText( i18n( "Top track" ) + " : " +  topTrack);
+        m_topTrack->setText( i18n( "Top track" ) + ": " +  topTrack);
     }
 }
 
@@ -381,7 +367,6 @@ ArtistWidget::addLastfmArtistStation()
 void
 ArtistWidget::resultReady( const QString &collectionId, const Meta::ArtistList &artists )
 {
-    DEBUG_BLOCK
     Q_UNUSED( collectionId )
     if( artists.length() > 0 )
         m_navigateButton->show();

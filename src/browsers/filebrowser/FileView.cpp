@@ -26,7 +26,6 @@
 #include "dialogs/TagDialog.h"
 #include "DirectoryLoader.h"
 #include "EngineController.h"
-#include "MainWindow.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "core/playlists/PlaylistFormat.h"
 #include "PaletteHandler.h"
@@ -38,6 +37,7 @@
 #include <KDialog>
 #include <KDirModel>
 #include <KFileItem>
+#include <KGlobalSettings>
 #include <KIcon>
 #include <KLocale>
 #include <KMenu>
@@ -68,20 +68,19 @@ FileView::FileView( QWidget * parent )
     setItemsExpandable( false );
     setRootIsDecorated( false );
     setAlternatingRowColors( true );
+    setUniformRowHeights( true );
 
     The::paletteHandler()->updateItemView( this );
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
 }
 
 void
-FileView::contextMenuEvent ( QContextMenuEvent * e )
+FileView::contextMenuEvent( QContextMenuEvent *e )
 {
-
     DEBUG_BLOCK
 
     if( !model() )
         return;
-
 
     //trying to do fancy stuff while showing places only leads to tears!
     debug() << model()->objectName();
@@ -90,20 +89,14 @@ FileView::contextMenuEvent ( QContextMenuEvent * e )
         e->accept();
         return;
     }
-    
 
     QModelIndexList indices = selectedIndexes();
-
     // Abort if nothing is selected
     if( indices.isEmpty() )
         return;
 
-    
-
     KMenu* menu = new KMenu( this );
-
     QList<QAction *> actions = actionsForIndices( indices );
-
     foreach( QAction * action, actions )
         menu->addAction( action );
 
@@ -144,6 +137,63 @@ FileView::contextMenuEvent ( QContextMenuEvent * e )
 
     menu->exec( e->globalPos() );
  
+}
+
+void
+FileView::mouseReleaseEvent( QMouseEvent *event )
+{
+    QModelIndex index = indexAt( event->pos() );
+    if( !index.isValid() )
+    {
+        m_lastSelectedIndex = QModelIndex();
+        event->accept();
+        return;
+    }
+
+    QModelIndexList indices = selectedIndexes();
+    if( indices.count() == 1 && KGlobalSettings::singleClick() )
+    {
+        const QVariant qvar = index.data( KDirModel::FileItemRole );
+        if( qvar.canConvert<KFileItem>() )
+        {
+            KFileItem item = index.data( KDirModel::FileItemRole ).value<KFileItem>();
+            if( item.isDir() )
+            {
+                m_lastSelectedIndex = QModelIndex();
+                Amarok::PrettyTreeView::mouseReleaseEvent( event );
+                return;
+            }
+
+            // check if the last selected item was clicked again, if so then trigger editor
+            if( m_lastSelectedIndex != index )
+            {
+                m_lastSelectedIndex = index;
+            }
+            else
+            {
+                Amarok::PrettyTreeView::edit( index, QAbstractItemView::AllEditTriggers, event );
+                m_lastSelectedIndex = QModelIndex();
+            }
+            event->accept();
+            return;
+        }
+    }
+    m_lastSelectedIndex = QModelIndex();
+    Amarok::PrettyTreeView::mouseReleaseEvent( event );
+}
+
+void
+FileView::mouseDoubleClickEvent( QMouseEvent *event )
+{
+    m_lastSelectedIndex = QModelIndex();
+    QModelIndex index = indexAt( event->pos() );
+    if( !index.isValid() )
+    {
+        event->accept();
+        return;
+    }
+    emit activated( index );
+    event->accept();
 }
 
 void
@@ -284,8 +334,6 @@ FileView::slotMoveTracks( const Meta::TrackList& tracks )
     m_moveAction = 0;
 }
 
-
-
 QList<QAction *>
 FileView::actionsForIndices( const QModelIndexList &indices )
 {
@@ -367,11 +415,11 @@ FileView::addSelectionToPlaylist( bool replace )
     The::playlistController()->insertOptioned( urls, replace ? Playlist::Replace : Playlist::AppendAndPlay );
 }
 
-
 void
 FileView::startDrag( Qt::DropActions supportedActions )
 {
     DEBUG_BLOCK
+    m_lastSelectedIndex = QModelIndex();
 
     //setSelectionMode( QAbstractItemView::NoSelection );
     // When a parent item is dragged, startDrag() is called a bunch of times. Here we prevent that:
@@ -433,8 +481,6 @@ FileView::selectedItems() const
     }
     return items;
 }
-
-
 
 Meta::TrackList
 FileView::tracksForEdit() const

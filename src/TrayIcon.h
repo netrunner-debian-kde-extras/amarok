@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2003 Stanislav Karchebny <berkus@users.sf.net>                         *
- * Copyright (c) 2009 Kevin Funk <krf@electrostorm.net>                                 *
  * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2009,2010 Kevin Funk <krf@electrostorm.net>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -19,17 +19,14 @@
 #ifndef AMAROK_TRAYICON_H
 #define AMAROK_TRAYICON_H
 
-#include "core/engine/EngineObserver.h" //baseclass
+#include "core/engine/EngineObserver.h" // baseclass
 #include "core/meta/Meta.h"
 #include "core/support/SmartPointerList.h"
 
-#include <KStatusNotifierItem> //baseclass
+#include <KStatusNotifierItem> // baseclass
 
 #include <QAction>
 #include <QPointer>
-
-class QEvent;
-class App;
 
 
 namespace Amarok {
@@ -40,24 +37,20 @@ class TrayIcon : public KStatusNotifierItem, public Engine::EngineObserver, publ
 
 public:
     TrayIcon( QObject *parent );
-    friend class ::App;
-    
+
     void setVisible( bool visible );
 
 protected:
     // reimplemented from engineobserver
     virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
     virtual void engineNewTrackPlaying();
-    virtual void engineTrackPositionChanged( qint64 position, bool /*userSeek*/ );
     virtual void engineVolumeChanged( int percent );
     virtual void engineMuteStateChanged( bool mute );
 
-    //Reimplemented from Meta::Observer
+    // reimplemented from Meta::Observer
     using Observer::metadataChanged;
     virtual void metadataChanged( Meta::TrackPtr track );
-
-    // get notified of 'highlight' color change
-    virtual void paletteChange( const QPalette & oldPalette );
+    virtual void metadataChanged( Meta::AlbumPtr album );
 
 private slots:
     void slotActivated();
@@ -65,15 +58,10 @@ private slots:
 
 private:
     void setupMenu();
-    void setupToolTip();
-
-    void paintIcon( qint64 trackPosition = -1 );
+    void setupToolTip( bool updateIcon );
 
     Meta::TrackPtr m_track;
-    qint64 m_trackLength;
-    QString m_toolTipIconUid;
 
-    QPixmap m_baseIcon, m_grayedIcon, m_icon;
     SmartPointerList<QAction> m_extraActions;
     QPointer<QAction> m_separator;
 };

@@ -18,7 +18,7 @@
 #ifndef AMAROK_NETWORK_SCRIPT_H
 #define AMAROK_NETWORK_SCRIPT_H
 
-#include <kio/job.h> // KIO::Job
+#include "NetworkAccessManagerProxy.h"
 
 #include <QObject>
 #include <QtScript>
@@ -67,17 +67,19 @@ public:
     static AmarokDownloadHelper *instance();
     
     // called by the wrapper class to register a new download
-    void newStringDownload( KJob* download, QScriptEngine* engine, QScriptValue obj, QString encoding = "UTF-8" );
-    void newDataDownload( KJob* download, QScriptEngine* engine, QScriptValue obj );
+    void newStringDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj, QString encoding = "UTF-8" );
+    void newDataDownload( const KUrl &url, QScriptEngine* engine, QScriptValue obj );
 
 private slots:
-    void resultString( KJob* job );
-    void resultData( KJob* job );
+    void resultString( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void resultData( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
     
 private:
-    QHash< KJob*, QScriptEngine* > m_engines;
-    QHash< KJob*, QScriptValue > m_jobs;
-    QHash< KJob*, QString > m_encodings;
+    QHash< KUrl, QScriptEngine* > m_engines;
+    QHash< KUrl, QScriptValue > m_values;
+    QHash< KUrl, QString > m_encodings;
+
+    void cleanUp( const KUrl &url );
 };
 
 #endif

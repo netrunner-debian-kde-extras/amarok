@@ -110,14 +110,13 @@ public:
     //TODO: implement these
     void beginMetaDataUpdate() {}
     void endMetaDataUpdate() {}
-    void abortMetaDataUpdate() {}
 
     bool isEditable() const { return true; }
 
-    /* Meta::Playlist virtual functions */
-    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
 
-    KUrl retrievableUrl() { return m_url; }
+    /* Meta::Playlist virtual functions */
+    virtual KUrl uidUrl() const { return m_url; }
+    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
 
     Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 

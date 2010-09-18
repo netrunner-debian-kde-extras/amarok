@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "PhotosEngine"
+
 #include "PhotosEngine.h"
 
 // Amarok
@@ -23,23 +25,15 @@
 #include "core/support/Debug.h"
 #include "EngineController.h"
 
-// KDE
-#include <KIO/Job>
-
-
 // Qt
 #include <QDomDocument>
 #include <QPixmap>
-
-
-#define DEBUG_PREFIX "PhotosEngine"
 
 using namespace Context;
 
 PhotosEngine::PhotosEngine( QObject* parent, const QList<QVariant>& /*args*/ )
         : DataEngine( parent )
         , ContextObserver( ContextView::self() )
-        , m_jobFlickr( 0 )
         , m_nbFlickr( -1 )
         , m_nbPhotos( 10 )
         , m_keywords( QString() )
@@ -52,7 +46,6 @@ PhotosEngine::PhotosEngine( QObject* parent, const QList<QVariant>& /*args*/ )
 
 PhotosEngine::~PhotosEngine()
 {
-    DEBUG_BLOCK
     m_photos.clear();
 }
 
@@ -93,7 +86,7 @@ PhotosEngine::sourceRequestEvent( const QString& name )
     {
         if ( tokens.at( 1 ) == QString( "stopped" ) )
         {
-            removeSource( "photos" );
+//             removeSource( "photos" );
             m_reload = true;
             return false;
         }
@@ -151,7 +144,6 @@ void PhotosEngine::update()
         qDeleteAll( m_photosInit );
         m_photos.clear();
         m_photosInit.clear();
-        m_listJob.clear();
         
         // Show the information
         if( !m_artist.isEmpty() )
@@ -172,31 +164,38 @@ void PhotosEngine::update()
             QString( "http://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=9c5a288116c34c17ecee37877397fe31&text=" )
             + m_artist + QString(" ") + m_keywords + QString( "&per_page=" ) + QString().setNum( m_nbPhotos ) + QString( "&sort=relevance&media=photos" ) );
         debug()<< "Flickr : " << flickrUrl.toMimeDataString() ;
-        m_jobFlickr = KIO::storedGet( flickrUrl, KIO::Reload, KIO::HideProgressInfo );
-        connect( m_jobFlickr, SIGNAL( result( KJob* ) ), SLOT( resultFlickr( KJob* ) ) );
+
+        m_flickrUrls << flickrUrl;
+        The::networkAccessManager()->getData( flickrUrl, this,
+             SLOT(resultFlickr(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 
     }
 }
 
-void PhotosEngine::resultFlickr( KJob* job )
+void PhotosEngine::resultFlickr( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-
-    if ( !m_jobFlickr ) //track changed while we were fetching
+    if( !m_flickrUrls.contains( url ) )
         return;
 
-    DEBUG_BLOCK
-    if ( job->error() != KJob::NoError && job == m_jobFlickr ) // It's the correct job but it errored out
+    m_flickrUrls.remove( url );
+    if( e.code != QNetworkReply::NoError )
     {
-        setData( "photos", "message", i18n( "Unable to retrieve from Flickr.com ") );
-        debug() << "Unable to retrieve Flickr information: " << job->errorString();
-        m_jobFlickr = 0; // clear job
-        m_nbFlickr = 0; //say that we didn't fetch any youtube songs (which is true !)
+        m_nbFlickr = 0; //say that we didn't fetch any images (which is true !)
+        setData( "photos", "message", i18n( "Unable to retrieve from Flickr.com: %1", e.description ) );
+        debug() << "Unable to retrieve Flickr information:" << e.description; 
         resultFinalize();
+        return;
     }
-    // Get the result
-    KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
+
+    DEBUG_BLOCK
+    if( data.isNull() )
+    {
+        debug() << "Got bad xml!";
+        resultFinalize();
+        return;
+    }
     QDomDocument xmlDoc;
-    xmlDoc.setContent( storedJob->data() );
+    xmlDoc.setContent( data );
     QDomNodeList xmlNodeList = xmlDoc.elementsByTagName( "photo" );
 
     QTime tim, time( 0, 0 );
@@ -214,58 +213,45 @@ void PhotosEngine::resultFlickr( KJob* job )
         item->urlphoto = url;
         debug() << urlpage;
         // Insert the item in the list
-        m_listJob << url;
+        m_imageUrls << url;
         m_photosInit << item;
-            
-        // Send a job to get the downloadable link
-        KJob *jobu = KIO::storedGet( KUrl( url ), KIO::NoReload, KIO::HideProgressInfo );
-        connect( jobu, SIGNAL( result( KJob* ) ), SLOT( resultImageFetcher( KJob* ) ) );
+        The::networkAccessManager()->getData( url, this,
+             SLOT(resultImageFetcher(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
     }
     m_nbFlickr += xmlNodeList.length();
-    // Check how many clip we've find and send message if all the job are finished but no clip were find
+    // Check how many clip we've find and send message if all the jobs are finished but no clip were find
     debug() << "Flickr fetch : " << m_nbFlickr << " photos ";
-    
-    m_jobFlickr = 0;
     resultFinalize();
 }
 
-void PhotosEngine::resultImageFetcher( KJob *job )
+void PhotosEngine::resultImageFetcher( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
-    QString jobUrl( storedJob->url().toMimeDataString() );    
-    if ( m_listJob.contains( jobUrl ) )
+    if( !m_imageUrls.contains( url ) )
+        return;
+
+    m_imageUrls.remove( url );
+    if( e.code != QNetworkReply::NoError )
     {
-        if ( job->error() != KJob::NoError )
-        {
-            DEBUG_BLOCK
-            debug() << "PhotosEngine | Unable to retrieve an image: " << job->errorString();
-            m_listJob.removeOne( jobUrl );
-            resultFinalize();
-            return;
-        }
-        
-        QPixmap *pix = new QPixmap;
-        if ( pix->loadFromData( storedJob->data() ) ) {;}
-
-        foreach ( PhotosInfo *item, m_photosInit )
-        {
-            if (item->urlphoto == jobUrl )
-            {
-                item->photo = pix ;
-                m_photos << item;
-                //remove from list of unfinished downlaods or we will get in big trouble
-                //when deleting items
-                m_photosInit.removeAll( item );
-            }
-        }
-
-        m_listJob.removeOne( jobUrl );
+        debug() << "PhotosEngine | Unable to retrieve an image:" << e.description;
         resultFinalize();
-
-        job = 0;
+        return;
     }
-}
 
+    QPixmap pixmap;
+    pixmap.loadFromData( data );
+    foreach( PhotosInfo *item, m_photosInit )
+    {
+        if( item->urlphoto == url )
+        {
+            item->photo = pixmap ;
+            m_photos << item;
+            //remove from list of unfinished downlaods or we will get in big trouble
+            //when deleting items
+            m_photosInit.removeAll( item );
+        }
+    }
+    resultFinalize();
+}
 
 void PhotosEngine::resultFinalize()
 {

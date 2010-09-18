@@ -18,8 +18,10 @@
 #ifndef UPCOMING_EVENTS_WIDGET_H
 #define UPCOMING_EVENTS_WIDGET_H
 
+#include "NetworkAccessManagerProxy.h"
+
 // Kde include
-#include<KUrl>
+#include <KUrl>
 
 // Qt include
 #include <QWidget>
@@ -28,9 +30,6 @@
 #include <QScrollArea>
 
 class KDateTime;
-class KUrl;
-class KJob;
-
 class QLabel;
 class QGridLayout;
 
@@ -114,14 +113,14 @@ class UpcomingEventsWidget : public QWidget
         QLabel *m_name;
         QLabel *m_url;
         QFrame *m_frame;
+        KUrl m_imageUrl;
 
     private slots:
         /**
          *SLOTS
-         *Get pixmap from the KJob and set it into image's QLabel
-         *@param KJob*, pointer to the job which get the pixmap from the web
+         *Get pixmap from the internet and set it into image's QLabel
          */
-        void    loadImage( KJob *job );
+        void loadImage( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 };
 
 #endif /* UPCOMINGEVENTSWIDGET_H */

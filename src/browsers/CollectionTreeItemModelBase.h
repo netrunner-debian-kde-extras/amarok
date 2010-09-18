@@ -26,6 +26,7 @@
 #include "CollectionTreeItem.h"
 
 #include <QAbstractItemModel>
+#include <QDateTime>
 #include <QHash>
 #include <QPair>
 #include <QSet>
@@ -51,12 +52,6 @@ namespace CategoryId
     Label
     };
 }
-
-enum {
-    AlternateCollectionRowRole = Qt::UserRole + 20
-};
-
-
 
 /**
 	@author Nikolaj Hald Nielsen <nhn@kde.org>
@@ -101,7 +96,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
 
     signals:
         void expandIndex( const QModelIndex &index );
-        void queryFinished();
+        void allQueriesFinished();
 
     public slots:
         virtual void queryDone();
@@ -116,6 +111,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
     private:
         void handleSpecialQueryResult( CollectionTreeItem::Type type, Collections::QueryMaker *qm, const Meta::DataList &dataList );
         void handleNormalQueryResult( Collections::QueryMaker *qm, const Meta::DataList &dataList );
+        QDateTime semanticDateTimeParser( const QString &text ) const;
 
         Collections::QueryMaker::QueryType mapCategoryToQueryType( int levelType ) const;
 
@@ -124,6 +120,7 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         virtual void updateHeaderText();
         virtual QString nameForLevel( int level ) const;
         virtual int levelModifier() const = 0;
+        virtual QVariant dataForItem( CollectionTreeItem *item, int role, int level = -1 ) const;
 
         virtual void filterChildren() = 0;
         void ensureChildrenLoaded( CollectionTreeItem *item );
@@ -154,16 +151,20 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         void startAnimationTick();
         void loadingAnimationTick();
         void update();
+
+    private slots:
+        void updateRowHeight();
 };
 
 class CollectionTreeItemModelBase::Private
 {
  public:
-    QHash<QString, CollectionRoot > m_collections;  //I'll concide this one... :-)
-    QHash<Collections::QueryMaker* , CollectionTreeItem* > m_childQueries;
-    QHash<Collections::QueryMaker* , CollectionTreeItem* > m_compilationQueries;
+    QHash<QString, CollectionRoot > collections;  //I'll concide this one... :-)
+    QHash<Collections::QueryMaker* , CollectionTreeItem* > childQueries;
+    QHash<Collections::QueryMaker* , CollectionTreeItem* > compilationQueries;
     QHash<Collections::QueryMaker* , CollectionTreeItem* > noLabelsQueries;
-    QHash<CollectionTreeItem*, Collections::QueryMaker*> m_runningQueries;
+    QHash<CollectionTreeItem*, Collections::QueryMaker*>   runningQueries;
+    int rowHeight;
 };
 
 #endif

@@ -32,6 +32,7 @@
 #include <KLocale>
 #include <KUrl>
 
+#include <QAction>
 #include <QLabel>
 #include <QString>
 
@@ -63,7 +64,7 @@ PlaylistFileProvider::~PlaylistFileProvider()
     debug() << m_playlists.size()  << " Playlists loaded";
     foreach( Playlists::PlaylistFilePtr playlistFile, m_playlists )
     {
-        KUrl url = playlistFile->retrievableUrl();
+        KUrl url = playlistFile->uidUrl();
         //only save files NOT in "playlists", those are automatically loaded.
         if( url.upUrl().equals( Amarok::saveLocation( "playlists" ) ) )
             continue;
@@ -249,9 +250,10 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
     m_playlists << playlistPtr;
     //just in case there wasn't one loaded before.
     m_playlistsLoaded = true;
-    emit updated();
+    Playlists::PlaylistPtr playlist = Playlists::PlaylistPtr::dynamicCast( playlistPtr );
+    emit playlistAdded( playlist );
 
-    return Playlists::PlaylistPtr::dynamicCast( playlistPtr );
+    return playlist;
 }
 
 bool
@@ -266,7 +268,13 @@ PlaylistFileProvider::import( const KUrl &path )
 
     foreach( Playlists::PlaylistFilePtr playlistFile, m_playlists )
     {
-        if( playlistFile->retrievableUrl() == path )
+        if( !playlistFile )
+        {
+            error() << "Could not cast down.";
+            error() << "m_playlists got corrupted! " << __FILE__ << ":" << __LINE__;
+            continue;
+        }
+        if( playlistFile->uidUrl() == path )
         {
             debug() << "Playlist " << path.path() << " was already imported";
             return false;
@@ -280,14 +288,14 @@ PlaylistFileProvider::import( const KUrl &path )
         return false;
     }
 
-    Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( path );
-    if( !playlist )
+    Playlists::PlaylistFilePtr playlistFile = Playlists::loadPlaylistFile( path );
+    if( !playlistFile )
         return false;
-    playlist->setProvider( this );
-    m_playlists << playlist;
+    playlistFile->setProvider( this );
+    m_playlists << playlistFile;
     //just in case there wasn't one loaded before.
     m_playlistsLoaded = true;
-    emit updated();
+    emit playlistAdded( Playlists::PlaylistPtr::dynamicCast( playlistFile ) );
     return true;
 }
 
@@ -298,7 +306,7 @@ PlaylistFileProvider::rename( Playlists::PlaylistPtr playlist, const QString &ne
     playlist->setName( newName );
 }
 
-void
+bool
 PlaylistFileProvider::deletePlaylists( Playlists::PlaylistList playlists )
 {
     Playlists::PlaylistFileList playlistFiles;
@@ -309,10 +317,10 @@ PlaylistFileProvider::deletePlaylists( Playlists::PlaylistList playlists )
         if( !playlistFile.isNull() )
             playlistFiles << playlistFile;
     }
-    deletePlaylistFiles( playlistFiles );
+    return deletePlaylistFiles( playlistFiles );
 }
 
-void
+bool
 PlaylistFileProvider::deletePlaylistFiles( Playlists::PlaylistFileList playlistFiles )
 {
     DEBUG_BLOCK
@@ -327,16 +335,18 @@ PlaylistFileProvider::deletePlaylistFiles( Playlists::PlaylistFileList playlistF
     dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from disk." ) );
     dialog.setMainWidget( &label );
     if( dialog.exec() != QDialog::Accepted )
-        return;
+        return false;
 
     foreach( Playlists::PlaylistFilePtr playlistFile, playlistFiles )
     {
         m_playlists.removeAll( playlistFile );
-        loadedPlaylistsConfig().deleteEntry( playlistFile->retrievableUrl().url() );
-        QFile::remove( playlistFile->retrievableUrl().path() );
+        loadedPlaylistsConfig().deleteEntry( playlistFile->uidUrl().url() );
+        QFile::remove( playlistFile->uidUrl().path() );
+        emit playlistRemoved( Playlists::PlaylistPtr::dynamicCast( playlistFile ) );
     }
     loadedPlaylistsConfig().sync();
-    emit updated();
+
+    return true;
 }
 
 void
@@ -365,6 +375,8 @@ PlaylistFileProvider::loadPlaylists()
                 );
             continue;
         }
+
+        //since class PlaylistFile can be used without a collection we set it manually
         playlist->setProvider( this );
 
         if( !groups.isEmpty() && playlist->isWritable() )

@@ -68,6 +68,8 @@ Playlist::Model::~Model()
 
     // Save current playlist
     exportPlaylist( defaultPlaylistPath() );
+
+    qDeleteAll( m_items );
 }
 
 QVariant
@@ -374,7 +376,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
     if( data->hasFormat( AmarokMimeData::TRACK_MIME ) )
     {
         debug() << "this is a track";
-        const AmarokMimeData* trackListDrag = dynamic_cast<const AmarokMimeData*>( data );
+        const AmarokMimeData* trackListDrag = qobject_cast<const AmarokMimeData*>( data );
         if( trackListDrag )
         {
 
@@ -388,7 +390,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
     else if( data->hasFormat( AmarokMimeData::PLAYLIST_MIME ) )
     {
         debug() << "this is a playlist";
-        const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
+        const AmarokMimeData* dragList = qobject_cast<const AmarokMimeData*>( data );
         if( dragList )
             The::playlistController()->insertPlaylists( beginRow, dragList->playlists() );
         return true;
@@ -396,7 +398,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
     else if( data->hasFormat( AmarokMimeData::PODCASTEPISODE_MIME ) )
     {
         debug() << "this is a podcast episode";
-        const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
+        const AmarokMimeData* dragList = qobject_cast<const AmarokMimeData*>( data );
         if( dragList )
         {
             Meta::TrackList tracks;
@@ -409,7 +411,7 @@ Playlist::Model::dropMimeData( const QMimeData* data, Qt::DropAction action, int
     else if( data->hasFormat( AmarokMimeData::PODCASTCHANNEL_MIME ) )
     {
         debug() << "this is a podcast channel";
-        const AmarokMimeData* dragList = dynamic_cast<const AmarokMimeData*>( data );
+        const AmarokMimeData* dragList = qobject_cast<const AmarokMimeData*>( data );
         if( dragList )
         {
             Meta::TrackList tracks;
@@ -775,13 +777,9 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
     foreach( const RemoveCmd &rc, cmds )
     {
         Meta::TrackPtr track = rc.first;
-        m_totalLength -= track->length();
-        m_totalSize -= track->filesize();
-        unsubscribeFrom( track );
-        if ( track->album() )
-            unsubscribeFrom( track->album() );
-
         Item* item = originalList.at(rc.second);
+        Q_ASSERT( track == item->track() );
+
         int idx = rowForItem( item );
         if (idx != -1) {
             beginRemoveRows(QModelIndex(), idx, idx);
@@ -791,6 +789,16 @@ Playlist::Model::removeTracksCommand( const RemoveCmdList& cmds )
             endRemoveRows();
         } else {
             error() << "tried to delete a non-existent item:" << rc.first->prettyName() << rc.second;
+        }
+
+        m_totalLength -= track->length();
+        m_totalSize -= track->filesize();
+
+        if( !containsTrack( track ) ) // check against same track two times in playlist
+        {
+            unsubscribeFrom( track );
+            if ( track->album() )
+                unsubscribeFrom( track->album() );
         }
     }
 

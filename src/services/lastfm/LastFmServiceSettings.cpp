@@ -19,8 +19,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "ui_LastFmConfigWidget.h"
-
-#include "kdenetwork/knetworkaccessmanager.h"
+#include <kio/accessmanager.h>
 
 #include <lastfm/Audioscrobbler> // from liblastfm
 #include <lastfm/ws.h>
@@ -104,7 +103,11 @@ LastFmServiceSettings::testLogin()
     // NOTE yes we instantiate two KNAMs here, one in this kcm module and one in the servce itself.
     // but there is no way to share the class easily across the lib boundary as they are not guaranteed to
     // always exist at the same time... so 1 class seems to be a relatively minor penalty for a working Test button
-    QNetworkAccessManager* qnam = new KNetworkAccessManager( this );
+#if KDE_IS_VERSION(4, 4, 0)
+    QNetworkAccessManager* qnam = new KIO::Integration::AccessManager( this );
+#else
+    QNetworkAccessManager* qnam = new KIO::AccessManager( this );
+#endif
     lastfm::setNetworkAccessManager( qnam );
 
     debug() << "username:" << QString( QUrl::toPercentEncoding( lastfm::ws::Username ) );
@@ -142,6 +145,7 @@ LastFmServiceSettings::onAuthenticated()
              {
                  m_configDialog->testLogin->setText( i18nc( "The operation completed as expected", "Success" ) );
                  m_configDialog->testLogin->setEnabled( false );
+                 m_configDialog->kcfg_SubmitPlayedSongs->setEnabled( true );
              }
              break;
 
@@ -178,8 +182,8 @@ LastFmServiceSettings::defaults()
     m_config.reset();
 
     // By default this checkboxes is:
-    m_configDialog->kcfg_SubmitPlayedSongs->setChecked( true );
-    m_configDialog->kcfg_RetrieveSimilarArtists->setChecked( true );
+    m_configDialog->kcfg_SubmitPlayedSongs->setChecked( false );
+    m_configDialog->kcfg_RetrieveSimilarArtists->setChecked( false );
 }
 
 

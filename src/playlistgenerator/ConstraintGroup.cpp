@@ -30,6 +30,7 @@
 
 ConstraintGroup::ConstraintGroup( QDomElement& xmlelem, ConstraintNode* p ) : ConstraintNode( p )
 {
+    DEBUG_BLOCK
     if ( xmlelem.tagName() == "group" ) {
         if ( xmlelem.attribute( "matchtype" ) == "any" ) {
             m_matchtype = MatchAny;
@@ -42,11 +43,13 @@ ConstraintGroup::ConstraintGroup( QDomElement& xmlelem, ConstraintNode* p ) : Co
     } else {
         m_matchtype = MatchAll;
     }
+    debug() << getName();
 }
 
-ConstraintGroup::ConstraintGroup( ConstraintNode* p ) : ConstraintNode( p )
+ConstraintGroup::ConstraintGroup( ConstraintNode* p ) : ConstraintNode( p ), m_matchtype( MatchAll )
 {
-    m_matchtype = MatchAll;
+    DEBUG_BLOCK
+    debug() << "new default ConstraintGroup";
 }
 
 ConstraintGroup*
@@ -81,11 +84,11 @@ QString
 ConstraintGroup::getName() const
 {
     if ( m_matchtype == MatchAny ) {
-        return QString( "\"Match Any\" group" );
+        return QString( i18nc("name of a type of constraint group", "\"Match Any\" group") );
     } else if ( m_matchtype == MatchAll ) {
-        return QString( "\"Match All\" group" );
+        return QString( i18nc("name of a type of constraint group", "\"Match All\" group") );
     } else {
-        return QString( "Unknown match group" );
+        return QString( i18nc("name of a type of constraint group", "Unknown match group") );
     }
 }
 
@@ -313,7 +316,7 @@ ConstraintGroup::deltaS_swap( const Meta::TrackList& tl, const int place, const 
 }
 
 void
-ConstraintGroup::insertTrack( const Meta::TrackList& tl, Meta::TrackPtr t, const int place )
+ConstraintGroup::insertTrack( const Meta::TrackList& tl, const Meta::TrackPtr t, const int place )
 {
     double newS;
     if ( m_matchtype == MatchAny ) {

@@ -14,41 +14,34 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "DropPixmapItem"
+
 #include "DropPixmapItem.h"
 
 #include "core/support/Debug.h"
 
-#include <KIO/Job>
-#include <KUrl>
-
 #include <QGraphicsSceneDragDropEvent>
 #include <QMimeData>
 
-#define DEBUG_PREFIX "DropPixmapItem"
-
-
 DropPixmapItem::DropPixmapItem( QGraphicsItem* parent )
     : QGraphicsPixmapItem( parent )
-    , m_job( 0 )
 {
     setAcceptDrops( true );
 }
 
 void DropPixmapItem::dropEvent(QGraphicsSceneDragDropEvent* event)
 {
-    Q_UNUSED( event )
-    
     DEBUG_BLOCK
-    
-    if  ( event->mimeData()->hasText() )
+    if( event->mimeData()->hasText() )
     {
         QString file( event->mimeData()->text() );
-        debug() << "DropPixmapItem::dropped : " << file;
+        debug() << "dropped:" << file;
         
         if ( file.contains( "http://" ) || file.contains( "https://" ) )
         {           
-            m_job = KIO::storedGet( KUrl( file ), KIO::Reload, KIO::HideProgressInfo );
-            connect( m_job, SIGNAL( result( KJob* ) ), SLOT( imageDownloadResult( KJob* ) ) );
+            m_url = KUrl( file );
+            The::networkAccessManager()->getData( m_url, this,
+                 SLOT(imageDownloadResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
         }
         
         else if ( file.contains( "file://" ) )
@@ -62,43 +55,35 @@ void DropPixmapItem::dropEvent(QGraphicsSceneDragDropEvent* event)
             }
             else
             {
-                debug() << "DropPixmapItem::not an image";
+                debug() << "not an image";
             }
         }
     }
 
-    if ( event->mimeData()->hasImage() )
+    if( event->mimeData()->hasImage() )
     {
-        debug() << "DropPixmapItem:: mimeData has image";
+        debug() << "mimeData has image";
         emit imageDropped( qVariantValue< QPixmap >( event->mimeData()->imageData() ) );
     }
 }
 
-void DropPixmapItem::imageDownloadResult( KJob *job )
+void DropPixmapItem::imageDownloadResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    if ( !m_job ) // if it's not the correct job
+    if( !url.isValid() || m_url != url )
         return;
-    
-    DEBUG_BLOCK
-    if ( m_job->error() != KJob::NoError && m_job == job ) // It's the correct job but it errored out
-    {
-        debug() << "DropPixmapItem::unable to download the image: " << job->errorString();
-        m_job = 0; // clear job
-        return;
-    }
-    
-    // Get the result
-    KIO::StoredTransferJob* const storedJob = static_cast<KIO::StoredTransferJob*>( job );
-    QString jobUrl( storedJob->url().toMimeDataString() );
 
-    QPixmap cover;
-    if ( !cover.loadFromData( storedJob->data() ) )
+    m_url.clear();
+    if( e.code != QNetworkReply::NoError )
     {
-        debug() << "DropPixmapItem::not an image";
+        debug() << "unable to download the image:" << e.description;
         return;
     }
-//     
-    emit imageDropped( cover );
+    
+    QPixmap cover;
+    if( cover.loadFromData( data ) )
+        emit imageDropped( cover );
+    else
+        debug() << "not an image";
 }
 
 #include "DropPixmapItem.moc"

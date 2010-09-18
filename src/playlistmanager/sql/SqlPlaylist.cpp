@@ -37,7 +37,7 @@ SqlPlaylist::SqlPlaylist( const QString & name, const Meta::TrackList
     , m_tracks( tracks )
     , m_provider( provider)
     , m_name( name )
-    , m_description( QString() )
+    , m_description( i18n( "Playlist in database" ) )
     , m_urlId( urlId )
     , m_tracksLoaded( true )
 {
@@ -66,6 +66,12 @@ SqlPlaylistGroupPtr
 SqlPlaylist::parent() const
 {
     return m_parent;
+}
+
+KUrl
+SqlPlaylist::uidUrl() const
+{
+    return KUrl( QString( "amarok-sqlplaylistuid://%1").arg( m_dbId ) );
 }
 
 QStringList

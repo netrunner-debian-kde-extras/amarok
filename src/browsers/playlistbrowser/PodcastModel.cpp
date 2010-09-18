@@ -29,10 +29,11 @@
 
 #include <ThreadWeaver/Weaver>
 
-#include <QInputDialog>
 #include <KIcon>
+
+#include <QAction>
+#include <QInputDialog>
 #include <QListIterator>
-#include <QtAlgorithms>
 #include <typeinfo>
 
 using namespace Podcasts;
@@ -63,7 +64,7 @@ PlaylistBrowserNS::PodcastModel::destroy()
 }
 
 PlaylistBrowserNS::PodcastModel::PodcastModel()
-    : MetaPlaylistModel( PlaylistManager::PodcastChannel )
+    : PlaylistBrowserModel( PlaylistManager::PodcastChannel )
  , m_setNewAction( 0 )
 {
     s_instance = this;
@@ -199,7 +200,7 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &idx, int role ) const
             {
                 switch( idx.column() )
                 {
-                    case MetaPlaylistModel::PlaylistColumn:
+                    case PlaylistBrowserModel::PlaylistItemColumn:
                         return pmc->title();
 
                     case SubtitleColumn:
@@ -249,14 +250,14 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &idx, int role ) const
 
             case ShortDescriptionRole:
             {
-                if( idx.column() == MetaPlaylistModel::PlaylistColumn )
+                if( idx.column() == PlaylistBrowserModel::PlaylistItemColumn )
                     return pmc->description();
                 break;
             }
 
             case ByLineRole:
             {
-                if( idx.column() == MetaPlaylistModel::ProviderColumn )
+                if( idx.column() == PlaylistBrowserModel::ProviderColumn )
                 {
                     Playlists::PlaylistProvider *provider = providerForIndex( idx );
                     if( provider )
@@ -269,21 +270,25 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &idx, int role ) const
 
             case Qt::DecorationRole:
             {
-                if( idx.column() == MetaPlaylistModel::PlaylistColumn )
+                if( idx.column() == PlaylistBrowserModel::PlaylistItemColumn )
                         return icon( pmc );
                 break;
             }
+
+            case ActionCountRole:
+            case ActionRole:
+                return PlaylistBrowserModel::data( idx, role );
         }
     }
 
-    return MetaPlaylistModel::data( idx, role );
+    return PlaylistBrowserModel::data( idx, role );
 }
 
 bool
 PlaylistBrowserNS::PodcastModel::setData( const QModelIndex &idx, const QVariant &value, int role )
 {
     //TODO: implement setNew.
-    return MetaPlaylistModel::setData( idx, value, role );
+    return PlaylistBrowserModel::setData( idx, value, role );
 }
 
 int
@@ -293,30 +298,30 @@ PlaylistBrowserNS::PodcastModel::columnCount( const QModelIndex &parent ) const
     return ColumnCount;
 }
 
-Qt::ItemFlags
-PlaylistBrowserNS::PodcastModel::flags( const QModelIndex &idx ) const
-{
-    if( idx.row() == -1 )
-    {
-        switch( idx.column() )
-        {
-            case ProviderColumn:
-                return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
-            default: break;
-        }
-    }
-
-    Qt::ItemFlags channelFlags;
-    if( podcastItemType( idx ) == Podcasts::ChannelType )
-    {
-        channelFlags = Qt::ItemIsDropEnabled;
-        if( idx.column() == ProviderColumn )
-            channelFlags |= Qt::ItemIsEditable;
-    }
-
-    return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled
-                 | channelFlags );
-}
+//Qt::ItemFlags
+//PlaylistBrowserNS::PodcastModel::flags( const QModelIndex &idx ) const
+//{
+//    if( idx.row() == -1 )
+//    {
+//        switch( idx.column() )
+//        {
+//            case ProviderColumn:
+//                return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
+//            default: break;
+//        }
+//    }
+//
+//    Qt::ItemFlags channelFlags;
+//    if( podcastItemType( idx ) == Podcasts::ChannelType )
+//    {
+//        channelFlags = Qt::ItemIsDropEnabled;
+//        if( idx.column() == ProviderColumn )
+//            channelFlags |= Qt::ItemIsEditable;
+//    }
+//
+//    return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled
+//                 | channelFlags );
+//}
 
 QVariant
 PlaylistBrowserNS::PodcastModel::headerData( int section, Qt::Orientation orientation,
@@ -435,7 +440,7 @@ PlaylistBrowserNS::PodcastModel::slotOpmlParsingDone()
 QActionList
 PlaylistBrowserNS::PodcastModel::actionsFor( const QModelIndex &idx ) const
 {
-    QActionList actions = MetaPlaylistModel::actionsFor( idx );
+    QActionList actions = PlaylistBrowserModel::actionsFor( idx );
 
     /* by default a list of podcast episodes can only be changed to isNew = false, except
        when all selected episodes are the same state */

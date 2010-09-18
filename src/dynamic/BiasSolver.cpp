@@ -95,7 +95,6 @@ Dynamic::BiasSolver::BiasSolver( int n, QList<Bias*> biases, Meta::TrackList con
         m_biasEnergy.append( 0.0 );
         m_biasMutationEnergy.append( 0.0 );
     }
-    
 }
 
 
@@ -116,6 +115,21 @@ bool
 Dynamic::BiasSolver::success() const
 {
     return !m_abortRequested;
+}
+
+void
+Dynamic::BiasSolver::setAutoDelete( bool autoDelete )
+{
+    if( autoDelete )
+    {
+        connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
+        connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
+    }
+    else
+    {
+        disconnect( this, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
+        disconnect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), this, SLOT( deleteLater() ) );
+    }
 }
 
 void Dynamic::BiasSolver::prepareToRun()
@@ -141,7 +155,10 @@ void Dynamic::BiasSolver::prepareToRun()
     // nothing to update
     if( !m_pendingBiasUpdates && !s_universeOutdated )
     {
-        emit readyToRun();
+        if (!m_abortRequested)
+            emit readyToRun();
+        else
+            emit failed(0);
         return;
     }
 
@@ -157,7 +174,7 @@ void Dynamic::BiasSolver::run()
     DEBUG_BLOCK
 
     debug() << "BiasSolver::run in thread:" << QThread::currentThreadId();
-    computeDomainAndFeasibleFilters();
+    computeFeasibleFilters();
 
     /*
      * Two stage solver: Run ga_optimize and feed it's result into sa_optimize.
@@ -478,8 +495,12 @@ Dynamic::BiasSolver::biasUpdated()
     if( m_pendingBiasUpdates <= 0 )
         return;
 
-    if( --m_pendingBiasUpdates == 0 && !s_universeOutdated )
-        emit readyToRun();
+    if( --m_pendingBiasUpdates == 0 && !s_universeOutdated ) {
+        if (!m_abortRequested)
+            emit readyToRun();
+        else
+            emit failed(0);
+    }
 }
 
 
@@ -593,15 +614,11 @@ Dynamic::BiasSolver::generateInitialPlaylist() const
     {
         int n = m_n;
         while( n-- )
-            playlist += getRandomTrack( m_domain );
+            playlist += getRandomTrack( TrackSet(s_universe) );
 
         debug() << "No collection filters, returning random initial playlist";
         return playlist;
     }
-
-    // We are going to be computing a lot of track set intersections so we will
-    // memoize to try and save time (if not memory).
-    QHash< QBitArray, QList<QByteArray> > memoizedIntersections;
 
     int *addedSongsForFilter = new int[m_feasibleCollectionFilters.size()];
     for( int i = 0; i < m_feasibleCollectionFilters.size(); ++i )
@@ -635,14 +652,13 @@ Dynamic::BiasSolver::generateInitialPlaylist() const
         // The bit array represents the choice made at each branch.
         QBitArray branches( m_feasibleCollectionFilters.size(), 0x0 );
 
-        Dynamic::TrackSet S;
-        S.setUniverseSet();
+        Dynamic::TrackSet currentSet(s_universe);
 
         for( int _i = 0; _i < m_feasibleCollectionFilters.size(); ++_i )
         {
             int i = indexes[_i];
 
-            Dynamic::TrackSet currentSet = S;
+            Dynamic::TrackSet newSet = currentSet;
 
             // Decide whether we should 'accept' or 'reject' a bias.
             double decider = (double)KRandom::random() / (((double)RAND_MAX) + 1.0);
@@ -653,13 +669,13 @@ Dynamic::BiasSolver::generateInitialPlaylist() const
             {
                 debug() << "chose track from bias";
                 branches.setBit( i, true );
-                currentSet.intersect( m_feasibleCollectionFilterSets[i] );
+                newSet.intersect( m_feasibleCollectionFilterSets[i] );
             }
             else
             {
                 debug() << "bias NOT chosen.";
                 branches.setBit( i, false );
-                currentSet.subtract( m_feasibleCollectionFilterSets[i] );
+                newSet.subtract( m_feasibleCollectionFilterSets[i] );
             }
 
             // Now we have to make sure our decision doesn't land us with an
@@ -668,36 +684,27 @@ Dynamic::BiasSolver::generateInitialPlaylist() const
             // deal with infeasible systems.)
             //debug() << "after set intersection/subtraction, R has size:" << R.size();
 
-            if( currentSet.size() == 0 ) {
+            if( newSet.trackCount() == 0 ) {
                 debug() << "bias would result in empty set. reverting decision";
                 branches.toggleBit( i );
             }
             else
             {
-                S = currentSet;
+                currentSet = newSet;
                 if( branches[i] )
                     addedSongsForFilter[i]++;
             }
         }
 
-        // Memoize to avoid touching U as much as possible, and to avoid
-        // duplicate toList conversions.
-        if( !memoizedIntersections.contains( branches ) )
-        {
-            memoizedIntersections[branches] = S.uidList();
-        }
-
-        const QList<QByteArray>& finalSubset = memoizedIntersections[branches];
-
         // this should never happen
-        if( finalSubset.size() == 0 )
+        if( currentSet.trackCount() == 0 )
         {
             error() << "BiasSolver assumption failed.";
             continue;
         }
 
         // choose a track at random from our final subset
-        playlist.append( getRandomTrack( finalSubset ) );
+        playlist.append( getRandomTrack(currentSet) );
     }
     delete[] addedSongsForFilter;
 
@@ -705,9 +712,9 @@ Dynamic::BiasSolver::generateInitialPlaylist() const
 }
 
 Meta::TrackPtr
-Dynamic::BiasSolver::getRandomTrack( const QList<QByteArray>& subset ) const
+Dynamic::BiasSolver::getRandomTrack( const TrackSet& subset ) const
 {
-    if( subset.size() == 0 ) 
+    if( subset.trackCount() == 0 )
         return Meta::TrackPtr();
 
     Meta::TrackPtr track;
@@ -715,7 +722,7 @@ Dynamic::BiasSolver::getRandomTrack( const QList<QByteArray>& subset ) const
     // this is really dumb, but we sometimes end up with uids that don't point to anything
     int giveup = 50;
     while( giveup-- && !track )
-        track = trackForUid( subset[ KRandom::random() % subset.size() ] );
+        track = trackForUid( subset.getRandomTrack(s_universe) );
 
     if( track )
     {
@@ -724,7 +731,7 @@ Dynamic::BiasSolver::getRandomTrack( const QList<QByteArray>& subset ) const
     }
     else
         error() << "track is 0 in BiasSolver::getRandomTrack()";
-    
+
     return track;
 }
 
@@ -751,7 +758,7 @@ Dynamic::BiasSolver::trackForUid( const QByteArray& uid ) const
 
 
 void
-Dynamic::BiasSolver::computeDomainAndFeasibleFilters()
+Dynamic::BiasSolver::computeFeasibleFilters()
 {
     DEBUG_BLOCK
     foreach( Dynamic::Bias* b, m_biases )
@@ -775,32 +782,11 @@ Dynamic::BiasSolver::computeDomainAndFeasibleFilters()
                 else
                 {
                     m_feasibleCollectionFilters.append( fc );
-                    m_feasibleCollectionFilterSets.append( TrackSet( fc->propertySet() ) );
+                    m_feasibleCollectionFilterSets.append( TrackSet( s_universe, fc->propertySet() ) );
                 }
             }
         }
     }
-    
-    TrackSet subset;
-    subset.setUniverseSet();
-
-    for( int i = 0; i < m_feasibleCollectionFilters.size(); ++i )
-    {
-        if( m_feasibleCollectionFilters.at(i)->weight() == 1.0 )
-            subset.intersect( m_feasibleCollectionFilterSets.at(i) );
-
-        if( m_feasibleCollectionFilters.at(i)->weight() == 0.0 )
-            subset.subtract( m_feasibleCollectionFilterSets.at(i) );
-    }
-
-    m_domain = subset.uidList();
-
-    // if we are left with an empty set, better we just use the universe than
-    // give the user what they are really asking for.
-    if( m_domain.size() == 0 )
-        m_domain = s_universe;
-
-    debug() << "domain size: " << m_domain.size();
 }
 
 void
@@ -837,6 +823,7 @@ Dynamic::BiasSolver::updateUniverse()
         }
         
         s_universeQuery = s_universeCollection->queryMaker();
+        s_universeQuery->setAutoDelete( true );
         s_universeQuery->setQueryType( Collections::QueryMaker::Custom );
         s_universeQuery->addReturnValue( Meta::valUniqueId );
     }
@@ -885,9 +872,13 @@ Dynamic::BiasSolver::universeUpdated()
     QMutexLocker locker( &s_universeMutex );
 
     s_universeOutdated = false;
+    s_universeQuery = 0;
 
-    if( m_pendingBiasUpdates == 0 )
+    if( m_pendingBiasUpdates == 0 ) {
         emit(readyToRun());
+        if (m_abortRequested)
+            deleteLater();
+    }
 }
 
 void
@@ -906,7 +897,10 @@ Dynamic::BiasSolver::setUniverseCollection( Collections::Collection* coll )
     {
         s_universeCollection = coll;
         s_universeOutdated = true;
-        s_universeQuery = 0; // this will get set on update
+
+        // stop the running query
+        disconnect( s_universeQuery, 0, 0, 0);
+        s_universeQuery = 0; // (we set autodelete) this will get set on update
     }
 }
 

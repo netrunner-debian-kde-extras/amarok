@@ -59,14 +59,6 @@ private slots:
     void doJob();
 
 private:
-    enum FileType
-    {
-        mp3,
-        ogg,
-        flac,
-        mp4
-    };
-
     bool readBatchIncrementalFile();
     bool readMtimeFile();
 
@@ -127,6 +119,7 @@ private:
     QString                     m_mtimeFile;
     QStringList                 m_scannedFolders;
     QDBusInterface             *m_amarokCollectionInterface;
+    QStringList                 m_images;
 
     // Disable copy constructor and assignment
     CollectionScanner( const CollectionScanner& );

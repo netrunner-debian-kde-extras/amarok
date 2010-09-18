@@ -23,7 +23,7 @@ Name[nn]=Universell masselagringssamling
 Name[pa]=ਯੂਨੀਵਰਸਲ ਸਟੋਰੇਜ਼ ਭੰਡਾਰ
 Name[pl]=Kolekcja na urządzeniu danych
 Name[pt]=Colecção de Armazenamento em Massa Universal
-Name[pt_BR]=Coleção de Armazenamento Universal em Massa
+Name[pt_BR]=Coleção de armazenamento universal em massa
 Name[ro]=Colecție pe stocare în masă universală
 Name[ru]=Коллекция UMS
 Name[sk]=Kolekcia univerzálnych veľkokapacitných zariadení
@@ -45,7 +45,7 @@ X-KDE-Library=amarok_collection-umscollection
 
 X-KDE-Amarok-authors=Alejandro Wainzinger
 X-KDE-Amarok-email=aikawarazuni@gmail.com
-X-KDE-Amarok-framework-version=56
+X-KDE-Amarok-framework-version=58
 X-KDE-Amarok-name=ums-collection
 X-KDE-Amarok-plugintype=collection
 X-KDE-Amarok-rank=100

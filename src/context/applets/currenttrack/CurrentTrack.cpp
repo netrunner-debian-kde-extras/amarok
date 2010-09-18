@@ -16,6 +16,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "CurrentTrack"
+
 #include "CurrentTrack.h"
 
 #include "core/support/Amarok.h"
@@ -62,7 +64,7 @@ CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
 
 CurrentTrack::~CurrentTrack()
 {
-    dataEngine( "amarok-current" )->disconnectSource( "current", this );
+    delete m_tabBar;
 }
 
 void
@@ -164,9 +166,7 @@ CurrentTrack::connectSource( const QString &source )
 void
 CurrentTrack::changeTrackRating( int rating )
 {
-    DEBUG_BLOCK
     Meta::TrackPtr track = The::engineController()->currentTrack();
-
     if( !track )
         return;
 
@@ -176,9 +176,7 @@ CurrentTrack::changeTrackRating( int rating )
         return;
 
     track->setRating( rating );
-    debug() << "change rating to: " << rating;
-
-    uc->collectionUpdated();
+    debug() << "Changed rating to:" << rating;
 }
 
 QList<QAction*>
@@ -204,6 +202,7 @@ CurrentTrack::contextualActions()
             foreach( QAction *action, customActions )
                 actions.append( action );
         }
+        delete cac;
     }
 
     return actions;
@@ -286,7 +285,6 @@ void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
         iconPos.setY( iconPos.y() + m_album->boundingRect().height() );
         foreach( Plasma::IconWidget *icon, m_trackActions )
         {
-            debug() << "painting action: " << icon->text();
             const int iconSize = icon->size().width();
             icon->setPos( iconPos );
             iconPos.rx() += iconSize + 4;

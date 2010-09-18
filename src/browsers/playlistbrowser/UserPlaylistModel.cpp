@@ -66,12 +66,9 @@ PlaylistBrowserNS::UserModel::destroy()
 }
 
 PlaylistBrowserNS::UserModel::UserModel()
-    : MetaPlaylistModel( PlaylistManager::UserPlaylist )
+    : PlaylistBrowserModel( PlaylistManager::UserPlaylist )
 {
     s_instance = this;
-
-    connect( The::playlistManager(), SIGNAL(renamePlaylist( Playlists::PlaylistPtr )),
-             SLOT(slotRenamePlaylist( Playlists::PlaylistPtr )) );
 }
 
 PlaylistBrowserNS::UserModel::~UserModel()
@@ -85,14 +82,14 @@ PlaylistBrowserNS::UserModel::setData( const QModelIndex &idx, const QVariant &v
 
     switch( idx.column() )
     {
-        case MetaPlaylistModel::PlaylistColumn:
+        case PlaylistBrowserModel::PlaylistItemColumn:
         {
             debug() << "setting name of item " << idx.internalId() << " to " << value.toString();
             Playlists::PlaylistPtr item = m_playlists.value( idx.internalId() );
             item->setName( value.toString() );
             break;
         }
-        case MetaPlaylistModel::LabelColumn:
+        case PlaylistBrowserModel::LabelColumn:
         {
             debug() << "changing group of item " << idx.internalId() << " to " << value.toString();
             Playlists::PlaylistPtr item = m_playlists.value( idx.internalId() );
@@ -127,8 +124,7 @@ PlaylistBrowserNS::UserModel::removeRows( int row, int count, const QModelIndex 
       if( playlistToRemove.isEmpty() )
         return false;
 
-      The::playlistManager()->deletePlaylists( playlistToRemove );
-      return true;
+      return The::playlistManager()->deletePlaylists( playlistToRemove );
     }
     int playlistRow = REMOVE_TRACK_MASK(parent.internalId());
 
@@ -154,11 +150,11 @@ PlaylistBrowserNS::UserModel::removeRows( int row, int count, const QModelIndex 
 
     beginRemoveRows( parent, row, row + count - 1 );
     //ignore notifications while removing tracks
-    playlist->unsubscribe( this );
+    unsubscribeFrom( playlist );
     for( int i = row; i < row + count; i++ )
         //deleting a track moves the next track up, so use the same row number each time
         playlist->removeTrack( row );
-    playlist->subscribe( this );
+    subscribeTo( playlist );
     endRemoveRows();
 
     return true;

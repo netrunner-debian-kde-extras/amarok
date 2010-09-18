@@ -53,6 +53,13 @@ public:
 
     const QList<Filter>& getFilters() const;
 
+    /**
+     *  Reads only one filter element.
+     */
+    static Filter readFilter(QXmlStreamReader *reader);
+
+    static qint64 fieldVal( QStringRef field );
+    static int compareVal( QStringRef compare );
 
 private:
     void readQuery();
@@ -60,9 +67,6 @@ private:
     void readReturnValues();
     void ignoreElements();
     void readAndOr();
-
-    qint64 fieldVal( QStringRef field );
-    int compareVal( QStringRef compare );
 
     struct Private;
     Private * const d;

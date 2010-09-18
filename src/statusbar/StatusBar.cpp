@@ -30,7 +30,9 @@
 #include "playlist/PlaylistModelStack.h"
 
 #include "KJobProgressBar.h"
+#include "NetworkProgressBar.h"
 
+#include <QNetworkReply>
 #include <QVariant>
 
 #include <cmath>
@@ -52,7 +54,7 @@ public:
 
     virtual void longMessage( const QString &text, MessageType type )
     {
-        StatusBar::MessageType otherType;
+        StatusBar::MessageType otherType = StatusBar::Information;
         switch( type )
         {
         case Amarok::Logger::Information:
@@ -71,6 +73,15 @@ public:
     virtual void newProgressOperation( KJob *job, const QString &text, QObject *obj, const char *slot, Qt::ConnectionType type )
     {
         ProgressBar *bar = m_statusBar->newProgressOperation( job, text );
+        if( obj )
+        {
+            bar->setAbortSlot( obj, slot, type );
+        }
+    }
+
+    virtual void newProgressOperation( QNetworkReply *reply, const QString &text, QObject *obj, const char *slot, Qt::ConnectionType type )
+    {
+        ProgressBar *bar = m_statusBar->newProgressOperation( reply, text );
         if( obj )
         {
             bar->setAbortSlot( obj, slot, type );
@@ -180,6 +191,7 @@ ProgressBar * StatusBar::newProgressOperation( QObject * owner, const QString & 
     m_nowPlayingWidget->hide();
     ProgressBar * newBar = new ProgressBar( 0 );
     newBar->setDescription( description );
+    connect( owner, SIGNAL(destroyed(QObject*)), this, SLOT(endProgressOperation(QObject*)) );
     m_progressBar->addProgressBar( newBar, owner );
     m_progressBar->show();
     m_busy = true;
@@ -197,7 +209,27 @@ ProgressBar * StatusBar::newProgressOperation( KJob * job, const QString & descr
     m_nowPlayingWidget->hide();
     KJobProgressBar * newBar = new KJobProgressBar( 0, job );
     newBar->setDescription( description );
+    connect( job, SIGNAL(destroyed(QObject*)), this, SLOT(endProgressOperation(QObject*)) );
     m_progressBar->addProgressBar( newBar, job );
+    m_progressBar->show();
+    m_busy = true;
+
+    return newBar;
+}
+
+ProgressBar *StatusBar::newProgressOperation( QNetworkReply* reply, const QString & description )
+{
+    //clear any short message currently being displayed and stop timer if running...
+    clearMessage();
+    m_shortMessageTimer->stop();
+
+    //also hide the now playing stuff:
+    m_nowPlayingWidget->hide();
+    NetworkProgressBar * newBar = new NetworkProgressBar( 0, reply );
+    newBar->setDescription( description );
+    newBar->setAbortSlot( reply, SLOT(deleteLater()) );
+    connect( reply, SIGNAL(destroyed(QObject*)), this, SLOT(endProgressOperation(QObject*)) );
+    m_progressBar->addProgressBar( newBar, reply );
     m_progressBar->show();
     m_busy = true;
 

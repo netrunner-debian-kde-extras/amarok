@@ -1,6 +1,5 @@
 /*
-    <one line to give the program's name and a brief idea of what it does.>
-    Copyright (C) <year>  <name of author>
+    Copyright (C) 2009 Maximilian Kossick <maximilian.kossick@googlemail.com>
 
     This program is free software; you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
@@ -28,19 +27,19 @@ const QString
 AFTUtility::readEmbeddedUniqueId( const TagLib::FileRef &fileref )
 {
     Q_UNUSED( fileref )
-    return "AftUtilityMock";
+    return "aftutilitymock";
 }
 
 const QString
 AFTUtility::randomUniqueId( QCryptographicHash &md5 )
 {
     Q_UNUSED( md5 )
-    return "AftUtilityMock";
+    return "aftutilitymock";
 }
 
 const QString
 AFTUtility::readUniqueId( const QString &path )
 {
     Q_UNUSED( path )
-    return "AftUtilityMock";
+    return "aftutilitymock";
 }

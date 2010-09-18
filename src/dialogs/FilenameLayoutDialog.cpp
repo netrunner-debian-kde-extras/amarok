@@ -109,6 +109,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     else
     {
         //INIT for collection root
+        filenamePreview->hide();
         unsigned int borderColor = static_cast<unsigned int>( KColorScheme( QPalette::Active ).decoration( KColorScheme::HoverColor ).color().rgb() );
         collectionRootFrame->setStyleSheet( "\
             color: palette( Text );\
@@ -264,7 +265,7 @@ FilenameLayoutDialog::FilenameLayoutDialog( QWidget *parent, bool isOrganizeColl
     else
     {
         tokenPool->addToken( new Token( "/", "filename-slash-amarok", Slash ) );
-        tokenPool->addToken( new Token( i18n( "Initial" ), "filename-initial-amarok", Initial ) );
+        tokenPool->addToken( new Token( i18nc( "Artist's Initial", "Initial" ), "filename-initial-amarok", Initial ) );
         Token *filetypeToken = new Token( i18n( "File type" ), "filename-filetype-amarok", FileType );
         tokenPool->addToken( filetypeToken );
         tokenPool->addToken( new Token( i18n( "Disc number" ), "filename-discnumber-amarok", DiscNumber ) );
@@ -336,6 +337,13 @@ FilenameLayoutDialog::setFileName( QString FileName )
     updatePreview();
 }
 
+// attempts to set the scheme
+void FilenameLayoutDialog::setScheme(const QString& scheme)
+{
+    inferScheme( scheme );
+}
+
+
 //Updates the Filename Preview
 void
 FilenameLayoutDialog::updatePreview()                 //SLOT
@@ -362,42 +370,42 @@ FilenameLayoutDialog::updatePreview()                 //SLOT
             if( tags.contains( "album" ) )
                 Album_result->setText( "<font color='" + QColor( album_color ).name() + "'>" + tags["album"] + "</font>" );
             else
-                Album_result->setText( i18n("<empty>") );
+                Album_result->setText( i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "&lt;empty&gt;" ) );
 
             if( tags.contains( "title" ) )
                 Title_result->setText( "<font color='" + QColor( title_color ).name() + "'>" + tags["title"] + "</font>" );
             else
-                Title_result->setText( i18n("<empty>") );
+                Title_result->setText( i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "&lt;empty&gt;" ) );
 
             if( tags.contains( "artist" ) )
                 Artist_result->setText( "<font color='" + QColor( artist_color ).name() + "'>" + tags["artist"] + "</font>" );
             else
-                Artist_result->setText( i18n("<empty>") );
+                Artist_result->setText( i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "&lt;empty&gt;" ) );
 
             if( tags.contains( "comment" ) )
                 Comment_result->setText( "<font color='" + QColor( comment_color ).name() + "'>" + tags["comment"] + "</font>" );
             else
-                Comment_result->setText( i18n("<empty>") );
+                Comment_result->setText( i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "&lt;empty&gt;" ) );
 
             if( tags.contains( "composer" ) )
                 Composer_result->setText( "<font color='" + QColor( composer_color ).name() + "'>" + tags["composer"] + "</font>" );
             else
-                Composer_result->setText( i18n("<empty>") );
+                Composer_result->setText( i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "&lt;empty&gt;" ) );
 
             if( tags.contains( "genre" ) )
                 Genre_result->setText( "<font color='" + QColor( genre_color ).name() + "'>" + tags["genre"] + "</font>" );
             else
-                Genre_result->setText( i18n("<empty>") );
+                Genre_result->setText( i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "&lt;empty&gt;" ) );
 
             if( tags.contains( "track" ) )
                 Track_result->setText( "<font color='" + QColor( track_color ).name() + "'>" + QString( tags["track"].toInt() ) + "</font>" );
             else
-                Track_result->setText( i18n("<empty>") );
+                Track_result->setText( i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "&lt;empty&gt;" ) );
 
             if( tags.contains( "year" ) )
                 Year_result->setText( "<font color='" + QColor( year_color ).name() + "'>" + QString( tags["year"].toInt() ) + "</font>" );
             else
-                Year_result->setText( i18n("<empty>") );
+                Year_result->setText( i18nc( "Text to represent an empty tag. Braces (<>) are only to clarify emptiness.", "&lt;empty&gt;" ) );
 
             filenamePreview->setText(guesser.coloredFileName());
         }
@@ -610,7 +618,7 @@ FilenameLayoutDialog::inferScheme( const QString &s ) //SLOT
             }
             else if( s.mid( i, 8 ) == "%initial" )
             {
-                m_dropTarget->insertToken( new Token( i18n( "Initial" ), "filename-initial-amarok", Initial ) );
+                m_dropTarget->insertToken( new Token( i18nc( "Artist's Initial", "Initial" ), "filename-initial-amarok", Initial ) );
                 i += 8;
             }
             else if( s.mid( i, 11 ) == "%discnumber" )

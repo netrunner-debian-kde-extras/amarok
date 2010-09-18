@@ -16,6 +16,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "SimilarArtistsApplet"
+
 #include "SimilarArtistsApplet.h"
 
 //Amarok
@@ -25,7 +27,6 @@
 #include "core/support/Debug.h"
 #include "context/Svg.h"
 #include "context/ContextView.h"
-#include "context/widgets/DropPixmapItem.h"
 #include "PaletteHandler.h"
 #include "context/widgets/TextScrollingWidget.h"
 
@@ -56,6 +57,8 @@ SimilarArtistsApplet::SimilarArtistsApplet( QObject *parent, const QVariantList&
         , Engine::EngineObserver( The::engineController() )
         , m_aspectRatio( 0 )
         , m_headerAspectRatio( 0.0 )
+        , m_layout( 0 )
+        , m_scroll( 0 )
         , m_headerLabel( 0 )
         , m_settingsIcon( 0 )
 {
@@ -272,9 +275,8 @@ SimilarArtistsApplet::dataUpdated( const QString& name, const Plasma::DataEngine
     m_artist = data[ "artist" ].toString();
 
     // we see if the artist name is valid
-    if ( m_artist.compare( "" ) != 0 )
+    if ( !m_artist.isEmpty() )
     {
-
         m_similars = data[ "SimilarArtists" ].value<SimilarArtist::SimilarArtistsList>();
 
         if ( !m_stoppedState )

@@ -3,13 +3,13 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Zlatko Popov <zlatkopopov@fsa-bg.org>, 2009.
-# Yasen Pramatarov <yasen@lindeas.com>, 2009.
+# Yasen Pramatarov <yasen@lindeas.com>, 2009, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarokpkg\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2010-05-03 05:06+0200\n"
-"PO-Revision-Date: 2009-08-11 00:51+0300\n"
+"PO-Revision-Date: 2010-06-23 22:00+0300\n"
 "Last-Translator: Yasen Pramatarov <yasen@lindeas.com>\n"
 "Language-Team: Bulgarian <dict@fsa-bg.org>\n"
 "MIME-Version: 1.0\n"
@@ -27,10 +27,8 @@ msgid "Amarok Applet Manager"
 msgstr "Мениджър на аплети за Amarok"
 
 #: amarokpkg.cpp:78
-#, fuzzy
-#| msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo franchi"
 msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo franchi"
+msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
 
 #: amarokpkg.cpp:79
 msgid "Aaron Seigo"
@@ -64,10 +62,8 @@ msgid "Upgrade the applet at <path>"
 msgstr "Обновяване на аплета в <path>"
 
 #: amarokpkg.cpp:99
-#, fuzzy
-#| msgid "List installed applet"
 msgid "List installed applets"
-msgstr "Показване на инсталираните аплети"
+msgstr "Списък с инсталираните аплети"
 
 #: amarokpkg.cpp:101
 msgctxt "Do not translate <name>"

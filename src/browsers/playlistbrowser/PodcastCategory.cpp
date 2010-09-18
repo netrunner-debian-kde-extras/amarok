@@ -16,48 +16,26 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "PodcastCategory"
+
 #include "PodcastCategory.h"
 
-#include "core/support/Amarok.h"
 #include "App.h"
-#include "context/ContextView.h"
-#include "context/popupdropper/libpud/PopupDropperItem.h"
-#include "context/popupdropper/libpud/PopupDropper.h"
+#include "browsers/InfoProxy.h"
 #include "core/support/Debug.h"
 #include "core/meta/support/MetaUtility.h"
 #include "PodcastModel.h"
-#include "core/podcasts/PodcastMeta.h"
-#include "PopupDropperFactory.h"
-#include "PlaylistsByProviderProxy.h"
-#include "PlaylistTreeItemDelegate.h"
-#include "browsers/InfoProxy.h"
-#include "SvgTinter.h"
-#include "SvgHandler.h"
+#include "PlaylistBrowserView.h"
 
-#include <QAction>
-#include <QFontMetrics>
-#include <QHeaderView>
-#include <QIcon>
-#include <QLinearGradient>
 #include <QModelIndexList>
-#include <QPainter>
-#include <QRegExp>
-#include <QToolBar>
-#include <QVBoxLayout>
-#include <QWebFrame>
-#include <QTextDocument>
-#include <qnamespace.h>
+#include <QTextBrowser>
 
 #include <KAction>
-#include <KMenu>
 #include <KIcon>
 #include <KStandardDirs>
 #include <KUrlRequesterDialog>
-#include <KToolBar>
 #include <KGlobal>
 #include <KLocale>
-
-#include <typeinfo>
 
 namespace The
 {
@@ -70,14 +48,13 @@ namespace The
 using namespace PlaylistBrowserNS;
 
 QString PodcastCategory::s_configGroup( "Podcast View" );
-QString PodcastCategory::s_mergedViewKey( "Merged View" );
 
 PodcastCategory* PodcastCategory::s_instance = 0;
 
 PodcastCategory*
 PodcastCategory::instance()
 {
-    return s_instance ? s_instance : new PodcastCategory( The::podcastModel() );
+    return s_instance ? s_instance : new PodcastCategory( 0 );
 }
 
 void
@@ -90,9 +67,12 @@ PodcastCategory::destroy()
     }
 }
 
-PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
-    : BrowserCategory( "podcasts", 0 )
-    , m_podcastModel( podcastModel )
+PodcastCategory::PodcastCategory( QWidget *parent )
+    : PlaylistBrowserCategory( Playlists::PodcastChannelPlaylist,
+                               "podcasts",
+                               s_configGroup,
+                               The::podcastModel(),
+                               parent )
 {
     setPrettyName( i18n( "Podcasts" ) );
     setShortDescription( i18n( "List of podcast subscriptions and episodes" ) );
@@ -104,109 +84,61 @@ PodcastCategory::PodcastCategory( PodcastModel *podcastModel )
 
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_podcasts.png" ) );
 
-    resize(339, 574);
-    QSizePolicy sizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
-    sizePolicy.setHorizontalStretch(0);
-    sizePolicy.setVerticalStretch(0);
-    sizePolicy.setHeightForWidth( this->sizePolicy().hasHeightForWidth());
-    setSizePolicy( sizePolicy );
+    QAction *addPodcastAction = new QAction( KIcon( "list-add-amarok" ), i18n("&Add Podcast"),
+                                             m_toolBar );
+    addPodcastAction->setPriority( QAction::NormalPriority );
+    m_toolBar->insertAction( m_separator, addPodcastAction );
+    connect( addPodcastAction, SIGNAL(triggered( bool )), The::podcastModel(), SLOT(addPodcast()) );
 
-    setContentsMargins(0,0,0,0);
-
-    KToolBar *toolBar = new KToolBar( this, false, false );
-    toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
-
-    QAction* addPodcastAction = new QAction( KIcon( "list-add-amarok" ), i18n("&Add Podcast"), toolBar );
-    toolBar->addAction( addPodcastAction );
-    connect( addPodcastAction, SIGNAL(triggered( bool )), m_podcastModel, SLOT(addPodcast()) );
-
-    QAction* updateAllAction = new QAction( KIcon("view-refresh-amarok"),
-                                            i18n("&Update All"), toolBar );
-    toolBar->addAction( updateAllAction );
+    QAction *updateAllAction = new QAction( KIcon("view-refresh-amarok"),
+                                            i18n("&Update All"), m_toolBar );
+    updateAllAction->setPriority( QAction::LowPriority );
+    m_toolBar->addAction( updateAllAction );
     connect( updateAllAction, SIGNAL(triggered( bool )),
-             m_podcastModel, SLOT(refreshPodcasts()) );
+             The::podcastModel(), SLOT(refreshPodcasts()) );
 
-    //a QWidget with minimumExpanding makes the next button right aligned.
-    QWidget *spacerWidget = new QWidget( this );
-    spacerWidget->setSizePolicy( QSizePolicy::MinimumExpanding,
-                                 QSizePolicy::MinimumExpanding );
-    toolBar->addWidget( spacerWidget );
-
-    m_podcastTreeView = new PodcastView( podcastModel, this );
-    m_defaultItemDelegate = m_podcastTreeView->itemDelegate();
-
-    m_byProviderProxy = new PlaylistsByProviderProxy( podcastModel,
-                                                      MetaPlaylistModel::ProviderColumn );
-    m_byProviderDelegate = new PlaylistTreeItemDelegate( m_podcastTreeView );
-
-    m_podcastTreeView->setFrameShape( QFrame::NoFrame );
-    m_podcastTreeView->setContentsMargins( 0, 0, 0, 0 );
-
-    KAction *toggleAction = new KAction( KIcon( "view-list-tree" ), QString(), toolBar );
-    toggleAction->setToolTip( i18n( "Merged View" ) );
-    toggleAction->setCheckable( true );
-    toggleAction->setChecked( Amarok::config( s_configGroup ).readEntry( s_mergedViewKey, true ) );
-    toolBar->addAction( toggleAction );
-    connect( toggleAction, SIGNAL( triggered( bool ) ), SLOT( toggleView( bool ) ) );
-    toggleView( toggleAction->isChecked() );
-
-    m_podcastTreeView->header()->hide();
-    m_podcastTreeView->setIconSize( QSize( 32, 32 ) );
-
-    m_podcastTreeView->setAlternatingRowColors( true );
-    m_podcastTreeView->setSelectionMode( QAbstractItemView::ExtendedSelection );
-    m_podcastTreeView->setSelectionBehavior( QAbstractItemView::SelectItems );
-    m_podcastTreeView->setDragEnabled( true );
-    m_podcastTreeView->setAcceptDrops( true );
-    m_podcastTreeView->setDropIndicatorShown( true );
-
-    for( int column = 1; column < podcastModel->columnCount(); ++ column )
-    {
-        m_podcastTreeView->hideColumn( column );
-    }
-
-    //transparency
-    QPalette p = m_podcastTreeView->palette();
-    QColor c = p.color( QPalette::Base );
-    c.setAlpha( 0 );
-    p.setColor( QPalette::Base, c );
-
-    c = p.color( QPalette::AlternateBase );
-    c.setAlpha( 77 );
-    p.setColor( QPalette::AlternateBase, c );
-
-    m_podcastTreeView->setPalette( p );
-
-    QSizePolicy sizePolicy1(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
-    sizePolicy1.setHorizontalStretch(0);
-    sizePolicy1.setVerticalStretch(0);
-    sizePolicy1.setHeightForWidth(m_podcastTreeView->sizePolicy().hasHeightForWidth());
-    m_podcastTreeView->setSizePolicy(sizePolicy1);
-
-    m_viewKicker = new ViewKicker( m_podcastTreeView );
-
-    connect( m_podcastTreeView, SIGNAL( clicked( const QModelIndex & ) ), this,
-             SLOT( showInfo( const QModelIndex & ) ) );
 
     QAction *importOpmlAction = new QAction( KIcon("document-import")
                                              , i18n( "Import OPML File" )
-                                             , toolBar
+                                             , m_toolBar
                                          );
     importOpmlAction->setToolTip( i18n( "Import OPML File" ) );
-    toolBar->addAction( importOpmlAction );
+    importOpmlAction->setPriority( QAction::LowPriority );
+    m_toolBar->addAction( importOpmlAction );
     connect( importOpmlAction, SIGNAL( triggered() ), SLOT( slotImportOpml() ) );
 
+    PlaylistBrowserView *view = static_cast<PlaylistBrowserView*>( playlistView() );
+    connect( view, SIGNAL(currentItemChanged(QModelIndex)), SLOT(showInfo(QModelIndex)) );
+
+    //transparency
+//    QPalette p = m_podcastTreeView->palette();
+//    QColor c = p.color( QPalette::Base );
+//    c.setAlpha( 0 );
+//    p.setColor( QPalette::Base, c );
+//
+//    c = p.color( QPalette::AlternateBase );
+//    c.setAlpha( 77 );
+//    p.setColor( QPalette::AlternateBase, c );
+//
+//    m_podcastTreeView->setPalette( p );
+//
+//    QSizePolicy sizePolicy1(QSizePolicy::MinimumExpanding, QSizePolicy::Expanding);
+//    sizePolicy1.setHorizontalStretch(0);
+//    sizePolicy1.setVerticalStretch(0);
+//    sizePolicy1.setHeightForWidth(m_podcastTreeView->sizePolicy().hasHeightForWidth());
+//    m_podcastTreeView->setSizePolicy(sizePolicy1);
 }
 
 PodcastCategory::~PodcastCategory()
 {
-    delete m_viewKicker;
 }
 
 void
-PodcastCategory::showInfo( const QModelIndex & index )
+PodcastCategory::showInfo( const QModelIndex &index )
 {
-    QVariantMap map;
+    if( !index.isValid() )
+        return;
+
     const int row = index.row();
     QString description;
     QString title( index.data( Qt::DisplayRole ).toString() );
@@ -328,6 +260,7 @@ PodcastCategory::showInfo( const QModelIndex & index )
         .arg( App::instance()->palette().brush( QPalette::Text ).color().name() )
         .arg( PaletteHandler::highlightColor().name() );
     
+    QVariantMap map;
     map["service_name"] = title;
     map["main_info"] = description;
     The::infoProxy()->setInfo( map );
@@ -343,7 +276,7 @@ PodcastCategory::slotImportOpml()
     if( !url.isEmpty() )
     {
         // user entered something and pressed OK
-        m_podcastModel->importOpml( url );
+        The::podcastModel()->importOpml( url );
     }
     else
     {
@@ -352,421 +285,4 @@ PodcastCategory::slotImportOpml()
     }
 }
 
-void
-PodcastCategory::toggleView( bool merged ) //SLOT
-{
-    if( merged )
-    {
-        m_podcastTreeView->setModel( m_podcastModel );
-        m_podcastTreeView->setItemDelegate( m_defaultItemDelegate );
-        m_podcastTreeView->setRootIsDecorated( true );
-    }
-    else
-    {
-        m_podcastTreeView->setModel( m_byProviderProxy );
-        m_podcastTreeView->setItemDelegate( m_byProviderDelegate );
-        m_podcastTreeView->setRootIsDecorated( false );
-    }
-
-    Amarok::config( s_configGroup ).writeEntry( s_mergedViewKey, merged );
-}
-
-ViewKicker::ViewKicker( QTreeView * treeView )
-{
-    DEBUG_BLOCK
-    m_treeView = treeView;
-}
-
-void
-ViewKicker::kickView()
-{
-    DEBUG_BLOCK
-    m_treeView->setRootIndex( QModelIndex() );
-}
-
-PodcastCategoryDelegate::PodcastCategoryDelegate( QTreeView * view )
-    : QItemDelegate()
-    , m_view( view )
-{
-    m_webPage = new QWebPage( view );
-}
-
-PodcastCategoryDelegate::~PodcastCategoryDelegate()
-{
-}
-
-void
-PodcastCategoryDelegate::paint( QPainter *painter, const QStyleOptionViewItem &option,
-                                const QModelIndex &index ) const
-{
-    DEBUG_BLOCK
-
-    int width = m_view->viewport()->size().width() - 4;
-    int iconWidth = 16;
-    int iconHeight = 16;
-    int iconPadX = 8;
-    int iconPadY = 4;
-    int height = option.rect.height();
-
-    painter->save();
-    painter->setRenderHint ( QPainter::Antialiasing );
-
-    QPixmap background = The::svgHandler()->renderSvg( "service_list_item", width - 40, height - 4, "service_list_item" );
-    painter->drawPixmap( option.rect.topLeft().x() + 2, option.rect.topLeft().y() + 2, background );
-
-    painter->setPen(Qt::black);
-
-    painter->setFont(QFont("Arial", 9));
-
-    QIcon icon = index.data( Qt::DecorationRole ).value<QIcon>();
-    QPixmap iconPixmap = icon.pixmap( iconWidth, iconHeight );
-    painter->drawPixmap( option.rect.topLeft() + QPoint( iconPadX, iconPadY ), iconPixmap );
-
-
-    QRectF titleRect;
-    titleRect.setLeft( option.rect.topLeft().x() + iconWidth + iconPadX );
-    titleRect.setTop( option.rect.top() );
-    titleRect.setWidth( width - ( iconWidth  + iconPadX * 2 + m_view->indentation() ) );
-    titleRect.setHeight( iconHeight + iconPadY );
-
-    QString title = index.data( Qt::DisplayRole ).toString();
-
-
-    //TODO: these metrics should be made static members so they are not created all the damn time!!
-    QFontMetricsF tfm( painter->font() );
-
-    title = tfm.elidedText ( title, Qt::ElideRight, titleRect.width() - 8, Qt::AlignHCenter );
-    //TODO: has a weird overlap
-    painter->drawText ( titleRect, Qt::AlignLeft | Qt::AlignBottom, title );
-
-    painter->setFont(QFont("Arial", 8));
-
-    QRect textRect;
-    textRect.setLeft( option.rect.topLeft().x() + iconPadX );
-    textRect.setTop( option.rect.top() + iconHeight + iconPadY );
-    textRect.setWidth( width - ( iconPadX * 2 + m_view->indentation() + 16) );
-    textRect.setHeight( height - ( iconHeight + iconPadY ) );
-
-    QFontMetricsF fm( painter->font() );
-    QRectF textBound;
-
-    QString description = index.data( ShortDescriptionRole ).toString();
-    description.replace( QRegExp("\n "), "\n" );
-    description.replace( QRegExp("\n+"), "\n" );
-
-
-    if (option.state & QStyle::State_Selected)
-        textBound = fm.boundingRect( textRect, Qt::TextWordWrap | Qt::AlignHCenter, description );
-    else
-        textBound = fm.boundingRect( titleRect, Qt::TextWordWrap | Qt::AlignHCenter, title );
-
-    bool toWide = textBound.width() > textRect.width();
-    bool toHigh = textBound.height() > textRect.height();
-    if ( toHigh || toWide )
-    {
-        QLinearGradient gradient;
-        gradient.setStart( textRect.bottomLeft().x(), textRect.bottomLeft().y() - 16 );
-
-        //if( toWide && toHigh ) gradient.setFinalStop( textRect.bottomRight() );
-        //else if ( toWide ) gradient.setFinalStop( textRect.topRight() );
-        gradient.setFinalStop( textRect.bottomLeft() );
-
-        gradient.setColorAt(0, painter->pen().color());
-        gradient.setColorAt(0.5, Qt::transparent);
-        gradient.setColorAt(1, Qt::transparent);
-        QPen pen;
-        pen.setBrush(QBrush(gradient));
-        painter->setPen(pen);
-    }
-
-    if (option.state & QStyle::State_Selected)
-    {
-        //painter->drawText( textRect, Qt::TextWordWrap | Qt::AlignVCenter | Qt::AlignLeft, description );
-        m_webPage->setViewportSize( QSize( textRect.width(), textRect.height() ) );
-        m_webPage->mainFrame()->setHtml( description );
-        m_webPage->mainFrame()->render ( painter, QRegion( textRect ) );
-    }
-
-    painter->restore();
-
-}
-
-QSize
-PodcastCategoryDelegate::sizeHint(const QStyleOptionViewItem & option, const QModelIndex & index) const
-{
-    Q_UNUSED( option );
-
-    int width = m_view->viewport()->size().width() - 4;
-
-    //todo: the height should be defined the way it is in the delegate: iconpadY*2 + iconheight
-    //Podcasts::PodcastMetaCommon* pmc = static_cast<Podcasts::PodcastMetaCommon *>( index.internalPointer() );
-    int height = 24;
-
-    if( /*option.state & QStyle::State_HasFocus*/ m_view->currentIndex() == index )
-    {
-        QString description = index.data( ShortDescriptionRole ).toString();
-
-        /*QFontMetrics fm( QFont( "Arial", 8 ) );
-        height = fm.boundingRect ( 0, 0, width - ( 32 + m_view->indentation() ), 1000,
-                                   Qt::AlignHCenter | Qt::AlignTop | Qt::TextWordWrap ,
-                                   description ).height() + 40;
-        debug() << "Option is selected, height = " << height;*/
-
-    }
-
-    return QSize ( width, height );
-}
-
-PodcastView::PodcastView( PodcastModel *model, QWidget * parent )
-    : Amarok::PrettyTreeView( parent )
-    , m_podcastModel( model )
-    , m_pd( 0 )
-    , m_ongoingDrag( false )
-    , m_dragMutex()
-    , m_justDoubleClicked( false )
-{
-    connect( &m_clickTimer, SIGNAL( timeout() ), this, SLOT( slotClickTimeout() ) );
-}
-
-PodcastView::~PodcastView()
-{}
-
-void
-PodcastView::mousePressEvent( QMouseEvent *event )
-{
-    QModelIndex index = indexAt( event->pos() );
-    if( KGlobalSettings::singleClick() )
-        setItemsExpandable( false );
-    //not a provider item, don't bother checking actions
-    if( model() == m_podcastModel || index.parent().isValid() )
-    {
-        Amarok::PrettyTreeView::mousePressEvent( event );
-        return;
-    }
-
-    const int actionCount =
-            index.data( PlaylistBrowserNS::MetaPlaylistModel::ActionCountRole ).toInt();
-    if( actionCount > 0 )
-    {
-        const QRect rect = PlaylistTreeItemDelegate::actionsRect( index );
-        if( rect.contains( event->pos() ) )
-            return;
-    }
-
-    Amarok::PrettyTreeView::mousePressEvent( event );
-}
-
-void
-PodcastView::mouseReleaseEvent( QMouseEvent * event )
-{
-    const QModelIndex index = indexAt( event->pos() );
-    if( !index.parent().isValid() ) // not a root element, don't bother checking actions
-    {
-        const int actionCount =
-            index.data( PlaylistBrowserNS::MetaPlaylistModel::ActionCountRole ).toInt();
-        if( actionCount > 0 )
-        {
-            const QRect rect = PlaylistTreeItemDelegate::actionsRect( index );
-            if( rect.contains( event->pos() ) )
-            {
-                QVariantList variantList =
-                        index.data( PlaylistBrowserNS::MetaPlaylistModel::ActionRole ).toList();
-                if( variantList.isEmpty() )
-                    return;
-
-                QList<QAction*> actions = variantList.first().value<QList<QAction*> >();
-                //hack: rect height == the width of one action's area.
-                int indexOfActionToTrigger
-                    = ( event->pos().x() - rect.left() ) / rect.height();
-                debug() << "triggering action " << indexOfActionToTrigger;
-                if( indexOfActionToTrigger >= actions.count() )
-                {
-                    debug() << "no such action";
-                    return;
-                }
-                QAction *action = actions.value( indexOfActionToTrigger );
-                if( action )
-                    action->trigger();
-                return;
-            }
-        }
-    }
-
-    if( m_pd )
-    {
-        connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( deleteLater() ) );
-        m_pd->hide();
-    }
-    m_pd = 0;
-
-    setItemsExpandable( true );
-
-    if( m_clickTimer.isActive() || m_justDoubleClicked )
-    {
-        //it's a double-click...so ignore it
-        m_clickTimer.stop();
-        m_justDoubleClicked = false;
-        m_savedClickIndex = QModelIndex();
-        event->accept();
-        return;
-    }
-
-    m_savedClickIndex = indexAt( event->pos() );
-    KConfigGroup cg( KGlobal::config(), "KDE" );
-    m_clickTimer.start( cg.readEntry( "DoubleClickInterval", 400 ) );
-    m_clickLocation = event->pos();
-    Amarok::PrettyTreeView::mouseReleaseEvent( event );
-}
-
-void
-PodcastView::mouseMoveEvent( QMouseEvent *event )
-{
-    if( event->buttons() || event->modifiers() )
-    {
-        Amarok::PrettyTreeView::mouseMoveEvent( event );
-        update();
-        return;
-    }
-    QPoint point = event->pos() - m_clickLocation;
-    KConfigGroup cg( KGlobal::config(), "KDE" );
-    if( point.manhattanLength() > cg.readEntry( "StartDragDistance", 4 ) )
-    {
-        m_clickTimer.stop();
-        slotClickTimeout();
-        event->accept();
-    }
-    else
-        Amarok::PrettyTreeView::mouseMoveEvent( event );
-}
-
-void
-PodcastView::mouseDoubleClickEvent( QMouseEvent * event )
-{
-    QModelIndex index = indexAt( event->pos() );
-
-    if( index.isValid() )
-    {
-        QList<QAction *> actions =
-         index.data( PlaylistBrowserNS::MetaPlaylistModel::ActionRole ).value<QList<QAction *> >();
-        if( actions.count() > 0 )
-        {
-            //HACK execute the first action assuming it's load
-            actions.first()->trigger();
-            actions.first()->setData( QVariant() );
-        }
-    }
-
-    m_clickTimer.stop();
-    //m_justDoubleClicked is necessary because the mouseReleaseEvent still
-    //comes through, but after the mouseDoubleClickEvent, so we need to tell
-    //mouseReleaseEvent to ignore that one event
-    m_justDoubleClicked = true;
-    if( model()->hasChildren( index ) )
-        setExpanded( index, !isExpanded( index ) );
-
-    event->accept();
-}
-
-void
-PodcastView::startDrag( Qt::DropActions supportedActions )
-{
-    DEBUG_BLOCK
-
-    // When a parent item is dragged, startDrag() is called a bunch of times. Here we prevent that:
-    m_dragMutex.lock();
-    if( m_ongoingDrag )
-    {
-        m_dragMutex.unlock();
-        return;
-    }
-    m_ongoingDrag = true;
-    m_dragMutex.unlock();
-
-    if( !m_pd )
-        m_pd = The::popupDropperFactory()->createPopupDropper( Context::ContextView::self() );
-
-    QList<QAction*> actions;
-
-    if( m_pd && m_pd->isHidden() )
-    {
-        actions = actionsFor( selectedIndexes() );
-
-        foreach( QAction *action, actions )
-            m_pd->addItem( The::popupDropperFactory()->createItem( action ) );
-
-        m_pd->show();
-    }
-
-    QTreeView::startDrag( supportedActions );
-    debug() << "After the drag!";
-
-    //We keep the items that the actions need to be applied to in the actions private data.
-    //Clear the data from all actions now that the context menu has executed.
-    foreach( QAction *action, actions )
-        action->setData( QVariant() );
-
-    if( m_pd )
-    {
-        debug() << "clearing PUD";
-        connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( clear() ) );
-        m_pd->hide();
-    }
-    m_dragMutex.lock();
-    m_ongoingDrag = false;
-    m_dragMutex.unlock();
-}
-
-QList<QAction *>
-PodcastView::actionsFor( QModelIndexList indexes )
-{
-    QList<QAction *> actions;
-    foreach( QModelIndex idx, indexes )
-    {
-        QList<QAction *> idxActions =
-         idx.data( PlaylistBrowserNS::MetaPlaylistModel::ActionRole ).value<QList<QAction *> >();
-        //only add unique actions model is responsible for making them unique
-        foreach( QAction *action, idxActions )
-        {
-            if( !actions.contains( action ) )
-                actions << action;
-        }
-    }
-    return actions;
-}
-
-void
-PodcastView::contextMenuEvent( QContextMenuEvent *event )
-{
-    QList<QAction *> actions = actionsFor( selectedIndexes() );
-
-    if( actions.isEmpty() )
-        return;
-
-    KMenu menu;
-    foreach( QAction *action, actions )
-    {
-        if( action )
-            menu.addAction( action );
-    }
-
-    menu.exec( mapToGlobal( event->pos() ) );
-    //We keep the items that the actions need to be applied to in the actions private data.
-    //Clear the data from all actions now that the PUD has executed.
-    foreach( QAction *action, actions )
-        action->setData( QVariant() );
-}
-
-void
-PodcastView::slotClickTimeout()
-{
-    m_clickTimer.stop();
-    if( m_savedClickIndex.isValid() && KGlobalSettings::singleClick() )
-    {
-        if( model()->hasChildren( m_savedClickIndex ) )
-            setExpanded( m_savedClickIndex, !isExpanded( m_savedClickIndex ) );
-    }
-    m_savedClickIndex = QModelIndex();
-}
-
 #include "PodcastCategory.moc"
-

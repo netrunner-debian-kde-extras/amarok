@@ -21,6 +21,8 @@
 
 #include "core/support/Debug.h"
 
+#include <QStack>
+
 const QString PlaylistsByProviderProxy::AMAROK_PROVIDERPROXY_INDEXES =
         "application/x-amarok-providerproxy-indexes";
 
@@ -30,16 +32,40 @@ PlaylistsByProviderProxy::PlaylistsByProviderProxy( QAbstractItemModel *model, i
     connect( m_model, SIGNAL( renameIndex( QModelIndex ) ), SLOT( slotRename( QModelIndex ) ) );
 }
 
+QVariant
+PlaylistsByProviderProxy::data( const QModelIndex &idx, int role ) const
+{
+    //TODO: filter out actions not from the provider, possibly using QAction separators marking
+    // the source of the actions (makes sense in the UI as well.
+
+    //Turn the QVariantList of the source into a comma separated string, but only for the real items
+    if( !isGroup( idx ) && idx.column() == PlaylistBrowserNS::PlaylistBrowserModel::ProviderColumn
+        && role == Qt::DisplayRole )
+    {
+        QVariant indexData = QtGroupingProxy::data( idx, role );
+        if( indexData.type() != QVariant::List )
+            return indexData;
+
+        QString providerString = indexData.toStringList().join( ", " );
+        return QVariant( providerString );
+    }
+
+    return QtGroupingProxy::data( idx, role );
+}
+
 bool
 PlaylistsByProviderProxy::removeRows( int row, int count, const QModelIndex &parent )
 {
     DEBUG_BLOCK
     bool result;
     debug() << "in parent " << parent << "remove " << count << " starting at row " << row;
-    beginRemoveRows( parent, row, row + count - 1 );
     QModelIndex originalIdx = mapToSource( parent );
     result = m_model->removeRows( row, count, originalIdx );
-    endRemoveRows();
+    if( result )
+    {
+        beginRemoveRows( parent, row, row + count - 1 );
+        endRemoveRows();
+    }
     return result;
 }
 

@@ -65,6 +65,7 @@ Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index, cons
             // there are no cover actions if the song/album is not in the collection
             KMenu *menuCover = new KMenu( i18n( "Album" ), menu );
             menuCover->addActions( coverActionsList );
+            menuCover->setIcon( KIcon( "filename-album-amarok" ) );
             menu->addMenu( menuCover );
             menu->addSeparator();
         }
@@ -113,17 +114,6 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
     QAction *separator = new QAction( parent );
     separator->setSeparator( true );
 
-    const bool isCurrentTrack = index->data( Playlist::ActiveTrackRole ).toBool();
-
-    if( m_stopAfterTrackAction == 0 )
-    {
-        m_stopAfterTrackAction = new QAction( KIcon( "media-playback-stop-amarok" ), i18n( "Stop Playing After This Track" ), parent );
-        QObject::connect( m_stopAfterTrackAction, SIGNAL( triggered() ), parent, SLOT( stopAfterTrack() ) );
-    }
-    actions << m_stopAfterTrackAction;
-
-    //actions << separator;
-
     const bool isQueued = index->data( Playlist::StateRole ).toInt() & Item::Queued;
     const QString queueText = !isQueued ? i18n( "Queue Track" ) : i18n( "Dequeue Track" );
 
@@ -143,6 +133,17 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
         QObject::connect( m_cueTrackAction, SIGNAL( triggered() ), parent, SLOT( queueSelection() ) );
 
     actions << m_cueTrackAction;
+
+    //actions << separator;
+
+    const bool isCurrentTrack = index->data( Playlist::ActiveTrackRole ).toBool();
+
+    if( m_stopAfterTrackAction == 0 )
+    {
+        m_stopAfterTrackAction = new QAction( KIcon( "media-playback-stop-amarok" ), i18n( "Stop Playing After This Track" ), parent );
+        QObject::connect( m_stopAfterTrackAction, SIGNAL( triggered() ), parent, SLOT( stopAfterTrack() ) );
+    }
+    actions << m_stopAfterTrackAction;
 
     //actions << separator;
 

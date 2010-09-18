@@ -20,7 +20,7 @@
 #include "AmarokUrlHandler.h"
 #include "core/support/Debug.h"
 #include "MainWindow.h"
-#include "PlaylistWidget.h"
+#include "PlaylistDock.h"
 #include "ProgressiveSearchWidget.h"
 #include "layouts/LayoutManager.h"
 
@@ -48,39 +48,39 @@ ViewUrlRunner::run( AmarokUrl url )
     DEBUG_BLOCK
 
     QMap< QString, QString > args = url.args();
-    Widget * playlistWidget = The::mainWindow()->playlistWidget();
+    Dock * playlistDock = The::mainWindow()->playlistDock();
 
     if( args.keys().contains( "filter" ) )
     {
         QString filterExpr = args.value( "filter" );
-        playlistWidget->searchWidget()->setCurrentFilter( filterExpr );
+        playlistDock->searchWidget()->setCurrentFilter( filterExpr );
         if( args.keys().contains( "matches" ) )
         {
             QString onlyMatches = args.value( "matches" );
-            playlistWidget->searchWidget()->slotShowOnlyMatches( ( onlyMatches == QString( "true" ) ) );
+            playlistDock->searchWidget()->slotShowOnlyMatches( ( onlyMatches == QString( "true" ) ) );
         }
     }
     if( args.keys().contains( "sort" ) )
     {
-        playlistWidget->sortWidget()->trimToLevel();
+        playlistDock->sortWidget()->trimToLevel();
 
         QString sortPath = args.value( "sort" );
 
         QStringList levels = sortPath.split( '-' );
         foreach( const QString &level, levels )
         {
-            if( level == QString( "Random" ) )
+            if( level == QString( "Random" ) || level == QString( "Shuffle" ) ) //we keep "Random" for compatibility
             {
-                playlistWidget->sortWidget()->addLevel( level );
+                playlistDock->sortWidget()->addLevel( QString( "Shuffle" ) );
                 break;
             }
             QStringList levelParts = level.split( '_' );
             if( levelParts.count() > 2 )
                 warning() << "Playlist view URL parse error: Invalid sort level " << level;
             if( levelParts.at( 1 ) == QString( "asc" ) )
-                playlistWidget->sortWidget()->addLevel( levelParts.at( 0 ), Qt::AscendingOrder );
+                playlistDock->sortWidget()->addLevel( levelParts.at( 0 ), Qt::AscendingOrder );
             else if( levelParts.at( 1 ) == QString( "des" ) )
-                playlistWidget->sortWidget()->addLevel( levelParts.at( 0 ), Qt::DescendingOrder );
+                playlistDock->sortWidget()->addLevel( levelParts.at( 0 ), Qt::DescendingOrder );
             else
                 warning() << "Playlist view URL parse error: Invalid sort order for level " << level;
         }

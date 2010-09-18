@@ -16,10 +16,14 @@
 
 
 #include "AmarokDockWidget.h"
+#include "core/support/Debug.h"
 
 AmarokDockWidget::AmarokDockWidget( const QString & title, QWidget * parent, Qt::WindowFlags flags )
     : QDockWidget( title, parent, flags )
+    , m_polished( false )
 {
+    m_dummyTitleBarWidget = new QWidget();
+    connect( this, SIGNAL( visibilityChanged( bool ) ), SLOT( slotVisibilityChanged( bool ) ) );
 }
 
 void AmarokDockWidget::closeEvent( QCloseEvent* event )
@@ -45,5 +49,41 @@ void AmarokDockWidget::hideEvent( QHideEvent* event )
     QWidget::hideEvent( event );
     emit( layoutChanged() );
 }
+
+void AmarokDockWidget::slotVisibilityChanged( bool visible )
+{
+    // DEBUG_BLOCK
+    if( visible )
+        ensurePolish();
+}
+
+void AmarokDockWidget::ensurePolish()
+{
+    if( !m_polished )
+    {
+        polish();
+        m_polished = true;
+    }
+}
+
+void AmarokDockWidget::setMovable( bool movable )
+{
+
+    if( movable )
+    {
+        const QFlags<QDockWidget::DockWidgetFeature> features = QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable;
+        setTitleBarWidget( 0 );
+        setFeatures( features );
+    }
+    else
+    {
+        const QFlags<QDockWidget::DockWidgetFeature> features = QDockWidget::NoDockWidgetFeatures;
+        setTitleBarWidget( m_dummyTitleBarWidget );
+        setFeatures( features );
+    }
+
+
+}
+
 
 #include "AmarokDockWidget.moc"

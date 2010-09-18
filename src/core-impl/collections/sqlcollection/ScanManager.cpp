@@ -18,18 +18,20 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "ScanManager"
+
 #include "ScanManager.h"
 
+#include "amarokconfig.h"
 #include "App.h"
-#include "core/support/Debug.h"
+#include "playlistmanager/PlaylistManager.h"
 #include "ScanResultProcessor.h"
 #include "SqlCollection.h"
 #include "SqlCollectionDBusHandler.h"
-#include "amarokconfig.h"
+#include "statusbar/StatusBar.h"
+#include "core/support/Debug.h"
 #include "core/meta/support/MetaConstants.h"
 #include "core/meta/support/MetaUtility.h"
-#include "playlistmanager/PlaylistManager.h"
-#include "statusbar/StatusBar.h"
 
 #include <QFileInfo>
 #include <QListIterator>
@@ -52,7 +54,7 @@ static const int WATCH_INTERVAL = 60 * 1000; // = 60 seconds
 
 
 ScanManager::ScanManager( QObject *parent )
-    : QObject( parent )
+    : IScanManager()
     , m_collection( 0 )
     , m_dbusHandler( 0 )
     , m_storage( 0 )
@@ -63,6 +65,8 @@ ScanManager::ScanManager( QObject *parent )
     , m_blockScan( false )
 {
     DEBUG_BLOCK
+
+    setParent( parent );
 
     m_dbusHandler = new SqlCollectionDBusHandler( this );
 
@@ -100,7 +104,6 @@ ScanManager::startFullScan()
     }
 
     checkTables( true );
-    cleanTables();
 
     if( m_parser )
     {
@@ -229,8 +232,9 @@ void ScanManager::startIncrementalScan( const QString &directory )
 }
 
 bool
-ScanManager::isDirInCollection( QString path )
+ScanManager::isDirInCollection( const QString &p )
 {
+    QString path = p;
     // In the database all directories have a trailing slash, so we must add that
     if( !path.endsWith( '/' ) )
         path += '/';
@@ -431,15 +435,37 @@ ScanManager::getDirsToScan()
     QList<int> deletedFolderIds;
 
     QStringList result;
+    QStringList collectionFolders = m_collection->mountPointManager()->collectionFolders();
+    //The below loop is not the most efficient loop ever but changing to something like a QSet introduces
+    //issues because of the differing ending / values. Changing those would require extreme care so as not
+    //to allow "Album" to satisfy the startsWith condition for "Album1", hence verifying against the full 
+    //path including trailing slash
     for( QListIterator<QString> iter( values ); iter.hasNext(); )
     {
         int id = iter.next().toInt();
         int deviceid = iter.next().toInt();
         const QString folder = m_collection->mountPointManager()->getAbsolutePath( deviceid, iter.next() );
-        const uint mtime = iter.next().toUInt();
 
+        bool validFolder = false;
+        bool scanRecursively = AmarokConfig::scanRecursively();
+        foreach( QString cFolder, collectionFolders )
+        {
+            cFolder += '/'; //config file paths don't have ending /, sql does
+            if( folder.startsWith( cFolder ) && scanRecursively )
+            {
+                validFolder = true;
+                break;
+            }
+            if( folder == cFolder && !scanRecursively )
+            {
+                validFolder = true;
+                break;
+            }
+        }
+
+        const uint mtime = iter.next().toUInt();
         QFileInfo info( folder );
-        if( info.exists() )
+        if( info.exists() && validFolder )
         {
             m_incrementalDirs << QString( folder + "_AMAROKMTIME_" + QString::number( mtime ) );
             if( info.lastModified().toTime_t() != mtime )
@@ -551,19 +577,6 @@ ScanManager::restartScanner()
     connect( m_scanner, SIGNAL( finished( int ) ), SLOT( slotFinished(  ) ) );
     connect( m_scanner, SIGNAL( error( QProcess::ProcessError ) ), SLOT( slotError( QProcess::ProcessError ) ) );
     m_scanner->start();
-}
-
-void
-ScanManager::cleanTables()
-{
-    DEBUG_BLOCK
-    m_storage->query( "DELETE FROM tracks;" );
-    m_storage->query( "DELETE FROM genres;" );
-    m_storage->query( "DELETE FROM years;" );
-    m_storage->query( "DELETE FROM composers;" );
-    m_storage->query( "DELETE FROM albums;" );
-    m_storage->query( "DELETE FROM artists;" );
-    //images table is deleted in DatabaseUpdater::copyToPermanentTables
 }
 
 void
@@ -755,7 +768,8 @@ XmlParseJob::run()
                     data.insert( Meta::Field::TRACKNUMBER, attrs.value( "track" ).toString() );
                     data.insert( Meta::Field::DISCNUMBER, attrs.value( "discnumber" ).toString() );
                     data.insert( Meta::Field::BPM, attrs.value( "bpm" ).toString() );
-                    //filetype and uniqueid are missing in the fields, compilation is not used here
+                    data.insert( Meta::Field::CODEC, attrs.value( "filetype" ).toString() );
+                    //uniqueid are missing in the fields, compilation is not used here
 
                     if( attrs.value( "audioproperties" ) == "true" )
                     {

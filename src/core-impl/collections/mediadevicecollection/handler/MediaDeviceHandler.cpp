@@ -67,8 +67,8 @@ MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
 
     connect( this, SIGNAL( incrementProgress() ),
              The::statusBar(), SLOT( incrementProgress() ), Qt::QueuedConnection );
-    connect( this, SIGNAL(endProgressOperation(const QObject*)),
-             The::statusBar(), SLOT(endProgressOperation(const QObject*)));
+    connect( this, SIGNAL(endProgressOperation(QObject*)),
+             The::statusBar(), SLOT(endProgressOperation(QObject*)));
     connect( this, SIGNAL( databaseWritten(bool)),
              this, SLOT( slotDatabaseWritten(bool)), Qt::QueuedConnection );
 }
@@ -83,7 +83,8 @@ void
 MediaDeviceHandler::slotDeletingHandler()
 {
     DEBUG_BLOCK
-    The::playlistManager()->removeProvider( m_provider );
+    if( m_provider )
+        The::playlistManager()->removeProvider( m_provider );
 }
 
 void

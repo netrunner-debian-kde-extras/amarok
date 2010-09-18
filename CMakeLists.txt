@@ -120,7 +120,7 @@ if( WITH_PLAYER )
     endif( WITH_IPOD )
 
     macro_optional_find_package(Mtp)
-    macro_log_feature( MTP_FOUND "libmtp" "Enable Support for portable media devices that use the media transfer protocol" "http://libmtp.sourceforge.net/" FALSE "0.3.0" "")
+    macro_log_feature( MTP_FOUND "libmtp" "Enable Support for portable media devices that use the media transfer protocol" "http://libmtp.sourceforge.net/" FALSE "1.0.0" "")
 
     if( WITH_MP3Tunes )
         find_package(CURL)
@@ -163,6 +163,11 @@ if( WITH_PLAYER )
     macro_ensure_version("4.3.80" ${KDE_VERSION} KSTATUSNOTIFIERITEM_FOUND)
     macro_bool_to_01(KSTATUSNOTIFIERITEM_FOUND HAVE_KSTATUSNOTIFIERITEM)
 
+    string( TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_TOLOWER )
+    if( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
+        set( DEBUG_BUILD_TYPE ON )
+    endif( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
+
     configure_file(config-amarok.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-amarok.h )
 
     include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE4_INCLUDES} ${TAGLIB_INCLUDES})
@@ -182,7 +187,10 @@ if( WITH_PLAYER )
 include(MacroOptionalAddSubdirectory)
 macro_optional_add_subdirectory( po )
 
-    #DOC_SUBDIR
+    
+include(MacroOptionalAddSubdirectory)
+macro_optional_add_subdirectory( doc )
+
 
 else( WITH_PLAYER )
 

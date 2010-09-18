@@ -97,6 +97,16 @@ namespace Dynamic
             bool success() const;
 
             /**
+             * Choose whether the BiasSolver instance should delete itself after the query.
+             * By passing true the instance will delete itself after emitting done, failed.
+             * Otherwise it is the responsibility of the owner to delete the instance
+             * when it is not needed anymore.
+             *
+             * Defaults to false, i.e. the BiasSolver instance will not delete itself.
+             */
+            void setAutoDelete( bool autoDelete );
+
+            /**
              * Set the collection that will be used when generating the
              * playlist.
              */
@@ -162,11 +172,9 @@ namespace Dynamic
 
             /**
              * Figures out what subset of the collection eligible tracks come
-             * from. If there are global biases set at 0 or 100 percent, we can
-             * exclude all those tracks, or include only those tracks,
-             * respectively.
+             * from.
              */
-            void computeDomainAndFeasibleFilters();
+            void computeFeasibleFilters();
 
 
             /**
@@ -208,7 +216,7 @@ namespace Dynamic
              * @param subset A list (representing a set) of uids stored in
              * QByteArrays.
              */
-            Meta::TrackPtr getRandomTrack( const QList<QByteArray>& subset ) const;
+            Meta::TrackPtr getRandomTrack( const TrackSet& subset ) const;
 
 
             /**
@@ -239,8 +247,6 @@ namespace Dynamic
 
             int m_pendingBiasUpdates;
 
-            QList<QByteArray> m_domain; //!< set of tracks being considered, potentially different than s_universe.
-
             /** List of biases which are global biases and are feasible (their
              * sets are non-empty). Set by computeDomain, but stored here so
              * generateInitialPlaylist can make use of it.
@@ -264,7 +270,7 @@ namespace Dynamic
              */
             static QList<QByteArray>  s_universe;
             static QMutex             s_universeMutex;
-            static Collections::QueryMaker*        s_universeQuery;
+            static Collections::QueryMaker*  s_universeQuery;
             static Collections::Collection*  s_universeCollection;
             static bool               s_universeOutdated;
             static unsigned int       s_uidUrlProtocolPrefixLength;

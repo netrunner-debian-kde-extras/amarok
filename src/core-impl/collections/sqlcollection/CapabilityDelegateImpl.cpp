@@ -44,15 +44,21 @@ class CompilationAction : public QAction
     Q_OBJECT
     public:
         CompilationAction( QObject* parent, Meta::SqlAlbum *album )
-            : QAction( parent )
+                : QAction( parent )
                 , m_album( album )
                 , m_isCompilation( album->isCompilation() )
             {
                 connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
                 if( m_isCompilation )
+                {
+                    setIcon( KIcon( "filename-artist-amarok" ) );
                     setText( i18n( "Do not show under Various Artists" ) );
+                }
                 else
+                {
+                    setIcon( KIcon( "similarartists-amarok" ) );
                     setText( i18n( "Show under Various Artists" ) );
+                }
             }
 
     private slots:
@@ -88,7 +94,6 @@ class EditCapabilityImpl : public Capabilities::EditCapability
         virtual void setDiscNumber( int newDiscNumber ) { m_track->setDiscNumber( newDiscNumber ); }
         virtual void beginMetaDataUpdate() { m_track->beginMetaDataUpdate(); }
         virtual void endMetaDataUpdate() { m_track->endMetaDataUpdate(); }
-        virtual void abortMetaDataUpdate() { m_track->abortMetaDataUpdate(); }
 
     private:
         KSharedPtr<Meta::SqlTrack> m_track;
@@ -129,11 +134,6 @@ class StatisticsCapabilityImpl : public Capabilities::StatisticsCapability
         virtual void endStatisticsUpdate()
         {
             m_track->endMetaDataUpdate();
-            m_track->setWriteAllStatisticsFields( false );
-        }
-        virtual void abortStatisticsUpdate()
-        {
-            m_track->abortMetaDataUpdate();
             m_track->setWriteAllStatisticsFields( false );
         }
 

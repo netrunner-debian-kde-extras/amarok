@@ -27,6 +27,7 @@
 #include "charset-detector/include/chardet.h"
 #include "MetaReplayGain.h"
 #include "shared/Version.h"  // for AMAROK_VERSION
+#include "shared/FileType.h"
 
 #include <cerrno>
 #include <cstdlib>
@@ -41,7 +42,6 @@
 #include <QtDebug>
 #include <QTextCodec>
 #include <QTextStream>
-#include <QTime>
 #include <QTimer>
 #include <QThread>
 
@@ -71,6 +71,7 @@
 
 #include <textidentificationframe.h>
 #include <uniquefileidentifierframe.h>
+#include <attachedpictureframe.h>
 #include <xiphcomment.h>
 
 #define Qt4QStringToTString(s) TagLib::String(s.toUtf8().data(), TagLib::String::UTF8)
@@ -378,12 +379,10 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
     QStringList recurseDirs;
     foreach( const QFileInfo &fi, list )
     {
-        if( !fi.exists() )
+        if( !fi.exists() || ( fi.isSymLink() && !QFileInfo( fi.symLinkTarget() ).exists() ) )
             break;
 
-        const QFileInfo &f = fi.isSymLink() ? QFileInfo( fi.symLinkTarget() ) : fi;
-
-        if( f.isDir() && m_recursively && !m_scannedFolders.contains( f.canonicalFilePath() ) )
+        if( fi.isDir() && m_recursively && !m_scannedFolders.contains( fi.absoluteFilePath() ) )
         {
             //The following D-Bus call is used to see if a found folder is new or not
             //During an incremental scan the scanning isn't really recursive, as all folders
@@ -394,16 +393,16 @@ CollectionScanner::readDir( const QString& dir, QStringList& entries )
             bool isInCollection = false;
             if( m_incremental && m_amarokCollectionInterface )
             {
-                QDBusReply<bool> reply = m_amarokCollectionInterface->call( "isDirInCollection", f.canonicalFilePath() );
+                QDBusReply<bool> reply = m_amarokCollectionInterface->call( "isDirInCollection", fi.absoluteFilePath() );
                 if( reply.isValid() )
                     isInCollection = reply.value();
             }
 
             if( !m_incremental || !isInCollection )
-                recurseDirs << QString( f.absoluteFilePath() + '/' );
+                recurseDirs << QString( fi.absoluteFilePath() + '/' );
         }
-        else if( f.isFile() )
-            entries.append( f.absoluteFilePath() );
+        else if( fi.isFile() )
+            entries.append( fi.absoluteFilePath() );
     }
     foreach( const QString &dir, recurseDirs )
         readDir( dir, entries );
@@ -418,8 +417,8 @@ CollectionScanner::scanFiles( const QStringList& entries )
     QStringList validImages;    validImages    << "jpg" << "png" << "gif" << "jpeg" << "bmp";
     QStringList validPlaylists; validPlaylists << "m3u" << "pls" << "xspf";
 
+    m_images.clear();
     QList<CoverBundle> covers;
-    QStringList images;
 
     int itemCount = 0;
 
@@ -444,7 +443,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
         }
 
         if( validImages.contains( ext ) )
-            images += path;
+            m_images += path;
 
         else if( m_importPlaylists && validPlaylists.contains( ext ) )
         {
@@ -463,8 +462,6 @@ CollectionScanner::scanFiles( const QStringList& entries )
 
         else
         {
-            //FIXME: PORT 2.0
-//             QList<EmbeddedImage> images;
             const AttributeHash attributes = readTags( path );
 
             if( !attributes.empty() )
@@ -475,24 +472,6 @@ CollectionScanner::scanFiles( const QStringList& entries )
 
                 if( !covers.contains( cover ) )
                     covers += cover;
-
-                //FIXME: PORT 2.0
-//                 foreach( EmbeddedImage image, images )
-//                 {
-//                     AttributeHash attributes;
-//                     if( m_batch && !m_rpath.isEmpty() )
-//                     {
-//                         QString rpath = path;
-//                         rpath.remove( QDir::cleanPath( QDir::currentPath() ) );
-//                         rpath.prepend( QDir::cleanPath( m_rpath + '/' ) );
-//                         attributes["path"] = rpath;
-//                     }
-//                     else
-//                         attributes["path"] = path;
-//                     attributes["hash"] = image.hash();
-//                     attributes["description"] = image.description();
-//                     writeElement( "embed", attributes );
-//                 }
             }
         }
 
@@ -503,7 +482,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
         if( path == entries.last() || dir != directory( *itTemp ) )
         {
             // we entered the next directory
-            foreach( const QString &imagePath, images )
+            foreach( const QString &imagePath, m_images )
             {
                 // Serialize CoverBundle list with AMAROK_MAGIC as separator
                 QString string;
@@ -541,7 +520,7 @@ CollectionScanner::scanFiles( const QStringList& entries )
 
             // clear now because we've processed them
             covers.clear();
-            images.clear();
+            m_images.clear();
         }
     }
 }
@@ -569,13 +548,17 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
 #endif
 #endif
 
+    AttributeHash attributes;
+
+    AFTUtility aftutil;
+    attributes["uniqueid"] = QString( "amarok-sqltrackuid://" + aftutil.readUniqueId( path ) );
+
     TagLib::FileRef fileref;
     TagLib::Tag *tag = 0;
     fileref = TagLib::FileRef( encodedName, true, readStyle );
 
-    AttributeHash attributes;
     bool isValid = false;
-    FileType fileType = ogg;
+    Amarok::FileType fileType = Amarok::Unknown;
     if( !fileref.isNull() )
     {
         tag = fileref.tag();
@@ -614,7 +597,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
            we have to cast the files, not the tags! */
         if ( TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() ) )
         {
-            fileType = mp3;
+            fileType = Amarok::Mp3;
             if ( file->ID3v2Tag() )
             {
                 if ( !file->ID3v2Tag()->frameListMap()["TPOS"].isEmpty() )
@@ -632,9 +615,20 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
                 if ( !file->ID3v2Tag()->frameListMap()["TCMP"].isEmpty() )
                     compilation = TStringToQString( file->ID3v2Tag()->frameListMap()["TCMP"].front()->toString() ).trimmed();
 
-                //FIXME: Port 2.0
-//                 if( images )
-//                     loadImagesFromTag( *file->ID3v2Tag(), *images );
+                if ( !file->ID3v2Tag()->frameListMap()["APIC"].isEmpty() )
+                {
+                    TagLib::ID3v2::FrameList apicList = file->ID3v2Tag()->frameListMap()["APIC"];
+                    TagLib::ID3v2::FrameList::ConstIterator iter;
+                    for( iter = apicList.begin(); iter != apicList.end(); ++iter )
+                    {
+                        TagLib::ID3v2::AttachedPictureFrame* currFrame = dynamic_cast<TagLib::ID3v2::AttachedPictureFrame*>(*iter); 
+                        if( currFrame->type() == TagLib::ID3v2::AttachedPictureFrame::FrontCover ||
+                            currFrame->type() == TagLib::ID3v2::AttachedPictureFrame::Other )
+                        {
+                            m_images += attributes["uniqueid"];
+                        }
+                    }
+                }
             }
 // HACK: charset-detector disabled, so all tags assumed utf-8
 // TODO: fix charset-detector to detect encoding with higher accuracy
@@ -682,7 +676,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
         }
         else if ( TagLib::Ogg::Vorbis::File *file = dynamic_cast<TagLib::Ogg::Vorbis::File *>( fileref.file() ) )
         {
-            fileType = ogg;
+            fileType = Amarok::Ogg;
             if ( file->tag() )
             {
                 if ( !file->tag()->fieldListMap()[ "COMPOSER" ].isEmpty() )
@@ -700,7 +694,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
         }
         else if ( TagLib::FLAC::File *file = dynamic_cast<TagLib::FLAC::File *>( fileref.file() ) )
         {
-            fileType = flac;
+            fileType = Amarok::Flac;
             if ( file->xiphComment() )
             {
                 if ( !file->xiphComment()->fieldListMap()[ "COMPOSER" ].isEmpty() )
@@ -715,12 +709,10 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
                 if ( !file->xiphComment()->fieldListMap()[ "COMPILATION" ].isEmpty() )
                     compilation = TStringToQString( file->xiphComment()->fieldListMap()["COMPILATION"].front() ).trimmed();
             }
-//             if ( images && file->ID3v2Tag() )
-//                 loadImagesFromTag( *file->ID3v2Tag(), *images );
         }
         else if ( TagLib::MP4::File *file = dynamic_cast<TagLib::MP4::File *>( fileref.file() ) )
         {
-            fileType = mp4;
+            fileType = Amarok::Mp4;
             TagLib::MP4::Tag *mp4tag = dynamic_cast<TagLib::MP4::Tag *>( file->tag() );
             if( mp4tag )
             {
@@ -774,6 +766,7 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
     if ( !isValid )
     {
         std::cout << "<dud/>";
+        attributes.remove( "uniqueid" );
         return attributes;
     }
 
@@ -814,9 +807,6 @@ CollectionScanner::readTags( const QString &path, TagLib::AudioProperties::ReadS
     if( size >= 0 )
         attributes["filesize"] =  QString::number( size );
 
-    AFTUtility aftutil;
-    attributes["uniqueid"] = QString( "amarok-sqltrackuid://" + aftutil.readUniqueId( path ) );
-
     return attributes;
 }
 
@@ -836,17 +826,17 @@ CollectionScanner::writeElement( const QString &name, const AttributeHash &attri
         // Because of this we skip attributes containing characters not belonging to any category.
         const QString data = escape( it.value() );
         const unsigned len = data.length();
-        bool nonPrint = false;
+        bool noCategory = false;
         for( unsigned i = 0; i < len; i++ )
         {
-            if( !data[i].isPrint() || ( data[i].category() == QChar::NoCategory ) )
+            if( data[i].category() == QChar::NoCategory )
             {
-                nonPrint = true;
+                noCategory = true;
                 break;
             }
         }
 
-        if( nonPrint )
+        if( noCategory )
             continue;
 
         element.setAttribute( it.key(), it.value() );
@@ -1045,7 +1035,7 @@ CollectionScanner::displayHelp()
     s_textStream << qPrintable( tr( "-s, --restart         : After a crash, restart the scanner in its last position" ) ) << endl;
     s_textStream << qPrintable( tr( "-b, --batch           : Run in batch mode" ) ) << endl;
     s_textStream << qPrintable( tr( "--idlepriority        : Run at idle priority" ) ) << endl;
-    s_textStream << qPrintable( tr( "--rpath=\"<path>\"      : In full-scan batch mode, specifies a path to prepend to entries (default is the current directory)" ) ) << endl;
+    s_textStream << qPrintable( tr( "--rpath \"<path>\"      : In full-scan batch mode, specifies a path to prepend to entries (default is the current directory)" ) ) << endl;
     s_textStream << qPrintable( tr( "--savelocation        : Internal command used by Amarok" ) ) << endl;
     s_textStream.flush();
 

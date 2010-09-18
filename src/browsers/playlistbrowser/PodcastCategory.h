@@ -17,38 +17,16 @@
 #ifndef PODCASTCATEGORY_H
 #define PODCASTCATEGORY_H
 
-#include "browsers/BrowserCategory.h"
-#include "playlist/PlaylistModel.h"
-#include "PodcastModel.h"
-#include "widgets/PrettyTreeView.h"
+#include "PlaylistBrowserCategory.h"
 
-#include <KGlobalSettings>
-
-#include <QContextMenuEvent>
-#include <QItemDelegate>
-#include <QMutex>
-#include <QListView>
-#include <QTimer>
-#include <QToolButton>
-#include <QWebPage>
-
-class PopupDropper;
-class QAction;
-
-class PlaylistsByProviderProxy;
-class PlaylistTreeItemDelegate;
+class QModelIndex;
 
 namespace PlaylistBrowserNS {
-
-class PodcastModel;
-class PodcastView;
-class PodcastCategoryDelegate;
-class ViewKicker;
 
 /**
     @author Bart Cerneels <bart.cerneels@kde.org>
 */
-class PodcastCategory : public BrowserCategory
+class PodcastCategory : public PlaylistBrowserCategory
 {
     Q_OBJECT
     public:
@@ -60,93 +38,15 @@ class PodcastCategory : public BrowserCategory
         static QString s_configGroup;
         static QString s_mergedViewKey;
 
-        PodcastCategory( PlaylistBrowserNS::PodcastModel *podcastModel );
+        PodcastCategory( QWidget *parent );
         ~PodcastCategory();
 
-        PodcastModel *m_podcastModel;
-        PlaylistsByProviderProxy *m_byProviderProxy;
-        PodcastView *m_podcastTreeView;
-        ViewKicker * m_viewKicker;
-
-        PlaylistTreeItemDelegate *m_byProviderDelegate;
-        QAbstractItemDelegate *m_defaultItemDelegate;
-
     private slots:
-        void showInfo( const QModelIndex & index );
+        void showInfo( const QModelIndex &index );
         void slotImportOpml();
-        void toggleView( bool );
 };
 
-class ViewKicker : public QObject
-{
-Q_OBJECT
-    public:
-        ViewKicker( QTreeView * treeView );
-
-    private:
-        QTreeView * m_treeView;
-
-    public slots:
-        void kickView();
-
-};
-
-class PodcastView : public Amarok::PrettyTreeView
-{
-    Q_OBJECT
-    public:
-        explicit PodcastView( PodcastModel *model, QWidget *parent = 0 );
-        ~PodcastView();
-
-    protected:
-        virtual void mousePressEvent( QMouseEvent *event );
-        virtual void mouseReleaseEvent( QMouseEvent *event );
-        virtual void mouseDoubleClickEvent( QMouseEvent *event );
-        virtual void mouseMoveEvent( QMouseEvent *event );
-        virtual void startDrag( Qt::DropActions supportedActions );
-
-        virtual void contextMenuEvent( QContextMenuEvent* event );
-
-    private slots:
-        void slotClickTimeout();
-
-    private:
-        QList<QAction *> actionsFor( QModelIndexList indexes );
-
-        PodcastModel *m_podcastModel;
-
-        PopupDropper* m_pd;
-
-        bool m_ongoingDrag;
-        QMutex m_dragMutex;
-
-        QPoint m_clickLocation;
-        QTimer m_clickTimer;
-        QModelIndex m_savedClickIndex;
-        bool m_justDoubleClicked;
-};
-
-/**
-    A delegate for displaying the Podcast category
-
-    @author Bart Cerneels
- */
-class PodcastCategoryDelegate : public QItemDelegate
-{
-    public:
-        PodcastCategoryDelegate( QTreeView *view );
-        ~PodcastCategoryDelegate();
-
-        void paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const;
-        QSize sizeHint ( const QStyleOptionViewItem & option, const QModelIndex & index ) const;
-
-    private:
-        QTreeView *m_view;
-        mutable int m_lastHeight;
-        QWebPage * m_webPage;
-};
-
-}
+} // namespace PlaylistBrowserNS
 
 namespace The {
     PlaylistBrowserNS::PodcastCategory *podcastCategory();

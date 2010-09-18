@@ -25,6 +25,9 @@
 
 #include <QDir>
 #include <QImage>
+#if QT_VERSION >= 0x040600
+#include <QPixmapCache>
+#endif
 
 #include <KStandardDirs>
 
@@ -412,12 +415,16 @@ Meta::Artist::operator==( const Meta::Artist &artist ) const
 QString
 Meta::Artist::sortableName() const
 {
-    if ( m_sortableName.isEmpty() && !name().isEmpty() ) {
-        if ( name().startsWith( "the ", Qt::CaseInsensitive ) ) {
+    if( m_sortableName.isEmpty() && !name().isEmpty() ) {
+        if( name().startsWith( "the ", Qt::CaseInsensitive ) ) {
             QString begin = name().left( 3 );
             m_sortableName = QString( "%1, %2" ).arg( name(), begin );
             m_sortableName = m_sortableName.mid( 4 );
-        }
+        } else if( name().startsWith( "dj ", Qt::CaseInsensitive ) ) {
+            QString begin = name().left( 2 );
+            m_sortableName = QString( "%1, %2" ).arg( name(), begin );
+            m_sortableName = m_sortableName.mid( 3 );
+    }
         else
             m_sortableName = name();
     }
@@ -455,6 +462,12 @@ Meta::Album::image( int size )
     const QString &noCoverKey = QString::number( size ) + "@nocover.png";
 
     QPixmap pixmap;
+    // look in the memory pixmap cache
+#if QT_VERSION >= 0x040600
+    if( QPixmapCache::find( noCoverKey, &pixmap ) )
+        return pixmap;
+#endif
+
     if( cacheCoverDir.exists( noCoverKey ) )
     {
         pixmap.load( cacheCoverDir.filePath( noCoverKey ) );
@@ -465,6 +478,9 @@ Meta::Album::image( int size )
         pixmap = orgPixmap.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
         pixmap.save( cacheCoverDir.filePath( noCoverKey ), "PNG" );
     }
+#if QT_VERSION >= 0x040600
+    QPixmapCache::insert( noCoverKey, pixmap );
+#endif
     return pixmap;
 }
 

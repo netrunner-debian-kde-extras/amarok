@@ -97,7 +97,7 @@ void TestPLSPlaylist::testTracks()
 void TestPLSPlaylist::testRetrievableUrl()
 {
     m_testPlaylist1->setName( "test.pls" );
-    QCOMPARE( m_testPlaylist1->retrievableUrl().pathOrUrl(), dataPath( "data/playlists/test.pls" ) );
+    QCOMPARE( m_testPlaylist1->uidUrl().pathOrUrl(), dataPath( "data/playlists/test.pls" ) );
 }
 
 void TestPLSPlaylist::testIsWritable()

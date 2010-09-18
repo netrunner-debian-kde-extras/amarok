@@ -17,11 +17,13 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "CollectionTreeView"
+#include "core/support/Debug.h"
+
 #include "CollectionTreeView.h"
 
 #include "core/support/Amarok.h"
 #include "AmarokMimeData.h"
-#include "core/support/Debug.h"
 #include "core/collections/CollectionLocation.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "browsers/CollectionTreeItem.h"
@@ -49,7 +51,7 @@
 
 #include <KGlobalSettings>
 #include <KIcon>
-#include <KLineEdit>
+#include <KComboBox>
 #include <KMenu>
 #include <KMessageBox> // NOTE: for delete dialog, will move to CollectionCapability later
 
@@ -62,16 +64,16 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     , m_loadAction( 0 )
     , m_editAction( 0 )
     , m_organizeAction( 0 )
-    , m_caSeperator( 0 )
-    , m_cmSeperator( 0 )
     , m_dragMutex()
     , m_ongoingDrag( false )
     , m_expandToggledWhenPressed( false )
 {
     setSortingEnabled( true );
+    setFocusPolicy( Qt::StrongFocus );
     sortByColumn( 0, Qt::AscendingOrder );
     setSelectionMode( QAbstractItemView::ExtendedSelection );
     setSelectionBehavior( QAbstractItemView::SelectRows );
+    setEditTriggers( /* SelectedClicked | */ EditKeyPressed );
 #ifdef Q_WS_MAC
     setVerticalScrollMode( QAbstractItemView::ScrollPerItem ); // for some bizarre reason w/ some styles on mac
     setHorizontalScrollMode( QAbstractItemView::ScrollPerItem ); // per-pixel scrolling is slower than per-item
@@ -81,9 +83,9 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
 #endif
 
     setDragDropMode( QAbstractItemView::DragOnly ); // implement drop when time allows
-    setAnimated( true );
 
-    setStyleSheet("QTreeView::item { margin-top: 1px; margin-bottom: 1px; }"); //ensure a bit of space around the cover icons
+    if( KGlobalSettings::graphicEffectsLevel() != KGlobalSettings::NoEffects )
+        setAnimated( true );
 
     connect( this, SIGNAL( collapsed( const QModelIndex & ) ), SLOT( slotCollapsed( const QModelIndex & ) ) );
     connect( this, SIGNAL( expanded( const QModelIndex & ) ), SLOT( slotExpanded( const QModelIndex & ) ) );
@@ -97,9 +99,7 @@ void CollectionTreeView::setModel( QAbstractItemModel * model )
 
     m_filterTimer.setSingleShot( true );
     connect( &m_filterTimer, SIGNAL( timeout() ), m_treeModel, SLOT( slotFilter() ) );
-    connect( m_treeModel, SIGNAL( queryFinished() ), SLOT( slotCheckAutoExpand() ));
-
-    CollectionSortFilterProxyModel *oldFilterModel = m_filterModel;
+    connect( m_treeModel, SIGNAL( allQueriesFinished() ), SLOT( slotCheckAutoExpand() ));
 
     m_filterModel = new CollectionSortFilterProxyModel( this );
     m_filterModel->setSortRole( CustomRoles::SortRole );
@@ -107,14 +107,12 @@ void CollectionTreeView::setModel( QAbstractItemModel * model )
     m_filterModel->setSortCaseSensitivity( Qt::CaseInsensitive );
     m_filterModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
     m_filterModel->setSourceModel( model );
+    m_filterModel->setDynamicSortFilter( true );
 
     QTreeView::setModel( m_filterModel );
 
-    delete oldFilterModel;
-
     QTimer::singleShot( 0, this, SLOT( slotCheckAutoExpand() ) );
 }
-
 
 CollectionTreeView::~CollectionTreeView()
 {
@@ -137,7 +135,6 @@ QList< int > CollectionTreeView::levels() const
         return m_treeModel->levels();
     return QList<int>();
 }
-
 
 void
 CollectionTreeView::setLevel( int level, int type )
@@ -164,17 +161,33 @@ CollectionTreeView::filterModel() const
     return m_filterModel;
 }
 
-
 void
 CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
 {
     if( !m_treeModel )
         return;
 
+    QModelIndex index = indexAt( event->pos() );
+    if( !index.isValid() )
+    {
+        Amarok::PrettyTreeView::contextMenuEvent( event );
+        return;
+    }
+
     QAction separator( this );
     separator.setSeparator( true );
 
     QModelIndexList indices = selectedIndexes();
+
+    // if previously selected indices do not contain the index of the item
+    // currently under the mouse when context menu is invoked.
+    if( !indices.contains( index ) )
+    {
+        indices.clear();
+        indices << index;
+        setCurrentIndex( index );
+    }
+
     if( m_filterModel )
     {
         QModelIndexList tmp;
@@ -200,71 +213,69 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
     actions += &separator;
     actions += createExtendedActions( indices );
 
-    QList<QAction*> collectionActions = createCollectionActions( indices );
-    if( !collectionActions.isEmpty() )
-    {
-        actions += &separator;
-        actions += collectionActions;
-    }
-
-
-    KMenu* menu = new KMenu( this );
+    KMenu menu( this );
 
     // Destroy the menu when the model is reset (collection update), so that we don't operate on invalid data.
     // see BUG 190056
-    connect( m_treeModel, SIGNAL( modelReset() ), menu, SLOT( deleteLater() ) );
+    connect( m_treeModel, SIGNAL( modelReset() ), &menu, SLOT( deleteLater() ) );
 
-    // Destroy menu after hiding it
-    connect( menu, SIGNAL( aboutToHide() ), menu, SLOT( deleteLater() ) );
+    foreach( QAction *action, actions )
+        menu.addAction( action );
 
-    foreach( QAction * action, actions )
-        menu->addAction( action );
+    QActionList customActions = createCustomActions( indices );
+    KMenu menuCustom( i18n( "Album" )  );
+    if( customActions.count() > 1 )
+    {
+        menuCustom.addActions( customActions );
+        menuCustom.setIcon( KIcon( "filename-album-amarok" ) );
+        menu.addMenu( &menuCustom );
+        menu.addSeparator();
+    }
+    else if( customActions.count() == 1 )
+    {
+        menu.addActions( customActions );
+    }
+
+    QActionList collectionActions = createCollectionActions( indices );
+    KMenu menuCollection( i18n( "Collection" ) );
+    if( collectionActions.count() > 1 )
+    {
+        menuCollection.setIcon( KIcon( "collection-amarok" ) );
+        menuCollection.addActions( collectionActions );
+        menu.addMenu( &menuCollection );
+        menu.addSeparator();
+    }
+    else if( collectionActions.count() == 1 )
+    {
+        menu.addActions( collectionActions );
+    }
 
     m_currentCopyDestination =   getCopyActions(   indices );
     m_currentMoveDestination =   getMoveActions(   indices );
     m_currentRemoveDestination = getRemoveActions( indices );
 
-    if ( !( m_currentCopyDestination.empty() && m_currentMoveDestination.empty() ) )
+    KMenu copyMenu( i18n( "Copy to Collection" ) );
+    if( !m_currentCopyDestination.empty() )
     {
-        if ( m_cmSeperator == 0 )
-        {
-            m_cmSeperator = new QAction( this );
-            m_cmSeperator->setSeparator ( true );
-        }
-        menu->addAction( m_cmSeperator );
+        copyMenu.setIcon( KIcon( "edit-copy" ) );
+        copyMenu.addActions( m_currentCopyDestination.keys() );
+        menu.addMenu( &copyMenu );
     }
 
-    if ( !m_currentCopyDestination.empty() )
+    KMenu moveMenu( i18n( "Move to Collection" ) );
+    if( !m_currentMoveDestination.empty() )
     {
-        KMenu *copyMenu = new KMenu( i18n( "Copy to Collection" ), menu );
-        foreach( QAction *action, m_currentCopyDestination.keys() )
-        {
-            action->setParent( copyMenu );
-            copyMenu->addAction( action );
-        }
-        menu->addMenu( copyMenu );
+        // moveMenu.setIcon(); // TODO: no move icon
+        moveMenu.addActions( m_currentMoveDestination.keys() );
+        menu.addMenu( &moveMenu );
     }
 
-    if ( !m_currentMoveDestination.empty() )
+    if( !m_currentRemoveDestination.empty() )
     {
-        KMenu *moveMenu = new KMenu( i18n( "Move to Collection" ), menu );
-        foreach( QAction * action, m_currentCopyDestination.keys() )
-        {
-            action->setParent( moveMenu );
-            moveMenu->addAction( action );
-        }
-        menu->addMenu( moveMenu );
+        menu.addActions( m_currentRemoveDestination.keys() );
     }
 
-    if( ( !m_currentRemoveDestination.empty() ) )
-    {
-        foreach( QAction * action, m_currentRemoveDestination.keys() )
-        {
-            menu->addAction( action );
-        }
-    }
-
-    menu->exec( event->globalPos() );
+    menu.exec( event->globalPos() );
 }
 
 void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
@@ -282,20 +293,16 @@ void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
         return;
     }
 
-    if( model()->hasChildren( index ) )
-    {
-        if( event->button() == Qt::LeftButton &&
-            event->modifiers() == Qt::NoModifier )
-        {
-            setExpanded( index, !isExpanded( index ) );
-        }
-    }
-    else
+    if( event->button() != Amarok::contextMouseButton() &&
+        event->modifiers() == Qt::NoModifier &&
+        (KGlobalSettings::singleClick() || !model()->hasChildren( index )) )
     {
         CollectionTreeItem *item = getItemFromIndex( index );
         playChildTracks( item, Playlist::AppendAndPlay );
+        event->accept();
+        return;
     }
-    event->accept();
+    Amarok::PrettyTreeView::mouseDoubleClickEvent( event );
 }
 
 void CollectionTreeView::mousePressEvent( QMouseEvent *event )
@@ -315,7 +322,6 @@ void CollectionTreeView::mousePressEvent( QMouseEvent *event )
     Amarok::PrettyTreeView::mousePressEvent( event );
 
     m_expandToggledWhenPressed = ( prevExpandState != isExpanded(index) );
-    event->accept();
 }
 
 void CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
@@ -343,13 +349,12 @@ void CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
     }
 
     if( !m_expandToggledWhenPressed &&
-        event->button() == Qt::LeftButton &&
+        event->button() != Amarok::contextMouseButton() &&
         event->modifiers() == Qt::NoModifier &&
         KGlobalSettings::singleClick() &&
         model()->hasChildren( index ) )
     {
         m_expandToggledWhenPressed = !m_expandToggledWhenPressed;
-        setCurrentIndex( index );
         setExpanded( index, !isExpanded( index ) );
         event->accept();
         return;
@@ -387,6 +392,12 @@ CollectionTreeItem* CollectionTreeView::getItemFromIndex( QModelIndex &index )
 void CollectionTreeView::keyPressEvent( QKeyEvent *event )
 {
     QModelIndexList indices = selectedIndexes();
+    if( indices.isEmpty() )
+    {
+        QTreeView::keyPressEvent( event );
+        return;
+    }
+
     if( m_filterModel )
     {
         QModelIndexList tmp;
@@ -402,12 +413,6 @@ void CollectionTreeView::keyPressEvent( QKeyEvent *event )
             m_currentItems.insert( static_cast<CollectionTreeItem*>( index.internalPointer() ) );
     }
 
-    if( indices.isEmpty() )
-    {
-        QTreeView::keyPressEvent( event );
-        return;
-    }
-
     QModelIndex current = currentIndex();
     switch( event->key() )
     {
@@ -416,23 +421,23 @@ void CollectionTreeView::keyPressEvent( QKeyEvent *event )
             slotAppendChildTracks();
             return;
         case Qt::Key_Up:
-            if ( current.parent() == QModelIndex() && current.row() == 0 )
+            if( current.parent() == QModelIndex() && current.row() == 0 )
             {
                 emit leavingTree();
                 return;
             }
+            break;
         case Qt::Key_Down:
-            QAbstractItemView::keyPressEvent( event );
-            return;
+            break;
         // L and R should magically work when we get a patched version of qt
         case Qt::Key_Right:
         case Qt::Key_Direction_R:
             expand( current );
-            break;
+            return;
         case Qt::Key_Left:
         case Qt::Key_Direction_L:
             collapse( current );
-            break;
+            return;
         default:
             break;
     }
@@ -498,7 +503,7 @@ CollectionTreeView::startDrag(Qt::DropActions supportedActions)
         PopupDropper * morePud = 0;
         if( actions.count() > 1 )
         {
-            morePud = The::popupDropperFactory()->createPopupDropper( 0 );
+            morePud = The::popupDropperFactory()->createPopupDropper( 0, true );
 
             foreach( QAction * action, actions )
                 morePud->addItem( The::popupDropperFactory()->createItem( action ) );
@@ -556,26 +561,14 @@ void CollectionTreeView::selectionChanged(const QItemSelection & selected, const
 void
 CollectionTreeView::slotSetFilterTimeout()
 {
-    KLineEdit *lineEdit = dynamic_cast<KLineEdit*>( sender() );
-    if( lineEdit )
+    KComboBox *comboBox = qobject_cast<KComboBox*>( sender() );
+    if( comboBox )
     {
         if( m_treeModel )
-            m_treeModel->setCurrentFilter( lineEdit->text() );
+            m_treeModel->setCurrentFilter( comboBox->currentText() );
         m_filterTimer.stop();
         m_filterTimer.start( 500 );
     }
-}
-
-void
-CollectionTreeView::slotExpand( const QModelIndex &index )
-{
-    DEBUG_BLOCK
-    debug() << "modelindex = " << index;
-    debug() << "m_filterModel ? " << (m_filterModel ? "true" : "false");
-    if( m_filterModel )
-        expand( m_filterModel->mapFromSource( index ) );
-    else
-        expand( index );
 }
 
 void
@@ -665,7 +658,6 @@ CollectionTreeView::playChildTracksSlot( Meta::TrackList list ) //slot
     mime->deleteLater();
 }
 
-
 void
 CollectionTreeView::organizeTracks( const QSet<CollectionTreeItem*> &items ) const
 {
@@ -747,7 +739,6 @@ CollectionTreeView::copyTracks( const QSet<CollectionTreeItem*> &items, Collecti
         source->prepareCopy( qm, dest );
     }
 }
-
 
 void
 CollectionTreeView::removeTracks( const QSet<CollectionTreeItem*> &items ) const
@@ -901,55 +892,54 @@ QActionList CollectionTreeView::createExtendedActions( const QModelIndexList & i
                 }
             }
         }
+    }
+    else
+        debug() << "invalid index or null internalPointer";
 
-        if( indices.count() == 1 )
+    return actions;
+}
+
+QActionList
+CollectionTreeView::createCustomActions( const QModelIndexList &indices )
+{
+    QActionList actions;
+    if( indices.count() == 1 )
+    {
+        if( indices.first().isValid() && indices.first().internalPointer() )
         {
-            if( indices.first().isValid() && indices.first().internalPointer() )
+            Meta::DataPtr data = static_cast<CollectionTreeItem*>( indices.first().internalPointer() )->data();
+            if( data )
             {
-                Meta::DataPtr data = static_cast<CollectionTreeItem*>( indices.first().internalPointer() )->data();
-                if( data )
+                Capabilities::CustomActionsCapability *cac = data->create<Capabilities::CustomActionsCapability>();
+                if( cac )
                 {
-                    Capabilities::CustomActionsCapability *cac = data->create<Capabilities::CustomActionsCapability>();
-                    if( cac )
+                    QActionList cActions = cac->customActions();
+
+                    foreach( QAction *action, cActions )
                     {
-                        if ( m_caSeperator == 0 ) {
-                            m_caSeperator = new QAction( this );
-                            m_caSeperator->setSeparator ( true );
-                        }
-                        //actions.append( m_caSeperator );
-
-                        QActionList cActions = cac->customActions();
-
-                        foreach( QAction *action, cActions )
+                        if( action )
                         {
-                            if( action )
-                            {
-                                actions.append( action );
-                                debug() << "Got custom action: " << action->text();
-                            }
+                            actions.append( action );
+                            debug() << "Got custom action: " << action->text();
                         }
-                        delete cac;
                     }
-                    //check if this item can be bookmarked...
-                    Capabilities::BookmarkThisCapability *btc = data->create<Capabilities::BookmarkThisCapability>();
-                    if( btc )
-                    {
-                        if( btc->isBookmarkable() ) {
+                    delete cac;
+                }
+                //check if this item can be bookmarked...
+                Capabilities::BookmarkThisCapability *btc = data->create<Capabilities::BookmarkThisCapability>();
+                if( btc )
+                {
+                    if( btc->isBookmarkable() ) {
 
-                            QAction *bookmarAction = btc->bookmarkAction();
-                            if ( bookmarAction )
-                                actions.append( bookmarAction );
-                        }
-                        delete btc;
+                        QAction *bookmarAction = btc->bookmarkAction();
+                        if ( bookmarAction )
+                            actions.append( bookmarAction );
                     }
+                    delete btc;
                 }
             }
         }
     }
-
-    else
-        debug() << "invalid index or null internalPointer";
-
     return actions;
 }
 
@@ -983,15 +973,15 @@ CollectionTreeView::createCollectionActions( const QModelIndexList & indices )
 
 QHash<QAction*, Collections::Collection*> CollectionTreeView::getCopyActions(const QModelIndexList & indices )
 {
-    QHash<QAction*, Collections::Collection*> m_currentCopyDestination;
+    QHash<QAction*, Collections::Collection*> currentCopyDestination;
 
-    if( onlyOneCollection( indices) )
+    if( onlyOneCollection( indices ) )
     {
         Collections::Collection *collection = getCollection( indices.first() );
         QList<Collections::Collection*> writableCollections;
         QHash<Collections::Collection*, CollectionManager::CollectionStatus> hash = CollectionManager::instance()->collections();
         QHash<Collections::Collection*, CollectionManager::CollectionStatus>::const_iterator it = hash.constBegin();
-        while ( it != hash.constEnd() )
+        while( it != hash.constEnd() )
         {
             Collections::Collection *coll = it.key();
             if( coll && coll->isWritable() && coll != collection )
@@ -1002,20 +992,20 @@ QHash<QAction*, Collections::Collection*> CollectionTreeView::getCopyActions(con
         {
             foreach( Collections::Collection *coll, writableCollections )
             {
-                QAction *action = new QAction( QIcon(), coll->prettyName(), 0 );
+                QAction *action = new QAction( coll->icon(), coll->prettyName(), 0 );
                 action->setProperty( "popupdropper_svg_id", "collection" );
                 connect( action, SIGNAL( triggered() ), this, SLOT( slotCopyTracks() ) );
 
-                m_currentCopyDestination.insert( action, coll );
+                currentCopyDestination.insert( action, coll );
             }
         }
     }
-    return m_currentCopyDestination;
+    return currentCopyDestination;
 }
 
 QHash<QAction*, Collections::Collection*> CollectionTreeView::getMoveActions( const QModelIndexList & indices )
 {
-    QHash<QAction*, Collections::Collection*> m_currentMoveDestination;
+    QHash<QAction*, Collections::Collection*> currentMoveDestination;
 
     if( onlyOneCollection( indices) )
     {
@@ -1023,7 +1013,7 @@ QHash<QAction*, Collections::Collection*> CollectionTreeView::getMoveActions( co
         QList<Collections::Collection*> writableCollections;
         QHash<Collections::Collection*, CollectionManager::CollectionStatus> hash = CollectionManager::instance()->collections();
         QHash<Collections::Collection*, CollectionManager::CollectionStatus>::const_iterator it = hash.constBegin();
-        while ( it != hash.constEnd() )
+        while( it != hash.constEnd() )
         {
             Collections::Collection *coll = it.key();
             if( coll && coll->isWritable() && coll != collection )
@@ -1036,20 +1026,20 @@ QHash<QAction*, Collections::Collection*> CollectionTreeView::getMoveActions( co
             {
                 foreach( Collections::Collection *coll, writableCollections )
                 {
-                    QAction *action = new QAction( QIcon(), coll->prettyName(), 0 );
+                    QAction *action = new QAction( coll->icon(), coll->prettyName(), 0 );
                     action->setProperty( "popupdropper_svg_id", "collection" );
                     connect( action, SIGNAL( triggered() ), this, SLOT( slotMoveTracks() ) );
-                    m_currentMoveDestination.insert( action, coll );
+                    currentMoveDestination.insert( action, coll );
                 }
             }
         }
     }
-    return m_currentMoveDestination;
+    return currentMoveDestination;
 }
 
 QHash<QAction*, Collections::Collection*> CollectionTreeView::getRemoveActions( const QModelIndexList & indices )
 {
-    QHash<QAction*, Collections::Collection*> m_currentRemoveDestination;
+    QHash<QAction*, Collections::Collection*> currentRemoveDestination;
 
     if( onlyOneCollection( indices) )
     {
@@ -1062,12 +1052,12 @@ QHash<QAction*, Collections::Collection*> CollectionTreeView::getRemoveActions( 
 
             connect( action, SIGNAL( triggered() ), this, SLOT( slotRemoveTracks() ) );
 
-            m_currentRemoveDestination.insert( action, collection );
+            currentRemoveDestination.insert( action, collection );
         }
 
 
     }
-    return m_currentRemoveDestination;
+    return currentRemoveDestination;
 }
 
 bool CollectionTreeView::onlyOneCollection( const QModelIndexList & indices )

@@ -18,15 +18,8 @@
 #define FILEBROWSERMKII_H
 
 #include "BrowserCategory.h"
-#include "FileView.h"
-#include "MimeTypeFilterProxyModel.h"
 
-#include "widgets/SearchWidget.h"
-
-#include <KDirModel>
-#include <KFilePlacesModel>
-
-#include <QTimer>
+#include <KUrl>
 
 class FileBrowser : public BrowserCategory
 {
@@ -43,7 +36,7 @@ public:
     /**
     * Navigate to a specific directory
     */
-    void setDir( const QString &dir );
+    void setDir( const KUrl &dir );
 
     /**
      * Return the path of the currently shown dir.
@@ -68,6 +61,16 @@ protected slots:
     void toggleColumn( bool toggled);
 
     /**
+     * Go backward in history
+     */
+    void back();
+
+    /**
+     * Go forward in history
+     */
+    void forward();
+
+    /**
      * Navigates up one level in the path shown
      */
     void up();
@@ -78,7 +81,7 @@ protected slots:
     void home();
 
     /**
-     * Navigates to home directory
+     * Navigates to "places"
      */
     void showPlaces();
 
@@ -90,31 +93,14 @@ protected slots:
      */
     void setupDone( const QModelIndex & index, bool success );    
 
+private slots:
+    void initView();
+
 private:
-    void readConfig();
-    void writeConfig();
+    class Private;
+    Private *const d;
 
-    QList< QAction * >       m_columnActions; //!< Maintains the mapping action<->column
-
-    QStringList siblingsForDir( const QString &path );
-    
-    SearchWidget             *m_searchWidget;
-    KDirModel                *m_kdirModel;
-    KFilePlacesModel         *m_placesModel;
-    
-    MimeTypeFilterProxyModel *m_mimeFilterProxyModel;
-
-    QTimer                    m_filterTimer;
-    QString                   m_currentFilter;
-    QString                   m_currentPath;
-    FileView                 *m_fileView;
-
-    QAction                  *m_upAction;
-    QAction                  *m_homeAction;
-    QAction                  *m_placesAction;
-
-    bool                      m_showingPlaces;
-        
+    Q_PRIVATE_SLOT( d, void slotSaveHeaderState() )
 };
 
 #endif // FILEBROWSERMKII_H

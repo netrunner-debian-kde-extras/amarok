@@ -22,6 +22,7 @@
 #include "CapabilityDelegate.h"
 #include "core/support/Debug.h"
 #include "core/meta/support/MetaUtility.h"
+#include "core-impl/meta/file/File.h"
 #include "core-impl/meta/file/TagLibUtils.h"
 #include "ArtistHelper.h"
 #include "SqlCollection.h"
@@ -29,8 +30,6 @@
 #include "SqlRegistry.h"
 #include "covermanager/CoverFetcher.h"
 #include "core/collections/support/SqlStorage.h"
-#include "MountPointManager.h"
-//#include "mediadevice/CopyToDeviceAction.h"
 
 #include "collectionscanner/AFTUtility.h"
 
@@ -41,6 +40,9 @@
 #include <QMultiHash>
 #include <QMutexLocker>
 #include <QPointer>
+#if QT_VERSION >= 0x040600
+#include <QPixmapCache>
+#endif
 
 #include <KCodecs>
 #include <KLocale>
@@ -281,18 +283,10 @@ SqlTrack::setUrl( const QString &url )
     DEBUG_BLOCK
     m_deviceid = m_collection->mountPointManager()->getIdForUrl( url );
     m_rpath = m_collection->mountPointManager()->getRelativePath( m_deviceid, url );
-    if( m_batchUpdate )
-    {
-        debug() << "Inserting track into cache";
-        m_cache.insert( Meta::Field::URL, m_collection->mountPointManager()->getAbsolutePath( m_deviceid, m_rpath ) );
-    }
-    else
-    {
-        debug() << "Doing immediate update";
-        m_url = url;
-        writeMetaDataToDb( Meta::Field::URL );
-        notifyObservers();
-    }
+
+    m_cache.insert( Meta::Field::URL, m_collection->mountPointManager()->getAbsolutePath( m_deviceid, m_rpath ) );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
 }
 
 void
@@ -300,14 +294,10 @@ SqlTrack::setUrl( const int deviceid, const QString &rpath )
 {
     m_deviceid = deviceid;
     m_rpath = rpath;
-    if( m_batchUpdate )
-        m_cache.insert( Meta::Field::URL, KUrl( m_collection->mountPointManager()->getAbsolutePath( deviceid, rpath ) ) );
-    else
-    {
-        m_url = KUrl( m_collection->mountPointManager()->getAbsolutePath( m_deviceid, m_rpath ) );
-        writeMetaDataToDb( Meta::Field::URL );
-        notifyObservers();
-    }
+
+    m_url = KUrl( m_collection->mountPointManager()->getAbsolutePath( m_deviceid, m_rpath ) );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
 }
 
 void
@@ -316,22 +306,9 @@ SqlTrack::setArtist( const QString &newArtist )
     if ( m_artist && m_artist->name() == newArtist )
         return;
 
-    if( m_batchUpdate )
-        m_cache.insert( Meta::Field::ARTIST, newArtist );
-    else
-    {
-        //invalidate cache of the old artist...
-        KSharedPtr<SqlArtist>::staticCast( m_artist )->invalidateCache();
-        m_artist = m_collection->registry()->getArtist( newArtist );
-        //and the new one
-        KSharedPtr<SqlArtist>::staticCast( m_artist )->invalidateCache();
-        m_cache.clear();
-        m_cache.insert( Meta::Field::ARTIST, newArtist );
-        writeMetaDataToFile();
-        writeMetaDataToDb( Meta::Field::ARTIST );
-        notifyObservers();
-        m_collection->sendChangedSignal();
-    }
+    m_cache.insert( Meta::Field::ARTIST, newArtist );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
 }
 
 void
@@ -340,20 +317,9 @@ SqlTrack::setGenre( const QString &newGenre )
     if ( m_genre && m_genre->name() == newGenre )
         return;
 
-    if( m_batchUpdate )
-        m_cache.insert( Meta::Field::GENRE, newGenre );
-    else
-    {
-        KSharedPtr<SqlGenre>::staticCast( m_genre )->invalidateCache();
-        m_genre = m_collection->registry()->getGenre( newGenre );
-        KSharedPtr<SqlGenre>::staticCast( m_genre )->invalidateCache();
-        m_cache.clear();
-        m_cache.insert( Meta::Field::GENRE, newGenre );
-        writeMetaDataToFile();
-        writeMetaDataToDb( Meta::Field::GENRE );
-        notifyObservers();
-        m_collection->sendChangedSignal();
-    }
+    m_cache.insert( Meta::Field::GENRE, newGenre );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
 }
 
 void
@@ -362,20 +328,9 @@ SqlTrack::setComposer( const QString &newComposer )
     if ( m_composer && m_composer->name() == newComposer )
         return;
 
-    if( m_batchUpdate )
-        m_cache.insert( Meta::Field::COMPOSER, newComposer );
-    else
-    {
-        KSharedPtr<SqlComposer>::staticCast( m_composer )->invalidateCache();
-        m_composer = m_collection->registry()->getComposer( newComposer );
-        KSharedPtr<SqlComposer>::staticCast( m_composer )->invalidateCache();
-        m_cache.clear();
-        m_cache.insert( Meta::Field::COMPOSER, newComposer );
-        writeMetaDataToFile();
-        writeMetaDataToDb( Meta::Field::COMPOSER );
-        notifyObservers();
-        m_collection->sendChangedSignal();
-    }
+    m_cache.insert( Meta::Field::COMPOSER, newComposer );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
 }
 
 void
@@ -384,20 +339,9 @@ SqlTrack::setYear( const QString &newYear )
     if ( m_year && m_year->name() == newYear )
         return;
 
-    if( m_batchUpdate )
-        m_cache.insert( Meta::Field::YEAR, newYear );
-    else
-    {
-        KSharedPtr<SqlYear>::staticCast( m_year )->invalidateCache();
-        m_year = m_collection->registry()->getYear( newYear );
-        KSharedPtr<SqlYear>::staticCast( m_year )->invalidateCache();
-        m_cache.clear();
-        m_cache.insert( Meta::Field::YEAR, newYear );
-        writeMetaDataToFile();
-        writeMetaDataToDb( Meta::Field::YEAR );
-        notifyObservers();
-        m_collection->sendChangedSignal();
-    }
+    m_cache.insert( Meta::Field::YEAR, newYear );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
 }
 
 void
@@ -406,17 +350,9 @@ SqlTrack::setBpm( const qreal newBpm )
     if ( m_bpm && m_bpm == newBpm )
         return;
 
-    if( m_batchUpdate )
-        m_cache.insert( Meta::Field::BPM, newBpm );
-    else
-    {
-        m_bpm = newBpm;
-        m_cache.clear();
-        m_cache.insert( Meta::Field::BPM, newBpm );
-        writeMetaDataToFile();
-        writeMetaDataToDb( Meta::Field::BPM );
-        notifyObservers();
-    }
+    m_cache.insert( Meta::Field::BPM, newBpm );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
 }
 
 void
@@ -425,28 +361,9 @@ SqlTrack::setAlbum( const QString &newAlbum )
     if ( m_album && m_album->name() == newAlbum )
         return;
 
-    if( m_batchUpdate )
-        m_cache.insert( Meta::Field::ALBUM, newAlbum );
-    else
-    {
-        KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
-        //the album should remain a compilation after renaming it
-        int id = 0;
-        if( m_album->hasAlbumArtist() )
-        {
-            SqlArtist *artist = dynamic_cast<SqlArtist*>(m_album->albumArtist().data());
-            if( artist )
-                id = artist->id();
-        }
-        m_album = m_collection->registry()->getAlbum( newAlbum, -1, id );
-        KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
-        m_cache.clear();
-        m_cache.insert( Meta::Field::ALBUM, newAlbum );
-        writeMetaDataToFile();
-        writeMetaDataToDb( Meta::Field::ALBUM );
-        notifyObservers();
-        m_collection->sendChangedSignal();
-    }
+    m_cache.insert( Meta::Field::ALBUM, newAlbum );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
 }
 
 void
@@ -478,67 +395,33 @@ SqlTrack::setRating( int newRating )
 void
 SqlTrack::setTrackNumber( int newTrackNumber )
 {
-    if( m_batchUpdate )
-        m_cache.insert( Meta::Field::TRACKNUMBER, newTrackNumber );
-    else
-    {
-        m_trackNumber= newTrackNumber;
-        m_cache.clear();
-        m_cache.insert( Meta::Field::TRACKNUMBER, newTrackNumber );
-        writeMetaDataToFile();
-        writeMetaDataToDb( Meta::Field::TRACKNUMBER );
-        notifyObservers();
-    }
+    m_cache.insert( Meta::Field::TRACKNUMBER, newTrackNumber );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
 }
 
 void
 SqlTrack::setDiscNumber( int newDiscNumber )
 {
-    if( m_batchUpdate )
-        m_cache.insert( Meta::Field::DISCNUMBER, newDiscNumber );
-    else
-    {
-        m_discNumber = newDiscNumber;
-        m_cache.clear();
-        m_cache.insert( Meta::Field::DISCNUMBER, newDiscNumber );
-        writeMetaDataToFile();
-        writeMetaDataToDb( Meta::Field::DISCNUMBER );
-        notifyObservers();
-    }
+    m_cache.insert( Meta::Field::DISCNUMBER, newDiscNumber );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
 }
 
 void
 SqlTrack::setComment( const QString &newComment )
 {
-    if( m_batchUpdate )
-        m_cache.insert( Meta::Field::COMMENT, newComment );
-    else
-    {
-        m_comment = newComment;
-        m_cache.clear();
-        m_cache.insert( Meta::Field::COMMENT, newComment );
-        writeMetaDataToFile();
-        writeMetaDataToDb( Meta::Field::COMMENT );
-        notifyObservers();
-    }
+    m_cache.insert( Meta::Field::COMMENT, newComment );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
 }
 
 void
 SqlTrack::setTitle( const QString &newTitle )
 {
-    DEBUG_BLOCK
-    if( m_batchUpdate )
-        m_cache.insert( Meta::Field::TITLE, newTitle );
-    else
-    {
-        debug() << "setting title in non batch mode " << m_batchUpdate;
-        m_title = newTitle;
-        m_cache.clear();
-        m_cache.insert( Meta::Field::TITLE, newTitle );
-        writeMetaDataToFile();
-        writeMetaDataToDb( Meta::Field::TITLE );
-        notifyObservers();
-    }
+    m_cache.insert( Meta::Field::TITLE, newTitle );
+    if( !m_batchUpdate )
+        commitMetaDataChanges();
 }
 
 void
@@ -610,17 +493,7 @@ SqlTrack::endMetaDataUpdate()
 {
     commitMetaDataChanges();
     m_batchUpdate = false;
-    m_cache.clear();
-    notifyObservers();
 }
-
-void
-SqlTrack::abortMetaDataUpdate()
-{
-    m_batchUpdate = false;
-    m_cache.clear();
-}
-
 
 void
 SqlTrack::writeMetaDataToFile()
@@ -646,81 +519,148 @@ SqlTrack::updateFileSize()
 void
 SqlTrack::commitMetaDataChanges()
 {
-    if( m_batchUpdate )
+    if( m_cache.isEmpty() )
+        return; // nothing to do
+
+    bool collectionChanged = false;
+
+    // for all the following objects we need to invalidate the cache and
+    // notify the observers after the update
+    KSharedPtr<SqlArtist>   oldArtist;
+    KSharedPtr<SqlArtist>   newArtist;
+    KSharedPtr<SqlAlbum>    oldAlbum;
+    KSharedPtr<SqlAlbum>    newAlbum;
+    KSharedPtr<SqlComposer> oldComposer;
+    KSharedPtr<SqlComposer> newComposer;
+    KSharedPtr<SqlGenre>    oldGenre;
+    KSharedPtr<SqlGenre>    newGenre;
+    KSharedPtr<SqlYear>     oldYear;
+    KSharedPtr<SqlYear>     newYear;
+
+    if( m_cache.contains( Meta::Field::TITLE ) )
+        m_title = m_cache.value( Meta::Field::TITLE ).toString();
+    if( m_cache.contains( Meta::Field::COMMENT ) )
+        m_comment = m_cache.value( Meta::Field::COMMENT ).toString();
+    if( m_cache.contains( Meta::Field::SCORE ) )
+        m_score = m_cache.value( Meta::Field::SCORE ).toDouble();
+    if( m_cache.contains( Meta::Field::RATING ) )
+        m_rating = m_cache.value( Meta::Field::RATING ).toInt();
+    if( m_cache.contains( Meta::Field::PLAYCOUNT ) )
+        m_playCount = m_cache.value( Meta::Field::PLAYCOUNT ).toInt();
+    if( m_cache.contains( Meta::Field::FIRST_PLAYED ) )
+        m_firstPlayed = m_cache.value( Meta::Field::FIRST_PLAYED ).toUInt();
+    if( m_cache.contains( Meta::Field::LAST_PLAYED ) )
+        m_lastPlayed = m_cache.value( Meta::Field::LAST_PLAYED ).toUInt();
+    if( m_cache.contains( Meta::Field::TRACKNUMBER ) )
+        m_trackNumber = m_cache.value( Meta::Field::TRACKNUMBER ).toInt();
+    if( m_cache.contains( Meta::Field::DISCNUMBER ) )
+        m_discNumber = m_cache.value( Meta::Field::DISCNUMBER ).toInt();
+    if( m_cache.contains( Meta::Field::UNIQUEID ) )
+        m_uid = m_cache.value( Meta::Field::UNIQUEID ).toString();
+    if( m_cache.contains( Meta::Field::URL ) )
     {
-        if( m_cache.contains( Meta::Field::TITLE ) )
-            m_title = m_cache.value( Meta::Field::TITLE ).toString();
-        if( m_cache.contains( Meta::Field::COMMENT ) )
-            m_comment = m_cache.value( Meta::Field::COMMENT ).toString();
-        if( m_cache.contains( Meta::Field::SCORE ) )
-            m_score = m_cache.value( Meta::Field::SCORE ).toDouble();
-        if( m_cache.contains( Meta::Field::RATING ) )
-            m_rating = m_cache.value( Meta::Field::RATING ).toInt();
-        if( m_cache.contains( Meta::Field::PLAYCOUNT ) )
-            m_playCount = m_cache.value( Meta::Field::PLAYCOUNT ).toInt();
-        if( m_cache.contains( Meta::Field::FIRST_PLAYED ) )
-            m_firstPlayed = m_cache.value( Meta::Field::FIRST_PLAYED ).toUInt();
-        if( m_cache.contains( Meta::Field::LAST_PLAYED ) )
-            m_lastPlayed = m_cache.value( Meta::Field::LAST_PLAYED ).toUInt();
-        if( m_cache.contains( Meta::Field::TRACKNUMBER ) )
-            m_trackNumber = m_cache.value( Meta::Field::TRACKNUMBER ).toInt();
-        if( m_cache.contains( Meta::Field::DISCNUMBER ) )
-            m_discNumber = m_cache.value( Meta::Field::DISCNUMBER ).toInt();
-        if( m_cache.contains( Meta::Field::UNIQUEID ) )
-            m_uid = m_cache.value( Meta::Field::UNIQUEID ).toString();
-        if( m_cache.contains( Meta::Field::URL ) )
-        {
-            debug() << "m_cache contains a new URL, setting m_url";
-            m_url = m_cache.value( Meta::Field::URL ).toString();
-        }
-
-        //invalidate the cache of both the old and the new object
-        if( m_cache.contains( Meta::Field::ARTIST ) )
-        {
-            KSharedPtr<SqlArtist>::staticCast( m_artist )->invalidateCache();
-            m_artist = m_collection->registry()->getArtist( m_cache.value( Meta::Field::ARTIST ).toString() );
-            KSharedPtr<SqlArtist>::staticCast( m_artist )->invalidateCache();
-        }
-        if( m_cache.contains( Meta::Field::ALBUM ) )
-        {
-            KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
-            int artistId = 0;
-            if( m_album->hasAlbumArtist() )
-            {
-                artistId = KSharedPtr<SqlArtist>::staticCast( m_album->albumArtist() )->id();
-            }
-            m_album = m_collection->registry()->getAlbum( m_cache.value( Meta::Field::ALBUM ).toString(), -1, artistId );
-            KSharedPtr<SqlAlbum>::staticCast( m_album )->invalidateCache();
-        }
-        if( m_cache.contains( Meta::Field::COMPOSER ) )
-        {
-            KSharedPtr<SqlComposer>::staticCast( m_composer )->invalidateCache();
-            m_composer = m_collection->registry()->getComposer( m_cache.value( Meta::Field::COMPOSER ).toString() );
-            KSharedPtr<SqlComposer>::staticCast( m_composer )->invalidateCache();
-        }
-        if( m_cache.contains( Meta::Field::GENRE ) )
-        {
-            KSharedPtr<SqlGenre>::staticCast( m_genre )->invalidateCache();
-            m_genre = m_collection->registry()->getGenre( m_cache.value( Meta::Field::GENRE ).toString() );
-            KSharedPtr<SqlGenre>::staticCast( m_genre )->invalidateCache();
-        }
-        if( m_cache.contains( Meta::Field::YEAR ) )
-        {
-            KSharedPtr<SqlYear>::staticCast( m_year )->invalidateCache();
-            m_year = m_collection->registry()->getYear( m_cache.value( Meta::Field::YEAR ).toString() );
-            KSharedPtr<SqlYear>::staticCast( m_year )->invalidateCache();
-        }
-
-        if( m_cache.contains( Meta::Field::BPM ) )
-            m_bpm = m_cache.value( Meta::Field::BPM ).toDouble();
-
-        //updating the tags of the file might change the filesize
-        //therefore write the tag to the file first, and update the db
-        //with the new filesize
-        writeMetaDataToFile();
-        writeMetaDataToDb( m_cache.keys() );
-        updateStatisticsInDb( m_cache.keys() );
+        debug() << "m_cache contains a new URL, setting m_url";
+        m_url = m_cache.value( Meta::Field::URL ).toString();
     }
+
+    if( m_cache.contains( Meta::Field::ARTIST ) )
+    {
+        //invalidate cache of the old artist...
+        oldArtist = static_cast<SqlArtist*>(m_artist.data());
+        m_artist = m_collection->registry()->getArtist( m_cache.value( Meta::Field::ARTIST ).toString() );
+        //and the new one
+        newArtist = static_cast<SqlArtist*>(m_artist.data());
+
+        // if the current album is no compilation and we aren't changing
+        // the album anyway, then we need to create a new album with the
+        // new artist.
+        if( m_album &&
+            m_album->hasAlbumArtist() &&
+            !m_cache.contains( Meta::Field::ALBUM ) )
+            m_cache.insert( Meta::Field::ALBUM, m_album->name() );
+
+        collectionChanged = true;
+    }
+
+    if( m_cache.contains( Meta::Field::ALBUM ) )
+    {
+        oldAlbum = static_cast<SqlAlbum*>(m_album.data());
+        //the album should remain a compilation after renaming it
+        int artistId = 0;
+        if( m_album->hasAlbumArtist() )
+        {
+            artistId = KSharedPtr<SqlArtist>::staticCast( m_album->albumArtist() )->id();
+        }
+        m_album = m_collection->registry()->getAlbum( m_cache.value( Meta::Field::ALBUM ).toString(), -1, artistId );
+        newAlbum = static_cast<SqlAlbum*>(m_album.data());
+
+        // copy the image BUG: 203211
+        // IMPROVEMENT: use setImage(QString) to prevent the image being
+        // physically copied.
+        if( oldAlbum &&
+            oldAlbum->hasImage(0) && !newAlbum->hasImage(0) )
+            newAlbum->setImage( oldAlbum->image(0) );
+
+        collectionChanged = true;
+    }
+
+    if( m_cache.contains( Meta::Field::COMPOSER ) )
+    {
+        oldComposer = static_cast<SqlComposer*>(m_composer.data());
+        m_composer = m_collection->registry()->getComposer( m_cache.value( Meta::Field::COMPOSER ).toString() );
+        newComposer = static_cast<SqlComposer*>(m_composer.data());
+        collectionChanged = true;
+    }
+
+    if( m_cache.contains( Meta::Field::GENRE ) )
+    {
+        oldGenre = static_cast<SqlGenre*>(m_genre.data());
+        m_genre = m_collection->registry()->getGenre( m_cache.value( Meta::Field::GENRE ).toString() );
+        newGenre = static_cast<SqlGenre*>(m_genre.data());
+        collectionChanged = true;
+    }
+
+    if( m_cache.contains( Meta::Field::YEAR ) )
+    {
+        oldYear = static_cast<SqlYear*>(m_year.data());
+        m_year = m_collection->registry()->getYear( m_cache.value( Meta::Field::YEAR ).toString() );
+        newYear = static_cast<SqlYear*>(m_year.data());
+        collectionChanged = true;
+    }
+
+    if( m_cache.contains( Meta::Field::BPM ) )
+        m_bpm = m_cache.value( Meta::Field::BPM ).toDouble();
+
+    //updating the tags of the file might change the filesize
+    //therefore write the tag to the file first, and update the db
+    //with the new filesize
+    writeMetaDataToFile();
+    writeMetaDataToDb( m_cache.keys() );
+    updateStatisticsInDb( m_cache.keys() );
+
+    m_cache.clear();
+    notifyObservers();
+
+    // these calls must be made after the database has been updated
+#define INVALIDATE_AND_UPDATE(X) if( X ) \
+    { \
+        X->invalidateCache(); \
+        X->notifyObservers(); \
+    }
+    INVALIDATE_AND_UPDATE(oldArtist);
+    INVALIDATE_AND_UPDATE(newArtist);
+    INVALIDATE_AND_UPDATE(oldAlbum);
+    INVALIDATE_AND_UPDATE(newAlbum);
+    INVALIDATE_AND_UPDATE(oldComposer);
+    INVALIDATE_AND_UPDATE(newComposer);
+    INVALIDATE_AND_UPDATE(oldGenre);
+    INVALIDATE_AND_UPDATE(newGenre);
+    INVALIDATE_AND_UPDATE(oldYear);
+    INVALIDATE_AND_UPDATE(newYear);
+#undef INVALIDATE_AND_UPDATE
+
+    if( collectionChanged )
+        m_collection->sendChangedSignal();
 }
 
 void
@@ -956,6 +896,8 @@ SqlTrack::addLabel( const Meta::LabelPtr &label )
                 m_labelsCache.append( Meta::LabelPtr::staticCast( sqlLabel ) );
             }
             notifyObservers();
+            sqlLabel->invalidateCache();
+            sqlLabel->notifyObservers();
         }
     }
 }
@@ -978,6 +920,8 @@ SqlTrack::removeLabel( const Meta::LabelPtr &label )
             m_labelsCache.removeAll( Meta::LabelPtr::staticCast( sqlLabel ) );
         }
         notifyObservers();
+        sqlLabel->invalidateCache();
+        sqlLabel->notifyObservers();
     }
 }
 
@@ -1120,6 +1064,7 @@ SqlAlbum::SqlAlbum( Collections::SqlCollection* collection, int id, const QStrin
     , m_name( name )
     , m_id( id )
     , m_artistId( artist )
+    , m_imageId( -1 )
     , m_hasImage( false )
     , m_hasImageChecked( false )
     , m_unsetImageId( -1 )
@@ -1154,7 +1099,6 @@ SqlAlbum::invalidateCache()
     m_tracksLoaded = false;
     m_hasImage = false;
     m_hasImageChecked = false;
-    m_images.clear();
     m_tracks.clear();
     m_mutex.unlock();
 }
@@ -1186,20 +1130,37 @@ SqlAlbum::tracks()
         return TrackList();
 }
 
+// note for internal implementation:
+// if hasImage returns true then m_imagePath is set
 bool
 SqlAlbum::hasImage( int size ) const
 {
+    Q_UNUSED(size); // we have every size if we have an image at all
+
     if( !m_hasImageChecked )
     {
         m_hasImageChecked = true;
 
-        QString image = const_cast<SqlAlbum*>( this )->findImage( size );
+        const_cast<SqlAlbum*>( this )->largeImagePath();
 
         // The user has explicitly set no cover
-        if( image == AMAROK_UNSET_MAGIC )
+        if( m_imagePath == AMAROK_UNSET_MAGIC )
             m_hasImage = false;
+
+        // if we don't have an image but it was not explicitely blocked
+        else if( m_imagePath.isEmpty() )
+        {
+            // Cover fetching runs in another thread. If there is a retrieved cover
+            // then updateImage() gets called which updates the cache and alerts the
+            // subscribers. We use queueAlbum() because this runs the fetch as a
+            // background job and doesn't give an intruding popup asking for confirmation
+            if( !m_suppressAutoFetch && !m_name.isEmpty() && AmarokConfig::autoGetCoverArt() )
+                CoverFetcher::instance()->queueAlbum( AlbumPtr(const_cast<SqlAlbum *>(this)) );
+
+            m_hasImage = false;
+        }
         else
-            m_hasImage = !image.isEmpty();
+            m_hasImage = true;
     }
 
     return m_hasImage;
@@ -1208,86 +1169,98 @@ SqlAlbum::hasImage( int size ) const
 QPixmap
 SqlAlbum::image( int size )
 {
-    if( m_hasImageChecked && !m_hasImage )
+    if( !hasImage() )
         return Meta::Album::image( size );
 
-    m_hasImageChecked = true;
-
-    //FIXME this cache doesn't differentiate between shadowed/unshadowed
-    if( m_images.contains( size ) )
-        return QPixmap( m_images.value( size ) );
-
-    QString result;
+    QPixmap pixmap;
+    // look in the memory pixmap cache
+    // large scale images are not stored in memory
+#if QT_VERSION >= 0x040600
+    QString cachedPixmapKey = QString::number(size) + "@acover" + QString::number(m_imageId);
+    if( size > 1 && QPixmapCache::find( cachedPixmapKey, &pixmap ) )
+        return pixmap;
+#endif
 
     // findCachedImage looks for a scaled version of the fullsize image
     // which may have been saved on a previous lookup
-    QString cachedImage = findCachedImage( size );
-    if( !cachedImage.isEmpty() )
-    {
-        result = cachedImage;
-    }
-
-    // findImage will lookup the original cover and create a scaled version
-    // of the cover if required (returning the path of that scaled image)
+    QString cachedImagePath;
+    if( size <= 1 && !hasEmbeddedImage() )
+        cachedImagePath = m_imagePath;
     else
-    {
-        QString image = findImage( size );
+        cachedImagePath = scaledDiskCachePath( size );
 
-        // If we return this value then we don't need to do anything else
-        // as we know that the user has explicitly set no cover
-        if( image == AMAROK_UNSET_MAGIC )
+    //FIXME this cache doesn't differentiate between shadowed/unshadowed
+    // a image exists. just load it.
+    if( !cachedImagePath.isEmpty() && QFile( cachedImagePath ).exists() )
+    {
+        pixmap = QPixmap( cachedImagePath );
+        if( pixmap.isNull() )
             return Meta::Album::image( size );
-
-        if( !image.isEmpty() && size < 1000 )
-            result = image;
-        else
-        {
-            // After a rescan we seem to lose all image information, so we need
-            // to check that we haven't already downloaded this image before.
-            QString large = findLargeCachedImage();
-            if( !large.isEmpty() )
-                result = createScaledImage( large, size );
-        }
+#if QT_VERSION >= 0x040600
+        if( size > 0)
+            QPixmapCache::insert( cachedPixmapKey, pixmap );
+#endif
+        return pixmap;
     }
 
-    if( !result.isEmpty() )
+    // no cached scaled image exists. Have to create it
+    QImage img;
+    if( hasEmbeddedImage() )
+        img = getEmbeddedImage();
+    else
+        img = QImage( m_imagePath );
+
+    if( img.isNull() )
+        return Meta::Album::image( size );
+
+    if( size > 1 && size < 1000 )
     {
-        m_hasImage = true;
-        m_images.insert( size, result );
-        return QPixmap( result );
+        img = img.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+        img.save( cachedImagePath, "JPG" );
+    }
+    else if( hasEmbeddedImage() )
+    {
+        // store it on the disk for later reference.
+        img.save( cachedImagePath, "JPG" );
     }
 
-    // Cover fetching runs in another thread. If there is a retrieved cover
-    // then updateImage() gets called which updates the cache and alerts the
-    // subscribers. We use queueAlbum() because this runs the fetch as a
-    // background job and doesn't give an intruding popup asking for confirmation
-    if( !m_suppressAutoFetch && !m_name.isEmpty() && AmarokConfig::autoGetCoverArt() )
-        CoverFetcher::instance()->queueAlbum( AlbumPtr(this) );
-
-    // If the result image is empty then we didn't find any cached image, nor
-    // could we find the original cover to scale to the appropriate size. Hence,
-    // the album cannot have a cover, for any size. In this case, we return the
-    // default image
-
-    m_hasImage = false;
-
-    return Meta::Album::image( size );
+    pixmap = QPixmap::fromImage( img );
+#if QT_VERSION >= 0x040600
+    if( size > 1)
+        QPixmapCache::insert( cachedPixmapKey, pixmap );
+#endif
+    return pixmap;
 }
 
 KUrl
 SqlAlbum::imageLocation( int size )
 {
-    // If we already have the location, return it
-    if( m_images.contains( size ) )
-        return m_images.value( size );
+    if( !hasImage() )
+        return KUrl();
 
-    // If we don't have the location, it's possible that we haven't tried to find the image yet
-    // So, let's look for it and just ignore the result
-    QPixmap i = image( size );
-    if( m_images.contains( size ) )
-        return KUrl( m_images.value( size ) );
+    // findCachedImage looks for a scaled version of the fullsize image
+    // which may have been saved on a previous lookup
+    QString cachedImagePath;
+    if( size >= 1 && !hasEmbeddedImage() )
+        cachedImagePath = m_imagePath;
+    else
+        cachedImagePath = scaledDiskCachePath( size );
 
-    return KUrl();
+    if( cachedImagePath.isEmpty() )
+        return KUrl();
+
+    if( !QFile( cachedImagePath ).exists() )
+    {
+        // If we don't have the location, it's possible that we haven't tried to find the image yet
+        // So, let's look for it and just ignore the result
+        QPixmap i = image( size );
+        Q_UNUSED( i )
+    }
+
+    if( !QFile( cachedImagePath ).exists() )
+        return KUrl();
+
+    return cachedImagePath;
 }
 
 void
@@ -1296,23 +1269,17 @@ SqlAlbum::setImage( const QPixmap &pixmap )
     if( pixmap.isNull() )
         return;
 
-    QByteArray widthKey = QString::number( pixmap.width() ).toLocal8Bit() + '@';
-    QString album = m_name;
-    QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
-
-    if( artist.isEmpty() && album.isEmpty() )
-        return;
-
     // removeImage() will destroy all scaled cached versions of the artwork
     // and remove references from the database if required.
-    if( hasImage( -1 ) ) // -1 is a dummy
-        removeImage();
+    removeImage();
 
-    QByteArray key = md5sum( artist, album, QString() );
-    QString path = Amarok::saveLocation( "albumcovers/large/" ) + key;
+    QString path = largeDiskCachePath();
+    // make sure not to overwrite existing images
+    while( QFile(path).exists() )
+        path += "_"; // not that nice but it shouldn't happen that often.
+
+    setImage( path );
     pixmap.save( path, "JPG" );
-
-    updateImage( path );
 
     notifyObservers();
 }
@@ -1320,69 +1287,57 @@ SqlAlbum::setImage( const QPixmap &pixmap )
 void
 SqlAlbum::removeImage()
 {
-    QString album = m_name;
-    QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
-
-    if( artist.isEmpty() && album.isEmpty() )
+    if( !hasImage() )
         return;
 
-    QByteArray key = md5sum( artist, album, QString() );
-
-    // remove the large covers
-    QFile::remove( Amarok::saveLocation( "albumcovers/large/" ) + key );
-
-    // remove all cache images
-    QDir        cacheDir( Amarok::saveLocation( "albumcovers/cache/" ) );
-    QStringList cacheFilter;
-    cacheFilter << QString( '*' + key );
-    QStringList cachedImages = cacheDir.entryList( cacheFilter );
-
-    foreach( const QString &image, cachedImages )
-    {
-        bool r = QFile::remove( cacheDir.filePath( image ) );
-        debug() << "deleting cached image: " << image << " : " + ( r ? QString("ok") : QString("fail") );
-    }
-
-    // TODO: remove directory image ??
-
     // Update the database image path
+    // Set the album image to a magic value which will tell Amarok not to fetch it automatically
+    const int unsetId = unsetImageId();
+    QString query = "UPDATE albums SET image = %1 WHERE id = %2";
+    m_collection->sqlStorage()->query( query.arg( QString::number( unsetId ), QString::number( m_id ) ) );
 
-    QString query = "SELECT images.id, count( images.id ) FROM images, albums "
-                    "WHERE albums.image = images.id AND albums.id = %1 "
-                    "GROUP BY images.id";
-    QStringList res = m_collection->sqlStorage()->query( query.arg( QString::number( m_id ) ) );
+    // From here on we check if there are any remaining references to that particular image in the database
+    // If there aren't, then we should remove the image path from the database ( and possibly delete the file? )
+    // If there are, we need to leave it since other albums will reference this particular image path.
+    //
+    query = "SELECT count( albums.id ) FROM albums "
+                    "WHERE albums.image = %1";
+    QStringList res = m_collection->sqlStorage()->query( query.arg( QString::number( m_imageId ) ) );
+
     if( !res.isEmpty() )
     {
-        int imageId    = res[0].toInt();
-        int references = res[1].toInt();
-
-        // Set the album image to a magic value which will tell Amarok not to fetch it automatically
-        const int unsetId = unsetImageId();
-
-        query = "UPDATE albums SET image = %1 WHERE id = %2";
-        m_collection->sqlStorage()->query( query.arg( QString::number( unsetId ), QString::number( m_id ) ) );
-
-        // We've just removed a references to that imageid
-        references--;
-
-        // From here on we check if there are any remaining references to that particular image in the database
-        // If there aren't, then we should remove the image path from the database ( and possibly delete the file? )
-        // If there are, we need to leave it since other albums will reference this particular image path.
-        //
-        // TODO: Should this cleanup be handled by the Collection at some other point with a DB wide cleanup, with a
-        // vaccuum analyze? Since the use case will most likely be a 1:1 mapping of album-image by moving the cleanup
-        // elsewhere we could remove 2 of the queries for this method - ie, it would be just one UPDATE statement.
+        int references = res[0].toInt();
 
         // If there are no more references to this particular image, then we should clean up
         if( references <= 0 )
         {
             query = "DELETE FROM images WHERE id = %1";
-            m_collection->sqlStorage()->query( query.arg( QString::number( imageId ) ) );
+            m_collection->sqlStorage()->query( query.arg( QString::number( m_imageId ) ) );
+
+            // remove the large cover only if it was cached.
+            QDir largeCoverDir( Amarok::saveLocation( "albumcovers/large/" ) );
+            if( QFileInfo(m_imagePath).absoluteDir() == largeCoverDir )
+                QFile::remove( m_imagePath );
+
+            // remove all cache images
+            QString key = md5sum( QString(), QString(), m_imagePath );
+            QDir        cacheDir( Amarok::saveLocation( "albumcovers/cache/" ) );
+            QStringList cacheFilter;
+            cacheFilter << QString( "*@" ) + key;
+            QStringList cachedImages = cacheDir.entryList( cacheFilter );
+
+            foreach( const QString &image, cachedImages )
+            {
+                bool r = QFile::remove( cacheDir.filePath( image ) );
+                debug() << "deleting cached image: " << image << " : " + ( r ? QString("ok") : QString("fail") );
+            }
         }
     }
 
-    m_images.clear();
+    m_imageId = -1;
+    m_imagePath = QString();
     m_hasImage = false;
+    m_hasImageChecked = true;
 
     notifyObservers();
 }
@@ -1442,160 +1397,151 @@ SqlAlbum::albumArtist() const
 QByteArray
 SqlAlbum::md5sum( const QString& artist, const QString& album, const QString& file ) const
 {
+    // FIXME: names with unicode characters are not supported.
+    // FIXME: "The Beatles"."Collection" and "The"."Beatles Collection" will produce the same hash.
+    // FIXME: Correcting this now would invalidate all existing image stores.
     KMD5 context( artist.toLower().toLocal8Bit() + album.toLower().toLocal8Bit() + file.toLocal8Bit() );
     return context.hexDigest();
 }
 
 QString
-SqlAlbum::imageKey() const
+SqlAlbum::largeDiskCachePath() const
 {
-    QString album = m_name;
-    QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
-
-    if ( artist.isEmpty() && album.isEmpty() )
+    // IMPROVEMENT: the large disk cache path could be human readable
+    const QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
+    if( artist.isEmpty() && m_name.isEmpty() )
         return QString();
-
-    return md5sum( artist, album, QString() );
-}
-
-QString
-SqlAlbum::findCachedImage( int size ) const
-{
-    QByteArray widthKey = QString::number( size ).toLocal8Bit() + '@';
-    const QString key = imageKey();
-
-    if( key.isEmpty() )
-        return QString();
-
-    QDir cacheCoverDir( Amarok::saveLocation( "albumcovers/cache/" ) );
-    // check cache for existing cover
-    if ( cacheCoverDir.exists( widthKey + key ) )
-        return cacheCoverDir.filePath( widthKey + key );
-
-    return QString();
-}
-
-QString
-SqlAlbum::findLargeCachedImage() const
-{
-    const QString key = imageKey();
 
     QDir largeCoverDir( Amarok::saveLocation( "albumcovers/large/" ) );
-    if( largeCoverDir.exists( key ) )
-    {
-        const QString filePath = largeCoverDir.filePath( key );
-        updateImage( filePath ); // We found a previously downloaded large image, let's keep it for future reference.
-        return filePath;
-    }
-    return QString();
+    const QString key = md5sum( artist, m_name, QString() );
+        return largeCoverDir.filePath( key );
 }
 
 QString
-SqlAlbum::createScaledImage( QString path, int size ) const
+SqlAlbum::scaledDiskCachePath( int size ) const
 {
-    if( size <= 1 )
-        return QString();
-
-    QByteArray widthKey = QString::number( size ).toLocal8Bit() + '@';
-    QString album = m_name;
-    QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
-
-    if( artist.isEmpty() && album.isEmpty() )
-        return QString();
-
-    QByteArray key = md5sum( artist, album, QString() );
-
+    const QByteArray widthKey = QByteArray::number( size ) + '@';
     QDir cacheCoverDir( Amarok::saveLocation( "albumcovers/cache/" ) );
-    QString cachedImagePath = cacheCoverDir.filePath( widthKey + key );
+    QString key = md5sum( QString(), QString(), m_imagePath );
 
-    if( QFile::exists( path ) )
+    if( !cacheCoverDir.exists( widthKey + key ) )
     {
-        // Don't overwrite if it already exists
-        if( !QFile::exists( cachedImagePath ) )
-        {
-            QImage img( path );
-            if( img.isNull() )
-                return QString();
+        // the correct location is empty
+        // check deprecated locations for the image cache and delete them
+        // (deleting the scaled image cache is fine)
 
-            // resize and save the image
-            img.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation ).save( cachedImagePath, "JPG" );
+        const QString artist = hasAlbumArtist() ? albumArtist()->name() : QString();
+        if( artist.isEmpty() && m_name.isEmpty() )
+            ; // do nothing special
+        else
+        {
+            QString oldKey;
+            oldKey = md5sum( artist, m_name, m_imagePath );
+            if( cacheCoverDir.exists( widthKey + oldKey ) )
+                cacheCoverDir.remove( widthKey + oldKey );
+
+            oldKey = md5sum( artist, m_name, QString() );
+            if( cacheCoverDir.exists( widthKey + oldKey ) )
+                cacheCoverDir.remove( widthKey + oldKey );
         }
-        return cachedImagePath;
     }
 
-    return QString();
+    return cacheCoverDir.filePath( widthKey + key );
 }
 
-QString
-SqlAlbum::findImage( int size )
+bool
+SqlAlbum::hasEmbeddedImage() const
 {
-    if( m_images.contains( size ) )
-        return m_images.value( size );
+    if( !hasImage() )
+        return false;
 
-    QString fullsize;
+    return m_imagePath.startsWith( "amarok-sqltrackuid://" );
+}
 
-    // get the full size path from the cache if we have it
-    if( m_images.contains( 0 ) )
+QImage
+SqlAlbum::getEmbeddedImage() const
+{
+    if( !hasEmbeddedImage() )
+        return QImage();
+
+    QString query = QString( "SELECT deviceid, rpath FROM urls WHERE uniqueid = '%1';" ).arg( m_imagePath );
+    QStringList result = m_collection->sqlStorage()->query( query );
+
+
+    if( result.isEmpty() )
+        return QImage();
+
+    QString finalPath = m_collection->mountPointManager()->getAbsolutePath( result[0].toInt(), result[1] );
+
+    return MetaFile::Track::getEmbeddedCover( finalPath );
+}
+
+
+QString
+SqlAlbum::largeImagePath()
+{
+    // Look up in the database
+    QString query = "SELECT images.id, images.path FROM images, albums WHERE albums.image = images.id AND albums.id = %1;";
+    QStringList res = m_collection->sqlStorage()->query( query.arg( m_id ) );
+    if( !res.isEmpty() )
     {
-        fullsize = m_images.value( 0 );
-    }
-    // if we don't have it, retrieve it from the database
-    else
-    {
-        QString query = "SELECT path FROM images, albums WHERE albums.image = images.id AND albums.id = %1;";
-        QStringList res = m_collection->sqlStorage()->query( query.arg( m_id ) );
-        if( !res.isEmpty() )
-        {
-            fullsize = res.first();
-            if( !fullsize.isEmpty() )
-                m_images.insert( 0, fullsize ); // store the full size version
-        }
+        m_imageId = res.at(0).toInt();
+        m_imagePath = res.at(1);
+
+        // explicitely deleted image
+        if( m_imagePath == AMAROK_UNSET_MAGIC )
+            return AMAROK_UNSET_MAGIC;
+
+        // embedded image (e.g. id3v2 APIC
+        if( m_imagePath.startsWith( "amarok-sqltrackuid://" ) )
+            return m_imagePath;
+
+        // normal file
+        if( !m_imagePath.isEmpty() && QFile::exists( m_imagePath ) )
+            return m_imagePath;
     }
 
-    if( fullsize == AMAROK_UNSET_MAGIC )
-        return AMAROK_UNSET_MAGIC;
-
-    if( QFile::exists( fullsize ) )
-    {
-        if( size > 1 )
-            return createScaledImage( fullsize, size );
-        return fullsize;
+    // After a rescan we currently lose all image information, so we need
+    // to check that we haven't already downloaded this image before.
+    m_imagePath = largeDiskCachePath();
+    if( !m_imagePath.isEmpty() && QFile::exists( m_imagePath ) ) {
+        setImage(m_imagePath);
+        return m_imagePath;
     }
+
+    m_imageId = -1;
+    m_imagePath = QString();
 
     return QString();
 }
 
 void
-SqlAlbum::updateImage( const QString path ) const
+SqlAlbum::setImage( const QString &path )
 {
     DEBUG_BLOCK
+
     QString query = "SELECT id FROM images WHERE path = '%1'";
     query = query.arg( m_collection->sqlStorage()->escape( path ) );
     QStringList res = m_collection->sqlStorage()->query( query );
-
-    int imageid = -1;
 
     if( res.isEmpty() )
     {
         QString insert = QString( "INSERT INTO images( path ) VALUES ( '%1' )" )
                             .arg( m_collection->sqlStorage()->escape( path ) );
-        imageid = m_collection->sqlStorage()->insert( insert, "images" );
+        m_imageId = m_collection->sqlStorage()->insert( insert, "images" );
     }
     else
-        imageid = res[0].toInt();
+        m_imageId = res[0].toInt();
 
-    if( imageid >= 0 )
+    if( m_imageId >= 0 )
     {
         query = QString("UPDATE albums SET image = %1 WHERE albums.id = %2" )
-                    .arg( QString::number( imageid ), QString::number( m_id ) );
+                    .arg( QString::number( m_imageId ), QString::number( m_id ) );
+        m_collection->sqlStorage()->query( query );
+
+        m_imagePath = path;
         m_hasImage = true;
         m_hasImageChecked = true;
-
-        // Make sure we remove any old cached image locations when setting a new cover
-        m_images.clear();
-
-        m_images.insert( 0, path );
-        m_collection->sqlStorage()->query( query );
     }
 }
 
@@ -1627,6 +1573,7 @@ SqlAlbum::setCompilation( bool compilation )
                 QString update = "UPDATE tracks SET album = %1 WHERE album = %2";
                 m_collection->sqlStorage()->query( update.arg( otherId ).arg( m_id ) );
 
+                removeImage();
                 QString delete_album = "DELETE FROM albums WHERE id = %1";
                 m_collection->sqlStorage()->query( delete_album.arg( m_id ) );
 
@@ -1700,50 +1647,46 @@ SqlAlbum::setCompilation( bool compilation )
             //step3: create missing album entries
             //special case: if there is only one album, and it does not exist yet, change the current object instead
             bool currentObjectUpdated = false;
-            if( artists.count() == 1 && artistToTargetAlbum.count() == 0 )
+            foreach( int artistId, artists.keys() )
             {
-                currentObjectUpdated = true;
-                int artistId = artists.keys().first();
-                // There isn't another album with the same name and artist, just change the artist on the album
-                QString update = "UPDATE albums SET artist = %1 WHERE id = %2";
-                m_collection->sqlStorage()->query( update.arg( artistId ).arg( m_id ) );
-                m_artistId = artistId;
-            }
-            else
-            {
-                foreach( int artistId, artists.keys() )
+                if( artistToTargetAlbum.contains( artistId ) )
                 {
-                    if( artistToTargetAlbum.contains( artistId ) )
-                    {
-                        //target album for the given artist already exists, do nothing here
-                        continue;
-                    }
-                    QString insert = "INSERT INTO albums (name, artist) VALUES ('%1',%2)";
+                    //target album for the given artist already exists, do nothing here
+                    continue;
+                } else if( !currentObjectUpdated ) {
+                    // update this album
+                    // There isn't another album with the same name and artist, just change the artist on the album
+                    currentObjectUpdated = true;
+                    QString update = "UPDATE albums SET artist = %1 WHERE id = %2";
+                    m_collection->sqlStorage()->query( update.arg( artistId ).arg( m_id ) );
+                    m_artistId = artistId;
+                } else {
+                    // create a new album
+                    QString insert = "INSERT INTO albums (name, artist, image) VALUES ('%1',%2)";
                     SqlStorage *s = m_collection->sqlStorage();
                     int albumId = s->insert( insert.arg( s->escape( m_name ), QString::number( artistId ) ), "albums" );
                     artistToTargetAlbum.insert( artistId, albumId );
                 }
             }
 
-            //step 4: update all tracks, if necessary
-            if( !currentObjectUpdated )
+            //step 4: update all tracks
+            foreach( int trackId, trackToArtist.keys() )
             {
-                foreach( int trackId, trackToArtist.keys() )
-                {
-                    int artistId = trackToArtist.value( trackId );
-                    int albumId = artistToTargetAlbum.value( artistId );
-                    QString update = "UPDATE tracks SET album = %1 WHERE id = %2;";
-                    m_collection->sqlStorage()->query( update.arg( albumId ).arg( trackId ) );
-                }
+                int artistId = trackToArtist.value( trackId );
+                int albumId = artistToTargetAlbum.value( artistId );
+                QString update = "UPDATE tracks SET album = %1 WHERE id = %2;";
+                m_collection->sqlStorage()->query( update.arg( albumId ).arg( trackId ) );
             }
 
             //step 5: delete the original album, if necessary
             if( !currentObjectUpdated )
             {
+                removeImage();
                 QString del = "DELETE FROM albums WHERE id = %1;";
                 m_collection->sqlStorage()->query( del.arg( m_id ) );
             }
         }
+
         //ensure that all currently loaded tracks will return the correct album from now on
         foreach( const QString &uid, uids )
         {

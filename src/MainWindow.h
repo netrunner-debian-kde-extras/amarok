@@ -18,10 +18,12 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <config-amarok.h>
+
 #include "amarok_export.h"
 #include "core/meta/Meta.h"
 #include "core/engine/EngineObserver.h"
-#include "browsers/BrowserWidget.h"
+#include "browsers/BrowserDock.h"
 
 #include <KMainWindow>
 #include <KVBox>
@@ -29,23 +31,18 @@
 #include <QPointer>
 
 class CollectionWidget;
-class ContextWidget;
 class SlimToolbar;
 class MainToolbar;
 class MainWindow;
+#ifdef DEBUG_BUILD_TYPE
+class NetworkAccessViewer;
+#endif // DEBUG_BUILD_TYPE
 class PlaylistFileProvider;
-class SearchWidget;
 
 namespace PlaylistBrowserNS { class PlaylistBrowser; }
+namespace Playlist { class Dock; }
+class ContextDock;
 
-namespace Plasma { class Containment; }
-namespace Playlist { class Widget; }
-
-namespace Context {
-    class ContextScene;
-    class ContextView;
-    class ToolbarView;
-}
 
 class KMenu;
 class QMenuBar;
@@ -84,10 +81,10 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
 
         void activate();
 
-        BrowserWidget *browserWidget() const { return m_browsers; }
+        BrowserDock *browserDock() const { return m_browserDock; }
         QPointer<KMenu> ToolsMenu() const { return m_toolsMenu; }
         QPointer<KMenu> SettingsMenu() const { return m_settingsMenu; }
-        QPointer<Playlist::Widget> playlistWidget() { return m_playlistWidget; }
+        Playlist::Dock * playlistDock() const { return m_playlistDock; }
         void deleteBrowsers();
 
         /* Reimplemented from QMainWindow to allow only one active toolbar at any time */
@@ -99,13 +96,12 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         PlaylistBrowserNS::PlaylistBrowser * playlistBrowser();
 
         //will return the size of the rect defined top, right and left by the main toolbar and bottom by the context view.
-        QSize backgroundSize();
+        QSize backgroundSize() const;
 
-        int contextXOffset();
-        QRect contextRectGlobal();
+        QRect contextRectGlobal() const;
         QPoint globalBackgroundOffset();
 
-        bool isLayoutLocked();
+        bool isLayoutLocked() const;
 
         /**
         *    If an audiocd collection is present. Stop current playback, clear playlist,
@@ -113,7 +109,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         */
         bool playAudioCd();
 
-        bool isWaitingForCd();
+        bool isWaitingForCd() const;
 
     signals:
         void loveTrack( Meta::TrackPtr track );
@@ -124,9 +120,8 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
     public slots:
         void showHide();
         void slotFullScreen();
-        void slotLoveTrack() { emit loveTrack( The::engineController()->currentTrack() ); }
+        void slotLoveTrack();
         void showNotificationPopup();
-        void hideContextView( bool hide );
 
         void setLayoutLocked( bool locked );
 
@@ -153,6 +148,9 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         void slotAddStream();
         void slotJumpTo();
         void showScriptSelector();
+#ifdef DEBUG_BUILD_TYPE
+        void showNetworkRequestViewer();
+#endif // DEBUG_BUILD_TYPE
 
         /**
          * Save state and position of dock widgets.
@@ -167,9 +165,11 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
     protected:
         bool eventFilter(QObject *, QEvent *);
         virtual void closeEvent( QCloseEvent* );
+        virtual void showEvent( QShowEvent* event );
         virtual void keyPressEvent( QKeyEvent* );
         virtual void resizeEvent ( QResizeEvent * event );
         virtual void paletteChange( const QPalette & oldPalette );
+        virtual bool queryExit(); 
 
     private slots:
         void setRating1() { setRating( 1 ); }
@@ -189,36 +189,26 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         QPointer<QMenuBar>  m_menubar;
         QPointer<KMenu>     m_toolsMenu;
         QPointer<KMenu>     m_settingsMenu;
-        QPointer<BrowserWidget>   m_browsers;
+        QPointer<BrowserDock>  m_browserDock;
         QStringList         m_browserNames;
         QPointer<KMenu>     m_searchMenu;
         //QPointer<KVBox>     m_statusbarArea;
 
-        QPointer<SearchWidget>     m_searchWidget;
-        QPointer<Playlist::Widget> m_playlistWidget;
         QPointer<QTimer>           m_timer;  //search filter timer
         QPointer<QSplitter>        m_splitter;
+#ifdef DEBUG_BUILD_TYPE
+        QPointer<NetworkAccessViewer> m_networkViewer;
+#endif // DEBUG_BUILD_TYPE
 
         QByteArray                 m_splitterState;
 
-        QPointer<ContextWidget>         m_contextWidget;
-        QPointer<Context::ContextScene> m_corona;
-        QPointer<Context::ContextView>  m_contextView;
-        QPointer<Context::ToolbarView>  m_contextToolbarView;
-
         Meta::TrackPtr m_currentTrack;
 
-        QDockWidget * m_browsersDock;
-        QDockWidget * m_contextDock;
-        QDockWidget * m_playlistDock;
+        ContextDock * m_contextDock;
+        Playlist::Dock * m_playlistDock;
 
         QPointer<SlimToolbar> m_slimToolbar;
         QPointer<MainToolbar> m_mainToolbar;
-
-        QWidget *     m_browserDummyTitleBarWidget;
-        QWidget *     m_contextDummyTitleBarWidget;
-        QWidget *     m_playlistDummyTitleBarWidget;
-
 
         void    createActions();
         void    createMenus();
@@ -228,6 +218,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         static QPointer<MainWindow> s_instance;
 
         bool m_layoutLocked;
+        bool m_layoutEverRestored;
 
         bool m_waitingForCd;
 
@@ -235,7 +226,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         typedef struct Ratio {
             float x,y;
         } Ratio;
-        Ratio m_browsersRatio;
+        Ratio m_browserRatio;
         Ratio m_contextRatio;
         Ratio m_playlistRatio;
         QRect m_dockingRect;
@@ -255,7 +246,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         void updateDockRatio(QDockWidget*);
         void initLayoutHack();
         // ------------------------------
-        void createContextView( Plasma::Containment *c );
 };
 
 
