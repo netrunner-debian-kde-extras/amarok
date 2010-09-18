@@ -22,8 +22,8 @@
 #include "playlist/layouts/LayoutManager.h"
 #include "PrettyItemDelegate.h"
 #include "SvgHandler.h"
+#include "widgets/kratingwidget.h"
 
-#include <kratingwidget.h>
 #include <KHBox>
 #include <KVBox>
 
@@ -34,6 +34,7 @@
 #include <QPainter>
 #include <QPaintEvent>
 
+using namespace Amarok;
 using namespace Playlist;
 
 const qreal Playlist::ALBUM_WIDTH = 50.0;
@@ -355,9 +356,7 @@ void InlineEditorWidget::ratingValueChanged()
 {
     DEBUG_BLOCK
 
-    QObject * senderObject = sender();
-
-    KRatingWidget * edit = dynamic_cast<KRatingWidget *>( senderObject );
+    KRatingWidget * edit = qobject_cast<KRatingWidget *>( sender() );
     if( !edit )
         return;
 

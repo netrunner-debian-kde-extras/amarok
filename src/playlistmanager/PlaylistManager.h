@@ -19,20 +19,22 @@
 
 #include "core/support/Amarok.h"
 #include "amarok_export.h"
+
 #include "core/playlists/Playlist.h"
 #include "core/playlists/PlaylistProvider.h"
+
+#include "SyncedPlaylist.h"
+#include "SyncRelationStorage.h"
 
 #include <QMultiMap>
 #include <QList>
 
 class KJob;
 class PlaylistManager;
-class QAction;
 
 namespace Playlists {
     class PlaylistFile;
     class PlaylistFileProvider;
-    class PlaylistProvider;
     class UserPlaylistProvider;
     typedef KSharedPtr<PlaylistFile> PlaylistFilePtr;
 }
@@ -115,7 +117,7 @@ class AMAROK_EXPORT PlaylistManager : public QObject
 
         void rename( Playlists::PlaylistPtr playlist );
 
-        void deletePlaylists( Playlists::PlaylistList playlistlist );
+        bool deletePlaylists( Playlists::PlaylistList playlistlist );
 
         Podcasts::PodcastProvider *defaultPodcasts() { return m_defaultPodcastProvider; }
         Playlists::UserPlaylistProvider *defaultUserPlaylists() { return m_defaultUserPlaylistProvider; }
@@ -124,7 +126,8 @@ class AMAROK_EXPORT PlaylistManager : public QObject
          *  Retrieves the provider owning the given playlist
          *  @arg playlist the playlist whose provider we want
          */
-        Playlists::PlaylistProvider* getProviderForPlaylist( const Playlists::PlaylistPtr playlist );
+        QList<Playlists::PlaylistProvider*>
+                getProvidersForPlaylist( const Playlists::PlaylistPtr playlist );
 
         /**
          *  Checks if the provider to whom this playlist belongs supports writing
@@ -133,10 +136,6 @@ class AMAROK_EXPORT PlaylistManager : public QObject
          */
 
         bool isWritable( const Playlists::PlaylistPtr &playlist );
-
-        QList<QAction *> playlistActions( const Playlists::PlaylistList lists );
-        QList<QAction *> trackActions( const Playlists::PlaylistPtr playlist,
-                                                  int trackIndex );
 
         void completePodcastDownloads();
 
@@ -149,19 +148,34 @@ class AMAROK_EXPORT PlaylistManager : public QObject
         void renamePlaylist( Playlists::PlaylistPtr playlist );
 
     private slots:
-        void slotUpdated( /*PlaylistProvider * provider*/ );
+        void slotUpdated();
+        void slotPlaylistAdded( Playlists::PlaylistPtr playlist );
+        void slotPlaylistRemoved( Playlists::PlaylistPtr playlist );
         void downloadComplete( KJob *job );
 
     private:
-        static PlaylistManager* s_instance;
+        void loadPlaylists( Playlists::PlaylistProvider *provider, int category );
+        void removePlaylists( Playlists::PlaylistProvider *provider );
+
+        void addPlaylist( Playlists::PlaylistPtr playlist, int category );
+        void removePlaylist( Playlists::PlaylistPtr playlist, int category );
+
+        static PlaylistManager *s_instance;
         PlaylistManager();
         ~PlaylistManager();
+
+        SyncRelationStorage *m_syncRelStore;
+
+        bool shouldBeSynced( Playlists::PlaylistPtr playlist );
 
         Podcasts::PodcastProvider *m_defaultPodcastProvider;
         Playlists::UserPlaylistProvider *m_defaultUserPlaylistProvider;
         Playlists::PlaylistFileProvider *m_playlistFileProvider;
 
         QMultiMap<int, Playlists::PlaylistProvider*> m_providerMap; //Map PlaylistCategories to providers
+        QMultiMap<int, Playlists::PlaylistPtr> m_playlistMap;
+        QMultiMap<SyncedPlaylistPtr, Playlists::PlaylistPtr> m_syncedPlaylistMap;
+
         QMap<int, QString> m_customCategories;
 
         QMap<KJob *, Playlists::PlaylistFilePtr> m_downloadJobMap;

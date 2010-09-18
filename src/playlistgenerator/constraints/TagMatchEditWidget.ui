@@ -12,7 +12,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Form</string>
+   <string comment="KDE::DoNotExtract">Form</string>
   </property>
   <property name="whatsThis">
    <string>An editor for a TagMatch constraint.  The user can specify a track characteristic, and the APG will fill the playlist with tracks that match that characteristic.  This functions similarity to the matching attributes of the smart playlists in Amarok 1.4.</string>
@@ -21,7 +21,7 @@
    <item>
     <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>Tag Match Constraint Settings</string>
+      <string>Match Tag Constraint Settings</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_4">
       <item row="1" column="0">
@@ -131,7 +131,7 @@ p, li { white-space: pre-wrap; }
               <item row="0" column="1">
                <layout class="QHBoxLayout" name="horizontalLayout_9">
                 <item>
-                 <widget class="QSpinBox" name="spinBox_ValueInt">
+                 <widget class="KIntSpinBox" name="spinBox_ValueInt">
                   <property name="whatsThis">
                    <string>The numerical value that the track characteristic should match.</string>
                   </property>
@@ -306,26 +306,14 @@ p, li { white-space: pre-wrap; }
                   <item>
                    <layout class="QHBoxLayout" name="horizontalLayout_6">
                     <item>
-                     <widget class="QSpinBox" name="spinBox_ValueDateValue"/>
+                     <widget class="KIntSpinBox" name="spinBox_ValueDateValue">
+                      <property name="maximum">
+                       <number>999</number>
+                      </property>
+                     </widget>
                     </item>
                     <item>
-                     <widget class="QComboBox" name="comboBox_ValueDateUnit">
-                      <item>
-                       <property name="text">
-                        <string>days</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>months</string>
-                       </property>
-                      </item>
-                      <item>
-                       <property name="text">
-                        <string>years</string>
-                       </property>
-                      </item>
-                     </widget>
+                     <widget class="QComboBox" name="comboBox_ValueDateUnit"/>
                     </item>
                     <item>
                      <spacer name="horizontalSpacer_2">
@@ -634,7 +622,7 @@ p, li { white-space: pre-wrap; }
               <item row="0" column="1">
                <layout class="QHBoxLayout" name="horizontalLayout_3">
                 <item>
-                 <widget class="KRatingWidget" name="rating_RatingValue">
+                 <widget class="Amarok::KRatingWidget" name="rating_RatingValue">
                   <property name="whatsThis">
                    <string>The rating that the APG should try to match.</string>
                   </property>
@@ -736,12 +724,17 @@ p, li { white-space: pre-wrap; }
  </widget>
  <customwidgets>
   <customwidget>
+   <class>KIntSpinBox</class>
+   <extends>QSpinBox</extends>
+   <header>knuminput.h</header>
+  </customwidget>
+  <customwidget>
    <class>KDateWidget</class>
    <extends>QWidget</extends>
    <header>kdatewidget.h</header>
   </customwidget>
   <customwidget>
-   <class>KRatingWidget</class>
+   <class>Amarok::KRatingWidget</class>
    <extends>QFrame</extends>
    <header>kratingwidget.h</header>
    <container>1</container>

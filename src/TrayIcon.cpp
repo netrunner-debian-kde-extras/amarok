@@ -26,33 +26,24 @@
 #include "EngineController.h"
 #include "amarokconfig.h"
 #include "GlobalCurrentTrackActions.h"
-#include "core/meta/support/MetaConstants.h"
 #include "core/capabilities/CurrentTrackActionsCapability.h"
 #include "playlist/PlaylistActions.h"
-#include "playlist/PlaylistModelStack.h"
 #include "SvgHandler.h"
 #include <KAboutData>
 #include <KAction>
 #include <KCmdLineArgs>
-#include <KIcon>
-#include <KIconEffect>
 #include <KLocale>
 #include <KMenu>
 #include <KStandardDirs>
 
 #include <QAction>
-#include <QEvent>
 #include <QFontMetrics>
-#include <QMouseEvent>
-#include <QPainter>
 #include <QPixmap>
-#include <QTime>
 #include <QToolTip>
 
 Amarok::TrayIcon::TrayIcon( QObject *parent )
         : KStatusNotifierItem( parent )
         , Engine::EngineObserver( The::engineController() )
-        , m_trackLength( 0 )
         , m_separator( 0 )
 {
     DEBUG_BLOCK
@@ -64,13 +55,13 @@ Amarok::TrayIcon::TrayIcon( QObject *parent )
 
     PERF_LOG( "Before adding actions" );
 
-    #ifdef Q_WS_MAC
+#ifdef Q_WS_MAC
     // Add these functions to the dock icon menu in OS X
     extern void qt_mac_set_dock_menu(QMenu *);
     qt_mac_set_dock_menu( contextMenu() );
     contextMenu()->addAction( ac->action( "playlist_playmedia" ) );
     contextMenu()->addSeparator();
-    #endif
+#endif
 
     contextMenu()->addAction( ac->action( "prev"       ) );
     contextMenu()->addAction( ac->action( "play_pause" ) );
@@ -79,105 +70,87 @@ Amarok::TrayIcon::TrayIcon( QObject *parent )
     contextMenu()->setObjectName( "TrayIconContextMenu" );
 
     PERF_LOG( "Adding system tray icon" );
-    paintIcon();
 
-    setupToolTip();
+    setIconByName( "amarok" );
+
+    setupToolTip( true );
 
     connect( this, SIGNAL( scrollRequested( int, Qt::Orientation ) ), SLOT( slotScrollRequested(int, Qt::Orientation) ) );
     connect( this, SIGNAL( secondaryActivateRequested( const QPoint & ) ), SLOT( slotActivated() ) );
 }
 
 void
-Amarok::TrayIcon::setupToolTip()
+Amarok::TrayIcon::setupToolTip( bool updateIcon )
 {
     if( m_track )
     {
         setToolTipTitle( The::engineController()->prettyNowPlaying() );
 
-        QStringList tooltip;
-        // TODO: Use Observer to get notified about changed album art
-        if( m_track->album() )
+        // check if we really need to update the icon (performance tweak)
+        if( updateIcon )
         {
-            const QString uid = m_track->uidUrl();
-            if ( uid != m_toolTipIconUid ) {
-                const QPixmap image = The::svgHandler()->imageWithBorder( m_track->album(), KIconLoader::SizeLarge, 5 );
-                if ( image.isNull() )
-                {
-                    setToolTipIconByName( "amarok" );
-                    m_toolTipIconUid.clear();
-                }
-                else
-                {
-                    setToolTipIconByPixmap( image );
-                    m_toolTipIconUid = uid;
-                }
+            if( m_track->album() && m_track->album()->hasImage() )
+            {
+                QPixmap image = The::svgHandler()->imageWithBorder( m_track->album(), KIconLoader::SizeLarge, 5 );
+                setToolTipIconByPixmap( image );
+            }
+            else
+            {
+                setToolTipIconByName( "amarok" );
             }
         }
-        else
-        {
-            setToolTipIconByName( "amarok" );
-            m_toolTipIconUid.clear();
-        }
 
-        QStringList left, right;
+        QStringList tooltip;
 
-        // TODO: Replace block by some other useful information
         QString volume;
         if ( The::engineController()->isMuted() )
+        {
             volume = i18n( "Muted" );
+        }
         else
+        {
             volume = QString( "%1%" ).arg( The::engineController()->volume() );
-        right << QString("<i>%1</i>").arg( volume );
-        left << QString( "<i>%1</i>" ).arg( i18n( "Volume" ) );
+        }
+        tooltip << QString("<i>%1: %2</i>").arg( i18n( "Volume" ) ).arg( volume );
 
         const float score = m_track->score();
         if( score > 0.f )
         {
-            right << QString::number( score, 'f', 2 );  // 2 digits after decimal point
-            left << i18n( "Score" );
+            tooltip << QString( "%1: %2" ).arg( i18n( "Score" ) ).arg( QString::number( score, 'f', 2 ) );
         }
 
         const int rating = m_track->rating();
         if( rating > 0 )
         {
-            QString s;
+            QString stars;
             for( int i = 0; i < rating / 2; ++i )
-                s += QString( "<img src=\"%1\" height=\"%2\" width=\"%3\">" )
+                stars += QString( "<img src=\"%1\" height=\"%2\" width=\"%3\">" )
                         .arg( KStandardDirs::locate( "data", "amarok/images/star.png" ) )
                         .arg( QFontMetrics( QToolTip::font() ).height() )
                         .arg( QFontMetrics( QToolTip::font() ).height() );
             if( rating % 2 )
-                s += QString( "<img src=\"%1\" height=\"%2\" width=\"%3\">" )
+                stars += QString( "<img src=\"%1\" height=\"%2\" width=\"%3\">" )
                         .arg( KStandardDirs::locate( "data", "amarok/images/smallstar.png" ) )
                         .arg( QFontMetrics( QToolTip::font() ).height() )
                         .arg( QFontMetrics( QToolTip::font() ).height() );
-            right << s;
-            left << i18n( "Rating" );
+
+            tooltip << QString( "%1: %2" ).arg( i18n( "Rating" ) ).arg( stars );
         }
 
         const int count = m_track->playCount();
         if( count > 0 )
         {
-            right << QString::number( count );
-            left << i18n( "Play Count" );
+            tooltip << QString( "%1: %2" ).arg( i18n( "Play Count" ) ).arg( QString::number( count ) );
         }
 
         const uint lastPlayed = m_track->lastPlayed();
-        right << Amarok::verboseTimeSince( lastPlayed );
-        left << i18n( "Last Played" );
-
-        // NOTE: It seems to be necessary to <center> each element indivdually
-        const QString row = "- %1: %2";
-        for( int x = 0; x < left.count(); ++x )
-            if ( !right[x].isEmpty() )
-                tooltip << row.arg( left[x] ).arg( right[x] );
+        tooltip << QString( "%1: %2" ).arg( i18n( "Last played" ) ).arg( Amarok::verboseTimeSince( lastPlayed ) );
 
         setToolTipSubTitle( tooltip.join("<br>") );
     }
     else
     {
         setToolTipIconByName( "amarok" );
-        m_toolTipIconUid.clear();
         setToolTipTitle( KCmdLineArgs::aboutData()->programName() );
         setToolTipSubTitle( The::engineController()->prettyNowPlaying() );
     }
@@ -199,20 +172,26 @@ Amarok::TrayIcon::engineStateChanged( Phonon::State state, Phonon::State /*oldSt
     switch( state )
     {
         case Phonon::PlayingState:
-            unsubscribeFrom( m_track );
+            if ( m_track )
+            {
+                unsubscribeFrom( m_track );
+                unsubscribeFrom( m_track->album() );
+            }
             m_track = track;
-            m_trackLength = m_track ? m_track->length() : 0;
-            subscribeTo( track );
+            if ( track )
+            {
+                subscribeTo( track );
+                subscribeTo( track->album() );
+            }
 
-            paintIcon( 0 );
+            setOverlayIconByName( "media-playback-start" );
             setupMenu();
             break;
 
         case Phonon::StoppedState:
             m_track = 0;
-            m_trackLength = 0;
 
-            paintIcon();
+            setOverlayIconByName( QString() );
             setupMenu(); // remove custom track actions on stop
             break;
 
@@ -223,21 +202,19 @@ Amarok::TrayIcon::engineStateChanged( Phonon::State state, Phonon::State /*oldSt
         case Phonon::LoadingState:
         case Phonon::ErrorState:
         case Phonon::BufferingState:
+            setOverlayIconByName( QString() );
             break;
     }
 
-    setupToolTip();
+    setupToolTip( true );
 }
 
 void
 Amarok::TrayIcon::engineNewTrackPlaying()
 {
     m_track = The::engineController()->currentTrack();
-    m_trackLength = m_track ? m_track->length() : 0;
 
-    paintIcon( 0 );
-
-    setupToolTip();
+    setupToolTip( true );
     setupMenu();
 }
 
@@ -246,17 +223,17 @@ Amarok::TrayIcon::metadataChanged( Meta::TrackPtr track )
 {
     Q_UNUSED( track )
 
-    setupToolTip();
+    setupToolTip( false );
     setupMenu();
 }
 
 void
-Amarok::TrayIcon::engineTrackPositionChanged( qint64 position, bool userSeek )
+Amarok::TrayIcon::metadataChanged( Meta::AlbumPtr album )
 {
-    Q_UNUSED( userSeek );
+    Q_UNUSED( album )
 
-    if( m_trackLength )
-        paintIcon( position );
+    setupToolTip( true );
+    setupMenu();
 }
 
 void
@@ -264,7 +241,7 @@ Amarok::TrayIcon::engineVolumeChanged( int percent )
 {
     Q_UNUSED( percent );
 
-    setupToolTip();
+    setupToolTip( false );
 }
 
 void
@@ -272,72 +249,7 @@ Amarok::TrayIcon::engineMuteStateChanged( bool mute )
 {
     Q_UNUSED( mute );
 
-    setupToolTip();
-}
-
-void
-Amarok::TrayIcon::paletteChange( const QPalette & op )
-{
-    Q_UNUSED( op );
-
-    paintIcon();
-}
-
-void
-Amarok::TrayIcon::paintIcon( qint64 trackPosition )
-{
-    static qint64 oldMergePos = -1;
-
-    // start up
-    // TODO: Move these two blocks to ctor (warning: might get some regressions)
-    if( m_baseIcon.isNull() )
-    {
-        m_baseIcon = KIconLoader::global()->loadIcon( "amarok", KIconLoader::Panel );
-        setIconByPixmap( m_baseIcon ); // show icon
-        setOverlayIconByName( QString() );
-        return; // HACK: return because m_baseIcon is still null after first startup (why?)
-    }
-
-    if( m_grayedIcon.isNull() )
-    {
-        m_grayedIcon = m_baseIcon; // copies object
-        KIconEffect::semiTransparent( m_grayedIcon );
-    }
-
-    // trackPosition < 0 means reset
-    if( trackPosition < 0 )
-    {
-        oldMergePos = -1;
-        setIconByPixmap( m_baseIcon );
-        setOverlayIconByName( QString() );
-        return;
-    }
-
-    // check if we are playing a stream
-    if( !m_trackLength )
-    {
-        m_icon = m_baseIcon;
-        setIconByPixmap( m_icon );
-        setOverlayIconByName( "media-playback-start" );
-        return;
-    }
-
-    const qint64 mergePos = ( float( trackPosition ) / m_trackLength ) * m_icon.height();
-
-    // return if pixmap would stay the same
-    if( oldMergePos == mergePos )
-        return;
-
-    // draw m_baseIcon on top of the gray version
-    m_icon = m_grayedIcon; // copies object
-    QPainter p( &m_icon );
-    p.drawPixmap( 0, 0, m_baseIcon, 0, 0, 0, m_icon.height() - mergePos );
-    p.end();
-
-    oldMergePos = mergePos;
-
-    setIconByPixmap( m_icon );
-    setOverlayIconByName( "media-playback-start" );
+    setupToolTip( false );
 }
 
 void

@@ -16,15 +16,14 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "AmpacheServiceQueryMaker"
+
 #include "AmpacheServiceQueryMaker.h"
 
+#include "AmpacheMeta.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "AmpacheMeta.h"
 #include "core-impl/collections/support/MemoryMatcher.h"
-
-#include <threadweaver/Job.h>
-#include <threadweaver/ThreadWeaver.h>
 
 #include <QDomDocument>
 
@@ -36,18 +35,18 @@ struct AmpacheServiceQueryMaker::Private
     QueryType type;
     int maxsize;
     bool returnDataPtrs;
+    QHash<QLatin1String, KUrl> urls;
 };
 
 AmpacheServiceQueryMaker::AmpacheServiceQueryMaker( AmpacheServiceCollection * collection, const QString &server, const QString &sessionId  )
     : DynamicServiceQueryMaker()
     , m_collection( collection )
-    , m_storedTransferJob( 0 )
     , d( new Private )
     , m_server( server )
     , m_sessionId( sessionId )
     , m_dateFilter( -1 )
 {
-    DEBUG_BLOCK
+    // DEBUG_BLOCK
     m_collection = collection;
     reset();
 }
@@ -62,6 +61,7 @@ AmpacheServiceQueryMaker::reset()
 {
     d->type = Private::NONE;
     d->maxsize = 0;
+    d->urls.clear();
     d->returnDataPtrs = false;
     m_parentArtistId.clear();
     m_parentAlbumId.clear();
@@ -84,7 +84,7 @@ AmpacheServiceQueryMaker::run()
 {
     DEBUG_BLOCK
 
-    if( m_storedTransferJob != 0 )
+    if( !d->urls.isEmpty() )
         return;
 
     //naive implementation, fix this
@@ -274,10 +274,9 @@ AmpacheServiceQueryMaker::fetchArtists()
         request.addQueryItem( "limit", QString::number( d->maxsize ) ); // set to 0 in reset() so fine to use uncondiationally
         debug() << "Artist url: " << request.url();
 
-
-        m_storedTransferJob =  KIO::storedGet(  request, KIO::NoReload, KIO::HideProgressInfo );
-        connect( m_storedTransferJob, SIGNAL( result( KJob * ) )
-            , this, SLOT( artistDownloadComplete( KJob *) ) );
+        d->urls[QLatin1String("artists")] = request;
+        The::networkAccessManager()->getData( request, this,
+             SLOT(artistDownloadComplete(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
     //}
 
     m_lastArtistFilter = m_artistFilter;
@@ -319,9 +318,9 @@ AmpacheServiceQueryMaker::fetchAlbums()
         request.addQueryItem( "limit", QString::number( d->maxsize ) ); // set to 0 in reset() so fine to use uncondiationally
         debug() << "request url: " << request.url();
 
-        m_storedTransferJob =  KIO::storedGet(  request, KIO::NoReload, KIO::HideProgressInfo );
-        connect( m_storedTransferJob, SIGNAL( result( KJob * ) )
-            , this, SLOT( albumDownloadComplete( KJob *) ) );
+        d->urls[QLatin1String("albums")] = request;
+        The::networkAccessManager()->getData( request, this,
+             SLOT(albumDownloadComplete(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
     }
 }
 
@@ -377,46 +376,45 @@ AmpacheServiceQueryMaker::fetchTracks()
 
         request.addQueryItem( "limit", QString::number( d->maxsize ) );// set to 0 in reset() so fine to use uncondiationally
 
-        m_storedTransferJob =  KIO::storedGet(  request, KIO::NoReload, KIO::HideProgressInfo );
-        connect( m_storedTransferJob, SIGNAL( result( KJob * ) )
-            , this, SLOT( trackDownloadComplete( KJob *) ) );
+        d->urls[QLatin1String("tracks")] = request;
+        The::networkAccessManager()->getData( request, this,
+             SLOT(trackDownloadComplete(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
     }
 }
 
 void
-AmpacheServiceQueryMaker::artistDownloadComplete( KJob * job )
+AmpacheServiceQueryMaker::artistDownloadComplete( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    DEBUG_BLOCK
+    if( d->urls.value(QLatin1String("artists")) != url )
+        return;
 
-    if( job->error() )
+    d->urls.remove( QLatin1String("artists") );
+    if( e.code != QNetworkReply::NoError )
     {
-        error() << job->error();
-        m_storedTransferJob->deleteLater();
+        debug() << "Artist download error:" << e.description;
         return;
     }
+
+    // DEBUG_BLOCK
 
     Meta::ArtistList artists;
 
      //so lets figure out what we got here:
     QDomDocument doc( "reply" );
-    doc.setContent( m_storedTransferJob->data() );
+    doc.setContent( data );
     QDomElement root = doc.firstChildElement( "root" );
 
     // Is this an error, if so we need to 'un-ready' the service and re-authenticate before contiuning
-    QDomElement error = root.firstChildElement( "error" );
+    QDomElement domError = root.firstChildElement( "error" );
 
-    if ( !error.isNull() )
+    if ( !domError.isNull() )
     {
-        debug () << "Error getting Artist List" << error.text();
+        debug () << "Error getting Artist List" << domError.text();
         AmpacheService *m_parentService = dynamic_cast< AmpacheService * >( m_collection->service() );
         if ( m_parentService == 0 )
-        {
-                return;
-        }
+            return;
         else
-        {
             m_parentService->reauthenticate();
-        }
     }
 
     QDomNode n = root.firstChild();
@@ -446,50 +444,43 @@ AmpacheServiceQueryMaker::artistDownloadComplete( KJob * job )
         n = n.nextSibling();
     }
 
-   m_storedTransferJob->deleteLater();
-
-   handleResult( artists );
-   emit queryDone();
+    handleResult( artists );
+    emit queryDone();
 }
 
 void
-AmpacheServiceQueryMaker::albumDownloadComplete( KJob * job )
+AmpacheServiceQueryMaker::albumDownloadComplete( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    DEBUG_BLOCK
+    if( d->urls.value(QLatin1String("albums")) != url )
+        return;
 
-    if( job->error() )
+    d->urls.remove( QLatin1String("albums") );
+    if( e.code != QNetworkReply::NoError )
     {
-        error() << job->error();
-        m_storedTransferJob->deleteLater();
+        debug() << "Album download error:" << e.description;
         return;
     }
 
-    //debug() << "Received response: " << m_storedTransferJob->data();
+    // DEBUG_BLOCK
 
     Meta::AlbumList albums;
 
-    //debug() << "received artists: " <<  m_storedTransferJob->data();
-
      //so lets figure out what we got here:
     QDomDocument doc( "reply" );
-    doc.setContent( m_storedTransferJob->data() );
+    doc.setContent( data );
     QDomElement root = doc.firstChildElement( "root" );
 
     // Is this an error, if so we need to 'un-ready' the service and re-authenticate before contiuning
-    QDomElement error = root.firstChildElement( "error" );
+    QDomElement domError = root.firstChildElement( "error" );
 
-    if ( !error.isNull() )
+    if( !domError.isNull() )
     {
-        debug () << "Error getting Album List" << error.text();
+        debug () << "Error getting Album List" << domError.text();
         AmpacheService *m_parentService = dynamic_cast< AmpacheService * >(m_collection->service());
         if ( m_parentService == 0 )
-        {
-                return;
-        }
+            return;
         else
-        {
             m_parentService->reauthenticate();
-        }
     }
 
     QDomNode n = root.firstChild();
@@ -541,48 +532,43 @@ AmpacheServiceQueryMaker::albumDownloadComplete( KJob * job )
         n = n.nextSibling();
     }
 
-   m_storedTransferJob->deleteLater();
-
-   handleResult( albums );
-   emit queryDone();
+    handleResult( albums );
+    emit queryDone();
 }
 
 void
-AmpacheServiceQueryMaker::trackDownloadComplete( KJob * job )
+AmpacheServiceQueryMaker::trackDownloadComplete( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    DEBUG_BLOCK
+    if( d->urls.value(QLatin1String("tracks")) != url )
+        return;
 
-    if( job->error() )
+    d->urls.remove( QLatin1String("tracks") );
+    if( e.code != QNetworkReply::NoError )
     {
-        error() << job->error();
-        m_storedTransferJob->deleteLater();
+        debug() << "Track download error:" << e.description;
         return;
     }
 
-    //debug() << "Received response: " << m_storedTransferJob->data();
+    // DEBUG_BLOCK
 
     Meta::TrackList tracks;
 
      //so lets figure out what we got here:
     QDomDocument doc( "reply" );
-    doc.setContent( m_storedTransferJob->data() );
+    doc.setContent( data );
     QDomElement root = doc.firstChildElement( "root" );
 
     // Is this an error, if so we need to 'un-ready' the service and re-authenticate before contiuning
-    QDomElement error = root.firstChildElement( "error" );
+    QDomElement domError = root.firstChildElement( "error" );
 
-    if ( !error.isNull() )
+    if( !domError.isNull() )
     {
-        debug () << "Error getting Track Download " << error.text();
+        debug () << "Error getting Track Download " << domError.text();
         AmpacheService *m_parentService = dynamic_cast< AmpacheService * >( m_collection->service() );
         if ( m_parentService == 0 )
-        {
-                return;
-        }
+            return;
         else
-        {
             m_parentService->reauthenticate();
-        }
     }
 
     QDomNode n = root.firstChild();
@@ -627,28 +613,27 @@ AmpacheServiceQueryMaker::trackDownloadComplete( KJob * job )
         if ( artistPtr.data() != 0 )
         {
             //debug() << "Found parent artist " << artistPtr->name();
-           Meta::ServiceArtist *artist = dynamic_cast< Meta::ServiceArtist * > ( artistPtr.data() );
-           track->setArtist( artistPtr );
-           artist->addTrack( trackPtr );
+            Meta::ServiceArtist *artist = dynamic_cast< Meta::ServiceArtist * > ( artistPtr.data() );
+            track->setArtist( artistPtr );
+            artist->addTrack( trackPtr );
         }
 
         Meta::AlbumPtr albumPtr = m_collection->albumById( albumId );
         if ( albumPtr.data() != 0 )
         {
-           //debug() << "Found parent album " << albumPtr->name() ;
-           Meta::ServiceAlbum *album = dynamic_cast< Meta::ServiceAlbum * > ( albumPtr.data() );
-           track->setAlbumPtr( albumPtr );
-           album->addTrack( trackPtr );
+            //debug() << "Found parent album " << albumPtr->name() ;
+            Meta::ServiceAlbum *album = dynamic_cast< Meta::ServiceAlbum * > ( albumPtr.data() );
+            track->setAlbumPtr( albumPtr );
+            album->addTrack( trackPtr );
         }
 
         tracks.push_back( trackPtr );
 
         n = n.nextSibling();
-   }
-   m_storedTransferJob->deleteLater();
+    }
 
-   handleResult( tracks );
-   emit queryDone();
+    handleResult( tracks );
+    emit queryDone();
 }
 
 QueryMaker *
@@ -681,7 +666,6 @@ AmpacheServiceQueryMaker::addNumberFilter( qint64 value, qint64 filter, QueryMak
     }
     return this;
 }
-
 
 int
 AmpacheServiceQueryMaker::validFilterMask()

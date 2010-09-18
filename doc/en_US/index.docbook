@@ -1,0 +1,321 @@
+<?xml version="1.0" ?>
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.2-Based Variant V1.1//EN" "dtd/kdex.dtd" [
+  <!ENTITY % addindex "IGNORE">
+  <!ENTITY % English "INCLUDE">
+]>
+<book lang="&language;">
+<bookinfo>
+<title>The Amarok Handbook</title>
+<authorgroup>
+<author>
+<personname>
+    <firstname>This documentation was converted from the KDE UserBase <ulink url=" http://userbase.kde.org/Amarok">Amarok</ulink> page.</firstname>
+<surname></surname>
+</personname>
+    </author>
+<!-- TRANS:ROLES_OF_TRANSLATORS -->
+    </authorgroup>
+<legalnotice>&FDLNotice;</legalnotice>
+<date>2010-08-04</date>
+    <releaseinfo>&kde; SC 4.5</releaseinfo>
+<abstract>
+ <para>Amarok is a free, versatile and powerful music player for Linux. The latest 2.x release series, often referred to as <quote>Amarok&nbsp;2</quote>, is cross-platform (can be used on many platforms, including Linux, MacOS and Microsoft Windows) and implements a completely reworked code base that will enable it to incorporate exciting new features as the release matures. The current stable release is version 2.3.</para>
+</abstract>
+
+<keywordset>
+ <keyword>KDE</keyword>
+ <keyword>multimedia</keyword>
+ <keyword>player</keyword>
+ <keyword>audio</keyword>
+ <keyword>ogg</keyword>
+ <keyword>mp3</keyword>
+ <keyword>wav</keyword>
+ <keyword>music</keyword>
+ <keyword>sound</keyword>
+</keywordset>
+</bookinfo>
+<!--userbase <timestamp>2010-08-04T20:37:13Z</timestamp>-->
+
+<!--userbase-content-->
+<chapter id="interface"><title>Interface</title>
+<para>Amarok&nbsp;2 sports a three-pane interface by default.
+</para>
+
+<sect1 id="the-left-pane"><title>The left pane</title>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1left.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase><quote>To the left, we have...</quote></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>The left pane is tabbed and retractable. The first tab is the <guilabel>collection browser</guilabel>, which is the primary interface to your local collection. Attached devices will also show up here. There is a tab for all <guilabel>Internet services</guilabel> that you have enabled. Here, you can browse listings of radio stations and podcasts; listen/subscribe to them, interact with your <ulink url="http://www.last.fm">last.fm</ulink> account, purchase music from online stores such as Magnatune and download independent artists' music from Jamendo and more.  The <guilabel>Playlist</guilabel> tab allows you to create and manage dynamic and traditional playlists and podcasts. Finally, the <guilabel>Files</guilabel> tab displays an integrated file browser.
+</para>
+</sect1>
+
+<sect1 id="the-central-pane-context-view"><title>The central pane (Context View)</title>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1center.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase><quote>In the middle...</quote></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>This is where all the action is. The pane contains applets that dynamically change to display context information about the song that is currently playing. You can see the rating, score and play count of the currently playing song, other songs by the same artist that you have, the lyrics of the song, the <ulink url="http://www.wikipedia.org">Wikipedia</ulink> page on the artist and more. These applets can be added, removed or rearranged using the <guilabel>applet bar</guilabel> at the bottom of the pane.
+</para>
+</sect1>
+
+<sect1 id="the-right-pane-playlist-view"><title>The right pane (Playlist View)</title>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1right.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase><quote>And on the right...</quote></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>Amarok&nbsp;2 has the most configurable play list of any music player in existence.  While most offer a columnar layout as default and perhaps a few other fixed views for the play list, Amarok&nbsp;2 puts the power in your hands to shape the play list any way you see fit.  To start you off, there are three example play list layouts that you can use as starting points to create the layout that fits your flow the best.
+</para>
+</sect1>
+
+</chapter>
+<chapter id="features"><title>Features</title>
+<sect1 id="plays-music"><title>Plays music</title>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1svn965006.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>Amarok&nbsp;2 can support most popular formats for music files. The actual list of formats is dependent on the codecs and audio backend in use on your system. There's also support for traditional play lists &mdash; you can create, save and load all the play lists you want.
+</para>
+</sect1>
+<sect1 id="device-support"><title>Device Support</title>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1ipod.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>Currently, basic iPod, MTP and UMS device support are enabled if the required packages are installed. This will be improved upon and more devices will be supported in the future releases.
+</para>
+<para>The button <guilabel>Toggle Unified View Mode</guilabel> at the top of the collection lets you merge collections.  This means songs from your local collection, audio CD, mp3-player and so on will be shown in one unified collection.
+</para>
+</sect1>
+<sect1 id="configurable-context-view"><title>Configurable Context View</title>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1contextviewconfig.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>The <guilabel>Context view</guilabel>, the centerpiece attraction in Amarok&nbsp;2, can automatically fetch contextual information about the currently playing song (such as album art, lyrics or <ulink url="http://www.wikipedia.org">Wikipedia</ulink> information) from the Internet and display them. This is one of the unique features of the Amarok series.
+</para>
+</sect1>
+
+
+<sect1 id="more-internet-services"><title>More Internet Services</title>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1internetservices.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase><quote>Some Internet services shown on the left pane</quote></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>Amarok&nbsp;2 opens the gateway to a rich multimedia experience on the Internet.  
+</para>
+<itemizedlist>
+<listitem><para>Sporting interfaces to services such as Ampache music servers and mp3tunes lockers, it allows you to listen to your music from anywhere in the world.  
+</para></listitem>
+<listitem><para>You can sample and buy music from Magnatune.  
+</para></listitem>
+<listitem><para>Using the Jamendo service, you can listen to and download music from independent artists who you can support with your donations.  
+</para></listitem>
+<listitem><para>With integrated <ulink url="http://www.last.fm">last.fm</ulink> functionality, you can scrobble your tracks, use <ulink url="http://www.last.fm">last.fm</ulink> features like statistics, charts and listen to radio streams customized to your music taste &mdash; all from Amarok&nbsp;2.  
+</para></listitem>
+</itemizedlist>
+<para>And that is just the beginning &mdash; you can add even more Internet services using the <guilabel>Script Manager</guilabel>.
+</para>
+</sect1>
+
+<sect1 id="script-manager"><title>Script Manager</title>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1scriptmanager.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>Scripts are add-ons that allow you to extend Amarok&nbsp;2&rsquo;s functionality in innovative ways.  Using the <guilabel>Script Manager</guilabel>, you can manage these scripts in that it allows you to install/remove or enable/disable scripts you already have.  You can also use the <guilabel>Get More Scripts</guilabel> feature to download new scripts submitted by other users.
+</para>
+</sect1>
+<sect1 id="cover-manager"><title>Cover Manager</title>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1covermanager.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>You can browse through your music collection using the nifty cover manager that displays the album art.
+</para>
+</sect1>
+<sect1 id="rating-and-scoring"><title>Rating and scoring</title>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1rating.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>You can show your love for the songs by rating them. Amarok&nbsp;2 supports &frac12;&sdot;&#10025; ratings, too. In addition, Amarok&nbsp;2 can calculate a score (a sort of guessed rating) depending on metrics such as how often you listen to or skip a song.
+</para>
+</sect1>
+<sect1 id="pop-up-dropper"><title>Pop-Up Dropper</title>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1popup.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>This is an innovative interface that offers contextual options (such as the ones you see in a <guilabel>right-click menu</guilabel>) that you can <quote>drop</quote> a song into. Grab a song and see it appear in the context view pane!
+</para>
+</sect1>
+<sect1 id="configurable-playlist-view"><title>Configurable Playlist View</title>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1pleditor.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>The currently loaded play list is highly configurable and can show information about the songs in any form you like. If you are used to the <guilabel>Spreadsheet View</guilabel> found in Amarok&nbsp;1.x series and other music players, you can have that, too!  The <guilabel>Playlist View</guilabel> also allows you to save or export the current playlist.
+</para>
+</sect1>
+
+
+<sect1 id="dynamic-playlists"><title>Dynamic Playlists</title>
+<para>
+<screenshot>
+<screeninfo></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1dynamicplaylist.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase><quote>A little bit of this, a little bit of that&hellip;</quote></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>Amarok&nbsp;2 allows you to create weighted random play lists that adhere to various criteria exactly (<emphasis>Proportional bias</emphasis>) or approximately (<emphasis>Fuzzy bias</emphasis>).  For example, you can create a play list that will be randomly populated by songs that are rated more than 3 stars and are approximately from around the year 1967!</para>
+</sect1>
+
+<sect1 id="replay-gain-support"><title>Replay Gain Support</title>
+<para>Amarok&nbsp;2 supports replay gain tag information embedded in files and automatically adjusts the overall volume of the song to a common level.
+</para>
+<para>Rediscover your music!
+</para>
+</sect1>
+</chapter>
+<chapter id="hints-tips-and-faqs"><title>Hints, Tips and FAQs</title>
+<para>If you find that most of your music is recognized by Amarok, but some folders are not properly picked up, open console and type
+</para>
+<para> touch <replaceable>folder</replaceable>
+</para>
+<para>where <replaceable>folder</replaceable> is the path to the folder that has the problem. Then select <menuchoice><guimenu>Settings</guimenu><guimenuitem>Configure Amarok</guimenuitem></menuchoice> in Amarok main window menu, and open <menuchoice><guimenu>Collection</guimenu><guimenuitem>Rescan Collection</guimenuitem></menuchoice> page. Your folder should be visible again now.
+</para>
+</chapter>
+<chapter id="more-information"><title>More Information</title>
+<itemizedlist>
+<listitem><para><ulink url="http://amarok.kde.org/">Amarok Homepage</ulink>
+</para></listitem>
+<listitem><para><ulink url="http://forum.kde.org/viewforum.php?f=127">Amarok Forum</ulink>
+</para></listitem>
+</itemizedlist>
+</chapter>
+<!--userbase-content-->
+<chapter id="credits">
+<title>Credits and License</title>
+    <para>
+Documentation Copyright see the UserBase     <ulink url="http://userbase.kde.org/index.php?title=Amarok&amp;action=history">Amarok page history</ulink></para>
+    <!-- TRANS:CREDIT_FOR_TRANSLATORS -->
+&underFDL;
+</chapter>
+&documentation.index;
+</book>

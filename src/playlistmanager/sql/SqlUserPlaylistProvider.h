@@ -41,7 +41,7 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         ~SqlUserPlaylistProvider();
 
         /* PlaylistProvider functions */
-        virtual QString prettyName() const { return i18n( "Internal Database" ); }
+        virtual QString prettyName() const { return i18n( "Amarok Database" ); }
         virtual QString description() const { return i18n( "Local playlists stored in the database" ); }
         virtual KIcon icon() const { return KIcon( "server-database" ); }
 
@@ -58,16 +58,13 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
                                                   int trackIndex );
 
         /* UserPlaylistProvider functions */
-        virtual void deletePlaylists( Playlists::PlaylistList playlistlist );
+        virtual bool deletePlaylists( Playlists::PlaylistList playlistlist );
         virtual void rename( Playlists::PlaylistPtr playlist, const QString &newName );
 
         Playlists::SqlPlaylistGroupPtr group( const QString &name );
         bool import( const QString& fromLocation );
 
         static Playlists::SqlPlaylistList toSqlPlaylists( Playlists::PlaylistList playlists );
-
-    signals:
-        void updated();
 
     private slots:
         void slotDelete();
@@ -83,7 +80,7 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         void checkTables();
         void loadFromDb();
 
-        void deleteSqlPlaylists( Playlists::SqlPlaylistList playlistlist );
+        bool deleteSqlPlaylists( Playlists::SqlPlaylistList playlistlist );
 
         Playlists::SqlPlaylistList selectedPlaylists() const
             { return m_selectedPlaylists; }

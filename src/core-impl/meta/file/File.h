@@ -19,6 +19,7 @@
 
 #include "core/meta/Meta.h"
 
+#include <fileref.h>
 
 namespace MetaFile
 {
@@ -97,7 +98,6 @@ namespace MetaFile
 
             virtual void beginMetaDataUpdate();
             virtual void endMetaDataUpdate();
-            virtual void abortMetaDataUpdate();
 
             virtual void finishedPlaying( double playedFraction );
 
@@ -106,6 +106,11 @@ namespace MetaFile
 
             virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
             virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
+
+            static TagLib::FileRef getFileRef( const KUrl &url );
+
+            virtual QImage getEmbeddedCover() const;
+            static QImage getEmbeddedCover( const QString &path );
 
             class Private;
 

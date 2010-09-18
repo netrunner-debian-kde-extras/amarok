@@ -23,8 +23,6 @@
 
 #include "MainWindow.h"
 
-#include <config-amarok.h>    //HAVE_LIBVISUAL definition
-
 #include "aboutdialog/ExtendedAboutDialog.h"
 #include "ActionClasses.h"
 #include "core/support/Amarok.h"
@@ -34,7 +32,6 @@
 #include "Osd.h"
 #include "PaletteHandler.h"
 #include "ScriptManager.h"
-#include "SearchWidget.h"
 #include "amarokconfig.h"
 #include "aboutdialog/OcsData.h"
 #include "amarokurls/AmarokUrlHandler.h"
@@ -43,19 +40,21 @@
 #include "browsers/filebrowser/FileBrowser.h"
 #include "browsers/playlistbrowser/PlaylistBrowser.h"
 #include "browsers/servicebrowser/ServiceBrowser.h"
+#include "context/ContextDock.h"
 #include "core-impl/collections/support/CollectionManager.h"
-#include "context/ContextScene.h"
-#include "context/ContextView.h"
-#include "context/ToolbarView.h"
 #include "covermanager/CoverManager.h" // for actions
 #include "dialogs/EqualizerDialog.h"
 #include "likeback/LikeBack.h"
 #include "moodbar/MoodbarManager.h"
+#include "network/NetworkAccessManagerProxy.h"
+#ifdef DEBUG_BUILD_TYPE
+#include "network/NetworkAccessViewer.h"
+#endif // DEBUG_BUILD_TYPE
 #include "playlist/layouts/LayoutConfigAction.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
-#include "playlist/PlaylistWidget.h"
+#include "playlist/PlaylistDock.h"
 #include "playlist/ProgressiveSearchWidget.h"
 #include "playlistmanager/file/PlaylistFileProvider.h"
 #include "playlistmanager/PlaylistManager.h"
@@ -94,7 +93,6 @@
 #include <QList>
 #include <QSizeGrip>
 #include <QStyle>
-#include <QSysInfo>
 #include <QVBoxLayout>
 
 #ifdef Q_WS_X11
@@ -133,6 +131,7 @@ MainWindow::MainWindow()
     : KMainWindow( 0 )
     , Engine::EngineObserver( The::engineController() )
     , m_lastBrowser( 0 )
+    , m_layoutEverRestored( false )
     , m_waitingForCd( false )
     , m_mouseDown( false )
     , m_LH_initialized( false )
@@ -173,53 +172,37 @@ MainWindow::MainWindow()
 
     //new K3bExporter();
 
-    KConfigGroup config = Amarok::config();
-    const QSize size = config.readEntry( "MainWindow Size", QSize() );
-    const QPoint pos = config.readEntry( "MainWindow Position", QPoint() );
-    if( size.isValid() )
-    {
-        resize( size );
-        move( pos );
-    }
-
     The::paletteHandler()->setPalette( palette() );
     setPlainCaption( i18n( AMAROK_CAPTION ) );
 
     init();  // We could as well move the code from init() here, but meh.. getting a tad long
 
     //restore active category ( as well as filters and levels and whatnot.. )
-    const QString path = config.readEntry( "Browser Path", QString() );
+    const QString path = Amarok::config().readEntry( "Browser Path", QString() );
     if( !path.isEmpty() )
-        m_browsers->list()->navigate( path );
+        m_browserDock->list()->navigate( path );
+
+    setAutoSaveSettings();
 }
 
 MainWindow::~MainWindow()
 {
     DEBUG_BLOCK
 
-    KConfigGroup config = Amarok::config();
-    config.writeEntry( "MainWindow Size", size() );
-    config.writeEntry( "MainWindow Position", pos() );
-
     //save currently active category
-    config.writeEntry( "Browser Path", m_browsers->list()->path() );
+    Amarok::config().writeEntry( "Browser Path", m_browserDock->list()->path() );
 
     QList<int> sPanels;
 
     //foreach( int a, m_splitter->saveState() )
     //    sPanels.append( a );
 
-    saveLayout();
-
     //AmarokConfig::setPanelsSavedState( sPanels );
 
-    delete m_browserDummyTitleBarWidget;
-    delete m_contextDummyTitleBarWidget;
-    delete m_playlistDummyTitleBarWidget;
-
-    delete m_contextView;
-    delete m_corona;
     //delete m_splitter;
+#ifdef DEBUG_BUILD_TYPE
+    delete m_networkViewer;
+#endif // DEBUG_BUILD_TYPE
     delete The::statusBar();
     delete The::svgHandler();
     delete The::paletteHandler();
@@ -255,63 +238,33 @@ MainWindow::init()
 
     //BEGIN Creating Widgets
     PERF_LOG( "Create sidebar" )
-    m_browsers = new BrowserWidget( this );
-    m_browsers->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
+    m_browserDock = new BrowserDock( this );
+    m_browserDock->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
 
-    m_browserDummyTitleBarWidget = new QWidget();
-    m_contextDummyTitleBarWidget = new QWidget();
-    m_playlistDummyTitleBarWidget = new QWidget();
-
-    m_browsersDock = new QDockWidget( i18n( "Media Sources" ), this );
-    m_browsersDock->setObjectName( "Media Sources dock" );
-    m_browsersDock->setWidget( m_browsers );
-    m_browsersDock->setAllowedAreas( Qt::AllDockWidgetAreas );
-    m_browsersDock->installEventFilter( this );
+    m_browserDock->installEventFilter( this );
     PERF_LOG( "Sidebar created" )
 
     PERF_LOG( "Create Playlist" )
-    m_playlistWidget = new Playlist::Widget( 0 );
-    m_playlistWidget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
-    m_playlistWidget->setFocus( Qt::ActiveWindowFocusReason );
-
-    m_playlistDock = new QDockWidget( i18n( "Playlist" ), this );
-    m_playlistDock->setObjectName( "Playlist dock" );
-    m_playlistDock->setWidget( m_playlistWidget );
-    m_playlistDock->setAllowedAreas( Qt::AllDockWidgetAreas );
+    m_playlistDock = new Playlist::Dock( this );
     m_playlistDock->installEventFilter( this );
     PERF_LOG( "Playlist created" )
 
     PERF_LOG( "Creating ContextWidget" )
-    m_contextWidget = new ContextWidget( this );
-    m_contextWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-    m_contextWidget->setSpacing( 0 );
-    m_contextWidget->setFrameShape( QFrame::NoFrame );
-    m_contextWidget->setFrameShadow( QFrame::Sunken );
-    m_contextWidget->setMinimumSize( 100, 100 );
-    PERF_LOG( "ContextWidget created" )
-
-    PERF_LOG( "Creating ContexScene" )
-    m_corona = new Context::ContextScene( this );
-    connect( m_corona, SIGNAL( containmentAdded( Plasma::Containment* ) ),
-            this, SLOT( createContextView( Plasma::Containment* ) ) );
-
-    m_contextDock = new QDockWidget( i18n( "Context" ), this );
-    m_contextDock->setObjectName( "Context dock" );
-    m_contextDock->setWidget( m_contextWidget );
-    m_contextDock->setAllowedAreas( Qt::AllDockWidgetAreas );
+    m_contextDock = new ContextDock( this );
     m_contextDock->installEventFilter( this );
+
     PERF_LOG( "ContextScene created" )
     //END Creating Widgets
 
     createMenus();
 
     PERF_LOG( "Loading default contextScene" )
-    m_corona->loadDefaultSetup(); // this method adds our containment to the scene
+
     PERF_LOG( "Loaded default contextScene" )
 
     setDockOptions ( QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks | QMainWindow::AnimatedDocks );
 
-    addDockWidget( Qt::LeftDockWidgetArea, m_browsersDock );
+    addDockWidget( Qt::LeftDockWidgetArea, m_browserDock );
     addDockWidget( Qt::LeftDockWidgetArea, m_contextDock, Qt::Horizontal );
     addDockWidget( Qt::LeftDockWidgetArea, m_playlistDock, Qt::Horizontal );
 
@@ -326,7 +279,7 @@ MainWindow::init()
         m_collectionBrowser->setPrettyName( i18n( "Local Music" ) );
         m_collectionBrowser->setIcon( KIcon( "collection-amarok" ) );
         m_collectionBrowser->setShortDescription( i18n( "Local sources of content" ) );
-        m_browsers->list()->addCategory( m_collectionBrowser );
+        m_browserDock->list()->addCategory( m_collectionBrowser );
         PERF_LOG( "Created CollectionWidget" )
 
 
@@ -336,7 +289,7 @@ MainWindow::init()
         internetContentServiceBrowser->setPrettyName( i18n( "Internet" ) );
         internetContentServiceBrowser->setIcon( KIcon( "applications-internet" ) );
         internetContentServiceBrowser->setShortDescription( i18n( "Online sources of content" ) );
-        m_browsers->list()->addCategory( internetContentServiceBrowser );
+        m_browserDock->list()->addCategory( internetContentServiceBrowser );
         PERF_LOG( "Created ServiceBrowser" )
 
         PERF_LOG( "Creating PlaylistBrowser" )
@@ -344,7 +297,7 @@ MainWindow::init()
         m_playlistBrowser->setPrettyName( i18n("Playlists") );
         m_playlistBrowser->setIcon( KIcon( "view-media-playlist-amarok" ) );
         m_playlistBrowser->setShortDescription( i18n( "Various types of playlists" ) );
-        m_browsers->list()->addCategory( m_playlistBrowser );
+        m_browserDock->list()->addCategory( m_playlistBrowser );
         PERF_LOG( "CreatedPlaylsitBrowser" )
 
 
@@ -353,7 +306,7 @@ MainWindow::init()
         fileBrowserMkII->setPrettyName( i18n("Files") );
         fileBrowserMkII->setIcon( KIcon( "folder-amarok" ) );
         fileBrowserMkII->setShortDescription( i18n( "Browse local hard drive for content" ) );
-        m_browsers->list()->addCategory( fileBrowserMkII );
+        m_browserDock->list()->addCategory( fileBrowserMkII );
 
 
         PERF_LOG( "Created FileBrowser" )
@@ -366,7 +319,7 @@ MainWindow::init()
         PERF_LOG( "ScriptableServiceManager done" )
 
         PERF_LOG( "Creating Podcast Category" )
-        m_browsers->list()->addCategory( The::podcastCategory() );
+        m_browserDock->list()->addCategory( The::podcastCategory() );
         PERF_LOG( "Created Podcast Category" )
 
         PERF_LOG( "finished MainWindow::init" )
@@ -393,33 +346,13 @@ MainWindow::init()
     // we must filter ourself to get mouseevents on the "splitter" - what is us, but filtered by the layouter
     installEventFilter( this );
 
-    //restore the layout
+    // restore the layout on app start
     restoreLayout();
-    saveLayout();
+
     // wait for the eventloop
     QTimer::singleShot( 0, this, SLOT( initLayoutHack() ) );
 }
 
-void
-MainWindow::createContextView( Plasma::Containment *containment )
-{
-    DEBUG_BLOCK
-    disconnect( m_corona, SIGNAL( containmentAdded( Plasma::Containment* ) ),
-            this, SLOT( createContextView( Plasma::Containment* ) ) );
-    PERF_LOG( "Creating ContexView" )
-    m_contextView = new Context::ContextView( containment, m_corona, m_contextWidget );
-    m_contextView->setFrameShape( QFrame::NoFrame );
-    m_contextToolbarView = new Context::ToolbarView( containment, m_corona, m_contextWidget );
-    m_contextToolbarView->setFrameShape( QFrame::NoFrame );
-
-    connect( m_contextToolbarView, SIGNAL( hideAppletExplorer() ), m_contextView, SLOT( hideAppletExplorer() ) );
-    connect( m_contextToolbarView, SIGNAL( showAppletExplorer() ), m_contextView, SLOT( showAppletExplorer() ) );
-    m_contextView->showHome();
-    PERF_LOG( "ContexView created" )
-
-    bool hide = AmarokConfig::hideContextView();
-    hideContextView( hide );
-}
 
 QMenu*
 MainWindow::createPopupMenu()
@@ -443,7 +376,7 @@ MainWindow::createPopupMenu()
     foreach( QDockWidget* dockWidget, dockwidgets )
     {
         if( dockWidget->parentWidget() == this )
-            menu->addAction( dockWidget->toggleViewAction());
+            menu->addAction( dockWidget->toggleViewAction() );
     }
 
     menu->addSeparator();
@@ -478,14 +411,20 @@ void
 MainWindow::showBrowser( const int index )
 {
     Q_UNUSED( index )
-    //if( index >= 0 && index != m_browsers->currentIndex() )
-    //    m_browsers->showWidget( index );
+    //if( index >= 0 && index != m_browsersDock->currentIndex() )
+    //    m_browsersDock->showWidget( index );
 }
 
 void
 MainWindow::saveLayout()  //SLOT
 {
     DEBUG_BLOCK
+
+    // Do not save the layout if the main window is hidden
+    // Qt takes widgets out of the layout if they're not visible.
+    // So this is not going to work. Also see bug 244583
+    if (!isVisible())
+        return;
 
     //save layout to file. Does not go into to rc as it is binary data.
     QFile file( Amarok::saveLocation() + "layout" );
@@ -519,8 +458,8 @@ MainWindow::keyPressEvent( QKeyEvent *e )
         default:
             return KMainWindow::keyPressEvent( e );
     }
-    if( n == 0 && m_browsers->currentIndex() >= 0 )
-        m_browsers->showWidget( m_browsers->currentIndex() );
+    if( n == 0 && m_browsersDock->currentIndex() >= 0 )
+        m_browsersDock->showWidget( m_browsersDock->currentIndex() );
     else if( n > 0 )
         showBrowser( n - 1 ); // map from human to computer counting*/
 }
@@ -531,13 +470,16 @@ MainWindow::closeEvent( QCloseEvent *e )
 {
     DEBUG_BLOCK
 
+    debug() << "Saving layout before minimizing the MainWindow";
+    saveLayout();
+
 #ifdef Q_WS_MAC
     Q_UNUSED( e );
     hide();
 #else
+
     //KDE policy states we should hide to tray and not quit() when the
     //close window button is pushed for the main widget
-
     if( AmarokConfig::showTrayIcon() && e->spontaneous() && !kapp->sessionSaving() )
     {
         KMessageBox::information( this,
@@ -554,6 +496,31 @@ MainWindow::closeEvent( QCloseEvent *e )
     kapp->quit();
 #endif
 }
+
+void
+MainWindow::showEvent(QShowEvent* e)
+{
+    DEBUG_BLOCK
+
+    // restore layout on first maximize request after start. See bug 244583
+    if (!m_layoutEverRestored)
+        restoreLayout();
+
+    QWidget::showEvent(e);
+}
+
+
+bool
+MainWindow::queryExit()
+{
+    DEBUG_BLOCK
+
+    // save layout on app exit
+    saveLayout();
+    
+    return true; // KMainWindow API expects us to always return true
+}
+
 
 void
 MainWindow::exportPlaylist() const //SLOT
@@ -589,7 +556,7 @@ MainWindow::exportPlaylist() const //SLOT
 void
 MainWindow::slotShowActiveTrack() const
 {
-    m_playlistWidget->showActiveTrack();
+    m_playlistDock->showActiveTrack();
 }
 
 void
@@ -618,14 +585,22 @@ MainWindow::slotPlayMedia() //SLOT
 void
 MainWindow::slotAddLocation( bool directPlay ) //SLOT
 {
+    static KUrl lastDirectory;
+
     // open a file selector to add media to the playlist
     KUrl::List files;
-    KFileDialog dlg( KUrl(QDesktopServices::storageLocation(QDesktopServices::MusicLocation)), QString("*.*|"), this );
+    KFileDialog dlg( KUrl(QDesktopServices::storageLocation(QDesktopServices::MusicLocation) ), QString("*.*|"), this );
+
+    if( !lastDirectory.isEmpty() )
+        dlg.setUrl( lastDirectory );
+
     dlg.setCaption( directPlay ? i18n("Play Media (Files or URLs)") : i18n("Add Media (Files or URLs)") );
     dlg.setMode( KFile::Files | KFile::Directory );
     dlg.setObjectName( "PlayMedia" );
     dlg.exec();
     files = dlg.selectedUrls();
+
+    lastDirectory = dlg.baseUrl();
 
     if( files.isEmpty() )
         return;
@@ -652,7 +627,7 @@ MainWindow::slotJumpTo() // slot
 {
     DEBUG_BLOCK
 
-    m_playlistWidget->searchWidget()->focusInputLine();
+    m_playlistDock->searchWidget()->focusInputLine();
 }
 
 void
@@ -661,6 +636,20 @@ MainWindow::showScriptSelector() //SLOT
     ScriptManager::instance()->show();
     ScriptManager::instance()->raise();
 }
+
+#ifdef DEBUG_BUILD_TYPE
+void
+MainWindow::showNetworkRequestViewer() //SLOT
+{
+    if( !m_networkViewer )
+    {
+        m_networkViewer = new NetworkAccessViewer( this );
+        The::networkAccessManager()->setNetworkAccessViewer( m_networkViewer );
+
+    }
+    The::networkAccessManager()->networkAccessViewer()->show();
+}
+#endif // DEBUG_BUILD_TYPE
 
 /**
  * "Toggle Main Window" global shortcut connects to this slot
@@ -715,12 +704,18 @@ MainWindow::slotFullScreen() // slot
 }
 
 void
+MainWindow::slotLoveTrack()
+{
+    emit loveTrack( The::engineController()->currentTrack() );
+}
+
+void
 MainWindow::activate()
 {
 #ifdef Q_WS_X11
     const KWindowInfo info = KWindowSystem::windowInfo( winId(), 0, 0 );
 
-    if( KWindowSystem::activeWindow() != winId())
+    if( KWindowSystem::activeWindow() != winId() )
         setVisible( true );
     else if( !info.isMinimized() )
         setVisible( true );
@@ -752,15 +747,15 @@ MainWindow::createActions()
 
     KStandardAction::keyBindings( kapp, SLOT( slotConfigShortcuts() ), ac );
     KStandardAction::preferences( kapp, SLOT( slotConfigAmarok() ), ac );
-    ac->action(KStandardAction::name(KStandardAction::KeyBindings))->setIcon( KIcon( "configure-shortcuts-amarok" ) );
-    ac->action(KStandardAction::name(KStandardAction::Preferences))->setIcon( KIcon( "configure-amarok" ) );
-    ac->action(KStandardAction::name(KStandardAction::Preferences))->setMenuRole(QAction::PreferencesRole); // Define OS X Prefs menu here, removes need for ifdef later
+    ac->action( KStandardAction::name( KStandardAction::KeyBindings ) )->setIcon( KIcon( "configure-shortcuts-amarok" ) );
+    ac->action( KStandardAction::name( KStandardAction::Preferences ) )->setIcon( KIcon( "configure-amarok" ) );
+    ac->action( KStandardAction::name( KStandardAction::Preferences ) )->setMenuRole(QAction::PreferencesRole); // Define OS X Prefs menu here, removes need for ifdef later
 
     KStandardAction::quit( kapp, SLOT( quit() ), ac );
 
     KAction *action = new KAction( KIcon( "folder-amarok" ), i18n("&Add Media..."), this );
     ac->addAction( "playlist_add", action );
-    connect( action, SIGNAL( triggered(bool) ), this, SLOT( slotAddLocation() ) );
+    connect( action, SIGNAL( triggered( bool ) ), this, SLOT( slotAddLocation() ) );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_A ) );
 
     action = new KAction( KIcon( "edit-clear-list-amarok" ), i18nc( "clear playlist", "&Clear Playlist" ), this );
@@ -775,11 +770,11 @@ MainWindow::createActions()
     ac->addAction( "playlist_layout", action );
 
     action = new KAction( KIcon( "folder-amarok" ), i18n("&Add Stream..."), this );
-    connect( action, SIGNAL( triggered(bool) ), this, SLOT( slotAddStream() ) );
+    connect( action, SIGNAL( triggered( bool ) ), this, SLOT( slotAddStream() ) );
     ac->addAction( "stream_add", action );
 
     action = new KAction( KIcon( "document-export-amarok" ), i18n("&Export Playlist As..."), this );
-    connect( action, SIGNAL( triggered(bool) ), this, SLOT( exportPlaylist() ) );
+    connect( action, SIGNAL( triggered( bool ) ), this, SLOT( exportPlaylist() ) );
     ac->addAction( "playlist_export", action );
 
     action = new KAction( KIcon( "bookmark-new" ), i18n( "Bookmark Media Sources View" ), this );
@@ -788,11 +783,11 @@ MainWindow::createActions()
 
     action = new KAction( KIcon( "bookmarks-organize" ), i18n( "Bookmark Manager" ), this );
     ac->addAction( "bookmark_manager", action );
-    connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowBookmarkManager() ) );
+    connect( action, SIGNAL( triggered( bool ) ), SLOT( slotShowBookmarkManager() ) );
 
     action = new KAction( KIcon( "view-media-equalizer" ), i18n( "Equalizer" ), this );
     ac->addAction( "equalizer_dialog", action );
-    connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowEqualizer() ) );
+    connect( action, SIGNAL( triggered( bool ) ), SLOT( slotShowEqualizer() ) );
 
     action = new KAction( KIcon( "bookmark-new" ), i18n( "Bookmark Playlist Setup" ), this );
     ac->addAction( "bookmark_playlistview", action );
@@ -803,33 +798,33 @@ MainWindow::createActions()
     connect( action, SIGNAL( triggered() ), The::amarokUrlHandler(), SLOT( bookmarkCurrentContextView() ) );
 
     action = new KAction( KIcon( "media-album-cover-manager-amarok" ), i18n( "Cover Manager" ), this );
-    connect( action, SIGNAL( triggered(bool) ), SLOT( slotShowCoverManager() ) );
+    connect( action, SIGNAL( triggered( bool ) ), SLOT( slotShowCoverManager() ) );
     ac->addAction( "cover_manager", action );
 
     action = new KAction( KIcon("folder-amarok"), i18n("Play Media..."), this );
     ac->addAction( "playlist_playmedia", action );
     action->setShortcut( Qt::CTRL + Qt::Key_O );
-    connect(action, SIGNAL(triggered(bool)), SLOT(slotPlayMedia()));
+    connect( action, SIGNAL( triggered( bool ) ), SLOT( slotPlayMedia() ) );
 
     action = new KAction( KIcon("preferences-plugin-script-amarok"), i18n("Script Manager"), this );
-    connect(action, SIGNAL(triggered(bool)), SLOT(showScriptSelector()));
+    connect( action, SIGNAL( triggered( bool ) ), SLOT( showScriptSelector() ) );
     ac->addAction( "script_manager", action );
 
     action = new KAction( KIcon( "media-seek-forward-amarok" ), i18n("&Seek Forward"), this );
     ac->addAction( "seek_forward", action );
     action->setShortcut( Qt::Key_Right );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::SHIFT + Qt::Key_Plus ) );
-    connect(action, SIGNAL(triggered(bool)), ec, SLOT(seekForward()));
+    connect( action, SIGNAL( triggered( bool ) ), ec, SLOT( seekForward() ) );
 
     action = new KAction( KIcon( "media-seek-backward-amarok" ), i18n("&Seek Backward"), this );
     ac->addAction( "seek_backward", action );
     action->setShortcut( Qt::Key_Left );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::SHIFT + Qt::Key_Minus ) );
-    connect(action, SIGNAL(triggered(bool)), ec, SLOT(seekBackward()));
+    connect( action, SIGNAL( triggered( bool ) ), ec, SLOT( seekBackward() ) );
 
     PERF_LOG( "MainWindow::createActions 6" )
     action = new KAction( KIcon("collection-refresh-amarok"), i18n( "Update Collection" ), this );
-    connect(action, SIGNAL(triggered(bool)), CollectionManager::instance(), SLOT(checkCollectionChanges()));
+    connect ( action, SIGNAL( triggered( bool ) ), CollectionManager::instance(), SLOT( checkCollectionChanges() ) );
     ac->addAction( "update_collection", action );
 
     action = new KAction( this );
@@ -837,13 +832,20 @@ MainWindow::createActions()
     action->setIcon( KIcon("media-skip-backward-amarok") );
     action->setText( i18n( "Previous Track" ) );
     action->setGlobalShortcut( KShortcut( Qt::Key_MediaPrevious ) );
-    connect( action, SIGNAL(triggered(bool)), pa, SLOT( back() ) );
+    connect( action, SIGNAL( triggered( bool ) ), pa, SLOT( back() ) );
+
+    action = new KAction( this );
+    ac->addAction( "replay", action );
+    action->setIcon( KIcon("media-playback-start") );
+    action->setText( i18n( "Restart current track" ) );
+    action->setGlobalShortcut( KShortcut() );
+    connect( action, SIGNAL( triggered( bool ) ), ec, SLOT(replay()) );
 
     action = new KAction( this );
     ac->addAction( "repopulate", action );
     action->setText( i18n( "Repopulate Playlist" ) );
     action->setIcon( KIcon("view-refresh-amarok") );
-    connect( action, SIGNAL(triggered(bool)), pa, SLOT( repopulateDynamicPlaylist() ) );
+    connect( action, SIGNAL( triggered( bool ) ), pa, SLOT( repopulateDynamicPlaylist() ) );
 
     action = new KAction( this );
     ac->addAction( "disable_dynamic", action );
@@ -854,7 +856,7 @@ MainWindow::createActions()
     action = new KAction( KIcon("media-skip-forward-amarok"), i18n( "Next Track" ), this );
     ac->addAction( "next", action );
     action->setGlobalShortcut( KShortcut( Qt::Key_MediaNext ) );
-    connect( action, SIGNAL(triggered(bool)), pa, SLOT( next() ) );
+    connect( action, SIGNAL( triggered( bool ) ), pa, SLOT( next() ) );
 
     action = new KAction( i18n( "Increase Volume" ), this );
     ac->addAction( "increaseVolume", action );
@@ -870,7 +872,7 @@ MainWindow::createActions()
 
     action = new KAction( i18n( "Toggle Main Window" ), this );
     ac->addAction( "toggleMainWindow", action );
-    action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_P ) );
+    action->setGlobalShortcut( KShortcut() );
     connect( action, SIGNAL( triggered() ), SLOT( showHide() ) );
 
     action = new KAction( i18n( "Toggle Full Screen" ), this );
@@ -942,17 +944,24 @@ MainWindow::createActions()
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_5 ) );
     connect( action, SIGNAL( triggered() ), SLOT( setRating5() ) );
 
-    action = KStandardAction::redo(pc, SLOT(redo()), this);
-    ac->addAction( "playlist_redo", action );
-    action->setEnabled(false);
-    action->setIcon( KIcon( "edit-redo-amarok" ) );
-    connect(pc, SIGNAL(canRedoChanged(bool)), action, SLOT(setEnabled(bool)));
+#ifdef DEBUG_BUILD_TYPE
+    action = new KAction( i18n( "Network Request Viewer" ), this );
+    ac->addAction( "network_request_viewer", action );
+    action->setIcon( KIcon( "utilities-system-monitor" ) );
+    connect( action, SIGNAL( triggered() ), SLOT( showNetworkRequestViewer() ) );
+#endif // DEBUG_BUILD_TYPE
 
-    action = KStandardAction::undo(pc, SLOT(undo()), this);
+    action = KStandardAction::redo( pc, SLOT( redo() ), this);
+    ac->addAction( "playlist_redo", action );
+    action->setEnabled( false );
+    action->setIcon( KIcon( "edit-redo-amarok" ) );
+    connect( pc, SIGNAL( canRedoChanged( bool ) ), action, SLOT( setEnabled( bool ) ) );
+
+    action = KStandardAction::undo( pc, SLOT( undo() ), this);
     ac->addAction( "playlist_undo", action );
-    action->setEnabled(false);
+    action->setEnabled( false );
     action->setIcon( KIcon( "edit-undo-amarok" ) );
-    connect(pc, SIGNAL(canUndoChanged(bool)), action, SLOT(setEnabled(bool)));
+    connect( pc, SIGNAL( canUndoChanged( bool ) ), action, SLOT( setEnabled( bool ) ) );
 
     action = new KAction( KIcon( "amarok" ), i18n( "&About Amarok" ), this );
     ac->addAction( "extendedAbout", action );
@@ -984,8 +993,8 @@ MainWindow::createActions()
     new Amarok::EqualizerAction( ac, this);
 
     ac->addAssociatedWidget( this );
-    foreach (QAction* action, ac->actions())
-        action->setShortcutContext(Qt::WindowShortcut);
+    foreach( QAction* action, ac->actions() )
+        action->setShortcutContext( Qt::WindowShortcut );
 }
 
 void
@@ -1012,7 +1021,7 @@ MainWindow::createMenus()
     //BEGIN Actions menu
     KMenu *actionsMenu;
 #ifdef Q_WS_MAC
-    m_menubar = new QMenuBar(0);  // Fixes menubar in OS X
+    m_menubar = new QMenuBar( 0 );  // Fixes menubar in OS X
     actionsMenu = new KMenu( m_menubar );
     // Add these functions to the dock icon menu in OS X
     //extern void qt_mac_set_dock_menu(QMenu *);
@@ -1035,7 +1044,7 @@ MainWindow::createMenus()
 
 #ifndef Q_WS_MAC    // Avoid duplicate "Quit" in OS X dock menu
     actionsMenu->addSeparator();
-    actionsMenu->addAction( Amarok::actionCollection()->action(KStandardAction::name(KStandardAction::Quit)) );
+    actionsMenu->addAction( Amarok::actionCollection()->action( KStandardAction::name( KStandardAction::Quit ) ) );
 #endif
     //END Actions menu
 
@@ -1044,7 +1053,7 @@ MainWindow::createMenus()
     playlistMenu->setTitle( i18n("&Playlist") );
     playlistMenu->addAction( Amarok::actionCollection()->action("playlist_add") );
     playlistMenu->addAction( Amarok::actionCollection()->action("stream_add") );
-    //playlistMenu->addAction( Amarok::actionCollection()->action("playlist_save") ); //FIXME: See FIXME in PlaylistWidget.cpp
+    //playlistMenu->addAction( Amarok::actionCollection()->action("playlist_save") ); //FIXME: See FIXME in PlaylistDock.cpp
     playlistMenu->addAction( Amarok::actionCollection()->action( "playlist_export" ) );
     playlistMenu->addSeparator();
     playlistMenu->addAction( Amarok::actionCollection()->action("playlist_undo") );
@@ -1063,6 +1072,9 @@ MainWindow::createMenus()
     m_toolsMenu->addAction( Amarok::actionCollection()->action("cover_manager") );
     m_toolsMenu->addAction( Amarok::actionCollection()->action("equalizer_dialog") );
     m_toolsMenu->addAction( Amarok::actionCollection()->action("script_manager") );
+#ifdef DEBUG_BUILD_TYPE
+    m_toolsMenu->addAction( Amarok::actionCollection()->action("network_request_viewer") );
+#endif // DEBUG_BUILD_TYPE
     m_toolsMenu->addSeparator();
     m_toolsMenu->addAction( Amarok::actionCollection()->action("update_collection") );
     //END Tools menu
@@ -1083,8 +1095,8 @@ MainWindow::createMenus()
     m_settingsMenu->addSeparator();
 #endif
 
-    m_settingsMenu->addAction( Amarok::actionCollection()->action(KStandardAction::name(KStandardAction::KeyBindings)) );
-    m_settingsMenu->addAction( Amarok::actionCollection()->action(KStandardAction::name(KStandardAction::Preferences)) );
+    m_settingsMenu->addAction( Amarok::actionCollection()->action( KStandardAction::name( KStandardAction::KeyBindings ) ) );
+    m_settingsMenu->addAction( Amarok::actionCollection()->action( KStandardAction::name( KStandardAction::Preferences ) ) );
     //END Settings menu
 
     m_menubar->addMenu( actionsMenu );
@@ -1098,9 +1110,9 @@ MainWindow::createMenus()
                             Amarok::actionCollection()->action( "reportBug" ) );
     helpMenu->insertAction( helpMenu->actions().last(),
                             Amarok::actionCollection()->action( "extendedAbout" ) );
-    helpMenu->insertAction( helpMenu->actions().at(4),
+    helpMenu->insertAction( helpMenu->actions().at( 4 ),
                             Amarok::actionCollection()->action( "likeBackSendComment" ) );
-    helpMenu->insertAction( helpMenu->actions().at(5),
+    helpMenu->insertAction( helpMenu->actions().at( 5 ),
                             Amarok::actionCollection()->action( "likeBackShowIcons" ) );
 
     m_menubar->addMenu( helpMenu );
@@ -1122,7 +1134,7 @@ MainWindow::showReportBug()
 }
 
 void
-MainWindow::paletteChange(const QPalette & oldPalette)
+MainWindow::paletteChange( const QPalette & oldPalette )
 {
     Q_UNUSED( oldPalette )
 
@@ -1132,7 +1144,7 @@ MainWindow::paletteChange(const QPalette & oldPalette)
 }
 
 QSize
-MainWindow::backgroundSize()
+MainWindow::backgroundSize() const
 {
     const QPoint topLeft = mapToGlobal( QPoint( 0, 0 ) );
     const QPoint bottomRight1 = mapToGlobal( QPoint( width(), height() ) );
@@ -1169,7 +1181,7 @@ MainWindow::LH_dockingTabbar()
     foreach ( QObject *kid, kids )
     {
         if( kid->isWidgetType() )
-            if( QTabBar *bar = qobject_cast<QTabBar*>(kid) )
+            if( QTabBar *bar = qobject_cast<QTabBar*>( kid ) )
                 return bar;
     }
     return 0;
@@ -1203,7 +1215,7 @@ QSize
 MainWindow::LH_desiredSize( QDockWidget *dock, const QRect &area, float rx, float ry, int splitter )
 {
     if( LH_isIrrelevant( dock ) )
-        return QSize(0,0);
+        return QSize( 0, 0 );
     QSize ret;
     int tabHeight = 0;
     if( !tabifiedDockWidgets( dock ).isEmpty() )
@@ -1212,8 +1224,8 @@ MainWindow::LH_desiredSize( QDockWidget *dock, const QRect &area, float rx, floa
             tabHeight = bar->height();
     }
     const QSize min = dock->minimumSize();
-    ret.setWidth( qMax( min.width(), (int)(rx == 1.0 ? area.width() : rx*area.width() - splitter/2) ) );
-    ret.setHeight( qMax( min.height(), (int)(ry == 1.0 ? area.height() - tabHeight : ry*area.height() - ( splitter/2 + tabHeight ) ) ) );
+    ret.setWidth( qMax( min.width(), (int)( rx == 1.0 ? area.width() : rx*area.width() - splitter/2 ) ) );
+    ret.setHeight( qMax( min.height(), (int)( ry == 1.0 ? area.height() - tabHeight : ry*area.height() - ( splitter/2 + tabHeight ) ) ) );
     return ret;
 }
 #define DESIRED_SIZE(_DOCK_) LH_desiredSize( _DOCK_##Dock, m_dockingRect, _DOCK_##Ratio.x, _DOCK_##Ratio.y, splitterSize )
@@ -1251,15 +1263,15 @@ MainWindow::initLayoutHack()
 {
     // the init _should_ be superflous, but hey: why risk it ;-)
     m_playlistRatio.x = 0.0; m_playlistRatio.y = 0.0;
-    m_browsersRatio = m_contextRatio = m_playlistRatio;
+    m_browserRatio = m_contextRatio = m_playlistRatio;
 
     m_dockingRect = QRect();
-    LH_extend( m_dockingRect, m_browsersDock );
+    LH_extend( m_dockingRect, m_browserDock );
     LH_extend( m_dockingRect, m_contextDock );
     LH_extend( m_dockingRect, m_playlistDock );
 
     // initially calculate ratios
-    updateDockRatio( m_browsersDock );
+    updateDockRatio( m_browserDock );
     updateDockRatio( m_contextDock );
     updateDockRatio( m_playlistDock );
 
@@ -1267,12 +1279,12 @@ MainWindow::initLayoutHack()
 
     // connect to dock changes (esp. tab selection)
     // this _is_ required...
-    connect ( m_browsersDock, SIGNAL( visibilityChanged(bool) ), this, SLOT( updateDockRatio() ) );
-    connect ( m_contextDock, SIGNAL( visibilityChanged(bool) ), this, SLOT( updateDockRatio() ) );
-    connect ( m_playlistDock, SIGNAL( visibilityChanged(bool) ), this, SLOT( updateDockRatio() ) );
+    connect ( m_browserDock, SIGNAL( visibilityChanged( bool ) ), this, SLOT( updateDockRatio() ) );
+    connect ( m_contextDock, SIGNAL( visibilityChanged( bool ) ), this, SLOT( updateDockRatio() ) );
+    connect ( m_playlistDock, SIGNAL( visibilityChanged( bool ) ), this, SLOT( updateDockRatio() ) );
 
     // but i think these can be omitted (move along a show event for tech. reasons)
-//     topLevelChanged(bool)
+//     topLevelChanged( bool )
 //     dockLocationChanged(Qt::DockWidgetArea)
 
     slotShowActiveTrack();    // See comment in 'playlist/view/PrettyListView.cpp constructor'.
@@ -1294,7 +1306,7 @@ MainWindow::resizeEvent( QResizeEvent * event )
     setUpdatesEnabled( false );
 
     // stop listening to resize events, we're gonna trigger them now
-    m_browsersDock->removeEventFilter( this );
+    m_browserDock->removeEventFilter( this );
     m_contextDock->removeEventFilter( this );
     m_playlistDock->removeEventFilter( this );
 
@@ -1303,19 +1315,19 @@ MainWindow::resizeEvent( QResizeEvent * event )
     // ok, the window was resized and our little docklings fill the entire docking area
     // -> m_dockingRect is their bounding rect
     m_dockingRect = QRect();
-    LH_extend( m_dockingRect, m_browsersDock );
+    LH_extend( m_dockingRect, m_browserDock );
     LH_extend( m_dockingRect, m_contextDock );
     LH_extend( m_dockingRect, m_playlistDock );
 
     // if we hit a minimumSize constraint, we can no more keep aspects at all atm. and just hope
     // that Qt distributed the lacking space evenly ;-)
     if( !m_LH_initialized ||
-        LH_isConstrained( m_contextDock ) || LH_isConstrained( m_browsersDock ) || LH_isConstrained( m_playlistDock ) )
+        LH_isConstrained( m_contextDock ) || LH_isConstrained( m_browserDock ) || LH_isConstrained( m_playlistDock ) )
     {
         setUpdatesEnabled( true );
 
         // continue to listen to resize events
-        m_browsersDock->installEventFilter( this );
+        m_browserDock->installEventFilter( this );
         m_contextDock->installEventFilter( this );
         m_playlistDock->installEventFilter( this );
 
@@ -1323,12 +1335,12 @@ MainWindow::resizeEvent( QResizeEvent * event )
     }
 
     int splitterSize = style()->pixelMetric( QStyle::PM_DockWidgetSeparatorExtent, 0, 0 );
-    const QSize dContextSz = DESIRED_SIZE(m_context);
-    const QSize dBrowsersSz = DESIRED_SIZE(m_browsers);
-    const QSize dPlaylistSz = DESIRED_SIZE(m_playlist);
+    const QSize dContextSz = DESIRED_SIZE( m_context );
+    const QSize dBrowsersSz = DESIRED_SIZE( m_browser );
+    const QSize dPlaylistSz = DESIRED_SIZE( m_playlist );
 
     // good god: prevent recursive resizes ;-)
-    setFixedSize(size());
+    setFixedSize( size() );
 
     layout()->setEnabled( false );
     QCoreApplication::sendPostedEvents( this, QEvent::LayoutRequest );
@@ -1338,16 +1350,16 @@ MainWindow::resizeEvent( QResizeEvent * event )
     // don't be super picky - there's an integer imprecision anyway and we just want to fix
     // major resize errors w/o being to intrusive or flickering
     if( !( LH_fuzzyMatch( dContextSz, m_contextDock->size() ) &&
-           LH_fuzzyMatch( dBrowsersSz, m_browsersDock->size() ) &&
+           LH_fuzzyMatch( dBrowsersSz, m_browserDock->size() ) &&
            LH_fuzzyMatch( dPlaylistSz, m_playlistDock->size() ) ) )
     {
 //         debug() << "SIZE MISMATCH, FORCING";
-        const QSize mins[3] = { m_contextDock->minimumSize(), m_browsersDock->minimumSize(), m_playlistDock->minimumSize() };
-        const QSize maxs[3] = { m_contextDock->maximumSize(), m_browsersDock->maximumSize(), m_playlistDock->maximumSize() };
+        const QSize mins[3] = { m_contextDock->minimumSize(), m_browserDock->minimumSize(), m_playlistDock->minimumSize() };
+        const QSize maxs[3] = { m_contextDock->maximumSize(), m_browserDock->maximumSize(), m_playlistDock->maximumSize() };
 
         // fix sizes to our idea, so the layout has few options left ;-)
         if( !m_contextDock->isFloating() ) m_contextDock->setFixedSize( dContextSz );
-        if( !m_browsersDock->isFloating() ) m_browsersDock->setFixedSize( dBrowsersSz );
+        if( !m_browserDock->isFloating() ) m_browserDock->setFixedSize( dBrowsersSz );
         if( !m_playlistDock->isFloating() ) m_playlistDock->setFixedSize( dPlaylistSz );
 
         // trigger a no-choice layouting
@@ -1357,17 +1369,17 @@ MainWindow::resizeEvent( QResizeEvent * event )
         // unleash sizes
         layout()->setEnabled( false );
         FREE_SIZE( m_contextDock, 0 );
-        FREE_SIZE( m_browsersDock, 1 );
+        FREE_SIZE( m_browserDock, 1 );
         FREE_SIZE( m_playlistDock, 2 );
         layout()->setEnabled( true );
     }
 
     // unleash size
-    setMinimumSize(0,0);
+    setMinimumSize( 0, 0 );
     setMaximumSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
 
     // continue to listen to resize events
-    m_browsersDock->installEventFilter( this );
+    m_browserDock->installEventFilter( this );
     m_contextDock->installEventFilter( this );
     m_playlistDock->installEventFilter( this );
 
@@ -1396,14 +1408,14 @@ void MainWindow::updateDockRatio( QDockWidget *dock )
         if( dock->width() == area.width() )
             r.x = 1.0;
         else
-            r.x = ( (float)(dock->width() + splitterSize/2) ) / area.width();
+            r.x = ( (float)( dock->width() + splitterSize/2) ) / area.width();
         if( dock->height() == area.height() - tabHeight )
             r.y = 1.0;
         else
-            r.y = ( (float)(dock->height() + splitterSize/2 + tabHeight ) ) / area.height();
+            r.y = ( (float)( dock->height() + splitterSize/2 + tabHeight ) ) / area.height();
 
-        if( dock == m_browsersDock )
-            m_browsersRatio = r;
+        if( dock == m_browserDock )
+            m_browserRatio = r;
         else if( dock == m_contextDock )
             m_contextRatio = r;
         else
@@ -1421,7 +1433,7 @@ void MainWindow::updateDockRatio()
         updateDockRatio( dock );
 }
 
-bool MainWindow::eventFilter(QObject *o, QEvent *e)
+bool MainWindow::eventFilter( QObject *o, QEvent *e )
 {
     // NOTICE this _must_ be handled by an eventfilter, as otherwise the "spliters" eventfilter
     // will eat and we don't receive it
@@ -1429,18 +1441,21 @@ bool MainWindow::eventFilter(QObject *o, QEvent *e)
     {
         if( e->type() == QEvent::MouseButtonPress || e->type() == QEvent::MouseButtonRelease )
         {
-            QMouseEvent *me = static_cast<QMouseEvent*>(e);
+            QMouseEvent *me = static_cast<QMouseEvent*>( e );
             if( me->button() == Qt::LeftButton )
                 m_mouseDown = ( e->type() == QEvent::MouseButtonPress );
         }
+
         return false;
+
+
     }
 
     if( ( ( e->type() == QEvent::Resize && m_mouseDown ) || // only when resized by the splitter :)
              e->type() == QEvent::Show || e->type() == QEvent::Hide ) && // show/hide is _NOT_ sufficient for tab changes
-        ( o == m_browsersDock || o == m_contextDock || o == m_playlistDock ) )
+        ( o == m_browserDock || o == m_contextDock || o == m_playlistDock ) )
     {
-        QDockWidget *dock = static_cast<QDockWidget*>(o);
+        QDockWidget *dock = static_cast<QDockWidget*>( o );
 //         if(e->type() == QEvent::Resize)
 //             debug() << dock << dock->size() << m_dockingRect.size();
 //         else
@@ -1459,11 +1474,12 @@ MainWindow::globalBackgroundOffset()
 }
 
 QRect
-MainWindow::contextRectGlobal()
+MainWindow::contextRectGlobal() const
 {
     //debug() << "pos of context vidget within main window is: " << m_contextWidget->pos();
-    QPoint contextPos = mapToGlobal( m_contextWidget->pos() );
-    return QRect( contextPos.x(), contextPos.y(), m_contextWidget->width(), m_contextWidget->height() );
+    //FIXME
+    QPoint contextPos = mapToGlobal( m_contextDock->pos() );
+    return QRect( contextPos.x(), contextPos.y(), m_contextDock->width(), m_contextDock->height() );
 }
 
 void
@@ -1506,7 +1522,7 @@ MainWindow::engineNewTrackPlaying()
 void
 MainWindow::metadataChanged( Meta::TrackPtr track )
 {
-    if( track )
+    if( track && The::engineController()->currentTrack() == track )
         setPlainCaption( i18n( "%1 - %2  ::  %3", track->artist() ? track->artist()->prettyName() : i18n( "Unknown" ), track->prettyName(), AMAROK_CAPTION ) );
 }
 
@@ -1519,8 +1535,8 @@ MainWindow::collectionBrowser()
 QString
 MainWindow::activeBrowserName()
 {
-    if( m_browsers->list()->activeCategory() )
-        return m_browsers->list()->activeCategory()->name();
+    if( m_browserDock->list()->activeCategory() )
+        return m_browserDock->list()->activeCategory()->name();
     else
         return QString();
 }
@@ -1532,33 +1548,15 @@ MainWindow::playlistBrowser()
 }
 
 void
-MainWindow::hideContextView( bool hide )
-{
-    DEBUG_BLOCK
-
-    if( hide )
-        m_contextWidget->hide();
-    else
-        m_contextWidget->show();
-}
-
-void MainWindow::setLayoutLocked( bool locked )
+MainWindow::setLayoutLocked( bool locked )
 {
     DEBUG_BLOCK
 
     if( locked )
     {
-        debug() << "locked!";
-        const QFlags<QDockWidget::DockWidgetFeature> features = QDockWidget::NoDockWidgetFeatures;
-
-        m_browsersDock->setFeatures( features );
-        m_browsersDock->setTitleBarWidget( m_browserDummyTitleBarWidget );
-
-        m_contextDock->setFeatures( features );
-        m_contextDock->setTitleBarWidget( m_contextDummyTitleBarWidget );
-
-        m_playlistDock->setFeatures( features );
-        m_playlistDock->setTitleBarWidget( m_playlistDummyTitleBarWidget );
+        m_browserDock->setMovable( false );
+        m_contextDock->setMovable( false );
+        m_playlistDock->setMovable( false );
 
         m_slimToolbar->setFloatable( false );
         m_slimToolbar->setMovable( false );
@@ -1568,17 +1566,9 @@ void MainWindow::setLayoutLocked( bool locked )
     }
     else
     {
-        debug() << "unlocked!";
-        const QFlags<QDockWidget::DockWidgetFeature> features = QDockWidget::DockWidgetMovable | QDockWidget::DockWidgetFloatable | QDockWidget::DockWidgetClosable;
-
-        m_browsersDock->setFeatures( features );
-        m_contextDock->setFeatures( features );
-        m_playlistDock->setFeatures( features );
-
-
-        m_browsersDock->setTitleBarWidget( 0 );
-        m_contextDock->setTitleBarWidget( 0 );
-        m_playlistDock->setTitleBarWidget( 0 );
+        m_browserDock->setMovable( true );
+        m_contextDock->setMovable( true );
+        m_playlistDock->setMovable( true );
 
         m_slimToolbar->setFloatable( true );
         m_slimToolbar->setMovable( true );
@@ -1593,7 +1583,7 @@ void MainWindow::setLayoutLocked( bool locked )
 }
 
 bool
-MainWindow::isLayoutLocked()
+MainWindow::isLayoutLocked() const
 {
     return m_layoutLocked;
 }
@@ -1602,6 +1592,12 @@ void
 MainWindow::restoreLayout()
 {
     DEBUG_BLOCK
+
+    // Do not restore the layout if the main window is hidden
+    // Qt takes widgets out of the layout if they're not visible.
+    // So this is not going to work. Also see bug 244583
+    if (!isVisible())
+        return;
 
     QFile file( Amarok::saveLocation() + "layout" );
     QByteArray layout;
@@ -1617,7 +1613,7 @@ MainWindow::restoreLayout()
         //so get the combined size of the widgets, as this is the space we have to play with. Then figure out
         //how much to give to each. Give the context view any pixels leftover from the integer division.
 
-        //int totalWidgetWidth = m_browsers->width() + m_contextView->width() + m_playlistWidget->width();
+        //int totalWidgetWidth = m_browsersDock->width() + m_contextView->width() + m_playlistDock->width();
         int totalWidgetWidth = contentsRect().width();
 
         //get the width of the splitter handles, we need to subtract these...
@@ -1634,15 +1630,15 @@ MainWindow::restoreLayout()
 
         //We need to set fixed widths initially, just until the main window has been properly layed out. As soon as this has
         //happened, we will unlock these sizes again so that the elements can be resized by the user.
-        const int mins[3] = { m_browsersDock->minimumWidth(), m_contextDock->minimumWidth(), m_playlistDock->minimumWidth() };
-        const int maxs[3] = { m_browsersDock->maximumWidth(), m_contextDock->maximumWidth(), m_playlistDock->maximumWidth() };
+        const int mins[3] = { m_browserDock->minimumWidth(), m_contextDock->minimumWidth(), m_playlistDock->minimumWidth() };
+        const int maxs[3] = { m_browserDock->maximumWidth(), m_contextDock->maximumWidth(), m_playlistDock->maximumWidth() };
 
-        m_browsersDock->setFixedWidth( widgetWidth );
+        m_browserDock->setFixedWidth( widgetWidth );
         m_contextDock->setFixedWidth( widgetWidth + leftover );
         m_playlistDock->setFixedWidth( widgetWidth );
         this->layout()->activate();
 
-        m_browsersDock->setMinimumWidth( mins[0] ); m_browsersDock->setMaximumWidth( maxs[0] );
+        m_browserDock->setMinimumWidth( mins[0] ); m_browserDock->setMaximumWidth( maxs[0] );
         m_contextDock->setMinimumWidth( mins[1] ); m_contextDock->setMaximumWidth( maxs[1] );
         m_playlistDock->setMinimumWidth( mins[2] ); m_playlistDock->setMaximumWidth( maxs[2] );
     }
@@ -1654,10 +1650,13 @@ MainWindow::restoreLayout()
     // Ensure that we don't end up without any toolbar (can happen after upgrading)
     if( m_mainToolbar->isHidden() && m_slimToolbar->isHidden() )
         m_mainToolbar->show();
+
+    m_layoutEverRestored = true;
 }
 
 
-bool MainWindow::playAudioCd()
+bool
+MainWindow::playAudioCd()
 {
     DEBUG_BLOCK
     //drop whatever we are doing and play auidocd
@@ -1697,7 +1696,8 @@ bool MainWindow::playAudioCd()
     return false;
 }
 
-bool MainWindow::isWaitingForCd()
+bool
+MainWindow::isWaitingForCd() const
 {
     DEBUG_BLOCK
     debug() << "waiting?: " << m_waitingForCd;

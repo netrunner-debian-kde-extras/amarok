@@ -36,6 +36,7 @@
 #include "core/meta/support/MetaConstants.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
+#include "network/NetworkAccessManagerProxy.h"
 #include "Osd.h"
 #include "PlaybackConfig.h"
 #include "PlayerDBusHandler.h"
@@ -150,6 +151,8 @@ App::App()
     qRegisterMetaType<Meta::ComposerList>();
     qRegisterMetaType<Meta::YearPtr>();
     qRegisterMetaType<Meta::YearList>();
+    qRegisterMetaType<Meta::LabelPtr>();
+    qRegisterMetaType<Meta::LabelList>();
 
 
     //make sure we have enough cache space for all our crazy svg stuff
@@ -261,11 +264,12 @@ App::~App()
     //mainWindow()->deleteBrowsers();
     delete mainWindow();
 
-    CollectionManager::destroy();
     Playlist::ModelStack::destroy();
     Playlist::Actions::destroy();
     PlaylistManager::destroy();
+    CollectionManager::destroy();
     CoverFetcher::destroy();
+    NetworkAccessManagerProxy::destroy();
 
     //this should be moved to App::quit() I guess
     Amarok::Components::applicationController()->shutdown();
@@ -542,9 +546,12 @@ void App::applySettings( bool firstTime )
 
     DEBUG_BLOCK
 
-    if ( AmarokConfig::showTrayIcon() && ! m_tray ) {
-        m_tray = new Amarok::TrayIcon( mainWindow() );
-    } else if ( !AmarokConfig::showTrayIcon() && m_tray ) {
+    if( AmarokConfig::showTrayIcon() && ! m_tray )
+    {
+        m_tray = new Amarok::TrayIcon( m_mainWindow );
+    }
+    else if( !AmarokConfig::showTrayIcon() && m_tray )
+    {
         delete m_tray;
         m_tray = 0;
     }
@@ -554,32 +561,20 @@ void App::applySettings( bool firstTime )
 
     //on startup we need to show the window, but only if it wasn't hidden on exit
     //and always if the trayicon isn't showing
-    QWidget* main_window = mainWindow();
-
-    // show or hide CV
-    if( mainWindow() )
-        mainWindow()->hideContextView( AmarokConfig::hideContextView() );
-
-    if( ( main_window && firstTime && !Amarok::config().readEntry( "HiddenOnExit", false ) ) || ( main_window && !AmarokConfig::showTrayIcon() ) )
+    if( m_mainWindow )
     {
-        PERF_LOG( "showing main window again" )
-        main_window->show();
-        PERF_LOG( "after showing mainWindow" )
+
+        if( ( firstTime && !Amarok::config().readEntry( "HiddenOnExit", false ) )
+            || !AmarokConfig::showTrayIcon() )
+        {
+            PERF_LOG( "showing main window again" )
+            m_mainWindow->show();
+            PERF_LOG( "after showing mainWindow" )
+        }
     }
 
-    if( firstTime )
-    {   // delete unneeded cover images from cache
-        PERF_LOG( "Begin cover handling" )
-        const QString size = QString::number( 100 ) + '@';
-        const QDir cacheDir = Amarok::saveLocation( "albumcovers/cache/" );
-        const QStringList obsoleteCovers = cacheDir.entryList( QStringList("*") );
-        foreach( const QString &it, obsoleteCovers )
-            //34@ is for playlist album cover images
-            if ( !it.startsWith( size  ) && !it.startsWith( "50@" ) && !it.startsWith( "32@" ) && !it.startsWith( "34@" ) )
-                QFile( cacheDir.filePath( it ) ).remove();
-
-        PERF_LOG( "done cover handling" )
-    }
+    if( !firstTime )
+        emit settingsChanged();
 }
 
 #ifdef DEBUG
@@ -662,12 +657,6 @@ App::continueInit()
     QDBusConnection::sessionBus().registerService("org.mpris.amarok");
     PERF_LOG( "Done creating DBus handlers" )
 
-    if( splash ) // close splash correctly
-    {
-        splash->close();
-        delete splash;
-    }
-
     //DON'T DELETE THIS NEXT LINE or the app crashes when you click the X (unless we reimplement closeEvent)
     //Reason: in ~App we have to call the deleteBrowsers method or else we run afoul of refcount foobar in KHTMLPart
     //But if you click the X (not Action->Quit) it automatically kills MainWindow because KMainWindow sets this
@@ -701,6 +690,12 @@ App::continueInit()
 
     // Restore keyboard shortcuts etc from config
     Amarok::actionCollection()->readSettings();
+
+    if( splash ) // close splash correctly
+    {
+        splash->close();
+        delete splash;
+    }
 
     PERF_LOG( "App init done" )
     KConfigGroup config = KGlobal::config()->group( "General" );
@@ -792,7 +787,20 @@ App::continueInit()
         aUrl.run();
     }
     s_delayedAmarokUrls.clear();
+
+    QTimer::singleShot( 1500, this, SLOT( resizeMainWindow() ) );
 }
+
+
+void App::resizeMainWindow() // SLOT
+{
+    // HACK
+    // This code works around a bug in KDE 4.5, which causes our Plasma applets to show
+    // with a wrong initial size. Remove when this bug is fixed in Plasma.
+    m_mainWindow->resize( m_mainWindow->width(), m_mainWindow->height() - 1 );
+    m_mainWindow->resize( m_mainWindow->width(), m_mainWindow->height() + 1 );
+}
+
 
 void App::checkCollectionScannerVersion()  // SLOT
 {

@@ -54,10 +54,9 @@ class AMAROK_CORE_EXPORT PlaylistProvider : public QObject, public Plugins::Plug
         virtual int playlistCount() const { return -1; }
         virtual Playlists::PlaylistList playlists() = 0;
 
-        virtual QList<QAction *> providerActions() { return QList<QAction *>(); }
-        virtual QList<QAction *> playlistActions( Playlists::PlaylistPtr playlist ) = 0;
-        virtual QList<QAction *> trackActions( Playlists::PlaylistPtr playlist,
-                                                  int trackIndex ) = 0;
+        virtual QActionList providerActions() { return QList<QAction *>(); }
+        virtual QActionList playlistActions( Playlists::PlaylistPtr playlist ) = 0;
+        virtual QActionList trackActions( Playlists::PlaylistPtr playlist, int trackIndex ) = 0;
 
         /** Copy a playlist to the provider.
           */
@@ -70,7 +69,10 @@ class AMAROK_CORE_EXPORT PlaylistProvider : public QObject, public Plugins::Plug
         virtual Meta::TrackPtr addTrack( Meta::TrackPtr track );
 
     signals:
+        //These signals have to be defined in subclasses!
         void updated();
+        void playlistAdded( PlaylistPtr playlist );
+        void playlistRemoved( PlaylistPtr playlist );
 
 };
 

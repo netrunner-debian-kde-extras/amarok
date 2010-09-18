@@ -17,10 +17,12 @@
 #include "SearchWidget.h"
 #include "EditFilterDialog.h"
 
+#include <QToolBar>
 #include <QVBoxLayout>
 
 #include <KIcon>
 #include <KLocale>
+#include <KLineEdit>
 #include <KHBox>
 #include <KPushButton>
 
@@ -45,7 +47,7 @@ SearchWidget::SearchWidget( QWidget *parent, QWidget *caller, bool advanced )
 void
 SearchWidget::setup( QObject* caller )
 {
-    connect( m_sw, SIGNAL( textChanged( const QString & ) ), caller,
+    connect( m_sw, SIGNAL( editTextChanged( const QString & ) ), caller,
              SLOT( slotSetFilterTimeout() ) );
     connect( this, SIGNAL( filterNow() ), caller,
              SLOT( slotFilterNow() ) );
@@ -62,16 +64,21 @@ SearchWidget::init( QWidget *parent, bool advanced )
     KHBox *searchBox = new KHBox( this );
     searchBox->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
 
-    m_sw = new Amarok::LineEdit( searchBox );
-    m_sw->setClickMessage( i18n( "Enter search terms here" ) );
+    m_sw = new Amarok::ComboBox( searchBox );
     m_sw->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
-    m_sw->setClearButtonShown( true );
     m_sw->setFrame( true );
+    m_sw->setCompletionMode( KGlobalSettings::CompletionPopup );
+    m_sw->completionObject()->setIgnoreCase( true );
     m_sw->setToolTip( i18n( "Enter space-separated terms to search." ) );
+    m_sw->addItem( KStandardGuiItem::find().icon(), QString() );
+    connect( m_sw, SIGNAL(returnPressed(const QString&)), SLOT(addCompletion(const QString&)) );
+    connect( m_sw, SIGNAL(activated(int)), SLOT(onComboItemActivated(int)));
+
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget( searchBox );
     layout->setContentsMargins( 0, 0, 0, 0 );
     setLayout( layout );
+    setClickMessage( i18n( "Enter search terms here" ) );
 
     m_toolBar = new QToolBar( searchBox );
     m_toolBar->setFixedHeight( m_sw->sizeHint().height() );
@@ -88,18 +95,54 @@ SearchWidget::init( QWidget *parent, bool advanced )
 void
 SearchWidget::setSearchString( const QString &searchString )
 {
-    m_sw->setText( searchString );
+    m_sw->setEditText( searchString );
     emit filterNow();
+}
+
+void
+SearchWidget::addCompletion( const QString &text )
+{
+    int index = m_sw->findText( text );
+    if( index == -1 )
+    {
+        m_sw->addItem( KStandardGuiItem::find().icon(), text );
+        m_sw->completionObject()->addItem( text );
+    }
+    else
+    {
+        m_sw->setCurrentIndex( index );
+    }
+}
+
+void
+SearchWidget::onComboItemActivated( int index )
+{
+    // if data of UserRole exists, use that as the actual filter string
+    const QString userFilter = m_sw->itemData( index ).toString();
+    if( userFilter.isEmpty() )
+        m_sw->setEditText( m_sw->itemText(index) );
+    else
+        m_sw->setEditText( userFilter );
 }
 
 void
 SearchWidget::slotShowFilterEditor()
 {
-    EditFilterDialog *fd = new EditFilterDialog( this, m_sw->text() );
+    EditFilterDialog *fd = new EditFilterDialog( this, m_sw->currentText() );
+    fd->setAttribute( Qt::WA_DeleteOnClose );
+    m_filterAction->setEnabled( false );
 
-    connect( fd, SIGNAL( filterChanged( const QString & ) ), m_sw,  SLOT( setText( const QString & ) ) );
+    connect( fd, SIGNAL(filterChanged(const QString&) ), m_sw, SLOT(setEditText(const QString&)) );
+    connect( fd, SIGNAL(finished(int)), this, SLOT(slotFilterEditorFinished(int)) );
 
-    fd->exec();
+    fd->show();
+}
+
+void
+SearchWidget::slotFilterEditorFinished( int result )
+{
+    Q_UNUSED( result )
+    m_filterAction->setEnabled( true );
 }
 
 QToolBar * SearchWidget::toolBar()
@@ -126,11 +169,8 @@ void SearchWidget::showAdvancedButton(bool show)
 
 void SearchWidget::setClickMessage( const QString &message )
 {
-    m_sw->setClickMessage( message );
+    KLineEdit *edit = qobject_cast<KLineEdit*>( m_sw->lineEdit() );
+    edit->setClickMessage( message );
 }
 
-
 #include "SearchWidget.moc"
-
-
-

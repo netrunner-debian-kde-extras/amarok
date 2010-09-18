@@ -37,7 +37,7 @@ Name[sr@ijekavianlatin]=Zbirka na serveru MySQL‑a
 Name[sr@latin]=Zbirka na serveru MySQL‑a
 Name[sv]=MySQLServer-samling
 Name[th]=คลังสื่อแบบ MySQLServer
-Name[tr]=MySQL Suncu Koleksiyonu
+Name[tr]=MySQL Sunucu Koleksiyonu
 Name[uk]=Збірка MySQLServer
 Name[x-test]=xxMySQLServer Collectionxx
 Name[zh_CN]=MySQLServer 收藏
@@ -104,7 +104,7 @@ X-KDE-Library=amarok_collection-mysqlservercollection
 
 X-KDE-Amarok-authors=Jeff Mitchell
 X-KDE-Amarok-email=mitchell@kde.org
-X-KDE-Amarok-framework-version=56
+X-KDE-Amarok-framework-version=58
 X-KDE-Amarok-name=mysqlserver-collection
 X-KDE-Amarok-plugintype=collection
 X-KDE-Amarok-rank=100

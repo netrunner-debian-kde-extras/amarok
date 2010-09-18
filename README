@@ -2,7 +2,7 @@
  Amarok - the audio player for KDE
 ===================================
 
-There are many media players around these days, true. What's missing from most
+There are many media players around these days, it's true. What's missing from most
 players is a user interface that doesn't get in the way of the user. How many
 buttons do you have to press for simply adding some new tracks to the playlist?
 Amarok tries to be a little different, providing a simple drag and drop
@@ -26,8 +26,8 @@ interface that really makes playlist handling easy.
     * iPod support, as well as other media players
     * Powerful scripting interface
     * KDE integration
-    * Integration with multiple web sources, Magnatune, Jamendo, Ampache and Mp3tunes 
-      among others.
+    * Integration with multiple web sources including Magnatune, Jamendo,
+      Ampache, MP3tunes, and others.
 --------------------------------------------------------------------------------
 
 
@@ -68,7 +68,7 @@ Optional
       (iPod support)
       http://www.gtkpod.org/libgpod/
 
-    * libmtp 0.3.x
+    * libmtp 1.0.0
       (MTP device support)
       http://libmtp.sourceforge.net/
 
@@ -88,8 +88,8 @@ Optional
     * MySQL 5.0 (or newer) Server (external database support)
 
 
-Please note, if compiling from source you must also install the devel versions
-of these packages.
+Please note that if compiling from source you may also need to install -devel versions
+of these packages, depending on your distribution.
 --------------------------------------------------------------------------------
 
 
@@ -140,7 +140,7 @@ If you wish to contribute to Amarok, you should build it from Git and subscribe
 to the amarok AT kde.org mailing list. The IRC channel is also a place where
 it's nice to be. There you can talk to other developers easily, and you can see
 instant notifications of commits to the Git master repository. For instant email 
-notification of commits, visit http://commitfilter.kde.org/ and http://amarok.be/fisheye
+notification of commits, visit http://commitfilter.kde.org/ , and http://amarok.be/fisheye
 provides a slightly-less-instant overview.
 
 More information at:

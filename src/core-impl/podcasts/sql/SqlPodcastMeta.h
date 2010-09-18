@@ -64,7 +64,6 @@ class SqlPodcastEpisode : public Podcasts::PodcastEpisode
         virtual bool isEditable() const;
         virtual void finishedPlaying( double playedFraction );
 
-        virtual Meta::AlbumPtr album() const;
         virtual Meta::ArtistPtr artist() const;
         virtual Meta::ComposerPtr composer() const;
         virtual Meta::GenrePtr genre() const;
@@ -103,7 +102,11 @@ class SqlPodcastChannel : public Podcasts::PodcastChannel
         virtual Meta::TrackList tracks() { return Podcasts::SqlPodcastEpisode::toTrackList( m_episodes ); }
         virtual Playlists::PlaylistProvider *provider() const;
 
+        virtual QStringList groups();
+        virtual void setGroups( const QStringList &groups );
+
         //Podcasts::PodcastChannel methods
+        virtual KUrl uidUrl() const;
         virtual void setTitle( const QString &title );
         virtual Podcasts::PodcastEpisodeList episodes();
         virtual bool hasImage() const { return !m_image.isNull(); }

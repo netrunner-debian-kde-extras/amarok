@@ -3,6 +3,165 @@ Amarok ChangeLog
 (C) 2002-2010 the Amarok authors.
 
 
+VERSION 2.3.2
+  FEATURES:
+
+  CHANGES:
+    * Bumped libMTP dependency to version 1.0.0.
+    * Improved response of current track and albums applet on data updates.
+    * Use system date/time format for default name when saving user playlists.
+
+  BUGFIXES:
+    * Fixed incorrect size of the VideoClip applet. (BR 247097)
+    * Comments embedded in files that contained newlines or tabs could be
+      skipped entirely. (BR 223502)
+    * The equalizer dialog did not discard changes when clicking "Cancel".
+      Patch by Anton Gritsay <anton@angri.ru>. (BR 242730)
+    * The Last.fm service did not work without KWallet. (BR 235861)
+    * Show actual KDE version in the "About Amarok" dialog, instead of the
+      version used at compile time.
+    * Fixed a crash when trying to save a playlist to a file where the format
+      of the playlist was unknown. (BR 246168)
+    * Also use podcast channel image for downloaded episodes. (BR 229391)
+    * Collection directories that were symlinks could end up storing the wrong
+      absolute path, causing those files to be removed during incremental
+      scans.
+    * Fixed playlist tooltips not showing up, even when enabled in the playlist
+      layout (BR 249086)
+    * Fixed potential crashes related to Applet loading. (BR 246756)
+    * Fixed possible crash in Labels Applet when playing new track. (BR 248538)
+    * Fixed incorrect layout of applets on startup.
+    * Fixed Collection Browser not properly updating after a full rescan,
+      necessitating Amarok to be closed and reopened. Fixes various bugs. 
+      (BR 172542)
+    * Fixed cover found dialog closing when download failed or is cancelled.
+    * Fixed failure when fetching cddb info for audio CDs in localized Amarok.
+    * Fixed expanding items in collection browser by double-click, in
+      double-click mode.
+    * Fixed crash when adding new folders repeatedly in podcast/saved playlist
+      browsers.
+    * Fixed context menu actions acting on wrong indices in the playlist
+      browser.
+    * Fixed incorrect text about "rpath" argument to collection scanner.
+      (BR 236076)
+    * Fixed emission of MPRIS StatusChange signal when switching into or out
+      of random mode.
+
+
+VERSION 2.3.2-Beta 1
+  FEATURES:
+    * Podcasts can now be filtered on provider and grouped in folders. (BR 219519)
+    * Amarok 1.4 Database Importer: added support for importing labels.
+      Thanks to Matěj Laitl for the patch. (BR 218996)
+    * Shortcuts: Added "Replay current track" shortcut. (BR 217081)
+    * Edit filter dialog: added "added" and "last played" date filters.
+    * File browser: added forward and back buttons for accessing navigate history.
+    * Organize Dialog: added a way to save multiple file formats as presets. (BR 122672)
+    * Filtering: added default presets to the drop down menu of the collection
+      search widget.
+    * Filtering: track format can now be used as filter keyword in the
+      collection browser, e.g. "format:flac".
+    * Filtering: track file size can now be used as filter keyword in the
+      collection browser, e.g. "filesize:<12" for tracks under 12Mb;
+      "filesize:25" for tracks that are between 25 and 26Mb.
+    * Filtering: tracks that were added to the collection since/before a
+      certain time can now be filtered using, e.g. "added:<1w".
+    * Filtering: added ability to filter last played date in the collection
+      browser, e.g. "played:<3d".
+
+  CHANGES:
+    * Let scripts access bpm property of tracks (read-only). (BR 245257)
+    * Remote Meta+P global shortcut to avoid future problems with new
+      keyboard drivers in notebooks. (BR 235204)
+    * Fix size of Slim toolbar time labels. Thanks to Tijl Coosemans for the patch.
+    * Amarok 1.4 Database Importer: only import tracks that actually belong in the
+      collection. Thanks to Matěj Laitl for the patch. (BR 218999)
+    * Refresh the albums context applet when the collection is updated.
+    * Don't allow the last visible playlist source in User Playlists to be hidden.
+    * "Play Media" dialog now remembers the last used directory. (BR 231092)
+    * Organize Dialog: tweaked the layout to fit better on smaller resolutions (BR 238000)
+    * Filtering: added year suffix for date filters in the collection browser.
+    * Last.fm features that require user authentication are now disabled
+      by default.
+    * Ignore "DJ" prefix when sorting in collection browser. (BR 181955)
+      Patch by Richard Longland <rlongland@hotmail.com>.
+
+  BUGFIXES:
+    * Tweaked fuzzy numerical comparisons in the APG. (BR 242281)
+    * Finally don't truncate the "Label:" label in TagDialog. (BR 235957)
+    * Fix crash when right clicking on children of "No labels". NoLabel item is
+      now a Data item. (BR 243825)
+    * Fix regression in Dynamic Collections. For files that were scanned when
+      Dynamic Collections wasn't working, you will need to rescan them to get
+      them associated with the proper device.
+    * Fix crash on exit with newer KDE versions. Patch by Martin Blumenstingl and Felix
+      Geyer. (BR 245513)
+    * Fixed playlist bottom toolbar getting to tall when using "Text only"
+      button style. (BR 228390)
+    * Fixed Amarok layout saving when minized to tray. (BR 244583)
+    * Make "No other participants" in the events applet translatable.
+      Patch by Jan Janssen. (BR 235311)
+    * Fixed track number on DAAP shares. Patch by Silvio Frischknecht. (BR 235030)
+    * Fixed filtering by rating in the playlist. (BR 240293)
+    * The scripts categories are now translatable. (BR 240563)
+    * Fixed Amarok 1.4 Database Importer not importing statistics and lyrics of
+      tracks that are not yet in database. Thanks to Matěj Laitl for the patch.
+      (see comments on BR 218996)
+    * Fixed always playing first track when adding tracks to empty playlist with
+      random mode on. Patch by Anton Gritsay <anton@angri.ru> (BR 240452)
+    * Directories that were once part of the collection but not anymore may not
+      have been properly removed, leading to files outside the collection being
+      scanned. (BR 243532)
+    * Fixed "genre" and other playlist groupings not working. (BR 243344)
+    * Removed track progress effect on TrayIcon as it caused several problems
+      (also caused by a bogus implementation of the KSNI class)
+      (BR 233506, BR 240463, BR 231539, BR 232578, BR 232312).
+    * Fixed track name in main window title incorrectly changing when editing
+      tag info for another track. Thanks to Anton Gritsay <anton@angri.ru> for
+      the patch (BR 220521)
+    * Splitted desktop so mime types can be allocated in a better way
+      (BR 242292).
+    * Fixed some tracks not being scanned when they had corrupted MusicBrainz
+      IDs. Thanks to Matěj Laitl <matej@laitl.cz> for the patch. (BR 236227)
+    * Fixed crash when navigating using "Places" in the file browser. (BR 240338)
+    * Fixed error dialog popup if the stored directory is no longer accessible
+      when using the file browser. (BR 234286)
+    * Single clicking a file in the file browser now selects it instead of
+      appending to the playlist by default in single-click mode. (BR 233171)
+    * Fixed resizing and eliding issues with the file browser breadcrumbs.
+      (BR 231366 comment #5)
+    * Drop file icons in file browser breadcrumbs. (BR 231366)
+    * Fixed keyboard navigation in file browser. (BR 240668)
+      Patch thanks to Hannes Koller.
+    * Fixed dropping files to playlist from Konqueror. (BR 235722)
+    * Fixed keyboard shortcuts of actions from scripts lost after restart.
+      Thanks to Martin Blumenstingl <darklight.xdarklight@googlemail.com>.
+      (BR 223165)
+    * Fixed tracks not changing for "stop after this track" action. (BR 231209)
+    * Cleaned up some tooltips/what's this strings in the Organize dialog
+      to make it easier to read and, hopefully, understand. (BR 237857)
+    * Fixed organize dialog's handling of the year tag. If there is no year
+      then the %year token should be an empty string.(BR 237834)
+    * The "Ignore 'The'" option in the organize files dialog is now case
+      insensitive. (BR 237831)
+    * Fixed odd header name when showing "places" in the file browser.
+      (BR 238518)
+    * Filenames with dots (.) and other special RegEx characters will now be
+      parsed correctly when guessing tags from a filename. (BR 225743)
+    * Align track details dialog's labels to the right as per KDE4's HIG.
+      (BR 234555)
+    * The last.fm service will now only open the wallet on startup if the user
+      has enabled features that require authentication. (BR 230098)
+    * Correctly load the list of labels in tag dialog. (BR 238737)
+      Patch by Daniel Faust <hessijames@gmail.com>.
+    * Cover manager: fixed crash if closed shortly after opening. (BR 235796)
+    * Fixed Last.fm service browser not updating its view if it's open on
+      startup. (BR 231044)
+    * Fixed clicking on browser categories not honoring mouse settings. (BR 226533)
+    * Fixed usability issue with regards to context menu item order when right
+      clicking in the playlist widget. (BR 198650)
+
+
 VERSION 2.3.1
   CHANGES:
     * Improved responsiveness when expanding/collapsing items in the
@@ -11,6 +170,7 @@ VERSION 2.3.1
       Amarok. Batch scan users can invoke it with the --idlepriority flag.
 
   BUGFIXES:
+    * Fixed regression in Ctrl+RightClick behaviour in playlist. (BR 241238)
     * File browser: fixed sorting files by date. (BR 226941)
     * Fixed issue with file browser bookmarks not working when the file browser
       was showing "places".
@@ -330,7 +490,6 @@ VERSION 2.3-Beta 1
     * Fixed behaviour when clearing the bookmark manager filter.
     * Fixed track not being added to the playlist when playing a track from
       the bookmark manager.
-
 
 VERSION 2.2.2
   CHANGES:

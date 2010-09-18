@@ -22,6 +22,7 @@
 
 #include "core/meta/Meta.h"
 #include "CoverFetchUnit.h"
+#include "network/NetworkAccessManagerProxy.h"
 
 #include <QHash>
 #include <QObject>      //baseclass
@@ -30,7 +31,6 @@
 
 class CoverFetchQueue;
 class CoverFoundDialog;
-class KJob;
 
 namespace KIO { class Job; }
 
@@ -51,7 +51,7 @@ public:
     enum FinishState { Success, Error, NotFound, Cancelled };
 
 public slots:
-    AMAROK_EXPORT void queueQuery( const QString &query, unsigned int page = 0 );
+    AMAROK_EXPORT void queueQuery( Meta::AlbumPtr album, const QString &query, int page = 0 );
 
 signals:
     void finishedSingle( int state );
@@ -62,7 +62,7 @@ private slots:
     void slotFetch( const CoverFetchUnit::Ptr unit );
 
     /// Handle result of a fetch job
-    void slotResult( KJob *job );
+    void slotResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
     /// Cover found dialog is closed by the user
     void slotDialogFinished();
@@ -75,11 +75,13 @@ private:
     /// Remove a fetch unit from the queue, and clean up any running jobs
     void abortFetch( CoverFetchUnit::Ptr unit );
 
+    void queueQueryForAlbum( Meta::AlbumPtr album );
+
     const int m_limit;            //!< maximum number of concurrent fetches
     CoverFetchQueue *m_queue;     //!< current fetch queue
     Meta::AlbumList m_queueLater; //!< put here if m_queue exceeds m_limit
 
-    QHash< const KJob*, CoverFetchUnit::Ptr > m_jobs;
+    QHash< KUrl, CoverFetchUnit::Ptr > m_urls;
     QHash< const CoverFetchUnit::Ptr, QPixmap > m_selectedPixmaps;
 
     QStringList m_errors;
@@ -93,7 +95,7 @@ private:
 
     /// Show the cover that has been found
     void showCover( CoverFetchUnit::Ptr unit,
-                    const QPixmap cover = QPixmap(),
+                    const QPixmap &cover = QPixmap(),
                     CoverFetch::Metadata data = CoverFetch::Metadata() );
 
     CoverFetch::Source fetchSource() const;

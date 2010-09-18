@@ -14,9 +14,13 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "BrowserBreadcrumbWidget"
+
 #include "BrowserBreadcrumbWidget.h"
 
 #include "amarokurls/AmarokUrl.h"
+#include "BrowserBreadcrumbItem.h"
+#include "BrowserCategoryList.h"
 #include "core/support/Debug.h"
 #include "browsers/filebrowser/FileBrowser.h"
 #include "MainWindow.h"
@@ -25,6 +29,7 @@
 #include <KLocale>
 
 #include <QDir>
+#include <QMenu>
 #include <QResizeEvent>
 
 BrowserBreadcrumbWidget::BrowserBreadcrumbWidget( QWidget * parent )
@@ -136,7 +141,7 @@ BrowserBreadcrumbWidget::addLevel( BrowserCategoryList * list )
         item->setActive( false );
         
         //check if this is also a list
-        BrowserCategoryList *childList = dynamic_cast<BrowserCategoryList*>( childCategory );
+        BrowserCategoryList *childList = qobject_cast<BrowserCategoryList*>( childCategory );
         if( childList )
         {
             addLevel( childList );
@@ -147,13 +152,12 @@ BrowserBreadcrumbWidget::addLevel( BrowserCategoryList * list )
             BrowserBreadcrumbItem * leaf = childCategory->breadcrumb();
             leaf->setParent( m_breadcrumbArea );
             leaf->show();
-            leaf->setActive( true );
             
             m_items.append( leaf );
 
-
+            const QList<BrowserBreadcrumbItem*> additionalItems = childCategory->additionalItems();
             //no children, but check if there are additional breadcrumb levels (for internal navigation in the category) that should be added anyway.
-            foreach( BrowserBreadcrumbItem * addItem, childCategory->additionalItems() )
+            foreach( BrowserBreadcrumbItem *addItem, additionalItems )
             {
                 debug() << "adding extra item";
 
@@ -162,21 +166,24 @@ BrowserBreadcrumbWidget::addLevel( BrowserCategoryList * list )
                 
                 addItem->setParent( m_breadcrumbArea );
                 addItem->show();
-                addItem->setActive( true );
             }
+
+            if( !additionalItems.isEmpty() )
+                additionalItems.last()->setActive( true );
+            else
+                leaf->setActive( true );
         }
     }
     else
     {
-        item->setActive( true );
-
         //if this item has children, add a menu button for selecting these.
-        BrowserCategoryList *childList = dynamic_cast<BrowserCategoryList*>( list );
+        BrowserCategoryList *childList = qobject_cast<BrowserCategoryList*>( list );
         if( childList )
         {
             m_childMenuButton = new BreadcrumbItemMenuButton( m_breadcrumbArea );
 
-            QMenu *menu = new QMenu( 0 );
+            QMenu *menu = new QMenu( item );
+            menu->hide();
 
             QMap<QString,BrowserCategory *> childMap =  childList->categories();
 
@@ -195,14 +202,14 @@ BrowserBreadcrumbWidget::addLevel( BrowserCategoryList * list )
 
             }
 
-        m_childMenuButton->setMenu( menu );
-        
-        //do a little magic to line up items in the menu with the current item
-        int offset = 6;
-        menu->setContentsMargins( offset, 1, 1, 2 );
+            m_childMenuButton->setMenu( menu );
+
+            //do a little magic to line up items in the menu with the current item
+            int offset = 6;
+            menu->setContentsMargins( offset, 1, 1, 2 );
 
         }
-        
+        item->setActive( true );
     }
 
     hideAsNeeded( width() );
@@ -267,11 +274,11 @@ BrowserBreadcrumbWidget::mousePressEvent( QMouseEvent * event )
     //set the string in the edit widgets. Just use the current "amarok path", except for the case of the
     //file browser where we want to show the current "real" path
 
-    QString amarokPath = The::mainWindow()->browserWidget()->list()->path();
+    QString amarokPath = The::mainWindow()->browserDock()->list()->path();
 
     if( amarokPath.endsWith( "files" ) )
     {
-        FileBrowser * fileBrowser = dynamic_cast<FileBrowser *>( The::mainWindow()->browserWidget()->list()->activeCategory() );
+        FileBrowser * fileBrowser = qobject_cast<FileBrowser *>( The::mainWindow()->browserDock()->list()->activeCategory() );
         if( fileBrowser )
         {
             m_pathEdit->setText( fileBrowser->currentDir() );

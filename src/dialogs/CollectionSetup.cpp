@@ -22,20 +22,21 @@
 
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
-#include "MainWindow.h"
 #include "amarokconfig.h"
 #include "dialogs/DatabaseImporterDialog.h"
 
 #include <KLocale>
+#include <KGlobalSettings>
 #include <KPushButton>
 #include <KVBox>
 
+#include <QAction>
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <QDir>
 #include <QFile>
 #include <QLabel>
-
+#include <QMenu>
 
 CollectionSetupTreeView::CollectionSetupTreeView( QWidget *parent )
         : QTreeView( parent )
@@ -103,7 +104,8 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     m_view  = new CollectionSetupTreeView( this );
     m_view->setHeaderHidden( true );
     m_view->setRootIsDecorated( true );
-    m_view->setAnimated( true );
+    if( KGlobalSettings::graphicEffectsLevel() != KGlobalSettings::NoEffects )
+        m_view->setAnimated( true );
     m_view->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     connect( m_view, SIGNAL( clicked( const QModelIndex & ) ), this, SIGNAL( changed() ) );
 
@@ -117,7 +119,7 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     import->setToolTip( i18n( "Import collection statistics from older Amarok versions, or from other media players." ) );
     connect( import, SIGNAL( clicked() ), this, SLOT( importCollection() ) );
 
-    m_recursive = new QCheckBox( i18n("&Scan folders recursively"), this );
+    m_recursive = new QCheckBox( i18n("&Scan folders recursively (requires full rescan if newly checked)"), this );
     m_monitor   = new QCheckBox( i18n("&Watch folders for changes"), this );
     m_charset   = new QCheckBox( i18n("&Enable character set detection in ID3 tags"), this );
     connect( m_recursive, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );

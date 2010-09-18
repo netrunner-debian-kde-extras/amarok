@@ -30,11 +30,16 @@
 #include "core/collections/QueryMaker.h"
 #include "amarokconfig.h"
 #include "core/capabilities/EditCapability.h"
+#include "shared/FileType.h"
+#include "SvgHandler.h"
 
+#include <KGlobalSettings>
 #include <KIcon>
 #include <KIconLoader>
 #include <KLocale>
 #include <KStandardDirs>
+
+#include <QFontMetrics>
 #include <QPixmap>
 #include <QTimeLine>
 #include <QTimer>
@@ -59,7 +64,9 @@ CollectionTreeItemModelBase::CollectionTreeItemModelBase( )
     m_timeLine = new QTimeLine( 10000, this );
     m_timeLine->setFrameRange( 0, 20 );
     m_timeLine->setLoopCount ( 0 );
+    updateRowHeight();
     connect( m_timeLine, SIGNAL( frameChanged( int ) ), this, SLOT( loadingAnimationTick() ) );
+    connect( KGlobalSettings::self(), SIGNAL(kdisplayFontChanged()), SLOT(updateRowHeight()) );
 }
 
 CollectionTreeItemModelBase::~CollectionTreeItemModelBase()
@@ -184,6 +191,65 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
         }
     }
     return false;
+}
+
+QVariant
+CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, int level ) const
+{
+    if( item->isDataItem() )
+    {
+        switch( role )
+        {
+        case Qt::DecorationRole:
+            {
+                if( level == -1 )
+                    level = item->level();
+
+                if( d->childQueries.values().contains( item ) )
+                {
+                    if( level < m_levelType.count() )
+                        return m_currentAnimPixmap;
+                }
+
+                if( level < m_levelType.count() )
+                {
+                    if( m_levelType[level] == CategoryId::Album && AmarokConfig::showAlbumArt() )
+                    {
+                        Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( item->data() );
+                        if( album )
+                            return The::svgHandler()->imageWithBorder( album, 32, 2 );
+                    }
+                    else if( m_levelType[level] == CategoryId::Artist && item->isVariousArtistItem() )
+                    {
+                        return KIconLoader::global()->loadIcon( "similarartists-amarok",
+                                                                KIconLoader::Toolbar,
+                                                                KIconLoader::SizeSmall );
+                    }
+                    return iconForLevel( level );
+                }
+                else if( level == m_levelType.count() )
+                {
+                    return KIconLoader::global()->loadIcon( "media-album-track",
+                                                            KIconLoader::Toolbar,
+                                                            KIconLoader::SizeSmall );
+                }
+            }
+            break;
+
+        case Qt::SizeHintRole:
+            {
+                QSize size( 1, d->rowHeight );
+                if( item->isAlbumItem() && AmarokConfig::showAlbumArt() )
+                {
+                    if( d->rowHeight < 34 )
+                        size.setHeight( 34 );
+                }
+                return size;
+            }
+            break;
+        }
+    }
+    return item->data( role );
 }
 
 QVariant
@@ -334,7 +400,7 @@ void
 CollectionTreeItemModelBase::ensureChildrenLoaded( CollectionTreeItem *item )
 {
     //only start a query if necessary and we are not querying for the item's children already
-    if ( item->requiresUpdate() && !d->m_runningQueries.contains( item ) )
+    if ( item->requiresUpdate() && !d->runningQueries.contains( item ) )
     {
         listForLevel( item->level() + levelModifier(), item->queryMaker(), item );
     }
@@ -371,18 +437,17 @@ CollectionTreeItemModelBase::iconForLevel(int level) const
 
 void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMaker * qm, CollectionTreeItem * parent)
 {
-    DEBUG_BLOCK
     if ( qm && parent )
     {
         //this check should not hurt anyone... needs to check if single... needs it
-        if( d->m_runningQueries.contains( parent ) )
+        if( d->runningQueries.contains( parent ) )
             return;
 
-        if ( level > m_levelType.count() )
+        if( level > m_levelType.count() || parent->isVariousArtistItem() || parent->isNoLabelItem() )
+        {
+            qm->deleteLater();
             return;
-
-        if( parent->isVariousArtistItem() || parent->isNoLabelItem() )
-            return;
+        }
 
         if ( level == m_levelType.count() )
             qm->setQueryType( Collections::QueryMaker::Track );
@@ -446,8 +511,8 @@ void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMake
         qm->setReturnResultAsDataPtrs( true );
         connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ), Qt::QueuedConnection );
         connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
-        d->m_childQueries.insert( qm, parent );
-        d->m_runningQueries.insert( parent, qm );
+        d->childQueries.insert( qm, parent );
+        d->runningQueries.insert( parent, qm );
         qm->run();
 
         //some very quick queries may be done so fast that the loading
@@ -627,6 +692,10 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
                 {
                     ADD_OR_EXCLUDE_FILTER( Meta::valComment, elem.text, false, false );
                 }
+                else if( lcField.compare( "filename", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "filename" ), Qt::CaseInsensitive ) == 0 )
+                {
+                    ADD_OR_EXCLUDE_FILTER( Meta::valUrl, elem.text, false, false );
+                }
                 else if( lcField.compare( "bitrate", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "bitrate" ), Qt::CaseInsensitive ) == 0 )
                 {
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valBitrate, elem.text.toInt(), compare );
@@ -651,6 +720,53 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
                 {
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valLength, elem.text.toInt() * 1000, compare );
                 }
+                else if( lcField.compare( "filesize", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "filesize" ), Qt::CaseInsensitive ) == 0 )
+                {
+                    bool doubleOk( false );
+                    const double mbytes = elem.text.toDouble( &doubleOk ); // input in MBs
+                    if( !doubleOk )
+                    {
+                        qm->endAndOr();
+                        return;
+                    }
+
+                    /*
+                     * A special case is made for Equals (e.g. filesize:100), which actually filters
+                     * for anything beween 100 and 101MBs. Megabytes are used because for audio files
+                     * they are the most reasonable units for the user to deal with.
+                     */
+                    const qreal bytes = mbytes * 1024.0 * 1024.0;
+                    const qint64 mbFloor = qint64( qAbs(mbytes) );
+                    switch( compare )
+                    {
+                    case Collections::QueryMaker::Equals:
+                        qm->endAndOr();
+                        qm->beginAnd();
+                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valFilesize, mbFloor * 1024 * 1024, Collections::QueryMaker::GreaterThan );
+                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valFilesize, (mbFloor + 1) * 1024 * 1024, Collections::QueryMaker::LessThan );
+                        break;
+                    case Collections::QueryMaker::GreaterThan:
+                    case Collections::QueryMaker::LessThan:
+                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valFilesize, bytes, compare );
+                        break;
+                    }
+                }
+                else if( lcField.compare( "format", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "format" ), Qt::CaseInsensitive ) == 0 )
+                {
+                    // NOTE: possible keywords that could be considered: codec, filetype, etc.
+                    const QString &ftStr = elem.text;
+                    Amarok::FileType ft = Amarok::Unknown;
+                    if( ftStr.compare( "flac", Qt::CaseInsensitive ) == 0 )
+                        ft = Amarok::Flac;
+                    else if( ftStr.compare( "mp3", Qt::CaseInsensitive ) == 0 )
+                        ft = Amarok::Mp3;
+                    else if( ftStr.compare( "mp4", Qt::CaseInsensitive ) == 0 )
+                        ft = Amarok::Mp4;
+                    else if( ftStr.compare( "ogg", Qt::CaseInsensitive ) == 0 )
+                        ft = Amarok::Ogg;
+
+                    ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valFormat, int(ft), compare );
+                }
                 else if( lcField.compare( "discnumber", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "discnumber" ), Qt::CaseInsensitive ) == 0 )
                 {
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valDiscNr, elem.text.toInt(), compare );
@@ -659,52 +775,47 @@ CollectionTreeItemModelBase::addFilters( Collections::QueryMaker * qm ) const
                 {
                     ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valTrackNr, elem.text.toInt(), compare );
                 }
+                else if( lcField.compare( "played", Qt::CaseInsensitive ) == 0 || lcField.compare( i18nc( "last played time / access date", "played" ), Qt::CaseInsensitive ) == 0 )
+                {
+                    if( compare == Collections::QueryMaker::Equals )
+                    {
+                        const uint dateCutOff = semanticDateTimeParser( elem.text ).toTime_t();
+                        if( dateCutOff > 0 )
+                        {
+                            ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valLastPlayed, dateCutOff, Collections::QueryMaker::GreaterThan );
+                        }
+                    }
+                    else
+                    {
+                        Collections::QueryMaker::NumberComparison compareAlt = Collections::QueryMaker::GreaterThan;
+                        if( compare == Collections::QueryMaker::GreaterThan )
+                        {
+                            qm->endAndOr();
+                            qm->beginAnd();
+                            compareAlt = Collections::QueryMaker::LessThan;
+                            ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valLastPlayed, 0, compare );
+                        }
+                        const uint time_t = semanticDateTimeParser( elem.text ).toTime_t();
+                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valLastPlayed, time_t, compareAlt );
+                    }
+                }
                 else if( lcField.compare( "added", Qt::CaseInsensitive ) == 0 || lcField.compare( i18n( "added" ), Qt::CaseInsensitive ) == 0 )
                 {
-                    if( compare == Collections::QueryMaker::Equals ) // just do some basic string matching
+                    if( compare == Collections::QueryMaker::Equals )
                     {
-                        QDateTime curTime = QDateTime::currentDateTime();
-                        uint dateCutOff = 0;
-                        if( ( elem.text.compare( "today", Qt::CaseInsensitive ) == 0 ) || ( elem.text.compare( i18n( "today" ), Qt::CaseInsensitive ) == 0 ) )
-                            dateCutOff = curTime.addDays( -1 ).toTime_t();
-                        else if( ( elem.text.compare( "last week", Qt::CaseInsensitive ) == 0 ) || ( elem.text.compare( i18n( "last week" ), Qt::CaseInsensitive ) == 0 ) )
-                            dateCutOff = curTime.addDays( -7 ).toTime_t();
-                        else if( ( elem.text.compare( "last month", Qt::CaseInsensitive ) == 0 ) || ( elem.text.compare( i18n( "last month" ), Qt::CaseInsensitive ) == 0 ) )
-                            dateCutOff = curTime.addMonths( -1 ).toTime_t();
-                        else if( ( elem.text.compare( "two months ago", Qt::CaseInsensitive ) == 0 ) || ( elem.text.compare( i18n( "two months ago" ), Qt::CaseInsensitive ) == 0 ) )
-                            dateCutOff = curTime.addMonths( -2 ).toTime_t();
-                        else if( ( elem.text.compare( "three months ago", Qt::CaseInsensitive ) == 0 ) || ( elem.text.compare( i18n( "three months ago" ), Qt::CaseInsensitive ) == 0 ) )
-                            dateCutOff = curTime.addMonths( -3 ).toTime_t();
-
+                        const uint dateCutOff = semanticDateTimeParser( elem.text ).toTime_t();
                         if( dateCutOff > 0 )
                         {
                             ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valCreateDate, dateCutOff, Collections::QueryMaker::GreaterThan );
                         }
                     }
-                    else if( compare == Collections::QueryMaker::LessThan ) // parse a "#m#d" (discoverability == 0, but without a GUI, how to do it?)
+                    else
                     {
-                        int months = 0, weeks = 0, days = 0;
-                        QString tmp;
-                        for( int i = 0; i < elem.text.length(); i++ )
-                        {
-                            QChar c = elem.text.at( i );
-                            if( c.isNumber() )
-                                tmp += c;
-                            else if( c == 'm' )
-                            {
-                                months = 0 - tmp.toInt();
-                                tmp.clear();
-                            } else if( c == 'w' )
-                            {
-                                weeks = 0 - 7 * tmp.toInt();
-                                tmp.clear();
-                            } else if( c == 'd' )
-                            {
-                                days = 0 - tmp.toInt();
-                                break;
-                            }
-                        }
-                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valCreateDate, QDateTime::currentDateTime().addMonths( months ).addDays( weeks ).addDays( days ).toTime_t(), Collections::QueryMaker::GreaterThan );
+                        Collections::QueryMaker::NumberComparison compareAlt = Collections::QueryMaker::GreaterThan;
+                        if( compare == Collections::QueryMaker::GreaterThan )
+                            compareAlt = Collections::QueryMaker::LessThan;
+                        const uint time_t = semanticDateTimeParser( elem.text ).toTime_t();
+                        ADD_OR_EXCLUDE_NUMBER_FILTER( Meta::valCreateDate, time_t, compareAlt );
                     }
                 }
             }
@@ -723,20 +834,30 @@ CollectionTreeItemModelBase::queryDone()
     if( !qm )
         return;
 
-    CollectionTreeItem* item = d->m_childQueries.contains( qm ) ? d->m_childQueries.take( qm ) : d->m_compilationQueries.take( qm );
+    CollectionTreeItem* item = 0;
+    if( d->childQueries.contains( qm ) )
+        item = d->childQueries.take( qm );
+    else if( d->compilationQueries.contains( qm ) )
+        item = d->compilationQueries.take( qm );
+    else if( d->noLabelsQueries.contains( qm ) )
+        item = d->noLabelsQueries.take( qm );
 
-    d->m_runningQueries.remove( item );
+    if( item )
+        d->runningQueries.remove( item );
 
     //reset icon for this item
     if( item && item != m_rootItem )
     {
         emit dataChanged( createIndex(item->row(), 0, item), createIndex(item->row(), 0, item) );
-        emit queryFinished();
     }
 
     //stop timer if there are no more animations active
-    if( d->m_runningQueries.count() == 0 )
+    if( d->runningQueries.isEmpty() )
+    {
+        emit allQueriesFinished();
         m_timeLine->stop();
+    }
+    qm->deleteLater();
 }
 
 void
@@ -744,17 +865,17 @@ CollectionTreeItemModelBase::newResultReady(const QString & collectionId, Meta::
 {
     Q_UNUSED( collectionId )
 
-    //if we are expanding an item, we'll find the sender in m_childQueries
+    //if we are expanding an item, we'll find the sender in childQueries
     //otherwise we are filtering all collections
     Collections::QueryMaker *qm = qobject_cast<Collections::QueryMaker*>( sender() );
     if( !qm )
         return;
 
-    if( d->m_childQueries.contains( qm ) )
+    if( d->childQueries.contains( qm ) )
     {
         handleNormalQueryResult( qm, data );
     }
-    else if( d->m_compilationQueries.contains( qm ) )
+    else if( d->compilationQueries.contains( qm ) )
     {
         handleSpecialQueryResult( CollectionTreeItem::VariousArtist, qm, data );
     }
@@ -771,7 +892,7 @@ CollectionTreeItemModelBase::handleSpecialQueryResult( CollectionTreeItem::Type 
     debug() << "Received special data: " << dataList.count();
     CollectionTreeItem *parent = 0;
     if( type == CollectionTreeItem::VariousArtist )
-        parent = d->m_compilationQueries.value( qm );
+        parent = d->compilationQueries.value( qm );
     else if( type == CollectionTreeItem::NoLabel )
         parent = d->noLabelsQueries.value( qm );
 
@@ -886,7 +1007,7 @@ CollectionTreeItemModelBase::handleSpecialQueryResult( CollectionTreeItem::Type 
 void
 CollectionTreeItemModelBase::handleNormalQueryResult( Collections::QueryMaker *qm, const Meta::DataList &dataList )
 {
-    CollectionTreeItem *parent = d->m_childQueries.value( qm );
+    CollectionTreeItem *parent = d->childQueries.value( qm );
     QModelIndex parentIndex;
     if( parent ) {
         if( parent == m_rootItem ) // will never happen in CollectionTreeItemModel, but will happen in Single!
@@ -1031,8 +1152,8 @@ CollectionTreeItemModelBase::handleCompilations( CollectionTreeItem *parent ) co
     qm->setReturnResultAsDataPtrs( true );
     connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ), Qt::QueuedConnection );
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
-    d->m_compilationQueries.insert( qm, parent );
-    d->m_runningQueries.insert( parent, qm );
+    d->compilationQueries.insert( qm, parent );
+    d->runningQueries.insert( parent, qm );
     qm->run();
 }
 
@@ -1058,14 +1179,74 @@ CollectionTreeItemModelBase::handleTracksWithoutLabels( Collections::QueryMaker:
     connect( qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), SLOT( newResultReady( QString, Meta::DataList ) ), Qt::QueuedConnection );
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
     d->noLabelsQueries.insert( qm, parent );
-    d->m_runningQueries.insert( parent, qm );
+    d->runningQueries.insert( parent, qm );
     qm->run();
+}
+
+QDateTime
+CollectionTreeItemModelBase::semanticDateTimeParser( const QString &text ) const
+{
+    /* TODO: semanticDateTimeParser: has potential to extend and form a class of its own */
+
+    const QString lowerText = text.toLower();
+    const QDateTime curTime = QDateTime::currentDateTime();
+    QDateTime result;
+
+    if( text.at(0).isLetter() )
+    {
+        if( ( lowerText.compare( "today" ) == 0 ) || ( lowerText.compare( i18n( "today" ) ) == 0 ) )
+            result = curTime.addDays( -1 );
+        else if( ( lowerText.compare( "last week" ) == 0 ) || ( lowerText.compare( i18n( "last week" ) ) == 0 ) )
+            result = curTime.addDays( -7 );
+        else if( ( lowerText.compare( "last month" ) == 0 ) || ( lowerText.compare( i18n( "last month" ) ) == 0 ) )
+            result = curTime.addMonths( -1 );
+        else if( ( lowerText.compare( "two months ago" ) == 0 ) || ( lowerText.compare( i18n( "two months ago" ) ) == 0 ) )
+            result = curTime.addMonths( -2 );
+        else if( ( lowerText.compare( "three months ago" ) == 0 ) || ( lowerText.compare( i18n( "three months ago" ) ) == 0 ) )
+            result = curTime.addMonths( -3 );
+    }
+    else // first character is a number
+    {
+        // parse a "#m#d" (discoverability == 0, but without a GUI, how to do it?)
+        int years = 0, months = 0, weeks = 0, days = 0;
+        QString tmp;
+        for( int i = 0; i < text.length(); i++ )
+        {
+            QChar c = text.at( i );
+            if( c.isNumber() )
+            {
+                tmp += c;
+            }
+            else if( c == 'y' )
+            {
+                years = -tmp.toInt();
+                tmp.clear();
+            }
+            else if( c == 'm' )
+            {
+                months = -tmp.toInt();
+                tmp.clear();
+            }
+            else if( c == 'w' )
+            {
+                weeks = -tmp.toInt() * 7;
+                tmp.clear();
+            }
+            else if( c == 'd' )
+            {
+                days = -tmp.toInt();
+                break;
+            }
+        }
+        result = QDateTime::currentDateTime().addYears( years ).addMonths( months ).addDays( weeks ).addDays( days );
+    }
+    return result;
 }
 
 void CollectionTreeItemModelBase::startAnimationTick()
 {
     //start animation
-    if( ( m_timeLine->state() != QTimeLine::Running ) && !d->m_runningQueries.isEmpty() )
+    if( ( m_timeLine->state() != QTimeLine::Running ) && !d->runningQueries.isEmpty() )
         m_timeLine->start();
 }
 
@@ -1080,7 +1261,7 @@ void CollectionTreeItemModelBase::loadingAnimationTick()
 
     //trigger an update of all items being populated at the moment;
 
-    QList< CollectionTreeItem * > items = d->m_runningQueries.keys();
+    QList< CollectionTreeItem * > items = d->runningQueries.keys();
     foreach ( CollectionTreeItem* item, items  )
     {
         if( item == m_rootItem )
@@ -1103,7 +1284,7 @@ CollectionTreeItemModelBase::slotFilter()
     {
         foreach( Collections::Collection *expanded, m_expandedCollections )
         {
-            CollectionTreeItem *expandedItem = d->m_collections.value( expanded->collectionId() ).second;
+            CollectionTreeItem *expandedItem = d->collections.value( expanded->collectionId() ).second;
             if( expandedItem )
                 emit expandIndex( createIndex( expandedItem->row(), 0, expandedItem ) );
         }
@@ -1177,6 +1358,13 @@ void CollectionTreeItemModelBase::update()
     reset();
 }
 
+void CollectionTreeItemModelBase::updateRowHeight()
+{
+    QFont font;
+    QFontMetrics fm( font );
+    d->rowHeight = fm.height() + 4;
+}
+
 void CollectionTreeItemModelBase::markSubTreeAsDirty( CollectionTreeItem *item )
 {
     //tracks are the leaves so they are never dirty
@@ -1190,15 +1378,16 @@ void CollectionTreeItemModelBase::markSubTreeAsDirty( CollectionTreeItem *item )
 
 void CollectionTreeItemModelBase::itemAboutToBeDeleted( CollectionTreeItem *item )
 {
-    if( !d->m_runningQueries.contains( item ) )
+    if( !d->runningQueries.contains( item ) )
         return;
     //replace this hack with QWeakPointer as soon as we depend on Qt 4.6
-    Collections::QueryMaker *qm = d->m_runningQueries.take( item );
+    Collections::QueryMaker *qm = d->runningQueries.take( item );
     if( qm )
     {
 
-        d->m_childQueries.remove( qm );
-        d->m_compilationQueries.remove( qm );
+        d->childQueries.remove( qm );
+        d->compilationQueries.remove( qm );
+        d->noLabelsQueries.remove( qm );
         //we still need to disconnect the qm below
     }
     if( qm )

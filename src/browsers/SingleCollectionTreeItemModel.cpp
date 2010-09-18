@@ -16,16 +16,17 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "SingleCollectionTreeItemModel"
+
 #include "SingleCollectionTreeItemModel.h"
 
+#include <amarokconfig.h>
 #include "core/support/Amarok.h"
-#include "SvgHandler.h"
 #include "core/collections/Collection.h"
 #include "CollectionTreeItem.h"
 #include "core/support/Debug.h"
 
 #include <KLocale>
-
 
 SingleCollectionTreeItemModel::SingleCollectionTreeItemModel( Collections::Collection * collection, const QList<int> &levelType )
     :CollectionTreeItemModelBase( )
@@ -45,7 +46,7 @@ SingleCollectionTreeItemModel::setLevels( const QList<int> &levelType )
     m_levelType = levelType;
     m_rootItem = new CollectionTreeItem( m_collection, 0, this );
 
-    d->m_collections.insert( m_collection->collectionId(), CollectionRoot( m_collection, m_rootItem ) );
+    d->collections.insert( m_collection->collectionId(), CollectionRoot( m_collection, m_rootItem ) );
 
     updateHeaderText();
     m_expandedItems.clear();
@@ -56,45 +57,11 @@ SingleCollectionTreeItemModel::setLevels( const QList<int> &levelType )
 QVariant
 SingleCollectionTreeItemModel::data(const QModelIndex &index, int role) const
 {
-    if (!index.isValid())
+    if( !index.isValid() )
         return QVariant();
 
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>( index.internalPointer() );
-
-    if ( item->isDataItem() )
-    {
-        if ( role == Qt::DecorationRole ) {
-            //don't subtract one here like in collectiontreeitemmodel because
-            //there is no collection level here
-
-            //check if the item being queried is currently being populated
-
-            const int level = item->level();
-
-            if ( d->m_childQueries.values().contains( item ) )
-            {
-                if ( level < m_levelType.count() )
-                    return m_currentAnimPixmap;
-            }
-
-            if ( level < m_levelType.count() )
-            {
-                if (  m_levelType[level] == CategoryId::Album )
-                {
-                    Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( item->data() );
-                    if( album)
-                        return The::svgHandler()->imageWithBorder( album, 32, 2 );
-                    else
-                        return iconForLevel( level );
-                }
-                else
-                    return iconForLevel( level );
-            }
-        } else if ( role == AlternateCollectionRowRole )
-            return ( index.row() % 2 == 1 );
-    }
-
-    return item->data( role );
+    return dataForItem( item, role );
 }
 
 Qt::ItemFlags

@@ -19,7 +19,7 @@
 
 #include "PlaylistTreeItemDelegate.h"
 
-#include "MetaPlaylistModel.h"
+#include "PlaylistBrowserModel.h"
 
 #include "App.h"
 #include "core/support/Debug.h"
@@ -67,8 +67,8 @@ PlaylistTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
     const int iconWidth = 32;
     const int iconHeight = 32;
     const int iconPadX = 4;
-    const int actionCount
-            = index.data( PlaylistBrowserNS::MetaPlaylistModel::ActionCountRole ).toInt();
+    const int actionCount =
+            index.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionCountRole ).toInt();
 
     painter->save();
 
@@ -122,7 +122,7 @@ PlaylistTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
 
     const QString collectionName = index.data( Qt::DisplayRole ).toString();
     const QString bylineText = index.data(
-            PlaylistBrowserNS::MetaPlaylistModel::ByLineRole ).toString();
+            PlaylistBrowserNS::PlaylistBrowserModel::ByLineRole ).toString();
     QFontMetrics bigFm( m_bigFont );
     QFontMetrics smallFm( m_smallFont );
 
@@ -158,16 +158,22 @@ PlaylistTreeItemDelegate::paint( QPainter *painter, const QStyleOptionViewItem &
     cursorPos.ry() -= 20;
     if( actionCount > 0 && isHover )
     {
-        //HACK: there is an issue with QtGroupingProxy: a UserValue is returned as multiple copies in a QVariantList. So only take the first.
-
+        /* HACK: there is an issue with QtGroupingProxy: a UserValue is returned as multiple copies
+           in a QVariantList. So only take the first. */
         QList<QAction*> actions;
         QVariantList actionsVariants =
-                index.data( PlaylistBrowserNS::MetaPlaylistModel::ActionRole ).toList();
+                index.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionRole ).toList();
         if( !actionsVariants.isEmpty() )
             actions = actionsVariants.first().value<QList<QAction*> >();
 
         QRect actionsRect;
-        actionsRect.setLeft( ( width - actionCount * ( ACTIONICON_SIZE + iconPadX ) ) - 2 );
+        if( isRTL )
+            //actions should appear to the right of the expander
+            actionsRect.setLeft( expanderOption.rect.right() + iconPadX );
+        else
+            //actions should appear left of the expander
+            actionsRect.setLeft( expanderOption.rect.left() -
+                                 actionCount * ( ACTIONICON_SIZE + iconPadX ) );
         actionsRect.setTop( option.rect.top() + iconYPadding );
         actionsRect.setWidth( actionsRectWidth );
         actionsRect.setHeight( ACTIONICON_SIZE );

@@ -27,7 +27,6 @@
 #include "CoverFetchQueue.h"
 #include "CoverFoundDialog.h"
 
-#include <KIO/Job>
 #include <KLocale>
 #include <KUrl>
 
@@ -61,7 +60,6 @@ CoverFetcher::CoverFetcher()
     m_queue = new CoverFetchQueue( this );
     connect( m_queue, SIGNAL(fetchUnitAdded(const CoverFetchUnit::Ptr)),
                       SLOT(slotFetch(const CoverFetchUnit::Ptr)) );
-
     s_instance = this;
 }
 
@@ -72,8 +70,24 @@ CoverFetcher::~CoverFetcher()
 void
 CoverFetcher::manualFetch( Meta::AlbumPtr album )
 {
-    m_queue->add( album, CoverFetch::Interactive );
-    debug() << "Adding interactive cover fetch for:" << album->name();
+    debug() << QString("Adding interactive cover fetch for: '%1' from %2")
+        .arg( album->name() )
+        .arg( Amarok::config("Cover Fetcher").readEntry("Interactive Image Source", "LastFm") );
+    switch( fetchSource() )
+    {
+    case CoverFetch::LastFm:
+        m_queue->add( album, CoverFetch::Interactive, fetchSource() );
+        break;
+
+    case CoverFetch::Discogs:
+    case CoverFetch::Google:
+    case CoverFetch::Yahoo:
+        queueQueryForAlbum( album );
+        break;
+
+    default:
+        break;
+    }
 }
 
 void
@@ -99,10 +113,19 @@ CoverFetcher::queueAlbums( Meta::AlbumList albums )
 }
 
 void
-CoverFetcher::queueQuery( const QString &query, unsigned int page )
+CoverFetcher::queueQuery( Meta::AlbumPtr album, const QString &query, int page )
 {
-    m_queue->addQuery( query, fetchSource(), page );
+    m_queue->addQuery( query, fetchSource(), page, album );
     debug() << QString( "Queueing cover fetch query: '%1' (page %2)" ).arg( query ).arg( page );
+}
+
+void
+CoverFetcher::queueQueryForAlbum( Meta::AlbumPtr album )
+{
+    QString query( album->name() );
+    if( album->hasAlbumArtist() )
+        query += ' ' + album->albumArtist()->name();
+    queueQuery( album, query, 0 );
 }
 
 void
@@ -114,57 +137,57 @@ CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
     const CoverFetchPayload *payload = unit->payload();
     const CoverFetch::Urls urls = payload->urls();
 
-    if( urls.isEmpty() )
+    // show the dialog straight away if fetch is interactive
+    if( !m_dialog && unit->isInteractive() )
     {
-        if( unit->isInteractive() && !m_dialog )
-        {
-            Amarok::Components::logger()->shortMessage( i18n( "No covers found." ) );
-            showCover( unit );
-        }
-        else
-        {
-            finish( unit, NotFound );
-        }
+        showCover( unit, QPixmap() );
+    }
+    else if( urls.isEmpty() )
+    {
+        finish( unit, NotFound );
         return;
     }
 
     const KUrl::List uniqueUrls = urls.uniqueKeys();
     foreach( const KUrl &url, uniqueUrls )
     {
-        KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
-        connect( job, SIGNAL(result( KJob* )), SLOT(slotResult( KJob* )) );
-        m_jobs.insert( job, unit );
+        if( !url.isValid() )
+            continue;
 
-        if( unit->isInteractive() )
+        QNetworkReply *reply = The::networkAccessManager()->getData( url, this,
+                               SLOT(slotResult(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
+        m_urls.insert( url, unit );
+
+        if( payload->type() == CoverFetchPayload::Art )
         {
-            Amarok::Components::logger()->newProgressOperation( job, i18n( "Fetching Cover" ) );
-        }
-        else if( payload->type() == CoverFetchPayload::Art )
-        {
-            // only one is needed when the fetch is non-interactive
-            return;
+            if( unit->isInteractive() )
+                Amarok::Components::logger()->newProgressOperation( reply, i18n( "Fetching Cover" ) );
+            else
+                return; // only one is needed when the fetch is non-interactive
         }
     }
 }
 
 void
-CoverFetcher::slotResult( KJob *job )
+CoverFetcher::slotResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    const CoverFetchUnit::Ptr unit( m_jobs.take( job ) );
-
-    if( !unit )
+    if( !m_urls.contains( url ) )
         return;
 
-    if( job && job->error() )
+    const CoverFetchUnit::Ptr unit( m_urls.take( url ) );
+    if( !unit )
     {
-        finish( unit, Error, i18n( "There was an error communicating with cover provider." ) );
+        m_queue->remove( unit );
         return;
     }
 
-    KIO::StoredTransferJob *const storedJob = static_cast<KIO::StoredTransferJob*>( job );
-    const QByteArray data = storedJob->data();
-    const CoverFetchPayload *payload = unit->payload();
+    if( e.code != QNetworkReply::NoError )
+    {
+        finish( unit, Error, i18n("There was an error communicating with cover provider: %1", e.description) );
+        return;
+    }
 
+    const CoverFetchPayload *payload = unit->payload();
     switch( payload->type() )
     {
     case CoverFetchPayload::Info:
@@ -183,9 +206,9 @@ CoverFetcher::slotResult( KJob *job )
         {
             if( unit->isInteractive() )
             {
-                const KUrl url = storedJob->url();
                 const CoverFetch::Metadata metadata = payload->urls().value( url );
                 showCover( unit, pixmap, metadata );
+                m_queue->remove( unit );
             }
             else
             {
@@ -195,7 +218,6 @@ CoverFetcher::slotResult( KJob *job )
         }
         break;
     }
-    storedJob->deleteLater();
 }
 
 void
@@ -222,7 +244,7 @@ CoverFetcher::slotDialogFinished()
      * or closes the cover found dialog. This way, the dialog will not reappear
      * if there are still covers yet to be retrieved.
      */
-    QList< CoverFetchUnit::Ptr > units = m_jobs.values();
+    QList< CoverFetchUnit::Ptr > units = m_urls.values();
     foreach( const CoverFetchUnit::Ptr &unit, units )
     {
         if( unit->isInteractive() )
@@ -233,7 +255,7 @@ CoverFetcher::slotDialogFinished()
 }
 
 void
-CoverFetcher::showCover( CoverFetchUnit::Ptr unit, const QPixmap cover, CoverFetch::Metadata data )
+CoverFetcher::showCover( CoverFetchUnit::Ptr unit, const QPixmap &cover, CoverFetch::Metadata data )
 {
     if( !m_dialog )
     {
@@ -244,16 +266,15 @@ CoverFetcher::showCover( CoverFetchUnit::Ptr unit, const QPixmap cover, CoverFet
             return;
         }
 
-        m_dialog = new CoverFoundDialog( unit, cover, data, static_cast<QWidget*>( parent() ) );
-        connect( m_dialog, SIGNAL(newCustomQuery(const QString&, unsigned int)),
-                           SLOT(queueQuery(const QString&, unsigned int)) );
+        m_dialog = new CoverFoundDialog( unit, data, static_cast<QWidget*>( parent() ) );
+        connect( m_dialog, SIGNAL(newCustomQuery(Meta::AlbumPtr, const QString&, int)),
+                           SLOT(queueQuery(Meta::AlbumPtr, const QString&, int)) );
         connect( m_dialog, SIGNAL(accepted()), SLOT(slotDialogFinished()) );
         connect( m_dialog, SIGNAL(rejected()), SLOT(slotDialogFinished()) );
 
-        QString query( album->name() );
-        if( album->hasAlbumArtist() )
-            query += ' ' + album->albumArtist()->name();
-        queueQuery( query, 0 );
+        if( fetchSource() == CoverFetch::LastFm )
+            queueQueryForAlbum( album );
+        m_dialog->setQueryPage( 1 );
 
         m_dialog->show();
         m_dialog->raise();
@@ -265,8 +286,8 @@ CoverFetcher::showCover( CoverFetchUnit::Ptr unit, const QPixmap cover, CoverFet
         {
             typedef CoverFetchArtPayload CFAP;
             const CFAP *payload = dynamic_cast< const CFAP* >( unit->payload() );
-            const CoverFetch::ImageSize imageSize = payload->imageSize();
-            m_dialog->add( cover, data, imageSize );
+            if( payload )
+                m_dialog->add( cover, data, payload->imageSize() );
         }
     }
 }
@@ -274,13 +295,12 @@ CoverFetcher::showCover( CoverFetchUnit::Ptr unit, const QPixmap cover, CoverFet
 void
 CoverFetcher::abortFetch( CoverFetchUnit::Ptr unit )
 {
-    Meta::AlbumPtr album = unit->album();
-    m_queue->remove( album );
-    m_queueLater.removeAll( album );
+    m_queue->remove( unit );
+    m_queueLater.removeAll( unit->album() );
     m_selectedPixmaps.remove( unit );
-    const KJob *job = m_jobs.key( unit );
-    const_cast<KJob*>( job )->deleteLater();
-    m_jobs.remove( job );
+    KUrl::List urls = m_urls.keys( unit );
+    foreach( const KUrl &url, urls )
+        m_urls.remove( url );
 }
 
 void

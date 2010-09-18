@@ -24,8 +24,11 @@
 
 #include <kicon.h>
 #include <kiconeffect.h>
+#include <kiconloader.h>
 #include <kdebug.h>
 
+namespace Amarok
+{
 
 class KRatingPainter::Private
 {
@@ -194,7 +197,8 @@ void KRatingPainter::paint( QPainter* painter, const QRect& rect, int rating, in
     int maxHSizeOnePix = ( rect.width() - (numUsedStars-1)*usedSpacing ) / numUsedStars;
     QPixmap ratingPix = d->getPixmap( qMin( rect.height(), maxHSizeOnePix ) );
 
-    QPixmap disabledRatingPix = KIconEffect().apply( ratingPix, KIconEffect::ToGray, 1.0, QColor(), false );
+    KIconEffect *iconEffect = KIconLoader::global()->iconEffect();
+    QPixmap disabledRatingPix = iconEffect->apply( ratingPix, KIconEffect::ToGray, 1.0, QColor(), false );
     QPixmap hoverPix;
 
     // if we are disabled we become gray and more transparent
@@ -211,7 +215,7 @@ void KRatingPainter::paint( QPainter* painter, const QRect& rect, int rating, in
     if ( hoverRating > 0 && rating != hoverRating && d->isEnabled ) {
         numHoverStars = d->bHalfSteps ? hoverRating/2 : hoverRating;
         halfHover = d->bHalfSteps && hoverRating%2;
-        hoverPix = KIconEffect().apply( ratingPix, KIconEffect::ToGray, 0.5, QColor(), false );
+        hoverPix = iconEffect->apply( ratingPix, KIconEffect::ToGray, 0.5, QColor(), false );
     }
 
     if ( d->alignment & Qt::AlignJustify ) {
@@ -350,3 +354,5 @@ int KRatingPainter::getRatingFromPosition( const QRect& rect, Qt::Alignment alig
     rp.setLayoutDirection( direction );
     return rp.ratingFromPosition( rect, pos );
 }
+
+} // Amarok namespace

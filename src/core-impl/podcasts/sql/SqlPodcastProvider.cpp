@@ -566,6 +566,7 @@ SqlPodcastProvider::configureProvider()
     DEBUG_BLOCK
     m_providerSettingsDialog = new KDialog( The::mainWindow() );
     QWidget *settingsWidget = new QWidget( m_providerSettingsDialog );
+    m_providerSettingsDialog->setObjectName( "SqlPodcastProviderSettings" );
     Ui::SqlPodcastProviderSettingsWidget settings;
     settings.setupUi( settingsWidget );
 
@@ -573,7 +574,9 @@ SqlPodcastProvider::configureProvider()
     settings.m_baseDirUrl->setUrl( m_baseDownloadDir );
 
     settings.m_autoUpdateInterval->setValue( m_autoUpdateInterval );
-    settings.m_autoUpdateInterval->setSuffix(ki18np(" minute", " minutes"));
+    settings.m_autoUpdateInterval->setPrefix(
+            ki18ncp( "prefix to 'x minutes'", "every ", "every " ).toString() );
+    settings.m_autoUpdateInterval->setSuffix( ki18np( " minute", " minutes" ) );
 
     m_providerSettingsDialog->setButtons( KDialog::Ok | KDialog::Cancel | KDialog::Apply );
     m_providerSettingsDialog->setMainWidget( settingsWidget );
@@ -1076,7 +1079,7 @@ SqlPodcastProvider::updateSqlChannel( Podcasts::SqlPodcastChannelPtr channel )
 
     connect( podcastReader, SIGNAL( finished( PodcastReader * ) ),
              SLOT( slotReadResult( PodcastReader * ) ) );
-    connect( podcastReader, SIGNAL( statusBarMessage( const QString & ) ),
+    connect( podcastReader, SIGNAL( statusBarSorryMessage( const QString & ) ),
             this, SLOT( slotStatusBarSorryMessage( const QString & ) ) );
     connect( podcastReader, SIGNAL( statusBarNewProgressOperation( KIO::TransferJob *, const QString &, Podcasts::PodcastReader* ) ),
                 this, SLOT( slotStatusBarNewProgressOperation( KIO::TransferJob *, const QString &, Podcasts::PodcastReader* ) ) );

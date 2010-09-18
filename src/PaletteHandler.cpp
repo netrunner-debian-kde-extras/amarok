@@ -18,7 +18,6 @@
 
 #include "App.h"
 #include "core/support/Debug.h"
-#include "MainWindow.h"
 
 #include <kglobal.h>
 
@@ -96,6 +95,8 @@ PaletteHandler::highlightColor( qreal saturationPercent, qreal valuePercent )
     saturation *= saturationPercent;
     qreal value = highlight.valueF();
     value *= valuePercent;
+    if( value > 1.0 )
+        value = 1.0;
     highlight.setHsvF( highlight.hueF(), saturation, value, highlight.alphaF() );
 
     return highlight;

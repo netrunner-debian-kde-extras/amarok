@@ -9,7 +9,7 @@ msgstr ""
 "Project-Id-Version: amarokpkg\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2010-05-03 05:06+0200\n"
-"PO-Revision-Date: 2010-03-08 09:29+0100\n"
+"PO-Revision-Date: 2010-06-15 11:55+0200\n"
 "Last-Translator: Javier Vinal <fjvinal@gmail.com>\n"
 "Language-Team: Español <kde-l10n-es@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -55,7 +55,7 @@ msgstr ""
 #: amarokpkg.cpp:95
 msgctxt "Do not translate <path>"
 msgid "Install the applet at <path>"
-msgstr "Instalar la miniaplicación <path>"
+msgstr "Instalar la miniaplicación en <path>"
 
 #: amarokpkg.cpp:97
 msgctxt "Do not translate <path>"

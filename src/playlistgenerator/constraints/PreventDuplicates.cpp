@@ -49,28 +49,34 @@ ConstraintTypes::PreventDuplicates::createNew( ConstraintNode* p )
 ConstraintFactoryEntry*
 ConstraintTypes::PreventDuplicates::registerMe()
 {
-    return new ConstraintFactoryEntry( i18n("PreventDuplicates"),
-                                i18n("Prevents duplicate tracks, albums, or artists from appearing in the playlist"),
-                                &PreventDuplicates::createFromXml, &PreventDuplicates::createNew );
+    return new ConstraintFactoryEntry( "PreventDuplicates",
+                                       i18n("Prevent Duplicates"),
+                                       i18n("Prevents duplicate tracks, albums, or artists from appearing in the playlist"),
+                                       &PreventDuplicates::createFromXml, &PreventDuplicates::createNew );
 }
 
 ConstraintTypes::PreventDuplicates::PreventDuplicates( QDomElement& xmlelem, ConstraintNode* p )
         : Constraint( p )
         , m_counterPtr( 0 )
 {
+    DEBUG_BLOCK
     QDomAttr a;
 
     a = xmlelem.attributeNode( "field" );
     if ( !a.isNull() ) {
         m_field = static_cast<DupeField>( a.value().toInt() );
     }
+    debug() << getName();
 }
 
 ConstraintTypes::PreventDuplicates::PreventDuplicates( ConstraintNode* p )
         : Constraint( p )
         , m_field( DupeTrack )
         , m_counterPtr( 0 )
-{ }
+{
+    DEBUG_BLOCK
+    debug() << "new default PreventDuplicates";
+}
 
 QWidget*
 ConstraintTypes::PreventDuplicates::editWidget() const

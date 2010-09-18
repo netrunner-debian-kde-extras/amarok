@@ -1,0 +1,510 @@
+<?xml version="1.0" ?>
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.2-Based Variant V1.1//EN" "dtd/kdex.dtd" [
+  <!ENTITY % addindex "IGNORE">
+  <!ENTITY % Swedish "INCLUDE">
+]>
+<book lang="&language;">
+<bookinfo>
+<title
+>Handbok Amarok</title>
+<authorgroup>
+<author>
+<personname
+><firstname
+>Det här dokumentet är konverterat från KDE:s användarbas <ulink url=" http://userbase.kde.org/Amarok"
+>Amarok</ulink
+>-sida.</firstname
+> <surname
+></surname
+> </personname>
+    </author>
+<othercredit role="translator"
+><firstname
+>Stefan</firstname
+> <surname
+>Asserhäll</surname
+><affiliation
+><address
+><email
+>stefan.asserhall@comhem.se</email
+></address
+></affiliation
+><contrib
+>Översättare</contrib
+></othercredit
+> 
+    </authorgroup>
+<legalnotice
+>&FDLNotice;</legalnotice>
+<date
+>2010-08-04</date>
+    <releaseinfo
+>&kde; SC 4.5</releaseinfo>
+<abstract>
+ <para
+>Amarok är en fri, mångsidig och kraftfull musikspelare för Linux. De senaste utgåvorna i 2.x-serien, ofta kallade <quote
+>Amarok&nbsp;2</quote
+>, är plattformsoberoende (kan användas på många plattformar, inklusive Linux, MaxOS och Microsoft Windows) och implementerar en fullständigt omarbetad kodbas, som kommer att göra det möjligt att inlemma spännande nya funktioner alltmedan utgåvorna mogar. Den nuvarande stabila utgåvan är version 2.3.</para>
+</abstract>
+
+<keywordset>
+ <keyword
+>KDE</keyword>
+ <keyword
+>multimedia</keyword>
+ <keyword
+>spelare</keyword>
+ <keyword
+>ljud</keyword>
+ <keyword
+>ogg</keyword>
+ <keyword
+>MP3</keyword>
+ <keyword
+>wav</keyword>
+ <keyword
+>musik</keyword>
+ <keyword
+>ljud</keyword>
+</keywordset>
+</bookinfo>
+<!--userbase <timestamp
+>2010-08-04T20:37:13Z</timestamp
+>-->
+
+<!--userbase-content-->
+<chapter id="interface"
+><title
+>Gränssnitt</title>
+<para
+>Amarok&nbsp;2 håller sig normalt med ett gränssnitt med tre rutor.. </para>
+
+<sect1 id="the-left-pane"
+><title
+>Vänstra rutan</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1left.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+><quote
+>Till vänster finns ...</quote
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Vänsterrutan har flikar och möjlig att fälla ihop. Den första fliken är <guilabel
+>sammlingsbläddraren</guilabel
+>, som är huvudgränssnittet för den lokala samlingen. Anslutna enheter visas också här. Det finns en flik för alla <guilabel
+>Internettjänster</guilabel
+> som är aktiverade. Här kan man bläddra bland listningar av radiostationer och podradiosändningar, lyssna eller prenumerera på dem, hantera ett <ulink url="http://www.last.fm"
+>last.fm</ulink
+>-konto, köpa musik från nätbutiker som Magnatune och ladda ner oberoende artisters musik från Jamendo, med mera. Fliken <guilabel
+>Spellista</guilabel
+> låter dig skapa och hantera dynamiska och traditionella spellistor och podradiosändningar. Till sist visar fliken <guilabel
+>Filer</guilabel
+> en integerad filbläddrare. </para>
+</sect1>
+
+<sect1 id="the-central-pane-context-view"
+><title
+>Mittenrutan (sammanhangsvyn)</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1center.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+><quote
+>I mitten ...</quote
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Det är här allt händer. Rutan innehåller miniprogram som dynamiskt ändras för att visa sammanhangsinformation om sången som för närvarande spelas. Du kan se betyg, poäng och antal spelningar för sången som spelas, andra sånger av samma artist som du har, sångtexten, <ulink url="http://www.wikipedia.org"
+>Wikipedia-sidan</ulink
+> om artisten, med mera. Dessa miniprogram kan läggas till, tas bort eller arrangeras om med <guilabel
+>miniprogramraden</guilabel
+> längst ner i rutan. </para>
+</sect1>
+
+<sect1 id="the-right-pane-playlist-view"
+><title
+>Högerrutan (spellistevyn)</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1right.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+><quote
+>Och till höger ...</quote
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Amarok&nbsp;2 har den mest anpassningsbara spellistan hos någon musikspelare som finns, Amarok&nbsp;2 lägger möjligheten i dina händer att forma spellistan på vilket sätt du än vill. För att komma igång, finns tre exempel på layout av spellistor som kan användas som utgångspunkt för att skapa en layout som passar ditt användningssätt bäst. </para>
+</sect1>
+
+</chapter>
+<chapter id="features"
+><title
+>Funktioner</title>
+<sect1 id="plays-music"
+><title
+>Spelar musik</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1svn965006.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Amarok&nbsp;2 kan stödja de mest populära formaten för musikfiler. Själva listan med format beror på avkodarna och ljudgränssnitten som används på systemet. Det finns också stöd för traditionella spellistor. Du kan skapa, spara och läsa in alla spellistor du vill. </para>
+</sect1>
+<sect1 id="device-support"
+><title
+>Enhetsstöd</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1ipod.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>För närvarande är grundläggande enhetsstöd för iPod, MTP och UMS aktiverat om nödvändiga paket är installerade. Det kommer att förbättras, och fler enheter kommer att stödjas i framtida utgåvor. </para>
+<para
+>Knappen längst upp i samlingen, <guilabel
+>Ändra enhetligt vyläge</guilabel
+>, låter dig sammanfoga samlingar. Det betyder att sånger från den lokala samlingen, ljud-cd, mp3-spelare, och så vidare, kommer att visas i en enhetlig samling. </para>
+</sect1>
+<sect1 id="configurable-context-view"
+><title
+>Anpassningsbar sammanhangsvy</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1contextviewconfig.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+><guilabel
+>Sammanhangsvyn</guilabel
+>, höjdpunkten i Amarok&nbsp;2 kan automatiskt hämta sammanhangsinformation om sången som för närvarande spelas (som omslag, sångtext eller <ulink url="http://www.wikipedia.org"
+>Wikipedia-information</ulink
+>) från Internet och visa den. Detta är en av de unika funktionerna i serien av Amarok musikspelare. </para>
+</sect1>
+
+
+<sect1 id="more-internet-services"
+><title
+>Fler Internettjänster</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1internetservices.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+><quote
+>Vissa Internettjänster visas i vänsterrutan</quote
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Amarok&nbsp;2 öppnar möjligheten för en rik multimediaupplevelse på Internet. </para>
+<itemizedlist>
+<listitem
+><para
+>Försedd med gränssnitt till tjänster som Ampache musikservrar och mp3tunes musikskåp, låter den dig lyssna på din egen musik var som helst i världen. </para
+></listitem>
+<listitem
+><para
+>Du kan provlyssna och köpa musik från Magnatune. </para
+></listitem>
+<listitem
+><para
+>Genom att använda tjänsten Jamendo,, kan du lyssna på och ladda ner musik från oberoende artister, som du kan stödja med donationer. </para
+></listitem>
+<listitem
+><para
+>Med den integrerade <ulink url="http://www.last.fm"
+>last.fm</ulink
+> funktionen, kan du skicka in vilka spår du spelar, använda <ulink url="http://www.last.fm"
+>last.fm</ulink
+> funktioner som statistik och diagram samt lyssna på radioutsändningar anpassade till din musiksmak &mdash; allt inifrån i Amarok&nbsp;2. </para
+></listitem>
+</itemizedlist>
+<para
+>Och det är bara början &mdash; ännu fler Internet-tjänster kan läggas till med <guilabel
+>Skripthantering</guilabel
+>. </para>
+</sect1>
+
+<sect1 id="script-manager"
+><title
+>Skripthantering</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1scriptmanager.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Skript är tillägg som låter dig utöka Amarok&nbsp;2:s funktioner på nyskapande sätt. Genom att använda <guilabel
+>Skripthantering</guilabel
+> kan du hantera skripten, genom att den tillåter dig att installera, ta bort, aktivera eller inaktivera skript som redan finns. Du kan också använda funktionen <guilabel
+>Hämta fler skript</guilabel
+> för att ladda ner nya skript inskickade av andra användare. </para>
+</sect1>
+<sect1 id="cover-manager"
+><title
+>Omslagshantering</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1covermanager.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Du kan bläddra igenom din musiksamling genom att använda den käcka omslagshanteringen som visar albumomslag. </para>
+</sect1>
+<sect1 id="rating-and-scoring"
+><title
+>Betyg och poängsättning</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1rating.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Du kan visa hur mycket du gillar sånger genom att ge dem betyg. Amarok&nbsp;2 stöder också &frac12;&sdot;&#10025; betyg. Dessutom kan Amarok&nbsp;2 räkna ut en poäng (ett sorts gissat betyg) beroende på mått som hur ofta du lyssnar på eller hoppar över en sång. </para>
+</sect1>
+<sect1 id="pop-up-dropper"
+><title
+>Uppdykande släppfunktion</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1popup.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Detta är ett nyskapande gränssnitt som erbjuder sammanhangsberoende alternativ (liksom de som visas i en <guilabel
+>högerklicksmeny</guilabel
+>) som du kan <quote
+>släppa</quote
+> en sång på. Ta tag i en sång och se den dyka upp i rutan med sammanhangsvyn. </para>
+</sect1>
+<sect1 id="configurable-playlist-view"
+><title
+>Anpassningsbar spellistevy</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1pleditor.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Spellistan som för närvarande är inläst är mycket anpassningsbar och kan visa information om sångerna på vilket sätt du vill. Om du är van vid <guilabel
+>Kalkylbladsvisningen</guilabel
+> som finns i Amarok&nbsp;1.x serien och andra musikspelare, kan du också få den! <guilabel
+>Spellistevyn</guilabel
+> låter dig också spara eller exportera den nuvarande spellistan. </para>
+</sect1>
+
+
+<sect1 id="dynamic-playlists"
+><title
+>Dynamiska spellistor</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1dynamicplaylist.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+><quote
+>Lite härifrån och lite därifrån&hellip;</quote
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Amarok&nbsp;2 låter dig skapa viktade slumpmässiga spellistor som håller sig till diverse kriterier exakt (<emphasis
+>Proportionell preferens</emphasis
+>) eller ungefärligt (<emphasis
+>Inexakt preferens</emphasis
+>). Du kan till exempel skapa en spellista som fylls i slumpmässigt med sånger som har ett betyg högre än tre stjärnor och som är ungefär från år 1967.</para>
+</sect1>
+
+<sect1 id="replay-gain-support"
+><title
+>Stöd för volymjustering</title>
+<para
+>Amarok&nbsp;2 stöder volymjusteringsinformation inbäddad i filer och justerar automatiskt sångens övergripande volym till en gemensam nivå. </para>
+<para
+>Återupptäck din musik! </para>
+</sect1>
+</chapter>
+<chapter id="hints-tips-and-faqs"
+><title
+>Tips och vanliga frågor</title>
+<para
+>Om du märker att den största delen av din musik känns igen av Amarok, men vissa kataloger inte hämtas på rätt sätt, öppna en terminal och skriv </para>
+<para
+>touch <replaceable
+>katalog</replaceable
+> </para>
+<para
+>där <replaceable
+>katalog</replaceable
+> är sökvägen till katalogen som har problemet. Välj därefter <menuchoice
+><guimenu
+>Inställningar</guimenu
+> <guimenuitem
+>Anpassa Amarok</guimenuitem
+></menuchoice
+> i menyn i Amaroks huvudfönster, och öppna sidan <menuchoice
+><guimenu
+>Samling</guimenu
+> <guimenuitem
+>Omsök samling</guimenuitem
+></menuchoice
+>. Katalogen ska nu vara synlig igen. </para>
+</chapter>
+<chapter id="more-information"
+><title
+>Mer information</title>
+<itemizedlist>
+<listitem
+><para
+><ulink url="http://amarok.kde.org/"
+>Amaroks hemsida</ulink>
+</para
+></listitem>
+<listitem
+><para
+><ulink url="http://forum.kde.org/viewforum.php?f=127"
+>Amaroks forum</ulink>
+</para
+></listitem>
+</itemizedlist>
+</chapter>
+<!--userbase-content-->
+<chapter id="credits">
+<title
+>Tack till och licens</title>
+    <para
+>Dokumentation Copyright, se användarbasens <ulink url="http://userbase.kde.org/index.php?title=Amarok&amp;action=history"
+>Amaroks sidhistorik</ulink
+></para>
+    <para
+>Översättning Stefan Asserhäll <email
+>stefan.asserhall@comhem.se</email
+></para
+> 
+&underFDL; </chapter>
+&documentation.index;
+</book>

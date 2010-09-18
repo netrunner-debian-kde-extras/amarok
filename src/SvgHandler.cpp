@@ -59,7 +59,7 @@ SvgHandler::SvgHandler( QObject* parent )
     , m_customTheme( false )
 {
     DEBUG_BLOCK
-    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), this, SLOT( reTint() ) );
+    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), this, SLOT( discardCache() ) );
 }
 
 SvgHandler::~SvgHandler()
@@ -128,18 +128,25 @@ KSvgRenderer * SvgHandler::getRenderer()
     return getRenderer( m_themeFile );
 }
 
-QPixmap SvgHandler::renderSvg( const QString &name, const QString& keyname, int width, int height, const QString& element )
+QPixmap SvgHandler::renderSvg( const QString &name,
+                               const QString& keyname,
+                               int width,
+                               int height,
+                               const QString& element,
+                               bool skipCache )
 {
-    QPixmap pixmap;
-
-    const QString key = QString("%1:%2x%3")
+    QString key;
+    if( !skipCache )
+    {
+        key = QString("%1:%2x%3")
             .arg( keyname )
             .arg( width )
             .arg( height );
+    }
 
-    if ( !m_cache->find( key, pixmap ) ) {
-//         debug() << QString("svg %1 not in cache...").arg( key );
-
+    QPixmap pixmap;
+    if( skipCache || !m_cache->find( key, pixmap ) )
+    {
         pixmap = QPixmap( width, height );
         pixmap.fill( Qt::transparent );
 
@@ -160,28 +167,26 @@ QPixmap SvgHandler::renderSvg( const QString &name, const QString& keyname, int 
         else
             m_renderers[name]->render( &pt, element, QRectF( 0, 0, width, height ) );
   
-        m_cache->insert( key, pixmap );
+        if( !skipCache )
+            m_cache->insert( key, pixmap );
     }
 
     return pixmap;
 }
 
-QPixmap SvgHandler::renderSvg(const QString & keyname, int width, int height, const QString & element)
+QPixmap SvgHandler::renderSvg(const QString & keyname, int width, int height, const QString & element, bool skipCache )
 {
-    return renderSvg( m_themeFile, keyname, width, height, element );
+    return renderSvg( m_themeFile, keyname, width, height, element, skipCache );
 }
 
 QPixmap SvgHandler::renderSvgWithDividers(const QString & keyname, int width, int height, const QString & element)
 {
-
-    QPixmap pixmap;
-
     const QString key = QString("%1:%2x%3-div")
             .arg( keyname )
             .arg( width )
             .arg( height );
 
-
+    QPixmap pixmap;
     if ( !m_cache->find( key, pixmap ) ) {
 //         debug() << QString("svg %1 not in cache...").arg( key );
 
@@ -226,6 +231,7 @@ void SvgHandler::reTint()
     The::svgTinter()->init();
     if ( !loadSvg( m_themeFile ))
         warning() << "Unable to load theme file: " << m_themeFile;
+    emit retinted();
 }
 
 QString SvgHandler::themeFile()
@@ -239,9 +245,13 @@ void SvgHandler::setThemeFile( const QString & themeFile )
     debug() << "got new theme file: " << themeFile;
     m_themeFile = themeFile;
     m_customTheme = true;
-    reTint();
-    
+    discardCache();
+}
+
+void SvgHandler::discardCache()
+{
     //redraw entire app....
+    reTint();
     m_cache->discard();
     App::instance()->mainWindow()->update();
 }
@@ -250,10 +260,9 @@ QPixmap
 SvgHandler::imageWithBorder( Meta::AlbumPtr album, int size, int borderWidth )
 {
     const int imageSize = size - ( borderWidth * 2 );
-    const QString loc   = album->imageLocation( imageSize ).url();
-    const QString key   = !loc.isEmpty() ? loc : album->name();
-    const QPixmap cover = album->image( imageSize );
-    return addBordersToPixmap( cover, borderWidth, key );
+    const QString &loc  = album->imageLocation( imageSize ).path( KUrl::LeaveTrailingSlash );
+    const QString &key  = !loc.isEmpty() ? loc : album->name();
+    return addBordersToPixmap( album->image(imageSize), borderWidth, key );
 }
 
 QPixmap SvgHandler::addBordersToPixmap( QPixmap orgPixmap, int borderWidth, const QString &name, bool skipCache )
@@ -261,14 +270,17 @@ QPixmap SvgHandler::addBordersToPixmap( QPixmap orgPixmap, int borderWidth, cons
     int newWidth = orgPixmap.width() + borderWidth * 2;
     int newHeight = orgPixmap.height() + borderWidth *2;
 
-    QPixmap pixmap;
-    
-    const QString key = QString("%1:%2x%3b%4")
+    QString key;
+    if( !skipCache )
+    {
+        key = QString("%1:%2x%3b%4")
             .arg( name )
             .arg( newWidth )
             .arg( newHeight )
             .arg( borderWidth );
+    }
 
+    QPixmap pixmap;
     if( skipCache || !m_cache->find( key, pixmap ) )
     {
         // Cache miss! We need to create the pixmap
@@ -301,7 +313,8 @@ QPixmap SvgHandler::addBordersToPixmap( QPixmap orgPixmap, int borderWidth, cons
         m_renderers[m_themeFile]->render( &pt, "cover_border_bottomleft", QRectF( 0, newHeight - borderWidth, borderWidth, borderWidth ) );
         m_renderers[m_themeFile]->render( &pt, "cover_border_left", QRectF( 0, borderWidth, borderWidth, orgPixmap.height() ) );
     
-        m_cache->insert( key, pixmap );
+        if( !skipCache )
+            m_cache->insert( key, pixmap );
     }
 
     return pixmap;
@@ -466,6 +479,5 @@ void SvgHandler::paintCustomSlider( QPainter *p, QStyleOptionSlider *slider, qre
         p->drawPixmap( knob.topLeft(), renderSvg( string, knob.width(), knob.height(), string ) );
     }
 }
-
 
 #include "SvgHandler.moc"

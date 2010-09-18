@@ -21,13 +21,7 @@
 
 #include "AmpacheServiceCollection.h"
 #include "AmpacheService.h"
-
-#include <kio/jobclasses.h>
-
-namespace ThreadWeaver
-{
-    class Job;
-}
+#include "NetworkAccessManagerProxy.h"
 
 namespace Collections {
 
@@ -69,7 +63,6 @@ public:
 
 protected:
     AmpacheServiceCollection * m_collection;
-    KIO::StoredTransferJob * m_storedTransferJob;
 
     struct Private;
     Private * const d;
@@ -85,9 +78,9 @@ protected:
     QString m_lastArtistFilter;
 
 public slots:
-    void artistDownloadComplete(KJob *job );
-    void albumDownloadComplete(KJob *job );
-    void trackDownloadComplete(KJob *job );
+    void artistDownloadComplete( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void albumDownloadComplete( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void trackDownloadComplete( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
 private:
     // Disable copy constructor and assignment

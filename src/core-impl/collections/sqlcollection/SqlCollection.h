@@ -37,6 +37,7 @@ namespace Capabilities {
 }
 
 class SqlMountPointManager;
+class IScanManager;
 class XesamCollectionBuilder;
 class ScanManager;
 
@@ -77,14 +78,13 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::Collection
 
         SqlRegistry* registry() const;
         DatabaseUpdater* dbUpdater() const;
-        ScanManager* scanManager() const;
+        IScanManager* scanManager() const;
         SqlStorage* sqlStorage() const;
         SqlMountPointManager* mountPointManager() const;
         
         void removeCollection();    //testing, remove later
 
         virtual bool isDirInCollection( QString path );
-        virtual bool isFileInCollection( const QString &url );
         virtual bool possiblyContainsTrack( const KUrl &url ) const;
         virtual Meta::TrackPtr trackForUrl( const KUrl &url );
 
@@ -95,19 +95,21 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::Collection
         QStringList collectionFolders() const;
         void setCollectionFolders( const QStringList &folders );
 
-        //sqlcollection internal methods
-        void sendChangedSignal();
-
         virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
         virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
+        //sqlcollection internal methods
+        void sendChangedSignal();
+
+        QStringList knownUIDsInDirectory( const QString &dir );
+
         void setSqlStorage( SqlStorage *storage ) { m_sqlStorage = storage; }
         void setRegistry( SqlRegistry *registry ) { m_registry = registry; }
-        void setUpdater( DatabaseUpdater *updater ) { m_updater = updater; }
+        void setUpdater( DatabaseUpdater *updater );
         void setCapabilityDelegate( Capabilities::CollectionCapabilityDelegate *delegate ) { m_capabilityDelegate = delegate; }
         void setCollectionLocationFactory( SqlCollectionLocationFactory *factory ) { m_collectionLocationFactory = factory; }
         void setQueryMakerFactory( SqlQueryMakerFactory *factory ) { m_queryMakerFactory = factory; }
-        void setScanManager( ScanManager *scanMgr );
+        void setScanManager( IScanManager *scanMgr );
         void setMountPointManager( SqlMountPointManager *mpm );
         //this method MUST be called before using the collection
         void init();
@@ -117,9 +119,6 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::Collection
         void deleteTracksSlot( Meta::TrackList tracklist );
 
         void dumpDatabaseContent();
-
-    signals:
-        void scanFinished();
 
     private slots:
         void initXesam();
@@ -133,7 +132,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::Collection
         SqlStorage * m_sqlStorage;
         SqlCollectionLocationFactory *m_collectionLocationFactory;
         SqlQueryMakerFactory *m_queryMakerFactory;
-        QPointer<ScanManager> m_scanManager;
+        QPointer<IScanManager> m_scanManager;
         SqlMountPointManager *m_mpm;
 
         QString m_collectionId;
@@ -160,6 +159,22 @@ public:
 signals:
         void deviceAdded( int id );
         void deviceRemoved( int id );
+};
+
+class IScanManager : public QObject
+{
+    Q_OBJECT
+public:
+    IScanManager() : QObject() {}
+    virtual ~ IScanManager() {}
+
+    virtual void setBlockScan( bool blockScan )  = 0;
+    virtual bool isDirInCollection( const QString &dir ) = 0;
+
+public slots:
+    virtual void startFullScan() = 0;
+    virtual void startIncrementalScan( const QString &directory = QString() ) = 0;
+    virtual void abort( const QString &reason = QString() ) = 0;
 };
 
 Q_DECLARE_METATYPE( TrackUrls )

@@ -1,4 +1,4 @@
-ADD_DEFINITIONS(${TAGLIB_CFLAGS} ${TAGLIB-EXTRAS_CFLAGS})
+add_definitions(${TAGLIB_CFLAGS} ${TAGLIB-EXTRAS_CFLAGS})
 
 if(APPLE)
     set(mac_SRCS
@@ -11,7 +11,6 @@ if(APPLE)
 endif(APPLE)
 
 add_subdirectory( core )
-# add_subdirectory( playlistmanager )
 add_subdirectory( core-impl/collections )
 #dont use our own libplasma anymore, but still pick up our applets/engines/containments
 add_subdirectory( context )
@@ -50,6 +49,7 @@ include_directories(
     dialogs
     dynamic
     likeback
+    network
     playlistmanager
     statusbar
     synchronization
@@ -58,7 +58,6 @@ include_directories(
     ${KDE4_INCLUDE_DIR}
     ${TAGLIB-EXTRAS_INCLUDE_DIR}
     ${TAGLIB-EXTRAS_INCLUDES}
-    ${MYSQL_INCLUDE_DIR}
     ${QT_INCLUDES}
     ${QT_QTSCRIPT_INCLUDE_DIR}
     ${QCA2_INCLUDE_DIR}
@@ -203,13 +202,12 @@ set(libbrowserframework_SRCS
     browsers/BrowserCategoryListDelegate.cpp
     browsers/BrowserCategoryListModel.cpp
     browsers/BrowserCategoryListSortFilterProxyModel.cpp
-    browsers/BrowserWidget.cpp
+    browsers/BrowserDock.cpp
     browsers/CollectionSortFilterProxyModel.cpp
     browsers/CollectionTreeItem.cpp
     browsers/CollectionTreeItemModel.cpp
     browsers/CollectionTreeItemModelBase.cpp
     browsers/CollectionTreeView.cpp
-    browsers/CollectionTreeViewSimple.cpp
     browsers/InfoProxy.cpp
     browsers/SingleCollectionTreeItemModel.cpp
 )
@@ -256,6 +254,7 @@ set(libstatusbar_SRCS
     statusbar/StatusBar.cpp
     statusbar/ProgressBar.cpp
     statusbar/KJobProgressBar.cpp
+    statusbar/NetworkProgressBar.cpp
     statusbar/CompoundProgressBar.cpp
     statusbar/PopupWidget.cpp
     statusbar/LongMessageWidget.cpp
@@ -316,6 +315,7 @@ set( libcontextview_SRCS
     context/Containment.cpp
     context/ContextObserver.cpp
     context/ContextScene.cpp
+    context/ContextDock.cpp
     context/ContextView.cpp
     context/LyricsManager.cpp
     context/ToolbarView.cpp
@@ -360,17 +360,18 @@ set(libplaylistbrowser_SRCS
     browsers/playlistbrowser/DynamicBiasDelegate.cpp
     browsers/playlistbrowser/DynamicBiasModel.cpp
     browsers/playlistbrowser/DynamicBiasWidgets.cpp
-    browsers/playlistbrowser/MetaPlaylistModel.cpp
+    browsers/playlistbrowser/PlaylistBrowserModel.cpp
+    browsers/playlistbrowser/PlaylistBrowserCategory.cpp
     browsers/playlistbrowser/QtGroupingProxy.cpp
     browsers/playlistbrowser/PlaylistBrowser.cpp
+    browsers/playlistbrowser/PlaylistBrowserView.cpp
     browsers/playlistbrowser/UserPlaylistCategory.cpp
-    browsers/playlistbrowser/PlaylistsInGroupsProxy.cpp
+    browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp
     browsers/playlistbrowser/PlaylistTreeItemDelegate.cpp
     browsers/playlistbrowser/PlaylistsByProviderProxy.cpp
     browsers/playlistbrowser/PodcastModel.cpp
     browsers/playlistbrowser/PodcastCategory.cpp
     browsers/playlistbrowser/UserPlaylistModel.cpp
-    browsers/playlistbrowser/UserPlaylistTreeView.cpp
 )
 
 #####################################################################
@@ -379,9 +380,12 @@ set(libplaylistbrowser_SRCS
 set(libplaylistmanager_SRCS
     playlistmanager/PlaylistManager.cpp
     playlistmanager/file/PlaylistFileProvider.cpp
+    playlistmanager/file/KConfigSyncRelStore.cpp
     playlistmanager/sql/SqlUserPlaylistProvider.cpp
     playlistmanager/sql/SqlPlaylist.cpp
     playlistmanager/sql/SqlPlaylistGroup.cpp
+    playlistmanager/SyncedPlaylist.cpp
+    playlistmanager/SyncRelationStorage.cpp
 )
 
 #####################################################################
@@ -405,14 +409,13 @@ set(libplaylist_SRCS
     playlist/PlaylistBreadcrumbItemSortButton.cpp
     playlist/PlaylistBreadcrumbLevel.cpp
     playlist/PlaylistController.cpp
-    playlist/PlaylistHeader.cpp
     playlist/PlaylistItem.cpp
     playlist/PlaylistModel.cpp
     playlist/PlaylistModelStack.cpp
     playlist/PlaylistSortWidget.cpp
     playlist/PlaylistViewUrlGenerator.cpp
     playlist/PlaylistViewUrlRunner.cpp
-    playlist/PlaylistWidget.cpp
+    playlist/PlaylistDock.cpp
     playlist/ProgressiveSearchWidget.cpp
     playlist/UndoCommands.cpp
     playlist/layouts/LayoutEditDialog.cpp
@@ -524,12 +527,12 @@ set(apg_SRCS
     playlistgenerator/TreeController.cpp
     playlistgenerator/TreeModel.cpp
     playlistgenerator/constraints/Checkpoint.cpp
-    playlistgenerator/constraints/CheckpointHandlers.cpp
+    playlistgenerator/constraints/CheckpointSupport.cpp
     playlistgenerator/constraints/Matching.cpp
     playlistgenerator/constraints/PlaylistLength.cpp
     playlistgenerator/constraints/PreventDuplicates.cpp
     playlistgenerator/constraints/TagMatch.cpp
-    playlistgenerator/constraints/TagMatchFieldsModel.cpp
+    playlistgenerator/constraints/TagMatchSupport.cpp
     playlistgenerator/constraints/TrackSpreader.cpp
 )
 
@@ -541,6 +544,24 @@ kde4_add_ui_files(apg_SRCS
     playlistgenerator/constraints/PreventDuplicatesEditWidget.ui
     playlistgenerator/constraints/TagMatchEditWidget.ui
 )
+
+#####################################################################
+# NETWORK ACCESS
+#####################################################################
+set(network_access_SRCS
+    network/NetworkAccessManagerProxy.cpp
+)
+
+if( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
+    set(network_access_SRCS
+        ${network_access_SRCS}
+        network/NetworkAccessViewer.cpp
+        )
+
+    kde4_add_ui_files(network_access_SRCS
+        network/NetworkRequests.ui
+        )
+endif( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
 
 #####################################################################
 # RESOLVERS
@@ -577,6 +598,7 @@ set(amaroklib_LIB_SRCS
     ${apg_SRCS}
     ${collection_SRCS}
     ${mac_SRCS}
+    ${network_access_SRCS}
     ${libplaylistbrowser_SRCS}
     ${libqueuemanager_SRCS}
     ${libplaylistmanager_SRCS}
@@ -631,6 +653,7 @@ set(amaroklib_LIB_SRCS
     dialogs/EqualizerDialog.cpp
     dialogs/FilenameLayoutDialog.cpp
     dialogs/OrganizeCollectionDialog.cpp
+    dialogs/TrackOrganizer.cpp
     dialogs/ScriptSelector.cpp
     dialogs/ScriptManager.cpp
     dialogs/ScriptUpdater.cpp
@@ -668,6 +691,7 @@ set(amaroklib_LIB_SRCS
     widgets/FlowLayout.cpp
     widgets/HorizontalDivider.cpp
     widgets/IconButton.cpp
+    widgets/ComboBox.cpp
     widgets/LineEdit.cpp
     widgets/MainControlsButton.cpp
     widgets/MainControlsWidget.cpp
@@ -711,6 +735,9 @@ else( BUILD_MYSQLE_COLLECTION )
             ${amaroklib_LIB_SRCS}
             MySqlServerTester.cpp
            )
+        add_definitions(${MYSQL_CFLAGS})
+        include_directories(${MYSQL_INCLUDE_DIR})
+        target_link_libraries(amaroklib ${MYSQL_LIBS})
 endif( BUILD_MYSQLE_COLLECTION )
 
 if(KDE4_BUILD_TESTS)
@@ -867,13 +894,18 @@ endif(Q_WS_MAC)
 ########### install files ###############
 
 install(FILES amarok.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
+install(FILES amarok_containers.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
+
 install(FILES amarok_plugin.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
 install(FILES amarok_codecinstall.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
 install(FILES amarok_append.desktop DESTINATION ${SERVICES_INSTALL_DIR}/ServiceMenus)
 install(FILES amarok-play-audiocd.desktop DESTINATION ${DATA_INSTALL_DIR}/solid/actions)
+
 install(FILES amarok.knsrc DESTINATION ${CONFIG_INSTALL_DIR})
 install(FILES context/amarokapplets.knsrc DESTINATION ${CONFIG_INSTALL_DIR})
 
+# protocol handlers
+install(FILES amarokurls/amarok.protocol  DESTINATION  ${SERVICES_INSTALL_DIR})
 install(FILES amarokitpc.protocol DESTINATION ${SERVICES_INSTALL_DIR})
 #install(FILES amarokpcast.protocol DESTINATION ${SERVICES_INSTALL_DIR})
 
@@ -890,6 +922,7 @@ install(FILES dbus/org.freedesktop.MediaPlayer.root.xml
 
 
 install(FILES data/DefaultPlaylistLayouts.xml
+              data/first_run_jingle.ogg
               services/InfoParserLoading.html
               browsers/hover_info_template.html
               DESTINATION ${DATA_INSTALL_DIR}/amarok/data)
@@ -898,9 +931,3 @@ install( FILES data/amarok_homerc DESTINATION ${CONFIG_INSTALL_DIR} )
 install( FILES data/amarok.notifyrc DESTINATION ${DATA_INSTALL_DIR}/amarok )
 
 kde4_install_icons( ${ICON_INSTALL_DIR} )
-
-############ amarok protocol handler ###########
-
-install( FILES amarokurls/amarok.protocol  DESTINATION  ${SERVICES_INSTALL_DIR} )
-
-

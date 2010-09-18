@@ -21,6 +21,9 @@
 
 //#include "nepomuk_export.h"
 
+namespace Amarok
+{
+
 /**
  * \brief Displays a rating value as a row of pixmaps.
  *
@@ -100,21 +103,20 @@ class KRatingWidget : public QFrame
 
  Q_SIGNALS:
     /**
-     * Emitted if the rating is changed by user interaction (ie. mouse click).
-     * A call to setRating does not trigger this signal.
+     * This signal is emitted when the rating is changed.
      */
     void ratingChanged( unsigned int rating );
     void ratingChanged( int rating );
 
  public Q_SLOTS:
     /**
-     * Set the current rating. Calling this method will NOT trigger the
-     * ratingChanged signal.
+     * Set the current rating. Calling this method will trigger the
+     * ratingChanged signal if @p rating is different from the previous rating.
      */
     void setRating( int rating );
 
     /**
-     * \deprecated use setRating( int max )
+     * \deprecated use setRating( int rating )
      */
     void setRating( unsigned int rating );
 
@@ -178,7 +180,7 @@ class KRatingWidget : public QFrame
     /**
      * Set the recommended size of the pixmaps. This is
      * only used for the sizeHint. The actual size is always
-     * dependant on the size of the widget itself.
+     * dependent on the size of the widget itself.
      */
     void setPixmapSize( int size );
 
@@ -193,5 +195,7 @@ class KRatingWidget : public QFrame
     class Private;
     Private* const d;
 };
+
+} // Amarok namespace
 
 #endif

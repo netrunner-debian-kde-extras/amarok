@@ -21,7 +21,7 @@
 
 #include <KSharedPtr>
 
-#include <QDomDocument>
+#include <QtCore/QXmlStreamReader>
 
 class CoverFetchPayload;
 class CoverFetchSearchPayload;
@@ -66,8 +66,6 @@ public:
                     CoverFetch::Option opt = CoverFetch::Automatic );
     CoverFetchUnit( const CoverFetchPayload *payload, CoverFetch::Option opt );
     CoverFetchUnit( const CoverFetchSearchPayload *payload );
-    CoverFetchUnit( const CoverFetchUnit &cpy );
-    explicit CoverFetchUnit() {}
     ~CoverFetchUnit();
 
     Meta::AlbumPtr album() const;
@@ -80,7 +78,6 @@ public:
     template< typename T >
         void addError( const T &error );
 
-    CoverFetchUnit &operator=( const CoverFetchUnit &rhs );
     bool operator==( const CoverFetchUnit &other ) const;
     bool operator!=( const CoverFetchUnit &other ) const;
 
@@ -89,6 +86,8 @@ private:
     QStringList m_errors;
     CoverFetch::Option m_options;
     const CoverFetchPayload *m_payload;
+
+    Q_DISABLE_COPY( CoverFetchUnit )
 };
 
 /**
@@ -102,6 +101,7 @@ public:
     CoverFetchPayload( const Meta::AlbumPtr album, enum Type type, const CoverFetch::Source src );
     virtual ~CoverFetchPayload();
 
+    Meta::AlbumPtr album() const { return m_album; }
     CoverFetch::Source source() const;
     enum Type type() const;
     const CoverFetch::Urls &urls() const;
@@ -113,7 +113,6 @@ protected:
     QString sanitizeQuery( const QString &query );
     const QString  sourceString() const;
     const QString &method() const { return m_method; }
-    Meta::AlbumPtr album()  const { return m_album; }
 
     bool isPrepared() const;
     virtual void prepareUrls() = 0;
@@ -140,8 +139,7 @@ protected:
     void prepareUrls();
 
 private:
-    QString m_xml;
-    void prepareDiscogsUrls( const QDomDocument &doc );
+    void prepareDiscogsUrls( const QByteArray &data );
     Q_DISABLE_COPY( CoverFetchInfoPayload )
 };
 
@@ -154,7 +152,8 @@ class CoverFetchSearchPayload : public CoverFetchPayload
 public:
     explicit CoverFetchSearchPayload( const QString &query = QString(),
                                       const CoverFetch::Source src = CoverFetch::LastFm,
-                                      unsigned int page = 0 );
+                                      unsigned int page = 0,
+                                      Meta::AlbumPtr album = Meta::AlbumPtr(0) );
     ~CoverFetchSearchPayload();
 
     QString query() const;
@@ -200,12 +199,6 @@ private:
     /// search is wild mode?
     bool m_wild;
 
-    /// convert ImageSize enum to string
-    QString coverSize2str( enum CoverFetch::ImageSize size ) const;
-
-    /// convert string to ImageSize
-    enum CoverFetch::ImageSize str2CoverSize( const QString &string ) const;
-
     /// lower, remove whitespace, and do Unicode normalization on a QString
     QString normalize( const QString &raw );
 
@@ -213,16 +206,19 @@ private:
     QStringList normalize( const QStringList &rawList );
 
     /// prepare urls from xml provided by Discogs
-    void prepareDiscogsUrls( const QDomDocument &doc );
+    void prepareDiscogsUrls( QXmlStreamReader &xml );
 
     /// prepare urls from xml provided by Last.fm
-    void prepareLastFmUrls( const QDomDocument &doc );
+    void prepareLastFmUrls( QXmlStreamReader &xml );
 
     /// prepare urls from xml provided by Yahoo! Image Search
-    void prepareYahooUrls( const QDomDocument &doc );
+    void prepareYahooUrls( QXmlStreamReader &xml );
 
     /// prepare urls from xml provided by Google Image Search
-    void prepareGoogleUrls( const QString &html );
+    void prepareGoogleUrls();
+
+    /// gets the value of the first available key from hash
+    QString firstAvailableValue( const QStringList &keys, const QHash<QString, QString> &hash );
 
     Q_DISABLE_COPY( CoverFetchArtPayload )
 };

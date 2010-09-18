@@ -27,10 +27,12 @@
 #include "core-impl/meta/file/File.h"
 #include "QStringx.h"
 #include "ui_OrganizeCollectionDialogBase.h"
-
+#include "TrackOrganizer.h"
 #include <kcolorscheme.h>
+#include <KInputDialog>
 
 #include <QDir>
+#include <QApplication>
 
 OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &tracks, const QStringList &folders, QWidget *parent,  const char *name, bool modal,
                                                     const QString &caption, QFlags<KDialog::ButtonCode> buttonMask )
@@ -44,11 +46,9 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     setModal( modal );
     setButtons( buttonMask );
     showButtonSeparator( true );
-    m_previewTrack = 0;
 
     if ( tracks.size() > 0 )
     {
-        m_previewTrack = tracks[0];
         m_allTracks = tracks;
     }
 
@@ -58,6 +58,7 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
 
     ui->setupUi( mainContainer );
 
+    mTrackOrganizer = new TrackOrganizer( m_allTracks, this );
     m_filenameLayoutDialog = new FilenameLayoutDialog( mainContainer, 1 );   //", 1" means isOrganizeCollection ==> doesn't show Options frame
 //    m_filenameLayoutDialog->hide();
     connect( this, SIGNAL( accepted() ),
@@ -88,8 +89,6 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     // to show the conflict error
     connect( ui->overwriteCheck, SIGNAL( stateChanged( int ) ), SLOT( slotUpdatePreview() ) );
 
-    connect( this, SIGNAL( updatePreview( QString ) ), ui->previewText, SLOT( setText( QString ) ) );
-
     connect( ui->ignoreTheCheck, SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
     connect( ui->spaceCheck    , SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
     connect( ui->asciiCheck    , SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
@@ -102,6 +101,8 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
              this, SLOT( slotUpdatePreview() ) );
     connect( ui->folderCombo, SIGNAL( currentIndexChanged( const QString & ) ),
              this, SLOT( slotEnableOk( const QString & ) ) );
+    connect( ui->addPresetButton, SIGNAL( clicked( bool ) ), this, SLOT( slotAddFormat() ) );
+    connect( ui->removePresetButton, SIGNAL( clicked( bool ) ), this, SLOT( slotRemoveFormat() ) );
 
     slotEnableOk( ui->folderCombo->currentText() );
 
@@ -119,86 +120,13 @@ OrganizeCollectionDialog::~OrganizeCollectionDialog()
 QMap<Meta::TrackPtr, QString>
 OrganizeCollectionDialog::getDestinations()
 {
-    QString format = buildFormatString();
-    QMap<Meta::TrackPtr, QString> destinations;
-    foreach( const Meta::TrackPtr &track, m_allTracks )
-    {
-        if( track )
-            destinations.insert( track, buildDestination( format, track ) );
-    }
-    return destinations;
+    return mTrackOrganizer->getDestinations();
 }
 
 bool
 OrganizeCollectionDialog::overwriteDestinations() const
 {
     return ui->overwriteCheck->isChecked();
-}
-
-QString
-OrganizeCollectionDialog::buildDestination( const QString &format, const Meta::TrackPtr &track ) const
-{
-    bool isCompilation = track->album() && track->album()->isCompilation();
-
-    QMap<QString, QString> args;
-    QString artist = track->artist() ? track->artist()->name() : QString();
-    QString albumartist;
-    if( isCompilation )
-        albumartist = i18n( "Various Artists" );
-    else
-    {
-        if( track->album() && track->album()->albumArtist() )
-            albumartist = track->album()->albumArtist()->name();
-        else
-            albumartist = artist;
-    }
-    args["theartist"] = cleanPath( artist );
-    args["thealbumartist"] = cleanPath( albumartist );
-
-    if( ui->ignoreTheCheck->isChecked() && artist.startsWith( "The " ) )
-        Amarok::manipulateThe( artist, true );
-
-    artist = cleanPath( artist );
-
-    if( ui->ignoreTheCheck->isChecked() && albumartist.startsWith( "The " ) )
-        Amarok::manipulateThe( albumartist, true );
-
-    albumartist = cleanPath( albumartist );
-
-    //these additional columns from MetaBundle were used before but haven't
-    //been ported yet. Do they need to be?
-    //Bpm,Directory,Bitrate,SampleRate,Mood
-    args["folder"] = ui->folderCombo->currentText();
-    args["title"] = cleanPath( track->prettyName() );
-    args["composer"] = track->composer() ? cleanPath( track->composer()->prettyName() ) : QString();
-    args["year"] = track->year() ? cleanPath( track->year()->prettyName() ) : QString();
-    args["album"] = track->album() ? cleanPath( track->album()->prettyName() ) : QString();
-
-    if( track->discNumber() )
-        args["discnumber"] = QString::number( track->discNumber() );
-
-    args["genre"] = track->genre() ? cleanPath( track->genre()->prettyName() ) : QString();
-    args["comment"] = cleanPath( track->comment() );
-    args["artist"] = artist;
-    args["albumartist"] = albumartist;
-    args["initial"] = albumartist.mid( 0, 1 ).toUpper();    //artists starting with The are already handled above
-    args["filetype"] = track->type();
-    args["rating"] = track->rating();
-    args["filesize"] = track->filesize();
-    args["length"] = track->length() / 1000;
-
-    if ( track->trackNumber() )
-    {
-        QString trackNum = QString("%1").arg( track->trackNumber(), 2, 10, QChar('0') );
-        args["track"] = trackNum;
-    }
-
-    Amarok::QStringx formatx( format );
-    QString result = formatx.namedOptArgs( args );
-    if( !result.startsWith( '/' ) )
-        result.prepend( "/" );
-
-   return result.replace( QRegExp( "/\\.*" ), "/" );
 }
 
 QString
@@ -262,27 +190,34 @@ OrganizeCollectionDialog::commonPrefix( const QStringList &list ) const
 
 }
 
-
-
 void
 OrganizeCollectionDialog::preview( const QString &format )
 {
     DEBUG_BLOCK
-    /*if( m_previewTrack )
-        emit updatePreview( buildDestination( format, m_previewTrack ) );*/
 
     ui->previewTableWidget->clearContents();
-    ui->previewTableWidget->setRowCount( m_allTracks.size() );
     bool conflict = false;
-    for (int i = 0; i < m_allTracks.size(); ++i)
+
+    QApplication::setOverrideCursor( QCursor( Qt::WaitCursor ) );
+    mTrackOrganizer->setFormatString( format );
+    debug() << "format" << format;
+    QMap<Meta::TrackPtr, QString> dests = mTrackOrganizer->getDestinations();
+    debug() << "dests.size()" << dests.count();
+    debug() << "dests" << dests;
+    ui->previewTableWidget->setRowCount( dests.count() );
+    QMapIterator<Meta::TrackPtr, QString> it( dests );
+    int i = 0;
+    while( it.hasNext() )
     {
-        Meta::TrackPtr track = m_allTracks.at(i);
+        debug() << "i:" << i;
+        it.next();
+        Meta::TrackPtr track = it.key();
 
         QString originalPath = track->prettyUrl();
-        QString newPath = buildDestination( format, track );
+        QString newPath = it.value();
 
-//         QStringList list;
-//         list << originalPath << newPath;
+        QStringList list;
+        list << "originalPath" << originalPath << "newPath" << newPath;
 //
 //         QString common_prefix = commonPrefix( list );
 //         debug() << "common prefix: " << common_prefix;
@@ -307,8 +242,9 @@ OrganizeCollectionDialog::preview( const QString &format )
         if( info.exists() )
             item->setBackgroundColor( p.color( QPalette::Base ) );
         ui->previewTableWidget->setItem(i, 1, item);
-
+        ++i;
     }
+    QApplication::restoreOverrideCursor();
     if( conflict )
     {
         if( ui->overwriteCheck->isChecked() )
@@ -320,43 +256,10 @@ OrganizeCollectionDialog::preview( const QString &format )
         ui->conflictLabel->setText(""); // we clear the text instead of hiding it to retain the layout spacing
 }
 
-
-QString
-OrganizeCollectionDialog::cleanPath( const QString &component ) const
-{
-    QString result = component;
-
-    if( ui->asciiCheck->isChecked() )
-    {
-        result = Amarok::cleanPath( result );
-        result = Amarok::asciiPath( result );
-    }
-
-    if( !ui->regexpEdit->text().isEmpty() )
-        result.replace( QRegExp( ui->regexpEdit->text() ), ui->replaceEdit->text() );
-
-    result.simplified();
-    if( ui->spaceCheck->isChecked() )
-        result.replace( QRegExp( "\\s" ), "_" );
-//     debug()<<"I'm about to do Amarok::vfatPath( result ), this is result: "<<result;
-    if( ui->vfatCheck->isChecked() )
-        result = Amarok::vfatPath( result );
-
-    result.replace( '/', '-' );
-
-    return result;
-}
-
-
 void
 OrganizeCollectionDialog::update( int dummy )   //why the dummy?
 {
     Q_UNUSED( dummy );
-
-    if( m_previewTrack )
-    {
-        emit updatePreview( buildDestination( "%folder/" + m_filenameLayoutDialog->getParsableScheme(), m_previewTrack ) );
-    }
 }
 
 
@@ -371,18 +274,74 @@ OrganizeCollectionDialog::update( const QString & dummy )
 void
 OrganizeCollectionDialog::init()
 {
+    populateFormatList();
     slotUpdatePreview();
 }
+
+void OrganizeCollectionDialog::populateFormatList()
+{
+    // items are stored in the config list in the following format:
+    // Label#DELIM#format string#DELIM#selected
+    // the last item to have the third parameter is the default selected preset
+    // the third param isnis optional 
+    QStringList presets_raw;
+    int selected_index = -1;
+    ui->presetCombo->clear();
+    presets_raw = AmarokConfig::formatPresets();
+    foreach( QString str, presets_raw )
+    {
+        QStringList items;
+        items = str.split( "#DELIM#", QString::SkipEmptyParts );
+        if( items.size() < 2 )
+            continue;
+        ui->presetCombo->addItem( items.at( 0 ), items.at( 1 ) ); // Label, format string
+        if( items.size() == 3 )
+            selected_index = ui->presetCombo->findData( items.at( 1 ) );
+    }
+    if( selected_index > 0 )
+        ui->presetCombo->setCurrentIndex( selected_index );
+    slotFormatPresetSelected( selected_index );
+    connect( ui->presetCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( slotFormatPresetSelected( int ) ) );
+}
+
+void OrganizeCollectionDialog::saveFormatList()
+{
+    QStringList presets;
+    int n = ui->presetCombo->count();
+    int current_idx = ui->presetCombo->currentIndex();
+    for( int i = 0; i < n; ++i )
+    {
+        QString item;
+        if( i == current_idx )
+            item = "%1#DELIM#%2#DELIM#selected";
+        else
+            item = "%1#DELIM#%2";
+        QString scheme = ui->presetCombo->itemData( i ).toString();
+        QString label = ui->presetCombo->itemText( i );
+        item = item.arg( label, scheme );
+        presets.append( item );
+    }
+    AmarokConfig::setFormatPresets( presets );
+}
+
 
 void
 OrganizeCollectionDialog::slotUpdatePreview()
 {
+    mTrackOrganizer->setAsciiOnly( ui->asciiCheck->isChecked() );
+    mTrackOrganizer->setFolderPrefix( ui->folderCombo->currentText() );
+    mTrackOrganizer->setFormatString( buildFormatString() );
+    mTrackOrganizer->setIgnoreThe( ui->ignoreTheCheck->isChecked() );
+    mTrackOrganizer->setReplaceSpaces( ui->spaceCheck->isChecked() );
+    mTrackOrganizer->setReplace( ui->regexpEdit->text(), ui->replaceEdit->text() );
+    mTrackOrganizer->setVfatSafe( ui->vfatCheck->isChecked() );
     preview( buildFormatString() );
 }
 
 void
 OrganizeCollectionDialog::slotDialogAccepted()
 {
+    saveFormatList();
     AmarokConfig::setOrganizeDirectory( ui->folderCombo->currentText() );
     AmarokConfig::setIgnoreThe( ui->ignoreTheCheck->isChecked() );
     AmarokConfig::setReplaceSpace( ui->spaceCheck->isChecked() );
@@ -401,4 +360,29 @@ OrganizeCollectionDialog::slotEnableOk( const QString & currentCollectionRoot )
     else
         enableButtonOk( true );
 }
+
+void OrganizeCollectionDialog::slotFormatPresetSelected( int index )
+{
+    QString scheme = ui->presetCombo->itemData( index ).toString();
+    m_filenameLayoutDialog->setScheme( scheme );
+}
+
+void OrganizeCollectionDialog::slotAddFormat()
+{
+    bool ok = false;
+    QString name = KInputDialog::getText( i18n( "New Format Preset" ), i18n( "Preset Name" ), i18n( "New Preset" ),  &ok, this );
+    if( !ok )
+        return; // user canceled.
+    QString format = m_filenameLayoutDialog->getParsableScheme();
+    ui->presetCombo->insertItem(0, name, format);
+    ui->presetCombo->setCurrentIndex( 0 );
+}
+
+void OrganizeCollectionDialog::slotRemoveFormat()
+{
+    int idx = ui->presetCombo->currentIndex();
+    ui->presetCombo->removeItem( idx );
+}
+
+
 #endif  //AMAROK_ORGANIZECOLLECTIONDIALOG_UI_H

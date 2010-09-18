@@ -64,8 +64,11 @@ LyricsApplet::LyricsApplet( QObject* parent, const QVariantList& args )
 
 LyricsApplet::~ LyricsApplet()
 {
-    m_proxy->setWidget( 0 );
-    delete m_proxy;
+    if( m_proxy )
+    {
+        m_proxy->setWidget( 0 );
+        delete m_proxy;
+    }
     delete m_lyrics;
     delete m_suggested;
 }
@@ -78,6 +81,7 @@ void LyricsApplet::init()
     m_titleLabel = new TextScrollingWidget( this );
     QFont bigger = m_titleLabel->font();
     bigger.setPointSize( bigger.pointSize() + 2 );
+    m_titleLabel->setTextFormat( Qt::RichText );
     m_titleLabel->setFont( bigger );
     m_titleLabel->setZValue( m_titleLabel->zValue() + 100 );
     m_titleLabel->setText( i18n( "Lyrics" ) );
@@ -309,6 +313,7 @@ void LyricsApplet::dataUpdated( const QString& name, const Plasma::DataEngine::D
     }
 
     update();
+    // collapseToMin();
     constraintsEvent();
 }
 
@@ -524,33 +529,57 @@ LyricsApplet::setEditing( const bool isEditing )
 }
 
 
+// FIXME: This does not work in all cases yet.
+// There are two known cases where this is broken:
+// -The lyrics applet is visible to the user, showing only a
+//  small amount of text. Then the user hides (hiding != removing)
+//  the applet. Once the track changes and the new track has long
+//  lyrics the scrollbar is clipped.
+// -The lyrics applet's position is moved. Say the lyrics applet would
+//  take all the space. Now there's the current track applet above the
+//  lyrics applet -> once the user moves the lyrics applet before the
+//  current track applet the lyrics applet won't resize.
 void LyricsApplet::collapseToMin()
 {
     QTextBrowser *browser = static_cast< QTextBrowser* >( m_proxy->widget() );
+
+    // The proxy does not have a browser after initialization.
+    // There's only a widget after the first dataUpdated() call, so
+    // make sure we're not crashing here.
     if( !browser )
         return;
 
-    // use a dummy item to get the lyrics layout being displayed
-    QGraphicsTextItem testItem;
-    testItem.setTextWidth( browser->document()->size().width() );
-    testItem.setFont( browser->currentFont() );
-    testItem.setHtml( browser->toHtml() );
+    qreal testItemHeight = 0;
+
+    // Check if the text browser contains any content (which is
+    // visible to the user).
+    if ( !browser->toPlainText().trimmed().isEmpty() )
+    {
+        // use a dummy item to get the lyrics layout being displayed
+        QGraphicsTextItem testItem;
+        testItem.setTextWidth( browser->document()->size().width() );
+        testItem.setFont( browser->currentFont() );
+        testItem.setHtml( browser->toHtml() );
+
+        // Get the height of the test item.
+        testItemHeight = testItem.boundingRect().height();
+    }
 
     const qreal frameWidth     = browser->frameWidth();
-    const qreal testItemHeight = testItem.boundingRect().height();
     const qreal headerHeight   = m_titleLabel->pos().y() + m_titleLabel->boundingRect().height() + standardPadding();
     const qreal contentHeight  = headerHeight + frameWidth + testItemHeight + frameWidth + standardPadding();
 
     // only show vertical scrollbar if there are lyrics and is needed
     browser->setVerticalScrollBarPolicy( m_hasLyrics ? Qt::ScrollBarAsNeeded : Qt::ScrollBarAlwaysOff );
-
+    
     // maybe we were just added, don't have a view yet
     if( !containment()->view() )
         return;
-    
+
     const qreal containerOffset = mapToView( containment()->view(), boundingRect() ).topLeft().y();
     const qreal containerHeight = containment()->size().height() - containerOffset;
     const qreal collapsedHeight = ( contentHeight > containerHeight ) ? containerHeight : contentHeight;
+
     setCollapseHeight( collapsedHeight );
     setCollapseOn();
     updateConstraints();

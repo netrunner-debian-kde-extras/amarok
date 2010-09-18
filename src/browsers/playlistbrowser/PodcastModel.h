@@ -20,7 +20,7 @@
 #include "core/podcasts/PodcastMeta.h"
 #include "core/podcasts/PodcastProvider.h"
 
-#include "MetaPlaylistModel.h"
+#include "PlaylistBrowserModel.h"
 #include "playlist/PlaylistModelStack.h"
 
 #include <QAbstractItemModel>
@@ -33,7 +33,7 @@ class OpmlOutline;
 namespace PlaylistBrowserNS {
 
 enum {
-    ShortDescriptionRole = MetaPlaylistModel::CustomRoleOffset,
+    ShortDescriptionRole = PlaylistBrowserModel::CustomRoleOffset,
     LongDescriptionRole
 };
 
@@ -41,7 +41,7 @@ enum {
    be fetched at once with itemData() */
 enum
 {
-    SubtitleColumn = MetaPlaylistModel::CustomColumOffset,
+    SubtitleColumn = PlaylistBrowserModel::CustomColumOffset,
     AuthorColumn,
     KeywordsColumn,
     FilesizeColumn, // episode only
@@ -54,7 +54,7 @@ enum
 /**
     @author Bart Cerneels
 */
-class PodcastModel : public MetaPlaylistModel
+class PodcastModel : public PlaylistBrowserModel
 {
     Q_OBJECT
     public:
@@ -64,15 +64,20 @@ class PodcastModel : public MetaPlaylistModel
         virtual QVariant data(const QModelIndex &index, int role) const;
         virtual bool setData( const QModelIndex &index, const QVariant &value,
                               int role = Qt::EditRole );
-        virtual Qt::ItemFlags flags(const QModelIndex &index) const;
+//        virtual Qt::ItemFlags flags(const QModelIndex &index) const;
         virtual QVariant headerData(int section, Qt::Orientation orientation,
                             int role = Qt::DisplayRole) const;
         virtual int columnCount(const QModelIndex &parent = QModelIndex()) const;
 
-        void importOpml( const KUrl &url );
+        virtual Qt::DropActions supportedDropActions() const {
+            return Qt::CopyAction | Qt::MoveAction;
+        }
 
-    signals:
-        void renameIndex( const QModelIndex &index ); // TODO: this signal is not being used atm
+        virtual Qt::DropActions supportedDragActions() const {
+            return Qt::MoveAction | Qt::CopyAction;
+        }
+
+        void importOpml( const KUrl &url );
 
     public slots:
         void addPodcast();

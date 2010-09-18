@@ -1,0 +1,498 @@
+<?xml version="1.0" ?>
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.2-Based Variant V1.1//EN" "dtd/kdex.dtd" [
+  <!ENTITY % addindex "IGNORE">
+  <!ENTITY % Ukrainian "INCLUDE">
+]>
+<book lang="&language;">
+<bookinfo>
+<title
+>Підручник з Amarok</title>
+<authorgroup>
+<author>
+<personname
+><firstname
+>Цю документацію було створено на основі сторінки UserBase KDE <ulink url=" http://userbase.kde.org/Amarok"
+>Amarok</ulink
+>.</firstname
+> <surname
+></surname
+> </personname>
+    </author>
+<othercredit role="translator"
+><firstname
+>Юрій</firstname
+><surname
+>Чорноіван</surname
+><affiliation
+><address
+><email
+>yurchor@ukr.net</email
+></address
+></affiliation
+><contrib
+>Переклад українською</contrib
+></othercredit
+> 
+    </authorgroup>
+<legalnotice
+>&FDLNotice;</legalnotice>
+<date
+>2010-08-04</date>
+    <releaseinfo
+>&kde; SC 4.5</releaseinfo>
+<abstract>
+ <para
+>Amarok — це вільний, гнучкий і потужний програвач музичних композицій для Linux. Версії останньої серії випусків, 2.x, які часто називають «Amarok 2», можуть працювати на багатьох платформах (зокрема Linux, Mac OS X і Windows). Код цих версій було повністю переписано, що надасть авторам змогу реалізувати чудові нові можливості під час розвитку проекту. Поточною стабільною версією є 2.3.</para>
+</abstract>
+
+<keywordset>
+ <keyword
+>KDE</keyword>
+ <keyword
+>мультимедійні дані</keyword>
+ <keyword
+>програвач</keyword>
+ <keyword
+>аудіо</keyword>
+ <keyword
+>ogg</keyword>
+ <keyword
+>mp3</keyword>
+ <keyword
+>wav</keyword>
+ <keyword
+>музика</keyword>
+ <keyword
+>звук</keyword>
+</keywordset>
+</bookinfo>
+<!--userbase <timestamp
+>2010-08-04T20:37:13Z</timestamp
+>-->
+
+<!--userbase-content-->
+<chapter id="interface"
+><title
+>Інтерфейс</title>
+<para
+>Типово, у Amarok 2 використовується інтерфейс з трьома панелями. </para>
+
+<sect1 id="the-left-pane"
+><title
+>Ліва панель</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1left.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+><quote
+>Ліворуч маємо...</quote
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Ліву панель поділено на сторінки. Цю панель можна згортати. Першу сторінку призначено для показу локальної збірки файлів. На цій сторінці ви зможете знайти і пункти з’єднаних з комп’ютером носіїв даних. Окрему сторінку призначено для служб Інтернету, музику з яких ви слухаєте. На цій сторінці ви зможете знайти списки радіостанцій і трансляцій. За її допомогою можна наказати програмі відтворити звукові дані або оформити передплату на службу. Тут ви зможете працювати з вашим обліковим записом на <ulink url="http://www.last.fm"
+>last.fm</ulink
+>, придбати музику у мережевому магазині, наприклад, Magnatune, і звантажити композиції незалежних музикантів з Jamendo тощо. За допомогою сторінки <guilabel
+>Списки відтворення</guilabel
+> ви зможете створити списки і керувати динамічними або традиційними списками композицій і трансляцій. Нарешті, на сторінці <guilabel
+>Файли</guilabel
+> ви знайдете вбудований переглядач файлів. </para>
+</sect1>
+
+<sect1 id="the-central-pane-context-view"
+><title
+>Центральна панель (Панель контексту)</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1center.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+><quote
+>Посередині...</quote
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>За допомогою цієї панелі програма показуватиме вам інформацію. На панелі міститимуться аплети, які динамічно змінюватимуться і показуватимуть відомості щодо поточної композиції. Тут ви зможете побачити оцінку, рахунок та кількість відтворень поточної композиції, перелік інших композицій виконавця у вашій збірці, слова пісні, сторінку <ulink url="http://www.wikipedia.org"
+>Вікіпедії</ulink
+>, присвячену виконавцеві та інші дані. Додавати, вилучати або впорядковувати аплети можна за допомогою <guilabel
+>панелі аплетів</guilabel
+>, розташованої у нижній частині цієї панелі. </para>
+</sect1>
+
+<sect1 id="the-right-pane-playlist-view"
+><title
+>Права панель (Панель списку відтворення)</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1right.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+><quote
+>І праворуч...</quote
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>У Amarok&nbsp;2 передбачено найгнучкіший з усіх відомих списків відтворення. У інших програвачах ви знайдете типову таблицю композицій, можливо, ще декілька фіксованих різновидів списку відтворення. Amarok&nbsp;2 надасть вам всі можливості для зміни параметрів списку відтворення відповідно до ваших потреб. Для початку у програмі передбачено три приклади компонування списку, якими ви можете скористатися під час створення власного компонування. </para>
+</sect1>
+
+</chapter>
+<chapter id="features"
+><title
+>Можливості</title>
+<sect1 id="plays-music"
+><title
+>Відтворення музики</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1svn965006.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>У Amarok&nbsp;2 передбачено підтримку відтворення музичних файлів у найпопулярніших форматах. Вміст переліку цих форматів залежить від кодеків та серверів відтворення звуку, встановлених у вашій системі. Крім того, у програмі передбачено підтримку традиційних списків відтворення: ви можете створювати, зберігати і завантажувати будь-який з потрібних вам списків відтворення. </para>
+</sect1>
+<sect1 id="device-support"
+><title
+>Підтримка пристроїв</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1ipod.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>У поточній версії програми у разі встановлення відповідних пакунків буде увімкнено базову підтримку пристроїв iPod, MTP і UMS. У наступних випусках програми цю підтримку буде покращено, крім того, буде розширено перелік підтримуваних програмою пристроїв. </para>
+<para
+>За допомогою кнопки <guilabel
+>Увімкнути/Вимкнути режим уніфікованого перегляду</guilabel
+>, розташованої над панеллю збірки, ви зможете об’єднувати збірки. Після об’єднання списків композицій з вашої локальної збірки, звукових компакт-дисків, mp3-програвачів тощо пункти композицій буде показано у одній спільній збірці. </para>
+</sect1>
+<sect1 id="configurable-context-view"
+><title
+>Налаштування панелі контексту</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1contextviewconfig.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Центральна частина Amarok 2 — <guilabel
+>Панель контексту</guilabel
+> — здатна автоматично отримувати контекстні відомості щодо поточної композиції (зокрема зображення з обкладинки альбомів, слова та відомості з <ulink url="http://www.wikipedia.org"
+>Вікіпедії</ulink
+>) з інтернету і показувати їх. Цієї можливості ви не знайдете у інших програмах, лише у Amarok. </para>
+</sect1>
+
+
+<sect1 id="more-internet-services"
+><title
+>Додаткові інтернет-служби</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1internetservices.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+><quote
+>Пункти деяких з інтернет-служб на лівій панелі програми</quote
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Amarok&nbsp;2 відкриває перед вами ворота до якнайширшого використання можливостей інтернету. </para>
+<itemizedlist>
+<listitem
+><para
+>У програмі передбачено інтерфейси до різноманітних служб, зокрема музичних серверів Ampache та скриньок mp3tunes. За допомогою програми ви зможете послухати музику з власної збірки будь-де. </para
+></listitem>
+<listitem
+><para
+>Безпосередньо за допомогою інтерфейсу програми ви можете прослухати зразки творів з Magnatune, а потім придбати відповідні твори. </para
+></listitem>
+<listitem
+><para
+>Використовуючи службу Jamendo, ви зможете слухати і звантажувати музику незалежних виконавців, яких ви можете підтримати вашими внесками. </para
+></listitem>
+<listitem
+><para
+>За допомогою вбудованого додатка <ulink url="http://www.last.fm"
+>last.fm</ulink
+> ви зможете підбирати композиції, використовувати можливості <ulink url="http://www.last.fm"
+>last.fm</ulink
+>, зокрема статистичні, списки популярності, та слухати потоки даних мережевої радіостанції, створеної відповідно до ваших музичних смаків. І все це не полишаючи Amarok&nbsp;2. </para
+></listitem>
+</itemizedlist>
+<para
+>Це лише початок: ви можете додати інші служби інтернету за допомогою <guilabel
+>Керування скриптами</guilabel
+>. </para>
+</sect1>
+
+<sect1 id="script-manager"
+><title
+>Керування скриптами</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1scriptmanager.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Скрипти — це додатки, за допомогою яких ви можете розширити функціональні можливості Amarok&nbsp;2 у декілька способів. За допомогою <guilabel
+>Керування скриптами</guilabel
+> ви можете керувати цими скриптами: встановлювати і вилучати, вмикати і вимикати скрипти, які вже встановлено. Крім того, ви можете скористатися можливістю <guilabel
+>Звантажити скрипти</guilabel
+> для звантаження скриптів, створених іншими користувачами. </para>
+</sect1>
+<sect1 id="cover-manager"
+><title
+>Керування обкладинками</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1covermanager.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Ви можете здійснювати навігацію вашою збіркою музичних творів за допомогою чудового інструменту керування обкладинками, на панелі якого буде показано всі звантажені вами обкладинки альбомів. </para>
+</sect1>
+<sect1 id="rating-and-scoring"
+><title
+>Оцінювання творів</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1rating.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Позначити улюблені пісні можна за допомогою визначення їх оцінок. У Amarok&nbsp;2 передбачено можливість визначення дробових оцінок з точністю до &frac12;&sdot;&#10025;. Крім того, Amarok&nbsp;2 може обчислювати рахунок (щось на зразок автоматично визначеної оцінки) залежно від того, наскільки часто відтворювалася композиція, та того, чи не переривали ви її відтворення. </para>
+</sect1>
+<sect1 id="pop-up-dropper"
+><title
+>Контекстне скидання</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1popup.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>У програмі передбачено інноваційний спосіб визначення дій над композицією (тих дій, доступ до яких можна отримати за допомогою контекстного меню, тобто клацання правою кнопкою миші): ви можете просто скинути пункт композиції на відповідний пункт дії. Перетягніть пункт композиції і ви побачити відповідні пункти дій на панелі контексту! </para>
+</sect1>
+<sect1 id="configurable-playlist-view"
+><title
+>Налаштування панелі списку відтворення</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1pleditor.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>У програмі передбачено надзвичайні можливості з налаштування завантаженого списку відтворення, у цьому списку може бути показано будь-які відомості щодо композицій у будь-якій формі. Якщо вам подобається вигляд <guilabel
+>електронної таблиці</guilabel
+>, з яким ви звикли працювати у Amarok&nbsp;1.x та інших програвачах музики, ви можете увімкнути саме цей вигляд! Крім того, за допомогою панелі перегляду ви можете зберегти або експортувати поточний список відтворення. </para>
+</sect1>
+
+
+<sect1 id="dynamic-playlists"
+><title
+>Динамічні списки композицій</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1dynamicplaylist.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+><quote
+>Трохи того, трохи цього...</quote
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>За допомогою Amarok&nbsp;2 ви можете створити випадкові списки відтворення з ваговими частинами певних різновидів композицій, що відповідають певним критеріям точно (<emphasis
+>Пропорційне зміщення</emphasis
+>) або приблизно (<emphasis
+>Нечітке зміщення</emphasis
+>). Ви, наприклад, можете створити список відтворення з випадковими композиціями з оцінкою, що перевищує 3, так, щоб ці композиції було записано приблизно у 1967 році!</para>
+</sect1>
+
+<sect1 id="replay-gain-support"
+><title
+>Підтримка вирівнювання гучності</title>
+<para
+>У Amarok&nbsp;2 передбачено можливості вбудовування даних щодо вирівнювання гучності до міток файла та автоматичного коригування загальної гучності композиції до типового рівня. </para>
+<para
+>Відкрийте свою музику знову! </para>
+</sect1>
+</chapter>
+<chapter id="hints-tips-and-faqs"
+><title
+>Підказки, настанови та відповіді на питання</title>
+<para
+>Якщо станеться так, що більшість ваших музичних композицій буде виявлено програмою Amarok, але програма не зможе «побачити» композицій з деяких тек, відкрийте консоль і введіть команду </para>
+<para
+>touch <replaceable
+>тека</replaceable
+> </para>
+<para
+>де замість слова <replaceable
+>тека</replaceable
+> слід вказати адресу проблемної теки. Після цього у Amarok оберіть пункт меню <menuchoice
+><guimenu
+>Параметри</guimenu
+><guimenuitem
+>Налаштувати Amarok</guimenuitem
+></menuchoice
+> і скористайтеся пунктом <menuchoice
+><guimenu
+>Збірка</guimenu
+><guimenuitem
+>Повністю пересканувати всю збірку</guimenuitem
+></menuchoice
+>. Ваша тека має потрапити до списку тек. </para>
+</chapter>
+<chapter id="more-information"
+><title
+>Додаткові відомості</title>
+<itemizedlist>
+<listitem
+><para
+><ulink url="http://amarok.kde.org/"
+>Домашня сторінка Amarok</ulink>
+</para
+></listitem>
+<listitem
+><para
+><ulink url="http://forum.kde.org/viewforum.php?f=127"
+>Форум Amarok</ulink>
+</para
+></listitem>
+</itemizedlist>
+</chapter>
+<!--userbase-content-->
+<chapter id="credits">
+<title
+>Подяки і ліцензія</title>
+    <para
+>Список власників авторських прав на документацію до програми можна знайти у <ulink url="http://userbase.kde.org/index.php?title=Amarok&amp;action=history"
+>журналі сторінки Amarok</ulink
+> UserBase.</para>
+    <para
+>Переклад українською: Юрій Чорноіван<email
+>yurchor@ukr.net</email
+></para
+> 
+&underFDL; </chapter>
+&documentation.index;
+</book>

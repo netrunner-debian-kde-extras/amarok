@@ -21,7 +21,6 @@
 #include "core/playlists/PlaylistFormat.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
-#include "MainWindow.h"
 #include "core-impl/playlists/types/file/m3u/M3UPlaylist.h"
 #include "core-impl/playlists/types/file/pls/PLSPlaylist.h"
 #include "core-impl/playlists/types/file/xspf/XSPFPlaylist.h"
@@ -31,8 +30,10 @@
 #include "UserPlaylistModel.h"
 
 #include <KDialog>
+#include <KGlobal>
 #include <KIcon>
 #include <KInputDialog>
+#include <KLocale>
 #include <KUrl>
 
 #include <QAction>
@@ -221,16 +222,16 @@ SqlUserPlaylistProvider::trackActions( Playlists::PlaylistPtr playlist, int trac
     return actions;
 }
 
-void
+bool
 SqlUserPlaylistProvider::deletePlaylists( Playlists::PlaylistList playlistList )
 {
     Playlists::SqlPlaylistList sqlPlaylists;
     foreach( Playlists::PlaylistPtr playlist, playlistList )
         sqlPlaylists << Playlists::SqlPlaylistPtr::dynamicCast( playlist );
-    deleteSqlPlaylists( sqlPlaylists );
+    return deleteSqlPlaylists( sqlPlaylists );
 }
 
-void
+bool
 SqlUserPlaylistProvider::deleteSqlPlaylists( Playlists::SqlPlaylistList playlistList )
 {
     if( !m_debug )
@@ -246,7 +247,7 @@ SqlUserPlaylistProvider::deleteSqlPlaylists( Playlists::SqlPlaylistList playlist
         dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from database." ) );
         dialog.setMainWidget( &label );
         if( dialog.exec() != QDialog::Accepted )
-            return;
+            return false;
     }
 
     foreach( Playlists::SqlPlaylistPtr sqlPlaylist, playlistList )
@@ -258,14 +259,16 @@ SqlUserPlaylistProvider::deleteSqlPlaylists( Playlists::SqlPlaylistList playlist
         }
     }
     reloadFromDb();
+
+    return true;
 }
 
 Playlists::PlaylistPtr
 SqlUserPlaylistProvider::save( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
-    return save( tracks,
-          QDateTime::currentDateTime().toString( "ddd MMMM d yy hh:mm") );
+    QString name = KGlobal::locale()->formatDateTime( QDateTime::currentDateTime(), KLocale::LongDate, true );
+    return save( tracks, name );
 }
 
 Playlists::PlaylistPtr

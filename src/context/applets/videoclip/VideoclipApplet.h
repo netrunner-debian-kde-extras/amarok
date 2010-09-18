@@ -82,9 +82,8 @@ class VideoclipApplet : public Context::Applet, public Engine::EngineObserver
         virtual void engineNewTrackPlaying();
         virtual void engineStateChanged(Phonon::State, Phonon::State );
         virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason );
-        
+
     public slots:
-        void    setGeom();
         void    dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
         void    connectSource( const QString &source );
 
@@ -100,7 +99,6 @@ class VideoclipApplet : public Context::Applet, public Engine::EngineObserver
 
     private:
         QPointer<CustomVideoWidget> m_videoWidget;
-     //   Phonon::VideoWidget       *m_videoWidget;
 
         // The two big container, only one who need a resize
         TextScrollingWidget     *m_headerText;

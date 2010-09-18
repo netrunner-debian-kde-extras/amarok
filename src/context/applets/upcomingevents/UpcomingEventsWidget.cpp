@@ -21,10 +21,8 @@
 // Kde include
 #include <KDateTime>
 #include <KIcon>
-#include <KIO/Job>
 #include <KLocale>
 #include <KLocalizedString>
-#include <KUrl>
 
 // Qt include
 #include <QLabel>
@@ -121,38 +119,40 @@ UpcomingEventsWidget::url() const
 void
 UpcomingEventsWidget::setImage( const KUrl &url )
 {
+    if( !url.isValid() )
+    {
+        m_image->setPixmap( KIcon( "weather-none-available" ).pixmap( 128 ) );
+        return;
+    }
+
     m_image->setText( i18n("Loading picture...") );
-    KJob* job = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
-    connect( job, SIGNAL( result( KJob * ) ), SLOT( loadImage( KJob * ) ) );
+    m_imageUrl = url;
+    The::networkAccessManager()->getData( url, this,
+         SLOT(loadImage(KUrl,QByteArray,NetworkAccessManagerProxy::Error)) );
 }
 
 void
-UpcomingEventsWidget::loadImage( KJob *job ) // SLOT
+UpcomingEventsWidget::loadImage( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e )
 {
-    if( job )
-    {
-        KIO::StoredTransferJob *const storedJob = static_cast< KIO::StoredTransferJob * >( job );
-        QPixmap image;
-        QByteArray buffer = storedJob->data();
-        if( !buffer.isEmpty() )
-        {
-            image.loadFromData( buffer );
-            m_image->setPixmap( The::svgHandler()->addBordersToPixmap( image, 5, QString(), true ) );
-        }
-        else
-        {
-            m_image->setPixmap( KIcon( "weather-none-available" ).pixmap( 128 ) );
-        }
-    }
+    if( m_imageUrl != url )
+        return;
+
+    m_imageUrl.clear();
+    if( e.code != QNetworkReply::NoError )
+        return;
+
+    QPixmap image;
+    if( image.loadFromData( data ) )
+        m_image->setPixmap( The::svgHandler()->addBordersToPixmap( image, 5, QString(), true ) );
 }
 
 void
 UpcomingEventsWidget::setParticipants( const QString &participants )
 {
     QFont font;
-    if( participants == "No other participants" )
+    if( participants.isEmpty() )
     {
-        m_participants->setText( participants );
+        m_participants->setText( i18n( "No other participants" ) );
         font.setItalic( true );
         m_participants->setFont( font );
     }

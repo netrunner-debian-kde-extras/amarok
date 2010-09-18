@@ -25,12 +25,12 @@
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "core/podcasts/PodcastProvider.h"
 #include "file/PlaylistFileProvider.h"
+#include "file/KConfigSyncRelStore.h"
 #include "core-impl/podcasts/sql/SqlPodcastProvider.h"
 #include "playlistmanager/sql/SqlUserPlaylistProvider.h"
 #include "core/support/Debug.h"
 #include "core/support/Components.h"
 #include "core/interfaces/Logger.h"
-#include "MainWindow.h"
 #include "browsers/playlistbrowser/UserPlaylistModel.h"
 
 #include <kdirlister.h>
@@ -41,6 +41,10 @@
 #include <KUrl>
 
 #include <QFileInfo>
+
+#include <typeinfo>
+
+using namespace Meta;
 
 PlaylistManager *PlaylistManager::s_instance = 0;
 
@@ -68,6 +72,8 @@ PlaylistManager::PlaylistManager()
 {
     s_instance = this;
 
+    m_syncRelStore = new KConfigSyncRelStore();
+
     m_defaultPodcastProvider = new Podcasts::SqlPodcastProvider();
     addProvider( m_defaultPodcastProvider, PlaylistManager::PodcastChannel );
     CollectionManager::instance()->addTrackProvider( m_defaultPodcastProvider );
@@ -86,60 +92,146 @@ PlaylistManager::~PlaylistManager()
     delete m_playlistFileProvider;
 }
 
+bool
+PlaylistManager::shouldBeSynced( Playlists::PlaylistPtr playlist )
+{
+    DEBUG_BLOCK
+    debug() << playlist->uidUrl();
+
+    if( !m_syncRelStore )
+        return false;
+
+    return m_syncRelStore->shouldBeSynced( playlist );
+}
+
 void
-PlaylistManager::addProvider( Playlists::PlaylistProvider * provider, int category )
+PlaylistManager::addProvider( Playlists::PlaylistProvider *provider, int category )
 {
     bool newCategory = false;
     if( !m_providerMap.uniqueKeys().contains( category ) )
             newCategory = true;
 
     m_providerMap.insert( category, provider );
-    connect( provider, SIGNAL(updated()), SLOT(slotUpdated( /*PlaylistProvider **/ )) );
+    connect( provider, SIGNAL(updated()), SLOT(slotUpdated()));
+    connect( provider, SIGNAL(playlistAdded( Playlists::PlaylistPtr )),
+             SLOT(slotPlaylistAdded( Playlists::PlaylistPtr )));
+    connect( provider, SIGNAL(playlistRemoved( Playlists::PlaylistPtr )),
+             SLOT(slotPlaylistRemoved( Playlists::PlaylistPtr )));
 
     if( newCategory )
         emit( categoryAdded( category ) );
 
     emit( providerAdded( provider, category ) );
     emit( updated() );
+
+    loadPlaylists( provider, category );
+}
+
+void
+PlaylistManager::loadPlaylists( Playlists::PlaylistProvider *provider, int category )
+{
+    foreach( Playlists::PlaylistPtr playlist, provider->playlists() )
+        addPlaylist( playlist, category );
+}
+
+void
+PlaylistManager::addPlaylist( Playlists::PlaylistPtr playlist, int category )
+{
+    if( shouldBeSynced( playlist ) )
+    {
+        SyncedPlaylistPtr syncedPlaylist = m_syncRelStore->asSyncedPlaylist( playlist );
+        m_syncedPlaylistMap.insert( syncedPlaylist, playlist );
+        if( !m_playlistMap.values( category ).contains(
+                Playlists::PlaylistPtr::dynamicCast( syncedPlaylist ) ) )
+        {
+            m_playlistMap.insert( category,
+                                  Playlists::PlaylistPtr::dynamicCast( syncedPlaylist ) );
+        }
+    }
+    else
+    {
+        m_playlistMap.insert( category, playlist );
+    }
 }
 
 void
 PlaylistManager::removeProvider( Playlists::PlaylistProvider *provider )
 {
+    DEBUG_BLOCK
+
     if( !provider )
         return;
 
-    if( m_providerMap.values( provider->category() ).contains( provider ) )
+    if( !m_providerMap.values( provider->category() ).contains( provider ) )
     {
-        debug() << "Providers of this category: " << providersForCategory( provider->category() ).count();
-        debug() << "Removing provider from map";
-        int removed = m_providerMap.remove( provider->category(), provider );
-        debug() << "Removed provider from map:" << ( m_providerMap.contains( provider->category(), provider ) ? "false" : "true" );
-        debug() << "Providers removed: " << removed;
+        return;
+    }
 
-        emit( providerRemoved( provider, provider->category() ) );
+    removePlaylists( provider );
 
-        slotUpdated();
+    m_providerMap.remove( provider->category(), provider );
+
+    emit( providerRemoved( provider, provider->category() ) );
+    emit( updated() );
+}
+
+void
+PlaylistManager::removePlaylists( Playlists::PlaylistProvider *provider )
+{
+    foreach( Playlists::PlaylistPtr playlist, m_playlistMap.values( provider->category() ) )
+        if( playlist->provider() && playlist->provider() == provider )
+            removePlaylist( playlist, provider->category() );
+}
+
+void
+PlaylistManager::removePlaylist( Playlists::PlaylistPtr playlist, int category )
+{
+    if( typeid( * playlist.data() ) == typeid( SyncedPlaylist ) )
+    {
+        SyncedPlaylistPtr syncedPlaylist = SyncedPlaylistPtr::dynamicCast( playlist );
+        syncedPlaylist->removePlaylistsFrom( playlist->provider() );
+        if( syncedPlaylist->isEmpty() )
+            m_playlistMap.remove( category, playlist );
+    }
+    else
+    {
+        m_playlistMap.remove( category, playlist );
     }
 }
 
 void
-PlaylistManager::slotUpdated( /*PlaylistProvider * provider*/ )
+PlaylistManager::slotUpdated()
 {
+    Playlists::PlaylistProvider *provider =
+            dynamic_cast<Playlists::PlaylistProvider *>( QObject::sender() );
+    if( !provider )
+        return;
+
+    //forcefull reload all the providers playlists.
+    //This is an expensive operation, the provider should use playlistAdded/Removed signals instead.
+    removePlaylists( provider );
+    loadPlaylists( provider, provider->category() );
     emit( updated() );
+}
+
+void
+PlaylistManager::slotPlaylistAdded( Playlists::PlaylistPtr playlist )
+{
+    addPlaylist( playlist, playlist->provider()->category() );
+    emit updated();
+}
+
+void
+PlaylistManager::slotPlaylistRemoved( Playlists::PlaylistPtr playlist )
+{
+    removePlaylist( playlist, playlist->provider()->category() );
+    emit updated();
 }
 
 Playlists::PlaylistList
 PlaylistManager::playlistsOfCategory( int playlistCategory )
 {
-    QList<Playlists::PlaylistProvider *> providers = m_providerMap.values( playlistCategory );
-    QListIterator<Playlists::PlaylistProvider *> i( providers );
-
-    Playlists::PlaylistList list;
-    while( i.hasNext() )
-        list << i.next()->playlists();
-
-    return list;
+    return m_playlistMap.values( playlistCategory );
 }
 
 PlaylistProviderList
@@ -244,7 +336,7 @@ PlaylistManager::rename( Playlists::PlaylistPtr playlist )
         return;
 
     Playlists::UserPlaylistProvider *provider
-            = qobject_cast<Playlists::UserPlaylistProvider *>( getProviderForPlaylist( playlist ) );
+            = qobject_cast<Playlists::UserPlaylistProvider *>( getProvidersForPlaylist( playlist ).first() );
 
     if( !provider )
         return;
@@ -261,7 +353,7 @@ PlaylistManager::rename( Playlists::PlaylistPtr playlist )
     }
 }
 
-void
+bool
 PlaylistManager::deletePlaylists( Playlists::PlaylistList playlistlist )
 {
     // Map the playlists to their respective providers
@@ -269,7 +361,8 @@ PlaylistManager::deletePlaylists( Playlists::PlaylistList playlistlist )
     foreach( Playlists::PlaylistPtr playlist, playlistlist )
     {
         // Get the providers of the respective playlists
-        Playlists::UserPlaylistProvider *prov = qobject_cast<Playlists::UserPlaylistProvider *>( getProviderForPlaylist( playlist ) );
+        Playlists::UserPlaylistProvider *prov = qobject_cast<Playlists::UserPlaylistProvider *>(
+                getProvidersForPlaylist( playlist ).first() );
 
         if( prov )
         {
@@ -289,30 +382,43 @@ PlaylistManager::deletePlaylists( Playlists::PlaylistList playlistlist )
 
     // Pass each list of playlists to the respective provider for deletion
 
+    bool removedSuccess = true;
     foreach( Playlists::UserPlaylistProvider* prov, provLists.keys() )
     {
-        prov->deletePlaylists( provLists.value( prov ) ); //TODO: test
+        removedSuccess = prov->deletePlaylists( provLists.value( prov ) ) && removedSuccess;
     }
+
+    return removedSuccess;
 }
 
-Playlists::PlaylistProvider*
-PlaylistManager::getProviderForPlaylist( const Playlists::PlaylistPtr playlist )
+QList<Playlists::PlaylistProvider*>
+PlaylistManager::getProvidersForPlaylist( const Playlists::PlaylistPtr playlist )
 {
+    QList<Playlists::PlaylistProvider*> providers;
     if( !playlist )
-        return 0;
+        return providers;
+
+    SyncedPlaylistPtr syncedPlaylist = SyncedPlaylistPtr::dynamicCast( playlist );
+    if( syncedPlaylist && m_syncedPlaylistMap.keys().contains( syncedPlaylist ) )
+    {
+        foreach( Playlists::PlaylistPtr playlist, m_syncedPlaylistMap.values( syncedPlaylist ) )
+            if( !providers.contains( playlist->provider() ) )
+                providers << playlist->provider();
+        return providers;
+    }
 
     Playlists::PlaylistProvider* provider = playlist->provider();
     if( provider )
-        return provider;
+        return providers << provider;
 
     // Iteratively check all providers' playlists for ownership
     QList< Playlists::PlaylistProvider* > userPlaylists = m_providerMap.values( UserPlaylist );
     foreach( Playlists::PlaylistProvider* provider, userPlaylists )
     {
         if( provider->playlists().contains( playlist ) )
-                return provider;
+                return providers << provider;
     }
-    return 0;
+    return providers;
 }
 
 
@@ -320,45 +426,12 @@ bool
 PlaylistManager::isWritable( const Playlists::PlaylistPtr &playlist )
 {
     Playlists::UserPlaylistProvider *provider
-            = qobject_cast<Playlists::UserPlaylistProvider *>( getProviderForPlaylist( playlist ) );
+            = qobject_cast<Playlists::UserPlaylistProvider *>( getProvidersForPlaylist( playlist ).first() );
 
     if( provider )
         return provider->isWritable();
     else
         return false;
-}
-
-QList<QAction *>
-PlaylistManager::playlistActions( const Playlists::PlaylistList playlists )
-{
-    QList<QAction *> actions;
-    foreach( const Playlists::PlaylistPtr playlist, playlists )
-    {
-        Playlists::PlaylistProvider *provider = getProviderForPlaylist( playlist );
-        if( !provider )
-            continue;
-
-        //only add actions that are not in the list yet.
-        QList<QAction *> playlistActions( provider->playlistActions( playlist ) );
-        foreach( QAction *action, playlistActions )
-        {
-            if( !actions.contains( action ) )
-                actions << action;
-        }
-    }
-
-    return actions;
-}
-
-QList<QAction *>
-PlaylistManager::trackActions( const Playlists::PlaylistPtr playlist, int trackIndex )
-{
-    QList<QAction *> actions;
-    Playlists::PlaylistProvider *provider = getProviderForPlaylist( playlist );
-    if( provider )
-        actions << provider->trackActions( playlist, trackIndex );
-
-    return actions;
 }
 
 void

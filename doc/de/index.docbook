@@ -1,0 +1,516 @@
+<?xml version="1.0" ?>
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.2-Based Variant V1.1//EN" "dtd/kdex.dtd" [
+  <!ENTITY % addindex "IGNORE">
+  <!ENTITY % German "INCLUDE">
+]>
+<book lang="&language;">
+<bookinfo>
+<title
+>Das Handbuch zu Amarok</title>
+<authorgroup>
+<author>
+<personname
+><firstname
+>Dieses Handbuch wurde aus der <ulink url=" http://userbase.kde.org/Amarok"
+>Amarok</ulink
+>-Webseite der KDE-Userbase erstellt.</firstname
+> <surname
+></surname
+> </personname>
+    </author>
+<othercredit role="translator"
+><firstname
+>Johannes</firstname
+><surname
+>Obermayr</surname
+><affiliation
+><address
+><email
+>johannesobermayr@gmx.de</email
+></address
+></affiliation
+><contrib
+>Übersetzung</contrib
+></othercredit
+> 
+    </authorgroup>
+<legalnotice
+>&FDLNotice;</legalnotice>
+<date
+>2010-08-04</date>
+    <releaseinfo
+>&kde; SC 4.5</releaseinfo>
+<abstract>
+ <para
+>Amarok ist eine freie, vielfältige und mächtige Anwendung zur Musikwiedergabe unter Linux. Die aktuelle 2.x-Serie (oftmals als „Amarok&nbsp;2“ bezeichnet), ist plattformübergreifend (= auf vielen Plattformen wie Linux, MacOS und Microsoft Windows verwendbar) und ermöglicht durch die vollkomme Neugestaltung des Quelltextes die Einbindung spannender neuer Eigenschaften bei der Veröffentlichung fortschreitender Versionen. Aktuell ist die stabile Version 2.3 veröffentlicht.</para>
+</abstract>
+
+<keywordset>
+ <keyword
+>KDE</keyword>
+ <keyword
+>Multimedia</keyword>
+ <keyword
+>Wiedergabe</keyword>
+ <keyword
+>Audio</keyword>
+ <keyword
+>ogg</keyword>
+ <keyword
+>mp3</keyword>
+ <keyword
+>wav</keyword>
+ <keyword
+>Musik</keyword>
+ <keyword
+>Klang</keyword>
+</keywordset>
+</bookinfo>
+<!--userbase <timestamp
+>2010-08-04T20:37:13Z</timestamp
+>-->
+
+<!--userbase-content-->
+<chapter id="interface"
+><title
+>Oberfläche</title>
+<para
+>Amarok&nbsp;2 bietet standardmäßig eine dreiteilige Oberfläche. </para>
+
+<sect1 id="the-left-pane"
+><title
+>Linke Leiste</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1left.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+><quote
+>Die linke Leiste des Amarok-Fensters.</quote
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Die linke Leiste ist gruppiert und ein-/ausklappbar. Die <guilabel
+>Lokale Sammlung</guilabel
+> stellt die Hauptübersicht der lokalen Sammlung dar. Angeschlossene werden ebenfalls dort angezeigt. Unter <guilabel
+>Internet-Dienste</guilabel
+> können die aktivierten Radiosender und Podcasts durchsucht, wiedergegeben und abonniert werden. Des Weiteren kann <ulink url="http://www.last.fm"
+>Last.fm</ulink
+> genutzt (Konto benötigt) aber auch Musik in Online-Musikgeschäften wie <guilabel
+>Magnatune.com</guilabel
+> gekauft und Musik unabhängiger Interpreten von <guilabel
+> Jamendo.com</guilabel
+> heruntergeladen werden. <guilabel
+>Wiedergabelisten</guilabel
+> ermöglicht das Erstellen und Verwalten dynamischer und traditioneller Wiedergabelisten und Podcasts. Hinter <guilabel
+>Dateien</guilabel
+> verbirgt sich die integriete Dateiverwaltung, welche den Zugriff auf das Dateisystem ermöglicht.  </para>
+</sect1>
+
+<sect1 id="the-central-pane-context-view"
+><title
+>Mittlere Leiste (Kontext-Ansicht)</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1center.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+><quote
+>Die mittlere Leiste des Amarok-Fensters.</quote
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Hierin besteht die eigentliche Vorteilhaftigkeit von Amarok. Diese Leiste enthält dynamische Miniprogramme zur Anzeige der kontextbezogenen Informationen zum aktuell wiedergegebenen Stück. Es werden Bewertung, Bepunktung und Wiedergabezählung des aktuellen Stücks, weitere Stücke des Interpreten in der Sammlung, Liedtext, <ulink url="http://www.wikipedia.org"
+>Wikipedia</ulink
+>-Seite des Interpreten und vieles mehr angezeigt. Diese Miniprogramme können mit der <guilabel
+>Miniprogramm-Leiste</guilabel
+> im unteren Teil hinzugefügt, entfernt oder umsortiert werden. </para>
+</sect1>
+
+<sect1 id="the-right-pane-playlist-view"
+><title
+>Rechte Seite (Wiedergabelistenansicht)</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1right.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+><quote
+>Die rechte Leiste des Amarok-Fensters.</quote
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Amarok&nbsp;2 bietet die anpassbarste Wiedergabeliste aller verfügbaren Audio-Wiedergabeprogramme. Während die meisten Wiedergabeprogramme standardmäßig ein spaltenbezogenes oder festes Design für die Wiedergabliste aufweisen ermöglicht Amarok&nbsp;2 die individuelle Anpassung an den eigenen Geschmack. Zu Beginn stehen drei Beispiele der Wiedergabeliste als Startpunkt für das eigene Design zur Verfügung. </para>
+</sect1>
+
+</chapter>
+<chapter id="features"
+><title
+>Funktionen</title>
+<sect1 id="plays-music"
+><title
+>Musikwiedergabe</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1svn965006.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Amarok&nbsp;2 unterstützt die bekanntesten Audioformate. Vielmehr hängt die tatsächliche Unterstützung der Audioformate von den verwendeten Kodierungen und Audiomodulen des Systems ab. Es werden auch traditionelle Wiedergabelisten unterstützt – all diese können erstellt, gespeichert und geladen werden. </para>
+</sect1>
+<sect1 id="device-support"
+><title
+>Geräteunterstützung</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1ipod.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Derzeit werden iPod-, MTP- und UMS-Geräte grundlegend unterstützt, soweit die benötigten Pakete installiert sind. Dies wird ständig ausgeweitet und weitere Geräte werden in künftigen Versionen unterstützt werden. </para>
+<para
+>Der Knopf <guilabel
+>Zusammengefügte Ansicht</guilabel
+> über der Sammlung ermöglicht das Anzeigen aller Sammlungen in einer einzigen. Das bedeutet, dass die Stücke aller lokalen Sammlungen, Audio-CDs, Mediengeräte, usw. in einer zusammengefassten Sammlung angezeigt werden. </para>
+</sect1>
+<sect1 id="configurable-context-view"
+><title
+>Einrichtbare Kontext-Ansicht</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1contextviewconfig.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Die <guilabel
+>Kontext-Ansicht</guilabel
+> stellt das grundlegende Merkmal von Amarok&nbsp;2 dar. Diese kann kontextbezogene Informationen zum aktuell wiedergegebenen Stück aus dem Internet abrufen und diese anzeigen (z. B. Album-Grafik, Liedtext oder Informationen von <ulink url="http://www.wikipedia.org"
+>Wikipedia</ulink
+>). Dieses Funktion ist einzigartig in der Amarok-Serie. </para>
+</sect1>
+
+
+<sect1 id="more-internet-services"
+><title
+>Weitere Internet-Dienste</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1internetservices.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+><quote
+>Ein paar Internet-Dienste werden in der linken Leiste aufgeführt</quote
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Amarok&nbsp;2 eröffnet den Weg zu einer reichhaltigen Multimedia-Erfahrung im Internet. </para>
+<itemizedlist>
+<listitem
+><para
+>Ansprechende Oberflächen zu den Diensten wie beispielsweise den Musikservern von <emphasis
+>Ampache</emphasis
+> und <emphasis
+>mp3tunes</emphasis
+> ermöglichen den Genuss der eigenen Musik in allen Orten der Welt. </para
+></listitem>
+<listitem
+><para
+>Probehören und Kaufen der Musik von <emphasis
+>Magnatune</emphasis
+>. </para
+></listitem>
+<listitem
+><para
+>Mit dem <emphasis
+>Jamendo</emphasis
+>-Dienst ist das Hören und Herunterladen der Musik unabhängiger Interpreten sowie deren Unterstützung durch Spenden möglich. </para
+></listitem>
+<listitem
+><para
+>Mit der eingebundenen Unterstützung von <ulink url="http://www.last.fm"
+>Last.fm</ulink
+> wird Musik durch Fernanalyse des Musikgeschmacks wiedergegeben (= scrobbeln) und Funktionen wie Statistik, Charts oder Radiostreams hören für den eigenen Musikgeschmack genutzt werden – das alles mit Amarok&nbsp;2. </para
+></listitem>
+</itemizedlist>
+<para
+>Das ist nur der Anfang – Weitere Internet-Dienste  können über die <guilabel
+>Skript-Verwaltung</guilabel
+> hinzugefügt werden. </para>
+</sect1>
+
+<sect1 id="script-manager"
+><title
+>Skript-Verwaltung</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1scriptmanager.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Skripte sind Zusatzmodule zur Erweiterung der Funktionen von Amarok&nbsp;2. Die <guilabel
+>Skript-Verwaltung</guilabel
+> ermöglicht das (De-)Installieren oder (De-)Aktivieren von Skripten. Mit <guilabel
+>Weitere Skripte holen</guilabel
+> können (neue) zur Verfügung gestellte Skripte anderer Benutzer heruntergeladen werden. </para>
+</sect1>
+<sect1 id="cover-manager"
+><title
+>Cover-Verwaltung</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1covermanager.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Die Musiksammlung kann mit der schicken <guilabel
+>Cover-Verwaltung</guilabel
+> unter Darstellung der Grafiken der Alben durchstöbert werden. </para>
+</sect1>
+<sect1 id="rating-and-scoring"
+><title
+>Bewertung und Bepunktung</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1rating.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Die geliebten Stücke können durch Bewertung hervorgehoben werden. Amarok&nbsp;2 unterstützt auch die Bewertung von halben Sternen (½⋅✩). Zusätzlich kann Amarok&nbsp;2 eine Bepunktung basierend auf metrischen Werten wie beispielsweise der Anzahl der Wiedergabe oder des Abbruchs von Stücken erstellen bzw. erraten. </para>
+</sect1>
+<sect1 id="pop-up-dropper"
+><title
+>Kontextbezogene Kontext-Ansicht</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1popup.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Diese innovative Oberfläche zeigt die kontextbezogenen Möglichkeiten (welche auch mittels Rechtsklick erscheinen) in der Kontext-Ansicht und kann durch entsprechendes Ablegen des gewählten Elements die jeweilige Funktion nutzen. </para>
+</sect1>
+<sect1 id="configurable-playlist-view"
+><title
+>Einrichtbare Wiedergabelistenansicht</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1pleditor.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Die aktuell geladende Wiedergabeliste ist in hohem Grade anpassbar und kann Informationen zu den Stücken in beliebiger Form anzeigen. Auch hier kann die gewohnte <guilabel
+>Tabellenansicht</guilabel
+> der 1.x-Serie von Amarok oder anderen Wiedergabeprogramme verwendet werden. Die <guilabel
+>Wiedergabelistenansicht</guilabel
+> ermöglicht auch das Speichern oder Exportieren der aktuellen Wiedergabeliste. </para>
+</sect1>
+
+
+<sect1 id="dynamic-playlists"
+><title
+>Dynamische Wiedergabelisten</title>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1dynamicplaylist.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+><quote
+>Die dynamische Wiedergabeliste im Amarok-Fenster.</quote
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Amarok&nbsp;2 ermöglicht das Erstellen gewichteter zufälliger Wiedergabelisten die mit verschiedenen Kriterien genau (<emphasis
+>Feste Gewichtung</emphasis
+>) oder ungefähr (<emphasis
+>Ungenaue Gewichtung</emphasis
+>) übereinstimmen. Beispielsweise kann eine Wiedergabeliste mit zufälligen Stücken erstellt werden, die mit mehr als 3 Sternen bewertet sind und um das Jahr 1967 erschienen.</para>
+</sect1>
+
+<sect1 id="replay-gain-support"
+><title
+>Unterstützung für Lautstärkeanpassung</title>
+<para
+>Amarok&nbsp;2 unterstützt die Metadateninformationen zur Lautstärkeanpassung und passt damit die Lautstärke des ganzen Stückes automatisch an ein gebräuchliches Maß an. </para>
+<para
+>Musik neu erleben! </para>
+</sect1>
+</chapter>
+<chapter id="hints-tips-and-faqs"
+><title
+>Hinweise, Tipps und häufig gestellte Fragen</title>
+<para
+>Sofern der überwiegende Teil der Musik mit Ausnahme der Musik in ein paar bestimmten Ordnern von Amarok erkannt wird sollte die Eingabeaufforderung (z. B. Konsole) geöffnet und dort folgender Befehl ausgeführt werden: </para>
+<para
+>touch <replaceable
+>Ordner</replaceable
+> </para>
+<para
+>Dabei ist der <replaceable
+>Ordner</replaceable
+> der Pfad zum problematischen Ordner. Danach ist <menuchoice
+><guimenu
+>Einstellungen</guimenu
+><guimenuitem
+>Amarok einrichten ...</guimenuitem
+></menuchoice
+> und im erscheinenden Dialog anschließend <menuchoice
+><guimenu
+>Sammlung</guimenu
+><guimenuitem
+>Vollständige Sammlung neu einlesen</guimenuitem
+></menuchoice
+> zu wählen. Die Musik sollte nun (wieder) angezeigt werden. </para>
+</chapter>
+<chapter id="more-information"
+><title
+>Weitere Informationen</title>
+<itemizedlist>
+<listitem
+><para
+><ulink url="http://amarok.kde.org/"
+>Amaroks Webseite</ulink>
+</para
+></listitem>
+<listitem
+><para
+><ulink url="http://forum.kde.org/viewforum.php?f=127"
+>Amaroks Forum</ulink>
+</para
+></listitem>
+</itemizedlist>
+</chapter>
+<!--userbase-content-->
+<chapter id="credits">
+<title
+>Danksagungen und Lizenz</title>
+    <para
+>Copyright der Dokumentation: siehe <ulink url="http://userbase.kde.org/index.php?title=Amarok&amp;action=history"
+>Verlauf</ulink
+></para>
+    <para
+>Übersetzung: Johannes Obermayr <email
+>johannesobermayr@gmx.de</email
+></para
+> 
+&underFDL; </chapter>
+&documentation.index;
+</book>

@@ -17,122 +17,50 @@
  ****************************************************************************************/
 
 #include "TrackSet.h"
-#include "BiasSolver.h"
 
+#include <KRandom>
 
-Dynamic::TrackSet::TrackSet()
-    : m_bits( Dynamic::BiasSolver::universe().size() )
+Dynamic::TrackSet::TrackSet( const QList<QByteArray>& universe)
+    : m_bits( universe.size() )
 {
+    m_bits.fill( true );
 }
 
-
-Dynamic::TrackSet::TrackSet( const QList<QByteArray>& uidList )
-    : m_bits( Dynamic::BiasSolver::universe().size() )
+Dynamic::TrackSet::TrackSet( const QList<QByteArray>& universe,
+                             const QList<QByteArray>& uidList )
+    : m_bits( universe.size() )
 {
-    addTracks( uidList );
+    foreach( const QByteArray &t, uidList )
+    {
+        int i = universe.indexOf( t );
+        if( i != -1 )
+            m_bits.setBit( i );
+    }
 }
 
-Dynamic::TrackSet::TrackSet( const QSet<QByteArray>& uidSet )
-    : m_bits( Dynamic::BiasSolver::universe().size() )
+Dynamic::TrackSet::TrackSet( const QList<QByteArray>& universe,
+                              const QSet<QByteArray>& uidSet )
+    : m_bits( universe.size() )
 {
-    addTracks( uidSet );
+    foreach( const QByteArray &t, uidSet )
+    {
+        int i = universe.indexOf( t );
+        if( i != -1 )
+            m_bits.setBit( i );
+    }
 }
 
 void
 Dynamic::TrackSet::reset()
 {
-    m_bits.resize( Dynamic::BiasSolver::universe().size() );
     m_bits.clear();
 }
 
 
 int
-Dynamic::TrackSet::size() const
+Dynamic::TrackSet::trackCount() const
 {
     return m_bits.count(true);
-}
-
-
-void
-Dynamic::TrackSet::clear()
-{
-    m_bits.clear();
-}
-
-void
-Dynamic::TrackSet::setUniverseSet()
-{
-    m_bits.fill( true );
-}
-
-
-void
-Dynamic::TrackSet::setTracks( const QList<QByteArray>& uidList )
-{
-    m_bits.clear();
-    addTracks( uidList );
-}
-
-void
-Dynamic::TrackSet::setTracks( const QSet<QByteArray>& uidSet )
-{
-    m_bits.clear();
-    addTracks( uidSet );
-}
-
-void
-Dynamic::TrackSet::addTracks( const QList<QByteArray>& uidList )
-{
-    const QList<QByteArray>& U =
-        Dynamic::BiasSolver::universe();
-
-    foreach( const QByteArray &t, uidList )
-    {
-        int i = U.indexOf( t );
-        if( i != -1 )
-            m_bits.setBit( i );
-    }
-}
-
-void
-Dynamic::TrackSet::addTracks( const QSet<QByteArray>& uidSet )
-{
-    const QList<QByteArray>& U =
-        Dynamic::BiasSolver::universe();
-
-    foreach( const QByteArray &t, uidSet )
-    {
-        int i = U.indexOf( t );
-        if( i != -1 )
-            m_bits.setBit( i );
-    }
-}
-
-QList<QByteArray>
-Dynamic::TrackSet::uidList() const
-{
-    const QList<QByteArray>& U =
-        Dynamic::BiasSolver::universe();
-
-    QList<QByteArray> uids;
-
-    int count = m_bits.count( true );
-    for( int i = 0; count > 0 && i < m_bits.size(); ++i )
-    {
-        if( m_bits.testBit(i) )
-        {
-            uids.append( U[i] );
-            count--;
-        }
-    }
-
-    return uids;
-}
-
-void
-Dynamic::TrackSet::unite( const Dynamic::TrackSet& B )
-{
-    m_bits |= B.m_bits;
 }
 
 void
@@ -147,6 +75,35 @@ Dynamic::TrackSet::subtract( const Dynamic::TrackSet& B )
     m_bits |= B.m_bits;
     m_bits ^= B.m_bits;
 }
+
+QByteArray
+Dynamic::TrackSet::getRandomTrack( const QList<QByteArray>& universe ) const
+{
+    Q_ASSERT( universe.size() == m_bits.size() );
+
+    int count = trackCount();
+    if( count == 0 )
+        return QByteArray();
+
+    // stupid that I have to go through the set like this...
+    int trackNr = KRandom::random() % count;
+    for( int i = m_bits.size()-1; i>=0; i-- )
+    {
+        if( m_bits.at(i) )
+        {
+            if( trackNr )
+                trackNr--;
+            else
+            {
+                return universe.at(i);
+            }
+        }
+    }
+
+    return QByteArray();
+}
+
+
 
 Dynamic::TrackSet&
 Dynamic::TrackSet::operator=( const Dynamic::TrackSet& B )

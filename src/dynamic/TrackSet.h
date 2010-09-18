@@ -25,37 +25,35 @@
 
 namespace Dynamic
 {
-    /* A representation of a set of tracks as a bit array, relative to the
-     * universe set that DynamicModel keeps. The solver does a lot of set
-     * operations. QSet is more space efficient for sparse sets, but set
+    /**
+     * A representation of a set of tracks as a bit array, relative to the
+     * given universe set.
+     * Intersecting TrackSets from different universes is not a good idea.
+     * The BiasSolver uses this class to do a lot of set operations.
+     * QSet is more space efficient for sparse sets, but set
      * operations generally aren't linear.
      */
     class TrackSet
     {
         public:
-            TrackSet();
-            TrackSet( const QList<QByteArray>& uidList );
-            TrackSet( const QSet<QByteArray>& uidSet );
+            /** Creates a TrackSet that represents the whole universe. All tracks are included.
+             */
+            TrackSet( const QList<QByteArray>& universe );
+
+            TrackSet( const QList<QByteArray>& universe, const QList<QByteArray>& uidList );
+            TrackSet( const QList<QByteArray>& universe, const QSet<QByteArray>& uidList );
 
             void reset();
 
-            int size() const;
+            /**
+             * The number of songs contained in this trackSet
+             */
+            int trackCount() const;
 
-            void clear(); //!< make this the empty set
-            void setUniverseSet(); //!< make this the universe set
+            QByteArray getRandomTrack( const QList<QByteArray>& universe ) const;
 
-
-            void setTracks( const QList<QByteArray>& );
-            void addTracks( const QList<QByteArray>& );
-            void setTracks( const QSet<QByteArray>& );
-            void addTracks( const QSet<QByteArray>& );
-
-            QList<QByteArray> uidList() const;
-
-            void unite( const TrackSet& );
             void intersect( const TrackSet& );
             void subtract( const TrackSet& );
-
 
             TrackSet& operator=( const TrackSet& );
 

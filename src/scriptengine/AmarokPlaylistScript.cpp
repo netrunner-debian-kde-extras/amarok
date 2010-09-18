@@ -26,7 +26,7 @@
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlist/view/listview/PrettyListView.h"
-#include "playlist/PlaylistWidget.h"
+#include "playlist/PlaylistDock.h"
 
 #include <QObject>
 
@@ -143,7 +143,7 @@ namespace AmarokScript
     {
         DEBUG_BLOCK
 
-        Playlist::PrettyListView* list = qobject_cast<Playlist::PrettyListView*>( The::mainWindow()->playlistWidget()->currentView() );
+        Playlist::PrettyListView* list = qobject_cast<Playlist::PrettyListView*>( The::mainWindow()->playlistDock()->currentView() );
         return list->selectedRows();
     }
 

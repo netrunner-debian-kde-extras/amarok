@@ -25,7 +25,7 @@
 #include "widgets/PrettyTreeView.h"
 #include "widgets/SearchWidget.h"
 
-#include <KLineEdit>
+#include <KComboBox>
 #include <KStandardDirs>
 
 #include <QFile>
@@ -81,7 +81,7 @@ BrowserCategoryList::BrowserCategoryList( QWidget * parent, const QString& name,
         m_categoryListView->sortByColumn( 0 );
     }
 
-    connect( m_categoryListView, SIGNAL( clicked( const QModelIndex & ) ), this, SLOT( categoryActivated( const QModelIndex & ) ) );
+    connect( m_categoryListView, SIGNAL(activated(const QModelIndex&)), this, SLOT(categoryActivated(const QModelIndex&)) );
 
     connect( m_categoryListView, SIGNAL( entered( const QModelIndex & ) ), this, SLOT( categoryEntered( const QModelIndex & ) ) );
 
@@ -114,7 +114,7 @@ BrowserCategoryList::addCategory( BrowserCategory * category )
     //if this is also a category list, watch it for changes as we need to report
     //these down the tree
 
-    BrowserCategoryList *childList = dynamic_cast<BrowserCategoryList*>( category );
+    BrowserCategoryList *childList = qobject_cast<BrowserCategoryList*>( category );
     if ( childList )
         connect( childList, SIGNAL( viewChanged() ), this, SLOT( childViewChanged() ) );
 
@@ -181,7 +181,7 @@ BrowserCategoryList::home()
     if ( m_currentCategory != 0 )
     {
 
-        BrowserCategoryList *childList = dynamic_cast<BrowserCategoryList*>( m_currentCategory );
+        BrowserCategoryList *childList = qobject_cast<BrowserCategoryList*>( m_currentCategory );
         if ( childList )
             childList->home();
 
@@ -218,10 +218,10 @@ BrowserCategoryList::removeCategory( const QString &name )
 
 void BrowserCategoryList::slotSetFilterTimeout()
 {
-    KLineEdit *lineEdit = dynamic_cast<KLineEdit*>( sender() );
-    if( lineEdit )
+    KComboBox *comboBox = qobject_cast<KComboBox*>( sender() );
+    if( comboBox )
     {
-        m_currentFilter = lineEdit->text();
+        m_currentFilter = comboBox->currentText();
         m_filterTimer.stop();
         m_filterTimer.start( 500 );
     }
@@ -247,7 +247,7 @@ BrowserCategory * BrowserCategoryList::activeCategory() const
 
 void BrowserCategoryList::back()
 {
-    BrowserCategoryList *childList = dynamic_cast<BrowserCategoryList*>( m_currentCategory );
+    BrowserCategoryList *childList = qobject_cast<BrowserCategoryList*>( m_currentCategory );
     if ( childList )
     {
         if ( childList->activeCategory() != 0 )
@@ -298,7 +298,7 @@ QString BrowserCategoryList::navigate( const QString & target )
     showCategory( childName );
 
     //check if this category is also BrowserCategoryList.target
-    BrowserCategoryList *childList = dynamic_cast<BrowserCategoryList*>( m_currentCategory );
+    BrowserCategoryList *childList = qobject_cast<BrowserCategoryList*>( m_currentCategory );
 
     if ( childList == 0 )
     {
@@ -334,7 +334,7 @@ QString BrowserCategoryList::path()
     DEBUG_BLOCK
     QString pathString = name();
 
-    BrowserCategoryList *childList = dynamic_cast<BrowserCategoryList*>( m_currentCategory );
+    BrowserCategoryList *childList = qobject_cast<BrowserCategoryList*>( m_currentCategory );
 
     if ( childList )
         pathString += '/' + childList->path();
@@ -454,7 +454,7 @@ BrowserCategory *BrowserCategoryList::activeCategoryRecursive()
     if( !category )
         return this;
 
-    BrowserCategoryList *childList = dynamic_cast<BrowserCategoryList*>( m_currentCategory );
+    BrowserCategoryList *childList = qobject_cast<BrowserCategoryList*>( m_currentCategory );
 
     if( childList )
         return childList->activeCategoryRecursive();

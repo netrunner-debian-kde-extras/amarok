@@ -360,7 +360,7 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
                     else
                         ratingAlignment = Qt::AlignCenter;
 
-                    KRatingPainter::paintRating( painter, QRect( currentItemX, rowOffsetY + 1, itemWidth, rowHeight - 2 ), ratingAlignment, rating, rating );
+                    Amarok::KRatingPainter::paintRating( painter, QRect( currentItemX, rowOffsetY + 1, itemWidth, rowHeight - 2 ), ratingAlignment, rating, rating );
 
                 } else if ( value == Divider )
                 {
@@ -440,7 +440,7 @@ void Playlist::PrettyItemDelegate::paintItem( LayoutItemConfig config, QPainter*
         QModelIndex emblemIndex = index.model()->index( index.row(), SourceEmblem );
         QPixmap emblemPixmap = emblemIndex.data( Qt::DisplayRole ).value<QPixmap>();
 
-        if ( !albumPixmap.isNull() )
+        if ( !emblemPixmap.isNull() )
             painter->drawPixmap( QRectF( nominalImageRect.x(), nominalImageRect.y() , 16, 16 ), emblemPixmap, QRectF( 0, 0 , 16, 16 ) );
     }
 
@@ -659,7 +659,7 @@ void Playlist::PrettyItemDelegate::setModelData( QWidget * editor, QAbstractItem
     Q_UNUSED( model )
     DEBUG_BLOCK
 
-    InlineEditorWidget * inlineEditor = dynamic_cast<InlineEditorWidget *>( editor );
+    InlineEditorWidget * inlineEditor = qobject_cast<InlineEditorWidget *>( editor );
     if( !inlineEditor )
         return;
 

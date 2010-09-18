@@ -22,9 +22,15 @@
 
 #include <QList>
 
-ConstraintNode::ConstraintNode( ConstraintNode* p ) : QObject( p ) { }
+ConstraintNode::ConstraintNode( ConstraintNode* p ) : QObject( p ) {
+    debug() << "new constraint node at" << (void*)this << "with parent at" << (void*)p;
+}
 
-ConstraintNode::~ConstraintNode() { }
+ConstraintNode::~ConstraintNode()
+{
+    debug() << "destroying constraint at" << (void*)this << "that has parent" << (void*)QObject::parent();
+    qDeleteAll( m_children );
+}
 
 int ConstraintNode::row() const
 {

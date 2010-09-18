@@ -18,12 +18,14 @@
 #define DROPPIXMAPITEM_H
 
 #include "amarok_export.h"
+#include "network/NetworkAccessManagerProxy.h"
+
+#include <KUrl>
 
 #include <QGraphicsPixmapItem>
 
 //forward
 class QGraphicsSceneDragDropEvent;
-class KJob;
 
 /**
 * \brief A QGraphicsPixmapItem on which you can drop an image
@@ -49,7 +51,7 @@ class AMAROK_EXPORT DropPixmapItem : public QObject, public QGraphicsPixmapItem
         /**
         * Result of the image fetching stuff
         */
-        void imageDownloadResult( KJob * );
+        void imageDownloadResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
         
     protected slots:
         /**
@@ -58,7 +60,7 @@ class AMAROK_EXPORT DropPixmapItem : public QObject, public QGraphicsPixmapItem
         virtual void dropEvent( QGraphicsSceneDragDropEvent* );
 
     private:
-        KJob *m_job;
+        KUrl m_url;
 
 };
 

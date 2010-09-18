@@ -305,13 +305,13 @@ void TestXSPFPlaylist::testHasCapabilityInterface()
     QVERIFY( m_testPlaylist1->hasCapabilityInterface( Playlists::XSPFPlaylist::Capability::EditablePlaylist ) );
 }
 
-void TestXSPFPlaylist::testRetrievableUrl()
+void TestXSPFPlaylist::testUidUrl()
 {
     QString tempPath = KStandardDirs::locateLocal( "tmp", "test.xspf" );
     
     //we have chaged the name around so much, better reset it
     m_testPlaylist1->setName( "test" );
-    QCOMPARE( m_testPlaylist1->retrievableUrl().pathOrUrl(), tempPath );
+    QCOMPARE( m_testPlaylist1->uidUrl().pathOrUrl(), tempPath );
 }
 
 void TestXSPFPlaylist::testIsWritable()

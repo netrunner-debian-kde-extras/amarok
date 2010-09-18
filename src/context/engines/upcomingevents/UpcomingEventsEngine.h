@@ -19,18 +19,18 @@
 #ifndef AMAROK_UPCOMINGEVENTS_ENGINE
 #define AMAROK_UPCOMINGEVENTS_ENGINE
 
-#include "src/context/ContextObserver.h"
-#include <context/DataEngine.h>
-#include "src/context/applets/upcomingevents/LastFmEvent.h"
+#include "context/applets/upcomingevents/LastFmEvent.h"
+#include "context/ContextObserver.h"
+#include "context/DataEngine.h"
 #include "core/meta/Meta.h"
+#include "network/NetworkAccessManagerProxy.h"
 
 // Qt
 #include <QDomDocument>
 #include <QLocale>
 #include <QXmlStreamReader>
 
-// KDE
-#include <KIO/Job>
+class QNetworkReply;
 
 using namespace Context;
 
@@ -43,7 +43,7 @@ class UpcomingEventsEngine : public DataEngine, public ContextObserver, Meta::Ob
 {
     Q_OBJECT
     Q_PROPERTY( QString selectionType READ selection WRITE setSelection )
-        
+
 public:
     /**
      * \brief Constructor
@@ -63,7 +63,7 @@ public:
      * Returns the sources
      */
     QStringList sources() const;
-    
+
     /**
      * Overriden from Context::Observer
      */
@@ -92,7 +92,7 @@ public:
      * Returns all the upcoming events
      */
     QList< LastFmEvent > upcomingEvents();
-    
+
     /**
     * Fetches the upcoming events for an artist thanks to the LastFm WebService
     *
@@ -105,7 +105,7 @@ public:
      * Parses the upcoming events request result
      */
     void upcomingEventsParseResult(QXmlStreamReader& xml);
-    
+
 protected:
     /**
      * When a source that does not currently exist is requested by the
@@ -128,7 +128,7 @@ protected:
      * \return true if a DataContainer was set up, false otherwise
      */
     bool sourceRequestEvent( const QString& name );
-    
+
 private:
     /**
      * Sends the data to the observers (e.g UpcomingEventsApplet)
@@ -180,11 +180,16 @@ private:
      */
     QString m_artistName;
 
+    /**
+     * The URL for the network request
+     */
+    KUrl m_url;
+
 private slots:
     /**
-     * Runs the KJob to parse the XML file
+     * Receive a network reply and parse the XML file
      */
-    void upcomingEventsResultFetched( KJob* );
+    void upcomingEventsResultFetched( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 };
 
 #endif

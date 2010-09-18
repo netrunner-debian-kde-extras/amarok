@@ -90,11 +90,12 @@ protected:
 class OrganizeCollectionDelegateImpl : public OrganizeCollectionDelegate
 {
 public:
-    OrganizeCollectionDelegateImpl() : OrganizeCollectionDelegate(), m_dialog( 0 ) {}
+    OrganizeCollectionDelegateImpl() : OrganizeCollectionDelegate(), m_dialog( 0 ), m_organizing( false ) {}
     virtual ~ OrganizeCollectionDelegateImpl() { delete m_dialog; }
 
     virtual void setTracks( const Meta::TrackList &tracks ) { m_tracks = tracks; }
     virtual void setFolders( const QStringList &folders ) { m_folders = folders; }
+    virtual void setIsOrganizing( bool organizing ) { m_organizing = organizing; }
 
     virtual void show()
     {
@@ -113,11 +114,14 @@ public:
 
     virtual bool overwriteDestinations() const { return m_dialog->overwriteDestinations(); }
     virtual QMap<Meta::TrackPtr, QString> destinations() const { return m_dialog->getDestinations(); }
+    //TODO
+    virtual bool migrateLabels() const { return false; }
 
 private:
     Meta::TrackList m_tracks;
     QStringList m_folders;
     OrganizeCollectionDialog *m_dialog;
+    bool m_organizing;
 };
 
 class OrganizeCollectionDelegateFactoryImpl : public OrganizeCollectionDelegateFactory
@@ -156,13 +160,17 @@ SqlCollectionFactory::createSqlCollection( const QString &id, const QString &pre
     SqlCollection *coll = new SqlCollection( id, prettyName );
     coll->setCapabilityDelegate( new Capabilities::CollectionCapabilityDelegateImpl() );
 
-    MountPointManager *mpm = new MountPointManager( coll, storage );
-
-    coll->setMountPointManager( new SqlMountPointManagerImpl( mpm ) );
     DatabaseUpdater *updater = new DatabaseUpdater();
     updater->setStorage( storage );
     updater->setCollection( coll );
+
+    //setUpdater runs the update function; this must be run *before* MountPointManager is initialized or its handlers may try to insert
+    //into the database before it's created/updated!
     coll->setUpdater( updater );
+
+    MountPointManager *mpm = new MountPointManager( coll, storage );
+
+    coll->setMountPointManager( new SqlMountPointManagerImpl( mpm ) );
     ScanManager *scanMgr = new ScanManager( coll );
     scanMgr->setCollection( coll );
     scanMgr->setStorage( storage );

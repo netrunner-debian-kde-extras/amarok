@@ -44,8 +44,6 @@ namespace Dynamic
 
             QDomElement xml() const;
 
-            void setContext( Meta::TrackList );
-
             void requestTracks(int);
 
             QList<Bias*>& biases();
@@ -59,21 +57,18 @@ namespace Dynamic
 
         private slots:
             void solverReady();
-            void solverFinished( ThreadWeaver::Job* );
+            void solverFinished();
             void updateStatus( int progress );
 
         private:
             void startSolver( bool withStatusBar = false );
             void handleRequest();
-            void getContext();
+            Meta::TrackList getContext();
 
-            Meta::TrackList m_context;
             Meta::TrackList m_buffer;
-            Meta::TrackList m_backbuffer;
-            QMutex m_backbufferMutex;
+            QMutex m_bufferMutex;
 
             int m_numRequested;
-            Meta::TrackList m_requestCache;
 
             QList<Bias*> m_biases;
 

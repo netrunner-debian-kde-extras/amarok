@@ -24,15 +24,13 @@
 #include "CollectionTreeItem.h"
 #include "core/support/Debug.h"
 #include "core/support/Amarok.h"
-#include "SvgHandler.h"
 #include "core/collections/Collection.h"
 #include "core-impl/collections/support/CollectionManager.h"
-#include "covermanager/CoverFetcher.h"
 #include "core/collections/QueryMaker.h"
 
 #include <KLocale>
-#include <QTimer>
 
+#include <QTimer>
 
 CollectionTreeItemModel::CollectionTreeItemModel( const QList<int> &levelType )
     : CollectionTreeItemModelBase()
@@ -42,12 +40,12 @@ CollectionTreeItemModel::CollectionTreeItemModel( const QList<int> &levelType )
     connect( collMgr, SIGNAL( collectionRemoved( QString ) ), this, SLOT( collectionRemoved( QString ) ) );
     //delete m_rootItem; //clears the whole tree!
     m_rootItem = new CollectionTreeItem( this );
-    d->m_collections.clear();
+    d->collections.clear();
     QList<Collections::Collection*> collections = CollectionManager::instance()->viewableCollections();
     foreach( Collections::Collection *coll, collections )
     {
         connect( coll, SIGNAL( updated() ), this, SLOT( slotFilter() ) ) ;
-        d->m_collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem, this ) ) );
+        d->collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem, this ) ) );
     }
     //m_rootItem->setChildrenLoaded( true ); //children of the root item are the collection items
     updateHeaderText();
@@ -69,63 +67,34 @@ CollectionTreeItemModel::setLevels( const QList<int> &levelType )
     m_levelType = levelType;
     delete m_rootItem; //clears the whole tree!
     m_rootItem = new CollectionTreeItem( this );
-    d->m_collections.clear();
+    d->collections.clear();
     QList<Collections::Collection*> collections = CollectionManager::instance()->viewableCollections();
     foreach( Collections::Collection *coll, collections )
     {
         connect( coll, SIGNAL( updated() ), this, SLOT( slotFilter() ) ) ;
-        d->m_collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem, this ) ) );
+        d->collections.insert( coll->collectionId(), CollectionRoot( coll, new CollectionTreeItem( coll, m_rootItem, this ) ) );
     }
     m_rootItem->setRequiresUpdate( false );  //all collections have been loaded already
     updateHeaderText();
     m_expandedItems.clear();
     m_expandedVariousArtistsNodes.clear();
-    d->m_runningQueries.clear();
-    d->m_childQueries.clear();
-    d->m_compilationQueries.clear();
+    d->runningQueries.clear();
+    d->childQueries.clear();
+    d->compilationQueries.clear();
     reset();
-    if ( d->m_collections.count() == 1 )
+    if ( d->collections.count() == 1 )
         QTimer::singleShot( 0, this, SLOT( requestCollectionsExpansion() ) );
 }
 
 QVariant
 CollectionTreeItemModel::data(const QModelIndex &index, int role) const
 {
-     if (!index.isValid())
-         return QVariant();
+    if (!index.isValid())
+        return QVariant();
 
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>(index.internalPointer());
-
-    if ( item->isDataItem() )
-    {
-        if ( role == Qt::DecorationRole )
-        {
-            int level = item->level() -1;
-
-            if ( d->m_childQueries.values().contains( item ) )
-            {
-                if( level < m_levelType.count() )
-                    return m_currentAnimPixmap;
-            }
-
-            if ( level >= 0 && level < m_levelType.count() ) {
-                if (  m_levelType[level] == CategoryId::Album )
-                {
-                    if( AmarokConfig::showAlbumArt() )
-                    {
-                        Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( item->data() );
-                        if( album )
-                            return The::svgHandler()->imageWithBorder( album, 32, 2 );
-                        return iconForLevel( level  );
-                    }
-                }
-                return iconForLevel( level );
-            }
-        } else if ( role == AlternateCollectionRowRole )
-            return ( index.row() % 2 == 1 );
-    }
-
-    return item->data( role );
+    // subtract one here because there is a collection level for this model
+    return dataForItem( item, role, item->level() - 1 );
 }
 
 bool
@@ -158,15 +127,15 @@ CollectionTreeItemModel::collectionAdded( Collections::Collection *newCollection
     connect( newCollection, SIGNAL( updated() ), this, SLOT( slotFilter() ) ) ;
 
     QString collectionId = newCollection->collectionId();
-    if ( d->m_collections.contains( collectionId ) )
+    if ( d->collections.contains( collectionId ) )
         return;
 
     //inserts new collection at the end. sort collection alphabetically?
     beginInsertRows( QModelIndex(), m_rootItem->childCount(), m_rootItem->childCount() );
-    d->m_collections.insert( collectionId, CollectionRoot( newCollection, new CollectionTreeItem( newCollection, m_rootItem, this ) ) );
+    d->collections.insert( collectionId, CollectionRoot( newCollection, new CollectionTreeItem( newCollection, m_rootItem, this ) ) );
     endInsertRows();
 
-    if( d->m_collections.count() == 1 )
+    if( d->collections.count() == 1 )
         QTimer::singleShot( 0, this, SLOT( requestCollectionsExpansion() ) );
 }
 
@@ -181,7 +150,7 @@ CollectionTreeItemModel::collectionRemoved( const QString &collectionId )
         {
             beginRemoveRows( QModelIndex(), i, i );
             m_rootItem->removeChild( i );
-            d->m_collections.remove( collectionId );
+            d->collections.remove( collectionId );
             m_expandedCollections.remove( item->parentCollection() );
             endRemoveRows();
         }

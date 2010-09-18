@@ -1,5 +1,7 @@
 macro(link_database_test test_target)
 
+    add_definitions(${MYSQL_CFLAGS})
+
     if(APPLE)
         SET_TARGET_PROPERTIES(${test_target} PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
     endif(APPLE)
@@ -14,20 +16,14 @@ macro(link_database_test test_target)
         amaroklib
         amarok-sqlcollection
         ${KDE4_KDECORE_LIBS}
+        ${KDE4_KIO_LIBS}
+        ${KDE4_THREADWEAVER_LIBRARIES}
         ${KDE4_KDEUI_LIBS}
         ${QT_QTTEST_LIBRARY}
         ${QT_QTCORE_LIBRARY}
-        ${OPENSSL_LIBRARIES}
-        ${MYSQL_EMBEDDED_LIBRARIES}
+        ${MYSQL_LIBRARIES}
         ${CMAKE_DL_LIBS}
         ${ZLIB_LIBRARIES})
-
-    if(NOT WIN32)
-        target_link_libraries(${test_target} crypto ssl)
-        if(NOT APPLE)
-            target_link_libraries(${test_target} crypt pthread)
-        endif(NOT APPLE)
-    endif(NOT WIN32)
 
 endmacro(link_database_test)
 
@@ -36,13 +32,13 @@ include_directories(
   ${AMAROK_TEST_TREE}
   ${AMAROK_SOURCE_TREE}
   ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection
+  ${AMAROK_SOURCE_TREE}/core-impl/logger
   ${AMAROK_UTILITY_TREE}
   ${CMAKE_BINARY_DIR}/src
   ${CMAKE_BINARY_DIR}/tests
   ${AMAROK_COLLECTION_SUPPORT_DIR}
   ${KDE4_INCLUDE_DIR}
   ${QT_INCLUDES}
-  ${OPENSSL_INCLUDE_DIR}
   ${MYSQL_INCLUDE_DIR}
   )
 
@@ -217,3 +213,51 @@ set( testsqltrack_SRCS
 kde4_add_unit_test( testsqltrack ${testsqltrack_SRCS} )
 
 link_database_test( testsqltrack )
+
+#-------------------------------- Test SqlCollectionLocation -----------------------
+
+set( testsqlcollectionlocation_SRCS
+        TestSqlCollectionLocation.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/mysql-shared/MySqlStorage.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlCollection.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlCollectionLocation.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlQueryMaker.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlQueryMakerInternal.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlMeta.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/SqlRegistry.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/DatabaseUpdater.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/collections/sqlcollection/ArtistHelper.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/logger/ProxyLogger.cpp
+        ${AMAROK_TEST_TREE}/mocks/AftUtilityMock.cpp
+    )
+
+kde4_add_unit_test( testsqlcollectionlocation ${testsqlcollectionlocation_SRCS} )
+
+add_dependencies( testsqlcollectionlocation amarokconfig_h )
+add_dependencies( testsqlcollectionlocation amarokcore )
+add_dependencies( testsqlcollectionlocation amaroklib)
+add_dependencies( testsqlcollectionlocation amarok-sqlcollection)
+
+
+# order matters when linking to libmyslqd.a, so beware of reordering
+target_link_libraries( testsqlcollectionlocation
+        amarokcore
+        amaroklib
+        amarok-sqlcollection
+        ${KDE4_KDECORE_LIBS}
+        ${KDE4_KIO_LIBS}
+        ${KDE4_KDEUI_LIBS}
+        ${KDE4_THREADWEAVER_LIBRARIES}
+        ${QT_QTTEST_LIBRARY}
+        ${QT_QTCORE_LIBRARY}
+        ${MYSQL_EMBEDDED_LIBRARIES}
+        ${CMAKE_DL_LIBS}
+        ${ZLIB_LIBRARIES}
+        ${GOOGLEMOCK_LIBRARIES})
+
+
+if(NOT WIN32 AND NOT APPLE)
+    target_link_libraries( testsqlcollectionlocation crypt pthread )
+endif(NOT WIN32 AND NOT APPLE)
+
