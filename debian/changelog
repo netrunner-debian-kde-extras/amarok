@@ -1,7 +1,11 @@
 amarok (2.3.2-0r3) UNRELEASED; urgency=low
 
   * New upstream release:
-    - Amarok ships documentation now.
+    - Amarok ships documentation now;
+    - tray icon is back in non-KDE environments; (Closes: #587720, #572757)
+    - solves a bunch of dynamic collection problems; (Closes: #539471)
+    - fixes saving of last.fm account data outside kwallet; (Closes: #550890)
+    - fixes crash when scanning media collection/library. (Closes: #585102)
   * Drop debian/mysql_no_openssl_fix.diff patch, the problem was fixed upstream
     differently.
   * Adapt debian/mysqle_amarok_local_errmsg_feature.diff patch to upstream
