@@ -1,4 +1,4 @@
-amarok (2.3.2-0r3) UNRELEASED; urgency=low
+amarok (2.3.2-1) experimental; urgency=low
 
   * New upstream release:
     - Amarok ships documentation now;
@@ -20,7 +20,7 @@ amarok (2.3.2-0r3) UNRELEASED; urgency=low
   * Bump libmtp-dev dependency to 1.0.0 (following upstream requirement).
   * Update install files.
 
- -- Modestas Vainius <modax@debian.org>  Sun, 19 Sep 2010 00:31:22 +0300
+ -- Modestas Vainius <modax@debian.org>  Tue, 21 Sep 2010 02:09:53 +0300
 
 amarok (2.3.1-1) unstable; urgency=low
 
