@@ -1,3 +1,4 @@
 debian_disable_qtscriptbindings_check_fix.diff
 debian_mysqle_amarok_local_errmsg_feature.diff
 backport_FLAC_BPM_tags_fix.diff
+0001-Re-add-some-tests-for-unprintable-but-also-invalid-c.patch

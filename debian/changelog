@@ -1,5 +1,9 @@
 amarok (2.3.2-2) UNRELEASED; urgency=low
 
+  * Backport 0001-Re-add-some-tests-for-unprintable-but-also-invalid-c.patch
+    as per upstream suggetion in order to fix problems in the collection
+    scanner emitting non-well-formed XML when unpritable characters are
+    encountered in the tags of the audio files.
 
  -- Modestas Vainius <modax@debian.org>  Sat, 25 Sep 2010 12:53:20 +0300
 
