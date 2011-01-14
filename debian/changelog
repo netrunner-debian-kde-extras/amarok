@@ -1,6 +1,7 @@
 amarok (2.4.0-0r1) UNRELEASED; urgency=low
 
-  * New upstream release.
+  * New upstream release:
+    - unmute should work properly. (Closes: #600159)
   * Remove patches previously backported from upstream:
     - backport_FLAC_BPM_tags_fix.diff;
     - 0001-Re-add-some-tests-for-unprintable-but-also-invalid-c.patch.
