@@ -1,4 +1,4 @@
-amarok (2.4.0-0r1) UNRELEASED; urgency=low
+amarok (2.4.0-1) unstable; urgency=low
 
   * New upstream release:
     - unmute should work properly. (Closes: #600159)
@@ -14,7 +14,7 @@ amarok (2.4.0-0r1) UNRELEASED; urgency=low
   * Add mysql-server-core-5.1 as a preferred alternative to mysql-server-5.1 in
     Build-Depends-Indep.
 
- -- Modestas Vainius <modax@debian.org>  Fri, 14 Jan 2011 21:08:38 +0200
+ -- Modestas Vainius <modax@debian.org>  Fri, 14 Jan 2011 22:39:04 +0200
 
 amarok (2.3.2-2) experimental; urgency=low
 
