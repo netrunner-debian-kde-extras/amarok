@@ -5,8 +5,8 @@ This patch makes Amarok MySQLe use locally installed errsys.msg
 (by amarok-common package) instead of global MySQL one which
 might not be available if mysql-server is not installed.
 
---- a/src/core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
-+++ b/src/core-impl/collections/sqlcollection/mysqlecollection/MySqlEmbeddedStorage.cpp
+--- a/src/core-impl/collections/db/sql/mysqlecollection/MySqlEmbeddedStorage.cpp
++++ b/src/core-impl/collections/db/sql/mysqlecollection/MySqlEmbeddedStorage.cpp
 @@ -27,6 +27,11 @@
  #include <QThreadStorage>
  #include <QVarLengthArray>
@@ -20,14 +20,14 @@ might not be available if mysql-server is not installed.
  
  MySqlEmbeddedStorage::MySqlEmbeddedStorage( const QString &storageLocation )
 @@ -37,6 +42,7 @@ MySqlEmbeddedStorage::MySqlEmbeddedStora
- 
+     QString storagePath = storageLocation;
      QString defaultsFile;
      QString databaseDir;
 +    QString languageDataDir;
      if( storageLocation.isEmpty() )
      {
-         defaultsFile = Amarok::config( "MySQLe" ).readEntry( "config", Amarok::saveLocation() + "my.cnf" );
-@@ -49,6 +55,7 @@ MySqlEmbeddedStorage::MySqlEmbeddedStora
+         storagePath = Amarok::saveLocation();
+@@ -50,6 +56,7 @@ MySqlEmbeddedStorage::MySqlEmbeddedStora
          defaultsFile = QDir::cleanPath( dir.absoluteFilePath( "my.cnf" ) );
          databaseDir = dir.absolutePath() + QDir::separator() + "mysqle";
      }
@@ -35,8 +35,8 @@ might not be available if mysql-server is not installed.
  
      if( !Amarok::config( "MySQLe" ).readEntry( "keepUserMyCnf", false ) )
      {
-@@ -68,6 +75,8 @@ MySqlEmbeddedStorage::MySqlEmbeddedStora
-         out << "myisam-recover = FORCE" << endl;
+@@ -70,6 +77,8 @@ MySqlEmbeddedStorage::MySqlEmbeddedStora
+         out << "key_buffer_size = 16777216" << endl; // (16Mb)
          out << "character-set-server = utf8" << endl;
          out << "collation-server = utf8_bin" << endl;
 +        if (!languageDataDir.isNull())

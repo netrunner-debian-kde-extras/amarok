@@ -5,6 +5,7 @@ amarok (2.4.0-0r1) UNRELEASED; urgency=low
     - backport_FLAC_BPM_tags_fix.diff;
     - 0001-Re-add-some-tests-for-unprintable-but-also-invalid-c.patch.
   * Refresh debian_disable_qtscriptbindings_check_fix.diff patch.
+  * Adapt debian_mysqle_amarok_local_errmsg_feature.diff to upstream changes.
 
  -- Modestas Vainius <modax@debian.org>  Fri, 14 Jan 2011 21:08:38 +0200
 
