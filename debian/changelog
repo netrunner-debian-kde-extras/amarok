@@ -8,6 +8,7 @@ amarok (2.4.0-0r1) UNRELEASED; urgency=low
   * Refresh debian_disable_qtscriptbindings_check_fix.diff patch.
   * Adapt debian_mysqle_amarok_local_errmsg_feature.diff to upstream changes.
   * Build depend on libavformat-dev (>= 4:0.5).
+  * Update install files.
 
  -- Modestas Vainius <modax@debian.org>  Fri, 14 Jan 2011 21:08:38 +0200
 
