@@ -18,7 +18,6 @@
 #ifndef AMAROK_OSD_H
 #define AMAROK_OSD_H
 
-#include "core/engine/EngineObserver.h"
 #include "core/meta/Meta.h"
 
 #include <QImage>
@@ -78,6 +77,7 @@ class OSDWidget : public QWidget
         void setText( const QString &text ) { m_text = text; }
         void setRating( const short rating ) { if ( isEnabled() ) m_rating = rating; }
         void setTranslucent( bool enabled ) { setWindowOpacity( enabled ? OSD_WINDOW_OPACITY : 1.0 ); }
+        void setFontScale( int scale ) { m_fontScale = static_cast<double>(scale) / 100.0; }
 
     protected:
         virtual ~OSDWidget();
@@ -109,6 +109,7 @@ class OSDWidget : public QWidget
         QImage      m_cover;
         QPixmap     m_scaledCover;
         bool        m_paused;
+        double      m_fontScale;
 };
 
 
@@ -125,8 +126,9 @@ public:
 
 public slots:
     void setTextColor( const QColor &color ) { OSDWidget::setTextColor( color ); doUpdate(); }
-    void setFont( const QFont &font ) { OSDWidget::setFont( font ); doUpdate(); }
+    //void setFont( const QFont &font ) { OSDWidget::setFont( font ); doUpdate(); }
     void setScreen( int screen ) { OSDWidget::setScreen( screen ); doUpdate(); }
+    void setFontScale( int scale ) { OSDWidget::setFontScale( scale ); doUpdate(); }
     void setUseCustomColors( const bool use, const QColor &fg )
     {
         if( use ) OSDWidget::setTextColor( fg );
@@ -155,7 +157,7 @@ private:
 
 namespace Amarok
 {
-    class OSD : public OSDWidget, public Engine::EngineObserver, public Meta::Observer
+    class OSD : public OSDWidget
     {
         Q_OBJECT
 
@@ -169,16 +171,12 @@ namespace Amarok
         // Don't hide baseclass methods - prevent compiler warnings
         virtual void show() { OSDWidget::show(); }
 
-    protected:
-        // Reimplemented from EngineObserver
-        virtual void engineVolumeChanged( int );
-        virtual void engineMuteStateChanged( bool );
-        virtual void engineNewTrackPlaying();
-        virtual void engineStateChanged( Phonon::State state, Phonon::State oldState );
-
-        // Reimplemented from Meta::Observer
-        using Observer::metadataChanged;
-        virtual void metadataChanged( Meta::AlbumPtr album );
+    protected slots:
+        void muteStateChanged( bool mute );
+        void trackPlaying( Meta::TrackPtr track );
+        void stopped();
+        void paused();
+        void metadataChanged();
 
     public slots:
         /**

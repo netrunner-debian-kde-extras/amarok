@@ -50,7 +50,6 @@ class SqlPlaylist : public Playlist, public Meta::Observer
         /* Playlist virtual functions */
         virtual KUrl uidUrl() const;
         virtual QString name() const { return m_name; }
-        virtual QString prettyName() const { return m_name; }
         virtual QString description() const { return m_description; }
 
         virtual PlaylistProvider *provider() const { return m_provider; }
@@ -67,8 +66,10 @@ class SqlPlaylist : public Playlist, public Meta::Observer
 
         int id();
 
-        /** returns all tracks in this playlist */
+        virtual int trackCount() const;
         virtual Meta::TrackList tracks();
+        virtual void triggerTrackLoad();
+
         virtual void addTrack( Meta::TrackPtr track, int position = -1 );
         virtual void removeTrack( int position );
 

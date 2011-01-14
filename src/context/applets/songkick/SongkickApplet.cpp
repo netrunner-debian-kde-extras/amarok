@@ -55,6 +55,9 @@ SongkickApplet::~ SongkickApplet()
 
 void SongkickApplet::init()
 {
+    // Call the base implementation.
+    Context::Applet::init();
+
     QColor highlight = PaletteHandler::highlightColor().darker( 300 );
 
     m_titleLabel = new QGraphicsSimpleTextItem( i18n("Concerts"), this );
@@ -62,7 +65,7 @@ void SongkickApplet::init()
     bigger.setPointSize( bigger.pointSize() + 2 );
     m_titleLabel->setFont( bigger );
     m_titleLabel->setZValue( m_titleLabel->zValue() + 100 );
-   // m_titleLabel->setBrush( highlight );
+    m_titleLabel->setDrawBackground( true );
 
     QAction* reloadAction = new QAction( i18n("Reload Songkick"), this );
     reloadAction->setIcon( KIcon( "view-refresh" ) );
@@ -213,13 +216,9 @@ SongkickApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *opt
 {
     Q_UNUSED( option );
     Q_UNUSED( contentsRect );
-    p->setRenderHint( QPainter::Antialiasing );
 
     // tint the whole applet
     addGradientToAppletBackground( p );
-
-    // draw rounded rect around title
-    drawRoundedRectAroundText( p, m_titleLabel );
 
     //draw background of lyrics text
     p->save();

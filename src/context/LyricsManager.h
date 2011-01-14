@@ -18,11 +18,11 @@
 #define LYRICS_MANAGER_H
 
 #include "amarok_export.h"
-#include "core/support/Debug.h"
 
+#include <QStringList>
 #include <QList>
-#include <QByteArray>
 #include <QString>
+#include <QVariant>
 
 class LyricsSubject;
 
@@ -44,7 +44,7 @@ class AMAROK_EXPORT LyricsObserver
         /**
          *  A lyrics script has returned a list of suggested URLs for correct lyrics.
          */
-        virtual void newSuggestions( QStringList& suggestions ) { Q_UNUSED( suggestions ); }
+        virtual void newSuggestions( const QVariantList &suggestions ) { Q_UNUSED( suggestions ); }
         /**
          *  A lyrics script has returned some generic message that they want to be displayed.
          */
@@ -66,7 +66,7 @@ class LyricsSubject
     
         void sendNewLyrics( QStringList lyrics );
         void sendNewLyricsHtml( QString lyrics );
-        void sendNewSuggestions( QStringList suggestions );
+        void sendNewSuggestions( const QVariantList &suggestions );
         void sendLyricsMessage( QString key, QString val );
     
     private:
@@ -90,6 +90,32 @@ class AMAROK_EXPORT LyricsManager : public LyricsSubject
         void lyricsResultHtml( const QString& lyrics, bool cached = false );
         void lyricsError( const QString &error );
         void lyricsNotFound( const QString& notfound );
+
+        /**
+          * Sets the given lyrics for the track with the given URL.
+          *
+          * @param trackUrl The URL of the track.
+          * @param lyrics The new lyrics.
+          */
+        void setLyricsForTrack( const QString &trackUrl, const QString &lyrics ) const;
+
+        /**
+         * Tests if the given lyrics are Html or plain text.
+         *
+         * @param lyrics The lyrics which will be tested.
+         *
+         * @return true if the given lyrics are Html, otherwise false.
+         */
+        bool isHtmlLyrics( const QString &lyrics ) const;
+
+        /**
+         * Tests if the given lyrics are empty.
+         *
+         * @param lyrics The lyrics which will be tested.
+         *
+         * @return true if the given lyrics are empty, otherwise false.
+         */
+        bool isEmpty( const QString &lyrics ) const;
 
     private:
         bool showCached();

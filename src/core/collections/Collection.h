@@ -45,7 +45,7 @@ class AMAROK_CORE_EXPORT CollectionFactory : public QObject
 {
     Q_OBJECT
     public:
-        CollectionFactory();
+        CollectionFactory( QObject *parent = 0 );
         virtual ~CollectionFactory();
 
         virtual void init() = 0;
@@ -129,18 +129,11 @@ class AMAROK_CORE_EXPORT Collection : public QObject, public TrackProvider, publ
         virtual QueryMaker * queryMaker() = 0;
 
         /**
-            Begin a full scan on the collection.  This is not valid for all collections.
+            Checks if the given path is covered by this collection.
+            Not all collections cover directories or even know what a path is.
+            @returns true if it is covered.
         */
-        virtual void startFullScan() {}
-        /**
-            Begin an incremental scan on the collection.  This is not valid for all collections.
-            @p directory An optional specification of which directory to scan.
-        */
-        virtual void startIncrementalScan( const QString &directory = QString() ) { Q_UNUSED( directory ) }
-        /**
-            Stop a scan on this collection.  This is not valid for all collections
-        */
-        virtual void stopScan() {}
+        virtual bool isDirInCollection(const QString &path) { Q_UNUSED( path ); return false; }
 
         /**
             The protocol of uids coming from this collection.
@@ -180,6 +173,15 @@ class AMAROK_CORE_EXPORT Collection : public QObject, public TrackProvider, publ
 
     signals:
         void remove();
+
+        /** This signal is send when the collection has changed.
+         *  This signal is send when the collection more than can be detected by
+         *  Meta::metaDataChanged.
+         *  This is e.g. a new song was added, an old one removed, new device added, ...
+         *
+         *  Specifically this means that previous done searches can no longer
+         *  be considered valid.
+         */
         void updated();
 };
 

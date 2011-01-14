@@ -19,14 +19,14 @@
 #ifndef ALBUMS_APPLET_H
 #define ALBUMS_APPLET_H
 
-#include "AlbumsView.h"
-
-#include <context/Applet.h>
-#include <context/DataEngine.h>
+#include "context/Applet.h"
+#include "context/DataEngine.h"
 #include "core/meta/Meta.h"
 
-class QStandardItemModel;
-class TextScrollingWidget;
+class AlbumsView;
+namespace Collections {
+    class Collection;
+}
 
 class Albums : public Context::Applet
 {
@@ -35,13 +35,8 @@ public:
     Albums( QObject* parent, const QVariantList& args );
     ~Albums();
 
-    void init();
-
-    void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
-
-    void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints);
-
 public slots:
+    virtual void init();
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
 
 protected:
@@ -49,19 +44,16 @@ protected:
 
 private slots:
     void collectionDataChanged( Collections::Collection *collection );
-    void connectSource( const QString &source );
     void saveConfiguration();
     void setRecentCount( int val );
+    void setRightAlignLength( int state );
 
 private:
-    const qreal m_albumWidth;
     int m_recentCount;
-    Meta::AlbumList m_albums;
-    QStandardItemModel *m_model;
+    bool m_rightAlignLength;
     AlbumsView *m_albumsView;
-    TextScrollingWidget *m_headerText;
-
-    void reconnectSource();
+    Meta::AlbumList m_albums;
+    Meta::TrackPtr m_currentTrack;
 };
 
 K_EXPORT_AMAROK_APPLET( albums, Albums )

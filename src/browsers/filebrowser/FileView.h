@@ -67,9 +67,11 @@ protected slots:
     void slotEditTracks();
     void slotPrepareMoveTracks();
     void slotPrepareCopyTracks();
+    void slotPrepareTranscodeTracks();
     void slotMoveTracks( const Meta::TrackList& tracks );
     void slotCopyTracks( const Meta::TrackList& tracks );
-    void slotDelete();
+    void slotDelete( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers );
+
 
 protected:
     QList<QAction *> actionsForIndices( const QModelIndexList &indices );
@@ -80,6 +82,9 @@ protected:
     virtual void mouseDoubleClickEvent( QMouseEvent *event );
     virtual void startDrag( Qt::DropActions supportedActions );
     KFileItemList selectedItems() const;
+
+private slots:
+    void slotEditTriggered();
 
 private:
     Meta::TrackList tracksForEdit() const;

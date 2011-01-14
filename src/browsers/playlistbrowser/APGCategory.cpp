@@ -14,8 +14,6 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "APGCategory"
-
 #include "APGCategory.h"
 
 #include "amarokconfig.h"
@@ -26,9 +24,8 @@
 #include "playlistgenerator/ConstraintTestWrapper.h"
 #endif
 
-#include "core/support/Debug.h"
-
 #include <KIcon>
+#include <KLocale>
 
 #include <QAction>
 #include <QHBoxLayout>
@@ -85,7 +82,7 @@ PlaylistBrowserNS::APGCategory::APGCategory( QWidget* )
 #ifndef KDE_NO_DEBUG_OUTPUT
     toolBar_Actions->addSeparator();
 
-    a = toolBar_Actions->addAction( KIcon( "flag-amarok" ), "Run constraint tester" );
+    a = toolBar_Actions->addAction( KIcon( "flag-amarok" ), i18n("Run constraint tester") );
     a->setEnabled( false );
     connect( this, SIGNAL( validIndexSelected( bool ) ), a, SLOT( setEnabled( bool ) ) );
     APG::ConstraintTestWrapper* ctw = new APG::ConstraintTestWrapper( this );

@@ -64,9 +64,11 @@ public:
     void setTitle( const QString &newTitle ) { FORWARD( setTitle( newTitle ) ) }
     void setArtist( const QString &newArtist ) { FORWARD( setArtist( newArtist ) ) }
     void setAlbum( const QString &newAlbum ) { FORWARD( setAlbum( newAlbum ) ) }
+    void setAlbumArtist( const QString &newAlbumArtist ) { FORWARD( setAlbumArtist ( newAlbumArtist ) ) }
     void setGenre( const QString &newGenre ) { FORWARD( setGenre( newGenre ) ) }
     void setComposer( const QString &newComposer ) { FORWARD( setComposer( newComposer ) ) }
-    void setYear( const QString &newYear ) { FORWARD( setYear( newYear ) ) }
+    void setYear( int newYear ) { FORWARD( setYear( newYear ) ) }
+    void setUidUrl( const QString &newUidUrl ) { FORWARD( setUidUrl( newUidUrl ) ) }
     bool isEditable() const
     {
         foreach( Capabilities::EditCapability *ec, m_ec )
@@ -326,17 +328,18 @@ ProxyTrack::setRating( int newRating )
     }
 }
 
-uint
+QDateTime
 ProxyTrack::firstPlayed() const
 {
-    uint result = 0;
+    QDateTime result;
     foreach( const Meta::TrackPtr &track, m_tracks )
     {
         //use the track's firstPlayed value if it represents an earlier timestamp than
         //the current result, or use it directly if result has not been set yet
         //this should result in the earliest timestamp for first play of all internal
         //tracks being returned
-        if( ( track->firstPlayed() && result && track->firstPlayed() < result ) || ( track->firstPlayed() && !result ) )
+        if( ( track->firstPlayed().isValid() && result.isValid() && track->firstPlayed() < result ) ||
+            ( track->firstPlayed().isValid() && !result.isValid() ) )
         {
             result = track->firstPlayed();
         }
@@ -344,10 +347,10 @@ ProxyTrack::firstPlayed() const
     return result;
 }
 
-uint
+QDateTime
 ProxyTrack::lastPlayed() const
 {
-    uint result = 0;
+    QDateTime result;
     //return the latest timestamp. Easier than firstPlayed because we do not have to
     //care about 0.
     //when are we going to perform the refactoring as discussed in Berlin?
@@ -438,13 +441,14 @@ ProxyTrack::createDate() const
     QDateTime result;
     foreach( const Meta::TrackPtr &track, m_tracks )
     {
-        QDateTime dt = track->createDate();
-        if( !dt.isValid() )
-            continue;
-        else
+        //use the track's firstPlayed value if it represents an earlier timestamp than
+        //the current result, or use it directly if result has not been set yet
+        //this should result in the earliest timestamp for first play of all internal
+        //tracks being returned
+        if( ( track->createDate().isValid() && result.isValid() && track->createDate() < result ) ||
+            ( track->createDate().isValid() && !result.isValid() ) )
         {
-            if( !result.isValid() || dt < result )
-                result = dt;
+            result = track->createDate();
         }
     }
     return result;
@@ -645,8 +649,8 @@ ProxyTrack::metadataChanged( Meta::TrackPtr track )
         return;
     }
 
-    const TrackKey myKey = Meta::keyFromTrack( Meta::TrackPtr( this ) );
-    const TrackKey otherKey = Meta::keyFromTrack( track );
+    const TrackKey myKey( Meta::TrackPtr( this ) );
+    const TrackKey otherKey( track );
     if( myKey == otherKey )
     {
         //no key relevant metadata did change
@@ -877,11 +881,11 @@ ProxyAlbum::canUpdateImage() const
 }
 
 void
-ProxyAlbum::setImage( const QPixmap &pixmap )
+ProxyAlbum::setImage( const QImage &image )
 {
     foreach( Meta::AlbumPtr album, m_albums )
     {
-        album->setImage( pixmap );
+        album->setImage( image );
     }
 }
 

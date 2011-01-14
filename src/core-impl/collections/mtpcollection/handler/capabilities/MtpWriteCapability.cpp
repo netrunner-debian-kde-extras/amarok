@@ -107,6 +107,11 @@ MtpWriteCapability::libSetArtist( Meta::MediaDeviceTrackPtr &track, const QStrin
     m_handler->libSetArtist( track, artist );
 }
 
+void
+MtpWriteCapability::libSetAlbumArtist( Meta::MediaDeviceTrackPtr &track, const QString &albumArtist )
+{
+    m_handler->libSetAlbumArtist( track, albumArtist );
+}
 
 void
 MtpWriteCapability::libSetComposer( Meta::MediaDeviceTrackPtr &track, const QString& composer )
@@ -192,7 +197,7 @@ MtpWriteCapability::libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playc
 }
 
 void
-MtpWriteCapability::libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed )
+MtpWriteCapability::libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, const QDateTime &lastplayed )
 {
     m_handler->libSetLastPlayed( track, lastplayed );
 }
@@ -216,7 +221,7 @@ MtpWriteCapability::libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, con
 }
 
 void
-MtpWriteCapability::libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QPixmap &cover )
+MtpWriteCapability::libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QImage &cover )
 {
     AMAROK_NOTIMPLEMENTED
     Q_UNUSED( track )

@@ -24,6 +24,7 @@
 #include "core/collections/QueryMaker.h"
 #include "core/meta/Meta.h"
 #include "CollectionTreeItem.h"
+#include "Expression.h"
 
 #include <QAbstractItemModel>
 #include <QDateTime>
@@ -46,6 +47,7 @@ namespace CategoryId
     None = 0,
     Album,
     Artist,
+    AlbumArtist,
     Composer,
     Genre,
     Year,
@@ -81,12 +83,15 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         virtual QMimeData* mimeData( const QList<CollectionTreeItem*> &items ) const;
         virtual QMimeData* mimeData( const QModelIndexList &indices ) const;
 
-        virtual QPixmap iconForLevel( int level ) const;
+        virtual QIcon iconForLevel( int level ) const;
         virtual void listForLevel( int level, Collections::QueryMaker *qm, CollectionTreeItem* parent );
 
 
         virtual void setLevels( const QList<int> &levelType ) = 0;
         virtual QList<int> levels() const { return m_levelType; }
+        virtual int levelCategory( const int level ) const;
+
+        virtual void addDateFilter( qint64 field, Collections::QueryMaker::NumberComparison compare, const expression_element &elem, Collections::QueryMaker *qm ) const;
 
         virtual void addFilters( Collections::QueryMaker *qm ) const;
 
@@ -127,7 +132,10 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
 
         void markSubTreeAsDirty( CollectionTreeItem *item );
 
+        /** Initiates a special search for albums without artists */
         void handleCompilations( CollectionTreeItem *parent ) const;
+
+        /** Initiates a special search for tracks without label */
         void handleTracksWithoutLabels( Collections::QueryMaker::QueryType queryType, CollectionTreeItem *parent ) const;
 
         QString m_headerText;
@@ -144,9 +152,8 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         QString m_currentFilter;
         QSet<Meta::DataPtr> m_expandedItems;
         QSet<Collections::Collection*> m_expandedCollections;
-        QSet<Collections::Collection*> m_expandedVariousArtistsNodes;
-        QSet<Collections::Collection*> m_expandedNoLabelsNodes;
-        
+        QSet<Collections::Collection*> m_expandedSpecialNodes;
+
     protected slots:
         void startAnimationTick();
         void loadingAnimationTick();

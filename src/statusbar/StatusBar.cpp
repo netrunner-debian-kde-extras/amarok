@@ -16,8 +16,11 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "StatusBar"
+
 #include "statusbar/StatusBar.h"
 
+#include "amarokconfig.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
 #include "LongMessageWidget.h"
@@ -104,7 +107,6 @@ namespace The
 
 StatusBar::StatusBar( QWidget * parent )
         : KStatusBar( parent )
-        , Engine::EngineObserver( The::engineController() )
         , m_progressBar( new CompoundProgressBar( this ) )
         , m_busy( false )
         , m_shortMessageTimer( new QTimer( this ) )
@@ -148,15 +150,24 @@ StatusBar::StatusBar( QWidget * parent )
     qRegisterMetaType<MessageType>( "MessageType" );
     connect( this, SIGNAL( signalLongMessage( const QString &, MessageType ) ), SLOT( slotLongMessage( const QString &, MessageType ) ), Qt::QueuedConnection );
 
-    connect( The::playlist()->qaim(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateTotalPlaylistLength() ) );
     // Ignore The::playlist() layoutChanged: rows moving around does not change the total playlist length.
-    connect( The::playlist()->qaim(), SIGNAL( modelReset() ), this, SLOT( updateTotalPlaylistLength() ) );
-    connect( The::playlist()->qaim(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
-    connect( The::playlist()->qaim(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
-
-    connect( The::playlist()->qaim(), SIGNAL( queueChanged() ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( modelReset() ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( rowsInserted( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
+    connect( Playlist::ModelStack::instance()->bottom(), SIGNAL( rowsRemoved( const QModelIndex&, int, int ) ), this, SLOT( updateTotalPlaylistLength() ) );
 
     updateTotalPlaylistLength();
+
+    EngineController *engine = The::engineController();
+
+    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
+             this, SLOT( trackMetadataChanged( Meta::TrackPtr ) ) );
+    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
+             this, SLOT( stopped() ) );
+    connect( engine, SIGNAL( paused() ),
+             this, SLOT( paused() ) );
+    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
+             this, SLOT( trackPlaying( Meta::TrackPtr ) ) );
 
     Amarok::Logger *logger = Amarok::Components::logger();
     ProxyLogger *proxy = qobject_cast<ProxyLogger*>( logger );
@@ -168,6 +179,9 @@ StatusBar::StatusBar( QWidget * parent )
     {
         warning() << "Was not able to register statusbar as logger";
     }
+
+    if( AmarokConfig::resumePlayback() )
+        m_currentTrack = The::engineController()->currentTrack();
 }
 
 
@@ -276,70 +290,37 @@ void StatusBar::nextShortMessage()
     }
 }
 
-void StatusBar::metadataChanged( Meta::TrackPtr track )
+void StatusBar::trackMetadataChanged( Meta::TrackPtr track )
 {
-    Q_UNUSED( track );
+    if( track )
+        updateInfo( track );
+}
 
-    if ( m_currentTrack )
+void
+StatusBar::stopped()
+{
+    m_nowPlayingLabel->setText( QString() );
+    m_nowPlayingEmblem->hide();
+}
+
+void
+StatusBar::paused()
+{
+    m_nowPlayingLabel->setText( i18n( "Amarok is paused" ) );
+    m_nowPlayingEmblem->hide();
+}
+
+void
+StatusBar::trackPlaying( Meta::TrackPtr track )
+{
+    m_currentTrack = track;
+
+    if( m_currentTrack )
         updateInfo( m_currentTrack );
-    else
-        engineNewTrackPlaying();
 }
 
-void StatusBar::engineStateChanged( Phonon::State state, Phonon::State oldState )
-{
-    Q_UNUSED( oldState )
-
-    switch ( state )
-    {
-    case Phonon::StoppedState:
-        m_nowPlayingLabel->setText( QString() );
-        m_nowPlayingEmblem->hide();
-        break;
-
-    case Phonon::LoadingState:
-        if ( m_currentTrack )
-            updateInfo( m_currentTrack );
-        else
-            m_nowPlayingLabel->setText( QString() );
-        m_nowPlayingEmblem->hide();
-        break;
-
-    case Phonon::PausedState:
-        m_nowPlayingLabel->setText( i18n( "Amarok is paused" ) ); // display TEMPORARY message
-        m_nowPlayingEmblem->hide();
-        break;
-
-    case Phonon::PlayingState:
-        if ( m_currentTrack )
-            updateInfo( m_currentTrack );
-        //else
-        //resetMainText(); // if we were paused, this is necessary
-        break;
-
-    case Phonon::ErrorState:
-    case Phonon::BufferingState:
-        break;
-    }
-}
-
-void StatusBar::engineNewTrackPlaying()
-{
-    if ( m_currentTrack )
-        unsubscribeFrom( m_currentTrack );
-
-    m_currentTrack = The::engineController()->currentTrack();
-
-    if ( !m_currentTrack )
-    {
-        m_currentTrack = Meta::TrackPtr();
-        return;
-    }
-    subscribeTo( m_currentTrack );
-    updateInfo( m_currentTrack );
-}
-
-void StatusBar::updateInfo( Meta::TrackPtr track )
+void
+StatusBar::updateInfo( Meta::TrackPtr track )
 {
     // Check if we have any source info:
     Capabilities::SourceInfoCapability *sic = track->create<Capabilities::SourceInfoCapability>();
@@ -390,14 +371,14 @@ StatusBar::updateTotalPlaylistLength() //SLOT
     DEBUG_BLOCK
 
     const quint64 totalLength = The::playlist()->totalLength();
-    const quint64 totalSize = The::playlist()->totalSize();
     const int trackCount = The::playlist()->qaim()->rowCount();
-    const QString prettyTotalLength = Meta::msToPrettyTime( totalLength );
-    const QString prettyTotalSize = Meta::prettyFilesize( totalSize );
 
     if( totalLength > 0 && trackCount > 0 )
     {
-        m_playlistLengthLabel->setText( i18ncp( "%1 is number of tracks, %2 is time", "%1 track (%2)", "%1 tracks (%2)", trackCount, prettyTotalLength ) );
+        const QString prettyTotalLength = Meta::msToPrettyTime( totalLength );
+        m_playlistLengthLabel->setText( i18ncp( "%1 is number of tracks, %2 is time",
+                                                "%1 track (%2)", "%1 tracks (%2)",
+                                                trackCount, prettyTotalLength ) );
         m_playlistLengthLabel->show();
 
         quint64 queuedTotalLength( 0 );
@@ -406,14 +387,16 @@ StatusBar::updateTotalPlaylistLength() //SLOT
 
         for( int i = 0; i < trackCount; ++i )
         {
-            if( The::playlist()->stateOfRow( i ) & Playlist::Item::Queued )
+            if( The::playlist()->queuePositionOfRow( i ) != 0 )
             {
                 queuedTotalLength += The::playlist()->trackAt( i )->length();
                 queuedTotalSize += The::playlist()->trackAt( i )->filesize();
-                queuedCount++;
+                ++queuedCount;
             }
         }
 
+        const quint64 totalSize = The::playlist()->totalSize();
+        const QString prettyTotalSize = Meta::prettyFilesize( totalSize );
         const QString prettyQueuedTotalLength = Meta::msToPrettyTime( queuedTotalLength );
         const QString prettyQueuedTotalSize   = Meta::prettyFilesize( queuedTotalSize );
 
@@ -439,8 +422,9 @@ StatusBar::updateTotalPlaylistLength() //SLOT
         m_playlistLengthLabel->setToolTip( 0 );
         m_separator->show();
     }
-    //Total Length will not be > 0 if trackCount is 0, so we can ignore it
-    else { // TotalLength = 0 and trackCount = 0;
+    else // Total Length will not be > 0 if trackCount is 0, so we can ignore it
+    {
+        // TotalLength = 0 and trackCount = 0;
         m_playlistLengthLabel->hide();
         m_separator->hide();
     }

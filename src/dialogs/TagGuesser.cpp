@@ -75,12 +75,12 @@ TagGuesser::guess()
     if( ( !m_fileName.isEmpty() ) && ( !m_schema.isEmpty() ) )
     {
         QString regExpr = getRegExpFromSchema( QRegExp::escape( m_schema ) );
-        QRegExp fileExpr(regExpr + "\\.(.*)");
-        QRegExp schemaExpr(regExpr);
-        
+        QRegExp fileExpr( "^" + regExpr + "\\.(.*)$" );
+        QRegExp schemaExpr( "^" + regExpr.replace( "\\d*", ".*" ) +"$" );
+
         int pos1 = schemaExpr.indexIn( m_schema );
         int pos2 = fileExpr.indexIn( m_fileName );
-        
+
         if( ( pos1 > -1 ) && ( pos2 > -1 ) )
         {
             for( int x = 1; x<=fileExpr.numCaptures()-1; x++)
@@ -93,7 +93,7 @@ TagGuesser::guess()
 
                     if( m_convertUnderscores )
                         tag = convertUnderscores( tag );
-                    
+
                     if( m_cutTrailingSpaces )
                         tag = tag.trimmed();
 
@@ -109,7 +109,6 @@ TagGuesser::guess()
                         m_sortedTags[x-1] = otag;
                         m_tags[type] = tag;
                     }
-                    
                 }
             }
         }
@@ -193,7 +192,8 @@ TagGuesser::cutTagTrailingSpaces( QString tag )
 QString
 TagGuesser::getRegExpFromSchema( QString schema )
 {
-    return schema.replace( QRegExp("(%track|%title|%artist|%composer|%year|%album|%comment|%genre|%ignore)"), "(.*)" );
+    return schema.replace( QRegExp( "(%title|%artist|%composer|%album|%albumartist|%comment|%genre|%ignore)" ), "(.*)" )
+                 .replace( QRegExp( "(%track|%year)" ), "(\\d*)" );
 }
 
 // creates a colored version of the filename
@@ -221,6 +221,13 @@ TagGuesser::coloredFileName()
             else if( ( m_tags.contains( "artist" ) ) && ( tag.value().type == "artist" ) )
             {
                 colored.insert( Pos,QString( "<font color=\"" + QColor( artist_color ).name() + "\">" ) );
+                Pos += tag.value().tag.length()+22;
+                colored.insert( Pos,QString( "</font>" ) );
+                Pos += 7;
+            }
+            else if( ( m_tags.contains( "albumartist" ) ) && ( tag.value().type == "albumartist" ) )
+            {
+                colored.insert( Pos,QString( "<font color=\"" + QColor( albumartist_color ).name() + "\">" ) );
                 Pos += tag.value().tag.length()+22;
                 colored.insert( Pos,QString( "</font>" ) );
                 Pos += 7;

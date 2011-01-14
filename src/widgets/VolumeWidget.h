@@ -19,12 +19,11 @@
 #ifndef VOLUMEWIDGET_H
 #define VOLUMEWIDGET_H
 
-#include "core/engine/EngineObserver.h"
 #include "ToolBar.h"
 
 #include <KAction>
 
-#include <QPointer>
+#include <QWeakPointer>
 #include <QStringList>
 
 namespace Amarok
@@ -35,21 +34,20 @@ namespace Amarok
 /**
 * A custom widget that serves as our volume slider within Amarok.
 */
-class VolumeWidget : public Amarok::ToolBar, public Engine::EngineObserver
+class VolumeWidget : public Amarok::ToolBar
 {
     Q_OBJECT
 public:
     VolumeWidget( QWidget * );
-    Amarok::VolumeSlider* slider() const { return m_slider; }
+    Amarok::VolumeSlider* slider() const { return m_slider.data(); }
 
 private Q_SLOTS:
     void toggleMute( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers );
+    void volumeChanged( int value );
+    void muteStateChanged( bool mute );
 
 private:
-    void engineVolumeChanged( int value );
-    void engineMuteStateChanged( bool mute );
-
-    QPointer<Amarok::VolumeSlider> m_slider;
+    QWeakPointer<Amarok::VolumeSlider> m_slider;
     KAction *m_action;
     QStringList m_icons;
 };

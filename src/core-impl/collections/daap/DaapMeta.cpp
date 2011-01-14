@@ -52,12 +52,6 @@ DaapTrack::name() const
     return m_name;
 }
 
-QString
-DaapTrack::prettyName() const
-{
-    return m_name;
-}
-
 KUrl
 DaapTrack::playableUrl() const
 {
@@ -145,7 +139,7 @@ DaapTrack::setGenre( const QString &newGenre )
 }
 
 void
-DaapTrack::setYear( const QString &newYear )
+DaapTrack::setYear( int newYear )
 {
     Q_UNUSED( newYear )
 }
@@ -251,12 +245,6 @@ DaapTrack::playCount() const
     return 0;
 }
 
-uint
-DaapTrack::lastPlayed() const
-{
-    return 0;
-}
-
 QString
 DaapTrack::type() const
 {
@@ -350,12 +338,6 @@ DaapArtist::name() const
     return m_name;
 }
 
-QString
-DaapArtist::prettyName() const
-{
-    return m_name;
-}
-
 TrackList
 DaapArtist::tracks()
 {
@@ -392,12 +374,6 @@ DaapAlbum::~DaapAlbum()
 
 QString
 DaapAlbum::name() const
-{
-    return m_name;
-}
-
-QString
-DaapAlbum::prettyName() const
 {
     return m_name;
 }
@@ -439,9 +415,9 @@ DaapAlbum::canUpdateImage() const
 }
 
 void
-DaapAlbum::setImage( const QPixmap &pixmap )
+DaapAlbum::setImage( const QImage &image )
 {
-    Q_UNUSED(pixmap);
+    Q_UNUSED(image);
     //TODO
 }
 
@@ -484,12 +460,6 @@ DaapGenre::name() const
     return m_name;
 }
 
-QString
-DaapGenre::prettyName() const
-{
-    return m_name;
-}
-
 TrackList
 DaapGenre::tracks()
 {
@@ -523,12 +493,6 @@ DaapComposer::name() const
     return m_name;
 }
 
-QString
-DaapComposer::prettyName() const
-{
-    return m_name;
-}
-
 TrackList
 DaapComposer::tracks()
 {
@@ -558,12 +522,6 @@ DaapYear::~DaapYear()
 
 QString
 DaapYear::name() const
-{
-    return m_name;
-}
-
-QString
-DaapYear::prettyName() const
 {
     return m_name;
 }

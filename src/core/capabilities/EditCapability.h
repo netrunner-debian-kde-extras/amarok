@@ -34,6 +34,8 @@ namespace Capabilities
             virtual bool isEditable() const = 0;
             /** Update the album of this track. */
             virtual void setAlbum( const QString &newAlbum ) = 0;
+
+            virtual void setAlbumArtist( const QString &newAlbumArtist ) = 0;
             //TODO: add overloaded methods which take a AlbumPtr if necessary
             /** Change the artist of this track */
             virtual void setArtist( const QString &newArtist ) = 0;
@@ -42,7 +44,7 @@ namespace Capabilities
 
             virtual void setGenre( const QString &newGenre ) = 0;
 
-            virtual void setYear( const QString &newYear ) = 0;
+            virtual void setYear( int newYear ) = 0;
 
             virtual void setTitle( const QString &newTitle ) = 0;
 
@@ -53,6 +55,8 @@ namespace Capabilities
             virtual void setDiscNumber( int newDiscNumber ) = 0;
 
             virtual void setBpm( const qreal newBpm ) = 0;
+
+            virtual void setUidUrl( const QString &newUidUrl ) = 0;
 
             /** The track object should not store changed meta data immediately but cache the
             changes until endMetaDataUpdate() is called */

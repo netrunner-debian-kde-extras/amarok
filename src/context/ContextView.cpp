@@ -20,6 +20,8 @@
   available at kdebase/workspace/plasma
 */
 
+#define DEBUG_PREFIX "ContextView"
+
 #include "ContextView.h"
 
 #include "core/support/Amarok.h"
@@ -34,10 +36,8 @@
 
 #include <plasma/dataenginemanager.h>
 
+#include <QParallelAnimationGroup>
 #include <QWheelEvent>
-
-
-#define DEBUG_PREFIX "ContextView"
 
 namespace Context
 {
@@ -47,10 +47,7 @@ ContextView* ContextView::s_self = 0;
 
 ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWidget* parent )
     : Plasma::View( cont, parent )
-    , Engine::EngineObserver( The::engineController() )
     , m_curState( Home )
-    , m_firstPlayingState( true )
-    , m_appletExplorer( 0 )
 {
     Q_UNUSED( corona )
     DEBUG_BLOCK
@@ -65,9 +62,7 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     setInteractive( true );
     setAcceptDrops( true );
     setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-   // setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
-    setMouseTracking( true );
-    setScreen( -1 );
+    // setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 
     //make background transparent
     QPalette p = palette();
@@ -87,24 +82,25 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
     cont->updateConstraints();
     Containment* amarokContainment = qobject_cast<Containment* >( cont );
     if( amarokContainment )
-    {
         amarokContainment->setView( this );
-    //    amarokContainment->addCurrentTrack();
-    }
-
-    m_appletExplorer = new AppletExplorer( cont );
-    m_appletExplorer->setContainment( amarokContainment );
-    m_appletExplorer->setPos( 0, cont->size().height() - m_appletExplorer->size().height() );
-    m_appletExplorer->setZValue( m_appletExplorer->zValue() + 1000 );
-    m_appletExplorer->hide();
-
-    connect( m_appletExplorer, SIGNAL( addAppletToContainment( const QString&, const int ) ),
-             amarokContainment, SLOT( addApplet( const QString&, const int ) ) );
-
-    connect( m_appletExplorer, SIGNAL( appletExplorerHid() ), this, SIGNAL( appletExplorerHid() ) );
 
     m_urlRunner = new ContextUrlRunner();
     The::amarokUrlHandler()->registerRunner( m_urlRunner, "context" );
+
+    m_collapseAnimations = new QParallelAnimationGroup( this );
+    connect( m_collapseAnimations.data(), SIGNAL(finished()),
+             this, SLOT(slotCollapseAnimationsFinished()) );
+
+    m_collapseGroupTimer = new QTimer( this );
+    m_collapseGroupTimer.data()->setSingleShot( true );
+    connect( m_collapseGroupTimer.data(), SIGNAL(timeout()), SLOT(slotStartCollapseAnimations()) );
+
+    EngineController* const engine = The::engineController();
+
+    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
+             this, SLOT( slotTrackChanged( Meta::TrackPtr ) ) );
+    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
+             this, SLOT( slotMetadataChanged( Meta::TrackPtr ) ) );
 }
 
 ContextView::~ContextView()
@@ -165,35 +161,24 @@ void ContextView::clearNoSave()
 }
 
 
-void ContextView::enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, EngineObserver::PlaybackEndedReason reason )
+void ContextView::slotTrackChanged( Meta::TrackPtr track )
 {
-    Q_UNUSED( finalPosition )
-    Q_UNUSED( trackLength )
-    Q_UNUSED( reason )
-    DEBUG_BLOCK
+    DEBUG_BLOCK;
 
-    messageNotify( Home );
-}
-
-
-void ContextView::engineNewTrackPlaying()
-{
-    DEBUG_BLOCK
-    messageNotify( Current );
-    m_firstPlayingState = false;
+    if( track )
+        messageNotify( Current );
+    else
+        messageNotify( Home );
 }
 
 
 void
-ContextView::engineNewMetaData( const QHash<qint64, QString> &newMetaData, bool trackChanged )
+ContextView::slotMetadataChanged( Meta::TrackPtr track )
 {
-    Q_UNUSED( newMetaData )
-    Q_UNUSED( trackChanged )
     DEBUG_BLOCK
 
     // if we are listening to a stream, take the new metadata as a "new track"
-    Meta::TrackPtr track = The::engineController()->currentTrack();
-    if( track && track->type() == "stream" )
+    if( track && The::engineController()->isStream() )
         messageNotify( Current );
 }
 
@@ -213,6 +198,7 @@ ContextView::loadConfig()
 {
     contextScene()->clearContainments();
 
+    PERF_LOG( "Start to load config" );
     int numContainments = contextScene()->containments().size();
     KConfig conf( "amarok_homerc", KConfig::FullConfig );
     for( int i = 0; i < numContainments; i++ )
@@ -224,6 +210,7 @@ ContextView::loadConfig()
             containment->loadConfig( cg );
         }
     }
+    PERF_LOG( "Done loading config" );
 }
 
 Plasma::Applet*
@@ -241,15 +228,105 @@ ContextView::addApplet( const QString& name, const QStringList& args )
 }
 
 void
+ContextView::addCollapseAnimation( QAbstractAnimation *anim )
+{
+    if( !anim )
+    {
+        debug() << "failed to add collapsing animation";
+        return;
+    }
+
+    QParallelAnimationGroup *group = m_collapseAnimations.data();
+    if( group && group->state() == QAbstractAnimation::Running )
+    {
+        m_queuedAnimations.enqueue( anim );
+        return;
+    }
+
+    QTimer *timer( 0 );
+    if( m_collapseGroupTimer )
+        timer = m_collapseGroupTimer.data();
+
+    if( group && timer && !timer->isActive() )
+    {
+        group->addAnimation( anim );
+        timer->start( 0 );
+    }
+    else
+    {
+        m_queuedAnimations.enqueue( anim );
+    }
+}
+
+void
+ContextView::slotCollapseAnimationsFinished()
+{
+    QTimer *timer = m_collapseGroupTimer.data();
+    if( timer )
+        timer->stop();
+
+    QParallelAnimationGroup *group = m_collapseAnimations.data();
+    if( group )
+        group->clear();
+
+    while( !m_queuedAnimations.isEmpty() )
+    {
+        if( QWeakPointer<QAbstractAnimation> anim = m_queuedAnimations.dequeue() )
+        {
+            if( group )
+                group->addAnimation( anim.data() );
+        }
+    }
+
+    if( group && (group->animationCount() > 0) )
+        timer->start( 0 );
+}
+
+void
+ContextView::slotStartCollapseAnimations()
+{
+    QParallelAnimationGroup *group = m_collapseAnimations.data();
+    if( group && (group->animationCount() > 0) )
+        group->start( QAbstractAnimation::KeepWhenStopped );
+}
+
+void
 ContextView::hideAppletExplorer()
 {
-    m_appletExplorer->hide();
+    if( m_appletExplorer )
+        m_appletExplorer.data()->hide();
 }
 
 void
 ContextView::showAppletExplorer()
 {
-    m_appletExplorer->show();
+    if( !m_appletExplorer )
+    {
+        Context::Containment *cont = qobject_cast<Context::Containment*>( containment() );
+        m_appletExplorer = new AppletExplorer( cont );
+        m_appletExplorer.data()->setContainment( cont );
+        m_appletExplorer.data()->setZValue( m_appletExplorer.data()->zValue() + 1000 );
+        m_appletExplorer.data()->setFlag( QGraphicsItem::ItemIsSelectable );
+
+        connect( m_appletExplorer.data(), SIGNAL(addAppletToContainment(QString, const int)),
+                 cont, SLOT(addApplet(QString, const int)) );
+        connect( m_appletExplorer.data(), SIGNAL(appletExplorerHid()), SIGNAL(appletExplorerHid()) );
+        connect( m_appletExplorer.data(), SIGNAL(geometryChanged()), SLOT(slotPositionAppletExplorer()) );
+
+        qreal height = m_appletExplorer.data()->effectiveSizeHint( Qt::PreferredSize ).height();
+        m_appletExplorer.data()->resize( rect().width() - 2, height );
+        m_appletExplorer.data()->setPos( 0, rect().height() - height - 2 );
+    }
+    m_appletExplorer.data()->show();
+}
+
+void
+ContextView::slotPositionAppletExplorer()
+{
+    if( !m_appletExplorer )
+        return;
+    qreal height = m_appletExplorer.data()->effectiveSizeHint( Qt::PreferredSize ).height();
+    m_appletExplorer.data()->setPos( 0, rect().height() - height - 2 );
 }
 
 
@@ -262,29 +339,28 @@ ContextView::contextScene()
 void
 ContextView::resizeEvent( QResizeEvent* event )
 {
-    Q_UNUSED( event )
-
-    if ( testAttribute( Qt::WA_PendingResizeEvent ) )
+    Plasma::View::resizeEvent( event );
+    if( testAttribute( Qt::WA_PendingResizeEvent ) )
         return; // lets not do this more than necessary, shall we?
 
-   updateContainmentsGeometry();
-}
+    QRectF rect( QRectF(pos(), maximumViewportSize()) );
+    containment()->setGeometry( rect );
+    scene()->setSceneRect( rect );
+    scene()->update( rect );
 
-
-void
-ContextView::updateContainmentsGeometry()
-{
-    containment()->resize( rect().size() );
-    containment()->setPos( rect().topLeft() );
-    m_appletExplorer->resize( rect().width(), m_appletExplorer->size().height() );
-    m_appletExplorer->setPos( 0, rect().height() - m_appletExplorer->size().height() - 5 );
+    if( m_appletExplorer )
+    {
+        qreal height = m_appletExplorer.data()->effectiveSizeHint( Qt::PreferredSize ).height();
+        m_appletExplorer.data()->resize( rect.width() - 2, height );
+        m_appletExplorer.data()->setPos( 0, rect.height() - height - 2 );
+    }
 }
 
 void
 ContextView::wheelEvent( QWheelEvent* event )
 {
     if( event->orientation() != Qt::Horizontal )
-        QGraphicsView::wheelEvent( event );
+        Plasma::View::wheelEvent( event );
 }
 
 QStringList

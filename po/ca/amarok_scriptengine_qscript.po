@@ -17,6 +17,7 @@ msgstr ""
 "Language: ca\n"
 "X-Generator: Lokalize 1.0\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Accelerator-Marker: &\n"
 
 #: simplejavascriptapplet.cpp:512
 msgid "i18n() takes at least one argument"

@@ -25,11 +25,10 @@
 
 #include <QDir>
 #include <QImage>
-#if QT_VERSION >= 0x040600
 #include <QPixmapCache>
-#endif
 
 #include <KStandardDirs>
+#include <KLocale>
 
 //Meta::Observer
 
@@ -290,26 +289,20 @@ Meta::Track::removeLabel( const Meta::LabelPtr &label )
     Q_UNUSED( label )
 }
 
-void
-Meta::Track::addMatchTo( Collections::QueryMaker *qm )
-{
-    qm->addMatch( TrackPtr( this ) );
-}
-
 QDateTime
 Meta::Track::createDate() const
 {
     return QDateTime();
 }
-qreal
-Meta::Track::replayGain( Meta::Track::ReplayGainMode mode ) const
+
+QDateTime
+Meta::Track::modifyDate() const
 {
-    Q_UNUSED( mode )
-    return 0.0;
+    return QDateTime();
 }
 
 qreal
-Meta::Track::replayPeakGain( Meta::Track::ReplayGainMode mode ) const
+Meta::Track::replayGain( Meta::ReplayGainTag mode ) const
 {
     Q_UNUSED( mode )
     return 0.0;
@@ -335,10 +328,16 @@ Meta::Track::notifyObservers() const
     }
 }
 
-uint
+QDateTime
+Meta::Track::lastPlayed() const
+{
+    return QDateTime();
+}
+
+QDateTime
 Meta::Track::firstPlayed() const
 {
-    return 0;
+    return QDateTime();
 }
 
 bool
@@ -390,10 +389,12 @@ Meta::Track::lessThan( const Meta::TrackPtr& left, const Meta::TrackPtr& right )
 
 //Meta::Artist
 
-void
-Meta::Artist::addMatchTo( Collections::QueryMaker *qm )
+QString
+Meta::Artist::prettyName() const
 {
-    qm->addMatch( ArtistPtr( this ) );
+    if( !name().isEmpty() )
+        return name();
+    return i18n("Unknown Artist");
 }
 
 void
@@ -415,28 +416,35 @@ Meta::Artist::operator==( const Meta::Artist &artist ) const
 QString
 Meta::Artist::sortableName() const
 {
-    if( m_sortableName.isEmpty() && !name().isEmpty() ) {
-        if( name().startsWith( "the ", Qt::CaseInsensitive ) ) {
-            QString begin = name().left( 3 );
-            m_sortableName = QString( "%1, %2" ).arg( name(), begin );
-            m_sortableName = m_sortableName.mid( 4 );
-        } else if( name().startsWith( "dj ", Qt::CaseInsensitive ) ) {
-            QString begin = name().left( 2 );
-            m_sortableName = QString( "%1, %2" ).arg( name(), begin );
-            m_sortableName = m_sortableName.mid( 3 );
+    if( !m_sortableName.isEmpty() )
+        return m_sortableName;
+
+    const QString &n = name();
+    if( n.startsWith( QLatin1String("the "), Qt::CaseInsensitive ) )
+    {
+        QStringRef article = n.leftRef( 3 );
+        QStringRef subject = n.midRef( 4 );
+        m_sortableName = QString( "%1, %2" ).arg( subject.toString(), article.toString() );
     }
-        else
-            m_sortableName = name();
+    else if( n.startsWith( QLatin1String("dj "), Qt::CaseInsensitive ) )
+    {
+        QStringRef article = n.leftRef( 2 );
+        QStringRef subject = n.midRef( 3 );
+        m_sortableName = QString( "%1, %2" ).arg( subject.toString(), article.toString() );
     }
+    else
+        m_sortableName = n;
     return m_sortableName;
 }
 
 //Meta::Album
 
-void
-Meta::Album::addMatchTo( Collections::QueryMaker *qm )
+QString
+Meta::Album::prettyName() const
 {
-    qm->addMatch( AlbumPtr( this ) );
+    if( !name().isEmpty() )
+        return name();
+    return i18n("Unknown Album");
 }
 
 void
@@ -463,10 +471,8 @@ Meta::Album::image( int size )
 
     QPixmap pixmap;
     // look in the memory pixmap cache
-#if QT_VERSION >= 0x040600
     if( QPixmapCache::find( noCoverKey, &pixmap ) )
         return pixmap;
-#endif
 
     if( cacheCoverDir.exists( noCoverKey ) )
     {
@@ -478,9 +484,7 @@ Meta::Album::image( int size )
         pixmap = orgPixmap.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
         pixmap.save( cacheCoverDir.filePath( noCoverKey ), "PNG" );
     }
-#if QT_VERSION >= 0x040600
     QPixmapCache::insert( noCoverKey, pixmap );
-#endif
     return pixmap;
 }
 
@@ -492,10 +496,12 @@ Meta::Album::operator==( const Meta::Album &album ) const
 
 //Meta::Genre
 
-void
-Meta::Genre::addMatchTo( Collections::QueryMaker *qm )
+QString
+Meta::Genre::prettyName() const
 {
-    qm->addMatch( GenrePtr( this ) );
+    if( !name().isEmpty() )
+        return name();
+    return i18n("Unknown Genre");
 }
 
 void
@@ -518,10 +524,12 @@ Meta::Genre::operator==( const Meta::Genre &genre ) const
 
 //Meta::Composer
 
-void
-Meta::Composer::addMatchTo( Collections::QueryMaker *qm )
+QString
+Meta::Composer::prettyName() const
 {
-    qm->addMatch( ComposerPtr( this ) );
+    if( !name().isEmpty() )
+        return name();
+    return i18n("Unknown Composer");
 }
 
 void
@@ -543,12 +551,6 @@ Meta::Composer::operator==( const Meta::Composer &composer ) const
 //Meta::Year
 
 void
-Meta::Year::addMatchTo( Collections::QueryMaker *qm )
-{
-    qm->addMatch( YearPtr( this ) );
-}
-
-void
 Meta::Year::notifyObservers() const
 {
     foreach( Observer *observer, m_observers )
@@ -562,12 +564,6 @@ bool
 Meta::Year::operator==( const Meta::Year &year ) const
 {
     return dynamic_cast<const void*>( this ) == dynamic_cast<const  void*>( &year );
-}
-
-void
-Meta::Label::addMatchTo( Collections::QueryMaker *qm )
-{
-    qm->addMatch( Meta::LabelPtr( this ) );
 }
 
 void

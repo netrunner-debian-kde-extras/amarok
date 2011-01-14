@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Peter ZHOU <peterzhoulei@gmail.com>                               *
  * Copyright (c) 2008 Ian Monroe <ian@monroe.nu>                                        *
- *                                                                                      *
+Image*                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
  * Foundation; either version 2 of the License, or (at your option) any later           *
@@ -149,11 +149,11 @@ MetaTrackPrototype::genre() const
     return ( track && track->genre() ) ? track->genre()->prettyName() : QString();
 }
 
-QString
+int
 MetaTrackPrototype::year() const
 {
     GET_TRACK
-    return ( track && track->year() ) ? track->year()->prettyName() : QString();
+    return ( track && track->year() ) ? track->year()->year() : 0;
 }
 
 QString
@@ -222,7 +222,7 @@ bool
 MetaTrackPrototype::isEditable() const
 {
     GET_TRACK
-    Capabilities::EditCapability* ec = track->create<Capabilities::EditCapability>();
+    QScopedPointer<Capabilities::EditCapability> ec( track->create<Capabilities::EditCapability>() );
     return ( ec && ec->isEditable() );
 }
 
@@ -284,7 +284,7 @@ MetaTrackPrototype::setGenre( QString genre )
 }
 
 void
-MetaTrackPrototype::setYear( QString year )
+MetaTrackPrototype::setYear( int year )
 {
     GET_TRACK_EC( ec->setYear( year ) )
 }
@@ -312,7 +312,7 @@ void
 MetaTrackPrototype::setImageUrl( const QString& imageUrl )
 {
     GET_TRACK
-    if ( track && track->album() ) track->album()->setImage( QPixmap(imageUrl) );
+    if ( track && track->album() ) track->album()->setImage( QImage(imageUrl) );
 }
 
 #undef GET_TRACK

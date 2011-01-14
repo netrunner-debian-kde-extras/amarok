@@ -172,12 +172,12 @@ void TestMetaTrack::testDiscNumber()
 
 void TestMetaTrack::testLastPlayed()
 {
-    QCOMPARE( m_testTrack1->lastPlayed(), 4294967295U ); // portability?
+    QCOMPARE( m_testTrack1->lastPlayed().toTime_t(), 4294967295U ); // portability?
 }
 
 void TestMetaTrack::testFirstPlayed()
 {
-    QCOMPARE( m_testTrack1->firstPlayed(), 4294967295U ); // portability?
+    QCOMPARE( m_testTrack1->firstPlayed().toTime_t(), 4294967295U ); // portability?
 }
 
 void TestMetaTrack::testPlayCount()
@@ -187,14 +187,10 @@ void TestMetaTrack::testPlayCount()
 
 void TestMetaTrack::testReplayGain()
 {
-    QCOMPARE( int(m_testTrack1->replayGain( Meta::Track::TrackReplayGain ) * 1000), -6655 );
-    QCOMPARE( int(m_testTrack1->replayGain( Meta::Track::AlbumReplayGain ) * 1000), -6655 );
-}
-
-void TestMetaTrack::testReplayPeakGain()
-{
-    QCOMPARE( int(m_testTrack1->replayPeakGain( Meta::Track::TrackReplayGain ) * 10000), 41263 );
-    QCOMPARE( int(m_testTrack1->replayPeakGain( Meta::Track::AlbumReplayGain ) * 10000), 41263 );
+    QCOMPARE( int(m_testTrack1->replayGain( Meta::ReplayGain_Track_Gain ) * 1000), -6655 );
+    QCOMPARE( int(m_testTrack1->replayGain( Meta::ReplayGain_Album_Gain ) * 1000), -6655 );
+    QCOMPARE( int(m_testTrack1->replayGain( Meta::ReplayGain_Track_Peak ) * 10000), 41263 );
+    QCOMPARE( int(m_testTrack1->replayGain( Meta::ReplayGain_Album_Peak ) * 10000), 41263 );
 }
 
 void TestMetaTrack::testType()

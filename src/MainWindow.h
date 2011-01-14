@@ -22,13 +22,14 @@
 
 #include "amarok_export.h"
 #include "core/meta/Meta.h"
-#include "core/engine/EngineObserver.h"
 #include "browsers/BrowserDock.h"
 
 #include <KMainWindow>
 #include <KVBox>
+#include <Phonon/Global>
+#include <Phonon/Global>
 
-#include <QPointer>
+#include <QWeakPointer>
 
 class CollectionWidget;
 class SlimToolbar;
@@ -45,6 +46,7 @@ class ContextDock;
 
 
 class KMenu;
+class KAction;
 class QMenuBar;
 class QSplitter;
 class QTimer;
@@ -62,44 +64,45 @@ namespace The {
   *
   * This is the main window widget.
   */
-class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserver, public Meta::Observer
+class AMAROK_EXPORT MainWindow : public KMainWindow
 {
     friend MainWindow* The::mainWindow();
 
     Q_OBJECT
 
     public:
+        enum AmarokDockId {
+            AmarokDockNavigation,
+            AmarokDockContext,
+            AmarokDockPlaylist
+        };
+        
         MainWindow();
         ~MainWindow();
 
-        //allows us to switch browsers from within other browsers etc
-        void showBrowser( const QString& name );
-        void addBrowser( const QString &name, QWidget *widget, const QString &text, const QString &icon );
-
-        //takes into account minimized, multiple desktops, etc.
-        bool isReallyShown() const;
-
         void activate();
 
-        BrowserDock *browserDock() const { return m_browserDock; }
-        QPointer<KMenu> ToolsMenu() const { return m_toolsMenu; }
-        QPointer<KMenu> SettingsMenu() const { return m_settingsMenu; }
-        Playlist::Dock * playlistDock() const { return m_playlistDock; }
+        //allows us to switch browsers from within other browsers etc
+        void showBrowser( const QString& name );
+
+        //ensures the dock widget is visible in case it is tabbed
+        void showDock( AmarokDockId dockId );
+
+        BrowserDock *browserDock() const { return m_browserDock.data(); }
+        KMenu *ToolsMenu() const { return m_toolsMenu.data(); }
+        KMenu *SettingsMenu() const { return m_settingsMenu.data(); }
+        Playlist::Dock *playlistDock() const { return m_playlistDock.data(); }
         void deleteBrowsers();
 
         /* Reimplemented from QMainWindow to allow only one active toolbar at any time */
         virtual QMenu* createPopupMenu();
 
+        void addViewMenuItems(QMenu* menu);
+
         QString activeBrowserName();
 
         CollectionWidget * collectionBrowser();
         PlaylistBrowserNS::PlaylistBrowser * playlistBrowser();
-
-        //will return the size of the rect defined top, right and left by the main toolbar and bottom by the context view.
-        QSize backgroundSize() const;
-
-        QRect contextRectGlobal() const;
-        QPoint globalBackgroundOffset();
 
         bool isLayoutLocked() const;
 
@@ -122,27 +125,22 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         void slotFullScreen();
         void slotLoveTrack();
         void showNotificationPopup();
-
         void setLayoutLocked( bool locked );
-
         void showAbout();
         void showReportBug();
 
-    protected:
-        //Reimplemented from EngineObserver
-        virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
-        virtual void engineNewTrackPlaying();
-
-        //Reimplemented from Meta::Observer
-        using Observer::metadataChanged;
-        virtual void metadataChanged( Meta::TrackPtr track );
-
     private slots:
+        void slotStopped();
+        void slotPaused();
+        void slotNewTrackPlaying();
+        void slotMetadataChanged( Meta::TrackPtr track );
+
         void exportPlaylist() const;
         void slotShowActiveTrack() const;
         void slotShowBookmarkManager() const;
         void slotShowEqualizer() const;
         void slotShowCoverManager() const;
+        void slotShowMenuBar();
         void slotPlayMedia();
         void slotAddLocation( bool directPlay = false );
         void slotAddStream();
@@ -163,11 +161,7 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
         void restoreLayout();
 
     protected:
-        bool eventFilter(QObject *, QEvent *);
         virtual void closeEvent( QCloseEvent* );
-        virtual void showEvent( QShowEvent* event );
-        virtual void keyPressEvent( QKeyEvent* );
-        virtual void resizeEvent ( QResizeEvent * event );
         virtual void paletteChange( const QPalette & oldPalette );
         virtual bool queryExit(); 
 
@@ -181,71 +175,38 @@ class AMAROK_EXPORT MainWindow : public KMainWindow, public Engine::EngineObserv
     private:
         void init();
         void setRating( int n );
-        void showBrowser( const int index );
 
         CollectionWidget * m_collectionBrowser;
         PlaylistBrowserNS::PlaylistBrowser * m_playlistBrowser;
 
-        QPointer<QMenuBar>  m_menubar;
-        QPointer<KMenu>     m_toolsMenu;
-        QPointer<KMenu>     m_settingsMenu;
-        QPointer<BrowserDock>  m_browserDock;
-        QStringList         m_browserNames;
-        QPointer<KMenu>     m_searchMenu;
-        //QPointer<KVBox>     m_statusbarArea;
-
-        QPointer<QTimer>           m_timer;  //search filter timer
-        QPointer<QSplitter>        m_splitter;
+        QWeakPointer<QMenuBar>  m_menubar;
+        QWeakPointer<KMenu>     m_toolsMenu;
+        QWeakPointer<KMenu>     m_settingsMenu;
+        QWeakPointer<BrowserDock> m_browserDock;
 #ifdef DEBUG_BUILD_TYPE
-        QPointer<NetworkAccessViewer> m_networkViewer;
+        QWeakPointer<NetworkAccessViewer> m_networkViewer;
 #endif // DEBUG_BUILD_TYPE
 
-        QByteArray                 m_splitterState;
+        QByteArray m_splitterState;
 
-        Meta::TrackPtr m_currentTrack;
+        QWeakPointer<ContextDock> m_contextDock;
+        QWeakPointer<Playlist::Dock> m_playlistDock;
 
-        ContextDock * m_contextDock;
-        Playlist::Dock * m_playlistDock;
+        QWeakPointer<SlimToolbar> m_slimToolbar;
+        QWeakPointer<MainToolbar> m_mainToolbar;
 
-        QPointer<SlimToolbar> m_slimToolbar;
-        QPointer<MainToolbar> m_mainToolbar;
+        void createActions();
+        void createMenus();
 
-        void    createActions();
-        void    createMenus();
-        int     m_lastBrowser;
-        int     m_searchField;
+        KAction* m_showMenuBar;
 
-        static QPointer<MainWindow> s_instance;
+        int m_lastBrowser;
+        int m_searchField;
+
+        static QWeakPointer<MainWindow> s_instance;
 
         bool m_layoutLocked;
-        bool m_layoutEverRestored;
-
         bool m_waitingForCd;
-
-        // Layout hack -----------------
-        typedef struct Ratio {
-            float x,y;
-        } Ratio;
-        Ratio m_browserRatio;
-        Ratio m_contextRatio;
-        Ratio m_playlistRatio;
-        QRect m_dockingRect;
-        bool m_mouseDown;
-        bool m_LH_initialized;
-        QTimer * m_saveLayoutChangesTimer;
-
-        bool LH_isIrrelevant( const QDockWidget *dock );
-        QTabBar *LH_dockingTabbar();
-        void LH_extend( QRect &target, const QDockWidget *dock );
-        QSize LH_desiredSize( QDockWidget *dock, const QRect &area, float rx, float ry, int splitter );
-        bool LH_fuzzyMatch( const QSize &sz1, const QSize &sz2 );
-        bool LH_isConstrained( const QDockWidget *dock );
-
-    private slots:
-        void updateDockRatio();
-        void updateDockRatio(QDockWidget*);
-        void initLayoutHack();
-        // ------------------------------
 };
 
 

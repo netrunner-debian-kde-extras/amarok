@@ -26,7 +26,7 @@
 
 #include <QHash>
 #include <QObject>      //baseclass
-#include <QPointer>
+#include <QWeakPointer>
 #include <QStringList>  //stack allocated
 
 class CoverFetchQueue;
@@ -59,13 +59,16 @@ signals:
 private slots:
 
     /// Fetch a cover
-    void slotFetch( const CoverFetchUnit::Ptr unit );
+    void slotFetch( CoverFetchUnit::Ptr unit );
 
     /// Handle result of a fetch job
     void slotResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 
     /// Cover found dialog is closed by the user
     void slotDialogFinished();
+
+    /// The fetch request was redirected.
+    void fetchRequestRedirected( QNetworkReply *oldReply, QNetworkReply *newReply );
 
 private:
     static CoverFetcher* s_instance;
@@ -82,11 +85,11 @@ private:
     Meta::AlbumList m_queueLater; //!< put here if m_queue exceeds m_limit
 
     QHash< KUrl, CoverFetchUnit::Ptr > m_urls;
-    QHash< const CoverFetchUnit::Ptr, QPixmap > m_selectedPixmaps;
+    QHash< const CoverFetchUnit::Ptr, QImage > m_selectedImages;
 
     QStringList m_errors;
 
-    QPointer<CoverFoundDialog> m_dialog;
+    QWeakPointer<CoverFoundDialog> m_dialog;
 
     /// cleanup depending on the fetch result
     void finish( const CoverFetchUnit::Ptr unit,
@@ -94,9 +97,13 @@ private:
                  const QString &message = QString() );
 
     /// Show the cover that has been found
-    void showCover( CoverFetchUnit::Ptr unit,
+    void showCover( const CoverFetchUnit::Ptr &unit,
                     const QPixmap &cover = QPixmap(),
-                    CoverFetch::Metadata data = CoverFetch::Metadata() );
+                    const CoverFetch::Metadata &data = CoverFetch::Metadata() );
+
+    void handleCoverPayload( const CoverFetchUnit::Ptr &unit,
+                             const QByteArray &data,
+                             const KUrl &url );
 
     CoverFetch::Source fetchSource() const;
 };

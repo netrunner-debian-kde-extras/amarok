@@ -16,6 +16,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "ActionClasses"
+
 #include "ActionClasses.h"
 
 #include <config-amarok.h>
@@ -26,7 +28,6 @@
 #include "EngineController.h"
 #include "MainWindow.h"
 #include "amarokconfig.h"
-#include "covermanager/CoverManager.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
 
@@ -169,44 +170,54 @@ Menu::helpMenu( QWidget *parent ) //STATIC
 
 PlayPauseAction::PlayPauseAction( KActionCollection *ac, QObject *parent )
         : KToggleAction( parent )
-        , Engine::EngineObserver( The::engineController() )
 {
+
     ac->addAction( "play_pause", this );
     setText( i18n( "Play/Pause" ) );
     setShortcut( Qt::Key_Space );
     setGlobalShortcut( KShortcut( Qt::Key_MediaPlay ) );
-    PERF_LOG( "PlayPauseAction: before engineStateChanged" )
-    engineStateChanged( The::engineController()->state() );
-    PERF_LOG( "PlayPauseAction: after engineStateChanged" )
 
-    connect( this, SIGNAL(triggered()), The::engineController(), SLOT(playPause()) );
+    EngineController *engine = The::engineController();
+
+    if( engine->isPaused() )
+        paused();
+    else if( engine->isPlaying() )
+        playing();
+    else
+        stopped();
+
+    connect( this, SIGNAL(triggered()),
+             engine, SLOT(playPause()) );
+
+    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
+             this, SLOT( stopped() ) );
+    connect( engine, SIGNAL( paused() ),
+             this, SLOT( paused() ) );
+    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
+             this, SLOT( playing() ) );
 }
 
 void
-PlayPauseAction::engineStateChanged( Phonon::State state,  Phonon::State oldState )
+PlayPauseAction::stopped()
 {
-    Q_UNUSED( oldState)
-
-    switch( state )
-    {
-    case Phonon::PlayingState:
-        setChecked( false );
-        setIcon( KIcon("media-playback-pause-amarok") );
-        break;
-    case Phonon::PausedState:
-        setChecked( true );
-        setIcon( KIcon("media-playback-start-amarok") );
-        break;
-    case Phonon::StoppedState:
-    case Phonon::LoadingState:
-        setChecked( false );
-        setIcon( KIcon("media-playback-start-amarok") );
-        break;
-    case Phonon::ErrorState:
-    case Phonon::BufferingState:
-        break;
-    }
+    setChecked( false );
+    setIcon( KIcon("media-playback-start-amarok") );
 }
+
+void
+PlayPauseAction::paused()
+{
+    setChecked( true );
+    setIcon( KIcon("media-playback-start-amarok") );
+}
+
+void
+PlayPauseAction::playing()
+{
+    setChecked( false );
+    setIcon( KIcon("media-playback-pause-amarok") );
+}
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // ToggleAction
@@ -481,32 +492,37 @@ BurnMenu::slotBurnSelectedTracks() //SLOT
 
 StopAction::StopAction( KActionCollection *ac, QObject *parent )
   : KAction( parent )
-  , Engine::EngineObserver( The::engineController() )
 {
     ac->addAction( "stop", this );
     setText( i18n( "Stop" ) );
     setIcon( KIcon("media-playback-stop-amarok") );
     setGlobalShortcut( KShortcut( Qt::Key_MediaStop ) );
     connect( this, SIGNAL( triggered() ), this, SLOT( stop() ) );
-    setEnabled( false );  // Disable action at startup
+
+    EngineController *engine = The::engineController();
+
+    if( engine->isStopped() )
+        stopped();
+    else
+        playing();
+
+    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
+             this, SLOT( stopped() ) );
+    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
+             this, SLOT( playing() ) );
+
 }
 
 void
-StopAction::engineStateChanged( Phonon::State state,  Phonon::State /*oldState*/ )
+StopAction::stopped()
 {
-    switch( state ) {
-    case Phonon::PlayingState:
-    case Phonon::PausedState:
-        setEnabled( true );
-        break;
-    case Phonon::StoppedState:
-    case Phonon::LoadingState:
-        setDisabled( true );
-        break;
-    case Phonon::ErrorState:
-    case Phonon::BufferingState:
-        break;
-    }
+    setEnabled( false );
+}
+
+void
+StopAction::playing()
+{
+    setEnabled( true );
 }
 
 void
@@ -528,14 +544,12 @@ StopAction::stop()
 
 StopPlayingAfterCurrentTrackAction::StopPlayingAfterCurrentTrackAction( KActionCollection *ac, QObject *parent )
 : KAction( parent )
-, Engine::EngineObserver( The::engineController() )
 {
     ac->addAction( "stop_after_current", this );
     setText( i18n( "Stop after current Track" ) );
     setIcon( KIcon("media-playback-stop-amarok") );
     setGlobalShortcut( KShortcut( Qt::META + Qt::SHIFT + Qt::Key_V ) );
     connect( this, SIGNAL( triggered() ), SLOT( stopPlayingAfterCurrentTrack() ) );
-    setEnabled( false );  // Disable action at startup
 }
 
 void
@@ -554,24 +568,6 @@ StopPlayingAfterCurrentTrackAction::stopPlayingAfterCurrentTrack()
         The::playlistActions()->repaintPlaylist();
         Amarok::OSD::instance()->setImage( QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
         Amarok::OSD::instance()->OSDWidget::show( i18n( "Stop after current track: Off" ) );
-    }
-}
-
-void
-StopPlayingAfterCurrentTrackAction::engineStateChanged( Phonon::State state,  Phonon::State /*oldState*/ )
-{
-    switch( state ) {
-        case Phonon::PlayingState:
-        case Phonon::PausedState:
-        case Phonon::StoppedState:
-            setEnabled( true );
-            break;
-        case Phonon::LoadingState:
-            setDisabled( true );
-            break;
-        case Phonon::ErrorState:
-        case Phonon::BufferingState:
-            break;
     }
 }
 

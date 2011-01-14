@@ -75,21 +75,6 @@ XmlQueryWriter::getEmbeddedQueryMaker() const
     return m_qm;
 }
 
-
-QueryMaker*
-XmlQueryWriter::reset()
-{
-    QDomNode child = m_element.firstChild();
-    while( !child.isNull() )
-    {
-        m_element.removeChild( child );
-        child = m_element.firstChild();
-    }
-
-    m_qm->reset();
-    return this;
-}
-
 void
 XmlQueryWriter::run()
 {
@@ -118,7 +103,7 @@ XmlQueryWriter::setQueryType( QueryType type )
         insertRetValue( "track" );
         m_qm->setQueryType( QueryMaker::Track );
         return this;
-            
+
     case QueryMaker::Artist:
         insertRetValue( "artist" );
         m_qm->setQueryType( QueryMaker::Artist );
@@ -128,7 +113,10 @@ XmlQueryWriter::setQueryType( QueryType type )
         insertRetValue( "album" );
         m_qm->setQueryType( QueryMaker::Album );
         return this;
-
+    case QueryMaker::AlbumArtist:
+        insertRetValue( "albumartist" );
+        m_qm->setQueryType( QueryMaker::AlbumArtist );
+        return this;
     case QueryMaker::Genre:
         insertRetValue( "genre" );
         m_qm->setQueryType( QueryMaker::Genre );
@@ -153,7 +141,7 @@ XmlQueryWriter::setQueryType( QueryType type )
         insertRetValue( "label" );
         m_qm->setQueryType( QueryMaker::Label );
         return this;
-    
+
     case QueryMaker::None:
         return this;
     }
@@ -191,7 +179,7 @@ QueryMaker*
 XmlQueryWriter::orderBy( qint64 value, bool descending )
 {
     QDomElement e = m_doc.createElement( "order" );
-    e.setAttribute( "field", fieldName( value ) );
+    e.setAttribute( "field", Meta::nameForField( value ) );
     e.setAttribute( "value", descending ? "descending" : "ascending" );
     m_element.appendChild( e );
 
@@ -284,13 +272,6 @@ XmlQueryWriter::addMatch( const Meta::LabelPtr &label )
 }
 
 QueryMaker*
-XmlQueryWriter::addMatch( const Meta::DataPtr &data )
-{
-    m_qm->addMatch( data );
-    return this;
-}
-
-QueryMaker*
 XmlQueryWriter::addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd )
 {
     DEBUG_BLOCK
@@ -361,6 +342,33 @@ XmlQueryWriter::setAlbumQueryMode( AlbumQueryMode mode )
     return this;
 }
 
+QueryMaker *
+XmlQueryWriter::setArtistQueryMode( QueryMaker::ArtistQueryMode mode )
+{
+    m_element.removeChild( m_element.lastChildElement( "onlyTrackArtists" ) );
+    m_element.removeChild( m_element.lastChildElement( "onlyAlbumArtists" ) );
+    m_element.removeChild( m_element.lastChildElement( "AlbumOrTrackArtists" ) );
+
+    if( mode == TrackArtists )
+    {
+        QDomElement e = m_doc.createElement( "onlyTrackArtists" );
+        m_element.appendChild( e );
+    }
+    else if( mode == AlbumArtists )
+    {
+        QDomElement e = m_doc.createElement( "onlyAlbumArtists" );
+        m_element.appendChild( e );
+    }
+    else if( mode == AlbumOrTrackArtists )
+    {
+        QDomElement e = m_doc.createElement( "AlbumOrTrackArtists" );
+        m_element.appendChild( e );
+    }
+
+    m_qm->setArtistQueryMode( mode );
+    return this;
+}
+
 QueryMaker*
 XmlQueryWriter::beginAnd()
 {
@@ -409,7 +417,7 @@ QDomElement
 XmlQueryWriter::xmlForFilter( QDomDocument doc, bool exclude, quint64 field, QString value)
 {
     QDomElement e = doc.createElement( exclude ? "exclude" : "include" );
-    e.setAttribute( "field", fieldName( field ) );
+    e.setAttribute( "field", Meta::nameForField( field ) );
     e.setAttribute( "value", value );
 
     return e;
@@ -419,7 +427,7 @@ QDomElement
 XmlQueryWriter::xmlForFilter( QDomDocument doc, bool exclude, quint64 field, quint64 numValue, NumberComparison compare)
 {
     QDomElement e = doc.createElement( exclude ? "exclude" : "include" );
-    e.setAttribute( "field", fieldName( field ) );
+    e.setAttribute( "field", Meta::nameForField( field ) );
     e.setAttribute( "value", numValue );
     e.setAttribute( "compare", compareName( compare ) );
 
@@ -437,38 +445,6 @@ XmlQueryWriter::insertRetValue( QString val )
 
     QDomElement retval = m_doc.createElement( val );
     m_retvalElement.appendChild( retval );
-}
-
-
-QString
-XmlQueryWriter::fieldName( qint64 val )
-{
-    switch( val )
-    {
-        case Meta::valUrl:         return "url";
-        case Meta::valTitle:       return "title";
-        case Meta::valArtist:      return "artist";
-        case Meta::valAlbum:       return "album";
-        case Meta::valGenre:       return "genre";
-        case Meta::valComposer:    return "composer";
-        case Meta::valYear:        return "year";
-        case Meta::valComment:     return "comment";
-        case Meta::valTrackNr:     return "tracknr";
-        case Meta::valDiscNr:      return "discnr";
-        case Meta::valLength:      return "length";
-        case Meta::valBitrate:     return "bitrate";
-        case Meta::valSamplerate:  return "samplerate";
-        case Meta::valFilesize:    return "filesize";
-        case Meta::valFormat:      return "format";
-        case Meta::valCreateDate:  return "createdate";
-        case Meta::valScore:       return "score";
-        case Meta::valRating:      return "rating";
-        case Meta::valFirstPlayed: return "firstplay";
-        case Meta::valLastPlayed:  return "lastplay";
-        case Meta::valPlaycount:   return "playcount";
-        case Meta::valLabel:       return "label";
-        default:                   return "";
-    }
 }
 
 QString

@@ -21,6 +21,7 @@
 
 #include "shared/amarok_export.h"
 #include "core/meta/Meta.h"
+#include "core/transcoding/TranscodingConfiguration.h"
 
 #include <QList>
 #include <QObject>
@@ -153,9 +154,12 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
            convenience method for copying a single track,
            @see prepareCopy( Meta::TrackList, CollectionLocation* )
         */
-        void prepareCopy( Meta::TrackPtr track, CollectionLocation *destination );
-        void prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination );
-        void prepareCopy( Collections::QueryMaker *qm, CollectionLocation *destination );
+        void prepareCopy( Meta::TrackPtr track, CollectionLocation *destination,
+                          const Transcoding::Configuration &configuration = Transcoding::Configuration() );
+        void prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination,
+                          const Transcoding::Configuration &configuration = Transcoding::Configuration() );
+        void prepareCopy( Collections::QueryMaker *qm, CollectionLocation *destination,
+                          const Transcoding::Configuration &configuration = Transcoding::Configuration() );
 
         /**
            convenience method for moving a single track,
@@ -171,19 +175,22 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         void prepareRemove( const Meta::TrackList &tracks );
         void prepareRemove( Collections::QueryMaker *qm );
 
-        /**
-           remove the track from the collection.
-           Return true if the removal was successful, false otherwise.
-        */
-
+        /** Removes a track from the collection (not from disk)
+         * Removes a track from the database ONLY if the file does NOT exist on disk.
+         * Do not call this method directly. Use the prepareRemove() method.
+         * @param track a track that does not exist on disk to be removed from the database
+         * @return true if the database entry was removed, false otherwise
+         */
         virtual bool remove( const Meta::TrackPtr &track );
 
-        /**
-           convenience method for removing multiple tracks,
-           @see remove( const Meta::TrackPtr &track )
-        */
-
-        bool remove( const Meta::TrackList &tracks );
+        /** Adds or merges a track to the collection (not to the disk)
+         * In
+         * Inserts a set of TrackPtrs directly into the database without needing to actual move any files
+         * This is a hack required by the DatabaseImporter
+         * TODO: Remove this hack
+         * @return true if the database entry was inserted, false otherwise
+         */
+        virtual bool insert( const Meta::TrackPtr &track, const QString &url );
 
         /**
           explicitly inform the source collection of successful transfer.
@@ -197,19 +204,14 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         */
         virtual void transferError( const Meta::TrackPtr &track, const QString &error );
 
-        /**
-         * Inserts a set of TrackPtrs directly into the database without needing to actuall move any files
-         * This is a hack required by the DatabaseImporter
-         */
-        virtual void insertTracks( const QMap<Meta::TrackPtr, QString> &trackMap ) { Q_UNUSED( trackMap ); }
-        virtual void insertStatistics( const QMap<Meta::TrackPtr, QString> &trackMap ) { Q_UNUSED( trackMap ); }
-
     signals:
-        void startCopy( const QMap<Meta::TrackPtr, KUrl> &sources );
+        void startCopy( const QMap<Meta::TrackPtr, KUrl> &sources,
+                        const Transcoding::Configuration & );
         void finishCopy();
         void startRemove();
         void finishRemove();
-        void prepareOperation( const Meta::TrackList &tracks, bool removeSources );
+        void prepareOperation( const Meta::TrackList &tracks, bool removeSources,
+                               const Transcoding::Configuration & );
         void operationPrepared();
         void aborted();
 
@@ -245,7 +247,8 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
             is writeable. you must call slotCopyOperationFinished() when you are done copying
             the files.
         */
-        virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources );
+        virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
+            const Transcoding::Configuration &configuration = Transcoding::Configuration() );
 
         /**
            this method is called on the collection you want to remove tracks from.  it must
@@ -268,7 +271,9 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
          * must call slotShowDestinationDialogDone() after they have acquired all necessary
          * information from the user.
          */
-        virtual void showDestinationDialog( const Meta::TrackList &tracks, bool removeSources );
+        virtual void showDestinationDialog( const Meta::TrackList &tracks,
+                                            bool removeSources,
+                                            const Transcoding::Configuration &configuration );
 
         /**
          * this methods allows the collection to show a warning dialog before tracks are removed,
@@ -305,9 +310,11 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
 
     private slots:
 
-        void slotPrepareOperation( const Meta::TrackList &tracks, bool removeSources );
+        void slotPrepareOperation( const Meta::TrackList &tracks, bool removeSources,
+                                   const Transcoding::Configuration &configuration );
         void slotOperationPrepared();
-        void slotStartCopy( const QMap<Meta::TrackPtr, KUrl> &sources );
+        void slotStartCopy( const QMap<Meta::TrackPtr, KUrl> &sources,
+                            const Transcoding::Configuration &configuration );
         void slotFinishCopy();
         void slotStartRemove();
         void slotFinishRemove();
@@ -340,6 +347,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         bool m_removeSources;
         bool m_isRemoveAction;
         bool m_noRemoveConfirmation;
+        Transcoding::Configuration m_transcodingConfiguration;  //only used when copying
         //used by the source collection to store the tracks that were successfully
         //copied by the destination and can be removed as part of a move
         Meta::TrackList m_tracksSuccessfullyTransferred;

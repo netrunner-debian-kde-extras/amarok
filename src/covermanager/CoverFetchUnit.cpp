@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "CoverFetchUnit"
+
 #include "CoverFetchUnit.h"
 
 #include "core/support/Amarok.h"
@@ -22,7 +24,6 @@
 #include <QSet>
 #include <QXmlStreamReader>
 
-#define DEBUG_PREFIX "CoverFetchUnit"
 #include "core/support/Debug.h"
 
 /*
@@ -118,10 +119,6 @@ bool CoverFetchUnit::operator!=( const CoverFetchUnit &other ) const
     return !( *this == other );
 }
 
-#ifdef  DEBUG_PREFIX
-# undef DEBUG_PREFIX
-#endif
-#define DEBUG_PREFIX "CoverFetchPayload"
 
 /*
  * CoverFetchPayload
@@ -470,8 +467,9 @@ CoverFetchArtPayload::prepareUrls()
 
     if( xml.hasError() )
     {
-        debug() << QString( "Error occured when pareparing %1 urls: %2" )
-                                .arg( sourceString(), xml.errorString() );
+        debug() << QString( "Error occured when pareparing %1 urls for %2: %3" )
+            .arg( sourceString(), (album() ? album()->name() : "'unknown'"), xml.errorString() );
+        debug() << urls();
     }
 }
 

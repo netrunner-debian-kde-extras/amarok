@@ -54,27 +54,19 @@ namespace The {
 SvgHandler::SvgHandler( QObject* parent )
     : QObject( parent )
     , m_cache( new KPixmapCache( "Amarok-pixmaps" ) )
-    , m_sliderHandleCache( new KPixmapCache( "Amarok-Slider-pixmaps" ) )
     , m_themeFile( "amarok/images/default-theme-clean.svg" )  // //use default theme
     , m_customTheme( false )
 {
     DEBUG_BLOCK
+    m_cache->setCacheLimit( 10 * 1024 );
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), this, SLOT( discardCache() ) );
 }
 
 SvgHandler::~SvgHandler()
 {
     DEBUG_BLOCK
-
-    m_cache->deleteCache( "Amarok-pixmaps" ); 
     delete m_cache;
-    m_sliderHandleCache->deleteCache( "Amarok-Slider-pixmaps" );
-    delete m_sliderHandleCache;
-
-    foreach( KSvgRenderer* item, m_renderers )
-    {
-        delete item;
-    }
+    qDeleteAll( m_renderers );
     m_renderers.clear();
 
     The::s_SvgHandler_instance = 0;
@@ -83,14 +75,8 @@ SvgHandler::~SvgHandler()
 
 bool SvgHandler::loadSvg( const QString& name )
 {
-    QString svgFilename;
-    
-    if ( !m_customTheme )
-        svgFilename = KStandardDirs::locate( "data", name );
-    else
-        svgFilename = name;
-    
-    KSvgRenderer *renderer = new KSvgRenderer( The::svgTinter()->tint( svgFilename ).toAscii() );
+    const QString &svgFilename = !m_customTheme ? KStandardDirs::locate( "data", name ) : name;
+    QSvgRenderer *renderer = new QSvgRenderer( The::svgTinter()->tint( svgFilename ) );
 
     if ( !renderer->isValid() )
     {
@@ -107,7 +93,7 @@ bool SvgHandler::loadSvg( const QString& name )
     return true;
 }
 
-KSvgRenderer* SvgHandler::getRenderer( const QString& name )
+QSvgRenderer* SvgHandler::getRenderer( const QString& name )
 {
     QReadLocker readLocker( &m_lock );
     if( ! m_renderers[name] )
@@ -116,14 +102,14 @@ KSvgRenderer* SvgHandler::getRenderer( const QString& name )
         if( !loadSvg( name ) )
         {
             QWriteLocker writeLocker( &m_lock );
-            m_renderers[name] = new KSvgRenderer();
+            m_renderers[name] = new QSvgRenderer();
         }
         readLocker.relock();
     }
     return m_renderers[name];
 }
 
-KSvgRenderer * SvgHandler::getRenderer()
+QSvgRenderer * SvgHandler::getRenderer()
 {
     return getRenderer( m_themeFile );
 }
@@ -265,7 +251,7 @@ SvgHandler::imageWithBorder( Meta::AlbumPtr album, int size, int borderWidth )
     return addBordersToPixmap( album->image(imageSize), borderWidth, key );
 }
 
-QPixmap SvgHandler::addBordersToPixmap( QPixmap orgPixmap, int borderWidth, const QString &name, bool skipCache )
+QPixmap SvgHandler::addBordersToPixmap( const QPixmap &orgPixmap, int borderWidth, const QString &name, bool skipCache )
 {
     int newWidth = orgPixmap.width() + borderWidth * 2;
     int newHeight = orgPixmap.height() + borderWidth *2;

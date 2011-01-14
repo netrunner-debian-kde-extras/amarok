@@ -16,6 +16,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "CollectionLocation"
+
 #include "core/collections/CollectionLocation.h"
 
 #include "core/collections/Collection.h"
@@ -36,6 +38,7 @@ CollectionLocation::CollectionLocation()
     , m_removeSources( false )
     , m_isRemoveAction( false )
     , m_noRemoveConfirmation( false )
+    , m_transcodingConfiguration( Transcoding::Configuration() )
 {
     //nothing to do
 }
@@ -49,6 +52,7 @@ CollectionLocation::CollectionLocation( const Collections::Collection* parentCol
     , m_removeSources( false )
     , m_isRemoveAction( false )
     , m_noRemoveConfirmation( false )
+    , m_transcodingConfiguration( Transcoding::Configuration() )
 {
     //nothing to do
 }
@@ -89,16 +93,19 @@ CollectionLocation::isOrganizable() const
 }
 
 void
-CollectionLocation::prepareCopy( Meta::TrackPtr track, CollectionLocation *destination )
+CollectionLocation::prepareCopy( Meta::TrackPtr track, CollectionLocation *destination,
+                                 const Transcoding::Configuration &configuration )
 {
+    debug() << "prepare copy 1 track from"<<collection()->collectionId()<<"to"<<destination->collection()->collectionId();
     Meta::TrackList list;
     list.append( track );
-    prepareCopy( list, destination );
+    prepareCopy( list, destination, configuration );
 }
 
 
 void
-CollectionLocation::prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination )
+CollectionLocation::prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination,
+                                 const Transcoding::Configuration &configuration )
 {
     if( !destination->isWritable() )
     {
@@ -109,12 +116,14 @@ CollectionLocation::prepareCopy( const Meta::TrackList &tracks, CollectionLocati
         return;
     }
     m_destination = destination;
+    m_transcodingConfiguration = configuration;
     m_destination->setSource( this );
     startWorkflow( tracks, false );
 }
 
 void
-CollectionLocation::prepareCopy( Collections::QueryMaker *qm, CollectionLocation *destination )
+CollectionLocation::prepareCopy( Collections::QueryMaker *qm, CollectionLocation *destination,
+                                 const Transcoding::Configuration &configuration )
 {
     DEBUG_BLOCK
     if( !destination->isWritable() )
@@ -127,6 +136,7 @@ CollectionLocation::prepareCopy( Collections::QueryMaker *qm, CollectionLocation
         return;
     }
     m_destination = destination;
+    m_transcodingConfiguration = configuration;
     m_removeSources = false;
     m_isRemoveAction = false;
     connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( resultReady( QString, Meta::TrackList ) ) );
@@ -146,6 +156,7 @@ CollectionLocation::prepareMove( Meta::TrackPtr track, CollectionLocation *desti
 void
 CollectionLocation::prepareMove( const Meta::TrackList &tracks, CollectionLocation *destination )
 {
+    DEBUG_BLOCK
     if( !destination->isWritable() )
     {
         Collections::CollectionLocationDelegate *delegate = Amarok::Components::collectionLocationDelegate();
@@ -225,17 +236,13 @@ CollectionLocation::remove( const Meta::TrackPtr &track )
 }
 
 bool
-CollectionLocation::remove( const Meta::TrackList &tracks )
+CollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
 {
-    bool success = true;
-
-    foreach( const Meta::TrackPtr &track, tracks )
-        if( !remove( track ) )
-            success = false;
-
-    return success;
-
+    Q_UNUSED( track )
+    Q_UNUSED( url )
+    return false;
 }
+
 
 void
 CollectionLocation::abort()
@@ -256,15 +263,19 @@ CollectionLocation::getKIOCopyableUrls( const Meta::TrackList &tracks )
             debug() << "adding url " << track->playableUrl();
         }
     }
+    debug() << "Format is " << m_transcodingConfiguration.encoder();
 
     slotGetKIOCopyableUrlsDone( urls );
 }
 
 void
-CollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources )
+CollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
+                                          const Transcoding::Configuration &configuration )
 {
+    DEBUG_BLOCK
     //reimplement in implementations which are writeable
     Q_UNUSED( sources )
+    Q_UNUSED( configuration )
     slotCopyOperationFinished();
 }
 
@@ -286,10 +297,13 @@ CollectionLocation::showSourceDialog( const Meta::TrackList &tracks, bool remove
 }
 
 void
-CollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, bool removeSources )
+CollectionLocation::showDestinationDialog( const Meta::TrackList &tracks,
+                                           bool removeSources,
+                                           const Transcoding::Configuration &configuration )
 {
     Q_UNUSED( tracks )
     Q_UNUSED( removeSources )
+    Q_UNUSED( configuration )
     slotShowDestinationDialogDone();
 }
 
@@ -315,7 +329,7 @@ CollectionLocation::showRemoveDialog( const Meta::TrackList &tracks )
 void
 CollectionLocation::slotGetKIOCopyableUrlsDone( const QMap<Meta::TrackPtr, KUrl> &sources )
 {
-    emit startCopy( sources );
+    emit startCopy( sources, m_transcodingConfiguration );
 }
 
 void
@@ -327,14 +341,13 @@ CollectionLocation::slotCopyOperationFinished()
 void
 CollectionLocation::slotRemoveOperationFinished()
 {
-    DEBUG_BLOCK
     emit finishRemove();
 }
 
 void
 CollectionLocation::slotShowSourceDialogDone()
 {
-    emit prepareOperation( m_sourceTracks, m_removeSources );
+    emit prepareOperation( m_sourceTracks, m_removeSources, m_transcodingConfiguration );
 }
 
 void
@@ -346,15 +359,15 @@ CollectionLocation::slotShowDestinationDialogDone()
 void
 CollectionLocation::slotShowRemoveDialogDone()
 {
-    DEBUG_BLOCK
     emit startRemove();
 }
 
 void
-CollectionLocation::slotPrepareOperation( const Meta::TrackList &tracks, bool removeSources )
+CollectionLocation::slotPrepareOperation( const Meta::TrackList &tracks, bool removeSources,
+                                          const Transcoding::Configuration &configuration )
 {
     m_removeSources = removeSources;
-    showDestinationDialog( tracks, removeSources );
+    showDestinationDialog( tracks, removeSources, configuration );
 }
 
 void
@@ -364,9 +377,11 @@ CollectionLocation::slotOperationPrepared()
 }
 
 void
-CollectionLocation::slotStartCopy( const QMap<Meta::TrackPtr, KUrl> &sources )
+CollectionLocation::slotStartCopy( const QMap<Meta::TrackPtr, KUrl> &sources,
+                                   const Transcoding::Configuration &configuration )
 {
-    copyUrlsToCollection( sources );
+    DEBUG_BLOCK
+    copyUrlsToCollection( sources, configuration );
 }
 
 void
@@ -415,7 +430,7 @@ CollectionLocation::slotFinishRemove()
         if(!track)
             continue;
 
-        Capabilities::UpdateCapability *uc = track->create<Capabilities::UpdateCapability>();
+        QScopedPointer<Capabilities::UpdateCapability> uc( track->create<Capabilities::UpdateCapability>() );
         if(!uc)
             continue;
 
@@ -464,18 +479,18 @@ CollectionLocation::queryDone()
     else
     {
         debug() << "we were about to copy something, lets proceed";
-        prepareCopy( m_sourceTracks, m_destination );
+        prepareCopy( m_sourceTracks, m_destination, m_transcodingConfiguration );
     }
 }
 
 void
 CollectionLocation::setupConnections()
 {
-    connect( this, SIGNAL( prepareOperation( Meta::TrackList, bool ) ),
-             m_destination, SLOT( slotPrepareOperation( Meta::TrackList, bool ) ) );
+    connect( this, SIGNAL( prepareOperation( Meta::TrackList, bool, const Transcoding::Configuration & ) ),
+             m_destination, SLOT( slotPrepareOperation( Meta::TrackList, bool, const Transcoding::Configuration & ) ) );
     connect( m_destination, SIGNAL( operationPrepared() ), SLOT( slotOperationPrepared() ) );
-    connect( this, SIGNAL( startCopy( QMap<Meta::TrackPtr, KUrl> ) ),
-             m_destination, SLOT( slotStartCopy( QMap<Meta::TrackPtr, KUrl> ) ) );
+    connect( this, SIGNAL( startCopy( QMap<Meta::TrackPtr, KUrl>, const Transcoding::Configuration & ) ),
+             m_destination, SLOT( slotStartCopy( QMap<Meta::TrackPtr, KUrl>, const Transcoding::Configuration & ) ) );
     connect( m_destination, SIGNAL( finishCopy() ),
              this, SLOT( slotFinishCopy() ) );
     connect( this, SIGNAL( aborted() ), SLOT( slotAborted() ) );
@@ -521,11 +536,11 @@ void
 CollectionLocation::removeSourceTracks( const Meta::TrackList &tracks )
 {
     DEBUG_BLOCK
-    debug() << "Transfer errors: " << m_tracksWithError.count();
+    debug() << "Transfer errors:" << m_tracksWithError.count() << "of" << tracks.count();
 
     foreach( Meta::TrackPtr track, m_tracksWithError.keys() )
     {
-        debug() << "transfer error for track " << track->playableUrl();
+        debug() << "transfer error for track" << track->playableUrl();
     }
 
     QSet<Meta::TrackPtr> toRemove = QSet<Meta::TrackPtr>::fromList( tracks );

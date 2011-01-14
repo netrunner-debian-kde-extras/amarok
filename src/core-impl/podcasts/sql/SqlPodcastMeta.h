@@ -99,7 +99,10 @@ class SqlPodcastChannel : public Podcasts::PodcastChannel
 
         ~SqlPodcastChannel();
         // Playlists::Playlist methods
-        virtual Meta::TrackList tracks() { return Podcasts::SqlPodcastEpisode::toTrackList( m_episodes ); }
+        virtual int trackCount() const;
+        virtual Meta::TrackList tracks() {
+            return Podcasts::SqlPodcastEpisode::toTrackList( m_episodes ); }
+        virtual void triggerTrackLoad();
         virtual Playlists::PlaylistProvider *provider() const;
 
         virtual QStringList groups();
@@ -110,8 +113,8 @@ class SqlPodcastChannel : public Podcasts::PodcastChannel
         virtual void setTitle( const QString &title );
         virtual Podcasts::PodcastEpisodeList episodes();
         virtual bool hasImage() const { return !m_image.isNull(); }
-        virtual void setImage( const QPixmap &image );
-        virtual QPixmap image() const { return m_image; }
+        virtual void setImage( const QImage &image );
+        virtual QPixmap image() const { return QPixmap::fromImage(m_image); }
         virtual KUrl imageUrl() const { return m_imageUrl; }
         virtual void setImageUrl( const KUrl &imageUrl );
 
@@ -129,10 +132,12 @@ class SqlPodcastChannel : public Podcasts::PodcastChannel
         const SqlPodcastEpisodeList sqlEpisodes() { return m_episodes; }
 
         void loadEpisodes();
+        void applyPurge();
 
     private:
         bool m_writeTags;
         int m_dbId; //database ID
+        bool m_episodesLoaded;
 
         SqlPodcastEpisodeList m_episodes;
         SqlPodcastProvider *m_provider;

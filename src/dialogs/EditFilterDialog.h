@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2006 Giovanni Venturi <giovanni@kde-it.org>                            *
+ * Copyright (c) 2010 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -25,8 +26,6 @@
 #include <QList>
 
 class QWidget;
-class QSpinBox;
-class QDateEdit;
 
 class EditFilterDialog : public KDialog
 {
@@ -48,42 +47,11 @@ class EditFilterDialog : public KDialog
         QString m_filterText;          // the resulting filter string
         QString m_previousFilterText;  // the previous resulting filter string
 
-        // Cache lists for completion
-        QStringList m_artists;
-        QStringList m_albums;
-        QStringList m_composers;
-        QStringList m_genres;
-        QStringList m_labels;
-
-        QString keywordConditionDate(const QString& keyword) const;
-        QString keywordConditionNumeric(const QString& keyword) const;
-        QString keywordConditionText(const QString& keyword) const;
-
-    private slots:
-        void selectedAttribute( const QString &attr );
-
-        void minSpinChanged(int value);
-        void maxSpinChanged(int value);
-
-        void dateWanted();
-        void textWanted( const KIcon &icon = KIcon() );
-        void textWanted( const QStringList &completions, const KIcon &icon = KIcon() );
-        void valueWanted();
-
-        void chooseCondition(int index);
-        void chooseOneValue();
-        void chooseMinMaxValue();
-        
-        void resultReady( const QString &collectionId, const Meta::AlbumList &albums );
-        void resultReady( const QString &collectionId, const Meta::ArtistList &artists );
-        void resultReady( const QString &collectionId, const Meta::ComposerList &composers );
-        void resultReady( const QString &collectionId, const Meta::GenreList &genres );
-        void resultReady( const QString &collectionId, const Meta::LabelList &labels );
-
     protected slots:
-        virtual void slotDefault();
-        virtual void slotUser1();
-        virtual void slotUser2();
+        virtual void slotAttributeChanged();
+        virtual void slotAppend();
+        virtual void slotClear();
+        virtual void slotUndo();
         virtual void slotOk();
 };
 

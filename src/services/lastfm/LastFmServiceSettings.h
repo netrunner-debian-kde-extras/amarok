@@ -21,7 +21,7 @@
 
 #include <kcmodule.h>
 
-class QNetworkReply;
+#include <QNetworkReply>
 
 namespace Ui { class LastFmConfigWidget; }
 
@@ -41,6 +41,7 @@ public:
 private slots:
     void testLogin();
     void onAuthenticated();
+    void onError( QNetworkReply::NetworkError code );
 private:
     Ui::LastFmConfigWidget *m_configDialog;
     LastFmServiceConfig     m_config;

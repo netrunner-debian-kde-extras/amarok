@@ -45,7 +45,6 @@ class AMAROK_EXPORT_TESTS ProxyQueryMaker : public QueryMaker
         ProxyQueryMaker( Collections::ProxyCollection *collection, const QList<QueryMaker*> &queryMakers );
         ~ProxyQueryMaker();
 
-        virtual QueryMaker* reset();
         virtual void run();
         virtual void abortQuery();
         virtual int resultCount() const;
@@ -65,7 +64,6 @@ class AMAROK_EXPORT_TESTS ProxyQueryMaker : public QueryMaker
         virtual QueryMaker* addMatch( const Meta::ComposerPtr &composer );
         virtual QueryMaker* addMatch( const Meta::GenrePtr &genre );
         virtual QueryMaker* addMatch( const Meta::YearPtr &year );
-        virtual QueryMaker* addMatch( const Meta::DataPtr &data );
         virtual QueryMaker* addMatch( const Meta::LabelPtr &label );
 
         virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );
@@ -84,6 +82,7 @@ class AMAROK_EXPORT_TESTS ProxyQueryMaker : public QueryMaker
         virtual QueryMaker* endAndOr();
 
         virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
+        virtual QueryMaker* setArtistQueryMode( ArtistQueryMode mode );
         virtual QueryMaker* setLabelQueryMode( LabelQueryMode mode );
 
     private:

@@ -21,7 +21,7 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 
-#include <KConfig>
+#include <KConfigGroup>
 #include <solid/device.h>
 #include <solid/deviceinterface.h>
 #include <solid/devicenotifier.h>
@@ -30,6 +30,7 @@
 #include <solid/portablemediaplayer.h>
 #include <solid/storageaccess.h>
 #include <solid/storagedrive.h>
+#include <solid/block.h>
 #include <solid/storagevolume.h>
 
 #include <QDir>
@@ -215,18 +216,23 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
     else if( const Solid::GenericInterface *generic = device.as<Solid::GenericInterface>() )
     {
         const QMap<QString, QVariant> properties = generic->allProperties();
-        if( !properties.contains("info.capabilities") )
-        {
-            debug() << "udi " << udi << " does not describe a portable media player or storage volume";
-            return;
-        }
-
-        const QStringList capabilities = properties["info.capabilities"].toStringList();
-        if( !capabilities.contains("afc") )
-        {
-            debug() << "udi " << udi << " does not describe a portable media player or storage volume";
-            return;
-        }
+        // iPods touch 3G (and maybe upper) do not have AFC capabilities. 
+        // Due to the return, iPod Touch are not known as media device and the code which execute the ifuse command is then not called!
+	if ( !device.product().contains("iPod") )
+	{
+            if( !properties.contains("info.capabilities") )
+            {
+                debug() << "udi " << udi << " does not describe a portable media player or storage volume";
+                return;
+            }
+    
+            const QStringList capabilities = properties["info.capabilities"].toStringList();
+            if( !capabilities.contains("afc") )
+            {
+                debug() << "udi " << udi << " does not describe a portable media player or storage volume";
+                return;
+            }
+	}
 
         debug() << "udi" << udi << "is AFC cabable (Apple mobile device)";
         m_type[udi] = MediaDeviceCache::SolidGenericType;
@@ -311,6 +317,28 @@ MediaDeviceCache::deviceName( const QString &udi ) const
         return m_name[udi];
     }
     return "ERR_NO_NAME"; //Should never happen!
+}
+
+const QString
+MediaDeviceCache::device( const QString &udi ) const
+{
+    DEBUG_BLOCK
+    Solid::Device device( udi );
+    Solid::Device parent( device.parent() );
+    if( !parent.isValid() )
+    {
+        debug() << udi << "has no parent, returning null string.";
+        return QString();
+    }
+
+    Solid::Block* sb = parent.as<Solid::Block>();
+    if( !sb  )
+    {
+        debug() << parent.udi() << "failed to convert to Block, returning null string.";
+        return QString();
+    }
+
+    return sb->device();
 }
 
 bool

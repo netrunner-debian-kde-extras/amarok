@@ -21,9 +21,10 @@
 #include "core/support/Debug.h"
 #include "amarokconfig.h"
 
-#include "core/capabilities/DecoratorCapability.h"
+#include "core/capabilities/ActionsCapability.h"
 
 #include <KLocale>
+#include <KIcon>
 
 Q_DECLARE_METATYPE( QAction* )
 Q_DECLARE_METATYPE( QList<QAction*> )
@@ -128,70 +129,18 @@ CollectionTreeItem::child( int row )
     return m_childItems.value( row );
 }
 
-QString
-CollectionTreeItem::albumYear() const
-{
-    if( Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( m_data ) )
-    {
-        const Meta::TrackList tracks = album->tracks();
-        if( !tracks.isEmpty() )
-        {
-            Meta::TrackPtr track = tracks.at( 0 );
-            if( track && track->year() )
-            {
-                const QString year = track->year()->prettyName();
-                if( year != "0" )
-                    return year;
-            }
-        }
-    }
-    return QString();
-}
-
 QVariant
 CollectionTreeItem::data( int role ) const
 {
-    if( !m_data.isNull() )
+    if( isNoLabelItem() )
     {
-        if( role == Qt::DisplayRole || role == CustomRoles::FilterRole )
+        switch( role )
         {
-            Meta::TrackPtr track = Meta::TrackPtr::dynamicCast( m_data );
-            QString name = track ? track->fixedName() : m_data->fixedName();
-
-            if( AmarokConfig::showTrackNumbers() && track )
-            {
-                int trackNum = track->trackNumber();
-                if( trackNum > 0 )
-                    name.prepend( QString("%1 - ").arg(trackNum) );
-            }
-
-            // Check empty after track logic and before album logic
-            if( name.isEmpty() )
-                name = i18nc( "The Name is not known", "Unknown" );
-
-            if( AmarokConfig::showYears() )
-            {
-                const QString year = albumYear();
-                if( !year.isEmpty() )
-                    name.prepend( QString("%1 - ").arg(year) );
-            }
-            return name;
-        }
-        else if( role == CustomRoles::SortRole )
-            return m_data->sortableName();
-
-        return QVariant();
-    }
-    else if( isVariousArtistItem() )
-    {
-        if( role == Qt::DisplayRole )
-            return i18n( "Various Artists" );
-        return QVariant();
-    }
-    else if( isNoLabelItem() )
-    {
-        if( role == Qt::DisplayRole )
+        case Qt::DisplayRole:
             return i18nc( "No labels are assigned to the given item are any of its subitems", "No Labels" );
+        case Qt::DecorationRole:
+            return KIcon( "label-amarok" );
+        }
         return QVariant();
     }
     else if( m_parentCollection )
@@ -244,12 +193,9 @@ QList<QAction*>
 CollectionTreeItem::decoratorActions() const
 {
     QList<QAction*> decoratorActions;
-    Capabilities::DecoratorCapability *dc = m_parentCollection->create<Capabilities::DecoratorCapability>();
+    QScopedPointer<Capabilities::ActionsCapability> dc( m_parentCollection->create<Capabilities::ActionsCapability>() );
     if( dc )
-    {
-        decoratorActions = dc->decoratorActions();
-        delete dc;
-    }
+        decoratorActions = dc->actions();
     return decoratorActions;
 }
 
@@ -291,13 +237,13 @@ CollectionTreeItem::level() const
 bool
 CollectionTreeItem::isDataItem() const
 {
-    return m_type == Data || m_type == VariousArtist || m_type == NoLabel;
+    return m_type == Data;
 }
 
 bool
 CollectionTreeItem::isVariousArtistItem() const
 {
-    return m_type == VariousArtist;
+    return m_type == CollectionTreeItem::VariousArtist;
 }
 
 bool
@@ -309,29 +255,48 @@ CollectionTreeItem::isNoLabelItem() const
 bool
 CollectionTreeItem::isAlbumItem() const
 {
-    return m_type == Data && m_type != VariousArtist && !Meta::AlbumPtr::dynamicCast( m_data ).isNull();
+    return m_type == Data && !Meta::AlbumPtr::dynamicCast( m_data ).isNull();
 }
 
 bool
 CollectionTreeItem::isTrackItem() const
 {
-    return m_type == Data && m_type != VariousArtist && !Meta::TrackPtr::dynamicCast( m_data ).isNull();
+    return m_type == Data && !Meta::TrackPtr::dynamicCast( m_data ).isNull();
 }
 
 Collections::QueryMaker*
 CollectionTreeItem::queryMaker() const
 {
-    if ( m_parentCollection )
-        return m_parentCollection->queryMaker();
-
-    CollectionTreeItem *tmp = m_parent;
-    while( tmp->isDataItem() )
-        tmp = tmp->parent();
-    Collections::QueryMaker *qm = 0;
-    if( tmp->parentCollection() )
-        qm = tmp->parentCollection()->queryMaker();
-    return qm;
+    Collections::Collection* coll = parentCollection();
+    if( coll )
+        return coll->queryMaker();
+    return 0;
 }
+
+void
+CollectionTreeItem::addMatch( Collections::QueryMaker *qm ) const
+{
+    if( !m_data || m_type != Data )
+        return;
+    if( !qm )
+        return;
+
+    if( Meta::TrackPtr track = Meta::TrackPtr::dynamicCast( m_data ) )
+        qm->addMatch( track );
+    else if( Meta::ArtistPtr artist = Meta::ArtistPtr::dynamicCast( m_data ) )
+        qm->addMatch( artist );
+    else if( Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( m_data ) )
+        qm->addMatch( album );
+    else if( Meta::ComposerPtr composer = Meta::ComposerPtr::dynamicCast( m_data ) )
+        qm->addMatch( composer );
+    else if( Meta::GenrePtr genre = Meta::GenrePtr::dynamicCast( m_data ) )
+        qm->addMatch( genre );
+    else if( Meta::YearPtr year = Meta::YearPtr::dynamicCast( m_data ) )
+        qm->addMatch( year );
+    else if( Meta::LabelPtr label = Meta::LabelPtr::dynamicCast( m_data ) )
+        qm->addMatch( label );
+}
+
 
 KUrl::List
 CollectionTreeItem::urls() const

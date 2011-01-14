@@ -40,11 +40,11 @@ PodcastImageFetcher::addChannel( Podcasts::PodcastChannelPtr channel )
     {
         debug() << "using cached image for " << channel->title();
         QString imagePath = cachedImagePath( channel ).toLocalFile();
-        QPixmap pixmap( imagePath );
-        if( pixmap.isNull() )
+        QImage image( imagePath );
+        if( image.isNull() )
             error() << "could not load pixmap from " << imagePath;
         else
-            channel->setImage( pixmap );
+            channel->setImage( image );
         return;
     }
 
@@ -73,7 +73,6 @@ PodcastImageFetcher::cachedImagePath( Podcasts::PodcastChannel *channel )
     KMD5 md5( channel->url().url().toLocal8Bit() );
     QString extension = Amarok::extension( channel->imageUrl().fileName() );
     imagePath.addPath( md5.hexDigest() + "." + extension );
-    debug() << "imagePath for " << channel->title() << " " << imagePath;
     return imagePath.toLocalFile();
 }
 
@@ -88,7 +87,6 @@ PodcastImageFetcher::hasCachedImage( Podcasts::PodcastChannelPtr channel )
 void
 PodcastImageFetcher::run()
 {
-    DEBUG_BLOCK
     if( m_channels.isEmpty() && m_episodes.isEmpty()
         && m_jobChannelMap.isEmpty() && m_jobEpisodeMap.isEmpty() )
     {
@@ -108,7 +106,6 @@ PodcastImageFetcher::run()
 
     foreach( Podcasts::PodcastChannelPtr channel, m_channels )
     {
-        debug() << "Download image from " << channel->imageUrl();
         KUrl cachedPath = cachedImagePath( channel );
         KIO::mkdir( cachedPath.directory() );
         KIO::FileCopyJob *job = KIO::file_copy( channel->imageUrl(), cachedPath,
@@ -142,11 +139,11 @@ PodcastImageFetcher::slotDownloadFinished( KJob *job )
     else
     {
         QString imagePath = cachedImagePath( channel ).toLocalFile();
-        QPixmap pixmap( imagePath );
-        if( pixmap.isNull() )
+        QImage image( imagePath );
+        if( image.isNull() )
             error() << "could not load pixmap from " << imagePath;
         else
-            channel->setImage( pixmap );
+            channel->setImage( image );
     }
 
     //call run again to start the next batch of transfers.

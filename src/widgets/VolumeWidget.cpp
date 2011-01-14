@@ -32,7 +32,6 @@
 
 VolumeWidget::VolumeWidget( QWidget *parent )
     : Amarok::ToolBar( parent )
-    , Engine::EngineObserver( The::engineController() )
 {
     setIconDimensions( 16 );
     setToolButtonStyle( Qt::ToolButtonIconOnly );
@@ -48,20 +47,26 @@ VolumeWidget::VolumeWidget( QWidget *parent )
     m_action = new KAction( KIcon( m_icons[ AmarokConfig::muteState() ] ), i18n( "Mute" ), this );
 
     m_slider = new Amarok::VolumeSlider( Amarok::VOLUME_MAX, this );
-    m_slider->setObjectName( "ToolBarVolume" );
-    m_slider->setValue( AmarokConfig::masterVolume() );
-    m_slider->setToolTip( i18n( "Volume: %1%", AmarokConfig::masterVolume() ) );
-    m_slider->setMaximumSize( 600000, 20 );
+    m_slider.data()->setObjectName( "ToolBarVolume" );
+    m_slider.data()->setValue( AmarokConfig::masterVolume() );
+    m_slider.data()->setToolTip( i18n( "Volume: %1%", AmarokConfig::masterVolume() ) );
+    m_slider.data()->setMaximumSize( 600000, 20 );
 
     addAction( m_action );
-    addWidget( m_slider );
+    addWidget( m_slider.data() );
 
     EngineController* const ec = The::engineController();
 
+    connect( ec, SIGNAL( volumeChanged( int ) ),
+             this, SLOT( volumeChanged( int ) ) );
+
+    connect( ec, SIGNAL( muteStateChanged( bool ) ),
+             this, SLOT( muteStateChanged( bool ) ) );
+
     connect( m_action, SIGNAL( triggered() ), ec, SLOT( toggleMute() ) );
     connect( m_action, SIGNAL( triggered( Qt::MouseButtons, Qt::KeyboardModifiers ) ), SLOT( toggleMute( Qt::MouseButtons, Qt::KeyboardModifiers ) ) );
-    connect( m_slider, SIGNAL( sliderMoved( int ) ), ec, SLOT( setVolume( int ) ) );
-    connect( m_slider, SIGNAL( sliderReleased( int ) ), ec, SLOT( setVolume( int ) ) );
+    connect( m_slider.data(), SIGNAL( sliderMoved( int ) ), ec, SLOT( setVolume( int ) ) );
+    connect( m_slider.data(), SIGNAL( sliderReleased( int ) ), ec, SLOT( setVolume( int ) ) );
 }
 
 void
@@ -74,21 +79,21 @@ VolumeWidget::toggleMute( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifi
 }
 
 void
-VolumeWidget::engineVolumeChanged( int value )
+VolumeWidget::volumeChanged( int value )
 {
-    m_slider->setToolTip( i18n( "Volume: %1%", value ) );
+    m_slider.data()->setToolTip( i18n( "Volume: %1%", value ) );
 
-    if( value != m_slider->value() )
-        m_slider->setValue( value );
+    if( value != m_slider.data()->value() )
+        m_slider.data()->setValue( value );
 }
 
 void
-VolumeWidget::engineMuteStateChanged( bool mute )
+VolumeWidget::muteStateChanged( bool mute )
 {
     if( mute )
-        m_slider->setToolTip( i18n( "Volume: <i>Muted</i>" ) );
+        m_slider.data()->setToolTip( i18n( "Volume: <i>Muted</i>" ) );
     else
-        m_slider->setToolTip( i18n( "Volume: %1%", m_slider->value() ) );
+        m_slider.data()->setToolTip( i18n( "Volume: %1%", m_slider.data()->value() ) );
 
 
     m_action->setIcon( KIcon( m_icons[ (bool)mute ] ) );

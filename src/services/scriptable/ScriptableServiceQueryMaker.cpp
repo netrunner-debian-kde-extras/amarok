@@ -52,7 +52,12 @@ ScriptableServiceQueryMaker::ScriptableServiceQueryMaker( ScriptableServiceColle
 
     connect( collection, SIGNAL( updateComplete() ), this, SLOT( slotScriptComplete() ) );
 
-    reset();
+    d->type = Private::NONE;
+    d->closestParent = Private::NONE;
+    d->maxsize = -1;
+    d->returnDataPtrs = false;
+    d->parentId = -1;
+    d->albumMode = AllAlbums;
 }
 
 ScriptableServiceQueryMaker::~ScriptableServiceQueryMaker()
@@ -60,20 +65,6 @@ ScriptableServiceQueryMaker::~ScriptableServiceQueryMaker()
     delete d;
 }
 
-Collections::QueryMaker * ScriptableServiceQueryMaker::reset()
-{
-    d->type = Private::NONE;
-    d->closestParent = Private::NONE;
-    d->maxsize = -1;
-    d->returnDataPtrs = false;
-    d->callbackString.clear();
-    d->parentId = -1;
-    d->albumMode = AllAlbums;
-    d->filter.clear();
-    d->lastFilter.clear();
-
-    return this;
-}
 
 Collections::QueryMaker* ScriptableServiceQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
 {
@@ -139,6 +130,7 @@ QueryMaker * ScriptableServiceQueryMaker::setQueryType( QueryType type )
     DEBUG_BLOCK
     switch( type ) {
     case QueryMaker::Artist:
+    case QueryMaker::AlbumArtist:
         d->type = Private::ARTIST;
         return this;
 
@@ -472,13 +464,6 @@ QueryMaker * ScriptableServiceQueryMaker::addFilter( qint64 value, const QString
     m_collection->setLastFilter( d->filter );
     return this;
 
-}
-
-QueryMaker * ScriptableServiceQueryMaker::addMatch( const Meta::DataPtr & data )
-{
-    //DEBUG_BLOCK
-    ( const_cast<Meta::DataPtr&>(data) )->addMatchTo( this );
-    return this;
 }
 
 #include "ScriptableServiceQueryMaker.moc"

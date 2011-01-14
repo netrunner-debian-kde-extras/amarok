@@ -28,6 +28,7 @@ class QGraphicsItem;
 class QGraphicsSceneResizeEvent;
 class QPainter;
 class QStyleOptionGraphicsItem;
+class QGraphicsLinearLayout;
 
 namespace Plasma
 {
@@ -46,38 +47,34 @@ class VerticalAppletLayout : public QGraphicsWidget
         VerticalAppletLayout( QGraphicsItem* parent = 0 );
         ~VerticalAppletLayout();
         
-        virtual void paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );
-        
         void addApplet( Plasma::Applet*, int location = -1 );
         
         virtual void saveToConfig( KConfigGroup &conf );
         
-
-        QSizeF totalSize();
-
         void showAtIndex( int index );
-        
         
     signals:
         void appletAdded( Plasma::Applet* applet, int location );
         void noApplets( bool );
         
     public slots:
-        void refresh();
         void showApplet( Plasma::Applet* );
         void moveApplet( Plasma::Applet*, int, int);
         void appletRemoved( Plasma::Applet* app );
+        void refresh();
     
     protected:
         // reimplemented from QGraphicsWidget
         virtual void resizeEvent( QGraphicsSceneResizeEvent * event );
+
     private:
-        int minIndexWithAppletOnScreen( int loc );
-        
         QList< Plasma::Applet* > m_appletList;
         int m_showingIndex;
+
+        QGraphicsLinearLayout *m_layout;
+        QGraphicsWidget *m_dummyWidget;
 };
 
-}
+} // namespace Context
 
 #endif

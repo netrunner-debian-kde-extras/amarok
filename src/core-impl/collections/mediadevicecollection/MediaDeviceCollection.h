@@ -98,7 +98,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Collections::C
         virtual Meta::TrackPtr trackForUrl( const KUrl &url ) { Q_UNUSED(url); return Meta::TrackPtr();  } // TODO: NYI
 
         virtual QueryMaker* queryMaker();
-        virtual void startFullScan(); // TODO: this will replace connectDevice() call to parsetracks in handler
         virtual void startFullScanDevice();
 
         // NOTE: incrementalscan and stopscan not implemented, might be used by UMS later though
@@ -142,6 +141,11 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Collections::C
 
     signals:
         void collectionReady( Collections::Collection* );
+        /** collectionDisconnected is called when ConnectionAssistant
+          is told it is to be disconnected.  This could be
+          because another part of Amarok (e.g. applet) told it to
+          or because the MediaDeviceMonitor noticed it disconnect
+        */
         void collectionDisconnected( const QString &udi );
         void deletingCollection();
 
@@ -151,7 +155,8 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Collections::C
 
     public slots:
         void slotAttemptConnectionDone( bool success );
-        void disconnectDevice();
+
+        virtual void eject();
         void deleteCollection();
 
     protected:

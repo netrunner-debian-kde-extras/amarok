@@ -66,8 +66,8 @@ class ServiceSqlWorkerThread : public ThreadWeaver::Job
 
 struct ServiceSqlQueryMaker::Private
 {
-    enum QueryType { NONE, TRACK, ARTIST, ALBUM, GENRE, COMPOSER, YEAR, CUSTOM };
-    enum {TRACKS_TABLE = 1, ALBUMS_TABLE = 2, ARTISTS_TABLE = 4, GENRE_TABLE = 8};
+    enum QueryType { NONE, TRACK, ARTIST, ALBUM, ALBUMARTIST, GENRE, COMPOSER, YEAR, CUSTOM };
+    enum {TRACKS_TABLE = 1, ALBUMS_TABLE = 2, ARTISTS_TABLE = 4, GENRE_TABLE = 8, ALBUMARTISTS_TABLE = 16 };
     int linkedTables;
     QueryType queryType;
     QString query;
@@ -79,6 +79,7 @@ struct ServiceSqlQueryMaker::Private
     //bool includedBuilder;
     //bool collectionRestriction;
     AlbumQueryMode albumMode;
+    ArtistQueryMode artistMode;
     bool returnDataPtrs;
     bool withoutDuplicates;
     int maxResultSize;
@@ -96,33 +97,20 @@ ServiceSqlQueryMaker::ServiceSqlQueryMaker( ServiceSqlCollection* collection, Se
     //d->includedBuilder = true;
     //d->collectionRestriction = false;
     d->worker = 0;
-    reset();
+
+    d->queryType = Private::NONE;
+    d->linkedTables = 0;
+    d->artistMode = TrackArtists;
+    d->returnDataPtrs = false;
+    d->withoutDuplicates = false;
+    d->maxResultSize = -1;
+    d->andStack.push( true );
 }
 
 ServiceSqlQueryMaker::~ServiceSqlQueryMaker()
 {
+    // what about d->worker?
     delete d;
-}
-
-QueryMaker*
-ServiceSqlQueryMaker::reset()
-{
-    d->query.clear();
-    d->queryType = Private::NONE;
-    d->queryReturnValues.clear();
-    d->queryFrom.clear();
-    d->queryMatch.clear();
-    d->queryFilter.clear();
-    d->queryOrderBy.clear();
-    d->linkedTables = 0;
-    if( d->worker && d->worker->isFinished() )
-        delete d->worker;   //TODO error handling
-    d->returnDataPtrs = false;
-    d->withoutDuplicates = false;
-    d->maxResultSize = -1;
-    d->andStack.clear();
-    d->andStack.push( true );
-    return this;
 }
 
 void
@@ -210,6 +198,21 @@ ServiceSqlQueryMaker::setQueryType( QueryType type)
             d->withoutDuplicates = true;
             d->queryReturnValues = m_metaFactory->getArtistSqlRows();
 
+            d->queryOrderBy += " GROUP BY " + prefix + "_tracks.id"; //fixes the same track being shown several times due to being in several genres
+        }
+        return this;
+
+    case QueryMaker::AlbumArtist:
+        if( d->queryType == Private::NONE )
+        {
+            QString prefix = m_metaFactory->tablePrefix();
+            d->queryFrom = ' ' + prefix + "_tracks";
+            d->linkedTables |= Private::ALBUMARTISTS_TABLE;
+            d->queryType = Private::ALBUMARTIST;
+            d->withoutDuplicates = true;
+            d->queryReturnValues = QString( "albumartists.id, " ) +
+                                            "albumartists.name, " +
+                                            "albumartists.description ";
             d->queryOrderBy += " GROUP BY " + prefix + "_tracks.id"; //fixes the same track being shown several times due to being in several genres
         }
         return this;
@@ -323,12 +326,35 @@ ServiceSqlQueryMaker::addMatch( const Meta::ArtistPtr &artist )
     d->linkedTables |= Private::ARTISTS_TABLE;
     if( serviceArtist )
     {
-        d->queryMatch += QString( " AND " + prefix + "_artists.id= '%1'" ).arg( serviceArtist->id() );
+        switch( d->artistMode )
+        {
+            case TrackArtists:
+                 d->queryMatch += QString( " AND " + prefix + "_artists.id= '%1'" ).arg( serviceArtist->id() );
+                 break;
+            case AlbumArtists:
+                 d->queryMatch += QString( " AND albumartists.id= '%1'" ).arg( serviceArtist->id() );
+                 break;
+            case AlbumOrTrackArtists:
+                 d->queryMatch += QString( " AND ( " + prefix + "_artists.id= '%1' OR albumartists.id= '%1' )" ).arg( serviceArtist->id() );
+                 break;
+        }
     }
     else
     {
-        d->queryMatch += QString( " AND " + prefix + "_artists.name='%1'" ).arg( escape( artist->name() ) );
+        switch( d->artistMode )
+        {
+            case TrackArtists:
+                 d->queryMatch += QString( " AND " + prefix + "_artists.name= '%1'" ).arg( escape( artist->name() ) );
+                 break;
+            case AlbumArtists:
+                 d->queryMatch += QString( " AND albumartists.name= '%1'" ).arg( escape( artist->name() ) );
+                 break;
+            case AlbumOrTrackArtists:
+                 d->queryMatch += QString( " AND ( " + prefix + "_artists.name= '%1' OR albumartists.name= '%1' )" ).arg( escape( artist->name() ) );
+                 break;
+        }
     }
+    d->artistMode = TrackArtists;
     return this;
 }
 
@@ -405,14 +431,6 @@ ServiceSqlQueryMaker::addMatch( const Meta::LabelPtr &label )
 {
     Q_UNUSED( label );
     //TODO
-    return this;
-}
-
-QueryMaker*
-ServiceSqlQueryMaker::addMatch( const Meta::DataPtr &data )
-{
-    ( const_cast<Meta::DataPtr&>(data) )->addMatchTo( this );
-    //TODO needed at all?
     return this;
 }
 
@@ -528,6 +546,8 @@ ServiceSqlQueryMaker::linkTables()
        d->queryFrom += " LEFT JOIN " + prefix + "_albums ON " + prefix + "_tracks.album_id = " + prefix + "_albums.id";
     if( d->linkedTables & Private::ARTISTS_TABLE )
        d->queryFrom += " LEFT JOIN " + prefix + "_artists ON " + prefix + "_albums.artist_id = " + prefix + "_artists.id";
+    if( d->linkedTables & Private::ALBUMARTISTS_TABLE )
+        d->queryFrom += " LEFT JOIN " + prefix + "_artists AS albumartists ON " + prefix + "_albums.artist_id = albumartists.id";
     if( d->linkedTables & Private::GENRE_TABLE )
        d->queryFrom += " LEFT JOIN " + prefix + "_genre ON " + prefix + "_genre.album_id = " + prefix + "_albums.id";
 }
@@ -592,6 +612,7 @@ ServiceSqlQueryMaker::handleResult( const QStringList &result )
             handleTracks( result );
             break;
         case Private::ARTIST:
+        case Private::ALBUMARTIST:
             handleArtists( result );
             break;
         case Private::ALBUM:
@@ -631,6 +652,9 @@ ServiceSqlQueryMaker::handleResult( const QStringList &result )
                 break;
             case QueryMaker::Album:
                 emit newResultReady( m_collection->collectionId(), Meta::AlbumList() );
+                break;
+            case QueryMaker::AlbumArtist:
+                emit newResultReady( m_collection->collectionId(), Meta::ArtistList() );
                 break;
             case QueryMaker::Genre:
                 emit newResultReady( m_collection->collectionId(), Meta::GenreList() );
@@ -876,6 +900,15 @@ QueryMaker *
 ServiceSqlQueryMaker::setAlbumQueryMode(AlbumQueryMode mode)
 {
     d->albumMode = mode;
+    return this;
+}
+
+QueryMaker *
+ServiceSqlQueryMaker::setArtistQueryMode( QueryMaker::ArtistQueryMode mode )
+{
+    if( mode == AlbumArtists || mode == AlbumOrTrackArtists )
+        d->linkedTables |= Private::ALBUMARTISTS_TABLE;
+    d->artistMode = mode;
     return this;
 }
 

@@ -20,6 +20,7 @@
 #include "CollectionSortFilterProxyModel.h"
 #include "playlist/PlaylistController.h"
 #include "core/meta/Meta.h"
+#include "core/transcoding/TranscodingConfiguration.h"
 #include "widgets/PrettyTreeView.h"
 
 
@@ -56,7 +57,6 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void setLevel( int level, int type );
 
         void setModel( QAbstractItemModel *model );
-        void contextMenuEvent(QContextMenuEvent *event);
 
         //Helper function to remove children if their parent is already present
         static QSet<CollectionTreeItem*> cleanItemSet( const QSet<CollectionTreeItem*> &items );
@@ -72,6 +72,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void slotFilterNow();
 
     protected:
+        void contextMenuEvent( QContextMenuEvent *event );
         void mouseDoubleClickEvent( QMouseEvent *event );
         void mouseMoveEvent( QMouseEvent *event );
         void mousePressEvent( QMouseEvent *event );
@@ -83,6 +84,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         virtual void selectionChanged ( const QItemSelection & selected, const QItemSelection & deselected );
         void slotCollapsed( const QModelIndex &index );
         void slotExpanded( const QModelIndex &index );
+        void slotExpandIndex( const QModelIndex &index );
 
         void slotCheckAutoExpand();
         
@@ -92,7 +94,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void slotEditTracks();
         void slotCopyTracks();
         void slotMoveTracks();
-        void slotRemoveTracks();
+        void slotRemoveTracks( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers );
         void slotOrganize();
 
     private:
@@ -102,8 +104,12 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void playChildTracks( const QSet<CollectionTreeItem*> &items, Playlist::AddOptions insertMode );
         void editTracks( const QSet<CollectionTreeItem*> &items ) const;
         void organizeTracks( const QSet<CollectionTreeItem*> &items ) const;
-        void copyTracks( const QSet<CollectionTreeItem*> &items, Collections::Collection *destination, bool removeSources ) const;
-        void removeTracks( const QSet<CollectionTreeItem*> &items ) const;
+        void copyTracks( const QSet<CollectionTreeItem*> &items, Collections::Collection *destination,
+                         bool removeSources, Transcoding::Configuration configuration = Transcoding::Configuration() ) const;
+        void removeTracks( const QSet<CollectionTreeItem*> &items, bool useTrash ) const;
+
+        // creates different actions from the different objects.
+        // note: you should not delete the created actions.
         QActionList createBasicActions( const QModelIndexList &indcies );
         QActionList createExtendedActions( const QModelIndexList &indcies );
         QActionList createCollectionActions( const QModelIndexList &indices );

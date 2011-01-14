@@ -27,11 +27,12 @@
 
 #include <QComboBox>
 #include <QLabel>
-#include <QPointer>
+#include <QWeakPointer>
 
 class KActionCollection;
 class KActionMenu;
 class QWidget;
+class PlaylistQueueEditor;
 
 namespace Playlists {
     class PlaylistProvider;
@@ -49,10 +50,9 @@ class Dock : public AmarokDockWidget
 
 public:
     Dock( QWidget* parent );
-    PrettyListView* currentView() { return m_playlistView; }
-
-    SortWidget * sortWidget() { return m_sortWidget; }
-    ProgressiveSearchWidget * searchWidget() { return m_searchWidget; }
+    PrettyListView *currentView();
+    SortWidget *sortWidget();
+    ProgressiveSearchWidget *searchWidget();
     void showActiveTrack();
 
     void polish();
@@ -69,10 +69,12 @@ private slots:
     void playlistProviderAdded( Playlists::PlaylistProvider *provider, int category );
     void playlistProviderRemoved( Playlists::PlaylistProvider *provider, int category );
     void slotSaveCurrentPlaylist();
+    void slotEditQueue();
 
 private:
     KActionMenu *m_savePlaylistMenu;
     KActionCollection *m_saveActions;
+    QWeakPointer<PlaylistQueueEditor> m_playlistQueueEditor;
 
     PrettyListView* m_playlistView;
     ProgressiveSearchWidget * m_searchWidget;
@@ -84,5 +86,5 @@ private:
 };
 }
 
-Q_DECLARE_METATYPE( QPointer<Playlists::UserPlaylistProvider> )
+Q_DECLARE_METATYPE( QWeakPointer<Playlists::UserPlaylistProvider> )
 #endif

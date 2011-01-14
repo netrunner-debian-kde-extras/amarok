@@ -29,7 +29,8 @@ const QString PlaylistsByProviderProxy::AMAROK_PROVIDERPROXY_INDEXES =
 PlaylistsByProviderProxy::PlaylistsByProviderProxy( QAbstractItemModel *model, int column )
         : QtGroupingProxy( model, QModelIndex(), column )
 {
-    connect( m_model, SIGNAL( renameIndex( QModelIndex ) ), SLOT( slotRename( QModelIndex ) ) );
+    connect( sourceModel(), SIGNAL(renameIndex( const QModelIndex & )),
+             SLOT(slotRenameIndex( const QModelIndex & )) );
 }
 
 QVariant
@@ -53,6 +54,16 @@ PlaylistsByProviderProxy::data( const QModelIndex &idx, int role ) const
     return QtGroupingProxy::data( idx, role );
 }
 
+Qt::ItemFlags
+PlaylistsByProviderProxy::flags( const QModelIndex &idx ) const
+{
+    //TODO: check if provider supports addPlaylist for DropEnabled
+    if( isGroup( idx ) )
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDropEnabled;
+
+    return QtGroupingProxy::flags( idx );
+}
+
 bool
 PlaylistsByProviderProxy::removeRows( int row, int count, const QModelIndex &parent )
 {
@@ -60,7 +71,7 @@ PlaylistsByProviderProxy::removeRows( int row, int count, const QModelIndex &par
     bool result;
     debug() << "in parent " << parent << "remove " << count << " starting at row " << row;
     QModelIndex originalIdx = mapToSource( parent );
-    result = m_model->removeRows( row, count, originalIdx );
+    result = sourceModel()->removeRows( row, count, originalIdx );
     if( result )
     {
         beginRemoveRows( parent, row, row + count - 1 );
@@ -74,7 +85,7 @@ QStringList
 PlaylistsByProviderProxy::mimeTypes() const
 {
     //nothing to add
-    return m_model->mimeTypes();
+    return sourceModel()->mimeTypes();
 }
 
 QMimeData *
@@ -101,7 +112,7 @@ PlaylistsByProviderProxy::mimeData( const QModelIndexList &indexes ) const
 
     QMimeData* mime = 0;
     if( !sourceIndexes.isEmpty() )
-        mime = m_model->mimeData( sourceIndexes );
+        mime = sourceModel()->mimeData( sourceIndexes );
 
     if( !mime )
         mime = new QMimeData();
@@ -188,10 +199,10 @@ PlaylistsByProviderProxy::dropMimeData( const QMimeData *data, Qt::DropAction ac
         if( data->hasFormat( AMAROK_PROVIDERPROXY_INDEXES ) )
         {
             QList<QModelIndex> originalIndexes =
-                    decodeMimeRows( data->data( AMAROK_PROVIDERPROXY_INDEXES ), m_model );
+                    decodeMimeRows( data->data( AMAROK_PROVIDERPROXY_INDEXES ), sourceModel() );
             //set the groupedColumn data of all playlist indexes to the data of this group
             //the model will understand this as a copy to the provider it's dropped on
-            RoleVariantMap groupData =
+            IndexData groupData =
                     m_groupMaps.value( parent.row() ).value( parent.column() );
             bool result = !originalIndexes.isEmpty();
             foreach( const QModelIndex& originalIndex, originalIndexes )
@@ -201,7 +212,7 @@ PlaylistsByProviderProxy::dropMimeData( const QMimeData *data, Qt::DropAction ac
                 if( !groupedColumnIndex.isValid() )
                     continue;
 
-                result = m_model->setItemData( groupedColumnIndex, groupData ) ? result : false;
+                result = sourceModel()->setItemData( groupedColumnIndex, groupData ) ? result : false;
             }
             return result;
         }
@@ -209,7 +220,7 @@ PlaylistsByProviderProxy::dropMimeData( const QMimeData *data, Qt::DropAction ac
     }
 
     QModelIndex sourceIndex = mapToSource( parent );
-    return m_model->dropMimeData( data, action, row, column,
+    return sourceModel()->dropMimeData( data, action, row, column,
                                sourceIndex );
 }
 
@@ -217,14 +228,26 @@ Qt::DropActions
 PlaylistsByProviderProxy::supportedDropActions() const
 {
     //always add CopyAction because playlists can copied to a Provider
-    return m_model->supportedDropActions() | Qt::CopyAction;
+    return sourceModel()->supportedDropActions() | Qt::CopyAction;
 }
 
 Qt::DropActions
 PlaylistsByProviderProxy::supportedDragActions() const
 {
     //always add CopyAction because playlists can be put into a different group
-    return m_model->supportedDragActions() | Qt::CopyAction;
+    return sourceModel()->supportedDragActions() | Qt::CopyAction;
+}
+
+void
+PlaylistsByProviderProxy::setSourceModel( QAbstractItemModel *model )
+{
+    if( sourceModel() )
+        sourceModel()->disconnect();
+
+    QtGroupingProxy::setSourceModel( model );
+
+    connect( sourceModel(), SIGNAL(renameIndex( const QModelIndex & )),
+             SLOT(slotRenameIndex( const QModelIndex & )) );
 }
 
 void
@@ -236,8 +259,9 @@ PlaylistsByProviderProxy::buildTree()
 }
 
 void
-PlaylistsByProviderProxy::slotRename( QModelIndex sourceIdx )
+PlaylistsByProviderProxy::slotRenameIndex( const QModelIndex &sourceIdx )
 {
-    QModelIndex proxyIdx = mapFromSource( sourceIdx );
-    emit( renameIndex( proxyIdx ) );
+    QModelIndex idx = mapFromSource( sourceIdx );
+    if( idx.isValid() )
+        emit renameIndex( idx );
 }

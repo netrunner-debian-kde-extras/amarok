@@ -33,15 +33,17 @@ public:
 
     virtual bool isEditable() const { return true; }
     virtual void setAlbum( const QString &newAlbum );
+    virtual void setAlbumArtist( const QString &newAlbumArtist );
     virtual void setArtist( const QString &newArtist );
     virtual void setComposer( const QString &newComposer );
     virtual void setGenre( const QString &newGenre );
-    virtual void setYear( const QString &newYear );
+    virtual void setYear( int newYear );
     virtual void setBpm( const qreal Bpm );
     virtual void setTitle( const QString &newTitle );
     virtual void setComment( const QString &newComment );
     virtual void setTrackNumber( int newTrackNumber );
     virtual void setDiscNumber( int newDiscNumber );
+    virtual void setUidUrl( const QString &newUidUrl );
 
     virtual void beginMetaDataUpdate();
     virtual void endMetaDataUpdate();

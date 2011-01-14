@@ -48,38 +48,30 @@ Mp3tunesServiceQueryMaker::Mp3tunesServiceQueryMaker( Mp3tunesServiceCollection 
     DEBUG_BLOCK
     m_collection = collection;
     m_sessionId = sessionId;
-    reset();
+
+    d->type = Private::NONE;
+    d->maxsize = -1;
+    d->returnDataPtrs = false;
 }
 
 Mp3tunesServiceQueryMaker::Mp3tunesServiceQueryMaker( Mp3tunesLocker * locker, const QString &sessionId, Mp3tunesServiceCollection * collection  )
     : DynamicServiceQueryMaker()
         , m_storedTransferJob( 0 )
         , d( new Private )
-
 {
     DEBUG_BLOCK
     m_collection = collection;
     m_sessionId = sessionId;
     m_locker = locker;
-    reset();
+
+    d->type = Private::NONE;
+    d->maxsize = -1;
+    d->returnDataPtrs = false;
 }
 
 Mp3tunesServiceQueryMaker::~Mp3tunesServiceQueryMaker()
 {
     delete d;
-}
-
-QueryMaker * Mp3tunesServiceQueryMaker::reset()
-{
-    DEBUG_BLOCK
-    d->type = Private::NONE;
-    d->maxsize = -1;
-    d->returnDataPtrs = false;
-    m_parentArtistId.clear();
-    m_parentAlbumId.clear();
-    m_artistFilter.clear();
-
-    return this;
 }
 
 QueryMaker*
@@ -121,6 +113,7 @@ Mp3tunesServiceQueryMaker::setQueryType( QueryType type )
 {
     switch( type ) {
     case QueryMaker::Artist:
+    case QueryMaker::AlbumArtist:
     {
         DEBUG_BLOCK
         d->type = Private::ARTIST;
@@ -433,7 +426,7 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete( QList<Mp3tunesLockerTrack
 
         serviceTrack->setTrackNumber( track.trackNumber() );
 
-        serviceTrack->setYear( QString::number( track.albumYear() ) );
+        serviceTrack->setYear( track.albumYear() );
 
         debug() << "setting type: " << Amarok::extension( track.trackFileName() );
         serviceTrack->setType( Amarok::extension( track.trackFileName() ) );

@@ -21,6 +21,7 @@
 #include "core/capabilities/Capability.h"
 #include "core/capabilities/EditCapability.h"
 
+#include <QTime>
 #include <QChar>
 #include <QFile>
 
@@ -28,6 +29,7 @@
 #include <kio/global.h>
 
         static const QString XESAM_ALBUM          = "http://freedesktop.org/standards/xesam/1.0/core#album";
+        static const QString XESAM_ALBUMARTIST    = "http://freedesktop.org/standards/xesam/1.0/core#albumArtist";
         static const QString XESAM_ARTIST         = "http://freedesktop.org/standards/xesam/1.0/core#artist";
         static const QString XESAM_BITRATE        = "http://freedesktop.org/standards/xesam/1.0/core#audioBitrate";
         static const QString XESAM_BPM            = "http://freedesktop.org/standards/xesam/1.0/core#audioBPM";
@@ -68,7 +70,11 @@ Meta::Field::mapFromTrack( const Meta::TrackPtr track )
     if( track->artist() && !track->artist()->name().isEmpty() )
         map.insert( Meta::Field::ARTIST, QVariant( track->artist()->name() ) );
     if( track->album() && !track->album()->name().isEmpty() )
+    {
         map.insert( Meta::Field::ALBUM, QVariant( track->album()->name() ) );
+        if( track->album()->hasAlbumArtist() && !track->album()->albumArtist()->name().isEmpty() )
+            map.insert( Meta::Field::ALBUMARTIST, QVariant( track->album()->albumArtist()->name() ) );
+    }
     if( track->filesize() )
         map.insert( Meta::Field::FILESIZE, QVariant( track->filesize() ) );
     if( track->genre() && !track->genre()->name().isEmpty() )
@@ -117,7 +123,11 @@ Meta::Field::mprisMapFromTrack( const Meta::TrackPtr track )
             map["artist"] = track->artist()->name();
 
         if( track->album() )
+        {
             map["album"] = track->album()->name();
+            if( track->album()->hasAlbumArtist() && !track->album()->albumArtist()->name().isEmpty() )
+                map[ "albumartist" ] = track->album()->albumArtist()->name();
+        }
 
         map["tracknumber"] = track->trackNumber();
         map["time"] = track->length() / 1000;
@@ -150,6 +160,74 @@ Meta::Field::mprisMapFromTrack( const Meta::TrackPtr track )
     return map;
 }
 
+QVariantMap
+Meta::Field::mpris20MapFromTrack( const Meta::TrackPtr track )
+{
+    QVariantMap map;
+    if( track )
+    {
+        // We do not set mpris::trackid here because it depends on the position
+        // of the track in the playlist
+        map["mpris:length"] = track->length() * 1000; // microseconds
+
+        if( track->album() )
+            map["mpris:artUrl"] = track->album()->imageLocation().url();
+
+        if( track->album() ) {
+            map["xesam:album"] = track->album()->name();
+            if ( track->album()->hasAlbumArtist() )
+                map["xesam:albumArtist"] = QStringList() << track->album()->albumArtist()->name();
+        }
+
+        if( track->artist() )
+            map["xesam:artist"] = QStringList() << track->artist()->name();
+
+        const QString lyrics = track->cachedLyrics();
+        if( !lyrics.isEmpty() )
+            map["xesam:asText"] = lyrics;
+
+        if( track->bpm() > 0 )
+            map["xesam:audioBPM"] = int(track->bpm());
+
+        map["xesam:autoRating"] = track->score();
+
+        map["xseam:comment"] = QStringList() << track->comment();
+
+        if( track->composer() )
+            map["xesam:composer"] = QStringList() << track->composer()->name();
+
+        if( track->year() ) {
+            bool ok;
+            int year = track->year()->name().toInt(&ok);
+            if (ok)
+                map["xesam:contentCreated"] = QDateTime(QDate(year, 1, 1)).toString(Qt::ISODate);
+        }
+
+        if( track->discNumber() )
+            map["xesam:discNumber"] = track->discNumber();
+
+        if( track->firstPlayed().isValid() )
+            map["xesam:firstUsed"] = track->firstPlayed().toString(Qt::ISODate);
+
+        if( track->genre() )
+            map["xesam:genre"] = QStringList() << track->genre()->name();
+
+        if( track->lastPlayed().isValid() )
+            map["xesam:lastUsed"] = track->lastPlayed().toString(Qt::ISODate);
+
+        map["xesam:title"] = track->prettyName();
+
+        map["xesam:trackNumber"] = track->trackNumber();
+
+        map["xesam:url"] = track->playableUrl().url();
+
+        map["xesam:useCount"] = track->playCount();
+
+        map["xesam:userRating"] = track->rating() / 10.; // xesam:userRating is a float
+    }
+    return map;
+}
+
 
 void
 Meta::Field::updateTrack( Meta::TrackPtr track, const QVariantMap &metadata )
@@ -157,7 +235,7 @@ Meta::Field::updateTrack( Meta::TrackPtr track, const QVariantMap &metadata )
     if( !track || !track->hasCapabilityInterface( Capabilities::Capability::Editable ) )
         return;
 
-    Capabilities::EditCapability *ec = track->create<Capabilities::EditCapability>();
+    QScopedPointer<Capabilities::EditCapability> ec( track->create<Capabilities::EditCapability>() );
     if( !ec || !ec->isEditable() )
         return;
     ec->beginMetaDataUpdate();
@@ -179,14 +257,16 @@ Meta::Field::updateTrack( Meta::TrackPtr track, const QVariantMap &metadata )
     QString album = metadata.contains( Meta::Field::ALBUM ) ?
                             metadata.value( Meta::Field::ALBUM ).toString() : QString();
     ec->setAlbum( album );
+    QString albumArtist = metadata.contains( Meta::Field::ALBUMARTIST ) ?
+                            metadata.value( Meta::Field::ALBUMARTIST ).toString() : QString();
     QString genre = metadata.contains( Meta::Field::GENRE ) ?
                             metadata.value( Meta::Field::GENRE ).toString() : QString();
     ec->setGenre( genre );
     QString composer = metadata.contains( Meta::Field::COMPOSER ) ?
                             metadata.value( Meta::Field::COMPOSER ).toString() : QString();
     ec->setComposer( composer );
-    QString year = metadata.contains( Meta::Field::YEAR ) ?
-                            metadata.value( Meta::Field::YEAR ).toString() : QString();
+    int year = metadata.contains( Meta::Field::YEAR ) ?
+                            metadata.value( Meta::Field::YEAR ).toInt() : 0;
     ec->setYear( year );
 
     ec->endMetaDataUpdate();
@@ -199,6 +279,8 @@ Meta::Field::xesamPrettyToFullFieldName( const QString &name )
         return XESAM_ARTIST;
     else if( name == Meta::Field::ALBUM )
         return XESAM_ALBUM;
+    else if( name == Meta::Field::ALBUMARTIST )
+        return XESAM_ALBUMARTIST;
     else if( name == Meta::Field::BITRATE )
         return XESAM_BITRATE;
     else if( name == Meta::Field::BPM )
@@ -248,6 +330,8 @@ Meta::Field::xesamFullToPrettyFieldName( const QString &name )
 {
     if( name == XESAM_ARTIST )
         return Meta::Field::ARTIST;
+    if( name == XESAM_ALBUMARTIST )
+        return Meta::Field::ALBUMARTIST;
     else if( name == XESAM_ALBUM )
         return Meta::Field::ALBUM;
     else if( name == XESAM_BITRATE )
@@ -304,26 +388,33 @@ Meta::msToPrettyTime( qint64 ms )
 QString
 Meta::secToPrettyTime( int seconds )
 {
-    int minutes = ( seconds / 60 ) % 60;
-    int hours = seconds / 3600;
-    QString s = QChar( ':' );
-    s.append( ( seconds % 60 ) < 10 ? QString( "0%1" ).arg( seconds % 60 ) : QString::number( seconds % 60 ) ); //seconds
-
-    if( hours )
-    {
-        s.prepend( minutes < 10 ? QString( "0%1" ).arg( minutes ) : QString::number( minutes ) );
-        s.prepend( ':' );
-    }
+    if( seconds < 60 * 60 ) // one hour
+        return QTime().addSecs( seconds ).toString( i18nc("the time format for a time length when the time is below 1 hour see QTime documentation.", "m:ss" ) );
     else
-    {
-        s.prepend( QString::number( minutes ) );
-        return s;
-    }
+        return QTime().addSecs( seconds ).toString( i18nc("the time format for a time length when the time is 1 hour or above see QTime documentation.", "h:mm:ss" ) );
+}
 
-    //don't zeroPad the last one, as it can be greater than 2 digits
-    s.prepend( QString::number( hours ) );
+QString
+Meta::secToPrettyTimeLong( int seconds )
+{
+    int minutes = seconds / 60;
+    int hours = minutes / 60;
+    int days = hours / 24;
+    int months = days / 30; // a short month
+    int years = months / 12;
 
-    return s;
+    if( months > 24 || (((months % 12) == 0) && years > 0) )
+        return i18ncp("number of years for the pretty time", "%1 year", "%1 years", years);
+    if( days > 60 || (((days % 30) == 0) && months > 0) )
+        return i18ncp("number of months for the pretty time", "%1 month", "%1 months", months);
+    if( hours > 24  || (((hours % 24) == 0) && days > 0) )
+        return i18ncp("number of days for the pretty time", "%1 day", "%1 days", days);
+    if( minutes > 120 || (((minutes % 60) == 0) && hours > 0) )
+        return i18ncp("number of hours for the pretty time", "%1 hour", "%1 hours", hours);
+    if( seconds > 120 || (((seconds % 60) == 0) && minutes > 0) )
+        return i18ncp("number of minutes for the pretty time", "%1 minute", "%1 minutes", hours);
+
+    return i18ncp("number of seconds for the pretty time", "%1 second", "%1 seconds", hours);
 }
 
 QString
@@ -342,41 +433,4 @@ Meta::prettyBitrate( int bitrate )
     return (bitrate >=0 && bitrate <= 256 && bitrate % 32 == 0)
                 ? bitrateStore[ bitrate / 32 ]
     : QString( "%1" ).arg( bitrate );
-}
-
-QString
-Meta::prettyRating( int rating )
-{
-    // Use the graphical star rating widget instead -- stharward
-    // I would remove this entirely, but I'm not sure if it would break the A2 string freeze
-    AMAROK_DEPRECATED
-    switch( rating )
-    {
-        case 1: return i18nc( "The quality of music", "Awful" );
-        case 2: return i18nc( "The quality of music", "Bad" );
-        case 3: return i18nc( "The quality of music", "Barely tolerable" );
-        case 4: return i18nc( "The quality of music", "Tolerable" );
-        case 5: return i18nc( "The quality of music", "Okay" );
-        case 6: return i18nc( "The quality of music", "Good" );
-        case 7: return i18nc( "The quality of music", "Very good" );
-        case 8: return i18nc( "The quality of music", "Excellent" );
-        case 9: return i18nc( "The quality of music", "Amazing" );
-        case 10: return i18nc( "The quality of music", "Favorite" );
-        case 0: default: return i18nc( "The quality of music", "Not rated" ); // assume weird values as not rated
-    }
-    return "if you can see this, then that's a bad sign.";
-}
-
-TrackKey
-Meta::keyFromTrack( const Meta::TrackPtr &track )
-{
-    TrackKey k;
-    k.trackName = track->name();
-    if( track->artist() )
-        k.artistName = track->artist()->name();
-
-    if( track->album() )
-        k.albumName = track->album()->name();
-
-    return k;
 }

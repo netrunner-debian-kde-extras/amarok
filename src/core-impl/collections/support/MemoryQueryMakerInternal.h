@@ -21,7 +21,7 @@
 #include "core/meta/Meta.h"
 
 #include <QObject>
-#include <QPointer>
+#include <QWeakPointer>
 #include <QWeakPointer>
 
 class CustomReturnFunction;
@@ -70,6 +70,7 @@ public:
     void setCustomReturnFunctions( const QList<CustomReturnFunction*> &functions );
     void setCustomReturnValues( const QList<CustomReturnValue*> &values );
     void setAlbumQueryMode( Collections::QueryMaker::AlbumQueryMode mode ) { m_albumQueryMode = mode; }
+    void setArtistQueryMode( Collections::QueryMaker::ArtistQueryMode mode ) { m_artistQueryMode = mode; }
     void setOrderDescending( bool orderDescending ) { m_orderDescending = orderDescending; }
     void setOrderByNumberField( bool orderByNumberField ) { m_orderByNumberField = orderByNumberField; }
     void setOrderByField( qint64 orderByField ) { m_orderByField = orderByField; }
@@ -93,7 +94,7 @@ private:
 
 private:
     QWeakPointer<Collections::MemoryCollection> m_collection;
-    QPointer<QObject> m_guard;
+    QWeakPointer<QObject> m_guard;
     MemoryMatcher *m_matchers;
     MemoryFilter *m_filters;
     bool m_randomize;
@@ -101,6 +102,7 @@ private:
     bool m_returnAsDataPtrs;
     Collections::QueryMaker::QueryType m_type;
     Collections::QueryMaker::AlbumQueryMode m_albumQueryMode;
+    Collections::QueryMaker::ArtistQueryMode m_artistQueryMode;
     Collections::QueryMaker::LabelQueryMode m_labelQueryMode;
     bool m_orderDescending;
     bool m_orderByNumberField;

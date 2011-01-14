@@ -272,8 +272,8 @@ ConstraintTypes::TagMatch::Comparer::compareDate( const uint test,
         target = targetVar.value<uint>();
     }
 
-    const double dte = static_cast<double>(test);
-    const double dta = static_cast<double>(target);
+    const double dte = static_cast<double>( test );
+    const double dta = static_cast<double>( target );
     if ( comp == CompareDateOn ) {
         // fuzzy equals -- within 1%, or within 10.0
         if ( ( abs( dte - dta ) < ( abs( dte + dta ) / 200.0 ) ) || ( abs( dte - dta ) < 10.0 ) ) {

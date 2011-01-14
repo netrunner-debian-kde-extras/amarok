@@ -88,7 +88,7 @@
         <whatsthis>The number of undo levels in the playlist.</whatsthis>
         <default>30</default>
     </entry>
-    <entry key="Show Splashscreen" type="Bool">
+    <entry key="Show Splash Screen" type="Bool">
         <label>Whether a splash-screen should be displayed on startup</label>
         <whatsthis>Enable/Disable splashscreen during Amarok startup.</whatsthis>
         <default>true</default>
@@ -121,6 +121,11 @@
     <entry key="PlayFirstRunJingle" type="Bool">
         <label>Play the first run jingle</label>
         <default>true</default>
+    </entry>
+    <entry key="AnimateAppletCollapse" type="Bool">
+        <label>Enable context applets collapse animations</label>
+        <whatsthis>If set, context applets will collapse using animations.</whatsthis>
+        <default>false</default>
     </entry>
 </group>
 
@@ -363,9 +368,16 @@
         <default>false</default>
     </entry>
     <entry key="Osd Text Color" type="Color">
-        <label>Font Color for On-Screen Display</label>
+        <label>Font color for OSD</label>
         <whatsthis>The color of the OSD text. The color is specified in RGB, a comma-separated list containing three integers between 0 and 255.</whatsthis>
         <default>#ffff00</default>
+    </entry>
+    <entry key="Osd Font Scaling" type="Int">
+        <label>Font scaling for OSD</label>
+        <whatsthis>The scaling multiplier for the OSD font, in percent-of-normal. 100 is &ldquo;normal size&rdquo;.</whatsthis>
+        <default>115</default>
+	<min>0</min>
+	<max>1000</max>
     </entry>
     <entry key="Osd Duration" type="Int">
         <label>How many milliseconds the text should be displayed for</label>
@@ -438,6 +450,18 @@
     <entry key="Monitor Changes" type="Bool">
         <label>Whether Collection folders are rescanned on change</label>
         <default>true</default>
+    </entry>
+    <entry key="Write Back" type="Bool">
+        <label>Whether meta data changes are written back</label>
+        <default>true</default>
+    </entry>
+    <entry key="Write Back Statistics" type="Bool">
+        <label>Whether changes to the track statistics are written back</label>
+        <default>false</default>
+    </entry>
+    <entry key="Write Back Cover" type="Bool">
+        <label>Whether changes to the album cover are written back</label>
+        <default>false</default>
     </entry>
     <entry key="Collection Folders" type="PathList">
         <label>List of folders in the Collection</label>
@@ -515,13 +539,6 @@
     <label>Server passwords</label>
     <whatsthis>Passwords stored by hostname.</whatsthis>
   </entry>
-</group>
-
-<group name="Panel Sizes">
-    <entry key="PanelsSavedState" type="IntList">
-        <label>State of main window splitter</label>
-        <default>-1</default>
-    </entry>
 </group>
 
 <group name="Playlist Search">
@@ -610,33 +627,6 @@
     <entry key="MoodbarPaintStyle" type="Int">
         <label>The style to use when painting the moodbar</label>
         <default>0</default>
-    </entry>
-</group>
-
-<group name="UpcomingEvents">
-    <entry key="enabledLinks" type="Bool">
-        <label>Clickable locations' names</label>
-        <whatsthis>Enable/Disable links to Google Map</whatsthis>
-        <default>true</default>
-    </entry>
-    <entry key="timeSpan" type="Enum">
-        <label>Timespan for upcoming events</label>
-        <whatsthis>Set the timespan for the upcoming events.</whatsthis>
-        <choices>
-            <choice name="AllEvents"/>
-            <choice name="ThisWeek"/>
-            <choice name="ThisMonth"/>
-            <choice name="ThisYear"/>
-        </choices>
-        <default>AllEvents</default>
-    </entry>
-</group>
-
-<group name="SimilarArtists">
-    <entry key="maxArtists" type="Int">
-        <label>Maximum similar artists</label>
-        <whatsthis>Maximum similar artists to be shown</whatsthis>
-        <default>20</default>
     </entry>
 </group>
 

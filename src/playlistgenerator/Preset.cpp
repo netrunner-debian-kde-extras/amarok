@@ -82,7 +82,7 @@ APG::Preset::Preset( const QString& title, QDomElement& xmlelem )
 }
 
 APG::Preset::Preset( const QString& title )
-        : m_title( title )
+    : m_title( title )
 {
 
     m_constraintTreeRoot = ConstraintFactory::instance()->createGroup( 0 );
@@ -90,7 +90,7 @@ APG::Preset::Preset( const QString& title )
 
 APG::Preset::~Preset()
 {
-    m_constraintTreeRoot->deleteLater();
+    delete m_constraintTreeRoot;
 }
 
 QDomElement*
@@ -128,7 +128,7 @@ void APG::Preset::queueSolver() {
     The::statusBar()->newProgressOperation( s, i18n("Generating a new playlist") )->setAbortSlot( s, SLOT( requestAbort() ) );
     connect( s, SIGNAL( incrementProgress() ), The::statusBar(), SLOT( incrementProgress() ) );
     connect( s, SIGNAL( done( ThreadWeaver::Job* ) ), this, SLOT( solverFinished( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
-    The::statusBar()->incrementProgressTotalSteps( s, s->iterationCount() );
+    The::statusBar()->setProgressTotalSteps( s, s->iterationCount() );
 
     m_constraintTreeRoot->addChild( ConstraintTypes::TrackSpreader::createNew( m_constraintTreeRoot ), 0 ); // private mandatory constraint
 
@@ -144,7 +144,7 @@ APG::Preset::solverFinished( ThreadWeaver::Job* job )
     The::statusBar()->endProgressOperation( solver );
     if ( job->success() ) {
         debug() << "Solver" << solver->serial() << "finished successfully";
-        if ( solver->finalSatisfaction() < 0.85 ) {
+        if ( solver->finalSatisfaction() < solver->satisfactionThreshold() ) {
             The::statusBar()->longMessage( i18n("The playlist generator created a playlist which does not meet all of your constraints.  If you are not satisfied with the results, try loosening or removing some constraints and then generating a new playlist.") );
         }
         The::playlistController()->insertOptioned( solver->getSolution() , Playlist::Replace );

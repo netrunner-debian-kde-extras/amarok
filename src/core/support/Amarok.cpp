@@ -21,37 +21,30 @@
 #include "core/capabilities/SourceInfoCapability.h"
 #include "core/playlists/PlaylistFormat.h"
 
-#include <QDateTime>
-#include <QTextDocument>
-
 #include <KCalendarSystem>
 #include <KConfigGroup>
 #include <KDirLister>
 #include <KGlobalSettings>
+#include <KIcon>
+#include <KIconEffect>
 #include <KStandardDirs>
 #include <KUniqueApplication>
 
-QPointer<KActionCollection> Amarok::actionCollectionObject;
+#include <QDateTime>
+#include <QPixmapCache>
+#include <QTextDocument>
+
+QWeakPointer<KActionCollection> Amarok::actionCollectionObject;
 QMutex Amarok::globalDirsMutex;
 
 namespace Amarok
 {
-    /*
-    * Transform to be usable within HTML/XHTML attributes
-    */
-    QString escapeHTMLAttr( const QString &s )
-    {
-        return QString(s).replace( '%', "%25" ).replace( '\'', "%27" ).replace( '"', "%22" ).
-                replace( '#', "%23" ).replace( '?', "%3F" );
-    }
-    QString unescapeHTMLAttr( const QString &s )
-    {
-        return QString(s).replace( "%3F", "?" ).replace( "%23", "#" ).replace( "%22", "\"" ).
-                replace( "%27", "'" ).replace( "%25", "%" );
-    }
 
     QString verboseTimeSince( const QDateTime &datetime )
     {
+        if( datetime.isNull() || !datetime.toTime_t() )
+            return i18nc( "The amount of time since last played", "Never" );
+
         const QDateTime now = QDateTime::currentDateTime();
         const int datediff = datetime.daysTo( now );
 
@@ -171,10 +164,10 @@ namespace Amarok
         if( !actionCollectionObject )
         {
             actionCollectionObject = new KActionCollection( kapp );
-            actionCollectionObject->setObjectName( "Amarok-KActionCollection" );
+            actionCollectionObject.data()->setObjectName( "Amarok-KActionCollection" );
         }
 
-        return actionCollectionObject;
+        return actionCollectionObject.data();
     }
 
     KConfigGroup config( const QString &group )
@@ -216,6 +209,11 @@ namespace Amarok
         QString result = KGlobal::dirs()->saveLocation( "data", QString("amarok/") + directory, true );
         globalDirsMutex.unlock();
         return result;
+    }
+
+    QString defaultPlaylistPath()
+    {
+        return Amarok::saveLocation() + QLatin1String("current.xspf");
     }
 
     QString cleanPath( const QString &path )
@@ -335,66 +333,20 @@ namespace Amarok
         return s;
     }
 
-    /* Strip the common prefix of two strings from the first one and trim
-     * whitespace from the beginning of the resultant string.
-     * Case-insensitive.
-     *
-     * @param input the string being processed
-     * @param ref the string used to determine prefix
-     */
-    QString decapitateString( const QString &input, const QString &ref )
+    QPixmap semiTransparentLogo( int dim )
     {
-        int len;    //the length of common prefix calculated so far
-        for ( len = 0; len < input.length() && len < ref.length(); len++ )
+        QPixmap logo;
+        #define AMAROK_LOGO_CACHE_KEY QLatin1String("AmarokSemiTransparentLogo")+QString::number(dim)
+        if( !QPixmapCache::find( AMAROK_LOGO_CACHE_KEY, &logo ) )
         {
-            if ( input.at( len ).toUpper() != ref.at( len ).toUpper() )
-                break;
+            QImage amarokIcon = KIcon( QLatin1String("amarok") ).pixmap( dim, dim ).toImage();
+            KIconEffect::toGray( amarokIcon, 1 );
+            KIconEffect::semiTransparent( amarokIcon );
+            logo = QPixmap::fromImage( amarokIcon );
+            QPixmapCache::insert( AMAROK_LOGO_CACHE_KEY, logo );
         }
-
-        return input.right( input.length() - len ).trimmed();
+        #undef AMAROK_LOGO_CACHE_KEY
+        return logo;
     }
 
-    //this function (C) Copyright 2003-4 Max Howell, (C) Copyright 2004 Mark Kretschmann
-    KUrl::List
-    recursiveUrlExpand ( const KUrl &url )
-    {
-        typedef QMap<QString, KUrl> FileMap;
-
-        KDirLister lister( 0 );
-        lister.setAutoUpdate ( false );
-        lister.setAutoErrorHandlingEnabled ( false, 0 );
-        lister.openUrl ( url );
-
-        while ( !lister.isFinished() )
-            kapp->processEvents ( QEventLoop::ExcludeUserInputEvents );
-
-        KFileItemList items = lister.items();
-        KUrl::List urls;
-        FileMap files;
-        foreach ( const KFileItem& it, items )
-        {
-            if ( it.isFile() ) { files[it.name() ] = it.url(); continue; }
-            if ( it.isDir() ) urls += recursiveUrlExpand( it.url() );
-        }
-
-        oldForeachType ( FileMap, files )
-        // users often have playlist files that reflect directories
-        // higher up, or stuff in this directory. Don't add them as
-        // it produces double entries
-        if ( !Playlists::isPlaylist( ( *it ).fileName() ) )
-            urls += *it;
-        return urls;
-    }
-
-    KUrl::List
-    recursiveUrlExpand ( const KUrl::List &list )
-    {
-        KUrl::List urls;
-        oldForeachType ( KUrl::List, list )
-        {
-            urls += recursiveUrlExpand ( *it );
-        }
-
-        return urls;
-    }
 } // End namespace Amarok

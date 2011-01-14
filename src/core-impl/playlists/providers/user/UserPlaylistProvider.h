@@ -43,13 +43,8 @@ class AMAROK_EXPORT UserPlaylistProvider : public PlaylistProvider
         **/
         virtual bool canSavePlaylists() = 0;
 
-        /**
-            Save a list of tracks as a playlist in the database.
-            @returns a non-null Playlists::PlaylistPtr if successful
-        **/
-        virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks ) = 0;
-
-        virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks, const QString& name ) = 0;
+        virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks,
+                                             const QString& name = QString() ) = 0;
 
         virtual bool supportsEmptyGroups();
 
@@ -63,9 +58,6 @@ class AMAROK_EXPORT UserPlaylistProvider : public PlaylistProvider
                 { Q_UNUSED( playlist ) Q_UNUSED(newName) }
         virtual bool deletePlaylists( Playlists::PlaylistList playlistlist )
                 { Q_UNUSED( playlistlist ) return false; }
-
-    signals:
-            void updated();
 };
 
 } //namespace Playlists

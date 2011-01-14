@@ -36,6 +36,10 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
                               , OnlyCompilations = 1
                               , OnlyNormalAlbums = 2 };
 
+        enum ArtistQueryMode { TrackArtists         = 0,
+                               AlbumArtists         = 1,
+                               AlbumOrTrackArtists  = 2 };
+
         enum LabelQueryMode { NoConstraint = 0
                                 , OnlyWithLabels = 1
                                 , OnlyWithoutLabels = 2 };
@@ -43,14 +47,15 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
         //Filters that the QueryMaker accepts for searching.
         //not all implementations will accept all filter levels, so make it possible to
         //specify which ones make sense for a given qm. Add to this as needed
-        enum ValidFilters { TitleFilter     =     1,
-                            AlbumFilter     =     2,
-                            ArtistFilter    =     4,
-                            GenreFilter     =     8,
-                            ComposerFilter  =    16,
-                            YearFilter      =    32,
-                            UrlFilter       =    64,
-                            AllFilters      = 65535 };
+        enum ValidFilters { TitleFilter      =     1,
+                            AlbumFilter      =     2,
+                            ArtistFilter     =     4,
+                            AlbumArtistFilter=     8,
+                            GenreFilter      =    16,
+                            ComposerFilter   =    32,
+                            YearFilter       =    64,
+                            UrlFilter        =   128,
+                            AllFilters       = 65535 };
 
         enum ReturnFunction { Count = 0,
                               Sum = 1,
@@ -65,6 +70,7 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
                          Track,
                          Artist,
                          Album,
+                         AlbumArtist,
                          Genre,
                          Composer,
                          Year,
@@ -74,12 +80,6 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
         QueryMaker();
         virtual ~QueryMaker();
 
-        /**
-            resets all internal data to the default values. Calling this method is the same
-            as creating a new QueryMaker.
-            @return this
-        */
-        virtual QueryMaker* reset() = 0;
         /**
             starts the query. This method returns immediately. All processing is done in one or more
             separate worker thread(s). One of the newResultReady signals will be emitted at least once,
@@ -157,22 +157,21 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
         virtual QueryMaker* addMatch( const Meta::ComposerPtr &composer ) = 0;
         virtual QueryMaker* addMatch( const Meta::GenrePtr &genre ) = 0;
         virtual QueryMaker* addMatch( const Meta::YearPtr &year ) = 0;
-        virtual QueryMaker* addMatch( const Meta::DataPtr &data ) = 0;
         virtual QueryMaker* addMatch( const Meta::LabelPtr &label );
 
         /**
          * Add a filter of type @p value and value @p filter. The querymaker applies this to all queries.
          * @param text the text to match
-         * @param anyBegin wildcard match the beginning of @p text (*text)
-         * @param anyEnd wildcard match the end of @p text (text*)
+         * @param matchBegin If set then wildcard match the beginning of @p text (*text)
+         * @param matchEnd If set then wildcard match the end of @p text (text*)
          * @return this
          */
         virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false ) = 0;
         /**
         * Exclude filter of type @p value and value @p filter. The querymaker applies this to all queries.
         * @param text the text to match
-        * @param anyBegin wildcard match the beginning of @p text (*text)
-        * @param anyEnd wildcard match the end of @p text (text*)
+        * @param matchBegin If set then wildcard match the beginning of @p text (*text)
+        * @param matchEnd If set then wildcard match the end of @p text (text*)
         * @return this
         */
         virtual QueryMaker* excludeFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false ) = 0;
@@ -192,6 +191,12 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
          * QueryMaker defaults to AlbumQueryMode::AllAlbums.
          */
         virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
+
+        /**
+         * Set artist query mode. If this method is not called,
+         * QueryMaker defaults to ArtistQueryMode::TrackArtist.
+         */
+        virtual QueryMaker* setArtistQueryMode( ArtistQueryMode mode );
 
         /**
           * Sets the label query mode. This method restricts a query to tracks

@@ -14,12 +14,14 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "LastFmServiceSettings"
+
 #include "LastFmServiceSettings.h"
 
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
+#include "NetworkAccessManagerProxy.h"
 #include "ui_LastFmConfigWidget.h"
-#include <kio/accessmanager.h>
 
 #include <lastfm/Audioscrobbler> // from liblastfm
 #include <lastfm/ws.h>
@@ -98,21 +100,13 @@ LastFmServiceSettings::testLogin()
     lastfm::ws::ApiKey = Amarok::lastfmApiKey();
     lastfm::ws::SharedSecret = "fe0dcde9fcd14c2d1d50665b646335e9";
     lastfm::ws::Username = qstrdup( m_configDialog->kcfg_ScrobblerUsername->text().toLatin1().data() );
-
-    // set up proxy
-    // NOTE yes we instantiate two KNAMs here, one in this kcm module and one in the servce itself.
-    // but there is no way to share the class easily across the lib boundary as they are not guaranteed to
-    // always exist at the same time... so 1 class seems to be a relatively minor penalty for a working Test button
-#if KDE_IS_VERSION(4, 4, 0)
-    QNetworkAccessManager* qnam = new KIO::Integration::AccessManager( this );
-#else
-    QNetworkAccessManager* qnam = new KIO::AccessManager( this );
-#endif
-    lastfm::setNetworkAccessManager( qnam );
+    if( lastfm::nam() != The::networkAccessManager() )
+        lastfm::setNetworkAccessManager( The::networkAccessManager() );
 
     debug() << "username:" << QString( QUrl::toPercentEncoding( lastfm::ws::Username ) );
 
-    QString authToken =  md5( ( m_configDialog->kcfg_ScrobblerUsername->text() + md5( m_configDialog->kcfg_ScrobblerPassword->text().toUtf8() ) ).toUtf8() );
+    const QString authToken = md5( QString( "%1%2" ).arg( m_configDialog->kcfg_ScrobblerUsername->text() )
+                                                    .arg( md5( m_configDialog->kcfg_ScrobblerPassword->text().toUtf8() ) ).toUtf8() );
 
     // now authenticate w/ last.fm and get our session key
     QMap<QString, QString> query;
@@ -122,6 +116,7 @@ LastFmServiceSettings::testLogin()
     m_authQuery = lastfm::ws::post( query );
 
     connect( m_authQuery, SIGNAL( finished() ), SLOT( onAuthenticated() ) );
+    connect( m_authQuery, SIGNAL( error( QNetworkReply::NetworkError ) ), SLOT( onError( QNetworkReply::NetworkError ) ) );
 }
 
 void
@@ -158,10 +153,32 @@ LastFmServiceSettings::onAuthenticated()
 
         default:
             debug() << "Unhandled QNetworkReply state, probably not important";
-            return;
     }
     m_authQuery->deleteLater();
 }
+
+void
+LastFmServiceSettings::onError( QNetworkReply::NetworkError code )
+{
+    DEBUG_BLOCK
+
+    if( code == QNetworkReply::NoError )
+        return;
+
+    if( code == QNetworkReply::AuthenticationRequiredError )
+    {
+        onAuthenticated();
+        return;
+    }
+
+    KMessageBox::error( this, i18n( "Unable to connect to Last.fm service." ), i18n( "Failed" ) );
+    m_configDialog->testLogin->setText( i18n( "Test Login" ) );
+    m_configDialog->testLogin->setEnabled( true );
+
+    debug() << "Error occurred during network request: " << m_authQuery->errorString();
+    m_authQuery->deleteLater();
+}
+
 
 void
 LastFmServiceSettings::load()
@@ -171,6 +188,9 @@ LastFmServiceSettings::load()
     m_configDialog->kcfg_ScrobblerPassword->setText( m_config.password() );
     m_configDialog->kcfg_SubmitPlayedSongs->setChecked( m_config.scrobble() );
     m_configDialog->kcfg_RetrieveSimilarArtists->setChecked( m_config.fetchSimilar() );
+
+    if( !m_config.username().isEmpty() && !m_config.password().isEmpty() )
+        m_configDialog->kcfg_SubmitPlayedSongs->setEnabled( true );
 
     KCModule::load();
 }

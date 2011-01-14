@@ -9,9 +9,9 @@ msgstr ""
 "Project-Id-Version: amarokpkg\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2010-05-03 05:06+0200\n"
-"PO-Revision-Date: 2010-06-15 11:55+0200\n"
+"PO-Revision-Date: 2010-10-15 09:13+0200\n"
 "Last-Translator: Javier Vinal <fjvinal@gmail.com>\n"
-"Language-Team: Español <kde-l10n-es@kde.org>\n"
+"Language-Team: Spanish <kde-l10n-es@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -20,7 +20,7 @@ msgstr ""
 
 #: amarokpkg.cpp:40
 msgid "Install, list, remove Amarok applets"
-msgstr "Instalar, listar y borrar miniaplicaciones de Amarok"
+msgstr "Instalar, listar y eliminar miniaplicaciones de Amarok"
 
 #: amarokpkg.cpp:76
 msgid "Amarok Applet Manager"
@@ -49,7 +49,7 @@ msgstr "Desarrollador"
 #: amarokpkg.cpp:92
 msgid "For install or remove, operates on applets installed for all users."
 msgstr ""
-"Para instalar o borrar, funciona en miniaplicaciones instaladas para todos "
+"Para instalar o eliminar, funciona en miniaplicaciones instaladas para todos "
 "los usuarios."
 
 #: amarokpkg.cpp:95
@@ -82,17 +82,17 @@ msgstr ""
 #: amarokpkg.cpp:162
 #, kde-format
 msgid "Successfully removed %1"
-msgstr "%1 borrado correctamente"
+msgstr "%1 eliminado satisfactoriamente"
 
 #: amarokpkg.cpp:164
 #, kde-format
 msgid "Removal of %1 failed."
-msgstr "Fallo al borrar %1."
+msgstr "Falló el borrado de %1."
 
 #: amarokpkg.cpp:169
 #, kde-format
 msgid "Plugin %1 is not installed."
-msgstr "Complemento %1 no esta instalado."
+msgstr "Complemento %1 no instalado."
 
 #: amarokpkg.cpp:174
 #, kde-format
@@ -109,7 +109,7 @@ msgctxt ""
 "No option was given, this is the error message telling the user he needs at "
 "least one, do not translate install, remove, upgrade nor list"
 msgid "One of install, remove, upgrade or list is required."
-msgstr "Se necesita instalar, borra, actualizar o listar."
+msgstr "Se necesita instalar, eliminar, actualizar o listar."
 
 #: rc.cpp:1
 msgctxt "NAME OF TRANSLATORS"

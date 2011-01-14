@@ -35,6 +35,12 @@ TimecodeEditCapability::setAlbum( const QString &newAlbum )
 }
 
 void
+TimecodeEditCapability::setAlbumArtist( const QString &newAlbumArtist )
+{
+    Q_UNUSED( newAlbumArtist );
+}
+
+void
 TimecodeEditCapability::setArtist( const QString &newArtist )
 {
      m_track->setArtist( newArtist );
@@ -53,7 +59,7 @@ TimecodeEditCapability::setGenre( const QString &newGenre )
 }
 
 void
-TimecodeEditCapability::setYear( const QString &newYear )
+TimecodeEditCapability::setYear( int newYear )
 {
      m_track->setYear( newYear );
 }
@@ -88,6 +94,11 @@ TimecodeEditCapability::setDiscNumber( int newDiscNumber )
     m_track->setDiscNumber( newDiscNumber );
 }
 
+void
+TimecodeEditCapability::setUidUrl( const QString &newUidUrl )
+{
+    Q_UNUSED( newUidUrl )
+}
 
 void
 TimecodeEditCapability::beginMetaDataUpdate()

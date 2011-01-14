@@ -1,11 +1,16 @@
 project(context-currenttrack)
 
-set(currenttrack_SRCS CurrentTrack.cpp )
-
 include_directories(
-                    ../..
-                    ../../..
-                    )
+    ${Amarok_SOURCE_DIR}/src/context/widgets
+    ${Amarok_SOURCE_DIR}/src/core-impl/collections/support
+    ${Amarok_SOURCE_DIR}/src
+    )
+
+set( currenttrack_SRCS
+     CurrentTrack.cpp
+     ${Amarok_SOURCE_DIR}/src/context/widgets/RecentlyPlayedListWidget.cpp
+     ${Amarok_SOURCE_DIR}/src/widgets/PixmapViewer.cpp
+     )
 
 kde4_add_ui_files( currenttrack_SRCS currentTrackSettings.ui )
 kde4_add_plugin(amarok_context_applet_currenttrack ${currenttrack_SRCS})

@@ -69,7 +69,7 @@ endif (CMAKE_COMPILER_IS_GNUCXX)
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/shared )
 
 if( WITH_PLAYER )
-    set(KDE_MIN_VERSION "4.3.0")
+    set(KDE_MIN_VERSION "4.4.0")
     find_package( KDE4 REQUIRED )
     include (KDE4Defaults)
     include (MacroLibrary)
@@ -77,7 +77,7 @@ if( WITH_PLAYER )
     include(MacroBoolTo01)
     include(MacroLogFeature)
 
-    macro_log_feature( KDE4_FOUND "kdelibs" "The toolkit Amarok uses to build" "http://www.kde.org" TRUE "4.3.0" "" )
+    macro_log_feature( KDE4_FOUND "kdelibs" "The toolkit Amarok uses to build" "http://www.kde.org" TRUE "4.4.0" "" )
 
     find_package( QtScriptQtBindings REQUIRED )
     macro_log_feature( QTSCRIPTQTBINDINGS_FOUND "qtscript-qt" "QtScript Qt Bindings" "http://code.google.com/p/qtscriptgenerator/" TRUE "" "" )
@@ -101,13 +101,21 @@ if( WITH_PLAYER )
     find_package(QCA2 REQUIRED)
     macro_log_feature( QCA2_FOUND "qca2" "Qt Cryptographic Architecture" "http://delta.affinix.com/qca/" TRUE "" "" )
 
-    macro_optional_find_package(Strigi)
-    macro_log_feature( STRIGI_FOUND "strigi" "Index metadata of files" "http://strigi.sourceforge.net" TRUE "" "" )
+    # macro_optional_find_package(Strigi)
+    # macro_log_feature( STRIGI_FOUND "strigi" "Index metadata of files" "http://strigi.sourceforge.net" FALSE "" "" )
 
     macro_optional_find_package(LibLastFm)
     macro_log_feature( LIBLASTFM_FOUND "liblastfm" "Enable Last.Fm service, including scrobbling, song submissions, and suggested song dynamic playlists" "http://cdn.last.fm/src/liblastfm-0.3.0.tar.bz2" FALSE "0.3" "" )
     macro_bool_to_01( LIBLASTFM_FOUND HAVE_LIBLASTFM )
 
+    macro_optional_find_package( FFmpeg )
+    macro_log_feature( FFMPEG_FOUND "ffmpeg" "Libraries and tools for handling multimedia data" "http://www.ffmpeg.org/" FALSE "0.5" "" )
+
+    if( FFMPEG_FOUND )
+        macro_optional_find_package(LibOFA)
+        macro_log_feature( LIBOFA_FOUND "libofa" "Enable MusicDNS service" "http://code.google.com/p/musicip-libofa/" FALSE "0.9.x" "" )
+        macro_bool_to_01( LIBOFA_FOUND HAVE_LIBOFA )
+    endif( FFMPEG_FOUND )
 
     if( WITH_IPOD )
         find_package(Ipod)
@@ -115,8 +123,8 @@ if( WITH_PLAYER )
             macro_ensure_version("0.7.0" ${IPOD_VERSION} IPOD_FOUND)
         endif( IPOD_FOUND AND NOT WIN32 )
         macro_log_feature( IPOD_FOUND "libgpod" "Support Apple iPod audio devices" "http://sourceforge.net/projects/gtkpod/" FALSE "0.7.0" "" )
-	macro_optional_find_package(Gdk)
-	macro_log_feature( GDK_FOUND "Gdk" "Support for artwork on iPod audio devices via GdkPixbuf" "http://developer.gnome.org/arch/imaging/gdkpixbuf.html" FALSE "2.0.x" "" )
+	macro_optional_find_package(GDKPixBuf)
+	macro_log_feature( GDKPIXBUF_FOUND "GDK-PixBuf" "Support for artwork on iPod audio devices via GDK-PixBuf" "http://developer.gnome.org/arch/imaging/gdkpixbuf.html" FALSE "2.0.x" "" )
     endif( WITH_IPOD )
 
     macro_optional_find_package(Mtp)
@@ -160,9 +168,6 @@ if( WITH_PLAYER )
 
     macro_bool_to_01(LIBVISUAL_FOUND HAVE_LIBVISUAL)
 
-    macro_ensure_version("4.3.80" ${KDE_VERSION} KSTATUSNOTIFIERITEM_FOUND)
-    macro_bool_to_01(KSTATUSNOTIFIERITEM_FOUND HAVE_KSTATUSNOTIFIERITEM)
-
     string( TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_TOLOWER )
     if( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
         set( DEBUG_BUILD_TYPE ON )
@@ -178,6 +183,7 @@ if( WITH_PLAYER )
     endif( KDE4_BUILD_TESTS AND NOT WIN32 )
 
     add_subdirectory( src )
+    add_subdirectory( external )
 
     macro_display_feature_log()
 

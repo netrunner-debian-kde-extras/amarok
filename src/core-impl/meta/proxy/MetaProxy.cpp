@@ -22,9 +22,8 @@
 
 #include "core-impl/collections/support/CollectionManager.h"
 
-#include <QDateTime>
 #include <QObject>
-#include <QPointer>
+#include <QWeakPointer>
 #include <QTimer>
 
 #include <KSharedPtr>
@@ -47,14 +46,16 @@ class EditCapabilityProxy : public Capabilities::EditCapability
         virtual bool isEditable() const { return true; }
         virtual void setTitle( const QString &title ) { m_track->setName( title ); }
         virtual void setAlbum( const QString &newAlbum ) { m_track->setAlbum( newAlbum ); }
+        virtual void setAlbumArtist( const QString &newAlbumArtist ) { m_track->setAlbumArtist( newAlbumArtist ); }
         virtual void setArtist( const QString &newArtist ) { m_track->setArtist( newArtist ); }
         virtual void setComposer( const QString &newComposer ) { m_track->setComposer( newComposer ); }
         virtual void setGenre( const QString &newGenre ) { m_track->setGenre( newGenre ); }
-        virtual void setYear( const QString &newYear ) { m_track->setYear( newYear ); }
+        virtual void setYear( int newYear ) { m_track->setYear( newYear ); }
         virtual void setBpm( const qreal newBpm ) { m_track->setBpm( newBpm ); }
         virtual void setComment( const QString &newComment ) { Q_UNUSED( newComment ); /*m_track->setComment( newComment );*/ } // Do we want to support this?
         virtual void setTrackNumber( int newTrackNumber ) { m_track->setTrackNumber( newTrackNumber ); }
         virtual void setDiscNumber( int newDiscNumber ) { m_track->setDiscNumber( newDiscNumber ); }
+        virtual void setUidUrl( const QString &newUidUrl ) { m_track->setUidUrl( newUidUrl ); }
 
         virtual void beginMetaDataUpdate() {}  // Nothing to do, we cache everything
         virtual void endMetaDataUpdate() {}
@@ -85,16 +86,16 @@ MetaProxy::Track::init( const KUrl &url, bool awaitLookupNotification )
     d->cachedLength = 0;
 
 	if( !awaitLookupNotification )
-		QObject::connect( CollectionManager::instance(), SIGNAL( trackProviderAdded( TrackProvider* ) ), d, SLOT( slotNewTrackProvider( TrackProvider* ) ) );
+    {
+        QObject::connect( CollectionManager::instance(), SIGNAL( trackProviderAdded( Collections::TrackProvider* ) ), d, SLOT( slotNewTrackProvider( Collections::TrackProvider* ) ) );
+        QObject::connect( CollectionManager::instance(), SIGNAL( collectionAdded( Collections::Collection* ) ), d, SLOT( slotNewCollection( Collections::Collection* ) ) );
+    }
 
-    d->albumPtr = Meta::AlbumPtr( new ProxyAlbum( QPointer<Track::Private>( d ) ) );
-    d->artistPtr = Meta::ArtistPtr( new ProxyArtist( QPointer<Track::Private>( d ) ) );
-    d->genrePtr = Meta::GenrePtr( new ProxyGenre( QPointer<Track::Private>( d ) ) );
-    d->composerPtr = Meta::ComposerPtr( new ProxyComposer( QPointer<Track::Private>( d ) ) );
-    d->yearPtr = Meta::YearPtr( new ProxyYear( QPointer<Track::Private>( d ) ) );
-
-	if( !awaitLookupNotification )
-		QTimer::singleShot( 0, d, SLOT( slotCheckCollectionManager() ) );
+    d->albumPtr = Meta::AlbumPtr( new ProxyAlbum( d ) );
+    d->artistPtr = Meta::ArtistPtr( new ProxyArtist( d ) );
+    d->genrePtr = Meta::GenrePtr( new ProxyGenre( d ) );
+    d->composerPtr = Meta::ComposerPtr( new ProxyComposer( d ) );
+    d->yearPtr = Meta::YearPtr( new ProxyYear( d ) );
 }
 
 MetaProxy::Track::~Track()
@@ -179,6 +180,12 @@ MetaProxy::Track::uidUrl() const
     return d->url.url();
 }
 
+void
+Track::setUidUrl( const QString &newUidUrl ) const
+{
+    Q_UNUSED( newUidUrl )
+}
+
 bool
 MetaProxy::Track::isPlayable() const
 {
@@ -199,6 +206,12 @@ void
 MetaProxy::Track::setAlbum( const QString &album )
 {
     d->cachedAlbum = album;
+}
+
+void
+Track::setAlbumArtist( const QString &artist )
+{
+    Q_UNUSED( artist );
 }
 
 Meta::ArtistPtr
@@ -236,6 +249,7 @@ MetaProxy::Track::setComposer( const QString &composer )
 {
     d->cachedComposer = composer;
 }
+
 Meta::YearPtr
 MetaProxy::Track::year() const
 {
@@ -243,7 +257,7 @@ MetaProxy::Track::year() const
 }
 
 void
-MetaProxy::Track::setYear( const QString &year )
+MetaProxy::Track::setYear( int year )
 {
     d->cachedYear = year;
 }
@@ -370,20 +384,20 @@ MetaProxy::Track::createDate() const
     return QDateTime();
 }
 
-uint
+QDateTime
 MetaProxy::Track::firstPlayed() const
 {
     if( d->realTrack )
         return d->realTrack->firstPlayed();
-    return 0;
+    return QDateTime();
 }
 
-uint
+QDateTime
 MetaProxy::Track::lastPlayed() const
 {
     if( d->realTrack )
         return d->realTrack->lastPlayed();
-    return 0;
+    return QDateTime();
 }
 
 int

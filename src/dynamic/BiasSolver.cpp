@@ -88,7 +88,7 @@ Dynamic::BiasSolver::BiasSolver( int n, QList<Bias*> biases, Meta::TrackList con
     , m_pendingBiasUpdates(0)
     , m_abortRequested(false)
 {
-    debug() << "CREATING BiasSolver in thread:" << QThread::currentThreadId();
+    // debug() << "CREATING BiasSolver in thread:" << QThread::currentThreadId();
     int i = m_biases.size();
     while( i-- )
     {
@@ -100,8 +100,7 @@ Dynamic::BiasSolver::BiasSolver( int n, QList<Bias*> biases, Meta::TrackList con
 
 Dynamic::BiasSolver::~BiasSolver()
 {
-    debug() << "DESTROYING BiasSolver in thread:" << QThread::currentThreadId();
-
+    // debug() << "DESTROYING BiasSolver in thread:" << QThread::currentThreadId();
 }
 
 
@@ -614,7 +613,12 @@ Dynamic::BiasSolver::generateInitialPlaylist() const
     {
         int n = m_n;
         while( n-- )
-            playlist += getRandomTrack( TrackSet(s_universe) );
+        {
+            Meta::TrackPtr track = getRandomTrack( TrackSet(s_universe) );
+            if( !track )
+                break;
+            playlist.append( track );
+        }
 
         debug() << "No collection filters, returning random initial playlist";
         return playlist;
@@ -664,16 +668,16 @@ Dynamic::BiasSolver::generateInitialPlaylist() const
             double decider = (double)KRandom::random() / (((double)RAND_MAX) + 1.0);
             double currentWeight = (m_feasibleCollectionFilters[i]->weight() * m_n - addedSongsForFilter[i]) / (double)(n+1);
 
-            debug() << "decider is set to:" << decider << "currentWeight is:" << currentWeight;
+            // debug() << "decider is set to:" << decider << "currentWeight is:" << currentWeight;
             if( decider < currentWeight )
             {
-                debug() << "chose track from bias";
+                // debug() << "chose track from bias";
                 branches.setBit( i, true );
                 newSet.intersect( m_feasibleCollectionFilterSets[i] );
             }
             else
             {
-                debug() << "bias NOT chosen.";
+                // debug() << "bias NOT chosen.";
                 branches.setBit( i, false );
                 newSet.subtract( m_feasibleCollectionFilterSets[i] );
             }
@@ -685,7 +689,7 @@ Dynamic::BiasSolver::generateInitialPlaylist() const
             //debug() << "after set intersection/subtraction, R has size:" << R.size();
 
             if( newSet.trackCount() == 0 ) {
-                debug() << "bias would result in empty set. reverting decision";
+                // debug() << "bias would result in empty set. reverting decision";
                 branches.toggleBit( i );
             }
             else
@@ -704,7 +708,10 @@ Dynamic::BiasSolver::generateInitialPlaylist() const
         }
 
         // choose a track at random from our final subset
-        playlist.append( getRandomTrack(currentSet) );
+        Meta::TrackPtr track = getRandomTrack(currentSet);
+        if( !track )
+            break;
+        playlist.append( track );
     }
     delete[] addedSongsForFilter;
 
@@ -726,8 +733,8 @@ Dynamic::BiasSolver::getRandomTrack( const TrackSet& subset ) const
 
     if( track )
     {
-        if( track->artist() )
-            debug() << "track selected:" << track->name() << track->artist()->name();
+        // if( track->artist() )
+            // debug() << "track selected:" << track->name() << track->artist()->name();
     }
     else
         error() << "track is 0 in BiasSolver::getRandomTrack()";
@@ -752,8 +759,15 @@ Dynamic::BiasSolver::getMutation()
 Meta::TrackPtr
 Dynamic::BiasSolver::trackForUid( const QByteArray& uid ) const
 {
-    const KUrl url = s_universeCollection->uidUrlProtocol() + "://" + QString( uid );
-    return s_universeCollection->trackForUrl( url );
+    const KUrl url = QString( s_universeCollection->uidUrlProtocol() + "://" + uid );
+    Meta::TrackPtr track = s_universeCollection->trackForUrl( url );
+    // try the same without the protocol
+    if( !track )
+         track = s_universeCollection->trackForUrl( KUrl(uid) );
+
+    if( !track )
+        warning() << "trackForUid returned no track for "<<uid<<"with protocol: "<< s_universeCollection->uidUrlProtocol();
+    return track;
 }
 
 
@@ -828,7 +842,7 @@ Dynamic::BiasSolver::updateUniverse()
         s_universeQuery->addReturnValue( Meta::valUniqueId );
     }
 
-    s_uidUrlProtocolPrefixLength = (QString(s_universeCollection->uidUrlProtocol()) + "://").length();
+    s_uidUrlProtocolPrefixLength = QString( s_universeCollection->uidUrlProtocol() + "://" ).length();
 
     connect( s_universeQuery, SIGNAL(newResultReady( QString, QStringList )),
             SLOT(universeResults( QString, QStringList )), Qt::DirectConnection );
