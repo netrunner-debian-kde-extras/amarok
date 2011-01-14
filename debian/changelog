@@ -1,6 +1,9 @@
 amarok (2.4.0-0r1) UNRELEASED; urgency=low
 
   * New upstream release.
+  * Remove patches previously backported from upstream:
+    - backport_FLAC_BPM_tags_fix.diff;
+    - 0001-Re-add-some-tests-for-unprintable-but-also-invalid-c.patch.
 
  -- Modestas Vainius <modax@debian.org>  Fri, 14 Jan 2011 21:08:38 +0200
 
