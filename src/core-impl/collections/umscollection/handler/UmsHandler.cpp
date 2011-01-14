@@ -137,8 +137,10 @@ UmsHandler::init()
     KUrl playerFilePath( m_mountPoint );
     playerFilePath.addPath( s_settingsFileName );
     QFile playerFile( playerFilePath.toLocalFile() );
+    //prevent BR 259849: no audio_folder key in .is_audio_player file.
+    m_musicPath = m_mountPoint;
 
-    if (playerFile.open(QIODevice::ReadOnly | QIODevice::Text))
+    if( playerFile.open( QIODevice::ReadOnly | QIODevice::Text ) )
     {
         debug() << QString( "Got %1 file").arg( s_settingsFileName );
         QTextStream in(&playerFile);
@@ -183,11 +185,7 @@ UmsHandler::init()
         }
 
     }
-/*
-    m_formats << "mp3" << "wav" << "asf" << "flac" << "wma" << "ogg" << "aac" << "m4a" << "m4b"
-            << "mp4" << "mp2" << "ac3";
 
-*/
     m_mimetypes << "audio/mpeg" << "audio/x-wav" << "video/x-ms-asf" << "audio/x-flac"
             << "audio/x-ms-wma" << "application/ogg" << "audio/mp4" << "audio/mp4a-latm"
             << "video/mp4" << "audio/ac3";
@@ -612,7 +610,6 @@ UmsHandler::findPathToCopy( const Meta::TrackPtr &srcTrack, const Meta::MediaDev
 bool
 UmsHandler::libCopyTrack( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr &destTrack )
 {
-    Q_UNUSED( destTrack )
     DEBUG_BLOCK
 
     KUrl srcurl = KUrl::fromPath( srcTrack->playableUrl().path() );
@@ -694,8 +691,6 @@ UmsHandler::fileTransferred( KJob *job )  //SLOT
 void
 UmsHandler::slotCopyingDone( KIO::Job* job, KUrl from, KUrl to, time_t mtime, bool directory, bool renamed)
 {
-    Q_UNUSED( job )
-    Q_UNUSED( to )
     Q_UNUSED( mtime )
     Q_UNUSED( directory )
     Q_UNUSED( renamed )
@@ -707,10 +702,13 @@ UmsHandler::slotCopyingDone( KIO::Job* job, KUrl from, KUrl to, time_t mtime, bo
     {
         Meta::TrackPtr metafiletrack( new MetaFile::Track( to ) );
         Meta::MediaDeviceTrackPtr destTrack = m_srctodest.value( track );
+        destTrack->setPlayableUrl( to );
         m_umstrackhash.insert( destTrack, metafiletrack );
         m_files.insert( to.path(), destTrack );
         slotFinalizeTrackCopy( track );
     }
+    else
+        slotCopyTrackFailed( track );
 }
 
 void
@@ -777,6 +775,17 @@ UmsHandler::libGetArtist( const Meta::MediaDeviceTrackPtr &track )
     if ( !m_umstrackhash.contains( track ) )
         debug() << "Error!  track not in hash!";
     return m_umstrackhash.value( track )->artist()->name();
+}
+
+QString
+UmsHandler::libGetAlbumArtist( const Meta::MediaDeviceTrackPtr &track )
+{
+    if ( !m_umstrackhash.contains( track ) )
+        debug() << "Error!  track not in hash!";
+    TrackPtr trackptr = m_umstrackhash.value( track );
+    return ( trackptr->album() && trackptr->album()->hasAlbumArtist() )
+           ? trackptr->album()->albumArtist()->name()
+           : QString();
 }
 
 QString
@@ -1062,7 +1071,7 @@ UmsHandler::updateTrack( Meta::MediaDeviceTrackPtr &track )
     if ( track->genre() )
         metafile->setGenre( track->genre()->name() );
     if ( track->year() )
-        metafile->setYear( track->year()->name() );
+        metafile->setYear( track->year()->year() );
     metafile->setTrackNumber( track->trackNumber() );
     metafile->setComment( track->comment() );
     metafile->setDiscNumber( track->discNumber() );

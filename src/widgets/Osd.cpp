@@ -32,6 +32,7 @@
 
 #include <KApplication>
 #include <KIcon>
+#include <KLocale>
 #include <KWindowSystem>
 
 #include <QDesktopWidget>
@@ -62,6 +63,7 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
         , m_rating( 0 )
         , m_volume( 0 )
         , m_showVolume( false )
+        , m_fontScale( 1.15 )
 {
     Qt::WindowFlags flags;
     flags = Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint;
@@ -85,11 +87,6 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
 
     m_timer->setSingleShot( true );
     connect( m_timer, SIGNAL( timeout() ), SLOT( hide() ) );
-
-    QFont f = font();
-    f.setFamily( "Arial" );
-    f.setPointSize( f.pointSize() + 8 );
-    setFont( f );
 
     //or crashes, KWindowSystem bug I think, crashes in QWidget::icon()
     kapp->setTopWidget( this );
@@ -116,6 +113,10 @@ OSDWidget::show( const QString &text, QImage newImage )
     }
     else
         m_cover = Amarok::icon();
+
+    QFont f = QFont( "sans-serif" );
+    f.setPointSizeF( f.pointSizeF() * m_fontScale );
+    setFont( f );
 
     m_text = text;
     show();
@@ -383,8 +384,6 @@ OSDWidget::paintEvent( QPaintEvent *e )
     p.setPen( palette().color( QPalette::Active, QPalette::WindowText ) );
     //p.setPen( Qt::white ); // This too.
     p.drawText( rect, align, m_text );
-
-    m_paused = false;
 }
 
 void
@@ -562,9 +561,32 @@ Amarok::OSD::destroy()
 
 Amarok::OSD::OSD()
     : OSDWidget( 0 )
-    , Engine::EngineObserver( The::engineController() )
 {
     s_instance = this;
+
+    EngineController* const engine = The::engineController();
+
+    if( engine->isPlaying() )
+        trackPlaying( engine->currentTrack() );
+
+    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
+             this, SLOT( trackPlaying( Meta::TrackPtr ) ) );
+    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
+             this, SLOT( stopped() ) );
+    connect( engine, SIGNAL( paused() ),
+             this, SLOT( paused() ) );
+
+    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
+             this, SLOT( metadataChanged() ) );
+    connect( engine, SIGNAL( albumMetadataChanged( Meta::AlbumPtr ) ),
+             this, SLOT( metadataChanged() ) );
+
+    connect( engine, SIGNAL( volumeChanged( int ) ),
+             this, SLOT( volumeChanged( int ) ) );
+
+    connect( engine, SIGNAL( muteStateChanged( bool ) ),
+             this, SLOT( muteStateChanged( bool ) ) );
+
 }
 
 Amarok::OSD::~OSD()
@@ -622,6 +644,7 @@ Amarok::OSD::applySettings()
     setEnabled( AmarokConfig::osdEnabled() );
     setOffset( AmarokConfig::osdYOffset() );
     setScreen( AmarokConfig::osdScreen() );
+    setFontScale( AmarokConfig::osdFontScaling() );
 
     if( AmarokConfig::osdUseCustomColors() )
         setTextColor( AmarokConfig::osdTextColor() );
@@ -646,13 +669,7 @@ Amarok::OSD::forceToggleOSD()
 }
 
 void
-Amarok::OSD::engineVolumeChanged( int newVolume )
-{
-    volumeChanged( newVolume );
-}
-
-void
-Amarok::OSD::engineMuteStateChanged( bool mute )
+Amarok::OSD::muteStateChanged( bool mute )
 {
     Q_UNUSED( mute )
 
@@ -660,49 +677,36 @@ Amarok::OSD::engineMuteStateChanged( bool mute )
 }
 
 void
-Amarok::OSD::engineNewTrackPlaying()
+Amarok::OSD::trackPlaying( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
+    m_currentTrack = track;
 
-    if( m_currentTrack )
-        unsubscribeFrom( m_currentTrack->album() );
-
-    if( The::engineController()->currentTrack() )
-    {
-        m_currentTrack = The::engineController()->currentTrack();
-        subscribeTo( m_currentTrack->album() );
-    }
-
+    m_paused = false;
     show( m_currentTrack );
 }
 
 void
-Amarok::OSD::engineStateChanged( Phonon::State state, Phonon::State oldState )
+Amarok::OSD::stopped()
 {
-    switch( state )
-    {
-        case Phonon::PlayingState:
-            m_paused = false;
-            if( oldState == Phonon::PausedState )
-                show( m_currentTrack );
-            break;
-
-        case Phonon::PausedState:
-            setImage( QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
-            OSDWidget::show( i18n( "Paused" ) );
-            m_paused = true;
-            break;
-
-        default:
-            break;
-    }
+    setImage( QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
+    setRating( 0 ); // otherwise stars from last rating change are visible
+    OSDWidget::show( i18n( "Stopped" ) );
+    m_paused = false;
 }
 
 void
-Amarok::OSD::metadataChanged( Meta::AlbumPtr album )
+Amarok::OSD::paused()
 {
-    Q_UNUSED( album )
+    setImage( QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
+    setRating( 0 ); // otherwise stars from last rating change are visible
+    OSDWidget::show( i18n( "Paused" ) );
+    m_paused = true;
+}
 
+void
+Amarok::OSD::metadataChanged()
+{
+    // this also covers all cases where a stream get's new metadata.
     show( m_currentTrack );
 }
 

@@ -36,10 +36,11 @@
 #include "core/meta/support/MetaConstants.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
+#include "core/transcoding/TranscodingController.h"
 #include "network/NetworkAccessManagerProxy.h"
 #include "Osd.h"
 #include "PlaybackConfig.h"
-#include "PlayerDBusHandler.h"
+#include "dbus/mpris1/PlayerHandler.h"
 #include "core/playlists/Playlist.h"
 #include "core/playlists/PlaylistFormat.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
@@ -49,16 +50,14 @@
 #include "playlistmanager/PlaylistManager.h"
 #include "core/plugins/PluginManager.h"
 #include "core/podcasts/PodcastProvider.h"
-#include "RootDBusHandler.h"
+#include "dbus/mpris1/RootHandler.h"
 #include "ScriptManager.h"
 #include "statemanagement/ApplicationController.h"
 #include "statemanagement/DefaultApplicationController.h"
-#include "TracklistDBusHandler.h"
-#ifdef HAVE_KSTATUSNOTIFIERITEM
+#include "dbus/mpris1/TrackListHandler.h"
+#include "dbus/mpris2/Mpris2DBusHandler.h"
 #include "TrayIcon.h"
-#else
-#include "TrayIconLegacy.h"
-#endif
+
 
 #ifdef NO_MYSQL_EMBEDDED
 #include "MySqlServerTester.h"
@@ -119,8 +118,8 @@ AMAROK_EXPORT KAboutData aboutData( "amarok", 0,
 AMAROK_EXPORT OcsData ocsData( "opendesktop" );
 
 App::App()
-        : KUniqueApplication()
-        , m_tray(0)
+    : KUniqueApplication()
+    , m_tray(0)
 {
     DEBUG_BLOCK
     PERF_LOG( "Begin Application ctor" )
@@ -281,6 +280,7 @@ App::~App()
     if (QDBusConnection::sessionBus().isConnected() && (dbusService = QDBusConnection::sessionBus().interface()))
     {
         dbusService->unregisterService("org.mpris.amarok");
+        dbusService->unregisterService("org.mpris.MediaPlayer2.amarok");
     }
 #endif
 }
@@ -356,30 +356,16 @@ App::handleCliArgs() //static
         haveArgs = false;
 
     static bool firstTime = true;
-    const bool debugWasJustEnabled = !Amarok::config().readEntry( "Debug Enabled", false ) && args->isSet( "debug" );
-    const bool debugIsDisabled = !args->isSet( "debug" );
+
     //allows debugging on OS X. Bundles have to be started with "open". Therefore it is not possible to pass an argument
     const bool forceDebug = Amarok::config().readEntry( "Force Debug", false );
 
-
-    Amarok::config().writeEntry( "Debug Enabled", forceDebug ? true : args->isSet( "debug" ) );
-
-    // Debug output will only work from this point on. If Amarok was run without debug output before,
-    // then a part of the output (until this point) will be missing. Inform the user about this:
-    if( debugWasJustEnabled || forceDebug )
+    if( firstTime && !Debug::debugEnabled() && !forceDebug )
     {
-        debug() << "************************************************************************************************************";
-        debug() << "** DEBUGGING OUTPUT IS NOW ENABLED. PLEASE NOTE THAT YOU WILL ONLY SEE THE FULL OUTPUT ON THE NEXT START. **";
-        debug() << "************************************************************************************************************";
-    }
-    else if( firstTime && debugIsDisabled )
-    {
-        Amarok::config().writeEntry( "Debug Enabled", true );
-        debug() << "**********************************************************************************************";
-        debug() << "** AMAROK WAS STARTED IN NORMAL MODE. IF YOU WANT TO SEE DEBUGGING INFORMATION, PLEASE USE: **";
-        debug() << "** amarok --debug                                                                           **";
-        debug() << "**********************************************************************************************";
-        Amarok::config().writeEntry( "Debug Enabled", false );
+        qDebug() << "**********************************************************************************************";
+        qDebug() << "** AMAROK WAS STARTED IN NORMAL MODE. IF YOU WANT TO SEE DEBUGGING INFORMATION, PLEASE USE: **";
+        qDebug() << "** amarok --debug                                                                           **";
+        qDebug() << "**********************************************************************************************";
     }
 
     if( !firstTime && !haveArgs )
@@ -471,6 +457,8 @@ App::initCliArgs() //static
     options.add("load", ki18n("Load URLs, replacing current playlist"));
     options.add("d");
     options.add("debug", ki18n("Print verbose debugging information"));
+    options.add("c");
+    options.add("coloroff", ki18n("Disable colorization for debug output."));
     options.add("m");
     options.add("multipleinstances", ki18n("Allow running multiple Amarok instances"));
     options.add("cwd <directory>", ki18n( "Base for relative filenames/URLs" ));
@@ -548,7 +536,7 @@ void App::applySettings( bool firstTime )
 
     if( AmarokConfig::showTrayIcon() && ! m_tray )
     {
-        m_tray = new Amarok::TrayIcon( m_mainWindow );
+        m_tray = new Amarok::TrayIcon( m_mainWindow.data() );
     }
     else if( !AmarokConfig::showTrayIcon() && m_tray )
     {
@@ -558,20 +546,6 @@ void App::applySettings( bool firstTime )
 
     if( !firstTime ) // prevent OSD from popping up during startup
         Amarok::OSD::instance()->applySettings();
-
-    //on startup we need to show the window, but only if it wasn't hidden on exit
-    //and always if the trayicon isn't showing
-    if( m_mainWindow )
-    {
-
-        if( ( firstTime && !Amarok::config().readEntry( "HiddenOnExit", false ) )
-            || !AmarokConfig::showTrayIcon() )
-        {
-            PERF_LOG( "showing main window again" )
-            m_mainWindow->show();
-            PERF_LOG( "after showing mainWindow" )
-        }
-    }
 
     if( !firstTime )
         emit settingsChanged();
@@ -630,11 +604,11 @@ App::continueInit()
     QTextCodec* utf8codec = QTextCodec::codecForName( "UTF-8" );
     QTextCodec::setCodecForCStrings( utf8codec ); //We need this to make CollectionViewItem showing the right characters.
 
-    new Amarok::DefaultApplicationController();
+    new Amarok::DefaultApplicationController( this );
     Amarok::Components::applicationController()->start();
 
     KSplashScreen* splash = 0;
-    if( AmarokConfig::showSplashscreen() && !isSessionRestored() )
+    if( AmarokConfig::showSplashScreen() && !isSessionRestored() )
     {
         QPixmap splashimg( KGlobal::dirs()->findResource( "data", "amarok/images/splash_screen.jpg" ) );
         splash = new KSplashScreen( splashimg, Qt::WindowStaysOnTopHint );
@@ -650,11 +624,13 @@ App::continueInit()
     }
 
     PERF_LOG( "Creating DBus handlers" )
-    new Amarok::RootDBusHandler();
-    new Amarok::PlayerDBusHandler();
-    new Amarok::TracklistDBusHandler();
+    new Mpris1::RootHandler();
+    new Mpris1::PlayerHandler();
+    new Mpris1::TrackListHandler();
     new CollectionDBusHandler( this );
+    new Amarok::Mpris2DBusHandler();
     QDBusConnection::sessionBus().registerService("org.mpris.amarok");
+    QDBusConnection::sessionBus().registerService("org.mpris.MediaPlayer2.amarok");
     PERF_LOG( "Done creating DBus handlers" )
 
     //DON'T DELETE THIS NEXT LINE or the app crashes when you click the X (unless we reimplement closeEvent)
@@ -678,18 +654,21 @@ App::continueInit()
     Amarok::KNotificationBackend::instance()->setEnabled( AmarokConfig::kNotifyEnabled() );
     Amarok::OSD::instance()->applySettings(); // Create after setting volume (don't show OSD for that)
 
-
-    if( AmarokConfig::resumePlayback() && restoreSession && !args->isSet( "stop" ) ) {
-        //restore session as long as the user didn't specify media to play etc.
-        //do this after applySettings() so OSD displays correctly
-        The::engineController()->restoreSession();
-    }
-
-    if( AmarokConfig::monitorChanges() )
-        CollectionManager::instance()->checkCollectionChanges();
-
     // Restore keyboard shortcuts etc from config
     Amarok::actionCollection()->readSettings();
+
+    //on startup we need to show the window, but only if it wasn't hidden on exit
+    //and always if the trayicon isn't showing
+    if( !Amarok::config().readEntry( "HiddenOnExit", false ) || !AmarokConfig::showTrayIcon() )
+    {
+        PERF_LOG( "showing main window again" )
+        m_mainWindow.data()->show();
+        PERF_LOG( "after showing mainWindow" )
+    }
+
+    //Instantiate the Transcoding::Controller, this fires up an asynchronous KProcess with
+    //FFmpeg which should not take more than ~200msec.
+    Amarok::Components::setTranscodingController( new Transcoding::Controller( this ) );
 
     if( splash ) // close splash correctly
     {
@@ -698,7 +677,6 @@ App::continueInit()
     }
 
     PERF_LOG( "App init done" )
-    KConfigGroup config = KGlobal::config()->group( "General" );
 
     // NOTE: First Run Tutorial disabled for 2.1-beta1 release (too buggy / unfinished)
 #if 0
@@ -737,49 +715,15 @@ App::continueInit()
     else
 #endif
     {
-        if( config.readEntry( "First Run", true ) )
-        {
-            const KUrl musicUrl = QDesktopServices::storageLocation( QDesktopServices::MusicLocation );
-            const QString musicDir = musicUrl.toLocalFile( KUrl::RemoveTrailingSlash );
-            const QDir dir( musicDir );
-
-            int result = KMessageBox::No;
-            if( dir.exists() && dir.isReadable() )
-            {
-                result = KMessageBox::questionYesNoCancel(
-                    mainWindow(),
-                    i18n( "A music path, %1, is set in System Settings.\nWould you like to use that as a collection folder?", musicDir )
-                    );
-            }
-
-            KConfigGroup folderConf = Amarok::config( "Collection Folders" );
-            bool useMusicLocation( false );
-            switch( result )
-            {
-            case KMessageBox::Yes:
-                if( CollectionManager::instance()->primaryCollection() )
-                {
-                    CollectionManager::instance()->primaryCollection()->setProperty( "collectionFolders", QStringList() << musicDir );
-                    CollectionManager::instance()->startFullScan();
-                    useMusicLocation = true;
-                }
-                break;
-
-            case KMessageBox::No:
-                slotConfigAmarok( "CollectionConfig" );
-                break;
-
-            default:
-                break;
-            }
-            folderConf.writeEntry( "Use MusicLocation", useMusicLocation );
-            config.writeEntry( "First Run", false );
-        }
+        handleFirstRun();
     }
 
-    // Using QTimer, so that we won't block the GUI
-    QTimer::singleShot( 0, this, SLOT( checkCollectionScannerVersion() ) );
 
+    if( AmarokConfig::resumePlayback() && restoreSession && !args->isSet( "stop" ) ) {
+        //restore session as long as the user didn't specify media to play etc.
+        //do this after applySettings() so OSD displays correctly
+        The::engineController()->restoreSession();
+    }
     //and now we can run any amarokurls provided on startup, as all components should be initialized by now!
     foreach( const QString& urlString, s_delayedAmarokUrls )
     {
@@ -787,49 +731,6 @@ App::continueInit()
         aUrl.run();
     }
     s_delayedAmarokUrls.clear();
-
-    QTimer::singleShot( 1500, this, SLOT( resizeMainWindow() ) );
-}
-
-
-void App::resizeMainWindow() // SLOT
-{
-    // HACK
-    // This code works around a bug in KDE 4.5, which causes our Plasma applets to show
-    // with a wrong initial size. Remove when this bug is fixed in Plasma.
-    m_mainWindow->resize( m_mainWindow->width(), m_mainWindow->height() - 1 );
-    m_mainWindow->resize( m_mainWindow->width(), m_mainWindow->height() + 1 );
-}
-
-
-void App::checkCollectionScannerVersion()  // SLOT
-{
-    DEBUG_BLOCK
-
-    QProcess scanner;
-
-    scanner.start( collectionScannerLocation(), QStringList( "--version" ) );
-    scanner.waitForFinished();
-
-    const QString version = scanner.readAllStandardOutput().trimmed();
-
-    if( version != AMAROK_VERSION  )
-    {
-        KMessageBox::error( 0, i18n( "<p>The version of the 'amarokcollectionscanner' tool\n"
-                                     "does not match your Amarok version.</p>"
-                                     "<p>Please note that Collection Scanning may not work correctly.</p>" ) );
-    }
-}
-
-QString App::collectionScannerLocation()  // static
-{
-    QString scannerPath = KStandardDirs::locate( "exe", "amarokcollectionscanner" );
-
-    // If the binary is not in $PATH, then search in the application folder too
-    if( scannerPath.isEmpty() )
-        scannerPath = applicationDirPath() + QDir::separator() + "amarokcollectionscanner";
-
-    return scannerPath;
 }
 
 void App::slotConfigAmarok( const QString& page )
@@ -869,6 +770,7 @@ void App::slotTrashResult( KJob *job )
 
 void App::quit()
 {
+    DEBUG_BLOCK
     The::playlistManager()->completePodcastDownloads();
 
     emit prepareToQuit();
@@ -928,6 +830,47 @@ int App::newInstance()
     return 0;
 }
 
+void App::handleFirstRun()
+{
+    KConfigGroup config = KGlobal::config()->group( "General" );
+    if( !config.readEntry( "First Run", true ) )
+        return;
+
+    const KUrl musicUrl = QDesktopServices::storageLocation( QDesktopServices::MusicLocation );
+    const QString musicDir = musicUrl.toLocalFile( KUrl::RemoveTrailingSlash );
+    const QDir dir( musicDir );
+
+    int result = KMessageBox::No;
+    if( dir.exists() && dir.isReadable() )
+    {
+        result = KMessageBox::questionYesNoCancel(
+            mainWindow(),
+            i18n( "A music path, %1, is set in System Settings.\nWould you like to use that as a collection folder?", musicDir )
+            );
+    }
+
+    KConfigGroup folderConf = Amarok::config( "Collection Folders" );
+    bool useMusicLocation( false );
+    switch( result )
+    {
+    case KMessageBox::Yes:
+        if( CollectionManager::instance()->primaryCollection() )
+        {
+            CollectionManager::instance()->primaryCollection()->setProperty( "collectionFolders", QStringList() << musicDir );
+            CollectionManager::instance()->startFullScan();
+            useMusicLocation = true;
+        }
+        break;
+
+    case KMessageBox::No:
+        slotConfigAmarok( "CollectionConfig" );
+        break;
+
+    default:
+        break;
+    }
+    folderConf.writeEntry( "Use MusicLocation", useMusicLocation );
+    config.writeEntry( "First Run", false );
+}
 
 #include "App.moc"
-

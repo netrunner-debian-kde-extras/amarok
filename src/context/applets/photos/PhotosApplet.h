@@ -21,13 +21,9 @@
 
 #include "context/Applet.h"
 #include "context/DataEngine.h"
-#include "core/engine/EngineObserver.h"
-
-#include "../../engines/photos/PhotosInfo.h"
 
 #include <ui_photosSettings.h>
 
-class TextScrollingWidget;
 class KConfigDialog;
 class PhotosScrollWidget;
 class QGraphicsSimpleTextItem;
@@ -39,47 +35,41 @@ namespace Plasma
 
  /** PhotosApplet will display photos from the Internet, relative to the current playing song
    */
-class PhotosApplet : public Context::Applet, public Engine::EngineObserver
+class PhotosApplet : public Context::Applet
 {
-        Q_OBJECT
+    Q_OBJECT
 
     public:
         PhotosApplet( QObject* parent, const QVariantList& args );
         ~PhotosApplet();
 
-        void    init();
-        void    paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
-
-        void    constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
-
-        // inherited from EngineObserver
-        virtual void engineNewTrackPlaying();
-        virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason );
-        
     public slots:
-        void    dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
-        void    connectSource( const QString &source );
-        void    saveSettings();
+        virtual void init();
+        void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
+        void saveSettings();
 
+    protected slots:
+        void stopped();
+        
     protected:
         void createConfigurationInterface(KConfigDialog *parent);
+
+    private slots:
+        void photoAdded();
         
     private:
-        TextScrollingWidget     *m_headerText;
-        PhotosScrollWidget      *m_widget;
+        PhotosScrollWidget *m_widget;
 
-        int   m_height;
-        int   m_nbPhotos;
-        bool  m_stoppedstate;
+        int m_nbPhotos;
         
+        QString m_currentArtist;
         QString m_Animation;
-        QString m_KeyWords;
+        QStringList m_KeyWords;
 
         Ui::photosSettings      ui_Settings;
         Plasma::IconWidget      *m_settingsIcon;
 };
 
-Q_DECLARE_METATYPE ( QList < PhotosInfo * > )
 K_EXPORT_AMAROK_APPLET( photos, PhotosApplet )
 
 #endif /* Photos_APPLET_H */

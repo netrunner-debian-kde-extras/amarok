@@ -20,14 +20,15 @@
 
 #include "core/support/Debug.h"
 
-#include "core/collections/Collection.h"
 #include "EngineController.h"
+#include "core/capabilities/CollectionScanCapability.h"
+#include "core/collections/Collection.h"
 #include "core/collections/MetaQueryMaker.h"
-#include "core-impl/meta/file/File.h"
-#include "core-impl/meta/stream/Stream.h"
+#include "core/collections/support/SqlStorage.h"
 #include "core/plugins/PluginManager.h"
 #include "core/support/SmartPointerList.h"
-#include "core/collections/support/SqlStorage.h"
+#include "core-impl/meta/file/File.h"
+#include "core-impl/meta/stream/Stream.h"
 #include "core-impl/meta/timecode/TimecodeTrackProvider.h"
 
 #include <QList>
@@ -37,7 +38,7 @@
 #include <QTimer>
 
 #include <KBuildSycocaProgressDialog>
-#include <KGlobal>
+#include <KConfigGroup>
 #include <KMessageBox>
 #include <KPluginLoader>
 #include <KPluginFactory>
@@ -235,7 +236,9 @@ CollectionManager::startFullScan()
 {
     foreach( const CollectionPair &pair, d->collections )
     {
-        pair.first->startFullScan();
+        QScopedPointer<Capabilities::CollectionScanCapability> csc( pair.first->create<Capabilities::CollectionScanCapability>());
+        if( csc )
+            csc->startFullScan();
     }
 }
 
@@ -244,7 +247,9 @@ CollectionManager::startIncrementalScan( const QString &directory )
 {
     foreach( const CollectionPair &pair, d->collections )
     {
-        pair.first->startIncrementalScan( directory );
+        QScopedPointer<Capabilities::CollectionScanCapability> csc( pair.first->create<Capabilities::CollectionScanCapability>());
+        if( csc )
+            csc->startIncrementalScan( directory );
     }
 }
 
@@ -253,19 +258,16 @@ CollectionManager::stopScan()
 {
     foreach( const CollectionPair &pair, d->collections )
     {
-        pair.first->stopScan();
+        QScopedPointer<Capabilities::CollectionScanCapability> csc( pair.first->create<Capabilities::CollectionScanCapability>());
+        if( csc )
+            csc->stopScan();
     }
 }
 
 void
 CollectionManager::checkCollectionChanges()
 {
-    DEBUG_BLOCK
-
-    foreach( const CollectionPair &pair, d->collections )
-    {
-        pair.first->startIncrementalScan();
-    }
+    startIncrementalScan( QString() );
 }
 
 Collections::QueryMaker*
@@ -482,50 +484,14 @@ CollectionManager::trackForUrl( const KUrl &url )
         }
     }
 
-    if( url.protocol() == "http" || url.protocol() == "mms" || url.protocol() == "smb" )
+    if( url.protocol() == QLatin1String("http") || url.protocol() == QLatin1String("mms") ||
+        url.protocol() == QLatin1String("smb") )
         return Meta::TrackPtr( new MetaStream::Track( url ) );
 
-    if( url.protocol() == "file" && EngineController::canDecode( url ) )       
+    if( url.protocol() == QLatin1String("file") && EngineController::canDecode( url ) )       
         return Meta::TrackPtr( new MetaFile::Track( url ) );
 
     return Meta::TrackPtr( 0 );
-}
-
-void
-CollectionManager::relatedArtists( Meta::ArtistPtr artist, int maxArtists )
-{
-    if( !artist )
-        return;
-
-    m_maxArtists = maxArtists;
-    SqlStorage *sql = sqlStorage();
-    QString query = QString( "SELECT suggestion FROM related_artists WHERE artist = '%1' ORDER BY %2 LIMIT %3 OFFSET 0;" )
-               .arg( sql->escape( artist->name() ), sql->randomFunc(), QString::number( maxArtists ) );
-
-    QStringList artistNames = sql->query( query );
-    //TODO: figure out a way to retrieve similar artists from last.fm here
-    /*if( artistNames.isEmpty() )
-    {
-        artistNames = Scrobbler::instance()->similarArtists( Qt::escape( artist->name() ) );
-    }*/
-    Collections::QueryMaker *qm = queryMaker();
-    foreach( const QString &artistName, artistNames )
-    {
-        qm->addFilter( Meta::valArtist, artistName, true, true );
-    }
-    qm->setQueryType( Collections::QueryMaker::Artist );
-    qm->limitMaxResultSize( maxArtists );
-
-    connect( qm, SIGNAL( newResultReady( QString, Meta::ArtistList ) ),
-             this, SLOT( slotArtistQueryResult( QString, Meta::ArtistList ) ) );
-
-    connect( qm, SIGNAL( queryDone() ), this, SLOT( slotContinueRelatedArtists() ) );
-
-    m_resultEmitted = false;
-    m_resultArtistList.clear();
-    m_artistNameSet.clear();
-
-    qm->run();
 }
 
 void
@@ -552,23 +518,6 @@ CollectionManager::slotArtistQueryResult( QString collectionId, Meta::ArtistList
         m_resultEmitted = true;
         emit( foundRelatedArtists( m_resultArtistList ) );
     }
-}
-
-void
-CollectionManager::slotContinueRelatedArtists() //SLOT
-{
-    disconnect( this, SLOT( slotArtistQueryResult( QString, Meta::ArtistList ) ) );
-
-    disconnect( this, SLOT( slotContinueRelatedArtists() ) );
-
-    if( !m_resultEmitted )
-    {
-        m_resultEmitted = true;
-        emit( foundRelatedArtists( m_resultArtistList ) );
-    }
-    QObject *s = sender();
-    if( s )
-        s->deleteLater();
 }
 
 void

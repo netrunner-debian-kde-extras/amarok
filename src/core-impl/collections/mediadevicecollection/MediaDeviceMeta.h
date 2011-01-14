@@ -23,7 +23,7 @@
 
 #include <QList>
 #include <QMultiMap>
-#include <QPointer>
+#include <QWeakPointer>
 
 namespace Collections {
     class MediaDeviceCollection;
@@ -59,10 +59,10 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
         virtual ~MediaDeviceTrack();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual KUrl playableUrl() const;
         virtual QString uidUrl() const;
+        virtual void setUidUrl( const QString &newUidUrl ) const;
         virtual QString prettyUrl() const;
 
         virtual bool isPlayable() const;
@@ -75,10 +75,11 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
         virtual YearPtr year() const;
 
         virtual void setAlbum ( const QString &newAlbum );
+        virtual void setAlbumArtist( const QString &newAlbumArtist );
         virtual void setArtist ( const QString &newArtist );
         virtual void setGenre ( const QString &newGenre );
         virtual void setComposer ( const QString &newComposer );
-        virtual void setYear ( const QString &newYear );
+        virtual void setYear ( int newYear );
 
         virtual QString title() const;
         virtual void setTitle( const QString &newTitle );
@@ -112,8 +113,8 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
         virtual int discNumber() const;
         virtual void setDiscNumber ( int newDiscNumber );
 
-        virtual uint lastPlayed() const;
-        void setLastPlayed( const uint newTime );
+        virtual QDateTime lastPlayed() const;
+        void setLastPlayed( const QDateTime &newTime );
 
         virtual int playCount() const;
         void setPlayCount( const int newCount );
@@ -148,7 +149,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
         void setPlayableUrl( const KUrl &url) { m_playableUrl = url; }
 
     private:
-        QPointer<Collections::MediaDeviceCollection> m_collection;
+        QWeakPointer<Collections::MediaDeviceCollection> m_collection;
 
         MediaDeviceArtistPtr m_artist;
         MediaDeviceAlbumPtr m_album;
@@ -170,7 +171,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track
         int m_samplerate;
         int m_trackNumber;
         int m_playCount;
-        uint m_lastPlayed;
+        QDateTime m_lastPlayed;
         int m_rating;
         qreal m_bpm;
         QString m_displayUrl;
@@ -184,7 +185,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceArtist : public Meta::Artist
         virtual ~MediaDeviceArtist();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual TrackList tracks();
         virtual AlbumList albums();
@@ -209,7 +209,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceAlbum : public Meta::Album
         virtual ~MediaDeviceAlbum();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual bool isCompilation() const;
         void setIsCompilation( bool compilation );
@@ -221,7 +220,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceAlbum : public Meta::Album
         virtual bool hasImage( int size = 1 ) const;
         virtual QPixmap image( int size = 1 );
         virtual bool canUpdateImage() const;
-        virtual void setImage( const QPixmap &pixmap );
+        virtual void setImage( const QImage &image );
         virtual void setImagePath( const QString &path );
         virtual void removeImage();
 
@@ -244,7 +243,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceAlbum : public Meta::Album
         bool            m_isCompilation;
         mutable bool    m_hasImage;
         bool            m_hasImageChecked;
-        QPixmap         m_image;
+        QImage          m_image;
         MediaDeviceArtistPtr   m_albumArtist;
 };
 
@@ -255,7 +254,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceComposer : public Meta::Composer
         virtual ~MediaDeviceComposer();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual TrackList tracks();
 
@@ -275,7 +273,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceGenre : public Meta::Genre
         virtual ~MediaDeviceGenre();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual TrackList tracks();
 
@@ -296,7 +293,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceYear : public Meta::Year
         virtual ~MediaDeviceYear();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual TrackList tracks();
 

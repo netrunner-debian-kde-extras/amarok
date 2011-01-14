@@ -28,7 +28,7 @@
 
 #include <QMetaMethod>
 #include <QNetworkReply>
-#include <QPointer>
+#include <QWeakPointer>
 #include <QWeakPointer>
 
 NetworkAccessManagerProxy *NetworkAccessManagerProxy::s_instance = 0;
@@ -66,54 +66,85 @@ public:
     {
         Q_Q( NetworkAccessManagerProxy );
         QNetworkReply *reply = static_cast<QNetworkReply*>( q->sender() );
+
         KUrl url = reply->request().url();
-        QList<CallBackData> callbacks = urlMap.values( url );
+        QList<CallBackData*> callbacks = urlMap.values( url );
         QByteArray data = reply->readAll();
         data.detach(); // detach so the bytes are not deleted before methods are invoked
-        foreach( const CallBackData &cb, callbacks )
+        foreach( const CallBackData *cb, callbacks )
         {
-            QByteArray sig = QMetaObject::normalizedSignature( cb.method );
-            sig.remove( 0, 1 ); // remove first char, which is the member code (see qobjectdefs.h)
-                                // and let Qt's meta object system handle the rest.
-            if( !cb.receiver.isNull() )
-            {
-                bool success( false );
-                const QMetaObject *mo = cb.receiver.data()->metaObject();
-                int methodIndex = mo->indexOfSlot( sig );
-                if( methodIndex != -1 )
-                {
-                    Error err = { reply->error(), reply->errorString() };
-                    QMetaMethod method = mo->method( methodIndex );
-                    success = method.invoke( cb.receiver.data(),
-                                             cb.type,
-                                             Q_ARG( KUrl, reply->request().url() ),
-                                             Q_ARG( QByteArray, data ),
-                                             Q_ARG( Error, err ) );
-                }
+            // There may have been a redirect.
+            KUrl redirectUrl = q->getRedirectUrl( reply );
 
-                if( !success )
+            // Check if there's no redirect.
+            if( redirectUrl.isEmpty() )
+            {
+                QByteArray sig = QMetaObject::normalizedSignature( cb->method );
+                sig.remove( 0, 1 ); // remove first char, which is the member code (see qobjectdefs.h)
+                                    // and let Qt's meta object system handle the rest.
+                if( cb->receiver )
                 {
-                    debug() << QString( "Failed to invoke method %1 of %2" )
-                        .arg( QString(sig) ).arg( mo->className() );
+                    bool success( false );
+                    const QMetaObject *mo = cb->receiver.data()->metaObject();
+                    int methodIndex = mo->indexOfSlot( sig );
+                    if( methodIndex != -1 )
+                    {
+                        Error err = { reply->error(), reply->errorString() };
+                        QMetaMethod method = mo->method( methodIndex );
+                        success = method.invoke( cb->receiver.data(),
+                                                cb->type,
+                                                Q_ARG( KUrl, reply->request().url() ),
+                                                Q_ARG( QByteArray, data ),
+                                                Q_ARG( NetworkAccessManagerProxy::Error, err ) );
+                    }
+
+                    if( !success )
+                    {
+                        debug() << QString( "Failed to invoke method %1 of %2" )
+                            .arg( QString(sig) ).arg( mo->className() );
+                    }
                 }
             }
+            else
+            {
+                debug() << "the server is redirecting the request to: " << redirectUrl;
+
+                // Let's try to fetch the data again, but this time from the new url.
+                QNetworkReply *newReply = q->getData( redirectUrl, cb->receiver.data(), cb->method, cb->type );
+
+                emit q->requestRedirected( url, redirectUrl );
+                emit q->requestRedirected( reply, newReply );
+            }
         }
+
+        qDeleteAll( callbacks );
         urlMap.remove( url );
         reply->deleteLater();
     }
 
-    struct CallBackData
+    class CallBackData
     {
-#if QT_VERSION >= 0x040600
+    public:
+        CallBackData( QObject *rec, QNetworkReply *rep, const char *met, Qt::ConnectionType t )
+            : receiver( rec )
+            , reply( rep )
+            , method( met )
+            , type( t )
+        {}
+
+        ~CallBackData()
+        {
+            if( reply )
+                reply.data()->deleteLater();
+        }
+
         QWeakPointer<QObject> receiver;
-#else
-        QPointer<QObject> receiver;
-#endif
+        QWeakPointer<QNetworkReply> reply;
         const char *method;
         Qt::ConnectionType type;
     };
 
-    QMultiHash<KUrl, CallBackData> urlMap;
+    QMultiHash<KUrl, CallBackData*> urlMap;
     QString userAgent;
 #ifdef DEBUG_BUILD_TYPE
     NetworkAccessViewer *viewer;
@@ -125,11 +156,7 @@ private:
 };
 
 NetworkAccessManagerProxy::NetworkAccessManagerProxy( QObject *parent )
-#if KDE_IS_VERSION(4, 4, 0)
     : KIO::Integration::AccessManager( parent )
-#else
-    : KIO::AccessManager( parent )
-#endif
     , d( new NetworkAccessManagerProxyPrivate( this ) )
 {
     setCache(0);   // disable QtWebKit cache to just use KIO one..
@@ -172,17 +199,58 @@ NetworkAccessManagerProxy::getData( const KUrl &url, QObject *receiver, const ch
         return 0;
     }
 
-    NetworkAccessManagerProxyPrivate::CallBackData cbm = { receiver, method, type };
-    if( d->urlMap.contains(url) )
-    {
-        d->urlMap.insert( url, cbm );
+    QNetworkReply *r = d->urlMap.contains(url) ? d->urlMap.value(url)->reply.data() : get( QNetworkRequest(url) );
+    typedef NetworkAccessManagerProxyPrivate::CallBackData PrivateCallBackData;
+    PrivateCallBackData *cbm = new PrivateCallBackData( receiver, r, method, type );
+    d->urlMap.insert( url, cbm );
+    connect( r, SIGNAL(finished()), this, SLOT(_replyFinished()), type );
+    return r;
+}
+
+int
+NetworkAccessManagerProxy::abortGet( const KUrl::List &urls )
+{
+    int removed = 0;
+    const QSet<KUrl> &urlSet = urls.toSet();
+    foreach( const KUrl &url, urlSet )
+        removed += abortGet( url );
+    return removed;
+}
+
+int
+NetworkAccessManagerProxy::abortGet( const KUrl &url )
+{
+    if( !d->urlMap.contains(url) )
         return 0;
+
+    qDeleteAll( d->urlMap.values( url ) );
+    int removed = d->urlMap.remove( url );
+    return removed;
+}
+
+KUrl
+NetworkAccessManagerProxy::getRedirectUrl( QNetworkReply *reply )
+{
+    KUrl targetUrl;
+
+    // Get the original URL.
+    KUrl originalUrl = reply->request().url();
+
+    // Get the redirect attribute.
+    QVariant redirectAttribute = reply->attribute( QNetworkRequest::RedirectionTargetAttribute );
+
+    // Get the redirect URL from the attribute.
+    KUrl redirectUrl = KUrl( redirectAttribute.toUrl() );
+
+    // If the redirect URL is valid and if it differs from the original
+    // URL then we return the redirect URL. Otherwise an empty URL will
+    // be returned.
+    if( !redirectUrl.isEmpty() && redirectUrl != originalUrl )
+    {
+        targetUrl = redirectUrl;
     }
 
-    QNetworkReply *reply = get( QNetworkRequest(url) );
-    d->urlMap.insert( url, cbm );
-    connect( reply, SIGNAL(finished()), this, SLOT(_replyFinished()), type );
-    return reply;
+    return targetUrl;
 }
 
 void
@@ -200,9 +268,7 @@ QNetworkReply *
 NetworkAccessManagerProxy::createRequest( Operation op, const QNetworkRequest &req, QIODevice *outgoingData )
 {
     QNetworkRequest request = req;
-#if QT_VERSION >= 0x040600
     request.setAttribute( QNetworkRequest::HttpPipeliningAllowedAttribute, true );
-#endif
     request.setRawHeader( "User-Agent", d->userAgent.toLocal8Bit() );
 
     KIO::CacheControl cc = KProtocolManager::cacheControl();
@@ -227,11 +293,7 @@ NetworkAccessManagerProxy::createRequest( Operation op, const QNetworkRequest &r
         break;
     }
 
-#if KDE_IS_VERSION(4, 4, 0)
     QNetworkReply *reply = KIO::Integration::AccessManager::createRequest( op, request, outgoingData );
-#else
-    QNetworkReply *reply = KIO::AccessManager::createRequest( op, request, outgoingData );
-#endif
 
 #ifdef DEBUG_BUILD_TYPE
     if( d->viewer )

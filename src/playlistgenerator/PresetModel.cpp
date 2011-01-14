@@ -191,13 +191,15 @@ APG::PresetModel::setActivePreset( const QModelIndex& index )
 }
 
 void
-APG::PresetModel::savePresetsToXml( const QString& filename, const QList<APG::PresetPtr> pl ) const
+APG::PresetModel::savePresetsToXml( const QString& filename, const QList<APG::PresetPtr> &pl ) const
 {
     QDomDocument xmldoc;
     QDomElement base = xmldoc.createElement( "playlistgenerator" );
+    QList<QDomNode*> nodes;
     foreach ( APG::PresetPtr ps, pl ) {
         QDomElement* elemPtr = ps->toXml( xmldoc );
         base.appendChild( (*elemPtr) );
+        nodes << elemPtr;
     }
 
     xmldoc.appendChild( base );
@@ -213,6 +215,7 @@ APG::PresetModel::savePresetsToXml( const QString& filename, const QList<APG::Pr
         The::statusBar()->longMessage( i18n("Preset could not be exported to %1", filename), StatusBar::Sorry );
         error() << "Can not write presets to " << filename;
     }
+    qDeleteAll( nodes );
 }
 
 void
@@ -323,7 +326,7 @@ const QString APG::PresetModel::presetExamples =
 "  <generatorpreset title=\"%3\">"
 "    <constrainttree>"
 "      <group matchtype=\"all\">"
-"        <constraint comparison=\"1\" length=\"3600000\" type=\"PlaylistLength\" strictness=\"0.3\"/>"
+"        <constraint comparison=\"1\" duration=\"3600000\" type=\"PlaylistDuration\" strictness=\"0.3\"/>"
 "        <constraint field=\"2\" type=\"PreventDuplicates\"/>"
 "      </group>"
 "    </constrainttree>"
@@ -334,7 +337,7 @@ const QString APG::PresetModel::presetExamples =
 "        <constraint field=\"0\" type=\"PreventDuplicates\"/>"
 "        <constraint field=\"last played\" comparison=\"3\" invert=\"true\" type=\"TagMatch\" value=\"7 days\" strictness=\"0.4\"/>"
 "        <constraint field=\"rating\" comparison=\"2\" invert=\"false\" type=\"TagMatch\" value=\"6\" strictness=\"1\"/>"
-"        <constraint comparison=\"1\" length=\"10800000\" type=\"PlaylistLength\" strictness=\"0.3\"/>"
+"        <constraint comparison=\"1\" duration=\"10800000\" type=\"PlaylistDuration\" strictness=\"0.3\"/>"
 "      </group>"
 "    </constrainttree>"
 "  </generatorpreset>"
@@ -347,8 +350,8 @@ const QString APG::PresetModel::presetExamples =
 "          <constraint field=\"genre\" comparison=\"3\" invert=\"false\" type=\"TagMatch\" value=\"Industrial\" strictness=\"1\"/>"
 "        </group>"
 "        <group matchtype=\"all\">"
-"          <constraint comparison=\"2\" length=\"4500000\" type=\"PlaylistLength\" strictness=\"0.4\"/>"
-"          <constraint comparison=\"0\" length=\"4800000\" type=\"PlaylistLength\" strictness=\"1\"/>"
+"          <constraint comparison=\"2\" duration=\"4500000\" type=\"PlaylistDuration\" strictness=\"0.4\"/>"
+"          <constraint comparison=\"0\" duration=\"4800000\" type=\"PlaylistDuration\" strictness=\"1\"/>"
 "        </group>"
 "      </group>"
 "    </constrainttree>"

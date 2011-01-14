@@ -17,9 +17,11 @@
 #include "DatabaseImporterDialog.h"
 
 #include "core/support/Debug.h"
+#include "databaseimporter/sqlbatch/SqlBatchImporter.h"
 #include "databaseimporter/amarok14/FastForwardImporter.h"
 #include "databaseimporter/itunes/ITunesImporter.h"
 
+#include <KLocale>
 #include <KPageWidgetItem>
 #include <KVBox>
 
@@ -39,8 +41,9 @@ DatabaseImporterDialog::DatabaseImporterDialog( QWidget *parent )
     KVBox *importerBox = new KVBox( this );
     importerBox->setSpacing( KDialog::spacingHint() );
 
-    QString text = i18n("This tool allows you to import track information and<br>statistical data from another music application.");
-    text += i18n("<br><br>Any statistical data in your database will be <i>overwritten</i>" );
+    QString text = i18n("This tool allows you to import track information and<br>"
+                        "statistical data from another music application.<br><br>"
+                        "Any statistical data in your database will be <i>overwritten</i>" );
     QLabel *label = new QLabel( text, importerBox );
     label->setTextFormat( Qt::RichText );
     label->setAlignment( Qt::AlignHCenter );
@@ -49,24 +52,26 @@ DatabaseImporterDialog::DatabaseImporterDialog( QWidget *parent )
     m_buttons = new QButtonGroup( importerBox );
     m_buttons->setExclusive( true );
 
+    QRadioButton *scanner = new QRadioButton( i18n("Amarok collection scanner"), importerBox );
     QRadioButton *amarok = new QRadioButton( i18n("Amarok 1.4"), importerBox );
     QRadioButton *itunes = new QRadioButton( i18n("iTunes"), importerBox );
     QRadioButton *banshee = new QRadioButton( i18n("Banshee"), importerBox );
     QRadioButton *rhythmbox = new QRadioButton( i18n("Rhythmbox"), importerBox );
 
-    amarok->setChecked( true );
-    itunes->setEnabled( true );
+    scanner->setChecked( true );
     banshee->setEnabled( false );
     rhythmbox->setEnabled( false );
 
     banshee->setHidden( true );
     rhythmbox->setHidden( true );
 
+    m_buttons->addButton( scanner );
     m_buttons->addButton( amarok );
     m_buttons->addButton( itunes );
     m_buttons->addButton( banshee );
     m_buttons->addButton( rhythmbox );
 
+    m_buttonHash.insert( scanner, SqlBatchImporter::name() );
     m_buttonHash.insert( amarok, FastForwardImporter::name() );
     m_buttonHash.insert( itunes, ITunesImporter::name() );
     m_buttonHash.insert( banshee, "" );

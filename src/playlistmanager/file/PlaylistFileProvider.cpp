@@ -98,7 +98,7 @@ PlaylistFileProvider::playlists()
         loadPlaylists();
 
     Playlists::PlaylistList playlists;
-    foreach( Playlists::PlaylistFilePtr playlistFile, m_playlists )
+    foreach( const Playlists::PlaylistFilePtr &playlistFile, m_playlists )
     {
         Playlists::PlaylistPtr playlist = Playlists::PlaylistPtr::dynamicCast( playlistFile );
         if( !playlist.isNull() )
@@ -138,6 +138,7 @@ PlaylistFileProvider::playlistActions( Playlists::PlaylistPtr playlist )
         m_deleteAction->setProperty( "popupdropper_svg_id", "delete" );
         connect( m_deleteAction, SIGNAL( triggered() ), SLOT( slotDelete() ) );
     }
+    m_deleteAction->setObjectName( "deleteAction" );
 
     Playlists::PlaylistFileList actionList =
             m_deleteAction->data().value<Playlists::PlaylistFileList>();
@@ -167,20 +168,13 @@ PlaylistFileProvider::trackActions( Playlists::PlaylistPtr playlist, int trackIn
 
     if( m_removeTrackAction == 0 )
     {
-        m_removeTrackAction = new QAction(
-                    KIcon( "media-track-remove-amarok" ),
-                    i18nc( "Remove a track from a saved playlist", "Remove From \"%1\"",  playlist->name() ),
-                    this
-                );
+        m_removeTrackAction = new QAction( this );
+        m_removeTrackAction->setIcon( KIcon( "media-track-remove-amarok" ) );
         m_removeTrackAction->setProperty( "popupdropper_svg_id", "delete" );
         connect( m_removeTrackAction, SIGNAL( triggered() ), SLOT( slotRemove() ) );
     }
-    else
-    {
-        m_removeTrackAction->setText( i18nc( "Remove a track from a saved playlist",
-                                             "Remove From \"%1\"", playlist->name() ) );
-    }
 
+    m_removeTrackAction->setObjectName( "deleteAction" );
     //Add the playlist/track combination to a QMultiMap that is stored in the action.
     //In the slot we use this data to remove that track from the playlist.
     PlaylistTrackMap playlistMap = m_removeTrackAction->data().value<PlaylistTrackMap>();
@@ -195,6 +189,12 @@ PlaylistFileProvider::trackActions( Playlists::PlaylistPtr playlist, int trackIn
     m_removeTrackAction->setData( QVariant::fromValue( playlistMap ) );
 
     if( playlistMap.keys().count() > 1 )
+        m_removeTrackAction->setText( i18n( "Remove tracks" ) );
+    else
+        m_removeTrackAction->setText( i18nc( "Remove a track from a saved playlist",
+                                             "Remove From \"%1\"", playlist->name() ) );
+
+    if( playlistMap.keys().count() > 1 )
         m_removeTrackAction->setText( i18n( "Remove" ) );
 
     actions << m_removeTrackAction;
@@ -202,28 +202,32 @@ PlaylistFileProvider::trackActions( Playlists::PlaylistPtr playlist, int trackIn
     return actions;
 }
 
-
-Playlists::PlaylistPtr
-PlaylistFileProvider::save( const Meta::TrackList &tracks )
-{
-    return save( tracks, QDateTime::currentDateTime().toString( "ddd MMMM d yy hh:mm") + ".xspf" );
-}
-
 Playlists::PlaylistPtr
 PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
 {
     DEBUG_BLOCK
+    QString filename = name.isEmpty() ? QDateTime::currentDateTime().toString( "ddd MMMM d yy hh-mm") : name;
+    filename = QString( filename ).replace( QLatin1Char('/'), QLatin1Char('-') );
+
     KUrl path( Amarok::saveLocation( "playlists" ) );
-    path.addPath( name );
+    path.addPath( Amarok::vfatPath( filename ) );
     if( QFileInfo( path.toLocalFile() ).exists() )
     {
         //TODO:request overwrite
         return Playlists::PlaylistPtr();
     }
-    QString ext = Amarok::extension( path.fileName() );
+
     Playlists::PlaylistFormat format = m_defaultFormat;
-    if( !name.isNull() && !ext.isEmpty() )
+    QString ext = Amarok::extension( path.fileName() );
+    if( ext.isEmpty() )
+    {
+        ext = QLatin1String("xspf");
+        path.setFileName( QString("%1.%2").arg(Amarok::vfatPath(filename), ext) );
+    }
+    else
+    {
         format = Playlists::getFormat( path );
+    }
 
     Playlists::PlaylistFile *playlistFile = 0;
     switch( format )
@@ -238,10 +242,10 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
             playlistFile = new Playlists::XSPFPlaylist( tracks );
             break;
         default:
-            debug() << QString("Do not support filetype with extension \"%1!\"").arg( ext );
+            error() << QString("Do not support filetype with extension \"%1!\"").arg( ext );
             return Playlists::PlaylistPtr();
     }
-    playlistFile->setName( name );
+    playlistFile->setName( filename );
     debug() << "Forcing save of playlist!";
     playlistFile->save( path, true );
     playlistFile->setProvider( this );
@@ -282,7 +286,7 @@ PlaylistFileProvider::import( const KUrl &path )
     }
 
     debug() << "Importing playlist file " << path;
-    if( path == ModelStack::instance()->bottom()->defaultPlaylistPath() )
+    if( path == Amarok::defaultPlaylistPath() )
     {
         error() << "trying to load saved session playlist at %s" << path.path();
         return false;
@@ -355,7 +359,7 @@ PlaylistFileProvider::loadPlaylists()
     DEBUG_BLOCK
     //load the playlists defined in the config
     QStringList keys = loadedPlaylistsConfig().keyList();
-    debug() << "keys " << keys;
+    // debug() << "keys " << keys;
 
     //ConfigEntry: name, file
     foreach( const QString &key, keys )

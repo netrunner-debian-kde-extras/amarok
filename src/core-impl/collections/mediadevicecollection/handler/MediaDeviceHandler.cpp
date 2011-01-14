@@ -121,7 +121,7 @@ MediaDeviceHandler::getBasicMediaDeviceTrackInfo( const Meta::TrackPtr &srcTrack
     destTrack->setBitrate( srcTrack->bitrate() );
     destTrack->setSamplerate( srcTrack->sampleRate() );
     destTrack->setFileSize( srcTrack->filesize() );
-    destTrack->setPlayCount( srcTrack->lastPlayed() );
+    destTrack->setPlayCount( srcTrack->playCount() );
     destTrack->setLastPlayed( srcTrack->lastPlayed() );
     destTrack->setRating( srcTrack->rating() );
 
@@ -141,7 +141,20 @@ MediaDeviceHandler::setBasicMediaDeviceTrackInfo( const Meta::TrackPtr& srcTrack
 
     m_wc->libSetTitle( destTrack, srcTrack->name() );
     if ( srcTrack->album() )
+    {
         m_wc->libSetAlbum( destTrack, srcTrack->album()->name() ); Debug::stamp();
+
+        if( srcTrack->album()->hasAlbumArtist() )
+            m_wc->libSetAlbumArtist( destTrack, srcTrack->album()->albumArtist()->name() ); Debug::stamp();
+
+        /* This line crashes.
+           It is using a pixmap from outside the UI thread.
+           A little refactoring is needed to solve this.
+
+           if( srcTrack->album()->hasImage() )
+           m_wc->libSetCoverArt( destTrack, srcTrack->album()->image().toImage() );
+        */
+    }
     if ( srcTrack->artist() )
         m_wc->libSetArtist( destTrack, srcTrack->artist()->name() ); Debug::stamp();
     if ( srcTrack->composer() )
@@ -163,9 +176,6 @@ MediaDeviceHandler::setBasicMediaDeviceTrackInfo( const Meta::TrackPtr& srcTrack
     m_wc->libSetRating( destTrack, srcTrack->rating() ); Debug::stamp();
     m_wc->libSetType( destTrack, srcTrack->type() ); Debug::stamp();
     //libSetPlayableUrl( destTrack, srcTrack );
-
-    if( srcTrack->album()->hasImage() )
-        m_wc->libSetCoverArt( destTrack, srcTrack->album()->image() );
 }
 
 void
@@ -270,7 +280,7 @@ MediaDeviceHandler::removeMediaDeviceTrackFromCollection( Meta::MediaDeviceTrack
     }
     if( year->tracks().isEmpty() )
     {
-        yearMap.remove( year->name() );
+        yearMap.remove( year->year() );
         m_memColl->memoryCollection()->acquireWriteLock();
         m_memColl->memoryCollection()->setYearMap( yearMap );
         m_memColl->memoryCollection()->releaseLock();
@@ -318,7 +328,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
     m_isCopying = true;
 
     bool isDupe = false;
-    bool hasDupe = false;
+    bool hasError = false;
     QString format;
     TrackMap trackMap = m_memColl->memoryCollection()->trackMap();
 
@@ -342,6 +352,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
         {
              const QString error = i18n("Unsupported format: %1", format);
              m_tracksFailed.insert( track, error );
+	     hasError = true;
              continue;
         }
 
@@ -377,7 +388,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
 
             // Track is already on there, break
             isDupe = true;
-            hasDupe = true;
+            hasError = true;
             break;
         }
 
@@ -393,7 +404,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
     }
 
     // NOTE: see comment at top of copyTrackListToDevice
-    if( hasDupe )
+    if( hasError )
         m_copyFailed = true;
 
     /* List ready, begin copying */
@@ -459,15 +470,38 @@ MediaDeviceHandler::copyNextTrackToDevice()
     DEBUG_BLOCK
     Meta::TrackPtr track;
 
-    // If there are more tracks to copy, copy the next one
+    debug() << "Tracks left to copy after this one is now done: " << m_numTracksToCopy;
+
     if ( !m_tracksToCopy.isEmpty() )
     {
         // Pop the track off the front of the list
-        track = m_tracksToCopy.first();
-        m_tracksToCopy.removeFirst();
+        track = m_tracksToCopy.takeFirst();
 
-        // Copy the track
-        privateCopyTrackToDevice( track );
+        // Copy the track and check result
+        if ( !privateCopyTrackToDevice( track ) )
+            slotCopyTrackFailed( track );
+    }
+    else
+    {
+        if ( m_numTracksToCopy > 0 )
+            debug() << "Oops. \"Tracks to copy\" counter is not zero, but copy list is empty. Something missed?";
+
+        if ( m_copyFailed )
+        {
+            The::statusBar()->shortMessage( i18np( "%1 track failed to copy to the device",
+                                                   "%1 tracks failed to copy to the device", m_tracksFailed.size() ) );
+        }
+        // clear maps/hashes used
+
+        m_tracksCopying.clear();
+        m_trackSrcDst.clear();
+        m_tracksFailed.clear();
+        m_tracksToCopy.clear();
+
+        // copying done
+
+        m_isCopying = false;
+        emit copyTracksDone( true );
     }
 }
 
@@ -545,30 +579,7 @@ MediaDeviceHandler::slotFinalizeTrackCopy( const Meta::TrackPtr & track )
     addMediaDeviceTrackToCollection( destTrack );
 
     emit incrementProgress();
-
     m_numTracksToCopy--;
-
-    debug() << "Tracks left to copy after this one is now done: " << m_numTracksToCopy;
-
-    if( m_numTracksToCopy == 0 )
-    {
-        if( m_tracksFailed.size() > 0 )
-        {
-            The::statusBar()->shortMessage( i18np( "%1 track failed to copy to the device",
-                                                   "%1 tracks failed to copy to the device", m_tracksFailed.size() ) );
-        }
-        // clear maps/hashes used
-
-        m_tracksCopying.clear();
-        m_trackSrcDst.clear();
-        m_tracksFailed.clear();
-        m_tracksToCopy.clear();
-
-        // copying done
-
-        m_isCopying = false;
-        emit copyTracksDone( true );
-    }
 }
 
 void
@@ -719,9 +730,10 @@ void
 MediaDeviceHandler::setupArtistMap( Meta::MediaDeviceTrackPtr track, ArtistMap& artistMap )
 {
     const QString artist( m_rcb->libGetArtist( track ) );
+    const QString albumArtist( m_rcb->libGetAlbumArtist( track ) );
     MediaDeviceArtistPtr artistPtr;
 
-    if ( artistMap.contains( artist ) )
+    if( artistMap.contains( artist ) )
         artistPtr = MediaDeviceArtistPtr::staticCast( artistMap.value( artist ) );
     else
     {
@@ -731,6 +743,13 @@ MediaDeviceHandler::setupArtistMap( Meta::MediaDeviceTrackPtr track, ArtistMap& 
 
     artistPtr->addTrack( track );
     track->setArtist( artistPtr );
+
+    if( !albumArtist.isEmpty() && albumArtist != artist &&
+        !artistMap.contains( albumArtist ) )
+    {
+        artistPtr = MediaDeviceArtistPtr( new MediaDeviceArtist( albumArtist ) );
+        artistMap.insert( albumArtist, ArtistPtr::staticCast( artistPtr ) );
+    }
 }
 
 void
@@ -738,6 +757,7 @@ MediaDeviceHandler::setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap& al
 {
     const QString album( m_rcb->libGetAlbum( track ) );
     const QString artist( m_rcb->libGetArtist( track ) );
+    const QString albumArtist( m_rcb->libGetAlbumArtist( track ) );
     MediaDeviceAlbumPtr albumPtr;
 
     if ( albumMap.contains( album ) )
@@ -751,9 +771,15 @@ MediaDeviceHandler::setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap& al
     albumPtr->addTrack( track );
     track->setAlbum( albumPtr );
 
-    if( !artist.isEmpty() && artistMap.contains( artist ) )
+    MediaDeviceArtistPtr artistPtr;
+
+    if( !albumArtist.isEmpty() && artistMap.contains( artist ) )
+        artistPtr = MediaDeviceArtistPtr::staticCast( artistMap.value( albumArtist ) );
+    else if( !artist.isEmpty() && artistMap.contains( artist ) )
+        artistPtr = MediaDeviceArtistPtr::staticCast( artistMap.value( artist ) );
+
+    if( !artistPtr.isNull() )
     {
-        MediaDeviceArtistPtr artistPtr = MediaDeviceArtistPtr::staticCast( artistMap.value( artist ) );
         artistPtr->addAlbum( albumPtr );
         albumPtr->setAlbumArtist( artistPtr );
     }
@@ -799,14 +825,13 @@ MediaDeviceHandler::setupComposerMap( Meta::MediaDeviceTrackPtr track, ComposerM
 void
 MediaDeviceHandler::setupYearMap( Meta::MediaDeviceTrackPtr track, YearMap& yearMap )
 {
-    QString year;
-    year = year.setNum( m_rcb->libGetYear( track ) );
+    int year = m_rcb->libGetYear( track );
     MediaDeviceYearPtr yearPtr;
     if ( yearMap.contains( year ) )
         yearPtr = MediaDeviceYearPtr::staticCast( yearMap.value( year ) );
     else
     {
-        yearPtr = MediaDeviceYearPtr( new MediaDeviceYear( year ) );
+        yearPtr = MediaDeviceYearPtr( new MediaDeviceYear( QString::number(year) ) );
         yearMap.insert( year, YearPtr::staticCast( yearPtr ) );
     }
     yearPtr->addTrack( track );

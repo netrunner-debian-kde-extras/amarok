@@ -33,7 +33,7 @@ namespace Collections {
 namespace ConstraintTypes {
 
     /* This constraint derives its name from the fact that it specifies the
-     * Length of the Playlist. */
+     * length (ie, number of tracks) of the Playlist. */
 
     class PlaylistLength : public Constraint {
         Q_OBJECT
@@ -41,25 +41,25 @@ namespace ConstraintTypes {
         enum NumComparison { CompareNumLessThan, CompareNumEquals, CompareNumGreaterThan };
 
         public:
-            static Constraint* createFromXml(QDomElement&, ConstraintNode*);
-            static Constraint* createNew(ConstraintNode*);
+            static Constraint* createFromXml( QDomElement&, ConstraintNode* );
+            static Constraint* createNew( ConstraintNode* );
             static ConstraintFactoryEntry* registerMe();
 
             virtual QWidget* editWidget() const;
-            virtual void toXml(QDomDocument&, QDomElement&) const;
+            virtual void toXml( QDomDocument&, QDomElement& ) const;
 
             virtual QString getName() const;
 
-            virtual Collections::QueryMaker* initQueryMaker(Collections::QueryMaker*) const;
-            virtual double satisfaction(const Meta::TrackList&);
-            virtual double deltaS_insert(const Meta::TrackList&, const Meta::TrackPtr, const int) const;
-            virtual double deltaS_replace(const Meta::TrackList&, const Meta::TrackPtr, const int) const;
-            virtual double deltaS_delete(const Meta::TrackList&, const int) const;
-            virtual double deltaS_swap(const Meta::TrackList&, const int, const int) const;
-            virtual void insertTrack(const Meta::TrackList&, const Meta::TrackPtr, const int);
-            virtual void replaceTrack(const Meta::TrackList&, const Meta::TrackPtr, const int);
-            virtual void deleteTrack(const Meta::TrackList&, const int);
-            virtual void swapTracks(const Meta::TrackList&, const int, const int);
+            virtual Collections::QueryMaker* initQueryMaker( Collections::QueryMaker* ) const;
+            virtual double satisfaction( const Meta::TrackList& );
+            virtual double deltaS_insert( const Meta::TrackList&, const Meta::TrackPtr, const int ) const;
+            virtual double deltaS_replace( const Meta::TrackList&, const Meta::TrackPtr, const int ) const;
+            virtual double deltaS_delete( const Meta::TrackList&, const int ) const;
+            virtual double deltaS_swap( const Meta::TrackList&, const int, const int ) const;
+            virtual void insertTrack( const Meta::TrackList&, const Meta::TrackPtr, const int );
+            virtual void replaceTrack( const Meta::TrackList&, const Meta::TrackPtr, const int );
+            virtual void deleteTrack( const Meta::TrackList&, const int );
+            virtual void swapTracks( const Meta::TrackList&, const int, const int );
             virtual int suggestInitialPlaylistSize() const;
             ConstraintNode::Vote* vote( const Meta::TrackList&, const Meta::TrackList& ) const;
 
@@ -69,11 +69,11 @@ namespace ConstraintTypes {
             void setStrictness( const int );
 
         private:
-            PlaylistLength(QDomElement&, ConstraintNode*);
-            PlaylistLength(ConstraintNode*);
+            PlaylistLength( QDomElement&, ConstraintNode* );
+            PlaylistLength( ConstraintNode* );
 
             // constraint parameters
-            qint64 m_length; // time in msec
+            int m_length;
             int m_comparison;
             double m_strictness;
 
@@ -81,10 +81,11 @@ namespace ConstraintTypes {
             QString comparisonToString() const;
 
             // internal mathematical functions
-            double transformLength( const qint64 ) const;
+            double penalty( const int ) const;
+            double transformLength( const int ) const;
 
             // internal mathematical state data
-            qint64 m_totalLength;
+            int m_totalLength;
     };
 
     class PlaylistLengthEditWidget : public QWidget {
@@ -100,7 +101,7 @@ namespace ConstraintTypes {
             void strictnessChanged( const int );
 
         private slots:
-            void on_timeEdit_Duration_timeChanged( const QTime& );
+            void on_spinBox_Length_valueChanged( const int );
             void on_comboBox_Comparison_currentIndexChanged( const int );
             void on_slider_Strictness_valueChanged( const int );
 

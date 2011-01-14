@@ -21,7 +21,6 @@
 #include <QDockWidget>
 #include <QString>
 
-
 class AmarokDockWidget : public QDockWidget
 {
     Q_OBJECT
@@ -31,26 +30,16 @@ public:
 
     void setMovable( bool movable );
 
-signals:
-    void layoutChanged();
-
 protected slots:
     void slotVisibilityChanged( bool visible );
 
 protected:
-    virtual void closeEvent( QCloseEvent* );
-    virtual void resizeEvent( QResizeEvent* );
-    virtual void showEvent( QShowEvent* );
-    virtual void hideEvent( QHideEvent* );
-
     virtual void polish() = 0;
     void ensurePolish();
 
     bool m_polished;
 
     QWidget * m_dummyTitleBarWidget;
-
-
 };
 
 #endif // AMAROKDOCKWIDGET_H

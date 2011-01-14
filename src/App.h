@@ -29,7 +29,7 @@
 #include <KUrl>
 
 #include <QHash>
-#include <QPointer>
+#include <QWeakPointer>
 #include <QString>
 
 namespace Amarok {
@@ -65,14 +65,7 @@ class AMAROK_EXPORT App : public KUniqueApplication
 
         virtual int newInstance();
 
-        inline MainWindow *mainWindow() const { return m_mainWindow; }
-
-        /**
-         * Determines location of the "amarokcollectionscanner" tool.
-         *
-         * @return path of the collection scanner binary.
-         */
-        static QString collectionScannerLocation();
+        inline MainWindow *mainWindow() const { return m_mainWindow.data(); }
 
         // FRIENDS
         friend class MainWindow; //requires access to applySettings()
@@ -83,7 +76,6 @@ class AMAROK_EXPORT App : public KUniqueApplication
 
     private slots:
         void continueInit();
-        void resizeMainWindow();
 
     public slots:
         void applySettings( bool firstTime = false );
@@ -95,22 +87,22 @@ class AMAROK_EXPORT App : public KUniqueApplication
         KIO::Job *trashFiles( const KUrl::List &files );
         void quit();
 
+        // stub to avoid warning. Fixed in kde 4.6
+        // http://reviewboard.kde.org/r/4278/, BUG:241435
+        void loadCommandLineOptionsForNewInstance() {}
+
     protected:
         virtual bool event( QEvent *event );
 
     private slots:
         void slotTrashResult( KJob *job );
 
-        /**
-         * Checks version of the "amarokcollectionscanner" tool.
-         * If the version does not match, it shows an error dialog.
-         */
-        void checkCollectionScannerVersion();
-
     private:
+        void handleFirstRun();
+
         // ATTRIBUTES
         bool                    m_isUniqueInstance;
-        QPointer<MainWindow>    m_mainWindow;
+        QWeakPointer<MainWindow>    m_mainWindow;
         Amarok::TrayIcon        *m_tray;
         MediaDeviceManager      *m_mediaDeviceManager;
 

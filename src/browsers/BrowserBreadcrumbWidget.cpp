@@ -148,7 +148,6 @@ BrowserBreadcrumbWidget::addLevel( BrowserCategoryList * list )
         }
         else
         {
-            debug() << "here!";
             BrowserBreadcrumbItem * leaf = childCategory->breadcrumb();
             leaf->setParent( m_breadcrumbArea );
             leaf->show();
@@ -159,11 +158,8 @@ BrowserBreadcrumbWidget::addLevel( BrowserCategoryList * list )
             //no children, but check if there are additional breadcrumb levels (for internal navigation in the category) that should be added anyway.
             foreach( BrowserBreadcrumbItem *addItem, additionalItems )
             {
-                debug() << "adding extra item";
-
                 //hack to ensure that we have not already added it to the front of the breadcrumb...
                 addItem->setParent( 0 );
-                
                 addItem->setParent( m_breadcrumbArea );
                 addItem->show();
             }
@@ -222,8 +218,7 @@ void BrowserBreadcrumbWidget::resizeEvent( QResizeEvent * event )
 
 void BrowserBreadcrumbWidget::hideAsNeeded( int width )
 {
-
-    DEBUG_BLOCK
+    // DEBUG_BLOCK
 
     //we need to check if there is enough space for all items, if not, we start hiding items from the left (excluding the home item) until they fit (we never hide the rightmost item)
     //we also add he hidden levels to the drop down menu of the last item so they are accessible.
@@ -236,7 +231,7 @@ void BrowserBreadcrumbWidget::hideAsNeeded( int width )
     if( m_rootList->activeCategory() != 0 )
         allItems.append( m_rootList->activeCategory()->additionalItems() );
 
-    debug() << "the active category is: " <<  m_rootList->activeCategoryName();
+    // debug() << "the active category is: " <<  m_rootList->activeCategoryName();
     
 
     int sizeOfFirst = allItems.first()->nominalWidth();
@@ -245,11 +240,11 @@ void BrowserBreadcrumbWidget::hideAsNeeded( int width )
     int spaceLeft = width - ( sizeOfFirst + sizeOfLast + 28 );
 
     int numberOfItems = allItems.count();
-    debug() << numberOfItems << " items.";
+    // debug() << numberOfItems << " items.";
 
     for( int i = numberOfItems - 2; i > 0; i-- )
     {
-        debug() << "item index " << i << " has width " << allItems.at( i )->nominalWidth() << " and space left is " << spaceLeft;
+        // debug() << "item index " << i << " has width " << allItems.at( i )->nominalWidth() << " and space left is " << spaceLeft;
         
         if( allItems.at( i )->nominalWidth() <= spaceLeft )
         {
@@ -313,12 +308,12 @@ BrowserBreadcrumbWidget::editUpdated()
         url.run();
         m_widgetStack->setCurrentIndex( 0 );
         return;
-        
     }
 
-    //if it points to a path on the file system, show the file browser (if not already shown) and navigate to this path
-    QDir dir( enteredPath );
-    if( dir.exists() )
+    //if it points to a path on the file system, show the file browser
+    //(if not already shown) and navigate to this path
+    KUrl fileUrl( enteredPath );
+    if( fileUrl.isLocalFile() || !fileUrl.protocol().isEmpty() )
     {
         AmarokUrl url;
         url.setCommand( "navigate" );
@@ -331,14 +326,12 @@ BrowserBreadcrumbWidget::editUpdated()
     }
 
     //if all else fails, try to navigate to it as an amarok url
-
     AmarokUrl url;
     url.setCommand( "navigate" );
     url.setPath( enteredPath );
     url.run();
 
     m_widgetStack->setCurrentIndex( 0 );
-    
 }
 
 bool
@@ -357,6 +350,5 @@ BrowserBreadcrumbWidget::eventFilter( QObject *obj, QEvent *ev )
     }
     return false;
 }
-
 
 #include "BrowserBreadcrumbWidget.moc"

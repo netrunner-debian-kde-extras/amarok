@@ -17,9 +17,10 @@
 #ifndef PHOTOSSCROLLWIDGET_H
 #define PHOTOSSCROLLWIDGET_H
 
-#include <QGraphicsWidget>
+#include "context/engines/photos/PhotosInfo.h"
+#include "NetworkAccessManagerProxy.h"
 
-#include "../../engines/photos/PhotosInfo.h"
+#include <QGraphicsWidget>
 
 #define PHOTOS_MODE_AUTOMATIC   0
 #define PHOTOS_MODE_INTERACTIVE 1
@@ -27,12 +28,9 @@
 
 //forward
 class QPixmap;
+class QPropertyAnimation;
 class QGraphicsSceneHoverEvent;
 class DragPixmapItem;
-namespace Plasma
-{
-    class Animator;
-}
 
 /**
 * \brief A widget to present the photos
@@ -48,27 +46,36 @@ namespace Plasma
 class PhotosScrollWidget : public QGraphicsWidget
 {
     Q_OBJECT
+    Q_PROPERTY(qreal animValue READ animValue WRITE animate)
     public:
 
         PhotosScrollWidget( QGraphicsItem* parent = 0 );
         ~PhotosScrollWidget();
 
-        void setPixmapList (QList < PhotosInfo * > );
+        void setPhotosInfoList( const PhotosInfo::List &list );
 
         void setMode( int );
-        
+
         void clear();
+
+        int count() const;
+
+        qreal animValue() const;
+        bool isAnimating() const;
 
     public slots:
         void animate( qreal anim );
         void automaticAnimBegin();
-        void automaticAnimEnd( int );
+        void automaticAnimEnd();
 
        /**
         * Reimplement resize in order to correctly repositioned the stack of pixmap
         */
         virtual void resize( qreal, qreal );
-        
+
+    signals:
+        void photoAdded();
+
     protected:
 
        /**
@@ -77,14 +84,15 @@ class PhotosScrollWidget : public QGraphicsWidget
         virtual void hoverMoveEvent(QGraphicsSceneHoverEvent* event);
         virtual void hoverLeaveEvent(QGraphicsSceneHoverEvent* event);
         virtual void hoverEnterEvent(QGraphicsSceneHoverEvent* event);
-        
+        //virtual void keyPressEvent(QKeyEvent* event);
+        //virtual void wheelEvent(QGraphicsSceneWheelEvent* event);
 
-        
- //       virtual void keyPressEvent(QKeyEvent* event);
- //       virtual void wheelEvent(QGraphicsSceneWheelEvent* event);
-        
+    private slots:
+        void photoFetched( const KUrl&, QByteArray, NetworkAccessManagerProxy::Error );
+
     private:
-        int     m_id;         // id of the animator
+        void addPhoto( const PhotosInfoPtr &item, const QPixmap &photo );
+
         float   m_speed;      // if negative, go to left, if positive go to right,
         int     m_margin;     // margin between the photos
         int     m_scrollmax;  // length of the whole stack
@@ -95,10 +103,12 @@ class PhotosScrollWidget : public QGraphicsWidget
         int     m_mode;       //
         int     m_delta;
         int     m_deltastart;
-        QList < int >               m_timerlist;
-        QList < PhotosInfo * >      m_currentlist; // contain the list of the current PhotosItem in the widget
-        QList < DragPixmapItem * >  m_pixmaplist;  // contain the list of dragpixmap item
-        QTimer                      *m_timer;      // our magnificent timer
+        QHash<KUrl, PhotosInfoPtr> m_infoHash;
+        QPropertyAnimation      *m_animation;   // animation
+        QList<int>               m_timerlist;
+        PhotosInfo::List         m_currentlist; // contain the list of the current PhotosItem in the widget
+        QList<DragPixmapItem *>  m_pixmaplist;  // contain the list of dragpixmap item
+        QTimer                  *m_timer;       // our magnificent timer
 };
 
 #endif // PHOTOSSCROLLWIDGET_H

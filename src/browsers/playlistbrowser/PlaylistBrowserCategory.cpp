@@ -26,6 +26,7 @@
 #include "PlaylistsInFoldersProxy.h"
 #include "PlaylistsByProviderProxy.h"
 #include "PlaylistTreeItemDelegate.h"
+#include "PlaylistBrowserFilterProxy.h"
 #include "SvgHandler.h"
 #include "statusbar/StatusBar.h"
 #include "PlaylistBrowserView.h"
@@ -35,7 +36,7 @@
 #include <KButtonGroup>
 #include <KIcon>
 #include <KLineEdit>
-
+#include <KConfigGroup>
 #include <QButtonGroup>
 #include <QCheckBox>
 #include <QGridLayout>
@@ -67,17 +68,6 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
     m_toolBar = new KToolBar( this, false, false );
     m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
 
-    m_byProviderProxy = new PlaylistsByProviderProxy( model, PlaylistBrowserModel::ProviderColumn );
-    m_byFolderProxy = new PlaylistsInFoldersProxy( model );
-
-    m_filterProxy = new QSortFilterProxyModel( this );
-    m_filterProxy->setDynamicSortFilter( true );
-    m_filterProxy->setFilterKeyColumn( PlaylistBrowserModel::ProviderColumn );
-
-    m_playlistView = new PlaylistBrowserView( m_filterProxy, this );
-    m_defaultItemDelegate = m_playlistView->itemDelegate();
-    m_byProviderDelegate = new PlaylistTreeItemDelegate( m_playlistView );
-
     //a QWidget with minimumExpanding makes the next button right aligned.
     QWidget *spacerWidget = new QWidget( this );
     spacerWidget->setSizePolicy( QSizePolicy::MinimumExpanding,
@@ -106,6 +96,18 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
     connect( toggleAction, SIGNAL( triggered( bool ) ), SLOT( toggleView( bool ) ) );
 
     m_toolBar->addSeparator();
+
+    m_byProviderProxy = new PlaylistsByProviderProxy( model, PlaylistBrowserModel::ProviderColumn );
+    m_byFolderProxy = new PlaylistsInFoldersProxy( model );
+
+    m_filterProxy = new PlaylistBrowserFilterProxy( this );
+    //no need to setModel on filterProxy since it will be done in toggleView anyway.
+    m_filterProxy->setDynamicSortFilter( true );
+    m_filterProxy->setFilterKeyColumn( PlaylistBrowserModel::ProviderColumn );
+
+    m_playlistView = new PlaylistBrowserView( m_filterProxy, this );
+    m_defaultItemDelegate = m_playlistView->itemDelegate();
+    m_byProviderDelegate = new PlaylistTreeItemDelegate( m_playlistView );
 
     toggleView( toggleAction->isChecked() );
 
@@ -174,21 +176,20 @@ PlaylistBrowserCategory::toggleView( bool merged )
     if( merged )
     {
         m_filterProxy->setSourceModel( m_byFolderProxy );
-        m_playlistView->setModel( m_filterProxy );
         m_playlistView->setItemDelegate( m_defaultItemDelegate );
         m_playlistView->setRootIsDecorated( true );
+        m_addFolderAction->setHelpText( m_addFolderAction->text() );
     }
     else
     {
         m_filterProxy->setSourceModel( m_byProviderProxy );
-        m_playlistView->setModel( m_filterProxy );
         m_playlistView->setItemDelegate( m_byProviderDelegate );
         m_playlistView->setRootIsDecorated( false );
+        m_addFolderAction->setHelpText( i18n( "Folders are only shown in <b>merged view</b>." ) );
     }
 
     //folders don't make sense in per-provider view
     m_addFolderAction->setEnabled( merged );
-    //TODO: set a tooltip saying why it's disabled mention labels
 
     Amarok::config( m_configGroup ).writeEntry( s_mergeViewKey, merged );
 }
@@ -202,8 +203,9 @@ PlaylistBrowserCategory::slotProviderAdded( Playlists::PlaylistProvider *provide
     if( !m_providerActions.keys().contains( provider ) )
         createProviderButton( provider );
 
-    //TODO: only turn off merged view for non-empty providers or based on some provider property
-    toggleView( false );
+    //Hide empty providers when added
+    if( provider->playlistCount() != 0 )
+        toggleView( false );
 
     slotToggleProviderButton();
 }
@@ -236,6 +238,14 @@ PlaylistBrowserCategory::createProviderButton( const Playlists::PlaylistProvider
         providerToggle->setEnabled( false );
     else if( m_providerActions.count() == 1 )
         m_providerActions.values().first()->setEnabled( true );
+
+    //Hide empty providers when added
+    if( provider->playlistCount() == 0 )
+    {
+        providerToggle->setChecked( false );
+        //ensure the provider is actually filtered out.
+        slotToggleProviderButton();
+    }
 
     m_providerActions.insert( provider, providerToggle );
 }
@@ -287,7 +297,7 @@ PlaylistBrowserCategory::createNewFolder()
             folderCount = regex.cap( 1 ).toInt();
         groupName += QString( " (%1)" ).arg( folderCount + 1 );
     }
-    QModelIndex idx = m_byFolderProxy->createNewFolder( groupName );
+    QModelIndex idx = m_filterProxy->mapFromSource( m_byFolderProxy->createNewFolder( groupName ) );
     m_playlistView->setCurrentIndex( idx );
     m_playlistView->edit( idx );
 }

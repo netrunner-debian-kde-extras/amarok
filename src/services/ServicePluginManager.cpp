@@ -14,10 +14,13 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
+
+#define DEBUG_PREFIX "ServicePluginManager"
  
 #include "ServicePluginManager.h"
 
 #include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 #include "ServiceBrowser.h"
 #include "core/plugins/PluginManager.h"
 
@@ -97,7 +100,7 @@ ServicePluginManager::init()
             //check if this service is enabled
             QString pluginName = factory->info().pluginName();
 
-            debug() << "PLUGIN CHECK: " << pluginName;
+            debug() << "PLUGIN CHECK:" << pluginName;
             if ( Amarok::config( "Plugins" ).readEntry( pluginName + "Enabled", true ) )
             {
                 factory->init();

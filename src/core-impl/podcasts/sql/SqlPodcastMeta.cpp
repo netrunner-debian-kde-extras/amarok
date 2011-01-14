@@ -21,7 +21,7 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 #include "core/capabilities/EditCapability.h"
-#include "core/capabilities/CurrentTrackActionsCapability.h"
+#include "core/capabilities/ActionsCapability.h"
 #include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
 #include "core-impl/capabilities/timecode/TimecodeWriteCapability.h"
 #include "SqlPodcastProvider.h"
@@ -235,7 +235,7 @@ SqlPodcastEpisode::hasCapabilityInterface( Capabilities::Capability::Type type )
 {
     switch( type )
     {
-        case Capabilities::Capability::CurrentTrackActions:
+        case Capabilities::Capability::Actions:
         case Capabilities::Capability::WriteTimecode:
         case Capabilities::Capability::LoadTimecode:
             //only downloaded episodes can be position marked
@@ -255,12 +255,11 @@ SqlPodcastEpisode::createCapabilityInterface( Capabilities::Capability::Type typ
 {
     switch( type )
     {
-        case Capabilities::Capability::CurrentTrackActions:
+        case Capabilities::Capability::Actions:
         {
             QList< QAction * > actions;
-            QAction* flag = new BookmarkCurrentTrackPositionAction( 0 );
-            actions << flag;
-            return new Capabilities::CurrentTrackActionsCapability( actions );
+            actions << new BookmarkCurrentTrackPositionAction( 0 );
+            return new Capabilities::ActionsCapability( actions );
         }
         case Capabilities::Capability::WriteTimecode:
             return new TimecodeWriteCapabilityPodcastImpl( this );
@@ -363,8 +362,8 @@ SqlPodcastEpisode::writeTagsToFile()
     if( m_localFile.isNull() )
         return false;
 
-    Capabilities::EditCapability *ec = m_localFile->create<Capabilities::EditCapability>();
-    if( ec == 0 )
+    QScopedPointer<Capabilities::EditCapability> ec( m_localFile->create<Capabilities::EditCapability>() );
+    if( !ec )
         return false;
 
     debug() << "writing tags for podcast episode " << title() << "to " << m_localUrl.url();
@@ -378,7 +377,7 @@ SqlPodcastEpisode::writeTagsToFile()
     ec->setAlbum( m_channel->title() );
     ec->setArtist( m_channel->author() );
     ec->setGenre( i18n( "Podcast" ) );
-    ec->setYear( QString::number( m_pubDate.date().year() ) );
+    ec->setYear( m_pubDate.date().year() );
     ec->endMetaDataUpdate();
 
     notifyObservers();
@@ -479,6 +478,7 @@ SqlPodcastChannel::fromPlaylistPtr( Playlists::PlaylistPtr playlist )
 SqlPodcastChannel::SqlPodcastChannel( SqlPodcastProvider *provider,
                                             const QStringList &result )
     : Podcasts::PodcastChannel()
+    , m_episodesLoaded( false )
     , m_provider( provider )
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
@@ -498,7 +498,6 @@ SqlPodcastChannel::SqlPodcastChannel( SqlPodcastProvider *provider,
     m_purge = sqlStorage->boolTrue() == *(iter++);
     m_purgeCount = (*(iter++)).toInt();
     m_writeTags = sqlStorage->boolTrue() == *(iter++);
-    loadEpisodes();
 }
 
 SqlPodcastChannel::SqlPodcastChannel( Podcasts::SqlPodcastProvider *provider,
@@ -524,7 +523,7 @@ SqlPodcastChannel::SqlPodcastChannel( Podcasts::SqlPodcastProvider *provider,
     m_copyright = channel->copyright();
     
     if( channel->hasImage() )
-        m_image = channel->image();
+        m_image = channel->image().toImage();
 
     //Default Settings
 
@@ -545,6 +544,35 @@ SqlPodcastChannel::SqlPodcastChannel( Podcasts::SqlPodcastProvider *provider,
 
         m_episodes << SqlPodcastEpisodePtr( sqlEpisode );
     }
+    m_episodesLoaded = true;
+}
+
+int
+SqlPodcastChannel::trackCount() const
+{
+    if( m_episodesLoaded )
+        return m_episodes.count();
+
+    QString query = "SELECT COUNT(id) FROM podcastepisodes WHERE channel = %1";
+
+    SqlStorage *sql = CollectionManager::instance()->sqlStorage();
+    Q_ASSERT( sql );
+
+    QStringList results = sql->query( query.arg( m_dbId ) );
+    if( results.isEmpty() )
+    {
+        error() << "no results for COUNT query on playlist_tracks table!";
+        return -1;
+    }
+    int trackCount = results.first().toInt();
+    return m_purge ? qMin( m_purgeCount, trackCount ): trackCount;
+}
+
+void
+SqlPodcastChannel::triggerTrackLoad()
+{
+    if( !m_episodesLoaded )
+        loadEpisodes();
 }
 
 Playlists::PlaylistProvider *
@@ -593,7 +621,7 @@ SqlPodcastChannel::episodes()
 }
 
 void
-SqlPodcastChannel::setImage( const QPixmap &image )
+SqlPodcastChannel::setImage( const QImage &image )
 {
     DEBUG_BLOCK
 
@@ -609,7 +637,7 @@ SqlPodcastChannel::setImageUrl( const KUrl &imageUrl )
 
     if( imageUrl.isLocalFile() )
     {
-        m_image = QPixmap( imageUrl.path() );
+        m_image = QImage( imageUrl.path() );
         return;
     }
 
@@ -629,13 +657,17 @@ SqlPodcastChannel::addEpisode( PodcastEpisodePtr episode )
     if( !episode->guid().isEmpty() && m_provider->possiblyContainsTrack( episode->guid() ) )
         return PodcastEpisodePtr::dynamicCast( m_provider->trackForUrl( episode->guid() ) );
 
+    //force episodes load.
+    if( !m_episodesLoaded )
+        loadEpisodes();
+
     SqlPodcastEpisodePtr sqlEpisode = SqlPodcastEpisodePtr( new SqlPodcastEpisode( episode ) );
 
     //episodes are sorted on pubDate high to low
-    SqlPodcastEpisodeList::iterator i;
-    for( i = m_episodes.begin() ; i != m_episodes.end() ; ++i )
+    int i;
+    for( i = 0; i < m_episodes.count() ; i++ )
     {
-        if( sqlEpisode->pubDate() > (*i)->pubDate() )
+        if( sqlEpisode->pubDate() > m_episodes[i]->pubDate() )
         {
             m_episodes.insert( i, sqlEpisode );
             break;
@@ -643,19 +675,31 @@ SqlPodcastChannel::addEpisode( PodcastEpisodePtr episode )
     }
 
     //insert in case the list is empty or at the end of the list
-    if( i == m_episodes.end() )
+    if( i == m_episodes.count() )
         m_episodes << sqlEpisode;
 
-    if( hasPurge() && m_episodes.count() > purgeCount() )
+    notifyObserversTrackAdded( Meta::TrackPtr::dynamicCast( sqlEpisode ), i );
+
+    applyPurge();
+
+    return PodcastEpisodePtr::dynamicCast( sqlEpisode );
+}
+
+void
+SqlPodcastChannel::applyPurge()
+{
+    if( !hasPurge() )
+        return;
+
+    while( m_episodes.count() > purgeCount() )
     {
-        debug() << "removing last episode from the list since we are limited to " << purgeCount();
         SqlPodcastEpisodePtr removedEpisode = m_episodes.takeLast();
         m_provider->deleteDownloadedEpisode( removedEpisode );
 
-        notifyObserversTrackRemoved( purgeCount() );
+        notifyObserversTrackRemoved( m_episodes.count() );
     }
 
-    return PodcastEpisodePtr::dynamicCast( sqlEpisode );
+    //TODO: load missing episodes in case m_episodes.count() <= purgeCount()
 }
 
 void
@@ -743,8 +787,11 @@ SqlPodcastChannel::loadEpisodes()
     for(int i=0; i < results.size(); i+=rowLength)
     {
         QStringList episodesResult = results.mid( i, rowLength );
-        SqlPodcastEpisode *episode = new SqlPodcastEpisode( episodesResult, SqlPodcastChannelPtr( this ) );
-        m_episodes << SqlPodcastEpisodePtr( episode );
+        SqlPodcastEpisodePtr sqlEpisode = SqlPodcastEpisodePtr(
+                new SqlPodcastEpisode( episodesResult, SqlPodcastChannelPtr( this ) ) );
+        m_episodes <<  sqlEpisode;
     }
+
+    m_episodesLoaded = true;
 }
 

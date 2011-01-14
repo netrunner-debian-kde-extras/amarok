@@ -15,6 +15,7 @@
  ****************************************************************************************/
 
 #include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 #include "App.h"
 #include "aboutdialog/OcsData.h"
 
@@ -22,15 +23,15 @@
 #include <KCmdLineArgs>
 #include <KDebug>
 
+#include <csignal>
+
 //#define AMAROK_USE_DRKONQI
 
 extern AMAROK_EXPORT class KAboutData aboutData; //defined in App.cpp
 extern AMAROK_EXPORT class OcsData ocsData;
 
-
 int main( int argc, char *argv[] )
 {
-
     //Authors
     aboutData.addAuthor( ki18n("Alejandro Wainzinger"),
             ki18n("Developer (xevix)"), "aikawarazuni@gmail.com", "http://awainzin-foss.blogspot.com" );
@@ -116,6 +117,8 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("Myriam Schweingruber"), ki18n("Rokymoter, bug squashing (Mamarok)"), "myriam@kde.org" );
         ocsData.addCredit( "Mamarok", aboutData.credits().last() );
+    aboutData.addCredit( ki18n("Nikhil Marathe"), ki18n("UPnP support and patches (nsm)"), "nsm.nikhil@gmail.com" );
+        ocsData.addCredit( "nikhilm", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Nuno Pinheiro"), ki18n("Artwork"), "nuno@oxygen-icons.org" );
         ocsData.addCredit( "nunopinheirokde", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Olivier Bédard"), ki18n("Website hosting"), "paleo@pwsp.net" );
@@ -140,6 +143,8 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( "thomas12777", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Valentin Rouet"), ki18n("Developer"), "v.rouet@gmail.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
+    aboutData.addCredit( ki18n("Valorie Zimmerman"), ki18n("Rokymoter"), "valorie.zimmerman@gmail.com" );
+        ocsData.addCredit( "valoriez", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Wade Olson"), ki18n("Splash screen artist"), "wade@corefunction.com" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("William Viana Soares"), ki18n("Context view"), "vianasw@gmail.com" );
@@ -205,6 +210,20 @@ int main( int argc, char *argv[] )
     aboutData.addCredit( ki18n("Stefan Bogner"), ki18n("Loads of stuff"), "bochi@online.ms" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
 
+    //Donors:
+    ocsData.addDonor( "", KAboutPerson( ki18n( "Benoît AlK Zugmeyer" ), KLocalizedString(), "benoit@zugmeyer.com" ) );
+    ocsData.addDonor( "bubeck", KAboutPerson( ki18n( "Dr. Tilmann Bubeck" ), KLocalizedString(), "t.bubeck@reinform.de" ) );
+    ocsData.addDonor( "", KAboutPerson( ki18n( "Edward Karavakis" ), KLocalizedString(), "edward.karavakis@cern.ch" ) );
+    ocsData.addDonor( "hekkro", KAboutPerson( ki18n( "Hekkro" ), KLocalizedString(), "hekkro@hekkro.com" ) );
+    ocsData.addDonor( "", KAboutPerson( ki18n( "Maik Keller" ), KLocalizedString(), "mk3ll3r@gmail.com" ) );
+    ocsData.addDonor( "mastercactapus", KAboutPerson( ki18n( "Nathan Caza" ), KLocalizedString(), "mastercactapus@gmail.com" ) );
+    ocsData.addDonor( "", KAboutPerson( ki18n( "Paul Erntges" ), KLocalizedString(), "fleischindosen@web.de" ) );
+    ocsData.addDonor( "", KAboutPerson( ki18n( "Robert Štětka" ), KLocalizedString(), "robert.stetka@gmail.com" ) );
+    ocsData.addDonor( "", KAboutPerson( ki18n( "Robert Tell" ), KLocalizedString(), "robert.tell@gmx.net" ) );
+    ocsData.addDonor( "", KAboutPerson( ki18n( "Ryan Rix" ), KLocalizedString(), "phrkonaleash@gmail.com" ) );
+    ocsData.addDonor( "", KAboutPerson( ki18n( "Thomas Kahle" ), KLocalizedString(), "tom111@gmx.de" ) );
+    //Last update: 4/12/2010
+
     KCmdLineArgs::reset();
     KCmdLineArgs::init( argc, argv, &::aboutData ); //calls KCmdLineArgs::addStdCmdLineOptions()
 
@@ -215,6 +234,12 @@ int main( int argc, char *argv[] )
 
     KUniqueApplication::StartFlag startFlag;
     startFlag = args->isSet( "multipleinstances" ) ? KUniqueApplication::NonUniqueInstance : KUniqueApplication::StartFlag( 0 );
+
+    const bool debugColorsEnabled = !args->isSet( "coloroff" );
+    const bool debugEnabled = args->isSet( "debug" );
+
+    Debug::setDebugEnabled( debugEnabled );
+    Debug::setColoredDebug( debugColorsEnabled );
 
     if( !KUniqueApplication::start( startFlag ) ) {
         QList<QByteArray> instanceOptions;
@@ -231,6 +256,12 @@ int main( int argc, char *argv[] )
             fprintf( stderr, "Amarok is already running!\n" );
         return 0;
     }
+
+    // Rewrite default SIGINT and SIGTERM handlers
+    // to make amarok save current playlists during forced
+    // application termination (logout, Ctr+C in console etc.)
+    signal( SIGINT, &QCoreApplication::exit );
+    signal( SIGTERM, &QCoreApplication::exit );
 
     App app;
     app.setUniqueInstance( startFlag == KUniqueApplication::NonUniqueInstance );

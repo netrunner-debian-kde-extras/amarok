@@ -66,25 +66,6 @@ ProxyQueryMaker::~ProxyQueryMaker()
     qDeleteAll( m_builders );
 }
 
-QueryMaker*
-ProxyQueryMaker::reset()
-{
-    m_queryDoneCount = 0;
-    m_returnDataPointers = false;
-    m_maxResultSize = -1;
-    m_randomize = false;
-    m_queryType = QueryMaker::None;
-    m_orderDescending = false;
-    m_orderField = 0;
-    qDeleteAll( m_returnFunctions );
-    m_returnFunctions.clear();
-    qDeleteAll( m_returnValues );
-    m_returnValues.clear();
-    foreach( QueryMaker *b, m_builders )
-        b->reset();
-    return this;
-}
-
 void
 ProxyQueryMaker::run()
 {
@@ -285,15 +266,6 @@ ProxyQueryMaker::addMatch( const Meta::YearPtr &year )
 }
 
 QueryMaker*
-ProxyQueryMaker::addMatch( const Meta::DataPtr &data )
-{
-    Meta::DataPtr tmp = const_cast<Meta::DataPtr&>( data );
-    foreach( QueryMaker *b, m_builders )
-        tmp->addMatchTo( b );
-    return this;
-}
-
-QueryMaker*
 ProxyQueryMaker::addMatch( const Meta::LabelPtr &label )
 {
     foreach( QueryMaker *b, m_builders )
@@ -351,6 +323,14 @@ ProxyQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
 {
     foreach( QueryMaker *b, m_builders )
         b->setAlbumQueryMode( mode );
+    return this;
+}
+
+QueryMaker*
+ProxyQueryMaker::setArtistQueryMode( QueryMaker::ArtistQueryMode mode )
+{
+    foreach( QueryMaker *b, m_builders )
+        b->setArtistQueryMode( mode );
     return this;
 }
 
@@ -487,6 +467,7 @@ ProxyQueryMaker::handleResult()
             break;
         }
         case QueryMaker::Artist :
+        case QueryMaker::AlbumArtist :
         {
             Meta::ArtistList artists;
             foreach( KSharedPtr<Meta::ProxyArtist> artist, m_artists )

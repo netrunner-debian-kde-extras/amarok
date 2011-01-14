@@ -25,6 +25,7 @@
 #include "mocks/MockAlbum.h"
 #include "mocks/MockArtist.h"
 
+#include <QApplication>
 #include <QModelIndex>
 #include <QSet>
 #include <QStringList>
@@ -118,6 +119,13 @@ TestSingleCollectionTreeItemModel::TestSingleCollectionTreeItemModel() : QObject
     qRegisterMetaType<Meta::AlbumList>();
     qRegisterMetaType<Meta::ArtistList>();
     qRegisterMetaType<Meta::DataList>();
+
+    m_app = new QApplication( 0, 0 ); // need an application for pixmaps
+}
+
+TestSingleCollectionTreeItemModel::~TestSingleCollectionTreeItemModel()
+{
+    delete m_app;
 }
 
 void
@@ -144,9 +152,9 @@ TestSingleCollectionTreeItemModel::testAddNewArtist()
 
     SingleCollectionTreeItemModel *model = new SingleCollectionTreeItemModel( coll, levels );
 
-    QTest::qWait( 30 );
-
     loadChildren( model, QModelIndex() );
+
+    QTest::qWait( 30 );
 
     QCOMPARE( model->rowCount( QModelIndex() ), 1 );
 
@@ -159,9 +167,9 @@ TestSingleCollectionTreeItemModel::testAddNewArtist()
 
     model->slotFilter();
 
-    QTest::qWait( 30 );
-
     loadChildren( model, QModelIndex() );
+
+    QTest::qWait( 30 );
 
     QCOMPARE( model->rowCount( QModelIndex() ), 2 );
 
@@ -195,9 +203,9 @@ TestSingleCollectionTreeItemModel::testRemoveArtist()
 
     SingleCollectionTreeItemModel *model = new SingleCollectionTreeItemModel( coll, levels );
 
-    QTest::qWait( 30 );
-
     loadChildren( model, QModelIndex() );
+
+    QTest::qWait( 30 );
 
     QCOMPARE( model->rowCount( QModelIndex() ), 2 );
 
@@ -221,9 +229,9 @@ TestSingleCollectionTreeItemModel::testRemoveArtist()
 
     model->slotFilter();
 
-    QTest::qWait( 30 );
-
     loadChildren( model, QModelIndex() );
+
+    QTest::qWait( 30 );
 
     QCOMPARE( model->rowCount( QModelIndex() ), 1 );
 
@@ -248,9 +256,8 @@ TestSingleCollectionTreeItemModel::testAddTrack()
 
     SingleCollectionTreeItemModel *model = new SingleCollectionTreeItemModel( coll, levels );
 
-    QTest::qWait( 30 );
-
     loadChildren( model, QModelIndex() );
+    QTest::qWait( 30 );
 
     QCOMPARE( model->rowCount( QModelIndex() ), 2 );
 
@@ -324,9 +331,9 @@ TestSingleCollectionTreeItemModel::testAddTrackWithFilter()
 
     SingleCollectionTreeItemModel *model = new SingleCollectionTreeItemModel( coll, levels );
 
-    QTest::qWait( 30 );
-
     loadChildren( model, QModelIndex() );
+
+    QTest::qWait( 100 ); // note: increasing this count makes the test less likely to fail. Somehow it still fails sometimes.
 
     QCOMPARE( model->rowCount( QModelIndex() ), 1 );
 

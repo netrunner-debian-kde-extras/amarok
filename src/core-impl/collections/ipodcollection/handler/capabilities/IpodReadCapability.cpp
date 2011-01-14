@@ -74,6 +74,12 @@ IpodReadCapability::libGetArtist( const Meta::MediaDeviceTrackPtr &track )
 }
 
 QString
+IpodReadCapability::libGetAlbumArtist( const Meta::MediaDeviceTrackPtr &track )
+{
+    return m_handler->libGetAlbumArtist( track );
+}
+
+QString
 IpodReadCapability::libGetComposer( const Meta::MediaDeviceTrackPtr &track )
 {
     return m_handler->libGetComposer( track );
@@ -145,7 +151,7 @@ IpodReadCapability::libGetPlayCount( const Meta::MediaDeviceTrackPtr &track )
     return m_handler->libGetPlayCount( track );
 }
 
-uint
+QDateTime
 IpodReadCapability::libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track )
 {
     return m_handler->libGetLastPlayed( track );

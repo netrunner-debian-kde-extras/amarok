@@ -21,6 +21,7 @@
 #include "core/support/Debug.h"
 
 #include <KIcon>
+#include <KLocale>
 
 #include <QDir>
 #include <QMenu>
@@ -138,7 +139,8 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QString
 
 BrowserBreadcrumbItem::~BrowserBreadcrumbItem()
 {
-    DEBUG_BLOCK
+    if( m_menuButton )
+        delete m_menuButton->menu();
 }
 
 void

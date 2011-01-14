@@ -19,32 +19,24 @@
 #ifndef CURRENT_TRACK_APPLET_H
 #define CURRENT_TRACK_APPLET_H
 
-#include <context/Applet.h>
-#include <context/DataEngine.h>
-#include <context/widgets/TrackWidget.h>
+#include "context/Applet.h"
 #include "core/meta/Meta.h"
+#include "ui_currentTrackSettings.h"
 
-#include <ui_currentTrackSettings.h>
-
-#include <QAction>
-#include <QList>
+#include <Plasma/DataEngine>
 
 class TextScrollingWidget;
-class DropPixmapItem;
+class DropPixmapLayoutItem;
 class RatingWidget;
-class QCheckBox;
-class QGraphicsPixmapItem;
+class RecentlyPlayedListWidget;
+class QAction;
 class QGraphicsLinearLayout;
-class QHBoxLayout;
-class QLabel;
-class QSpinBox;
+class QGraphicsProxyWidget;
+class QGraphicsSceneMouseEvent;
+class QSignalMapper;
 
-namespace Plasma {
-    class DataEngine;
-    class TabBar;
-}
-
-static const int MAX_PLAYED_TRACKS = 5;
+static const KLocalizedString UNKNOWN_ARTIST = ki18n("Unknown Artist");
+static const KLocalizedString UNKNOWN_ALBUM = ki18n("Unknown Album");
 
 class CurrentTrack : public Context::Applet
 {
@@ -54,71 +46,95 @@ public:
     CurrentTrack( QObject* parent, const QVariantList& args );
     ~CurrentTrack();
 
-    virtual void init();
-    virtual void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
+    virtual void paintInterface( QPainter *painter,
+                                 const QStyleOptionGraphicsItem *option,
+                                 const QRect &contentsRect );
 
 public slots:
+    virtual void init();
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
 
 protected:
+    virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
     virtual void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
-    void createConfigurationInterface(KConfigDialog *parent);
+    virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF &constraint = QSizeF() ) const;
+    void createConfigurationInterface( KConfigDialog *parent );
 
 private slots:
-    void changeTrackRating( int rating );
-    void connectSource( const QString &source );
-    void paletteChanged( const QPalette & palette );
-    void tabChanged( int index );
-    void changeTitleFont();
-    void coverDropped( QPixmap cover );
+    void trackRatingChanged( int rating );
+    void paletteChanged( const QPalette &palette );
+    void settingsAccepted();
+    void coverDropped( const QPixmap &cover );
+    void tracksCounted( QString id, QStringList results );
+    void albumsCounted( QString id, QStringList results );
+    void genresCounted( QString id, QStringList results );
+    void findInSource( const QString &name );
+    void queryCollection();
+    void editTrack();
 
 private:
     QList<QAction*> contextualActions();
 
-    bool resizeCover( QPixmap cover, qreal width, QPointF albumCoverPos );
-    // aligns the second QGI to be at the same level as the first (the bottom edges)
-    void alignBottomToFirst( QGraphicsItem* a, QGraphicsItem* b );
+    void clearTrackActions();
+    void drawStatsBackground( QPainter *const p, const QRect &rect );
+    void drawStatsTexts( QPainter *const p, const QRect &rect );
+    void drawSourceEmblem( QPainter *const p, const QRect &rect );
+    void resizeCover( const QPixmap &cover, qreal width );
+    void setupLayoutActions( Meta::TrackPtr track );
 
-    TextScrollingWidget* m_title;
-    TextScrollingWidget* m_artist;
-    TextScrollingWidget* m_album;
-    QGraphicsSimpleTextItem* m_noTrack;
-    QGraphicsSimpleTextItem* m_byText;
-    QGraphicsSimpleTextItem* m_onText;
+    // aligns the second QGI to be at the same level as the first (the font baseline)
+    void alignBaseLineToFirst( TextScrollingWidget *a, QGraphicsSimpleTextItem *b );
+
+    QBrush normalBrush() const;
+    QBrush unknownBrush() const;
+    /**
+     * Bug 205038
+     * We check if original is an 'invalid' value
+     * In that case we return replacement and
+     * set widget's brush to unknownBrush()
+     *
+     * If original is 'valid', widget brush is set
+     * to normalBrush() and original is returned
+     */
+    QString handleUnknown( const QString &original,
+                           TextScrollingWidget *widget,
+                           const QString &replacement );
+
+    QGraphicsProxyWidget *m_collectionLabel;
+    RecentlyPlayedListWidget *m_recentWidget;
+    RatingWidget *m_ratingWidget;
+    DropPixmapLayoutItem *m_albumCover;
+    TextScrollingWidget *m_recentHeader;
+    TextScrollingWidget *m_title;
+    TextScrollingWidget *m_artist;
+    TextScrollingWidget *m_album;
+    QGraphicsSimpleTextItem *m_byText;
+    QGraphicsSimpleTextItem *m_onText;
+    QGraphicsLinearLayout *m_actionsLayout;
+    QSignalMapper *m_findInSourceSignalMapper;
+    QList<QAction*> m_customActions; // for storing non global actions
+    QList<QAction*> m_contextActions;
+
     int m_rating;
+    int m_score;
     int m_trackLength;
-
-    DropPixmapItem* m_albumCover;
-    QPixmap m_bigCover;
+    int m_playCount;
+    int m_trackCount;
+    int m_albumCount;
+    int m_genreCount;
+    QDateTime m_lastPlayed;
     QString m_sourceEmblemPath;
-
-    RatingWidget* m_ratingWidget;
-
-    QString m_noTrackText;
-    QString m_playCountLabel;
-    QString m_scoreLabel;
-    QString m_lastPlayedLabel;
-    QString m_score;
-    QString m_numPlayed;
-    QString m_playedLast;
-
-    bool m_showStatistics;
-
-    int m_maxTextWidth;
-
-    //keep this safe as we might need it when resizing
+    bool m_isStopped;
     QVariantMap m_currentInfo;
+    qint64 m_coverKey;
 
-    TrackWidget *m_tracks[MAX_PLAYED_TRACKS];
-    Meta::TrackList m_lastTracks;
-    Meta::TrackList m_favoriteTracks;
-    int m_tracksToShow;
+    enum View { Stopped, Playing } m_view;
+    void setView( View mode );
 
     Ui::currentTrackSettings ui_Settings;
-
-    QList<Plasma::IconWidget*> m_trackActions;
-
-    Plasma::TabBar *m_tabBar;
+    bool m_showEditTrackDetailsAction;
+    bool m_showFindInSourceAction;
+    const int m_albumWidth;
 };
 
 K_EXPORT_AMAROK_APPLET( currenttrack, CurrentTrack )

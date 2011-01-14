@@ -19,7 +19,6 @@
 
 #include "core/support/Amarok.h"
 #include "App.h"
-#include "AppletItemOverlay.h"
 #include "AppletToolbarAddItem.h"
 #include "AppletToolbarAppletItem.h"
 #include "AppletToolbarConfigItem.h"
@@ -122,7 +121,7 @@ Context::AppletToolbar::appletRemoved( Plasma::Applet* applet )
     DEBUG_BLOCK
     for( int i = 0; i < m_appletLayout->count(); i++ )
     {
-        AppletToolbarAppletItem* app = dynamic_cast< AppletToolbarAppletItem* >( m_appletLayout->itemAt( i ) );
+        AppletToolbarAppletItem* app = static_cast<AppletToolbarAppletItem*>( m_appletLayout->itemAt(i) );
         if( app && app->applet() == applet )
         {
             m_appletLayout->removeItem( app );

@@ -21,7 +21,6 @@
 
 #include "context/Applet.h"
 #include "context/DataEngine.h"
-#include "core/engine/EngineObserver.h"
 #include "core/support/SmartPointerList.h"
 
 #include "VideoclipInfo.h"
@@ -31,7 +30,7 @@
 #include <Phonon/Path>
 #include <Phonon/MediaObject>
 
-#include <QPointer>
+#include <QWeakPointer>
 
 
 // Forward declarations
@@ -45,27 +44,22 @@ namespace Phonon
 namespace Plasma
 {
     class IconWidget;
+    class ScrollWidget;
 }
 
 class KConfigDialog;
-class KratingWidget;
-class KratingPainter;
-class QAction;
-class QGraphicsLinearLayout;
-class QGraphicsProxyWidget;
 class QGraphicsWidget;
-class QHBoxLayout;
-class QScrollArea;
+class QGraphicsLinearLayout;
+class QGraphicsSceneResizeEvent;
 
 class CustomVideoWidget;
-class TextScrollingWidget;
 class VideoItemButton;
 
 
  /** VideoclipApplet will display videoclip from the Internet, relative to the current playing song
    * If a video is detected in the playlist, it will also play the video inside the VideoWidget.
    */
-class VideoclipApplet : public Context::Applet, public Engine::EngineObserver
+class VideoclipApplet : public Context::Applet
 {
         Q_OBJECT
 
@@ -73,49 +67,46 @@ class VideoclipApplet : public Context::Applet, public Engine::EngineObserver
         VideoclipApplet( QObject* parent, const QVariantList& args );
         ~VideoclipApplet();
 
-        void    init();
-        void    paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
-
-        void    constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
-
-        // inherited from EngineObserver
-        virtual void engineNewTrackPlaying();
-        virtual void engineStateChanged(Phonon::State, Phonon::State );
-        virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason );
+        virtual void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
 
     public slots:
-        void    dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
-        void    connectSource( const QString &source );
+        virtual void init();
+
+        virtual void dataUpdated( const QString& name, const Plasma::DataEngine::Data& data );
+        void connectSource( const QString &source );
 
         // right click context menu
-        void    appendVideoClip( VideoInfo *info );
-        void    queueVideoClip( VideoInfo *info );
-        void    appendPlayVideoClip( VideoInfo *info );
+        void appendVideoClip( VideoInfo *info );
+        void queueVideoClip( VideoInfo *info );
+        void appendPlayVideoClip( VideoInfo *info );
 
-        void    saveSettings();
+        void saveSettings();
+
     protected:
-        void    createConfigurationInterface(KConfigDialog *parent);
+        void createConfigurationInterface(KConfigDialog *parent);
+        virtual void resizeEvent( QGraphicsSceneResizeEvent * event );
 
+    private slots:
+        void trackPlaying();
+        void stateChanged(Phonon::State, Phonon::State );
+        void stopped();
 
     private:
-        QPointer<CustomVideoWidget> m_videoWidget;
-
-        // The two big container, only one who need a resize
-        TextScrollingWidget     *m_headerText;
-        QGraphicsProxyWidget    *m_widget;
-        QScrollArea             *m_scroll;
-        QHBoxLayout             *m_layout;
-        QList<QWidget *>        m_layoutWidgetList;
+        QWeakPointer<CustomVideoWidget> m_videoWidget;
         SmartPointerList<VideoItemButton> m_videoItemButtons;
 
-        QPixmap                 *m_pixYoutube;
-        QPixmap                 *m_pixDailymotion;
-        QPixmap                 *m_pixVimeo;
+        // The two big container, only one who need a resize
+        Plasma::ScrollWidget    *m_scroll;
+        QGraphicsLinearLayout   *m_scrollLayout;
+        QGraphicsLinearLayout   *m_layout;
+
+        QPixmap m_pixYoutube;
+        QPixmap m_pixDailymotion;
+        QPixmap m_pixVimeo;
 
         Plasma::IconWidget      *m_settingsIcon;
         Ui::videoclipSettings   ui_Settings;
         bool                    m_youtubeHQ;
-        int                     m_height;
 };
 
 #endif /* VIDEOCLIP_APPLET_H */

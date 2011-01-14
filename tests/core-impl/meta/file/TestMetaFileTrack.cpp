@@ -62,7 +62,7 @@ void TestMetaFileTrack::cleanupTestCase()
 }
 
 void TestMetaFileTrack::testNameAndSetTitle()
-{ 
+{
     // why aren't those called set/getTitle?
     QCOMPARE( m_track->name(), QString( "Platz 01" ) );
 
@@ -202,16 +202,16 @@ void TestMetaFileTrack::testSetGetArtist()
     QCOMPARE( m_track->artist().data()->name(), QString( "Free Music Charts" ) );
 
     m_track->setArtist( "" );
-    QCOMPARE( m_track->artist().data()->name(), QString( "" ) );
+    QCOMPARE( m_track->artist()->name(), QString( "" ) );
 
     m_track->setArtist( "test" );
-    QCOMPARE( m_track->artist().data()->name(), QString( "test" ) );
+    QCOMPARE( m_track->artist()->name(), QString( "test" ) );
 
     m_track->setArtist( "Another Test" );
-    QCOMPARE( m_track->artist().data()->name(), QString( "Another Test" ) );
+    QCOMPARE( m_track->artist()->name(), QString( "Another Test" ) );
 
     m_track->setArtist( "Some Umlauts: äöü" );
-    QCOMPARE( m_track->artist().data()->name(), QString( "Some Umlauts: äöü" ) );
+    QCOMPARE( m_track->artist()->name(), QString( "Some Umlauts: äöü" ) );
 
     m_track->setArtist( "Free Music Charts" );
     QCOMPARE( m_track->artist().data()->name(), QString( "Free Music Charts" ) );
@@ -384,36 +384,36 @@ void TestMetaFileTrack::testBitrate()
 
 void TestMetaFileTrack::testSetGetLastPlayed()
 {
-    QCOMPARE( m_track->lastPlayed(), 4294967295U ); // portability?
+    QCOMPARE( m_track->lastPlayed(), QDateTime() ); // portability?
 
-    m_track->setLastPlayed( 0 );
-    QCOMPARE( m_track->lastPlayed(), 0U );
+    m_track->setLastPlayed( QDateTime::fromTime_t(0) );
+    QCOMPARE( m_track->lastPlayed().toTime_t(), 0U );
 
-    m_track->setLastPlayed( 1 );
-    QCOMPARE( m_track->lastPlayed(), 1U );
+    m_track->setLastPlayed( QDateTime::fromTime_t(1) );
+    QCOMPARE( m_track->lastPlayed().toTime_t(), 1U );
 
-    m_track->setLastPlayed( 23 );
-    QCOMPARE( m_track->lastPlayed(), 23U );
+    m_track->setLastPlayed( QDateTime::fromTime_t(23) );
+    QCOMPARE( m_track->lastPlayed().toTime_t(), 23U );
 
-    m_track->setLastPlayed( 4294967295U );
-    QCOMPARE( m_track->lastPlayed(), 4294967295U );
+    m_track->setLastPlayed( QDateTime::fromTime_t(4294967295U) );
+    QCOMPARE( m_track->lastPlayed().toTime_t(), 4294967295U );
 }
 
 void TestMetaFileTrack::testSetGetFirstPlayed()
 {
-    QCOMPARE( m_track->firstPlayed(), 4294967295U );
+    QCOMPARE( m_track->firstPlayed(), QDateTime() );
 
-    m_track->setFirstPlayed( 0 );
-    QCOMPARE( m_track->firstPlayed(), 0U );
+    m_track->setFirstPlayed( QDateTime::fromTime_t(0) );
+    QCOMPARE( m_track->firstPlayed().toTime_t(), 0U );
 
-    m_track->setFirstPlayed( 1 );
-    QCOMPARE( m_track->firstPlayed(), 1U );
+    m_track->setFirstPlayed( QDateTime::fromTime_t(1) );
+    QCOMPARE( m_track->firstPlayed().toTime_t(), 1U );
 
-    m_track->setFirstPlayed( 23 );
-    QCOMPARE( m_track->firstPlayed(), 23U );
+    m_track->setFirstPlayed( QDateTime::fromTime_t(23) );
+    QCOMPARE( m_track->firstPlayed().toTime_t(), 23U );
 
-    m_track->setFirstPlayed( 4294967295U );
-    QCOMPARE( m_track->firstPlayed(), 4294967295U );
+    m_track->setFirstPlayed( QDateTime::fromTime_t(4294967295U) );
+    QCOMPARE( m_track->firstPlayed().toTime_t(), 4294967295U );
 }
 
 void TestMetaFileTrack::testSetGetPlayCount()
@@ -435,15 +435,10 @@ void TestMetaFileTrack::testSetGetPlayCount()
 
 void TestMetaFileTrack::testReplayGain()
 {
-    // HACK: double fails even with fuzzy compare :(
-    QCOMPARE( static_cast<float>( m_track->replayGain( Meta::Track::TrackReplayGain ) ), -6.655f );
-    QCOMPARE( static_cast<float>( m_track->replayGain( Meta::Track::AlbumReplayGain ) ), -6.655f );
-}
-
-void TestMetaFileTrack::testReplayPeakGain()
-{
-    QCOMPARE( static_cast<float>( m_track->replayPeakGain( Meta::Track::TrackReplayGain ) ), 4.1263f );
-    QCOMPARE( static_cast<float>( m_track->replayPeakGain( Meta::Track::AlbumReplayGain ) ), 4.1263f );
+    QCOMPARE( int(m_track->replayGain( Meta::ReplayGain_Track_Gain ) * 1000), -6655 );
+    QCOMPARE( int(m_track->replayGain( Meta::ReplayGain_Album_Gain ) * 1000), -6655 );
+    QCOMPARE( int(m_track->replayGain( Meta::ReplayGain_Track_Peak ) * 10000), 41263 );
+    QCOMPARE( int(m_track->replayGain( Meta::ReplayGain_Album_Peak ) * 10000), 41263 );
 }
 
 void TestMetaFileTrack::testType()

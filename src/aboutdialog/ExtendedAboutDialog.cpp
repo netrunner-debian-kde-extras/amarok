@@ -177,17 +177,17 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
     if (authorCount)
     {
         m_authorWidget = new QWidget( this );
-        QVBoxLayout *authorLayout = new QVBoxLayout( m_authorWidget );
+        QVBoxLayout *authorLayout = new QVBoxLayout( m_authorWidget.data() );
 
         m_showOcsAuthorButton = new AnimatedBarWidget( openDesktopIcon,
                                      i18n( "Get data from openDesktop.org to learn more about the team" ),
-                                     "process-working", m_authorWidget );
-        connect( m_showOcsAuthorButton, SIGNAL( clicked() ), this, SLOT( switchToOcsWidgets() ) );
-        authorLayout->addWidget( m_showOcsAuthorButton );
+                                     "process-working", m_authorWidget.data() );
+        connect( m_showOcsAuthorButton.data(), SIGNAL( clicked() ), this, SLOT( switchToOcsWidgets() ) );
+        authorLayout->addWidget( m_showOcsAuthorButton.data() );
 
         if (!aboutData->customAuthorTextEnabled() || !aboutData->customAuthorRichText().isEmpty())
         {
-            QLabel *bugsLabel = new QLabel( m_authorWidget );
+            QLabel *bugsLabel = new QLabel( m_authorWidget.data() );
             bugsLabel->setContentsMargins( 4, 2, 0, 4 );
             if (!aboutData->customAuthorTextEnabled())
             {
@@ -213,46 +213,80 @@ ExtendedAboutDialog::ExtendedAboutDialog(const KAboutData *aboutData, const OcsD
             authorLayout->addWidget( bugsLabel );
         }
 
-        m_authorListWidget = new OcsPersonListWidget( d->aboutData->authors(), m_ocsData.authors(), OcsPersonItem::Author, m_authorWidget );
-        connect( m_authorListWidget, SIGNAL( switchedToOcs() ), m_showOcsAuthorButton, SLOT( stop() ) );
-        connect( m_authorListWidget, SIGNAL( switchedToOcs() ), m_showOcsAuthorButton, SLOT( fold() ) );
+        m_authorListWidget = new OcsPersonListWidget( d->aboutData->authors(), m_ocsData.authors(), OcsPersonItem::Author, m_authorWidget.data() );
+        connect( m_authorListWidget.data(), SIGNAL( switchedToOcs() ), m_showOcsAuthorButton.data(), SLOT( stop() ) );
+        connect( m_authorListWidget.data(), SIGNAL( switchedToOcs() ), m_showOcsAuthorButton.data(), SLOT( fold() ) );
 
-        authorLayout->addWidget( m_authorListWidget );
+        authorLayout->addWidget( m_authorListWidget.data() );
         authorLayout->setMargin( 0 );
         authorLayout->setSpacing( 2 );
-        m_authorWidget->setLayout( authorLayout );
+        m_authorWidget.data()->setLayout( authorLayout );
 
         m_authorPageTitle = ( authorCount == 1 ) ? i18n("A&uthor") : i18n("A&uthors");
-        tabWidget->addTab(m_authorWidget, m_authorPageTitle);
+        tabWidget->addTab(m_authorWidget.data(), m_authorPageTitle);
         m_isOfflineAuthorWidget = true; //is this still used?
     }
 
-    //Finally, the Credits page:
+    //Then the Credits page:
     const int creditCount = aboutData->credits().count();
 
     if (creditCount)
     {
         m_creditWidget = new QWidget( this );
-        QVBoxLayout *creditLayout = new QVBoxLayout( m_creditWidget );
+        QVBoxLayout *creditLayout = new QVBoxLayout( m_creditWidget.data() );
 
         m_showOcsCreditButton = new AnimatedBarWidget( openDesktopIcon,
                                      i18n( "Get data from openDesktop.org to learn more about contributors" ),
-                                     "process-working", m_creditWidget );
-        connect( m_showOcsCreditButton, SIGNAL( clicked() ), this, SLOT( switchToOcsWidgets() ) );
-        creditLayout->addWidget( m_showOcsCreditButton );
+                                     "process-working", m_creditWidget.data() );
+        connect( m_showOcsCreditButton.data(), SIGNAL( clicked() ), this, SLOT( switchToOcsWidgets() ) );
+        creditLayout->addWidget( m_showOcsCreditButton.data() );
 
-        m_creditListWidget = new OcsPersonListWidget( d->aboutData->credits(), m_ocsData.credits(), OcsPersonItem::Contributor, m_creditWidget );
-        connect( m_creditListWidget, SIGNAL( switchedToOcs() ), m_showOcsCreditButton, SLOT( stop() ) );
-        connect( m_creditListWidget, SIGNAL( switchedToOcs() ), m_showOcsCreditButton, SLOT( fold() ) );
+        m_creditListWidget = new OcsPersonListWidget( d->aboutData->credits(), m_ocsData.credits(), OcsPersonItem::Contributor, m_creditWidget.data() );
+        connect( m_creditListWidget.data(), SIGNAL( switchedToOcs() ), m_showOcsCreditButton.data(), SLOT( stop() ) );
+        connect( m_creditListWidget.data(), SIGNAL( switchedToOcs() ), m_showOcsCreditButton.data(), SLOT( fold() ) );
 
-        creditLayout->addWidget( m_creditListWidget );
+        creditLayout->addWidget( m_creditListWidget.data() );
         creditLayout->setMargin( 0 );
         creditLayout->setSpacing( 2 );
-        m_creditWidget->setLayout( creditLayout );
+        m_creditWidget.data()->setLayout( creditLayout );
 
-        tabWidget->addTab( m_creditWidget, i18n("&Thanks To"));
+        tabWidget->addTab( m_creditWidget.data(), i18n("&Thanks To"));
         m_isOfflineCreditWidget = true; //is this still used?
     }
+
+    //Finally, the Donors page:
+    const int donorCount = ocsData->donors()->count();
+
+    if (donorCount)
+    {
+        m_donorWidget = new QWidget( this );
+        QVBoxLayout *donorLayout = new QVBoxLayout( m_donorWidget.data() );
+
+        m_showOcsDonorButton = new AnimatedBarWidget( openDesktopIcon,
+                                     i18n( "Get data from openDesktop.org to learn more about our generous donors" ),
+                                     "process-working", m_donorWidget.data() );
+        connect( m_showOcsDonorButton.data(), SIGNAL( clicked() ), this, SLOT( switchToOcsWidgets() ) );
+        donorLayout->addWidget( m_showOcsDonorButton.data() );
+
+        QList< KAboutPerson > donors;
+        for( QList< QPair< QString, KAboutPerson > >::const_iterator it = m_ocsData.donors()->constBegin();
+             it != m_ocsData.donors()->constEnd(); ++it )
+        {
+            donors << ( *it ).second;
+        }
+        m_donorListWidget = new OcsPersonListWidget( donors , m_ocsData.donors(), OcsPersonItem::Contributor, m_donorWidget.data() );
+        connect( m_donorListWidget.data(), SIGNAL( switchedToOcs() ), m_showOcsDonorButton.data(), SLOT( stop() ) );
+        connect( m_donorListWidget.data(), SIGNAL( switchedToOcs() ), m_showOcsDonorButton.data(), SLOT( fold() ) );
+
+        donorLayout->addWidget( m_donorListWidget.data() );
+        donorLayout->setMargin( 0 );
+        donorLayout->setSpacing( 2 );
+        m_donorWidget.data()->setLayout( donorLayout );
+
+        tabWidget->addTab( m_donorWidget.data(), i18n("&Donors"));
+        m_isOfflineDonorWidget = true;
+    }
+
 
     //And the translators:
     QPalette transparentBackgroundPalette;
@@ -340,8 +374,12 @@ ExtendedAboutDialog::switchToOcsWidgets()
         return;
     }
 
-    m_showOcsAuthorButton->animate();
-    m_showOcsCreditButton->animate();
+    if( m_showOcsAuthorButton )
+        m_showOcsAuthorButton.data()->animate();
+    if( m_showOcsCreditButton )
+        m_showOcsCreditButton.data()->animate();
+    if( m_showOcsDonorButton )
+        m_showOcsDonorButton.data()->animate();
     AmarokAttica::ProviderInitJob *providerJob = AmarokAttica::Provider::byId( m_ocsData.providerId() );
     connect( providerJob, SIGNAL( result( KJob * ) ), this, SLOT( onProviderFetched( KJob * ) ) );
 }
@@ -354,8 +392,12 @@ ExtendedAboutDialog::onProviderFetched( KJob *job )
     {
         debug()<<"Successfully fetched OCS provider"<< providerJob->provider().name();
         debug()<<"About to request OCS data";
-        m_authorListWidget->switchToOcs( providerJob->provider() );
-        m_creditListWidget->switchToOcs( providerJob->provider() );
+        if( m_authorListWidget )
+            m_authorListWidget.data()->switchToOcs( providerJob->provider() );
+        if( m_creditListWidget )
+            m_creditListWidget.data()->switchToOcs( providerJob->provider() );
+        if( m_donorListWidget )
+            m_donorListWidget.data()->switchToOcs( providerJob->provider() );
     }
     else
         warning() << "OCS provider fetch failed";

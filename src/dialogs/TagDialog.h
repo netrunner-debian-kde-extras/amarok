@@ -102,6 +102,9 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         */
         void guessFromFilename();
 
+        void musicbrainzTagger();
+        void musicbrainzTaggerResult( const QMap<Meta::TrackPtr, QVariantMap > result );
+
         void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
         void queryDone();
 
@@ -120,6 +123,7 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         void composerModified();
         void artistModified();
         void albumModified();
+        void albumArtistModified();
         void genreModified();
         void bpmModified();
         void ratingModified();
@@ -220,6 +224,7 @@ class AMAROK_EXPORT TagDialog : public KDialog, public Meta::Observer
         Collections::QueryMaker *m_queryMaker;
         QSet<QString> m_artists;
         QSet<QString> m_albums;
+        QSet<QString> m_albumArtists;
         QSet<QString> m_composers;
         QSet<QString> m_genres;
         QSet<QString> m_allLabels; //! all labels known to currently active collections, used for autocompletion

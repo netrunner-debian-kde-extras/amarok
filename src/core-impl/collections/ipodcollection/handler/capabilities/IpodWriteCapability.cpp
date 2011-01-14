@@ -98,6 +98,13 @@ IpodWriteCapability::libSetArtist( Meta::MediaDeviceTrackPtr &track, const QStri
 }
 
 void
+IpodWriteCapability::libSetAlbumArtist( Meta::MediaDeviceTrackPtr &track, const QString &albumArtist )
+{
+    m_handler->libSetAlbumArtist( track, albumArtist );
+}
+
+
+void
 IpodWriteCapability::libSetComposer( Meta::MediaDeviceTrackPtr &track, const QString& composer )
 {
     m_handler->libSetComposer( track, composer );
@@ -170,7 +177,7 @@ IpodWriteCapability::libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int play
 }
 
 void
-IpodWriteCapability::libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed )
+IpodWriteCapability::libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, const QDateTime &lastplayed )
 {
     m_handler->libSetLastPlayed( track, lastplayed );
 }
@@ -194,7 +201,7 @@ IpodWriteCapability::libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, co
 }
 
 void
-IpodWriteCapability::libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QPixmap &cover )
+IpodWriteCapability::libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QImage &cover )
 {
     m_handler->libSetCoverArt( track, cover );
 }

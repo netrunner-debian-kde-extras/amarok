@@ -15,12 +15,18 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "LyricsManager"
+
 #include "LyricsManager.h"
 
+#include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
 
+#include <KLocale>
+
 #include <QDomDocument>
+#include <QGraphicsTextItem>
 
 ////////////////////////////////////////////////////////////////
 //// CLASS LyricsObserver
@@ -48,6 +54,7 @@ LyricsObserver::~LyricsObserver()
 
 void LyricsSubject::sendNewLyrics( QStringList lyrics )
 {
+    DEBUG_BLOCK
     foreach( LyricsObserver* obs, m_observers )
     {
         obs->newLyrics( lyrics );
@@ -56,14 +63,16 @@ void LyricsSubject::sendNewLyrics( QStringList lyrics )
 
 void LyricsSubject::sendNewLyricsHtml( QString lyrics )
 {
+    DEBUG_BLOCK
     foreach( LyricsObserver* obs, m_observers )
     {
         obs->newLyricsHtml( lyrics );
     }
 }
 
-void LyricsSubject::sendNewSuggestions( QStringList sug )
+void LyricsSubject::sendNewSuggestions( const QVariantList &sug )
 {
+    DEBUG_BLOCK
     foreach( LyricsObserver* obs, m_observers )
     {
         obs->newSuggestions( sug );
@@ -128,17 +137,14 @@ LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
         }
         else
         {
-            QStringList suggested;
-            for( uint i = 0; i < l.length(); ++i )
+            QVariantList suggested;
+            for( int i = 0, len = l.length(); i < len; ++i )
             {
-                const QString url    = l.item( i ).toElement().attribute( "url" );
-                const QString artist = l.item( i ).toElement().attribute( "artist" );
-                const QString title  = l.item( i ).toElement().attribute( "title" );
-
-                suggested << QString( "%1 - %2 - %3" ).arg( title, artist, url );
+                const QString &url    = l.item( i ).toElement().attribute( "url" );
+                const QString &artist = l.item( i ).toElement().attribute( "artist" );
+                const QString &title  = l.item( i ).toElement().attribute( "title" );
+                suggested << ( QStringList() << title << artist << url );
             }
-            // setData( "lyrics", "suggested", suggested );
-            // TODO for now suggested is disabled
             sendNewSuggestions( suggested );
         }
     }
@@ -151,7 +157,7 @@ LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
 
         // FIXME: lyrics != "Not found" will not work when the lyrics script displays i18n'ed
         // error messages
-        if ( !lyrics.isEmpty() &&
+        if ( !isEmpty( lyrics ) &&
               lyrics != "Not found" )
         {
             // overwrite cached lyrics (as either there were no lyircs available previously OR
@@ -159,16 +165,14 @@ LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
             debug() << "setting cached lyrics...";
             The::engineController()->currentTrack()->setCachedLyrics( lyrics ); // TODO: setLyricsByPath?
         }
-        else if( !The::engineController()->currentTrack()->cachedLyrics().isEmpty() &&
+        else if( !isEmpty( The::engineController()->currentTrack()->cachedLyrics() ) &&
                   The::engineController()->currentTrack()->cachedLyrics() != "Not found" )
         {
             // we found nothing, so if we have cached lyrics, use it!
             debug() << "using cached lyrics...";
             lyrics = The::engineController()->currentTrack()->cachedLyrics();
 
-            // check if the lyrics data contains "<html" (note the missing closing bracket,
-            // this enables XHTML lyrics to be recognized)
-            if( lyrics.contains( "<html" , Qt::CaseInsensitive) )
+            if( isHtmlLyrics( lyrics ) )
             {
                 //we have stored html lyrics, so use that directly
                 sendNewLyricsHtml( lyrics );
@@ -177,7 +181,7 @@ LyricsManager::lyricsResult( const QString& lyricsXML, bool cached ) //SLOT
         }
 
         // only continue if the given lyrics are not empty
-        if ( !lyrics.isEmpty() )
+        if ( !isEmpty( lyrics ) )
         {
             // TODO: why don't we use currentTrack->prettyName() here?
             const QString title = el.attribute( "title" );
@@ -205,7 +209,7 @@ LyricsManager::lyricsResultHtml( const QString& lyricsHTML, bool cached )
 
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
     if( currentTrack &&
-        !lyricsHTML.isEmpty() )
+        !isEmpty( lyricsHTML ) )
     {
         sendNewLyricsHtml( lyricsHTML );
 
@@ -218,6 +222,7 @@ LyricsManager::lyricsResultHtml( const QString& lyricsHTML, bool cached )
 void
 LyricsManager::lyricsError( const QString &error )
 {
+    DEBUG_BLOCK
     if( !showCached() )
     {
         sendLyricsMessage( "error", error );
@@ -228,40 +233,24 @@ LyricsManager::lyricsError( const QString &error )
 void
 LyricsManager::lyricsNotFound( const QString& notfound )
 {
+    DEBUG_BLOCK
     if( !showCached() )
-    {
-        //if we have cached lyrics there is absolutely no point in not showing these..
-        Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-	if( !currentTrack ) 
-	{
-		return;
-	}
-
-        const QString title = currentTrack->prettyName();
-
-        QStringList lyricsData;
-        lyricsData << title
-        << currentTrack->artist()->name()
-        << QString() // TODO lyrics site
-        << notfound;
-        sendNewLyrics( lyricsData );
-    }
+        sendLyricsMessage( "notfound", notfound );
 }
 
 
 bool LyricsManager::showCached()
 {
+    DEBUG_BLOCK
     //if we have cached lyrics there is absolutely no point in not showing these..
     Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-    if( currentTrack && !currentTrack->cachedLyrics().isEmpty() )
+    if( currentTrack && !isEmpty( currentTrack->cachedLyrics() ) )
     {
         // TODO: add some sort of feedback that we could not fetch new ones
         // so we are showing a cached result
         debug() << "showing cached lyrics!";
 
-        // check if the lyrics data contains "<html" (note the missing closing bracket,
-        // this enables XHTML lyrics to be recognized)
-        if( currentTrack->cachedLyrics().contains( "<html" , Qt::CaseInsensitive ) )
+        if( isHtmlLyrics( currentTrack->cachedLyrics() ) )
         {
             //we have stored html lyrics, so use that directly
             sendNewLyricsHtml( currentTrack->cachedLyrics() );
@@ -282,4 +271,41 @@ bool LyricsManager::showCached()
         }
     }
     return false;
+}
+
+void LyricsManager::setLyricsForTrack( const QString &trackUrl, const QString &lyrics ) const
+{
+    DEBUG_BLOCK
+
+    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( trackUrl ) );
+
+    if( track )
+        track->setCachedLyrics( lyrics );
+    else
+        debug() << QString("could not find a track for the given URL (%1) - ignoring.").arg( trackUrl );
+}
+
+bool LyricsManager::isHtmlLyrics( const QString &lyrics ) const
+{
+    // Check if the lyrics data contains "<html" (note the missing closing bracket,
+    // this ensures XHTML lyrics are recognized)
+    return lyrics.contains( "<html" , Qt::CaseInsensitive );
+}
+
+bool LyricsManager::isEmpty( const QString &lyrics ) const
+{
+    QGraphicsTextItem testItem;
+
+    // Set the text of the TextItem.
+    if( isHtmlLyrics( lyrics ) )
+        testItem.setHtml( lyrics );
+    else
+        testItem.setPlainText( lyrics );
+
+    // Get the plaintext content.
+    // We use toPlainText() to strip all Html formatting,
+    // so we can test if there's any text given.
+    QString testText = testItem.toPlainText().trimmed();
+
+    return testText.isEmpty();
 }

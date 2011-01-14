@@ -44,11 +44,10 @@ typedef KSharedPtr<AudioCdYear> AudioCdYearPtr;
 class AudioCdTrack : public Meta::Track
 {
     public:
-        AudioCdTrack( Collections::AudioCdCollection *collection, const QString &name, const QString &url );
+        AudioCdTrack( Collections::AudioCdCollection *collection, const QString &name, const KUrl &url );
         virtual ~AudioCdTrack();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual KUrl playableUrl() const;
         virtual QString uidUrl() const;
@@ -67,7 +66,7 @@ class AudioCdTrack : public Meta::Track
         virtual void setArtist ( const QString &newArtist );
         virtual void setGenre ( const QString &newGenre );
         virtual void setComposer ( const QString &newComposer );
-        virtual void setYear ( const QString &newYear );
+        virtual void setYear ( int newYear );
 
         virtual void setTitle( const QString &newTitle );
 
@@ -94,7 +93,6 @@ class AudioCdTrack : public Meta::Track
         virtual int discNumber() const;
         virtual void setDiscNumber ( int newDiscNumber );
 
-        virtual uint lastPlayed() const;
         virtual int playCount() const;
 
         virtual QString type() const;
@@ -133,7 +131,7 @@ class AudioCdTrack : public Meta::Track
         qint64 m_length;
         int m_trackNumber;
         QString m_displayUrl;
-        QString m_playableUrl;
+        KUrl m_playableUrl;
         QString m_fileNameBase;
 };
 
@@ -144,7 +142,6 @@ class AudioCdArtist : public Meta::Artist
         virtual ~AudioCdArtist();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual TrackList tracks();
 
@@ -165,7 +162,6 @@ class AudioCdAlbum : public Meta::Album
         virtual ~AudioCdAlbum();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual bool isCompilation() const;
         virtual bool hasAlbumArtist() const;
@@ -174,7 +170,7 @@ class AudioCdAlbum : public Meta::Album
 
         virtual QPixmap image( int size = 1 );
         virtual bool canUpdateImage() const;
-        virtual void setImage( const QPixmap &pixmap );
+        virtual void setImage( const QImage &image );
 
         //AudioCdAlbum specific methods
         void addTrack( AudioCdTrackPtr track );
@@ -186,7 +182,7 @@ class AudioCdAlbum : public Meta::Album
         TrackList m_tracks;
         bool m_isCompilation;
         AudioCdArtistPtr m_albumArtist;
-        QPixmap m_cover;
+        QImage m_cover;
         QMap<int, QPixmap> m_coverSizeMap;
 };
 
@@ -197,7 +193,6 @@ class AudioCdGenre : public Meta::Genre
         virtual ~AudioCdGenre();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual TrackList tracks();
 
@@ -216,7 +211,6 @@ class AudioCdComposer : public Meta::Composer
         virtual ~AudioCdComposer();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual TrackList tracks();
 
@@ -235,7 +229,6 @@ class AudioCdYear : public Meta::Year
         virtual ~AudioCdYear();
 
         virtual QString name() const;
-        virtual QString prettyName() const;
 
         virtual TrackList tracks();
 

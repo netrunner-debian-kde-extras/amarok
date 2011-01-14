@@ -87,7 +87,6 @@ ScriptManager* ScriptManager::s_instance = 0;
 
 ScriptManager::ScriptManager( QWidget* parent )
         : KDialog( parent )
-        , Engine::EngineObserver( The::engineController() )
 {
     DEBUG_BLOCK
     Ui::ScriptManagerBase gui;
@@ -232,6 +231,7 @@ ScriptManager::notifyFetchLyrics( const QString& artist, const QString& title )
 void
 ScriptManager::notifyFetchLyricsByUrl( const QString& artist, const QString& title, const QString& url )
 {
+    DEBUG_BLOCK
     emit fetchLyrics( Qt::escape( artist ), Qt::escape( title ), url );
 }
 
@@ -476,7 +476,11 @@ ScriptManager::slotRunScript( QString name, bool silent )
     m_scripts[name].running = true;
     m_scripts[name].evaluating = true;
     if( m_scripts[name].info.category() == "Lyrics" )
+    {
         m_lyricsScript = name;
+        debug() << "lyrics script started:" << name;
+        emit lyricsScriptStarted();
+    }
 
     m_scripts[name].log += time.currentTime().toString() + " Script Started!" + '\n';
     m_scripts[name].engine->setProcessEventsInterval( 100 );

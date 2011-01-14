@@ -59,7 +59,7 @@ X-KDE-Submenu[uk]=Amarok
 X-KDE-Submenu[wa]=Amarok
 X-KDE-Submenu[x-test]=xxAmarokxx
 X-KDE-Submenu[zh_CN]=Amarok
-X-KDE-Submenu[zh_TW]=Amarok
+X-KDE-Submenu[zh_TW]=影音播放_Amarok
 
 [Desktop Action appendToPlaylist]
 Name=Append to Playlist
@@ -87,7 +87,7 @@ Name[hu]=Hozzáfűzés a lejátszólistához
 Name[is]=Bæta við lagalista
 Name[it]=Aggiungi alla playlist
 Name[ja]=プレイリストに追加
-Name[km]=បន្ថែម​ទៅ​ខាង​ចុង​បញ្ជីចាក់
+Name[km]=បន្ថែម​ទៅ​ខាង​ចុង​បញ្ជី​ចាក់
 Name[ko]=재생 목록에 덧붙이기
 Name[ku]=Bixe ser lîsteya lêdanê
 Name[lt]=Papildyti grojaraštį
@@ -179,7 +179,7 @@ Name[x-test]=xxAppend & Playxx
 Name[zh_CN]=追加并播放
 Name[zh_TW]=添加並播放
 Icon=amarok
-Exec=qdbus org.kde.amarok /PlayerList playMedia %U
+Exec=amarok --append %U --play
 
 [Desktop Action queueTrack]
 Name=Queue Track
@@ -208,7 +208,7 @@ Name[hu]=Szám betevése a sorba
 Name[is]=Setja í biðröð
 Name[it]=Accoda traccia
 Name[ja]=トラックをキュー
-Name[km]=ដាក់​បទ​ក្នុង​ជួរ
+Name[km]=តម្រៀប​បទ​ជា​ជួរ
 Name[ko]=대기열에 추가하기
 Name[ku]=Rêza Stranan
 Name[lt]=Pridėti į eilę

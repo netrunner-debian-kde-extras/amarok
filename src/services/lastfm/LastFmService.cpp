@@ -48,7 +48,6 @@
 #include "NetworkAccessManagerProxy.h"
 
 #include <lastfm/Audioscrobbler> // from liblastfm
-#include <lastfm/NetworkAccessManager>
 #include <lastfm/XmlQuery>
 
 #include <KLocale>
@@ -59,7 +58,6 @@
 #include <QComboBox>
 #include <QCryptographicHash>
 #include <QGroupBox>
-#include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QPainter>
 #include <QImage>
@@ -240,18 +238,12 @@ LastFmService::init()
     //Ws::ApiKey = "c8c7b163b11f92ef2d33ba6cd3c2c3c3";
     m_userNameArray = qstrdup( m_userName.toLatin1().data() );
     lastfm::ws::Username = m_userNameArray;
-
-
-    // set up proxy
-    if( !lastfm::nam() )
-    {
-        QNetworkAccessManager* qnam = The::networkAccessManager();
-        lastfm::setNetworkAccessManager( qnam );
-    }
+    if( lastfm::nam() != The::networkAccessManager() )
+        lastfm::setNetworkAccessManager( The::networkAccessManager() );
 
     debug() << "username:" << QString( QUrl::toPercentEncoding( lastfm::ws::Username ) );
 
-    QString authToken =  md5( ( m_userName + md5( password.toUtf8() ) ).toUtf8() );
+    const QString authToken = md5( QString( "%1%2" ).arg( m_userName ).arg( md5( password.toUtf8() ) ).toUtf8() );
 
     // now authenticate w/ last.fm and get our session key if we don't have one
     if( sessionKey.isEmpty() )

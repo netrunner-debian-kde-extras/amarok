@@ -64,6 +64,7 @@ Comment[is]=Þjónusta sem fellir Last.fm aðgerðir inn í Amarok
 Comment[it]=Un servizio che integra le funzionalità di Last.fm in Amarok
 Comment[ja]=Last.fm の機能を Amarok に統合するサービス
 Comment[km]=សេវា​ដែល​រួម​បញ្ចូល​មុខងារ Last.fm ទៅ​ក្នុង Amarok
+Comment[ko]=Amarok에 last.fm 기능을 통합하는 서비스
 Comment[lv]=Pakalpojums, kurš integrē last.fm atbalstu amarok
 Comment[nb]=En tjeneste som integrerer funksjonalitet i Last.fm inn i Amarok
 Comment[nds]=En Deenst, de Funkschonen vun "Last.fm" för Amarok praatstellt
@@ -91,7 +92,7 @@ X-KDE-Library=amarok_service_lastfm
 
 X-KDE-Amarok-authors=Shane King
 X-KDE-Amarok-email=kde@dontletsstart.com
-X-KDE-Amarok-framework-version=58
+X-KDE-Amarok-framework-version=60
 X-KDE-Amarok-name=LastFmService
 X-KDE-Amarok-plugintype=service
 X-KDE-Amarok-rank=100

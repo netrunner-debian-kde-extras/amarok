@@ -14,26 +14,29 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "CoverFetchingActions"
+
 #include "CoverFetchingActions.h"
+
 #include "core/support/Debug.h"
+#include "MainWindow.h"
+#include "CoverFetcher.h"
+#include "CoverManager.h"
+#include "CoverViewDialog.h"
 
-#include <QDesktopWidget>
-
+#include <KApplication>
 #include <KDirOperator>
 #include <KFile>
 #include <KFileDialog>
 #include <KFileWidget>
 #include <KIcon>
 #include <KImageIO>
-#include <KLocale>
+#include <KLocalizedString>
 #include <KMessageBox>
 #include <KTempDir>
-#include <kio/netaccess.h>
-#include <ksharedptr.h>
+#include <KIO/NetAccess>
 
-#include "CoverFetcher.h"
-#include "CoverManager.h"
-#include "CoverViewDialog.h"
+#include <QDesktopWidget>
 
 /////////////////////////////////////
 //  FetchCoverAction
@@ -73,10 +76,7 @@ void DisplayCoverAction::init()
 
 void DisplayCoverAction::slotTriggered()
 {
-    QWidget *p = dynamic_cast<QWidget*>( parent() );
-    int parentScreen = KApplication::desktop()->screenNumber( p );
-
-    ( new CoverViewDialog( m_albums.first(), QApplication::desktop()->screen( parentScreen ) ) )->show();
+    ( new CoverViewDialog( m_albums.first(), The::mainWindow() ) )->show();
 }
 
 
@@ -169,11 +169,11 @@ SetCustomCoverAction::slotTriggered()
 
     if( !file.isEmpty() )
     {
-        QPixmap pixmap;
+        QImage image;
 
         if( file.isLocalFile() )
         {
-            pixmap.load( file.path() );
+            image.load( file.path() );
 
         }
         else
@@ -190,15 +190,15 @@ SetCustomCoverAction::slotTriggered()
                                                   qobject_cast<QWidget*>( parent() ) );
 
             if( ret )
-                pixmap.load( coverDownloadPath );
+                image.load( coverDownloadPath );
         }
 
-        if( !pixmap.isNull() )
+        if( !image.isNull() )
         {
             foreach( Meta::AlbumPtr album, m_albums )
             {
                 if( album && album->canUpdateImage() )
-                    album->setImage( pixmap );
+                    album->setImage( image );
             }
         }
     }

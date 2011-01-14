@@ -19,7 +19,7 @@
 #include "core/support/Debug.h"
 #include "covermanager/CoverFetchingActions.h"
 #include "covermanager/CoverFetcher.h"
-#include "core/capabilities/CustomActionsCapability.h"
+#include "core/capabilities/ActionsCapability.h"
 #include "core/capabilities/Capability.h"
 #include "core/capabilities/BoundedPlaybackCapability.h"
 #include "core-impl/capabilities/timecode/TimecodeEditCapability.h"
@@ -56,12 +56,6 @@ QString
 TimecodeTrack::name() const
 {
     return m_name;
-}
-
-QString
-TimecodeTrack::prettyName() const
-{
-    return name();
 }
 
 KUrl
@@ -196,12 +190,6 @@ TimecodeTrack::discNumber() const
     return m_discNumber;
 }
 
-uint
-TimecodeTrack::lastPlayed() const
-{
-    return 0;
-}
-
 int
 TimecodeTrack::playCount() const
 {
@@ -243,10 +231,10 @@ TimecodeTrack::setGenre( const QString &newGenre )
 }
 
 void
-TimecodeTrack::setYear( const QString &newYear )
+TimecodeTrack::setYear( int newYear )
 {
     m_updatedFields |= YEAR_UPDATED;
-    m_fields.insert( YEAR_UPDATED, newYear );
+    m_fields.insert( YEAR_UPDATED, QString::number( newYear ) );
 }
 
 void
@@ -456,12 +444,6 @@ TimecodeArtist::name() const
     return m_name;
 }
 
-QString
-TimecodeArtist::prettyName() const
-{
-    return name();
-}
-
 TrackList
 TimecodeArtist::tracks()
 {
@@ -504,12 +486,6 @@ TimecodeAlbum::name() const
     return m_name;
 }
 
-QString
-TimecodeAlbum::prettyName() const
-{
-    return name();
-}
-
 bool
 TimecodeAlbum::isCompilation() const
 {
@@ -542,7 +518,7 @@ TimecodeAlbum::image( int size )
     if ( m_coverSizeMap.contains( size ) )
          return m_coverSizeMap.value( size );
 
-    QPixmap scaled = m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+    QPixmap scaled = QPixmap::fromImage(m_cover).scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
 
     m_coverSizeMap.insert( size, scaled );
     return scaled;
@@ -555,9 +531,9 @@ TimecodeAlbum::canUpdateImage() const
 }
 
 void
-TimecodeAlbum::setImage( const QPixmap & pixmap )
+TimecodeAlbum::setImage( const QImage &image )
 {
-    m_cover = pixmap;
+    m_cover = image;
     notifyObservers();
 }
 
@@ -579,12 +555,12 @@ void TimecodeAlbum::setIsCompilation( bool compilation )
 
 bool TimecodeAlbum::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
-    return type == Capabilities::Capability::CustomActions;
+    return type == Capabilities::Capability::Actions;
 }
 
 Capabilities::Capability* TimecodeAlbum::asCapabilityInterface( Capabilities::Capability::Type type )
 {
-    if( type == Capabilities::Capability::CustomActions )
+    if( type == Capabilities::Capability::Actions )
     {
         QList<QAction*> actions;
 
@@ -616,7 +592,7 @@ Capabilities::Capability* TimecodeAlbum::asCapabilityInterface( Capabilities::Ca
             m_unsetCoverAction->setEnabled( true );
         }
 
-        return new CustomActionsCapability( actions );
+        return new ActionsCapability( actions );
     }
 
     return 0;
@@ -637,12 +613,6 @@ QString
 TimecodeGenre::name() const
 {
     return m_name;
-}
-
-QString
-TimecodeGenre::prettyName() const
-{
-    return name();
 }
 
 TrackList
@@ -674,12 +644,6 @@ TimecodeComposer::name() const
     return m_name;
 }
 
-QString
-TimecodeComposer::prettyName() const
-{
-    return name();
-}
-
 TrackList
 TimecodeComposer::tracks()
 {
@@ -707,12 +671,6 @@ QString
 TimecodeYear::name() const
 {
     return m_name;
-}
-
-QString
-TimecodeYear::prettyName() const
-{
-    return name();
 }
 
 TrackList

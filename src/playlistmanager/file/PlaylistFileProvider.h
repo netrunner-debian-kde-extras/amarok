@@ -56,9 +56,8 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
 
         virtual bool canSavePlaylists() { return true; }
 
-        virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks );
         virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks,
-                                        const QString &name );
+                                             const QString &name = QString() );
 
         virtual bool import( const KUrl &path );
 
@@ -67,10 +66,6 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
         virtual bool deletePlaylists( Playlists::PlaylistList playlistList );
 
         virtual void loadPlaylists();
-
-    signals:
-        void playlistAdded( Playlists::PlaylistPtr playlist );
-        void playlistRemoved( Playlists::PlaylistPtr playlist );
 
     private slots:
         void slotDelete();

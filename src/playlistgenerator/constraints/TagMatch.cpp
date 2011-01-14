@@ -180,7 +180,7 @@ ConstraintTypes::TagMatch::getName() const
     v = v.arg( ( m_invert ? i18n(" not") : "" ), m_fieldsModel->pretty_name_of( m_field ), comparisonToString() );
     if ( m_field == "rating" ) {
         double r = m_value.toDouble() / 2.0;
-        return v.arg( QString( i18nc("number of stars in the rating of a track", "%1 stars") ).arg( r ) );
+        return v.arg( i18ncp("number of stars in the rating of a track", "%1 star", "%1 stars", r) );
     } else if ( m_field == "length" ) {
         return v.arg( QTime().addMSecs( m_value.toInt() ).toString( "H:mm:ss" ) );
     } else {
@@ -457,8 +457,6 @@ ConstraintTypes::TagMatch::comparisonToString() const
             return QString( i18n("within") );
         }
     } else {
-#if 0
-        // FIXME: Replace the block below with this one after string freeze is lifted
         if ( m_comparison == CompareStrEquals ) {
             return QString( i18nc("an alphabetical tag (like title or artist name) equals some string","equals") );
         } else if ( m_comparison == CompareStrStartsWith ) {
@@ -467,18 +465,6 @@ ConstraintTypes::TagMatch::comparisonToString() const
             return QString( i18nc("an alphabetical tag (like title or artist name) ends with some string","ends with") );
         } else if ( m_comparison == CompareStrContains ) {
             return QString( i18nc("an alphabetical tag (like title or artist name) contains some string","contains") );
-        } else if ( m_comparison == CompareStrRegExp ) {
-            return QString( i18n("regexp") );
-        }
-#endif
-        if ( m_comparison == CompareStrEquals ) {
-            return QString( i18nc("an alphabetical tag (like title or artist name) equals some string","equals") );
-        } else if ( m_comparison == CompareStrStartsWith ) {
-            return QString( i18n("starts with") );
-        } else if ( m_comparison == CompareStrEndsWith ) {
-            return QString( i18n("ends with") );
-        } else if ( m_comparison == CompareStrContains ) {
-            return QString( i18n("contains") );
         } else if ( m_comparison == CompareStrRegExp ) {
             return QString( i18n("regexp") );
         }
@@ -570,10 +556,10 @@ ConstraintTypes::TagMatch::matches( Meta::TrackPtr track ) const
                 v = m_comparer->compareNum( track->rating(), m_comparison, m_value.toInt(), m_strictness, fmv );
                 break;
             case Meta::valFirstPlayed:
-                v = m_comparer->compareDate( track->firstPlayed(), m_comparison, m_value, m_strictness );
+                v = m_comparer->compareDate( track->firstPlayed().toTime_t(), m_comparison, m_value, m_strictness );
                 break;
             case Meta::valLastPlayed:
-                v = m_comparer->compareDate( track->lastPlayed(), m_comparison, m_value, m_strictness );
+                v = m_comparer->compareDate( track->lastPlayed().toTime_t(), m_comparison, m_value, m_strictness );
                 break;
             case Meta::valPlaycount:
                 v = m_comparer->compareNum( track->playCount(), m_comparison, m_value.toInt(), m_strictness, fmv );

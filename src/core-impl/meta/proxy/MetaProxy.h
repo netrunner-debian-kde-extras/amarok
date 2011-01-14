@@ -50,11 +50,13 @@ namespace MetaProxy
             virtual KUrl playableUrl() const;
             virtual QString prettyUrl() const;
             virtual QString uidUrl() const;
+            virtual void setUidUrl( const QString &newUidUrl ) const;
 
             virtual bool isPlayable() const;
 
             virtual Meta::AlbumPtr album() const;
             virtual void setAlbum( const QString &album );
+            virtual void setAlbumArtist( const QString &artist );
             virtual Meta::ArtistPtr artist() const;
             virtual void setArtist( const QString &artist );
             virtual Meta::GenrePtr genre() const;
@@ -62,7 +64,7 @@ namespace MetaProxy
             virtual Meta::ComposerPtr composer() const;
             virtual void setComposer( const QString &composer );
             virtual Meta::YearPtr year() const;
-            virtual void setYear( const QString &year );
+            virtual void setYear( int year );
 
             virtual qreal bpm() const;
             virtual void setBpm( const qreal bpm );
@@ -86,8 +88,8 @@ namespace MetaProxy
             virtual int bitrate() const;
             virtual QDateTime createDate() const;
 
-            virtual uint firstPlayed() const;
-            virtual uint lastPlayed() const;
+            virtual QDateTime firstPlayed() const;
+            virtual QDateTime lastPlayed() const;
             virtual int playCount() const;
 
             virtual QString type() const;

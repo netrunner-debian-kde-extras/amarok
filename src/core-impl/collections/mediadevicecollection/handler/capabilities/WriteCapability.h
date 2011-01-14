@@ -76,6 +76,7 @@ class MEDIADEVICECOLLECTION_EXPORT WriteCapability : public Handler::WriteCapabi
         virtual void libSetTitle( Meta::MediaDeviceTrackPtr &track, const QString& title ) = 0;
         virtual void libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album ) = 0;
         virtual void libSetArtist( Meta::MediaDeviceTrackPtr &track, const QString& artist ) = 0;
+        virtual void libSetAlbumArtist( Meta::MediaDeviceTrackPtr &track, const QString& albumArtist ) = 0;
         virtual void libSetComposer( Meta::MediaDeviceTrackPtr &track, const QString& composer ) = 0;
         virtual void libSetGenre( Meta::MediaDeviceTrackPtr &track, const QString& genre ) = 0;
         virtual void libSetYear( Meta::MediaDeviceTrackPtr &track, const QString& year ) = 0;
@@ -88,11 +89,11 @@ class MEDIADEVICECOLLECTION_EXPORT WriteCapability : public Handler::WriteCapabi
         virtual void libSetBpm( Meta::MediaDeviceTrackPtr &track, qreal bpm ) = 0;
         virtual void libSetFileSize( Meta::MediaDeviceTrackPtr &track, int filesize ) = 0;
         virtual void libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount ) = 0;
-        virtual void libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed ) = 0;
+        virtual void libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, const QDateTime &lastplayed ) = 0;
         virtual void libSetRating( Meta::MediaDeviceTrackPtr &track, int rating )  = 0;
         virtual void libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type ) = 0;
         virtual void libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack ) = 0;
-        virtual void libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QPixmap &cover ) = 0;
+        virtual void libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QImage &cover ) = 0;
 };
 }
 

@@ -20,6 +20,9 @@
 
 #include "CoverFoundDialog.h"
 
+#define DEBUG_PREFIX "CoverFoundDialog"
+#include "core/support/Debug.h"
+
 #include "AlbumBreadcrumbWidget.h"
 #include "core/support/Amarok.h"
 #include "CoverViewDialog.h"
@@ -32,6 +35,7 @@
 #include <KFileDialog>
 #include <KLineEdit>
 #include <KListWidget>
+#include <KLocalizedString>
 #include <KMessageBox>
 #include <KPushButton>
 #include <KSaveFile>
@@ -45,15 +49,11 @@
 #include <QHeaderView>
 #include <QMenu>
 #include <QScrollArea>
-#include <QSignalMapper>
 #include <QSplitter>
 #include <QTabWidget>
 
-#define DEBUG_PREFIX "CoverFoundDialog"
-#include "core/support/Debug.h"
-
 CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
-                                    const CoverFetch::Metadata data,
+                                    const CoverFetch::Metadata &data,
                                     QWidget *parent )
     : KDialog( parent )
     , m_album( unit->album() )
@@ -61,8 +61,8 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     , m_sortEnabled( false )
     , m_unit( unit )
     , m_queryPage( 0 )
-    , m_errorSignalMapper( 0 )
 {
+    DEBUG_BLOCK
     setButtons( KDialog::Ok | KDialog::Cancel |
                 KDialog::User1 ); // User1: clear icon view
 
@@ -172,8 +172,8 @@ CoverFoundDialog::CoverFoundDialog( const CoverFetchUnit::Ptr unit,
     m_view->setViewMode( QListView::IconMode );
     m_view->setResizeMode( QListView::Adjust );
 
-    connect( m_view, SIGNAL(itemSelectionChanged()),
-             this,   SLOT(itemSelected()) );
+    connect( m_view, SIGNAL(currentItemChanged(QListWidgetItem*, QListWidgetItem*)),
+             this,   SLOT(currentItemChanged(QListWidgetItem*, QListWidgetItem*)) );
     connect( m_view, SIGNAL(itemDoubleClicked(QListWidgetItem*)),
              this,   SLOT(itemDoubleClicked(QListWidgetItem*)) );
     connect( m_view, SIGNAL(customContextMenuRequested(const QPoint&)),
@@ -216,13 +216,8 @@ CoverFoundDialog::~CoverFoundDialog()
     m_album->setSuppressImageAutoFetch( false );
 
     const QList<QListWidgetItem*> &viewItems = m_view->findItems( QChar('*'), Qt::MatchWildcard );
-    foreach( QListWidgetItem *item, viewItems )
-    {
-        CoverFoundItem* cfi = dynamic_cast<CoverFoundItem*>( item );
-        if( cfi )
-            delete cfi;
-    }
-    delete m_dialog;
+    qDeleteAll( viewItems );
+    delete m_dialog.data();
 }
 
 void CoverFoundDialog::hideEvent( QHideEvent *event )
@@ -233,17 +228,17 @@ void CoverFoundDialog::hideEvent( QHideEvent *event )
 }
 
 void CoverFoundDialog::add( const QPixmap &cover,
-                            const CoverFetch::Metadata metadata,
+                            const CoverFetch::Metadata &metadata,
                             const CoverFetch::ImageSize imageSize )
 {
     if( cover.isNull() )
         return;
 
-    CoverFoundItem *item = new CoverFoundItem( cover, metadata, imageSize );
-    if( !contains( item ) )
+    if( !contains( metadata ) )
+    {
+        CoverFoundItem *item = new CoverFoundItem( cover, metadata, imageSize );
         addToView( item );
-    else
-        delete item;
+    }
 }
 
 void CoverFoundDialog::addToView( CoverFoundItem *item )
@@ -273,18 +268,15 @@ void CoverFoundDialog::addToView( CoverFoundItem *item )
     updateGui();
 }
 
-bool CoverFoundDialog::contains( const CoverFoundItem *item ) const
+bool CoverFoundDialog::contains( const CoverFetch::Metadata &metadata ) const
 {
-    bool hasItem( false );
     for( int i = 0, count = m_view->count(); i < count; ++i )
     {
-        CoverFoundItem *vItem = dynamic_cast<CoverFoundItem*>( m_view->item(i) );
-        if( vItem )
-            hasItem = (*vItem == *item);
-        if( hasItem )
+        CoverFoundItem *item = static_cast<CoverFoundItem*>( m_view->item(i) );
+        if( item->metadata() == metadata )
             return true;
     }
-    return hasItem;
+    return false;
 }
 
 void CoverFoundDialog::addToCustomSearch( const QString &text )
@@ -331,14 +323,15 @@ void CoverFoundDialog::insertComboText( const QString &text )
     m_search->setCurrentIndex( 0 );
 }
 
-void CoverFoundDialog::itemSelected()
+void CoverFoundDialog::currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous )
 {
-    CoverFoundItem *it = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
-    if( it )
-    {
-        m_pixmap = it->hasBigPix() ? it->bigPix() : it->thumb();
-        m_sideBar->setPixmap( m_pixmap, it->metadata() );
-    }
+    Q_UNUSED( previous )
+    if( !current )
+        return;
+    CoverFoundItem *it = static_cast< CoverFoundItem* >( current );
+    QPixmap pixmap = it->hasBigPix() ? it->bigPix() : it->thumb();
+    m_image = pixmap;
+    m_sideBar->setPixmap( pixmap, it->metadata() );
 }
 
 void CoverFoundDialog::itemDoubleClicked( QListWidgetItem *item )
@@ -355,7 +348,7 @@ void CoverFoundDialog::itemMenuRequested( const QPoint &pos )
     if( !index.isValid() )
         return;
 
-    CoverFoundItem *item = dynamic_cast< CoverFoundItem* >( m_view->item( index.row() ) );
+    CoverFoundItem *item = static_cast< CoverFoundItem* >( m_view->item( index.row() ) );
     item->setSelected( true );
 
     QMenu menu( this );
@@ -372,10 +365,7 @@ void CoverFoundDialog::itemMenuRequested( const QPoint &pos )
 
 void CoverFoundDialog::saveAs()
 {
-    CoverFoundItem *item = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
-    if( !item )
-        return;
-
+    CoverFoundItem *item = static_cast< CoverFoundItem* >( m_view->currentItem() );
     if( !item->hasBigPix() && !fetchBigPix() )
         return;
 
@@ -435,7 +425,10 @@ void CoverFoundDialog::slotButtonClicked( int button )
     {
         CoverFoundItem *item = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
         if( !item )
+        {
+            reject();
             return;
+        }
 
         bool gotBigPix( true );
         if( !item->hasBigPix() )
@@ -443,7 +436,7 @@ void CoverFoundDialog::slotButtonClicked( int button )
 
         if( gotBigPix )
         {
-            m_pixmap = item->bigPix();
+            m_image = item->bigPix();
             accept();
         }
     }
@@ -462,24 +455,21 @@ void CoverFoundDialog::handleFetchResult( const KUrl &url, QByteArray data,
     {
         item->setBigPix( pixmap );
         m_sideBar->setPixmap( pixmap );
-        m_dialog->accept();
+        m_dialog.data()->accept();
     }
     else
     {
         QStringList errors;
         errors << e.description;
         KMessageBox::errorList( this, i18n("Sorry, the cover image could not be retrieved."), errors );
-        m_dialog->reject();
+        m_dialog.data()->reject();
     }
 }
 
 bool CoverFoundDialog::fetchBigPix()
 {
     DEBUG_BLOCK
-    CoverFoundItem *item = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
-    if( !item )
-        return false;
-
+    CoverFoundItem *item = static_cast< CoverFoundItem* >( m_view->currentItem() );
     const KUrl url( item->metadata().value( "normalarturl" ) );
     if( !url.isValid() )
         return false;
@@ -491,29 +481,23 @@ bool CoverFoundDialog::fetchBigPix()
     if( !m_dialog )
     {
         m_dialog = new KProgressDialog( this );
-        m_dialog->setCaption( i18n( "Fetching Large Cover" ) );
-        m_dialog->setLabelText( i18n( "Download Progress" ) );
-        m_dialog->setModal( true );
-        m_dialog->setAllowCancel( true );
-        m_dialog->setAutoClose( false );
-        m_dialog->setAutoReset( true );
-        m_dialog->progressBar()->setMinimum( 0 );
-        m_dialog->setMinimumWidth( 300 );
+        m_dialog.data()->setCaption( i18n( "Fetching Large Cover" ) );
+        m_dialog.data()->setLabelText( i18n( "Download Progress" ) );
+        m_dialog.data()->setModal( true );
+        m_dialog.data()->setAllowCancel( true );
+        m_dialog.data()->setAutoClose( false );
+        m_dialog.data()->setAutoReset( true );
+        m_dialog.data()->progressBar()->setMinimum( 0 );
+        m_dialog.data()->setMinimumWidth( 300 );
         connect( reply, SIGNAL(downloadProgress(qint64,qint64)),
                         SLOT(downloadProgressed(qint64,qint64)) );
-
-        if( !m_errorSignalMapper )
-        {
-            m_errorSignalMapper = new QSignalMapper( this );
-            connect( m_errorSignalMapper, SIGNAL(mapped(QObject*)),
-                     The::networkAccessManager(), SLOT(slotError(QObject*)) );
-        }
-        connect( m_dialog, SIGNAL(cancelClicked()), m_errorSignalMapper, SLOT(map()) );
-        m_errorSignalMapper->setMapping( m_dialog, reply );
     }
-    int result = m_dialog->exec();
-    bool success = (result == QDialog::Accepted) && !m_dialog->wasCancelled();
-    m_dialog->deleteLater();
+    int result = m_dialog.data()->exec();
+    bool success = (result == QDialog::Accepted) && !m_dialog.data()->wasCancelled();
+    The::networkAccessManager()->abortGet( url );
+    if( !success )
+        m_urls.remove( url );
+    m_dialog.data()->deleteLater();
     return success;
 }
 
@@ -521,26 +505,23 @@ void CoverFoundDialog::downloadProgressed( qint64 bytesReceived, qint64 bytesTot
 {
     if( m_dialog )
     {
-        m_dialog->progressBar()->setMaximum( bytesTotal );
-        m_dialog->progressBar()->setValue( bytesReceived );
+        m_dialog.data()->progressBar()->setMaximum( bytesTotal );
+        m_dialog.data()->progressBar()->setValue( bytesReceived );
     }
 }
 
 void CoverFoundDialog::display()
 {
-    CoverFoundItem *item = dynamic_cast< CoverFoundItem* >( m_view->currentItem() );
-    if( !item )
-        return;
-
+    CoverFoundItem *item = static_cast< CoverFoundItem* >( m_view->currentItem() );
     const bool success = item->hasBigPix() ? true : fetchBigPix();
     if( !success )
         return;
 
     const QPixmap &pixmap = item->hasBigPix() ? item->bigPix() : item->thumb();
-    QPointer<CoverViewDialog> dlg = new CoverViewDialog( pixmap, this );
-    dlg->show();
-    dlg->raise();
-    dlg->activateWindow();
+    QWeakPointer<CoverViewDialog> dlg = new CoverViewDialog( pixmap, this );
+    dlg.data()->show();
+    dlg.data()->raise();
+    dlg.data()->activateWindow();
 }
 
 void CoverFoundDialog::processQuery()
@@ -651,7 +632,7 @@ void CoverFoundDialog::sortCoversBySize()
     foreach( QListWidgetItem *viewItem, viewItems  )
     {
         CoverFoundItem *coverItem = dynamic_cast<CoverFoundItem*>( viewItem );
-        const CoverFetch::Metadata meta = coverItem->metadata();
+        const CoverFetch::Metadata &meta = coverItem->metadata();
         const int itemSize = meta.value( "width" ).toInt() * meta.value( "height" ).toInt();
         sortItems.insert( itemSize, coverItem );
         m_sortSizes << itemSize;
@@ -707,11 +688,11 @@ CoverFoundSideBar::CoverFoundSideBar( const Meta::AlbumPtr album, QWidget *paren
 {
     m_cover = new QLabel( this );
     m_tabs  = new QTabWidget( this );
-    m_notes = new QLabel( m_tabs );
-    m_metaTable = new QWidget( m_tabs );
-    m_metaTable->setLayout( new QFormLayout() );
+    m_notes = new QLabel;
+    QScrollArea *metaArea = new QScrollArea;
+    m_metaTable = new QWidget( metaArea );
+    m_metaTable->setLayout( new QFormLayout );
     m_metaTable->setMinimumSize( QSize( 150, 200 ) );
-    QScrollArea *metaArea = new QScrollArea( m_tabs );
     metaArea->setFrameShape( QFrame::NoFrame );
     metaArea->setWidget( m_metaTable );
     m_notes->setAlignment( Qt::AlignLeft | Qt::AlignTop );
@@ -810,7 +791,7 @@ void CoverFoundSideBar::updateMetaTable()
 
             if( !name.isEmpty() )
             {
-                QLabel *label = new QLabel( value, this );
+                QLabel *label = new QLabel( value, 0 );
                 label->setToolTip( value );
                 layout->addRow( QString("<b>%1:</b>").arg(name), label );
             }
@@ -847,7 +828,7 @@ void CoverFoundSideBar::updateMetaTable()
                                     .arg( decoded )
                                     .arg( i18nc("@item::intable URL", "link") );
 
-        QLabel *label = new QLabel( url, this );
+        QLabel *label = new QLabel( url, 0 );
         label->setOpenExternalLinks( true );
         label->setTextInteractionFlags( Qt::TextBrowserInteraction );
         label->setToolTip( tooltip );
@@ -869,7 +850,7 @@ void CoverFoundSideBar::clearMetaTable()
 }
 
 CoverFoundItem::CoverFoundItem( const QPixmap &cover,
-                                const CoverFetch::Metadata data,
+                                const CoverFetch::Metadata &data,
                                 const CoverFetch::ImageSize imageSize,
                                 QListWidget *parent )
     : QListWidgetItem( parent )
@@ -912,23 +893,23 @@ bool CoverFoundItem::operator!=( const CoverFoundItem &other ) const
 void CoverFoundItem::setCaption()
 {
     QStringList captions;
-    const QString width = m_metadata.value( "width" );
-    const QString height = m_metadata.value( "height" );
+    const QString &width = m_metadata.value( QLatin1String("width") );
+    const QString &height = m_metadata.value( QLatin1String("height") );
     if( !width.isEmpty() && !height.isEmpty() )
         captions << QString( "%1 x %2" ).arg( width ).arg( height );
 
-    int size = m_metadata.value( "size" ).toInt();
+    int size = m_metadata.value( QLatin1String("size") ).toInt();
     if( size )
     {
-        const QString source = m_metadata.value( "source" );
-        if( source == "Yahoo!" )
+        const QString source = m_metadata.value( QLatin1String("source") );
+        if( source == QLatin1String("Yahoo!") )
             size /= 1024;
 
-        captions << ( QString::number( size ) + 'k' );
+        captions << ( QString::number( size ) + QLatin1Char('k') );
     }
 
     if( !captions.isEmpty() )
-        setText( captions.join( QString( " - " ) ) );
+        setText( captions.join( QLatin1String( " - " ) ) );
 }
 
 #include "CoverFoundDialog.moc"

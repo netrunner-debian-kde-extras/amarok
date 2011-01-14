@@ -52,14 +52,14 @@ APG::ConstraintSolver::ConstraintSolver( ConstraintNode* r, int qualityFactor )
     // TODO: really adjust according to qualityFactor
     double x = (double)qualityFactor/(double)QUALITY_RANGE;
     debug() << "Constraint Solver quality factor:" << x;
-    m_satisfactionThreshold = 0.95;
-    m_qualityFactor = 1.0;
-    m_maxCoolingIterations = 500;
-    m_maxMutationIterations = 30;
-    m_maxSwapIterations = 30;
+    m_satisfactionThreshold = 0.80 + 0.15*x;
+    m_qualityFactor = 1.0 + 5.0*x;
+    m_maxCoolingIterations = 200 + static_cast<int>( 600.0*x );
+    m_maxMutationIterations = 20 + static_cast<int>( 50.0*x );
+    m_maxSwapIterations = 20 + static_cast<int>( 50.0*x );
 
-    m_minPlaylistSize = 5;
-    m_maxPlaylistSize = 200;
+    m_minPlaylistSize = 1;
+    m_maxPlaylistSize = 1000;
 
     if ( !m_constraintTreeRoot ) {
         error() << "No constraint tree was passed to the solver.  Aborting.";
@@ -103,6 +103,12 @@ double
 APG::ConstraintSolver::finalSatisfaction() const
 {
     return m_finalSatisfaction;
+}
+
+double
+APG::ConstraintSolver::satisfactionThreshold() const
+{
+    return m_satisfactionThreshold;
 }
 
 bool
@@ -225,21 +231,29 @@ APG::ConstraintSolver::receiveQueryMakerData( QString collId, Meta::TrackList re
 void
 APG::ConstraintSolver::receiveQueryMakerDone()
 {
+    m_qm->deleteLater();
+    m_qm = 0;
+
     if (( m_domain.size() > 0 ) || m_domainReductionFailed ) {
         if ( m_domain.size() <= 0 ) {
             Amarok::Components::logger()->shortMessage( i18n("The playlist generator failed to load any tracks from the collection.") );
         }
         m_readyToRun = true;
-        m_qm->deleteLater();
-        m_qm = 0;
         emit readyToRun();
     } else {
         Amarok::Components::logger()->longMessage( i18n("There are no tracks that match all constraints.  The playlist generator will find the tracks that match best, but you may want to consider loosening the constraints to find more tracks.") );
         m_domainReductionFailed = true;
-        m_qm->reset();
-        m_qm->setQueryType( Collections::QueryMaker::Track );
-        m_qm->orderByRandom();
-        m_qm->run();
+
+        // need a new query maker without constraints
+        m_qm = new Collections::MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
+        if ( m_qm ) {
+            connect( m_qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( receiveQueryMakerData( QString, Meta::TrackList ) ), Qt::QueuedConnection );
+            connect( m_qm, SIGNAL( queryDone() ), this, SLOT( receiveQueryMakerDone() ), Qt::QueuedConnection );
+
+            m_qm->setQueryType( Collections::QueryMaker::Track );
+            m_qm->orderByRandom();
+            m_qm->run();
+        }
     }
 }
 

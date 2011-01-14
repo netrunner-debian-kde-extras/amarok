@@ -226,7 +226,7 @@ PlaylistBrowserNS::DynamicModel::data ( const QModelIndex & i, int role ) const
         case Qt::DisplayRole:
         case Qt::EditRole:
             if( i.row() == m_activePlaylist && m_activeUnsaved )
-                return title + " (" + i18n("modified") + ')';
+                return QString( i18n( "%1 (modified) ", title ) );
             else
                 return title;
         default:
@@ -513,10 +513,14 @@ PlaylistBrowserNS::DynamicModel::loadAutoSavedPlaylist()
 
     // create the empty default random playlist
     Dynamic::DynamicPlaylistPtr playlist = createDefaultPlaylist();
+    const QDomElement &elem = playlist->xml();
 
-    m_playlistElements.append( playlist->xml() );
-    m_savedPlaylistsRoot.appendChild( m_playlistElements.back() );
-    m_playlistHash[ playlist->title() ] = playlist->xml();
+    if( !elem.isNull() && !m_savedPlaylistsRoot.isNull() )
+    {
+        m_playlistElements.append( elem );
+        m_savedPlaylistsRoot.appendChild( elem );
+        m_playlistHash[ playlist->title() ] = elem;
+    }
 
     m_activePlaylist = m_defaultPlaylist = 0;
     m_activePlaylistPtr = playlist;

@@ -117,7 +117,7 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
 
         topModelInsertRow = m_topModel->activeRow() + 1;
 
-        while( m_topModel->stateOfRow( topModelInsertRow ) & Item::Queued )
+        while( m_topModel->queuePositionOfRow( topModelInsertRow ) )
             topModelInsertRow++;    // We want to add the newly queued items after any items which are already queued
 
         int bottomModelInsertRow = insertionTopRowToBottom( topModelInsertRow );
@@ -141,14 +141,13 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
         insertionHelper( insertionTopRowToBottom( topModelInsertRow ), list );
     }
 
-    const Phonon::State engineState = The::engineController()->state();
-    debug() << "engine state: " << engineState;
+    debug() << "engine playing?: " << The::engineController()->isPlaying();
 
     bool playNow = false;
-    if ( options & DirectPlay )
+    if( options & DirectPlay )
         playNow = true;
-    if ( options & StartPlay )
-        if ( ( engineState == Phonon::StoppedState ) || ( engineState == Phonon::LoadingState ) || ( engineState == Phonon::PausedState) )
+    if( options & StartPlay )
+        if( !The::engineController()->isPlaying() )
             playNow = true;
 
     if ( playNow ) {
@@ -169,6 +168,7 @@ Playlist::Controller::insertOptioned( Playlists::PlaylistPtr playlist, int optio
     if( !playlist )
         return;
 
+    playlist->triggerTrackLoad();
     insertOptioned( playlist->tracks(), options );
 }
 
@@ -226,6 +226,7 @@ void
 Playlist::Controller::insertPlaylist( int topModelRow, Playlists::PlaylistPtr playlist )
 {
     DEBUG_BLOCK
+    playlist->triggerTrackLoad();
     Meta::TrackList tl( playlist->tracks() );
     insertTracks( topModelRow, tl );
 }
@@ -237,6 +238,7 @@ Playlist::Controller::insertPlaylists( int topModelRow, Playlists::PlaylistList 
     Meta::TrackList tl;
     foreach( Playlists::PlaylistPtr playlist, playlists )
     {
+        playlist->triggerTrackLoad();
         tl += playlist->tracks();
     }
     insertTracks( topModelRow, tl );
@@ -589,6 +591,7 @@ Playlist::Controller::insertionHelper( int bottomModelRow, Meta::TrackList& tl )
             Playlists::PlaylistPtr playlist = Playlists::expand( track ); //expand() can return 0 if the KIO job times out
             if( playlist )
             {
+                playlist->triggerTrackLoad(); //playlist track loading is on demand.
                 //since this is a playlist masqueurading as a single track, make a MultiTrack out of it:
                 if ( playlist->tracks().count() > 0 )
                     modifiedList << Meta::TrackPtr( new Meta::MultiTrack( playlist ) );

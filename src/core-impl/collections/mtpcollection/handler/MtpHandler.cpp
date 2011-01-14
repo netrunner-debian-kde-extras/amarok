@@ -987,6 +987,14 @@ MtpHandler::libGetArtist( const Meta::MediaDeviceTrackPtr &track )
 }
 
 QString
+MtpHandler::libGetAlbumArtist( const Meta::MediaDeviceTrackPtr &track )
+{
+    //Album artist isn't supported by libmtp ATM.
+    Q_UNUSED( track )
+    return QString();
+}
+
+QString
 MtpHandler::libGetComposer( const Meta::MediaDeviceTrackPtr &track )
 {
     return QString::fromUtf8( m_mtpTrackHash.value( track )->composer );
@@ -1063,12 +1071,13 @@ MtpHandler::libGetPlayCount( const Meta::MediaDeviceTrackPtr &track )
 {
     return m_mtpTrackHash.value( track )->usecount;
 }
-uint
+
+QDateTime
 MtpHandler::libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track )
 {
     Q_UNUSED( track );
     // NOTE: defaulting, since not provided
-    return 0;
+    return QDateTime();
 }
 
 // TODO: implement rating
@@ -1130,6 +1139,15 @@ MtpHandler::libSetArtist( Meta::MediaDeviceTrackPtr &track, const QString& artis
     m_mtpTrackHash.value( track )->artist = ( artist.isEmpty() ? qstrdup( "" ) : qstrdup( artist.toUtf8() ) );
     debug() << "Set to: " << m_mtpTrackHash.value( track )->artist;
 }
+
+void
+MtpHandler::libSetAlbumArtist( MediaDeviceTrackPtr &track, const QString &albumArtist )
+{
+    //Album artist isn't supported by libmtp ATM.
+    Q_UNUSED( track )
+    Q_UNUSED( albumArtist )
+}
+
 void
 MtpHandler::libSetComposer( Meta::MediaDeviceTrackPtr &track, const QString& composer )
 {
@@ -1205,8 +1223,9 @@ MtpHandler::libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount )
 {
     m_mtpTrackHash.value( track )->usecount = playcount;
 }
+
 void
-MtpHandler::libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed)
+MtpHandler::libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, const QDateTime &lastplayed)
 {
     Q_UNUSED( track )
     Q_UNUSED( lastplayed )

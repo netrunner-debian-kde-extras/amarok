@@ -27,7 +27,7 @@
 
 extern "C" {
 #include <glib-object.h> // g_type_init
-#ifdef GDK_FOUND
+#ifdef GDKPIXBUF_FOUND
 // work around compile issue with glib >= 2.25
 #ifdef signals
   #undef signals
@@ -60,7 +60,7 @@ extern "C" {
 #include <QFile>
 #include <QFileInfo>
 #include <QMutexLocker>
-#include <QPixmap>
+#include <QImage>
 #include <QProcess>
 #include <QRegExp>
 #include <QString>
@@ -170,7 +170,7 @@ void
 IpodHandler::init()
 {
     bool isMounted = m_deviceInfo->wasMounted();
-    if( !isMounted && !m_deviceInfo->deviceUid().isEmpty() )
+    if( !isMounted )
     {
         QStringList args;
         if( !m_deviceInfo->deviceUid().isEmpty() )
@@ -787,7 +787,7 @@ IpodHandler::detectModel()
         const Itdb_IpodInfo *ipodInfo = itdb_device_get_ipod_info( m_itdb->device );
         debug() << "Got ipodinfo";
         const gchar *modelString = 0;
-        #ifdef GDK_FOUND
+        #ifdef GDKPIXBUF_FOUND
         m_supportsArtwork = itdb_device_supports_artwork( m_itdb->device );
         #else
         m_supportsArtwork = false;
@@ -1401,6 +1401,8 @@ IpodHandler::slotCopyingDone( KIO::Job* job, KUrl from, KUrl to, time_t mtime, b
 
     if( !job->error() )
         slotFinalizeTrackCopy( track );
+    else
+        slotCopyTrackFailed( track );
 }
 
 void
@@ -1544,6 +1546,12 @@ IpodHandler::libGetArtist( const Meta::MediaDeviceTrackPtr &track )
 }
 
 QString
+IpodHandler::libGetAlbumArtist( const Meta::MediaDeviceTrackPtr &track )
+{
+    return QString::fromUtf8( m_itdbtrackhash[ track ]->albumartist );
+}
+
+QString
 IpodHandler::libGetComposer( const Meta::MediaDeviceTrackPtr &track )
 {
     return QString::fromUtf8( m_itdbtrackhash[ track ]->composer );
@@ -1612,10 +1620,10 @@ IpodHandler::libGetPlayCount( const Meta::MediaDeviceTrackPtr &track )
 {
     return m_itdbtrackhash[ track ]->playcount;
 }
-uint
+QDateTime
 IpodHandler::libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track )
 {
-    return m_itdbtrackhash[ track ]->time_played;
+    return QDateTime::fromTime_t(m_itdbtrackhash[ track ]->time_played);
 }
 int
 IpodHandler::libGetRating( const Meta::MediaDeviceTrackPtr &track )
@@ -1663,6 +1671,14 @@ IpodHandler::libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album
     m_itdbtrackhash[ track ]->album = g_strdup( album.toUtf8() );
     setDatabaseChanged();
 }
+
+void
+IpodHandler::libSetAlbumArtist( MediaDeviceTrackPtr &track, const QString &albumArtist )
+{
+    m_itdbtrackhash[ track ]->albumartist = g_strdup( albumArtist.toUtf8() );
+    setDatabaseChanged();
+}
+
 void
 IpodHandler::libSetArtist( Meta::MediaDeviceTrackPtr &track, const QString& artist )
 {
@@ -1754,7 +1770,7 @@ IpodHandler::libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount )
     setDatabaseChanged();
 }
 void
-IpodHandler::libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed)
+IpodHandler::libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, const QDateTime &lastplayed)
 {
     Q_UNUSED( track )
     Q_UNUSED( lastplayed )
@@ -1860,41 +1876,41 @@ IpodHandler::ipodArtFilename( const Itdb_Track *ipodtrack ) const
     return m_tempdir->name() + imageKey + ".png";
 }
 
-QPixmap
+QImage
 IpodHandler::libGetCoverArt( const Meta::MediaDeviceTrackPtr &track )
 {
-#ifdef GDK_FOUND
+#ifdef GDKPIXBUF_FOUND
     Itdb_Track *ipodtrack = m_itdbtrackhash[ track ];
     if( !ipodtrack )
-        return QPixmap();
+        return QImage();
 
     if( ipodtrack->has_artwork == 0x02 ) // has_artwork: True if set to 0x01, false if set to 0x02.
-        return QPixmap();
+        return QImage();
 
     const QString filename = ipodArtFilename( ipodtrack );
 
     if( m_coverArt.contains(filename) )
-        return QPixmap(filename);
+        return QImage(filename);
 
     GdkPixbuf *pixbuf = (GdkPixbuf*) itdb_artwork_get_pixbuf( ipodtrack->itdb->device, ipodtrack->artwork, -1, -1 );
     if( !pixbuf )
-        return QPixmap();
+        return QImage();
 
     gdk_pixbuf_save( pixbuf, QFile::encodeName(filename), "png", NULL, (const char*)(NULL));
     gdk_pixbuf_unref( pixbuf );
 
     m_coverArt.insert( filename );
-    return QPixmap( filename );
+    return QImage( filename );
 #else
     Q_UNUSED( track );
-    return QPixmap();
+    return QImage();
 #endif
 }
 
 void
 IpodHandler::libSetCoverArtPath( Meta::MediaDeviceTrackPtr &track, const QString &path )
 {
-#ifdef GDK_FOUND
+#ifdef GDKPIXBUF_FOUND
     if( path.isEmpty() || !m_supportsArtwork )
         return;
 
@@ -1912,9 +1928,9 @@ IpodHandler::libSetCoverArtPath( Meta::MediaDeviceTrackPtr &track, const QString
 }
 
 void
-IpodHandler::libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QPixmap &image )
+IpodHandler::libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QImage &image )
 {
-#ifdef GDK_FOUND
+#ifdef GDKPIXBUF_FOUND
     if( image.isNull() || !m_supportsArtwork )
         return;
 
@@ -2096,7 +2112,7 @@ void
 IpodHandler::setAssociateTrack( const Meta::MediaDeviceTrackPtr track )
 {
     m_itdbtrackhash[ track ] = m_currtrack;
-    const QString key(m_currtrack->ipod_path);
+    const QString key( QString( m_currtrack->ipod_path ).toLower() );
     if( m_files.value(key) )
        debug() << "duplicate track" << key;
     else

@@ -38,7 +38,6 @@ Playlist::TrackNavigator::TrackNavigator()
     //   Ignore SIGNAL layoutChanged: we don't need to know when rows are moved around.
     connect( m_model->qaim(), SIGNAL( modelReset() ), this, SLOT( slotModelReset() ) );
     //   Ignore SIGNAL rowsInserted.
-    connect( m_model->qaim(), SIGNAL( rowsAboutToBeRemoved( const QModelIndex&, int, int ) ), this, SLOT( slotRowsAboutToBeRemoved( const QModelIndex&, int, int ) ) );
 }
 
 void
@@ -65,6 +64,30 @@ Playlist::TrackNavigator::dequeueId( const quint64 id )
     m_queue.removeAll( id );
 }
 
+bool
+Playlist::TrackNavigator::queueMoveUp( const quint64 id )
+{
+    const int idx = m_queue.indexOf( id );
+    if ( idx < 1 )
+        return false;
+    quint64 temp = m_queue[ idx - 1 ];
+    m_queue[ idx - 1 ] = m_queue[ idx ];
+    m_queue[ idx ] = temp;
+    return true;
+}
+
+bool
+Playlist::TrackNavigator::queueMoveDown( const quint64 id )
+{
+    const int idx = m_queue.indexOf( id );
+    if ( idx == -1 || idx == m_queue.count() - 1 )
+        return false;
+    quint64 temp = m_queue[ idx + 1 ];
+    m_queue[ idx + 1 ] = m_queue[ idx ];
+    m_queue[ idx ] = temp;
+    return true;
+}
+
 int
 Playlist::TrackNavigator::queuePosition( const quint64 id ) const
 {
@@ -81,17 +104,6 @@ Playlist::TrackNavigator::slotModelReset()
 {
     DEBUG_BLOCK
     m_queue.clear();    // We should check 'm_model's new contents, but this is unlikely to bother anyone.
-}
-
-// This function can get called thousands of times during a single FilterProxy change.
-// Be very efficient here! (e.g. no DEBUG_BLOCK)
-void
-Playlist::TrackNavigator::slotRowsAboutToBeRemoved( const QModelIndex& parent, int startRow, int endRow )
-{
-    Q_UNUSED( parent );
-
-    for (int row = startRow; row <= endRow; row++)
-        dequeueId( m_model->idAt( row ) );
 }
 
 quint64

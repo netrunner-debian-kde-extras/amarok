@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "FileView"
+
 #include "FileView.h"
 
 #include "core/support/Debug.h"
@@ -31,13 +33,20 @@
 #include "PaletteHandler.h"
 #include "playlist/PlaylistModelStack.h"
 #include "PopupDropperFactory.h"
+#include "statusbar/StatusBar.h"
 #include "SvgHandler.h"
+#include "src/transcoding/TranscodingJob.h"
+#include "src/transcoding/TranscodingAssistantDialog.h"
+#include "src/core/transcoding/TranscodingController.h"
 
+#include <KAction>
+#include <KIO/CopyJob>
 #include <KIO/DeleteJob>
 #include <KDialog>
 #include <KDirModel>
 #include <KFileItem>
 #include <KGlobalSettings>
+#include <KMessageBox>
 #include <KIcon>
 #include <KLocale>
 #include <KMenu>
@@ -47,8 +56,6 @@
 #include <QFileSystemModel>
 #include <QItemDelegate>
 #include <QPainter>
-
-
 
 FileView::FileView( QWidget * parent )
     : Amarok::PrettyTreeView( parent )
@@ -77,13 +84,11 @@ FileView::FileView( QWidget * parent )
 void
 FileView::contextMenuEvent( QContextMenuEvent *e )
 {
-    DEBUG_BLOCK
-
     if( !model() )
         return;
 
     //trying to do fancy stuff while showing places only leads to tears!
-    debug() << model()->objectName();
+    // debug() << model()->objectName();
     if( model()->objectName() == "PLACESMODEL" )
     {
         e->accept();
@@ -95,6 +100,7 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
     if( indices.isEmpty() )
         return;
 
+    DEBUG_BLOCK
     KMenu* menu = new KMenu( this );
     QList<QAction *> actions = actionsForIndices( indices );
     foreach( QAction * action, actions )
@@ -134,9 +140,12 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
         }
         menu->addMenu( copyMenu );
     }
+    KAction *transcodeAction = new KAction( "Transcode here", this );
+    connect( transcodeAction, SIGNAL( triggered() ), this, SLOT( slotPrepareTranscodeTracks() ) );
+    menu->addAction( transcodeAction );
+    transcodeAction->setVisible( false );   //This is just used for debugging, hide it!
 
     menu->exec( e->globalPos() );
- 
 }
 
 void
@@ -171,7 +180,7 @@ FileView::mouseReleaseEvent( QMouseEvent *event )
             }
             else
             {
-                Amarok::PrettyTreeView::edit( index, QAbstractItemView::AllEditTriggers, event );
+                QTimer::singleShot( QApplication::doubleClickInterval(), this, SLOT(slotEditTriggered()) );
                 m_lastSelectedIndex = QModelIndex();
             }
             event->accept();
@@ -180,6 +189,14 @@ FileView::mouseReleaseEvent( QMouseEvent *event )
     }
     m_lastSelectedIndex = QModelIndex();
     Amarok::PrettyTreeView::mouseReleaseEvent( event );
+}
+
+void
+FileView::slotEditTriggered()
+{
+    QModelIndexList indices = selectedIndexes();
+    if( indices.count() == 1 && indices.first().isValid() )
+        Amarok::PrettyTreeView::edit( indices.first() );
 }
 
 void
@@ -218,6 +235,31 @@ FileView::slotEditTracks()
         TagDialog *dialog = new TagDialog( tracks, this );
         dialog->show();
     }
+}
+
+void
+FileView::slotPrepareTranscodeTracks()
+{
+    DEBUG_BLOCK
+    KAction *action = qobject_cast< KAction * >( sender() );
+    if( !action )
+        return;
+
+    const KFileItemList list = selectedItems();
+    if ( list.isEmpty() )
+        return;
+    debug()<<" SRC URL IS " << list.urlList().first();
+    debug()<<" SRC URL IS " << list.urlList().first();
+
+    if( !Amarok::Components::transcodingController()->availableFormats().isEmpty() )
+    {
+        Transcoding::AssistantDialog *d = new Transcoding::AssistantDialog( this );
+        debug() << "About to show Transcoding::AssistantDialog";
+        d->show();
+        debug() << "Transcoding::AssistantDialog shown.";
+    }
+    else
+        debug() << "FFmpeg is not installed or does not support any of the required formats.";
 }
 
 void
@@ -267,6 +309,7 @@ FileView::slotPrepareCopyTracks()
 void
 FileView::slotCopyTracks( const Meta::TrackList& tracks )
 {
+    DEBUG_BLOCK
     if( !m_copyAction || !m_copyActivated )
         return;
 
@@ -289,7 +332,13 @@ FileView::slotCopyTracks( const Meta::TrackList& tracks )
             source = new Collections::FileCollectionLocation();
         }
         Collections::CollectionLocation *destination = m_copyAction->collection()->location();
-        source->prepareCopy( tracks, destination );
+        Transcoding::AssistantDialog dialog( this );
+        Transcoding::Configuration configuration = Transcoding::Configuration();
+        if( dialog.exec() )
+        {
+            configuration = dialog.configuration();
+            source->prepareCopy( tracks, destination, configuration );
+        }
     }
     else
     {
@@ -338,7 +387,7 @@ QList<QAction *>
 FileView::actionsForIndices( const QModelIndexList &indices )
 {
     QList<QAction *> actions;
-    
+
     if( indices.isEmpty() )
         return actions; // get out of here!
 
@@ -374,14 +423,15 @@ FileView::actionsForIndices( const QModelIndexList &indices )
             m_separator1 = new QAction( this );
             m_separator1->setSeparator( true );
     }
-    
+
     actions.append( m_separator1 );
 
     if( m_deleteAction == 0 )
     {
-        m_deleteAction = new QAction( KIcon( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
+        m_deleteAction = new KAction( KIcon( "media-track-remove-amarok" ), i18n( "&Delete" ), this );
         m_deleteAction->setProperty( "popupdropper_svg_id", "delete_file" );
-        connect( m_deleteAction, SIGNAL( triggered() ), this, SLOT( slotDelete() ) );
+        connect( m_deleteAction, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
+                 this, SLOT(slotDelete(Qt::MouseButtons,Qt::KeyboardModifiers)) );
     }
 
     actions.append( m_deleteAction );
@@ -502,40 +552,66 @@ FileView::tracksForEdit() const
 }
 
 void
-FileView::slotDelete()
+FileView::slotDelete( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers )
 {
+    Q_UNUSED( buttons )
     DEBUG_BLOCK
 
     QModelIndexList indices = selectedIndexes();
-
-    if( indices.count() == 0 )
+    if( indices.isEmpty() )
         return;
 
+    const bool skipTrash = modifiers.testFlag( Qt::ShiftModifier );
+    QString caption;
+    QString labelText;
+    if( skipTrash )
+    {
+        caption = i18nc( "@title:window", "Confirm Delete" );
+        labelText = i18np( "Are you sure you want to delete this item?",
+                           "Are you sure you want to delete these %1 items?",
+                           indices.count() );
+    }
+    else
+    {
+        caption = i18nc( "@title:window", "Confirm Move to Trash" );
+        labelText = i18np( "Are you sure you want to move this item to trash?",
+                           "Are you sure you want to move these %1 items to trash?",
+                           indices.count() );
+    }
+
     KDialog dialog;
-    dialog.setCaption( i18n( "Confirm Delete" ) );
+    dialog.setCaption( caption );
     dialog.setButtons( KDialog::Ok | KDialog::Cancel );
-    QLabel label( i18np( "Are you sure you want to delete this item?",
-                         "Are you sure you want to delete these %1 items?",
-                         indices.count() )
-                    , &dialog
-                  );
-    dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from disk." ) );
+    QLabel label( labelText, &dialog );
     dialog.setMainWidget( &label );
     if( dialog.exec() != QDialog::Accepted )
         return;
-    
-    
-    QList<KUrl> urls;
 
+    KUrl::List urls;
+    QStringList filepaths;
     foreach( const QModelIndex& index, indices )
     {
         KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
-        debug() << "file path: " << file.url();
-
-        KIO::DeleteJob * job = KIO::del( file.url() );
-        job->start();
+        filepaths << file.localPath();
+        urls << file.url();
     }
 
+    const bool cont = KMessageBox::warningContinueCancelList(
+        0, labelText, filepaths, caption, KStandardGuiItem::remove() ) == KMessageBox::Continue;
+
+    if( !cont )
+        return;
+
+    KIO::Job *job = skipTrash
+        ? static_cast<KIO::Job*>( KIO::del( urls, KIO::HideProgressInfo ) )
+        : static_cast<KIO::Job*>( KIO::trash( urls, KIO::HideProgressInfo ) );
+
+    if( job )
+    {
+        debug() << QString( "%1 %2 files" ).arg( skipTrash ? "Deleting" : "Trashing" ).arg( urls.count() );
+        QString statusText = i18ncp( "@info:status", "Moving to trash: 1 file", "Moving to trash: %1 files", urls.count() );
+        The::statusBar()->newProgressOperation( job, statusText );
+    }
 }
 
 #include "FileView.moc"

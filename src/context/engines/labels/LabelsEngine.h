@@ -21,18 +21,19 @@
 #include "ContextObserver.h"
 #include "context/DataEngine.h"
 #include "core/meta/Meta.h"
+#include "network/NetworkAccessManagerProxy.h"
 
 #include <QMap>
-
-class KJob;
+#include <QTimer>
+#include <QWeakPointer>
 
 using namespace Context;
 
  /**
-   *   This class provide labels from flickr
+   *   This class provide labels from last.fm
    *
    */
-class LabelsEngine : public DataEngine, public ContextObserver, Meta::Observer
+class LabelsEngine : public DataEngine, public ContextObserver
 {
     Q_OBJECT
 public:
@@ -40,62 +41,55 @@ public:
     virtual ~LabelsEngine();
 
     QStringList sources() const;
-    // reimplemented from Context::Observer
-    virtual void message( const ContextState &state );
-    // reimplemented from Meta::Observer
-    using Observer::metadataChanged;
-    void metadataChanged( Meta::TrackPtr track );
 
 protected:
-    //reimplement from Plasma::DataEngine
+    // reimplemented from Plasma::DataEngine
     bool sourceRequestEvent( const QString &name );
 
 private slots:
 
- /**
-   *   This slots will handle last.fm result for this query:
-   *   API key is : 402d3ca8e9bc9d3cf9b85e1202944ca5
-   *   http://ws.audioscrobbler.com/2.0/?method=track.gettoptags&artist=radiohead&track=paranoid+android&api_key=b25b959554ed76058ac220b7b2e0a026
-   *   see here for details: http://www.lastfm.com/api/
-   */
-    void resultLastFm( KJob * );
+    void update( bool reload = false );
 
-  /**
-   *   This method will send the info to the applet and order them if every jobs are finished
-   */
-    void resultFinalize();
+    /**
+     *   This slots will handle last.fm result for this query:
+     *   API key is : 402d3ca8e9bc9d3cf9b85e1202944ca5
+     *   http://ws.audioscrobbler.com/2.0/?method=track.gettoptags&artist=radiohead&track=paranoid+android&api_key=b25b959554ed76058ac220b7b2e0a026
+     *   see here for details: http://www.lastfm.com/api/
+     */
+    void resultLastFm( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+
+    void resultReady( const QString &collectionId, const Meta::LabelList &labels );
+    void dataQueryDone();
+
+    void timeout();
 
 private:
   /**
    *   Engine was updated, so we check if the songs is different, and if it is, we delete every and start
    *   all the query/ fetching stuff
    */
-    void update();
+    void fetchLastFm();
+    void updateLocal();
 
-    // TODO implement a reload
-    void reloadLabels(); // NOTE what is that function doing? reload already implemented.
+    QTimer m_timeoutTimer;
 
-    KJob                    *m_jobLastFm;
+    /// The URL for the network request
+    KUrl m_lastFmUrl;
 
-    int                     m_numLastFm;         // number of labels we got from last.fm
+    QStringList                 m_sources;
 
-    QStringList             m_sources;
-
-    Meta::TrackPtr          m_currentTrack;
-    
     // Cache the artist and title of the current track so we can check against metadata
     // updates. We only want to update the labels if the artist change
-    QString                 m_artist;
-    QString                 m_title;
+    QString                     m_artist;
+    QString                     m_title;
+    // Send the album name to the applet, used to filter labels that match the album
+    QString                     m_album;
 
-    int                     m_try;
+    int                         m_try;
 
-    // stores what features are enabled
-    bool                    m_requested;
-    bool                    m_reload;
-
-    //!  List containing all the info
-    QMap < QString, QVariant >   m_labels;           // labels data
+    QStringList                 m_allLabels;           // all labels known to amarok
+    QStringList                 m_userLabels;          // user labels
+    QMap < QString, QVariant >  m_webLabels;           // downloaded labels
 
 };
 

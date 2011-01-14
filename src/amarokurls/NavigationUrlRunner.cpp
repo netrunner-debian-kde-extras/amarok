@@ -67,6 +67,8 @@ NavigationUrlRunner::run( AmarokUrl url )
                 levels.append( CategoryId::Artist );
             else if( levelString == "album" )
                 levels.append( CategoryId::Album );
+            else if( levelString == "albumartist" )
+                levels.append( CategoryId::AlbumArtist );
             else if( levelString == "composer" )
                 levels.append( CategoryId::Composer );
             else if( levelString == "year" )
@@ -114,6 +116,8 @@ NavigationUrlRunner::run( AmarokUrl url )
 
     if ( args.keys().contains( "filter" ) )
         active->setFilter( args.value( "filter" ) );
+
+    The::mainWindow()->showDock( MainWindow::AmarokDockNavigation );
 
     return true;
 }

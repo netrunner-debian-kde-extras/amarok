@@ -45,7 +45,6 @@ public:
     virtual ~DynamicServiceQueryMaker() {};
 
     //this is the stuff that must be implmeneted
-    virtual QueryMaker* reset() = 0;
     virtual void run() = 0;
     virtual void abortQuery() = 0;
 
@@ -72,9 +71,6 @@ public:
     virtual QueryMaker* addMatch ( const Meta::ComposerPtr &composer );
     virtual QueryMaker* addMatch ( const Meta::YearPtr &year );
     virtual QueryMaker* addMatch ( const Meta::LabelPtr &label );
-
-    //this function must be reimplemented if the QueryMaker accepts any kind of qualifiers
-    virtual QueryMaker* addMatch ( const Meta::DataPtr &data );
 
     virtual QueryMaker* addFilter ( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );
     virtual QueryMaker* excludeFilter ( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );

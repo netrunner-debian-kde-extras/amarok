@@ -24,6 +24,7 @@
 #include "core-impl/playlists/types/file/pls/PLSPlaylist.h"
 #include "core-impl/playlists/types/file/m3u/M3UPlaylist.h"
 #include "statusbar/StatusBar.h"
+#include "amarokconfig.h"
 
 
 #include <KLocale>
@@ -39,7 +40,9 @@ namespace Playlists {
 PlaylistFilePtr
 loadPlaylistFile( const KUrl &url )
 {
-    //DEBUG_BLOCK
+    // note: this function can be called from out of process, so don't do any
+    // UI stuff from this thread.
+    DEBUG_BLOCK
 
     QFile file;
     KUrl fileToLoad;
@@ -88,7 +91,9 @@ loadPlaylistFile( const KUrl &url )
         if( !tempFile.open() )
         {
             if( The::statusBar() )
-                The::statusBar()->longMessage( i18n( "Could not create a temporary file to download playlist.") );
+                QMetaObject::invokeMethod( The::statusBar(), "longMessage",
+                                           Qt::QueuedConnection,
+                                           Q_ARG(QString, i18n( "Could not create a temporary file to download playlist.") ) );
 
             return Playlists::PlaylistFilePtr( 0 ); //error
         }
@@ -103,7 +108,12 @@ loadPlaylistFile( const KUrl &url )
         KIO::FileCopyJob * job = KIO::file_copy( url , KUrl( tempFileName ), 0774 , KIO::Overwrite | KIO::HideProgressInfo );
 
         if( The::statusBar() )
-            The::statusBar()->newProgressOperation( job, i18n( "Downloading remote playlist" ) );
+            QMetaObject::invokeMethod( The::statusBar(), "newProgressJobOperation",
+                                       Qt::QueuedConnection,
+                                       Q_ARG(QObject*, job),
+                                       Q_ARG(QString, i18n("Downloading remote playlist" ) ) );
+
+        qRegisterMetaType<KIO::filesize_t>("KIO::filesize_t"); // this is needed or else job->exec asserts
 
         if( !job->exec() ) //Job deletes itself after execution
         {
@@ -177,14 +187,13 @@ exportPlaylistFile( const Meta::TrackList &list, const KUrl &path, const QList<i
     if ( playlist )
     {
         playlist->setQueue( queued );
-        result = playlist->save( path.path(), true );
+        result = playlist->save( path.path(), AmarokConfig::relativePlaylist() );
     }
     else
     {
-        // TODO: Add this after git master is open again.
-        // KMessageBox::error( 0,
-        //                    i18n( "The given file extension is valid for a playlist." ),
-        //                    i18n( "Unknown playlist format" ) );
+        KMessageBox::error( 0,
+                            i18n( "The used file extension is not valid for playlists." ),
+                            i18n( "Unknown playlist format" ) );
     }
     
     return result;

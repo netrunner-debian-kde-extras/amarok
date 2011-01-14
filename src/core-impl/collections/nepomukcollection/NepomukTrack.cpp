@@ -269,16 +269,16 @@ NepomukTrack::discNumber() const
     return m_discNumber;
 }
 
-uint
+QDateTime
 NepomukTrack::firstPlayed() const
 {
-    return m_firstPlayed.toTime_t();
+    return m_firstPlayed;
 }
 
-uint
+QDateTime
 NepomukTrack::lastPlayed() const
 {
-    return m_lastPlayed.toTime_t();
+    return m_lastPlayed;
 }
 
 int
@@ -327,6 +327,8 @@ void
 NepomukTrack::setCachedLyrics ( const QString& value )
 {
     m_nepores.setProperty( QUrl( "http://amarok.kde.org/metadata/1.0/track#lyrics" ), value );
+
+    notifyObservers();
 }
 
 void
@@ -374,7 +376,7 @@ NepomukTrack::uid() const
 }
 
 void
-NepomukTrack::setUid ( const QString& value )
+NepomukTrack::setUidUrl( const QString& value )
 {
     // do not write it to nepomuk, it's nepomukregistrys job
     m_uid = value;

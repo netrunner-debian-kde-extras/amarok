@@ -69,15 +69,6 @@ MetaQueryMaker::~MetaQueryMaker()
         delete b;
 }
 
-QueryMaker*
-MetaQueryMaker::reset()
-{
-    m_queryDoneCount = 0;
-    foreach( QueryMaker *b, builders )
-        b->reset();
-    return this;
-}
-
 void
 MetaQueryMaker::run()
 {
@@ -240,15 +231,6 @@ MetaQueryMaker::addMatch( const Meta::YearPtr &year )
 }
 
 QueryMaker*
-MetaQueryMaker::addMatch( const Meta::DataPtr &data )
-{
-    Meta::DataPtr tmp = const_cast<Meta::DataPtr&>( data );
-    foreach( QueryMaker *b, builders )
-        tmp->addMatchTo( b );
-    return this;
-}
-
-QueryMaker*
 MetaQueryMaker::addMatch( const Meta::LabelPtr &label )
 {
     foreach( QueryMaker *b, builders )
@@ -301,6 +283,14 @@ MetaQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
 {
     foreach( QueryMaker *qm, builders )
         qm->setAlbumQueryMode( mode );
+    return this;
+}
+
+QueryMaker*
+MetaQueryMaker::setArtistQueryMode( ArtistQueryMode mode )
+{
+    foreach( QueryMaker *qm, builders )
+        qm->setArtistQueryMode( mode );
     return this;
 }
 

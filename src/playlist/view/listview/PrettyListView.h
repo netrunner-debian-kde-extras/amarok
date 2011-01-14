@@ -24,7 +24,6 @@
 #include "PrettyItemDelegate.h"
 #include "playlist/proxymodels/GroupingProxy.h"
 #include "playlist/view/PlaylistViewCommon.h"
-#include "playlist/view/tooltips/ToolTipManager.h"
 
 #include <QListView>
 #include <QModelIndex>
@@ -76,6 +75,9 @@ public slots:
     void scrollToActiveTrack();
     void selectSource();
 
+    void downOneTrack();
+    void upOneTrack();
+
     // Workaround for BUG 222961 and BUG 229240: see implementation for more comments.
     void setCurrentIndex( const QModelIndex &index );
     void selectionModel_setCurrentIndex( const QModelIndex &index, QItemSelectionModel::SelectionFlags command );    // Never call selectionModel()->setCurrentIndex() directly!
@@ -106,6 +108,7 @@ private slots:
     void slotPlaylistActiveTrackChanged();
     void bottomModelRowsInserted( const QModelIndex& parent, int start, int end );
     void bottomModelRowsInsertedScroll();
+    void moveTrackSelection( int offset );
 
     void trackActivated( const QModelIndex& );
     void updateProxyTimeout();
@@ -135,10 +138,6 @@ private:
     PrettyItemDelegate * m_prettyDelegate;
 
     QTimer *m_animationTimer;
-
-    ToolTipManager * m_toolTipManager;
-
-    void excludeFieldsFromTooltip( const Playlist::LayoutItemConfig& item , bool single );
 
 public:
     QList<int> selectedRows() const;

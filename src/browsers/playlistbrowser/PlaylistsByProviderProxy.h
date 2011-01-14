@@ -43,6 +43,9 @@ class PlaylistsByProviderProxy : public QtGroupingProxy
         /* reimplement to handle tracks with multiple providers (synced) */
         virtual QVariant data( const QModelIndex &idx, int role ) const;
 
+        /* reimplemented to prevent changing providers name */
+        virtual Qt::ItemFlags flags( const QModelIndex &idx ) const;
+
         /* QAbstractModel methods */
         virtual bool removeRows( int row, int count,
                                  const QModelIndex &parent = QModelIndex() );
@@ -54,14 +57,17 @@ class PlaylistsByProviderProxy : public QtGroupingProxy
         virtual Qt::DropActions supportedDropActions() const;
         virtual Qt::DropActions supportedDragActions() const;
 
+        // re-implement to connect renameIndex signal
+        virtual void setSourceModel( QAbstractItemModel *sourceModel );
+
     signals:
-        void renameIndex( QModelIndex idx );
+        void renameIndex( const QModelIndex &idx );
 
     protected slots:
         virtual void buildTree();
 
     private slots:
-        void slotRename( QModelIndex idx );
+        void slotRenameIndex( const QModelIndex &index );
 
 };
 

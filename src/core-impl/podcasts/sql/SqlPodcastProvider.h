@@ -32,6 +32,10 @@ class PodcastReader;
 class SqlStorage;
 class QTimer;
 
+namespace Ui {
+    class SqlPodcastProviderSettingsWidget;
+}
+
 namespace Podcasts {
 
 /**
@@ -81,7 +85,6 @@ class SqlPodcastProvider : public Podcasts::PodcastProvider
         void updateAll();
         void downloadEpisode( Podcasts::PodcastEpisodePtr episode );
         void deleteDownloadedEpisode( Podcasts::PodcastEpisodePtr episode );
-        void slotUpdated();
 
         void slotReadResult( PodcastReader *podcastReader );
         void downloadEpisode( Podcasts::SqlPodcastEpisodePtr episode );
@@ -100,12 +103,18 @@ class SqlPodcastProvider : public Podcasts::PodcastProvider
         void slotDownloadProgress( KJob *job, unsigned long percent );
         void slotWriteTagsToFiles();
         void slotConfigChanged();
+        void slotExportOpml();
 
     signals:
+        //PlaylistProvider signals
+        void updated();
+        void playlistAdded( Playlists::PlaylistPtr playlist );
+        void playlistRemoved( Playlists::PlaylistPtr playlist );
+
         void totalPodcastDownloadProgress( int progress );
 
     private slots:
-        void channelImageReady( Podcasts::PodcastChannelPtr, QPixmap );
+        void channelImageReady( Podcasts::PodcastChannelPtr, QImage );
         void podcastImageFetcherDone( PodcastImageFetcher * );
         void slotConfigureProvider();
 
@@ -113,8 +122,10 @@ class SqlPodcastProvider : public Podcasts::PodcastProvider
                                                                const QString &description,
                                                                Podcasts::PodcastReader* reader );
         void slotStatusBarSorryMessage( const QString &message );
+        void slotOpmlWriterDone( int result );
 
     private:
+        void startTimer();
         void configureProvider();
         void configureChannel( Podcasts::SqlPodcastChannelPtr channel );
         void updateSqlChannel( Podcasts::SqlPodcastChannelPtr channel );
@@ -142,7 +153,7 @@ class SqlPodcastProvider : public Podcasts::PodcastProvider
         void removeSubscription( Podcasts::SqlPodcastChannelPtr channel );
 
         void subscribe( const KUrl &url );
-        QFile* createTmpFile ( KJob *job );
+        QFile* createTmpFile ( Podcasts::SqlPodcastEpisodePtr sqlEpisode );
         void cleanupDownload( KJob *job, bool downloadFailed );
 
         /** returns true if the file that is downloaded by 'job' is already locally available */
@@ -157,9 +168,14 @@ class SqlPodcastProvider : public Podcasts::PodcastProvider
         Podcasts::SqlPodcastChannelList m_updateQueue;
         QList<KUrl> m_subscribeQueue;
 
-        QHash<KJob *, Podcasts::SqlPodcastEpisodePtr> m_downloadJobMap;
-        QHash<KJob *, QString> m_fileNameMap;
-        QHash<KJob *, QFile*> m_tmpFileMap;
+        struct PodcastEpisodeDownload {
+            Podcasts::SqlPodcastEpisodePtr episode;
+            QFile *tmpFile;
+            QString fileName;
+            bool finalNameReady;
+        };
+
+        QHash<KJob *, struct PodcastEpisodeDownload> m_downloadJobMap;
 
         Podcasts::SqlPodcastEpisodeList m_downloadQueue;
         int m_maxConcurrentDownloads;
@@ -168,6 +184,7 @@ class SqlPodcastProvider : public Podcasts::PodcastProvider
         KUrl m_baseDownloadDir;
 
         KDialog *m_providerSettingsDialog;
+        Ui::SqlPodcastProviderSettingsWidget *m_providerSettingsWidget;
 
         QList<QAction *> m_providerActions;
 

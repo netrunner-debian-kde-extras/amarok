@@ -1,0 +1,56 @@
+[Desktop Entry]
+Type=Service
+Name=Playdar Collection
+Name[ca]=Col·lecció del Playdar
+Name[ca@valencia]=Col·lecció del Playdar
+Name[da]=Playdar-samling
+Name[de]=Playdar-Sammlung
+Name[en_GB]=Playdar Collection
+Name[es]=Colección de Playdar
+Name[et]=Playdari kogu
+Name[it]=Collezione Playdar
+Name[ja]=Playdar コレクション
+Name[km]=សម្រាំង Playdar
+Name[nb]=Playdar-samling
+Name[nds]=Playdar-Sammeln
+Name[nl]=Playdar-collectie
+Name[pt]=Colecção do Playdar
+Name[pt_BR]=Coleção do Playdar
+Name[ru]=Коллекция Playdar
+Name[sv]=Playdar-samling
+Name[uk]=Збірка Playdar
+Name[x-test]=xxPlaydar Collectionxx
+Name[zh_TW]=Playdar 收藏
+Comment=Music that Playdar can find
+Comment[ca]=Música que el Playdar pot trobar
+Comment[ca@valencia]=Música que el Playdar pot trobar
+Comment[da]=Musik som Playdar kan finde
+Comment[de]=Von Playdar auffindbare Musik
+Comment[en_GB]=Music that Playdar can find
+Comment[es]=Música que puede encontrar Playdar
+Comment[et]=Muusika, mida Playdar suudab leida
+Comment[it]=Musica che Playdar può trovare
+Comment[ja]=Playdar が見つけることのできる音楽
+Comment[km]=តន្ត្រី​ដែល​ Playdar អាច​រក​ឃើញ
+Comment[nb]=Musikk som Playdar kan finne
+Comment[nds]=Musik, de sik mit Playdar finnen lett
+Comment[nl]=Muziek die Playdar kan vinden
+Comment[pt]=Música que o Playdar consegue encontrar
+Comment[pt_BR]=Música que o Playdar pode encontrar
+Comment[ru]=Модуль коллекции Playdar для Amarok
+Comment[sv]=Musik som Playdar kan hitta
+Comment[uk]=Музика, яку може знайти Playdar
+Comment[x-test]=xxMusic that Playdar can findxx
+Comment[zh_TW]=Playdar 可以找到的音樂
+
+ServiceTypes=Amarok/Plugin-disabled
+
+X-KDE-Library=amarok_collection-playdarcollection
+
+X-KDE-Amarok-authors=Andrew Coder
+X-KDE-Amarok-email=andrew.coder@gmail.com
+X-KDE-Amarok-framework-version=60
+X-KDE-Amarok-name=playdar-collection
+X-KDE-Amarok-plugintype=collection
+X-KDE-Amarok-rank=100
+X-KDE-Amarok-version=1

@@ -24,10 +24,9 @@
 #include <KActionCollection>
 #include <KConfig>
 #include <KIO/NetAccess>
-#include <KUrl> // recursiveUrlExpand
 
 #include <QDir>
-#include <QPointer>
+#include <QWeakPointer>
 
 class QColor;
 class QDateTime;
@@ -47,7 +46,7 @@ namespace Amarok
     const int GUI_THREAD_ID = 0;
 
     extern QMutex globalDirsMutex;
-    extern QPointer<KActionCollection> actionCollectionObject;
+    extern QWeakPointer<KActionCollection> actionCollectionObject;
 
     namespace ColorScheme
     {
@@ -120,15 +119,7 @@ namespace Amarok
      */
     AMAROK_CORE_EXPORT QString saveLocation( const QString &directory = QString() );
 
-    /**
-     * For recursively expanding the contents of a directory into a KUrl::List
-     * (playlists are ignored)
-     */
-
-    // TODO: New in Amarok2 -> recursiveUrlExpand has been replaced
-    // existing code depending on this port need to be changed (max urls is removed)
-    AMAROK_CORE_EXPORT KUrl::List recursiveUrlExpand( const KUrl &url );
-    AMAROK_CORE_EXPORT KUrl::List recursiveUrlExpand( const KUrl::List &urls );
+    AMAROK_CORE_EXPORT QString defaultPlaylistPath();
 
     AMAROK_CORE_EXPORT QString verboseTimeSince( const QDateTime &datetime );
     AMAROK_CORE_EXPORT QString verboseTimeSince( uint time_t );
@@ -196,20 +187,6 @@ namespace Amarok
      */
     AMAROK_CORE_EXPORT QString vfatPath( const QString &path );
 
-    /**
-     * Compare both strings from left to right and remove the common part from input
-     * @param input the string that get's cleaned.
-     * @param ref a reference to compare input with.
-     * @return The cleaned up string.
-     */
-    AMAROK_CORE_EXPORT QString decapitateString( const QString &input, const QString &ref );
-
-    /*
-     * Transform to be usable within HTML/XHTML attributes
-     */
-    AMAROK_CORE_EXPORT QString escapeHTMLAttr( const QString &s );
-    AMAROK_CORE_EXPORT QString unescapeHTMLAttr( const QString &s );
-
     /* defined in browsers/CollectionTreeItemModel.cpp */
     /**
      * Small function aimed to convert Eagles, The -> The Eagles (and back again).
@@ -218,9 +195,17 @@ namespace Amarok
      */
     AMAROK_CORE_EXPORT void manipulateThe( QString &str, bool reverse );
 
+    /**
+     * Creates a semi-transparent Amarok logo for suitable for painting.
+     * @param dim width of the logo
+     * @return A QPixmap of the logo
+     */
+    AMAROK_CORE_EXPORT QPixmap semiTransparentLogo( int dim );
+
     inline const char* discogsApiKey() { return "91734dd989"; }
     inline const char* lastfmApiKey() { return "402d3ca8e9bc9d3cf9b85e1202944ca5"; }
     inline const char* yahooBossApiKey() { return "oQepTNrV34G9Satb1dgRZ8hdl1uhJvguDSU5Knl2Xd4ALK85knYt6ylr.FTA57XMRBA-"; }
+    inline const char* flickrApiKey() { return "9c5a288116c34c17ecee37877397fe31"; }
 }
 
 /**

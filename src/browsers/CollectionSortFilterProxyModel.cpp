@@ -172,21 +172,14 @@ CollectionSortFilterProxyModel::lessThanIndex( const QModelIndex &left, const QM
     if( leftData.canConvert( QVariant::String ) && rightData.canConvert( QVariant::String ) )
         return lessThanString( leftData.toString(), rightData.toString() );
    
-    warning() << "failed: an unexpected comparison was made";
+    warning() << "failed: an unexpected comparison was made between"<<left.data(Qt::DisplayRole)<<"and"<<right.data(Qt::DisplayRole);
     
     //Just in case
     return QSortFilterProxyModel::lessThan( left, right );
 }
 
-// This method tries to do a smart comparison where a lexographical sort might not be the
-// most intelligent sort method. For example the following output would be sorted natually:
-//   Symphony 1         Symphony 1
-//   Symphony 10        Symphony 2
-//   Symphony 11  -->   Symphony 10
-//   Symphony 2         Symphony 11
-//   Symphony 21        Symphony 21
 bool
 CollectionSortFilterProxyModel::lessThanString( const QString &a, const QString &b ) const
 {
-    return KStringHandler::naturalCompare( a, b, Qt::CaseInsensitive ) <= 0;
+    return KStringHandler::naturalCompare( a, b, Qt::CaseInsensitive ) < 0;
 }

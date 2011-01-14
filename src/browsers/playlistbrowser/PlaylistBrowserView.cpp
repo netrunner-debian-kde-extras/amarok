@@ -31,6 +31,7 @@
 #include "PlaylistTreeItemDelegate.h"
 #include "SvgHandler.h"
 #include "PlaylistsInFoldersProxy.h"
+#include "PlaylistsByProviderProxy.h"
 
 #include <KAction>
 #include <KGlobalSettings>
@@ -39,8 +40,10 @@
 #include <QKeyEvent>
 #include <QMouseEvent>
 #include <QModelIndex>
+#include <QToolTip>
 
-PlaylistBrowserNS::PlaylistBrowserView::PlaylistBrowserView( QAbstractItemModel *model, QWidget *parent )
+PlaylistBrowserNS::PlaylistBrowserView::PlaylistBrowserView( QAbstractItemModel *model,
+                                                             QWidget *parent )
     : Amarok::PrettyTreeView( parent )
     , m_pd( 0 )
     , m_addFolderAction( 0 )
@@ -59,14 +62,7 @@ PlaylistBrowserNS::PlaylistBrowserView::PlaylistBrowserView( QAbstractItemModel 
         setAnimated( true );
 
     The::paletteHandler()->updateItemView( this );
-
-    //Give line edits a solid background color as any edit delegates will otherwise inherit the transparent base color,
-    //which is bad as the line edit is drawn on top of the original name, leading to double text while editing....
-    QPalette p = The::paletteHandler()->palette();
-    QColor c = p.color( QPalette::Base );
-    setStyleSheet("QLineEdit { background-color: " + c.name() + " }");
 }
-
 
 PlaylistBrowserNS::PlaylistBrowserView::~PlaylistBrowserView()
 {
@@ -75,8 +71,13 @@ PlaylistBrowserNS::PlaylistBrowserView::~PlaylistBrowserView()
 void
 PlaylistBrowserNS::PlaylistBrowserView::setModel( QAbstractItemModel *model )
 {
-    connect( model, SIGNAL( renameIndex( QModelIndex ) ), SLOT( edit( QModelIndex ) ) );
+    if( this->model() )
+        this->model()->disconnect();
+
     Amarok::PrettyTreeView::setModel( model );
+
+    connect( this->model(), SIGNAL(renameIndex( const QModelIndex & )),
+                 SLOT(edit( const QModelIndex &)) );
 }
 
 void
@@ -113,42 +114,43 @@ PlaylistBrowserNS::PlaylistBrowserView::mousePressEvent( QMouseEvent *event )
     m_expandToggledWhenPressed = ( prevExpandState != isExpanded(index) );
 }
 
+QAction *
+PlaylistBrowserNS::PlaylistBrowserView::decoratorActionAt( const QModelIndex &idx, const QPoint pos )
+{
+    const int actionCount =
+        idx.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionCountRole ).toInt();
+    if( actionCount > 0 )
+    {
+        const QRect rect = PlaylistTreeItemDelegate::actionsRect( idx );
+        if( rect.contains( pos ) )
+        {
+            QVariantList variantList =
+                    idx.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionRole ).toList();
+            if( variantList.isEmpty() )
+                return 0;
+
+            QActionList actions = variantList.first().value<QActionList>();
+            int indexOfAction = ( pos.x() - rect.left() ) /
+                                PlaylistTreeItemDelegate::delegateActionIconWidth();
+            if( indexOfAction >= actions.count() )
+                return 0;
+            return actions.value( indexOfAction );
+        }
+    }
+    return 0;
+}
+
 void
-PlaylistBrowserNS::PlaylistBrowserView::mouseReleaseEvent( QMouseEvent * event )
+PlaylistBrowserNS::PlaylistBrowserView::mouseReleaseEvent( QMouseEvent *event )
 {
     const QModelIndex index = indexAt( event->pos() );
     // HACK: provider elements hide the root decorations
     // Don't bother checking actions for the others.
     if( !rootIsDecorated() && !index.parent().isValid() )
     {
-        const int actionCount =
-            index.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionCountRole ).toInt();
-        if( actionCount > 0 )
-        {
-            const QRect rect = PlaylistTreeItemDelegate::actionsRect( index );
-            if( rect.contains( event->pos() ) )
-            {
-                QVariantList variantList =
-                        index.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionRole ).toList();
-                if( variantList.isEmpty() )
-                    return;
-
-                QList<QAction*> actions = variantList.first().value<QList<QAction*> >();
-                //hack: rect height == the width of one action's area.
-                int indexOfActionToTrigger
-                    = ( event->pos().x() - rect.left() ) / rect.height();
-                debug() << "triggering action " << indexOfActionToTrigger;
-                if( indexOfActionToTrigger >= actions.count() )
-                {
-                    debug() << "no such action";
-                    return;
-                }
-                QAction *action = actions.value( indexOfActionToTrigger );
-                if( action )
-                    action->trigger();
-                return;
-            }
-        }
+        QAction *action = decoratorActionAt( index, event->pos() );
+        if( action )
+            action->trigger();
     }
 
     if( m_pd )
@@ -185,7 +187,7 @@ PlaylistBrowserNS::PlaylistBrowserView::mouseMoveEvent( QMouseEvent *event )
 }
 
 void
-PlaylistBrowserNS::PlaylistBrowserView::mouseDoubleClickEvent( QMouseEvent * event )
+PlaylistBrowserNS::PlaylistBrowserView::mouseDoubleClickEvent( QMouseEvent *event )
 {
     QModelIndex index = indexAt( event->pos() );
     if( !index.isValid() )
@@ -197,7 +199,7 @@ PlaylistBrowserNS::PlaylistBrowserView::mouseDoubleClickEvent( QMouseEvent * eve
     if( !model()->hasChildren( index ) )
     {
         QList<QAction *> actions =
-            index.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionRole ).value<QList<QAction *> >();
+            index.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionRole ).value<QActionList>();
         if( actions.count() > 0 )
         {
             //HACK execute the first action assuming it's load
@@ -261,19 +263,32 @@ PlaylistBrowserNS::PlaylistBrowserView::keyPressEvent( QKeyEvent *event )
     {
         case Qt::Key_Delete:
         {
-            foreach( const QModelIndex &selectedIdx, selectedIndexes() )
-                model()->removeRow( selectedIdx.row(), selectedIdx.parent() );
+            QModelIndexList indices = selectedIndexes();
+            QActionList actions = actionsFor( indices );
+
+            if( actions.isEmpty() )
+            {
+                debug() <<"No actions !";
+                return;
+            }
+            foreach( QAction *actn, actions )
+                if( actn )
+                    if( actn->objectName() == "deleteAction" )
+                    {
+                        actn->trigger();
+                        actn->setData( QVariant() );
+                    }
             return;
         }
      }
      Amarok::PrettyTreeView::keyPressEvent( event );
 }
 
-void PlaylistBrowserNS::PlaylistBrowserView::contextMenuEvent( QContextMenuEvent * event )
+void PlaylistBrowserNS::PlaylistBrowserView::contextMenuEvent( QContextMenuEvent *event )
 {
     QModelIndexList indices = selectedIndexes();
 
-    QList<QAction *> actions = actionsFor( indices );
+    QActionList actions = actionsFor( indices );
 
     if( actions.isEmpty() )
         return;
@@ -296,14 +311,35 @@ void PlaylistBrowserNS::PlaylistBrowserView::contextMenuEvent( QContextMenuEvent
         action->setData( QVariant() );
 }
 
+bool
+PlaylistBrowserNS::PlaylistBrowserView::viewportEvent( QEvent *event )
+{
+    if( event->type() == QEvent::ToolTip )
+    {
+        QHelpEvent *helpEvent = static_cast<QHelpEvent *>( event );
+        const QModelIndex &index = indexAt( helpEvent->pos() );
+        if( !rootIsDecorated() && !index.parent().isValid() )
+        {
+            QAction *action = decoratorActionAt( index, helpEvent->pos() );
+            if( action )
+            {
+                QToolTip::showText( helpEvent->globalPos(), action->toolTip() );
+                return true;
+            }
+        }
+    }
+
+    return Amarok::PrettyTreeView::viewportEvent( event );
+}
+
 QList<QAction *>
 PlaylistBrowserNS::PlaylistBrowserView::actionsFor( QModelIndexList indexes )
 {
-    QList<QAction *> actions;
+    QActionList actions;
     foreach( QModelIndex idx, indexes )
     {
-        QList<QAction *> idxActions =
-         idx.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionRole ).value<QList<QAction *> >();
+        QActionList idxActions =
+            idx.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionRole ).value<QActionList>();
         //only add unique actions model is responsible for making them unique
         foreach( QAction *action, idxActions )
         {

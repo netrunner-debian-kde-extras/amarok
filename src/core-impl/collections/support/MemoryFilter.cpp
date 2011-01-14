@@ -27,14 +27,16 @@ namespace FilterFactory
         MemoryFilter *result = 0;
         switch( value )
         {
+            case Meta::valUrl:
+            {
+                UrlMemoryFilter *umf = new UrlMemoryFilter();
+                umf->setFilter( filter, matchBegin, matchEnd );
+                result = umf;
+                break;
+            }
             case Meta::valTitle:
             {
                 result = new TitleMemoryFilter( filter, matchBegin, matchEnd );
-                break;
-            }
-            case Meta::valAlbum:
-            {
-                result = new AlbumMemoryFilter( filter, matchBegin, matchEnd );
                 break;
             }
             case Meta::valArtist:
@@ -42,9 +44,14 @@ namespace FilterFactory
                 result = new ArtistMemoryFilter( filter, matchBegin, matchEnd );
                 break;
             }
-            case Meta::valYear:
+            case Meta::valAlbum:
             {
-                result = new YearMemoryFilter( filter, matchBegin, matchEnd );
+                result = new AlbumMemoryFilter( filter, matchBegin, matchEnd );
+                break;
+            }
+            case Meta::valGenre:
+            {
+                result = new GenreMemoryFilter( filter, matchBegin, matchEnd );
                 break;
             }
             case Meta::valComposer:
@@ -52,19 +59,35 @@ namespace FilterFactory
                 result = new ComposerMemoryFilter( filter, matchBegin, matchEnd );
                 break;
             }
+            case Meta::valYear:
+            {
+                result = new YearMemoryFilter( filter, matchBegin, matchEnd );
+                break;
+            }
             case Meta::valComment:
             {
                 result = new CommentMemoryFilter( filter, matchBegin, matchEnd );
+                break;
             }
             case Meta::valAlbumArtist:
             {
                 result = new AlbumArtistMemoryFilter( filter, matchBegin, matchEnd );
+                break;
             }
             case Meta::valLabel:
             {
                 result = new LabelFilter( filter, matchBegin, matchEnd );
+                break;
+            }
+            case Meta::valLastPlayed:
+            {
+                LastPlayedFilter *lpf = new LastPlayedFilter();
+                lpf->setFilter( (qint64)filter.toInt(), Collections::QueryMaker::Equals );
+                result = lpf;
+                break;
             }
         }
+        Q_ASSERT_X( result, "FilterFactory::filter", QString( "called filter with an unknown value, value was %1" ).arg( QString::number( value ) ).toLocal8Bit() );
         return result;
     }
 
@@ -148,7 +171,8 @@ ContainerMemoryFilter::~ContainerMemoryFilter()
 void
 ContainerMemoryFilter::addFilter( MemoryFilter *filter )
 {
-    m_filters.append( filter );
+    if( filter )
+        m_filters.append( filter );
 }
 
 AndContainerMemoryFilter::AndContainerMemoryFilter()
@@ -161,14 +185,14 @@ AndContainerMemoryFilter::~AndContainerMemoryFilter()
 }
 
 bool
-AndContainerMemoryFilter::filterMatches( const Meta::TrackPtr &track ) const
+AndContainerMemoryFilter::filterMatches( Meta::TrackPtr track ) const
 {
     if( m_filters.isEmpty() )
         return false;
 
     foreach( MemoryFilter *filter, m_filters )
     {
-        if( !filter->filterMatches( track ) )
+        if( filter && !filter->filterMatches( track ) )
             return false;
     }
     return true;
@@ -184,7 +208,7 @@ OrContainerMemoryFilter::~OrContainerMemoryFilter()
 }
 
 bool
-OrContainerMemoryFilter::filterMatches( const Meta::TrackPtr &track ) const
+OrContainerMemoryFilter::filterMatches( Meta::TrackPtr track ) const
 {
     if( m_filters.isEmpty() )
         return false;
@@ -209,7 +233,7 @@ NegateMemoryFilter::~NegateMemoryFilter()
 }
 
 bool
-NegateMemoryFilter::filterMatches( const Meta::TrackPtr &track ) const
+NegateMemoryFilter::filterMatches( Meta::TrackPtr track ) const
 {
     return !m_filter->filterMatches( track );
 }
@@ -223,6 +247,7 @@ StringMemoryFilter::StringMemoryFilter()
 
 StringMemoryFilter::~StringMemoryFilter()
 {
+
 }
 
 void
@@ -234,7 +259,7 @@ StringMemoryFilter::setFilter( const QString &filter, bool matchBegin, bool matc
 }
 
 bool
-StringMemoryFilter::filterMatches( const Meta::TrackPtr &track ) const
+StringMemoryFilter::filterMatches( Meta::TrackPtr track ) const
 {
     const QString &str = value( track );
     if( m_matchBegin && m_matchEnd )
@@ -255,6 +280,12 @@ StringMemoryFilter::filterMatches( const Meta::TrackPtr &track ) const
     }
 }
 
+QString
+UrlMemoryFilter::value( Meta::TrackPtr track ) const
+{
+    return track->playableUrl().url();
+}
+
 TitleMemoryFilter::TitleMemoryFilter( const QString &filter, bool matchBegin, bool matchEnd )
     : StringMemoryFilter()
 {
@@ -266,7 +297,7 @@ TitleMemoryFilter::~TitleMemoryFilter()
 }
 
 QString
-TitleMemoryFilter::value( const Meta::TrackPtr &track ) const
+TitleMemoryFilter::value( Meta::TrackPtr track ) const
 {
     return track->name();
 }
@@ -283,7 +314,7 @@ ArtistMemoryFilter::~ArtistMemoryFilter()
 }
 
 QString
-ArtistMemoryFilter::value( const Meta::TrackPtr &track ) const
+ArtistMemoryFilter::value( Meta::TrackPtr track ) const
 {
     if( track->artist() )
         return track->artist()->name();
@@ -302,7 +333,7 @@ AlbumMemoryFilter::~AlbumMemoryFilter()
 }
 
 QString
-AlbumMemoryFilter::value( const Meta::TrackPtr &track ) const
+AlbumMemoryFilter::value( Meta::TrackPtr track ) const
 {
     if( track->album() )
         return track->album()->name();
@@ -321,7 +352,7 @@ AlbumArtistMemoryFilter::~AlbumArtistMemoryFilter()
 }
 
 QString
-AlbumArtistMemoryFilter::value( const Meta::TrackPtr &track ) const
+AlbumArtistMemoryFilter::value( Meta::TrackPtr track ) const
 {
     if( track->album() && track->album()->hasAlbumArtist() )
         return track->album()->albumArtist()->name();
@@ -340,7 +371,7 @@ GenreMemoryFilter::~GenreMemoryFilter()
 }
 
 QString
-GenreMemoryFilter::value( const Meta::TrackPtr &track ) const
+GenreMemoryFilter::value( Meta::TrackPtr track ) const
 {
     if( track->genre() )
         return track->genre()->name();
@@ -359,7 +390,7 @@ ComposerMemoryFilter::~ComposerMemoryFilter()
 }
 
 QString
-ComposerMemoryFilter::value( const Meta::TrackPtr &track ) const
+ComposerMemoryFilter::value( Meta::TrackPtr track ) const
 {
     if( track->composer() )
         return track->composer()->name();
@@ -378,9 +409,12 @@ YearMemoryFilter::~YearMemoryFilter()
 }
 
 QString
-YearMemoryFilter::value( const Meta::TrackPtr &track ) const
+YearMemoryFilter::value( Meta::TrackPtr track ) const
 {
-    return track->year()->name();
+    if( track->year() )
+        return track->year()->name();
+    else
+        return QString();
 }
 
 CommentMemoryFilter::CommentMemoryFilter( const QString &filter, bool matchBegin, bool matchEnd )
@@ -394,7 +428,7 @@ CommentMemoryFilter::~CommentMemoryFilter()
 }
 
 QString
-CommentMemoryFilter::value( const Meta::TrackPtr &track ) const
+CommentMemoryFilter::value( Meta::TrackPtr track ) const
 {
     return track->comment();
 }
@@ -418,7 +452,7 @@ NumberMemoryFilter::setFilter( qint64 filter, Collections::QueryMaker::NumberCom
 }
 
 bool
-NumberMemoryFilter::filterMatches( const Meta::TrackPtr &track ) const
+NumberMemoryFilter::filterMatches( Meta::TrackPtr track ) const
 {
     qint64 currentValue = value( track );
     switch( m_compare )
@@ -443,7 +477,7 @@ TrackNumberFilter::~TrackNumberFilter()
 }
 
 qint64
-TrackNumberFilter::value( const Meta::TrackPtr &track ) const
+TrackNumberFilter::value( Meta::TrackPtr track ) const
 {
     return track->trackNumber();
 }
@@ -458,7 +492,7 @@ DiscNumberFilter::~DiscNumberFilter()
 }
 
 qint64
-DiscNumberFilter::value( const Meta::TrackPtr &track ) const
+DiscNumberFilter::value( Meta::TrackPtr track ) const
 {
     return track->discNumber();
 }
@@ -473,7 +507,7 @@ RatingFilter::~RatingFilter()
 }
 
 qint64
-RatingFilter::value( const Meta::TrackPtr &track ) const
+RatingFilter::value( Meta::TrackPtr track ) const
 {
     return track->rating();
 }
@@ -488,7 +522,7 @@ ScoreFilter::~ScoreFilter()
 }
 
 qint64
-ScoreFilter::value( const Meta::TrackPtr &track ) const
+ScoreFilter::value( Meta::TrackPtr track ) const
 {
     return track->score();
 }
@@ -503,7 +537,7 @@ PlaycountFilter::~PlaycountFilter()
 }
 
 qint64
-PlaycountFilter::value( const Meta::TrackPtr &track ) const
+PlaycountFilter::value( Meta::TrackPtr track ) const
 {
     return track->playCount();
 }
@@ -518,9 +552,9 @@ FirstPlayedFilter::~FirstPlayedFilter()
 }
 
 qint64
-FirstPlayedFilter::value( const Meta::TrackPtr &track ) const
+FirstPlayedFilter::value( Meta::TrackPtr track ) const
 {
-    return track->firstPlayed();
+    return track->firstPlayed().toTime_t();
 }
 
 LastPlayedFilter::LastPlayedFilter()
@@ -533,9 +567,9 @@ LastPlayedFilter::~LastPlayedFilter()
 }
 
 qint64
-LastPlayedFilter::value( const Meta::TrackPtr &track ) const
+LastPlayedFilter::value( Meta::TrackPtr track ) const
 {
-    return track->lastPlayed();
+    return track->lastPlayed().toTime_t();
 }
 
 LengthFilter::LengthFilter()
@@ -548,7 +582,7 @@ LengthFilter::~LengthFilter()
 }
 
 qint64
-LengthFilter::value( const Meta::TrackPtr &track ) const
+LengthFilter::value( Meta::TrackPtr track ) const
 {
     return track->length();
 }
@@ -563,7 +597,7 @@ FilesizeFilter::~FilesizeFilter()
 }
 
 qint64
-FilesizeFilter::value( const Meta::TrackPtr &track ) const
+FilesizeFilter::value( Meta::TrackPtr track ) const
 {
     return track->filesize();
 }
@@ -578,7 +612,7 @@ SampleRateFilter::~SampleRateFilter()
 }
 
 qint64
-SampleRateFilter::value( const Meta::TrackPtr &track ) const
+SampleRateFilter::value( Meta::TrackPtr track ) const
 {
     return track->sampleRate();
 }
@@ -593,7 +627,7 @@ BitrateFilter::~BitrateFilter()
 }
 
 qint64
-BitrateFilter::value( const Meta::TrackPtr &track ) const
+BitrateFilter::value( Meta::TrackPtr track ) const
 {
     return track->bitrate();
 }
@@ -608,7 +642,7 @@ CreateDateFilter::~CreateDateFilter()
 }
 
 qint64
-CreateDateFilter::value( const Meta::TrackPtr &track ) const
+CreateDateFilter::value( Meta::TrackPtr track ) const
 {
     return track->createDate().toTime_t();
 }
@@ -623,7 +657,7 @@ YearNumberFilter::~YearNumberFilter()
 }
 
 qint64
-YearNumberFilter::value( const Meta::TrackPtr &track ) const
+YearNumberFilter::value( Meta::TrackPtr track ) const
 {
     if( !track->year() )
         return 0;
@@ -641,7 +675,7 @@ BpmNumberFilter::~BpmNumberFilter()
 }
 
 qint64
-BpmNumberFilter::value( const Meta::TrackPtr &track ) const
+BpmNumberFilter::value( Meta::TrackPtr track ) const
 {
     if( track->bpm() < 0 )
         return 0;
@@ -659,23 +693,15 @@ FormatNumberFilter::~FormatNumberFilter()
 }
 
 qint64
-FormatNumberFilter::value( const Meta::TrackPtr &track ) const
+FormatNumberFilter::value( Meta::TrackPtr track ) const
 {
     if( track->bpm() < 0 )
         return 0;
-
+   
     const QString &ftStr = track->type();
-    Amarok::FileType ft = Amarok::Unknown;
-    if( ftStr.compare( "flac", Qt::CaseInsensitive ) == 0 )
-        ft = Amarok::Flac;
-    else if( ftStr.compare( "mp3", Qt::CaseInsensitive ) == 0 )
-        ft = Amarok::Mp3;
-    else if( ftStr.compare( "mp4", Qt::CaseInsensitive ) == 0 )
-        ft = Amarok::Mp4;
-    else if( ftStr.compare( "ogg", Qt::CaseInsensitive ) == 0 )
-        ft = Amarok::Ogg;
-
-    return qint64(ft);
+    int ftInt = int(Amarok::FileTypeSupport::fileType(ftStr));
+    
+    return qint64(ftInt);
 }
 
 LabelFilter::LabelFilter( const QString &filter, bool matchBegin, bool matchEnd )
@@ -697,7 +723,7 @@ LabelFilter::~LabelFilter()
 }
 
 bool
-LabelFilter::filterMatches( const Meta::TrackPtr &track ) const
+LabelFilter::filterMatches( Meta::TrackPtr track ) const
 {
     foreach( const Meta::LabelPtr &label, track->labels() )
     {

@@ -22,11 +22,12 @@
 #define AMAROK_PLAYLISTACTIONS_H
 
 #include "core/support/Debug.h"
-#include "core/engine/EngineObserver.h"
 #include "core/playlists/Playlist.h"
 
 #include <QQueue>
 #include <QModelIndex>
+
+#include <Phonon/Global>
 
 namespace Playlist
 {
@@ -56,7 +57,7 @@ enum StopAfterMode
  * Next", etc. commands to the GUI code.
  */
 
-class AMAROK_EXPORT Actions : public QObject, public Engine::EngineObserver
+class AMAROK_EXPORT Actions : public QObject
 {
     Q_OBJECT
 
@@ -111,6 +112,10 @@ public:
     // should be publicly accessible
     QQueue<quint64> queue();
 
+    bool queueMoveUp( quint64 id );
+    bool queueMoveDown( quint64 id );
+    void dequeue( quint64 id );
+
 public slots:
     void play();
     void play( const int row );
@@ -133,18 +138,19 @@ public slots:
 signals:
     void navigatorChanged();
 
+protected slots:
+    void slotTrackPlaying( Meta::TrackPtr engineTrack );
+
 private:
     Actions();
     ~Actions();
 
-    void engineStateChanged( Phonon::State currentState, Phonon::State oldState ); //from EngineObserver
-    void engineNewTrackPlaying(); //from EngineObserver
+    void init();
 
     quint64 m_nextTrackCandidate;
     quint64 m_trackToBeLast;
     TrackNavigator* m_navigator;                //!< the strategy of what to do when a track finishes playing
     Playlist::StopAfterMode m_stopAfterMode;
-    bool m_trackError;
     bool m_waitingForNextTrack;
 
     static Actions* s_instance; //!< instance variable
