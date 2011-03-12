@@ -85,6 +85,7 @@ Section: debug
 Architecture: any
 Depends: amarok (= ${binary:Version}), ${misc:Depends}
 Recommends: kdelibs5-dbg
+Suggests: libqtwebkit4-dbg
 Description: debugging symbols for Amarok
  This package provides debugging symbols for all binary packages built from
  amarok source package. It's highly recommended to have this package installed
