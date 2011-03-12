@@ -1,3 +1,8 @@
+amarok (2.4.0-2) UNRELEASED; urgency=low
+
+
+ -- Modestas Vainius <modax@debian.org>  Sat, 12 Mar 2011 14:53:59 +0200
+
 amarok (2.4.0-1) unstable; urgency=low
 
   * New upstream release:
