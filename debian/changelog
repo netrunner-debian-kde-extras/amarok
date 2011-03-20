@@ -1,4 +1,4 @@
-amarok (2.4.1~beta1-0r1) UNRELEASED; urgency=low
+amarok (2.4.1~beta1-1) experimental; urgency=low
 
   * New upstream beta release.
   * Drop backport_mute_button_fix.diff - backported from upstream.
@@ -8,7 +8,7 @@ amarok (2.4.1~beta1-0r1) UNRELEASED; urgency=low
   * Backport a patch as recommended by upstream to fix plugin version
     (backport_fix_plugin_version.diff).
 
- -- Modestas Vainius <modax@debian.org>  Sun, 20 Mar 2011 16:18:08 +0200
+ -- Modestas Vainius <modax@debian.org>  Sun, 20 Mar 2011 17:50:14 +0200
 
 amarok (2.4.0-2) unstable; urgency=low
 
