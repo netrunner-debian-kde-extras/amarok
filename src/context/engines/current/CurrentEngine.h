@@ -65,20 +65,26 @@ protected:
 
 private:
     void update( Meta::TrackPtr track );
-    void update( Meta::ArtistPtr artist );
+    void update( Meta::AlbumPtr album );
 
     int m_coverWidth;
     QStringList m_sources;
     QHash< QString, bool > m_requested;
     Meta::AlbumList m_albums;
     Meta::TrackPtr m_currentTrack;
-    QWeakPointer<Collections::QueryMaker> m_recentAlbumsQm;
+    qint64 m_coverCacheKey;
+    QVariantMap m_trackInfo;
+
+    /** The address of the query maker used for the albums query.
+        This is only used to check if the query results are from the latest started query maker.
+    */
+    Collections::QueryMaker *m_lastQueryMaker;
 
 private slots:
     void resultReady( const QString &collectionId, const Meta::AlbumList &albums );
     void setupAlbumsData();
 };
 
-K_EXPORT_AMAROK_DATAENGINE( current, CurrentEngine )
+AMAROK_EXPORT_DATAENGINE( current, CurrentEngine )
 
 #endif

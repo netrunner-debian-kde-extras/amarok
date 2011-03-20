@@ -35,6 +35,7 @@
 
 #include "ui_SqlPodcastProviderSettingsWidget.h"
 
+#include <KCodecs>
 #include <KLocale>
 #include <KFileDialog>
 #include <KIO/CopyJob>
@@ -242,7 +243,7 @@ SqlPodcastProvider::possiblyContainsTrack( const KUrl &url ) const
     if( !sqlStorage )
         return false;
 
-    QString command = "SELECT title FROM podcastepisodes WHERE guid='%1' OR url='%1' "
+    QString command = "SELECT id FROM podcastepisodes WHERE guid='%1' OR url='%1' "
                       "OR localurl='%1';";
     command = command.arg( sqlStorage->escape( url.url() ) );
 
@@ -296,7 +297,7 @@ SqlPodcastProvider::providerActions()
         m_providerActions << configureAction;
 
         QAction *exportOpmlAction = new QAction( KIcon( "document-export" ),
-                                                 i18n( "&Export to subscriptions to OPML file" ),
+                                                 i18n( "&Export subscriptions to OPML file" ),
                                                  this
                                                );
         connect( exportOpmlAction, SIGNAL(triggered()), SLOT(slotExportOpml()) );
@@ -620,6 +621,9 @@ SqlPodcastProvider::configureProvider()
             startTimer();
         else
             m_updateTimer->stop();
+
+        m_baseDownloadDir = settings.m_baseDirUrl->url();
+        //TODO: ask user if existing directories need to be moved.
     }
 
     delete m_providerSettingsDialog;
@@ -643,18 +647,19 @@ SqlPodcastProvider::slotConfigChanged()
 void
 SqlPodcastProvider::slotExportOpml()
 {
-    OpmlOutline *rootOutline = new OpmlOutline();
-    //TODO: root OPML outline head
+    QList<OpmlOutline *> rootOutlines;
+    QMap<QString,QString> headerData;
+    //TODO: set header data such as date
 
     //TODO: folder outline support
     foreach( SqlPodcastChannelPtr channel, m_channels )
     {
-        OpmlOutline *channelOutline = new OpmlOutline( rootOutline );
+        OpmlOutline *channelOutline = new OpmlOutline();
         #define addAttr( k, v ) channelOutline->addAttribute( k, v )
         addAttr( "text", channel->title() );
         addAttr( "type", "rss" );
         addAttr( "xmlUrl", channel->url().url() );
-        rootOutline->addChild( channelOutline );
+        rootOutlines << channelOutline;
     }
 
     //TODO: add checkbox as widget to filedialog to include podcast settings.
@@ -673,7 +678,7 @@ SqlPodcastProvider::slotExportOpml()
         error() << "could not open OPML file " << filePath.url();
         return;
     }
-    OpmlWriter *opmlWriter = new OpmlWriter( rootOutline, opmlFile );
+    OpmlWriter *opmlWriter = new OpmlWriter( rootOutlines, headerData, opmlFile );
     connect( opmlWriter, SIGNAL(result(int)), SLOT(slotOpmlWriterDone(int)) );
     opmlWriter->run();
 }
@@ -682,6 +687,7 @@ void
 SqlPodcastProvider::slotOpmlWriterDone( int result )
 {
     Q_UNUSED( result )
+
     OpmlWriter *writer = qobject_cast<OpmlWriter *>( QObject::sender() );
     Q_ASSERT( writer );
     writer->device()->close();
@@ -1237,7 +1243,7 @@ SqlPodcastProvider::downloadEpisode( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
     QFile *tmpFile = createTmpFile( sqlEpisode );
     struct PodcastEpisodeDownload download = { sqlEpisode,
                                                tmpFile,
-    /* Unless a reidrect happens the filename from the enclosure is used. This is a potential source
+    /* Unless a redirect happens the filename from the enclosure is used. This is a potential source
        of filename conflicts in downloadResult() */
                                                KUrl( sqlEpisode->uidUrl() ).fileName(),
                                                false
@@ -1321,6 +1327,7 @@ SqlPodcastProvider::createTmpFile( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
 
     QDir dir( sqlChannel->saveLocation().toLocalFile() );
     dir.mkpath( "." );  // ensure that the path is there
+    //TODO: what if result is false?
 
     KUrl localUrl = KUrl::fromPath( dir.absolutePath() );
     QString tempName;
@@ -1328,7 +1335,10 @@ SqlPodcastProvider::createTmpFile( Podcasts::SqlPodcastEpisodePtr sqlEpisode )
         tempName = QUrl::toPercentEncoding( sqlEpisode->guid() );
     else
         tempName = QUrl::toPercentEncoding( sqlEpisode->uidUrl() );
-    localUrl.addPath( tempName + PODCAST_TMP_POSTFIX );
+
+    QString tempNameMd5( KMD5( tempName.toUtf8() ).hexDigest() );
+
+    localUrl.addPath( tempNameMd5 + PODCAST_TMP_POSTFIX );
 
     return new QFile( localUrl.toLocalFile() );
 }

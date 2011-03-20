@@ -53,12 +53,10 @@ using namespace Collections;
 AMAROK_EXPORT_COLLECTION( AudioCdCollectionFactory, audiocdcollection )
 
 AudioCdCollectionFactory::AudioCdCollectionFactory( QObject *parent, const QVariantList &args )
-    : MediaDeviceCollectionFactory<AudioCdCollection>( new AudioCdConnectionAssistant() )
+    : MediaDeviceCollectionFactory<AudioCdCollection>( parent, args, new AudioCdConnectionAssistant() )
 {
-    setParent( parent );
-    Q_UNUSED( args );
+    m_info = KPluginInfo( "amarok_collection-audiocdcollection.desktop", "services" );
 }
-
 
 AudioCdCollection::AudioCdCollection( MediaDeviceInfo* info )
    : MediaDeviceCollection()
@@ -367,18 +365,18 @@ AudioCdCollection::encodingFormat() const
 }
 
 QString
-AudioCdCollection::copyableBasePath() const
+AudioCdCollection::copyableFilePath( const QString &fileName ) const
 {
     switch( m_encodingFormat )
     {
         case WAV:
-            return audiocdUrl().url();
+            return audiocdUrl( fileName ).url();
         case FLAC:
-            return audiocdUrl( "FLAC/" ).url();
+            return audiocdUrl( "FLAC/" + fileName ).url();
         case OGG:
-            return audiocdUrl( "Ogg Vorbis/" ).url();
+            return audiocdUrl( "Ogg Vorbis/" + fileName ).url();
         case MP3:
-            return audiocdUrl( "MP3/" ).url();
+            return audiocdUrl( "MP3/" + fileName ).url();
     }
     return QString();
 }

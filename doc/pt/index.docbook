@@ -37,9 +37,9 @@
 <legalnotice
 >&FDLNotice;</legalnotice>
 <date
->2010-09-14</date>
+>2011-01-29</date>
     <releaseinfo
->&kde; SC 4.5</releaseinfo>
+>&kde; SC 4.6</releaseinfo>
 <abstract>
 <para
 >O &amarok; é um leitor de música gratuito, versátil e poderoso para o &Linux;. A última série de versões 2.x, normalmente conhecida por <quote
@@ -750,7 +750,7 @@
 ><para
 >a <emphasis
 >Lista de Reprodução</emphasis
-> à direita </para
+> à direita. </para
 ></listitem>
 </orderedlist>
 </sect1>
@@ -1160,7 +1160,9 @@
 >Listas de Reprodução</emphasis
 >, como uma <emphasis
 >Lista de Reprodução Gravada</emphasis
->. Caso contrário, navegue pelos programas disponíveis no Gestor de Programas (<menuchoice
+>. Caso contrário, navegue pelos programas disponíveis no <emphasis
+>Gestor de Programas</emphasis
+> (<menuchoice
 ><guimenu
 >Ferramentas</guimenu
 ><guimenuitem
@@ -1304,8 +1306,8 @@
 >Música Local</emphasis
 >. Não só poderá procurar pelo artista, álbum ou faixa, mas também por qualquer parte. Poderá criar uma lista de reprodução gira se procurar por <replaceable
 >inverno</replaceable
->, por exemplo, ou simplesmente procurar por uma faixa da qual só se lembra de uma palavra do título. Também poderá procurar pela classificação, número de reproduções e até pelo tipo de ficheiros. Veja mais detalhes em <ulink url="http://amarok.kde.org/en/Insider/Issue_14"
->&amarok; Insider Issue 14</ulink
+>, por exemplo, ou simplesmente procurar por uma faixa da qual só se lembra de uma palavra do título. Também poderá procurar pela classificação, número de reproduções e até pelo tipo de ficheiros. Veja mais detalhes em <ulink url="http://userbase.kde.org/Special:myLanguage/Amarok/Manual/AdvancedFeatures/SearchInCollection\"
+>Procurar na Colecção</ulink
 >. </para>
 </sect2>
 <sect2 id="deleting-items-from-the-collection"
@@ -1534,7 +1536,7 @@
 ><title
 >Usar as ferramentas da Lista de Reprodução no fundo</title>
 <para
->No fundo da área da Lista de Reprodução, existem seis ícones: </para>
+>No fundo da área da Lista de Reprodução, existem sete ícones: </para>
 <para>
 <table>
   <title
@@ -1639,6 +1641,36 @@
     <entry>
       <para
 >Define o modo de reprodução: repetir as faixas, ordem aleatória, preferir as músicas raramente tocadas, &etc;</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-media-standard-track-progression-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Define o modo de reprodução: repetir as faixas, ordem aleatória, preferir as músicas raramente tocadas, &etc;</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-edit-playlist-queue.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Edita a fila da lista de reprodução; as faixas são tocadas antes de a lista de reprodução prosseguir.</para>
     </entry>
   </row>
 </tbody>
@@ -1796,7 +1828,13 @@
 ><title
 >Depois de ter actualizado a minha colecção, as adições não aparecem no Navegador de Contexto</title>
 <para
->Saia do &amarok; com o menu <guilabel
+>No menu de topo, em  <menuchoice
+><guimenu
+>Ferramentas</guimenu
+><guimenuitem
+>Actualizar a Colecção</guimenuitem
+></menuchoice
+>. Se não aparecerem, saia do &amarok; com o menu <guilabel
 >Amarok</guilabel
 > ou use a combinação <keycombo
 >&Ctrl;<keycap
@@ -1828,11 +1866,21 @@
 ><para
 >O título da sua música contém caracteres especiais com uma cedilha, um acento, &etc;, que não aparecem no título da sua faixa. Como tal, a 'applet' do programa de letras musicais poderá não encontrar uma correspondência para o seu título. Verifique o seu sistema de marcas e numerações de faixas com um marcador como o <ulink url="http://musicbrainz.org/doc/MusicBrainz_Picard"
 >Picard</ulink
->. Veja também a <ulink url="http://userbase.kde.org/Special:mylanguage/Amarok/Manual/FAQ"
->FAQ do &amarok;</ulink
-> </para
+>.</para
 ></listitem>
 </orderedlist>
+</sect1>
+<sect1 id="my-question-isnt-answered-here"
+><title
+>A minha dúvida não está respondida aqui</title>
+<para
+>As questões mais complexas estão cobertas no <ulink url="http://userbase.kde.org/Special:myLanguage/Amarok/Manual"
+>Manual</ulink
+>, incluindo a <ulink url="http://userbase.kde.org/Special:myLanguage/Amarok/Manual/TroubleshootingAndCommonProblems"
+>Resolução dos Problemas Comuns</ulink
+> e na <ulink url="http://userbase.kde.org/Special:mylanguage/Amarok/Manual/FAQ"
+>FAQ do Amarok</ulink
+>. </para>
 </sect1>
 </chapter>
 <chapter id="glossary"
@@ -1842,7 +1890,9 @@
 ><title
 >Área de Navegação</title>
 <para
->Esta é uma forma de navegar por uma estrutura hierárquica de ficheiros no &amarok; perto do topo da área de Fontes Multimédia. Começando ao nível da pasta pessoal, mostra quão profundamente uma pessoa percorreu o sistema de ficheiros. Quando tiver ido para um dado local no sistema de ficheiros, irá ver todas as pastas num nível superior. No &amarok;, as ligações <guilabel
+>Esta é uma forma de navegar por uma estrutura hierárquica de ficheiros no &amarok; perto do topo da área de <emphasis
+>Fontes Multimédia</emphasis
+>. Começando ao nível da pasta pessoal, mostra quão profundamente uma pessoa percorreu o sistema de ficheiros. Quando tiver ido para um dado local no sistema de ficheiros, irá ver todas as pastas num nível superior. No &amarok;, as ligações <guilabel
 >&gt;</guilabel
 > entre níveis das pastas permitem ver que pastas alternativas existem num dado nível. As áreas de navegação são um mecanismo eficiente de navegar por todo o sistema de ficheiros no seu computador. </para>
 </sect1>
