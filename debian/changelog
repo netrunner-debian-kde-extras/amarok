@@ -4,6 +4,7 @@ amarok (2.4.1~beta1-0r1) UNRELEASED; urgency=low
   * Drop backport_mute_button_fix.diff - backported from upstream.
   * Build depend on libqjson-dev.
   * Update install files.
+  * Override amarok: embedded-library ... : libmysqlclient.
 
  -- Modestas Vainius <modax@debian.org>  Sun, 20 Mar 2011 16:18:08 +0200
 
