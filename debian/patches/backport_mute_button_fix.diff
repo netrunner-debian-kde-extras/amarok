@@ -1,0 +1,21 @@
+From: Sergey Ivanov <123kash@gmail.com>
+Date: Mon Jan 17 11:24:34 2011 +0300
+Subject: fixed Mute button.
+Bug: http://bugs.kde.org/253098
+Bug-Debian: http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=600159
+Origin: backport commit:6e1339533a1645e0d2a3cff0b5deb7bead20efae
+Acked-By: Modestas Vainius <modax@debian.org>
+
+BUG: 253098
+
+--- a/src/EngineController.cpp
++++ b/src/EngineController.cpp
+@@ -724,6 +724,8 @@ void
+ EngineController::setMuted( bool mute ) //SLOT
+ {
+     m_audio.data()->setMuted( mute ); // toggle mute
++    if( !isMuted() )
++        setVolume( m_volume );
+ 
+     AmarokConfig::setMuteState( mute );
+     emit muteStateChanged( mute );
