@@ -1,3 +1,9 @@
+amarok (2.4.1~beta1-0r1) UNRELEASED; urgency=low
+
+  * New upstream beta release.
+
+ -- Modestas Vainius <modax@debian.org>  Sun, 20 Mar 2011 16:18:08 +0200
+
 amarok (2.4.0-2) unstable; urgency=low
 
   * Make amarok-dbg suggest libqtwebkit4-dbg.
