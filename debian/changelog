@@ -5,6 +5,8 @@ amarok (2.4.1~beta1-0r1) UNRELEASED; urgency=low
   * Build depend on libqjson-dev.
   * Update install files.
   * Override amarok: embedded-library ... : libmysqlclient.
+  * Backport a patch as recommended by upstream to fix plugin version
+    (backport_fix_plugin_version.diff).
 
  -- Modestas Vainius <modax@debian.org>  Sun, 20 Mar 2011 16:18:08 +0200
 
