@@ -37,9 +37,9 @@
 <legalnotice
 >&FDLNotice;</legalnotice>
 <date
->2010-09-14</date>
+>2011-01-29</date>
     <releaseinfo
->&kde; SC 4.5</releaseinfo>
+>&kde; SC 4.6</releaseinfo>
 <abstract>
 <para
 >&amarok; är en fri, mångsidig och kraftfull musikspelare för &Linux;. De senaste utgåvorna i 2.x-serien, ofta kallade <quote
@@ -746,7 +746,7 @@
 ><para
 ><emphasis
 >Spellistan</emphasis
-> i rutan till höger </para
+> i rutan till höger. </para
 ></listitem>
 </orderedlist>
 </sect1>
@@ -866,13 +866,15 @@
 <para
 >Om du inte har några musikfiler på datorn är det enkelt att <emphasis
 >lagra</emphasis
-> dem (kopiera spåren från cd-skivor till samlingen). Sätt bara i en cd, och högerklicka på cd-skivans enhet i samlingsbläddraren för att spela den, eller kopiera den till samlingen, vilket <emphasis
+> dem (kopiera spåren från cd-skivor till samlingen). Sätt bara i en cd, och högerklicka på cd-skivans enhet i <emphasis
+>samlingsbläddraren</emphasis
+> för att spela den, eller kopiera den till samlingen, vilket <emphasis
 >lagrar</emphasis
 > spåren och <emphasis
->lägger till taggar</emphasis
+>lägger till taggar </emphasis
 > (se bilden nedan). Om du kopierar musik från en ljud-cd till den lokala samlingen, visar <emphasis
 >statusraden</emphasis
-> längst ner i &amarok;s fönster att kopiering pågår. Lagringen kan ta flera minuter. När lagringen väl är färdig, försvinner meddelandet i <emphasis
+> längst ner i &amarok;s fönster att kopiering pågår. Lagringen kan ta flera minuter. När lagringen väl är färdig, försvinner meddelandet på <emphasis
 >statusraden</emphasis
 > och musiken visas i den lokala samlingens samlingsbläddrare. Om den lagrade musiken inte visas i <emphasis
 >Mediakällor</emphasis
@@ -880,7 +882,7 @@
 >&Ctrl;<keycap
 >Q</keycap
 ></keycombo
->, och därefter starta om. Nu ska du se samlingen i vänsterrutan. Skärmbilden nedan visar hur du flyttar spår från en ljud-cd, en iPod eller en annan enhet till samlingen, med användning av högerklicksmenyn. </para>
+>, och därefter starta om. Nu ska du se den i samlingen. Skärmbilden nedan visar hur du flyttar spår från en ljud-cd, en iPod eller en annan enhet till samlingen, med användning av den sammanhangsberoende menyn. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -1298,9 +1300,9 @@
 >Lokal musik</emphasis
 > för att söka i samlingen. Du kan inte bara söka enligt artist, album eller spårnamn, utan efter vilken del som helst. Du kan skapa en trevlig spellista genom att exempelvis söka efter <replaceable
 >vinter</replaceable
->, eller helt enkelt hitta ett spår när du bara kommer ihåg ett ord i titeln. Du kan också söka enligt betyg, antal spelningar, och till och med enligt filtyp. Se <ulink url="http://amarok.kde.org/en/Insider/Issue_14"
->&amarok; Insider, utgåva 14</ulink
->, för mer information.  </para>
+>, eller helt enkelt hitta ett spår när du bara kommer ihåg ett ord i titeln. Du kan också söka enligt betyg, antal spelningar, och till och med enligt filtyp. Se <ulink url="http://userbase.kde.org/Special:myLanguage/Amarok/Manual/AdvancedFeatures/SearchInCollection"
+>Sök i samlingen</ulink
+> för mer information.  </para>
 </sect2>
 <sect2 id="deleting-items-from-the-collection"
 ><title
@@ -1528,7 +1530,7 @@
 ><title
 >Använda verktygen längst ner i spellistan</title>
 <para
->Längst ner i spellistans ruta finns sex ikoner: </para>
+>Längst ner i spellistans ruta finns sju ikoner: </para>
 <para>
 <table>
   <title
@@ -1633,6 +1635,36 @@
     <entry>
       <para
 >Ställ in uppspelningsläge: upprepa spår, slumpmässig ordning, föredra sällan spelade, etc.</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-media-standard-track-progression-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Ställ in uppspelningsläge: upprepa spår, slumpmässig ordning, föredra sällan spelade, etc.</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-edit-playlist-queue.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Redigera spellistans kö, spår som spelas först innan spellistan återupptas.</para>
     </entry>
   </row>
 </tbody>
@@ -1790,7 +1822,13 @@
 ><title
 >Efter att jag har uppdaterat samlingen, visas inte tilläggen i samlingsbläddraren.</title>
 <para
->Avsluta &amarok; med menyn <guilabel
+>I toppnivåmenyn <menuchoice
+><guimenu
+>Verktyg</guimenu
+> <guimenuitem
+>Uppdatera samling</guimenuitem
+></menuchoice
+>. Om de inte dyker upp, avsluta &amarok; med menyn <guilabel
 >Amarok</guilabel
 >, eller använd <keycombo
 >&Ctrl;<keycap
@@ -1822,11 +1860,21 @@
 ><para
 >Sångens namn innehåller specialtecken med en cedilj, accent, etc. som inte syns i spårnamnet. Därför kan inte sångtextskriptet hitta något som motsvarar titeln. Kontrollera taggar och spårnumreringssystem med ett taggverktyg som <ulink url="http://musicbrainz.org/doc/MusicBrainz_Picard"
 >Picard</ulink
->. Se också <ulink url="http://userbase.kde.org/Special:mylanguage/Amarok/Manual/FAQ"
->&amarok;s vanliga frågor</ulink
->. </para
+>.</para
 ></listitem>
 </orderedlist>
+</sect1>
+<sect1 id="my-question-isnt-answered-here"
+><title
+>Jag hittar inte svaret på min fråga här</title>
+<para
+>Mer komplicerade frågor behandlas i <ulink url="http://userbase.kde.org/Special:myLanguage/Amarok/Manual"
+>handboken</ulink
+>, inklusive <ulink url="http://userbase.kde.org/Special:myLanguage/Amarok/Manual/TroubleshootingAndCommonProblems"
+>Felsökning och vanliga problem</ulink
+> samt <ulink url="http://userbase.kde.org/Special:mylanguage/Amarok/Manual/FAQ"
+>Svar på vanliga frågor för Amarok</ulink
+>. </para>
 </sect1>
 </chapter>
 <chapter id="glossary"
@@ -1836,7 +1884,9 @@
 ><title
 >Länkstigar</title>
 <para
->Det här är ett sätt att navigera i en hierarkisk filstruktur i &amarok; nära överkanten av  rutan Mediakällor. Den börjar på nivån för hemkatalogen, och visar hur långt ner du har förflyttat sig i filsystemet. När du har gått till en viss plats i filsystemet, visas alla kataloger på högre nivåer. I &amarok; gör länkarna mellan katalognivåer (<guilabel
+>Det här är ett sätt att navigera i en hierarkisk filstruktur i &amarok; nära överkanten av  rutan <emphasis
+>Mediakällor</emphasis
+>. Den börjar på hemkatalogens nivå, och visar hur långt ner du har förflyttat dig i filsystemet. När du har gått till en viss plats i filsystemet, visas alla kataloger på högre nivåer. I &amarok; gör länkarna mellan katalognivåer (<guilabel
 >&gt;</guilabel
 >) det möjligt att ta reda på vilka alternativa kataloger som är tillgängliga på en viss nivå. En länkstig är ett effektivt sätt att navigera i datorns hela filsystem. </para>
 </sect1>

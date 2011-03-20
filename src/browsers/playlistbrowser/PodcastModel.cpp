@@ -18,7 +18,6 @@
 
 #include "AmarokMimeData.h"
 #include "core/support/Debug.h"
-#include "OpmlParser.h"
 #include "core/podcasts/PodcastMeta.h"
 #include "core/podcasts/PodcastImageFetcher.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
@@ -26,7 +25,6 @@
 #include "PodcastCategory.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "SvgHandler.h"
-
 #include <ThreadWeaver/Weaver>
 
 #include <KIcon>
@@ -109,7 +107,9 @@ PlaylistBrowserNS::PodcastModel::icon( Podcasts::PodcastMetaCommon *pmc ) const
     Podcasts::PodcastChannel *channel = 0;
     Podcasts::PodcastEpisode *episode = 0;
     QStringList emblems;
-    
+
+    // I hope we are caching this icon somehow and not creating it every time new (Ralf)
+
     switch( pmc->podcastType() )
     {
         case Podcasts::ChannelType:
@@ -137,10 +137,11 @@ PlaylistBrowserNS::PodcastModel::icon( Podcasts::PodcastMetaCommon *pmc ) const
                 int y = 32 / 2 - size.height() / 2;
 
                 QPainter p( &pixmap );
-                p.drawPixmap( x, y, channel->image().scaled( size,
-                                                             Qt::KeepAspectRatio,
-                                                             Qt::SmoothTransformation ) );
-                
+                p.drawPixmap( x, y,
+                              QPixmap::fromImage( channel->image().scaled( size,
+                                                                           Qt::KeepAspectRatio,
+                                                                           Qt::SmoothTransformation ) ) );
+
                 // if it's a new episode draw the overlay:
                 if( !emblems.isEmpty() )
                 {
@@ -386,55 +387,6 @@ PlaylistBrowserNS::PodcastModel::refreshPodcasts()
         if( podcastProvider )
             podcastProvider->updateAll();
     }
-}
-
-void
-PlaylistBrowserNS::PodcastModel::importOpml( const KUrl &url )
-{
-    if( !url.isValid() )
-        return;
-
-    debug() << "Importing OPML file from " << url;
-
-    OpmlParser *parser = new OpmlParser( url.toLocalFile() );
-    connect( parser, SIGNAL( outlineParsed( OpmlOutline * ) ),
-             SLOT( slotOpmlOutlineParsed( OpmlOutline * ) ) );
-    connect( parser, SIGNAL( doneParsing() ), SLOT( slotOpmlParsingDone() ) );
-
-    ThreadWeaver::Weaver::instance()->enqueue( parser );
-}
-
-void
-PlaylistBrowserNS::PodcastModel::slotOpmlOutlineParsed( OpmlOutline *outline )
-{
-    if( !outline )
-        return;
-
-    if( outline->hasChildren() )
-        return; //TODO grouping handling once PodcastCategory has it.
-
-    if( outline->attributes().contains( "xmlUrl" ) )
-    {
-        KUrl url( outline->attributes().value( "xmlUrl" ).trimmed() );
-        if( !url.isValid() )
-        {
-            debug() << "OPML outline contained an invalid url: " << url;
-            return; //TODO signal invalid feed to user
-        }
-
-        //TODO: handle multiple providers
-        Podcasts::PodcastProvider *podcastProvider = The::playlistManager()->defaultPodcasts();
-        if( podcastProvider )
-            podcastProvider->addPodcast( url );
-    }
-}
-
-void
-PlaylistBrowserNS::PodcastModel::slotOpmlParsingDone()
-{
-    debug() << "Done parsing OPML file";
-    //TODO: print number of imported channels
-    sender()->deleteLater();
 }
 
 QActionList

@@ -25,6 +25,7 @@ add_subdirectory( scripts )
 add_subdirectory( themes )
 add_subdirectory( aboutdialog/libattica-ocsclient )
 add_subdirectory( transcoding )
+add_subdirectory( kconf_update )
 
 # if( STRIGI_FOUND )
     # add_subdirectory( strigi )
@@ -187,7 +188,9 @@ set(libconfigdialog_SRCS
     configdialog/dialogs/GeneralConfig.cpp
     configdialog/dialogs/NotificationsConfig.cpp
     configdialog/dialogs/PlaybackConfig.cpp
-    configdialog/dialogs/ServiceConfig.cpp
+    configdialog/dialogs/PluginsConfig.cpp
+    configdialog/dialogs/ScriptsConfig.cpp
+    configdialog/dialogs/ScriptSelector.cpp
     configdialog/dialogs/DatabaseConfig.cpp
 )
 
@@ -197,6 +200,7 @@ kde4_add_ui_files(libconfigdialog_SRCS
     configdialog/dialogs/NotificationsConfig.ui
     configdialog/dialogs/PlaybackConfig.ui
     configdialog/dialogs/DatabaseConfig.ui
+    configdialog/dialogs/ScriptsConfig.ui
 )
 
 set(libbrowserframework_SRCS
@@ -273,6 +277,14 @@ set(libmetaimpl_SRCS
     core-impl/playlists/types/file/m3u/M3UPlaylist.cpp
     ../shared/MetaReplayGain.cpp
     ../shared/MetaTagLib.cpp
+    ../shared/TagsFromFileNameGuesser.cpp
+    ../shared/tag_helpers/APETagHelper.cpp
+    ../shared/tag_helpers/ASFTagHelper.cpp
+    ../shared/tag_helpers/ID3v2TagHelper.cpp
+    ../shared/tag_helpers/MP4TagHelper.cpp
+    ../shared/tag_helpers/StringHelper.cpp
+    ../shared/tag_helpers/TagHelper.cpp
+    ../shared/tag_helpers/VorbisCommentTagHelper.cpp
     core-impl/playlists/types/file/pls/PLSPlaylist.cpp
     core-impl/playlists/providers/user/UserPlaylistProvider.cpp
     core-impl/playlists/types/file/PlaylistFileSupport.cpp
@@ -627,6 +639,10 @@ set(amaroklib_LIB_SRCS
     MainWindow.cpp
     MediaDeviceCache.cpp
     MediaDeviceMonitor.cpp
+    MountPointManager.cpp
+    PluginManager.cpp
+    ScriptManager.cpp
+    ScriptUpdater.cpp
     StarManager.cpp
     SvgHandler.cpp
     SvgTinter.cpp
@@ -634,6 +650,7 @@ set(amaroklib_LIB_SRCS
     core-impl/meta/timecode/TimecodeObserver.cpp
     core-impl/meta/timecode/TimecodeMeta.cpp
     core-impl/meta/timecode/TimecodeTrackProvider.cpp
+    covermanager/CoverCache.cpp
     covermanager/CoverFetcher.cpp
     covermanager/CoverFetchingActions.cpp
     covermanager/CoverFetchQueue.cpp
@@ -658,9 +675,6 @@ set(amaroklib_LIB_SRCS
     dialogs/MusicBrainzTagger.cpp
     dialogs/OrganizeCollectionDialog.cpp
     dialogs/TrackOrganizer.cpp
-    dialogs/ScriptSelector.cpp
-    dialogs/ScriptManager.cpp
-    dialogs/ScriptUpdater.cpp
     dialogs/TagDialog.cpp
     dialogs/TagGuesser.cpp
     dialogs/LabelListModel.cpp
@@ -703,6 +717,7 @@ set(amaroklib_LIB_SRCS
     widgets/ComboBox.cpp
     widgets/LineEdit.cpp
     widgets/Osd.cpp
+    widgets/TimeLabel.cpp
     widgets/PixmapViewer.cpp
     widgets/PlayPauseButton.cpp
     widgets/PrettyTreeView.cpp
@@ -726,16 +741,14 @@ set(amaroklib_LIB_SRCS
     ../shared/FileType.cpp
 )
 
-if( BUILD_MYSQLE_COLLECTION )
-else( BUILD_MYSQLE_COLLECTION )
-        set(amaroklib_LIB_SRCS
-            ${amaroklib_LIB_SRCS}
-            MySqlServerTester.cpp
-           )
-        add_definitions(${MYSQL_CFLAGS})
-        include_directories(${MYSQL_INCLUDE_DIR})
-        target_link_libraries(amaroklib ${MYSQL_LIBS})
-endif( BUILD_MYSQLE_COLLECTION )
+if( NOT BUILD_MYSQLE_COLLECTION )
+    set(amaroklib_LIB_SRCS
+        ${amaroklib_LIB_SRCS}
+        MySqlServerTester.cpp
+    )
+    add_definitions(${MYSQL_CFLAGS})
+    include_directories(${MYSQL_INCLUDE_DIR})
+endif( NOT BUILD_MYSQLE_COLLECTION )
 
 if(KDE4_BUILD_TESTS)
     set(amaroklib_LIB_SRCS
@@ -873,7 +886,6 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     dialogs/EditFilterDialog.ui
     dialogs/EqualizerDialog.ui
     dialogs/MusicBrainzTagger.ui
-    dialogs/ScriptManagerBase.ui
     dialogs/TagDialogBase.ui
     dialogs/FilenameLayoutDialog.ui
     dialogs/OrganizeCollectionDialogBase.ui
@@ -917,10 +929,9 @@ if(KDE4_BUILD_TESTS)
     target_link_libraries(amaroklib ${QT_QTTEST_LIBRARY})
 endif()
 
-if( BUILD_MYSQLE_COLLECTION )
-else( BUILD_MYSQLE_COLLECTION )
+if( NOT BUILD_MYSQLE_COLLECTION )
     target_link_libraries(amaroklib ${MYSQL_LIBRARIES} ${ZLIB_LIBRARIES})
-endif( BUILD_MYSQLE_COLLECTION )
+endif( NOT BUILD_MYSQLE_COLLECTION )
 
 if(WIN32)
     target_link_libraries(amaroklib ${QT_QTWEBKIT_LIBRARY})
@@ -956,6 +967,8 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
 
 kde4_add_app_icon(amarok_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/images/hi*-app-amarok.png)
 
+find_package(X11)
+
 if(Q_WS_MAC)
     kde4_add_executable(Amarok ${amarok_SRCS})
     target_link_libraries(Amarok ${KDE4_KDECORE_LIBS} amarokcore amaroklib )
@@ -966,10 +979,13 @@ if(Q_WS_MAC)
     #the following line was copied from KDE4Macros.cmake. kde4_add_app_icon fails to actually copy the .icns file
     SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_BINARY_DIR}/amarok.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
     install(TARGETS Amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
+elseif(X11_FOUND)
+    kde4_add_executable(amarok ${amarok_SRCS})
+    target_link_libraries(amarok ${KDE4_KDEUI_LIBS} amarokcore amaroklib ${X11_LIBRARIES} ${TAGLIB_LIBRARIES} ${TAGLIB-EXTRAS_LIBRARIES} )
+    install(TARGETS amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
 else(Q_WS_MAC)
     kde4_add_executable(amarok ${amarok_SRCS})
     target_link_libraries(amarok ${KDE4_KDEUI_LIBS} amarokcore amaroklib ${TAGLIB_LIBRARIES} ${TAGLIB-EXTRAS_LIBRARIES} )
-
     install(TARGETS amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
 endif(Q_WS_MAC)
 

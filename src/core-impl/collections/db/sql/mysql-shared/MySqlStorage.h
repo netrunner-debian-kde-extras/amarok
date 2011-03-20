@@ -43,7 +43,7 @@ class MySqlStorage: public SqlStorage
         virtual QStringList query( const QString &query );
         virtual int insert( const QString &statement, const QString &table = QString() );
 
-        virtual QString escape( QString text ) const;
+        virtual QString escape( const QString &text ) const;
         virtual QString randomFunc() const;
 
         virtual QString boolTrue() const;
@@ -60,6 +60,15 @@ class MySqlStorage: public SqlStorage
 
         void setDatabasePriority( int priority ) { m_priority = priority; }
 
+        /** Returns a list of the last sql errors.
+            The list might not include every one error if the number
+            is beyond a sensible limit.
+        */
+        QStringList getLastErrors() const;
+
+        /** Clears the list of the last errors. */
+        void clearLastErrors();
+
     protected:
         void reportError( const QString &message );
 
@@ -71,6 +80,7 @@ class MySqlStorage: public SqlStorage
         mutable QMutex m_mutex;
 
         QString m_debugIdent;
+        QStringList m_lastErrors;
 
     private:
         int m_priority;

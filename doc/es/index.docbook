@@ -65,9 +65,9 @@
 <legalnotice
 >&FDLNotice;</legalnotice>
 <date
->2010-09-14</date>
+>2011-01-29</date>
     <releaseinfo
->&kde; SC 4.5</releaseinfo>
+>&kde; SC 4.6</releaseinfo>
 <abstract>
 <para
 >&amarok; es un reproductor de música para &Linux;, libre, versatil y potente. La últimas series 2.x, a las que se refiere con frecuencia como <quote
@@ -127,7 +127,7 @@
 </para>
 <para
 >El <emphasis
->Panel de orígenes de medios</emphasis
+>Panel de medios</emphasis
 > de la izquierda es el lugar donde usted accede a su colección local así como a otros servicios: <guilabel
 >Música local</guilabel
 > en la parte superior, que es la interfaz primaria a su colección local y a los dispositivos conectados como reproductores de mp3 y &CD;. Hay una sección para todos los <guilabel
@@ -429,9 +429,7 @@
 </sect1>
 <sect1 id="pop-up-dropper"
 ><title
->Olivier Bédard (hospedaje del sitio web) <email
->paleo@pwsp.net</email
->.</title
+>Gotero emergente</title
 > 
 <para>
 <screenshot>
@@ -453,7 +451,7 @@
 >menú pulsar-derecho</emphasis
 >) en el que usted puede <quote
 >soltar</quote
-> una canción. ¡Escoja una canción y vea si el gotero emergente aparece en el panel de vista de contexto! </para>
+> una canción. ¡Capture una canción y vea si el gotero emergente aparece en el panel de vista de contexto! </para>
 </sect1>
 <sect1 id="configurable-playlist-view"
 ><title
@@ -547,7 +545,7 @@
 ><guimenuitem
 >Volver a explorar la colección</guimenuitem
 ></menuchoice
->. Ahora su carpeta será visible de nuevo </para>
+>. Ahora su carpeta será visible de nuevo. </para>
 </chapter>
 <chapter id="more-information"
 ><title
@@ -780,7 +778,7 @@
 ><para
 >la <emphasis
 >Lista de reproducción</emphasis
-> en el panel derecho </para
+> en el panel derecho. </para
 ></listitem>
 </orderedlist>
 </sect1>
@@ -819,7 +817,7 @@
 >El panel de orígenes de medios</title>
 <para
 >El <emphasis
->Panel de orígenes de medios</emphasis
+>Panel de medios</emphasis
 > es el lugar donde usted navega y visualiza su colección de música completa. Esto incluye las pistas en su disco duro local, tanto como aquellas en dispositivos externos o medios conectados a su equipo, tales como &CD; de audio, dispositivos USB, reproductores de medios, discos de red o fuentes de Internet. </para>
 </sect1>
 <sect1 id="setting-up-a-collection"
@@ -864,15 +862,15 @@
 >Añadir dispositivos de medios a la colección</title>
 <para
 >Por debajo de la barra de búsqueda cerca de la parte superior del <emphasis
->Panel de orígenes de medios</emphasis
+>Panel de medios</emphasis
 > usted verá los diferentes dispositivos o categorías de contenido dentro del <emphasis
 >Navegador de contenido</emphasis
 >. Si usted inserta un &CD; de audio en la unidad de &CD; aparecerá el <emphasis
->Panel de orígenes de medios</emphasis
+>Panel de medios</emphasis
 >, junto con los reproductores de medios, miniaturas de las unidades y otros dispositivos USB. Después de que se haya montado un dispositivo externo, debería mostrarse automáticamente con el <emphasis
->Panel de orígenes de medios</emphasis
+>Panel de medios</emphasis
 >. Usted no necesita realizar acciones adicionales para ver los dispositivos externos en su <emphasis
->Panel de orígenes de medios</emphasis
+>Panel de medios</emphasis
 >, siempre y cuando hayan sido reconocidos por su equipo. </para>
 <para
 >Mas abajo se muestra una captura de pantalla que muestra las fuentes conectadas con música: &CD; de audio, reproductores de mp3 y la <emphasis
@@ -900,7 +898,9 @@
 <para
 >Su usted no tiene archivos de música en su equipo, es fácil <emphasis
 >extraerlos</emphasis
-> (copiar pistas de su &CD; a su colección). Solo introduzca un &CD; y pulse con el botón derecho en la imagen del dispositivo de &CD; en el navegador de contenidos, para reproducir o copiar su colección, que <emphasis
+> (copiar pistas de su &CD; a su colección). Solo introduzca un &CD; y pulse con el botón derecho en la imagen del dispositivo de &CD; en el <emphasis
+>Navegador de contenidos</emphasis
+>, para reproducir o copiar su colección que <emphasis
 >extraerá</emphasis
 > y <emphasis
 >etiquetará</emphasis
@@ -908,13 +908,15 @@
 >barra de mensajes</emphasis
 > en la parte inferior de la ventana de &amarok; indicará que está ocupado copiando. La extracción puede tardar varios minutos. Una vez que la extracción está terminada, el mensaje en la <emphasis
 >barra de mensajes</emphasis
-> desaparece y la música aparece en el navegador de contexto de su colección local. Si la música extraída no aparece en su <emphasis
->Panel de orígenes de medios</emphasis
+> desaparece y la música aparece en el navegador de contexto de su <emphasis
+>Colección local</emphasis
+>. Si la música extraída no aparece en su <emphasis
+>Panel de medios</emphasis
 > es mejor salir de &amarok; desde el menú superior de &amarok; o pulsar <keycombo
 >&Ctrl;<keycap
 >Q</keycap
 ></keycombo
->, y reiniciarlo a continuación. Ahora usted debería ver su colección en el panel izquierdo. La captura de pantalla de abajo muestra como usted puede mover pistas desde su &CD; de audio, iPod u otro dispositivo a su colección, usando el menú que se abre con el botón derecho. </para>
+>, y reiniciarlo a continuación. Ahora usted debería verlo en su colección. La captura de pantalla de abajo muestra como usted puede mover pistas desde su &CD; de audio, iPod u otro dispositivo a su colección, usando el menú de contexto que se abre con el botón derecho. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -964,11 +966,11 @@
 >Acceder a otros orígenes de medios</title>
 <para
 >Usted puede haberse sorprendido porque el <emphasis
->Panel de orígenes de medios</emphasis
+>Panel de medios</emphasis
 > no se llama «Panel de colección». &amarok; le proporciona acceso a mucha mas música que la de su colección --Tiendas de Internet, audio libros, podcasts, archivos de música almacenados fuera de su colección y listas de reproducción almacenadas previamente. La <emphasis
 >ruta de navegación</emphasis
 > de &amarok; es la clave de todo esto. El icono inicial de la ruta de navegación es icono de carpeta personal azul en el extremo superior izquierdo del <emphasis
->Panel de orígenes de medios</emphasis
+>Panel de medios</emphasis
 >. Este icono se expande y contrae mientras usted navega por el <emphasis
 >Panel de orígenes de medios</emphasis
 >, permitiéndole navegar fácilmente por su colección pulsando su carpeta deseada en la barra de ruta. </para>
@@ -989,9 +991,9 @@
 </para>
 <para
 >Si usted pulsa la carpeta inicial de &amarok; usted verá el <emphasis
->Panel de orígenes de medios</emphasis
+>Panel de medios</emphasis
 > en la parte inferior izquierda, que contiene iconos para los recursos disponibles. Si pulsa en el icono «Archivos» (imagen izquierda de mas abajo, segundo elemento desde abajo), verá algo similar a la imagen de la derecha, abajo. Dese cuenta como la barra de ruta se expande y como el contenido de la carpeta seleccionada se muestra en el <emphasis
->Panel de orígenes de medios</emphasis
+>Panel de medios</emphasis
 > (imagen derecha de mas abajo). Al pulsar los símbolos <guilabel
 >&gt;</guilabel
 > entre las rutas le permite ver las carpetas disponibles a ese nivel de la estructura de carpetas. El navegador de archivos de &amarok; le da acceso a su sistema de archivos completo, incluso fuera de su colección local. </para>
@@ -1180,7 +1182,7 @@
 ><title
 >Flujos y Podcasts</title>
 <para
->Hay dos modos de escuchar emisiones. Si usted tiene una emisora favorita, obtenga la &URL; de la emisión y añadalá: <menuchoice
+>Hay dos modos de escuchar emisiones. Si usted tiene una emisora favorita, obtenga la &URL; de la emisión y añádala: <menuchoice
 ><guimenu
 >Lista de reproducción</guimenu
 ><guimenuitem
@@ -1190,7 +1192,9 @@
 >Listas de reproducción</emphasis
 >, como una <emphasis
 >Lista de reproducción almacenada</emphasis
->. De otro modo, navegue por los guiones disponibles en su gestor de guiones (<menuchoice
+>. De otro modo, navegue por los guiones disponibles en su <emphasis
+>Gestor de guiones</emphasis
+> (<menuchoice
 ><guimenu
 >Herramientas </guimenu
 ><guimenuitem
@@ -1228,7 +1232,7 @@
 ><title
 >Uso del navegador de contexto</title>
 <para
->El disco duro de su equipo, &CD; de audio, dispositivos externos e Internet son los recursos básicos de su colección. Después de que se haya configurado su colección, es habitual que su colección mantenga un gran número de álbumes y pistas, muchas mas de las que se pueden mostrar en una sola ventana, </para>
+>El disco duro de su equipo, &CD; de audio, dispositivos externos e Internet son los recursos básicos de su colección. Después de que se haya configurado su colección, es habitual que su colección mantenga un gran número de álbumes y pistas, muchas mas de las que se pueden mostrar en una sola ventana. </para>
 <para
 >Como modificar la visualización de su colección, abajo: </para>
 <sect2 id="hiding-or-expanding-information"
@@ -1236,7 +1240,7 @@
 >Esconder o expandir información</title>
 <para
 >El área del <emphasis
->Panel de orígenes de medios</emphasis
+>Panel de medios</emphasis
 > bajo la barra de búsqueda se denomina <emphasis
 >Navegador de contexto</emphasis
 >. En la imagen de mas abajo del navegador de contexto se indican tres orígenes de medios: &CD;, colección local y reproductor de medios: </para>
@@ -1258,7 +1262,7 @@
 <para
 >Al pulsar la bandera para un dispositivo muestra u oculta el contexto de ese dispositivo. La dirección de la flecha verde a la derecha indica si los contenidos del dispositivo se muestran o esconden. El contenido de un dispositivo concreto puede esconderse o mostrarse usando el mismo principio, pulsando en el artista o album adecuado. Un símbolo <guilabel
 >-</guilabel
-> a la izquierda de un artista o album indica que los contenidos se han expandido. un símbolo <guilabel
+> a la izquierda de un artista o album indica que los contenidos se han expandido. Un símbolo <guilabel
 >+</guilabel
 > indica que están disponibles mas símbolos para esta categoría. En la imagen superior, la información para el &CD; <emphasis
 >Mike Oldfield - The Songs of Distant Earth</emphasis
@@ -1276,8 +1280,8 @@
 <para
 >El orden en el que se clasifican las pistas en el <emphasis
 >Navegador de contexto</emphasis
-> se puede personalizar usando el <emphasis
->Botón de opciones de ordenación</emphasis
+> se puede personalizar usando el botón de <emphasis
+> Opciones de ordenación</emphasis
 > en la parte superior del <emphasis
 >Panel de orígenes de medios</emphasis
 >: </para>
@@ -1298,7 +1302,7 @@
 </para>
 <para
 >El orden de clasificación se indica en la parte superior izquierda del <emphasis
->Panel de orígenes de medios</emphasis
+>Panel de medios</emphasis
 >, justo debajo del cuadro de texto <emphasis
 >Buscar </emphasis
 >. El orden predeterminado es <emphasis
@@ -1312,7 +1316,7 @@
 >, pulse el <emphasis
 >Icono de mezcla</emphasis
 > en la parte superior derecha del <emphasis
->Panel de orígenes de medios</emphasis
+>Panel de medios</emphasis
 >: </para>
 <para>
 <screenshot>
@@ -1334,8 +1338,8 @@
 >Música local</emphasis
 >. Usted no solo puede buscar por artista, álbum o nombre de pista, sino cualquier otro componente. Usted podría crear una bonita lista de reproducción buscando <replaceable
 >invierno </replaceable
->, por ejemplo, o simplemente buscar una pista de la que solo recuerde una palabra del título. Usted también puede buscar por puntuación, contador de reproducciones, incluso tipo de archivo. Consulte <ulink url="http://amarok.kde.org/en/Insider/Issue_14"
->&amarok; Información privilegiada tema 14</ulink
+>, por ejemplo, o simplemente buscar una pista de la que solo recuerde una palabra del título. Usted también puede buscar por puntuación, contador de reproducciones, incluso tipo de archivo. Consulte <ulink url="http://userbase.kde.org/Special:myLanguage/Amarok/Manual/AdvancedFeatures/SearchInCollection"
+>Búsqueda en colección</ulink
 > para mas detalles. </para>
 </sect2>
 <sect2 id="deleting-items-from-the-collection"
@@ -1404,15 +1408,15 @@
 <orderedlist>
 <listitem
 ><para
->Elija algo de su música en el navegador de contexto y arraśtrela a la derecha. Si usted la arrastra encima del <emphasis
->Panel de contexto</emphasis
+>Elija algo de su música en el navegador de contexto y arrástrela a la derecha. Si usted la arrastra encima del panel de <emphasis
+>Contexto</emphasis
 > verá el <emphasis
 >Gotero emergente</emphasis
 >, también conocido como PUD. La imagen superior muestra PUD en acción. PUD proporciona tres opciones; <guilabel
 >Añadir a la lista de reproducción</guilabel
 >, <guilabel
 >Reemplazar lista de reproducción</guilabel
->, y <guilabel
+> y <guilabel
 >Mas...</guilabel
 >. La opción resaltada en un área gris (<guilabel
 >Añadir a lista de reproducción</guilabel
@@ -1517,10 +1521,10 @@
 ></listitem>
 <listitem
 ><para
->Arrastre el elemento a borrar sobre el <emphasis
->Panel de contexto</emphasis
-> para activar PUD. Aparecerán varias opciones sobre el <emphasis
->Panel de contexto</emphasis
+>Arrastre el elemento a borrar sobre el panel de <emphasis
+>Contexto</emphasis
+> para activar PUD. Aparecerán varias opciones sobre el panel de <emphasis
+>Contexto</emphasis
 >. Arrastre el elemento al área marcada <guilabel
 >Borrar de la lista de reproducción</guilabel
 >. Vea la imagen inferior que muestra una pista siendo arrastrada en la opción <guilabel
@@ -1564,7 +1568,7 @@
 ><title
 >Uso de las herramientas de lista de reproducción de la parte inferior</title>
 <para
->En la parte inferior del panel de lista de reproducción hay seis iconos: </para>
+>En la parte inferior del panel de lista de reproducción hay siete iconos: </para>
 <para>
 <table>
   <title
@@ -1671,6 +1675,36 @@
 >Establece el modo de reproducción: repetir pistas, orden aleatorio, preferir la reproducida pocas veces, &etc;</para>
     </entry>
   </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-media-standard-track-progression-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Establece el modo de reproducción: repetir pistas, orden aleatorio, preferir la reproducida pocas veces, &etc;</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-edit-playlist-queue.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Edite la cola de la lista de reproducción; las pistas se reproducen primero antes de que la lista de reproducción se reanude.</para>
+    </entry>
+  </row>
 </tbody>
   </tgroup>
 </table>
@@ -1727,12 +1761,12 @@
 ><title
 >La vista de contexto</title>
 <para
->El poder de &amarok; es el <emphasis
->Panel de contexto</emphasis
+>El poder de &amarok; es el panel de <emphasis
+>Contexto</emphasis
 > (en el centro de la ventana de &amarok;) donde usted puede instalar varias <emphasis
 >Miniaplicaciones</emphasis
-> para ayudarle a disfrutar y explorar su música. Mucha de esta información adicional se obtiene de Internet, por lo que una conexión es importante para obtener la mayoría de su <emphasis
->Panel de lista de reproducción</emphasis
+> para ayudarle a disfrutar y explorar su música. Mucha de esta información adicional se obtiene de Internet, por lo que una conexión es importante para obtener la mayoría de su panel de <emphasis
+>Contexto</emphasis
 >. Por omisión, están preseleccionadas tres <emphasis
 >Miniaplicaciones</emphasis
 >; <emphasis
@@ -1746,10 +1780,10 @@
 ><title
 >Diseño predeterminado</title>
 <para
->Las búsquedas predeterminadas del <emphasis
->Panel de contexto</emphasis
-> para las letras de la canción que está reproduciendo, se muestran en la mitad inferior del panel de contexto, mientras que la bandera superior del <emphasis
->Panel de contexto</emphasis
+>Las búsquedas predeterminadas del panel de <emphasis
+>Contexto</emphasis
+> para las letras de la canción que está reproduciendo, se muestran en la mitad inferior del panel de contexto, mientras que la bandera superior del panel de <emphasis
+>Contexto</emphasis
 > muestra la carátula del álbum e información de la pista para la música actual. Algunas veces las letras no están disponibles, porque no pueden almacenarse en un recurso adecuado de Internet. Además, la información de la pista actual necesita ser <link linkend="tags"
 >etiquetada</link
 > correctamente para que puedan encontrarse las letras. Si las letras no se encuentran, esto puede deberse a varias razones, entre ellas las informaciones erróneas en las fuentes de Internet, como un sistema de numeración incorrecto de las pistas en el álbum y la mala representación de texto inusual, como cuando el título de la pista contiene caracteres como circunflejo, cedilla o acento (ê,ç,à), pero no es cierto. </para>
@@ -1773,11 +1807,15 @@
 ><title
 >Personalización del panel de contexto</title>
 <para
->En la parte inferior panel de contexto, hay tres botones para las miniaplicaciones predeterminadas. A la derecha de estos tres botones, usted puede ver una llave, al pulsar sobre ella se mostrará una <guilabel
+>En la parte inferior panel de <emphasis
+>Contexto</emphasis
+>, hay tres botones para las miniaplicaciones predeterminadas. A la derecha de estos tres botones, usted puede ver una llave, al pulsar sobre ella se mostrará una <guilabel
 >X</guilabel
 > roja que le permite eliminar estas miniaplicaciones. Pulse el <guilabel
 >+</guilabel
-> verde para añadir mas opciones de visualización (vea la imagen de abajo). Arrastre los botones etiquetados para reordenar las miniaplicaciones que usted tiene y pulse la llave de nuevo para fijar sus selecciones. Esto hace al panel de contexto extremadamente flexible, maximizando la posibilidad de una visualización personalizada que se ajuste a sus preferencias. </para>
+> verde para añadir mas opciones de visualización (vea la imagen de abajo). Arrastre los botones etiquetados para reordenar las miniaplicaciones que usted tiene y pulse la llave de nuevo para fijar sus selecciones. Esto hace al panel de <emphasis
+>Contexto</emphasis
+> extremadamente flexible, maximizando la posibilidad de una visualización personalizada que se ajuste a sus preferencias. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -1826,7 +1864,13 @@
 ><title
 >Después de actualizar mi colección, los añadidos no se muestran en el navegador de contexto</title>
 <para
->Salga de &amarok; desde el menú de <guilabel
+>Desde el menú de nivel superior <menuchoice
+><guimenu
+>Herramientas</guimenu
+><guimenuitem
+>Actualizar colección</guimenuitem
+></menuchoice
+>. Si no se muestran, salga de &amarok; desde el menú de <guilabel
 >Amarok</guilabel
 > u use <keycombo
 >&Ctrl;<keycap
@@ -1858,11 +1902,21 @@
 ><para
 >El título de su canción contiene caracteres especiales como una cedilla, acento, &etc; que no se muestran en el título de su pista. Por lo tanto, el guion de la miniaplicación de letras no puede encontrar una que coincida con su título. Compruebe sus etiquetas y sistema de numeración de pistas con un etiquetador como <ulink url="http://musicbrainz.org/doc/MusicBrainz_Picard"
 >Picard</ulink
->. Consulte también <ulink url="http://userbase.kde.org/Special:mylanguage/Amarok/Manual/FAQ"
->&amarok; FAQ</ulink
-> </para
+>.</para
 ></listitem>
 </orderedlist>
+</sect1>
+<sect1 id="my-question-isnt-answered-here"
+><title
+>Mi pregunta no está contestada aquí</title>
+<para
+>Los asuntos mas complejos están cubiertos en el <ulink url="http://userbase.kde.org/Special:myLanguage/Amarok/Manual"
+>Manual</ulink
+>, incluyendo <ulink url="http://userbase.kde.org/Special:myLanguage/Amarok/Manual/TroubleshootingAndCommonProblems"
+>Resolución de problemas y problemas comunes</ulink
+> y la <ulink url="http://userbase.kde.org/Special:mylanguage/Amarok/Manual/FAQ"
+>FAQ de Amarok</ulink
+>. </para>
 </sect1>
 </chapter>
 <chapter id="glossary"
@@ -1872,7 +1926,9 @@
 ><title
 >Migas</title>
 <para
->Este es un modo de navegar en una estructura jerárquica de archivos; en &amarok; cerca de la parte superior del panel de orígenes de medios. Comenzando en el nivel de carpeta personal, muestra la profundidad en la que se ha navegado en el sistema de archivos. Cuando usted ha ido a un lugar concreto en el sistema de archivos, usted verá todas las carpetas de un nivel superior. En &amarok; los enlaces <guilabel
+>Este es un modo de navegar en una estructura jerárquica de archivos; en &amarok; cerca de la parte superior del <emphasis
+>Panel de medios</emphasis
+>. Comenzando en el nivel de carpeta personal, muestra la profundidad en la que se ha navegado en el sistema de archivos. Cuando usted ha ido a un lugar concreto en el sistema de archivos, usted verá todas las carpetas de un nivel superior. En &amarok; los enlaces <guilabel
 >&gt;</guilabel
 > entre niveles de carpetas le permiten encontrar que carpetas alternativas están disponibles en un determinado nivel. Las migajas son un mecanismo eficiente para navegar por todo el sistema de archivos de su equipo. </para>
 </sect1>
@@ -1887,7 +1943,7 @@
 >Navegador de contexto</title>
 <para
 >Esta es la parte central del <emphasis
->Panel de orígenes de medios</emphasis
+>Panel de medios</emphasis
 > que le permite listar la música que usted tiene disponible en su colección. El navegador de contexto le permite seleccionar el orden de clasificación de su lista de pistas tanto como el detalle con el que desea ver su música. </para>
 </sect1>
 <sect1 id="playlist"
