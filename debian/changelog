@@ -1,5 +1,7 @@
 amarok (2.4.1~beta1-2) UNRELEASED; urgency=low
 
+  * No longer recommend phonon-backend-xine. Stick to what phonon metapackage
+    depends on.
 
  -- Modestas Vainius <modax@debian.org>  Sun, 20 Mar 2011 18:02:02 +0200
 

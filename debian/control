@@ -21,7 +21,7 @@ Vcs-Browser: http://git.debian.org/?p=users/modax/amarok.git
 
 Package: amarok
 Architecture: any
-Depends: amarok-common (= ${source:Version}), amarok-utils (= ${binary:Version}), phonon-backend-xine | phonon-backend,
+Depends: amarok-common (= ${source:Version}), amarok-utils (= ${binary:Version}),
  ${shlibs:Depends}, ${misc:Depends},
  libqtscript4-core, libqtscript4-gui, libqtscript4-network, libqtscript4-xml, libqtscript4-sql, libqtscript4-uitools
 Recommends: kdemultimedia-kio-plugins (>= 4:4.2.0)
