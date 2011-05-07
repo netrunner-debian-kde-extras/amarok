@@ -13,6 +13,7 @@ Name[en_GB]=MySQLServer Collection
 Name[es]=Colección MySQLServer
 Name[et]=MySQLServeri kogu
 Name[fi]=MySQLServer-kokoelma
+Name[gl]=Colección MySQLServer
 Name[hu]=MySQLServer-gyűjtemény
 Name[is]=MySQL safn
 Name[it]=Collezione MySQLServer
@@ -104,7 +105,7 @@ ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-authors=Jeff Mitchell
 X-KDE-Amarok-email=mitchell@kde.org
-X-KDE-Amarok-framework-version=61
+X-KDE-Amarok-framework-version=62
 X-KDE-Amarok-name=mysqlserver-collection
 X-KDE-Amarok-plugintype=collection
 X-KDE-Amarok-rank=100

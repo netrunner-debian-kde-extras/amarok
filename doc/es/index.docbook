@@ -126,8 +126,8 @@
 </screenshot>
 </para>
 <para
->El <emphasis
->Panel de medios</emphasis
+>El panel <emphasis
+>Orígenes de medios</emphasis
 > de la izquierda es el lugar donde usted accede a su colección local así como a otros servicios: <guilabel
 >Música local</guilabel
 > en la parte superior, que es la interfaz primaria a su colección local y a los dispositivos conectados como reproductores de mp3 y &CD;. Hay una sección para todos los <guilabel
@@ -172,7 +172,7 @@
 </screenshot>
 </para>
 <para
->Aquí es donde se muestra toda la información. El panel contiene tres miniaplicaciones que cambian dinámicamente para mostrar información contextual sobre la canción que se está reproduciendo. Usted puede ver la clasificación, puntuación y contador de reproducciones de la <emphasis
+>Aquí es donde se muestra toda la información. El panel contiene tres miniaplicaciones que cambian dinámicamente para mostrar información contextual sobre la canción que se está reproduciendo. Usted puede ver la valoración, puntuación y contador de reproducciones de la <emphasis
 >pista actual</emphasis
 >, o de la última pista reproducida si no se está reproduciendo ninguna, la <emphasis
 >letra</emphasis
@@ -231,7 +231,7 @@
 </screenshot>
 </para>
 <para
->&amarok; puede admitir los formatos mas populares de archivos de música. La lista de formatos real depende de los codec y motores de audio que se usen en su sistema. También admite listas de reproducción tradicionales &mdash; que usted crea, guarda y carga todas las listas de reproducción que usted quiera. </para>
+>&amarok; puede admitir los formatos mas populares de archivos de música. La lista de formatos real depende de los codecs y motores de audio que se usen en su sistema. También admite listas de reproducción tradicionales &mdash; que usted crea, guarda y carga todas las listas de reproducción que usted quiera. </para>
 </sect1>
 <sect1 id="device-support"
 ><title
@@ -268,7 +268,7 @@
 <para
 >El botón <guilabel
 >Mezclar vista</guilabel
-> en la parte superior de la colección le permite mezclar colecciones. Esto significa que las canciones de su colección local, &CD; de audio, reproductores mp3, etc. se mostrarán en una colección unificada. Es un conmutador por lo que usted puede revertir fácilmente para mostrar los canales separados. </para>
+> en la parte superior de la colección le permite mezclar colecciones. Esto significa que las canciones de su colección local, &CD; de audio, reproductores mp3, etc. se mostrarán en una colección unificada. Es un conmutador por lo que usted puede revertir fácilmente para mostrar las fuentes separadas. </para>
 </sect1>
 <sect1 id="configurable-context-view"
 ><title
@@ -294,7 +294,7 @@
 >Vista de contexto</emphasis
 >, la pieza central en &amarok; puede obtener automáticamente la información contextual sobre la canción que se está reproduciendo (tal como carátula del álbum, letra o información de la <ulink url="http://www.wikipedia.org"
 >Wikipedia</ulink
->)de Internet y mostrarla. Esta es una de las características únicas de las series &amarok;. </para>
+>) desde Internet y mostrarla. Esta es una de las características únicas de las series &amarok;. </para>
 </sect1>
 <sect1 id="more-internet-services"
 ><title
@@ -583,7 +583,7 @@
 >Desde &plasma;</title>
 <para
 >Si usted está ejecutando el <ulink url="http://userbase.kde.org/Special:mylanguage/Plasma"
->Entorno &plasma;</ulink
+>Área de trabajo &plasma;</ulink
 >, puede iniciar &amarok; mediante: </para>
 <itemizedlist>
 <listitem
@@ -861,16 +861,16 @@
 ><title
 >Añadir dispositivos de medios a la colección</title>
 <para
->Por debajo de la barra de búsqueda cerca de la parte superior del <emphasis
->Panel de medios</emphasis
+>Por debajo de la barra de búsqueda cerca de la parte superior del panel de<emphasis
+>Orígenes de medios</emphasis
 > usted verá los diferentes dispositivos o categorías de contenido dentro del <emphasis
 >Navegador de contenido</emphasis
->. Si usted inserta un &CD; de audio en la unidad de &CD; aparecerá el <emphasis
->Panel de medios</emphasis
->, junto con los reproductores de medios, miniaturas de las unidades y otros dispositivos USB. Después de que se haya montado un dispositivo externo, debería mostrarse automáticamente con el <emphasis
->Panel de medios</emphasis
->. Usted no necesita realizar acciones adicionales para ver los dispositivos externos en su <emphasis
->Panel de medios</emphasis
+>. Si usted inserta un &CD; de audio en la unidad de &CD; aparecerá el panel de <emphasis
+>Orígenes de medios</emphasis
+>, junto con los reproductores de medios, miniaturas de las unidades y otros dispositivos USB. Después de que se haya montado un dispositivo externo, debería mostrarse automáticamente con el panel de <emphasis
+>Orígenes de medios</emphasis
+>. Usted no necesita realizar acciones adicionales para ver los dispositivos externos en su panel de<emphasis
+>Orígenes de medios</emphasis
 >, siempre y cuando hayan sido reconocidos por su equipo. </para>
 <para
 >Mas abajo se muestra una captura de pantalla que muestra las fuentes conectadas con música: &CD; de audio, reproductores de mp3 y la <emphasis
@@ -910,8 +910,8 @@
 >barra de mensajes</emphasis
 > desaparece y la música aparece en el navegador de contexto de su <emphasis
 >Colección local</emphasis
->. Si la música extraída no aparece en su <emphasis
->Panel de medios</emphasis
+>. Si la música extraída no aparece en su panel de <emphasis
+>Orígenes de medios</emphasis
 > es mejor salir de &amarok; desde el menú superior de &amarok; o pulsar <keycombo
 >&Ctrl;<keycap
 >Q</keycap
@@ -990,8 +990,8 @@
 </screenshot>
 </para>
 <para
->Si usted pulsa la carpeta inicial de &amarok; usted verá el <emphasis
->Panel de medios</emphasis
+>Si usted pulsa la carpeta inicial de &amarok; usted verá el panel de <emphasis
+>Orígenes de medios</emphasis
 > en la parte inferior izquierda, que contiene iconos para los recursos disponibles. Si pulsa en el icono «Archivos» (imagen izquierda de mas abajo, segundo elemento desde abajo), verá algo similar a la imagen de la derecha, abajo. Dese cuenta como la barra de ruta se expande y como el contenido de la carpeta seleccionada se muestra en el <emphasis
 >Panel de medios</emphasis
 > (imagen derecha de mas abajo). Al pulsar los símbolos <guilabel
@@ -1301,9 +1301,9 @@
 </screenshot>
 </para>
 <para
->El orden de clasificación se indica en la parte superior izquierda del <emphasis
->Panel de medios</emphasis
->, justo debajo del cuadro de texto <emphasis
+>El orden de clasificación se indica en la parte superior izquierda del panel de <emphasis
+>Orígenes de medios</emphasis
+>, justo debajo del área de texto <emphasis
 >Buscar </emphasis
 >. El orden predeterminado es <emphasis
 >Artista / Año - Álbum</emphasis
@@ -1315,8 +1315,8 @@
 >Vista mezclada</emphasis
 >, pulse el <emphasis
 >Icono de mezcla</emphasis
-> en la parte superior derecha del <emphasis
->Panel de medios</emphasis
+> en la parte superior derecha del panel de <emphasis
+>Orígenes de medios</emphasis
 >: </para>
 <para>
 <screenshot>
@@ -1719,7 +1719,7 @@
 <para
 >El icono de disco (mostrado en la tabla de arriba), al fondo de su <emphasis
 >Panel de lista de reproducción</emphasis
->, le permite guardar la lista de reproducción actual de &amarok;. Esto le permite volver a seleccionar una parte de su colección de música en cualquier momento. Las listas de reproducción solo contienen apuntadores a la musica seleccionada, no la propia música. Por tanto, si su lista de reproducción apunta a música de un dispositivo externo, este debe estar conectado y montado, de otro modo no se podrá reproducir la música. Hay tres lugares donde almacenar listas de reproducción: </para>
+>, le permite guardar la lista de reproducción actual de &amarok;. Esto le permite volver a seleccionar una parte de su colección de música en cualquier momento. Las listas de reproducción solo contienen punteros a la musica seleccionada, no la propia música. Por tanto, si su lista de reproducción apunta a música de un dispositivo externo, este debe estar conectado y montado, de otro modo no se podrá reproducir la música. Hay tres lugares donde almacenar listas de reproducción: </para>
 <orderedlist>
 <listitem
 ><para
@@ -1862,7 +1862,7 @@
 </sect1>
 <sect1 id="after-i-have-updated-my-collection-the-additions-are-not-shown-in-the-content-browser"
 ><title
->Después de actualizar mi colección, los añadidos no se muestran en el navegador de contexto</title>
+>Después de que haya actualizado mi colección, los añadidos no se muestran en el navegador de contexto</title>
 <para
 >Desde el menú de nivel superior <menuchoice
 ><guimenu
@@ -1926,8 +1926,8 @@
 ><title
 >Migas</title>
 <para
->Este es un modo de navegar en una estructura jerárquica de archivos; en &amarok; cerca de la parte superior del <emphasis
->Panel de medios</emphasis
+>Este es un modo de navegar en una estructura jerárquica de archivos; en &amarok; cerca de la parte superior del panel de <emphasis
+>Orígenes de medios</emphasis
 >. Comenzando en el nivel de carpeta personal, muestra la profundidad en la que se ha navegado en el sistema de archivos. Cuando usted ha ido a un lugar concreto en el sistema de archivos, usted verá todas las carpetas de un nivel superior. En &amarok; los enlaces <guilabel
 >&gt;</guilabel
 > entre niveles de carpetas le permiten encontrar que carpetas alternativas están disponibles en un determinado nivel. Las migajas son un mecanismo eficiente para navegar por todo el sistema de archivos de su equipo. </para>
@@ -1942,8 +1942,8 @@
 ><title
 >Navegador de contexto</title>
 <para
->Esta es la parte central del <emphasis
->Panel de medios</emphasis
+>Esta es la parte central del panel de <emphasis
+>Orígenes de medios</emphasis
 > que le permite listar la música que usted tiene disponible en su colección. El navegador de contexto le permite seleccionar el orden de clasificación de su lista de pistas tanto como el detalle con el que desea ver su música. </para>
 </sect1>
 <sect1 id="playlist"

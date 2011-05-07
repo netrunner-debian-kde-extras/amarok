@@ -81,7 +81,7 @@ ScanManager::ScanManager( Collections::DatabaseCollection *collection, QObject *
 
 ScanManager::~ScanManager()
 {
-    abort();
+    blockScan();
     // actually we should wait for the abort to be finished.
     delete m_importRequested;
 }
@@ -751,7 +751,7 @@ ScannerJob::getKnownDirs()
 {
     QList< QPair<QString, uint> > result;
 
-    // -- get all mount points
+    // -- get all (mounted) mount points
     QList<int> idlist = m_collection->mountPointManager()->getMountedDeviceIds();
 
     //expects a stringlist in order deviceid, dir, changedate

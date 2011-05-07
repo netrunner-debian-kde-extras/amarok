@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2011-03-06 03:22+0100\n"
-"PO-Revision-Date: 2011-01-28 17:28+0100\n"
+"POT-Creation-Date: 2011-03-22 03:38+0100\n"
+"PO-Revision-Date: 2011-03-11 10:04+0100\n"
 "Last-Translator: Bjørn Steensrud <bjornst@skogkatt.homelinux.org>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: nb\n"
@@ -644,7 +644,7 @@ msgstr "Artist / album"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:198
 msgid "Album / Artist"
-msgstr ""
+msgstr "Album / Artist"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:202
 #: services/jamendo/JamendoService.cpp:152
@@ -998,36 +998,6 @@ msgctxt "default name for new folder"
 msgid "New Folder"
 msgstr "Ny mappe"
 
-#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:173
-#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:222
-#, kde-format
-msgctxt "number of playlists from one source"
-msgid "One Playlist"
-msgid_plural "%1 playlists"
-msgstr[0] "En spilleliste"
-msgstr[1] "%1 spillelister"
-
-#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:439
-msgid "Source"
-msgstr "Kilde"
-
-#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:33
-msgid "&Rename Folder..."
-msgstr "&Endre mappenavn …"
-
-#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:39
-msgid "&Delete Folder"
-msgstr "&Slett mappe"
-
-#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:309
-msgid "New name"
-msgstr "Nytt navn"
-
-#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:311
-msgctxt "Enter a new name for a folder that already exists"
-msgid "Enter new folder name:"
-msgstr "Oppgi nytt mappenavn:"
-
 #: browsers/playlistbrowser/UserPlaylistCategory.cpp:58
 msgid "Saved Playlists"
 msgstr "Lagrede spillelister"
@@ -1133,6 +1103,51 @@ msgstr "Legg til podcast"
 msgid "Enter RSS 1.0/2.0 or Atom feed URL:"
 msgstr "Oppgi nettadresse til RSS 1./2.0 eller Atom-kilden:"
 
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:36
+msgid "&Rename Folder..."
+msgstr "&Endre mappenavn …"
+
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:42
+msgid "&Delete Folder"
+msgstr "&Slett mappe"
+
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:315
+msgid "New name"
+msgstr "Nytt navn"
+
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:317
+msgctxt "Enter a new name for a folder that already exists"
+msgid "Enter new folder name:"
+msgstr "Oppgi nytt mappenavn:"
+
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:333
+#: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:251
+#: playlistmanager/file/PlaylistFileProvider.cpp:418
+#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:117
+msgid "Confirm Delete"
+msgstr "Bekreft sletting"
+
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:335
+msgid "Are you sure you want to delete this folder and it's contents?"
+msgstr ""
+
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:339
+msgid "Yes, delete folder."
+msgstr ""
+
+#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:173
+#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:222
+#, kde-format
+msgctxt "number of playlists from one source"
+msgid "One Playlist"
+msgid_plural "%1 playlists"
+msgstr[0] "En spilleliste"
+msgstr[1] "%1 spillelister"
+
+#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:439
+msgid "Source"
+msgstr "Kilde"
+
 #: browsers/servicebrowser/ServiceBrowser.cpp:44
 msgid ""
 "The Internet browser lets you browse online sources of content that "
@@ -1191,7 +1206,7 @@ msgstr "Lydsystem – Amarok"
 
 #: configdialog/dialogs/PluginsConfig.cpp:44
 msgid "Collections"
-msgstr ""
+msgstr "Samlinger"
 
 #: configdialog/dialogs/PluginsConfig.cpp:48
 msgid "Internet Services"
@@ -1199,7 +1214,7 @@ msgstr "Internettjenester"
 
 #: configdialog/dialogs/PluginsConfig.cpp:52
 msgid "Devices"
-msgstr ""
+msgstr "Enheter"
 
 #: configdialog/dialogs/ScriptSelector.cpp:31 dialogs/ScriptSelector.cpp:31
 msgid "Search Scripts"
@@ -1210,10 +1225,9 @@ msgid "Generic"
 msgstr "Generisk"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:57
-#: context/applets/lyrics/LyricsApplet.cpp:393
-#: context/applets/lyrics/LyricsApplet.cpp:506
-#: context/applets/lyrics/LyricsApplet.cpp:532
-#: context/applets/lyrics/LyricsApplet.cpp:558 dialogs/TagDialog.cpp:550
+#: context/applets/lyrics/LyricsApplet.cpp:395
+#: context/applets/lyrics/LyricsApplet.cpp:512
+#: context/applets/lyrics/LyricsApplet.cpp:556 dialogs/TagDialog.cpp:550
 msgid "Lyrics"
 msgstr "Sangtekst"
 
@@ -1276,19 +1290,19 @@ msgstr "Sett opp database"
 
 #: configdialog/ConfigDialog.cpp:63
 msgid "Plugins"
-msgstr ""
+msgstr "Programtillegg"
 
 #: configdialog/ConfigDialog.cpp:63
 msgid "Configure Plugins"
-msgstr ""
+msgstr "Sett opp programtillegg"
 
 #: configdialog/ConfigDialog.cpp:64
 msgid "Scripts"
-msgstr ""
+msgstr "Skripter"
 
 #: configdialog/ConfigDialog.cpp:64
 msgid "Configure Scripts"
-msgstr ""
+msgstr "Sett opp skripter"
 
 #: context/ContextDock.cpp:30
 msgid "&Context"
@@ -1302,13 +1316,13 @@ msgstr[0] "%1 spor"
 msgstr[1] "%1 spor"
 
 #: context/applets/albums/Albums.cpp:65
-#: context/engines/current/CurrentEngine.cpp:144
+#: context/engines/current/CurrentEngine.cpp:145
 msgid "Recently added albums"
 msgstr "Sist tilførte album"
 
 #: context/applets/albums/Albums.cpp:74
 #: context/applets/labels/LabelsApplet.cpp:111
-#: context/applets/lyrics/LyricsApplet.cpp:432
+#: context/applets/lyrics/LyricsApplet.cpp:434
 #: context/applets/photos/PhotosApplet.cpp:76
 #: context/applets/similarartists/SimilarArtistsApplet.cpp:97
 #: context/applets/tabs/TabsApplet.cpp:104
@@ -1320,7 +1334,7 @@ msgstr "Innstillinger"
 
 #: context/applets/albums/Albums.cpp:81 context/applets/albums/Albums.cpp:318
 msgid "Filter Albums"
-msgstr ""
+msgstr "Filtrer albumer"
 
 #: context/applets/albums/Albums.cpp:138
 #: context/applets/currenttrack/CurrentTrack.cpp:448
@@ -1358,7 +1372,7 @@ msgstr "Oppsett for album-miniprogram"
 #. i18n: file: services/magnatune/MagnatuneSignupDialogBase.ui:45
 #. i18n: ectx: property (text), widget (QPushButton, closeButton)
 #: context/applets/albums/Albums.cpp:334
-#: context/applets/lyrics/LyricsApplet.cpp:418
+#: context/applets/lyrics/LyricsApplet.cpp:420
 #: firstruntutorial/FirstRunTutorialPage.cpp:56 rc.cpp:2446
 msgid "Close"
 msgstr "Lukk"
@@ -1511,27 +1525,27 @@ msgstr "Etiketter for  %1 av %2"
 
 #: context/applets/labels/LabelsApplet.cpp:740
 msgid "General Settings"
-msgstr ""
+msgstr "Generelle innstillinger"
 
 #: context/applets/labels/LabelsApplet.cpp:741
 msgid "Blacklist Settings"
-msgstr ""
+msgstr "Innstillinger for svarteliste"
 
 #: context/applets/labels/LabelsApplet.cpp:742
 msgid "Replacement Settings"
-msgstr ""
+msgstr "Innstillinger for erstatninger"
 
-#: context/applets/lyrics/LyricsSuggestionsListWidget.cpp:91
+#: context/applets/lyrics/LyricsSuggestionsListWidget.cpp:90
 #, kde-format
 msgid "artist: %1"
-msgstr ""
+msgstr "artist: %1"
 
-#: context/applets/lyrics/LyricsApplet.cpp:179
+#: context/applets/lyrics/LyricsApplet.cpp:181
 msgctxt "Used if the current track has no artist."
 msgid "Unknown"
 msgstr "Ukjent"
 
-#: context/applets/lyrics/LyricsApplet.cpp:186
+#: context/applets/lyrics/LyricsApplet.cpp:188
 #, kde-format
 msgid ""
 "While you were editing the lyrics of <b>%1 - %2</b> the track has changed. "
@@ -1540,7 +1554,7 @@ msgstr ""
 "Sporet ble endret mens du redigerte teksten til <b>%1 – %2</b>. Vil du lagre "
 "endringene dine?"
 
-#: context/applets/lyrics/LyricsApplet.cpp:193
+#: context/applets/lyrics/LyricsApplet.cpp:195
 #, kde-format
 msgid ""
 "The lyrics of <b>%1 - %2</b> changed while you were editing them. Do you "
@@ -1549,39 +1563,39 @@ msgstr ""
 "Teksten til <b>%1 – %2</b> ble endret mens du redigerte den. Vil du lagre "
 "endringene dine?"
 
-#: context/applets/lyrics/LyricsApplet.cpp:404
+#: context/applets/lyrics/LyricsApplet.cpp:406
 msgid "Edit Lyrics"
 msgstr "Rediger sangtekst"
 
-#: context/applets/lyrics/LyricsApplet.cpp:411
+#: context/applets/lyrics/LyricsApplet.cpp:413
 msgid "Save Lyrics"
 msgstr "Lagre sangtekst"
 
-#: context/applets/lyrics/LyricsApplet.cpp:425
+#: context/applets/lyrics/LyricsApplet.cpp:427
 msgid "Reload Lyrics"
 msgstr "Last inn sangtekst på nytt"
 
-#: context/applets/lyrics/LyricsApplet.cpp:501
+#: context/applets/lyrics/LyricsApplet.cpp:507
 msgid "Lyrics: No script is running"
 msgstr "Sangtekst: Intet skript kjører"
 
-#: context/applets/lyrics/LyricsApplet.cpp:513
+#: context/applets/lyrics/LyricsApplet.cpp:519
 msgid "Lyrics: Fetching ..."
 msgstr "Sangtekst: Henter …"
 
-#: context/applets/lyrics/LyricsApplet.cpp:517
+#: context/applets/lyrics/LyricsApplet.cpp:523
 msgid "Lyrics: Fetch error"
 msgstr "Sangtekst: Feil ved henting"
 
-#: context/applets/lyrics/LyricsApplet.cpp:523
+#: context/applets/lyrics/LyricsApplet.cpp:529
 msgid "Lyrics: Suggested URLs"
 msgstr "Sangtekst: foreslåtte URL-er"
 
-#: context/applets/lyrics/LyricsApplet.cpp:565
+#: context/applets/lyrics/LyricsApplet.cpp:563
 msgid "Lyrics: Not found"
 msgstr "Sangtekst: ikke funnet"
 
-#: context/applets/lyrics/LyricsApplet.cpp:605
+#: context/applets/lyrics/LyricsApplet.cpp:603
 msgctxt "@info"
 msgid ""
 "Do you really want to refetch lyrics for this track? All changes you may "
@@ -1592,7 +1606,7 @@ msgstr ""
 
 #. i18n: file: context/applets/lyrics/lyricsSettings.ui:14
 #. i18n: ectx: property (windowTitle), widget (QWidget, lyricsSettings)
-#: context/applets/lyrics/LyricsApplet.cpp:642 rc.cpp:975
+#: context/applets/lyrics/LyricsApplet.cpp:640 rc.cpp:975
 msgid "Lyrics Settings"
 msgstr "Innstillinger for sangtekst"
 
@@ -2068,12 +2082,12 @@ msgid ""
 msgstr ""
 "Legg til noen miniprogrammer fra verktøylinja nederst i kontekstvisningen."
 
-#: context/engines/current/CurrentEngine.cpp:213
+#: context/engines/current/CurrentEngine.cpp:214
 msgctxt "Header text for current album applet"
 msgid "Albums"
 msgstr "Albumer"
 
-#: context/engines/current/CurrentEngine.cpp:224
+#: context/engines/current/CurrentEngine.cpp:225
 #, kde-format
 msgid "Albums by %1"
 msgstr "Albumer av %1"
@@ -2382,7 +2396,11 @@ msgstr "<strong>Applet Explorer</strong>"
 msgid "Containments"
 msgstr "Oppsamlinger"
 
-#: context/LyricsManager.cpp:170
+#: context/LyricsManager.cpp:135
+msgid "Retrieved lyrics is empty"
+msgstr ""
+
+#: context/LyricsManager.cpp:176
 msgid "Lyrics data could not be parsed"
 msgstr "Sangtekstdata kunne ikke tolkes"
 
@@ -2478,6 +2496,16 @@ msgid ""
 "In most cases you will need to resolve these errors before Amarok will run "
 "properly."
 msgstr ""
+"Amarok-databasen meldte om følgende feil:\n"
+"%1\n"
+"I de fleste tilfeller vil du måtte rette på disse feilene før Amarok kan "
+"kjøre riktig."
+
+#: core-impl/collections/db/sql/SqlMeta.cpp:272
+#: covermanager/CoverManager.cpp:846 services/lastfm/meta/LastFmMeta.cpp:133
+#, kde-format
+msgid "%1 - %2"
+msgstr "%1 – %2"
 
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:483
 msgid "Organizing tracks"
@@ -2485,11 +2513,11 @@ msgstr "Ordner sporene"
 
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:485
 msgid "Moving tracks"
-msgstr "Flytter spor"
+msgstr "Flytter sporene"
 
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:489
 msgid "Copying tracks"
-msgstr "Kopierer spor"
+msgstr "Kopierer sporene"
 
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:491
 msgid "Transcoding tracks"
@@ -2515,12 +2543,6 @@ msgstr "Transkoder: %1"
 #, kde-format
 msgid "Removing: %1"
 msgstr "Fjerner: %1"
-
-#: core-impl/collections/db/sql/SqlMeta.cpp:272
-#: covermanager/CoverManager.cpp:846 services/lastfm/meta/LastFmMeta.cpp:133
-#, kde-format
-msgid "%1 - %2"
-msgstr "%1 – %2"
 
 #: core-impl/collections/db/ScanManager.cpp:134
 msgid "Database import requested"
@@ -2548,6 +2570,10 @@ msgid ""
 "In most cases this means that not all of your tracks were imported.\n"
 "Further errors will only be reported on the console."
 msgstr ""
+"Samlingsskannerern meldte følgende feil:\n"
+"%1\n"
+"I de fleste tilfeller betyr dette at ikke alle dine spor ble importert.\n"
+"Senere feil blir bare meldt på konsollet."
 
 #: core-impl/collections/db/ScanManager.cpp:486
 #, kde-format
@@ -2590,7 +2616,7 @@ msgstr ""
 #: core-impl/collections/db/ScanResultProcessor.cpp:261
 msgctxt "The genre name for classical music"
 msgid "Classical"
-msgstr ""
+msgstr "Klassisk"
 
 #: core-impl/collections/ipodcollection/handler/IpodHandler.cpp:290
 msgid "iPod was not initialized:"
@@ -2837,14 +2863,14 @@ msgstr[1] "Tar bort spor fra enheten"
 #: core-impl/collections/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.cpp:115
 #: playlistmanager/PlaylistManager.cpp:342
 #: playlistmanager/file/PlaylistFileProvider.cpp:446
-#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:129
+#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:148
 msgid "Change playlist"
 msgstr "Endre spilleliste"
 
 #: core-impl/collections/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.cpp:116
 #: playlistmanager/PlaylistManager.cpp:343
 #: playlistmanager/file/PlaylistFileProvider.cpp:447
-#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:130
+#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:149
 msgid "Enter new name for playlist:"
 msgstr "Oppgi nytt navn på spillelista:"
 
@@ -3027,12 +3053,6 @@ msgstr "Sett opp USB-masselagringsenhet"
 msgid "&Delete Episode"
 msgstr "&Slett episode"
 
-#: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:251
-#: playlistmanager/file/PlaylistFileProvider.cpp:332
-#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:252
-msgid "Confirm Delete"
-msgstr "Bekreft sletting"
-
 #: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:253
 #, kde-format
 msgid "Are you sure you want to delete this episode?"
@@ -3142,35 +3162,35 @@ msgstr "&Tilpass generelle innstillinger"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:300
 msgid "&Export subscriptions to OPML file"
-msgstr ""
+msgstr "&Eksporter abonnementer til OPML-fil"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:324
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:854
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:857
 msgid "&Configure"
 msgstr "&Oppsett"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:342
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:872
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:875
 msgid "&Remove Subscription"
 msgstr "&Fjern abonnement"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:364
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:893
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:896
 msgid "&Update Channel"
 msgstr "&Oppdater kanal"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:403
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:774
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:777
 msgid "&Delete Downloaded Episode"
 msgstr "&Slett nedlastet episode"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:415
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:787
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:790
 msgid "&Write Feed Information to File"
 msgstr "&Skriv kildeinformasjon til fil"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:439
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:824
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:827
 msgid "&Download Episode"
 msgstr "&Last ned episode"
 
@@ -3194,48 +3214,48 @@ msgstr[1] " minutter"
 msgid "Configure Local Podcasts"
 msgstr "Oppsett av lokale podkaster"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:666
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:669
 msgid "Select file for OPML export"
 msgstr "Velg fil som skal eksporteres til OPML"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:945
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:948
 msgid "Unsubscribe"
 msgstr "Avslutt abonnementet"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:949
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:952
 msgid "Do you really want to unsubscribe from "
 msgstr "Er du sikker på at du vil stoppe abonnementet på "
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:956
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:959
 msgid "Delete downloaded episodes"
 msgstr "Slett episoder som er lastet ned"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1079
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1082
 msgid "Waiting for Podcast Downloads to Finish"
 msgstr "Venter på at nedlasting av podkaster skal bli ferdige"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1080
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1083
 #, kde-format
 msgid "There is still a podcast download in progress"
 msgid_plural "There are still %1 podcast downloads in progress"
 msgstr[0] "En podkast-nedlasting pågår ennå"
 msgstr[1] "%1 podkast-nedlastinger pågår ennå"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1084
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1087
 msgid "Cancel Download and Quit."
 msgstr "Avbryt nedlasting og avslutt."
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1261
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1466
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1264
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1469
 #, kde-format
 msgid "Unable to save podcast episode file to %1"
 msgstr "Klarte ikke å lagre podcastepisodefila i %1"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1271
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1274
 msgid "Downloading Podcast Media"
 msgstr "Laster ned podcastmedia …"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1272
+#: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1275
 #, kde-format
 msgid "Downloading Podcast \"%1\""
 msgstr "Laster ned podcast «%1»"
@@ -4251,7 +4271,7 @@ msgstr "Album med"
 msgid "All Artists"
 msgstr "Alle artister"
 
-#: covermanager/CoverManager.cpp:174 widgets/SearchWidget.cpp:81
+#: covermanager/CoverManager.cpp:174 widgets/SearchWidget.cpp:82
 msgid "Enter search terms here"
 msgstr "Oppgi søkebegreper her"
 
@@ -5118,100 +5138,6 @@ msgstr "Navn på forhåndsinnstilt format"
 msgid "New Preset"
 msgstr "Ny forhåndsinnstilling"
 
-#. i18n: file: dialogs/EditFilterDialog.ui:172
-#. i18n: ectx: property (text), item, widget (QComboBox, cbAndOr)
-#: dialogs/EditFilterDialog.cpp:37 rc.cpp:1261
-msgid "AND"
-msgstr "AND"
-
-#. i18n: file: dialogs/EditFilterDialog.ui:177
-#. i18n: ectx: property (text), item, widget (QComboBox, cbAndOr)
-#: dialogs/EditFilterDialog.cpp:38 rc.cpp:1264
-msgid "OR"
-msgstr "OR"
-
-#: dialogs/EditFilterDialog.cpp:39
-msgid "Simple text"
-msgstr "Enkel tekst"
-
-#: dialogs/EditFilterDialog.cpp:46
-msgid "Edit Filter"
-msgstr "Rediger filter"
-
-#: dialogs/TagDialog.cpp:431
-msgid "Filename Layout Chooser"
-msgstr "Velger for filnavnutforming"
-
-#: dialogs/TagDialog.cpp:549
-msgid "Tags"
-msgstr "Merker"
-
-#: dialogs/TagDialog.cpp:711 dialogs/TagDialog.cpp:719
-msgctxt "The value for this tag is not known"
-msgid "Unknown"
-msgstr "Ukjent"
-
-#: dialogs/TagDialog.cpp:756
-#, kde-format
-msgid "Track Details: %1 by %2"
-msgstr "Sporinformasjon: %1 av %2"
-
-#: dialogs/TagDialog.cpp:762
-#, kde-format
-msgctxt "The amount of tracks being edited"
-msgid "1 Track"
-msgid_plural "Information for %1 Tracks"
-msgstr[0] "1 spor"
-msgstr[1] "Informasjon om %1 spor"
-
-#: dialogs/TagDialog.cpp:791 dialogs/TagDialog.cpp:801
-#, kde-format
-msgid "<b>%1</b> by <b>%2</b>"
-msgstr "<b>%1</b> av <b>%2</b>"
-
-#: dialogs/TagDialog.cpp:799
-#, kde-format
-msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
-msgstr "<b>%1</b> av <b>%2</b> på <b>%3</b>"
-
-#: dialogs/TagDialog.cpp:803
-#, kde-format
-msgid "<b>%1</b>"
-msgstr "<b>%1</b>"
-
-#: dialogs/TagDialog.cpp:809
-#, kde-format
-msgid "Editing 1 file"
-msgid_plural "Editing %1 files"
-msgstr[0] "Redigerer 1 fil"
-msgstr[1] "Redigerer %1 filer"
-
-#: dialogs/TagDialog.cpp:841
-msgctxt "When this track first played"
-msgid "Never"
-msgstr ""
-
-#: dialogs/TagDialog.cpp:846
-msgctxt "When this track was last played"
-msgid "Never"
-msgstr "Aldri"
-
-#: dialogs/TagDialog.cpp:850
-msgctxt "The collection this track is part of"
-msgid "None"
-msgstr "Ingen"
-
-#: dialogs/TagDialog.cpp:1369
-msgid ""
-"Writing to file failed. Please check permissions and available disc space."
-msgstr "Klarte ikke skrive til fil. Sjekk rettigheter og diskplass."
-
-#. i18n: file: dialogs/MusicBrainzTagger.ui:12
-#. i18n: ectx: property (windowTitle), widget (QWidget, MusicBrainzTagger)
-#: dialogs/TagDialog.cpp:1427 rc.cpp:1474
-msgid "MusicBrainz Tagger"
-msgstr "MusicBrainz-tagger"
-
 #: dialogs/deviceconfiguredialog.cpp:39
 #, kde-format
 msgid "Select Plugin for %1"
@@ -5289,6 +5215,100 @@ msgstr "Fjern omkodede filer etter overføring"
 #: dialogs/deviceconfiguredialog.cpp:110 dialogs/deviceconfiguredialog.cpp:111
 msgid "For this feature, a script of type \"Transcode\" has to be running"
 msgstr "For at dette skal virke, må det kjøres et skript av typen «Transkode»"
+
+#: dialogs/TagDialog.cpp:431
+msgid "Filename Layout Chooser"
+msgstr "Velger for filnavnutforming"
+
+#: dialogs/TagDialog.cpp:549
+msgid "Tags"
+msgstr "Merker"
+
+#: dialogs/TagDialog.cpp:711 dialogs/TagDialog.cpp:719
+msgctxt "The value for this tag is not known"
+msgid "Unknown"
+msgstr "Ukjent"
+
+#: dialogs/TagDialog.cpp:756
+#, kde-format
+msgid "Track Details: %1 by %2"
+msgstr "Sporinformasjon: %1 av %2"
+
+#: dialogs/TagDialog.cpp:762
+#, kde-format
+msgctxt "The amount of tracks being edited"
+msgid "1 Track"
+msgid_plural "Information for %1 Tracks"
+msgstr[0] "1 spor"
+msgstr[1] "Informasjon om %1 spor"
+
+#: dialogs/TagDialog.cpp:791 dialogs/TagDialog.cpp:801
+#, kde-format
+msgid "<b>%1</b> by <b>%2</b>"
+msgstr "<b>%1</b> av <b>%2</b>"
+
+#: dialogs/TagDialog.cpp:799
+#, kde-format
+msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
+msgstr "<b>%1</b> av <b>%2</b> på <b>%3</b>"
+
+#: dialogs/TagDialog.cpp:803
+#, kde-format
+msgid "<b>%1</b>"
+msgstr "<b>%1</b>"
+
+#: dialogs/TagDialog.cpp:809
+#, kde-format
+msgid "Editing 1 file"
+msgid_plural "Editing %1 files"
+msgstr[0] "Redigerer 1 fil"
+msgstr[1] "Redigerer %1 filer"
+
+#: dialogs/TagDialog.cpp:841
+msgctxt "When this track first played"
+msgid "Never"
+msgstr "Aldri"
+
+#: dialogs/TagDialog.cpp:846
+msgctxt "When this track was last played"
+msgid "Never"
+msgstr "Aldri"
+
+#: dialogs/TagDialog.cpp:850
+msgctxt "The collection this track is part of"
+msgid "None"
+msgstr "Ingen"
+
+#: dialogs/TagDialog.cpp:1369
+msgid ""
+"Writing to file failed. Please check permissions and available disc space."
+msgstr "Klarte ikke skrive til fil. Sjekk rettigheter og diskplass."
+
+#. i18n: file: dialogs/MusicBrainzTagger.ui:12
+#. i18n: ectx: property (windowTitle), widget (QWidget, MusicBrainzTagger)
+#: dialogs/TagDialog.cpp:1427 rc.cpp:1474
+msgid "MusicBrainz Tagger"
+msgstr "MusicBrainz-tagger"
+
+#. i18n: file: dialogs/EditFilterDialog.ui:172
+#. i18n: ectx: property (text), item, widget (QComboBox, cbAndOr)
+#: dialogs/EditFilterDialog.cpp:39 rc.cpp:1261
+msgid "AND"
+msgstr "AND"
+
+#. i18n: file: dialogs/EditFilterDialog.ui:177
+#. i18n: ectx: property (text), item, widget (QComboBox, cbAndOr)
+#: dialogs/EditFilterDialog.cpp:40 rc.cpp:1264
+msgid "OR"
+msgstr "OR"
+
+#: dialogs/EditFilterDialog.cpp:41
+msgid "Simple text"
+msgstr "Enkel tekst"
+
+#: dialogs/EditFilterDialog.cpp:49
+msgid "Edit Filter"
+msgstr "Rediger filter"
 
 #: dynamic/BiasedPlaylist.cpp:142
 msgid "Generating playlist..."
@@ -6388,7 +6408,7 @@ msgstr "kortere enn"
 #: playlistgenerator/constraints/PlaylistDuration.cpp:273
 #: playlistgenerator/constraints/PlaylistLength.cpp:210
 #: playlistgenerator/constraints/TagMatch.cpp:473
-#: widgets/MetaQueryWidget.cpp:918
+#: widgets/MetaQueryWidget.cpp:893
 msgid "unknown comparison"
 msgstr "ukjent sammenlikning"
 
@@ -6427,7 +6447,7 @@ msgstr "kortere enn"
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonRating)
 #: playlistgenerator/constraints/PlaylistLength.cpp:208
 #: playlistgenerator/constraints/TagMatch.cpp:448
-#: widgets/MetaQueryWidget.cpp:899 rc.cpp:2135 rc.cpp:2219 rc.cpp:2252
+#: widgets/MetaQueryWidget.cpp:880 rc.cpp:2135 rc.cpp:2219 rc.cpp:2252
 msgid "less than"
 msgstr "mindre enn"
 
@@ -6496,7 +6516,7 @@ msgid "\"%1\""
 msgstr "«%1»"
 
 #: playlistgenerator/constraints/TagMatch.cpp:444
-#: widgets/MetaQueryWidget.cpp:901
+#: widgets/MetaQueryWidget.cpp:882
 msgctxt "a numerical tag (like year or track number) equals a value"
 msgid "equals"
 msgstr "er lik"
@@ -6508,7 +6528,7 @@ msgstr "er lik"
 #. i18n: file: playlistgenerator/constraints/TagMatchEditWidget.ui:614
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonRating)
 #: playlistgenerator/constraints/TagMatch.cpp:446
-#: widgets/MetaQueryWidget.cpp:903 rc.cpp:2141 rc.cpp:2225 rc.cpp:2258
+#: widgets/MetaQueryWidget.cpp:884 rc.cpp:2141 rc.cpp:2225 rc.cpp:2258
 msgid "greater than"
 msgstr "større enn"
 
@@ -6540,20 +6560,18 @@ msgid "equals"
 msgstr "er lik"
 
 #: playlistgenerator/constraints/TagMatch.cpp:464
-#: widgets/MetaQueryWidget.cpp:911
 msgctxt ""
 "an alphabetical tag (like title or artist name) starts with some string"
 msgid "starts with"
 msgstr "begynner med"
 
 #: playlistgenerator/constraints/TagMatch.cpp:466
-#: widgets/MetaQueryWidget.cpp:913
 msgctxt "an alphabetical tag (like title or artist name) ends with some string"
 msgid "ends with"
 msgstr "slutter med"
 
 #: playlistgenerator/constraints/TagMatch.cpp:468
-#: widgets/MetaQueryWidget.cpp:907
+#: widgets/MetaQueryWidget.cpp:888
 msgctxt "an alphabetical tag (like title or artist name) contains some string"
 msgid "contains"
 msgstr "inneholder"
@@ -6737,22 +6755,22 @@ msgid "Playlist Files on Disk"
 msgstr "Spillelistefiler på disk"
 
 #: playlistmanager/file/PlaylistFileProvider.cpp:124
-#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:171
+#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:190
 msgid "&Rename..."
 msgstr "&Endre navn …"
 
 #: playlistmanager/file/PlaylistFileProvider.cpp:136
-#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:183
+#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:202
 msgid "&Delete..."
 msgstr "&Fjern …"
 
 #: playlistmanager/file/PlaylistFileProvider.cpp:192
-#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:228
+#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:247
 msgid "Remove tracks"
 msgstr "Fjern spor"
 
 #: playlistmanager/file/PlaylistFileProvider.cpp:195
-#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:231
+#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:250
 #, kde-format
 msgctxt "Remove a track from a saved playlist"
 msgid "Remove From \"%1\""
@@ -6764,23 +6782,31 @@ msgstr "Fjern fra «%1»"
 msgid "Remove"
 msgstr "Fjern"
 
-#: playlistmanager/file/PlaylistFileProvider.cpp:334
-#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:254
+#: playlistmanager/file/PlaylistFileProvider.cpp:363
+#: playlistmanager/file/PlaylistFileProvider.cpp:391
+#, kde-format
+msgid "The playlist file \"%1\" could not be loaded."
+msgstr "Kunne ikke laste inn spillelistefila «%1»."
+
+#: playlistmanager/file/PlaylistFileProvider.cpp:420
+#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:119
 #, kde-format
 msgid "Are you sure you want to delete this playlist?"
 msgid_plural "Are you sure you want to delete these %1 playlist files?"
 msgstr[0] "Er du sikker på at du vil slette denne spillelista?"
 msgstr[1] "Er du sikker på at du vil slette disse %1 spillelistefilene?"
 
-#: playlistmanager/file/PlaylistFileProvider.cpp:339
+#: playlistmanager/file/PlaylistFileProvider.cpp:426
 msgid "Yes, delete from disk."
 msgstr "Ja, slett fra disk"
 
-#: playlistmanager/file/PlaylistFileProvider.cpp:377
-#: playlistmanager/file/PlaylistFileProvider.cpp:405
-#, kde-format
-msgid "The playlist file \"%1\" could not be loaded."
-msgstr "Kunne ikke laste inn spillelistefila «%1»."
+#: playlistmanager/sql/SqlUserPlaylistProvider.h:44
+msgid "Amarok Database"
+msgstr "Amarok database"
+
+#: playlistmanager/sql/SqlUserPlaylistProvider.h:45
+msgid "Local playlists stored in the database"
+msgstr "Lokale spillelister lagret i databasen"
 
 #: playlistmanager/sql/SqlPlaylist.cpp:40
 msgid "Playlist in database"
@@ -6799,17 +6825,9 @@ msgstr "Er du sikker på at du vil endre navn på denne spillelista til «%1»?"
 msgid "Yes, rename this playlist."
 msgstr "Ja, endre navn på denne spillelista."
 
-#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:259
+#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:125
 msgid "Yes, delete from database."
 msgstr "Ja, slett fra databasen."
-
-#: playlistmanager/sql/SqlUserPlaylistProvider.h:44
-msgid "Amarok Database"
-msgstr "Amarok database"
-
-#: playlistmanager/sql/SqlUserPlaylistProvider.h:45
-msgid "Local playlists stored in the database"
-msgstr "Lokale spillelister lagret i databasen"
 
 #: scriptengine/AmarokNetworkScript.cpp:70
 msgctxt "do not translate 'DataDownloader' or 'qt.core'"
@@ -7678,15 +7696,15 @@ msgstr "Henter opplysninger om podcast"
 #: services/opmldirectory/OpmlDirectoryModel.cpp:294
 #: services/opmldirectory/OpmlDirectoryService.cpp:143
 msgid "Add OPML"
-msgstr ""
+msgstr "Legg til OPML"
 
 #: services/opmldirectory/OpmlDirectoryModel.cpp:340
 msgid "New Folder"
-msgstr ""
+msgstr "Ny mappe"
 
 #: services/opmldirectory/OpmlDirectoryService.cpp:53
 msgid "Podcast Directory"
-msgstr "Podcastkatalog"
+msgstr "Podkastkatalog"
 
 #: services/opmldirectory/OpmlDirectoryService.cpp:74
 msgid "A large listing of podcasts"
@@ -7697,6 +7715,8 @@ msgid ""
 "A comprehensive list of searchable podcasts that you can subscribe to "
 "directly from within Amarok."
 msgstr ""
+"En omfattende liste over søkbare podkaster som du kan abonnere på direkte "
+"fra inne i Amarok."
 
 #: services/opmldirectory/OpmlDirectoryService.cpp:134
 #: services/gpodder/GpodderService.cpp:177
@@ -7705,7 +7725,7 @@ msgstr "Abonner"
 
 #: services/opmldirectory/OpmlDirectoryService.cpp:168
 msgid "Add an OPML file to the list."
-msgstr ""
+msgstr "Legg til en OPML til lista."
 
 #: services/scriptable/ScriptableServiceInfoParser.cpp:44
 #: services/scriptable/ScriptableServiceInfoParser.cpp:62
@@ -7716,31 +7736,33 @@ msgstr "Henter informasjon …"
 
 #: services/gpodder/GpodderService.cpp:113
 msgid "gpodder.net: Podcast Directory Service"
-msgstr ""
+msgstr "gpodder.net: Podkast katalogtjeneste"
 
 #: services/gpodder/GpodderService.cpp:115
 msgid "gpodder.net is an online Podcast Directory & Synchonisation Service."
 msgstr ""
-
-#. i18n: file: playlist/layouts/PlaylistLayoutEditDialog.ui:312
-#. i18n: ectx: property (text), widget (QLabel, label)
-#: services/ServiceBase.cpp:144 rc.cpp:1932
-msgid "Group By"
-msgstr "Grupper etter"
-
-#: services/ServiceBase.cpp:308
-msgid "This service does not accept any messages"
-msgstr "Denne tjenesten tar ikke i mot noen meldinger"
-
-#: services/ServiceBase.cpp:315
-msgid "ERROR: unknown message"
-msgstr "FEIL: Ukjent melding"
+"gpodder.net er en nettjeneste for podkast-kataloger og podkast-"
+"synkronisering."
 
 #: services/ServicePluginManager.cpp:161 services/ServicePluginManager.cpp:178
 #: services/ServicePluginManager.cpp:195
 #, kde-format
 msgid "No service named %1 is currently loaded"
 msgstr "Det er ikke lastet noen tjeneste som heter %1"
+
+#. i18n: file: playlist/layouts/PlaylistLayoutEditDialog.ui:312
+#. i18n: ectx: property (text), widget (QLabel, label)
+#: services/ServiceBase.cpp:147 rc.cpp:1932
+msgid "Group By"
+msgstr "Grupper etter"
+
+#: services/ServiceBase.cpp:311
+msgid "This service does not accept any messages"
+msgstr "Denne tjenesten tar ikke i mot noen meldinger"
+
+#: services/ServiceBase.cpp:318
+msgid "ERROR: unknown message"
+msgstr "FEIL: Ukjent melding"
 
 #: statusbar/CompoundProgressBar.cpp:64 statusbar/CompoundProgressBar.cpp:157
 #: statusbar/ProgressBar.cpp:47
@@ -7917,14 +7939,6 @@ msgstr "Spill"
 #: widgets/PlayPauseButton.cpp:81
 msgid "Pause"
 msgstr "Pause"
-
-#: widgets/SearchWidget.cpp:72
-msgid "Enter space-separated terms to search."
-msgstr "Skriv inn en liste over søkeord, atskilt med mellomrom."
-
-#: widgets/SearchWidget.cpp:87 widgets/SearchWidget.cpp:159
-msgid "Edit filter"
-msgstr "Rediger filter"
 
 #: widgets/SliderWidget.cpp:244
 msgid "100%"
@@ -8128,7 +8142,7 @@ msgstr "er før"
 
 #: widgets/SmartPlaylistEditor.cpp:934 widgets/SmartPlaylistEditor.cpp:956
 #: widgets/SmartPlaylistEditor.cpp:984 widgets/SmartPlaylistEditor.cpp:1003
-#: widgets/MetaQueryWidget.cpp:441
+#: widgets/MetaQueryWidget.cpp:436
 msgid "and"
 msgstr "og"
 
@@ -8245,64 +8259,62 @@ msgid_plural "months"
 msgstr[0] "måned"
 msgstr[1] "måneder"
 
-#: widgets/MetaQueryWidget.cpp:229
+#: widgets/MetaQueryWidget.cpp:220
 msgid "Simple Search"
 msgstr "Enkelt søk"
 
-#: widgets/MetaQueryWidget.cpp:551
+#: widgets/MetaQueryWidget.cpp:532
 msgctxt "Unit for data rate kilo bit per seconds"
 msgid "kbps"
 msgstr "kbps"
 
-#: widgets/MetaQueryWidget.cpp:553
+#: widgets/MetaQueryWidget.cpp:534
 msgctxt "Unit for sample rate"
 msgid "Hz"
 msgstr "Hz"
 
-#: widgets/MetaQueryWidget.cpp:555
+#: widgets/MetaQueryWidget.cpp:536
 msgctxt "Unit for file size in mega byte"
 msgid "MiB"
 msgstr "MiB"
 
-#: widgets/MetaQueryWidget.cpp:879
+#: widgets/MetaQueryWidget.cpp:862
 msgctxt "The date lies before the given fixed date"
 msgid "before"
 msgstr "før"
 
-#: widgets/MetaQueryWidget.cpp:881
+#: widgets/MetaQueryWidget.cpp:864
 msgctxt "The date is the same as the given fixed date"
 msgid "on"
 msgstr "på"
 
-#: widgets/MetaQueryWidget.cpp:883
+#: widgets/MetaQueryWidget.cpp:866
 msgctxt "The date is after the given fixed date"
 msgid "after"
 msgstr "etter"
 
-#: widgets/MetaQueryWidget.cpp:885
+#: widgets/MetaQueryWidget.cpp:868
 msgctxt "The date is between the given fixed dates"
 msgid "between"
 msgstr "mellom"
 
-#: widgets/MetaQueryWidget.cpp:887
+#: widgets/MetaQueryWidget.cpp:870
 msgctxt "The date lies before the given time interval"
 msgid "older than"
 msgstr "eldre enn"
 
-#: widgets/MetaQueryWidget.cpp:889
-msgctxt "The date lies after the given time interval"
-msgid "within"
-msgstr "innen"
-
-#: widgets/MetaQueryWidget.cpp:905
+#: widgets/MetaQueryWidget.cpp:886
 msgctxt "a numerical tag (like year or track number) is between two values"
 msgid "between"
 msgstr "mellom"
 
-#: widgets/MetaQueryWidget.cpp:909
-msgctxt "an alphabetical tag (like title or artist name) equals some string"
-msgid "matches"
-msgstr "treffer"
+#: widgets/SearchWidget.cpp:73
+msgid "Enter space-separated terms to search."
+msgstr "Skriv inn en liste over søkeord, atskilt med mellomrom."
+
+#: widgets/SearchWidget.cpp:88 widgets/SearchWidget.cpp:160
+msgid "Edit filter"
+msgstr "Rediger filter"
 
 #: ActionClasses.cpp:85
 msgid "Amarok Menu"
@@ -9038,7 +9050,7 @@ msgstr "Valentin V. Bartenev"
 #: OpmlParser.cpp:109
 #, kde-format
 msgid "Reading OPML podcast from %1 failed with error:\n"
-msgstr ""
+msgstr "Klarte ikke lese OPML-podkast fra %1, feil:\n"
 
 #: App.cpp:432
 msgid "Files/URLs to open"
@@ -9475,7 +9487,7 @@ msgstr "Pause :: %1"
 msgid "%1 - %2  ::  %3"
 msgstr "%1 – %2 :: %3"
 
-#: PluginManager.cpp:229
+#: PluginManager.cpp:244
 msgid ""
 "<p>Amarok could not find any collection plugins. It is possible that Amarok "
 "is installed under the wrong prefix, please fix your installation "
@@ -11337,13 +11349,13 @@ msgstr "Oppdater automatisk innebygde skripter"
 #. i18n: ectx: property (toolTip), widget (QPushButton, manageButton)
 #: rc.cpp:871
 msgid "Browse, install, and uninstall scripts"
-msgstr ""
+msgstr "Bla i, installer og avinstaller skripter"
 
 #. i18n: file: configdialog/dialogs/ScriptsConfig.ui:65
 #. i18n: ectx: property (text), widget (QPushButton, manageButton)
 #: rc.cpp:874
 msgid "Manage Scripts"
-msgstr ""
+msgstr "Behandle skripter"
 
 #. i18n: file: context/applets/currenttrack/currentTrackSettings.ui:32
 #. i18n: ectx: property (title), widget (QGroupBox, showActionsGroupBox)
@@ -11439,19 +11451,19 @@ msgstr "Farge for etiketters bakgrunn:"
 #. i18n: ectx: property (toolTip), widget (QPushButton, resetColorsPushButton)
 #: rc.cpp:932
 msgid "Sets the label colors according to the current color scheme."
-msgstr ""
+msgstr "Angir etikettfarger i følge gjeldende fargeoppsett."
 
 #. i18n: file: context/applets/labels/labelsGeneralSettings.ui:300
 #. i18n: ectx: property (text), widget (QPushButton, resetColorsPushButton)
 #: rc.cpp:935
 msgid "Reset colors"
-msgstr ""
+msgstr "Tilbakestill farger"
 
 #. i18n: file: context/applets/labels/labelsBlacklistSettings.ui:17
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: rc.cpp:938
 msgid "Do not show the following labels:"
-msgstr ""
+msgstr "Ikke vis følgende etiketter:"
 
 #. i18n: file: context/applets/labels/labelsBlacklistSettings.ui:24
 #. i18n: ectx: property (text), widget (QCheckBox, matchArtistCheckBox)
@@ -11481,7 +11493,7 @@ msgstr "Svarteliste:"
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: rc.cpp:953
 msgid "Replace downloaded label"
-msgstr ""
+msgstr "Erstatt etikett som er lastet ned"
 
 #. i18n: file: context/applets/labels/labelsReplacementSettings.ui:36
 #. i18n: ectx: property (text), widget (QLabel, label_2)
@@ -11507,50 +11519,53 @@ msgid ""
 "labels according to your preferences.\n"
 "Eg. \"hip hop\" -> \"hip-hop\""
 msgstr ""
+"Dette hjelper til å holde etikettsamlingen ryddig ved å erstatte nedlastede "
+"etiketter slik du foretrekker.\n"
+"Eks. «hip hop»→«hip-hop»"
 
 #. i18n: file: context/applets/labels/labelsReplacementSettings.ui:98
 #. i18n: ectx: property (text), widget (QTreeWidget, replacementTreeWidget)
 #: rc.cpp:966
 msgid "Downloaded label"
-msgstr ""
+msgstr "Nedlastet etikett"
 
 #. i18n: file: context/applets/labels/labelsReplacementSettings.ui:103
 #. i18n: ectx: property (text), widget (QTreeWidget, replacementTreeWidget)
 #: rc.cpp:969
 msgid "Replacement"
-msgstr ""
+msgstr "Erstatning"
 
 #. i18n: file: context/applets/lyrics/lyricsSettings.ui:20
 #. i18n: ectx: property (title), widget (QGroupBox, fontGroup)
 #: rc.cpp:978
 msgid "Font"
-msgstr ""
+msgstr "Skrift"
 
 #. i18n: file: context/applets/lyrics/lyricsSettings.ui:32
 #. i18n: ectx: property (title), widget (KButtonGroup, alignmentGroup)
 #: rc.cpp:981
 msgid "Alignment"
-msgstr ""
+msgstr "Innretting"
 
 #. i18n: file: context/applets/lyrics/lyricsSettings.ui:38
 #. i18n: ectx: property (text), widget (QRadioButton, alignLeft)
 #: rc.cpp:984
 msgctxt "Left alignment"
 msgid "Left"
-msgstr ""
+msgstr "Venstre"
 
 #. i18n: file: context/applets/lyrics/lyricsSettings.ui:45
 #. i18n: ectx: property (text), widget (QRadioButton, alignCenter)
 #: rc.cpp:987
 msgctxt "Center alignment"
 msgid "Center"
-msgstr ""
+msgstr "Senter"
 
 #. i18n: file: context/applets/lyrics/lyricsSettings.ui:52
 #. i18n: ectx: property (text), widget (QRadioButton, alignRight)
 #: rc.cpp:990
 msgid "Right"
-msgstr ""
+msgstr "Høyre"
 
 #. i18n: file: context/applets/photos/photosSettings.ui:20
 #. i18n: ectx: property (text), widget (QLabel, animationLabel)
@@ -12439,7 +12454,7 @@ msgstr "Lagre forhåndsinnstilling"
 #. i18n: ectx: property (text), widget (QPushButton, updatePresetButton)
 #: rc.cpp:1548
 msgid "&Update Preset"
-msgstr ""
+msgstr "&Oppdater forhåndsinnstilling"
 
 #. i18n: file: dialogs/OrganizeCollectionDialogBase.ui:166
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
@@ -12752,7 +12767,7 @@ msgstr "Spor – artist – album"
 #. i18n: ectx: property (text), widget (QLabel, leftHeaderLabel)
 #: rc.cpp:1657
 msgid "Properties"
-msgstr ""
+msgstr "Egenskaper"
 
 #. i18n: file: dialogs/TagDialogBase.ui:144
 #. i18n: ectx: property (text), widget (QLabel, rightHeaderLabel)
@@ -12794,7 +12809,7 @@ msgstr "Format:"
 #. i18n: ectx: property (text), widget (QLabel, qLabel_format)
 #: rc.cpp:1690
 msgid "mp3"
-msgstr ""
+msgstr "mp3"
 
 #. i18n: file: dialogs/TagDialogBase.ui:317
 #. i18n: ectx: property (text), widget (QLabel, collectionLabel)
@@ -12812,7 +12827,7 @@ msgstr "Vurdering:"
 #. i18n: ectx: property (text), widget (QLabel, playcountLabel)
 #: rc.cpp:1702
 msgid "Play count:"
-msgstr ""
+msgstr "Avspillingsteller:"
 
 #. i18n: file: dialogs/TagDialogBase.ui:444
 #. i18n: ectx: property (text), widget (QLabel, scoreLabel)
@@ -12824,7 +12839,7 @@ msgstr "Poeng:"
 #. i18n: ectx: property (text), widget (QLabel, firstPlayedLabel)
 #: rc.cpp:1711
 msgid "First played:"
-msgstr ""
+msgstr "Spilt først:"
 
 #. i18n: file: dialogs/TagDialogBase.ui:485
 #. i18n: ectx: property (text), widget (QLabel, qLabel_firstPlayed)
@@ -12832,13 +12847,13 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QLabel, qLabel_lastPlayed)
 #: rc.cpp:1714 rc.cpp:1720
 msgid "1/1/2000"
-msgstr ""
+msgstr "1/1/2000"
 
 #. i18n: file: dialogs/TagDialogBase.ui:498
 #. i18n: ectx: property (text), widget (QLabel, lastPlayedLabel)
 #: rc.cpp:1717
 msgid "Last played:"
-msgstr ""
+msgstr "Sist spilt:"
 
 #. i18n: file: dialogs/TagDialogBase.ui:552
 #. i18n: ectx: attribute (title), widget (QWidget, tagsTab)
@@ -12880,7 +12895,7 @@ msgstr "Al&bum:"
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_6_6)
 #: rc.cpp:1741
 msgid " Trac&k Number:"
-msgstr ""
+msgstr "Spo&rnummer:"
 
 #. i18n: file: dialogs/TagDialogBase.ui:747
 #. i18n: ectx: property (text), widget (QLabel, textLabel1_4)
@@ -14042,51 +14057,9 @@ msgid ""
 "p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">After joining, go to the "
-"Magnatune config in \"Settings-&gt;Configure Amarok-&gt;Internet Services\" "
-"and enter your membership information. </p></body></html>"
+"Magnatune config in \"Settings->Configure Amarok->Internet Services\" and "
+"enter your membership information. </p></body></html>"
 msgstr ""
-"<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
-"REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-"css\">\n"
-"p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:'Liberation Sans'; font-size:9pt; "
-"font-weight:400; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\">HVis du blir medlem i "
-"Magnatune.com får du tilgang til ubegrenset nedlasting og kan laste ned "
-"albumer fra inne i Amarok med ett enkelt museklikk. Blir du med, kan du også "
-"lytte til alle sporstrømmer fra Magnatune.com uten reklame.</p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
-"margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></"
-"p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\">Amarok-laget får 10% av "
-"din første innbetaling, så ved å melde deg inn støtter du også utviklingen "
-"av Amarok.</p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
-"margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></"
-"p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\">Som alltid får de utøvende "
-" 50% av dine medlemskapsbetalinger, fordelt etter hvilke artister du laster "
-"ned og strømmer.</p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
-"margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></"
-"p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\">Trykk her <a href=\"http://"
-"magnatune.com/downloads?referal_id=amarok\"><span style=\" text-decoration: "
-"underline; color:#0057ae;\">Membership Info</span></a> for å lese mer om "
-"medlemskap i Magnatune.com eller for å melde deg inn.</p>\n"
-"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
-"margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></"
-"p>\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\">Når du har meldt deg inn, "
-"gå  til Magnatune innstillingene i  \"Innstillinger-&gt;Sett opp Amarok-&gt;"
-"Internett-tjenester\" og skriv inn informasjon om ditt medlemskap. </p></"
-"body></html>"
 
 #. i18n: file: services/mp3tunes/Mp3tunesConfigWidget.ui:16
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
@@ -14180,12 +14153,13 @@ msgstr ""
 #: rc.cpp:2480
 msgid "Add a local or remote OPML file to be included in the list."
 msgstr ""
+"Legg til en OPML-fil, lokalt eller på nettverket, som skal legges til lista."
 
 #. i18n: file: services/opmldirectory/AddOpmlWidget.ui:88
 #. i18n: ectx: property (clickMessage), widget (KLineEdit, titleEdit)
 #: rc.cpp:2489
 msgid "If left blank the title from the OPML will be used."
-msgstr ""
+msgstr "Hvis dette er tomt blir tittelen fra OPML-en brukt."
 
 #. i18n: file: transcoding/TranscodingAssistantDialog.ui:105
 #. i18n: ectx: property (text), widget (QCommandLinkButton, justCopyButton)
