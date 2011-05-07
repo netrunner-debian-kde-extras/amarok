@@ -3,6 +3,7 @@ amarok (2.4.1-1) UNRELEASED; urgency=low
   * New upstream release.
   * No longer recommend phonon-backend-xine. Stick to what phonon metapackage
     depends on.
+  * Bump Standards-Version to 3.9.2: no changes needed.
 
  -- Modestas Vainius <modax@debian.org>  Sun, 20 Mar 2011 18:02:02 +0200
 
