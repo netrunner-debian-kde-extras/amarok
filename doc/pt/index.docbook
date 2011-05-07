@@ -901,9 +901,9 @@
 </screenshot>
 </para>
 <para
->No menu de contexto acima, poderá também ver a opção para <guilabel
->Editar os Detalhes da Faixa</guilabel
->. Use esta opção se tiver uma faixa onde necessite de modificar uma marca. Isto torna-se importante quando extrair músicas para o formato .WAV, perdendo algumas das marcas. Se alguma parte da sua colecção necessitar de marcas, pense em usar alguma aplicação de marcação dedicada, como por exemplo </para>
+>In the above context menu, you can also see the the choice to <guilabel
+>Edit Track Details</guilabel
+>. Use this option if you have a track that needs a tag edited. This becomes important when you rip music to .WAV format, losing some of the tags. If quite a bit of your collection needs tagging, consider dedicated tagging software, such as </para>
 <itemizedlist>
 <listitem
 ><para
