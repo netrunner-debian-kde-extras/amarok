@@ -1,4 +1,4 @@
-amarok (2.4.1-1) UNRELEASED; urgency=low
+amarok (2.4.1-1) unstable; urgency=low
 
   * New upstream release.
   * No longer recommend phonon-backend-xine. Stick to what phonon metapackage
@@ -7,7 +7,7 @@ amarok (2.4.1-1) UNRELEASED; urgency=low
   * Drop backport_fix_plugin_version.diff, it was backported from upstream.
   * Call dh in compat=8 compliant way.
 
- -- Modestas Vainius <modax@debian.org>  Sun, 20 Mar 2011 18:02:02 +0200
+ -- Modestas Vainius <modax@debian.org>  Sun, 08 May 2011 00:21:26 +0300
 
 amarok (2.4.1~beta1-1) experimental; urgency=low
 
