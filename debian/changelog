@@ -5,6 +5,7 @@ amarok (2.4.1-1) UNRELEASED; urgency=low
     depends on.
   * Bump Standards-Version to 3.9.2: no changes needed.
   * Drop backport_fix_plugin_version.diff, it was backported from upstream.
+  * Call dh in compat=8 compliant way.
 
  -- Modestas Vainius <modax@debian.org>  Sun, 20 Mar 2011 18:02:02 +0200
 

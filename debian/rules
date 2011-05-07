@@ -23,6 +23,6 @@ override_dh_builddeb:
 	dh_builddeb --remaining-packages
 
 %:
-	dh --with kde --parallel --dbg-package=amarok-dbg $@
+	dh $@ --with kde --parallel --dbg-package=amarok-dbg
 
 .PHONY: override_dh_auto_test
