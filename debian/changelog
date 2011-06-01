@@ -1,9 +1,9 @@
-amarok (2.4.1-2) UNRELEASED; urgency=low
+amarok (2.4.1-2) unstable; urgency=low
 
   * Build depend on kdelibs5-dev 4:4.5 and ship plugins for NFS and SMB
     collection support. (Closes: #620741)
 
- -- Modestas Vainius <modax@debian.org>  Wed, 01 Jun 2011 15:04:31 +0300
+ -- Modestas Vainius <modax@debian.org>  Wed, 01 Jun 2011 15:10:31 +0300
 
 amarok (2.4.1-1) unstable; urgency=low
 
