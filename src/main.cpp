@@ -23,15 +23,26 @@
 #include <KCmdLineArgs>
 #include <KDebug>
 
+#include <qglobal.h>
+
+#ifdef Q_WS_X11
+    #include <X11/Xlib.h>
+#endif
+
 #include <csignal>
 
 //#define AMAROK_USE_DRKONQI
 
-extern AMAROK_EXPORT class KAboutData aboutData; //defined in App.cpp
-extern AMAROK_EXPORT class OcsData ocsData;
-
 int main( int argc, char *argv[] )
 {
+    KAboutData aboutData(
+        "amarok", 0,
+        ki18n( "Amarok" ), AMAROK_VERSION,
+        ki18n( "The audio player for KDE" ), KAboutData::License_GPL,
+        ki18n( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2011, The Amarok Development Squad" ),
+        ki18n( "IRC:\nirc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org\n\n(Build Date: %1)" ).subs( __DATE__ ),
+        ( "http://amarok.kde.org" ) );
+
     //Authors
     aboutData.addAuthor( ki18n("Alejandro Wainzinger"),
             ki18n("Developer (xevix)"), "aikawarazuni@gmail.com", "http://awainzin-foss.blogspot.com" );
@@ -58,6 +69,7 @@ int main( int argc, char *argv[] )
     aboutData.addAuthor( ki18n("Téo Mrnjavac"),
             ki18n("Developer (Teo`)"), "teo@kde.org", "http://teom.wordpress.com/" );
 
+    extern OcsData ocsData;
     ocsData.addAuthor( "xevix", aboutData.authors().at( 0 ) );
     ocsData.addAuthor( "Stecchino", aboutData.authors().at( 1 ) );
     ocsData.addAuthor( QString(), aboutData.authors().at( 2 ) );
@@ -209,6 +221,8 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( QString(), aboutData.credits().last() );
     aboutData.addCredit( ki18n("Stefan Bogner"), ki18n("Loads of stuff"), "bochi@online.ms" );
         ocsData.addCredit( QString(), aboutData.credits().last() );
+    aboutData.addCredit( ki18n("Tomasz Dudzik"), ki18n("Splash screen"), "madsheytan@gmail.com" );
+        ocsData.addCredit( QString(), aboutData.credits().last() );
 
     //Donors:
     ocsData.addDonor( "", KAboutPerson( ki18n( "Benoît AlK Zugmeyer" ), KLocalizedString(), "benoit@zugmeyer.com" ) );
@@ -222,10 +236,11 @@ int main( int argc, char *argv[] )
     ocsData.addDonor( "", KAboutPerson( ki18n( "Robert Tell" ), KLocalizedString(), "robert.tell@gmx.net" ) );
     ocsData.addDonor( "", KAboutPerson( ki18n( "Ryan Rix" ), KLocalizedString(), "phrkonaleash@gmail.com" ) );
     ocsData.addDonor( "", KAboutPerson( ki18n( "Thomas Kahle" ), KLocalizedString(), "tom111@gmx.de" ) );
-    //Last update: 4/12/2010
+    ocsData.addDonor( "VBart", KAboutPerson( ki18n( "Valentin V. Bartenev" ), KLocalizedString(), "i@vbart.ru" ) );
+    //Last update: 11/1/2010
 
     KCmdLineArgs::reset();
-    KCmdLineArgs::init( argc, argv, &::aboutData ); //calls KCmdLineArgs::addStdCmdLineOptions()
+    KCmdLineArgs::init( argc, argv, &aboutData ); //calls KCmdLineArgs::addStdCmdLineOptions()
 
     App::initCliArgs();
     KUniqueApplication::addCmdLineOptions();
@@ -262,6 +277,11 @@ int main( int argc, char *argv[] )
     // application termination (logout, Ctr+C in console etc.)
     signal( SIGINT, &QCoreApplication::exit );
     signal( SIGTERM, &QCoreApplication::exit );
+
+    // This call is needed to prevent a crash on exit with Phonon-VLC and LibPulse
+#ifdef Q_WS_X11
+    XInitThreads();
+#endif
 
     App app;
     app.setUniqueInstance( startFlag == KUniqueApplication::NonUniqueInstance );

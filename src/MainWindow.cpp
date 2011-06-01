@@ -31,7 +31,6 @@
 #include "KNotificationBackend.h"
 #include "Osd.h"
 #include "PaletteHandler.h"
-#include "ScriptManager.h"
 #include "amarokconfig.h"
 #include "aboutdialog/OcsData.h"
 #include "amarokurls/AmarokUrlHandler.h"
@@ -59,12 +58,12 @@
 #include "playlistmanager/file/PlaylistFileProvider.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "PodcastCategory.h"
-#include "services/ServicePluginManager.h"
 #include "services/scriptable/ScriptableService.h"
 #include "statusbar/StatusBar.h"
 #include "toolbar/SlimToolbar.h"
 #include "toolbar/MainToolbar.h"
 #include "SvgHandler.h"
+#include "PluginManager.h"
 #include "widgets/Splitter.h"
 //#include "mediabrowser.h"
 
@@ -107,7 +106,6 @@
 
 #define AMAROK_CAPTION I18N_NOOP( "Amarok" )
 
-extern KAboutData aboutData;
 extern OcsData ocsData;
 
 QWeakPointer<MainWindow> MainWindow::s_instance;
@@ -136,21 +134,24 @@ MainWindow::MainWindow()
     CollectionManager::instance();
     PERF_LOG( "Started Collection Manager instance" )
 
-    /* The ServicePluginManager needs to be loaded before the playlist model
-    * (which gets started by "statusBar" below up so that it can handle any
+    PERF_LOG( "Set Status Bar" )
+    StatusBar* statusBar = new StatusBar( this );
+    setStatusBar( statusBar );
+    PERF_LOG( "Created Status Bar" )
+
+    /* The PluginManager needs to be loaded before the playlist model
+    * (which gets started by "statusBar::conectPlaylist" below so that it can handle any
     * tracks in the saved playlist that are associated with services. Eg, if
     * the playlist has a Magnatune track in it when Amarok is closed, then the
     * Magnatune service needs to be initialized before the playlist is loaded
     * here. */
+    PERF_LOG( "Instantiate Plugin Manager" )
+    The::pluginManager();
+    PERF_LOG( "Started Plugin Manager instance" )
 
-    PERF_LOG( "Instantiate Service Plugin Manager" )
-    ServicePluginManager::instance();
-    PERF_LOG( "Started Service Plugin Manager instance" )
-
-    PERF_LOG( "Set Status Bar" )
-    StatusBar * statusBar = new StatusBar( this );
-    setStatusBar( statusBar );
-    PERF_LOG( "Created Status Bar" )
+    PERF_LOG( "Connect Status Bar" )
+    statusBar->connectPlaylist();
+    PERF_LOG( "Connected Status Bar" )
 
     // Sets caption and icon correctly (needed e.g. for GNOME)
 //     kapp->setTopWidget( this );
@@ -222,7 +223,6 @@ MainWindow::init()
     m_mainToolbar.data()->setAllowedAreas( Qt::TopToolBarArea | Qt::BottomToolBarArea );
     m_mainToolbar.data()->setMovable ( true );
     addToolBar( Qt::TopToolBarArea, m_mainToolbar.data() );
-    m_mainToolbar.data()->hide();
 
     //create slim toolbar
     m_slimToolbar = new SlimToolbar( 0 );
@@ -295,20 +295,13 @@ MainWindow::init()
         m_browserDock.data()->list()->addCategory( m_playlistBrowser );
         PERF_LOG( "CreatedPlaylsitBrowser" )
 
-
         PERF_LOG( "Creating FileBrowser" )
         FileBrowser * fileBrowserMkII = new FileBrowser( "files", 0 );
         fileBrowserMkII->setPrettyName( i18n("Files") );
         fileBrowserMkII->setIcon( KIcon( "folder-amarok" ) );
         fileBrowserMkII->setShortDescription( i18n( "Browse local hard drive for content" ) );
         m_browserDock.data()->list()->addCategory( fileBrowserMkII );
-
-
         PERF_LOG( "Created FileBrowser" )
-
-        PERF_LOG( "Initialising ServicePluginManager" )
-        ServicePluginManager::instance()->init();
-        PERF_LOG( "Initialised ServicePluginManager" )
 
         internetContentServiceBrowser->setScriptableServiceManager( The::scriptableServiceManager() );
         PERF_LOG( "ScriptableServiceManager done" )
@@ -614,13 +607,6 @@ MainWindow::slotJumpTo() // slot
     m_playlistDock.data()->searchWidget()->focusInputLine();
 }
 
-void
-MainWindow::showScriptSelector() //SLOT
-{
-    ScriptManager::instance()->show();
-    ScriptManager::instance()->raise();
-}
-
 #ifdef DEBUG_BUILD_TYPE
 void
 MainWindow::showNetworkRequestViewer() //SLOT
@@ -782,10 +768,6 @@ MainWindow::createActions()
     ac->addAction( "playlist_playmedia", action );
     action->setShortcut( Qt::CTRL + Qt::Key_O );
     connect( action, SIGNAL( triggered( bool ) ), SLOT( slotPlayMedia() ) );
-
-    action = new KAction( KIcon("preferences-plugin-script-amarok"), i18n("Script Manager"), this );
-    connect( action, SIGNAL( triggered( bool ) ), SLOT( showScriptSelector() ) );
-    ac->addAction( "script_manager", action );
 
     action = new KAction( KIcon( "media-seek-forward-amarok" ), i18n("&Seek Forward"), this );
     ac->addAction( "seek_forward", action );
@@ -1124,7 +1106,7 @@ MainWindow::slotShowMenuBar()
 void
 MainWindow::showAbout()
 {
-    ExtendedAboutDialog dialog( &aboutData, &ocsData );
+    ExtendedAboutDialog dialog( KGlobal::mainComponent().aboutData(), &ocsData );
     dialog.exec();
 }
 

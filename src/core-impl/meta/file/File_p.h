@@ -95,6 +95,7 @@ public:
         , batchUpdate( false )
         , album()
         , artist()
+        , albumArtist()
         , provider( 0 )
         , track( t )
     {}
@@ -104,6 +105,7 @@ public:
     bool batchUpdate;
     Meta::AlbumPtr album;
     Meta::ArtistPtr artist;
+    Meta::ArtistPtr albumArtist;
     Meta::GenrePtr genre;
     Meta::ComposerPtr composer;
     Meta::YearPtr year;
@@ -141,6 +143,8 @@ void Track::Private::readMetaData()
         m_data.artist = values.value(Meta::valArtist).toString();
     if( values.contains(Meta::valAlbum) )
         m_data.album = values.value(Meta::valAlbum).toString();
+    if( values.contains(Meta::valAlbumArtist) )
+        m_data.albumArtist = values.value(Meta::valAlbumArtist).toString();
     if( values.contains(Meta::valHasCover) )
         m_data.embeddedImage = values.value(Meta::valHasCover).toBool();
     if( values.contains(Meta::valComment) )
@@ -211,9 +215,10 @@ void Track::Private::readMetaData()
 class FileArtist : public Meta::Artist
 {
 public:
-    FileArtist( MetaFile::Track::Private *dptr )
+    FileArtist( MetaFile::Track::Private *dptr, bool isAlbumArtist = false )
         : Meta::Artist()
         , d( dptr )
+        , m_isAlbumArtist( isAlbumArtist )
     {}
 
     Meta::TrackList tracks()
@@ -221,14 +226,10 @@ public:
         return Meta::TrackList();
     }
 
-    Meta::AlbumList albums()
-    {
-        return Meta::AlbumList();
-    }
-
     QString name() const
     {
-        const QString artist = d.data()->m_data.artist;
+        const QString artist = m_isAlbumArtist ? d.data()->m_data.albumArtist
+                                               : d.data()->m_data.artist;
         return artist;
     }
 
@@ -237,6 +238,7 @@ public:
     }
 
     QWeakPointer<MetaFile::Track::Private> const d;
+    const bool m_isAlbumArtist;
 };
 
 class FileAlbum : public Meta::Album
@@ -254,12 +256,12 @@ public:
 
     bool hasAlbumArtist() const
     {
-        return false;
+        return !d.data()->albumArtist->name().isEmpty();
     }
 
     Meta::ArtistPtr albumArtist() const
     {
-        return Meta::ArtistPtr();
+        return d.data()->albumArtist;
     }
 
     Meta::TrackList tracks()
@@ -276,11 +278,6 @@ public:
         }
         else
             return QString();
-    }
-
-    QPixmap image( int size )
-    {
-        return Meta::Album::image( size );
     }
 
     bool operator==( const Meta::Album &other ) const {

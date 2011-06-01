@@ -37,9 +37,9 @@
 <legalnotice
 >&FDLNotice;</legalnotice>
 <date
->2010-09-14</date>
+>29-01-2011</date>
     <releaseinfo
->&kde; SC 4.5</releaseinfo>
+>&kde; SC 4.6</releaseinfo>
 <abstract>
 <para
 >O &amarok; é um reprodutor de música gratuito, versátil e poderoso para o &Linux;. A última série de versões 2.x, normalmente conhecida por <quote
@@ -98,11 +98,11 @@
 </screenshot>
 </para>
 <para
->O <emphasis
->painel de Fontes de mídia</emphasis
-> á esquerda é o local onde você acesse sua coleção local bem como outros serviços: <guilabel
+>O painel de <emphasis
+>Fontes de mídia</emphasis
+> à esquerda é a localização de acesso a sua coleção local, assim como outros serviços: <guilabel
 >Músicas locais</guilabel
-> acima, que é a interface primária para sua coleção local e mídias conectadas como reprodutores mp3 e &CD;s. Existe uma seção para todos os <guilabel
+> na parte superior, que é a interface primária para sua coleção local e mídias conectadas, como reprodutores mp3 e &CD;s. Existe uma seção para todos os <guilabel
 >Serviços da Internet</guilabel
 > que você pode habilitar. Aqui, você pode navegar pela lista de estações de rádio e podcasts, ouvir ou inscrever-se nestes serviços, interagir com sua conta do <ulink url="http://www.last.fm"
 >last.fm</ulink
@@ -112,17 +112,17 @@
 >Jamendo</guilabel
 > e muito mais. A seção de <guilabel
 >Listas</guilabel
-> permite que você crie e gerencie <emphasis
+> permite-lhe criar e gerenciar <emphasis
 >Listas dinâmicas</emphasis
 >, acesse suas <emphasis
 >Listas de músicas salvas</emphasis
-> bem como o <emphasis
+> assim como o <emphasis
 >Gerador de lista de músicas automatizado</emphasis
 >. A seção <guilabel
 >Arquivos</guilabel
 > exibe um navegador de arquivos integrado e a seção <guilabel
 >Podcasts</guilabel
-> lhe permite acessar os podcasts aos quais se inscreveu. </para>
+> permite-lhe acessar os podcasts aos quais você se inscreveu. </para>
 </sect1>
 <sect1 id="the-central-pane-context-view"
 ><title
@@ -752,7 +752,7 @@
 ><para
 >a <emphasis
 >Lista de músicas</emphasis
-> no painel à direita </para
+> no painel à direita. </para
 ></listitem>
 </orderedlist>
 </sect1>
@@ -790,8 +790,8 @@
 ><title
 >O painel de fontes de mídias</title>
 <para
->O <emphasis
->painel de Fontes de mídias</emphasis
+>O painel de <emphasis
+>Fontes de mídias</emphasis
 > é o local aonde você navega e exibe sua coleção de músicas completa. Isto inclui as faixas em seu disco local, bem como as que estejam em qualquer dispositivos ou mídias conectadas ao seu computador, como &CD;s de áudio, dispositivos USB, reprodutores de mídia, discos de rede ou fontes da Internet. </para>
 </sect1>
 <sect1 id="setting-up-a-collection"
@@ -835,17 +835,17 @@
 ><title
 >Adicionando dispositivos de mídia à sua coleção</title>
 <para
->Abaixo da barra de pesquisa, próximo ao topo do <emphasis
->painel de Fontes de mídias</emphasis
+>Abaixo da barra de pesquisa, próximo ao topo do painel de <emphasis
+>Fontes de mídias</emphasis
 > você verá diferentes dispositivos e/ou categorias de conteúdo dentro do <emphasis
 >Navegador de conteúdo</emphasis
->. Se você inserir um CD de áudio no leitor de CDs, ele aparecerá no <emphasis
->painel de Fontes de mídias</emphasis
->, juntamente com reprodutores de mídia, pendrives e outros dispositivos USB. Após um dispositivo externo ter sido montado, ele será exibido automaticamente no <emphasis
->painel de Fontes de mídias</emphasis
->. Você não precisa fazer nada a mais para ver os dispositivos externos no seu <emphasis
->painel de Fontes de mídias</emphasis
->, uma vez eles tenham sido reconhecidos pelo seu computador. </para>
+>. Se você inserir um CD de áudio no leitor de CDs, ele aparecerá no painel de <emphasis
+>Fontes de mídias</emphasis
+>, juntamente com reprodutores de mídia, pendrives e outros dispositivos USB. Após um dispositivo externo ter sido montado, ele será exibido automaticamente no painel de <emphasis
+>Fontes de mídias</emphasis
+>. Você não precisa fazer nada a mais para ver os dispositivos externos no seu painel de <emphasis
+>Fontes de mídias</emphasis
+>, desde que eles tenham sido reconhecidos pelo seu computador. </para>
 <para
 >Abaixo está uma imagem mostrando três fontes de músicas conectadas: CD de áudio, reprodutor mp3 e a <emphasis
 >Coleção local</emphasis
@@ -871,22 +871,28 @@
 >Ripando um CD para sua coleção</title>
 <para
 >Se você ainda não possui nenhum arquivo de música em seu computador, é fácil <emphasis
->ripá</emphasis
->-los (copiar as faixas de seus CDs para sua coleção). Basta carregar o CD e dar um clique-direito na faixa do dispositivo de CD no navegador de conteúdo para reproduzir ou copiar para sua coleção, o que irá <emphasis
->ripar</emphasis
+>extraí-los</emphasis
+> (copiar as faixas de seus &CD;s para a sua coleção). Basta carregar um &CD; e clicar com o botão direito do mouse na faixa do dispositivo de &CD; no <emphasis
+>Navegador de conteúdo</emphasis
+>, para reproduzir ou copiar para sua coleção, o que irá <emphasis
+>extrair</emphasis
 > e <emphasis
 >marcar</emphasis
-> suas faixas (veja a imagem abaixo). Se você copiar músicas de um CD de áudio para sua coleção local, a <emphasis
->barra de mensagem</emphasis
-> no fundo da janela do &amarok; indicará que ele está ocupado copiando. A ripagem pode levar vários minutos. Uma vez esteja completa, a mensagem na <emphasis
->barra de mensagem</emphasis
-> desaparecerá e a música aparecerá no navegador de conteúdo de sua coleção local. Se a música ripada não aparecer em seu <emphasis
->painel de Fontes de mídias</emphasis
-> saia do &amarok; usando o menu do &amarok; ou use o <keycombo
+> as suas faixas (veja a imagem abaixo). Se você copiar músicas de um &CD; de áudio para sua <emphasis
+>Coleção local</emphasis
+>, a <emphasis
+>barra de mensagens</emphasis
+> na parte inferior da janela do &amarok; indicará que ele está ocupado fazendo a cópia. A extração pode levar vários minutos. Quando estiver concluída, a mensagem na <emphasis
+>barra de mensagens</emphasis
+> desaparecerá e a música aparecerá no navegador de conteúdo da sua <emphasis
+>Coleção local</emphasis
+>. Se a música extraída não aparecer no seu painel de <emphasis
+>Fontes de mídias</emphasis
+> saia do &amarok; usando o menu ou use o <keycombo
 >&Ctrl;<keycap
 >Q</keycap
 ></keycombo
->, e então reinicie-o. Agora você deve ver sua coleção no painel esquerdo. A imagem abaixo mostra como você move faixas de um CD de áudio, iPod ou outro dispositivo para sua coleção usando o menu do botão direito. </para>
+>, e então reinicie-o. Agora você deve vê-la na sua coleção. A imagem abaixo mostra como você move faixas de um &CD; de áudio, iPod ou outro dispositivo para a sua coleção usando o menu do botão direito do mouse. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -935,15 +941,15 @@
 ><title
 >Acessando outras fontes de mídia</title>
 <para
->Você pode estar se perguntando porque o <emphasis
->painel de Fontes de mídia</emphasis
-> não é chamado de 'painel de Coleções'. O &amarok; lhe fornece acesso a muito mais músicas do que as existentes em sua coleção -- lojas na Internet, livros de áudio, podcasts, arquivos de músicas armazenados fora de sua coleção, e listas de músicas previamente salvas. A <emphasis
->navegação de trilha de pão</emphasis
-> do &amarok; é a chave para tudo isto. O ícone de início para a navegação de trilha de pão é o da pasta azul com uma casa no canto esquerdo superior do <emphasis
->painel de Fontes de mídias</emphasis
->. Este ícone se expande e contrai conforme você navega pelo <emphasis
->painel de Fontes de mídias</emphasis
->, permitindo que você navegue facilmente por sua coleção clicando na pasta desejada na sua barra de trilha de pão. </para>
+>Você pode estar se perguntando porque o painel de <emphasis
+>Fontes de mídia</emphasis
+> não é chamado de 'painel de Coleções'. O &amarok; lhe fornece acesso a muito mais músicas do que as existentes em sua coleção -- lojas na Internet, livros de áudio, podcasts, arquivos de músicas armazenados fora da sua coleção, e listas de músicas previamente salvas. A <emphasis
+>área de navegação</emphasis
+> do &amarok; é a chave para tudo isto. O ícone de inicial para a área de navegação é o da pasta azul com uma casa no canto superior esquerdo do painel de <emphasis
+>Fontes de mídias</emphasis
+>. Este ícone se expande e contrai conforme você navega pelo painel de <emphasis
+>Fontes de mídias</emphasis
+>, permitindo-lhe navegar facilmente pela sua coleção clicando na pasta desejada na sua barra de navegação. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -960,10 +966,10 @@
 </screenshot>
 </para>
 <para
->Se você clicar na pasta da casa do &amarok;, você verá o <emphasis
->painel de Fontes de mídias</emphasis
-> à esquerda e abaixo, contendo os ícones para as fontes disponíveis. Se você clicar no ícone de Arquivos (imagem à esquerda e abaixo, segundo botão a partir do fundo), você verá algo semelhante à imagem à direita e abaixo. Note como a barra da trilha de pão se expande e como o conteúdo da pasta é mostrado no <emphasis
->painel de Fontes de mídias</emphasis
+>Se você clicar na pasta da casa do &amarok;, você verá o painel de <emphasis
+>Fontes de mídias</emphasis
+> à esquerda e abaixo, contendo os ícones para as fontes disponíveis. Se você clicar no ícone de Arquivos (imagem à esquerda e abaixo, segundo botão a partir do fundo), você verá algo semelhante à imagem à direita e abaixo. Note como a barra da trilha de pão se expande e como o conteúdo da pasta é mostrado no painel de <emphasis
+>Fontes de mídias</emphasis
 > (imagem à direita e abaixo). Clicar nos símbolos <guilabel
 >&gt;</guilabel
 > ao longo da trilha de pão permite que você veja as pastas disponíveis naquele nível da estrutura de pastas. O navegador de arquivos do &amarok; lhe fornece acesso a todo o seu sistema de arquivos, mesmo fora de sua coleção local. </para>
@@ -1152,7 +1158,7 @@
 ><title
 >Transmissões e podcasts</title>
 <para
->Existem duas maneiras de ouvir transmissões. Se você tem uma estação favorita, obtenha o URL da transmissão e adicione-o: <menuchoice
+>Existem duas maneiras de ouvir transmissões. Se você tem uma estação favorita, obtenha o &URL; da transmissão e adicione-o: <menuchoice
 ><guimenu
 >Listas de músicas</guimenu
 ><guimenuitem
@@ -1162,7 +1168,9 @@
 >Listas de músicas</emphasis
 >, como uma <emphasis
 >lista de músicas salva</emphasis
->. Caso contrário, navegue pelos scripts disponíveis em seu gerenciador de scripts (<menuchoice
+>. Caso contrário, navegue pelos scripts disponíveis em seu <emphasis
+>gerenciador de scripts</emphasis
+> (<menuchoice
 ><guimenu
 >Ferramentas</guimenu
 ><guimenuitem
@@ -1170,12 +1178,12 @@
 ></menuchoice
 >). Existem algumas coleções excelentes disponíveis, que serão exibidas na seção <emphasis
 >Internet</emphasis
-> de seu <emphasis
->painel de Mídias</emphasis
+> de seu painel de <emphasis
+>Mídias</emphasis
 >. </para>
 <para
->Podcasts possuem sua própria seção no <emphasis
->painel de Mídias</emphasis
+>Podcasts possuem sua própria seção no painel de <emphasis
+>Mídias</emphasis
 > acima. Se você possui o URL de uma fonte RSS ou Atom, clique no <guilabel
 >+</guilabel
 > verde e adicione-o aqui. Se você possui um arquivo OPML para importar, esta opção também está disponível. Use o menu de contexto (<keycap
@@ -1207,8 +1215,8 @@
 ><title
 >Ocultando e expandindo informações</title>
 <para
->A área no <emphasis
->painel de Fontes de mídias</emphasis
+>A área no painel de <emphasis
+>Fontes de mídias</emphasis
 > abaixo da barra de pesquisa é chamada de <emphasis
 >navegador de conteúdo</emphasis
 >. Três fontes de mídia estão indicadas na imagem do navegador de conteúdo abaixo: &CD;, coleção local e um reprodutor de mídia: </para>
@@ -1248,10 +1256,10 @@
 <para
 >A ordem na qual as faixas são ordenadas no <emphasis
 >navegador de conteúdo</emphasis
-> pode ser customizada usando o <emphasis
->botão de opções de ordenamento</emphasis
-> no topo do <emphasis
->painel de fontes de mídia</emphasis
+> pode ser customizada usando o botão de <emphasis
+>Opções de ordenamento</emphasis
+> no topo do painel de <emphasis
+>Fontes de mídia</emphasis
 >: </para>
 <para>
 <screenshot>
@@ -1269,8 +1277,8 @@
 </screenshot>
 </para>
 <para
->A ordenação é indicada no topo e à esquerda do <emphasis
->painel de fontes de mídias</emphasis
+>A ordenação é indicada no topo e à esquerda do painel de <emphasis
+>Fontes de mídias</emphasis
 >, imediatamente abaixo da caixa de texto de <emphasis
 >pesquisa</emphasis
 >. A ordenação padrão é por <emphasis
@@ -1283,8 +1291,8 @@
 >visualização combinada</emphasis
 >, clique no <emphasis
 >ícone de combinação</emphasis
-> no topo e do lado direito do <emphasis
->painel de fontes de mídia</emphasis
+> no topo e do lado direito do painel de <emphasis
+>Fontes de mídia</emphasis
 >: </para>
 <para>
 <screenshot>
@@ -1306,9 +1314,9 @@
 >músicas locais</emphasis
 >. Você pode pesquisar não somente por um artista, álbum ou nome de faixa, mas por qualquer informação contida nas músicas. Você pode criar uma lista de músicas legal procurando por <replaceable
 >winter</replaceable
->, por exemplo, ou simplesmente encontrando uma faixa quando você somente se lembra de uma palavra do título. Você pode pesquisar por pontuação, número de reproduções e até mesmo por tipo de arquivo. Veja em <ulink url="http://amarok.kde.org/en/Insider/Issue_14"
->&amarok; Inside volume 14</ulink
-> mais detalhes. </para>
+>, por exemplo, ou simplesmente encontrando uma faixa quando você somente se lembra de uma palavra do título. Você pode pesquisar por pontuação, número de reproduções e até mesmo por tipo de arquivo. Veja <ulink url="http://userbase.kde.org/Special:myLanguage/Amarok/Manual/AdvancedFeatures/SearchInCollection"
+>Pesquisar na coleção</ulink
+> para mais detalhes. </para>
 </sect2>
 <sect2 id="deleting-items-from-the-collection"
 ><title
@@ -1376,8 +1384,8 @@
 <orderedlist>
 <listitem
 ><para
->Selecione algumas de suas músicas no navegador de conteúdo e arreste-as para a direita. Se você arrastá-las sobre o <emphasis
->painel de Contexto</emphasis
+>Selecione algumas de suas músicas no navegador de conteúdo e arreste-as para a direita. Se você arrastá-las sobre o painel de <emphasis
+>Contexto</emphasis
 >, você verá <emphasis
 >Menu de Contexto</emphasis
 >. A imagem acima mostra o menu de contexto em ação. Este menu fornece três opções: <guilabel
@@ -1489,10 +1497,10 @@
 ></listitem>
 <listitem
 ><para
->Arrastar o item a ser removido para o <emphasis
->painel de Contexto</emphasis
-> para ativar o menu de contexto. Diversas opções irão aparecer sobre o <emphasis
->painel de Contexto</emphasis
+>Arrastar o item a ser removido para o painel de <emphasis
+>Contexto</emphasis
+> para ativar o menu de contexto. Diversas opções irão aparecer sobre o painel de <emphasis
+>Contexto</emphasis
 >. Arraste o item para a área marcada como <guilabel
 >Remover da lista de músicas</guilabel
 >. Veja a imagem abaixo que mostra uma faixa sendo arrastada na opção <guilabel
@@ -1536,7 +1544,7 @@
 ><title
 >Usando as ferramentas ao fundo da Lista de músicas</title>
 <para
->No fundo do painel da Lista de músicas existem seis ícones: </para>
+>No fundo do painel da Lista de músicas existem sete ícones: </para>
 <para>
 <table>
   <title
@@ -1643,6 +1651,36 @@
 >Define o modo de reprodução: repetir faixas, ordem aleatória, preferir tocadas raramente, &etc;</para>
     </entry>
   </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-media-standard-track-progression-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Define o modo de reprodução: repetir faixas, ordem aleatória, preferir tocadas raramente, &etc;</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-edit-playlist-queue.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Edita a fila da lista de reprodução; as faixas são tocadas antes de a lista de reprodução prosseguir.</para>
+    </entry>
+  </row>
 </tbody>
   </tgroup>
 </table>
@@ -1699,13 +1737,13 @@
 ><title
 >Área de Contexto</title>
 <para
->O poder do &amarok; está no seu <emphasis
->painel de Contexto</emphasis
+>O poder do &amarok; está no seu painel de <emphasis
+>Contexto</emphasis
 > (no centro da janela padrão do &amarok;), onde você pode instalar vários <emphasis
 >mini-aplicativos</emphasis
-> para auxiliá-lo a desfrutar e explorar suas músicas. Muitas das informações adicionais são obtidas da Internet, assim uma conexão é importante para obter o máximo que seu <emphasis
->painel de Contexto</emphasis
-> pode oferecer. Por padrão, 3 <emphasis
+> para auxiliá-lo a desfrutar e explorar suas músicas. Muitas das informações adicionais são obtidas da Internet, assim uma conexão é importante para obter o máximo que seu painel de <emphasis
+>Contexto</emphasis
+> pode oferecer. Por padrão, três <emphasis
 >mini-aplicativos</emphasis
 > são pré-definidos: <emphasis
 >Faixa atual</emphasis
@@ -1718,10 +1756,10 @@
 ><title
 >Layout padrão</title>
 <para
->O <emphasis
->painel de Contexto</emphasis
-> padrão busca pelas letras da música que você está tocando. Se ele encontra as letras, elas são exibidas na metade inferior do painel de Contexto, enquanto a faixa superior do <emphasis
->painel de Contexto</emphasis
+>O painel de <emphasis
+>Contexto</emphasis
+> padrão busca pelas letras da música que você está tocando. Se ele encontra as letras, elas são exibidas na metade inferior do painel de Contexto, enquanto a faixa superior do painel de <emphasis
+>Contexto</emphasis
 > exibe a capa do álbum e informações da faixa atual. Algumas vezes as letras não estão disponíveis por não estarem armazenadas em um recurso apropriado na Internet. Além disso, as informações da faixa atual precisam ser <link linkend="tags"
 >marcadas</link
 > corretamente para que as letras possam ser encontradas. Se as letras não forem encontradas, isto pode ocorrer devido a vários razões, incluindo informações incorretas nas fontes da Internet como um sistema de numeração incorreto de faixas dentro de um álbum ou a representação incorreta de um texto não usual, como quando o título de uma faixa deve conter caracteres com acento circunflexo, cedilha ou agudo (ê, ç, à) mas não os tem. </para>
@@ -1745,11 +1783,15 @@
 ><title
 >Personalizando o painel de Contexto</title>
 <para
->No fundo do painel de contexto existem três botões para os mini-aplicativos padrão. À direita destes botões você pode ver uma chave inglesa que ao ser clicada exibirá um <guilabel
+>No fundo do painel de <emphasis
+>Contexto</emphasis
+> existem três botões para os mini-aplicativos padrão. À direita destes botões você pode ver uma chave inglesa que ao ser clicada exibirá um <guilabel
 >X</guilabel
 > vermelho em todos os botões, permitindo que você remova cada um dos mini-aplicativos. Clique no <guilabel
 >+</guilabel
-> verde para adicionar mais opções de exibição (veja a imagem abaixo). Arraste os botões para reordenar os mini-aplicativos e clique na chave inglesa novamente para fixar suas seleções. Isto torna o painel de contexto extremamente flexível, maximizando as possibilidades de personalização de modo a atender suas preferências. </para>
+> verde para adicionar mais opções de exibição (veja a imagem abaixo). Arraste os botões para reordenar os mini-aplicativos e clique na chave inglesa novamente para fixar suas seleções. Isto torna o painel de <emphasis
+>Contexto</emphasis
+> extremamente flexível, maximizando as possibilidades de personalização de modo a atender suas preferências. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -1798,7 +1840,13 @@
 ><title
 >Após eu atualizar minha coleção, o que foi adicionado não é exibido no navegador de conteúdo</title>
 <para
->Sai do &amarok; a partir do menu <guilabel
+>No menu de topo, em  <menuchoice
+><guimenu
+>Ferramentas</guimenu
+><guimenuitem
+>Atualizar coleção</guimenuitem
+></menuchoice
+>. Se as músicas não aparecerem, saia do &amarok; a partir do menu <guilabel
 >Amarok</guilabel
 >, ou use <keycombo
 >&Ctrl;<keycap
@@ -1830,11 +1878,21 @@
 ><para
 >O título de sua música contém caracteres especiais com uma cedilha, acento, &etc; que não são mostrados na marca de título. Deste modo, o mini-aplicativo de letras não pode encontrar uma correspondência para seu título. Verifique suas marcas e sistema de numeração de faixas com um programa específico como o <ulink url="http://musicbrainz.org/doc/MusicBrainz_Picard"
 >Picar</ulink
->. Veja mais informações na <ulink url="http://userbase.kde.org/Special:mylanguage/Amarok/Manual/FAQ"
->FAQ do &amarok;</ulink
->. </para
+>.</para
 ></listitem>
 </orderedlist>
+</sect1>
+<sect1 id="my-question-isnt-answered-here"
+><title
+>A minha dúvida não está respondida aqui</title>
+<para
+>As questões mais complexas estão cobertas no <ulink url="http://userbase.kde.org/Special:myLanguage/Amarok/Manual"
+>Manual</ulink
+>, incluindo a <ulink url="http://userbase.kde.org/Special:myLanguage/Amarok/Manual/TroubleshootingAndCommonProblems"
+>Resolução dos Problemas Comuns</ulink
+> e na <ulink url="http://userbase.kde.org/Special:mylanguage/Amarok/Manual/FAQ"
+>FAQ do Amarok</ulink
+>. </para>
 </sect1>
 </chapter>
 <chapter id="glossary"
@@ -1844,9 +1902,11 @@
 ><title
 >Caminho de pão</title>
 <para
->Esta é uma maneira de navegar por uma estrutura de arquivos hierárquica. No &amarok;, está próximo ao topo do painel de Fontes de mídias. Iniciando a partir da pasta de nível Casa, ele mostra quão fundo navegou no sistema de arquivos. Quando você tiver chegado a um local em particular no sistema de arquivos, verá todas as pastas de nível superior. No &amarok;, as ligações <guilabel
+>Esta é uma maneira de navegar por uma estrutura de arquivos hierárquica. No &amarok;, está próximo ao topo do painel de <emphasis
+>Fontes de mídias</emphasis
+>. Iniciando a partir do nível da Pasta pessoal, ele mostra quão profundamente navegou no sistema de arquivos. Quando você tiver chegado a um local em particular no sistema de arquivos, verá todas as pastas de nível superior. No &amarok;, os links <guilabel
 >&gt;</guilabel
-> entre os níveis de pasta permitem que você descubra quais pastas alternativas estão disponíveis em um determinado nível. O caminho de pão é um mecanismo eficiente para navegar por todo o sistema de arquivos em seu computador. </para>
+> entre os níveis de pasta permitem que você descubra quais pastas alternativas estão disponíveis em um determinado nível. A área de navegação é um mecanismo eficiente para navegar por todo o sistema de arquivos no seu computador. </para>
 </sect1>
 <sect1 id="collection"
 ><title
@@ -1858,9 +1918,9 @@
 ><title
 >Navegador de conteúdo</title>
 <para
->Esta é a parte centra do <emphasis
->painel de Fontes de mídia</emphasis
-> que permite que você liste as músicas que possui em sua coleção. O navegador de conteúdo permite que você selecione a ordenação desejada de suas listas de faixas bem como os detalhes que você deseja ver de suas músicas. </para>
+>Esta é a parte central do painel de <emphasis
+>Fontes de mídia</emphasis
+>, que permite-lhe listar as músicas que possui em sua coleção. O navegador de conteúdo permite-lhe selecionar a ordenação desejada de suas listas de faixas bem como os detalhes das suas músicas que você deseja ver. </para>
 </sect1>
 <sect1 id="playlist"
 ><title

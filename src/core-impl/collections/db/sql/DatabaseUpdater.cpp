@@ -866,9 +866,19 @@ DatabaseUpdater::adminValue( const QString &key ) const
 {
     SqlStorage *storage = m_collection->sqlStorage();
 
-    QStringList values;
-    values = storage->query( QString( "SELECT version FROM admin WHERE component = '%1';").arg(storage->escape( key ) ) );
-    return values.isEmpty() ? 0 : values.first().toInt();
+    QStringList columns = storage->query(
+            QString( "SELECT column_name FROM INFORMATION_SCHEMA.columns "
+                     "WHERE table_name='admin'" ) );
+    if( columns.isEmpty() )
+        return 0; //no table with that name
+
+    QStringList values = storage->query(
+            QString( "SELECT version FROM admin WHERE component = '%1';")
+            .arg(storage->escape( key ) ) );
+    if( values.isEmpty() )
+        return 0;
+
+    return values.first().toInt();
 }
 
 void
@@ -879,11 +889,11 @@ DatabaseUpdater::deleteAllRedundant( const QString &type )
     const QString tablename = type + 's';
     if( type == "artist" )
         storage->query( QString( "DELETE FROM artists "
-                                 "WHERE id NOT IN ( SELECT artist FROM tracks ) AND "
-                                 "id NOT IN ( SELECT artist FROM albums )") );
+                                 "WHERE id NOT IN ( SELECT artist FROM tracks WHERE artist IS NOT NULL ) AND "
+                                 "id NOT IN ( SELECT artist FROM albums WHERE artist IS NOT NULL )") );
     else
         storage->query( QString( "DELETE FROM %1 "
-                                 "WHERE id NOT IN ( SELECT %2 FROM tracks )" ).
+                                 "WHERE id NOT IN ( SELECT %2 FROM tracks WHERE %2 IS NOT NULL )" ).
                         arg( tablename, type ) );
 }
 

@@ -230,7 +230,7 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
                 {
                     int trackNum = track->trackNumber();
                     if( trackNum > 0 )
-                        name.prepend( QString("%1. ").arg(trackNum) );
+                        name.prepend( QString("%1 - ").arg(trackNum) );
                 }
 
                 // Check empty after track logic and before album logic
@@ -254,7 +254,8 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
         case Qt::ToolTipRole:
             {
                 QString name = album->prettyName();
-                if( AmarokConfig::showYears() )
+                // add years for named albums (if enabled)
+                if( AmarokConfig::showYears() && !album->name().isEmpty() )
                 {
                     Meta::TrackList tracks = album->tracks();
                     if( !tracks.isEmpty() )
@@ -1407,6 +1408,10 @@ void CollectionTreeItemModelBase::markSubTreeAsDirty( CollectionTreeItem *item )
 
 void CollectionTreeItemModelBase::itemAboutToBeDeleted( CollectionTreeItem *item )
 {
+    // also all the children will be deleted
+    foreach( CollectionTreeItem *child, item->children() )
+        itemAboutToBeDeleted( child );
+
     if( !d->runningQueries.contains( item ) )
         return;
     //replace this hack with QWeakPointer as soon as we depend on Qt 4.6

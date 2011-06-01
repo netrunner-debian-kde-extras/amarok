@@ -1,15 +1,17 @@
 # Daniel E. Moctezuma <democtezuma@gmail.com>, 2010.
+# Fumiaki Okushi <okushi@kde.gr.jp>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarokpkg\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2010-05-03 05:06+0200\n"
-"PO-Revision-Date: 2010-06-23 21:13-0700\n"
-"Last-Translator: Daniel E. Moctezuma <democtezuma@gmail.com>\n"
+"PO-Revision-Date: 2011-04-10 13:51-0700\n"
+"Last-Translator: Fumiaki Okushi <okushi@kde.gr.jp>\n"
 "Language-Team: Japanese <Kdeveloper@kde.gr.jp>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Language: ja\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Accelerator-Marker: &\n"
 "X-Text-Markup: kde4\n"
@@ -17,7 +19,7 @@ msgstr ""
 
 #: amarokpkg.cpp:40
 msgid "Install, list, remove Amarok applets"
-msgstr ""
+msgstr "Amarok アプレットのインストール、一覧表示、削除"
 
 #: amarokpkg.cpp:76
 msgid "Amarok Applet Manager"
@@ -50,21 +52,21 @@ msgstr ""
 #: amarokpkg.cpp:95
 msgctxt "Do not translate <path>"
 msgid "Install the applet at <path>"
-msgstr ""
+msgstr "<path> にあるアプレットをインストール"
 
 #: amarokpkg.cpp:97
 msgctxt "Do not translate <path>"
 msgid "Upgrade the applet at <path>"
-msgstr ""
+msgstr "<path> にあるアプレットをアップグレード"
 
 #: amarokpkg.cpp:99
 msgid "List installed applets"
-msgstr ""
+msgstr "インストールされているアプレットの一覧表示"
 
 #: amarokpkg.cpp:101
 msgctxt "Do not translate <name>"
 msgid "Remove the applet named <name>"
-msgstr ""
+msgstr "<name> という名前のアプレットを削除"
 
 #: amarokpkg.cpp:103
 msgid ""

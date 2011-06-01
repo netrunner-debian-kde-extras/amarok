@@ -4,23 +4,24 @@ Priority: optional
 Maintainer: Modestas Vainius <modax@debian.org>
 Build-Depends: debhelper (>= 7.3.16), cmake (>= 2.6.2), pkg-kde-tools (>= 0.5),
  libtag1-dev (>= 1.6-2~), libtag-extras-dev (>= 1.0.1),
+ libqtwebkit-dev | libqt4-dev (<< 4:4.7.0),
  kdelibs5-dev (>= 4:4.3.0), libsoprano-dev (>= 2.1.67),
  libstreamanalyzer-dev (>= 0.6.3), libstrigiqtdbusclient-dev (>= 0.6.3),
- libnjb-dev, libifp-dev, libmtp-dev (>= 1.0.0),
+ libnjb-dev, libifp-dev, libmtp-dev (>= 1.0.0), libqjson-dev,
  libglib2.0-dev, libgpod-nogtk-dev (>= 0.7.0) | libgpod-dev (>= 0.7.0),
  libmysqld-pic (>= 5.1.36-2), libwrap0-dev,
  libqt4-opengl-dev, libcurl4-gnutls-dev, libxml2-dev, libloudmouth1-dev,
  libgtk2.0-dev, kdemultimedia-dev (>= 4:4.2.0), libqca2-dev, liblastfm-dev (>= 0.3),
  libavformat-dev (>= 4:0.5), libofa0-dev
 Build-Depends-Indep: mysql-server-core-5.1 | mysql-server-5.1
-Standards-Version: 3.9.1
+Standards-Version: 3.9.2
 Homepage: http://amarok.kde.org
 Vcs-Git: git://git.debian.org/git/users/modax/amarok.git
 Vcs-Browser: http://git.debian.org/?p=users/modax/amarok.git
 
 Package: amarok
 Architecture: any
-Depends: amarok-common (= ${source:Version}), amarok-utils (= ${binary:Version}), phonon-backend-xine | phonon-backend,
+Depends: amarok-common (= ${source:Version}), amarok-utils (= ${binary:Version}),
  ${shlibs:Depends}, ${misc:Depends},
  libqtscript4-core, libqtscript4-gui, libqtscript4-network, libqtscript4-xml, libqtscript4-sql, libqtscript4-uitools
 Recommends: kdemultimedia-kio-plugins (>= 4:4.2.0)
@@ -85,6 +86,7 @@ Section: debug
 Architecture: any
 Depends: amarok (= ${binary:Version}), ${misc:Depends}
 Recommends: kdelibs5-dbg
+Suggests: libqtwebkit4-dbg
 Description: debugging symbols for Amarok
  This package provides debugging symbols for all binary packages built from
  amarok source package. It's highly recommended to have this package installed

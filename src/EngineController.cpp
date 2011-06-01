@@ -24,29 +24,29 @@
 
 #include "EngineController.h"
 
-#include "core/support/Amarok.h"
-#include "amarokconfig.h"
-#include "core-impl/collections/support/CollectionManager.h"
-#include "core/support/Components.h"
-#include "core/interfaces/Logger.h"
-#include "core/support/Debug.h"
 #include "MainWindow.h"
 #include "MediaDeviceMonitor.h"
-#include "core/meta/Meta.h"
-#include "core/meta/support/MetaConstants.h"
-#include "core/meta/support/MetaUtility.h"
+#include "amarokconfig.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "core/capabilities/MultiPlayableCapability.h"
 #include "core/capabilities/MultiSourceCapability.h"
 #include "core/capabilities/SourceInfoCapability.h"
-#include "playlist/PlaylistActions.h"
-#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
-#include "core/plugins/PluginManager.h"
+#include "core/interfaces/Logger.h"
+#include "core/meta/Meta.h"
+#include "core/meta/support/MetaConstants.h"
+#include "core/meta/support/MetaUtility.h"
 #include "core/playlists/PlaylistFormat.h"
+#include "core/support/Amarok.h"
+#include "core/support/Components.h"
+#include "core/support/Debug.h"
+#include "playlist/PlaylistActions.h"
 
 #include <KFileItem>
 #include <KIO/Job>
 #include <KMessageBox>
 #include <KRun>
+#include <KServiceTypeTrader>
 
 #include <Phonon/AudioOutput>
 #include <Phonon/BackendCapabilities>
@@ -144,6 +144,10 @@ EngineController::initializePhonon()
 
     PERF_LOG( "EngineController: loading phonon objects" )
     m_media = new Phonon::MediaObject( this );
+
+    // Enable zeitgeist support on linux
+    m_media.data()->setProperty("PlaybackTracking", true);
+
     m_audio = new Phonon::AudioOutput( Phonon::MusicCategory, this );
 
     m_path = Phonon::createPath( m_media.data(), m_audio.data() );
@@ -551,8 +555,7 @@ EngineController::stop( bool forceInstant ) //SLOT
         unsubscribeFrom( m_currentTrack );
         if( m_currentAlbum )
             unsubscribeFrom( m_currentAlbum );
-        m_currentTrack = 0;
-        emit trackChanged( Meta::TrackPtr( 0 ) );
+
         m_currentTrack = 0;
         m_currentAlbum = 0;
         emit trackChanged( m_currentTrack );
@@ -724,6 +727,8 @@ void
 EngineController::setMuted( bool mute ) //SLOT
 {
     m_audio.data()->setMuted( mute ); // toggle mute
+    if( !isMuted() )
+        setVolume( m_volume );
 
     AmarokConfig::setMuteState( mute );
     emit muteStateChanged( mute );
@@ -995,7 +1000,6 @@ EngineController::slotAboutToFinish()
         //there might not be any more tracks in the playlist...
         stop( true );
         The::playlistActions()->requestNextTrack();
-        slotFinished();
     }
     else if( m_currentTrack && m_currentTrack->playableUrl().url().startsWith( "audiocd:/" ) )
     {
@@ -1015,10 +1019,6 @@ EngineController::slotFinished()
 
     if( m_currentTrack && !m_multiPlayback && !m_multiSource )
     {
-        // TODO: what happens if (due to an error) the track never really played? You can't say trackFinished in such a case.
-        const qint64 pos = trackPositionMs();
-        const qint64 length = m_currentTrack->length();
-        m_currentTrack->finishedPlaying( double(pos)/double(length) );
         if( !m_nextTrack && m_nextUrl.isEmpty() )
             emit stopped( trackPositionMs(), m_currentTrack->length() );
         unsubscribeFrom( m_currentTrack );

@@ -34,7 +34,7 @@ usr/lib/kde4/amarok_data_engine_tabs.so
 usr/lib/kde4/amarok_data_engine_upcomingEvents.so
 usr/lib/kde4/amarok_data_engine_videoclip.so
 usr/lib/kde4/amarok_data_engine_wikipedia.so
-usr/lib/kde4/amarok_massstorage-device.so
+usr/lib/kde4/amarok_device_massstorage.so
 usr/lib/kde4/amarok_runnerscript_javascript.so
 usr/lib/kde4/amarok_service_ampache.so
 usr/lib/kde4/amarok_service_jamendo.so
@@ -52,8 +52,8 @@ usr/lib/libamarokcore.so.1*
 usr/lib/libamaroklib.so.1*
 usr/lib/libamarokocsclient.so.4*
 usr/lib/libamarokpud.so.1*
-usr/lib/libamarokqtjson.so.1*
 usr/lib/libampache_account_login.so
 usr/share/applications/kde4/amarok.desktop
 usr/share/applications/kde4/amarok_containers.desktop
+usr/share/kde4/apps/kconf_update/amarok.upd
 usr/share/kde4/services/amarok.protocol

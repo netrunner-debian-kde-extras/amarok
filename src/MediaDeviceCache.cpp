@@ -33,6 +33,12 @@
 #include <solid/block.h>
 #include <solid/storagevolume.h>
 
+#include <kdeversion.h>
+
+#if KDE_IS_VERSION(4,4,99)
+#include <kmountpoint.h>
+#endif
+
 #include <QDir>
 #include <QFile>
 #include <QList>
@@ -50,6 +56,10 @@ MediaDeviceCache::MediaDeviceCache() : QObject()
              this, SLOT( slotAddSolidDevice( const QString & ) ) );
     connect( Solid::DeviceNotifier::instance(), SIGNAL( deviceRemoved( const QString & ) ),
              this, SLOT( slotRemoveSolidDevice( const QString & ) ) );
+    connect(&m_timer, SIGNAL(timeout()), this, SLOT(slotTimeout()));
+
+    m_timer.setSingleShot(true);
+    m_timer.start(1000);
 }
 
 MediaDeviceCache::~MediaDeviceCache()
@@ -102,9 +112,11 @@ MediaDeviceCache::refreshCache()
             {
                 m_type[device.udi()] = MediaDeviceCache::SolidVolumeType;
                 m_name[device.udi()] = ssa->filePath();
+                m_accessibility[ device.udi() ] = true;
             }
             else
             {
+                m_accessibility[ device.udi() ] = false;
                 debug() << "Solid device is not accessible, will wait until it is to consider it added.";
             }
         }
@@ -181,12 +193,6 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
         m_type[udi] = MediaDeviceCache::SolidAudioCdType;
         m_name[udi] = device.vendor() + " - " + device.product();
     }
-    else if( device.as<Solid::StorageDrive>() )
-    {
-        debug() << "device is a Storage drive, still need a volume";
-        m_type[udi] = MediaDeviceCache::SolidGenericType;
-        m_name[udi] = device.vendor() + " - " + device.product();
-    }
     else if( ssa )
     {
         debug() << "volume is generic storage";
@@ -207,6 +213,12 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
             return;
         }
     }
+    else if( device.as<Solid::StorageDrive>() )
+    {
+        debug() << "device is a Storage drive, still need a volume";
+        m_type[udi] = MediaDeviceCache::SolidGenericType;
+        m_name[udi] = device.vendor() + " - " + device.product();
+    }
     else if( device.as<Solid::PortableMediaPlayer>() )
     {
         debug() << "device is a PMP";
@@ -218,8 +230,8 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
         const QMap<QString, QVariant> properties = generic->allProperties();
         // iPods touch 3G (and maybe upper) do not have AFC capabilities. 
         // Due to the return, iPod Touch are not known as media device and the code which execute the ifuse command is then not called!
-	if ( !device.product().contains("iPod") )
-	{
+        if ( !device.product().contains("iPod") )
+        {
             if( !properties.contains("info.capabilities") )
             {
                 debug() << "udi " << udi << " does not describe a portable media player or storage volume";
@@ -232,7 +244,7 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
                 debug() << "udi " << udi << " does not describe a portable media player or storage volume";
                 return;
             }
-	}
+        }
 
         debug() << "udi" << udi << "is AFC cabable (Apple mobile device)";
         m_type[udi] = MediaDeviceCache::SolidGenericType;
@@ -268,6 +280,47 @@ MediaDeviceCache::slotRemoveSolidDevice( const QString &udi )
     }
     debug() << "Odd, got a deviceRemoved at udi " << udi << " but it did not seem to exist in the first place...";
     emit deviceRemoved( udi );
+}
+
+void MediaDeviceCache::slotTimeout()
+{
+#if KDE_IS_VERSION(4,4,99)
+    KMountPoint::List possibleMountList = KMountPoint::possibleMountPoints();
+    KMountPoint::List currentMountList = KMountPoint::currentMountPoints();
+    QList<Solid::Device> deviceList = Solid::Device::listFromType( Solid::DeviceInterface::StorageAccess );
+
+    for (KMountPoint::List::iterator it = possibleMountList.begin(); it != possibleMountList.end(); ++it) {
+        if ((*it)->mountType() == "nfs" || (*it)->mountType() == "nfs4" || 
+            (*it)->mountType() == "smb" || (*it)->mountType() == "cifs") {
+            QString path = (*it)->mountPoint();
+            bool mounted = false;
+            QString udi = QString();
+
+            foreach( const Solid::Device &device, deviceList )
+            {
+                const Solid::StorageAccess* ssa = device.as<Solid::StorageAccess>();
+                if( ssa && path == ssa->filePath())
+                    udi = device.udi();
+            }
+
+            for (KMountPoint::List::iterator it2 = currentMountList.begin(); it2 != currentMountList.end(); ++it2) {
+                if ( (*it)->mountType() == (*it2)->mountType() &&
+                     (*it)->mountPoint() == (*it2)->mountPoint() ) {
+                    mounted = true;
+                    break;
+                }
+            }
+
+            if ( m_accessibility[udi] != mounted ) {
+                m_accessibility[udi] = mounted;
+                slotAccessibilityChanged( mounted, udi);
+            }
+        }
+    }
+#endif
+
+    m_timer.setSingleShot(true);
+    m_timer.start(1000);
 }
 
 void

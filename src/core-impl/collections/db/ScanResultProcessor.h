@@ -56,7 +56,7 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanResultProcessor : public QObjec
     public:
         /** The scan mode.
             In general a full scan will consider the information read from the disk
-            as being superiour to the one in the database.
+            as being superior to the one in the database.
             The full scan will overwrite existing album covers and statistics.
 
             An update scan is a scan done automatically by Amarok. I will check
@@ -89,6 +89,15 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanResultProcessor : public QObjec
 
         virtual void commit();
         virtual void rollback();
+
+        /** Returns a list of the last sql errors.
+            The list might not include every one error if the number
+            is beyond a sensible limit.
+        */
+        QStringList getLastErrors() const;
+
+        /** Clears the list of the last errors. */
+        void clearLastErrors();
 
     Q_SIGNALS:
         /** This signal is emitted after a directory was written to the database.
@@ -130,6 +139,8 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanResultProcessor : public QObjec
         QMultiHash<QString, CollectionScanner::Album*> m_albumNames;
 
         ScanType m_type;
+
+        QStringList m_lastErrors;
 };
 
 #endif

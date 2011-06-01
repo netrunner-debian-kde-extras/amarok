@@ -1,9 +1,34 @@
-amarok (2.4.0-1~bpo60+1) squeeze-backports; urgency=low
+amarok (2.4.1-1) unstable; urgency=low
 
-  * Rebuild for squeeze-backports.
-  * No source changes required.
+  * New upstream release.
+  * No longer recommend phonon-backend-xine. Stick to what phonon metapackage
+    depends on.
+  * Bump Standards-Version to 3.9.2: no changes needed.
+  * Drop backport_fix_plugin_version.diff, it was backported from upstream.
+  * Call dh in compat=8 compliant way.
 
- -- Modestas Vainius <modax@debian.org>  Tue, 15 Feb 2011 21:54:07 +0200
+ -- Modestas Vainius <modax@debian.org>  Sun, 08 May 2011 00:21:26 +0300
+
+amarok (2.4.1~beta1-1) experimental; urgency=low
+
+  * New upstream beta release.
+  * Drop backport_mute_button_fix.diff - backported from upstream.
+  * Build depend on libqjson-dev.
+  * Update install files.
+  * Override amarok: embedded-library ... : libmysqlclient.
+  * Backport a patch as recommended by upstream to fix plugin version
+    (backport_fix_plugin_version.diff).
+
+ -- Modestas Vainius <modax@debian.org>  Sun, 20 Mar 2011 17:50:14 +0200
+
+amarok (2.4.0-2) unstable; urgency=low
+
+  * Make amarok-dbg suggest libqtwebkit4-dbg.
+  * Build depend on libqtwebkit-dev | libqt4-dev (<< 4:4.7.0). Closes: #618209
+  * Backport backport_mute_button_fix.diff patch to really fix mute button.
+    (Closes: #600159)
+
+ -- Modestas Vainius <modax@debian.org>  Sun, 20 Mar 2011 16:00:14 +0200
 
 amarok (2.4.0-1) unstable; urgency=low
 

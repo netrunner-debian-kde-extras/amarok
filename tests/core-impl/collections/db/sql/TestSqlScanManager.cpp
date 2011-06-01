@@ -43,7 +43,7 @@ TestSqlScanManager::TestSqlScanManager()
 void
 TestSqlScanManager::initTestCase()
 {
-    setenv( "LC_ALL", "", 1 ); // this breakes the test
+    // setenv( "LC_ALL", "", 1 ); // this breakes the test
     // Amarok does not force LC_ALL=C but obviously the test does it which
     // will prevent scanning of files with umlauts.
 
@@ -221,6 +221,39 @@ TestSqlScanManager::testDuplicateUid()
 }
 
 void
+TestSqlScanManager::testLongUid()
+{
+    Meta::FieldHash values;
+
+    // create two tracks with different very long
+    values.clear();
+    values.insert( Meta::valUniqueId, QVariant("c6c29f50279ab9523a0f44928bc1e96c6c29f50279ab9523a0f44928bc1e96c6c29f50279ab9523a0f44928bc1e96c6c29f50279ab9523a0f44928bc1e96c6c29f50279ab9523a0f44928bc1e96c6c29f50279ab9523a0f44928bc1e96c6c29f50279ab9523a0f44928bc1e96c6c29f50279ab9523a0f44928bc1e96c6c29f50279ab9523a0f44928bc1e96c6c29f50279ab9523a0f44928bc1e96c6c29f50279ab9523a0f44928bc1e96c6c29f50279ab9523a0f44928bc1e96c6c29f50279ab9523a0f44928bc1e96c6c29f50279ab9523a0f44928bc1e96bbbbbbbbbbbbbbc6c29f50279ab9523a0f44928bc1e96b1") );
+    values.insert( Meta::valUrl, QVariant("track1.mp3") );
+    values.insert( Meta::valTitle, QVariant("Track 1") );
+    createTrack( values );
+
+    values.clear();
+    values.insert( Meta::valUniqueId, QVariant("c6c29f50279ab9523a0f44928bc1e96c6c29f50279ab9523a0f44928bc1e96c6c29f50279ab9523a0f44928bc1e96c6c29f50279ab9523a0f44928bc1e96c6c29f50279ab9523a0f44928bc1e96c6c29f50279ab9523a0f44928bc1e96c6c29f50279ab9523a0f44928bc1e96c6c29f50279ab9523a0f44928bc1e96c6c29f50279ab9523a0f44928bc1e96c6c29f50279ab9523a0f44928bc1e96c6c29f50279ab9523a0f44928bc1e96c6c29f50279ab9523a0f44928bc1e96c6c29f50279ab9523a0f44928bc1e96c6c29f50279ab9523a0f44928bc1e96bbbbbbbbbbbbbbc6c29f50279ab9523a0f44928bc1e96b2") );
+    values.insert( Meta::valUrl, QVariant("track2.mp3") );
+    values.insert( Meta::valTitle, QVariant("Track 2") );
+    createTrack( values );
+
+    m_scanManager->requestFullScan();
+    waitScannerFinished();
+
+    // -- check the commit (the database needs to have been updated correctly)
+    m_collection->registry()->emptyCache();
+
+    Meta::AlbumPtr album;
+    album = m_collection->registry()->getAlbum( QString(), QString() );
+
+    QCOMPARE( album->tracks().count(), 2 );
+    QVERIFY( album->tracks().first()->name() == "Track 1" ||
+             album->tracks().first()->name() == "Track 2" );
+}
+
+
+void
 TestSqlScanManager::testCompilation()
 {
     createAlbum();
@@ -298,8 +331,10 @@ TestSqlScanManager::testCompilation()
     QCOMPARE( album->tracks().count(), 1 );
     QVERIFY( !album->isCompilation() );
 
-    album = m_collection->registry()->getAlbum( "Once", "Glen Hansard & Markéta Irglová" );
-    QCOMPARE( album->albumArtist()->name(), QString( "Glen Hansard & Markéta Irglová" ) );
+    // this album is a little tricky because it has some nasty special characters in it.
+    Meta::TrackPtr track = m_collection->registry()->getTrackFromUid( m_collection->uidUrlProtocol() + "://" + "0969ea6128444e128cfcac95207bd525" );
+    QVERIFY( track );
+    album = track->album();
     QCOMPARE( album->tracks().count(), 13 );
     QVERIFY( !album->isCompilation() );
 }
@@ -397,7 +432,7 @@ TestSqlScanManager::testRemoveDir()
     album = m_collection->registry()->getAlbum( "Top Gun", QString() );
     foreach( Meta::TrackPtr t, album->tracks() )
         QVERIFY( QFile::remove( t->playableUrl().path() ) );
-    QVERIFY( QDir( m_tmpCollectionDir->name() ).rmdir( QFileInfo( album->tracks().first()->playableUrl().path() ).path() ) );
+    QVERIFY( QDir( m_tmpCollectionDir->name() ).rmpath( QFileInfo( album->tracks().first()->playableUrl().path() ).path() ) );
 
     m_scanManager->requestFullScan();
     waitScannerFinished();
@@ -413,11 +448,13 @@ TestSqlScanManager::testRemoveDir()
 
 
     // -- remove the second album
+    // this time it's a directory inside a directory
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
     QCOMPARE( album->tracks().count(), 9 );
     foreach( Meta::TrackPtr t, album->tracks() )
         QVERIFY( QFile::remove( t->playableUrl().path() ) );
-    QVERIFY( QDir( m_tmpCollectionDir->name() ).rmdir( QFileInfo( album->tracks().first()->playableUrl().path() ).path() ) );
+    QVERIFY( QDir( m_tmpCollectionDir->name() ).rmpath( QFileInfo( album->tracks().first()->playableUrl().path() ).path() ) );
+    // QVERIFY( QDir( m_tmpCollectionDir->name() ).rmpath( "Pop" ) );
 
     m_scanManager->requestIncrementalScan();
     waitScannerFinished();
@@ -466,8 +503,8 @@ TestSqlScanManager::testUidChangeMoveDirectoryIncrementalScan()
 
     // move album directory
     const KUrl oldUrl = tracks.first()->playableUrl();
-    const QString base = m_tmpCollectionDir->name() + "Thriller";
-    QVERIFY( QFile::rename( base, base + "Thriller (Moved)" ) );
+    const QString base = m_tmpCollectionDir->name() + "Pop";
+    QVERIFY( QFile::rename( base, base + "Albums" ) );
 
     // do an incremental scan
     m_scanManager->requestIncrementalScan();
@@ -623,7 +660,7 @@ TestSqlScanManager::testAlbumImage()
     QString imageSourcePath = QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + "/data/playlists/no-playlist.png" );
     QVERIFY( QFile::exists( imageSourcePath ) );
     QString targetPath;
-    targetPath = m_tmpCollectionDir->name() + "Thriller/cover.png";
+    targetPath = m_tmpCollectionDir->name() + "Pop/Thriller/cover.png";
     QVERIFY( QFile::copy( m_sourcePath, targetPath ) );
 
     // put an image into the compilation directory
@@ -662,7 +699,7 @@ TestSqlScanManager::testMerges()
     values.clear();
     values.insert( Meta::valUniqueId, QVariant("123456d040d5dd9b5b45c1494d84cc82") );
     values.insert( Meta::valUrl, QVariant("Various Artists/Big Screen Adventures/28 - Theme From Armageddon.mp3") );
-    values.insert( Meta::valFiletype, QVariant("1") );
+    values.insert( Meta::valFormat, QVariant("1") );
     values.insert( Meta::valTitle, QVariant("Unnamed track") );
     values.insert( Meta::valArtist, QVariant("Unknown artist") );
     createTrack( values );
@@ -682,7 +719,7 @@ TestSqlScanManager::testMerges()
     values.clear();
     values.insert( Meta::valUniqueId, QVariant("794b1bd040d5dd9b5b45c1494d84cc82") );
     values.insert( Meta::valUrl, QVariant("Various Artists/Big Screen Adventures/28 - Theme From Armageddon.mp3") );
-    values.insert( Meta::valFiletype, QVariant("1") );
+    values.insert( Meta::valFormat, QVariant("1") );
     values.insert( Meta::valTitle, QVariant("Theme From Armageddon") );
     values.insert( Meta::valArtist, QVariant("Soundtrack & Theme Orchestra") );
     values.insert( Meta::valAlbumArtist, QVariant("Various Artists") );
@@ -897,7 +934,7 @@ TestSqlScanManager::testIdentifyCompilationInMultipleDirectories()
 
     values.insert( Meta::valUniqueId, QVariant("5ef9fede5b3f98deb088b33428b0398e") );
     values.insert( Meta::valUrl, QVariant("Kenny Loggins/Top Gun/Top Gun - 01 - Kenny Loggins - Danger Zone.mp3") );
-    values.insert( Meta::valFiletype, QVariant("1") );
+    values.insert( Meta::valFormat, QVariant("1") );
     values.insert( Meta::valTitle, QVariant("Danger Zone") );
     values.insert( Meta::valArtist, QVariant("Kenny Loggins") );
     values.insert( Meta::valAlbum, QVariant("Top Gun") );
@@ -977,7 +1014,7 @@ TestSqlScanManager::createSingleTrack()
 
     values.insert( Meta::valUniqueId, QVariant("794b1bd040d5dd9b5b45c1494d84cc82") );
     values.insert( Meta::valUrl, QVariant("Various Artists/Big Screen Adventures/28 - Theme From Armageddon.mp3") );
-    values.insert( Meta::valFiletype, QVariant("1") );
+    values.insert( Meta::valFormat, QVariant("1") );
     values.insert( Meta::valTitle, QVariant("Theme From Armageddon") );
     values.insert( Meta::valArtist, QVariant("Soundtrack & Theme Orchestra") );
     values.insert( Meta::valAlbumArtist, QVariant("Theme Orchestra") );
@@ -1004,7 +1041,7 @@ TestSqlScanManager::createAlbum()
     Meta::FieldHash values;
 
     values.insert( Meta::valUniqueId, QVariant("1dc7022c52a3e4c51b46577da9b3c8ff") );
-    values.insert( Meta::valUrl, QVariant("Thriller/Thriller - 01 - Michael Jackson - Track01.mp3") );
+    values.insert( Meta::valUrl, QVariant("Pop/Thriller/Thriller - 01 - Michael Jackson - Track01.mp3") );
     values.insert( Meta::valTitle, QVariant("Wanna Be Startin' Somethin'") );
     values.insert( Meta::valArtist, QVariant("Michael Jackson") );
     values.insert( Meta::valAlbum, QVariant("Thriller") );
@@ -1014,7 +1051,7 @@ TestSqlScanManager::createAlbum()
 
     values.clear();
     values.insert( Meta::valUniqueId, QVariant("1dc708934a3e4c51b46577da9b3ab11") );
-    values.insert( Meta::valUrl, QVariant("Thriller/Thriller - 02 - Michael Jackson - Track02.mp3") );
+    values.insert( Meta::valUrl, QVariant("Pop/Thriller/Thriller - 02 - Michael Jackson - Track02.mp3") );
     values.insert( Meta::valTitle, QVariant("Baby Be Mine") );
     values.insert( Meta::valArtist, QVariant("Michael Jackson") );
     values.insert( Meta::valAlbum, QVariant("Thriller") );
@@ -1024,7 +1061,7 @@ TestSqlScanManager::createAlbum()
 
     values.clear();
     values.insert( Meta::valUniqueId, QVariant("15a6b1bf79747fdc8e9c6b6f06203017") );
-    values.insert( Meta::valUrl, QVariant("Thriller/Thriller - 03 - Michael Jackson - Track03.mp3") );
+    values.insert( Meta::valUrl, QVariant("Pop/Thriller/Thriller - 03 - Michael Jackson - Track03.mp3") );
     values.insert( Meta::valTitle, QVariant("The Girl Is Mine") );
     values.insert( Meta::valArtist, QVariant("Michael Jackson") );
     values.insert( Meta::valAlbum, QVariant("Thriller") );
@@ -1034,7 +1071,7 @@ TestSqlScanManager::createAlbum()
 
     values.clear();
     values.insert( Meta::valUniqueId, QVariant("4aba4c8b1d1893c03c112cc3c01221e9") );
-    values.insert( Meta::valUrl, QVariant("Thriller/Thriller - 04 - Michael Jackson - Track04.mp3") );
+    values.insert( Meta::valUrl, QVariant("Pop/Thriller/Thriller - 04 - Michael Jackson - Track04.mp3") );
     values.insert( Meta::valTitle, QVariant("Thriller") );
     values.insert( Meta::valArtist, QVariant("Michael Jackson") );
     values.insert( Meta::valAlbum, QVariant("Thriller") );
@@ -1044,7 +1081,7 @@ TestSqlScanManager::createAlbum()
 
     values.clear();
     values.insert( Meta::valUniqueId, QVariant("cb44d2a3d8053829b04672723bf0bd6e") );
-    values.insert( Meta::valUrl, QVariant("Thriller/Thriller - 05 - Michael Jackson - Track05.mp3") );
+    values.insert( Meta::valUrl, QVariant("Pop/Thriller/Thriller - 05 - Michael Jackson - Track05.mp3") );
     values.insert( Meta::valTitle, QVariant("Beat It") );
     values.insert( Meta::valArtist, QVariant("Michael Jackson") );
     values.insert( Meta::valAlbum, QVariant("Thriller") );
@@ -1054,7 +1091,7 @@ TestSqlScanManager::createAlbum()
 
     values.clear();
     values.insert( Meta::valUniqueId, QVariant("eba1858eeeb3c6d97fe3385200114d86") );
-    values.insert( Meta::valUrl, QVariant("Thriller/Thriller - 06 - Michael Jackson - Track06.mp3") );
+    values.insert( Meta::valUrl, QVariant("Pop/Thriller/Thriller - 06 - Michael Jackson - Track06.mp3") );
     values.insert( Meta::valTitle, QVariant("Billy Jean") );
     values.insert( Meta::valArtist, QVariant("Michael Jackson") );
     values.insert( Meta::valAlbum, QVariant("Thriller") );
@@ -1064,7 +1101,7 @@ TestSqlScanManager::createAlbum()
 
     values.clear();
     values.insert( Meta::valUniqueId, QVariant("4623850290998486b0f7b39a2719904e") );
-    values.insert( Meta::valUrl, QVariant("Thriller/Thriller - 07 - Michael Jackson - Track07.mp3") );
+    values.insert( Meta::valUrl, QVariant("Pop/Thriller/Thriller - 07 - Michael Jackson - Track07.mp3") );
     values.insert( Meta::valTitle, QVariant("Human Nature") );
     values.insert( Meta::valArtist, QVariant("Michael Jackson") );
     values.insert( Meta::valAlbum, QVariant("Thriller") );
@@ -1074,7 +1111,7 @@ TestSqlScanManager::createAlbum()
 
     values.clear();
     values.insert( Meta::valUniqueId, QVariant("6d9a7de13af1e16bb13a6208e44b046d") );
-    values.insert( Meta::valUrl, QVariant("Thriller/Thriller - 08 - Michael Jackson - Track08.mp3") );
+    values.insert( Meta::valUrl, QVariant("Pop/Thriller/Thriller - 08 - Michael Jackson - Track08.mp3") );
     values.insert( Meta::valTitle, QVariant("P.Y.T. (Pretty Young Thing)") );
     values.insert( Meta::valArtist, QVariant("Michael Jackson") );
     values.insert( Meta::valAlbum, QVariant("Thriller") );
@@ -1084,7 +1121,7 @@ TestSqlScanManager::createAlbum()
 
     values.clear();
     values.insert( Meta::valUniqueId, QVariant("91cf9a7c0d255399f9f6babfacae432b") );
-    values.insert( Meta::valUrl, QVariant("Thriller/Thriller - 09 - Michael Jackson - Track09.mp3") );
+    values.insert( Meta::valUrl, QVariant("Pop/Thriller/Thriller - 09 - Michael Jackson - Track09.mp3") );
     values.insert( Meta::valTitle, QVariant("The Lady In My Life") );
     values.insert( Meta::valArtist, QVariant("Michael Jackson") );
     values.insert( Meta::valAlbum, QVariant("Thriller") );
@@ -1101,7 +1138,7 @@ TestSqlScanManager::createCompilation()
 
     values.insert( Meta::valUniqueId, QVariant("5ef9fede5b3f98deb088b33428b0398e") );
     values.insert( Meta::valUrl, QVariant("Top Gun/Top Gun - 01 - Kenny Loggins - Danger Zone.mp3") );
-    values.insert( Meta::valFiletype, QVariant("1") );
+    values.insert( Meta::valFormat, QVariant("1") );
     values.insert( Meta::valTitle, QVariant("Danger Zone") );
     values.insert( Meta::valArtist, QVariant("Kenny Loggins") );
     values.insert( Meta::valAlbum, QVariant("Top Gun") );
@@ -1185,9 +1222,15 @@ TestSqlScanManager::createCompilationLookAlikeAlbum()
 {
     Meta::FieldHash values;
 
-    values.insert( Meta::valUniqueId, QVariant( "8375aa24-e0e0-434c-a0c3-6e382b6f188c" ) );
-    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Markéta Irglová/Once/01 Glen Hansard & Markéta Irglová - Falling Slowly.mp3" ) );
-    values.insert( Meta::valFiletype, QVariant( "1" ) );
+    // Some systems have problems with the umlauts in the file names.
+    // That is the case where the system encoding when compiling does not
+    // match the one of the file system.
+    // the following is the original filename
+    // values.insert( Meta::valUrl, QVariant( "Glen Hansard & Markéta Irglová/Once/01 Glen Hansard & Markéta Irglová - Falling Slowly.mp3" ) );
+
+    values.insert( Meta::valUniqueId, QVariant( "8375aa24e0e0434ca0c36e382b6f188c" ) );
+    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Marketa Irglova/Once/01 Glen Hansard & Marketa Irglova - Falling Slowly.mp3" ) );
+    values.insert( Meta::valFormat, QVariant( "1" ) );
     values.insert( Meta::valTitle, QVariant( "Falling Slowly" ) );
     values.insert( Meta::valArtist, QVariant( "Glen Hansard & Markéta Irglová" ) );
     values.insert( Meta::valAlbum, QVariant( "Once" ) );
@@ -1195,9 +1238,9 @@ TestSqlScanManager::createCompilationLookAlikeAlbum()
     values.insert( Meta::valTrackNr, QVariant( "1" ) );
     createTrack( values );
 
-    values.insert( Meta::valUniqueId, QVariant( "ff3f82b1-c2e1-434d-9d1a-7b6aec67ac9c" ) );
-    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Markéta Irglová/Once/02 Glen Hansard & Markéta Irglová - If You Want Me.mp3" ) );
-    values.insert( Meta::valFiletype, QVariant( "1" ) );
+    values.insert( Meta::valUniqueId, QVariant( "ff3f82b1c2e1434d9d1a7b6aec67ac9c" ) );
+    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Marketa Irglova/Once/02 Glen Hansard & Marketa Irglova - If You Want Me.mp3" ) );
+    values.insert( Meta::valFormat, QVariant( "1" ) );
     values.insert( Meta::valTitle, QVariant( "If You Want Me" ) );
     values.insert( Meta::valArtist, QVariant( "Glen Hansard & Markéta Irglová" ) );
     values.insert( Meta::valAlbum, QVariant( "Once" ) );
@@ -1205,9 +1248,9 @@ TestSqlScanManager::createCompilationLookAlikeAlbum()
     values.insert( Meta::valTrackNr, QVariant( "2" ) );
     createTrack( values );
 
-    values.insert( Meta::valUniqueId, QVariant( "8fb2396f-8d97-4f61-96d2-b2ef93ba2551" ) );
-    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Markéta Irglová/Once/03 Glen Hansard - Broken Hearted Hoover Fixer Sucker Guy.mp3" ) );
-    values.insert( Meta::valFiletype, QVariant( "1" ) );
+    values.insert( Meta::valUniqueId, QVariant( "8fb2396f8d974f6196d2b2ef93ba2551" ) );
+    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Marketa Irglova/Once/03 Glen Hansard - Broken Hearted Hoover Fixer Sucker Guy.mp3" ) );
+    values.insert( Meta::valFormat, QVariant( "1" ) );
     values.insert( Meta::valTitle, QVariant( "Broken Hearted Hoover Fixer Sucker Guy" ) );
     values.insert( Meta::valArtist, QVariant( "Glen Hansard" ) );
     values.insert( Meta::valAlbum, QVariant( "Once" ) );
@@ -1215,9 +1258,9 @@ TestSqlScanManager::createCompilationLookAlikeAlbum()
     values.insert( Meta::valTrackNr, QVariant( "3" ) );
     createTrack( values );
 
-    values.insert( Meta::valUniqueId, QVariant( "3a211546-b91c-4bf7-a4ec-9d41325e5a01" ) );
-    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Markéta Irglová/Once/04 Glen Hansard & Markéta Irglová - When Your Mind's Made Up.mp3" ) );
-    values.insert( Meta::valFiletype, QVariant( "1" ) );
+    values.insert( Meta::valUniqueId, QVariant( "3a211546b91c4bf7a4ec9d41325e5a01" ) );
+    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Marketa Irglova/Once/04 Glen Hansard & Marketa Irglova - When Your Mind's Made Up.mp3" ) );
+    values.insert( Meta::valFormat, QVariant( "1" ) );
     values.insert( Meta::valTitle, QVariant( "When Your Mind's Made Up" ) );
     values.insert( Meta::valArtist, QVariant( "Glen Hansard & Markéta Irglová" ) );
     values.insert( Meta::valAlbum, QVariant( "Once" ) );
@@ -1225,9 +1268,9 @@ TestSqlScanManager::createCompilationLookAlikeAlbum()
     values.insert( Meta::valTrackNr, QVariant( "4" ) );
     createTrack( values );
 
-    values.insert( Meta::valUniqueId, QVariant( "e7a1ed52-777c-4375-82a2-17cd29cc35f7" ) );
-    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Markéta Irglová/Once/05 Glen Hansard - Lies.mp3" ) );
-    values.insert( Meta::valFiletype, QVariant( "1" ) );
+    values.insert( Meta::valUniqueId, QVariant( "e7a1ed52777c437582a217cd29cc35f7" ) );
+    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Marketa Irglova/Once/05 Glen Hansard - Lies.mp3" ) );
+    values.insert( Meta::valFormat, QVariant( "1" ) );
     values.insert( Meta::valTitle, QVariant( "Lies" ) );
     values.insert( Meta::valArtist, QVariant( "Glen Hansard" ) );
     values.insert( Meta::valAlbum, QVariant( "Once" ) );
@@ -1235,9 +1278,9 @@ TestSqlScanManager::createCompilationLookAlikeAlbum()
     values.insert( Meta::valTrackNr, QVariant( "5" ) );
     createTrack( values );
 
-    values.insert( Meta::valUniqueId, QVariant( "e0c88a85-884d-40c8-9952-2cd733718d9e" ) );
-    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Markéta Irglová/Once/06 Interference - Gold.mp3" ) );
-    values.insert( Meta::valFiletype, QVariant( "1" ) );
+    values.insert( Meta::valUniqueId, QVariant( "e0c88a85884d40c899522cd733718d9e" ) );
+    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Marketa Irglova/Once/06 Interference - Gold.mp3" ) );
+    values.insert( Meta::valFormat, QVariant( "1" ) );
     values.insert( Meta::valTitle, QVariant( "Gold" ) );
     values.insert( Meta::valArtist, QVariant( "Interference" ) );
     values.insert( Meta::valAlbum, QVariant( "Once" ) );
@@ -1245,9 +1288,9 @@ TestSqlScanManager::createCompilationLookAlikeAlbum()
     values.insert( Meta::valTrackNr, QVariant( "6" ) );
     createTrack( values );
 
-    values.insert( Meta::valUniqueId, QVariant( "0969ea61-2844-4e12-8cfc-ac95207bd525" ) );
-    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Markéta Irglová/Once/07 Markéta Irglová - The Hill.mp3" ) );
-    values.insert( Meta::valFiletype, QVariant( "1" ) );
+    values.insert( Meta::valUniqueId, QVariant( "0969ea6128444e128cfcac95207bd525" ) );
+    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Marketa Irglova/Once/07 Marketa Irglova - The Hill.mp3" ) );
+    values.insert( Meta::valFormat, QVariant( "1" ) );
     values.insert( Meta::valTitle, QVariant( "The Hill" ) );
     values.insert( Meta::valArtist, QVariant( "Markéta Irglová" ) );
     values.insert( Meta::valAlbum, QVariant( "Once" ) );
@@ -1255,9 +1298,9 @@ TestSqlScanManager::createCompilationLookAlikeAlbum()
     values.insert( Meta::valTrackNr, QVariant( "7" ) );
     createTrack( values );
 
-    values.insert( Meta::valUniqueId, QVariant( "c1d6eff3-cb6c-42ea-a0d6-3e186ef1b749" ) );
-    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Markéta Irglová/Once/08 Glen Hansard - Fallen From the Sky.mp3" ) );
-    values.insert( Meta::valFiletype, QVariant( "1" ) );
+    values.insert( Meta::valUniqueId, QVariant( "c1d6eff3cb6c42eaa0d63e186ef1b749" ) );
+    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Marketa Irglova/Once/08 Glen Hansard - Fallen From the Sky.mp3" ) );
+    values.insert( Meta::valFormat, QVariant( "1" ) );
     values.insert( Meta::valTitle, QVariant( "Fallen From the Sky" ) );
     values.insert( Meta::valArtist, QVariant( "Glen Hansard" ) );
     values.insert( Meta::valAlbum, QVariant( "Once" ) );
@@ -1265,9 +1308,9 @@ TestSqlScanManager::createCompilationLookAlikeAlbum()
     values.insert( Meta::valTrackNr, QVariant( "8" ) );
     createTrack( values );
 
-    values.insert( Meta::valUniqueId, QVariant( "b6611dbc-cd0e-49bc-a8db-5dc598b7bf4f" ) );
-    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Markéta Irglová/Once/09 Glen Hansard - Leave.mp3" ) );
-    values.insert( Meta::valFiletype, QVariant( "1" ) );
+    values.insert( Meta::valUniqueId, QVariant( "b6611dbccd0e49bca8db5dc598b7bf4f" ) );
+    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Marketa Irglova/Once/09 Glen Hansard - Leave.mp3" ) );
+    values.insert( Meta::valFormat, QVariant( "1" ) );
     values.insert( Meta::valTitle, QVariant( "Leave" ) );
     values.insert( Meta::valArtist, QVariant( "Glen Hansard" ) );
     values.insert( Meta::valAlbum, QVariant( "Once" ) );
@@ -1275,9 +1318,9 @@ TestSqlScanManager::createCompilationLookAlikeAlbum()
     values.insert( Meta::valTrackNr, QVariant( "9" ) );
     createTrack( values );
 
-    values.insert( Meta::valUniqueId, QVariant( "46873076-087f-48dd-a553-fc5ebd3c0fb6" ) );
-    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Markéta Irglová/Once/10 Glen Hansard - Trying to Pull Myself Away.mp3" ) );
-    values.insert( Meta::valFiletype, QVariant( "1" ) );
+    values.insert( Meta::valUniqueId, QVariant( "46873076087f48dda553fc5ebd3c0fb6" ) );
+    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Marketa Irglova/Once/10 Glen Hansard - Trying to Pull Myself Away.mp3" ) );
+    values.insert( Meta::valFormat, QVariant( "1" ) );
     values.insert( Meta::valTitle, QVariant( "Trying to Pull Myself Away" ) );
     values.insert( Meta::valArtist, QVariant( "Glen Hansard" ) );
     values.insert( Meta::valAlbum, QVariant( "Once" ) );
@@ -1285,9 +1328,9 @@ TestSqlScanManager::createCompilationLookAlikeAlbum()
     values.insert( Meta::valTrackNr, QVariant( "10" ) );
     createTrack( values );
 
-    values.insert( Meta::valUniqueId, QVariant( "ea29de7b-131c-4cf2-8df1-77a8cda990ee" ) );
-    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Markéta Irglová/Once/11 Glen Hansard - All the Way Down.mp3" ) );
-    values.insert( Meta::valFiletype, QVariant( "1" ) );
+    values.insert( Meta::valUniqueId, QVariant( "ea29de7b131c4cf28df177a8cda990ee" ) );
+    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Marketa Irglova/Once/11 Glen Hansard - All the Way Down.mp3" ) );
+    values.insert( Meta::valFormat, QVariant( "1" ) );
     values.insert( Meta::valTitle, QVariant( "All the Way Down" ) );
     values.insert( Meta::valArtist, QVariant( "Glen Hansard" ) );
     values.insert( Meta::valAlbum, QVariant( "Once" ) );
@@ -1295,9 +1338,9 @@ TestSqlScanManager::createCompilationLookAlikeAlbum()
     values.insert( Meta::valTrackNr, QVariant( "11" ) );
     createTrack( values );
 
-    values.insert( Meta::valUniqueId, QVariant( "66259801-d8ba-4d50-a2df-df0129bc8792" ) );
-    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Markéta Irglová/Once/12 Glen Hansard & Markéta Irglová - Once.mp3" ) );
-    values.insert( Meta::valFiletype, QVariant( "1" ) );
+    values.insert( Meta::valUniqueId, QVariant( "66259801d8ba4d50a2dfdf0129bc8792" ) );
+    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Marketa Irglova/Once/12 Glen Hansard & Marketa Irglova - Once.mp3" ) );
+    values.insert( Meta::valFormat, QVariant( "1" ) );
     values.insert( Meta::valTitle, QVariant( "Once" ) );
     values.insert( Meta::valArtist, QVariant( "Glen Hansard & Markéta Irglová" ) );
     values.insert( Meta::valAlbum, QVariant( "Once" ) );
@@ -1305,9 +1348,9 @@ TestSqlScanManager::createCompilationLookAlikeAlbum()
     values.insert( Meta::valTrackNr, QVariant( "12" ) );
     createTrack( values );
 
-    values.insert( Meta::valUniqueId, QVariant( "a654e8c5-afb1-4de7-b55b-6548ac02f724" ) );
-    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Markéta Irglová/Once/13 Glen Hansard - Say It to Me Now.mp3" ) );
-    values.insert( Meta::valFiletype, QVariant( "1" ) );
+    values.insert( Meta::valUniqueId, QVariant( "a654e8c5afb14de7b55b6548ac02f724" ) );
+    values.insert( Meta::valUrl, QVariant( "Glen Hansard & Marketa Irglova/Once/13 Glen Hansard - Say It to Me Now.mp3" ) );
+    values.insert( Meta::valFormat, QVariant( "1" ) );
     values.insert( Meta::valTitle, QVariant( "Say It to Me Now" ) );
     values.insert( Meta::valArtist, QVariant( "Glen Hansard" ) );
     values.insert( Meta::valAlbum, QVariant( "Once" ) );
@@ -1323,7 +1366,7 @@ TestSqlScanManager::createCompilationTrack()
 
     values.insert( Meta::valUniqueId, QVariant("c6c29f50279ab9523a0f44928bc1e96b") );
     values.insert( Meta::valUrl, QVariant("Amazon MP3/The Sum Of All Fears (O.S.T.)/The Sum of All Fears/01 - If We Could Remember (O.S.T. LP Version).mp3") );
-    values.insert( Meta::valFiletype, QVariant("1") );
+    values.insert( Meta::valFormat, QVariant("1") );
     values.insert( Meta::valTitle, QVariant("If We Could Remember (O.S.T. LP Version)") );
     values.insert( Meta::valArtist, QVariant("The Sum Of All Fears (O.S.T.)/Yolanda Adams") );
     values.insert( Meta::valAlbumArtist, QVariant("The Sum Of All Fears (O.S.T.)") );
@@ -1340,7 +1383,7 @@ TestSqlScanManager::createCompilationTrack()
     values.clear();
     values.insert( Meta::valUniqueId, QVariant("2188afd457cd75a363905f411966b9a0") );
     values.insert( Meta::valUrl, QVariant("The Cross Of Changes/01 - Second Chapter.mp3") );
-    values.insert( Meta::valFiletype, QVariant(1) );
+    values.insert( Meta::valFormat, QVariant(1) );
     values.insert( Meta::valTitle, QVariant("Second Chapter") );
     values.insert( Meta::valArtist, QVariant("Enigma") );
     values.insert( Meta::valAlbumArtist, QVariant("Enigma") );
@@ -1355,7 +1398,7 @@ TestSqlScanManager::createCompilationTrack()
 
     values.insert( Meta::valUniqueId, QVariant("637bee4fd456d2ff9eafe65c71ba192e") );
     values.insert( Meta::valUrl, QVariant("The Cross Of Changes/02 - The Eyes Of Truth.mp3") );
-    values.insert( Meta::valFiletype, QVariant("1") );
+    values.insert( Meta::valFormat, QVariant("1") );
     values.insert( Meta::valTitle, QVariant("The Eyes Of Truth") );
     values.insert( Meta::valArtist, QVariant("Enigma") );
     values.insert( Meta::valAlbumArtist, QVariant("Enigma") );
@@ -1370,7 +1413,7 @@ TestSqlScanManager::createCompilationTrack()
 
     values.insert( Meta::valUniqueId, QVariant("b4206da4bc0335d76c2bbc5d4c1b164c") );
     values.insert( Meta::valUrl, QVariant("The Cross Of Changes/03 - Return To Innocence.mp3") );
-    values.insert( Meta::valFiletype, QVariant("1") );
+    values.insert( Meta::valFormat, QVariant("1") );
     values.insert( Meta::valTitle, QVariant("Return To Innocence") );
     values.insert( Meta::valArtist, QVariant("Enigma") );
     values.insert( Meta::valAlbumArtist, QVariant("Enigma") );
@@ -1385,7 +1428,7 @@ TestSqlScanManager::createCompilationTrack()
 
     values.insert( Meta::valUniqueId, QVariant("eb0061602f52d67140fd465dc275fbf2") );
     values.insert( Meta::valUrl, QVariant("The Cross Of Changes/04 - I Love You...I'Ll Kill You.mp3") );
-    values.insert( Meta::valFiletype, 1 );
+    values.insert( Meta::valFormat, 1 );
     values.insert( Meta::valTitle, QVariant("I Love You...I'Ll Kill You") );
     values.insert( Meta::valArtist, QVariant("Enigma") );
     values.insert( Meta::valAlbumArtist, QVariant("Enigma") );
@@ -1400,7 +1443,7 @@ TestSqlScanManager::createCompilationTrack()
 
     values.insert( Meta::valUniqueId, QVariant("94dabc09509379646458f62bee7e41ed") );
     values.insert( Meta::valUrl, QVariant("The Cross Of Changes/05 - Silent Warrior.mp3") );
-    values.insert( Meta::valFiletype, 1 );
+    values.insert( Meta::valFormat, 1 );
     values.insert( Meta::valTitle, QVariant("Silent Warrior") );
     values.insert( Meta::valArtist, QVariant("Enigma") );
     values.insert( Meta::valAlbumArtist, QVariant("Enigma") );

@@ -65,6 +65,8 @@ private slots:
 
 class MetaQueryWidget : public QWidget
 {
+    Q_PROPERTY( bool hideFieldSelector READ isFieldSelectorHidden WRITE setFieldSelectorHidden )
+
     Q_OBJECT
 
     public:
@@ -77,27 +79,21 @@ class MetaQueryWidget : public QWidget
 
         enum FilterCondition
         {
-            Equals = 0,
-            GreaterThan = 1,
-            LessThan = 2,
-            Between = 3,
-            OlderThan = 4,
-            Contains = 5, // this is the string comparison
-
-            // only for the advanced playlist generator
-            Within = 6,
-            Matches = 7,
-            StartsWith = 8,
-            EndsWith = 9
+            Equals       =  0,
+            GreaterThan  =  1,
+            LessThan     =  2,
+            Between      =  3,
+            OlderThan    =  4,
+            Contains     =  5
         };
 
         struct Filter
         {
             Filter()
-                : field(Meta::valArtist)
-                  , numValue(0)
-                  , numValue2(0)
-                  , condition(Contains)
+                  : field( 0 )
+                  , numValue( 0 )
+                  , numValue2( 0 )
+                  , condition( Contains )
             {}
 
             /** Returns a textual representation of the field.
@@ -126,11 +122,6 @@ class MetaQueryWidget : public QWidget
          */
         Filter filter() const;
 
-        /** Set the automatic playlist generator mode.
-            The widget will show a little different set of conditions.
-        */
-        void setAPGMode( bool value );
-
         /** Returns true if the given field is a numeric field */
         static bool isNumeric( qint64 field );
 
@@ -145,6 +136,12 @@ class MetaQueryWidget : public QWidget
 
     public slots:
         void setFilter(const MetaQueryWidget::Filter &value);
+
+        void setField( const qint64 field );
+        /** Field Selector combo box visibility state
+         */
+        bool isFieldSelectorHidden() const;
+        void setFieldSelectorHidden( const bool hidden );
 
     signals:
         void changed(const MetaQueryWidget::Filter &value);
@@ -191,7 +188,6 @@ class MetaQueryWidget : public QWidget
 
         bool m_onlyNumeric;
         bool m_noCondition;
-        bool m_apgMode;
 
         bool m_settingFilter; // if set to true we are just setting the filter
 

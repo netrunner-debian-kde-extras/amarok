@@ -1,6 +1,7 @@
 usr/share/doc/kde/HTML/de/*
 usr/share/doc/kde/HTML/en/*
 usr/share/doc/kde/HTML/es/*
+usr/share/doc/kde/HTML/et/*
 usr/share/doc/kde/HTML/fr/*
 usr/share/doc/kde/HTML/it/*
 usr/share/doc/kde/HTML/pt/*
@@ -28,6 +29,7 @@ usr/share/kde4/apps/amarok/scripts/radio_station_service/script.spec
 usr/share/kde4/apps/amarok/scripts/script_console/main.js
 usr/share/kde4/apps/amarok/scripts/script_console/script.spec
 usr/share/kde4/apps/desktoptheme/*
+usr/share/kde4/apps/kconf_update/amarok-2.4.1-tokens_syntax_update.pl
 usr/share/kde4/apps/solid/actions/amarok-play-audiocd.desktop
 usr/share/kde4/config.kcfg/*
 usr/share/kde4/config/amarok.knsrc
@@ -67,7 +69,7 @@ usr/share/kde4/services/amarok_collection-mysqlservercollection.desktop
 usr/share/kde4/services/amarok_collection-playdarcollection.desktop
 usr/share/kde4/services/amarok_collection-umscollection.desktop
 usr/share/kde4/services/amarok_collection-upnpcollection.desktop
-usr/share/kde4/services/amarok_massstorage-device.desktop
+usr/share/kde4/services/amarok_device_massstorage.desktop
 usr/share/kde4/services/amarok_service_ampache.desktop
 usr/share/kde4/services/amarok_service_ampache_config.desktop
 usr/share/kde4/services/amarok_service_jamendo.desktop

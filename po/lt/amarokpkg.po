@@ -47,7 +47,7 @@ msgstr "Programuotojas"
 #: amarokpkg.cpp:92
 msgid "For install or remove, operates on applets installed for all users."
 msgstr ""
-"Diegimui bei šalinimui, dirba su visiems naudotojams įdiegtais įskiepiais."
+"Diegimui bei šalinimui, dirba su visiems vartotojams įdiegtais įskiepiais."
 "paketai"
 
 #: amarokpkg.cpp:95
