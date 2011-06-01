@@ -35,6 +35,8 @@ usr/lib/kde4/amarok_data_engine_upcomingEvents.so
 usr/lib/kde4/amarok_data_engine_videoclip.so
 usr/lib/kde4/amarok_data_engine_wikipedia.so
 usr/lib/kde4/amarok_device_massstorage.so
+usr/lib/kde4/amarok_device_nfs.so
+usr/lib/kde4/amarok_device_smb.so
 usr/lib/kde4/amarok_runnerscript_javascript.so
 usr/lib/kde4/amarok_service_ampache.so
 usr/lib/kde4/amarok_service_jamendo.so

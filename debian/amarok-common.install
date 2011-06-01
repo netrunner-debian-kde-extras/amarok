@@ -70,6 +70,8 @@ usr/share/kde4/services/amarok_collection-playdarcollection.desktop
 usr/share/kde4/services/amarok_collection-umscollection.desktop
 usr/share/kde4/services/amarok_collection-upnpcollection.desktop
 usr/share/kde4/services/amarok_device_massstorage.desktop
+usr/share/kde4/services/amarok_device_nfs.desktop
+usr/share/kde4/services/amarok_device_smb.desktop
 usr/share/kde4/services/amarok_service_ampache.desktop
 usr/share/kde4/services/amarok_service_ampache_config.desktop
 usr/share/kde4/services/amarok_service_jamendo.desktop
