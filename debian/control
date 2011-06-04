@@ -1,7 +1,8 @@
 Source: amarok
 Section: sound
 Priority: optional
-Maintainer: Modestas Vainius <modax@debian.org>
+Maintainer: Debian KDE Extras Team <pkg-kde-extras@lists.alioth.debian.org>
+Uploaders: Modestas Vainius <modax@debian.org>
 Build-Depends: debhelper (>= 7.3.16), cmake (>= 2.6.2), pkg-kde-tools (>= 0.5),
  libtag1-dev (>= 1.6-2~), libtag-extras-dev (>= 1.0.1),
  libqtwebkit-dev | libqt4-dev (<< 4:4.7.0),
