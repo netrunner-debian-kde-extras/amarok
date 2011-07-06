@@ -20,6 +20,7 @@
 
 #include "BrowserBreadcrumbWidget.h"
 #include "BrowserCategoryList.h"
+#include "BrowserMessageArea.h"
 #include "widgets/AmarokDockWidget.h"
 
 #include <KVBox>
@@ -34,7 +35,7 @@ class BrowserDock : public AmarokDockWidget
     Q_OBJECT
 
 public:
-    BrowserDock( QWidget * parent );
+    BrowserDock( QWidget *parent );
 
     ~BrowserDock();
 
@@ -44,11 +45,13 @@ public:
 
 private slots:
     void home();
+    void paletteChanged( const QPalette &palette );
 
 private:
-    BrowserBreadcrumbWidget * m_breadcrumbWidget;
+    BrowserBreadcrumbWidget *m_breadcrumbWidget;
     QWeakPointer<BrowserCategoryList> m_categoryList;
-    KVBox * m_mainWidget;
+    KVBox *m_mainWidget;
+    BrowserMessageArea *m_progressArea;
 };
 
 #endif

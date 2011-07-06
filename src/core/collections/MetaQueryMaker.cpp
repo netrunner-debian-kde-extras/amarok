@@ -29,15 +29,14 @@ MetaQueryMaker::MetaQueryMaker( const QList<Collections::Collection*> &collectio
         builders.append( b );
         connect( b, SIGNAL( queryDone() ), this, SLOT( slotQueryDone() ) );
         //relay signals directly
-        connect( b, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SIGNAL( newResultReady( QString, Meta::TrackList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), this, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), this, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( QString, Meta::GenreList ) ), this, SIGNAL( newResultReady( QString, Meta::GenreList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), this, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( QString, Meta::YearList ) ), this, SIGNAL( newResultReady( QString, Meta::YearList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( QString, QStringList ) ), this, SIGNAL( newResultReady( QString, QStringList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( QString, Meta::DataList ) ), this, SIGNAL( newResultReady( QString, Meta::DataList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL(newResultReady(QString,Meta::LabelList)), this, SIGNAL(newResultReady(QString,Meta::LabelList)), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( Meta::TrackList ) ), this, SIGNAL( newResultReady( Meta::TrackList ) ), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( Meta::ArtistList ) ), this, SIGNAL( newResultReady( Meta::ArtistList ) ), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( Meta::AlbumList ) ), this, SIGNAL( newResultReady( Meta::AlbumList ) ), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( Meta::GenreList ) ), this, SIGNAL( newResultReady( Meta::GenreList ) ), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( Meta::ComposerList ) ), this, SIGNAL( newResultReady( Meta::ComposerList ) ), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( Meta::YearList ) ), this, SIGNAL( newResultReady( Meta::YearList ) ), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( QStringList ) ), this, SIGNAL( newResultReady( QStringList ) ), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( Meta::LabelList)), this, SIGNAL( newResultReady( Meta::LabelList)), Qt::DirectConnection );
     }
 }
 
@@ -51,15 +50,14 @@ MetaQueryMaker::MetaQueryMaker( const QList<QueryMaker*> &queryMakers )
     {
         connect( b, SIGNAL( queryDone() ), this, SLOT( slotQueryDone() ) );
         //relay signals directly
-        connect( b, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SIGNAL( newResultReady( QString, Meta::TrackList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), this, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), this, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( QString, Meta::GenreList ) ), this, SIGNAL( newResultReady( QString, Meta::GenreList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), this, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( QString, Meta::YearList ) ), this, SIGNAL( newResultReady( QString, Meta::YearList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( QString, QStringList ) ), this, SIGNAL( newResultReady( QString, QStringList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( QString, Meta::DataList ) ), this, SIGNAL( newResultReady( QString, Meta::DataList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL(newResultReady(QString,Meta::LabelList)), this, SIGNAL(newResultReady(QString,Meta::LabelList)), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( Meta::TrackList ) ), this, SIGNAL( newResultReady( Meta::TrackList ) ), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( Meta::ArtistList ) ), this, SIGNAL( newResultReady( Meta::ArtistList ) ), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( Meta::AlbumList ) ), this, SIGNAL( newResultReady( Meta::AlbumList ) ), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( Meta::GenreList ) ), this, SIGNAL( newResultReady( Meta::GenreList ) ), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( Meta::ComposerList ) ), this, SIGNAL( newResultReady( Meta::ComposerList ) ), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( Meta::YearList ) ), this, SIGNAL( newResultReady( Meta::YearList ) ), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( QStringList ) ), this, SIGNAL( newResultReady( QStringList ) ), Qt::DirectConnection );
+        connect( b, SIGNAL(newResultReady( Meta::LabelList)), this, SIGNAL(newResultReady( Meta::LabelList)), Qt::DirectConnection );
     }
 }
 
@@ -81,17 +79,6 @@ MetaQueryMaker::abortQuery()
 {
     foreach( QueryMaker *b, builders )
         b->abortQuery();
-}
-
-int
-MetaQueryMaker::resultCount() const
-{
-    int count = 0;
-    foreach( QueryMaker *b, builders )
-    {
-        count += b->resultCount();
-    }
-    return count;
 }
 
 QueryMaker*
@@ -123,14 +110,6 @@ MetaQueryMaker::orderBy( qint64 value, bool descending )
 {
     foreach( QueryMaker *b, builders )
         b->orderBy( value, descending );
-    return this;
-}
-
-QueryMaker*
-MetaQueryMaker::orderByRandom()
-{
-    foreach( QueryMaker *b, builders )
-        b->orderByRandom();
     return this;
 }
 
@@ -219,14 +198,6 @@ MetaQueryMaker::addMatch( const Meta::LabelPtr &label )
 {
     foreach( QueryMaker *b, builders )
         b->addMatch( label );
-    return this;
-}
-
-QueryMaker*
-MetaQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
-{
-    foreach( QueryMaker *b, builders )
-        b->setReturnResultAsDataPtrs( resultAsDataPtrs );
     return this;
 }
 

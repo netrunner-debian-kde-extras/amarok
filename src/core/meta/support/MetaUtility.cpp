@@ -28,6 +28,13 @@
 #include <klocale.h>
 #include <kio/global.h>
 
+// We want to give sensible sized images to mpris.
+// 135 is also a size used by Amarok internally so the chances are quite good that we already
+// have a scaled image in our cache.
+// Also requesting images in a specific size reduces the chances that we get an abstract URL
+// like amarok-sqltrackuid://1345 (see bug 263642)
+#define MPRIS_IMAGE_SIZE 135
+
         static const QString XESAM_ALBUM          = "http://freedesktop.org/standards/xesam/1.0/core#album";
         static const QString XESAM_ALBUMARTIST    = "http://freedesktop.org/standards/xesam/1.0/core#albumArtist";
         static const QString XESAM_ARTIST         = "http://freedesktop.org/standards/xesam/1.0/core#artist";
@@ -143,7 +150,7 @@ Meta::Field::mprisMapFromTrack( const Meta::TrackPtr track )
             map["year"] = track->year()->name();
 
         if( track->album() )
-            map["arturl"] = track->album()->imageLocation().url();
+            map["arturl"] = track->album()->imageLocation( MPRIS_IMAGE_SIZE ).url();
 
         //TODO: external service meta info
 
@@ -171,7 +178,7 @@ Meta::Field::mpris20MapFromTrack( const Meta::TrackPtr track )
         map["mpris:length"] = track->length() * 1000; // microseconds
 
         if( track->album() )
-            map["mpris:artUrl"] = track->album()->imageLocation().url();
+            map["mpris:artUrl"] = track->album()->imageLocation( MPRIS_IMAGE_SIZE ).url();
 
         if( track->album() ) {
             map["xesam:album"] = track->album()->name();
@@ -390,6 +397,8 @@ Meta::secToPrettyTime( int seconds )
 {
     if( seconds < 60 * 60 ) // one hour
         return QTime().addSecs( seconds ).toString( i18nc("the time format for a time length when the time is below 1 hour see QTime documentation.", "m:ss" ) );
+    else if( seconds >= 86400 ) // one day
+        return  QDateTime().addSecs( seconds ).toString( i18nc("the time format for a time length when the time is 1 day or above see QDateTime documentation.", "d:hh:mm:ss" ) );
     else
         return QTime().addSecs( seconds ).toString( i18nc("the time format for a time length when the time is 1 hour or above see QTime documentation.", "h:mm:ss" ) );
 }

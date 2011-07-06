@@ -19,21 +19,22 @@
 
 #include "FileView.h"
 
-#include "core/support/Debug.h"
-#include "core-impl/collections/support/CollectionManager.h"
-#include "core-impl/collections/support/FileCollectionLocation.h"
 #include "context/ContextView.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "context/popupdropper/libpud/PopupDropperItem.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/collections/support/FileCollectionLocation.h"
+#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
+#include "core/interfaces/Logger.h"
+#include "core/playlists/PlaylistFormat.h"
+#include "core/support/Debug.h"
 #include "dialogs/TagDialog.h"
 #include "DirectoryLoader.h"
 #include "EngineController.h"
-#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
-#include "core/playlists/PlaylistFormat.h"
 #include "PaletteHandler.h"
-#include "playlist/PlaylistModelStack.h"
+#include "playlist/PlaylistController.h"
 #include "PopupDropperFactory.h"
-#include "statusbar/StatusBar.h"
+
 #include "SvgHandler.h"
 #include "src/transcoding/TranscodingJob.h"
 #include "src/transcoding/TranscodingAssistantDialog.h"
@@ -57,7 +58,7 @@
 #include <QItemDelegate>
 #include <QPainter>
 
-FileView::FileView( QWidget * parent )
+FileView::FileView( QWidget *parent )
     : Amarok::PrettyTreeView( parent )
     , m_appendAction( 0 )
     , m_loadAction( 0 )
@@ -78,7 +79,8 @@ FileView::FileView( QWidget * parent )
     setUniformRowHeights( true );
 
     The::paletteHandler()->updateItemView( this );
-    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette & ) ), SLOT( newPalette( const QPalette & ) ) );
+    connect( The::paletteHandler(), SIGNAL(newPalette( const QPalette & )),
+                                    SLOT(newPalette( const QPalette & )) );
 }
 
 void
@@ -88,7 +90,6 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
         return;
 
     //trying to do fancy stuff while showing places only leads to tears!
-    // debug() << model()->objectName();
     if( model()->objectName() == "PLACESMODEL" )
     {
         e->accept();
@@ -100,7 +101,6 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
     if( indices.isEmpty() )
         return;
 
-    DEBUG_BLOCK
     KMenu* menu = new KMenu( this );
     QList<QAction *> actions = actionsForIndices( indices );
     foreach( QAction * action, actions )
@@ -109,18 +109,18 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
     // Create Copy/Move to menu items
     // ported from old filebrowser
     QList<Collections::Collection*> writableCollections;
-    QHash<Collections::Collection*, CollectionManager::CollectionStatus> hash = CollectionManager::instance()->collections();
-    QHash<Collections::Collection*, CollectionManager::CollectionStatus>::const_iterator it = hash.constBegin();
-    while ( it != hash.constEnd() )
+    QHash<Collections::Collection*, CollectionManager::CollectionStatus> hash =
+            CollectionManager::instance()->collections();
+    QHash<Collections::Collection*, CollectionManager::CollectionStatus>::const_iterator it =
+            hash.constBegin();
+    while( it != hash.constEnd() )
     {
         Collections::Collection *coll = it.key();
-        if ( coll && coll->isWritable() )
-        {
+        if( coll && coll->isWritable() )
             writableCollections.append( coll );
-        }
         ++it;
     }
-    if ( !writableCollections.isEmpty() )
+    if( !writableCollections.isEmpty() )
     {
         QMenu *moveMenu = new QMenu( i18n( "Move to Collection" ), this );
         foreach( Collections::Collection *coll, writableCollections )
@@ -143,7 +143,7 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
     KAction *transcodeAction = new KAction( "Transcode here", this );
     connect( transcodeAction, SIGNAL( triggered() ), this, SLOT( slotPrepareTranscodeTracks() ) );
     menu->addAction( transcodeAction );
-    transcodeAction->setVisible( false );   //This is just used for debugging, hide it!
+    transcodeAction->setVisible( false ); //This is just used for debugging, hide it!
 
     menu->exec( e->globalPos() );
 }
@@ -180,7 +180,9 @@ FileView::mouseReleaseEvent( QMouseEvent *event )
             }
             else
             {
-                QTimer::singleShot( QApplication::doubleClickInterval(), this, SLOT(slotEditTriggered()) );
+                QTimer::singleShot( QApplication::doubleClickInterval(), this,
+                                    SLOT(slotEditTriggered())
+                                  );
                 m_lastSelectedIndex = QModelIndex();
             }
             event->accept();
@@ -246,20 +248,18 @@ FileView::slotPrepareTranscodeTracks()
         return;
 
     const KFileItemList list = selectedItems();
-    if ( list.isEmpty() )
+    if( list.isEmpty() )
         return;
-    debug()<<" SRC URL IS " << list.urlList().first();
-    debug()<<" SRC URL IS " << list.urlList().first();
 
     if( !Amarok::Components::transcodingController()->availableFormats().isEmpty() )
     {
         Transcoding::AssistantDialog *d = new Transcoding::AssistantDialog( this );
-        debug() << "About to show Transcoding::AssistantDialog";
         d->show();
-        debug() << "Transcoding::AssistantDialog shown.";
     }
     else
+    {
         debug() << "FFmpeg is not installed or does not support any of the required formats.";
+    }
 }
 
 void
@@ -269,18 +269,19 @@ FileView::slotPrepareMoveTracks()
         return;
 
     CollectionAction *action = dynamic_cast<CollectionAction*>( sender() );
-    if ( !action )
+    if( !action )
         return;
 
     m_moveActivated = true;
     m_moveAction = action;
 
     const KFileItemList list = selectedItems();
-    if ( list.isEmpty() )
+    if( list.isEmpty() )
         return;
 
     DirectoryLoader* dl = new DirectoryLoader();
-    connect( dl, SIGNAL( finished( const Meta::TrackList& ) ), this, SLOT( slotMoveTracks( const Meta::TrackList& ) ) );
+    connect( dl, SIGNAL(finished( const Meta::TrackList& )),
+                 SLOT(slotMoveTracks( const Meta::TrackList& )) );
     dl->init( list.urlList() );
 }
 
@@ -291,18 +292,19 @@ FileView::slotPrepareCopyTracks()
         return;
 
     CollectionAction *action = dynamic_cast<CollectionAction*>( sender() );
-    if ( !action )
+    if( !action )
         return;
 
     m_copyActivated = true;
     m_copyAction = action;
 
     const KFileItemList list = selectedItems();
-    if ( list.isEmpty() )
+    if( list.isEmpty() )
         return;
 
     DirectoryLoader* dl = new DirectoryLoader();
-    connect( dl, SIGNAL( finished( const Meta::TrackList& ) ), this, SLOT( slotCopyTracks( const Meta::TrackList& ) ) );
+    connect( dl, SIGNAL(finished( const Meta::TrackList & )),
+                 SLOT(slotCopyTracks( const Meta::TrackList & )) );
     dl->init( list.urlList() );
 }
 
@@ -393,7 +395,8 @@ FileView::actionsForIndices( const QModelIndexList &indices )
 
     if( m_appendAction == 0 )
     {
-        m_appendAction = new QAction( KIcon( "media-track-add-amarok" ), i18n( "&Add to Playlist" ), this );
+        m_appendAction = new QAction( KIcon( "media-track-add-amarok" ), i18n( "&Add to Playlist" ),
+                                     this );
         m_appendAction->setProperty( "popupdropper_svg_id", "append" );
         connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppendToPlaylist() ) );
     }
@@ -402,7 +405,11 @@ FileView::actionsForIndices( const QModelIndexList &indices )
 
     if( m_loadAction == 0 )
     {
-        m_loadAction = new QAction( KIcon( "folder-open" ), i18nc( "Replace the currently loaded tracks with these", "&Replace Playlist" ), this );
+        m_loadAction = new QAction( KIcon( "folder-open" ),
+                                   i18nc( "Replace the currently loaded tracks with these",
+                                          "&Replace Playlist" ),
+                                   this
+                                  );
         m_loadAction->setProperty( "popupdropper_svg_id", "load" );
         connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotReplacePlaylist() ) );
     }
@@ -411,7 +418,8 @@ FileView::actionsForIndices( const QModelIndexList &indices )
 
     if( m_editAction == 0 )
     {
-        m_editAction = new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Edit Track Details" ), this );
+        m_editAction = new QAction( KIcon( "media-track-edit-amarok" ),
+                                    i18n( "&Edit Track Details" ), this );
         m_editAction->setProperty( "popupdropper_svg_id", "edit" );
         connect( m_editAction, SIGNAL( triggered() ), this, SLOT( slotEditTracks() ) );
     }
@@ -445,7 +453,6 @@ FileView::actionsForIndices( const QModelIndexList &indices )
 void
 FileView::addSelectionToPlaylist( bool replace )
 {
-    DEBUG_BLOCK
     QModelIndexList indices = selectedIndexes();
 
     if( indices.count() == 0 )
@@ -455,7 +462,6 @@ FileView::addSelectionToPlaylist( bool replace )
     foreach( const QModelIndex& index, indices )
     {
         KFileItem file = index.data( KDirModel::FileItemRole ).value<KFileItem>();
-        debug() << "file path: " << file.url();
         if( EngineController::canDecode( file.url() ) || Playlists::isPlaylist( file.url() ) || file.isDir() )
         {
             urls << file.url();
@@ -468,7 +474,6 @@ FileView::addSelectionToPlaylist( bool replace )
 void
 FileView::startDrag( Qt::DropActions supportedActions )
 {
-    DEBUG_BLOCK
     m_lastSelectedIndex = QModelIndex();
 
     //setSelectionMode( QAbstractItemView::NoSelection );
@@ -495,18 +500,16 @@ FileView::startDrag( Qt::DropActions supportedActions )
         font.setPointSize( 16 );
         font.setBold( true );
 
-        foreach( QAction * action, actions )
+        foreach( QAction *action, actions )
             m_pd->addItem( The::popupDropperFactory()->createItem( action ) );
 
         m_pd->show();
     }
 
     QTreeView::startDrag( supportedActions );
-    debug() << "After the drag!";
 
     if( m_pd )
     {
-        debug() << "clearing PUD";
         connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( clear() ) );
         m_pd->hide();
     }
@@ -608,9 +611,9 @@ FileView::slotDelete( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers 
 
     if( job )
     {
-        debug() << QString( "%1 %2 files" ).arg( skipTrash ? "Deleting" : "Trashing" ).arg( urls.count() );
-        QString statusText = i18ncp( "@info:status", "Moving to trash: 1 file", "Moving to trash: %1 files", urls.count() );
-        The::statusBar()->newProgressOperation( job, statusText );
+        QString statusText = i18ncp( "@info:status", "Moving to trash: 1 file",
+                                     "Moving to trash: %1 files", urls.count() );
+        Amarok::Components::logger()->newProgressOperation( job, statusText );
     }
 }
 

@@ -93,37 +93,18 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
         virtual void abortQuery() = 0;
 
         /**
-            returns the number of times one of the newResultReady signals will be emitted
-            by the QueryMaker instance.
-         */
-        virtual int resultCount() const;
-
-        /**
          * Sets the type of objects the querymaker will query for.  These are mutually
          * exclusive.  The results of the query will be returned as objects of the
          * appropriate type, therefore it is necessary to connect the client to the
-         * newResultReady( QString, Meta::Type ) signal (unless you are after Meta::Data
-         * pointers, see setReturnResultAsDataPtrs( bool ) for details.
+         * newResultReady( Meta::Type ) signal
          *
          * if you set QueryType custom, this starts a custom query. Unlike other query types, you have to set up the return
          * values yourself using addReturnValue( qint64 ) and addReturnFunction(). The results will
          * be returned as a QStringList. Threfore you have to connect to the
-         * newResultReady( QString, QStringList ) signal to receive the results. Calling
-         * setReturnResultAsDataPtrs( bool ) has no effect when using a custom query.
+         * newResultReady( QStringList ) signal to receive the results.
          * @return this
          */
         virtual QueryMaker* setQueryType( QueryType type ) = 0;
-        /**
-            sets the QueryMaker instance to return Meta::Data objects instead of the actual type.
-            In some cases it can be useful to ignore the actual type of the result and just work with
-            the method provided by Meta::Data. Calling this method with resultAsDataPtrs = true causes
-            the QueryMaker instance to emit the newResultReady( QString, Meta::DataList ) signal
-            for all query types (except a custom query). Calling the method with resultAsDataPtrs = false
-            switches back to the normal behaviour.
-
-            @return this
-        */
-        virtual QueryMaker* setReturnResultAsDataPtrs( bool resultAsDataPtrs ) = 0;
 
         /**
             only works after starting a custom query with startCustomQuery()
@@ -142,11 +123,6 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
          * @return this
          */
         virtual QueryMaker* orderBy( qint64 value, bool descending = false ) = 0;
-        /**
-         * return results in a random order.
-         * @return this
-         */
-        virtual QueryMaker* orderByRandom() = 0;
 
         virtual QueryMaker* addMatch( const Meta::TrackPtr &track ) = 0;
         virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist ) = 0;
@@ -221,16 +197,22 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
         virtual int validFilterMask();
 
     signals:
-        void newResultReady( QString collectionId, Meta::TrackList );
-        void newResultReady( QString collectionId, Meta::ArtistList );
-        void newResultReady( QString collectionId, Meta::AlbumList );
-        void newResultReady( QString collectionId, Meta::GenreList );
-        void newResultReady( QString collectionId, Meta::ComposerList );
-        void newResultReady( QString collectionId, Meta::YearList );
-        void newResultReady( QString collectionId, Meta::DataList );
-        void newResultReady( QString collectionId, QStringList );
-        void newResultReady( QString collectionId, Meta::LabelList );
+        /** newResultReady will be emitted every time new results from the query maker are received.
+            This signal can be emitted zero times (in case of no results) one (the usual case) or multiple times
+            (e.g. in case when the result is received in several batches).
+            The results will be terminated by a queryDone signal.
+        */
+        void newResultReady( Meta::TrackList );
+        void newResultReady( Meta::ArtistList );
+        void newResultReady( Meta::AlbumList );
+        void newResultReady( Meta::GenreList );
+        void newResultReady( Meta::ComposerList );
+        void newResultReady( Meta::YearList );
+        void newResultReady( QStringList );
+        void newResultReady( Meta::LabelList );
 
+        /** This signal is emitted after all the results have been submitted via zero or more newResultReady signals.
+        */
         void queryDone();
 };
 

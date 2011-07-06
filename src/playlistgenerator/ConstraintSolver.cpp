@@ -72,8 +72,7 @@ APG::ConstraintSolver::ConstraintSolver( ConstraintNode* r, int qualityFactor )
     if ( m_qm ) {
         debug() << "New ConstraintSolver with serial number" << m_serialNumber;
         m_qm->setQueryType( Collections::QueryMaker::Track );
-        m_qm->orderByRandom();
-        connect( m_qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( receiveQueryMakerData( QString, Meta::TrackList ) ), Qt::QueuedConnection );
+        connect( m_qm, SIGNAL( newResultReady( Meta::TrackList ) ), this, SLOT( receiveQueryMakerData( Meta::TrackList ) ), Qt::QueuedConnection );
         connect( m_qm, SIGNAL( queryDone() ), this, SLOT( receiveQueryMakerDone() ), Qt::QueuedConnection );
         m_constraintTreeRoot->initQueryMaker( m_qm );
         m_qm->run();
@@ -220,9 +219,8 @@ APG::ConstraintSolver::run()
 }
 
 void
-APG::ConstraintSolver::receiveQueryMakerData( QString collId, Meta::TrackList results )
+APG::ConstraintSolver::receiveQueryMakerData( Meta::TrackList results )
 {
-    Q_UNUSED( collId );
     m_domainMutex.lock();
     m_domain += results;
     m_domainMutex.unlock();
@@ -236,22 +234,25 @@ APG::ConstraintSolver::receiveQueryMakerDone()
 
     if (( m_domain.size() > 0 ) || m_domainReductionFailed ) {
         if ( m_domain.size() <= 0 ) {
-            Amarok::Components::logger()->shortMessage( i18n("The playlist generator failed to load any tracks from the collection.") );
+            Amarok::Components::logger()->shortMessage(
+                    i18n("The playlist generator failed to load any tracks from the collection.") );
         }
         m_readyToRun = true;
         emit readyToRun();
     } else {
-        Amarok::Components::logger()->longMessage( i18n("There are no tracks that match all constraints.  The playlist generator will find the tracks that match best, but you may want to consider loosening the constraints to find more tracks.") );
+        Amarok::Components::logger()->longMessage(
+                    i18n("There are no tracks that match all constraints. " \
+                         "The playlist generator will find the tracks that match best, " \
+                "but you may want to consider loosening the constraints to find more tracks.") );
         m_domainReductionFailed = true;
 
         // need a new query maker without constraints
         m_qm = new Collections::MetaQueryMaker( CollectionManager::instance()->queryableCollections() );
         if ( m_qm ) {
-            connect( m_qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( receiveQueryMakerData( QString, Meta::TrackList ) ), Qt::QueuedConnection );
+            connect( m_qm, SIGNAL( newResultReady( Meta::TrackList ) ), this, SLOT( receiveQueryMakerData( Meta::TrackList ) ), Qt::QueuedConnection );
             connect( m_qm, SIGNAL( queryDone() ), this, SLOT( receiveQueryMakerDone() ), Qt::QueuedConnection );
 
             m_qm->setQueryType( Collections::QueryMaker::Track );
-            m_qm->orderByRandom();
             m_qm->run();
         }
     }

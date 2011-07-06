@@ -74,7 +74,6 @@ struct MemoryQueryMaker::Private {
     QList<CustomReturnFunction*> returnFunctions;
     QList<CustomReturnValue*> returnValues;
     bool usingFilters;
-    bool randomize;
     KRandomSequence sequence;   //do not reset
     qint64 orderByField;
     bool orderDescending;
@@ -100,7 +99,6 @@ MemoryQueryMaker::MemoryQueryMaker( QWeakPointer<MemoryCollection> mc, const QSt
     d->maxsize = -1;
     d->containerFilters.push( new AndContainerMemoryFilter() );
     d->usingFilters = false;
-    d->randomize = false;
     d->orderByField = 0;
     d->orderDescending = false;
     d->orderByNumberField = false;
@@ -139,9 +137,7 @@ MemoryQueryMaker::run()
         }
         qmi->setMatchers( d->matcher );
         d->matcher = 0; //will be deleted by MemoryQueryMakerInternal
-        qmi->setRandomize( d->randomize );
         qmi->setMaxSize( d->maxsize );
-        qmi->setReturnAsDataPtrs( d->returnDataPtrs );
         qmi->setType( d->type );
         qmi->setCustomReturnFunctions( d->returnFunctions );
         d->returnFunctions.clear(); //will be deleted by MemoryQueryMakerInternal
@@ -155,15 +151,15 @@ MemoryQueryMaker::run()
         qmi->setOrderByField( d->orderByField );
         qmi->setCollectionId( d->collectionId );
 
-        connect( qmi, SIGNAL(newResultReady(QString,Meta::AlbumList)), SIGNAL(newResultReady(QString,Meta::AlbumList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(QString,Meta::ArtistList)), SIGNAL(newResultReady(QString,Meta::ArtistList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(QString,Meta::GenreList)), SIGNAL(newResultReady(QString,Meta::GenreList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(QString,Meta::ComposerList)), SIGNAL(newResultReady(QString,Meta::ComposerList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(QString,Meta::YearList)), SIGNAL(newResultReady(QString,Meta::YearList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(QString,Meta::TrackList)), SIGNAL(newResultReady(QString,Meta::TrackList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(QString,Meta::DataList)), SIGNAL(newResultReady(QString,Meta::DataList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(QString,QStringList)), SIGNAL(newResultReady(QString,QStringList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(QString,Meta::LabelList)), SIGNAL(newResultReady(QString,Meta::LabelList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(Meta::AlbumList)), SIGNAL(newResultReady(Meta::AlbumList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(Meta::ArtistList)), SIGNAL(newResultReady(Meta::ArtistList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(Meta::GenreList)), SIGNAL(newResultReady(Meta::GenreList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(Meta::ComposerList)), SIGNAL(newResultReady(Meta::ComposerList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(Meta::YearList)), SIGNAL(newResultReady(Meta::YearList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(Meta::TrackList)), SIGNAL(newResultReady(Meta::TrackList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(Meta::DataList)), SIGNAL(newResultReady(Meta::DataList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(QStringList)), SIGNAL(newResultReady(QStringList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(Meta::LabelList)), SIGNAL(newResultReady(Meta::LabelList)), Qt::DirectConnection );
 
         d->job = new QueryJob( qmi );
         connect( d->job, SIGNAL( done( ThreadWeaver::Job * ) ), SLOT( done( ThreadWeaver::Job * ) ) );
@@ -239,13 +235,6 @@ MemoryQueryMaker::setQueryType( QueryType type )
 }
 
 QueryMaker*
-MemoryQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
-{
-    d->returnDataPtrs = resultAsDataPtrs;
-    return this;
-}
-
-QueryMaker*
 MemoryQueryMaker::addReturnValue( qint64 value )
 {
     //MQM can not deliver sensible results if both a custom return value and a return function is selected
@@ -297,13 +286,6 @@ MemoryQueryMaker::orderBy( qint64 value, bool descending )
         default:
             d->orderByNumberField = false;
     }
-    return this;
-}
-
-QueryMaker*
-MemoryQueryMaker::orderByRandom()
-{
-    d->randomize = true;
     return this;
 }
 

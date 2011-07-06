@@ -107,7 +107,7 @@ TagDialog::TagDialog( Collections::QueryMaker *qm )
     resize( minimumSizeHint() );
 
     qm->setQueryType( Collections::QueryMaker::Track );
-    connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( resultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
+    connect( qm, SIGNAL( newResultReady( Meta::TrackList ) ), this, SLOT( resultReady( Meta::TrackList ) ), Qt::QueuedConnection );
     connect( qm, SIGNAL( queryDone() ), this, SLOT( queryDone() ), Qt::QueuedConnection );
     qm->run();
 }
@@ -154,10 +154,8 @@ TagDialog::addTrack( Meta::TrackPtr &track )
 }
 
 void
-TagDialog::resultReady( const QString &collectionId, const Meta::TrackList &tracks )
+TagDialog::resultReady( const Meta::TrackList &tracks )
 {
-    Q_UNUSED( collectionId )
-
     foreach( Meta::TrackPtr track, tracks )
         addTrack( track );
 }
@@ -180,10 +178,8 @@ TagDialog::queryDone()
 }
 
 void
-TagDialog::resultReady( const QString &collectionId, const Meta::AlbumList &albums )
+TagDialog::resultReady( const Meta::AlbumList &albums )
 {
-    Q_UNUSED( collectionId )
-
     foreach( const Meta::AlbumPtr &album, albums )
     {
         if( !album->name().isEmpty() )
@@ -195,10 +191,8 @@ TagDialog::resultReady( const QString &collectionId, const Meta::AlbumList &albu
 }
 
 void
-TagDialog::resultReady( const QString &collectionId, const Meta::ArtistList &artists )
+TagDialog::resultReady( const Meta::ArtistList &artists )
 {
-    Q_UNUSED( collectionId )
-
     foreach( const Meta::ArtistPtr &artist, artists )
     {
         if( !artist->name().isEmpty() )
@@ -207,10 +201,8 @@ TagDialog::resultReady( const QString &collectionId, const Meta::ArtistList &art
 }
 
 void
-TagDialog::resultReady( const QString &collectionId, const Meta::ComposerList &composers )
+TagDialog::resultReady( const Meta::ComposerList &composers )
 {
-    Q_UNUSED( collectionId )
-
     foreach( const Meta::ComposerPtr &composer, composers )
     {
         if( !composer->name().isEmpty() )
@@ -219,10 +211,8 @@ TagDialog::resultReady( const QString &collectionId, const Meta::ComposerList &c
 }
 
 void
-TagDialog::resultReady( const QString &collectionId, const Meta::GenreList &genres )
+TagDialog::resultReady( const Meta::GenreList &genres )
 {
-    Q_UNUSED( collectionId )
-
     foreach( const Meta::GenrePtr &genre, genres )
     {
         if( !genre->name().isEmpty() )  // Where the heck do the empty genres come from?
@@ -232,10 +222,8 @@ TagDialog::resultReady( const QString &collectionId, const Meta::GenreList &genr
 
 
 void
-TagDialog::resultReady( const QString &collectionId, const Meta::LabelList &labels )
+TagDialog::resultReady( const Meta::LabelList &labels )
 {
-    Q_UNUSED( collectionId )
-
     foreach( const Meta::LabelPtr &label, labels )
     {
         if( !label->name().isEmpty() )
@@ -369,7 +357,7 @@ TagDialog::accept() //SLOT
 inline void
 TagDialog::openPressed() //SLOT
 {
-    new KRun( QFileInfo( m_path ).dir().absolutePath(), this );
+    new KRun( QFileInfo( m_path ).absolutePath(), this );
 }
 
 
@@ -647,7 +635,7 @@ void TagDialog::initUi()
 void
 TagDialog::setCurrentTrack( int num )
 {
-    if( num<0 || num>=m_tracks.count() )
+    if( num < 0 || num >= m_tracks.count() )
         return;
 
     if( m_currentTrack ) // even in multiple tracks mode we don't want to write back
@@ -671,7 +659,8 @@ TagDialog::setCurrentTrack( int num )
 }
 
 void
-TagDialog::startDataQuery( Collections::QueryMaker::QueryType type, const char* signal, const char* slot )
+TagDialog::startDataQuery( Collections::QueryMaker::QueryType type, const char *signal,
+                           const char *slot )
 {
     Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
     qm->setQueryType( type );
@@ -687,20 +676,20 @@ void
 TagDialog::startDataQueries()
 {
     startDataQuery( Collections::QueryMaker::Artist,
-                    SIGNAL( newResultReady( QString, Meta::ArtistList ) ),
-                    SLOT( resultReady( QString, Meta::ArtistList ) ) );
+                    SIGNAL( newResultReady( Meta::ArtistList ) ),
+                    SLOT( resultReady( Meta::ArtistList ) ) );
     startDataQuery( Collections::QueryMaker::Album,
-                    SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
-                    SLOT( resultReady( QString, Meta::AlbumList ) ) );
+                    SIGNAL( newResultReady( Meta::AlbumList ) ),
+                    SLOT( resultReady( Meta::AlbumList ) ) );
     startDataQuery( Collections::QueryMaker::Composer,
-                    SIGNAL( newResultReady( QString, Meta::ComposerList ) ),
-                    SLOT( resultReady( QString, Meta::ComposerList ) ) );
+                    SIGNAL( newResultReady( Meta::ComposerList ) ),
+                    SLOT( resultReady( Meta::ComposerList ) ) );
     startDataQuery( Collections::QueryMaker::Genre,
-                    SIGNAL( newResultReady( QString, Meta::GenreList ) ),
-                    SLOT( resultReady( QString, Meta::GenreList ) ) );
+                    SIGNAL( newResultReady( Meta::GenreList ) ),
+                    SLOT( resultReady( Meta::GenreList ) ) );
     startDataQuery( Collections::QueryMaker::Label,
-                    SIGNAL( newResultReady( QString, Meta::LabelList ) ),
-                    SLOT( resultReady( QString, Meta::LabelList ) ) );
+                    SIGNAL( newResultReady( Meta::LabelList ) ),
+                    SLOT( resultReady( Meta::LabelList ) ) );
 }
 
 
@@ -790,7 +779,7 @@ TagDialog::setTagsToUi( const QVariantMap &tags )
                 if( !m_currentTrack->artist()->name().isEmpty() )
                     niceTitle = i18n( "<b>%1</b> by <b>%2</b>", curTrackName,  curArtistName );
                 else
-                    niceTitle = QString( "<b>%1</b>").arg( curTrackName );
+                    niceTitle = i18n( "<b>%1</b>", curTrackName );
             }
             else
                 niceTitle = curTrackPretName;
@@ -859,17 +848,19 @@ TagDialog::setTagsToUi( const QVariantMap &tags )
     setControlsAccessability();
 
     // If it's a local file, write the directory to m_path, else disable the "open in konqui" button
-    if( !tags.value( Meta::Field::URL ).toString().isEmpty() )
+    KUrl url = tags.value( Meta::Field::URL ).toString();
+    //pathOrUrl will give localpath or proper url for remote.
+    ui->kLineEdit_location->setText( url.pathOrUrl() );
+    if( url.isLocalFile() )
     {
-        //all files are local & have the same Directory
-        m_path = tags.value( Meta::Field::URL ).toString();
         ui->locationLabel->show();
         ui->kLineEdit_location->show();
+        m_path = url.directory();
         ui->pushButton_open->setEnabled( true );
-        ui->kLineEdit_location->setText( m_path );
     }
     else
     {
+        m_path = QString();
         ui->pushButton_open->setEnabled( false );
     }
 

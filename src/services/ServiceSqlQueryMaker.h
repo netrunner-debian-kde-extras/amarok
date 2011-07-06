@@ -41,8 +41,6 @@ class ServiceSqlQueryMaker : public QueryMaker
 
         virtual QueryMaker* setQueryType( QueryType type );
 
-        virtual QueryMaker* setReturnResultAsDataPtrs( bool resultAsDataPtrs );
-
         virtual QueryMaker* addMatch( const Meta::TrackPtr &track );
         virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist );
         virtual QueryMaker* addMatch( const Meta::AlbumPtr &album );
@@ -60,7 +58,6 @@ class ServiceSqlQueryMaker : public QueryMaker
         virtual QueryMaker* addReturnValue( qint64 value );
         virtual QueryMaker* addReturnFunction( ReturnFunction function, qint64 value );
         virtual QueryMaker* orderBy( qint64 value, bool descending = false );
-        virtual QueryMaker* orderByRandom();
 
         virtual QueryMaker* limitMaxResultSize( int size );
 

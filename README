@@ -35,7 +35,7 @@ that really makes playlist handling easy.
 ==============
 
 Required
-    * KDE-Libs 4.4 + KDE-Base-runtime 4.4 (or newer)
+    * KDE-Libs 4.4 + KDE-Base-runtime 4.4(oxygen-icons) (or newer)
       http://www.kde.org
 
     * Qt 4.6 (or newer)
@@ -95,7 +95,7 @@ Optional
     * MySQL 5.0 (or newer) Server (external database support)
 
     * MusicBrainz-based audio fingerprint tag lookup requires:
-      * FFmpeg 0.5.0 (or newer) - http://ffmpeg.org/
+      * FFmpeg 0.6.0 (or newer) - http://ffmpeg.org/
         * libavcodec & libavformat specifically
       * LibOFA - http://code.google.com/p/musicip-libofa/
       

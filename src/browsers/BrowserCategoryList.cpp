@@ -19,47 +19,54 @@
 #include "BrowserCategoryList.h"
 
 #include "App.h"
-#include "core/support/Debug.h"
 #include "BrowserCategoryListDelegate.h"
 #include "context/ContextView.h"
+#include "core/support/Debug.h"
 #include "InfoProxy.h"
 #include "PaletteHandler.h"
 #include "widgets/PrettyTreeView.h"
 #include "widgets/SearchWidget.h"
+
+#include <QStackedWidget>
+#include <QTreeView>
 
 #include <KComboBox>
 #include <KStandardDirs>
 
 #include <QFile>
 
-
-BrowserCategoryList::BrowserCategoryList( QWidget * parent, const QString& name, bool sort )
+BrowserCategoryList::BrowserCategoryList( const QString &name, QWidget* parent, bool sort )
     : BrowserCategory( name, parent )
-    , m_currentCategory( 0 )
-    , m_categoryListModel( new BrowserCategoryListModel() )
+    , m_categoryListModel( new BrowserCategoryListModel( this ) )
     , m_sorting( sort )
 {
-    setObjectName( name );
-    setParent( parent );
+    // -- the widget stack
+    m_widgetStack = new QStackedWidget( this );
 
-    debug() << "BrowserCategoryList named " << name << " starting...";
+    QWidget* mainWidget = new QWidget();
+    QVBoxLayout* vLayout = new QVBoxLayout();
+    mainWidget->setLayout( vLayout );
 
-    m_searchWidget = new SearchWidget( this, this, false );
+    // -- the search widget
+    m_searchWidget = new SearchWidget( 0, this, false );
     m_searchWidget->setClickMessage( i18n( "Filter Music Sources" ) );
+    vLayout->addWidget( m_searchWidget );
 
     m_filterTimer.setSingleShot( true );
-    connect( &m_filterTimer, SIGNAL( timeout() ), this, SLOT( slotFilterNow() ) );
+    connect( &m_filterTimer, SIGNAL(timeout()), this, SLOT(slotFilterNow()) );
 
-    m_categoryListView = new Amarok::PrettyTreeView( this );
+    // -- the main list view
+    m_categoryListView = new Amarok::PrettyTreeView();
 #ifdef Q_WS_MAC
-    m_categoryListView->setVerticalScrollMode( QAbstractItemView::ScrollPerItem ); // for some bizarre reason w/ some styles on mac
-    m_categoryListView->setHorizontalScrollMode( QAbstractItemView::ScrollPerItem ); // per-pixel scrolling is slower than per-item
+    // for some bizarre reason w/ some styles on mac
+    // per-pixel scrolling is slower than per-item
+    m_categoryListView->setVerticalScrollMode( QAbstractItemView::ScrollPerItem );
+    m_categoryListView->setHorizontalScrollMode( QAbstractItemView::ScrollPerItem );
 #else
-    m_categoryListView->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
-    m_categoryListView->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
+    // Scrolling per item is really not smooth and looks terrible
+    m_categoryListView->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
+    m_categoryListView->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
 #endif
-
-
 
     m_categoryListView->setFrameShape( QFrame::NoFrame );
 
@@ -68,7 +75,6 @@ BrowserCategoryList::BrowserCategoryList( QWidget * parent, const QString& name,
 
     m_delegate = new BrowserCategoryListDelegate( m_categoryListView );
     m_categoryListView->setItemDelegate( m_delegate );
-    m_categoryListView->setSelectionMode( QAbstractItemView::NoSelection );
     m_categoryListView->setHeaderHidden( true );
     m_categoryListView->setRootIsDecorated( false );
     m_categoryListView->setAlternatingRowColors( true );
@@ -77,41 +83,81 @@ BrowserCategoryList::BrowserCategoryList( QWidget * parent, const QString& name,
 
     if( sort )
     {
-        debug() << "We are sorting!!";
         m_proxyModel->setSortRole( Qt::DisplayRole );
         m_categoryListView->setSortingEnabled( true );
         m_categoryListView->sortByColumn( 0 );
     }
 
-    connect( m_categoryListView, SIGNAL(activated(const QModelIndex&)), this, SLOT(categoryActivated(const QModelIndex&)) );
+    connect( m_categoryListView, SIGNAL(activated(const QModelIndex &)),
+            SLOT(categoryActivated(const QModelIndex &)) );
 
-    connect( m_categoryListView, SIGNAL( entered( const QModelIndex & ) ), this, SLOT( categoryEntered( const QModelIndex & ) ) );
+    connect( m_categoryListView, SIGNAL(entered( const QModelIndex &) ),
+            SLOT(categoryEntered( const QModelIndex &) ) );
+
+    vLayout->addWidget( m_categoryListView );
+    m_widgetStack->addWidget( mainWidget );
 
     The::paletteHandler()->updateItemView( m_categoryListView );
-
-    setFrameShape( QFrame::NoFrame );
 }
 
 BrowserCategoryList::~BrowserCategoryList()
+{ }
+
+
+void
+BrowserCategoryList::categoryActivated( const QModelIndex &index )
 {
-    // DEBUG_BLOCK
-    qDeleteAll( m_categories.values() );
-    delete m_categoryListView;
-    delete m_categoryListModel;
-    delete m_delegate;
+    DEBUG_BLOCK
+    BrowserCategory * category = 0;
+
+    if( index.data( CustomCategoryRoles::CategoryRole ).canConvert<BrowserCategory *>() )
+        category = index.data( CustomCategoryRoles::CategoryRole ).value<BrowserCategory *>();
+    else
+        return;
+
+    if( category )
+    {
+        debug() << "Show service: " <<  category->name();
+        setActiveCategory( category );
+    }
 }
 
 void
-BrowserCategoryList::addCategory( BrowserCategory * category )
+BrowserCategoryList::home()
 {
-    if( !category )
-        return;
+    DEBUG_BLOCK
+    if( activeCategory() )
+    {
+        BrowserCategoryList *childList = qobject_cast<BrowserCategoryList*>( activeCategory() );
+        if( childList )
+            childList->home();
+
+        activeCategory()->clearAdditionalItems();
+        m_widgetStack->setCurrentIndex( 0 );
+
+        emit( viewChanged() );
+    }
+}
+
+
+QMap<QString, BrowserCategory*>
+BrowserCategoryList::categories()
+{
+    return m_categories;
+}
+
+void
+BrowserCategoryList::addCategory( BrowserCategory *category )
+{
+    Q_ASSERT( category );
 
     category->setParentList( this );
 
     //insert service into service map
+    category->setParent( this );
     m_categories[category->name()] = category;
     m_categoryListModel->addCategory( category );
+    m_widgetStack->addWidget( category );
 
     //if this is also a category list, watch it for changes as we need to report
     //these down the tree
@@ -129,93 +175,23 @@ BrowserCategoryList::addCategory( BrowserCategory * category )
 
 
 void
-BrowserCategoryList::categoryActivated( const QModelIndex & index )
+BrowserCategoryList::removeCategory( BrowserCategory *category )
 {
-    DEBUG_BLOCK
-    BrowserCategory * category = 0;
+    Q_ASSERT( category );
 
-    if ( index.data( CustomCategoryRoles::CategoryRole ).canConvert<BrowserCategory *>() )
-        category = index.data( CustomCategoryRoles::CategoryRole ).value<BrowserCategory *>();
-    else
-        return;
+    if( m_widgetStack->indexOf( category ) == -1 )
+        return; // no such category
 
-    if ( category )
-    {
-        debug() << "Show service: " <<  category->name();
-        showCategory( category->name() );
-        emit( viewChanged() );
-    }
-}
-
-void
-BrowserCategoryList::showCategory( const QString &name )
-{
-    DEBUG_BLOCK
-    BrowserCategory * category = 0;
-    if ( m_categories.contains( name ) )
-        category = m_categories.value( name );
-
-    if ( category != 0 && category != m_currentCategory )
-    {
-        //if a service is already shown, make damn sure to deactivate that one first...
-        if ( m_currentCategory )
-        {
-            m_currentCategory->setParent( 0 );
-            m_currentCategory->clearAdditionalItems();
-        }
-
-        m_categoryListView->setParent( 0 );
-        category->setParent ( this );
-        category->move( QPoint( 0, 0 ) );
-        category->show();
-        category->polish();
-        m_currentCategory = category;
-    }
-
-    m_searchWidget->hide();
-
-    emit( viewChanged() );
-}
-
-void
-BrowserCategoryList::home()
-{
-    if ( m_currentCategory != 0 )
-    {
-
-        BrowserCategoryList *childList = qobject_cast<BrowserCategoryList*>( m_currentCategory );
-        if ( childList )
-            childList->home();
-
-        m_currentCategory->setParent( 0 );
-        m_currentCategory->clearAdditionalItems();
-        m_categoryListView->setParent( this );
-        m_currentCategory = 0; // remove any context stuff we might have added
-        m_searchWidget->show();
-
-        emit( viewChanged() );
-
-    }
-}
-
-
-QMap<QString, BrowserCategory*>
-BrowserCategoryList::categories()
-{
-    return m_categories;
-}
-
-void
-BrowserCategoryList::removeCategory( const QString &name )
-{
-    BrowserCategory * category = m_categories.take( name );
-    if( m_currentCategory == category )
+    if( m_widgetStack->currentWidget() == category )
         home();
 
-    if( category )
-        m_categoryListModel->removeCategory( category );
+    m_categories.remove( category->name() );
+    m_categoryListModel->removeCategory( category );
+    m_widgetStack->removeWidget( category );
     delete category;
+
     m_categoryListView->reset();
+
     emit( viewChanged() );
 }
 
@@ -235,25 +211,37 @@ void BrowserCategoryList::slotFilterNow()
     m_proxyModel->setFilterFixedString( m_currentFilter );
 }
 
-QString BrowserCategoryList::activeCategoryName()
+BrowserCategory* BrowserCategoryList::activeCategory() const
 {
-    DEBUG_BLOCK
-    if ( m_currentCategory )
-        return m_currentCategory->name();
-    return QString();
+    return qobject_cast<BrowserCategory*>(m_widgetStack->currentWidget());
 }
 
-BrowserCategory * BrowserCategoryList::activeCategory() const
+void BrowserCategoryList::setActiveCategory( BrowserCategory* category )
 {
-    return m_currentCategory;
+    DEBUG_BLOCK;
+
+    if( m_widgetStack->indexOf( category ) == -1 )
+        return; // no such category
+
+    if( !category || category == activeCategory() )
+        return; // nothing to do
+
+    if( activeCategory() )
+        activeCategory()->clearAdditionalItems();
+
+    m_widgetStack->setCurrentWidget( category );
+
+    emit( viewChanged() );
 }
 
 void BrowserCategoryList::back()
 {
-    BrowserCategoryList *childList = qobject_cast<BrowserCategoryList*>( m_currentCategory );
-    if ( childList )
+    DEBUG_BLOCK
+
+    BrowserCategoryList *childList = qobject_cast<BrowserCategoryList*>( activeCategory() );
+    if( childList )
     {
-        if ( childList->activeCategory() != 0 )
+        if( childList->activeCategory() != 0 )
         {
             childList->back();
             return;
@@ -298,10 +286,10 @@ QString BrowserCategoryList::navigate( const QString & target )
 
 
     debug() << "got it!";
-    showCategory( childName );
+    setActiveCategory( m_categories[childName] );
 
     //check if this category is also BrowserCategoryList.target
-    BrowserCategoryList *childList = qobject_cast<BrowserCategoryList*>( m_currentCategory );
+    BrowserCategoryList *childList = qobject_cast<BrowserCategoryList*>( activeCategory() );
 
     if ( childList == 0 )
     {
@@ -337,21 +325,15 @@ QString BrowserCategoryList::path()
     DEBUG_BLOCK
     QString pathString = name();
 
-    BrowserCategoryList *childList = qobject_cast<BrowserCategoryList*>( m_currentCategory );
+    BrowserCategoryList *childList = qobject_cast<BrowserCategoryList*>( activeCategory() );
 
-    if ( childList )
+    if( childList )
         pathString += '/' + childList->path();
-    else if ( m_currentCategory )
-        pathString += '/' + m_currentCategory->name();
+    else if( activeCategory() )
+        pathString += '/' + activeCategory()->name();
 
     debug() << "path: " << pathString;
     return pathString;
-}
-
-void BrowserCategoryList::activate( BrowserCategory * category )
-{
-    DEBUG_BLOCK
-    showCategory( category->name() );
 }
 
 void BrowserCategoryList::categoryEntered( const QModelIndex & index )
@@ -457,8 +439,7 @@ BrowserCategory *BrowserCategoryList::activeCategoryRecursive()
     if( !category )
         return this;
 
-    BrowserCategoryList *childList = qobject_cast<BrowserCategoryList*>( m_currentCategory );
-
+    BrowserCategoryList *childList = qobject_cast<BrowserCategoryList*>( category );
     if( childList )
         return childList->activeCategoryRecursive();
 

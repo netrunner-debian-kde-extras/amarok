@@ -1,7 +1,7 @@
 /*
     Copyright (c) 2003-2005 Max Howell <max.howell@methylblue.com>
     Copyright (c) 2007-2009 Mark Kretschmann <kretschmann@kde.org>
-    Copyright (c) 2010 Kevin Funk <krf@electrostorm.net>
+    Copyright (c) 2010-2011 Kevin Funk <krf@electrostorm.net>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -141,7 +141,7 @@ void Debug::setColoredDebug( bool enable )
     s_debugColorsEnabled = enable;
 }
 
-kdbgstream Debug::dbgstream( DebugLevel level )
+QDebug Debug::dbgstream( DebugLevel level )
 {
     if( !debugEnabled() )
         return kDebugDevNull();
@@ -154,7 +154,7 @@ kdbgstream Debug::dbgstream( DebugLevel level )
     if ( level > KDEBUG_INFO )
         text.append( ' ' + reverseColorize( toString(level), toColor( level ) ) );
 
-    return kdbgstream( QtDebugMsg ) << qPrintable( text );
+    return QDebug( QtDebugMsg ) << qPrintable( text );
 }
 
 void Debug::perfLog( const QString &message, const QString &func )

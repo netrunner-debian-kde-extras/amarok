@@ -48,9 +48,6 @@ public:
     virtual void run() = 0;
     virtual void abortQuery() = 0;
 
-    virtual QueryMaker* setReturnResultAsDataPtrs ( bool resultAsDataPtrs ) = 0;
-
-
     //below here is the stuf that each dynamic querymaker will most likely only need
     //Some of, hense they are all stubbed out:
 
@@ -59,7 +56,6 @@ public:
     virtual QueryMaker* addReturnValue ( qint64 value );
     virtual QueryMaker* addReturnFunction( ReturnFunction function, qint64 value );
     virtual QueryMaker* orderBy ( qint64 value, bool descending = false );
-    virtual QueryMaker* orderByRandom();
 
     virtual QueryMaker* addMatch ( const Meta::TrackPtr &track );
     virtual QueryMaker* addMatch ( const Meta::ArtistPtr &artist );

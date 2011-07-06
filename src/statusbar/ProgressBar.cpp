@@ -24,44 +24,46 @@
 #include <KIcon>
 #include <KLocale>
 
-ProgressBar::ProgressBar( QWidget * parent )
+ProgressBar::ProgressBar( QWidget *parent )
         : QFrame( parent )
 {
-    QHBoxLayout *box = new QHBoxLayout( this );
+    setFixedHeight( 30 );
+    setContentsMargins( 0, 0, 0, 4 );
+
+    QVBoxLayout *box = new QVBoxLayout;
     box->setMargin( 0 );
-    box->setSpacing( 0 );
+    box->setSpacing( 3 );
 
-    m_descriptionLabel = new QLabel( this );
-    m_descriptionLabel->setMinimumWidth( 50 );
-    //m_descriptionLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
-    box->addWidget( m_descriptionLabel );
+    QHBoxLayout *descriptionLayout = new QHBoxLayout;
+    descriptionLayout->setMargin( 0 );
+    descriptionLayout->setSpacing( 2 );
 
-    KHBox *progressBox = new KHBox( this );
+    m_descriptionLabel = new QLabel;
+    m_descriptionLabel->setWordWrap( true );
+    //add with stretchfactor 1 so it takes up more space then the cancel button
+    descriptionLayout->addWidget( m_descriptionLabel, 1 );
 
-    m_extraButtonSpace = new KHBox( progressBox );
-    m_extraButtonSpace->setSpacing( 0 );
-    m_extraButtonSpace->setMargin( 0 );
-
-    m_cancelButton = new QToolButton( progressBox );
+    m_cancelButton = new QToolButton;
     m_cancelButton->setIcon( KIcon( "dialog-cancel-amarok" ) );
     m_cancelButton->setToolTip( i18n( "Abort" ) );
-    m_cancelButton->setEnabled( false );
+    m_cancelButton->setHidden( true );
+    m_cancelButton->setFixedWidth( 16 );
+    m_cancelButton->setFixedHeight( 16 );
+    m_cancelButton->setAutoFillBackground( false );
+    m_cancelButton->setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
+    descriptionLayout->addWidget( m_cancelButton );
+    descriptionLayout->setAlignment( m_cancelButton, Qt::AlignRight );
 
-    m_progressBar = new QProgressBar( progressBox );
+    box->addLayout( descriptionLayout );
+
+    m_progressBar = new QProgressBar;
     m_progressBar->setMinimum( 0 );
     m_progressBar->setMaximum( 100 );
-    m_progressBar->setMinimumWidth( 200 );
-    m_progressBar->setMaximumWidth( 300 );
+    m_progressBar->setFixedHeight( 5 );
     m_progressBar->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
-
-    box->addWidget( progressBox );
-    box->setAlignment( progressBox, Qt::AlignRight );
-
-    // Fix multiple progressbars using all available vertical space
-    const int contentHeight = QFontMetrics( m_descriptionLabel->font() ).height();
-    const int barHeight = contentHeight + 6;
-    setFixedHeight( barHeight );
-    m_progressBar->setFixedHeight( barHeight - 4 );
+    m_progressBar->setTextVisible( false );
+    box->addWidget( m_progressBar );
+    box->setAlignment( m_progressBar, Qt::AlignBottom );
 
     setLayout( box );
 }
@@ -72,22 +74,19 @@ ProgressBar::~ProgressBar()
 }
 
 void
-ProgressBar::setDescription( const QString & description )
+ProgressBar::setDescription( const QString &description )
 {
     m_descriptionLabel->setText( description );
 
 }
 
 ProgressBar *
-ProgressBar::setAbortSlot( QObject * receiver, const char * slot, Qt::ConnectionType type )
+ProgressBar::setAbortSlot( QObject *receiver, const char *slot, Qt::ConnectionType type )
 {
-    // DEBUG_BLOCK
-    // debug() << "Setting abort slot for " << m_descriptionLabel->text();
-    cancelButton()->setEnabled( true );
-    // debug() << "connecting to " << slot;
-    connect( this, SIGNAL( cancelled() ), receiver, slot, type );
+    cancelButton()->setHidden( false );
+    if( receiver )
+        connect( this, SIGNAL( cancelled() ), receiver, slot, type );
     connect( cancelButton(), SIGNAL( clicked() ), this, SLOT( cancel() ) );
-
 
     return this;
 }
@@ -118,9 +117,9 @@ void ProgressBar::delayedDone()
 
 int ProgressBar::percentage()
 {
-    if ( m_progressBar->maximum() == 100 )
+    if( m_progressBar->maximum() == 100 )
         return m_progressBar->value();
-    return ( int )((( float ) m_progressBar->value() / ( float ) m_progressBar->maximum() ) * 100.0 );
+    return (int)( ( (float) m_progressBar->value() / (float)m_progressBar->maximum() ) * 100.0 );
 }
 
 

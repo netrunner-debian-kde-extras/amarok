@@ -1,7 +1,7 @@
 /*
     Copyright (c) 2003-2005 Max Howell <max.howell@methylblue.com>
     Copyright (c) 2007-2009 Mark Kretschmann <kretschmann@kde.org>
-    Copyright (c) 2010 Kevin Funk <krf@electrostorm.net>
+    Copyright (c) 2010-2011 Kevin Funk <krf@electrostorm.net>
 
     This library is free software; you can redistribute it and/or
     modify it under the terms of the GNU Lesser General Public
@@ -29,6 +29,45 @@
 #include <kdebug.h>
 
 #include <QMutex>
+
+// BEGIN: DEBUG_ASSERT
+/**
+ * Debug helper to write "soft" assertions with escape statements more easily
+ * If the assertions fails, a warning is printed containing the position
+ * (file and line number) of the assert and the second parameter is evaluated.
+ *
+ * Usage: DEBUG_ASSERT(assertion, statement)
+ *
+ * (pseudo code *without* DEBUG_ASSERT)
+ * \code
+ * bool someMethod(T* pointer) {
+ *   if (!pointer)
+ *     qWarning() << "Warning pointer is null, aborting";
+ *     return false;
+ *   (...)
+ *   return someBoolean;
+ * }
+ * \endcode
+ *
+ * (may be replaced by)
+ * \code
+ * bool someMethod(T* pointer) {
+ *   DEBUG_ASSERT(pointer, return false)
+ *   (...)
+ *   return someBoolean;
+ * }
+ * \endcode
+ *
+ * \author Kevin Funk
+ * \sa http://qt.gitorious.org/qt-creator/qt-creator/blobs/master/src/libs/utils/qtcassert.h
+ */
+#define DEBUG_ASSERT(cond, action) \
+    if(cond){}else{warning()<< \
+        "ASSERTION " #cond " FAILED AT " __FILE__ ":" DEBUG_ASSERT_STRINGIFY(__LINE__);action;}
+
+#define DEBUG_ASSERT_STRINGIFY_INTERNAL(x) #x
+#define DEBUG_ASSERT_STRINGIFY(x) DEBUG_ASSERT_STRINGIFY_INTERNAL(x)
+// END__: DEBUG_ASSERT
 
 #if QT_VERSION >= 0x040700
 # include <QElapsedTimer>
@@ -92,14 +131,14 @@ namespace Debug
         KDEBUG_FATAL = 3
     };
 
-    AMAROK_CORE_EXPORT kdbgstream dbgstream( DebugLevel level = KDEBUG_INFO );
+    AMAROK_CORE_EXPORT QDebug dbgstream( DebugLevel level = KDEBUG_INFO );
     AMAROK_CORE_EXPORT bool debugEnabled();
     AMAROK_CORE_EXPORT bool debugColorEnabled();
     AMAROK_CORE_EXPORT void setDebugEnabled( bool enable );
     AMAROK_CORE_EXPORT void setColoredDebug( bool enable );
     AMAROK_CORE_EXPORT QString indent();
 
-    static inline kdbgstream dbgstreamwrapper( DebugLevel level ) {
+    static inline QDebug dbgstreamwrapper( DebugLevel level ) {
 #ifdef DEBUG_PREFIX
         return dbgstream( level ) << AMAROK_PREFIX;
 #else
@@ -107,10 +146,10 @@ namespace Debug
 #endif
     }
 
-    static inline kdbgstream debug()   { return dbgstreamwrapper( KDEBUG_INFO ); }
-    static inline kdbgstream warning() { return dbgstreamwrapper( KDEBUG_WARN ); }
-    static inline kdbgstream error()   { return dbgstreamwrapper( KDEBUG_ERROR ); }
-    static inline kdbgstream fatal()   { return dbgstreamwrapper( KDEBUG_FATAL ); }
+    static inline QDebug debug()   { return dbgstreamwrapper( KDEBUG_INFO ); }
+    static inline QDebug warning() { return dbgstreamwrapper( KDEBUG_WARN ); }
+    static inline QDebug error()   { return dbgstreamwrapper( KDEBUG_ERROR ); }
+    static inline QDebug fatal()   { return dbgstreamwrapper( KDEBUG_FATAL ); }
 
     AMAROK_CORE_EXPORT void perfLog( const QString &message, const QString &func );
 }

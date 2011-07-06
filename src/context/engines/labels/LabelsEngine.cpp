@@ -76,8 +76,8 @@ LabelsEngine::sourceRequestEvent( const QString &name )
         qm->setQueryType( Collections::QueryMaker::Label );
         m_allLabels.clear();
 
-        connect( qm, SIGNAL( newResultReady( QString, Meta::LabelList ) ),
-                SLOT( resultReady( QString, Meta::LabelList ) ), Qt::QueuedConnection );
+        connect( qm, SIGNAL( newResultReady( Meta::LabelList ) ),
+                SLOT( resultReady( Meta::LabelList ) ), Qt::QueuedConnection );
         connect( qm, SIGNAL( queryDone() ), SLOT( dataQueryDone() ) );
 
         qm->run();
@@ -89,10 +89,8 @@ LabelsEngine::sourceRequestEvent( const QString &name )
 }
 
 void
-LabelsEngine::resultReady( const QString &collectionId, const Meta::LabelList &labels )
+LabelsEngine::resultReady( const Meta::LabelList &labels )
 {
-    Q_UNUSED( collectionId )
-
     foreach( const Meta::LabelPtr &label, labels )
     {
         if( !label->name().isEmpty() )
@@ -131,7 +129,7 @@ LabelsEngine::update( bool reload )
     Meta::ArtistPtr artist = track->artist();
     if( !artist )
     {
-        setData( "labels", "message", i18n( "No labels found on last.fm" ) );
+        setData( "labels", "message", i18n( "No labels found on Last.fm" ) );
         debug() << "track has no artist, returning";
         return;
     }
@@ -194,7 +192,7 @@ LabelsEngine::fetchLastFm()
     {
         // stop timeout timer
         m_timeoutTimer.stop();
-        setData( "labels", "message", i18n( "No labels found on last.fm" ) );
+        setData( "labels", "message", i18n( "No labels found on Last.fm" ) );
         debug() << "current track is invalid, returning";
         return;
     }
@@ -255,7 +253,7 @@ LabelsEngine::fetchLastFm()
         {
             // stop timeout timer
             m_timeoutTimer.stop();
-            setData( "labels", "message", i18n( "No labels found on last.fm" ) );
+            setData( "labels", "message", i18n( "No labels found on Last.fm" ) );
             debug() << "try 3: artist and title are the same, returning";
             return;
         }
@@ -265,7 +263,7 @@ LabelsEngine::fetchLastFm()
         // shouldn't happen
         // stop timeout timer
         m_timeoutTimer.stop();
-        setData( "labels", "message", i18n( "No labels found on last.fm" ) );
+        setData( "labels", "message", i18n( "No labels found on Last.fm" ) );
         debug() << "try > 2, returning";
         return;
     }
@@ -299,7 +297,7 @@ LabelsEngine::fetchLastFm()
     {
         // stop timeout timer
         m_timeoutTimer.stop();
-        setData( "labels", "message", i18n( "No labels found on last.fm" ) );
+        setData( "labels", "message", i18n( "No labels found on Last.fm" ) );
         debug() << "artist or track empty";
     }
 }
@@ -318,7 +316,7 @@ void LabelsEngine::resultLastFm( const KUrl &url, QByteArray data, NetworkAccess
     {
         // stop timeout timer
         m_timeoutTimer.stop();
-        setData( "labels", "message", i18n( "Unable to retrieve from last.fm" ) );
+        setData( "labels", "message", i18n( "Unable to retrieve from Last.fm" ) );
         debug() << "Unable to retrieve last.fm information: " << e.description;
         return;
     }
@@ -350,7 +348,7 @@ void LabelsEngine::resultLastFm( const KUrl &url, QByteArray data, NetworkAccess
         {
             // stop timeout timer
             m_timeoutTimer.stop();
-            setData( "labels", "message", i18n( "No labels found on last.fm" ) );
+            setData( "labels", "message", i18n( "No labels found on Last.fm" ) );
         }
     }
     else
@@ -368,7 +366,7 @@ void LabelsEngine::resultLastFm( const KUrl &url, QByteArray data, NetworkAccess
 
 void LabelsEngine::timeout()
 {
-    setData( "labels", "message", i18n( "No connection to last.fm" ) );
+    setData( "labels", "message", i18n( "No connection to Last.fm" ) );
 }
 
 

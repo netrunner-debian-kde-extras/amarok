@@ -53,11 +53,9 @@ class UpnpQueryMaker : public QueryMaker
         void abortQuery() ;
 
         QueryMaker* setQueryType( QueryType type ) ;
-        QueryMaker* setReturnResultAsDataPtrs( bool resultAsDataPtrs ) ;
         QueryMaker* addReturnValue( qint64 value ) ;
         QueryMaker* addReturnFunction( ReturnFunction function, qint64 value ) ;
         QueryMaker* orderBy( qint64 value, bool descending = false ) ;
-        QueryMaker* orderByRandom() ;
 
         QueryMaker* addMatch( const Meta::TrackPtr &track ) ;
         QueryMaker* addMatch( const Meta::ArtistPtr &artist ) ;
@@ -88,15 +86,14 @@ class UpnpQueryMaker : public QueryMaker
         int validFilterMask();
 
     signals:
-        void newResultReady( QString collectionId, Meta::TrackList );
-        void newResultReady( QString collectionId, Meta::ArtistList );
-        void newResultReady( QString collectionId, Meta::AlbumList );
-        void newResultReady( QString collectionId, Meta::GenreList );
-        void newResultReady( QString collectionId, Meta::ComposerList );
-        void newResultReady( QString collectionId, Meta::YearList );
-        void newResultReady( QString collectionId, Meta::DataList );
-        void newResultReady( QString collectionId, QStringList );
-        void newResultReady( QString collectionId, Meta::LabelList );
+        void newResultReady( Meta::TrackList );
+        void newResultReady( Meta::ArtistList );
+        void newResultReady( Meta::AlbumList );
+        void newResultReady( Meta::GenreList );
+        void newResultReady( Meta::ComposerList );
+        void newResultReady( Meta::YearList );
+        void newResultReady( QStringList );
+        void newResultReady( Meta::LabelList );
 
         void queryDone();
 
@@ -105,7 +102,6 @@ class UpnpQueryMaker : public QueryMaker
         void handleArtists( Meta::ArtistList );
         void handleAlbums( Meta::AlbumList );
         void handleTracks( Meta::TrackList );
-        void handleCustom( const KIO::UDSEntryList &list );
 
     private:
         /*

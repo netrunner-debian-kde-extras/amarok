@@ -26,7 +26,6 @@
 #include <QMutex>
 #include <QSet>
 
-#include <KRandomSequence>
 #include <KSharedPtr>
 
 class CustomReturnFunction;
@@ -47,16 +46,12 @@ class AMAROK_EXPORT_TESTS ProxyQueryMaker : public QueryMaker
 
         virtual void run();
         virtual void abortQuery();
-        virtual int resultCount() const;
 
         virtual QueryMaker* setQueryType( QueryType type );
-
-        virtual QueryMaker* setReturnResultAsDataPtrs( bool resultAsDataPtrs );
 
         virtual QueryMaker* addReturnValue( qint64 value);
         virtual QueryMaker* addReturnFunction( ReturnFunction function, qint64 value );
         virtual QueryMaker* orderBy( qint64 value, bool descending = false );
-        virtual QueryMaker* orderByRandom();
 
         virtual QueryMaker* addMatch( const Meta::TrackPtr &track );
         virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist );
@@ -90,13 +85,13 @@ class AMAROK_EXPORT_TESTS ProxyQueryMaker : public QueryMaker
 
     private slots:
         void slotQueryDone();
-        void slotNewResultReady( const QString &collectionId, const Meta::TrackList &tracks );
-        void slotNewResultReady( const QString &collectionId, const Meta::ArtistList &artists );
-        void slotNewResultReady( const QString &collectionId, const Meta::AlbumList &albums );
-        void slotNewResultReady( const QString &collectionId, const Meta::GenreList &genres );
-        void slotNewResultReady( const QString &collectionId, const Meta::ComposerList &composers );
-        void slotNewResultReady( const QString &collectionId, const Meta::YearList &years );
-        void slotNewResultReady( const QString &collectionId, const Meta::LabelList &labels );
+        void slotNewResultReady( const Meta::TrackList &tracks );
+        void slotNewResultReady( const Meta::ArtistList &artists );
+        void slotNewResultReady( const Meta::AlbumList &albums );
+        void slotNewResultReady( const Meta::GenreList &genres );
+        void slotNewResultReady( const Meta::ComposerList &composers );
+        void slotNewResultReady( const Meta::YearList &years );
+        void slotNewResultReady( const Meta::LabelList &labels );
 
     private:
         ProxyCollection *m_collection;
@@ -104,7 +99,6 @@ class AMAROK_EXPORT_TESTS ProxyQueryMaker : public QueryMaker
         int m_queryDoneCount;
         bool m_returnDataPointers;
         int m_maxResultSize;
-        bool m_randomize;
         QueryType m_queryType;
         bool m_orderDescending;
         qint64 m_orderField;
@@ -119,7 +113,6 @@ class AMAROK_EXPORT_TESTS ProxyQueryMaker : public QueryMaker
         QSet<KSharedPtr<Meta::ProxyComposer> > m_composers;
         QSet<KSharedPtr<Meta::ProxyYear> > m_years;
         QSet<KSharedPtr<Meta::ProxyLabel> > m_labels;
-        KRandomSequence m_sequence; //do not reset
         QList<CustomReturnFunction*> m_returnFunctions;
         QList<CustomReturnValue*> m_returnValues;
 

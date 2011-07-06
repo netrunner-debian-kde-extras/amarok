@@ -251,7 +251,7 @@ CurrentTrack::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
     if( !m_isStopped
         && event->modifiers() == Qt::NoModifier
-        && event->button() != Amarok::contextMouseButton() )
+        && event->button() == Qt::LeftButton )
     {
         QGraphicsView *view = scene()->views().first();
         QGraphicsItem *item = view->itemAt( view->mapFromScene(event->scenePos()) );
@@ -445,7 +445,7 @@ CurrentTrack::drawStatsTexts( QPainter *const p, const QRect &contentsRect )
 {
     const qreal leftEdge       = m_ratingWidget->boundingRect().right() + standardPadding();
     const qreal maxTextWidth   = contentsRect.right() - standardPadding() * 2 - leftEdge;
-    const QString column1Label = m_isStopped ? i18n( "Tracks" ) : i18n( "Play count" );
+    const QString column1Label = m_isStopped ? i18n( "Tracks" ) : i18n( "Play Count" );
     const QString column2Label = m_isStopped ? i18n( "Albums" ) : i18n( "Score" );
     const QString column3Label = m_isStopped ? i18n( "Genres" ) : i18n( "Last Played" );
 
@@ -609,8 +609,8 @@ CurrentTrack::settingsAccepted()
     config.writeEntry( "ShowEditTrackAction", m_showEditTrackDetailsAction );
     config.writeEntry( "ShowFindInSourceAction", m_showFindInSourceAction );
 
-    Plasma::DataEngine::Data data = dataEngine( "amarok-current" )->query( "current" );
-    dataUpdated( QLatin1String("current"), data );
+    clearTrackActions();
+    setupLayoutActions( The::engineController()->currentTrack() );
 }
 
 void
@@ -619,12 +619,12 @@ CurrentTrack::queryCollection()
     Collections::QueryMaker *qmTracks = CollectionManager::instance()->queryMaker();
     Collections::QueryMaker *qmAlbums = CollectionManager::instance()->queryMaker();
     Collections::QueryMaker *qmGenres = CollectionManager::instance()->queryMaker();
-    connect( qmTracks, SIGNAL(newResultReady(QString, QStringList)),
-             this, SLOT(tracksCounted(QString, QStringList)) );
-    connect( qmAlbums, SIGNAL(newResultReady(QString, QStringList)),
-             this, SLOT(albumsCounted(QString, QStringList)) );
-    connect( qmGenres, SIGNAL(newResultReady(QString, QStringList)),
-             this, SLOT(genresCounted(QString, QStringList)) );
+    connect( qmTracks, SIGNAL(newResultReady(QStringList)),
+             this, SLOT(tracksCounted(QStringList)) );
+    connect( qmAlbums, SIGNAL(newResultReady(QStringList)),
+             this, SLOT(albumsCounted(QStringList)) );
+    connect( qmGenres, SIGNAL(newResultReady(QStringList)),
+             this, SLOT(genresCounted(QStringList)) );
 
     qmTracks->setAutoDelete( true )
       ->setQueryType( Collections::QueryMaker::Custom )
@@ -643,25 +643,22 @@ CurrentTrack::queryCollection()
 }
 
 void
-CurrentTrack::tracksCounted( QString id, QStringList results )
+CurrentTrack::tracksCounted( QStringList results )
 {
-    Q_UNUSED( id );
     m_trackCount = !results.isEmpty() ? results.first().toInt() : 0;
     update();
 }
 
 void
-CurrentTrack::albumsCounted( QString id, QStringList results )
+CurrentTrack::albumsCounted( QStringList results )
 {
-    Q_UNUSED( id );
     m_albumCount = !results.isEmpty() ? results.first().toInt() : 0;
     update();
 }
 
 void
-CurrentTrack::genresCounted( QString id, QStringList results )
+CurrentTrack::genresCounted( QStringList results )
 {
-    Q_UNUSED( id );
     m_genreCount = !results.isEmpty() ? results.first().toInt() : 0;
     update();
 }
@@ -804,35 +801,35 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
 
         if( album && !album->name().isEmpty() )
         {
-            act = new QAction( KIcon("current-track-amarok"), i18n("Show Album In Media Sources"), this );
+            act = new QAction( KIcon("current-track-amarok"), i18n("Show Album in Media Sources"), this );
             connect( act, SIGNAL(triggered()), m_findInSourceSignalMapper, SLOT(map()) );
             m_findInSourceSignalMapper->setMapping( act, QLatin1String("album") );
             m_customActions << act;
         }
         if( artist && !artist->name().isEmpty() )
         {
-            act = new QAction( KIcon("filename-artist-amarok"), i18n("Show Artist In Media Sources"), this );
+            act = new QAction( KIcon("filename-artist-amarok"), i18n("Show Artist in Media Sources"), this );
             connect( act, SIGNAL(triggered()), m_findInSourceSignalMapper, SLOT(map()) );
             m_findInSourceSignalMapper->setMapping( act, QLatin1String("artist") );
             m_customActions << act;
         }
         if( composer && !composer->name().isEmpty() && (composer->name() != i18n("Unknown Composer")) )
         {
-            act = new QAction( KIcon("filename-composer-amarok"), i18n("Show Composer In Media Sources"), this );
+            act = new QAction( KIcon("filename-composer-amarok"), i18n("Show Composer in Media Sources"), this );
             connect( act, SIGNAL(triggered()), m_findInSourceSignalMapper, SLOT(map()) );
             m_findInSourceSignalMapper->setMapping( act, QLatin1String("composer") );
             m_customActions << act;
         }
         if( genre && !genre->name().isEmpty() )
         {
-            act = new QAction( KIcon("filename-genre-amarok"), i18n("Show Genre In Media Sources"), this );
+            act = new QAction( KIcon("filename-genre-amarok"), i18n("Show Genre in Media Sources"), this );
             connect( act, SIGNAL(triggered()), m_findInSourceSignalMapper, SLOT(map()) );
             m_findInSourceSignalMapper->setMapping( act, QLatin1String("genre") );
             m_customActions << act;
         }
         if( year && !year->name().isEmpty() )
         {
-            act = new QAction( KIcon("filename-year-amarok"), i18n("Show Year In Media Sources"), this );
+            act = new QAction( KIcon("filename-year-amarok"), i18n("Show Year in Media Sources"), this );
             connect( act, SIGNAL(triggered()), m_findInSourceSignalMapper, SLOT(map()) );
             m_findInSourceSignalMapper->setMapping( act, QLatin1String("year") );
             m_customActions << act;

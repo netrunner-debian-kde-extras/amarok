@@ -17,63 +17,85 @@
  
 #include "BrowserDock.h"
 
+#include "App.h"
+#include "core/interfaces/Logger.h"
 #include "core/support/Amarok.h"
+#include "core/support/Components.h"
 #include "core/support/Debug.h"
+#include "core-impl/logger/ProxyLogger.h"
+#include "PaletteHandler.h"
 #include "widgets/HorizontalDivider.h"
 
 #include <KAction>
 #include <KIcon>
 #include <KLocale>
 
-BrowserDock::BrowserDock( QWidget * parent )
+#include <QWidget>
+
+BrowserDock::BrowserDock( QWidget *parent )
     : AmarokDockWidget( i18n( "&Media Sources" ), parent )
 {
-    DEBUG_BLOCK
-
     setObjectName( "Media Sources dock" );
     setAllowedAreas( Qt::AllDockWidgetAreas );
 
     //we have to create this here as it is used when setting up the
-    //categories (unless of couse we move that to polish as well...)
+    //categories (unless of course we move that to polish as well...)
     m_mainWidget = new KVBox( this );
+    setWidget( m_mainWidget );
+    m_mainWidget->setContentsMargins( 0, 0, 0, 0 );
+    m_mainWidget->setFrameShape( QFrame::NoFrame );
+    m_mainWidget->setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Ignored );
+    m_mainWidget->setFocus( Qt::ActiveWindowFocusReason );
+
     m_breadcrumbWidget = new BrowserBreadcrumbWidget( m_mainWidget );
     new HorizontalDivider( m_mainWidget );
-    m_categoryList = new BrowserCategoryList( m_mainWidget, "root list" );
+    m_categoryList = new BrowserCategoryList( "root list", m_mainWidget );
     m_breadcrumbWidget->setRootList( m_categoryList.data() );
+
+    m_progressArea = new BrowserMessageArea( m_mainWidget );
+    m_progressArea->setAutoFillBackground( true );
+    m_progressArea->setFixedHeight( 30 );
+
+    Amarok::Logger *logger = Amarok::Components::logger();
+    ProxyLogger *proxy = dynamic_cast<ProxyLogger *>( logger );
+    if( proxy )
+        proxy->setLogger( m_progressArea );
+    else
+        error() << "Was not able to register BrowserDock as logger";
+
     ensurePolish();
 }
-
 
 BrowserDock::~BrowserDock()
 {}
 
 void BrowserDock::polish()
 {
-    DEBUG_BLOCK
-    setWidget( m_mainWidget );
-
     m_categoryList.data()->setIcon( KIcon( "user-home" ) );
 
     m_categoryList.data()->setMinimumSize( 100, 300 );
 
     connect( m_breadcrumbWidget, SIGNAL( toHome() ), this, SLOT( home() ) );
 
-    m_mainWidget->setFrameShape( QFrame::NoFrame );
-
     // Keyboard shortcut for going back one level
-    KAction *action = new KAction( KIcon( "go-previous" ), i18n( "Previous Browser" ), m_mainWidget );
+    KAction *action = new KAction( KIcon( "go-previous" ), i18n( "Previous Browser" ),
+                                  m_mainWidget );
     Amarok::actionCollection()->addAction( "browser_previous", action );
-    connect( action, SIGNAL( triggered( bool ) ), m_categoryList.data(), SLOT( back() ) );
+    connect( action, SIGNAL(triggered( bool )), m_categoryList.data(), SLOT(back()) );
     action->setShortcut( KShortcut( Qt::CTRL + Qt::Key_Left ) );
+
+    paletteChanged( App::instance()->palette() );
+    connect( The::paletteHandler(), SIGNAL(newPalette( const QPalette & )),
+             SLOT(paletteChanged( const QPalette & )) );
 }
 
-BrowserCategoryList * BrowserDock::list() const
+BrowserCategoryList *BrowserDock::list() const
 {
     return m_categoryList.data();
 }
 
 void
-BrowserDock::navigate( const QString & target )
+BrowserDock::navigate( const QString &target )
 {
     m_categoryList.data()->navigate( target );
 }
@@ -81,8 +103,18 @@ BrowserDock::navigate( const QString & target )
 void
 BrowserDock::home()
 {
-    DEBUG_BLOCK
     m_categoryList.data()->home();
+}
+
+void
+BrowserDock::paletteChanged( const QPalette &palette )
+{
+    Q_UNUSED(palette); //palette is accessible via PaletteHandler
+    m_progressArea->setStyleSheet(
+                QString( "QFrame { background-color: %1; color: %2; border-radius: 3px; }" )
+                        .arg( PaletteHandler::alternateBackgroundColor().name() )
+                        .arg( The::paletteHandler()->palette().highlightedText().color().name() )
+                );
 }
 
 #include "BrowserDock.moc"

@@ -27,6 +27,7 @@
 #include "core/capabilities/UpdateCapability.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
+#include "PaletteHandler.h"
 #include "Theme.h"
 
 #include <Plasma/IconWidget>
@@ -153,10 +154,10 @@ LabelsApplet::init()
         QString label = parts.at(0);
         label = label.replace( "%s", "|" );
         label = label.replace( "%p", "%" );
-        QString replacement = parts.at(1);
-        replacement = replacement.replace( "%s", "|" );
-        replacement = replacement.replace( "%p", "%" );
-        m_replacementMap.insert( label, replacement );
+        QString replacementValue = parts.at(1);
+        replacementValue = replacementValue.replace( "%s", "|" );
+        replacementValue = replacementValue.replace( "%p", "%" );
+        m_replacementMap.insert( label, replacementValue );
     }
 
     setStoppedState( true );
@@ -191,7 +192,7 @@ LabelsApplet::setStoppedState( bool stopped )
     else
     {
         m_reloadIcon.data()->setEnabled( false );
-        m_titleText = i18n( "Labels" ) + QString( " : " ) + i18n( "No track playing" );
+        m_titleText = i18n( "Labels: No track playing" );
         m_addLabelProxy.data()->hide();
         setBusy( false );
         qDeleteAll( m_labelItems );
@@ -511,7 +512,7 @@ LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &
     
     if( data.contains( "message" ) && data["message"].toString().contains("fetching") )
     {
-        m_titleText = i18n( "Labels" ) + QString( " : " ) + i18n( "Fetching ..." );
+        m_titleText = i18n( "Labels: Fetching..." );
         if ( !data.contains( "user" ) ) // avoid calling update twice
         {
             constraintsEvent(); // don't use updateConstraints() in order to avoid labels displayed at pos. 0,0 for a moment
@@ -521,7 +522,7 @@ LabelsApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &
     }
     else if( data.contains( "message" ) )
     {
-        m_titleText = i18n( "Labels" ) + QString( " : " ) + data[ "message" ].toString();
+        m_titleText = i18n( "Labels: %1", data[ "message" ].toString() );
         if( !data.contains( "user" ) ) // avoid calling update twice
         {
             constraintsEvent(); // don't use updateConstraints() in order to avoid labels displayed at pos. 0,0 for a moment

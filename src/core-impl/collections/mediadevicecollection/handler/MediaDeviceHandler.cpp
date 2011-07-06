@@ -22,6 +22,8 @@
 
 #include "MediaDeviceHandlerCapability.h"
 
+#include "core/interfaces/Logger.h"
+#include "core/support/Components.h"
 #include "playlist/MediaDeviceUserPlaylistProvider.h"
 #include "playlistmanager/PlaylistManager.h"
 
@@ -63,12 +65,8 @@ MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
     DEBUG_BLOCK
 
     connect( m_memColl, SIGNAL( deletingCollection() ),
-             this,      SLOT( slotDeletingHandler() ), Qt::QueuedConnection );
+             this, SLOT( slotDeletingHandler() ), Qt::QueuedConnection );
 
-    connect( this, SIGNAL( incrementProgress() ),
-             The::statusBar(), SLOT( incrementProgress() ), Qt::QueuedConnection );
-    connect( this, SIGNAL(endProgressOperation(QObject*)),
-             The::statusBar(), SLOT(endProgressOperation(QObject*)));
     connect( this, SIGNAL( databaseWritten(bool)),
              this, SLOT( slotDatabaseWritten(bool)), Qt::QueuedConnection );
 }
@@ -85,6 +83,7 @@ MediaDeviceHandler::slotDeletingHandler()
     DEBUG_BLOCK
     if( m_provider )
         The::playlistManager()->removeProvider( m_provider );
+    m_memColl = NULL;
 }
 
 void
@@ -373,11 +372,6 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
                 || ( tempTrack->composer()->name() != track->composer()->name() )
                 || ( tempTrack->year()->name() != track->year()->name() ) )
             {
-                debug() << "Same title, but other tags differ, not a dupe";
-                //debug() << "Source track:   " << "Artist: " << track->artist()->name() << " Album: " << track->album()->name() << " Genre: " << track->genre()->name() <<
-                //" Composer: " << track->composer()->name() << " Year: " << track->year()->name();
-                //debug() << "Candidate dupe: " << "Artist: " << tempTrack->artist()->name() << " Album: " << tempTrack->album()->name() << " Genre: " << tempTrack->genre()->name() <<
-                //" Composer: " << tempTrack->composer()->name() << " Year: " << tempTrack->year()->name();
                 continue;
             }
 
@@ -439,12 +433,10 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
 
     // Set up progress bar
 
-    m_statusbar = The::statusBar()->newProgressOperation( this, i18n( "Transferring Tracks to Device" ) );
-
-    m_statusbar->setMaximum( m_tracksToCopy.size() );
+    Amarok::Components::logger()->newProgressOperation( this,
+            i18n( "Transferring Tracks to Device" ), m_tracksToCopy.size() );
 
     // prepare to copy
-
     m_wcb->prepareToCopy();
 
     m_numTracksToCopy = m_tracksToCopy.count();
@@ -483,11 +475,12 @@ MediaDeviceHandler::copyNextTrackToDevice()
 
         if ( m_copyFailed )
         {
-            The::statusBar()->shortMessage( i18np( "%1 track failed to copy to the device",
-                                                   "%1 tracks failed to copy to the device", m_tracksFailed.size() ) );
+            Amarok::Components::logger()->shortMessage(
+                        i18np( "%1 track failed to copy to the device",
+                               "%1 tracks failed to copy to the device", m_tracksFailed.size() ) );
         }
-        // clear maps/hashes used
 
+        // clear maps/hashes used
         m_tracksCopying.clear();
         m_trackSrcDst.clear();
         m_tracksFailed.clear();
@@ -616,10 +609,9 @@ MediaDeviceHandler::removeTrackListFromDevice( const Meta::TrackList &tracks )
     m_tracksToDelete = tracks;
 
     // Set up statusbar for deletion operation
-
-    m_statusbar = The::statusBar()->newProgressOperation( this, i18np( "Removing Track from Device", "Removing Tracks from Device", tracks.size() ) );
-
-    m_statusbar->setMaximum( tracks.size() );
+    Amarok::Components::logger()->newProgressOperation( this,
+            i18np( "Removing Track from Device", "Removing Tracks from Device", tracks.size() ),
+            tracks.size() );
 
     m_wcb->prepareToDelete();
 
@@ -698,7 +690,8 @@ MediaDeviceHandler::slotFinalizeTrackRemove( const Meta::TrackPtr & track )
         /*
         if( m_tracksFailed.size() > 0 )
         {
-            The::statusBar()->shortMessage( i18n( "%1 tracks failed to copy to the device", m_tracksFailed.size() ) );
+            Amarok::Components::logger()->shortMessage(
+                        i18n( "%1 tracks failed to copy to the device", m_tracksFailed.size() ) );
         }
         */
         m_wcb->endTrackRemove();
@@ -854,6 +847,10 @@ MediaDeviceHandler::privateParseTracks()
         /// Fetch next track to parse
 
         m_rcb->nextTrackToParse();
+
+        // FIXME: should we return true or false?
+        if (!m_memColl)
+            return true;
 
         MediaDeviceTrackPtr track( new MediaDeviceTrack( m_memColl ) );
 
@@ -1011,21 +1008,16 @@ MediaDeviceHandler::enqueueNextCopyThread()
         // Copy the track
         ThreadWeaver::Weaver::instance()->enqueue(  new CopyWorkerThread( track,  this ) );
     }
-}
+    else
+    {
+	// Finish the progress bar
+	emit incrementProgress();
+	emit endProgressOperation( this );
 
-void
-MediaDeviceHandler::slotCopyTrackJobsDone( ThreadWeaver::Job* job )
-{
-    Q_UNUSED( job )
-    // TODO: some error checking showing tracks that could not be copied
-
-    // Finish the progress bar
-    emit incrementProgress();
-    emit endProgressOperation( this );
-
-    // Inform CollectionLocation that copying is done
-    m_isCopying = false;
-    emit copyTracksDone( true );
+	// Inform CollectionLocation that copying is done
+	m_isCopying = false;
+	emit copyTracksDone( true );
+    }
 }
 
 float
@@ -1300,7 +1292,8 @@ ParseWorkerThread::run()
 void
 ParseWorkerThread::slotDoneSuccess( ThreadWeaver::Job* )
 {
-    m_handler->m_memColl->emitCollectionReady();
+    if (m_handler->m_memColl)
+        m_handler->m_memColl->emitCollectionReady();
 }
 
 // CopyWorkerThread

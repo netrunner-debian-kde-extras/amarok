@@ -49,37 +49,28 @@ class AppletToolbar : public QGraphicsWidget
         AppletToolbar( QGraphicsItem* parent = 0 );
         ~AppletToolbar();
         
-        virtual void paint ( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );
+        virtual void paint( QPainter * painter, const QStyleOptionGraphicsItem * option, QWidget * widget = 0 );
         
         QSizePolicy sizePolicy () const;  
-        QGraphicsLinearLayout* appletLayout();
+        QGraphicsLinearLayout* appletLayout() const;
         bool configEnabled() const;
         
         void appletRemoved( Plasma::Applet* applet );
-        
-        void refreshAddIcons();
+
     signals:
         void showApplet( Plasma::Applet* );
         void addAppletToContainment( const QString& pluginName, int loc );
         void appletAddedToToolbar( Plasma::Applet* applet, int loc );
         void moveApplet( Plasma::Applet*, int, int );
         void configModeToggled();
-        void installApplets();
         void hideAppletExplorer();
         void showAppletExplorer();
-        
-    protected:
-        // reimplemented dfrom QGraphicsWidget
-        virtual void resizeEvent( QGraphicsSceneResizeEvent * event );
-        virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const;
 
-        void mousePressEvent( QGraphicsSceneMouseEvent *event );
-        
-    /*    virtual void dragEnterEvent( QGraphicsSceneDragDropEvent *event );
-        virtual void dragMoveEvent( QGraphicsSceneDragDropEvent *event );
-        virtual void dragLeaveEvent( QGraphicsSceneDragDropEvent *event );
-        virtual void dropEvent( QGraphicsSceneDragDropEvent *event );
-        */
+    protected:
+        virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const;
+        virtual void resizeEvent( QGraphicsSceneResizeEvent * event );
+        virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
+
     private slots:
         void appletAdded( Plasma::Applet*, int );
         void toggleConfigMode();
@@ -88,14 +79,12 @@ class AppletToolbar : public QGraphicsWidget
         void newAddItem( int loc );
         
         qreal m_width;    
-        
+
         bool m_configMode;
-        QList< AppletToolbarAddItem* > m_configAddIcons;
         
         QGraphicsLinearLayout* m_appletLayout;
                 
         Containment* m_cont;
-        AppletToolbarAddItem* m_addItem;
         AppletToolbarConfigItem* m_configItem;
 };
 

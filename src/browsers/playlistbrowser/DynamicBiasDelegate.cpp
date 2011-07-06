@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Daniel Caleb Jones <danielcjones@gmail.com>                       *
+ * Copyright (c) 2011 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -17,40 +18,91 @@
  ****************************************************************************************/
 
 #include "DynamicBiasDelegate.h"
+#include "dynamic/DynamicModel.h"
 
 #include "App.h"
-#include "core/support/Debug.h"
-#include "DynamicBiasWidgets.h"
-#include "DynamicBiasModel.h"
+// #include "Bias.h"
+// #include "core/support/Debug.h"
 
+#include <QApplication>
 #include <QPainter>
 
 PlaylistBrowserNS::DynamicBiasDelegate::DynamicBiasDelegate( QWidget* parent )
-    : QAbstractItemDelegate( parent )
-{}
+    : QStyledItemDelegate( parent )
+{
+    m_smallFont.setPointSize( m_smallFont.pointSize() - 1 );
+
+    m_normalFm = new QFontMetrics( m_normalFont );
+    m_smallFm = new QFontMetrics( m_smallFont );
+}
+
+PlaylistBrowserNS::DynamicBiasDelegate::~DynamicBiasDelegate()
+{
+    delete m_normalFm;
+    delete m_smallFm;
+}
 
 void
-PlaylistBrowserNS::DynamicBiasDelegate::paint ( QPainter * painter, const QStyleOptionViewItem & option, const QModelIndex & index ) const
+PlaylistBrowserNS::DynamicBiasDelegate::paint( QPainter* painter,
+                                               const QStyleOptionViewItem& option,
+                                               const QModelIndex& index ) const
 {
-    //Q_UNUSED(painter)
+    Dynamic::AbstractBias* bias = 0;
+    QVariant v;
+    if( index.isValid() ) {
+        v = index.model()->data( index, Dynamic::DynamicModel::BiasRole );
+        if( v.isValid() )
+            bias = qobject_cast<Dynamic::AbstractBias*>(v.value<QObject*>() );
+    }
 
-    QApplication::style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter );
+    // for a bias paint the operator (e.g. a small progress bar for the part bias) in front of it
+    if( bias )
+    {
+        QModelIndex parentIndex = index.parent();
+        Dynamic::AbstractBias* parentBias = 0;
 
-    QRect rect( option.rect );
+        const bool isRTL = QApplication::isRightToLeft();
+        Q_UNUSED( isRTL );
 
-    BiasBoxWidget* widget = qvariant_cast<BiasBoxWidget*>( index.data( DynamicBiasModel::WidgetRole ) ); 
-    widget->setGeometry( rect );
-    widget->show();
+        v = parentIndex.model()->data( parentIndex, Dynamic::DynamicModel::BiasRole );
+        if( v.isValid() )
+            parentBias = qobject_cast<Dynamic::AbstractBias*>(v.value<QObject*>() );
+
+        if( parentBias )
+        {
+            // sub-biases have a operator drawn in front of them.
+            const int operatorWidth = m_smallFm->boundingRect( "mmmm" ).width();
+
+            // draw the selection
+            QApplication::style()->drawPrimitive( QStyle::PE_PanelItemViewItem, &option, painter );
+
+            // TODO: isRTL
+
+            // -- paint the operator
+            QRect operatorRect( option.rect.x(), option.rect.y(),
+                                operatorWidth, option.rect.height() );
+            painter->setFont( m_smallFont );
+            parentBias->paintOperator( painter, operatorRect, bias );
+
+            // -- paint the normal text
+            QRect textRect( option.rect.x() + operatorWidth, option.rect.y(),
+                            option.rect.width() - operatorWidth, option.rect.height() );
+            painter->setFont( m_normalFont );
+            const QString text = index.data( Qt::DisplayRole ).toString();
+            painter->drawText( textRect, Qt::TextWordWrap, text );
+        }
+        else
+        {
+            QStyledItemDelegate::paint( painter, option, index );
+        }
+
+    }
+    else
+    {
+        QStyledItemDelegate::paint( painter, option, index );
+    }
+
 }
 
 
-
-QSize
-PlaylistBrowserNS::DynamicBiasDelegate::sizeHint( const QStyleOptionViewItem & option, const QModelIndex & index ) const
-{
-    Q_UNUSED( option )
-
-    BiasBoxWidget* widget = qvariant_cast<BiasBoxWidget*>( index.data( DynamicBiasModel::WidgetRole ) );
-    return widget->sizeHint();
-}
 

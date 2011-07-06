@@ -29,6 +29,7 @@
 #include "SvgHandler.h"
 #include "amarokconfig.h"
 #include "core/meta/support/MetaUtility.h"
+#include "KNotificationBackend.h"
 
 #include <KApplication>
 #include <KDebug>
@@ -64,6 +65,7 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
         , m_rating( 0 )
         , m_volume( The::engineController()->volume() )
         , m_showVolume( false )
+        , m_hideWhenFullscreenWindowIsActive( false )
 {
     Qt::WindowFlags flags;
     flags = Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint;
@@ -119,6 +121,27 @@ OSDWidget::show( const QString &text, const QImage &newImage )
 }
 
 void
+OSDWidget::show()
+{
+    if ( !isTemporaryDisabled() )
+        QWidget::show();
+}
+
+bool
+OSDWidget::isTemporaryDisabled()
+{
+    // Check if the OSD should not be shown,
+    // if a fullscreen window is focused.
+    if ( m_hideWhenFullscreenWindowIsActive )
+    {
+        return Amarok::KNotificationBackend::instance()->isFullscreenWindowActive();
+    }
+
+    return false;
+}
+
+
+void
 OSDWidget::ratingChanged( const QString& path, int rating )
 {
     Meta::TrackPtr track = The::engineController()->currentTrack();
@@ -161,7 +184,6 @@ OSDWidget::setVisible( bool visible )
 
         const uint M = fontMetrics().width( 'x' );
 
-        const QRect oldGeometry = QRect( pos(), size() );
         const QRect newGeometry = determineMetrics( M );
 
         if( newGeometry.width() > 0 && newGeometry.height() > 0 )
@@ -435,7 +457,7 @@ OSDWidget::setScreen( int screen )
 }
 
 void
-OSDWidget::setFontScale(int scale)
+OSDWidget::setFontScale( int scale )
 {
     double fontScale = static_cast<double>( scale ) / 100.0;
 
@@ -443,6 +465,12 @@ OSDWidget::setFontScale(int scale)
     QFont newFont( font() );
     newFont.setPointSizeF( defaultPointSize() * fontScale );
     setFont( newFont );
+}
+
+void
+OSDWidget::setHideWhenFullscreenWindowIsActive( bool hide )
+{
+    m_hideWhenFullscreenWindowIsActive = hide;
 }
 
 
@@ -664,6 +692,7 @@ Amarok::OSD::applySettings()
     setOffset( AmarokConfig::osdYOffset() );
     setScreen( AmarokConfig::osdScreen() );
     setFontScale( AmarokConfig::osdFontScaling() );
+    setHideWhenFullscreenWindowIsActive( AmarokConfig::osdHideOnFullscreen() );
 
     if( AmarokConfig::osdUseCustomColors() )
         setTextColor( AmarokConfig::osdTextColor() );

@@ -29,7 +29,6 @@ using namespace Collections;
 SqlQueryMakerInternal::SqlQueryMakerInternal( SqlCollection *collection )
     : QObject()
     , m_collection( collection )
-    , m_resultAsDataPtrs( false )
     , m_queryType( QueryMaker::None )
 {
 }
@@ -63,12 +62,6 @@ SqlQueryMakerInternal::setQuery( const QString &query )
 }
 
 void
-SqlQueryMakerInternal::setResultAsDataPtrs( bool value )
-{
-    m_resultAsDataPtrs = value;
-}
-
-void
 SqlQueryMakerInternal::setQueryType( QueryMaker::QueryType type )
 {
     m_queryType = type;
@@ -81,7 +74,7 @@ SqlQueryMakerInternal::handleResult( const QStringList &result )
     {
         switch( m_queryType ) {
         case QueryMaker::Custom:
-            emit newResultReady( m_collection.data()->collectionId(), result );
+            emit newResultReady( result );
             break;
         case QueryMaker::Track:
             handleTracks( result );
@@ -112,66 +105,40 @@ SqlQueryMakerInternal::handleResult( const QStringList &result )
     }
     else
     {
-        if( m_resultAsDataPtrs )
-        {
-            emit newResultReady( m_collection.data()->collectionId(), Meta::DataList() );
-        }
-        else
-        {
-            switch( m_queryType ) {
-                case QueryMaker::Custom:
-                    emit newResultReady( m_collection.data()->collectionId(), QStringList() );
-                    break;
-                case QueryMaker::Track:
-                    emit newResultReady( m_collection.data()->collectionId(), Meta::TrackList() );
-                    break;
-                case QueryMaker::Artist:
-                case QueryMaker::AlbumArtist:
-                    emit newResultReady( m_collection.data()->collectionId(), Meta::ArtistList() );
-                    break;
-                case QueryMaker::Album:
-                    emit newResultReady( m_collection.data()->collectionId(), Meta::AlbumList() );
-                    break;
-                case QueryMaker::Genre:
-                    emit newResultReady( m_collection.data()->collectionId(), Meta::GenreList() );
-                    break;
-                case QueryMaker::Composer:
-                    emit newResultReady( m_collection.data()->collectionId(), Meta::ComposerList() );
-                    break;
-                case QueryMaker::Year:
-                    emit newResultReady( m_collection.data()->collectionId(), Meta::YearList() );
-                    break;
-                case QueryMaker::Label:
-                    emit newResultReady( m_collection.data()->collectionId(), Meta::LabelList() );
-                    break;
+        switch( m_queryType ) {
+            case QueryMaker::Custom:
+                emit newResultReady( QStringList() );
+                break;
+            case QueryMaker::Track:
+                emit newResultReady( Meta::TrackList() );
+                break;
+            case QueryMaker::Artist:
+            case QueryMaker::AlbumArtist:
+                emit newResultReady( Meta::ArtistList() );
+                break;
+            case QueryMaker::Album:
+                emit newResultReady( Meta::AlbumList() );
+                break;
+            case QueryMaker::Genre:
+                emit newResultReady( Meta::GenreList() );
+                break;
+            case QueryMaker::Composer:
+                emit newResultReady( Meta::ComposerList() );
+                break;
+            case QueryMaker::Year:
+                emit newResultReady( Meta::YearList() );
+                break;
+            case QueryMaker::Label:
+                emit newResultReady( Meta::LabelList() );
+                break;
 
             case QueryMaker::None:
                 debug() << "Warning: queryResult with queryType == NONE";
-            }
         }
     }
 
     //queryDone will be emitted in done(Job*)
 }
-
-// What's worse, a bunch of almost identical repeated code, or a not so obvious macro? :-)
-// The macro below will emit the proper result signal. If m_resultAsDataPtrs is true,
-// it'll emit the signal that takes a list of DataPtrs. Otherwise, it'll call the
-// signal that takes the list of the specific class.
-// If qm is used blocking it only stores the result ptrs into data as DataPtrs
-
-#define emitProperResult( PointerType, list ) { \
-            if ( m_resultAsDataPtrs ) { \
-                Meta::DataList data; \
-                foreach( PointerType p, list ) { \
-                    data << Meta::DataPtr::staticCast( p ); \
-                } \
-                emit newResultReady( m_collection.data()->collectionId(), data ); \
-            } \
-            else { \
-                emit newResultReady( m_collection.data()->collectionId(), list ); \
-            } \
-       }
 
 void
 SqlQueryMakerInternal::handleTracks( const QStringList &result )
@@ -185,7 +152,7 @@ SqlQueryMakerInternal::handleTracks( const QStringList &result )
         QStringList row = result.mid( i*returnCount, returnCount );
         tracks.append( reg->getTrack( row[Meta::SqlTrack::returnIndex_trackId].toInt(), row ) );
     }
-    emitProperResult( Meta::TrackPtr, tracks );
+    emit newResultReady( tracks );
 }
 
 void
@@ -200,7 +167,7 @@ SqlQueryMakerInternal::handleArtists( const QStringList &result )
         if( id.toInt() > 0 )
             artists.append( reg->getArtist( id.toInt(), name ) );
     }
-    emitProperResult( Meta::ArtistPtr, artists );
+    emit newResultReady( artists );
 }
 
 void
@@ -215,7 +182,7 @@ SqlQueryMakerInternal::handleAlbums( const QStringList &result )
         QString artist = iter.next();
         albums.append( reg->getAlbum( id.toInt(), name, artist.toInt() ) );
     }
-    emitProperResult( Meta::AlbumPtr, albums );
+    emit newResultReady( albums );
 }
 
 void
@@ -229,7 +196,7 @@ SqlQueryMakerInternal::handleGenres( const QStringList &result )
         QString id = iter.next();
         genres.append( reg->getGenre( id.toInt(), name ) );
     }
-    emitProperResult( Meta::GenrePtr, genres );
+    emit newResultReady( genres );
 }
 
 void
@@ -243,7 +210,7 @@ SqlQueryMakerInternal::handleComposers( const QStringList &result )
         QString id = iter.next();
         composers.append( reg->getComposer( id.toInt(), name ) );
     }
-    emitProperResult( Meta::ComposerPtr, composers );
+    emit newResultReady( composers );
 }
 
 void
@@ -257,7 +224,7 @@ SqlQueryMakerInternal::handleYears( const QStringList &result )
         QString id = iter.next();
         years.append( reg->getYear( id.toInt(), name.toInt() ) );
     }
-    emitProperResult( Meta::YearPtr, years );
+    emit newResultReady( years );
 }
 
 void
@@ -272,7 +239,7 @@ SqlQueryMakerInternal::handleLabels( const QStringList &result )
         labels.append( reg->getLabel( id.toInt(), label ) );
     }
 
-    emitProperResult( Meta::LabelPtr, labels );
+    emit newResultReady( labels );
 }
 
 #include "SqlQueryMakerInternal.moc"

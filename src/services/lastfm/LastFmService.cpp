@@ -44,7 +44,6 @@
 #include "meta/LastFmMeta.h"
 #include "playlist/PlaylistModelStack.h"
 #include "widgets/SearchWidget.h"
-#include "CustomBias.h"
 #include "NetworkAccessManagerProxy.h"
 
 #include <lastfm/Audioscrobbler> // from liblastfm
@@ -153,7 +152,7 @@ LastFmServiceFactory::createLastFmService()
 //     if ( config.username().isEmpty() || config.password().isEmpty() )
 //         return 0;
 
-    ServiceBase* service = new LastFmService( this, "Last.fm", config.username(), config.password(), config.sessionKey(), config.scrobble(), config.fetchSimilar() );
+    ServiceBase* service = new LastFmService( this, "Last.fm", config.username(), config.password(), config.sessionKey(), config.scrobble(), config.fetchSimilar(), config.scrobbleComposer() );
     return service;
 }
 
@@ -171,7 +170,7 @@ LastFmServiceFactory::config()
 }
 
 
-LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name, const QString &username, QString password, const QString& sessionKey, bool scrobble, bool fetchSimilar )
+LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name, const QString &username, QString password, const QString& sessionKey, bool scrobble, bool fetchSimilar, bool scrobbleComposer )
     : ServiceBase( name, parent, false ),
       m_inited( false),
       m_scrobble( scrobble ),
@@ -183,10 +182,9 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
       m_userinfo( 0 ),
       m_userName( username ),
       m_sessionKey( sessionKey ),
+      m_scrobbleComposer( scrobbleComposer ),
       m_userNameArray( 0 ),
-      m_sessionKeyArray( 0 ),
-      m_lastFmBiasFactory( 0 ),
-      m_weeklyTopBiasFactory( 0 )
+      m_sessionKeyArray( 0 )
 {
     DEBUG_BLOCK
 
@@ -195,7 +193,7 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
 
     setShortDescription( i18n( "Last.fm: The social music revolution" ) );
     setIcon( KIcon( "view-services-lastfm-amarok" ) );
-    setLongDescription( i18n( "Last.fm is a popular online service that provides personal radio stations and music recommendations. A personal listening station is tailored based on your listening habits and provides you with recommendations for new music. It is also possible to play stations with music that is similar to a particular artist as well as listen to streams from people you have added as friends or that last.fm considers your musical \"neighbors\"" ) );
+    setLongDescription( i18n( "Last.fm is a popular online service that provides personal radio stations and music recommendations. A personal listening station is tailored based on your listening habits and provides you with recommendations for new music. It is also possible to play stations with music that is similar to a particular artist as well as listen to streams from people you have added as friends or that Last.fm considers your musical \"neighbors\"" ) );
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_lastfm.png" ) );
 
     if( !username.isEmpty() && !password.isEmpty() )
@@ -208,8 +206,6 @@ LastFmService::~LastFmService()
 {
     DEBUG_BLOCK
 
-    delete m_lastFmBiasFactory;
-    delete m_weeklyTopBiasFactory;
     delete[] m_userNameArray;
     delete[] m_sessionKeyArray;
 
@@ -276,11 +272,8 @@ LastFmService::init()
     m_searchWidget->setVisible( false );
 
     // enable custom bias
-    m_lastFmBiasFactory = new Dynamic::LastFmBiasFactory();
-    Dynamic::CustomBias::registerNewBiasFactory( m_lastFmBiasFactory );
-
-    m_weeklyTopBiasFactory = new Dynamic::WeeklyTopBiasFactory();
-    Dynamic::CustomBias::registerNewBiasFactory( m_weeklyTopBiasFactory );
+    Dynamic::BiasFactory::instance()->registerNewBiasFactory( new Dynamic::LastFmBiasFactory() );
+    Dynamic::BiasFactory::instance()->registerNewBiasFactory( new Dynamic::WeeklyTopBiasFactory() );
 
     m_collection = new Collections::LastFmServiceCollection( m_userName );
     CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
@@ -444,7 +437,7 @@ LastFmService::updateEditHint( int index )
             hint = i18n( "Enter a tag" );
             break;
         case 2:
-            hint = i18n( "Enter a last.fm user name" );
+            hint = i18n( "Enter a Last.fm user name" );
             break;
         default:
             return;
@@ -457,7 +450,7 @@ LastFmService::updateProfileInfo()
 {
     if( m_userinfo )
     {
-        m_userinfo->setText( i18n( "Username: ") + Qt::escape( m_userName ) );
+        m_userinfo->setText( i18n( "Username: %1", Qt::escape( m_userName ) ) );
     }
 
     if( m_profile && !m_playcount.isEmpty() )

@@ -46,6 +46,7 @@
 #include <QMetaEnum>
 #include <QMetaObject>
 #include <QRect>
+#include <QSortFilterProxyModel>
 #include <QStackedWidget>
 #include <QToolBar>
 #include <QToolButton>
@@ -143,6 +144,10 @@ CollectionWidget::CollectionWidget( const QString &name , QWidget *parent )
     //TODO: we have a really nice opportunity to make these info blurbs both helpful and pretty
     setLongDescription( i18n( "This is where you will find your local music, as well as music from mobile audio players and CDs." ) );
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_collections.png" ) );
+
+    // set background
+    const QString bgImage = KStandardDirs::locate("data", "amarok/images/hover_info_collections.png");
+    setBackgroundImage( bgImage );
 
     KHBox *hbox = new KHBox( this );
     d->searchWidget = new SearchWidget( hbox );

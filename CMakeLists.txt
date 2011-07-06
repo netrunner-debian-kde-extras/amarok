@@ -13,35 +13,43 @@ option(WITH_MYSQL_EMBEDDED "Build the embedded database library -- highly recomm
 include(CheckLibraryExists)
 check_library_exists(dl dlopen "" LIBDL_FOUND)
 
+# --------- taglib --------
+# building without taglib is stupid, but it's possible
+
 set(TAGLIB_MIN_VERSION "1.6")
-find_package(Taglib REQUIRED)
+find_package(Taglib)
 
-# Check if TagLib is built with ASF and MP4 support
-include(CheckCXXSourceCompiles)
-set(CMAKE_REQUIRED_INCLUDES "${TAGLIB_INCLUDES}")
-set(CMAKE_REQUIRED_LIBRARIES "${TAGLIB_LIBRARIES}")
+if(TAGLIB_FOUND)
+    # Check if TagLib is built with ASF and MP4 support
+    include(CheckCXXSourceCompiles)
+    set(CMAKE_REQUIRED_INCLUDES "${TAGLIB_INCLUDES}")
+    set(CMAKE_REQUIRED_LIBRARIES "${TAGLIB_LIBRARIES}")
 
-check_cxx_source_compiles("#include <asftag.h>
-int main() { TagLib::ASF::Tag tag; return 0;}" TAGLIB_ASF_FOUND)
-if( NOT TAGLIB_ASF_FOUND )
-    message(FATAL_ERROR "TagLib does not have ASF support compiled in.")
-endif( NOT TAGLIB_ASF_FOUND )
+    check_cxx_source_compiles("#include <asftag.h>
+    int main() { TagLib::ASF::Tag tag; return 0;}" TAGLIB_ASF_FOUND)
+    if( NOT TAGLIB_ASF_FOUND )
+        message(FATAL_ERROR "TagLib does not have ASF support compiled in.")
+    endif( NOT TAGLIB_ASF_FOUND )
 
-check_cxx_source_compiles("#include <mp4tag.h>
-int main() { TagLib::MP4::Tag tag(0, 0); return 0;}" TAGLIB_MP4_FOUND)
-if( NOT TAGLIB_MP4_FOUND )
-    message(FATAL_ERROR "TagLib does not have MP4 support compiled in.")
-endif( NOT TAGLIB_MP4_FOUND )
+    check_cxx_source_compiles("#include <mp4tag.h>
+    int main() { TagLib::MP4::Tag tag(0, 0); return 0;}" TAGLIB_MP4_FOUND)
+    if( NOT TAGLIB_MP4_FOUND )
+        message(FATAL_ERROR "TagLib does not have MP4 support compiled in.")
+    endif( NOT TAGLIB_MP4_FOUND )
 
-set(CMAKE_REQUIRED_INCLUDES)
-set(CMAKE_REQUIRED_LIBRARIES)
+    set(CMAKE_REQUIRED_INCLUDES)
+    set(CMAKE_REQUIRED_LIBRARIES)
 
-set(TAGLIB-EXTRAS_MIN_VERSION "1.0")
-find_package(Taglib-Extras REQUIRED)
+    set(TAGLIB-EXTRAS_MIN_VERSION "1.0")
+    find_package(Taglib-Extras)
+    set(TAGLIB_EXTRAS_FOUND ${TAGLIB-EXTRAS_FOUND}) # we need a c-compatible name for the include file
 
-include(CheckTagLibFileName)
+    include(CheckTagLibFileName)
 
-check_taglib_filename(COMPLEX_TAGLIB_FILENAME)
+    check_taglib_filename(COMPLEX_TAGLIB_FILENAME)
+endif()
+
+# --------------------------
 
 # Figure out problems inside KAboutData before re-enabling
 #execute_process( COMMAND "git" "describe" WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} RESULT_VARIABLE GIT_OUTPUT_VALUE OUTPUT_VARIABLE CURRENT_GIT_VERSION )
@@ -79,8 +87,11 @@ if( WITH_PLAYER )
 
     macro_log_feature( KDE4_FOUND "kdelibs" "The toolkit Amarok uses to build" "http://www.kde.org" TRUE "4.4.0" "" )
 
-    find_package( QtScriptQtBindings REQUIRED )
-    macro_log_feature( QTSCRIPTQTBINDINGS_FOUND "qtscript-qt" "QtScript Qt Bindings" "http://code.google.com/p/qtscriptgenerator/" TRUE "" "" )
+    macro_ensure_version( "4.5.0" ${KDE_VERSION} KDE_HAS_KIMAGECACHE )
+    macro_bool_to_01( KDE_HAS_KIMAGECACHE HAVE_KIMAGECACHE )
+
+    find_package( QtScriptQtBindings )
+    macro_log_feature( QTSCRIPTQTBINDINGS_FOUND "qtscript-qt" "QtScript Qt Bindings" "http://code.google.com/p/qtscriptgenerator/" FALSE "" "" )
 
     add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 
@@ -98,8 +109,8 @@ if( WITH_PLAYER )
     macro_log_feature( ZLIB_FOUND "zlib" "zlib" "" TRUE "" "" )
 
     # QCA2 is required for the Script Updater
-    find_package(QCA2 REQUIRED)
-    macro_log_feature( QCA2_FOUND "qca2" "Qt Cryptographic Architecture" "http://delta.affinix.com/qca/" TRUE "" "" )
+    find_package(QCA2)
+    macro_log_feature( QCA2_FOUND "qca2" "Qt Cryptographic Architecture" "http://delta.affinix.com/qca/" FALSE "" "" )
 
     # QJson is required for the PlaydarCollection
     macro_optional_find_package(QJSON)
@@ -113,7 +124,7 @@ if( WITH_PLAYER )
     macro_bool_to_01( LIBLASTFM_FOUND HAVE_LIBLASTFM )
 
     macro_optional_find_package( FFmpeg )
-    macro_log_feature( FFMPEG_FOUND "ffmpeg" "Libraries and tools for handling multimedia data" "http://www.ffmpeg.org/" FALSE "0.5" "" )
+    macro_log_feature( FFMPEG_FOUND "ffmpeg" "Libraries and tools for handling multimedia data" "http://www.ffmpeg.org/" FALSE "0.6" "" )
 
     if( FFMPEG_FOUND )
         macro_optional_find_package(LibOFA)
@@ -184,7 +195,7 @@ if( WITH_PLAYER )
 
     configure_file(config-amarok.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-amarok.h )
 
-    include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE4_INCLUDES} ${TAGLIB_INCLUDES})
+    include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE4_INCLUDES})
 
     if( KDE4_BUILD_TESTS AND NOT WIN32 )
         ENABLE_TESTING()
@@ -202,17 +213,14 @@ if( WITH_PLAYER )
 include(MacroOptionalAddSubdirectory)
 macro_optional_add_subdirectory( po )
 
-    
-include(MacroOptionalAddSubdirectory)
-macro_optional_add_subdirectory( doc )
-
+    #DOC_SUBDIR
 
 else( WITH_PLAYER )
 
     find_package( Qt4 REQUIRED )
     set( CMAKE_INCLUDE_CURRENT_DIR ON )
     add_definitions(${QT_DEFINITIONS})
-    include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${TAGLIB_INCLUDES})
+    include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
 endif( WITH_PLAYER )
 
