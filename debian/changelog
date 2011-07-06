@@ -6,6 +6,7 @@ amarok (2.4.2~beta1-0r1) UNRELEASED; urgency=low
   * Update documentation about Phonon backends in Amarok bug-presubj.
     (Closes: #629208)
   * Adapt debian_disable_qtscriptbindings_check_fix.diff to upstream changes.
+  * Do not ship documentation: not provided in this release.
 
  -- Modestas Vainius <modax@debian.org>  Sat, 04 Jun 2011 20:38:34 +0300
 
