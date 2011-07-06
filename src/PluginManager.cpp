@@ -32,7 +32,9 @@
 #include <QFile>
 #include <QMetaEnum>
 
-const int Plugins::PluginManager::s_pluginFrameworkVersion = 62;
+#include <cstdlib>
+
+const int Plugins::PluginManager::s_pluginFrameworkVersion = 63;
 Plugins::PluginManager* Plugins::PluginManager::s_instance = 0;
 
 Plugins::PluginManager*
@@ -90,9 +92,16 @@ Plugins::PluginManager::init()
     PERF_LOG( "Loading device plugins" )
     key = QLatin1String( "Device" );
     Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
-    m_mountPointManager = static_cast<Collections::SqlCollection*>( coll )->mountPointManager();
-    m_factories[ key ] = createFactories( key );
-    m_mountPointManager->loadDevicePlugins( m_factories.value( key ) );
+    if( !coll )
+    {
+        error() << "No primary collection available. You might have problems with your installation. Amarok will not be usable like this.";
+    }
+    else
+    {
+        m_mountPointManager = static_cast<Collections::SqlCollection*>( coll )->mountPointManager();
+        m_factories[ key ] = createFactories( key );
+        m_mountPointManager->loadDevicePlugins( m_factories.value( key ) );
+    }
     PERF_LOG( "Loaded device plugins" )
 }
 

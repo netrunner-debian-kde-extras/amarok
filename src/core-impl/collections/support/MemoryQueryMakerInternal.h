@@ -63,7 +63,6 @@ public:
 
     void setMatchers( MemoryMatcher *matchers );
     void setFilters( MemoryFilter *filters );
-    void setRandomize( bool randomize );
     void setMaxSize( int maxSize );
     void setReturnAsDataPtrs( bool returnAsDataPtrs );
     void setType( QueryMaker::QueryType );
@@ -78,15 +77,14 @@ public:
     void setLabelQueryMode( Collections::QueryMaker::LabelQueryMode mode ) { m_labelQueryMode = mode; }
 
 signals:
-    void newResultReady( QString collectionId, Meta::TrackList );
-    void newResultReady( QString collectionId, Meta::ArtistList );
-    void newResultReady( QString collectionId, Meta::AlbumList );
-    void newResultReady( QString collectionId, Meta::GenreList );
-    void newResultReady( QString collectionId, Meta::ComposerList );
-    void newResultReady( QString collectionId, Meta::YearList );
-    void newResultReady( QString collectionId, Meta::DataList );
-    void newResultReady( QString collectionId, QStringList );
-    void newResultReady( QString collectionId, Meta::LabelList );
+    void newResultReady( Meta::TrackList );
+    void newResultReady( Meta::ArtistList );
+    void newResultReady( Meta::AlbumList );
+    void newResultReady( Meta::GenreList );
+    void newResultReady( Meta::ComposerList );
+    void newResultReady( Meta::YearList );
+    void newResultReady( QStringList );
+    void newResultReady( Meta::LabelList );
 
 private:
     template <class PointerType>
@@ -97,7 +95,6 @@ private:
     QWeakPointer<QObject> m_guard;
     MemoryMatcher *m_matchers;
     MemoryFilter *m_filters;
-    bool m_randomize;
     int m_maxSize;
     bool m_returnAsDataPtrs;
     Collections::QueryMaker::QueryType m_type;

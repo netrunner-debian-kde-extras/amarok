@@ -268,8 +268,18 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
 
     // Used to be updated after changes commit to prevent crash on NULL pointer access
     // if metaTrack had no album.
-    if( track->album() && track->album()->hasImage() && !metaTrack->album()->hasImage() )
-        metaTrack->album()->setImage( track->album()->image() );
+    if( track->album() && metaTrack->album() )
+    {
+        metaTrack->beginMetaDataUpdate();
+        
+        if( track->album()->hasAlbumArtist() && !metaTrack->album()->hasAlbumArtist() )
+            metaTrack->setAlbumArtist( track->album()->albumArtist()->name() );
+        
+        if( track->album()->hasImage() && !metaTrack->album()->hasImage() )
+            metaTrack->album()->setImage( track->album()->image() );
+        
+        metaTrack->endMetaDataUpdate();
+    }
 
     metaTrack->setWriteFile( true );
 
@@ -496,8 +506,9 @@ SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
     }
 
     m_transferjob = new TransferJob( this, configuration );
-    Amarok::Components::logger()->newProgressOperation( m_transferjob, statusBarTxt, this, SLOT( slotTransferJobAborted() ) );
-    connect( m_transferjob, SIGNAL( result( KJob * ) ), this, SLOT( slotTransferJobFinished( KJob * ) ) );
+    Amarok::Components::logger()->newProgressOperation( m_transferjob, statusBarTxt, this,
+                                                        SLOT(slotTransferJobAborted()) );
+    connect( m_transferjob, SIGNAL(result( KJob * )), SLOT(slotTransferJobFinished( KJob * )) );
     m_transferjob->start();
 }
 

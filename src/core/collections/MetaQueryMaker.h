@@ -36,16 +36,12 @@ class AMAROK_CORE_EXPORT MetaQueryMaker : public QueryMaker
 
         virtual void run();
         virtual void abortQuery();
-        virtual int resultCount() const;
 
         virtual QueryMaker* setQueryType( QueryType type );
-
-        virtual QueryMaker* setReturnResultAsDataPtrs( bool resultAsDataPtrs );
 
         virtual QueryMaker* addReturnValue( qint64 value);
         virtual QueryMaker* addReturnFunction( ReturnFunction function, qint64 value );
         virtual QueryMaker* orderBy( qint64 value, bool descending = false );
-        virtual QueryMaker* orderByRandom();
 
         virtual QueryMaker* addMatch( const Meta::TrackPtr &track );
         virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist );

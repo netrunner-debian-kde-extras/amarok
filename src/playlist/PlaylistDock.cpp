@@ -25,27 +25,34 @@
 #include "amarokconfig.h"
 #include "App.h"
 #include "core/support/Debug.h"
-#include "DynamicModel.h"
 #include "layouts/LayoutManager.h"
 #include "MainWindow.h"
 #include "navigators/NavigatorConfigAction.h"
 #include "PaletteHandler.h"
 #include "PlaylistController.h"
 #include "PlaylistDefines.h"
+#include "PlaylistInfoWidget.h"
 #include "PlaylistManager.h"
 #include "PlaylistModelStack.h"
 #include "PlaylistQueueEditor.h"
+#include "PlaylistToolBar.h"
 #include "ProgressiveSearchWidget.h"
+#include "playlist/PlaylistActions.h"
 #include "core-impl/playlists/providers/user/UserPlaylistProvider.h"
 #include "widgets/HorizontalDivider.h"
 
 #include <KActionMenu>
+#include <KStandardDirs>
 #include <KToolBarSpacerAction>
+#include <KVBox>
 
+#include <QLabel>
+#include <QToolBar>
 #include <QHBoxLayout>
 
 Playlist::Dock::Dock( QWidget* parent )
     : AmarokDockWidget( i18n( "&Playlist" ), parent )
+    , m_barBox( 0 )
 {
     DEBUG_BLOCK
 
@@ -78,6 +85,7 @@ void
 Playlist::Dock::polish()
 {
     DEBUG_BLOCK
+
     m_mainWidget = new KVBox( this );
     setWidget( m_mainWidget );
     m_mainWidget->setContentsMargins( 0, 0, 0, 0 );
@@ -92,24 +100,24 @@ Playlist::Dock::polish()
     m_searchWidget = new Playlist::ProgressiveSearchWidget( m_mainWidget );
 
     // show visual indication of dynamic playlists  being enabled
-    connect( PlaylistBrowserNS::DynamicModel::instance(), SIGNAL( enableDynamicMode( bool ) ),
-             SLOT( showDynamicHint( bool ) ) );
+    connect( The::playlistActions(), SIGNAL( navigatorChanged() ),
+             SLOT( showDynamicHint() ) );
     m_dynamicHintWidget = new QLabel( i18n( "Dynamic Mode Enabled" ), m_mainWidget );
     m_dynamicHintWidget->setAlignment( Qt::AlignCenter );
     m_dynamicHintWidget->setStyleSheet(
             QString( "QLabel { background-color: %1; color: %2; border-radius: 3px; } " )
-                    .arg( PaletteHandler::highlightColor().name() )
+                    .arg( PaletteHandler::alternateBackgroundColor().name() )
                     .arg( The::paletteHandler()->palette().highlightedText().color().name() )
             );
     QFont dynamicHintWidgetFont = m_dynamicHintWidget->font();
     dynamicHintWidgetFont.setPointSize( dynamicHintWidgetFont.pointSize() + 1 );
     m_dynamicHintWidget->setFont( dynamicHintWidgetFont );
 
-    showDynamicHint( AmarokConfig::dynamicMode() );
+    showDynamicHint();
 
     paletteChanged( App::instance()->palette() );
     connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ),
-             SLOT(  paletteChanged( const QPalette &  ) ) );
+             SLOT( paletteChanged( const QPalette &  ) ) );
 
     QWidget * layoutHolder = new QWidget( m_mainWidget );
 
@@ -149,29 +157,34 @@ Playlist::Dock::polish()
     mainPlaylistlayout->setSpacing( 0 );
     mainPlaylistlayout->addWidget( m_playlistView );
 
-    KHBox *barBox = new KHBox( m_mainWidget );
-    barBox->setMargin( 0 );
-    barBox->setContentsMargins( 0, 0, 0, 0 );
-
-    // Use QToolBar instead of KToolBar, see bug 228390
-    QToolBar *plBar = new QToolBar( barBox );
-    plBar->setFixedHeight( 30 );
-    plBar->setObjectName( "PlaylistToolBar" );
-
     ModelStack::instance(); //This also creates the Controller.
 
-    { // START Playlist toolbar
+    { // START: Playlist toolbar
+        // action toolbar
+        m_barBox = new KHBox( m_mainWidget );
+        m_barBox->setMargin( 0 );
+        m_barBox->setContentsMargins( 0, 0, 0, 0 );
+        m_barBox->setStyleSheet(
+                        QString( "QFrame { background-color: %1; color: %2; border-radius: 3px; }" )
+                        .arg( PaletteHandler::alternateBackgroundColor().name() )
+                        .arg( The::paletteHandler()->palette().highlightedText().color().name() )
+                    );
+
+        // Use QToolBar instead of KToolBar, see bug 228390
+        ToolBar *plBar = new ToolBar( m_barBox );
+        plBar->setFixedHeight( 30 );
         plBar->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Preferred );
         plBar->setMovable( false );
-        plBar->addAction( new KToolBarSpacerAction( m_mainWidget ) );
 
-        plBar->addAction( Amarok::actionCollection()->action( "playlist_clear" ) );
 
-        plBar->addSeparator();
+        QActionGroup *playlistActions = new QActionGroup( m_mainWidget );
+        playlistActions->addAction( Amarok::actionCollection()->action( "playlist_clear" ) );
 
         m_savePlaylistMenu = new KActionMenu( KIcon( "document-save-amarok" ),
                                               i18n("&Save Current Playlist"), m_mainWidget );
+
         m_saveActions = new KActionCollection( m_mainWidget );
+
         connect( m_savePlaylistMenu, SIGNAL( triggered( bool ) ),
                  SLOT( slotSaveCurrentPlaylist() ) );
         foreach( Playlists::PlaylistProvider *provider, The::playlistManager()->providersForCategory(
@@ -189,30 +202,27 @@ Playlist::Dock::polish()
                  SLOT( playlistProviderRemoved( Playlists::PlaylistProvider *, int ) )
                  );
 
-        plBar->addAction( m_savePlaylistMenu );
+        playlistActions->addAction( m_savePlaylistMenu );
 
-        plBar->addSeparator();
-        plBar->addAction( Amarok::actionCollection()->action( "playlist_undo" ) );
-        plBar->addAction( Amarok::actionCollection()->action( "playlist_redo" ) );
-        plBar->addSeparator();
+        playlistActions->addAction( Amarok::actionCollection()->action( "playlist_undo" ) );
+        //redo action can be accessed from menu > Playlist
 
-        plBar->addAction( Amarok::actionCollection()->action( "show_active_track" ) );
-        plBar->addSeparator();
+        playlistActions->addAction( Amarok::actionCollection()->action( "show_active_track" ) );
 
-        NavigatorConfigAction * navigatorConfig = new NavigatorConfigAction( m_mainWidget );
+        plBar->addCollapsibleActions( playlistActions );
+
+        NavigatorConfigAction *navigatorConfig = new NavigatorConfigAction( m_mainWidget );
         plBar->addAction( navigatorConfig );
-        plBar->addSeparator();
 
         QToolButton *toolButton =
                 qobject_cast<QToolButton*>(plBar->widgetForAction( navigatorConfig ) );
         if( toolButton )
             toolButton->setPopupMode( QToolButton::InstantPopup );
 
-        QAction *queueEditAction = Amarok::actionCollection()->action( "playlist_edit_queue" );
-        plBar->addAction( queueEditAction );
         plBar->addAction( new KToolBarSpacerAction( m_mainWidget ) );
-        connect( queueEditAction, SIGNAL( triggered( bool ) ),
-                 SLOT( slotEditQueue() ) );
+
+        // label widget
+        new PlaylistInfoWidget( m_barBox );
     } // END Playlist Toolbar
 
     // If it is active, clear the search filter before replacing the playlist. Fixes Bug #200709.
@@ -229,12 +239,18 @@ Playlist::Dock::sizeHint() const
 
 
 void
-Playlist::Dock::paletteChanged( const QPalette& palette )
+Playlist::Dock::paletteChanged( const QPalette &palette )
 {
-    m_dynamicHintWidget->setStyleSheet( QString( "QLabel { background-color: %1; color: %2; } " )
-                                        .arg( PaletteHandler::highlightColor().name() )
-                                        .arg( palette.highlightedText().color().name() )
-                                        );
+    m_dynamicHintWidget->setStyleSheet(
+                QString( "QLabel { background-color: %1; color: %2; ; border-radius: 3px; } " )
+                                .arg( PaletteHandler::PaletteHandler::highlightColor().name() )
+                                .arg( palette.highlightedText().color().name() )
+                        );
+    if( m_barBox )
+        m_barBox->setStyleSheet(
+                    QString( "QFrame { background-color: %1; color: %2; border-radius: 3px; }" )
+                                        .arg( PaletteHandler::alternateBackgroundColor().name() )
+                                        .arg( palette.highlightedText().color().name() ) );
 }
 
 void
@@ -308,11 +324,11 @@ Playlist::Dock::showActiveTrack()
 }
 
 void
-Playlist::Dock::showDynamicHint( bool enabled ) // slot
+Playlist::Dock::showDynamicHint() // slot
 {
     DEBUG_BLOCK
 
-    if( enabled )
+    if( AmarokConfig::dynamicMode() )
         m_dynamicHintWidget->show();
     else
         m_dynamicHintWidget->hide();

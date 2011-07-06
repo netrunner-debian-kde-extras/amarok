@@ -23,6 +23,8 @@
 
 #include "IpodCollection.h"
 #include "core-impl/collections/support/CollectionManager.h"
+#include "core/interfaces/Logger.h"
+#include "core/support/Components.h"
 #include "core/support/Debug.h"
 
 extern "C" {
@@ -289,7 +291,6 @@ IpodHandler::init()
     GError *err = 0;
     QString initError = i18n( "iPod was not initialized:" );
     QString initErrorCaption = i18n( "iPod Initialization Failed" );
-    bool wasInitialized = false;
 
     // First attempt to parse the database
 
@@ -436,7 +437,6 @@ IpodHandler::init()
             {
                 KMessageBox::information( 0, i18n( "The iPod was successfully initialized." ), i18n( "iPod Initialized" ) );
                 debug() << "iPod was initialized";
-                wasInitialized = true;
                 m_success = true;
             }
         }
@@ -552,9 +552,10 @@ IpodHandler::slotInitializeIpod()
         const bool success = initializeIpod();
 
         if ( success )
-            The::statusBar()->shortMessage( i18n( "The iPod has been initialized" ) );
+            Amarok::Components::logger()->shortMessage( i18n( "The iPod has been initialized" ) );
         else
-            The::statusBar()->shortMessage( i18n( "The iPod was unable to be initialized" ) );
+            Amarok::Components::logger()->shortMessage(
+                        i18n( "The iPod was unable to be initialized" ) );
     }
 }
 
@@ -698,7 +699,7 @@ IpodHandler::slotSyncArtworkFailed( ThreadWeaver::Job *job )
     Q_UNUSED( job )
 
     const QString msg( i18n( "iPod artwork could not be synchronized" ) );
-    The::statusBar()->shortMessage( msg );
+    Amarok::Components::logger()->shortMessage( msg );
 }
 
 
@@ -709,7 +710,7 @@ IpodHandler::slotSyncArtworkSucceeded( ThreadWeaver::Job *job )
 
     writeDatabase();
     const QString msg( i18n( "Artwork synchronized" ) );
-    The::statusBar()->shortMessage( msg );
+    Amarok::Components::logger()->shortMessage( msg );
 }
 
 bool
@@ -2264,11 +2265,10 @@ IpodHandler::slotOrphanedSucceeded( ThreadWeaver::Job* job )
 
         if( !m_orphanedPaths.empty() )
         {
-            m_statusbar = The::statusBar()->newProgressOperation( this, i18n( "Adding Orphaned Tracks to iPod Database" ) );
-            m_statusbar->setMaximum( m_orphanedPaths.count() );
+            Amarok::Components::logger()->newProgressOperation( this,
+                    i18n( "Adding Orphaned Tracks to iPod Database" ), m_orphanedPaths.count() );
 
             ThreadWeaver::Weaver::instance()->enqueue( new AddOrphanedWorkerThread( this ) );
-
         }
 
     }

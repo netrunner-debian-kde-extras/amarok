@@ -42,6 +42,7 @@
 #include "navigators/StandardTrackNavigator.h"
 #include "navigators/FavoredRandomTrackNavigator.h"
 #include "PlaylistModelStack.h"
+#include "PlaylistController.h"
 #include "playlist/PlaylistDock.h"
 #include "playlistmanager/PlaylistManager.h"
 
@@ -242,6 +243,29 @@ Playlist::Actions::back()
     requestPrevTrack();
 }
 
+
+void
+Playlist::Actions::enableDynamicMode( bool enable )
+{
+    if( AmarokConfig::dynamicMode() == enable )
+        return;
+
+    AmarokConfig::setDynamicMode( enable );
+    // TODO: turn off other incompatible modes
+    // TODO: should we restore the state of other modes?
+    AmarokConfig::self()->writeConfig();
+
+    //if the playlist is empty, repopulate while we are at it:
+    if( enable )
+    {
+        if ( Playlist::ModelStack::instance()->bottom()->rowCount() == 0 )
+            repopulateDynamicPlaylist();
+    }
+
+    playlistModeChanged();
+}
+
+
 void
 Playlist::Actions::playlistModeChanged()
 {
@@ -263,25 +287,12 @@ Playlist::Actions::playlistModeChanged()
 
     if ( AmarokConfig::dynamicMode() )
     {
-        PlaylistBrowserNS::DynamicModel* dm = PlaylistBrowserNS::DynamicModel::instance();
-
-        Dynamic::DynamicPlaylistPtr playlist = dm->activePlaylist();
-
-        if ( !playlist )
-        {
-            debug() << "No dynamic playlist current loaded! Creating dynamic track navigator with null playlist!";
-        }
-
-        m_navigator = new DynamicTrackNavigator( playlist );
-
+        m_navigator = new DynamicTrackNavigator();
         emit navigatorChanged();
-
         return;
-
     }
 
     m_navigator = 0;
-
 
     switch( AmarokConfig::trackProgression() )
     {
@@ -314,8 +325,9 @@ Playlist::Actions::playlistModeChanged()
             m_navigator = new RandomAlbumNavigator();
             break;
 
-        //repeat playlist, standard and fallback are all the normal navigator.
+        //repeat playlist, standard, only queue and fallback are all the normal navigator.
         case AmarokConfig::EnumTrackProgression::RepeatPlaylist:
+        case AmarokConfig::EnumTrackProgression::OnlyQueue:
         case AmarokConfig::EnumTrackProgression::Normal:
         default:
             m_navigator = new StandardTrackNavigator();

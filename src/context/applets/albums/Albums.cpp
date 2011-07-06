@@ -62,7 +62,7 @@ void Albums::init()
     Context::Applet::init();
 
     enableHeader( true );
-    setHeaderText( i18n( "Recently added albums" ) );
+    setHeaderText( i18n( "Recently Added Albums" ) );
 
     setCollapseOffHeight( -1 );
     setCollapseHeight( m_header->height() );
@@ -163,6 +163,11 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
 
     foreach( Meta::AlbumPtr albumPtr, albums )
     {
+        // do not show all tracks without an album from the collection, this takes ages
+        // TODO: show all tracks from this artist that are not part of an album
+        if( albumPtr->name().isEmpty() )
+            continue;
+
         Meta::TrackList tracks = albumPtr->tracks();
         if( tracks.isEmpty() )
             continue;
@@ -245,13 +250,13 @@ void Albums::createConfigurationInterface( KConfigDialog *parent )
     spinBox->setValue( m_recentCount );
     connect( spinBox, SIGNAL(valueChanged(int)), SLOT(setRecentCount(int)) );
 
-    QCheckBox *checkBox = new QCheckBox( i18n( "Enabled" ) );
+    QCheckBox *checkBox = new QCheckBox( i18n( "Right align track lengths" ) );
     checkBox->setCheckState( m_rightAlignLength ? Qt::Checked : Qt::Unchecked );
     connect( checkBox, SIGNAL(stateChanged(int)), SLOT(setRightAlignLength(int)) );
 
     QFormLayout *formLayout = new QFormLayout;
     formLayout->addRow( i18n("Number of recently added albums:"), spinBox );
-    formLayout->addRow( i18n("Right align track lengths:"), checkBox );
+    formLayout->addRow( checkBox );
 
     QWidget *config = new QWidget;
     config->setLayout( formLayout );
@@ -289,15 +294,21 @@ void Albums::saveConfiguration()
 {
     Amarok::config("Albums Applet").writeEntry( "RecentlyAdded", QString::number( m_recentCount ) );
     Amarok::config("Albums Applet").writeEntry( "RightAlignLength", m_rightAlignLength );
-    Plasma::DataEngine::Data data = dataEngine( "amarok-current" )->query( "albums" );
-    dataUpdated( QLatin1String("albums"), data );
+    updateData();
 }
 
 void Albums::collectionDataChanged( Collections::Collection *collection )
 {
     Q_UNUSED( collection )
+
     DEBUG_BLOCK
-    m_albums.clear(); // clear to force an update
+}
+
+void Albums::updateData()
+{
+    // clear to force an update
+    m_albums.clear();
+
     Plasma::DataEngine::Data data = dataEngine( "amarok-current" )->query( "albums" );
     dataUpdated( QLatin1String("albums"), data );
 }

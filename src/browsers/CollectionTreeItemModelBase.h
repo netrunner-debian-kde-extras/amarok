@@ -24,7 +24,6 @@
 #include "core/collections/QueryMaker.h"
 #include "core/meta/Meta.h"
 #include "CollectionTreeItem.h"
-#include "Expression.h"
 
 #include <QAbstractItemModel>
 #include <QDateTime>
@@ -91,9 +90,12 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         virtual QList<int> levels() const { return m_levelType; }
         virtual int levelCategory( const int level ) const;
 
-        virtual void addDateFilter( qint64 field, Collections::QueryMaker::NumberComparison compare, const expression_element &elem, Collections::QueryMaker *qm ) const;
+        QString currentFilter() const
+        { return m_currentFilter; }
 
-        virtual void addFilters( Collections::QueryMaker *qm ) const;
+        /** Adds the query maker to the running queries and connects the slots */
+        void addQueryMaker( CollectionTreeItem* item,
+                            Collections::QueryMaker *qm ) const;
 
         void setCurrentFilter( const QString &filter );
 
@@ -105,7 +107,14 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
 
     public slots:
         virtual void queryDone();
-        virtual void newResultReady( const QString &collectionId, Meta::DataList data );
+        void newResultReady( Meta::TrackList );
+        void newResultReady( Meta::ArtistList );
+        void newResultReady( Meta::AlbumList );
+        void newResultReady( Meta::GenreList );
+        void newResultReady( Meta::ComposerList );
+        void newResultReady( Meta::YearList );
+        void newResultReady( Meta::LabelList );
+        virtual void newResultReady( Meta::DataList data );
 
         void slotFilter();
 
@@ -116,7 +125,6 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
     private:
         void handleSpecialQueryResult( CollectionTreeItem::Type type, Collections::QueryMaker *qm, const Meta::DataList &dataList );
         void handleNormalQueryResult( Collections::QueryMaker *qm, const Meta::DataList &dataList );
-        QDateTime semanticDateTimeParser( const QString &text ) const;
 
         Collections::QueryMaker::QueryType mapCategoryToQueryType( int levelType ) const;
 
@@ -170,7 +178,7 @@ class CollectionTreeItemModelBase::Private
     QHash<Collections::QueryMaker* , CollectionTreeItem* > childQueries;
     QHash<Collections::QueryMaker* , CollectionTreeItem* > compilationQueries;
     QHash<Collections::QueryMaker* , CollectionTreeItem* > noLabelsQueries;
-    QHash<CollectionTreeItem*, Collections::QueryMaker*>   runningQueries;
+    QMultiHash<CollectionTreeItem*, Collections::QueryMaker*> runningQueries;
     int rowHeight;
 };
 

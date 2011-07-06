@@ -17,11 +17,9 @@
 #ifndef BROWSERCATEGORY_H
 #define BROWSERCATEGORY_H
 
-#include "amarok_export.h"
-
-#include "ToolBar.h"
-
 #include <KVBox>
+
+#include "amarok_export.h"
 
 #include <QIcon>
 
@@ -36,6 +34,7 @@ class BrowserCategoryList;
 class AMAROK_EXPORT BrowserCategory : public KVBox
 {
     Q_OBJECT
+
 public:
 
     /**
@@ -44,7 +43,7 @@ public:
      * @param name The internal name of the category, used for generating Amarok urls. This should never be translated.
      * @param parent The parent widget.
      */
-    BrowserCategory( const QString &name, QWidget *parent );
+    BrowserCategory( const QString &name, QWidget *parent = 0 );
 
     /**
      * Destructor.
@@ -107,6 +106,13 @@ public:
     QIcon icon() const;
 
     /**
+     * Set the background image of this browser widget
+     *
+     * \param path Fully qualified path (e.g. looked up with KStandardDirs::locate)
+     */
+    void setBackgroundImage( const QString &path );
+
+    /**
      * Set the path of the imaged used in the presentation of this category.
      * @param path The path of the image to use.
      */
@@ -116,15 +122,21 @@ public:
      * Get the path of the image used in the presentation of this category.
      * @return The path of the image.
      */
-    QString imagePath();
+    QString imagePath() const;
 
     BrowserCategoryList * parentList() const;
     void setParentList( BrowserCategoryList * parent );
 
-    BrowserBreadcrumbItem * breadcrumb();
+    /**
+     * Returns an item that will be added to the breadcrumb widget
+     * if this category is selected.
+     *
+     * The caller will have to free the returned item.
+     */
+    BrowserBreadcrumbItem* breadcrumb();
 
-    virtual void polish() {};
-    virtual void setupAddItems() {};
+    virtual void polish() {}
+    virtual void setupAddItems() {}
 
     //These 2 functions are forwarded to simplifiy the creation of urls
     //even though they might not be needed in many cases.
@@ -138,7 +150,6 @@ public:
     void clearAdditionalItems();
 
     QList<BrowserBreadcrumbItem *> additionalItems();
-
 
 public slots:
     void activate();

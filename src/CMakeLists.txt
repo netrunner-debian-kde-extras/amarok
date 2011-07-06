@@ -3,8 +3,6 @@ add_definitions(-DQT_USE_FAST_CONCATENATION)
 add_definitions(-DQT_USE_FAST_OPERATOR_PLUS)
 add_definitions(-DQT_STRICT_ITERATORS)
 
-add_definitions(${TAGLIB_CFLAGS} ${TAGLIB-EXTRAS_CFLAGS})
-
 if(APPLE)
     set(mac_SRCS
         app_mac.cpp
@@ -21,7 +19,9 @@ add_subdirectory( core-impl/collections )
 add_subdirectory( context )
 add_subdirectory( images )
 add_subdirectory( services )
-add_subdirectory( scripts )
+if( QTSCRIPTQTBINDINGS_FOUND )
+    add_subdirectory( scripts )
+endif( QTSCRIPTQTBINDINGS_FOUND )
 add_subdirectory( themes )
 add_subdirectory( aboutdialog/libattica-ocsclient )
 add_subdirectory( transcoding )
@@ -65,11 +65,8 @@ include_directories(
     transcoding
     widgets
     ${KDE4_INCLUDE_DIR}
-    ${TAGLIB-EXTRAS_INCLUDE_DIR}
-    ${TAGLIB-EXTRAS_INCLUDES}
     ${QT_INCLUDES}
     ${QT_QTSCRIPT_INCLUDE_DIR}
-    ${QCA2_INCLUDE_DIR}
 )
 
 if ( KDEMULTIMEDIA_FOUND )
@@ -212,6 +209,7 @@ set(libbrowserframework_SRCS
     browsers/BrowserCategoryListModel.cpp
     browsers/BrowserCategoryListSortFilterProxyModel.cpp
     browsers/BrowserDock.cpp
+    browsers/BrowserMessageArea.cpp
     browsers/CollectionSortFilterProxyModel.cpp
     browsers/CollectionTreeItem.cpp
     browsers/CollectionTreeItemModel.cpp
@@ -260,7 +258,6 @@ set(libsynchronization_SRCS
 # STATUSBAR
 #####################################################################
 set(libstatusbar_SRCS
-    statusbar/StatusBar.cpp
     statusbar/ProgressBar.cpp
     statusbar/KJobProgressBar.cpp
     statusbar/NetworkProgressBar.cpp
@@ -275,16 +272,8 @@ set(libstatusbar_SRCS
 #####################################################################
 set(libmetaimpl_SRCS
     core-impl/playlists/types/file/m3u/M3UPlaylist.cpp
-    ../shared/MetaReplayGain.cpp
     ../shared/MetaTagLib.cpp
     ../shared/TagsFromFileNameGuesser.cpp
-    ../shared/tag_helpers/APETagHelper.cpp
-    ../shared/tag_helpers/ASFTagHelper.cpp
-    ../shared/tag_helpers/ID3v2TagHelper.cpp
-    ../shared/tag_helpers/MP4TagHelper.cpp
-    ../shared/tag_helpers/StringHelper.cpp
-    ../shared/tag_helpers/TagHelper.cpp
-    ../shared/tag_helpers/VorbisCommentTagHelper.cpp
     core-impl/playlists/types/file/pls/PLSPlaylist.cpp
     core-impl/playlists/providers/user/UserPlaylistProvider.cpp
     core-impl/playlists/types/file/PlaylistFileSupport.cpp
@@ -302,6 +291,21 @@ set(libmetaimpl_SRCS
     core-impl/statistics/providers/url/PermanentUrlStatisticsProvider.cpp
     core-impl/statistics/providers/tag/TagStatisticsProvider.cpp
 )
+
+if( TAGLIB_FOUND )
+    set(libmetaimpl_SRCS
+        ${libmetaimpl_SRCS}
+        ../shared/MetaReplayGain.cpp
+        ../shared/FileTypeResolver.cpp
+        ../shared/tag_helpers/APETagHelper.cpp
+        ../shared/tag_helpers/ASFTagHelper.cpp
+        ../shared/tag_helpers/ID3v2TagHelper.cpp
+        ../shared/tag_helpers/MP4TagHelper.cpp
+        ../shared/tag_helpers/StringHelper.cpp
+        ../shared/tag_helpers/TagHelper.cpp
+        ../shared/tag_helpers/VorbisCommentTagHelper.cpp
+    )
+endif( TAGLIB_FOUND )
 
 #####################################################################
 # COLLECTION
@@ -321,6 +325,8 @@ set(collection_SRCS
     core-impl/collections/support/XmlQueryReader.cpp
     core-impl/collections/support/XmlQueryWriter.cpp
     core-impl/collections/support/FileCollectionLocation.cpp
+    core-impl/collections/support/Expression.cpp
+    core-impl/collections/support/TextualQueryFilter.cpp
 )
 
 #####################################################################
@@ -362,6 +368,7 @@ set(libpodcasts_SRCS
     core-impl/podcasts/sql/SqlPodcastMeta.cpp
     core-impl/podcasts/sql/SqlPodcastProvider.cpp
     core-impl/podcasts/sql/PodcastSettingsDialog.cpp
+    core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp
 )
 
 #####################################################################
@@ -369,11 +376,10 @@ set(libpodcasts_SRCS
 #####################################################################
 set(libplaylistbrowser_SRCS
     browsers/playlistbrowser/APGCategory.cpp
-    browsers/playlistbrowser/DynamicModel.cpp
     browsers/playlistbrowser/DynamicCategory.cpp
     browsers/playlistbrowser/DynamicBiasDelegate.cpp
-    browsers/playlistbrowser/DynamicBiasModel.cpp
     browsers/playlistbrowser/DynamicBiasWidgets.cpp
+    browsers/playlistbrowser/DynamicView.cpp
     browsers/playlistbrowser/PlaylistBrowserFilterProxy.cpp
     browsers/playlistbrowser/PlaylistBrowserModel.cpp
     browsers/playlistbrowser/PlaylistBrowserCategory.cpp
@@ -413,6 +419,7 @@ set(libplaylist_SRCS
     playlist/PlaylistBreadcrumbLevel.cpp
     playlist/PlaylistColumnNames.cpp
     playlist/PlaylistController.cpp
+    playlist/PlaylistInfoWidget.cpp
     playlist/PlaylistItem.cpp
     playlist/PlaylistModel.cpp
     playlist/PlaylistModelStack.cpp
@@ -421,6 +428,7 @@ set(libplaylist_SRCS
     playlist/PlaylistViewUrlGenerator.cpp
     playlist/PlaylistViewUrlRunner.cpp
     playlist/PlaylistDock.cpp
+    playlist/PlaylistToolBar.cpp
     playlist/ProgressiveSearchWidget.cpp
     playlist/UndoCommands.cpp
     playlist/layouts/LayoutEditDialog.cpp
@@ -472,18 +480,22 @@ endif(KDEMULTIMEDIA_FOUND)
 # DYNAMIC
 #####################################################################
 set(libdynamic_SRCS
-    dynamic/Bias.cpp
+    dynamic/TrackSet.cpp
+    dynamic/BiasFactory.cpp
     dynamic/BiasedPlaylist.cpp
     dynamic/BiasSolver.cpp
-    dynamic/CustomBias.cpp
-    dynamic/CustomBiasEntry.cpp
-    dynamic/CustomBiasEntryWidget.cpp
     dynamic/DynamicPlaylist.cpp
-    dynamic/TrackSet.cpp
-    dynamic/gsl/gauss.c
+    dynamic/DynamicModel.cpp
 
     # biases
-    dynamic/biases/EchoNest.cpp
+    dynamic/Bias.cpp
+    dynamic/biases/AlbumPlayBias.cpp
+    dynamic/biases/EchoNestBias.cpp
+    dynamic/biases/IfElseBias.cpp
+    dynamic/biases/PartBias.cpp
+    dynamic/biases/QuizPlayBias.cpp
+    dynamic/biases/TagMatchBias.cpp
+    dynamic/biases/SearchQueryBias.cpp
 )
 
 #####################################################################
@@ -511,6 +523,7 @@ set(scriptengine_SRCS
     scriptengine/AmarokScriptableServiceScript.cpp
     scriptengine/AmarokServicePluginManagerScript.cpp
     scriptengine/AmarokEngineScript.cpp
+    scriptengine/AmarokKNotifyScript.cpp
     scriptengine/AmarokOSDScript.cpp
     scriptengine/AmarokPlaylistScript.cpp
     scriptengine/AmarokStatusbarScript.cpp
@@ -576,16 +589,6 @@ if( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
 endif( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
 
 #####################################################################
-# RESOLVERS
-#####################################################################
-set(taglib_filetype_resolver_SRCS
-    ../shared/taglib_filetype_resolvers/asffiletyperesolver.cpp
-    ../shared/taglib_filetype_resolvers/mp4filetyperesolver.cpp
-    ../shared/taglib_filetype_resolvers/wavfiletyperesolver.cpp
-    ../shared/taglib_filetype_resolvers/mimefiletyperesolver.cpp
-)
-
-#####################################################################
 # LIBAMAROK
 #####################################################################
 set(amaroklib_LIB_SRCS
@@ -617,7 +620,6 @@ set(amaroklib_LIB_SRCS
     ${scriptengine_SRCS}
     ${libstatusbar_SRCS}
     ${libamarokurl_SRCS}
-    ${taglib_filetype_resolver_SRCS}
     ${libsynchronization_SRCS}
     core-impl/logger/ProxyLogger.cpp
     aboutdialog/AnimatedBarWidget.cpp
@@ -634,7 +636,6 @@ set(amaroklib_LIB_SRCS
     CaseConverter.cpp
     DirectoryLoader.cpp
     EngineController.cpp
-    Expression.cpp
     KNotificationBackend.cpp
     MainWindow.cpp
     MediaDeviceCache.cpp
@@ -643,7 +644,6 @@ set(amaroklib_LIB_SRCS
     PluginManager.cpp
     ScriptManager.cpp
     ScriptUpdater.cpp
-    StarManager.cpp
     SvgHandler.cpp
     SvgTinter.cpp
     TrayIcon.cpp
@@ -678,6 +678,7 @@ set(amaroklib_LIB_SRCS
     dialogs/TagDialog.cpp
     dialogs/TagGuesser.cpp
     dialogs/LabelListModel.cpp
+    equalizer/EqualizerPresets.cpp
     browsers/filebrowser/MimeTypeFilterProxyModel.cpp
     browsers/filebrowser/FileBrowser.cpp
     browsers/filebrowser/FileView.cpp
@@ -702,7 +703,7 @@ set(amaroklib_LIB_SRCS
     widgets/AnimatedLabelStack.cpp
     widgets/BreadcrumbItemButton.cpp
     widgets/CoverLabel.cpp
-    widgets/hintlineedit.cpp
+    widgets/HintLineEdit.cpp
     widgets/kdatecombo.cpp
     widgets/kratingpainter.cpp
     widgets/kratingwidget.cpp
@@ -710,7 +711,6 @@ set(amaroklib_LIB_SRCS
     widgets/EditDeleteComboBoxView.cpp
     widgets/EditDeleteDelegate.cpp
     widgets/ElidingButton.cpp
-    widgets/ExpandingControlsWidget.cpp
     widgets/FlowLayout.cpp
     widgets/HorizontalDivider.cpp
     widgets/IconButton.cpp
@@ -724,12 +724,11 @@ set(amaroklib_LIB_SRCS
     widgets/ProgressWidget.cpp
     widgets/SearchWidget.cpp
     widgets/SliderWidget.cpp
+    widgets/StarManager.cpp
     widgets/TokenPool.cpp
     widgets/Token.cpp
     widgets/TokenWithLayout.cpp
-    widgets/VolumeWidget.cpp
     widgets/VolumeDial.cpp
-    widgets/Splitter.cpp
     widgets/TrackActionButton.cpp
     widgets/BookmarkTriangle.cpp
     widgets/BookmarkPopup.cpp
@@ -894,6 +893,7 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     playlist/layouts/PlaylistLayoutEditDialog.ui
     core-impl/podcasts/sql/PodcastSettingsBase.ui
     core-impl/podcasts/sql/SqlPodcastProviderSettingsWidget.ui
+    core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui
     browsers/playlistbrowser/PodcastCategoryBase.ui
 )
 
@@ -902,21 +902,15 @@ kde4_add_library(amaroklib SHARED ${amaroklib_LIB_SRCS})
 target_link_libraries(amaroklib
     ${KDE4_KDEUI_LIBS}
     ${KDE4_KFILE_LIBS}
-    ${KDE4_KHTML_LIBS}
     ${KDE4_KNEWSTUFF3_LIBS}
-    ${KDE4_KNEWSTUFF2_LIBS}
     ${KDE4_KNOTIFYCONFIG_LIBS}
     ${KDE4_KUTILS_LIBS}
     ${KDE4_PHONON_LIBRARY}
     ${KDE4_PLASMA_LIBS}
     ${KDE4_SOLID_LIBRARY}
     ${KDE4_THREADWEAVER_LIBRARIES}
-    ${TAGLIB_LIBRARIES}
-    ${TAGLIB-EXTRAS_LIBRARIES}
     ${QT_QTSCRIPT_LIBRARY}
     ${QT_QTSQL_LIBRARY}
-    ${QT_QTWEBKIT_LIBRARY}
-    ${QCA2_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
     ${EXTRA_LIBS}
     amarokpud
@@ -924,6 +918,23 @@ target_link_libraries(amaroklib
     amarokocsclient
     amarok-transcoding
 )
+
+if( TAGLIB_FOUND )
+    include_directories(${TAGLIB_INCLUDES})
+    add_definitions(${TAGLIB_CFLAGS})
+    target_link_libraries(amaroklib ${TAGLIB_LIBRARIES})
+endif( TAGLIB_FOUND )
+if( TAGLIB-EXTRAS_FOUND )
+    include_directories(${TAGLIB-EXTRAS_INCLUDES})
+    add_definitions(${TAGLIB-EXTRAS_CFLAGS})
+    target_link_libraries(amaroklib ${TAGLIB-EXTRAS_LIBRARIES})
+endif( TAGLIB-EXTRAS_FOUND )
+
+if( QCA2_FOUND )
+    include_directories( ${QCA2_INCLUDE_DIR} )
+    target_link_libraries(amaroklib ${QCA2_LIBRARIES})
+endif( QCA2_FOUND )
+
 
 if(KDE4_BUILD_TESTS)
     target_link_libraries(amaroklib ${QT_QTTEST_LIBRARY})
@@ -962,7 +973,7 @@ install(TARGETS amaroklib ${INSTALL_TARGETS_DEFAULT_ARGS} )
 # AMAROK
 #####################################################################
 
-set(amarok_SRCS main.cpp )
+set(amarok_SRCS equalizer/EqualizerPresets.cpp main.cpp )
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
 
 kde4_add_app_icon(amarok_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/images/hi*-app-amarok.png)
@@ -981,11 +992,11 @@ if(Q_WS_MAC)
     install(TARGETS Amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
 elseif(X11_FOUND)
     kde4_add_executable(amarok ${amarok_SRCS})
-    target_link_libraries(amarok ${KDE4_KDEUI_LIBS} amarokcore amaroklib ${X11_LIBRARIES} ${TAGLIB_LIBRARIES} ${TAGLIB-EXTRAS_LIBRARIES} )
+    target_link_libraries(amarok ${KDE4_KDEUI_LIBS} amarokcore amaroklib ${X11_LIBRARIES})
     install(TARGETS amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
 else(Q_WS_MAC)
     kde4_add_executable(amarok ${amarok_SRCS})
-    target_link_libraries(amarok ${KDE4_KDEUI_LIBS} amarokcore amaroklib ${TAGLIB_LIBRARIES} ${TAGLIB-EXTRAS_LIBRARIES} )
+    target_link_libraries(amarok ${KDE4_KDEUI_LIBS} amarokcore amaroklib)
     install(TARGETS amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
 endif(Q_WS_MAC)
 

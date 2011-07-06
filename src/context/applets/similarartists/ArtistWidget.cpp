@@ -26,7 +26,7 @@
 #include "core/collections/QueryMaker.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "playlist/PlaylistModelStack.h"
+#include "playlist/PlaylistController.h"
 #include "PaletteHandler.h"
 #include "SvgHandler.h"
 
@@ -467,8 +467,8 @@ ArtistWidget::setTopTrack( const QString &topTrack )
         qm->limitMaxResultSize( 1 );
         qm->setAutoDelete( true );
 
-        connect( qm, SIGNAL(newResultReady(QString,Meta::TrackList)),
-                 SLOT(resultReady(QString,Meta::TrackList)) );
+        connect( qm, SIGNAL(newResultReady(Meta::TrackList)),
+                 SLOT(resultReady(Meta::TrackList)) );
          
         qm->run();
     }
@@ -694,9 +694,8 @@ ArtistsListWidget::widget( const QString &artistName )
 }
 
 void
-ArtistWidget::resultReady( const QString &collectionId, const Meta::TrackList &tracks )
+ArtistWidget::resultReady( const Meta::TrackList &tracks )
 {
-    Q_UNUSED( collectionId )
     if( !tracks.isEmpty() )
     {
         m_topTrack = tracks.first();

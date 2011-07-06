@@ -27,9 +27,11 @@
 #include "MountPointManager.h"
 #include "ScanResultProcessor.h"
 #include "amarokconfig.h"
+#include "core/interfaces/Logger.h"
+#include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "sql/SqlCollection.h"
-#include "statusbar/StatusBar.h"
+
 
 // include files from the collection scanner utility
 #include <collectionscanner/BatchFile.h>
@@ -175,8 +177,11 @@ ScanManager::addDirToList( const QString &directory )
     QMutexLocker locker( &m_mutex );
     debug() << "addDirToList for"<<directory;
 
-    if( directory.isEmpty() )
+    if( directory.isEmpty() ) {
+        DEBUG_ASSERT(m_collection, return)
+        DEBUG_ASSERT(m_collection->mountPointManager(), return)
         m_scanDirsRequested.unite( m_collection->mountPointManager()->collectionFolders().toSet() );
+    }
     else
     {
         if( m_collection->isDirInCollection( directory ) )
@@ -234,24 +239,12 @@ ScanManager::startScanner()
         m_scanDirsRequested.clear();
     }
 
-    // - connect the status bar
-    if( The::statusBar() )
-    {
-        The::statusBar()->newProgressOperation( m_scanner, i18n( "Scanning music" ) )
-            ->setAbortSlot( this, SLOT( abort() ) );
-
-        connect( m_scanner, SIGNAL( totalSteps(const QObject*, int) ),
-                 The::statusBar(), SLOT( setProgressTotalSteps(const QObject*, int) ),
-                 Qt::QueuedConnection );
-        connect( m_scanner, SIGNAL( step(const QObject*) ),
-                 The::statusBar(), SLOT( incrementProgress(const QObject*) ),
-                 Qt::QueuedConnection );
-    }
+    Amarok::Components::logger()->newProgressOperation( m_scanner, i18n( "Scanning music" ),
+                                                            100, this, SLOT(abort()) );
 
     // - enqueue it.
     connect( m_scanner, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
     connect( m_scanner, SIGNAL( message( QString ) ), this, SIGNAL( message( QString ) ) );
-    connect( m_scanner, SIGNAL( succeeded() ), this, SIGNAL( succeeded() ) );
     connect( m_scanner, SIGNAL( failed( QString ) ), this, SIGNAL( failed( QString ) ) );
     ThreadWeaver::Weaver::instance()->enqueue( m_scanner );
 
@@ -542,18 +535,17 @@ ScannerJob::run()
                     debug() << "ScannerJob: got count:" << m_reader.attributes().value( "count" ).toString().toInt();
                     emit message( i18np("Found one directory", "Found %1 directories",
                                   m_reader.attributes().value( "count" ).toString()) );
-                    emit totalSteps( this,
-                                     m_reader.attributes().value( "count" ).toString().toInt() * 2);
+                    emit totalSteps( m_reader.attributes().value( "count" ).toString().toInt() * 2 );
                 }
                 else if( name == "directory" )
                 {
                     CollectionScanner::Directory *dir = new CollectionScanner::Directory( &m_reader );
                     processor->addDirectory( dir );
-                    debug() << "ScannerJob: run:"<<count<<"current path"<<dir->rpath();
+                    // debug() << "ScannerJob: run:"<<count<<"current path"<<dir->rpath();
                     count++;
 
-                    emit message( i18n("Got directory \"%1\" from scanner.").arg( dir->rpath() ) );
-                    emit step( this );
+                    emit message( i18n( "Got directory \"%1\" from scanner.", dir->rpath() ) );
+                    emit incrementProgress();
                 }
                 else
                 {
@@ -593,13 +585,13 @@ ScannerJob::run()
     else if( !finished && m_reader.hasError() )
     {
         warning() << "Aborting ScanManager ScannerJob with error"<<m_reader.errorString();
-        emit failed( i18n("Aborting scanner with error: %1").arg( m_reader.errorString() ) );
+        emit failed( i18n( "Aborting scanner with error: %1", m_reader.errorString() ) );
         processor->rollback();
     }
     else
     {
         processor->commit();
-        emit succeeded();
+        emit endProgressOperation( this );
     }
 
     debug() << "ScannerJob finished";
@@ -639,14 +631,13 @@ ScannerJob::scannerPath()
 void
 ScannerJob::directoryProcessed()
 {
-    emit step( this );
+    emit incrementProgress();
 }
 
 
 bool
 ScannerJob::createScannerProcess( bool restart )
 {
-    DEBUG_BLOCK;
     Q_ASSERT( !m_scanner );
 
     if( m_abortRequested )
@@ -687,7 +678,6 @@ ScannerJob::createScannerProcess( bool restart )
 
     *m_scanner << "--batch" << m_batchfilePath;
 
-    debug() << "starting scanner now:";
     m_scanner->start();
     return m_scanner->waitForStarted( -1 );
 }
@@ -696,8 +686,6 @@ ScannerJob::createScannerProcess( bool restart )
 bool
 ScannerJob::tryRestart()
 {
-    DEBUG_BLOCK;
-
     if( m_scanner->exitStatus() == QProcess::NormalExit )
         return false; // all shiny. no need to restart
 
@@ -719,8 +707,6 @@ ScannerJob::tryRestart()
 void
 ScannerJob::getScannerOutput()
 {
-    DEBUG_BLOCK;
-
     if( !m_scanner->waitForReadyRead( -1 ) )
         return;
     m_incompleteTagBuffer += m_scanner->readAll();

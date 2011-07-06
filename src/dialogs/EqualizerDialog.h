@@ -20,6 +20,8 @@
 
 #include "ui_EqualizerDialog.h"
 
+#include <equalizer/EqualizerPresets.h>
+
 #include <KDialog>
 
 class EqualizerDialog;
@@ -37,12 +39,16 @@ class EqualizerDialog : public KDialog, public Ui_EqualizerDialog
         static EqualizerDialog * instance();
         ~EqualizerDialog();
 
-         static void showOnce();
+        QString eqSelectedPresetName() const;
+
+        static void showOnce();;
 
     private Q_SLOTS:
         void eqUpdateUI( int index );
         void eqPresetChanged( int index );
         void eqBandsChanged();
+        void eqRepopulateUi();
+
         void eqSavePreset();
         void eqDeletePreset();
         void eqRestorePreset();
@@ -50,6 +56,7 @@ class EqualizerDialog : public KDialog, public Ui_EqualizerDialog
 
     private:
         EqualizerDialog();
+
         double mValueScale;
         QVector<QSlider*> mBands;
         QVector<QLabel*> mBandsValues;
@@ -57,15 +64,12 @@ class EqualizerDialog : public KDialog, public Ui_EqualizerDialog
         QList<int> mOriginalGains;
         QString mOriginalPreset;
 
+        EqualizerPresets mPresets;
+
         void eqSetupUI();
         void eqUpdateToolTips();
         void eqUpdateLabels( QList<int> & mEqGains );
-        bool eqCfgDeletePreset( QString & mPresetName );
-        bool eqCfgRestorePreset( QString mPresetName );
-        void eqCfgSetPresetVal( QString & mPresetName, QList<int> & mPresetValues);
         void eqRememberOriginalSettings();
-        QList<int> eqCfgGetPresetVal ( QString mPresetName );
-        QStringList eqGlobalList();
 
         static EqualizerDialog *s_instance;
 };

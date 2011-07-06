@@ -20,7 +20,7 @@
 
 #include "AmarokMimeData.h"
 #include "playlistmanager/PlaylistManager.h"
-#include "playlist/PlaylistModelStack.h"
+#include "playlist/PlaylistController.h"
 #include "core/support/Debug.h"
 
 #include <KIcon>
@@ -327,7 +327,7 @@ PlaylistBrowserModel::hasChildren( const QModelIndex &parent ) const
         return false;
     if( !parent.isValid() )
     {
-        return m_playlists.isEmpty();
+        return !m_playlists.isEmpty();
     }
     else if( !IS_TRACK(parent) )
     {

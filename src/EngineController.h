@@ -24,7 +24,6 @@
 #include "core/capabilities/BoundedPlaybackCapability.h"
 #include "core/meta/Meta.h"
 
-#include <QMap>
 #include <QMutex>
 #include <QObject>
 #include <QWeakPointer>
@@ -37,7 +36,6 @@
 
 class QTimer;
 
-namespace KIO { class Job; }
 namespace Capabilities { class MultiPlayableCapability; class MultiSourceCapability; }
 namespace Phonon { class AudioOutput; class MediaSource; class VolumeFaderEffect; }
 
@@ -553,6 +551,7 @@ private:
     bool m_playWhenFetched;
     int m_volume;
     bool m_currentIsAudioCd;
+    int m_currentAudioCdTrack;
 
     QList<QVariantMap> m_metaDataHistory; // against metadata spam
 

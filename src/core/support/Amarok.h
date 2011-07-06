@@ -81,18 +81,19 @@ namespace Amarok
 
     /**
      * Compute score for a track that has finished playing.
+     * The resulting score is between 0 and 100
      */
     inline double computeScore( double oldScore, unsigned int playCount, double playedFraction )
     {
-        const int percentage = static_cast<int>(playedFraction * 100);
+        const int percentage = qBound(0, static_cast<int>(playedFraction * 100), 100);
         double newScore;
 
-        if( playCount == 0 )
+        if( playCount <= 0 )
             newScore = ( oldScore + percentage ) / 2;
         else
             newScore = ( ( oldScore * playCount ) + percentage ) / ( playCount + 1 );
 
-        return newScore;
+        return qBound( double(0.0), newScore, double(100.0) );
     }
 
     /**
@@ -104,13 +105,6 @@ namespace Amarok
         OverrideCursor( Qt::CursorShape cursor = Qt::WaitCursor );
        ~OverrideCursor();
     };
-
-    /**
-     * For getting the mouse button that invokes the contextual menu.
-     * This conforms to what "handed" the mouse is configured to be.
-     * @return the mouse button that invokes the context menu.
-     */
-    AMAROK_CORE_EXPORT Qt::MouseButton contextMouseButton();
 
     /**
      * For saving files to ~/.kde/share/apps/amarok/directory
@@ -158,9 +152,6 @@ namespace Amarok
     bool favorScores();
     bool favorRatings();
     bool favorLastPlay();
-
-    void setDynamicPlaylist( const QString& title );  // defined in browsers/playlistbrowser/DynamicModel.cpp
-    void enableDynamicMode( bool enable );
 
     /**
      * Removes accents from the string

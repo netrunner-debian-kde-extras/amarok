@@ -23,14 +23,12 @@
 #include "view/listview/PrettyListView.h"
 #include "widgets/AmarokDockWidget.h"
 
-#include <KVBox>
-
-#include <QComboBox>
-#include <QLabel>
 #include <QWeakPointer>
 
 class KActionCollection;
 class KActionMenu;
+class KVBox;
+class QLabel;
 class QWidget;
 class PlaylistQueueEditor;
 
@@ -58,13 +56,15 @@ public:
     void polish();
 
 public slots:
-    void showDynamicHint( bool enabled );
     void clearFilterIfActive();
 
 protected:
     QSize sizeHint() const;
 
 private slots:
+    /** show or hide the dynamic playlist mode indicator */
+    void showDynamicHint();
+
     void paletteChanged( const QPalette& palette );
     void playlistProviderAdded( Playlists::PlaylistProvider *provider, int category );
     void playlistProviderRemoved( Playlists::PlaylistProvider *provider, int category );
@@ -74,15 +74,16 @@ private slots:
 private:
     KActionMenu *m_savePlaylistMenu;
     KActionCollection *m_saveActions;
+
     QWeakPointer<PlaylistQueueEditor> m_playlistQueueEditor;
 
-    PrettyListView* m_playlistView;
-    ProgressiveSearchWidget * m_searchWidget;
-    SortWidget * m_sortWidget;
-    QLabel* m_dynamicHintWidget;
+    PrettyListView *m_playlistView;
+    ProgressiveSearchWidget *m_searchWidget;
+    SortWidget *m_sortWidget;
+    QLabel *m_dynamicHintWidget;
 
-    KVBox * m_mainWidget;
-
+    KVBox *m_mainWidget;
+    KHBox *m_barBox;
 };
 }
 

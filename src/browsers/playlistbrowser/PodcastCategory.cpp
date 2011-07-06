@@ -25,6 +25,7 @@
 #include "browsers/InfoProxy.h"
 #include "core/support/Debug.h"
 #include "core/meta/support/MetaUtility.h"
+#include "PaletteHandler.h"
 #include "PodcastModel.h"
 #include "PlaylistBrowserView.h"
 
@@ -37,6 +38,7 @@
 #include <KUrlRequesterDialog>
 #include <KGlobal>
 #include <KLocale>
+#include <KToolBar>
 
 namespace The
 {
@@ -84,6 +86,10 @@ PodcastCategory::PodcastCategory( QWidget *parent )
                               "Amarok to do this automatically." ) );
 
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_podcasts.png" ) );
+
+    // set background
+    const QString bgImage = KStandardDirs::locate("data", "amarok/images/hover_info_podcasts.png");
+    setBackgroundImage( bgImage );
 
     QAction *addPodcastAction = new QAction( KIcon( "list-add-amarok" ), i18n("&Add Podcast"),
                                              m_toolBar );

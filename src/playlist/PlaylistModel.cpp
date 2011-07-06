@@ -38,7 +38,7 @@
 #include "core/meta/support/MetaUtility.h"
 #include "PlaylistColumnNames.h"
 #include "PlaylistActions.h"
-#include "PlaylistModelStack.h"
+#include "PlaylistController.h"
 #include "PlaylistItem.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "UndoCommands.h"
@@ -55,25 +55,33 @@
 
 #include <typeinfo>
 
+#define TOOLTIP_STATIC_LINEBREAK 50
+
 bool Playlist::Model::s_tooltipColumns[NUM_COLUMNS];
 bool Playlist::Model::s_showToolTip;
 
 // ------- helper functions for the tooltip
 
+static bool
+fitsInOneLineHTML(const QString& text)
+{
+    // The size of the normal, standard line
+    const int lnSize = TOOLTIP_STATIC_LINEBREAK;
+    return (text.size() <= lnSize);
+}
+
 static QString
 breakLongLinesHTML(const QString& text)
 {
     // Now let's break up long lines so that the tooltip doesn't become hideously large
-
-    // The size of the normal, standard line
-    const int lnSize = 50;
-    if (text.size() <= lnSize)
+    if (fitsInOneLineHTML(text))
     {
         // If the text is not too long, return it as it is
         return text;
     }
     else
     {
+        const int lnSize = TOOLTIP_STATIC_LINEBREAK;
         QString textInLines;
 
         QStringList words = text.trimmed().split(' ');
@@ -229,8 +237,12 @@ Playlist::Model::tooltipFor( Meta::TrackPtr track ) const
     if( s_tooltipColumns[Playlist::Year] && year && year->year() > 0 )
         text += HTMLLine( Playlist::Year, year->year() );
 
-    if( s_tooltipColumns[Playlist::Comment])
-        text += HTMLLine( Playlist::Comment, track->comment() );
+    if( s_tooltipColumns[Playlist::Comment]) {
+        if ( !(fitsInOneLineHTML( track->comment() ) ) )
+            text += HTMLLine( Playlist::Comment, i18n( "(...)" ) );
+        else
+            text += HTMLLine( Playlist::Comment, track->comment() );
+    }
 
     if( s_tooltipColumns[Playlist::Score] )
         text += HTMLLine( Playlist::Score, track->score() );
@@ -792,7 +804,7 @@ Playlist::Model::metadataChanged( Meta::AlbumPtr album )
 }
 
 bool
-Playlist::Model::exportPlaylist( const QString &path ) const
+Playlist::Model::exportPlaylist( const QString &path, bool relative ) const
 {
     // check queue state
     QQueue<quint64> queueIds = The::playlistActions()->queue();
@@ -800,7 +812,7 @@ Playlist::Model::exportPlaylist( const QString &path ) const
     foreach( quint64 id, queueIds ) {
       queued << rowForId( id );
     }
-    return Playlists::exportPlaylistFile( tracks(), path, queued );
+    return Playlists::exportPlaylistFile( tracks(), path, relative, queued );
 }
 
 Meta::TrackList
@@ -823,7 +835,7 @@ Playlist::Model::generatePlaylistName() const
     {
         return i18nc( "A saved playlist with the current time (KLocale::Shortdate) added between \
                       the parentheses",
-                      "Empty Playlist (%1)").arg( datePart );
+                      "Empty Playlist (%1)", datePart );
     }
 
     bool singleArtist = true;
@@ -851,7 +863,7 @@ Playlist::Model::generatePlaylistName() const
         ( !artist && !album ) )
         return i18nc( "A saved playlist with the current time (KLocale::Shortdate) added between \
                       the parentheses",
-                      "Various Tracks (%1)" ).arg( datePart );
+                      "Various Tracks (%1)", datePart );
 
     if( singleArtist )
     {
@@ -875,8 +887,8 @@ Playlist::Model::generatePlaylistName() const
     else
         albumPart = i18n( "Various Albums" );
 
-    return i18nc( "A saved playlist titled <artist> - <album>", "%1 - %2")
-            .arg( artistPart, albumPart );
+    return i18nc( "A saved playlist titled <artist> - <album>", "%1 - %2",
+                  artistPart, albumPart );
 
 }
 

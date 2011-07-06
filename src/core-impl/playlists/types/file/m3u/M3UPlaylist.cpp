@@ -190,33 +190,37 @@ M3UPlaylist::save( const KUrl &location, bool relative )
     QList<int> lengths;
     foreach( Meta::TrackPtr track, m_tracks )
     {
-        if( track )
-        {
-            urls << track->playableUrl();
-            titles << track->name();
-            lengths << track->length();
-        }
-    }
+        Q_ASSERT(track);
 
-    for( int i = 0, n = urls.count(); i < n; ++i )
-    {
-        const KUrl &url = urls[i];
+        const KUrl &url = track->playableUrl();
+        int length = track->length() / 1000;
+        const QString &title = track->name();
+        const QString &artist = track->artist()->name();
 
-        if( !titles.isEmpty() && !lengths.isEmpty() )
+        if( !title.isEmpty() && !artist.isEmpty() && length )
         {
             stream << "#EXTINF:";
-            stream << QString::number( lengths[i] );
+            stream << QString::number( length );
             stream << ',';
-            stream << titles[i];
+            stream << artist << " - " << title;
             stream << '\n';
         }
-        if (url.protocol() == "file" ) {
-            if ( relative ) {
-                const QFileInfo fi(file);
-                stream << KUrl::relativePath(fi.path(), url.path());
-            } else
+        if( url.protocol() == "file" )
+        {
+            if( relative )
+            {
+                const QFileInfo fi( file );
+                QString relativePath = KUrl::relativePath( fi.path(), url.path() );
+                relativePath.remove( 0, 2 ); //remove "./"
+                stream << relativePath;
+            }
+            else
+            {
                 stream << url.path();
-        } else {
+            }
+        }
+        else
+        {
             stream << url.url();
         }
         stream << "\n";

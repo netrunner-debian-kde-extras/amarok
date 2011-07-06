@@ -59,12 +59,10 @@
 #include "playlistmanager/PlaylistManager.h"
 #include "PodcastCategory.h"
 #include "services/scriptable/ScriptableService.h"
-#include "statusbar/StatusBar.h"
 #include "toolbar/SlimToolbar.h"
 #include "toolbar/MainToolbar.h"
 #include "SvgHandler.h"
 #include "PluginManager.h"
-#include "widgets/Splitter.h"
 //#include "mediabrowser.h"
 
 #include <KAction>          //m_actionCollection
@@ -76,7 +74,6 @@
 #include <KLocale>
 #include <KMenu>
 #include <KMenuBar>
-#include <KPixmapCache>
 #include <KBugReport>
 #include <KStandardAction>
 #include <KStandardDirs>
@@ -90,7 +87,6 @@
 #include <QDesktopWidget>
 #include <QDockWidget>
 #include <QList>
-#include <QSizeGrip>
 #include <QStyle>
 #include <QVBoxLayout>
 
@@ -126,7 +122,6 @@ MainWindow::MainWindow()
     s_instance = this;
 
 #ifdef Q_WS_MAC
-    QSizeGrip* grip = new QSizeGrip( this );
     GrowlInterface* growl = new GrowlInterface( qApp->applicationName() );
 #endif
 
@@ -134,13 +129,8 @@ MainWindow::MainWindow()
     CollectionManager::instance();
     PERF_LOG( "Started Collection Manager instance" )
 
-    PERF_LOG( "Set Status Bar" )
-    StatusBar* statusBar = new StatusBar( this );
-    setStatusBar( statusBar );
-    PERF_LOG( "Created Status Bar" )
-
     /* The PluginManager needs to be loaded before the playlist model
-    * (which gets started by "statusBar::conectPlaylist" below so that it can handle any
+    * (which gets started by "statusBar::connectPlaylist" below so that it can handle any
     * tracks in the saved playlist that are associated with services. Eg, if
     * the playlist has a Magnatune track in it when Amarok is closed, then the
     * Magnatune service needs to be initialized before the playlist is loaded
@@ -148,10 +138,6 @@ MainWindow::MainWindow()
     PERF_LOG( "Instantiate Plugin Manager" )
     The::pluginManager();
     PERF_LOG( "Started Plugin Manager instance" )
-
-    PERF_LOG( "Connect Status Bar" )
-    statusBar->connectPlaylist();
-    PERF_LOG( "Connected Status Bar" )
 
     // Sets caption and icon correctly (needed e.g. for GNOME)
 //     kapp->setTopWidget( this );
@@ -195,11 +181,9 @@ MainWindow::~MainWindow()
     //save currently active category
     Amarok::config().writeEntry( "Browser Path", m_browserDock.data()->list()->path() );
 
-    //delete m_splitter;
 #ifdef DEBUG_BUILD_TYPE
     delete m_networkViewer.data();
 #endif // DEBUG_BUILD_TYPE
-    delete The::statusBar();
     delete The::svgHandler();
     delete The::paletteHandler();
 }
@@ -242,6 +226,9 @@ MainWindow::init()
     PERF_LOG( "Create Playlist" )
     m_playlistDock = new Playlist::Dock( this );
     m_playlistDock.data()->installEventFilter( this );
+    //HACK, need to connect after because of order in MainWindow()
+    connect( Amarok::actionCollection()->action( "playlist_edit_queue" ),
+             SIGNAL( triggered( bool ) ), m_playlistDock.data(), SLOT( slotEditQueue() ) );
     PERF_LOG( "Playlist created" )
 
     PERF_LOG( "Creating ContextWidget" )
@@ -257,7 +244,7 @@ MainWindow::init()
 
     PERF_LOG( "Loaded default contextScene" )
 
-    setDockOptions ( QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks | QMainWindow::AnimatedDocks );
+    setDockOptions( QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks | QMainWindow::AnimatedDocks | QMainWindow::VerticalTabs );
 
     addDockWidget( Qt::LeftDockWidgetArea, m_browserDock.data() );
     addDockWidget( Qt::LeftDockWidgetArea, m_contextDock.data(), Qt::Horizontal );
@@ -506,6 +493,7 @@ MainWindow::exportPlaylist() const //SLOT
 
     KFileDialog fileDialog( KUrl("kfiledialog:///amarok-playlist-export"), QString(), 0 );
     QCheckBox *saveRelativeCheck = new QCheckBox( i18n("Use relative path for &saving") );
+    saveRelativeCheck->setChecked( AmarokConfig::relativePlaylist() );
 
     QStringList supportedMimeTypes;
     supportedMimeTypes << "audio/x-mpegurl"; //M3U
@@ -524,10 +512,7 @@ MainWindow::exportPlaylist() const //SLOT
     QString playlistPath = fileDialog.selectedFile();
 
     if( !playlistPath.isEmpty() )
-    {
-        AmarokConfig::setRelativePlaylist( saveRelativeCheck->isChecked() );
-        The::playlist()->exportPlaylist( playlistPath );
-    }
+        The::playlist()->exportPlaylist( playlistPath, saveRelativeCheck->isChecked() );
 }
 
 void
@@ -722,8 +707,11 @@ MainWindow::createActions()
     connect( action, SIGNAL( triggered( bool ) ), pc, SLOT( clear() ) );
     ac->addAction( "playlist_clear", action );
 
-    action = new KAction( KIcon( "format-list-ordered" ), i18nc( "edit play queue of playlist", "Edit &Queue" ), this );
-    ac->addAction( "playlist_edit_queue", action );
+    action = new KAction( KIcon( "format-list-ordered" ),
+                          i18nc( "edit play queue of playlist", "Edit &Queue" ), this );
+    //Qt::META+Qt::Key_Q is taken by Plasma as a global
+    action->setShortcut( KShortcut( Qt::META + Qt::Key_U ) );
+    ac->addAction( "playlist_edit_queue", action );;
 
     action = new KAction( i18nc( "Remove duplicate and dead (unplayable) tracks from the playlist", "Re&move Duplicates" ), this );
     connect( action, SIGNAL( triggered( bool ) ), pc, SLOT( removeDeadAndDuplicates() ) );
@@ -977,19 +965,17 @@ MainWindow::setRating( int n )
 void
 MainWindow::createMenus()
 {
+    m_menubar = menuBar();
+
     //BEGIN Actions menu
-    KMenu *actionsMenu;
+    KMenu *actionsMenu = new KMenu( m_menubar.data() );
 #ifdef Q_WS_MAC
-    m_menubar = new QMenuBar( 0 );  // Fixes menubar in OS X
-    actionsMenu = new KMenu( m_menubar.data() );
     // Add these functions to the dock icon menu in OS X
     //extern void qt_mac_set_dock_menu(QMenu *);
     //qt_mac_set_dock_menu(actionsMenu);
     // Change to avoid duplicate menu titles in OS X
     actionsMenu->setTitle( i18n("&Music") );
 #else
-    m_menubar = menuBar();
-    actionsMenu = new KMenu( m_menubar.data() );
     actionsMenu->setTitle( i18n("&Amarok") );
 #endif
     actionsMenu->addAction( Amarok::actionCollection()->action("playlist_playmedia") );
@@ -1026,6 +1012,7 @@ MainWindow::createMenus()
     playlistMenu->addAction( Amarok::actionCollection()->action("playlist_clear") );
     playlistMenu->addAction( Amarok::actionCollection()->action("playlist_remove_dead_and_duplicates") );
     playlistMenu->addAction( Amarok::actionCollection()->action("playlist_layout") );
+    playlistMenu->addAction( Amarok::actionCollection()->action("playlist_edit_queue") );
     //END Playlist menu
 
     //BEGIN Tools menu
@@ -1035,7 +1022,9 @@ MainWindow::createMenus()
     m_toolsMenu.data()->addAction( Amarok::actionCollection()->action("bookmark_manager") );
     m_toolsMenu.data()->addAction( Amarok::actionCollection()->action("cover_manager") );
     m_toolsMenu.data()->addAction( Amarok::actionCollection()->action("equalizer_dialog") );
+#ifdef QTSCRIPTQTBINDINGS_FOUND
     m_toolsMenu.data()->addAction( Amarok::actionCollection()->action("script_manager") );
+#endif
 #ifdef DEBUG_BUILD_TYPE
     m_toolsMenu.data()->addAction( Amarok::actionCollection()->action("network_request_viewer") );
 #endif // DEBUG_BUILD_TYPE
@@ -1081,6 +1070,7 @@ MainWindow::createMenus()
     helpMenu->insertAction( helpMenu->actions().at( 5 ),
                             Amarok::actionCollection()->action( "likeBackShowIcons" ) );
 
+    m_menubar.data()->addSeparator();
     m_menubar.data()->addMenu( helpMenu );
 }
 
@@ -1123,8 +1113,6 @@ MainWindow::paletteChange( const QPalette & oldPalette )
 {
     Q_UNUSED( oldPalette )
 
-    KPixmapCache cache( "Amarok-pixmaps" );
-    cache.discard();
     The::paletteHandler()->setPalette( palette() );
 }
 
@@ -1166,12 +1154,6 @@ MainWindow::activeBrowserName()
         return m_browserDock.data()->list()->activeCategory()->name();
     else
         return QString();
-}
-
-PlaylistBrowserNS::PlaylistBrowser *
-MainWindow::playlistBrowser()
-{
-    return m_playlistBrowser;
 }
 
 void
@@ -1288,6 +1270,7 @@ MainWindow::playAudioCd()
 
     QList<Collections::Collection*> collections = CollectionManager::instance()->viewableCollections();
 
+    // Search a non-empty MemoryCollection with the id: AudioCd
     foreach( Collections::Collection *collection, collections )
     {
         if( collection->collectionId() == "AudioCd" )
@@ -1306,11 +1289,7 @@ MainWindow::playAudioCd()
 
             The::engineController()->stop( true );
             The::playlistController()->clear();
-
-            Collections::QueryMaker * qm = collection->queryMaker();
-            qm->setQueryType( Collections::QueryMaker::Track );
-            The::playlistController()->insertOptioned( qm, Playlist::DirectPlay );
-
+            The::playlistController()->insertOptioned( cdColl->trackMap().values(), Playlist::DirectPlay );
             m_waitingForCd = false;
             return true;
         }

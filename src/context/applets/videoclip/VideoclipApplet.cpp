@@ -31,7 +31,7 @@
 #include "context/ContextView.h"
 #include "context/Svg.h"
 #include "context/widgets/RatingWidget.h"
-#include "playlist/PlaylistModelStack.h"
+#include "playlist/PlaylistController.h"
 #include "SvgHandler.h"
 #include "widgets/AppletHeader.h"
 
@@ -320,7 +320,7 @@ VideoclipApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Dat
         else if( data.contains( "message" ) )
         {
             //if nothing found, we collapse and inform user
-            setHeaderText( i18n( "Video Clip: No information found" ) );
+            setHeaderText( i18n( "Video Clip: No Information Found" ) );
             update();
             setBusy( false );
             m_scroll->hide();
@@ -486,20 +486,26 @@ void
 VideoclipApplet::appendPlayVideoClip( VideoInfo *info )
 {
     DEBUG_BLOCK
-    QAbstractButton *button = qobject_cast<QAbstractButton *>(QObject::sender() );
-    if ( button )
-    {
-        QStringList lst = button->text().split(" | ");
 
-        MetaStream::Track *tra = new MetaStream::Track(KUrl( info->videolink ) );
-        tra->setTitle( info->title );
-        tra->setAlbum( info->source );
-        tra->setArtist( info->artist );
-        tra->album()->setImage( info->cover.toImage() );
-        Meta::TrackPtr track( tra );
-        //append to the playlist the newly retrieved
-        The::playlistController()->insertOptioned( track, Playlist::AppendAndPlayImmediately );
-    }
+    QAbstractButton *button = qobject_cast<QAbstractButton *>(QObject::sender() );
+    if ( !button )
+        return;
+
+    const QStringList lst = button->text().split(" | ");
+
+    debug() << "  Artist:" << info->artist;
+    debug() << "  Title :" << info->title;
+    debug() << "  Album :" << info->source;
+    debug() << "  Link  :" << info->videolink;
+
+    MetaStream::Track *tra = new MetaStream::Track(KUrl( info->videolink ) );
+    tra->setTitle( info->title );
+    tra->setAlbum( info->source );
+    tra->setArtist( info->artist );
+    tra->album()->setImage( info->cover.toImage() );
+    Meta::TrackPtr track( tra );
+    //append to the playlist the newly retrieved
+    The::playlistController()->insertOptioned( track, Playlist::AppendAndPlayImmediately );
 }
 
 void

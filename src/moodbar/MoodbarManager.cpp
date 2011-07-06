@@ -57,7 +57,7 @@ namespace The
 }
 
 MoodbarManager::MoodbarManager()
-    : m_cache( new KPixmapCache( "Amarok-moodbars" ) )
+    : m_cache( new ImageCache( "Amarok-moodbars", 10 * 1024 ) )
     , m_lastPaintMode( 0 )
 {
     connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(paletteChanged(QPalette)) );
@@ -331,7 +331,7 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
             rangeStart = 0;
             rangeDelta = 359;
             sat        = 150;
-            val        = 200;
+            val        = 250;
             break;
 
         default: // Default (system colours)

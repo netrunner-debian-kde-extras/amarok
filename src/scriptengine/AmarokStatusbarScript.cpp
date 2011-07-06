@@ -16,9 +16,8 @@
 
 #include "AmarokStatusbarScript.h"
 
-#include "App.h"
-#include "statusbar/StatusBar.h"
-
+#include <core/support/Components.h>
+#include <core/interfaces/Logger.h>
 
 namespace AmarokScript
 {
@@ -35,41 +34,15 @@ namespace AmarokScript
 
     }
 
-   /* void AmarokStatusbarScript::setMainText( const QString &text )
-    {
-        The::statusBar()->setMainText( text );
-    }
-
-    void AmarokStatusbarScript::setMainTextIcon( QPixmap icon )
-    {
-        The::statusBar()->setMainTextIcon( icon );
-    }
-
-    void AmarokStatusbarScript::hideMainTextIcon()
-    {
-        The::statusBar()->hideMainTextIcon();
-    }
-
-    void AmarokStatusbarScript::resetMainText()
-    {
-        The::statusBar()->resetMainText();
-    }*/
-
     void AmarokStatusbarScript::longMessage( const QString &text )
     {
-        The::statusBar()->longMessage( text );
+        Amarok::Components::logger()->longMessage( text );
     }
-
-   /* void AmarokStatusbarScript::shortLongMessage( const QString &_short, const QString &_long )
-    {
-        The::statusBar()->shortLongMessage( _short, _long );
-    }*/
 
     void AmarokStatusbarScript::shortMessage( const QString &text )
     {
-        The::statusBar()->shortMessage( text );
+        Amarok::Components::logger()->shortMessage( text );
     }
 }
 
 #include "AmarokStatusbarScript.moc"
-

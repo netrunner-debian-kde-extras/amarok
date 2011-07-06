@@ -26,7 +26,9 @@
 #include "AmarokMimeData.h"
 #include "core/collections/CollectionLocation.h"
 #include "core-impl/collections/support/CollectionManager.h"
+#include "CollectionSortFilterProxyModel.h"
 #include "core-impl/collections/support/TrashCollectionLocation.h"
+#include "core-impl/collections/support/TextualQueryFilter.h"
 #include "browsers/CollectionTreeItem.h"
 #include "browsers/CollectionTreeItemModel.h"
 #include "context/ContextView.h"
@@ -35,7 +37,6 @@
 #include "core/collections/MetaQueryMaker.h"
 #include "core/capabilities/BookmarkThisCapability.h"
 #include "core/capabilities/ActionsCapability.h"
-#include "PaletteHandler.h"
 #include "playlist/PlaylistModelStack.h"
 #include "PopupDropperFactory.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
@@ -44,12 +45,6 @@
 #include "SvgHandler.h"
 #include "TagDialog.h"
 #include "transcoding/TranscodingAssistantDialog.h"
-#include "src/core/transcoding/TranscodingController.h"
-
-#include <QContextMenuEvent>
-#include <QHash>
-#include <QMouseEvent>
-#include <QSet>
 
 #include <KAction>
 #include <KGlobalSettings>
@@ -57,6 +52,11 @@
 #include <KComboBox>
 #include <KMenu>
 #include <KMessageBox> // NOTE: for delete dialog, will move to CollectionCapability later
+
+#include <QContextMenuEvent>
+#include <QHash>
+#include <QMouseEvent>
+#include <QSortFilterProxyModel>
 
 CollectionTreeView::CollectionTreeView( QWidget *parent)
     : Amarok::PrettyTreeView( parent )
@@ -85,7 +85,7 @@ CollectionTreeView::CollectionTreeView( QWidget *parent)
     setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel ); // Scrolling per item is really not smooth and looks terrible
 #endif
 
-    setDragDropMode( QAbstractItemView::DragOnly ); // implement drop when time allows
+    setDragDropMode( QAbstractItemView::DragDrop ); // implement drop when time allows
 
     if( KGlobalSettings::graphicEffectsLevel() != KGlobalSettings::NoEffects )
         setAnimated( true );
@@ -178,9 +178,6 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
         return;
     }
 
-    QAction separator( this );
-    separator.setSeparator( true );
-
     QModelIndexList indices = selectedIndexes();
 
     // if previously selected indices do not contain the index of the item
@@ -213,18 +210,19 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
             m_currentItems.insert( static_cast<CollectionTreeItem*>( index.internalPointer() ) );
     }
 
-    QActionList actions = createBasicActions( indices );
-    actions += &separator;
-    actions += createExtendedActions( indices );
-
     KMenu menu( this );
 
     // Destroy the menu when the model is reset (collection update), so that we don't operate on invalid data.
     // see BUG 190056
     connect( m_treeModel, SIGNAL( modelReset() ), &menu, SLOT( deleteLater() ) );
 
-    foreach( QAction *action, actions )
+    // create basic actions
+    QActionList actions = createBasicActions( indices );
+    foreach( QAction *action, actions ) {
         menu.addAction( action );
+    }
+    menu.addSeparator();
+    actions.clear();
 
     QActionList customActions = createCustomActions( indices );
     KMenu menuCustom( i18n( "Album" )  );
@@ -291,6 +289,13 @@ CollectionTreeView::contextMenuEvent( QContextMenuEvent* event )
         menu.addActions( m_currentRemoveDestination.keys() );
     }
 
+    // add extended actions
+    menu.addSeparator();
+    actions += createExtendedActions( indices );
+    foreach( QAction *action, actions ) {
+        menu.addAction( action );
+    }
+
     menu.exec( event->globalPos() );
 }
 
@@ -309,7 +314,7 @@ void CollectionTreeView::mouseDoubleClickEvent( QMouseEvent *event )
         return;
     }
 
-    if( event->button() != Amarok::contextMouseButton() &&
+    if( event->button() == Qt::LeftButton &&
         event->modifiers() == Qt::NoModifier &&
         (KGlobalSettings::singleClick() || !model()->hasChildren( index )) )
     {
@@ -365,7 +370,7 @@ void CollectionTreeView::mouseReleaseEvent( QMouseEvent *event )
     }
 
     if( !m_expandToggledWhenPressed &&
-        event->button() != Amarok::contextMouseButton() &&
+        event->button() == Qt::LeftButton &&
         event->modifiers() == Qt::NoModifier &&
         KGlobalSettings::singleClick() &&
         model()->hasChildren( index ) )
@@ -869,13 +874,6 @@ QActionList CollectionTreeView::createExtendedActions( const QModelIndexList & i
 
     if( !indices.isEmpty() )
     {
-        if ( m_editAction == 0 )
-        {
-            m_editAction = new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Edit Track Details" ), this );
-            setProperty( "popupdropper_svg_id", "edit" );
-            connect( m_editAction, SIGNAL( triggered() ), this, SLOT( slotEditTracks() ) );
-        }
-        actions.append( m_editAction );
 
         {   //keep the scope of item minimal
             CollectionTreeItem *item = static_cast<CollectionTreeItem*>( indices.first().internalPointer() );
@@ -934,6 +932,14 @@ QActionList CollectionTreeView::createExtendedActions( const QModelIndexList & i
                 }
             }
         }
+
+        if ( m_editAction == 0 )
+        {
+            m_editAction = new QAction( KIcon( "media-track-edit-amarok" ), i18n( "&Edit Track Details" ), this );
+            setProperty( "popupdropper_svg_id", "edit" );
+            connect( m_editAction, SIGNAL( triggered() ), this, SLOT( slotEditTracks() ) );
+        }
+        actions.append( m_editAction );
     }
     else
         debug() << "invalid index or null internalPointer";
@@ -1249,7 +1255,7 @@ CollectionTreeView::createMetaQueryFromItems( const QSet<CollectionTreeItem*> &i
             }
             tmp = tmp->parent();
         }
-        m_treeModel->addFilters( qm );
+        Collections::addTextualFilter( qm, m_treeModel->currentFilter() );
         queryMakers.append( qm );
     }
     return new Collections::MetaQueryMaker( queryMakers );

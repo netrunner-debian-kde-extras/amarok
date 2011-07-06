@@ -1,13 +1,16 @@
 [Desktop Entry]
 Name=Labels
+Name[bs]=Oznake
 Name[ca]=Etiquetes
 Name[ca@valencia]=Etiquetes
 Name[cs]=Popisky
 Name[da]=Etiketter
 Name[de]=Stichwörter
+Name[el]=Ετικέτες
 Name[en_GB]=Labels
 Name[es]=Etiquetas
 Name[et]=Märgendid
+Name[fa]=برچسبها
 Name[gl]=Etiquetas
 Name[it]=Etichette
 Name[ja]=ラベル
@@ -28,6 +31,7 @@ Name[sr@ijekavianlatin]=Etikete
 Name[sr@latin]=Etikete
 Name[sv]=Etiketter
 Name[tr]=Etiketler
+Name[ug]=ئەنلەر
 Name[uk]=Мітки
 Name[x-test]=xxLabelsxx
 Name[zh_TW]=標籤

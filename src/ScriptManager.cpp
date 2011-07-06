@@ -26,13 +26,16 @@
 
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
+#include "core/interfaces/Logger.h"
 #include "MainWindow.h"
 #include "amarokconfig.h"
+#include "config-amarok.h" // for the compile flags
 #include "services/scriptable/ScriptableServiceManager.h"
 #include "scriptengine/AmarokCollectionScript.h"
 #include "scriptengine/AmarokScriptConfig.h"
 #include "scriptengine/AmarokEngineScript.h"
 #include "scriptengine/AmarokInfoScript.h"
+#include "scriptengine/AmarokKNotifyScript.h"
 #include "scriptengine/AmarokLyricsScript.h"
 #include "scriptengine/AmarokNetworkScript.h"
 #include "scriptengine/AmarokOSDScript.h"
@@ -118,7 +121,7 @@ ScriptManager::stopScript( const QString& name )
 }
 
 QStringList
-ScriptManager::listRunningScripts()
+ScriptManager::listRunningScripts() const
 {
     QStringList runningScripts;
     foreach( const ScriptItem *item, m_scripts )
@@ -130,7 +133,7 @@ ScriptManager::listRunningScripts()
 }
 
 QString
-ScriptManager::specForScript( const QString& name )
+ScriptManager::specForScript( const QString& name ) const
 {
     if( !m_scripts.contains( name ) )
         return QString();
@@ -140,7 +143,7 @@ ScriptManager::specForScript( const QString& name )
 }
 
 bool
-ScriptManager::lyricsScriptRunning()
+ScriptManager::lyricsScriptRunning() const
 {
     return !m_lyricsScript.isEmpty();
 }
@@ -166,7 +169,8 @@ ScriptManager::notifyFetchLyricsByUrl( const QString& artist, const QString& tit
 void
 ScriptManager::updateAllScripts() // SLOT
 {
-
+// note: we can't update scripts without the QtCryptoArchitecture, so don't even try
+#ifdef QCA2_FOUND
     DEBUG_BLOCK
     // find all scripts (both in $KDEHOME and /usr)
     QStringList foundScripts = KGlobal::dirs()->findAllResources( "data", "amarok/scripts/*/main.js",
@@ -208,6 +212,7 @@ ScriptManager::updateAllScripts() // SLOT
         }
         configChanged( true );
     }
+#endif
 }
 
 void
@@ -237,6 +242,10 @@ ScriptManager::slotRunScript( const QString &name, bool silent )
     const KUrl url = item->url;
     //load the wrapper classes
     item->engine = new QScriptEngine( this );
+    connect(item->engine,
+            SIGNAL(signalHandlerException(QScriptValue)),
+            SLOT(handleException(QScriptValue)));
+
     startScriptEngine( name );
     QFile scriptFile( url.path() );
     scriptFile.open( QIODevice::ReadOnly );
@@ -283,12 +292,30 @@ ScriptManager::slotRunScript( const QString &name, bool silent )
     return true;
 }
 
+void ScriptManager::handleException(const QScriptValue& value)
+{
+    DEBUG_BLOCK
+
+    QScriptEngine * engine = value.engine();
+    if (!engine)
+        return;
+
+    Amarok::Components::logger()->longMessage( i18n( "Script error reported by: %1\n%2" )
+            .arg( scriptNameForEngine( engine ), value.toString() ), Amarok::Logger::Error );
+}
+
 void
 ScriptManager::slotStopScript( const QString &name )
 {
     DEBUG_BLOCK
-    //FIXME: Sometimes a script can be evaluating and cannot be abort? or can be reevaluating for some reason?
+
     ScriptItem *item = m_scripts.value( name );
+    if( !item->engine ) {
+        warning() << "Script has no script engine attached:" << name;
+        return;
+    }
+
+    //FIXME: Sometimes a script can be evaluating and cannot be abort? or can be reevaluating for some reason?
     if( item->engine->isEvaluating() )
     {
         item->engine->abortEvaluation();
@@ -435,7 +462,7 @@ ScriptManager::loadScript( const QString& path )
 }
 
 KPluginInfo::List
-ScriptManager::scripts( const QString &category )
+ScriptManager::scripts( const QString &category ) const
 {
     KPluginInfo::List scripts;
     foreach( const ScriptItem *script, m_scripts )
@@ -444,6 +471,17 @@ ScriptManager::scripts( const QString &category )
             scripts << script->info;
     }
     return scripts;
+}
+
+QString ScriptManager::scriptNameForEngine(const QScriptEngine* engine) const
+{
+    foreach( const QString& name, m_scripts.keys() ) {
+        ScriptItem *script = m_scripts[name];
+        if (script->engine == engine)
+            return name;
+    }
+
+    return QString();
 }
 
 void
@@ -473,6 +511,7 @@ ScriptManager::startScriptEngine( const QString &name )
     new AmarokScript::AmarokWindowScript( scriptEngine );
     new AmarokScript::AmarokPlaylistScript( scriptEngine );
     new AmarokScript::AmarokStatusbarScript( scriptEngine );
+    new AmarokScript::AmarokKNotifyScript( scriptEngine );
     new AmarokScript::AmarokOSDScript( scriptEngine );
     QScriptValue windowObject = scriptEngine->globalObject().property( "Amarok" ).property( "Window" );
     windowObject.setProperty( "ToolsMenu", scriptEngine->newObject() );
