@@ -1,6 +1,6 @@
-amarok (2.4.2~beta1-0r1) UNRELEASED; urgency=low
+amarok (2.4.2-0r1) UNRELEASED; urgency=low
 
-  * New upstream development release.
+  * New upstream release.
   * Switch maintainer to Debian KDE Extras team, add myself to Uploaders,
     document committing/uploading rules in README.source.
   * Update documentation about Phonon backends in Amarok bug-presubj.
