@@ -213,7 +213,10 @@ if( WITH_PLAYER )
 include(MacroOptionalAddSubdirectory)
 macro_optional_add_subdirectory( po )
 
-    #DOC_SUBDIR
+    
+include(MacroOptionalAddSubdirectory)
+macro_optional_add_subdirectory( doc )
+
 
 else( WITH_PLAYER )
 

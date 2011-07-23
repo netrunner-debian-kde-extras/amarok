@@ -28,7 +28,6 @@ msgid "Amarok Applet Manager"
 msgstr "Menedżer apletów Amaroka"
 
 #: amarokpkg.cpp:78
-#| msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo franchi"
 msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
 msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
 
@@ -65,7 +64,6 @@ msgid "Upgrade the applet at <path>"
 msgstr "Uaktualnij aplet w <path>"
 
 #: amarokpkg.cpp:99
-#| msgid "List installed applet"
 msgid "List installed applets"
 msgstr "Wyświetl zainstalowane aplety"
 
