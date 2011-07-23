@@ -52,6 +52,9 @@ class AMAROK_EXPORT_TESTS M3UPlaylist : public PlaylistFile
         virtual Meta::TrackList tracks();
         virtual void triggerTrackLoad();
 
+        virtual void addTrack( Meta::TrackPtr track, int position = -1 );
+        virtual void removeTrack( int position );
+
        /* the following has been copied from Meta.h
         * it is my hope that we can integrate Playlists
         * better into the rest of the Meta framework someday ~Bart Cerneels

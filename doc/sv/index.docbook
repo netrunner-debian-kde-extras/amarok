@@ -1,0 +1,2030 @@
+<?xml version="1.0" ?>
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.2-Based Variant V1.1//EN" "dtd/kdex.dtd" [
+  <!ENTITY % addindex "IGNORE">
+  <!ENTITY % Swedish "INCLUDE">
+]>
+<book lang="&language;">
+<bookinfo>
+<title
+>Handbok &amarok;</title>
+<authorgroup>
+<author>
+<personname
+><firstname
+>Det här dokumentet är konverterat från &kde;:s användarbas <ulink url=" http://userbase.kde.org/Amarok"
+>&amarok;</ulink
+>-sida.</firstname
+> <surname
+></surname
+> </personname>
+    </author>
+<othercredit role="translator"
+><firstname
+>Stefan</firstname
+> <surname
+>Asserhäll</surname
+><affiliation
+><address
+><email
+>stefan.asserhall@comhem.se</email
+></address
+></affiliation
+><contrib
+>Översättare</contrib
+></othercredit
+> 
+    </authorgroup>
+<legalnotice
+>&FDLNotice;</legalnotice>
+<date
+>2011-05-31</date>
+    <releaseinfo
+>&kde; SC 4.6</releaseinfo>
+<abstract>
+<para
+>&amarok; är en fri, mångsidig och kraftfull musikspelare för &Linux;. De senaste utgåvorna i 2.x-serien, ofta kallade <quote
+>Amarok&nbsp;2</quote
+>, är plattformsoberoende (kan användas på många plattformar, inklusive &Linux;, MaxOS och &Microsoft; &Windows;) och implementerar en fullständigt omarbetad kodbas, som kommer att göra det möjligt att inlemma spännande nya funktioner alltmedan utgåvorna mognar. Den nuvarande stabila utgåvan är version 2.4.</para>
+    </abstract>
+<keywordset>
+ <keyword
+>KDE</keyword>
+ <keyword
+>multimedia</keyword>
+ <keyword
+>spelare</keyword>
+ <keyword
+>ljud</keyword>
+ <keyword
+>ogg</keyword>
+ <keyword
+>MP3</keyword>
+ <keyword
+>wav</keyword>
+ <keyword
+>musik</keyword>
+ <keyword
+>ljud</keyword>
+</keywordset>
+</bookinfo>
+<!--userbase <timestamp
+>2011-05-22T05:48:00Z</timestamp
+>-->
+
+<!--userbase-content-->
+<chapter id="interface"
+><title
+>Gränssnitt</title
+> 
+<para
+>&amarok; håller sig normalt med ett gränssnitt med tre rutor.. </para>
+<sect1 id="the-left-pane-media-sources"
+><title
+>Vänstra rutan (mediakällor)</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokmediasources-home.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Rutan <emphasis
+>Mediakällor</emphasis
+> till vänster är stället där man kan komma åt den lokala samlingen samt andra tjänster: <guilabel
+>Lokal musik</guilabel
+> längst upp, som är huvudgränssnittet för den lokala samlingen och anslutna enheter som MP3-spelare och cd-skivor. Det finns en avdelning för <guilabel
+>Internettjänster</guilabel
+> som har aktiverats. Här kan du bläddra bland listningar av radiostationer och podsändningar, lyssna eller prenumerera på dem, hantera ett <ulink url="http://www.last.fm"
+>last.fm</ulink
+>-konto, köpa musik från nätbutiker som <guilabel
+>Magnatune</guilabel
+> och ladda ner oberoende artisters musik från <guilabel
+>Jamendo</guilabel
+>, med mera. Avdelningen <guilabel
+>Spellistor</guilabel
+> låter dig skapa och hantera <emphasis
+>Dynamiska spellistor</emphasis
+>, komma åt dina <emphasis
+>Sparade spellistor</emphasis
+> samt <emphasis
+>automatisk generering av spellistor</emphasis
+>. Avdelningen <guilabel
+>Filer</guilabel
+> visar en integrerad filbläddrare och avdelningen <guilabel
+>Podsändningar</guilabel
+> låter dig komma åt dina prenumerationer på podsändningar. </para>
+</sect1>
+<sect1 id="the-central-pane-context-view"
+><title
+>Mittenrutan (sammanhangsvyn)</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok-context.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Det är här all information visas. Rutan i mitten innehåller tre miniprogram som dynamiskt ändras för att visa sammanhangsinformation om sången som för närvarande spelas. Du kan se betyg, poäng och antal spelningar för sången som spelas, andra sånger av samma artist som du har, sångtexten, <ulink url="http://www.wikipedia.org"
+>Wikipedia-sidan</ulink
+> om artisten, med mera. Fler miniprogram kan läggas till, tas bort eller arrangeras om med <guilabel
+>miniprogramraden</guilabel
+> längst ner i rutan. </para>
+</sect1>
+<sect1 id="the-right-pane-playlist-view"
+><title
+>Högerrutan (spellistevyn)</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1right.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>&amarok; har den mest anpassningsbara spellistan hos någon musikspelare som finns, Den lägger möjligheten i dina händer att forma spellistan på vilket sätt du än vill. För att komma igång, finns tre exempel på layout av spellistor som kan användas som utgångspunkt för att skapa en layout som passar ditt användningssätt bäst. Du kan skapa dynamiska spellistor med olika preferenser eller använda automatisk generering av spellistor, blanda, spela slumpmässigt eller upprepa, köa spår och spara befintliga spellistor för senare användning. </para>
+</sect1>
+</chapter>
+<chapter id="features"
+><title
+>Funktioner</title
+> 
+<sect1 id="music-playback"
+><title
+>Uppspelning av musik</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokfull.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>&amarok; kan stödja de mest populära formaten för musikfiler. Själva listan med format beror på avkodarna och ljudgränssnitten som används på systemet. Det finns också stöd för traditionella spellistor. Du kan skapa, spara och läsa in alla spellistor du vill. </para>
+</sect1>
+<sect1 id="device-support"
+><title
+>Enhetsstöd</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1ipod.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>&amarok; erbjuder stöd för ett stort urval mediaspelare som <guilabel
+>iPod</guilabel
+>, <ulink url="http://en.wikipedia.org/wiki/Media_Transfer_Protocol"
+><guilabel
+>MTP</guilabel
+></ulink
+> och <ulink url="http://en.wikipedia.org/wiki/USB_mass_storage_device_class"
+><guilabel
+>UMS</guilabel
+></ulink
+>. </para>
+ 
+<para
+>Knappen längst upp i samlingen, <guilabel
+>Sammanfogad vy</guilabel
+>, låter dig sammanfoga samlingar. Det betyder att sånger från den lokala samlingen, musik-cd, mp3-spelare, och så vidare, kommer att visas i en enhetlig samling. Den byter inställning, så du kan enkelt gå tillbaka till att visa separata källor. </para>
+</sect1>
+<sect1 id="configurable-context-view"
+><title
+>Anpassningsbar sammanhangsvy</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Context-applets-amarok.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+><emphasis
+>Sammanhangsvyn</emphasis
+>, höjdpunkten i &amarok; kan automatiskt hämta sammanhangsinformation om sången som för närvarande spelas (som omslag, sångtext eller <ulink url="http://www.wikipedia.org"
+>Wikipedia-information</ulink
+>) från Internet och visa den. Detta är en av de unika funktionerna i serien av &amarok; musikspelare. </para>
+</sect1>
+<sect1 id="more-internet-services"
+><title
+>Fler Internettjänster</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok_-_internet_services.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>&amarok; öppnar möjligheten för en rik multimediaupplevelse på Internet. </para>
+<itemizedlist>
+<listitem
+><para
+>Försedd med gränssnitt till tjänster som <emphasis
+>Ampache musikservrar</emphasis
+> och <emphasis
+>mp3tunes musikskåp</emphasis
+>, låter den dig lyssna på din egen musik var som helst i världen. </para
+></listitem>
+<listitem
+><para
+>Du kan provlyssna och köpa musik från <guilabel
+>Magnatune</guilabel
+>. </para
+></listitem>
+<listitem
+><para
+>Genom att använda tjänsten <guilabel
+>Jamendo</guilabel
+>, kan du lyssna på och ladda ner musik från oberoende artister, som du kan stödja med donationer. </para
+></listitem>
+<listitem
+><para
+>Med den integrerade <ulink url="http://www.last.fm"
+>last.fm</ulink
+> funktionen, kan du <emphasis
+>skicka in</emphasis
+> (eng. scrobble) vilka spår du spelar, använda <ulink url="http://www.last.fm"
+>last.fm</ulink
+> funktioner som statistik och diagram samt lyssna på radioutsändningar anpassade till din musiksmak &mdash; allt inifrån i &amarok;. </para
+></listitem>
+</itemizedlist>
+ 
+<para
+>Och det är bara början &mdash; ännu fler Internet-tjänster kan läggas till med <guilabel
+>Skripthantering</guilabel
+>. </para>
+</sect1>
+<sect1 id="script-manager"
+><title
+>Skripthantering</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1scriptmanager.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Skript är tillägg som låter dig utöka &amarok;:s funktioner på nyskapande sätt. Genom att använda <guilabel
+>Skripthantering</guilabel
+> kan du hantera skripten, genom att den tillåter dig att installera, ta bort, aktivera eller inaktivera skript som redan finns. Du kan också använda funktionen <guilabel
+>Hämta fler skript</guilabel
+> för att ladda ner nya skript inskickade av andra användare. </para>
+</sect1>
+<sect1 id="cover-manager"
+><title
+>Omslagshantering</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1covermanager.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Du kan bläddra igenom din musiksamling genom att använda den käcka <guilabel
+>omslagshanteringen</guilabel
+> som visar albumomslag, laddar ner omslag från diverse källor eller låter &amarok; automatiskt leta på Internet efter omslag. </para>
+</sect1>
+<sect1 id="rating-and-scoring"
+><title
+>Betyg och poängsättning</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1rating.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Du kan visa hur mycket du gillar sånger genom att ge dem betyg. &amarok; stöder också <guilabel
+>&frac12;&sdot;&#10025;</guilabel
+> betyg. Dessutom kan &amarok; räkna ut en poäng (ett sorts gissat betyg) beroende på mått som hur ofta du lyssnar på eller hoppar över en sång. </para>
+</sect1>
+<sect1 id="pop-up-dropper"
+><title
+>Uppdykande släppfunktion</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Pud-amarok.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Detta är ett nyskapande gränssnitt som erbjuder sammanhangsberoende alternativ (liksom de som visas i en <emphasis
+>högerklicksmeny</emphasis
+>) som du kan <quote
+>släppa</quote
+> en sång på. Ta tag i en sång och se den dyka upp i sammanhangsvyns ruta. </para>
+</sect1>
+<sect1 id="configurable-playlist-view"
+><title
+>Anpassningsbar spellistevy</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1pleditor.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Spellistan som för närvarande är inläst är mycket anpassningsbar och kan visa information om sångerna på vilket sätt du vill. Om du är van vid <guilabel
+>Kalkylbladsvisningen</guilabel
+> som finns i &amarok;&nbsp;1.x serien och andra musikspelare, kan du också få den! <guilabel
+>Spellistevyn</guilabel
+> låter dig också spara eller exportera den nuvarande spellistan. </para>
+</sect1>
+<sect1 id="dynamic-playlists"
+><title
+>Dynamiska spellistor</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1dynamicplaylist.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>&amarok; låter dig skapa viktade slumpmässiga spellistor som håller sig till diverse kriterier exakt (<guilabel
+>Proportionell preferens</guilabel
+>) eller ungefärligt (<guilabel
+>Inexakt preferens</guilabel
+>). Du kan till exempel skapa en spellista som fylls i slumpmässigt med sånger som har ett betyg högre än tre stjärnor och som är ungefär från år 1967. </para>
+</sect1>
+<sect1 id="replay-gain-support"
+><title
+>Stöd för volymjustering</title
+> 
+<para
+>&amarok; stöder <emphasis
+>volymjusteringsinformation</emphasis
+> inbäddad i filer och justerar automatiskt sångens övergripande volym till en gemensam nivå. </para>
+<para
+>Återupptäck din musik! </para>
+</sect1>
+</chapter>
+<chapter id="hints-tips-and-faqs"
+><title
+>Tips och vanliga frågor</title
+> 
+<para
+>Om du märker att den största delen av din musik känns igen av &amarok;, men vissa kataloger inte hämtas på rätt sätt, öppna en terminal och skriv </para>
+<para
+><userinput
+>touch <replaceable
+>katalog</replaceable
+></userinput
+> 
+</para>
+<para
+>där <replaceable
+>katalog</replaceable
+> är sökvägen till katalogen som har problemet. Välj därefter <menuchoice
+><guimenu
+>Inställningar</guimenu
+> <guimenuitem
+>Anpassa &amarok;</guimenuitem
+></menuchoice
+> i menyn i  &amarok;s huvudfönster, och öppna sidan <menuchoice
+><guimenu
+>Samling</guimenu
+> <guimenuitem
+>Omsök samling</guimenuitem
+></menuchoice
+>. Katalogen ska nu vara synlig igen. </para>
+</chapter>
+<chapter id="more-information"
+><title
+>Mer information</title
+> 
+<itemizedlist>
+<listitem
+><para
+><ulink url="http://amarok.kde.org/"
+>&amarok;s hemsida</ulink>
+</para
+></listitem>
+<listitem
+><para
+><ulink url="http://forum.kde.org/viewforum.php?f=127"
+>&amarok;s forum</ulink>
+</para
+></listitem>
+</itemizedlist>
+<para
+>Gratulerar till att ha installerat &amarok;, den mest avancerade programvaran för att upptäcka musik som finns. &amarok; hjälper dig att utforska musik, och njuta av den som aldrig förr. Dessutom kan du besöka olika musikkällor, radiostationer och ljudböcker på nätet. I den här handboken visar vi hur &amarok; kan hitta din musiksamling, spela upp den åt dig, och dessutom hur man använder &amarok; för att hitta saker på nätet. Vi antar att du inte känner till någonting om &amarok;, men vet hur menyer, musen och tangentbordet används. </para>
+</chapter>
+<chapter id="getting-started"
+><title
+>Komma igång</title>
+<sect1 id="starting-amarok"
+><title
+>Starta &amarok;</title>
+<para
+>Om du redan känner till hur man tar sig runt i operativsystemet, vet du troligen också hur man startar &amarok;, och du kan <link linkend="first-time"
+>fortsätta</link
+>. Om inte, läs vidare. </para>
+<sect2 id="from-plasma"
+><title
+>Från &plasma;</title>
+<para
+>Om du kör <ulink url="http://userbase.kde.org/Special:mylanguage/Plasma"
+>&plasma; arbetsytan</ulink
+>, kan du starta &amarok; genom att antingen: </para>
+<itemizedlist>
+<listitem
+><para
+>klicka på <ulink url="http://userbase.kde.org/Special:mylanguage/Kickoff"
+>K-menyn</ulink
+> och därefter <menuchoice
+><guimenu
+>Multimedia</guimenu
+><guimenuitem
+>&amarok;</guimenuitem
+></menuchoice
+>. </para
+></listitem>
+<listitem
+><para
+>starta <ulink url="http://userbase.kde.org/Special:mylanguage/KRunner"
+>Kör program</ulink
+> (normalt <keycombo
+>&Alt;<keycap
+>F2</keycap
+></keycombo
+>), skriva in <replaceable
+>amarok</replaceable
+> och därefter trycka på returtangenten. </para
+></listitem>
+</itemizedlist>
+</sect2>
+<sect2 id="from-the-file-manager"
+><title
+>Från filhanteraren</title
+> 
+<para
+>Öppna en multimediafil som det är känt att &amarok; spelar upp.</para>
+</sect2>
+</sect1>
+<sect1 id="first-time"
+><title
+>Första gången</title>
+<para
+>Första gången &amarok; används, dyker en dialogruta för första start upp som ber dig tala om var din musik är lagrad. Om du redan har en musikkatalog <ulink url="help:/kcontrol/paths/index.html"
+>inställd i systemet</ulink
+>, bör &amarok; detektera den och be dig att använda den: </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Firstruncollection2.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot
+></para>
+<para
+>Om du väljer <guilabel
+>Nej</guilabel
+> i dialogrutan, visas en annan som låter dig välja musikkatalog:</para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Configurecollection.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Se <link linkend="setting-up-a-collection"
+>Ställa in en samling</link
+> </para>
+<para
+>När du väl har valt katalogen där din musik finns, söker &amarok; igenom katalogen och dess underkataloger, för att skapa samlingen. Beroende på antal spår och hur snabb åtkomsten till platsen är, kan det ta en viss tid. </para>
+</sect1>
+<sect1 id="closing-amarok"
+><title
+>Stänga &amarok;</title>
+<para
+>Om du vill stänga &amarok;: </para>
+<itemizedlist>
+<listitem
+><para
+>Skriv <keycombo
+>&Ctrl;<keycap
+>Q</keycap
+></keycombo
+> när du är i &amarok;s fönster, eller </para
+></listitem>
+<listitem
+><para
+>Välj alternativet <guilabel
+>Avsluta</guilabel
+> i &amarok;s meny, eller </para
+></listitem>
+<listitem
+><para
+>Högerklicka på ikonen med den blåa vargen i <emphasis
+>systembrickan</emphasis
+> längst ner på skärmen. Följande visas då för dig: </para
+></listitem>
+</itemizedlist>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokrightmenu.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Om du stänger &amarok;s fönster genom att klicka på <emphasis
+>Stäng</emphasis
+> i fönstrets namnlist, fortsätter &amarok; att köra i bakgrunden och visar bara ikonen med den blåa vargen i <emphasis
+>systembrickan</emphasis
+>: </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amaroksystray.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Om du loggar ut från sessionen eller stänger av datorn utan att avsluta &amarok;, kommer vissa inställningar inte att sparas. </para>
+</sect1>
+</chapter>
+<chapter id="the-amarok-window"
+><title
+>Amaroks fönster</title
+> 
+<para
+>&amarok;s fönster är skapat för att låta dig återupptäcka din musik. Alltså ger det dig så mycket information om din musik som möjligt. Även om många användare tycker om den normala layouten, är den fullständigt anpassningsbar.</para>
+<sect1 id="default-layout-of-the-amarok-window"
+><title
+>Standardlayout för Amaroks fönster</title
+> 
+<para
+>Efter installation kommer &amarok; att se ut så här:</para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="AmarokNew2.4.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+>Nyinstallerad Amarok 2.4</phrase>
+    </textobject>
+    <caption>
+      <para
+>Nyinstallerad Amarok 2.4</para>
+    </caption>
+  </mediaobject>
+</screenshot
+></para>
+<para
+>&amarok;s fönster har fyra huvuddelar:</para>
+<orderedlist>
+<listitem
+><para
+>under toppnivåmenyerna finns <emphasis
+>verktygsraden</emphasis
+>, som i sin tur är placerad ovanför tre rutor: </para
+></listitem>
+<listitem
+><para
+><emphasis
+>Mediakällor</emphasis
+> (musiksamling och andra media) i rutan till vänster, </para
+></listitem>
+<listitem
+><para
+><emphasis
+>Sammanhang</emphasis
+> i mittenrutan, och </para
+></listitem>
+<listitem
+><para
+><emphasis
+>Spellistan</emphasis
+> i rutan till höger. </para
+></listitem>
+</orderedlist>
+</sect1>
+<sect1 id="using-the-amarok-window-to-manage-and-play-your-music"
+><title
+>Använda &amarok;s fönster för att hantera och spela musik</title>
+<para
+>Att spela musik med &amarok; kräver oftast två steg: </para>
+<orderedlist>
+<listitem
+><para
+>Skapa en spellista genom att markera en del musik i samlingen, som är listad i rutan  <emphasis
+>Mediakällor</emphasis
+>, och skicka musiken till <emphasis
+>spellistan</emphasis
+>. </para
+></listitem>
+<listitem
+><para
+>Spela musiken i spellistan, genom att använda <emphasis
+>spellistas ruta</emphasis
+> och/eller <emphasis
+>verktygsraden</emphasis
+>. </para
+></listitem>
+</orderedlist>
+<para
+>Dessutom kanske du vill överföra en del musik till en bärbar musikspelare, såsom en iPod. Följande avsnitt förklarar hur man gör det.</para>
+</sect1>
+</chapter>
+<chapter id="the-music-collection"
+><title
+>Musiksamlingen</title>
+<sect1 id="the-media-sources-pane"
+><title
+>Rutan med mediakällor</title>
+<para
+>Rutan <emphasis
+>Mediakällor</emphasis
+> är platsen där man bläddrar i och visar den fullständiga musiksamlingen. Det omfattar spåren på den lokala hårddisken, samt de på eventuella externa enheter eller media anslutna till datorn, som musik-cd, USB-enheter, mediaspelare, nätverksdiskar eller Internet-källor. </para>
+</sect1>
+<sect1 id="setting-up-a-collection"
+><title
+>Ställa in en samling</title>
+<para
+>Har du musikspår med MP3-, OGG-, eller FLAC-format på datorn? Börja med att tala om för &amarok; var filerna finns, så att samlingen kan skapas. I toppnivåmenyn: <menuchoice
+><guimenu
+>Inställningar</guimenu
+><guimenuitem
+>Anpassa &amarok;</guimenuitem
+></menuchoice
+>. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.4.1ConfigureDialogCollection.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+>Dialogrutan för att anpassa samlingen, från version 2.4.1</phrase>
+    </textobject>
+    <caption>
+      <para
+>Dialogrutan för att anpassa samlingen, från version 2.4.1</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>En trädvy av hemkatalogen visas ovan. Klicka på kryssrutan där musiken är lagrad, oftast ~/Musik. Välj därefter <guilabel
+>Omsök hela samlingen fullständigt</guilabel
+>. Det tar en viss tid, så bli inte alarmerad om &amarok; verkar långsamt ett tag. När sökningen väl är klar, är det bäst att avsluta &amarok; med &amarok;s toppnivåmeny, eller <keycombo
+>&Ctrl;<keycap
+>Q</keycap
+></keycombo
+>, och därefter starta om. Den nytillagda musiken ska visas under avdelningen <emphasis
+>Lokal samling</emphasis
+>. </para>
+</sect1>
+<sect1 id="adding-media-devices-to-the-collection"
+><title
+>Lägga till mediaspelare i samlingen</title>
+<para
+>Under sökraden, nära överkanten på rutan <emphasis
+>Mediakällor</emphasis
+> visas de olika enheterna och/eller innehållskategorierna i <emphasis
+>sammanhangsbläddraren</emphasis
+>. Om du matar in en musik-cd i cd-enheten dyker den upp i rutan <emphasis
+>Mediakällor</emphasis
+> tillsammans med mediaspelare, minnesstickor och andra USB-enheter. När en extern enhet har monterats, ska den automatiskt visas i rutan <emphasis
+>Mediakällor</emphasis
+>.</para>
+<para
+>Nedan finns en skärmbild som visar tre anslutna musikkällor: Musik-cd, MP3-spelare och den <emphasis
+>lokala samlingen</emphasis
+>.</para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Mediasources.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+<sect1 id="ripping-a-cd-into-the-collection"
+><title
+>Lagra en cd i samlingen</title>
+<para
+>Om du inte har några musikfiler på datorn är det enkelt att <emphasis
+>lagra</emphasis
+> dem (kopiera spåren från cd-skivor till samlingen). Sätt bara i en cd, och högerklicka på cd-skivans enhet i <emphasis
+>samlingsbläddraren</emphasis
+> för att spela den, eller kopiera den till samlingen, vilket <emphasis
+>lagrar</emphasis
+> spåren och <emphasis
+>lägger till taggar </emphasis
+> (se bilden nedan). Om du kopierar musik från en musik-cd till den lokala samlingen, visar <emphasis
+>statusraden</emphasis
+> längst ner i &amarok;s fönster att kopiering pågår. Lagringen kan ta flera minuter. När lagringen väl är färdig, försvinner meddelandet på <emphasis
+>statusraden</emphasis
+> och musiken visas i den lokala samlingens samlingsbläddrare. Om den lagrade musiken inte visas i <emphasis
+>Mediakällor</emphasis
+> är det bäst att avsluta &amarok; från toppnivåmenyn, eller med <keycombo
+>&Ctrl;<keycap
+>Q</keycap
+></keycombo
+>, och därefter starta om. Nu ska du se den i samlingen. Skärmbilden nedan visar hur du flyttar spår från en musik-cd, en iPod eller en annan enhet till samlingen, med användning av den sammanhangsberoende menyn. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokripcd.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>I den sammanhangsberoende menyn ovan kan du också se alternativet <guilabel
+>Redigera spårinformation</guilabel
+>. Använd alternativet om du har ett spår vars tagg behöver redigeras. Det blir viktigt när du lagrar musik med formatet WAV, vilket gör att vissa taggar går förlorade. Om en stor del av samlingen har behov av att redigera taggar, fundera på att använda särskild programvara för tagghantering, såsom: </para>
+<itemizedlist>
+<listitem
+><para
+><ulink url="http://musicbrainz.org/doc/PicardTagger"
+>Picard</ulink>
+</para
+></listitem>
+<listitem
+><para
+><ulink url="http://easytag.sourceforge.net"
+>EasyTag</ulink>
+</para
+></listitem>
+<listitem
+><para
+><ulink url="http://kid3.sourceforge.net"
+>Kid3</ulink>
+</para
+></listitem>
+</itemizedlist>
+<para
+>Riktiga taggar är viktigt för att hjälpa &amarok; visa spåren i rätt album och riktig sorteringsordning. Ta reda på mer om <link linkend="tags"
+>lagring och taggar</link
+>. </para>
+</sect1>
+<sect1 id="accessing-other-media-sources"
+><title
+>Komma åt andra mediakällor</title>
+<para
+>Du kanske undrar varför <emphasis
+>Mediakällor</emphasis
+> inte kallas för 'samlingsrutan'. &amarok; ger tillgång till mycket mer musik än bara din samling: Internetbutiker, ljudböcker, podsändningar, musikfiler lagrade utanför samlingen, och tidigare lagrade spellistor. &amarok;s <emphasis
+>navigering med länkstig</emphasis
+> är nyckeln till allt detta. Startikonen för navigering med länkstig är ikonen med hemkatalogen allra längst upp till vänster i <emphasis
+>Mediakällor</emphasis
+>. Ikonen expanderas och dras ihop medan du bläddrar i <emphasis
+>Mediakällor</emphasis
+>, vilket låter dig enkelt navigera i samlingen genom att klicka på önskad katalog i länkstigen.</para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokbreadcrumb.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Om du klickar på &amarok;s hemkatalog ser du <emphasis
+>Mediakällor</emphasis
+> till vänster nedanför, som innehåller ikoner för tillgängliga resurser. Om du klickar på filikonen (vänstra bilden nedan, andra objektet nerifrån), visas något som liknar bilden nedan till höger. Observera hur länkstigen expanderas och hur innehållet i den valda katalogen visas i <emphasis
+>Mediakällor</emphasis
+> (högra bilden nedan). Genom att klicka på symbolen <guilabel
+>&gt;</guilabel
+> i länkstigen kan du se tillgängliga kataloger på den nivån i katalogstrukturen. &amarok;s filbläddrare ger dig tillgång till hela filsystemet, även utanför den lokala samlingen. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokmediasources-home.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+    <caption>
+      <para
+>Rutan med mediakällor</para>
+    </caption>
+  </mediaobject>
+</screenshot
+> 
+</para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokmediasources-files.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+    <caption>
+      <para
+>Filikonen klickad</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Funktionerna för ikonerna i &amarok;s hemkatalog (uppe till vänster) är: </para>
+<para>
+<table>
+  <title
+>Ikoner i hemkatalogen</title>
+  <tgroup cols="3">
+  <tbody>
+  <row>
+    <entry>
+      <para
+>Ikon</para>
+    </entry>
+    <entry>
+      <para
+>Namn</para>
+    </entry>
+    <entry>
+      <para
+>Åtgärd</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi32-action-collection-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+><guilabel
+>Lokal musik</guilabel
+></para>
+    </entry>
+    <entry>
+      <para
+>&amarok;s samling</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Applications-internet.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+><guilabel
+>Internet</guilabel
+></para>
+    </entry>
+    <entry>
+      <para
+>Internetbutiker som Magnatune, Jamendo och Last.fm. Ställ först in Internetresurser med: <menuchoice
+><guimenu
+>Inställningar</guimenu
+> <guimenuitem
+>Anpassa &amarok;</guimenuitem
+></menuchoice
+>.</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="View-media-playlist.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+><guilabel
+>Spellistor</guilabel
+></para>
+    </entry>
+    <entry>
+      <para
+>Sparade spellistor &mdash; Se också <link linkend="playlists"
+>Spellistor</link
+>. Även spellistor på mediaspelare.</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Folder-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+><guilabel
+>Filer</guilabel
+></para>
+    </entry>
+    <entry>
+      <para
+>Filsystemet</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-podcast-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+><guilabel
+>Podsändningar</guilabel
+></para>
+    </entry>
+    <entry>
+      <para
+>Åtkomst till podsändningar via RSS-kanaler</para>
+    </entry>
+  </row>
+</tbody>
+  </tgroup>
+</table>
+</para>
+<para
+>Att klicka på ikonen Lokal musik ovan, eller på katalogen Lokal musik i länkstigen tar dig tillbaka till samlingen, som visar en lista med alla tillgängliga resurser, artister, album och spår som du tidigare har definierat som del av samlingen. Länkstigen anger att du visar lokal musik. </para>
+</sect1>
+<sect1 id="streams-and-podcasts"
+><title
+>Strömmar och podsändningar</title>
+<para
+>Det finns två sätt att lyssna på strömmar. Om du har en favoritstation, hämta strömmens webbadress och lägg till den: <menuchoice
+><guimenu
+>Spellista</guimenu
+><guimenuitem
+>Lägg till ström</guimenuitem
+></menuchoice
+>. Du kommer att kunna hitta den igen under <emphasis
+>Spellistor</emphasis
+>, som en <emphasis
+>Sparad spellista</emphasis
+>. Bläddra annars igenom tillgängliga skript i skripthanteringen (<menuchoice
+><guimenu
+>Verktyg</guimenu
+><guimenuitem
+>Skripthantering</guimenuitem
+></menuchoice
+>). Det finns några utmärkta samlingar tillgängliga, som visas i avdelningen <emphasis
+>Internet</emphasis
+> i <emphasis
+>Mediakällor</emphasis
+>. </para>
+<para
+>Podsändningar har sin egen avdelning i <emphasis
+>Mediakällor</emphasis
+> ovan. Om du har en webbadress för en RSS- eller Atom-kanal, klicka på det gröna plustecknet (<guilabel
+>+</guilabel
+>) och lägg till den där. Om du har en OPML-fil att importera, är det alternativet också tillgängligt. Använd de sammanhangsberoende menyerna (<keycap
+>högerklicksmenyerna</keycap
+>) för alternativen <guilabel
+>Lägg till i spellista</guilabel
+>, <guilabel
+>Anpassa</guilabel
+>, <guilabel
+>Ta bort prenumeration</guilabel
+>, <guilabel
+>Uppdatera kanal</guilabel
+>, eller markera ett avsnitt som <emphasis
+>Nytt</emphasis
+>. Om du är intresserad av att bläddra igenom en stor samling podsändningar, ta en titt på  <emphasis
+>Podsändningskatalog</emphasis
+> tillgänglig via  <emphasis
+>Skripthantering</emphasis
+>, som hänvisas till ovan. </para>
+</sect1>
+<sect1 id="using-the-content-browser"
+><title
+>Använda samlingsbläddraren</title>
+<para
+>Datorns hårddisk, musik-cd, externa enheter och Internet är grundresurserna i samlingen. Efter att samlingen har ställts in är det troligt att den innehåller ett stort antal album och spår, många fler än som kan visas i ett enda fönster. </para>
+<para
+>Hur visningen av samlingen ändras, nedan: </para>
+<sect2 id="hiding-or-expanding-information"
+><title
+>Dölja eller expandera information</title>
+<para
+>Området i <emphasis
+>Mediakällor</emphasis
+> under sökraden kallas <emphasis
+>Samlingsbläddraren</emphasis
+>. Tre mediakällor visas i bilden av en samlingsbläddrare nedan: en cd-skiva, lokal samling och en mediaspelare. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Cd_collection_sansa.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Att klicka på enhetens rubrik (den blåa raden för Sansa ovan) visar eller döljer enhetens innehåll. Riktningen på den gröna pilen till höger anger om enhetens innehåll visas eller är dolt. Innehållet i en viss enhet kan i sin tur döljas eller visas med samma princip, genom att klicka på lämplig artist eller album. Ett minustecken (<guilabel
+>-</guilabel
+>) till vänster om en artist eller ett album anger att innehållet är expanderat. Ett plustecken (<guilabel
+>+</guilabel
+>) anger att ytterligare innehåll för kategorin är tillgängligt, för närvarande dolt. I bilden ovan är informationen om cd:n <emphasis
+>Mike Oldfield - The Songs of Distant Earth</emphasis
+> expanderad, och visar enskilda spår. Å andra sidan är album och spår i den <emphasis
+>lokala samlingen</emphasis
+> dolda. Genom att klicka på deras plustecken (<guilabel
+>+</guilabel
+>) eller minustecken (<guilabel
+>-</guilabel
+>) kan information också expanderas eller döljas. </para>
+</sect2>
+<sect2 id="changing-the-order-of-tracks-and-albums"
+><title
+>Ändra ordningen på spår och album</title>
+<para
+>Ordningen som spår sorteras i <emphasis
+>samlingsbläddraren</emphasis
+> kan anpassas genom att använda knappen <emphasis
+>sorteringsordning</emphasis
+> längst upp i rutan <emphasis
+>Mediakällor</emphasis
+>: </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Preferences-other.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Sorteringsordningen anges uppe till vänster i <emphasis
+>Mediakällor</emphasis
+>, precis under textrutan <emphasis
+>Sök</emphasis
+>. Standardordningen är <emphasis
+>Artist / År - Album</emphasis
+>. Visningsordningen i <emphasis
+>samlingsbläddraren</emphasis
+> kan tillfälligt bytas mellan användardefinierad sorteringsordning (beskriven ovan) och en <emphasis
+>sammanfogad visning</emphasis
+> där artister listas alfabetiskt oberoende av vilka media musiken är lagrad på. För att byta <emphasis
+>sammanfogad visning</emphasis
+>, klicka på ikonen  <emphasis
+>Sammanfogad vy</emphasis
+>. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="View-list-tree.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Skriv in sökbegrepp i sökraden längst upp i avdelningen <emphasis
+>Lokal musik</emphasis
+> för att söka i samlingen. Du kan inte bara söka enligt artist, album eller spårnamn, utan efter vilken del som helst. Du kan skapa en trevlig spellista genom att exempelvis söka efter <replaceable
+>vinter</replaceable
+>, eller helt enkelt hitta ett spår när du bara kommer ihåg ett ord i titeln. Du kan också söka enligt betyg, antal spelningar, och till och med enligt filtyp. Se <ulink url="http://userbase.kde.org/Special:myLanguage/Amarok/Manual/AdvancedFeatures/SearchInCollection"
+>Sök i samlingen</ulink
+> för mer information.  </para>
+</sect2>
+<sect2 id="deleting-items-from-the-collection"
+><title
+>Ta bort objekt från samlingen</title>
+<para
+><warning
+><para
+>Använd alternativet med försiktighet: Spåren kommer att tas bort från hårddisken, inte skickas till papperskorgen.</para
+></warning>
+</para>
+<para
+>Du kan ta bort vilket objekt som helst från samlingen genom att högerklicka på det och välja det nedersta alternativet <guilabel
+>Ta bort spår</guilabel
+>. En dialogruta för bekräftelse visas, vilket förhindrar borttagning av spår av misstag. Fler än ett objekt kan markeras med <keycombo
+>&Ctrl;<keycap
+>-klick</keycap
+></keycombo
+>. </para>
+</sect2>
+</sect1>
+</chapter>
+<chapter id="playlists"
+><title
+>Spellistor</title>
+<sect1 id="the-playlist-pane"
+><title
+>Spellistans ruta</title>
+<para
+>Nu när &amarok; har sökt igenom din musiksamling vill du lyssna på den. Använd rutan <emphasis
+>Spellista</emphasis
+> för att skapa en spellista som innehåller det urval av spår du vill ha. Det är här musik, strömmande ljud eller podsändningar spelas upp.</para>
+<para
+>Spellistan kan sorteras enligt titel, album, artist, genre med mera. Du kan exempelvis först sortera spåren enligt år, därefter enligt artist, och så vidare.</para>
+<para
+>Sökrutan låter dig söka efter eller filtrera spår. De två stora gråa pilarna längst upp i <emphasis
+>spellistan</emphasis
+> låter dig gå till nästa eller föregående spår som innehåller bokstäverna du har skrivit in. Skiftnyckeln till höger låter dig filtrera spår enligt artist, album, etc.</para>
+<para
+><emphasis
+>Spellistans layout</emphasis
+> kan ändras via toppnivåmenyn: <menuchoice
+><guimenu
+>Spellista</guimenu
+><guimenuitem
+>Spellistelayouter</guimenuitem
+></menuchoice
+>.</para>
+</sect1>
+<sect1 id="adding-music-to-a-playlist"
+><title
+>Lägga till musik i en spellista</title>
+<para
+>Det finns fyra sätt att lägga till musik i spellistan.</para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok_addtoplaylist.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<orderedlist>
+<listitem
+><para
+>Markera en del musik i samlingsbläddraren, och dra den åt höger. Om den dras över <emphasis
+>sammanhangsrutan</emphasis
+> visas den <emphasis
+>uppdykande släppfunktionen</emphasis
+>, som också kallas <emphasis
+>PUD</emphasis
+>. Bilden ovan visar släppfunktionen i arbete. Den tillhandahåller tre alternativ: <guilabel
+>Lägg till i spellista</guilabel
+>, <guilabel
+>Ersätt spellista</guilabel
+> och <guilabel
+>Mer...</guilabel
+>. Alternativet markerat i det gråa området är det aktiva (<guilabel
+>Lägg till i spellista</guilabel
+> på bilden). Släpps albumet där, läggs det till i spellistan i <emphasis
+>spellistans ruta</emphasis
+>. Välj ett av de andra alternativen för att göra något annat med markeringen. Att dra den över <guilabel
+>Mer...</guilabel
+> visar en ny meny med alternativ för släppfunktionen. </para
+></listitem>
+<listitem
+><para
+>Dra markeringen hela vägen till <emphasis
+>spellistans ruta</emphasis
+> på höger sida i &amarok;s fönster. </para
+></listitem>
+<listitem
+><para
+><keycap
+>Dubbelklicka</keycap
+> på albumet eller spåret som du vill överföra till spellistan. </para
+></listitem>
+<listitem
+><para
+><keycap
+>Högerklicka</keycap
+> på albumet eller spåret. Det finns liknande alternativ i högerklicksmenyn. Bilden nedan visar den sammanhangsberoende menyn som visas efter ett högerklick på ett objekt. Välj <guilabel
+>Lägg till i spellista</guilabel
+>. </para
+></listitem>
+</orderedlist>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok_addtoplaylist1.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+<sect1 id="using-the-toolbar"
+><title
+>Använda verktygsraden</title>
+<para
+><emphasis
+>Verktygsraden</emphasis
+> längst upp i &amarok;s fönster tillhandahåller ett enkelt gränssnitt för att kontrollera musikuppspelning i spellistan. Klicka på den runda ikonen till vänster för att börja spela musik, och klicka på den igen för paus. Till höger finns volymkontrollen och tystnadsknappen: klicka i mitten på ikonen för tystnad. Använd musens hjul för att justera volymen, eller klicka och dra musen längs volymikonens ytterring. När ett spår eller en ström väl börjar spelas, visas omväxlande <emphasis
+>artist</emphasis
+>, <emphasis
+>albumnamn</emphasis
+> och <emphasis
+>spårtitel</emphasis
+> med fetstil i mitten. Nästa spår finns till höger, som börjar spelas omedelbart vid ett klick. När ett spår väl har spelats, kommer det att finnas till vänster, så att det går att gå tillbaka genom att klicka på titeln. Förloppsrutan mitt på <emphasis
+>verktygsraden</emphasis
+> anger åtgången tid (till vänster) och återstående tid (till höger) för spåret som för närvarande spelas. Om du istället vill ha en traditionellare verktygsrad, kan du välja <guilabel
+>Tunn verktygsrad</guilabel
+> i menyn <guilabel
+>Visa</guilabel
+>. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Controlamarok.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+<sect1 id="manipulating-playlists"
+><title
+>Hantera spellistor</title>
+<para
+>Du kanske vill ta bort album eller spår från spellistan, arrangera om de visade objekten för varje spår, eller arrangera om ordningen spåren visas.</para>
+<sect2 id="removing-a-track"
+><title
+>Ta bort ett spår</title>
+<para
+>Du kan ta bort vilket spår eller album som helst från spellistan genom att: </para>
+<orderedlist>
+<listitem
+><para
+><keycap
+>Högerklicka</keycap
+> på objektet i spellistan och välj alternativet <guilabel
+>Ta bort från spellista</guilabel
+>. </para
+></listitem>
+<listitem
+><para
+>Dra objektet som ska tas bort till <emphasis
+>sammanhangsrutan</emphasis
+> för att aktivera den uppdykande släppfunktionen. Flera alternativ visas i <emphasis
+>sammanhangsrutan</emphasis
+>. Dra objektet till området som är markerat <guilabel
+>Ta bort från spellista</guilabel
+>. Se bilden nedan som visar ett spår som dras till alternativet <guilabel
+>Ta bort</guilabel
+> med den uppdykande släppfunktionen. </para
+></listitem>
+<listitem
+><para
+>Markera spåret eller spåren och använd tangenten <keycap
+>Delete</keycap
+>. Flera spår kan väljas med &Shift; eller &Ctrl;. </para
+></listitem>
+</orderedlist>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok-removefromplaylist.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Du kan ångra borttagningen genom att trycka på <keycombo
+>&Ctrl;<keycap
+>Z</keycap
+></keycombo
+> eller genom att klicka på lämplig pil på <emphasis
+>spellistans verktygsrad</emphasis
+> längst ner i <emphasis
+>spellistans ruta</emphasis
+> (se nedan). </para>
+</sect2>
+<sect2 id="using-the-playlist-tools-at-the-bottom"
+><title
+>Använda verktygen längst ner i spellistan</title>
+<para
+>Längst ner i spellistans ruta finns sju ikoner: </para>
+<para>
+<table>
+  <title
+>Ikoner i spellistans ruta</title>
+  <tgroup cols="2">
+  <tbody>
+  <row>
+    <entry>
+      <para
+>Ikon</para>
+    </entry>
+    <entry>
+      <para
+>Åtgärd</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-clear-playlist-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Rensa spellistan från alla album och spår</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Document-save.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Spara spellistan. Om namnet inte ändras, får den dagens datum som namn.</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Edit-undo.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Ångra den senaste redigeringen av spellistan</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Edit-redo.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Gör om det senast ångrade i spellistan</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-music-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Markera spåret som för närvarande spelas. Användbart för långa spellistor</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-media-standard-track-progression-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Ställ in uppspelningsläge: upprepa spår, slumpmässig ordning, föredra sällan spelade, etc.</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-media-standard-track-progression-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Ställ in uppspelningsläge: upprepa spår, slumpmässig ordning, föredra sällan spelade, etc.</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-edit-playlist-queue.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Redigera spellistans kö, spår som spelas först innan spellistan återupptas.</para>
+    </entry>
+  </row>
+</tbody>
+  </tgroup>
+</table>
+</para>
+<para
+>Knapparna tillhandahåller bekväma alternativ för flera snabbtangenter. </para>
+</sect2>
+</sect1>
+<sect1 id="saving-and-retrieving-your-favourite-playlists"
+><title
+>Spara och hämta favoritspellistor</title>
+<para
+>Diskikonen (visad i tabellen ovan), längst ner i <emphasis
+>spellistans ruta</emphasis
+> låter dig spara den nuvarande spellistan i &amarok;. Det gör det möjligt att återkalla ett visst musikurval från samlingen när som helst. Spellistor innehåller bara pekare till vald musik, inte själva musiken. Om spellistan alltså pekar på musik i en extern enhet, måste den vara ansluten och monterad, annars kan inte musiken spelas. Det finns tre ställe spellistor kan lagras: </para>
+<orderedlist>
+<listitem
+><para
+>utanför &amarok; i datorns filsystem, </para
+></listitem>
+<listitem
+><para
+>i &amarok;s databas över spellistor, </para
+></listitem>
+<listitem
+><para
+>på en bärbar mediaspelare. </para
+></listitem>
+</orderedlist>
+<para
+>Genom att klicka på diskikonen längst ner i <emphasis
+>spellistans ruta</emphasis
+> lagras spellistan i &amarok;s databas med spellistor. För att spara på hårddisken, klicka och håll nere, och gå därefter till det alternativet.</para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.4.1SavePlaylistChoices.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+>Klicka och håll nere, för att spara spellistan</phrase>
+    </textobject>
+    <caption>
+      <para
+>Klicka och håll nere, för att spara spellistan</para>
+    </caption>
+  </mediaobject>
+</screenshot
+></para>
+<para
+>Normalt får den sparade spellistan ett namn som består av datum och tid när den sparades (se bilden nedan). Högerklicka på spellistans namn för att byta namn. Att högerklicka på ett namn i spellistan gör det också möjligt att lägga till den i den befintliga spellistan i <emphasis
+>spellistans ruta</emphasis
+>, eller ersätta den befintliga spellistan.</para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok-renameplaylist.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+</chapter>
+<chapter id="the-context-view"
+><title
+>Sammanhangsvyn</title>
+<para
+>Kraften i &amarok; sitter i <emphasis
+>sammanhangsrutan</emphasis
+> (i mitten av &amarok;s standardfönster), där det går att installera diverse <emphasis
+>miniprogram</emphasis
+> för att hjälpa till med att njuta av och utforska musik. Det mesta av denna ytterligare information hämtas från Internet, så en anslutning är viktig för att få ut så mycket som möjligt av <emphasis
+>sammanhangsrutan</emphasis
+>. Normalt är tre <emphasis
+>miniprogram</emphasis
+>förinställda: <emphasis
+>Aktuellt spår</emphasis
+>, <emphasis
+>Sångtext</emphasis
+> och <emphasis
+>Wikipedia</emphasis
+>. </para>
+<sect1 id="default-layout"
+><title
+>Standardlayout</title>
+<para
+>Den förinställda <emphasis
+>sammanhangsrutan</emphasis
+> söker efter sångtexten för sången som spelas. Om sångtexten hittas, visas den i nedre delen av sammanhangsrutan, medan den övre rubriken i <emphasis
+>sammanhangsrutan</emphasis
+> visar albumomslag och spårinformation för aktuell musik. Ibland är sångtexten inte tillgänglig, på grund av att den inte är lagrad i en lämplig resurs på Internet. Dessutom måste spårinformationen för aktuellt spår ha riktiga <link linkend="tags"
+>taggar</link
+> för att sångtexten ska kunna hittas. Om såntexten inte hittas, kan det bero på olika orsaker, bland dem felaktig information hos källorna på Internet, som felaktig numrering av spåren på albumet, och felaktig representation av ovanlig text, liksom när ett spårs titel ska innehålla vissa tecken med circumflex, cedilj eller accent (ê,ç,à), men inte gör det. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok-context.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+<sect1 id="customizing-the-context-pane"
+><title
+>Anpassa sammanhangsrutan</title>
+<para
+>Längst ner i sammanhangsrutan finns tre knappar för de förvalda miniprogrammen. Till höger om knapparna syns en skiftnyckel. Genom att klicka på den visas ett rött <guilabel
+>X</guilabel
+> som låter dig ta bort miniprogrammen. Klicka på det gröna plustecknet (<guilabel
+>+</guilabel
+>) för att lägga till flera visningsalternativ (se bilden nedan). Dra de namngivna knapparna för att ordna om miniprogrammen du har, och klicka på skiftnyckeln igen för att låsa ändringarna.</para>
+<para
+>Detta gör sammanhangsrutan ytterst flexibel, och maximerar möjligheten att ha en egen visning som passar dina behov. Mer information finns <ulink url="http://userbase.kde.org/Special:myLanguage/Amarok/Manual/AmarokWindow/ContextPane"
+>här</ulink
+>.</para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok-contextadd.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+</chapter>
+<chapter id="how-to-deal-with-problems"
+><title
+>Hur man hanterar problem</title>
+<sect1 id="some-of-the-music-is-being-rapidly-skipped-over"
+><title
+>En del av musiken hoppas snabbt över </title>
+<para
+>Du kanske inte har installerat nödvändiga <emphasis
+>avkodare</emphasis
+>. Mer om det här: <ulink url="http://userbase.kde.org/Amarok/Manual/FAQ#What_media_types_does_Amarok_support.3F"
+>Vanliga frågor: Vilka mediatyper stöder &amarok;</ulink
+>. Se din distribution. </para>
+</sect1>
+<sect1 id="after-my-ipod-has-been-mounted-it-is-not-shown-in-the-content-browser"
+><title
+>Efter min iPod har monterats, visas den inte i samlingsbläddraren</title>
+<para
+>Det ska inte kunna hända. Kontrollera att enheten har monterats riktigt. Genom att helt enkelt skriva <userinput
+>mount</userinput
+> i en terminal, visas alla monterade enheter. </para>
+</sect1>
+<sect1 id="amarok-cannot-see-the-predefined-playlists-on-my-portable-music-player"
+><title
+>&amarok; kan inte se de fördefinierade spellistorna på min bärbara musikspelare</title>
+<para
+>Vänta på nästa version av &amarok;. </para>
+</sect1>
+<sect1 id="after-i-have-updated-my-collection-the-additions-are-not-shown-in-the-content-browser"
+><title
+>Efter att jag har uppdaterat samlingen, visas inte tilläggen i samlingsbläddraren.</title>
+<para
+>I toppnivåmenyn <menuchoice
+><guimenu
+>Verktyg</guimenu
+> <guimenuitem
+>Uppdatera samling</guimenuitem
+></menuchoice
+>. Om de inte dyker upp, avsluta &amarok; med menyn <guilabel
+>Amarok</guilabel
+>, eller använd <keycombo
+>&Ctrl;<keycap
+>Q</keycap
+></keycombo
+> för att avsluta. När du väl startar om &amarok;, ska samlingen visa uppdateringarna. </para>
+</sect1>
+<sect1 id="amarok-cannot-find-the-lyrics-of-the-songs-that-i-play"
+><title
+>&amarok; kan inte hitta sångtexterna för sångerna jag spelar</title>
+<para
+>Möjligheter: </para>
+<orderedlist>
+<listitem
+><para
+>Sångtexten är inte tillgänglig på de platser som kontrollerats på Internet. Du kan behöva lägga till flera platser via skriptmenyn (innan 2.4.1:<menuchoice
+><guimenu
+>Verktyg</guimenu
+><guimenuitem
+>Skripthantering</guimenuitem
+></menuchoice
+>, från 2.4.1: <menuchoice
+><guimenu
+>Inställningar</guimenu
+><guisubmenu
+>Anpassa  Amarok</guisubmenu
+><guimenuitem
+>Skript</guimenuitem
+></menuchoice
+>). </para
+></listitem>
+<listitem
+><para
+>Spårnumreringen i ett album i samlingen är inte riktig. </para
+></listitem>
+<listitem
+><para
+>Sångens namn innehåller specialtecken med en cedilj, accent, etc. som inte syns i spårnamnet. Därför kan inte sångtextskriptet hitta något som motsvarar titeln. Kontrollera taggar och spårnumreringssystem med ett taggverktyg som <ulink url="http://musicbrainz.org/doc/MusicBrainz_Picard"
+>Picard</ulink
+>. </para
+></listitem>
+</orderedlist>
+</sect1>
+<sect1 id="my-question-isnt-answered-here"
+><title
+>Jag hittar inte svaret på min fråga här</title>
+<para
+>Mer komplicerade frågor behandlas i <ulink url="http://userbase.kde.org/Special:myLanguage/Amarok/Manual"
+>handboken</ulink
+>, inklusive <ulink url="http://userbase.kde.org/Special:myLanguage/Amarok/Manual/TroubleshootingAndCommonProblems"
+>Felsökning och vanliga problem</ulink
+> samt <ulink url="http://userbase.kde.org/Special:mylanguage/Amarok/Manual/FAQ"
+>Svar på vanliga frågor för Amarok</ulink
+>. </para>
+</sect1>
+</chapter>
+<chapter id="glossary"
+><title
+>Ordförklaring</title>
+<sect1 id="breadcrumbs"
+><title
+>Länkstigar</title>
+<para
+>Det här är ett sätt att navigera i en hierarkisk filstruktur i &amarok; nära överkanten av  rutan <emphasis
+>Mediakällor</emphasis
+>. Den börjar på hemkatalogens nivå, och visar hur långt ner du har förflyttat dig i filsystemet. När du har gått till en viss plats i filsystemet, visas alla kataloger på högre nivåer. I &amarok; gör länkarna mellan katalognivåer (<guilabel
+>&gt;</guilabel
+>) det möjligt att ta reda på vilka alternativa kataloger som är tillgängliga på en viss nivå. En länkstig är ett effektivt sätt att navigera i datorns hela filsystem. </para>
+</sect1>
+<sect1 id="collection"
+><title
+>Samling</title>
+<para
+>Alla ljudfiler som &amarok; har samlat i databasen. Samlingen kan variera i storlek och musikspårens sammansättning, beroende på vilka externa enheter (som musik-cd eller bärbara spelare med musik) är anslutna till och monterade på datorn. </para>
+</sect1>
+<sect1 id="content-browser"
+><title
+>Samlingsbläddraren</title>
+<para
+>Det här är den centrala delen i rutan <emphasis
+>Mediakällor</emphasis
+> som låter dig lyssna på musik som finns i din samling. Samlingsbläddraren låter dig välja spårlistans sorteringsordning, samt detaljnivån du vill se musiken. </para>
+</sect1>
+<sect1 id="playlist"
+><title
+>Spellista</title>
+<para
+>Ett urval av spår från samlingen som du vill spela. Vissa bärbara musikspelare har fördefinierade spellistor som troligtvis skiljer sig från &amarok;s spellistor. </para>
+</sect1>
+<sect1 id="script5"
+><title
+>Skript</title
+> 
+<para
+>Insticksprogram i &amarok; för att utöka funktionerna. Innan 2.4.1 är skript tillgängliga med <menuchoice
+><guimenu
+>Verktyg</guimenu
+><guimenuitem
+>Skripthantering</guimenuitem
+></menuchoice
+>, från 2.4.1 med <menuchoice
+><guimenu
+>Inställningar</guimenu
+><guisubmenu
+>Anpassa Amarok</guisubmenu
+><guimenuitem
+>Skript</guimenuitem
+></menuchoice
+>. Lägg till fler källor till sångtexter, fler strömmade stationer, spara omslag i albumkataloger, bränn cd-skivor från spellistor, etc.</para>
+</sect1>
+<sect1 id="scrobble"
+><title
+>Skicka in (scrobble)</title>
+<para
+>Att skicka in (eng. scrobble) ett spår betyder att när du lyssnar på det, skickas spårets titel och artist till en webbplats som <emphasis
+>Last.fm</emphasis
+>, där informationen läggs till i din profil.</para>
+</sect1>
+<sect1 id="stream-streaming"
+><title
+>Ström, strömma</title>
+<para
+>Som radiostationer på 1900-talet, skickar Internet-radiostationer ut <quote
+>strömmar</quote
+> med program. Man kan hitta musik, nyheter, reportage och åsikter. Många strömmar kan kommas åt via &amarok;, antingen med skript såsom Cool streams, eller individuellt tillagda via menyn (<menuchoice
+><guimenu
+>Spellista</guimenu
+><guimenuitem
+>Lägg till strömmar</guimenuitem
+></menuchoice
+>). </para>
+</sect1>
+<sect1 id="tags"
+><title
+>Taggar</title>
+<para
+>Information om varje spår du lyssnar på, t.ex. albumnamn, spårtitel, kompositör, artist, år, etc. Det finns en standard som kallas ID3 för att inkludera denna information på musik-cd. Du kan redigera taggar för enskilda spår inne i &amarok; om filrättigheterna är riktiga. </para>
+</sect1>
+</chapter>
+<!--userbase-content-->
+<chapter id="credits">
+<title
+>Tack till och licens</title>
+    <para
+>Dokumentation Copyright, se användarbasens <ulink url="http://userbase.kde.org/index.php?title=Amarok&amp;action=history"
+>&amarok;s sidhistorik</ulink
+></para>
+    <para
+>Översättning Stefan Asserhäll <email
+>stefan.asserhall@comhem.se</email
+></para
+> 
+&underFDL; </chapter>
+&documentation.index;
+</book>

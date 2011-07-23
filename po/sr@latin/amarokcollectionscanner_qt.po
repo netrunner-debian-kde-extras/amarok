@@ -3,6 +3,7 @@
 # Chusslove Illich <caslav.ilic@gmx.net>, 2009, 2010, 2011.
 # Dalibor Djuric <dalibor.djuric@mozilla-srbija.org>, 2010.
 # Slobodan Terzić <githzerai06@gmail.com>, 2010, 2011.
+# Dalibor Djuric <daliborddjuric@gmail.com>, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarokcollectionscanner_qt\n"

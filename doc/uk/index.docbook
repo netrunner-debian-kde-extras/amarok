@@ -1,0 +1,2016 @@
+<?xml version="1.0" ?>
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.2-Based Variant V1.1//EN" "dtd/kdex.dtd" [
+  <!ENTITY % addindex "IGNORE">
+  <!ENTITY % Ukrainian "INCLUDE">
+]>
+<book lang="&language;">
+<bookinfo>
+<title
+>Підручник з &amarok;</title>
+<authorgroup>
+<author>
+<personname
+><firstname
+>Цю документацію було створено на основі сторінки UserBase &kde; <ulink url=" http://userbase.kde.org/Amarok"
+>&amarok;</ulink
+>.</firstname
+> <surname
+></surname
+> </personname>
+    </author>
+<othercredit role="translator"
+><firstname
+>Юрій</firstname
+><surname
+>Чорноіван</surname
+><affiliation
+><address
+><email
+>yurchor@ukr.net</email
+></address
+></affiliation
+><contrib
+>Переклад українською</contrib
+></othercredit
+> 
+    </authorgroup>
+<legalnotice
+>&FDLNotice;</legalnotice>
+<date
+>31 травня 2011 року</date>
+    <releaseinfo
+>&kde; SC 4.6</releaseinfo>
+<abstract>
+<para
+>&amarok; — це вільний, гнучкий і потужний програвач музичних композицій для &Linux;. Версії останньої серії випусків, 2.x, які часто називають «Amarok 2», можуть працювати на багатьох платформах (зокрема &Linux;, Mac OS X і &Microsoft; &Windows;). Код цих версій було повністю переписано, що надасть авторам змогу реалізувати чудові нові можливості під час розвитку проекту. Поточною стабільною версією є 2.4.</para>
+    </abstract>
+<keywordset>
+ <keyword
+>KDE</keyword>
+ <keyword
+>мультимедійні дані</keyword>
+ <keyword
+>програвач</keyword>
+ <keyword
+>аудіо</keyword>
+ <keyword
+>ogg</keyword>
+ <keyword
+>mp3</keyword>
+ <keyword
+>wav</keyword>
+ <keyword
+>музика</keyword>
+ <keyword
+>звук</keyword>
+</keywordset>
+</bookinfo>
+<!--userbase <timestamp
+>2011-05-22T05:48:00Z</timestamp
+>-->
+
+<!--userbase-content-->
+<chapter id="interface"
+><title
+>Інтерфейс</title
+> 
+<para
+>Типово, у &amarok; використовується інтерфейс з трьома панелями. </para>
+<sect1 id="the-left-pane-media-sources"
+><title
+>Ліва панель (Джерела мультимедійних даних)</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokmediasources-home.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Панель <emphasis
+>Джерела мультимедійних даних</emphasis
+> розташовано ліворуч. За її допомогою ви можете отримувати доступ до локальної збірки, а також інших служб: <guilabel
+>Локальної музики</guilabel
+> вгорі (основний інтерфейс керування локальною збіркою) та носіїв даних, зокрема mp3-програвачів та компакт-дисків. Окрему сторінку призначено для <guilabel
+>служб інтернету</guilabel
+>, музику з яких ви слухаєте. На цій сторінці ви зможете знайти списки радіостанцій і трансляцій. За її допомогою можна наказати програмі відтворити звукові дані або оформити передплату на службу. Тут ви зможете працювати з вашим обліковим записом на <ulink url="http://www.last.fm"
+>last.fm</ulink
+>, придбати музику у мережевому магазині, наприклад, <guilabel
+>Magnatune</guilabel
+>, і звантажити композиції незалежних музикантів з <guilabel
+>Jamendo</guilabel
+> тощо. За допомогою сторінки <guilabel
+>Списки відтворення</guilabel
+> ви зможете створити списки і керувати динамічними або традиційними списками композицій і трансляцій. Нарешті, на сторінці <guilabel
+>Файли</guilabel
+> ви знайдете вбудований переглядач файлів, а на сторінці <guilabel
+>Радіотрансляції</guilabel
+> отримаєте доступ до ваших підписок на трансляції (подкасти). </para>
+</sect1>
+<sect1 id="the-central-pane-context-view"
+><title
+>Центральна панель (Панель контексту)</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok-context.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>За допомогою цієї панелі програма показуватиме вам інформацію. На панелі міститимуться аплети, які динамічно змінюватимуться і показуватимуть відомості щодо поточної композиції. Тут ви зможете побачити оцінку, рахунок та кількість відтворень поточної композиції, перелік інших композицій виконавця у вашій збірці, слова пісні, сторінку <ulink url="http://www.wikipedia.org"
+>Вікіпедії</ulink
+>, присвячену виконавцеві та інші дані. Додавати, вилучати або впорядковувати аплети можна за допомогою <guilabel
+>панелі аплетів</guilabel
+>, розташованої у нижній частині цієї панелі. </para>
+</sect1>
+<sect1 id="the-right-pane-playlist-view"
+><title
+>Права панель (Панель списку відтворення)</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1right.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>У &amarok; передбачено найгнучкіший з усіх відомих списків відтворення. У інших програвачах ви знайдете типову таблицю композицій, можливо, ще декілька фіксованих різновидів списку відтворення. &amarok; надасть вам всі можливості для зміни параметрів списку відтворення відповідно до ваших потреб. Для початку у програмі передбачено три приклади компонування списку, якими ви можете скористатися під час створення власного компонування. Ви можете створювати списки відтворення у динамічному режимі з різноманітними умовами або скористатися інструментом автоматичного створення списків, перемішувати композиції у списку, наказати програмі відтворювати їх у випадковому порядку або повторювати, додавати композиції до списку і зберігати списки відтворення для подальшого використання. </para>
+</sect1>
+</chapter>
+<chapter id="features"
+><title
+>Можливості</title
+> 
+<sect1 id="music-playback"
+><title
+>Відтворення музики</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokfull.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>У &amarok; передбачено підтримку відтворення музичних файлів у найпопулярніших форматах. Вміст переліку цих форматів залежить від кодеків та серверів відтворення звуку, встановлених у вашій системі. Крім того, у програмі передбачено підтримку традиційних списків відтворення: ви можете створювати, зберігати і завантажувати будь-який з потрібних вам списків відтворення. </para>
+</sect1>
+<sect1 id="device-support"
+><title
+>Підтримка пристроїв</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1ipod.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>У &amarok; передбачено підтримку роботи з багатьма мультимедійними пристроями, зокрема пристроями <guilabel
+>iPods</guilabel
+>, <ulink url="http://en.wikipedia.org/wiki/Media_Transfer_Protocol"
+><guilabel
+>MTP</guilabel
+></ulink
+> та <ulink url="http://en.wikipedia.org/wiki/USB_mass_storage_device_class"
+><guilabel
+>UMS</guilabel
+></ulink
+>. </para>
+ 
+<para
+>За допомогою кнопки <guilabel
+>Об’єднаний перегляд</guilabel
+>, розташованої над панеллю збірки, ви зможете об’єднувати збірки. Після об’єднання списків композицій з вашої локальної збірки, звукових компакт-дисків, mp3-програвачів тощо пункти композицій буде показано у одній спільній збірці. За допомогою повторного натискання цієї кнопки ви можете повернутися до показу окремих джерел. </para>
+</sect1>
+<sect1 id="configurable-context-view"
+><title
+>Налаштування панелі контексту</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Context-applets-amarok.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Центральна частина &amarok; — <guilabel
+>Панель контексту</guilabel
+> — здатна автоматично отримувати контекстні відомості щодо поточної композиції (зокрема зображення з обкладинки альбомів, слова та відомості з <ulink url="http://www.wikipedia.org"
+>Вікіпедії</ulink
+>) з інтернету і показувати їх. Цієї можливості ви не знайдете у інших програмах, лише у &amarok;. </para>
+</sect1>
+<sect1 id="more-internet-services"
+><title
+>Додаткові інтернет-служби</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok_-_internet_services.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>&amarok; відкриває перед вами ворота до якнайширшого використання можливостей інтернету. </para>
+<itemizedlist>
+<listitem
+><para
+>У програмі передбачено інтерфейси до різноманітних служб, зокрема <emphasis
+>музичних серверів Ampache</emphasis
+> та <emphasis
+>скриньок mp3tunes</emphasis
+>. За допомогою програми ви зможете послухати музику з власної збірки будь-де. </para
+></listitem>
+<listitem
+><para
+>Безпосередньо за допомогою інтерфейсу програми ви можете прослухати зразки творів з <guilabel
+>Magnatune</guilabel
+>, а потім придбати відповідні твори. </para
+></listitem>
+<listitem
+><para
+>Використовуючи службу <guilabel
+>Jamendo</guilabel
+>, ви зможете слухати і звантажувати музику незалежних виконавців, яких ви можете підтримати вашими внесками. </para
+></listitem>
+<listitem
+><para
+>За допомогою вбудованого додатка <ulink url="http://www.last.fm"
+>last.fm</ulink
+> ви зможете підбирати композиції, використовувати можливості <ulink url="http://www.last.fm"
+>last.fm</ulink
+>, зокрема статистичні, списки популярності, та слухати потоки даних мережевої радіостанції, створеної відповідно до ваших музичних смаків. І все це не полишаючи &amarok;. </para
+></listitem>
+</itemizedlist>
+ 
+<para
+>Це лише початок: ви можете додати інші служби інтернету за допомогою <guilabel
+>Керування скриптами</guilabel
+>. </para>
+</sect1>
+<sect1 id="script-manager"
+><title
+>Керування скриптами</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1scriptmanager.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Скрипти — це додатки, за допомогою яких ви можете розширити функціональні можливості &amarok; у декілька способів. За допомогою <guilabel
+>Керування скриптами</guilabel
+> ви можете керувати цими скриптами: встановлювати і вилучати, вмикати і вимикати скрипти, які вже встановлено. Крім того, ви можете скористатися можливістю <guilabel
+>Звантажити скрипти</guilabel
+> для звантаження скриптів, створених іншими користувачами. </para>
+</sect1>
+<sect1 id="cover-manager"
+><title
+>Керування обкладинками</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1covermanager.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Ви можете здійснювати навігацію вашою збіркою музичних творів за допомогою чудового інструменту <guilabel
+>Керування обкладинками</guilabel
+>, на панелі якого буде показано всі звантажені вами обкладинки альбомів, звантажити зображення обкладинок з різних джерел або надати &amarok; змогу звантажувати зображення обкладинок з інтернету. </para>
+</sect1>
+<sect1 id="rating-and-scoring"
+><title
+>Оцінювання творів</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1rating.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Позначити улюблені пісні можна за допомогою визначення їх оцінок. У &amarok; передбачено можливість визначення дробових оцінок з точністю до <guilabel
+>&frac12;&sdot;&#10025;</guilabel
+>. Крім того, &amarok; може обчислювати рахунок (щось на зразок автоматично визначеної оцінки) залежно від того, наскільки часто відтворювалася композиція, та того, чи не переривали ви її відтворення. </para>
+</sect1>
+<sect1 id="pop-up-dropper"
+><title
+>Контекстне скидання</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Pud-amarok.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>У програмі передбачено інноваційний спосіб визначення дій над композицією (тих дій, доступ до яких можна отримати за допомогою контекстного меню, тобто клацання правою кнопкою миші): ви можете просто скинути пункт композиції на відповідний пункт дії. Перетягніть пункт композиції і ви побачити відповідні пункти дій на панелі контексту! </para>
+</sect1>
+<sect1 id="configurable-playlist-view"
+><title
+>Налаштування панелі списку відтворення</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1pleditor.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>У програмі передбачено надзвичайні можливості з налаштування завантаженого списку відтворення, у цьому списку може бути показано будь-які відомості щодо композицій у будь-якій формі. Якщо вам подобається вигляд <guilabel
+>електронної таблиці</guilabel
+>, з яким ви звикли працювати у &amarok;&nbsp;1.x та інших програвачах музики, ви можете увімкнути саме цей вигляд! Крім того, за допомогою панелі перегляду ви можете зберегти або експортувати поточний список відтворення. </para>
+</sect1>
+<sect1 id="dynamic-playlists"
+><title
+>Динамічні списки композицій</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.1dynamicplaylist.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>За допомогою &amarok; ви можете створити випадкові списки відтворення з ваговими частинами певних різновидів композицій, що відповідають певним критеріям точно (<guilabel
+>Пропорційне зміщення</guilabel
+>) або приблизно (<guilabel
+>Нечітке зміщення</guilabel
+>). Ви, наприклад, можете створити список відтворення з випадковими композиціями з оцінкою, що перевищує 3, так, щоб ці композиції було записано приблизно у 1967 році! </para>
+</sect1>
+<sect1 id="replay-gain-support"
+><title
+>Підтримка вирівнювання гучності</title
+> 
+<para
+>У &amarok; передбачено можливості вбудовування даних щодо вирівнювання гучності до міток файла та автоматичного коригування загальної гучності композиції до типового рівня. </para>
+<para
+>Відкрийте свою музику знову! </para>
+</sect1>
+</chapter>
+<chapter id="hints-tips-and-faqs"
+><title
+>Підказки, настанови та відповіді на питання</title
+> 
+<para
+>Якщо станеться так, що більшість ваших музичних композицій буде виявлено програмою &amarok;, але програма не зможе «побачити» композицій з деяких тек, відкрийте консоль і введіть команду </para>
+<para
+><userinput
+>touch <replaceable
+>тека</replaceable
+></userinput
+> 
+</para>
+<para
+>де замість слова <replaceable
+>тека</replaceable
+> слід вказати адресу проблемної теки. Після цього у &amarok; виберіть пункт меню <menuchoice
+><guimenu
+>Параметри</guimenu
+><guimenuitem
+>Налаштувати Amarok</guimenuitem
+></menuchoice
+> і скористайтеся пунктом <menuchoice
+><guimenu
+>Збірка</guimenu
+><guimenuitem
+>Повністю пересканувати всю збірку</guimenuitem
+></menuchoice
+>. Ваша тека має потрапити до списку тек. </para>
+</chapter>
+<chapter id="more-information"
+><title
+>Додаткові відомості</title
+> 
+<itemizedlist>
+<listitem
+><para
+><ulink url="http://amarok.kde.org/"
+>Домашня сторінка &amarok;</ulink>
+</para
+></listitem>
+<listitem
+><para
+><ulink url="http://forum.kde.org/viewforum.php?f=127"
+>Форум &amarok;</ulink>
+</para
+></listitem>
+</itemizedlist>
+<para
+>Вітаємо вас зі встановленням &amarok;, найпотужнішого програмного забезпечення для керування музичними записами, яке будь-коли було створено. За допомогою &amarok; ви зможете здійснювати навігацію вашою музичною збіркою та отримувати від неї максимальні позитивні емоції. Крім того, ви зможете насолодитися музикою з різних джерел, зокрема інтернет-радіостанціями та звуковими книжками. У цьому підручнику наведено настанови щодо налаштування &amarok; на пошук вашої збірки, відтворення музики та способів використання &amarok; для пошуку даних у інтернеті. Ми припускатимемо, що вам нічого невідомо про &amarok;, але ви вже вмієте користуватися меню, мишею та клавіатурою вашого комп’ютера. </para>
+</chapter>
+<chapter id="getting-started"
+><title
+>Початкові зауваження</title>
+<sect1 id="starting-amarok"
+><title
+>Як запустити &amarok;</title>
+<para
+>Якщо ви вже знайомі з можливостями вашої операційної системи, ви, ймовірно, вже знаєте як запустити &amarok;, отже можете перейти до <link linkend="first-time"
+>наступного пункту</link
+>. Якщо ж у вас виникають труднощі, скористайтеся наведеними нижче порадами. </para>
+<sect2 id="from-plasma"
+><title
+>Запуск за допомогою Плазми</title>
+<para
+>Якщо ви працюєте у <ulink url="http://userbase.kde.org/Special:mylanguage/Plasma"
+>робочому просторі Плазми</ulink
+>, ви можете запустити &amarok; у один з таких способів: </para>
+<itemizedlist>
+<listitem
+><para
+>натисканням кнопки <ulink url="http://userbase.kde.org/Special:mylanguage/Kickoff"
+>Kickoff</ulink
+> з наступним вибором пункту <menuchoice
+><guimenu
+>Програми</guimenu
+><guisubmenu
+>Звук і Відео</guisubmenu
+><guimenuitem
+>&amarok;</guimenuitem
+></menuchoice
+>. </para
+></listitem>
+<listitem
+><para
+>за допомогою <ulink url="http://userbase.kde.org/Special:mylanguage/KRunner"
+>&krunner;</ulink
+> (типова комбінація клавіш для запуску — <keycombo
+>&Alt;<keycap
+>F2</keycap
+></keycombo
+>); введіть <userinput
+>amarok</userinput
+> і натисніть клавішу &Enter;. </para
+></listitem>
+</itemizedlist>
+</sect2>
+<sect2 id="from-the-file-manager"
+><title
+>за допомогою програми для керування файлами</title
+> 
+<para
+>Відкрийте файл звукових даних, який може відтворювати &amarok;.</para>
+</sect2>
+</sect1>
+<sect1 id="first-time"
+><title
+>Перший запуск</title>
+<para
+>Після першого запуску &amarok; буде відкрито вікно майстра початкового налаштування, у якому програма запитає вас про те, де розташовано файли вашої музичної збірки. Якщо у вашій системі <ulink url="help:/kcontrol/paths/index.html"
+>налаштовано каталог для зберігання музики</ulink
+>, &amarok; знайде потрібний каталог і спитає вас, чи слід його використовувати: </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Firstruncollection2.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot
+></para>
+<para
+>Якщо у діалоговому вікні ви натиснете кнопку <guilabel
+>Ні</guilabel
+>, програма відкриє інше діалогове вікно, за допомогою якого ви зможете вказати теку, у якій зберігаються ваші музичні дані:</para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Configurecollection.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Див. <link linkend="setting-up-a-collection"
+>Налаштування збірки</link
+>. </para>
+<para
+>Після вибору теки, у якій зберігаються ваші музичні дані, &amarok; виконає пошук файлів даних у основній теці та підтеках для створення збірки. Тривалість пошуку залежатиме від кількості композицій та швидкості обробки даних. </para>
+</sect1>
+<sect1 id="closing-amarok"
+><title
+>Як завершити роботу &amarok;</title>
+<para
+>Якщо ви хочете завершити роботу &amarok; </para>
+<itemizedlist>
+<listitem
+><para
+>Натисніть комбінацію клавіш <keycombo
+>&Ctrl;<keycap
+>Q</keycap
+></keycombo
+>, коли вікно &amarok; буде активовано, або </para
+></listitem>
+<listitem
+><para
+>Скористайтеся пунктом <guilabel
+>Вийти</guilabel
+> у меню &amarok;, або </para
+></listitem>
+<listitem
+><para
+>Наведіть вказівник миші на піктограму з синім зображенням голови вовка у <emphasis
+>системному лотку</emphasis
+> і клацніть правою кнопкою миші. Програма відкриє таке контекстне меню: </para
+></listitem>
+</itemizedlist>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokrightmenu.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Якщо ви просто закриєте вікно &amarok; натисканням кнопки <emphasis
+>Закрити</emphasis
+> на смужці заголовка, &amarok; продовжить роботу у фоновому режимі. Керувати роботою програми можна буде за допомогою піктограми з синім зображенням голови вовка у <emphasis
+>системному лотку</emphasis
+>: </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amaroksystray.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Якщо ви завершите сеанс роботи або вимкнете комп’ютер без завершення роботи &amarok;, частину встановлених вами параметрів може бути не збережено, якщо ви не користуєтеся KDE. </para>
+</sect1>
+</chapter>
+<chapter id="the-amarok-window"
+><title
+>Вікно &amarok;</title
+> 
+<para
+>Вікно програми &amarok; є типовим інтерфейсом користувача, за допомогою якого ви зможете кинути новий погляд на ваші улюблені твори. Крім того, вікно програми надасть вам максимум візуальної інформації щодо музики. Хоча багатьох користувачів вдовольняє типове компонування вікна, компонування можна довільним чином змінити, якщо воно вам не подобається.</para>
+<sect1 id="default-layout-of-the-amarok-window"
+><title
+>Типове компонування вікна &amarok;</title
+> 
+<para
+>Одразу після встановлення вікно &amarok; виглядатиме так:</para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="AmarokNew2.4.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+>Amarok 2.4 після встановлення</phrase>
+    </textobject>
+    <caption>
+      <para
+>Amarok 2.4 після встановлення</para>
+    </caption>
+  </mediaobject>
+</screenshot
+></para>
+<para
+>Вікно &amarok; складається з чотирьох основних частин:</para>
+<orderedlist>
+<listitem
+><para
+>під верхнім меню розташовано <emphasis
+>панель інструментів</emphasis
+>, під якою розташовано три інші панелі: </para
+></listitem>
+<listitem
+><para
+>панель <emphasis
+>джерел даних</emphasis
+> (музичної збірки та решти джерел) ліворуч, </para
+></listitem>
+<listitem
+><para
+>панель <emphasis
+>контексту</emphasis
+> у центрі і </para
+></listitem>
+<listitem
+><para
+>панель <emphasis
+>списку відтворення</emphasis
+> праворуч. </para
+></listitem>
+</orderedlist>
+</sect1>
+<sect1 id="using-the-amarok-window-to-manage-and-play-your-music"
+><title
+>Використання вікна &amarok; для керування збіркою та відтворення ваших музичних творів</title>
+<para
+>Щоб відтворити музичний твір у &amarok;, зазвичай, слід виконати такі дві дії: </para>
+<orderedlist>
+<listitem
+><para
+>створити список відтворення позначенням декількох композицій на панелі <emphasis
+>джерел даних</emphasis
+> з перенесенням їх на панель <emphasis
+>списку відтворення</emphasis
+>. </para
+></listitem>
+<listitem
+><para
+>запустити відтворення списку за допомогою панелі <emphasis
+>списку відтворення</emphasis
+> і/або <emphasis
+>панелі інструментів</emphasis
+>. </para
+></listitem>
+</orderedlist>
+<para
+>Крім того, ви можете перенести частину ваших музичних творів на портативний програвач, наприклад, iPod. У наступних розділах ми наведемо настанови щодо виконання відповідних завдань.</para>
+</sect1>
+</chapter>
+<chapter id="the-music-collection"
+><title
+>Музична збірка</title>
+<sect1 id="the-media-sources-pane"
+><title
+>Панель джерел даних</title>
+<para
+>За допомогою панелі <emphasis
+>джерел даних</emphasis
+> ви зможете пересуватися і переглядати всю вашу збірку музичних творів. Зокрема це стосується композицій, що зберігаються на жорсткому диску вашого комп’ютера, а також на будь-яких зовнішніх пристроях зберігання даних або носіях, з’єднаних з вашим комп’ютером, наприклад, звукових компакт-дисках, флеш-картках USB, мультимедійних програвачах, дисках у мережі або на серверах у інтернеті. </para>
+</sect1>
+<sect1 id="setting-up-a-collection"
+><title
+>Налаштування збірки</title>
+<para
+>На вашому комп’ютері зберігаються ваші улюблені композиції у форматах mp3, ogg або FLAC? Вкажіть &amarok;, де шукати ці файли, щоб програма могла розпочати створення вашої збірки. Скористайтеся для цього верхнім меню <menuchoice
+><guimenu
+>Параметри</guimenu
+><guisubmenu
+> Налаштувати &amarok;</guisubmenu
+><guimenuitem
+>Збірка</guimenuitem
+></menuchoice
+>. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.4.1ConfigureDialogCollection.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+>Діалогове вікно налаштування збірки у версії 2.4.1</phrase>
+    </textobject>
+    <caption>
+      <para
+>Діалогове вікно налаштування збірки у версії 2.4.1</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Вище наведено зразок перегляду ієрархії вашого домашнього каталогу. Позначте пункти каталогів, у яких зберігаються ваші музичні твори; зазвичай, ~/Музика. Після цього натисніть кнопку <guilabel
+>Повністю пересканувати всю збірку</guilabel
+>. Сканування може тривати досить довго, отже &amarok; може певний час працювати досить повільно. Після завершення сканування краще перезапустити &amarok;. Скористайтеся відповідним пунктом меню &amarok; або натисніть комбінацію клавіш <keycombo
+>&Ctrl;<keycap
+>Q</keycap
+></keycombo
+>, а потім знову запустіть програму. Всі щойно знайдені твори мають потрапити до списку <emphasis
+>Локальна збірка</emphasis
+>. </para>
+</sect1>
+<sect1 id="adding-media-devices-to-the-collection"
+><title
+>Додавання до збірки даних на портативних носіях</title>
+<para
+>Одразу під полем пошуку у верхній частині панелі <emphasis
+>джерел даних</emphasis
+> ви побачите пункти різних пристроїв і/або категорій даних панелі <emphasis
+>джерел даних</emphasis
+>. Якщо ви вставите у пристрій для читання компакт-дисків звуковий компакт-диск, його пункт з’явиться на панелі джерел даних, поряд з пунктами програвачів мультимедійних даних, флеш-карток та інших пристроїв протоколу USB. Після монтування зовнішнього пристрою зберігання даних його пункт має автоматично з’явитися на панелі джерел даних. Вам не потрібно виконувати ніяких додаткових дій для того, щоб побачити пункти зовнішніх пристроїв зберігання у вашому списку панелі <emphasis
+>джерел даних</emphasis
+>, якщо ці пристрої розпізнаються вашим комп’ютером автоматично.</para>
+<para
+>На наведеному нижче знімку вінка показано три з’єднаних джерела музичних даних: звуковий компакт-диск, mp3-програвач і <emphasis
+>Локальна збірка</emphasis
+>.</para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Mediasources.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+<sect1 id="ripping-a-cd-into-the-collection"
+><title
+>Видобування даних зі звукового оптичного носія до збірки</title>
+<para
+>Якщо на вашому комп’ютері не зберігається жодних музичних файлів, ви можете <emphasis
+>видобути</emphasis
+> їх (скопіювати музичні дані з ваших компакт-дисків до збірки). Просто вставте у лоток компакт-диск, наведіть вказівник на пункт компакт-диска на панелі <emphasis
+>джерел даних</emphasis
+>, клацніть правою кнопкою миші, виберіть пункт копіювання до вашої збірки. Програма виконає <emphasis
+>видобування</emphasis
+> та <emphasis
+>визначення міток</emphasis
+> ваших композицій (див. наведене нижче зображення). Під час копіювання музики зі звукового компакт-диска до вашої <emphasis
+>локальної збірки</emphasis
+> на <emphasis
+>смужці повідомлень</emphasis
+> у нижній частині вікна &amarok; буде показано поступ процесу копіювання. Видобування може тривати декілька хвилин. Коли його буде завершено, повідомлення зі <emphasis
+>смужки повідомлень</emphasis
+> зникне, а відповідні пункти музичних творів з’являться на панелі джерел даних вашої локальної збірки. Якщо ви не бачите пунктів видобутих творів на панелі <emphasis
+>джерел даних</emphasis
+>, варто завершити роботу &amarok; за допомогою відповідного пункту меню &amarok; або натискання комбінації клавіш <keycombo
+>&Ctrl;<keycap
+>Q</keycap
+></keycombo
+>, а потім знову запустити її. Після цього відповідні пункти з’являться у вашій збірці. На наведеному нижче знімку показано, як пересувати композиції з вашого звукового компакт-диска, iPod або іншого пристрою до вашої збірки за допомогою контекстного меню. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokripcd.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Крім того, у контекстному меню буде показано пункт <guilabel
+>Змінити відомості про композицію</guilabel
+>. Скористайтеся цим пунктом, якщо вам потрібно змінити мітки певної композиції. Цей пункт є важливим, якщо видобування музичних даних було виконано до файлів у форматі .WAV з втратою частини міток. Якщо значна частина вашої збірки потребує встановлення відповідних міток, спробуйте скористатися відповідним програмним забезпеченням для встановлення міток, наприклад, </para>
+<itemizedlist>
+<listitem
+><para
+><ulink url="http://musicbrainz.org/doc/PicardTagger"
+>Picard</ulink>
+</para
+></listitem>
+<listitem
+><para
+><ulink url="http://easytag.sourceforge.net"
+>EasyTag</ulink>
+</para
+></listitem>
+<listitem
+><para
+><ulink url="http://kid3.sourceforge.net"
+>Kid3</ulink>
+</para
+></listitem>
+</itemizedlist>
+<para
+>Встановлення належних міток є важливим, якщо ви хочете, щоб &amarok; показував композиції у відповідних альбомах та у відповідному порядку. Докладніше про мітки можна дізнатися <link linkend="tags"
+>тут</link
+>. </para>
+</sect1>
+<sect1 id="accessing-other-media-sources"
+><title
+>Як отримати доступ до інших джерел даних</title>
+<para
+>Ймовірно, у вас виникло питання: чому панель <emphasis
+>джерел даних</emphasis
+> не названо панеллю збірок. &amarok; надає вам доступ до значно ширшого діапазону джерел даних, ніж ваша локальна збірка, — інтернет-магазинів, звукових книг, трансляцій, музичних файлів, що зберігаються поза межами вашої збірки та попередньо збережених списків відтворення. Ключем доступ до всіх цих джерел у &amarok; є інструмент послідовної навігації. Початковим пунктом послідовної навігації є піктограма домашньої теки у лівому верхньому куті панелі <emphasis
+>джерел даних</emphasis
+>. До цієї піктограми додаються додаткові пункти, коли ви переходите до інших тек на панелі <emphasis
+>джерел даних</emphasis
+>, що спрощує навігацію вашою збіркою: достатньо просто натиснути відповідну кнопку теки на панелі послідовної навігації.</para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokbreadcrumb.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Якщо ви натиснете кнопку домашньої теки &amarok;, ви побачите <emphasis
+>панель джерел даних</emphasis
+> внизу ліворуч з піктограмами всіх доступних ресурсів. Якщо натиснути піктограму файлів (ліве зображення нижче, другий пункт з кінця), ви побачите щось схоже на зображення, наведене внизу праворуч. Смужка послідовної навігації розгорнеться, а на <emphasis
+>панелі джерел даних</emphasis
+> буде показано вміст відповідної теки (зображення нижче праворуч). У відповідь на натискання символів <guilabel
+>&gt;</guilabel
+>, розташованих між пунктами послідовного перегляду, програма показуватиме вам меню з пунктів тек, доступних для переходу на відповідному рівні ієрархії. Інструмент перегляду файлової системи &amarok; надасть вам доступ до будь-якого куточка файлової системи, навіть поза межами локальної збірки. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokmediasources-home.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+    <caption>
+      <para
+>Панель джерел даних</para>
+    </caption>
+  </mediaobject>
+</screenshot
+> 
+</para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokmediasources-files.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+    <caption>
+      <para
+>Натиснуто піктограму файлів</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Призначення піктограм домашньої теки &amarok; (розташованої вгорі ліворуч): </para>
+<para>
+<table>
+  <title
+>Піктограми у теці «Домівка»</title>
+  <tgroup cols="3">
+  <tbody>
+  <row>
+    <entry>
+      <para
+>Піктограма</para>
+    </entry>
+    <entry>
+      <para
+>Назва</para>
+    </entry>
+    <entry>
+      <para
+>Дія</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi32-action-collection-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+><guilabel
+>Локальна музика</guilabel
+></para>
+    </entry>
+    <entry>
+      <para
+>Ваша збірка &amarok;</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Applications-internet.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+><guilabel
+>Інтернет</guilabel
+></para>
+    </entry>
+    <entry>
+      <para
+>Інтернет-магазини, зокрема Magnatune, Jamendo і Last.fm. Для початку, інтернет-ресурси слід налаштувати за допомогою пункту меню <menuchoice
+><guimenu
+>Параметри</guimenu
+><guisubmenu
+>Налаштувати &amarok;</guisubmenu
+><guimenuitem
+>Інтернет-служби</guimenuitem
+></menuchoice
+>.</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="View-media-playlist.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+><guilabel
+>Списки відтворення</guilabel
+></para>
+    </entry>
+    <entry>
+      <para
+>Збережені списки композицій. Дивіться також <link linkend="playlists"
+>Списки відтворення</link
+>. Також списки відтворення на носіях даних.</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Folder-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+><guilabel
+>Файли</guilabel
+></para>
+    </entry>
+    <entry>
+      <para
+>Файлова система вашого комп’ютера</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-podcast-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+><guilabel
+>Радіотрансляції</guilabel
+></para>
+    </entry>
+    <entry>
+      <para
+>Доступ до радіотрансляцій за допомогою подач RSS</para>
+    </entry>
+  </row>
+</tbody>
+  </tgroup>
+</table>
+</para>
+<para
+>Натискання піктограми локальної музики, розташованої вище, або пункту теки локальної музики на смужці послідовної навігації поверне вас до вашої збірки, де ви побачите список всіх доступних ресурсів, виконавців, альбомів та композиції, які було раніше визначено як частину вашої збірки. На панелі послідовної навігації буде показано, що ви переглядаєте вашу локальну музику. </para>
+</sect1>
+<sect1 id="streams-and-podcasts"
+><title
+>Потоки і радіотрансляції</title>
+<para
+>Потокові дані можна прослухати у два способи. Якщо у вас є певна улюблена радіостанція, дізнайтеся адресу її потоку і додайте його: <menuchoice
+><guimenu
+>Список композицій</guimenu
+><guimenuitem
+>Додати потік</guimenuitem
+></menuchoice
+>. Відповідний пункт з’явиться у меню <emphasis
+>Списки відтворення</emphasis
+>, як <emphasis
+>Збережений список відтворення</emphasis
+>. Іншим способом є використання скриптів, доступ до яких можна отримати за допомогою <emphasis
+>Керування скриптами</emphasis
+> (<menuchoice
+><guimenu
+>Інструменти</guimenu
+><guimenuitem
+>Керування скриптами</guimenuitem
+></menuchoice
+>). Серед скриптів є декілька чудових збірок, пункти яких буде показано у розділі <emphasis
+>Інтернет</emphasis
+> вашої панелі <emphasis
+>джерел даних</emphasis
+>. </para>
+<para
+>У радіотрансляцій є власний розділ на панелі <emphasis
+>джерел даних</emphasis
+>, розташованій вище. Якщо вам відома адреса подачі RSS або Atom, натисніть кнопку з зеленим символом <guilabel
+>+</guilabel
+> і вкажіть адресу. Якщо у вас є файл OPML для імпортування, ви зможете вказати і його. Скористайтеся контекстними меню (меню, які викликаються <keycap
+>клацанням правою кнопкою миші</keycap
+>), щоб <guilabel
+>Додати до списку відтворення</guilabel
+>, <guilabel
+>Налаштувати</guilabel
+>, <guilabel
+>Вилучити підписку</guilabel
+>, <guilabel
+>Оновити канал</guilabel
+> або позначити серію як <emphasis
+>Нову</emphasis
+>. Якщо ви зацікавлені у використанні великої збірки радіотрансляцій, скористайтеся <emphasis
+>Каталогом радіотрансляцій</emphasis
+>, доступним за допомогою <emphasis
+>Керування скриптами</emphasis
+>, про яке ми згадували раніше. </para>
+</sect1>
+<sect1 id="using-the-content-browser"
+><title
+>Користування панеллю перегляду даних</title>
+<para
+>Файли жорсткого диска вашого комп’ютера, звукові компакт-диски, зовнішні пристрої та інтернет є основними ресурсами вашої збірки. Після налаштування вашої збірки, ймовірно, у вашій збірці буде досить багато альбомів та композицій, набагато більше, ніж може бути показано у одному вікні. </para>
+<para
+>Нижче наведено способи зміни форми показу вашої збірки. </para>
+<sect2 id="hiding-or-expanding-information"
+><title
+>Приховування та показ відомостей</title>
+<para
+>Область панелі <emphasis
+>джерел даних</emphasis
+>, розташована під смужкою пошуку, називається <emphasis
+>Переглядачем даних</emphasis
+>. На наведеному нижче знімку наведено три джерела даних переглядачем даних: компакти диски, локальна збірка і програвач мультимедійних даних. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Cd_collection_sansa.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Натискання кнопки пристрою (синя смужка для пристрою Sansa на знімку вище) показує або приховує вміст відповідного пристрою. Напрямок зеленої стрілки, розташованої праворуч, вказує на те, приховати чи показано вміст пристрою. Вміст відповідного пристрою, відповідно, можна приховати або показати на основі подібного ж принципу: натисканням пункту відповідного виконавця або альбому. Символ <guilabel
+>-</guilabel
+>, розташований ліворуч від пункту виконавця або альбому, означає, що вміст показано. Символ <guilabel
+>+</guilabel
+> означає, що вміст категорії доступний і прихований. На наведеному вище зображенні, дані щодо компакт-диска <emphasis
+>Mike Oldfield - The Songs of Distant Earth</emphasis
+> розгорнуто, показано окремі композиції. З іншого боку, альбоми і композиції <emphasis
+>Локальної збірки</emphasis
+> приховано. Натискання кнопок з символами <guilabel
+>+</guilabel
+> або <guilabel
+>-</guilabel
+> також розгортає або згортає список відомостей. </para>
+</sect2>
+<sect2 id="changing-the-order-of-tracks-and-albums"
+><title
+>Як змінити порядок композицій і альбомів</title>
+<para
+>Порядок, у якому показано композиції у <emphasis
+>переглядачі вмісту</emphasis
+>, можна змінити за допомогою кнопки <emphasis
+>варіантів впорядкування</emphasis
+>, розташованої у верхній частині панелі <emphasis
+>джерел даних</emphasis
+>: </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Preferences-other.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>За порядком побудови списку можна спостерігати за допомогою верхньої лівою частини панелі <emphasis
+>джерел даних</emphasis
+>, одразу під текстовим полем <emphasis
+>Пошук</emphasis
+>. Типовим порядком <emphasis
+>Виконавець / Рік - Альбом</emphasis
+>. Порядок показу у <emphasis
+>перегляді вмісту</emphasis
+> можна тимчасово перемкнути між визначеним користувачем порядком (спосіб його зміни описано вище) та <emphasis
+>об’єднаним переглядом</emphasis
+>, у якому пункти виконавців буде показано за абеткою, незалежно від того, на якому носії зберігаються дані. Щоб увімкнути або вимкнути режим об’єднаного перегляду, натисніть <emphasis
+>піктограму об’єднання</emphasis
+>, розташовану вгорі праворуч на панелі <emphasis
+>джерел даних</emphasis
+>: </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="View-list-tree.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Щоб виконати пошук у вашій збірці, введіть ключові слова пошуку до поля пошуку, розташованого над розділом <emphasis
+>Локальна музика</emphasis
+>. Ви можете виконувати пошук не лише за виконавцем, альбомом або назвою композиції, а і за будь-якими даними композиції. Ви можете, наприклад, створити чудовий список відтворення за результатами пошуку за словом <replaceable
+>winter</replaceable
+> або явним чином знайти композицію, про яку ви пам’ятаєте лише одне слово з назви. Ви також можете виконати пошук за оцінкою, кількістю відтворень, навіть типом файла. Докладніше про це можна дізнатися зі <ulink url="http://userbase.kde.org/Special:myLanguage/Amarok/Manual/AdvancedFeatures/SearchInCollection"
+>стонінки щодо пошуку у збірці</ulink
+>. </para>
+</sect2>
+<sect2 id="deleting-items-from-the-collection"
+><title
+>Вилучення записів зі збірки</title>
+<para
+><warning
+><para
+>Будьте обережними з використанням цього варіанта: композиції буде вилучено з жорсткого диска, а не надіслано до смітника.</para
+></warning>
+</para>
+<para
+>Ви можете вилучити будь-який пункт з вашої збірки: для цього достатньо навести вказівник миші на відповідний пункт, клацнути правою кнопкою миші і вибрати пункт <guilabel
+>Вилучити композиції</guilabel
+>. Програма відкриє діалогове вікно підтвердження дій, щоб запобігти випадковому вилученню композицій. Позначити одразу декілька композицій можна за допомогою одночасного утримування натиснутою клавіші <keycombo
+>&Ctrl;<keycap
+>клацання лівою кнопкою миші</keycap
+></keycombo
+>. </para>
+</sect2>
+</sect1>
+</chapter>
+<chapter id="playlists"
+><title
+>Списки відтворення</title>
+<sect1 id="the-playlist-pane"
+><title
+>Панель списків відтворення</title>
+<para
+>Після створення збірки музичних творів, очевидно, у вас виникне бажання послухати музику. Отже, створіть список композицій, що міститиме всі бажані композиції, на <emphasis
+>панелі списку відтворення</emphasis
+>. За допомогою цієї панелі ви зможете наказувати програмі відтворювати музику, потокові музичні дані та трансляції.</para>
+<para
+>За допомогою цієї панелі ви зможете відтворювати вашу музику, потокові дані або дані інтернет-радіостанцій. Ви зможете впорядковувати список композицій за назвою, альбомом, виконавцем, жанром та іншими характеристиками. Наприклад, ви можете наказати програмі впорядкувати композиції спочатку за роком, потім за виконавцем тощо.</para>
+<para
+>За допомогою поля пошуку ви можете шукати композиції або фільтрувати їх список. За допомогою двох великих сірих стрілок у верхній частині <emphasis
+>панелі списку відтворення</emphasis
+> ви можете перейти до наступної або попередньої композиції, дані якої містять вказані вами літери. За допомогою кнопки з гайковим ключем, розташованої праворуч, ви зможете виконати фільтрування списку за виконавцем, альбомом тощо.</para>
+<para
+>Компонування панелі списку відтворення можна змінити за допомогою верхнього меню: <menuchoice
+><guimenu
+>Список композицій</guimenu
+><guimenuitem
+>Компонування списків композицій</guimenuitem
+></menuchoice
+>.</para>
+</sect1>
+<sect1 id="adding-music-to-a-playlist"
+><title
+>Додавання композицій до списку відтворення</title>
+<para
+>Передбачено чотири способи додавання музики до списку композицій на <emphasis
+>панелі списку відтворення</emphasis
+>.</para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok_addtoplaylist.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<orderedlist>
+<listitem
+><para
+>Позначте твір на панелі джерел даних і перетягніть його праворуч. Коли пункт досягне панелі <emphasis
+>контексту</emphasis
+>, ви побачите <emphasis
+>панель контекстного скидання</emphasis
+>. На знімку, наведеному вище, ви можете бачити панель контекстного скидання. За допомогою панелі контекстного скидання можна отримати доступ до трьох варіантів дій: <guilabel
+>Додати до списку відтворення</guilabel
+>, <guilabel
+>Замінити список відтворення</guilabel
+> і <guilabel
+>Більше...</guilabel
+>. Активною вважається варіант, позначений сірим кольором (<guilabel
+>Додати до списку відтворення</guilabel
+> у нашому прикладі). Скидання альбому на цей пункт додасть його до <emphasis
+>списку відтворення</emphasis
+>. За допомогою інших варіантів можна виконати інші дії з позначеними вами композиціями. Якщо композиції буде перетягнуто на пункт <guilabel
+>Більше...</guilabel
+>, програма відкриє додаткове меню варіантів дій. </para
+></listitem>
+<listitem
+><para
+>Перетягніть позначені композиції безпосередньо на <emphasis
+>панель списку відтворення</emphasis
+>, розташовану у правій частині вікна &amarok;. </para
+></listitem>
+<listitem
+><para
+><keycap
+>Двічі клацнути лівою кнопкою миші</keycap
+> на позначці альбому/композиції, яку слід додати до списку відтворення. </para
+></listitem>
+<listitem
+><para
+>Наведіть вказівник миші на позначку альбому або композиції і клацніть <keycap
+>правою</keycap
+> кнопкою миші. У контекстному меню ви знайдете ті самі варіанти дій. На наведеному нижче зображенні показано контекстне меню пункту у списку відтворення. Виберіть у контекстному меню пункт <guilabel
+>Додати до списку відтворення</guilabel
+>. </para
+></listitem>
+</orderedlist>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok_addtoplaylist1.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+<sect1 id="using-the-toolbar"
+><title
+>Користування панеллю інструментів</title>
+<para
+><emphasis
+>Панель інструментів</emphasis
+>, розташована у верхній частині вікна &amarok;, — простий інтерфейс для керування відтворенням музики зі списку відтворення. Натисніть круглу піктограму, розташовану ліворуч, щоб розпочати відтворення. Повторне клацання призведе до призупинки відтворення. Праворуч розташовано кнопку керування гучністю та вимикання звуку: наведення вказівника миші на центральну частину кнопки з наступним натисканням лівої кнопки миші призведе до вимикання звуку. Щоб змінити гучність скористайтеся гортанням коліщатка миші або перетягуванням з клацанням на зовнішньому кільці піктограми гучності. Після того, як розпочнеться відтворення композиції, у центральній частині панелі один за одним буде показано <emphasis
+>виконавця</emphasis
+>/<emphasis
+>назву альбому</emphasis
+>/<emphasis
+>назву композиції</emphasis
+>. Праворуч буде показано назву наступної композиції. Наведення вказівника миші на цю назву з наступним клацанням лівою кнопкою миші призведе до негайного початку її відтворення. Після завершення відтворення композиції її назву буде показано у лівій частині панелі, ви зможете натиснути цю назву, щоб повернутися до відтворення цієї композиції. Смужка поступу у середній частині <emphasis
+>панелі інструментів</emphasis
+> показуватиме дані щодо вже витраченого часу (ліворуч) та часу, що залишився (праворуч). Якщо ви надаєте перевагу традиційній панелі інструментів, ви можете вибрати пункт <guilabel
+>Вузька панель</guilabel
+> у меню <guilabel
+>Перегляд</guilabel
+>. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Controlamarok.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+<sect1 id="manipulating-playlists"
+><title
+>Керування списками відтворення</title>
+<para
+>Ймовірно, вам захочеться вилучити альбоми або композиції зі списку, змінити порядок у списку для окремої композиції або виконати загальне перевпорядкування списку.</para>
+<sect2 id="removing-a-track"
+><title
+>Вилучення композиції</title>
+<para
+>Ви можете вилучити будь-яку композицію або альбом з вашого списку композицій у один з таких способів: </para>
+<orderedlist>
+<listitem
+><para
+>Наведіть вказівник миші на пункт у списку відтворення, клацніть <keycap
+>правою</keycap
+> кнопкою миші і виберіть у контекстному меню пункт <guilabel
+>Вилучити зі списку відтворення</guilabel
+>. </para
+></listitem>
+<listitem
+><para
+>Перетягніть пункт, який слід вилучити, на панель <emphasis
+>контексту</emphasis
+>, щоб активувати контекстне меню. У цьому меню ви побачите декілька пунктів. Перетягніть композицію на пункт з написом <guilabel
+>Вилучити зі списку відтворення</guilabel
+>. На наведеному нижче зображенні показано композицію, яку перетягують на пункт меню <guilabel
+>Вилучити</guilabel
+>. </para
+></listitem>
+<listitem
+><para
+>Позначте пункт композиції або декількох композицій і натисніть клавішу <keycap
+>Delete</keycap
+>. Позначити декілька композицій можна за допомогою утримування натиснутою клавіші &Shift; або &Ctrl;. </para
+></listitem>
+</orderedlist>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok-removefromplaylist.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Скасувати вилучення можна натисканням комбінації клавіш <keycombo
+>&Ctrl;<keycap
+>Z</keycap
+></keycombo
+> або відповідної кнопки зі стрілочкою на <emphasis
+>панелі інструментів списку відтворення</emphasis
+>, розташованій у нижній частині <emphasis
+>панелі списку відтворення</emphasis
+> (див. нижче). </para>
+</sect2>
+<sect2 id="using-the-playlist-tools-at-the-bottom"
+><title
+>Використання інструментів керування списками відтворення, розташованих внизу</title>
+<para
+>У нижній частині панелі списку відтворення ви побачите сім піктограм: </para>
+<para>
+<table>
+  <title
+>Піктограми панелі списку відтворення</title>
+  <tgroup cols="2">
+  <tbody>
+  <row>
+    <entry>
+      <para
+>Піктограма</para>
+    </entry>
+    <entry>
+      <para
+>Дія</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-clear-playlist-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Спорожнити список відтворення від всіх альбомів та композицій</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Document-save.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Зберегти ваш список відтворення. Якщо ви не змінюватимете назву, буде використано типову назву на основі поточної дати.</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Edit-undo.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Скасувати останню внесену вами до списку відтворення зміну</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Edit-redo.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Повторити раніше скасовану дію зі списком відтворення</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-music-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Підсвітити пункт композиції, що відтворюється. Корисно для довгих списків відтворення</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-media-standard-track-progression-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Встановити режим відтворення: повторення композицій, випадковий порядок, надавати перевагу композиціям, які давно не відтворювалися тощо</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-media-standard-track-progression-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Встановити режим відтворення: повторення композицій, випадковий порядок, надавати перевагу композиціям, які давно не відтворювалися тощо</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-edit-playlist-queue.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Редагувати чергу списку відтворення; композиції, які буде відтворено до поновлення використання списку композицій.</para>
+    </entry>
+  </row>
+</tbody>
+  </tgroup>
+</table>
+</para>
+<para
+>Ці кнопки є зручною альтернативою до деяких клавіатурних скорочень. </para>
+</sect2>
+</sect1>
+<sect1 id="saving-and-retrieving-your-favourite-playlists"
+><title
+>Збереження та відновлення ваших улюблених списків відтворення</title>
+<para
+>За допомогою кнопки з піктограмою дискети (показано у наведеній вище таблиці), розташованої у нижній частині вашої <emphasis
+>панелі списку відтворення</emphasis
+>, ви можете зберегти поточний список відтворення &amarok;. Згодом ви зможете знову відтворити цей список. У списках відтворення зберігаються лише посилання на позначені вами композиції, а не самі композиції. Отже, якщо ваш список відтворення посилається на дані з зовнішнього пристрою, на час відтворення пристрій має бути з’єднано і змонтовано, інакше ви нічого не почуєте. Списки відтворення можна зберігати у трьох місцях: </para>
+<orderedlist>
+<listitem
+><para
+>поза межами &amarok; у файловій системі вашого комп’ютера, </para
+></listitem>
+<listitem
+><para
+>у вашій базі даних списків відтворення &amarok;, </para
+></listitem>
+<listitem
+><para
+>на портативному носії даних. </para
+></listitem>
+</orderedlist>
+<para
+>Натискання піктограми з зображенням дискети, розташованої у нижній частині <emphasis
+>панелі списку відтворення</emphasis
+>, призведе до збереження вашого списку у базі даних &amarok;. Щоб зберегти список на диск, натисніть піктограму, утримуйте натиснутою кнопку миші, а потім виберіть у списку потрібний вам варіант.</para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2.4.1SavePlaylistChoices.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+>Натисніть кнопку миші і утримуйте її. Прокрутіть коліщатко, щоб зберегти список композицій.</phrase>
+    </textobject>
+    <caption>
+      <para
+>Натисніть кнопку миші і утримуйте її. Прокрутіть коліщатко, щоб зберегти список композицій.</para>
+    </caption>
+  </mediaobject>
+</screenshot
+></para>
+<para
+>Типово, ваш збережений список відтворення матиме назву, що складається з дати і часу, коли ви його зберегли (див. наведений нижче знімок). За допомогою контекстного меню, яке можна викликати клацанням правою кнопкою миші, ви зможете додати список відтворення до поточного списку на <emphasis
+>панелі списку відтворення</emphasis
+> або замінити ним поточний список відтворення.</para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok-renameplaylist.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+</chapter>
+<chapter id="the-context-view"
+><title
+>Панель контексту</title>
+<para
+>Одним з найпотужніших інструментів &amarok; є панель <emphasis
+>контексту</emphasis
+> (розташована у центрі типового вікна &amarok;). Ви можете вбудовувати у цю панель різноманітні <emphasis
+>аплети</emphasis
+>, які допоможуть вам отримати додаткові відомості щодо композицій з вашої збірки. Переважну частину додаткових даних програма отримує з інтернету, отже для повноцінного використання панелі <emphasis
+>контексту</emphasis
+> вам знадобиться інтернет-з’єднання. У типовому компонуванні передбачено 3 <emphasis
+>аплети</emphasis
+>: <emphasis
+>Поточна композиція</emphasis
+>, <emphasis
+>Текст пісні</emphasis
+> і <emphasis
+>Вікіпедія</emphasis
+>. </para>
+<sect1 id="default-layout"
+><title
+>Типове компонування</title>
+<para
+>За типових налаштувань панель <emphasis
+>контексту</emphasis
+> виконує пошук тексту пісні, яка зараз відтворюється. Якщо текст буде знайдено, програма покаже його у нижній половині панелі контексту. У верхній половині панелі <emphasis
+>контексту</emphasis
+> буде показано зображення з обкладинки альбому та відомості щодо поточної композиції. Іноді текст пісні не вдається знайти через те, що його немає на відповідному ресурсі у інтернеті. Крім того, відомості щодо композиції має бути належним чином <link linkend="tags"
+>збережено у мітках</link
+>, щоб програма могла знайти відповідний текст. Причинами того, що текст не вдалося знайти, можуть бути помилкова нумерації композицій у альбомі, помилки під час пошуку нетипових назв пісень, зокрема назв, що містять діакритичні символи, седиль або акцентовані літери (ê,ç,à). </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok-context.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+<sect1 id="customizing-the-context-pane"
+><title
+>Налаштування панелі контексту</title>
+<para
+>У нижній частині панелі <emphasis
+>контексту</emphasis
+> розташовано три кнопки типових аплетів. Праворуч від цих кнопок розташовано кнопку з зображенням гайкового ключа. Якщо ви натиснете останню кнопку, програма покаже кнопку з зображенням червоного хрестика. За допомогою натискання цієї кнопки ви зможете вилучати аплети. Натисканням кнопки з зеленим <guilabel
+>+</guilabel
+> можна додати нові аплети (див. знімок нижче). Щоб змінити порядок аплетів, перетягніть відповідним чином кнопки з написами, а потім знову натисніть кнопку з гайковим ключем, щоб зафіксувати ваш вибір. Всі ці елементи керування роблять компонування панелі <guilabel
+>контексту</guilabel
+> дуже гнучким, отже ви зможете змінити компонування таким чином, щоб воно максимально відповідало вашим потребам.</para>
+<para
+>Це робити панель <emphasis
+>Контекст</emphasis
+> дуже гнучкою у налаштуванні, максимально розширює можливості з показу нетипових даних. Докладніше про це можна дізнатися <ulink url="http://userbase.kde.org/Special:myLanguage/Amarok/Manual/AmarokWindow/ContextPane"
+>тут</ulink
+>.</para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok-contextadd.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+</chapter>
+<chapter id="how-to-deal-with-problems"
+><title
+>Способи усування проблем</title>
+<sect1 id="some-of-the-music-is-being-rapidly-skipped-over"
+><title
+>Після спроби розпочати відтворення програма швидко пропускає частину творів</title>
+<para
+>Ймовірно, вам слід встановити відповідні <emphasis
+>кодеки</emphasis
+>. Докладніше про це у розділі <ulink url="http://userbase.kde.org/Amarok/Manual/FAQ#What_media_types_does_Amarok_support.3F"
+>Поширені питання: підтримку яких типів даних передбачено у &amarok;</ulink
+>. Будь ласка, зверніться до довідки з вашого дистрибутива. </para>
+</sect1>
+<sect1 id="after-my-ipod-has-been-mounted-it-is-not-shown-in-the-content-browser"
+><title
+>Після монтування мого iPod, його пункту немає на панелі джерел даних</title>
+<para
+>Такого не мало трапитися. Перевірте, чи справді змонтовано пристрій. Щоб переглянути список всіх змонтованих пристроїв, просто віддайте команду <userinput
+>mount</userinput
+> у консолі. </para>
+</sect1>
+<sect1 id="amarok-cannot-see-the-predefined-playlists-on-my-portable-music-player"
+><title
+>&amarok; не бачить списків відтворення з мого портативного музичного програвача</title>
+<para
+>Зачекайте на наступну версію &amarok;. </para>
+</sect1>
+<sect1 id="after-i-have-updated-my-collection-the-additions-are-not-shown-in-the-content-browser"
+><title
+>Після оновлення мною збірки у списках збірки немає нових пунктів</title>
+<para
+>Скористайтеся пунктом меню <menuchoice
+><guimenu
+>Інструменти</guimenu
+><guimenuitem
+>Оновити збірку</guimenuitem
+></menuchoice
+>. Якщо пункти у списку не з’являться, завершіть роботу &amarok; за допомогою меню <guilabel
+>Amarok</guilabel
+> або скористайтеся комбінацією клавіш <keycombo
+>&Ctrl;<keycap
+>Q</keycap
+></keycombo
+>. Після повторного запуску &amarok; список збірки має оновитися. </para>
+</sect1>
+<sect1 id="amarok-cannot-find-the-lyrics-of-the-songs-that-i-play"
+><title
+>&amarok; не вдається знайти слова пісні, яку я слухаю</title>
+<para
+>Можливі причини: </para>
+<orderedlist>
+<listitem
+><para
+>Слів пісні немає на сайтах, на яких програма шукає слова у інтернеті. Ви можете розширити діапазон сайтів за допомогою додаткових скриптів (<menuchoice
+><guimenu
+>Інструменти</guimenu
+><guimenuitem
+>Керування скриптами</guimenuitem
+></menuchoice
+>у версії до 2.4.1 і <menuchoice
+><guimenu
+>Параметри</guimenu
+><guisubmenu
+>Налаштувати Amarok</guisubmenu
+><guimenuitem
+>Скрипти</guimenuitem
+></menuchoice
+> у версіях після 2.4.1). </para
+></listitem>
+<listitem
+><para
+>Система нумерації композицій у альбомі вашої збірки є помилковою. </para
+></listitem>
+<listitem
+><para
+>У заголовку композиції містяться спеціальні символи з седилем, акцентами тощо, які програма не здатна обробити. Скрипт пошуку слів просто не може знайти відповідну назву у базі даних назв. Спробуйте скоригувати мітки і систему нумерації композицій за допомогою програми для виправлення міток, наприклад, <ulink url="http://musicbrainz.org/doc/MusicBrainz_Picard"
+>Picard</ulink
+>. </para
+></listitem>
+</orderedlist>
+</sect1>
+<sect1 id="my-question-isnt-answered-here"
+><title
+>Тут немає відповіді на моє питання</title>
+<para
+>Відповіді на складніші питання можна знайти у <ulink url="http://userbase.kde.org/Special:myLanguage/Amarok/Manual"
+>підручнику</ulink
+>, зокрема розділах щодо <ulink url="http://userbase.kde.org/Special:myLanguage/Amarok/Manual/TroubleshootingAndCommonProblems"
+>усування типових проблем</ulink
+> та <ulink url="http://userbase.kde.org/Special:mylanguage/Amarok/Manual/FAQ"
+>відповідей на поширені питання щодо Amarok</ulink
+>. </para>
+</sect1>
+</chapter>
+<chapter id="glossary"
+><title
+>Глосарій</title>
+<sect1 id="breadcrumbs"
+><title
+>Послідовний перегляд</title>
+<para
+>Спосіб навігації ієрархічною структурою файлової системи. У &amarok; відповідний елемент керування розташовано у верхній частині панелі <emphasis
+>джерел даних</emphasis
+>. За його допомогою можна стежити за глибиною поточної теки у ієрархії, що починається з теки «Домівка». Після переходу до певного місця файлової системи ви зможете бачити всі теки вищих рівнів. У &amarok; позначки <guilabel
+>&gt;</guilabel
+> між назвами теки позначають теки певного рівня, де можливі інші варіанти переходу. Дехто вважає, що послідовний перегляд є новітнім ефективним механізмом роботи з усією файловою системою вашого комп’ютера. </para>
+</sect1>
+<sect1 id="collection"
+><title
+>Збірка</title>
+<para
+>Всі файли звукових даних, які зареєстровано у базі даних &amarok;. Збірки можуть бути різного розміру та структури, залежно від того, які зовнішні пристрої зберігання даних (наприклад, звукові компакт-диски або портативні програвачі) з’єднано і змонтовано у вашій системі. </para>
+</sect1>
+<sect1 id="content-browser"
+><title
+>Панель даних</title>
+<para
+>Центральна частина панелі <emphasis
+>джерел даних</emphasis
+>, за допомогою якої можна керувати списком музичних творів з вашої збірки. За допомогою списку даних ви можете змінювати впорядкування, а також перелік даних щодо музичних творів, які ви бажаєте бачити. </para>
+</sect1>
+<sect1 id="playlist"
+><title
+>Список відтворення</title>
+<para
+>Вибірка композицій з вашої збірки, яку ви підготували для відтворення. Списки відтворення деяких портативних музичних програвачів можуть відрізнятися від списків відтворення &amarok; за форматом. </para>
+</sect1>
+<sect1 id="script5"
+><title
+>Скрипт</title
+> 
+<para
+>Додаток для розширення можливостей &amarok;. Керувати скриптами можна за допомогою пункту меню <menuchoice
+><guimenu
+>Інструменти</guimenu
+><guimenuitem
+>Керування скриптами</guimenuitem
+></menuchoice
+> до версії 2.4.1;  <menuchoice
+><guimenu
+>Параметри</guimenu
+><guisubmenu
+>Налаштувати Amarok</guisubmenu
+><guimenuitem
+>Скрипти</guimenuitem
+></menuchoice
+> у версії 2.4.1. За допомогою скриптів ви можете розширити перелік джерел даних слів пісень, інтернет-радіостанцій, джерел зображень обкладинок альбомів, записувати компакт-диски на основі списків відтворення тощо.</para>
+</sect1>
+<sect1 id="scrobble"
+><title
+>Скроблінґ</title>
+<para
+>Скроблінґ — це спосіб обробки композицій, який полягає у тому, що під час відтворення композиції дані щодо назви та виконавця надсилаються на вебсайт, наприклад, <emphasis
+>Last.fm</emphasis
+>, де відповідна інформація додається до вашого профілю.</para>
+</sect1>
+<sect1 id="stream-streaming"
+><title
+>Потік, потокове відтворення</title>
+<para
+>Подібно до звичайних радіостанцій попереднього століття, інтернет-радіостанції надсилають «потоки» даних. Серед цих даних музичні дані, новини, коментарі та враження. Доступ до багатьох потоків можна отримати за допомогою &amarok;. У додаванні потоків вам допоможуть або скрипти, зокрема Cool Streams, або меню програми (<menuchoice
+><guimenu
+>Список композицій</guimenu
+><guimenuitem
+>Додати потік</guimenuitem
+></menuchoice
+>). </para>
+</sect1>
+<sect1 id="tags"
+><title
+>Мітки</title>
+<para
+>Відомості щодо кожної з композицій, які ви слухаєте, зокрема назву альбому, назва композиції, композитора, виконавця, року запису тощо. Існує стандарт з назвою ID3, яким обмежується формат додавання відомостей на звукові компакт-диски. Ви можете змінювати мітки безпосередньо за допомогою &amarok;, якщо маєте належні права доступу до відповідного файла. </para>
+</sect1>
+</chapter>
+<!--userbase-content-->
+<chapter id="credits">
+<title
+>Подяки і ліцензія</title>
+    <para
+>Список власників авторських прав на документацію до програми можна знайти у <ulink url="http://userbase.kde.org/index.php?title=Amarok&amp;action=history"
+>журналі сторінки &amarok;</ulink
+> UserBase.</para>
+    <para
+>Переклад українською: Юрій Чорноіван<email
+>yurchor@ukr.net</email
+></para
+> 
+&underFDL; </chapter>
+&documentation.index;
+</book>
