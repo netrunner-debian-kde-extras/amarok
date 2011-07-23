@@ -57,7 +57,7 @@ Description: easy to use media player based on the KDE Platform
 
 Package: amarok-common
 Architecture: all
-Depends: ${misc:Depends}
+Depends: ${misc:Depends}, ${perl:Depends}
 Recommends: amarok (>= ${source:Version})
 Description: architecture independent files for Amarok
  This package contains architecture independent files needed for Amarok to run
