@@ -11,6 +11,8 @@ amarok (2.4.2-0r3) UNRELEASED; urgency=low
   * Backport a patch to fix a bug which caused KWallet to prompt for a password
     on every track change (backport_no_kwallet_prompt_on_track_change.patch).
   * Override lintian "amarok: no-symbols-control-file".
+  * Drop amarok-engine-xine (<< 2) and amarok-engine-yauap (<< 2) from amarok
+    Conflicts. No longer relevant for stable.
 
  -- Modestas Vainius <modax@debian.org>  Sat, 04 Jun 2011 20:38:34 +0300
 
