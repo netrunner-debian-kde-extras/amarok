@@ -1,2 +1,3 @@
+backport_no_kwallet_prompt_on_track_change.patch
 debian_disable_qtscriptbindings_check_fix.diff
 debian_mysqle_amarok_local_errmsg_feature.diff

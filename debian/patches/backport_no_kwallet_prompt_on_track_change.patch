@@ -1,0 +1,159 @@
+From: Sam Lade <sam@sentynel.com>
+Date: Sat, 23 Jul 2011 23:25:00 +0100
+Subject: [PATCH] Prevent KWallet being queried on every track change by last.fm
+Bug: htts://bugs.kde.org/278177
+Applied-Upstream: 2.4.3
+origin: backport commit:8c9728264176b9da37b7118a700ae383a98a4d04
+Last-Update: 2011-07-24
+Acked-By: Modestas Vainius <modax@debian.org>
+
+Just look up the scrobbleComposer value from config directly,
+rather than creating a whole lastFmServiceConfig object just to get it
+BUG:278177
+FIXED-IN:2.4.3
+---
+ src/services/lastfm/LastFmService.cpp    |   11 ++++-------
+ src/services/lastfm/LastFmService.h      |    1 +
+ src/services/lastfm/ScrobblerAdapter.cpp |   25 +++++++++++++------------
+ src/services/lastfm/ScrobblerAdapter.h   |    1 +
+ 4 files changed, 19 insertions(+), 19 deletions(-)
+
+--- a/src/services/lastfm/LastFmService.cpp
++++ b/src/services/lastfm/LastFmService.cpp
+@@ -182,6 +182,7 @@ LastFmService::LastFmService( LastFmServ
+       m_userinfo( 0 ),
+       m_userName( username ),
+       m_sessionKey( sessionKey ),
++      m_password( password ),
+       m_scrobbleComposer( scrobbleComposer ),
+       m_userNameArray( 0 ),
+       m_sessionKeyArray( 0 )
+@@ -221,9 +222,6 @@ LastFmService::~LastFmService()
+ void
+ LastFmService::init()
+ {
+-    LastFmServiceConfig config;
+-    const QString password = config.password();
+-    const QString sessionKey = config.sessionKey();
+     // set the global static Lastfm::Ws stuff
+     lastfm::ws::ApiKey = Amarok::lastfmApiKey();
+     lastfm::ws::SharedSecret = "fe0dcde9fcd14c2d1d50665b646335e9";
+@@ -237,10 +235,10 @@ LastFmService::init()
+ 
+     debug() << "username:" << QString( QUrl::toPercentEncoding( lastfm::ws::Username ) );
+ 
+-    const QString authToken = md5( QString( "%1%2" ).arg( m_userName ).arg( md5( password.toUtf8() ) ).toUtf8() );
++    const QString authToken = md5( QString( "%1%2" ).arg( m_userName ).arg( md5( m_password.toUtf8() ) ).toUtf8() );
+ 
+     // now authenticate w/ last.fm and get our session key if we don't have one
+-    if( sessionKey.isEmpty() )
++    if( m_sessionKey.isEmpty() )
+     {
+         debug() << "got no saved session key, authenticating with last.fm";
+         QMap<QString, QString> query;
+@@ -254,9 +252,8 @@ LastFmService::init()
+     } else
+     {
+         debug() << "using saved sessionkey from last.fm";
+-        m_sessionKeyArray = qstrdup( sessionKey.toLatin1().data() );
++        m_sessionKeyArray = qstrdup( m_sessionKey.toLatin1().data() );
+         lastfm::ws::SessionKey = m_sessionKeyArray;
+-        m_sessionKey = sessionKey;
+ 
+         if( m_scrobble )
+             m_scrobbler = new ScrobblerAdapter( this, "ark" );
+--- a/src/services/lastfm/LastFmService.h
++++ b/src/services/lastfm/LastFmService.h
+@@ -116,6 +116,7 @@ private:
+ 
+     QString m_userName;
+     QString m_sessionKey;
++    QString m_password;
+     QString m_station;
+     QString m_age;
+     QString m_gender;
+--- a/src/services/lastfm/ScrobblerAdapter.cpp
++++ b/src/services/lastfm/ScrobblerAdapter.cpp
+@@ -81,8 +81,6 @@ ScrobblerAdapter::trackPlaying( Meta::Tr
+     {
+         m_lastSaved = m_lastPosition; // HACK engineController is broken :(
+ 
+-        LastFmServiceConfig config;
+-    
+         debug() << "track type:" << track->type();
+         const bool isRadio = ( track->type() == "stream/lastfm" );
+         
+@@ -92,8 +90,8 @@ ScrobblerAdapter::trackPlaying( Meta::Tr
+         
+         m_current.setTitle( track->name() );
+         m_current.setDuration( track->length() / 1000 );
+-        debug() << "scrobbleComposer: " << config.scrobbleComposer();
+-        if( track->composer() && config.scrobbleComposer() )
++        debug() << "scrobbleComposer: " << scrobbleComposer();
++        if( track->composer() && scrobbleComposer() )
+             m_current.setArtist( track->composer()->name() );
+         else if( track->artist() )
+             m_current.setArtist( track->artist()->name() );
+@@ -133,12 +131,10 @@ void
+ ScrobblerAdapter::trackMetadataChanged( Meta::TrackPtr track )
+ {
+     DEBUG_BLOCK
+-    LastFmServiceConfig config;
+-
+     // if we are listening to a stream, take the new metadata as a "new track" and, if we have enough info, save it for scrobbling
+     if( track &&
+         ( track->type() == "stream" && ( !track->name().isEmpty() 
+-          && ( track->artist() || ( track->composer() && config.scrobbleComposer() ) ) ) ) )
++          && ( track->artist() || ( track->composer() && scrobbleComposer() ) ) ) ) )
+         // got a stream, and it has enough info to be a new track
+     {
+         // don't use checkScrobble as we don't need to check timestamps, it is a stream
+@@ -150,12 +146,12 @@ ScrobblerAdapter::trackMetadataChanged(
+                     
+         m_current.setTitle( track->name() );
+         m_current.setArtist(
+-              track->composer() && config.scrobbleComposer()
++              track->composer() && scrobbleComposer()
+             ? track->composer()->name()
+             : track->artist()->name()
+         );
+         m_current.stamp();
+-        
++
+         m_current.setSource( lastfm::Track::NonPersonalisedBroadcast );
+ 
+         if( !m_current.isNull() )
+@@ -227,11 +223,9 @@ ScrobblerAdapter::loveTrack( Meta::Track
+ 
+     if( track )
+     {
+-        LastFmServiceConfig config;
+-
+         lastfm::MutableTrack trackInfo;
+         trackInfo.setTitle( track->name() );
+-        if( track->composer() && config.scrobbleComposer() )
++        if( track->composer() && scrobbleComposer() )
+             trackInfo.setArtist( track->composer()->name() );
+         else if( track->artist() )
+             trackInfo.setArtist( track->artist()->name() );
+@@ -280,3 +274,10 @@ ScrobblerAdapter::checkScrobble()
+     }
+     resetVariables();
+ }
++
++bool
++ScrobblerAdapter::scrobbleComposer()
++{
++    KConfigGroup config = KGlobal::config()->group( LastFmServiceConfig::configSectionName() );
++    return config.readEntry( "scrobbleComposer", false );
++}
+--- a/src/services/lastfm/ScrobblerAdapter.h
++++ b/src/services/lastfm/ScrobblerAdapter.h
+@@ -50,6 +50,7 @@ private slots:
+ private:
+     void resetVariables();
+     void checkScrobble();
++    bool scrobbleComposer();
+ 
+     lastfm::Audioscrobbler *m_scrobbler;
+     lastfm::MutableTrack m_current;

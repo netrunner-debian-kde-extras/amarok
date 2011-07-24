@@ -8,6 +8,8 @@ amarok (2.4.2-0r1) UNRELEASED; urgency=low
   * Adapt debian_disable_qtscriptbindings_check_fix.diff to upstream changes.
   * Add ${perl:Depends} to amarok-common Depends.
   * Update install files.
+  * Backport a patch to fix a bug which caused KWallet to prompt for a password
+    on every track change (backport_no_kwallet_prompt_on_track_change.patch).
 
  -- Modestas Vainius <modax@debian.org>  Sat, 04 Jun 2011 20:38:34 +0300
 
