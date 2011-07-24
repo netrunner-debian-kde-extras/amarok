@@ -1,4 +1,4 @@
-amarok (2.4.2-0r1) UNRELEASED; urgency=low
+amarok (2.4.2-0r3) UNRELEASED; urgency=low
 
   * New upstream release.
   * Switch maintainer to Debian KDE Extras team, add myself to Uploaders,
