@@ -1,5 +1,6 @@
 amarok (2.4.2-2) UNRELEASED; urgency=low
 
+  * Fix FTBFS on armel (backport_arm_build_fix.patch).
 
  -- Modestas Vainius <modax@debian.org>  Sun, 24 Jul 2011 17:26:53 +0300
 
