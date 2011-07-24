@@ -1,5 +1,6 @@
 amarok (2.4.2-3) UNRELEASED; urgency=low
 
+  * Switch Vcs-* field to kde-extras repository. (Closes: #635292)
 
  -- Modestas Vainius <modax@debian.org>  Sun, 24 Jul 2011 22:38:44 +0300
 
