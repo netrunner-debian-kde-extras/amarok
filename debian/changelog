@@ -1,4 +1,4 @@
-amarok (2.4.2-0r3) UNRELEASED; urgency=low
+amarok (2.4.2-1) unstable; urgency=low
 
   * New upstream release.
   * Switch maintainer to Debian KDE Extras team, add myself to Uploaders,
@@ -14,7 +14,7 @@ amarok (2.4.2-0r3) UNRELEASED; urgency=low
   * Drop amarok-engine-xine (<< 2) and amarok-engine-yauap (<< 2) from amarok
     Conflicts. No longer relevant for stable.
 
- -- Modestas Vainius <modax@debian.org>  Sat, 04 Jun 2011 20:38:34 +0300
+ -- Modestas Vainius <modax@debian.org>  Sun, 24 Jul 2011 12:26:59 +0300
 
 amarok (2.4.1-2) unstable; urgency=low
 
