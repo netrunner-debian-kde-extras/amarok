@@ -1,3 +1,8 @@
+amarok (2.4.2-3) UNRELEASED; urgency=low
+
+
+ -- Modestas Vainius <modax@debian.org>  Sun, 24 Jul 2011 22:38:44 +0300
+
 amarok (2.4.2-2) unstable; urgency=low
 
   * Fix FTBFS on armel (backport_arm_build_fix.patch).
