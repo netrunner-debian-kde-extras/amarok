@@ -1,7 +1,8 @@
 From: Modestas Vainius <modax@debian.org>
 Subject: Fix building on armel
-Origin: vendor
+Origin: backport, commit:8e5fe76cfefa5a17e969953f4f8249617c77a561
 Last-Update: 2011-07-24
+Applied-Upstream: 2.4.3
 
 --- a/src/dynamic/biases/PartBias.cpp
 +++ b/src/dynamic/biases/PartBias.cpp
