@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2011-07-17 03:51+0200\n"
-"PO-Revision-Date: 2011-07-08 08:57+0800\n"
+"POT-Creation-Date: 2011-07-26 04:06+0200\n"
+"PO-Revision-Date: 2011-07-28 09:43+0800\n"
 "Last-Translator: Franklin Weng <franklin@goodhorse.idv.tw>\n"
 "Language-Team: Chinese Traditional <zh-l10n@linux.org.tw>\n"
 "MIME-Version: 1.0\n"
@@ -89,6 +89,697 @@ msgstr "在目前曲目後停止：開啟"
 #: ActionClasses.cpp:542
 msgid "Stop after current track: Off"
 msgstr "在目前曲目後停止：關閉"
+
+#: equalizer/EqualizerPresets.cpp:90
+msgid "Manual"
+msgstr "手動"
+
+#: equalizer/EqualizerPresets.cpp:91
+msgid "Classical"
+msgstr "古典"
+
+#: equalizer/EqualizerPresets.cpp:92
+msgid "Club"
+msgstr "俱樂部"
+
+#: equalizer/EqualizerPresets.cpp:93
+msgid "Dance"
+msgstr "舞蹈"
+
+#: equalizer/EqualizerPresets.cpp:94
+msgid "Full Bass"
+msgstr "完全低音"
+
+#: equalizer/EqualizerPresets.cpp:95
+msgid "Full Treble"
+msgstr "完全高音"
+
+#: equalizer/EqualizerPresets.cpp:96
+msgid "Full Bass + Treble"
+msgstr "完全低音加高音"
+
+#: equalizer/EqualizerPresets.cpp:97
+msgid "Laptop/Headphones"
+msgstr "筆記型電腦/耳機"
+
+#: equalizer/EqualizerPresets.cpp:98
+msgid "Large Hall"
+msgstr "大演出廳"
+
+#: equalizer/EqualizerPresets.cpp:99
+msgid "Live"
+msgstr "現場演出"
+
+#: equalizer/EqualizerPresets.cpp:100
+msgid "Party"
+msgstr "派對"
+
+#: equalizer/EqualizerPresets.cpp:101
+msgid "Pop"
+msgstr "流行"
+
+#: equalizer/EqualizerPresets.cpp:102
+msgid "Reggae"
+msgstr "雷鬼"
+
+#: equalizer/EqualizerPresets.cpp:103
+msgid "Rock"
+msgstr "搖滾"
+
+#: equalizer/EqualizerPresets.cpp:104
+msgid "Soft"
+msgstr "柔和"
+
+#: equalizer/EqualizerPresets.cpp:105
+msgid "Ska"
+msgstr "Ska"
+
+#: equalizer/EqualizerPresets.cpp:106
+msgid "Soft Rock"
+msgstr "柔和搖滾"
+
+#: equalizer/EqualizerPresets.cpp:107
+msgid "Techno"
+msgstr "技術"
+
+#: equalizer/EqualizerPresets.cpp:108
+msgid "Zero"
+msgstr "Zero"
+
+#: KNotificationBackend.cpp:146
+msgid "Now playing"
+msgstr "現正播放"
+
+#: App.cpp:410
+msgid "Files/URLs to open"
+msgstr "要開啟的檔案/URL"
+
+#: App.cpp:411
+msgid "Immediately start playing an audio cd"
+msgstr "立刻開始播放音樂光碟"
+
+#: App.cpp:413
+msgid "Skip backwards in playlist"
+msgstr "在播放清單中往後略過"
+
+#: App.cpp:415
+msgid "Start playing current playlist"
+msgstr "開始播放目前的播放清單"
+
+#: App.cpp:417
+msgid "Play if stopped, pause if playing"
+msgstr "停止的話就開始播放，播放中的就暫停"
+
+#: App.cpp:418
+msgid "Pause playback"
+msgstr "暫停播放"
+
+#: App.cpp:420
+msgid "Stop playback"
+msgstr "停止播放"
+
+#: App.cpp:422
+msgid "Skip forwards in playlist"
+msgstr "在播放清單中往前略過"
+
+#: App.cpp:423
+msgid "Additional options:"
+msgstr "額外設定："
+
+#: App.cpp:425
+msgid "Append files/URLs to playlist"
+msgstr "要附加到播放清單的檔案/URL"
+
+#: App.cpp:426
+msgid "Queue URLs after the currently playing track"
+msgstr "目前曲目播放完後，仍在佇列中的 URL"
+
+#: App.cpp:428
+msgid "Load URLs, replacing current playlist"
+msgstr "載入 URL，會取代掉目前的播放清單"
+
+#: App.cpp:430
+msgid "Print verbose debugging information"
+msgstr "印出詳細除錯資訊"
+
+#: App.cpp:432
+msgid "Disable colorization for debug output."
+msgstr "關閉除錯輸出的色彩。"
+
+#: App.cpp:434
+msgid "Allow running multiple Amarok instances"
+msgstr "允許執行多個 Amarok 實體"
+
+#: App.cpp:435
+msgid "Base for relative filenames/URLs"
+msgstr "檔名/URL 為相對路徑時它們的基底目錄"
+
+#: App.cpp:437
+msgid "Unit test options:"
+msgstr "單位測試選項："
+
+#: App.cpp:438
+msgid "Run integrated unit tests"
+msgstr "執行整合單位測試"
+
+#: App.cpp:439
+msgid "Destination of test output: 'stdout', 'log'"
+msgstr "測試輸出於：'stdout' (標準輸出)，'log' (紀錄檔)"
+
+#: App.cpp:440
+msgid "Format of test output: 'xml', 'lightxml', 'plaintext'"
+msgstr "測試輸出格式：'xml'，'lightxml'，'plaintext'"
+
+#: App.cpp:441
+msgid "Verbosity from 0-3 (highest)"
+msgstr "詳細度 0-3 (3 最高)"
+
+#: App.cpp:633
+msgid ""
+"The embedded database was not found; you must set up a database server "
+"connection.\n"
+"You must restart Amarok after doing this."
+msgstr ""
+"找不到嵌入的資料庫；您必須設定資料庫連線。\n"
+"設定完成後請重新啟動 Amarok。"
+
+#: App.cpp:634
+msgid ""
+"The connection details for the database server were invalid.\n"
+"You must enter correct settings and restart Amarok after doing this."
+msgstr ""
+"資料庫伺服器的連線詳情無效。\n"
+"您必須輸入正確的設定並重新啟動 Amarok。"
+
+#: App.cpp:635
+msgid "Database Error"
+msgstr "資料庫錯誤"
+
+#: App.cpp:680
+msgid "Moving files to trash"
+msgstr "正在把檔案移至資源回收筒"
+
+#: App.cpp:768
+#, kde-format
+msgid ""
+"A music path, %1, is set in System Settings.\n"
+"Would you like to use that as a collection folder?"
+msgstr ""
+"在系統設定中已經設定了一個音樂路徑 %1。\n"
+"您要用它做為收藏資料夾嗎？"
+
+#. i18n: file: core-impl/collections/audiocd/FormatSelectionDialog.ui:14
+#. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
+#: MainWindow.cpp:103 rc.cpp:1130 main.cpp:40
+msgid "Amarok"
+msgstr "Amarok"
+
+#: MainWindow.cpp:261
+msgid "Local Music"
+msgstr "本地端音樂"
+
+#: MainWindow.cpp:263
+msgid "Local sources of content"
+msgstr "內容的本地端來源"
+
+#: MainWindow.cpp:271
+msgid "Internet"
+msgstr "網際網路"
+
+#: MainWindow.cpp:273
+msgid "Online sources of content"
+msgstr "線上的內容來源"
+
+#: MainWindow.cpp:279
+msgid "Playlists"
+msgstr "播放清單"
+
+#: MainWindow.cpp:281
+msgid "Various types of playlists"
+msgstr "多種類型的播放清單"
+
+#: MainWindow.cpp:287 amarokurls/NavigationUrlGenerator.cpp:135
+msgid "Files"
+msgstr "檔案"
+
+#: MainWindow.cpp:289
+msgid "Browse local hard drive for content"
+msgstr "瀏覽本地端硬碟以取得內容"
+
+#: MainWindow.cpp:350
+msgctxt "@item:inmenu"
+msgid "&View"
+msgstr "檢視(&V)"
+
+#: MainWindow.cpp:353
+msgid "Lock Layout"
+msgstr "鎖定配置"
+
+#: MainWindow.cpp:464
+msgid ""
+"<qt>Closing the main window will keep Amarok running in the System Tray. Use "
+"<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
+"qt>"
+msgstr ""
+"<qt>關閉主視窗不等於關閉 Amarok，它仍會在系統列繼續運作。要完全關閉，您可以在"
+"選單中按<B>離開</B>，或用系統匣圖示來結束應用程式。</qt>"
+
+#: MainWindow.cpp:466
+msgid "Docking in System Tray"
+msgstr "停駐在系統列中"
+
+#: MainWindow.cpp:495
+msgid "Use relative path for &saving"
+msgstr "儲存時使用相對路徑(&S)"
+
+#: MainWindow.cpp:507 covermanager/CoverFoundDialog.cpp:361
+msgid "Save As"
+msgstr "另存為"
+
+#: MainWindow.cpp:559
+msgid "Play Media (Files or URLs)"
+msgstr "播放媒體 (檔案或 URL)"
+
+#: MainWindow.cpp:559
+msgid "Add Media (Files or URLs)"
+msgstr "加入媒體 (檔案或 URL)"
+
+#: MainWindow.cpp:577
+msgid "Add Stream"
+msgstr "加入串流"
+
+#: MainWindow.cpp:577
+msgid "Enter Stream URL:"
+msgstr "請輸入串流網址："
+
+#: MainWindow.cpp:701
+msgid "&Add Media..."
+msgstr "加入媒體(&A)..."
+
+#: MainWindow.cpp:706
+msgctxt "clear playlist"
+msgid "&Clear Playlist"
+msgstr "清除播放清單(&C)"
+
+#: MainWindow.cpp:711
+msgctxt "edit play queue of playlist"
+msgid "Edit &Queue"
+msgstr "編輯佇列(&Q)"
+
+#: MainWindow.cpp:716
+msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
+msgid "Re&move Duplicates"
+msgstr "移除重複曲目(&M)"
+
+#: MainWindow.cpp:723
+msgid "&Add Stream..."
+msgstr "加入串流(&A)..."
+
+#: MainWindow.cpp:727
+msgid "&Export Playlist As..."
+msgstr "將播放清單匯出為(&E)..."
+
+#: MainWindow.cpp:731 amarokurls/NavigationUrlGenerator.cpp:250
+msgid "Bookmark Media Sources View"
+msgstr "將媒體來源檢視加入書籤"
+
+#: MainWindow.cpp:735 amarokurls/BookmarkManager.cpp:43
+msgid "Bookmark Manager"
+msgstr "書籤管理員"
+
+#: MainWindow.cpp:739
+msgid "Equalizer"
+msgstr "等化器"
+
+#: MainWindow.cpp:743 playlist/PlaylistViewUrlGenerator.cpp:101
+msgid "Bookmark Playlist Setup"
+msgstr "將播放清單設定加入書籤"
+
+#: MainWindow.cpp:747
+msgid "Bookmark Context Applets"
+msgstr "將情境小程式加入書籤"
+
+#: MainWindow.cpp:751 covermanager/CoverManager.cpp:105
+msgid "Cover Manager"
+msgstr "封面管理員"
+
+#: MainWindow.cpp:755
+msgid "Play Media..."
+msgstr "播放媒體..."
+
+#: MainWindow.cpp:760
+msgid "&Seek Forward"
+msgstr "往後搜尋(&S)"
+
+#: MainWindow.cpp:766
+msgid "&Seek Backward"
+msgstr "往前搜尋(&S)"
+
+#: MainWindow.cpp:773
+msgid "Update Collection"
+msgstr "更新收藏"
+
+#: MainWindow.cpp:780
+msgid "Previous Track"
+msgstr "上一曲目"
+
+#: MainWindow.cpp:787
+msgid "Restart current track"
+msgstr "重新開始目前的曲目"
+
+#: MainWindow.cpp:793
+msgid "Repopulate Playlist"
+msgstr "重新安排播放清單"
+
+#: MainWindow.cpp:799
+msgid "Disable Dynamic Playlist"
+msgstr "關閉動態播放清單"
+
+#: MainWindow.cpp:803
+msgid "Next Track"
+msgstr "下一曲目"
+
+#: MainWindow.cpp:808
+msgid "Increase Volume"
+msgstr "增大音量"
+
+#: MainWindow.cpp:814
+msgid "Decrease Volume"
+msgstr "減少音量"
+
+#: MainWindow.cpp:820
+msgid "Toggle Main Window"
+msgstr "切換主視窗"
+
+#: MainWindow.cpp:825
+msgid "Toggle Full Screen"
+msgstr "切換全螢幕"
+
+#: MainWindow.cpp:830
+msgid "Jump to"
+msgstr "跳至"
+
+#: MainWindow.cpp:835
+msgid "Show active track"
+msgstr "顯示目前的曲目"
+
+#: MainWindow.cpp:839
+msgid "Show Notification Popup"
+msgstr "顯示通知彈出式視窗"
+
+#: MainWindow.cpp:844
+msgid "Mute Volume"
+msgstr "靜止音量"
+
+#: MainWindow.cpp:849
+msgid "Last.fm: Love Current Track"
+msgstr "Last.fm：喜愛目前的曲目"
+
+#: MainWindow.cpp:854
+msgid "Last.fm: Ban Current Track"
+msgstr "Last.fm：禁止目前的曲目"
+
+#: MainWindow.cpp:859
+msgid "Last.fm: Skip Current Track"
+msgstr "Last.fm：跳過目前的曲目"
+
+#: MainWindow.cpp:864 playlist/view/PlaylistViewCommon.cpp:115
+msgid "Queue Track"
+msgstr "把曲目放入佇列"
+
+#: MainWindow.cpp:869
+msgid "Rate Current Track: 1"
+msgstr "將目前曲目評等為：1"
+
+#: MainWindow.cpp:874
+msgid "Rate Current Track: 2"
+msgstr "將目前曲目評等為：2"
+
+#: MainWindow.cpp:879
+msgid "Rate Current Track: 3"
+msgstr "將目前曲目評等為：3"
+
+#: MainWindow.cpp:884
+msgid "Rate Current Track: 4"
+msgstr "將目前曲目評等為：4"
+
+#: MainWindow.cpp:889
+msgid "Rate Current Track: 5"
+msgstr "將目前曲目評等為：5"
+
+#: MainWindow.cpp:895
+msgid "Network Request Viewer"
+msgstr "網路請求檢視器"
+
+#: MainWindow.cpp:913
+msgid "&About Amarok"
+msgstr "關於 Amarok(&A)"
+
+#: MainWindow.cpp:917
+msgid "&Report Bug..."
+msgstr "報告問題(&R)..."
+
+#: MainWindow.cpp:977
+msgid "&Music"
+msgstr "音樂(&M)"
+
+#: MainWindow.cpp:979
+msgid "&Amarok"
+msgstr "Amarok(&A)"
+
+#: MainWindow.cpp:1003 playlist/PlaylistDock.cpp:54
+#: playlist/PlaylistToolBar.cpp:38
+msgid "&Playlist"
+msgstr "播放清單(&P)"
+
+#: MainWindow.cpp:1020
+msgid "&Tools"
+msgstr "工具(&T)"
+
+#: MainWindow.cpp:1037
+msgid "&Settings"
+msgstr "設定(&S)"
+
+#: MainWindow.cpp:1084
+#, kde-format
+msgid ""
+"You have chosen to hide the menu bar.\n"
+"\n"
+"Please remember that you can always use the shortcut \"%1\" to bring it back."
+msgstr ""
+"您已選擇隱藏選單列。\n"
+"\n"
+"請記得您可以用 %1 來把選單列叫回來。"
+
+#: MainWindow.cpp:1086
+msgid "Hide Menu"
+msgstr "隱藏選單"
+
+#: MainWindow.cpp:1128
+#, kde-format
+msgid "Paused  ::  %1"
+msgstr "暫停 :: %1"
+
+#: MainWindow.cpp:1141 amarokurls/BookmarkTreeView.cpp:377
+#: amarokurls/BookmarkTreeView.cpp:378 amarokurls/BookmarkTreeView.cpp:379
+#: context/applets/albums/AlbumItem.cpp:97
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:444
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:445
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:446
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:447
+msgid "Unknown"
+msgstr "未知"
+
+#: MainWindow.cpp:1141
+#, kde-format
+msgid "%1 - %2  ::  %3"
+msgstr "%1 - %2  ::  %3"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:73
+msgid ""
+"<qt>No information available.<br />The supplied KAboutData object does not "
+"exist.</qt>"
+msgstr "<qt>沒有可用的資訊。<br />替代的 KAboutData 物件不存在。</qt>"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:82
+msgid ""
+"<qt>No information available.<br />The supplied OcsData object does not "
+"exist.</qt>"
+msgstr "<qt>沒有可用的資訊。<br />替代的 OcsData 物件不存在。</qt>"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:91
+#, kde-format
+msgid "About %1"
+msgstr "關於 %1"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:112
+#, kde-format
+msgid ""
+"<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE %3</"
+"html>"
+msgstr "<html><font size=\"5\">%1</font><br/><b>版本 %2</b><br/>KDE %3</html>"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:152
+#, kde-format
+msgid "License: %1"
+msgstr "授權：%1"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:166
+msgid "&About"
+msgstr "關於(&A)"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:183
+msgid "Get data from openDesktop.org to learn more about the team"
+msgstr "從 openDesktop.org 取得資料以瞭解更多有關於此團隊的資訊"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:195
+msgid ""
+"Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to report "
+"bugs.\n"
+msgstr ""
+"請用 <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> 來回報問題。\n"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:200
+#: aboutdialog/ExtendedAboutDialog.cpp:206
+#, kde-format
+msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
+msgstr "請報告問題到<a href=\"mailto:%1\">%2</a>。\n"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:225
+msgid "A&uthor"
+msgstr "作者(&U)"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:225
+msgid "A&uthors"
+msgstr "作者(&U)"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:239
+msgid "Get data from openDesktop.org to learn more about contributors"
+msgstr "從 openDesktop.org 取得資料以瞭解更多有關於貢獻者的資訊"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:253
+msgid "&Thanks To"
+msgstr "感謝(&T)"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:266
+msgid "Get data from openDesktop.org to learn more about our generous donors"
+msgstr "從 openDesktop.org 取得資料以瞭解更多有關於我們慷慨的捐獻者的資訊"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:286
+msgid "&Donors"
+msgstr "捐獻者(&D)"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:316
+msgid "T&ranslation"
+msgstr "翻譯(&R)"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:340
+msgid "License Agreement"
+msgstr "授權協議"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:373
+msgid "Internet connection not available"
+msgstr "目前沒有可用的網際網路連線"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:373
+msgid "Network error"
+msgstr "網路錯誤"
+
+#: aboutdialog/OcsPersonItem.cpp:95
+msgid "Email contributor"
+msgstr "發信給貢獻者"
+
+#: aboutdialog/OcsPersonItem.cpp:103 aboutdialog/OcsPersonItem.cpp:274
+msgid "Visit contributor's homepage"
+msgstr "拜訪貢獻者的首頁"
+
+#: aboutdialog/OcsPersonItem.cpp:179
+#, kde-format
+msgctxt "A person's location: City, Country"
+msgid "%1, %2"
+msgstr "%1，%2"
+
+#: aboutdialog/OcsPersonItem.cpp:199
+msgid "IRC channels: "
+msgstr "IRC 頻道："
+
+#: aboutdialog/OcsPersonItem.cpp:212
+msgid "Favorite music: "
+msgstr "最喜歡的音樂："
+
+#: aboutdialog/OcsPersonItem.cpp:217
+#, kde-format
+msgid "Visit %1's openDesktop.org profile"
+msgstr "造訪 %1 的 openDesktop.org 檔案"
+
+#: aboutdialog/OcsPersonItem.cpp:219
+#, kde-format
+msgid "Visit %1's profile on openDesktop.org"
+msgstr "造訪 %1 在 openDesktop.org 上的檔案"
+
+#: aboutdialog/OcsPersonItem.cpp:253
+msgid "Visit contributor's blog"
+msgstr "造訪貢獻者的部落格"
+
+#: aboutdialog/OcsPersonItem.cpp:258
+msgid "Visit contributor's del.icio.us profile"
+msgstr "造訪貢獻者的 delicio.us.org 檔案"
+
+#: aboutdialog/OcsPersonItem.cpp:263
+msgid "Visit contributor's Digg profile"
+msgstr "造訪貢獻者的 Digg 檔案"
+
+#: aboutdialog/OcsPersonItem.cpp:268
+msgid "Visit contributor's Facebook profile"
+msgstr "造訪貢獻者的 Facebook"
+
+#: aboutdialog/OcsPersonItem.cpp:284
+msgid "Visit contributor's Last.fm profile"
+msgstr "造訪貢獻者的 Last.fm 檔案"
+
+#: aboutdialog/OcsPersonItem.cpp:292
+msgid "Visit contributor's LinkedIn profile"
+msgstr "造訪貢獻者的 LinkedIn 檔案"
+
+#: aboutdialog/OcsPersonItem.cpp:297
+msgid "Visit contributor's MySpace homepage"
+msgstr "造訪貢獻者的 MySpace 首頁"
+
+#: aboutdialog/OcsPersonItem.cpp:302
+msgid "Visit contributor's Reddit profile"
+msgstr "造訪貢獻者的 Reddit 檔案"
+
+#: aboutdialog/OcsPersonItem.cpp:307
+msgid "Visit contributor's YouTube profile"
+msgstr "造訪貢獻者的 YouTube"
+
+#: aboutdialog/OcsPersonItem.cpp:312
+msgid "Visit contributor's Twitter feed"
+msgstr "造訪貢獻者的 Twitter"
+
+#: aboutdialog/OcsPersonItem.cpp:317
+msgid "Visit contributor's Wikipedia profile"
+msgstr "造訪貢獻者的維基百科檔案"
+
+#: aboutdialog/OcsPersonItem.cpp:322
+msgid "Visit contributor's Xing profile"
+msgstr "造訪貢獻者的 Xing 檔案"
+
+#: aboutdialog/OcsPersonItem.cpp:327
+msgid "Visit contributor's identi.ca feed"
+msgstr "造訪貢獻者的 identi.ca 檔案"
+
+#: aboutdialog/OcsPersonItem.cpp:332
+msgid "Visit contributor's libre.fm profile"
+msgstr "造訪貢獻者的 libre.fm 檔案"
+
+#: aboutdialog/OcsPersonItem.cpp:337
+msgid "Visit contributor's StackOverflow profile"
+msgstr "造訪貢獻者的 StackOverflow 檔案"
+
+#: aboutdialog/libattica-ocsclient/personlistjob.cpp:108
+msgid "Unable to parse avatar image data."
+msgstr "無法剖析個人圖像影像資料。"
 
 #: rc.cpp:1
 msgctxt "NAME OF TRANSLATORS"
@@ -2240,7 +2931,7 @@ msgstr "重新載入下列標題與演出者的樂譜"
 #: dialogs/transferdialog.cpp:88 dialogs/FilenameLayoutDialog.cpp:230
 #: dialogs/FilenameLayoutDialog.cpp:591 musicbrainz/MusicBrainzTags.cpp:359
 #: playlist/PlaylistModel.cpp:902 services/jamendo/JamendoInfoParser.cpp:51
-#: services/lastfm/LastFmService.cpp:527
+#: services/lastfm/LastFmService.cpp:507
 #: services/magnatune/MagnatuneStore.cpp:218
 #: widgets/SmartPlaylistEditor.cpp:183 widgets/SmartPlaylistEditor.cpp:197
 msgid "Artist"
@@ -2414,12 +3105,6 @@ msgstr "Youtube HQ"
 #: rc.cpp:1127
 msgid "Use Wikipedia &mobile version"
 msgstr "使用行動版維基百科(&M)"
-
-#. i18n: file: core-impl/collections/audiocd/FormatSelectionDialog.ui:14
-#. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: rc.cpp:1130 MainWindow.cpp:103 main.cpp:40
-msgid "Amarok"
-msgstr "Amarok"
 
 #. i18n: file: core-impl/collections/audiocd/FormatSelectionDialog.ui:26
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
@@ -4915,49 +5600,7 @@ msgstr "Magnatune.com 成員簽入"
 #. i18n: file: services/magnatune/MagnatuneSignupDialogBase.ui:32
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: rc.cpp:2438
-#, fuzzy, no-c-format
-#| msgid ""
-#| "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
-#| "REC-html40/strict.dtd\">\n"
-#| "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-#| "css\">\n"
-#| "p, li { white-space: pre-wrap; }\n"
-#| "</style></head><body style=\" font-family:'Liberation Sans'; font-"
-#| "size:9pt; font-weight:400; font-style:normal;\">\n"
-#| "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#| "right:0px; -qt-block-indent:0; text-indent:0px;\">By becoming a Magnatune."
-#| "com member, you get unlimited download access and can download any album "
-#| "from within Amarok with a single mouse click. By joining, you can also "
-#| "listen to all streaming tracks from Magnatune.com ad-free.</p>\n"
-#| "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
-#| "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"
-#| "\"></p>\n"
-#| "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#| "right:0px; -qt-block-indent:0; text-indent:0px;\">The Amarok team gets "
-#| "10% of your initial membership payment, so by joining, you are also "
-#| "supporting the development of Amarok.</p>\n"
-#| "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
-#| "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"
-#| "\"></p>\n"
-#| "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#| "right:0px; -qt-block-indent:0; text-indent:0px;\">As always, the artists "
-#| "get 50% of your memberhip payment(s) distributed based on which artist "
-#| "you download and stream.</p>\n"
-#| "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
-#| "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"
-#| "\"></p>\n"
-#| "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#| "right:0px; -qt-block-indent:0; text-indent:0px;\">To read more about "
-#| "Magnatune.com memberships, or to sign up, click here: <a href=\"http://"
-#| "magnatune.com/downloads?referal_id=amarok\"><span style=\" text-"
-#| "decoration: underline; color:#0057ae;\">Membership Info</span></a> </p>\n"
-#| "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
-#| "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"
-#| "\"></p>\n"
-#| "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#| "right:0px; -qt-block-indent:0; text-indent:0px;\">After joining, go to "
-#| "the Magnatune config in \"Settings->Configure Amarok->Plugins\" and enter "
-#| "your membership information. </p></body></html>"
+#, no-c-format
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
@@ -5009,7 +5652,7 @@ msgstr ""
 "</style></head><body style=\" font-family:'Liberation Sans'; font-size:9pt; "
 "font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\">成為B Magnatune.com 的成員"
+"right:0px; -qt-block-indent:0; text-indent:0px;\">成為 Magnatune.com 的成員"
 "後， 您可以取得無限制下載的權限，並且在 Amarok 內輕鬆點擊一下即可下載任何專"
 "輯。此外， 您也可以收聽 Magnature.com 內的所有串流。</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
@@ -5205,708 +5848,6 @@ msgstr "沒有群組 (單一列)"
 #: rc.cpp:2529
 msgid "Verbose"
 msgstr "詳細"
-
-#: equalizer/EqualizerPresets.cpp:90
-msgid "Manual"
-msgstr "手動"
-
-#: equalizer/EqualizerPresets.cpp:91
-msgid "Classical"
-msgstr "古典"
-
-#: equalizer/EqualizerPresets.cpp:92
-msgid "Club"
-msgstr "俱樂部"
-
-#: equalizer/EqualizerPresets.cpp:93
-msgid "Dance"
-msgstr "舞蹈"
-
-#: equalizer/EqualizerPresets.cpp:94
-msgid "Full Bass"
-msgstr "完全低音"
-
-#: equalizer/EqualizerPresets.cpp:95
-msgid "Full Treble"
-msgstr "完全高音"
-
-#: equalizer/EqualizerPresets.cpp:96
-msgid "Full Bass + Treble"
-msgstr "完全低音加高音"
-
-#: equalizer/EqualizerPresets.cpp:97
-msgid "Laptop/Headphones"
-msgstr "筆記型電腦/耳機"
-
-#: equalizer/EqualizerPresets.cpp:98
-msgid "Large Hall"
-msgstr "大演出廳"
-
-#: equalizer/EqualizerPresets.cpp:99
-msgid "Live"
-msgstr "現場演出"
-
-#: equalizer/EqualizerPresets.cpp:100
-msgid "Party"
-msgstr "派對"
-
-#: equalizer/EqualizerPresets.cpp:101
-msgid "Pop"
-msgstr "流行"
-
-#: equalizer/EqualizerPresets.cpp:102
-msgid "Reggae"
-msgstr "雷鬼"
-
-#: equalizer/EqualizerPresets.cpp:103
-msgid "Rock"
-msgstr "搖滾"
-
-#: equalizer/EqualizerPresets.cpp:104
-msgid "Soft"
-msgstr "柔和"
-
-#: equalizer/EqualizerPresets.cpp:105
-msgid "Ska"
-msgstr "Ska"
-
-#: equalizer/EqualizerPresets.cpp:106
-msgid "Soft Rock"
-msgstr "柔和搖滾"
-
-#: equalizer/EqualizerPresets.cpp:107
-msgid "Techno"
-msgstr "技術"
-
-#: equalizer/EqualizerPresets.cpp:108
-msgid "Zero"
-msgstr "Zero"
-
-#: KNotificationBackend.cpp:146
-msgid "Now playing"
-msgstr "現正播放"
-
-#: App.cpp:410
-msgid "Files/URLs to open"
-msgstr "要開啟的檔案/URL"
-
-#: App.cpp:411
-msgid "Immediately start playing an audio cd"
-msgstr "立刻開始播放音樂光碟"
-
-#: App.cpp:413
-msgid "Skip backwards in playlist"
-msgstr "在播放清單中往後略過"
-
-#: App.cpp:415
-msgid "Start playing current playlist"
-msgstr "開始播放目前的播放清單"
-
-#: App.cpp:417
-msgid "Play if stopped, pause if playing"
-msgstr "停止的話就開始播放，播放中的就暫停"
-
-#: App.cpp:418
-msgid "Pause playback"
-msgstr "暫停播放"
-
-#: App.cpp:420
-msgid "Stop playback"
-msgstr "停止播放"
-
-#: App.cpp:422
-msgid "Skip forwards in playlist"
-msgstr "在播放清單中往前略過"
-
-#: App.cpp:423
-msgid "Additional options:"
-msgstr "額外設定："
-
-#: App.cpp:425
-msgid "Append files/URLs to playlist"
-msgstr "要附加到播放清單的檔案/URL"
-
-#: App.cpp:426
-msgid "Queue URLs after the currently playing track"
-msgstr "目前曲目播放完後，仍在佇列中的 URL"
-
-#: App.cpp:428
-msgid "Load URLs, replacing current playlist"
-msgstr "載入 URL，會取代掉目前的播放清單"
-
-#: App.cpp:430
-msgid "Print verbose debugging information"
-msgstr "印出詳細除錯資訊"
-
-#: App.cpp:432
-msgid "Disable colorization for debug output."
-msgstr "關閉除錯輸出的色彩。"
-
-#: App.cpp:434
-msgid "Allow running multiple Amarok instances"
-msgstr "允許執行多個 Amarok 實體"
-
-#: App.cpp:435
-msgid "Base for relative filenames/URLs"
-msgstr "檔名/URL 為相對路徑時它們的基底目錄"
-
-#: App.cpp:437
-msgid "Unit test options:"
-msgstr "單位測試選項："
-
-#: App.cpp:438
-msgid "Run integrated unit tests"
-msgstr "執行整合單位測試"
-
-#: App.cpp:439
-msgid "Destination of test output: 'stdout', 'log'"
-msgstr "測試輸出於：'stdout' (標準輸出)，'log' (紀錄檔)"
-
-#: App.cpp:440
-msgid "Format of test output: 'xml', 'lightxml', 'plaintext'"
-msgstr "測試輸出格式：'xml'，'lightxml'，'plaintext'"
-
-#: App.cpp:441
-msgid "Verbosity from 0-3 (highest)"
-msgstr "詳細度 0-3 (3 最高)"
-
-#: App.cpp:633
-msgid ""
-"The embedded database was not found; you must set up a database server "
-"connection.\n"
-"You must restart Amarok after doing this."
-msgstr ""
-"找不到嵌入的資料庫；您必須設定資料庫連線。\n"
-"設定完成後請重新啟動 Amarok。"
-
-#: App.cpp:634
-msgid ""
-"The connection details for the database server were invalid.\n"
-"You must enter correct settings and restart Amarok after doing this."
-msgstr ""
-"資料庫伺服器的連線詳情無效。\n"
-"您必須輸入正確的設定並重新啟動 Amarok。"
-
-#: App.cpp:635
-msgid "Database Error"
-msgstr "資料庫錯誤"
-
-#: App.cpp:680
-msgid "Moving files to trash"
-msgstr "正在把檔案移至資源回收筒"
-
-#: App.cpp:768
-#, kde-format
-msgid ""
-"A music path, %1, is set in System Settings.\n"
-"Would you like to use that as a collection folder?"
-msgstr ""
-"在系統設定中已經設定了一個音樂路徑 %1。\n"
-"您要用它做為收藏資料夾嗎？"
-
-#: MainWindow.cpp:261
-msgid "Local Music"
-msgstr "本地端音樂"
-
-#: MainWindow.cpp:263
-msgid "Local sources of content"
-msgstr "內容的本地端來源"
-
-#: MainWindow.cpp:271
-msgid "Internet"
-msgstr "網際網路"
-
-#: MainWindow.cpp:273
-msgid "Online sources of content"
-msgstr "線上的內容來源"
-
-#: MainWindow.cpp:279
-msgid "Playlists"
-msgstr "播放清單"
-
-#: MainWindow.cpp:281
-msgid "Various types of playlists"
-msgstr "多種類型的播放清單"
-
-#: MainWindow.cpp:287 amarokurls/NavigationUrlGenerator.cpp:135
-msgid "Files"
-msgstr "檔案"
-
-#: MainWindow.cpp:289
-msgid "Browse local hard drive for content"
-msgstr "瀏覽本地端硬碟以取得內容"
-
-#: MainWindow.cpp:350
-msgctxt "@item:inmenu"
-msgid "&View"
-msgstr "檢視(&V)"
-
-#: MainWindow.cpp:353
-msgid "Lock Layout"
-msgstr "鎖定配置"
-
-#: MainWindow.cpp:464
-msgid ""
-"<qt>Closing the main window will keep Amarok running in the System Tray. Use "
-"<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
-"qt>"
-msgstr ""
-"<qt>關閉主視窗不等於關閉 Amarok，它仍會在系統列繼續運作。要完全關閉，您可以在"
-"選單中按<B>離開</B>，或用系統匣圖示來結束應用程式。</qt>"
-
-#: MainWindow.cpp:466
-msgid "Docking in System Tray"
-msgstr "停駐在系統列中"
-
-#: MainWindow.cpp:495
-msgid "Use relative path for &saving"
-msgstr "儲存時使用相對路徑(&S)"
-
-#: MainWindow.cpp:507 covermanager/CoverFoundDialog.cpp:361
-msgid "Save As"
-msgstr "另存為"
-
-#: MainWindow.cpp:559
-msgid "Play Media (Files or URLs)"
-msgstr "播放媒體 (檔案或 URL)"
-
-#: MainWindow.cpp:559
-msgid "Add Media (Files or URLs)"
-msgstr "加入媒體 (檔案或 URL)"
-
-#: MainWindow.cpp:577
-msgid "Add Stream"
-msgstr "加入串流"
-
-#: MainWindow.cpp:577
-msgid "Enter Stream URL:"
-msgstr "請輸入串流網址："
-
-#: MainWindow.cpp:701
-msgid "&Add Media..."
-msgstr "加入媒體(&A)..."
-
-#: MainWindow.cpp:706
-msgctxt "clear playlist"
-msgid "&Clear Playlist"
-msgstr "清除播放清單(&C)"
-
-#: MainWindow.cpp:711
-msgctxt "edit play queue of playlist"
-msgid "Edit &Queue"
-msgstr "編輯佇列(&Q)"
-
-#: MainWindow.cpp:716
-msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
-msgid "Re&move Duplicates"
-msgstr "移除重複曲目(&M)"
-
-#: MainWindow.cpp:723
-msgid "&Add Stream..."
-msgstr "加入串流(&A)..."
-
-#: MainWindow.cpp:727
-msgid "&Export Playlist As..."
-msgstr "將播放清單匯出為(&E)..."
-
-#: MainWindow.cpp:731 amarokurls/NavigationUrlGenerator.cpp:250
-msgid "Bookmark Media Sources View"
-msgstr "將媒體來源檢視加入書籤"
-
-#: MainWindow.cpp:735 amarokurls/BookmarkManager.cpp:43
-msgid "Bookmark Manager"
-msgstr "書籤管理員"
-
-#: MainWindow.cpp:739
-msgid "Equalizer"
-msgstr "等化器"
-
-#: MainWindow.cpp:743 playlist/PlaylistViewUrlGenerator.cpp:101
-msgid "Bookmark Playlist Setup"
-msgstr "將播放清單設定加入書籤"
-
-#: MainWindow.cpp:747
-msgid "Bookmark Context Applets"
-msgstr "將情境小程式加入書籤"
-
-#: MainWindow.cpp:751 covermanager/CoverManager.cpp:105
-msgid "Cover Manager"
-msgstr "封面管理員"
-
-#: MainWindow.cpp:755
-msgid "Play Media..."
-msgstr "播放媒體..."
-
-#: MainWindow.cpp:760
-msgid "&Seek Forward"
-msgstr "往後搜尋(&S)"
-
-#: MainWindow.cpp:766
-msgid "&Seek Backward"
-msgstr "往前搜尋(&S)"
-
-#: MainWindow.cpp:773
-msgid "Update Collection"
-msgstr "更新收藏"
-
-#: MainWindow.cpp:780
-msgid "Previous Track"
-msgstr "上一曲目"
-
-#: MainWindow.cpp:787
-msgid "Restart current track"
-msgstr "重新開始目前的曲目"
-
-#: MainWindow.cpp:793
-msgid "Repopulate Playlist"
-msgstr "重新安排播放清單"
-
-#: MainWindow.cpp:799
-msgid "Disable Dynamic Playlist"
-msgstr "關閉動態播放清單"
-
-#: MainWindow.cpp:803
-msgid "Next Track"
-msgstr "下一曲目"
-
-#: MainWindow.cpp:808
-msgid "Increase Volume"
-msgstr "增大音量"
-
-#: MainWindow.cpp:814
-msgid "Decrease Volume"
-msgstr "減少音量"
-
-#: MainWindow.cpp:820
-msgid "Toggle Main Window"
-msgstr "切換主視窗"
-
-#: MainWindow.cpp:825
-msgid "Toggle Full Screen"
-msgstr "切換全螢幕"
-
-#: MainWindow.cpp:830
-msgid "Jump to"
-msgstr "跳至"
-
-#: MainWindow.cpp:835
-msgid "Show active track"
-msgstr "顯示目前的曲目"
-
-#: MainWindow.cpp:839
-msgid "Show Notification Popup"
-msgstr "顯示通知彈出式視窗"
-
-#: MainWindow.cpp:844
-msgid "Mute Volume"
-msgstr "靜止音量"
-
-#: MainWindow.cpp:849
-msgid "Last.fm: Love Current Track"
-msgstr "Last.fm：喜愛目前的曲目"
-
-#: MainWindow.cpp:854
-msgid "Last.fm: Ban Current Track"
-msgstr "Last.fm：禁止目前的曲目"
-
-#: MainWindow.cpp:859
-msgid "Last.fm: Skip Current Track"
-msgstr "Last.fm：跳過目前的曲目"
-
-#: MainWindow.cpp:864 playlist/view/PlaylistViewCommon.cpp:115
-msgid "Queue Track"
-msgstr "把曲目放入佇列"
-
-#: MainWindow.cpp:869
-msgid "Rate Current Track: 1"
-msgstr "將目前曲目評等為：1"
-
-#: MainWindow.cpp:874
-msgid "Rate Current Track: 2"
-msgstr "將目前曲目評等為：2"
-
-#: MainWindow.cpp:879
-msgid "Rate Current Track: 3"
-msgstr "將目前曲目評等為：3"
-
-#: MainWindow.cpp:884
-msgid "Rate Current Track: 4"
-msgstr "將目前曲目評等為：4"
-
-#: MainWindow.cpp:889
-msgid "Rate Current Track: 5"
-msgstr "將目前曲目評等為：5"
-
-#: MainWindow.cpp:895
-msgid "Network Request Viewer"
-msgstr "網路請求檢視器"
-
-#: MainWindow.cpp:913
-msgid "&About Amarok"
-msgstr "關於 Amarok(&A)"
-
-#: MainWindow.cpp:917
-msgid "&Report Bug..."
-msgstr "報告問題(&R)..."
-
-#: MainWindow.cpp:977
-msgid "&Music"
-msgstr "音樂(&M)"
-
-#: MainWindow.cpp:979
-msgid "&Amarok"
-msgstr "Amarok(&A)"
-
-#: MainWindow.cpp:1003 playlist/PlaylistDock.cpp:54
-#: playlist/PlaylistToolBar.cpp:38
-msgid "&Playlist"
-msgstr "播放清單(&P)"
-
-#: MainWindow.cpp:1020
-msgid "&Tools"
-msgstr "工具(&T)"
-
-#: MainWindow.cpp:1037
-msgid "&Settings"
-msgstr "設定(&S)"
-
-#: MainWindow.cpp:1084
-#, kde-format
-msgid ""
-"You have chosen to hide the menu bar.\n"
-"\n"
-"Please remember that you can always use the shortcut \"%1\" to bring it back."
-msgstr ""
-"您已選擇隱藏選單列。\n"
-"\n"
-"請記得您可以用 %1 來把選單列叫回來。"
-
-#: MainWindow.cpp:1086
-msgid "Hide Menu"
-msgstr "隱藏選單"
-
-#: MainWindow.cpp:1128
-#, kde-format
-msgid "Paused  ::  %1"
-msgstr "暫停 :: %1"
-
-#: MainWindow.cpp:1141 amarokurls/BookmarkTreeView.cpp:377
-#: amarokurls/BookmarkTreeView.cpp:378 amarokurls/BookmarkTreeView.cpp:379
-#: context/applets/albums/AlbumItem.cpp:97
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:444
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:445
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:446
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:447
-msgid "Unknown"
-msgstr "未知"
-
-#: MainWindow.cpp:1141
-#, kde-format
-msgid "%1 - %2  ::  %3"
-msgstr "%1 - %2  ::  %3"
-
-#: PluginManager.cpp:253
-msgid ""
-"<p>Amarok could not find any collection plugins. It is possible that Amarok "
-"is installed under the wrong prefix, please fix your installation using:<pre>"
-"$ cd /path/to/amarok/source-code/<br>$ su -c \"make uninstall\"<br>$ cmake -"
-"DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -c \"make install\"<br>$ "
-"kbuildsycoca4 --noincremental<br>$ amarok</pre>More information can be found "
-"in the README file. For further assistance join us at #amarok on irc."
-"freenode.net.</p>"
-msgstr ""
-"<p>Amarok 找不到任何收藏外掛程式。可能是因為 Amarok 安裝的路徑不正確。您可以"
-"嘗試這樣做： <pre>$ cd /path/to/amarok/source-code/<br>$ su -c \"make "
-"uninstall\"<br>$ cmake -DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -"
-"c \"make install\"<br>$ kbuildsycoca4 --noincremental<br>$ amarok</pre>您也能"
-"在 README 檔中找到更多資訊。若需要更深入的幫助，請加入我們位於 irc.freenode."
-"net 的 IRC 頻道 #amarok。</p>"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:73
-msgid ""
-"<qt>No information available.<br />The supplied KAboutData object does not "
-"exist.</qt>"
-msgstr "<qt>沒有可用的資訊。<br />替代的 KAboutData 物件不存在。</qt>"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:82
-msgid ""
-"<qt>No information available.<br />The supplied OcsData object does not "
-"exist.</qt>"
-msgstr "<qt>沒有可用的資訊。<br />替代的 OcsData 物件不存在。</qt>"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:91
-#, kde-format
-msgid "About %1"
-msgstr "關於 %1"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:112
-#, kde-format
-msgid ""
-"<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE %3</"
-"html>"
-msgstr "<html><font size=\"5\">%1</font><br/><b>版本 %2</b><br/>KDE %3</html>"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:152
-#, kde-format
-msgid "License: %1"
-msgstr "授權：%1"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:166
-msgid "&About"
-msgstr "關於(&A)"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:183
-msgid "Get data from openDesktop.org to learn more about the team"
-msgstr "從 openDesktop.org 取得資料以瞭解更多有關於此團隊的資訊"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:195
-msgid ""
-"Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to report "
-"bugs.\n"
-msgstr ""
-"請用 <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> 來回報問題。\n"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:200
-#: aboutdialog/ExtendedAboutDialog.cpp:206
-#, kde-format
-msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
-msgstr "請報告問題到<a href=\"mailto:%1\">%2</a>。\n"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:225
-msgid "A&uthor"
-msgstr "作者(&U)"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:225
-msgid "A&uthors"
-msgstr "作者(&U)"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:239
-msgid "Get data from openDesktop.org to learn more about contributors"
-msgstr "從 openDesktop.org 取得資料以瞭解更多有關於貢獻者的資訊"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:253
-msgid "&Thanks To"
-msgstr "感謝(&T)"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:266
-msgid "Get data from openDesktop.org to learn more about our generous donors"
-msgstr "從 openDesktop.org 取得資料以瞭解更多有關於我們慷慨的捐獻者的資訊"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:286
-msgid "&Donors"
-msgstr "捐獻者(&D)"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:316
-msgid "T&ranslation"
-msgstr "翻譯(&R)"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:340
-msgid "License Agreement"
-msgstr "授權協議"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:373
-msgid "Internet connection not available"
-msgstr "目前沒有可用的網際網路連線"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:373
-msgid "Network error"
-msgstr "網路錯誤"
-
-#: aboutdialog/OcsPersonItem.cpp:95
-msgid "Email contributor"
-msgstr "發信給貢獻者"
-
-#: aboutdialog/OcsPersonItem.cpp:103 aboutdialog/OcsPersonItem.cpp:274
-msgid "Visit contributor's homepage"
-msgstr "拜訪貢獻者的首頁"
-
-#: aboutdialog/OcsPersonItem.cpp:179
-#, kde-format
-msgctxt "A person's location: City, Country"
-msgid "%1, %2"
-msgstr "%1，%2"
-
-#: aboutdialog/OcsPersonItem.cpp:199
-msgid "IRC channels: "
-msgstr "IRC 頻道："
-
-#: aboutdialog/OcsPersonItem.cpp:212
-msgid "Favorite music: "
-msgstr "最喜歡的音樂："
-
-#: aboutdialog/OcsPersonItem.cpp:217
-#, kde-format
-msgid "Visit %1's openDesktop.org profile"
-msgstr "造訪 %1 的 openDesktop.org 檔案"
-
-#: aboutdialog/OcsPersonItem.cpp:219
-#, kde-format
-msgid "Visit %1's profile on openDesktop.org"
-msgstr "造訪 %1 在 openDesktop.org 上的檔案"
-
-#: aboutdialog/OcsPersonItem.cpp:253
-msgid "Visit contributor's blog"
-msgstr "造訪貢獻者的部落格"
-
-#: aboutdialog/OcsPersonItem.cpp:258
-msgid "Visit contributor's del.icio.us profile"
-msgstr "造訪貢獻者的 delicio.us.org 檔案"
-
-#: aboutdialog/OcsPersonItem.cpp:263
-msgid "Visit contributor's Digg profile"
-msgstr "造訪貢獻者的 Digg 檔案"
-
-#: aboutdialog/OcsPersonItem.cpp:268
-msgid "Visit contributor's Facebook profile"
-msgstr "造訪貢獻者的 Facebook"
-
-#: aboutdialog/OcsPersonItem.cpp:284
-msgid "Visit contributor's Last.fm profile"
-msgstr "造訪貢獻者的 Last.fm 檔案"
-
-#: aboutdialog/OcsPersonItem.cpp:292
-msgid "Visit contributor's LinkedIn profile"
-msgstr "造訪貢獻者的 LinkedIn 檔案"
-
-#: aboutdialog/OcsPersonItem.cpp:297
-msgid "Visit contributor's MySpace homepage"
-msgstr "造訪貢獻者的 MySpace 首頁"
-
-#: aboutdialog/OcsPersonItem.cpp:302
-msgid "Visit contributor's Reddit profile"
-msgstr "造訪貢獻者的 Reddit 檔案"
-
-#: aboutdialog/OcsPersonItem.cpp:307
-msgid "Visit contributor's YouTube profile"
-msgstr "造訪貢獻者的 YouTube"
-
-#: aboutdialog/OcsPersonItem.cpp:312
-msgid "Visit contributor's Twitter feed"
-msgstr "造訪貢獻者的 Twitter"
-
-#: aboutdialog/OcsPersonItem.cpp:317
-msgid "Visit contributor's Wikipedia profile"
-msgstr "造訪貢獻者的維基百科檔案"
-
-#: aboutdialog/OcsPersonItem.cpp:322
-msgid "Visit contributor's Xing profile"
-msgstr "造訪貢獻者的 Xing 檔案"
-
-#: aboutdialog/OcsPersonItem.cpp:327
-msgid "Visit contributor's identi.ca feed"
-msgstr "造訪貢獻者的 identi.ca 檔案"
-
-#: aboutdialog/OcsPersonItem.cpp:332
-msgid "Visit contributor's libre.fm profile"
-msgstr "造訪貢獻者的 libre.fm 檔案"
-
-#: aboutdialog/OcsPersonItem.cpp:337
-msgid "Visit contributor's StackOverflow profile"
-msgstr "造訪貢獻者的 StackOverflow 檔案"
-
-#: aboutdialog/libattica-ocsclient/personlistjob.cpp:108
-msgid "Unable to parse avatar image data."
-msgstr "無法剖析個人圖像影像資料。"
 
 #: amarokurls/AmarokUrlHandler.cpp:222
 msgctxt "The command type of this url is not known"
@@ -7271,72 +7212,6 @@ msgstr "樂譜設定"
 msgid "Reload Tabs"
 msgstr "重新載入樂譜"
 
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:67
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:128
-msgid "Upcoming Events"
-msgstr "將發生的事件"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:78
-msgid "View Events Calendar"
-msgstr "檢視事件行事曆"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:91
-msgctxt "@title:group"
-msgid "No track is currently playing"
-msgstr "目前沒有播放任何曲目"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:158
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:303
-msgid "Favorite Venues"
-msgstr "最喜歡的場地"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:224
-msgid "No upcoming events"
-msgstr "沒有將發生的事件"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:224
-#, kde-format
-msgid "%1: No upcoming events"
-msgstr "%1：沒有將發生的事件"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:229
-#, kde-format
-msgctxt "@title:group Number of upcoming events"
-msgid "1 event"
-msgid_plural "%1 events"
-msgstr[0] "%1 個事件"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:230
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:640
-#, kde-format
-msgctxt "@title:group Number of upcoming events"
-msgid "%1: 1 event"
-msgid_plural "%1: %2 events"
-msgstr[0] "%1：%2 個事件"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:302
-msgid "Upcoming Events Settings"
-msgstr "將發生的事件設定"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:353
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:362
-msgctxt "@label:textbox Url label"
-msgid "link"
-msgstr "連結"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:494
-msgid "Map View"
-msgstr "地圖檢視"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:532
-msgid "Events Calender"
-msgstr "事件行事曆"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:638
-msgctxt "@title:group"
-msgid "Favorite Venues"
-msgstr "最喜歡的場地"
-
 #: context/applets/upcomingevents/UpcomingEventsCalendarWidget.cpp:160
 msgctxt "@info:tooltip Calendar action"
 msgid "Jump to Today"
@@ -7427,6 +7302,72 @@ msgstr[0] "<strong>%1</strong> 天內"
 msgctxt "@info:tooltip"
 msgid "<strong>Location:</strong><nl/>%1"
 msgstr "<strong>位置：</strong><nl/>%1"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:67
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:128
+msgid "Upcoming Events"
+msgstr "將發生的事件"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:78
+msgid "View Events Calendar"
+msgstr "檢視事件行事曆"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:91
+msgctxt "@title:group"
+msgid "No track is currently playing"
+msgstr "目前沒有播放任何曲目"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:158
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:303
+msgid "Favorite Venues"
+msgstr "最喜歡的場地"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:224
+msgid "No upcoming events"
+msgstr "沒有將發生的事件"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:224
+#, kde-format
+msgid "%1: No upcoming events"
+msgstr "%1：沒有將發生的事件"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:229
+#, kde-format
+msgctxt "@title:group Number of upcoming events"
+msgid "1 event"
+msgid_plural "%1 events"
+msgstr[0] "%1 個事件"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:230
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:640
+#, kde-format
+msgctxt "@title:group Number of upcoming events"
+msgid "%1: 1 event"
+msgid_plural "%1: %2 events"
+msgstr[0] "%1：%2 個事件"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:302
+msgid "Upcoming Events Settings"
+msgstr "將發生的事件設定"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:353
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:362
+msgctxt "@label:textbox Url label"
+msgid "link"
+msgstr "連結"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:494
+msgid "Map View"
+msgstr "地圖檢視"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:532
+msgid "Events Calendar"
+msgstr "事件行事曆"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:638
+msgctxt "@title:group"
+msgid "Favorite Venues"
+msgstr "最喜歡的場地"
 
 #: context/applets/videoclip/CustomVideoWidget.cpp:83
 msgid "Enter &fullscreen"
@@ -7914,6 +7855,12 @@ msgstr ""
 "%1\n"
 "大部份狀況下您需要解決這些錯誤，Amarok 才能正確執行。"
 
+#: core-impl/collections/db/sql/SqlMeta.cpp:272
+#: covermanager/CoverManager.cpp:842 services/lastfm/meta/LastFmMeta.cpp:133
+#, kde-format
+msgid "%1 - %2"
+msgstr "%1 - %2"
+
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:497
 msgid "Organizing tracks"
 msgstr "組織曲目中"
@@ -7950,12 +7897,6 @@ msgstr "轉換格式中：%1"
 #, kde-format
 msgid "Removing: %1"
 msgstr "移除中：%1"
-
-#: core-impl/collections/db/sql/SqlMeta.cpp:272
-#: covermanager/CoverManager.cpp:842 services/lastfm/meta/LastFmMeta.cpp:133
-#, kde-format
-msgid "%1 - %2"
-msgstr "%1 - %2"
 
 #: core-impl/collections/db/ScanManager.cpp:136
 msgid "Database import requested"
@@ -8351,6 +8292,15 @@ msgstr "兩個月前"
 msgid "three months ago"
 msgstr "三個月以前"
 
+#: core-impl/collections/support/TrashCollectionLocation.cpp:47
+msgid "Trash"
+msgstr "放入資源回收筒"
+
+#: core-impl/collections/support/TrashCollectionLocation.cpp:101
+#, kde-format
+msgid "Moving to trash: %1"
+msgstr "正在移至資源回收筒：%1"
+
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:40
 #, kde-format
 msgctxt "@info"
@@ -8399,11 +8349,11 @@ msgstr "移動檔案"
 msgctxt "@info"
 msgid ""
 "There was a problem and this track could not be removed. Make sure the "
-"directory is writeable."
+"directory is writable."
 msgid_plural ""
 "There was a problem and %1 tracks could not be removed. Make sure the "
-"directory is writeable."
-msgstr[0] "發生了問題，因此 %1 個曲目無法被移動。請確定目錄是可寫入的。"
+"directory is writable."
+msgstr[0] "發生了問題，因此 %1 個曲目無法被移除。請確定目錄是可寫入的。"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:103
 msgid "Unable to be removed tracks"
@@ -8411,7 +8361,7 @@ msgstr "無法移除曲目"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:110
 msgid ""
-"The collection does not have enough free space available or is not writeable."
+"The collection does not have enough free space available or is not writable."
 msgstr "收藏沒有足夠的空間，或是無法寫入。"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:116
@@ -8421,15 +8371,6 @@ msgstr "您確定要移除空白的資料夾嗎？"
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:117
 msgid "Remove empty folders?"
 msgstr "移除空白資料夾？"
-
-#: core-impl/collections/support/TrashCollectionLocation.cpp:47
-msgid "Trash"
-msgstr "放入資源回收筒"
-
-#: core-impl/collections/support/TrashCollectionLocation.cpp:101
-#, kde-format
-msgid "Moving to trash: %1"
-msgstr "正在移至資源回收筒：%1"
 
 #: core-impl/collections/umscollection/handler/UmsHandler.cpp:474
 msgid "&Use as Collection"
@@ -8936,56 +8877,56 @@ msgctxt ""
 msgid "m:ss"
 msgstr "m:ss"
 
-#: core/meta/support/MetaUtility.cpp:401
-msgctxt ""
-"the time format for a time length when the time is 1 day or above see "
-"QDateTime documentation."
-msgid "d:hh:mm:ss"
-msgstr "d:hh:mm:ss"
+#: core/meta/support/MetaUtility.cpp:406
+#, kde-format
+msgctxt "number of days with spacing for the pretty time"
+msgid "%1 day, "
+msgid_plural "%1 days, "
+msgstr[0] "%1 天，"
 
-#: core/meta/support/MetaUtility.cpp:403
+#: core/meta/support/MetaUtility.cpp:407
 msgctxt ""
 "the time format for a time length when the time is 1 hour or above see QTime "
 "documentation."
 msgid "h:mm:ss"
 msgstr "h:mm:ss"
 
-#: core/meta/support/MetaUtility.cpp:416
+#: core/meta/support/MetaUtility.cpp:421
 #, kde-format
 msgctxt "number of years for the pretty time"
 msgid "%1 year"
 msgid_plural "%1 years"
 msgstr[0] "%1 年"
 
-#: core/meta/support/MetaUtility.cpp:418
+#: core/meta/support/MetaUtility.cpp:423
 #, kde-format
 msgctxt "number of months for the pretty time"
 msgid "%1 month"
 msgid_plural "%1 months"
 msgstr[0] "%1 個月"
 
-#: core/meta/support/MetaUtility.cpp:420
+#: core/meta/support/MetaUtility.cpp:425
 #, kde-format
 msgctxt "number of days for the pretty time"
 msgid "%1 day"
 msgid_plural "%1 days"
 msgstr[0] "%1 天"
 
-#: core/meta/support/MetaUtility.cpp:422
+#: core/meta/support/MetaUtility.cpp:427
 #, kde-format
 msgctxt "number of hours for the pretty time"
 msgid "%1 hour"
 msgid_plural "%1 hours"
 msgstr[0] "%1 小時"
 
-#: core/meta/support/MetaUtility.cpp:424
+#: core/meta/support/MetaUtility.cpp:429
 #, kde-format
 msgctxt "number of minutes for the pretty time"
 msgid "%1 minute"
 msgid_plural "%1 minutes"
 msgstr[0] "%1 分鐘"
 
-#: core/meta/support/MetaUtility.cpp:426
+#: core/meta/support/MetaUtility.cpp:431
 #, kde-format
 msgctxt "number of seconds for the pretty time"
 msgid "%1 second"
@@ -10665,26 +10606,6 @@ msgstr "前一首曲目"
 msgid "one of the tracks in the current playlist"
 msgstr "目前播放清單中的某個曲目"
 
-#: dynamic/biases/PartBias.cpp:44
-msgctxt "Name of the \"Part\" bias"
-msgid "Partition"
-msgstr "分區"
-
-#: dynamic/biases/PartBias.cpp:53
-msgctxt "Description of the \"Part\" bias"
-msgid ""
-"The \"Part\" bias fills parts of the playlist from different sub-biases."
-msgstr "\"分區\" bias 會從不同的子 bias 填入播放清單裡的分區。"
-
-#: dynamic/biases/PartBias.cpp:260
-msgid "This controls what portion of the playlist should match the criteria"
-msgstr "這控制播放清單中的哪一部份應該要符合此標準"
-
-#: dynamic/biases/PartBias.cpp:401
-msgctxt "Part bias representation"
-msgid "Partition"
-msgstr "分區"
-
 #: dynamic/biases/QuizPlayBias.cpp:44
 msgctxt "Name of the \"QuizPlay\" bias"
 msgid "Quiz play"
@@ -10789,6 +10710,26 @@ msgstr "\"標籤比對\" bias 會將符合特定條件的曲目加入。"
 msgctxt "Inverted condition in tag match bias"
 msgid "Not %1"
 msgstr "不是 %1"
+
+#: dynamic/biases/PartBias.cpp:44
+msgctxt "Name of the \"Part\" bias"
+msgid "Partition"
+msgstr "分區"
+
+#: dynamic/biases/PartBias.cpp:53
+msgctxt "Description of the \"Part\" bias"
+msgid ""
+"The \"Part\" bias fills parts of the playlist from different sub-biases."
+msgstr "\"分區\" bias 會從不同的子 bias 填入播放清單裡的分區。"
+
+#: dynamic/biases/PartBias.cpp:260
+msgid "This controls what portion of the playlist should match the criteria"
+msgstr "這控制播放清單中的哪一部份應該要符合此標準"
+
+#: dynamic/biases/PartBias.cpp:401
+msgctxt "Part bias representation"
+msgid "Partition"
+msgstr "分區"
 
 #: dynamic/Bias.cpp:239
 msgctxt "And bias representation"
@@ -12454,7 +12395,7 @@ msgid "Neighbors"
 msgstr "鄰居"
 
 #: services/lastfm/LoveTrackAction.cpp:25
-#: services/lastfm/LastFmService.cpp:287
+#: services/lastfm/LastFmService.cpp:284
 msgid "Last.fm: Love"
 msgstr "Last.fm：喜愛"
 
@@ -12653,13 +12594,6 @@ msgstr "測試登入"
 msgid "Unable to connect to Last.fm service."
 msgstr "無法連線到 Last.fm 服務。"
 
-#: services/lastfm/ScrobblerAdapter.cpp:242
-#: services/lastfm/LastFmService.cpp:563
-#, kde-format
-msgctxt "As in, lastfm"
-msgid "Loved Track: %1"
-msgstr "喜愛的曲目: %1"
-
 #: services/lastfm/LastFmServiceConfig.cpp:143
 msgid "Last.fm credentials"
 msgstr "Last.fm 憑證"
@@ -12670,78 +12604,6 @@ msgid ""
 "credentials in plaintext?"
 msgstr ""
 "沒有找到執行中的 KWallet。您要讓 Amarok 用純文字儲存您的 Last.fm 密碼嗎？"
-
-#: services/lastfm/LastFmService.cpp:194
-msgid "Last.fm: The social music revolution"
-msgstr "Last.fm：社交性音樂革命"
-
-#: services/lastfm/LastFmService.cpp:196
-msgid ""
-"Last.fm is a popular online service that provides personal radio stations "
-"and music recommendations. A personal listening station is tailored based on "
-"your listening habits and provides you with recommendations for new music. "
-"It is also possible to play stations with music that is similar to a "
-"particular artist as well as listen to streams from people you have added as "
-"friends or that Last.fm considers your musical \"neighbors\""
-msgstr ""
-"Last.fm 是個受歡迎的線上電台服務，提供個人廣播站台與推薦音樂。個人收聽站會依"
-"您的收聽習慣量身打造，並提供您最新的音樂。它也可以播放與某特定演出者風格相似"
-"的音樂，以及您增為好友的網友提供的串流。"
-
-#: services/lastfm/LastFmService.cpp:289
-msgid "Ctrl+L"
-msgstr "Ctrl+L"
-
-#: services/lastfm/LastFmService.cpp:342
-msgctxt "Last.fm: errorMessage"
-msgid "Either the username was not recognized, or the password was incorrect."
-msgstr "無法辨別使用者，或是密碼不正確。"
-
-#: services/lastfm/LastFmService.cpp:346
-msgctxt "Last.fm: errorMessage"
-msgid ""
-"There was a problem communicating with the Last.fm services. Please try "
-"again later."
-msgstr "與 Last.fm 服務聯繫時發生問題。請稍候再試。"
-
-#: services/lastfm/LastFmService.cpp:434
-msgid "Enter an artist name"
-msgstr "請輸入演出者名稱"
-
-#: services/lastfm/LastFmService.cpp:437
-msgid "Enter a tag"
-msgstr "請輸入標籤"
-
-#: services/lastfm/LastFmService.cpp:440
-msgid "Enter a Last.fm user name"
-msgstr "請輸入 Last.fm 的使用者名稱"
-
-#: services/lastfm/LastFmService.cpp:453
-#, kde-format
-msgid "Username: %1"
-msgstr "使用者名稱：%1"
-
-#: services/lastfm/LastFmService.cpp:458
-#, kde-format
-msgid "Play Count: %1 play"
-msgid_plural "Play Count: %1 plays"
-msgstr[0] "播放次數：%1 次播放"
-
-#: services/lastfm/LastFmService.cpp:468
-msgid "Enter login information for Last.fm"
-msgstr "輸入 Last.fm 登入資訊"
-
-#: services/lastfm/LastFmService.cpp:524
-msgid "Create a Custom Last.fm Station"
-msgstr "建立自訂的 Last.fm 廣播站台"
-
-#: services/lastfm/LastFmService.cpp:527
-msgid "Tag"
-msgstr "標籤"
-
-#: services/lastfm/LastFmService.cpp:527
-msgid "User"
-msgstr "使用者"
 
 #: services/lastfm/LastFmServiceCollection.cpp:42
 #, kde-format
@@ -12771,6 +12633,81 @@ msgstr "朋友的個人頻道"
 #: services/lastfm/SimilarArtistsAction.cpp:26
 msgid "Play Similar Artists from Last.fm"
 msgstr "從 Last.fm 播放相似的演出者曲目"
+
+#: services/lastfm/ScrobblerAdapter.cpp:236
+#: services/lastfm/LastFmService.cpp:543
+#, kde-format
+msgctxt "As in, lastfm"
+msgid "Loved Track: %1"
+msgstr "喜愛的曲目: %1"
+
+#: services/lastfm/LastFmService.cpp:195
+msgid "Last.fm: The social music revolution"
+msgstr "Last.fm：社交性音樂革命"
+
+#: services/lastfm/LastFmService.cpp:197
+msgid ""
+"Last.fm is a popular online service that provides personal radio stations "
+"and music recommendations. A personal listening station is tailored based on "
+"your listening habits and provides you with recommendations for new music. "
+"It is also possible to play stations with music that is similar to a "
+"particular artist as well as listen to streams from people you have added as "
+"friends or that Last.fm considers your musical \"neighbors\""
+msgstr ""
+"Last.fm 是個受歡迎的線上電台服務，提供個人廣播站台與推薦音樂。個人收聽站會依"
+"您的收聽習慣量身打造，並提供您最新的音樂。它也可以播放與某特定演出者風格相似"
+"的音樂，以及您增為好友的網友提供的串流。"
+
+#: services/lastfm/LastFmService.cpp:286
+msgid "Ctrl+L"
+msgstr "Ctrl+L"
+
+#: services/lastfm/LastFmService.cpp:339
+msgctxt "Last.fm: errorMessage"
+msgid "Either the username was not recognized, or the password was incorrect."
+msgstr "無法辨別使用者，或是密碼不正確。"
+
+#: services/lastfm/LastFmService.cpp:343
+msgctxt "Last.fm: errorMessage"
+msgid ""
+"There was a problem communicating with the Last.fm services. Please try "
+"again later."
+msgstr "與 Last.fm 服務聯繫時發生問題。請稍候再試。"
+
+#: services/lastfm/LastFmService.cpp:431
+msgid "Enter an artist name"
+msgstr "請輸入演出者名稱"
+
+#: services/lastfm/LastFmService.cpp:434
+msgid "Enter a tag"
+msgstr "請輸入標籤"
+
+#: services/lastfm/LastFmService.cpp:437
+msgid "Enter a Last.fm user name"
+msgstr "請輸入 Last.fm 的使用者名稱"
+
+#: services/lastfm/LastFmService.cpp:450
+#, kde-format
+msgid "Username: %1"
+msgstr "使用者名稱：%1"
+
+#: services/lastfm/LastFmService.cpp:455
+#, kde-format
+msgid "Play Count: %1 play"
+msgid_plural "Play Count: %1 plays"
+msgstr[0] "播放次數：%1 次播放"
+
+#: services/lastfm/LastFmService.cpp:504
+msgid "Create a Custom Last.fm Station"
+msgstr "建立自訂的 Last.fm 廣播站台"
+
+#: services/lastfm/LastFmService.cpp:507
+msgid "Tag"
+msgstr "標籤"
+
+#: services/lastfm/LastFmService.cpp:507
+msgid "User"
+msgstr "使用者"
 
 #: services/magnatune/MagnatuneCollectionLocation.cpp:42
 msgid "Preview Tracks"
@@ -14431,6 +14368,23 @@ msgstr "<b>%1</b> 於 <b>%2</b>"
 msgctxt "track from source"
 msgid "from <b>%1</b>"
 msgstr "從 <b>%1</b>"
+
+#: PluginManager.cpp:253
+msgid ""
+"<p>Amarok could not find any collection plugins. It is possible that Amarok "
+"is installed under the wrong prefix, please fix your installation using:<pre>"
+"$ cd /path/to/amarok/source-code/<br>$ su -c \"make uninstall\"<br>$ cmake -"
+"DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -c \"make install\"<br>$ "
+"kbuildsycoca4 --noincremental<br>$ amarok</pre>More information can be found "
+"in the README file. For further assistance join us at #amarok on irc."
+"freenode.net.</p>"
+msgstr ""
+"<p>Amarok 找不到任何收藏外掛程式。可能是因為 Amarok 安裝的路徑不正確。您可以"
+"嘗試這樣做： <pre>$ cd /path/to/amarok/source-code/<br>$ su -c \"make "
+"uninstall\"<br>$ cmake -DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -"
+"c \"make install\"<br>$ kbuildsycoca4 --noincremental<br>$ amarok</pre>您也能"
+"在 README 檔中找到更多資訊。若需要更深入的幫助，請加入我們位於 irc.freenode."
+"net 的 IRC 頻道 #amarok。</p>"
 
 #: TrayIcon.cpp:146
 #, kde-format

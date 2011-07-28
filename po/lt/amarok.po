@@ -8,9 +8,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2011-07-17 03:51+0200\n"
-"PO-Revision-Date: 2011-06-17 15:01+0300\n"
-"Last-Translator: Tomas Straupis <tomasstraupis@gmail.com>\n"
+"POT-Creation-Date: 2011-07-26 04:06+0200\n"
+"PO-Revision-Date: 2011-07-27 21:19+0300\n"
+"Last-Translator: Remigijus Jarmalavičius <remigijus@jarmalavicius.lt>\n"
 "Language-Team: Lithuanian <kde-i18n-lt@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -91,15 +91,719 @@ msgstr "Sustoti po dabartinės dainos: įjungta"
 msgid "Stop after current track: Off"
 msgstr "Sustoti po dabartinės dainos: išjungta"
 
+#: equalizer/EqualizerPresets.cpp:90
+msgid "Manual"
+msgstr "Rankinis"
+
+#: equalizer/EqualizerPresets.cpp:91
+msgid "Classical"
+msgstr "Klasikinė"
+
+#: equalizer/EqualizerPresets.cpp:92
+msgid "Club"
+msgstr "Klubinė"
+
+#: equalizer/EqualizerPresets.cpp:93
+msgid "Dance"
+msgstr "Šokių"
+
+#: equalizer/EqualizerPresets.cpp:94
+msgid "Full Bass"
+msgstr "Pilnas bosas"
+
+#: equalizer/EqualizerPresets.cpp:95
+msgid "Full Treble"
+msgstr "Pilni aukšti tonai"
+
+#: equalizer/EqualizerPresets.cpp:96
+msgid "Full Bass + Treble"
+msgstr "Pilnas bosas ir aukšti tonai"
+
+#: equalizer/EqualizerPresets.cpp:97
+msgid "Laptop/Headphones"
+msgstr "Skreitinukas su ausinėmis"
+
+#: equalizer/EqualizerPresets.cpp:98
+msgid "Large Hall"
+msgstr "Didelė salė"
+
+#: equalizer/EqualizerPresets.cpp:99
+msgid "Live"
+msgstr "Gyvai"
+
+#: equalizer/EqualizerPresets.cpp:100
+msgid "Party"
+msgstr "Vakarėlis"
+
+#: equalizer/EqualizerPresets.cpp:101
+msgid "Pop"
+msgstr "Pop"
+
+#: equalizer/EqualizerPresets.cpp:102
+msgid "Reggae"
+msgstr "Regis"
+
+#: equalizer/EqualizerPresets.cpp:103
+msgid "Rock"
+msgstr "Rokas"
+
+#: equalizer/EqualizerPresets.cpp:104
+msgid "Soft"
+msgstr "Minkšta"
+
+#: equalizer/EqualizerPresets.cpp:105
+msgid "Ska"
+msgstr "Ska"
+
+#: equalizer/EqualizerPresets.cpp:106
+msgid "Soft Rock"
+msgstr "Minkštas rokas"
+
+#: equalizer/EqualizerPresets.cpp:107
+msgid "Techno"
+msgstr "Techno"
+
+#: equalizer/EqualizerPresets.cpp:108
+msgid "Zero"
+msgstr "Zero"
+
+#: KNotificationBackend.cpp:146
+msgid "Now playing"
+msgstr "Dabar grojama"
+
+#: App.cpp:410
+msgid "Files/URLs to open"
+msgstr "Atverti failus arba URL"
+
+#: App.cpp:411
+msgid "Immediately start playing an audio cd"
+msgstr "Nedelsiant pradėti groti garso plokštelę"
+
+#: App.cpp:413
+msgid "Skip backwards in playlist"
+msgstr "Grojaraštyje eiti atgal"
+
+#: App.cpp:415
+msgid "Start playing current playlist"
+msgstr "Pradėti groti dabartinį grojaraštį"
+
+#: App.cpp:417
+msgid "Play if stopped, pause if playing"
+msgstr "Groti jei sustabdyta, pristabdyti jei grojama"
+
+#: App.cpp:418
+msgid "Pause playback"
+msgstr "Pristabdyti"
+
+#: App.cpp:420
+msgid "Stop playback"
+msgstr "Nustoti groti"
+
+#: App.cpp:422
+msgid "Skip forwards in playlist"
+msgstr "Grojaraštyje eiti pirmyn"
+
+#: App.cpp:423
+msgid "Additional options:"
+msgstr "Papildomos parinktys:"
+
+#: App.cpp:425
+msgid "Append files/URLs to playlist"
+msgstr "Papildyti grojaraštį failais arba URL"
+
+#: App.cpp:426
+msgid "Queue URLs after the currently playing track"
+msgstr "Įtraukti URL į eilę po dabar grojančios dainos"
+
+#: App.cpp:428
+msgid "Load URLs, replacing current playlist"
+msgstr "Įkelti URL pakeičiant dabartinį grojaraštį"
+
+#: App.cpp:430
+msgid "Print verbose debugging information"
+msgstr "Spausdinti išsamią klaidų derinimo informaciją"
+
+#: App.cpp:432
+msgid "Disable colorization for debug output."
+msgstr "Išjungti spalvinimą derinimo išvestyje."
+
+#: App.cpp:434
+msgid "Allow running multiple Amarok instances"
+msgstr "Galima vienu metu paleisti daugiau nei vieną Amaroką"
+
+#: App.cpp:435
+msgid "Base for relative filenames/URLs"
+msgstr "Santykinių failų pavadinimų ar URL pradžia"
+
+#: App.cpp:437
+msgid "Unit test options:"
+msgstr "Blokinio testavimo parinktys:"
+
+#: App.cpp:438
+msgid "Run integrated unit tests"
+msgstr "Paleisti integruotus blokinius testus"
+
+#: App.cpp:439
+msgid "Destination of test output: 'stdout', 'log'"
+msgstr "Testavimo rezultatai išvedami į: „stdout“, „log“"
+
+#: App.cpp:440
+msgid "Format of test output: 'xml', 'lightxml', 'plaintext'"
+msgstr "Testų rezultatų formatas: „xml“, „lightxml“, „plaintext“"
+
+#: App.cpp:441
+msgid "Verbosity from 0-3 (highest)"
+msgstr "Išsamumas nuo 0 iki 3 (didžiausias)"
+
+#: App.cpp:633
+msgid ""
+"The embedded database was not found; you must set up a database server "
+"connection.\n"
+"You must restart Amarok after doing this."
+msgstr ""
+"Nerasta įsiūta duomenų bazė. Turite nurodyti jungtį į duomenų bazę.\n"
+"Tai padarę turėsite iš naujo paleisti Amaroką."
+
+#: App.cpp:634
+msgid ""
+"The connection details for the database server were invalid.\n"
+"You must enter correct settings and restart Amarok after doing this."
+msgstr ""
+"Prisijungimo prie duomenų bazės informacija buvo neteisinga.\n"
+"Turite įvesti teisingus prisijungimo duomenis ir tada iš naujo paleisti "
+"Amaroką."
+
+#: App.cpp:635
+msgid "Database Error"
+msgstr "Duombazės klaida"
+
+#: App.cpp:680
+msgid "Moving files to trash"
+msgstr "Failai perkeliami į šiukšliadėžę"
+
+#: App.cpp:768
+#, kde-format
+msgid ""
+"A music path, %1, is set in System Settings.\n"
+"Would you like to use that as a collection folder?"
+msgstr ""
+"Muzikos kelias „%1“ yra nurodytas sistemos nustatymuose.\n"
+"Ar norite jį naudoti kaip jūsų fonotekos aplanką?"
+
+#. i18n: file: core-impl/collections/audiocd/FormatSelectionDialog.ui:14
+#. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
+#: MainWindow.cpp:103 rc.cpp:1130 main.cpp:40
+msgid "Amarok"
+msgstr "Amarok"
+
+#: MainWindow.cpp:261
+msgid "Local Music"
+msgstr "Vietinė muzika"
+
+#: MainWindow.cpp:263
+msgid "Local sources of content"
+msgstr "Vietiniai turinio šaltiniai"
+
+#: MainWindow.cpp:271
+msgid "Internet"
+msgstr "Internetas"
+
+#: MainWindow.cpp:273
+msgid "Online sources of content"
+msgstr "Internetiniai turinio šaltiniai"
+
+#: MainWindow.cpp:279
+msgid "Playlists"
+msgstr "Grojaraščiai"
+
+#: MainWindow.cpp:281
+msgid "Various types of playlists"
+msgstr "Įvairūs grojaraščių tipai"
+
+#: MainWindow.cpp:287 amarokurls/NavigationUrlGenerator.cpp:135
+msgid "Files"
+msgstr "Failai"
+
+#: MainWindow.cpp:289
+msgid "Browse local hard drive for content"
+msgstr "Ieškoti turinio vietiniame diske"
+
+#: MainWindow.cpp:350
+msgctxt "@item:inmenu"
+msgid "&View"
+msgstr "&Rodymas"
+
+#: MainWindow.cpp:353
+msgid "Lock Layout"
+msgstr "Užrakinti išdėstymą"
+
+#: MainWindow.cpp:464
+msgid ""
+"<qt>Closing the main window will keep Amarok running in the System Tray. Use "
+"<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
+"qt>"
+msgstr ""
+"<qt>Uždarius pagrindinį langą Amarok liks sistemos dėkle. Norėdami nutraukti "
+"darbą nurodykite komandą <B>Baigti</B>, esančią meniu arba Amarok sisteminio "
+"dėklo ženkliuke.</qt>"
+
+#: MainWindow.cpp:466
+msgid "Docking in System Tray"
+msgstr "Nukelti į sistemos dėklą"
+
+#: MainWindow.cpp:495
+msgid "Use relative path for &saving"
+msgstr "Išsaugant naudoti &santykinį kelią"
+
+#: MainWindow.cpp:507 covermanager/CoverFoundDialog.cpp:361
+msgid "Save As"
+msgstr "Išsaugoti kaip"
+
+#: MainWindow.cpp:559
+msgid "Play Media (Files or URLs)"
+msgstr "Groti muziką (failus ar URL)"
+
+#: MainWindow.cpp:559
+msgid "Add Media (Files or URLs)"
+msgstr "Įdėti muziką (failus ar URL)"
+
+#: MainWindow.cpp:577
+msgid "Add Stream"
+msgstr "Įdėti srautą"
+
+#: MainWindow.cpp:577
+msgid "Enter Stream URL:"
+msgstr "Įrašykite srauto URL:"
+
+#: MainWindow.cpp:701
+msgid "&Add Media..."
+msgstr "&Įdėti muziką..."
+
+#: MainWindow.cpp:706
+msgctxt "clear playlist"
+msgid "&Clear Playlist"
+msgstr "&Išvalyti grojaraštį"
+
+#: MainWindow.cpp:711
+msgctxt "edit play queue of playlist"
+msgid "Edit &Queue"
+msgstr "Keisti &eilę"
+
+#: MainWindow.cpp:716
+msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
+msgid "Re&move Duplicates"
+msgstr "&Pašalinti dublikatus"
+
+#: MainWindow.cpp:723
+msgid "&Add Stream..."
+msgstr "&Įdėti srautą..."
+
+#: MainWindow.cpp:727
+msgid "&Export Playlist As..."
+msgstr "&Eksportuoti grojaraštį kaip..."
+
+#: MainWindow.cpp:731 amarokurls/NavigationUrlGenerator.cpp:250
+msgid "Bookmark Media Sources View"
+msgstr "Pasižymėti kūrinių šaltinių rodinį"
+
+#: MainWindow.cpp:735 amarokurls/BookmarkManager.cpp:43
+msgid "Bookmark Manager"
+msgstr "Žymelių tvarkyklė"
+
+#: MainWindow.cpp:739
+msgid "Equalizer"
+msgstr "Glodintuvas"
+
+#: MainWindow.cpp:743 playlist/PlaylistViewUrlGenerator.cpp:101
+msgid "Bookmark Playlist Setup"
+msgstr "Pasižymėti grojaraščio nuostatas"
+
+#: MainWindow.cpp:747
+msgid "Bookmark Context Applets"
+msgstr "Pasižymėti konteksto įskiepius"
+
+#: MainWindow.cpp:751 covermanager/CoverManager.cpp:105
+msgid "Cover Manager"
+msgstr "Viršelių tvarkyklė"
+
+#: MainWindow.cpp:755
+msgid "Play Media..."
+msgstr "Groti kūrinį..."
+
+#: MainWindow.cpp:760
+msgid "&Seek Forward"
+msgstr "&Prasukti pirmyn"
+
+#: MainWindow.cpp:766
+msgid "&Seek Backward"
+msgstr "&Prasukti atgal"
+
+#: MainWindow.cpp:773
+msgid "Update Collection"
+msgstr "Atnaujinti fonoteką"
+
+#: MainWindow.cpp:780
+msgid "Previous Track"
+msgstr "Ankstesnė daina"
+
+#: MainWindow.cpp:787
+msgid "Restart current track"
+msgstr "Pradėti šią dainą iš pradžių"
+
+#: MainWindow.cpp:793
+msgid "Repopulate Playlist"
+msgstr "Iš naujo užpildyti grojaraštį"
+
+#: MainWindow.cpp:799
+msgid "Disable Dynamic Playlist"
+msgstr "Išjungti dinaminį grojaraštį"
+
+#: MainWindow.cpp:803
+msgid "Next Track"
+msgstr "Kita daina"
+
+#: MainWindow.cpp:808
+msgid "Increase Volume"
+msgstr "Pagarsinti"
+
+#: MainWindow.cpp:814
+msgid "Decrease Volume"
+msgstr "Pritildyti"
+
+#: MainWindow.cpp:820
+msgid "Toggle Main Window"
+msgstr "Įj./išj. pagrindinį langą"
+
+#: MainWindow.cpp:825
+msgid "Toggle Full Screen"
+msgstr "Perjungti visą ekraną"
+
+#: MainWindow.cpp:830
+msgid "Jump to"
+msgstr "Šokti į"
+
+#: MainWindow.cpp:835
+msgid "Show active track"
+msgstr "Rodyti aktyvią dainą"
+
+#: MainWindow.cpp:839
+msgid "Show Notification Popup"
+msgstr "Rodyti perspėjimus"
+
+#: MainWindow.cpp:844
+msgid "Mute Volume"
+msgstr "Išjungti garsą"
+
+#: MainWindow.cpp:849
+msgid "Last.fm: Love Current Track"
+msgstr "Last.fm: Ši daina patinka"
+
+#: MainWindow.cpp:854
+msgid "Last.fm: Ban Current Track"
+msgstr "Last.fm: Uždrausti dabartinę dainą"
+
+#: MainWindow.cpp:859
+msgid "Last.fm: Skip Current Track"
+msgstr "Last.fm: Praleisti dabartinę dainą"
+
+#: MainWindow.cpp:864 playlist/view/PlaylistViewCommon.cpp:115
+msgid "Queue Track"
+msgstr "Dainą į eilę"
+
+#: MainWindow.cpp:869
+msgid "Rate Current Track: 1"
+msgstr "Įvertinti šią dainą: 1"
+
+#: MainWindow.cpp:874
+msgid "Rate Current Track: 2"
+msgstr "Įvertinti šią dainą: 2"
+
+#: MainWindow.cpp:879
+msgid "Rate Current Track: 3"
+msgstr "Įvertinti šią dainą: 3"
+
+#: MainWindow.cpp:884
+msgid "Rate Current Track: 4"
+msgstr "Įvertinti šią dainą: 4"
+
+#: MainWindow.cpp:889
+msgid "Rate Current Track: 5"
+msgstr "Įvertinti šią dainą: 5"
+
+#: MainWindow.cpp:895
+msgid "Network Request Viewer"
+msgstr "Tinklo užklausų žiūryklė"
+
+#: MainWindow.cpp:913
+msgid "&About Amarok"
+msgstr "&Apie Amarok"
+
+#: MainWindow.cpp:917
+msgid "&Report Bug..."
+msgstr "&Pranešti apie klaidą..."
+
+#: MainWindow.cpp:977
+msgid "&Music"
+msgstr "&Muzika"
+
+#: MainWindow.cpp:979
+msgid "&Amarok"
+msgstr "&Amarok"
+
+#: MainWindow.cpp:1003 playlist/PlaylistDock.cpp:54
+#: playlist/PlaylistToolBar.cpp:38
+msgid "&Playlist"
+msgstr "&Grojaraštis"
+
+#: MainWindow.cpp:1020
+msgid "&Tools"
+msgstr "Įrank&iai"
+
+#: MainWindow.cpp:1037
+msgid "&Settings"
+msgstr "&Parinktys"
+
+#: MainWindow.cpp:1084
+#, kde-format
+msgid ""
+"You have chosen to hide the menu bar.\n"
+"\n"
+"Please remember that you can always use the shortcut \"%1\" to bring it back."
+msgstr ""
+"Jūs nurodėte paslėpti meniu juostą.\n"
+"\n"
+"Atsiminkite, kad galite ją bet kada grąžinti panaudoję klavišų kombinaciją „%"
+"1“."
+
+#: MainWindow.cpp:1086
+msgid "Hide Menu"
+msgstr "Slėpti meniu"
+
+#: MainWindow.cpp:1128
+#, kde-format
+msgid "Paused  ::  %1"
+msgstr "Pristabdyta  ::  %1"
+
+#: MainWindow.cpp:1141 amarokurls/BookmarkTreeView.cpp:377
+#: amarokurls/BookmarkTreeView.cpp:378 amarokurls/BookmarkTreeView.cpp:379
+#: context/applets/albums/AlbumItem.cpp:97
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:444
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:445
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:446
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:447
+msgid "Unknown"
+msgstr "Nežinoma"
+
+#: MainWindow.cpp:1141
+#, kde-format
+msgid "%1 - %2  ::  %3"
+msgstr "%1 – %2  ::  %3"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:73
+msgid ""
+"<qt>No information available.<br />The supplied KAboutData object does not "
+"exist.</qt>"
+msgstr ""
+"<qt>Nėra informacijos.<br />Pateiktas KAboutData objektas neegzistuoja.</qt>"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:82
+msgid ""
+"<qt>No information available.<br />The supplied OcsData object does not "
+"exist.</qt>"
+msgstr ""
+"<qt>Nėra informacijos.<br />Pateiktas OcsData objektas neegzistuoja.</qt>"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:91
+#, kde-format
+msgid "About %1"
+msgstr "Apie %1"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:112
+#, kde-format
+msgid ""
+"<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE %3</"
+"html>"
+msgstr ""
+"<html><font size=\"5\">%1</font><br /><b>Versija %2</b><br />Naudoja KDE %3</"
+"html>"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:152
+#, kde-format
+msgid "License: %1"
+msgstr "Licencija: %1"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:166
+msgid "&About"
+msgstr "&Apie"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:183
+msgid "Get data from openDesktop.org to learn more about the team"
+msgstr ""
+"Parsisiųskite duomenis iš openDesktop.org, kad sužinotumėte daugiau apie "
+"komandą"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:195
+msgid ""
+"Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to report "
+"bugs.\n"
+msgstr ""
+"Apie klaidas prašome pranešti <a href=\"http://bugs.kde.org\">http://bugs."
+"kde.org</a> puslapyje.\n"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:200
+#: aboutdialog/ExtendedAboutDialog.cpp:206
+#, kde-format
+msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
+msgstr "Apie klaidas prašome pranešti <a href=\"mailto:%1\">%2</a>.\n"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:225
+msgid "A&uthor"
+msgstr "A&utorius"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:225
+msgid "A&uthors"
+msgstr "A&utoriai"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:239
+msgid "Get data from openDesktop.org to learn more about contributors"
+msgstr ""
+"Gauti duomenis iš openDesktop.org, kad daugiau sužinotumėte apie talkininkus"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:253
+msgid "&Thanks To"
+msgstr "&Dėkojame"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:266
+msgid "Get data from openDesktop.org to learn more about our generous donors"
+msgstr ""
+"Parsisiųskite duomenis iš openDesktop.org, kad sužinotumėte daugiau apie "
+"mūsų dosnius rėmėjus"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:286
+msgid "&Donors"
+msgstr "&Rėmėjai"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:316
+msgid "T&ranslation"
+msgstr "&Vertimas"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:340
+msgid "License Agreement"
+msgstr "Licencijos sutartis"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:373
+msgid "Internet connection not available"
+msgstr "Nėra interneto ryšio"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:373
+msgid "Network error"
+msgstr "Tinklo klaida"
+
+#: aboutdialog/OcsPersonItem.cpp:95
+msgid "Email contributor"
+msgstr "Prašyti talkininkui el. laišką"
+
+#: aboutdialog/OcsPersonItem.cpp:103 aboutdialog/OcsPersonItem.cpp:274
+msgid "Visit contributor's homepage"
+msgstr "Aplankyti talkininko svetainę"
+
+#: aboutdialog/OcsPersonItem.cpp:179
+#, kde-format
+msgctxt "A person's location: City, Country"
+msgid "%1, %2"
+msgstr "%1, %2"
+
+#: aboutdialog/OcsPersonItem.cpp:199
+msgid "IRC channels: "
+msgstr "IRC kanalai: "
+
+#: aboutdialog/OcsPersonItem.cpp:212
+msgid "Favorite music: "
+msgstr "Mėgstamiausia muzika: "
+
+#: aboutdialog/OcsPersonItem.cpp:217
+#, kde-format
+msgid "Visit %1's openDesktop.org profile"
+msgstr "Aplankyti %1 openDesktop.org profilį"
+
+#: aboutdialog/OcsPersonItem.cpp:219
+#, kde-format
+msgid "Visit %1's profile on openDesktop.org"
+msgstr "Aplankyti %1 openDesktop.org profilį"
+
+#: aboutdialog/OcsPersonItem.cpp:253
+msgid "Visit contributor's blog"
+msgstr "Aplankyti talkininko blogą"
+
+#: aboutdialog/OcsPersonItem.cpp:258
+msgid "Visit contributor's del.icio.us profile"
+msgstr "Aplankyti talkininko del.icio.us profilį"
+
+#: aboutdialog/OcsPersonItem.cpp:263
+msgid "Visit contributor's Digg profile"
+msgstr "Aplankyti talkininko Digg profilį"
+
+#: aboutdialog/OcsPersonItem.cpp:268
+msgid "Visit contributor's Facebook profile"
+msgstr "Aplankyti talkininko Facebook profilį"
+
+#: aboutdialog/OcsPersonItem.cpp:284
+msgid "Visit contributor's Last.fm profile"
+msgstr "Aplankyti talkininko Last.fm profilį"
+
+#: aboutdialog/OcsPersonItem.cpp:292
+msgid "Visit contributor's LinkedIn profile"
+msgstr "Aplankyti talkininko LinkedIn profilį"
+
+#: aboutdialog/OcsPersonItem.cpp:297
+msgid "Visit contributor's MySpace homepage"
+msgstr "Aplankyti talkininko MySpace puslapį"
+
+#: aboutdialog/OcsPersonItem.cpp:302
+msgid "Visit contributor's Reddit profile"
+msgstr "Aplankyti talkininko Reddit profilį"
+
+#: aboutdialog/OcsPersonItem.cpp:307
+msgid "Visit contributor's YouTube profile"
+msgstr "Aplankyti talkininko YouTube profilį"
+
+#: aboutdialog/OcsPersonItem.cpp:312
+msgid "Visit contributor's Twitter feed"
+msgstr "Aplankyti talkininko Twitter kanalą"
+
+#: aboutdialog/OcsPersonItem.cpp:317
+msgid "Visit contributor's Wikipedia profile"
+msgstr "Aplankyti talkininko Vikipedijos profilį"
+
+#: aboutdialog/OcsPersonItem.cpp:322
+msgid "Visit contributor's Xing profile"
+msgstr "Aplankyti talkininko Xing profilį"
+
+#: aboutdialog/OcsPersonItem.cpp:327
+msgid "Visit contributor's identi.ca feed"
+msgstr "Aplankyti talkininko identi.ca kanalą"
+
+#: aboutdialog/OcsPersonItem.cpp:332
+msgid "Visit contributor's libre.fm profile"
+msgstr "Aplankyti talkininko libre.fm profilį"
+
+#: aboutdialog/OcsPersonItem.cpp:337
+msgid "Visit contributor's StackOverflow profile"
+msgstr "Aplankyti talkininko StackOverflow profilį"
+
+#: aboutdialog/libattica-ocsclient/personlistjob.cpp:108
+msgid "Unable to parse avatar image data."
+msgstr "Nepavyksta išnagrinėti pseudo portreto duomenų."
+
 #: rc.cpp:1
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr "Andrius Štikonas, Dovydas Sankauskas"
+msgstr "Andrius Štikonas, Dovydas Sankauskas, Remigijus Jarmalavičius"
 
 #: rc.cpp:2
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
-msgstr "stikonas@gmail.com, laisve@gmail.com"
+msgstr "stikonas@gmail.com, laisve@gmail.com, remigijus@jarmalavicius.lt"
 
 #. i18n: file: amarokconfig.kcfg:13
 #. i18n: ectx: label, entry, group (General Options)
@@ -609,7 +1313,7 @@ msgstr "Nutildymo būsena"
 #. i18n: ectx: whatsthis, entry, group (Playback)
 #: rc.cpp:218
 msgid "Mute/Unmute sound."
-msgstr "Įjungti/Išjunti garsą"
+msgstr "Įjungti/Išjungti garsą"
 
 #. i18n: file: amarokconfig.kcfg:225
 #. i18n: ectx: label, entry, group (Playback)
@@ -777,7 +1481,7 @@ msgstr "Nurodykite kokia kalba bus atsiunčiama informacija iš Vikipedijos."
 #. i18n: ectx: label, entry, group (KNotify)
 #: rc.cpp:296
 msgid "Use KNotify support"
-msgstr "Nautoti KNotify palaikymą"
+msgstr "Naudoti KNotify palaikymą"
 
 #. i18n: file: amarokconfig.kcfg:314
 #. i18n: ectx: label, entry, group (OSD)
@@ -869,7 +1573,7 @@ msgid ""
 "The color of the OSD text. The color is specified in RGB, a comma-separated "
 "list containing three integers between 0 and 255."
 msgstr ""
-"Pranešimo teksto spalva, nurodyta RGB fomatu: trimis kableliais atskirtais "
+"Pranešimo teksto spalva, nurodyta RGB formatu: trimis kableliais atskirtais "
 "skaičiais nuo 0 iki 255."
 
 #. i18n: file: amarokconfig.kcfg:349
@@ -2332,7 +3036,7 @@ msgstr "Iš naujo įkelti korteles su šiuo pavadinimu ir atlikėju"
 #: dialogs/transferdialog.cpp:88 dialogs/FilenameLayoutDialog.cpp:230
 #: dialogs/FilenameLayoutDialog.cpp:591 musicbrainz/MusicBrainzTags.cpp:359
 #: playlist/PlaylistModel.cpp:902 services/jamendo/JamendoInfoParser.cpp:51
-#: services/lastfm/LastFmService.cpp:527
+#: services/lastfm/LastFmService.cpp:507
 #: services/magnatune/MagnatuneStore.cpp:218
 #: widgets/SmartPlaylistEditor.cpp:183 widgets/SmartPlaylistEditor.cpp:197
 msgid "Artist"
@@ -2506,12 +3210,6 @@ msgstr "Youtube HQ"
 #: rc.cpp:1127
 msgid "Use Wikipedia &mobile version"
 msgstr "Naudoti Vikipedijos versiją skirtą &mobiliems"
-
-#. i18n: file: core-impl/collections/audiocd/FormatSelectionDialog.ui:14
-#. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: rc.cpp:1130 MainWindow.cpp:103 main.cpp:40
-msgid "Amarok"
-msgstr "Amarok"
 
 #. i18n: file: core-impl/collections/audiocd/FormatSelectionDialog.ui:26
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
@@ -2884,7 +3582,7 @@ msgid ""
 "Reset selected preset setting to default. Available only for built-in "
 "presets."
 msgstr ""
-"Atstatyti parinkto išankstinio nustatymo numatytasias reikšmes. Veikia tik "
+"Atstatyti parinkto išankstinio nustatymo numatytąsias reikšmes. Veikia tik "
 "įsiūtiems nustatymams."
 
 #. i18n: file: dialogs/EqualizerDialog.ui:107
@@ -3422,7 +4120,7 @@ msgid ""
 "If checked all spaces will be replaced with underscores in the file names. "
 "If not, spaces will be left as they are."
 msgstr ""
-"Įjungus šią parinktį, visi tarpai faiilų pavadinimuose bus pakeisti "
+"Įjungus šią parinktį, visi tarpai failų pavadinimuose bus pakeisti "
 "pabraukimo simboliais. Priešingu atveju tarpai nebus keičiami."
 
 #. i18n: file: dialogs/OrganizeCollectionDialogBase.ui:187
@@ -3615,7 +4313,7 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QCheckBox, vfatCheck)
 #: rc.cpp:1681
 msgid "&VFAT safe names"
-msgstr "&VFAT atitinkatys pavadinimai"
+msgstr "&VFAT atitinkantys pavadinimai"
 
 #. i18n: file: dialogs/OrganizeCollectionDialogBase.ui:316
 #. i18n: ectx: property (title), widget (QGroupBox, previewBox)
@@ -3642,7 +4340,7 @@ msgstr "Pradinis"
 #: rc.cpp:1693
 msgid "If checked, overwrite files of the same name without asking."
 msgstr ""
-"Jei ši parinkis įjungta, perrašyti failus tokiu pačiu pavadinimu be atskiro "
+"Jei ši parinktis įjungta, perrašyti failus tokiu pačiu pavadinimu be atskiro "
 "paklausimo."
 
 #. i18n: file: dialogs/OrganizeCollectionDialogBase.ui:404
@@ -4384,7 +5082,7 @@ msgid ""
 "than that number of tracks; and the strictness with which the APG should "
 "match the target number of tracks."
 msgstr ""
-"Grojaraščio dydžio apribojimo redaktorius. Naudojas gali nurodyti, kiek "
+"Grojaraščio dydžio apribojimo redaktorius. Naudotojas gali nurodyti, kiek "
 "dainų turi būti grojaraštyje. Ar dainų turi būti mažiau, lygiai ar daugiau "
 "už nurodytą skaičių. Taipogi nurodoma, kaip griežtai APG turi atitikti "
 "nurodytą dainų kiekio apribojimą."
@@ -4409,7 +5107,7 @@ msgstr ""
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Comparison)
 #: rc.cpp:2053
 msgid "fewer than"
-msgstr "mažiau uš"
+msgstr "mažiau už"
 
 #. i18n: file: playlistgenerator/constraints/PlaylistLengthEditWidget.ui:49
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Comparison)
@@ -5056,49 +5754,7 @@ msgstr "Magnatune.com narių prisijungimas"
 #. i18n: file: services/magnatune/MagnatuneSignupDialogBase.ui:32
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: rc.cpp:2438
-#, fuzzy, no-c-format
-#| msgid ""
-#| "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
-#| "REC-html40/strict.dtd\">\n"
-#| "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-#| "css\">\n"
-#| "p, li { white-space: pre-wrap; }\n"
-#| "</style></head><body style=\" font-family:'Liberation Sans'; font-"
-#| "size:9pt; font-weight:400; font-style:normal;\">\n"
-#| "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#| "right:0px; -qt-block-indent:0; text-indent:0px;\">By becoming a Magnatune."
-#| "com member, you get unlimited download access and can download any album "
-#| "from within Amarok with a single mouse click. By joining, you can also "
-#| "listen to all streaming tracks from Magnatune.com ad-free.</p>\n"
-#| "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
-#| "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"
-#| "\"></p>\n"
-#| "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#| "right:0px; -qt-block-indent:0; text-indent:0px;\">The Amarok team gets "
-#| "10% of your initial membership payment, so by joining, you are also "
-#| "supporting the development of Amarok.</p>\n"
-#| "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
-#| "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"
-#| "\"></p>\n"
-#| "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#| "right:0px; -qt-block-indent:0; text-indent:0px;\">As always, the artists "
-#| "get 50% of your memberhip payment(s) distributed based on which artist "
-#| "you download and stream.</p>\n"
-#| "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
-#| "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"
-#| "\"></p>\n"
-#| "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#| "right:0px; -qt-block-indent:0; text-indent:0px;\">To read more about "
-#| "Magnatune.com memberships, or to sign up, click here: <a href=\"http://"
-#| "magnatune.com/downloads?referal_id=amarok\"><span style=\" text-"
-#| "decoration: underline; color:#0057ae;\">Membership Info</span></a> </p>\n"
-#| "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
-#| "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"
-#| "\"></p>\n"
-#| "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#| "right:0px; -qt-block-indent:0; text-indent:0px;\">After joining, go to "
-#| "the Magnatune config in \"Settings->Configure Amarok->Internet Services\" "
-#| "and enter your membership information. </p></body></html>"
+#, no-c-format
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
@@ -5151,7 +5807,7 @@ msgstr ""
 "font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">Tapę Magnatune.com nariu, "
-"jūs gausite neriboto atsisiuntimo galimybę ir galėsite atsisiųsti bet kokį "
+"Jūs gausite neriboto atsisiuntimo galimybę ir galėsite atsisiųsti bet kokį "
 "albumą tiesiai iš Amaroko vienu pelės mygtuko paspaudimu. Prisijungę taipogi "
 "galėsite klausytis visų Magnatune.com srautu perduodamų kūrinių neturėdami "
 "žiūrėti reklamų.</p>\n"
@@ -5160,14 +5816,14 @@ msgstr ""
 "p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">Amaroko komanda gauna 10% "
-"jūsų pradinio narystės mokesčio, taigi prisijungdami jūs taipogi remiate "
+"Jūsų pradinio narystės mokesčio, taigi prisijungdami jūs taipogi remiate "
 "Amaroko kūrimą.</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
 "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></"
 "p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">Kaip visada, kūrinių "
-"autoriai gauna 50% jūsų narystės mokesčio, kuris paskirstomas priklausomai "
+"autoriai gauna 50% Jūsų narystės mokesčio, kuris paskirstomas priklausomai "
 "nuo to, kuriuos kūrinius jūs parsisiunčiate arba klausotės srautų pagalba.</"
 "p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
@@ -5355,723 +6011,6 @@ msgstr "Negrupuoti (viena eilutė)"
 #: rc.cpp:2529
 msgid "Verbose"
 msgstr "Išsamus"
-
-#: equalizer/EqualizerPresets.cpp:90
-msgid "Manual"
-msgstr "Rankinis"
-
-#: equalizer/EqualizerPresets.cpp:91
-msgid "Classical"
-msgstr "Klasikinė"
-
-#: equalizer/EqualizerPresets.cpp:92
-msgid "Club"
-msgstr "Klubinė"
-
-#: equalizer/EqualizerPresets.cpp:93
-msgid "Dance"
-msgstr "Šokių"
-
-#: equalizer/EqualizerPresets.cpp:94
-msgid "Full Bass"
-msgstr "Pilnas bosas"
-
-#: equalizer/EqualizerPresets.cpp:95
-msgid "Full Treble"
-msgstr "Pilni aukšti tonai"
-
-#: equalizer/EqualizerPresets.cpp:96
-msgid "Full Bass + Treble"
-msgstr "Pilnas bosas ir aukšti tonai"
-
-#: equalizer/EqualizerPresets.cpp:97
-msgid "Laptop/Headphones"
-msgstr "Skreitinukas su ausinėmis"
-
-#: equalizer/EqualizerPresets.cpp:98
-msgid "Large Hall"
-msgstr "Didelė salė"
-
-#: equalizer/EqualizerPresets.cpp:99
-msgid "Live"
-msgstr "Gyvai"
-
-#: equalizer/EqualizerPresets.cpp:100
-msgid "Party"
-msgstr "Vakarėlis"
-
-#: equalizer/EqualizerPresets.cpp:101
-msgid "Pop"
-msgstr "Pop"
-
-#: equalizer/EqualizerPresets.cpp:102
-msgid "Reggae"
-msgstr "Regis"
-
-#: equalizer/EqualizerPresets.cpp:103
-msgid "Rock"
-msgstr "Rokas"
-
-#: equalizer/EqualizerPresets.cpp:104
-msgid "Soft"
-msgstr "Minkšta"
-
-#: equalizer/EqualizerPresets.cpp:105
-msgid "Ska"
-msgstr "Ska"
-
-#: equalizer/EqualizerPresets.cpp:106
-msgid "Soft Rock"
-msgstr "Minkštas rokas"
-
-#: equalizer/EqualizerPresets.cpp:107
-msgid "Techno"
-msgstr "Techno"
-
-#: equalizer/EqualizerPresets.cpp:108
-msgid "Zero"
-msgstr "Zero"
-
-#: KNotificationBackend.cpp:146
-msgid "Now playing"
-msgstr "Dabar grojama"
-
-#: App.cpp:410
-msgid "Files/URLs to open"
-msgstr "Atverti failus arba URL"
-
-#: App.cpp:411
-msgid "Immediately start playing an audio cd"
-msgstr "Nedelsiant pradėti groti garso plokštelę"
-
-#: App.cpp:413
-msgid "Skip backwards in playlist"
-msgstr "Grojaraštyje eiti atgal"
-
-#: App.cpp:415
-msgid "Start playing current playlist"
-msgstr "Pradėti groti dabartinį grojaraštį"
-
-#: App.cpp:417
-msgid "Play if stopped, pause if playing"
-msgstr "Groti jei sustabdyta, pristabdyti jei grojama"
-
-#: App.cpp:418
-msgid "Pause playback"
-msgstr "Pristabdyti"
-
-#: App.cpp:420
-msgid "Stop playback"
-msgstr "Nustoti groti"
-
-#: App.cpp:422
-msgid "Skip forwards in playlist"
-msgstr "Grojaraštyje eiti pirmyn"
-
-#: App.cpp:423
-msgid "Additional options:"
-msgstr "Papildomos parinktys:"
-
-#: App.cpp:425
-msgid "Append files/URLs to playlist"
-msgstr "Papildyti grojaraštį failais arba URL"
-
-#: App.cpp:426
-msgid "Queue URLs after the currently playing track"
-msgstr "Įtraukti URL į eilę po dabar grojančios dainos"
-
-#: App.cpp:428
-msgid "Load URLs, replacing current playlist"
-msgstr "Įkelti URL pakeičiant dabartinį grojaraštį"
-
-#: App.cpp:430
-msgid "Print verbose debugging information"
-msgstr "Spausdinti išsamią klaidų derinimo informaciją"
-
-#: App.cpp:432
-msgid "Disable colorization for debug output."
-msgstr "Išjungti spalvinimą derinimo išvestyje."
-
-#: App.cpp:434
-msgid "Allow running multiple Amarok instances"
-msgstr "Galima vienu metu paleisti daugiau nei vieną Amaroką"
-
-#: App.cpp:435
-msgid "Base for relative filenames/URLs"
-msgstr "Santykinių failų pavadinimų ar URL pradžia"
-
-#: App.cpp:437
-msgid "Unit test options:"
-msgstr "Blokinio testavimo parinktys:"
-
-#: App.cpp:438
-msgid "Run integrated unit tests"
-msgstr "Paleisti integruotus blokinius testus"
-
-#: App.cpp:439
-msgid "Destination of test output: 'stdout', 'log'"
-msgstr "Testavimo rezultatai išvedami į: „stdout“, „log“"
-
-#: App.cpp:440
-msgid "Format of test output: 'xml', 'lightxml', 'plaintext'"
-msgstr "Testų rezultatų formatas: „xml“, „lightxml“, „plaintext“"
-
-#: App.cpp:441
-msgid "Verbosity from 0-3 (highest)"
-msgstr "Išsamumas nuo 0 iki 3 (didžiausias)"
-
-#: App.cpp:633
-msgid ""
-"The embedded database was not found; you must set up a database server "
-"connection.\n"
-"You must restart Amarok after doing this."
-msgstr ""
-"Nerasta įsiūta duomenų bazė. Turite nurodyti jungtį į duomenų bazę.\n"
-"Tai padarę turėsite iš naujo paleisti Amaroką."
-
-#: App.cpp:634
-msgid ""
-"The connection details for the database server were invalid.\n"
-"You must enter correct settings and restart Amarok after doing this."
-msgstr ""
-"Prisijungimo prie duomenų bazės informacija buvo neteisinga.\n"
-"Turite įvesti teisingus prisijungimo duomenis ir tada iš naujo paleisti "
-"Amaroką."
-
-#: App.cpp:635
-msgid "Database Error"
-msgstr "Duombazės klaida"
-
-#: App.cpp:680
-msgid "Moving files to trash"
-msgstr "Failai perkeliami į šiukšliadėžę"
-
-#: App.cpp:768
-#, kde-format
-msgid ""
-"A music path, %1, is set in System Settings.\n"
-"Would you like to use that as a collection folder?"
-msgstr ""
-"Muzikos kelias „%1“ yra nurodytas sistemos nustatymuose.\n"
-"Ar norite jį naudoti kaip jūsų fonotekos aplanką?"
-
-#: MainWindow.cpp:261
-msgid "Local Music"
-msgstr "Vietinė muzika"
-
-#: MainWindow.cpp:263
-msgid "Local sources of content"
-msgstr "Vietiniai turinio šaltiniai"
-
-#: MainWindow.cpp:271
-msgid "Internet"
-msgstr "Internetas"
-
-#: MainWindow.cpp:273
-msgid "Online sources of content"
-msgstr "Internetiniai turinio šaltiniai"
-
-#: MainWindow.cpp:279
-msgid "Playlists"
-msgstr "Grojaraščiai"
-
-#: MainWindow.cpp:281
-msgid "Various types of playlists"
-msgstr "Įvairūs grojaraščių tipai"
-
-#: MainWindow.cpp:287 amarokurls/NavigationUrlGenerator.cpp:135
-msgid "Files"
-msgstr "Failai"
-
-#: MainWindow.cpp:289
-msgid "Browse local hard drive for content"
-msgstr "Ieškoti turinio vietiniame diske"
-
-#: MainWindow.cpp:350
-msgctxt "@item:inmenu"
-msgid "&View"
-msgstr "&Rodymas"
-
-#: MainWindow.cpp:353
-msgid "Lock Layout"
-msgstr "Užrakinti išdėstymą"
-
-#: MainWindow.cpp:464
-msgid ""
-"<qt>Closing the main window will keep Amarok running in the System Tray. Use "
-"<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
-"qt>"
-msgstr ""
-"<qt>Uždarius pagrindinį langą Amarok liks sistemos dėkle. Norėdami nutraukti "
-"darbą nurodykite komandą <B>Baigti</B>, esančią meniu arba Amarok sisteminio "
-"dėklo ženkliuke.</qt>"
-
-#: MainWindow.cpp:466
-msgid "Docking in System Tray"
-msgstr "Nukelti į sistemos dėklą"
-
-#: MainWindow.cpp:495
-msgid "Use relative path for &saving"
-msgstr "Išsaugant naudoti &santykinį kelią"
-
-#: MainWindow.cpp:507 covermanager/CoverFoundDialog.cpp:361
-msgid "Save As"
-msgstr "Išsaugoti kaip"
-
-#: MainWindow.cpp:559
-msgid "Play Media (Files or URLs)"
-msgstr "Groti muziką (failus ar URL)"
-
-#: MainWindow.cpp:559
-msgid "Add Media (Files or URLs)"
-msgstr "Įdėti muziką (failus ar URL)"
-
-#: MainWindow.cpp:577
-msgid "Add Stream"
-msgstr "Įdėti srautą"
-
-#: MainWindow.cpp:577
-msgid "Enter Stream URL:"
-msgstr "Įrašykite srauto URL:"
-
-#: MainWindow.cpp:701
-msgid "&Add Media..."
-msgstr "&Įdėti muziką..."
-
-#: MainWindow.cpp:706
-msgctxt "clear playlist"
-msgid "&Clear Playlist"
-msgstr "&Išvalyti grojaraštį"
-
-#: MainWindow.cpp:711
-msgctxt "edit play queue of playlist"
-msgid "Edit &Queue"
-msgstr "Keisti &eilę"
-
-#: MainWindow.cpp:716
-msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
-msgid "Re&move Duplicates"
-msgstr "&Pašalinti dublikatus"
-
-#: MainWindow.cpp:723
-msgid "&Add Stream..."
-msgstr "&Įdėti srautą..."
-
-#: MainWindow.cpp:727
-msgid "&Export Playlist As..."
-msgstr "&Eksportuoti grojaraštį kaip..."
-
-#: MainWindow.cpp:731 amarokurls/NavigationUrlGenerator.cpp:250
-msgid "Bookmark Media Sources View"
-msgstr "Pasižymėti kūrinių šaltinių rodinį"
-
-#: MainWindow.cpp:735 amarokurls/BookmarkManager.cpp:43
-msgid "Bookmark Manager"
-msgstr "Žymelių tvarkyklė"
-
-#: MainWindow.cpp:739
-msgid "Equalizer"
-msgstr "Glodintuvas"
-
-#: MainWindow.cpp:743 playlist/PlaylistViewUrlGenerator.cpp:101
-msgid "Bookmark Playlist Setup"
-msgstr "Pasižymėti grojaraščio nuostatas"
-
-#: MainWindow.cpp:747
-msgid "Bookmark Context Applets"
-msgstr "Pasižymėti konteksto įskiepius"
-
-#: MainWindow.cpp:751 covermanager/CoverManager.cpp:105
-msgid "Cover Manager"
-msgstr "Viršelių tvarkyklė"
-
-#: MainWindow.cpp:755
-msgid "Play Media..."
-msgstr "Groti kūrinį..."
-
-#: MainWindow.cpp:760
-msgid "&Seek Forward"
-msgstr "&Prasukti pirmyn"
-
-#: MainWindow.cpp:766
-msgid "&Seek Backward"
-msgstr "&Prasukti atgal"
-
-#: MainWindow.cpp:773
-msgid "Update Collection"
-msgstr "Atnaujinti fonoteką"
-
-#: MainWindow.cpp:780
-msgid "Previous Track"
-msgstr "Ankstesnė daina"
-
-#: MainWindow.cpp:787
-msgid "Restart current track"
-msgstr "Pradėti šią dainą iš pradžių"
-
-#: MainWindow.cpp:793
-msgid "Repopulate Playlist"
-msgstr "Iš naujo užpildyti grojaraštį"
-
-#: MainWindow.cpp:799
-msgid "Disable Dynamic Playlist"
-msgstr "Išjungti dinaminį grojaraštį"
-
-#: MainWindow.cpp:803
-msgid "Next Track"
-msgstr "Kita daina"
-
-#: MainWindow.cpp:808
-msgid "Increase Volume"
-msgstr "Pagarsinti"
-
-#: MainWindow.cpp:814
-msgid "Decrease Volume"
-msgstr "Pritildyti"
-
-#: MainWindow.cpp:820
-msgid "Toggle Main Window"
-msgstr "Įj./išj. pagrindinį langą"
-
-#: MainWindow.cpp:825
-msgid "Toggle Full Screen"
-msgstr "Perjungti visą ekraną"
-
-#: MainWindow.cpp:830
-msgid "Jump to"
-msgstr "Šokti į"
-
-#: MainWindow.cpp:835
-msgid "Show active track"
-msgstr "Rodyti aktyvią dainą"
-
-#: MainWindow.cpp:839
-msgid "Show Notification Popup"
-msgstr "Rodyti perspėjimus"
-
-#: MainWindow.cpp:844
-msgid "Mute Volume"
-msgstr "Išjungti garsą"
-
-#: MainWindow.cpp:849
-msgid "Last.fm: Love Current Track"
-msgstr "Last.fm: Ši daina patinka"
-
-#: MainWindow.cpp:854
-msgid "Last.fm: Ban Current Track"
-msgstr "Last.fm: Uždrausti dabartinę dainą"
-
-#: MainWindow.cpp:859
-msgid "Last.fm: Skip Current Track"
-msgstr "Last.fm: Praleisti dabartinę dainą"
-
-#: MainWindow.cpp:864 playlist/view/PlaylistViewCommon.cpp:115
-msgid "Queue Track"
-msgstr "Dainą į eilę"
-
-#: MainWindow.cpp:869
-msgid "Rate Current Track: 1"
-msgstr "Įvertinti šią dainą: 1"
-
-#: MainWindow.cpp:874
-msgid "Rate Current Track: 2"
-msgstr "Įvertinti šią dainą: 2"
-
-#: MainWindow.cpp:879
-msgid "Rate Current Track: 3"
-msgstr "Įvertinti šią dainą: 3"
-
-#: MainWindow.cpp:884
-msgid "Rate Current Track: 4"
-msgstr "Įvertinti šią dainą: 4"
-
-#: MainWindow.cpp:889
-msgid "Rate Current Track: 5"
-msgstr "Įvertinti šią dainą: 5"
-
-#: MainWindow.cpp:895
-msgid "Network Request Viewer"
-msgstr "Tinklo užklausų žiūryklė"
-
-#: MainWindow.cpp:913
-msgid "&About Amarok"
-msgstr "&Apie Amarok"
-
-#: MainWindow.cpp:917
-msgid "&Report Bug..."
-msgstr "&Pranešti apie klaidą..."
-
-#: MainWindow.cpp:977
-msgid "&Music"
-msgstr "&Muzika"
-
-#: MainWindow.cpp:979
-msgid "&Amarok"
-msgstr "&Amarok"
-
-#: MainWindow.cpp:1003 playlist/PlaylistDock.cpp:54
-#: playlist/PlaylistToolBar.cpp:38
-msgid "&Playlist"
-msgstr "&Grojaraštis"
-
-#: MainWindow.cpp:1020
-msgid "&Tools"
-msgstr "Įrank&iai"
-
-#: MainWindow.cpp:1037
-msgid "&Settings"
-msgstr "&Parinktys"
-
-#: MainWindow.cpp:1084
-#, kde-format
-msgid ""
-"You have chosen to hide the menu bar.\n"
-"\n"
-"Please remember that you can always use the shortcut \"%1\" to bring it back."
-msgstr ""
-"Jūs nurodėte paslėpti meniu juostą.\n"
-"\n"
-"Atsiminkite, kad galite ją bet kada grąžinti panaudoję klavišų kombinaciją „%"
-"1“."
-
-#: MainWindow.cpp:1086
-msgid "Hide Menu"
-msgstr "Slėpti meniu"
-
-#: MainWindow.cpp:1128
-#, kde-format
-msgid "Paused  ::  %1"
-msgstr "Pristabdyta  ::  %1"
-
-#: MainWindow.cpp:1141 amarokurls/BookmarkTreeView.cpp:377
-#: amarokurls/BookmarkTreeView.cpp:378 amarokurls/BookmarkTreeView.cpp:379
-#: context/applets/albums/AlbumItem.cpp:97
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:444
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:445
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:446
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:447
-msgid "Unknown"
-msgstr "Nežinoma"
-
-#: MainWindow.cpp:1141
-#, kde-format
-msgid "%1 - %2  ::  %3"
-msgstr "%1 – %2  ::  %3"
-
-#: PluginManager.cpp:253
-msgid ""
-"<p>Amarok could not find any collection plugins. It is possible that Amarok "
-"is installed under the wrong prefix, please fix your installation using:<pre>"
-"$ cd /path/to/amarok/source-code/<br>$ su -c \"make uninstall\"<br>$ cmake -"
-"DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -c \"make install\"<br>$ "
-"kbuildsycoca4 --noincremental<br>$ amarok</pre>More information can be found "
-"in the README file. For further assistance join us at #amarok on irc."
-"freenode.net.</p>"
-msgstr ""
-"<p>Amarok nerado jokių fonotekos įskiepių. Amarok atnaujina KDE parinkčių "
-"duomenų bazę. Gali būti, kad Amarok įdiegtas blogoje vietoje, pataisykite "
-"įdiegimo vietą komanda:<pre>$ cd /path/to/amarok/source-code/<br>$ su -c "
-"\"make uninstall\"<br>$ cmake -DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` "
-"&& su -c \"make install\"<br>$ kbuildsycoca4 --noincremental<br>$ amarok</"
-"pre>Daugiau informacijos galite rasti README faile. Jei reikia tolimesnės "
-"pagalbos, prisijunkite prie mūsų irc kanalo #amarok serveryje irc.freenode."
-"net.</p>"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:73
-msgid ""
-"<qt>No information available.<br />The supplied KAboutData object does not "
-"exist.</qt>"
-msgstr ""
-"<qt>Nėra informacijos.<br />Pateiktas KAboutData objektas neegzistuoja.</qt>"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:82
-msgid ""
-"<qt>No information available.<br />The supplied OcsData object does not "
-"exist.</qt>"
-msgstr ""
-"<qt>Nėra informacijos.<br />Pateiktas OcsData objektas neegzistuoja.</qt>"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:91
-#, kde-format
-msgid "About %1"
-msgstr "Apie %1"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:112
-#, kde-format
-msgid ""
-"<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE %3</"
-"html>"
-msgstr ""
-"<html><font size=\"5\">%1</font><br /><b>Versija %2</b><br />Naudoja KDE %3</"
-"html>"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:152
-#, kde-format
-msgid "License: %1"
-msgstr "Licencija: %1"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:166
-msgid "&About"
-msgstr "&Apie"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:183
-msgid "Get data from openDesktop.org to learn more about the team"
-msgstr ""
-"Parsisiųskite duomenis iš openDesktop.org, kad sužinotumėte daugiau apie "
-"komandą"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:195
-msgid ""
-"Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to report "
-"bugs.\n"
-msgstr ""
-"Apie klaidas prašome pranešti <a href=\"http://bugs.kde.org\">http://bugs."
-"kde.org</a> puslapyje.\n"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:200
-#: aboutdialog/ExtendedAboutDialog.cpp:206
-#, kde-format
-msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
-msgstr "Apie klaidas prašome pranešti <a href=\"mailto:%1\">%2</a>.\n"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:225
-msgid "A&uthor"
-msgstr "A&utorius"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:225
-msgid "A&uthors"
-msgstr "A&utoriai"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:239
-msgid "Get data from openDesktop.org to learn more about contributors"
-msgstr ""
-"Gauti duomenis iš openDesktop.org, kad daugiau sužinotumėte apie talkininkus"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:253
-msgid "&Thanks To"
-msgstr "&Dėkojame"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:266
-msgid "Get data from openDesktop.org to learn more about our generous donors"
-msgstr ""
-"Parsisiųskite duomenis iš openDesktop.org, kad sužinotumėte daugiau apie "
-"mūsų dosnius rėmėjus"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:286
-msgid "&Donors"
-msgstr "&Rėmėjai"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:316
-msgid "T&ranslation"
-msgstr "&Vertimas"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:340
-msgid "License Agreement"
-msgstr "Licencijos sutartis"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:373
-msgid "Internet connection not available"
-msgstr "Nėra interneto ryšio"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:373
-msgid "Network error"
-msgstr "Tinklo klaida"
-
-#: aboutdialog/OcsPersonItem.cpp:95
-msgid "Email contributor"
-msgstr "Prašyti talkininkui el. laišką"
-
-#: aboutdialog/OcsPersonItem.cpp:103 aboutdialog/OcsPersonItem.cpp:274
-msgid "Visit contributor's homepage"
-msgstr "Aplankyti talkininko svetainę"
-
-#: aboutdialog/OcsPersonItem.cpp:179
-#, kde-format
-msgctxt "A person's location: City, Country"
-msgid "%1, %2"
-msgstr "%1, %2"
-
-#: aboutdialog/OcsPersonItem.cpp:199
-msgid "IRC channels: "
-msgstr "IRC kanalai: "
-
-#: aboutdialog/OcsPersonItem.cpp:212
-msgid "Favorite music: "
-msgstr "Mėgstamiausia muzika: "
-
-#: aboutdialog/OcsPersonItem.cpp:217
-#, kde-format
-msgid "Visit %1's openDesktop.org profile"
-msgstr "Aplankyti %1 openDesktop.org profilį"
-
-#: aboutdialog/OcsPersonItem.cpp:219
-#, kde-format
-msgid "Visit %1's profile on openDesktop.org"
-msgstr "Aplankyti %1 openDesktop.org profilį"
-
-#: aboutdialog/OcsPersonItem.cpp:253
-msgid "Visit contributor's blog"
-msgstr "Aplankyti talkininko blogą"
-
-#: aboutdialog/OcsPersonItem.cpp:258
-msgid "Visit contributor's del.icio.us profile"
-msgstr "Aplankyti talkininko del.icio.us profilį"
-
-#: aboutdialog/OcsPersonItem.cpp:263
-msgid "Visit contributor's Digg profile"
-msgstr "Aplankyti talkininko Digg profilį"
-
-#: aboutdialog/OcsPersonItem.cpp:268
-msgid "Visit contributor's Facebook profile"
-msgstr "Aplankyti talkininko Facebook profilį"
-
-#: aboutdialog/OcsPersonItem.cpp:284
-msgid "Visit contributor's Last.fm profile"
-msgstr "Aplankyti talkininko Last.fm profilį"
-
-#: aboutdialog/OcsPersonItem.cpp:292
-msgid "Visit contributor's LinkedIn profile"
-msgstr "Aplankyti talkininko LinkedIn profilį"
-
-#: aboutdialog/OcsPersonItem.cpp:297
-msgid "Visit contributor's MySpace homepage"
-msgstr "Aplankyti talkininko MySpace puslapį"
-
-#: aboutdialog/OcsPersonItem.cpp:302
-msgid "Visit contributor's Reddit profile"
-msgstr "Aplankyti talkininko Reddit profilį"
-
-#: aboutdialog/OcsPersonItem.cpp:307
-msgid "Visit contributor's YouTube profile"
-msgstr "Aplankyti talkininko YouTube profilį"
-
-#: aboutdialog/OcsPersonItem.cpp:312
-msgid "Visit contributor's Twitter feed"
-msgstr "Aplankyti talkininko Twitter kanalą"
-
-#: aboutdialog/OcsPersonItem.cpp:317
-msgid "Visit contributor's Wikipedia profile"
-msgstr "Aplankyti talkininko Vikipedijos profilį"
-
-#: aboutdialog/OcsPersonItem.cpp:322
-msgid "Visit contributor's Xing profile"
-msgstr "Aplankyti talkininko Xing profilį"
-
-#: aboutdialog/OcsPersonItem.cpp:327
-msgid "Visit contributor's identi.ca feed"
-msgstr "Aplankyti talkininko identi.ca kanalą"
-
-#: aboutdialog/OcsPersonItem.cpp:332
-msgid "Visit contributor's libre.fm profile"
-msgstr "Aplankyti talkininko libre.fm profilį"
-
-#: aboutdialog/OcsPersonItem.cpp:337
-msgid "Visit contributor's StackOverflow profile"
-msgstr "Aplankyti talkininko StackOverflow profilį"
-
-#: aboutdialog/libattica-ocsclient/personlistjob.cpp:108
-msgid "Unable to parse avatar image data."
-msgstr "Nepavyksta išnagrinėti pseudoportreto duomenų."
 
 #: amarokurls/AmarokUrlHandler.cpp:222
 msgctxt "The command type of this url is not known"
@@ -6873,7 +6812,7 @@ msgstr "Metai – Albumas"
 #: playlist/PlaylistModel.cpp:904 widgets/SmartPlaylistEditor.cpp:183
 #: widgets/SmartPlaylistEditor.cpp:197
 msgid "Composer"
-msgstr "Kompozitoius"
+msgstr "Kompozitorius"
 
 #: browsers/CollectionTreeItemModelBase.cpp:985
 #: core/meta/support/MetaConstants.cpp:109 dialogs/transferdialog.cpp:90
@@ -7490,78 +7429,6 @@ msgstr "Kortelių nustatymai"
 msgid "Reload Tabs"
 msgstr "Korteles įkelti iš naujo"
 
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:67
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:128
-msgid "Upcoming Events"
-msgstr "Būsimi įvykiai"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:78
-msgid "View Events Calendar"
-msgstr "Žiūrėti įvykių kalendorių"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:91
-msgctxt "@title:group"
-msgid "No track is currently playing"
-msgstr "Dabar negroja jokia daina"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:158
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:303
-msgid "Favorite Venues"
-msgstr "Mėgstamiausios vietos"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:224
-msgid "No upcoming events"
-msgstr "Nėra būsimų įvykių"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:224
-#, kde-format
-msgid "%1: No upcoming events"
-msgstr "%1: Nėra būsimų įvykių"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:229
-#, kde-format
-msgctxt "@title:group Number of upcoming events"
-msgid "1 event"
-msgid_plural "%1 events"
-msgstr[0] "1 įvykis"
-msgstr[1] "%1 įvykis"
-msgstr[2] "%1 įvykiai"
-msgstr[3] "%1 įvykių"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:230
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:640
-#, kde-format
-msgctxt "@title:group Number of upcoming events"
-msgid "%1: 1 event"
-msgid_plural "%1: %2 events"
-msgstr[0] "%1: 1 įvykis"
-msgstr[1] "%1: %2 įvykis"
-msgstr[2] "%1: %2 įvykiai"
-msgstr[3] "%1: %2 įvykių"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:302
-msgid "Upcoming Events Settings"
-msgstr "Būsimų įvykių nuostatos"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:353
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:362
-msgctxt "@label:textbox Url label"
-msgid "link"
-msgstr "nuoroda"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:494
-msgid "Map View"
-msgstr "Žemėlapis"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:532
-msgid "Events Calender"
-msgstr "Įvykių kalendorius"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:638
-msgctxt "@title:group"
-msgid "Favorite Venues"
-msgstr "Mėgstamiausios vietos"
-
 #: context/applets/upcomingevents/UpcomingEventsCalendarWidget.cpp:160
 msgctxt "@info:tooltip Calendar action"
 msgid "Jump to Today"
@@ -7655,6 +7522,80 @@ msgstr[3] "Po <strong>%1</strong> dienų"
 msgctxt "@info:tooltip"
 msgid "<strong>Location:</strong><nl/>%1"
 msgstr "<strong>Vieta:</strong><nl/>%1"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:67
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:128
+msgid "Upcoming Events"
+msgstr "Būsimi įvykiai"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:78
+msgid "View Events Calendar"
+msgstr "Žiūrėti įvykių kalendorių"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:91
+msgctxt "@title:group"
+msgid "No track is currently playing"
+msgstr "Dabar negroja jokia daina"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:158
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:303
+msgid "Favorite Venues"
+msgstr "Mėgstamiausios vietos"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:224
+msgid "No upcoming events"
+msgstr "Nėra būsimų įvykių"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:224
+#, kde-format
+msgid "%1: No upcoming events"
+msgstr "%1: Nėra būsimų įvykių"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:229
+#, kde-format
+msgctxt "@title:group Number of upcoming events"
+msgid "1 event"
+msgid_plural "%1 events"
+msgstr[0] "1 įvykis"
+msgstr[1] "%1 įvykis"
+msgstr[2] "%1 įvykiai"
+msgstr[3] "%1 įvykių"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:230
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:640
+#, kde-format
+msgctxt "@title:group Number of upcoming events"
+msgid "%1: 1 event"
+msgid_plural "%1: %2 events"
+msgstr[0] "%1: 1 įvykis"
+msgstr[1] "%1: %2 įvykis"
+msgstr[2] "%1: %2 įvykiai"
+msgstr[3] "%1: %2 įvykių"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:302
+msgid "Upcoming Events Settings"
+msgstr "Būsimų įvykių nuostatos"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:353
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:362
+msgctxt "@label:textbox Url label"
+msgid "link"
+msgstr "nuoroda"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:494
+msgid "Map View"
+msgstr "Žemėlapis"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:532
+#, fuzzy
+#| msgid "Events Calender"
+msgid "Events Calendar"
+msgstr "Įvykių kalendorius"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:638
+msgctxt "@title:group"
+msgid "Favorite Venues"
+msgstr "Mėgstamiausios vietos"
 
 #: context/applets/videoclip/CustomVideoWidget.cpp:83
 msgid "Enter &fullscreen"
@@ -8155,6 +8096,12 @@ msgstr ""
 "Dažniausiai jums teks pataisyti šias klaidas jei norėsite, kad Amarok "
 "tvarkingai dirbtų."
 
+#: core-impl/collections/db/sql/SqlMeta.cpp:272
+#: covermanager/CoverManager.cpp:842 services/lastfm/meta/LastFmMeta.cpp:133
+#, kde-format
+msgid "%1 - %2"
+msgstr "%1 – %2"
+
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:497
 msgid "Organizing tracks"
 msgstr "Organizuojamos dainos"
@@ -8191,12 +8138,6 @@ msgstr "Perkoduojama: %1"
 #, kde-format
 msgid "Removing: %1"
 msgstr "Šalinama: %1"
-
-#: core-impl/collections/db/sql/SqlMeta.cpp:272
-#: covermanager/CoverManager.cpp:842 services/lastfm/meta/LastFmMeta.cpp:133
-#, kde-format
-msgid "%1 - %2"
-msgstr "%1 – %2"
 
 #: core-impl/collections/db/ScanManager.cpp:136
 msgid "Database import requested"
@@ -8296,7 +8237,7 @@ msgstr "Inicializuoti iPod'ą?"
 
 #: core-impl/collections/ipodcollection/handler/IpodHandler.cpp:319
 msgid "&Initialize"
-msgstr "&Initializuoti"
+msgstr "&Inicializuoti"
 
 #: core-impl/collections/ipodcollection/handler/IpodHandler.cpp:360
 msgid "Set iPod Model"
@@ -8625,6 +8566,15 @@ msgstr "prieš du mėnesius"
 msgid "three months ago"
 msgstr "prieš tris mėnesius"
 
+#: core-impl/collections/support/TrashCollectionLocation.cpp:47
+msgid "Trash"
+msgstr "Šiukšliadėžė"
+
+#: core-impl/collections/support/TrashCollectionLocation.cpp:101
+#, kde-format
+msgid "Moving to trash: %1"
+msgstr "Perkeliama į šiukšliadėžę: %1"
+
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:40
 #, kde-format
 msgctxt "@info"
@@ -8700,14 +8650,21 @@ msgid "Move Files"
 msgstr "Perkelti failus"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:98
-#, kde-format
+#, fuzzy, kde-format
+#| msgctxt "@info"
+#| msgid ""
+#| "There was a problem and this track could not be removed. Make sure the "
+#| "directory is writeable."
+#| msgid_plural ""
+#| "There was a problem and %1 tracks could not be removed. Make sure the "
+#| "directory is writeable."
 msgctxt "@info"
 msgid ""
 "There was a problem and this track could not be removed. Make sure the "
-"directory is writeable."
+"directory is writable."
 msgid_plural ""
 "There was a problem and %1 tracks could not be removed. Make sure the "
-"directory is writeable."
+"directory is writable."
 msgstr[0] ""
 "Įvyko klaida ir šios dainos pašalinti nepavyko. Įsitikinkite, kad į šį "
 "aplanką galima rašyti."
@@ -8726,8 +8683,12 @@ msgid "Unable to be removed tracks"
 msgstr "Nepavyko pašalinti dainų"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:110
+#, fuzzy
+#| msgid ""
+#| "The collection does not have enough free space available or is not "
+#| "writeable."
 msgid ""
-"The collection does not have enough free space available or is not writeable."
+"The collection does not have enough free space available or is not writable."
 msgstr "Fonotekoje nepakanka laisvos vietos arba į ją negalima įrašinėti."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:116
@@ -8737,15 +8698,6 @@ msgstr "Ar norite pašalinti tuščius aplankus?"
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:117
 msgid "Remove empty folders?"
 msgstr "Pašalinti tuščius aplankus?"
-
-#: core-impl/collections/support/TrashCollectionLocation.cpp:47
-msgid "Trash"
-msgstr "Šiukšliadėžė"
-
-#: core-impl/collections/support/TrashCollectionLocation.cpp:101
-#, kde-format
-msgid "Moving to trash: %1"
-msgstr "Perkeliama į šiukšliadėžę: %1"
 
 #: core-impl/collections/umscollection/handler/UmsHandler.cpp:474
 msgid "&Use as Collection"
@@ -8846,7 +8798,7 @@ msgstr "Grojaraštis_%1"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.h:54
 msgid "Local Podcasts"
-msgstr "Vietiniai podcast"
+msgstr "Vietinė garso prenumerata"
 
 #: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:15
 msgctxt "Change filename layout"
@@ -8976,7 +8928,7 @@ msgstr[3] "%1 garso prenumeratų vis dar siunčiamos"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1135
 msgid "Cancel Download and Quit."
-msgstr "Atšaukti parsiuntimą ir išjunti."
+msgstr "Atšaukti parsiuntimą ir išjungti."
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1312
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1555
@@ -8986,12 +8938,12 @@ msgstr "Nepavyko įrašyti podcast epizodo failo į %1"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1322
 msgid "Downloading Podcast Media"
-msgstr "Atsiunčiami podcast įrašai"
+msgstr "Atsiunčiami garso prenumeratos įrašai"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:1323
 #, kde-format
 msgid "Downloading Podcast \"%1\""
-msgstr "Atsiunčiamas podcast „%1“"
+msgstr "Atsiunčiama garso prenumerata „%1“"
 
 #: core/meta/support/MetaConstants.cpp:104
 msgctxt ""
@@ -9131,7 +9083,7 @@ msgstr "žanras"
 #: core/meta/support/MetaConstants.cpp:153
 msgctxt "One word translation used in the collection filter"
 msgid "composer"
-msgstr "kompozitoius"
+msgstr "kompozitorius"
 
 #: core/meta/support/MetaConstants.cpp:154
 msgctxt "One word translation used in the collection filter"
@@ -9264,23 +9216,26 @@ msgctxt ""
 msgid "m:ss"
 msgstr "m:ss"
 
-#: core/meta/support/MetaUtility.cpp:401
-#, fuzzy
-#| msgid "h:mm:ss"
-msgctxt ""
-"the time format for a time length when the time is 1 day or above see "
-"QDateTime documentation."
-msgid "d:hh:mm:ss"
-msgstr "h:mm:ss"
+#: core/meta/support/MetaUtility.cpp:406
+#, fuzzy, kde-format
+#| msgid "%1 day"
+#| msgid_plural "%1 days"
+msgctxt "number of days with spacing for the pretty time"
+msgid "%1 day, "
+msgid_plural "%1 days, "
+msgstr[0] "%1 diena"
+msgstr[1] "%1 diena"
+msgstr[2] "%1 dienos"
+msgstr[3] "%1 dienų"
 
-#: core/meta/support/MetaUtility.cpp:403
+#: core/meta/support/MetaUtility.cpp:407
 msgctxt ""
 "the time format for a time length when the time is 1 hour or above see QTime "
 "documentation."
 msgid "h:mm:ss"
 msgstr "h:mm:ss"
 
-#: core/meta/support/MetaUtility.cpp:416
+#: core/meta/support/MetaUtility.cpp:421
 #, kde-format
 msgctxt "number of years for the pretty time"
 msgid "%1 year"
@@ -9290,7 +9245,7 @@ msgstr[1] "%1 metai"
 msgstr[2] "%1 metai"
 msgstr[3] "%1 metų"
 
-#: core/meta/support/MetaUtility.cpp:418
+#: core/meta/support/MetaUtility.cpp:423
 #, kde-format
 msgctxt "number of months for the pretty time"
 msgid "%1 month"
@@ -9300,7 +9255,7 @@ msgstr[1] "%1 mėnuo"
 msgstr[2] "%1 mėnesiai"
 msgstr[3] "%1 mėnesių"
 
-#: core/meta/support/MetaUtility.cpp:420
+#: core/meta/support/MetaUtility.cpp:425
 #, kde-format
 msgctxt "number of days for the pretty time"
 msgid "%1 day"
@@ -9310,7 +9265,7 @@ msgstr[1] "%1 diena"
 msgstr[2] "%1 dienos"
 msgstr[3] "%1 dienų"
 
-#: core/meta/support/MetaUtility.cpp:422
+#: core/meta/support/MetaUtility.cpp:427
 #, kde-format
 msgctxt "number of hours for the pretty time"
 msgid "%1 hour"
@@ -9320,7 +9275,7 @@ msgstr[1] "%1 valanda"
 msgstr[2] "%1 valandos"
 msgstr[3] "%1 valandų"
 
-#: core/meta/support/MetaUtility.cpp:424
+#: core/meta/support/MetaUtility.cpp:429
 #, kde-format
 msgctxt "number of minutes for the pretty time"
 msgid "%1 minute"
@@ -9330,7 +9285,7 @@ msgstr[1] "%1 minutė"
 msgstr[2] "%1 minutės"
 msgstr[3] "%1 minučių"
 
-#: core/meta/support/MetaUtility.cpp:426
+#: core/meta/support/MetaUtility.cpp:431
 #, kde-format
 msgctxt "number of seconds for the pretty time"
 msgid "%1 second"
@@ -9343,7 +9298,7 @@ msgstr[3] "%1 sekundžių"
 #: core/podcasts/PodcastReader.cpp:455
 #, kde-format
 msgid "Importing podcast channel from %1"
-msgstr "Įmportuojamas garso prenumeratų kanalas iš %1"
+msgstr "Importuojamas garso prenumeratų kanalas iš %1"
 
 #: core/podcasts/PodcastReader.cpp:459
 msgid "Updating podcast channel"
@@ -10202,7 +10157,7 @@ msgid ""
 "Perform meta information search on non-existing files, possibly detecting "
 "file renames. See <b>What's This</b>"
 msgstr ""
-"Vykdyti paiešką pagal meta informaciją neegizstuojančiuose failuose, nes "
+"Vykdyti paiešką pagal meta informaciją neegzistuojančiuose failuose, nes "
 "taip gali būti aptikti failų pervadinimai. Žiūrėkite <b>Kas tai?</b>"
 
 #: databaseimporter/amarok14/FastForwardImporterConfig.cpp:95
@@ -10248,7 +10203,7 @@ msgstr "Nepavyko įvykdyti importo užklausos: %1"
 msgid ""
 "(track exists, but does not belong in any of your configured collection "
 "folders)"
-msgstr "(daina egzistuoja, bet nepriklauso jokai sukonfigūruotai fonotekai)"
+msgstr "(daina egzistuoja, bet nepriklauso jokiai sukonfigūruotai fonotekai)"
 
 #: databaseimporter/amarok14/FastForwardWorker.cpp:271
 #, kde-format
@@ -11114,7 +11069,7 @@ msgstr ""
 #: dynamic/biases/EchoNestBias.cpp:126
 msgctxt "EchoNest bias representation"
 msgid "Similar to the previous track (as reported by EchoNest)"
-msgstr "Panašį į ankstesnę dainą (pagal EchoNest informaciją)"
+msgstr "Panaši į ankstesnę dainą (pagal EchoNest informaciją)"
 
 #: dynamic/biases/EchoNestBias.cpp:129
 msgctxt "EchoNest bias representation"
@@ -11133,28 +11088,6 @@ msgstr "ankstesnė daina"
 #: dynamic/biases/EchoNestBias.cpp:145
 msgid "one of the tracks in the current playlist"
 msgstr "viena iš dabartinio grojaraščio dainų"
-
-#: dynamic/biases/PartBias.cpp:44
-msgctxt "Name of the \"Part\" bias"
-msgid "Partition"
-msgstr "Pozicija:"
-
-#: dynamic/biases/PartBias.cpp:53
-msgctxt "Description of the \"Part\" bias"
-msgid ""
-"The \"Part\" bias fills parts of the playlist from different sub-biases."
-msgstr ""
-
-#: dynamic/biases/PartBias.cpp:260
-msgid "This controls what portion of the playlist should match the criteria"
-msgstr "Čia nurodoma, kuri grojaraščio dalis turi atitikti kriterijų"
-
-#: dynamic/biases/PartBias.cpp:401
-#, fuzzy
-#| msgid "Position:"
-msgctxt "Part bias representation"
-msgid "Partition"
-msgstr "Pozicija:"
 
 #: dynamic/biases/QuizPlayBias.cpp:44
 msgctxt "Name of the \"QuizPlay\" bias"
@@ -11257,6 +11190,28 @@ msgctxt "Inverted condition in tag match bias"
 msgid "Not %1"
 msgstr "Ne %1"
 
+#: dynamic/biases/PartBias.cpp:44
+msgctxt "Name of the \"Part\" bias"
+msgid "Partition"
+msgstr "Pozicija:"
+
+#: dynamic/biases/PartBias.cpp:53
+msgctxt "Description of the \"Part\" bias"
+msgid ""
+"The \"Part\" bias fills parts of the playlist from different sub-biases."
+msgstr ""
+
+#: dynamic/biases/PartBias.cpp:260
+msgid "This controls what portion of the playlist should match the criteria"
+msgstr "Čia nurodoma, kuri grojaraščio dalis turi atitikti kriterijų"
+
+#: dynamic/biases/PartBias.cpp:401
+#, fuzzy
+#| msgid "Position:"
+msgctxt "Part bias representation"
+msgid "Partition"
+msgstr "Pozicija:"
+
 #: dynamic/Bias.cpp:239
 msgctxt "And bias representation"
 msgid "Match all"
@@ -11348,8 +11303,6 @@ msgid "Album play"
 msgstr "Albumo puslapis"
 
 #: dynamic/DynamicModel.cpp:940
-#, fuzzy
-#| msgid "Rating"
 msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "Įvertinimas"
@@ -12396,7 +12349,7 @@ msgstr "žanras"
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:91
 msgid "composer"
-msgstr "kompozitoius"
+msgstr "kompozitorius"
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:92
 msgid "year"
@@ -12492,8 +12445,6 @@ msgid "equals"
 msgstr "lygus"
 
 #: playlistgenerator/constraints/TagMatch.cpp:462
-#, fuzzy
-#| msgid "with"
 msgid "within"
 msgstr "su"
 
@@ -12995,7 +12946,7 @@ msgstr "Asmeninis radijas"
 
 #: services/lastfm/LastFmTreeModel.cpp:183
 msgid "Neighborhood"
-msgstr "Kaiminystė"
+msgstr "Kaimynystė"
 
 #: services/lastfm/LastFmTreeModel.cpp:368
 msgid "My Recommendations"
@@ -13030,7 +12981,7 @@ msgid "Neighbors"
 msgstr "Kaimynai"
 
 #: services/lastfm/LoveTrackAction.cpp:25
-#: services/lastfm/LastFmService.cpp:287
+#: services/lastfm/LastFmService.cpp:284
 msgid "Last.fm: Love"
 msgstr "Last.fm: Myliu"
 
@@ -13231,13 +13182,6 @@ msgstr "Tikrinti prisijungimą"
 msgid "Unable to connect to Last.fm service."
 msgstr "Nepavyko prisijungti prie Last.fm paslaugos."
 
-#: services/lastfm/ScrobblerAdapter.cpp:242
-#: services/lastfm/LastFmService.cpp:563
-#, kde-format
-msgctxt "As in, lastfm"
-msgid "Loved Track: %1"
-msgstr "Mėgstamos dainos: %1"
-
 #: services/lastfm/LastFmServiceConfig.cpp:143
 #, fuzzy
 #| msgid "Last.fm Profile"
@@ -13251,79 +13195,6 @@ msgid ""
 msgstr ""
 "Nerasta veikianti piniginė (KWallet). Ar norite, kad Amarok atsimintų jūsų "
 "prisijungimo prie Last.fm duomenis paprasto teksto faile?"
-
-#: services/lastfm/LastFmService.cpp:194
-msgid "Last.fm: The social music revolution"
-msgstr "Last.fm: bendruomeninės muzikos revoliucija."
-
-#: services/lastfm/LastFmService.cpp:196
-msgid ""
-"Last.fm is a popular online service that provides personal radio stations "
-"and music recommendations. A personal listening station is tailored based on "
-"your listening habits and provides you with recommendations for new music. "
-"It is also possible to play stations with music that is similar to a "
-"particular artist as well as listen to streams from people you have added as "
-"friends or that Last.fm considers your musical \"neighbors\""
-msgstr ""
-
-#: services/lastfm/LastFmService.cpp:289
-msgid "Ctrl+L"
-msgstr "Ctrl+L"
-
-#: services/lastfm/LastFmService.cpp:342
-msgctxt "Last.fm: errorMessage"
-msgid "Either the username was not recognized, or the password was incorrect."
-msgstr "Neatpažintas naudotojo vardas arba neteisingas slaptažodis."
-
-#: services/lastfm/LastFmService.cpp:346
-msgctxt "Last.fm: errorMessage"
-msgid ""
-"There was a problem communicating with the Last.fm services. Please try "
-"again later."
-msgstr ""
-"Bandant bendrauti su Last.fm paslaugomis įvyko klaida. Pabandykite vėliau."
-
-#: services/lastfm/LastFmService.cpp:434
-msgid "Enter an artist name"
-msgstr "Įveskite atlikėjo vardą"
-
-#: services/lastfm/LastFmService.cpp:437
-msgid "Enter a tag"
-msgstr "Įveskite žymę"
-
-#: services/lastfm/LastFmService.cpp:440
-msgid "Enter a Last.fm user name"
-msgstr "Įveskite Last.fm naudotojo vardą"
-
-#: services/lastfm/LastFmService.cpp:453
-#, kde-format
-msgid "Username: %1"
-msgstr "Naudotojo vardas: %1"
-
-#: services/lastfm/LastFmService.cpp:458
-#, kde-format
-msgid "Play Count: %1 play"
-msgid_plural "Play Count: %1 plays"
-msgstr[0] "Grojimų skaičius: %1 grojimas"
-msgstr[1] "Grojimų skaičius: %1 grojimas"
-msgstr[2] "Grojimų skaičius: %1 grojimai"
-msgstr[3] "Grojimų skaičius: %1 grojimų"
-
-#: services/lastfm/LastFmService.cpp:468
-msgid "Enter login information for Last.fm"
-msgstr "Įveskite prisijungimo prie Last.fm duomenis"
-
-#: services/lastfm/LastFmService.cpp:524
-msgid "Create a Custom Last.fm Station"
-msgstr "Sukurti savo Last.fm stotį"
-
-#: services/lastfm/LastFmService.cpp:527
-msgid "Tag"
-msgstr "Žymė"
-
-#: services/lastfm/LastFmService.cpp:527
-msgid "User"
-msgstr "Naudotojas"
 
 #: services/lastfm/LastFmServiceCollection.cpp:42
 #, kde-format
@@ -13352,7 +13223,83 @@ msgstr "Draugų asmeninis radijas"
 
 #: services/lastfm/SimilarArtistsAction.cpp:26
 msgid "Play Similar Artists from Last.fm"
-msgstr "Groti panašius atlikėjsus iš Last.fm"
+msgstr "Groti panašius atlikėjus iš Last.fm"
+
+#: services/lastfm/ScrobblerAdapter.cpp:236
+#: services/lastfm/LastFmService.cpp:543
+#, kde-format
+msgctxt "As in, lastfm"
+msgid "Loved Track: %1"
+msgstr "Mėgstamos dainos: %1"
+
+#: services/lastfm/LastFmService.cpp:195
+msgid "Last.fm: The social music revolution"
+msgstr "Last.fm: bendruomeninės muzikos revoliucija."
+
+#: services/lastfm/LastFmService.cpp:197
+msgid ""
+"Last.fm is a popular online service that provides personal radio stations "
+"and music recommendations. A personal listening station is tailored based on "
+"your listening habits and provides you with recommendations for new music. "
+"It is also possible to play stations with music that is similar to a "
+"particular artist as well as listen to streams from people you have added as "
+"friends or that Last.fm considers your musical \"neighbors\""
+msgstr ""
+
+#: services/lastfm/LastFmService.cpp:286
+msgid "Ctrl+L"
+msgstr "Ctrl+L"
+
+#: services/lastfm/LastFmService.cpp:339
+msgctxt "Last.fm: errorMessage"
+msgid "Either the username was not recognized, or the password was incorrect."
+msgstr "Neatpažintas naudotojo vardas arba neteisingas slaptažodis."
+
+#: services/lastfm/LastFmService.cpp:343
+msgctxt "Last.fm: errorMessage"
+msgid ""
+"There was a problem communicating with the Last.fm services. Please try "
+"again later."
+msgstr ""
+"Bandant bendrauti su Last.fm paslaugomis įvyko klaida. Pabandykite vėliau."
+
+#: services/lastfm/LastFmService.cpp:431
+msgid "Enter an artist name"
+msgstr "Įveskite atlikėjo vardą"
+
+#: services/lastfm/LastFmService.cpp:434
+msgid "Enter a tag"
+msgstr "Įveskite žymę"
+
+#: services/lastfm/LastFmService.cpp:437
+msgid "Enter a Last.fm user name"
+msgstr "Įveskite Last.fm naudotojo vardą"
+
+#: services/lastfm/LastFmService.cpp:450
+#, kde-format
+msgid "Username: %1"
+msgstr "Naudotojo vardas: %1"
+
+#: services/lastfm/LastFmService.cpp:455
+#, kde-format
+msgid "Play Count: %1 play"
+msgid_plural "Play Count: %1 plays"
+msgstr[0] "Grojimų skaičius: %1 grojimas"
+msgstr[1] "Grojimų skaičius: %1 grojimas"
+msgstr[2] "Grojimų skaičius: %1 grojimai"
+msgstr[3] "Grojimų skaičius: %1 grojimų"
+
+#: services/lastfm/LastFmService.cpp:504
+msgid "Create a Custom Last.fm Station"
+msgstr "Sukurti savo Last.fm stotį"
+
+#: services/lastfm/LastFmService.cpp:507
+msgid "Tag"
+msgstr "Žymė"
+
+#: services/lastfm/LastFmService.cpp:507
+msgid "User"
+msgstr "Naudotojas"
 
 #: services/magnatune/MagnatuneCollectionLocation.cpp:42
 msgid "Preview Tracks"
@@ -13594,7 +13541,7 @@ msgstr "KLAIDA: Nepateikta jokių parametrų."
 
 #: services/magnatune/MagnatuneStore.cpp:663
 msgid "ERROR: Wrong number of arguments for addMoodyTracks"
-msgstr "KLAIDA: neteisingas arumentų skaičius kviečiant addMoodyTracks"
+msgstr "KLAIDA: neteisingas argumentų skaičius kviečiant addMoodyTracks"
 
 #: services/magnatune/MagnatuneStore.cpp:673
 msgid "ERROR: Parse error for argument 2 ( count )"
@@ -13751,7 +13698,7 @@ msgstr "Pridėti OPML"
 
 #: services/opmldirectory/OpmlDirectoryService.cpp:168
 msgid "Add an OPML file to the list."
-msgstr "Pridėti OPML failą į sarašą."
+msgstr "Pridėti OPML failą į sąrašą."
 
 #: services/opmldirectory/OpmlDirectoryModel.cpp:294
 msgctxt "Heading of Add OPML dialog"
@@ -13768,7 +13715,7 @@ msgstr "Įkeliama garso prenumeratos informacija..."
 
 #: services/opmldirectory/OpmlDirectoryInfoParser.cpp:66
 msgid "Fetching Podcast Info"
-msgstr "Atsiunčiama garso prenumeracijos informacija"
+msgstr "Atsiunčiama garso prenumeratos informacija"
 
 #: services/scriptable/ScriptableServiceInfoParser.cpp:44
 #: services/scriptable/ScriptableServiceInfoParser.cpp:62
@@ -15027,7 +14974,7 @@ msgstr ""
 
 #: EngineController.cpp:1175
 msgid "Too many errors encountered in playlist. Playback stopped."
-msgstr "Grojarašyje rasta per daug klaidų. Grojimas sustabdytas."
+msgstr "Grojaraštyje rasta per daug klaidų. Grojimas sustabdytas."
 
 #: EngineController.cpp:1396
 #, kde-format
@@ -15052,6 +14999,25 @@ msgstr "<b>%1</b> albumas <b>%2</b>"
 msgctxt "track from source"
 msgid "from <b>%1</b>"
 msgstr "nuo <b>%1</b>"
+
+#: PluginManager.cpp:253
+msgid ""
+"<p>Amarok could not find any collection plugins. It is possible that Amarok "
+"is installed under the wrong prefix, please fix your installation using:<pre>"
+"$ cd /path/to/amarok/source-code/<br>$ su -c \"make uninstall\"<br>$ cmake -"
+"DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -c \"make install\"<br>$ "
+"kbuildsycoca4 --noincremental<br>$ amarok</pre>More information can be found "
+"in the README file. For further assistance join us at #amarok on irc."
+"freenode.net.</p>"
+msgstr ""
+"<p>Amarok nerado jokių fonotekos įskiepių. Amarok atnaujina KDE parinkčių "
+"duomenų bazę. Gali būti, kad Amarok įdiegtas blogoje vietoje, pataisykite "
+"įdiegimo vietą komanda:<pre>$ cd /path/to/amarok/source-code/<br>$ su -c "
+"\"make uninstall\"<br>$ cmake -DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` "
+"&& su -c \"make install\"<br>$ kbuildsycoca4 --noincremental<br>$ amarok</"
+"pre>Daugiau informacijos galite rasti README faile. Jei reikia tolimesnės "
+"pagalbos, prisijunkite prie mūsų irc kanalo #amarok serveryje irc.freenode."
+"net.</p>"
 
 #: TrayIcon.cpp:146
 #, kde-format
@@ -15082,3 +15048,5 @@ msgstr "Grojimų skaičius: %1"
 #, kde-format
 msgid "Last played: %1"
 msgstr "Paskiausiai grota: %1"
+
+#, fuzzy

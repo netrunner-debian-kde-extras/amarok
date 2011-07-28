@@ -11,7 +11,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2011-07-17 03:51+0200\n"
+"POT-Creation-Date: 2011-07-26 04:06+0200\n"
 "PO-Revision-Date: 2011-06-06 20:56+0300\n"
 "Last-Translator: Tommi Nieminen <translator@legisign.org>\n"
 "Language-Team: Finnish <kde-i18n-doc@kde.org>\n"
@@ -92,6 +92,736 @@ msgstr "Toisto pysäytetään tämän kappaleen jälkeen."
 #: ActionClasses.cpp:542
 msgid "Stop after current track: Off"
 msgstr "Toistoa ei pysäytetä tämän kappaleen jälkeen."
+
+#: equalizer/EqualizerPresets.cpp:90
+msgid "Manual"
+msgstr "Manuaalinen"
+
+#: equalizer/EqualizerPresets.cpp:91
+msgid "Classical"
+msgstr ""
+
+#: equalizer/EqualizerPresets.cpp:92
+msgid "Club"
+msgstr ""
+
+#: equalizer/EqualizerPresets.cpp:93
+#, fuzzy
+#| msgid "France"
+msgid "Dance"
+msgstr "Ranska"
+
+#: equalizer/EqualizerPresets.cpp:94
+#, fuzzy
+#| msgid "Fuzzy Bias"
+msgid "Full Bass"
+msgstr "Sumea vaikutin"
+
+#: equalizer/EqualizerPresets.cpp:95
+msgid "Full Treble"
+msgstr ""
+
+#: equalizer/EqualizerPresets.cpp:96
+#, fuzzy
+#| msgid "Fuzzy Bias"
+msgid "Full Bass + Treble"
+msgstr "Sumea vaikutin"
+
+#: equalizer/EqualizerPresets.cpp:97
+msgid "Laptop/Headphones"
+msgstr ""
+
+#: equalizer/EqualizerPresets.cpp:98
+#, fuzzy
+#| msgid "Larger Than"
+msgid "Large Hall"
+msgstr "suurempi kuin"
+
+#: equalizer/EqualizerPresets.cpp:99
+msgid "Live"
+msgstr ""
+
+#: equalizer/EqualizerPresets.cpp:100
+#, fuzzy
+#| msgid "Playback"
+msgid "Party"
+msgstr "Toisto"
+
+#: equalizer/EqualizerPresets.cpp:101
+msgid "Pop"
+msgstr ""
+
+#: equalizer/EqualizerPresets.cpp:102
+#, fuzzy
+#| msgid "Replace"
+msgid "Reggae"
+msgstr "Korvaa"
+
+#: equalizer/EqualizerPresets.cpp:103
+#, fuzzy
+#| msgid "ok"
+msgid "Rock"
+msgstr "OK"
+
+#: equalizer/EqualizerPresets.cpp:104
+msgid "Soft"
+msgstr ""
+
+#: equalizer/EqualizerPresets.cpp:105
+msgid "Ska"
+msgstr ""
+
+#: equalizer/EqualizerPresets.cpp:106
+msgid "Soft Rock"
+msgstr ""
+
+#: equalizer/EqualizerPresets.cpp:107
+msgid "Techno"
+msgstr ""
+
+#: equalizer/EqualizerPresets.cpp:108
+#, fuzzy
+#| msgid "Zero"
+msgid "Zero"
+msgstr "Oletus"
+
+#: KNotificationBackend.cpp:146
+msgid "Now playing"
+msgstr "Nyt soi"
+
+#: App.cpp:410
+msgid "Files/URLs to open"
+msgstr "Avattavat tiedostot tai verkko-osoitteet"
+
+#: App.cpp:411
+msgid "Immediately start playing an audio cd"
+msgstr "Ala heti soittaa musiikki-CD:tä"
+
+#: App.cpp:413
+msgid "Skip backwards in playlist"
+msgstr "Siirry soittolistan edelliseen kappaleeseen"
+
+#: App.cpp:415
+msgid "Start playing current playlist"
+msgstr "Aloita nykyisen soittolistan soitto"
+
+#: App.cpp:417
+msgid "Play if stopped, pause if playing"
+msgstr "Aloittaa tai lopettaa soittamisen"
+
+#: App.cpp:418
+msgid "Pause playback"
+msgstr "Tauko"
+
+#: App.cpp:420
+msgid "Stop playback"
+msgstr "Pysäytä soitto"
+
+#: App.cpp:422
+msgid "Skip forwards in playlist"
+msgstr "Siirry soittolistan seuraavaan kappaleeseen"
+
+#: App.cpp:423
+msgid "Additional options:"
+msgstr "Lisäasetukset:"
+
+#: App.cpp:425
+msgid "Append files/URLs to playlist"
+msgstr "Lisää tiedostoja tai verkko-osoitteita soittolistaan"
+
+# tätä tässä varmaankin tarkoitetaan
+#: App.cpp:426
+msgid "Queue URLs after the currently playing track"
+msgstr "Lisää virtaustoistot soivan kappaleen perään"
+
+#: App.cpp:428
+msgid "Load URLs, replacing current playlist"
+msgstr "Lataa virtaustoistot ja korvaa nykyinen soittolista"
+
+#: App.cpp:430
+msgid "Print verbose debugging information"
+msgstr "Tulosta perinpohjaiset virheenjäljitystiedot"
+
+#: App.cpp:432
+msgid "Disable colorization for debug output."
+msgstr "Älä väritä vianjäljitystulostetta."
+
+#: App.cpp:434
+msgid "Allow running multiple Amarok instances"
+msgstr "Salli rinnakkaiset Amarok-instanssit"
+
+#: App.cpp:435
+msgid "Base for relative filenames/URLs"
+msgstr "Suhteellisten tiedostonimien ja verkko-osoitteiden kanta"
+
+#: App.cpp:437
+#, fuzzy
+#| msgid "Stream options"
+msgid "Unit test options:"
+msgstr "Virtaustoiston asetukset"
+
+#: App.cpp:438
+msgid "Run integrated unit tests"
+msgstr ""
+
+#: App.cpp:439
+msgid "Destination of test output: 'stdout', 'log'"
+msgstr ""
+
+#: App.cpp:440
+msgid "Format of test output: 'xml', 'lightxml', 'plaintext'"
+msgstr ""
+
+#: App.cpp:441
+msgid "Verbosity from 0-3 (highest)"
+msgstr ""
+
+#: App.cpp:633
+msgid ""
+"The embedded database was not found; you must set up a database server "
+"connection.\n"
+"You must restart Amarok after doing this."
+msgstr ""
+
+#: App.cpp:634
+msgid ""
+"The connection details for the database server were invalid.\n"
+"You must enter correct settings and restart Amarok after doing this."
+msgstr ""
+"Tietokantapalvelimen yhteystiedot olivat kelvottomat.\n"
+"Syötä oikeat tiedot ja käynnistä sen jälkeen Amarok uudelleen."
+
+#: App.cpp:635
+msgid "Database Error"
+msgstr "Tietokantavirhe"
+
+#: App.cpp:680
+msgid "Moving files to trash"
+msgstr "Tiedostoja siirretään roskakoriin"
+
+#: App.cpp:768
+#, kde-format
+msgid ""
+"A music path, %1, is set in System Settings.\n"
+"Would you like to use that as a collection folder?"
+msgstr ""
+"%1 on asetettu järjestelmän asetuksissa musiikkikansioksi.\n"
+"Haluatko käyttää sitä kokoelmakansiona?"
+
+#. i18n: file: core-impl/collections/audiocd/FormatSelectionDialog.ui:14
+#. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
+#: MainWindow.cpp:103 rc.cpp:1130 main.cpp:40
+msgid "Amarok"
+msgstr "Amarok"
+
+#: MainWindow.cpp:261
+msgid "Local Music"
+msgstr "Paikallinen musiikki"
+
+#: MainWindow.cpp:263
+msgid "Local sources of content"
+msgstr "Oma kokoelma ja laitteet"
+
+#: MainWindow.cpp:271
+msgid "Internet"
+msgstr "Internet"
+
+#: MainWindow.cpp:273
+msgid "Online sources of content"
+msgstr "Internetin tarjoamat musiikkilähteet"
+
+#: MainWindow.cpp:279
+msgid "Playlists"
+msgstr "Soittolistat"
+
+#: MainWindow.cpp:281
+msgid "Various types of playlists"
+msgstr "Staattiset ja elävät soittolistat"
+
+#: MainWindow.cpp:287 amarokurls/NavigationUrlGenerator.cpp:135
+msgid "Files"
+msgstr "Tiedostot"
+
+#: MainWindow.cpp:289
+msgid "Browse local hard drive for content"
+msgstr "Selaa levyasemia"
+
+#: MainWindow.cpp:350
+msgctxt "@item:inmenu"
+msgid "&View"
+msgstr "&Näkymä"
+
+# tagi-dialogin eka ruutu, ilman kaksoispistettä
+#: MainWindow.cpp:353
+msgid "Lock Layout"
+msgstr "Lukitse sijoittelu"
+
+#: MainWindow.cpp:464
+msgid ""
+"<qt>Closing the main window will keep Amarok running in the System Tray. Use "
+"<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
+"qt>"
+msgstr ""
+"<qt>Pääikkunan sulkeminen piilottaa Amarokin ilmoitusalueelle. Valitse "
+"<b>Lopeta</b> valikosta tai Amarokin ilmoitusalueella olevasta kuvakkeesta, "
+"jos haluat sulkea Amarokin.</qt>"
+
+#: MainWindow.cpp:466
+msgid "Docking in System Tray"
+msgstr "Ilmoitusalueelle telakoiminen"
+
+#: MainWindow.cpp:495
+msgid "Use relative path for &saving"
+msgstr "Käytä &suhteellista polkua tallennettaessa"
+
+#: MainWindow.cpp:507 covermanager/CoverFoundDialog.cpp:361
+msgid "Save As"
+msgstr "Tallenna nimellä"
+
+#: MainWindow.cpp:559
+msgid "Play Media (Files or URLs)"
+msgstr "Soita tiedostoja tai verkko-osoitteita"
+
+#: MainWindow.cpp:559
+msgid "Add Media (Files or URLs)"
+msgstr "Lisää tiedostoja tai verkko-osoitteita"
+
+#: MainWindow.cpp:577
+msgid "Add Stream"
+msgstr "Lisää virtaustoisto"
+
+#: MainWindow.cpp:577
+msgid "Enter Stream URL:"
+msgstr "Anna virtaustoiston osoite:"
+
+#: MainWindow.cpp:701
+msgid "&Add Media..."
+msgstr "&Lisää sisältöä…"
+
+#: MainWindow.cpp:706
+msgctxt "clear playlist"
+msgid "&Clear Playlist"
+msgstr "&Tyhjennä soittolista"
+
+#: MainWindow.cpp:711
+#, fuzzy
+#| msgid "&Queue"
+msgctxt "edit play queue of playlist"
+msgid "Edit &Queue"
+msgstr "Lisää &jonoon"
+
+#: MainWindow.cpp:716
+msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
+msgid "Re&move Duplicates"
+msgstr "Poista &moniesiintymät"
+
+#: MainWindow.cpp:723
+msgid "&Add Stream..."
+msgstr "&Lisää virtaustoisto…"
+
+#: MainWindow.cpp:727
+msgid "&Export Playlist As..."
+msgstr "&Vie soittolista nimellä…"
+
+#: MainWindow.cpp:731 amarokurls/NavigationUrlGenerator.cpp:250
+msgid "Bookmark Media Sources View"
+msgstr ""
+
+#: MainWindow.cpp:735 amarokurls/BookmarkManager.cpp:43
+msgid "Bookmark Manager"
+msgstr "Kirjanmerkkien hallinta"
+
+#: MainWindow.cpp:739
+msgid "Equalizer"
+msgstr "Taajuuskorjain"
+
+#: MainWindow.cpp:743 playlist/PlaylistViewUrlGenerator.cpp:101
+msgid "Bookmark Playlist Setup"
+msgstr ""
+
+#: MainWindow.cpp:747
+msgid "Bookmark Context Applets"
+msgstr ""
+
+#: MainWindow.cpp:751 covermanager/CoverManager.cpp:105
+msgid "Cover Manager"
+msgstr "Kansikuvaselain"
+
+#: MainWindow.cpp:755
+msgid "Play Media..."
+msgstr "Soita…"
+
+#: MainWindow.cpp:760
+msgid "&Seek Forward"
+msgstr "&Kelaa eteenpäin"
+
+#: MainWindow.cpp:766
+msgid "&Seek Backward"
+msgstr "&Kelaa taaksepäin"
+
+#: MainWindow.cpp:773
+msgid "Update Collection"
+msgstr "Päivitä kokoelma"
+
+#: MainWindow.cpp:780
+msgid "Previous Track"
+msgstr "Edellinen kappale"
+
+#: MainWindow.cpp:787
+#, fuzzy
+#| msgid "Rate Current Track: 1"
+msgid "Restart current track"
+msgstr "Arvostele nykyinen kappale yhden tähden arvoiseksi."
+
+#: MainWindow.cpp:793
+msgid "Repopulate Playlist"
+msgstr "Muodosta soittolista"
+
+#: MainWindow.cpp:799
+#, fuzzy
+#| msgid "Default Dynamic Playlist"
+msgid "Disable Dynamic Playlist"
+msgstr "Elävä soittolista, oletus"
+
+#: MainWindow.cpp:803
+msgid "Next Track"
+msgstr "Seuraava kappale"
+
+#: MainWindow.cpp:808
+msgid "Increase Volume"
+msgstr "Lisää äänenvoimakkuutta"
+
+#: MainWindow.cpp:814
+msgid "Decrease Volume"
+msgstr "Vähennä äänenvoimakkuutta"
+
+#: MainWindow.cpp:820
+msgid "Toggle Main Window"
+msgstr "Näytä tai piilota soittolistaikkuna"
+
+#: MainWindow.cpp:825
+msgid "Toggle Full Screen"
+msgstr "Kokoruututila"
+
+#: MainWindow.cpp:830
+msgid "Jump to"
+msgstr ""
+
+#: MainWindow.cpp:835
+msgid "Show active track"
+msgstr "Näytä soiva kappale"
+
+# absoluuttinen polku tagi-dialogis
+#: MainWindow.cpp:839
+msgid "Show Notification Popup"
+msgstr "Näytä ponnahdusilmoitus"
+
+#: MainWindow.cpp:844
+msgid "Mute Volume"
+msgstr "Vaimenna"
+
+#: MainWindow.cpp:849
+msgid "Last.fm: Love Current Track"
+msgstr "Last.fm: Merkitse ihkubiisiksi"
+
+#: MainWindow.cpp:854
+msgid "Last.fm: Ban Current Track"
+msgstr "Last.fm: Tyrmää kappale"
+
+#: MainWindow.cpp:859
+msgid "Last.fm: Skip Current Track"
+msgstr "Last.fm: Ohita kappale"
+
+#: MainWindow.cpp:864 playlist/view/PlaylistViewCommon.cpp:115
+msgid "Queue Track"
+msgstr "Lisää jonoon"
+
+#: MainWindow.cpp:869
+msgid "Rate Current Track: 1"
+msgstr "Arvostele nykyinen kappale yhden tähden arvoiseksi."
+
+#: MainWindow.cpp:874
+msgid "Rate Current Track: 2"
+msgstr "Arvostele nykyinen kappale kahden tähden arvoiseksi."
+
+#: MainWindow.cpp:879
+msgid "Rate Current Track: 3"
+msgstr "Arvostele nykyinen kappale kolmen tähden arvoiseksi."
+
+#: MainWindow.cpp:884
+msgid "Rate Current Track: 4"
+msgstr "Arvostele nykyinen kappale neljän tähden arvoiseksi."
+
+#: MainWindow.cpp:889
+msgid "Rate Current Track: 5"
+msgstr "Arvostele nykyinen kappale viiden tähden arvoiseksi."
+
+#: MainWindow.cpp:895
+msgid "Network Request Viewer"
+msgstr "Verkkopyynnön katselin"
+
+#: MainWindow.cpp:913
+msgid "&About Amarok"
+msgstr "&Amarok"
+
+#: MainWindow.cpp:917
+msgid "&Report Bug..."
+msgstr "&Ilmoita ohjelmavirhe..."
+
+#: MainWindow.cpp:977
+msgid "&Music"
+msgstr "&Musiikki"
+
+#: MainWindow.cpp:979
+msgid "&Amarok"
+msgstr "&Amarok"
+
+#: MainWindow.cpp:1003 playlist/PlaylistDock.cpp:54
+#: playlist/PlaylistToolBar.cpp:38
+msgid "&Playlist"
+msgstr "Soitto&lista"
+
+#: MainWindow.cpp:1020
+msgid "&Tools"
+msgstr "&Työkalut"
+
+#: MainWindow.cpp:1037
+msgid "&Settings"
+msgstr "&Asetukset"
+
+#: MainWindow.cpp:1084
+#, kde-format
+msgid ""
+"You have chosen to hide the menu bar.\n"
+"\n"
+"Please remember that you can always use the shortcut \"%1\" to bring it back."
+msgstr ""
+"Olet päättänyt piilottaa valikkorivin.\n"
+"\n"
+"Muista, että saat sen aina takaisin pikanäppäimellä ”%1”."
+
+#: MainWindow.cpp:1086
+msgid "Hide Menu"
+msgstr "Piilota valikko"
+
+# perkele näitä
+#: MainWindow.cpp:1128
+#, kde-format
+msgid "Paused  ::  %1"
+msgstr "Tauko :: %1"
+
+#: MainWindow.cpp:1141 amarokurls/BookmarkTreeView.cpp:377
+#: amarokurls/BookmarkTreeView.cpp:378 amarokurls/BookmarkTreeView.cpp:379
+#: context/applets/albums/AlbumItem.cpp:97
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:444
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:445
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:446
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:447
+msgid "Unknown"
+msgstr "Tuntematon"
+
+#: MainWindow.cpp:1141
+#, kde-format
+msgid "%1 - %2  ::  %3"
+msgstr "%1 - %2  ::  %3"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:73
+msgid ""
+"<qt>No information available.<br />The supplied KAboutData object does not "
+"exist.</qt>"
+msgstr ""
+"<qt>Tietoa ei saatavilla.<br />Annettua KAboutData-objektia ei ole olemassa."
+"</qt>"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:82
+msgid ""
+"<qt>No information available.<br />The supplied OcsData object does not "
+"exist.</qt>"
+msgstr ""
+"<qt>Tietoa ei saatavilla.<br />Annettua OcsData-objektia ei ole olemassa.</"
+"qt>"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:91
+#, kde-format
+msgid "About %1"
+msgstr "Tietoja %1:sta"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:112
+#, kde-format
+msgid ""
+"<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE %3</"
+"html>"
+msgstr ""
+"<html><font size=\"5\">%1</font><br /><b>Versio %2</b><br />Käytössä KDE %3</"
+"html>"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:152
+#, kde-format
+msgid "License: %1"
+msgstr "Lisenssi: %1"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:166
+msgid "&About"
+msgstr "&Tietoja"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:183
+msgid "Get data from openDesktop.org to learn more about the team"
+msgstr "Etsi lisätietoa ryhmästä openDesktop.orgista"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:195
+msgid ""
+"Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to report "
+"bugs.\n"
+msgstr ""
+"Ilmoita virheistä osoitteeseen <a href=\"http://bugs.kde.org/\">http://bugs."
+"kde.org/</a>.\n"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:200
+#: aboutdialog/ExtendedAboutDialog.cpp:206
+#, kde-format
+msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
+msgstr "Ilmoita bugit osoitteeseen <a href=\"mailto:%1\">%2</a>.\n"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:225
+msgid "A&uthor"
+msgstr "T&ekijä"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:225
+msgid "A&uthors"
+msgstr "T&ekijät"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:239
+msgid "Get data from openDesktop.org to learn more about contributors"
+msgstr "Etsi lisätietoa sisällöntuottajista openDesktop.orgista"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:253
+msgid "&Thanks To"
+msgstr "&Kiitokset"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:266
+#, fuzzy
+#| msgid "Get data from openDesktop.org to learn more about contributors"
+msgid "Get data from openDesktop.org to learn more about our generous donors"
+msgstr "Etsi lisätietoa sisällöntuottajista openDesktop.orgista"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:286
+#, fuzzy
+#| msgid "&Download"
+msgid "&Donors"
+msgstr "&Lataa"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:316
+msgid "T&ranslation"
+msgstr "K&äännös:"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:340
+msgid "License Agreement"
+msgstr "Lisenssisopimus"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:373
+msgid "Internet connection not available"
+msgstr "Internet-yhteyttä ei saatavilla"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:373
+msgid "Network error"
+msgstr "Verkkovirhe"
+
+#: aboutdialog/OcsPersonItem.cpp:95
+msgid "Email contributor"
+msgstr ""
+
+#: aboutdialog/OcsPersonItem.cpp:103 aboutdialog/OcsPersonItem.cpp:274
+msgid "Visit contributor's homepage"
+msgstr ""
+
+# Gotta love this :)
+#: aboutdialog/OcsPersonItem.cpp:179
+#, kde-format
+msgctxt "A person's location: City, Country"
+msgid "%1, %2"
+msgstr "%1, %2"
+
+#: aboutdialog/OcsPersonItem.cpp:199
+msgid "IRC channels: "
+msgstr "IRC-kanavat: "
+
+#: aboutdialog/OcsPersonItem.cpp:212
+msgid "Favorite music: "
+msgstr "Suosikkimusiikki: "
+
+#: aboutdialog/OcsPersonItem.cpp:217
+#, kde-format
+msgid "Visit %1's openDesktop.org profile"
+msgstr "Vieraile käyttäjän %1 openDesktop.org-profiilissa"
+
+#: aboutdialog/OcsPersonItem.cpp:219
+#, kde-format
+msgid "Visit %1's profile on openDesktop.org"
+msgstr "Vieraile käyttäjän %1 openDesktop.org-profiilissa "
+
+#: aboutdialog/OcsPersonItem.cpp:253
+msgid "Visit contributor's blog"
+msgstr "Vieraile käyttäjän blogissa"
+
+#: aboutdialog/OcsPersonItem.cpp:258
+msgid "Visit contributor's del.icio.us profile"
+msgstr "Vieraile käyttäjän del.icio.us-profiilissa"
+
+#: aboutdialog/OcsPersonItem.cpp:263
+msgid "Visit contributor's Digg profile"
+msgstr "Vieraile käyttäjän Digg-profiilissa"
+
+#: aboutdialog/OcsPersonItem.cpp:268
+msgid "Visit contributor's Facebook profile"
+msgstr "Vieraile käyttäjän Facebook-profiilissa"
+
+#: aboutdialog/OcsPersonItem.cpp:284
+msgid "Visit contributor's Last.fm profile"
+msgstr "Vieraile käyttäjän Last.fm-profiilissa"
+
+#: aboutdialog/OcsPersonItem.cpp:292
+msgid "Visit contributor's LinkedIn profile"
+msgstr "Vieraile käyttäjän LinkedIn-profiilissa"
+
+#: aboutdialog/OcsPersonItem.cpp:297
+msgid "Visit contributor's MySpace homepage"
+msgstr "Vieraile käyttäjän MySpace-kotisivulla"
+
+#: aboutdialog/OcsPersonItem.cpp:302
+msgid "Visit contributor's Reddit profile"
+msgstr "Vieraile käyttäjän Reddit-profiilissa"
+
+#: aboutdialog/OcsPersonItem.cpp:307
+msgid "Visit contributor's YouTube profile"
+msgstr "Vieraile käyttäjän YouTube-profiilissa"
+
+#: aboutdialog/OcsPersonItem.cpp:312
+msgid "Visit contributor's Twitter feed"
+msgstr "Vieraile käyttäjän Twitter-syötteessä"
+
+#: aboutdialog/OcsPersonItem.cpp:317
+msgid "Visit contributor's Wikipedia profile"
+msgstr "Vieraile käyttäjän Wikipedia-profiilissa"
+
+#: aboutdialog/OcsPersonItem.cpp:322
+msgid "Visit contributor's Xing profile"
+msgstr "Vieraile käyttäjän Xing-profiilissa"
+
+#: aboutdialog/OcsPersonItem.cpp:327
+msgid "Visit contributor's identi.ca feed"
+msgstr "Vieraile käyttäjän identi.ca-profiilissa"
+
+#: aboutdialog/OcsPersonItem.cpp:332
+msgid "Visit contributor's libre.fm profile"
+msgstr "Vieraile käyttäjän libre.fm-profiilissa"
+
+#: aboutdialog/OcsPersonItem.cpp:337
+msgid "Visit contributor's StackOverflow profile"
+msgstr "Vieraile käyttäjän StackOverflow-profiilissa"
+
+#: aboutdialog/libattica-ocsclient/personlistjob.cpp:108
+msgid "Unable to parse avatar image data."
+msgstr "Käyttäjän avataria ei voitu lukea."
 
 #: rc.cpp:1
 msgctxt "NAME OF TRANSLATORS"
@@ -2392,7 +3122,7 @@ msgstr ""
 #: dialogs/transferdialog.cpp:88 dialogs/FilenameLayoutDialog.cpp:230
 #: dialogs/FilenameLayoutDialog.cpp:591 musicbrainz/MusicBrainzTags.cpp:359
 #: playlist/PlaylistModel.cpp:902 services/jamendo/JamendoInfoParser.cpp:51
-#: services/lastfm/LastFmService.cpp:527
+#: services/lastfm/LastFmService.cpp:507
 #: services/magnatune/MagnatuneStore.cpp:218
 #: widgets/SmartPlaylistEditor.cpp:183 widgets/SmartPlaylistEditor.cpp:197
 msgid "Artist"
@@ -2596,12 +3326,6 @@ msgstr "Youtube HQ"
 #: rc.cpp:1127
 msgid "Use Wikipedia &mobile version"
 msgstr ""
-
-#. i18n: file: core-impl/collections/audiocd/FormatSelectionDialog.ui:14
-#. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: rc.cpp:1130 MainWindow.cpp:103 main.cpp:40
-msgid "Amarok"
-msgstr "Amarok"
 
 #. i18n: file: core-impl/collections/audiocd/FormatSelectionDialog.ui:26
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
@@ -5225,747 +5949,6 @@ msgstr "Ei ryhmittelyä (yksittäinen rivi)"
 msgid "Verbose"
 msgstr ""
 
-#: equalizer/EqualizerPresets.cpp:90
-msgid "Manual"
-msgstr "Manuaalinen"
-
-#: equalizer/EqualizerPresets.cpp:91
-msgid "Classical"
-msgstr ""
-
-#: equalizer/EqualizerPresets.cpp:92
-msgid "Club"
-msgstr ""
-
-#: equalizer/EqualizerPresets.cpp:93
-#, fuzzy
-#| msgid "France"
-msgid "Dance"
-msgstr "Ranska"
-
-#: equalizer/EqualizerPresets.cpp:94
-#, fuzzy
-#| msgid "Fuzzy Bias"
-msgid "Full Bass"
-msgstr "Sumea vaikutin"
-
-#: equalizer/EqualizerPresets.cpp:95
-msgid "Full Treble"
-msgstr ""
-
-#: equalizer/EqualizerPresets.cpp:96
-#, fuzzy
-#| msgid "Fuzzy Bias"
-msgid "Full Bass + Treble"
-msgstr "Sumea vaikutin"
-
-#: equalizer/EqualizerPresets.cpp:97
-msgid "Laptop/Headphones"
-msgstr ""
-
-#: equalizer/EqualizerPresets.cpp:98
-#, fuzzy
-#| msgid "Larger Than"
-msgid "Large Hall"
-msgstr "suurempi kuin"
-
-#: equalizer/EqualizerPresets.cpp:99
-msgid "Live"
-msgstr ""
-
-#: equalizer/EqualizerPresets.cpp:100
-#, fuzzy
-#| msgid "Playback"
-msgid "Party"
-msgstr "Toisto"
-
-#: equalizer/EqualizerPresets.cpp:101
-msgid "Pop"
-msgstr ""
-
-#: equalizer/EqualizerPresets.cpp:102
-#, fuzzy
-#| msgid "Replace"
-msgid "Reggae"
-msgstr "Korvaa"
-
-#: equalizer/EqualizerPresets.cpp:103
-#, fuzzy
-#| msgid "ok"
-msgid "Rock"
-msgstr "OK"
-
-#: equalizer/EqualizerPresets.cpp:104
-msgid "Soft"
-msgstr ""
-
-#: equalizer/EqualizerPresets.cpp:105
-msgid "Ska"
-msgstr ""
-
-#: equalizer/EqualizerPresets.cpp:106
-msgid "Soft Rock"
-msgstr ""
-
-#: equalizer/EqualizerPresets.cpp:107
-msgid "Techno"
-msgstr ""
-
-#: equalizer/EqualizerPresets.cpp:108
-#, fuzzy
-#| msgid "Zero"
-msgid "Zero"
-msgstr "Oletus"
-
-#: KNotificationBackend.cpp:146
-msgid "Now playing"
-msgstr "Nyt soi"
-
-#: App.cpp:410
-msgid "Files/URLs to open"
-msgstr "Avattavat tiedostot tai verkko-osoitteet"
-
-#: App.cpp:411
-msgid "Immediately start playing an audio cd"
-msgstr "Ala heti soittaa musiikki-CD:tä"
-
-#: App.cpp:413
-msgid "Skip backwards in playlist"
-msgstr "Siirry soittolistan edelliseen kappaleeseen"
-
-#: App.cpp:415
-msgid "Start playing current playlist"
-msgstr "Aloita nykyisen soittolistan soitto"
-
-#: App.cpp:417
-msgid "Play if stopped, pause if playing"
-msgstr "Aloittaa tai lopettaa soittamisen"
-
-#: App.cpp:418
-msgid "Pause playback"
-msgstr "Tauko"
-
-#: App.cpp:420
-msgid "Stop playback"
-msgstr "Pysäytä soitto"
-
-#: App.cpp:422
-msgid "Skip forwards in playlist"
-msgstr "Siirry soittolistan seuraavaan kappaleeseen"
-
-#: App.cpp:423
-msgid "Additional options:"
-msgstr "Lisäasetukset:"
-
-#: App.cpp:425
-msgid "Append files/URLs to playlist"
-msgstr "Lisää tiedostoja tai verkko-osoitteita soittolistaan"
-
-# tätä tässä varmaankin tarkoitetaan
-#: App.cpp:426
-msgid "Queue URLs after the currently playing track"
-msgstr "Lisää virtaustoistot soivan kappaleen perään"
-
-#: App.cpp:428
-msgid "Load URLs, replacing current playlist"
-msgstr "Lataa virtaustoistot ja korvaa nykyinen soittolista"
-
-#: App.cpp:430
-msgid "Print verbose debugging information"
-msgstr "Tulosta perinpohjaiset virheenjäljitystiedot"
-
-#: App.cpp:432
-msgid "Disable colorization for debug output."
-msgstr "Älä väritä vianjäljitystulostetta."
-
-#: App.cpp:434
-msgid "Allow running multiple Amarok instances"
-msgstr "Salli rinnakkaiset Amarok-instanssit"
-
-#: App.cpp:435
-msgid "Base for relative filenames/URLs"
-msgstr "Suhteellisten tiedostonimien ja verkko-osoitteiden kanta"
-
-#: App.cpp:437
-#, fuzzy
-#| msgid "Stream options"
-msgid "Unit test options:"
-msgstr "Virtaustoiston asetukset"
-
-#: App.cpp:438
-msgid "Run integrated unit tests"
-msgstr ""
-
-#: App.cpp:439
-msgid "Destination of test output: 'stdout', 'log'"
-msgstr ""
-
-#: App.cpp:440
-msgid "Format of test output: 'xml', 'lightxml', 'plaintext'"
-msgstr ""
-
-#: App.cpp:441
-msgid "Verbosity from 0-3 (highest)"
-msgstr ""
-
-#: App.cpp:633
-msgid ""
-"The embedded database was not found; you must set up a database server "
-"connection.\n"
-"You must restart Amarok after doing this."
-msgstr ""
-
-#: App.cpp:634
-msgid ""
-"The connection details for the database server were invalid.\n"
-"You must enter correct settings and restart Amarok after doing this."
-msgstr ""
-"Tietokantapalvelimen yhteystiedot olivat kelvottomat.\n"
-"Syötä oikeat tiedot ja käynnistä sen jälkeen Amarok uudelleen."
-
-#: App.cpp:635
-msgid "Database Error"
-msgstr "Tietokantavirhe"
-
-#: App.cpp:680
-msgid "Moving files to trash"
-msgstr "Tiedostoja siirretään roskakoriin"
-
-#: App.cpp:768
-#, kde-format
-msgid ""
-"A music path, %1, is set in System Settings.\n"
-"Would you like to use that as a collection folder?"
-msgstr ""
-"%1 on asetettu järjestelmän asetuksissa musiikkikansioksi.\n"
-"Haluatko käyttää sitä kokoelmakansiona?"
-
-#: MainWindow.cpp:261
-msgid "Local Music"
-msgstr "Paikallinen musiikki"
-
-#: MainWindow.cpp:263
-msgid "Local sources of content"
-msgstr "Oma kokoelma ja laitteet"
-
-#: MainWindow.cpp:271
-msgid "Internet"
-msgstr "Internet"
-
-#: MainWindow.cpp:273
-msgid "Online sources of content"
-msgstr "Internetin tarjoamat musiikkilähteet"
-
-#: MainWindow.cpp:279
-msgid "Playlists"
-msgstr "Soittolistat"
-
-#: MainWindow.cpp:281
-msgid "Various types of playlists"
-msgstr "Staattiset ja elävät soittolistat"
-
-#: MainWindow.cpp:287 amarokurls/NavigationUrlGenerator.cpp:135
-msgid "Files"
-msgstr "Tiedostot"
-
-#: MainWindow.cpp:289
-msgid "Browse local hard drive for content"
-msgstr "Selaa levyasemia"
-
-#: MainWindow.cpp:350
-msgctxt "@item:inmenu"
-msgid "&View"
-msgstr "&Näkymä"
-
-# tagi-dialogin eka ruutu, ilman kaksoispistettä
-#: MainWindow.cpp:353
-msgid "Lock Layout"
-msgstr "Lukitse sijoittelu"
-
-#: MainWindow.cpp:464
-msgid ""
-"<qt>Closing the main window will keep Amarok running in the System Tray. Use "
-"<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
-"qt>"
-msgstr ""
-"<qt>Pääikkunan sulkeminen piilottaa Amarokin ilmoitusalueelle. Valitse "
-"<b>Lopeta</b> valikosta tai Amarokin ilmoitusalueella olevasta kuvakkeesta, "
-"jos haluat sulkea Amarokin.</qt>"
-
-#: MainWindow.cpp:466
-msgid "Docking in System Tray"
-msgstr "Ilmoitusalueelle telakoiminen"
-
-#: MainWindow.cpp:495
-msgid "Use relative path for &saving"
-msgstr "Käytä &suhteellista polkua tallennettaessa"
-
-#: MainWindow.cpp:507 covermanager/CoverFoundDialog.cpp:361
-msgid "Save As"
-msgstr "Tallenna nimellä"
-
-#: MainWindow.cpp:559
-msgid "Play Media (Files or URLs)"
-msgstr "Soita tiedostoja tai verkko-osoitteita"
-
-#: MainWindow.cpp:559
-msgid "Add Media (Files or URLs)"
-msgstr "Lisää tiedostoja tai verkko-osoitteita"
-
-#: MainWindow.cpp:577
-msgid "Add Stream"
-msgstr "Lisää virtaustoisto"
-
-#: MainWindow.cpp:577
-msgid "Enter Stream URL:"
-msgstr "Anna virtaustoiston osoite:"
-
-#: MainWindow.cpp:701
-msgid "&Add Media..."
-msgstr "&Lisää sisältöä…"
-
-#: MainWindow.cpp:706
-msgctxt "clear playlist"
-msgid "&Clear Playlist"
-msgstr "&Tyhjennä soittolista"
-
-#: MainWindow.cpp:711
-#, fuzzy
-#| msgid "&Queue"
-msgctxt "edit play queue of playlist"
-msgid "Edit &Queue"
-msgstr "Lisää &jonoon"
-
-#: MainWindow.cpp:716
-msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
-msgid "Re&move Duplicates"
-msgstr "Poista &moniesiintymät"
-
-#: MainWindow.cpp:723
-msgid "&Add Stream..."
-msgstr "&Lisää virtaustoisto…"
-
-#: MainWindow.cpp:727
-msgid "&Export Playlist As..."
-msgstr "&Vie soittolista nimellä…"
-
-#: MainWindow.cpp:731 amarokurls/NavigationUrlGenerator.cpp:250
-msgid "Bookmark Media Sources View"
-msgstr ""
-
-#: MainWindow.cpp:735 amarokurls/BookmarkManager.cpp:43
-msgid "Bookmark Manager"
-msgstr "Kirjanmerkkien hallinta"
-
-#: MainWindow.cpp:739
-msgid "Equalizer"
-msgstr "Taajuuskorjain"
-
-#: MainWindow.cpp:743 playlist/PlaylistViewUrlGenerator.cpp:101
-msgid "Bookmark Playlist Setup"
-msgstr ""
-
-#: MainWindow.cpp:747
-msgid "Bookmark Context Applets"
-msgstr ""
-
-#: MainWindow.cpp:751 covermanager/CoverManager.cpp:105
-msgid "Cover Manager"
-msgstr "Kansikuvaselain"
-
-#: MainWindow.cpp:755
-msgid "Play Media..."
-msgstr "Soita…"
-
-#: MainWindow.cpp:760
-msgid "&Seek Forward"
-msgstr "&Kelaa eteenpäin"
-
-#: MainWindow.cpp:766
-msgid "&Seek Backward"
-msgstr "&Kelaa taaksepäin"
-
-#: MainWindow.cpp:773
-msgid "Update Collection"
-msgstr "Päivitä kokoelma"
-
-#: MainWindow.cpp:780
-msgid "Previous Track"
-msgstr "Edellinen kappale"
-
-#: MainWindow.cpp:787
-#, fuzzy
-#| msgid "Rate Current Track: 1"
-msgid "Restart current track"
-msgstr "Arvostele nykyinen kappale yhden tähden arvoiseksi."
-
-#: MainWindow.cpp:793
-msgid "Repopulate Playlist"
-msgstr "Muodosta soittolista"
-
-#: MainWindow.cpp:799
-#, fuzzy
-#| msgid "Default Dynamic Playlist"
-msgid "Disable Dynamic Playlist"
-msgstr "Elävä soittolista, oletus"
-
-#: MainWindow.cpp:803
-msgid "Next Track"
-msgstr "Seuraava kappale"
-
-#: MainWindow.cpp:808
-msgid "Increase Volume"
-msgstr "Lisää äänenvoimakkuutta"
-
-#: MainWindow.cpp:814
-msgid "Decrease Volume"
-msgstr "Vähennä äänenvoimakkuutta"
-
-#: MainWindow.cpp:820
-msgid "Toggle Main Window"
-msgstr "Näytä tai piilota soittolistaikkuna"
-
-#: MainWindow.cpp:825
-msgid "Toggle Full Screen"
-msgstr "Kokoruututila"
-
-#: MainWindow.cpp:830
-msgid "Jump to"
-msgstr ""
-
-#: MainWindow.cpp:835
-msgid "Show active track"
-msgstr "Näytä soiva kappale"
-
-# absoluuttinen polku tagi-dialogis
-#: MainWindow.cpp:839
-msgid "Show Notification Popup"
-msgstr "Näytä ponnahdusilmoitus"
-
-#: MainWindow.cpp:844
-msgid "Mute Volume"
-msgstr "Vaimenna"
-
-#: MainWindow.cpp:849
-msgid "Last.fm: Love Current Track"
-msgstr "Last.fm: Merkitse ihkubiisiksi"
-
-#: MainWindow.cpp:854
-msgid "Last.fm: Ban Current Track"
-msgstr "Last.fm: Tyrmää kappale"
-
-#: MainWindow.cpp:859
-msgid "Last.fm: Skip Current Track"
-msgstr "Last.fm: Ohita kappale"
-
-#: MainWindow.cpp:864 playlist/view/PlaylistViewCommon.cpp:115
-msgid "Queue Track"
-msgstr "Lisää jonoon"
-
-#: MainWindow.cpp:869
-msgid "Rate Current Track: 1"
-msgstr "Arvostele nykyinen kappale yhden tähden arvoiseksi."
-
-#: MainWindow.cpp:874
-msgid "Rate Current Track: 2"
-msgstr "Arvostele nykyinen kappale kahden tähden arvoiseksi."
-
-#: MainWindow.cpp:879
-msgid "Rate Current Track: 3"
-msgstr "Arvostele nykyinen kappale kolmen tähden arvoiseksi."
-
-#: MainWindow.cpp:884
-msgid "Rate Current Track: 4"
-msgstr "Arvostele nykyinen kappale neljän tähden arvoiseksi."
-
-#: MainWindow.cpp:889
-msgid "Rate Current Track: 5"
-msgstr "Arvostele nykyinen kappale viiden tähden arvoiseksi."
-
-#: MainWindow.cpp:895
-msgid "Network Request Viewer"
-msgstr "Verkkopyynnön katselin"
-
-#: MainWindow.cpp:913
-msgid "&About Amarok"
-msgstr "&Amarok"
-
-#: MainWindow.cpp:917
-msgid "&Report Bug..."
-msgstr "&Ilmoita ohjelmavirhe..."
-
-#: MainWindow.cpp:977
-msgid "&Music"
-msgstr "&Musiikki"
-
-#: MainWindow.cpp:979
-msgid "&Amarok"
-msgstr "&Amarok"
-
-#: MainWindow.cpp:1003 playlist/PlaylistDock.cpp:54
-#: playlist/PlaylistToolBar.cpp:38
-msgid "&Playlist"
-msgstr "Soitto&lista"
-
-#: MainWindow.cpp:1020
-msgid "&Tools"
-msgstr "&Työkalut"
-
-#: MainWindow.cpp:1037
-msgid "&Settings"
-msgstr "&Asetukset"
-
-#: MainWindow.cpp:1084
-#, kde-format
-msgid ""
-"You have chosen to hide the menu bar.\n"
-"\n"
-"Please remember that you can always use the shortcut \"%1\" to bring it back."
-msgstr ""
-"Olet päättänyt piilottaa valikkorivin.\n"
-"\n"
-"Muista, että saat sen aina takaisin pikanäppäimellä ”%1”."
-
-#: MainWindow.cpp:1086
-msgid "Hide Menu"
-msgstr "Piilota valikko"
-
-# perkele näitä
-#: MainWindow.cpp:1128
-#, kde-format
-msgid "Paused  ::  %1"
-msgstr "Tauko :: %1"
-
-#: MainWindow.cpp:1141 amarokurls/BookmarkTreeView.cpp:377
-#: amarokurls/BookmarkTreeView.cpp:378 amarokurls/BookmarkTreeView.cpp:379
-#: context/applets/albums/AlbumItem.cpp:97
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:444
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:445
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:446
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:447
-msgid "Unknown"
-msgstr "Tuntematon"
-
-#: MainWindow.cpp:1141
-#, kde-format
-msgid "%1 - %2  ::  %3"
-msgstr "%1 - %2  ::  %3"
-
-#: PluginManager.cpp:253
-msgid ""
-"<p>Amarok could not find any collection plugins. It is possible that Amarok "
-"is installed under the wrong prefix, please fix your installation using:<pre>"
-"$ cd /path/to/amarok/source-code/<br>$ su -c \"make uninstall\"<br>$ cmake -"
-"DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -c \"make install\"<br>$ "
-"kbuildsycoca4 --noincremental<br>$ amarok</pre>More information can be found "
-"in the README file. For further assistance join us at #amarok on irc."
-"freenode.net.</p>"
-msgstr ""
-"<p>Amarok ei löytänyt yhtään kokoelmaliitännäistä. Amarok on mahdollisesti "
-"asennettu väärään paikkaan. Korjaa asennus komennoilla:<pre>$ cd /path/to/"
-"amarok/source-code/<br>$ su -c \"make uninstall\"<br>$ cmake -"
-"DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -c \"make install\"<br>$ "
-"kbuildsycoca4 --noincremental<br>$ amarok</pre>Lisätietoja on README-"
-"tiedostossa. Lisäapua saa IRC-kanavalla #amarok (irc.freenode.net).</p>"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:73
-msgid ""
-"<qt>No information available.<br />The supplied KAboutData object does not "
-"exist.</qt>"
-msgstr ""
-"<qt>Tietoa ei saatavilla.<br />Annettua KAboutData-objektia ei ole olemassa."
-"</qt>"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:82
-msgid ""
-"<qt>No information available.<br />The supplied OcsData object does not "
-"exist.</qt>"
-msgstr ""
-"<qt>Tietoa ei saatavilla.<br />Annettua OcsData-objektia ei ole olemassa.</"
-"qt>"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:91
-#, kde-format
-msgid "About %1"
-msgstr "Tietoja %1:sta"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:112
-#, kde-format
-msgid ""
-"<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE %3</"
-"html>"
-msgstr ""
-"<html><font size=\"5\">%1</font><br /><b>Versio %2</b><br />Käytössä KDE %3</"
-"html>"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:152
-#, kde-format
-msgid "License: %1"
-msgstr "Lisenssi: %1"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:166
-msgid "&About"
-msgstr "&Tietoja"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:183
-msgid "Get data from openDesktop.org to learn more about the team"
-msgstr "Etsi lisätietoa ryhmästä openDesktop.orgista"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:195
-msgid ""
-"Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to report "
-"bugs.\n"
-msgstr ""
-"Ilmoita virheistä osoitteeseen <a href=\"http://bugs.kde.org/\">http://bugs."
-"kde.org/</a>.\n"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:200
-#: aboutdialog/ExtendedAboutDialog.cpp:206
-#, kde-format
-msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
-msgstr "Ilmoita bugit osoitteeseen <a href=\"mailto:%1\">%2</a>.\n"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:225
-msgid "A&uthor"
-msgstr "T&ekijä"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:225
-msgid "A&uthors"
-msgstr "T&ekijät"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:239
-msgid "Get data from openDesktop.org to learn more about contributors"
-msgstr "Etsi lisätietoa sisällöntuottajista openDesktop.orgista"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:253
-msgid "&Thanks To"
-msgstr "&Kiitokset"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:266
-#, fuzzy
-#| msgid "Get data from openDesktop.org to learn more about contributors"
-msgid "Get data from openDesktop.org to learn more about our generous donors"
-msgstr "Etsi lisätietoa sisällöntuottajista openDesktop.orgista"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:286
-#, fuzzy
-#| msgid "&Download"
-msgid "&Donors"
-msgstr "&Lataa"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:316
-msgid "T&ranslation"
-msgstr "K&äännös:"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:340
-msgid "License Agreement"
-msgstr "Lisenssisopimus"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:373
-msgid "Internet connection not available"
-msgstr "Internet-yhteyttä ei saatavilla"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:373
-msgid "Network error"
-msgstr "Verkkovirhe"
-
-#: aboutdialog/OcsPersonItem.cpp:95
-msgid "Email contributor"
-msgstr ""
-
-#: aboutdialog/OcsPersonItem.cpp:103 aboutdialog/OcsPersonItem.cpp:274
-msgid "Visit contributor's homepage"
-msgstr ""
-
-# Gotta love this :)
-#: aboutdialog/OcsPersonItem.cpp:179
-#, kde-format
-msgctxt "A person's location: City, Country"
-msgid "%1, %2"
-msgstr "%1, %2"
-
-#: aboutdialog/OcsPersonItem.cpp:199
-msgid "IRC channels: "
-msgstr "IRC-kanavat: "
-
-#: aboutdialog/OcsPersonItem.cpp:212
-msgid "Favorite music: "
-msgstr "Suosikkimusiikki: "
-
-#: aboutdialog/OcsPersonItem.cpp:217
-#, kde-format
-msgid "Visit %1's openDesktop.org profile"
-msgstr "Vieraile käyttäjän %1 openDesktop.org-profiilissa"
-
-#: aboutdialog/OcsPersonItem.cpp:219
-#, kde-format
-msgid "Visit %1's profile on openDesktop.org"
-msgstr "Vieraile käyttäjän %1 openDesktop.org-profiilissa "
-
-#: aboutdialog/OcsPersonItem.cpp:253
-msgid "Visit contributor's blog"
-msgstr "Vieraile käyttäjän blogissa"
-
-#: aboutdialog/OcsPersonItem.cpp:258
-msgid "Visit contributor's del.icio.us profile"
-msgstr "Vieraile käyttäjän del.icio.us-profiilissa"
-
-#: aboutdialog/OcsPersonItem.cpp:263
-msgid "Visit contributor's Digg profile"
-msgstr "Vieraile käyttäjän Digg-profiilissa"
-
-#: aboutdialog/OcsPersonItem.cpp:268
-msgid "Visit contributor's Facebook profile"
-msgstr "Vieraile käyttäjän Facebook-profiilissa"
-
-#: aboutdialog/OcsPersonItem.cpp:284
-msgid "Visit contributor's Last.fm profile"
-msgstr "Vieraile käyttäjän Last.fm-profiilissa"
-
-#: aboutdialog/OcsPersonItem.cpp:292
-msgid "Visit contributor's LinkedIn profile"
-msgstr "Vieraile käyttäjän LinkedIn-profiilissa"
-
-#: aboutdialog/OcsPersonItem.cpp:297
-msgid "Visit contributor's MySpace homepage"
-msgstr "Vieraile käyttäjän MySpace-kotisivulla"
-
-#: aboutdialog/OcsPersonItem.cpp:302
-msgid "Visit contributor's Reddit profile"
-msgstr "Vieraile käyttäjän Reddit-profiilissa"
-
-#: aboutdialog/OcsPersonItem.cpp:307
-msgid "Visit contributor's YouTube profile"
-msgstr "Vieraile käyttäjän YouTube-profiilissa"
-
-#: aboutdialog/OcsPersonItem.cpp:312
-msgid "Visit contributor's Twitter feed"
-msgstr "Vieraile käyttäjän Twitter-syötteessä"
-
-#: aboutdialog/OcsPersonItem.cpp:317
-msgid "Visit contributor's Wikipedia profile"
-msgstr "Vieraile käyttäjän Wikipedia-profiilissa"
-
-#: aboutdialog/OcsPersonItem.cpp:322
-msgid "Visit contributor's Xing profile"
-msgstr "Vieraile käyttäjän Xing-profiilissa"
-
-#: aboutdialog/OcsPersonItem.cpp:327
-msgid "Visit contributor's identi.ca feed"
-msgstr "Vieraile käyttäjän identi.ca-profiilissa"
-
-#: aboutdialog/OcsPersonItem.cpp:332
-msgid "Visit contributor's libre.fm profile"
-msgstr "Vieraile käyttäjän libre.fm-profiilissa"
-
-#: aboutdialog/OcsPersonItem.cpp:337
-msgid "Visit contributor's StackOverflow profile"
-msgstr "Vieraile käyttäjän StackOverflow-profiilissa"
-
-#: aboutdialog/libattica-ocsclient/personlistjob.cpp:108
-msgid "Unable to parse avatar image data."
-msgstr "Käyttäjän avataria ei voitu lukea."
-
 #: amarokurls/AmarokUrlHandler.cpp:222
 msgctxt "The command type of this url is not known"
 msgid "Unknown"
@@ -7407,80 +7390,6 @@ msgstr "Asetukset"
 msgid "Reload Tabs"
 msgstr "Lataa uudelleen"
 
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:67
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:128
-msgid "Upcoming Events"
-msgstr "Tulevat tapahtumat"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:78
-msgid "View Events Calendar"
-msgstr "Näytä tapahtumakalenteri"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:91
-msgctxt "@title:group"
-msgid "No track is currently playing"
-msgstr "Mikään kappale ei nyt soi"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:158
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:303
-#, fuzzy
-#| msgid "Favorite music: "
-msgid "Favorite Venues"
-msgstr "Suosikkimusiikki: "
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:224
-msgid "No upcoming events"
-msgstr "Ei tulevia tapahtumia"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:224
-#, kde-format
-msgid "%1: No upcoming events"
-msgstr "%1: Ei tulevia tapahtumia"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:229
-#, kde-format
-msgctxt "@title:group Number of upcoming events"
-msgid "1 event"
-msgid_plural "%1 events"
-msgstr[0] "1 tapahtuma"
-msgstr[1] "%1 tapahtumaa"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:230
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:640
-#, kde-format
-msgctxt "@title:group Number of upcoming events"
-msgid "%1: 1 event"
-msgid_plural "%1: %2 events"
-msgstr[0] "%1: 1 tapahtuma"
-msgstr[1] "%1: %2 tapahtumaa"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:302
-msgid "Upcoming Events Settings"
-msgstr "Tulevat tapahtumat – Asetukset"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:353
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:362
-msgctxt "@label:textbox Url label"
-msgid "link"
-msgstr "linkki"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:494
-#, fuzzy
-#| msgid "Merged View"
-msgid "Map View"
-msgstr "Yhdistelmänäyttö"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:532
-msgid "Events Calender"
-msgstr "Tapahtumakalenteri"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:638
-#, fuzzy
-#| msgid "Favorite music: "
-msgctxt "@title:group"
-msgid "Favorite Venues"
-msgstr "Suosikkimusiikki: "
-
 #: context/applets/upcomingevents/UpcomingEventsCalendarWidget.cpp:160
 msgctxt "@info:tooltip Calendar action"
 msgid "Jump to Today"
@@ -7582,6 +7491,82 @@ msgstr[1] "<strong>%1</strong> päivän kuluttua"
 msgctxt "@info:tooltip"
 msgid "<strong>Location:</strong><nl/>%1"
 msgstr "<strong>Sijainti:</strong><nl/>%1"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:67
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:128
+msgid "Upcoming Events"
+msgstr "Tulevat tapahtumat"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:78
+msgid "View Events Calendar"
+msgstr "Näytä tapahtumakalenteri"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:91
+msgctxt "@title:group"
+msgid "No track is currently playing"
+msgstr "Mikään kappale ei nyt soi"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:158
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:303
+#, fuzzy
+#| msgid "Favorite music: "
+msgid "Favorite Venues"
+msgstr "Suosikkimusiikki: "
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:224
+msgid "No upcoming events"
+msgstr "Ei tulevia tapahtumia"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:224
+#, kde-format
+msgid "%1: No upcoming events"
+msgstr "%1: Ei tulevia tapahtumia"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:229
+#, kde-format
+msgctxt "@title:group Number of upcoming events"
+msgid "1 event"
+msgid_plural "%1 events"
+msgstr[0] "1 tapahtuma"
+msgstr[1] "%1 tapahtumaa"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:230
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:640
+#, kde-format
+msgctxt "@title:group Number of upcoming events"
+msgid "%1: 1 event"
+msgid_plural "%1: %2 events"
+msgstr[0] "%1: 1 tapahtuma"
+msgstr[1] "%1: %2 tapahtumaa"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:302
+msgid "Upcoming Events Settings"
+msgstr "Tulevat tapahtumat – Asetukset"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:353
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:362
+msgctxt "@label:textbox Url label"
+msgid "link"
+msgstr "linkki"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:494
+#, fuzzy
+#| msgid "Merged View"
+msgid "Map View"
+msgstr "Yhdistelmänäyttö"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:532
+#, fuzzy
+#| msgid "Events Calender"
+msgid "Events Calendar"
+msgstr "Tapahtumakalenteri"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:638
+#, fuzzy
+#| msgid "Favorite music: "
+msgctxt "@title:group"
+msgid "Favorite Venues"
+msgstr "Suosikkimusiikki: "
 
 #: context/applets/videoclip/CustomVideoWidget.cpp:83
 msgid "Enter &fullscreen"
@@ -8083,6 +8068,12 @@ msgid ""
 "properly."
 msgstr ""
 
+#: core-impl/collections/db/sql/SqlMeta.cpp:272
+#: covermanager/CoverManager.cpp:842 services/lastfm/meta/LastFmMeta.cpp:133
+#, kde-format
+msgid "%1 - %2"
+msgstr "%1 – %2"
+
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:497
 msgid "Organizing tracks"
 msgstr ""
@@ -8127,12 +8118,6 @@ msgstr "Siirretään: %1"
 #| msgid "Playing: %1"
 msgid "Removing: %1"
 msgstr "Nyt soi %1"
-
-#: core-impl/collections/db/sql/SqlMeta.cpp:272
-#: covermanager/CoverManager.cpp:842 services/lastfm/meta/LastFmMeta.cpp:133
-#, kde-format
-msgid "%1 - %2"
-msgstr "%1 – %2"
 
 #: core-impl/collections/db/ScanManager.cpp:136
 msgid "Database import requested"
@@ -8548,6 +8533,15 @@ msgstr "kaksi kuukautta sitten"
 msgid "three months ago"
 msgstr "kolme kuukautta sitten"
 
+#: core-impl/collections/support/TrashCollectionLocation.cpp:47
+msgid "Trash"
+msgstr "Roskakori"
+
+#: core-impl/collections/support/TrashCollectionLocation.cpp:101
+#, kde-format
+msgid "Moving to trash: %1"
+msgstr "Siirretään roskakoriin: %1"
+
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:40
 #, kde-format
 msgctxt "@info"
@@ -8605,14 +8599,21 @@ msgid "Move Files"
 msgstr "Siirrä tiedostot"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:98
-#, kde-format
+#, fuzzy, kde-format
+#| msgctxt "@info"
+#| msgid ""
+#| "There was a problem and this track could not be removed. Make sure the "
+#| "directory is writeable."
+#| msgid_plural ""
+#| "There was a problem and %1 tracks could not be removed. Make sure the "
+#| "directory is writeable."
 msgctxt "@info"
 msgid ""
 "There was a problem and this track could not be removed. Make sure the "
-"directory is writeable."
+"directory is writable."
 msgid_plural ""
 "There was a problem and %1 tracks could not be removed. Make sure the "
-"directory is writeable."
+"directory is writable."
 msgstr[0] ""
 "Kohdattiin ongelma, eikä tätä kappaletta voitu poistaa. Varmista, että voit "
 "kirjoittaa kansioon."
@@ -8625,8 +8626,12 @@ msgid "Unable to be removed tracks"
 msgstr "Kappaleita ei voitu poistaa"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:110
+#, fuzzy
+#| msgid ""
+#| "The collection does not have enough free space available or is not "
+#| "writeable."
 msgid ""
-"The collection does not have enough free space available or is not writeable."
+"The collection does not have enough free space available or is not writable."
 msgstr ""
 "Kokoelmassa ei ole riittävästi vapaata tyhjää tilaa tai se ei ole "
 "kirjoitettavissa."
@@ -8638,15 +8643,6 @@ msgstr "Haluatko poistaa tyhjät kansiot?"
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:117
 msgid "Remove empty folders?"
 msgstr "Poistetaanko tyhjät kansiot?"
-
-#: core-impl/collections/support/TrashCollectionLocation.cpp:47
-msgid "Trash"
-msgstr "Roskakori"
-
-#: core-impl/collections/support/TrashCollectionLocation.cpp:101
-#, kde-format
-msgid "Moving to trash: %1"
-msgstr "Siirretään roskakoriin: %1"
 
 #: core-impl/collections/umscollection/handler/UmsHandler.cpp:474
 msgid "&Use as Collection"
@@ -9259,23 +9255,24 @@ msgctxt ""
 msgid "m:ss"
 msgstr "m:ss"
 
-#: core/meta/support/MetaUtility.cpp:401
-#, fuzzy
-#| msgid "h:mm:ss"
-msgctxt ""
-"the time format for a time length when the time is 1 day or above see "
-"QDateTime documentation."
-msgid "d:hh:mm:ss"
-msgstr "t:mm:ss"
+# tagi-dialogin eka ruutu, ilman kaksoispistettä
+#: core/meta/support/MetaUtility.cpp:406
+#, fuzzy, kde-format
+#| msgid "%1 layout"
+msgctxt "number of days with spacing for the pretty time"
+msgid "%1 day, "
+msgid_plural "%1 days, "
+msgstr[0] "Asettelu %1"
+msgstr[1] "Asettelu %1"
 
-#: core/meta/support/MetaUtility.cpp:403
+#: core/meta/support/MetaUtility.cpp:407
 msgctxt ""
 "the time format for a time length when the time is 1 hour or above see QTime "
 "documentation."
 msgid "h:mm:ss"
 msgstr "h:mm:ss"
 
-#: core/meta/support/MetaUtility.cpp:416
+#: core/meta/support/MetaUtility.cpp:421
 #, fuzzy, kde-format
 #| msgid "year"
 msgctxt "number of years for the pretty time"
@@ -9284,7 +9281,7 @@ msgid_plural "%1 years"
 msgstr[0] "vuosi"
 msgstr[1] "vuosi"
 
-#: core/meta/support/MetaUtility.cpp:418
+#: core/meta/support/MetaUtility.cpp:423
 #, fuzzy, kde-format
 #| msgctxt "within the last %1 months"
 #| msgid "month"
@@ -9296,7 +9293,7 @@ msgstr[0] "kuukausi"
 msgstr[1] "kuukautta"
 
 # tagi-dialogin eka ruutu, ilman kaksoispistettä
-#: core/meta/support/MetaUtility.cpp:420
+#: core/meta/support/MetaUtility.cpp:425
 #, fuzzy, kde-format
 #| msgid "%1 layout"
 msgctxt "number of days for the pretty time"
@@ -9305,7 +9302,7 @@ msgid_plural "%1 days"
 msgstr[0] "Asettelu %1"
 msgstr[1] "Asettelu %1"
 
-#: core/meta/support/MetaUtility.cpp:422
+#: core/meta/support/MetaUtility.cpp:427
 #, fuzzy, kde-format
 #| msgid "Hours"
 msgctxt "number of hours for the pretty time"
@@ -9314,7 +9311,7 @@ msgid_plural "%1 hours"
 msgstr[0] "tuntia"
 msgstr[1] "tuntia"
 
-#: core/meta/support/MetaUtility.cpp:424
+#: core/meta/support/MetaUtility.cpp:429
 #, fuzzy, kde-format
 #| msgid " minute"
 #| msgid_plural " minutes"
@@ -9324,7 +9321,7 @@ msgid_plural "%1 minutes"
 msgstr[0] " minuutti"
 msgstr[1] ". minuutti"
 
-#: core/meta/support/MetaUtility.cpp:426
+#: core/meta/support/MetaUtility.cpp:431
 #, fuzzy, kde-format
 #| msgid "Seconds"
 msgctxt "number of seconds for the pretty time"
@@ -11070,31 +11067,6 @@ msgstr "Edellinen kappale"
 msgid "one of the tracks in the current playlist"
 msgstr "Kirjoita hakeaksesi soittolistalta"
 
-#: dynamic/biases/PartBias.cpp:44
-#, fuzzy
-#| msgid "Proportion:"
-msgctxt "Name of the \"Part\" bias"
-msgid "Partition"
-msgstr "Vaikutus:"
-
-#: dynamic/biases/PartBias.cpp:53
-msgctxt "Description of the \"Part\" bias"
-msgid ""
-"The \"Part\" bias fills parts of the playlist from different sub-biases."
-msgstr ""
-
-#: dynamic/biases/PartBias.cpp:260
-msgid "This controls what portion of the playlist should match the criteria"
-msgstr ""
-"Tämä arvo ohjaa, minkä verran kriteeri vaikuttaa soittolistan muodostuksessa"
-
-#: dynamic/biases/PartBias.cpp:401
-#, fuzzy
-#| msgid "Proportion:"
-msgctxt "Part bias representation"
-msgid "Partition"
-msgstr "Vaikutus:"
-
 #: dynamic/biases/QuizPlayBias.cpp:44
 msgctxt "Name of the \"QuizPlay\" bias"
 msgid "Quiz play"
@@ -11197,6 +11169,31 @@ msgstr ""
 msgctxt "Inverted condition in tag match bias"
 msgid "Not %1"
 msgstr "Tietoja %1:sta"
+
+#: dynamic/biases/PartBias.cpp:44
+#, fuzzy
+#| msgid "Proportion:"
+msgctxt "Name of the \"Part\" bias"
+msgid "Partition"
+msgstr "Vaikutus:"
+
+#: dynamic/biases/PartBias.cpp:53
+msgctxt "Description of the \"Part\" bias"
+msgid ""
+"The \"Part\" bias fills parts of the playlist from different sub-biases."
+msgstr ""
+
+#: dynamic/biases/PartBias.cpp:260
+msgid "This controls what portion of the playlist should match the criteria"
+msgstr ""
+"Tämä arvo ohjaa, minkä verran kriteeri vaikuttaa soittolistan muodostuksessa"
+
+#: dynamic/biases/PartBias.cpp:401
+#, fuzzy
+#| msgid "Proportion:"
+msgctxt "Part bias representation"
+msgid "Partition"
+msgstr "Vaikutus:"
 
 #: dynamic/Bias.cpp:239
 #, fuzzy
@@ -13068,7 +13065,7 @@ msgid "Neighbors"
 msgstr "Naapurusto – muita joilla on samankaltainen musiikkimaku"
 
 #: services/lastfm/LoveTrackAction.cpp:25
-#: services/lastfm/LastFmService.cpp:287
+#: services/lastfm/LastFmService.cpp:284
 msgid "Last.fm: Love"
 msgstr "Last.fm: Ihkubiisi"
 
@@ -13285,13 +13282,6 @@ msgstr "Testaa kirjautumista"
 msgid "Unable to connect to Last.fm service."
 msgstr "Flickr.com ei antanut kuvaa "
 
-#: services/lastfm/ScrobblerAdapter.cpp:242
-#: services/lastfm/LastFmService.cpp:563
-#, kde-format
-msgctxt "As in, lastfm"
-msgid "Loved Track: %1"
-msgstr "Suosikkikappaleita: %1"
-
 #: services/lastfm/LastFmServiceConfig.cpp:143
 msgid "Last.fm credentials"
 msgstr "Last.fm-tunnistautuminen"
@@ -13303,80 +13293,6 @@ msgid ""
 msgstr ""
 "KWallet-lompakkoa ei ole saatavilla. Haluatko että Amarok tallentaa "
 "tunnistautumistiedot (myös salasanan) salaamattomasti?"
-
-# Last.fm tiputettu tarkoituksella
-#: services/lastfm/LastFmService.cpp:194
-msgid "Last.fm: The social music revolution"
-msgstr "Yhteisöllinen musiikkipalvelu"
-
-#: services/lastfm/LastFmService.cpp:196
-msgid ""
-"Last.fm is a popular online service that provides personal radio stations "
-"and music recommendations. A personal listening station is tailored based on "
-"your listening habits and provides you with recommendations for new music. "
-"It is also possible to play stations with music that is similar to a "
-"particular artist as well as listen to streams from people you have added as "
-"friends or that Last.fm considers your musical \"neighbors\""
-msgstr ""
-
-#: services/lastfm/LastFmService.cpp:289
-msgid "Ctrl+L"
-msgstr "Ctrl+L"
-
-#: services/lastfm/LastFmService.cpp:342
-msgctxt "Last.fm: errorMessage"
-msgid "Either the username was not recognized, or the password was incorrect."
-msgstr "Käyttäjätunnus tai salasana on väärin."
-
-#: services/lastfm/LastFmService.cpp:346
-msgctxt "Last.fm: errorMessage"
-msgid ""
-"There was a problem communicating with the Last.fm services. Please try "
-"again later."
-msgstr "Yhteys Last.fm-palveluun epäonnistui. Kokeile uudelleen."
-
-#: services/lastfm/LastFmService.cpp:434
-msgid "Enter an artist name"
-msgstr "Syötä artistin nimi"
-
-#: services/lastfm/LastFmService.cpp:437
-msgid "Enter a tag"
-msgstr "Syötä sisältökuvaus"
-
-#: services/lastfm/LastFmService.cpp:440
-#, fuzzy
-#| msgid "Enter a last.fm user name"
-msgid "Enter a Last.fm user name"
-msgstr "Syötä Last.fm-käyttäjätunnus"
-
-#: services/lastfm/LastFmService.cpp:453
-#, fuzzy, kde-format
-#| msgid "Username: "
-msgid "Username: %1"
-msgstr "Käyttäjätunnus: "
-
-#: services/lastfm/LastFmService.cpp:458
-#, kde-format
-msgid "Play Count: %1 play"
-msgid_plural "Play Count: %1 plays"
-msgstr[0] "Yksi soitto"
-msgstr[1] "Soittoja: %1"
-
-#: services/lastfm/LastFmService.cpp:468
-msgid "Enter login information for Last.fm"
-msgstr "Syötä kirjautumistiedot Last.fm-palveluun"
-
-#: services/lastfm/LastFmService.cpp:524
-msgid "Create a Custom Last.fm Station"
-msgstr "Luo oma Last.fm-radioasema"
-
-#: services/lastfm/LastFmService.cpp:527
-msgid "Tag"
-msgstr "Sisältökuvaus"
-
-#: services/lastfm/LastFmService.cpp:527
-msgid "User"
-msgstr "Käyttäjä"
 
 #: services/lastfm/LastFmServiceCollection.cpp:42
 #, kde-format
@@ -13406,6 +13322,83 @@ msgstr "Kaverien oma radio"
 #: services/lastfm/SimilarArtistsAction.cpp:26
 msgid "Play Similar Artists from Last.fm"
 msgstr "Soita samankaltaisia artisteja Last.fm-palvelusta"
+
+#: services/lastfm/ScrobblerAdapter.cpp:236
+#: services/lastfm/LastFmService.cpp:543
+#, kde-format
+msgctxt "As in, lastfm"
+msgid "Loved Track: %1"
+msgstr "Suosikkikappaleita: %1"
+
+# Last.fm tiputettu tarkoituksella
+#: services/lastfm/LastFmService.cpp:195
+msgid "Last.fm: The social music revolution"
+msgstr "Yhteisöllinen musiikkipalvelu"
+
+#: services/lastfm/LastFmService.cpp:197
+msgid ""
+"Last.fm is a popular online service that provides personal radio stations "
+"and music recommendations. A personal listening station is tailored based on "
+"your listening habits and provides you with recommendations for new music. "
+"It is also possible to play stations with music that is similar to a "
+"particular artist as well as listen to streams from people you have added as "
+"friends or that Last.fm considers your musical \"neighbors\""
+msgstr ""
+
+#: services/lastfm/LastFmService.cpp:286
+msgid "Ctrl+L"
+msgstr "Ctrl+L"
+
+#: services/lastfm/LastFmService.cpp:339
+msgctxt "Last.fm: errorMessage"
+msgid "Either the username was not recognized, or the password was incorrect."
+msgstr "Käyttäjätunnus tai salasana on väärin."
+
+#: services/lastfm/LastFmService.cpp:343
+msgctxt "Last.fm: errorMessage"
+msgid ""
+"There was a problem communicating with the Last.fm services. Please try "
+"again later."
+msgstr "Yhteys Last.fm-palveluun epäonnistui. Kokeile uudelleen."
+
+#: services/lastfm/LastFmService.cpp:431
+msgid "Enter an artist name"
+msgstr "Syötä artistin nimi"
+
+#: services/lastfm/LastFmService.cpp:434
+msgid "Enter a tag"
+msgstr "Syötä sisältökuvaus"
+
+#: services/lastfm/LastFmService.cpp:437
+#, fuzzy
+#| msgid "Enter a last.fm user name"
+msgid "Enter a Last.fm user name"
+msgstr "Syötä Last.fm-käyttäjätunnus"
+
+#: services/lastfm/LastFmService.cpp:450
+#, fuzzy, kde-format
+#| msgid "Username: "
+msgid "Username: %1"
+msgstr "Käyttäjätunnus: "
+
+#: services/lastfm/LastFmService.cpp:455
+#, kde-format
+msgid "Play Count: %1 play"
+msgid_plural "Play Count: %1 plays"
+msgstr[0] "Yksi soitto"
+msgstr[1] "Soittoja: %1"
+
+#: services/lastfm/LastFmService.cpp:504
+msgid "Create a Custom Last.fm Station"
+msgstr "Luo oma Last.fm-radioasema"
+
+#: services/lastfm/LastFmService.cpp:507
+msgid "Tag"
+msgstr "Sisältökuvaus"
+
+#: services/lastfm/LastFmService.cpp:507
+msgid "User"
+msgstr "Käyttäjä"
 
 #: services/magnatune/MagnatuneCollectionLocation.cpp:42
 msgid "Preview Tracks"
@@ -15135,6 +15128,23 @@ msgctxt "track from source"
 msgid "from <b>%1</b>"
 msgstr ""
 
+#: PluginManager.cpp:253
+msgid ""
+"<p>Amarok could not find any collection plugins. It is possible that Amarok "
+"is installed under the wrong prefix, please fix your installation using:<pre>"
+"$ cd /path/to/amarok/source-code/<br>$ su -c \"make uninstall\"<br>$ cmake -"
+"DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -c \"make install\"<br>$ "
+"kbuildsycoca4 --noincremental<br>$ amarok</pre>More information can be found "
+"in the README file. For further assistance join us at #amarok on irc."
+"freenode.net.</p>"
+msgstr ""
+"<p>Amarok ei löytänyt yhtään kokoelmaliitännäistä. Amarok on mahdollisesti "
+"asennettu väärään paikkaan. Korjaa asennus komennoilla:<pre>$ cd /path/to/"
+"amarok/source-code/<br>$ su -c \"make uninstall\"<br>$ cmake -"
+"DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -c \"make install\"<br>$ "
+"kbuildsycoca4 --noincremental<br>$ amarok</pre>Lisätietoja on README-"
+"tiedostossa. Lisäapua saa IRC-kanavalla #amarok (irc.freenode.net).</p>"
+
 # Gotta love this :)
 #: TrayIcon.cpp:146
 #, kde-format
@@ -15168,6 +15178,17 @@ msgstr "Soittokertoja: %1"
 #, kde-format
 msgid "Last played: %1"
 msgstr "Viimeksi soitettu: %1"
+
+#, fuzzy
+
+
+
+
+
+
+
+
+
 
 
 
