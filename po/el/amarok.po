@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2011-07-17 03:51+0200\n"
-"PO-Revision-Date: 2011-07-15 13:08+0300\n"
+"POT-Creation-Date: 2011-07-26 04:06+0200\n"
+"PO-Revision-Date: 2011-07-26 13:08+0300\n"
 "Last-Translator: Stelios <sstavra@gmail.com>\n"
 "Language-Team: Greek <kde-i18n-el@kde.org>\n"
 "MIME-Version: 1.0\n"
@@ -93,6 +93,715 @@ msgstr "Σταμάτημα μετά το τρέχον κομμάτι: ενεργ
 #: ActionClasses.cpp:542
 msgid "Stop after current track: Off"
 msgstr "Σταμάτημα μετά το τρέχον κομμάτι: ανενεργό"
+
+#: equalizer/EqualizerPresets.cpp:90
+msgid "Manual"
+msgstr "Χειροκίνητο"
+
+#: equalizer/EqualizerPresets.cpp:91
+msgid "Classical"
+msgstr "Classical"
+
+#: equalizer/EqualizerPresets.cpp:92
+msgid "Club"
+msgstr "Club"
+
+#: equalizer/EqualizerPresets.cpp:93
+msgid "Dance"
+msgstr "Dance"
+
+#: equalizer/EqualizerPresets.cpp:94
+msgid "Full Bass"
+msgstr "Full Bass"
+
+#: equalizer/EqualizerPresets.cpp:95
+msgid "Full Treble"
+msgstr "Full Treble"
+
+#: equalizer/EqualizerPresets.cpp:96
+msgid "Full Bass + Treble"
+msgstr "Full Bass + Treble"
+
+#: equalizer/EqualizerPresets.cpp:97
+msgid "Laptop/Headphones"
+msgstr "Φορητός/Ακουστικά"
+
+#: equalizer/EqualizerPresets.cpp:98
+msgid "Large Hall"
+msgstr "Large Hall"
+
+#: equalizer/EqualizerPresets.cpp:99
+msgid "Live"
+msgstr "Live"
+
+#: equalizer/EqualizerPresets.cpp:100
+msgid "Party"
+msgstr "Party"
+
+#: equalizer/EqualizerPresets.cpp:101
+msgid "Pop"
+msgstr "Pop"
+
+#: equalizer/EqualizerPresets.cpp:102
+msgid "Reggae"
+msgstr "Reggae"
+
+#: equalizer/EqualizerPresets.cpp:103
+msgid "Rock"
+msgstr "Rock"
+
+#: equalizer/EqualizerPresets.cpp:104
+msgid "Soft"
+msgstr "Soft"
+
+#: equalizer/EqualizerPresets.cpp:105
+msgid "Ska"
+msgstr "Ska"
+
+#: equalizer/EqualizerPresets.cpp:106
+msgid "Soft Rock"
+msgstr "Soft Rock"
+
+#: equalizer/EqualizerPresets.cpp:107
+msgid "Techno"
+msgstr "Techno"
+
+#: equalizer/EqualizerPresets.cpp:108
+msgid "Zero"
+msgstr "Zero"
+
+#: KNotificationBackend.cpp:146
+msgid "Now playing"
+msgstr "Αναπαράγεται τώρα"
+
+#: App.cpp:410
+msgid "Files/URLs to open"
+msgstr "Αρχεία/URLs για άνοιγμα"
+
+#: App.cpp:411
+msgid "Immediately start playing an audio cd"
+msgstr "Άμεση αναπαραγωγή ενός cd ήχου"
+
+#: App.cpp:413
+msgid "Skip backwards in playlist"
+msgstr "Παράλειψη προς τα πίσω στη λίστα"
+
+#: App.cpp:415
+msgid "Start playing current playlist"
+msgstr "Εκκίνηση αναπαραγωγής της τρέχουσας λίστας"
+
+#: App.cpp:417
+msgid "Play if stopped, pause if playing"
+msgstr "Αναπαραγωγή αν είναι σταματημένο, αλλιώς παύση"
+
+#: App.cpp:418
+msgid "Pause playback"
+msgstr "Παύση αναπαραγωγής"
+
+#: App.cpp:420
+msgid "Stop playback"
+msgstr "Σταμάτημα αναπαραγωγής"
+
+#: App.cpp:422
+msgid "Skip forwards in playlist"
+msgstr "Παράλειψη προς τα μπροστά στη λίστα"
+
+#: App.cpp:423
+msgid "Additional options:"
+msgstr "Επιπλέον επιλογές:"
+
+#: App.cpp:425
+msgid "Append files/URLs to playlist"
+msgstr "Προσθήκη των αρχείων/URLs στη λίστα"
+
+#: App.cpp:426
+msgid "Queue URLs after the currently playing track"
+msgstr "Τοποθέτηση των URLs σε αναμονή μετά το τρέχον κομμάτι"
+
+#: App.cpp:428
+msgid "Load URLs, replacing current playlist"
+msgstr "Φόρτωση URL και αντικατάσταση της τρέχουσας λίστας"
+
+#: App.cpp:430
+msgid "Print verbose debugging information"
+msgstr "Εμφάνιση αναλυτικών πληροφοριών αποσφαλμάτωσης"
+
+#: App.cpp:432
+msgid "Disable colorization for debug output."
+msgstr "Απενεργοποίηση χρωματισμού για εμφάνιση σφαλμάτων κώδικα στην έξοδο"
+
+#: App.cpp:434
+msgid "Allow running multiple Amarok instances"
+msgstr "Επίτρεψε πολλαπλές εκτελέσεις του Amarok"
+
+#: App.cpp:435
+msgid "Base for relative filenames/URLs"
+msgstr "Βάση για σχετικά ονόματα αρχείων/URLs"
+
+#: App.cpp:437
+msgid "Unit test options:"
+msgstr "Επιλογές Unit test"
+
+#: App.cpp:438
+msgid "Run integrated unit tests"
+msgstr "Εκτέλεση ολοκληρωμένων unit tests"
+
+#: App.cpp:439
+msgid "Destination of test output: 'stdout', 'log'"
+msgstr "Προορισμός εξόδου της δοκιμής: 'stdout', 'log'"
+
+#: App.cpp:440
+msgid "Format of test output: 'xml', 'lightxml', 'plaintext'"
+msgstr "Τύπος αρχειοθέτησης της εξόδου δοκιμής: 'xml', 'lightxml', 'plaintext'"
+
+#: App.cpp:441
+msgid "Verbosity from 0-3 (highest)"
+msgstr "Φλυαρία από 0-3 (υψηλότερη)"
+
+#: App.cpp:633
+msgid ""
+"The embedded database was not found; you must set up a database server "
+"connection.\n"
+"You must restart Amarok after doing this."
+msgstr ""
+"Η ενσωματωμένη βάση δεδομένων δεν βρέθηκε· πρέπει να ρυθμίσετε μια σύνδεση "
+"εξυπηρετητή βάσης δεδομένων.\n"
+"Πρέπει να κάνετε επανεκκίνηση του Amarok μετά από αυτήν την ενέργεια."
+
+#: App.cpp:634
+msgid ""
+"The connection details for the database server were invalid.\n"
+"You must enter correct settings and restart Amarok after doing this."
+msgstr ""
+"Τα στοιχεία σύνδεσης για τον εξυπηρετητή βάσης δεδομένων ήταν άκυρα.\n"
+"Πρέπει να εισάγετε έγκυρες ρυθμίσεις και έπειτα να κάνετε επανεκκίνηση του "
+"Amarok."
+
+#: App.cpp:635
+msgid "Database Error"
+msgstr "Σφάλμα της βάσης δεδομένων"
+
+#: App.cpp:680
+msgid "Moving files to trash"
+msgstr "Μετακίνηση των αρχείων στα απορρίμματα"
+
+#: App.cpp:768
+#, kde-format
+msgid ""
+"A music path, %1, is set in System Settings.\n"
+"Would you like to use that as a collection folder?"
+msgstr ""
+"Μια διαδρομή, %1, σε αρχεία μουσικής έχει οριστεί στις Ρυθμίσεις "
+"συστήματος.\n"
+"Θέλετε να τη χρησιμοποιήσετε ως φάκελο συλλογής;"
+
+#. i18n: file: core-impl/collections/audiocd/FormatSelectionDialog.ui:14
+#. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
+#: MainWindow.cpp:103 rc.cpp:1130 main.cpp:40
+msgid "Amarok"
+msgstr "AmaroK"
+
+#: MainWindow.cpp:261
+msgid "Local Music"
+msgstr "Τοπική μουσική"
+
+#: MainWindow.cpp:263
+msgid "Local sources of content"
+msgstr "Τοπικές πηγές περιεχομένου"
+
+#: MainWindow.cpp:271
+msgid "Internet"
+msgstr "Διαδίκτυο"
+
+#: MainWindow.cpp:273
+msgid "Online sources of content"
+msgstr "Διαδικτυακές πηγές περιεχομένου"
+
+#: MainWindow.cpp:279
+msgid "Playlists"
+msgstr "Λίστες"
+
+#: MainWindow.cpp:281
+msgid "Various types of playlists"
+msgstr "Διάφοροι τύποι λιστών αναπαραγωγής"
+
+#: MainWindow.cpp:287 amarokurls/NavigationUrlGenerator.cpp:135
+msgid "Files"
+msgstr "Αρχεία"
+
+#: MainWindow.cpp:289
+msgid "Browse local hard drive for content"
+msgstr "Περιήγηση στον τοπικό δίσκο"
+
+#: MainWindow.cpp:350
+msgctxt "@item:inmenu"
+msgid "&View"
+msgstr "&Προβολή"
+
+#: MainWindow.cpp:353
+msgid "Lock Layout"
+msgstr "Κλείδωμα διάταξης"
+
+#: MainWindow.cpp:464
+msgid ""
+"<qt>Closing the main window will keep Amarok running in the System Tray. Use "
+"<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
+"qt>"
+msgstr ""
+"<qt>Κλείνοντας το κύριο παράθυρο το Amarok θα συνεχίσει να εκτελείται στο "
+"πλαίσιο εικονιδίων του συστήματος. Χρησιμοποιήστε το <B>Έξοδος</B> από το "
+"μενού, ή το εικονίδιο στο πλαίσιο συστήματος για να τερματίσετε την εφαρμογή."
+"</qt>"
+
+#: MainWindow.cpp:466
+msgid "Docking in System Tray"
+msgstr "Προσάρτηση στο πλαίσιο συστήματος"
+
+#: MainWindow.cpp:495
+msgid "Use relative path for &saving"
+msgstr "Χρήση σχετικής διαδρομής για την απο&θήκευση"
+
+#: MainWindow.cpp:507 covermanager/CoverFoundDialog.cpp:361
+msgid "Save As"
+msgstr "Αποθήκευση ως"
+
+#: MainWindow.cpp:559
+msgid "Play Media (Files or URLs)"
+msgstr "Αναπαραγωγή πολυμέσων (Αρχείων ή URL)"
+
+#: MainWindow.cpp:559
+msgid "Add Media (Files or URLs)"
+msgstr "Προσθήκη πολυμέσων (Αρχείων ή URL)"
+
+#: MainWindow.cpp:577
+msgid "Add Stream"
+msgstr "Προσθήκη ροής"
+
+#: MainWindow.cpp:577
+msgid "Enter Stream URL:"
+msgstr "Εισάγετε URL ροής:"
+
+#: MainWindow.cpp:701
+msgid "&Add Media..."
+msgstr "&Προσθήκη πολυμέσων..."
+
+#: MainWindow.cpp:706
+msgctxt "clear playlist"
+msgid "&Clear Playlist"
+msgstr "Κα&θαρισμός λίστας"
+
+#: MainWindow.cpp:711
+msgctxt "edit play queue of playlist"
+msgid "Edit &Queue"
+msgstr "Επεξεργασία σειράς &αναμονής"
+
+#: MainWindow.cpp:716
+msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
+msgid "Re&move Duplicates"
+msgstr "Α&φαίρεση διπλών εγγραφών"
+
+#: MainWindow.cpp:723
+msgid "&Add Stream..."
+msgstr "&Προσθήκη ροής..."
+
+#: MainWindow.cpp:727
+msgid "&Export Playlist As..."
+msgstr "&Εξαγωγή λίστας ως..."
+
+#: MainWindow.cpp:731 amarokurls/NavigationUrlGenerator.cpp:250
+msgid "Bookmark Media Sources View"
+msgstr "Σελιδοδείκτης προβολής πηγών μέσου"
+
+#: MainWindow.cpp:735 amarokurls/BookmarkManager.cpp:43
+msgid "Bookmark Manager"
+msgstr "Επεξεργασία σελιδοδεικτών"
+
+#: MainWindow.cpp:739
+msgid "Equalizer"
+msgstr "Ισοσταθμιστής"
+
+#: MainWindow.cpp:743 playlist/PlaylistViewUrlGenerator.cpp:101
+msgid "Bookmark Playlist Setup"
+msgstr "Ρύθμιση σελιδοδεικτών λίστας αναπαραγωγής"
+
+#: MainWindow.cpp:747
+msgid "Bookmark Context Applets"
+msgstr "Σελιδοδείκτη στις μικροεφαρμογές του περιεχομένου"
+
+#: MainWindow.cpp:751 covermanager/CoverManager.cpp:105
+msgid "Cover Manager"
+msgstr "Διαχειριστής εξώφυλλων"
+
+#: MainWindow.cpp:755
+msgid "Play Media..."
+msgstr "Αναπαραγωγή πολυμέσου..."
+
+#: MainWindow.cpp:760
+msgid "&Seek Forward"
+msgstr "&Αναζήτηση μπροστά"
+
+#: MainWindow.cpp:766
+msgid "&Seek Backward"
+msgstr "&Αναζήτηση πίσω"
+
+#: MainWindow.cpp:773
+msgid "Update Collection"
+msgstr "Ενημέρωση συλλογής"
+
+#: MainWindow.cpp:780
+msgid "Previous Track"
+msgstr "Προηγούμενο κομμάτι"
+
+#: MainWindow.cpp:787
+msgid "Restart current track"
+msgstr "Επανεκκίνηση τρέχοντος κομματιού"
+
+#: MainWindow.cpp:793
+msgid "Repopulate Playlist"
+msgstr "Επανασυμπλήρωση της λίστας αναπαραγωγής"
+
+#: MainWindow.cpp:799
+msgid "Disable Dynamic Playlist"
+msgstr "Απενεργοποίηση δυναμικής λίστας"
+
+#: MainWindow.cpp:803
+msgid "Next Track"
+msgstr "Επόμενο κομμάτι"
+
+#: MainWindow.cpp:808
+msgid "Increase Volume"
+msgstr "Αύξηση έντασης"
+
+#: MainWindow.cpp:814
+msgid "Decrease Volume"
+msgstr "Μείωση έντασης"
+
+#: MainWindow.cpp:820
+msgid "Toggle Main Window"
+msgstr "Εναλλαγή κύριου παραθύρου"
+
+#: MainWindow.cpp:825
+msgid "Toggle Full Screen"
+msgstr "Εναλλαγή λειτουργίας πλήρους οθόνης"
+
+#: MainWindow.cpp:830
+msgid "Jump to"
+msgstr "Μεταπήδηση στο"
+
+#: MainWindow.cpp:835
+msgid "Show active track"
+msgstr "Εμφάνιση ενεργού κομματιού"
+
+#: MainWindow.cpp:839
+msgid "Show Notification Popup"
+msgstr "Εμφάνιση ανάδυσης ειδοποιήσεων"
+
+#: MainWindow.cpp:844
+msgid "Mute Volume"
+msgstr "Σίγαση ήχου"
+
+#: MainWindow.cpp:849
+msgid "Last.fm: Love Current Track"
+msgstr "Last.fm: Μ' αρέσει το τρέχον κομμάτι"
+
+#: MainWindow.cpp:854
+msgid "Last.fm: Ban Current Track"
+msgstr "Last.fm: Αποκλεισμός του τρέχοντος κομματιού"
+
+#: MainWindow.cpp:859
+msgid "Last.fm: Skip Current Track"
+msgstr "Last.fm: Παράλειψη τρέχοντος κομματιού"
+
+#: MainWindow.cpp:864 playlist/view/PlaylistViewCommon.cpp:115
+msgid "Queue Track"
+msgstr "Κομμάτι στην αναμονή"
+
+#: MainWindow.cpp:869
+msgid "Rate Current Track: 1"
+msgstr "Αξιολόγηση τρέχοντος κομματιού: 1"
+
+#: MainWindow.cpp:874
+msgid "Rate Current Track: 2"
+msgstr "Αξιολόγηση τρέχοντος κομματιού: 2"
+
+#: MainWindow.cpp:879
+msgid "Rate Current Track: 3"
+msgstr "Αξιολόγηση τρέχοντος κομματιού: 3"
+
+#: MainWindow.cpp:884
+msgid "Rate Current Track: 4"
+msgstr "Αξιολόγηση τρέχοντος κομματιού: 4"
+
+#: MainWindow.cpp:889
+msgid "Rate Current Track: 5"
+msgstr "Αξιολόγηση τρέχοντος κομματιού: 5"
+
+#: MainWindow.cpp:895
+msgid "Network Request Viewer"
+msgstr "Προβολή αιτήματος δικτύου"
+
+#: MainWindow.cpp:913
+msgid "&About Amarok"
+msgstr "Σχετικά με το &Amarok"
+
+#: MainWindow.cpp:917
+msgid "&Report Bug..."
+msgstr "Αναφορά σ&φάλματος..."
+
+#: MainWindow.cpp:977
+msgid "&Music"
+msgstr "&Μουσική"
+
+#: MainWindow.cpp:979
+msgid "&Amarok"
+msgstr "&Amarok"
+
+#: MainWindow.cpp:1003 playlist/PlaylistDock.cpp:54
+#: playlist/PlaylistToolBar.cpp:38
+msgid "&Playlist"
+msgstr "&Λίστα"
+
+#: MainWindow.cpp:1020
+msgid "&Tools"
+msgstr "Ερ&γαλεία"
+
+#: MainWindow.cpp:1037
+msgid "&Settings"
+msgstr "Ρ&υθμίσεις"
+
+#: MainWindow.cpp:1084
+#, kde-format
+msgid ""
+"You have chosen to hide the menu bar.\n"
+"\n"
+"Please remember that you can always use the shortcut \"%1\" to bring it back."
+msgstr ""
+"Έχετε επιλέξει την απόκρυψη της γραμμής του μενού.\n"
+"\n"
+"Θυμηθείτε ότι μπορείτε πάντα να χρησιμοποιήσετε τη συντόμευση \"%1\" για να "
+"την επαναφέρετε."
+
+#: MainWindow.cpp:1086
+msgid "Hide Menu"
+msgstr "Απόκρυψη μενού"
+
+#: MainWindow.cpp:1128
+#, kde-format
+msgid "Paused  ::  %1"
+msgstr "Παύση  ::  %1"
+
+#: MainWindow.cpp:1141 amarokurls/BookmarkTreeView.cpp:377
+#: amarokurls/BookmarkTreeView.cpp:378 amarokurls/BookmarkTreeView.cpp:379
+#: context/applets/albums/AlbumItem.cpp:97
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:444
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:445
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:446
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:447
+msgid "Unknown"
+msgstr "&Εξαγωγή"
+
+#: MainWindow.cpp:1141
+#, kde-format
+msgid "%1 - %2  ::  %3"
+msgstr "%1 - %2  ::  %3"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:73
+msgid ""
+"<qt>No information available.<br />The supplied KAboutData object does not "
+"exist.</qt>"
+msgstr ""
+"<qt>Δεν υπάρχουν διαθέσιμες πληροφορίες.<br />Το παρεχόμενο αντικείμενο "
+"KAboutData δεν υπάρχει.</qt>"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:82
+msgid ""
+"<qt>No information available.<br />The supplied OcsData object does not "
+"exist.</qt>"
+msgstr ""
+"<qt>Καμία διαθέσιμη πληροφορία.<br />Το ζητούμενο αντικείμενο OcsData δεν "
+"υπάρχει.</qt>"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:91
+#, kde-format
+msgid "About %1"
+msgstr "Σχετικά με το %1"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:112
+#, kde-format
+msgid ""
+"<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE %3</"
+"html>"
+msgstr ""
+"<html><font size=\"5\">%1</font><br /><b>έκδοση %2</b><br />χρησιμοποιώντας "
+"το KDE %3</html>"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:152
+#, kde-format
+msgid "License: %1"
+msgstr "Άδεια χρήσης: %1"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:166
+msgid "&About"
+msgstr "&Σχετικά"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:183
+msgid "Get data from openDesktop.org to learn more about the team"
+msgstr ""
+"Αποκτήστε περισσότερες πληροφορίες για την ομάδα από το openDesktop.org"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:195
+msgid ""
+"Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to report "
+"bugs.\n"
+msgstr ""
+"Παρακαλώ χρησιμοποιήστε το <a href=\"http//bugs.kde.org\">http://bugs.kde."
+"org</a> για να αναφέρετε σφάλματα.\n"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:200
+#: aboutdialog/ExtendedAboutDialog.cpp:206
+#, kde-format
+msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
+msgstr "Παρακαλώ αναφέρετε σφάλματα στο <a href=\"mailto:%1\">%2</a>.\n"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:225
+msgid "A&uthor"
+msgstr "Συγγραφέας"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:225
+msgid "A&uthors"
+msgstr "Συγγραφείς"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:239
+msgid "Get data from openDesktop.org to learn more about contributors"
+msgstr ""
+"Αποκτήστε περισσότερες πληροφορίες σχετικά με τους συντελεστές από το "
+"openDesktop.org"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:253
+msgid "&Thanks To"
+msgstr "Ευχαριστίες προς"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:266
+msgid "Get data from openDesktop.org to learn more about our generous donors"
+msgstr ""
+"Αποκτήστε περισσότερες πληροφορίες σχετικά με τους γενναιόδωρους δωρητές "
+"μας  από το openDesktop.org"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:286
+msgid "&Donors"
+msgstr "&Δωρητές"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:316
+msgid "T&ranslation"
+msgstr "Μετάφ&ραση"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:340
+msgid "License Agreement"
+msgstr "Άδεια χρήσης"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:373
+msgid "Internet connection not available"
+msgstr "Η σύνδεση στο διαδίκτυο δεν είναι διαθέσιμη"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:373
+msgid "Network error"
+msgstr "Σφάλμα δικτύου"
+
+#: aboutdialog/OcsPersonItem.cpp:95
+msgid "Email contributor"
+msgstr "Αποστολή αλληλογραφίας στον συντελεστή"
+
+#: aboutdialog/OcsPersonItem.cpp:103 aboutdialog/OcsPersonItem.cpp:274
+msgid "Visit contributor's homepage"
+msgstr "Επισκεφθείτε την ιστοσελίδα του συντελεστή"
+
+#: aboutdialog/OcsPersonItem.cpp:179
+#, kde-format
+msgctxt "A person's location: City, Country"
+msgid "%1, %2"
+msgstr "%1, %2"
+
+#: aboutdialog/OcsPersonItem.cpp:199
+msgid "IRC channels: "
+msgstr "Κανάλια IRC:"
+
+#: aboutdialog/OcsPersonItem.cpp:212
+msgid "Favorite music: "
+msgstr "Αγαπημένη μουσική:"
+
+#: aboutdialog/OcsPersonItem.cpp:217
+#, kde-format
+msgid "Visit %1's openDesktop.org profile"
+msgstr "Επισκεφθείτε το προφίλ openDesktop.org του %1"
+
+#: aboutdialog/OcsPersonItem.cpp:219
+#, kde-format
+msgid "Visit %1's profile on openDesktop.org"
+msgstr "Επισκεφθείτε το προφίλ του %1 στο openDesktop.org"
+
+#: aboutdialog/OcsPersonItem.cpp:253
+msgid "Visit contributor's blog"
+msgstr "Επισκεφθείτε το blog του συντελεστή"
+
+#: aboutdialog/OcsPersonItem.cpp:258
+msgid "Visit contributor's del.icio.us profile"
+msgstr "Επισκεφθείτε το προφίλ del.icio.us του συντελεστή"
+
+#: aboutdialog/OcsPersonItem.cpp:263
+msgid "Visit contributor's Digg profile"
+msgstr "Επισκεφθείτε το προφίλ Digg του συντελεστή"
+
+#: aboutdialog/OcsPersonItem.cpp:268
+msgid "Visit contributor's Facebook profile"
+msgstr "Επισκεφθείτε το προφίλ Facebook του συντελεστή"
+
+#: aboutdialog/OcsPersonItem.cpp:284
+msgid "Visit contributor's Last.fm profile"
+msgstr "Επισκεφθείτε το προφίλ Last.fm του συντελεστή"
+
+#: aboutdialog/OcsPersonItem.cpp:292
+msgid "Visit contributor's LinkedIn profile"
+msgstr "Επισκεφθείτε το προφίλ Linkedln του συντελεστή"
+
+#: aboutdialog/OcsPersonItem.cpp:297
+msgid "Visit contributor's MySpace homepage"
+msgstr "Επισκεφθείτε την ιστοσελίδα στο MySpace του συντελεστή"
+
+#: aboutdialog/OcsPersonItem.cpp:302
+msgid "Visit contributor's Reddit profile"
+msgstr "Επισκεφθείτε το προφίλ Reddit του συντελεστή"
+
+#: aboutdialog/OcsPersonItem.cpp:307
+msgid "Visit contributor's YouTube profile"
+msgstr "Επισκεφθείτε το προφίλ YouTube του συντελεστή"
+
+#: aboutdialog/OcsPersonItem.cpp:312
+msgid "Visit contributor's Twitter feed"
+msgstr "Επισκεφθείτε την ροή Twitter του συντελεστή"
+
+#: aboutdialog/OcsPersonItem.cpp:317
+msgid "Visit contributor's Wikipedia profile"
+msgstr "Επισκεφθείτε το προφίλ Wikipedia του συντελεστή"
+
+#: aboutdialog/OcsPersonItem.cpp:322
+msgid "Visit contributor's Xing profile"
+msgstr "Επισκεφθείτε το προφίλ Xing του συντελεστή"
+
+#: aboutdialog/OcsPersonItem.cpp:327
+msgid "Visit contributor's identi.ca feed"
+msgstr "Επισκεφθείτε την ροή identi.ca του συντελεστή"
+
+#: aboutdialog/OcsPersonItem.cpp:332
+msgid "Visit contributor's libre.fm profile"
+msgstr "Επισκεφθείτε το προφίλ libre.fm του συντελεστή"
+
+#: aboutdialog/OcsPersonItem.cpp:337
+msgid "Visit contributor's StackOverflow profile"
+msgstr "Επισκεφθείτε το προφίλ StackOverflow του συντελεστή"
+
+#: aboutdialog/libattica-ocsclient/personlistjob.cpp:108
+msgid "Unable to parse avatar image data."
+msgstr "Αδυναμία ανάλυσης των δεδομένων της εικόνας."
 
 #: rc.cpp:1
 msgctxt "NAME OF TRANSLATORS"
@@ -2397,7 +3106,7 @@ msgstr "Επαναφόρτωση παρτιτούρων με τον ακόλου
 #: dialogs/transferdialog.cpp:88 dialogs/FilenameLayoutDialog.cpp:230
 #: dialogs/FilenameLayoutDialog.cpp:591 musicbrainz/MusicBrainzTags.cpp:359
 #: playlist/PlaylistModel.cpp:902 services/jamendo/JamendoInfoParser.cpp:51
-#: services/lastfm/LastFmService.cpp:527
+#: services/lastfm/LastFmService.cpp:507
 #: services/magnatune/MagnatuneStore.cpp:218
 #: widgets/SmartPlaylistEditor.cpp:183 widgets/SmartPlaylistEditor.cpp:197
 msgid "Artist"
@@ -2571,12 +3280,6 @@ msgstr "YouTube HQ"
 #: rc.cpp:1127
 msgid "Use Wikipedia &mobile version"
 msgstr "Χρήση &κινητής έκδοσης της Wikipedia"
-
-#. i18n: file: core-impl/collections/audiocd/FormatSelectionDialog.ui:14
-#. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: rc.cpp:1130 MainWindow.cpp:103 main.cpp:40
-msgid "Amarok"
-msgstr "AmaroK"
 
 #. i18n: file: core-impl/collections/audiocd/FormatSelectionDialog.ui:26
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
@@ -5419,727 +6122,6 @@ msgstr "Χωρίς ομαδοποίηση (μια μόνο γραμμή)"
 msgid "Verbose"
 msgstr "Αναλυτικό"
 
-#: equalizer/EqualizerPresets.cpp:90
-msgid "Manual"
-msgstr "Χειροκίνητο"
-
-#: equalizer/EqualizerPresets.cpp:91
-msgid "Classical"
-msgstr "Classical"
-
-#: equalizer/EqualizerPresets.cpp:92
-msgid "Club"
-msgstr "Club"
-
-#: equalizer/EqualizerPresets.cpp:93
-msgid "Dance"
-msgstr "Dance"
-
-#: equalizer/EqualizerPresets.cpp:94
-msgid "Full Bass"
-msgstr "Full Bass"
-
-#: equalizer/EqualizerPresets.cpp:95
-msgid "Full Treble"
-msgstr "Full Treble"
-
-#: equalizer/EqualizerPresets.cpp:96
-msgid "Full Bass + Treble"
-msgstr "Full Bass + Treble"
-
-#: equalizer/EqualizerPresets.cpp:97
-msgid "Laptop/Headphones"
-msgstr "Φορητός/Ακουστικά"
-
-#: equalizer/EqualizerPresets.cpp:98
-msgid "Large Hall"
-msgstr "Large Hall"
-
-#: equalizer/EqualizerPresets.cpp:99
-msgid "Live"
-msgstr "Live"
-
-#: equalizer/EqualizerPresets.cpp:100
-msgid "Party"
-msgstr "Party"
-
-#: equalizer/EqualizerPresets.cpp:101
-msgid "Pop"
-msgstr "Pop"
-
-#: equalizer/EqualizerPresets.cpp:102
-msgid "Reggae"
-msgstr "Reggae"
-
-#: equalizer/EqualizerPresets.cpp:103
-msgid "Rock"
-msgstr "Rock"
-
-#: equalizer/EqualizerPresets.cpp:104
-msgid "Soft"
-msgstr "Soft"
-
-#: equalizer/EqualizerPresets.cpp:105
-msgid "Ska"
-msgstr "Ska"
-
-#: equalizer/EqualizerPresets.cpp:106
-msgid "Soft Rock"
-msgstr "Soft Rock"
-
-#: equalizer/EqualizerPresets.cpp:107
-msgid "Techno"
-msgstr "Techno"
-
-#: equalizer/EqualizerPresets.cpp:108
-msgid "Zero"
-msgstr "Zero"
-
-#: KNotificationBackend.cpp:146
-msgid "Now playing"
-msgstr "Αναπαράγεται τώρα"
-
-#: App.cpp:410
-msgid "Files/URLs to open"
-msgstr "Αρχεία/URLs για άνοιγμα"
-
-#: App.cpp:411
-msgid "Immediately start playing an audio cd"
-msgstr "Άμεση αναπαραγωγή ενός cd ήχου"
-
-#: App.cpp:413
-msgid "Skip backwards in playlist"
-msgstr "Παράλειψη προς τα πίσω στη λίστα"
-
-#: App.cpp:415
-msgid "Start playing current playlist"
-msgstr "Εκκίνηση αναπαραγωγής της τρέχουσας λίστας"
-
-#: App.cpp:417
-msgid "Play if stopped, pause if playing"
-msgstr "Αναπαραγωγή αν είναι σταματημένο, αλλιώς παύση"
-
-#: App.cpp:418
-msgid "Pause playback"
-msgstr "Παύση αναπαραγωγής"
-
-#: App.cpp:420
-msgid "Stop playback"
-msgstr "Σταμάτημα αναπαραγωγής"
-
-#: App.cpp:422
-msgid "Skip forwards in playlist"
-msgstr "Παράλειψη προς τα μπροστά στη λίστα"
-
-#: App.cpp:423
-msgid "Additional options:"
-msgstr "Επιπλέον επιλογές:"
-
-#: App.cpp:425
-msgid "Append files/URLs to playlist"
-msgstr "Προσθήκη των αρχείων/URLs στη λίστα"
-
-#: App.cpp:426
-msgid "Queue URLs after the currently playing track"
-msgstr "Τοποθέτηση των URLs σε αναμονή μετά το τρέχον κομμάτι"
-
-#: App.cpp:428
-msgid "Load URLs, replacing current playlist"
-msgstr "Φόρτωση URL και αντικατάσταση της τρέχουσας λίστας"
-
-#: App.cpp:430
-msgid "Print verbose debugging information"
-msgstr "Εμφάνιση αναλυτικών πληροφοριών αποσφαλμάτωσης"
-
-#: App.cpp:432
-msgid "Disable colorization for debug output."
-msgstr "Απενεργοποίηση χρωματισμού για εμφάνιση σφαλμάτων κώδικα στην έξοδο"
-
-#: App.cpp:434
-msgid "Allow running multiple Amarok instances"
-msgstr "Επίτρεψε πολλαπλές εκτελέσεις του Amarok"
-
-#: App.cpp:435
-msgid "Base for relative filenames/URLs"
-msgstr "Βάση για σχετικά ονόματα αρχείων/URLs"
-
-#: App.cpp:437
-msgid "Unit test options:"
-msgstr "Επιλογές Unit test"
-
-#: App.cpp:438
-msgid "Run integrated unit tests"
-msgstr "Εκτέλεση ολοκληρωμένων unit tests"
-
-#: App.cpp:439
-msgid "Destination of test output: 'stdout', 'log'"
-msgstr "Προορισμός εξόδου της δοκιμής: 'stdout', 'log'"
-
-#: App.cpp:440
-msgid "Format of test output: 'xml', 'lightxml', 'plaintext'"
-msgstr "Τύπος αρχειοθέτησης της εξόδου δοκιμής: 'xml', 'lightxml', 'plaintext'"
-
-#: App.cpp:441
-msgid "Verbosity from 0-3 (highest)"
-msgstr "Φλυαρία από 0-3 (υψηλότερη)"
-
-#: App.cpp:633
-msgid ""
-"The embedded database was not found; you must set up a database server "
-"connection.\n"
-"You must restart Amarok after doing this."
-msgstr ""
-"Η ενσωματωμένη βάση δεδομένων δεν βρέθηκε· πρέπει να ρυθμίσετε μια σύνδεση "
-"εξυπηρετητή βάσης δεδομένων.\n"
-"Πρέπει να κάνετε επανεκκίνηση του Amarok μετά από αυτήν την ενέργεια."
-
-#: App.cpp:634
-msgid ""
-"The connection details for the database server were invalid.\n"
-"You must enter correct settings and restart Amarok after doing this."
-msgstr ""
-"Τα στοιχεία σύνδεσης για τον εξυπηρετητή βάσης δεδομένων ήταν άκυρα.\n"
-"Πρέπει να εισάγετε έγκυρες ρυθμίσεις και έπειτα να κάνετε επανεκκίνηση του "
-"Amarok."
-
-#: App.cpp:635
-msgid "Database Error"
-msgstr "Σφάλμα της βάσης δεδομένων"
-
-#: App.cpp:680
-msgid "Moving files to trash"
-msgstr "Μετακίνηση των αρχείων στα απορρίμματα"
-
-#: App.cpp:768
-#, kde-format
-msgid ""
-"A music path, %1, is set in System Settings.\n"
-"Would you like to use that as a collection folder?"
-msgstr ""
-"Μια διαδρομή, %1, σε αρχεία μουσικής έχει οριστεί στις Ρυθμίσεις "
-"συστήματος.\n"
-"Θέλετε να τη χρησιμοποιήσετε ως φάκελο συλλογής;"
-
-#: MainWindow.cpp:261
-msgid "Local Music"
-msgstr "Τοπική μουσική"
-
-#: MainWindow.cpp:263
-msgid "Local sources of content"
-msgstr "Τοπικές πηγές περιεχομένου"
-
-#: MainWindow.cpp:271
-msgid "Internet"
-msgstr "Διαδίκτυο"
-
-#: MainWindow.cpp:273
-msgid "Online sources of content"
-msgstr "Διαδικτυακές πηγές περιεχομένου"
-
-#: MainWindow.cpp:279
-msgid "Playlists"
-msgstr "Λίστες"
-
-#: MainWindow.cpp:281
-msgid "Various types of playlists"
-msgstr "Διάφοροι τύποι λιστών αναπαραγωγής"
-
-#: MainWindow.cpp:287 amarokurls/NavigationUrlGenerator.cpp:135
-msgid "Files"
-msgstr "Αρχεία"
-
-#: MainWindow.cpp:289
-msgid "Browse local hard drive for content"
-msgstr "Περιήγηση στον τοπικό δίσκο"
-
-#: MainWindow.cpp:350
-msgctxt "@item:inmenu"
-msgid "&View"
-msgstr "&Προβολή"
-
-#: MainWindow.cpp:353
-msgid "Lock Layout"
-msgstr "Κλείδωμα διάταξης"
-
-#: MainWindow.cpp:464
-msgid ""
-"<qt>Closing the main window will keep Amarok running in the System Tray. Use "
-"<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
-"qt>"
-msgstr ""
-"<qt>Κλείνοντας το κύριο παράθυρο το Amarok θα συνεχίσει να εκτελείται στο "
-"πλαίσιο εικονιδίων του συστήματος. Χρησιμοποιήστε το <B>Έξοδος</B> από το "
-"μενού, ή το εικονίδιο στο πλαίσιο συστήματος για να τερματίσετε την εφαρμογή."
-"</qt>"
-
-#: MainWindow.cpp:466
-msgid "Docking in System Tray"
-msgstr "Προσάρτηση στο πλαίσιο συστήματος"
-
-#: MainWindow.cpp:495
-msgid "Use relative path for &saving"
-msgstr "Χρήση σχετικής διαδρομής για την απο&θήκευση"
-
-#: MainWindow.cpp:507 covermanager/CoverFoundDialog.cpp:361
-msgid "Save As"
-msgstr "Αποθήκευση ως"
-
-#: MainWindow.cpp:559
-msgid "Play Media (Files or URLs)"
-msgstr "Αναπαραγωγή πολυμέσων (Αρχείων ή URL)"
-
-#: MainWindow.cpp:559
-msgid "Add Media (Files or URLs)"
-msgstr "Προσθήκη πολυμέσων (Αρχείων ή URL)"
-
-#: MainWindow.cpp:577
-msgid "Add Stream"
-msgstr "Προσθήκη ροής"
-
-#: MainWindow.cpp:577
-msgid "Enter Stream URL:"
-msgstr "Εισάγετε URL ροής:"
-
-#: MainWindow.cpp:701
-msgid "&Add Media..."
-msgstr "&Προσθήκη πολυμέσων..."
-
-#: MainWindow.cpp:706
-msgctxt "clear playlist"
-msgid "&Clear Playlist"
-msgstr "Κα&θαρισμός λίστας"
-
-#: MainWindow.cpp:711
-msgctxt "edit play queue of playlist"
-msgid "Edit &Queue"
-msgstr "Επεξεργασία σειράς &αναμονής"
-
-#: MainWindow.cpp:716
-msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
-msgid "Re&move Duplicates"
-msgstr "Α&φαίρεση διπλών εγγραφών"
-
-#: MainWindow.cpp:723
-msgid "&Add Stream..."
-msgstr "&Προσθήκη ροής..."
-
-#: MainWindow.cpp:727
-msgid "&Export Playlist As..."
-msgstr "&Εξαγωγή λίστας ως..."
-
-#: MainWindow.cpp:731 amarokurls/NavigationUrlGenerator.cpp:250
-msgid "Bookmark Media Sources View"
-msgstr "Σελιδοδείκτης προβολής πηγών μέσου"
-
-#: MainWindow.cpp:735 amarokurls/BookmarkManager.cpp:43
-msgid "Bookmark Manager"
-msgstr "Επεξεργασία σελιδοδεικτών"
-
-#: MainWindow.cpp:739
-msgid "Equalizer"
-msgstr "Ισοσταθμιστής"
-
-#: MainWindow.cpp:743 playlist/PlaylistViewUrlGenerator.cpp:101
-msgid "Bookmark Playlist Setup"
-msgstr "Ρύθμιση σελιδοδεικτών λίστας αναπαραγωγής"
-
-#: MainWindow.cpp:747
-msgid "Bookmark Context Applets"
-msgstr "Σελιδοδείκτη στις μικροεφαρμογές του περιεχομένου"
-
-#: MainWindow.cpp:751 covermanager/CoverManager.cpp:105
-msgid "Cover Manager"
-msgstr "Διαχειριστής εξώφυλλων"
-
-#: MainWindow.cpp:755
-msgid "Play Media..."
-msgstr "Αναπαραγωγή πολυμέσου..."
-
-#: MainWindow.cpp:760
-msgid "&Seek Forward"
-msgstr "&Αναζήτηση μπροστά"
-
-#: MainWindow.cpp:766
-msgid "&Seek Backward"
-msgstr "&Αναζήτηση πίσω"
-
-#: MainWindow.cpp:773
-msgid "Update Collection"
-msgstr "Ενημέρωση συλλογής"
-
-#: MainWindow.cpp:780
-msgid "Previous Track"
-msgstr "Προηγούμενο κομμάτι"
-
-#: MainWindow.cpp:787
-msgid "Restart current track"
-msgstr "Επανεκκίνηση τρέχοντος κομματιού"
-
-#: MainWindow.cpp:793
-msgid "Repopulate Playlist"
-msgstr "Επανασυμπλήρωση της λίστας αναπαραγωγής"
-
-#: MainWindow.cpp:799
-msgid "Disable Dynamic Playlist"
-msgstr "Απενεργοποίηση δυναμικής λίστας"
-
-#: MainWindow.cpp:803
-msgid "Next Track"
-msgstr "Επόμενο κομμάτι"
-
-#: MainWindow.cpp:808
-msgid "Increase Volume"
-msgstr "Αύξηση έντασης"
-
-#: MainWindow.cpp:814
-msgid "Decrease Volume"
-msgstr "Μείωση έντασης"
-
-#: MainWindow.cpp:820
-msgid "Toggle Main Window"
-msgstr "Εναλλαγή κύριου παραθύρου"
-
-#: MainWindow.cpp:825
-msgid "Toggle Full Screen"
-msgstr "Εναλλαγή λειτουργίας πλήρους οθόνης"
-
-#: MainWindow.cpp:830
-msgid "Jump to"
-msgstr "Μεταπήδηση στο"
-
-#: MainWindow.cpp:835
-msgid "Show active track"
-msgstr "Εμφάνιση ενεργού κομματιού"
-
-#: MainWindow.cpp:839
-msgid "Show Notification Popup"
-msgstr "Εμφάνιση ανάδυσης ειδοποιήσεων"
-
-#: MainWindow.cpp:844
-msgid "Mute Volume"
-msgstr "Σίγαση ήχου"
-
-#: MainWindow.cpp:849
-msgid "Last.fm: Love Current Track"
-msgstr "Last.fm: Μ' αρέσει το τρέχον κομμάτι"
-
-#: MainWindow.cpp:854
-msgid "Last.fm: Ban Current Track"
-msgstr "Last.fm: Αποκλεισμός του τρέχοντος κομματιού"
-
-#: MainWindow.cpp:859
-msgid "Last.fm: Skip Current Track"
-msgstr "Last.fm: Παράλειψη τρέχοντος κομματιού"
-
-#: MainWindow.cpp:864 playlist/view/PlaylistViewCommon.cpp:115
-msgid "Queue Track"
-msgstr "Κομμάτι στην αναμονή"
-
-#: MainWindow.cpp:869
-msgid "Rate Current Track: 1"
-msgstr "Αξιολόγηση τρέχοντος κομματιού: 1"
-
-#: MainWindow.cpp:874
-msgid "Rate Current Track: 2"
-msgstr "Αξιολόγηση τρέχοντος κομματιού: 2"
-
-#: MainWindow.cpp:879
-msgid "Rate Current Track: 3"
-msgstr "Αξιολόγηση τρέχοντος κομματιού: 3"
-
-#: MainWindow.cpp:884
-msgid "Rate Current Track: 4"
-msgstr "Αξιολόγηση τρέχοντος κομματιού: 4"
-
-#: MainWindow.cpp:889
-msgid "Rate Current Track: 5"
-msgstr "Αξιολόγηση τρέχοντος κομματιού: 5"
-
-#: MainWindow.cpp:895
-msgid "Network Request Viewer"
-msgstr "Προβολή αιτήματος δικτύου"
-
-#: MainWindow.cpp:913
-msgid "&About Amarok"
-msgstr "Σχετικά με το &Amarok"
-
-#: MainWindow.cpp:917
-msgid "&Report Bug..."
-msgstr "Αναφορά σ&φάλματος..."
-
-#: MainWindow.cpp:977
-msgid "&Music"
-msgstr "&Μουσική"
-
-#: MainWindow.cpp:979
-msgid "&Amarok"
-msgstr "&Amarok"
-
-#: MainWindow.cpp:1003 playlist/PlaylistDock.cpp:54
-#: playlist/PlaylistToolBar.cpp:38
-msgid "&Playlist"
-msgstr "&Λίστα"
-
-#: MainWindow.cpp:1020
-msgid "&Tools"
-msgstr "Ερ&γαλεία"
-
-#: MainWindow.cpp:1037
-msgid "&Settings"
-msgstr "Ρ&υθμίσεις"
-
-#: MainWindow.cpp:1084
-#, kde-format
-msgid ""
-"You have chosen to hide the menu bar.\n"
-"\n"
-"Please remember that you can always use the shortcut \"%1\" to bring it back."
-msgstr ""
-"Έχετε επιλέξει την απόκρυψη της γραμμής του μενού.\n"
-"\n"
-"Θυμηθείτε ότι μπορείτε πάντα να χρησιμοποιήσετε τη συντόμευση \"%1\" για να "
-"την επαναφέρετε."
-
-#: MainWindow.cpp:1086
-msgid "Hide Menu"
-msgstr "Απόκρυψη μενού"
-
-#: MainWindow.cpp:1128
-#, kde-format
-msgid "Paused  ::  %1"
-msgstr "Παύση  ::  %1"
-
-#: MainWindow.cpp:1141 amarokurls/BookmarkTreeView.cpp:377
-#: amarokurls/BookmarkTreeView.cpp:378 amarokurls/BookmarkTreeView.cpp:379
-#: context/applets/albums/AlbumItem.cpp:97
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:444
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:445
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:446
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:447
-msgid "Unknown"
-msgstr "&Εξαγωγή"
-
-#: MainWindow.cpp:1141
-#, kde-format
-msgid "%1 - %2  ::  %3"
-msgstr "%1 - %2  ::  %3"
-
-#: PluginManager.cpp:253
-msgid ""
-"<p>Amarok could not find any collection plugins. It is possible that Amarok "
-"is installed under the wrong prefix, please fix your installation using:<pre>"
-"$ cd /path/to/amarok/source-code/<br>$ su -c \"make uninstall\"<br>$ cmake -"
-"DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -c \"make install\"<br>$ "
-"kbuildsycoca4 --noincremental<br>$ amarok</pre>More information can be found "
-"in the README file. For further assistance join us at #amarok on irc."
-"freenode.net.</p>"
-msgstr ""
-"<p>Το AmaroK δεν μπορεί να βρει πρόσθετα για τη συλλογή. Είναι πιθανό το "
-"AmaroK να έχει εγκατασταθεί με εσφαλμένο πρόθεμα, παρακαλώ διορθώστε την "
-"εγκατάστασή σας χρησιμοποιώντας:<pre>$ cd /path/to/amarok/source-code/<br>$ "
-"su -c \"make uninstall\"<br>$ cmake -DCMAKE_INSTALL_PREFIX=`kde4-config --"
-"prefix` && su -c \"make install\"<br>$ kbuildsycoca4 --noincremental<br>$ "
-"amarok</pre>Περισσότερες πληροφορίες θα βρείτε στο αρχείο README. Για "
-"βοήθεια, συναντήστε μας στο #amarok στο irc.freenode.net.</p>"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:73
-msgid ""
-"<qt>No information available.<br />The supplied KAboutData object does not "
-"exist.</qt>"
-msgstr ""
-"<qt>Δεν υπάρχουν διαθέσιμες πληροφορίες.<br />Το παρεχόμενο αντικείμενο "
-"KAboutData δεν υπάρχει.</qt>"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:82
-msgid ""
-"<qt>No information available.<br />The supplied OcsData object does not "
-"exist.</qt>"
-msgstr ""
-"<qt>Καμία διαθέσιμη πληροφορία.<br />Το ζητούμενο αντικείμενο OcsData δεν "
-"υπάρχει.</qt>"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:91
-#, kde-format
-msgid "About %1"
-msgstr "Σχετικά με το %1"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:112
-#, kde-format
-msgid ""
-"<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE %3</"
-"html>"
-msgstr ""
-"<html><font size=\"5\">%1</font><br /><b>έκδοση %2</b><br />χρησιμοποιώντας "
-"το KDE %3</html>"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:152
-#, kde-format
-msgid "License: %1"
-msgstr "Άδεια χρήσης: %1"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:166
-msgid "&About"
-msgstr "&Σχετικά"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:183
-msgid "Get data from openDesktop.org to learn more about the team"
-msgstr ""
-"Αποκτήστε περισσότερες πληροφορίες για την ομάδα από το openDesktop.org"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:195
-msgid ""
-"Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to report "
-"bugs.\n"
-msgstr ""
-"Παρακαλώ χρησιμοποιήστε το <a href=\"http//bugs.kde.org\">http://bugs.kde."
-"org</a> για να αναφέρετε σφάλματα.\n"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:200
-#: aboutdialog/ExtendedAboutDialog.cpp:206
-#, kde-format
-msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
-msgstr "Παρακαλώ αναφέρετε σφάλματα στο <a href=\"mailto:%1\">%2</a>.\n"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:225
-msgid "A&uthor"
-msgstr "Συγγραφέας"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:225
-msgid "A&uthors"
-msgstr "Συγγραφείς"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:239
-msgid "Get data from openDesktop.org to learn more about contributors"
-msgstr ""
-"Αποκτήστε περισσότερες πληροφορίες σχετικά με τους συντελεστές από το "
-"openDesktop.org"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:253
-msgid "&Thanks To"
-msgstr "Ευχαριστίες προς"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:266
-msgid "Get data from openDesktop.org to learn more about our generous donors"
-msgstr ""
-"Αποκτήστε περισσότερες πληροφορίες σχετικά με τους γενναιόδωρους δωρητές "
-"μας  από το openDesktop.org"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:286
-msgid "&Donors"
-msgstr "&Δωρητές"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:316
-msgid "T&ranslation"
-msgstr "Μετάφ&ραση"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:340
-msgid "License Agreement"
-msgstr "Άδεια χρήσης"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:373
-msgid "Internet connection not available"
-msgstr "Η σύνδεση στο διαδίκτυο δεν είναι διαθέσιμη"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:373
-msgid "Network error"
-msgstr "Σφάλμα δικτύου"
-
-#: aboutdialog/OcsPersonItem.cpp:95
-msgid "Email contributor"
-msgstr "Αποστολή αλληλογραφίας στον συντελεστή"
-
-#: aboutdialog/OcsPersonItem.cpp:103 aboutdialog/OcsPersonItem.cpp:274
-msgid "Visit contributor's homepage"
-msgstr "Επισκεφθείτε την ιστοσελίδα του συντελεστή"
-
-#: aboutdialog/OcsPersonItem.cpp:179
-#, kde-format
-msgctxt "A person's location: City, Country"
-msgid "%1, %2"
-msgstr "%1, %2"
-
-#: aboutdialog/OcsPersonItem.cpp:199
-msgid "IRC channels: "
-msgstr "Κανάλια IRC:"
-
-#: aboutdialog/OcsPersonItem.cpp:212
-msgid "Favorite music: "
-msgstr "Αγαπημένη μουσική:"
-
-#: aboutdialog/OcsPersonItem.cpp:217
-#, kde-format
-msgid "Visit %1's openDesktop.org profile"
-msgstr "Επισκεφθείτε το προφίλ openDesktop.org του %1"
-
-#: aboutdialog/OcsPersonItem.cpp:219
-#, kde-format
-msgid "Visit %1's profile on openDesktop.org"
-msgstr "Επισκεφθείτε το προφίλ του %1 στο openDesktop.org"
-
-#: aboutdialog/OcsPersonItem.cpp:253
-msgid "Visit contributor's blog"
-msgstr "Επισκεφθείτε το blog του συντελεστή"
-
-#: aboutdialog/OcsPersonItem.cpp:258
-msgid "Visit contributor's del.icio.us profile"
-msgstr "Επισκεφθείτε το προφίλ del.icio.us του συντελεστή"
-
-#: aboutdialog/OcsPersonItem.cpp:263
-msgid "Visit contributor's Digg profile"
-msgstr "Επισκεφθείτε το προφίλ Digg του συντελεστή"
-
-#: aboutdialog/OcsPersonItem.cpp:268
-msgid "Visit contributor's Facebook profile"
-msgstr "Επισκεφθείτε το προφίλ Facebook του συντελεστή"
-
-#: aboutdialog/OcsPersonItem.cpp:284
-msgid "Visit contributor's Last.fm profile"
-msgstr "Επισκεφθείτε το προφίλ Last.fm του συντελεστή"
-
-#: aboutdialog/OcsPersonItem.cpp:292
-msgid "Visit contributor's LinkedIn profile"
-msgstr "Επισκεφθείτε το προφίλ Linkedln του συντελεστή"
-
-#: aboutdialog/OcsPersonItem.cpp:297
-msgid "Visit contributor's MySpace homepage"
-msgstr "Επισκεφθείτε την ιστοσελίδα στο MySpace του συντελεστή"
-
-#: aboutdialog/OcsPersonItem.cpp:302
-msgid "Visit contributor's Reddit profile"
-msgstr "Επισκεφθείτε το προφίλ Reddit του συντελεστή"
-
-#: aboutdialog/OcsPersonItem.cpp:307
-msgid "Visit contributor's YouTube profile"
-msgstr "Επισκεφθείτε το προφίλ YouTube του συντελεστή"
-
-#: aboutdialog/OcsPersonItem.cpp:312
-msgid "Visit contributor's Twitter feed"
-msgstr "Επισκεφθείτε την ροή Twitter του συντελεστή"
-
-#: aboutdialog/OcsPersonItem.cpp:317
-msgid "Visit contributor's Wikipedia profile"
-msgstr "Επισκεφθείτε το προφίλ Wikipedia του συντελεστή"
-
-#: aboutdialog/OcsPersonItem.cpp:322
-msgid "Visit contributor's Xing profile"
-msgstr "Επισκεφθείτε το προφίλ Xing του συντελεστή"
-
-#: aboutdialog/OcsPersonItem.cpp:327
-msgid "Visit contributor's identi.ca feed"
-msgstr "Επισκεφθείτε την ροή identi.ca του συντελεστή"
-
-#: aboutdialog/OcsPersonItem.cpp:332
-msgid "Visit contributor's libre.fm profile"
-msgstr "Επισκεφθείτε το προφίλ libre.fm του συντελεστή"
-
-#: aboutdialog/OcsPersonItem.cpp:337
-msgid "Visit contributor's StackOverflow profile"
-msgstr "Επισκεφθείτε το προφίλ StackOverflow του συντελεστή"
-
-#: aboutdialog/libattica-ocsclient/personlistjob.cpp:108
-msgid "Unable to parse avatar image data."
-msgstr "Αδυναμία ανάλυσης των δεδομένων της εικόνας."
-
 #: amarokurls/AmarokUrlHandler.cpp:222
 msgctxt "The command type of this url is not known"
 msgid "Unknown"
@@ -7544,74 +7526,6 @@ msgstr "Ρυθμίσεις για τις παρτιτούρες"
 msgid "Reload Tabs"
 msgstr "Επαναφόρτωση παρτιτούρων"
 
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:67
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:128
-msgid "Upcoming Events"
-msgstr "Προσεχείς εκδηλώσεις"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:78
-msgid "View Events Calendar"
-msgstr "Εμφάνιση ημερολογίου εκδηλώσεων"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:91
-msgctxt "@title:group"
-msgid "No track is currently playing"
-msgstr "Δεν εκτελείται κομμάτι τώρα"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:158
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:303
-msgid "Favorite Venues"
-msgstr "Αγαπημένοι χώροι"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:224
-msgid "No upcoming events"
-msgstr "Καμία προσεχής εκδήλωση"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:224
-#, kde-format
-msgid "%1: No upcoming events"
-msgstr "%1: Καμία προσεχής εκδήλωση"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:229
-#, kde-format
-msgctxt "@title:group Number of upcoming events"
-msgid "1 event"
-msgid_plural "%1 events"
-msgstr[0] "1 εκδήλωση"
-msgstr[1] "%1 εκδηλώσεις"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:230
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:640
-#, kde-format
-msgctxt "@title:group Number of upcoming events"
-msgid "%1: 1 event"
-msgid_plural "%1: %2 events"
-msgstr[0] "%1: 1 εκδήλωση"
-msgstr[1] "%1: %2 εκδηλώσεις"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:302
-msgid "Upcoming Events Settings"
-msgstr "Ρυθμίσεις προσεχών εκδηλώσεων"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:353
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:362
-msgctxt "@label:textbox Url label"
-msgid "link"
-msgstr "σύνδεσμος"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:494
-msgid "Map View"
-msgstr "Προβολή χάρτη"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:532
-msgid "Events Calender"
-msgstr "Ημερολόγιο εκδηλώσεων"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:638
-msgctxt "@title:group"
-msgid "Favorite Venues"
-msgstr "Αγαπημένοι χώροι"
-
 #: context/applets/upcomingevents/UpcomingEventsCalendarWidget.cpp:160
 msgctxt "@info:tooltip Calendar action"
 msgid "Jump to Today"
@@ -7703,6 +7617,74 @@ msgstr[1] "Σε <strong>%1</strong> ημέρες"
 msgctxt "@info:tooltip"
 msgid "<strong>Location:</strong><nl/>%1"
 msgstr "<strong>Τοποθεσία:</strong><nl/>%1"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:67
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:128
+msgid "Upcoming Events"
+msgstr "Προσεχείς εκδηλώσεις"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:78
+msgid "View Events Calendar"
+msgstr "Εμφάνιση ημερολογίου εκδηλώσεων"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:91
+msgctxt "@title:group"
+msgid "No track is currently playing"
+msgstr "Δεν εκτελείται κομμάτι τώρα"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:158
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:303
+msgid "Favorite Venues"
+msgstr "Αγαπημένοι χώροι"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:224
+msgid "No upcoming events"
+msgstr "Καμία προσεχής εκδήλωση"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:224
+#, kde-format
+msgid "%1: No upcoming events"
+msgstr "%1: Καμία προσεχής εκδήλωση"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:229
+#, kde-format
+msgctxt "@title:group Number of upcoming events"
+msgid "1 event"
+msgid_plural "%1 events"
+msgstr[0] "1 εκδήλωση"
+msgstr[1] "%1 εκδηλώσεις"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:230
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:640
+#, kde-format
+msgctxt "@title:group Number of upcoming events"
+msgid "%1: 1 event"
+msgid_plural "%1: %2 events"
+msgstr[0] "%1: 1 εκδήλωση"
+msgstr[1] "%1: %2 εκδηλώσεις"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:302
+msgid "Upcoming Events Settings"
+msgstr "Ρυθμίσεις προσεχών εκδηλώσεων"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:353
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:362
+msgctxt "@label:textbox Url label"
+msgid "link"
+msgstr "σύνδεσμος"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:494
+msgid "Map View"
+msgstr "Προβολή χάρτη"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:532
+msgid "Events Calendar"
+msgstr "Ημερολόγιο εκδηλώσεων"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:638
+msgctxt "@title:group"
+msgid "Favorite Venues"
+msgstr "Αγαπημένοι χώροι"
 
 #: context/applets/videoclip/CustomVideoWidget.cpp:83
 msgid "Enter &fullscreen"
@@ -8202,6 +8184,12 @@ msgstr ""
 "Στις περισσότερες περιπτώσεις θα χρειαστεί να επιλύσετε αυτά τα σφάλματα για "
 "να εκτελεστεί σωστά το Amarok."
 
+#: core-impl/collections/db/sql/SqlMeta.cpp:272
+#: covermanager/CoverManager.cpp:842 services/lastfm/meta/LastFmMeta.cpp:133
+#, kde-format
+msgid "%1 - %2"
+msgstr "%1 - %2"
+
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:497
 msgid "Organizing tracks"
 msgstr "Οργάνωση κομματιών"
@@ -8238,12 +8226,6 @@ msgstr "Αλλαγή κωδικοποίησης: %1"
 #, kde-format
 msgid "Removing: %1"
 msgstr "Αφαίρεση: %1"
-
-#: core-impl/collections/db/sql/SqlMeta.cpp:272
-#: covermanager/CoverManager.cpp:842 services/lastfm/meta/LastFmMeta.cpp:133
-#, kde-format
-msgid "%1 - %2"
-msgstr "%1 - %2"
 
 #: core-impl/collections/db/ScanManager.cpp:136
 msgid "Database import requested"
@@ -8667,6 +8649,15 @@ msgstr "δύο μήνες πριν"
 msgid "three months ago"
 msgstr "τρεις μήνες πριν"
 
+#: core-impl/collections/support/TrashCollectionLocation.cpp:47
+msgid "Trash"
+msgstr "Απορρίμματα"
+
+#: core-impl/collections/support/TrashCollectionLocation.cpp:101
+#, kde-format
+msgid "Moving to trash: %1"
+msgstr "Μετακίνηση στα απορρίμματα: %1"
+
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:40
 #, kde-format
 msgctxt "@info"
@@ -8728,16 +8719,16 @@ msgstr "Μετακίνηση αρχείων"
 msgctxt "@info"
 msgid ""
 "There was a problem and this track could not be removed. Make sure the "
-"directory is writeable."
+"directory is writable."
 msgid_plural ""
 "There was a problem and %1 tracks could not be removed. Make sure the "
-"directory is writeable."
+"directory is writable."
 msgstr[0] ""
-"Υπήρξε ένα πρόβλημα και αυτό το κομμάτι δεν μπόρεσε να αφαιρεθεί. "
-"Βεβαιωθείτε ότι ο φάκελος είναι εγγράψιμος."
+"Υπήρξε ένα πρόβλημα και αυτό το κομμάτι δεν ήταν δυνατό να αφαιρεθεί. "
+"Βεβαιωθείτε ότι ο κατάλογος είναι εγγράψιμος."
 msgstr[1] ""
-"Υπήρξε ένα πρόβλημα και %1 κομμάτια δεν μπόρεσαν να αφαιρεθούν. Βεβαιωθείτε "
-"ότι ο φάκελος είναι εγγράψιμος."
+"Υπήρξε ένα πρόβλημα και %1 κομμάτια δεν ήταν δυνατό να αφαιρεθούν. "
+"Βεβαιωθείτε ότι ο κατάλογος είναι εγγράψιμος."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:103
 msgid "Unable to be removed tracks"
@@ -8745,9 +8736,9 @@ msgstr "Αδυναμία αφαίρεσης κομματιών"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:110
 msgid ""
-"The collection does not have enough free space available or is not writeable."
+"The collection does not have enough free space available or is not writable."
 msgstr ""
-"Η συλλογή δεν έχει επαρκή ελεύθερο χώρο διαθέσιμο ή δεν είναι εγγράψιμος."
+"Η συλλογή δεν έχει επαρκή ελεύθερο χώρο διαθέσιμο ή δεν είναι εγγράψιμη."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:116
 msgid "Do you want to remove empty folders?"
@@ -8756,15 +8747,6 @@ msgstr "Επιθυμείτε τη διαγραφή των άδειων φακέ�
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:117
 msgid "Remove empty folders?"
 msgstr "Διαγραφή των άδειων φακέλων;"
-
-#: core-impl/collections/support/TrashCollectionLocation.cpp:47
-msgid "Trash"
-msgstr "Απορρίμματα"
-
-#: core-impl/collections/support/TrashCollectionLocation.cpp:101
-#, kde-format
-msgid "Moving to trash: %1"
-msgstr "Μετακίνηση στα απορρίμματα: %1"
 
 #: core-impl/collections/umscollection/handler/UmsHandler.cpp:474
 msgid "&Use as Collection"
@@ -9277,21 +9259,24 @@ msgctxt ""
 msgid "m:ss"
 msgstr "m:ss"
 
-#: core/meta/support/MetaUtility.cpp:401
-msgctxt ""
-"the time format for a time length when the time is 1 day or above see "
-"QDateTime documentation."
-msgid "d:hh:mm:ss"
-msgstr "d:hh:mm:ss"
+#: core/meta/support/MetaUtility.cpp:406
+#, fuzzy, kde-format
+#| msgid "%1 day"
+#| msgid_plural "%1 days"
+msgctxt "number of days with spacing for the pretty time"
+msgid "%1 day, "
+msgid_plural "%1 days, "
+msgstr[0] "%1 ημέρα"
+msgstr[1] "%1 ημέρες"
 
-#: core/meta/support/MetaUtility.cpp:403
+#: core/meta/support/MetaUtility.cpp:407
 msgctxt ""
 "the time format for a time length when the time is 1 hour or above see QTime "
 "documentation."
 msgid "h:mm:ss"
 msgstr "h:mm:ss"
 
-#: core/meta/support/MetaUtility.cpp:416
+#: core/meta/support/MetaUtility.cpp:421
 #, kde-format
 msgctxt "number of years for the pretty time"
 msgid "%1 year"
@@ -9299,7 +9284,7 @@ msgid_plural "%1 years"
 msgstr[0] "%1 έτος"
 msgstr[1] "%1 έτη"
 
-#: core/meta/support/MetaUtility.cpp:418
+#: core/meta/support/MetaUtility.cpp:423
 #, kde-format
 msgctxt "number of months for the pretty time"
 msgid "%1 month"
@@ -9307,7 +9292,7 @@ msgid_plural "%1 months"
 msgstr[0] "%1 μήνας"
 msgstr[1] "%1 μήνες"
 
-#: core/meta/support/MetaUtility.cpp:420
+#: core/meta/support/MetaUtility.cpp:425
 #, kde-format
 msgctxt "number of days for the pretty time"
 msgid "%1 day"
@@ -9315,7 +9300,7 @@ msgid_plural "%1 days"
 msgstr[0] "%1 ημέρα"
 msgstr[1] "%1 ημέρες"
 
-#: core/meta/support/MetaUtility.cpp:422
+#: core/meta/support/MetaUtility.cpp:427
 #, kde-format
 msgctxt "number of hours for the pretty time"
 msgid "%1 hour"
@@ -9323,7 +9308,7 @@ msgid_plural "%1 hours"
 msgstr[0] "%1 ώρα"
 msgstr[1] "%1 ώρες"
 
-#: core/meta/support/MetaUtility.cpp:424
+#: core/meta/support/MetaUtility.cpp:429
 #, kde-format
 msgctxt "number of minutes for the pretty time"
 msgid "%1 minute"
@@ -9331,7 +9316,7 @@ msgid_plural "%1 minutes"
 msgstr[0] "%1 λεπτό"
 msgstr[1] "%1 λεπτά"
 
-#: core/meta/support/MetaUtility.cpp:426
+#: core/meta/support/MetaUtility.cpp:431
 #, kde-format
 msgctxt "number of seconds for the pretty time"
 msgid "%1 second"
@@ -11132,28 +11117,6 @@ msgstr "το προηγούμενο κομμάτι"
 msgid "one of the tracks in the current playlist"
 msgstr "ένα από τα κομμάτια στην τρέχουσα λίστα αναπαραγωγής"
 
-#: dynamic/biases/PartBias.cpp:44
-msgctxt "Name of the \"Part\" bias"
-msgid "Partition"
-msgstr "Partition"
-
-#: dynamic/biases/PartBias.cpp:53
-msgctxt "Description of the \"Part\" bias"
-msgid ""
-"The \"Part\" bias fills parts of the playlist from different sub-biases."
-msgstr ""
-"Η προτίμηση \"Part\" γεμίζει κομμάτια της λίστας αναπαραγωγής από "
-"διαφορετικές υπο-προτιμήσεις."
-
-#: dynamic/biases/PartBias.cpp:260
-msgid "This controls what portion of the playlist should match the criteria"
-msgstr "Αυτό καθορίζει ποιο τμήμα της λίστας θα ταιριάζει στα κριτήρια"
-
-#: dynamic/biases/PartBias.cpp:401
-msgctxt "Part bias representation"
-msgid "Partition"
-msgstr "Τμήμα"
-
 #: dynamic/biases/QuizPlayBias.cpp:44
 msgctxt "Name of the \"QuizPlay\" bias"
 msgid "Quiz play"
@@ -11261,6 +11224,28 @@ msgstr ""
 msgctxt "Inverted condition in tag match bias"
 msgid "Not %1"
 msgstr "Όχι το %1"
+
+#: dynamic/biases/PartBias.cpp:44
+msgctxt "Name of the \"Part\" bias"
+msgid "Partition"
+msgstr "Partition"
+
+#: dynamic/biases/PartBias.cpp:53
+msgctxt "Description of the \"Part\" bias"
+msgid ""
+"The \"Part\" bias fills parts of the playlist from different sub-biases."
+msgstr ""
+"Η προτίμηση \"Part\" γεμίζει κομμάτια της λίστας αναπαραγωγής από "
+"διαφορετικές υπο-προτιμήσεις."
+
+#: dynamic/biases/PartBias.cpp:260
+msgid "This controls what portion of the playlist should match the criteria"
+msgstr "Αυτό καθορίζει ποιο τμήμα της λίστας θα ταιριάζει στα κριτήρια"
+
+#: dynamic/biases/PartBias.cpp:401
+msgctxt "Part bias representation"
+msgid "Partition"
+msgstr "Τμήμα"
 
 #: dynamic/Bias.cpp:239
 msgctxt "And bias representation"
@@ -13000,7 +12985,7 @@ msgid "Neighbors"
 msgstr "Γείτονες"
 
 #: services/lastfm/LoveTrackAction.cpp:25
-#: services/lastfm/LastFmService.cpp:287
+#: services/lastfm/LastFmService.cpp:284
 msgid "Last.fm: Love"
 msgstr "Last.fm: Αγαπημένο"
 
@@ -13205,13 +13190,6 @@ msgstr "Δοκιμή σύνδεσης"
 msgid "Unable to connect to Last.fm service."
 msgstr "Αδυναμία σύνδεσης στην υπηρεσία Last.fm."
 
-#: services/lastfm/ScrobblerAdapter.cpp:242
-#: services/lastfm/LastFmService.cpp:563
-#, kde-format
-msgctxt "As in, lastfm"
-msgid "Loved Track: %1"
-msgstr "Αγαπημένο κομμάτι: %1"
-
 #: services/lastfm/LastFmServiceConfig.cpp:143
 msgid "Last.fm credentials"
 msgstr "Διαπιστευτήρια Last.fm"
@@ -13223,85 +13201,6 @@ msgid ""
 msgstr ""
 "Δεν βρέθηκε KWallet σε εκτέλεση. Θέλετε το Amarok να αποθηκεύσει τα "
 "διαπιστευτήριά σας του Last.FM σε απλό κείμενο; "
-
-#: services/lastfm/LastFmService.cpp:194
-msgid "Last.fm: The social music revolution"
-msgstr "Last.fm: Η κοινωνική επανάσταση της μουσικής"
-
-#: services/lastfm/LastFmService.cpp:196
-msgid ""
-"Last.fm is a popular online service that provides personal radio stations "
-"and music recommendations. A personal listening station is tailored based on "
-"your listening habits and provides you with recommendations for new music. "
-"It is also possible to play stations with music that is similar to a "
-"particular artist as well as listen to streams from people you have added as "
-"friends or that Last.fm considers your musical \"neighbors\""
-msgstr ""
-"Το Last.fm είναι μια δημοφιλής διαδικτυακή υπηρεσία η οποία παρέχει "
-"προσωπικούς ραδιοφωνικούς σταθμούς και μουσικές προτάσεις. Ένας προσωπικός "
-"σταθμός έχει προσαρμοστεί σύμφωνα με τις συνήθειές σας και σας προτείνει "
-"βάσει αυτών νέους τίτλους. Είναι επίσης δυνατό να ακούσετε σταθμούς που "
-"εκπέμπουν μουσική σχετικά με έναν συγκεκριμένο καλλιτέχνη και ροές απόάτομα "
-"που έχετε προσθέσει ως φίλους ή με τα οποία το Last.fm θεωρεί πως "
-"«γειτονεύετε» μουσικά"
-
-#: services/lastfm/LastFmService.cpp:289
-msgid "Ctrl+L"
-msgstr "Ctrl+Α"
-
-#: services/lastfm/LastFmService.cpp:342
-msgctxt "Last.fm: errorMessage"
-msgid "Either the username was not recognized, or the password was incorrect."
-msgstr "Το όνομα χρήστη ή ο κωδικός πρόσβασης είναι εσφαλμένα."
-
-#: services/lastfm/LastFmService.cpp:346
-msgctxt "Last.fm: errorMessage"
-msgid ""
-"There was a problem communicating with the Last.fm services. Please try "
-"again later."
-msgstr ""
-"Υπήρξε ένα πρόβλημα επικοινωνίας με τις υπηρεσίες Last.fm. Παρακαλώ "
-"προσπαθήστε αργότερα."
-
-#: services/lastfm/LastFmService.cpp:434
-msgid "Enter an artist name"
-msgstr "Εισαγωγή ονόματος καλλιτέχνη"
-
-#: services/lastfm/LastFmService.cpp:437
-msgid "Enter a tag"
-msgstr "Εισαγωγή ετικέτας"
-
-#: services/lastfm/LastFmService.cpp:440
-msgid "Enter a Last.fm user name"
-msgstr "Εισαγωγή ονόματος χρήστη Last.fm"
-
-#: services/lastfm/LastFmService.cpp:453
-#, kde-format
-msgid "Username: %1"
-msgstr "Όνομα χρήστη: %1"
-
-#: services/lastfm/LastFmService.cpp:458
-#, kde-format
-msgid "Play Count: %1 play"
-msgid_plural "Play Count: %1 plays"
-msgstr[0] "Μετρητής εκτελέσεων: %1 φορά"
-msgstr[1] "Μετρητής εκτελέσεων: %1 φορές"
-
-#: services/lastfm/LastFmService.cpp:468
-msgid "Enter login information for Last.fm"
-msgstr "Εισάγετε τα στοιχεία σύνδεσης για το Last.fm"
-
-#: services/lastfm/LastFmService.cpp:524
-msgid "Create a Custom Last.fm Station"
-msgstr "Δημιουργία ενός προσαρμοσμένου σταθμού Last.fm"
-
-#: services/lastfm/LastFmService.cpp:527
-msgid "Tag"
-msgstr "Ετικέτα"
-
-#: services/lastfm/LastFmService.cpp:527
-msgid "User"
-msgstr "Χρήστης"
 
 #: services/lastfm/LastFmServiceCollection.cpp:42
 #, kde-format
@@ -13331,6 +13230,88 @@ msgstr "Προσωπικό ραδιόφωνο φίλων"
 #: services/lastfm/SimilarArtistsAction.cpp:26
 msgid "Play Similar Artists from Last.fm"
 msgstr "Αναπαραγωγή παρόμοιων καλλιτεχνών από Last.fm"
+
+#: services/lastfm/ScrobblerAdapter.cpp:236
+#: services/lastfm/LastFmService.cpp:543
+#, kde-format
+msgctxt "As in, lastfm"
+msgid "Loved Track: %1"
+msgstr "Αγαπημένο κομμάτι: %1"
+
+#: services/lastfm/LastFmService.cpp:195
+msgid "Last.fm: The social music revolution"
+msgstr "Last.fm: Η κοινωνική επανάσταση της μουσικής"
+
+#: services/lastfm/LastFmService.cpp:197
+msgid ""
+"Last.fm is a popular online service that provides personal radio stations "
+"and music recommendations. A personal listening station is tailored based on "
+"your listening habits and provides you with recommendations for new music. "
+"It is also possible to play stations with music that is similar to a "
+"particular artist as well as listen to streams from people you have added as "
+"friends or that Last.fm considers your musical \"neighbors\""
+msgstr ""
+"Το Last.fm είναι μια δημοφιλής διαδικτυακή υπηρεσία η οποία παρέχει "
+"προσωπικούς ραδιοφωνικούς σταθμούς και μουσικές προτάσεις. Ένας προσωπικός "
+"σταθμός έχει προσαρμοστεί σύμφωνα με τις συνήθειές σας και σας προτείνει "
+"βάσει αυτών νέους τίτλους. Είναι επίσης δυνατό να ακούσετε σταθμούς που "
+"εκπέμπουν μουσική σχετικά με έναν συγκεκριμένο καλλιτέχνη και ροές απόάτομα "
+"που έχετε προσθέσει ως φίλους ή με τα οποία το Last.fm θεωρεί πως "
+"«γειτονεύετε» μουσικά"
+
+#: services/lastfm/LastFmService.cpp:286
+msgid "Ctrl+L"
+msgstr "Ctrl+Α"
+
+#: services/lastfm/LastFmService.cpp:339
+msgctxt "Last.fm: errorMessage"
+msgid "Either the username was not recognized, or the password was incorrect."
+msgstr "Το όνομα χρήστη ή ο κωδικός πρόσβασης είναι εσφαλμένα."
+
+#: services/lastfm/LastFmService.cpp:343
+msgctxt "Last.fm: errorMessage"
+msgid ""
+"There was a problem communicating with the Last.fm services. Please try "
+"again later."
+msgstr ""
+"Υπήρξε ένα πρόβλημα επικοινωνίας με τις υπηρεσίες Last.fm. Παρακαλώ "
+"προσπαθήστε αργότερα."
+
+#: services/lastfm/LastFmService.cpp:431
+msgid "Enter an artist name"
+msgstr "Εισαγωγή ονόματος καλλιτέχνη"
+
+#: services/lastfm/LastFmService.cpp:434
+msgid "Enter a tag"
+msgstr "Εισαγωγή ετικέτας"
+
+#: services/lastfm/LastFmService.cpp:437
+msgid "Enter a Last.fm user name"
+msgstr "Εισαγωγή ονόματος χρήστη Last.fm"
+
+#: services/lastfm/LastFmService.cpp:450
+#, kde-format
+msgid "Username: %1"
+msgstr "Όνομα χρήστη: %1"
+
+#: services/lastfm/LastFmService.cpp:455
+#, kde-format
+msgid "Play Count: %1 play"
+msgid_plural "Play Count: %1 plays"
+msgstr[0] "Μετρητής εκτελέσεων: %1 φορά"
+msgstr[1] "Μετρητής εκτελέσεων: %1 φορές"
+
+#: services/lastfm/LastFmService.cpp:504
+msgid "Create a Custom Last.fm Station"
+msgstr "Δημιουργία ενός προσαρμοσμένου σταθμού Last.fm"
+
+#: services/lastfm/LastFmService.cpp:507
+msgid "Tag"
+msgstr "Ετικέτα"
+
+#: services/lastfm/LastFmService.cpp:507
+msgid "User"
+msgstr "Χρήστης"
 
 #: services/magnatune/MagnatuneCollectionLocation.cpp:42
 msgid "Preview Tracks"
@@ -15030,6 +15011,24 @@ msgctxt "track from source"
 msgid "from <b>%1</b>"
 msgstr "από <b>%1</b>"
 
+#: PluginManager.cpp:253
+msgid ""
+"<p>Amarok could not find any collection plugins. It is possible that Amarok "
+"is installed under the wrong prefix, please fix your installation using:<pre>"
+"$ cd /path/to/amarok/source-code/<br>$ su -c \"make uninstall\"<br>$ cmake -"
+"DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -c \"make install\"<br>$ "
+"kbuildsycoca4 --noincremental<br>$ amarok</pre>More information can be found "
+"in the README file. For further assistance join us at #amarok on irc."
+"freenode.net.</p>"
+msgstr ""
+"<p>Το AmaroK δεν μπορεί να βρει πρόσθετα για τη συλλογή. Είναι πιθανό το "
+"AmaroK να έχει εγκατασταθεί με εσφαλμένο πρόθεμα, παρακαλώ διορθώστε την "
+"εγκατάστασή σας χρησιμοποιώντας:<pre>$ cd /path/to/amarok/source-code/<br>$ "
+"su -c \"make uninstall\"<br>$ cmake -DCMAKE_INSTALL_PREFIX=`kde4-config --"
+"prefix` && su -c \"make install\"<br>$ kbuildsycoca4 --noincremental<br>$ "
+"amarok</pre>Περισσότερες πληροφορίες θα βρείτε στο αρχείο README. Για "
+"βοήθεια, συναντήστε μας στο #amarok στο irc.freenode.net.</p>"
+
 #: TrayIcon.cpp:146
 #, kde-format
 msgid "%1%"
@@ -15059,6 +15058,15 @@ msgstr "Μετρητής εκτελέσεων: %1"
 #, kde-format
 msgid "Last played: %1"
 msgstr "Τελευταία εκτέλεση: %1"
+
+
+
+
+
+
+
+
+
 
 
 

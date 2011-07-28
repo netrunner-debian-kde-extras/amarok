@@ -42,9 +42,9 @@
 >&kde; SC 4.6</releaseinfo>
 <abstract>
 <para
->O &amarok; é um leitor de música gratuito, versátil e poderoso para o &Linux;. A última série de versões 2.x, normalmente conhecida por <quote
+>&amarok; is a free, versatile and powerful music player for &Linux;. The latest 2.x release series, often referred to as <quote
 >Amarok&nbsp;2</quote
->, é multi-plataforma (poderá ser usado em várias plataformas, incluindo o &Linux;, MacOS e o &Microsoft; &Windows;) e implementa um código completamente remodelado que permitirá incorporar diversas funcionalidades óptimas à medida que a versão vai amadurecendo. A versão estável neste momento é a 2.3.</para>
+>, is cross-platform (can be used on many platforms, including &Linux;, MacOS and &Microsoft; &Windows;) and implements a completely reworked code base that will enable it to incorporate exciting new features as the release matures. The current stable release is version 2.3.</para>
     </abstract>
 <keywordset>
  <keyword
@@ -570,17 +570,15 @@
 ></listitem>
 <listitem
 ><para
->executando o <ulink url="http://userbase.kde.org/Special:mylanguage/KRunner"
+>running <ulink url="http://userbase.kde.org/Special:mylanguage/KRunner"
 >&krunner;</ulink
 > (<keycombo
-><keycap
->Alt</keycap
-><keycap
+>&Alt;<keycap
 >F2</keycap
 ></keycombo
-> por omissão), escrevendo <replaceable
->amarok</replaceable
-> e depois carregar em &Enter;. </para
+> by default), enter <userinput
+>amarok</userinput
+> and then press &Enter;. </para
 ></listitem>
 </itemizedlist>
 </sect2>
@@ -589,9 +587,9 @@
 ><title
 >Primeira Vez</title>
 <para
->Da primeira vez que usar o &amarok;, irá aparecer uma interface de Primeiro Arranque, a perguntar-lhe onde é que se localiza a sua música. Se já tiver uma pasta de música <ulink url="help:/kcontrol/paths/index.html"
->configurada no seu sistema</ulink
->, o &amarok; devê-la-á detectar e pedir-lhe se a deseja usar: </para>
+>The first time you use &amarok;, a First Start User Interface will come up asking you to specify where your music is located. If you have a music folder already <ulink url="help:/kcontrol/paths/index.html"
+>configured in your system</ulink
+>, &amarok; should detect it and ask you to use it: </para>
 <para>
 <screenshot>
 <screeninfo
@@ -608,9 +606,9 @@
 </screenshot>
 </para>
 <para
->Se seleccionar <quote
->Não</quote
-> nesta janela, ser-lhe-á apresentada outra que lhe permite seleccionar a sua pasta de música: </para>
+>If you select <quote
+>No</quote
+> in this dialog, you will be presented with another which allows you to select your music folder: </para>
 <para>
 <screenshot>
 <screeninfo
@@ -702,12 +700,12 @@
 </chapter>
 <chapter id="the-amarok-window"
 ><title
->A janela do &amarok;</title>
+>The &amarok; window</title>
 <para
->A janela do &amarok; é a interface predefinida, estando desenhada para lhe permitir redescobrir a sua música. Para além disso, também está desenhada para lhe dar o máximo de informação visual possível sobre a sua música. Embora muitos utilizadores possam achar a disposição predefinida adequada para as suas necessidades, esta pode ser completamente personalizada, caso prefira outra. </para>
+>The &amarok; window is the default user interface designed to let you rediscover your music. In addition, it is also designed to give you as much visual information about your music as possible. While many users will find the default layout suitable for their needs, the layout is fully customizable if you prefer another layout. </para>
 <sect1 id="default-layout-of-the-amarok-window"
 ><title
->Disposição predefinida da janela do &amarok;</title>
+>Default layout of the &amarok; window</title>
 <para
 >Após a instalação, o &amarok; parecer-se-á com o seguinte: </para>
 <para>
@@ -726,13 +724,13 @@
 </screenshot>
 </para>
 <para
->A janela do &amarok; tem quatro componentes principais: </para>
+>The &amarok; window has four main components: </para>
 <orderedlist>
 <listitem
 ><para
->logo por baixo dos menus de topo, existe a <emphasis
->Barra de Ferramentas</emphasis
-> que fica por cima das três áreas: </para
+>right under the top-level menus is the <emphasis
+>Toolbar</emphasis
+> that lies above three panes: </para
 ></listitem>
 <listitem
 ><para
@@ -778,7 +776,7 @@
 ></listitem>
 </orderedlist>
 <para
->Para além disso, poderá querer transferir alguma da sua música para um leitor de música portátil, como um iPod. As seguintes secções ajudá-lo-ão nessas tarefas. </para>
+>Additionally, you may wish to transfer some of your music to a mobile music player, such as an iPod. The next sections will help you with these tasks. </para>
 </sect1>
 </chapter>
 <chapter id="the-music-collection"
@@ -833,20 +831,20 @@
 ><title
 >Adicionar Dispositivos Multimédia à Colecção</title>
 <para
->Por baixo da barra de pesquisa, perto do topo da área de <emphasis
->Fontes Multimédia</emphasis
->, irá ver os diferentes dispositivos e/ou categorias de conteúdos dentro do <emphasis
->Navegador de Conteúdos</emphasis
->. Se introduzir um &CD; de áudio no leitor de &CD;'s, ele irá aparecer na área de <emphasis
->Fontes Multimédia</emphasis
->, em conjunto com os Leitores Multimédia, discos USB e outros dispositivos. Depois de ter montado um dispositivo externo, este deverá aparecer automaticamente dentro da área de <emphasis
->Fontes Multimédia</emphasis
->. Não terá de efectuar qualquer acção adicional para ver os dispositivos externos na sua área de <emphasis
->Fontes Multimédia</emphasis
->, desde que os mesmos consigam ser reconhecidos pelo seu computador. </para>
+>Underneath the search bar near the top of the <emphasis
+>Media Sources</emphasis
+> pane you see the different devices and/or content categories within the <emphasis
+>Content Browser</emphasis
+>. If you insert an Audio &CD; in the &CD; drive it will appear in the <emphasis
+>Media Sources</emphasis
+> pane, along with Media Players, thumb drives, and other USB devices. After an external device has been mounted, it should show automatically within the <emphasis
+>Media Sources</emphasis
+> pane. You do not need to go through any additional actions to see the external devices in your <emphasis
+>Media Sources</emphasis
+> pane, as long as they have been recognized by your computer. </para>
 <para
->Por baixo, encontra-se uma imagem que mostra três fontes ligadas com músicas: &CD; de Áudio, leitor de MP3 e a <emphasis
->Colecção Local</emphasis
+>Below is a screenshot showing three connected sources with music: Audio &CD;, mp3 player, and the <emphasis
+>Local Collection</emphasis
 >. </para>
 <para>
 <screenshot>
@@ -933,15 +931,15 @@
 ><title
 >Aceder a outras fontes multimédia</title>
 <para
->Poderá achar estranho porque é que a área de <emphasis
->Fontes Multimédia</emphasis
-> não se chama de 'área de Colecções'. O &amarok; dá-lhe acesso a muito mais músicas que apenas a sua colecção -- lojas na Internet, livros áudio, 'podcasts', ficheiros de música gravados fora da sua colecção e listas de reprodução gravadas anteriormente. A <emphasis
->área de navegação</emphasis
-> do &amarok; é chave para conseguir fazer tudo isto. O ícone inicial da navegação é ó ícone da pasta azul que aparece no canto superior esquerdo da área de <emphasis
->Fontes Multimédia</emphasis
->. Este ícone expande e recolhe à medida que navega na área de <emphasis
->Fontes Multimédia</emphasis
->, permitindo-lhe navegar facilmente pela sua colecção, carregando na sua pasta desejada na barra de navegação. </para>
+>You might have wondered why the <emphasis
+>Media Sources</emphasis
+> pane is not called the 'Collections pane'. &amarok; gives you access to much more music than just your collection -- Internet shops, audio books, podcasts, music files stored outside your collection, and previously stored playlists. The &amarok; <emphasis
+>breadcrumb navigation</emphasis
+> is the key to all of this. The starting icon for the breadcrumb navigation is the blue home folder icon at the extreme top left of the <emphasis
+>Media Sources</emphasis
+> pane. This icon expands and contracts as you browse through the <emphasis
+>Media Sources</emphasis
+> pane, allowing you to easily navigate your collection by clicking your desired folder in the breadcrumb bar. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -1337,17 +1335,17 @@
 ><title
 >A área da Lista de Reprodução</title>
 <para
->Tendo criado uma colecção de música, irá querer ouvi-la. Como tal, crie uma lista de reprodução que contém a selecção de faixas que deseja, na área da <emphasis
->Lista de Reprodução</emphasis
->. Aqui é onde toca a sua música, transmissões ou 'podcasts'. Poderá ordenar a sua lista de reprodução por título, álbum, artista, género e muitos outros critérios. Por exemplo, poderá ordenar as suas faixas primeiro pelo ano, depois pelo artista e assim por diante. </para>
+>Having created a collection of music, you will wish to listen to it. So, create a playlist containing the selection of tracks you want, in the <emphasis
+>Playlist pane</emphasis
+>. This is where you play your music, streams, or podcasts. You can sort your playlist by title, album, artist, genre and many others. For instance you can sort your tracks by year first, then by artist and so on. </para>
 <para
->O campo de pesquisa permite-lhe procurar ou filtrar as suas faixas. As duas setas grandes, no topo da área da Lista de Reprodução, permitem-lhe saltar para a faixa anterior ou seguinte que contêm as letras que escolheu. A chave inglesa à direita permite-lhe filtrar as suas faixas pelo artista, álbum, &etc;. A disposição da <emphasis
->Lista de Reprodução</emphasis
-> pode ser alterada através do menu de topo: <menuchoice
+>The search box lets you search or filter your tracks. The two big gray arrows at the top of the Playlist pane lets you skip to the next or previous track containing the letters you have chosen. The wrench to the right lets you filter your tracks by artist, album, &etc; The layout of the <emphasis
+>Playlist pane</emphasis
+> can be changed through the top-level menu: <menuchoice
 ><guimenu
->Lista de Reprodução</guimenu
+>Playlist</guimenu
 ><guimenuitem
->Disposições da Lista de Reprodução</guimenuitem
+>Playlist Layouts</guimenuitem
 ></menuchoice
 >. </para>
 </sect1>
@@ -1355,8 +1353,8 @@
 ><title
 >Adicionar músicas a uma lista de reprodução</title>
 <para
->Existem quatro formas de adicionar músicas à lista de reprodução na <emphasis
->área de Reprodução</emphasis
+>There are four ways to add music to the playlist in the <emphasis
+>Playlist pane</emphasis
 >. </para>
 <para>
 <screenshot>
@@ -1376,29 +1374,29 @@
 <orderedlist>
 <listitem
 ><para
->Escolha alguma da sua música no Navegador de Conteúdos e arraste-a para a direita. Se a arrastar para cima da área de <emphasis
->Contexto</emphasis
-> irá ver a <emphasis
->Lista ou Menu de Contexto</emphasis
->. A imagem acima mostra este menu em acção. O mesmo oferece três opções: <guilabel
->Adicionar à Lista de Reprodução</guilabel
+>Choose some of your music in the Content Browser, and drag it to the right. If you drag it over the <emphasis
+>Context</emphasis
+> pane you'll see the <emphasis
+>Pop-up Dropper</emphasis
+>, also known as PUD. The image above shows PUD in action. PUD provides three options: <guilabel
+>Add to Playlist</guilabel
 >, <guilabel
->Substituir a Lista de Reprodução</guilabel
-> e <guilabel
->Mais...</guilabel
->. A opção seleccionada numa zona a cinzento (<guilabel
->Adicionar à Lista de Reprodução</guilabel
->, nesta imagem) é a activa. Se largar o álbum aí, irá adicionar o mesmo à lista de reprodução na área de <emphasis
->Lista de Reprodução</emphasis
->. Escolha uma das outras opções para efectuar outra coisa qualquer com a sua selecção. Se arrastar o álbum para <guilabel
->Mais...</guilabel
->, irá ver um novo conjunto de opções no menu. </para
+>Replace Playlist</guilabel
+>, and <guilabel
+>More...</guilabel
+>. The option highlighted in a grey area (<guilabel
+>Add to Playlist</guilabel
+> in this image) is the active one. Dropping the album there adds it to the playlist in the <emphasis
+>Playlist pane</emphasis
+>. Choose one of the other options to do something else with your selection. Dragging it over <guilabel
+>More...</guilabel
+> brings up a new menu of choices in PUD. </para
 ></listitem>
 <listitem
 ><para
->Arraste a sua colecção à vontade pela <emphasis
->área da Lista de Reprodução</emphasis
-> no lado direito do ecrã da &amarok;. </para
+>Drag your selection all the way onto the <emphasis
+>Playlist pane</emphasis
+> on the right-hand side of the &amarok; screen. </para
 ></listitem>
 <listitem
 ><para
@@ -1408,12 +1406,12 @@
 ></listitem>
 <listitem
 ><para
->Carregue com o <keycap
->botão direito</keycap
-> sobre o álbum ou faixa. No seu menu do botão direito, irá encontrar opções semelhantes. A imagem abaixo mostra o menu de contexto que aparece a seguir a um item (<emphasis
+><keycap
+>Right-click</keycap
+> the album or track. In your right-click menu, you'll find similar choices. The image below shows the context menu that appears after an item (<emphasis
 >Brother Ali - Real As Can Be</emphasis
->, neste caso) ter sido seleccionado com o botão direito. Seleccione a opção <guilabel
->Adicionar à lista de reprodução</guilabel
+> in this case) has been right-clicked. Select <guilabel
+>Add to Playlist</guilabel
 >. </para
 ></listitem>
 </orderedlist>
@@ -1472,7 +1470,7 @@
 ><title
 >Manipular as listas de reprodução</title>
 <para
->A manipulação mais importante que irá provavelmente efectuar sobre a sua lista de reprodução é apagar faixas ou álbuns, reorganizar os itens apresentados para cada faixa ou reorganizar completamente a ordem de apresentação das faixas. </para>
+>The most important manipulation you will probably perform on your playlist is to delete albums or tracks, to rearrange the displayed items for each track or to rearrange the display order of tracks. </para>
 <sect2 id="removing-a-track"
 ><title
 >Remover uma faixa</title>
@@ -1580,7 +1578,7 @@
     </entry>
     <entry>
       <para
->Grava a sua lista de reprodução. Se não mudar o seu nome, usada a data como nome por omissão.</para>
+>Save your playlist. If you do not rename it, defaults to the date as a name.</para>
     </entry>
   </row>
     <row>
@@ -1703,11 +1701,11 @@
 ></listitem>
 </orderedlist>
 <para
->Se carregar no ícone do disco, no fundo da área da <emphasis
->Lista de Reprodução</emphasis
->, guarda a sua lista de reprodução na base de dados do &amarok;. Por omissão, a sua lista de reprodução gravada tem um nome composto pela data e hora em que o gravou (ver a imagem abaixo). Ao carregar com o botão direito sobre o nome da lista de reprodução, poderá mudar o nome da mesma para algo mais adequado. Esta opção também lhe permite adicionar a lista à sua lista de reprodução existente na área da <emphasis
->Lista de Reprodução</emphasis
-> ou substituir a mesma. </para>
+>Clicking the disk icon at the bottom of the <emphasis
+>Playlist pane</emphasis
+> stores your playlist in the &amarok; playlist database. By default, your saved playlist has a name composed of the date and time when you saved it (see image below). By right-clicking the playlist name, you can rename it to something more suitable. Right-clicking on a playlist name also allows you to add it to your existing playlist in the <emphasis
+>Playlist pane</emphasis
+>, or to replace your existing playlist. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -1775,11 +1773,15 @@
 ><title
 >Personalizar a área de contexto</title>
 <para
->No fundo da área de contexto, existem três botões para as 'applets' predefinidas. Do lado direito destes botões, poderá ver uma chave inglesa; se carregar nela, irá mostrar um <guilabel
+>At the bottom of the <emphasis
+>Context</emphasis
+> pane are three buttons for the default applets. On the right of these buttons you see a wrench, clicking on it will show a red <guilabel
 >X</guilabel
->  vermelho, que lhe permite remover estas 'applets'. Carregue no <guilabel
+> allowing you to remove these applets. Click the green <guilabel
 >+</guilabel
-> verde para adicionar mais opções de visualização (ver a imagem abaixo). Arraste os botões com texto para reordenar as 'applets' que tem e carregue de novo na chave inglesa para fixar as suas selecções. Isto torna a área de contexto extremamente flexível, maximizando a possibilidade de ter um visual personalizado que se ajusta às suas preferências. </para>
+> to add more display options (see image below). Drag the labeled buttons to re-order the applets you have, and click the wrench again to fix your selections. This makes the <emphasis
+>Context</emphasis
+> pane extremely flexible, maximizing the possibility of a custom display that fits your preferences. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -1850,11 +1852,11 @@
 <orderedlist>
 <listitem
 ><para
->As letras não estão disponíveis nas páginas assinaladas na Internet. Poderá querer adicionar mais servidores destes com o menu de programas (<menuchoice
+>The lyrics are not available in the sites checked on the Internet. You may wish to add more sites via the script menu (<menuchoice
 ><guimenu
->Ferramentas</guimenu
+>Tools</guimenu
 ><guimenuitem
->Gestor de Programas</guimenuitem
+>Script Manager</guimenuitem
 ></menuchoice
 >). </para
 ></listitem>
@@ -1864,7 +1866,7 @@
 ></listitem>
 <listitem
 ><para
->O título da sua música contém caracteres especiais com uma cedilha, um acento, &etc;, que não aparecem no título da sua faixa. Como tal, a 'applet' do programa de letras musicais poderá não encontrar uma correspondência para o seu título. Verifique o seu sistema de marcas e numerações de faixas com um marcador como o <ulink url="http://musicbrainz.org/doc/MusicBrainz_Picard"
+>The title of your song contains special characters with a cedille, accent, &etc; that do not show in your track title. Therefore the lyrics script applet cannot find a match for your title. Check your tags and track numbering system with a tagger such as <ulink url="http://musicbrainz.org/doc/MusicBrainz_Picard"
 >Picard</ulink
 >.</para
 ></listitem>
@@ -1920,19 +1922,19 @@
 ><title
 >Programa</title>
 <para
->Um 'plugin' do &amarok; para extender as funcionalidades. Os programas estão disponíveis na opção <menuchoice
+>&amarok; plugin to extend functionality. Scripts are available from <menuchoice
 ><guimenu
->Ferramentas</guimenu
+>Tools</guimenu
 ><guimenuitem
->Gestor de Programas</guimenuitem
+>Script Manager</guimenuitem
 ></menuchoice
->. Adicione mais fontes de letras musicais, mais estações de transmissão, grave capas dos seus álbuns, grave &CD;'s apartir das listas de reprodução, &etc; </para>
+>. Add more lyrics sources, more streaming stations, save covers to your album folders, burn &CD;s from playlists, &etc; </para>
 </sect1>
 <sect1 id="scrobble"
 ><title
 >Scrobble</title>
 <para
->Efectuar um 'scrobble' de uma faixa significa que, à medida que a ouve, o título e o artista da mesma são enviados para uma página Web, como o Last.fm, onde a informação é adicionada ao seu perfil. </para>
+>To scrobble a track means that as you listen to it, the title of the track and artist are sent to a Web site such as Last.fm, where the information is added to your profile. </para>
 </sect1>
 <sect1 id="stream-streaming"
 ><title

@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2011-07-17 03:51+0200\n"
+"POT-Creation-Date: 2011-07-26 04:06+0200\n"
 "PO-Revision-Date: 2011-04-24 13:09-0700\n"
 "Last-Translator: Fumiaki Okushi <okushi@kde.gr.jp>\n"
 "Language-Team: Japanese <Kdeveloper@kde.gr.jp>\n"
@@ -93,6 +93,715 @@ msgstr "現在のトラック後に停止: オン"
 #: ActionClasses.cpp:542
 msgid "Stop after current track: Off"
 msgstr "現在のトラック後に停止: オフ"
+
+#: equalizer/EqualizerPresets.cpp:90
+msgid "Manual"
+msgstr ""
+
+#: equalizer/EqualizerPresets.cpp:91
+#, fuzzy
+#| msgctxt "The genre name for classical music"
+#| msgid "Classical"
+msgid "Classical"
+msgstr "クラシック"
+
+#: equalizer/EqualizerPresets.cpp:92
+msgid "Club"
+msgstr ""
+
+#: equalizer/EqualizerPresets.cpp:93
+#, fuzzy
+#| msgid "&Cancel"
+msgid "Dance"
+msgstr "キャンセル(&C)"
+
+#: equalizer/EqualizerPresets.cpp:94
+#, fuzzy
+#| msgid "Bass"
+msgid "Full Bass"
+msgstr "ベース"
+
+#: equalizer/EqualizerPresets.cpp:95
+msgid "Full Treble"
+msgstr ""
+
+#: equalizer/EqualizerPresets.cpp:96
+#, fuzzy
+#| msgid "Bass"
+msgid "Full Bass + Treble"
+msgstr "ベース"
+
+#: equalizer/EqualizerPresets.cpp:97
+msgid "Laptop/Headphones"
+msgstr ""
+
+#: equalizer/EqualizerPresets.cpp:98
+msgid "Large Hall"
+msgstr ""
+
+#: equalizer/EqualizerPresets.cpp:99
+msgid "Live"
+msgstr ""
+
+#: equalizer/EqualizerPresets.cpp:100
+#, fuzzy
+#| msgid "Play"
+msgid "Party"
+msgstr "再生"
+
+#: equalizer/EqualizerPresets.cpp:101
+msgid "Pop"
+msgstr ""
+
+#: equalizer/EqualizerPresets.cpp:102
+#, fuzzy
+#| msgid "Replace"
+msgid "Reggae"
+msgstr "置換"
+
+#: equalizer/EqualizerPresets.cpp:103
+#, fuzzy
+#| msgid "ok"
+msgid "Rock"
+msgstr "ok"
+
+#: equalizer/EqualizerPresets.cpp:104
+msgid "Soft"
+msgstr ""
+
+#: equalizer/EqualizerPresets.cpp:105
+msgid "Ska"
+msgstr ""
+
+#: equalizer/EqualizerPresets.cpp:106
+msgid "Soft Rock"
+msgstr ""
+
+#: equalizer/EqualizerPresets.cpp:107
+msgid "Techno"
+msgstr ""
+
+#: equalizer/EqualizerPresets.cpp:108
+#, fuzzy
+#| msgid "Hekkro"
+msgid "Zero"
+msgstr "Hekkro"
+
+#: KNotificationBackend.cpp:146
+msgid "Now playing"
+msgstr "再生中"
+
+#: App.cpp:410
+msgid "Files/URLs to open"
+msgstr "開くファイル/URL"
+
+#: App.cpp:411
+msgid "Immediately start playing an audio cd"
+msgstr ""
+
+#: App.cpp:413
+msgid "Skip backwards in playlist"
+msgstr "プレイリストの前のトラックへ移動"
+
+#: App.cpp:415
+msgid "Start playing current playlist"
+msgstr "現在のプレイリストを再生開始"
+
+#: App.cpp:417
+msgid "Play if stopped, pause if playing"
+msgstr "停止している場合は再生、再生している場合は一時停止"
+
+#: App.cpp:418
+msgid "Pause playback"
+msgstr "再生を一時停止"
+
+#: App.cpp:420
+msgid "Stop playback"
+msgstr "再生を停止"
+
+#: App.cpp:422
+msgid "Skip forwards in playlist"
+msgstr "プレイリストの次のトラックへ移動"
+
+#: App.cpp:423
+msgid "Additional options:"
+msgstr "追加オプション:"
+
+#: App.cpp:425
+msgid "Append files/URLs to playlist"
+msgstr "ファイル/URL をプレイリストへ追加"
+
+#: App.cpp:426
+msgid "Queue URLs after the currently playing track"
+msgstr "再生中のトラックの後に URL をキュー"
+
+#: App.cpp:428
+msgid "Load URLs, replacing current playlist"
+msgstr "URL をロードし、現在のプレイリストを置換"
+
+#: App.cpp:430
+msgid "Print verbose debugging information"
+msgstr "詳細なデバッグ情報を表示"
+
+#: App.cpp:432
+msgid "Disable colorization for debug output."
+msgstr ""
+
+#: App.cpp:434
+msgid "Allow running multiple Amarok instances"
+msgstr "Amarok を複数インスタンス実行することを許可"
+
+#: App.cpp:435
+msgid "Base for relative filenames/URLs"
+msgstr "ファイル名/URL の相対パスのベース"
+
+#: App.cpp:437
+msgid "Unit test options:"
+msgstr "ユニットテストオプション:"
+
+#: App.cpp:438
+msgid "Run integrated unit tests"
+msgstr "統合されたユニットテストを実行"
+
+#: App.cpp:439
+msgid "Destination of test output: 'stdout', 'log'"
+msgstr "テスト出力先: 'stdout', 'log'"
+
+#: App.cpp:440
+msgid "Format of test output: 'xml', 'lightxml', 'plaintext'"
+msgstr ""
+
+#: App.cpp:441
+msgid "Verbosity from 0-3 (highest)"
+msgstr "冗長性 0-3 (最高)"
+
+#: App.cpp:633
+msgid ""
+"The embedded database was not found; you must set up a database server "
+"connection.\n"
+"You must restart Amarok after doing this."
+msgstr ""
+
+#: App.cpp:634
+msgid ""
+"The connection details for the database server were invalid.\n"
+"You must enter correct settings and restart Amarok after doing this."
+msgstr ""
+
+#: App.cpp:635
+msgid "Database Error"
+msgstr "データベースエラー"
+
+#: App.cpp:680
+msgid "Moving files to trash"
+msgstr "ファイルをごみ箱に移動"
+
+#: App.cpp:768
+#, kde-format
+msgid ""
+"A music path, %1, is set in System Settings.\n"
+"Would you like to use that as a collection folder?"
+msgstr ""
+
+#. i18n: file: core-impl/collections/audiocd/FormatSelectionDialog.ui:14
+#. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
+#: MainWindow.cpp:103 rc.cpp:1130 main.cpp:40
+msgid "Amarok"
+msgstr "Amarok"
+
+#: MainWindow.cpp:261
+msgid "Local Music"
+msgstr "ローカル音楽"
+
+#: MainWindow.cpp:263
+msgid "Local sources of content"
+msgstr "コンテンツのローカルソース"
+
+#: MainWindow.cpp:271
+msgid "Internet"
+msgstr "インターネット"
+
+#: MainWindow.cpp:273
+msgid "Online sources of content"
+msgstr "コンテンツのオンラインソース"
+
+#: MainWindow.cpp:279
+msgid "Playlists"
+msgstr "プレイリスト"
+
+#: MainWindow.cpp:281
+msgid "Various types of playlists"
+msgstr "複数タイプのプレイリスト"
+
+#: MainWindow.cpp:287 amarokurls/NavigationUrlGenerator.cpp:135
+msgid "Files"
+msgstr "ファイル"
+
+#: MainWindow.cpp:289
+msgid "Browse local hard drive for content"
+msgstr "コンテンツのためにローカルハードドライブをブラウズ"
+
+#: MainWindow.cpp:350
+msgctxt "@item:inmenu"
+msgid "&View"
+msgstr "表示(&V)"
+
+#: MainWindow.cpp:353
+msgid "Lock Layout"
+msgstr "レイアウトを固定"
+
+#: MainWindow.cpp:464
+msgid ""
+"<qt>Closing the main window will keep Amarok running in the System Tray. Use "
+"<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
+"qt>"
+msgstr ""
+"<qt>メインウィンドウを閉じても Amarok はシステムトレイで実行し続けます。終了"
+"するにはメインメニューまたはシステムトレイアイコンから<interface>終了</"
+"interface>を選択してください。</qt>"
+
+#: MainWindow.cpp:466
+msgid "Docking in System Tray"
+msgstr "システムトレイにドッキング"
+
+#: MainWindow.cpp:495
+msgid "Use relative path for &saving"
+msgstr "保存する際に相対パスを使う(&S)"
+
+#: MainWindow.cpp:507 covermanager/CoverFoundDialog.cpp:361
+msgid "Save As"
+msgstr "名前を付けて保存"
+
+#: MainWindow.cpp:559
+msgid "Play Media (Files or URLs)"
+msgstr "メディアを再生 (ファイルまたは URL)"
+
+#: MainWindow.cpp:559
+msgid "Add Media (Files or URLs)"
+msgstr "メディアを追加 (ファイルまたは URL)"
+
+#: MainWindow.cpp:577
+msgid "Add Stream"
+msgstr "ストリームを追加"
+
+#: MainWindow.cpp:577
+msgid "Enter Stream URL:"
+msgstr "ストリームの URL を入力:"
+
+#: MainWindow.cpp:701
+msgid "&Add Media..."
+msgstr "メディアを追加(&A)..."
+
+#: MainWindow.cpp:706
+msgctxt "clear playlist"
+msgid "&Clear Playlist"
+msgstr "プレイリストをクリア(&C)"
+
+#: MainWindow.cpp:711
+msgctxt "edit play queue of playlist"
+msgid "Edit &Queue"
+msgstr "キューを編集(&Q)"
+
+#: MainWindow.cpp:716
+msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
+msgid "Re&move Duplicates"
+msgstr "重複を削除(&M)"
+
+#: MainWindow.cpp:723
+msgid "&Add Stream..."
+msgstr "ストリームを追加(&A)..."
+
+#: MainWindow.cpp:727
+msgid "&Export Playlist As..."
+msgstr "プレイリストをエクスポート(&E)..."
+
+#: MainWindow.cpp:731 amarokurls/NavigationUrlGenerator.cpp:250
+#, fuzzy
+#| msgid "Bookmark"
+msgid "Bookmark Media Sources View"
+msgstr "ブックマーク"
+
+#: MainWindow.cpp:735 amarokurls/BookmarkManager.cpp:43
+msgid "Bookmark Manager"
+msgstr "ブックマークマネージャ"
+
+#: MainWindow.cpp:739
+msgid "Equalizer"
+msgstr "イコライザ"
+
+#: MainWindow.cpp:743 playlist/PlaylistViewUrlGenerator.cpp:101
+msgid "Bookmark Playlist Setup"
+msgstr "プレイリスト設定をブックマーク"
+
+#: MainWindow.cpp:747
+msgid "Bookmark Context Applets"
+msgstr "コンテキストアプレットをブックマーク"
+
+#: MainWindow.cpp:751 covermanager/CoverManager.cpp:105
+msgid "Cover Manager"
+msgstr "カバーマネージャ"
+
+#: MainWindow.cpp:755
+msgid "Play Media..."
+msgstr "メディアを再生..."
+
+#: MainWindow.cpp:760
+msgid "&Seek Forward"
+msgstr "前方検索(&S)"
+
+#: MainWindow.cpp:766
+msgid "&Seek Backward"
+msgstr "後方検索(&S)"
+
+#: MainWindow.cpp:773
+msgid "Update Collection"
+msgstr "コレクションを更新"
+
+#: MainWindow.cpp:780
+msgid "Previous Track"
+msgstr "前のトラック"
+
+#: MainWindow.cpp:787
+#, fuzzy
+#| msgid "Rate Current Track: 1"
+msgid "Restart current track"
+msgstr "現在のトラックを評価: 1"
+
+#: MainWindow.cpp:793
+msgid "Repopulate Playlist"
+msgstr "プレイリストを再補充"
+
+#: MainWindow.cpp:799
+#, fuzzy
+#| msgid "Default Dynamic Playlist"
+msgid "Disable Dynamic Playlist"
+msgstr "デフォルトのダイナミックプレイリスト"
+
+#: MainWindow.cpp:803
+msgid "Next Track"
+msgstr "次のトラック"
+
+#: MainWindow.cpp:808
+msgid "Increase Volume"
+msgstr "音量を上げる"
+
+#: MainWindow.cpp:814
+msgid "Decrease Volume"
+msgstr "音量を下げる"
+
+#: MainWindow.cpp:820
+msgid "Toggle Main Window"
+msgstr "メインウィンドウを表示/隠す"
+
+#: MainWindow.cpp:825
+msgid "Toggle Full Screen"
+msgstr "フルスクリーンのオン/オフ"
+
+#: MainWindow.cpp:830
+msgid "Jump to"
+msgstr "移動"
+
+#: MainWindow.cpp:835
+msgid "Show active track"
+msgstr "アクティブなトラックを表示"
+
+#: MainWindow.cpp:839
+msgid "Show Notification Popup"
+msgstr "通知ポップアップを表示"
+
+#: MainWindow.cpp:844
+msgid "Mute Volume"
+msgstr "ミュート"
+
+#: MainWindow.cpp:849
+msgid "Last.fm: Love Current Track"
+msgstr "Last.fm: 現在のトラックを Love"
+
+#: MainWindow.cpp:854
+msgid "Last.fm: Ban Current Track"
+msgstr "Last.fm: 現在のトラックを Ban"
+
+#: MainWindow.cpp:859
+msgid "Last.fm: Skip Current Track"
+msgstr "Last.fm: 現在のトラックをスキップ"
+
+#: MainWindow.cpp:864 playlist/view/PlaylistViewCommon.cpp:115
+msgid "Queue Track"
+msgstr "トラックをキューに追加"
+
+#: MainWindow.cpp:869
+msgid "Rate Current Track: 1"
+msgstr "現在のトラックを評価: 1"
+
+#: MainWindow.cpp:874
+msgid "Rate Current Track: 2"
+msgstr "現在のトラックを評価: 2"
+
+#: MainWindow.cpp:879
+msgid "Rate Current Track: 3"
+msgstr "現在のトラックを評価: 3"
+
+#: MainWindow.cpp:884
+msgid "Rate Current Track: 4"
+msgstr "現在のトラックを評価: 4"
+
+#: MainWindow.cpp:889
+msgid "Rate Current Track: 5"
+msgstr "現在のトラックを評価: 5"
+
+#: MainWindow.cpp:895
+msgid "Network Request Viewer"
+msgstr "ネットワーク・リクエスト・ビューア"
+
+#: MainWindow.cpp:913
+msgid "&About Amarok"
+msgstr "&Amarok について"
+
+#: MainWindow.cpp:917
+msgid "&Report Bug..."
+msgstr "バグを報告(&R)..."
+
+#: MainWindow.cpp:977
+msgid "&Music"
+msgstr "音楽(&M)"
+
+#: MainWindow.cpp:979
+msgid "&Amarok"
+msgstr "&Amarok"
+
+#: MainWindow.cpp:1003 playlist/PlaylistDock.cpp:54
+#: playlist/PlaylistToolBar.cpp:38
+msgid "&Playlist"
+msgstr "プレイリスト(&P)"
+
+#: MainWindow.cpp:1020
+msgid "&Tools"
+msgstr "ツール(&T)"
+
+#: MainWindow.cpp:1037
+msgid "&Settings"
+msgstr "設定(&S)"
+
+#: MainWindow.cpp:1084
+#, kde-format
+msgid ""
+"You have chosen to hide the menu bar.\n"
+"\n"
+"Please remember that you can always use the shortcut \"%1\" to bring it back."
+msgstr ""
+
+#: MainWindow.cpp:1086
+msgid "Hide Menu"
+msgstr "メニューを隠す"
+
+#: MainWindow.cpp:1128
+#, kde-format
+msgid "Paused  ::  %1"
+msgstr "一時停止 ::  %1"
+
+#: MainWindow.cpp:1141 amarokurls/BookmarkTreeView.cpp:377
+#: amarokurls/BookmarkTreeView.cpp:378 amarokurls/BookmarkTreeView.cpp:379
+#: context/applets/albums/AlbumItem.cpp:97
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:444
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:445
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:446
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:447
+msgid "Unknown"
+msgstr "不明"
+
+#: MainWindow.cpp:1141
+#, kde-format
+msgid "%1 - %2  ::  %3"
+msgstr "%1 - %2  ::  %3"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:73
+msgid ""
+"<qt>No information available.<br />The supplied KAboutData object does not "
+"exist.</qt>"
+msgstr ""
+
+#: aboutdialog/ExtendedAboutDialog.cpp:82
+msgid ""
+"<qt>No information available.<br />The supplied OcsData object does not "
+"exist.</qt>"
+msgstr ""
+
+#: aboutdialog/ExtendedAboutDialog.cpp:91
+#, kde-format
+msgid "About %1"
+msgstr "%1 について"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:112
+#, kde-format
+msgid ""
+"<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE %3</"
+"html>"
+msgstr ""
+"<html><font size=\"5\">%1</font><br /><b>バージョン %2</b><br />KDE %3 を使用"
+"</html>"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:152
+#, kde-format
+msgid "License: %1"
+msgstr "ライセンス: %1"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:166
+msgid "&About"
+msgstr "情報(&A)"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:183
+msgid "Get data from openDesktop.org to learn more about the team"
+msgstr ""
+
+#: aboutdialog/ExtendedAboutDialog.cpp:195
+msgid ""
+"Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to report "
+"bugs.\n"
+msgstr ""
+"バグを報告するために <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> "
+"を使ってください。\n"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:200
+#: aboutdialog/ExtendedAboutDialog.cpp:206
+#, kde-format
+msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
+msgstr "バグを <a href=\"mailto:%1\">%2</a> に報告してください。\n"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:225
+msgid "A&uthor"
+msgstr "作者(&U)"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:225
+msgid "A&uthors"
+msgstr "作者(&U)"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:239
+msgid "Get data from openDesktop.org to learn more about contributors"
+msgstr ""
+
+#: aboutdialog/ExtendedAboutDialog.cpp:253
+msgid "&Thanks To"
+msgstr "&Thanks To"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:266
+msgid "Get data from openDesktop.org to learn more about our generous donors"
+msgstr ""
+
+#: aboutdialog/ExtendedAboutDialog.cpp:286
+msgid "&Donors"
+msgstr "寄付者(&D)"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:316
+msgid "T&ranslation"
+msgstr "翻訳(&R)"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:340
+msgid "License Agreement"
+msgstr "ライセンス同意"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:373
+msgid "Internet connection not available"
+msgstr "インターネット接続が利用できません"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:373
+msgid "Network error"
+msgstr "ネットワークエラー"
+
+#: aboutdialog/OcsPersonItem.cpp:95
+msgid "Email contributor"
+msgstr "貢献者の Email"
+
+#: aboutdialog/OcsPersonItem.cpp:103 aboutdialog/OcsPersonItem.cpp:274
+msgid "Visit contributor's homepage"
+msgstr "貢献者のホームページを訪問"
+
+#: aboutdialog/OcsPersonItem.cpp:179
+#, kde-format
+msgctxt "A person's location: City, Country"
+msgid "%1, %2"
+msgstr "%2 %1"
+
+#: aboutdialog/OcsPersonItem.cpp:199
+msgid "IRC channels: "
+msgstr "IRC チャンネル: "
+
+#: aboutdialog/OcsPersonItem.cpp:212
+msgid "Favorite music: "
+msgstr "お気に入りの音楽: "
+
+#: aboutdialog/OcsPersonItem.cpp:217
+#, kde-format
+msgid "Visit %1's openDesktop.org profile"
+msgstr "%1 の openDesktop.org プロフィールを訪問"
+
+#: aboutdialog/OcsPersonItem.cpp:219
+#, kde-format
+msgid "Visit %1's profile on openDesktop.org"
+msgstr "openDesktop.org の %1 のプロフィールを訪問"
+
+#: aboutdialog/OcsPersonItem.cpp:253
+msgid "Visit contributor's blog"
+msgstr "貢献者のブログを訪問"
+
+#: aboutdialog/OcsPersonItem.cpp:258
+msgid "Visit contributor's del.icio.us profile"
+msgstr "貢献者の del.icio.us プロフィールを訪問"
+
+#: aboutdialog/OcsPersonItem.cpp:263
+msgid "Visit contributor's Digg profile"
+msgstr "貢献者の Digg プロフィールを訪問"
+
+#: aboutdialog/OcsPersonItem.cpp:268
+msgid "Visit contributor's Facebook profile"
+msgstr "貢献者の Facebook プロフィールを訪問"
+
+#: aboutdialog/OcsPersonItem.cpp:284
+msgid "Visit contributor's Last.fm profile"
+msgstr "貢献者の Last.fm プロフィールを訪問"
+
+#: aboutdialog/OcsPersonItem.cpp:292
+msgid "Visit contributor's LinkedIn profile"
+msgstr "貢献者の LinkedIn プロフィールを訪問"
+
+#: aboutdialog/OcsPersonItem.cpp:297
+msgid "Visit contributor's MySpace homepage"
+msgstr "貢献者の MySpace プロフィールを訪問"
+
+#: aboutdialog/OcsPersonItem.cpp:302
+msgid "Visit contributor's Reddit profile"
+msgstr "貢献者の Reddit プロフィールを訪問"
+
+#: aboutdialog/OcsPersonItem.cpp:307
+msgid "Visit contributor's YouTube profile"
+msgstr "貢献者の YouTube プロフィールを訪問"
+
+#: aboutdialog/OcsPersonItem.cpp:312
+msgid "Visit contributor's Twitter feed"
+msgstr "貢献者の Twitter プロフィールを訪問"
+
+#: aboutdialog/OcsPersonItem.cpp:317
+msgid "Visit contributor's Wikipedia profile"
+msgstr "貢献者の Wikipedia プロフィールを訪問"
+
+#: aboutdialog/OcsPersonItem.cpp:322
+msgid "Visit contributor's Xing profile"
+msgstr "貢献者の Xing プロフィールを訪問"
+
+#: aboutdialog/OcsPersonItem.cpp:327
+msgid "Visit contributor's identi.ca feed"
+msgstr "貢献者の identi.ca プロフィールを訪問"
+
+#: aboutdialog/OcsPersonItem.cpp:332
+msgid "Visit contributor's libre.fm profile"
+msgstr "貢献者の libre.fm プロフィールを訪問"
+
+#: aboutdialog/OcsPersonItem.cpp:337
+msgid "Visit contributor's StackOverflow profile"
+msgstr "貢献者の StackOverflow プロフィールを訪問"
+
+#: aboutdialog/libattica-ocsclient/personlistjob.cpp:108
+msgid "Unable to parse avatar image data."
+msgstr "アバター画像データを処理できません。"
 
 #: rc.cpp:1
 msgctxt "NAME OF TRANSLATORS"
@@ -2310,7 +3019,7 @@ msgstr ""
 #: dialogs/transferdialog.cpp:88 dialogs/FilenameLayoutDialog.cpp:230
 #: dialogs/FilenameLayoutDialog.cpp:591 musicbrainz/MusicBrainzTags.cpp:359
 #: playlist/PlaylistModel.cpp:902 services/jamendo/JamendoInfoParser.cpp:51
-#: services/lastfm/LastFmService.cpp:527
+#: services/lastfm/LastFmService.cpp:507
 #: services/magnatune/MagnatuneStore.cpp:218
 #: widgets/SmartPlaylistEditor.cpp:183 widgets/SmartPlaylistEditor.cpp:197
 msgid "Artist"
@@ -2494,12 +3203,6 @@ msgstr "Youtube HQ"
 #| msgid "Use Wikipedia Mobile Version"
 msgid "Use Wikipedia &mobile version"
 msgstr "Wikipedia モバイルバージョンを使用"
-
-#. i18n: file: core-impl/collections/audiocd/FormatSelectionDialog.ui:14
-#. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: rc.cpp:1130 MainWindow.cpp:103 main.cpp:40
-msgid "Amarok"
-msgstr "Amarok"
 
 #. i18n: file: core-impl/collections/audiocd/FormatSelectionDialog.ui:26
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
@@ -5329,727 +6032,6 @@ msgstr "グループ化なし (シングルライン)"
 msgid "Verbose"
 msgstr "詳細モード"
 
-#: equalizer/EqualizerPresets.cpp:90
-msgid "Manual"
-msgstr ""
-
-#: equalizer/EqualizerPresets.cpp:91
-#, fuzzy
-#| msgctxt "The genre name for classical music"
-#| msgid "Classical"
-msgid "Classical"
-msgstr "クラシック"
-
-#: equalizer/EqualizerPresets.cpp:92
-msgid "Club"
-msgstr ""
-
-#: equalizer/EqualizerPresets.cpp:93
-#, fuzzy
-#| msgid "&Cancel"
-msgid "Dance"
-msgstr "キャンセル(&C)"
-
-#: equalizer/EqualizerPresets.cpp:94
-#, fuzzy
-#| msgid "Bass"
-msgid "Full Bass"
-msgstr "ベース"
-
-#: equalizer/EqualizerPresets.cpp:95
-msgid "Full Treble"
-msgstr ""
-
-#: equalizer/EqualizerPresets.cpp:96
-#, fuzzy
-#| msgid "Bass"
-msgid "Full Bass + Treble"
-msgstr "ベース"
-
-#: equalizer/EqualizerPresets.cpp:97
-msgid "Laptop/Headphones"
-msgstr ""
-
-#: equalizer/EqualizerPresets.cpp:98
-msgid "Large Hall"
-msgstr ""
-
-#: equalizer/EqualizerPresets.cpp:99
-msgid "Live"
-msgstr ""
-
-#: equalizer/EqualizerPresets.cpp:100
-#, fuzzy
-#| msgid "Play"
-msgid "Party"
-msgstr "再生"
-
-#: equalizer/EqualizerPresets.cpp:101
-msgid "Pop"
-msgstr ""
-
-#: equalizer/EqualizerPresets.cpp:102
-#, fuzzy
-#| msgid "Replace"
-msgid "Reggae"
-msgstr "置換"
-
-#: equalizer/EqualizerPresets.cpp:103
-#, fuzzy
-#| msgid "ok"
-msgid "Rock"
-msgstr "ok"
-
-#: equalizer/EqualizerPresets.cpp:104
-msgid "Soft"
-msgstr ""
-
-#: equalizer/EqualizerPresets.cpp:105
-msgid "Ska"
-msgstr ""
-
-#: equalizer/EqualizerPresets.cpp:106
-msgid "Soft Rock"
-msgstr ""
-
-#: equalizer/EqualizerPresets.cpp:107
-msgid "Techno"
-msgstr ""
-
-#: equalizer/EqualizerPresets.cpp:108
-#, fuzzy
-#| msgid "Hekkro"
-msgid "Zero"
-msgstr "Hekkro"
-
-#: KNotificationBackend.cpp:146
-msgid "Now playing"
-msgstr "再生中"
-
-#: App.cpp:410
-msgid "Files/URLs to open"
-msgstr "開くファイル/URL"
-
-#: App.cpp:411
-msgid "Immediately start playing an audio cd"
-msgstr ""
-
-#: App.cpp:413
-msgid "Skip backwards in playlist"
-msgstr "プレイリストの前のトラックへ移動"
-
-#: App.cpp:415
-msgid "Start playing current playlist"
-msgstr "現在のプレイリストを再生開始"
-
-#: App.cpp:417
-msgid "Play if stopped, pause if playing"
-msgstr "停止している場合は再生、再生している場合は一時停止"
-
-#: App.cpp:418
-msgid "Pause playback"
-msgstr "再生を一時停止"
-
-#: App.cpp:420
-msgid "Stop playback"
-msgstr "再生を停止"
-
-#: App.cpp:422
-msgid "Skip forwards in playlist"
-msgstr "プレイリストの次のトラックへ移動"
-
-#: App.cpp:423
-msgid "Additional options:"
-msgstr "追加オプション:"
-
-#: App.cpp:425
-msgid "Append files/URLs to playlist"
-msgstr "ファイル/URL をプレイリストへ追加"
-
-#: App.cpp:426
-msgid "Queue URLs after the currently playing track"
-msgstr "再生中のトラックの後に URL をキュー"
-
-#: App.cpp:428
-msgid "Load URLs, replacing current playlist"
-msgstr "URL をロードし、現在のプレイリストを置換"
-
-#: App.cpp:430
-msgid "Print verbose debugging information"
-msgstr "詳細なデバッグ情報を表示"
-
-#: App.cpp:432
-msgid "Disable colorization for debug output."
-msgstr ""
-
-#: App.cpp:434
-msgid "Allow running multiple Amarok instances"
-msgstr "Amarok を複数インスタンス実行することを許可"
-
-#: App.cpp:435
-msgid "Base for relative filenames/URLs"
-msgstr "ファイル名/URL の相対パスのベース"
-
-#: App.cpp:437
-msgid "Unit test options:"
-msgstr "ユニットテストオプション:"
-
-#: App.cpp:438
-msgid "Run integrated unit tests"
-msgstr "統合されたユニットテストを実行"
-
-#: App.cpp:439
-msgid "Destination of test output: 'stdout', 'log'"
-msgstr "テスト出力先: 'stdout', 'log'"
-
-#: App.cpp:440
-msgid "Format of test output: 'xml', 'lightxml', 'plaintext'"
-msgstr ""
-
-#: App.cpp:441
-msgid "Verbosity from 0-3 (highest)"
-msgstr "冗長性 0-3 (最高)"
-
-#: App.cpp:633
-msgid ""
-"The embedded database was not found; you must set up a database server "
-"connection.\n"
-"You must restart Amarok after doing this."
-msgstr ""
-
-#: App.cpp:634
-msgid ""
-"The connection details for the database server were invalid.\n"
-"You must enter correct settings and restart Amarok after doing this."
-msgstr ""
-
-#: App.cpp:635
-msgid "Database Error"
-msgstr "データベースエラー"
-
-#: App.cpp:680
-msgid "Moving files to trash"
-msgstr "ファイルをごみ箱に移動"
-
-#: App.cpp:768
-#, kde-format
-msgid ""
-"A music path, %1, is set in System Settings.\n"
-"Would you like to use that as a collection folder?"
-msgstr ""
-
-#: MainWindow.cpp:261
-msgid "Local Music"
-msgstr "ローカル音楽"
-
-#: MainWindow.cpp:263
-msgid "Local sources of content"
-msgstr "コンテンツのローカルソース"
-
-#: MainWindow.cpp:271
-msgid "Internet"
-msgstr "インターネット"
-
-#: MainWindow.cpp:273
-msgid "Online sources of content"
-msgstr "コンテンツのオンラインソース"
-
-#: MainWindow.cpp:279
-msgid "Playlists"
-msgstr "プレイリスト"
-
-#: MainWindow.cpp:281
-msgid "Various types of playlists"
-msgstr "複数タイプのプレイリスト"
-
-#: MainWindow.cpp:287 amarokurls/NavigationUrlGenerator.cpp:135
-msgid "Files"
-msgstr "ファイル"
-
-#: MainWindow.cpp:289
-msgid "Browse local hard drive for content"
-msgstr "コンテンツのためにローカルハードドライブをブラウズ"
-
-#: MainWindow.cpp:350
-msgctxt "@item:inmenu"
-msgid "&View"
-msgstr "表示(&V)"
-
-#: MainWindow.cpp:353
-msgid "Lock Layout"
-msgstr "レイアウトを固定"
-
-#: MainWindow.cpp:464
-msgid ""
-"<qt>Closing the main window will keep Amarok running in the System Tray. Use "
-"<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
-"qt>"
-msgstr ""
-"<qt>メインウィンドウを閉じても Amarok はシステムトレイで実行し続けます。終了"
-"するにはメインメニューまたはシステムトレイアイコンから<interface>終了</"
-"interface>を選択してください。</qt>"
-
-#: MainWindow.cpp:466
-msgid "Docking in System Tray"
-msgstr "システムトレイにドッキング"
-
-#: MainWindow.cpp:495
-msgid "Use relative path for &saving"
-msgstr "保存する際に相対パスを使う(&S)"
-
-#: MainWindow.cpp:507 covermanager/CoverFoundDialog.cpp:361
-msgid "Save As"
-msgstr "名前を付けて保存"
-
-#: MainWindow.cpp:559
-msgid "Play Media (Files or URLs)"
-msgstr "メディアを再生 (ファイルまたは URL)"
-
-#: MainWindow.cpp:559
-msgid "Add Media (Files or URLs)"
-msgstr "メディアを追加 (ファイルまたは URL)"
-
-#: MainWindow.cpp:577
-msgid "Add Stream"
-msgstr "ストリームを追加"
-
-#: MainWindow.cpp:577
-msgid "Enter Stream URL:"
-msgstr "ストリームの URL を入力:"
-
-#: MainWindow.cpp:701
-msgid "&Add Media..."
-msgstr "メディアを追加(&A)..."
-
-#: MainWindow.cpp:706
-msgctxt "clear playlist"
-msgid "&Clear Playlist"
-msgstr "プレイリストをクリア(&C)"
-
-#: MainWindow.cpp:711
-msgctxt "edit play queue of playlist"
-msgid "Edit &Queue"
-msgstr "キューを編集(&Q)"
-
-#: MainWindow.cpp:716
-msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
-msgid "Re&move Duplicates"
-msgstr "重複を削除(&M)"
-
-#: MainWindow.cpp:723
-msgid "&Add Stream..."
-msgstr "ストリームを追加(&A)..."
-
-#: MainWindow.cpp:727
-msgid "&Export Playlist As..."
-msgstr "プレイリストをエクスポート(&E)..."
-
-#: MainWindow.cpp:731 amarokurls/NavigationUrlGenerator.cpp:250
-#, fuzzy
-#| msgid "Bookmark"
-msgid "Bookmark Media Sources View"
-msgstr "ブックマーク"
-
-#: MainWindow.cpp:735 amarokurls/BookmarkManager.cpp:43
-msgid "Bookmark Manager"
-msgstr "ブックマークマネージャ"
-
-#: MainWindow.cpp:739
-msgid "Equalizer"
-msgstr "イコライザ"
-
-#: MainWindow.cpp:743 playlist/PlaylistViewUrlGenerator.cpp:101
-msgid "Bookmark Playlist Setup"
-msgstr "プレイリスト設定をブックマーク"
-
-#: MainWindow.cpp:747
-msgid "Bookmark Context Applets"
-msgstr "コンテキストアプレットをブックマーク"
-
-#: MainWindow.cpp:751 covermanager/CoverManager.cpp:105
-msgid "Cover Manager"
-msgstr "カバーマネージャ"
-
-#: MainWindow.cpp:755
-msgid "Play Media..."
-msgstr "メディアを再生..."
-
-#: MainWindow.cpp:760
-msgid "&Seek Forward"
-msgstr "前方検索(&S)"
-
-#: MainWindow.cpp:766
-msgid "&Seek Backward"
-msgstr "後方検索(&S)"
-
-#: MainWindow.cpp:773
-msgid "Update Collection"
-msgstr "コレクションを更新"
-
-#: MainWindow.cpp:780
-msgid "Previous Track"
-msgstr "前のトラック"
-
-#: MainWindow.cpp:787
-#, fuzzy
-#| msgid "Rate Current Track: 1"
-msgid "Restart current track"
-msgstr "現在のトラックを評価: 1"
-
-#: MainWindow.cpp:793
-msgid "Repopulate Playlist"
-msgstr "プレイリストを再補充"
-
-#: MainWindow.cpp:799
-#, fuzzy
-#| msgid "Default Dynamic Playlist"
-msgid "Disable Dynamic Playlist"
-msgstr "デフォルトのダイナミックプレイリスト"
-
-#: MainWindow.cpp:803
-msgid "Next Track"
-msgstr "次のトラック"
-
-#: MainWindow.cpp:808
-msgid "Increase Volume"
-msgstr "音量を上げる"
-
-#: MainWindow.cpp:814
-msgid "Decrease Volume"
-msgstr "音量を下げる"
-
-#: MainWindow.cpp:820
-msgid "Toggle Main Window"
-msgstr "メインウィンドウを表示/隠す"
-
-#: MainWindow.cpp:825
-msgid "Toggle Full Screen"
-msgstr "フルスクリーンのオン/オフ"
-
-#: MainWindow.cpp:830
-msgid "Jump to"
-msgstr "移動"
-
-#: MainWindow.cpp:835
-msgid "Show active track"
-msgstr "アクティブなトラックを表示"
-
-#: MainWindow.cpp:839
-msgid "Show Notification Popup"
-msgstr "通知ポップアップを表示"
-
-#: MainWindow.cpp:844
-msgid "Mute Volume"
-msgstr "ミュート"
-
-#: MainWindow.cpp:849
-msgid "Last.fm: Love Current Track"
-msgstr "Last.fm: 現在のトラックを Love"
-
-#: MainWindow.cpp:854
-msgid "Last.fm: Ban Current Track"
-msgstr "Last.fm: 現在のトラックを Ban"
-
-#: MainWindow.cpp:859
-msgid "Last.fm: Skip Current Track"
-msgstr "Last.fm: 現在のトラックをスキップ"
-
-#: MainWindow.cpp:864 playlist/view/PlaylistViewCommon.cpp:115
-msgid "Queue Track"
-msgstr "トラックをキューに追加"
-
-#: MainWindow.cpp:869
-msgid "Rate Current Track: 1"
-msgstr "現在のトラックを評価: 1"
-
-#: MainWindow.cpp:874
-msgid "Rate Current Track: 2"
-msgstr "現在のトラックを評価: 2"
-
-#: MainWindow.cpp:879
-msgid "Rate Current Track: 3"
-msgstr "現在のトラックを評価: 3"
-
-#: MainWindow.cpp:884
-msgid "Rate Current Track: 4"
-msgstr "現在のトラックを評価: 4"
-
-#: MainWindow.cpp:889
-msgid "Rate Current Track: 5"
-msgstr "現在のトラックを評価: 5"
-
-#: MainWindow.cpp:895
-msgid "Network Request Viewer"
-msgstr "ネットワーク・リクエスト・ビューア"
-
-#: MainWindow.cpp:913
-msgid "&About Amarok"
-msgstr "&Amarok について"
-
-#: MainWindow.cpp:917
-msgid "&Report Bug..."
-msgstr "バグを報告(&R)..."
-
-#: MainWindow.cpp:977
-msgid "&Music"
-msgstr "音楽(&M)"
-
-#: MainWindow.cpp:979
-msgid "&Amarok"
-msgstr "&Amarok"
-
-#: MainWindow.cpp:1003 playlist/PlaylistDock.cpp:54
-#: playlist/PlaylistToolBar.cpp:38
-msgid "&Playlist"
-msgstr "プレイリスト(&P)"
-
-#: MainWindow.cpp:1020
-msgid "&Tools"
-msgstr "ツール(&T)"
-
-#: MainWindow.cpp:1037
-msgid "&Settings"
-msgstr "設定(&S)"
-
-#: MainWindow.cpp:1084
-#, kde-format
-msgid ""
-"You have chosen to hide the menu bar.\n"
-"\n"
-"Please remember that you can always use the shortcut \"%1\" to bring it back."
-msgstr ""
-
-#: MainWindow.cpp:1086
-msgid "Hide Menu"
-msgstr "メニューを隠す"
-
-#: MainWindow.cpp:1128
-#, kde-format
-msgid "Paused  ::  %1"
-msgstr "一時停止 ::  %1"
-
-#: MainWindow.cpp:1141 amarokurls/BookmarkTreeView.cpp:377
-#: amarokurls/BookmarkTreeView.cpp:378 amarokurls/BookmarkTreeView.cpp:379
-#: context/applets/albums/AlbumItem.cpp:97
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:444
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:445
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:446
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:447
-msgid "Unknown"
-msgstr "不明"
-
-#: MainWindow.cpp:1141
-#, kde-format
-msgid "%1 - %2  ::  %3"
-msgstr "%1 - %2  ::  %3"
-
-#: PluginManager.cpp:253
-msgid ""
-"<p>Amarok could not find any collection plugins. It is possible that Amarok "
-"is installed under the wrong prefix, please fix your installation using:<pre>"
-"$ cd /path/to/amarok/source-code/<br>$ su -c \"make uninstall\"<br>$ cmake -"
-"DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -c \"make install\"<br>$ "
-"kbuildsycoca4 --noincremental<br>$ amarok</pre>More information can be found "
-"in the README file. For further assistance join us at #amarok on irc."
-"freenode.net.</p>"
-msgstr ""
-"<p>Amarok はコレクション用のプラグインを見つけることができませんでした。"
-"Amarok が間違った場所にインストールされている可能性があります。以下に従ってイ"
-"ンストールを修正してください。<pre>$ cd /path/to/amarok/source-code/<br>$ su "
-"-c \"make uninstall\"<br>$ cmake -DCMAKE_INSTALL_PREFIX=`kde4-config --"
-"prefix` && su -c \"make install\"<br>$ kbuildsycoca4 --noincremental<br>$ "
-"amarok</pre>README により詳しい情報があります。さらに手助けが必要な場合は "
-"irc.freenode.net の #amarok に参加してください。</p>"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:73
-msgid ""
-"<qt>No information available.<br />The supplied KAboutData object does not "
-"exist.</qt>"
-msgstr ""
-
-#: aboutdialog/ExtendedAboutDialog.cpp:82
-msgid ""
-"<qt>No information available.<br />The supplied OcsData object does not "
-"exist.</qt>"
-msgstr ""
-
-#: aboutdialog/ExtendedAboutDialog.cpp:91
-#, kde-format
-msgid "About %1"
-msgstr "%1 について"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:112
-#, kde-format
-msgid ""
-"<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE %3</"
-"html>"
-msgstr ""
-"<html><font size=\"5\">%1</font><br /><b>バージョン %2</b><br />KDE %3 を使用"
-"</html>"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:152
-#, kde-format
-msgid "License: %1"
-msgstr "ライセンス: %1"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:166
-msgid "&About"
-msgstr "情報(&A)"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:183
-msgid "Get data from openDesktop.org to learn more about the team"
-msgstr ""
-
-#: aboutdialog/ExtendedAboutDialog.cpp:195
-msgid ""
-"Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to report "
-"bugs.\n"
-msgstr ""
-"バグを報告するために <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> "
-"を使ってください。\n"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:200
-#: aboutdialog/ExtendedAboutDialog.cpp:206
-#, kde-format
-msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
-msgstr "バグを <a href=\"mailto:%1\">%2</a> に報告してください。\n"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:225
-msgid "A&uthor"
-msgstr "作者(&U)"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:225
-msgid "A&uthors"
-msgstr "作者(&U)"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:239
-msgid "Get data from openDesktop.org to learn more about contributors"
-msgstr ""
-
-#: aboutdialog/ExtendedAboutDialog.cpp:253
-msgid "&Thanks To"
-msgstr "&Thanks To"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:266
-msgid "Get data from openDesktop.org to learn more about our generous donors"
-msgstr ""
-
-#: aboutdialog/ExtendedAboutDialog.cpp:286
-msgid "&Donors"
-msgstr "寄付者(&D)"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:316
-msgid "T&ranslation"
-msgstr "翻訳(&R)"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:340
-msgid "License Agreement"
-msgstr "ライセンス同意"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:373
-msgid "Internet connection not available"
-msgstr "インターネット接続が利用できません"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:373
-msgid "Network error"
-msgstr "ネットワークエラー"
-
-#: aboutdialog/OcsPersonItem.cpp:95
-msgid "Email contributor"
-msgstr "貢献者の Email"
-
-#: aboutdialog/OcsPersonItem.cpp:103 aboutdialog/OcsPersonItem.cpp:274
-msgid "Visit contributor's homepage"
-msgstr "貢献者のホームページを訪問"
-
-#: aboutdialog/OcsPersonItem.cpp:179
-#, kde-format
-msgctxt "A person's location: City, Country"
-msgid "%1, %2"
-msgstr "%2 %1"
-
-#: aboutdialog/OcsPersonItem.cpp:199
-msgid "IRC channels: "
-msgstr "IRC チャンネル: "
-
-#: aboutdialog/OcsPersonItem.cpp:212
-msgid "Favorite music: "
-msgstr "お気に入りの音楽: "
-
-#: aboutdialog/OcsPersonItem.cpp:217
-#, kde-format
-msgid "Visit %1's openDesktop.org profile"
-msgstr "%1 の openDesktop.org プロフィールを訪問"
-
-#: aboutdialog/OcsPersonItem.cpp:219
-#, kde-format
-msgid "Visit %1's profile on openDesktop.org"
-msgstr "openDesktop.org の %1 のプロフィールを訪問"
-
-#: aboutdialog/OcsPersonItem.cpp:253
-msgid "Visit contributor's blog"
-msgstr "貢献者のブログを訪問"
-
-#: aboutdialog/OcsPersonItem.cpp:258
-msgid "Visit contributor's del.icio.us profile"
-msgstr "貢献者の del.icio.us プロフィールを訪問"
-
-#: aboutdialog/OcsPersonItem.cpp:263
-msgid "Visit contributor's Digg profile"
-msgstr "貢献者の Digg プロフィールを訪問"
-
-#: aboutdialog/OcsPersonItem.cpp:268
-msgid "Visit contributor's Facebook profile"
-msgstr "貢献者の Facebook プロフィールを訪問"
-
-#: aboutdialog/OcsPersonItem.cpp:284
-msgid "Visit contributor's Last.fm profile"
-msgstr "貢献者の Last.fm プロフィールを訪問"
-
-#: aboutdialog/OcsPersonItem.cpp:292
-msgid "Visit contributor's LinkedIn profile"
-msgstr "貢献者の LinkedIn プロフィールを訪問"
-
-#: aboutdialog/OcsPersonItem.cpp:297
-msgid "Visit contributor's MySpace homepage"
-msgstr "貢献者の MySpace プロフィールを訪問"
-
-#: aboutdialog/OcsPersonItem.cpp:302
-msgid "Visit contributor's Reddit profile"
-msgstr "貢献者の Reddit プロフィールを訪問"
-
-#: aboutdialog/OcsPersonItem.cpp:307
-msgid "Visit contributor's YouTube profile"
-msgstr "貢献者の YouTube プロフィールを訪問"
-
-#: aboutdialog/OcsPersonItem.cpp:312
-msgid "Visit contributor's Twitter feed"
-msgstr "貢献者の Twitter プロフィールを訪問"
-
-#: aboutdialog/OcsPersonItem.cpp:317
-msgid "Visit contributor's Wikipedia profile"
-msgstr "貢献者の Wikipedia プロフィールを訪問"
-
-#: aboutdialog/OcsPersonItem.cpp:322
-msgid "Visit contributor's Xing profile"
-msgstr "貢献者の Xing プロフィールを訪問"
-
-#: aboutdialog/OcsPersonItem.cpp:327
-msgid "Visit contributor's identi.ca feed"
-msgstr "貢献者の identi.ca プロフィールを訪問"
-
-#: aboutdialog/OcsPersonItem.cpp:332
-msgid "Visit contributor's libre.fm profile"
-msgstr "貢献者の libre.fm プロフィールを訪問"
-
-#: aboutdialog/OcsPersonItem.cpp:337
-msgid "Visit contributor's StackOverflow profile"
-msgstr "貢献者の StackOverflow プロフィールを訪問"
-
-#: aboutdialog/libattica-ocsclient/personlistjob.cpp:108
-msgid "Unable to parse avatar image data."
-msgstr "アバター画像データを処理できません。"
-
 #: amarokurls/AmarokUrlHandler.cpp:222
 msgctxt "The command type of this url is not known"
 msgid "Unknown"
@@ -7501,84 +7483,6 @@ msgstr "タブ譜の設定"
 msgid "Reload Tabs"
 msgstr "タブ譜を再読み込み"
 
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:67
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:128
-msgid "Upcoming Events"
-msgstr "近日中のイベント"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:78
-msgid "View Events Calendar"
-msgstr ""
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:91
-msgctxt "@title:group"
-msgid "No track is currently playing"
-msgstr "再生中のトラックはありません"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:158
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:303
-#, fuzzy
-#| msgid "Favorite music: "
-msgid "Favorite Venues"
-msgstr "お気に入りの音楽: "
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:224
-#, fuzzy
-#| msgid "Upcoming events"
-msgid "No upcoming events"
-msgstr "近日中のイベント"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:224
-#, fuzzy, kde-format
-#| msgid "No upcoming events for %1"
-msgid "%1: No upcoming events"
-msgstr "%1 の近日中のイベントはありません"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:229
-#, fuzzy, kde-format
-#| msgid "All events"
-msgctxt "@title:group Number of upcoming events"
-msgid "1 event"
-msgid_plural "%1 events"
-msgstr[0] "すべてのイベント"
-msgstr[1] "すべてのイベント"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:230
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:640
-#, kde-format
-msgctxt "@title:group Number of upcoming events"
-msgid "%1: 1 event"
-msgid_plural "%1: %2 events"
-msgstr[0] ""
-msgstr[1] ""
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:302
-msgid "Upcoming Events Settings"
-msgstr "近日中のイベント設定"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:353
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:362
-msgctxt "@label:textbox Url label"
-msgid "link"
-msgstr "リンク"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:494
-#, fuzzy
-#| msgid "Merged View"
-msgid "Map View"
-msgstr "統合ビュー"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:532
-msgid "Events Calender"
-msgstr ""
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:638
-#, fuzzy
-#| msgid "Favorite music: "
-msgctxt "@title:group"
-msgid "Favorite Venues"
-msgstr "お気に入りの音楽: "
-
 #: context/applets/upcomingevents/UpcomingEventsCalendarWidget.cpp:160
 msgctxt "@info:tooltip Calendar action"
 msgid "Jump to Today"
@@ -7676,6 +7580,84 @@ msgstr[1] "%1 日後"
 msgctxt "@info:tooltip"
 msgid "<strong>Location:</strong><nl/>%1"
 msgstr ""
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:67
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:128
+msgid "Upcoming Events"
+msgstr "近日中のイベント"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:78
+msgid "View Events Calendar"
+msgstr ""
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:91
+msgctxt "@title:group"
+msgid "No track is currently playing"
+msgstr "再生中のトラックはありません"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:158
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:303
+#, fuzzy
+#| msgid "Favorite music: "
+msgid "Favorite Venues"
+msgstr "お気に入りの音楽: "
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:224
+#, fuzzy
+#| msgid "Upcoming events"
+msgid "No upcoming events"
+msgstr "近日中のイベント"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:224
+#, fuzzy, kde-format
+#| msgid "No upcoming events for %1"
+msgid "%1: No upcoming events"
+msgstr "%1 の近日中のイベントはありません"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:229
+#, fuzzy, kde-format
+#| msgid "All events"
+msgctxt "@title:group Number of upcoming events"
+msgid "1 event"
+msgid_plural "%1 events"
+msgstr[0] "すべてのイベント"
+msgstr[1] "すべてのイベント"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:230
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:640
+#, kde-format
+msgctxt "@title:group Number of upcoming events"
+msgid "%1: 1 event"
+msgid_plural "%1: %2 events"
+msgstr[0] ""
+msgstr[1] ""
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:302
+msgid "Upcoming Events Settings"
+msgstr "近日中のイベント設定"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:353
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:362
+msgctxt "@label:textbox Url label"
+msgid "link"
+msgstr "リンク"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:494
+#, fuzzy
+#| msgid "Merged View"
+msgid "Map View"
+msgstr "統合ビュー"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:532
+msgid "Events Calendar"
+msgstr ""
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:638
+#, fuzzy
+#| msgid "Favorite music: "
+msgctxt "@title:group"
+msgid "Favorite Venues"
+msgstr "お気に入りの音楽: "
 
 #: context/applets/videoclip/CustomVideoWidget.cpp:83
 msgid "Enter &fullscreen"
@@ -8156,6 +8138,12 @@ msgid ""
 "properly."
 msgstr ""
 
+#: core-impl/collections/db/sql/SqlMeta.cpp:272
+#: covermanager/CoverManager.cpp:842 services/lastfm/meta/LastFmMeta.cpp:133
+#, kde-format
+msgid "%1 - %2"
+msgstr "%1 - %2"
+
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:497
 msgid "Organizing tracks"
 msgstr "トラックを管理中"
@@ -8194,12 +8182,6 @@ msgstr "トランスコーディング: %1"
 #, kde-format
 msgid "Removing: %1"
 msgstr "削除中: %1"
-
-#: core-impl/collections/db/sql/SqlMeta.cpp:272
-#: covermanager/CoverManager.cpp:842 services/lastfm/meta/LastFmMeta.cpp:133
-#, kde-format
-msgid "%1 - %2"
-msgstr "%1 - %2"
 
 #: core-impl/collections/db/ScanManager.cpp:136
 msgid "Database import requested"
@@ -8598,6 +8580,15 @@ msgstr "2 カ月前"
 msgid "three months ago"
 msgstr "3 カ月前"
 
+#: core-impl/collections/support/TrashCollectionLocation.cpp:47
+msgid "Trash"
+msgstr "ごみ箱"
+
+#: core-impl/collections/support/TrashCollectionLocation.cpp:101
+#, kde-format
+msgid "Moving to trash: %1"
+msgstr "ごみ箱に移動: %1"
+
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:40
 #, kde-format
 msgctxt "@info"
@@ -8659,10 +8650,10 @@ msgstr "ファイルを移動"
 msgctxt "@info"
 msgid ""
 "There was a problem and this track could not be removed. Make sure the "
-"directory is writeable."
+"directory is writable."
 msgid_plural ""
 "There was a problem and %1 tracks could not be removed. Make sure the "
-"directory is writeable."
+"directory is writable."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -8672,7 +8663,7 @@ msgstr "ファイルを移動できませんでした"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:110
 msgid ""
-"The collection does not have enough free space available or is not writeable."
+"The collection does not have enough free space available or is not writable."
 msgstr ""
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:116
@@ -8682,15 +8673,6 @@ msgstr "空のフォルダを削除しますか？"
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:117
 msgid "Remove empty folders?"
 msgstr "空のフォルダを削除しますか？"
-
-#: core-impl/collections/support/TrashCollectionLocation.cpp:47
-msgid "Trash"
-msgstr "ごみ箱"
-
-#: core-impl/collections/support/TrashCollectionLocation.cpp:101
-#, kde-format
-msgid "Moving to trash: %1"
-msgstr "ごみ箱に移動: %1"
 
 #: core-impl/collections/umscollection/handler/UmsHandler.cpp:474
 msgid "&Use as Collection"
@@ -9227,23 +9209,24 @@ msgctxt ""
 msgid "m:ss"
 msgstr "m:ss"
 
-#: core/meta/support/MetaUtility.cpp:401
-#, fuzzy
-#| msgid "h:mm:ss"
-msgctxt ""
-"the time format for a time length when the time is 1 day or above see "
-"QDateTime documentation."
-msgid "d:hh:mm:ss"
-msgstr "h:mm:ss"
+#: core/meta/support/MetaUtility.cpp:406
+#, fuzzy, kde-format
+#| msgid "%1 day"
+#| msgid_plural "%1 days"
+msgctxt "number of days with spacing for the pretty time"
+msgid "%1 day, "
+msgid_plural "%1 days, "
+msgstr[0] "%1 日"
+msgstr[1] "%1 日"
 
-#: core/meta/support/MetaUtility.cpp:403
+#: core/meta/support/MetaUtility.cpp:407
 msgctxt ""
 "the time format for a time length when the time is 1 hour or above see QTime "
 "documentation."
 msgid "h:mm:ss"
 msgstr "h:mm:ss"
 
-#: core/meta/support/MetaUtility.cpp:416
+#: core/meta/support/MetaUtility.cpp:421
 #, kde-format
 msgctxt "number of years for the pretty time"
 msgid "%1 year"
@@ -9252,7 +9235,7 @@ msgstr[0] "%1年"
 msgstr[1] "%1年"
 
 # |,no-check-spell
-#: core/meta/support/MetaUtility.cpp:418
+#: core/meta/support/MetaUtility.cpp:423
 #, kde-format
 msgctxt "number of months for the pretty time"
 msgid "%1 month"
@@ -9260,7 +9243,7 @@ msgid_plural "%1 months"
 msgstr[0] "%1月"
 msgstr[1] "%1月"
 
-#: core/meta/support/MetaUtility.cpp:420
+#: core/meta/support/MetaUtility.cpp:425
 #, kde-format
 msgctxt "number of days for the pretty time"
 msgid "%1 day"
@@ -9268,7 +9251,7 @@ msgid_plural "%1 days"
 msgstr[0] "%1日"
 msgstr[1] "%1日"
 
-#: core/meta/support/MetaUtility.cpp:422
+#: core/meta/support/MetaUtility.cpp:427
 #, kde-format
 msgctxt "number of hours for the pretty time"
 msgid "%1 hour"
@@ -9276,7 +9259,7 @@ msgid_plural "%1 hours"
 msgstr[0] "%1時間"
 msgstr[1] "%1時間"
 
-#: core/meta/support/MetaUtility.cpp:424
+#: core/meta/support/MetaUtility.cpp:429
 #, kde-format
 msgctxt "number of minutes for the pretty time"
 msgid "%1 minute"
@@ -9284,7 +9267,7 @@ msgid_plural "%1 minutes"
 msgstr[0] "%1分"
 msgstr[1] "%1分"
 
-#: core/meta/support/MetaUtility.cpp:426
+#: core/meta/support/MetaUtility.cpp:431
 #, kde-format
 msgctxt "number of seconds for the pretty time"
 msgid "%1 second"
@@ -10974,32 +10957,6 @@ msgstr "前のトラック"
 msgid "one of the tracks in the current playlist"
 msgstr "プレイリスト内におけるトラック間の進み方"
 
-#: dynamic/biases/PartBias.cpp:44
-#, fuzzy
-#| msgid "Position:"
-msgctxt "Name of the \"Part\" bias"
-msgid "Partition"
-msgstr "位置:"
-
-#: dynamic/biases/PartBias.cpp:53
-msgctxt "Description of the \"Part\" bias"
-msgid ""
-"The \"Part\" bias fills parts of the playlist from different sub-biases."
-msgstr ""
-
-#: dynamic/biases/PartBias.cpp:260
-msgid "This controls what portion of the playlist should match the criteria"
-msgstr ""
-"プレイリストの何パーセントのトラックを指定した条件にマッチさせるかを設定しま"
-"す。"
-
-#: dynamic/biases/PartBias.cpp:401
-#, fuzzy
-#| msgid "Position:"
-msgctxt "Part bias representation"
-msgid "Partition"
-msgstr "位置:"
-
 #: dynamic/biases/QuizPlayBias.cpp:44
 msgctxt "Name of the \"QuizPlay\" bias"
 msgid "Quiz play"
@@ -11100,6 +11057,32 @@ msgstr ""
 msgctxt "Inverted condition in tag match bias"
 msgid "Not %1"
 msgstr "%1 について"
+
+#: dynamic/biases/PartBias.cpp:44
+#, fuzzy
+#| msgid "Position:"
+msgctxt "Name of the \"Part\" bias"
+msgid "Partition"
+msgstr "位置:"
+
+#: dynamic/biases/PartBias.cpp:53
+msgctxt "Description of the \"Part\" bias"
+msgid ""
+"The \"Part\" bias fills parts of the playlist from different sub-biases."
+msgstr ""
+
+#: dynamic/biases/PartBias.cpp:260
+msgid "This controls what portion of the playlist should match the criteria"
+msgstr ""
+"プレイリストの何パーセントのトラックを指定した条件にマッチさせるかを設定しま"
+"す。"
+
+#: dynamic/biases/PartBias.cpp:401
+#, fuzzy
+#| msgid "Position:"
+msgctxt "Part bias representation"
+msgid "Partition"
+msgstr "位置:"
 
 #: dynamic/Bias.cpp:239
 #, fuzzy
@@ -12866,7 +12849,7 @@ msgid "Neighbors"
 msgstr "ご近所さん"
 
 #: services/lastfm/LoveTrackAction.cpp:25
-#: services/lastfm/LastFmService.cpp:287
+#: services/lastfm/LastFmService.cpp:284
 msgid "Last.fm: Love"
 msgstr "Last.fm: Love"
 
@@ -13072,13 +13055,6 @@ msgstr "ログインをテスト"
 msgid "Unable to connect to Last.fm service."
 msgstr "Last.fm サービスに接続できません。"
 
-#: services/lastfm/ScrobblerAdapter.cpp:242
-#: services/lastfm/LastFmService.cpp:563
-#, kde-format
-msgctxt "As in, lastfm"
-msgid "Loved Track: %1"
-msgstr "Love したトラック: %1"
-
 #: services/lastfm/LastFmServiceConfig.cpp:143
 msgid "Last.fm credentials"
 msgstr "Last.fm 資格情報"
@@ -13088,81 +13064,6 @@ msgid ""
 "No running KWallet found. Would you like Amarok to save your Last.fm "
 "credentials in plaintext?"
 msgstr ""
-
-#: services/lastfm/LastFmService.cpp:194
-msgid "Last.fm: The social music revolution"
-msgstr "Last.fm: ソーシャル音楽革命"
-
-#: services/lastfm/LastFmService.cpp:196
-msgid ""
-"Last.fm is a popular online service that provides personal radio stations "
-"and music recommendations. A personal listening station is tailored based on "
-"your listening habits and provides you with recommendations for new music. "
-"It is also possible to play stations with music that is similar to a "
-"particular artist as well as listen to streams from people you have added as "
-"friends or that Last.fm considers your musical \"neighbors\""
-msgstr ""
-
-#: services/lastfm/LastFmService.cpp:289
-msgid "Ctrl+L"
-msgstr "Ctrl+L"
-
-#: services/lastfm/LastFmService.cpp:342
-msgctxt "Last.fm: errorMessage"
-msgid "Either the username was not recognized, or the password was incorrect."
-msgstr "ユーザ名が認識されなかったか、パスワードが間違っていました。"
-
-#: services/lastfm/LastFmService.cpp:346
-msgctxt "Last.fm: errorMessage"
-msgid ""
-"There was a problem communicating with the Last.fm services. Please try "
-"again later."
-msgstr ""
-"Last.fm サービスとの通信に問題がありました。しばらくたってからやり直してくだ"
-"さい。"
-
-#: services/lastfm/LastFmService.cpp:434
-msgid "Enter an artist name"
-msgstr "アーティスト名を入力"
-
-#: services/lastfm/LastFmService.cpp:437
-msgid "Enter a tag"
-msgstr "タグを入力"
-
-#: services/lastfm/LastFmService.cpp:440
-#, fuzzy
-#| msgid "Enter a last.fm user name"
-msgid "Enter a Last.fm user name"
-msgstr "Last.fm のユーザ名を入力"
-
-#: services/lastfm/LastFmService.cpp:453
-#, fuzzy, kde-format
-#| msgid "Username: "
-msgid "Username: %1"
-msgstr "ユーザ名: "
-
-#: services/lastfm/LastFmService.cpp:458
-#, kde-format
-msgid "Play Count: %1 play"
-msgid_plural "Play Count: %1 plays"
-msgstr[0] "再生回数: %1 回再生"
-msgstr[1] "再生回数: %1 回再生"
-
-#: services/lastfm/LastFmService.cpp:468
-msgid "Enter login information for Last.fm"
-msgstr "Last.fm のログイン情報を入力"
-
-#: services/lastfm/LastFmService.cpp:524
-msgid "Create a Custom Last.fm Station"
-msgstr "Last.fm のカスタムステーションを作成"
-
-#: services/lastfm/LastFmService.cpp:527
-msgid "Tag"
-msgstr "タグ"
-
-#: services/lastfm/LastFmService.cpp:527
-msgid "User"
-msgstr "ユーザ"
 
 #: services/lastfm/LastFmServiceCollection.cpp:42
 #, kde-format
@@ -13192,6 +13093,84 @@ msgstr "友達のパーソナルラジオ"
 #: services/lastfm/SimilarArtistsAction.cpp:26
 msgid "Play Similar Artists from Last.fm"
 msgstr "Last.fm から類似したアーティストを再生"
+
+#: services/lastfm/ScrobblerAdapter.cpp:236
+#: services/lastfm/LastFmService.cpp:543
+#, kde-format
+msgctxt "As in, lastfm"
+msgid "Loved Track: %1"
+msgstr "Love したトラック: %1"
+
+#: services/lastfm/LastFmService.cpp:195
+msgid "Last.fm: The social music revolution"
+msgstr "Last.fm: ソーシャル音楽革命"
+
+#: services/lastfm/LastFmService.cpp:197
+msgid ""
+"Last.fm is a popular online service that provides personal radio stations "
+"and music recommendations. A personal listening station is tailored based on "
+"your listening habits and provides you with recommendations for new music. "
+"It is also possible to play stations with music that is similar to a "
+"particular artist as well as listen to streams from people you have added as "
+"friends or that Last.fm considers your musical \"neighbors\""
+msgstr ""
+
+#: services/lastfm/LastFmService.cpp:286
+msgid "Ctrl+L"
+msgstr "Ctrl+L"
+
+#: services/lastfm/LastFmService.cpp:339
+msgctxt "Last.fm: errorMessage"
+msgid "Either the username was not recognized, or the password was incorrect."
+msgstr "ユーザ名が認識されなかったか、パスワードが間違っていました。"
+
+#: services/lastfm/LastFmService.cpp:343
+msgctxt "Last.fm: errorMessage"
+msgid ""
+"There was a problem communicating with the Last.fm services. Please try "
+"again later."
+msgstr ""
+"Last.fm サービスとの通信に問題がありました。しばらくたってからやり直してくだ"
+"さい。"
+
+#: services/lastfm/LastFmService.cpp:431
+msgid "Enter an artist name"
+msgstr "アーティスト名を入力"
+
+#: services/lastfm/LastFmService.cpp:434
+msgid "Enter a tag"
+msgstr "タグを入力"
+
+#: services/lastfm/LastFmService.cpp:437
+#, fuzzy
+#| msgid "Enter a last.fm user name"
+msgid "Enter a Last.fm user name"
+msgstr "Last.fm のユーザ名を入力"
+
+#: services/lastfm/LastFmService.cpp:450
+#, fuzzy, kde-format
+#| msgid "Username: "
+msgid "Username: %1"
+msgstr "ユーザ名: "
+
+#: services/lastfm/LastFmService.cpp:455
+#, kde-format
+msgid "Play Count: %1 play"
+msgid_plural "Play Count: %1 plays"
+msgstr[0] "再生回数: %1 回再生"
+msgstr[1] "再生回数: %1 回再生"
+
+#: services/lastfm/LastFmService.cpp:504
+msgid "Create a Custom Last.fm Station"
+msgstr "Last.fm のカスタムステーションを作成"
+
+#: services/lastfm/LastFmService.cpp:507
+msgid "Tag"
+msgstr "タグ"
+
+#: services/lastfm/LastFmService.cpp:507
+msgid "User"
+msgstr "ユーザ"
 
 #: services/magnatune/MagnatuneCollectionLocation.cpp:42
 msgid "Preview Tracks"
@@ -14871,6 +14850,24 @@ msgctxt "track from source"
 msgid "from <b>%1</b>"
 msgstr "<b>%1</b> から"
 
+#: PluginManager.cpp:253
+msgid ""
+"<p>Amarok could not find any collection plugins. It is possible that Amarok "
+"is installed under the wrong prefix, please fix your installation using:<pre>"
+"$ cd /path/to/amarok/source-code/<br>$ su -c \"make uninstall\"<br>$ cmake -"
+"DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -c \"make install\"<br>$ "
+"kbuildsycoca4 --noincremental<br>$ amarok</pre>More information can be found "
+"in the README file. For further assistance join us at #amarok on irc."
+"freenode.net.</p>"
+msgstr ""
+"<p>Amarok はコレクション用のプラグインを見つけることができませんでした。"
+"Amarok が間違った場所にインストールされている可能性があります。以下に従ってイ"
+"ンストールを修正してください。<pre>$ cd /path/to/amarok/source-code/<br>$ su "
+"-c \"make uninstall\"<br>$ cmake -DCMAKE_INSTALL_PREFIX=`kde4-config --"
+"prefix` && su -c \"make install\"<br>$ kbuildsycoca4 --noincremental<br>$ "
+"amarok</pre>README により詳しい情報があります。さらに手助けが必要な場合は "
+"irc.freenode.net の #amarok に参加してください。</p>"
+
 #: TrayIcon.cpp:146
 #, fuzzy, kde-format
 #| msgctxt "monthname year"
@@ -14907,6 +14904,17 @@ msgstr "再生回数:"
 #| msgid "Last played:"
 msgid "Last played: %1"
 msgstr "前回再生:"
+
+#, fuzzy
+
+
+
+
+
+
+
+
+
 
 
 

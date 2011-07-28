@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2011-07-17 03:51+0200\n"
-"PO-Revision-Date: 2011-07-09 09:23+0200\n"
+"POT-Creation-Date: 2011-07-26 04:06+0200\n"
+"PO-Revision-Date: 2011-07-26 20:01+0200\n"
 "Last-Translator: Martin Schlander <mschlander@opensuse.org>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
 "MIME-Version: 1.0\n"
@@ -89,6 +89,708 @@ msgstr "Stop efter aktuelt spor: Til"
 #: ActionClasses.cpp:542
 msgid "Stop after current track: Off"
 msgstr "Stop efter aktuelt spor: Fra"
+
+#: equalizer/EqualizerPresets.cpp:90
+msgid "Manual"
+msgstr "Manuel"
+
+#: equalizer/EqualizerPresets.cpp:91
+msgid "Classical"
+msgstr "Klassisk"
+
+#: equalizer/EqualizerPresets.cpp:92
+msgid "Club"
+msgstr "Club"
+
+#: equalizer/EqualizerPresets.cpp:93
+msgid "Dance"
+msgstr "Dance"
+
+#: equalizer/EqualizerPresets.cpp:94
+msgid "Full Bass"
+msgstr "Fuld bas"
+
+#: equalizer/EqualizerPresets.cpp:95
+msgid "Full Treble"
+msgstr "Fuld diskant"
+
+#: equalizer/EqualizerPresets.cpp:96
+msgid "Full Bass + Treble"
+msgstr "Fuld bas + diskant"
+
+#: equalizer/EqualizerPresets.cpp:97
+msgid "Laptop/Headphones"
+msgstr "Bærbar/høretelefoner"
+
+#: equalizer/EqualizerPresets.cpp:98
+msgid "Large Hall"
+msgstr "Stor sal"
+
+#: equalizer/EqualizerPresets.cpp:99
+msgid "Live"
+msgstr "Live"
+
+#: equalizer/EqualizerPresets.cpp:100
+msgid "Party"
+msgstr "Party"
+
+#: equalizer/EqualizerPresets.cpp:101
+msgid "Pop"
+msgstr "Pop"
+
+#: equalizer/EqualizerPresets.cpp:102
+msgid "Reggae"
+msgstr "Reggae"
+
+#: equalizer/EqualizerPresets.cpp:103
+msgid "Rock"
+msgstr "Rock"
+
+#: equalizer/EqualizerPresets.cpp:104
+msgid "Soft"
+msgstr "Soft"
+
+#: equalizer/EqualizerPresets.cpp:105
+msgid "Ska"
+msgstr "Ska"
+
+#: equalizer/EqualizerPresets.cpp:106
+msgid "Soft Rock"
+msgstr "Blød rock"
+
+#: equalizer/EqualizerPresets.cpp:107
+msgid "Techno"
+msgstr "Techno"
+
+#: equalizer/EqualizerPresets.cpp:108
+msgid "Zero"
+msgstr "Zero"
+
+#: KNotificationBackend.cpp:146
+msgid "Now playing"
+msgstr "Afspiller nu"
+
+#: App.cpp:410
+msgid "Files/URLs to open"
+msgstr "Filer/URL'er der skal åbnes"
+
+#: App.cpp:411
+msgid "Immediately start playing an audio cd"
+msgstr "Start afspilning af lyd-cd straks"
+
+#: App.cpp:413
+msgid "Skip backwards in playlist"
+msgstr "Skip tilbage i spillelisten"
+
+#: App.cpp:415
+msgid "Start playing current playlist"
+msgstr "Start afspilning af denne spilleliste"
+
+#: App.cpp:417
+msgid "Play if stopped, pause if playing"
+msgstr "Spil hvis der er stoppet, hold pause hvis der spilles"
+
+#: App.cpp:418
+msgid "Pause playback"
+msgstr "Pause i afspilning"
+
+#: App.cpp:420
+msgid "Stop playback"
+msgstr "Stop afspilning"
+
+#: App.cpp:422
+msgid "Skip forwards in playlist"
+msgstr "Skip fremad i spillelisten"
+
+#: App.cpp:423
+msgid "Additional options:"
+msgstr "Yderligere tilvalg:"
+
+#: App.cpp:425
+msgid "Append files/URLs to playlist"
+msgstr "Tilføj filer/URL'er til spilleliste"
+
+#: App.cpp:426
+msgid "Queue URLs after the currently playing track"
+msgstr "Sæt URL'er i kø efter det spor der afspilles"
+
+#: App.cpp:428
+msgid "Load URLs, replacing current playlist"
+msgstr "Indlæs URL'er, erstattende nuværende spilleliste"
+
+#: App.cpp:430
+msgid "Print verbose debugging information"
+msgstr "Skriv udførlig fejlretningsinformation"
+
+#: App.cpp:432
+msgid "Disable colorization for debug output."
+msgstr "Deaktivér farvelægning af fejlsøgning-output"
+
+#: App.cpp:434
+msgid "Allow running multiple Amarok instances"
+msgstr "Tillad kørsel af flere instanser af Amarok"
+
+#: App.cpp:435
+msgid "Base for relative filenames/URLs"
+msgstr "Udgangspunkt for relative filnavne/URL'er"
+
+#: App.cpp:437
+msgid "Unit test options:"
+msgstr "Indstillinger for enhedstest:"
+
+#: App.cpp:438
+msgid "Run integrated unit tests"
+msgstr "Kør integrerede enhedstests"
+
+#: App.cpp:439
+msgid "Destination of test output: 'stdout', 'log'"
+msgstr "Destination for testoutput: \"stdout\", \"log\""
+
+#: App.cpp:440
+msgid "Format of test output: 'xml', 'lightxml', 'plaintext'"
+msgstr "Format for testoutput: \"xml\", \"lightxml\", \"plaintext\""
+
+#: App.cpp:441
+msgid "Verbosity from 0-3 (highest)"
+msgstr "Uddybningsniveau fra 0-3 (højest)"
+
+#: App.cpp:633
+msgid ""
+"The embedded database was not found; you must set up a database server "
+"connection.\n"
+"You must restart Amarok after doing this."
+msgstr ""
+"Den indlejrede database blev ikke fundet, du skal sætte en forbindelse til "
+"en database-server op.\n"
+"Du er nødt til at genstarte Amarok efter det er gjort."
+
+#: App.cpp:634
+msgid ""
+"The connection details for the database server were invalid.\n"
+"You must enter correct settings and restart Amarok after doing this."
+msgstr ""
+"Forbindelsesdetaljerne for database-serveren var ugyldige.\n"
+"Du skal angive korrekte indstillinger og genstarte Amarok efter det er gjort."
+
+#: App.cpp:635
+msgid "Database Error"
+msgstr "Databasefejl"
+
+#: App.cpp:680
+msgid "Moving files to trash"
+msgstr "Flytter filer til papirkurven"
+
+#: App.cpp:768
+#, kde-format
+msgid ""
+"A music path, %1, is set in System Settings.\n"
+"Would you like to use that as a collection folder?"
+msgstr ""
+"En musik-sti, %1, er sat i Systemindstillinger.\n"
+"Vil du gerne bruge den som samlingsmappe?"
+
+#. i18n: file: core-impl/collections/audiocd/FormatSelectionDialog.ui:14
+#. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
+#: MainWindow.cpp:103 rc.cpp:1130 main.cpp:40
+msgid "Amarok"
+msgstr "Amarok"
+
+#: MainWindow.cpp:261
+msgid "Local Music"
+msgstr "Lokal musik"
+
+#: MainWindow.cpp:263
+msgid "Local sources of content"
+msgstr "Lokale kilder til indhold"
+
+#: MainWindow.cpp:271
+msgid "Internet"
+msgstr "Internet"
+
+#: MainWindow.cpp:273
+msgid "Online sources of content"
+msgstr "Online kilder til indhold"
+
+#: MainWindow.cpp:279
+msgid "Playlists"
+msgstr "Spillelister"
+
+#: MainWindow.cpp:281
+msgid "Various types of playlists"
+msgstr "Forskellige typer af spillelister"
+
+#: MainWindow.cpp:287 amarokurls/NavigationUrlGenerator.cpp:135
+msgid "Files"
+msgstr "Filer"
+
+#: MainWindow.cpp:289
+msgid "Browse local hard drive for content"
+msgstr "Gennemse lokal harddisk for indhold"
+
+#: MainWindow.cpp:350
+msgctxt "@item:inmenu"
+msgid "&View"
+msgstr "&Vis"
+
+#: MainWindow.cpp:353
+msgid "Lock Layout"
+msgstr "Lås layout"
+
+#: MainWindow.cpp:464
+msgid ""
+"<qt>Closing the main window will keep Amarok running in the System Tray. Use "
+"<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
+"qt>"
+msgstr ""
+"<qt>Efter lukning af hovedvinduet vil Amarok fortsat køre i statusområdet. "
+"Brug <B>Afslut</B> fra menuen, eller Amaroks statusikon, til at lukke "
+"programmet.</qt>"
+
+#: MainWindow.cpp:466
+msgid "Docking in System Tray"
+msgstr "Dokker i statusområdet"
+
+#: MainWindow.cpp:495
+msgid "Use relative path for &saving"
+msgstr "Brug relativ sti til at &gemme"
+
+#: MainWindow.cpp:507 covermanager/CoverFoundDialog.cpp:361
+msgid "Save As"
+msgstr "Gem som"
+
+#: MainWindow.cpp:559
+msgid "Play Media (Files or URLs)"
+msgstr "Afspil medie (filer eller URL'er)"
+
+#: MainWindow.cpp:559
+msgid "Add Media (Files or URLs)"
+msgstr "Tilføj medie (filer eller URL'er)"
+
+#: MainWindow.cpp:577
+msgid "Add Stream"
+msgstr "Tilføj stream"
+
+#: MainWindow.cpp:577
+msgid "Enter Stream URL:"
+msgstr "Angiv URL til stream:"
+
+#: MainWindow.cpp:701
+msgid "&Add Media..."
+msgstr "Tilføj &medie..."
+
+#: MainWindow.cpp:706
+msgctxt "clear playlist"
+msgid "&Clear Playlist"
+msgstr "&Ryd Spilleliste"
+
+#: MainWindow.cpp:711
+msgctxt "edit play queue of playlist"
+msgid "Edit &Queue"
+msgstr "Redigér &kø"
+
+#: MainWindow.cpp:716
+msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
+msgid "Re&move Duplicates"
+msgstr "Fjer&n dobbeltgængere"
+
+#: MainWindow.cpp:723
+msgid "&Add Stream..."
+msgstr "Tilføj &stream..."
+
+#: MainWindow.cpp:727
+msgid "&Export Playlist As..."
+msgstr "&Eksportér spilleliste som..."
+
+#: MainWindow.cpp:731 amarokurls/NavigationUrlGenerator.cpp:250
+msgid "Bookmark Media Sources View"
+msgstr "Sæt bogmærke ved mediekilder-visning"
+
+#: MainWindow.cpp:735 amarokurls/BookmarkManager.cpp:43
+msgid "Bookmark Manager"
+msgstr "Håndtering af bogmærker"
+
+#: MainWindow.cpp:739
+msgid "Equalizer"
+msgstr "Equalizer"
+
+#: MainWindow.cpp:743 playlist/PlaylistViewUrlGenerator.cpp:101
+msgid "Bookmark Playlist Setup"
+msgstr "Sæt bogmærke ved spilleliste-opsætning"
+
+#: MainWindow.cpp:747
+msgid "Bookmark Context Applets"
+msgstr "Sæt bogmærke ved kontekst-applets"
+
+#: MainWindow.cpp:751 covermanager/CoverManager.cpp:105
+msgid "Cover Manager"
+msgstr "Håndtering af omslag"
+
+#: MainWindow.cpp:755
+msgid "Play Media..."
+msgstr "Afspil medie..."
+
+#: MainWindow.cpp:760
+msgid "&Seek Forward"
+msgstr "Søg &fremad"
+
+#: MainWindow.cpp:766
+msgid "&Seek Backward"
+msgstr "Søg &tilbage"
+
+#: MainWindow.cpp:773
+msgid "Update Collection"
+msgstr "Opdatér samling"
+
+#: MainWindow.cpp:780
+msgid "Previous Track"
+msgstr "Forrige spor"
+
+#: MainWindow.cpp:787
+msgid "Restart current track"
+msgstr "Genstart aktuelt spor"
+
+#: MainWindow.cpp:793
+msgid "Repopulate Playlist"
+msgstr "Genudfyld spilleliste"
+
+#: MainWindow.cpp:799
+msgid "Disable Dynamic Playlist"
+msgstr "Deaktivér dynamisk spilleliste"
+
+#: MainWindow.cpp:803
+msgid "Next Track"
+msgstr "Næste spor"
+
+#: MainWindow.cpp:808
+msgid "Increase Volume"
+msgstr "Forøg lydstyrken"
+
+#: MainWindow.cpp:814
+msgid "Decrease Volume"
+msgstr "Formindsk lydstyrken"
+
+#: MainWindow.cpp:820
+msgid "Toggle Main Window"
+msgstr "Slå hovedvinduet til og fra"
+
+#: MainWindow.cpp:825
+msgid "Toggle Full Screen"
+msgstr "Slå fuldskærm til/fra"
+
+#: MainWindow.cpp:830
+msgid "Jump to"
+msgstr "Gå til"
+
+#: MainWindow.cpp:835
+msgid "Show active track"
+msgstr "Vis aktivt spor"
+
+#: MainWindow.cpp:839
+msgid "Show Notification Popup"
+msgstr "Vis bekendtgørelses-pop-op"
+
+#: MainWindow.cpp:844
+msgid "Mute Volume"
+msgstr "Sæt på lydløs"
+
+#: MainWindow.cpp:849
+msgid "Last.fm: Love Current Track"
+msgstr "Last.fm: Elsk dette spor"
+
+#: MainWindow.cpp:854
+msgid "Last.fm: Ban Current Track"
+msgstr "Last.fm: Bandlys dette spor"
+
+#: MainWindow.cpp:859
+msgid "Last.fm: Skip Current Track"
+msgstr "Last.fm: Skip dette spor"
+
+#: MainWindow.cpp:864 playlist/view/PlaylistViewCommon.cpp:115
+msgid "Queue Track"
+msgstr "Sæt spor i kø"
+
+#: MainWindow.cpp:869
+msgid "Rate Current Track: 1"
+msgstr "Vurdér dette spor: 1"
+
+#: MainWindow.cpp:874
+msgid "Rate Current Track: 2"
+msgstr "Vurdér dette spor: 2"
+
+#: MainWindow.cpp:879
+msgid "Rate Current Track: 3"
+msgstr "Vurdér dette spor: 3"
+
+#: MainWindow.cpp:884
+msgid "Rate Current Track: 4"
+msgstr "Vurdér dette spor: 4"
+
+#: MainWindow.cpp:889
+msgid "Rate Current Track: 5"
+msgstr "Vurdér dette spor: 5"
+
+#: MainWindow.cpp:895
+msgid "Network Request Viewer"
+msgstr "Fremviser af netværksanmodninger"
+
+#: MainWindow.cpp:913
+msgid "&About Amarok"
+msgstr "&Om Amarok"
+
+#: MainWindow.cpp:917
+msgid "&Report Bug..."
+msgstr "&Rapportér programfejl..."
+
+#: MainWindow.cpp:977
+msgid "&Music"
+msgstr "&Musik"
+
+#: MainWindow.cpp:979
+msgid "&Amarok"
+msgstr "&Amarok"
+
+#: MainWindow.cpp:1003 playlist/PlaylistDock.cpp:54
+#: playlist/PlaylistToolBar.cpp:38
+msgid "&Playlist"
+msgstr "S&pilleliste"
+
+#: MainWindow.cpp:1020
+msgid "&Tools"
+msgstr "Værk&tøjer"
+
+#: MainWindow.cpp:1037
+msgid "&Settings"
+msgstr "&Indstillinger"
+
+#: MainWindow.cpp:1084
+#, kde-format
+msgid ""
+"You have chosen to hide the menu bar.\n"
+"\n"
+"Please remember that you can always use the shortcut \"%1\" to bring it back."
+msgstr ""
+"Du har valgt at skjule menulinjen.\n"
+"\n"
+"Husk at du altid kan bruge genvejen \"%1\" til at få den frem igen."
+
+#: MainWindow.cpp:1086
+msgid "Hide Menu"
+msgstr "Skjul menu"
+
+#: MainWindow.cpp:1128
+#, kde-format
+msgid "Paused  ::  %1"
+msgstr "Pause  ::  %1"
+
+#: MainWindow.cpp:1141 amarokurls/BookmarkTreeView.cpp:377
+#: amarokurls/BookmarkTreeView.cpp:378 amarokurls/BookmarkTreeView.cpp:379
+#: context/applets/albums/AlbumItem.cpp:97
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:444
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:445
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:446
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:447
+msgid "Unknown"
+msgstr "Ukendt"
+
+#: MainWindow.cpp:1141
+#, kde-format
+msgid "%1 - %2  ::  %3"
+msgstr "%1 - %2  ::  %3"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:73
+msgid ""
+"<qt>No information available.<br />The supplied KAboutData object does not "
+"exist.</qt>"
+msgstr ""
+"<qt>Ingen information tilgængelig.<br />Det leverede KAboutData-objekt "
+"eksisterer ikke.</qt>"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:82
+msgid ""
+"<qt>No information available.<br />The supplied OcsData object does not "
+"exist.</qt>"
+msgstr ""
+"<qt>Ingen information tilgængelig.<br />Det leverede OcsData-objekt "
+"eksisterer ikke.</qt>"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:91
+#, kde-format
+msgid "About %1"
+msgstr "Om %1"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:112
+#, kde-format
+msgid ""
+"<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE %3</"
+"html>"
+msgstr ""
+"<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Med brug af KDE "
+"%3</html>"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:152
+#, kde-format
+msgid "License: %1"
+msgstr "Licens: %1"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:166
+msgid "&About"
+msgstr "O&m"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:183
+msgid "Get data from openDesktop.org to learn more about the team"
+msgstr "Hent data fra openDesktop.org for at lære mere om holdet"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:195
+msgid ""
+"Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to report "
+"bugs.\n"
+msgstr ""
+"Benyt venligst <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> til "
+"rapportering af programfejl.\n"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:200
+#: aboutdialog/ExtendedAboutDialog.cpp:206
+#, kde-format
+msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
+msgstr "Rapportér venligst fejl til <a href=\"mailto:%1\">%2</a>.\n"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:225
+msgid "A&uthor"
+msgstr "Opha&vsmand"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:225
+msgid "A&uthors"
+msgstr "Opha&vsmænd"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:239
+msgid "Get data from openDesktop.org to learn more about contributors"
+msgstr "Hent data fra openDesktop.org for at lære mere om bidragsydere"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:253
+msgid "&Thanks To"
+msgstr "&Tak til"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:266
+msgid "Get data from openDesktop.org to learn more about our generous donors"
+msgstr ""
+"Hent data fra openDesktop.org for at lære mere om vores generøse "
+"donationsgivere"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:286
+msgid "&Donors"
+msgstr "&Donationsgivere"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:316
+msgid "T&ranslation"
+msgstr "O&versættelse"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:340
+msgid "License Agreement"
+msgstr "Licensaftale"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:373
+msgid "Internet connection not available"
+msgstr "Internetforbindelse er ikke tilgængelig"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:373
+msgid "Network error"
+msgstr "Netværksfejl"
+
+#: aboutdialog/OcsPersonItem.cpp:95
+msgid "Email contributor"
+msgstr "Send e-mail til bidragsyder"
+
+#: aboutdialog/OcsPersonItem.cpp:103 aboutdialog/OcsPersonItem.cpp:274
+msgid "Visit contributor's homepage"
+msgstr "Besøg bidragsyders hjemmeside"
+
+#: aboutdialog/OcsPersonItem.cpp:179
+#, kde-format
+msgctxt "A person's location: City, Country"
+msgid "%1, %2"
+msgstr "%1, %2"
+
+#: aboutdialog/OcsPersonItem.cpp:199
+msgid "IRC channels: "
+msgstr "IRC-kanaler: "
+
+#: aboutdialog/OcsPersonItem.cpp:212
+msgid "Favorite music: "
+msgstr "Yndlingsmusik: "
+
+#: aboutdialog/OcsPersonItem.cpp:217
+#, kde-format
+msgid "Visit %1's openDesktop.org profile"
+msgstr "Besøg %1s openDesktop.org-profil"
+
+#: aboutdialog/OcsPersonItem.cpp:219
+#, kde-format
+msgid "Visit %1's profile on openDesktop.org"
+msgstr "Besøg %1s profil på openDesktop.org"
+
+#: aboutdialog/OcsPersonItem.cpp:253
+msgid "Visit contributor's blog"
+msgstr "Besøg bidragsyders blog"
+
+#: aboutdialog/OcsPersonItem.cpp:258
+msgid "Visit contributor's del.icio.us profile"
+msgstr "Besøg bidragsyders del.icio.us-profil"
+
+#: aboutdialog/OcsPersonItem.cpp:263
+msgid "Visit contributor's Digg profile"
+msgstr "Besøg bidragsyders Digg-profil"
+
+#: aboutdialog/OcsPersonItem.cpp:268
+msgid "Visit contributor's Facebook profile"
+msgstr "Besøg bidragsyders Facebook-profil"
+
+#: aboutdialog/OcsPersonItem.cpp:284
+msgid "Visit contributor's Last.fm profile"
+msgstr "Besøg bidragsyders Last.fm-profil"
+
+#: aboutdialog/OcsPersonItem.cpp:292
+msgid "Visit contributor's LinkedIn profile"
+msgstr "Besøg bidragsyders LinkedIn-profil"
+
+#: aboutdialog/OcsPersonItem.cpp:297
+msgid "Visit contributor's MySpace homepage"
+msgstr "Besøg bidragsyders MySpace-hjemmeside"
+
+#: aboutdialog/OcsPersonItem.cpp:302
+msgid "Visit contributor's Reddit profile"
+msgstr "Besøg bidragsyders Reddit-profil"
+
+#: aboutdialog/OcsPersonItem.cpp:307
+msgid "Visit contributor's YouTube profile"
+msgstr "Besøg bidragsyders YouTube-profil"
+
+#: aboutdialog/OcsPersonItem.cpp:312
+msgid "Visit contributor's Twitter feed"
+msgstr "Besøg bidragsyders Twitter-feed"
+
+#: aboutdialog/OcsPersonItem.cpp:317
+msgid "Visit contributor's Wikipedia profile"
+msgstr "Besøg bidragsyders Wikipedia-profil"
+
+#: aboutdialog/OcsPersonItem.cpp:322
+msgid "Visit contributor's Xing profile"
+msgstr "Besøg bidragsyders Xing-profil"
+
+#: aboutdialog/OcsPersonItem.cpp:327
+msgid "Visit contributor's identi.ca feed"
+msgstr "Besøg bidragsyders identi.ca-feed"
+
+#: aboutdialog/OcsPersonItem.cpp:332
+msgid "Visit contributor's libre.fm profile"
+msgstr "Besøg bidragsyders libre.fm-profil"
+
+#: aboutdialog/OcsPersonItem.cpp:337
+msgid "Visit contributor's StackOverflow profile"
+msgstr "Besøg bidragsyders StackOverflow-profil"
+
+#: aboutdialog/libattica-ocsclient/personlistjob.cpp:108
+msgid "Unable to parse avatar image data."
+msgstr "Kan ikke fortolke avatar-billeddata."
 
 #: rc.cpp:1
 msgctxt "NAME OF TRANSLATORS"
@@ -2318,7 +3020,7 @@ msgstr "Genindlæs tabulaturer med følgende titel og kunstner"
 #: dialogs/transferdialog.cpp:88 dialogs/FilenameLayoutDialog.cpp:230
 #: dialogs/FilenameLayoutDialog.cpp:591 musicbrainz/MusicBrainzTags.cpp:359
 #: playlist/PlaylistModel.cpp:902 services/jamendo/JamendoInfoParser.cpp:51
-#: services/lastfm/LastFmService.cpp:527
+#: services/lastfm/LastFmService.cpp:507
 #: services/magnatune/MagnatuneStore.cpp:218
 #: widgets/SmartPlaylistEditor.cpp:183 widgets/SmartPlaylistEditor.cpp:197
 msgid "Artist"
@@ -2492,12 +3194,6 @@ msgstr "Youtube HQ"
 #: rc.cpp:1127
 msgid "Use Wikipedia &mobile version"
 msgstr "Brug &mobilversionen af Wikipedia"
-
-#. i18n: file: core-impl/collections/audiocd/FormatSelectionDialog.ui:14
-#. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: rc.cpp:1130 MainWindow.cpp:103 main.cpp:40
-msgid "Amarok"
-msgstr "Amarok"
 
 #. i18n: file: core-impl/collections/audiocd/FormatSelectionDialog.ui:26
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
@@ -5297,720 +5993,6 @@ msgstr "Ingen gruppering (enkelt linje)"
 msgid "Verbose"
 msgstr "Uddybende"
 
-#: equalizer/EqualizerPresets.cpp:90
-msgid "Manual"
-msgstr "Manuel"
-
-#: equalizer/EqualizerPresets.cpp:91
-msgid "Classical"
-msgstr "Klassisk"
-
-#: equalizer/EqualizerPresets.cpp:92
-msgid "Club"
-msgstr "Club"
-
-#: equalizer/EqualizerPresets.cpp:93
-msgid "Dance"
-msgstr "Dance"
-
-#: equalizer/EqualizerPresets.cpp:94
-msgid "Full Bass"
-msgstr "Fuld bas"
-
-#: equalizer/EqualizerPresets.cpp:95
-msgid "Full Treble"
-msgstr "Fuld diskant"
-
-#: equalizer/EqualizerPresets.cpp:96
-msgid "Full Bass + Treble"
-msgstr "Fuld bas + diskant"
-
-#: equalizer/EqualizerPresets.cpp:97
-msgid "Laptop/Headphones"
-msgstr "Bærbar/høretelefoner"
-
-#: equalizer/EqualizerPresets.cpp:98
-msgid "Large Hall"
-msgstr "Stor sal"
-
-#: equalizer/EqualizerPresets.cpp:99
-msgid "Live"
-msgstr "Live"
-
-#: equalizer/EqualizerPresets.cpp:100
-msgid "Party"
-msgstr "Party"
-
-#: equalizer/EqualizerPresets.cpp:101
-msgid "Pop"
-msgstr "Pop"
-
-#: equalizer/EqualizerPresets.cpp:102
-msgid "Reggae"
-msgstr "Reggae"
-
-#: equalizer/EqualizerPresets.cpp:103
-msgid "Rock"
-msgstr "Rock"
-
-#: equalizer/EqualizerPresets.cpp:104
-msgid "Soft"
-msgstr "Soft"
-
-#: equalizer/EqualizerPresets.cpp:105
-msgid "Ska"
-msgstr "Ska"
-
-#: equalizer/EqualizerPresets.cpp:106
-msgid "Soft Rock"
-msgstr "Blød rock"
-
-#: equalizer/EqualizerPresets.cpp:107
-msgid "Techno"
-msgstr "Techno"
-
-#: equalizer/EqualizerPresets.cpp:108
-msgid "Zero"
-msgstr "Zero"
-
-#: KNotificationBackend.cpp:146
-msgid "Now playing"
-msgstr "Afspiller nu"
-
-#: App.cpp:410
-msgid "Files/URLs to open"
-msgstr "Filer/URL'er der skal åbnes"
-
-#: App.cpp:411
-msgid "Immediately start playing an audio cd"
-msgstr "Start afspilning af lyd-cd straks"
-
-#: App.cpp:413
-msgid "Skip backwards in playlist"
-msgstr "Skip tilbage i spillelisten"
-
-#: App.cpp:415
-msgid "Start playing current playlist"
-msgstr "Start afspilning af denne spilleliste"
-
-#: App.cpp:417
-msgid "Play if stopped, pause if playing"
-msgstr "Spil hvis der er stoppet, hold pause hvis der spilles"
-
-#: App.cpp:418
-msgid "Pause playback"
-msgstr "Pause i afspilning"
-
-#: App.cpp:420
-msgid "Stop playback"
-msgstr "Stop afspilning"
-
-#: App.cpp:422
-msgid "Skip forwards in playlist"
-msgstr "Skip fremad i spillelisten"
-
-#: App.cpp:423
-msgid "Additional options:"
-msgstr "Yderligere tilvalg:"
-
-#: App.cpp:425
-msgid "Append files/URLs to playlist"
-msgstr "Tilføj filer/URL'er til spilleliste"
-
-#: App.cpp:426
-msgid "Queue URLs after the currently playing track"
-msgstr "Sæt URL'er i kø efter det spor der afspilles"
-
-#: App.cpp:428
-msgid "Load URLs, replacing current playlist"
-msgstr "Indlæs URL'er, erstattende nuværende spilleliste"
-
-#: App.cpp:430
-msgid "Print verbose debugging information"
-msgstr "Skriv udførlig fejlretningsinformation"
-
-#: App.cpp:432
-msgid "Disable colorization for debug output."
-msgstr "Deaktivér farvelægning af fejlsøgning-output"
-
-#: App.cpp:434
-msgid "Allow running multiple Amarok instances"
-msgstr "Tillad kørsel af flere instanser af Amarok"
-
-#: App.cpp:435
-msgid "Base for relative filenames/URLs"
-msgstr "Udgangspunkt for relative filnavne/URL'er"
-
-#: App.cpp:437
-msgid "Unit test options:"
-msgstr "Indstillinger for enhedstest:"
-
-#: App.cpp:438
-msgid "Run integrated unit tests"
-msgstr "Kør integrerede enhedstests"
-
-#: App.cpp:439
-msgid "Destination of test output: 'stdout', 'log'"
-msgstr "Destination for testoutput: \"stdout\", \"log\""
-
-#: App.cpp:440
-msgid "Format of test output: 'xml', 'lightxml', 'plaintext'"
-msgstr "Format for testoutput: \"xml\", \"lightxml\", \"plaintext\""
-
-#: App.cpp:441
-msgid "Verbosity from 0-3 (highest)"
-msgstr "Uddybningsniveau fra 0-3 (højest)"
-
-#: App.cpp:633
-msgid ""
-"The embedded database was not found; you must set up a database server "
-"connection.\n"
-"You must restart Amarok after doing this."
-msgstr ""
-"Den indlejrede database blev ikke fundet, du skal sætte en forbindelse til "
-"en database-server op.\n"
-"Du er nødt til at genstarte Amarok efter det er gjort."
-
-#: App.cpp:634
-msgid ""
-"The connection details for the database server were invalid.\n"
-"You must enter correct settings and restart Amarok after doing this."
-msgstr ""
-"Forbindelsesdetaljerne for database-serveren var ugyldige.\n"
-"Du skal angive korrekte indstillinger og genstarte Amarok efter det er gjort."
-
-#: App.cpp:635
-msgid "Database Error"
-msgstr "Databasefejl"
-
-#: App.cpp:680
-msgid "Moving files to trash"
-msgstr "Flytter filer til papirkurven"
-
-#: App.cpp:768
-#, kde-format
-msgid ""
-"A music path, %1, is set in System Settings.\n"
-"Would you like to use that as a collection folder?"
-msgstr ""
-"En musik-sti, %1, er sat i Systemindstillinger.\n"
-"Vil du gerne bruge den som samlingsmappe?"
-
-#: MainWindow.cpp:261
-msgid "Local Music"
-msgstr "Lokal musik"
-
-#: MainWindow.cpp:263
-msgid "Local sources of content"
-msgstr "Lokale kilder til indhold"
-
-#: MainWindow.cpp:271
-msgid "Internet"
-msgstr "Internet"
-
-#: MainWindow.cpp:273
-msgid "Online sources of content"
-msgstr "Online kilder til indhold"
-
-#: MainWindow.cpp:279
-msgid "Playlists"
-msgstr "Spillelister"
-
-#: MainWindow.cpp:281
-msgid "Various types of playlists"
-msgstr "Forskellige typer af spillelister"
-
-#: MainWindow.cpp:287 amarokurls/NavigationUrlGenerator.cpp:135
-msgid "Files"
-msgstr "Filer"
-
-#: MainWindow.cpp:289
-msgid "Browse local hard drive for content"
-msgstr "Gennemse lokal harddisk for indhold"
-
-#: MainWindow.cpp:350
-msgctxt "@item:inmenu"
-msgid "&View"
-msgstr "&Vis"
-
-#: MainWindow.cpp:353
-msgid "Lock Layout"
-msgstr "Lås layout"
-
-#: MainWindow.cpp:464
-msgid ""
-"<qt>Closing the main window will keep Amarok running in the System Tray. Use "
-"<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
-"qt>"
-msgstr ""
-"<qt>Efter lukning af hovedvinduet vil Amarok fortsat køre i statusområdet. "
-"Brug <B>Afslut</B> fra menuen, eller Amaroks statusikon, til at lukke "
-"programmet.</qt>"
-
-#: MainWindow.cpp:466
-msgid "Docking in System Tray"
-msgstr "Dokker i statusområdet"
-
-#: MainWindow.cpp:495
-msgid "Use relative path for &saving"
-msgstr "Brug relativ sti til at &gemme"
-
-#: MainWindow.cpp:507 covermanager/CoverFoundDialog.cpp:361
-msgid "Save As"
-msgstr "Gem som"
-
-#: MainWindow.cpp:559
-msgid "Play Media (Files or URLs)"
-msgstr "Afspil medie (filer eller URL'er)"
-
-#: MainWindow.cpp:559
-msgid "Add Media (Files or URLs)"
-msgstr "Tilføj medie (filer eller URL'er)"
-
-#: MainWindow.cpp:577
-msgid "Add Stream"
-msgstr "Tilføj stream"
-
-#: MainWindow.cpp:577
-msgid "Enter Stream URL:"
-msgstr "Angiv URL til stream:"
-
-#: MainWindow.cpp:701
-msgid "&Add Media..."
-msgstr "Tilføj &medie..."
-
-#: MainWindow.cpp:706
-msgctxt "clear playlist"
-msgid "&Clear Playlist"
-msgstr "&Ryd Spilleliste"
-
-#: MainWindow.cpp:711
-msgctxt "edit play queue of playlist"
-msgid "Edit &Queue"
-msgstr "Redigér &kø"
-
-#: MainWindow.cpp:716
-msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
-msgid "Re&move Duplicates"
-msgstr "Fjer&n dobbeltgængere"
-
-#: MainWindow.cpp:723
-msgid "&Add Stream..."
-msgstr "Tilføj &stream..."
-
-#: MainWindow.cpp:727
-msgid "&Export Playlist As..."
-msgstr "&Eksportér spilleliste som..."
-
-#: MainWindow.cpp:731 amarokurls/NavigationUrlGenerator.cpp:250
-msgid "Bookmark Media Sources View"
-msgstr "Sæt bogmærke ved mediekilder-visning"
-
-#: MainWindow.cpp:735 amarokurls/BookmarkManager.cpp:43
-msgid "Bookmark Manager"
-msgstr "Håndtering af bogmærker"
-
-#: MainWindow.cpp:739
-msgid "Equalizer"
-msgstr "Equalizer"
-
-#: MainWindow.cpp:743 playlist/PlaylistViewUrlGenerator.cpp:101
-msgid "Bookmark Playlist Setup"
-msgstr "Sæt bogmærke ved spilleliste-opsætning"
-
-#: MainWindow.cpp:747
-msgid "Bookmark Context Applets"
-msgstr "Sæt bogmærke ved kontekst-applets"
-
-#: MainWindow.cpp:751 covermanager/CoverManager.cpp:105
-msgid "Cover Manager"
-msgstr "Håndtering af omslag"
-
-#: MainWindow.cpp:755
-msgid "Play Media..."
-msgstr "Afspil medie..."
-
-#: MainWindow.cpp:760
-msgid "&Seek Forward"
-msgstr "Søg &fremad"
-
-#: MainWindow.cpp:766
-msgid "&Seek Backward"
-msgstr "Søg &tilbage"
-
-#: MainWindow.cpp:773
-msgid "Update Collection"
-msgstr "Opdatér samling"
-
-#: MainWindow.cpp:780
-msgid "Previous Track"
-msgstr "Forrige spor"
-
-#: MainWindow.cpp:787
-msgid "Restart current track"
-msgstr "Genstart aktuelt spor"
-
-#: MainWindow.cpp:793
-msgid "Repopulate Playlist"
-msgstr "Genudfyld spilleliste"
-
-#: MainWindow.cpp:799
-msgid "Disable Dynamic Playlist"
-msgstr "Deaktivér dynamisk spilleliste"
-
-#: MainWindow.cpp:803
-msgid "Next Track"
-msgstr "Næste spor"
-
-#: MainWindow.cpp:808
-msgid "Increase Volume"
-msgstr "Forøg lydstyrken"
-
-#: MainWindow.cpp:814
-msgid "Decrease Volume"
-msgstr "Formindsk lydstyrken"
-
-#: MainWindow.cpp:820
-msgid "Toggle Main Window"
-msgstr "Slå hovedvinduet til og fra"
-
-#: MainWindow.cpp:825
-msgid "Toggle Full Screen"
-msgstr "Slå fuldskærm til/fra"
-
-#: MainWindow.cpp:830
-msgid "Jump to"
-msgstr "Gå til"
-
-#: MainWindow.cpp:835
-msgid "Show active track"
-msgstr "Vis aktivt spor"
-
-#: MainWindow.cpp:839
-msgid "Show Notification Popup"
-msgstr "Vis bekendtgørelses-pop-op"
-
-#: MainWindow.cpp:844
-msgid "Mute Volume"
-msgstr "Sæt på lydløs"
-
-#: MainWindow.cpp:849
-msgid "Last.fm: Love Current Track"
-msgstr "Last.fm: Elsk dette spor"
-
-#: MainWindow.cpp:854
-msgid "Last.fm: Ban Current Track"
-msgstr "Last.fm: Bandlys dette spor"
-
-#: MainWindow.cpp:859
-msgid "Last.fm: Skip Current Track"
-msgstr "Last.fm: Skip dette spor"
-
-#: MainWindow.cpp:864 playlist/view/PlaylistViewCommon.cpp:115
-msgid "Queue Track"
-msgstr "Sæt spor i kø"
-
-#: MainWindow.cpp:869
-msgid "Rate Current Track: 1"
-msgstr "Vurdér dette spor: 1"
-
-#: MainWindow.cpp:874
-msgid "Rate Current Track: 2"
-msgstr "Vurdér dette spor: 2"
-
-#: MainWindow.cpp:879
-msgid "Rate Current Track: 3"
-msgstr "Vurdér dette spor: 3"
-
-#: MainWindow.cpp:884
-msgid "Rate Current Track: 4"
-msgstr "Vurdér dette spor: 4"
-
-#: MainWindow.cpp:889
-msgid "Rate Current Track: 5"
-msgstr "Vurdér dette spor: 5"
-
-#: MainWindow.cpp:895
-msgid "Network Request Viewer"
-msgstr "Fremviser af netværksanmodninger"
-
-#: MainWindow.cpp:913
-msgid "&About Amarok"
-msgstr "&Om Amarok"
-
-#: MainWindow.cpp:917
-msgid "&Report Bug..."
-msgstr "&Rapportér programfejl..."
-
-#: MainWindow.cpp:977
-msgid "&Music"
-msgstr "&Musik"
-
-#: MainWindow.cpp:979
-msgid "&Amarok"
-msgstr "&Amarok"
-
-#: MainWindow.cpp:1003 playlist/PlaylistDock.cpp:54
-#: playlist/PlaylistToolBar.cpp:38
-msgid "&Playlist"
-msgstr "S&pilleliste"
-
-#: MainWindow.cpp:1020
-msgid "&Tools"
-msgstr "Værk&tøjer"
-
-#: MainWindow.cpp:1037
-msgid "&Settings"
-msgstr "&Indstillinger"
-
-#: MainWindow.cpp:1084
-#, kde-format
-msgid ""
-"You have chosen to hide the menu bar.\n"
-"\n"
-"Please remember that you can always use the shortcut \"%1\" to bring it back."
-msgstr ""
-"Du har valgt at skjule menulinjen.\n"
-"\n"
-"Husk at du altid kan bruge genvejen \"%1\" til at få den frem igen."
-
-#: MainWindow.cpp:1086
-msgid "Hide Menu"
-msgstr "Skjul menu"
-
-#: MainWindow.cpp:1128
-#, kde-format
-msgid "Paused  ::  %1"
-msgstr "Pause  ::  %1"
-
-#: MainWindow.cpp:1141 amarokurls/BookmarkTreeView.cpp:377
-#: amarokurls/BookmarkTreeView.cpp:378 amarokurls/BookmarkTreeView.cpp:379
-#: context/applets/albums/AlbumItem.cpp:97
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:444
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:445
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:446
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:447
-msgid "Unknown"
-msgstr "Ukendt"
-
-#: MainWindow.cpp:1141
-#, kde-format
-msgid "%1 - %2  ::  %3"
-msgstr "%1 - %2  ::  %3"
-
-#: PluginManager.cpp:253
-msgid ""
-"<p>Amarok could not find any collection plugins. It is possible that Amarok "
-"is installed under the wrong prefix, please fix your installation using:<pre>"
-"$ cd /path/to/amarok/source-code/<br>$ su -c \"make uninstall\"<br>$ cmake -"
-"DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -c \"make install\"<br>$ "
-"kbuildsycoca4 --noincremental<br>$ amarok</pre>More information can be found "
-"in the README file. For further assistance join us at #amarok on irc."
-"freenode.net.</p>"
-msgstr ""
-"<p>Amarok kunne ikke finde nogen samlingsplugins. Muligvis er Amarok "
-"installeret under det forkerte præfix, reparér installationen med:<pre>$ cd /"
-"sti/til/amarok/kildekode/<br>$ su -c \"make uninstall\"<br>$ cmake -"
-"DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -c \"make install\"<br>$ "
-"kbuildsycoca4 --noincremental<br>$ amarok</pre>Mere information kan findes i "
-"README-filen. For yderligere assistance kan du besøge os i #amarok på irc."
-"freenode.net.</p>"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:73
-msgid ""
-"<qt>No information available.<br />The supplied KAboutData object does not "
-"exist.</qt>"
-msgstr ""
-"<qt>Ingen information tilgængelig.<br />Det leverede KAboutData-objekt "
-"eksisterer ikke.</qt>"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:82
-msgid ""
-"<qt>No information available.<br />The supplied OcsData object does not "
-"exist.</qt>"
-msgstr ""
-"<qt>Ingen information tilgængelig.<br />Det leverede OcsData-objekt "
-"eksisterer ikke.</qt>"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:91
-#, kde-format
-msgid "About %1"
-msgstr "Om %1"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:112
-#, kde-format
-msgid ""
-"<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE %3</"
-"html>"
-msgstr ""
-"<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Med brug af KDE "
-"%3</html>"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:152
-#, kde-format
-msgid "License: %1"
-msgstr "Licens: %1"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:166
-msgid "&About"
-msgstr "O&m"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:183
-msgid "Get data from openDesktop.org to learn more about the team"
-msgstr "Hent data fra openDesktop.org for at lære mere om holdet"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:195
-msgid ""
-"Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to report "
-"bugs.\n"
-msgstr ""
-"Benyt venligst <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> til "
-"rapportering af programfejl.\n"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:200
-#: aboutdialog/ExtendedAboutDialog.cpp:206
-#, kde-format
-msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
-msgstr "Rapportér venligst fejl til <a href=\"mailto:%1\">%2</a>.\n"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:225
-msgid "A&uthor"
-msgstr "Opha&vsmand"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:225
-msgid "A&uthors"
-msgstr "Opha&vsmænd"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:239
-msgid "Get data from openDesktop.org to learn more about contributors"
-msgstr "Hent data fra openDesktop.org for at lære mere om bidragsydere"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:253
-msgid "&Thanks To"
-msgstr "&Tak til"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:266
-msgid "Get data from openDesktop.org to learn more about our generous donors"
-msgstr ""
-"Hent data fra openDesktop.org for at lære mere om vores generøse "
-"donationsgivere"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:286
-msgid "&Donors"
-msgstr "&Donationsgivere"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:316
-msgid "T&ranslation"
-msgstr "O&versættelse"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:340
-msgid "License Agreement"
-msgstr "Licensaftale"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:373
-msgid "Internet connection not available"
-msgstr "Internetforbindelse er ikke tilgængelig"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:373
-msgid "Network error"
-msgstr "Netværksfejl"
-
-#: aboutdialog/OcsPersonItem.cpp:95
-msgid "Email contributor"
-msgstr "Send e-mail til bidragsyder"
-
-#: aboutdialog/OcsPersonItem.cpp:103 aboutdialog/OcsPersonItem.cpp:274
-msgid "Visit contributor's homepage"
-msgstr "Besøg bidragsyders hjemmeside"
-
-#: aboutdialog/OcsPersonItem.cpp:179
-#, kde-format
-msgctxt "A person's location: City, Country"
-msgid "%1, %2"
-msgstr "%1, %2"
-
-#: aboutdialog/OcsPersonItem.cpp:199
-msgid "IRC channels: "
-msgstr "IRC-kanaler: "
-
-#: aboutdialog/OcsPersonItem.cpp:212
-msgid "Favorite music: "
-msgstr "Yndlingsmusik: "
-
-#: aboutdialog/OcsPersonItem.cpp:217
-#, kde-format
-msgid "Visit %1's openDesktop.org profile"
-msgstr "Besøg %1s openDesktop.org-profil"
-
-#: aboutdialog/OcsPersonItem.cpp:219
-#, kde-format
-msgid "Visit %1's profile on openDesktop.org"
-msgstr "Besøg %1s profil på openDesktop.org"
-
-#: aboutdialog/OcsPersonItem.cpp:253
-msgid "Visit contributor's blog"
-msgstr "Besøg bidragsyders blog"
-
-#: aboutdialog/OcsPersonItem.cpp:258
-msgid "Visit contributor's del.icio.us profile"
-msgstr "Besøg bidragsyders del.icio.us-profil"
-
-#: aboutdialog/OcsPersonItem.cpp:263
-msgid "Visit contributor's Digg profile"
-msgstr "Besøg bidragsyders Digg-profil"
-
-#: aboutdialog/OcsPersonItem.cpp:268
-msgid "Visit contributor's Facebook profile"
-msgstr "Besøg bidragsyders Facebook-profil"
-
-#: aboutdialog/OcsPersonItem.cpp:284
-msgid "Visit contributor's Last.fm profile"
-msgstr "Besøg bidragsyders Last.fm-profil"
-
-#: aboutdialog/OcsPersonItem.cpp:292
-msgid "Visit contributor's LinkedIn profile"
-msgstr "Besøg bidragsyders LinkedIn-profil"
-
-#: aboutdialog/OcsPersonItem.cpp:297
-msgid "Visit contributor's MySpace homepage"
-msgstr "Besøg bidragsyders MySpace-hjemmeside"
-
-#: aboutdialog/OcsPersonItem.cpp:302
-msgid "Visit contributor's Reddit profile"
-msgstr "Besøg bidragsyders Reddit-profil"
-
-#: aboutdialog/OcsPersonItem.cpp:307
-msgid "Visit contributor's YouTube profile"
-msgstr "Besøg bidragsyders YouTube-profil"
-
-#: aboutdialog/OcsPersonItem.cpp:312
-msgid "Visit contributor's Twitter feed"
-msgstr "Besøg bidragsyders Twitter-feed"
-
-#: aboutdialog/OcsPersonItem.cpp:317
-msgid "Visit contributor's Wikipedia profile"
-msgstr "Besøg bidragsyders Wikipedia-profil"
-
-#: aboutdialog/OcsPersonItem.cpp:322
-msgid "Visit contributor's Xing profile"
-msgstr "Besøg bidragsyders Xing-profil"
-
-#: aboutdialog/OcsPersonItem.cpp:327
-msgid "Visit contributor's identi.ca feed"
-msgstr "Besøg bidragsyders identi.ca-feed"
-
-#: aboutdialog/OcsPersonItem.cpp:332
-msgid "Visit contributor's libre.fm profile"
-msgstr "Besøg bidragsyders libre.fm-profil"
-
-#: aboutdialog/OcsPersonItem.cpp:337
-msgid "Visit contributor's StackOverflow profile"
-msgstr "Besøg bidragsyders StackOverflow-profil"
-
-#: aboutdialog/libattica-ocsclient/personlistjob.cpp:108
-msgid "Unable to parse avatar image data."
-msgstr "Kan ikke fortolke avatar-billeddata."
-
 #: amarokurls/AmarokUrlHandler.cpp:222
 msgctxt "The command type of this url is not known"
 msgid "Unknown"
@@ -7399,74 +7381,6 @@ msgstr "Indstillinger for tabulaturer"
 msgid "Reload Tabs"
 msgstr "Genindlæs tabulaturer"
 
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:67
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:128
-msgid "Upcoming Events"
-msgstr "Kommende begivenheder"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:78
-msgid "View Events Calendar"
-msgstr "Vis begivenhedskalender"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:91
-msgctxt "@title:group"
-msgid "No track is currently playing"
-msgstr "Intet spor afspilles i øjeblikket"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:158
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:303
-msgid "Favorite Venues"
-msgstr "Foretrukne spillesteder"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:224
-msgid "No upcoming events"
-msgstr "Ingen kommende begivenheder"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:224
-#, kde-format
-msgid "%1: No upcoming events"
-msgstr "%1: Ingen kommende begivenheder"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:229
-#, kde-format
-msgctxt "@title:group Number of upcoming events"
-msgid "1 event"
-msgid_plural "%1 events"
-msgstr[0] "1 begivenhed"
-msgstr[1] "%1 begivenheder"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:230
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:640
-#, kde-format
-msgctxt "@title:group Number of upcoming events"
-msgid "%1: 1 event"
-msgid_plural "%1: %2 events"
-msgstr[0] "%1: 1 begivenhed"
-msgstr[1] "%1: %2 begivenheder"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:302
-msgid "Upcoming Events Settings"
-msgstr "Indstillinger for Kommende begivenheder"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:353
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:362
-msgctxt "@label:textbox Url label"
-msgid "link"
-msgstr "link"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:494
-msgid "Map View"
-msgstr "Kortvisning"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:532
-msgid "Events Calender"
-msgstr "Begivenhedskalender"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:638
-msgctxt "@title:group"
-msgid "Favorite Venues"
-msgstr "Foretrukne spillesteder"
-
 #: context/applets/upcomingevents/UpcomingEventsCalendarWidget.cpp:160
 msgctxt "@info:tooltip Calendar action"
 msgid "Jump to Today"
@@ -7558,6 +7472,74 @@ msgstr[1] "Om <strong>%1</strong> dage"
 msgctxt "@info:tooltip"
 msgid "<strong>Location:</strong><nl/>%1"
 msgstr "<strong>Sted:</strong><nl/>%1"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:67
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:128
+msgid "Upcoming Events"
+msgstr "Kommende begivenheder"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:78
+msgid "View Events Calendar"
+msgstr "Vis begivenhedskalender"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:91
+msgctxt "@title:group"
+msgid "No track is currently playing"
+msgstr "Intet spor afspilles i øjeblikket"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:158
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:303
+msgid "Favorite Venues"
+msgstr "Foretrukne spillesteder"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:224
+msgid "No upcoming events"
+msgstr "Ingen kommende begivenheder"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:224
+#, kde-format
+msgid "%1: No upcoming events"
+msgstr "%1: Ingen kommende begivenheder"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:229
+#, kde-format
+msgctxt "@title:group Number of upcoming events"
+msgid "1 event"
+msgid_plural "%1 events"
+msgstr[0] "1 begivenhed"
+msgstr[1] "%1 begivenheder"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:230
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:640
+#, kde-format
+msgctxt "@title:group Number of upcoming events"
+msgid "%1: 1 event"
+msgid_plural "%1: %2 events"
+msgstr[0] "%1: 1 begivenhed"
+msgstr[1] "%1: %2 begivenheder"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:302
+msgid "Upcoming Events Settings"
+msgstr "Indstillinger for Kommende begivenheder"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:353
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:362
+msgctxt "@label:textbox Url label"
+msgid "link"
+msgstr "link"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:494
+msgid "Map View"
+msgstr "Kortvisning"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:532
+msgid "Events Calendar"
+msgstr "Begivenhedskalender"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:638
+msgctxt "@title:group"
+msgid "Favorite Venues"
+msgstr "Foretrukne spillesteder"
 
 #: context/applets/videoclip/CustomVideoWidget.cpp:83
 msgid "Enter &fullscreen"
@@ -8049,6 +8031,12 @@ msgstr ""
 "%1\n"
 "Normalt vil du skulle løse disse fejl før Amarok vil køre korrekt."
 
+#: core-impl/collections/db/sql/SqlMeta.cpp:272
+#: covermanager/CoverManager.cpp:842 services/lastfm/meta/LastFmMeta.cpp:133
+#, kde-format
+msgid "%1 - %2"
+msgstr "%1 - %2"
+
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:497
 msgid "Organizing tracks"
 msgstr "Organiserer spor"
@@ -8085,12 +8073,6 @@ msgstr "Konverterer: %1"
 #, kde-format
 msgid "Removing: %1"
 msgstr "Fjerner: %1"
-
-#: core-impl/collections/db/sql/SqlMeta.cpp:272
-#: covermanager/CoverManager.cpp:842 services/lastfm/meta/LastFmMeta.cpp:133
-#, kde-format
-msgid "%1 - %2"
-msgstr "%1 - %2"
 
 #: core-impl/collections/db/ScanManager.cpp:136
 msgid "Database import requested"
@@ -8503,6 +8485,15 @@ msgstr "to måneder siden"
 msgid "three months ago"
 msgstr "tre måneder siden"
 
+#: core-impl/collections/support/TrashCollectionLocation.cpp:47
+msgid "Trash"
+msgstr "Affald"
+
+#: core-impl/collections/support/TrashCollectionLocation.cpp:101
+#, kde-format
+msgid "Moving to trash: %1"
+msgstr "Flytter til affald: %1"
+
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:40
 #, kde-format
 msgctxt "@info"
@@ -8564,10 +8555,10 @@ msgstr "Flyt filer"
 msgctxt "@info"
 msgid ""
 "There was a problem and this track could not be removed. Make sure the "
-"directory is writeable."
+"directory is writable."
 msgid_plural ""
 "There was a problem and %1 tracks could not be removed. Make sure the "
-"directory is writeable."
+"directory is writable."
 msgstr[0] ""
 "Der opstod et problem og dette spor kunne ikke fjernes. Sørg for at der er "
 "skriverettigheder til mappen."
@@ -8581,7 +8572,7 @@ msgstr "Spor der ikke kan fjernes"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:110
 msgid ""
-"The collection does not have enough free space available or is not writeable."
+"The collection does not have enough free space available or is not writable."
 msgstr ""
 "Samlingen har ikke nok ledig plads tilgængelig eller der er ikke "
 "skriverettigheder."
@@ -8593,15 +8584,6 @@ msgstr "Vil du fjerne tomme mapper?"
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:117
 msgid "Remove empty folders?"
 msgstr "Fjern tomme mapper?"
-
-#: core-impl/collections/support/TrashCollectionLocation.cpp:47
-msgid "Trash"
-msgstr "Affald"
-
-#: core-impl/collections/support/TrashCollectionLocation.cpp:101
-#, kde-format
-msgid "Moving to trash: %1"
-msgstr "Flytter til affald: %1"
 
 #: core-impl/collections/umscollection/handler/UmsHandler.cpp:474
 msgid "&Use as Collection"
@@ -9112,21 +9094,22 @@ msgctxt ""
 msgid "m:ss"
 msgstr "m:ss"
 
-#: core/meta/support/MetaUtility.cpp:401
-msgctxt ""
-"the time format for a time length when the time is 1 day or above see "
-"QDateTime documentation."
-msgid "d:hh:mm:ss"
-msgstr "d:tt:mm:ss"
+#: core/meta/support/MetaUtility.cpp:406
+#, kde-format
+msgctxt "number of days with spacing for the pretty time"
+msgid "%1 day, "
+msgid_plural "%1 days, "
+msgstr[0] "%1 dag, "
+msgstr[1] "%1 dage, "
 
-#: core/meta/support/MetaUtility.cpp:403
+#: core/meta/support/MetaUtility.cpp:407
 msgctxt ""
 "the time format for a time length when the time is 1 hour or above see QTime "
 "documentation."
 msgid "h:mm:ss"
 msgstr "t:mm:ss"
 
-#: core/meta/support/MetaUtility.cpp:416
+#: core/meta/support/MetaUtility.cpp:421
 #, kde-format
 msgctxt "number of years for the pretty time"
 msgid "%1 year"
@@ -9134,7 +9117,7 @@ msgid_plural "%1 years"
 msgstr[0] "%1 år"
 msgstr[1] "%1 år"
 
-#: core/meta/support/MetaUtility.cpp:418
+#: core/meta/support/MetaUtility.cpp:423
 #, kde-format
 msgctxt "number of months for the pretty time"
 msgid "%1 month"
@@ -9142,7 +9125,7 @@ msgid_plural "%1 months"
 msgstr[0] "%1 måned"
 msgstr[1] "%1 måneder"
 
-#: core/meta/support/MetaUtility.cpp:420
+#: core/meta/support/MetaUtility.cpp:425
 #, kde-format
 msgctxt "number of days for the pretty time"
 msgid "%1 day"
@@ -9150,7 +9133,7 @@ msgid_plural "%1 days"
 msgstr[0] "%1 dag"
 msgstr[1] "%1 dage"
 
-#: core/meta/support/MetaUtility.cpp:422
+#: core/meta/support/MetaUtility.cpp:427
 #, kde-format
 msgctxt "number of hours for the pretty time"
 msgid "%1 hour"
@@ -9158,7 +9141,7 @@ msgid_plural "%1 hours"
 msgstr[0] "%1 time"
 msgstr[1] "%1 timer"
 
-#: core/meta/support/MetaUtility.cpp:424
+#: core/meta/support/MetaUtility.cpp:429
 #, kde-format
 msgctxt "number of minutes for the pretty time"
 msgid "%1 minute"
@@ -9166,7 +9149,7 @@ msgid_plural "%1 minutes"
 msgstr[0] "%1 minut"
 msgstr[1] "%1 minutter"
 
-#: core/meta/support/MetaUtility.cpp:426
+#: core/meta/support/MetaUtility.cpp:431
 #, kde-format
 msgctxt "number of seconds for the pretty time"
 msgid "%1 second"
@@ -10928,27 +10911,6 @@ msgstr "det forrige spor"
 msgid "one of the tracks in the current playlist"
 msgstr "et af sporene i den aktuelle spilleliste"
 
-#: dynamic/biases/PartBias.cpp:44
-msgctxt "Name of the \"Part\" bias"
-msgid "Partition"
-msgstr "Partition"
-
-#: dynamic/biases/PartBias.cpp:53
-msgctxt "Description of the \"Part\" bias"
-msgid ""
-"The \"Part\" bias fills parts of the playlist from different sub-biases."
-msgstr ""
-"Biasen \"Part\" udfylder dele af spillelisten fra forskellige underbias."
-
-#: dynamic/biases/PartBias.cpp:260
-msgid "This controls what portion of the playlist should match the criteria"
-msgstr "Dette styrer hvilken andel af spillelisten som skal matche kriterierne"
-
-#: dynamic/biases/PartBias.cpp:401
-msgctxt "Part bias representation"
-msgid "Partition"
-msgstr "Partition"
-
 #: dynamic/biases/QuizPlayBias.cpp:44
 msgctxt "Name of the \"QuizPlay\" bias"
 msgid "Quiz play"
@@ -11056,6 +11018,27 @@ msgstr ""
 msgctxt "Inverted condition in tag match bias"
 msgid "Not %1"
 msgstr "Ikke %1"
+
+#: dynamic/biases/PartBias.cpp:44
+msgctxt "Name of the \"Part\" bias"
+msgid "Partition"
+msgstr "Partition"
+
+#: dynamic/biases/PartBias.cpp:53
+msgctxt "Description of the \"Part\" bias"
+msgid ""
+"The \"Part\" bias fills parts of the playlist from different sub-biases."
+msgstr ""
+"Biasen \"Part\" udfylder dele af spillelisten fra forskellige underbias."
+
+#: dynamic/biases/PartBias.cpp:260
+msgid "This controls what portion of the playlist should match the criteria"
+msgstr "Dette styrer hvilken andel af spillelisten som skal matche kriterierne"
+
+#: dynamic/biases/PartBias.cpp:401
+msgctxt "Part bias representation"
+msgid "Partition"
+msgstr "Partition"
 
 #: dynamic/Bias.cpp:239
 msgctxt "And bias representation"
@@ -12779,7 +12762,7 @@ msgid "Neighbors"
 msgstr "Naboer"
 
 #: services/lastfm/LoveTrackAction.cpp:25
-#: services/lastfm/LastFmService.cpp:287
+#: services/lastfm/LastFmService.cpp:284
 msgid "Last.fm: Love"
 msgstr "Last.fm: Elsk"
 
@@ -12982,13 +12965,6 @@ msgstr "Test login"
 msgid "Unable to connect to Last.fm service."
 msgstr "Kan ikke forbinde til Last.fm-tjenesten."
 
-#: services/lastfm/ScrobblerAdapter.cpp:242
-#: services/lastfm/LastFmService.cpp:563
-#, kde-format
-msgctxt "As in, lastfm"
-msgid "Loved Track: %1"
-msgstr "Elsket spor: %1"
-
 #: services/lastfm/LastFmServiceConfig.cpp:143
 msgid "Last.fm credentials"
 msgstr "Last.fm-akkreditiver"
@@ -13000,83 +12976,6 @@ msgid ""
 msgstr ""
 "Ingen kørende KWallet fundet. Vil du have at Amarok skal gemme dine Last.fm-"
 "akkreditiver i klartekst?"
-
-#: services/lastfm/LastFmService.cpp:194
-msgid "Last.fm: The social music revolution"
-msgstr "Last.fm: Den sociale musikrevolution"
-
-#: services/lastfm/LastFmService.cpp:196
-msgid ""
-"Last.fm is a popular online service that provides personal radio stations "
-"and music recommendations. A personal listening station is tailored based on "
-"your listening habits and provides you with recommendations for new music. "
-"It is also possible to play stations with music that is similar to a "
-"particular artist as well as listen to streams from people you have added as "
-"friends or that Last.fm considers your musical \"neighbors\""
-msgstr ""
-"Last.fm er en populær online tjeneste der giver personlige radiostationer og "
-"musikanbefalinger. En personlig lyttestation skræddersyes baseret på dine "
-"lyttevaner og giver dig anbefalinger af ny musik. Det er også muligt at "
-"afspille stationer med musik der minder om en bestemt kunstner såvel som at "
-"lytte til streams fra folk du har tilføjet som venner eller som Last.fm "
-"anser for dine musikalske \"naboer\""
-
-#: services/lastfm/LastFmService.cpp:289
-msgid "Ctrl+L"
-msgstr "Ctrl+L"
-
-#: services/lastfm/LastFmService.cpp:342
-msgctxt "Last.fm: errorMessage"
-msgid "Either the username was not recognized, or the password was incorrect."
-msgstr "Enten brugernavn eller adgangskode er forkert."
-
-#: services/lastfm/LastFmService.cpp:346
-msgctxt "Last.fm: errorMessage"
-msgid ""
-"There was a problem communicating with the Last.fm services. Please try "
-"again later."
-msgstr ""
-"Der er problemer med kommunikationen med tjenesten Last.fm. Prøv igen senere."
-
-#: services/lastfm/LastFmService.cpp:434
-msgid "Enter an artist name"
-msgstr "Indtast et kunstnernavn"
-
-#: services/lastfm/LastFmService.cpp:437
-msgid "Enter a tag"
-msgstr "Indtast et mærke"
-
-#: services/lastfm/LastFmService.cpp:440
-msgid "Enter a Last.fm user name"
-msgstr "Angiv et brugernavn til Last.fm"
-
-#: services/lastfm/LastFmService.cpp:453
-#, kde-format
-msgid "Username: %1"
-msgstr "Brugernavn: %1"
-
-#: services/lastfm/LastFmService.cpp:458
-#, kde-format
-msgid "Play Count: %1 play"
-msgid_plural "Play Count: %1 plays"
-msgstr[0] "Afspilningstæller:  %1 afspilning"
-msgstr[1] "Afspilningstæller: %1 afspilninger"
-
-#: services/lastfm/LastFmService.cpp:468
-msgid "Enter login information for Last.fm"
-msgstr "Indtast login-information til Last.fm"
-
-#: services/lastfm/LastFmService.cpp:524
-msgid "Create a Custom Last.fm Station"
-msgstr "Opret en brugertilpasset Last.fm-station"
-
-#: services/lastfm/LastFmService.cpp:527
-msgid "Tag"
-msgstr "Mærke"
-
-#: services/lastfm/LastFmService.cpp:527
-msgid "User"
-msgstr "Bruger"
 
 #: services/lastfm/LastFmServiceCollection.cpp:42
 #, kde-format
@@ -13106,6 +13005,86 @@ msgstr "Personlig radio for ven"
 #: services/lastfm/SimilarArtistsAction.cpp:26
 msgid "Play Similar Artists from Last.fm"
 msgstr "Afspil lignende kunstnere fra Last.fm"
+
+#: services/lastfm/ScrobblerAdapter.cpp:236
+#: services/lastfm/LastFmService.cpp:543
+#, kde-format
+msgctxt "As in, lastfm"
+msgid "Loved Track: %1"
+msgstr "Elsket spor: %1"
+
+#: services/lastfm/LastFmService.cpp:195
+msgid "Last.fm: The social music revolution"
+msgstr "Last.fm: Den sociale musikrevolution"
+
+#: services/lastfm/LastFmService.cpp:197
+msgid ""
+"Last.fm is a popular online service that provides personal radio stations "
+"and music recommendations. A personal listening station is tailored based on "
+"your listening habits and provides you with recommendations for new music. "
+"It is also possible to play stations with music that is similar to a "
+"particular artist as well as listen to streams from people you have added as "
+"friends or that Last.fm considers your musical \"neighbors\""
+msgstr ""
+"Last.fm er en populær online tjeneste der giver personlige radiostationer og "
+"musikanbefalinger. En personlig lyttestation skræddersyes baseret på dine "
+"lyttevaner og giver dig anbefalinger af ny musik. Det er også muligt at "
+"afspille stationer med musik der minder om en bestemt kunstner såvel som at "
+"lytte til streams fra folk du har tilføjet som venner eller som Last.fm "
+"anser for dine musikalske \"naboer\""
+
+#: services/lastfm/LastFmService.cpp:286
+msgid "Ctrl+L"
+msgstr "Ctrl+L"
+
+#: services/lastfm/LastFmService.cpp:339
+msgctxt "Last.fm: errorMessage"
+msgid "Either the username was not recognized, or the password was incorrect."
+msgstr "Enten brugernavn eller adgangskode er forkert."
+
+#: services/lastfm/LastFmService.cpp:343
+msgctxt "Last.fm: errorMessage"
+msgid ""
+"There was a problem communicating with the Last.fm services. Please try "
+"again later."
+msgstr ""
+"Der er problemer med kommunikationen med tjenesten Last.fm. Prøv igen senere."
+
+#: services/lastfm/LastFmService.cpp:431
+msgid "Enter an artist name"
+msgstr "Indtast et kunstnernavn"
+
+#: services/lastfm/LastFmService.cpp:434
+msgid "Enter a tag"
+msgstr "Indtast et mærke"
+
+#: services/lastfm/LastFmService.cpp:437
+msgid "Enter a Last.fm user name"
+msgstr "Angiv et brugernavn til Last.fm"
+
+#: services/lastfm/LastFmService.cpp:450
+#, kde-format
+msgid "Username: %1"
+msgstr "Brugernavn: %1"
+
+#: services/lastfm/LastFmService.cpp:455
+#, kde-format
+msgid "Play Count: %1 play"
+msgid_plural "Play Count: %1 plays"
+msgstr[0] "Afspilningstæller:  %1 afspilning"
+msgstr[1] "Afspilningstæller: %1 afspilninger"
+
+#: services/lastfm/LastFmService.cpp:504
+msgid "Create a Custom Last.fm Station"
+msgstr "Opret en brugertilpasset Last.fm-station"
+
+#: services/lastfm/LastFmService.cpp:507
+msgid "Tag"
+msgstr "Mærke"
+
+#: services/lastfm/LastFmService.cpp:507
+msgid "User"
+msgstr "Bruger"
 
 #: services/magnatune/MagnatuneCollectionLocation.cpp:42
 msgid "Preview Tracks"
@@ -14789,6 +14768,24 @@ msgctxt "track from source"
 msgid "from <b>%1</b>"
 msgstr "fra <b>%1</b>"
 
+#: PluginManager.cpp:253
+msgid ""
+"<p>Amarok could not find any collection plugins. It is possible that Amarok "
+"is installed under the wrong prefix, please fix your installation using:<pre>"
+"$ cd /path/to/amarok/source-code/<br>$ su -c \"make uninstall\"<br>$ cmake -"
+"DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -c \"make install\"<br>$ "
+"kbuildsycoca4 --noincremental<br>$ amarok</pre>More information can be found "
+"in the README file. For further assistance join us at #amarok on irc."
+"freenode.net.</p>"
+msgstr ""
+"<p>Amarok kunne ikke finde nogen samlingsplugins. Muligvis er Amarok "
+"installeret under det forkerte præfix, reparér installationen med:<pre>$ cd /"
+"sti/til/amarok/kildekode/<br>$ su -c \"make uninstall\"<br>$ cmake -"
+"DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -c \"make install\"<br>$ "
+"kbuildsycoca4 --noincremental<br>$ amarok</pre>Mere information kan findes i "
+"README-filen. For yderligere assistance kan du besøge os i #amarok på irc."
+"freenode.net.</p>"
+
 #: TrayIcon.cpp:146
 #, kde-format
 msgid "%1%"
@@ -14818,6 +14815,15 @@ msgstr "Afspilningstæller: %1"
 #, kde-format
 msgid "Last played: %1"
 msgstr "Sidst spillet: %1"
+
+
+
+
+
+
+
+
+
 
 
 

@@ -9,9 +9,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2011-07-17 03:51+0200\n"
-"PO-Revision-Date: 2011-07-04 23:01+0200\n"
-"Last-Translator: Lukáš Tinkl <ltinkl@redhat.com>\n"
+"POT-Creation-Date: 2011-07-26 04:06+0200\n"
+"PO-Revision-Date: 2011-07-26 14:26+0200\n"
+"Last-Translator: Vít Pelčák <vit@pelcak.org>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -90,6 +90,703 @@ msgstr "Zastavit po současné skladbě: Zapnuto"
 #: ActionClasses.cpp:542
 msgid "Stop after current track: Off"
 msgstr "Zastavit po současné skladbě: Vypnuto"
+
+#: equalizer/EqualizerPresets.cpp:90
+msgid "Manual"
+msgstr "Ruční"
+
+#: equalizer/EqualizerPresets.cpp:91
+msgid "Classical"
+msgstr "Klasika"
+
+#: equalizer/EqualizerPresets.cpp:92
+msgid "Club"
+msgstr "Club"
+
+#: equalizer/EqualizerPresets.cpp:93
+msgid "Dance"
+msgstr "Dance"
+
+#: equalizer/EqualizerPresets.cpp:94
+msgid "Full Bass"
+msgstr "Plné basy"
+
+#: equalizer/EqualizerPresets.cpp:95
+msgid "Full Treble"
+msgstr "Plné výšky"
+
+#: equalizer/EqualizerPresets.cpp:96
+msgid "Full Bass + Treble"
+msgstr "Plné basy a výšky"
+
+#: equalizer/EqualizerPresets.cpp:97
+msgid "Laptop/Headphones"
+msgstr "Laptop/Sluchátka"
+
+#: equalizer/EqualizerPresets.cpp:98
+msgid "Large Hall"
+msgstr "Velká hala"
+
+#: equalizer/EqualizerPresets.cpp:99
+msgid "Live"
+msgstr "Live"
+
+#: equalizer/EqualizerPresets.cpp:100
+msgid "Party"
+msgstr "Party"
+
+#: equalizer/EqualizerPresets.cpp:101
+msgid "Pop"
+msgstr "Pop"
+
+#: equalizer/EqualizerPresets.cpp:102
+msgid "Reggae"
+msgstr "Reggae"
+
+#: equalizer/EqualizerPresets.cpp:103
+msgid "Rock"
+msgstr "Rock"
+
+#: equalizer/EqualizerPresets.cpp:104
+msgid "Soft"
+msgstr "Soft"
+
+#: equalizer/EqualizerPresets.cpp:105
+msgid "Ska"
+msgstr "Ska"
+
+#: equalizer/EqualizerPresets.cpp:106
+msgid "Soft Rock"
+msgstr "Soft Rock"
+
+#: equalizer/EqualizerPresets.cpp:107
+msgid "Techno"
+msgstr "Techno"
+
+#: equalizer/EqualizerPresets.cpp:108
+msgid "Zero"
+msgstr "Nula"
+
+#: KNotificationBackend.cpp:146
+msgid "Now playing"
+msgstr "Nyní přehrávám"
+
+#: App.cpp:410
+msgid "Files/URLs to open"
+msgstr "Soubory/URL k otevření"
+
+#: App.cpp:411
+msgid "Immediately start playing an audio cd"
+msgstr "Okamžitě zahájit přehrávání audio CD"
+
+#: App.cpp:413
+msgid "Skip backwards in playlist"
+msgstr "Přeskočit v seznamu skladeb zpět"
+
+#: App.cpp:415
+msgid "Start playing current playlist"
+msgstr "Zahájit přehrávání aktuálního seznamu skladeb"
+
+#: App.cpp:417
+msgid "Play if stopped, pause if playing"
+msgstr "Přehrát, pokud je zastaveno, pozastavit, pokud se hraje"
+
+#: App.cpp:418
+msgid "Pause playback"
+msgstr "Pozastavit přehrávání"
+
+#: App.cpp:420
+msgid "Stop playback"
+msgstr "Zastavit přehrávání"
+
+#: App.cpp:422
+msgid "Skip forwards in playlist"
+msgstr "Přeskočit v seznamu skladeb vpřed"
+
+#: App.cpp:423
+msgid "Additional options:"
+msgstr "Další volby:"
+
+#: App.cpp:425
+msgid "Append files/URLs to playlist"
+msgstr "Přidat soubory/URL do seznamu skladeb"
+
+#: App.cpp:426
+msgid "Queue URLs after the currently playing track"
+msgstr "Zařadit URL do fronty za právě přehrávanou skladbu"
+
+#: App.cpp:428
+msgid "Load URLs, replacing current playlist"
+msgstr "Nahradit aktuální seznam skladeb nahranými URL"
+
+#: App.cpp:430
+msgid "Print verbose debugging information"
+msgstr "Zobrazit podrobné ladicí informace"
+
+#: App.cpp:432
+msgid "Disable colorization for debug output."
+msgstr "Vypnout vybarvování ladicího výstupu."
+
+#: App.cpp:434
+msgid "Allow running multiple Amarok instances"
+msgstr "Povolit spuštění více instancí Amaroku"
+
+#: App.cpp:435
+msgid "Base for relative filenames/URLs"
+msgstr "Základ pro relativní názvy souborů/URL"
+
+#: App.cpp:437
+msgid "Unit test options:"
+msgstr "Volby testování pro aplikační jednotku:"
+
+#: App.cpp:438
+msgid "Run integrated unit tests"
+msgstr "Spustit integrované testy aplikačních jednotek"
+
+#: App.cpp:439
+msgid "Destination of test output: 'stdout', 'log'"
+msgstr "Umístění výsledků testu: 'stdout', 'log'"
+
+#: App.cpp:440
+msgid "Format of test output: 'xml', 'lightxml', 'plaintext'"
+msgstr "Formát výsledku testu: 'xml', 'lightxml', 'plaintext'"
+
+#: App.cpp:441
+msgid "Verbosity from 0-3 (highest)"
+msgstr "Obšírnost popisu 0-3 (nejvyšší hodnota)"
+
+#: App.cpp:633
+msgid ""
+"The embedded database was not found; you must set up a database server "
+"connection.\n"
+"You must restart Amarok after doing this."
+msgstr ""
+"Začleněná databáze nebyla nalezena; je třeba nastavit spojení se serverem "
+"databáze.\n"
+"Po tomto musíte restartovat Amarok."
+
+#: App.cpp:634
+msgid ""
+"The connection details for the database server were invalid.\n"
+"You must enter correct settings and restart Amarok after doing this."
+msgstr ""
+"Detaily spojení s databází nebyly platné.\n"
+"Musíte vložit správné nastavení a potom restartovat Amarok."
+
+#: App.cpp:635
+msgid "Database Error"
+msgstr "Chyba databáze"
+
+#: App.cpp:680
+msgid "Moving files to trash"
+msgstr "Soubory se přesunují do koše"
+
+#: App.cpp:768
+#, kde-format
+msgid ""
+"A music path, %1, is set in System Settings.\n"
+"Would you like to use that as a collection folder?"
+msgstr ""
+"Cesta k hudbě je nastavena, %1, je nastavena v systémovém nastavení.\n"
+"Chcete ji používat jako adresář sbírky?"
+
+#. i18n: file: core-impl/collections/audiocd/FormatSelectionDialog.ui:14
+#. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
+#: MainWindow.cpp:103 rc.cpp:1130 main.cpp:40
+msgid "Amarok"
+msgstr "Amarok"
+
+#: MainWindow.cpp:261
+msgid "Local Music"
+msgstr "Místní hudba"
+
+#: MainWindow.cpp:263
+msgid "Local sources of content"
+msgstr "Místní zdroje obsahu"
+
+#: MainWindow.cpp:271
+msgid "Internet"
+msgstr "Internet"
+
+#: MainWindow.cpp:273
+msgid "Online sources of content"
+msgstr "Internetové zdroje obsahu"
+
+#: MainWindow.cpp:279
+msgid "Playlists"
+msgstr "Seznamy skladeb"
+
+#: MainWindow.cpp:281
+msgid "Various types of playlists"
+msgstr "Různé typy seznamů skladeb"
+
+#: MainWindow.cpp:287 amarokurls/NavigationUrlGenerator.cpp:135
+msgid "Files"
+msgstr "Soubory"
+
+#: MainWindow.cpp:289
+msgid "Browse local hard drive for content"
+msgstr "Procházet kvůli obsahu místní pevný disk"
+
+#: MainWindow.cpp:350
+msgctxt "@item:inmenu"
+msgid "&View"
+msgstr "Po&hled"
+
+#: MainWindow.cpp:353
+msgid "Lock Layout"
+msgstr "Uzamknout rozvržení"
+
+#: MainWindow.cpp:464
+msgid ""
+"<qt>Closing the main window will keep Amarok running in the System Tray. Use "
+"<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
+"qt>"
+msgstr ""
+"<qt>Po uzavření hlavního okna bude Amarok stále spuštěn v systémové části "
+"panelu. Použijte <B>Ukončit</B> z nabídky, nebo ikonu Amaroku v panelu k "
+"ukončení celé aplikace.</qt>"
+
+#: MainWindow.cpp:466
+msgid "Docking in System Tray"
+msgstr "Pohlcení v systémové části panelu"
+
+#: MainWindow.cpp:495
+msgid "Use relative path for &saving"
+msgstr "Pro &uložení použít relativní cestu"
+
+#: MainWindow.cpp:507 covermanager/CoverFoundDialog.cpp:361
+msgid "Save As"
+msgstr "Uložit jako"
+
+#: MainWindow.cpp:559
+msgid "Play Media (Files or URLs)"
+msgstr "Přehrát multimédia (soubory nebo URL)"
+
+#: MainWindow.cpp:559
+msgid "Add Media (Files or URLs)"
+msgstr "Přidat multimédia (soubory nebo URL)"
+
+#: MainWindow.cpp:577
+msgid "Add Stream"
+msgstr "Přidat proud"
+
+#: MainWindow.cpp:577
+msgid "Enter Stream URL:"
+msgstr "Zadejte URL proudu:"
+
+#: MainWindow.cpp:701
+msgid "&Add Media..."
+msgstr "Přid&at média..."
+
+#: MainWindow.cpp:706
+msgctxt "clear playlist"
+msgid "&Clear Playlist"
+msgstr "S&mazat seznam skladeb"
+
+#: MainWindow.cpp:711
+msgctxt "edit play queue of playlist"
+msgid "Edit &Queue"
+msgstr "Upravit &frontu"
+
+#: MainWindow.cpp:716
+msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
+msgid "Re&move Duplicates"
+msgstr "Odstra&nit duplikáty"
+
+#: MainWindow.cpp:723
+msgid "&Add Stream..."
+msgstr "Přid&at proud..."
+
+#: MainWindow.cpp:727
+msgid "&Export Playlist As..."
+msgstr "&Exportovat seznam skladeb jako..."
+
+#: MainWindow.cpp:731 amarokurls/NavigationUrlGenerator.cpp:250
+msgid "Bookmark Media Sources View"
+msgstr "Přidat pohled na zdroje médií do záložek"
+
+#: MainWindow.cpp:735 amarokurls/BookmarkManager.cpp:43
+msgid "Bookmark Manager"
+msgstr "Správce záložek"
+
+#: MainWindow.cpp:739
+msgid "Equalizer"
+msgstr "Ekvalizér"
+
+#: MainWindow.cpp:743 playlist/PlaylistViewUrlGenerator.cpp:101
+msgid "Bookmark Playlist Setup"
+msgstr "Přidat nastavení seznamu skladeb do záložek"
+
+#: MainWindow.cpp:747
+msgid "Bookmark Context Applets"
+msgstr "Přidat kontextové applety do záložek "
+
+#: MainWindow.cpp:751 covermanager/CoverManager.cpp:105
+msgid "Cover Manager"
+msgstr "Správce obalů"
+
+#: MainWindow.cpp:755
+msgid "Play Media..."
+msgstr "Přehrát média..."
+
+#: MainWindow.cpp:760
+msgid "&Seek Forward"
+msgstr "&Rychle vpřed"
+
+#: MainWindow.cpp:766
+msgid "&Seek Backward"
+msgstr "Rychle v&zad"
+
+#: MainWindow.cpp:773
+msgid "Update Collection"
+msgstr "Aktualizovat sbírku"
+
+#: MainWindow.cpp:780
+msgid "Previous Track"
+msgstr "Předchozí skladba"
+
+#: MainWindow.cpp:787
+msgid "Restart current track"
+msgstr "Znovu spustit aktuální skladbu"
+
+#: MainWindow.cpp:793
+msgid "Repopulate Playlist"
+msgstr "Znovu naplnit seznam skladeb"
+
+#: MainWindow.cpp:799
+msgid "Disable Dynamic Playlist"
+msgstr "Zakázat dynamický seznam skladeb"
+
+#: MainWindow.cpp:803
+msgid "Next Track"
+msgstr "Další skladba"
+
+#: MainWindow.cpp:808
+msgid "Increase Volume"
+msgstr "Zvýšit hlasitost"
+
+#: MainWindow.cpp:814
+msgid "Decrease Volume"
+msgstr "Snížit hlasitost"
+
+#: MainWindow.cpp:820
+msgid "Toggle Main Window"
+msgstr "Přepnout hlavní okno"
+
+#: MainWindow.cpp:825
+msgid "Toggle Full Screen"
+msgstr "Přepnout na celou obrazovku"
+
+#: MainWindow.cpp:830
+msgid "Jump to"
+msgstr "Přejít na"
+
+#: MainWindow.cpp:835
+msgid "Show active track"
+msgstr "Zobrazit aktivní skladbu"
+
+#: MainWindow.cpp:839
+msgid "Show Notification Popup"
+msgstr "Zobrazovat vyskakovací okno oznamování"
+
+#: MainWindow.cpp:844
+msgid "Mute Volume"
+msgstr "Ztlumit hlasitost"
+
+#: MainWindow.cpp:849
+msgid "Last.fm: Love Current Track"
+msgstr "Last.fm: Tuhle skladbu miluji"
+
+#: MainWindow.cpp:854
+msgid "Last.fm: Ban Current Track"
+msgstr "Last.fm: Zakázat právě právě přehrávanou skladbu"
+
+#: MainWindow.cpp:859
+msgid "Last.fm: Skip Current Track"
+msgstr "Last.fm: Přeskočit právě přehrávanou skladbu"
+
+#: MainWindow.cpp:864 playlist/view/PlaylistViewCommon.cpp:115
+msgid "Queue Track"
+msgstr "Zařadit skladbu do fronty"
+
+#: MainWindow.cpp:869
+msgid "Rate Current Track: 1"
+msgstr "Hodnotit aktuální skladbu: 1"
+
+#: MainWindow.cpp:874
+msgid "Rate Current Track: 2"
+msgstr "Hodnotit aktuální skladbu: 2"
+
+#: MainWindow.cpp:879
+msgid "Rate Current Track: 3"
+msgstr "Hodnotit aktuální skladbu: 3"
+
+#: MainWindow.cpp:884
+msgid "Rate Current Track: 4"
+msgstr "Hodnotit aktuální skladbu: 4"
+
+#: MainWindow.cpp:889
+msgid "Rate Current Track: 5"
+msgstr "Hodnotit aktuální skladbu: 5"
+
+#: MainWindow.cpp:895
+msgid "Network Request Viewer"
+msgstr ""
+
+#: MainWindow.cpp:913
+msgid "&About Amarok"
+msgstr "O aplikaci &Amarok"
+
+#: MainWindow.cpp:917
+msgid "&Report Bug..."
+msgstr "Nahlásit &chybu..."
+
+#: MainWindow.cpp:977
+msgid "&Music"
+msgstr "&Hudba"
+
+#: MainWindow.cpp:979
+msgid "&Amarok"
+msgstr "&Amarok"
+
+#: MainWindow.cpp:1003 playlist/PlaylistDock.cpp:54
+#: playlist/PlaylistToolBar.cpp:38
+msgid "&Playlist"
+msgstr "S&eznam skladeb"
+
+#: MainWindow.cpp:1020
+msgid "&Tools"
+msgstr "&Nástroje"
+
+#: MainWindow.cpp:1037
+msgid "&Settings"
+msgstr "&Nastavení"
+
+#: MainWindow.cpp:1084
+#, kde-format
+msgid ""
+"You have chosen to hide the menu bar.\n"
+"\n"
+"Please remember that you can always use the shortcut \"%1\" to bring it back."
+msgstr ""
+
+#: MainWindow.cpp:1086
+msgid "Hide Menu"
+msgstr "Skrýt nabídku"
+
+#: MainWindow.cpp:1128
+#, kde-format
+msgid "Paused  ::  %1"
+msgstr "Pozastaveno  ::  %1"
+
+#: MainWindow.cpp:1141 amarokurls/BookmarkTreeView.cpp:377
+#: amarokurls/BookmarkTreeView.cpp:378 amarokurls/BookmarkTreeView.cpp:379
+#: context/applets/albums/AlbumItem.cpp:97
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:444
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:445
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:446
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:447
+msgid "Unknown"
+msgstr "Neznámé"
+
+#: MainWindow.cpp:1141
+#, kde-format
+msgid "%1 - %2  ::  %3"
+msgstr "%1 - %2  ::  %3"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:73
+msgid ""
+"<qt>No information available.<br />The supplied KAboutData object does not "
+"exist.</qt>"
+msgstr ""
+"<qt>Nejsou dostupné žádné informace.<br />Dodaný objekt KAboutData "
+"neexistuje.</qt>"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:82
+msgid ""
+"<qt>No information available.<br />The supplied OcsData object does not "
+"exist.</qt>"
+msgstr ""
+"<qt>Nejsou dostupné žádné informace.<br />Dodaný objekt OcsData neexistuje.</"
+"qt>"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:91
+#, kde-format
+msgid "About %1"
+msgstr "Informace o aplikaci %1"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:112
+#, kde-format
+msgid ""
+"<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE %3</"
+"html>"
+msgstr ""
+"<html><font size=\"5\">%1</font><br/><b>Verze %2</b><br/>Používá KDE %3</"
+"html>"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:152
+#, kde-format
+msgid "License: %1"
+msgstr "Licence: %1"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:166
+msgid "&About"
+msgstr "Informace o &aplikaci"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:183
+msgid "Get data from openDesktop.org to learn more about the team"
+msgstr "Více informací o týmu se dozvíte z openDesktop.org"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:195
+msgid ""
+"Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to report "
+"bugs.\n"
+msgstr ""
+"Pro hlášení chyb, prosím, použijte <a href=\"http://bugs.kde.org\">http://"
+"bugs.kde.org</a>.\n"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:200
+#: aboutdialog/ExtendedAboutDialog.cpp:206
+#, kde-format
+msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
+msgstr "Chyby, prosím, hlaste na <a href=\"mailto:%1\">%2</a>.\n"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:225
+msgid "A&uthor"
+msgstr "A&utor"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:225
+msgid "A&uthors"
+msgstr "A&utoři"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:239
+msgid "Get data from openDesktop.org to learn more about contributors"
+msgstr "Více informací o přispěvatelích se dozvíte z openDesktop.org"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:253
+msgid "&Thanks To"
+msgstr "Díky pa&tří"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:266
+msgid "Get data from openDesktop.org to learn more about our generous donors"
+msgstr "Více informací o našich štědrých dárcích se dozvíte z openDesktop.org"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:286
+msgid "&Donors"
+msgstr "&Dárci"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:316
+msgid "T&ranslation"
+msgstr "Přek&lad"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:340
+msgid "License Agreement"
+msgstr "Licenční ujednání"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:373
+msgid "Internet connection not available"
+msgstr "Internetové spojení nedostupné"
+
+#: aboutdialog/ExtendedAboutDialog.cpp:373
+msgid "Network error"
+msgstr "Chyba sítě"
+
+#: aboutdialog/OcsPersonItem.cpp:95
+msgid "Email contributor"
+msgstr "E-mailový přispěvatel"
+
+#: aboutdialog/OcsPersonItem.cpp:103 aboutdialog/OcsPersonItem.cpp:274
+msgid "Visit contributor's homepage"
+msgstr "Navštívit domovskou stránku přispěvatele"
+
+#: aboutdialog/OcsPersonItem.cpp:179
+#, kde-format
+msgctxt "A person's location: City, Country"
+msgid "%1, %2"
+msgstr "%1, %2"
+
+#: aboutdialog/OcsPersonItem.cpp:199
+msgid "IRC channels: "
+msgstr "Kanály IRC: "
+
+#: aboutdialog/OcsPersonItem.cpp:212
+msgid "Favorite music: "
+msgstr "Oblíbená hudba: "
+
+#: aboutdialog/OcsPersonItem.cpp:217
+#, kde-format
+msgid "Visit %1's openDesktop.org profile"
+msgstr "Navštívit profil %1 na openDesktop.org"
+
+#: aboutdialog/OcsPersonItem.cpp:219
+#, kde-format
+msgid "Visit %1's profile on openDesktop.org"
+msgstr "Navštívit profil %1 na openDesktop.org"
+
+#: aboutdialog/OcsPersonItem.cpp:253
+msgid "Visit contributor's blog"
+msgstr "Navštívit přispěvatelův blog"
+
+#: aboutdialog/OcsPersonItem.cpp:258
+msgid "Visit contributor's del.icio.us profile"
+msgstr "Navštívit přispěvatelův del.icio.us profil"
+
+#: aboutdialog/OcsPersonItem.cpp:263
+msgid "Visit contributor's Digg profile"
+msgstr "Navštívit přispěvatelův Digg profil"
+
+#: aboutdialog/OcsPersonItem.cpp:268
+msgid "Visit contributor's Facebook profile"
+msgstr "Navštívit přispěvatelův profil na Facebooku"
+
+#: aboutdialog/OcsPersonItem.cpp:284
+msgid "Visit contributor's Last.fm profile"
+msgstr "Navštívit Last.fm profil přispěvatele "
+
+#: aboutdialog/OcsPersonItem.cpp:292
+msgid "Visit contributor's LinkedIn profile"
+msgstr "Navštívit přispěvatelův profil na LinkedIn"
+
+#: aboutdialog/OcsPersonItem.cpp:297
+msgid "Visit contributor's MySpace homepage"
+msgstr "Navštívit přispěvatelovu domovskou stránku na MySpace"
+
+#: aboutdialog/OcsPersonItem.cpp:302
+msgid "Visit contributor's Reddit profile"
+msgstr "Navštívit přispěvatelův Reddit profil"
+
+#: aboutdialog/OcsPersonItem.cpp:307
+msgid "Visit contributor's YouTube profile"
+msgstr "Navštívit přispěvatelův profil na YouTube"
+
+#: aboutdialog/OcsPersonItem.cpp:312
+msgid "Visit contributor's Twitter feed"
+msgstr "Navštívit přispěvatelův kanál na Twitteru"
+
+#: aboutdialog/OcsPersonItem.cpp:317
+msgid "Visit contributor's Wikipedia profile"
+msgstr "Navštívit přispěvatelův profil na Wikipedii"
+
+#: aboutdialog/OcsPersonItem.cpp:322
+msgid "Visit contributor's Xing profile"
+msgstr "Navštívit přispěvatelův Xing profil"
+
+#: aboutdialog/OcsPersonItem.cpp:327
+msgid "Visit contributor's identi.ca feed"
+msgstr "Navštívit přispěvatelův kanál na identi.ca  "
+
+#: aboutdialog/OcsPersonItem.cpp:332
+msgid "Visit contributor's libre.fm profile"
+msgstr "Navštívit přispěvatelův profil na libre.fm"
+
+#: aboutdialog/OcsPersonItem.cpp:337
+msgid "Visit contributor's StackOverflow profile"
+msgstr "Navštívit přispěvatelův profil na StackOverflow"
+
+#: aboutdialog/libattica-ocsclient/personlistjob.cpp:108
+msgid "Unable to parse avatar image data."
+msgstr "Nelze analyzovat obrazová data avataru."
 
 #: rc.cpp:1
 msgctxt "NAME OF TRANSLATORS"
@@ -2018,10 +2715,8 @@ msgstr "P&růhlednost"
 #. i18n: file: configdialog/dialogs/NotificationsConfig.ui:226
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: rc.cpp:870
-#, fuzzy
-#| msgid "Fonts"
 msgid "Font scale:"
-msgstr "Písma"
+msgstr "Měřítko písma:"
 
 #. i18n: file: configdialog/dialogs/NotificationsConfig.ui:233
 #. i18n: ectx: property (suffix), widget (QSpinBox, kcfg_OsdFontScaling)
@@ -2376,7 +3071,7 @@ msgstr ""
 #: dialogs/transferdialog.cpp:88 dialogs/FilenameLayoutDialog.cpp:230
 #: dialogs/FilenameLayoutDialog.cpp:591 musicbrainz/MusicBrainzTags.cpp:359
 #: playlist/PlaylistModel.cpp:902 services/jamendo/JamendoInfoParser.cpp:51
-#: services/lastfm/LastFmService.cpp:527
+#: services/lastfm/LastFmService.cpp:507
 #: services/magnatune/MagnatuneStore.cpp:218
 #: widgets/SmartPlaylistEditor.cpp:183 widgets/SmartPlaylistEditor.cpp:197
 msgid "Artist"
@@ -2557,12 +3252,6 @@ msgstr "Youtube HQ"
 #: rc.cpp:1127
 msgid "Use Wikipedia &mobile version"
 msgstr "Použít &mobilní verzi Wikipedie"
-
-#. i18n: file: core-impl/collections/audiocd/FormatSelectionDialog.ui:14
-#. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: rc.cpp:1130 MainWindow.cpp:103 main.cpp:40
-msgid "Amarok"
-msgstr "Amarok"
 
 #. i18n: file: core-impl/collections/audiocd/FormatSelectionDialog.ui:26
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
@@ -5136,49 +5825,7 @@ msgstr "Členské přihlášení k Magnatude.com"
 #. i18n: file: services/magnatune/MagnatuneSignupDialogBase.ui:32
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: rc.cpp:2438
-#, fuzzy, no-c-format
-#| msgid ""
-#| "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
-#| "REC-html40/strict.dtd\">\n"
-#| "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-#| "css\">\n"
-#| "p, li { white-space: pre-wrap; }\n"
-#| "</style></head><body style=\" font-family:'Liberation Sans'; font-"
-#| "size:9pt; font-weight:400; font-style:normal;\">\n"
-#| "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#| "right:0px; -qt-block-indent:0; text-indent:0px;\">By becoming a Magnatune."
-#| "com member, you get unlimited download access and can download any album "
-#| "from within Amarok with a single mouse click. By joining, you can also "
-#| "listen to all streaming tracks from Magnatune.com ad-free.</p>\n"
-#| "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
-#| "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"
-#| "\"></p>\n"
-#| "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#| "right:0px; -qt-block-indent:0; text-indent:0px;\">The Amarok team gets "
-#| "10% of your initial membership payment, so by joining, you are also "
-#| "supporting the development of Amarok.</p>\n"
-#| "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
-#| "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"
-#| "\"></p>\n"
-#| "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#| "right:0px; -qt-block-indent:0; text-indent:0px;\">As always, the artists "
-#| "get 50% of your memberhip payment(s) distributed based on which artist "
-#| "you download and stream.</p>\n"
-#| "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
-#| "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"
-#| "\"></p>\n"
-#| "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#| "right:0px; -qt-block-indent:0; text-indent:0px;\">To read more about "
-#| "Magnatune.com memberships, or to sign up, click here: <a href=\"http://"
-#| "magnatune.com/downloads?referal_id=amarok\"><span style=\" text-"
-#| "decoration: underline; color:#0057ae;\">Membership Info</span></a> </p>\n"
-#| "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
-#| "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;"
-#| "\"></p>\n"
-#| "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#| "right:0px; -qt-block-indent:0; text-indent:0px;\">After joining, go to "
-#| "the Magnatune config in \"Settings->Configure Amarok->Internet Services\" "
-#| "and enter your membership information. </p></body></html>"
+#, no-c-format
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
@@ -5262,7 +5909,7 @@ msgstr ""
 "p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">Po přihlášení jděte do "
-"nastavení Magnatune v \"Nastavení->Nastavit  Amarok->Internetové služby\" a "
+"nastavení Magnatune v \"Nastavení->Nastavit  Amarok->IZásuvné moduly\" a "
 "zadejte údaje o vašem členství. </p></body></html>"
 
 #. i18n: file: services/magnatune/MagnatuneSignupDialogBase.ui:45
@@ -5432,716 +6079,6 @@ msgstr "Žádné seskupování (jeden řádek)"
 #: rc.cpp:2529
 msgid "Verbose"
 msgstr "Podrobný"
-
-#: equalizer/EqualizerPresets.cpp:90
-msgid "Manual"
-msgstr "Ruční"
-
-#: equalizer/EqualizerPresets.cpp:91
-msgid "Classical"
-msgstr "Klasika"
-
-#: equalizer/EqualizerPresets.cpp:92
-msgid "Club"
-msgstr "Club"
-
-#: equalizer/EqualizerPresets.cpp:93
-msgid "Dance"
-msgstr "Dance"
-
-#: equalizer/EqualizerPresets.cpp:94
-msgid "Full Bass"
-msgstr "Plné basy"
-
-#: equalizer/EqualizerPresets.cpp:95
-msgid "Full Treble"
-msgstr "Plné výšky"
-
-#: equalizer/EqualizerPresets.cpp:96
-msgid "Full Bass + Treble"
-msgstr "Plné basy a výšky"
-
-#: equalizer/EqualizerPresets.cpp:97
-msgid "Laptop/Headphones"
-msgstr "Laptop/Sluchátka"
-
-#: equalizer/EqualizerPresets.cpp:98
-msgid "Large Hall"
-msgstr "Velká hala"
-
-#: equalizer/EqualizerPresets.cpp:99
-msgid "Live"
-msgstr "Live"
-
-#: equalizer/EqualizerPresets.cpp:100
-msgid "Party"
-msgstr "Party"
-
-#: equalizer/EqualizerPresets.cpp:101
-msgid "Pop"
-msgstr "Pop"
-
-#: equalizer/EqualizerPresets.cpp:102
-msgid "Reggae"
-msgstr "Reggae"
-
-#: equalizer/EqualizerPresets.cpp:103
-msgid "Rock"
-msgstr "Rock"
-
-#: equalizer/EqualizerPresets.cpp:104
-msgid "Soft"
-msgstr "Soft"
-
-#: equalizer/EqualizerPresets.cpp:105
-msgid "Ska"
-msgstr "Ska"
-
-#: equalizer/EqualizerPresets.cpp:106
-msgid "Soft Rock"
-msgstr "Soft Rock"
-
-#: equalizer/EqualizerPresets.cpp:107
-msgid "Techno"
-msgstr "Techno"
-
-#: equalizer/EqualizerPresets.cpp:108
-msgid "Zero"
-msgstr "Nula"
-
-#: KNotificationBackend.cpp:146
-msgid "Now playing"
-msgstr "Nyní přehrávám"
-
-#: App.cpp:410
-msgid "Files/URLs to open"
-msgstr "Soubory/URL k otevření"
-
-#: App.cpp:411
-msgid "Immediately start playing an audio cd"
-msgstr "Okamžitě zahájit přehrávání audio CD"
-
-#: App.cpp:413
-msgid "Skip backwards in playlist"
-msgstr "Přeskočit v seznamu skladeb zpět"
-
-#: App.cpp:415
-msgid "Start playing current playlist"
-msgstr "Zahájit přehrávání aktuálního seznamu skladeb"
-
-#: App.cpp:417
-msgid "Play if stopped, pause if playing"
-msgstr "Přehrát, pokud je zastaveno, pozastavit, pokud se hraje"
-
-#: App.cpp:418
-msgid "Pause playback"
-msgstr "Pozastavit přehrávání"
-
-#: App.cpp:420
-msgid "Stop playback"
-msgstr "Zastavit přehrávání"
-
-#: App.cpp:422
-msgid "Skip forwards in playlist"
-msgstr "Přeskočit v seznamu skladeb vpřed"
-
-#: App.cpp:423
-msgid "Additional options:"
-msgstr "Další volby:"
-
-#: App.cpp:425
-msgid "Append files/URLs to playlist"
-msgstr "Přidat soubory/URL do seznamu skladeb"
-
-#: App.cpp:426
-msgid "Queue URLs after the currently playing track"
-msgstr "Zařadit URL do fronty za právě přehrávanou skladbu"
-
-#: App.cpp:428
-msgid "Load URLs, replacing current playlist"
-msgstr "Nahradit aktuální seznam skladeb nahranými URL"
-
-#: App.cpp:430
-msgid "Print verbose debugging information"
-msgstr "Zobrazit podrobné ladicí informace"
-
-#: App.cpp:432
-msgid "Disable colorization for debug output."
-msgstr "Vypnout vybarvování ladicího výstupu."
-
-#: App.cpp:434
-msgid "Allow running multiple Amarok instances"
-msgstr "Povolit spuštění více instancí Amaroku"
-
-#: App.cpp:435
-msgid "Base for relative filenames/URLs"
-msgstr "Základ pro relativní názvy souborů/URL"
-
-#: App.cpp:437
-msgid "Unit test options:"
-msgstr "Volby testování pro aplikační jednotku:"
-
-#: App.cpp:438
-msgid "Run integrated unit tests"
-msgstr "Spustit integrované testy aplikačních jednotek"
-
-#: App.cpp:439
-msgid "Destination of test output: 'stdout', 'log'"
-msgstr "Umístění výsledků testu: 'stdout', 'log'"
-
-#: App.cpp:440
-msgid "Format of test output: 'xml', 'lightxml', 'plaintext'"
-msgstr "Formát výsledku testu: 'xml', 'lightxml', 'plaintext'"
-
-#: App.cpp:441
-msgid "Verbosity from 0-3 (highest)"
-msgstr "Obšírnost popisu 0-3 (nejvyšší hodnota)"
-
-#: App.cpp:633
-msgid ""
-"The embedded database was not found; you must set up a database server "
-"connection.\n"
-"You must restart Amarok after doing this."
-msgstr ""
-"Začleněná databáze nebyla nalezena; je třeba nastavit spojení se serverem "
-"databáze.\n"
-"Po tomto musíte restartovat Amarok."
-
-#: App.cpp:634
-msgid ""
-"The connection details for the database server were invalid.\n"
-"You must enter correct settings and restart Amarok after doing this."
-msgstr ""
-"Detaily spojení s databází nebyly platné.\n"
-"Musíte vložit správné nastavení a potom restartovat Amarok."
-
-#: App.cpp:635
-msgid "Database Error"
-msgstr "Chyba databáze"
-
-#: App.cpp:680
-msgid "Moving files to trash"
-msgstr "Soubory se přesunují do koše"
-
-#: App.cpp:768
-#, kde-format
-msgid ""
-"A music path, %1, is set in System Settings.\n"
-"Would you like to use that as a collection folder?"
-msgstr ""
-"Cesta k hudbě je nastavena, %1, je nastavena v systémovém nastavení.\n"
-"Chcete ji používat jako adresář sbírky?"
-
-#: MainWindow.cpp:261
-msgid "Local Music"
-msgstr "Místní hudba"
-
-#: MainWindow.cpp:263
-msgid "Local sources of content"
-msgstr "Místní zdroje obsahu"
-
-#: MainWindow.cpp:271
-msgid "Internet"
-msgstr "Internet"
-
-#: MainWindow.cpp:273
-msgid "Online sources of content"
-msgstr "Internetové zdroje obsahu"
-
-#: MainWindow.cpp:279
-msgid "Playlists"
-msgstr "Seznamy skladeb"
-
-#: MainWindow.cpp:281
-msgid "Various types of playlists"
-msgstr "Různé typy seznamů skladeb"
-
-#: MainWindow.cpp:287 amarokurls/NavigationUrlGenerator.cpp:135
-msgid "Files"
-msgstr "Soubory"
-
-#: MainWindow.cpp:289
-msgid "Browse local hard drive for content"
-msgstr "Procházet kvůli obsahu místní pevný disk"
-
-#: MainWindow.cpp:350
-msgctxt "@item:inmenu"
-msgid "&View"
-msgstr "Po&hled"
-
-#: MainWindow.cpp:353
-msgid "Lock Layout"
-msgstr "Uzamknout rozvržení"
-
-#: MainWindow.cpp:464
-msgid ""
-"<qt>Closing the main window will keep Amarok running in the System Tray. Use "
-"<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
-"qt>"
-msgstr ""
-"<qt>Po uzavření hlavního okna bude Amarok stále spuštěn v systémové části "
-"panelu. Použijte <B>Ukončit</B> z nabídky, nebo ikonu Amaroku v panelu k "
-"ukončení celé aplikace.</qt>"
-
-#: MainWindow.cpp:466
-msgid "Docking in System Tray"
-msgstr "Pohlcení v systémové části panelu"
-
-#: MainWindow.cpp:495
-msgid "Use relative path for &saving"
-msgstr "Pro &uložení použít relativní cestu"
-
-#: MainWindow.cpp:507 covermanager/CoverFoundDialog.cpp:361
-msgid "Save As"
-msgstr "Uložit jako"
-
-#: MainWindow.cpp:559
-msgid "Play Media (Files or URLs)"
-msgstr "Přehrát multimédia (soubory nebo URL)"
-
-#: MainWindow.cpp:559
-msgid "Add Media (Files or URLs)"
-msgstr "Přidat multimédia (soubory nebo URL)"
-
-#: MainWindow.cpp:577
-msgid "Add Stream"
-msgstr "Přidat proud"
-
-#: MainWindow.cpp:577
-msgid "Enter Stream URL:"
-msgstr "Zadejte URL proudu:"
-
-#: MainWindow.cpp:701
-msgid "&Add Media..."
-msgstr "Přid&at média..."
-
-#: MainWindow.cpp:706
-msgctxt "clear playlist"
-msgid "&Clear Playlist"
-msgstr "S&mazat seznam skladeb"
-
-#: MainWindow.cpp:711
-msgctxt "edit play queue of playlist"
-msgid "Edit &Queue"
-msgstr "Upravit &frontu"
-
-#: MainWindow.cpp:716
-msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
-msgid "Re&move Duplicates"
-msgstr "Odstra&nit duplikáty"
-
-#: MainWindow.cpp:723
-msgid "&Add Stream..."
-msgstr "Přid&at proud..."
-
-#: MainWindow.cpp:727
-msgid "&Export Playlist As..."
-msgstr "&Exportovat seznam skladeb jako..."
-
-#: MainWindow.cpp:731 amarokurls/NavigationUrlGenerator.cpp:250
-msgid "Bookmark Media Sources View"
-msgstr "Přidat pohled na zdroje médií do záložek"
-
-#: MainWindow.cpp:735 amarokurls/BookmarkManager.cpp:43
-msgid "Bookmark Manager"
-msgstr "Správce záložek"
-
-#: MainWindow.cpp:739
-msgid "Equalizer"
-msgstr "Ekvalizér"
-
-#: MainWindow.cpp:743 playlist/PlaylistViewUrlGenerator.cpp:101
-msgid "Bookmark Playlist Setup"
-msgstr "Přidat nastavení seznamu skladeb do záložek"
-
-#: MainWindow.cpp:747
-msgid "Bookmark Context Applets"
-msgstr "Přidat kontextové applety do záložek "
-
-#: MainWindow.cpp:751 covermanager/CoverManager.cpp:105
-msgid "Cover Manager"
-msgstr "Správce obalů"
-
-#: MainWindow.cpp:755
-msgid "Play Media..."
-msgstr "Přehrát média..."
-
-#: MainWindow.cpp:760
-msgid "&Seek Forward"
-msgstr "&Rychle vpřed"
-
-#: MainWindow.cpp:766
-msgid "&Seek Backward"
-msgstr "Rychle v&zad"
-
-#: MainWindow.cpp:773
-msgid "Update Collection"
-msgstr "Aktualizovat sbírku"
-
-#: MainWindow.cpp:780
-msgid "Previous Track"
-msgstr "Předchozí skladba"
-
-#: MainWindow.cpp:787
-msgid "Restart current track"
-msgstr "Znovu spustit aktuální skladbu"
-
-#: MainWindow.cpp:793
-msgid "Repopulate Playlist"
-msgstr "Znovu naplnit seznam skladeb"
-
-#: MainWindow.cpp:799
-msgid "Disable Dynamic Playlist"
-msgstr "Zakázat dynamický seznam skladeb"
-
-#: MainWindow.cpp:803
-msgid "Next Track"
-msgstr "Další skladba"
-
-#: MainWindow.cpp:808
-msgid "Increase Volume"
-msgstr "Zvýšit hlasitost"
-
-#: MainWindow.cpp:814
-msgid "Decrease Volume"
-msgstr "Snížit hlasitost"
-
-#: MainWindow.cpp:820
-msgid "Toggle Main Window"
-msgstr "Přepnout hlavní okno"
-
-#: MainWindow.cpp:825
-msgid "Toggle Full Screen"
-msgstr "Přepnout na celou obrazovku"
-
-#: MainWindow.cpp:830
-msgid "Jump to"
-msgstr "Přejít na"
-
-#: MainWindow.cpp:835
-msgid "Show active track"
-msgstr "Zobrazit aktivní skladbu"
-
-#: MainWindow.cpp:839
-msgid "Show Notification Popup"
-msgstr "Zobrazovat vyskakovací okno oznamování"
-
-#: MainWindow.cpp:844
-msgid "Mute Volume"
-msgstr "Ztlumit hlasitost"
-
-#: MainWindow.cpp:849
-msgid "Last.fm: Love Current Track"
-msgstr "Last.fm: Tuhle skladbu miluji"
-
-#: MainWindow.cpp:854
-msgid "Last.fm: Ban Current Track"
-msgstr "Last.fm: Zakázat právě právě přehrávanou skladbu"
-
-#: MainWindow.cpp:859
-msgid "Last.fm: Skip Current Track"
-msgstr "Last.fm: Přeskočit právě přehrávanou skladbu"
-
-#: MainWindow.cpp:864 playlist/view/PlaylistViewCommon.cpp:115
-msgid "Queue Track"
-msgstr "Zařadit skladbu do fronty"
-
-#: MainWindow.cpp:869
-msgid "Rate Current Track: 1"
-msgstr "Hodnotit aktuální skladbu: 1"
-
-#: MainWindow.cpp:874
-msgid "Rate Current Track: 2"
-msgstr "Hodnotit aktuální skladbu: 2"
-
-#: MainWindow.cpp:879
-msgid "Rate Current Track: 3"
-msgstr "Hodnotit aktuální skladbu: 3"
-
-#: MainWindow.cpp:884
-msgid "Rate Current Track: 4"
-msgstr "Hodnotit aktuální skladbu: 4"
-
-#: MainWindow.cpp:889
-msgid "Rate Current Track: 5"
-msgstr "Hodnotit aktuální skladbu: 5"
-
-#: MainWindow.cpp:895
-msgid "Network Request Viewer"
-msgstr ""
-
-#: MainWindow.cpp:913
-msgid "&About Amarok"
-msgstr "O aplikaci &Amarok"
-
-#: MainWindow.cpp:917
-msgid "&Report Bug..."
-msgstr "Nahlásit &chybu..."
-
-#: MainWindow.cpp:977
-msgid "&Music"
-msgstr "&Hudba"
-
-#: MainWindow.cpp:979
-msgid "&Amarok"
-msgstr "&Amarok"
-
-#: MainWindow.cpp:1003 playlist/PlaylistDock.cpp:54
-#: playlist/PlaylistToolBar.cpp:38
-msgid "&Playlist"
-msgstr "S&eznam skladeb"
-
-#: MainWindow.cpp:1020
-msgid "&Tools"
-msgstr "&Nástroje"
-
-#: MainWindow.cpp:1037
-msgid "&Settings"
-msgstr "&Nastavení"
-
-#: MainWindow.cpp:1084
-#, kde-format
-msgid ""
-"You have chosen to hide the menu bar.\n"
-"\n"
-"Please remember that you can always use the shortcut \"%1\" to bring it back."
-msgstr ""
-
-#: MainWindow.cpp:1086
-msgid "Hide Menu"
-msgstr "Skrýt nabídku"
-
-#: MainWindow.cpp:1128
-#, kde-format
-msgid "Paused  ::  %1"
-msgstr "Pozastaveno  ::  %1"
-
-#: MainWindow.cpp:1141 amarokurls/BookmarkTreeView.cpp:377
-#: amarokurls/BookmarkTreeView.cpp:378 amarokurls/BookmarkTreeView.cpp:379
-#: context/applets/albums/AlbumItem.cpp:97
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:444
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:445
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:446
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:447
-msgid "Unknown"
-msgstr "Neznámé"
-
-#: MainWindow.cpp:1141
-#, kde-format
-msgid "%1 - %2  ::  %3"
-msgstr "%1 - %2  ::  %3"
-
-#: PluginManager.cpp:253
-msgid ""
-"<p>Amarok could not find any collection plugins. It is possible that Amarok "
-"is installed under the wrong prefix, please fix your installation using:<pre>"
-"$ cd /path/to/amarok/source-code/<br>$ su -c \"make uninstall\"<br>$ cmake -"
-"DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -c \"make install\"<br>$ "
-"kbuildsycoca4 --noincremental<br>$ amarok</pre>More information can be found "
-"in the README file. For further assistance join us at #amarok on irc."
-"freenode.net.</p>"
-msgstr ""
-"<p>Amarok nemohl najít žádné moduly sbírky. Počkejte prosím několik minut a "
-"potom Amarok znovu spusťte.</p><p>Pokud to nepomůže, je pravděpodobné, že "
-"byl Amarok instalován se špatným prefixem. Opravte, prosím, svou instalaci "
-"za použití:<pre>$ cd /cesta ke zdrojovým souborům Amaroku/<br>$ su -c \"make "
-"uninstall\"<br>$ ./configure --prefix=`kde-config --prefix` && su -c \"make "
-"install\"<br>$ kbuildsycoca4 -- noincremental<br>$ amarok</pre>Více "
-"informací je možné nalézt v souboru README. Kvůli další pomoci se k nám "
-"připojte na #amarok na irc.freenode.net.</p>"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:73
-msgid ""
-"<qt>No information available.<br />The supplied KAboutData object does not "
-"exist.</qt>"
-msgstr ""
-"<qt>Nejsou dostupné žádné informace.<br />Dodaný objekt KAboutData "
-"neexistuje.</qt>"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:82
-msgid ""
-"<qt>No information available.<br />The supplied OcsData object does not "
-"exist.</qt>"
-msgstr ""
-"<qt>Nejsou dostupné žádné informace.<br />Dodaný objekt OcsData neexistuje.</"
-"qt>"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:91
-#, kde-format
-msgid "About %1"
-msgstr "Informace o aplikaci %1"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:112
-#, kde-format
-msgid ""
-"<html><font size=\"5\">%1</font><br /><b>Version %2</b><br />Using KDE %3</"
-"html>"
-msgstr ""
-"<html><font size=\"5\">%1</font><br/><b>Verze %2</b><br/>Používá KDE %3</"
-"html>"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:152
-#, kde-format
-msgid "License: %1"
-msgstr "Licence: %1"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:166
-msgid "&About"
-msgstr "Informace o &aplikaci"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:183
-msgid "Get data from openDesktop.org to learn more about the team"
-msgstr "Více informací o týmu se dozvíte z openDesktop.org"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:195
-msgid ""
-"Please use <a href=\"http://bugs.kde.org\">http://bugs.kde.org</a> to report "
-"bugs.\n"
-msgstr ""
-"Pro hlášení chyb, prosím, použijte <a href=\"http://bugs.kde.org\">http://"
-"bugs.kde.org</a>.\n"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:200
-#: aboutdialog/ExtendedAboutDialog.cpp:206
-#, kde-format
-msgid "Please report bugs to <a href=\"mailto:%1\">%2</a>.\n"
-msgstr "Chyby, prosím, hlaste na <a href=\"mailto:%1\">%2</a>.\n"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:225
-msgid "A&uthor"
-msgstr "A&utor"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:225
-msgid "A&uthors"
-msgstr "A&utoři"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:239
-msgid "Get data from openDesktop.org to learn more about contributors"
-msgstr "Více informací o přispěvatelích se dozvíte z openDesktop.org"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:253
-msgid "&Thanks To"
-msgstr "Díky pa&tří"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:266
-msgid "Get data from openDesktop.org to learn more about our generous donors"
-msgstr "Více informací o našich štědrých dárcích se dozvíte z openDesktop.org"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:286
-msgid "&Donors"
-msgstr "&Dárci"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:316
-msgid "T&ranslation"
-msgstr "Přek&lad"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:340
-msgid "License Agreement"
-msgstr "Licenční ujednání"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:373
-msgid "Internet connection not available"
-msgstr "Internetové spojení nedostupné"
-
-#: aboutdialog/ExtendedAboutDialog.cpp:373
-msgid "Network error"
-msgstr "Chyba sítě"
-
-#: aboutdialog/OcsPersonItem.cpp:95
-msgid "Email contributor"
-msgstr "E-mailový přispěvatel"
-
-#: aboutdialog/OcsPersonItem.cpp:103 aboutdialog/OcsPersonItem.cpp:274
-msgid "Visit contributor's homepage"
-msgstr "Navštívit domovskou stránku přispěvatele"
-
-#: aboutdialog/OcsPersonItem.cpp:179
-#, kde-format
-msgctxt "A person's location: City, Country"
-msgid "%1, %2"
-msgstr "%1, %2"
-
-#: aboutdialog/OcsPersonItem.cpp:199
-msgid "IRC channels: "
-msgstr "Kanály IRC: "
-
-#: aboutdialog/OcsPersonItem.cpp:212
-msgid "Favorite music: "
-msgstr "Oblíbená hudba: "
-
-#: aboutdialog/OcsPersonItem.cpp:217
-#, kde-format
-msgid "Visit %1's openDesktop.org profile"
-msgstr "Navštívit profil %1 na openDesktop.org"
-
-#: aboutdialog/OcsPersonItem.cpp:219
-#, kde-format
-msgid "Visit %1's profile on openDesktop.org"
-msgstr "Navštívit profil %1 na openDesktop.org"
-
-#: aboutdialog/OcsPersonItem.cpp:253
-msgid "Visit contributor's blog"
-msgstr "Navštívit přispěvatelův blog"
-
-#: aboutdialog/OcsPersonItem.cpp:258
-msgid "Visit contributor's del.icio.us profile"
-msgstr "Navštívit přispěvatelův del.icio.us profil"
-
-#: aboutdialog/OcsPersonItem.cpp:263
-msgid "Visit contributor's Digg profile"
-msgstr "Navštívit přispěvatelův Digg profil"
-
-#: aboutdialog/OcsPersonItem.cpp:268
-msgid "Visit contributor's Facebook profile"
-msgstr "Navštívit přispěvatelův profil na Facebooku"
-
-#: aboutdialog/OcsPersonItem.cpp:284
-msgid "Visit contributor's Last.fm profile"
-msgstr "Navštívit Last.fm profil přispěvatele "
-
-#: aboutdialog/OcsPersonItem.cpp:292
-msgid "Visit contributor's LinkedIn profile"
-msgstr "Navštívit přispěvatelův profil na LinkedIn"
-
-#: aboutdialog/OcsPersonItem.cpp:297
-msgid "Visit contributor's MySpace homepage"
-msgstr "Navštívit přispěvatelovu domovskou stránku na MySpace"
-
-#: aboutdialog/OcsPersonItem.cpp:302
-msgid "Visit contributor's Reddit profile"
-msgstr "Navštívit přispěvatelův Reddit profil"
-
-#: aboutdialog/OcsPersonItem.cpp:307
-msgid "Visit contributor's YouTube profile"
-msgstr "Navštívit přispěvatelův profil na YouTube"
-
-#: aboutdialog/OcsPersonItem.cpp:312
-msgid "Visit contributor's Twitter feed"
-msgstr "Navštívit přispěvatelův kanál na Twitteru"
-
-#: aboutdialog/OcsPersonItem.cpp:317
-msgid "Visit contributor's Wikipedia profile"
-msgstr "Navštívit přispěvatelův profil na Wikipedii"
-
-#: aboutdialog/OcsPersonItem.cpp:322
-msgid "Visit contributor's Xing profile"
-msgstr "Navštívit přispěvatelův Xing profil"
-
-#: aboutdialog/OcsPersonItem.cpp:327
-msgid "Visit contributor's identi.ca feed"
-msgstr "Navštívit přispěvatelův kanál na identi.ca  "
-
-#: aboutdialog/OcsPersonItem.cpp:332
-msgid "Visit contributor's libre.fm profile"
-msgstr "Navštívit přispěvatelův profil na libre.fm"
-
-#: aboutdialog/OcsPersonItem.cpp:337
-msgid "Visit contributor's StackOverflow profile"
-msgstr "Navštívit přispěvatelův profil na StackOverflow"
-
-#: aboutdialog/libattica-ocsclient/personlistjob.cpp:108
-msgid "Unable to parse avatar image data."
-msgstr "Nelze analyzovat obrazová data avataru."
 
 #: amarokurls/AmarokUrlHandler.cpp:222
 msgctxt "The command type of this url is not known"
@@ -6560,10 +6497,8 @@ msgid "APG Presets"
 msgstr "Přednastavení AGP"
 
 #: browsers/playlistbrowser/APGCategory.cpp:120
-#, fuzzy
-#| msgid "General Options"
 msgid "Generator Optimization"
-msgstr "Obecné volby"
+msgstr "Optimalizace generátoru"
 
 #: browsers/playlistbrowser/APGCategory.cpp:124
 msgid "Speed"
@@ -7576,80 +7511,6 @@ msgstr "Nastavení karet"
 msgid "Reload Tabs"
 msgstr "Znovu načíst karty"
 
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:67
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:128
-msgid "Upcoming Events"
-msgstr "Nadcházející události"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:78
-msgid "View Events Calendar"
-msgstr "Zobrazit kalendář událostí"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:91
-msgctxt "@title:group"
-msgid "No track is currently playing"
-msgstr "Nepřehrává se žádná skladba"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:158
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:303
-#, fuzzy
-#| msgid "Favorite music: "
-msgid "Favorite Venues"
-msgstr "Oblíbená hudba: "
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:224
-msgid "No upcoming events"
-msgstr "Žádné nadcházející události"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:224
-#, kde-format
-msgid "%1: No upcoming events"
-msgstr "%1: Žádné nadcházející události"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:229
-#, kde-format
-msgctxt "@title:group Number of upcoming events"
-msgid "1 event"
-msgid_plural "%1 events"
-msgstr[0] "1 událost"
-msgstr[1] "%1 události"
-msgstr[2] "%1 událostí"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:230
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:640
-#, kde-format
-msgctxt "@title:group Number of upcoming events"
-msgid "%1: 1 event"
-msgid_plural "%1: %2 events"
-msgstr[0] "%1: 1 událost"
-msgstr[1] "%1: %2 události"
-msgstr[2] "%1: %2 událostí"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:302
-msgid "Upcoming Events Settings"
-msgstr "Nastavení nadcházejících událostí"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:353
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:362
-msgctxt "@label:textbox Url label"
-msgid "link"
-msgstr "odkaz"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:494
-msgid "Map View"
-msgstr "Prohlížení mapy"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:532
-msgid "Events Calender"
-msgstr "Kalendář událostí"
-
-#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:638
-#, fuzzy
-#| msgid "Favorite music: "
-msgctxt "@title:group"
-msgid "Favorite Venues"
-msgstr "Oblíbená hudba: "
-
 #: context/applets/upcomingevents/UpcomingEventsCalendarWidget.cpp:160
 msgctxt "@info:tooltip Calendar action"
 msgid "Jump to Today"
@@ -7748,6 +7609,82 @@ msgstr[2] "Za <strong>%1</strong> dnů"
 msgctxt "@info:tooltip"
 msgid "<strong>Location:</strong><nl/>%1"
 msgstr "<strong>Umístění:</strong><nl/>%1"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:67
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:128
+msgid "Upcoming Events"
+msgstr "Nadcházející události"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:78
+msgid "View Events Calendar"
+msgstr "Zobrazit kalendář událostí"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:91
+msgctxt "@title:group"
+msgid "No track is currently playing"
+msgstr "Nepřehrává se žádná skladba"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:158
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:303
+#, fuzzy
+#| msgid "Favorite music: "
+msgid "Favorite Venues"
+msgstr "Oblíbená hudba: "
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:224
+msgid "No upcoming events"
+msgstr "Žádné nadcházející události"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:224
+#, kde-format
+msgid "%1: No upcoming events"
+msgstr "%1: Žádné nadcházející události"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:229
+#, kde-format
+msgctxt "@title:group Number of upcoming events"
+msgid "1 event"
+msgid_plural "%1 events"
+msgstr[0] "1 událost"
+msgstr[1] "%1 události"
+msgstr[2] "%1 událostí"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:230
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:640
+#, kde-format
+msgctxt "@title:group Number of upcoming events"
+msgid "%1: 1 event"
+msgid_plural "%1: %2 events"
+msgstr[0] "%1: 1 událost"
+msgstr[1] "%1: %2 události"
+msgstr[2] "%1: %2 událostí"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:302
+msgid "Upcoming Events Settings"
+msgstr "Nastavení nadcházejících událostí"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:353
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:362
+msgctxt "@label:textbox Url label"
+msgid "link"
+msgstr "odkaz"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:494
+msgid "Map View"
+msgstr "Prohlížení mapy"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:532
+#, fuzzy
+#| msgid "Events Calender"
+msgid "Events Calendar"
+msgstr "Kalendář událostí"
+
+#: context/applets/upcomingevents/UpcomingEventsApplet.cpp:638
+#, fuzzy
+#| msgid "Favorite music: "
+msgctxt "@title:group"
+msgid "Favorite Venues"
+msgstr "Oblíbená hudba: "
 
 #: context/applets/videoclip/CustomVideoWidget.cpp:83
 msgid "Enter &fullscreen"
@@ -8250,6 +8187,12 @@ msgstr ""
 "Ve většině případů budete tyto problémy muset vyřešit aby Amarok poběží "
 "korektně."
 
+#: core-impl/collections/db/sql/SqlMeta.cpp:272
+#: covermanager/CoverManager.cpp:842 services/lastfm/meta/LastFmMeta.cpp:133
+#, kde-format
+msgid "%1 - %2"
+msgstr "%1 - %2"
+
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:497
 msgid "Organizing tracks"
 msgstr "Uspořádávání skladeb"
@@ -8263,10 +8206,8 @@ msgid "Copying tracks"
 msgstr "Skladby se kopírují"
 
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:505
-#, fuzzy
-#| msgid "Organizing tracks"
 msgid "Transcoding tracks"
-msgstr "Uspořádávání skladeb"
+msgstr "Převádím skladby"
 
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:563
 #, kde-format
@@ -8279,22 +8220,15 @@ msgid "Transferring: %1"
 msgstr "Přenos: %1"
 
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:642
-#, fuzzy, kde-format
-#| msgid "Transferring: %1"
+#, kde-format
 msgid "Transcoding: %1"
-msgstr "Přenos: %1"
+msgstr "Převádím: %1"
 
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:686
 #: core-impl/collections/support/FileCollectionLocation.cpp:100
 #, kde-format
 msgid "Removing: %1"
 msgstr "Odstraňuje se: %1"
-
-#: core-impl/collections/db/sql/SqlMeta.cpp:272
-#: covermanager/CoverManager.cpp:842 services/lastfm/meta/LastFmMeta.cpp:133
-#, kde-format
-msgid "%1 - %2"
-msgstr "%1 - %2"
 
 #: core-impl/collections/db/ScanManager.cpp:136
 msgid "Database import requested"
@@ -8691,10 +8625,8 @@ msgid "Nepomuk Collection (slow, Redland)"
 msgstr "Sbírka Nepomuku (pomalé, používající Redland)"
 
 #: core-impl/collections/playdarcollection/PlaydarCollection.cpp:125
-#, fuzzy
-#| msgid "Proxy Collection"
 msgid "Playdar Collection"
-msgstr "Proxy sbírka"
+msgstr "Kolekce Playdar"
 
 #: core-impl/collections/proxycollection/ProxyCollection.cpp:53
 msgid "Proxy Collection"
@@ -8719,6 +8651,15 @@ msgstr "před dvěma měsíci"
 #: core-impl/collections/support/TextualQueryFilter.cpp:310
 msgid "three months ago"
 msgstr "před třemi měsíci"
+
+#: core-impl/collections/support/TrashCollectionLocation.cpp:47
+msgid "Trash"
+msgstr "Vyhodit do koše"
+
+#: core-impl/collections/support/TrashCollectionLocation.cpp:101
+#, kde-format
+msgid "Moving to trash: %1"
+msgstr "Přesunuji do koše: %1"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:40
 #, kde-format
@@ -8791,14 +8732,21 @@ msgid "Move Files"
 msgstr "Přesunout soubory"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:98
-#, kde-format
+#, fuzzy, kde-format
+#| msgctxt "@info"
+#| msgid ""
+#| "There was a problem and this track could not be removed. Make sure the "
+#| "directory is writeable."
+#| msgid_plural ""
+#| "There was a problem and %1 tracks could not be removed. Make sure the "
+#| "directory is writeable."
 msgctxt "@info"
 msgid ""
 "There was a problem and this track could not be removed. Make sure the "
-"directory is writeable."
+"directory is writable."
 msgid_plural ""
 "There was a problem and %1 tracks could not be removed. Make sure the "
-"directory is writeable."
+"directory is writable."
 msgstr[0] ""
 "Vyskytl se problém a tato skladba nemohla být odstraněna. Ujistěte se, že do "
 "adresáře lze zapisovat."
@@ -8814,8 +8762,12 @@ msgid "Unable to be removed tracks"
 msgstr "Skladby nelze smazat"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:110
+#, fuzzy
+#| msgid ""
+#| "The collection does not have enough free space available or is not "
+#| "writeable."
 msgid ""
-"The collection does not have enough free space available or is not writeable."
+"The collection does not have enough free space available or is not writable."
 msgstr ""
 "Kolekce nemá k dispozici dostatek volného místa, anebo do ní nelze zapisovat."
 
@@ -8826,15 +8778,6 @@ msgstr "Přejete si odstranit prázdné složky?"
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:117
 msgid "Remove empty folders?"
 msgstr "Odstranit prázdné složky?"
-
-#: core-impl/collections/support/TrashCollectionLocation.cpp:47
-msgid "Trash"
-msgstr "Vyhodit do koše"
-
-#: core-impl/collections/support/TrashCollectionLocation.cpp:101
-#, kde-format
-msgid "Moving to trash: %1"
-msgstr "Přesunuji do koše: %1"
 
 #: core-impl/collections/umscollection/handler/UmsHandler.cpp:474
 msgid "&Use as Collection"
@@ -9369,23 +9312,25 @@ msgctxt ""
 msgid "m:ss"
 msgstr "m:ss"
 
-#: core/meta/support/MetaUtility.cpp:401
-#, fuzzy
-#| msgid "h:mm:ss"
-msgctxt ""
-"the time format for a time length when the time is 1 day or above see "
-"QDateTime documentation."
-msgid "d:hh:mm:ss"
-msgstr "h:mm:ss"
+#: core/meta/support/MetaUtility.cpp:406
+#, fuzzy, kde-format
+#| msgid "%1 day"
+#| msgid_plural "%1 days"
+msgctxt "number of days with spacing for the pretty time"
+msgid "%1 day, "
+msgid_plural "%1 days, "
+msgstr[0] "%1 den"
+msgstr[1] "%1 dny"
+msgstr[2] "%1 dnů"
 
-#: core/meta/support/MetaUtility.cpp:403
+#: core/meta/support/MetaUtility.cpp:407
 msgctxt ""
 "the time format for a time length when the time is 1 hour or above see QTime "
 "documentation."
 msgid "h:mm:ss"
 msgstr "h:mm:ss"
 
-#: core/meta/support/MetaUtility.cpp:416
+#: core/meta/support/MetaUtility.cpp:421
 #, kde-format
 msgctxt "number of years for the pretty time"
 msgid "%1 year"
@@ -9394,7 +9339,7 @@ msgstr[0] "%1 rok"
 msgstr[1] "%1 roky"
 msgstr[2] "%1 let"
 
-#: core/meta/support/MetaUtility.cpp:418
+#: core/meta/support/MetaUtility.cpp:423
 #, kde-format
 msgctxt "number of months for the pretty time"
 msgid "%1 month"
@@ -9403,7 +9348,7 @@ msgstr[0] "%1 měsíc"
 msgstr[1] "%1 měsíce"
 msgstr[2] "%1 měsíců"
 
-#: core/meta/support/MetaUtility.cpp:420
+#: core/meta/support/MetaUtility.cpp:425
 #, kde-format
 msgctxt "number of days for the pretty time"
 msgid "%1 day"
@@ -9412,7 +9357,7 @@ msgstr[0] "%1 den"
 msgstr[1] "%1 dny"
 msgstr[2] "%1 dnů"
 
-#: core/meta/support/MetaUtility.cpp:422
+#: core/meta/support/MetaUtility.cpp:427
 #, kde-format
 msgctxt "number of hours for the pretty time"
 msgid "%1 hour"
@@ -9421,7 +9366,7 @@ msgstr[0] "%1 hodina"
 msgstr[1] "%1 hodiny"
 msgstr[2] "%1 hodin"
 
-#: core/meta/support/MetaUtility.cpp:424
+#: core/meta/support/MetaUtility.cpp:429
 #, kde-format
 msgctxt "number of minutes for the pretty time"
 msgid "%1 minute"
@@ -9430,7 +9375,7 @@ msgstr[0] "%1 minuta"
 msgstr[1] "%1 minuty"
 msgstr[2] "%1 minut"
 
-#: core/meta/support/MetaUtility.cpp:426
+#: core/meta/support/MetaUtility.cpp:431
 #, kde-format
 msgctxt "number of seconds for the pretty time"
 msgid "%1 second"
@@ -10342,10 +10287,9 @@ msgid "Input file"
 msgstr "Vstupní soubor"
 
 #: databaseimporter/sqlbatch/SqlBatchImporter.cpp:72
-#, fuzzy, kde-format
-#| msgid "Could not create directory: %1"
+#, kde-format
 msgid "Could not open file \"%1\"."
-msgstr "Nepodařilo se vytvořit adresář: %1"
+msgstr "Nelze otevřít soubor \"%1\"."
 
 #: dialogs/CollectionSetup.cpp:78
 #, kde-format
@@ -10399,10 +10343,8 @@ msgid "&Watch folders for changes"
 msgstr "S&ledovat změny ve složkách"
 
 #: dialogs/CollectionSetup.cpp:134
-#, fuzzy
-#| msgid "&Write Feed Information to File"
 msgid "Write metadata to file"
-msgstr "Zapiš do souboru informace o &zdroji"
+msgstr "Zapsat metadata do souboru"
 
 #: dialogs/CollectionSetup.cpp:135
 msgid "Write statistics to file"
@@ -10448,17 +10390,14 @@ msgid ""
 msgstr ""
 
 #: dialogs/CollectionSetup.cpp:150
-#, fuzzy
-#| msgid ""
-#| "If selected, Amarok will use Mozilla's Character Set Detector to attempt "
-#| "to automatically guess the character sets used in ID3 tags."
 msgid ""
 "If selected, Amarok will use Mozilla's\n"
 "Character Set Detector to attempt to automatically guess the\n"
 "character sets used in ID3 tags."
 msgstr ""
-"Pokud je volba zvolena, Amarok použije detektor znakové sady z Mozzily k "
-"tomu, aby automaticky odhadl znakovou sadu využitou v ID3 značkách."
+"Pokud je volba zvolena, Amarok použije\n"
+"detektor znakové sady z Mozzily k tomu, aby automaticky odhadl\n"
+"znakovou sadu využitou v ID3 značkách."
 
 #: dialogs/deletedialog.cpp:63
 #, kde-format
@@ -11166,27 +11105,6 @@ msgstr "předchozí skladba"
 msgid "one of the tracks in the current playlist"
 msgstr "Jakým způsobem se má postupovat skladbami v seznamu skladeb"
 
-#: dynamic/biases/PartBias.cpp:44
-msgctxt "Name of the \"Part\" bias"
-msgid "Partition"
-msgstr "Diskový oddíl"
-
-#: dynamic/biases/PartBias.cpp:53
-msgctxt "Description of the \"Part\" bias"
-msgid ""
-"The \"Part\" bias fills parts of the playlist from different sub-biases."
-msgstr ""
-
-#: dynamic/biases/PartBias.cpp:260
-msgid "This controls what portion of the playlist should match the criteria"
-msgstr ""
-"Toto kontroluje, která část seznamu skladeb by měla odpovídat kritériím"
-
-#: dynamic/biases/PartBias.cpp:401
-msgctxt "Part bias representation"
-msgid "Partition"
-msgstr "Diskový oddíl"
-
 #: dynamic/biases/QuizPlayBias.cpp:44
 msgctxt "Name of the \"QuizPlay\" bias"
 msgid "Quiz play"
@@ -11282,6 +11200,27 @@ msgctxt "Inverted condition in tag match bias"
 msgid "Not %1"
 msgstr "Ne %1"
 
+#: dynamic/biases/PartBias.cpp:44
+msgctxt "Name of the \"Part\" bias"
+msgid "Partition"
+msgstr "Diskový oddíl"
+
+#: dynamic/biases/PartBias.cpp:53
+msgctxt "Description of the \"Part\" bias"
+msgid ""
+"The \"Part\" bias fills parts of the playlist from different sub-biases."
+msgstr ""
+
+#: dynamic/biases/PartBias.cpp:260
+msgid "This controls what portion of the playlist should match the criteria"
+msgstr ""
+"Toto kontroluje, která část seznamu skladeb by měla odpovídat kritériím"
+
+#: dynamic/biases/PartBias.cpp:401
+msgctxt "Part bias representation"
+msgid "Partition"
+msgstr "Diskový oddíl"
+
 #: dynamic/Bias.cpp:239
 msgctxt "And bias representation"
 msgid "Match all"
@@ -11375,8 +11314,6 @@ msgid "Album play"
 msgstr "Stránka alba"
 
 #: dynamic/DynamicModel.cpp:940
-#, fuzzy
-#| msgid "Rating"
 msgctxt "Name of a dynamic playlist"
 msgid "Rating"
 msgstr "Hodnocení"
@@ -12905,10 +12842,8 @@ msgid "Authentication Error"
 msgstr "Chyba při ověřování"
 
 #: services/ampache/AmpacheService.cpp:100
-#, fuzzy
-#| msgid "Amarok frontend for your Ampache server."
 msgid "Amarok frontend for your Ampache server"
-msgstr "Amarok jako rozhraní pro spojení s vaším Ampache serverem."
+msgstr "Amarok jako rozhraní pro spojení s vaším serverem Ampache"
 
 #: services/ampache/AmpacheService.cpp:102
 msgid ""
@@ -12964,10 +12899,8 @@ msgid "Update"
 msgstr "Aktualizovat"
 
 #: services/jamendo/JamendoService.cpp:189
-#, fuzzy
-#| msgid "Downloading Jamendo.com Database"
 msgid "Downloading Jamendo.com database..."
-msgstr "Stahuje se databáze z Jamendo.com"
+msgstr "Stahuje se databáze z Jamendo.com..."
 
 #: services/jamendo/JamendoService.cpp:211
 msgid "Updating the local Jamendo database."
@@ -13050,7 +12983,7 @@ msgid "Neighbors"
 msgstr "Sousedé"
 
 #: services/lastfm/LoveTrackAction.cpp:25
-#: services/lastfm/LastFmService.cpp:287
+#: services/lastfm/LastFmService.cpp:284
 msgid "Last.fm: Love"
 msgstr "Last.fm: Oblíbené"
 
@@ -13257,13 +13190,6 @@ msgstr "Vyzkoušet přihlášení"
 msgid "Unable to connect to Last.fm service."
 msgstr "Nelze se spojit se službou Last.fm."
 
-#: services/lastfm/ScrobblerAdapter.cpp:242
-#: services/lastfm/LastFmService.cpp:563
-#, kde-format
-msgctxt "As in, lastfm"
-msgid "Loved Track: %1"
-msgstr "Zbožňovaná skladba: %1"
-
 #: services/lastfm/LastFmServiceConfig.cpp:143
 msgid "Last.fm credentials"
 msgstr "Přihlašovací údaje last.fm"
@@ -13275,86 +13201,6 @@ msgid ""
 msgstr ""
 "Nenalezen spuštěný KWallet. Chcete, aby Amarok uložil váše poslední "
 "přihlašovací údaje Last.fm jako obyčejný text?"
-
-#: services/lastfm/LastFmService.cpp:194
-msgid "Last.fm: The social music revolution"
-msgstr "Last.fm: Sociální hudební revoluce"
-
-#: services/lastfm/LastFmService.cpp:196
-msgid ""
-"Last.fm is a popular online service that provides personal radio stations "
-"and music recommendations. A personal listening station is tailored based on "
-"your listening habits and provides you with recommendations for new music. "
-"It is also possible to play stations with music that is similar to a "
-"particular artist as well as listen to streams from people you have added as "
-"friends or that Last.fm considers your musical \"neighbors\""
-msgstr ""
-"Last.fm je oblíbená internetová služba, která poskytuje osobní doporučení "
-"týkající se rádiových stanic a hudby. Osobní doporučení ohledně poslechu "
-"stanic je děláno přesně podle vašich zvyků a poskytuje vám rady při hledání "
-"nové hudby. Je taktéž možné pouštět si stanice hrající hudbu, která se "
-"podobá určitému umělci a stejně tak poslouchat rádiové proudy od lidí, jež "
-"jste si přidal jako přátele, nebo aby Last.fm zvážilo vaše hudební \"sousedy"
-"\""
-
-#: services/lastfm/LastFmService.cpp:289
-msgid "Ctrl+L"
-msgstr "Ctrl+L"
-
-#: services/lastfm/LastFmService.cpp:342
-msgctxt "Last.fm: errorMessage"
-msgid "Either the username was not recognized, or the password was incorrect."
-msgstr "Buď není v pořádku uživatelské jméno nebo je chybné heslo."
-
-#: services/lastfm/LastFmService.cpp:346
-msgctxt "Last.fm: errorMessage"
-msgid ""
-"There was a problem communicating with the Last.fm services. Please try "
-"again later."
-msgstr ""
-"Během komunikace se službami Last.fm nastal problém. Prosím, zkuste to "
-"později znovu."
-
-#: services/lastfm/LastFmService.cpp:434
-msgid "Enter an artist name"
-msgstr "Zadejte jméno umělce"
-
-#: services/lastfm/LastFmService.cpp:437
-msgid "Enter a tag"
-msgstr "Zadejte značku"
-
-#: services/lastfm/LastFmService.cpp:440
-msgid "Enter a Last.fm user name"
-msgstr "Zadejte jméno uživatele služby Last.fm"
-
-#: services/lastfm/LastFmService.cpp:453
-#, kde-format
-msgid "Username: %1"
-msgstr "Uživatelské jméno: %1"
-
-#: services/lastfm/LastFmService.cpp:458
-#, kde-format
-msgid "Play Count: %1 play"
-msgid_plural "Play Count: %1 plays"
-msgstr[0] "Počet přehrání: %1"
-msgstr[1] "Počet přehrání: %1"
-msgstr[2] "Počet přehrání: %1"
-
-#: services/lastfm/LastFmService.cpp:468
-msgid "Enter login information for Last.fm"
-msgstr "Zadejte přihlašovací informace pro last.fm"
-
-#: services/lastfm/LastFmService.cpp:524
-msgid "Create a Custom Last.fm Station"
-msgstr "Vytvořit si vlastní stanici Last.fm"
-
-#: services/lastfm/LastFmService.cpp:527
-msgid "Tag"
-msgstr "Značka"
-
-#: services/lastfm/LastFmService.cpp:527
-msgid "User"
-msgstr "Uživatel"
 
 #: services/lastfm/LastFmServiceCollection.cpp:42
 #, kde-format
@@ -13384,6 +13230,89 @@ msgstr "Osobní rádio přátel"
 #: services/lastfm/SimilarArtistsAction.cpp:26
 msgid "Play Similar Artists from Last.fm"
 msgstr "Přehrávat skladby od podobných umělců z Last.fm"
+
+#: services/lastfm/ScrobblerAdapter.cpp:236
+#: services/lastfm/LastFmService.cpp:543
+#, kde-format
+msgctxt "As in, lastfm"
+msgid "Loved Track: %1"
+msgstr "Zbožňovaná skladba: %1"
+
+#: services/lastfm/LastFmService.cpp:195
+msgid "Last.fm: The social music revolution"
+msgstr "Last.fm: Sociální hudební revoluce"
+
+#: services/lastfm/LastFmService.cpp:197
+msgid ""
+"Last.fm is a popular online service that provides personal radio stations "
+"and music recommendations. A personal listening station is tailored based on "
+"your listening habits and provides you with recommendations for new music. "
+"It is also possible to play stations with music that is similar to a "
+"particular artist as well as listen to streams from people you have added as "
+"friends or that Last.fm considers your musical \"neighbors\""
+msgstr ""
+"Last.fm je oblíbená internetová služba, která poskytuje osobní doporučení "
+"týkající se rádiových stanic a hudby. Osobní doporučení ohledně poslechu "
+"stanic je děláno přesně podle vašich zvyků a poskytuje vám rady při hledání "
+"nové hudby. Je taktéž možné pouštět si stanice hrající hudbu, která se "
+"podobá určitému umělci a stejně tak poslouchat rádiové proudy od lidí, jež "
+"jste si přidal jako přátele, nebo aby Last.fm zvážilo vaše hudební \"sousedy"
+"\""
+
+#: services/lastfm/LastFmService.cpp:286
+msgid "Ctrl+L"
+msgstr "Ctrl+L"
+
+#: services/lastfm/LastFmService.cpp:339
+msgctxt "Last.fm: errorMessage"
+msgid "Either the username was not recognized, or the password was incorrect."
+msgstr "Buď není v pořádku uživatelské jméno nebo je chybné heslo."
+
+#: services/lastfm/LastFmService.cpp:343
+msgctxt "Last.fm: errorMessage"
+msgid ""
+"There was a problem communicating with the Last.fm services. Please try "
+"again later."
+msgstr ""
+"Během komunikace se službami Last.fm nastal problém. Prosím, zkuste to "
+"později znovu."
+
+#: services/lastfm/LastFmService.cpp:431
+msgid "Enter an artist name"
+msgstr "Zadejte jméno umělce"
+
+#: services/lastfm/LastFmService.cpp:434
+msgid "Enter a tag"
+msgstr "Zadejte značku"
+
+#: services/lastfm/LastFmService.cpp:437
+msgid "Enter a Last.fm user name"
+msgstr "Zadejte jméno uživatele služby Last.fm"
+
+#: services/lastfm/LastFmService.cpp:450
+#, kde-format
+msgid "Username: %1"
+msgstr "Uživatelské jméno: %1"
+
+#: services/lastfm/LastFmService.cpp:455
+#, kde-format
+msgid "Play Count: %1 play"
+msgid_plural "Play Count: %1 plays"
+msgstr[0] "Počet přehrání: %1"
+msgstr[1] "Počet přehrání: %1"
+msgstr[2] "Počet přehrání: %1"
+
+#: services/lastfm/LastFmService.cpp:504
+msgid "Create a Custom Last.fm Station"
+msgstr "Vytvořit si vlastní stanici Last.fm"
+
+#: services/lastfm/LastFmService.cpp:507
+msgid "Tag"
+msgstr "Značka"
+
+#: services/lastfm/LastFmService.cpp:507
+msgid "User"
+msgstr "Uživatel"
 
 #: services/magnatune/MagnatuneCollectionLocation.cpp:42
 msgid "Preview Tracks"
@@ -13562,10 +13491,8 @@ msgid "Could not process download"
 msgstr "Stažení nemohlo být zpracováno"
 
 #: services/magnatune/MagnatuneStore.cpp:106
-#, fuzzy
-#| msgid "\"Fair trade\" online music store."
 msgid "\"Fair trade\" online music store"
-msgstr "Internetový hudební obchod \"Fair trade\"."
+msgstr "Internetový hudební obchod \"Fair trade\""
 
 #: services/magnatune/MagnatuneStore.cpp:110
 #, no-c-format
@@ -13603,10 +13530,8 @@ msgid "Signup"
 msgstr "Přihlášení"
 
 #: services/magnatune/MagnatuneStore.cpp:318
-#, fuzzy
-#| msgid "Downloading Magnatune.com Database"
 msgid "Downloading Magnatune.com database..."
-msgstr "Stahuje se databáze Magnatune.com"
+msgstr "Stahuje se databáze Magnatune.com..."
 
 #: services/magnatune/MagnatuneStore.cpp:347
 msgid "Updating the local Magnatune database."
@@ -15075,6 +15000,25 @@ msgctxt "track from source"
 msgid "from <b>%1</b>"
 msgstr "od <b>%1</b>"
 
+#: PluginManager.cpp:253
+msgid ""
+"<p>Amarok could not find any collection plugins. It is possible that Amarok "
+"is installed under the wrong prefix, please fix your installation using:<pre>"
+"$ cd /path/to/amarok/source-code/<br>$ su -c \"make uninstall\"<br>$ cmake -"
+"DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -c \"make install\"<br>$ "
+"kbuildsycoca4 --noincremental<br>$ amarok</pre>More information can be found "
+"in the README file. For further assistance join us at #amarok on irc."
+"freenode.net.</p>"
+msgstr ""
+"<p>Amarok nemohl najít žádné moduly sbírky. Počkejte prosím několik minut a "
+"potom Amarok znovu spusťte.</p><p>Pokud to nepomůže, je pravděpodobné, že "
+"byl Amarok instalován se špatným prefixem. Opravte, prosím, svou instalaci "
+"za použití:<pre>$ cd /cesta ke zdrojovým souborům Amaroku/<br>$ su -c \"make "
+"uninstall\"<br>$ ./configure --prefix=`kde-config --prefix` && su -c \"make "
+"install\"<br>$ kbuildsycoca4 -- noincremental<br>$ amarok</pre>Více "
+"informací je možné nalézt v souboru README. Kvůli další pomoci se k nám "
+"připojte na #amarok na irc.freenode.net.</p>"
+
 #: TrayIcon.cpp:146
 #, kde-format
 msgid "%1%"
@@ -15104,6 +15048,17 @@ msgstr "Počet přehrání: %1"
 #, kde-format
 msgid "Last played: %1"
 msgstr "Naposledy hrané: %1"
+
+#, fuzzy
+
+
+
+
+
+
+
+
+
 
 
 
