@@ -4,6 +4,8 @@ amarok (2.4.3-0r1) UNRELEASED; urgency=low
   * Switch Vcs-* field to kde-extras repository. (Closes: #635292)
   * Drop backport_no_kwallet_prompt_on_track_change.patch and
     backport_arm_build_fix.patch - integrated upstream.
+  * Add upstream_fix_lyrics_autorefresh_in_some_cases.patch to fix lyrics
+    autorefresh in some cases.
 
  -- Modestas Vainius <modax@debian.org>  Sun, 24 Jul 2011 22:38:44 +0300
 
