@@ -1,4 +1,4 @@
-amarok (2.4.3-0r1) UNRELEASED; urgency=low
+amarok (2.4.3-1) unstable; urgency=low
 
   * New upstream release.
   * Switch Vcs-* field to kde-extras repository. (Closes: #635292)
@@ -7,7 +7,7 @@ amarok (2.4.3-0r1) UNRELEASED; urgency=low
   * Add upstream_fix_lyrics_autorefresh_in_some_cases.patch to fix lyrics
     autorefresh in some cases.
 
- -- Modestas Vainius <modax@debian.org>  Sun, 24 Jul 2011 22:38:44 +0300
+ -- Modestas Vainius <modax@debian.org>  Sat, 30 Jul 2011 18:00:09 +0300
 
 amarok (2.4.2-2) unstable; urgency=low
 
