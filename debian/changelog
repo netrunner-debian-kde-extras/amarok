@@ -4,6 +4,7 @@ amarok (2.5.0-0r1) UNRELEASED; urgency=low
   * Refresh patches.
   * Disable doc/nl because it fails to build (against kdelibs 4.6.5 at least).
   * This version of amarok requires kdelibs 4.6, bump build dependency.
+  * Bump compat to 9 in order to get automatic build flags handling.
 
  -- Modestas Vainius <modax@debian.org>  Sat, 17 Dec 2011 12:08:05 +0200
 
