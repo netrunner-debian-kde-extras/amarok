@@ -2,3 +2,4 @@ upstream_fix_lyrics_autorefresh_in_some_cases.patch
 debian_disable_qtscriptbindings_check_fix.diff
 debian_mysqle_amarok_local_errmsg_feature.diff
 debian_disable_doc_nl.diff
+debian_find_mysql_fix.diff

@@ -6,6 +6,7 @@ amarok (2.5.0-0r1) UNRELEASED; urgency=low
   * This version of amarok requires kdelibs 4.6, bump build dependency.
   * Bump compat to 9 in order to get automatic build flags handling.
   * Ship Russian documentation translations.
+  * Add debian_find_mysql_fix.diff patch to fix MySQL detection at cmake stage.
 
  -- Modestas Vainius <modax@debian.org>  Sat, 17 Dec 2011 12:08:05 +0200
 

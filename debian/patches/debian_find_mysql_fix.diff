@@ -1,0 +1,38 @@
+From: Modestas Vainius <modax@debian.org>
+Subject: Fix mysql_config call for Debian MySQL
+
+-- Found MySQL: Usage: /usr/bin/mysql_config [OPTIONS]
+Options:
+        --cflags         [-I/usr/include/mysql  -DBIG_JOINS=1  -fno-strict-aliasing   -DUNIV_LINUX -DUNIV_LINUX]
+        --include        [-I/usr/include/mysql]
+        --libs           [-rdynamic -L/usr/lib/mysql -lmysqlclient]
+        --libs_r         [-rdynamic -L/usr/lib/mysql -lmysqlclient_r]
+        --plugindir      [/usr/lib/mysql/plugin]
+        --socket         [/var/run/mysqld/mysqld.sock]
+        --port           [0]
+        --version        [5.1.58]
+        --libmysqld-libs [-rdynamic -L/usr/lib/mysql -lmysqld -ldl -lwrap -lrt], -rdynamic -L/usr/lib/mysql -lmysqlclient
+-- Found MySQL Embedded: Usage: /usr/bin/mysql_config [OPTIONS]
+Options:
+        --cflags         [-I/usr/include/mysql  -DBIG_JOINS=1  -fno-strict-aliasing   -DUNIV_LINUX -DUNIV_LINUX]
+        --include        [-I/usr/include/mysql]
+        --libs           [-rdynamic -L/usr/lib/mysql -lmysqlclient]
+        --libs_r         [-rdynamic -L/usr/lib/mysql -lmysqlclient_r]
+        --plugindir      [/usr/lib/mysql/plugin]
+        --socket         [/var/run/mysqld/mysqld.sock]
+        --port           [0]
+        --version        [5.1.58]
+        --libmysqld-libs [-rdynamic -L/usr/lib/mysql -lmysqld -ldl -lwrap -lrt], -rdynamic -L/usr/lib/mysql -lmysqld_pic -ldl -lwrap -lrt -lpthread
+
+ii  libmysqlclient-dev            5.1.58-1                      MySQL database development files
+--- a/cmake/modules/FindMySQLAmarok.cmake
++++ b/cmake/modules/FindMySQLAmarok.cmake
+@@ -17,7 +17,7 @@ if(NOT WIN32)
+ endif(NOT WIN32)
+ 
+ if(MYSQLCONFIG_EXECUTABLE)
+-    exec_program(${MYSQLCONFIG_EXECUTABLE} ARGS --variable=pkgincludedir RETURN_VALUE _return_VALUE OUTPUT_VARIABLE MYSQL_INCLUDE_DIR)
++    exec_program(${MYSQLCONFIG_EXECUTABLE} ARGS --include RETURN_VALUE _return_VALUE OUTPUT_VARIABLE MYSQL_INCLUDE_DIR)
+     exec_program(${MYSQLCONFIG_EXECUTABLE} ARGS --cflags RETURN_VALUE _return_VALUE OUTPUT_VARIABLE MYSQL_CFLAGS)
+     exec_program(${MYSQLCONFIG_EXECUTABLE} ARGS --libs RETURN_VALUE _return_VALUE OUTPUT_VARIABLE MYSQL_LIBRARIES)
+     exec_program(${MYSQLCONFIG_EXECUTABLE} ARGS --libmysqld-libs RETURN_VALUE _return_VALUE OUTPUT_VARIABLE MYSQL_EMBEDDED_LIBSTEMP)
