@@ -20,6 +20,7 @@ usr/lib/kde4/amarok_context_applet_labels.so
 usr/lib/kde4/amarok_context_applet_lyrics.so
 usr/lib/kde4/amarok_context_applet_photos.so
 usr/lib/kde4/amarok_context_applet_similarArtists.so
+usr/lib/kde4/amarok_context_applet_spectrum_analyzer.so
 usr/lib/kde4/amarok_context_applet_tabs.so
 usr/lib/kde4/amarok_context_applet_upcomingEvents.so
 usr/lib/kde4/amarok_context_applet_videoclip.so
@@ -30,6 +31,7 @@ usr/lib/kde4/amarok_data_engine_labels.so
 usr/lib/kde4/amarok_data_engine_lyrics.so
 usr/lib/kde4/amarok_data_engine_photos.so
 usr/lib/kde4/amarok_data_engine_similarArtists.so
+usr/lib/kde4/amarok_data_engine_spectrum_analyzer.so
 usr/lib/kde4/amarok_data_engine_tabs.so
 usr/lib/kde4/amarok_data_engine_upcomingEvents.so
 usr/lib/kde4/amarok_data_engine_videoclip.so
@@ -38,12 +40,14 @@ usr/lib/kde4/amarok_device_massstorage.so
 usr/lib/kde4/amarok_device_nfs.so
 usr/lib/kde4/amarok_device_smb.so
 usr/lib/kde4/amarok_runnerscript_javascript.so
+usr/lib/kde4/amarok_service_amazonstore.so
 usr/lib/kde4/amarok_service_ampache.so
 usr/lib/kde4/amarok_service_jamendo.so
 usr/lib/kde4/amarok_service_lastfm.so
 usr/lib/kde4/amarok_service_magnatunestore.so
 usr/lib/kde4/amarok_service_mp3tunes.so
 usr/lib/kde4/amarok_service_opmldirectory.so
+usr/lib/kde4/kcm_amarok_service_amazonstore.so
 usr/lib/kde4/kcm_amarok_service_ampache.so
 usr/lib/kde4/kcm_amarok_service_lastfm.so
 usr/lib/kde4/kcm_amarok_service_magnatunestore.so

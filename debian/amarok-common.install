@@ -45,6 +45,7 @@ usr/share/kde4/services/amarok-context-applet-labels.desktop
 usr/share/kde4/services/amarok-context-applet-lyrics.desktop
 usr/share/kde4/services/amarok-context-applet-photos.desktop
 usr/share/kde4/services/amarok-context-applet-similarArtists.desktop
+usr/share/kde4/services/amarok-context-applet-spectrum-analyzer.desktop
 usr/share/kde4/services/amarok-context-applet-tabs.desktop
 usr/share/kde4/services/amarok-context-applet-upcomingEvents.desktop
 usr/share/kde4/services/amarok-context-applet-videoclip.desktop
@@ -55,6 +56,7 @@ usr/share/kde4/services/amarok-data-engine-labels.desktop
 usr/share/kde4/services/amarok-data-engine-lyrics.desktop
 usr/share/kde4/services/amarok-data-engine-photos.desktop
 usr/share/kde4/services/amarok-data-engine-similarArtists.desktop
+usr/share/kde4/services/amarok-data-engine-spectrum-analyzer.desktop
 usr/share/kde4/services/amarok-data-engine-tabs.desktop
 usr/share/kde4/services/amarok-data-engine-upcomingEvents.desktop
 usr/share/kde4/services/amarok-data-engine-videoclip.desktop
@@ -73,6 +75,8 @@ usr/share/kde4/services/amarok_collection-upnpcollection.desktop
 usr/share/kde4/services/amarok_device_massstorage.desktop
 usr/share/kde4/services/amarok_device_nfs.desktop
 usr/share/kde4/services/amarok_device_smb.desktop
+usr/share/kde4/services/amarok_service_amazonstore.desktop
+usr/share/kde4/services/amarok_service_amazonstore_config.desktop
 usr/share/kde4/services/amarok_service_ampache.desktop
 usr/share/kde4/services/amarok_service_ampache_config.desktop
 usr/share/kde4/services/amarok_service_jamendo.desktop
