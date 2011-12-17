@@ -1,0 +1,10 @@
+From: Modestas Vainius <modax@debian.org>
+Subject: Disable doc/nl because it does not build
+
+--- a/doc/CMakeLists.txt
++++ b/doc/CMakeLists.txt
+@@ -9,4 +9,3 @@ add_subdirectory(es)
+ add_subdirectory(sv)
+ add_subdirectory(ru)
+ add_subdirectory(it)
+-add_subdirectory(nl)

@@ -2,6 +2,7 @@ amarok (2.5.0-0r1) UNRELEASED; urgency=low
 
   * New upstream release.
   * Refresh patches.
+  * Disable doc/nl because it fails to build (against kdelibs 4.6.5 at least).
 
  -- Modestas Vainius <modax@debian.org>  Sat, 17 Dec 2011 12:08:05 +0200
 
