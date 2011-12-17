@@ -13,11 +13,9 @@ changed as well.
  src/context/engines/lyrics/LyricsEngine.cpp |    5 ++++-
  1 files changed, 4 insertions(+), 1 deletions(-)
 
-diff --git a/src/context/engines/lyrics/LyricsEngine.cpp b/src/context/engines/lyrics/LyricsEngine.cpp
-index 2abeb6d..e6188fc 100644
 --- a/src/context/engines/lyrics/LyricsEngine.cpp
 +++ b/src/context/engines/lyrics/LyricsEngine.cpp
-@@ -66,7 +66,10 @@ void LyricsEngine::onTrackMetadataChanged( Meta::TrackPtr track )
+@@ -66,7 +66,10 @@ void LyricsEngine::onTrackMetadataChange
      DEBUG_BLOCK
  
      // Only update if the lyrics have changed.
@@ -29,6 +27,3 @@ index 2abeb6d..e6188fc 100644
          update();
  }
  
--- 
-1.7.5.4
-

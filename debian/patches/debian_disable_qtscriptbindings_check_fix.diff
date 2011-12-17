@@ -9,9 +9,9 @@ Just make cmake think that QtScriptBindings is available.
 
 --- a/CMakeLists.txt
 +++ b/CMakeLists.txt
-@@ -90,8 +90,8 @@ if( WITH_PLAYER )
-     macro_ensure_version( "4.5.0" ${KDE_VERSION} KDE_HAS_KIMAGECACHE )
-     macro_bool_to_01( KDE_HAS_KIMAGECACHE HAVE_KIMAGECACHE )
+@@ -92,8 +92,8 @@ if( WITH_PLAYER )
+ 
+     macro_log_feature( KDE4_FOUND "kdelibs" "The toolkit Amarok uses to build" "http://www.kde.org" TRUE "4.6.0" "" )
  
 -    find_package( QtScriptQtBindings )
 -    macro_log_feature( QTSCRIPTQTBINDINGS_FOUND "qtscript-qt" "QtScript Qt Bindings" "http://code.google.com/p/qtscriptgenerator/" FALSE "" "" )
