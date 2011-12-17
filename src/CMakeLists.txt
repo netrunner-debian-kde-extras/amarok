@@ -1,7 +1,9 @@
 # Improves speed of string concatenation
 add_definitions(-DQT_USE_FAST_CONCATENATION)
 add_definitions(-DQT_USE_FAST_OPERATOR_PLUS)
-add_definitions(-DQT_STRICT_ITERATORS)
+if(NOT MSVC)
+    add_definitions(-DQT_STRICT_ITERATORS)
+endif(NOT MSVC)
 
 if(APPLE)
     set(mac_SRCS
@@ -39,7 +41,6 @@ include_directories(
     browsers/
     browsers/playlistbrowser
     browsers/servicebrowser
-    browsers/servicebrowser/scriptableservice
     core-impl/collections
     core-impl/collections/support
     core-impl/collections/mediadevicecollection
@@ -61,7 +62,6 @@ include_directories(
     playlistmanager
     statusbar
     synchronization
-    timecode
     transcoding
     widgets
     ${KDE4_INCLUDE_DIR}
@@ -331,10 +331,20 @@ set(collection_SRCS
 )
 
 #####################################################################
+# SCANNER
+#####################################################################
+set( scanner_SRCS
+    scanner/GenericScanManager.cpp
+    ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/Album.cpp
+    ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/BatchFile.cpp
+    ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/Directory.cpp
+    ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/Playlist.cpp
+    ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/Track.cpp
+)
+
+#####################################################################
 # CONTEXT
 #####################################################################
-#
-
 set( libcontextview_SRCS
     context/Applet.cpp
     context/Containment.cpp
@@ -407,6 +417,7 @@ set(libplaylistmanager_SRCS
     playlistmanager/sql/SqlPlaylist.cpp
     playlistmanager/sql/SqlPlaylistGroup.cpp
     playlistmanager/SyncedPlaylist.cpp
+    playlistmanager/SyncedPodcast.cpp
     playlistmanager/SyncRelationStorage.cpp
 )
 
@@ -543,15 +554,12 @@ set(apg_SRCS
     playlistgenerator/ConstraintFactory.cpp
     playlistgenerator/ConstraintNode.cpp
     playlistgenerator/ConstraintSolver.cpp
-    playlistgenerator/ConstraintTester.cpp
-    playlistgenerator/ConstraintTestWrapper.cpp
     playlistgenerator/Preset.cpp
     playlistgenerator/PresetEditDialog.cpp
     playlistgenerator/PresetModel.cpp
     playlistgenerator/TreeController.cpp
     playlistgenerator/TreeModel.cpp
     playlistgenerator/constraints/Checkpoint.cpp
-    playlistgenerator/constraints/CheckpointSupport.cpp
     playlistgenerator/constraints/Matching.cpp
     playlistgenerator/constraints/PlaylistDuration.cpp
     playlistgenerator/constraints/PlaylistLength.cpp
@@ -612,6 +620,7 @@ set(amaroklib_LIB_SRCS
     ${core_interfaces_SRCS}
     ${apg_SRCS}
     ${collection_SRCS}
+    ${scanner_SRCS}
     ${mac_SRCS}
     ${network_access_SRCS}
     ${libplaylistbrowser_SRCS}
@@ -643,6 +652,7 @@ set(amaroklib_LIB_SRCS
     MediaDeviceMonitor.cpp
     MountPointManager.cpp
     PluginManager.cpp
+    QStringx.cpp
     ScriptManager.cpp
     ScriptUpdater.cpp
     SvgHandler.cpp
@@ -703,6 +713,7 @@ set(amaroklib_LIB_SRCS
     widgets/AmarokDockWidget.cpp
     widgets/AnimatedLabelStack.cpp
     widgets/BreadcrumbItemButton.cpp
+    widgets/ClearSpinBox.cpp
     widgets/CoverLabel.cpp
     widgets/HintLineEdit.cpp
     widgets/kdatecombo.cpp
@@ -772,6 +783,11 @@ if(KDE4_BUILD_TESTS)
         ../tests/timecode/
     )
 endif()
+
+if( LIBMYGPO_QT_FOUND )
+    set( EXTRA_LIBS ${LIBMYGPO_QT_LIBRARIES} )
+    include_directories(     ${LIBMYGPO_QT_INCLUDE_DIRS} ${LIBMYGPO_QT_INCLUDE_DIRS}/../ )
+endif( LIBMYGPO_QT_FOUND )
 
 if( LIBLASTFM_FOUND )
     set(amaroklib_LIB_SRCS

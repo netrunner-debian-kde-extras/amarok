@@ -48,7 +48,6 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     , m_trackOrganizerDone( false )
     , m_detailed( true )
     , m_schemeModified( false )
-    , m_formatListModified( false )
     , m_conflict( false )
 {
     Q_UNUSED( name )
@@ -77,7 +76,6 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     m_filenameLayoutDialog = new FilenameLayoutDialog( mainContainer, 1 );
     connect( this, SIGNAL( accepted() ),  m_filenameLayoutDialog, SLOT( onAccept() ) );
     ui->verticalLayout->insertWidget( 1, m_filenameLayoutDialog );
-    ui->ignoreTheCheck->show();
 
     ui->folderCombo->insertItems( 0, folders );
     if( ui->folderCombo->contains( AmarokConfig::organizeDirectory() ) )
@@ -86,12 +84,12 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
         ui->folderCombo->setCurrentIndex( 0 ); //TODO possible bug: assumes folder list is not empty.
 
     ui->overwriteCheck->setChecked( AmarokConfig::overwriteFiles() );
-    ui->spaceCheck->setChecked( AmarokConfig::replaceSpace() );
-    ui->ignoreTheCheck->setChecked( AmarokConfig::ignoreThe() );
-    ui->vfatCheck->setChecked( AmarokConfig::vfatCompatible() );
-    ui->asciiCheck->setChecked( AmarokConfig::asciiOnly() );
-    ui->regexpEdit->setText( AmarokConfig::replacementRegexp() );
-    ui->replaceEdit->setText( AmarokConfig::replacementString() );
+    m_filenameLayoutDialog->setReplaceSpaces( AmarokConfig::replaceSpace() );
+    m_filenameLayoutDialog->setIgnoreThe( AmarokConfig::ignoreThe() );
+    m_filenameLayoutDialog->setVfatCompatible( AmarokConfig::vfatCompatible() );
+    m_filenameLayoutDialog->setAsciiOnly( AmarokConfig::asciiOnly() );
+    m_filenameLayoutDialog->setRegexpText( AmarokConfig::replacementRegexp() );
+    m_filenameLayoutDialog->setReplaceText( AmarokConfig::replacementString() );
 
     ui->previewTableWidget->horizontalHeader()->setResizeMode( QHeaderView::ResizeToContents );
     ui->conflictLabel->setText("");
@@ -100,13 +98,8 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     ui->conflictLabel->setPalette( p );
 
     // to show the conflict error
-    connect( ui->overwriteCheck, SIGNAL(stateChanged( int )), SLOT(slotUpdatePreview()) );
-    connect( ui->ignoreTheCheck, SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
-    connect( ui->spaceCheck, SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
-    connect( ui->asciiCheck, SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
-    connect( ui->vfatCheck, SIGNAL(toggled(bool)), SLOT(slotUpdatePreview()) );
-    connect( ui->regexpEdit, SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
-    connect( ui->replaceEdit, SIGNAL(textChanged(QString)), SLOT(slotUpdatePreview()) );
+    connect( ui->overwriteCheck, SIGNAL(stateChanged( int )),
+             SLOT(slotUpdatePreview()) );
     connect( ui->folderCombo, SIGNAL(currentIndexChanged( const QString & )),
              SLOT(slotUpdatePreview()) );
     connect( m_filenameLayoutDialog, SIGNAL(schemeChanged()), SLOT(slotUpdatePreview()) );
@@ -115,9 +108,6 @@ OrganizeCollectionDialog::OrganizeCollectionDialog( const Meta::TrackList &track
     connect( this, SIGNAL(accepted()), SLOT(slotDialogAccepted()) );
     connect( ui->folderCombo, SIGNAL(currentIndexChanged( const QString & )),
              SLOT(slotEnableOk( const QString & )) );
-    connect( ui->addPresetButton, SIGNAL(clicked( bool )), SLOT(slotAddFormat()) );
-    connect( ui->removePresetButton, SIGNAL(clicked( bool )), SLOT(slotRemoveFormat()) );
-    connect( ui->updatePresetButton, SIGNAL(clicked( bool )), SLOT(slotUpdateFormat()) );
 
     slotEnableOk( ui->folderCombo->currentText() );
 
@@ -223,72 +213,22 @@ OrganizeCollectionDialog::update( const QString & dummy )
 void
 OrganizeCollectionDialog::init()
 {
-    populateFormatList();
     slotUpdatePreview();
 }
-
-void OrganizeCollectionDialog::populateFormatList()
-{
-    // items are stored in the config list in the following format:
-    // Label#DELIM#format string#DELIM#selected
-    // the last item to have the third parameter is the default selected preset
-    // the third param isnis optional 
-    QStringList presets_raw;
-    int selected_index = -1;
-    ui->presetCombo->clear();
-    presets_raw = AmarokConfig::formatPresets();
-    foreach( QString str, presets_raw )
-    {
-        QStringList items;
-        items = str.split( "#DELIM#", QString::SkipEmptyParts );
-        if( items.size() < 2 )
-            continue;
-        ui->presetCombo->addItem( items.at( 0 ), items.at( 1 ) ); // Label, format string
-        if( items.size() == 3 )
-            selected_index = ui->presetCombo->findData( items.at( 1 ) );
-    }
-    if( selected_index > 0 )
-        ui->presetCombo->setCurrentIndex( selected_index );
-    slotFormatPresetSelected( selected_index );
-    connect( ui->presetCombo, SIGNAL( currentIndexChanged( int ) ), this, SLOT( slotFormatPresetSelected( int ) ) );
-}
-
-void OrganizeCollectionDialog::slotSaveFormatList()
-{
-    if( !m_formatListModified )
-        return;
-
-    QStringList presets;
-    int n = ui->presetCombo->count();
-    int current_idx = ui->presetCombo->currentIndex();
-    for( int i = 0; i < n; ++i )
-    {
-        QString item;
-        if( i == current_idx )
-            item = "%1#DELIM#%2#DELIM#selected";
-        else
-            item = "%1#DELIM#%2";
-        QString scheme = ui->presetCombo->itemData( i ).toString();
-        QString label = ui->presetCombo->itemText( i );
-        item = item.arg( label, scheme );
-        presets.append( item );
-    }
-    AmarokConfig::setFormatPresets( presets );
-}
-
 
 void
 OrganizeCollectionDialog::slotUpdatePreview()
 {
     QString formatString = buildFormatString();
-    m_trackOrganizer->setAsciiOnly( ui->asciiCheck->isChecked() );
+    m_trackOrganizer->setAsciiOnly( m_filenameLayoutDialog->asciiOnly() );
     m_trackOrganizer->setFolderPrefix( ui->folderCombo->currentText() );
     m_trackOrganizer->setFormatString( formatString );
     m_trackOrganizer->setTargetFileExtension( m_targetFileExtension );
-    m_trackOrganizer->setIgnoreThe( ui->ignoreTheCheck->isChecked() );
-    m_trackOrganizer->setReplaceSpaces( ui->spaceCheck->isChecked() );
-    m_trackOrganizer->setReplace( ui->regexpEdit->text(), ui->replaceEdit->text() );
-    m_trackOrganizer->setVfatSafe( ui->vfatCheck->isChecked() );
+    m_trackOrganizer->setIgnoreThe( m_filenameLayoutDialog->ignoreThe() );
+    m_trackOrganizer->setReplaceSpaces( m_filenameLayoutDialog->replaceSpaces() );
+    m_trackOrganizer->setReplace( m_filenameLayoutDialog->regexpText(),
+                                  m_filenameLayoutDialog->replaceText() );
+    m_trackOrganizer->setVfatSafe( m_filenameLayoutDialog->vfatCompatible() );
 
     //empty the table, not only it's contents
     ui->previewTableWidget->setRowCount( 0 );
@@ -361,12 +301,14 @@ void
 OrganizeCollectionDialog::slotDialogAccepted()
 {
     AmarokConfig::setOrganizeDirectory( ui->folderCombo->currentText() );
-    AmarokConfig::setIgnoreThe( ui->ignoreTheCheck->isChecked() );
-    AmarokConfig::setReplaceSpace( ui->spaceCheck->isChecked() );
-    AmarokConfig::setVfatCompatible( ui->vfatCheck->isChecked() );
-    AmarokConfig::setAsciiOnly( ui->asciiCheck->isChecked() );
-    AmarokConfig::setReplacementRegexp( ui->regexpEdit->text() );
-    AmarokConfig::setReplacementString( ui->replaceEdit->text() );
+    AmarokConfig::setIgnoreThe( m_filenameLayoutDialog->ignoreThe() );
+    AmarokConfig::setReplaceSpace( m_filenameLayoutDialog->replaceSpaces() );
+    AmarokConfig::setVfatCompatible( m_filenameLayoutDialog->vfatCompatible() );
+    AmarokConfig::setAsciiOnly( m_filenameLayoutDialog->asciiOnly() );
+    AmarokConfig::setReplacementRegexp( m_filenameLayoutDialog->regexpText() );
+    AmarokConfig::setReplacementString( m_filenameLayoutDialog->replaceText() );
+
+    m_filenameLayoutDialog->onAccept();
 }
 
 //The Ok button should be disabled when there's no collection root selected, and when there is no .%filetype in format string
@@ -378,42 +320,5 @@ OrganizeCollectionDialog::slotEnableOk( const QString & currentCollectionRoot )
     else
         enableButtonOk( true );
 }
-
-void OrganizeCollectionDialog::slotFormatPresetSelected( int index )
-{
-    QString scheme = ui->presetCombo->itemData( index ).toString();
-    m_filenameLayoutDialog->setScheme( scheme );
-}
-
-void OrganizeCollectionDialog::slotAddFormat()
-{
-    bool ok = false;
-    QString name = KInputDialog::getText( i18n( "New Format Preset" ), i18n( "Preset Name" ), i18n( "New Preset" ),  &ok, this );
-    if( !ok )
-        return; // user canceled.
-    QString format = m_filenameLayoutDialog->getParsableScheme();
-    ui->presetCombo->insertItem(0, name, format);
-    ui->presetCombo->setCurrentIndex( 0 );
-    m_formatListModified = true;
-}
-
-void OrganizeCollectionDialog::slotRemoveFormat()
-{
-    int idx = ui->presetCombo->currentIndex();
-    ui->presetCombo->removeItem( idx );
-    m_formatListModified = true;
-}
-
-void
-OrganizeCollectionDialog::slotUpdateFormat()
-{
-    int idx = ui->presetCombo->currentIndex();
-    QString formatString = m_filenameLayoutDialog->getParsableScheme();
-    ui->presetCombo->setItemData( idx, formatString );
-    ui->updatePresetButton->setEnabled( false );
-    m_formatListModified = true;
-}
-
-
 
 #endif  //AMAROK_ORGANIZECOLLECTIONDIALOG_UI_H

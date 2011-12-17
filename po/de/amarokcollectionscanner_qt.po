@@ -1,7 +1,7 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
-# Burkhard Lück <lueck@hube-lueck.de>, 2009.
+# Burkhard Lück <lueck@hube-lueck.de>, 2009, 2011.
 # Thomas Reitelbach <tr@erdfunkstelle.de>, 2009.
 # Johannes Obermayr <johannesobermayr@gmx.de>, 2009, 2010.
 # Panagiotis Papadopoulos <pano_90@gmx.net>, 2010.
@@ -10,16 +10,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarokcollectionscanner_qt\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-06-20 03:54+0200\n"
-"PO-Revision-Date: 2010-12-26 15:23+0100\n"
-"Last-Translator: Johannes Obermayr <johannesobermayr@gmx.de>\n"
+"POT-Creation-Date: 2011-08-18 02:51+0200\n"
+"PO-Revision-Date: 2011-10-07 14:05+0200\n"
+"Last-Translator: Burkhard Lück <lueck@hube-lueck.de>\n"
 "Language-Team: German <kde-i18n-de@kde.org>\n"
+"Language: de\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Lokalize 1.2\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"Language: de\n"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:244
 #: utilities/collectionscanner/CollectionScanner.cpp:267
@@ -55,8 +55,8 @@ msgid ""
 "    --idlepriority      : Run at idle priority\n"
 "    --sharedmemory <key> : A shared memory segment to be used for restarting "
 "a scan\n"
-"    --newer <path>      : Only scan directories if modification time is new "
-"than <path>\n"
+"    --newer <path>      : Only scan directories if modification time is "
+"newer than <path>\n"
 "                          Only useful in incremental scan mode\n"
 "    --batch <path>      : Add the directories from the batch xml file\n"
 "                          batch file format should look like this:\n"

@@ -35,6 +35,7 @@
 
 #include <QDBusConnection>
 #include <QDBusMessage>
+#include <QDBusObjectPath>
 
 #include <KAboutData>
 #include <KCmdLineArgs>
@@ -44,13 +45,21 @@ static const char *MPRIS2_OBJECT_PATH = "/org/mpris/MediaPlayer2";
 static const char *MPRIS2_PLAYER_INTERFACE = "org.mpris.MediaPlayer2.Player";
 static const char *FDO_PROPERTIES_INTERFACE = "org.freedesktop.DBus.Properties";
 
-static QString activeMprisTrackId()
+static QDBusObjectPath mprisTrackId(quint64 playlistTrackId)
 {
-    quint64 id = The::playlist()->activeId();
-    if( id > 0 )
-        return QString( "%1/Track/%2" ).arg( MPRIS2_OBJECT_PATH ).arg( id );
-    else
-        return QString();
+    QString path;
+    if( playlistTrackId > 0 ) {
+        path = QString( "%1/Track/%2" ).arg( MPRIS2_OBJECT_PATH ).arg( playlistTrackId );
+    } else {
+        // dropped out of the playlist
+        path = QString( "%1/OrphanTrack" ).arg( MPRIS2_OBJECT_PATH );
+    }
+    return QDBusObjectPath( path );
+}
+
+static QDBusObjectPath activeMprisTrackId()
+{
+    return mprisTrackId( The::playlist()->activeId() );
 }
 
 enum Status { Playing, Paused, Stopped };
@@ -77,12 +86,6 @@ namespace Amarok
         new Mpris2AmarokPlayerAdaptor( this );
         QDBusConnection::sessionBus().registerObject( MPRIS2_OBJECT_PATH, this );
 
-        updateTrackProgressionProperties();
-        updatePlaybackStatusProperty();
-        updatePlaylistProperties();
-        updateTrackProperties();
-        setPropertyInternal( "Volume", static_cast<double>(The::engineController()->volume()) / 100.0 );
-
         connect( The::playlistActions(), SIGNAL( navigatorChanged() ),
             SLOT( updateTrackProgressionProperties() ) );
         // changing the navigator may also affect whether there is a
@@ -96,6 +99,8 @@ namespace Amarok
             SLOT( updatePlaylistProperties() ) );
         connect( The::playlist()->qaim(), SIGNAL( rowsRemoved(QModelIndex,int,int) ),
             SLOT( updatePlaylistProperties() ) );
+        connect( qobject_cast<Playlist::ProxyBase*>(The::playlist()->qaim()), SIGNAL( activeTrackChanged(const quint64) ),
+                 this, SLOT( playlistActiveTrackChanged(quint64) ) );
 
         EngineController *engine = The::engineController();
 
@@ -115,6 +120,12 @@ namespace Amarok
         connect( engine, SIGNAL( volumeChanged( int ) ),
                  this, SLOT( volumeChanged( int ) ) );
 
+        updateTrackProgressionProperties();
+        updatePlaybackStatusProperty();
+        updatePlaylistProperties();
+        updateTrackProperties();
+        setPropertyInternal( "Volume", static_cast<double>(The::engineController()->volume()) / 100.0 );
+        setPropertyInternal( "CanSeek", The::engineController()->phononMediaObject()->isSeekable() );
     }
 
     void Mpris2DBusHandler::setProperty( const char *name, const QVariant &value )
@@ -173,6 +184,9 @@ namespace Amarok
 
     QStringList Mpris2DBusHandler::SupportedMimeTypes() const
     {
+        // FIXME: this is likely to change when
+        // Phonon::BackendCapabilities::notifier()'s capabilitiesChanged signal
+        // is emitted (and so a propertiesChanged D-Bus signal should be emitted)
         return The::engineController()->supportedMimeTypes();
     }
 
@@ -246,11 +260,11 @@ namespace Amarok
 
     void Mpris2DBusHandler::SetPosition( const QDBusObjectPath &trackId, qlonglong position )
     {
-        QString activeTrackId = activeMprisTrackId();
-        if( trackId.path() == activeTrackId )
+        QDBusObjectPath activeTrackId = activeMprisTrackId();
+        if( trackId == activeTrackId )
             The::engineController()->seek( position / 1000 );
         else
-            warning() << "SetPosition() called with a trackId (" << trackId.path() << ") which is not for the active track (" << activeTrackId << ")";
+            warning() << "SetPosition() called with a trackId (" << trackId.path() << ") which is not for the active track (" << activeTrackId.path() << ")";
     }
 
     void Mpris2DBusHandler::OpenUri( const QString &uri )
@@ -420,13 +434,37 @@ namespace Amarok
         else
         {
             int activeRow = The::playlist()->activeRow();
-            setPropertyInternal( "CanGoNext", activeRow < The::playlist()->qaim()->rowCount() - 1 );
-            setPropertyInternal( "CanGoPrevious", activeRow > 0 );
+            bool canGoNext = activeRow < The::playlist()->qaim()->rowCount() - 1;
+            bool canGoPrevious = activeRow > 0;
+            debug() << "Playlist properties changed; can go next:" << canGoNext << "; can go previous:" << canGoPrevious;
+            setPropertyInternal( "CanGoNext", canGoNext );
+            setPropertyInternal( "CanGoPrevious", canGoPrevious );
+        }
+    }
+
+    void Mpris2DBusHandler::playlistActiveTrackChanged( quint64 newTrackId )
+    {
+        // the rest of the metadata should be set in updateTrackProperties when the
+        // engine controller says the track has changed
+        QVariantMap metaData = property( "Metadata" ).toMap();
+        metaData["mpris:trackid"] = QVariant::fromValue<QDBusObjectPath>( mprisTrackId( newTrackId ) );
+        setPropertyInternal( "Metadata", metaData );
+
+        if ( AmarokConfig::trackProgression() != AmarokConfig::EnumTrackProgression::RepeatPlaylist )
+        {
+            int activeRow = The::playlist()->activeRow();
+            bool canGoNext = activeRow < The::playlist()->qaim()->rowCount() - 1;
+            bool canGoPrevious = activeRow > 0;
+            debug() << "Active track changed; can go next:" << canGoNext << "; can go previous:" << canGoPrevious;
+            setPropertyInternal( "CanGoNext", canGoNext );
+            setPropertyInternal( "CanGoPrevious", canGoPrevious );
         }
     }
 
     void Mpris2DBusHandler::updateTrackProperties()
     {
+        DEBUG_BLOCK
+
         Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
         if ( !currentTrack )
         {
@@ -439,7 +477,13 @@ namespace Amarok
         else
         {
             QVariantMap metaData = Meta::Field::mpris20MapFromTrack( currentTrack );
-            metaData["mpris:trackid"] = activeMprisTrackId();
+            if ( currentTrack == The::playlist()->activeTrack() )
+                metaData["mpris:trackid"] = QVariant::fromValue<QDBusObjectPath>(activeMprisTrackId());
+            else {
+                // we should be updated shortly
+                QString path = QString( "/PendingTrack" ).arg( MPRIS2_OBJECT_PATH );
+                metaData["mpris:trackid"] = QVariant::fromValue<QDBusObjectPath>( QDBusObjectPath( path ) );
+            }
 
             setPropertyInternal( "CanPlay", true );
             // Phonon doesn't actually tell us whether the media is pausable,

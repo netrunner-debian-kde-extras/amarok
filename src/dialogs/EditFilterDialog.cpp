@@ -69,8 +69,8 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
     connect( this, SIGNAL( resetClicked() ), SLOT( slotReset() ) );
     connect( m_ui->cbInvert, SIGNAL( toggled( bool ) ),
              SLOT( slotInvert( bool ) ) );
-    connect( m_ui->cbAndOr, SIGNAL( currentIndexChanged( QString ) ),
-             SLOT( slotSeparatorChange( QString ) ) );
+    connect( m_ui->cbAndOr, SIGNAL( currentIndexChanged( int ) ),
+             SLOT( slotSeparatorChange( int ) ) );
     connect( m_dropTarget, SIGNAL( focusReceived( QWidget * ) ),
              SLOT( slotTokenSelected( QWidget * ) ) );
     connect( m_dropTarget, SIGNAL( changed() ),
@@ -143,9 +143,14 @@ EditFilterDialog::slotInvert( bool checked )
 }
 
 void
-EditFilterDialog::slotSeparatorChange( const QString &separator )
+EditFilterDialog::slotSeparatorChange( int index )
 {
-    m_separator = QString( " %1 " ).arg( separator );
+    // this depends on the order of combobox entries in EditFilterDialog.ui
+    // but fixes Bug 279559
+    if( index == 0 )
+        m_separator = QString( " AND " );
+    else
+        m_separator = QString( " OR " );
 
     m_ui->label->setText( filter() );
 }
@@ -295,20 +300,28 @@ EditFilterDialog::parseTextFilter( const QString &text )
             {
                 switch( elem.match )
                 {
-                    case 0:
+                    case expression_element::Equals:
                         filter.filter.condition = MetaQueryWidget::Equals;
                         break;
-                    case 1:
+                    case expression_element::Less:
                         filter.filter.condition = MetaQueryWidget::LessThan;
                         break;
-                    case 2:
+                    case expression_element::More:
                         filter.filter.condition = MetaQueryWidget::GreaterThan;
                         break;
                 }
             }
             else
             {
-                filter.filter.condition = MetaQueryWidget::Contains;
+                switch( elem.match )
+                {
+                    case expression_element::Contains:
+                        filter.filter.condition = MetaQueryWidget::Contains;
+                        break;
+                    case expression_element::Equals:
+                        filter.filter.condition = MetaQueryWidget::Equals;
+                        break;
+                }
                 filter.filter.value = elem.text;
             }
 

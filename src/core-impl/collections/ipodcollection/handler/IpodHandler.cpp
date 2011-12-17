@@ -94,7 +94,6 @@ IpodHandler::IpodHandler( Collections::IpodCollection *mc, const IpodDeviceInfo 
     , m_currplaylistlist( 0 )
     , m_currplaylist( 0 )
     , m_jobcounter( 0 )
-    , m_libtrack( 0 )
     , m_autoConnect( false )
     , m_name()
     , m_deviceInfo( deviceInfo )
@@ -506,7 +505,11 @@ IpodHandler::isWritable() const
 QString
 IpodHandler::prettyName() const
 {
-    return QString::fromUtf8( itdb_playlist_mpl( m_itdb )->name );
+    Itdb_Playlist *masterPlaylist = itdb_playlist_mpl( m_itdb );
+    // itdb_playlist_mpl() may return null in some corner cases, see bug 288936
+    if( masterPlaylist && masterPlaylist->name )
+        return QString::fromUtf8( masterPlaylist->name );
+    return i18n( "Unknown" );
 }
 
 QList<QAction *>
@@ -694,22 +697,18 @@ IpodHandler::slotSyncArtwork()
 }
 
 void
-IpodHandler::slotSyncArtworkFailed( ThreadWeaver::Job *job )
+IpodHandler::slotSyncArtworkDone( ThreadWeaver::Job *job )
 {
-    Q_UNUSED( job )
-
-    const QString msg( i18n( "iPod artwork could not be synchronized" ) );
-    Amarok::Components::logger()->shortMessage( msg );
-}
-
-
-void
-IpodHandler::slotSyncArtworkSucceeded( ThreadWeaver::Job *job )
-{
-    Q_UNUSED( job )
-
-    writeDatabase();
-    const QString msg( i18n( "Artwork synchronized" ) );
+    QString msg;
+    if( job->success() )
+    {
+        writeDatabase();
+        msg = i18n( "Artwork synchronized" );
+    }
+    else
+    {
+        msg = i18n( "iPod artwork could not be synchronized" );
+    }
     Amarok::Components::logger()->shortMessage( msg );
 }
 
@@ -1614,26 +1613,34 @@ IpodHandler::libGetBpm( const Meta::MediaDeviceTrackPtr &track )
 {
     return m_itdbtrackhash[ track ]->BPM;
 }
+
 int
 IpodHandler::libGetFileSize( const Meta::MediaDeviceTrackPtr &track )
 {
     return m_itdbtrackhash[ track ]->size;
 }
+
 int
 IpodHandler::libGetPlayCount( const Meta::MediaDeviceTrackPtr &track )
 {
     return m_itdbtrackhash[ track ]->playcount;
 }
+
 QDateTime
 IpodHandler::libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track )
 {
-    return QDateTime::fromTime_t(m_itdbtrackhash[ track ]->time_played);
+    time_t time_played = m_itdbtrackhash[ track ]->time_played;
+    if( time_played == 0 )
+        return QDateTime();  // 0 means "no last played time", so return invalid QDateTime
+    return QDateTime::fromTime_t( time_played );
 }
+
 int
 IpodHandler::libGetRating( const Meta::MediaDeviceTrackPtr &track )
 {
     return ( m_itdbtrackhash[ track ]->rating / ITDB_RATING_STEP * 2 );
 }
+
 QString
 IpodHandler::libGetType( const Meta::MediaDeviceTrackPtr &track )
 {
@@ -1644,6 +1651,13 @@ KUrl
 IpodHandler::libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track )
 {
     return KUrl(mountPoint() + (QString( m_itdbtrackhash[ track ]->ipod_path ).split( ':' ).join( "/" )));
+}
+
+bool
+IpodHandler::libIsCompilation( const Meta::MediaDeviceTrackPtr &track )
+{
+    // libgpod says: True if set to 0x1, false if set to 0x0.
+    return m_itdbtrackhash[ track ]->compilation != 0x0;
 }
 
 float
@@ -1776,8 +1790,12 @@ IpodHandler::libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount )
 void
 IpodHandler::libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, const QDateTime &lastplayed)
 {
-    Q_UNUSED( track )
-    Q_UNUSED( lastplayed )
+    if( lastplayed.isValid() )
+        m_itdbtrackhash[ track ]->time_played = lastplayed.toTime_t();
+    else
+        /* invalid QDateTime returns (unsigned) -1 which is not what we want: */
+        m_itdbtrackhash[ track ]->time_played = 0;
+    setDatabaseChanged();
 }
 void
 IpodHandler::libSetRating( Meta::MediaDeviceTrackPtr &track, int rating )
@@ -1862,6 +1880,13 @@ IpodHandler::libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta
        m_files.insert(key, m_itdbtrackhash[ destTrack ] );
     debug() << "on iPod: " << m_itdbtrackhash[ destTrack ]->ipod_path;
     setDatabaseChanged();
+}
+
+void
+IpodHandler::libSetIsCompilation( MediaDeviceTrackPtr &track, bool isCompilation )
+{
+    // libgpod says: True if set to 0x1, false if set to 0x0.
+    m_itdbtrackhash[ track ]->compilation = isCompilation ? 0x1 : 0x0;
 }
 
 void
@@ -2154,17 +2179,8 @@ IpodHandler::prepareToDelete()
 }
 
 void
-IpodHandler::slotDBWriteFailed( ThreadWeaver::Job* job )
+IpodHandler::slotDBWriteDone( ThreadWeaver::Job* job )
 {
-    Q_UNUSED( job );
-    debug() << "Writing to DB failed!";
-    slotDatabaseWritten( false );
-}
-
-void
-IpodHandler::slotDBWriteSucceeded( ThreadWeaver::Job* job )
-{
-    Q_UNUSED( job );
     if( job->success() )
     {
         debug() << "Writing to DB succeeded!";
@@ -2172,20 +2188,13 @@ IpodHandler::slotDBWriteSucceeded( ThreadWeaver::Job* job )
     }
     else
         debug() << "Writing to DB did not happen or failed";
+    slotDatabaseWritten( job->success() );
 }
 
 /// Stale
 
 void
-IpodHandler::slotStaleFailed( ThreadWeaver::Job* job )
-{
-    Q_UNUSED( job );
-    debug() << "Finding stale thread failed";
-    slotOrphaned();
-}
-
-void
-IpodHandler::slotStaleSucceeded( ThreadWeaver::Job* job )
+IpodHandler::slotStaleDone( ThreadWeaver::Job* job )
 {
     if( job->success() )
     {
@@ -2247,14 +2256,7 @@ IpodHandler::slotStaleSucceeded( ThreadWeaver::Job* job )
 /// Orphaned
 
 void
-IpodHandler::slotOrphanedFailed( ThreadWeaver::Job* job )
-{
-    Q_UNUSED( job );
-    debug() << "Finding orphaned thread failed";
-}
-
-void
-IpodHandler::slotOrphanedSucceeded( ThreadWeaver::Job* job )
+IpodHandler::slotOrphanedDone( ThreadWeaver::Job* job )
 {
     DEBUG_BLOCK
     if( job->success() )
@@ -2281,24 +2283,13 @@ IpodHandler::slotOrphanedSucceeded( ThreadWeaver::Job* job )
 /// Add Orphaned
 
 void
-IpodHandler::slotAddOrphanedFailed( ThreadWeaver::Job* job )
-{
-    Q_UNUSED( job );
-    debug() << "Adding orphaned thread failed";
-    if( m_orphanedPaths.count() )
-            ThreadWeaver::Weaver::instance()->enqueue( new AddOrphanedWorkerThread( this ) );
-}
-
-void
-IpodHandler::slotAddOrphanedSucceeded( ThreadWeaver::Job* job )
+IpodHandler::slotAddOrphanedDone( ThreadWeaver::Job* job )
 {
     if( job->success() )
     {
         emit incrementProgress();
 
-        if( m_orphanedPaths.count() )
-            ThreadWeaver::Weaver::instance()->enqueue( new AddOrphanedWorkerThread( this ) );
-        else
+        if( m_orphanedPaths.isEmpty() )
         {
             writeDatabase();
 
@@ -2314,6 +2305,14 @@ IpodHandler::slotAddOrphanedSucceeded( ThreadWeaver::Job* job )
     {
         debug() << "failed to add orphaned tracks";
     }
+
+    /* in fact, AddOrphanedWorkerThread( this ) adds just one next orphaned track to db
+     * and it removes mentioned track from m_orphanedPaths as its first operarion, so
+     * it is actually "safe" to enqueue new track even when adding the previous failed,
+     * but nonetheless this remains somewhat controversial. Orphaned tracks processing
+     * should be refactored outside of IpodHandler in future */
+    if( m_orphanedPaths.count() )
+        ThreadWeaver::Weaver::instance()->enqueue( new AddOrphanedWorkerThread( this ) );
 }
 
 /// Capability-related functions
@@ -2356,8 +2355,7 @@ IpodHandler::createCapabilityInterface( Handler::Capability::Type type )
 DBWorkerThread::DBWorkerThread( IpodHandler* handler )
     : AbstractIpodWorkerThread( handler )
 {
-    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotDBWriteFailed( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotDBWriteSucceeded( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotDBWriteDone( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
 }
 
 void
@@ -2371,8 +2369,7 @@ DBWorkerThread::run()
 StaleWorkerThread::StaleWorkerThread( IpodHandler* handler )
     : AbstractIpodWorkerThread( handler )
 {
-    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotStaleFailed( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotStaleSucceeded( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotStaleDone( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
 }
 
 void
@@ -2386,8 +2383,7 @@ StaleWorkerThread::run()
 OrphanedWorkerThread::OrphanedWorkerThread( IpodHandler* handler )
     : AbstractIpodWorkerThread( handler )
 {
-    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotOrphanedFailed( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotOrphanedSucceeded( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotOrphanedDone( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
 }
 
 void
@@ -2401,8 +2397,7 @@ OrphanedWorkerThread::run()
 AddOrphanedWorkerThread::AddOrphanedWorkerThread( IpodHandler* handler )
     : AbstractIpodWorkerThread( handler )
 {
-    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotAddOrphanedFailed( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotAddOrphanedSucceeded( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotAddOrphanedDone( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
 }
 
 void
@@ -2416,8 +2411,7 @@ AddOrphanedWorkerThread::run()
 SyncArtworkWorkerThread::SyncArtworkWorkerThread( IpodHandler* handler )
     : AbstractIpodWorkerThread( handler )
 {
-    connect( this, SIGNAL( failed( ThreadWeaver::Job* ) ), m_handler, SLOT( slotSyncArtworkFailed( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
-    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotSyncArtworkSucceeded( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
+    connect( this, SIGNAL( done( ThreadWeaver::Job* ) ), m_handler, SLOT( slotSyncArtworkDone( ThreadWeaver::Job* ) ), Qt::QueuedConnection );
 }
 
 void

@@ -1,7 +1,5 @@
 
 include_directories(
-    .
-    ${Amarok_SOURCE_DIR}/transcoding
     ${CMAKE_SOURCE_DIR}/src
     ${CMAKE_SOURCE_DIR}/utilities
     ${CMAKE_BINARY_DIR}/src
@@ -33,11 +31,6 @@ set(amarok_collection-sqlcollection_SRCS
     SqlMeta.cpp
     SqlWriteLabelCapability.cpp
     SqlScanResultProcessor.cpp
-    ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/Album.cpp
-    ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/BatchFile.cpp
-    ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/Directory.cpp
-    ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/Playlist.cpp
-    ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/Track.cpp
     ${CMAKE_SOURCE_DIR}/shared/FileType.cpp
     ${CMAKE_SOURCE_DIR}/src/core-impl/collections/support/ArtistHelper.cpp
     ${extra_src}

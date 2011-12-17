@@ -166,7 +166,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1right.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1right.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -215,7 +215,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1ipod.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1ipod.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -337,7 +337,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1scriptmanager.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1scriptmanager.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -363,7 +363,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1covermanager.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1covermanager.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -387,7 +387,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1rating.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1rating.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -437,7 +437,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1pleditor.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1pleditor.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -463,7 +463,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1dynamicplaylist.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1dynamicplaylist.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase

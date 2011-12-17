@@ -56,7 +56,6 @@ namespace Solid {
 }
 
 class QString;
-class QMutex;
 
 namespace Collections {
     class IpodCollection;
@@ -195,6 +194,7 @@ class IpodHandler : public Meta::MediaDeviceHandler
         virtual void libSetRating( Meta::MediaDeviceTrackPtr &track, int rating ) ;
         virtual void libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type );
         virtual void libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack );
+        virtual void libSetIsCompilation( Meta::MediaDeviceTrackPtr &track, bool isCompilation );
 
         virtual void libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QImage &image );
         virtual void libSetCoverArtPath( Meta::MediaDeviceTrackPtr &track, const QString &path );
@@ -203,14 +203,6 @@ class IpodHandler : public Meta::MediaDeviceHandler
         virtual void prepareToDelete();
 
     private:
-        enum FileType
-        {
-            mp3,
-            ogg,
-            flac,
-            mp4
-        };
-
         /// Functions for ReadCapability
         virtual void prepareToParseTracks();
         virtual bool isEndOfParseTracksList();
@@ -239,6 +231,7 @@ class IpodHandler : public Meta::MediaDeviceHandler
         virtual int     libGetRating( const Meta::MediaDeviceTrackPtr &track ) ;
         virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track );
         virtual KUrl    libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track );
+        virtual bool    libIsCompilation( const Meta::MediaDeviceTrackPtr &track );
         virtual QImage  libGetCoverArt( const Meta::MediaDeviceTrackPtr &track );
 
         virtual float usedCapacity() const;
@@ -330,8 +323,6 @@ class IpodHandler : public Meta::MediaDeviceHandler
 
         QMap<KUrl, Meta::TrackPtr> m_tracksdeleting; // associates source url to track of source url being deleted
 
-        Itdb_Track       *m_libtrack;
-
         /* Ipod Connection */
         bool    m_autoConnect;
         QString m_name;
@@ -382,20 +373,11 @@ class IpodHandler : public Meta::MediaDeviceHandler
         void fileTransferred( KJob *job );
         void fileDeleted( KJob *job );
 
-        void slotDBWriteFailed( ThreadWeaver::Job* job );
-        void slotDBWriteSucceeded( ThreadWeaver::Job* job );
-
-        void slotStaleFailed( ThreadWeaver::Job* job );
-        void slotStaleSucceeded( ThreadWeaver::Job* job );
-
-        void slotOrphanedFailed( ThreadWeaver::Job* job );
-        void slotOrphanedSucceeded( ThreadWeaver::Job* job );
-
-        void slotAddOrphanedFailed( ThreadWeaver::Job* job );
-        void slotAddOrphanedSucceeded( ThreadWeaver::Job* job );
-
-        void slotSyncArtworkFailed( ThreadWeaver::Job *job );
-        void slotSyncArtworkSucceeded( ThreadWeaver::Job *job );
+        void slotDBWriteDone( ThreadWeaver::Job* job );
+        void slotStaleDone( ThreadWeaver::Job* job );
+        void slotOrphanedDone( ThreadWeaver::Job* job );
+        void slotAddOrphanedDone( ThreadWeaver::Job* job );
+        void slotSyncArtworkDone( ThreadWeaver::Job *job );
 
         void slotCopyingDone( KIO::Job* job, KUrl from, KUrl to, time_t mtime, bool directory, bool renamed );
 

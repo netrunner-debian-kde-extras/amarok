@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2010 Bart Cerneels <bart.cerneels@kde.org>                             *
+ * Copyright (c) 2011 Lucas Lira Gomes <x8lucas8x@gmail.com>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -16,6 +17,26 @@
 
 #include "SyncRelationStorage.h"
 
+#include "core/support/Debug.h"
+
 SyncRelationStorage::SyncRelationStorage()
 {
+}
+
+//TODO: this is a hack. No special cases allowed.
+SyncedPlaylistPtr
+SyncRelationStorage::createSyncedPlaylist( const Playlists::PlaylistPtr playlist )
+{
+    DEBUG_BLOCK
+    debug() << "playlist: " << playlist->uidUrl();
+
+    SyncedPlaylistPtr syncedPlaylist;
+
+    if( Podcasts::PodcastChannelPtr::dynamicCast( playlist ) )
+        syncedPlaylist = SyncedPlaylistPtr( new SyncedPodcast(
+                                                Podcasts::PodcastChannelPtr::dynamicCast( playlist ) ) );
+    else
+        syncedPlaylist = SyncedPlaylistPtr( new SyncedPlaylist( playlist ) );
+
+    return syncedPlaylist;
 }

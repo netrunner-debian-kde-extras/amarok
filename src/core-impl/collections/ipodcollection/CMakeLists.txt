@@ -7,7 +7,6 @@ if(IPOD_FOUND AND WITH_IPOD)
 
   include_directories( ../..
     ../../collections
-    ../../metadata/audible
     ../mediadevicecollection
     ../mediadevicecollection/support
     ../mediadevicecollection/handler
@@ -38,7 +37,7 @@ if(IPOD_FOUND AND WITH_IPOD)
     handler/capabilities/IpodArtworkCapability.cpp
     handler/capabilities/IpodPlaylistCapability.cpp
     handler/capabilities/IpodReadCapability.cpp
-    handler/capabilities/IpodWriteCapability.cpp	
+    handler/capabilities/IpodWriteCapability.cpp
     support/IpodDeviceInfo.cpp
     support/IpodConnectionAssistant.cpp
   )
@@ -50,10 +49,8 @@ if(IPOD_FOUND AND WITH_IPOD)
   target_link_libraries(amarok_collection-ipodcollection
     amarokcore
     amaroklib
-    amarokpud
     ${KDE4_KDECORE_LIBS}
     ${KDE4_KIO_LIBS}
-    ${KDE4_KDEUI_LIBS}
     ${KDE4_SOLID_LIBRARY}
     ${KDE4_THREADWEAVER_LIBRARIES}
     ${QT_QTGUI_LIBRARY}

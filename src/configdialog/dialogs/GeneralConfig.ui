@@ -64,14 +64,21 @@
       </item>
       <item row="3" column="0">
        <widget class="QCheckBox" name="kcfg_AnimateAppletCollapse">
-       <property name="toolTip">
+        <property name="toolTip">
          <string>Check to enable animations when context applets collapse.</string>
-       </property>
-       <property name="whatsThis">
+        </property>
+        <property name="whatsThis">
          <string>Check to enable animations when context applets collapse.</string>
-       </property>
+        </property>
         <property name="text">
          <string>Enable context applets collapse animations</string>
+        </property>
+       </widget>
+      </item>
+      <item row="4" column="0">
+       <widget class="QCheckBox" name="kcfg_ShowBrowserBackgroundImage">
+        <property name="text">
+         <string>Show background images in the browser panel</string>
         </property>
        </widget>
       </item>
@@ -131,7 +138,7 @@ Please note that this feature requires the external &quot;Moodbar Generator&quot
         </property>
         <item>
          <property name="text">
-          <string>Default</string>
+          <string>Default (System colours)</string>
          </property>
         </item>
         <item>
@@ -147,6 +154,11 @@ Please note that this feature requires the external &quot;Moodbar Generator&quot
         <item>
          <property name="text">
           <string>Happy</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Normal</string>
          </property>
         </item>
        </widget>

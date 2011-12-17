@@ -20,7 +20,7 @@
 using namespace Handler;
 
 IpodWriteCapability::IpodWriteCapability( Meta::IpodHandler *handler )
-        : Handler::WriteCapability()
+        : Handler::WriteCapability( handler )
         , m_handler( handler )
 {
 }
@@ -198,6 +198,12 @@ void
 IpodWriteCapability::libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack )
 {
     m_handler->libSetPlayableUrl( destTrack, srcTrack );
+}
+
+void
+IpodWriteCapability::libSetIsCompilation(Meta::MediaDeviceTrackPtr& track, bool isCompilation)
+{
+    m_handler->libSetIsCompilation( track, isCompilation );
 }
 
 void

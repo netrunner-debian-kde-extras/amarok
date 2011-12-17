@@ -641,6 +641,7 @@ CollectionTreeItemModelBase::addQueryMaker( CollectionTreeItem* item,
     connect( qm, SIGNAL( newResultReady( Meta::ComposerList ) ), SLOT( newResultReady( Meta::ComposerList ) ), Qt::QueuedConnection );
     connect( qm, SIGNAL( newResultReady( Meta::YearList ) ), SLOT( newResultReady( Meta::YearList ) ), Qt::QueuedConnection );
     connect( qm, SIGNAL( newResultReady( Meta::LabelList ) ), SLOT( newResultReady( Meta::LabelList ) ), Qt::QueuedConnection );
+    connect( qm, SIGNAL( newResultReady( Meta::DataList ) ), SLOT( newResultReady( Meta::DataList ) ), Qt::QueuedConnection );
     connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
     d->runningQueries.insert( item, qm );
 }
@@ -649,7 +650,6 @@ CollectionTreeItemModelBase::addQueryMaker( CollectionTreeItem* item,
 void
 CollectionTreeItemModelBase::queryDone()
 {
-    DEBUG_BLOCK
     Collections::QueryMaker *qm = qobject_cast<Collections::QueryMaker*>( sender() );
     if( !qm )
         return;
@@ -993,8 +993,6 @@ CollectionTreeItemModelBase::nameForLevel(int level) const
 void
 CollectionTreeItemModelBase::handleCompilations( CollectionTreeItem *parent ) const
 {
-    DEBUG_BLOCK
-
     //this method will be called when we retrieve a list of artists from the database.
     //we have to query for all compilations, and then add a "Various Artists" node if at least
     //one compilation exists
@@ -1058,6 +1056,7 @@ void
 CollectionTreeItemModelBase::setCurrentFilter( const QString &filter )
 {
     m_currentFilter = filter;
+    slotFilter();
 }
 
 void

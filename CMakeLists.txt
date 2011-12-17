@@ -4,11 +4,14 @@ cmake_minimum_required(VERSION 2.6.2)
 
 set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )
 
+message(STATUS "${CMAKE_MODULE_PATH}")
+
 option(WITH_UTILITIES "Enable building of utilities" ON)
 option(WITH_PLAYER "Enable building of main Amarok player" ON)
 option(WITH_MP3Tunes "Enable mp3tunes in the Amarok player, requires multiple extra dependencies" ON)
 option(WITH_IPOD "Enable iPod support in Amarok" ON)
 option(WITH_MYSQL_EMBEDDED "Build the embedded database library -- highly recommended" ON)
+option(WITH_PLAYGROUND "Enable building of playground scripts and applets (WARNING: some of them might have legal issues!)" OFF)
 
 include(CheckLibraryExists)
 check_library_exists(dl dlopen "" LIBDL_FOUND)
@@ -47,6 +50,8 @@ if(TAGLIB_FOUND)
     include(CheckTagLibFileName)
 
     check_taglib_filename(COMPLEX_TAGLIB_FILENAME)
+else()
+    message(WARNING "You are building Amarok without taglib. This has been known to cause many strange behaviours and is strongly advised against.")
 endif()
 
 # --------------------------
@@ -77,7 +82,7 @@ endif (CMAKE_COMPILER_IS_GNUCXX)
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/shared )
 
 if( WITH_PLAYER )
-    set(KDE_MIN_VERSION "4.4.0")
+    set(KDE_MIN_VERSION "4.6.0")
     find_package( KDE4 REQUIRED )
     include (KDE4Defaults)
     include (MacroLibrary)
@@ -85,10 +90,7 @@ if( WITH_PLAYER )
     include(MacroBoolTo01)
     include(MacroLogFeature)
 
-    macro_log_feature( KDE4_FOUND "kdelibs" "The toolkit Amarok uses to build" "http://www.kde.org" TRUE "4.4.0" "" )
-
-    macro_ensure_version( "4.5.0" ${KDE_VERSION} KDE_HAS_KIMAGECACHE )
-    macro_bool_to_01( KDE_HAS_KIMAGECACHE HAVE_KIMAGECACHE )
+    macro_log_feature( KDE4_FOUND "kdelibs" "The toolkit Amarok uses to build" "http://www.kde.org" TRUE "4.6.0" "" )
 
     find_package( QtScriptQtBindings )
     macro_log_feature( QTSCRIPTQTBINDINGS_FOUND "qtscript-qt" "QtScript Qt Bindings" "http://code.google.com/p/qtscriptgenerator/" FALSE "" "" )
@@ -133,8 +135,8 @@ if( WITH_PLAYER )
     endif( FFMPEG_FOUND )
     
     ##gpodder Service
-    macro_optional_find_package(Libmygpo-qt)
-    macro_log_feature( LIBMYGPO_QT_FOUND "libmygpo-qt" "Enable gpodder.net service" "http://wiki.gpodder.org/wiki/Libmygpo-qt" FALSE "1.0.2" "" )
+    macro_optional_find_package( Mygpo-qt )
+    macro_log_feature( LIBMYGPO_QT_FOUND "libmygpo-qt" "Enable gpodder.net service" "http://wiki.gpodder.org/wiki/Libmygpo-qt" FALSE "1.0.5" "" )
     macro_bool_to_01( LIBMYGPO_QT_FOUND HAVE_LIBMYGPOQT )
 
     if( WITH_IPOD )
@@ -232,5 +234,10 @@ if( WITH_UTILITIES )
     set(BIN_INSTALL_DIR          "${EXEC_INSTALL_PREFIX}/bin"    CACHE PATH "The subdirectory to the binaries prefix (default prefix/bin)" FORCE)
     add_subdirectory( utilities )
 endif( WITH_UTILITIES )
+
+if( WITH_PLAYGROUND )
+    add_subdirectory( playground )
+    message(STATUS "Included playground subdirectory in configuration")
+endif( WITH_PLAYGROUND )
 
 include(CTest)

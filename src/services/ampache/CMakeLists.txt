@@ -3,7 +3,6 @@
             ${Amarok_SOURCE_DIR}/src/
             ${Amarok_SOURCE_DIR}/src/core-impl/collections
             ${Amarok_SOURCE_DIR}/src/network
-            ${Amarok_SOURCE_DIR}/src/servicebrowser
             ${Amarok_SOURCE_DIR}/src/statusbar
             ${CMAKE_CURRENT_BINARY_DIR}/../../..
             ${KDE4_INCLUDE_DIR}
@@ -60,6 +59,7 @@ install(TARGETS ampache_account_login DESTINATION ${INSTALL_TARGETS_DEFAULT_ARGS
             ${KDE4_KIO_LIBS}
             ${KDE4_THREADWEAVER_LIBRARIES}
             ${QT_QTXML_LIBRARY}
+            ${KDE4_SOLID_LIBS}
         )
         if( LIBLASTFM_FOUND )
             target_link_libraries(amarok_service_ampache

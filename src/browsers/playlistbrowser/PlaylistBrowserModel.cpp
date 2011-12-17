@@ -21,6 +21,7 @@
 #include "AmarokMimeData.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "playlist/PlaylistController.h"
+#include "playlist/PlaylistModel.h"
 #include "core/support/Debug.h"
 
 #include <KIcon>
@@ -39,6 +40,11 @@ lessThanPlaylistTitles( const Playlists::PlaylistPtr &lhs, const Playlists::Play
 PlaylistBrowserModel::PlaylistBrowserModel( int playlistCategory )
     : m_playlistCategory( playlistCategory )
 {
+    m_createEmptyPlaylistAction = new QAction( KIcon( "media-track-add-amarok" ),
+                                               i18n( "Create empty playlist" ),
+                                               this );
+    connect( m_createEmptyPlaylistAction, SIGNAL(triggered()), SLOT(slotCreateEmptyPlaylist()) );
+
     //common, unconditional actions
     m_appendAction = new QAction( KIcon( "media-track-add-amarok" ), i18n( "&Add to Playlist" ),
                                   this );
@@ -58,6 +64,8 @@ PlaylistBrowserModel::PlaylistBrowserModel( int playlistCategory )
              SLOT( slotPlaylistAdded( Playlists::PlaylistPtr,int ) ) );
     connect( The::playlistManager(), SIGNAL( playlistRemoved( Playlists::PlaylistPtr, int ) ),
              SLOT( slotPlaylistRemoved( Playlists::PlaylistPtr,int ) ) );
+    connect( The::playlistManager(), SIGNAL(playlistUpdated( Playlists::PlaylistPtr, int )),
+             SLOT(slotPlaylistUpdated( Playlists::PlaylistPtr, int )) );
 
     connect( The::playlistManager(), SIGNAL(renamePlaylist( Playlists::PlaylistPtr )),
              SLOT(slotRenamePlaylist( Playlists::PlaylistPtr )) );
@@ -68,49 +76,6 @@ PlaylistBrowserModel::PlaylistBrowserModel( int playlistCategory )
 QVariant
 PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
 {
-    //Special negative index to support empty provider groups (PlaylistsByProviderProxy)
-    if( index.row() == -1 && index.column() == PlaylistBrowserModel::ProviderColumn )
-    {
-        QVariantList displayList;
-        QVariantList iconList;
-        QVariantList playlistCountList;
-        QVariantList providerActionsCountList;
-        QVariantList providerActionsList;
-        QVariantList providerByLineList;
-
-        //get data from empty providers
-        PlaylistProviderList providerList =
-                The::playlistManager()->providersForCategory( m_playlistCategory );
-        foreach( Playlists::PlaylistProvider *provider, providerList )
-        {
-            if( provider && ( provider->playlistCount() > 0 || provider->playlists().count() > 0 ) )
-                continue;
-
-            displayList << provider->prettyName();
-            iconList << provider->icon();
-            playlistCountList << provider->playlists().count();
-            providerActionsCountList << provider->providerActions().count();
-            providerActionsList <<  QVariant::fromValue( provider->providerActions() );
-            //TODO: after string freeze possibly add a string indicating it's empty.
-            providerByLineList << QString();
-        }
-
-        switch( role )
-        {
-            case Qt::DisplayRole:
-            case DescriptionRole:
-            case Qt::ToolTipRole: return displayList;
-            case Qt::DecorationRole: return iconList;
-            case PlaylistBrowserModel::ActionCountRole: return providerActionsCountList;
-            case PlaylistBrowserModel::ActionRole: return providerActionsList;
-            case PlaylistBrowserModel::ByLineRole: return providerByLineList;
-            case Qt::EditRole: return QVariant();
-        }
-    }
-
-    if( !index.isValid() )
-        return QVariant();
-
     int row = REMOVE_TRACK_MASK(index.internalId());
     Playlists::PlaylistPtr playlist = m_playlists.value( row );
 
@@ -206,7 +171,7 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
             break;
         }
 
-        default: return QVariant();
+        default: break;
     }
 
 
@@ -235,6 +200,7 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
 bool
 PlaylistBrowserModel::setData( const QModelIndex &idx, const QVariant &value, int role )
 {
+
     if( !idx.isValid() )
         return false;
 
@@ -262,13 +228,22 @@ PlaylistBrowserModel::setData( const QModelIndex &idx, const QVariant &value, in
                 else
                 {
                     Playlists::PlaylistPtr playlist = playlistFromIndex( idx );
-                    if( !playlist )
+                    if( !playlist || ( playlist->provider() == provider ) )
                         return false;
+
+                    foreach( Playlists::PlaylistPtr tempPlaylist , provider->playlists() )
+                    {
+                        if ( tempPlaylist->name() == playlist->name() )
+                            return false;
+                    }
+
                     debug() << QString( "Copy playlist \"%1\" to \"%2\"." )
                             .arg( playlist->prettyName() ).arg( provider->prettyName() );
+
                     return !provider->addPlaylist( playlist ).isNull();
                 }
             }
+
             //return true even for the data we didn't handle to get QAbstractItemModel::setItemData to work
             //TODO: implement setItemData()
             return true;
@@ -278,6 +253,7 @@ PlaylistBrowserModel::setData( const QModelIndex &idx, const QVariant &value, in
             debug() << "changing group of item " << idx.internalId() << " to " << value.toString();
             Playlists::PlaylistPtr item = m_playlists.value( idx.internalId() );
             item->setGroups( value.toStringList() );
+
             return true;
         }
     }
@@ -427,6 +403,7 @@ PlaylistBrowserModel::flags( const QModelIndex &idx ) const
     return Qt::ItemIsEnabled | Qt::ItemIsEditable | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled |
            Qt::ItemIsDropEnabled;
 }
+
 QVariant
 PlaylistBrowserModel::headerData( int section, Qt::Orientation orientation, int role ) const
 {
@@ -498,27 +475,33 @@ PlaylistBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action
         foreach( Playlists::PlaylistPtr playlist, playlists )
         {
             if( !m_playlists.contains( playlist ) )
-            {
-                debug() << "unknown playlist dragged in: " << playlist->prettyName();
-                debug() << "TODO: start synchronization";
-            }
+                debug() << "Unknown playlist dragged in: " << playlist->prettyName();
         }
 
         return true;
     }
     else if( data->hasFormat( AmarokMimeData::TRACK_MIME ) )
     {
-        debug() << "Dropped track on " << parent << " at row: " << row;
-
-        Playlists::PlaylistPtr playlist = playlistFromIndex( parent );
-        if( !playlist )
-            return false;
-
         Meta::TrackList tracks = amarokMime->tracks();
-        foreach( Meta::TrackPtr track, tracks )
-            playlist->addTrack( track, row++ );
+        if( !parent.isValid() && row == -1 )
+        {
+            debug() << "Dropped tracks on empty area: create new playlist";
+            //TODO: use Playlist::Model::generatePlaylistName()
+            The::playlistManager()->save( tracks, Amarok::generatePlaylistName( tracks ) );
+        }
+        else
+        {
+            debug() << "Dropped track on " << parent << " at row: " << row;
 
-        return true;
+            Playlists::PlaylistPtr playlist = playlistFromIndex( parent );
+            if( !playlist )
+                return false;
+
+            foreach( Meta::TrackPtr track, tracks )
+                playlist->addTrack( track, row++ );
+
+            return true;
+        }
     }
 
     return false;
@@ -672,13 +655,46 @@ PlaylistBrowserModel::slotPlaylistRemoved( Playlists::PlaylistPtr playlist, int 
     int position = m_playlists.indexOf( playlist );
     if( position == -1 )
     {
-        error() << "signal removed playlist not in m_playlists";
+        error() << "signal received for removed playlist not in m_playlists";
         return;
     }
 
     beginRemoveRows( QModelIndex(), position, position );
     m_playlists.removeAt( position );
     endRemoveRows();
+}
+
+void
+PlaylistBrowserModel::slotPlaylistUpdated( Playlists::PlaylistPtr playlist, int category )
+{
+    if( category != m_playlistCategory )
+        return;
+
+    int position = m_playlists.indexOf( playlist );
+    if( position == -1 )
+    {
+        error() << "signal received for updated playlist not in m_playlists";
+        return;
+    }
+
+    //TODO: this should work by signaling a change in the model data, but QtGroupingProxy doesn't
+    //work like that ATM
+//    const QModelIndex &idx = index( position, 0 );
+//    emit dataChanged( idx, idx );
+
+    //HACK: remove and readd so QtGroupingProxy can put it in the correct groups.
+    beginRemoveRows( QModelIndex(), position, position );
+    endRemoveRows();
+
+    beginInsertRows( QModelIndex(), position, position );
+    endInsertRows();
+}
+
+void
+PlaylistBrowserModel::slotCreateEmptyPlaylist()
+{
+    The::playlistManager()->save( Meta::TrackList(),
+                                  Amarok::generatePlaylistName( Meta::TrackList() ) );
 }
 
 Meta::TrackList
@@ -746,6 +762,12 @@ PlaylistBrowserModel::providerForIndex( const QModelIndex &idx ) const
 QActionList
 PlaylistBrowserModel::actionsFor( const QModelIndex &idx ) const
 {
+    if( !idx.isValid() )
+    {
+        QActionList emptyActions;
+        emptyActions << m_createEmptyPlaylistAction;
+        return emptyActions;
+    }
     //wheter we use the list from m_appendAction of m_loadAction does not matter they are the same
     QModelIndexList actionList = m_appendAction->data().value<QModelIndexList>();
 

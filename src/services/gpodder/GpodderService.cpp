@@ -17,16 +17,18 @@
  ****************************************************************************************/
 
 #define DEBUG_PREFIX "GpodderService"
-#include "core/support/Debug.h"
 
 #include "GpodderService.h"
 
-#include "GpodderServiceView.h"
-#include "GpodderServiceModel.h"
-#include "GpodderPodcastTreeItem.h"
-#include "GpodderSortFilterProxyModel.h"
-
 #include "core/podcasts/PodcastProvider.h"
+#include "core/support/Debug.h"
+#include "GpodderPodcastTreeItem.h"
+#include "GpodderServiceConfig.h"
+#include "GpodderServiceModel.h"
+#include "GpodderServiceView.h"
+#include "GpodderSortFilterProxyModel.h"
+#include <mygpo-qt/ApiRequest.h>
+#include <mygpo-qt/Podcast.h>
 #include "playlistmanager/PlaylistManager.h"
 #include "widgets/SearchWidget.h"
 
@@ -35,20 +37,20 @@
 #include <KStandardDirs>
 #include <KUrl>
 
-#include <mygpo-qt/ApiRequest.h>
-#include <mygpo-qt/Podcast.h>
+#include <QHostInfo>
 
 AMAROK_EXPORT_SERVICE_PLUGIN( gpodder, GpodderServiceFactory )
 
 GpodderServiceFactory::GpodderServiceFactory( QObject *parent, const QVariantList &args )
     : ServiceFactory( parent, args )
 {
-    KPluginInfo pluginInfo(  "amarok_service_gpodder.desktop", "services" );
+    KPluginInfo pluginInfo( "amarok_service_gpodder.desktop", "services" );
     pluginInfo.setConfig( config() );
     m_info = pluginInfo;
 }
 
-void GpodderServiceFactory::init()
+void
+GpodderServiceFactory::init()
 {
     ServiceBase *service = createGpodderService();
     if( service )
@@ -59,26 +61,31 @@ void GpodderServiceFactory::init()
     }
 }
 
-QString GpodderServiceFactory::name()
+QString
+GpodderServiceFactory::name()
 {
     return "gpodder.net";
 }
 
-KPluginInfo GpodderServiceFactory::info()
+KPluginInfo
+GpodderServiceFactory::info()
 {
     KPluginInfo pluginInfo( "amarok_service_gpodder.desktop", "services" );
     pluginInfo.setConfig( config() );
     return pluginInfo;
 }
 
-KConfigGroup GpodderServiceFactory::config()
+KConfigGroup
+GpodderServiceFactory::config()
 {
-    return Amarok::config( "Service_gpodder" );
+    return Amarok::config( GpodderServiceConfig::configSectionName() );
 }
 
-void GpodderServiceFactory::slotCreateGpodderService()
+void
+GpodderServiceFactory::slotCreateGpodderService()
 {
-    if( !m_initialized )  // Until we can remove a service when networking gets disabled, only create it the first time.
+    //Until we can remove a service when networking gets disabled, only create it the first time.
+    if( !m_initialized )
     {
         ServiceBase *service = createGpodderService();
         if( service )
@@ -90,7 +97,8 @@ void GpodderServiceFactory::slotCreateGpodderService()
     }
 }
 
-void GpodderServiceFactory::slotRemoveGpodderService()
+void
+GpodderServiceFactory::slotRemoveGpodderService()
 {
     if( m_activeServices.size() == 0 )
         return;
@@ -100,19 +108,27 @@ void GpodderServiceFactory::slotRemoveGpodderService()
     m_activeServices.clear();
 }
 
-ServiceBase* GpodderServiceFactory::createGpodderService()
+ServiceBase *
+GpodderServiceFactory::createGpodderService()
 {
-    ServiceBase* service = new GpodderService( this, QLatin1String( "gpodder" ) );
+    ServiceBase *service = new GpodderService( this, QLatin1String( "gpodder" ) );
     return service;
 }
 
-GpodderService::GpodderService( GpodderServiceFactory* parent, const QString& name )
-    : ServiceBase( name, parent, false ), m_inited( false )
+GpodderService::GpodderService( GpodderServiceFactory *parent, const QString &name )
+    : ServiceBase( name, parent, false )
+    , m_inited( false )
+    , m_podcastProvider( 0 )
+    , m_proxyModel( 0 )
+    , m_subscribeButton( 0 )
+    , m_selectionModel( 0 )
 {
     DEBUG_BLOCK
+
     setShortDescription( i18n( "gpodder.net: Podcast Directory Service" ) );
     setIcon( KIcon( "view-services-gpodder-amarok" ) );
-    setLongDescription( i18n( "gpodder.net is an online Podcast Directory & Synchonisation Service." ) );
+    setLongDescription(
+                i18n( "gpodder.net is an online Podcast Directory & Synchonisation Service." ) );
     setImagePath( KStandardDirs::locate( "data", "amarok/images/mygpo.png" ) );
 
     init();
@@ -122,31 +138,44 @@ GpodderService::~GpodderService()
 {
     DEBUG_BLOCK
 
+    delete m_podcastProvider;
+    delete m_apiRequest;
 }
 
 //This Method should only contain the most necessary things for initilazing the Service
-void GpodderService::init()
+void
+GpodderService::init()
 {
+    GpodderServiceConfig config;
+
+    if( config.enableProvider() )
+    {
+        m_apiRequest = new mygpo::ApiRequest( config.username(), config.password(), The::networkAccessManager() );
+        enableGpodderProvider( config.username() );
+    }
+    else
+        m_apiRequest = new mygpo::ApiRequest( The::networkAccessManager() );
 
     m_serviceready = true;
-
     m_inited = true;
 }
 
-//This Method should contain the rest of the Service Initialization (not soo necessary things, that can be done after the Object was created)
-void GpodderService::polish()
+//This Method should contain the rest of the Service Initialization (not soo necessary things, that
+//can be done after the Object was created)
+void
+GpodderService::polish()
 {
-
     DEBUG_BLOCK
 
     generateWidgetInfo();
+
     if( m_polished )
         return;
 
     //do not allow this content to get added to the playlist. At least not for now
     setPlayableTracks( false );
 
-    GpodderServiceView* view = new GpodderServiceView( this );
+    GpodderServiceView *view = new GpodderServiceView( this );
     view->setHeaderHidden( true );
     view->setFrameShape( QFrame::NoFrame );
 
@@ -160,7 +189,7 @@ void GpodderService::polish()
 
     setView( view );
 
-    GpodderServiceModel *sourceModel = new GpodderServiceModel( this );
+    GpodderServiceModel *sourceModel = new GpodderServiceModel( m_apiRequest, this );
 
     m_proxyModel = new GpodderSortFilterProxyModel( this );
     m_proxyModel->setDynamicSortFilter( true );
@@ -180,48 +209,44 @@ void GpodderService::polish()
 
     m_subscribeButton->setEnabled( true );
 
-    connect( m_subscribeButton, SIGNAL( clicked() ), this, SLOT( subscribe() ) );
+    connect( m_subscribeButton, SIGNAL(clicked()), this, SLOT(subscribe()) );
 
+    connect( m_searchWidget, SIGNAL(filterChanged( const QString & )),
+             m_proxyModel, SLOT(setFilterWildcard( const QString & )) );
 
-
-
-    m_searchWidget->setup( this );
     m_polished = true;
 }
 
-void GpodderService::itemSelected( CollectionTreeItem * selectedItem )
+void
+GpodderService::itemSelected( CollectionTreeItem * selectedItem )
 {
     Q_UNUSED( selectedItem )
     DEBUG_BLOCK
     return;
 }
 
-// Filter slots
-void GpodderService::slotSetFilterTimeout()
-{
-    
-    m_proxyModel->setFilterWildcard( m_searchWidget->currentText() );
-}
-
-void GpodderService::slotFilterNow()
-{
-
-}
-
-void GpodderService::setFocus()
-{
-
-}
-
-void GpodderService::subscribe()
+void
+GpodderService::subscribe()
 {
     QModelIndex index = m_proxyModel->mapToSource( m_selectionModel->currentIndex() );
     GpodderTreeItem *treeItem = static_cast<GpodderTreeItem*>( index.internalPointer() );
 
-    if( GpodderPodcastTreeItem *podcastTreeItem = qobject_cast<GpodderPodcastTreeItem*>( treeItem ) )
+    if( GpodderPodcastTreeItem *pcastTreeItem = qobject_cast<GpodderPodcastTreeItem*>( treeItem ) )
     {
         Podcasts::PodcastProvider *podcastProvider = The::playlistManager()->defaultPodcasts();
-        KUrl kUrl( podcastTreeItem->podcast()->url() );
+        KUrl kUrl( pcastTreeItem->podcast()->url() );
         podcastProvider->addPodcast( kUrl );
     }
+}
+
+void
+GpodderService::enableGpodderProvider( const QString &username )
+{
+    DEBUG_BLOCK
+
+    debug() << "Enabling GpodderProvider";
+
+    delete m_podcastProvider;
+    QString device = QLatin1String( "amarok-" ) % QHostInfo::localHostName();
+    m_podcastProvider = new Podcasts::GpodderProvider( username, device, m_apiRequest );
 }

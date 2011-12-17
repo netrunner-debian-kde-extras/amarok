@@ -31,6 +31,7 @@ class MEDIADEVICECOLLECTION_EXPORT ReadCapability : public Handler::ReadCapabili
     Q_OBJECT
 
     public:
+        ReadCapability( QObject *parent ) : ReadCapabilityBase( parent ) {}
         virtual ~ReadCapability();
 
         /* Parsing of Tracks on Device */
@@ -54,7 +55,8 @@ class MEDIADEVICECOLLECTION_EXPORT ReadCapability : public Handler::ReadCapabili
         virtual QDateTime libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track ) = 0;
         virtual int     libGetRating( const Meta::MediaDeviceTrackPtr &track )  = 0;
         virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track ) = 0;
-        virtual KUrl libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track ) = 0;
+        virtual KUrl    libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track ) = 0;
+        virtual bool    libIsCompilation( const Meta::MediaDeviceTrackPtr &track );
 };
 }
 

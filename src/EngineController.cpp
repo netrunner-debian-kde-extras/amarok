@@ -109,6 +109,7 @@ EngineController::~EngineController()
 
     delete m_media.data();
     delete m_audio.data();
+    delete m_audioDataOutput.data();
 }
 
 void
@@ -133,9 +134,11 @@ EngineController::initializePhonon()
     DEBUG_BLOCK
 
     m_path.disconnect();
+    m_dataPath.disconnect();
     delete m_media.data();
     delete m_controller.data();
     delete m_audio.data();
+    delete m_audioDataOutput.data();
     delete m_preamp.data();
     delete m_equalizer.data();
 
@@ -146,7 +149,9 @@ EngineController::initializePhonon()
     m_media.data()->setProperty("PlaybackTracking", true);
 
     m_audio = new Phonon::AudioOutput( Phonon::MusicCategory, this );
+    m_audioDataOutput = new Phonon::AudioDataOutput( this );
 
+    m_dataPath = Phonon::createPath( m_media.data(), m_audioDataOutput.data() );
     m_path = Phonon::createPath( m_media.data(), m_audio.data() );
 
     m_controller = new Phonon::MediaController( m_media.data() );
@@ -190,9 +195,9 @@ EngineController::initializePhonon()
     connect( m_media.data(), SIGNAL( totalTimeChanged( qint64 ) ), SLOT( slotTrackLengthChanged( qint64 ) ) );
     connect( m_media.data(), SIGNAL( currentSourceChanged( const Phonon::MediaSource & ) ), SLOT( slotNewTrackPlaying( const Phonon::MediaSource & ) ) );
     connect( m_media.data(), SIGNAL( seekableChanged( bool ) ), SLOT( slotSeekableChanged( bool ) ) );
-
     connect( m_audio.data(), SIGNAL( volumeChanged( qreal ) ), SLOT( slotVolumeChanged( qreal ) ) );
     connect( m_audio.data(), SIGNAL( mutedChanged( bool ) ), SLOT( slotMutedChanged( bool ) ) );
+    connect( m_audioDataOutput.data(), SIGNAL(dataReady(const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> >&)), this, SIGNAL(audioDataReady(const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> >&)));
 
     connect( m_controller.data(), SIGNAL( titleChanged( int ) ), SLOT( slotTitleChanged( int ) ) );
 
@@ -232,11 +237,13 @@ EngineController::canDecode( const KUrl &url ) //static
     if( !item.isLocalFile() )
         return true;
 
-    // Filter the available mime types to only include audio and video, as amarok does not intend to play photos
+    // Phonon::BackendCapabilities::isMimeTypeAvailable is too simplistic for our purposes
+    // FIXME: this variable should be updated when
+    // Phonon::BackendCapabilities::notifier()'s capabilitiesChanged signal is emitted
     static QStringList mimeTable = supportedMimeTypes();
 
     const KMimeType::Ptr mimeType = item.mimeTypePtr();
-    
+
     bool valid = false;
     foreach( const QString &type, mimeTable )
     {
@@ -251,26 +258,38 @@ EngineController::canDecode( const KUrl &url ) //static
 }
 
 QStringList
-EngineController::supportedMimeTypes()
+EngineController::supportedMimeTypes() //static
 {
     //NOTE this function must be thread-safe
+
     // Filter the available mime types to only include audio and video, as amarok does not intend to play photos
-    static QStringList mimeTable = Phonon::BackendCapabilities::availableMimeTypes().filter( "audio/", Qt::CaseInsensitive ) +
-                                   Phonon::BackendCapabilities::availableMimeTypes().filter( "video/", Qt::CaseInsensitive );
+    static QRegExp avFilter( "^(audio|video)/", Qt::CaseInsensitive );
+    // NB: we can't make this static, as we edit it later in the method; however, this method
+    //     should not be called too often.
+    QStringList mimeTable = Phonon::BackendCapabilities::availableMimeTypes().filter( avFilter );
 
     // Add whitelist hacks
-    mimeTable << "audio/x-m4b"; // MP4 Audio Books have a different extension that KFileItem/Phonon don't grok
 
-    if( mimeTable.contains( "audio/x-flac" ) )
+    // MP4 Audio Books have a different extension that KFileItem/Phonon don't grok
+    if( !mimeTable.contains( "audio/x-m4b" ) )
+        mimeTable << "audio/x-m4b";
+
+    // technically, "audio/flac" is not a valid mimetype (not on IANA list), but some things expect it
+    if( mimeTable.contains( "audio/x-flac" ) && !mimeTable.contains( "audio/flac" ) )
         mimeTable << "audio/flac";
 
     // We special case this, as otherwise the users would hate us
-    if( ( !mimeTable.contains( "audio/mp3" ) && !mimeTable.contains( "audio/x-mp3" ) ) && !installDistroCodec() )
+    // Again, "audio/mp3" is not a valid mimetype, but is widely used
+    // (the proper one is "audio/mpeg", but that is also for .mp1 and .mp2 files)
+    if( !mimeTable.contains( "audio/mp3" ) && !mimeTable.contains( "audio/x-mp3" ) )
     {
-        Amarok::Components::logger()->longMessage(
-                i18n( "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
-                      "the installation of the backend that phonon uses.</p>"
-                      "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok Handbook</i>.</p>" ), Amarok::Logger::Error );
+        if ( !installDistroCodec() )
+        {
+            Amarok::Components::logger()->longMessage(
+                    i18n( "<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
+                          "the installation of the backend that phonon uses.</p>"
+                          "<p>You may find useful information in the <i>FAQ</i> section of the <i>Amarok Handbook</i>.</p>" ), Amarok::Logger::Error );
+        }
         mimeTable << "audio/mp3" << "audio/x-mp3";
     }
 
@@ -896,6 +915,9 @@ EngineController::eqUpdate() //SLOT
     if( AmarokConfig::equalizerMode() <= 0 )
     {
         // Remove effect from path
+//         if( m_path.effects().indexOf( m_equalizer.data() ) != -1 )
+//             m_path.removeEffect( m_equalizer.data() );
+
         if( m_path.effects().indexOf( m_equalizer.data() ) != -1 )
             m_path.removeEffect( m_equalizer.data() );
     }
@@ -961,6 +983,7 @@ EngineController::slotTick( qint64 position )
     }
     else
     {
+        m_lastTickPosition = position;
         emit trackPositionChanged( static_cast<long>( position ), false ); //it expects milliseconds
     }
 }
@@ -1380,7 +1403,7 @@ bool EngineController::isPlayingAudioCd()
     return m_currentIsAudioCd;
 }
 
-QString EngineController::prettyNowPlaying() const
+QString EngineController::prettyNowPlaying( bool progress ) const
 {
     Meta::TrackPtr track = currentTrack();
 
@@ -1417,7 +1440,10 @@ QString EngineController::prettyNowPlaying() const
 
         if ( track->length() > 0 ) {
             QString length = Qt::escape( Meta::msToPrettyTime( track->length() ) );
-            title += " (" + length + ')';
+            title += " (";
+            if ( progress )
+                    title+= Qt::escape( Meta::msToPrettyTime( m_lastTickPosition ) ) + "/";
+            title += length + ")";
         }
 
         return title;

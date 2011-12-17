@@ -100,8 +100,6 @@ void CollectionTreeView::setModel( QAbstractItemModel * model )
     if( !m_treeModel )
         return;
 
-    m_filterTimer.setSingleShot( true );
-    connect( &m_filterTimer, SIGNAL( timeout() ), m_treeModel, SLOT( slotFilter() ) );
     connect( m_treeModel, SIGNAL( allQueriesFinished() ), SLOT( slotCheckAutoExpand() ));
     connect( m_treeModel, SIGNAL(expandIndex(QModelIndex)), SLOT(slotExpandIndex(QModelIndex)) );
 
@@ -589,19 +587,6 @@ void CollectionTreeView::selectionChanged(const QItemSelection & selected, const
 }
 
 void
-CollectionTreeView::slotSetFilterTimeout()
-{
-    KComboBox *comboBox = qobject_cast<KComboBox*>( sender() );
-    if( comboBox )
-    {
-        if( m_treeModel )
-            m_treeModel->setCurrentFilter( comboBox->currentText() );
-        m_filterTimer.stop();
-        m_filterTimer.start( 500 );
-    }
-}
-
-void
 CollectionTreeView::slotCollapsed( const QModelIndex &index )
 {
     if( !m_treeModel )
@@ -833,14 +818,16 @@ CollectionTreeView::editTracks( const QSet<CollectionTreeItem*> &items ) const
     (void)new TagDialog( qm ); //the dialog will show itself automatically as soon as it is ready
 }
 
-void CollectionTreeView::slotFilterNow()
+void
+CollectionTreeView::slotSetFilter( const QString &filter )
 {
+    DEBUG_BLOCK;
     if( m_treeModel )
-        m_treeModel->slotFilter();
-    setFocus( Qt::OtherFocusReason );
+        m_treeModel->setCurrentFilter( filter );
 }
 
-QActionList CollectionTreeView::createBasicActions( const QModelIndexList & indices )
+QActionList
+CollectionTreeView::createBasicActions( const QModelIndexList & indices )
 {
     QActionList actions;
 
@@ -1076,23 +1063,24 @@ QHash<QAction*, Collections::Collection*> CollectionTreeView::getRemoveActions( 
 {
     QHash<QAction*, Collections::Collection*> currentRemoveDestination;
 
-    if( onlyOneCollection( indices) )
-    {
-        Collections::Collection *collection = getCollection( indices.first() );
-        if( collection && collection->isWritable() )
-        {
-            //writableCollections.append( collection );
-            KAction *action = new KAction( KIcon( "remove-amarok" ), i18n( "Delete Tracks" ), 0 );
-            action->setProperty( "popupdropper_svg_id", "delete" );
+    if( !onlyOneCollection( indices ) )
+        return currentRemoveDestination;
+    Collections::Collection *collection = getCollection( indices.first() );
+    if( !collection || !collection->isWritable() )
+        return currentRemoveDestination;
 
-            connect( action, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
-                     this, SLOT(slotRemoveTracks(Qt::MouseButtons,Qt::KeyboardModifiers)) );
+    KAction *trashAction = new KAction( KIcon( "user-trash" ), i18n( "Move Tracks to Trash" ), 0 );
+    trashAction->setProperty( "popupdropper_svg_id", "delete" );
+    connect( trashAction, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
+                this, SLOT(slotTrashTracks()) );
+    currentRemoveDestination.insert( trashAction, collection );
 
-            currentRemoveDestination.insert( action, collection );
-        }
+    KAction *deleteAction = new KAction( KIcon( "remove-amarok" ), i18n( "Delete Tracks" ), 0 );
+    deleteAction->setProperty( "popupdropper_svg_id", "delete" );
+    connect( deleteAction, SIGNAL(triggered(Qt::MouseButtons,Qt::KeyboardModifiers)),
+                this, SLOT(slotRemoveTracks()) );
+    currentRemoveDestination.insert( deleteAction, collection );
 
-
-    }
     return currentRemoveDestination;
 }
 
@@ -1186,15 +1174,23 @@ void CollectionTreeView::slotMoveTracks()
     }
 }
 
-void CollectionTreeView::slotRemoveTracks( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers )
+void
+CollectionTreeView::slotTrashTracks()
 {
-    Q_UNUSED( buttons )
     KAction *action = qobject_cast<KAction*>( sender() );
-    if( action )
-    {
-        bool skipTrash = modifiers.testFlag( Qt::ShiftModifier );
-        removeTracks( m_currentItems, !skipTrash );
-    }
+    if( !action )
+        return;
+    // TODO: can use m_currentRemoveDestination[ action ] and pass it to removeTracks()
+    removeTracks( m_currentItems, true /* use trash */ );
+}
+
+void CollectionTreeView::slotRemoveTracks()
+{
+    KAction *action = qobject_cast<KAction*>( sender() );
+    if( !action )
+        return;
+    // TODO: can use m_currentRemoveDestination[ action ] and pass it to removeTracks()
+    removeTracks( m_currentItems, false /* do not use trash */ );
 }
 
 void CollectionTreeView::slotOrganize()

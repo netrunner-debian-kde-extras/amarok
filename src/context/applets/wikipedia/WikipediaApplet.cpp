@@ -38,6 +38,7 @@
 #include <Plasma/Theme>
 
 #include <QAction>
+#include <QTimer>
 #include <QDesktopServices>
 #include <QGraphicsLinearLayout>
 #include <QGraphicsView>
@@ -110,6 +111,7 @@ WikipediaAppletPrivate::setUrl( const QUrl &url )
     webView->settings()->resetFontSize( QWebSettings::MinimumLogicalFontSize );
     webView->settings()->resetFontSize( QWebSettings::DefaultFontSize );
     webView->settings()->resetFontSize( QWebSettings::DefaultFixedFontSize );
+    webView->settings()->resetFontFamily( QWebSettings::StandardFont );
     webView->setUrl( url );
     currentUrl = url;
     dataContainer->removeAllData();
@@ -264,8 +266,10 @@ WikipediaAppletPrivate::_paletteChanged( const QPalette &palette )
     {
         // transparent background
         QPalette newPalette( palette );
-        newPalette.setBrush( QPalette::Base, QColor::fromRgbF(0, 0, 0, 0) );
+        newPalette.setBrush( QPalette::Base, Qt::transparent );
         webView->page()->setPalette( newPalette );
+        webView->setPalette( newPalette );
+        webView->setAttribute( Qt::WA_OpaquePaintEvent, false );
 
         QString contents = QString( file.readAll() );
         contents.replace( "/*{text_color}*/", palette.text().color().name() );
@@ -322,6 +326,7 @@ WikipediaAppletPrivate::_updateWebFonts()
     webSettings->setFontSize( QWebSettings::DefaultFixedFontSize, qRound(fixedFontSize) );
     webSettings->setFontSize( QWebSettings::DefaultFontSize, qRound(generalFontSize) );
     webSettings->setFontSize( QWebSettings::MinimumFontSize, qRound(minimumFontSize) );
+    webSettings->setFontFamily( QWebSettings::StandardFont, KGlobalSettings::generalFont().family() );
 }
 
 void
@@ -463,10 +468,19 @@ void
 WikipediaAppletPrivate::_pageLoadStarted()
 {
     Q_Q( WikipediaApplet );
-    QGraphicsProxyWidget *proxy = new QGraphicsProxyWidget;
-    proxy->setWidget( new QProgressBar );
+
+    // create a proxy widget for displaying the webview load status in form of a progress bar
+
+    // if the proxyWidget still exists, re-use the existing object
+    if ( proxyWidget )
+        return;
+
+    proxyWidget = new QGraphicsProxyWidget;
+    proxyWidget->setWidget( new QProgressBar );
+
+    // add proxy widget to layout
     QGraphicsLinearLayout *lo = static_cast<QGraphicsLinearLayout*>( q->layout() );
-    lo->addItem( proxy );
+    lo->addItem( proxyWidget );
     lo->activate();
     QObject::connect( webView, SIGNAL(loadProgress(int)), q, SLOT(_pageLoadProgress(int)) );
 }
@@ -474,11 +488,11 @@ WikipediaAppletPrivate::_pageLoadStarted()
 void
 WikipediaAppletPrivate::_pageLoadProgress( int progress )
 {
-    Q_Q( WikipediaApplet );
-    QGraphicsLinearLayout *lo = static_cast<QGraphicsLinearLayout*>( q->layout() );
-    QGraphicsProxyWidget *proxy = static_cast<QGraphicsProxyWidget*>( lo->itemAt( lo->count() - 1 ) );
-    QString kbytes = QString::number( webView->page()->totalBytes() / 1024 );
-    QProgressBar *pbar = static_cast<QProgressBar*>( proxy->widget() );
+    DEBUG_ASSERT(proxyWidget, return)
+
+    const QString kbytes = QString::number( webView->page()->totalBytes() / 1024 );
+
+    QProgressBar *pbar = qobject_cast<QProgressBar*>( proxyWidget->widget() );
     pbar->setFormat( QString( "%1kB : %p%" ).arg( kbytes ) );
     pbar->setValue( progress );
 }
@@ -488,11 +502,16 @@ WikipediaAppletPrivate::_pageLoadFinished( bool ok )
 {
     Q_UNUSED( ok )
     Q_Q( WikipediaApplet );
+
+    // remove proxy widget from layout again, delete it
     QGraphicsLinearLayout *lo = static_cast<QGraphicsLinearLayout*>( q->layout() );
-    QGraphicsProxyWidget *proxy = static_cast<QGraphicsProxyWidget*>( lo->itemAt( lo->count() - 1 ) );
-    lo->removeItem( proxy );
+    lo->removeItem( proxyWidget );
     lo->activate();
-    proxy->deleteLater();
+
+    // disconnect (so that we don't get any further progress signalling) and delete widget
+    QObject::disconnect( webView, SIGNAL(loadProgress(int)), q, SLOT(_pageLoadProgress(int)) );
+    proxyWidget->deleteLater();
+    proxyWidget = 0;
 }
 
 void
@@ -548,7 +567,6 @@ WikipediaApplet::init()
     d->webView->page()->settings()->setAttribute( QWebSettings::PrivateBrowsingEnabled, true );
     QWebSettings::globalSettings()->setAttribute( QWebSettings::DnsPrefetchEnabled, true );
     d->webView->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
-    d->webView->setAttribute( Qt::WA_OpaquePaintEvent, true );
     d->_updateWebFonts();
     connect( KGlobalSettings::self(), SIGNAL(appearanceChanged()), SLOT(_updateWebFonts()) );
 

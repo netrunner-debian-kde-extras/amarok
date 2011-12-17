@@ -22,9 +22,9 @@
 #include <mygpo-qt/ApiRequest.h>
 #include <mygpo-qt/TagList.h>
 
-#include <QVariant>
 #include <QList>
 #include <QModelIndex>
+#include <QVariant>
 
 class GpodderServiceModel;
 
@@ -32,7 +32,7 @@ class GpodderTreeItem : public QObject
 {
     Q_OBJECT
 public:
-    GpodderTreeItem( GpodderTreeItem *parent = 0 );
+    GpodderTreeItem( GpodderTreeItem *parent = 0, QString name = "" );
     virtual ~GpodderTreeItem();
 
     void appendChild( GpodderTreeItem *child );
@@ -48,11 +48,12 @@ public:
 
     virtual QVariant displayData() const;
 
-    virtual void appendTags( mygpo::TagListPtr tags/*, mygpo::ApiRequest& request, GpodderServiceModel *model*/ );
+    virtual void appendTags( mygpo::TagListPtr tags );
     virtual void appendPodcasts( mygpo::PodcastListPtr podcasts );
 private:
-    QList<GpodderTreeItem*> m_childItems;
+    QList<GpodderTreeItem *> m_childItems;
     GpodderTreeItem *m_parentItem;
+    QString m_name;
     bool m_hasChildren;
 };
 

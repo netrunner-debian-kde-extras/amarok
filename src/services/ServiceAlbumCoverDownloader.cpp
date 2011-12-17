@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "ServiceAlbumCoverDownloader"
+
 #include "ServiceAlbumCoverDownloader.h"
 
 #include "core/support/Amarok.h"
@@ -32,20 +34,17 @@ Meta::ServiceAlbumWithCover::ServiceAlbumWithCover( const QString &name )
     : ServiceAlbum( name )
     , m_hasFetchedCover( false )
     , m_isFetchingCover ( false )
-    , m_coverDownloader( 0 )
 {}
 
 Meta::ServiceAlbumWithCover::ServiceAlbumWithCover( const QStringList &resultRow )
     : ServiceAlbum( resultRow )
     , m_hasFetchedCover( false )
     , m_isFetchingCover ( false )
-    , m_coverDownloader( 0 )
 {}
 
 Meta::ServiceAlbumWithCover::~ServiceAlbumWithCover()
 {
     CoverCache::invalidateAlbum( this );
-    delete m_coverDownloader;
 }
 
 QImage
@@ -57,43 +56,40 @@ ServiceAlbumWithCover::image( int size ) const
         return Meta::Album::image( size );
     }
 
-    QString artist;
+    const QString artist = hasAlbumArtist() ?
+        albumArtist()->name() :
+        QLatin1String("NULL"); //no need to translate, only used as a caching key/temp filename
 
-    if ( hasAlbumArtist() )
-        artist = albumArtist()->name();
-    else
-        artist = "NULL"; //no need to translate, only used as a caching key/temp filename
-
-    QString coverName = downloadPrefix() + '_' + artist+ '_' + name() + "_cover.png";
-
-    QDir cacheCoverDir = QDir( Amarok::saveLocation( "albumcovers/cache/" ) );
+    const QString coverName = QString( "%1_%2_%3_cover.png" ).arg( downloadPrefix(), artist, name() );
+    const QString saveLocation = Amarok::saveLocation( "albumcovers/cache/" );
+    const QDir cacheCoverDir = QDir( saveLocation );
 
     //make sure that this dir exists
-    if ( !cacheCoverDir.exists() )
-        cacheCoverDir.mkpath( Amarok::saveLocation( "albumcovers/cache/" ) );
+    if( !cacheCoverDir.exists() )
+        cacheCoverDir.mkpath( saveLocation );
 
-    if ( size <= 1 )
+    if( size <= 1 )
         size = 100;
-    QString sizeKey = QString::number( size ) + '@';
 
-    if( QFile::exists( cacheCoverDir.filePath( sizeKey + coverName ) ) )
+    const QString sizeKey = QString::number( size ) + QLatin1Char('@');
+    const QString cacheCoverPath = cacheCoverDir.filePath( sizeKey + coverName );
+
+    if( QFile::exists( cacheCoverPath ) )
     {
-        return QImage( cacheCoverDir.filePath( sizeKey + coverName ) );
+        return QImage( cacheCoverPath );
     }
-    else if ( m_hasFetchedCover && !m_cover.isNull() )
+    else if( m_hasFetchedCover && !m_cover.isNull() )
     {
         QImage image( m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation ) );
-        image.save( cacheCoverDir.filePath( sizeKey + coverName ), "PNG" );
+        image.save( cacheCoverPath, "PNG" );
         return image;
-
     }
-    else if ( !m_isFetchingCover && !coverUrl().isEmpty() )
+    else if( !m_isFetchingCover && !coverUrl().isEmpty() )
     {
         m_isFetchingCover = true;
 
-        if ( m_coverDownloader == 0 )
-            m_coverDownloader = new ServiceAlbumCoverDownloader();
-        m_coverDownloader->downloadCover( const_cast<ServiceAlbumWithCover*>(this) );
+        ( new ServiceAlbumCoverDownloader )->downloadCover(
+            ServiceAlbumWithCoverPtr(const_cast<ServiceAlbumWithCover*>(this)) );
     }
 
     return Meta::Album::image( size );
@@ -135,7 +131,7 @@ ServiceAlbumCoverDownloader::~ServiceAlbumCoverDownloader()
 }
 
 void
-ServiceAlbumCoverDownloader::downloadCover( ServiceAlbumWithCover *album )
+ServiceAlbumCoverDownloader::downloadCover( ServiceAlbumWithCoverPtr album )
 {
     m_album = album;
 
@@ -154,16 +150,18 @@ ServiceAlbumCoverDownloader::downloadCover( ServiceAlbumWithCover *album )
 void
 ServiceAlbumCoverDownloader::coverDownloadComplete( KJob * downloadJob )
 {
-    QSharedPointer<ServiceAlbumWithCover> album( m_album );
-    if( !album ) // album was removed in between
+    if( !m_album ) // album was removed in between
+    {
+        debug() << "Bad album pointer";
         return;
+    }
 
     if( !downloadJob || !downloadJob->error() == 0 )
     {
         debug() << "Download Job failed!";
 
         //we could not download, so inform album
-        album->imageDownloadCanceled();
+        m_album->imageDownloadCanceled();
         return;
     }
 
@@ -175,15 +173,16 @@ ServiceAlbumCoverDownloader::coverDownloadComplete( KJob * downloadJob )
     {
         debug() << "file not a valid image";
         //the file wasn't an image, so inform album
-        album->imageDownloadCanceled();
+        m_album->imageDownloadCanceled();
         return;
     }
 
-    album->setImage( cover );
+    m_album->setImage( cover );
 
     downloadJob->deleteLater();
 
     m_tempDir->unlink();
+    deleteLater();
 }
 
 void
@@ -192,12 +191,12 @@ ServiceAlbumCoverDownloader::coverDownloadCanceled( KJob *downloadJob )
     Q_UNUSED( downloadJob );
     DEBUG_BLOCK
 
-    QSharedPointer<ServiceAlbumWithCover> album( m_album );
-    if( !album ) // album was removed in between
+    if( !m_album ) // album was removed in between
         return;
 
     debug() << "Cover download cancelled";
-    album->imageDownloadCanceled();
+    m_album->imageDownloadCanceled();
+    deleteLater();
 }
 
 #include "ServiceAlbumCoverDownloader.moc"

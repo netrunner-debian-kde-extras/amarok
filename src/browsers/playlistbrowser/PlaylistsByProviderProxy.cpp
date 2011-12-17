@@ -17,17 +17,22 @@
 #include "PlaylistsByProviderProxy.h"
 
 #include "AmarokMimeData.h"
-#include "UserPlaylistModel.h"
+#include "PlaylistBrowserModel.h"
 
+#include "core/playlists/PlaylistProvider.h"
 #include "core/support/Debug.h"
+#include "playlistmanager/PlaylistManager.h"
+
+#include <KIcon>
 
 #include <QStack>
 
 const QString PlaylistsByProviderProxy::AMAROK_PROVIDERPROXY_INDEXES =
         "application/x-amarok-providerproxy-indexes";
 
-PlaylistsByProviderProxy::PlaylistsByProviderProxy( QAbstractItemModel *model, int column )
+PlaylistsByProviderProxy::PlaylistsByProviderProxy( QAbstractItemModel *model, int column, int playlistCategory )
         : QtGroupingProxy( model, QModelIndex(), column )
+        , m_playlistCategory( playlistCategory )
 {
     connect( sourceModel(), SIGNAL(renameIndex( const QModelIndex & )),
              SLOT(slotRenameIndex( const QModelIndex & )) );
@@ -36,6 +41,8 @@ PlaylistsByProviderProxy::PlaylistsByProviderProxy( QAbstractItemModel *model, i
 QVariant
 PlaylistsByProviderProxy::data( const QModelIndex &idx, int role ) const
 {
+    //TODO: actions for empty providers
+
     //TODO: filter out actions not from the provider, possibly using QAction separators marking
     // the source of the actions (makes sense in the UI as well.
 
@@ -255,6 +262,33 @@ PlaylistsByProviderProxy::buildTree()
 {
     //clear that data anyway since provider can disappear and should no longer be listed.
     m_groupMaps.clear();
+
+    //add the empty providers at the top of the list
+    PlaylistProviderList providerList =
+            The::playlistManager()->providersForCategory( m_playlistCategory );
+    if( !providerList.isEmpty() )
+    {
+        beginInsertRows( QModelIndex(), 0, providerList.count() );
+        foreach( Playlists::PlaylistProvider *provider, providerList )
+        {
+            if( provider && ( provider->playlistCount() > 0 || provider->playlists().count() > 0 ) )
+                continue;
+
+            ItemData itemData;
+            itemData.insert( Qt::DisplayRole, provider->prettyName() );
+            itemData.insert( Qt::DecorationRole, provider->icon() );
+            itemData.insert( PlaylistBrowserNS::PlaylistBrowserModel::ActionRole,
+                             QVariant::fromValue( provider->providerActions() ) );
+            itemData.insert( PlaylistBrowserNS::PlaylistBrowserModel::ByLineRole, QString() );
+            RowData rowData;
+            rowData.insert( PlaylistBrowserNS::PlaylistBrowserModel::PlaylistItemColumn, itemData );
+            //Provider column is used for filtering.
+            rowData.insert( PlaylistBrowserNS::PlaylistBrowserModel::ProviderColumn, itemData );
+            m_groupMaps << rowData;
+        }
+        endInsertRows();
+    }
+
     QtGroupingProxy::buildTree();
 }
 

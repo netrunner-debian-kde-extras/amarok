@@ -20,7 +20,7 @@
 using namespace Handler;
 
 IpodReadCapability::IpodReadCapability( Meta::IpodHandler *handler )
-        : Handler::ReadCapability()
+        : Handler::ReadCapability( handler )
         , m_handler( handler )
 {
 }
@@ -173,6 +173,12 @@ KUrl
 IpodReadCapability::libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track )
 {
     return m_handler->libGetPlayableUrl( track );
+}
+
+bool
+IpodReadCapability::libIsCompilation( const Meta::MediaDeviceTrackPtr &track )
+{
+    return m_handler->libIsCompilation( track );
 }
 
 float
