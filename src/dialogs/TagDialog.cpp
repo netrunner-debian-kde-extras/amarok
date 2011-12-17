@@ -38,6 +38,7 @@
 #include "MusicBrainzTagger.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/collections/QueryMaker.h"
+#include "SvgHandler.h"
 #include "TagGuesser.h"
 #include "ui_TagDialogBase.h"
 
@@ -357,7 +358,7 @@ TagDialog::accept() //SLOT
 inline void
 TagDialog::openPressed() //SLOT
 {
-    new KRun( QFileInfo( m_path ).absolutePath(), this );
+    new KRun( m_path, this );
 }
 
 
@@ -421,43 +422,16 @@ TagDialog::guessFromFilename() //SLOT
     FilenameLayoutDialog widget( &dialog );
     widget.setFileName( m_currentTrack->playableUrl().path() );
     dialog.setMainWidget( &widget );
-    connect( &dialog, SIGNAL( accepted() ), &widget, SLOT( onAccept() ) );
 
-    const int dcode = dialog.exec();
-
-    QString schemeFromDialog; //note to self: see where to put it from an old revision
-    debug() << "FilenameLayoutDialog finished.";
-    if( dcode == KDialog::Accepted )
-        schemeFromDialog = widget.getParsableScheme();
-    else
-        debug() << "WARNING: Have not received a new scheme from FilenameLayoutDialog";
-
-    debug() << "I have " << schemeFromDialog << " as filename scheme to use.";
-    //legacy tagguesserconfigdialog code follows, needed to make everything hackishly work
-    //probably not the best solution
-    QStringList schemes;    //now, this is really bad: the old TagGuesser code requires a QStringList of schemes to work on, and by default uses the first one.
-                            //It was done like this because the user could pick from a list of default and previously used schemes. I'm just adding my scheme as the first in the list.
-                            //So there's a bunch of rotting unused code but I suggest leaving it like this for now so we can rollback to the old dialog if I don't manage to fix the
-                            //new one before 2.0.
-    schemes += schemeFromDialog;
-
-
-    if( schemeFromDialog.isEmpty() )
+    if( dialog.exec() == KDialog::Accepted )
     {
-        //FIXME: remove this before release
+        widget.onAccept();
 
-        debug()<<"No filename scheme to extract tags from. Please choose a filename scheme to describe the layout of the filename(s) to extract the tags.";
-    }
-    else
-    {
-    //here starts the old guessFromFilename() code
         int cur = 0;
 
-        QFileInfo fi( m_currentTrack->playableUrl().path() );
-
         TagGuesser guesser;
-        guesser.setFilename( fi.fileName() );
-        guesser.setSchema( schemeFromDialog );
+        guesser.setFilename( widget.getParsableFileName() );
+        guesser.setSchema( widget.getParsableScheme() );
         guesser.setCaseType( widget.getCaseOptions() );
         guesser.setConvertUnderscores( widget.getUnderscoreOptions() );
         guesser.setCutTrailingSpaces( widget.getWhitespaceOptions() );
@@ -567,13 +541,6 @@ void TagDialog::initUi()
 
     ui->addButton->setEnabled( false );
     ui->removeButton->setEnabled( false );
-
-    // looks better to have a blank label than 0, we can't do this in
-    // the UI file due to bug in Designer
-    ui->qSpinBox_track->setSpecialValueText( " " );
-    ui->qSpinBox_year->setSpecialValueText( " " );
-    ui->qSpinBox_score->setSpecialValueText( " " );
-    ui->qSpinBox_discNumber->setSpecialValueText( " " );
 
     // set an icon for the open-in-konqui button
     ui->pushButton_open->setIcon( KIcon( "folder-amarok" ) );
@@ -848,14 +815,16 @@ TagDialog::setTagsToUi( const QVariantMap &tags )
     setControlsAccessability();
 
     // If it's a local file, write the directory to m_path, else disable the "open in konqui" button
-    KUrl url = tags.value( Meta::Field::URL ).toString();
+    QString urlString = tags.value( Meta::Field::URL ).toString();
+    KUrl url( urlString );
     //pathOrUrl will give localpath or proper url for remote.
     ui->kLineEdit_location->setText( url.pathOrUrl() );
     if( url.isLocalFile() )
     {
         ui->locationLabel->show();
         ui->kLineEdit_location->show();
-        m_path = url.directory();
+        QFileInfo fi( urlString );
+        m_path = fi.isDir() ? urlString : url.directory( KUrl::AppendTrailingSlash );
         ui->pushButton_open->setEnabled( true );
     }
     else
@@ -1225,7 +1194,7 @@ TagDialog::updateButtons()
 void
 TagDialog::updateCover()
 {
-    DEBUG_BLOCK;
+    DEBUG_BLOCK
 
     if( !m_currentTrack )
         return;
@@ -1253,8 +1222,7 @@ TagDialog::updateCover()
     else
     {
         ui->pixmap_cover->setVisible( true );
-
-        ui->pixmap_cover->setPixmap( QPixmap::fromImage( album->image( s ) ) );
+        ui->pixmap_cover->setPixmap( The::svgHandler()->imageWithBorder( album, s ) );
         QString artist = m_currentTrack->artist() ? m_currentTrack->artist()->name() : QString();
         ui->pixmap_cover->setInformation( artist, album->name() );
     }

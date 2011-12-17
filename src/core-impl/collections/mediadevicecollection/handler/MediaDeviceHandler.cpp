@@ -119,6 +119,7 @@ MediaDeviceHandler::getBasicMediaDeviceTrackInfo( const Meta::TrackPtr &srcTrack
     destTrack->setDiscNumber( srcTrack->discNumber() );
     destTrack->setBitrate( srcTrack->bitrate() );
     destTrack->setSamplerate( srcTrack->sampleRate() );
+    destTrack->setBpm( srcTrack->bpm() );
     destTrack->setFileSize( srcTrack->filesize() );
     destTrack->setPlayCount( srcTrack->playCount() );
     destTrack->setLastPlayed( srcTrack->lastPlayed() );
@@ -141,13 +142,16 @@ MediaDeviceHandler::setBasicMediaDeviceTrackInfo( const Meta::TrackPtr& srcTrack
     m_wc->libSetTitle( destTrack, srcTrack->name() );
     if ( srcTrack->album() )
     {
-        m_wc->libSetAlbum( destTrack, srcTrack->album()->name() ); Debug::stamp();
+        AlbumPtr album = srcTrack->album();
 
-        if( srcTrack->album()->hasAlbumArtist() )
-            m_wc->libSetAlbumArtist( destTrack, srcTrack->album()->albumArtist()->name() ); Debug::stamp();
+        m_wc->libSetAlbum( destTrack, album->name() );
+        m_wc->libSetIsCompilation( destTrack, album->isCompilation() );
 
-        if( srcTrack->album()->hasImage() )
-            m_wc->libSetCoverArt( destTrack, srcTrack->album()->image() );
+        if( album->hasAlbumArtist() )
+            m_wc->libSetAlbumArtist( destTrack, album->albumArtist()->name() );
+
+        if( album->hasImage() )
+            m_wc->libSetCoverArt( destTrack, album->image() );
     }
     if ( srcTrack->artist() )
         m_wc->libSetArtist( destTrack, srcTrack->artist()->name() ); Debug::stamp();
@@ -163,7 +167,7 @@ MediaDeviceHandler::setBasicMediaDeviceTrackInfo( const Meta::TrackPtr& srcTrack
     m_wc->libSetDiscNumber( destTrack, srcTrack->discNumber() ); Debug::stamp();
     m_wc->libSetBitrate( destTrack, srcTrack->bitrate() ); Debug::stamp();
     m_wc->libSetSamplerate( destTrack, srcTrack->sampleRate() ); Debug::stamp();
-    //libSetBpm( destTrack, srcTrack->bpm() );
+    m_wc->libSetBpm( destTrack, srcTrack->bpm() ); Debug::stamp();
     m_wc->libSetFileSize( destTrack, srcTrack->filesize() ); Debug::stamp();
     m_wc->libSetPlayCount( destTrack, srcTrack->playCount() ); Debug::stamp();
     m_wc->libSetLastPlayed( destTrack, srcTrack->lastPlayed() ); Debug::stamp();
@@ -243,7 +247,6 @@ MediaDeviceHandler::removeMediaDeviceTrackFromCollection( Meta::MediaDeviceTrack
     year->remTrack( track );
 
     // if empty, get rid of metadata in general
-
     if( artist->tracks().isEmpty() )
     {
         artistMap.remove( artist->name() );
@@ -281,9 +284,18 @@ MediaDeviceHandler::removeMediaDeviceTrackFromCollection( Meta::MediaDeviceTrack
     }
 
     // remove from trackmap
-    trackMap.remove( track->name() );
+    trackMap.remove( track->uidUrl() );
+
+    m_titlemap.remove( track->name(), TrackPtr::staticCast( track ) );
+
+    // Finally, assign the created maps to the collection
     m_memColl->memoryCollection()->acquireWriteLock();
     m_memColl->memoryCollection()->setTrackMap( trackMap );
+    m_memColl->memoryCollection()->setArtistMap( artistMap );
+    m_memColl->memoryCollection()->setAlbumMap( albumMap );
+    m_memColl->memoryCollection()->setGenreMap( genreMap );
+    m_memColl->memoryCollection()->setComposerMap( composerMap );
+    m_memColl->memoryCollection()->setYearMap( yearMap );
     m_memColl->memoryCollection()->releaseLock();
 }
 
@@ -673,12 +685,7 @@ MediaDeviceHandler::slotFinalizeTrackRemove( const Meta::TrackPtr & track )
         m_wc->setDatabaseChanged();
     }
 
-    // remove from titlemap
-
-    m_titlemap.remove( track->name(), track );
-
-    // remove from collection
-
+    // remove from memory collection
     removeMediaDeviceTrackFromCollection( devicetrack );
 
     emit incrementProgress();
@@ -757,6 +764,12 @@ MediaDeviceHandler::setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap& al
 
     albumPtr->addTrack( track );
     track->setAlbum( albumPtr );
+
+    bool isCompilation = albumPtr->isCompilation();
+    /* if at least one track from album identifies itself as a part of compilation, mark
+     * whole album as such: (we should be deterministic wrt track adding order) */
+    isCompilation |= m_rc->libIsCompilation( track );
+    albumPtr->setIsCompilation( isCompilation );
 
     MediaDeviceArtistPtr artistPtr;
 
@@ -937,12 +950,12 @@ MediaDeviceHandler::privateParseTracks()
         }
 
         // When the provider saves a playlist, the handler should save it internally
-        connect( m_provider, SIGNAL( playlistSaved( const Playlists::MediaDevicePlaylistPtr &, const QString& ) ),
-                 SLOT( savePlaylist( const Playlists::MediaDevicePlaylistPtr &, const QString& ) ) );
-        connect( m_provider, SIGNAL( playlistRenamed( const Playlists::MediaDevicePlaylistPtr &) ),
-                 SLOT( renamePlaylist( const Playlists::MediaDevicePlaylistPtr & ) ) );
-        connect( m_provider, SIGNAL( playlistsDeleted( const Playlists::MediaDevicePlaylistList & ) ),
-                 SLOT( deletePlaylists( const Playlists::MediaDevicePlaylistList &  ) ) );
+        connect( m_provider, SIGNAL(playlistSaved(Playlists::MediaDevicePlaylistPtr,QString)),
+                 SLOT(savePlaylist(Playlists::MediaDevicePlaylistPtr,QString)) );
+        connect( m_provider, SIGNAL(playlistRenamed(Playlists::MediaDevicePlaylistPtr)),
+                 SLOT(renamePlaylist(Playlists::MediaDevicePlaylistPtr)) );
+        connect( m_provider, SIGNAL(playlistsDeleted(Playlists::MediaDevicePlaylistList)),
+                 SLOT(deletePlaylists(Playlists::MediaDevicePlaylistList)) );
 
         The::playlistManager()->addProvider(  m_provider,  m_provider->category() );
         m_provider->sendUpdated();
@@ -1038,7 +1051,6 @@ MediaDeviceHandler::freeSpace() const
 float
 MediaDeviceHandler::usedcapacity() const
 {
-    DEBUG_BLOCK
     if ( m_rcb )
         return m_rcb->usedCapacity();
     else
@@ -1048,7 +1060,6 @@ MediaDeviceHandler::usedcapacity() const
 float
 MediaDeviceHandler::totalcapacity() const
 {
-    DEBUG_BLOCK
     if ( m_rcb )
         return m_rcb->totalCapacity();
     else

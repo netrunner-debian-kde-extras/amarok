@@ -132,6 +132,7 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
     if( name != QLatin1String("albums") )
         return;
 
+    DEBUG_BLOCK
     Meta::AlbumList albums = data[ "albums" ].value<Meta::AlbumList>();
     Meta::TrackPtr track = data[ "currentTrack" ].value<Meta::TrackPtr>();
     QString headerText = data[ "headerText" ].toString();
@@ -146,6 +147,7 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
 
     if( albums.isEmpty() )
     {
+        debug() << "received albums is empty";
         setCollapseOn();
         m_albums.clear();
         m_albumsView->clear();
@@ -154,7 +156,6 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
 
     setCollapseOff();
 
-    DEBUG_BLOCK
     m_albums = albums;
     m_currentTrack = track;
     m_albumsView->clear();
@@ -215,7 +216,7 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
             {
                 const TrackItem *item = items.first();
                 QStandardItem *discItem( 0 );
-                if( numberOfDiscs > 0 )
+                if( numberOfDiscs > 1 )
                 {
                     discItem = new QStandardItem( i18n("Disc %1", item->track()->discNumber()) );
                     albumItem->setChild( childRow++, discItem );
@@ -294,7 +295,12 @@ void Albums::saveConfiguration()
 {
     Amarok::config("Albums Applet").writeEntry( "RecentlyAdded", QString::number( m_recentCount ) );
     Amarok::config("Albums Applet").writeEntry( "RightAlignLength", m_rightAlignLength );
-    updateData();
+
+    // clear to force an update
+    m_albums.clear();
+
+    Plasma::DataEngine::Data data = dataEngine( "amarok-current" )->query( "albums" );
+    dataUpdated( QLatin1String("albums"), data );
 }
 
 void Albums::collectionDataChanged( Collections::Collection *collection )
@@ -302,15 +308,6 @@ void Albums::collectionDataChanged( Collections::Collection *collection )
     Q_UNUSED( collection )
 
     DEBUG_BLOCK
-}
-
-void Albums::updateData()
-{
-    // clear to force an update
-    m_albums.clear();
-
-    Plasma::DataEngine::Data data = dataEngine( "amarok-current" )->query( "albums" );
-    dataUpdated( QLatin1String("albums"), data );
 }
 
 AlbumsFilterBar::AlbumsFilterBar( QGraphicsItem *parent, Qt::WindowFlags wFlags )

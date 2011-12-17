@@ -86,7 +86,8 @@ parseTokens( const QString &scheme )
 
 Meta::FieldHash
 Meta::Tag::TagGuesser::guessTagsByScheme( const QString &fileName, const QString &scheme,
-                                          bool cutTrailingSpaces, bool convertUnderscores )
+                                          bool cutTrailingSpaces, bool convertUnderscores,
+                                          bool isRegExp )
 {
     Meta::FieldHash metadata;
 
@@ -96,8 +97,14 @@ Meta::Tag::TagGuesser::guessTagsByScheme( const QString &fileName, const QString
     QString m_scheme = scheme;
 
     QList< qint64 > tokens = parseTokens( m_scheme );
-
-    rx.setPattern( m_scheme.replace( m_digitalFields, "(\\d+)" )
+    
+    // Screen all special symbols
+    if( !isRegExp )
+        m_scheme = m_scheme.replace( QRegExp( "([~!\\^&*()\\-+\\[\\]{}\\\\:\"?\\.])" ),"\\\\1" );
+    
+    QRegExp spaces( "(\\s+)" );
+    rx.setPattern( m_scheme.replace( spaces, "\\s+" )
+                           .replace( m_digitalFields, "(\\d+)" )
                            .replace( m_literalFields, "(.+)" )
                            .replace( "%ignore%", "(?:.+)" ) );
 
@@ -127,7 +134,7 @@ Meta::Tag::TagGuesser::guessTags( const QString &fileName )
 
     foreach( QString scheme, m_schemes )
     {
-        Meta::FieldHash metadata = guessTagsByScheme( tmpStr, scheme );
+        Meta::FieldHash metadata = guessTagsByScheme( tmpStr, scheme, true, true, true );
         if( !metadata.isEmpty() )
             return metadata;
     }

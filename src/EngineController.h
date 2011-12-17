@@ -33,6 +33,7 @@
 #include <Phonon/MediaObject>
 #include <Phonon/Effect>
 #include <Phonon/EffectParameter>
+#include <phonon/audiodataoutput.h>
 
 class QTimer;
 
@@ -204,8 +205,9 @@ public:
 
     /**
      * @return QString with a pretty name for the current track
+     * @param whether to include the playing progress (default false)
      */
-    QString prettyNowPlaying() const;
+    QString prettyNowPlaying( bool progress = false ) const;
 
 public slots:
     /**
@@ -448,6 +450,12 @@ Q_SIGNALS:
      * Called when playback state changes to PlayingState, StoppedState or PausedState.
      */
     void playbackStateChanged();
+    
+    /**
+    *   Is emitted when new audio Data is ready
+    *   @param audioData The audio data that is available
+    */
+    void audioDataReady( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &audioData );
 
 private slots:
     /**
@@ -534,8 +542,10 @@ private:
     QWeakPointer<Phonon::VolumeFaderEffect> m_preamp;
     QWeakPointer<Phonon::Effect>            m_equalizer;
     QWeakPointer<Phonon::AudioOutput>       m_audio;
+    QWeakPointer<Phonon::AudioDataOutput>   m_audioDataOutput;
     QWeakPointer<Phonon::MediaController>   m_controller;
     Phonon::Path                            m_path;
+    Phonon::Path                            m_dataPath;
 
     Phonon::VolumeFaderEffect* m_fader;
     QTimer* m_fadeoutTimer;

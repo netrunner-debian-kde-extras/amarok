@@ -18,6 +18,7 @@
 
 #include "PlaylistBrowserCategory.h"
 
+#include "amarokconfig.h"
 #include "core/support/Debug.h"
 #include "PaletteHandler.h"
 #include "PlaylistBrowserModel.h"
@@ -55,10 +56,11 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
     m_playlistCategory( playlistCategory )
 {
     setContentsMargins( 0, 0, 0, 0 );
+    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_podcasts.png" ) );
 
     // set background
-    const QString bgImage = KStandardDirs::locate("data", "amarok/images/hover_info_user_playlists.png");
-    setBackgroundImage( bgImage );
+    if( AmarokConfig::showBrowserBackgroundImage() )
+        setBackgroundImage( imagePath() );
 
     m_toolBar = new KToolBar( this, false, false );
     m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
@@ -92,7 +94,8 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
 
     m_toolBar->addSeparator();
 
-    m_byProviderProxy = new PlaylistsByProviderProxy( model, PlaylistBrowserModel::ProviderColumn );
+    m_byProviderProxy = new PlaylistsByProviderProxy( model, PlaylistBrowserModel::ProviderColumn,
+                                                      m_playlistCategory );
     m_byFolderProxy = new PlaylistsInFoldersProxy( model );
 
     m_filterProxy = new PlaylistBrowserFilterProxy( this );
@@ -233,14 +236,6 @@ PlaylistBrowserCategory::createProviderButton( const Playlists::PlaylistProvider
         providerToggle->setEnabled( false );
     else if( m_providerActions.count() == 1 )
         m_providerActions.values().first()->setEnabled( true );
-
-    //Hide empty providers when added
-    if( provider->playlistCount() == 0 )
-    {
-        providerToggle->setChecked( false );
-        //ensure the provider is actually filtered out.
-        slotToggleProviderButton();
-    }
 
     m_providerActions.insert( provider, providerToggle );
 }

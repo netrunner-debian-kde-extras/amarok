@@ -1,7 +1,7 @@
 /****************************************************************************************
- * Copyright (c) 2010 Stefan Derkits <stefan@derkits.at>                                *
- * Copyright (c) 2010 Christian Wagner <christian.wagner86@gmx.at>                      *
- * Copyright (c) 2010 Felix Winter <ixos01@gmail.com>                                   *
+ * Copyright (c) 2010 - 2011 Stefan Derkits <stefan@derkits.at>                         *
+ * Copyright (c) 2010 - 2011 Christian Wagner <christian.wagner86@gmx.at>               *
+ * Copyright (c) 2010 - 2011 Felix Winter <ixos01@gmail.com>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,6 +20,7 @@
 #define GPODDERSERVICE_H
 
 #include "core/support/Amarok.h"
+#include "GpodderProvider.h"
 #include "services/ServiceBase.h"
 
 #include <QItemSelectionModel>
@@ -27,10 +28,7 @@
 
 class GpodderService;
 
-namespace The
-{
-GpodderService* gpodderService();
-}
+namespace The { GpodderService *gpodderService(); }
 
 class GpodderServiceFactory : public ServiceFactory
 {
@@ -50,7 +48,7 @@ private slots:
     void slotRemoveGpodderService();
 
 private:
-    ServiceBase* createGpodderService();
+    ServiceBase *createGpodderService();
 };
 
 class GpodderService : public ServiceBase
@@ -58,35 +56,31 @@ class GpodderService : public ServiceBase
     Q_OBJECT
 
 public:
-    GpodderService( GpodderServiceFactory* parent, const QString& name );
+    GpodderService( GpodderServiceFactory *parent, const QString &name );
     virtual ~GpodderService();
 
 private slots:
-
     void subscribe();
     void itemSelected( CollectionTreeItem *selectedItem );
-
-    // filter slots
-    void slotSetFilterTimeout();
-    void slotFilterNow();
-    void setFocus();
 
 private:
     void init();
     void polish();
 
-    virtual Collections::Collection * collection()
-    {
-        return 0;
-    }
+    void enableGpodderProvider( const QString &username );
+
+    virtual Collections::Collection *collection() { return 0; }
 
     bool m_inited;
+
+    mygpo::ApiRequest *m_apiRequest;
+
+    Podcasts::GpodderProvider *m_podcastProvider;
 
     QSortFilterProxyModel *m_proxyModel;
 
     QPushButton *m_subscribeButton;
     QItemSelectionModel *m_selectionModel;
-
 };
 
 #endif  // GPODDERSERVICE_H

@@ -116,6 +116,8 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanManager : public QObject
         void succeeded();
         void failed( QString message );
 
+        void scanStarted( ScannerJob *job );
+
     private slots:
         /** Adds the given directory to the list of directories for the next scan.
             If an empty string is given it will add the whole list of collection folder.
@@ -260,7 +262,7 @@ class ScannerJob : public ThreadWeaver::Job
         QScopedPointer< QIODevice > m_input;
 
         int m_restartCount;
-        bool m_abortRequested;
+        volatile bool m_abortRequested;
         QString m_abortReason;
         QString m_incompleteTagBuffer; // strings received via addNewXmlData but not terminated by either a </directory> or a </scanner>
 

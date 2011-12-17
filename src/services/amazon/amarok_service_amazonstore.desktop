@@ -1,0 +1,59 @@
+[Desktop Entry]
+Type=Service
+ServiceTypes=KPluginInfo
+Icon=view-services-amazon-amarok
+Name=MP3 Music Store
+Name[ca]=MP3 Music Store
+Name[cs]=Obchod s hudbou v MP3
+Name[da]=Musikbutik med MP3
+Name[de]=MP3-Musikladen
+Name[el]=MP3 Music Store
+Name[es]=Tienda de música MP3
+Name[it]=MP3 Music Store
+Name[nb]=MP3 Musikkbutikk
+Name[nl]=MP3 Music-store
+Name[pt]=Loja de Música em MP3
+Name[pt_BR]=Loja de músicas em MP3
+Name[ru]=Магазин музыки в MP3
+Name[sv]=MP3-musikbutik
+Name[uk]=Музична крамниця з продажу MP3
+Name[x-test]=xxMP3 Music Storexx
+Name[zh_TW]=MP3 音樂商店
+Comment=Access the Amazon MP3 Store directly from Amarok
+Comment[ca]=Accés directe a l'Amazon MP3 Store des de l'Amarok
+Comment[cs]=Přistupujte k Amazon MP3 Store přímo z Amaroku
+Comment[da]=Tilgå Amazons MP3-butik direkte fra Amarok
+Comment[de]=Den MP3-Laden von Amazon direkt aus Amarok heraus nutzen
+Comment[el]=Αποκτήστε πρόσβαση στο κατάστημα MP3 της Amazon απευθείας από το Amarok
+Comment[es]=Acceder a la tienda de música MP3 de Amazon directamente desde Amarok
+Comment[it]=Accedi al MP3 Store di Amazon direttamente da Amarok
+Comment[nb]=Bruk Amazons M3-butikk direkte fra Amarok
+Comment[nl]=De Amazon MP3-store direct vanuit Amarok benaderen
+Comment[pt]=Aceder à loja de MP3 da Amazon directamente do Amarok
+Comment[pt_BR]=Acessar a loja de MP3 da Amazon diretamente a partir do Amarok
+Comment[ru]=Доступ к магазину MP3 Amazon напрямую из Amarok
+Comment[sv]=Kom åt Amazons MP3-butik direkt från Amarok
+Comment[uk]=Доступ до крамниці з продажу MP3 Amazon безпосередньо з Amarok
+Comment[x-test]=xxAccess the Amazon MP3 Store directly from Amarokxx
+Comment[zh_TW]=直接到 Amazon 存取 Amazon MP3 商店
+
+ServiceTypes=Amarok/Plugin
+
+X-KDE-Library=amarok_service_amazonstore
+
+X-KDE-Amarok-authors=Sven Krohlas
+X-KDE-Amarok-email=sven@getamarok.com
+X-KDE-Amarok-framework-version=67
+X-KDE-Amarok-name=AmazonStore
+X-KDE-Amarok-plugintype=service
+X-KDE-Amarok-rank=100
+X-KDE-Amarok-version=1
+
+X-KDE-PluginInfo-Author=Sven Krohlas
+X-KDE-PluginInfo-Email=sven@getamarok.com
+X-KDE-PluginInfo-Version=1.0
+X-KDE-PluginInfo-Category=Service
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=true
+X-KDE-Library=amarok_service_amazonstore
+X-KDE-PluginInfo-Name=amarok_service_amazonstore

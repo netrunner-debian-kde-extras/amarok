@@ -22,6 +22,7 @@
 #include "FileBrowser_p.h"
 #include "FileBrowser_p.moc"
 
+#include "amarokconfig.h"
 #include "core/support/Debug.h"
 #include "BrowserBreadcrumbItem.h"
 #include "BrowserCategoryList.h"
@@ -71,10 +72,9 @@ FileBrowser::Private::Private( FileBrowser *parent )
     navigationToolbar->addAction( homeAction );
     navigationToolbar->addAction( placesAction );
 
-    SearchWidget *searchWidget = new SearchWidget( topHBox, q, false );
+    searchWidget = new SearchWidget( topHBox, false );
     searchWidget->setClickMessage( i18n( "Filter Files" ) );
 
-    filterTimer.setSingleShot( true );
     fileView = new FileView( q );
 }
 
@@ -179,8 +179,8 @@ FileBrowser::FileBrowser( const char *name, QWidget *parent )
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_files.png" ) );
 
     // set background
-    const QString bgImage = KStandardDirs::locate("data", "amarok/images/hover_info_files.png");
-    setBackgroundImage( bgImage );
+    if( AmarokConfig::showBrowserBackgroundImage() )
+        setBackgroundImage( imagePath() );
 
     QTimer::singleShot( 0, this, SLOT(initView()) );
 }
@@ -196,6 +196,8 @@ FileBrowser::initView()
     d->mimeFilterProxyModel->setSortCaseSensitivity( Qt::CaseInsensitive );
     d->mimeFilterProxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
     d->mimeFilterProxyModel->setDynamicSortFilter( true );
+    connect( d->searchWidget, SIGNAL( filterChanged( const QString & ) ),
+             d->mimeFilterProxyModel, SLOT( setFilterFixedString( const QString & ) ) );
 
     d->fileView->setModel( d->mimeFilterProxyModel );
     d->fileView->header()->setContextMenuPolicy( Qt::ActionsContextMenu );
@@ -232,8 +234,7 @@ FileBrowser::initView()
                );
     }
 
-    connect( d->placesAction, SIGNAL(triggered( bool)), this, SLOT(showPlaces()) );
-    connect( &d->filterTimer, SIGNAL(timeout()), this, SLOT(slotFilterNow()) );
+    connect( d->placesAction, SIGNAL( triggered( bool) ), this, SLOT( showPlaces() ) );
 }
 
 FileBrowser::~FileBrowser()
@@ -335,26 +336,6 @@ FileBrowser::itemActivated( const QModelIndex &index )
     }
 }
 
-void
-FileBrowser::slotSetFilterTimeout()
-{
-    KComboBox *comboBox = qobject_cast<KComboBox*>( sender() );
-    if( comboBox )
-    {
-        d->currentFilter = comboBox->currentText();
-        d->filterTimer.stop();
-        d->filterTimer.start( 500 );
-    }
-}
-
-void
-FileBrowser::slotFilterNow()
-{
-    d->mimeFilterProxyModel->setFilterFixedString( d->currentFilter );
-
-    QStringList filters;
-    filters << d->currentFilter;
-}
 
 void
 FileBrowser::addItemActivated( const QString &callbackString )

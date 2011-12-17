@@ -530,13 +530,16 @@ App::continueInit()
     new Amarok::DefaultApplicationController( this );
     Amarok::Components::applicationController()->start();
 
-    KSplashScreen* splash = 0;
+    // splash screen makes problems on Windows, it cannot be closed with a click
+	KSplashScreen* splash = 0;
+#ifndef Q_WS_WIN
     if( AmarokConfig::showSplashScreen() && !isSessionRestored() )
     {
         QPixmap splashimg( KGlobal::dirs()->findResource( "data", "amarok/images/splash_screen.jpg" ) );
         splash = new KSplashScreen( splashimg, Qt::WindowStaysOnTopHint );
         splash->show();
     }
+#endif
 
     PERF_LOG( "Creating MainWindow" )
     m_mainWindow = new MainWindow();

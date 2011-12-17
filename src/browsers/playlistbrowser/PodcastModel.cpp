@@ -24,6 +24,7 @@
 #include "context/popupdropper/libpud/PopupDropper.h"
 #include "PodcastCategory.h"
 #include "playlistmanager/PlaylistManager.h"
+#include "playlistmanager/SyncedPodcast.h"
 #include "SvgHandler.h"
 #include <ThreadWeaver/Weaver>
 
@@ -114,7 +115,6 @@ PlaylistBrowserNS::PodcastModel::icon( Podcasts::PodcastMetaCommon *pmc ) const
     {
         case Podcasts::ChannelType:
             channel = static_cast<Podcasts::PodcastChannel *>( pmc );
-
             //TODO: only check visible episodes. For now those are all returned by episodes().
             foreach( const Podcasts::PodcastEpisodePtr ep, channel->episodes() )
             {
@@ -155,7 +155,6 @@ PlaylistBrowserNS::PodcastModel::icon( Podcasts::PodcastMetaCommon *pmc ) const
             }
             else
             {
-
                 return KIcon( "podcast-amarok", 0, emblems ).pixmap( 32, 32 );
             }
 
@@ -181,15 +180,10 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &idx, int role ) const
     {
         Podcasts::PodcastMetaCommon *pmc;
         if( IS_TRACK(idx) )
-        {
-            pmc = dynamic_cast<Podcasts::PodcastMetaCommon *>(
-                    trackFromIndex( idx ).data() );
-        }
+            pmc = dynamic_cast<Podcasts::PodcastMetaCommon *>( trackFromIndex( idx ).data() );
         else
-        {
-            pmc = dynamic_cast<Podcasts::PodcastMetaCommon *>(
-                    playlistFromIndex( idx ).data() );
-        }
+            //HACK: get rid of getPlaylist()
+            pmc = dynamic_cast<Podcasts::PodcastMetaCommon *>( playlistFromIndex( idx ).data() );
 
         if( !pmc )
             return QVariant();
@@ -288,8 +282,12 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &idx, int role ) const
 bool
 PlaylistBrowserNS::PodcastModel::setData( const QModelIndex &idx, const QVariant &value, int role )
 {
+
+    DEBUG_BLOCK
+
     //TODO: implement setNew.
     return PlaylistBrowserModel::setData( idx, value, role );
+
 }
 
 int
@@ -392,6 +390,12 @@ PlaylistBrowserNS::PodcastModel::refreshPodcasts()
 QActionList
 PlaylistBrowserNS::PodcastModel::actionsFor( const QModelIndex &idx ) const
 {
+    if( !idx.isValid() )
+    {
+        //TODO: add podcast action
+        return QActionList();
+    }
+
     QActionList actions = PlaylistBrowserModel::actionsFor( idx );
 
     /* by default a list of podcast episodes can only be changed to isNew = false, except

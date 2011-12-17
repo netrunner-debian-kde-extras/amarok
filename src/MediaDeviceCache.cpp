@@ -35,9 +35,7 @@
 
 #include <kdeversion.h>
 
-#if KDE_IS_VERSION(4,4,99)
 #include <kmountpoint.h>
-#endif
 
 #include <QDir>
 #include <QFile>
@@ -93,14 +91,8 @@ MediaDeviceCache::refreshCache()
         debug() << "Device name is = " << device.product() << " and was made by " << device.vendor();
 
         const Solid::StorageAccess* ssa = device.as<Solid::StorageAccess>();
-        const Solid::OpticalDisc * opt = device.as<Solid::OpticalDisc>();
 
-        if ( opt && opt->availableContent() & Solid::OpticalDisc::Audio )
-        {
-            m_type[ device.udi() ] = MediaDeviceCache::SolidAudioCdType;
-            m_name[ device.udi() ] = device.vendor() + " - " + device.product();
-        }
-        else if( ssa )
+        if( ssa )
         {
             if( !m_volumes.contains( device.udi() ) )
             {
@@ -130,6 +122,21 @@ MediaDeviceCache::refreshCache()
         if( device.as<Solid::StorageDrive>() )
         {
             m_type[device.udi()] = MediaDeviceCache::SolidGenericType;
+            m_name[device.udi()] = device.vendor() + " - " + device.product();
+        }
+    }
+    deviceList = Solid::Device::listFromType( Solid::DeviceInterface::OpticalDisc );
+    foreach( const Solid::Device &device, deviceList )
+    {
+        debug() << "Found Solid::DeviceInterface::OpticalDisc with udi = " << device.udi();
+        debug() << "Device name is = " << device.product() << " and was made by " << device.vendor();
+
+        const Solid::OpticalDisc * opt = device.as<Solid::OpticalDisc>();
+
+        if ( opt && opt->availableContent() & Solid::OpticalDisc::Audio )
+        {
+            debug() << "device is an Audio CD";
+            m_type[device.udi()] = MediaDeviceCache::SolidAudioCdType;
             m_name[device.udi()] = device.vendor() + " - " + device.product();
         }
     }
@@ -221,9 +228,14 @@ MediaDeviceCache::slotAddSolidDevice( const QString &udi )
     else if( const Solid::GenericInterface *generic = device.as<Solid::GenericInterface>() )
     {
         const QMap<QString, QVariant> properties = generic->allProperties();
-        // iPods touch 3G (and maybe upper) do not have AFC capabilities. 
-        // Due to the return, iPod Touch are not known as media device and the code which execute the ifuse command is then not called!
-        if ( !device.product().contains("iPod") )
+        /* At least iPod touch 3G and iPhone 3G do not advertise AFC (Apple File
+         * Connection) capabilities. Therefore we have to white-list them so that they are
+         * still recognised ad iPods
+         *
+         * @see IpodConnectionAssistant::identify() for a quirk that is currently also
+         * needed for proper identification of iPhone-like devices.
+         */
+        if ( !device.product().contains("iPod") && !device.product().contains("iPhone"))
         {
             if( !properties.contains("info.capabilities") )
             {
@@ -277,7 +289,6 @@ MediaDeviceCache::slotRemoveSolidDevice( const QString &udi )
 
 void MediaDeviceCache::slotTimeout()
 {
-#if KDE_IS_VERSION(4,4,99)
     KMountPoint::List possibleMountList = KMountPoint::possibleMountPoints();
     KMountPoint::List currentMountList = KMountPoint::currentMountPoints();
     QList<Solid::Device> deviceList = Solid::Device::listFromType( Solid::DeviceInterface::StorageAccess );
@@ -310,7 +321,6 @@ void MediaDeviceCache::slotTimeout()
             }
         }
     }
-#endif
 
     m_timer.setSingleShot(true);
     m_timer.start(1000);

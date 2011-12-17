@@ -194,7 +194,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1right.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1right.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -243,7 +243,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1ipod.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1ipod.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -365,7 +365,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1scriptmanager.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1scriptmanager.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -391,7 +391,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1covermanager.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1covermanager.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -415,7 +415,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1rating.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1rating.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -463,7 +463,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1pleditor.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1pleditor.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -489,7 +489,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1dynamicplaylist.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1dynamicplaylist.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -753,7 +753,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="AmarokNew2.4.png" format="PNG"/>
+      <imagedata fileref="AmarokNew2_4.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -850,7 +850,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.4.1ConfigureDialogCollection.png" format="PNG"/>
+      <imagedata fileref="Amarok2_4_1ConfigureDialogCollection.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -1758,14 +1758,14 @@
 <para
 >Al pulsar el icono del disco en la parte inferior del panel de <emphasis
 >Lista de reproducción</emphasis
->  se guarda su lista de reproducción en la base de datos de listas de reproducción de &amarok;. Para guardarla a disco, mantenga pulsado el ratón y desplácelo hasta esa elección.</para>
+> se guarda su lista de reproducción en la base de datos de listas de reproducción de &amarok;. Para guardarla a disco, mantenga pulsado el ratón y desplácelo hasta esa elección.</para>
 <para>
 <screenshot>
 <screeninfo
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.4.1SavePlaylistChoices.png" format="PNG"/>
+      <imagedata fileref="Amarok2_4_1SavePlaylistChoices.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -1918,7 +1918,7 @@
 ></menuchoice
 >. Si no se muestran, salga de &amarok; desde el menú de <guilabel
 >Amarok</guilabel
-> u use <keycombo
+> o use <keycombo
 >&Ctrl;<keycap
 >Q</keycap
 ></keycombo

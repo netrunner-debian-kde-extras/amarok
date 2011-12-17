@@ -27,8 +27,6 @@
 #include "MountPointManager.h"
 #include "ScanResultProcessor.h"
 #include "amarokconfig.h"
-#include "core/interfaces/Logger.h"
-#include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "sql/SqlCollection.h"
 
@@ -239,15 +237,12 @@ ScanManager::startScanner()
         m_scanDirsRequested.clear();
     }
 
-    Amarok::Components::logger()->newProgressOperation( m_scanner, i18n( "Scanning music" ),
-                                                            100, this, SLOT(abort()) );
-
     // - enqueue it.
     connect( m_scanner, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( slotJobDone() ) );
     connect( m_scanner, SIGNAL( message( QString ) ), this, SIGNAL( message( QString ) ) );
     connect( m_scanner, SIGNAL( failed( QString ) ), this, SIGNAL( failed( QString ) ) );
     ThreadWeaver::Weaver::instance()->enqueue( m_scanner );
-
+    emit scanStarted( m_scanner );
 }
 
 void
@@ -514,7 +509,7 @@ ScannerJob::run()
             break;
 
         // -- scan as many directory tags as we added to the data
-        while( !m_reader.atEnd() )
+        while( !m_reader.atEnd() && !m_abortRequested )
         {
             m_reader.readNext();
             if( m_reader.hasError() )
@@ -578,18 +573,21 @@ ScannerJob::run()
 
     if( m_abortRequested )
     {
+        QMutexLocker locker( &m_mutex );
         debug() << "Aborting ScanManager ScannerJob";
         emit failed( m_abortReason );
         processor->rollback();
     }
     else if( !finished && m_reader.hasError() )
     {
+        QMutexLocker locker( &m_mutex );
         warning() << "Aborting ScanManager ScannerJob with error"<<m_reader.errorString();
         emit failed( i18n( "Aborting scanner with error: %1", m_reader.errorString() ) );
         processor->rollback();
     }
     else
     {
+        QMutexLocker locker( &m_mutex );
         processor->commit();
         emit endProgressOperation( this );
     }

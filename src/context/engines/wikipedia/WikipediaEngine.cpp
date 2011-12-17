@@ -143,7 +143,7 @@ WikipediaEnginePrivate::_dataContainerUpdated( const QString &source, const Plas
             wikiCurrentUrl = clickUrl;
             if( !wikiCurrentUrl.hasQueryItem( QLatin1String("useskin") ) )
                 wikiCurrentUrl.addQueryItem( QLatin1String("useskin"), QLatin1String("monobook") );
-            KUrl encodedUrl( wikiCurrentUrl.toString() );
+            KUrl encodedUrl( wikiCurrentUrl.toEncoded() );
             urls << encodedUrl;
             q->setData( source, QLatin1String("busy"), true );
             The::networkAccessManager()->getData( encodedUrl, q,
@@ -455,11 +455,15 @@ WikipediaEnginePrivate::_parseListingResult( const KUrl &url,
             pattern = QLatin1String(".*\\(.*(album|score|soundtrack).*\\)");
         else if( hostLang == QLatin1String("fr") )
             pattern = QLatin1String(".*\\(.*(album|BO).*\\)");
+        else if( hostLang == QLatin1String("de") )
+            pattern = QLatin1String(".*\\(.*(album|soundtrack).*\\)");
         break;
 
     case Track:
         if( hostLang == QLatin1String("en") )
-            pattern = QLatin1String(".*\\(.*song|track.*\\)");
+            pattern = QLatin1String(".*\\(.*(song|track).*\\)");
+        else if( hostLang == QLatin1String("de") )
+            pattern = QLatin1String(".*\\(.*(lied).*\\)");
         else if( hostLang == QLatin1String("pl") )
             pattern = QLatin1String(".*\\(.*singel.*\\)");
         break;
@@ -535,8 +539,7 @@ WikipediaEnginePrivate::fetchWikiUrl( const QString &title, const QString &urlPr
         host.prepend( ".m" );
         host.prepend( urlPrefix );
         pageUrl.setHost( host );
-        pageUrl.setPath( QLatin1String("/wiki") );
-        pageUrl.addQueryItem( QLatin1String("search"), title );
+        pageUrl.setPath( QString("/wiki/%1").arg(title) );
         DataEngine::Data data;
         data[QLatin1String("sourceUrl")] = pageUrl;
         q->removeAllData( QLatin1String("wikipedia") );

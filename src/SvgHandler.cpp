@@ -15,6 +15,8 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
+
+#define DEBUG_PREFIX "SvgHandler"
  
 #include "SvgHandler.h"
 
@@ -54,7 +56,7 @@ namespace The {
 
 SvgHandler::SvgHandler( QObject* parent )
     : QObject( parent )
-    , m_cache( new ImageCache( "Amarok-pixmaps", 20 * 1024 ) )
+    , m_cache( new KImageCache( "Amarok-pixmaps", 20 * 1024 ) )
     , m_themeFile( "amarok/images/default-theme-clean.svg" )  // //use default theme
     , m_customTheme( false )
 {
@@ -131,7 +133,7 @@ QPixmap SvgHandler::renderSvg( const QString &name,
     }
 
     QPixmap pixmap;
-    if( skipCache || !m_cache->find( key, pixmap ) )
+    if( skipCache || !m_cache->findPixmap( key, &pixmap ) )
     {
         pixmap = QPixmap( width, height );
         pixmap.fill( Qt::transparent );
@@ -154,7 +156,7 @@ QPixmap SvgHandler::renderSvg( const QString &name,
             m_renderers[name]->render( &pt, element, QRectF( 0, 0, width, height ) );
   
         if( !skipCache )
-            m_cache->insert( key, pixmap );
+            m_cache->insertPixmap( key, pixmap );
     }
 
     return pixmap;
@@ -173,7 +175,7 @@ QPixmap SvgHandler::renderSvgWithDividers(const QString & keyname, int width, in
             .arg( height );
 
     QPixmap pixmap;
-    if ( !m_cache->find( key, pixmap ) ) {
+    if ( !m_cache->findPixmap( key, &pixmap ) ) {
 //         debug() << QString("svg %1 not in cache...").arg( key );
 
         pixmap = QPixmap( width, height );
@@ -205,7 +207,7 @@ QPixmap SvgHandler::renderSvgWithDividers(const QString & keyname, int width, in
         m_renderers[name]->render( &pt, "divider_top", QRectF( margin, 0 , width - 1 * margin, 1 ) );
         m_renderers[name]->render( &pt, "divider_bottom", QRectF( margin, height - 1 , width - 2 * margin, 1 ) );
     
-        m_cache->insert( key, pixmap );
+        m_cache->insertPixmap( key, pixmap );
     }
 
     return pixmap;
@@ -238,7 +240,7 @@ void SvgHandler::discardCache()
 {
     //redraw entire app....
     reTint();
-    m_cache->discard();
+    m_cache->clear();
     App::instance()->mainWindow()->update();
 }
 
@@ -246,7 +248,7 @@ QPixmap
 SvgHandler::imageWithBorder( Meta::AlbumPtr album, int size, int borderWidth )
 {
     const int imageSize = size - ( borderWidth * 2 );
-    const QString &loc  = album->imageLocation( imageSize ).path( KUrl::LeaveTrailingSlash );
+    const QString &loc  = album->imageLocation( imageSize ).url();
     const QString &key  = !loc.isEmpty() ? loc : album->name();
     return addBordersToPixmap( The::coverCache()->getCover( album, imageSize ), borderWidth, key );
 }
@@ -267,7 +269,7 @@ QPixmap SvgHandler::addBordersToPixmap( const QPixmap &orgPixmap, int borderWidt
     }
 
     QPixmap pixmap;
-    if( skipCache || !m_cache->find( key, pixmap ) )
+    if( skipCache || !m_cache->findPixmap( key, &pixmap ) )
     {
         // Cache miss! We need to create the pixmap
         // if skipCache is true, we might actually already have fetched the image, including borders from the cache....
@@ -300,7 +302,7 @@ QPixmap SvgHandler::addBordersToPixmap( const QPixmap &orgPixmap, int borderWidt
         m_renderers[m_themeFile]->render( &pt, "cover_border_left", QRectF( 0, borderWidth, borderWidth, orgPixmap.height() ) );
     
         if( !skipCache )
-            m_cache->insert( key, pixmap );
+            m_cache->insertPixmap( key, pixmap );
     }
 
     return pixmap;

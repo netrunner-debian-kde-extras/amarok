@@ -48,12 +48,11 @@ BrowserCategoryList::BrowserCategoryList( const QString &name, QWidget* parent, 
     mainWidget->setLayout( vLayout );
 
     // -- the search widget
-    m_searchWidget = new SearchWidget( 0, this, false );
+    m_searchWidget = new SearchWidget( this, false );
     m_searchWidget->setClickMessage( i18n( "Filter Music Sources" ) );
     vLayout->addWidget( m_searchWidget );
 
-    m_filterTimer.setSingleShot( true );
-    connect( &m_filterTimer, SIGNAL(timeout()), this, SLOT(slotFilterNow()) );
+    connect( m_searchWidget, SIGNAL( filterChanged( const QString & ) ), SLOT( setFilter( const QString & ) ) );
 
     // -- the main list view
     m_categoryListView = new Amarok::PrettyTreeView();
@@ -197,23 +196,8 @@ BrowserCategoryList::removeCategory( BrowserCategory *category )
     emit( viewChanged() );
 }
 
-void BrowserCategoryList::slotSetFilterTimeout()
-{
-    KComboBox *comboBox = qobject_cast<KComboBox*>( sender() );
-    if( comboBox )
-    {
-        m_currentFilter = comboBox->currentText();
-        m_filterTimer.stop();
-        m_filterTimer.start( 500 );
-    }
-}
-
-void BrowserCategoryList::slotFilterNow()
-{
-    m_proxyModel->setFilterFixedString( m_currentFilter );
-}
-
-BrowserCategory* BrowserCategoryList::activeCategory() const
+BrowserCategory*
+BrowserCategoryList::activeCategory() const
 {
     return qobject_cast<BrowserCategory*>(m_widgetStack->currentWidget());
 }
@@ -225,10 +209,10 @@ void BrowserCategoryList::setActiveCategory( BrowserCategory* category )
     if( m_widgetStack->indexOf( category ) == -1 )
         return; // no such category
 
-    if( !category || category == activeCategory() )
+    if( !category )
         return; // nothing to do
 
-    if( activeCategory() )
+    if( activeCategory() && (activeCategory() != category) )
         activeCategory()->clearAdditionalItems();
 
     m_widgetStack->setCurrentWidget( category );
@@ -429,11 +413,6 @@ QString BrowserCategoryList::css()
     return style;
 }
 
-QString BrowserCategoryList::filter() const
-{
-    return m_currentFilter;
-}
-
 BrowserCategory *BrowserCategoryList::activeCategoryRecursive()
 {
     BrowserCategory *category = activeCategory();
@@ -450,8 +429,7 @@ BrowserCategory *BrowserCategoryList::activeCategoryRecursive()
 
 void BrowserCategoryList::setFilter( const QString &filter )
 {
-    m_currentFilter = filter;
-    m_searchWidget->setSearchString( filter );
+    m_proxyModel->setFilterFixedString( filter );
 }
 
 #include "BrowserCategoryList.moc"

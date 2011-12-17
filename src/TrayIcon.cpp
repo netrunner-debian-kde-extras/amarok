@@ -96,7 +96,6 @@ Amarok::TrayIcon::TrayIcon( QObject *parent )
     connect( engine, SIGNAL( playbackStateChanged() ),
              this, SLOT( updateOverlayIcon() ) );
 
-
     connect( this, SIGNAL( scrollRequested( int, Qt::Orientation ) ),
              SLOT( slotScrollRequested(int, Qt::Orientation) ) );
     connect( this, SIGNAL( secondaryActivateRequested( const QPoint & ) ),
@@ -132,7 +131,7 @@ Amarok::TrayIcon::updateToolTip()
 {
     if( m_track )
     {
-        setToolTipTitle( The::engineController()->prettyNowPlaying() );
+        setToolTipTitle( The::engineController()->prettyNowPlaying( false ) );
 
         QStringList tooltip;
 
@@ -185,7 +184,7 @@ Amarok::TrayIcon::updateToolTip()
     else
     {
         setToolTipTitle( KCmdLineArgs::aboutData()->programName() );
-        setToolTipSubTitle( The::engineController()->prettyNowPlaying() );
+        setToolTipSubTitle( The::engineController()->prettyNowPlaying( false ) );
     }
 }
 

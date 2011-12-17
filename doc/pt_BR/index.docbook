@@ -37,7 +37,7 @@
 <legalnotice
 >&FDLNotice;</legalnotice>
 <date
->31-05-2011</date>
+>31/05/2011</date>
     <releaseinfo
 >&kde; SC 4.6</releaseinfo>
 <abstract>
@@ -164,7 +164,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1right.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1right.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -213,7 +213,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1ipod.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1ipod.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -335,7 +335,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1scriptmanager.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1scriptmanager.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -361,7 +361,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1covermanager.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1covermanager.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -385,7 +385,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1rating.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1rating.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -435,7 +435,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1pleditor.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1pleditor.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -461,7 +461,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1dynamicplaylist.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1dynamicplaylist.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -473,7 +473,7 @@
 <para
 >O &amarok; permite-lhe criar listas aleatórias ponderadas que respeitam diversos critérios exatos (<guilabel
 >Preferência proporcional</guilabel
->) ou  aproximados (<guilabel
+>) ou aproximados (<guilabel
 >Preferência difusa</guilabel
 >). Por exemplo, você poderá criar uma lista de reprodução preenchida de forma aleatória com músicas classificadas com mais de 3 estrelas e que sejam aproximadamente do ano de 1967! </para>
 </sect1>
@@ -491,7 +491,7 @@
 </chapter>
 <chapter id="hints-tips-and-faqs"
 ><title
->Sugestões, Dicas e FAQ's</title
+>Sugestões, Dicas e FAQs</title
 > 
 <para
 >Se você achar que a maior parte da sua música é reconhecida pelo &amarok;, mas que algumas pastas não são recolhidas de forma adequada, abra um console e digite </para>
@@ -640,7 +640,7 @@
 >Configurando sua coleção</link
 > </para>
 <para
->Uma vez que você tenha selecionado a pasta onde suas músicas estão, o &amarok; irá pesquisar a pasta e sub-pastas, criando a coleção. Dependendo do número de faixas e da velocidade de acesso a localização das músicas, isto pode levar algum tempo. </para>
+>Uma vez que você tenha selecionado a pasta onde suas músicas estão, o &amarok; irá pesquisar a pasta e subpastas, criando a coleção. Dependendo do número de faixas e da velocidade de acesso a localização das músicas, isto pode levar algum tempo. </para>
 </sect1>
 <sect1 id="closing-amarok"
 ><title
@@ -727,7 +727,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="AmarokNew2.4.png" format="PNG"/>
+      <imagedata fileref="AmarokNew2_4.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -752,7 +752,7 @@
 <listitem
 ><para
 >suas <emphasis
->Fontes de mída</emphasis
+>Fontes de mídia</emphasis
 > (coleção de músicas e outras mídias) no painel da esquerda. </para
 ></listitem>
 <listitem
@@ -793,7 +793,7 @@
 ></listitem>
 </orderedlist>
 <para
->Além disso, você pode querer transferir alguma de suas músicas para um reprodutor de músicas móvel, como um iPod. As seções a seguir explicarão como fazer isso..</para>
+>Além disso, você pode querer transferir alguma de suas músicas para um reprodutor de músicas móvel, como um iPod. As seções a seguir explicarão como fazer isso.</para>
 </sect1>
 </chapter>
 <chapter id="the-music-collection"
@@ -824,7 +824,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.4.1ConfigureDialogCollection.png" format="PNG"/>
+      <imagedata fileref="Amarok2_4_1ConfigureDialogCollection.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -981,7 +981,7 @@
 </screenshot>
 </para>
 <para
->Se você clicar na pasta da casa do &amarok;, você verá o painel de <emphasis
+>Se você clicar na pasta inicial do &amarok;, você verá o painel de <emphasis
 >Fontes de mídias</emphasis
 > à esquerda e abaixo, contendo os ícones para as fontes disponíveis. Se você clicar no ícone de Arquivos (imagem à esquerda e abaixo, segundo botão a partir do fundo), você verá algo semelhante à imagem à direita e abaixo. Note como a barra da trilha de pão se expande e como o conteúdo da pasta é mostrado no painel de <emphasis
 >Fontes de mídias</emphasis
@@ -1088,7 +1088,7 @@
     </entry>
     <entry>
       <para
->Lojas de música como Magnatune, Jamento e Last.fm. Primeiro configure suas fontes da Internet em:<menuchoice
+>Lojas de música como Magnatune, Jamendo e Last.fm. Primeiro configure suas fontes da Internet em:<menuchoice
 ><guimenu
 >Configurações</guimenu
 ><guimenuitem
@@ -1117,7 +1117,7 @@
       <para
 >Listas de músicas salvas &mdash; veja também <link linkend="playlists"
 >Listas de músicas</link
->. Exibe também as listas de músicas nos dispositivos de mída.</para>
+>. Exibe também as listas de músicas nos dispositivos de mídia.</para>
     </entry>
   </row>
     <row>
@@ -1173,7 +1173,7 @@
 ><title
 >Transmissões e podcasts</title>
 <para
->Existem duas maneiras de ouvir transmissões. Se você tem uma estação favorita, obtenha o &URL; da transmissão e adicione-o: <menuchoice
+>Existem duas maneiras de ouvir transmissões. Se você tem uma estação favorita, obtenha a &URL; da transmissão e adicione-o: <menuchoice
 ><guimenu
 >Listas de músicas</guimenu
 ><guimenuitem
@@ -1464,7 +1464,7 @@
 <para
 >A <emphasis
 >barra de ferramentas</emphasis
-> no topo da janela do &amarok; fornece uma interface simples para controlar a reprodução de músicas na lista de músicas. Clique arredondado à esquerda para iniciar a reprodução de suas músicas, e clique nele novamente para pausar. À direita está o controle de volume de de mudo: clique no centro do ícone para cortar o som. Use a roda do seu mouse para controlar o volume, ou clique/arraste seu mouse no anel ao redor do ícone de volume. Uma vez que uma faixa ou transmissão comece sua reprodução, o <emphasis
+> no topo da janela do &amarok; fornece uma interface simples para controlar a reprodução de músicas na lista de músicas. Clique arredondado à esquerda para iniciar a reprodução de suas músicas, e clique nele novamente para pausar. À direita está o controle de volume de mudo: clique no centro do ícone para cortar o som. Use a roda do seu mouse para controlar o volume, ou clique/arraste seu mouse no anel ao redor do ícone de volume. Uma vez que uma faixa ou transmissão comece sua reprodução, o <emphasis
 >artista</emphasis
 >/<emphasis
 >álbum</emphasis
@@ -1737,7 +1737,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.4.1SavePlaylistChoices.png" format="PNG"/>
+      <imagedata fileref="Amarok2_4_1SavePlaylistChoices.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -1745,7 +1745,7 @@
     </textobject>
     <caption>
       <para
->Clique e mantenha, deslocando-se para salvar a lista</para>
+>Clique e mantenha, deslocando-se para salvar a lista de músicas</para>
     </caption>
   </mediaobject>
 </screenshot
@@ -1778,11 +1778,11 @@
 >O poder do &amarok; está no seu painel de <emphasis
 >Contexto</emphasis
 > (no centro da janela padrão do &amarok;), onde você pode instalar vários <emphasis
->mini-aplicativos</emphasis
+>miniaplicativos</emphasis
 > para auxiliá-lo a desfrutar e explorar suas músicas. Muitas das informações adicionais são obtidas da Internet, assim uma conexão é importante para obter o máximo que seu painel de <emphasis
 >Contexto</emphasis
 > pode oferecer. Por padrão, três <emphasis
->mini-aplicativos</emphasis
+>miniaplicativos</emphasis
 > são pré-definidos: <emphasis
 >Faixa atual</emphasis
 >, <emphasis
@@ -1792,7 +1792,7 @@
 >. </para>
 <sect1 id="default-layout"
 ><title
->Layout padrão</title>
+>Leiaute padrão</title>
 <para
 >O painel de <emphasis
 >Contexto</emphasis
@@ -1823,9 +1823,9 @@
 <para
 >No fundo do painel de <emphasis
 >Contexto</emphasis
-> existem três botões para os mini-aplicativos padrão. À direita destes botões você pode ver uma chave inglesa que ao ser clicada exibirá um <guilabel
+> existem três botões para os miniaplicativos padrão. À direita destes botões você pode ver uma chave inglesa que ao ser clicada exibirá um <guilabel
 >X</guilabel
-> vermelho em todos os botões, permitindo que você remova cada um dos mini-aplicativos. Clique no <guilabel
+> vermelho em todos os botões, permitindo que você remova cada um dos miniaplicativos. Clique no <guilabel
 >+</guilabel
 > verde para adicionar mais opções de exibição (veja a imagem abaixo). Arraste os botões para reordenar os mini-aplicativos e clique na chave inglesa novamente para fixar suas seleções.</para>
 <para
@@ -1882,7 +1882,7 @@
 ><title
 >Após eu atualizar minha coleção, o que foi adicionado não é exibido no navegador de conteúdo</title>
 <para
->No menu de topo, em  <menuchoice
+>No menu de topo, em <menuchoice
 ><guimenu
 >Ferramentas</guimenu
 ><guimenuitem

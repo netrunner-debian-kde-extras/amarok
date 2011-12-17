@@ -20,6 +20,7 @@
 
 #include "CurrentTrack.h"
 
+#include "amarokurls/AmarokUrl.h"
 #include "core/support/Amarok.h"
 #include "App.h"
 #include "core/support/Debug.h"
@@ -34,6 +35,7 @@
 #include "core/meta/support/MetaUtility.h"
 #include "MainWindow.h"
 #include "PaletteHandler.h"
+#include "PluginManager.h"
 #include "SvgHandler.h"
 #include "context/widgets/RatingWidget.h"
 #include "context/widgets/TextScrollingWidget.h"
@@ -68,12 +70,11 @@ CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     , m_playCount( 0 )
     , m_trackCount( 0 )
     , m_albumCount( 0 )
-    , m_genreCount( 0 )
+    , m_artistCount( 0 )
     , m_isStopped( true )
     , m_coverKey( 0 )
     , m_view( Stopped )
     , m_showEditTrackDetailsAction( true )
-    , m_showFindInSourceAction( false )
     , m_albumWidth( 135 )
 {
     setHasConfigurationInterface( true );
@@ -187,7 +188,6 @@ CurrentTrack::init()
         font.setPointSize( font.pointSize() + 3 );
 
     m_showEditTrackDetailsAction = config.readEntry( "ShowEditTrackAction", true );
-    m_showFindInSourceAction = config.readEntry( "ShowFindInSourceAction", false );
 
     m_title->setFont( font );
     m_artist->setFont( font );
@@ -447,7 +447,7 @@ CurrentTrack::drawStatsTexts( QPainter *const p, const QRect &contentsRect )
     const qreal maxTextWidth   = contentsRect.right() - standardPadding() * 2 - leftEdge;
     const QString column1Label = m_isStopped ? i18n( "Tracks" ) : i18n( "Play Count" );
     const QString column2Label = m_isStopped ? i18n( "Albums" ) : i18n( "Score" );
-    const QString column3Label = m_isStopped ? i18n( "Genres" ) : i18n( "Last Played" );
+    const QString column3Label = m_isStopped ? i18n( "Artists" ) : i18n( "Last Played" );
 
     //Align labels taking into account the string widths for each label
     QFontMetricsF fm( font() );
@@ -509,7 +509,7 @@ CurrentTrack::drawStatsTexts( QPainter *const p, const QRect &contentsRect )
     rect.moveLeft( rect.topLeft().x() + maxTextWidth * prevFactor );
 
     const QString column3Stat = ( m_isStopped )
-        ? QString::number( m_genreCount )
+        ? QString::number( m_artistCount )
         : fm.elidedText( Amarok::verboseTimeSince(m_lastPlayed), Qt::ElideRight, rect.width() );
     p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, column3Stat );
 
@@ -555,6 +555,7 @@ CurrentTrack::drawSourceEmblem( QPainter *const p, const QRect &contentsRect )
 void
 CurrentTrack::clearTrackActions()
 {
+    prepareGeometryChange();
     int actionCount = m_actionsLayout->count();
     while( --actionCount >= 0 )
     {
@@ -598,7 +599,6 @@ CurrentTrack::settingsAccepted()
 {
     QFont font = ui_Settings.fontRequester->font();
     m_showEditTrackDetailsAction = (ui_Settings.editTrackDetailsCheckBox->checkState() == Qt::Checked);
-    m_showFindInSourceAction = (ui_Settings.findInSourceCheckBox->checkState() == Qt::Checked);
 
     m_title->setFont( font );
     m_artist->setFont( font );
@@ -607,7 +607,6 @@ CurrentTrack::settingsAccepted()
     KConfigGroup config = Amarok::config("Current Track Applet");
     config.writeEntry( "Font", font.toString() );
     config.writeEntry( "ShowEditTrackAction", m_showEditTrackDetailsAction );
-    config.writeEntry( "ShowFindInSourceAction", m_showFindInSourceAction );
 
     clearTrackActions();
     setupLayoutActions( The::engineController()->currentTrack() );
@@ -618,27 +617,25 @@ CurrentTrack::queryCollection()
 {
     Collections::QueryMaker *qmTracks = CollectionManager::instance()->queryMaker();
     Collections::QueryMaker *qmAlbums = CollectionManager::instance()->queryMaker();
-    Collections::QueryMaker *qmGenres = CollectionManager::instance()->queryMaker();
+    Collections::QueryMaker *qmArtists = CollectionManager::instance()->queryMaker();
     connect( qmTracks, SIGNAL(newResultReady(QStringList)),
              this, SLOT(tracksCounted(QStringList)) );
     connect( qmAlbums, SIGNAL(newResultReady(QStringList)),
              this, SLOT(albumsCounted(QStringList)) );
-    connect( qmGenres, SIGNAL(newResultReady(QStringList)),
-             this, SLOT(genresCounted(QStringList)) );
+    connect( qmArtists, SIGNAL(newResultReady(QStringList)),
+             this, SLOT(artistsCounted(QStringList)) );
 
     qmTracks->setAutoDelete( true )
       ->setQueryType( Collections::QueryMaker::Custom )
       ->addReturnFunction( Collections::QueryMaker::Count, Meta::valUrl )
       ->run();
-    /* TODO: These don't work since not implemented in SqlQueryMaker::linkedTables()
-      */
     qmAlbums->setAutoDelete( true )
       ->setQueryType( Collections::QueryMaker::Custom )
       ->addReturnFunction( Collections::QueryMaker::Count, Meta::valAlbum )
       ->run();
-    qmGenres->setAutoDelete( true )
+    qmArtists->setAutoDelete( true )
       ->setQueryType( Collections::QueryMaker::Custom )
-      ->addReturnFunction( Collections::QueryMaker::Count, Meta::valGenre )
+      ->addReturnFunction( Collections::QueryMaker::Count, Meta::valArtist )
       ->run();
 }
 
@@ -657,9 +654,9 @@ CurrentTrack::albumsCounted( QStringList results )
 }
 
 void
-CurrentTrack::genresCounted( QStringList results )
+CurrentTrack::artistsCounted( QStringList results )
 {
-    m_genreCount = !results.isEmpty() ? results.first().toInt() : 0;
+    m_artistCount = !results.isEmpty() ? results.first().toInt() : 0;
     update();
 }
 
@@ -671,7 +668,6 @@ CurrentTrack::createConfigurationInterface( KConfigDialog *parent )
     ui_Settings.setupUi( settings );
     ui_Settings.fontRequester->setFont( m_title->font() );
     ui_Settings.editTrackDetailsCheckBox->setCheckState( m_showEditTrackDetailsAction ? Qt::Checked : Qt::Unchecked );
-    ui_Settings.findInSourceCheckBox->setCheckState( m_showFindInSourceAction ? Qt::Checked : Qt::Unchecked );
 
     parent->addPage( settings, i18n( "Current Track Settings" ), "preferences-system");
 
@@ -784,7 +780,7 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
         }
     }
 
-    if( m_showFindInSourceAction && track->hasCapabilityInterface( Capability::FindInSource ) )
+    if( track->hasCapabilityInterface( Capability::FindInSource ) )
     {
         if( !m_findInSourceSignalMapper )
         {
@@ -812,6 +808,22 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
             connect( act, SIGNAL(triggered()), m_findInSourceSignalMapper, SLOT(map()) );
             m_findInSourceSignalMapper->setMapping( act, QLatin1String("artist") );
             m_customActions << act;
+
+            KPluginInfo::List services = The::pluginManager()->plugins( QLatin1String("Service") );
+            foreach( const KPluginInfo &service, services )
+            {
+                if( service.pluginName() == QLatin1String("amarok_service_amazonstore") )
+                {
+                    if( service.isPluginEnabled() )
+                    {
+                        act = new QAction( KIcon("view-services-amazon-amarok"),
+                                           i18n("Search for Artist in the MP3 Music Store"), this );
+                        connect( act, SIGNAL(triggered()), this, SLOT(findInStore()) );
+                        m_customActions << act;
+                    }
+                    break;
+                }
+            }
         }
         if( composer && !composer->name().isEmpty() && (composer->name() != i18n("Unknown Composer")) )
         {
@@ -865,6 +877,14 @@ CurrentTrack::findInSource( const QString &name )
         fis->findInSource( FindInSourceCapability::Genre );
     else if( name == QLatin1String("year") )
         fis->findInSource( FindInSourceCapability::Year );
+}
+
+void
+CurrentTrack::findInStore()
+{
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    AmarokUrl url( "amarok://navigate/internet/MP3%20Music%20Store/?filter=\"" + AmarokUrl::escape( track.data()->artist().data()->name() ) + '\"' );
+    url.run();
 }
 
 void

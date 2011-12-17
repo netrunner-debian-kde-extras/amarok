@@ -164,8 +164,24 @@ Playlist::Model::Model( QObject *parent )
         , m_totalLength( 0 )
         , m_totalSize( 0 )
         , m_setStateOfItem_batchMinRow( -1 )
+        , m_saveStateTimer( new QTimer(this) )
 {
     DEBUG_BLOCK
+
+    m_saveStateTimer->setInterval( 5000 );
+    m_saveStateTimer->setSingleShot( true );
+    connect( m_saveStateTimer, SIGNAL(timeout()),
+             this, SLOT(saveState()) );
+    connect( this, SIGNAL(modelReset()),
+             this, SLOT(queueSaveState()) );
+    connect( this, SIGNAL(dataChanged(QModelIndex,QModelIndex)),
+             this, SLOT(queueSaveState()) );
+    connect( this, SIGNAL(rowsInserted(QModelIndex,int,int)),
+             this, SLOT(queueSaveState()) );
+    connect( this, SIGNAL(rowsMoved(QModelIndex,int,int,QModelIndex,int)),
+             this, SLOT(queueSaveState()) );
+    connect( this, SIGNAL(rowsRemoved(QModelIndex,int,int)),
+             this, SLOT(queueSaveState()) );
 }
 
 Playlist::Model::~Model()
@@ -176,6 +192,19 @@ Playlist::Model::~Model()
     exportPlaylist( Amarok::defaultPlaylistPath() );
 
     qDeleteAll( m_items );
+}
+
+void
+Playlist::Model::saveState()
+{
+    exportPlaylist( Amarok::defaultPlaylistPath() );
+}
+
+void
+Playlist::Model::queueSaveState()
+{
+    if ( !m_saveStateTimer->isActive() )
+        m_saveStateTimer->start();
 }
 
 QVariant
@@ -822,74 +851,6 @@ Playlist::Model::tracks() const
     foreach( Item* item, m_items )
         tl << item->track();
     return tl;
-}
-
-QString
-Playlist::Model::generatePlaylistName() const
-{
-    QString datePart = KGlobal::locale()->formatDateTime( QDateTime::currentDateTime(),
-                                                          KLocale::ShortDate, true );
-    Meta::TrackList trackList = tracks();
-
-    if( trackList.count() == 0 )
-    {
-        return i18nc( "A saved playlist with the current time (KLocale::Shortdate) added between \
-                      the parentheses",
-                      "Empty Playlist (%1)", datePart );
-    }
-
-    bool singleArtist = true;
-    bool singleAlbum = true;
-
-    Meta::ArtistPtr artist = trackList.first()->artist();
-    Meta::AlbumPtr album = trackList.first()->album();
-
-    QString artistPart;
-    QString albumPart;
-
-    foreach( const Meta::TrackPtr track, trackList )
-    {
-        if( artist != track->artist() )
-            singleArtist = false;
-
-        if( album != track->album() )
-            singleAlbum = false;
-
-        if ( !singleArtist && !singleAlbum )
-            break;
-    }
-
-    if( ( !singleArtist && !singleAlbum ) ||
-        ( !artist && !album ) )
-        return i18nc( "A saved playlist with the current time (KLocale::Shortdate) added between \
-                      the parentheses",
-                      "Various Tracks (%1)", datePart );
-
-    if( singleArtist )
-    {
-        if( artist )
-            artistPart = artist->prettyName();
-        else
-            artistPart = i18n( "Unknown Artist(s)" );
-    }
-    else if( album && album->hasAlbumArtist() && singleAlbum )
-        artistPart = album->albumArtist()->prettyName();
-    else
-        artistPart = i18n( "Various Artists" );
-
-    if( singleAlbum )
-    {
-        if( album )
-            albumPart = album->prettyName();
-        else
-            albumPart = i18n( "Unknown Album(s)" );
-    }
-    else
-        albumPart = i18n( "Various Albums" );
-
-    return i18nc( "A saved playlist titled <artist> - <album>", "%1 - %2",
-                  artistPart, albumPart );
-
 }
 
 QString
