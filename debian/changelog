@@ -1,4 +1,4 @@
-amarok (2.5.0-0r1) UNRELEASED; urgency=low
+amarok (2.5.0-1) unstable; urgency=low
 
   * New upstream release.
   * Refresh patches.
@@ -10,7 +10,7 @@ amarok (2.5.0-0r1) UNRELEASED; urgency=low
   * Compress amarok-dbg package with xz.
   * Fix doc/nl build with kdelibs 4.6 (patch debian_fix_doc_nl_build.diff).
 
- -- Modestas Vainius <modax@debian.org>  Sat, 17 Dec 2011 12:08:05 +0200
+ -- Modestas Vainius <modax@debian.org>  Mon, 26 Dec 2011 14:04:49 +0200
 
 amarok (2.4.3-1) unstable; urgency=low
 
