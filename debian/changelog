@@ -5,6 +5,8 @@ amarok (2.5.0-2~pre1) UNRELEASED; urgency=low
   * Prefer mysql-server-core-5.5 in Build-Depends-Indep. Alternatively depend
     on the mysql-server-core virtual package.
   * Bump Standards-Version to 3.9.3: no changes needed.
+  * Since the package is compat=9, rebuild againt debhelper 9.20120419 should
+    enable hardening flags. (Closes: #653354)
 
  -- Modestas Vainius <modax@debian.org>  Sat, 19 May 2012 22:16:23 +0300
 
