@@ -10,7 +10,7 @@ override_dh_bugfiles:
 
 override_dh_install:
 	dh_install
-	# Copy English errmsg.sys from mysql-server package
+	# Copy English errmsg.sys from mysql-server-core package
 	if [ -d debian/amarok-common ]; then \
 	    cp -a /usr/share/mysql/english/errmsg.sys debian/amarok-common/usr/share/kde4/apps/amarok/mysqle/; \
 	fi
