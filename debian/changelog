@@ -4,6 +4,7 @@ amarok (2.5.0-2~pre1) UNRELEASED; urgency=low
     split off long ago (it's in squeeze).
   * Prefer mysql-server-core-5.5 in Build-Depends-Indep. Alternatively depend
     on the mysql-server-core virtual package.
+  * Bump Standards-Version to 3.9.3: no changes needed.
 
  -- Modestas Vainius <modax@debian.org>  Sat, 19 May 2012 22:16:23 +0300
 
