@@ -1,4 +1,4 @@
-amarok (2.5.0-2~pre1) UNRELEASED; urgency=low
+amarok (2.5.0-2~pre3) UNRELEASED; urgency=low
 
   * Drop mysql-server-5.1 from Build-Depends-Indep. mysql-server-core-5.1 was
     split off long ago (it's in squeeze).
