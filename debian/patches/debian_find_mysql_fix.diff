@@ -1,5 +1,10 @@
 From: Modestas Vainius <modax@debian.org>
 Subject: Fix mysql_config call for Debian MySQL
+Last-Update: 2012-05-21
+
+* As of 5.5.23, mysql_config_pic is shipped inside libmysqld-pic package.
+* As of 5.5.23, -L/usr/lib/mysql is no longer in --libmysqld-libs so linker
+  can't find -lmysqld_pic anymore.
 
 -- Found MySQL: Usage: /usr/bin/mysql_config [OPTIONS]
 Options:
@@ -27,7 +32,12 @@ Options:
 ii  libmysqlclient-dev            5.1.58-1                      MySQL database development files
 --- a/cmake/modules/FindMySQLAmarok.cmake
 +++ b/cmake/modules/FindMySQLAmarok.cmake
-@@ -17,7 +17,7 @@ if(NOT WIN32)
+@@ -13,11 +13,11 @@
+ # For details see the accompanying COPYING-CMAKE-SCRIPTS file.
+ 
+ if(NOT WIN32)
+-    find_program(MYSQLCONFIG_EXECUTABLE NAMES mysql_config mysql_config5 PATHS ${BIN_INSTALL_DIR} ~/usr/bin /usr/local/bin)
++    find_program(MYSQLCONFIG_EXECUTABLE NAMES mysql_config_pic mysql_config mysql_config5 PATHS ${BIN_INSTALL_DIR} ~/usr/bin /usr/local/bin)
  endif(NOT WIN32)
  
  if(MYSQLCONFIG_EXECUTABLE)
@@ -36,3 +46,13 @@ ii  libmysqlclient-dev            5.1.58-1                      MySQL database d
      exec_program(${MYSQLCONFIG_EXECUTABLE} ARGS --cflags RETURN_VALUE _return_VALUE OUTPUT_VARIABLE MYSQL_CFLAGS)
      exec_program(${MYSQLCONFIG_EXECUTABLE} ARGS --libs RETURN_VALUE _return_VALUE OUTPUT_VARIABLE MYSQL_LIBRARIES)
      exec_program(${MYSQLCONFIG_EXECUTABLE} ARGS --libmysqld-libs RETURN_VALUE _return_VALUE OUTPUT_VARIABLE MYSQL_EMBEDDED_LIBSTEMP)
+@@ -36,6 +36,9 @@ if(MYSQLCONFIG_EXECUTABLE)
+ 
+     if(MYSQLD_PIC_SEPARATE)
+         string(REPLACE "lmysqld" "lmysqld_pic" MYSQL_EMBEDDED_LIBRARIES ${MYSQL_EMBEDDED_LIBSTEMP})
++        # Hack for Debian. mysql_config{,_pic} as of 5.5.23 does not refer to
++        # -L/usr/lib/mysql where mysqld_pic actually lives (see #673574)
++        set(MYSQL_EMBEDDED_LIBRARIES "-L/usr/lib/mysql ${MYSQL_EMBEDDED_LIBRARIES}")
+     else(MYSQLD_PIC_SEPARATE)
+         set(MYSQL_EMBEDDED_LIBRARIES ${MYSQL_EMBEDDED_LIBSTEMP})
+     endif(MYSQLD_PIC_SEPARATE)
