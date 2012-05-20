@@ -9,6 +9,8 @@ amarok (2.5.0-2~pre1) UNRELEASED; urgency=low
     enable hardening flags. (Closes: #653354)
   * Improve debian_find_mysql_fix.diff to work with Debian libmysqld-pic
     5.5.23.
+  * Add libssl-dev and libaio-dev [linux-any] to Build-Depends because they are
+    needed for libmysqld-pic 5.5.23.
 
  -- Modestas Vainius <modax@debian.org>  Sat, 19 May 2012 22:16:23 +0300
 
