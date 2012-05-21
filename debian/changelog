@@ -1,4 +1,4 @@
-amarok (2.5.0-2~pre3) UNRELEASED; urgency=low
+amarok (2.5.0-2) unstable; urgency=low
 
   * Drop mysql-server-5.1 from Build-Depends-Indep. mysql-server-core-5.1 was
     split off long ago (it's in squeeze).
@@ -16,7 +16,7 @@ amarok (2.5.0-2~pre3) UNRELEASED; urgency=low
     Patch debian_mysqle_force_defaults_file.diff
   * Bump debhelper build dependency to >= 9.
 
- -- Modestas Vainius <modax@debian.org>  Sat, 19 May 2012 22:16:23 +0300
+ -- Modestas Vainius <modax@debian.org>  Mon, 21 May 2012 20:38:19 +0300
 
 amarok (2.5.0-1) unstable; urgency=low
 
