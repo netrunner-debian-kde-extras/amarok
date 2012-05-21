@@ -14,6 +14,7 @@ amarok (2.5.0-2~pre3) UNRELEASED; urgency=low
   * Force MySQLe to use our custom defaults file. This makes MySQLe independent
     from system MySQL configuration. (Closes: #672207, #673403)
     Patch debian_mysqle_force_defaults_file.diff
+  * Bump debhelper build dependency to >= 9.
 
  -- Modestas Vainius <modax@debian.org>  Sat, 19 May 2012 22:16:23 +0300
 
