@@ -1,5 +1,7 @@
 amarok (2.5.0-3~pre1) UNRELEASED; urgency=low
 
+  * Depend on libmysql-pic 5.5.23+dfsg so we can drop libssl-dev from
+    Build-Depends.
 
  -- Modestas Vainius <modax@debian.org>  Sat, 26 May 2012 00:42:14 +0300
 
