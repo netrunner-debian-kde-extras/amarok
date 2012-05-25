@@ -26,7 +26,8 @@ Depends: amarok-common (= ${source:Version}), amarok-utils (= ${binary:Version})
  ${shlibs:Depends}, ${misc:Depends},
  libqtscript4-core, libqtscript4-gui, libqtscript4-network, libqtscript4-xml, libqtscript4-sql, libqtscript4-uitools
 Recommends: kdemultimedia-kio-plugins (>= 4:4.2.0)
-Suggests: libxine1-ffmpeg, libqt4-sql-sqlite, libqt4-sql-mysql, libqt4-sql-psql, moodbar
+Suggests: amarok-doc (>= ${source:Version}), libxine1-ffmpeg, libqt4-sql-sqlite, libqt4-sql-mysql, libqt4-sql-psql,
+ moodbar
 Description: easy to use media player based on the KDE Platform
  Amarok is a powerful music player with an intuitive interface. It makes
  playing the music you love and discovering new music easier than ever before
@@ -62,6 +63,17 @@ Description: architecture independent files for Amarok
  This package contains architecture independent files needed for Amarok to run
  properly. Therefore, unless you have 'amarok' package of the same version
  installed, you will hardly find this package useful.
+
+Package: amarok-doc
+Section: doc
+Architecture: all
+Depends: ${misc:Depends}, ${perl:Depends}
+Replaces: amarok-common (<= 2.5.0-2)
+Breaks: amarok-common (<= 2.5.0-2)
+Recommends: amarok (>= ${source:Version})
+Description: Amarok documentation (Handbook)
+ This package contains Amarok user documentation. It can be opened from the
+ application menu Help -> Amarok Handbook.
 
 Package: amarok-utils
 Section: utils
