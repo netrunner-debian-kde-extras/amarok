@@ -1,4 +1,4 @@
-amarok (2.5.0-3~pre1) UNRELEASED; urgency=low
+amarok (2.5.0-3) unstable; urgency=low
 
   * Depend on libmysql-pic 5.5.23+dfsg so we can drop libssl-dev from
     Build-Depends.
@@ -8,7 +8,7 @@ amarok (2.5.0-3~pre1) UNRELEASED; urgency=low
   * Fix unsafe argument assignment in the debian_mysqle_force_defaults_file
     patch. Thanks to Pino Toscano for heads up.
 
- -- Modestas Vainius <modax@debian.org>  Sat, 26 May 2012 00:42:14 +0300
+ -- Modestas Vainius <modax@debian.org>  Sat, 26 May 2012 19:24:16 +0300
 
 amarok (2.5.0-2) unstable; urgency=low
 
