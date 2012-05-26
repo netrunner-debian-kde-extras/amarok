@@ -5,6 +5,8 @@ amarok (2.5.0-3~pre1) UNRELEASED; urgency=low
   * Compress all deb packages with xz, not just amarok-dbg.
   * Split off Amarok Handbook into amarok-doc package.
   * Update debian/copyright.
+  * Fix unsafe argument assignment in the debian_mysqle_force_defaults_file
+    patch. Thanks to Pino Toscano for heads up.
 
  -- Modestas Vainius <modax@debian.org>  Sat, 26 May 2012 00:42:14 +0300
 
