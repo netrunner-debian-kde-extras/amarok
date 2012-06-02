@@ -1,4 +1,4 @@
-amarok (2.6~beta1-0r1) UNRELEASED; urgency=low
+amarok (2.6~beta1-1) experimental; urgency=low
 
   * New upstream development release (2.5.90).
   * Drop upstream_fix_lyrics_autorefresh_in_some_cases.patch, merged upstream.
@@ -8,7 +8,7 @@ amarok (2.6~beta1-0r1) UNRELEASED; urgency=low
   * Update install files.
   * Remove ${perl:Depends} from amarok-doc Depends, not needed.
 
- -- Modestas Vainius <modax@debian.org>  Sun, 03 Jun 2012 00:00:29 +0300
+ -- Modestas Vainius <modax@debian.org>  Sun, 03 Jun 2012 01:17:19 +0300
 
 amarok (2.5.0-3) unstable; urgency=low
 
