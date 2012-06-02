@@ -1,16 +1,16 @@
 From: Modestas Vainius <modax@debian.org>
-Subject: fix doc/nl build with kde sc 4.6
+Subject: fix doc/nl build with kde sc 4.7
+Last-Update: 2012-06-03
 
-Embedded Thom Castermans entity inline as it does not exist in kdelibs 4.6.
+Add missing ENTITYs again.
 
 --- a/doc/nl/index.docbook
 +++ b/doc/nl/index.docbook
-@@ -2,6 +2,8 @@
+@@ -2,6 +2,7 @@
  <!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.2-Based Variant V1.1//EN" "dtd/kdex.dtd" [
    <!ENTITY % addindex "IGNORE">
    <!ENTITY % Dutch "INCLUDE">
-+  <!ENTITY Thom.Castermans '<othercredit role="translator"><firstname>Thom</firstname><surname>Castermans</surname><affiliation><address><email>thomcastermans@kde.nl</email></address></affiliation><contrib>Vertaler/Nalezer</contrib></othercredit>'>
-+  <!ENTITY vertaling.thom "<para>Dit document is vertaald in het Nederlands door &Thom.Castermans;.</para>">
++  <!ENTITY ged.vertaald           '<othercredit role="translator"><firstname>Dit document is nog maar gedeeltelijk vertaald.</firstname> <surname>Wilt u meehelpen, stuur een bericht naar:</surname><affiliation><address> <email>kde-i18n-nl@kde.org</email></address></affiliation> <contrib>Nieuwe vertaler</contrib></othercredit>'>
  ]>
  <book lang="&language;">
  <bookinfo>
