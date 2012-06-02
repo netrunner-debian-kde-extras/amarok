@@ -14,15 +14,15 @@ add_subdirectory( images )
 ########### next target ###############
 
 set( amarok_service_amazonstore_PART_SRCS
-    AmazonCart.cpp
-    AmazonCartItem.cpp
     AmazonCollection.cpp
     AmazonConfig.cpp
     AmazonItemTreeModel.cpp
     AmazonItemTreeView.cpp
     AmazonParser.cpp
     AmazonMeta.cpp
+    AmazonShoppingCart.cpp
     AmazonShoppingCartDialog.cpp
+    AmazonShoppingCartItem.cpp
     AmazonShoppingCartModel.cpp
     AmazonShoppingCartView.cpp
     AmazonStore.cpp

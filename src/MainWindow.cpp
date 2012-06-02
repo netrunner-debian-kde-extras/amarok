@@ -42,6 +42,7 @@
 #include "context/ContextDock.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "covermanager/CoverManager.h" // for actions
+#include "dialogs/DiagnosticDialog.h"
 #include "dialogs/EqualizerDialog.h"
 #include "likeback/LikeBack.h"
 #include "moodbar/MoodbarManager.h"
@@ -139,13 +140,8 @@ MainWindow::MainWindow()
     The::pluginManager();
     PERF_LOG( "Started Plugin Manager instance" )
 
-    // Sets caption and icon correctly (needed e.g. for GNOME)
-//     kapp->setTopWidget( this );
-    PERF_LOG( "Set Top Widget" )
     createActions();
     PERF_LOG( "Created actions" )
-
-    //new K3bExporter();
 
     The::paletteHandler()->setPalette( palette() );
     setPlainCaption( i18n( AMAROK_CAPTION ) );
@@ -244,7 +240,8 @@ MainWindow::init()
 
     PERF_LOG( "Loaded default contextScene" )
 
-    setDockOptions( QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks | QMainWindow::AnimatedDocks | QMainWindow::VerticalTabs );
+    setDockOptions( QMainWindow::AllowNestedDocks | QMainWindow::AllowTabbedDocks
+                    | QMainWindow::AnimatedDocks | QMainWindow::VerticalTabs );
 
     addDockWidget( Qt::LeftDockWidgetArea, m_browserDock.data() );
     addDockWidget( Qt::LeftDockWidgetArea, m_contextDock.data(), Qt::Horizontal );
@@ -256,8 +253,10 @@ MainWindow::init()
     {
         Debug::Block block( "Creating browsers. Please report long start times!" );
 
+        //TODO: parent these browsers?
         PERF_LOG( "Creating CollectionWidget" )
         m_collectionBrowser = new CollectionWidget( "collections", 0 );
+        //TODO: rename "Music Collections
         m_collectionBrowser->setPrettyName( i18n( "Local Music" ) );
         m_collectionBrowser->setIcon( KIcon( "collection-amarok" ) );
         m_collectionBrowser->setShortDescription( i18n( "Local sources of content" ) );
@@ -266,12 +265,12 @@ MainWindow::init()
 
 
         PERF_LOG( "Creating ServiceBrowser" )
-        ServiceBrowser *internetContentServiceBrowser = ServiceBrowser::instance();
-        internetContentServiceBrowser->setParent( 0 );
-        internetContentServiceBrowser->setPrettyName( i18n( "Internet" ) );
-        internetContentServiceBrowser->setIcon( KIcon( "applications-internet" ) );
-        internetContentServiceBrowser->setShortDescription( i18n( "Online sources of content" ) );
-        m_browserDock.data()->list()->addCategory( internetContentServiceBrowser );
+        ServiceBrowser *serviceBrowser = ServiceBrowser::instance();
+        serviceBrowser->setParent( 0 );
+        serviceBrowser->setPrettyName( i18n( "Internet" ) );
+        serviceBrowser->setIcon( KIcon( "applications-internet" ) );
+        serviceBrowser->setShortDescription( i18n( "Online sources of content" ) );
+        m_browserDock.data()->list()->addCategory( serviceBrowser );
         PERF_LOG( "Created ServiceBrowser" )
 
         PERF_LOG( "Creating PlaylistBrowser" )
@@ -283,14 +282,14 @@ MainWindow::init()
         PERF_LOG( "CreatedPlaylsitBrowser" )
 
         PERF_LOG( "Creating FileBrowser" )
-        FileBrowser * fileBrowserMkII = new FileBrowser( "files", 0 );
-        fileBrowserMkII->setPrettyName( i18n("Files") );
-        fileBrowserMkII->setIcon( KIcon( "folder-amarok" ) );
-        fileBrowserMkII->setShortDescription( i18n( "Browse local hard drive for content" ) );
-        m_browserDock.data()->list()->addCategory( fileBrowserMkII );
+        FileBrowser *fileBrowser = new FileBrowser( "files", 0 );
+        fileBrowser->setPrettyName( i18n("Files") );
+        fileBrowser->setIcon( KIcon( "folder-amarok" ) );
+        fileBrowser->setShortDescription( i18n( "Browse local hard drive for content" ) );
+        m_browserDock.data()->list()->addCategory( fileBrowser );
         PERF_LOG( "Created FileBrowser" )
 
-        internetContentServiceBrowser->setScriptableServiceManager( The::scriptableServiceManager() );
+        serviceBrowser->setScriptableServiceManager( The::scriptableServiceManager() );
         PERF_LOG( "ScriptableServiceManager done" )
 
         PERF_LOG( "Creating Podcast Category" )
@@ -522,9 +521,22 @@ MainWindow::slotShowActiveTrack() const
 }
 
 void
+MainWindow::slotEditTrackInfo() const
+{
+    m_playlistDock.data()->editTrackInfo();
+}
+
+void
 MainWindow::slotShowCoverManager() const //SLOT
 {
     CoverManager::showOnce();
+}
+
+void
+MainWindow::slotShowDiagnosticsDialog() const
+{
+    DiagnosticDialog *dialog = new DiagnosticDialog( KGlobal::mainComponent().aboutData() );
+    dialog->show();
 }
 
 void MainWindow::slotShowBookmarkManager() const
@@ -765,6 +777,11 @@ MainWindow::createActions()
     action->setShortcut( Qt::CTRL + Qt::Key_O );
     connect( action, SIGNAL( triggered( bool ) ), SLOT( slotPlayMedia() ) );
 
+    action = new KAction( KIcon("media-track-edit-amarok"), i18n("Edit Details of Currently Selected Track"), this );
+    ac->addAction( "trackdetails_edit", action );
+    action->setShortcut( Qt::CTRL + Qt::Key_E );
+    connect( action, SIGNAL( triggered( bool ) ), SLOT( slotEditTrackInfo() ) );
+
     action = new KAction( KIcon( "media-seek-forward-amarok" ), i18n("&Seek Forward"), this );
     ac->addAction( "seek_forward", action );
     action->setShortcut( Qt::Key_Right );
@@ -927,6 +944,10 @@ MainWindow::createActions()
     ac->addAction( "extendedAbout", action );
     connect( action, SIGNAL( triggered() ), SLOT( showAbout() ) );
 
+    action = new KAction ( KIcon( "info-amarok" ), i18n( "&Diagnostics" ), this );
+    ac->addAction( "diagnosticDialog", action );
+    connect( action, SIGNAL( triggered() ), SLOT( slotShowDiagnosticsDialog() ) );
+
     action = new KAction( KIcon( "tools-report-bug" ), i18n("&Report Bug..."), this );
     ac->addAction( "reportBug", action );
     connect( action, SIGNAL( triggered() ), SLOT( showReportBug() ) );
@@ -1078,6 +1099,8 @@ MainWindow::createMenus()
                             Amarok::actionCollection()->action( "reportBug" ) );
     helpMenu->insertAction( helpMenu->actions().last(),
                             Amarok::actionCollection()->action( "extendedAbout" ) );
+    helpMenu->insertAction( helpMenu->actions().last(),
+                            Amarok::actionCollection()->action( "diagnosticDialog" ) );
     helpMenu->insertAction( helpMenu->actions().at( 4 ),
                             Amarok::actionCollection()->action( "likeBackSendComment" ) );
     helpMenu->insertAction( helpMenu->actions().at( 5 ),

@@ -40,7 +40,7 @@ msgstr "فۇنكسىيە dataEngine() نىڭ بىر ئارگۇمېنتى بار"
 #: simplejavascriptapplet.cpp:590 simplejavascriptapplet.cpp:615
 #: simplejavascriptapplet.cpp:782
 msgid "Could not extract the AppletObject"
-msgstr ""
+msgstr "AppletObject نى يايغىلى بولمىدى"
 
 #: simplejavascriptapplet.cpp:595 simplejavascriptapplet.cpp:620
 #: simplejavascriptapplet.cpp:787
@@ -53,7 +53,7 @@ msgstr "فۇنكسىيە service() نىڭ ئىككى ئارگۇمېنتى بار
 
 #: simplejavascriptapplet.cpp:633
 msgid "loadui() takes one argument"
-msgstr "فۇنكسىيە loadui() نىڭ بىر ئارگۇمەنتى بار"
+msgstr "فۇنكسىيە loadui() نىڭ بىر ئارگۇمېنتى بار"
 
 #: simplejavascriptapplet.cpp:639
 #, kde-format
@@ -66,7 +66,7 @@ msgstr "Constructor نىڭ ئاز دېگەندە بىر ئارگۇمېنتى ب�
 
 #: simplejavascriptapplet.cpp:764
 msgid "CreateWidget takes one argument"
-msgstr ""
+msgstr "CreateWidget نىڭ بىر ئارگۇمېنتى بار"
 
 #: simplejavascriptapplet.cpp:772
 msgid "The parent must be a QGraphicsWidget"
@@ -75,11 +75,11 @@ msgstr ""
 #: simplejavascriptapplet.cpp:817
 #, kde-format
 msgid "This operation was not supported, %1"
-msgstr ""
+msgstr "بۇ مەشغۇلاتنى قوللىمايدۇ، %1"
 
 #: simplejavascriptapplet.cpp:824
 msgid "print() takes one argument"
-msgstr "فۇنكسىيە print() نىڭ بىر ئارگۇمەنتى بار"
+msgstr "فۇنكسىيە print() نىڭ بىر ئارگۇمېنتى بار"
 
 #: qtgui/linearlayout.cpp:70
 msgid "LinearLayout requires a parent"

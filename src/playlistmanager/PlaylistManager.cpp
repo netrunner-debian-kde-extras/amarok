@@ -340,17 +340,21 @@ PlaylistManager::downloadComplete( KJob *job )
 
 bool
 PlaylistManager::save( Meta::TrackList tracks, const QString &name,
-                       Playlists::UserPlaylistProvider *toProvider )
+                       Playlists::PlaylistProvider *toProvider, bool editName )
 {
     //if toProvider is 0 use the default Playlists::UserPlaylistProvider (SQL)
-    Playlists::UserPlaylistProvider *prov = toProvider ? toProvider : m_defaultUserPlaylistProvider;
+    Playlists::UserPlaylistProvider *prov = toProvider
+        ? qobject_cast<Playlists::UserPlaylistProvider *>( toProvider )
+        : m_defaultUserPlaylistProvider;
+    if( !prov || !prov->isWritable() )
+        return false;
+
     Playlists::PlaylistPtr playlist = prov->save( tracks, name );
     if( playlist.isNull() )
         return false;
 
-    AmarokUrl("amarok://navigate/playlists/user playlists").run();
-    emit renamePlaylist( playlist );
-
+    if( editName )
+        rename( playlist );
     return true;
 }
 
@@ -374,21 +378,20 @@ PlaylistManager::rename( Playlists::PlaylistPtr playlist )
     if( playlist.isNull() )
         return;
 
-    Playlists::UserPlaylistProvider *provider
-            = qobject_cast<Playlists::UserPlaylistProvider *>( getProvidersForPlaylist( playlist ).first() );
+    AmarokUrl("amarok://navigate/playlists/user playlists").run();
+    emit renamePlaylist( playlist ); // connected to PlaylistBrowserModel
+}
 
-    if( !provider )
-        return;
+bool
+PlaylistManager::rename( PlaylistPtr playlist, const QString &newName )
+{
+    Playlists::UserPlaylistProvider *provider =
+        qobject_cast<Playlists::UserPlaylistProvider *>( playlist->provider() );
+    if( !provider || !provider->isWritable() )
+        return false;
 
-    bool ok;
-    const QString newName = KInputDialog::getText( i18n("Change playlist"),
-                i18n("Enter new name for playlist:"), playlist->name(),
-                                                   &ok );
-    if( ok )
-    {
-        debug() << "Changing name from " << playlist->name() << " to " << newName.trimmed();
-        provider->rename( playlist, newName.trimmed() );
-    }
+    provider->rename( playlist, newName );
+    return true;
 }
 
 bool

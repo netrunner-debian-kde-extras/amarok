@@ -57,7 +57,7 @@ PlaylistBrowserNS::PlaylistBrowserView::PlaylistBrowserView( QAbstractItemModel 
     setSelectionBehavior( QAbstractItemView::SelectItems );
     setDragDropMode( QAbstractItemView::DragDrop );
     setAcceptDrops( true );
-    setEditTriggers( QAbstractItemView::SelectedClicked | QAbstractItemView::EditKeyPressed );
+    setEditTriggers( QAbstractItemView::EditKeyPressed );
     if( KGlobalSettings::graphicEffectsLevel() != KGlobalSettings::NoEffects )
         setAnimated( true );
 
@@ -71,13 +71,10 @@ PlaylistBrowserNS::PlaylistBrowserView::~PlaylistBrowserView()
 void
 PlaylistBrowserNS::PlaylistBrowserView::setModel( QAbstractItemModel *model )
 {
-    if( this->model() )
-        this->model()->disconnect();
-
+    disconnect( this->model(), 0, this, 0 );
     Amarok::PrettyTreeView::setModel( model );
 
-    connect( this->model(), SIGNAL(renameIndex( const QModelIndex & )),
-                 SLOT(edit( const QModelIndex &)) );
+    connect( this->model(), SIGNAL(renameIndex(QModelIndex)), SLOT(edit(QModelIndex)) );
 }
 
 void
@@ -143,7 +140,27 @@ PlaylistBrowserNS::PlaylistBrowserView::decoratorActionAt( const QModelIndex &id
 void
 PlaylistBrowserNS::PlaylistBrowserView::mouseReleaseEvent( QMouseEvent *event )
 {
-    const QModelIndex index = indexAt( event->pos() );
+    if( m_pd )
+    {
+        connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( deleteLater() ) );
+        m_pd->hide();
+        m_pd = 0;
+    }
+
+    QModelIndex index = indexAt( event->pos() );
+    if( !index.isValid() )
+    {
+        event->accept();
+        return;
+    }
+
+    if( event->button() == Qt::MidButton )
+    {
+        appendAndPlay( index );
+        event->accept();
+        return;
+    }
+
     // HACK: provider elements hide the root decorations
     // Don't bother checking actions for the others.
     if( !rootIsDecorated() && !index.parent().isValid() )
@@ -153,13 +170,6 @@ PlaylistBrowserNS::PlaylistBrowserView::mouseReleaseEvent( QMouseEvent *event )
             action->trigger();
     }
 
-    if( m_pd )
-    {
-        connect( m_pd, SIGNAL( fadeHideFinished() ), m_pd, SLOT( deleteLater() ) );
-        m_pd->hide();
-        m_pd = 0;
-    }
-
     if( !m_expandToggledWhenPressed &&
         event->button() == Qt::LeftButton &&
         event->modifiers() == Qt::NoModifier &&
@@ -167,7 +177,6 @@ PlaylistBrowserNS::PlaylistBrowserView::mouseReleaseEvent( QMouseEvent *event )
         model()->hasChildren( index ) )
     {
         m_expandToggledWhenPressed = !m_expandToggledWhenPressed;
-        setCurrentIndex( index );
         setExpanded( index, !isExpanded( index ) );
         event->accept();
         return;
@@ -184,30 +193,6 @@ PlaylistBrowserNS::PlaylistBrowserView::mouseMoveEvent( QMouseEvent *event )
         return;
     }
     event->accept();
-}
-
-void
-PlaylistBrowserNS::PlaylistBrowserView::mouseDoubleClickEvent( QMouseEvent *event )
-{
-    QModelIndex index = indexAt( event->pos() );
-    if( !index.isValid() )
-    {
-        event->accept();
-        return;
-    }
-
-    if( !model()->hasChildren( index ) )
-    {
-        QList<QAction *> actions =
-            index.data( PlaylistBrowserNS::PlaylistBrowserModel::ActionRole ).value<QActionList>();
-        if( actions.count() > 0 )
-        {
-            //HACK execute the first action assuming it's load
-            actions.first()->trigger();
-            actions.first()->setData( QVariant() );
-        }
-    }
-    Amarok::PrettyTreeView::mouseDoubleClickEvent( event );
 }
 
 void PlaylistBrowserNS::PlaylistBrowserView::startDrag( Qt::DropActions supportedActions )
@@ -259,29 +244,55 @@ void PlaylistBrowserNS::PlaylistBrowserView::startDrag( Qt::DropActions supporte
 void
 PlaylistBrowserNS::PlaylistBrowserView::keyPressEvent( QKeyEvent *event )
 {
+    QModelIndexList indices = selectedIndexes();
+    if( indices.isEmpty() )
+    {
+        Amarok::PrettyTreeView::keyPressEvent( event );
+        return;
+    }
+
     switch( event->key() )
     {
-        case Qt::Key_Delete:
-        {
-            QModelIndexList indices = selectedIndexes();
-            QActionList actions = actionsFor( indices );
-
-            if( actions.isEmpty() )
-            {
-                debug() <<"No actions !";
-                return;
-            }
-            foreach( QAction *actn, actions )
-                if( actn )
-                    if( actn->objectName() == "deleteAction" )
-                    {
-                        actn->trigger();
-                        actn->setData( QVariant() );
-                    }
+        case Qt::Key_Enter:
+        case Qt::Key_Return:
+            appendAndPlay( indices );
             return;
-        }
+        case Qt::Key_Delete:
+            deletePlaylistsTracks( indices );
+            return;
+        default:
+            break;
      }
-     Amarok::PrettyTreeView::keyPressEvent( event );
+    Amarok::PrettyTreeView::keyPressEvent( event );
+}
+
+void
+PlaylistBrowserNS::PlaylistBrowserView::mouseDoubleClickEvent( QMouseEvent *event )
+{
+    if( event->button() == Qt::MidButton )
+    {
+        event->accept();
+        return;
+    }
+
+    QModelIndex index = indexAt( event->pos() );
+    if( !index.isValid() )
+    {
+        event->accept();
+        return;
+    }
+
+    bool isExpandable = model()->hasChildren( index );
+    bool wouldExpand = isExpandable && !KGlobalSettings::singleClick(); // we're in doubleClick
+    if( event->button() == Qt::LeftButton &&
+        event->modifiers() == Qt::NoModifier &&
+        !wouldExpand )
+    {
+        appendAndPlay( index );
+        event->accept();
+        return;
+    }
+    Amarok::PrettyTreeView::mouseDoubleClickEvent( event );
 }
 
 void PlaylistBrowserNS::PlaylistBrowserView::contextMenuEvent( QContextMenuEvent *event )
@@ -311,7 +322,7 @@ void PlaylistBrowserNS::PlaylistBrowserView::contextMenuEvent( QContextMenuEvent
 
     menu.exec( mapToGlobal( event->pos() ) );
 
-    //We keep the items that the actions need to be applied to in the actions private data.
+    //We keep the items that the action need to be applied to in the action's private data.
     //Clear the data from all actions now that the context menu has executed.
     foreach( QAction *action, actions )
         action->setData( QVariant() );
@@ -368,6 +379,37 @@ PlaylistBrowserNS::PlaylistBrowserView::currentChanged( const QModelIndex &curre
 {
     Q_UNUSED( previous )
     emit currentItemChanged( current );
+    Amarok::PrettyTreeView::currentChanged( current, previous );
+}
+
+void
+PlaylistBrowserNS::PlaylistBrowserView::appendAndPlay( const QModelIndex &index )
+{
+    appendAndPlay( QModelIndexList() << index );
+}
+
+void
+PlaylistBrowserNS::PlaylistBrowserView::appendAndPlay( const QModelIndexList &list )
+{
+    performActionNamed( "appendAction", list );
+}
+
+void
+PlaylistBrowserNS::PlaylistBrowserView::deletePlaylistsTracks( const QModelIndexList &list )
+{
+    performActionNamed( "deleteAction", list );
+}
+
+void PlaylistBrowserNS::PlaylistBrowserView::performActionNamed( const QString &name, const QModelIndexList &list )
+{
+    QActionList actions = actionsFor( list );
+
+    foreach( QAction *action, actions )
+    {
+        if( action->objectName() == name )
+            action->trigger();
+        action->setData( QVariant() );  // reset data of all actions
+    }
 }
 
 #include "PlaylistBrowserView.moc"

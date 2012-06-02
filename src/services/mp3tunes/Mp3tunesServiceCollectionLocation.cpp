@@ -27,9 +27,9 @@
 
 using namespace Collections;
 
-Mp3tunesServiceCollectionLocation::Mp3tunesServiceCollectionLocation( Mp3tunesServiceCollection const *parentCollection )
-    : ServiceCollectionLocation()
-    , m_collection( const_cast<Mp3tunesServiceCollection*>(  parentCollection ) )
+Mp3tunesServiceCollectionLocation::Mp3tunesServiceCollectionLocation( Mp3tunesServiceCollection *parentCollection )
+    : ServiceCollectionLocation( parentCollection )
+    , m_collection( parentCollection )
 {
     DEBUG_BLOCK
 }
@@ -48,11 +48,6 @@ bool Mp3tunesServiceCollectionLocation::isWritable() const
     return true;
 }
 
-bool Mp3tunesServiceCollectionLocation::remove( const Meta::TrackPtr &/*track*/ )
-{
-    //TODO
-    return false;
-}
 void Mp3tunesServiceCollectionLocation::copyUrlsToCollection (
         const QMap<Meta::TrackPtr, KUrl> &sources,
         const Transcoding::Configuration &configuration )

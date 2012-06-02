@@ -276,7 +276,7 @@ Meta::Tag::selectHelper( const TagLib::FileRef fileref, bool forceCreation )
     else if( TagLib::FLAC::File *file = dynamic_cast< TagLib::FLAC::File * >( fileref.file() ) )
     {
         if( file->xiphComment() )
-            tagHelper = new VorbisCommentTagHelper( fileref.tag(), file->xiphComment(), Amarok::Flac );
+            tagHelper = new VorbisCommentTagHelper( fileref.tag(), file->xiphComment(), file, Amarok::Flac );
         else if( file->ID3v2Tag() )
             tagHelper = new ID3v2TagHelper( fileref.tag(), file->ID3v2Tag(), Amarok::Flac );
         else if( file->ID3v1Tag() )
@@ -286,7 +286,16 @@ Meta::Tag::selectHelper( const TagLib::FileRef fileref, bool forceCreation )
     {
         TagLib::MP4::Tag *tag = dynamic_cast< TagLib::MP4::Tag * >( file->tag() );
         if( tag )
-            tagHelper = new MP4TagHelper( fileref.tag(), tag, Amarok::Mp4 );
+        {
+            Amarok::FileType specificType = Amarok::Mp4;
+            QString filename = QString( fileref.file()->name() );
+            foreach( Amarok::FileType type, QList<Amarok::FileType>() << Amarok::M4a << Amarok::M4v )
+            {
+                if( filename.endsWith( Amarok::FileTypeSupport::toString( type ), Qt::CaseInsensitive ) )
+                    specificType = type;
+            }
+            tagHelper = new MP4TagHelper( fileref.tag(), tag, specificType );
+        }
     }
     else if( TagLib::MPC::File *file = dynamic_cast< TagLib::MPC::File * >( fileref.file() ) )
     {

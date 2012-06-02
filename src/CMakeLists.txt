@@ -24,7 +24,6 @@ add_subdirectory( services )
 if( QTSCRIPTQTBINDINGS_FOUND )
     add_subdirectory( scripts )
 endif( QTSCRIPTQTBINDINGS_FOUND )
-add_subdirectory( themes )
 add_subdirectory( aboutdialog/libattica-ocsclient )
 add_subdirectory( transcoding )
 add_subdirectory( kconf_update )
@@ -97,17 +96,15 @@ set(libproxycollection_SRCS
 set(libmediadeviceframework_SRCS
   core-impl/collections/mediadevicecollection/MediaDeviceCollection.cpp
   core-impl/collections/mediadevicecollection/MediaDeviceCollectionLocation.cpp
+  core-impl/collections/mediadevicecollection/MediaDeviceEditCapability.cpp
   core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp
   core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp
   core-impl/collections/mediadevicecollection/handler/MediaDeviceHandlerCapability.cpp
   core-impl/collections/mediadevicecollection/handler/capabilities/ArtworkCapability.cpp
-  core-impl/collections/mediadevicecollection/handler/capabilities/CustomReadCapability.cpp
   core-impl/collections/mediadevicecollection/handler/capabilities/PlaylistCapability.cpp
   core-impl/collections/mediadevicecollection/handler/capabilities/PodcastCapability.cpp
   core-impl/collections/mediadevicecollection/handler/capabilities/ReadCapability.cpp
-  core-impl/collections/mediadevicecollection/handler/capabilities/ReadCapabilityBase.cpp
   core-impl/collections/mediadevicecollection/handler/capabilities/WriteCapability.cpp
-  core-impl/collections/mediadevicecollection/handler/capabilities/WriteCapabilityBase.cpp
   core-impl/collections/mediadevicecollection/playlist/MediaDevicePlaylist.cpp
   core-impl/collections/mediadevicecollection/playlist/MediaDeviceUserPlaylistProvider.cpp
   core-impl/collections/mediadevicecollection/podcast/MediaDevicePodcastProvider.cpp
@@ -278,6 +275,7 @@ set(libmetaimpl_SRCS
     core-impl/playlists/providers/user/UserPlaylistProvider.cpp
     core-impl/playlists/types/file/PlaylistFileSupport.cpp
     core-impl/playlists/types/file/xspf/XSPFPlaylist.cpp
+    core-impl/capabilities/AlbumActionsCapability.cpp
     core-impl/capabilities/timecode/TimecodeBoundedPlaybackCapability.cpp
     core-impl/capabilities/timecode/TimecodeEditCapability.cpp
     core-impl/capabilities/timecode/TimecodeLoadCapability.cpp
@@ -287,6 +285,7 @@ set(libmetaimpl_SRCS
     core-impl/meta/multi/MultiTrack.cpp
     core-impl/meta/cue/CueFileSupport.cpp
     core-impl/meta/proxy/MetaProxy.cpp
+    core-impl/meta/proxy/MetaProxyWorker.cpp
     core-impl/meta/stream/Stream.cpp
     core-impl/playlists/types/file/PlaylistFile.cpp
     core-impl/statistics/providers/url/PermanentUrlStatisticsProvider.cpp
@@ -312,11 +311,14 @@ endif( TAGLIB_FOUND )
 # COLLECTION
 #####################################################################
 set(collection_SRCS
+    core-impl/collections/support/jobs/WriteTagsJob.cpp
+    core-impl/collections/support/ArtistHelper.cpp
     core-impl/collections/support/CollectionManager.cpp
     core-impl/collections/support/CollectionLocationDelegateImpl.cpp
     core-impl/collections/support/MemoryCustomValue.cpp
     core-impl/collections/support/MemoryFilter.cpp
     core-impl/collections/support/MemoryMatcher.cpp
+    core-impl/collections/support/MemoryMeta.cpp
     core-impl/collections/support/MemoryQueryMaker.cpp
     core-impl/collections/support/MemoryQueryMakerInternal.cpp
     core-impl/collections/support/MemoryQueryMakerHelper.cpp
@@ -517,7 +519,12 @@ set(dbus_SRCS
     dbus/mpris1/RootHandler.cpp
     dbus/mpris1/PlayerHandler.cpp
     dbus/mpris1/TrackListHandler.cpp
-    dbus/mpris2/Mpris2DBusHandler.cpp
+    dbus/mpris2/DBusAbstractAdaptor.cpp
+    dbus/mpris2/Mpris2.cpp
+    dbus/mpris2/MediaPlayer2.cpp
+    dbus/mpris2/MediaPlayer2Player.cpp
+    dbus/mpris2/MediaPlayer2AmarokExtensions.cpp
+    dbus/mpris2/DBusAmarokApp.cpp
     dbus/CollectionDBusHandler.cpp
     dbus/DBusQueryHelper.cpp
 )
@@ -680,6 +687,7 @@ set(amaroklib_LIB_SRCS
     databaseimporter/sqlbatch/SqlBatchImporterConfig.cpp
     dialogs/CollectionSetup.cpp
     dialogs/DatabaseImporterDialog.cpp
+    dialogs/DiagnosticDialog.cpp
     dialogs/EditFilterDialog.cpp
     dialogs/EqualizerDialog.cpp
     dialogs/FilenameLayoutDialog.cpp
@@ -693,8 +701,6 @@ set(amaroklib_LIB_SRCS
     browsers/filebrowser/MimeTypeFilterProxyModel.cpp
     browsers/filebrowser/FileBrowser.cpp
     browsers/filebrowser/FileView.cpp
-    firstruntutorial/FirstRunTutorial.cpp
-    firstruntutorial/FirstRunTutorialPage.cpp
     musicbrainz/MusicBrainzFinder.cpp
     musicbrainz/MusicBrainzTags.cpp
     musicbrainz/MusicBrainzXmlParser.cpp
@@ -710,6 +716,7 @@ set(amaroklib_LIB_SRCS
     toolbar/VolumePopupButton.cpp
     toolbar/MainToolbar.cpp
     widgets/AlbumBreadcrumbWidget.cpp
+    widgets/AmarokContextMenu.cpp
     widgets/AmarokDockWidget.cpp
     widgets/AnimatedLabelStack.cpp
     widgets/BreadcrumbItemButton.cpp
@@ -861,37 +868,10 @@ qt4_add_dbus_adaptor(
    CollectionAdaptor
    CollectionAdaptor )
 
-qt4_add_dbus_adaptor(
-   amaroklib_LIB_SRCS
-   dbus/mpris2/org.mpris.MediaPlayer2.root.xml
-   dbus/mpris2/Mpris2DBusHandler.h
-   Amarok::Mpris2DBusHandler
-   Mpris2RootAdaptor
-   Mpris2RootAdaptor )
-qt4_add_dbus_adaptor(
-   amaroklib_LIB_SRCS
-   dbus/mpris2/org.mpris.MediaPlayer2.Player.xml
-   dbus/mpris2/Mpris2DBusHandler.h
-   Amarok::Mpris2DBusHandler
-   Mpris2PlayerAdaptor
-   Mpris2PlayerAdaptor )
-qt4_add_dbus_adaptor(
-   amaroklib_LIB_SRCS
-   dbus/org.kde.amarok.App.xml
-   dbus/mpris2/Mpris2DBusHandler.h
-   Amarok::Mpris2DBusHandler
-   Mpris2AmarokAppAdaptor
-   Mpris2AmarokAppAdaptor )
-qt4_add_dbus_adaptor(
-   amaroklib_LIB_SRCS
-   dbus/mpris2/org.kde.amarok.Mpris2Extensions.Player.xml
-   dbus/mpris2/Mpris2DBusHandler.h
-   Amarok::Mpris2DBusHandler
-   Mpris2AmarokPlayerAdaptor
-   Mpris2AmarokPlayerAdaptor )
 
 set( amaroklib_DEPENDS "amarokpud" )
 set( amaroklib_DEPENDS "amarokcore" )
+set( amaroklib_DEPENDS "amarok-transcoding" ) # depends on generated ui_*.h file
 
 kde4_add_kcfg_files(amaroklib_LIB_SRCS amarokconfig.kcfgc)
 add_custom_target(amarokconfig_h DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/amarokconfig.h)

@@ -43,7 +43,7 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
 
         Meta::TrackPtr realTrack;
 
-        QList<Meta::Observer*> observers;
+        QList<Meta::Observer *> observers;
 
         QString cachedArtist;
         QString cachedAlbum;
@@ -82,34 +82,6 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
         }
 
     public slots:
-        void slotNewTrackProvider( Collections::TrackProvider *newTrackProvider )
-        {
-            if ( !newTrackProvider )
-            {
-                return;
-            }
-
-            if( newTrackProvider->possiblyContainsTrack( url ) )
-            {
-                Meta::TrackPtr track = newTrackProvider->trackForUrl( url );
-                slotUpdateTrack( track );
-            }
-        }
-
-        void slotNewCollection( Collections::Collection *newCollection )
-        {
-            if ( !newCollection )
-            {
-                return;
-            }
-
-            if( newCollection->possiblyContainsTrack( url ) )
-            {
-                Meta::TrackPtr track = newCollection->trackForUrl( url );
-                slotUpdateTrack( track );
-            }
-        }
-
         void slotUpdateTrack( Meta::TrackPtr track )
         {
             if( track )
@@ -117,8 +89,6 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
                 subscribeTo( track );
                 realTrack = track;
                 notifyObservers();
-                disconnect( CollectionManager::instance(), SIGNAL( trackProviderAdded( Collections::TrackProvider* ) ), this, SLOT( slotNewTrackProvider( Collections::TrackProvider* ) ) );
-                disconnect( CollectionManager::instance(), SIGNAL( collectionAdded( Collections::Collection* ) ), this, SLOT( slotNewCollection( Collections::Collection* ) ) );
             }
         }
 };
@@ -135,31 +105,31 @@ public:
 
     Meta::TrackList tracks()
     {
-        if( d && d->realTrack )
-            return d->realTrack->artist()->tracks();
-        else
-            return Meta::TrackList();
+        Meta::TrackPtr realTrack = d ? d->realTrack : Meta::TrackPtr();
+        Meta::ArtistPtr artist = realTrack ? realTrack->artist() : Meta::ArtistPtr();
+        return artist ? artist->tracks() : Meta::TrackList();
     }
 
     QString name() const
     {
-        if( d && d->realTrack )
+        Meta::TrackPtr realTrack = d ? d->realTrack : Meta::TrackPtr();
+        if( realTrack )
         {
-            if ( d->realTrack->artist() )
-                return d->realTrack->artist()->name();
-            return QString();
-        } else if( d )
-            return d->cachedArtist;
-        return QString();
+            Meta::ArtistPtr artist = realTrack ? realTrack->artist() : Meta::ArtistPtr();
+            return artist ? artist->name() : QString();
+        }
+        return d ? d->cachedArtist : QString();
     }
 
     QString prettyName() const
     {
-        if( d && d->realTrack )
-            return d->realTrack->artist()->prettyName();
-        else if( d )
-            return d->cachedArtist;
-        return QString();
+        Meta::TrackPtr realTrack = d ? d->realTrack : Meta::TrackPtr();
+        if( realTrack )
+        {
+            Meta::ArtistPtr artist = realTrack ? realTrack->artist() : Meta::ArtistPtr();
+            return artist ? artist->prettyName() : QString();
+        }
+        return d ? d->cachedArtist : QString();
     }
 
     virtual bool operator==( const Meta::Artist &artist ) const
@@ -187,12 +157,42 @@ public:
         , d( dptr )
     {}
 
+    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
+    {
+        if( d && d->realTrack && d->realTrack->album() )
+            return d->realTrack->album()->hasCapabilityInterface( type );
+        else
+            return Meta::Album::hasCapabilityInterface( type );
+    }
+
+    Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
+    {
+        if( d && d->realTrack && d->realTrack->album() )
+            return d->realTrack->album()->createCapabilityInterface( type );
+        else
+            return Meta::Album::createCapabilityInterface( type );
+    }
+
     bool isCompilation() const
     {
-        if( d && d->realTrack )
+        if( d && d->realTrack && d->realTrack->album() )
             return d->realTrack->album()->isCompilation();
         else
             return false;
+    }
+
+    bool canUpdateCompilation() const
+    {
+        if( d && d->realTrack && d->realTrack->album() )
+            return d->realTrack->album()->canUpdateCompilation();
+        else
+            return Meta::Album::canUpdateCompilation();
+    }
+
+    void setCompilation( bool isCompilation )
+    {
+        if( d && d->realTrack && d->realTrack->album() )
+            return d->realTrack->album()->setCompilation( isCompilation );
     }
 
     bool hasAlbumArtist() const
@@ -213,7 +213,7 @@ public:
 
     Meta::TrackList tracks()
     {
-        if( d && d->realTrack )
+        if( d && d->realTrack && d->realTrack->album() )
             return d->realTrack->album()->tracks();
         else
             return Meta::TrackList();
@@ -243,12 +243,46 @@ public:
 
     QImage image( int size ) const
     {
-        if( d && d->realTrack ) {
-            if ( d->realTrack->album() )
-                return d->realTrack->album()->image( size );
+        if( d && d->realTrack && d->realTrack->album() )
+            return d->realTrack->album()->image( size );
+        else
             return Meta::Album::image( size );
-        } else
-            return Meta::Album::image( size );
+    }
+
+    bool hasImage( int size ) const
+    {
+        if( d && d->realTrack && d->realTrack->album() )
+            return d->realTrack->album()->hasImage( size );
+        else
+            return Meta::Album::hasImage( size );
+    }
+
+    KUrl imageLocation( int size = 0 )
+    {
+        if( d && d->realTrack && d->realTrack->album() )
+            return d->realTrack->album()->imageLocation( size );
+        else
+            return Meta::Album::imageLocation( size );
+    }
+
+    bool canUpdateImage() const
+    {
+        if( d && d->realTrack && d->realTrack->album() )
+            return d->realTrack->album()->canUpdateImage();
+        else
+            return Meta::Album::canUpdateImage();
+    }
+
+    void setImage( const QImage &image )
+    {
+        if( d && d->realTrack && d->realTrack->album() )
+            return d->realTrack->album()->setImage( image );
+    }
+
+    void removeImage()
+    {
+        if( d && d->realTrack && d->realTrack->album() )
+            return d->realTrack->album()->removeImage();
     }
 
     virtual bool operator==( const Meta::Album &album ) const

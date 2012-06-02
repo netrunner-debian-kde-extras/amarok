@@ -1,20 +1,20 @@
 # Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the PACKAGE package.
 #
-# Javier Vinal <fjvinal@gmail.com>, 2009, 2010, 2011.
+# Javier Vinal <fjvinal@gmail.com>, 2009, 2010, 2011, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarokcollectionscanner_qt\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-08-18 02:51+0200\n"
-"PO-Revision-Date: 2011-09-21 12:03+0200\n"
+"PO-Revision-Date: 2012-02-04 19:47+0100\n"
 "Last-Translator: Javier Vinal <fjvinal@gmail.com>\n"
 "Language-Team: Spanish <kde-l10n-es@kde.org>\n"
 "Language: es\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 1.2\n"
+"X-Generator: Lokalize 1.4\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:244
@@ -66,7 +66,7 @@ msgid ""
 msgstr ""
 "Explorador de colecciones de Amarok\n"
 "Explora directorios y genera como salida un archivo xml con los resultados.\n"
-"para mas información consulte http://amarok.kde.org/wiki/Batch_Mode\n"
+"para más información consulte http://amarok.kde.org/wiki/Batch_Mode\n"
 "\n"
 "Uso: amarokcollectionscanner [opciones] <Carpeta(s)>\n"
 "Opciones modificables por el usuario:\n"

@@ -48,6 +48,10 @@ PlaylistBrowserModel::PlaylistBrowserModel( int playlistCategory )
     //common, unconditional actions
     m_appendAction = new QAction( KIcon( "media-track-add-amarok" ), i18n( "&Add to Playlist" ),
                                   this );
+    // object name must match one in PlaylistBrowserNS::PlaylistBrowserView
+    m_appendAction->setObjectName( "appendAction" );
+    // key shortcut is only for display purposes here, actual one is determined by View in Model/View classes
+    m_appendAction->setShortcut( Qt::Key_Enter );
     m_appendAction->setProperty( "popupdropper_svg_id", "append" );
     connect( m_appendAction, SIGNAL( triggered() ), this, SLOT( slotAppend() ) );
 
@@ -55,6 +59,7 @@ PlaylistBrowserModel::PlaylistBrowserModel( int playlistCategory )
                                 i18nc( "Replace the currently loaded tracks with these",
                                        "&Replace Playlist" ),
                                 this );
+    m_loadAction->setObjectName( "loadAction" );
     m_loadAction->setProperty( "popupdropper_svg_id", "load" );
     connect( m_loadAction, SIGNAL( triggered() ), this, SLOT( slotLoad() ) );
 
@@ -67,8 +72,8 @@ PlaylistBrowserModel::PlaylistBrowserModel( int playlistCategory )
     connect( The::playlistManager(), SIGNAL(playlistUpdated( Playlists::PlaylistPtr, int )),
              SLOT(slotPlaylistUpdated( Playlists::PlaylistPtr, int )) );
 
-    connect( The::playlistManager(), SIGNAL(renamePlaylist( Playlists::PlaylistPtr )),
-             SLOT(slotRenamePlaylist( Playlists::PlaylistPtr )) );
+    connect( The::playlistManager(), SIGNAL(renamePlaylist(Playlists::PlaylistPtr)),
+             SLOT(slotRenamePlaylist(Playlists::PlaylistPtr)) );
 
     m_playlists = loadPlaylists();
 }
@@ -84,6 +89,9 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
     KIcon icon;
     int playlistCount = 0;
     QList<QAction *> providerActions;
+    QList<Playlists::PlaylistProvider *> providers =
+        The::playlistManager()->getProvidersForPlaylist( playlist );
+    Playlists::PlaylistProvider *provider = providers.count() == 1 ? providers.first() : 0;
 
     switch( index.column() )
     {
@@ -115,9 +123,6 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
 
         case PlaylistBrowserModel::ProviderColumn: //source
         {
-            QList<Playlists::PlaylistProvider *> providers =
-                    The::playlistManager()->getProvidersForPlaylist( playlist );
-
             if( providers.count() > 1 )
             {
                 QVariantList nameData;
@@ -153,15 +158,8 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
                     return providerActionsData;
                 }
             }
-            else if( providers.count() )
+            else if( provider )
             {
-                Playlists::PlaylistProvider *provider = providers.first();
-                //prevent crash
-                if( !provider )
-                {
-                    error() << "Invalid PlaylistProvider.";
-                    break;
-                }
                 name = description = provider->prettyName();
                 icon = provider->icon();
                 playlistCount = provider->playlistCount();
@@ -184,7 +182,7 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
         case Qt::DecorationRole: return QVariant( icon );
         case PlaylistBrowserModel::ByLineRole:
             return i18ncp( "number of playlists from one source",
-                           "One Playlist", "%1 playlists",
+                           "One playlist", "%1 playlists",
                            playlistCount );
         case PlaylistBrowserModel::ActionRole:
             return QVariant::fromValue( index.column() == PlaylistBrowserModel::ProviderColumn ?
@@ -192,6 +190,8 @@ PlaylistBrowserModel::data( const QModelIndex &index, int role ) const
         case PlaylistBrowserModel::ActionCountRole:
             return QVariant( index.column() == PlaylistBrowserModel::ProviderColumn ?
                     providerActions.count() : actionsFor( index ).count() );
+        case PlaylistBrowserModel::ProviderRole:
+            return provider ? QVariant::fromValue<Playlists::PlaylistProvider *>( provider ) : QVariant();
 
         default: return QVariant();
     }
@@ -456,7 +456,8 @@ bool
 PlaylistBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row, int column,
                                  const QModelIndex &parent )
 {
-    Q_UNUSED( column );
+    DEBUG_BLOCK
+    debug() << "Dropped on" << parent << "row" << row << "column" << column << "action" << action;
     if( action == Qt::IgnoreAction )
         return true;
 
@@ -470,6 +471,7 @@ PlaylistBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action
 
     if( data->hasFormat( AmarokMimeData::PLAYLIST_MIME ) )
     {
+        // TODO: is this ever called????
         Playlists::PlaylistList playlists = amarokMime->playlists();
 
         foreach( Playlists::PlaylistPtr playlist, playlists )
@@ -483,22 +485,27 @@ PlaylistBrowserModel::dropMimeData( const QMimeData *data, Qt::DropAction action
     else if( data->hasFormat( AmarokMimeData::TRACK_MIME ) )
     {
         Meta::TrackList tracks = amarokMime->tracks();
-        if( !parent.isValid() && row == -1 )
+        if( !parent.isValid() && row == -1 && column == -1 )
         {
-            debug() << "Dropped tracks on empty area: create new playlist";
-            //TODO: use Playlist::Model::generatePlaylistName()
+            debug() << "Dropped tracks on empty area: create new playlist in a default provider";
             The::playlistManager()->save( tracks, Amarok::generatePlaylistName( tracks ) );
+            return true;
+        }
+        else if( !parent.isValid() )
+        {
+            warning() << "Dropped tracks between root items, this is not supported!";
+            return false;
         }
         else
         {
-            debug() << "Dropped track on " << parent << " at row: " << row;
+            debug() << "Dropped tracks on " << parent << " at row: " << row;
 
             Playlists::PlaylistPtr playlist = playlistFromIndex( parent );
             if( !playlist )
                 return false;
 
             foreach( Meta::TrackPtr track, tracks )
-                playlist->addTrack( track, row++ );
+                playlist->addTrack( track, ( row >= 0 ) ? row++ : -1 ); // increment only if positive
 
             return true;
         }
@@ -543,22 +550,16 @@ PlaylistBrowserModel::slotRenamePlaylist( Playlists::PlaylistPtr playlist )
     if( !playlist->provider() || playlist->provider()->category() != m_playlistCategory )
         return;
 
-    //search index of this Playlist
-    // HACK: matches first to match same name, but there could be
-    // several playlists with the same name
-    int row = -1;
-    foreach( const Playlists::PlaylistPtr p, m_playlists )
+    int row = 0;
+    foreach( Playlists::PlaylistPtr p, m_playlists )
     {
-        row++;
-        if( p->name() == playlist->name() )
+        if( p == playlist )
+        {
+            emit renameIndex( index( row, 0 ) );
             break;
+        }
+        row++;
     }
-    if( row == -1 )
-        return;
-
-    QModelIndex idx = index( row, 0, QModelIndex() );
-    debug() << idx;
-    emit( renameIndex( idx ) );
 }
 
 void

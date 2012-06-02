@@ -19,10 +19,10 @@
 #include "AmazonStore.h"
 
 #include "Amazon.h"
-#include "AmazonCart.h"
 #include "AmazonConfig.h"
 #include "AmazonMeta.h"
 #include "AmazonParser.h"
+#include "AmazonShoppingCart.h"
 #include "AmazonShoppingCartDialog.h"
 #include "AmazonUrlRunner.h"
 
@@ -30,6 +30,7 @@
 #include "browsers/CollectionTreeItem.h"
 #include "browsers/SingleCollectionTreeItemModel.h"
 #include "core/interfaces/Logger.h"
+#include "core/support/Components.h"
 #include "playlist/PlaylistController.h"
 #include "widgets/SearchWidget.h"
 
@@ -105,7 +106,7 @@ AmazonStore::AmazonStore( AmazonServiceFactory* parent, const char *name )
 
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_amazon.png" ) );
 
-    m_metaFactory = new AmazonMetaFactory( "amazon", this );
+    m_metaFactory = new AmazonMetaFactory( "amazon" );
     m_collection = new Collections::AmazonCollection( this, "amazon", "MP3 Music Store" );
     polish();
     setPlayableTracks( true );
@@ -187,7 +188,7 @@ AmazonStore::addToCart()
         price = track->price();
     }
 
-    AmazonCart::instance()->add( asin, price, name );
+    AmazonShoppingCart::instance()->add( asin, price, name );
     Amarok::Components::logger()->shortMessage( i18n( "<em>%1</em> has been added to your shopping cart.", name ) );
     m_checkoutButton->setEnabled( true );
 }
@@ -202,30 +203,46 @@ AmazonStore::viewCart()
 void
 AmazonStore::checkout()
 {
-    QUrl url = AmazonCart::instance()->checkoutUrl();
+    QUrl url = AmazonShoppingCart::instance()->checkoutUrl();
     debug() << url;
-    m_checkoutButton->setEnabled( false );
 
-    QTemporaryFile tempFile;
-    tempFile.setAutoRemove( false );  // file must be removed later -> parser does it
-
-    if( !tempFile.open() )
+    if( QDesktopServices::openUrl( url ) )
     {
-        Amarok::Components::logger()->shortMessage( i18n( "Error: Unable to write temporary file. :-(" ) );
-        m_checkoutButton->setEnabled( true );
-        return;
+        m_checkoutButton->setEnabled( false );
+        AmazonShoppingCart::instance()->clear();
     }
+}
 
-    KIO::FileCopyJob *requestJob = KIO::file_copy( url, KUrl( tempFile.fileName() ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
+void
+AmazonStore::directCheckout()
+{
+    if( !m_selectedIndex.isValid() )
+        return;
 
-    connect( requestJob, SIGNAL( result( KJob * ) ), this, SLOT( openCheckoutUrl( KJob * ) ) );
-    requestJob->start();
+    // get item ASIN from collection
+    int id = m_itemModel->idForIndex( m_selectedIndex );
+    QString asin;
+    Meta::AmazonItem* item;
+
+    if( m_itemModel->isAlbum( m_selectedIndex ) ) // album
+        item = dynamic_cast<Meta::AmazonItem*>( m_collection->albumById( id ).data() );
+    else // track
+        item = dynamic_cast<Meta::AmazonItem*>( m_collection->trackById( id ).data() );
+
+    if( !item )
+        return;
+
+    asin = item->asin();
+
+    // create and open direct checkout url
+    QUrl url( AmazonShoppingCart::instance()->checkoutUrl( asin ) );
+    QDesktopServices::openUrl( url );
 }
 
 void
 AmazonStore::itemDoubleClicked( QModelIndex index )
 {
-    // for albums: search for the album name to get details about it
+    // for albums: search for the album ASIN to get details about it
     // for tracks: add it to the playlist
 
     int id = 0;
@@ -239,8 +256,7 @@ AmazonStore::itemDoubleClicked( QModelIndex index )
         if( !album )
             return;
 
-        QString name = m_collection->artistById( album->artistId() )->name() + " - " + album->name();
-        m_searchWidget->setSearchString( name );
+        m_searchWidget->setSearchString( "asin:" + album->asin() );
     }
     else // track
     {
@@ -277,13 +293,13 @@ AmazonStore::newSearchRequest( const QString request )
         KCM.setWindowTitle( i18n( "Select your Amazon locale - Amarok" ) );
         KCM.addModule( KCModuleInfo( QString( "amarok_service_amazonstore_config.desktop" ) ) );
         KCM.setButtons( KCMultiDialog::Ok | KCMultiDialog::Cancel );
-        KCM.resize( 400, 200 );
+        KCM.adjustSize();
 
         // if the user selects a country we continue our quest for search results
         if( !(KCM.exec() == QDialog::Accepted) )
             return;
     }
-    else if( AmazonConfig::instance()->country() == QLatin1String( "none" ) )
+    else if( AmazonConfig::instance()->country() == QLatin1String( "none" ) && m_itemView->isVisible() ) // do not show the message on startup, if the service is not visible
     {
         // user explicitly said we are in a not supported country
         Amarok::Components::logger()->longMessage( i18n( "<b>MP3 Music Store</b><br/><br/>Please select a valid country in the settings to make the store work." ) );
@@ -349,15 +365,13 @@ AmazonStore::searchForAlbum( QModelIndex index )
         if( !track )
             return;
 
-        QString name;
+        Meta::AmazonAlbum* album;
+        album = dynamic_cast<Meta::AmazonAlbum*>( m_collection->albumById( track->albumId() ).data() );
 
-        // don't add the artist name for compilations
-        if( !m_collection->albumById( track->albumId() )->isCompilation() )
-            name = m_collection->artistById( track->artistId() )->name() + " - ";
+        if( !album )
+            return;
 
-        name = name + m_collection->albumById( track->albumId() )->name();
-
-        m_searchWidget->setSearchString( name );
+        m_searchWidget->setSearchString( "asin:" + album->asin() );
     }
 }
 
@@ -370,18 +384,29 @@ AmazonStore::createRequestUrl( QString request )
     QString urlString;
     QString pageValue;
 
-    pageValue.setNum( m_resultpageSpinBox->value() );
     urlString += MP3_MUSIC_STORE_HOST;
-    urlString += "apikey=";
+    urlString += "/?apikey=";
     urlString += MP3_MUSIC_STORE_KEY;
-    urlString += "&method=Search&Player=amarok&Location=";
+    urlString += "&Player=amarok&Location=";
     urlString += AmazonConfig::instance()->country();
-    urlString += "&Text=";
-    urlString += request.toUtf8().toBase64();
-    urlString += "&Page=";
-    urlString += pageValue;
-    debug() << urlString;
 
+    if( request.startsWith( "asin:" ) ) // we need to load album details
+    {
+        urlString += "&method=LoadAlbum";
+        urlString += "&ASIN=" + request.remove( "asin:" );
+    }
+    else // normal search
+    {
+        pageValue.setNum( m_resultpageSpinBox->value() );
+
+        urlString += "&method=Search";
+        urlString += "&Text=";
+        urlString += request.toUtf8().toBase64();
+        urlString += "&Page=";
+        urlString += pageValue;
+    }
+
+    debug() << urlString;
     return QUrl( urlString );
 }
 
@@ -455,6 +480,7 @@ AmazonStore::initView()
 
     connect( m_addToCartButton, SIGNAL( clicked() ), this, SLOT( addToCart() ) );
     connect( m_itemView, SIGNAL( addToCart() ), this, SLOT( addToCart() ) );
+    connect( m_itemView, SIGNAL( directCheckout() ), this, SLOT( directCheckout() ) );
     connect( m_viewCartButton, SIGNAL( clicked() ), this, SLOT( viewCart() ) );
     connect( m_checkoutButton, SIGNAL( clicked() ), this, SLOT( checkout() ) );
 }
@@ -504,63 +530,6 @@ AmazonStore::parsingFailed( ThreadWeaver::Job* parserJob )
     Q_UNUSED( parserJob )
     Amarok::Components::logger()->shortMessage( i18n( "Error: Received an invalid reply. :-(" ) );
     m_searchWidget->searchEnded();
-}
-
-void
-AmazonStore::openCheckoutUrl( KJob* requestJob )
-{
-    // very short document, we can parse it in the main thread
-    QDomDocument responseDocument;
-
-    QString tempFileName;
-    KIO::FileCopyJob *job = dynamic_cast<KIO::FileCopyJob*>( requestJob );
-
-    if( job )
-        tempFileName = job->destUrl().toLocalFile();
-
-    QFile responseFile( tempFileName );
-
-    if( !responseFile.open( QIODevice::ReadOnly ) )
-    {
-        Amarok::Components::logger()->shortMessage( i18n( "Error: Unable to open temporary file. :-(" ) );
-
-        m_checkoutButton->setEnabled( true );
-        requestJob->deleteLater();
-        QFile::remove( tempFileName );
-        return;
-    }
-
-    QString errorMsg;
-    int errorLine;
-    int errorColumn;
-
-    // verify it is valid
-    if( !responseDocument.setContent( &responseFile, false, &errorMsg, &errorLine, &errorColumn ) ) // parse error
-    {
-        debug() << responseDocument.toString();
-        debug() << "Parse ERROR";
-        debug() << "Message:" << errorMsg;
-        debug() << "Line:" << errorLine;
-        debug() << "Column:" << errorColumn;
-        Amarok::Components::logger()->shortMessage( i18n( "Error: Unable to parse temporary file. :-(" ) );
-
-        m_checkoutButton->setEnabled( true );
-        requestJob->deleteLater();
-        QFile::remove( tempFileName );
-        return;
-    }
-
-    debug() << responseDocument.toString();
-
-    // now that's the whole parser for this reply:
-    QUrl url;
-    url.setEncodedUrl( responseDocument.documentElement().elementsByTagName( QLatin1String( "purchaseurl" ) ).at( 0 ).firstChild().nodeValue().toAscii() );
-
-    QDesktopServices::openUrl( url );
-
-    requestJob->deleteLater();
-    QFile::remove( tempFileName );
-    AmazonCart::instance()->clear();
 }
 
 void

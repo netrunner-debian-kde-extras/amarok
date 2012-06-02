@@ -176,9 +176,9 @@ CollectionTreeItem::data( int role ) const
         case CustomRoles::HasCapacityRole:
             return m_parentCollection->hasCapacity();
         case CustomRoles::UsedCapacityRole:
-            if( m_parentCollection->hasCapacity() && m_parentCollection->totalCapacity() > 0 )
-                return m_parentCollection->usedCapacity() * 100 / m_parentCollection->totalCapacity();
-            break;
+            return m_parentCollection->usedCapacity();
+        case CustomRoles::TotalCapacityRole:
+            return m_parentCollection->totalCapacity();
         case CustomRoles::DecoratorRoleCount:
             return decoratorActions().size();
         case CustomRoles::DecoratorRole:
@@ -279,17 +279,24 @@ CollectionTreeItem::queryMaker() const
 }
 
 void
-CollectionTreeItem::addMatch( Collections::QueryMaker *qm ) const
+CollectionTreeItem::addMatch( Collections::QueryMaker *qm, CategoryId::CatMenuId levelCategory ) const
 {
-    if( !m_data || m_type != Data )
-        return;
     if( !qm )
         return;
 
-    if( Meta::TrackPtr track = Meta::TrackPtr::dynamicCast( m_data ) )
+    if( isVariousArtistItem() )
+        qm->setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
+    if( isNoLabelItem() )
+        qm->setLabelQueryMode( Collections::QueryMaker::OnlyWithoutLabels );
+    else if( Meta::TrackPtr track = Meta::TrackPtr::dynamicCast( m_data ) )
         qm->addMatch( track );
     else if( Meta::ArtistPtr artist = Meta::ArtistPtr::dynamicCast( m_data ) )
+    {
+        if( levelCategory == CategoryId::AlbumArtist )
+            // this needs to be BEFORE addMatch(), because addMatch() resets ArtistQueryMode
+            qm->setArtistQueryMode( Collections::QueryMaker::AlbumArtists );
         qm->addMatch( artist );
+    }
     else if( Meta::AlbumPtr album = Meta::AlbumPtr::dynamicCast( m_data ) )
         qm->addMatch( album );
     else if( Meta::ComposerPtr composer = Meta::ComposerPtr::dynamicCast( m_data ) )

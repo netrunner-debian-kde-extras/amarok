@@ -27,6 +27,7 @@
 #include <solid/device.h>
 
 #include <QtGlobal>
+#include <QTimer>
 
 using namespace Collections;
 
@@ -48,21 +49,54 @@ class UmsCollectionFactory : public CollectionFactory
 
         virtual void init();
 
-    signals:
-        void newCollection( Collections::Collection *newCollection );
-
     private slots:
-        void slotAddSolidDevice( const QString & );
-        void slotRemoveSolidDevice( const QString & );
+        /**
+         * Called when solid notifier detects a new device has been added
+         */
+        void slotAddSolidDevice( const QString &udi );
+
+        /**
+         * Called when solid StorageAccess device we are interested in is mounted or
+         * unmounted
+         */
+        void slotAccessibilityChanged( bool accessible, const QString &udi );
+
+        /**
+         * Called when solid notifier detects a device has been removed
+         */
+        void slotRemoveSolidDevice( const QString &udi );
+
+        /**
+         * Like @see slotRemoveSolidDevice(), but instructs Collection to eject the
+         * device after it has performed necessary teardown operations.
+         *
+         * Called when user wants to unmount the device from for example Device Notifier
+         */
+        void slotRemoveAndTeardownSolidDevice( const QString &udi );
+
+        /**
+         * Called when "tracked" collection is destroyed
+         */
+        void slotCollectionDestroyed( QObject *collection );
 
     private:
-        bool m_initialized;
+        /**
+         * Checks whether a solid device is a USB mass-storage one
+         */
+        bool identifySolidDevice( const QString &udi ) const;
 
-        //maps device udi to active UMS collections
-        QMap<QString, UmsCollection *> m_umsCollectionMap;
+        /**
+         * Attempts to create appropriate collection for already identified solid device
+         * @param udi. Should emit newCollection() if the collection was successfully
+         * created and should become visible to the user.
+         */
+        void createCollectionForSolidDevice( const QString &udi );
+
+        // maps device udi to active UMS collections
+        QMap<QString, UmsCollection *> m_collectionMap;
 };
 
-class UmsCollection : public Collection
+class UmsCollection : public Collection, public Meta::Observer
 {
     Q_OBJECT
 
@@ -89,7 +123,7 @@ class UmsCollection : public Collection
         virtual float usedCapacity() const;
         virtual float totalCapacity() const;
 
-        virtual CollectionLocation *location() const;
+        virtual CollectionLocation *location();
 
         virtual bool isWritable() const;
         virtual bool isOrganizable() const;
@@ -99,33 +133,68 @@ class UmsCollection : public Collection
         virtual Capabilities::Capability *createCapabilityInterface(
                 Capabilities::Capability::Type type );
 
+        /* Meta::Observer methods */
+        virtual void metadataChanged( Meta::TrackPtr track );
+        using Meta::Observer::metadataChanged; // silence compiler warning about hidder overloads
+
         /* own methods */
         const KUrl &musicPath() const { return m_musicPath; }
         const KUrl &podcastPath() const { return m_podcastPath; }
 
-        KUrl organizedUrl( Meta::TrackPtr track ) const;
+        /**
+         * Get location where track @param track should be transferred to.
+         *
+         * @param fileExtension new extension to use. Leave empty if you don't wish to
+         * change file extension
+         */
+        KUrl organizedUrl( Meta::TrackPtr track, const QString &fileExtension = QString() ) const;
 
         QSharedPointer<MemoryCollection> memoryCollection() const { return m_mc; }
 
+    signals:
+        /**
+         * Start a count-down that emits updated() signal after it expires.
+         * Resets the timer to original timeout if already running. This is to ensure
+         * that we emit update() max. once per <timeout> for batch updates.
+         *
+         * Timers can only be started from "their" thread so use signals & slots for that.
+         */
+        void startUpdateTimer();
+
     public slots:
-        void slotDeviceRemoved();
+        /**
+         * Destroy the collection (by emitting remove)
+         */
+        void slotDestroy();
+
+        /**
+         * Destroy the collection and try to eject the device from system
+         */
+        void slotEject();
+
         void slotTrackAdded( KUrl trackLocation );
+        void slotTrackRemoved( const Meta::TrackPtr &track );
+
+        /**
+         * Overriden to update m_lastUpdated timestamp
+         */
+        virtual void collectionUpdated();
 
     private slots:
-        void slotAccessibilityChanged( bool accessible, const QString &udi );
-
         void slotParseTracks();
         void slotParseActionTriggered();
         void slotConfigure();
-        void slotEject();
 
         void slotDirectoryScanned( CollectionScanner::Directory *dir );
 
+        /**
+         * Starts a timer that ensures we emit updated() signal sometime in future.
+         */
+        void slotStartUpdateTimer();
+
     private:
-        /** enable the collection after the volume got mounted */
+        /** extended constructor */
         void init();
-        /** disable the collection, but don't remove it yet so it stays in the collection view */
-        void deInit();
 
         //static variables relating to the on-disk configuration file
         static QString s_settingsFileName;
@@ -139,10 +208,12 @@ class UmsCollection : public Collection
         static QString s_replaceTextKey;
         static QString s_podcastFolderKey;
         static QString s_autoConnectKey;
+        static QString s_collectionName;
+        static QString s_transcodingGroup;
 
         Solid::Device m_device;
         QSharedPointer<MemoryCollection> m_mc;
-        bool m_initialized;
+        bool m_tracksParsed;
 
         bool m_autoConnect;
         QString m_mountPoint;
@@ -155,6 +226,7 @@ class UmsCollection : public Collection
         bool m_replaceSpaces;
         QString m_regexText;
         QString m_replaceText;
+        QString m_collectionName;
 
         GenericScanManager *m_scanManager;
         KDirWatch m_watcher;
@@ -166,6 +238,8 @@ class UmsCollection : public Collection
         QAction *m_parseAction;
         QAction *m_configureAction;
         QAction *m_ejectAction;
+        QTimer m_updateTimer;
+        qint64 m_lastUpdated; /* msecs since epoch */
 };
 
 #endif

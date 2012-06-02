@@ -49,14 +49,14 @@ ContextView* ContextView::s_self = 0;
 ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWidget* parent )
     : Plasma::View( cont, parent )
     , m_curState( Home )
+    , m_urlRunner(0)
     , m_appletExplorer(0)
     , m_collapseAnimations(0)
+    , m_queuedAnimations(0)
     , m_collapseGroupTimer(0)
 {
     Q_UNUSED( corona )
     DEBUG_BLOCK
-
-    s_self = this;
 
     // using QGraphicsScene::BspTreeIndex leads to crashes in some Qt versions
     scene()->setItemIndexMethod( QGraphicsScene::NoIndex );
@@ -107,6 +107,9 @@ ContextView::ContextView( Plasma::Containment *cont, Plasma::Corona *corona, QWi
              this, SLOT( slotTrackChanged( Meta::TrackPtr ) ) );
     connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
              this, SLOT( slotMetadataChanged( Meta::TrackPtr ) ) );
+
+    // keep this assignment at bottom so that premature usage of ::self() asserts out
+    s_self = this;
 }
 
 ContextView::~ContextView()

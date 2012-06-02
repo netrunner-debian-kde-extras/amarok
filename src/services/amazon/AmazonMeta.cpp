@@ -18,8 +18,6 @@
 
 #include "AmazonMeta.h"
 
-#include "AmazonCart.h"
-
 #include <KStandardDirs>
 #include "klocalizedstring.h"
 
@@ -150,9 +148,8 @@ Meta::AmazonTrack::sourceName()
 // class AmazonMetaFactory
 ///////////////////////////////////////////////////////////////////////////////
 
-AmazonMetaFactory::AmazonMetaFactory( const QString &dbPrefix, AmazonStore* store )
+AmazonMetaFactory::AmazonMetaFactory( const QString &dbPrefix )
     : ServiceMetaFactory( dbPrefix )
-    , m_store( store )
 {}
 
 
@@ -183,4 +180,3 @@ AmazonMetaFactory::createArtist( const QStringList &rows )
 
     return ArtistPtr( artist );
 }
-

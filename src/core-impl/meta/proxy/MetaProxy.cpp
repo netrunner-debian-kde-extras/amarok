@@ -17,6 +17,7 @@
 #include "core-impl/meta/proxy/MetaProxy.h"
 #include "core-impl/meta/proxy/MetaProxy_p.h"
 #include "core-impl/meta/proxy/MetaProxy_p.moc"
+#include "core-impl/meta/proxy/MetaProxyWorker.h"
 
 #include "core/capabilities/EditCapability.h"
 
@@ -27,6 +28,7 @@
 #include <QTimer>
 
 #include <KSharedPtr>
+#include <threadweaver/ThreadWeaver.h>
 
 using namespace MetaProxy;
 
@@ -55,7 +57,6 @@ class EditCapabilityProxy : public Capabilities::EditCapability
         virtual void setComment( const QString &newComment ) { Q_UNUSED( newComment ); /*m_track->setComment( newComment );*/ } // Do we want to support this?
         virtual void setTrackNumber( int newTrackNumber ) { m_track->setTrackNumber( newTrackNumber ); }
         virtual void setDiscNumber( int newDiscNumber ) { m_track->setDiscNumber( newDiscNumber ); }
-        virtual void setUidUrl( const QString &newUidUrl ) { m_track->setUidUrl( newUidUrl ); }
 
         virtual void beginMetaDataUpdate() {}  // Nothing to do, we cache everything
         virtual void endMetaDataUpdate() {}
@@ -84,18 +85,20 @@ MetaProxy::Track::init( const KUrl &url, bool awaitLookupNotification )
 	d->url = url;
     d->proxy = this;
     d->cachedLength = 0;
-
-	if( !awaitLookupNotification )
-    {
-        QObject::connect( CollectionManager::instance(), SIGNAL( trackProviderAdded( Collections::TrackProvider* ) ), d, SLOT( slotNewTrackProvider( Collections::TrackProvider* ) ) );
-        QObject::connect( CollectionManager::instance(), SIGNAL( collectionAdded( Collections::Collection* ) ), d, SLOT( slotNewCollection( Collections::Collection* ) ) );
-    }
-
     d->albumPtr = Meta::AlbumPtr( new ProxyAlbum( d ) );
     d->artistPtr = Meta::ArtistPtr( new ProxyArtist( d ) );
     d->genrePtr = Meta::GenrePtr( new ProxyGenre( d ) );
     d->composerPtr = Meta::ComposerPtr( new ProxyComposer( d ) );
     d->yearPtr = Meta::YearPtr( new ProxyYear( d ) );
+
+    if( !awaitLookupNotification )
+    {
+        Worker *worker = new Worker( d->url );
+        QObject::connect( worker, SIGNAL(finishedLookup( const Meta::TrackPtr & )),
+                d, SLOT(slotUpdateTrack(Meta::TrackPtr)) );
+
+        ThreadWeaver::Weaver::instance()->enqueue( worker );
+    }
 }
 
 MetaProxy::Track::~Track()
@@ -106,11 +109,10 @@ MetaProxy::Track::~Track()
 QString
 MetaProxy::Track::name() const
 {
-    if( d->realTrack ) {
-        QString name = d->realTrack->name();
-        return name;
-    }
-    return d->cachedName;
+    if( d->realTrack )
+        return d->realTrack->name();
+    else
+        return d->cachedName;
 }
 
 void
@@ -122,31 +124,37 @@ MetaProxy::Track::setName( const QString &name )
 QString
 MetaProxy::Track::prettyName() const
 {
-    if( d->realTrack ) {
-        QString prettyName = d->realTrack->prettyName();
-        return prettyName;
-    }
-    return d->cachedName;   //TODO maybe change this?
+    if( d->realTrack )
+        return d->realTrack->prettyName();
+    else
+        return d->cachedName;
 }
 
 QString
 MetaProxy::Track::fullPrettyName() const
 {
-    if( d->realTrack ) {
-        QString fullPrettyName = d->realTrack->fullPrettyName();
-        return fullPrettyName;
-    }
-    return d->cachedName;   //TODO maybe change this??
+    if( d->realTrack )
+        return d->realTrack->fullPrettyName();
+    else
+        return d->cachedName;
 }
 
 QString
 MetaProxy::Track::sortableName() const
 {
-    if( d->realTrack ) {
-        QString sortableName = d->realTrack->sortableName();
-        return sortableName;
-    }
-    return d->cachedName;   //TODO maybe change this??
+    if( d->realTrack )
+        return d->realTrack->sortableName();
+    else
+        return d->cachedName;
+}
+
+QString
+Track::fixedName() const
+{
+    if( d->realTrack )
+        return d->realTrack->fixedName();
+    else
+        return d->cachedName;
 }
 
 KUrl
@@ -178,12 +186,6 @@ MetaProxy::Track::uidUrl() const
         return uidUrl;
     }
     return d->url.url();
-}
-
-void
-Track::setUidUrl( const QString &newUidUrl ) const
-{
-    Q_UNUSED( newUidUrl )
 }
 
 bool
@@ -260,6 +262,15 @@ void
 MetaProxy::Track::setYear( int year )
 {
     d->cachedYear = year;
+}
+
+Meta::LabelList
+Track::labels() const
+{
+    if( d->realTrack )
+        return d->realTrack->labels();
+    else
+        return Meta::Track::labels();
 }
 
 qreal
@@ -352,6 +363,12 @@ MetaProxy::Track::length() const
     return d->cachedLength;
 }
 
+void
+MetaProxy::Track::setLength( qint64 length )
+{
+    d->cachedLength = length;
+}
+
 int
 MetaProxy::Track::filesize() const
 {
@@ -381,7 +398,15 @@ MetaProxy::Track::createDate() const
 {
     if( d->realTrack )
         return d->realTrack->createDate();
-    return QDateTime();
+    return Meta::Track::createDate();
+}
+
+QDateTime
+Track::modifyDate() const
+{
+    if( d->realTrack )
+        return d->realTrack->modifyDate();
+    return Meta::Track::modifyDate();
 }
 
 QDateTime
@@ -408,12 +433,27 @@ MetaProxy::Track::playCount() const
     return 0;
 }
 
+qreal
+Track::replayGain( Meta::ReplayGainTag mode ) const
+{
+    if( d->realTrack )
+        return d->realTrack->replayGain( mode );
+    return Meta::Track::replayGain( mode );
+}
+
 QString
 MetaProxy::Track::type() const
 {
     if( d->realTrack )
         return d->realTrack->type();
     return QString();       //TODO cache type??
+}
+
+void
+Track::prepareToPlay()
+{
+    if( d->realTrack )
+        d->realTrack->prepareToPlay();
 }
 
 void
@@ -431,13 +471,58 @@ MetaProxy::Track::inCollection() const
     return false;
 }
 
-Collections::Collection*
+Collections::Collection *
 MetaProxy::Track::collection() const
 {
     if( d->realTrack )
         return d->realTrack->collection();
     else
         return 0;
+}
+
+QString
+Track::cachedLyrics() const
+{
+    if( d->realTrack )
+        return d->realTrack->cachedLyrics();
+    else
+        return Meta::Track::cachedLyrics();
+}
+
+void
+Track::setCachedLyrics(const QString& lyrics)
+{
+    if( d->realTrack )
+        d->realTrack->setCachedLyrics( lyrics );
+    else
+        Meta::Track::setCachedLyrics( lyrics );
+}
+
+void
+Track::addLabel( const QString &label )
+{
+    if( d->realTrack )
+        d->realTrack->addLabel( label );
+    else
+        Meta::Track::addLabel( label );
+}
+
+void
+Track::addLabel( const Meta::LabelPtr &label )
+{
+    if( d->realTrack )
+        d->realTrack->addLabel( label );
+    else
+        Meta::Track::addLabel( label );
+}
+
+void
+Track::removeLabel( const Meta::LabelPtr &label )
+{
+    if( d->realTrack )
+        d->realTrack->removeLabel( label );
+    else
+        Meta::Track::removeLabel( label );
 }
 
 void
@@ -457,7 +542,11 @@ MetaProxy::Track::unsubscribe( Meta::Observer *observer )
 void
 MetaProxy::Track::lookupTrack( Collections::TrackProvider *provider )
 {
-	d->slotNewTrackProvider( provider );
+    if( provider->possiblyContainsTrack( d->url ) )
+    {
+        Meta::TrackPtr track = provider->trackForUrl( d->url );
+        d->slotUpdateTrack( track );
+    }
 }
 
 void
@@ -477,7 +566,7 @@ MetaProxy::Track::hasCapabilityInterface( Capabilities::Capability::Type type ) 
     return false;
 }
 
-Capabilities::Capability*
+Capabilities::Capability *
 MetaProxy::Track::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     if( d->realTrack )
@@ -491,7 +580,7 @@ MetaProxy::Track::createCapabilityInterface( Capabilities::Capability::Type type
 bool
 MetaProxy::Track::operator==( const Meta::Track &track ) const
 {
-    const MetaProxy::Track *proxy = dynamic_cast<const MetaProxy::Track*>( &track );
+    const MetaProxy::Track *proxy = dynamic_cast<const MetaProxy::Track *>( &track );
     if( proxy && d->realTrack )
         return d->realTrack == proxy->d->realTrack;
     else if( proxy )

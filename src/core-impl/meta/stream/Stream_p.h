@@ -24,11 +24,7 @@
 #include "covermanager/CoverCache.h"
 #include "EngineController.h"
 
-#include <Phonon/Global>
-
-#include <QList>
 #include <QObject>
-#include <QPixmap>
 
 using namespace MetaStream;
 
@@ -42,30 +38,24 @@ class MetaStream::Track::Private : public QObject
         {
             EngineController *engine = The::engineController();
 
-            connect( engine, SIGNAL( currentMetadataChanged( QVariantMap ) ),
-                     this, SLOT( currentMetadataChanged( QVariantMap ) ) );
+            // force a direct connection or slot might not be called because of thread
+            // affinity. (see BUG 300334)
+            connect( engine, SIGNAL(currentMetadataChanged( QVariantMap) ),
+                     this, SLOT(currentMetadataChanged( QVariantMap )),
+                     Qt::DirectConnection );
         }
 
         void notify() const
         {
-            DEBUG_BLOCK
-
             foreach( Meta::Observer *observer, observers )
-            {
-                debug() << "Notifying observer: " << observer;
-                observer->metadataChanged( Meta::TrackPtr( const_cast<MetaStream::Track*>( track ) ) );
-            }
+                observer->metadataChanged( Meta::TrackPtr( track ) );
         }
 
     public Q_SLOTS:
         void currentMetadataChanged( QVariantMap metaData )
         {
-            DEBUG_BLOCK
             if( metaData.value( Meta::Field::URL ) == url.url() )
             {
-                DEBUG_BLOCK
-                debug() << "Applying new Metadata.";
-
                 if( metaData.contains( Meta::Field::ARTIST ) )
                     artist = metaData.value( Meta::Field::ARTIST ).toString();
                 if( metaData.contains( Meta::Field::TITLE ) )
@@ -73,10 +63,14 @@ class MetaStream::Track::Private : public QObject
                 if( metaData.contains( Meta::Field::ALBUM ) )
                     album = metaData.value( Meta::Field::ALBUM ).toString();
 
-                // Special demangling of artist/title for Shoutcast streams, which usually have "Artist - Title" in the title tag:
-                if( artist.isEmpty() && title.contains( " - " ) ) {
+                //TODO: move special handling to subclass or using some configurable XSPF
+                // Special demangling of artist/title for Shoutcast streams, which usually
+                // have "Artist - Title" in the title tag:
+                if( artist.isEmpty() && title.contains( " - " ) )
+                {
                     const QStringList artist_title = title.split( " - " );
-                    if( artist_title.size() >= 2 ) {
+                    if( artist_title.size() >= 2 )
+                    {
                         artist = artist_title[0];
                         title  = title.remove( 0, artist.length() + 3 );
                     }
@@ -87,7 +81,7 @@ class MetaStream::Track::Private : public QObject
         }
 
     public:
-        QSet<Meta::Observer*> observers;
+        QSet<Meta::Observer *> observers;
         KUrl url;
         QString title;
         QString artist;
@@ -136,7 +130,8 @@ class StreamArtist : public Meta::Artist
             return name();
         }
 
-        bool operator==( const Meta::Artist &other ) const {
+        bool operator==( const Meta::Artist &other ) const
+        {
             return name() == other.name();
         }
 
@@ -188,6 +183,14 @@ public:
         return name();
     }
 
+    bool hasImage( int size ) const
+    {
+        if( m_cover.isNull() )
+            return Meta::Album::hasImage( size );
+        else
+            return true;
+    }
+
     QImage image( int size ) const
     {
         if( m_cover.isNull() )
@@ -213,4 +216,3 @@ public:
 
 
 #endif
-

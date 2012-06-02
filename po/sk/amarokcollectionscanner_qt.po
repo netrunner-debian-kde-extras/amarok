@@ -6,8 +6,8 @@ msgstr ""
 "Project-Id-Version: amarokcollectionscanner_qt\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-08-18 02:51+0200\n"
-"PO-Revision-Date: 2010-02-13 14:13+0100\n"
-"Last-Translator: Vaclav Divok <vaclav.divok@gmail.com>\n"
+"PO-Revision-Date: 2012-02-09 22:01+0100\n"
+"Last-Translator: Roman Paholík <wizzardsk@gmail.com>\n"
 "Language-Team: Slovak <kde-sk@linux.sk>\n"
 "Language: sk\n"
 "MIME-Version: 1.0\n"
@@ -20,17 +20,17 @@ msgstr ""
 #: utilities/collectionscanner/CollectionScanner.cpp:267
 #, qt-format
 msgid "File \"%1\" not found."
-msgstr ""
+msgstr "Súbor \"%1\" nenájdený."
 
 #: utilities/collectionscanner/CollectionScanner.cpp:247
 #, qt-format
 msgid "Could not open file \"%1\"."
-msgstr ""
+msgstr "Nepodarilo sa otvoriť súbor \"%1\"."
 
 #: utilities/collectionscanner/CollectionScanner.cpp:499
 #, qt-format
 msgid "Missing argument for option %1"
-msgstr ""
+msgstr "Chýba argument pre voľbu %1"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:536
 msgid ""

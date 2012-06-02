@@ -76,10 +76,10 @@ class MyCollectionTestImpl : public CollectionTestImpl
 public:
     MyCollectionTestImpl( const QString &id ) : CollectionTestImpl( id ) {}
 
-    CollectionLocation* location() const
+    CollectionLocation* location()
     {
         MyCollectionLocation *r = new MyCollectionLocation();
-        r->coll = const_cast<MyCollectionTestImpl*>( this );
+        r->coll = this;
         return r;
     }
 };
@@ -97,7 +97,7 @@ void addMockTrack( Collections::CollectionTestImpl *coll, const QString &trackNa
     EXPECT_CALL( *track, playableUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( KUrl( '/' + track->uidUrl() ) ) );
     coll->mc->addTrack( trackPtr );
 
-    Meta::AlbumPtr albumPtr = coll->mc->albumMap().value( albumName );
+    Meta::AlbumPtr albumPtr = coll->mc->albumMap().value( albumName, QString() /* no album artist */ );
     Meta::MockAlbum *album;
     Meta::TrackList albumTracks;
     if( albumPtr )

@@ -1,8 +1,167 @@
 Amarok ChangeLog
 ================
-(C) 2002-2011 the Amarok authors.
+(C) 2002-2012 the Amarok authors.
 
-Version 2.5
+VERSION 2.6-Beta 1
+  FEATURES:
+    * Amazon store: improved album search
+    * Support for transcoding when copying tracks to USB Mass Storage devices;
+      per-device transcoding preference can be saved, too.
+    * Provide Repopulate and Turn off link in "Dynamic Mode Enabled" bagde.
+    * Support for setting cover images for albums on USB Mass Storage devices.
+    * Support for setting and unsetting cover images for iPod albums, can
+      write back covers to file meta-data too, respects configuration.
+    * Amazon store: ability to check out an item directly without using the Amarok
+      shopping cart. (BR 288808)
+    * Amarok now includes the Free Music Charts service by default.
+    * The maximum dimensions for embedded covers are now configurable. (BR 279493)
+    * Small configuration dialog for iPods that shows troubleshooting information
+      and allows to change iPod name.
+    * Improved usability of iPod playlists: iPod collection automatically transfers
+      tracks dropped to iPod playlists to iPod when it is needed.
+    * Tracks can now be transcoded when transferring them to iPod. (BR 291722)
+    * A diagnostic dialog reporting versions of Amarok, Qt, KDE and phonon libraries
+      as well as the used phonon backend and status of plugins and scripts.
+      Patch by Andrzej Hunt.
+    * Ability to move track position bookmarks by dragging; patch by
+      Jasneet Bhatti. (BR 214721)
+    * Amarok can now remember whether and how to transcode tracks when
+      transferring them to a particular collection. (BR 264681)
+    * "Crop playlist" functionality implemented using drag & drop. (BR 267729, 211811)
+    * Added keyboard shortcut for "Edit Track Information..." (BR 173814)
+      Patch by Jasneet Bhatti.
+    * Support for embedded album covers in non-collection tracks and
+      in USB Mass Storage collection.
+    * Hold the Shift key when dragging tracks to collections to move them
+      instead of copying.
+    * New search filter for absolute date
+    * Named UMS collections
+    * Albums with same name but different album artist are now correctly
+      separated in USB Mass Storage, iPod and various online service collections.
+    * Support for detecting compilations in USB Mass Storage collection.
+    * Support embedded covers for ogg (read only) and flac files. (BR 288752)
+    * Track meta-data can be edited in USB Mass Storage collection.
+    * Support for album artists in USB Mass Storage collection.
+    * album artist (if differs from artist), BPM, labels, last played time and
+      bitrate are now shown in playlist track tooltip (if not already displayed
+      in playlist)
+    * Volume normalization: ReplayGain is now converted to iPod Sound Check and
+      vice versa. (BR 142579)
+
+  CHANGES:
+    * Builds with ffmpeg 0.11.
+    * Database structure (lyrics table) was updated. Starting Amarok for the first
+      time after the upgrade may take up to one minute as the data is migrated.
+    * Amazon store: try to show a sensible default in the country selection.
+    * Only offer delete action when Shift key is pressed in Collection context menu.
+    * Only offer move action when Shift key is pressed in Collection context menu.
+    * Remove context view video applet. Unmaintained and broken. (BR 242793)
+    * Album cover images are written in background to prevent freezes. (BR 298332)
+    * Make keyboard & mouse behaviour of saved playlists browser same as of the
+      collection browser, including the delete key.
+    * Delete and Shift + Delete keys now work as expected in collection browser.
+    * Preserve statistics when copying or moving tracks to Local Collection.
+    * Common album actions such as Show cover, Show under Various Artists are now
+      available for all collections that support it, not just Local collection.
+    * When copying files to iPod, ensure target directories exist.
+    * When writing covers to files, all existing covers will be replaced.
+    * PulseAudio status in diagnostic dialog.
+    * optional libgpod dependency raised to 0.8.2 to support newest iPods.
+    * Amarok now prevents accidental unmounting of iPods in (small) time-frames
+      when iTunes database on iPod is not yet updated.
+    * Amarok detects when iPod is to be ejected from system and gracefully
+      disconnects it when it occurs.
+    * Hitting the eject button on iPod collection ejects it also from the system.
+    * iPod collection now detects whether iPod is safe to write and marks iPod
+      as read-only if not. This prevents "iPod shows 0 tracks" problem.
+    * Correct progress bar advancement when transferring tracks to iPod. (BR 139454)
+    * iPod Collection supports multiple simultaneous cancellable transfers.
+      (BR 219963)
+    * Improved dialog to initialize iPod. (BR 279797)
+    * Load tracks in playlists asynchronously using proxy tracks. (BR 295199)
+    * It is now possible to transcode tracks when moving them. (BR 280526)
+    * Drag & drop of tracks and playlists to Saved Playlists works in all cases.
+    * Don't show unmounted USB Mass Storage devices and make it clear when
+      the device is not "activated" yet.
+    * "Devices" in Amarok configuration -> Plugins is with other related strings
+      renamed to "Local Collection Backends" to reduce user confusion.
+    * Enable keyboard activation of PlaylistBrowser items. 
+    * Don't use `mysql_config --variable=pkgincludedir`, find mysql include
+      directory manually by looking up mysql.h.
+    * Album artist is now guessed for tracks that do not belong into any
+      collection and tracks from USB Mass Storage collection. Guessing uses the
+      same algorithm as Local Collection.
+    * When hovering iPod, UMS or MTP collection in collection browser,
+      "1.2 GB free" is shown instead of "85% used"; thicker capacity bar.
+
+  BUGFIXES:
+    * Fix crash on startup due to EngineController. (BR 300659)
+    * Fix problem building tests with google mock 1.6.0 on Ubuntu
+    * Fix dynamic playlist album play bias with MetaProxy::Tracks.
+    * Transcoding: fix compatibility with libav's ffmpeg. (BR 300551)
+    * Saved lyrics are preserved when the track is moved. (BR 242350)
+    * Lyrics, labels and album actions are correctly displayed for tracks
+      from main and saved playlists on Amarok startup. (BR 299150)
+    * Lyrics applet scrolls more intelligently. Patch by Alexander Potashev.
+      (BR 283601)
+    * Fix crash on startup related to ContextView. (BR 258741)
+    * Fix dragging of "No Labels" and "Various Artists" collection tree items.
+    * Don't add duplicates to playlist when dragging from collection. (BR 254411)
+    * Fix crash related to DAAP collection. (BR 280774)
+    * Fix crash on startup related to Audio CD collection. (BR 256585)
+    * When turning dynamic playlist on, immediately populate playlist and clear
+      any possible playlist sorting. (BR 220558)
+    * Fix transcoding with ffmpeg >= 0.10; patch by Julian Simioni.
+    * Fix crash on start when Qt is build with debugging assertions. (BR 285720)
+    * Fix URLs in MP3tunes, gpodder.net and Last.fm config dialogs. (BR 299088)
+    * Fix drag & drop in playlist layout editor, filename layout editor and
+      filter editor for non-english locales. (BR 215402)
+    * Fix bug where MySQL password could not be set to 'password'; patch by
+      Lachlan Dufton. (BR 272346)
+    * Detection and elimination of stale and orphaned iPod tracks now works
+      correctly; users are notified about these when iPod is plugged in.
+    * iPod playlists now work correctly. (BR 289304)
+    * Show correct error when transferring unsupported files to iPod. (BR 234876)
+    * Fix m4a tracks transferred as mp4 videos to iPods. (BR 268238)
+    * Combination of double click and context menu actions caused multiple
+      delete of downloaded podcast actions, etc. (BR 297092)
+    * Prevent merging tracks with same title but different track (disc) numbers;
+      patch by Alexey Neyman.
+    * Prevent crash on very quick drag and release of tracks. (BR 295275)
+    * Prevent occasional tag corruption on multi-byte UTF8 characters in tags.
+    * Do not double-transcode tracks when importing from an audio CD. (BR 263775)
+    * Fix resulting filetype when copying a track from Jamendo. (BR 296000)
+    * Playlists with a dot in name can now be saved to Playlist Files on Disk. (BR 290318)
+    * iPod playlists now appear even when plugged in while Amarok is running. (BR 289303)
+    * Show in Media Sources actions no longer reset the collection sorting to artist/album. (BR 231858)
+    * Don't mark audio-CD tracks as unplayable (greyed out). (BR 285885)
+    * Don't misbehave when track is dropped directly to saved playlist. (BR 293295)
+    * Don't report collection of USB Mass Storage tracks as None.
+    * When adding, changing and removing tracks in USB Mass Storage collection,
+      actually update the user interface to show it.
+    * Remove empty folders when deleting tracks from USB Mass Storage collection.
+    * Don't copy tracks to USB Mass Storage collection in move operation.
+    * Fix defunct aborting of transfers to USB Mass Storage collection. (BR 290448)
+    * Allow ripping of CD tracks with special characters in name tranks to
+      Björn Steinbrink. (BR 224437)
+    * Don't allow tracks to be dropped to their own collection and to
+      non-writable collections; indicate the fact visually. (BR 291068)
+    * Fix scrollarea following keyboard navigation. (BR 259791)
+    * Fix crash when trying to save custom equalizer presets. (BR 286227)
+    * Fix crash due to my silly method order error. (BR 291968)
+    * Fix favored random track playing picking recent played songs (BR 244442)
+    * Fix crashes with Bookmarks (BR 283753) thanks to Charles Reiss
+    * Fix memory leaks in USB Mass Storage collection where track objects were
+      never freed due to circular references.
+    * Fix rare APG solver crash. (BR 290533)
+    * Compilations are handled more consistently on iPods. (BR 232072)
+    * MPRIS2 compliance: don't use track ids that start with /org/mpris/
+    * MPRIS2: be better about emitting the Seeked signal
+    * MPRIS2: fix the mpris:artUrl metadata property
+    * MPRIS2: make sure that the Seeked signal is sent out when the track time
+              moves backwards (eg: when the track changes)
+
+VERSION 2.5
   FEATURES:
     * Now It's possible to use formated strings for prefix and suffix in 
       Playlist's layout items.
@@ -43,7 +202,7 @@ Version 2.5
     * Don't block the UI while scanning UMS device.
     * Allow going back and forward in Amazon store. Thanks to GCI student Nikola Miljkovic.
 
-Version 2.5.0-Beta 1
+VERSION 2.5.0-Beta 1
   FEATURES:
     * New "equals" match in collection filter - e.g. label:=pop finds songs
       with label "pop" but not songs with label "electro pop". (BR 260004)
@@ -136,7 +295,7 @@ Version 2.5.0-Beta 1
     * Fixed issue with TagDialog's "Open Destination" button, now It opens
       correct directory instead of parent. (BR 279147)
 
-Version 2.4.3
+VERSION 2.4.3
   BUGFIXES:
     * Fix KWallet auth requests on every track change. (BR 278177)
     * Display correct values for pretty times (playlist length) > 1 day.
@@ -148,7 +307,7 @@ Version 2.4.3
     * Don't block the UI while calculating the filename previews. (BR 233196)
     * Make M3U & PLS playlist files editable from Saved Playlists. (BR 245963)
 
-Version 2.4.2
+VERSION 2.4.2
     * This version number was skipped.
 
 VERSION 2.4.2-Beta 1

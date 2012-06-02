@@ -1,11 +1,13 @@
+# translation of amarokcollectionscanner_qt.po to Japanese
 # Daniel E. Moctezuma <democtezuma@gmail.com>, 2010.
-# Fumiaki Okushi <okushi@kde.gr.jp>, 2010.
+# Yasuhiko Kamata <belphegor@belbel.or.jp>, 2012.
+# Fumiaki Okushi <okushi@kde.gr.jp>, 2010, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarokcollectionscanner_qt\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-08-18 02:51+0200\n"
-"PO-Revision-Date: 2010-12-18 23:51-0800\n"
+"PO-Revision-Date: 2012-03-24 16:24-0700\n"
 "Last-Translator: Fumiaki Okushi <okushi@kde.gr.jp>\n"
 "Language-Team: Japanese <Kdeveloper@kde.gr.jp>\n"
 "Language: ja\n"
@@ -15,7 +17,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Accelerator-Marker: &\n"
 "X-Text-Markup: qtrich\n"
-"X-Generator: Lokalize 1.1\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:244
 #: utilities/collectionscanner/CollectionScanner.cpp:267
@@ -31,7 +33,7 @@ msgstr "ファイル「%1」を開けませんでした。"
 #: utilities/collectionscanner/CollectionScanner.cpp:499
 #, qt-format
 msgid "Missing argument for option %1"
-msgstr ""
+msgstr "オプション %1 に対するパラメータがありません"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:536
 msgid ""
@@ -64,3 +66,32 @@ msgid ""
 "   </scanner>\n"
 "                          You can also use a previous scan result for that.\n"
 msgstr ""
+"Amarok コレクションスキャナ\n"
+"ディレクトリ内を検索し、検索結果を XML ファイルに出力します。\n"
+"詳しくは http://amarok.kde.org/wiki/Batch_Mode をお読みください。\n"
+"\n"
+"使用方法: amarokcollectionscanner [オプション] <フォルダ>\n"
+"オプション:\n"
+"<フォルダ>              : スキャン対象のフォルダ。複数指定可能。\n"
+"-h, --help              : このヘルプテキストを表示\n"
+"-v, --version           : このツールのバージョンを表示\n"
+"-r, --recursive         : フォルダを再帰的に検索する\n"
+"-i, --incremental       : 増分スキャン (変更のあったフォルダのみ対象)\n"
+"-s, --restart           : クラッシュ発生後、最終位置からスキャナを再開する\n"
+"    --idlepriority      : 優先順位をアイドル状態 (最低位) として実行\n"
+"    --sharedmemory <key> : スキャン再開時に使用する共有メモリセグメントの指"
+"定\n"
+"    --newer <path>      : <path> で指定した日時よりも新しい更新日時のディレク"
+"トリのみを処理する\n"
+"                          増分スキャンモードの場合にのみ便利な設定です\n"
+"    --batch <path>      : バッチ XML ファイルを利用してディレクトリを追加す"
+"る。\n"
+"                          バッチ XML ファイルは下記の形式とします:\n"
+"   <scanner>\n"
+"    <directory>\n"
+"     <path>/absolute/path/of/directory</path>\n"
+"     <mtime>1234</mtime>   (これは指定してもしなくてもかまいません)\n"
+"    </directory>\n"
+"   </scanner>\n"
+"                          このバッチ XML ファイルには、以前の検索結果を利用す"
+"ることもできます。\n"

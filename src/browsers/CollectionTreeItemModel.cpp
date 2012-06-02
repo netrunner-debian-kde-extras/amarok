@@ -37,7 +37,7 @@
 #include <QTimer>
 #include <QMap>
 
-CollectionTreeItemModel::CollectionTreeItemModel( const QList<int> &levelType )
+CollectionTreeItemModel::CollectionTreeItemModel( const QList<CategoryId::CatMenuId> &levelType )
     : CollectionTreeItemModelBase()
 {
     CollectionManager* collMgr = CollectionManager::instance();
@@ -63,11 +63,14 @@ CollectionTreeItemModel::~CollectionTreeItemModel()
     DEBUG_BLOCK
 
     KConfigGroup config = Amarok::config( "Collection Browser" );
-    config.writeEntry( "TreeCategory", levels() );
+    QList<int> levelNumbers;
+    foreach( CategoryId::CatMenuId category, levels() )
+        levelNumbers.append( category );
+    config.writeEntry( "TreeCategory", levelNumbers );
 }
 
 void
-CollectionTreeItemModel::setLevels( const QList<int> &levelType )
+CollectionTreeItemModel::setLevels( const QList<CategoryId::CatMenuId> &levelType )
 {
     if( m_levelType == levelType && m_rootItem )
         return;
@@ -97,12 +100,26 @@ CollectionTreeItemModel::setLevels( const QList<int> &levelType )
 Qt::ItemFlags
 CollectionTreeItemModel::flags( const QModelIndex &idx ) const
 {
+    if( !idx.isValid() )
+        return 0;
+
     Qt::ItemFlags flags = CollectionTreeItemModelBase::flags( idx );
-    //TODO: check for CollectionLocation::isWritable().
-    if( !idx.parent().isValid() )
-        return flags | Qt::ItemIsDropEnabled;
-    else
-        return flags;
+    if( idx.parent().isValid() )
+        return flags; // has parent -> not a collection -> no drops
+
+    // we depend on someone (probably CollectionTreeView) to call
+    // CollectionTreeItemModelBase::setDragSourceCollections() every time a drag is
+    // initiated or enters collection browser widget
+    CollectionTreeItem *item = static_cast<CollectionTreeItem*>( idx.internalPointer() );
+    Q_ASSERT(item->type() == CollectionTreeItem::Collection);
+    if( m_dragSourceCollections.contains( item->parentCollection() ) )
+        return flags; // attempt to drag tracks from the same collection, don't allow this (bug 291068)
+
+    if( !item->parentCollection()->isWritable() )
+        return flags; // not writeable, disallow drops
+
+    // all paranoid checks passed, tracks can be dropped to this item
+    return flags | Qt::ItemIsDropEnabled;
 }
 
 QVariant
@@ -117,17 +134,20 @@ CollectionTreeItemModel::data(const QModelIndex &index, int role) const
 }
 
 bool
-CollectionTreeItemModel::dropMimeData( const QMimeData *data, Qt::DropAction action, int row,
-                                  int column, const QModelIndex &parent )
+CollectionTreeItemModel::dropMimeData( const QMimeData *data, Qt::DropAction action,
+                                       int row, int column, const QModelIndex &parent )
 {
-    if( !parent.isValid() && row == -1 && column == -1 )
-        return true; //only droppable on root (collection header) items.
+    Q_UNUSED(row)
+    Q_UNUSED(column)
+    //no drops on empty areas
+    if( !parent.isValid() )
+        return false;
 
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>( parent.internalPointer() );
     Q_ASSERT(item->type() == CollectionTreeItem::Collection);
 
-    Collections::CollectionLocation *targetLocation = item->parentCollection()->location();
-    Q_ASSERT(targetLocation);
+    Collections::Collection *targetCollection = item->parentCollection();
+    Q_ASSERT(targetCollection);
 
     //TODO: accept external drops.
     const AmarokMimeData *mimeData = qobject_cast<const AmarokMimeData *>( data );
@@ -135,16 +155,19 @@ CollectionTreeItemModel::dropMimeData( const QMimeData *data, Qt::DropAction act
 
     //TODO: optimize for copy from same provider.
     Meta::TrackList tracks = mimeData->tracks();
-    QMap<const Collections::Collection *, Meta::TrackPtr> collectionTrackMap;
+    QMap<Collections::Collection *, Meta::TrackPtr> collectionTrackMap;
 
     foreach( Meta::TrackPtr track, tracks )
     {
-        const Collections::Collection *sourceCollection = track->collection();
+        Collections::Collection *sourceCollection = track->collection();
         collectionTrackMap.insertMulti( sourceCollection, track );
     }
 
-    foreach( const Collections::Collection *sourceCollection, collectionTrackMap.uniqueKeys() )
+    foreach( Collections::Collection *sourceCollection, collectionTrackMap.uniqueKeys() )
     {
+        if( sourceCollection == targetCollection )
+            continue; // should be already catched by ...Model::flags(), but hey
+
         Collections::CollectionLocation *sourceLocation;
         if( sourceCollection )
         {
@@ -156,18 +179,20 @@ CollectionTreeItemModel::dropMimeData( const QMimeData *data, Qt::DropAction act
             sourceLocation = new Collections::FileCollectionLocation();
         }
 
-        if( sourceLocation == targetLocation )
-            continue;
+        // we need to create target collection location per each source colleciton location
+        // -- prepareSomething() takes ownership of the pointer.
+        Collections::CollectionLocation *targetLocation = targetCollection->location();
+        Q_ASSERT(targetLocation);
 
         if( action == Qt::CopyAction )
         {
             sourceLocation->prepareCopy( collectionTrackMap.values( sourceCollection ),
-                                        targetLocation );
+                                         targetLocation );
         }
         else if( action == Qt::MoveAction )
         {
             sourceLocation->prepareMove( collectionTrackMap.values( sourceCollection ),
-                                        targetLocation );
+                                         targetLocation );
         }
     }
 
@@ -193,6 +218,13 @@ CollectionTreeItemModel::fetchMore( const QModelIndex &parent )
 
     CollectionTreeItem *item = static_cast<CollectionTreeItem*>( parent.internalPointer() );
     ensureChildrenLoaded( item );
+}
+
+Qt::DropActions
+CollectionTreeItemModel::supportedDropActions() const
+{
+    // this also causes supportedDragActions() to contain move action
+    return CollectionTreeItemModelBase::supportedDropActions() | Qt::MoveAction;
 }
 
 void

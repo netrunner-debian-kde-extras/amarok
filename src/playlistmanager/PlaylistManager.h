@@ -115,10 +115,11 @@ class AMAROK_EXPORT PlaylistManager : public QObject
         *   @arg tracks list of tracks to save
         *   @arg name name of playlist to save
         *   @arg toProvider If 0 (default) will save to the default UserPlaylistProvider
+        *   @arg editName whether to edit new playlist name as soon as it is created
         *   @see defaultUserPlaylists
         */
         bool save( Meta::TrackList tracks, const QString &name = QString(),
-                   Playlists::UserPlaylistProvider *toProvider = 0 );
+                   Playlists::PlaylistProvider *toProvider = 0, bool editName = true );
 
         /**
          *  Saves a playlist from a file to the database.
@@ -126,7 +127,17 @@ class AMAROK_EXPORT PlaylistManager : public QObject
          */
          bool import( const QString &fromLocation );
 
+        /**
+         * Initiates renaming of playlists @param playlist. Can Focus Saved Playlists and
+         * initiate inline rename.
+         */
         void rename( Playlists::PlaylistPtr playlist );
+
+        /**
+         * Rename @param playlist to @param newName, return true if renaming was successful,
+         * false otherwise.
+         */
+        bool rename( Playlists::PlaylistPtr playlist, const QString &newName );
 
         bool deletePlaylists( Playlists::PlaylistList playlistlist );
 

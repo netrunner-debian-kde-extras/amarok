@@ -18,6 +18,7 @@
 #include "MediaDeviceCollection.h"
 #include "MediaDeviceHandler.h"
 
+#include "MediaDeviceEditCapability.h"
 #include "handler/capabilities/ArtworkCapability.h"
 #include "covermanager/CoverCache.h"
 #include "covermanager/CoverFetchingActions.h"
@@ -25,7 +26,7 @@
 #include "SvgHandler.h"
 #include "core/capabilities/ActionsCapability.h"
 #include "core/capabilities/EditCapability.h"
-#include "core/capabilities/UpdateCapability.h"
+#include "core-impl/capabilities/AlbumActionsCapability.h"
 
 #include <KIcon>
 #include <KUrl>
@@ -33,55 +34,6 @@
 #include <QAction>
 
 using namespace Meta;
-// Currently complaining about some vtable issue
-
-class EditCapabilityMediaDevice : public Capabilities::EditCapability
-{
-    Q_OBJECT
-    public:
-        EditCapabilityMediaDevice( MediaDeviceTrack *track )
-            : Capabilities::EditCapability()
-            , m_track( track ) {}
-
-        virtual bool isEditable() const { return m_track->isEditable(); }
-        virtual void setAlbum( const QString &newAlbum ) { m_track->setAlbum( newAlbum ); }
-        virtual void setAlbumArtist( const QString &newAlbumArtist ) { m_track->setAlbumArtist( newAlbumArtist ); }
-        virtual void setArtist( const QString &newArtist ) { m_track->setArtist( newArtist ); }
-        virtual void setComposer( const QString &newComposer ) { m_track->setComposer( newComposer ); }
-        virtual void setGenre( const QString &newGenre ) { m_track->setGenre( newGenre ); }
-        virtual void setYear( int newYear ) { m_track->setYear( newYear ); }
-        virtual void setBpm( const qreal newBpm ) { m_track->setBpm( newBpm ); }
-        virtual void setTitle( const QString &newTitle ) { m_track->setTitle( newTitle ); }
-        virtual void setComment( const QString &newComment ) { m_track->setComment( newComment ); }
-        virtual void setTrackNumber( int newTrackNumber ) { m_track->setTrackNumber( newTrackNumber ); }
-        virtual void setDiscNumber( int newDiscNumber ) { m_track->setDiscNumber( newDiscNumber ); }
-        virtual void setUidUrl( const QString &newUidUrl ) { m_track->setUidUrl( newUidUrl ); }
-        virtual void beginMetaDataUpdate() { m_track->beginMetaDataUpdate(); }
-        virtual void endMetaDataUpdate() { m_track->endMetaDataUpdate(); }
-
-    private:
-        KSharedPtr<MediaDeviceTrack> m_track;
-};
-
-class UpdateCapabilityMediaDevice : public Capabilities::UpdateCapability
-{
-    Q_OBJECT
-    public:
-        UpdateCapabilityMediaDevice( Collections::MediaDeviceCollection *coll )
-            : Capabilities::UpdateCapability()
-            , m_coll( coll )
-        {}
-
-        virtual void collectionUpdated() const
-        {
-            m_coll->collectionUpdated();
-            m_coll->writeDatabase();
-        }
-
-    private:
-        Collections::MediaDeviceCollection *m_coll;
-};
-
 
 MediaDeviceTrack::MediaDeviceTrack( Collections::MediaDeviceCollection *collection )
     : Meta::Track()
@@ -129,12 +81,6 @@ QString
 MediaDeviceTrack::uidUrl() const
 {
     return m_playableUrl.isLocalFile() ? m_playableUrl.toLocalFile() : m_playableUrl.url();
-}
-
-void
-MediaDeviceTrack::setUidUrl( const QString &newUidUrl ) const
-{
-    Q_UNUSED( newUidUrl )
 }
 
 QString
@@ -233,7 +179,10 @@ MediaDeviceTrack::rating() const
 void
 MediaDeviceTrack::setRating( int newRating )
 {
+    if( newRating == m_rating )
+        return;
     m_rating = newRating;
+    // this method is _not_ called though EditCapability, notify observers manually
     notifyObservers();
 }
 
@@ -338,6 +287,29 @@ MediaDeviceTrack::setLastPlayed( const QDateTime &newTime )
     m_lastPlayed = newTime;
 }
 
+qreal
+MediaDeviceTrack::replayGain( ReplayGainTag mode ) const
+{
+    /* no known non-UMS portable media player is able to differentiante between different
+     * replay gain modes (track & album), so store only one value */
+    switch( mode ) {
+        case Meta::ReplayGain_Track_Gain:
+        case Meta::ReplayGain_Album_Gain:
+            return m_replayGain;
+        case Meta::ReplayGain_Track_Peak:
+        case Meta::ReplayGain_Album_Peak:
+            // no default label so that compiler emits a warning when new enum value is added
+            break;
+    }
+    return 0.0;
+}
+
+void
+MediaDeviceTrack::setReplayGain( qreal newReplayGain )
+{
+    m_replayGain = newReplayGain;
+}
+
 QString
 MediaDeviceTrack::type() const
 {
@@ -402,8 +374,6 @@ MediaDeviceTrack::hasCapabilityInterface( Capabilities::Capability::Type type ) 
     {
         case Capabilities::Capability::Editable:
             return true;
-        case Capabilities::Capability::Updatable:
-            return true;
         default:
             return false;
     }
@@ -418,9 +388,7 @@ MediaDeviceTrack::createCapabilityInterface( Capabilities::Capability::Type type
     switch( type )
     {
         case Capabilities::Capability::Editable:
-            return new EditCapabilityMediaDevice( this );
-        case Capabilities::Capability::Updatable:
-            return new UpdateCapabilityMediaDevice( m_collection.data() );
+            return new MediaDeviceEditCapability( this );
         default:
             return 0;
     }
@@ -438,14 +406,19 @@ MediaDeviceTrack::setAlbum( const QString &newAlbum )
 
     // do cleanup of soon to be previous album
 
+    MediaDeviceArtistPtr albumArtist;
+    QString albumArtistName;
     albumPtr = m_album;
     if ( !albumPtr.isNull() )
     {
+        albumArtist = MediaDeviceArtistPtr::staticCast( albumPtr->albumArtist() );
+        if( albumArtist )
+            albumArtistName = albumArtist->name();
         // remove track from previous album's tracklist
         albumPtr->remTrack( track );
         // if album's tracklist is empty, remove album from albummap
         if( albumPtr->tracks().isEmpty() )
-            albumMap.remove( albumPtr->name() );
+            albumMap.remove( AlbumPtr::staticCast( albumPtr ) );
     }
 
     // change to a new album
@@ -453,14 +426,15 @@ MediaDeviceTrack::setAlbum( const QString &newAlbum )
     // check for the existence of the album to be set to,
     // if album exists, reuse, else create
 
-    if ( albumMap.contains( newAlbum ) )
+    if ( albumMap.contains( newAlbum, albumArtistName ) )
     {
-        albumPtr = MediaDeviceAlbumPtr::staticCast( albumMap.value( newAlbum ) );
+        albumPtr = MediaDeviceAlbumPtr::staticCast( albumMap.value( newAlbum, albumArtistName ) );
     }
     else
     {
         albumPtr = MediaDeviceAlbumPtr( new MediaDeviceAlbum( m_collection.data(), newAlbum ) );
-        albumMap.insert( newAlbum, AlbumPtr::staticCast( albumPtr ) );
+        albumPtr->setAlbumArtist( albumArtist );
+        albumMap.insert( AlbumPtr::staticCast( albumPtr ) );
     }
 
     // add track to album's tracklist
@@ -484,14 +458,6 @@ MediaDeviceTrack::setAlbumArtist( const QString &newAlbumArtist )
 
     MediaDeviceArtistPtr artistPtr;
     ArtistMap artistMap = m_collection.data()->memoryCollection()->artistMap();
-    artistPtr = MediaDeviceArtistPtr::staticCast( m_album->albumArtist() );
-
-    if( !artistPtr.isNull() )
-    {
-        artistPtr->remAlbum( m_album );
-        if( artistPtr->tracks().isEmpty() && artistPtr->albums().isEmpty() )
-            artistMap.remove( artistPtr->name() );
-    }
 
     if( artistMap.contains( newAlbumArtist ) )
         artistPtr = MediaDeviceArtistPtr::staticCast( artistMap.value( newAlbumArtist ) );
@@ -501,7 +467,6 @@ MediaDeviceTrack::setAlbumArtist( const QString &newAlbumArtist )
         artistMap.insert( newAlbumArtist, ArtistPtr::staticCast( artistPtr ) );
     }
 
-    artistPtr->addAlbum( m_album );
     m_album->setAlbumArtist( artistPtr );
 
     m_collection.data()->memoryCollection()->acquireWriteLock();
@@ -527,7 +492,7 @@ MediaDeviceTrack::setArtist( const QString &newArtist )
     {
         artistPtr->remTrack( track );
         // if artist's tracklist is empty, remove artist from artistmap
-        if( artistPtr->tracks().isEmpty() && artistPtr->albums().isEmpty() )
+        if( artistPtr->tracks().isEmpty() )
             artistMap.remove( artistPtr->name() );
     }
 
@@ -746,11 +711,8 @@ MediaDeviceTrack::setLength( qint64 length )
 }
 
 void
-MediaDeviceTrack::endMetaDataUpdate()
+MediaDeviceTrack::commitChanges()
 {
-    DEBUG_BLOCK
-    // Update info in local mediadevice database struct
-    debug() << "Observer number: " << m_observers.count();
     notifyObservers();
 }
 
@@ -781,12 +743,6 @@ MediaDeviceArtist::tracks()
     return m_tracks;
 }
 
-AlbumList
-MediaDeviceArtist::albums()
-{
-    return m_albums;
-}
-
 void
 MediaDeviceArtist::addTrack( MediaDeviceTrackPtr track )
 {
@@ -797,18 +753,6 @@ void
 MediaDeviceArtist::remTrack( MediaDeviceTrackPtr track )
 {
     m_tracks.removeOne( TrackPtr::staticCast( track ) );
-}
-
-void
-MediaDeviceArtist::addAlbum( MediaDeviceAlbumPtr album )
-{
-    m_albums.append( AlbumPtr::staticCast( album ) );
-}
-
-void
-MediaDeviceArtist::remAlbum( MediaDeviceAlbumPtr album )
-{
-    m_albums.removeOne( AlbumPtr::staticCast( album ) );
 }
 
 //---------------MediaDeviceAlbum-----------------------------------
@@ -961,28 +905,7 @@ MediaDeviceAlbum::createCapabilityInterface( Capabilities::Capability::Type type
     switch( type )
     {
         case Capabilities::Capability::Actions:
-        {
-            QList<QAction*> actions;
-            if( m_collection && canUpdateImage() )
-            {
-                /* none of media device implementations can currently unset cover,
-                 * so it would only confuse user to see "Unset Cover" action. */
-                QAction *separator          = new QAction( m_collection.data() );
-                QAction *displayCoverAction = new DisplayCoverAction( m_collection.data(), AlbumPtr::dynamicCast( MediaDeviceAlbumPtr(this) ) );
-
-                separator->setSeparator( true );
-
-                actions.append( separator );
-                actions.append( displayCoverAction );
-                actions.append( new FetchCoverAction( m_collection.data(), AlbumPtr::staticCast( MediaDeviceAlbumPtr(this) ) ) );
-                actions.append( new SetCustomCoverAction( m_collection.data(), AlbumPtr::staticCast( MediaDeviceAlbumPtr(this) ) ) );
-                if( !hasImage() )
-                {
-                    displayCoverAction->setEnabled( false );
-                }
-            }
-            return new Capabilities::ActionsCapability( actions );
-        }
+            return new Capabilities::AlbumActionsCapability( Meta::AlbumPtr( this ) );
 
         default:
             return 0;
@@ -1124,5 +1047,3 @@ MediaDeviceYear::remTrack( MediaDeviceTrackPtr track )
 {
     m_tracks.removeOne( TrackPtr::staticCast( track ) );
 }
-
-#include "mediadevicemeta.moc"

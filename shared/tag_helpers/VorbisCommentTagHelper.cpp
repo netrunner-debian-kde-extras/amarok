@@ -25,11 +25,37 @@
 
 #include "StringHelper.h"
 
+#include <taglib/flacpicture.h>
+
+#ifndef UTILITIES_BUILD
+    #include <QBuffer>
+#endif  //UTILITIES_BUILD
+
 using namespace Meta::Tag;
 
 VorbisCommentTagHelper::VorbisCommentTagHelper( TagLib::Tag *tag, TagLib::Ogg::XiphComment *commentsTag, Amarok::FileType fileType )
                       : TagHelper( tag, fileType )
                       , m_tag( commentsTag )
+                      , m_flacFile( 0 )
+{
+    m_fieldMap.insert( Meta::valAlbumArtist, TagLib::String( "ALBUMARTIST" ) );
+    m_fieldMap.insert( Meta::valBpm,         TagLib::String( "BPM" ) );
+    m_fieldMap.insert( Meta::valCompilation, TagLib::String( "COMPILATION" ) );
+    m_fieldMap.insert( Meta::valComposer,    TagLib::String( "COMPOSER" ) );
+    m_fieldMap.insert( Meta::valDiscNr,      TagLib::String( "DISCNUMBER" ) );
+    m_fieldMap.insert( Meta::valHasCover,    TagLib::String( "COVERART" ) ); // non-standard but frequently used
+    m_fieldMap.insert( Meta::valPlaycount,   TagLib::String( "FMPS_PLAYCOUNT" ) );
+    m_fieldMap.insert( Meta::valRating,      TagLib::String( "FMPS_RATING" ) );
+    m_fieldMap.insert( Meta::valScore,       TagLib::String( "FMPS_RATING_AMAROK_SCORE" ) );
+
+    m_uidFieldMap.insert( UIDAFT,            TagLib::String( "AMAROK 2 AFTV1 - AMAROK.KDE.ORG" ) );
+    m_uidFieldMap.insert( UIDMusicBrainz,    TagLib::String( "MUSICBRAINZ_TRACKID" ) );
+}
+
+VorbisCommentTagHelper::VorbisCommentTagHelper( TagLib::Tag *tag, TagLib::Ogg::XiphComment *commentsTag, TagLib::FLAC::File *file, Amarok::FileType fileType )
+                      : TagHelper( tag, fileType )
+                      , m_tag( commentsTag )
+                      , m_flacFile( file )
 {
     m_fieldMap.insert( Meta::valAlbumArtist, TagLib::String( "ALBUMARTIST" ) );
     m_fieldMap.insert( Meta::valBpm,         TagLib::String( "BPM" ) );
@@ -67,6 +93,8 @@ VorbisCommentTagHelper::tags() const
                 data.insert( field, qRound( value.toFloat() * 10.0 ) );
             else if( field == Meta::valScore )
                 data.insert( field, value.toFloat() * 100.0 );
+            else if( field == Meta::valHasCover )
+                data.insert( Meta::valHasCover, true );
             else
                 data.insert( field, value );
         }
@@ -76,6 +104,23 @@ VorbisCommentTagHelper::tags() const
         {
             if( !data.contains( Meta::valUniqueId ) ) // we prefere AFT uids
                 data.insert( Meta::valUniqueId, value.prepend( "mb-" ) );
+        }
+    }
+
+    if( m_flacFile )
+    {
+        const TagLib::List<TagLib::FLAC::Picture*> picturelist = m_flacFile->pictureList();
+        for( TagLib::List<TagLib::FLAC::Picture*>::ConstIterator it = picturelist.begin(); it != picturelist.end(); it++ )
+        {
+            TagLib::FLAC::Picture* picture = *it;
+
+            if( ( picture->type() == TagLib::FLAC::Picture::FrontCover ||
+                picture->type() == TagLib::FLAC::Picture::Other ) &&
+                picture->data().size() > MIN_COVER_SIZE ) // must be at least 1kb
+            {
+                data.insert( Meta::valHasCover, true );
+                break;
+            }
         }
     }
 
@@ -94,7 +139,9 @@ VorbisCommentTagHelper::setTags( const Meta::FieldHash &changes )
 
         if( !field.isNull() && !field.isEmpty() )
         {
-            if( key == Meta::valRating )
+            if( key == Meta::valHasCover )
+                continue;
+            else if( key == Meta::valRating )
                 m_tag->addField( field, Qt4QStringToTString( QString::number( value.toFloat() / 10.0 ) ) );
             else if( key == Meta::valScore )
                 m_tag->addField( field, Qt4QStringToTString( QString::number( value.toFloat() / 100.0 ) ) );
@@ -122,3 +169,137 @@ VorbisCommentTagHelper::render() const
 {
     return m_tag->render();
 }
+
+#ifndef UTILITIES_BUILD
+bool
+VorbisCommentTagHelper::hasEmbeddedCover() const
+{
+    if( m_flacFile )
+    {
+        const TagLib::List<TagLib::FLAC::Picture*> picturelist = m_flacFile->pictureList();
+        for( TagLib::List<TagLib::FLAC::Picture*>::ConstIterator it = picturelist.begin(); it != picturelist.end(); it++ )
+        {
+            const TagLib::FLAC::Picture *picture = *it;
+
+            if( ( picture->type() == TagLib::FLAC::Picture::FrontCover ||
+                picture->type() == TagLib::FLAC::Picture::Other ) &&
+                picture->data().size() > MIN_COVER_SIZE ) // must be at least 1kb
+            {
+                return true;
+            }
+        }
+    }
+    else if( !fieldName( Meta::valHasCover ).isEmpty() )
+    {
+        TagLib::ByteVector field = fieldName( Meta::valHasCover ).toCString();
+
+        return m_tag->fieldListMap().contains( field );
+    }
+
+    return false;
+}
+
+QImage
+VorbisCommentTagHelper::embeddedCover() const
+{
+    QImage cover;
+
+    if( m_flacFile )
+    {
+        QImage otherCover;
+
+        const TagLib::List<TagLib::FLAC::Picture*> picturelist = m_flacFile->pictureList();
+        for( TagLib::List<TagLib::FLAC::Picture*>::ConstIterator it = picturelist.begin(); it != picturelist.end(); it++ )
+        {
+            const TagLib::FLAC::Picture *picture = *it;
+
+            if( ( picture->type() == TagLib::FLAC::Picture::FrontCover ||
+                picture->type() == TagLib::FLAC::Picture::Other ) &&
+                picture->data().size() > MIN_COVER_SIZE ) // must be at least 1kb
+            {
+                QByteArray image_data( picture->data().data(), picture->data().size() );
+
+                if( picture->type() == TagLib::FLAC::Picture::FrontCover )
+                {
+                    cover.loadFromData( image_data );
+                    break;
+                }
+                else if( otherCover.isNull() )
+                {
+                    otherCover.loadFromData( image_data );
+                }
+            }
+        }
+
+        if( cover.isNull() && !otherCover.isNull() )
+            cover = otherCover;
+    }
+    else if( !fieldName( Meta::valHasCover ).isEmpty() )
+    {
+        TagLib::ByteVector field = fieldName( Meta::valHasCover ).toCString();
+
+        if( !m_tag->fieldListMap().contains( field ) )
+            return cover;
+
+        TagLib::StringList coverList = m_tag->fieldListMap()[field];
+
+        for( uint i=0; i<coverList.size(); i++ )
+        {
+            QByteArray image_data_b64( coverList[i].toCString() );
+            QByteArray image_data = QByteArray::fromBase64(image_data_b64);
+
+            if( image_data.size() <= MIN_COVER_SIZE ) // must be at least 1kb
+                continue;
+
+            bool success = false;
+
+            success = cover.loadFromData( image_data );
+            if( !success )
+                success = cover.loadFromData( image_data_b64 );
+
+            if( success )
+                break;
+        }
+    }
+
+    return cover;
+}
+
+bool
+VorbisCommentTagHelper::setEmbeddedCover( const QImage &cover )
+{
+// NOTE since the COVERART tag is not standardized and a proper way has been defined recently [1],
+// we should wait until taglib provides an implementation.
+// [1] http://wiki.xiph.org/index.php/VorbisComment#Cover_art
+
+    if( m_flacFile )
+    {
+        QByteArray bytes;
+        QBuffer buffer( &bytes );
+
+        buffer.open( QIODevice::WriteOnly );
+
+        if( !cover.save( &buffer, "JPEG" ) )
+        {
+            buffer.close();
+            return false;
+        }
+
+        buffer.close();
+
+        // remove all covers
+        m_flacFile->removePictures();
+
+        // add new cover
+        TagLib::FLAC::Picture *newPicture = new TagLib::FLAC::Picture();
+        newPicture->setData( TagLib::ByteVector( bytes.data(), bytes.size() ) );
+        newPicture->setMimeType( "image/jpeg" );
+        newPicture->setType( TagLib::FLAC::Picture::FrontCover );
+        m_flacFile->addPicture( newPicture );
+
+        return true;
+    }
+
+    return false;
+}
+#endif  //UTILITIES_BUILD

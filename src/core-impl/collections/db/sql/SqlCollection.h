@@ -21,6 +21,7 @@
 #include "amarok_sqlcollection_export.h"
 #include "core/capabilities/CollectionScanCapability.h"
 #include "core/capabilities/CollectionImportCapability.h"
+#include "core/capabilities/TranscodeCapability.h"
 #include "core/collections/Collection.h"
 #include "core-impl/collections/db/DatabaseCollection.h"
 #include "core-impl/collections/support/CollectionManager.h"
@@ -45,6 +46,9 @@ namespace Collections {
 class CollectionLocation;
 class SqlCollectionLocationFactory;
 class SqlQueryMakerFactory;
+
+/// Configuration group name in amarokrc for preferred transcoding configuration for SqlCollection
+static const QString SQL_TRANSCODING_GROUP_NAME = "Collection Transcoding Preference";
 
 class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCollection
 {
@@ -102,9 +106,7 @@ class AMAROK_SQLCOLLECTION_EXPORT SqlCollection : public Collections::DatabaseCo
         virtual Meta::TrackPtr getTrackFromUid( const QString &uniqueid );
         virtual Meta::AlbumPtr getAlbum( const QString &album, const QString &artist );
 
-        virtual CollectionLocation* location() const;
-        virtual bool isWritable() const;
-        virtual bool isOrganizable() const;
+        virtual CollectionLocation* location();
         QStringList getDatabaseDirectories( QList<int> idList ) const;
 
         QStringList collectionFolders() const;
@@ -206,8 +208,17 @@ class SqlCollectionImportCapability : public Capabilities::CollectionImportCapab
         ScanManager *m_scanManager;
 };
 
+class AMAROK_SQLCOLLECTION_EXPORT SqlCollectionTranscodeCapability : public Capabilities::TranscodeCapability
+{
+    Q_OBJECT
+    public:
+
+        virtual ~SqlCollectionTranscodeCapability();
+
+        virtual Transcoding::Configuration savedConfiguration();
+        virtual void setSavedConfiguration( const Transcoding::Configuration &configuration );
+};
 
 }
 
 #endif /* AMAROK_COLLECTION_SQLCOLLECTION_H */
-
