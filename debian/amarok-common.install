@@ -3,6 +3,11 @@ usr/share/kde4/apps/amarok/amarok.notifyrc
 usr/share/kde4/apps/amarok/data/*
 usr/share/kde4/apps/amarok/icons/*
 usr/share/kde4/apps/amarok/images/*
+usr/share/kde4/apps/amarok/scripts/free_music_charts_service/FMCEmblem.png
+usr/share/kde4/apps/amarok/scripts/free_music_charts_service/FMCIcon.png
+usr/share/kde4/apps/amarok/scripts/free_music_charts_service/FMCShow.png
+usr/share/kde4/apps/amarok/scripts/free_music_charts_service/main.js
+usr/share/kde4/apps/amarok/scripts/free_music_charts_service/script.spec
 usr/share/kde4/apps/amarok/scripts/librivox_service/LibrivoxEmblem.png
 usr/share/kde4/apps/amarok/scripts/librivox_service/LibrivoxIcon.png
 usr/share/kde4/apps/amarok/scripts/librivox_service/LibrivoxLogo.png
@@ -37,7 +42,6 @@ usr/share/kde4/services/amarok-context-applet-similarArtists.desktop
 usr/share/kde4/services/amarok-context-applet-spectrum-analyzer.desktop
 usr/share/kde4/services/amarok-context-applet-tabs.desktop
 usr/share/kde4/services/amarok-context-applet-upcomingEvents.desktop
-usr/share/kde4/services/amarok-context-applet-videoclip.desktop
 usr/share/kde4/services/amarok-context-applet-wikipedia.desktop
 usr/share/kde4/services/amarok-data-engine-current.desktop
 usr/share/kde4/services/amarok-data-engine-info.desktop
@@ -48,7 +52,6 @@ usr/share/kde4/services/amarok-data-engine-similarArtists.desktop
 usr/share/kde4/services/amarok-data-engine-spectrum-analyzer.desktop
 usr/share/kde4/services/amarok-data-engine-tabs.desktop
 usr/share/kde4/services/amarok-data-engine-upcomingEvents.desktop
-usr/share/kde4/services/amarok-data-engine-videoclip.desktop
 usr/share/kde4/services/amarok-data-engine-wikipedia.desktop
 usr/share/kde4/services/amarok-scriptengine-applet-simple-javascript.desktop
 usr/share/kde4/services/amarok-scriptengine-runner-javascript.desktop

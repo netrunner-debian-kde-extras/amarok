@@ -5,6 +5,7 @@ amarok (2.6~beta1-0r1) UNRELEASED; urgency=low
   * Adapt debian_find_mysql_fix.diff to upstream changes.
   * Update debian_fix_doc_nl_build.diff patch to fix a new build problem with
     KDE 4.7, require kdelibs5-dev 4:4.7.
+  * Update install files.
 
  -- Modestas Vainius <modax@debian.org>  Sun, 03 Jun 2012 00:00:29 +0300
 
