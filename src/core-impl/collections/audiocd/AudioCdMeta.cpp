@@ -19,10 +19,11 @@
 #include "AudioCdCollection.h"
 
 #include "core/support/Debug.h"
+#include "covermanager/CoverCache.h"
 
 using namespace Meta;
 
-AudioCdTrack::AudioCdTrack( Collections::AudioCdCollection *collection, const QString &name, const QString &url )
+AudioCdTrack::AudioCdTrack( Collections::AudioCdCollection *collection, const QString &name, const KUrl &url )
     : Meta::Track()
     , m_collection( collection )
     , m_artist( 0 )
@@ -33,7 +34,7 @@ AudioCdTrack::AudioCdTrack( Collections::AudioCdCollection *collection, const QS
     , m_name( name)
     , m_length( 0 )
     , m_trackNumber( 0 )
-    , m_displayUrl( url )
+    , m_displayUrl( url.url() )
     , m_playableUrl( url )
 {
 }
@@ -49,12 +50,6 @@ AudioCdTrack::name() const
     return m_name;
 }
 
-QString
-AudioCdTrack::prettyName() const
-{
-    return m_name;
-}
-
 KUrl
 AudioCdTrack::playableUrl() const
 {
@@ -65,7 +60,7 @@ AudioCdTrack::playableUrl() const
 QString
 AudioCdTrack::uidUrl() const
 {
-    return m_playableUrl;
+    return m_playableUrl.url();
 }
 
 QString
@@ -77,7 +72,13 @@ AudioCdTrack::prettyUrl() const
 bool
 AudioCdTrack::isPlayable() const
 {
-    return true;
+    KUrl trackUrl = playableUrl();
+    QFileInfo trackFileInfo = QFileInfo( trackUrl.toLocalFile() );
+    //track can be played only if it's readable
+    if( trackFileInfo.exists() && trackFileInfo.isFile() && trackFileInfo.isReadable() )
+        return true;
+
+    return false;
 }
 
 bool
@@ -141,7 +142,7 @@ AudioCdTrack::setGenre( const QString &newGenre )
 }
 
 void
-AudioCdTrack::setYear( const QString &newYear )
+AudioCdTrack::setYear( int newYear )
 {
     Q_UNUSED( newYear )
 }
@@ -238,12 +239,6 @@ AudioCdTrack::setDiscNumber( int newDiscNumber )
 
 int
 AudioCdTrack::playCount() const
-{
-    return 0;
-}
-
-uint
-AudioCdTrack::lastPlayed() const
 {
     return 0;
 }
@@ -352,12 +347,6 @@ AudioCdArtist::name() const
     return m_name;
 }
 
-QString
-AudioCdArtist::prettyName() const
-{
-    return m_name;
-}
-
 TrackList
 AudioCdArtist::tracks()
 {
@@ -389,17 +378,11 @@ AudioCdAlbum::AudioCdAlbum( const QString &name )
 
 AudioCdAlbum::~AudioCdAlbum()
 {
-    //nothing to do
+    CoverCache::invalidateAlbum( this );
 }
 
 QString
 AudioCdAlbum::name() const
-{
-    return m_name;
-}
-
-QString
-AudioCdAlbum::prettyName() const
 {
     return m_name;
 }
@@ -429,20 +412,13 @@ AudioCdAlbum::tracks()
     return m_tracks;
 }
 
-QPixmap
-AudioCdAlbum::image( int size )
+QImage
+AudioCdAlbum::image( int size ) const
 {
     if ( m_cover.isNull() )
         return Meta::Album::image( size );
-
-    //only cache during session
-    if ( m_coverSizeMap.contains( size ) )
-         return m_coverSizeMap.value( size );
-
-    QPixmap scaled = m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
-
-    m_coverSizeMap.insert( size, scaled );
-    return scaled;
+    else
+        return m_cover.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
 }
 
 bool
@@ -452,9 +428,10 @@ AudioCdAlbum::canUpdateImage() const
 }
 
 void
-AudioCdAlbum::setImage( const QPixmap &pixmap )
+AudioCdAlbum::setImage( const QImage &image )
 {
-    m_cover = pixmap;
+    m_cover = image;
+    CoverCache::invalidateAlbum( this );
 }
 
 void
@@ -497,12 +474,6 @@ AudioCdGenre::name() const
     return m_name;
 }
 
-QString
-AudioCdGenre::prettyName() const
-{
-    return m_name;
-}
-
 TrackList
 AudioCdGenre::tracks()
 {
@@ -536,12 +507,6 @@ AudioCdComposer::name() const
     return m_name;
 }
 
-QString
-AudioCdComposer::prettyName() const
-{
-    return m_name;
-}
-
 TrackList
 AudioCdComposer::tracks()
 {
@@ -571,12 +536,6 @@ AudioCdYear::~AudioCdYear()
 
 QString
 AudioCdYear::name() const
-{
-    return m_name;
-}
-
-QString
-AudioCdYear::prettyName() const
 {
     return m_name;
 }

@@ -21,19 +21,19 @@
 
 #include "context/Applet.h"
 #include "context/DataEngine.h"
-#include "core/engine/EngineObserver.h"
 
-#include <ui_labelsSettings.h>
+#include <ui_labelsGeneralSettings.h>
+#include <ui_labelsBlacklistSettings.h>
+#include <ui_labelsReplacementSettings.h>
 
-#include <QPointer>
+#include <QWeakPointer>
 
-class TextScrollingWidget;
 class LabelGraphicsItem;
 class KComboBox;
 class QGraphicsProxyWidget;
 
 
-class LabelsApplet : public Context::Applet, public Engine::EngineObserver
+class LabelsApplet : public Context::Applet
 {
     Q_OBJECT
 
@@ -41,16 +41,10 @@ public:
     LabelsApplet( QObject *parent, const QVariantList &args );
     ~LabelsApplet();
 
-    virtual void init();
-    void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
-
     void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints );
-    
-    // inherited from EngineObserver
-    virtual void engineNewTrackPlaying();
-    virtual void enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason );
 
 public slots:
+    virtual void init();
     void dataUpdated( const QString &name, const Plasma::DataEngine::Data &data );
     void connectSource( const QString &source );
     void toggleLabel( const QString &label );
@@ -60,42 +54,71 @@ public slots:
     void saveSettings();
     
 protected:
-    void createConfigurationInterface(KConfigDialog *parent);
+    void createConfigurationInterface( KConfigDialog *parent );
 
 private:
     void updateLabels();
-    void startDataQuery();
+    void setStoppedState( bool stopped );
 
-    QMap < QString, QVariant >    m_labelInfos;
-    QList < LabelGraphicsItem * > m_labelItems;
-    QStringList             m_currentLabels;
-    QStringList             m_allLabels;
-    
-    QString                 m_titleText;
-    TextScrollingWidget     *m_titleLabel;
-    KComboBox               *m_addLabel;
+    QWeakPointer<Plasma::IconWidget>   m_reloadIcon;
+    QWeakPointer<Plasma::IconWidget>   m_settingsIcon;
+    QString                            m_titleText;
+    QWeakPointer<QGraphicsProxyWidget> m_addLabelProxy;
+    QWeakPointer<KComboBox>            m_addLabel;
 
-    QPointer<QGraphicsProxyWidget> m_addLabelProxy;
+    // all labels currently used by the user in the collection (used for the combobox at the bottom)
+    QStringList                     m_allLabels;
+    // labels assigned to the current track
+    QStringList                     m_userLabels;
+    // labels received through last.fm
+    QMap < QString, QVariant >      m_webLabels;
 
+    // the list of the active label items and their animations - both lists have to be in sync
+    QList < LabelGraphicsItem * >   m_labelItems;
+    QList < QPropertyAnimation * >  m_labelAnimations;
+
+    // the list of the label items that are about to be delete and are "flying out" and their animations - both lists have to be in sync
+    QList < LabelGraphicsItem * >   m_labelItemsToDelete;
+    QList < QPropertyAnimation * >  m_labelAnimationsToDelete;
+
+    // configuration values
     int                     m_numLabels;
     int                     m_minCount;
     int                     m_personalCount;
     bool                    m_autoAdd;
     int                     m_minAutoAddCount;
+    bool                    m_matchArtist;
+    bool                    m_matchTitle;
+    bool                    m_matchAlbum;
     QStringList             m_blacklist;
+    QColor                  m_selectedColor;
+    QColor                  m_backgroundColor;
+
+    QHash < QString, QString > m_replacementMap;
+    
     bool                    m_stoppedstate;
+    QString                 m_artist;
+    QString                 m_title;
+    QString                 m_album;
 
-    QPointer<Plasma::IconWidget> m_reloadIcon;
-    QPointer<Plasma::IconWidget> m_settingsIcon;
-
-    Ui::labelsSettings      ui_Settings;
+    // some information about the last label that the user interacted with so we can optimize the view
+    QString                 m_lastLabelName;        // the label name in order to find it if it got toggled
+    QSizeF                  m_lastLabelSize;        // if the user toggles a label it should be realigned because it's size will change
+    bool                    m_lastLabelBottomAdded; // if the user adds a label through the combobox the animation should start at the combobox
+    
+    Ui::labelsGeneralSettings       ui_GeneralSettings;
+    Ui::labelsBlacklistSettings     ui_BlacklistSettings;
+    Ui::labelsReplacementSettings   ui_ReplacementSettings;
 
 private slots:
-    void resultReady( const QString &collectionId, const Meta::LabelList &labels );
     void reload();
+    void animationFinished();
+    void settingsResetColors();
+    void settingsAddReplacement();
+    void settingsRemoveReplacement();
 
 };
 
-K_EXPORT_AMAROK_APPLET( labels, LabelsApplet )
+AMAROK_EXPORT_APPLET( labels, LabelsApplet )
 
 #endif

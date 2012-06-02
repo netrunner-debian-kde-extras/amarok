@@ -75,8 +75,7 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         QSet<int> allRowsForTrack( const Meta::TrackPtr track ) const;
         Meta::TrackPtr activeTrack() const;
         bool containsTrack( const Meta::TrackPtr track ) const;
-        inline const QString defaultPlaylistPath() const { return Amarok::saveLocation() + "current.xspf"; }
-        virtual bool exportPlaylist( const QString &path ) const;
+        virtual bool exportPlaylist( const QString &path, bool relative = false ) const;
         int firstRowForTrack( const Meta::TrackPtr track ) const;
         quint64 idAt( const int row ) const;
         bool rowExists( int row ) const { return (( row >= 0 ) && ( row < m_items.size() ) ); }
@@ -86,8 +85,8 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         void setActiveRow( int row );
         void setAllNewlyAddedToUnplayed();
         void setAllUnplayed();
-        void setRowQueued( int row );
-        void setRowDequeued( int row );
+        void emitQueueChanged();
+        int queuePositionOfRow( int row );
         Item::State stateOfId( quint64 id ) const;
         Item::State stateOfRow( int row ) const;
         qint64 totalLength() const { return m_totalLength; }
@@ -104,6 +103,11 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
         // static member functions
         static QString prettyColumnName( Column index ); //!< takes a Column enum and returns its string name
 
+        /** Set the columns that are displayed in the tooltip */
+        static void setTooltipColumns( bool columns[] );
+
+        static void enableToolTip( bool enable );
+
     signals:
         void activeTrackChanged( quint64 );
         void queueChanged();
@@ -111,7 +115,13 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
     protected:
         int rowForItem( Item *item ) const { return m_items.indexOf( item ); }
 
+    private slots:
+        void saveState();
+        void queueSaveState();
+
     private:
+        QString tooltipFor( Meta::TrackPtr track ) const;
+
         // Inherited from QAbstractItemModel. Make them private so that nobody is tempted to use them.
         bool insertRow( int, const QModelIndex& parent = QModelIndex() ) { Q_UNUSED( parent ); return false; }
         bool insertRows( int, int, const QModelIndex& parent = QModelIndex() ) { Q_UNUSED( parent ); return false; }
@@ -145,6 +155,11 @@ class AMAROK_EXPORT Model : public QAbstractListModel, public Meta::Observer, pu
 
         int m_setStateOfItem_batchMinRow;    //!< For 'setStateOfItem_batch*()'
         int m_setStateOfItem_batchMaxRow;
+
+        static bool s_tooltipColumns[NUM_COLUMNS];
+        static bool s_showToolTip;
+
+        QTimer *m_saveStateTimer;
 };
 
 } // namespace Playlist

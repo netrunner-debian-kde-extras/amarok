@@ -1,0 +1,34 @@
+[Desktop Entry]
+Name=Spectrum-Analyzer
+Name[ca]=Analitzador d'espectre
+Name[cs]=Spektrální analyzátor
+Name[da]=Spektrumanalysator
+Name[de]=Bandbreitenanalyse
+Name[el]=Spectrum-Analyzer
+Name[es]=Analizador de espectro
+Name[eu]=Espektro-analizatzailea
+Name[it]=Analizzatore di spettro
+Name[nb]=Spektrumanalysator
+Name[nl]=Spectrumanalyser
+Name[pt]=Analisador do Espectro
+Name[pt_BR]=Analisador de Espectro
+Name[ru]=Спектральный анализатор
+Name[sv]=Spektrumanalysator
+Name[uk]=Аналізатор спектра
+Name[x-test]=xxSpectrum-Analyzerxx
+Name[zh_TW]=光譜分析器
+Type=Service
+Icon=spectrum-analyzer-amarok
+ServiceTypes=Plasma/Applet
+
+X-KDE-Library=amarok_context_applet_spectrum_analyzer
+X-KDE-PluginInfo-Author=Daniel Dewald
+X-KDE-PluginInfo-Email=Daniel.Dewald@time-shift.de
+X-KDE-PluginInfo-Name=Spectrum Analyzer
+X-KDE-PluginInfo-Version=1.0
+X-KDE-PluginInfo-Website=
+X-KDE-PluginInfo-Depends=
+X-KDE-PluginInfo-License=GPL
+X-KDE-PluginInfo-EnabledByDefault=true
+X-KDE-ParentApp=amarok
+X-KDE-PluginInfo-Category=Current

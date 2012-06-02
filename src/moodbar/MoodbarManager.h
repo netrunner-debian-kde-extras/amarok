@@ -21,8 +21,7 @@
 #include "amarok_export.h"
 #include "core/meta/Meta.h"
 
-#include "KPixmapCache"
-
+#include <KImageCache>
 #include <QColor>
 #include <QObject>
 
@@ -43,6 +42,14 @@ Q_OBJECT
 friend MoodbarManager* The::moodbarManager();
 
 public:
+    enum Style
+    {
+        SystemColours,
+        Angry,
+        Frozen,
+        Happy,
+        Normal
+    };
     ~MoodbarManager();
 
     bool hasMoodbar( Meta::TrackPtr track );
@@ -52,6 +59,9 @@ signals:
     void moodbarReady( const QPixmap &pixmap );
     void moodbarCreationFailed( const QString &error );
     void moodbarStyleChanged();
+
+private slots:
+    void paletteChanged( const QPalette &palette );
 
 private:
     MoodbarManager();
@@ -65,7 +75,7 @@ private:
     QMap<Meta::TrackPtr, QString> m_moodFileMap;
     QMap<Meta::TrackPtr, MoodbarColorList> m_moodDataMap;
 
-    KPixmapCache * m_cache;
+    KImageCache * m_cache;
 
     int m_lastPaintMode;
 };

@@ -23,7 +23,7 @@
 #include "DaapCollection.h"
 #include "DaapMeta.h"
 #include "core/support/Debug.h"
-#include "statusbar/StatusBar.h"
+
 
 #include <QByteArray>
 #include <QDateTime>
@@ -35,8 +35,6 @@
 
 using namespace Daap;
 using namespace Meta;
-
-QMap<QString, Code> Reader::s_codes;
 
 //#define DEBUGTAG( VAR ) debug() << tag << " has value " << VAR;
 #define DEBUGTAG( VAR )
@@ -53,121 +51,21 @@ Reader::Reader( Collections::DaapCollection* mc, const QString& host, quint16 po
     setObjectName( name );
     debug() << "Host: " << host << " port: " << port;
 
-    if( s_codes.size() == 0 )
-    {
-        s_codes["mtco"] = Code( "dmap.specifiedtotalcount", LONG );
-        s_codes["mdcl"] = Code( "dmap.dictionary", CONTAINER  );
-        s_codes["aeGI"] = Code( "com.apple.itunes.itms-genreid", LONG );
-        s_codes["aeNV"] = Code( "com.apple.itunes.norm-volume", LONG );
-        s_codes["astn"] = Code( "daap.songtracknumber", SHORT );
-        s_codes["abal"] = Code( "daap.browsealbumlisting", CONTAINER  );
-        s_codes["asco"] = Code( "daap.songcompilation", CHAR );
-        s_codes["aeSP"] = Code( "com.apple.itunes.smart-playlist", CHAR );
-        s_codes["ascp"] = Code( "daap.songcomposer", STRING );
-        s_codes["aseq"] = Code( "daap.songeqpreset", STRING );
-        s_codes["abpl"] = Code( "daap.baseplaylist", CHAR );
-        s_codes["msqy"] = Code( "dmap.supportsquery", CHAR );
-        s_codes["aeCI"] = Code( "com.apple.itunes.itms-composerid", LONG );
-        s_codes["mcnm"] = Code( "dmap.contentcodesnumber", LONG );
-        s_codes["abro"] = Code( "daap.databasebrowse", CONTAINER  );
-        s_codes["assz"] = Code( "daap.songsize", LONG );
-        s_codes["abcp"] = Code( "daap.browsecomposerlisting", CONTAINER  );
-        s_codes["aeAI"] = Code( "com.apple.itunes.itms-artistid", LONG );
-        s_codes["aeHV"] = Code( "com.apple.itunes.has-video", CHAR );
-        s_codes["msts"] = Code( "dmap.statusstring", STRING );
-        s_codes["msas"] = Code( "dmap.authenticationschemes", LONG );
-        s_codes["ascr"] = Code( "daap.songcontentrating", CHAR );
-        s_codes["aePI"] = Code( "com.apple.itunes.itms-playlistid", LONG );
-        s_codes["mstt"] = Code( "dmap.status", LONG );
-        s_codes["msix"] = Code( "dmap.supportsindex", CHAR );
-        s_codes["msrs"] = Code( "dmap.supportsresolve", CHAR );
-        s_codes["mccr"] = Code( "dmap.contentcodesresponse", CONTAINER  );
-        s_codes["asdk"] = Code( "daap.songdatakind", CHAR );
-        s_codes["asar"] = Code( "daap.songartist", STRING );
-        s_codes["ascs"] = Code( "daap.songcodecsubtype", LONG );
-        s_codes["msau"] = Code( "dmap.authenticationmethod", CHAR );
-        s_codes["aeSU"] = Code( "com.apple.itunes.season-num", LONG );
-        s_codes["arif"] = Code( "daap.resolveinfo", CONTAINER  );
-        s_codes["asct"] = Code( "daap.songcategory", STRING );
-        s_codes["asfm"] = Code( "daap.songformat", STRING );
-        s_codes["aeEN"] = Code( "com.apple.itunes.episode-num-str", STRING );
-        s_codes["apsm"] = Code( "daap.playlistshufflemode", CHAR );
-        s_codes["abar"] = Code( "daap.browseartistlisting", CONTAINER  );
-        s_codes["mslr"] = Code( "dmap.loginrequired", CHAR );
-        s_codes["msex"] = Code( "dmap.supportsextensions", CHAR );
-        s_codes["mudl"] = Code( "dmap.deletedidlisting", CONTAINER  );
-        s_codes["asdm"] = Code( "daap.songdatemodified", DATE );
-        s_codes["asky"] = Code( "daap.songkeywords", STRING );
-        s_codes["asul"] = Code( "daap.songdataurl", STRING );
-        s_codes["aeSV"] = Code( "com.apple.itunes.music-sharing-version", LONG );
-        s_codes["f\215ch"] = Code( "dmap.haschildcontainers", CHAR );
-        s_codes["mlcl"] = Code( "dmap.listing", CONTAINER  );
-        s_codes["msrv"] = Code( "dmap.serverinforesponse", CONTAINER  );
-        s_codes["asdn"] = Code( "daap.songdiscnumber", SHORT );
-        s_codes["astc"] = Code( "daap.songtrackcount", SHORT );
-        s_codes["apso"] = Code( "daap.playlistsongs", CONTAINER  );
-        s_codes["ascd"] = Code( "daap.songcodectype", LONG );
-        s_codes["minm"] = Code( "dmap.itemname", STRING );
-        s_codes["mimc"] = Code( "dmap.itemcount", LONG );
-        s_codes["mctc"] = Code( "dmap.containercount", LONG );
-        s_codes["aeSF"] = Code( "com.apple.itunes.itms-storefrontid", LONG );
-        s_codes["asrv"] = Code( "daap.songrelativevolume", SHORT );
-        s_codes["msup"] = Code( "dmap.supportsupdate", CHAR );
-        s_codes["mcna"] = Code( "dmap.contentcodesname", STRING );
-        s_codes["agrp"] = Code( "daap.songgrouping", STRING );
-        s_codes["mikd"] = Code( "dmap.itemkind", CHAR );
-        s_codes["mupd"] = Code( "dmap.updateresponse", CONTAINER  );
-        s_codes["aeNN"] = Code( "com.apple.itunes.network-name", STRING );
-        s_codes["asyr"] = Code( "daap.songyear", SHORT );
-        s_codes["aeES"] = Code( "com.apple.itunes.episode-sort", LONG );
-        s_codes["miid"] = Code( "dmap.itemid", LONG );
-        s_codes["msbr"] = Code( "dmap.supportsbrowse", CHAR );
-        s_codes["muty"] = Code( "dmap.updatetype", CHAR );
-        s_codes["mcty"] = Code( "dmap.contentcodestype", SHORT );
-        s_codes["aply"] = Code( "daap.databaseplaylists", CONTAINER  );
-        s_codes["aePP"] = Code( "com.apple.itunes.is-podcast-playlist", CHAR );
-        s_codes["aeSI"] = Code( "com.apple.itunes.itms-songid", LONG );
-        s_codes["assp"] = Code( "daap.songstoptime", LONG );
-        s_codes["aslc"] = Code( "daap.songlongcontentdescription", STRING );
-        s_codes["mcon"] = Code( "dmap.container", CONTAINER  );
-        s_codes["mlit"] = Code( "dmap.listingitem", CONTAINER  );
-        s_codes["asur"] = Code( "daap.songuserrating", CHAR );
-        s_codes["mspi"] = Code( "dmap.supportspersistentids", CHAR );
-        s_codes["assr"] = Code( "daap.songsamplerate", LONG );
-        s_codes["asda"] = Code( "daap.songdateadded", DATE );
-        s_codes["asbr"] = Code( "daap.songbitrate", SHORT );
-        s_codes["mcti"] = Code( "dmap.containeritemid", LONG );
-        s_codes["mpco"] = Code( "dmap.parentcontainerid", LONG );
-        s_codes["msdc"] = Code( "dmap.databasescount", LONG );
-        s_codes["mlog"] = Code( "dmap.loginresponse", CONTAINER  );
-        s_codes["mlid"] = Code( "dmap.sessionid", LONG );
-        s_codes["musr"] = Code( "dmap.serverrevision", LONG );
-        s_codes["asdb"] = Code( "daap.songdisabled", CHAR );
-        s_codes["asdt"] = Code( "daap.songdescription", STRING );
-        s_codes["mbcl"] = Code( "dmap.bag", CONTAINER  );
-        s_codes["msal"] = Code( "dmap.supportsautologout", CHAR );
-        s_codes["mstm"] = Code( "dmap.timeoutinterval", LONG );
-        s_codes["asdc"] = Code( "daap.songdisccount", SHORT );
-        s_codes["asbt"] = Code( "daap.songbeatsperminute", SHORT );
-        s_codes["asgn"] = Code( "daap.songgenre", STRING );
-        s_codes["aprm"] = Code( "daap.playlistrepeatmode", CHAR );
-        s_codes["asst"] = Code( "daap.songstarttime", LONG );
-        s_codes["mper"] = Code( "dmap.persistentid", LONGLONG );
-        s_codes["mrco"] = Code( "dmap.returnedcount", LONG );
-        s_codes["mpro"] = Code( "dmap.protocolversion", DVERSION );
-        s_codes["ascm"] = Code( "daap.songcomment", STRING );
-        s_codes["aePC"] = Code( "com.apple.itunes.is-podcast", CHAR );
-        s_codes["aeSN"] = Code( "com.apple.itunes.series-name", STRING );
-        s_codes["arsv"] = Code( "daap.resolve", CONTAINER  );
-        s_codes["asal"] = Code( "daap.songalbum", STRING );
-        s_codes["apro"] = Code( "daap.protocolversion", DVERSION );
-        s_codes["avdb"] = Code( "daap.serverdatabases", CONTAINER  );
-        s_codes["aeMK"] = Code( "com.apple.itunes.mediakind", CHAR );
-        s_codes["astm"] = Code( "daap.songtime", LONG );
-        s_codes["adbs"] = Code( "daap.databasesongs", CONTAINER  );
-        s_codes["abgn"] = Code( "daap.browsegenrelisting", CONTAINER  );
-        s_codes["ascn"] = Code( "daap.songcontentdescription", STRING );
-    }
+    // these content codes are needed to learn all others
+    m_codes["mccr"] = Code( "dmap.contentcodesresponse", CONTAINER );
+    m_codes["mstt"] = Code( "dmap.status", LONG );
+    m_codes["mdcl"] = Code( "dmap.dictionary", CONTAINER );
+    // mcnm is actually an int, but string makes parsing easier
+    m_codes["mcnm"] = Code( "dmap.contentcodesnumber", STRING );
+    m_codes["mcna"] = Code( "dmap.contentcodesname", STRING );
+    m_codes["mcty"] = Code( "dmap.contentcodestype", SHORT );
+
+    // stupid, stupid. The reflection just isn't good enough
+    // to connect to an iPhoto server.
+    m_codes["ppro"] = Code( "dpap.protocolversion", LONG );
+    m_codes["avdb"] = Code( "daap.serverdatabases", CONTAINER );
+    m_codes["adbs"] = Code( "daap.databasesongs", CONTAINER );
+    m_codes["pret"] = Code( "dpap.unknown", CONTAINER );
 }
 
 Reader::~Reader()
@@ -197,6 +95,41 @@ Reader::loginRequest()
     DEBUG_BLOCK
     ContentFetcher* http = new ContentFetcher( m_host, m_port, m_password, this, "readerHttp");
     connect( http, SIGNAL( httpError( const QString& ) ), this, SLOT( fetchingError( const QString& ) ) );
+    connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( contentCodesReceived( int, bool ) ) );
+    http->getDaap( "/content-codes" );
+}
+
+void
+Reader::contentCodesReceived( int /* id */, bool error )
+{
+    DEBUG_BLOCK
+    ContentFetcher* http = (ContentFetcher*) sender();
+    disconnect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( contentCodesReceived( int, bool ) ) );
+    if( error )
+    {
+        http->deleteLater();
+        return;
+    }
+
+    QDataStream raw( http->results() );
+    Map contentCodes = parse( raw );
+    QList<QVariant> root = contentCodes["mccr"].toList();
+    if( root.isEmpty() )
+        return; //error
+    root = root[0].toMap()["mdcl"].toList();
+    foreach( QVariant v, root )
+    {
+        Map entry = v.toMap();
+        QString code = entry["mcnm"].toList()[0].toString();
+        QString name = entry["mcna"].toList()[0].toString();
+        ContentTypes type = static_cast< ContentTypes > ( entry["mcty"].toList()[0].toInt() );
+        if( !m_codes.contains( code ) && !code.isEmpty() && type > 0 )
+        {
+            m_codes[code] = Code( name, type );
+            debug() << "Added DAAP code" << code << ":" << name << "with type" << type;
+        }
+    }
+
     connect( http, SIGNAL(  responseHeaderReceived( const QHttpResponseHeader & ) )
             , this, SLOT( loginHeaderReceived( const QHttpResponseHeader & ) ) );
     http->getDaap( "/login" );
@@ -231,7 +164,7 @@ Reader::loginFinished( int /* id */, bool error )
         return;
     }
     QDataStream raw( http->results() );
-    Map loginResults = parse( raw, 0, true );
+    Map loginResults = parse( raw );
     debug() << "list size is " << loginResults["mlog"].toList().size();
     if( loginResults["mlog"].toList().size() == 0 )
         return;
@@ -258,7 +191,7 @@ Reader::updateFinished( int /*id*/, bool error )
     }
 
     QDataStream raw( http->results() );
-    Map updateResults = parse( raw, 0, true );
+    Map updateResults = parse( raw );
     if( updateResults["mupd"].toList().isEmpty() )
         return; //error
     if( updateResults["mupd"].toList()[0].toMap()["musr"].toList().isEmpty() )
@@ -282,7 +215,7 @@ Reader::databaseIdFinished( int /*id*/, bool error )
     }
 
     QDataStream raw( http->results() );
-    Map dbIdResults = parse( raw, 0, true );
+    Map dbIdResults = parse( raw );
     m_databaseId = QString::number( dbIdResults["avdb"].toList()[0].toMap()["mlcl"].toList()[0].toMap()["mlit"].toList()[0].toMap()["miid"].toList()[0].toInt() );
     connect( http, SIGNAL( requestFinished( int, bool ) ), this, SLOT( songListFinished( int, bool ) ) );
     http->getDaap( QString("/databases/%1/items?type=music&meta=dmap.itemid,dmap.itemname,daap.songformat,daap.songartist,daap.songalbum,daap.songtime,daap.songtracknumber,daap.songcomment,daap.songyear,daap.songgenre&%2")
@@ -308,7 +241,7 @@ Reader::songListFinished( int /*id*/, bool error )
 }
 
 bool
-Reader::parseSongList( const QByteArray &data )
+Reader::parseSongList( const QByteArray &data, bool set_collection )
 {
     // The original implementation used parse(), which uses addElement() and
     // makes heavy usage of QMaps and QList which hurts performance very badly.
@@ -322,7 +255,6 @@ Reader::parseSongList( const QByteArray &data )
     QDataStream raw( data );
 
     // Cache for music data
-    uint index = 0;
     QString itemId;
     QString format;
     QString title;
@@ -331,127 +263,81 @@ Reader::parseSongList( const QByteArray &data )
     QString comment;
     QString album;
     QString genre;
-    QString year;
+    int year = 0;
     qint32 trackNumber=0;
     qint32 songTime=0;
 
     while( !raw.atEnd() )
     {
-        char tag[5];
-        quint32 tagLength = getTagAndLength( raw, tag );
+        char rawTag[5];
+        quint32 tagLength = getTagAndLength( raw, rawTag );
+
         if( tagLength == 0 )
-        {
-            index += 8;
             continue;
-        }
-        switch( s_codes[tag].type )
+
+        QVariant tagData = readTagData( raw, rawTag, tagLength );
+
+        if( !tagData.isValid() )
+            continue;
+
+        QString tag = QString( rawTag );
+
+        if( m_codes[tag].type == CONTAINER )
         {
-            case CHAR:
-            {
-                qint8 charData;
-                raw >> charData; DEBUGTAG( charData )
-                break;
-            }
-            case SHORT:
-            {
-                qint16 shortData;
-                raw >> shortData; DEBUGTAG( shortData )
-                if ( QString( tag ) == "astn" )
-                    trackNumber = shortData;
-                else if ( QString( tag ) == "asyr" )
-                     year = QString::number(shortData);
-                break;
-            }
-            case LONG:
-            {
-                qint32 longData;
-                raw >> longData; DEBUGTAG( longData )
-                if ( QString( tag ) == "miid" )
-                    itemId = QString::number( longData );
-                if ( QString( tag ) == "astm" )
-                    songTime = longData;
-                break;
-            }
-            case LONGLONG:
-            {
-                qint64 longlongData;
-                raw >> longlongData; DEBUGTAG( longlongData )
-                break;
-            }
-            case STRING:
-            {
-                QByteArray stringData(tagLength, ' ');
-                raw.readRawData( stringData.data(), tagLength ); DEBUGTAG( QString::fromUtf8( stringData, tagLength ) )
-                if ( QString( tag ) == "asfm" )
-                     format = QString::fromUtf8( stringData, tagLength );
-                else if ( QString( tag ) == "minm" )
-                     title = QString::fromUtf8( stringData, tagLength );
-                else if ( QString( tag ) == "asal" )
-                     album = QString::fromUtf8( stringData, tagLength );
-                else if ( QString( tag ) == "asar" )
-                     artist = QString::fromUtf8( stringData, tagLength );
-                else if ( QString( tag ) == "ascp" )
-                     composer = QString::fromUtf8( stringData, tagLength );
-                else if ( QString( tag ) == "ascm" )
-                     comment = QString::fromUtf8( stringData, tagLength );
-                else if ( QString( tag ) == "asgn" )
-                     genre = QString::fromUtf8( stringData, tagLength );
-                break;
-            }
-            case DATE:
-            {
-                qint64 dateData;
-                QDateTime date;
-                raw >> dateData; DEBUGTAG( dateData )
-                date.setTime_t(dateData);
-                break;
-            }
-            case DVERSION:
-            {
-                qint16 major;
-                qint8 minor;
-                qint8 patchLevel;
-                raw >> major >> minor >> patchLevel; DEBUGTAG( patchLevel )
-                break;
-            }
-            case CONTAINER:
-            {
-                if ( QString( tag ) == "mlit" )
-                    addTrack( itemId, title, artist, composer, comment, album, genre, year, format, trackNumber, songTime );
-                break;
-            }
-            default:
-            {
-                warning() << tag << " does not work";
-                break;
-            }
+             parseSongList( tagData.toByteArray() );
+             continue;
         }
-        index += tagLength + 8;
+
+        if( tag == "astn" )
+            trackNumber = tagData.toInt();
+        else if( tag == "asyr" )
+            year = tagData.toInt();
+        else if( tag == "miid" )
+            itemId = tagData.toString();
+        else if(tag == "astm" )
+            songTime = tagData.toInt();
+        else if( tag== "asfm" )
+            format = tagData.toString();
+        else if( tag == "minm" )
+            title = tagData.toString();
+        else if( tag == "asal" )
+            album = tagData.toString();
+        else if( tag == "asar" )
+            artist = tagData.toString();
+        else if( tag == "ascp" )
+            composer = tagData.toString();
+        else if( tag == "ascm" )
+            comment = tagData.toString();
+        else if( tag == "asgn" )
+            genre = tagData.toString();
     }
 
-    addTrack( itemId, title, artist, composer, comment, album, genre, year, format, trackNumber, songTime );
+    if( !itemId.isEmpty() )
+        addTrack( itemId, title, artist, composer, comment, album, genre, year, format, trackNumber, songTime );
 
-    m_memColl->memoryCollection()->acquireWriteLock();
-    m_memColl->memoryCollection()->setTrackMap( m_trackMap );
-    m_memColl->memoryCollection()->setArtistMap( m_artistMap );
-    m_memColl->memoryCollection()->setAlbumMap( m_albumMap );
-    m_memColl->memoryCollection()->setGenreMap( m_genreMap );
-    m_memColl->memoryCollection()->setComposerMap( m_composerMap );
-    m_memColl->memoryCollection()->setYearMap( m_yearMap );
-    m_memColl->memoryCollection()->releaseLock();
-    m_trackMap.clear();
-    m_artistMap.clear();
-    m_albumMap.clear();
-    m_genreMap.clear();
-    m_composerMap.clear();
-    m_yearMap.clear();
-
+    if( set_collection )
+    {
+        m_memColl->memoryCollection()->acquireWriteLock();
+        m_memColl->memoryCollection()->setTrackMap( m_trackMap );
+        m_memColl->memoryCollection()->setArtistMap( m_artistMap );
+        m_memColl->memoryCollection()->setAlbumMap( m_albumMap );
+        m_memColl->memoryCollection()->setGenreMap( m_genreMap );
+        m_memColl->memoryCollection()->setComposerMap( m_composerMap );
+        m_memColl->memoryCollection()->setYearMap( m_yearMap );
+        m_memColl->memoryCollection()->releaseLock();
+        m_trackMap.clear();
+        m_artistMap.clear();
+        m_albumMap.clear();
+        m_genreMap.clear();
+        m_composerMap.clear();
+        m_yearMap.clear();
+    }
     return true;
 }
 
 void
 Reader::addTrack( const QString& itemId, const QString& title, const QString& artist, const QString& composer,
-                  const QString& comment, const QString& album, const QString& genre, const QString& year, const QString& format,
+                  const QString& comment, const QString& album, const QString& genre, int year, const QString& format,
                   qint32 trackNumber, qint32 songTime )
 {
     DaapTrackPtr track( new DaapTrack( m_memColl, m_host, m_port, m_databaseId, itemId, format ) );
@@ -499,7 +385,7 @@ Reader::addTrack( const QString& itemId, const QString& title, const QString& ar
         yearPtr = DaapYearPtr::staticCast( m_yearMap.value( year ) );
     else
     {
-        yearPtr = DaapYearPtr( new DaapYear( year ) );
+        yearPtr = DaapYearPtr( new DaapYear( QString::number(year) ) );
         m_yearMap.insert( year, YearPtr::staticCast( yearPtr ) );
     }
     yearPtr->addTrack( track );
@@ -529,8 +415,99 @@ Reader::getTagAndLength( QDataStream &raw, char tag[5] )
     return tagLength;
 }
 
+QVariant
+Reader::readTagData( QDataStream &raw, char *tag, quint32 tagLength)
+{
+    /**
+    * Consume tagLength bytes of data from the stream and convert it to the
+    * proper type, while making sure that datalength/datatype mismatches are handled properly
+    */
+
+    QVariant ret = QVariant();
+
+    if ( tagLength == 0 )
+        return ret;
+
+#define READ_DATA(var) \
+    DEBUGTAG( var ) \
+    if( sizeof(var) != tagLength ) { \
+        warning() << "Bad tag data length:" << tag << ":" << tagLength; \
+        raw.skipRawData(tagLength); \
+        break; \
+    } else { \
+        raw >> var ; \
+        ret = QVariant(var); \
+    }
+    switch( m_codes[tag].type )
+    {
+        case CHAR:
+        {
+            qint8 charData;
+            READ_DATA( charData )
+            break;
+        }
+        case SHORT:
+        {
+            qint16 shortData;
+            READ_DATA( shortData )
+            break;
+        }
+        case LONG:
+        {
+            qint32 longData;
+            READ_DATA( longData );
+            break;
+        }
+        case LONGLONG:
+        {
+            qint64 longlongData;
+            READ_DATA( longlongData );
+            break;
+        }
+        case STRING:
+        {
+            QByteArray stringData( tagLength, ' ' );
+            raw.readRawData( stringData.data(), tagLength );
+            ret = QVariant(QString::fromUtf8( stringData, tagLength ));
+            DEBUGTAG( QString::fromUtf8( stringData, tagLength ) )
+            break;
+        }
+        case DATE:
+        {
+            qint64 dateData;
+            READ_DATA( dateData )
+            QDateTime date;
+            date.setTime_t( dateData );
+            ret = QVariant( date );
+            break;
+        }
+        case DVERSION:
+        {
+            qint32 verData;
+            READ_DATA( verData )
+            QString version( "%1.%2.%3" );
+            version.arg( verData >> 16, (verData >> 8) & 0xFF, verData & 0xFF);
+            ret = QVariant( version );
+            break;
+        }
+        case CONTAINER:
+        {
+            QByteArray containerData( tagLength, ' ' );
+            raw.readRawData( containerData.data(), tagLength );
+            ret = QVariant( containerData );
+            break;
+        }
+        default:
+            warning() << "Tag" << tag << "has unhandled type.";
+            raw.skipRawData(tagLength);
+            break;
+    }
+#undef READ_DATA
+    return ret;
+}
+
 Map
-Reader::parse( QDataStream &raw, uint containerLength, bool first )
+Reader::parse( QDataStream &raw )
 {
     DEBUG_BLOCK
     /**
@@ -540,85 +517,24 @@ Reader::parse( QDataStream &raw, uint containerLength, bool first )
      * 8-      Data    The data contained within the chunk
      **/
     Map childMap;
-    uint index = 0;
-    while( (first ? !raw.atEnd() : ( index < containerLength ) ) )
+    while( !raw.atEnd() )
     {
         char tag[5];
         quint32 tagLength = getTagAndLength( raw, tag );
         if( tagLength == 0 )
-        {
-            index += 8;
             continue;
-        }
-        switch( s_codes[tag].type )
+
+        QVariant tagData = readTagData(raw, tag, tagLength);
+        if( !tagData.isValid() )
+            continue;
+
+        if( m_codes[tag].type == CONTAINER )
         {
-            case CHAR:
-            {
-                qint8 charData;
-                raw >> charData; DEBUGTAG( charData )
-                addElement( childMap, tag, QVariant( static_cast<int>(charData) ) );
-                break;
-            }
-            case SHORT:
-            {
-                qint16 shortData;
-                raw >> shortData; DEBUGTAG( shortData )
-                addElement( childMap, tag, QVariant( static_cast<int>(shortData) ) );
-                break;
-            }
-            case LONG:
-            {
-                qint32 longData;
-                raw >> longData; DEBUGTAG( longData )
-                addElement( childMap, tag, QVariant( longData ) );
-                break;
-            }
-            case LONGLONG:
-            {
-                qint64 longlongData;
-                raw >> longlongData; DEBUGTAG( longlongData )
-                addElement( childMap, tag, QVariant( longlongData ) );
-                break;
-            }
-            case STRING:
-            {
-                QByteArray stringData(tagLength, ' ');
-                raw.readRawData( stringData.data(), tagLength ); DEBUGTAG( QString::fromUtf8( stringData, tagLength ) )
-                addElement( childMap, tag, QVariant( QString::fromUtf8( stringData, tagLength ) ) );
-                break;
-            }
-            case DATE:
-            {
-                qint64 dateData;
-                QDateTime date;
-                raw >> dateData; DEBUGTAG( dateData )
-                date.setTime_t(dateData);
-                addElement( childMap, tag, QVariant( date ) );
-                break;
-            }
-            case DVERSION:
-            {
-                qint16 major;
-                qint8 minor;
-                qint8 patchLevel;
-                raw >> major >> minor >> patchLevel; DEBUGTAG( patchLevel )
-                QString version("%1.%2.%3");
-                version.arg(major, minor, patchLevel);
-                addElement( childMap, tag, QVariant(version) );
-            }
-            case CONTAINER:
-            {
-                DEBUGTAG( 11 )
-                addElement( childMap, tag, QVariant( parse( raw, tagLength ) ) );
-                break;
-            }
-            default:
-            {
-                warning() << tag << " does not work";
-                break;
-            }
+            QDataStream substream( tagData.toByteArray() );
+            addElement( childMap, tag, QVariant( parse( substream ) ) );
         }
-        index += tagLength + 8;
+        else
+            addElement( childMap, tag, tagData );
     }
     return childMap;
 }
@@ -671,7 +587,7 @@ WorkerThread::success() const
 void
 WorkerThread::run()
 {
-    m_success = m_reader->parseSongList( m_data );
+    m_success = m_reader->parseSongList( m_data, true );
 }
 
 #include "Reader.moc"

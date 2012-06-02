@@ -22,10 +22,12 @@
 #include "PresetEditDialog.h"
 
 #include "amarokconfig.h"
+#include "core/interfaces/Logger.h"
 #include "core/collections/Collection.h"
+#include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
-#include "statusbar/StatusBar.h"
+
 
 #include <KFileDialog>
 #include <KUrl>
@@ -62,7 +64,7 @@ APG::PresetModel::PresetModel()
         : QAbstractListModel()
         , m_activePresetIndex( 0 )
 {
-    loadPresetsFromXml( Amarok::saveLocation() + "playlistgenerator.xml" );
+    loadPresetsFromXml( Amarok::saveLocation() + "playlistgenerator.xml", true );
 }
 
 APG::PresetModel::~PresetModel()
@@ -191,13 +193,15 @@ APG::PresetModel::setActivePreset( const QModelIndex& index )
 }
 
 void
-APG::PresetModel::savePresetsToXml( const QString& filename, const QList<APG::PresetPtr> pl ) const
+APG::PresetModel::savePresetsToXml( const QString& filename, const QList<APG::PresetPtr> &pl ) const
 {
     QDomDocument xmldoc;
     QDomElement base = xmldoc.createElement( "playlistgenerator" );
+    QList<QDomNode*> nodes;
     foreach ( APG::PresetPtr ps, pl ) {
         QDomElement* elemPtr = ps->toXml( xmldoc );
         base.appendChild( (*elemPtr) );
+        nodes << elemPtr;
     }
 
     xmldoc.appendChild( base );
@@ -206,17 +210,23 @@ APG::PresetModel::savePresetsToXml( const QString& filename, const QList<APG::Pr
         QTextStream out( &file );
         out.setCodec( "UTF-8" );
         xmldoc.save( out, 2, QDomNode::EncodingFromTextStream );
-        if ( !filename.contains( "playlistgenerator.xml" ) ) {
-            The::statusBar()->longMessage( i18n("Preset exported to %1", filename), StatusBar::Information );
+        if( !filename.contains( "playlistgenerator.xml" ) )
+        {
+            Amarok::Components::logger()->longMessage( i18n("Preset exported to %1", filename),
+                                                       Amarok::Logger::Information );
         }
-    } else {
-        The::statusBar()->longMessage( i18n("Preset could not be exported to %1", filename), StatusBar::Sorry );
+    }
+    else
+    {
+        Amarok::Components::logger()->longMessage(
+                    i18n("Preset could not be exported to %1", filename), Amarok::Logger::Error );
         error() << "Can not write presets to " << filename;
     }
+    qDeleteAll( nodes );
 }
 
 void
-APG::PresetModel::loadPresetsFromXml( const QString& filename )
+APG::PresetModel::loadPresetsFromXml( const QString& filename, bool createDefaults )
 {
     QFile file( filename );
     if ( file.open( QIODevice::ReadOnly ) ) {
@@ -226,12 +236,16 @@ APG::PresetModel::loadPresetsFromXml( const QString& filename )
             parseXmlToPresets( document );
         } else {
             error() << "Failed to read" << filename;
-            The::statusBar()->longMessage( i18n("Presets could not be imported from %1", filename), StatusBar::Sorry );
+            Amarok::Components::logger()->longMessage(
+                        i18n("Presets could not be imported from %1", filename),
+                        Amarok::Logger::Error );
         }
         file.close();
     } else {
-        if ( !filename.contains( "playlistgenerator.xml" ) ) {
-            The::statusBar()->longMessage( i18n("%1 could not be opened for preset import", filename), StatusBar::Sorry );
+        if ( !createDefaults ) {
+            Amarok::Components::logger()->longMessage(
+                        i18n("%1 could not be opened for preset import", filename),
+                        Amarok::Logger::Error );
         } else {
             QDomDocument document;
             QString translatedPresetExamples( presetExamples.arg(
@@ -289,7 +303,7 @@ APG::PresetModel::ExportDialog::ExportDialog( APG::PresetPtr ps )
     setSelection( ps->title() + ".xml" );
     setOperationMode( KFileDialog::Saving );
     setKeepLocation( true );
-    setCaption( i18n("Export `%1' preset", ps->title() ) );
+    setCaption( i18n( "Export \"%1\" preset", ps->title() ) );
     connect( this, SIGNAL( okClicked() ), this, SLOT( recvAccept() ) );
 }
 
@@ -323,7 +337,7 @@ const QString APG::PresetModel::presetExamples =
 "  <generatorpreset title=\"%3\">"
 "    <constrainttree>"
 "      <group matchtype=\"all\">"
-"        <constraint comparison=\"1\" length=\"3600000\" type=\"PlaylistLength\" strictness=\"0.3\"/>"
+"        <constraint comparison=\"1\" duration=\"3600000\" type=\"PlaylistDuration\" strictness=\"0.3\"/>"
 "        <constraint field=\"2\" type=\"PreventDuplicates\"/>"
 "      </group>"
 "    </constrainttree>"
@@ -334,7 +348,7 @@ const QString APG::PresetModel::presetExamples =
 "        <constraint field=\"0\" type=\"PreventDuplicates\"/>"
 "        <constraint field=\"last played\" comparison=\"3\" invert=\"true\" type=\"TagMatch\" value=\"7 days\" strictness=\"0.4\"/>"
 "        <constraint field=\"rating\" comparison=\"2\" invert=\"false\" type=\"TagMatch\" value=\"6\" strictness=\"1\"/>"
-"        <constraint comparison=\"1\" length=\"10800000\" type=\"PlaylistLength\" strictness=\"0.3\"/>"
+"        <constraint comparison=\"1\" duration=\"10800000\" type=\"PlaylistDuration\" strictness=\"0.3\"/>"
 "      </group>"
 "    </constrainttree>"
 "  </generatorpreset>"
@@ -347,8 +361,8 @@ const QString APG::PresetModel::presetExamples =
 "          <constraint field=\"genre\" comparison=\"3\" invert=\"false\" type=\"TagMatch\" value=\"Industrial\" strictness=\"1\"/>"
 "        </group>"
 "        <group matchtype=\"all\">"
-"          <constraint comparison=\"2\" length=\"4500000\" type=\"PlaylistLength\" strictness=\"0.4\"/>"
-"          <constraint comparison=\"0\" length=\"4800000\" type=\"PlaylistLength\" strictness=\"1\"/>"
+"          <constraint comparison=\"2\" duration=\"4500000\" type=\"PlaylistDuration\" strictness=\"0.4\"/>"
+"          <constraint comparison=\"0\" duration=\"4800000\" type=\"PlaylistDuration\" strictness=\"1\"/>"
 "        </group>"
 "      </group>"
 "    </constrainttree>"

@@ -14,9 +14,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-//Plasma applet for showing videoclip in the context view
+#define DEBUG_PREFIX "VideoclipApplet"
 
-#include "VideoclipApplet.h" 
+#include "VideoclipApplet.h"
 
 #include "CustomVideoWidget.h"
 #include "PaletteHandler.h"
@@ -30,11 +30,10 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "context/ContextView.h"
 #include "context/Svg.h"
-#include "playlist/PlaylistModelStack.h"
+#include "context/widgets/RatingWidget.h"
+#include "playlist/PlaylistController.h"
 #include "SvgHandler.h"
-#include "widgets/kratingpainter.h"
-#include "widgets/kratingwidget.h"
-#include "widgets/TextScrollingWidget.h"
+#include "widgets/AppletHeader.h"
 
 // KDE
 #include <KColorScheme>
@@ -44,6 +43,9 @@
 #include <Plasma/Theme>
 #include <Plasma/BusyWidget>
 #include <Plasma/IconWidget>
+#include <Plasma/Label>
+#include <Plasma/Separator>
+#include <Plasma/ScrollWidget>
 #include <Phonon/MediaObject>
 #include <Phonon/Path>
 #include <Phonon/VideoWidget>
@@ -51,6 +53,7 @@
 // Qt
 #include <QGraphicsLinearLayout>
 #include <QGraphicsProxyWidget>
+#include <QGraphicsSceneResizeEvent>
 #include <QGraphicsWidget>
 #include <QGridLayout>
 #include <QLabel>
@@ -59,169 +62,170 @@
 #include <QScrollArea>
 #include <QScrollBar>
 
-#define DEBUG_PREFIX "VideoclipApplet"
-
-
-
-
 Q_DECLARE_METATYPE ( VideoInfo *)
-K_EXPORT_AMAROK_APPLET( videoclip, VideoclipApplet )
+AMAROK_EXPORT_APPLET( videoclip, VideoclipApplet )
 
-
+/**
+ * Plasma applet for showing a videoclip in the context view
+ */
 VideoclipApplet::VideoclipApplet( QObject* parent, const QVariantList& args )
         : Context::Applet( parent, args )
-        , Engine::EngineObserver( The::engineController() )
-        , m_videoWidget( 0 )
         , m_settingsIcon( 0 )
         , m_youtubeHQ( false )
 {
-    DEBUG_BLOCK
     setHasConfigurationInterface( true );
 }
 
-void 
+void
 VideoclipApplet::init()
 {
-    setBackgroundHints( Plasma::Applet::NoBackground );
+    DEBUG_BLOCK
 
-    m_height = 300;
-    resize( size().width(), m_height );
+    // Call the base implementation.
+    Context::Applet::init();
 
     // CustomWidget is a special VideoWidget for interaction
     m_videoWidget = new CustomVideoWidget();
-    m_videoWidget->setParent( Context::ContextView::self()->viewport(), Qt::SubWindow | Qt::FramelessWindowHint );
-    m_videoWidget->hide();
-    
-    // we create path no need to add a lot of fancy thing 
-    Phonon::createPath( const_cast<Phonon::MediaObject*>( The::engineController()->phononMediaObject() ), m_videoWidget );
+    m_videoWidget.data()->setParent( Context::ContextView::self()->viewport(), Qt::SubWindow | Qt::FramelessWindowHint );
+    m_videoWidget.data()->hide();
 
-    
+    // we create path no need to add a lot of fancy thing
+    Phonon::createPath( const_cast<Phonon::MediaObject*>( The::engineController()->phononMediaObject() ), m_videoWidget.data() );
+
     // Load pixmap
-    m_pixYoutube = new QPixmap( KStandardDirs::locate( "data", "amarok/images/amarok-videoclip-youtube.png" ) );
-    m_pixDailymotion = new QPixmap( KStandardDirs::locate( "data", "amarok/images/amarok-videoclip-dailymotion.png" ) );
-    m_pixVimeo = new QPixmap( KStandardDirs::locate( "data", "amarok/images/amarok-videoclip-vimeo.png" ) );
+    m_pixYoutube = QPixmap( KStandardDirs::locate( "data", "amarok/images/amarok-videoclip-youtube.png" ) );
+    m_pixDailymotion = QPixmap( KStandardDirs::locate( "data", "amarok/images/amarok-videoclip-dailymotion.png" ) );
+    m_pixVimeo = QPixmap( KStandardDirs::locate( "data", "amarok/images/amarok-videoclip-vimeo.png" ) );
+
+    // Create label
+    enableHeader( true );
+    setHeaderText( i18n( "Video Clip" ) );
 
     QAction* langAction = new QAction( this );
     langAction->setIcon( KIcon( "preferences-system" ) );
     langAction->setVisible( true );
     langAction->setEnabled( true );
     langAction->setText( i18n( "Settings" ) );
-    m_settingsIcon = addAction( langAction );
+    m_settingsIcon = addRightHeaderAction( langAction );
     connect( m_settingsIcon, SIGNAL( clicked() ), this, SLOT( showConfigurationInterface() ) );
 
-    
-    // Create label
-    QFont labelFont;
-    labelFont.setPointSize( labelFont.pointSize() + 2 );
-    m_headerText = new TextScrollingWidget( this );
-    m_headerText->setBrush( Plasma::Theme::defaultTheme()->color( Plasma::Theme::TextColor ) );
-    m_headerText->setFont( labelFont );
-    m_headerText->setText( i18n( "Video Clip" ) );
-
     // Set the collapse size
-    setCollapseHeight( m_headerText->boundingRect().height() + 3 * standardPadding() );
+    setCollapseOffHeight( 300 );
+    setCollapseHeight( m_header->height() );
+    setMinimumHeight( collapseHeight() );
+    setPreferredHeight( collapseHeight() );
+    setMaximumHeight( 300 );
 
     // Create layout
-    m_layout = new QHBoxLayout();
-    m_layout->setSizeConstraint( QLayout::SetMinAndMaxSize );
-    m_layout->setContentsMargins( 5, 5, 5, 5 );
-    m_layout->setSpacing( 2 );
-
-    // create a widget
-    QWidget *window = new QWidget;
-    window->setAttribute( Qt::WA_NoSystemBackground );
-    window->setLayout( m_layout );
+    m_scrollLayout = new QGraphicsLinearLayout( Qt::Horizontal );
+    m_scrollLayout->setContentsMargins( 8, 0, 8, 0 );
+    m_scrollLayout->setSpacing( 2 );
+    m_scrollLayout->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
     // create a scroll Area
-    m_scroll = new QScrollArea();
-    m_scroll->setMaximumHeight( m_height - m_headerText->boundingRect().height() - 4*standardPadding() );
-    m_scroll->setWidget( window );
-    m_scroll->setAttribute( Qt::WA_NoSystemBackground );
-    m_scroll->viewport()->setAttribute( Qt::WA_NoSystemBackground );
+    m_scroll = new Plasma::ScrollWidget( this );
+    QGraphicsWidget *scrollContent = new QGraphicsWidget( this );
+    scrollContent->setLayout( m_scrollLayout );
+    m_scroll->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    m_scroll->setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+    m_scroll->setWidget( scrollContent );
 
-    m_widget = new QGraphicsProxyWidget( this );
-    m_widget->setWidget( m_scroll );
-
-    constraintsEvent();
-    
-    //Update the applet (render properly the header)
-    update();
+    m_layout = new QGraphicsLinearLayout( Qt::Vertical, this );
+    m_layout->addItem( m_header );
+    m_layout->addItem( m_scroll );
+    m_layout->setAlignment( m_scroll, Qt::AlignHCenter );
+    m_layout->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
     connectSource( "videoclip" );
-    
     connect( dataEngine( "amarok-videoclip" ), SIGNAL( sourceAdded( const QString & ) ),
              this, SLOT( connectSource( const QString & ) ) );
-
-    engineStateChanged(Phonon::PlayingState,Phonon::StoppedState);// kickstart
 
     // Read config and inform the engine.
     KConfigGroup config = Amarok::config("Videoclip Applet");
     m_youtubeHQ = config.readEntry( "YoutubeHQ", false );
     dataEngine( "amarok-videoclip" )->query( QString( "videoclip:youtubeHQ:" ) + QString().setNum( m_youtubeHQ ) );
-    
+
+    EngineController *engine = The::engineController();
+    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)), SLOT(trackPlaying()) );
+    connect( engine, SIGNAL(stopped(qint64,qint64)), SLOT(stopped()) );
+
+    const Phonon::MediaObject *media = engine->phononMediaObject();
+    connect( media, SIGNAL(stateChanged(Phonon::State, Phonon::State)),
+             this, SLOT(stateChanged(Phonon::State, Phonon::State)), Qt::QueuedConnection );
+
+    updateConstraints();
+    update();
 }
 
 VideoclipApplet::~VideoclipApplet()
 {
-    DEBUG_BLOCK
-   
-    delete m_videoWidget;
+    delete m_videoWidget.data();
     qDeleteAll( m_videoItemButtons );
 }
 
-void 
-VideoclipApplet::engineNewTrackPlaying()
+void
+VideoclipApplet::trackPlaying()
 {
     DEBUG_BLOCK
     // on new track, we expand the applet if not already
+    setMinimumHeight( 300 );
+    setMaximumHeight( 300 );
     setCollapseOff();
-    m_videoWidget->hide();
+    m_layout->addItem( m_scroll );
+    m_scroll->show();
 }
 
 void
-VideoclipApplet::engineStateChanged(Phonon::State currentState, Phonon::State oldState)
+VideoclipApplet::resizeEvent( QGraphicsSceneResizeEvent * event )
 {
-    DEBUG_BLOCK
+    Context::Applet::resizeEvent( event );
+    if( m_videoWidget && m_videoWidget.data()->isVisible() )
+        m_videoWidget.data()->setGeometry( m_scroll->geometry().toRect() );
+}
 
-    debug() << "video old state: " << oldState << " new state: " << currentState;
+void
+VideoclipApplet::stateChanged(Phonon::State currentState, Phonon::State oldState)
+{
+    // DEBUG_BLOCK
+    // debug() << "video old state: " << oldState << " new state: " << currentState;
 
-    if ( currentState == oldState )
+    if( currentState == oldState )
         return;
 
-    switch ( currentState )
+    switch( currentState )
     {
         // when switching from buffering to to playing, we launch the vid widget
-        case Phonon::PlayingState :
+        case Phonon::PlayingState:
         {
-            // We need this has when song switching the state will do
+            // We need this as when song switching the state will do
             // playing > stopped > playing > loading > buffering > playing
 
             // --well, not on OS X. there it will go oldState == stopped,
             // newState == playing, after which the track actually starts playing
             // adding StoppedState below makes the videoapplet work for video podcasts.
             // I suggest adding a special case for OS X if this breaks on other platforms - max
-            if ( oldState == Phonon::BufferingState || oldState == Phonon::StoppedState )
+            if( oldState == Phonon::BufferingState || oldState == Phonon::StoppedState )
             {
                 debug() <<" video state : playing";
+                setMinimumHeight( 300 );
+                setMaximumHeight( 300 );
+                setCollapseOff();
 
-                if ( The::engineController()->phononMediaObject()->hasVideo() )
+                if( The::engineController()->phononMediaObject()->hasVideo() )
                 {
                     setBusy( false );
-                    debug() << " VideoclipApplet | Show VideoWidget";
-                    m_widget->hide();
-                    m_videoWidget->show();
-                    m_videoWidget->activateWindow();
-                    Phonon::createPath( const_cast<Phonon::MediaObject*>( The::engineController()->phononMediaObject() ), m_videoWidget );
-                    if( m_videoWidget->isActiveWindow() ) {
-                        //FIXME dual-screen this seems to still show
-                        QContextMenuEvent e( QContextMenuEvent::Other, QPoint() );
-                        QApplication::sendEvent( m_videoWidget, &e );
-                    }
+                    debug() << "Show VideoWidget";
+                    m_scroll->hide();
+                    m_videoWidget.data()->show();
+                    m_videoWidget.data()->activateWindow();
+                    Phonon::createPath( const_cast<Phonon::MediaObject*>( The::engineController()->phononMediaObject() ), m_videoWidget.data() );
+                    m_videoWidget.data()->setGeometry( m_scroll->geometry().toRect() );
                 }
                 else
                 {
-                    debug() << " VideoclipApplet | Hide VideoWidget";
-                    m_videoWidget->hide();
+                    debug() << "Hide VideoWidget";
+                    m_videoWidget.data()->hide();
+                    m_scroll->show();
                 }
             }
             break;
@@ -232,143 +236,107 @@ VideoclipApplet::engineStateChanged(Phonon::State currentState, Phonon::State ol
         case Phonon::LoadingState:
         {
             debug() <<" video state : buffering";
-
+            debug() << "Hide VideoWidget";
             setBusy( true );
-            m_videoWidget->hide();
-            m_widget->hide();
+            m_videoWidget.data()->hide();
+            m_scroll->hide();
             break;
         }
 
+        case Phonon::StoppedState:
+            debug() <<" video state : stopped";
+            break;
+
+        case Phonon::PausedState:
+            debug() <<" video state : paused";
+            break;
+
         default:
+            debug() <<" video state : unknown" << currentState;
             break;
     }
 }
 
-void 
-VideoclipApplet::enginePlaybackEnded( qint64 finalPosition, qint64 trackLength, PlaybackEndedReason reason )
+void
+VideoclipApplet::stopped()
 {
-    Q_UNUSED( finalPosition )
-    Q_UNUSED( trackLength )
-    Q_UNUSED( reason )
-
+    DEBUG_BLOCK
     // On playback ending, we hide everything and collapse
     setBusy( false );
-    m_widget->hide();
-    m_videoWidget->hide();
-    
+    m_scroll->hide();
+    debug() << "Hide VideoWidget";
+    m_videoWidget.data()->hide();
+    m_layout->removeItem( m_scroll );
+    setMinimumHeight( m_header->height() );
+    setMaximumHeight( m_header->height() );
     setCollapseOn();
-
 }
 
-void 
+void
 VideoclipApplet::constraintsEvent( Plasma::Constraints constraints )
 {
-    Q_UNUSED( constraints );
-    prepareGeometryChange();
-
-    qreal widmax = boundingRect().width() - 4 * standardPadding();
-    QRectF rect( ( boundingRect().width() - widmax ) / 2, 0 , widmax, 15 );
-
-    m_headerText->setScrollingText( m_headerText->text(), rect );
-
-    // tint the applet size
-    m_headerText->setPos( size().width() / 2 - m_headerText->boundingRect().width() / 2, standardPadding() + 3 );
-    m_widget->setPos( standardPadding(), m_headerText->pos().y() + m_headerText->boundingRect().height() + standardPadding() );
-    m_widget->resize( size().width() - 2 * standardPadding(), size().height() - m_headerText->boundingRect().height() - 2*standardPadding() );
-    m_videoWidget->setGeometry( QRect(
-        pos().toPoint()+QPoint( standardPadding(), m_headerText->boundingRect().height() + 2.5 * standardPadding() ),
-        size().toSize()-QSize( 2 * standardPadding(),  m_headerText->boundingRect().height() + 3.5 * standardPadding() ) ) );
-
-    m_settingsIcon->setPos( size().width() - m_settingsIcon->size().width() - standardPadding(), standardPadding() );
+    Context::Applet::constraintsEvent( constraints );
+    setHeaderText( i18n( "Video Clip" ) );
 }
 
-void 
-VideoclipApplet::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
-{
-    Q_UNUSED( option );
-    Q_UNUSED( contentsRect );
-    p->setRenderHint( QPainter::Antialiasing );
-    // tint the whole applet
-    addGradientToAppletBackground( p );
-    // draw rounded rect around title
-    drawRoundedRectAroundText( p, m_headerText );
-
-    p->save();
-
-    const int frameWidth        = m_scroll->frameWidth();
-    const QScrollBar *scrollBar = m_scroll->horizontalScrollBar();
-    const qreal scrollBarHeight = scrollBar->isVisible() ? scrollBar->height() + 2 : 0;
-    const QSizeF proxySize = m_widget->size();
-    const QSizeF widgetSize( proxySize.width()  - frameWidth * 2,
-                             proxySize.height() - frameWidth * 2 - scrollBarHeight );
-    const QPointF widgetPos( m_widget->pos().x() + frameWidth,
-                             m_widget->pos().y() + frameWidth );
-    const QRectF widgetRect( widgetPos, widgetSize );
-
-    QPainterPath path;
-    path.addRoundedRect( widgetRect, 2, 2 );
-    p->fillPath( path, The::paletteHandler()->backgroundColor() );
-
-    p->restore();
-}
-
-void 
+void
 VideoclipApplet::connectSource( const QString &source )
 {
     if ( source == "videoclip" )
         dataEngine( "amarok-videoclip" )->connectSource( "videoclip", this );
 }
 
-void 
-VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data ) // SLOT
+void
+VideoclipApplet::dataUpdated( const QString &name, const Plasma::DataEngine::Data &data )
 {
-    DEBUG_BLOCK
-    Q_UNUSED( name )
-
-    if ( data.empty() )
+    if( name != QLatin1String("videoclip") )
         return;
-    
-    if ( !m_videoWidget->isVisible() && !The::engineController()->phononMediaObject()->hasVideo() )
+
+    DEBUG_BLOCK
+    if( !m_videoWidget.data()->isVisible() && !The::engineController()->phononMediaObject()->hasVideo() )
     {
-        int width = 130;
+        // int width = 130;
         // Properly delete previsouly allocated item
-        while ( !m_layoutWidgetList.empty() )
+        int count = m_scrollLayout->count();
+        if( count > 0 )
         {
-            m_layoutWidgetList.front()->hide();
-            m_layout->removeWidget( m_layoutWidgetList.front() );
-			delete m_layoutWidgetList.front();
-            m_layoutWidgetList.pop_front();            
+            while( --count >= 0 )
+            {
+                QGraphicsLayoutItem *child = m_scrollLayout->itemAt( 0 );
+                m_scrollLayout->removeItem( child );
+                delete child;
+            }
         }
-        
+
         // if we get a message, show it
-        if ( data.contains( "message" ) && data["message"].toString().contains("Fetching"))
+        if( data.contains( "message" ) && data["message"].toString().contains("Fetching"))
         {
-            m_headerText->setText( i18n( "Video Clip" ) );
-            constraintsEvent();
+            setHeaderText( i18n( "Video Clip: Fetching" ) );
+            updateConstraints();
             update();
             debug() <<" message fetching ";
-            m_widget->hide();
-
-			setBusy( true );
+            setBusy( true );
         }
-		else if ( data.contains( "message" ) )
-		{
+        else if( data.contains( "message" ) )
+        {
             //if nothing found, we collapse and inform user
-            m_headerText->setText( i18n( "Video Clip " ) + ':' + i18n( " No information found..." ) );
+            setHeaderText( i18n( "Video Clip: No Information Found" ) );
             update();
-			setBusy( false );
-            m_widget->hide();
+            setBusy( false );
+            m_scroll->hide();
+            setMinimumHeight( m_header->height() );
+            setMaximumHeight( m_header->height() );
             setCollapseOn();
-		}
+        }
         else if ( data.contains( "item:0" ) )
         {
-            m_headerText->setText( i18n( "Video Clip" ) );
-            update();
-            // set collapsed
-            // tint the applet
-            m_widget->show();
+            setHeaderText( i18n( "Video Clip" ) );
+            setMinimumHeight( 300 );
+            setMaximumHeight( 300 );
+            setCollapseOff();
+            m_scroll->show();
 
-			setBusy(false);
+            setBusy(false);
             for (int i=0; i< data.size(); i++ )
             {
                 VideoInfo *item = data[ QString ("item:" )+QString().setNum(i) ].value<VideoInfo *>() ;
@@ -376,108 +344,118 @@ VideoclipApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Dat
                 {
                     VideoItemButton *vidButton = new VideoItemButton();
                     vidButton->setVideoInfo( item );
+                    vidButton->setAttribute( Qt::WA_NoSystemBackground );
                     m_videoItemButtons.append( vidButton );
 
-                    connect ( vidButton, SIGNAL( appendRequested( VideoInfo * ) ), this, SLOT ( appendVideoClip( VideoInfo * ) ) );
-                    connect ( vidButton, SIGNAL( queueRequested( VideoInfo* ) ), this, SLOT ( queueVideoClip( VideoInfo * ) ) );
-                    connect ( vidButton, SIGNAL( appendPlayRequested( VideoInfo * ) ), this, SLOT ( appendPlayVideoClip( VideoInfo * ) ) );
+                    connect( vidButton, SIGNAL( appendRequested( VideoInfo * ) ), this, SLOT ( appendVideoClip( VideoInfo * ) ) );
+                    connect( vidButton, SIGNAL( queueRequested( VideoInfo* ) ), this, SLOT ( queueVideoClip( VideoInfo * ) ) );
+                    connect( vidButton, SIGNAL( appendPlayRequested( VideoInfo * ) ), this, SLOT ( appendPlayVideoClip( VideoInfo * ) ) );
 
                     // create link (and resize, no more than 3 lines long)
                     QString title( item->title );
-                    if ( title.size() > 45 ) title.resize( 45 );
-                    QLabel *link = new QLabel( QString( "<html><body><a href=\"" ) + item->url + QString( "\">" ) + title + QString( "</a>" ) );
-                    link->setOpenExternalLinks( true );
-                    link->setWordWrap( true );
+                    if( title.size() > 45 )
+                        title.resize( 45 );
 
                     QLabel *duration =  new QLabel( item->duration + QString( "<br>" ) + item->views + QString( " views" ) );
-
-                    Amarok::KRatingWidget* rating = new Amarok::KRatingWidget;
-                    rating->setRating(( int )( item->rating * 2. ) );
-                    rating->setMaximumWidth(( int )(( width / 3 )*2 ) );
-                    rating->setMinimumWidth(( int )(( width / 3 )*2 ) );
+                    duration->setAttribute( Qt::WA_NoSystemBackground );
+                    duration->setAlignment( Qt::AlignCenter );
 
                     QLabel *webi = new QLabel;
-                    if ( item->source == QString( "youtube" ) )
-                        webi->setPixmap( *m_pixYoutube );
+                    webi->setAttribute( Qt::WA_NoSystemBackground );
+                    webi->setAlignment( Qt::AlignCenter );
+
+                    if( item->source == QString( "youtube" ) )
+                        webi->setPixmap( m_pixYoutube );
                     else if ( item->source == QString( "dailymotion" ) )
-                        webi->setPixmap( *m_pixDailymotion );
+                        webi->setPixmap( m_pixDailymotion );
                     else if ( item->source == QString( "vimeo" ) )
-                        webi->setPixmap( *m_pixVimeo );
+                        webi->setPixmap( m_pixVimeo );
 
+                    QGraphicsWidget *widget = new QGraphicsWidget( m_scroll );
+                    widget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
-                    QGridLayout *grid = new QGridLayout();
-                    grid->setHorizontalSpacing( 5 );
-                    grid->setVerticalSpacing( 2 );
-                    grid->setRowMinimumHeight( 1, 65 );
-                    grid->setColumnStretch( 0, 0 );
-                    grid->setColumnStretch( 1, 1 );
-                    grid->addWidget( vidButton, 0, 0, 1, -1, Qt::AlignCenter );
-                    grid->addWidget( link, 1, 0, 1, -1, Qt::AlignCenter | Qt::AlignTop );
-                    grid->addWidget( webi, 2, 0, Qt::AlignCenter );
-                    grid->addWidget( duration, 2, 1, Qt::AlignLeft );
-                    grid->addWidget( rating, 3, 0, 1, -1, Qt::AlignCenter );
+                    QString href = QString( "<a href=\"%1\">%2</a>" ).arg( item->url, title );
+                    Plasma::Label *linkWidget = new Plasma::Label( widget );
+                    linkWidget->setText( href );
+                    linkWidget->setTextSelectable( true );
+                    linkWidget->nativeWidget()->setOpenExternalLinks( true );
+                    linkWidget->nativeWidget()->setWordWrap( true );
+                    linkWidget->nativeWidget()->setAlignment( Qt::AlignHCenter );
 
-                    // Add The Widget
-                    QWidget *widget = new QWidget();
-                    widget->setLayout( grid );
-                    widget->resize( width, m_height - m_headerText->boundingRect().height() - 2*standardPadding() );
-                    widget->setMaximumWidth( width );
-                    widget->setMinimumWidth( width );
-                    widget->setMinimumHeight( m_height - ( m_headerText->boundingRect().height() + 10 * standardPadding() ) );
-                    widget->setMaximumHeight( m_height - ( m_headerText->boundingRect().height() + 10 * standardPadding() ) );
-                    m_layout->addWidget( widget, Qt::AlignLeft );
-                    m_layoutWidgetList.push_back( widget );
+                    QGraphicsProxyWidget *videoWidget = new QGraphicsProxyWidget( widget );
+                    QGraphicsProxyWidget *durationWidget = new QGraphicsProxyWidget( widget );
+                    QGraphicsProxyWidget *webiWidget = new QGraphicsProxyWidget( widget );
 
-                    if ( i < data.size() - 1 )
+                    videoWidget->setWidget( vidButton );
+                    durationWidget->setWidget( duration );
+                    webiWidget->setWidget( webi );
+
+                    RatingWidget *rating = new RatingWidget( widget );
+                    rating->setAcceptedMouseButtons( 0 );
+                    rating->setRating( int( item->rating * 2) );
+
+                    QGraphicsLinearLayout *l = new QGraphicsLinearLayout( Qt::Vertical, widget );
+                    l->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+                    l->setSpacing( 2 );
+                    l->addItem( videoWidget );
+                    l->addItem( linkWidget );
+                    l->addItem( webiWidget );
+                    l->addItem( durationWidget );
+                    l->addItem( rating );
+
+                    l->setAlignment( videoWidget, Qt::AlignHCenter );
+                    l->setAlignment( linkWidget, Qt::AlignHCenter );
+                    l->setAlignment( webiWidget, Qt::AlignHCenter );
+                    l->setAlignment( durationWidget, Qt::AlignHCenter );
+                    l->setAlignment( rating, Qt::AlignHCenter );
+
+                    m_scrollLayout->addItem( widget );
+
+                    if( i < data.size() - 1 )
                     {
-                        QFrame *line = new QFrame();
-                        line->setFrameStyle( QFrame::VLine );
-                        line->setAutoFillBackground( false );
-                        line->setMaximumHeight( m_height - ( m_headerText->boundingRect().height() + 2 * standardPadding() ) );
-                        m_layout->addWidget( line, Qt::AlignLeft );
-                        m_layoutWidgetList.push_back( line );
+                        Plasma::Separator *line = new Plasma::Separator;
+                        line->setOrientation( Qt::Vertical );
+                        m_scrollLayout->addItem( line );
                     }
                 }
             }
         }
     }
-
-    // FIXME This should be in engineStateChanged(), but for now it help fixing the bug 210332
+    // FIXME This should be in stateChanged(), but for now it help fixing the bug 210332
     else if ( The::engineController()->phononMediaObject()->hasVideo()
         && The::engineController()->phononMediaObject()->state() != Phonon::BufferingState
         && The::engineController()->phononMediaObject()->state() != Phonon::LoadingState )
     {
         setBusy( false );
-        debug() << " VideoclipApplet | Show VideoWidget";
-        m_widget->hide();
-        m_videoWidget->show();
-        m_videoWidget->activateWindow();
-        if ( m_videoWidget->inputPaths().isEmpty() )
-            Phonon::createPath( const_cast<Phonon::MediaObject*>( The::engineController()->phononMediaObject() ), m_videoWidget );
-        if( m_videoWidget->isActiveWindow() )
-        {
-            QContextMenuEvent e( QContextMenuEvent::Other, QPoint() );
-            QApplication::sendEvent( m_videoWidget, &e );
-        }
+        debug() << "Show VideoWidget";
+        m_scroll->hide();
+        m_videoWidget.data()->show();
+        m_videoWidget.data()->activateWindow();
+        if ( m_videoWidget.data()->inputPaths().isEmpty() )
+            Phonon::createPath( const_cast<Phonon::MediaObject*>( The::engineController()->phononMediaObject() ), m_videoWidget.data() );
     }
-    
+    else
+    {
+        setBusy( false );
+        debug() << "unknown error";
+    }
     updateConstraints();
 }
 
-void 
+void
 VideoclipApplet::appendVideoClip( VideoInfo *info )
 {
-	DEBUG_BLOCK
+    DEBUG_BLOCK
     QAbstractButton *button = qobject_cast<QAbstractButton *>(QObject::sender() );
     if ( button )
     {
         QStringList lst = button->text().split(" | ");
-    
+
         MetaStream::Track *tra = new MetaStream::Track(KUrl( info->videolink ) );
         tra->setTitle( info->title );
         tra->setAlbum( info->source );
         tra->setArtist( info->artist );
-        tra->album()->setImage( info->cover );
+        tra->album()->setImage( info->cover.toImage() );
         Meta::TrackPtr track( tra );
         //append to the playlist the newly retrieved
         The::playlistController()->insertOptioned(track , Playlist::Append );
@@ -492,12 +470,12 @@ VideoclipApplet::queueVideoClip( VideoInfo *info )
     if ( button )
     {
         QStringList lst = button->text().split(" | ");
-        
+
         MetaStream::Track *tra = new MetaStream::Track(KUrl( info->videolink ) );
         tra->setTitle( info->title );
         tra->setAlbum( info->source );
         tra->setArtist( info->artist );
-        tra->album()->setImage( info->cover );
+        tra->album()->setImage( info->cover.toImage() );
         Meta::TrackPtr track( tra );
         //append to the playlist the newly retrieved
         The::playlistController()->insertOptioned(track , Playlist::Queue );
@@ -508,20 +486,26 @@ void
 VideoclipApplet::appendPlayVideoClip( VideoInfo *info )
 {
     DEBUG_BLOCK
+
     QAbstractButton *button = qobject_cast<QAbstractButton *>(QObject::sender() );
-    if ( button )
-    {
-        QStringList lst = button->text().split(" | ");
-        
-        MetaStream::Track *tra = new MetaStream::Track(KUrl( info->videolink ) );
-        tra->setTitle( info->title );
-        tra->setAlbum( info->source );
-        tra->setArtist( info->artist );
-        tra->album()->setImage( info->cover );
-        Meta::TrackPtr track( tra );
-        //append to the playlist the newly retrieved
-        The::playlistController()->insertOptioned( track, Playlist::AppendAndPlayImmediately );
-    }
+    if ( !button )
+        return;
+
+    const QStringList lst = button->text().split(" | ");
+
+    debug() << "  Artist:" << info->artist;
+    debug() << "  Title :" << info->title;
+    debug() << "  Album :" << info->source;
+    debug() << "  Link  :" << info->videolink;
+
+    MetaStream::Track *tra = new MetaStream::Track(KUrl( info->videolink ) );
+    tra->setTitle( info->title );
+    tra->setAlbum( info->source );
+    tra->setArtist( info->artist );
+    tra->album()->setImage( info->cover.toImage() );
+    Meta::TrackPtr track( tra );
+    //append to the playlist the newly retrieved
+    The::playlistController()->insertOptioned( track, Playlist::AppendAndPlayImmediately );
 }
 
 void
@@ -530,11 +514,11 @@ VideoclipApplet::createConfigurationInterface( KConfigDialog *parent )
     KConfigGroup configuration = config();
     QWidget *settings = new QWidget;
     ui_Settings.setupUi( settings );
-    
+
     // TODO bad, it's done manually ...
     if ( m_youtubeHQ == true )
         ui_Settings.checkYoutubeHQ->setChecked( true );
-    
+
     parent->addPage( settings, i18n( "Video Clip Settings" ), "preferences-system");
     connect( parent, SIGNAL( accepted() ), this, SLOT( saveSettings( ) ) );
 }
@@ -544,12 +528,11 @@ VideoclipApplet::saveSettings()
 {
     DEBUG_BLOCK
     KConfigGroup config = Amarok::config("Videoclip Applet");
-    
+
     m_youtubeHQ = ui_Settings.checkYoutubeHQ->isChecked();
     config.writeEntry( "YoutubeHQ", m_youtubeHQ );
-    
+
     dataEngine( "amarok-videoclip" )->query( QString( "videoclip:youtubeHQ:" ) + QString().setNum( m_youtubeHQ ) );
 }
 
 #include "VideoclipApplet.moc"
-#include "../../../core/support/SmartPointerList.moc"

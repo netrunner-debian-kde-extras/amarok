@@ -15,13 +15,16 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "Mp3tunesService"
+
 #include "Mp3tunesService.h"
 
 #include "browsers/SingleCollectionTreeItemModel.h"
 #include "core-impl/collections/support/CollectionManager.h"
+#include "core/interfaces/Logger.h"
+#include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "Mp3tunesConfig.h"
-#include "statusbar/StatusBar.h"
 
 #include <KMenuBar>
 #include <KMessageBox>
@@ -29,38 +32,43 @@
 
 #include <QRegExp>
 
-AMAROK_EXPORT_PLUGIN( Mp3tunesServiceFactory )
+AMAROK_EXPORT_SERVICE_PLUGIN( mp3tunes, Mp3tunesServiceFactory )
+
+Mp3tunesServiceFactory::Mp3tunesServiceFactory( QObject *parent, const QVariantList &args )
+    : ServiceFactory( parent, args )
+{
+    KPluginInfo pluginInfo(  "amarok_service_mp3tunes.desktop", "services" );
+    pluginInfo.setConfig( config() );
+    m_info = pluginInfo;
+}
 
 void Mp3tunesServiceFactory::init()
 {
-    Mp3tunesConfig config;
-
-    //The user activated the service, but didn't fill the email/password? Don't start it.
-    if ( config.email().isEmpty() || config.password().isEmpty() )
-        return;
-    
-    ServiceBase* service = new Mp3tunesService( this, "MP3tunes.com", config.partnerToken(), config.email(), config.password(),  config.harmonyEnabled() );
-    m_activeServices << service;
-    m_initialized = true;
-    connect( service, SIGNAL( ready() ), this, SLOT( slotServiceReady() ) );
-    emit newService( service );
-    
+    DEBUG_BLOCK
+    ServiceBase *service = createService();
+    if( service )
+    {
+        m_activeServices << service;
+        m_initialized = true;
+        connect( service, SIGNAL( ready() ), this, SLOT( slotServiceReady() ) );
+        emit newService( service );
+    }
 }
 
+ServiceBase* Mp3tunesServiceFactory::createService()
+{
+    Mp3tunesConfig config;
+    //The user activated the service, but didn't fill the email/password? Don't start it.
+    // if( config.email().isEmpty() || config.password().isEmpty() )
+        // return 0;
+    ServiceBase* service = new Mp3tunesService( this, "MP3tunes.com", config.partnerToken(), config.email(), config.password(),  config.harmonyEnabled() );
+    return service;
+}
 
 QString Mp3tunesServiceFactory::name()
 {
     return "MP3tunes.com";
 }
-
-
-KPluginInfo Mp3tunesServiceFactory::info()
-{
-    KPluginInfo pluginInfo(  "amarok_service_mp3tunes.desktop", "services" );
-    pluginInfo.setConfig( config() );
-    return pluginInfo;
-}
-
 
 KConfigGroup Mp3tunesServiceFactory::config()
 {
@@ -215,7 +223,7 @@ void Mp3tunesService::enableHarmony()
 
     debug() << "Daemon running";
     m_harmonyEnabled = true;
-    The::statusBar()->shortMessage( i18n( "MP3tunes AutoSync Enabled"  ) );
+    Amarok::Components::logger()->shortMessage( i18n( "MP3tunes AutoSync Enabled"  ) );
     polish();
  }
 
@@ -231,7 +239,7 @@ void Mp3tunesService::enableHarmony()
     m_harmonyEnabled = false;
     polish();
 
-    The::statusBar()->shortMessage( i18n( "MP3tunes AutoSync Disabled"  ) );
+    Amarok::Components::logger()->shortMessage( i18n( "MP3tunes AutoSync Disabled"  ) );
  }
 
 void Mp3tunesService::authenticate( const QString & uname, const QString & passwd )
@@ -251,7 +259,7 @@ void Mp3tunesService::authenticate( const QString & uname, const QString & passw
     //debug() << "Connection complete. Enqueueing..";
     ThreadWeaver::Weaver::instance()->enqueue( m_loginWorker );
     //debug() << "LoginWorker queue";
-    The::statusBar()->shortMessage( i18n( "Authenticating"  ) );
+    Amarok::Components::logger()->shortMessage( i18n( "Authenticating"  ) );
 
 }
 
@@ -268,7 +276,7 @@ void Mp3tunesService::authenticationComplete( const QString & sessionId )
         {
             error = m_locker->errorMessage(); // Not sure how to i18n this
         }
-        The::statusBar()->longMessage( error );
+        Amarok::Components::logger()->longMessage( error );
 
         m_serviceready = false;
         m_authenticationFailed = true;
@@ -296,14 +304,14 @@ void Mp3tunesService::harmonyDisconnected()
 {
     DEBUG_BLOCK
     debug() << "Harmony Disconnected!";
-    The::statusBar()->shortMessage( i18n( "MP3tunes Harmony: Disconnected"  ) );
+    Amarok::Components::logger()->shortMessage( i18n( "MP3tunes Harmony: Disconnected"  ) );
 }
 
 void Mp3tunesService::harmonyWaitingForEmail( const QString &pin )
 {
     DEBUG_BLOCK
     debug() << "Waiting for user to input PIN: " << pin;
-    The::statusBar()->shortMessage( i18n( "MP3tunes Harmony: Waiting for PIN Input"  ) );
+    Amarok::Components::logger()->shortMessage( i18n( "MP3tunes Harmony: Waiting for PIN Input"  ) );
     KMessageBox::information( this,
                               "Please go to <a href=\"http://www.mp3tunes.com/pin\">mp3tunes.com/pin</a> and enter the following pin.\n\tPIN: " + pin,
                               "MP3tunes Harmony",
@@ -316,7 +324,7 @@ void Mp3tunesService::harmonyWaitingForPin()
     DEBUG_BLOCK
     QString pin = m_harmony->pin();
     debug() << "Waiting for user to input PIN: " << pin;
-    The::statusBar()->shortMessage( i18n( "MP3tunes Harmony: Waiting for PIN Input"  ) );
+    Amarok::Components::logger()->shortMessage( i18n( "MP3tunes Harmony: Waiting for PIN Input"  ) );
     KMessageBox::information( this,
                               "Please go to <a href=\"http://www.mp3tunes.com/pin\">mp3tunes.com/pin</a> and enter the following pin.\n\tPIN: " + pin,
                               "MP3tunes Harmony",
@@ -328,7 +336,7 @@ void Mp3tunesService::harmonyConnected()
 {
     DEBUG_BLOCK
     debug() << "Harmony Connected!";
-    The::statusBar()->shortMessage( i18n( "MP3tunes Harmony: Successfully Connected"  ) );
+    Amarok::Components::logger()->shortMessage( i18n( "MP3tunes Harmony: Successfully Connected"  ) );
     /* at this point since the user has input the pin, we will save the info
        for later authentication*/
     Mp3tunesConfig config;
@@ -343,7 +351,7 @@ void Mp3tunesService::harmonyError( const QString &error )
 {
     DEBUG_BLOCK
     debug() << "Harmony Error: " << error;
-    The::statusBar()->longMessage( i18n( "MP3tunes Harmony Error\n%1", error ) );
+    Amarok::Components::logger()->longMessage( i18n( "MP3tunes Harmony Error\n%1", error ) );
 }
 
 void Mp3tunesService::harmonyDownloadReady( const QVariantMap &download )

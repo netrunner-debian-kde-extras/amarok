@@ -32,6 +32,7 @@ class KToolBar;
 class PlaylistsInFoldersProxy;
 class PlaylistsByProviderProxy;
 class PlaylistTreeItemDelegate;
+class PlaylistBrowserFilterProxy;
 
 namespace Playlists {
     class PlaylistProvider;
@@ -43,13 +44,14 @@ class PlaylistBrowserModel;
 
 class PlaylistBrowserCategory : public BrowserCategory
 {
-Q_OBJECT
+    Q_OBJECT
+
 public:
     static QString s_mergeViewKey;
 
     explicit PlaylistBrowserCategory( int playlistCategory,
-                                  QString categoryName,
-                                  QString configGroup,
+                                  const QString &categoryName,
+                                  const QString &configGroup,
                                   PlaylistBrowserModel *model,
                                   QWidget *parent );
     ~PlaylistBrowserCategory();
@@ -81,6 +83,7 @@ private slots:
 
 private:
     void createProviderButton( const Playlists::PlaylistProvider *provider );
+
     KActionMenu *m_providerMenu;
     QMap<const Playlists::PlaylistProvider *, QAction *> m_providerActions;
 
@@ -92,7 +95,7 @@ private:
     QAbstractItemDelegate *m_defaultItemDelegate;
     PlaylistsInFoldersProxy *m_byFolderProxy;
     PlaylistsByProviderProxy *m_byProviderProxy;
-    QSortFilterProxyModel *m_filterProxy;
+    PlaylistBrowserFilterProxy *m_filterProxy;
 
     QString m_configGroup;
     int m_playlistCategory;

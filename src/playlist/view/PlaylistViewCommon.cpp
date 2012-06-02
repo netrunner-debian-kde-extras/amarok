@@ -25,7 +25,7 @@
 #include "core/support/Debug.h"
 #include "EngineController.h"
 #include "GlobalCurrentTrackActions.h"
-#include "core/capabilities/CurrentTrackActionsCapability.h"
+#include "core/capabilities/ActionsCapability.h"
 #include "core/capabilities/FindInSourceCapability.h"
 #include "playlist/proxymodels/GroupingProxy.h"
 #include "TagDialog.h"
@@ -48,109 +48,122 @@ Playlist::ViewCommon::~ViewCommon()
 
 
 void
-Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index, const QPoint &pos, bool coverActions )
+Playlist::ViewCommon::trackMenu( QWidget *parent, const QModelIndex *index, const QPoint &pos )
 {
     DEBUG_BLOCK
 
     KMenu *menu = new KMenu( parent );
 
-    menu->addActions( trackActionsFor( parent, index ) );
+    menu->addActions( parentCheckActions( parent, trackActionsFor( parent, index ) ) );
     menu->addSeparator();
 
-    if( coverActions )
+    QList<QAction *> albumActionsList = parentCheckActions( parent, albumActionsFor( index ) );
+    if( !albumActionsList.isEmpty() )
     {
-        QList<QAction*> coverActionsList = coverActionsFor( index );
-        if ( !coverActionsList.isEmpty() )
-        {
-            // there are no cover actions if the song/album is not in the collection
-            KMenu *menuCover = new KMenu( i18n( "Album" ), menu );
-            menuCover->addActions( coverActionsList );
-            menuCover->setIcon( KIcon( "filename-album-amarok" ) );
-            menu->addMenu( menuCover );
-            menu->addSeparator();
-        }
+        // there are no cover actions if the song/album is not in the collection
+        KMenu *menuCover = new KMenu( i18n( "Album" ), menu );
+        menuCover->addActions( albumActionsList );
+        menuCover->setIcon( KIcon( "filename-album-amarok" ) );
+        menu->addMenu( menuCover );
+        menu->addSeparator();
     }
 
-    menu->addActions( multiSourceActionsFor( parent, index ) );
+    menu->addActions( parentCheckActions( parent, multiSourceActionsFor( parent, index ) ) );
     menu->addSeparator();
-    menu->addActions( editActionsFor( parent, index ) );
+    menu->addActions( parentCheckActions( parent, editActionsFor( parent, index ) ) );
 
     menu->exec( pos );
 }
 
 
-QList<QAction*>
-Playlist::ViewCommon::actionsFor( QWidget *parent, const QModelIndex *index, bool coverActions )
+QList<QAction *>
+Playlist::ViewCommon::actionsFor( QWidget *parent, const QModelIndex *index )
 {
-    QList<QAction*> actions;
+    QList<QAction *> actions;
 
     QAction *separator = new QAction( parent );
     separator->setSeparator( true );
 
-    actions << trackActionsFor( parent, index );
+    actions << parentCheckActions( parent, trackActionsFor( parent, index ) );
     actions << separator;
 
-    if( coverActions )
+    QList<QAction *> albumActionsList = parentCheckActions( parent, albumActionsFor( index ) );
+    if( !albumActionsList.isEmpty() )
     {
-        actions << coverActionsFor( index );
+        actions << albumActionsList;
         actions << separator;
     }
 
-    actions << multiSourceActionsFor( parent, index );
+    actions << parentCheckActions( parent, multiSourceActionsFor( parent, index ) );
     actions << separator;
-    actions << editActionsFor( parent, index );
+    actions << parentCheckActions( parent, editActionsFor( parent, index ) );
 
     return actions;
 }
 
 
-QList<QAction*>
+QList<QAction *>
 Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index )
 {
-    QList<QAction*> actions;
+    QList<QAction *> actions;
 
     Meta::TrackPtr track = index->data( Playlist::TrackRole ).value< Meta::TrackPtr >();
 
     QAction *separator = new QAction( parent );
     separator->setSeparator( true );
-
-    const bool isQueued = index->data( Playlist::StateRole ).toInt() & Item::Queued;
+    const bool isQueued = index->data( Playlist::QueuePositionRole ).toInt() != 0;
     const QString queueText = !isQueued ? i18n( "Queue Track" ) : i18n( "Dequeue Track" );
 
-    if( m_cueTrackAction == 0 )
+    //display "Queue track" option only if the track is playable
+    if( track->isPlayable() )
     {
-        m_cueTrackAction = new QAction( KIcon( "media-track-queue-amarok" ), queueText, parent );
-    }
-    else
-    {
-        m_cueTrackAction->disconnect();
-        m_cueTrackAction->setText( queueText );
-    }
 
-    if( isQueued )
-        QObject::connect( m_cueTrackAction, SIGNAL( triggered() ), parent, SLOT( dequeueSelection() ) );
-    else
-        QObject::connect( m_cueTrackAction, SIGNAL( triggered() ), parent, SLOT( queueSelection() ) );
+        if( m_cueTrackAction == 0 )
+        {
+            m_cueTrackAction = new QAction( KIcon( "media-track-queue-amarok" ), queueText, parent );
+        }
+        else
+        {
+            m_cueTrackAction->disconnect();
+            m_cueTrackAction->setText( queueText );
+        }
 
-    actions << m_cueTrackAction;
+        if( isQueued )
+            QObject::connect( m_cueTrackAction, SIGNAL(triggered()),
+                              parent, SLOT(dequeueSelection()) );
+        else
+            QObject::connect( m_cueTrackAction, SIGNAL(triggered()),
+                              parent, SLOT(queueSelection()) );
+
+        actions << m_cueTrackAction;
+
+    }
 
     //actions << separator;
 
     const bool isCurrentTrack = index->data( Playlist::ActiveTrackRole ).toBool();
 
-    if( m_stopAfterTrackAction == 0 )
+    //display "Stop after this track" option only if track is playable. not sure if this check is really needed
+    if( track->isPlayable() )
     {
-        m_stopAfterTrackAction = new QAction( KIcon( "media-playback-stop-amarok" ), i18n( "Stop Playing After This Track" ), parent );
-        QObject::connect( m_stopAfterTrackAction, SIGNAL( triggered() ), parent, SLOT( stopAfterTrack() ) );
+        if( m_stopAfterTrackAction == 0 )
+        {
+            m_stopAfterTrackAction = new QAction( KIcon( "media-playback-stop-amarok" ),
+                                                  i18n( "Stop Playing After This Track" ), parent );
+            QObject::connect( m_stopAfterTrackAction, SIGNAL(triggered()),
+                              parent, SLOT(stopAfterTrack()) );
+        }
+            actions << m_stopAfterTrackAction;
     }
-    actions << m_stopAfterTrackAction;
 
     //actions << separator;
 
     if( m_removeTracTrackAction == 0 )
     {
-        m_removeTracTrackAction = new QAction( KIcon( "media-track-remove-amarok" ), i18n( "Remove From Playlist" ), parent );
-        QObject::connect( m_removeTracTrackAction, SIGNAL( triggered() ), parent, SLOT( removeSelection() ) );
+        m_removeTracTrackAction = new QAction( KIcon( "media-track-remove-amarok" ),
+                                               i18n( "Remove From Playlist" ), parent );
+        QObject::connect( m_removeTracTrackAction, SIGNAL(triggered()),
+                          parent, SLOT(removeSelection()) );
     }
     actions << m_removeTracTrackAction;
 
@@ -159,21 +172,16 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
     {
         //actions << separator;
 
-        QList<QAction*> globalCurrentTrackActions = The::globalCurrentTrackActions()->actions();
+        QList<QAction *> globalCurrentTrackActions = The::globalCurrentTrackActions()->actions();
         foreach( QAction *action, globalCurrentTrackActions )
             actions << action;
 
-        if( track->hasCapabilityInterface( Capabilities::Capability::CurrentTrackActions ) )
+        if( track->hasCapabilityInterface( Capabilities::Capability::Actions ) )
         {
-            Capabilities::CurrentTrackActionsCapability *cac = track->create<Capabilities::CurrentTrackActionsCapability>();
-            if ( cac )
-            {
-                QList<QAction *> cActions = cac->customActions();
-
-                foreach( QAction *action, cActions )
-                    actions << action;
-            }
-            delete cac;
+            QScopedPointer<Capabilities::ActionsCapability>
+                    ac( track->create<Capabilities::ActionsCapability>() );
+            if ( ac )
+                actions.append( ac->actions() );
         }
     }
 
@@ -181,8 +189,10 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
     {
         if( m_findInSourceAction == 0 )
         {
-            m_findInSourceAction = new QAction( KIcon( "edit-find" ), i18n( "Show in Media Sources" ), parent );
-            QObject::connect( m_findInSourceAction, SIGNAL( triggered() ), parent, SLOT( findInSource() ) );
+            m_findInSourceAction = new QAction( KIcon( "edit-find" ),
+                                                i18n( "Show in Media Sources" ), parent );
+            QObject::connect( m_findInSourceAction, SIGNAL(triggered()),
+                              parent, SLOT(findInSource()) );
         }
         actions << m_findInSourceAction;
     }
@@ -190,42 +200,39 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
     return actions;
 }
 
-QList<QAction*>
-Playlist::ViewCommon::coverActionsFor( const QModelIndex *index )
+QList<QAction *>
+Playlist::ViewCommon::albumActionsFor( const QModelIndex *index )
 {
-    QList<QAction*> actions;
+    QList<QAction *> actions;
 
     Meta::TrackPtr track = index->data( Playlist::TrackRole ).value< Meta::TrackPtr >();
 
     Meta::AlbumPtr album = track->album();
     if( album )
     {
-        Capabilities::CustomActionsCapability *cac = album->create<Capabilities::CustomActionsCapability>();
-        if ( cac )
-        {
-            QList<QAction *> customActions = cac->customActions();
-            foreach( QAction *customAction, customActions )
-                actions << customAction;
-        }
-        delete cac;
+        QScopedPointer<Capabilities::ActionsCapability>
+                ac( album->create<Capabilities::ActionsCapability>() );
+        if( ac )
+            actions.append( ac->actions() );
     }
 
     return actions;
 }
 
 
-QList<QAction*>
+QList<QAction *>
 Playlist::ViewCommon::multiSourceActionsFor( QWidget *parent, const QModelIndex *index )
 {
-    QList<QAction*> actions;
+    QList<QAction *> actions;
     Meta::TrackPtr track = index->data( Playlist::TrackRole ).value< Meta::TrackPtr >();
 
     const bool isMultiSource = index->data( Playlist::MultiSourceRole ).toBool();
 
     if( isMultiSource )
     {
-        QAction *selectSourceAction = new QAction( KIcon( "media-playlist-repeat" ), i18n( "Select Source" ), parent );
-        QObject::connect( selectSourceAction, SIGNAL( triggered() ), parent, SLOT( selectSource() ) );
+        QAction *selectSourceAction = new QAction( KIcon( "media-playlist-repeat" ),
+                                                   i18n( "Select Source" ), parent );
+        QObject::connect( selectSourceAction, SIGNAL(triggered()), parent, SLOT(selectSource()) );
 
         actions << selectSourceAction;
     }
@@ -234,17 +241,30 @@ Playlist::ViewCommon::multiSourceActionsFor( QWidget *parent, const QModelIndex 
 }
 
 
-QList<QAction*>
+QList<QAction *>
 Playlist::ViewCommon::editActionsFor( QWidget *parent, const QModelIndex *index )
 {
-    QList<QAction*> actions;
+    QList<QAction *> actions;
 
     Meta::TrackPtr track = index->data( Playlist::TrackRole ).value< Meta::TrackPtr >();
 
-    QAction *editAction = new QAction( KIcon( "media-track-edit-amarok" ), i18n( "Edit Track Details" ), parent );
+    QAction *editAction = new QAction( KIcon( "media-track-edit-amarok" ),
+                                       i18n( "Edit Track Details" ), parent );
     editAction->setProperty( "popupdropper_svg_id", "edit" );
-    QObject::connect( editAction, SIGNAL( triggered() ), parent, SLOT( editTrackInformation() ) );
+    QObject::connect( editAction, SIGNAL(triggered()), parent, SLOT(editTrackInformation()) );
     actions << editAction;
+
+    return actions;
+}
+
+QList<QAction *>
+Playlist::ViewCommon::parentCheckActions( QObject *parent, QList<QAction *> actions )
+{
+    foreach( QAction *action, actions )
+    {
+        if( !action->parent() )
+            action->setParent( parent );
+    }
 
     return actions;
 }

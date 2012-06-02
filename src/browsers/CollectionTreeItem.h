@@ -33,7 +33,9 @@ namespace CustomRoles
         ByLineRole = Qt::UserRole + 3,
         HasCapacityRole = Qt::UserRole + 4,
         UsedCapacityRole = Qt::UserRole + 5,
+        /** The number of collection actions */
         DecoratorRoleCount = Qt::UserRole + 6,
+        /** The collection actions */
         DecoratorRole = Qt::UserRole + 7
     };
 }
@@ -88,10 +90,13 @@ class CollectionTreeItem : public QObject
 
         Collections::QueryMaker* queryMaker() const;
 
+        /** Call addMatch for this objects data and it's query maker */
+        void addMatch( Collections::QueryMaker *qm ) const;
+
         bool operator<( const CollectionTreeItem& other ) const;
 
         const Meta::DataPtr data() const { return m_data; }
-        Collections::Collection* parentCollection() const { return m_parentCollection; }
+        Collections::Collection* parentCollection() const { return m_parentCollection ? m_parentCollection : (m_parent ? m_parent->parentCollection() : 0); }
 
         KUrl::List urls() const;
         QList<Meta::TrackPtr> descendentTracks();
@@ -108,11 +113,13 @@ class CollectionTreeItem : public QObject
         void dataUpdated();
 
     private slots:
-        void tracksCounted( QString collectionId, QStringList res );
+        void tracksCounted( QStringList res );
         void collectionUpdated();
 
     private:
-        QString albumYear() const;
+        /** Returns a list of collection actions.
+            Collection actions are shown on top of the collection tree item as icons (decorations)
+        */
         QList<QAction*> decoratorActions() const;
         void prepareForRemoval();
 

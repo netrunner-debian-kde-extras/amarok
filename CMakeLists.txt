@@ -4,44 +4,57 @@ cmake_minimum_required(VERSION 2.6.2)
 
 set( CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/modules )
 
+message(STATUS "${CMAKE_MODULE_PATH}")
+
 option(WITH_UTILITIES "Enable building of utilities" ON)
 option(WITH_PLAYER "Enable building of main Amarok player" ON)
 option(WITH_MP3Tunes "Enable mp3tunes in the Amarok player, requires multiple extra dependencies" ON)
 option(WITH_IPOD "Enable iPod support in Amarok" ON)
 option(WITH_MYSQL_EMBEDDED "Build the embedded database library -- highly recommended" ON)
+option(WITH_PLAYGROUND "Enable building of playground scripts and applets (WARNING: some of them might have legal issues!)" OFF)
 
 include(CheckLibraryExists)
 check_library_exists(dl dlopen "" LIBDL_FOUND)
 
+# --------- taglib --------
+# building without taglib is stupid, but it's possible
+
 set(TAGLIB_MIN_VERSION "1.6")
-find_package(Taglib REQUIRED)
+find_package(Taglib)
 
-# Check if TagLib is built with ASF and MP4 support
-include(CheckCXXSourceCompiles)
-set(CMAKE_REQUIRED_INCLUDES "${TAGLIB_INCLUDES}")
-set(CMAKE_REQUIRED_LIBRARIES "${TAGLIB_LIBRARIES}")
+if(TAGLIB_FOUND)
+    # Check if TagLib is built with ASF and MP4 support
+    include(CheckCXXSourceCompiles)
+    set(CMAKE_REQUIRED_INCLUDES "${TAGLIB_INCLUDES}")
+    set(CMAKE_REQUIRED_LIBRARIES "${TAGLIB_LIBRARIES}")
 
-check_cxx_source_compiles("#include <asftag.h>
-int main() { TagLib::ASF::Tag tag; return 0;}" TAGLIB_ASF_FOUND)
-if( NOT TAGLIB_ASF_FOUND )
-    message(FATAL_ERROR "TagLib does not have ASF support compiled in.")
-endif( NOT TAGLIB_ASF_FOUND )
+    check_cxx_source_compiles("#include <asftag.h>
+    int main() { TagLib::ASF::Tag tag; return 0;}" TAGLIB_ASF_FOUND)
+    if( NOT TAGLIB_ASF_FOUND )
+        message(FATAL_ERROR "TagLib does not have ASF support compiled in.")
+    endif( NOT TAGLIB_ASF_FOUND )
 
-check_cxx_source_compiles("#include <mp4tag.h>
-int main() { TagLib::MP4::Tag tag(0, 0); return 0;}" TAGLIB_MP4_FOUND)
-if( NOT TAGLIB_MP4_FOUND )
-    message(FATAL_ERROR "TagLib does not have MP4 support compiled in.")
-endif( NOT TAGLIB_MP4_FOUND )
+    check_cxx_source_compiles("#include <mp4tag.h>
+    int main() { TagLib::MP4::Tag tag(0, 0); return 0;}" TAGLIB_MP4_FOUND)
+    if( NOT TAGLIB_MP4_FOUND )
+        message(FATAL_ERROR "TagLib does not have MP4 support compiled in.")
+    endif( NOT TAGLIB_MP4_FOUND )
 
-set(CMAKE_REQUIRED_INCLUDES)
-set(CMAKE_REQUIRED_LIBRARIES)
+    set(CMAKE_REQUIRED_INCLUDES)
+    set(CMAKE_REQUIRED_LIBRARIES)
 
-set(TAGLIB-EXTRAS_MIN_VERSION "1.0")
-find_package(Taglib-Extras REQUIRED)
+    set(TAGLIB-EXTRAS_MIN_VERSION "1.0")
+    find_package(Taglib-Extras)
+    set(TAGLIB_EXTRAS_FOUND ${TAGLIB-EXTRAS_FOUND}) # we need a c-compatible name for the include file
 
-include(CheckTagLibFileName)
+    include(CheckTagLibFileName)
 
-check_taglib_filename(COMPLEX_TAGLIB_FILENAME)
+    check_taglib_filename(COMPLEX_TAGLIB_FILENAME)
+else()
+    message(WARNING "You are building Amarok without taglib. This has been known to cause many strange behaviours and is strongly advised against.")
+endif()
+
+# --------------------------
 
 # Figure out problems inside KAboutData before re-enabling
 #execute_process( COMMAND "git" "describe" WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} RESULT_VARIABLE GIT_OUTPUT_VALUE OUTPUT_VARIABLE CURRENT_GIT_VERSION )
@@ -69,7 +82,7 @@ endif (CMAKE_COMPILER_IS_GNUCXX)
 include_directories( ${CMAKE_CURRENT_SOURCE_DIR}/shared )
 
 if( WITH_PLAYER )
-    set(KDE_MIN_VERSION "4.3.0")
+    set(KDE_MIN_VERSION "4.6.0")
     find_package( KDE4 REQUIRED )
     include (KDE4Defaults)
     include (MacroLibrary)
@@ -77,10 +90,10 @@ if( WITH_PLAYER )
     include(MacroBoolTo01)
     include(MacroLogFeature)
 
-    macro_log_feature( KDE4_FOUND "kdelibs" "The toolkit Amarok uses to build" "http://www.kde.org" TRUE "4.3.0" "" )
+    macro_log_feature( KDE4_FOUND "kdelibs" "The toolkit Amarok uses to build" "http://www.kde.org" TRUE "4.6.0" "" )
 
-    find_package( QtScriptQtBindings REQUIRED )
-    macro_log_feature( QTSCRIPTQTBINDINGS_FOUND "qtscript-qt" "QtScript Qt Bindings" "http://code.google.com/p/qtscriptgenerator/" TRUE "" "" )
+    find_package( QtScriptQtBindings )
+    macro_log_feature( QTSCRIPTQTBINDINGS_FOUND "qtscript-qt" "QtScript Qt Bindings" "http://code.google.com/p/qtscriptgenerator/" FALSE "" "" )
 
     add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
 
@@ -98,16 +111,33 @@ if( WITH_PLAYER )
     macro_log_feature( ZLIB_FOUND "zlib" "zlib" "" TRUE "" "" )
 
     # QCA2 is required for the Script Updater
-    find_package(QCA2 REQUIRED)
-    macro_log_feature( QCA2_FOUND "qca2" "Qt Cryptographic Architecture" "http://delta.affinix.com/qca/" TRUE "" "" )
+    find_package(QCA2)
+    macro_log_feature( QCA2_FOUND "qca2" "Qt Cryptographic Architecture" "http://delta.affinix.com/qca/" FALSE "" "" )
 
-    macro_optional_find_package(Strigi)
-    macro_log_feature( STRIGI_FOUND "strigi" "Index metadata of files" "http://strigi.sourceforge.net" TRUE "" "" )
+    # QJson is required for the PlaydarCollection
+    macro_optional_find_package(QJSON)
+    macro_log_feature( QJSON_FOUND "QJson" "Qt JSON Parser used for the Playdar Collection" "http://qjson.sourceforge.net/" FALSE "" "" )
+
+    # macro_optional_find_package(Strigi)
+    # macro_log_feature( STRIGI_FOUND "strigi" "Index metadata of files" "http://strigi.sourceforge.net" FALSE "" "" )
 
     macro_optional_find_package(LibLastFm)
     macro_log_feature( LIBLASTFM_FOUND "liblastfm" "Enable Last.Fm service, including scrobbling, song submissions, and suggested song dynamic playlists" "http://cdn.last.fm/src/liblastfm-0.3.0.tar.bz2" FALSE "0.3" "" )
     macro_bool_to_01( LIBLASTFM_FOUND HAVE_LIBLASTFM )
 
+    macro_optional_find_package( FFmpeg )
+    macro_log_feature( FFMPEG_FOUND "ffmpeg" "Libraries and tools for handling multimedia data" "http://www.ffmpeg.org/" FALSE "0.6" "" )
+
+    if( FFMPEG_FOUND )
+        macro_optional_find_package(LibOFA)
+        macro_log_feature( LIBOFA_FOUND "libofa" "Enable MusicDNS service" "http://code.google.com/p/musicip-libofa/" FALSE "0.9.x" "" )
+        macro_bool_to_01( LIBOFA_FOUND HAVE_LIBOFA )
+    endif( FFMPEG_FOUND )
+    
+    ##gpodder Service
+    macro_optional_find_package( Mygpo-qt )
+    macro_log_feature( LIBMYGPO_QT_FOUND "libmygpo-qt" "Enable gpodder.net service" "http://wiki.gpodder.org/wiki/Libmygpo-qt" FALSE "1.0.5" "" )
+    macro_bool_to_01( LIBMYGPO_QT_FOUND HAVE_LIBMYGPOQT )
 
     if( WITH_IPOD )
         find_package(Ipod)
@@ -115,8 +145,8 @@ if( WITH_PLAYER )
             macro_ensure_version("0.7.0" ${IPOD_VERSION} IPOD_FOUND)
         endif( IPOD_FOUND AND NOT WIN32 )
         macro_log_feature( IPOD_FOUND "libgpod" "Support Apple iPod audio devices" "http://sourceforge.net/projects/gtkpod/" FALSE "0.7.0" "" )
-	macro_optional_find_package(Gdk)
-	macro_log_feature( GDK_FOUND "Gdk" "Support for artwork on iPod audio devices via GdkPixbuf" "http://developer.gnome.org/arch/imaging/gdkpixbuf.html" FALSE "2.0.x" "" )
+	macro_optional_find_package(GDKPixBuf)
+	macro_log_feature( GDKPIXBUF_FOUND "GDK-PixBuf" "Support for artwork on iPod audio devices via GDK-PixBuf" "http://developer.gnome.org/arch/imaging/gdkpixbuf.html" FALSE "2.0.x" "" )
     endif( WITH_IPOD )
 
     macro_optional_find_package(Mtp)
@@ -148,8 +178,8 @@ if( WITH_PLAYER )
     if( WITH_IPOD OR WITH_MP3Tunes )
     find_package(GObject)
     macro_log_feature( GOBJECT_FOUND "gobject" "Required by libgpod and mp3tunes." "http://www.gtk.org" FALSE "2.x" "" )
-	find_package(GLIB2)
-	macro_log_feature( GLIB2_FOUND "glib2" "Required by libgpod and mp3tunes" "http://www.gtk.org" FALSE "2.x" "")
+    find_package(GLIB2)
+    macro_log_feature( GLIB2_FOUND "glib2" "Required by libgpod and mp3tunes" "http://www.gtk.org" FALSE "2.x" "")
     endif( WITH_IPOD OR WITH_MP3Tunes )
 
     #These two are currently unused
@@ -160,9 +190,6 @@ if( WITH_PLAYER )
 
     macro_bool_to_01(LIBVISUAL_FOUND HAVE_LIBVISUAL)
 
-    macro_ensure_version("4.3.80" ${KDE_VERSION} KSTATUSNOTIFIERITEM_FOUND)
-    macro_bool_to_01(KSTATUSNOTIFIERITEM_FOUND HAVE_KSTATUSNOTIFIERITEM)
-
     string( TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_TOLOWER )
     if( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
         set( DEBUG_BUILD_TYPE ON )
@@ -170,7 +197,7 @@ if( WITH_PLAYER )
 
     configure_file(config-amarok.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/config-amarok.h )
 
-    include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE4_INCLUDES} ${TAGLIB_INCLUDES})
+    include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${KDE4_INCLUDES})
 
     if( KDE4_BUILD_TESTS AND NOT WIN32 )
         ENABLE_TESTING()
@@ -178,6 +205,7 @@ if( WITH_PLAYER )
     endif( KDE4_BUILD_TESTS AND NOT WIN32 )
 
     add_subdirectory( src )
+    add_subdirectory( external )
 
     macro_display_feature_log()
 
@@ -197,7 +225,7 @@ else( WITH_PLAYER )
     find_package( Qt4 REQUIRED )
     set( CMAKE_INCLUDE_CURRENT_DIR ON )
     add_definitions(${QT_DEFINITIONS})
-    include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR} ${TAGLIB_INCLUDES})
+    include_directories (${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
 endif( WITH_PLAYER )
 
@@ -206,5 +234,10 @@ if( WITH_UTILITIES )
     set(BIN_INSTALL_DIR          "${EXEC_INSTALL_PREFIX}/bin"    CACHE PATH "The subdirectory to the binaries prefix (default prefix/bin)" FORCE)
     add_subdirectory( utilities )
 endif( WITH_UTILITIES )
+
+if( WITH_PLAYGROUND )
+    add_subdirectory( playground )
+    message(STATUS "Included playground subdirectory in configuration")
+endif( WITH_PLAYGROUND )
 
 include(CTest)

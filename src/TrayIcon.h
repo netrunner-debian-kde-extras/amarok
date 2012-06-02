@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2003 Stanislav Karchebny <berkus@users.sf.net>                         *
  * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
- * Copyright (c) 2009,2010 Kevin Funk <krf@electrostorm.net>                            *
+ * Copyright (c) 2009-2011 Kevin Funk <krf@electrostorm.net>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -19,51 +19,42 @@
 #ifndef AMAROK_TRAYICON_H
 #define AMAROK_TRAYICON_H
 
-#include "core/engine/EngineObserver.h" // baseclass
+#include <KStatusNotifierItem> // baseclass
+
 #include "core/meta/Meta.h"
 #include "core/support/SmartPointerList.h"
 
-#include <KStatusNotifierItem> // baseclass
-
 #include <QAction>
-#include <QPointer>
-
+#include <QWeakPointer>
 
 namespace Amarok {
 
-class TrayIcon : public KStatusNotifierItem, public Engine::EngineObserver, public Meta::Observer
+class TrayIcon : public KStatusNotifierItem
 {
     Q_OBJECT
 
 public:
     TrayIcon( QObject *parent );
 
-    void setVisible( bool visible );
-
-protected:
-    // reimplemented from engineobserver
-    virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
-    virtual void engineNewTrackPlaying();
-    virtual void engineVolumeChanged( int percent );
-    virtual void engineMuteStateChanged( bool mute );
-
-    // reimplemented from Meta::Observer
-    using Observer::metadataChanged;
-    virtual void metadataChanged( Meta::TrackPtr track );
-    virtual void metadataChanged( Meta::AlbumPtr album );
-
 private slots:
-    void slotActivated();
+    void updateOverlayIcon();
+    void updateToolTipIcon();
+    void updateToolTip();
+    void updateMenu();
+
+    void trackPlaying( Meta::TrackPtr track );
+    void stopped();
+    void paused();
+    void metadataChanged( Meta::TrackPtr track );
+    void metadataChanged( Meta::AlbumPtr album );
+
     void slotScrollRequested( int delta, Qt::Orientation orientation );
 
 private:
-    void setupMenu();
-    void setupToolTip( bool updateIcon );
-
     Meta::TrackPtr m_track;
 
     SmartPointerList<QAction> m_extraActions;
-    QPointer<QAction> m_separator;
+    QWeakPointer<QAction> m_separator;
 };
 
 }

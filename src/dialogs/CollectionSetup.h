@@ -41,6 +41,7 @@ class CollectionSetupTreeView : public QTreeView
         ~CollectionSetupTreeView();
 
     protected slots:
+        /** Shows a context menu if the right mouse button is pressed over a directory. */
         void slotPressed( const QModelIndex &index );
         void slotRescanDirTriggered();
 
@@ -67,6 +68,9 @@ class CollectionSetup : public KVBox
         QStringList dirs() const { return m_dirs; }
         bool recursive() const { return m_recursive && m_recursive->isChecked(); }
         bool monitor() const { return m_monitor && m_monitor->isChecked(); }
+        bool writeBack() const { return m_writeBack&& m_writeBack->isChecked(); }
+        bool writeBackStatistics() const { return m_writeBackStatistics && m_writeBackStatistics->isChecked(); }
+        bool writeBackCover() const { return m_writeBackCover && m_writeBackCover->isChecked(); }
         bool charset() const { return m_charset && m_charset->isChecked(); }
 
         const QString modelFilePath( const QModelIndex &index ) const;
@@ -85,6 +89,9 @@ class CollectionSetup : public KVBox
         QStringList m_dirs;
         QCheckBox *m_recursive;
         QCheckBox *m_monitor;
+        QCheckBox *m_writeBack;
+        QCheckBox *m_writeBackStatistics;
+        QCheckBox *m_writeBackCover;
         QCheckBox *m_charset;
 };
 
@@ -107,9 +114,21 @@ namespace CollectionFolder //just to keep it out of the global namespace
 
         private:
             bool ancestorChecked( const QString &path ) const;
+            QStringList allCheckedAncestors( const QString &path ) const;
             bool descendantChecked( const QString &path ) const;
             bool isForbiddenPath( const QString &path ) const;
-            bool recursive() const { return CollectionSetup::instance() && CollectionSetup::instance()->recursive(); } // simply for convenience
+            void checkRecursiveSubfolders( const QString &root, const QString &excludePath );
+            inline bool recursive() const
+            {
+                // Simply for convenience
+                return CollectionSetup::instance() && CollectionSetup::instance()->recursive();
+            }
+
+            static inline QString normalPath( const QString &path )
+            {
+                return path.endsWith( '/' ) ? path : path + '/';
+            }
+
             QSet<QString> m_checked;
     };
 

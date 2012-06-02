@@ -59,8 +59,9 @@ public:
         coll->mc->releaseLock();
         return true;
     }
-    void copyUrlsToCollection(const QMap<Meta::TrackPtr, KUrl> &sources)
+    void copyUrlsToCollection(const QMap<Meta::TrackPtr, KUrl> &sources, const Transcoding::Configuration& conf)
     {
+        Q_UNUSED( conf )
         qDebug() << "adding " << sources.count() << " tracks to " << coll->collectionId();
         trackCopyCount = sources.count();
         foreach( const Meta::TrackPtr &track, sources.keys() )
@@ -94,6 +95,9 @@ void addMockTrack( Collections::CollectionTestImpl *coll, const QString &trackNa
     EXPECT_CALL( *track, uidUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( trackName + "_" + artistName + "_" + albumName ) );
     EXPECT_CALL( *track, isPlayable() ).Times( AnyNumber() ).WillRepeatedly( Return( true ) );
     EXPECT_CALL( *track, playableUrl() ).Times( AnyNumber() ).WillRepeatedly( Return( KUrl( '/' + track->uidUrl() ) ) );
+    EXPECT_CALL( *track, composer() ).Times( AnyNumber() ).WillRepeatedly( Return( Meta::ComposerPtr() ) );
+    EXPECT_CALL( *track, genre() ).Times( AnyNumber() ).WillRepeatedly( Return( Meta::GenrePtr() ) );
+    EXPECT_CALL( *track, year() ).Times( AnyNumber() ).WillRepeatedly( Return( Meta::YearPtr() ) );
     coll->mc->addTrack( trackPtr );
 
     Meta::AlbumPtr albumPtr = coll->mc->albumMap().value( albumName );
@@ -116,6 +120,7 @@ void addMockTrack( Collections::CollectionTestImpl *coll, const QString &trackNa
         albumPtr = Meta::AlbumPtr( album );
         EXPECT_CALL( *album, name() ).Times( AnyNumber() ).WillRepeatedly( Return( albumName ) );
         EXPECT_CALL( *album, hasAlbumArtist() ).Times( AnyNumber() ).WillRepeatedly( Return( false ) );
+        EXPECT_CALL( *album, albumArtist() ).Times( AnyNumber() ).WillRepeatedly( Return( Meta::ArtistPtr() ) );
         coll->mc->addAlbum( albumPtr );
     }
     albumTracks << trackPtr;
@@ -147,6 +152,7 @@ void addMockTrack( Collections::CollectionTestImpl *coll, const QString &trackNa
     artistTracks << trackPtr;
     EXPECT_CALL( *artist, tracks() ).Times( AnyNumber() ).WillRepeatedly( Return( artistTracks ) );
     EXPECT_CALL( *track, artist() ).Times( AnyNumber() ).WillRepeatedly( Return( artistPtr ) );
+    EXPECT_CALL( *album, albumArtist() ).Times( AnyNumber() ).WillRepeatedly( Return( artistPtr ) );
 }
 
 TestOneWaySynchronizationJob::TestOneWaySynchronizationJob() : QObject()

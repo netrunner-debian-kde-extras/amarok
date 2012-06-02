@@ -53,6 +53,7 @@ class IpodWriteCapability : public WriteCapability
     virtual void libSetTitle( Meta::MediaDeviceTrackPtr &track, const QString& title );
     virtual void libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album );
     virtual void libSetArtist( Meta::MediaDeviceTrackPtr &track, const QString& artist );
+    virtual void libSetAlbumArtist( Meta::MediaDeviceTrackPtr &track, const QString& albumArtist );
     virtual void libSetComposer( Meta::MediaDeviceTrackPtr &track, const QString& composer );
     virtual void libSetGenre( Meta::MediaDeviceTrackPtr &track, const QString& genre );
     virtual void libSetYear( Meta::MediaDeviceTrackPtr &track, const QString& year );
@@ -65,11 +66,12 @@ class IpodWriteCapability : public WriteCapability
     virtual void libSetBpm( Meta::MediaDeviceTrackPtr &track, qreal bpm );
     virtual void libSetFileSize( Meta::MediaDeviceTrackPtr &track, int filesize );
     virtual void libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount );
-    virtual void libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed );
+    virtual void libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, const QDateTime &lastplayed );
     virtual void libSetRating( Meta::MediaDeviceTrackPtr &track, int rating ) ;
     virtual void libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type );
     virtual void libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack );
-    virtual void libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QPixmap &cover );
+    virtual void libSetIsCompilation( Meta::MediaDeviceTrackPtr &track, bool isCompilation );
+    virtual void libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QImage &cover );
 
     virtual void prepareToCopy();
     virtual void prepareToDelete();

@@ -32,10 +32,9 @@ using namespace Collections;
 AMAROK_EXPORT_COLLECTION( IpodCollectionFactory, ipodcollection )
 
 IpodCollectionFactory::IpodCollectionFactory( QObject *parent, const QVariantList &args )
-    : MediaDeviceCollectionFactory<IpodCollection> ( new IpodConnectionAssistant() )
+    : MediaDeviceCollectionFactory<IpodCollection>( parent, args, new IpodConnectionAssistant() )
 {
-    setParent( parent );
-    Q_UNUSED( args )
+    m_info = KPluginInfo( "amarok_collection-ipodcollection.desktop", "services" );
 }
 
 IpodCollectionFactory::~IpodCollectionFactory()
@@ -55,10 +54,8 @@ IpodCollection::IpodCollection( MediaDeviceInfo* info )
     debug() << "Mounted at: " << m_mountPoint;
     m_udi = ipodinfo->udi();
 
-    bool isMounted = true;
     if (m_mountPoint.isEmpty())
     {
-        isMounted = false;
         m_mountPoint = KStandardDirs::locateLocal( "tmp", "amarok/" );
         m_mountPoint += "imobiledevice";
         if( !ipodinfo->deviceUid().isEmpty() )

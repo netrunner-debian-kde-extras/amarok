@@ -17,7 +17,7 @@
 #ifndef TOKENWITHLAYOUT_H
 #define TOKENWITHLAYOUT_H
 
-#include <QPointer>
+#include <QWeakPointer>
 #include <Token.h>
 
 class LayoutEditDialog;
@@ -40,7 +40,7 @@ signals:
 class TokenWithLayoutFactory : public TokenFactory
 {
 public:
-    virtual Token * createToken( const QString &text, const QString &iconName, int value, QWidget *parent = 0 );
+    virtual Token * createToken( const QString &text, const QString &iconName, qint64 value, QWidget *parent = 0 );
 };
 
 /**
@@ -52,7 +52,7 @@ class TokenWithLayout : public Token
 {
     Q_OBJECT
 public:
-    TokenWithLayout( const QString &text, const QString &iconName, int value, QWidget *parent = 0 );
+    TokenWithLayout( const QString &text, const QString &iconName, qint64 value, QWidget *parent = 0 );
     ~TokenWithLayout();
 
     Qt::Alignment alignment();
@@ -99,7 +99,7 @@ private:
     QString m_prefix, m_suffix;
     Wrench *m_wrench;
     int m_wrenchTimer;
-    static QPointer<LayoutEditDialog> m_dialog;
+    static QWeakPointer<LayoutEditDialog> m_dialog;
 
 };
 

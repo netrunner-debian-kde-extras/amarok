@@ -18,45 +18,37 @@
 
 #include "PlaylistBrowserCategory.h"
 
-#include "core-impl/collections/support/CollectionManager.h"
+#include "amarokconfig.h"
 #include "core/support/Debug.h"
 #include "PaletteHandler.h"
+#include "PlaylistBrowserModel.h"
 #include "playlist/PlaylistModel.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "PlaylistsInFoldersProxy.h"
 #include "PlaylistsByProviderProxy.h"
 #include "PlaylistTreeItemDelegate.h"
+#include "PlaylistBrowserFilterProxy.h"
 #include "SvgHandler.h"
-#include "statusbar/StatusBar.h"
 #include "PlaylistBrowserView.h"
 
-#include <KAction>
 #include <KActionMenu>
-#include <KButtonGroup>
+#include <KConfigGroup>
 #include <KIcon>
-#include <KLineEdit>
-
-#include <QButtonGroup>
-#include <QCheckBox>
-#include <QGridLayout>
-#include <QHeaderView>
-#include <QLabel>
 #include <KStandardDirs>
+#include <KToolBar>
+
+#include <QHeaderView>
 #include <QToolBar>
-#include <QTreeView>
-#include <QVBoxLayout>
 
 #include <typeinfo>
-
-#include "PlaylistBrowserModel.h"
 
 using namespace PlaylistBrowserNS;
 
 QString PlaylistBrowserCategory::s_mergeViewKey( "Merged View" );
 
 PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
-                                                  QString categoryName,
-                                                  QString configGroup,
+                                                  const QString &categoryName,
+                                                  const QString &configGroup,
                                                   PlaylistBrowserModel *model,
                                                   QWidget *parent ) :
     BrowserCategory( categoryName, parent ),
@@ -64,19 +56,14 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
     m_playlistCategory( playlistCategory )
 {
     setContentsMargins( 0, 0, 0, 0 );
+    setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_podcasts.png" ) );
+
+    // set background
+    if( AmarokConfig::showBrowserBackgroundImage() )
+        setBackgroundImage( imagePath() );
+
     m_toolBar = new KToolBar( this, false, false );
     m_toolBar->setToolButtonStyle( Qt::ToolButtonTextBesideIcon );
-
-    m_byProviderProxy = new PlaylistsByProviderProxy( model, PlaylistBrowserModel::ProviderColumn );
-    m_byFolderProxy = new PlaylistsInFoldersProxy( model );
-
-    m_filterProxy = new QSortFilterProxyModel( this );
-    m_filterProxy->setDynamicSortFilter( true );
-    m_filterProxy->setFilterKeyColumn( PlaylistBrowserModel::ProviderColumn );
-
-    m_playlistView = new PlaylistBrowserView( m_filterProxy, this );
-    m_defaultItemDelegate = m_playlistView->itemDelegate();
-    m_byProviderDelegate = new PlaylistTreeItemDelegate( m_playlistView );
 
     //a QWidget with minimumExpanding makes the next button right aligned.
     QWidget *spacerWidget = new QWidget( this );
@@ -106,6 +93,19 @@ PlaylistBrowserCategory::PlaylistBrowserCategory( int playlistCategory,
     connect( toggleAction, SIGNAL( triggered( bool ) ), SLOT( toggleView( bool ) ) );
 
     m_toolBar->addSeparator();
+
+    m_byProviderProxy = new PlaylistsByProviderProxy( model, PlaylistBrowserModel::ProviderColumn,
+                                                      m_playlistCategory );
+    m_byFolderProxy = new PlaylistsInFoldersProxy( model );
+
+    m_filterProxy = new PlaylistBrowserFilterProxy( this );
+    //no need to setModel on filterProxy since it will be done in toggleView anyway.
+    m_filterProxy->setDynamicSortFilter( true );
+    m_filterProxy->setFilterKeyColumn( PlaylistBrowserModel::ProviderColumn );
+
+    m_playlistView = new PlaylistBrowserView( m_filterProxy, this );
+    m_defaultItemDelegate = m_playlistView->itemDelegate();
+    m_byProviderDelegate = new PlaylistTreeItemDelegate( m_playlistView );
 
     toggleView( toggleAction->isChecked() );
 
@@ -174,21 +174,20 @@ PlaylistBrowserCategory::toggleView( bool merged )
     if( merged )
     {
         m_filterProxy->setSourceModel( m_byFolderProxy );
-        m_playlistView->setModel( m_filterProxy );
         m_playlistView->setItemDelegate( m_defaultItemDelegate );
         m_playlistView->setRootIsDecorated( true );
+        m_addFolderAction->setHelpText( m_addFolderAction->text() );
     }
     else
     {
         m_filterProxy->setSourceModel( m_byProviderProxy );
-        m_playlistView->setModel( m_filterProxy );
         m_playlistView->setItemDelegate( m_byProviderDelegate );
         m_playlistView->setRootIsDecorated( false );
+        m_addFolderAction->setHelpText( i18n( "Folders are only shown in <b>merged view</b>." ) );
     }
 
     //folders don't make sense in per-provider view
     m_addFolderAction->setEnabled( merged );
-    //TODO: set a tooltip saying why it's disabled mention labels
 
     Amarok::config( m_configGroup ).writeEntry( s_mergeViewKey, merged );
 }
@@ -202,8 +201,9 @@ PlaylistBrowserCategory::slotProviderAdded( Playlists::PlaylistProvider *provide
     if( !m_providerActions.keys().contains( provider ) )
         createProviderButton( provider );
 
-    //TODO: only turn off merged view for non-empty providers or based on some provider property
-    toggleView( false );
+    //Hide empty providers when added
+    if( provider->playlistCount() != 0 )
+        toggleView( false );
 
     slotToggleProviderButton();
 }
@@ -287,7 +287,7 @@ PlaylistBrowserCategory::createNewFolder()
             folderCount = regex.cap( 1 ).toInt();
         groupName += QString( " (%1)" ).arg( folderCount + 1 );
     }
-    QModelIndex idx = m_byFolderProxy->createNewFolder( groupName );
+    QModelIndex idx = m_filterProxy->mapFromSource( m_byFolderProxy->createNewFolder( groupName ) );
     m_playlistView->setCurrentIndex( idx );
     m_playlistView->edit( idx );
 }

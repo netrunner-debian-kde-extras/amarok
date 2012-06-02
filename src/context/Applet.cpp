@@ -15,24 +15,28 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "Context::Applet"
+
 #include "Applet.h"
 
-#include "App.h"
+#include "AppletHeader.h"
+#include "amarokconfig.h"
 #include "Containment.h"
 #include "ContextView.h"
 #include "core/support/Debug.h"
 #include "PaletteHandler.h"
 
-#include <Plasma/Animator>
-#include <Plasma/FrameSvg>
+#include <KMessageBox>
+#include <KServiceTypeTrader>
 #include <Plasma/IconWidget>
 #include <Plasma/Theme>
 
 #include <QGraphicsLayout>
 #include <QGraphicsScene>
 #include <QFontMetrics>
+#include <QMetaMethod>
 #include <QPainter>
-#include <KServiceTypeTrader>
+#include <QPropertyAnimation>
 
 namespace Context
 {
@@ -41,32 +45,19 @@ namespace Context
 
 Context::Applet::Applet( QObject * parent, const QVariantList& args )
     : Plasma::Applet( parent, args )
-    , m_collapsed( false )
-    , m_animationIdOn( 0 )
-    , m_animationIdOff( 0 )
+    , m_canAnimate( !KServiceTypeTrader::self()->query("Plasma/Animator", QString()).isEmpty() )
+    , m_heightCollapseOff( 0 )
+    , m_header( 0 )
     , m_transient( 0 )
     , m_standardPadding( 6.0 )
-    , m_textBackground( 0 )
 {
-    KService::List offers = KServiceTypeTrader::self()->query("Plasma/Animator", QString());
-    m_canAnimate = !offers.isEmpty();
-
-    if( m_canAnimate )
-        connect ( Plasma::Animator::self(), SIGNAL(customAnimationFinished ( int ) ), this, SLOT( animateEnd( int ) ) );
-    setBackgroundHints(NoBackground);
-
-    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
+    setBackgroundHints( NoBackground );
+    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(paletteChanged(QPalette )) );
 }
 
-Context::Applet::~Applet( )
+Context::Applet::~Applet()
 {
-    if ( m_animationIdOn != 0 )
-        Plasma::Animator::self()->stopCustomAnimation( m_animationIdOn );
-    if ( m_animationIdOff != 0 )
-        Plasma::Animator::self()->stopCustomAnimation( m_animationIdOff );
-    delete m_textBackground;
 }
-
 
 QFont
 Context::Applet::shrinkTextSizeToFit( const QString& text, const QRectF& bounds )
@@ -101,65 +92,44 @@ Context::Applet::shrinkTextSizeToFit( const QString& text, const QRectF& bounds 
 }
 
 QString
-Context::Applet::truncateTextToFit( QString text, const QFont& font, const QRectF& bounds )
+Context::Applet::truncateTextToFit( const QString &text, const QFont& font, const QRectF& bounds )
 {
     QFontMetrics fm( font );
     return fm.elidedText ( text, Qt::ElideRight, (int)bounds.width() );
 }
 
 void
-Context::Applet::drawRoundedRectAroundText( QPainter* p, QGraphicsTextItem* textItem )
+Context::Applet::paintInterface( QPainter *p,
+                                 const QStyleOptionGraphicsItem *option,
+                                 const QRect &contentsRect )
 {
-    p->save();
-    p->setRenderHint( QPainter::Antialiasing );
-
-    if ( !m_textBackground )
-    {
-        m_textBackground = new Plasma::FrameSvg();
-        m_textBackground->setImagePath( "widgets/text-background" );
-        m_textBackground->setEnabledBorders( Plasma::FrameSvg::AllBorders );
-    }
-
-    // Paint in integer coordinates, align to grid
-    QRectF rect = textItem->boundingRect();
-    rect.setX( qRound( rect.x() ) );
-    rect.setY( qRound( rect.y() ) );
-    rect.setHeight( qRound( rect.height() ) );
-    rect.setWidth( qRound( rect.width() ) );
-    rect.moveTopLeft( textItem->pos() );
-
-    QPointF pos = textItem->pos();
-    pos.setX( qRound( pos.x() ) );
-    pos.setY( qRound( pos.y() ) );
-
-    rect.moveTopLeft( pos );
-    rect.adjust( -5, -5, 5, 5 );
-
-    m_textBackground->resizeFrame( rect.size() );
-    m_textBackground->paintFrame( p, rect.topLeft() );
-    p->restore();
+    Plasma::Applet::paintInterface( p, option, contentsRect );
+    addGradientToAppletBackground( p );
 }
 
 void
 Context::Applet::addGradientToAppletBackground( QPainter* p )
 {
-        // tint the whole applet
+    // tint the whole applet
     // draw non-gradient backround. going for elegance and style
+    const QRectF roundRect = boundingRect().adjusted( 0, 1, -1, -1 );
+
     p->save();
+    p->setRenderHint( QPainter::Antialiasing );
     QPainterPath path;
-    path.addRoundedRect( boundingRect().adjusted( 0, 1, -1, -1 ), 4, 4 );
-    //p->fillPath( path, gradient );
+    path.addRoundedRect( roundRect, 4, 4 );
     QColor highlight = PaletteHandler::highlightColor( 0.4, 1.05 );
     highlight.setAlphaF( highlight.alphaF() * 0.5 );
     p->fillPath( path, highlight );
     p->restore();
 
     p->save();
+    p->setRenderHint( QPainter::Antialiasing );
     p->translate( 0.5, 0.5 );
     QColor col = PaletteHandler::highlightColor( 0.3, 0.5 );
     col.setAlphaF( col.alphaF() * 0.7 );
     p->setPen( col );
-    p->drawRoundedRect( boundingRect().adjusted( 0, 1, -1, -1 ), 4, 4 );
+    p->drawRoundedRect( roundRect, 4, 4 );
     p->restore();
 }
 
@@ -207,27 +177,13 @@ Context::Applet::cleanUpAndDelete()
     Plasma::Applet::deleteLater();
 }
 
-QSizeF
-Context::Applet::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
-{
-    return QSizeF( QGraphicsWidget::sizeHint( which, constraint ).width(), m_heightCurrent );
-}
-
-void
-Context::Applet::resize( qreal wid, qreal hei)
-{
-    m_heightCollapseOff = hei;
-    m_heightCurrent = hei;
-    Plasma::Applet::resize( wid, hei );
-}
-
 Plasma::IconWidget*
-Context::Applet::addAction( QAction *action, const int size )
+Context::Applet::addAction( QGraphicsItem *parent, QAction *action, const int size )
 {
     if( !action )
         return 0;
 
-    Plasma::IconWidget *tool = new Plasma::IconWidget( this );
+    Plasma::IconWidget *tool = new Plasma::IconWidget( parent );
     tool->setAction( action );
     tool->setText( QString() );
     tool->setToolTip( action->text() );
@@ -243,80 +199,146 @@ Context::Applet::addAction( QAction *action, const int size )
 }
 
 void
+Context::Applet::enableHeader( bool enable )
+{
+    if( m_header )
+    {
+        delete m_header;
+        m_header = 0;
+    }
+
+    if( enable )
+    {
+        m_header = new AppletHeader( this );
+        m_header->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+    }
+}
+
+Plasma::IconWidget *
+Context::Applet::addLeftHeaderAction( QAction *action )
+{
+    if( !m_header )
+        return 0;
+
+    Plasma::IconWidget *icon = addAction( 0, action );
+    m_header->addIcon( icon, Qt::AlignLeft );
+    return icon;
+}
+
+Plasma::IconWidget *
+Context::Applet::addRightHeaderAction( QAction *action )
+{
+    if( !m_header )
+        return 0;
+
+    Plasma::IconWidget *icon = addAction( 0, action );
+    m_header->addIcon( icon, Qt::AlignRight );
+    return icon;
+}
+
+QString
+Context::Applet::headerText() const
+{
+    if( !m_header )
+        return QString();
+    return m_header->titleText();
+}
+
+void
+Context::Applet::setHeaderText( const QString &text )
+{
+    if( !m_header )
+        return;
+    m_header->setTitleText( text );
+}
+
+bool
+Context::Applet::isAnimating() const
+{
+    QSharedPointer<QPropertyAnimation> anim = m_animation.toStrongRef();
+    if( anim )
+        return (anim->state() == QAbstractAnimation::Running);
+    return false;
+}
+
+bool
+Context::Applet::isCollapsed() const
+{
+    return m_heightCollapseOn == preferredHeight();
+}
+
+void
 Context::Applet::setCollapseOn()
 {
-
-    if( !m_canAnimate ) {
-        resize( size().width(), m_heightCollapseOn );
-        return;
-    }
-
-    // We are asked to collapse, but the applet is already animating to collapse, do nothing
-    if ( m_animationIdOn != 0 )
-        return;
-
-    // We are already collapsed
-    if ( size().height() == m_heightCollapseOn )
-        return;
-
-    debug() << "collapsing applet to..." << m_heightCollapseOn;
-    if( m_heightCollapseOff == -1 )
-        m_animFromHeight = size().height();
-    else
-        m_animFromHeight = m_heightCollapseOff;
-
-    if ( m_animationIdOff != 0 ) // warning we are extanding right now we should stop
-    {
-        // stop the anim
-        Plasma::Animator::self()->stopCustomAnimation( m_animationIdOff );
-        m_animationIdOff = 0;
-    }
-    m_collapsed = false;
-    m_animationIdOn = Plasma::Animator::self()->customAnimation(20, 1000, Plasma::Animator::EaseInCurve, this, "animateOn" );
+    collapse( true );
 }
 
 void
 Context::Applet::setCollapseOff()
 {
-    DEBUG_BLOCK
+    collapse( false );
+}
 
-    if( !m_canAnimate ) {
-        resize( size().width(), m_heightCollapseOff );
-        return;
-    }
-    
-    // We are asked to extend, but the applet is already animating to extend, do nothing
-    if ( m_animationIdOff != 0 )
-        return;
-    
-    // Applet already extended
-    if ( size().height() == m_heightCollapseOff )
-        return;
+void
+Context::Applet::collapse( bool on )
+{
+    qreal finalHeight = ( on ) ? m_heightCollapseOn : m_heightCollapseOff;
+    const qreal maxHeight = containment()->size().height();
+    if( (finalHeight > maxHeight) || (finalHeight < 0) )
+        finalHeight = maxHeight;
 
-    debug() << "height:" << size().height() << "target:" << m_heightCollapseOff << "m_collapsed:" << m_collapsed;
-    if( m_heightCollapseOff == -1) // if it's self-expanding, don't animate as we don't know where we're going. also, if we're shrinking
-    {                                                                       // stop that and expand regardless
-        // stop the animation on now
-        if( m_animationIdOn != 0 )
-        {
-            Plasma::Animator::self()->stopCustomAnimation( m_animationIdOn );
-            m_animationIdOn = 0;
-        }
-        m_heightCurrent =  m_heightCollapseOff;
-        emit sizeHintChanged(Qt::PreferredSize);
-        updateGeometry();
-        m_collapsed = false;
-        return;
-    }
-
-    if ( m_animationIdOn != 0 ) // warning we are collapsing right now, stop that and reverse it !
+    prepareGeometryChange();
+    ContextView *v = static_cast<ContextView*>( view() );
+    // Plasma::Applet::view() might return 0, if the widget is not yet constructed, etc.
+    // \sa https://bugs.kde.org/show_bug.cgi?id=258741. If view is not available
+    // yet, regardless of the animation setting the preferred size is set
+    // straight away.
+    if( !v || !AmarokConfig::animateAppletCollapse() )
     {
-        // stop the anim
-        Plasma::Animator::self()->stopCustomAnimation( m_animationIdOn );
-        m_animationIdOn = 0;
+        setPreferredHeight( finalHeight );
+        emit sizeHintChanged( Qt::PreferredSize );
+        updateGeometry();
+        return;
     }
-    m_collapsed = true ;
-    m_animationIdOff = Plasma::Animator::self()->customAnimation(20, 1000, Plasma::Animator::EaseInCurve, this, "animateOff" );
+
+    if( finalHeight == size().height() )
+        return;
+
+    // debug() << pluginName() << (on ? "collapsing to" : "uncollapsing to") << finalHeight;
+    QPropertyAnimation *pan = m_animation.data();
+    if( !pan )
+        pan = new QPropertyAnimation( this, "preferredSize" );
+    if( pan->state() == QAbstractAnimation::Running )
+        pan->stop();
+    pan->setDuration( 600 );
+    pan->setEasingCurve( QEasingCurve::InQuad );
+    pan->setStartValue( size() );
+    pan->setEndValue( QSizeF(size().width(), finalHeight) );
+    connect( pan, SIGNAL(finished()), SLOT(collapseAnimationFinished()) );
+    m_animation = pan;
+    pan->setDirection( QAbstractAnimation::Forward );
+
+    v->addCollapseAnimation( pan );
+}
+
+int
+Context::Applet::collapseHeight() const
+{
+    return m_heightCollapseOn;
+}
+
+int
+Context::Applet::collapseOffHeight() const
+{
+    return m_heightCollapseOff;
+}
+
+void
+Context::Applet::collapseAnimationFinished()
+{
+    emit sizeHintChanged( Qt::PreferredSize );
+    updateConstraints();
+    update();
 }
 
 void
@@ -325,50 +347,10 @@ Context::Applet::setCollapseHeight( int h )
     m_heightCollapseOn = h;
 }
 
-bool
-Context::Applet::isAppletCollapsed()
-{
-    return ( m_heightCollapseOn == m_heightCurrent );
-}
-
-bool
-Context::Applet::isAppletExtended()
-{
-    return ( m_heightCollapseOff == m_heightCurrent );
-}
-
-
 void
-Context::Applet::animateOn( qreal anim )
+Context::Applet::setCollapseOffHeight( int h )
 {
-    m_heightCurrent = m_animFromHeight - ( m_animFromHeight - m_heightCollapseOn ) * anim ;
-    emit sizeHintChanged(Qt::PreferredSize);
-}
-
-void
-Context::Applet::animateOff( qreal anim )
-{
-    m_heightCurrent =  m_heightCollapseOn + ( m_heightCollapseOff - m_heightCollapseOn ) * anim ;
-    emit sizeHintChanged(Qt::PreferredSize);
-}
-
-void
-Context::Applet::animateEnd( int id )
-{
-    if( id == m_animationIdOn )
-    {
-        Plasma::Applet::resize( size().width(), m_heightCollapseOn );
-        m_collapsed = true;
-        m_animationIdOn = 0;
-    }
-    if ( id == m_animationIdOff )
-    {
-        Plasma::Applet::resize( size().width(), m_heightCollapseOff );
-        m_collapsed = false;
-        m_animationIdOff = 0;
-    }
-    updateGeometry();
-    emit sizeHintChanged(Qt::PreferredSize);
+    m_heightCollapseOff = h;
 }
 
 void
@@ -380,6 +362,19 @@ Context::Applet::paletteChanged( const QPalette & palette )
 bool Context::Applet::canAnimate()
 {
     return m_canAnimate;
+}
+
+void
+Context::Applet::showWarning( const QString &message, const char *slot )
+{
+    int ret = KMessageBox::warningYesNo( 0, message );
+    Plasma::MessageButton button = (ret == KMessageBox::Yes) ? Plasma::ButtonYes : Plasma::ButtonNo;
+    QByteArray sig = QMetaObject::normalizedSignature( slot );
+    sig.remove( 0, 1 ); // remove method type
+    QMetaMethod me = metaObject()->method( metaObject()->indexOfSlot(sig) );
+    QGenericArgument arg1 = Q_ARG( const Plasma::MessageButton, button );
+    if( !me.invoke( this, arg1 ) )
+        warning() << "invoking failed:" << sig;
 }
 
 #include "Applet.moc"

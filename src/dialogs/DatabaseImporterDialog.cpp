@@ -17,9 +17,11 @@
 #include "DatabaseImporterDialog.h"
 
 #include "core/support/Debug.h"
+#include "databaseimporter/sqlbatch/SqlBatchImporter.h"
 #include "databaseimporter/amarok14/FastForwardImporter.h"
 #include "databaseimporter/itunes/ITunesImporter.h"
 
+#include <KLocale>
 #include <KPageWidgetItem>
 #include <KVBox>
 
@@ -39,8 +41,9 @@ DatabaseImporterDialog::DatabaseImporterDialog( QWidget *parent )
     KVBox *importerBox = new KVBox( this );
     importerBox->setSpacing( KDialog::spacingHint() );
 
-    QString text = i18n("This tool allows you to import track information and<br>statistical data from another music application.");
-    text += i18n("<br><br>Any statistical data in your database will be <i>overwritten</i>" );
+    QString text = i18n("This tool allows you to import track information and<br>"
+                        "statistical data from another music application.<br><br>"
+                        "Any statistical data in your database will be <i>overwritten</i>" );
     QLabel *label = new QLabel( text, importerBox );
     label->setTextFormat( Qt::RichText );
     label->setAlignment( Qt::AlignHCenter );
@@ -49,24 +52,26 @@ DatabaseImporterDialog::DatabaseImporterDialog( QWidget *parent )
     m_buttons = new QButtonGroup( importerBox );
     m_buttons->setExclusive( true );
 
+    QRadioButton *scanner = new QRadioButton( i18n("Amarok collection scanner"), importerBox );
     QRadioButton *amarok = new QRadioButton( i18n("Amarok 1.4"), importerBox );
     QRadioButton *itunes = new QRadioButton( i18n("iTunes"), importerBox );
     QRadioButton *banshee = new QRadioButton( i18n("Banshee"), importerBox );
     QRadioButton *rhythmbox = new QRadioButton( i18n("Rhythmbox"), importerBox );
 
-    amarok->setChecked( true );
-    itunes->setEnabled( true );
+    scanner->setChecked( true );
     banshee->setEnabled( false );
     rhythmbox->setEnabled( false );
 
     banshee->setHidden( true );
     rhythmbox->setHidden( true );
 
+    m_buttons->addButton( scanner );
     m_buttons->addButton( amarok );
     m_buttons->addButton( itunes );
     m_buttons->addButton( banshee );
     m_buttons->addButton( rhythmbox );
 
+    m_buttonHash.insert( scanner, SqlBatchImporter::name() );
     m_buttonHash.insert( amarok, FastForwardImporter::name() );
     m_buttonHash.insert( itunes, ITunesImporter::name() );
     m_buttonHash.insert( banshee, "" );
@@ -191,12 +196,19 @@ DatabaseImporterDialog::importedTrack( Meta::TrackPtr track )
     if( !track ) return;
 
     QString text;
-    if( !track->album() || track->album()->name().isEmpty() )
-        text = i18nc( "Track has been imported, format: Artist - Track", 
-                      "Imported <b>%1 - %2</b>", track->artist()->name(), track->name() );
+    Meta::ArtistPtr artist = track->artist();
+    Meta::AlbumPtr album = track->album();
+
+    if( !artist || artist->name().isEmpty() )
+        text = i18nc( "Track has been imported, format: Track",
+                      "Imported <b>%1</b>", track->name() );
+    else if( !album || album->name().isEmpty() )
+        text = i18nc( "Track has been imported, format: Artist - Track",
+                      "Imported <b>%1 - %2</b>", artist->name(), track->name() );
     else
-        text = i18nc( "Track has been imported, format: Artist - Track (Album)", 
-                      "Imported <b>%1 - %2 (%3)</b>", track->artist()->name(), track->name(), track->album()->name() );
+        text = i18nc( "Track has been imported, format: Artist - Track (Album)",
+                      "Imported <b>%1 - %2 (%3)</b>", artist->name(), track->name(), album->name() );
+
     m_results->appendHtml( text );
 }
 
@@ -213,13 +225,19 @@ void DatabaseImporterDialog::matchedTrack( Meta::TrackPtr track, QString oldUrl 
     if( !track ) return;
 
     QString text;
+    Meta::ArtistPtr artist = track->artist();
+    Meta::AlbumPtr album = track->album();
+
     //TODO: help text; also check wording with imported; unify?
-    if( !track->album() || track->album()->name().isEmpty() )
+    if( !artist || artist->name().isEmpty() )
+        text = i18nc( "Track has been imported by tags, format: Track, from Url, to Url",
+                      "Imported <b><font color='green'>%1</font></b><br/>&nbsp;&nbsp;from %2<br/>&nbsp;&nbsp;to %3", track->name(), oldUrl, track->prettyUrl() );
+    else if( !album || album->name().isEmpty() )
         text = i18nc( "Track has been imported by tags, format: Artist - Track, from Url, to Url",
-                      "Imported <b><font color='green'>%1 - %2</font></b><br/>&nbsp;&nbsp;from %3<br/>&nbsp;&nbsp;to %4", track->artist()->name(), track->name(), oldUrl, track->prettyUrl() );
+                      "Imported <b><font color='green'>%1 - %2</font></b><br/>&nbsp;&nbsp;from %3<br/>&nbsp;&nbsp;to %4", artist->name(), track->name(), oldUrl, track->prettyUrl() );
     else
         text = i18nc( "Track has been imported by tags, format: Artist - Track (Album), from Url, to Url",
-                      "Imported <b><font color='green'>%1 - %2 (%3)</font></b><br/>&nbsp;&nbsp;from %4<br/>&nbsp;&nbsp;to %5", track->artist()->name(), track->name(), track->album()->name(), oldUrl, track->prettyUrl() );
+                      "Imported <b><font color='green'>%1 - %2 (%3)</font></b><br/>&nbsp;&nbsp;from %4<br/>&nbsp;&nbsp;to %5", artist->name(), track->name(), album->name(), oldUrl, track->prettyUrl() );
 
     m_results->appendHtml( text );
 }

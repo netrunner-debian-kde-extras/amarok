@@ -28,17 +28,18 @@
 #include "core-impl/collections/support/CollectionManager.h"
 #include "CompoundProgressBar.h"
 #include "core/support/Debug.h"
-#include "core/capabilities/CurrentTrackActionsCapability.h"
+#include "core/capabilities/ActionsCapability.h"
 #include "core/meta/Meta.h"
 #include "core/collections/QueryMaker.h"
 #include "CoverFetchingActions.h"
 #include <config-amarok.h>
 #include "PixmapViewer.h"
-#include "playlist/PlaylistModelStack.h"
+#include "playlist/PlaylistController.h"
 #include "widgets/LineEdit.h"
 
+#include <KApplication>
 #include <KIO/NetAccess>
-#include <KLocale>
+#include <KLocalizedString>
 #include <KMenu>    //showCoverMenu()
 #include <KPushButton>
 #include <KSqueezedTextLabel> //status label
@@ -133,8 +134,8 @@ CoverManager::CoverManager( QWidget *parent )
     qm->setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
     qm->orderBy( Meta::valArtist );
 
-    connect( qm, SIGNAL( newResultReady( QString, Meta::ArtistList ) ),
-             this, SLOT( slotArtistQueryResult( QString, Meta::ArtistList ) ) );
+    connect( qm, SIGNAL( newResultReady( Meta::ArtistList ) ),
+             this, SLOT( slotArtistQueryResult( Meta::ArtistList ) ) );
 
     connect( qm, SIGNAL( queryDone() ), this, SLOT( slotContinueConstruction() ) );
 
@@ -142,10 +143,9 @@ CoverManager::CoverManager( QWidget *parent )
 }
 
 void
-CoverManager::slotArtistQueryResult( QString collectionId, Meta::ArtistList artists ) //SLOT
+CoverManager::slotArtistQueryResult( Meta::ArtistList artists ) //SLOT
 {
     DEBUG_BLOCK
-    Q_UNUSED( collectionId );
     foreach( Meta::ArtistPtr artist, artists )
         m_artistList << artist;
 }
@@ -369,8 +369,8 @@ CoverManager::slotArtistSelected() //SLOT
     qm->excludeFilter( Meta::valAlbum, QString(), true, true );
     qm->endAndOr();
 
-    connect( qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
-             this, SLOT( slotAlbumQueryResult( QString, Meta::AlbumList ) ) );
+    connect( qm, SIGNAL( newResultReady( Meta::AlbumList ) ),
+             this, SLOT( slotAlbumQueryResult( Meta::AlbumList ) ) );
 
     connect( qm, SIGNAL( queryDone() ), this, SLOT( slotArtistQueryDone() ) );
 
@@ -378,9 +378,8 @@ CoverManager::slotArtistSelected() //SLOT
 }
 
 void
-CoverManager::slotAlbumQueryResult( QString collectionId, Meta::AlbumList albums ) //SLOT
+CoverManager::slotAlbumQueryResult( Meta::AlbumList albums ) //SLOT
 {
-    Q_UNUSED( collectionId );
     m_albumList = albums;
 }
 
@@ -595,13 +594,11 @@ CoverManager::loadCover( const QString &artist, const QString &album )
 void
 CoverManager::playSelectedAlbums()
 {
-    Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
-    Collections::QueryMaker *qm = coll->queryMaker();
+    // -- get all the track from the selected items
+    Meta::TrackList tracks;
     foreach( CoverViewItem *item, selectedItems() )
-    {
-        qm->addMatch( item->albumPtr() );
-    }
-    The::playlistController()->insertOptioned( qm, Playlist::AppendAndPlay );
+        tracks.append( item->albumPtr()->tracks() );
+    The::playlistController()->insertOptioned( tracks, Playlist::AppendAndPlay );
 }
 
 QList<CoverViewItem*>
@@ -777,10 +774,10 @@ CoverView::contextMenuEvent( QContextMenuEvent *event )
         Meta::AlbumPtr album = item->albumPtr();
         if( album )
         {
-            Capabilities::CustomActionsCapability *cac = album->create<Capabilities::CustomActionsCapability>();
-            if( cac )
+            QScopedPointer<Capabilities::ActionsCapability> ac( album->create<Capabilities::ActionsCapability>() );
+            if( ac )
             {
-                actions = cac->customActions();
+                actions = ac->actions();
                 foreach( QAction *action, actions )
                     menu.addAction( action );
             }
@@ -801,10 +798,10 @@ CoverView::contextMenuEvent( QContextMenuEvent *event )
             Meta::AlbumPtr album = cvItem->albumPtr();
             if( album )
             {
-                Capabilities::CustomActionsCapability *cac = album->create<Capabilities::CustomActionsCapability>();
-                if( cac )
+                QScopedPointer<Capabilities::ActionsCapability> ac( album->create<Capabilities::ActionsCapability>() );
+                if( ac )
                 {
-                    QList<QAction *> actions = cac->customActions();
+                    QList<QAction *> actions = ac->actions();
                     foreach( QAction *action, actions )
                     {
                         if( qobject_cast<FetchCoverAction*>(action) )
@@ -863,10 +860,7 @@ CoverViewItem::CoverViewItem( QListWidget *parent, Meta::AlbumPtr album )
         m_artist = i18n( "No Artist" );
     setText( album->prettyName() );
 
-    const bool isSuppressing = album->suppressImageAutoFetch();
-    album->setSuppressImageAutoFetch( true );
-    setIcon( album->image( 100 ) );
-    album->setSuppressImageAutoFetch( isSuppressing );
+    loadCover();
 
     CoverManager::instance()->subscribeTo( album );
 }
@@ -885,7 +879,7 @@ CoverViewItem::loadCover()
 {
     const bool isSuppressing = m_albumPtr->suppressImageAutoFetch();
     m_albumPtr->setSuppressImageAutoFetch( true );
-    setIcon( m_albumPtr->image( 100 ) );
+    setIcon( QPixmap::fromImage( m_albumPtr->image( 100 ) ) );
     m_albumPtr->setSuppressImageAutoFetch( isSuppressing );
 }
 

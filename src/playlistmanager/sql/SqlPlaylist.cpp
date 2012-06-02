@@ -206,18 +206,51 @@ SqlPlaylist::saveTracks()
     }
 }
 
+int
+SqlPlaylist::trackCount() const
+{
+    if( m_tracksLoaded )
+        return m_tracks.count();
+
+    QString query = "SELECT COUNT(id) FROM playlist_tracks WHERE playlist_id=%1;";
+
+    SqlStorage *sql = CollectionManager::instance()->sqlStorage();
+    Q_ASSERT( sql );
+
+    QStringList results = sql->query( query.arg( m_dbId ) );
+    debug() << results;
+    if( results.isEmpty() )
+    {
+        error() << "no results for COUNT query on playlist_tracks table!";
+        return -1;
+    }
+    int trackCount = results.first().toInt();
+    return trackCount;
+}
+
 Meta::TrackList
 SqlPlaylist::tracks()
 {
-    if ( !m_tracksLoaded )
-        loadTracks();
+    //If you do not load before, m_tracks
+    //can be empty before usage.
+    triggerTrackLoad();
 
     return m_tracks;
 }
 
 void
+SqlPlaylist::triggerTrackLoad()
+{
+    if( !m_tracksLoaded )
+        loadTracks();
+}
+
+void
 SqlPlaylist::addTrack( Meta::TrackPtr track, int position )
 {
+    if( !m_tracksLoaded )
+        loadTracks();
+
     int insertAt = (position == -1) ? m_tracks.count() : position;
     subscribeTo( track ); //keep track of metadata changes.
     m_tracks.insert( insertAt, track );
@@ -228,6 +261,9 @@ SqlPlaylist::addTrack( Meta::TrackPtr track, int position )
 void
 SqlPlaylist::removeTrack( int position )
 {
+    if( !m_tracksLoaded )
+        loadTracks();
+
     if( position < 0 || position >= m_tracks.size() )
         return;
     Meta::TrackPtr track = m_tracks.takeAt( position );
@@ -239,6 +275,9 @@ SqlPlaylist::removeTrack( int position )
 void
 SqlPlaylist::metadataChanged( Meta::TrackPtr track )
 {
+    if( !m_tracksLoaded )
+        loadTracks();
+
     //When AFT detects a moved file it will update the track and make it signal it's observers.
     if( !m_tracks.contains( track ) )
     {

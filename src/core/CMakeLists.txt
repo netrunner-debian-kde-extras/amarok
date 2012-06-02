@@ -5,20 +5,17 @@ include_directories(
     ${QT_INCLUDES}
 )
 
-set(libcore_plugin_SRCS
-    plugins/Plugin.cpp
-    plugins/PluginManager.cpp
-    plugins/PluginConfig.cpp
-)
-
 set(libcore_interfaces_SRCS
     interfaces/Logger.cpp
 )
 
 set(libcore_meta_SRCS
     meta/Meta.cpp
+    meta/support/MetaConstants.cpp
     meta/support/MetaUtility.cpp
+    meta/support/MetaKeys.cpp
     meta/support/PrivateMetaRegistry.cpp
+    ../../shared/FileType.cpp
 )
 
 set(libcore_playlists_SRCS
@@ -33,12 +30,11 @@ set(libcore_statistics_SRCS
 
 set(libcore_capabilities_SRCS
     capabilities/Capability.cpp
+    capabilities/ActionsCapability.cpp
     capabilities/BookmarkThisCapability.cpp
     capabilities/BoundedPlaybackCapability.cpp
-    capabilities/CollectionCapability.cpp
-    capabilities/CurrentTrackActionsCapability.cpp
-    capabilities/CustomActionsCapability.cpp
-    capabilities/DecoratorCapability.cpp
+    capabilities/CollectionScanCapability.cpp
+    capabilities/CollectionImportCapability.cpp
     capabilities/EditCapability.cpp
     capabilities/EditablePlaylistCapability.cpp
     capabilities/FindInSourceCapability.cpp
@@ -73,18 +69,27 @@ set(libcore_support_SRCS
     support/Amarok.cpp
     support/Components.cpp
     support/SmartPointerList.cpp
+    support/PluginFactory.cpp
     support/Debug.cpp
 )
 
-set(libcore_engine_SRCS
-    engine/EngineObserver.cpp
+set(libcore_transcoding_SRCS
+    transcoding/formats/TranscodingNullFormat.cpp
+    transcoding/formats/TranscodingAacFormat.cpp
+    transcoding/formats/TranscodingAlacFormat.cpp
+    transcoding/formats/TranscodingFlacFormat.cpp
+    transcoding/formats/TranscodingMp3Format.cpp
+    transcoding/formats/TranscodingVorbisFormat.cpp
+    transcoding/formats/TranscodingWmaFormat.cpp
+    transcoding/TranscodingConfiguration.cpp
+    transcoding/TranscodingController.cpp
+    transcoding/TranscodingProperty.cpp
 )
 
 #####################################################################
 # LIBCORE
 #####################################################################
 set(libcore_LIB_SRCS
-    ${libcore_plugin_SRCS}
     ${libcore_podcasts_SRCS}
     ${libcore_interfaces_SRCS}
     ${libcore_collection_SRCS}
@@ -92,8 +97,8 @@ set(libcore_LIB_SRCS
     ${libcore_playlists_SRCS}
     ${libcore_meta_SRCS}
     ${libcore_capabilities_SRCS}
-    ${libcore_engine_SRCS}
     ${libcore_support_SRCS}
+    ${libcore_transcoding_SRCS}
 )
 
 kde4_add_library(amarokcore SHARED ${libcore_LIB_SRCS})
@@ -101,7 +106,7 @@ kde4_add_library(amarokcore SHARED ${libcore_LIB_SRCS})
 target_link_libraries(amarokcore
     ${CMAKE_THREAD_LIBS_INIT}
     ${KDE4_KIO_LIBS}
-    ${KDE4_KUTILS_LIBS}
+#    ${KDE4_KUTILS_LIBS}
     ${KDE4_SOLID_LIBRARY}
     ${KDE4_THREADWEAVER_LIBRARIES}
     ${QT_CORE_LIBRARY}

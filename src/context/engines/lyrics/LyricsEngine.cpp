@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "LyricsEngine"
+
 #include "LyricsEngine.h"
 
 #include "core/support/Amarok.h"
@@ -23,15 +25,22 @@
 #include "EngineController.h"
 #include "ScriptManager.h"
 
+#include <QTimer>
+#include <QTextDocument>
 
 using namespace Context;
 
 LyricsEngine::LyricsEngine( QObject* parent, const QList<QVariant>& /*args*/ )
     : DataEngine( parent )
-    , ContextObserver( ContextView::self() )
     , LyricsObserver( LyricsManager::self() )
+    , m_isUpdateInProgress( false )
 {
-    m_requested = true; // testing
+
+    EngineController* engine = The::engineController();
+    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
+             this, SLOT( update() ), Qt::QueuedConnection );
+    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
+             this, SLOT( onTrackMetadataChanged( Meta::TrackPtr ) ), Qt::QueuedConnection );
 }
 
 QStringList LyricsEngine::sources() const
@@ -44,165 +53,137 @@ QStringList LyricsEngine::sources() const
 
 bool LyricsEngine::sourceRequestEvent( const QString& name )
 {
-    m_requested = true; // someone is asking for data, so we turn ourselves on :)
-    if( name.contains( "previous lyrics" ) )
-    {
-        removeAllData( "lyrics" );
-        setData( "lyrics", "label", "previous Track Information" );
-        
-        if( m_prevLyricsList.size() == 0 || m_prevSuggestionsList.size() == 0 || m_prevLyrics.contains( "Unavailable" ) )
-            setData( "lyrics", "Unavailable" , "Unavailable" );
-
-        if( m_prevLyricsList.size() > 0 )
-            setData( "lyrics", "lyrics", m_prevLyricsList );
-
-        else if( !m_prevLyrics.isEmpty() )
-            setData( "lyrics", "html", m_prevLyrics );
-
-        if( m_prevSuggestionsList.size() > 0 )
-            setData( "lyrics", "suggested", m_prevSuggestionsList );
-
-        return true;
-    }
     removeAllData( name );
     setData( name, QVariant());
-    update();
-
+    // in the case where we are resuming playback on startup. Need to be sure
+    // the script manager is running and a lyrics script is loaded first.
+    QTimer::singleShot( 0, this, SLOT(update()) );
     return true;
 }
 
-void LyricsEngine::message( const ContextState& state )
+void LyricsEngine::onTrackMetadataChanged( Meta::TrackPtr track )
 {
     DEBUG_BLOCK
-    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-    if( currentTrack && m_currentTrack && currentTrack != m_currentTrack )
-    {
-        m_prevLyrics = m_currentLyrics;
-        m_prevLyricsList = m_currentLyricsList;
-        m_prevSuggestionsList = m_currentSuggestionsList;
 
-        m_currentLyrics.clear();
-        m_currentLyricsList.clear();
-        m_currentSuggestionsList.clear();
-    }
-    if( state == Current && m_requested )
-    {
-        update();
-    } else if( state == Home )
-    {
-        removeAllData( "lyrics" );
-        setData( "lyrics", "stopped" ,"stopped" );
-    }
-    
-}
-
-void LyricsEngine::metadataChanged( Meta::TrackPtr track )
-{
-    const bool hasChanged = track->name() != m_title || 
-                            track->artist()->name() != m_artist;
-
-    if( hasChanged )
+    // Only update if the lyrics have changed.
+    if( m_prevLyrics.text != track->cachedLyrics() )
         update();
 }
 
 void LyricsEngine::update()
 {
-    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-    if( !currentTrack || !currentTrack->artist() )
+    DEBUG_BLOCK
+
+    if( m_isUpdateInProgress )
         return;
 
-    unsubscribeFrom( m_currentTrack );
-    m_currentTrack = currentTrack;
-    subscribeTo( currentTrack );
+    m_isUpdateInProgress = true;
 
-    QString lyrics = currentTrack->cachedLyrics();
-    
-    // don't rely on caching for streams
-    const bool cached = !lyrics.isEmpty() && !The::engineController()->isStream();
-    
-    m_title = currentTrack->name();
-    m_artist = currentTrack->artist()->name();
+    // -- get current title and artist
+    Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
+    if( !currentTrack )
+    {
+        debug() << "no current track";
+        m_prevLyrics.clear();
+        removeAllData( "lyrics" );
+        setData( "lyrics", "stopped", "stopped" );
+        m_isUpdateInProgress = false;
+        return;
+    }
 
-    if( m_title.contains("PREVIEW: buy it at www.magnatune.com", Qt::CaseSensitive) )
-        m_title = m_title.remove(" (PREVIEW: buy it at www.magnatune.com)");
-    if( m_artist.contains("PREVIEW: buy it at www.magnatune.com", Qt::CaseSensitive) )
-        m_artist = m_artist.remove(" (PREVIEW: buy it at www.magnatune.com)");
+    QString title = currentTrack->name();
+    QString artist = currentTrack->artist() ? currentTrack->artist()->name() : QString();
 
-    if( m_title.isEmpty() )
+    // -- clean up title
+    const QString magnatunePreviewString = QLatin1String( "PREVIEW: buy it at www.magnatune.com" );
+    if( title.contains(magnatunePreviewString, Qt::CaseSensitive) )
+        title = title.remove( " (" + magnatunePreviewString + ")" );
+    if( artist.contains(magnatunePreviewString, Qt::CaseSensitive) )
+        artist = artist.remove( " (" + magnatunePreviewString + ")" );
+
+    if( title.isEmpty() && currentTrack )
     {
         /* If title is empty, try to use pretty title.
            The fact that it often (but not always) has "artist name" together, can be bad,
            but at least the user will hopefully get nice suggestions. */
-        QString prettyTitle = The::engineController()->currentTrack()->prettyName();
-        int h = prettyTitle.indexOf( '-' );
+        QString prettyTitle = currentTrack->prettyName();
+        int h = prettyTitle.indexOf( QLatin1Char('-') );
         if ( h != -1 )
         {
-            m_title = prettyTitle.mid( h+1 ).trimmed();
-            if( m_title.contains("PREVIEW: buy it at www.magnatune.com", Qt::CaseSensitive) )
-                m_title = m_title.remove(" (PREVIEW: buy it at www.magnatune.com)");
-            if( m_artist.isEmpty() ) {
-                m_artist = prettyTitle.mid( 0, h ).trimmed();
-                if( m_artist.contains("PREVIEW: buy it at www.magnatune.com", Qt::CaseSensitive) )
-                    m_artist = m_artist.remove(" (PREVIEW: buy it at www.magnatune.com)");
+            title = prettyTitle.mid( h + 1 ).trimmed();
+            if( title.contains(magnatunePreviewString, Qt::CaseSensitive) )
+                title = title.remove( " (" + magnatunePreviewString + ")" );
+
+            if( artist.isEmpty() )
+            {
+                artist = prettyTitle.mid( 0, h ).trimmed();
+                if( artist.contains(magnatunePreviewString, Qt::CaseSensitive) )
+                    artist = artist.remove( " (" + magnatunePreviewString + ")" );
             }
         }
     }
 
+    LyricsData lyrics = { currentTrack->cachedLyrics(), title, artist, KUrl() };
+
+    // Check if the title, the artist and the lyrics are still the same.
+    if( !lyrics.text.isEmpty() && (lyrics.text == m_prevLyrics.text) )
+    {
+        debug() << "nothing changed:" << lyrics.title;
+        newLyrics( lyrics );
+        m_isUpdateInProgress = false;
+        return;
+    }
+
+    // don't rely on caching for streams
+    const bool cached = !LyricsManager::self()->isEmpty( lyrics.text )
+        && !The::engineController()->isStream();
+
     if( cached )
     {
-        // check if the lyrics data contains "<html" (note the missing closing bracket,
-        // this enables XHTML lyrics to be recognized)
-        if( lyrics.contains( "<html" , Qt::CaseInsensitive ) )
-            newLyricsHtml( lyrics );
-        else
-        {
-            QStringList info;
-            info << m_title << m_artist << QString() <<  lyrics;
-            newLyrics( info );
-        }
-    }
-    else if( !ScriptManager::instance()->lyricsScriptRunning() ) // no lyrics, and no lyrics script!
-    {
-        removeAllData( "lyrics" );
-        setData( "lyrics", "noscriptrunning", "noscriptrunning" );
-        m_currentLyrics = "Lyrics  Unavailable";
+        newLyrics( lyrics );
     }
     else
     {
+        // no lyrics, and no lyrics script!
+        if( !ScriptManager::instance()->lyricsScriptRunning() )
+        {
+            debug() << "no lyrics script running";
+            removeAllData( "lyrics" );
+            setData( "lyrics", "noscriptrunning", "noscriptrunning" );
+            disconnect( ScriptManager::instance(), SIGNAL(lyricsScriptStarted()), this, 0 );
+            connect( ScriptManager::instance(), SIGNAL(lyricsScriptStarted()), SLOT(update()) );
+            m_isUpdateInProgress = false;
+            return;
+        }
+
         // fetch by lyrics script
         removeAllData( "lyrics" );
         setData( "lyrics", "fetching", "fetching" );
-        m_currentLyrics = "Lyrics Unavailable";
-        ScriptManager::instance()->notifyFetchLyrics( m_artist, m_title );
+        ScriptManager::instance()->notifyFetchLyrics( lyrics.artist, lyrics.title );
     }
+    m_isUpdateInProgress = false;
 }
 
-void LyricsEngine::newLyrics( QStringList& lyrics )
+void LyricsEngine::newLyrics( const LyricsData &lyrics )
 {
     DEBUG_BLOCK
 
+    QString key = Qt::mightBeRichText( lyrics.text ) ? QLatin1String( "html" )
+                                                     : QLatin1String( "lyrics" );
     removeAllData( "lyrics" );
-    setData( "lyrics", "lyrics", lyrics );
-    m_currentLyricsList = lyrics;
+    setData( "lyrics", key, QVariant::fromValue(lyrics) );
+    m_prevLyrics = lyrics;
 }
 
-void LyricsEngine::newLyricsHtml( QString& lyrics )
-{
-    removeAllData( "lyrics" );
-    setData( "lyrics", "html", lyrics );
-    m_currentLyrics = lyrics;
-}
-
-void LyricsEngine::newSuggestions( QStringList& suggested )
+void LyricsEngine::newSuggestions( const QVariantList &suggested )
 {
     DEBUG_BLOCK
     // each string is in "title - artist <url>" form
     removeAllData( "lyrics" );
     setData( "lyrics", "suggested", suggested );
-    m_currentSuggestionsList = suggested;
 }
 
-void LyricsEngine::lyricsMessage( QString& key, QString &val )
+void LyricsEngine::lyricsMessage( const QString& key, const QString &val )
 {
     DEBUG_BLOCK
 

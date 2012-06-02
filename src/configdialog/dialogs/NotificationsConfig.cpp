@@ -33,6 +33,8 @@ NotificationsConfig::NotificationsConfig( QWidget* parent )
     m_osdPreview = new OSDPreviewWidget( this ); //must be child!!!
     m_osdPreview->setAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) );
     m_osdPreview->setOffset( AmarokConfig::osdYOffset() );
+    m_osdPreview->setFontScale( AmarokConfig::osdFontScaling() );
+    m_osdPreview->setTranslucent( AmarokConfig::osdUseTranslucency() );
 
     #ifdef Q_WS_MAC
         QCheckBox* growl = new QCheckBox( i18n( "Use Growl for notifications" ), this );
@@ -50,16 +52,18 @@ NotificationsConfig::NotificationsConfig( QWidget* parent )
     for( int i = 0; i < numScreens; i++ )
         kcfg_OsdScreen->addItem( QString::number( i ) );
 
-    connect( kcfg_OsdTextColor,       SIGNAL( changed( const QColor& ) ),
-             m_osdPreview,            SLOT( setTextColor(const QColor& ) ) );
-    connect( kcfg_OsdUseCustomColors, SIGNAL( toggled( bool ) ),
-             this,                    SLOT( useCustomColorsToggled( bool ) ) );
-    connect( kcfg_OsdScreen,          SIGNAL( activated( int ) ),
-             m_osdPreview,            SLOT( setScreen( int ) ) );
-    connect( kcfg_OsdEnabled,         SIGNAL( toggled( bool ) ),
-             m_osdPreview,            SLOT( setVisible( bool ) ) );
-    connect( kcfg_OsdUseTranslucency, SIGNAL( toggled( bool ) ),
-             m_osdPreview,            SLOT( setTranslucent( bool ) ) );
+    connect( kcfg_OsdTextColor,        SIGNAL( changed( const QColor& ) ),
+             m_osdPreview,             SLOT( setTextColor(const QColor& ) ) );
+    connect( kcfg_OsdUseCustomColors,  SIGNAL( toggled( bool ) ),
+             this,                     SLOT( useCustomColorsToggled( bool ) ) );
+    connect( kcfg_OsdScreen,           SIGNAL( activated( int ) ),
+             m_osdPreview,             SLOT( setScreen( int ) ) );
+    connect( kcfg_OsdEnabled,          SIGNAL( toggled( bool ) ),
+             m_osdPreview,             SLOT( setVisible( bool ) ) );
+    connect( kcfg_OsdUseTranslucency,  SIGNAL( toggled( bool ) ),
+             m_osdPreview,             SLOT( setTranslucent( bool ) ) );
+    connect( kcfg_OsdFontScaling,      SIGNAL( valueChanged( int ) ),
+             m_osdPreview,             SLOT( setFontScale( int ) ) );
 
     /*
     Amarok::QStringx text = i18n(
@@ -116,8 +120,9 @@ NotificationsConfig::updateSettings()
     DEBUG_BLOCK
 
     AmarokConfig::setOsdAlignment( m_osdPreview->alignment() );
-    AmarokConfig::setOsdYOffset( m_osdPreview->y() );
+    AmarokConfig::setOsdYOffset( m_osdPreview->offset() );
     AmarokConfig::setOsdUseTranslucency( kcfg_OsdUseTranslucency->isChecked() );
+    //AmarokConfig::setOsdTextScaling( m_osdPreview->); //FIXME?
 
     Amarok::OSD::instance()->setEnabled( kcfg_OsdEnabled->isChecked() );
 

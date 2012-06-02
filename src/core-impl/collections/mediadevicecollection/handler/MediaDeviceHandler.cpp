@@ -22,6 +22,8 @@
 
 #include "MediaDeviceHandlerCapability.h"
 
+#include "core/interfaces/Logger.h"
+#include "core/support/Components.h"
 #include "playlist/MediaDeviceUserPlaylistProvider.h"
 #include "playlistmanager/PlaylistManager.h"
 
@@ -63,12 +65,8 @@ MediaDeviceHandler::MediaDeviceHandler( QObject *parent )
     DEBUG_BLOCK
 
     connect( m_memColl, SIGNAL( deletingCollection() ),
-             this,      SLOT( slotDeletingHandler() ), Qt::QueuedConnection );
+             this, SLOT( slotDeletingHandler() ), Qt::QueuedConnection );
 
-    connect( this, SIGNAL( incrementProgress() ),
-             The::statusBar(), SLOT( incrementProgress() ), Qt::QueuedConnection );
-    connect( this, SIGNAL(endProgressOperation(QObject*)),
-             The::statusBar(), SLOT(endProgressOperation(QObject*)));
     connect( this, SIGNAL( databaseWritten(bool)),
              this, SLOT( slotDatabaseWritten(bool)), Qt::QueuedConnection );
 }
@@ -85,6 +83,7 @@ MediaDeviceHandler::slotDeletingHandler()
     DEBUG_BLOCK
     if( m_provider )
         The::playlistManager()->removeProvider( m_provider );
+    m_memColl = NULL;
 }
 
 void
@@ -120,8 +119,9 @@ MediaDeviceHandler::getBasicMediaDeviceTrackInfo( const Meta::TrackPtr &srcTrack
     destTrack->setDiscNumber( srcTrack->discNumber() );
     destTrack->setBitrate( srcTrack->bitrate() );
     destTrack->setSamplerate( srcTrack->sampleRate() );
+    destTrack->setBpm( srcTrack->bpm() );
     destTrack->setFileSize( srcTrack->filesize() );
-    destTrack->setPlayCount( srcTrack->lastPlayed() );
+    destTrack->setPlayCount( srcTrack->playCount() );
     destTrack->setLastPlayed( srcTrack->lastPlayed() );
     destTrack->setRating( srcTrack->rating() );
 
@@ -141,7 +141,18 @@ MediaDeviceHandler::setBasicMediaDeviceTrackInfo( const Meta::TrackPtr& srcTrack
 
     m_wc->libSetTitle( destTrack, srcTrack->name() );
     if ( srcTrack->album() )
-        m_wc->libSetAlbum( destTrack, srcTrack->album()->name() ); Debug::stamp();
+    {
+        AlbumPtr album = srcTrack->album();
+
+        m_wc->libSetAlbum( destTrack, album->name() );
+        m_wc->libSetIsCompilation( destTrack, album->isCompilation() );
+
+        if( album->hasAlbumArtist() )
+            m_wc->libSetAlbumArtist( destTrack, album->albumArtist()->name() );
+
+        if( album->hasImage() )
+            m_wc->libSetCoverArt( destTrack, album->image() );
+    }
     if ( srcTrack->artist() )
         m_wc->libSetArtist( destTrack, srcTrack->artist()->name() ); Debug::stamp();
     if ( srcTrack->composer() )
@@ -156,16 +167,13 @@ MediaDeviceHandler::setBasicMediaDeviceTrackInfo( const Meta::TrackPtr& srcTrack
     m_wc->libSetDiscNumber( destTrack, srcTrack->discNumber() ); Debug::stamp();
     m_wc->libSetBitrate( destTrack, srcTrack->bitrate() ); Debug::stamp();
     m_wc->libSetSamplerate( destTrack, srcTrack->sampleRate() ); Debug::stamp();
-    //libSetBpm( destTrack, srcTrack->bpm() );
+    m_wc->libSetBpm( destTrack, srcTrack->bpm() ); Debug::stamp();
     m_wc->libSetFileSize( destTrack, srcTrack->filesize() ); Debug::stamp();
     m_wc->libSetPlayCount( destTrack, srcTrack->playCount() ); Debug::stamp();
     m_wc->libSetLastPlayed( destTrack, srcTrack->lastPlayed() ); Debug::stamp();
     m_wc->libSetRating( destTrack, srcTrack->rating() ); Debug::stamp();
     m_wc->libSetType( destTrack, srcTrack->type() ); Debug::stamp();
     //libSetPlayableUrl( destTrack, srcTrack );
-
-    if( srcTrack->album()->hasImage() )
-        m_wc->libSetCoverArt( destTrack, srcTrack->album()->image() );
 }
 
 void
@@ -239,7 +247,6 @@ MediaDeviceHandler::removeMediaDeviceTrackFromCollection( Meta::MediaDeviceTrack
     year->remTrack( track );
 
     // if empty, get rid of metadata in general
-
     if( artist->tracks().isEmpty() )
     {
         artistMap.remove( artist->name() );
@@ -270,16 +277,25 @@ MediaDeviceHandler::removeMediaDeviceTrackFromCollection( Meta::MediaDeviceTrack
     }
     if( year->tracks().isEmpty() )
     {
-        yearMap.remove( year->name() );
+        yearMap.remove( year->year() );
         m_memColl->memoryCollection()->acquireWriteLock();
         m_memColl->memoryCollection()->setYearMap( yearMap );
         m_memColl->memoryCollection()->releaseLock();
     }
 
     // remove from trackmap
-    trackMap.remove( track->name() );
+    trackMap.remove( track->uidUrl() );
+
+    m_titlemap.remove( track->name(), TrackPtr::staticCast( track ) );
+
+    // Finally, assign the created maps to the collection
     m_memColl->memoryCollection()->acquireWriteLock();
     m_memColl->memoryCollection()->setTrackMap( trackMap );
+    m_memColl->memoryCollection()->setArtistMap( artistMap );
+    m_memColl->memoryCollection()->setAlbumMap( albumMap );
+    m_memColl->memoryCollection()->setGenreMap( genreMap );
+    m_memColl->memoryCollection()->setComposerMap( composerMap );
+    m_memColl->memoryCollection()->setYearMap( yearMap );
     m_memColl->memoryCollection()->releaseLock();
 }
 
@@ -318,7 +334,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
     m_isCopying = true;
 
     bool isDupe = false;
-    bool hasDupe = false;
+    bool hasError = false;
     QString format;
     TrackMap trackMap = m_memColl->memoryCollection()->trackMap();
 
@@ -342,6 +358,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
         {
              const QString error = i18n("Unsupported format: %1", format);
              m_tracksFailed.insert( track, error );
+	     hasError = true;
              continue;
         }
 
@@ -367,17 +384,12 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
                 || ( tempTrack->composer()->name() != track->composer()->name() )
                 || ( tempTrack->year()->name() != track->year()->name() ) )
             {
-                debug() << "Same title, but other tags differ, not a dupe";
-                //debug() << "Source track:   " << "Artist: " << track->artist()->name() << " Album: " << track->album()->name() << " Genre: " << track->genre()->name() <<
-                //" Composer: " << track->composer()->name() << " Year: " << track->year()->name();
-                //debug() << "Candidate dupe: " << "Artist: " << tempTrack->artist()->name() << " Album: " << tempTrack->album()->name() << " Genre: " << tempTrack->genre()->name() <<
-                //" Composer: " << tempTrack->composer()->name() << " Year: " << tempTrack->year()->name();
                 continue;
             }
 
             // Track is already on there, break
             isDupe = true;
-            hasDupe = true;
+            hasError = true;
             break;
         }
 
@@ -393,7 +405,7 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
     }
 
     // NOTE: see comment at top of copyTrackListToDevice
-    if( hasDupe )
+    if( hasError )
         m_copyFailed = true;
 
     /* List ready, begin copying */
@@ -433,12 +445,10 @@ MediaDeviceHandler::copyTrackListToDevice(const Meta::TrackList tracklist)
 
     // Set up progress bar
 
-    m_statusbar = The::statusBar()->newProgressOperation( this, i18n( "Transferring Tracks to Device" ) );
-
-    m_statusbar->setMaximum( m_tracksToCopy.size() );
+    Amarok::Components::logger()->newProgressOperation( this,
+            i18n( "Transferring Tracks to Device" ), m_tracksToCopy.size() );
 
     // prepare to copy
-
     m_wcb->prepareToCopy();
 
     m_numTracksToCopy = m_tracksToCopy.count();
@@ -459,15 +469,39 @@ MediaDeviceHandler::copyNextTrackToDevice()
     DEBUG_BLOCK
     Meta::TrackPtr track;
 
-    // If there are more tracks to copy, copy the next one
+    debug() << "Tracks left to copy after this one is now done: " << m_numTracksToCopy;
+
     if ( !m_tracksToCopy.isEmpty() )
     {
         // Pop the track off the front of the list
-        track = m_tracksToCopy.first();
-        m_tracksToCopy.removeFirst();
+        track = m_tracksToCopy.takeFirst();
 
-        // Copy the track
-        privateCopyTrackToDevice( track );
+        // Copy the track and check result
+        if ( !privateCopyTrackToDevice( track ) )
+            slotCopyTrackFailed( track );
+    }
+    else
+    {
+        if ( m_numTracksToCopy > 0 )
+            debug() << "Oops. \"Tracks to copy\" counter is not zero, but copy list is empty. Something missed?";
+
+        if ( m_copyFailed )
+        {
+            Amarok::Components::logger()->shortMessage(
+                        i18np( "%1 track failed to copy to the device",
+                               "%1 tracks failed to copy to the device", m_tracksFailed.size() ) );
+        }
+
+        // clear maps/hashes used
+        m_tracksCopying.clear();
+        m_trackSrcDst.clear();
+        m_tracksFailed.clear();
+        m_tracksToCopy.clear();
+
+        // copying done
+
+        m_isCopying = false;
+        emit copyTracksDone( true );
     }
 }
 
@@ -545,30 +579,7 @@ MediaDeviceHandler::slotFinalizeTrackCopy( const Meta::TrackPtr & track )
     addMediaDeviceTrackToCollection( destTrack );
 
     emit incrementProgress();
-
     m_numTracksToCopy--;
-
-    debug() << "Tracks left to copy after this one is now done: " << m_numTracksToCopy;
-
-    if( m_numTracksToCopy == 0 )
-    {
-        if( m_tracksFailed.size() > 0 )
-        {
-            The::statusBar()->shortMessage( i18np( "%1 track failed to copy to the device",
-                                                   "%1 tracks failed to copy to the device", m_tracksFailed.size() ) );
-        }
-        // clear maps/hashes used
-
-        m_tracksCopying.clear();
-        m_trackSrcDst.clear();
-        m_tracksFailed.clear();
-        m_tracksToCopy.clear();
-
-        // copying done
-
-        m_isCopying = false;
-        emit copyTracksDone( true );
-    }
 }
 
 void
@@ -610,10 +621,9 @@ MediaDeviceHandler::removeTrackListFromDevice( const Meta::TrackList &tracks )
     m_tracksToDelete = tracks;
 
     // Set up statusbar for deletion operation
-
-    m_statusbar = The::statusBar()->newProgressOperation( this, i18np( "Removing Track from Device", "Removing Tracks from Device", tracks.size() ) );
-
-    m_statusbar->setMaximum( tracks.size() );
+    Amarok::Components::logger()->newProgressOperation( this,
+            i18np( "Removing Track from Device", "Removing Tracks from Device", tracks.size() ),
+            tracks.size() );
 
     m_wcb->prepareToDelete();
 
@@ -632,8 +642,7 @@ MediaDeviceHandler::removeNextTrackFromDevice()
     {
         // Pop the track off the front of the list
 
-        track = m_tracksToDelete.first();
-        m_tracksToDelete.removeFirst();
+        track = m_tracksToDelete.takeFirst();
 
         // Remove the track
 
@@ -676,12 +685,7 @@ MediaDeviceHandler::slotFinalizeTrackRemove( const Meta::TrackPtr & track )
         m_wc->setDatabaseChanged();
     }
 
-    // remove from titlemap
-
-    m_titlemap.remove( track->name(), track );
-
-    // remove from collection
-
+    // remove from memory collection
     removeMediaDeviceTrackFromCollection( devicetrack );
 
     emit incrementProgress();
@@ -693,7 +697,8 @@ MediaDeviceHandler::slotFinalizeTrackRemove( const Meta::TrackPtr & track )
         /*
         if( m_tracksFailed.size() > 0 )
         {
-            The::statusBar()->shortMessage( i18n( "%1 tracks failed to copy to the device", m_tracksFailed.size() ) );
+            Amarok::Components::logger()->shortMessage(
+                        i18n( "%1 tracks failed to copy to the device", m_tracksFailed.size() ) );
         }
         */
         m_wcb->endTrackRemove();
@@ -719,9 +724,10 @@ void
 MediaDeviceHandler::setupArtistMap( Meta::MediaDeviceTrackPtr track, ArtistMap& artistMap )
 {
     const QString artist( m_rcb->libGetArtist( track ) );
+    const QString albumArtist( m_rcb->libGetAlbumArtist( track ) );
     MediaDeviceArtistPtr artistPtr;
 
-    if ( artistMap.contains( artist ) )
+    if( artistMap.contains( artist ) )
         artistPtr = MediaDeviceArtistPtr::staticCast( artistMap.value( artist ) );
     else
     {
@@ -731,6 +737,13 @@ MediaDeviceHandler::setupArtistMap( Meta::MediaDeviceTrackPtr track, ArtistMap& 
 
     artistPtr->addTrack( track );
     track->setArtist( artistPtr );
+
+    if( !albumArtist.isEmpty() && albumArtist != artist &&
+        !artistMap.contains( albumArtist ) )
+    {
+        artistPtr = MediaDeviceArtistPtr( new MediaDeviceArtist( albumArtist ) );
+        artistMap.insert( albumArtist, ArtistPtr::staticCast( artistPtr ) );
+    }
 }
 
 void
@@ -738,6 +751,7 @@ MediaDeviceHandler::setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap& al
 {
     const QString album( m_rcb->libGetAlbum( track ) );
     const QString artist( m_rcb->libGetArtist( track ) );
+    const QString albumArtist( m_rcb->libGetAlbumArtist( track ) );
     MediaDeviceAlbumPtr albumPtr;
 
     if ( albumMap.contains( album ) )
@@ -751,9 +765,21 @@ MediaDeviceHandler::setupAlbumMap( Meta::MediaDeviceTrackPtr track, AlbumMap& al
     albumPtr->addTrack( track );
     track->setAlbum( albumPtr );
 
-    if( !artist.isEmpty() && artistMap.contains( artist ) )
+    bool isCompilation = albumPtr->isCompilation();
+    /* if at least one track from album identifies itself as a part of compilation, mark
+     * whole album as such: (we should be deterministic wrt track adding order) */
+    isCompilation |= m_rc->libIsCompilation( track );
+    albumPtr->setIsCompilation( isCompilation );
+
+    MediaDeviceArtistPtr artistPtr;
+
+    if( !albumArtist.isEmpty() && artistMap.contains( artist ) )
+        artistPtr = MediaDeviceArtistPtr::staticCast( artistMap.value( albumArtist ) );
+    else if( !artist.isEmpty() && artistMap.contains( artist ) )
+        artistPtr = MediaDeviceArtistPtr::staticCast( artistMap.value( artist ) );
+
+    if( !artistPtr.isNull() )
     {
-        MediaDeviceArtistPtr artistPtr = MediaDeviceArtistPtr::staticCast( artistMap.value( artist ) );
         artistPtr->addAlbum( albumPtr );
         albumPtr->setAlbumArtist( artistPtr );
     }
@@ -799,14 +825,13 @@ MediaDeviceHandler::setupComposerMap( Meta::MediaDeviceTrackPtr track, ComposerM
 void
 MediaDeviceHandler::setupYearMap( Meta::MediaDeviceTrackPtr track, YearMap& yearMap )
 {
-    QString year;
-    year = year.setNum( m_rcb->libGetYear( track ) );
+    int year = m_rcb->libGetYear( track );
     MediaDeviceYearPtr yearPtr;
     if ( yearMap.contains( year ) )
         yearPtr = MediaDeviceYearPtr::staticCast( yearMap.value( year ) );
     else
     {
-        yearPtr = MediaDeviceYearPtr( new MediaDeviceYear( year ) );
+        yearPtr = MediaDeviceYearPtr( new MediaDeviceYear( QString::number(year) ) );
         yearMap.insert( year, YearPtr::staticCast( yearPtr ) );
     }
     yearPtr->addTrack( track );
@@ -835,6 +860,10 @@ MediaDeviceHandler::privateParseTracks()
         /// Fetch next track to parse
 
         m_rcb->nextTrackToParse();
+
+        // FIXME: should we return true or false?
+        if (!m_memColl)
+            return true;
 
         MediaDeviceTrackPtr track( new MediaDeviceTrack( m_memColl ) );
 
@@ -921,12 +950,12 @@ MediaDeviceHandler::privateParseTracks()
         }
 
         // When the provider saves a playlist, the handler should save it internally
-        connect( m_provider, SIGNAL( playlistSaved( const Playlists::MediaDevicePlaylistPtr &, const QString& ) ),
-                 SLOT( savePlaylist( const Playlists::MediaDevicePlaylistPtr &, const QString& ) ) );
-        connect( m_provider, SIGNAL( playlistRenamed( const Playlists::MediaDevicePlaylistPtr &) ),
-                 SLOT( renamePlaylist( const Playlists::MediaDevicePlaylistPtr & ) ) );
-        connect( m_provider, SIGNAL( playlistsDeleted( const Playlists::MediaDevicePlaylistList & ) ),
-                 SLOT( deletePlaylists( const Playlists::MediaDevicePlaylistList &  ) ) );
+        connect( m_provider, SIGNAL(playlistSaved(Playlists::MediaDevicePlaylistPtr,QString)),
+                 SLOT(savePlaylist(Playlists::MediaDevicePlaylistPtr,QString)) );
+        connect( m_provider, SIGNAL(playlistRenamed(Playlists::MediaDevicePlaylistPtr)),
+                 SLOT(renamePlaylist(Playlists::MediaDevicePlaylistPtr)) );
+        connect( m_provider, SIGNAL(playlistsDeleted(Playlists::MediaDevicePlaylistList)),
+                 SLOT(deletePlaylists(Playlists::MediaDevicePlaylistList)) );
 
         The::playlistManager()->addProvider(  m_provider,  m_provider->category() );
         m_provider->sendUpdated();
@@ -992,21 +1021,16 @@ MediaDeviceHandler::enqueueNextCopyThread()
         // Copy the track
         ThreadWeaver::Weaver::instance()->enqueue(  new CopyWorkerThread( track,  this ) );
     }
-}
+    else
+    {
+	// Finish the progress bar
+	emit incrementProgress();
+	emit endProgressOperation( this );
 
-void
-MediaDeviceHandler::slotCopyTrackJobsDone( ThreadWeaver::Job* job )
-{
-    Q_UNUSED( job )
-    // TODO: some error checking showing tracks that could not be copied
-
-    // Finish the progress bar
-    emit incrementProgress();
-    emit endProgressOperation( this );
-
-    // Inform CollectionLocation that copying is done
-    m_isCopying = false;
-    emit copyTracksDone( true );
+	// Inform CollectionLocation that copying is done
+	m_isCopying = false;
+	emit copyTracksDone( true );
+    }
 }
 
 float
@@ -1027,7 +1051,6 @@ MediaDeviceHandler::freeSpace() const
 float
 MediaDeviceHandler::usedcapacity() const
 {
-    DEBUG_BLOCK
     if ( m_rcb )
         return m_rcb->usedCapacity();
     else
@@ -1037,7 +1060,6 @@ MediaDeviceHandler::usedcapacity() const
 float
 MediaDeviceHandler::totalcapacity() const
 {
-    DEBUG_BLOCK
     if ( m_rcb )
         return m_rcb->totalCapacity();
     else
@@ -1281,7 +1303,8 @@ ParseWorkerThread::run()
 void
 ParseWorkerThread::slotDoneSuccess( ThreadWeaver::Job* )
 {
-    m_handler->m_memColl->emitCollectionReady();
+    if (m_handler->m_memColl)
+        m_handler->m_memColl->emitCollectionReady();
 }
 
 // CopyWorkerThread

@@ -26,19 +26,20 @@
 
 static const QStringList typeElements = ( QStringList()
 << ""
-<< "%ignore"
-<< "%track"
-<< "%title"
-<< "%artist"
-<< "%composer"
-<< "%year"
-<< "%album"
-<< "%comment"
-<< "%genre"
-<< "%filetype"
-<< "%folder"
-<< "%initial"
-<< "%discnumber"
+<< "%ignore%"
+<< "%track%"
+<< "%title%"
+<< "%artist%"
+<< "%composer%"
+<< "%year%"
+<< "%album%"
+<< "%albumartist%"
+<< "%comment%"
+<< "%genre%"
+<< "%filetype%"
+<< "%folder%"
+<< "%initial%"
+<< "%discnumber%"
 << " "
 << "/"
 << "."
@@ -46,9 +47,10 @@ static const QStringList typeElements = ( QStringList()
 << "_" );
 
 class TokenDropTarget;
+class QFileInfo;
 
 //Holds the TokenLayoutWidget and TokenPool and handles their interaction. Also holds a number of case and substitution options for the filename scheme.
-class FilenameLayoutDialog
+class AMAROK_EXPORT FilenameLayoutDialog
     : public QWidget
     , private Ui::FilenameLayoutDialog
 {
@@ -66,6 +68,7 @@ class FilenameLayoutDialog
             , Composer
             , Year
             , Album
+            , AlbumArtist
             , Comment
             , Genre
             , FileType
@@ -80,8 +83,11 @@ class FilenameLayoutDialog
         };
 
 
-        AMAROK_EXPORT explicit FilenameLayoutDialog( QWidget *parent = 0, bool isOrganizeCollection = 0 ); // Could I have exported the whole class? I don't see how
-        AMAROK_EXPORT QString getParsableScheme();
+         explicit FilenameLayoutDialog( QWidget *parent = 0, bool isOrganizeCollection = 0 );
+        ~FilenameLayoutDialog() {}
+
+        QString getParsableScheme();
+        QString getParsableFileName();
         int getCaseOptions();
         bool getWhitespaceOptions();
         bool getUnderscoreOptions();
@@ -91,26 +97,55 @@ class FilenameLayoutDialog
         */
         void setFileName( QString FileName );
 
-        AMAROK_EXPORT void setScheme( const QString &scheme );
+        void setScheme( const QString &scheme );
+
+        /* accessors to Ui::FilenameLayoutDialog members */
+        bool asciiOnly() const { return asciiCheck->isChecked(); }
+        void setAsciiOnly( bool enable ) { asciiCheck->setChecked( enable ); }
+        bool vfatCompatible() const { return vfatCheck->isChecked(); }
+        void setVfatCompatible( bool enable ) { vfatCheck->setChecked( enable ); }
+        bool ignoreThe() const { return ignoreTheCheck->isChecked(); }
+        void setIgnoreThe( bool enable ) { ignoreTheCheck->setChecked( enable ); }
+        bool replaceSpaces() const { return spaceCheck->isChecked(); }
+        void setReplaceSpaces( bool enable ) { spaceCheck->setChecked( enable ); }
+        QString regexpText() const { return regexpEdit->text(); }
+        void setRegexpText( const QString &text ) { regexpEdit->setText( text ); }
+        QString replaceText() const { return replaceEdit->text(); }
+        void setReplaceText( const QString &text ) { replaceEdit->setText( text ); }
+
+        void setformatPresetVisible( bool visible ) { formatPresetWidget->setVisible( visible ); }
 
     public slots:
         void onAccept();
 
     signals:
+        /** emitted when either the scheme, option checkboxes or the replace edits change */
         void schemeChanged();
 
     private slots:
         void editStateEnable( bool checked );
         void toggleAdvancedMode();
         void updatePreview();
-    
+
+        void slotFormatPresetSelected( int );
+        void slotAddFormat();
+        void slotRemoveFormat();
+        void slotUpdateFormat();
+        void slotSaveFormatList();
+
     private:
+        void initOrganizeCollection();
+        void initTagGuesser();
         void setAdvancedMode( bool isAdvanced );
         QString parsableScheme() const;
+        QString parsableFileName( const QFileInfo &fileInfo ) const;
         void inferScheme( const QString &scheme );
-        
+        void populateFormatList();
+
+        QString m_configCategory;
         QString m_filename;                         //!< Filename to guess from
         bool m_isOrganizeCollection;
+        bool m_formatListModified;
         bool m_advancedMode;
         TokenDropTarget *m_dropTarget;
         QColor m_color_Track;
@@ -119,9 +154,10 @@ class FilenameLayoutDialog
         QColor m_color_Composer;
         QColor m_color_Year;
         QColor m_color_Album;
+        QColor m_color_AlbumArtist;
         QColor m_color_Comment;
         QColor m_color_Genre;
-        
+
         QList<QRadioButton*> m_caseEditRadioButtons;
 };
 

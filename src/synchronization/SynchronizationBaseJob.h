@@ -18,7 +18,7 @@
 #define SYNCHRONIZATIONBASEJOB_H
 
 #include "core/meta/Meta.h"
-#include "core/meta/support/MetaUtility.h"
+#include "core/meta/support/MetaKeys.h"
 
 #include <QHash>
 #include <QObject>
@@ -64,11 +64,11 @@ class SynchronizationBaseJob : public QObject
         virtual void synchronize();
 
     private slots:
-        void slotResultReady( const QString &id, const Meta::TrackList &artists );
-        void slotResultReady( const QString &id, const Meta::AlbumList &albums );
-        void slotResultReady( const QString &id, const Meta::ArtistList &tracks );
+        void slotResultReady( const Meta::TrackList &artists );
+        void slotResultReady( const Meta::AlbumList &albums );
+        void slotResultReady( const Meta::ArtistList &tracks );
         void slotQueryDone();
-        void slotSyncTracks( const QString &id, const Meta::TrackList &tracks );
+        void slotSyncTracks( const Meta::TrackList &tracks );
         void slotSyncQueryDone();
 
         void timeout();
@@ -100,16 +100,19 @@ class SynchronizationBaseJob : public QObject
         Collections::Collection *m_collectionA;
         Collections::Collection *m_collectionB;
 
+        /** All the query makers we created and the collection they belong to. */
+        QHash<Collections::QueryMaker*, Collections::Collection*> m_queryMakers;
+
         QSet<QString> m_artistsA;
         QSet<QString> m_artistsB;
-        QSet<AlbumKey> m_albumsA;
-        QSet<AlbumKey> m_albumsB;
-        QSet<TrackKey> m_tracksA;
-        QSet<TrackKey> m_tracksB;
-        QHash<TrackKey, Meta::TrackPtr> m_keyToTrackA;
-        QHash<TrackKey, Meta::TrackPtr> m_keyToTrackB;
+        QSet<Meta::AlbumKey> m_albumsA;
+        QSet<Meta::AlbumKey> m_albumsB;
+        QSet<Meta::TrackKey> m_tracksA;
+        QSet<Meta::TrackKey> m_tracksB;
+        QHash<Meta::TrackKey, Meta::TrackPtr> m_keyToTrackA;
+        QHash<Meta::TrackKey, Meta::TrackPtr> m_keyToTrackB;
         QHash<QString, InSet> m_artistResult;
-        QHash<AlbumKey, InSet> m_albumResult;
+        QHash<Meta::AlbumKey, InSet> m_albumResult;
         Meta::TrackList m_trackResultOnlyInA;
         Meta::TrackList m_trackResultOnlyInB;
         QTimer m_timer;

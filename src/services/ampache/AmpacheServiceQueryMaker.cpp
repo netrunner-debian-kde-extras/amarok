@@ -34,7 +34,6 @@ struct AmpacheServiceQueryMaker::Private
     enum QueryType { NONE, TRACK, ARTIST, ALBUM, COMPOSER, YEAR, GENRE, CUSTOM };
     QueryType type;
     int maxsize;
-    bool returnDataPtrs;
     QHash<QLatin1String, KUrl> urls;
 };
 
@@ -47,36 +46,17 @@ AmpacheServiceQueryMaker::AmpacheServiceQueryMaker( AmpacheServiceCollection * c
     , m_dateFilter( -1 )
 {
     // DEBUG_BLOCK
-    m_collection = collection;
-    reset();
+
+    d->type = Private::NONE;
+    d->maxsize = 0;
+    d->urls.clear();
+    m_dateFilter = 0;
+    //m_lastArtistFilter = QString(); this one really should survive a reset....
 }
 
 AmpacheServiceQueryMaker::~AmpacheServiceQueryMaker()
 {
     delete d;
-}
-
-QueryMaker *
-AmpacheServiceQueryMaker::reset()
-{
-    d->type = Private::NONE;
-    d->maxsize = 0;
-    d->urls.clear();
-    d->returnDataPtrs = false;
-    m_parentArtistId.clear();
-    m_parentAlbumId.clear();
-    m_artistFilter.clear();
-    m_dateFilter = 0;
-    //m_lastArtistFilter = QString(); this one really should survive a reset....
-
-    return this;
-}
-
-QueryMaker*
-AmpacheServiceQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
-{
-    d->returnDataPtrs = resultAsDataPtrs;
-    return this;
 }
 
 void
@@ -118,6 +98,7 @@ AmpacheServiceQueryMaker::setQueryType( QueryType type )
     switch( type ) {
 
     case QueryMaker::Artist:
+    case QueryMaker::AlbumArtist:
         d->type = Private::ARTIST;
         return this;
 
@@ -197,48 +178,6 @@ AmpacheServiceQueryMaker::addMatch( const Meta::AlbumPtr & album )
     return this;
 }
 
-template<class PointerType, class ListType>
-void AmpacheServiceQueryMaker::emitProperResult( const ListType& list )
-{
-    if ( d->returnDataPtrs ) {
-        Meta::DataList data;
-        foreach( PointerType p, list )
-            data << Meta::DataPtr::staticCast( p );
-
-        emit newResultReady( m_collection->collectionId(), data );
-    }
-    else
-        emit newResultReady( m_collection->collectionId(), list );
-}
-
-void AmpacheServiceQueryMaker::handleResult()
-{
-    DEBUG_BLOCK
-}
-
-void AmpacheServiceQueryMaker::handleResult( const Meta::ArtistList & artists )
-{
-    DEBUG_BLOCK
-
-    emitProperResult<Meta::ArtistPtr, Meta::ArtistList>( artists );
-}
-
-void
-AmpacheServiceQueryMaker::handleResult( const Meta::AlbumList &albums )
-{
-    DEBUG_BLOCK
-
-    emitProperResult<Meta::AlbumPtr, Meta::AlbumList>( albums );
-}
-
-void
-AmpacheServiceQueryMaker::handleResult( const Meta::TrackList & tracks )
-{
-    DEBUG_BLOCK
-
-    emitProperResult<Meta::TrackPtr, Meta::TrackList>( tracks );
-}
-
 void
 AmpacheServiceQueryMaker::fetchArtists()
 {
@@ -247,7 +186,7 @@ AmpacheServiceQueryMaker::fetchArtists()
     //this stuff causes crashes and "whiteouts" and will need to change anyway if the Ampache API is updated to
     // allow multilevel filtering. Hence it is commented out but left in for future reference
     /*if ( ( m_collection->artistMap().values().count() != 0 ) && ( m_artistFilter == m_lastArtistFilter ) ) {
-        handleResult( m_collection->artistMap().values() );
+        emit newResultReady( m_collection->artistMap().values() );
         debug() << "no need to fetch artists again! ";
         debug() << "    filter: " << m_artistFilter;
         debug() << "    last filter: " << m_lastArtistFilter;
@@ -296,7 +235,7 @@ AmpacheServiceQueryMaker::fetchAlbums()
 
     if ( albums.count() > 0 )
     {
-        handleResult( albums );
+        emit newResultReady( albums );
         emit queryDone();
     }
     else
@@ -346,7 +285,7 @@ AmpacheServiceQueryMaker::fetchTracks()
 
     if( tracks.count() > 0 )
     {
-        handleResult( tracks );
+        emit newResultReady( tracks );
         emit queryDone();
     }
     else
@@ -444,7 +383,7 @@ AmpacheServiceQueryMaker::artistDownloadComplete( const KUrl &url, QByteArray da
         n = n.nextSibling();
     }
 
-    handleResult( artists );
+    emit newResultReady( artists );
     emit queryDone();
 }
 
@@ -532,7 +471,7 @@ AmpacheServiceQueryMaker::albumDownloadComplete( const KUrl &url, QByteArray dat
         n = n.nextSibling();
     }
 
-    handleResult( albums );
+    emit newResultReady( albums );
     emit queryDone();
 }
 
@@ -632,7 +571,7 @@ AmpacheServiceQueryMaker::trackDownloadComplete( const KUrl &url, QByteArray dat
         n = n.nextSibling();
     }
 
-    handleResult( tracks );
+    emit newResultReady( tracks );
     emit queryDone();
 }
 

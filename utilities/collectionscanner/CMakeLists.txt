@@ -1,56 +1,8 @@
 
 include_directories( ../
                      ${CMAKE_SOURCE_DIR}
-                     charset-detector/include
-                     charset-detector/src
-                     charset-detector/src/tables
                      ${QT_INCLUDES}
-                     ${TAGLIB_INCLUDES}
-                     ${TAGLIB-EXTRAS_INCLUDES}
                    )
-
-add_definitions(${TAGLIB_CFLAGS} ${TAGLIB-EXTRAS_CFLAGS})
-
-#####################################################################
-# Character Encoding Detector
-#####################################################################
-set( libchardet_SRCS
-    charset-detector/src/impl.cpp
-    charset-detector/src/CharDistribution.cpp
-    charset-detector/src/JpCntx.cpp
-    charset-detector/src/LangBulgarianModel.cpp
-    charset-detector/src/LangCyrillicModel.cpp
-    charset-detector/src/LangGreekModel.cpp
-    charset-detector/src/LangHebrewModel.cpp
-    charset-detector/src/LangHungarianModel.cpp
-    charset-detector/src/LangThaiModel.cpp
-    charset-detector/src/nsBig5Prober.cpp
-    charset-detector/src/nsCharSetProber.cpp
-    charset-detector/src/nsEscCharsetProber.cpp
-    charset-detector/src/nsEscSM.cpp
-    charset-detector/src/nsEUCJPProber.cpp
-    charset-detector/src/nsEUCKRProber.cpp
-    charset-detector/src/nsEUCTWProber.cpp
-    charset-detector/src/nsGB2312Prober.cpp
-    charset-detector/src/nsHebrewProber.cpp
-    charset-detector/src/nsLatin1Prober.cpp
-    charset-detector/src/nsMBCSGroupProber.cpp
-    charset-detector/src/nsMBCSSM.cpp
-    charset-detector/src/nsSBCharSetProber.cpp
-    charset-detector/src/nsSBCSGroupProber.cpp
-    charset-detector/src/nsSJISProber.cpp
-    charset-detector/src/nsUniversalDetector.cpp
-    charset-detector/src/nsUTF8Prober.cpp
-)
-
-#####################################################################
-# TagLib File Type Resolvers
-#####################################################################
-set( taglib_filetype_resolver_SRCS
-    ../../shared/taglib_filetype_resolvers/wavfiletyperesolver.cpp
-    ../../shared/taglib_filetype_resolvers/mp4filetyperesolver.cpp
-    ../../shared/taglib_filetype_resolvers/asffiletyperesolver.cpp
-)
 
 ########### next target ###############
 
@@ -64,18 +16,49 @@ add_definitions( "-DUTILITIES_BUILD" )
 
 set(amarokcollectionscanner_SRCS
     CollectionScanner.cpp
-    AFTUtility.cpp
-    ../../shared/MetaReplayGain.cpp
+    Directory.cpp
+    Album.cpp
+    Track.cpp
+    Playlist.cpp
+    BatchFile.cpp
+    ../../shared/FileType.cpp
+    ../../shared/MetaTagLib.cpp
+    ../../shared/TagsFromFileNameGuesser.cpp
 )
+if( TAGLIB_FOUND )
+    set(amarokcollectionscanner_SRCS
+        ${amarokcollectionscanner_SRCS}
+        ../../shared/FileTypeResolver.cpp
+        ../../shared/MetaReplayGain.cpp
+        ../../shared/tag_helpers/APETagHelper.cpp
+        ../../shared/tag_helpers/ASFTagHelper.cpp
+        ../../shared/tag_helpers/ID3v2TagHelper.cpp
+        ../../shared/tag_helpers/MP4TagHelper.cpp
+        ../../shared/tag_helpers/StringHelper.cpp
+        ../../shared/tag_helpers/TagHelper.cpp
+        ../../shared/tag_helpers/VorbisCommentTagHelper.cpp
+    )
+endif( TAGLIB_FOUND )
 
-add_executable(amarokcollectionscanner ${amarokcollectionscanner_SRCS} ${libchardet_SRCS} ${taglib_filetype_resolver_SRCS})
+add_executable(amarokcollectionscanner ${amarokcollectionscanner_SRCS} ${libchardet_SRCS})
+
+if( TAGLIB_FOUND )
+    include_directories(${TAGLIB_INCLUDES})
+    add_definitions(${TAGLIB_CFLAGS})
+    target_link_libraries(amarokcollectionscanner ${TAGLIB_LIBRARIES})
+endif( TAGLIB_FOUND )
+if( TAGLIB-EXTRAS_FOUND )
+    include_directories(${TAGLIB-EXTRAS_INCLUDES})
+    add_definitions(${TAGLIB-EXTRAS_CFLAGS})
+    target_link_libraries(amarokcollectionscanner ${TAGLIB-EXTRAS_LIBRARIES})
+endif( TAGLIB-EXTRAS_FOUND )
 
 target_link_libraries(amarokcollectionscanner 
+                      ${QT_QTGUI_LIBRARY} # required on Solaris, see bug 264112
                       ${QT_QTCORE_LIBRARY}
                       ${QT_QTXML_LIBRARY}
                       ${QT_QTDBUS_LIBRARY}
-                      ${TAGLIB_LIBRARIES}
-                      ${TAGLIB-EXTRAS_LIBRARIES}
+                      ${KDE4_KDECORE_LIBRARY}
                       )
 
 if(APPLE)

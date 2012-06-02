@@ -41,36 +41,10 @@ BrowserBreadcrumbWidget::BrowserBreadcrumbWidget( QWidget * parent )
     setContentsMargins( 3, 0, 3, 0 );
     setSpacing( 0 );
 
-    m_widgetStack = new QStackedWidget( this );
-    m_widgetStack->setContentsMargins( 0, 0, 0, 0 );
-
-    m_breadcrumbArea = new KHBox( 0 );
+    m_breadcrumbArea = new KHBox( this );
     m_breadcrumbArea->setContentsMargins( 0, 0, 0, 0 );
     m_breadcrumbArea->setSpacing( 0 );
     setStretchFactor( m_breadcrumbArea, 10 );
-
-    m_editArea = new KHBox( 0 );
-    m_editArea->setContentsMargins( 0, 0, 0, 0 );
-    m_editArea->setSpacing( 0 );
-    setStretchFactor( m_editArea, 10 );
-
-    m_pathEdit = new KLineEdit( m_editArea );
-    m_pathEdit->setClearButtonShown( true );
-    m_pathEdit->installEventFilter( this ); //we want to catch the escape button and bail out of editing
-    
-    m_goButton = new KPushButton( KIcon( "dialog-ok" ), QString(), m_editArea );
-    m_goButton->setToolTip( i18n( "Click For Location Navigation" ) ); //String stolen from Dolphin! :-)
-    m_goButton->setFixedSize( 20, 20 );
-    m_goButton->setFlat( true );
-    
-    connect( m_pathEdit, SIGNAL( returnPressed() ), this, SLOT( editUpdated() ) );
-    connect( m_goButton, SIGNAL( clicked( bool ) ), this, SLOT( editUpdated() ) );
-
-
-    m_widgetStack->addWidget( m_breadcrumbArea );
-    m_widgetStack->addWidget( m_editArea );
-
-    m_widgetStack->setCurrentIndex( 0 );
 
     new BreadcrumbUrlMenuButton( "navigate", this );
 
@@ -85,19 +59,16 @@ BrowserBreadcrumbWidget::~BrowserBreadcrumbWidget()
 void
 BrowserBreadcrumbWidget::clearCrumbs()
 {
-    //these items will get deleted by their BrowserCategory, so set parent to 0
-    //or they will get double deleted, causing a crash
     foreach( BrowserBreadcrumbItem *item, m_items )
     {
         item->hide();
-        item->setParent( 0 );
+        item->deleteLater();
     }
     m_items.clear();
 
     //if we have a final menu button, also delete it.
     delete m_childMenuButton;
     m_childMenuButton = 0;
-    
 }
 
 void
@@ -148,7 +119,6 @@ BrowserBreadcrumbWidget::addLevel( BrowserCategoryList * list )
         }
         else
         {
-            debug() << "here!";
             BrowserBreadcrumbItem * leaf = childCategory->breadcrumb();
             leaf->setParent( m_breadcrumbArea );
             leaf->show();
@@ -159,11 +129,8 @@ BrowserBreadcrumbWidget::addLevel( BrowserCategoryList * list )
             //no children, but check if there are additional breadcrumb levels (for internal navigation in the category) that should be added anyway.
             foreach( BrowserBreadcrumbItem *addItem, additionalItems )
             {
-                debug() << "adding extra item";
-
                 //hack to ensure that we have not already added it to the front of the breadcrumb...
                 addItem->setParent( 0 );
-                
                 addItem->setParent( m_breadcrumbArea );
                 addItem->show();
             }
@@ -222,8 +189,7 @@ void BrowserBreadcrumbWidget::resizeEvent( QResizeEvent * event )
 
 void BrowserBreadcrumbWidget::hideAsNeeded( int width )
 {
-
-    DEBUG_BLOCK
+    // DEBUG_BLOCK
 
     //we need to check if there is enough space for all items, if not, we start hiding items from the left (excluding the home item) until they fit (we never hide the rightmost item)
     //we also add he hidden levels to the drop down menu of the last item so they are accessible.
@@ -236,7 +202,7 @@ void BrowserBreadcrumbWidget::hideAsNeeded( int width )
     if( m_rootList->activeCategory() != 0 )
         allItems.append( m_rootList->activeCategory()->additionalItems() );
 
-    debug() << "the active category is: " <<  m_rootList->activeCategoryName();
+    // debug() << "the active category is: " <<  m_rootList->activeCategoryName();
     
 
     int sizeOfFirst = allItems.first()->nominalWidth();
@@ -245,11 +211,11 @@ void BrowserBreadcrumbWidget::hideAsNeeded( int width )
     int spaceLeft = width - ( sizeOfFirst + sizeOfLast + 28 );
 
     int numberOfItems = allItems.count();
-    debug() << numberOfItems << " items.";
+    // debug() << numberOfItems << " items.";
 
     for( int i = numberOfItems - 2; i > 0; i-- )
     {
-        debug() << "item index " << i << " has width " << allItems.at( i )->nominalWidth() << " and space left is " << spaceLeft;
+        // debug() << "item index " << i << " has width " << allItems.at( i )->nominalWidth() << " and space left is " << spaceLeft;
         
         if( allItems.at( i )->nominalWidth() <= spaceLeft )
         {
@@ -264,99 +230,5 @@ void BrowserBreadcrumbWidget::hideAsNeeded( int width )
         }
     }
 }
-
-void
-BrowserBreadcrumbWidget::mousePressEvent( QMouseEvent * event )
-{
-    Q_UNUSED( event )
-    DEBUG_BLOCK
-
-    //set the string in the edit widgets. Just use the current "amarok path", except for the case of the
-    //file browser where we want to show the current "real" path
-
-    QString amarokPath = The::mainWindow()->browserDock()->list()->path();
-
-    if( amarokPath.endsWith( "files" ) )
-    {
-        FileBrowser * fileBrowser = qobject_cast<FileBrowser *>( The::mainWindow()->browserDock()->list()->activeCategory() );
-        if( fileBrowser )
-        {
-            m_pathEdit->setText( fileBrowser->currentDir() );
-        }
-    }
-    else
-    {
-        amarokPath = amarokPath.replace( "root list/", QString() );
-        amarokPath = amarokPath.replace( "root list", QString() );
-        m_pathEdit->setText( amarokPath );
-    }
-    
-    m_widgetStack->setCurrentIndex( 1 );
-}
-
-void
-BrowserBreadcrumbWidget::editUpdated()
-{
-    QString enteredPath = m_pathEdit->text();
-
-    //if its empty, do nothing
-    if( enteredPath.isEmpty() )
-    {
-        m_widgetStack->setCurrentIndex( 0 );
-        return;
-    }
-
-    //if it is an amarok url, just run it!
-    if( enteredPath.startsWith( "amarok://", Qt::CaseInsensitive ) )
-    {
-        AmarokUrl url( enteredPath );
-        url.run();
-        m_widgetStack->setCurrentIndex( 0 );
-        return;
-        
-    }
-
-    //if it points to a path on the file system, show the file browser (if not already shown) and navigate to this path
-    QDir dir( enteredPath );
-    if( dir.exists() )
-    {
-        AmarokUrl url;
-        url.setCommand( "navigate" );
-        url.setPath( "files" );
-        url.appendArg( "path", enteredPath );
-        url.run();
-
-        m_widgetStack->setCurrentIndex( 0 );
-        return;
-    }
-
-    //if all else fails, try to navigate to it as an amarok url
-
-    AmarokUrl url;
-    url.setCommand( "navigate" );
-    url.setPath( enteredPath );
-    url.run();
-
-    m_widgetStack->setCurrentIndex( 0 );
-    
-}
-
-bool
-BrowserBreadcrumbWidget::eventFilter( QObject *obj, QEvent *ev )
-{
-    if ( obj != m_pathEdit )
-        return false;
-
-    if ( ev->type() == QEvent::KeyPress) {
-        int key = static_cast< QKeyEvent* >(ev)->key();
-        if( key == Qt::Key_Escape ) {
-            m_pathEdit->clear();
-            m_widgetStack->setCurrentIndex( 0 );
-            return true;
-        }
-    }
-    return false;
-}
-
 
 #include "BrowserBreadcrumbWidget.moc"

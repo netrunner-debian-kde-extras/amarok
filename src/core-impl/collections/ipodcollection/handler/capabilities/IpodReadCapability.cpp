@@ -20,7 +20,7 @@
 using namespace Handler;
 
 IpodReadCapability::IpodReadCapability( Meta::IpodHandler *handler )
-        : Handler::ReadCapability()
+        : Handler::ReadCapability( handler )
         , m_handler( handler )
 {
 }
@@ -71,6 +71,12 @@ QString
 IpodReadCapability::libGetArtist( const Meta::MediaDeviceTrackPtr &track )
 {
     return m_handler->libGetArtist( track );
+}
+
+QString
+IpodReadCapability::libGetAlbumArtist( const Meta::MediaDeviceTrackPtr &track )
+{
+    return m_handler->libGetAlbumArtist( track );
 }
 
 QString
@@ -145,7 +151,7 @@ IpodReadCapability::libGetPlayCount( const Meta::MediaDeviceTrackPtr &track )
     return m_handler->libGetPlayCount( track );
 }
 
-uint
+QDateTime
 IpodReadCapability::libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track )
 {
     return m_handler->libGetLastPlayed( track );
@@ -167,6 +173,12 @@ KUrl
 IpodReadCapability::libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track )
 {
     return m_handler->libGetPlayableUrl( track );
+}
+
+bool
+IpodReadCapability::libIsCompilation( const Meta::MediaDeviceTrackPtr &track )
+{
+    return m_handler->libIsCompilation( track );
 }
 
 float

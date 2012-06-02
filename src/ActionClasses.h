@@ -19,14 +19,14 @@
 #ifndef AMAROK_ACTIONCLASSES_H
 #define AMAROK_ACTIONCLASSES_H
 
-#include "core/engine/EngineObserver.h"
-
 #include <KAction>
 #include <KMenu>
 #include <KToggleAction>
 #include <KSelectAction>
 
-#include <QPointer>
+#include <QWeakPointer>
+
+#include <Phonon/Global>
 
 class KActionCollection;
 class KHelpMenu;
@@ -53,11 +53,17 @@ namespace Amarok
             MenuAction( KActionCollection*, QObject* );
     };
 
-    class PlayPauseAction : public KToggleAction, public Engine::EngineObserver
+    class PlayPauseAction : public KToggleAction
     {
+        Q_OBJECT
+
         public:
             PlayPauseAction( KActionCollection*, QObject* );
-            virtual void engineStateChanged( Phonon::State, Phonon::State = Phonon::StoppedState );
+
+        private slots:
+            void stopped();
+            void paused();
+            void playing();
     };
 
     class ToggleAction : public KToggleAction
@@ -131,10 +137,6 @@ namespace Amarok
 
         private slots:
             void actTrigg( int index );
-
-        private:
-            QStringList eqGlobalList();
-            QList<int> eqCfgGetPresetVal( int mPresetNo );
     };
 
     class BurnMenu : public KMenu
@@ -161,23 +163,25 @@ namespace Amarok
             virtual QWidget* createWidget( QWidget* );
     };
 
-    class StopAction : public KAction, public Engine::EngineObserver
+    class StopAction : public KAction
     {
         Q_OBJECT
         public:
             StopAction( KActionCollection*, QObject* );
-            virtual void engineStateChanged( Phonon::State, Phonon::State = Phonon::StoppedState );
+
         private slots:
+            void stopped();
+            void playing();
             void stop();
     };
 
-    class StopPlayingAfterCurrentTrackAction : public KAction, public Engine::EngineObserver
+    class StopPlayingAfterCurrentTrackAction : public KAction
     {
         Q_OBJECT
         public:
             StopPlayingAfterCurrentTrackAction( KActionCollection*, QObject* );
-            virtual void engineStateChanged( Phonon::State, Phonon::State = Phonon::StoppedState );
-        private Q_SLOTS:
+
+        private slots:
             void stopPlayingAfterCurrentTrack();
     };
 } /* namespace Amarok */

@@ -31,14 +31,8 @@ public:
     LastFmServiceQueryMaker( LastFmServiceCollection *collection );
     virtual ~LastFmServiceQueryMaker();
 
-    virtual QueryMaker* reset();
     virtual void run();
     virtual void abortQuery();
-
-    virtual QueryMaker *setReturnResultAsDataPtrs( bool resultAsDataPtrs );
-
-private:
-    bool m_resultAsDataPtrs;
 };
 
 } //namespace Collections

@@ -46,15 +46,24 @@
 
 #include <QDateTime>
 #include <QMenu>
+#include <QToolBar>
 #include <QToolButton>
 
 #include <typeinfo>
 
-AMAROK_EXPORT_PLUGIN( MagnatuneServiceFactory )
+AMAROK_EXPORT_SERVICE_PLUGIN( magnatunestore, MagnatuneServiceFactory )
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // class MagnatuneServiceFactory
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+MagnatuneServiceFactory::MagnatuneServiceFactory( QObject *parent, const QVariantList &args )
+    : ServiceFactory( parent, args )
+{
+    KPluginInfo pluginInfo( "amarok_service_magnatunestore.desktop", "services" );
+    pluginInfo.setConfig( config() );
+    m_info = pluginInfo;
+}
 
 void MagnatuneServiceFactory::init()
 {
@@ -68,13 +77,6 @@ void MagnatuneServiceFactory::init()
 QString MagnatuneServiceFactory::name()
 {
     return "Magnatune.com";
-}
-
-KPluginInfo MagnatuneServiceFactory::info()
-{
-    KPluginInfo pluginInfo( "amarok_service_magnatunestore.desktop", "services" );
-    pluginInfo.setConfig( config() );
-    return pluginInfo;
 }
 
 KConfigGroup MagnatuneServiceFactory::config()
@@ -101,7 +103,7 @@ MagnatuneStore::MagnatuneStore( MagnatuneServiceFactory* parent, const char *nam
     DEBUG_BLOCK
     //initTopPanel( );
 
-    setShortDescription( i18n( "\"Fair trade\" online music store." ) );
+    setShortDescription( i18n( "\"Fair trade\" online music store" ) );
     setIcon( KIcon( "view-services-magnatune-amarok" ) );
 
     // xgettext: no-c-format
@@ -313,7 +315,7 @@ bool MagnatuneStore::updateMagnatuneList()
     m_tempFileName = tempFile.fileName();
 
     m_listDownloadJob = KIO::file_copy( KUrl( "http://magnatune.com/info/album_info_xml.bz2" ),  KUrl( m_tempFileName ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
-    Amarok::Components::logger()->newProgressOperation( m_listDownloadJob, i18n( "Downloading Magnatune.com Database" ), this, SLOT( listDownloadCancelled() ) );
+    Amarok::Components::logger()->newProgressOperation( m_listDownloadJob, i18n( "Downloading Magnatune.com database..." ), this, SLOT( listDownloadCancelled() ) );
 
     connect( m_listDownloadJob, SIGNAL( result( KJob * ) ),
             this, SLOT( listDownloadComplete( KJob * ) ) );
@@ -529,7 +531,7 @@ void MagnatuneStore::moodMapReady(QMap< QString, int > map)
         QVariantMap action;
         action["component"]  = "/ServicePluginManager";
         action["function"] = "sendMessage";
-        action["arg1"] = QString( "Magnatune.com").arg( escapedKey );
+        action["arg1"] = QString( "Magnatune.com");
         action["arg2"] = QString( "addMoodyTracks %1 10").arg( escapedKey );
 
         dbusActions[key] = action;

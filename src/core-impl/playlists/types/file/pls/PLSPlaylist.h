@@ -47,8 +47,12 @@ class AMAROK_EXPORT_TESTS PLSPlaylist : public PlaylistFile
         virtual QString prettyName() const { return m_url.fileName(); }
         virtual QString description() const;
 
-        /** returns all tracks in this playlist */
-        Meta::TrackList tracks() { return m_tracks; }
+        virtual int trackCount() const;
+        virtual Meta::TrackList tracks();
+        virtual void triggerTrackLoad();
+
+        virtual void addTrack( Meta::TrackPtr track, int position = -1 );
+        virtual void removeTrack( int position );
 
         bool hasCapabilityInterface( Capabilities::Capability::Type type ) const { Q_UNUSED( type ); return false; }
 
@@ -64,8 +68,11 @@ class AMAROK_EXPORT_TESTS PLSPlaylist : public PlaylistFile
         bool loadPls( QTextStream &stream );
         unsigned int loadPls_extractIndex( const QString &str ) const;
 
-        Meta::TrackList m_tracks;
         KUrl m_url;
+
+        bool m_tracksLoaded;
+        Meta::TrackList m_tracks;
+
         QString m_name;
 };
 

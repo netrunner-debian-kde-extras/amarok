@@ -1,19 +1,21 @@
-/****************************************************************************************
- * Copyright (c) 2003-2005 Max Howell <max.howell@methylblue.com>                       *
- * Copyright (c) 2007-2009 Mark Kretschmann <kretschmann@kde.org>                       *
- *                                                                                      *
- * This program is free software; you can redistribute it and/or modify it under        *
- * the terms of the GNU General Public License as published by the Free Software        *
- * Foundation; either version 2 of the License, or (at your option) any later           *
- * version.                                                                             *
- *                                                                                      *
- * This program is distributed in the hope that it will be useful, but WITHOUT ANY      *
- * WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A      *
- * PARTICULAR PURPOSE. See the GNU General Public License for more details.             *
- *                                                                                      *
- * You should have received a copy of the GNU General Public License along with         *
- * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
- ****************************************************************************************/
+/*
+    Copyright (c) 2003-2005 Max Howell <max.howell@methylblue.com>
+    Copyright (c) 2007-2009 Mark Kretschmann <kretschmann@kde.org>
+    Copyright (c) 2010-2011 Kevin Funk <krf@electrostorm.net>
+
+    This library is free software; you can redistribute it and/or
+    modify it under the terms of the GNU Lesser General Public
+    License as published by the Free Software Foundation; either
+    version 2.1 of the License, or (at your option) any later version.
+
+    This library is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+    Lesser General Public License for more details.
+
+    You should have received a copy of the GNU Lesser General Public
+    License along with this library.  If not, see <http://www.gnu.org/licenses/>.
+*/
 
 #ifndef AMAROK_DEBUG_H
 #define AMAROK_DEBUG_H
@@ -22,24 +24,70 @@
 #undef QT_NO_DEBUG_OUTPUT
 #undef KDE_NO_DEBUG_OUTPUT
 
-#include <KGlobal>
-#include <KCmdLineArgs>
-#include <KConfig>
-#include <KConfigGroup>
-#include <kdebug.h>
-#include <QApplication>
-#include <QMutex>
-#include <QObject>
-
-#include <sys/time.h>
-#include <unistd.h>
-#include <iostream>
-#include <cerrno>
-
 #include "shared/amarok_export.h"
 
+#include <kdebug.h>
+
+#include <QMutex>
+
+// BEGIN: DEBUG_ASSERT
+/**
+ * Debug helper to write "soft" assertions with escape statements more easily
+ * If the assertions fails, a warning is printed containing the position
+ * (file and line number) of the assert and the second parameter is evaluated.
+ *
+ * Usage: DEBUG_ASSERT(assertion, statement)
+ *
+ * (pseudo code *without* DEBUG_ASSERT)
+ * \code
+ * bool someMethod(T* pointer) {
+ *   if (!pointer)
+ *     qWarning() << "Warning pointer is null, aborting";
+ *     return false;
+ *   (...)
+ *   return someBoolean;
+ * }
+ * \endcode
+ *
+ * (may be replaced by)
+ * \code
+ * bool someMethod(T* pointer) {
+ *   DEBUG_ASSERT(pointer, return false)
+ *   (...)
+ *   return someBoolean;
+ * }
+ * \endcode
+ *
+ * \author Kevin Funk
+ * \sa http://qt.gitorious.org/qt-creator/qt-creator/blobs/master/src/libs/utils/qtcassert.h
+ */
+#define DEBUG_ASSERT(cond, action) \
+    if(cond){}else{warning()<< \
+        "ASSERTION " #cond " FAILED AT " __FILE__ ":" DEBUG_ASSERT_STRINGIFY(__LINE__);action;}
+
+#define DEBUG_ASSERT_STRINGIFY_INTERNAL(x) #x
+#define DEBUG_ASSERT_STRINGIFY(x) DEBUG_ASSERT_STRINGIFY_INTERNAL(x)
+// END__: DEBUG_ASSERT
+
+#if QT_VERSION >= 0x040700
+# include <QElapsedTimer>
+#else
+# include <QTime>
+#endif
+
+// Platform specific macros
 #ifdef _WIN32
 #define __PRETTY_FUNCTION__ __FUNCTION__
+#endif
+#ifdef __SUNPRO_CC
+#define __PRETTY_FUNCTION__ __FILE__
+#endif
+
+// Debug prefix, override if needed
+#ifndef DEBUG_PREFIX
+#define AMAROK_PREFIX ""
+#else
+#define AMAROK_PREFIX "[" DEBUG_PREFIX "]"
 #endif
 
 /**
@@ -71,83 +119,39 @@
  * @see CrashHelper
  * @see ListStream
  */
-
 namespace Debug
 {
     extern AMAROK_CORE_EXPORT QMutex mutex;
 
-    // we can't use a statically instantiated QString for the indent, because
-    // static namespaces are unique to each dlopened library. So we piggy back
-    // the QString on the KApplication instance
-
-    #define qOApp reinterpret_cast<QObject*>(qApp)
-    class Indent : QObject
-    {
-        friend QString &modifieableIndent();
-        Indent() : QObject( qOApp ) { setObjectName( "DEBUG_indent" ); }
-        QString m_string;
-    };
-
-    inline QString &modifieableIndent()
-    {
-        QObject* o = qOApp ? qOApp->findChild<QObject*>( "DEBUG_indent" ) : 0;
-        QString &ret = (o ? static_cast<Indent*>( o ) : new Indent)->m_string;
-        return ret;
-    }
-
-    inline QString indent()
-    {
-        return modifieableIndent();
-    }
-
-    inline bool debugEnabled()
-    {
-        KConfigGroup config = KGlobal::config()->group( "General" );
-        const bool debug = config.readEntry( "Debug Enabled", false );
-        
-        return debug; 
-    }
-
-    inline kdbgstream dbgstream()
-    {
-        return debugEnabled() ? kdbgstream( QtDebugMsg ) : kDebugDevNull();
-    }
- 
-    #undef qOApp
-
-    #ifndef DEBUG_PREFIX
-    #define AMK_PREFIX ""
-    #else
-    #define AMK_PREFIX "[" DEBUG_PREFIX "]"
-    #endif
-
-    //from kdebug.h
-    enum DebugLevels {
+    // from kdebug.h
+    enum DebugLevel {
         KDEBUG_INFO  = 0,
         KDEBUG_WARN  = 1,
         KDEBUG_ERROR = 2,
         KDEBUG_FATAL = 3
     };
 
-        
-    static inline kdbgstream debug()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << qPrintable( "amarok: " + ind + AMK_PREFIX ); }
-    static inline kdbgstream warning() { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << qPrintable( "amarok: " + ind + AMK_PREFIX + " [WARNING!]" ); }
-    static inline kdbgstream error()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << qPrintable( "amarok: " + ind + AMK_PREFIX + " [ERROR!]" ); }
-    static inline kdbgstream fatal()   { mutex.lock(); QString ind = indent(); mutex.unlock(); return dbgstream() << qPrintable( "amarok: " + ind + AMK_PREFIX ); }
+    AMAROK_CORE_EXPORT QDebug dbgstream( DebugLevel level = KDEBUG_INFO );
+    AMAROK_CORE_EXPORT bool debugEnabled();
+    AMAROK_CORE_EXPORT bool debugColorEnabled();
+    AMAROK_CORE_EXPORT void setDebugEnabled( bool enable );
+    AMAROK_CORE_EXPORT void setColoredDebug( bool enable );
+    AMAROK_CORE_EXPORT QString indent();
 
-    #undef AMK_PREFIX
-
-    static inline void perfLog( const QString &message, const QString &func )
-    {
-#ifdef Q_OS_UNIX
-        if( !debugEnabled() )
-        {
-            return;
-        }
-        QString str = QString( "MARK: %1: %2 %3" ).arg( KCmdLineArgs::appName(), func, message );
-        access( str.toLocal8Bit().data(), F_OK );
+    static inline QDebug dbgstreamwrapper( DebugLevel level ) {
+#ifdef DEBUG_PREFIX
+        return dbgstream( level ) << AMAROK_PREFIX;
+#else
+        return dbgstream( level );
 #endif
     }
+
+    static inline QDebug debug()   { return dbgstreamwrapper( KDEBUG_INFO ); }
+    static inline QDebug warning() { return dbgstreamwrapper( KDEBUG_WARN ); }
+    static inline QDebug error()   { return dbgstreamwrapper( KDEBUG_ERROR ); }
+    static inline QDebug fatal()   { return dbgstreamwrapper( KDEBUG_FATAL ); }
+
+    AMAROK_CORE_EXPORT void perfLog( const QString &message, const QString &func );
 }
 
 using Debug::debug;
@@ -161,21 +165,19 @@ using Debug::fatal;
 /// Announce a line
 #define DEBUG_LINE_INFO { Debug::mutex.lock(); kDebug() << Debug::indent() << "Line: " << __LINE__; Debug::mutex.unlock(); }
 
-#ifdef __SUNPRO_CC
-#define __PRETTY_FUNCTION__ __FILE__
-#endif
-
 /// Convenience macro for making a standard Debug::Block
 #define DEBUG_BLOCK Debug::Block uniquelyNamedStackAllocatedStandardBlock( __PRETTY_FUNCTION__ );
 
 /// Use this to remind yourself to finish the implementation of a function
-#define AMAROK_NOTIMPLEMENTED warning() << "NOT-IMPLEMENTED: " << __PRETTY_FUNCTION__ << endl;
+#define AMAROK_NOTIMPLEMENTED warning() << "NOT-IMPLEMENTED:" << __PRETTY_FUNCTION__ << endl;
 
 /// Use this to alert other developers to stop using a function
-#define AMAROK_DEPRECATED warning() << "DEPRECATED: " << __PRETTY_FUNCTION__ << endl;
+#define AMAROK_DEPRECATED warning() << "DEPRECATED:" << __PRETTY_FUNCTION__ << endl;
 
 /// Performance logging
 #define PERF_LOG( msg ) { Debug::perfLog( msg, __PRETTY_FUNCTION__ ); }
+
+class BlockPrivate;
 
 namespace Debug
 {
@@ -201,64 +203,21 @@ namespace Debug
      *     app: END: section - Took 0.1s
      *
      */
-
     class Block
     {
-        timeval     m_start;
-        const char *m_label;
-
     public:
-        Block( const char *label )
-                : m_label( label )
-        {
-            if ( gettimeofday( &m_start, 0 ) == -1 )
-                dbgstream() << "amarok: Block - gettimeofday failed with "
-                            << strerror(errno);
+        AMAROK_CORE_EXPORT Block( const char *name );
+        AMAROK_CORE_EXPORT ~Block();
 
-            if( !debugEnabled() ) return;
-
-            mutex.lock();
-
-            dbgstream() << qPrintable( "amarok: " + indent() + "BEGIN: " + label );
-            Debug::modifieableIndent() += "  ";
-            mutex.unlock();
-        }
-
-        ~Block()
-        {
-            if( !debugEnabled() ) return;
-
-            mutex.lock();
-            timeval end;
-            int result = gettimeofday( &end, 0 );
-            if( result == -1 )
-            {
-                mutex.unlock();
-                return;
-            }
-
-            end.tv_sec -= m_start.tv_sec;
-            if( end.tv_usec < m_start.tv_usec) {
-                // Manually carry a one from the seconds field.
-                end.tv_usec += 1000000;
-                end.tv_sec--;
-            }
-            end.tv_usec -= m_start.tv_usec;
-
-            double duration = double(end.tv_sec) + (double(end.tv_usec) / 1000000.0);
-
-            Debug::modifieableIndent().truncate( Debug::indent().length() - 2 );
-
-            // Print timing information, and a special message (DELAY) if the method took longer than 5s
-            if( duration < 5.0 )
-                dbgstream() << qPrintable( "amarok: " + indent() + "END__: " + m_label + " - Took " + QString::number( duration, 'g', 2 ) + "s" );
-            else
-                dbgstream() << qPrintable( "amarok: " + indent() + "END__: " + m_label + " - DELAY Took (quite long) " + QString::number( duration, 'g', 2 ) + "s" );
-
-            mutex.unlock();
-        }
+    private:
+#if QT_VERSION >= 0x040700
+        QElapsedTimer m_startTime;
+#else
+        QTime m_startTime;
+#endif
+        const char *m_label;
+        int m_color;
     };
-
 
     /**
      * @name Debug::stamp()
@@ -280,14 +239,8 @@ namespace Debug
      *     app: Stamp: 2
      *
      */
-
-    inline void stamp()
-    {
-        static int n = 0;
-        debug() << "| Stamp: " << ++n << endl;
-    }
+    AMAROK_CORE_EXPORT void stamp();
 }
-
 
 #include <QVariant>
 

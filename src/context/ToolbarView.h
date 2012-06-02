@@ -18,7 +18,7 @@
 #define AMAROK_CONTEXT_TOOLBAR_VIEW
 
 #include <QGraphicsView>
-#include <QPointer>
+#include <QWeakPointer>
 
 class QGraphicsScene;
 class QWidget;
@@ -48,9 +48,6 @@ class ToolbarView : public QGraphicsView
     public:
         explicit ToolbarView( Plasma::Containment* cont, QGraphicsScene* scene, QWidget* parent = 0 );
         ~ToolbarView();
-        
-        virtual QSize sizeHint() const;
-        int heightForWidth ( int w ) const;
 
     signals:
         void hideAppletExplorer();
@@ -68,12 +65,11 @@ class ToolbarView : public QGraphicsView
         void appletAdded( Plasma::Applet*, int);
         void refreshOverlays();
         void recreateOverlays();
-        void installApplets();
         void refreshSycoca();
     
     private:
         int m_height;
-        QPointer<AppletToolbar> m_toolbar;
+        QWeakPointer<AppletToolbar> m_toolbar;
         QList< AppletItemOverlay* > m_moveOverlays;
         Plasma::Containment* m_cont;
 };    

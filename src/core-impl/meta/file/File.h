@@ -19,8 +19,6 @@
 
 #include "core/meta/Meta.h"
 
-#include <fileref.h>
-
 namespace MetaFile
 {
     class Track;
@@ -35,14 +33,12 @@ namespace MetaFile
 
         //methods inherited from Meta::MetaBase
             virtual QString name() const;
-            virtual QString prettyName() const;
-            virtual QString fullPrettyName() const;
-            virtual QString sortableName() const;
 
         //methods inherited from Meta::Track
             virtual KUrl playableUrl() const;
             virtual QString prettyUrl() const;
             virtual QString uidUrl() const;
+            virtual void setUidUrl( const QString &newUidUrl ) const;
 
             virtual bool isPlayable() const;
             virtual bool isEditable() const;
@@ -54,10 +50,11 @@ namespace MetaFile
             virtual Meta::YearPtr year() const;
 
             virtual void setAlbum( const QString &newAlbum );
+            virtual void setAlbumArtist( const QString &newAlbumArtist );
             virtual void setArtist( const QString &newArtist );
             virtual void setGenre( const QString &newGenre );
             virtual void setComposer( const QString &newComposer );
-            virtual void setYear( const QString &newYear );
+            virtual void setYear( int newYear );
 
             virtual void setTitle( const QString &newTitle );
 
@@ -84,15 +81,14 @@ namespace MetaFile
             virtual int sampleRate() const;
             virtual int bitrate() const;
             virtual QDateTime createDate() const;
-            virtual uint lastPlayed() const;
-            virtual void setLastPlayed( uint newTime );
-            virtual uint firstPlayed() const;
-            virtual void setFirstPlayed( uint newTime );
+            virtual QDateTime lastPlayed() const;
+            virtual void setLastPlayed( const QDateTime &newTime );
+            virtual QDateTime firstPlayed() const;
+            virtual void setFirstPlayed( const QDateTime &newTime );
             virtual int playCount() const;
             virtual void setPlayCount( int newCount );
 
-            virtual qreal replayGain( ReplayGainMode mode ) const;
-            virtual qreal replayPeakGain( ReplayGainMode mode ) const;
+            virtual qreal replayGain( Meta::ReplayGainTag mode ) const;
 
             virtual QString type() const;
 
@@ -107,10 +103,7 @@ namespace MetaFile
             virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
             virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
-            static TagLib::FileRef getFileRef( const KUrl &url );
-
             virtual QImage getEmbeddedCover() const;
-            static QImage getEmbeddedCover( const QString &path );
 
             class Private;
 

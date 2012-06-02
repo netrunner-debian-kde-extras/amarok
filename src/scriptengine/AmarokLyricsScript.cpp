@@ -15,29 +15,35 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "AmarokLyricsScript"
+
 #include "AmarokLyricsScript.h"
 
-#include "core/support/Amarok.h"
-#include "core-impl/collections/support/CollectionManager.h"
-#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "LyricsManager.h"
-#include "core/meta/Meta.h"
 #include "ScriptManager.h"
+#include "core/meta/Meta.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 
 #include <KApplication>
 
 #include <QByteArray>
+#include <QScriptEngine>
+#include <QTextCodec>
 #include <QTextDocument>
 
 namespace AmarokScript
 {
 
-AmarokLyricsScript::AmarokLyricsScript( QScriptEngine* scriptEngine )
-    : QObject( kapp )
+AmarokLyricsScript::AmarokLyricsScript( QScriptEngine *engine )
+    : QObject( engine )
 {
-    Q_UNUSED( scriptEngine )
-    connect( ScriptManager::instance(), SIGNAL( fetchLyrics( const QString&, const QString&, const QString& ) ), this, SIGNAL( fetchLyrics( const QString&, const QString&, const QString& ) ) );
+    QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
+    engine->globalObject().property( "Amarok" ).setProperty( "Lyrics", scriptObject );
+    connect( ScriptManager::instance(),
+             SIGNAL(fetchLyrics(QString, QString, QString)),
+             SIGNAL(fetchLyrics(QString, QString, QString)) );
 }
 
 AmarokLyricsScript::~AmarokLyricsScript()
@@ -57,6 +63,7 @@ AmarokLyricsScript::showLyrics( const QString& lyrics ) const
 void
 AmarokLyricsScript::showLyricsHtml( const QString& lyrics ) const
 {
+    DEBUG_BLOCK
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( !track )
         return;
@@ -66,6 +73,7 @@ AmarokLyricsScript::showLyricsHtml( const QString& lyrics ) const
 void
 AmarokLyricsScript::showLyricsError( const QString& error ) const
 {
+    DEBUG_BLOCK
     LyricsManager::self()->lyricsError( error );
 }
 
@@ -73,6 +81,7 @@ AmarokLyricsScript::showLyricsError( const QString& error ) const
 void
 AmarokLyricsScript::showLyricsNotFound( const QString& msg ) const
 {
+    DEBUG_BLOCK
     LyricsManager::self()->lyricsNotFound( msg );
 }
  
@@ -86,10 +95,7 @@ AmarokLyricsScript::escape( const QString& str )
 void
 AmarokLyricsScript::setLyricsForTrack( const QString& trackUrl, const QString& lyrics ) const
 {
-    DEBUG_BLOCK
-    Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( trackUrl ) );
-    if( track )
-        track->setCachedLyrics( lyrics );
+    LyricsManager::self()->setLyricsForTrack( trackUrl, lyrics );
 }
 
 QString

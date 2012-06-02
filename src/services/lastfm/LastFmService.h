@@ -41,22 +41,16 @@ namespace The
     LastFmService *lastFmService();
 }
 
-namespace Dynamic {
-    class LastFmBiasFactory;
-    class WeeklyTopBiasFactory;
-}
-
 class LastFmServiceFactory : public ServiceFactory
 {
     Q_OBJECT
 
 public:
-    LastFmServiceFactory() {}
+    LastFmServiceFactory( QObject *parent, const QVariantList &args );
     virtual ~LastFmServiceFactory() {}
 
     virtual void init();
     virtual QString name();
-    virtual KPluginInfo info();
     virtual KConfigGroup config();
 
     virtual bool possiblyContainsTrack( const KUrl &url ) const { return url.protocol() == "lastfm"; }
@@ -74,7 +68,7 @@ class LastFmService : public ServiceBase
     Q_OBJECT
 
 public:
-    LastFmService( LastFmServiceFactory* parent, const QString &name, const QString &username, QString password, const QString &sessionKey, bool scrobble, bool fetchSimilar );
+    LastFmService( LastFmServiceFactory* parent, const QString &name, const QString &username, QString password, const QString &sessionKey, bool scrobble, bool fetchSimilar, bool scrobbleComposer );
     virtual ~LastFmService();
 
     virtual void polish();
@@ -122,6 +116,7 @@ private:
 
     QString m_userName;
     QString m_sessionKey;
+    QString m_password;
     QString m_station;
     QString m_age;
     QString m_gender;
@@ -129,12 +124,10 @@ private:
     QString m_playcount;
     QPixmap m_avatar;
     bool m_subscriber;
+    bool m_scrobbleComposer;
 
     char *m_userNameArray;
     char *m_sessionKeyArray;
-
-    Dynamic::LastFmBiasFactory* m_lastFmBiasFactory;
-    Dynamic::WeeklyTopBiasFactory* m_weeklyTopBiasFactory;
 
     QMap< QString, QNetworkReply* > m_jobs;
     static LastFmService *ms_service;

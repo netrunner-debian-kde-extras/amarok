@@ -21,12 +21,14 @@
 #include "TrackOrganizer.h"
 
 #include "core/support/Amarok.h"
-#include "core/support/Debug.h"
 #include "QStringx.h"
+
+#include <KLocale>
 
 TrackOrganizer::TrackOrganizer( const Meta::TrackList &tracks, QObject* parent )
     : QObject( parent )
     , m_allTracks( tracks )
+    , m_trackOffset( 0 )
     , m_IgnoreThe( false )
     , m_AsciiOnly( false )
     , m_UnderscoresNotSpaces( false )
@@ -68,23 +70,26 @@ QString TrackOrganizer::buildDestination(const QString& format, const Meta::Trac
     //been ported yet. Do they need to be?
     //Bpm,Directory,Bitrate,SampleRate,Mood
     args["folder"] = m_folderPrefix;
-    args["title"] = cleanPath( track->prettyName() );
-    args["composer"] = track->composer() ? cleanPath( track->composer()->prettyName() ) : QString();
+    args["title"] = cleanPath( track->name() );
+    args["composer"] = track->composer() ? cleanPath( track->composer()->name() ) : QString();
 
     // if year == 0 then we don't want include it
-    QString year = track->year() ? cleanPath( track->year()->prettyName() ) : QString();
+    QString year = track->year() ? cleanPath( track->year()->name() ) : QString();
     args["year"] = year.localeAwareCompare( "0" ) == 0 ? QString() : year;
-    args["album"] = track->album() ? cleanPath( track->album()->prettyName() ) : QString();
+    args["album"] = track->album() ? cleanPath( track->album()->name() ) : QString();
 
     if( track->discNumber() )
         args["discnumber"] = QString::number( track->discNumber() );
 
-    args["genre"] = track->genre() ? cleanPath( track->genre()->prettyName() ) : QString();
+    args["genre"] = track->genre() ? cleanPath( track->genre()->name() ) : QString();
     args["comment"] = cleanPath( track->comment() );
     args["artist"] = artist;
     args["albumartist"] = albumartist;
     args["initial"] = albumartist.mid( 0, 1 ).toUpper();    //artists starting with The are already handled above
-    args["filetype"] = track->type();
+    if( m_targetFileExtension == QString() )
+        args["filetype"] = track->type();
+    else
+        args["filetype"] = m_targetFileExtension;
     args["rating"] = track->rating();
     args["filesize"] = track->filesize();
     args["length"] = track->length() / 1000;
@@ -95,12 +100,27 @@ QString TrackOrganizer::buildDestination(const QString& format, const Meta::Trac
         args["track"] = trackNum;
     }
 
+    // Fill up default empty values for StringX formater
+    // TODO make this values changeable by user
+    args["default_album"]           = i18n( "Unknown album" );
+    args["default_albumartist"]     = i18n( "Unknown artist" );
+    args["default_artist"]          = args["albumartist"];
+    args["default_thealbumartist"]  = args["albumartist"];
+    args["default_theartist"]       = args["albumartist"];
+    args["default_comment"]         = i18n( "No comments" );
+    args["default_composer"]        = i18n( "Unknown composer" );
+    args["default_discnumber"]      = i18n( "Unknown disc number" );
+    args["default_genre"]           = i18n( "Unknown genre" );
+    args["default_title"]           = i18n( "Unknown title" );
+    args["default_year"]            = i18n( "Unknown year" );
+
     Amarok::QStringx formatx( format );
     QString result = formatx.namedOptArgs( args );
     if( !result.startsWith( '/' ) )
         result.prepend( "/" );
 
-   return result.replace( QRegExp( "/\\.*" ), "/" );
+    QFileInfo path( result );           // Used to polish path string. (e.g. remove '//')
+    return path.absoluteFilePath();
 }
 
 QString TrackOrganizer::cleanPath( const QString& component ) const
@@ -128,49 +148,98 @@ QString TrackOrganizer::cleanPath( const QString& component ) const
     return result;
 }
 
-QMap< Meta::TrackPtr, QString > TrackOrganizer::getDestinations()
+QMap< Meta::TrackPtr, QString > TrackOrganizer::getDestinations( unsigned int batchSize )
 {
     QMap<Meta::TrackPtr, QString> destinations;
-    foreach( const Meta::TrackPtr &track, m_allTracks )
+
+    int newOffset = m_trackOffset + batchSize;
+    //don't go out of bounds in the for loop
+    if( newOffset >= m_allTracks.count() )
+        newOffset = m_allTracks.count();
+
+    if( batchSize == 0 )
     {
+        m_trackOffset = 0;
+        newOffset = m_allTracks.count();
+    }
+
+    for( ; m_trackOffset < newOffset ; m_trackOffset++ )
+    {
+        Meta::TrackPtr track = m_allTracks.value( m_trackOffset );
         if( track )
             destinations.insert( track, buildDestination( m_format, track ) );
     }
+
+    if( m_trackOffset == m_allTracks.count() )
+    {
+        emit finished();
+        m_trackOffset = 0;
+    }
+
     return destinations;
 }
 
 void TrackOrganizer::setFormatString( const QString& format )
 {
+    if( m_format != format )
+        m_trackOffset = 0;
+
     m_format = format;
 }
 
 void TrackOrganizer::setFolderPrefix(const QString& prefix)
 {
+    if( m_folderPrefix != prefix )
+        m_trackOffset = 0;
+
     m_folderPrefix = prefix;
 }
 
 void TrackOrganizer::setAsciiOnly(bool flag)
 {
+    if( m_AsciiOnly != flag )
+        m_trackOffset = 0;
+
     m_AsciiOnly = flag;
 }
 
 void TrackOrganizer::setIgnoreThe(bool flag)
 {
+    if( m_IgnoreThe != flag )
+        m_trackOffset = 0;
+
     m_IgnoreThe = flag;
 }
 
 void TrackOrganizer::setReplaceSpaces(bool flag)
 {
+    if( m_UnderscoresNotSpaces != flag )
+        m_trackOffset = 0;
+
     m_UnderscoresNotSpaces = flag;
 }
 
 void TrackOrganizer::setVfatSafe(bool flag)
 {
+    if( m_vfatSafe != flag )
+        m_trackOffset = 0;
+
     m_vfatSafe = flag;
 }
 
 void TrackOrganizer::setReplace(const QString& regex, const QString& string)
 {
+    if( m_regexPattern != regex || m_replaceString != string )
+        m_trackOffset = 0;
+
     m_regexPattern = regex;
     m_replaceString = string;
+}
+
+void TrackOrganizer::setTargetFileExtension( const QString &fileExtension )
+{
+    if( m_targetFileExtension != fileExtension )
+        m_trackOffset = 0;
+
+    m_targetFileExtension = fileExtension;
 }

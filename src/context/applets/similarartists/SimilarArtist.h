@@ -18,21 +18,27 @@
 #define SIMILAR_ARTIST_H
 
 //Kde
+#include <KSharedPtr>
 #include <KUrl>
 
 //Qt
-#include<QString>
+#include <QSharedData>
+#include <QString>
+#include <QXmlStreamReader>
 
+class SimilarArtist;
+typedef KSharedPtr<SimilarArtist> SimilarArtistPtr;
 
 /**
  * Represents a similar artist to another
  * @author Joffrey Clavel
  * @version 0.1
  */
-class SimilarArtist
+class SimilarArtist : public QSharedData
 {
 public:
-    
+    typedef QList<SimilarArtistPtr> List;
+
     /**
      * Create an empty similar artist
      */
@@ -46,13 +52,11 @@ public:
      * @param url   A url of this artist on the web, for example on last.fm
      * @param urlImage  A url of an image of this artist, for example on last.fm
      * @param similarTo The name of the artist similar to this artist
-     * @param desc The description of this artist, empty string as default
-     * @param topTrack The most known artist track.
      */
     SimilarArtist( const QString &name, const int match, const KUrl &url,
-                   const KUrl &urlImage, const QString &similarTo,
-                   const QString &description=QString(),
-                   const QString &topTrack=QString() );
+                   const KUrl &urlImage, const QString &similarTo );
+
+    SimilarArtist( const SimilarArtist &other );
 
     /**
      * @return The name of this artist
@@ -75,32 +79,17 @@ public:
     KUrl urlImage() const;
 
     /**
-     * @return the description of this artist
+     * @return the artist this similar artist is related to
      */
-    QString description() const;
+    QString similarTo() const;
 
     /**
-     * Set the description of this artist
-     * @param desc the description
+     * Set the artist this similar artist is related to
+     * @param artist artist name
      */
-    void setDescription(const QString &description);
+    void setSimilarTo( const QString &artist );
 
-    /**
-     * @return the most known artist track
-     */
-    QString topTrack() const;
-
-    /**
-     * Set the most known artist track
-     * @param track the top track
-     */
-    void setTopTrack(const QString &track);
-
-    /**
-     * Define a new type for help the communication
-     * between the data engine SimilarArtists and the applet SimilarArtists
-     */
-    typedef QList<SimilarArtist> SimilarArtistsList ;
+    static SimilarArtist::List listFromXml( QXmlStreamReader &xml );
 
 private:
     /**
@@ -124,24 +113,13 @@ private:
     KUrl m_urlImage;
 
     /**
-     * The description of this artist
-     */
-    QString m_description;
-
-    /**
-     * The most known track of this artist
-     */
-    QString m_topTrack;
-
-    /**
      * The name of the artist similar to this artist
      */
     QString m_similarTo;
-
 };
 
 Q_DECLARE_METATYPE( SimilarArtist )
-Q_DECLARE_METATYPE( SimilarArtist::SimilarArtistsList )
+Q_DECLARE_METATYPE( SimilarArtistPtr )
+Q_DECLARE_METATYPE( SimilarArtist::List )
 
 #endif // SIMILAR_ARTIST_H
-

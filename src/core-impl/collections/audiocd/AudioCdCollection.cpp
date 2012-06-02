@@ -19,8 +19,8 @@
 
 #include "AudioCdCollection.h"
 
+#include "MainWindow.h"
 #include "amarokconfig.h"
-#include "AudioCdCollectionCapability.h"
 #include "AudioCdCollectionLocation.h"
 #include "AudioCdMeta.h"
 #include "core-impl/collections/support/CollectionManager.h"
@@ -37,6 +37,7 @@
 
 #include <kio/job.h>
 #include <kio/netaccess.h>
+#include <kio/udsentry.h>
 
 #include <solid/device.h>
 #include <solid/opticaldrive.h>
@@ -54,12 +55,10 @@ using namespace Collections;
 AMAROK_EXPORT_COLLECTION( AudioCdCollectionFactory, audiocdcollection )
 
 AudioCdCollectionFactory::AudioCdCollectionFactory( QObject *parent, const QVariantList &args )
-    : MediaDeviceCollectionFactory<AudioCdCollection>( new AudioCdConnectionAssistant() )
+    : MediaDeviceCollectionFactory<AudioCdCollection>( parent, args, new AudioCdConnectionAssistant() )
 {
-    setParent( parent );
-    Q_UNUSED( args );
+    m_info = KPluginInfo( "amarok_collection-audiocdcollection.desktop", "services" );
 }
-
 
 AudioCdCollection::AudioCdCollection( MediaDeviceInfo* info )
    : MediaDeviceCollection()
@@ -71,13 +70,9 @@ AudioCdCollection::AudioCdCollection( MediaDeviceInfo* info )
     debug() << "Getting Audio CD info";
     AudioCdDeviceInfo *cdInfo = qobject_cast<AudioCdDeviceInfo *>( info );
     m_udi = cdInfo->udi();
+    m_device = cdInfo->device();
 
     readAudioCdSettings();
-
-    m_ejectAction = new QAction( KIcon( "media-eject" ), i18n( "&Eject" ), 0 );
-    m_ejectAction->setProperty( "popupdropper_svg_id", "eject" );
-
-    connect( m_ejectAction, SIGNAL( triggered() ), this, SLOT( eject() ) );
 
     m_handler = new Meta::AudioCdHandler( this );
 }
@@ -87,12 +82,23 @@ AudioCdCollection::~AudioCdCollection()
 {
 }
 
+
+KUrl
+AudioCdCollection::audiocdUrl( const QString & path ) const
+{
+    if (m_device.isNull())
+        return KUrl( QString( "audiocd:/" + path ) );
+    else
+        return KUrl( QString( "audiocd:/%1?device=%2" ).arg( path ).arg( m_device ) );
+}
+
+
 void
 AudioCdCollection::readCd()
 {
     DEBUG_BLOCK
     //get the CDDB info file if possible.
-    KIO::ListJob *listJob = KIO::listRecursive( KUrl("audiocd:/"), KIO::HideProgressInfo, false );
+    KIO::ListJob *listJob = KIO::listRecursive( audiocdUrl(), KIO::HideProgressInfo, false );
     connect( listJob, SIGNAL(entries(KIO::Job*,KIO::UDSEntryList)),
              this, SLOT(audioCdEntries(KIO::Job*,KIO::UDSEntryList)) );
 }
@@ -115,7 +121,7 @@ AudioCdCollection::audioCdEntries( KIO::Job *job, const KIO::UDSEntryList &list 
             QString name = entry.stringValue( KIO::UDSEntry::UDS_NAME );
             if( name.endsWith( QLatin1String(".txt") ) )
             {
-                KUrl url( QString( "audiocd:/%1" ).arg( name ) );
+                KUrl url =  audiocdUrl( name );
                 KIO::StoredTransferJob *tjob = KIO::storedGet( url, KIO::NoReload, KIO::HideProgressInfo );
                 connect( tjob, SIGNAL(result(KJob*)), SLOT(infoFetchComplete(KJob*)) );
                 job->deleteLater();
@@ -147,6 +153,11 @@ AudioCdCollection::infoFetchComplete( KJob *job )
 
         debug() << "Encoding: " << prober.encoding();
         debug() << "got cddb info: " << cddbInfo;
+        if (cddbInfo.length() == 0) {
+            job->deleteLater();
+            noInfoAvailable();
+            return;
+        }
 
         int startIndex;
         int endIndex;
@@ -244,7 +255,7 @@ AudioCdCollection::infoFetchComplete( KJob *job )
 
                 debug() << "Track name: " << trackName;
 
-                QString padding = i < 10 ? "0" : QString();
+                QString padding = (i + 1) < 10 ? "0" : QString();
 
                 QString baseFileName = m_fileNamePattern;
                 debug() << "Track Base File Name (before): " << baseFileName;
@@ -258,7 +269,7 @@ AudioCdCollection::infoFetchComplete( KJob *job )
                 baseFileName.replace( "%{genre}", genre, Qt::CaseInsensitive );
 
                 //we hack the url so the engine controller knows what track on the CD to play..
-                QString baseUrl = "audiocd:/" + m_discCddbId + '/' + QString::number( i + 1 );
+                KUrl baseUrl = audiocdUrl( m_discCddbId + '/' + QString::number( i + 1 ) );
 
                 debug() << "Track Base File Name (after): " << baseFileName;
                 debug() << "Track url: " << baseUrl;
@@ -267,6 +278,7 @@ AudioCdCollection::infoFetchComplete( KJob *job )
 
                 trackPtr->setTrackNumber( i + 1 );
                 trackPtr->setFileNameBase( baseFileName );
+                trackPtr->setLength( trackLength( i + 1 ) );
 
                 memoryCollection()->addTrack( Meta::TrackPtr::staticCast( trackPtr ) );
 
@@ -314,6 +326,19 @@ AudioCdCollection::infoFetchComplete( KJob *job )
     }
 }
 
+qint64
+AudioCdCollection::trackLength(int i) const
+{
+    KUrl kioUrl = audiocdUrl( QString("Track%1.wav").arg(i, 2, 10, QChar('0') ) );
+    KIO::UDSEntry uds;
+    if ( KIO::NetAccess::stat(kioUrl, uds, NULL) )
+    {
+        qint64 samples = (uds.numberValue(KIO::UDSEntry::UDS_SIZE, 44) - 44) / 4;
+        return (samples - 44) * 10 / 441;
+    }
+    return 0;
+}
+
 QString
 AudioCdCollection::collectionId() const
 {
@@ -356,18 +381,18 @@ AudioCdCollection::encodingFormat() const
 }
 
 QString
-AudioCdCollection::copyableBasePath() const
+AudioCdCollection::copyableFilePath( const QString &fileName ) const
 {
     switch( m_encodingFormat )
     {
         case WAV:
-            return "audiocd:/";
+            return audiocdUrl( fileName ).url();
         case FLAC:
-            return "audiocd:/FLAC/";
+            return audiocdUrl( "FLAC/" + fileName ).url();
         case OGG:
-            return "audiocd:/Ogg Vorbis/";
+            return audiocdUrl( "Ogg Vorbis/" + fileName ).url();
         case MP3:
-            return "audiocd:/MP3/";
+            return audiocdUrl( "MP3/" + fileName ).url();
     }
     return QString();
 }
@@ -407,34 +432,6 @@ AudioCdCollection::eject()
         debug() << "disc has no drive";
 }
 
-QAction *
-AudioCdCollection::ejectAction() const
-{
-    return m_ejectAction;
-}
-
-bool
-AudioCdCollection::hasCapabilityInterface( Capabilities::Capability::Type type ) const
-{
-    switch( type )
-    {
-        case Capabilities::Capability::Collection:
-        case Capabilities::Capability::Decorator:
-            return true;
-
-        default:
-            return false;
-    }
-}
-
-Capabilities::Capability *
-AudioCdCollection::asCapabilityInterface( Capabilities::Capability::Type type )
-{
-    if ( type == Capabilities::Capability::Collection )
-        return new Capabilities::AudioCdCollectionCapability( this );
-    return 0;
-}
-
 void
 AudioCdCollection::noInfoAvailable()
 {
@@ -464,7 +461,7 @@ AudioCdCollection::noInfoAvailable()
     QString prefix( "0" );
     QString trackName = "Track " + prefix + QString::number( i );
 
-    while( KIO::NetAccess::exists( "audiocd:/" + trackName + ".wav", KIO::NetAccess::SourceSide,0 ) )
+    while( KIO::NetAccess::exists( QString( "audiocd:/" + trackName + ".wav" ), KIO::NetAccess::SourceSide, 0 ) )
     {
         debug() << "got track: " << "audiocd:/" + trackName + ".wav";
 
@@ -474,6 +471,7 @@ AudioCdCollection::noInfoAvailable()
 
         trackPtr->setTrackNumber( i );
         trackPtr->setFileNameBase( trackName );
+        trackPtr->setLength( trackLength( i ) );
 
         memoryCollection()->addTrack( Meta::TrackPtr::staticCast( trackPtr ) );
 

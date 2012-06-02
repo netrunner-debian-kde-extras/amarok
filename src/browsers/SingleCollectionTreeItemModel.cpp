@@ -42,6 +42,9 @@ SingleCollectionTreeItemModel::SingleCollectionTreeItemModel( Collections::Colle
 void
 SingleCollectionTreeItemModel::setLevels( const QList<int> &levelType )
 {
+    if( m_levelType == levelType && m_rootItem )
+        return;
+
     delete m_rootItem; //clears the whole tree!
     m_levelType = levelType;
     m_rootItem = new CollectionTreeItem( m_collection, 0, this );
@@ -50,7 +53,10 @@ SingleCollectionTreeItemModel::setLevels( const QList<int> &levelType )
 
     updateHeaderText();
     m_expandedItems.clear();
-    m_expandedVariousArtistsNodes.clear();
+    m_expandedSpecialNodes.clear();
+    d->runningQueries.clear();
+    d->childQueries.clear();
+    d->compilationQueries.clear();
     reset(); //resets the whole model, as the data changed
 }
 

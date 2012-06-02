@@ -66,8 +66,9 @@ public:
         slotRemoveOperationFinished();
     }
 
-    void copyUrlsToCollection(const QMap<Meta::TrackPtr, KUrl> &sources)
+    void copyUrlsToCollection(const QMap<Meta::TrackPtr, KUrl> &sources, const Transcoding::Configuration& conf)
     {
+        Q_UNUSED( conf )
         trackCopyCount = sources.count();
         foreach( const Meta::TrackPtr &track, sources.keys() )
         {
@@ -122,6 +123,7 @@ void addMockTrack( Collections::CollectionTestImpl *coll, const QString &trackNa
         albumPtr = Meta::AlbumPtr( album );
         EXPECT_CALL( *album, name() ).Times( AnyNumber() ).WillRepeatedly( Return( albumName ) );
         EXPECT_CALL( *album, hasAlbumArtist() ).Times( AnyNumber() ).WillRepeatedly( Return( false ) );
+        EXPECT_CALL( *album, albumArtist() ).Times( AnyNumber() ).WillRepeatedly( Return( Meta::ArtistPtr() ) );
         coll->mc->addAlbum( albumPtr );
     }
     albumTracks << trackPtr;

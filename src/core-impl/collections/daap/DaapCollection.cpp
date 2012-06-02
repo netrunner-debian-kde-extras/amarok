@@ -21,11 +21,12 @@
 #include "DaapCollection.h"
 
 #include "amarokconfig.h"
-#include "DaapMeta.h"
+#include "core/interfaces/Logger.h"
+#include "core/support/Components.h"
 #include "core/support/Debug.h"
+#include "DaapMeta.h"
 #include "MemoryQueryMaker.h"
 #include "Reader.h"
-#include "statusbar/StatusBar.h"
 
 #include <QStringList>
 #include <QTimer>
@@ -41,11 +42,10 @@ using namespace Collections;
 AMAROK_EXPORT_COLLECTION( DaapCollectionFactory, daapcollection )
 
 DaapCollectionFactory::DaapCollectionFactory( QObject *parent, const QVariantList &args )
-    : Collections::CollectionFactory()
+    : Collections::CollectionFactory( parent, args )
     , m_browser( 0 )
 {
-    setParent( parent );
-    Q_UNUSED( args );
+    m_info = KPluginInfo( "amarok_collection-daapcollection.desktop", "services" );
 }
 
 DaapCollectionFactory::~DaapCollectionFactory()
@@ -82,6 +82,7 @@ DaapCollectionFactory::init()
     default:
         debug() << "Unknown error with Zeroconf";
     }
+    m_initialized = true;
 }
 
 void
@@ -99,7 +100,9 @@ DaapCollectionFactory::connectToManualServers()
             
         QString host = current.first();
         quint16 port = current.last().toUShort();
-        The::statusBar()->longMessage( i18n( "Loading remote collection from host %1", host), StatusBar::Information );
+        Amarok::Components::logger()->longMessage(
+                    i18n( "Loading remote collection from host %1", host),
+                    Amarok::Logger::Information );
 
         int lookup_id = QHostInfo::lookupHost( host, this, SLOT( resolvedManualServerIp(QHostInfo)));
         m_lookupHash.insert( lookup_id, port );
@@ -113,9 +116,9 @@ DaapCollectionFactory::serverOffline( DNSSD::RemoteService::Ptr service )
     QString key =  serverKey( service.data()->hostName(), service.data()->port() );
     if( m_collectionMap.contains( key ) )
     {
-        DaapCollection *coll = m_collectionMap[ key ];
+        QWeakPointer<DaapCollection> coll = m_collectionMap[ key ];
         if( coll )
-            coll->serverOffline();  //collection will be deleted by collectionmanager
+            coll.data()->serverOffline();  //collection will be deleted by collectionmanager
         else
             warning() << "collection already null";
         
@@ -172,9 +175,9 @@ DaapCollectionFactory::slotCollectionDownloadFailed()
     if( !collection )
         return;
     disconnect( collection, SIGNAL( collectionReady() ), this, SLOT( slotCollectionReady() ) );
-    foreach( QPointer< DaapCollection > it, m_collectionMap )
+    foreach( QWeakPointer< DaapCollection > it, m_collectionMap )
     {
-        if( it == collection )
+        if( it.data() == collection )
         {
             m_collectionMap.remove( m_collectionMap.key( it ) );
             break;
@@ -222,10 +225,10 @@ DaapCollectionFactory::resolvedServiceIp( QHostInfo hostInfo )
         return;
 
    // debug() << "creating daap collection with" << host << ip << port;
-    QPointer<DaapCollection> coll( new DaapCollection( host, ip, port ) );
-    connect( coll, SIGNAL( collectionReady() ), SLOT( slotCollectionReady() ) );
-    connect( coll, SIGNAL( remove() ), SLOT( slotCollectionDownloadFailed() ) );
-    m_collectionMap.insert( serverKey( host, port ), coll );
+    QWeakPointer<DaapCollection> coll( new DaapCollection( host, ip, port ) );
+    connect( coll.data(), SIGNAL( collectionReady() ), SLOT( slotCollectionReady() ) );
+    connect( coll.data(), SIGNAL( remove() ), SLOT( slotCollectionDownloadFailed() ) );
+    m_collectionMap.insert( serverKey( host, port ), coll.data() );
 }
 
 //DaapCollection
@@ -249,12 +252,6 @@ DaapCollection::~DaapCollection()
 {
 }
 
-void
-DaapCollection::startFullScan()
-{
-    //ignore
-}
-
 QueryMaker*
 DaapCollection::queryMaker()
 {
@@ -264,7 +261,7 @@ DaapCollection::queryMaker()
 QString
 DaapCollection::collectionId() const
 {
-    return "daap://" + m_ip + ':' + m_port;
+    return QString( "daap://" + m_ip + ':' ) + QString::number( m_port );
 }
 
 QString

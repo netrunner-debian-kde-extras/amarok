@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Daniel Caleb Jones <danielcjones@gmail.com>                       *
  * Copyright (c) 2009 Mark Kretschmann <kretschmann@kde.org>                            *
+ * Copyright (c) 2010,2011 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,208 +21,46 @@
 #ifndef AMAROK_DYNAMICBIASWIDGETS_H
 #define AMAROK_DYNAMICBIASWIDGETS_H
 
+#include "shared/amarok_export.h"
 #include "Bias.h"
 
-#include <QWidget>
+#include <QDialog>
 
-class QFrame;
-class QGridLayout;
-class QHBoxLayout;
+class QVBoxLayout;
 class QLabel;
-class QToolButton;
 class KComboBox;
-class KToolBar;
-class KVBox;
-
-namespace Amarok
-{
-    class Slider;
-}
 
 namespace PlaylistBrowserNS
 {
-    class BiasBoxWidget : public QWidget
+    class BiasWidget;
+
+    /** A dialog that contains the widget from a bias and allows to edit it.
+    */
+    class BiasDialog : public QDialog
     {
         Q_OBJECT
 
         public:
-            BiasBoxWidget(QWidget* parent = 0 );
-            virtual ~BiasBoxWidget() {}
+            BiasDialog( Dynamic::BiasPtr bias, QWidget* parent = 0 );
+            virtual ~BiasDialog();
 
-            bool alternate() { return m_alternate; }
-            void setAlternate( bool alternate ) { m_alternate = alternate; }
-            void toggleAlternate() { m_alternate = !m_alternate; }
-
-        signals:
-            void widgetChanged( QWidget* );
+        protected slots:
+            void factoriesChanged();
+            void selectionChanged( int index );
+            void biasReplaced( Dynamic::BiasPtr oldBias, Dynamic::BiasPtr newBias );
 
         protected:
-            void resizeEvent( QResizeEvent* );
 
-        private:
-            void paintEvent( QPaintEvent* );
-            bool m_alternate;
+            QVBoxLayout* m_mainLayout;
+            QVBoxLayout* m_biasLayout;
 
+            KComboBox* m_biasSelection;
+            QLabel *m_descriptionLabel;
+            QWidget *m_biasWidget;
+
+            Dynamic::BiasPtr m_bias;
     };
-
-    class BiasAddWidget : public BiasBoxWidget
-    {
-        Q_OBJECT
-
-        public:
-            BiasAddWidget( const QString& caption, const QString& description, QWidget* parent = 0 );
-
-        private slots:
-            void slotClicked();
-
-        signals:
-            void addBias();
-            void clicked();
-
-        protected:
-            virtual void mousePressEvent( QMouseEvent* event );
-
-        private:
-           // KToolBar*    m_addToolbar;
-            QToolButton* m_addButton;
-            QLabel*      m_addLabel;
-    };
-
-    class BiasWidget : public BiasBoxWidget
-    {
-        Q_OBJECT
-
-        public:
-            explicit BiasWidget( Dynamic::Bias*, QWidget* parent = 0 );
-
-        signals:
-            void biasRemoved( Dynamic::Bias* );
-            void biasChanged( Dynamic::Bias* );
-
-        private slots:
-            void biasRemoved();
-
-        protected: //protected data members make Mike cry :'(
-            Dynamic::Bias* m_bias;
-
-        private:
-            KToolBar* m_removeToolbar;
-            QToolButton* m_removeButton;
-    };
-
-    class BiasGlobalWidget : public BiasWidget
-    {
-        Q_OBJECT
-
-        public:
-            explicit BiasGlobalWidget( Dynamic::GlobalBias* bias, QWidget* parent = 0 );
-            ~BiasGlobalWidget();
-
-        private slots:
-            void weightChanged( int );
-            void fieldChanged( int );
-            void compareChanged( int );
-            void valueChanged( const QString& );
-            void numValueChanged( int );
-            void numValue2Changed( int );
-            void numValueChanged( qint64 );
-            void numValue2Changed( qint64 );
-            void numValueChanged( const QTime& );
-            void numValue2Changed( const QTime& );
-            void numValueDateChanged();
-            void numValue2DateChanged();
-            void numValueTimeDistanceChanged();
-
-            void populateComboBox( QString collectionId, QStringList );
-            void comboBoxPopulated();
-
-        private:
-            void syncControlsToBias();
-            void syncBiasToControls();
-
-            void makeFieldSelection();
-
-            /** Adds the value selection widgets to the layout.
-             *  Adds m_withLabel, m_compareSelection, m_valueSelection1, m_valueSelection2 and m_andLabel to the layout.
-             */
-            void setValueSelection();
-
-            void makeCompareSelection();
-            void makeValueSelection();
-
-            void makeGenericComboSelection( bool editable, Collections::QueryMaker* populateQuery );
-
-            void makeArtistSelection();
-            void makeComposerSelection();
-            void makeAlbumSelection();
-            void makeTitleSelection();
-            void makeGenreSelection();
-            void makeGenericNumberSelection( int min, int max, int def );
-            void makePlaycountSelection();
-            void makeRatingSelection();
-            void makeLengthSelection();
-            void makeDateTimeSelection();
-            void makeFilenameSelection();
-
-            QFrame*      m_controlFrame;
-            QGridLayout* m_controlLayout;
-
-            Amarok::Slider* m_weightSelection;
-            QLabel*         m_weightLabel;
-            KComboBox*      m_fieldSelection;
-            QLabel*         m_withLabel;
-            QLabel*         m_andLabel;
-            KComboBox*      m_compareSelection;
-            QWidget*        m_valueSelection1;
-            QWidget*        m_valueSelection2;
-
-            Dynamic::GlobalBias* m_gbias;
-            Dynamic::GlobalBias::Filter m_filter;
-
-            QMap< Collections::QueryMaker*, KComboBox* > m_runningQueries;
-    };
-
-    class BiasNormalWidget : public BiasWidget
-    {
-        Q_OBJECT
-
-        public:
-            explicit BiasNormalWidget( Dynamic::NormalBias*, QWidget* parent = 0 );
-
-        private slots:
-            void fieldChanged( int );
-            void valueChanged( int );
-            void valueDateChanged();
-            void valueChanged( const QTime& );
-            void scaleChanged( int );
-
-        private:
-            void popuplateFieldSection();
-            void syncControlsToBias();
-            void makeGenericNumberSelection( int min, int max );
-            void makeRatingSelection();
-            void makeScoreSelection();
-            void makeLengthSelection();
-            void makeDateTimeSelection();
-            void setValueSelection( QWidget* w );
-
-            QFrame*      m_controlFrame;
-            QGridLayout* m_controlLayout;
-
-            KComboBox* m_fieldSelection;
-            QLabel*  m_withLabel;
-            QWidget* m_valueSelection;
-            Amarok::Slider* m_scaleSelection;
-            QLabel* m_scaleLabel;
-
-            Dynamic::NormalBias* m_nbias;
-    };
-
-
 
 }
 
-Q_DECLARE_METATYPE( PlaylistBrowserNS::BiasBoxWidget* )
-
 #endif
-

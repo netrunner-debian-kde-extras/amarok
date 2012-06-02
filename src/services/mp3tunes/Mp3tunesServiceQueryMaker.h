@@ -47,7 +47,6 @@ public:
     Mp3tunesServiceQueryMaker( Mp3tunesLocker * locker, const QString &sessionId, Mp3tunesServiceCollection * collection );
     ~Mp3tunesServiceQueryMaker();
 
-    virtual QueryMaker* reset();
     virtual void run();
 
    // virtual void runQuery();
@@ -58,8 +57,6 @@ public:
     using DynamicServiceQueryMaker::addMatch;
     virtual QueryMaker* addMatch ( const Meta::ArtistPtr &artist );
     virtual QueryMaker* addMatch ( const Meta::AlbumPtr &album );
-
-    virtual QueryMaker* setReturnResultAsDataPtrs ( bool resultAsDataPtrs );
 
     virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false );
 

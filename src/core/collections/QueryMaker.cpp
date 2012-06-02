@@ -29,14 +29,15 @@ QueryMaker::~QueryMaker()
 {
 }
 
-int
-QueryMaker::resultCount() const
+QueryMaker*
+QueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
 {
-    return 1;
+    Q_UNUSED( mode )
+    return this;
 }
 
 QueryMaker*
-QueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
+QueryMaker::setArtistQueryMode( ArtistQueryMode mode )
 {
     Q_UNUSED( mode )
     return this;

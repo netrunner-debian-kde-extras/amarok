@@ -26,6 +26,7 @@
 #include "core-impl/playlists/types/file/pls/PLSPlaylist.h"
 #include "core-impl/playlists/types/file/xspf/XSPFPlaylist.h"
 #include "playlist/PlaylistModelStack.h"
+#include "playlistmanager/PlaylistManager.h"
 
 #include <KDialog>
 #include <KInputDialog>
@@ -33,8 +34,10 @@
 #include <KUrl>
 
 #include <QAction>
+#include <QDir>
 #include <QLabel>
 #include <QString>
+#include <QTimer>
 
 //For removing multiple tracks from different playlists with one QAction
 typedef QMultiMap<Playlists::PlaylistPtr, Meta::TrackPtr> PlaylistTrackMap;
@@ -51,8 +54,29 @@ PlaylistFileProvider::PlaylistFileProvider()
  , m_renameAction( 0 )
  , m_deleteAction( 0 )
  , m_removeTrackAction( 0 )
+ , m_saveLaterTimer( 0 )
 {
-    //playlists are lazy loaded
+    //playlists are lazy loaded but we can count how many we'll load already
+    QStringList keys = loadedPlaylistsConfig().keyList();
+    foreach( const QString &key, keys )
+    {
+        KUrl url( key );
+        //Don't load these from the config file, they are read from the directory anyway
+        if( url.upUrl().equals( Amarok::saveLocation( "playlists" ) ) )
+            continue;
+        m_urlsToLoad << url;
+    }
+    //also add all files in the $KDEHOME/share/apps/amarok/playlists
+    QDir playlistDir = QDir( Amarok::saveLocation( "playlists" ), "",
+                             QDir::Name,
+                             QDir::Files | QDir::Readable );
+    foreach( const QString &file, playlistDir.entryList() )
+    {
+        KUrl url( playlistDir.path() );
+        url.addPath( file );
+        if( Playlists::isPlaylist( url ) )
+            m_urlsToLoad << url;
+    }
 }
 
 PlaylistFileProvider::~PlaylistFileProvider()
@@ -85,20 +109,22 @@ PlaylistFileProvider::prettyName() const
 int
 PlaylistFileProvider::playlistCount() const
 {
-    if( m_playlistsLoaded )
-        return m_playlists.count();
-    //count the entries in the config file
-    return loadedPlaylistsConfig().keyList().count();
+    return m_playlists.count() + m_urlsToLoad.count();
 }
 
 Playlists::PlaylistList
 PlaylistFileProvider::playlists()
 {
-    if( !m_playlistsLoaded )
-        loadPlaylists();
-
     Playlists::PlaylistList playlists;
-    foreach( Playlists::PlaylistFilePtr playlistFile, m_playlists )
+
+    if( !m_playlistsLoaded )
+    {
+        //trigger a lazy load the playlists
+        QTimer::singleShot(0, this, SLOT(loadPlaylists()) );
+        return playlists;
+    }
+
+    foreach( const Playlists::PlaylistFilePtr &playlistFile, m_playlists )
     {
         Playlists::PlaylistPtr playlist = Playlists::PlaylistPtr::dynamicCast( playlistFile );
         if( !playlist.isNull() )
@@ -138,6 +164,7 @@ PlaylistFileProvider::playlistActions( Playlists::PlaylistPtr playlist )
         m_deleteAction->setProperty( "popupdropper_svg_id", "delete" );
         connect( m_deleteAction, SIGNAL( triggered() ), SLOT( slotDelete() ) );
     }
+    m_deleteAction->setObjectName( "deleteAction" );
 
     Playlists::PlaylistFileList actionList =
             m_deleteAction->data().value<Playlists::PlaylistFileList>();
@@ -167,20 +194,13 @@ PlaylistFileProvider::trackActions( Playlists::PlaylistPtr playlist, int trackIn
 
     if( m_removeTrackAction == 0 )
     {
-        m_removeTrackAction = new QAction(
-                    KIcon( "media-track-remove-amarok" ),
-                    i18nc( "Remove a track from a saved playlist", "Remove From \"%1\"",  playlist->name() ),
-                    this
-                );
+        m_removeTrackAction = new QAction( this );
+        m_removeTrackAction->setIcon( KIcon( "media-track-remove-amarok" ) );
         m_removeTrackAction->setProperty( "popupdropper_svg_id", "delete" );
         connect( m_removeTrackAction, SIGNAL( triggered() ), SLOT( slotRemove() ) );
     }
-    else
-    {
-        m_removeTrackAction->setText( i18nc( "Remove a track from a saved playlist",
-                                             "Remove From \"%1\"", playlist->name() ) );
-    }
 
+    m_removeTrackAction->setObjectName( "deleteAction" );
     //Add the playlist/track combination to a QMultiMap that is stored in the action.
     //In the slot we use this data to remove that track from the playlist.
     PlaylistTrackMap playlistMap = m_removeTrackAction->data().value<PlaylistTrackMap>();
@@ -195,6 +215,12 @@ PlaylistFileProvider::trackActions( Playlists::PlaylistPtr playlist, int trackIn
     m_removeTrackAction->setData( QVariant::fromValue( playlistMap ) );
 
     if( playlistMap.keys().count() > 1 )
+        m_removeTrackAction->setText( i18n( "Remove tracks" ) );
+    else
+        m_removeTrackAction->setText( i18nc( "Remove a track from a saved playlist",
+                                             "Remove From \"%1\"", playlist->name() ) );
+
+    if( playlistMap.keys().count() > 1 )
         m_removeTrackAction->setText( i18n( "Remove" ) );
 
     actions << m_removeTrackAction;
@@ -202,28 +228,33 @@ PlaylistFileProvider::trackActions( Playlists::PlaylistPtr playlist, int trackIn
     return actions;
 }
 
-
-Playlists::PlaylistPtr
-PlaylistFileProvider::save( const Meta::TrackList &tracks )
-{
-    return save( tracks, QDateTime::currentDateTime().toString( "ddd MMMM d yy hh:mm") + ".xspf" );
-}
-
 Playlists::PlaylistPtr
 PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
 {
     DEBUG_BLOCK
+    QString filename = name.isEmpty() ? QDateTime::currentDateTime().toString( "ddd MMMM d yy hh-mm") : name;
+    filename = QString( filename ).replace( QLatin1Char('/'), QLatin1Char('-') );
+
     KUrl path( Amarok::saveLocation( "playlists" ) );
-    path.addPath( name );
+    path.addPath( Amarok::vfatPath( filename ) );
     if( QFileInfo( path.toLocalFile() ).exists() )
     {
         //TODO:request overwrite
         return Playlists::PlaylistPtr();
     }
-    QString ext = Amarok::extension( path.fileName() );
+
+    //FIXME: extention guessing fails with playlist names with a '.' in them
     Playlists::PlaylistFormat format = m_defaultFormat;
-    if( !name.isNull() && !ext.isEmpty() )
+    QString ext = Amarok::extension( path.fileName() );
+    if( ext.isEmpty() )
+    {
+        ext = QLatin1String("xspf");
+        path.setFileName( QString("%1.%2").arg(Amarok::vfatPath(filename), ext) );
+    }
+    else
+    {
         format = Playlists::getFormat( path );
+    }
 
     Playlists::PlaylistFile *playlistFile = 0;
     switch( format )
@@ -238,10 +269,10 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
             playlistFile = new Playlists::XSPFPlaylist( tracks );
             break;
         default:
-            debug() << QString("Do not support filetype with extension \"%1!\"").arg( ext );
+            error() << QString("Do not support filetype with extension \"%1!\"").arg( ext );
             return Playlists::PlaylistPtr();
     }
-    playlistFile->setName( name );
+    playlistFile->setName( filename );
     debug() << "Forcing save of playlist!";
     playlistFile->save( path, true );
     playlistFile->setProvider( this );
@@ -282,7 +313,7 @@ PlaylistFileProvider::import( const KUrl &path )
     }
 
     debug() << "Importing playlist file " << path;
-    if( path == ModelStack::instance()->bottom()->defaultPlaylistPath() )
+    if( path == Amarok::defaultPlaylistPath() )
     {
         error() << "trying to load saved session playlist at %s" << path.path();
         return false;
@@ -292,6 +323,7 @@ PlaylistFileProvider::import( const KUrl &path )
     if( !playlistFile )
         return false;
     playlistFile->setProvider( this );
+
     m_playlists << playlistFile;
     //just in case there wasn't one loaded before.
     m_playlistsLoaded = true;
@@ -323,20 +355,6 @@ PlaylistFileProvider::deletePlaylists( Playlists::PlaylistList playlists )
 bool
 PlaylistFileProvider::deletePlaylistFiles( Playlists::PlaylistFileList playlistFiles )
 {
-    DEBUG_BLOCK
-    KDialog dialog;
-    dialog.setCaption( i18n( "Confirm Delete" ) );
-    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
-    QLabel label( i18np( "Are you sure you want to delete this playlist?",
-                         "Are you sure you want to delete these %1 playlist files?",
-                         playlistFiles.count() )
-                    , &dialog
-                  );
-    dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from disk." ) );
-    dialog.setMainWidget( &label );
-    if( dialog.exec() != QDialog::Accepted )
-        return false;
-
     foreach( Playlists::PlaylistFilePtr playlistFile, playlistFiles )
     {
         m_playlists.removeAll( playlistFile );
@@ -352,20 +370,14 @@ PlaylistFileProvider::deletePlaylistFiles( Playlists::PlaylistFileList playlistF
 void
 PlaylistFileProvider::loadPlaylists()
 {
-    DEBUG_BLOCK
-    //load the playlists defined in the config
-    QStringList keys = loadedPlaylistsConfig().keyList();
-    debug() << "keys " << keys;
+    if( m_urlsToLoad.isEmpty() )
+        return;
 
-    //ConfigEntry: name, file
-    foreach( const QString &key, keys )
+    //arbitrary number of playlists to load during one mainloop run: 5
+    for( int i = 0; i < qMin( m_urlsToLoad.count(), 5 ); i++ )
     {
-        KUrl url( key );
-        //Don't load these from the config file, they are read from the directory anyway
-        if( url.upUrl().equals( Amarok::saveLocation( "playlists" ) ) )
-            continue;
-
-        QString groups = loadedPlaylistsConfig().readEntry( key );
+        KUrl url = m_urlsToLoad.takeFirst();
+        QString groups = loadedPlaylistsConfig().readEntry( url.url() );
         Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( url );
         if( playlist.isNull() )
         {
@@ -383,32 +395,45 @@ PlaylistFileProvider::loadPlaylists()
             playlist->setGroups( groups.split( ',',  QString::SkipEmptyParts ) );
 
         m_playlists << playlist;
+        emit playlistAdded( Playlists::PlaylistPtr::dynamicCast( playlist ) );
     }
 
-    //also add all files in the $KDEHOME/share/apps/amarok/playlists
-    QDir playlistDir = QDir( Amarok::saveLocation( "playlists" ), "",
-                             QDir::Name,
-                             QDir::Files | QDir::Readable );
-    foreach( const QString &file, playlistDir.entryList() )
+    //give the mainloop time to run
+    if( !m_urlsToLoad.isEmpty() )
+        QTimer::singleShot( 0, this, SLOT(loadPlaylists()) );
+}
+
+void
+PlaylistFileProvider::saveLater( Playlists::PlaylistFilePtr playlist )
+{
+    //WARNING: this assumes the playlistfile uses it's m_url for uidUrl
+    if( playlist->uidUrl().isEmpty() )
+        return;
+
+    if( !m_saveLaterPlaylists.contains( playlist ) )
+        m_saveLaterPlaylists << playlist;
+
+    if( !m_saveLaterTimer )
     {
-        KUrl url( playlistDir.path() );
-        url.addPath( file );
-        debug() << QString( "Trying to open %1 as a playlist file" ).arg( url.url() );
-        Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( url );
-        if( playlist.isNull() )
-        {
-            Amarok::Components::logger()->longMessage(
-                    i18n("The playlist file \"%1\" could not be loaded.", url.fileName() ),
-                    Amarok::Logger::Error
-                );
-            continue;
-        }
-        playlist->setProvider( this );
-
-        m_playlists << playlist;
+        m_saveLaterTimer = new QTimer( this );
+        m_saveLaterTimer->setSingleShot( true );
+        m_saveLaterTimer->setInterval( 0 );
+        connect( m_saveLaterTimer, SIGNAL(timeout()), SLOT(slotSaveLater()) );
     }
 
-    m_playlistsLoaded = true;
+    m_saveLaterTimer->start();
+}
+
+void
+PlaylistFileProvider::slotSaveLater() //SLOT
+{
+    foreach( Playlists::PlaylistFilePtr playlist, m_saveLaterPlaylists )
+    {
+        KUrl url = playlist->uidUrl();
+        playlist->save( url, true ); //TODO: read relative type when loading
+    }
+
+    m_saveLaterPlaylists.clear();
 }
 
 void
@@ -421,7 +446,21 @@ PlaylistFileProvider::slotDelete()
     //only one playlist can be selected at this point
     Playlists::PlaylistFileList playlists = action->data().value<Playlists::PlaylistFileList>();
 
-    if( playlists.count() > 0 )
+    if( playlists.count() == 0 )
+        return;
+
+    KDialog dialog;
+    dialog.setCaption( i18n( "Confirm Delete" ) );
+    dialog.setButtons( KDialog::Ok | KDialog::Cancel );
+    QLabel label( i18np( "Are you sure you want to delete this playlist?",
+                         "Are you sure you want to delete these %1 playlist files?",
+                         playlists.count() )
+                    , &dialog
+                  );
+    //TODO:include a text area with all the names of the playlists
+    dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from disk." ) );
+    dialog.setMainWidget( &label );
+    if( dialog.exec() == QDialog::Accepted )
         deletePlaylistFiles( playlists );
 }
 

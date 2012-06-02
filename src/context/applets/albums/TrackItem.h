@@ -20,12 +20,13 @@
 #include "core/meta/Meta.h"
 
 #include <QStandardItem>
+#include <QMutex>
 
 class TrackItem : public QStandardItem, public Meta::Observer
 {
     public:
         TrackItem();
-        ~TrackItem() { }
+        ~TrackItem();
 
         /**
          * Sets the TrackPtr for this item to associate with
@@ -55,10 +56,13 @@ class TrackItem : public QStandardItem, public Meta::Observer
         using Observer::metadataChanged;
         virtual void metadataChanged( Meta::TrackPtr track );
 
-        virtual int type() const { return QStandardItem::UserType + 1; }
+        virtual int type() const;
+
+        virtual bool operator<( const QStandardItem &other ) const;
 
     private:
         Meta::TrackPtr m_track;
+        QMutex m_mutex;
 };
 
 #endif // multiple inclusion guard

@@ -36,16 +36,10 @@ class ServiceSqlQueryMaker : public QueryMaker
        ServiceSqlQueryMaker( ServiceSqlCollection* collection, ServiceMetaFactory * metaFactory, ServiceSqlRegistry * registry );
         virtual ~ServiceSqlQueryMaker();
 
-        virtual QueryMaker* reset();
         virtual void abortQuery();
         virtual void run();
 
         virtual QueryMaker* setQueryType( QueryType type );
-
-        virtual QueryMaker* setReturnResultAsDataPtrs( bool resultAsDataPtrs );
-
-        virtual QueryMaker* includeCollection( const QString &collectionId );
-        virtual QueryMaker* excludeCollection( const QString &collectionId );
 
         virtual QueryMaker* addMatch( const Meta::TrackPtr &track );
         virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist );
@@ -54,7 +48,6 @@ class ServiceSqlQueryMaker : public QueryMaker
         virtual QueryMaker* addMatch( const Meta::GenrePtr &genre );
         virtual QueryMaker* addMatch( const Meta::YearPtr &year );
         virtual QueryMaker* addMatch( const Meta::LabelPtr &label );
-        virtual QueryMaker* addMatch( const Meta::DataPtr &data );
 
         virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );
         virtual QueryMaker* excludeFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );
@@ -65,7 +58,6 @@ class ServiceSqlQueryMaker : public QueryMaker
         virtual QueryMaker* addReturnValue( qint64 value );
         virtual QueryMaker* addReturnFunction( ReturnFunction function, qint64 value );
         virtual QueryMaker* orderBy( qint64 value, bool descending = false );
-        virtual QueryMaker* orderByRandom();
 
         virtual QueryMaker* limitMaxResultSize( int size );
 
@@ -74,6 +66,7 @@ class ServiceSqlQueryMaker : public QueryMaker
         virtual QueryMaker* endAndOr();
 
         virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
+        virtual QueryMaker* setArtistQueryMode( ArtistQueryMode mode );
 
         QString query();
         QStringList runQuery( const QString &query );

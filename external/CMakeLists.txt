@@ -1,0 +1,1 @@
+add_definitions(${KDE4_ENABLE_EXCEPTIONS})

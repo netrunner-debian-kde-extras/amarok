@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2008 Daniel Caleb Jones <danielcjones@gmail.com>                       *
+ * Copyright (c) 2011 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -19,22 +20,34 @@
 #ifndef AMAROK_DYNAMICBIASDELEGATE
 #define AMAROK_DYNAMICBIASDELEGATE
 
-#include <QAbstractItemDelegate>
+#include <QStyledItemDelegate>
 
 namespace PlaylistBrowserNS
 {
-    class DynamicBiasDelegate : public QAbstractItemDelegate
-    {
-        public:
-            DynamicBiasDelegate( QWidget* parent = 0 );
 
-            void paint ( QPainter * painter,
-                         const QStyleOptionViewItem & option,
-                         const QModelIndex & index ) const;
+/** A special delegate for the dynamic playlists.
+    It will paint an additional operator hint in front of a bias.
+    e.g. a small progress bar or a "If" text.
+*/
+class DynamicBiasDelegate : public QStyledItemDelegate
+{
+    public:
+        DynamicBiasDelegate( QWidget* parent = 0 );
+        ~DynamicBiasDelegate();
 
-            QSize sizeHint ( const QStyleOptionViewItem & option,
-                             const QModelIndex & index ) const;
-    };
+        void paint( QPainter* painter,
+                    const QStyleOptionViewItem& option,
+                    const QModelIndex& index ) const;
+
+    private:
+      QFont m_normalFont;
+      QFont m_smallFont;
+
+      QFontMetrics *m_normalFm;
+      QFontMetrics *m_smallFm;
+
+};
+
 }
 
 #endif

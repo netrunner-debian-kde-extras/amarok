@@ -18,7 +18,6 @@
 #ifndef AMAROK_LYRICS_ENGINE
 #define AMAROK_LYRICS_ENGINE
 
-#include "ContextObserver.h"
 #include "context/DataEngine.h"
 #include "context/LyricsManager.h"
 #include "core/meta/Meta.h"
@@ -33,49 +32,37 @@ NOTE: The QVariant data is structured like this:
 
 using namespace Context;
 
-class LyricsEngine : public DataEngine, public ContextObserver, public LyricsObserver, public Meta::Observer
+class LyricsEngine : public DataEngine, public LyricsObserver
 {
     Q_OBJECT
 
 public:
     LyricsEngine( QObject* parent, const QList<QVariant>& args );
-    
-    QStringList sources() const;
-    
-    // reimplemented from Context::Observer
-    virtual void message( const ContextState& state );
-    
-    // reimplemented from LyricsObserver
-    void newLyrics( QStringList& lyrics );
-    void newLyricsHtml( QString& lyrics );
-    void newSuggestions( QStringList& suggest );
-    void lyricsMessage( QString& key, QString& val );
 
-    // reimplemented from Meta::Observer
-    using Observer::metadataChanged;
-    void metadataChanged( Meta::TrackPtr track );
-    
+    QStringList sources() const;
+
+    // reimplemented from LyricsObserver
+    void newLyrics( const LyricsData &lyrics );
+    void newSuggestions( const QVariantList &suggest );
+    void lyricsMessage( const QString& key, const QString& val );
+
 protected:
     bool sourceRequestEvent( const QString& name );
-    
-private:
+
+private slots:
     void update();
-    
-    // stores is we have been disabled (disconnected)
-    bool m_requested;
-   
-    Meta::TrackPtr m_currentTrack;
-    // Cache the title/artist of the current track so we can check against
-    // metadata updates. We only want to update the lyrics if either the
-    // title or the artist change (but not other attributes like rating, score,
-    // composer etc).
-    QStringList m_currentLyricsList,m_prevLyricsList;
-    QStringList m_currentSuggestionsList,m_prevSuggestionsList;
-    QString m_currentLyrics,m_prevLyrics;
-    QString        m_title;
-    QString        m_artist;
+    void onTrackMetadataChanged( Meta::TrackPtr track );
+
+private:
+    LyricsData m_prevLyrics;
+    bool m_isUpdateInProgress;
+
+    struct trackMetadata {
+        QString artist;
+        QString title;
+    } m_prevTrackMetadata;
 };
 
-K_EXPORT_AMAROK_DATAENGINE( lyrics, LyricsEngine )
+AMAROK_EXPORT_DATAENGINE( lyrics, LyricsEngine )
 
 #endif

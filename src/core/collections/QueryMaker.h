@@ -36,6 +36,10 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
                               , OnlyCompilations = 1
                               , OnlyNormalAlbums = 2 };
 
+        enum ArtistQueryMode { TrackArtists         = 0,
+                               AlbumArtists         = 1,
+                               AlbumOrTrackArtists  = 2 };
+
         enum LabelQueryMode { NoConstraint = 0
                                 , OnlyWithLabels = 1
                                 , OnlyWithoutLabels = 2 };
@@ -43,14 +47,15 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
         //Filters that the QueryMaker accepts for searching.
         //not all implementations will accept all filter levels, so make it possible to
         //specify which ones make sense for a given qm. Add to this as needed
-        enum ValidFilters { TitleFilter     =     1,
-                            AlbumFilter     =     2,
-                            ArtistFilter    =     4,
-                            GenreFilter     =     8,
-                            ComposerFilter  =    16,
-                            YearFilter      =    32,
-                            UrlFilter       =    64,
-                            AllFilters      = 65535 };
+        enum ValidFilters { TitleFilter      =     1,
+                            AlbumFilter      =     2,
+                            ArtistFilter     =     4,
+                            AlbumArtistFilter=     8,
+                            GenreFilter      =    16,
+                            ComposerFilter   =    32,
+                            YearFilter       =    64,
+                            UrlFilter        =   128,
+                            AllFilters       = 65535 };
 
         enum ReturnFunction { Count = 0,
                               Sum = 1,
@@ -65,6 +70,7 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
                          Track,
                          Artist,
                          Album,
+                         AlbumArtist,
                          Genre,
                          Composer,
                          Year,
@@ -74,12 +80,6 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
         QueryMaker();
         virtual ~QueryMaker();
 
-        /**
-            resets all internal data to the default values. Calling this method is the same
-            as creating a new QueryMaker.
-            @return this
-        */
-        virtual QueryMaker* reset() = 0;
         /**
             starts the query. This method returns immediately. All processing is done in one or more
             separate worker thread(s). One of the newResultReady signals will be emitted at least once,
@@ -93,37 +93,18 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
         virtual void abortQuery() = 0;
 
         /**
-            returns the number of times one of the newResultReady signals will be emitted
-            by the QueryMaker instance.
-         */
-        virtual int resultCount() const;
-
-        /**
          * Sets the type of objects the querymaker will query for.  These are mutually
          * exclusive.  The results of the query will be returned as objects of the
          * appropriate type, therefore it is necessary to connect the client to the
-         * newResultReady( QString, Meta::Type ) signal (unless you are after Meta::Data
-         * pointers, see setReturnResultAsDataPtrs( bool ) for details.
+         * newResultReady( Meta::Type ) signal
          *
          * if you set QueryType custom, this starts a custom query. Unlike other query types, you have to set up the return
          * values yourself using addReturnValue( qint64 ) and addReturnFunction(). The results will
          * be returned as a QStringList. Threfore you have to connect to the
-         * newResultReady( QString, QStringList ) signal to receive the results. Calling
-         * setReturnResultAsDataPtrs( bool ) has no effect when using a custom query.
+         * newResultReady( QStringList ) signal to receive the results.
          * @return this
          */
         virtual QueryMaker* setQueryType( QueryType type ) = 0;
-        /**
-            sets the QueryMaker instance to return Meta::Data objects instead of the actual type.
-            In some cases it can be useful to ignore the actual type of the result and just work with
-            the method provided by Meta::Data. Calling this method with resultAsDataPtrs = true causes
-            the QueryMaker instance to emit the newResultReady( QString, Meta::DataList ) signal
-            for all query types (except a custom query). Calling the method with resultAsDataPtrs = false
-            switches back to the normal behaviour.
-
-            @return this
-        */
-        virtual QueryMaker* setReturnResultAsDataPtrs( bool resultAsDataPtrs ) = 0;
 
         /**
             only works after starting a custom query with startCustomQuery()
@@ -142,14 +123,6 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
          * @return this
          */
         virtual QueryMaker* orderBy( qint64 value, bool descending = false ) = 0;
-        /**
-         * return results in a random order.
-         * @return this
-         */
-        virtual QueryMaker* orderByRandom() = 0;
-
-        virtual QueryMaker* includeCollection( const QString &collectionId ) = 0;
-        virtual QueryMaker* excludeCollection( const QString &collectionId ) = 0;
 
         virtual QueryMaker* addMatch( const Meta::TrackPtr &track ) = 0;
         virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist ) = 0;
@@ -157,22 +130,21 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
         virtual QueryMaker* addMatch( const Meta::ComposerPtr &composer ) = 0;
         virtual QueryMaker* addMatch( const Meta::GenrePtr &genre ) = 0;
         virtual QueryMaker* addMatch( const Meta::YearPtr &year ) = 0;
-        virtual QueryMaker* addMatch( const Meta::DataPtr &data ) = 0;
         virtual QueryMaker* addMatch( const Meta::LabelPtr &label );
 
         /**
          * Add a filter of type @p value and value @p filter. The querymaker applies this to all queries.
          * @param text the text to match
-         * @param anyBegin wildcard match the beginning of @p text (*text)
-         * @param anyEnd wildcard match the end of @p text (text*)
+         * @param matchBegin If set then wildcard match the beginning of @p text (*text)
+         * @param matchEnd If set then wildcard match the end of @p text (text*)
          * @return this
          */
         virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false ) = 0;
         /**
         * Exclude filter of type @p value and value @p filter. The querymaker applies this to all queries.
         * @param text the text to match
-        * @param anyBegin wildcard match the beginning of @p text (*text)
-        * @param anyEnd wildcard match the end of @p text (text*)
+        * @param matchBegin If set then wildcard match the beginning of @p text (*text)
+        * @param matchEnd If set then wildcard match the end of @p text (text*)
         * @return this
         */
         virtual QueryMaker* excludeFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false ) = 0;
@@ -192,6 +164,12 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
          * QueryMaker defaults to AlbumQueryMode::AllAlbums.
          */
         virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
+
+        /**
+         * Set artist query mode. If this method is not called,
+         * QueryMaker defaults to ArtistQueryMode::TrackArtist.
+         */
+        virtual QueryMaker* setArtistQueryMode( ArtistQueryMode mode );
 
         /**
           * Sets the label query mode. This method restricts a query to tracks
@@ -219,16 +197,23 @@ class AMAROK_CORE_EXPORT QueryMaker : public QObject
         virtual int validFilterMask();
 
     signals:
-        void newResultReady( QString collectionId, Meta::TrackList );
-        void newResultReady( QString collectionId, Meta::ArtistList );
-        void newResultReady( QString collectionId, Meta::AlbumList );
-        void newResultReady( QString collectionId, Meta::GenreList );
-        void newResultReady( QString collectionId, Meta::ComposerList );
-        void newResultReady( QString collectionId, Meta::YearList );
-        void newResultReady( QString collectionId, Meta::DataList );
-        void newResultReady( QString collectionId, QStringList );
-        void newResultReady( QString collectionId, Meta::LabelList );
+        /** newResultReady will be emitted every time new results from the query maker are received.
+            This signal can be emitted zero times (in case of no results) one (the usual case) or multiple times
+            (e.g. in case when the result is received in several batches).
+            The results will be terminated by a queryDone signal.
+        */
+        void newResultReady( Meta::TrackList );
+        void newResultReady( Meta::ArtistList );
+        void newResultReady( Meta::AlbumList );
+        void newResultReady( Meta::GenreList );
+        void newResultReady( Meta::ComposerList );
+        void newResultReady( Meta::YearList );
+        void newResultReady( QStringList );
+        void newResultReady( Meta::LabelList );
+        void newResultReady( Meta::DataList );
 
+        /** This signal is emitted after all the results have been submitted via zero or more newResultReady signals.
+        */
         void queryDone();
 };
 

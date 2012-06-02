@@ -14,26 +14,29 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "CoverFetchingActions"
+
 #include "CoverFetchingActions.h"
+
 #include "core/support/Debug.h"
+#include "MainWindow.h"
+#include "CoverFetcher.h"
+#include "CoverManager.h"
+#include "CoverViewDialog.h"
 
-#include <QDesktopWidget>
-
+#include <KApplication>
 #include <KDirOperator>
 #include <KFile>
 #include <KFileDialog>
 #include <KFileWidget>
 #include <KIcon>
 #include <KImageIO>
-#include <KLocale>
+#include <KLocalizedString>
 #include <KMessageBox>
 #include <KTempDir>
-#include <kio/netaccess.h>
-#include <ksharedptr.h>
+#include <KIO/NetAccess>
 
-#include "CoverFetcher.h"
-#include "CoverManager.h"
-#include "CoverViewDialog.h"
+#include <QDesktopWidget>
 
 /////////////////////////////////////
 //  FetchCoverAction
@@ -44,6 +47,12 @@ void FetchCoverAction::init()
     setText( i18np("Fetch Cover", "Fetch Covers", m_albums.count()) );
     setIcon( KIcon("insert-image") );
     setToolTip( i18np("Fetch the artwork for this album", "Fetch artwork for %1 albums", m_albums.count()) );
+    // a track that is not in the collection will return a null tracklist under
+    // its album pointer. In that case we can't find the location of the track
+    // via the meta system, so cover fetching is fruitless.
+    Meta::AlbumPtr album = m_albums.first();
+    if( album )
+        setEnabled( !album->tracks().isEmpty() );
 }
 
 void FetchCoverAction::slotTriggered()
@@ -73,10 +82,7 @@ void DisplayCoverAction::init()
 
 void DisplayCoverAction::slotTriggered()
 {
-    QWidget *p = dynamic_cast<QWidget*>( parent() );
-    int parentScreen = KApplication::desktop()->screenNumber( p );
-
-    ( new CoverViewDialog( m_albums.first(), QApplication::desktop()->screen( parentScreen ) ) )->show();
+    ( new CoverViewDialog( m_albums.first(), The::mainWindow() ) )->show();
 }
 
 
@@ -141,7 +147,7 @@ void SetCustomCoverAction::init()
 void
 SetCustomCoverAction::slotTriggered()
 {
-    if( !m_albums.first() || m_albums.first()->tracks().isEmpty() )
+    if( m_albums.isEmpty() || m_albums.first()->tracks().isEmpty() )
         return;
 
     const QString& startPath = m_albums.first()->tracks().first()->playableUrl().directory();
@@ -155,26 +161,16 @@ SetCustomCoverAction::slotTriggered()
     dlg.setCaption( i18n("Select Cover Image File") );
     dlg.setInlinePreviewShown( true );
 
-    // TODO: auto error handling was disabled to allow entering an http address
-    // in the dialog (commit 8b192500da7d31e314ce04759233d78fe6ce57b9). Now with
-    // kde 4.4 and 4.3.3 this is no longer necessary (BR 197945).
-
-    // trueg: there could be another implementation of the file module which does not use KFileWidget!
-    if ( KFileWidget *fileWidget = dynamic_cast<KFileWidget*>( dlg.fileWidget() ) )
-        if ( KDirLister *dirLister = fileWidget->dirOperator()->dirLister() )
-            dirLister->setAutoErrorHandlingEnabled( false, qobject_cast<QWidget*>( parent() ) );
-
     dlg.exec();
     KUrl file = dlg.selectedUrl();
 
     if( !file.isEmpty() )
     {
-        QPixmap pixmap;
+        QImage image;
 
         if( file.isLocalFile() )
         {
-            pixmap.load( file.path() );
-
+            image.load( file.path() );
         }
         else
         {
@@ -190,15 +186,15 @@ SetCustomCoverAction::slotTriggered()
                                                   qobject_cast<QWidget*>( parent() ) );
 
             if( ret )
-                pixmap.load( coverDownloadPath );
+                image.load( coverDownloadPath );
         }
 
-        if( !pixmap.isNull() )
+        if( !image.isNull() )
         {
             foreach( Meta::AlbumPtr album, m_albums )
             {
                 if( album && album->canUpdateImage() )
-                    album->setImage( pixmap );
+                    album->setImage( image );
             }
         }
     }

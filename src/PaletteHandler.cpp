@@ -13,6 +13,8 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
+
+#define DEBUG_PREFIX "PaletteHandler"
  
 #include "PaletteHandler.h"
 
@@ -20,6 +22,8 @@
 #include "core/support/Debug.h"
 
 #include <kglobal.h>
+
+#include <QPainter>
 
 
 namespace The {
@@ -59,32 +63,46 @@ PaletteHandler::updateItemView( QAbstractItemView * view )
 {
     QPalette p = m_palette;
 
-    QColor c = p.color( QPalette::Base );
-    c.setAlpha( 0 );
-    p.setColor( QPalette::Base, c );
-
-    c = p.color( QPalette::AlternateBase );
+    QColor c = p.color( QPalette::AlternateBase );
     c.setAlpha( 77 );
     p.setColor( QPalette::AlternateBase, c );
-
+    // to fix hardcoded QPalette::Text usage in Qt classes
+    p.setColor( QPalette::Base, p.color(QPalette::Window) );
+    p.setColor( QPalette::Text, p.color(QPalette::WindowText) );
     view->setPalette( p );
+    
+    if ( QWidget *vp = view->viewport() )
+    {
+        // don't paint background - do NOT use Qt::transparent etc.
+        vp->setAutoFillBackground( false );
+        vp->setBackgroundRole( QPalette::Window );
+        vp->setForegroundRole( QPalette::WindowText );
+        // erase custom viewport palettes, shall be "transparent"
+        vp->setPalette(QPalette());
+    }
+}
+
+QColor
+PaletteHandler::foregroundColor( const QPainter *p, bool selected )
+{
+    QPalette pal;
+    QPalette::ColorRole fg = QPalette::WindowText;
+    if ( p->device() && p->device()->devType() == QInternal::Widget)
+    {
+        QWidget *w = static_cast<QWidget*>( p->device() );
+        fg = w->foregroundRole();
+        pal = w->palette();
+    }
+    else
+        pal = App::instance()->palette();
+
+    return pal.color( selected ? QPalette::HighlightedText : fg );
 }
 
 QPalette
 PaletteHandler::palette()
 {
     return m_palette;
-}
-
-QColor
-PaletteHandler::highlightColor()
-{
-    QColor highlight = App::instance()->palette().highlight().color();
-    qreal saturation = highlight.saturationF();
-    saturation *= 0.5;
-    highlight.setHsvF( highlight.hueF(), saturation, highlight.valueF(), highlight.alphaF() );
-
-    return highlight;
 }
 
 QColor

@@ -30,6 +30,7 @@
 
 #include <KAboutData>
 #include <kdialog.h>
+#include <QWeakPointer>
 
 class AMAROK_EXPORT ExtendedAboutDialog : public KDialog
 {
@@ -53,17 +54,23 @@ private:
     OcsData m_ocsData;
 
 //Authors:
-    AnimatedBarWidget *m_showOcsAuthorButton;
     QString m_authorPageTitle;
-    QWidget *m_authorWidget;
-    OcsPersonListWidget *m_authorListWidget;
+    QWeakPointer<AnimatedBarWidget> m_showOcsAuthorButton;
+    QWeakPointer<QWidget> m_authorWidget;
+    QWeakPointer<OcsPersonListWidget> m_authorListWidget;
     bool m_isOfflineAuthorWidget;
 
 //Contributors:
-    AnimatedBarWidget *m_showOcsCreditButton;
-    QWidget *m_creditWidget;
-    OcsPersonListWidget *m_creditListWidget;
+    QWeakPointer<AnimatedBarWidget> m_showOcsCreditButton;
+    QWeakPointer<QWidget> m_creditWidget;
+    QWeakPointer<OcsPersonListWidget> m_creditListWidget;
     bool m_isOfflineCreditWidget;
+
+//Donors:
+    QWeakPointer<AnimatedBarWidget> m_showOcsDonorButton;
+    QWeakPointer<QWidget> m_donorWidget;
+    QWeakPointer<OcsPersonListWidget> m_donorListWidget;
+    bool m_isOfflineDonorWidget;
 
 };
 

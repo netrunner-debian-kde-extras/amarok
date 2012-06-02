@@ -28,11 +28,12 @@ namespace Handler
         Q_OBJECT
 
         public:
+            ArtworkCapability( QObject *parent ) : Capability( parent ) {}
             virtual ~ArtworkCapability();
 
-            virtual QPixmap getCover( const Meta::MediaDeviceTrackPtr &track ) = 0;
+            virtual QImage getCover( const Meta::MediaDeviceTrackPtr &track ) = 0;
 
-            virtual void setCover( Meta::MediaDeviceAlbumPtr album, const QPixmap &pixmap ) = 0;
+            virtual void setCover( Meta::MediaDeviceAlbumPtr album, const QImage &image ) = 0;
 
             virtual void setCoverPath( Meta::MediaDeviceAlbumPtr album, const QString &path );
 

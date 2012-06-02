@@ -18,6 +18,9 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "CoverFetcher"
+#include "core/support/Debug.h"
+
 #include "CoverFetcher.h"
 
 #include "core/support/Amarok.h"
@@ -26,12 +29,13 @@
 #include "amarokconfig.h"
 #include "CoverFetchQueue.h"
 #include "CoverFoundDialog.h"
+#include "CoverFetchUnit.h"
 
 #include <KLocale>
 #include <KUrl>
 
-#define DEBUG_PREFIX "CoverFetcher"
-#include "core/support/Debug.h"
+#include <QBuffer>
+#include <QImageReader>
 
 CoverFetcher* CoverFetcher::s_instance = 0;
 
@@ -53,14 +57,18 @@ void CoverFetcher::destroy()
 CoverFetcher::CoverFetcher()
     : QObject()
     , m_limit( 10 )
-    , m_dialog( 0 )
 {
+    DEBUG_BLOCK
     setObjectName( "CoverFetcher" );
+    qRegisterMetaType<CoverFetchUnit::Ptr>("CoverFetchUnit::Ptr");
 
     m_queue = new CoverFetchQueue( this );
-    connect( m_queue, SIGNAL(fetchUnitAdded(const CoverFetchUnit::Ptr)),
-                      SLOT(slotFetch(const CoverFetchUnit::Ptr)) );
+    connect( m_queue, SIGNAL(fetchUnitAdded(CoverFetchUnit::Ptr)),
+                      SLOT(slotFetch(CoverFetchUnit::Ptr)) );
     s_instance = this;
+
+    connect( The::networkAccessManager(), SIGNAL( requestRedirected( QNetworkReply*, QNetworkReply* ) ),
+             this, SLOT( fetchRequestRedirected( QNetworkReply*, QNetworkReply* ) ) );
 }
 
 CoverFetcher::~CoverFetcher()
@@ -129,7 +137,7 @@ CoverFetcher::queueQueryForAlbum( Meta::AlbumPtr album )
 }
 
 void
-CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
+CoverFetcher::slotFetch( CoverFetchUnit::Ptr unit )
 {
     if( !unit )
         return;
@@ -140,7 +148,7 @@ CoverFetcher::slotFetch( const CoverFetchUnit::Ptr unit )
     // show the dialog straight away if fetch is interactive
     if( !m_dialog && unit->isInteractive() )
     {
-        showCover( unit, QPixmap() );
+        showCover( unit, QImage() );
     }
     else if( urls.isEmpty() )
     {
@@ -191,7 +199,7 @@ CoverFetcher::slotResult( const KUrl &url, QByteArray data, NetworkAccessManager
     switch( payload->type() )
     {
     case CoverFetchPayload::Info:
-        m_queue->add( unit->album(), unit->options(), unit->payload()->source(), data );
+        m_queue->add( unit->album(), unit->options(), payload->source(), data );
         m_queue->remove( unit );
         break;
 
@@ -201,33 +209,78 @@ CoverFetcher::slotResult( const KUrl &url, QByteArray data, NetworkAccessManager
         break;
 
     case CoverFetchPayload::Art:
-        QPixmap pixmap;
-        if( pixmap.loadFromData( data ) )
-        {
-            if( unit->isInteractive() )
-            {
-                const CoverFetch::Metadata metadata = payload->urls().value( url );
-                showCover( unit, pixmap, metadata );
-                m_queue->remove( unit );
-            }
-            else
-            {
-                m_selectedPixmaps.insert( unit, pixmap );
-                finish( unit );
-            }
-        }
+        handleCoverPayload( unit, data, url );
         break;
     }
 }
 
 void
+CoverFetcher::handleCoverPayload( const CoverFetchUnit::Ptr &unit, const QByteArray &data, const KUrl &url )
+{
+    if( data.isEmpty() )
+    {
+        finish( unit, NotFound );
+        return;
+    }
+
+    QBuffer buffer;
+    buffer.setData( data );
+    buffer.open( QIODevice::ReadOnly );
+    QImageReader reader( &buffer );
+    if( !reader.canRead() )
+    {
+        finish( unit, Error, reader.errorString() );
+        return;
+    }
+
+    QSize imageSize = reader.size();
+    const CoverFetchArtPayload *payload = static_cast<const CoverFetchArtPayload*>( unit->payload() );
+    const CoverFetch::Metadata &metadata = payload->urls().value( url );
+
+    if( payload->imageSize() == CoverFetch::ThumbSize )
+    {
+        if( imageSize.isEmpty() )
+        {
+            imageSize.setWidth( metadata.value( QLatin1String("width") ).toInt() );
+            imageSize.setHeight( metadata.value( QLatin1String("height") ).toInt() );
+        }
+        imageSize.scale( 120, 120, Qt::KeepAspectRatio );
+        reader.setScaledSize( imageSize );
+        // This will force the JPEG decoder to use JDCT_IFAST
+        reader.setQuality( 49 );
+    }
+
+    if( unit->isInteractive() )
+    {
+        QImage image;
+        if( reader.read( &image ) )
+        {
+            showCover( unit, image, metadata );
+            m_queue->remove( unit );
+            return;
+        }
+    }
+    else
+    {
+        QImage image;
+        if( reader.read( &image ) )
+        {
+            m_selectedImages.insert( unit, image );
+            finish( unit );
+            return;
+        }
+    }
+    finish( unit, Error, reader.errorString() );
+}
+
+void
 CoverFetcher::slotDialogFinished()
 {
-    const CoverFetchUnit::Ptr unit = m_dialog->unit();
-    switch( m_dialog->result() )
+    const CoverFetchUnit::Ptr unit = m_dialog.data()->unit();
+    switch( m_dialog.data()->result() )
     {
     case KDialog::Accepted:
-        m_selectedPixmaps.insert( unit, m_dialog->image() );
+        m_selectedImages.insert( unit, m_dialog.data()->image() );
         finish( unit );
         break;
 
@@ -251,11 +304,39 @@ CoverFetcher::slotDialogFinished()
             abortFetch( unit );
     }
 
-    m_dialog->delayedDestruct();
+    m_dialog.data()->delayedDestruct();
 }
 
 void
-CoverFetcher::showCover( CoverFetchUnit::Ptr unit, const QPixmap &cover, CoverFetch::Metadata data )
+CoverFetcher::fetchRequestRedirected( QNetworkReply *oldReply,
+                                      QNetworkReply *newReply )
+{
+    KUrl oldUrl = oldReply->request().url();
+    KUrl newUrl = newReply->request().url();
+
+    // Since we were redirected we have to check if the redirect
+    // was for one of our URLs and if the new URL is not handled
+    // already.
+    if( m_urls.contains( oldUrl ) && !m_urls.contains( newUrl ) )
+    {
+        // Get the unit for the old URL.
+        CoverFetchUnit::Ptr unit = m_urls.value( oldUrl );
+
+        // Add the unit with the new URL and remove the old one.
+        m_urls.insert( newUrl, unit );
+        m_urls.remove( oldUrl );
+
+        // If the unit is an interactive one we have to incidate that we're
+        // still fetching the cover.
+        if( unit->isInteractive() )
+            Amarok::Components::logger()->newProgressOperation( newReply, i18n( "Fetching Cover" ) );
+    }
+}
+
+void
+CoverFetcher::showCover( const CoverFetchUnit::Ptr &unit,
+                         const QImage &cover,
+                         const CoverFetch::Metadata &data )
 {
     if( !m_dialog )
     {
@@ -267,18 +348,18 @@ CoverFetcher::showCover( CoverFetchUnit::Ptr unit, const QPixmap &cover, CoverFe
         }
 
         m_dialog = new CoverFoundDialog( unit, data, static_cast<QWidget*>( parent() ) );
-        connect( m_dialog, SIGNAL(newCustomQuery(Meta::AlbumPtr, const QString&, int)),
+        connect( m_dialog.data(), SIGNAL(newCustomQuery(Meta::AlbumPtr, const QString&, int)),
                            SLOT(queueQuery(Meta::AlbumPtr, const QString&, int)) );
-        connect( m_dialog, SIGNAL(accepted()), SLOT(slotDialogFinished()) );
-        connect( m_dialog, SIGNAL(rejected()), SLOT(slotDialogFinished()) );
+        connect( m_dialog.data(), SIGNAL(accepted()), SLOT(slotDialogFinished()) );
+        connect( m_dialog.data(), SIGNAL(rejected()), SLOT(slotDialogFinished()) );
 
         if( fetchSource() == CoverFetch::LastFm )
             queueQueryForAlbum( album );
-        m_dialog->setQueryPage( 1 );
+        m_dialog.data()->setQueryPage( 1 );
 
-        m_dialog->show();
-        m_dialog->raise();
-        m_dialog->activateWindow();
+        m_dialog.data()->show();
+        m_dialog.data()->raise();
+        m_dialog.data()->activateWindow();
     }
     else
     {
@@ -287,7 +368,7 @@ CoverFetcher::showCover( CoverFetchUnit::Ptr unit, const QPixmap &cover, CoverFe
             typedef CoverFetchArtPayload CFAP;
             const CFAP *payload = dynamic_cast< const CFAP* >( unit->payload() );
             if( payload )
-                m_dialog->add( cover, data, payload->imageSize() );
+                m_dialog.data()->add( cover, data, payload->imageSize() );
         }
     }
 }
@@ -297,10 +378,11 @@ CoverFetcher::abortFetch( CoverFetchUnit::Ptr unit )
 {
     m_queue->remove( unit );
     m_queueLater.removeAll( unit->album() );
-    m_selectedPixmaps.remove( unit );
+    m_selectedImages.remove( unit );
     KUrl::List urls = m_urls.keys( unit );
     foreach( const KUrl &url, urls )
         m_urls.remove( url );
+    The::networkAccessManager()->abortGet( urls );
 }
 
 void
@@ -320,7 +402,7 @@ CoverFetcher::finish( const CoverFetchUnit::Ptr unit,
             Amarok::Components::logger()->shortMessage( text );
             debug() << "Finished successfully for album" << albumName;
         }
-        album->setImage( m_selectedPixmaps.take( unit ) );
+        album->setImage( m_selectedImages.take( unit ) );
         abortFetch( unit );
         break;
 

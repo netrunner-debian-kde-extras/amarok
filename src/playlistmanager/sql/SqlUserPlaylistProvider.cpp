@@ -64,6 +64,12 @@ SqlUserPlaylistProvider::~SqlUserPlaylistProvider()
 {
 }
 
+int
+SqlUserPlaylistProvider::playlistCount() const
+{
+    return m_root->childSqlPlaylists().count();
+}
+
 Playlists::PlaylistList
 SqlUserPlaylistProvider::playlists()
 {
@@ -102,8 +108,27 @@ SqlUserPlaylistProvider::slotDelete()
     //only one playlist can be selected at this point
     Playlists::SqlPlaylistList playlists = action->data().value<Playlists::SqlPlaylistList>();
 
-    if( playlists.count() > 0 )
-        deleteSqlPlaylists( playlists );
+    if( playlists.count() == 0 )
+        return;
+
+    if( !m_debug )
+    {
+        KDialog dialog;
+        dialog.setCaption( i18n( "Confirm Delete" ) );
+        dialog.setButtons( KDialog::Ok | KDialog::Cancel );
+        QLabel label( i18np( "Are you sure you want to delete this playlist?",
+                             "Are you sure you want to delete these %1 playlists?",
+                             playlists.count() )
+                      , &dialog
+                    );
+        //TODO:include a text area with all the names of the playlists
+        dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from database." ) );
+        dialog.setMainWidget( &label );
+        if( dialog.exec() != QDialog::Accepted )
+            return;
+    }
+
+    deleteSqlPlaylists( playlists );
 }
 
 void
@@ -178,6 +203,7 @@ SqlUserPlaylistProvider::playlistActions( Playlists::PlaylistPtr playlist )
         m_deleteAction->setProperty( "popupdropper_svg_id", "delete" );
         connect( m_deleteAction, SIGNAL( triggered() ), SLOT( slotDelete() ) );
     }
+    m_deleteAction->setObjectName( "deleteAction" );
 
     Playlists::SqlPlaylistList actionList = m_deleteAction->data().value<Playlists::SqlPlaylistList>();
     actionList << sqlPlaylist;
@@ -196,14 +222,14 @@ SqlUserPlaylistProvider::trackActions( Playlists::PlaylistPtr playlist, int trac
 
     if( m_removeTrackAction == 0 )
     {
-        m_removeTrackAction = new QAction(
-                    KIcon( "media-track-remove-amarok" ),
-                    i18nc( "Remove a track from a saved playlist", "Remove From \"%1\"", playlist->name() ),
-                    this
-                );
+        m_removeTrackAction = new QAction( this );
+        m_removeTrackAction->setIcon( KIcon( "media-track-remove-amarok" ) );
         m_removeTrackAction->setProperty( "popupdropper_svg_id", "delete" );
         connect( m_removeTrackAction, SIGNAL( triggered() ), SLOT( slotRemove() ) );
     }
+
+    m_removeTrackAction->setObjectName( "deleteAction" );
+
     //Add the playlist/track combination to a QMultiMap that is stored in the action.
     //In the slot we use this data to remove that track from the playlist.
     PlaylistTrackMap playlistMap = m_removeTrackAction->data().value<PlaylistTrackMap>();
@@ -217,6 +243,11 @@ SqlUserPlaylistProvider::trackActions( Playlists::PlaylistPtr playlist, int trac
     }
     m_removeTrackAction->setData( QVariant::fromValue( playlistMap ) );
 
+    if( playlistMap.keys().count() > 1 )
+        m_removeTrackAction->setText( i18n( "Remove tracks" ) );
+    else
+        m_removeTrackAction->setText( i18nc( "Remove a track from a saved playlist",
+                                                 "Remove From \"%1\"", playlist->name() ) );
     actions << m_removeTrackAction;
 
     return actions;
@@ -234,31 +265,17 @@ SqlUserPlaylistProvider::deletePlaylists( Playlists::PlaylistList playlistList )
 bool
 SqlUserPlaylistProvider::deleteSqlPlaylists( Playlists::SqlPlaylistList playlistList )
 {
-    if( !m_debug )
-    {
-        KDialog dialog;
-        dialog.setCaption( i18n( "Confirm Delete" ) );
-        dialog.setButtons( KDialog::Ok | KDialog::Cancel );
-        QLabel label( i18np( "Are you sure you want to delete this playlist?",
-                             "Are you sure you want to delete these %1 playlists?",
-                             playlistList.count() )
-                      , &dialog
-                    );
-        dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from database." ) );
-        dialog.setMainWidget( &label );
-        if( dialog.exec() != QDialog::Accepted )
-            return false;
-    }
-
+    //this delete is not confirmed, has to be done by the slot connected to the delete action.
     foreach( Playlists::SqlPlaylistPtr sqlPlaylist, playlistList )
     {
         if( sqlPlaylist )
         {
             debug() << "deleting " << sqlPlaylist->name();
+            m_root->m_childPlaylists.removeAll( sqlPlaylist );
+            emit playlistRemoved( Playlists::PlaylistPtr::dynamicCast( sqlPlaylist ) );
             sqlPlaylist->removeFromDb();
         }
     }
-    reloadFromDb();
 
     return true;
 }
@@ -281,13 +298,16 @@ SqlUserPlaylistProvider::save( const Meta::TrackList &tracks, const QString& nam
                 Playlists::SqlPlaylistGroupPtr(),
                 this )
             );
-    reloadFromDb();
+    m_root->m_childPlaylists << sqlPlaylist;
+    Playlists::PlaylistPtr playlist = Playlists::PlaylistPtr::dynamicCast( sqlPlaylist );
 
-    return Playlists::PlaylistPtr::dynamicCast( sqlPlaylist ); //assumes insertion in db was successful!
+    emit playlistAdded( playlist );
+
+    return playlist; //assumes insertion in db was successful!
 }
 
 bool
-SqlUserPlaylistProvider::import( const QString& fromLocation )
+SqlUserPlaylistProvider::import( const QString &fromLocation )
 {
     DEBUG_BLOCK
     debug() << "importing playlist " << fromLocation;
@@ -340,8 +360,8 @@ SqlUserPlaylistProvider::import( const QString& fromLocation )
                                                      this,
                                                      fromLocation )
                               );
+    //TODO: don't reload database and emit playlistAdded()
     reloadFromDb();
-    emit updated();
 
     return true;
 }

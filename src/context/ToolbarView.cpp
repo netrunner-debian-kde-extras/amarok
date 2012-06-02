@@ -18,11 +18,11 @@
 
 #include "Containment.h"
 #include "core/support/Debug.h"
+#include "PaletteHandler.h"
 #include "toolbar/AppletItemOverlay.h"
-#include "toolbar/AppletToolbar.h"
 #include "toolbar/AppletToolbarAppletItem.h"
+#include "toolbar/AppletToolbar.h"
 
-#include <knewstuff2/engine.h>
 #include <kfiledialog.h>
 #include <kstandarddirs.h>
 #include <plasma/applet.h>
@@ -30,6 +30,7 @@
 #include <plasma/packagestructure.h>
 #include <plasma/theme.h>
 
+#include <QApplication>
 #include <QDBusInterface>
 #include <QGraphicsLinearLayout>
 #include <QGraphicsScene>
@@ -39,54 +40,57 @@
 #include <QTimer>
 
 #define TOOLBAR_X_OFFSET 2000
+#define TOOLBAR_SCENE_PADDING 2
 
 Context::ToolbarView::ToolbarView( Plasma::Containment* containment, QGraphicsScene* scene, QWidget* parent )
     : QGraphicsView( scene, parent )
-    , m_height( 30 )
+    , m_height( 36 )
     , m_cont( containment )
 {
-    setSceneRect( TOOLBAR_X_OFFSET, 0, size().width(), m_height );
-    QSizePolicy policy( QSizePolicy::Preferred, QSizePolicy::Fixed );
-    policy.setHeightForWidth( true );
-    setSizePolicy( policy );
-    setAutoFillBackground( true );
+    setObjectName( "ContextToolbarView" );
 
-    setFrameStyle(QFrame::NoFrame);
-    //setAutoFillBackground(true);
-    //setDragMode(QGraphicsView::RubberBandDrag);
-    //setCacheMode(QGraphicsView::CacheBackground);
-    setInteractive(true);
-    setAcceptDrops(true);
-    setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    setFixedHeight( m_height );
+    setSizePolicy( QSizePolicy::Preferred, QSizePolicy::Fixed );
+    setAutoFillBackground( true );
+    setContentsMargins( 0, 0, 0, 0 );
+
+    QPalette palette = QApplication::palette();
+    setFrameStyle( QFrame::NoFrame );
+    setStyleSheet( QString( "QFrame#ContextToolbarView { border: 1px ridge %1; " \
+                            "background-color: %2; color: %3; border-radius: 3px; }" \
+                            "QLabel { color: %3; }" )
+                           .arg( palette.color( QPalette::Window ).name() )
+                           .arg( The::paletteHandler()->highlightColor().name() )
+                           .arg( palette.color( QPalette::HighlightedText ).name() )
+                 );
+
+    //Padding required to prevent view scrolling, probably caused by the 1px ridge
+    setSceneRect( TOOLBAR_X_OFFSET, 0, size().width()-TOOLBAR_SCENE_PADDING,
+                  size().height()-TOOLBAR_SCENE_PADDING );
+
+    setInteractive( true );
+    setAcceptDrops( true );
+    setHorizontalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
+    setVerticalScrollBarPolicy( Qt::ScrollBarAlwaysOff );
 
     // now we create the toolbar
     m_toolbar = new AppletToolbar( containment );
-    m_toolbar->setZValue( m_toolbar->zValue() + 1000 );
-    // scene()->addItem( m_toolbar );
-    m_toolbar->setPos( TOOLBAR_X_OFFSET, 0 );
+    m_toolbar.data()->setZValue( m_toolbar.data()->zValue() + 1000 );
+    m_toolbar.data()->setPos( TOOLBAR_X_OFFSET, 0 );
 
-   connect( m_toolbar, SIGNAL( configModeToggled() ), this, SLOT( toggleConfigMode() ) );
-   connect( m_toolbar, SIGNAL( installApplets() ), this, SLOT( installApplets() ) );
-   connect( m_toolbar, SIGNAL( hideAppletExplorer() ), this, SIGNAL( hideAppletExplorer() ) );
-   connect( m_toolbar, SIGNAL( showAppletExplorer() ), this, SIGNAL( showAppletExplorer() ) );
+   connect( m_toolbar.data(), SIGNAL(configModeToggled()), SLOT(toggleConfigMode()) );
+   connect( m_toolbar.data(), SIGNAL(hideAppletExplorer()), SIGNAL(hideAppletExplorer()) );
+   connect( m_toolbar.data(), SIGNAL(showAppletExplorer()), SIGNAL(showAppletExplorer()) );
 
    Context::Containment* cont = dynamic_cast< Context::Containment* >( containment );
    if( cont )
    {
-       connect( cont, SIGNAL( appletAdded( Plasma::Applet*, int) ), m_toolbar, SLOT( appletAdded( Plasma::Applet*, int ) ) );
-       connect( m_toolbar, SIGNAL( appletAddedToToolbar( Plasma::Applet*, int ) ), this, SLOT( appletAdded( Plasma::Applet*, int ) ) );
+       connect( cont, SIGNAL( appletAdded( Plasma::Applet*, int) ), m_toolbar.data(), SLOT( appletAdded( Plasma::Applet*, int ) ) );
+       connect( m_toolbar.data(), SIGNAL( appletAddedToToolbar( Plasma::Applet*, int ) ), this, SLOT( appletAdded( Plasma::Applet*, int ) ) );
        connect( cont, SIGNAL( appletRemoved( Plasma::Applet* ) ), this, SLOT( appletRemoved( Plasma::Applet* ) ) );
-       connect( m_toolbar, SIGNAL( showApplet( Plasma::Applet* ) ), cont, SLOT( showApplet( Plasma::Applet* ) ) );
-       connect( m_toolbar, SIGNAL( moveApplet( Plasma::Applet*, int, int ) ), cont, SLOT( moveApplet( Plasma::Applet*, int, int ) ) );
+       connect( m_toolbar.data(), SIGNAL( showApplet( Plasma::Applet* ) ), cont, SLOT( showApplet( Plasma::Applet* ) ) );
+       connect( m_toolbar.data(), SIGNAL( moveApplet( Plasma::Applet*, int, int ) ), cont, SLOT( moveApplet( Plasma::Applet*, int, int ) ) );
    }
-
-   //make background transparent
-   QPalette p = palette();
-   QColor c = p.color( QPalette::Base );
-   c.setAlpha( 0 );
-   p.setColor( QPalette::Base, c );
-   setPalette( p );
 
 }
 
@@ -95,29 +99,17 @@ Context::ToolbarView::~ToolbarView()
 
 }
 
-QSize
-Context::ToolbarView::sizeHint() const
-{
-    return QSize( size().width(), m_height );
-}
-
-int
-Context::ToolbarView::heightForWidth( int w ) const
-{
-    Q_UNUSED( w )
-    return m_height;
-}
-
-
 void
 Context::ToolbarView::resizeEvent( QResizeEvent *event )
 {
     Q_UNUSED( event )
 
-    setSceneRect( TOOLBAR_X_OFFSET, 0, size().width(), m_height );
+    debug() << size();
+    setSceneRect( TOOLBAR_X_OFFSET, 0, size().width()-TOOLBAR_SCENE_PADDING,
+                  size().height()-TOOLBAR_SCENE_PADDING );
 
     if( m_toolbar )
-        m_toolbar->setGeometry( sceneRect() );
+        m_toolbar.data()->setGeometry( sceneRect() );
 }
 
 void
@@ -142,7 +134,7 @@ void
 Context::ToolbarView::toggleConfigMode()
 {
     DEBUG_BLOCK
-    if( m_toolbar->configEnabled() ) // set up config stuff
+    if( m_toolbar.data()->configEnabled() ) // set up config stuff
     {
         debug() << "got config enabled, creating all the move overlays";
           // now add the overlays that handle the drag-n-dropping
@@ -158,13 +150,13 @@ Context::ToolbarView::toggleConfigMode()
                 debug() << "add item has boundingRect:" << item->boundingRect() << "and geom:" << item->geometry() << "and sizehint" << item->effectiveSizeHint( Qt::PreferredSize );
         } */
 
-        for( int i = 0; i < m_toolbar->appletLayout()->count(); i++ )
+        for( int i = 0; i < m_toolbar.data()->appletLayout()->count(); i++ )
         {
             debug() << "creating a move overlay";
-            Context::AppletToolbarAppletItem* item = dynamic_cast< Context::AppletToolbarAppletItem* >( m_toolbar->appletLayout()->itemAt( i ) );
+            Context::AppletToolbarAppletItem* item = dynamic_cast< Context::AppletToolbarAppletItem* >( m_toolbar.data()->appletLayout()->itemAt( i ) );
             if( item )
             {
-                Context::AppletItemOverlay *moveOverlay = new Context::AppletItemOverlay( item, m_toolbar->appletLayout(), this );
+                Context::AppletItemOverlay *moveOverlay = new Context::AppletItemOverlay( item, m_toolbar.data()->appletLayout(), this );
                 connect( moveOverlay, SIGNAL( moveApplet( Plasma::Applet*, int, int ) ), m_cont, SLOT( moveApplet( Plasma::Applet*, int, int ) ) );
                 connect( moveOverlay, SIGNAL( moveApplet( Plasma::Applet*, int, int ) ), this, SLOT( refreshOverlays() ) );
                 connect( moveOverlay, SIGNAL( deleteApplet( Plasma::Applet* ) ), this, SLOT( appletRemoved( Plasma::Applet* ) ) );
@@ -198,7 +190,7 @@ Context::ToolbarView::appletRemoved( Plasma::Applet* applet )
             debug() << "got an overlay to remove";
         }
     }
-    m_toolbar->appletRemoved( applet );
+    m_toolbar.data()->appletRemoved( applet );
     applet->deleteLater();
 }
 
@@ -209,7 +201,7 @@ Context::ToolbarView::appletAdded( Plasma::Applet* applet, int loc )
     Q_UNUSED( applet )
     Q_UNUSED( loc )
 
-    if( m_toolbar->configEnabled() )
+    if( m_toolbar.data()->configEnabled() )
         recreateOverlays();
 }
 
@@ -217,7 +209,6 @@ Context::ToolbarView::appletAdded( Plasma::Applet* applet, int loc )
 void
 Context::ToolbarView::refreshOverlays()
 {
-    m_toolbar->refreshAddIcons();
 }
 
 void
@@ -233,13 +224,13 @@ Context::ToolbarView::recreateOverlays()
     QBrush overlayBrush( overlayColor );
     QPalette p( palette() );
     p.setBrush( QPalette::Window, overlayBrush );
-    for( int i = 0; i < m_toolbar->appletLayout()->count(); i++ )
+    for( int i = 0; i < m_toolbar.data()->appletLayout()->count(); i++ )
     {
         debug() << "creating a move overlay";
-        Context::AppletToolbarAppletItem* item = dynamic_cast< Context::AppletToolbarAppletItem* >( m_toolbar->appletLayout()->itemAt( i ) );
+        Context::AppletToolbarAppletItem* item = dynamic_cast< Context::AppletToolbarAppletItem* >( m_toolbar.data()->appletLayout()->itemAt( i ) );
         if( item )
         {
-            Context::AppletItemOverlay *moveOverlay = new Context::AppletItemOverlay( item, m_toolbar->appletLayout(), this );
+            Context::AppletItemOverlay *moveOverlay = new Context::AppletItemOverlay( item, m_toolbar.data()->appletLayout(), this );
             connect( moveOverlay, SIGNAL( moveApplet( Plasma::Applet*, int, int ) ), m_cont, SLOT( moveApplet( Plasma::Applet*, int, int ) ) );
             connect( moveOverlay, SIGNAL( moveApplet( Plasma::Applet*, int, int ) ), this, SLOT( refreshOverlays() ) );
             connect( moveOverlay, SIGNAL( deleteApplet( Plasma::Applet* ) ), this, SLOT( appletRemoved( Plasma::Applet* ) ) );
@@ -254,29 +245,12 @@ Context::ToolbarView::recreateOverlays()
 }
 
 void
-Context::ToolbarView::installApplets()
-{
-    DEBUG_BLOCK
-
-    KNS::Engine engine(0);
-    if (engine.init("amarokapplets.knsrc")) {
-        KNS::Entry::List entries = engine.downloadDialogModal(this);
-    }
-    
-    // give it some time to run, but not too long
-    QTimer::singleShot( 0, this, SLOT( refreshSycoca() ) );
-}
-
-void
 Context::ToolbarView::refreshSycoca()
 {
-
     QDBusInterface dbus("org.kde.kded", "/kbuildsycoca", "org.kde.kbuildsycoca");
     dbus.call(QDBus::Block, "recreate");
 
     recreateOverlays();
-
 }
-
 
 #include "ToolbarView.moc"

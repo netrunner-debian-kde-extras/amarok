@@ -25,9 +25,10 @@ public:
         : collectionManager( 0 )
         , engineController( 0 )
         , sqlStorage( 0 )
+        , logger( 0 )
         , applicationController( 0 )
         , collectionLocationDelegate( 0 )
-
+        , transcodingController( 0 )
     {}
 
     CollectionManager *collectionManager;
@@ -36,6 +37,7 @@ public:
     Amarok::Logger *logger;
     Amarok::ApplicationController *applicationController;
     Collections::CollectionLocationDelegate *collectionLocationDelegate;
+    Transcoding::Controller *transcodingController;
 };
 
 //using a static variable is ok in this case as ComponentsPrivate does nothing on destruction
@@ -48,7 +50,6 @@ K_GLOBAL_STATIC( ComponentsPrivate, d )
 Type \
 Amarok::Components::getter() \
 { \
-    Q_ASSERT( d->getter ); \
     return d->getter ; \
 } \
 Type \
@@ -70,4 +71,6 @@ COMPONENT_ACCESSORS( Amarok::Logger*, logger, setLogger )
 COMPONENT_ACCESSORS( Amarok::ApplicationController*, applicationController, setApplicationController )
 
 COMPONENT_ACCESSORS( Collections::CollectionLocationDelegate*, collectionLocationDelegate, setCollectionLocationDelegate )
+
+COMPONENT_ACCESSORS( Transcoding::Controller*, transcodingController, setTranscodingController )
 

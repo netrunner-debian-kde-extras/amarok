@@ -66,8 +66,8 @@ class ServiceSqlWorkerThread : public ThreadWeaver::Job
 
 struct ServiceSqlQueryMaker::Private
 {
-    enum QueryType { NONE, TRACK, ARTIST, ALBUM, GENRE, COMPOSER, YEAR, CUSTOM };
-    enum {TRACKS_TABLE = 1, ALBUMS_TABLE = 2, ARTISTS_TABLE = 4, GENRE_TABLE = 8};
+    enum QueryType { NONE, TRACK, ARTIST, ALBUM, ALBUMARTIST, GENRE, COMPOSER, YEAR, CUSTOM };
+    enum {TRACKS_TABLE = 1, ALBUMS_TABLE = 2, ARTISTS_TABLE = 4, GENRE_TABLE = 8, ALBUMARTISTS_TABLE = 16 };
     int linkedTables;
     QueryType queryType;
     QString query;
@@ -79,7 +79,7 @@ struct ServiceSqlQueryMaker::Private
     //bool includedBuilder;
     //bool collectionRestriction;
     AlbumQueryMode albumMode;
-    bool returnDataPtrs;
+    ArtistQueryMode artistMode;
     bool withoutDuplicates;
     int maxResultSize;
     ServiceSqlWorkerThread *worker;
@@ -96,33 +96,19 @@ ServiceSqlQueryMaker::ServiceSqlQueryMaker( ServiceSqlCollection* collection, Se
     //d->includedBuilder = true;
     //d->collectionRestriction = false;
     d->worker = 0;
-    reset();
+
+    d->queryType = Private::NONE;
+    d->linkedTables = 0;
+    d->artistMode = TrackArtists;
+    d->withoutDuplicates = false;
+    d->maxResultSize = -1;
+    d->andStack.push( true );
 }
 
 ServiceSqlQueryMaker::~ServiceSqlQueryMaker()
 {
+    // what about d->worker?
     delete d;
-}
-
-QueryMaker*
-ServiceSqlQueryMaker::reset()
-{
-    d->query.clear();
-    d->queryType = Private::NONE;
-    d->queryReturnValues.clear();
-    d->queryFrom.clear();
-    d->queryMatch.clear();
-    d->queryFilter.clear();
-    d->queryOrderBy.clear();
-    d->linkedTables = 0;
-    if( d->worker && d->worker->isFinished() )
-        delete d->worker;   //TODO error handling
-    d->returnDataPtrs = false;
-    d->withoutDuplicates = false;
-    d->maxResultSize = -1;
-    d->andStack.clear();
-    d->andStack.push( true );
-    return this;
 }
 
 void
@@ -130,13 +116,6 @@ ServiceSqlQueryMaker::abortQuery()
 {
     if( d->worker )
         d->worker->requestAbort();
-}
-
-QueryMaker*
-ServiceSqlQueryMaker::setReturnResultAsDataPtrs( bool returnDataPtrs )
-{
-    d->returnDataPtrs = returnDataPtrs;
-    return this;
 }
 
 void
@@ -214,6 +193,21 @@ ServiceSqlQueryMaker::setQueryType( QueryType type)
         }
         return this;
 
+    case QueryMaker::AlbumArtist:
+        if( d->queryType == Private::NONE )
+        {
+            QString prefix = m_metaFactory->tablePrefix();
+            d->queryFrom = ' ' + prefix + "_tracks";
+            d->linkedTables |= Private::ALBUMARTISTS_TABLE;
+            d->queryType = Private::ALBUMARTIST;
+            d->withoutDuplicates = true;
+            d->queryReturnValues = QString( "albumartists.id, " ) +
+                                            "albumartists.name, " +
+                                            "albumartists.description ";
+            d->queryOrderBy += " GROUP BY " + prefix + "_tracks.id"; //fixes the same track being shown several times due to being in several genres
+        }
+        return this;
+
     case QueryMaker::Album:
         if( d->queryType == Private::NONE )
         {
@@ -278,30 +272,6 @@ ServiceSqlQueryMaker::setQueryType( QueryType type)
 }
 
 QueryMaker*
-ServiceSqlQueryMaker::includeCollection( const QString &collectionId )
-{
-    Q_UNUSED( collectionId );
-  /*  if( !d->collectionRestriction )
-    {
-        d->includedBuilder = false;
-        d->collectionRestriction = true;
-    }
-    if( m_collection->collectionId() == collectionId )
-        d->includedBuilder = true;*/
-    return this;
-}
-
-QueryMaker*
-ServiceSqlQueryMaker::excludeCollection( const QString &collectionId )
-{
-     Q_UNUSED( collectionId );
-    /*d->collectionRestriction = true;
-    if( m_collection->collectionId() == collectionId )
-        d->includedBuilder = false;*/
-    return this;
-}
-
-QueryMaker*
 ServiceSqlQueryMaker::addMatch( const Meta::TrackPtr &track )
 {
     //DEBUG_BLOCK
@@ -323,12 +293,35 @@ ServiceSqlQueryMaker::addMatch( const Meta::ArtistPtr &artist )
     d->linkedTables |= Private::ARTISTS_TABLE;
     if( serviceArtist )
     {
-        d->queryMatch += QString( " AND " + prefix + "_artists.id= '%1'" ).arg( serviceArtist->id() );
+        switch( d->artistMode )
+        {
+            case TrackArtists:
+                 d->queryMatch += QString( " AND " + prefix + "_artists.id= '%1'" ).arg( serviceArtist->id() );
+                 break;
+            case AlbumArtists:
+                 d->queryMatch += QString( " AND albumartists.id= '%1'" ).arg( serviceArtist->id() );
+                 break;
+            case AlbumOrTrackArtists:
+                 d->queryMatch += QString( " AND ( " + prefix + "_artists.id= '%1' OR albumartists.id= '%1' )" ).arg( serviceArtist->id() );
+                 break;
+        }
     }
     else
     {
-        d->queryMatch += QString( " AND " + prefix + "_artists.name='%1'" ).arg( escape( artist->name() ) );
+        switch( d->artistMode )
+        {
+            case TrackArtists:
+                 d->queryMatch += QString( " AND " + prefix + "_artists.name= '%1'" ).arg( escape( artist->name() ) );
+                 break;
+            case AlbumArtists:
+                 d->queryMatch += QString( " AND albumartists.name= '%1'" ).arg( escape( artist->name() ) );
+                 break;
+            case AlbumOrTrackArtists:
+                 d->queryMatch += QString( " AND ( " + prefix + "_artists.name= '%1' OR albumartists.name= '%1' )" ).arg( escape( artist->name() ) );
+                 break;
+        }
     }
+    d->artistMode = TrackArtists;
     return this;
 }
 
@@ -405,14 +398,6 @@ ServiceSqlQueryMaker::addMatch( const Meta::LabelPtr &label )
 {
     Q_UNUSED( label );
     //TODO
-    return this;
-}
-
-QueryMaker*
-ServiceSqlQueryMaker::addMatch( const Meta::DataPtr &data )
-{
-    ( const_cast<Meta::DataPtr&>(data) )->addMatchTo( this );
-    //TODO needed at all?
     return this;
 }
 
@@ -501,13 +486,6 @@ ServiceSqlQueryMaker::orderBy( qint64 value, bool descending )
 }
 
 QueryMaker*
-ServiceSqlQueryMaker::orderByRandom()
-{
-    // TODO
-    return this;
-}
-
-QueryMaker*
 ServiceSqlQueryMaker::limitMaxResultSize( int size )
 {
     d->maxResultSize = size;
@@ -528,6 +506,8 @@ ServiceSqlQueryMaker::linkTables()
        d->queryFrom += " LEFT JOIN " + prefix + "_albums ON " + prefix + "_tracks.album_id = " + prefix + "_albums.id";
     if( d->linkedTables & Private::ARTISTS_TABLE )
        d->queryFrom += " LEFT JOIN " + prefix + "_artists ON " + prefix + "_albums.artist_id = " + prefix + "_artists.id";
+    if( d->linkedTables & Private::ALBUMARTISTS_TABLE )
+        d->queryFrom += " LEFT JOIN " + prefix + "_artists AS albumartists ON " + prefix + "_albums.artist_id = albumartists.id";
     if( d->linkedTables & Private::GENRE_TABLE )
        d->queryFrom += " LEFT JOIN " + prefix + "_genre ON " + prefix + "_genre.album_id = " + prefix + "_albums.id";
 }
@@ -586,12 +566,13 @@ ServiceSqlQueryMaker::handleResult( const QStringList &result )
     {
         switch( d->queryType ) {
         /*case Private::CUSTOM:
-            emit newResultReady( m_collection->collectionId(), result );
+            emit newResultReady( result );
             break;*/
         case Private::TRACK:
             handleTracks( result );
             break;
         case Private::ARTIST:
+        case Private::ALBUMARTIST:
             handleArtists( result );
             break;
         case Private::ALBUM:
@@ -613,33 +594,32 @@ ServiceSqlQueryMaker::handleResult( const QStringList &result )
             break;
         }
     }
-    else if( d->returnDataPtrs )
-    {
-        emit newResultReady( m_collection->collectionId(), Meta::DataList() );
-    }
     else
     {
         switch( d->queryType ) {
             case QueryMaker::Custom:
-                emit newResultReady( m_collection->collectionId(), QStringList() );
+                emit newResultReady( QStringList() );
                 break;
             case QueryMaker::Track:
-                emit newResultReady( m_collection->collectionId(), Meta::TrackList() );
+                emit newResultReady( Meta::TrackList() );
                 break;
             case QueryMaker::Artist:
-                emit newResultReady( m_collection->collectionId(), Meta::ArtistList() );
+                emit newResultReady( Meta::ArtistList() );
                 break;
             case QueryMaker::Album:
-                emit newResultReady( m_collection->collectionId(), Meta::AlbumList() );
+                emit newResultReady( Meta::AlbumList() );
+                break;
+            case QueryMaker::AlbumArtist:
+                emit newResultReady( Meta::ArtistList() );
                 break;
             case QueryMaker::Genre:
-                emit newResultReady( m_collection->collectionId(), Meta::GenreList() );
+                emit newResultReady( Meta::GenreList() );
                 break;
             case QueryMaker::Composer:
-                emit newResultReady( m_collection->collectionId(), Meta::ComposerList() );
+                emit newResultReady( Meta::ComposerList() );
                 break;
             case QueryMaker::Year:
-                emit newResultReady( m_collection->collectionId(), Meta::YearList() );
+                emit newResultReady( Meta::YearList() );
                 break;
 
         case QueryMaker::None:
@@ -686,20 +666,6 @@ ServiceSqlQueryMaker::nameForValue( qint64 value )
     }
 }
 
-template<class PointerType, class ListType>
-void ServiceSqlQueryMaker::emitProperResult( const ListType& list )
-{
-    if ( d->returnDataPtrs ) {
-        Meta::DataList data;
-        foreach( PointerType p, list )
-            data << Meta::DataPtr::staticCast( p );
-
-        emit newResultReady( m_collection->collectionId(), data );
-    }
-    else
-        emit newResultReady( m_collection->collectionId(), list );
-}
-
 void
 ServiceSqlQueryMaker::handleTracks( const QStringList &result )
 {
@@ -720,7 +686,7 @@ ServiceSqlQueryMaker::handleTracks( const QStringList &result )
         tracks.append( trackptr );
     }
 
-    emitProperResult<Meta::TrackPtr, Meta::TrackList>( tracks );
+    emit newResultReady( tracks );
 }
 
 void
@@ -735,7 +701,7 @@ ServiceSqlQueryMaker::handleArtists( const QStringList &result )
         QStringList row = result.mid( i*rowCount, rowCount );
         artists.append( m_registry->getArtist( row ) );
     }
-    emitProperResult<Meta::ArtistPtr, Meta::ArtistList>( artists );
+    emit newResultReady( artists );
 }
 
 void
@@ -750,7 +716,7 @@ ServiceSqlQueryMaker::handleAlbums( const QStringList &result )
         QStringList row = result.mid( i*rowCount, rowCount );
         albums.append( m_registry->getAlbum( row ) );
     }
-    emitProperResult<Meta::AlbumPtr, Meta::AlbumList>( albums );
+    emit newResultReady( albums );
 }
 
 void
@@ -765,7 +731,7 @@ ServiceSqlQueryMaker::handleGenres( const QStringList &result )
         QStringList row = result.mid( i*rowCount, rowCount );
         genres.append( m_registry->getGenre( row ) );
     }
-    emitProperResult<Meta::GenrePtr, Meta::GenreList>( genres );
+    emit newResultReady( genres );
 }
 
 /*void
@@ -779,7 +745,7 @@ ServiceSqlQueryMaker::handleComposers( const QStringList &result )
         QString id = iter.next();
         composers.append( reg->getComposer( name, id.toInt() ) );
     }
-    emitProperResult<Meta::ComposerPtr, Meta::ComposerList>( composers );
+    emit newResultReady( composers );
 }
 
 void
@@ -793,7 +759,7 @@ ServiceSqlQueryMaker::handleYears( const QStringList &result )
         QString id = iter.next();
         years.append( reg->getYear( name, id.toInt() ) );
     }
-    emitProperResult<Meta::YearPtr, Meta::YearList>( years );
+    emit newResultReady( years );
 }*/
 
 QString
@@ -876,6 +842,15 @@ QueryMaker *
 ServiceSqlQueryMaker::setAlbumQueryMode(AlbumQueryMode mode)
 {
     d->albumMode = mode;
+    return this;
+}
+
+QueryMaker *
+ServiceSqlQueryMaker::setArtistQueryMode( QueryMaker::ArtistQueryMode mode )
+{
+    if( mode == AlbumArtists || mode == AlbumOrTrackArtists )
+        d->linkedTables |= Private::ALBUMARTISTS_TABLE;
+    d->artistMode = mode;
     return this;
 }
 

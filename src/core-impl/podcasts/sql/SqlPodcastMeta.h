@@ -45,6 +45,7 @@ class SqlPodcastEpisode : public Podcasts::PodcastEpisode
         /** Copy from another PodcastEpisode
         */
         SqlPodcastEpisode( PodcastEpisodePtr episode );
+        SqlPodcastEpisode( PodcastChannelPtr channel, PodcastEpisodePtr episode );
 
         ~SqlPodcastEpisode();
 
@@ -99,7 +100,15 @@ class SqlPodcastChannel : public Podcasts::PodcastChannel
 
         ~SqlPodcastChannel();
         // Playlists::Playlist methods
-        virtual Meta::TrackList tracks() { return Podcasts::SqlPodcastEpisode::toTrackList( m_episodes ); }
+        virtual void syncTrackStatus( int position, Meta::TrackPtr otherTrack );
+        virtual int trackCount() const;
+
+        virtual QString filenameLayout() const { return m_filenameLayout; }
+
+        virtual Meta::TrackList tracks();
+        virtual void addTrack( Meta::TrackPtr track, int position = -1 );
+
+        virtual void triggerTrackLoad();
         virtual Playlists::PlaylistProvider *provider() const;
 
         virtual QStringList groups();
@@ -110,16 +119,18 @@ class SqlPodcastChannel : public Podcasts::PodcastChannel
         virtual void setTitle( const QString &title );
         virtual Podcasts::PodcastEpisodeList episodes();
         virtual bool hasImage() const { return !m_image.isNull(); }
-        virtual void setImage( const QPixmap &image );
-        virtual QPixmap image() const { return m_image; }
+        virtual void setImage( const QImage &image );
+        virtual QImage image() const { return m_image; }
         virtual KUrl imageUrl() const { return m_imageUrl; }
         virtual void setImageUrl( const KUrl &imageUrl );
+        virtual void setFilenameLayout( const QString &filenameLayout ) { m_filenameLayout = filenameLayout; }
+
 
         PodcastEpisodePtr addEpisode( PodcastEpisodePtr episode );
 
         //SqlPodcastChannel specific methods
         int dbId() const { return m_dbId; }
-        void addEpisode( SqlPodcastEpisodePtr episode ) { m_episodes << episode; }
+        //void addEpisode( SqlPodcastEpisodePtr episode ) { m_episodes << episode; }
 
         bool writeTags() const { return m_writeTags; }
         void setWriteTags( bool writeTags ) { m_writeTags = writeTags; }
@@ -129,13 +140,16 @@ class SqlPodcastChannel : public Podcasts::PodcastChannel
         const SqlPodcastEpisodeList sqlEpisodes() { return m_episodes; }
 
         void loadEpisodes();
+        void applyPurge();
 
     private:
         bool m_writeTags;
         int m_dbId; //database ID
+        bool m_episodesLoaded;
 
         SqlPodcastEpisodeList m_episodes;
         SqlPodcastProvider *m_provider;
+        QString m_filenameLayout; //specifies filename layout for episodes
 };
 
 } //namespace Podcasts

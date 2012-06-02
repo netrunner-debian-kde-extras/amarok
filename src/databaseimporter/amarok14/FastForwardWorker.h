@@ -82,7 +82,7 @@ class FastForwardWorker : public ThreadWeaver::Job
         void trackMatchMultiple( Meta::TrackList, QString );
 
     private slots:
-        void resultReady( const QString &collectionId, const Meta::TrackList &tracks );
+        void resultReady( const Meta::TrackList &tracks );
         void queryDone();
 
     private:
@@ -103,8 +103,8 @@ class FastForwardWorker : public ThreadWeaver::Job
          * sets track statistics (score, rating, firstPlayed, lastPlayed, playCount) using
          * StatisticsCapability.
          */
-        void setTrackMetadata( Meta::TrackPtr track, double score, int rating, uint firstPlayed,
-                                  uint lastPlayed, int playCount );
+        void setTrackMetadata( Meta::TrackPtr track, double score, int rating, QDateTime firstPlayed,
+                                  QDateTime lastPlayed, int playCount );
 
         /**
          * adds misc track data (lyrics, labels) to cache @param dataForInsert.

@@ -1,3 +1,141 @@
+amarok (2.5.0-3) unstable; urgency=low
+
+  * Depend on libmysql-pic 5.5.23+dfsg so we can drop libssl-dev from
+    Build-Depends.
+  * Compress all deb packages with xz, not just amarok-dbg.
+  * Split off Amarok Handbook into amarok-doc package.
+  * Update debian/copyright.
+  * Fix unsafe argument assignment in the debian_mysqle_force_defaults_file
+    patch. Thanks to Pino Toscano for heads up.
+
+ -- Modestas Vainius <modax@debian.org>  Sat, 26 May 2012 19:24:16 +0300
+
+amarok (2.5.0-2) unstable; urgency=low
+
+  * Drop mysql-server-5.1 from Build-Depends-Indep. mysql-server-core-5.1 was
+    split off long ago (it's in squeeze).
+  * Prefer mysql-server-core-5.5 in Build-Depends-Indep. Alternatively depend
+    on the mysql-server-core virtual package.
+  * Bump Standards-Version to 3.9.3: no changes needed.
+  * Since the package is compat=9, rebuild againt debhelper 9.20120419 should
+    enable hardening flags. (Closes: #653354)
+  * Improve debian_find_mysql_fix.diff to work with Debian libmysqld-pic
+    5.5.23.
+  * Add libssl-dev and libaio-dev [linux-any] to Build-Depends because they are
+    needed for libmysqld-pic 5.5.23.
+  * Force MySQLe to use our custom defaults file. This makes MySQLe independent
+    from system MySQL configuration. (Closes: #672207, #673403)
+    Patch debian_mysqle_force_defaults_file.diff
+  * Bump debhelper build dependency to >= 9.
+
+ -- Modestas Vainius <modax@debian.org>  Mon, 21 May 2012 20:38:19 +0300
+
+amarok (2.5.0-1) unstable; urgency=low
+
+  * New upstream release.
+  * Refresh patches.
+  * This version of amarok requires kdelibs 4.6, bump build dependency.
+  * Bump compat to 9 in order to get automatic build flags handling.
+  * Ship Russian documentation translations.
+  * Add debian_find_mysql_fix.diff patch to fix MySQL detection at cmake stage.
+  * Update install files.
+  * Compress amarok-dbg package with xz.
+  * Fix doc/nl build with kdelibs 4.6 (patch debian_fix_doc_nl_build.diff).
+
+ -- Modestas Vainius <modax@debian.org>  Mon, 26 Dec 2011 14:04:49 +0200
+
+amarok (2.4.3-1) unstable; urgency=low
+
+  * New upstream release.
+  * Switch Vcs-* field to kde-extras repository. (Closes: #635292)
+  * Drop backport_no_kwallet_prompt_on_track_change.patch and
+    backport_arm_build_fix.patch - integrated upstream.
+  * Add upstream_fix_lyrics_autorefresh_in_some_cases.patch to fix lyrics
+    autorefresh in some cases.
+
+ -- Modestas Vainius <modax@debian.org>  Sat, 30 Jul 2011 18:00:09 +0300
+
+amarok (2.4.2-2) unstable; urgency=low
+
+  * Fix FTBFS on armel (backport_arm_build_fix.patch).
+
+ -- Modestas Vainius <modax@debian.org>  Sun, 24 Jul 2011 17:29:30 +0300
+
+amarok (2.4.2-1) unstable; urgency=low
+
+  * New upstream release.
+  * Switch maintainer to Debian KDE Extras team, add myself to Uploaders,
+    document committing/uploading rules in README.source.
+  * Update documentation about Phonon backends in Amarok bug-presubj.
+    (Closes: #629208)
+  * Adapt debian_disable_qtscriptbindings_check_fix.diff to upstream changes.
+  * Add ${perl:Depends} to amarok-common Depends.
+  * Update install files.
+  * Backport a patch to fix a bug which caused KWallet to prompt for a password
+    on every track change (backport_no_kwallet_prompt_on_track_change.patch).
+  * Override lintian "amarok: no-symbols-control-file".
+  * Drop amarok-engine-xine (<< 2) and amarok-engine-yauap (<< 2) from amarok
+    Conflicts. No longer relevant for stable.
+
+ -- Modestas Vainius <modax@debian.org>  Sun, 24 Jul 2011 12:26:59 +0300
+
+amarok (2.4.1-2) unstable; urgency=low
+
+  * Build depend on kdelibs5-dev 4:4.5 and ship plugins for NFS and SMB
+    collection support. (Closes: #620741)
+
+ -- Modestas Vainius <modax@debian.org>  Wed, 01 Jun 2011 15:10:31 +0300
+
+amarok (2.4.1-1) unstable; urgency=low
+
+  * New upstream release.
+  * No longer recommend phonon-backend-xine. Stick to what phonon metapackage
+    depends on.
+  * Bump Standards-Version to 3.9.2: no changes needed.
+  * Drop backport_fix_plugin_version.diff, it was backported from upstream.
+  * Call dh in compat=8 compliant way.
+
+ -- Modestas Vainius <modax@debian.org>  Sun, 08 May 2011 00:21:26 +0300
+
+amarok (2.4.1~beta1-1) experimental; urgency=low
+
+  * New upstream beta release.
+  * Drop backport_mute_button_fix.diff - backported from upstream.
+  * Build depend on libqjson-dev.
+  * Update install files.
+  * Override amarok: embedded-library ... : libmysqlclient.
+  * Backport a patch as recommended by upstream to fix plugin version
+    (backport_fix_plugin_version.diff).
+
+ -- Modestas Vainius <modax@debian.org>  Sun, 20 Mar 2011 17:50:14 +0200
+
+amarok (2.4.0-2) unstable; urgency=low
+
+  * Make amarok-dbg suggest libqtwebkit4-dbg.
+  * Build depend on libqtwebkit-dev | libqt4-dev (<< 4:4.7.0). Closes: #618209
+  * Backport backport_mute_button_fix.diff patch to really fix mute button.
+    (Closes: #600159)
+
+ -- Modestas Vainius <modax@debian.org>  Sun, 20 Mar 2011 16:00:14 +0200
+
+amarok (2.4.0-1) unstable; urgency=low
+
+  * New upstream release:
+    - unmute should work properly. (Closes: #600159)
+  * Remove patches previously backported from upstream:
+    - backport_FLAC_BPM_tags_fix.diff;
+    - 0001-Re-add-some-tests-for-unprintable-but-also-invalid-c.patch.
+  * Refresh debian_disable_qtscriptbindings_check_fix.diff patch.
+  * Adapt debian_mysqle_amarok_local_errmsg_feature.diff to upstream changes.
+  * Build depend on libavformat-dev (>= 4:0.5).
+  * Update install files.
+  * Build depend on libofa0-dev.
+  * Update lintian-overrides.
+  * Add mysql-server-core-5.1 as a preferred alternative to mysql-server-5.1 in
+    Build-Depends-Indep.
+
+ -- Modestas Vainius <modax@debian.org>  Fri, 14 Jan 2011 22:39:04 +0200
+
 amarok (2.3.2-2) experimental; urgency=low
 
   * Backport 0001-Re-add-some-tests-for-unprintable-but-also-invalid-c.patch

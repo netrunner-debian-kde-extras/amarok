@@ -46,7 +46,6 @@ public:
     virtual ~TimecodeTrack();
 
     virtual QString name() const;
-    virtual QString prettyName() const;
 
     virtual KUrl playableUrl() const;
     virtual QString uidUrl() const;
@@ -65,7 +64,7 @@ public:
     virtual void setArtist ( const QString &newArtist );
     virtual void setGenre ( const QString &newGenre );
     virtual void setComposer ( const QString &newComposer );
-    virtual void setYear ( const QString &newYear );
+    virtual void setYear ( int newYear );
 
     virtual void setTitle( const QString &newTitle );
 
@@ -93,7 +92,6 @@ public:
     virtual int discNumber() const;
     virtual void setDiscNumber ( int newDiscNumber );
 
-    virtual uint lastPlayed() const;
     virtual int playCount() const;
 
     virtual QString type() const;
@@ -161,7 +159,6 @@ public:
     virtual ~TimecodeArtist();
 
     virtual QString name() const;
-    virtual QString prettyName() const;
 
     virtual TrackList tracks();
 
@@ -188,16 +185,15 @@ public:
     virtual ~TimecodeAlbum();
 
     virtual QString name() const;
-    virtual QString prettyName() const;
 
     virtual bool isCompilation() const;
     virtual bool hasAlbumArtist() const;
     virtual ArtistPtr albumArtist() const;
     virtual TrackList tracks();
 
-    virtual QPixmap image( int size = 1 );
+    virtual QImage image( int size = 0 ) const;
     virtual bool canUpdateImage() const;
-    virtual void setImage( const QPixmap &pixmap );
+    virtual void setImage( const QImage &image );
 
     virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
     virtual Capabilities::Capability* asCapabilityInterface( Capabilities::Capability::Type type );
@@ -218,8 +214,7 @@ private:
     bool m_isCompilation;
     TimecodeArtistPtr m_albumArtist;
 
-    QPixmap m_cover;
-    QMap<int, QPixmap> m_coverSizeMap;
+    QImage m_cover;
 
     QAction *m_separator;
     QAction *m_displayCoverAction;
@@ -235,7 +230,6 @@ public:
     virtual ~TimecodeGenre();
 
     virtual QString name() const;
-    virtual QString prettyName() const;
 
     virtual TrackList tracks();
 
@@ -259,7 +253,6 @@ public:
     virtual ~TimecodeComposer();
 
     virtual QString name() const;
-    virtual QString prettyName() const;
 
     virtual TrackList tracks();
 
@@ -283,7 +276,6 @@ public:
     virtual ~TimecodeYear();
 
     virtual QString name() const;
-    virtual QString prettyName() const;
 
     virtual TrackList tracks();
 

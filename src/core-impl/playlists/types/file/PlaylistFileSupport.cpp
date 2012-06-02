@@ -17,13 +17,16 @@
  ****************************************************************************************/
 
 #include "core/playlists/PlaylistFormat.h"
+#include "core/interfaces/Logger.h"
+#include "core/support/Components.h"
 #include "core/support/Amarok.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "core/support/Debug.h"
 #include "core-impl/playlists/types/file/xspf/XSPFPlaylist.h"
 #include "core-impl/playlists/types/file/pls/PLSPlaylist.h"
 #include "core-impl/playlists/types/file/m3u/M3UPlaylist.h"
-#include "statusbar/StatusBar.h"
+
+#include "amarokconfig.h"
 
 
 #include <KLocale>
@@ -39,7 +42,9 @@ namespace Playlists {
 PlaylistFilePtr
 loadPlaylistFile( const KUrl &url )
 {
-    //DEBUG_BLOCK
+    // note: this function can be called from out of process, so don't do any
+    // UI stuff from this thread.
+    DEBUG_BLOCK
 
     QFile file;
     KUrl fileToLoad;
@@ -69,8 +74,8 @@ loadPlaylistFile( const KUrl &url )
         {
             debug() << "could not read file " << url.path();
 
-            if( The::statusBar() )
-                The::statusBar()->longMessage( i18n( "Cannot read playlist (%1).", url.url() ) );
+            Amarok::Components::logger()->longMessage(
+                        i18n( "Cannot read playlist (%1).", url.url() ) );
 
             return Playlists::PlaylistFilePtr( 0 );
         }
@@ -87,8 +92,9 @@ loadPlaylistFile( const KUrl &url )
         tempFile.setAutoRemove( false );  //file will be removed in JamendoXmlParser
         if( !tempFile.open() )
         {
-            if( The::statusBar() )
-                The::statusBar()->longMessage( i18n( "Could not create a temporary file to download playlist.") );
+            //longMessage is thread-safe
+            Amarok::Components::logger()->longMessage(
+                        i18n( "Could not create a temporary file to download playlist.") );
 
             return Playlists::PlaylistFilePtr( 0 ); //error
         }
@@ -100,10 +106,13 @@ loadPlaylistFile( const KUrl &url )
         // using KTemporary.close() is not enough here
         tempFile.remove();
         #endif
-        KIO::FileCopyJob * job = KIO::file_copy( url , KUrl( tempFileName ), 0774 , KIO::Overwrite | KIO::HideProgressInfo );
+        KIO::FileCopyJob *job = KIO::file_copy( url , KUrl( tempFileName ), 0774 ,
+                                                KIO::Overwrite | KIO::HideProgressInfo );
 
-        if( The::statusBar() )
-            The::statusBar()->newProgressOperation( job, i18n( "Downloading remote playlist" ) );
+        Amarok::Components::logger()->newProgressOperation( job,
+                                                            i18n("Downloading remote playlist" ) );
+
+        qRegisterMetaType<KIO::filesize_t>("KIO::filesize_t"); // this is needed or else job->exec asserts
 
         if( !job->exec() ) //Job deletes itself after execution
         {
@@ -146,13 +155,8 @@ loadPlaylistFile( const KUrl &url )
 }
 
 bool
-exportPlaylistFile( const Meta::TrackList &list, const KUrl &path )
-{
-    return exportPlaylistFile( list, path, QList<int>() );
-}
-
-bool
-exportPlaylistFile( const Meta::TrackList &list, const KUrl &path, const QList<int> &queued )
+exportPlaylistFile( const Meta::TrackList &list, const KUrl &path, bool relative,
+                    const QList<int> &queued )
 {
     PlaylistFormat format = Playlists::getFormat( path );
     bool result = false;
@@ -174,17 +178,16 @@ exportPlaylistFile( const Meta::TrackList &list, const KUrl &path, const QList<i
             break;
     }
 
-    if ( playlist )
+    if( playlist )
     {
         playlist->setQueue( queued );
-        result = playlist->save( path.path(), true );
+        result = playlist->save( path.path(), relative );
     }
     else
     {
-        // TODO: Add this after git master is open again.
-        // KMessageBox::error( 0,
-        //                    i18n( "The given file extension is valid for a playlist." ),
-        //                    i18n( "Unknown playlist format" ) );
+        KMessageBox::error( 0,
+                            i18n( "The used file extension is not valid for playlists." ),
+                            i18n( "Unknown playlist format" ) );
     }
     
     return result;

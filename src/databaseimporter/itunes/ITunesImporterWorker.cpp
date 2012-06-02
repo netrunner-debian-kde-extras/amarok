@@ -29,6 +29,7 @@
 #include <kio/jobclasses.h>
 
 #include <QFile>
+#include <QDateTime>
 
 ITunesImporterWorker::ITunesImporterWorker()
     : ThreadWeaver::Job()
@@ -41,7 +42,8 @@ void
 ITunesImporterWorker::readTrackElement()
 {
     QString title, artist, album, url;
-    int year = -1, bpm = -1, playcount = -1, rating = -1, lastplayed = -1;
+    int year = -1, bpm = -1, playcount = -1, rating = -1;
+    QDateTime lastplayed;
     
     while( !( isEndElement() && name() == "dict" ) )
     {
@@ -79,7 +81,7 @@ ITunesImporterWorker::readTrackElement()
         } else if( name() == "key" && text == "Play Date" )
         { 
             readNext(); // skip past the </key> and to the data tag
-            lastplayed = readElementText().toInt(); // itunes rates 0-100
+            lastplayed = QDateTime::fromTime_t(readElementText().toInt());
         } else if( name() == "key" && text == "Location" )
         {
             readNext(); // skip past the </key> and to the data tag
@@ -96,13 +98,13 @@ ITunesImporterWorker::readTrackElement()
     Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( KUrl( url ) );
     if( track )
     {
-        Capabilities::StatisticsCapability *ec = track->create<Capabilities::StatisticsCapability>();
+        QScopedPointer<Capabilities::StatisticsCapability> ec( track->create<Capabilities::StatisticsCapability>() );
         if( ec )
         {   
             ec->beginStatisticsUpdate();
             if( rating != -1 ) 
                 ec->setRating( rating );
-            if( lastplayed > 0 )
+            if( lastplayed.isValid() )
                 ec->setLastPlayed( lastplayed );
             if( playcount != -1 ) 
                 ec->setPlayCount( playcount );
@@ -146,7 +148,7 @@ ITunesImporterWorker::run()
         return;
     }
     setDevice( file );
-  
+
     //debug() << "got element:" << name().toString();
 
     while( !atEnd() )
@@ -155,9 +157,9 @@ ITunesImporterWorker::run()
             return;
 
         readNext();
-         
+
         if ( name() == "key" && readElementText() == "Tracks" ) // ok, we're at the start
-        {  
+        {
             readNext();
             readNext();
             readNext(); // this skips the first all-encompassing <dict> tag 
@@ -180,10 +182,14 @@ ITunesImporterWorker::run()
     if( m_tracksForInsert.size() > 0 )
     {
         Collections::CollectionLocation *location = CollectionManager::instance()->primaryCollection()->location();
-        location->insertTracks( m_tracksForInsert );
-        location->insertStatistics( m_tracksForInsert );
+
+        QMapIterator<Meta::TrackPtr, QString> j(m_tracksForInsert);
+        while (j.hasNext()) {
+            j.next();
+            location->insert( j.key(), j.value() );
+        }
     }
-     
+
     debug() << "done importing xml file";
 }
 

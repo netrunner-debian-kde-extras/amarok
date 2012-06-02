@@ -35,13 +35,22 @@
 #include <KTemporaryFile>
 #include <threadweaver/ThreadWeaver.h>
 
+#include <QToolBar>
 #include <QToolButton>
 
 #include <typeinfo>
 
 using namespace Meta;
 
-AMAROK_EXPORT_PLUGIN( JamendoServiceFactory )
+AMAROK_EXPORT_SERVICE_PLUGIN( jamendo, JamendoServiceFactory )
+
+JamendoServiceFactory::JamendoServiceFactory( QObject *parent, const QVariantList &args )
+    : ServiceFactory( parent, args )
+{
+    KPluginInfo pluginInfo(  "amarok_service_jamendo.desktop", "services" );
+    pluginInfo.setConfig( config() );
+    m_info = pluginInfo;
+}
 
 void JamendoServiceFactory::init()
 {
@@ -57,14 +66,6 @@ JamendoServiceFactory::name()
     return "Jamendo.com";
 }
 
-KPluginInfo
-JamendoServiceFactory::info()
-{
-    KPluginInfo pluginInfo(  "amarok_service_jamendo.desktop", "services" );
-    pluginInfo.setConfig( config() );
-    return pluginInfo;
-}
-
 KConfigGroup
 JamendoServiceFactory::config()
 {
@@ -76,7 +77,7 @@ JamendoService::JamendoService( JamendoServiceFactory* parent, const QString & n
     , m_currentAlbum( 0 )
     , m_xmlParser( 0 )
 {
-    setShortDescription(  i18n( "A site where artists can showcase their creations to the world" ) );
+    setShortDescription(  i18n( "A archive of free, Creative Commons licensed music" ) );
     setIcon( KIcon( "view-services-jamendo-amarok" ) );
 
     setLongDescription( i18n( "Jamendo.com puts artists and music lovers in touch with each other. The site allows artists to upload their own albums to share them with the world and users to download all of them for free. Listen to and download all Jamendo.com contents from within Amarok." ) );
@@ -185,7 +186,7 @@ JamendoService::updateButtonClicked()
     m_tempFileName = tempFile.fileName();
     m_listDownloadJob = KIO::file_copy( KUrl( "http://img.jamendo.com/data/dbdump_artistalbumtrack.xml.gz" ), KUrl( m_tempFileName ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
 
-    Amarok::Components::logger()->newProgressOperation( m_listDownloadJob, i18n( "Downloading Jamendo.com Database" ), this, SLOT( listDownloadCancelled() ) );
+    Amarok::Components::logger()->newProgressOperation( m_listDownloadJob, i18n( "Downloading Jamendo.com database..." ), this, SLOT( listDownloadCancelled() ) );
 
     connect( m_listDownloadJob, SIGNAL( result( KJob * ) ),
             this, SLOT( listDownloadComplete( KJob * ) ) );

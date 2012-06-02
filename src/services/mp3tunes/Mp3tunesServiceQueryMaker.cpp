@@ -35,7 +35,6 @@ struct Mp3tunesServiceQueryMaker::Private {
     enum QueryType { NONE, TRACK, ARTIST, ALBUM, COMPOSER, YEAR, GENRE, CUSTOM };
     QueryType type;
     int maxsize;
-    bool returnDataPtrs;
 };
 
 
@@ -48,45 +47,28 @@ Mp3tunesServiceQueryMaker::Mp3tunesServiceQueryMaker( Mp3tunesServiceCollection 
     DEBUG_BLOCK
     m_collection = collection;
     m_sessionId = sessionId;
-    reset();
+
+    d->type = Private::NONE;
+    d->maxsize = -1;
 }
 
 Mp3tunesServiceQueryMaker::Mp3tunesServiceQueryMaker( Mp3tunesLocker * locker, const QString &sessionId, Mp3tunesServiceCollection * collection  )
     : DynamicServiceQueryMaker()
         , m_storedTransferJob( 0 )
         , d( new Private )
-
 {
     DEBUG_BLOCK
     m_collection = collection;
     m_sessionId = sessionId;
     m_locker = locker;
-    reset();
+
+    d->type = Private::NONE;
+    d->maxsize = -1;
 }
 
 Mp3tunesServiceQueryMaker::~Mp3tunesServiceQueryMaker()
 {
     delete d;
-}
-
-QueryMaker * Mp3tunesServiceQueryMaker::reset()
-{
-    DEBUG_BLOCK
-    d->type = Private::NONE;
-    d->maxsize = -1;
-    d->returnDataPtrs = false;
-    m_parentArtistId.clear();
-    m_parentAlbumId.clear();
-    m_artistFilter.clear();
-
-    return this;
-}
-
-QueryMaker*
-Mp3tunesServiceQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
-{
-    d->returnDataPtrs = resultAsDataPtrs;
-    return this;
 }
 
 void Mp3tunesServiceQueryMaker::run()
@@ -121,6 +103,7 @@ Mp3tunesServiceQueryMaker::setQueryType( QueryType type )
 {
     switch( type ) {
     case QueryMaker::Artist:
+    case QueryMaker::AlbumArtist:
     {
         DEBUG_BLOCK
         d->type = Private::ARTIST;
@@ -177,20 +160,6 @@ QueryMaker * Mp3tunesServiceQueryMaker::addMatch(const Meta::AlbumPtr & album)
     return this;
 }
 
-template<class PointerType, class ListType>
-void Mp3tunesServiceQueryMaker::emitProperResult( const ListType& list )
-{
-    if ( d->returnDataPtrs ) {
-        Meta::DataList data;
-        foreach( PointerType p, list )
-            data << Meta::DataPtr::staticCast( p );
-
-        emit newResultReady( m_collection->collectionId(), data );
-    }
-    else
-        emit newResultReady( m_collection->collectionId(), list );
-}
-
 void Mp3tunesServiceQueryMaker::handleResult()
 {
     DEBUG_BLOCK
@@ -201,9 +170,9 @@ void Mp3tunesServiceQueryMaker::handleResult( const Meta::ArtistList & artists )
     DEBUG_BLOCK
 
     if ( d->maxsize >= 0 && artists.count() > d->maxsize ) {
-        emitProperResult<Meta::ArtistPtr, Meta::ArtistList>( artists.mid( 0, d->maxsize ) );
+        emit newResultReady( artists.mid( 0, d->maxsize ) );
     } else {
-        emitProperResult<Meta::ArtistPtr, Meta::ArtistList>( artists );
+        emit newResultReady( artists );
     }
 }
 
@@ -212,9 +181,9 @@ void Mp3tunesServiceQueryMaker::handleResult( const Meta::AlbumList &albums )
     DEBUG_BLOCK
 
     if ( d->maxsize >= 0 && albums.count() > d->maxsize ) {
-        emitProperResult<Meta::AlbumPtr, Meta::AlbumList>( albums.mid( 0, d->maxsize ) );
+        emit newResultReady( albums.mid( 0, d->maxsize ) );
     } else {
-        emitProperResult<Meta::AlbumPtr, Meta::AlbumList>( albums );
+        emit newResultReady( albums );
     }
 }
 
@@ -223,9 +192,9 @@ void Mp3tunesServiceQueryMaker::handleResult(const Meta::TrackList & tracks)
     DEBUG_BLOCK
 
     if ( d->maxsize >= 0 && tracks.count() > d->maxsize ) {
-        emitProperResult<Meta::TrackPtr, Meta::TrackList>( tracks.mid( 0, d->maxsize ) );
+        emit newResultReady( tracks.mid( 0, d->maxsize ) );
     } else {
-        emitProperResult<Meta::TrackPtr, Meta::TrackList>( tracks );
+        emit newResultReady( tracks );
     }
 }
 
@@ -433,7 +402,7 @@ void Mp3tunesServiceQueryMaker::trackDownloadComplete( QList<Mp3tunesLockerTrack
 
         serviceTrack->setTrackNumber( track.trackNumber() );
 
-        serviceTrack->setYear( QString::number( track.albumYear() ) );
+        serviceTrack->setYear( track.albumYear() );
 
         debug() << "setting type: " << Amarok::extension( track.trackFileName() );
         serviceTrack->setType( Amarok::extension( track.trackFileName() ) );

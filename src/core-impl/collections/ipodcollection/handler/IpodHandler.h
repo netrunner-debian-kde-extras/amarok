@@ -22,11 +22,7 @@
 #ifndef IPODHANDLER_H
 #define IPODHANDLER_H
 
-// Taglib includes
-#include <audioproperties.h>
-#include <fileref.h>
-
-/* CMake check for GDK */
+/* CMake check for GDKPIXBUF */
 #include <config-gdk.h>
 
 extern "C"
@@ -60,7 +56,6 @@ namespace Solid {
 }
 
 class QString;
-class QMutex;
 
 namespace Collections {
     class IpodCollection;
@@ -182,6 +177,7 @@ class IpodHandler : public Meta::MediaDeviceHandler
         virtual void libSetTitle( Meta::MediaDeviceTrackPtr &track, const QString& title );
         virtual void libSetAlbum( Meta::MediaDeviceTrackPtr &track, const QString& album );
         virtual void libSetArtist( Meta::MediaDeviceTrackPtr &track, const QString& artist );
+        virtual void libSetAlbumArtist( Meta::MediaDeviceTrackPtr &track, const QString& albumArtist );
         virtual void libSetComposer( Meta::MediaDeviceTrackPtr &track, const QString& composer );
         virtual void libSetGenre( Meta::MediaDeviceTrackPtr &track, const QString& genre );
         virtual void libSetYear( Meta::MediaDeviceTrackPtr &track, const QString& year );
@@ -194,26 +190,19 @@ class IpodHandler : public Meta::MediaDeviceHandler
         virtual void libSetBpm( Meta::MediaDeviceTrackPtr &track, qreal bpm );
         virtual void libSetFileSize( Meta::MediaDeviceTrackPtr &track, int filesize );
         virtual void libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount );
-        virtual void libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed );
+        virtual void libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, const QDateTime &lastplayed );
         virtual void libSetRating( Meta::MediaDeviceTrackPtr &track, int rating ) ;
         virtual void libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type );
         virtual void libSetPlayableUrl( Meta::MediaDeviceTrackPtr &destTrack, const Meta::TrackPtr &srcTrack );
+        virtual void libSetIsCompilation( Meta::MediaDeviceTrackPtr &track, bool isCompilation );
 
-        virtual void libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QPixmap &image );
+        virtual void libSetCoverArt( Meta::MediaDeviceTrackPtr &track, const QImage &image );
         virtual void libSetCoverArtPath( Meta::MediaDeviceTrackPtr &track, const QString &path );
 
         virtual void prepareToCopy();
         virtual void prepareToDelete();
 
     private:
-        enum FileType
-        {
-            mp3,
-            ogg,
-            flac,
-            mp4
-        };
-
         /// Functions for ReadCapability
         virtual void prepareToParseTracks();
         virtual bool isEndOfParseTracksList();
@@ -225,6 +214,7 @@ class IpodHandler : public Meta::MediaDeviceHandler
         virtual QString libGetTitle( const Meta::MediaDeviceTrackPtr &track );
         virtual QString libGetAlbum( const Meta::MediaDeviceTrackPtr &track );
         virtual QString libGetArtist( const Meta::MediaDeviceTrackPtr &track );
+        virtual QString libGetAlbumArtist( const Meta::MediaDeviceTrackPtr &track );
         virtual QString libGetComposer( const Meta::MediaDeviceTrackPtr &track );
         virtual QString libGetGenre( const Meta::MediaDeviceTrackPtr &track );
         virtual int     libGetYear( const Meta::MediaDeviceTrackPtr &track );
@@ -237,11 +227,12 @@ class IpodHandler : public Meta::MediaDeviceHandler
         virtual qreal   libGetBpm( const Meta::MediaDeviceTrackPtr &track );
         virtual int     libGetFileSize( const Meta::MediaDeviceTrackPtr &track );
         virtual int     libGetPlayCount( const Meta::MediaDeviceTrackPtr &track );
-        virtual uint    libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track );
+        virtual QDateTime libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track );
         virtual int     libGetRating( const Meta::MediaDeviceTrackPtr &track ) ;
         virtual QString libGetType( const Meta::MediaDeviceTrackPtr &track );
         virtual KUrl    libGetPlayableUrl( const Meta::MediaDeviceTrackPtr &track );
-        virtual QPixmap libGetCoverArt( const Meta::MediaDeviceTrackPtr &track );
+        virtual bool    libIsCompilation( const Meta::MediaDeviceTrackPtr &track );
+        virtual QImage  libGetCoverArt( const Meta::MediaDeviceTrackPtr &track );
 
         virtual float usedCapacity() const;
         virtual float totalCapacity() const;
@@ -332,8 +323,6 @@ class IpodHandler : public Meta::MediaDeviceHandler
 
         QMap<KUrl, Meta::TrackPtr> m_tracksdeleting; // associates source url to track of source url being deleted
 
-        Itdb_Track       *m_libtrack;
-
         /* Ipod Connection */
         bool    m_autoConnect;
         QString m_name;
@@ -384,20 +373,11 @@ class IpodHandler : public Meta::MediaDeviceHandler
         void fileTransferred( KJob *job );
         void fileDeleted( KJob *job );
 
-        void slotDBWriteFailed( ThreadWeaver::Job* job );
-        void slotDBWriteSucceeded( ThreadWeaver::Job* job );
-
-        void slotStaleFailed( ThreadWeaver::Job* job );
-        void slotStaleSucceeded( ThreadWeaver::Job* job );
-
-        void slotOrphanedFailed( ThreadWeaver::Job* job );
-        void slotOrphanedSucceeded( ThreadWeaver::Job* job );
-
-        void slotAddOrphanedFailed( ThreadWeaver::Job* job );
-        void slotAddOrphanedSucceeded( ThreadWeaver::Job* job );
-
-        void slotSyncArtworkFailed( ThreadWeaver::Job *job );
-        void slotSyncArtworkSucceeded( ThreadWeaver::Job *job );
+        void slotDBWriteDone( ThreadWeaver::Job* job );
+        void slotStaleDone( ThreadWeaver::Job* job );
+        void slotOrphanedDone( ThreadWeaver::Job* job );
+        void slotAddOrphanedDone( ThreadWeaver::Job* job );
+        void slotSyncArtworkDone( ThreadWeaver::Job *job );
 
         void slotCopyingDone( KIO::Job* job, KUrl from, KUrl to, time_t mtime, bool directory, bool renamed );
 

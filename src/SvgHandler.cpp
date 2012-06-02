@@ -15,6 +15,8 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
+
+#define DEBUG_PREFIX "SvgHandler"
  
 #include "SvgHandler.h"
 
@@ -25,6 +27,7 @@
 #include "moodbar/MoodbarManager.h"
 #include "PaletteHandler.h"
 #include "SvgTinter.h"
+#include "covermanager/CoverCache.h"
 
 #include <KColorScheme>
 #include <KColorUtils>
@@ -53,8 +56,7 @@ namespace The {
 
 SvgHandler::SvgHandler( QObject* parent )
     : QObject( parent )
-    , m_cache( new KPixmapCache( "Amarok-pixmaps" ) )
-    , m_sliderHandleCache( new KPixmapCache( "Amarok-Slider-pixmaps" ) )
+    , m_cache( new KImageCache( "Amarok-pixmaps", 20 * 1024 ) )
     , m_themeFile( "amarok/images/default-theme-clean.svg" )  // //use default theme
     , m_customTheme( false )
 {
@@ -65,16 +67,8 @@ SvgHandler::SvgHandler( QObject* parent )
 SvgHandler::~SvgHandler()
 {
     DEBUG_BLOCK
-
-    m_cache->deleteCache( "Amarok-pixmaps" ); 
     delete m_cache;
-    m_sliderHandleCache->deleteCache( "Amarok-Slider-pixmaps" );
-    delete m_sliderHandleCache;
-
-    foreach( KSvgRenderer* item, m_renderers )
-    {
-        delete item;
-    }
+    qDeleteAll( m_renderers );
     m_renderers.clear();
 
     The::s_SvgHandler_instance = 0;
@@ -83,14 +77,8 @@ SvgHandler::~SvgHandler()
 
 bool SvgHandler::loadSvg( const QString& name )
 {
-    QString svgFilename;
-    
-    if ( !m_customTheme )
-        svgFilename = KStandardDirs::locate( "data", name );
-    else
-        svgFilename = name;
-    
-    KSvgRenderer *renderer = new KSvgRenderer( The::svgTinter()->tint( svgFilename ).toAscii() );
+    const QString &svgFilename = !m_customTheme ? KStandardDirs::locate( "data", name ) : name;
+    QSvgRenderer *renderer = new QSvgRenderer( The::svgTinter()->tint( svgFilename ) );
 
     if ( !renderer->isValid() )
     {
@@ -107,7 +95,7 @@ bool SvgHandler::loadSvg( const QString& name )
     return true;
 }
 
-KSvgRenderer* SvgHandler::getRenderer( const QString& name )
+QSvgRenderer* SvgHandler::getRenderer( const QString& name )
 {
     QReadLocker readLocker( &m_lock );
     if( ! m_renderers[name] )
@@ -116,14 +104,14 @@ KSvgRenderer* SvgHandler::getRenderer( const QString& name )
         if( !loadSvg( name ) )
         {
             QWriteLocker writeLocker( &m_lock );
-            m_renderers[name] = new KSvgRenderer();
+            m_renderers[name] = new QSvgRenderer();
         }
         readLocker.relock();
     }
     return m_renderers[name];
 }
 
-KSvgRenderer * SvgHandler::getRenderer()
+QSvgRenderer * SvgHandler::getRenderer()
 {
     return getRenderer( m_themeFile );
 }
@@ -145,7 +133,7 @@ QPixmap SvgHandler::renderSvg( const QString &name,
     }
 
     QPixmap pixmap;
-    if( skipCache || !m_cache->find( key, pixmap ) )
+    if( skipCache || !m_cache->findPixmap( key, &pixmap ) )
     {
         pixmap = QPixmap( width, height );
         pixmap.fill( Qt::transparent );
@@ -168,7 +156,7 @@ QPixmap SvgHandler::renderSvg( const QString &name,
             m_renderers[name]->render( &pt, element, QRectF( 0, 0, width, height ) );
   
         if( !skipCache )
-            m_cache->insert( key, pixmap );
+            m_cache->insertPixmap( key, pixmap );
     }
 
     return pixmap;
@@ -187,7 +175,7 @@ QPixmap SvgHandler::renderSvgWithDividers(const QString & keyname, int width, in
             .arg( height );
 
     QPixmap pixmap;
-    if ( !m_cache->find( key, pixmap ) ) {
+    if ( !m_cache->findPixmap( key, &pixmap ) ) {
 //         debug() << QString("svg %1 not in cache...").arg( key );
 
         pixmap = QPixmap( width, height );
@@ -219,7 +207,7 @@ QPixmap SvgHandler::renderSvgWithDividers(const QString & keyname, int width, in
         m_renderers[name]->render( &pt, "divider_top", QRectF( margin, 0 , width - 1 * margin, 1 ) );
         m_renderers[name]->render( &pt, "divider_bottom", QRectF( margin, height - 1 , width - 2 * margin, 1 ) );
     
-        m_cache->insert( key, pixmap );
+        m_cache->insertPixmap( key, pixmap );
     }
 
     return pixmap;
@@ -252,7 +240,7 @@ void SvgHandler::discardCache()
 {
     //redraw entire app....
     reTint();
-    m_cache->discard();
+    m_cache->clear();
     App::instance()->mainWindow()->update();
 }
 
@@ -260,12 +248,12 @@ QPixmap
 SvgHandler::imageWithBorder( Meta::AlbumPtr album, int size, int borderWidth )
 {
     const int imageSize = size - ( borderWidth * 2 );
-    const QString &loc  = album->imageLocation( imageSize ).path( KUrl::LeaveTrailingSlash );
+    const QString &loc  = album->imageLocation( imageSize ).url();
     const QString &key  = !loc.isEmpty() ? loc : album->name();
-    return addBordersToPixmap( album->image(imageSize), borderWidth, key );
+    return addBordersToPixmap( The::coverCache()->getCover( album, imageSize ), borderWidth, key );
 }
 
-QPixmap SvgHandler::addBordersToPixmap( QPixmap orgPixmap, int borderWidth, const QString &name, bool skipCache )
+QPixmap SvgHandler::addBordersToPixmap( const QPixmap &orgPixmap, int borderWidth, const QString &name, bool skipCache )
 {
     int newWidth = orgPixmap.width() + borderWidth * 2;
     int newHeight = orgPixmap.height() + borderWidth *2;
@@ -281,7 +269,7 @@ QPixmap SvgHandler::addBordersToPixmap( QPixmap orgPixmap, int borderWidth, cons
     }
 
     QPixmap pixmap;
-    if( skipCache || !m_cache->find( key, pixmap ) )
+    if( skipCache || !m_cache->findPixmap( key, &pixmap ) )
     {
         // Cache miss! We need to create the pixmap
         // if skipCache is true, we might actually already have fetched the image, including borders from the cache....
@@ -314,7 +302,7 @@ QPixmap SvgHandler::addBordersToPixmap( QPixmap orgPixmap, int borderWidth, cons
         m_renderers[m_themeFile]->render( &pt, "cover_border_left", QRectF( 0, borderWidth, borderWidth, orgPixmap.height() ) );
     
         if( !skipCache )
-            m_cache->insert( key, pixmap );
+            m_cache->insertPixmap( key, pixmap );
     }
 
     return pixmap;

@@ -1,5 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2006 Giovanni Venturi <giovanni@kde-it.org>                            *
+ * Copyright (c) 2010 Ralf Engels <ralf-engels@gmx.de>                                  *
+ * Copyright (c) 2010 Sergey Ivanov <123kash@gmail.com>                                 *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -18,15 +20,18 @@
 #define AMAROK_EDITFILTERDIALOG_H
 
 #include "core/meta/Meta.h"
-#include "ui_EditFilterDialog.h"
+#include "widgets/MetaQueryWidget.h"
+#include "widgets/TokenPool.h"
 
 #include <KDialog>
-
 #include <QList>
 
-class QWidget;
-class QSpinBox;
-class QDateEdit;
+namespace Ui
+{
+    class EditFilterDialog;
+}
+
+class TokenDropTarget;
 
 class EditFilterDialog : public KDialog
 {
@@ -41,50 +46,33 @@ class EditFilterDialog : public KDialog
     signals:
         void filterChanged( const QString &filter );
 
-    private:
-        Ui::EditFilterDialog m_ui;
-
-        bool m_appended;               // true if a filter appended
-        QString m_filterText;          // the resulting filter string
-        QString m_previousFilterText;  // the previous resulting filter string
-
-        // Cache lists for completion
-        QStringList m_artists;
-        QStringList m_albums;
-        QStringList m_composers;
-        QStringList m_genres;
-        QStringList m_labels;
-
-        QString keywordConditionDate(const QString& keyword) const;
-        QString keywordConditionNumeric(const QString& keyword) const;
-        QString keywordConditionText(const QString& keyword) const;
-
     private slots:
-        void selectedAttribute( const QString &attr );
+        void slotTokenSelected( QWidget *token );
+        void slotTokenDropTargetChanged();
+        void slotAttributeChanged( const MetaQueryWidget::Filter &filter );
+        void slotInvert( bool checked );
+        void slotSeparatorChange( int index );
+        void slotReset();
+        void accept();
 
-        void minSpinChanged(int value);
-        void maxSpinChanged(int value);
+    private:
+        void initTokenPool();
+        Token *tokenForField( const qint64 field );
+        void parseTextFilter( const QString &text );
+        void updateMetaQueryWidgetView();
 
-        void dateWanted();
-        void textWanted( const KIcon &icon = KIcon() );
-        void textWanted( const QStringList &completions, const KIcon &icon = KIcon() );
-        void valueWanted();
+        struct Filter
+        {
+            MetaQueryWidget::Filter filter;
+            bool inverted;
+        };
 
-        void chooseCondition(int index);
-        void chooseOneValue();
-        void chooseMinMaxValue();
-        
-        void resultReady( const QString &collectionId, const Meta::AlbumList &albums );
-        void resultReady( const QString &collectionId, const Meta::ArtistList &artists );
-        void resultReady( const QString &collectionId, const Meta::ComposerList &composers );
-        void resultReady( const QString &collectionId, const Meta::GenreList &genres );
-        void resultReady( const QString &collectionId, const Meta::LabelList &labels );
+        Ui::EditFilterDialog *m_ui;
+        TokenDropTarget *m_dropTarget;
+        Token *m_curToken;
+        QMap< Token *, Filter > m_filters;
 
-    protected slots:
-        virtual void slotDefault();
-        virtual void slotUser1();
-        virtual void slotUser2();
-        virtual void slotOk();
+        QString m_separator;
 };
 
 #endif /* AMAROK_EDITFILTERDIALOG_H */

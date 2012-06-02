@@ -21,6 +21,7 @@ add_subdirectory( browsers )
 add_subdirectory( context )
 add_subdirectory( core )
 add_subdirectory( core-impl )
+add_subdirectory( dynamic )
 add_subdirectory( playlist )
 add_subdirectory( playlistmanager )
 add_subdirectory( timecode )
@@ -53,13 +54,23 @@ set( testcaseconverter_SRCS
 
 kde4_add_unit_test( testcaseconverter  ${testcaseconverter_SRCS} )
 
-target_link_libraries(testcaseconverter ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY})
+target_link_libraries(testcaseconverter ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} amarokcore)
+
+#------------------------ Test Debug -----------------------------
+
+set( testdebug_SRCS
+     TestDebug.cpp
+     ${AMAROK_SOURCE_TREE}/core/support/Debug.cpp
+     )
+
+kde4_add_unit_test( testdebug ${testdebug_SRCS} )
+target_link_libraries(testdebug ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY} amarokcore )
 
 #------------------------ Test Expression -----------------------------
 
 set( testexpression_SRCS
         TestExpression.cpp
-        ${AMAROK_SOURCE_TREE}/Expression.cpp
+        ${AMAROK_SOURCE_TREE}/core-impl/collections/support/Expression.cpp
     )
 
 kde4_add_unit_test( testexpression  ${testexpression_SRCS} )
@@ -70,6 +81,7 @@ target_link_libraries(testexpression ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBRARY})
 
 set( testqstringx_SRCS
         TestQStringx.cpp
+        ${AMAROK_SOURCE_TREE}/QStringx.cpp
     )
 
 kde4_add_unit_test( testqstringx  ${testqstringx_SRCS} )
@@ -91,12 +103,13 @@ target_link_libraries(testsmartpointerlist ${KDE4_KDECORE_LIBS} ${QT_QTTEST_LIBR
 
 set( testtagguesser_SRCS
         TestTagGuesser.cpp
+        ${CMAKE_SOURCE_DIR}/shared/TagsFromFileNameGuesser.cpp
         ${AMAROK_SOURCE_TREE}/dialogs/TagGuesser.cpp
     )
 
 kde4_add_unit_test( testtagguesser  ${testtagguesser_SRCS} )
 
-target_link_libraries(testtagguesser ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${QT_QTTEST_LIBRARY})
+target_link_libraries(testtagguesser ${KDE4_KDECORE_LIBS} ${KDE4_KDEUI_LIBS} ${QT_QTTEST_LIBRARY} amarokcore)
 
 #------------------------ Test TrackOrganizer -----------------------------
 
@@ -104,6 +117,7 @@ set( testtrackorganizer_SRCS
         TestTrackOrganizer.cpp
         ${AMAROK_SOURCE_TREE}/dialogs/TrackOrganizer.cpp
         ${AMAROK_SOURCE_TREE}/core/meta/Meta.cpp
+        ${AMAROK_SOURCE_TREE}/QStringx.cpp
     )
 
 kde4_add_unit_test( testtrackorganizer  ${testtrackorganizer_SRCS} )

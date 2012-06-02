@@ -23,6 +23,7 @@
 #include <QMap>
 #include <QString>
 #include <QStringList>
+#include <QtCore/QTimer>
 
 namespace Solid {
     class Device;
@@ -49,6 +50,7 @@ class AMAROK_EXPORT MediaDeviceCache : public QObject
         const QStringList getAll() const { return m_type.keys(); }
         MediaDeviceCache::DeviceType deviceType( const QString &udi ) const;
         const QString deviceName( const QString &udi ) const;
+        const QString device( const QString & udi ) const;
         bool isGenericEnabled( const QString &udi ) const;
         const QString volumeMountPoint( const QString &udi ) const;
 
@@ -61,12 +63,15 @@ class AMAROK_EXPORT MediaDeviceCache : public QObject
         void slotAddSolidDevice( const QString &udi );
         void slotRemoveSolidDevice( const QString &udi );
         void slotAccessibilityChanged( bool accessible, const QString &udi );
+        void slotTimeout();
 
     private:
         QMap<QString, MediaDeviceCache::DeviceType> m_type;
         QMap<QString, QString> m_name;
+        QMap<QString, bool> m_accessibility;
         QStringList m_volumes;
         static MediaDeviceCache* s_instance;
+        QTimer m_timer;
 };
 
 #endif /* AMAROK_MEDIADEVICECACHE_H */

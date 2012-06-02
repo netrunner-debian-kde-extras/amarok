@@ -1,11 +1,445 @@
 Amarok ChangeLog
 ================
-(C) 2002-2010 the Amarok authors.
+(C) 2002-2011 the Amarok authors.
+
+Version 2.5
+  FEATURES:
+    * Now It's possible to use formated strings for prefix and suffix in 
+      Playlist's layout items.
+
+  BUGFIXES:
+    * Do not crash when iPod doesn't have a master playlist. (BR 288936)
+    * Fix Last.fm not finding KDE Wallet. (BR 286741)
+    * Put a border around bottom toolbars, visually separating them from
+      browser contents. (BR 277741)
+    * Align the bottom toolbars.
+    * Allow albums with empty name but nonempty artist in local collection. (BR 272471)
+    * Fix collection info display (track count, free space) for iPod and MTP
+      devices. (BR 232093)
+    * Fix crash at exit with Qt 4.8
+    * Fix moving applets rightward in the context toolbar.
+    * Fix breadcrumbs not working properly for the file browser.
+    * Disable cover fetching action for tracks not in the collection to avoid
+      crash when trying to "save as" a cover. (BR 287604)
+    * Show default cover in tag dialog when track is not in the collection.
+    * Fix directory selection when opening album location in tag dialog.
+    * Fix crash in CoverFoundDialog if progress dialog is cancelled just
+      before fetch is done.
+    * Correctly parse disambiguation pages for songs in the English Wikipedia. (BR 270054)
+    * Fix wrong context view applets sizes on start up in some cases.
+    * Fix Amarok consuming CPU until main window is shown. (BR 278897)
+    * Fix last.fm 'scrobble composer' option's fallback to artist (BR 286215)
+    * Fix volume control from within Amarok.
+    * Fix slow startup because of imported playlists. (BR 284761)
+    * Fix audio CD detection on Amarok start. (BR 276032)
+    * Set a default filename scheme for USB Mass Storage (BR 285900)
+    * Fixed crash during MusicBrainz search. (BR 277475)
+
+  CHANGES:
+    * Load Last.fm friend/neighbour avatars on demand.
+    * Update tracks in the recently played widget only when needed.
+    * Allow editing the SearchWidget during a search animation.
+    * Update the collection view while UMS is scanning.
+    * Don't block the UI while scanning UMS device.
+    * Allow going back and forward in Amazon store. Thanks to GCI student Nikola Miljkovic.
+
+Version 2.5.0-Beta 1
+  FEATURES:
+    * New "equals" match in collection filter - e.g. label:=pop finds songs
+      with label "pop" but not songs with label "electro pop". (BR 260004)
+    * Enable dropping tracks on empty area in Saved Playlists to create new
+      playlist.
+    * Added a "create new playlist" action in the empty space of the Saved
+      Playlists. (BR202725)
+    * Add new type of optional tokens in format string (Collection Organizer)
+      (BR 264874)
+    * Compilations are properly marked as such when transferring music
+      to/from iPods. (BR 207880)
+    * Ctrl+F now activates collection browser and focuses the seach collection
+      bar. (BR 257381)
+    * Music store based on the Amazon catalogue.
+    * Podcast subscription synchronisation and podcast status synchronisation
+      with gpodder.net service.
+    * Possibility to browse through podcasts suggested by gpodder.net and
+      through gpodder.net top recommended podcasts.
+    * Made possible to make presets for TagGuesser. (BR 264632)
+    * Display current timestamp in tray tooltip. (BR 278445)
+    * Auto-save the playlist so that it is not lost if Amarok crashes.
+
+  CHANGES:
+    * BPM (beats-per-minute) attribute is now kept when transferring tracks
+      to/from media devices. (including iPods)
+    * Better, shorter internet service descriptions.
+    * Both Delete and Move to Trash actions are now offered in the collection
+      browser context menu. (BR 286356)
+    * Amarok now depends on libmygpo-qt >= 1.0.5.
+    * New USB Mass Storage media-device plugin using the Amarok Collection Scanner.
+    * Browser widget backgrounds can now be enabled/disabled.
+    * Playlist: Don't group albums without name. (BR 243344)
+    * Make delete confirmation dialog text less confusing. Patch by Gilles Habran.
+      (BR 263693)
+    * Removed never-working right-mouse-button action to unset iPod album cover.
+    * Removed the confusing ability to edit the navigation breadcrumb.
+    * BPM is now read from/saved to media devices (e.g. iPod).
+    * Track last played date and time is now correctly read from/saved to iPods.
+    * Depend on KDE 4.6 - various bugs were caused by older versions.
+    * Total rewrite of Automated Playlist Generator algorithm.  New algorithm
+      is far less complicated and crash-prone, but at the cost of taking
+      longer to converge when the constraint tree is complicated. (BR 240927,
+      BR 240301)
+    * Improved the playlist synchronisation feature.
+    * Make possible to get count tracks before the XSPF file is fully loaded.
+    * Stop fetching guitar- and bass-tabs from fretplay.com because the site is down.
+    * Mark unplayble tracks in the playlist. Patch by Sandeep Raghuraman. (BR 263640)
+    * Current track applet: show number of artists instead of genres. (BR 261077)
+
+  BUGFIXES:
+    * Stability fixes for Dynamic playlist (BR 280056)
+    * Fixed crash in the Wikipedia Applet. (BR 279813)
+    * Don't crash with Qt debug builds when iPod is connected. (BR 279798)
+    * Fixed crash on exit while collection scanner is running. (BR 261421)
+    * Fixed collection browser tracks grouping after switching to Merged View. (BR 277015)
+    * Prefer track artist to album artist in Albums applet fiter. (BR 266682)
+    * Fixed the Metadata, CanGoPrevious, CanGoNext and CanSeek properties of the
+      MPRIS2 interface
+    * Fixed Wikipedia search field not accepting space character or cursor
+      keys. (BR 266591)
+    * Fixed SupportedMimeTypes method on the MPRIS2 D-Bus interface, so that it
+      no longer appends duplicate entries on every call.
+    * Do not use Album Artist as Artist for files without Artist metadata. (BR 281283)
+    * Fixed crash on decodeing currupted media during MusicDNS search. (BR 284895)
+    * Prevent crash on getting cover from MP4 files. Patch by Charles Reiss.
+      (BR 283675)
+    * Prevent several potential and one real media device crash. (BR 284838)
+    * Fixed iPod album covers not displayed in collection browser. (BR 263268)
+    * Do not crash when iPod is removed but some iPod tracks are still in
+      playlist. (BR 245852)
+    * Fixed several potential AmarokUrl related crashes.
+    * Rework iPod identification so that it is more reliable (BR 263288)
+    * iPhone 3G (and perhaps later models) should be correctly recognized by
+      Amarok now. (BR 281738)
+    * Automated Playlist Generator doesn't freeze anymore when it finishes.
+      (BR 277865)
+    * Use regular MusicBrainz search for tracks with MBID. (BR 280857)
+    * Always use English AND/OR in Collection Filter even if translations are
+      in effect. (BR 279559)
+    * Fixed errors in the saved playlists view when removing a playlist. (BR 273358)
+    * Fixed issue where the Context View wrench was not created when the
+      Context View had no applets. (BR 280382)
+    * Fixed off-by-one error in organize collection dialog.
+    * Fixed issue that made TagGuesser dialog to forget setings. (BR 280288)
+    * Fixed tags guessing from full file path. (BR 264302)
+    * Work around a Qt bug that crashed Amarok in various situations. (BR 207382, BR 269227)
+    * Fixed issue with TagDialog that brought to messed up digits order in numerical
+      fields (year, track, disk, score). (BR 277279)
+    * Made possible to store empty TagDialog's numerical fields. (BR 278921)
+    * Fixed issue with TagDialog's "Open Destination" button, now It opens
+      correct directory instead of parent. (BR 279147)
+
+Version 2.4.3
+  BUGFIXES:
+    * Fix KWallet auth requests on every track change. (BR 278177)
+    * Display correct values for pretty times (playlist length) > 1 day.
+    * Update playlist length correctly after removing track. (BR 273407)
+    * Fix seek backward from dbus. (Thanks to Matthieu Bedouet) (BR 263287)
+    * Prevent dialog querying last.fm settings being displayed on startup if none set.
+    * Fix detection of smartphones in USB storage mode. (BR 277685)
+    * Fix crashes on expanding a newly cloned dynamic playlist (BR 277750)
+    * Don't block the UI while calculating the filename previews. (BR 233196)
+    * Make M3U & PLS playlist files editable from Saved Playlists. (BR 245963)
+
+Version 2.4.2
+    * This version number was skipped.
+
+VERSION 2.4.2-Beta 1
+  FEATURES:
+    * Made Amarok compile with the Clang LLVM frontend.
+    * Enable drag and drop on collections to copy/move within Local Music and
+      directly from the playlist. (BR 223400)
+    * Added KNotify scripting interface. (BR 260750)
+    * Make podcast episodes download filename configurable. Patch by
+      Sandeep Raghuraman. (BR 155075)
+    * Automatic scrolling in lyrics applet (Thanks to Jan Gerrit Marker)
+    * Option to scrobble composer as artist to Last.fm (Thanks to Nicholas Wilson)
+    * Option to hide the OSD if another window is taking the full screen
+
+  CHANGES:
+    * Again write back ratings only if option is selected.
+    * Moved the queue-editor action to the main menu under playlist to save space.
+      Queue editor now has a shortcut: Meta+U.
+    * Removed the redo action from the playlist toolbar to make it less wide.
+    * Made some playlist toolbar actions collapse into a menu button for use on
+      small screens.
+    * Removed the statusbar. Moved progress info & messages to the Media Sources dock.
+    * Removed the preview button and checkbox from the organize collection dialog.
+    * General user interface cleanup (addition of browser widget backgrounds,
+      etc.)
+    * Removed the add button in the context toolbar. Applet explorer is opened on config.
+    * Easier to understand Dynamic playlists
+    * Made Amarok depend ffmpeg-0.6 or newer.
+    * Use KImageCache if possible (kdelibs 4.5.0 and later), which should
+      reduce the number of cache-related crashes.
+
+  BUGFIXES:
+    * Make the Coverbling applet build again. (Patch by Manu Wagner)
+    * Don't let the album applet freeze Amarok for ages on track change. (BR260810, BR277021)
+    * Fixed cover fetching from Google Images. (BR 275265)
+    * Fixed a crash in the equalizer dialog when selecting "Off".
+    * Fix finalization of track copy process to media device collections. (BR238912)
+      Patch by Tommaso Falchi Delitala.
+    * Fixed crash on MusicBrainz search. (BR 274956)
+    * Avoid crash in ContextView when accessing Plasma::Applet::view().
+      (BR 258741)
+    * Fixed playlist tooltip getting too tall for multiline comments. (BR 256038)
+    * Made equalizer keywords (dB,kHz,...) translatable. (BR 263572)
+    * Made equalizer preset names translatable. (BR 263596)
+    * Fixed runtime error reporting of scripts. (BR 207409)
+    * Fixed "Happy" moodbar theme. (BR 264432)
+    * Re-added old "Normal" moodbar theme. (BR 264432)
+    * Fixed crash for invalid scripts trying to be stopped by the manager.
+      (BR 268917)
+    * Fixed collection menu items ordering. (BR 207007)
+    * Fixed top level podcast location setting. (BR 263736)
+    * Fixed double-clicking in collection using left-handed mouse setting.
+      (BR 272360)
+
+
+VERSION 2.4.1
+  BUGFIXES:
+    * Fixed crash on saving playlist on ineligible device. (BR 266899)
+    * Fixed Photos applet crash on track metadata change. (BR 265395)
+    * Fixed crash on local collection search. (BR 270949)
+    * Fixed crash during iPod track removal. (BR 253088)
+    * Relative paths support for XSPF playlists. (BR 264147)
+    * Fixed incorrect handling of "Various Artists" node by Collection Browser,
+      now selection of this node returns "Various Artists" tracks instead of
+      whole collection. (BR: 263255, BR: 269717)
+    * Fixed song scrobbling if It was paused. (BR 267477)
+    * Screen escape characters in MusicBrainz request string. (BR 269455)
+    * Fixed detection of iPod devices.
+    * Fixed crash when the lyrics applet was removed and re-added while a
+      track was playing and the user pressed "ESC".
+    * Fixed cached lyrics were not displayed if no lyrics script was running.
+    * Fixed lyrics changes in the TagDialog were not "synchronized" to the
+      lyrics applet.
+    * Fixed reporting of playback status for MPRIS (both versions).
+      (BR 268282)
+
+
+VERSION 2.4.1-Beta 1
+  FEATURES:
+    * Remote NFS & SMB/CIFS collections now work! (BR 249760, BR 232976, 
+      BR 171213, BR 187692)
+    * New "Preview" feature for the Organize Collection dialog. Patch by
+      Maximilian Güntner <maximilian.guentner@gmail.com>.
+    * String filtering in the albums applet.
+    * Ability to change text alignment in the lyrics applet.
+    * gpodder.net Service, a Podcast Directory displaying the most used Tags
+      from gpodder.net & the top Podcasts of these Tags
+
+  CHANGES:
+    * The podcast directory service is now based on incremental parsing of OPML without
+      caching in the database.
+    * Plugins can now be optionally enabled in the config dialog.
+    * Script selector is moved from the menubar to the config dialog.
+    * Now all changes to Preset Formats in Organize Collection dialog get saved on close,
+      doesn't matter If dialog was accepted or rejected.
+    * Added "Update Preset" button to Organize Collection dialog, which updates currently
+      choosen scheme.
+    * Renewed FilterEditor dialog.
+    * Changed tokens syntax in FileNameLayoutDialog (TagGuesser, OrginizeCollection dialogs)
+      now tokens wrapped in percent signs (%token% instead of %token).
+    * Added ability to guess tags from whole track path. (TagGuesser dialog)
+    * Use KDirWatch to watch changes to collection.
+    * Do always store track rating as tags in files. Patch by Alan Ezusti
+      <alan.ezust@gmail.com>. (BR 259117)
+    * Added missing tooltip for animation settings. Patch by Bhargav Mangipudi
+      <bhargav.1191@gmail.com>. (BR 248690)
+
+  BUGFIXES:
+    * Fixed translation issue in MagnatuneSignupDialog. 
+      Patch by Burkhard Lueck (lueck@hube-lueck.de) (BR: 239019)
+    * Fixed crash on loading unsupported format playlist. (BR: 265378)
+    * Ask delete confirmation for all contents of folder at once instead of each individually.
+      Affects "Saved Playlists" and "Podcasts" (BR 246117)
+    * Fixed unreadable text in lyrics applet in kde 4.6. (BR 265311)
+    * Fixed tag dialog crash when sorting by genre and then changing tags.
+    * Fixed track's statistics update in case of StopAfterCurrent playback mode
+      (prevent double statistics change). (BR 265654)
+    * Delete .mood files when tracks got removed from collection via Collection
+      view context menu, and move them to new destination during Organize Collection process.
+      (BR 261629)
+    * Fixed "Configure Amarok..." disappearing in tray menu. (BR 258226)
+    * Fixed crash when quitting Amarok. (BR 253676, BR 257407)
+    * Fixed empty folders removal after collection organization. (BR 190881)
+    * Fixed crash when trying to load cover for track/album without artist. (BR 263256)
+    * Fixed linking on Solaris 11 (and others?). (BR 264112)
+    * Fixed temporary podcast download filenames that were to long by using MD5 hash instead.
+      Thanks to Frank Steinmetzger for the patch. (BR 264813)
+    * Fixed issue with absentee toolbar on clear run (without config files). (BR 259615)
+    * Fixed CD copying functionality. (BR 264050)
+    * Fixed CUE tracks playback order. (BR 263237)
+    * Prevent crash on exit when using Phonon-VLC.
+    * Fixed crash in the queue editor when trying to show already
+      removed items of the playlist. (BR 263308)
+    * Fixed Mute button. (BR 253098)
+    * Fixed issue with Organize collection, which made amarok remove newly copied tracks.
+      (BR 263301)
+    * Fixed wrong "Configure amarok" action position in tray icon popup menu. (BR 263330)
+    * Fixed minor inconsistency in the Collection view. Patch by 
+      Bhargav Mangipudi <bhargav.1191@gmail.com>. (BR 260973)
+    * Fixed potential crash with the Similar Artists applet. Thanks to 
+      Tuomas Nurmi <tuomas@norsumanageri.org> for the patch. (BR 263145)
+    * Fixed 'Scale Font' option in OSD options for OSD preview widget.
+      (BR 254029)
+    * Fixed issue with playlist tooltips that was shown independetly from
+      "Show tooltip" option. (BR 263121)
+    * Fixed issues with multifiles cuesheet, when all tracks get metadata of
+      last track
+      in cuesheet, and each file defined in sheet gets all tracks of this sheet.
+      (BR 262668) (BR 209341)
+    * Fixed crash when trying to download a full size cover and the server
+      redirects the request. (BR 262902)
+    * Fixed issue when breadcrumbs stayed not updated after service insert/remove.
+      (BR 262780)
+    * Fixed issue with TagDialog that make metadata fields stay editable if multiple
+      streams opened. (BR 177400)
+    * Fixed missing equals-sign ('=') in filter string of bookmarks. (BR 245759)
+
+
+VERSION 2.4.0
+  CHANGES:
+    * New Splash Screen by Tomasz Dudzik <madsheytan@gmail.com>.
+    * The "Playdar Collection" feature has been disabled until some technical 
+      issues are resolved.
+    * Fixed some broken radio stream URLs.
+
+  BUGFIXES:
+    * Fix crash on copying tracks between collection. (BR 261364)
+    * Fix fetching of script data. BBC, Free Music Charts and others should work again.
+      (BR 261839)
+    * Actually show the Splash Screen by default, as it was meant to work.
+    * Leave all pending files in case of error/conflict during tracks moving. (BR 257739)
+    * Fix crash when moving tracks between collections. (BR 253033)
+    * Fixed issue with UMS Collection that made amarok to delete original track
+      instead of newly copied one. (BR 238915)
+    * Fixed issue with Audio CDs that do not provide CDDB information. Patch by
+      Andriy Gapon <avg@icyb.net.ua>. (BR 257818)
+    * Fixed issue with the Organize Files Dialog that prevented presets from being
+      loaded when in advanced mode. Patch by Philipp Schmidt <philschmidt@gmx.net>.
+      (BR 255325)
+
+
+VERSION 2.4-Beta 1
+  FEATURES:
+    * New UPnP Collection detects and plays media on UPnP devices on the network.
+    * New transcoding feature which converts one or more tracks with a chosen encoder
+      when copying to the local collection.
+    * Added option to use Wikipedia Mobile.
+    * Added settings for writing statistics and album covers back to the file.
+    * Leave focus in playlist search widget when using up/down to scroll through
+      filtered results. Thanks to Thomas Karpiniec for the patch!
+    * LyricsApplet: The lyrics in are now updated when they were changed in a
+      different place, for example in the Tag Dialog.
+    * Permit the use of iPod Touch 3G and possibly newer devices. Thanks to
+      Aurélien Croc for the patch!
+    * Match space-separated search terms in the playlist filter var individually. Thanks 
+      to Thomas Karpiniec for the patch!
+    * Added new context applet for displaying guitar and bass tab information. Thanks to
+      Rainer Sigle for the patch!
+    * Added ability to set/update Album Artist.
+    * Added map view and calendar in the upcoming events applet.
+    * Added support for all Wikipedia languages. (BR 220617)
+    * Added incremental search in the Wikipedia applet (press
+      '/' or global search key when in focus).
+    * Added "Favorite Venues" to the upcoming events applet.
+    * Read MusicBrainz IDs of MP4 files during scanning.
+    * Ability to hide and show the menu bar. Patch by 
+      Valentyn Pavliuchenko <valentyn.pavliuchenko@gmail.com>.
+    * Size of the On-Screen-Display font is now configurable. (BR 195186)
+    * Musicbrainz-based mass tagging UI by Sergey Ivanov.
+    * New easy to use table-based UI for Ampache server configuration. (BR 200703)
+    * OPML export for podcast subscriptions. (BR 126120)
+    * New "Playlist Length" constraint for the APG, which allows you to specify
+      the number of tracks in the playlist.  What was the "Playlist Length "
+      constraint is now called "Playlist Duration".
+    * MPRIS2 support for controlling Amarok over D-Bus.
+    * New "Playdar Collection" allows searching for and listening
+      to music provided by a running local Playdar service.
+
+  CHANGES:
+    * Brought back collapsing animations of context applets.
+    * Added a "Donors" tab to the About dialog for our generous Roktober 2010
+      donors who wish to be mentioned.
+    * Tracks might contain lyrics in the HTML format, where there's no user-visible
+      content in the HTML. Those lyrics are now regarded as "empty".
+    * LyricsApplet: changed the layout of the "Do you really want to refetch lyrics"
+      message.
+    * Current track applet: added "show in media sources" actions for current
+      track's artist, album, composer, genre, and year if available.
+    * Current track applet: added action to open the tag dialog.
+    * Improved appearance of current track applet when playback is stopped.
+    * Better scrolling in the applet explorer.
+    * The default moodbar style now uses system colors.
+    * Added tray icon context-menu action to open the preferences dialog.
+    * Show a progress bar while loading pages in the Wikipedia applet.
+    * Added option to right-align "year" in the albums applet.
+    * Improved alignment of tracks in the albums applet.
+    * Scroll to the current album and make its tracks visible in the albums
+      applet. (BR 187011)
+    * Added ability to expand/collapse/drag disc items in the albums applet.
+      (BR 249488)
+    * Improved appearance of similar artist, upcoming events, and Wikipedia
+      applets.
+    * Improved presentation of suggested lyrics (currently only 3rd party
+      scripts use).
+    * Now using QToolTip for playlist tooltips.
+    * Changed playlist delegate margins and inline editor formating.
+    * Added "Added This Hour" filter preset to the collection brower widget.
+    * Bumped KDE dependency to version 4.4., and Qt dependency to 4.6.
+    * Print message when a file can't be copied to a media player.
+      Patch by Sergey Ivanov <123kash@gmail.com>. (BR 203820)
+    * Improved the usability of device items in Media Sources by adding tooltips.
+    * Deleting items in the collection/file browser will move them to trash;
+      pressing SHIFT while clicking the action will bypass trash.
+
+  BUGFIXES:
+    * Fixed white text on light blue background in tabs applet. (BR 258234)
+    * Fixed cover dialog crash pressing Ok when nothing is selected. (BR 258187)
+    * Title labels incorrectly used the text color from the plasma theme.
+      This caused trouble with the fixed plasma theme and light color schemes.
+    * Fixed a data-loss bug where the user could lose changes he made to the current
+      track's lyrics. (BR 207621)
+    * Fixed covers of Ampache tracks not available through DBus.
+    * Scanning stale and orphaned songs on iPod results in song duplication. (BR 235696)
+    * Applets' settings dialogs were partly untranslatable. (BR 255971)
+    * Fixed append&play action. Thanks Pieter van der Kloet for the patch. (BR 229706)
+    * Don't ignore the "use relative path" checkbox in the playlist export dialog.
+      (BR 250689)
+    * Fixed applet explorer getting stuck. (BR 253058)
+    * Fixed Wikipedia applet header layout issues. (BR 215171)
+    * Fixed truncated heading in albums applet. (BR 231001)
+    * Playlist sorting breadcrumb items have been untranslatable.
+      Patch by Alexander Potashev <aspotashev@gmail.com>. (BR 189750)
+    * Dynamic Playlist criteria were not being saved properly. (BR 243562)
+    * Collection Browser should show Artist names for Compilation Albums. (BR
+      252790)
+    * When Amarok starts and "Continue playing when Amarok is started" is selected,
+      the Current Track applet showed songs of the artist instead of the current
+      track info. Patch by Conrad Hübler. (BR 241641)
+    * Fixed crash on Windows when exporting playlist to any file type. Patch by
+      James Duncan <james.t.duncan@gmail.com>. (BR 249376)
+    * If album keyword is empty, show "unknown album" in context window. (BR 205038)
+    * Ampache would not connect to servers placed in a subdirectory.
+    * Fixed an initialization bug which affected all context applets.
+    * Fixed bug where users could drag applets around indiscriminately.
+    * FLAC BPM tags could be read incorrectly. (BR 234166)
+
+
+==BEGIN Qt 4.6 / KDE 4.4 DEPENDENCY==
 
 
 VERSION 2.3.2
-  FEATURES:
-
   CHANGES:
     * Bumped libMTP dependency to version 1.0.0.
     * Improved response of current track and albums applet on data updates.

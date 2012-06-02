@@ -48,23 +48,6 @@ QueryMaker * DynamicServiceQueryMaker::orderBy(qint64 value, bool descending)
     return this;
 }
 
-QueryMaker * DynamicServiceQueryMaker::orderByRandom()
-{
-    return this;
-}
-
-QueryMaker * DynamicServiceQueryMaker::includeCollection(const QString & collectionId)
-{
-    Q_UNUSED( collectionId );
-    return this;
-}
-
-QueryMaker * DynamicServiceQueryMaker::excludeCollection(const QString & collectionId)
-{
-    Q_UNUSED( collectionId );
-    return this;
-}
-
 QueryMaker * DynamicServiceQueryMaker::addMatch(const Meta::TrackPtr & track)
 {
     DEBUG_BLOCK
@@ -111,13 +94,6 @@ QueryMaker * DynamicServiceQueryMaker::addMatch(const Meta::LabelPtr & label)
 {
     DEBUG_BLOCK
     Q_UNUSED( label );
-    return this;
-}
-
-QueryMaker * DynamicServiceQueryMaker::addMatch(const Meta::DataPtr & data)
-{
-    DEBUG_BLOCK
-    ( const_cast<Meta::DataPtr&>(data) )->addMatchTo( this );
     return this;
 }
 

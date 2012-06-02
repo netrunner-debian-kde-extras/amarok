@@ -14,6 +14,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "CoverFetchUnit"
+
 #include "CoverFetchUnit.h"
 
 #include "core/support/Amarok.h"
@@ -22,8 +24,8 @@
 #include <QSet>
 #include <QXmlStreamReader>
 
-#define DEBUG_PREFIX "CoverFetchUnit"
 #include "core/support/Debug.h"
+#include <KLocalizedString>
 
 /*
  * CoverFetchUnit
@@ -118,10 +120,6 @@ bool CoverFetchUnit::operator!=( const CoverFetchUnit &other ) const
     return !( *this == other );
 }
 
-#ifdef  DEBUG_PREFIX
-# undef DEBUG_PREFIX
-#endif
-#define DEBUG_PREFIX "CoverFetchPayload"
 
 /*
  * CoverFetchPayload
@@ -470,8 +468,9 @@ CoverFetchArtPayload::prepareUrls()
 
     if( xml.hasError() )
     {
-        debug() << QString( "Error occured when pareparing %1 urls: %2" )
-                                .arg( sourceString(), xml.errorString() );
+        debug() << QString( "Error occured when pareparing %1 urls for %2: %3" )
+            .arg( sourceString(), (album() ? album()->name() : "'unknown'"), xml.errorString() );
+        debug() << urls();
     }
 }
 
@@ -545,12 +544,13 @@ void
 CoverFetchArtPayload::prepareGoogleUrls()
 {
     // code based on Audex CDDA Extractor
-    const QString filter = "a-zA-Z0-9\\&\\_\\%\\/\\=\\.\\:\\-\\?\\,\\(\\)\\~\\!";
-    QRegExp rx( "<a\\shref=(\\/imgres\\?imgurl=[" + filter + "]+)>[\\s\\n]*<img\\ssrc=([" + filter + "]+).*>[\\s\\n]*</a>" );
+    QRegExp rx( "<a\\shref=\"(\\/imgres\\?imgurl=[^\"]+)\">[\\s\\n]*<img[^>]+src=\"([^\"]+)\"" );
+    rx.setCaseSensitivity( Qt::CaseInsensitive );
     rx.setMinimal( true );
 
     int pos = 0;
-    QString html = m_xml;
+    QString html = m_xml.replace( QLatin1String("&amp;"), QLatin1String("&") );
+
     while( ( (pos = rx.indexIn( html, pos ) ) != -1 ) )
     {
         KUrl url( "http://www.google.com" + rx.cap( 1 ) );
@@ -591,7 +591,9 @@ CoverFetchArtPayload::prepareLastFmUrls( QXmlStreamReader &xml )
     QSet<QString> artistSet;
     if( method() == "album.getinfo" )
     {
-        artistSet << normalize( album()->albumArtist()->name() );
+        artistSet << normalize( ( album() && album()->albumArtist() )
+                                ? album()->albumArtist()->name()
+                                : i18n( "Unknown Artist" ) );
     }
     else if( method() == "album.search" )
     {
@@ -600,7 +602,8 @@ CoverFetchArtPayload::prepareLastFmUrls( QXmlStreamReader &xml )
             const Meta::TrackList tracks = album()->tracks();
             QStringList artistNames( "Various Artists" );
             foreach( const Meta::TrackPtr &track, tracks )
-                artistNames << track->artist()->name();
+                artistNames << ( track->artist() ? track->artist()->name()
+                                                 : i18n( "Unknown Artist" ) );
             artistSet = normalize( artistNames ).toSet();
         }
     }

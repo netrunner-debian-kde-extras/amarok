@@ -21,6 +21,7 @@
 #include "CollectionSetup.h"
 
 #include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/collections/db/sql/SqlCollection.h"
 #include "core/support/Debug.h"
 #include "amarokconfig.h"
 #include "dialogs/DatabaseImporterDialog.h"
@@ -31,8 +32,7 @@
 #include <KVBox>
 
 #include <QAction>
-#include <QDBusInterface>
-#include <QDBusReply>
+#include <QApplication>
 #include <QDir>
 #include <QFile>
 #include <QLabel>
@@ -57,13 +57,23 @@ void
 CollectionSetupTreeView::slotPressed( const QModelIndex &index )
 {
     DEBUG_BLOCK
+    // --- show context menu on right mouse button
     if( ( QApplication::mouseButtons() & Qt::RightButton ) && parent() )
     {
-        m_currDir = qobject_cast<CollectionSetup*>(parent())->modelFilePath( index );        
+        m_currDir = qobject_cast<CollectionSetup*>(parent())->modelFilePath( index );
         debug() << "Setting current dir to " << m_currDir;
-        QDBusInterface interface( "org.kde.amarok", "/SqlCollection" );
-        QDBusReply<bool> reply = interface.call( "isDirInCollection", m_currDir );
-        if( reply.isValid() && reply.value() )
+
+        // check if there is an sql collection covering the directory
+        bool covered = false;
+        QList<Collections::Collection*> queryableCollections = CollectionManager::instance()->queryableCollections();
+        foreach( Collections::Collection *collection, queryableCollections )
+        {
+            if( collection->isDirInCollection( m_currDir ) )
+                covered = true;
+        }
+
+        // it's covered, so we can show the rescan option
+        if( covered )
         {
             m_rescanDirAction->setText( i18n( "Rescan '%1'", m_currDir ) );
             QMenu menu;
@@ -111,27 +121,42 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 
     KHBox* buttonBox = new KHBox( this );
 
-    KPushButton *rescan = new KPushButton( KIcon( "collection-rescan-amarok" ), i18n( "Fully Rescan Entire Collection" ), buttonBox );
+    KPushButton *rescan = new KPushButton( KIcon( "collection-rescan-amarok" ), i18n( "Full rescan" ), buttonBox );
     rescan->setToolTip( i18n( "Rescan your entire collection. This will <i>not</i> delete any statistics." ) );
     connect( rescan, SIGNAL( clicked() ), CollectionManager::instance(), SLOT( startFullScan() ) );
 
-    KPushButton *import = new KPushButton( KIcon( "tools-wizard" ), i18n( "Import Statistics" ), buttonBox );
-    import->setToolTip( i18n( "Import collection statistics from older Amarok versions, or from other media players." ) );
+    KPushButton *import = new KPushButton( KIcon( "tools-wizard" ), i18n( "Import" ), buttonBox );
+    import->setToolTip( i18n( "Import collection and/or statistics from older Amarok versions, the batch scanner or media players." ) );
     connect( import, SIGNAL( clicked() ), this, SLOT( importCollection() ) );
 
     m_recursive = new QCheckBox( i18n("&Scan folders recursively (requires full rescan if newly checked)"), this );
     m_monitor   = new QCheckBox( i18n("&Watch folders for changes"), this );
+    m_writeBack = new QCheckBox( i18n("Write metadata to file"), this );
+    m_writeBackStatistics = new QCheckBox( i18n("Write statistics to file"), this );
+    m_writeBackCover = new QCheckBox( i18n("Write covers to file"), this );
     m_charset   = new QCheckBox( i18n("&Enable character set detection in ID3 tags"), this );
     connect( m_recursive, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
     connect( m_monitor  , SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+    connect( m_writeBack, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+    connect( m_writeBackStatistics, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+    connect( m_writeBackCover, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
     connect( m_charset  , SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
 
     m_recursive->setToolTip( i18n( "If selected, Amarok will read all subfolders." ) );
-    m_monitor->setToolTip(   i18n( "If selected, folders will automatically get rescanned when the content is modified, e.g. when a new file was added." ) );
-    m_charset->setToolTip(   i18n( "If selected, Amarok will use Mozilla's Character Set Detector to attempt to automatically guess the character sets used in ID3 tags." ) );
+    m_monitor->setToolTip(   i18n( "If selected, the collection folders will be watched for changes.\nThe watcher will not notice changes behind symbolic links." ) );
+    m_writeBack->setToolTip( i18n( "Write meta data changes (including 'stars' rating) back to the original file.\nYou can also prevent writing back by write protecting the file.\nThis might be a good idea if you are currently\nsharing those files via the Internet." ) );
+    m_writeBackStatistics->setToolTip( i18n( "Write play-changing statistics (e.g. score, lastplayed, playcount)\nas tags back to the file." ) );
+    m_writeBackCover->setToolTip( i18n( "Write changed covers back to the file.\nThis will replace existing embedded covers." ) );
+    m_charset->setToolTip(   i18n( "If selected, Amarok will use Mozilla's\nCharacter Set Detector to attempt to automatically guess the\ncharacter sets used in ID3 tags." ) );
 
     m_recursive->setChecked( AmarokConfig::scanRecursively() );
     m_monitor->setChecked( AmarokConfig::monitorChanges() );
+    m_writeBack->setChecked( AmarokConfig::writeBack() );
+    m_writeBack->setVisible( false ); // probably not a usecase
+    m_writeBackStatistics->setChecked( AmarokConfig::writeBackStatistics() );
+    m_writeBackStatistics->setEnabled( writeBack() );
+    m_writeBackCover->setChecked( AmarokConfig::writeBackCover() );
+    m_writeBackCover->setEnabled( writeBack() );
     m_charset->setChecked( AmarokConfig::useCharsetDetector() );
 
     // set the model _after_ constructing the checkboxes
@@ -160,16 +185,20 @@ CollectionSetup::CollectionSetup( QWidget *parent )
 bool
 CollectionSetup::hasChanged() const
 {
-    DEBUG_BLOCK
-
     Collections::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
     QStringList collectionFolders = primaryCollection ? primaryCollection->property( "collectionFolders" ).toStringList() : QStringList();
-    const bool foldersChanged = m_model->directories() != collectionFolders;
-    const bool recursiveChanged = m_recursive->isChecked() != AmarokConfig::scanRecursively();
-    const bool monitorChanged  = m_monitor->isChecked() != AmarokConfig::monitorChanges();
-    const bool charsetChanged  = m_charset->isChecked() != AmarokConfig::useCharsetDetector();
 
-    return foldersChanged || recursiveChanged || monitorChanged || charsetChanged;
+    m_writeBackStatistics->setEnabled( writeBack() );
+    m_writeBackCover->setEnabled( writeBack() );
+
+    return
+        m_model->directories() != collectionFolders ||
+        m_recursive->isChecked() != recursive() ||
+        m_monitor->isChecked() != monitor() ||
+        m_writeBack->isChecked() != writeBack() ||
+        m_writeBackStatistics->isChecked() != writeBackStatistics() ||
+        m_writeBackCover->isChecked() != writeBackCover() ||
+        m_charset->isChecked() != AmarokConfig::useCharsetDetector();
 }
 
 void
@@ -179,6 +208,9 @@ CollectionSetup::writeConfig()
 
     AmarokConfig::setScanRecursively( recursive() );
     AmarokConfig::setMonitorChanges( monitor() );
+    AmarokConfig::setWriteBack( writeBack() );
+    AmarokConfig::setWriteBackStatistics( writeBackStatistics() );
+    AmarokConfig::setWriteBackCover( writeBackCover() );
     AmarokConfig::setUseCharsetDetector( charset() );
 
     Collections::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
@@ -226,7 +258,7 @@ namespace CollectionFolder {
     {
         Qt::ItemFlags flags = QFileSystemModel::flags( index );
         const QString path = filePath( index );
-        if( ( recursive() && ancestorChecked( path ) ) || isForbiddenPath( path ) )
+        if( isForbiddenPath( path ) )
             flags ^= Qt::ItemIsEnabled; //disabled!
        
         flags |= Qt::ItemIsUserCheckable;
@@ -256,16 +288,49 @@ namespace CollectionFolder {
     {
         if( index.isValid() && index.column() == 0 && role == Qt::CheckStateRole )
         {
-            QString path = filePath( index );
-            // store checked paths, remove unchecked paths
+            const QString path = filePath( index );
             if( value.toInt() == Qt::Checked )
-                m_checked.insert( path );
+            {
+                // New path selected
+                if( recursive() )
+                {
+                    // Recursive, so clear any paths in m_checked that are made
+                    // redundant by this new selection
+                    QString _path = normalPath( path );
+                    foreach( QString elem, m_checked )
+                    {
+                        if( normalPath( elem ).startsWith( _path ) )
+                            m_checked.remove( elem );
+                    }
+                }
+                m_checked << path;
+            }
             else
+            {
+                // Path un-selected
                 m_checked.remove( path );
-
-            const QModelIndex &parentIndex = parent( index );
-            const int lastRow = rowCount( parentIndex );
-            emit dataChanged( sibling( 0, 0, parentIndex), sibling( lastRow, 0, parentIndex ) );
+                if( recursive() && ancestorChecked( path ) )
+                {
+                    // Recursive, so we need to deal with the case of un-selecting
+                    // an implicitly selected path
+                    const QStringList ancestors = allCheckedAncestors( path );
+                    QString topAncestor;
+                    // Remove all selected ancestor of path, and find shallowest
+                    // ancestor
+                    foreach( QString elem, ancestors )
+                    {
+                        m_checked.remove( elem );
+                        if( elem < topAncestor || topAncestor.isEmpty() )
+                            topAncestor = elem;
+                    }
+                    // Check all paths reachable from topAncestor, except for
+                    // those that are ancestors of path
+                    checkRecursiveSubfolders( topAncestor, path );
+                }
+            }
+            // A check or un-check can possibly require the whole view to change,
+            // so we signal that the root's data is changed
+            emit dataChanged( QModelIndex(), QModelIndex() );
             return true;
         }
         return QFileSystemModel::setData( index, value, role );
@@ -306,7 +371,7 @@ namespace CollectionFolder {
     Model::isForbiddenPath( const QString &path ) const
     {
         // we need the trailing slash otherwise we could forbid "/dev-music" for example
-        QString _path = path.endsWith( '/' ) ? path : path + '/';
+        QString _path = normalPath( path );
         return _path.startsWith( "/proc/" ) || _path.startsWith( "/dev/" ) || _path.startsWith( "/sys/" );
     }
 
@@ -314,29 +379,74 @@ namespace CollectionFolder {
     Model::ancestorChecked( const QString &path ) const
     {
         // we need the trailing slash otherwise sibling folders with one as the prefix of the other are seen as parent/child
-        const QString _path = path.endsWith( '/' ) ? path : path + '/';
+        const QString _path = normalPath( path );
 
         foreach( const QString &element, m_checked )
         {
-            const QString _element = element.endsWith( '/' ) ? element : element + '/';
+            const QString _element = normalPath( element );
             if( _path.startsWith( _element ) && _element != _path )
                 return true;
         }
         return false;
     }
 
-    bool Model::descendantChecked( const QString& path ) const
+    /**
+     * Get a list of all checked paths that are an ancestor of
+     * the given path.
+     */
+    QStringList
+    Model::allCheckedAncestors( const QString &path ) const
+    {
+        const QString _path = normalPath( path );
+        QStringList rtn;
+        foreach( const QString &element, m_checked )
+        {
+            const QString _element = normalPath( element );
+            if ( _path.startsWith( _element ) && _element != _path )
+                rtn << element;
+        }
+        return rtn;
+    }
+
+    bool
+    Model::descendantChecked( const QString &path ) const
     {
         // we need the trailing slash otherwise sibling folders with one as the prefix of the other are seen as parent/child
-        const QString _path = path.endsWith( '/' ) ? path : path + '/';
+        const QString _path = normalPath( path );
 
         foreach( const QString& element, m_checked )
         {
-            const QString _element = element.endsWith( '/' ) ? element : element + '/';
+            const QString _element = normalPath( element );
             if( _element.startsWith( _path ) && _element != _path )
                 return true;
         }
         return false;
+    }
+
+    /**
+     * Check the logical recursive difference of root and excludePath.
+     * For example, if excludePath is a grandchild of root, then this method
+     * will check all of the children of root except the one that is the 
+     * parent of excludePath, as well as excludePath's siblings.
+     */
+    void
+    Model::checkRecursiveSubfolders( const QString &root, const QString &excludePath )
+    {
+        QString _root = normalPath( root );
+        QString _excludePath = normalPath( excludePath );
+        if( _root == _excludePath )
+            return;
+        QDirIterator it( _root );
+        while( it.hasNext() )
+        {
+            QString nextPath = it.next();
+            if( nextPath.endsWith( "/." ) || nextPath.endsWith( "/.." ) )
+                continue;
+            if( !_excludePath.startsWith( nextPath ) )
+                m_checked << nextPath;
+            else
+                checkRecursiveSubfolders( nextPath, excludePath );
+        }
     }
 
 } //namespace Collection

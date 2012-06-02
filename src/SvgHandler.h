@@ -24,9 +24,9 @@ class QStyleOptionSlider;
 #include "amarok_export.h"
 #include "core/meta/Meta.h"
 
-#include <KPixmapCache>
 #include <QReadWriteLock>
-#include <KSvgRenderer>
+#include <QSvgRenderer>
+#include <KImageCache>
 
 #include <QPixmap>
 #include <QString>
@@ -49,8 +49,8 @@ class AMAROK_EXPORT SvgHandler : public QObject
     public:
         ~SvgHandler();
 
-        KSvgRenderer* getRenderer( const QString &name );
-        KSvgRenderer* getRenderer();
+        QSvgRenderer* getRenderer( const QString &name );
+        QSvgRenderer* getRenderer();
         QPixmap renderSvg( const QString &name, const QString& keyname, int width, int height, const QString& element = QString(), bool skipCache = false );
 
         /**
@@ -95,7 +95,7 @@ class AMAROK_EXPORT SvgHandler : public QObject
          * @param name A name for use as the basis of the cache key that for caching the completed image plus borders.
          * @param skipCache If true, the pixmap will always get rendered and never fetched from the cache.
          */
-        QPixmap addBordersToPixmap( QPixmap orgPixmap, int borderWidth, const QString &name, bool skipCache =false );
+        QPixmap addBordersToPixmap( const QPixmap &orgPixmap, int borderWidth, const QString &name, bool skipCache =false );
 
         /**
          * Paint a custom slider using the specified painter. The slider consists
@@ -154,10 +154,9 @@ class AMAROK_EXPORT SvgHandler : public QObject
         QColor calcDarkColor(const QColor &color) const;
         bool lowThreshold(const QColor &color) const;
 
-        KPixmapCache * m_cache;
-        KPixmapCache * m_sliderHandleCache;
+        KImageCache * m_cache;
 
-        QHash<QString,KSvgRenderer*> m_renderers;
+        QHash<QString,QSvgRenderer*> m_renderers;
         QReadWriteLock m_lock;
 
         QString m_themeFile;

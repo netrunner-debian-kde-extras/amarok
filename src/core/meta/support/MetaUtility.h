@@ -25,34 +25,6 @@
 #include <QString>
 #include <QVariant>
 
-class AMAROK_CORE_EXPORT AlbumKey
-{
-public:
-    QString albumName;
-    QString artistName;
-
-    AlbumKey() {}
-    AlbumKey( const QString &artist, const QString &album )
-    { artistName = artist; albumName = album; }
-
-    AlbumKey &operator=( const AlbumKey &o )
-    { albumName = o.albumName; artistName = o.artistName; return *this; }
-};
-
-class AMAROK_CORE_EXPORT TrackKey
-{
-public:
-    QString trackName;
-    QString albumName;
-    QString artistName;
-    //more?
-
-    TrackKey() {}
-
-    TrackKey &operator=( const TrackKey &o )
-    { trackName = o.trackName; albumName = o.albumName; artistName = o.artistName; return *this; }
-};
-
 namespace Meta
 {
     class Track;
@@ -62,8 +34,10 @@ namespace Meta
 
         //deprecated
         AMAROK_CORE_EXPORT QVariantMap mapFromTrack( const Meta::TrackPtr track );
-        //this method will return a map with keys that are compatible to the fdo MPRIS specification
+        //this method will return a map with keys that are compatible to the fdo MPRIS 1.0 specification
         AMAROK_CORE_EXPORT QVariantMap mprisMapFromTrack( const Meta::TrackPtr track );
+        //this method will return a map with keys that are compatible to the fdo MPRIS 2.0 specification
+        AMAROK_CORE_EXPORT QVariantMap mpris20MapFromTrack( const Meta::TrackPtr track );
         AMAROK_CORE_EXPORT void updateTrack( Meta::TrackPtr track, const QVariantMap &metadata );
         AMAROK_CORE_EXPORT QString xesamPrettyToFullFieldName( const QString &name );
         AMAROK_CORE_EXPORT QString xesamFullToPrettyFieldName( const QString &name );
@@ -71,40 +45,23 @@ namespace Meta
 
 
     AMAROK_CORE_EXPORT QString msToPrettyTime( qint64 ms );
+
+    /** Returns the character representation for the time duration.
+        This is a pretty short representation looking like this: 3:45.
+        It is used in the playlist.
+        It is not usefull for times above a 24 hours.
+    */
     AMAROK_CORE_EXPORT QString secToPrettyTime( int seconds );
+
+    /** Returns the character representation for the time duration.
+        This is a longer human friendy representation looking like this: 5 minutes even when
+        the actual seconds are 307.
+    */
+    AMAROK_CORE_EXPORT QString secToPrettyTimeLong( int seconds );
 
     AMAROK_CORE_EXPORT QString prettyFilesize( quint64 size );
     AMAROK_CORE_EXPORT QString prettyBitrate( int bitrate );
 
-    AMAROK_CORE_EXPORT QString prettyRating( int rating );
-
-    AMAROK_CORE_EXPORT TrackKey keyFromTrack( const Meta::TrackPtr &track );
-}
-
-inline bool
-operator==( const TrackKey &k1, const TrackKey &k2 )
-{
-    return k1.trackName == k2.trackName &&
-                          k1.albumName == k2.albumName &&
-                          k1.artistName == k2.artistName;
-}
-
-inline uint
-qHash( const TrackKey &key )
-{
-    return qHash( key.trackName ) + 17 * qHash( key.albumName ) + 31 * qHash( key.artistName );
-}
-
-inline bool
-operator==( const AlbumKey &k1, const AlbumKey &k2 )
-{
-    return k1.albumName == k2.albumName && k1.artistName == k2.artistName;
-}
-
-inline uint
-qHash( const AlbumKey &key )
-{
-    return qHash( key.albumName ) + 17 * qHash( key.artistName );
 }
 
 #endif

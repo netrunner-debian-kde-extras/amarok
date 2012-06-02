@@ -19,22 +19,23 @@
 #ifndef AMAROK_APPLET_TOOLBAR_APPLET_ITEM_H
 #define AMAROK_APPLET_TOOLBAR_APPLET_ITEM_H
 
-#include <QGraphicsWidget>
 #include "AppletToolbarBase.h"
 
-class QStyleOptionGraphicsItem;
-class QPainter;
-class QGraphicsSceneMouseEvent;
+#include <QWeakPointer>
+
+class QPropertyAnimation;
+class QPalette;
 
 namespace Plasma
 {
+    class Animation;
     class Applet;
     class IconWidget;
 }
 
 namespace Context
 {
-    
+
 class AppletToolbarAppletItem : public AppletToolbarBase
 {
     Q_OBJECT
@@ -42,7 +43,7 @@ class AppletToolbarAppletItem : public AppletToolbarBase
     public:
         explicit AppletToolbarAppletItem( QGraphicsItem* parent = 0, Plasma::Applet* applet = 0 );
         ~AppletToolbarAppletItem();
-        
+
         void setConfigEnabled( bool config );
         bool configEnabled();
 
@@ -53,7 +54,7 @@ class AppletToolbarAppletItem : public AppletToolbarBase
     signals:
         void appletChosen( Plasma::Applet* );
         void geometryChanged();
-        
+
     protected:
         virtual void resizeEvent( QGraphicsSceneResizeEvent * event );
         virtual QSizeF sizeHint( Qt::SizeHint which, const QSizeF & constraint = QSizeF() ) const;
@@ -65,23 +66,23 @@ class AppletToolbarAppletItem : public AppletToolbarBase
 
         virtual void hoverEnterEvent( QGraphicsSceneHoverEvent * event );
         virtual void hoverLeaveEvent( QGraphicsSceneHoverEvent * event );
-    
+
         void mousePressEvent( QGraphicsSceneMouseEvent * event );
 
     private slots:
         void deleteApplet();
-        void animateHoverIn( qreal progress );
-        void animateHoverOut( qreal progress );
+        void paletteChanged( const QPalette &palette );
 
     private:
         Plasma::IconWidget* addAction( QAction *action, int size );
-        
+
         Plasma::Applet* m_applet;
-        QGraphicsSimpleTextItem* m_label;
-        
-        
+        QGraphicsTextItem* m_label;
+
+        QWeakPointer<QPropertyAnimation> m_opacityAnimation;
+
         Plasma::IconWidget* m_deleteIcon;
-        
+
         int m_labelPadding;
         bool m_configEnabled;
 };

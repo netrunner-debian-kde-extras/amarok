@@ -28,11 +28,13 @@ even porting to qtscript so it could be run, as needed, by Amarok.
 - Nikolaj
 */
 
+#define DEBUG_PREFIX "MoodbarManager"
 
 #include "MoodbarManager.h"
 
 #include "amarokconfig.h"
 #include "core/support/Debug.h"
+#include "PaletteHandler.h"
 
 #include <QFile>
 #include <QFileInfo>
@@ -55,9 +57,11 @@ namespace The
 }
 
 MoodbarManager::MoodbarManager()
-    : m_cache( new KPixmapCache( "Amarok-moodbars" ) )
+    : m_cache( new KImageCache( "Amarok-moodbars", 10 * 1024 ) )
     , m_lastPaintMode( 0 )
-{}
+{
+    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(paletteChanged(QPalette)) );
+}
 
 MoodbarManager::~MoodbarManager()
 {}
@@ -141,7 +145,7 @@ QPixmap MoodbarManager::getMoodbar( Meta::TrackPtr track, int width, int height,
     if( m_lastPaintMode != AmarokConfig::moodbarPaintStyle() )
     {
         m_lastPaintMode = AmarokConfig::moodbarPaintStyle();
-        m_cache->discard();
+        m_cache->clear();
         m_moodDataMap.clear();
         emit moodbarStyleChanged();
     }
@@ -151,7 +155,7 @@ QPixmap MoodbarManager::getMoodbar( Meta::TrackPtr track, int width, int height,
     const QString pixmapKey = QString( "mood:%1-%2x%3%4" ).arg( track->uidUrl() ).arg(width).arg(height).arg( rtl?"r":"" );
     QPixmap moodbar;
     
-    if( m_cache->find( pixmapKey, moodbar ) )
+    if( m_cache->findPixmap( pixmapKey, &moodbar ) )
         return moodbar;
         
     //No? Ok, then create it reusing as much info as possible
@@ -185,7 +189,7 @@ QPixmap MoodbarManager::getMoodbar( Meta::TrackPtr track, int width, int height,
         return moodbar;
 
     moodbar = drawMoodbar( data, width, height, rtl );
-    m_cache->insert( pixmapKey, moodbar );
+    m_cache->insertPixmap( pixmapKey, moodbar );
     
     return moodbar;
 }
@@ -200,7 +204,7 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
     if( path.isEmpty() )
         return data;
 
-    debug() << "Moodbar::readFile: Trying to read " << path << endl;
+    debug() << "Trying to read " << path;
 
     QFile moodFile( path );
 
@@ -208,15 +212,13 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
         return data;
 
     int r, g, b, samples = moodFile.size() / 3;
-    debug() << "Moodbar::readFile: File " << path
-            << " opened. Proceeding to read contents... s=" << samples << endl;
+    debug() << "File" << path << "opened. Proceeding to read contents... s=" << samples;
 
     // This would be bad.
     if( samples == 0 )
     {
-        debug() << "Moodbar::readFile: File " << moodFile.fileName()
-                << " is corrupted, removing." << endl;
-                //TODO: notify the user somehow
+        debug() << "Filex " << moodFile.fileName() << "is corrupted, removing";
+        //TODO: notify the user somehow
         //moodFile.remove();
         return data;
     }
@@ -229,7 +231,7 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
     memset( huedist, 0, sizeof( huedist ) );
 
     // Read the file, keeping track of some histograms
-    for( int i = 0; i < samples; i++ )
+    for( int i = 0; i < samples; ++i )
     {
 
         char rChar, gChar, bChar;
@@ -288,7 +290,6 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
 
     const int paintStyle = AmarokConfig::moodbarPaintStyle();
 
-    if( paintStyle != 0 )
     {
         MoodbarColorList modifiedData;
         // Explanation of the parameters:
@@ -309,7 +310,7 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
 
         switch( paintStyle )
         {
-          case 1: // Angry
+        case Angry: // Angry
             threshold  = samples / 360 * 9;
             rangeStart = 45;
             rangeDelta = -45;
@@ -317,7 +318,7 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
             val        = 100;
             break;
 
-          case 2: // Frozen
+        case Frozen: // Frozen
             threshold  = samples / 360 * 1;
             rangeStart = 140;
             rangeDelta = 160;
@@ -325,12 +326,30 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
             val        = 100;
             break;
 
-          default: // Happy
+        case Happy: // Happy
             threshold  = samples / 360 * 2;
             rangeStart = 0;
             rangeDelta = 359;
             sat        = 150;
             val        = 250;
+            break;
+
+        case Normal: // old "normal" mode, don't change moodfile's RGB values
+            threshold  = samples / 360 * 3;
+            rangeStart = 0;
+            rangeDelta = 359;
+            sat        = 100;
+            val        = 100;
+            break;
+
+        case SystemColours:
+        default: // Default (system colours)
+            threshold  = samples / 360 * 3;
+            rangeStart = The::paletteHandler()->highlightColor().hsvHue();
+            rangeStart = (rangeStart - 20 + 360) % 360;
+            rangeDelta = 20;
+            sat        = The::paletteHandler()->highlightColor().hsvSaturation();
+            val        = The::paletteHandler()->highlightColor().value() / 2;
         }
 
         //debug() << "ReadMood: Applying filter t=" << threshold
@@ -401,10 +420,7 @@ MoodbarColorList MoodbarManager::readMoodFile( const KUrl &moodFileUrl )
         mx = i;
     m_hueSort += mx;
 */
-    //debug() << "Moodbar::readFile: All done." << endl;
-
-
-
+    //debug() << "All done.";
     return data;
 }
 
@@ -501,3 +517,13 @@ QString MoodbarManager::moodPath( const QString &trackPath ) const
     return moodPath.replace( fileName, '.' + fileName );
 }
 
+void MoodbarManager::paletteChanged( const QPalette &palette )
+{
+    Q_UNUSED( palette )
+    const int paintStyle = AmarokConfig::moodbarPaintStyle();
+    if( paintStyle == 0 ) // system default colour
+    {
+        m_cache->clear();
+        m_moodDataMap.clear();
+    }
+}

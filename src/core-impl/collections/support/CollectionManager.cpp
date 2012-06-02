@@ -20,15 +20,16 @@
 
 #include "core/support/Debug.h"
 
+#include "core/capabilities/CollectionScanCapability.h"
 #include "core/collections/Collection.h"
-#include "EngineController.h"
 #include "core/collections/MetaQueryMaker.h"
+#include "core/collections/support/SqlStorage.h"
+#include "core/support/SmartPointerList.h"
 #include "core-impl/meta/file/File.h"
 #include "core-impl/meta/stream/Stream.h"
-#include "core/plugins/PluginManager.h"
-#include "core/support/SmartPointerList.h"
-#include "core/collections/support/SqlStorage.h"
 #include "core-impl/meta/timecode/TimecodeTrackProvider.h"
+#include "EngineController.h"
+#include "PluginManager.h"
 
 #include <QList>
 #include <QMetaEnum>
@@ -36,8 +37,7 @@
 #include <QPair>
 #include <QTimer>
 
-#include <KBuildSycocaProgressDialog>
-#include <KGlobal>
+#include <KConfigGroup>
 #include <KMessageBox>
 #include <KPluginLoader>
 #include <KPluginFactory>
@@ -46,6 +46,8 @@
 
 typedef QPair<Collections::Collection*, CollectionManager::CollectionStatus> CollectionPair;
 
+/** This wrapper will be used by the collection manager to present one static SqlStorage object even when the user switches the actual database.
+On the other hand nobody except the owning colleciton should hold a reference to the SqlStorage anyway. */
 class SqlStorageWrapper : public SqlStorage
 {
 public:
@@ -56,7 +58,7 @@ public:
 
     virtual int sqlDatabasePriority() const { return ( m_sqlStorage ? m_sqlStorage->sqlDatabasePriority() : 0 ); }
     virtual QString type() const  { return ( m_sqlStorage ? m_sqlStorage->type() : "SqlStorageWrapper" ); }
-    virtual QString escape( QString text ) const  { return ( m_sqlStorage ? m_sqlStorage->escape( text ) : text ); }
+    virtual QString escape( const QString &text ) const  { return ( m_sqlStorage ? m_sqlStorage->escape( text ) : text ); }
     virtual QStringList query( const QString &query )  { return ( m_sqlStorage ? m_sqlStorage->query( query ) : QStringList() ); }
     virtual int insert( const QString &statement, const QString &table )  { return ( m_sqlStorage ? m_sqlStorage->insert( statement, table ) : 0 ); }
     virtual QString boolTrue() const  { return ( m_sqlStorage ? m_sqlStorage->boolTrue() : "1" ); }
@@ -67,6 +69,11 @@ public:
     virtual QString exactIndexableTextColumnType( int length ) const { return ( m_sqlStorage ? m_sqlStorage->exactIndexableTextColumnType( length ) : "WRAPPER_NOT_IMPLEMENTED" ); };
     virtual QString longTextColumnType() const { return ( m_sqlStorage ? m_sqlStorage->longTextColumnType() : "WRAPPER_NOT_IMPLEMENTED" ); }
     virtual QString randomFunc() const { return ( m_sqlStorage ? m_sqlStorage->randomFunc() : "WRAPPER_NOT_IMPLEMENTED" ); }
+
+    virtual QStringList getLastErrors() const
+    { return m_sqlStorage ? m_sqlStorage->getLastErrors() : QStringList(); }
+    virtual void clearLastErrors()
+    { if( m_sqlStorage ) m_sqlStorage->clearLastErrors(); }
 
     void setSqlStorage( SqlStorage *sqlStorage ) { m_sqlStorage = sqlStorage; }
 private:
@@ -106,14 +113,14 @@ CollectionManager::CollectionManager()
     : QObject()
     , d( new Private )
 {
+    DEBUG_BLOCK
+    setObjectName( "CollectionManager" );
     qRegisterMetaType<SqlStorage *>( "SqlStorage*" );
     d->sqlDatabase = 0;
     d->primaryCollection = 0;
     d->sqlStorageWrapper = new SqlStorageWrapper();
     s_instance = this;
     m_haveEmbeddedMysql = false;
-
-    init();
 }
 
 CollectionManager::~CollectionManager()
@@ -128,14 +135,17 @@ CollectionManager::~CollectionManager()
     d->unmanagedCollections.clear();
     d->trackProviders.clear();
     qDeleteAll( d->managedCollections );
-    qDeleteAll( d->factories );
 
+    // qDeleteAll seems to be partly broken in Qt 4.8, FIX: 285951
+    // qDeleteAll( d->factories );
+    while (!d->factories.isEmpty())
+        delete d->factories.takeFirst();
 
     delete d;
 }
 
 void
-CollectionManager::init()
+CollectionManager::init( const QList<Plugins::PluginFactory*> &factories )
 {
     DEBUG_BLOCK
 
@@ -144,89 +154,59 @@ CollectionManager::init()
     m_timecodeTrackProvider = new TimecodeTrackProvider();
     addTrackProvider( m_timecodeTrackProvider );
 
-    KService::List plugins = Plugins::PluginManager::query( "[X-KDE-Amarok-plugintype] == 'collection'" );
-    debug() << "Received [" << QString::number( plugins.count() ) << "] collection plugin offers";
-
-    if( plugins.isEmpty() )
+    QList<Collections::CollectionFactory*> orderdFactories;
+    foreach( Plugins::PluginFactory *pFactory, factories )
     {
-        debug() << "No Amarok plugins found, running kbuildsycoca4.";
-        KBuildSycocaProgressDialog::rebuildKSycoca( 0 );
+        using namespace Collections;
+        CollectionFactory *factory = qobject_cast<CollectionFactory*>( pFactory );
+        if( !factory )
+            continue;
 
-        plugins = Plugins::PluginManager::query( "[X-KDE-Amarok-plugintype] == 'collection'" );
-        debug() << "Second attempt: Received [" << QString::number( plugins.count() ) << "] collection plugin offers";
-
-        if( plugins.isEmpty() )
+        const QString name = factory->info().pluginName();
+        if( name == QLatin1String("amarok_collection-mysqlservercollection") || name == QLatin1String("amarok_collection-mysqlecollection") )
         {
-            KMessageBox::error( 0, i18n(
-                    "<p>Amarok could not find any collection plugins. "
-                    "It is possible that Amarok is installed under the wrong prefix, please fix your installation using:<pre>"
-                    "$ cd /path/to/amarok/source-code/<br>"
-                    "$ su -c \"make uninstall\"<br>"
-                    "$ cmake -DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -c \"make install\"<br>"
-                    "$ kbuildsycoca4 --noincremental<br>"
-                    "$ amarok</pre>"
-                    "More information can be found in the README file. For further assistance join us at #amarok on irc.freenode.net.</p>" ) );
-            // don't use QApplication::exit, as the eventloop may not have started yet
-            std::exit( EXIT_SUCCESS );
-        }
-    }
-
-    KService::List orderedPlugins;
-    const bool useMySqlServer = Amarok::config( "MySQL" ).readEntry( "UseServer", false );
-    foreach( const KService::Ptr &service, plugins )
-    {
-        const QString name = service->property( "X-KDE-Amarok-name" ).toString();
-        if( name == "mysqlserver-collection" )
-        {
-            if( useMySqlServer )
-                orderedPlugins.prepend( service );
-        }
-        else if( name == "mysqle-collection" )
-        {
-            if( !useMySqlServer )
-                orderedPlugins.prepend( service );
+            orderdFactories.prepend( factory );
         }
         else
         {
-            orderedPlugins.append( service );
+            orderdFactories.append( factory );
         }
     }
-    loadServices( orderedPlugins );
+    loadPlugins( orderdFactories );
 }
 
 void
-CollectionManager::loadServices( const KService::List &services )
+CollectionManager::loadPlugins( const QList<Collections::CollectionFactory*> &factories )
 {
     DEBUG_BLOCK
-    foreach( const KService::Ptr &service, services )
+    foreach( Collections::CollectionFactory *factory, factories )
     {
-        const QString name( service->property( "X-KDE-Amarok-name" ).toString() );
-        KPluginLoader loader( *( service.constData() ) );
-        KPluginFactory *pluginFactory = loader.factory();
-        if( pluginFactory )
+        if( !factory )
+            continue;
+
+        const KPluginInfo info = factory->info();
+        const QString name = info.pluginName();
+        const bool useMySqlServer = Amarok::config( "MySQL" ).readEntry( "UseServer", false );
+
+        bool essential = false;
+        if( (useMySqlServer && (name == QLatin1String("amarok_collection-mysqlservercollection"))) ||
+            (!useMySqlServer && (name == QLatin1String("amarok_collection-mysqlecollection"))) )
         {
-            Collections::CollectionFactory* factory( 0 );
-            if( (factory = pluginFactory->create<Collections::CollectionFactory>( this )) )
-            {
-                connect( factory, SIGNAL(newCollection(Collections::Collection*)),
-                         this, SLOT(slotNewCollection(Collections::Collection*)) );
-                d->factories.append( factory );
-                debug() << "Initialising" << name;
-                factory->init();
-                if( name == "mysqle-collection" )
-                    m_haveEmbeddedMysql = true;
-            }
-            else
-            {
-                debug() << QString( "Plugin '%1' has wrong factory class: %2" )
-                                             .arg( name, loader.errorString() );
-            }
+            essential = true;
         }
-        else
-        {
-            warning() << QString( "Failed to get factory '%1' from KPluginLoader: %2" )
-                                                     .arg( name, loader.errorString() );
-        }
+
+        bool enabledByDefault = info.isPluginEnabledByDefault();
+        bool enabled = Amarok::config( "Plugins" ).readEntry( name + "Enabled", enabledByDefault );
+        if( !enabled && !essential )
+            continue;
+
+        connect( factory, SIGNAL(newCollection(Collections::Collection*)),
+                 this, SLOT(slotNewCollection(Collections::Collection*)) );
+        d->factories.append( factory );
+        debug() << "initializing" << name;
+        factory->init();
+        if( name == QLatin1String("amarok_collection-mysqlecollection") )
+            m_haveEmbeddedMysql = true;
     }
 }
 
@@ -235,7 +215,9 @@ CollectionManager::startFullScan()
 {
     foreach( const CollectionPair &pair, d->collections )
     {
-        pair.first->startFullScan();
+        QScopedPointer<Capabilities::CollectionScanCapability> csc( pair.first->create<Capabilities::CollectionScanCapability>());
+        if( csc )
+            csc->startFullScan();
     }
 }
 
@@ -244,7 +226,9 @@ CollectionManager::startIncrementalScan( const QString &directory )
 {
     foreach( const CollectionPair &pair, d->collections )
     {
-        pair.first->startIncrementalScan( directory );
+        QScopedPointer<Capabilities::CollectionScanCapability> csc( pair.first->create<Capabilities::CollectionScanCapability>());
+        if( csc )
+            csc->startIncrementalScan( directory );
     }
 }
 
@@ -253,19 +237,16 @@ CollectionManager::stopScan()
 {
     foreach( const CollectionPair &pair, d->collections )
     {
-        pair.first->stopScan();
+        QScopedPointer<Capabilities::CollectionScanCapability> csc( pair.first->create<Capabilities::CollectionScanCapability>());
+        if( csc )
+            csc->stopScan();
     }
 }
 
 void
 CollectionManager::checkCollectionChanges()
 {
-    DEBUG_BLOCK
-
-    foreach( const CollectionPair &pair, d->collections )
-    {
-        pair.first->startIncrementalScan();
-    }
+    startIncrementalScan( QString() );
 }
 
 Collections::QueryMaker*
@@ -389,7 +370,7 @@ CollectionManager::slotRemoveCollection()
             }
         }
         emit collectionRemoved( collection->collectionId() );
-        QTimer::singleShot( 0, collection, SLOT( deleteLater() ) );
+        QTimer::singleShot( 500, collection, SLOT( deleteLater() ) ); // give the tree some time to update itself until we really delete the collection pointers.
     }
 }
 
@@ -482,50 +463,14 @@ CollectionManager::trackForUrl( const KUrl &url )
         }
     }
 
-    if( url.protocol() == "http" || url.protocol() == "mms" || url.protocol() == "smb" )
+    if( url.protocol() == QLatin1String("http") || url.protocol() == QLatin1String("mms") ||
+        url.protocol() == QLatin1String("smb") )
         return Meta::TrackPtr( new MetaStream::Track( url ) );
 
-    if( url.protocol() == "file" && EngineController::canDecode( url ) )       
+    if( url.protocol() == QLatin1String("file") && EngineController::canDecode( url ) )       
         return Meta::TrackPtr( new MetaFile::Track( url ) );
 
     return Meta::TrackPtr( 0 );
-}
-
-void
-CollectionManager::relatedArtists( Meta::ArtistPtr artist, int maxArtists )
-{
-    if( !artist )
-        return;
-
-    m_maxArtists = maxArtists;
-    SqlStorage *sql = sqlStorage();
-    QString query = QString( "SELECT suggestion FROM related_artists WHERE artist = '%1' ORDER BY %2 LIMIT %3 OFFSET 0;" )
-               .arg( sql->escape( artist->name() ), sql->randomFunc(), QString::number( maxArtists ) );
-
-    QStringList artistNames = sql->query( query );
-    //TODO: figure out a way to retrieve similar artists from last.fm here
-    /*if( artistNames.isEmpty() )
-    {
-        artistNames = Scrobbler::instance()->similarArtists( Qt::escape( artist->name() ) );
-    }*/
-    Collections::QueryMaker *qm = queryMaker();
-    foreach( const QString &artistName, artistNames )
-    {
-        qm->addFilter( Meta::valArtist, artistName, true, true );
-    }
-    qm->setQueryType( Collections::QueryMaker::Artist );
-    qm->limitMaxResultSize( maxArtists );
-
-    connect( qm, SIGNAL( newResultReady( QString, Meta::ArtistList ) ),
-             this, SLOT( slotArtistQueryResult( QString, Meta::ArtistList ) ) );
-
-    connect( qm, SIGNAL( queryDone() ), this, SLOT( slotContinueRelatedArtists() ) );
-
-    m_resultEmitted = false;
-    m_resultArtistList.clear();
-    m_artistNameSet.clear();
-
-    qm->run();
 }
 
 void
@@ -552,23 +497,6 @@ CollectionManager::slotArtistQueryResult( QString collectionId, Meta::ArtistList
         m_resultEmitted = true;
         emit( foundRelatedArtists( m_resultArtistList ) );
     }
-}
-
-void
-CollectionManager::slotContinueRelatedArtists() //SLOT
-{
-    disconnect( this, SLOT( slotArtistQueryResult( QString, Meta::ArtistList ) ) );
-
-    disconnect( this, SLOT( slotContinueRelatedArtists() ) );
-
-    if( !m_resultEmitted )
-    {
-        m_resultEmitted = true;
-        emit( foundRelatedArtists( m_resultArtistList ) );
-    }
-    QObject *s = sender();
-    if( s )
-        s->deleteLater();
 }
 
 void

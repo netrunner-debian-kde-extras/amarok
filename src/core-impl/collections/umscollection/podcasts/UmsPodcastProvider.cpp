@@ -19,17 +19,20 @@
 #include <KDialog>
 #include <KIO/DeleteJob>
 #include <KIO/FileCopyJob>
+#include <KIO/Job>
 #include <KMimeType>
 
+#include <QAction>
 #include <QDirIterator>
+#include <QLabel>
 #include <QListWidget>
 #include <QObject>
+#include <QVBoxLayout>
 
 using namespace Podcasts;
 
-UmsPodcastProvider::UmsPodcastProvider( Meta::UmsHandler *handler, KUrl scanDirectory )
-        : m_handler( handler )
-        , m_scanDirectory( scanDirectory )
+UmsPodcastProvider::UmsPodcastProvider( KUrl scanDirectory )
+        : m_scanDirectory( scanDirectory )
         , m_deleteEpisodeAction( 0 )
         , m_deleteChannelAction( 0 )
 {
@@ -74,7 +77,7 @@ UmsPodcastProvider::addChannel( PodcastChannelPtr channel )
     UmsPodcastChannelPtr umsChannel = UmsPodcastChannelPtr(
             new UmsPodcastChannel( channel, this ) );
     m_umsChannels << umsChannel;
-    emit( updated() );
+    emit( playlistAdded( Playlists::PlaylistPtr::dynamicCast( umsChannel ) ) );
     return PodcastChannelPtr::dynamicCast( umsChannel );
 }
 
@@ -152,7 +155,7 @@ UmsPodcastProvider::configureChannel( PodcastChannelPtr channel )
 QString
 UmsPodcastProvider::prettyName() const
 {
-    return i18nc( "Podcasts on a media device", "Podcasts on %1", m_handler->prettyName() );
+    return i18nc( "Podcasts on a media device", "Podcasts on %1", QString("TODO: replace me") );
 }
 
 KIcon
@@ -267,7 +270,7 @@ UmsPodcastProvider::deleteEpisodes( UmsPodcastEpisodeList umsEpisodes )
     layout->addWidget( &label );
     layout->addWidget( &listWidget );
     dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete from %1.",
-                                             m_handler->prettyName() ) );
+                                             QString("TODO: replace me") ) );
 
     dialog.setMainWidget( widget );
     if( dialog.exec() != QDialog::Accepted )
@@ -309,7 +312,7 @@ UmsPodcastProvider::deleteJobComplete( KJob *job )
         {
             debug() << "channel is empty now, remove it";
             m_umsChannels.removeAll( umsChannel );
-            emit( updated() );
+            emit( playlistRemoved( Playlists::PlaylistPtr::dynamicCast( umsChannel ) ) );
         }
     }
 }
@@ -364,7 +367,7 @@ UmsPodcastProvider::slotDeleteChannels()
         }
 
         deleteEpisodes( umsChannel->m_umsEpisodes );
-        //slot deleteJobComplete() will emit updated once all tracks are gone.
+        //slot deleteJobComplete() will emit signal once all tracks are gone.
     }
 }
 
@@ -467,15 +470,15 @@ UmsPodcastProvider::addPath( const QString &path )
     }
     else if( info.isFile() )
     {
-        foreach( const QString &mimetype, m_handler->mimetypes() )
-        {
-            if( mime->is( mimetype ) )
-            {
+//        foreach( const QString &mimetype, m_handler->mimetypes() )
+//        {
+//            if( mime->is( mimetype ) )
+//            {
                 addFile( MetaFile::TrackPtr( new MetaFile::Track(
                         KUrl( info.canonicalFilePath() ) ) ) );
                 return 2;
-            }
-        }
+//            }
+//        }
     }
 
     return 0;
@@ -530,7 +533,7 @@ UmsPodcastProvider::addFile( MetaFile::TrackPtr metafileTrack )
         channel = UmsPodcastChannelPtr( new UmsPodcastChannel( this ) );
         channel->setTitle( metafileTrack->album()->name() );
         m_umsChannels << channel;
-        emit( updated() );
+        emit( playlistAdded( Playlists::PlaylistPtr::dynamicCast( channel ) ) );
     }
 
     if( episode.isNull() )
@@ -545,24 +548,4 @@ UmsPodcastProvider::addFile( MetaFile::TrackPtr metafileTrack )
     episode->setLocalFile( metafileTrack );
 
     return episode;
-}
-
-Playlists::PlaylistPtr
-UmsPodcastProvider::addPlaylist( Playlists::PlaylistPtr playlist )
-{
-    PodcastChannelPtr channel = PodcastChannelPtr::dynamicCast( playlist );
-    if( channel.isNull() )
-        return Playlists::PlaylistPtr();
-
-    return Playlists::PlaylistPtr::dynamicCast( addChannel( channel ) );
-}
-
-Meta::TrackPtr
-UmsPodcastProvider::addTrack( Meta::TrackPtr track )
-{
-    PodcastEpisodePtr episode = PodcastEpisodePtr::dynamicCast( track );
-    if( episode.isNull() )
-        return Meta::TrackPtr();
-
-    return Meta::TrackPtr::dynamicCast( addEpisode( episode ) );
 }

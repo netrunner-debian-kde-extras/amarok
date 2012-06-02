@@ -57,8 +57,8 @@ namespace Meta {
             void setScore( double newScore );
             int rating() const;
             void setRating( int newRating );
-            uint firstPlayed() const;
-            uint lastPlayed() const;
+            QDateTime firstPlayed() const;
+            QDateTime lastPlayed() const;
             int playCount() const;
             void finishedPlaying( double playedFraction );
 
@@ -119,17 +119,17 @@ namespace Meta {
         void add( Meta::AlbumPtr album );
 
         /** returns true if the album has a cover set */
-        virtual bool hasImage( int size = 1 ) const;
+        virtual bool hasImage( int size = 0 ) const;
         /** returns the cover of the album */
-        virtual QPixmap image( int size = 1 );
+        virtual QImage image( int size = 0 ) const;
         /** returns the image location on disk */
-        virtual KUrl imageLocation( int size = 1 );
+        virtual KUrl imageLocation( int size = 0 );
         /** returns the cover of the album with a nice border around it*/
-        virtual QPixmap imageWithBorder( int size = 1, int borderWidth = 5 );
+        virtual QPixmap imageWithBorder( int size = 0, int borderWidth = 5 );
         /** Returns true if it is possible to update the cover of the album */
         virtual bool canUpdateImage() const;
         /** updates the cover of the album */
-        virtual void setImage( const QPixmap &pixmap );
+        virtual void setImage( const QImage &image );
         virtual void removeImage();
         /** don't automatically fetch artwork */
         virtual void setSuppressImageAutoFetch( const bool suppress );
@@ -158,8 +158,6 @@ namespace Meta {
         virtual QString sortableName() const;
 
         Meta::TrackList tracks();
-
-        Meta::AlbumList albums();
 
         virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
         virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );

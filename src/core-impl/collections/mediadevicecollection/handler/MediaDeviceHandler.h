@@ -30,7 +30,6 @@
 #include "MemoryCollection.h"
 #include "playlist/MediaDeviceUserPlaylistProvider.h"
 #include "core/meta/Meta.h"
-#include "statusbar/StatusBar.h"
 
 #include "mediadevicecollection_export.h"
 
@@ -287,7 +286,6 @@ protected:
     void setBasicMediaDeviceTrackInfo( const Meta::TrackPtr &srcTrack, Meta::MediaDeviceTrackPtr destTrack );
 
     Collections::MediaDeviceCollection   *m_memColl; ///< Associated collection
-    ProgressBar      *m_statusbar; ///< A progressbar to show progress of an operation
 
     bool m_success;
     bool m_copyingthreadsafe; ///< whether or not the handler's method of copying is threadsafe
@@ -300,7 +298,6 @@ protected slots:
     void slotCopyNextTrackFailed( ThreadWeaver::Job* job, const Meta::TrackPtr& track );
     void slotCopyNextTrackDone( ThreadWeaver::Job* job, const Meta::TrackPtr& track );
 
-    void slotCopyTrackJobsDone( ThreadWeaver::Job* job );
     void slotFinalizeTrackCopy( const Meta::TrackPtr & track );
     void slotCopyTrackFailed( const Meta::TrackPtr & track );
     void slotFinalizeTrackRemove( const Meta::TrackPtr & track );

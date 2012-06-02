@@ -17,7 +17,8 @@
 #include "Mp3tunesServiceCollectionLocation.h"
 
 #include "Mp3tunesWorkers.h"
-#include "statusbar/StatusBar.h"
+#include "core/interfaces/Logger.h"
+#include "core/support/Components.h"
 
 #include <threadweaver/Job.h>
 #include <threadweaver/ThreadWeaver.h>
@@ -53,9 +54,12 @@ bool Mp3tunesServiceCollectionLocation::remove( const Meta::TrackPtr &/*track*/ 
     return false;
 }
 void Mp3tunesServiceCollectionLocation::copyUrlsToCollection (
-        const QMap<Meta::TrackPtr, KUrl> &sources )
+        const QMap<Meta::TrackPtr, KUrl> &sources,
+        const Transcoding::Configuration &configuration )
 {
     DEBUG_BLOCK
+    Q_UNUSED( configuration ); // TODO: we might support transcoding here
+
     QStringList urls;
     QString error;
     debug() << "sources has " << sources.count();
@@ -80,7 +84,7 @@ void Mp3tunesServiceCollectionLocation::copyUrlsToCollection (
         }
     }
     if( !error.isEmpty() )
-        The::statusBar()->longMessage( error );
+        Amarok::Components::logger()->longMessage( error );
     Mp3tunesSimpleUploader * uploadWorker = new Mp3tunesSimpleUploader( m_collection->locker(), urls );
     connect( uploadWorker, SIGNAL( uploadComplete() ), this, SLOT( slotCopyOperationFinished() ) );
     ThreadWeaver::Weaver::instance()->enqueue( uploadWorker );

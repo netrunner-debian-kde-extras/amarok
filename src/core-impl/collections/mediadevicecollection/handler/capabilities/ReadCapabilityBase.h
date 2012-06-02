@@ -29,6 +29,7 @@ class MEDIADEVICECOLLECTION_EXPORT ReadCapabilityBase : public Handler::Capabili
     Q_OBJECT
 
     public:
+        ReadCapabilityBase( QObject *parent ) : Capability( parent ) {}
         virtual ~ReadCapabilityBase();
 
         /* Parsing of Tracks on Device */
@@ -82,6 +83,7 @@ class MEDIADEVICECOLLECTION_EXPORT ReadCapabilityBase : public Handler::Capabili
 
         virtual QString libGetAlbum( const Meta::MediaDeviceTrackPtr &track ) = 0;
         virtual QString libGetArtist( const Meta::MediaDeviceTrackPtr &track ) = 0;
+        virtual QString libGetAlbumArtist( const Meta::MediaDeviceTrackPtr &track ) = 0;
         virtual QString libGetComposer( const Meta::MediaDeviceTrackPtr &track ) = 0;
         virtual QString libGetGenre( const Meta::MediaDeviceTrackPtr &track ) = 0;
         virtual int     libGetYear( const Meta::MediaDeviceTrackPtr &track ) = 0;

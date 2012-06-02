@@ -21,7 +21,7 @@
 #include "core/support/Debug.h"
 
 
-PopupWidget::PopupWidget( QWidget * anchor, const QString &name )
+PopupWidget::PopupWidget( QWidget *anchor, const QString &name )
         : KVBox( The::mainWindow() )
         , m_anchor( anchor )
 {
@@ -51,9 +51,9 @@ void PopupWidget::reposition()
 {
     adjustSize();
 
-    // p is no longer in the anchor's coordinates
+    //HACK: put longmessage popup in the bottom right of the window.
     QPoint p;
-    p.setX( m_anchor->x() + ( m_anchor->width() - width() ) );
-    p.setY( m_anchor->y() - height() );
+    p.setX( The::mainWindow()->width() - width() );
+    p.setY( The::mainWindow()->height() - height() );
     move( p );
 }

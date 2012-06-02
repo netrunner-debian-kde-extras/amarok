@@ -26,6 +26,7 @@
 #include "core/support/Debug.h"
 
 #include "core-impl/meta/file/File.h" // for KIO file handling
+#include "core/interfaces/Logger.h"
 
 #include <KIO/Job>
 #include <KIO/DeleteJob>
@@ -90,7 +91,7 @@ MtpHandler::~MtpHandler()
         LIBMTP_Release_Device( m_device );
         /* possible race condition with statusbar destructor,
         will uncomment when fixed */
-        //The::statusBar()->longMessage(
+        //Amarok::Components::logger()->longMessage(
         //                       i18n( "The MTP device %1 has been disconnected", prettyName() ), StatusBar::Information );
         debug() << "Device released";
     }
@@ -357,9 +358,12 @@ MtpHandler::terminate()
     {
         LIBMTP_Release_Device( m_device );
         /* possible race condition with statusbar destructor,
-        will uncomment when fixed */
-        //The::statusBar()->longMessage(
-    //                       i18n( "The MTP device %1 has been disconnected", prettyName() ), StatusBar::Information );
+        will uncomment when fixed
+        Amarok::Components::logger()->longMessage(
+                                    i18n( "The MTP device %1 has been disconnected", prettyName() ),
+                                    Amarok::Logger::Information
+                            ); */
+
         debug() << "Device released";
     }
 }
@@ -389,7 +393,7 @@ MtpHandler::getCopyableUrls( const Meta::TrackList &tracks )
         if (  ret != 0 )
         {
             debug() << "Get Track failed: " << ret;
-            /*The::statusBar()->shortLongMessage(
+            /*Amarok::Components::logger()->shortLongMessage(
                 genericError,
                 i18n( "Could not copy track from device." ),
                 StatusBar::Error
@@ -596,9 +600,8 @@ MtpHandler::privateDeleteTrackFromDevice( const Meta::MtpTrackPtr &track )
     if ( status != 0 )
     {
         debug() << "delete object failed";
-        The::statusBar()->longMessage(
-            i18n( "Delete failed" ),
-            StatusBar::Error
+        Amarok::Components::logger()->longMessage( i18n( "Delete failed" ),
+                                                   Amarok::Logger::Error
         );
 //       return false;
     }
@@ -613,17 +616,6 @@ MtpHandler::privateDeleteTrackFromDevice( const Meta::MtpTrackPtr &track )
 int
 MtpHandler::getTrackToFile( const uint32_t id, const QString & filename )
 {
-    DEBUG_BLOCK
-
-//    The::statusBar()->shortMessage( i18n( "Loading Track" ) );
-    /*
-        connect( this, SIGNAL( setProgress( int ) ),
-                 The::statusBar(), SLOT( setProgress( int ) ) );
-
-        connect( this, SIGNAL(endProgressOperation(QObject*)),
-                 The::statusBar(), SLOT(endProgressOperation(QObject*)) );
-                */
-
     return LIBMTP_Get_Track_To_File( m_device, id, filename.toUtf8(), 0, 0 );
 }
 
@@ -671,10 +663,10 @@ MtpHandler::findPathToCopy( const Meta::TrackPtr &srcTrack, const Meta::MediaDev
         if ( parent_id == 0 )
         {
             debug() << "Could not create new parent (" << m_folderStructure << ")";
-            /*The::statusBar()->shortLongMessage(
+            /*Amarok::Components::logger()->shortLongMessage(
             genericError,
             i18n( "Cannot create parent folder. Check your structure." ),
-            StatusBar::Error
+            Amarok::Logger::Error
                                               );*/
             return;
         }
@@ -987,6 +979,14 @@ MtpHandler::libGetArtist( const Meta::MediaDeviceTrackPtr &track )
 }
 
 QString
+MtpHandler::libGetAlbumArtist( const Meta::MediaDeviceTrackPtr &track )
+{
+    //Album artist isn't supported by libmtp ATM.
+    Q_UNUSED( track )
+    return QString();
+}
+
+QString
 MtpHandler::libGetComposer( const Meta::MediaDeviceTrackPtr &track )
 {
     return QString::fromUtf8( m_mtpTrackHash.value( track )->composer );
@@ -1063,12 +1063,13 @@ MtpHandler::libGetPlayCount( const Meta::MediaDeviceTrackPtr &track )
 {
     return m_mtpTrackHash.value( track )->usecount;
 }
-uint
+
+QDateTime
 MtpHandler::libGetLastPlayed( const Meta::MediaDeviceTrackPtr &track )
 {
     Q_UNUSED( track );
     // NOTE: defaulting, since not provided
-    return 0;
+    return QDateTime();
 }
 
 // TODO: implement rating
@@ -1130,6 +1131,15 @@ MtpHandler::libSetArtist( Meta::MediaDeviceTrackPtr &track, const QString& artis
     m_mtpTrackHash.value( track )->artist = ( artist.isEmpty() ? qstrdup( "" ) : qstrdup( artist.toUtf8() ) );
     debug() << "Set to: " << m_mtpTrackHash.value( track )->artist;
 }
+
+void
+MtpHandler::libSetAlbumArtist( MediaDeviceTrackPtr &track, const QString &albumArtist )
+{
+    //Album artist isn't supported by libmtp ATM.
+    Q_UNUSED( track )
+    Q_UNUSED( albumArtist )
+}
+
 void
 MtpHandler::libSetComposer( Meta::MediaDeviceTrackPtr &track, const QString& composer )
 {
@@ -1205,8 +1215,9 @@ MtpHandler::libSetPlayCount( Meta::MediaDeviceTrackPtr &track, int playcount )
 {
     m_mtpTrackHash.value( track )->usecount = playcount;
 }
+
 void
-MtpHandler::libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, uint lastplayed)
+MtpHandler::libSetLastPlayed( Meta::MediaDeviceTrackPtr &track, const QDateTime &lastplayed)
 {
     Q_UNUSED( track )
     Q_UNUSED( lastplayed )
@@ -1255,10 +1266,10 @@ MtpHandler::libSetType( Meta::MediaDeviceTrackPtr &track, const QString& type )
         else
         {
             debug() << "We do not support the extension ." << extension;
-            /*   The::statusBar()->shortLongMessage(
+            /*   Amarok::Components::logger()->shortLongMessage(
                genericError,
                i18n( "Cannot determine a valid file type" ),
-               StatusBar::Error
+               Amarok::Logger::Error
                                                  );*/
         }
     }

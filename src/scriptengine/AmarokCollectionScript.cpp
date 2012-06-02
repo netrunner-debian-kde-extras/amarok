@@ -20,16 +20,17 @@
 #include "App.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/collections/support/SqlStorage.h"
-#include "core-impl/collections/sqlcollection/SqlCollectionLocation.h"
+#include "core-impl/collections/db/sql/SqlCollectionLocation.h"
 #include "core/support/Debug.h"
 
 
 namespace AmarokScript
 {
-    AmarokCollectionScript::AmarokCollectionScript( QScriptEngine* ScriptEngine )
-        : QObject( kapp )
+    AmarokCollectionScript::AmarokCollectionScript( QScriptEngine *engine )
+        : QObject( engine )
     {
-        Q_UNUSED( ScriptEngine );
+        QScriptValue scriptObject = engine->newQObject( this, QScriptEngine::AutoOwnership );
+        engine->globalObject().property( "Amarok" ).setProperty( "Collection", scriptObject );
     }
 
     AmarokCollectionScript::~AmarokCollectionScript()
@@ -124,7 +125,7 @@ namespace AmarokScript
             parentUrl.setPath( dir );
             if ( !AmarokConfig::scanRecursively() )
             {
-                if ( ( dir == path ) || ( dir + '/' == path ) )
+                if ( ( dir == path ) || ( QString( dir + '/' ) == path ) )
                     return true;
             }
             else //scan recursively

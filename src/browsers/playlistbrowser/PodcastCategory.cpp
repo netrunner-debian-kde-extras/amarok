@@ -20,10 +20,13 @@
 
 #include "PodcastCategory.h"
 
+#include "amarokconfig.h"
+#include "amarokurls/AmarokUrl.h"
 #include "App.h"
 #include "browsers/InfoProxy.h"
 #include "core/support/Debug.h"
 #include "core/meta/support/MetaUtility.h"
+#include "PaletteHandler.h"
 #include "PodcastModel.h"
 #include "PlaylistBrowserView.h"
 
@@ -36,6 +39,7 @@
 #include <KUrlRequesterDialog>
 #include <KGlobal>
 #include <KLocale>
+#include <KToolBar>
 
 namespace The
 {
@@ -84,16 +88,20 @@ PodcastCategory::PodcastCategory( QWidget *parent )
 
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_podcasts.png" ) );
 
+    // set background
+    if( AmarokConfig::showBrowserBackgroundImage() )
+        setBackgroundImage( imagePath() );
+
     QAction *addPodcastAction = new QAction( KIcon( "list-add-amarok" ), i18n("&Add Podcast"),
                                              m_toolBar );
     addPodcastAction->setPriority( QAction::NormalPriority );
     m_toolBar->insertAction( m_separator, addPodcastAction );
     connect( addPodcastAction, SIGNAL(triggered( bool )), The::podcastModel(), SLOT(addPodcast()) );
 
-    QAction *updateAllAction = new QAction( KIcon("view-refresh-amarok"),
-                                            i18n("&Update All"), m_toolBar );
+    QAction *updateAllAction = new QAction( KIcon("view-refresh-amarok"), QString(), m_toolBar );
+    updateAllAction->setToolTip( i18n("&Update All") );
     updateAllAction->setPriority( QAction::LowPriority );
-    m_toolBar->addAction( updateAllAction );
+    m_toolBar->insertAction( m_separator, updateAllAction );
     connect( updateAllAction, SIGNAL(triggered( bool )),
              The::podcastModel(), SLOT(refreshPodcasts()) );
 
@@ -269,20 +277,7 @@ PodcastCategory::showInfo( const QModelIndex &index )
 void
 PodcastCategory::slotImportOpml()
 {
-    DEBUG_BLOCK
-    KUrl url = KUrlRequesterDialog::getUrl( QString(), this
-                                            , i18n( "Select OPML file to import" )
-                                            );
-    if( !url.isEmpty() )
-    {
-        // user entered something and pressed OK
-        The::podcastModel()->importOpml( url );
-    }
-    else
-    {
-        // user entered nothing or pressed Cancel
-        debug() << "invalid input or cancel";
-    }
+    AmarokUrl( "amarok://service-podcastdirectory/addOpml" ).run();
 }
 
 #include "PodcastCategory.moc"

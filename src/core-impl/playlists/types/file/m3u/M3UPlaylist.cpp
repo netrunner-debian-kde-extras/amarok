@@ -16,13 +16,14 @@
 
 #include "core-impl/playlists/types/file/m3u/M3UPlaylist.h"
 
-#define DEBUG_PREFIX "M3UPlaylist"
+#define _PREFIX "M3UPlaylist"
 
 #include "core/support/Amarok.h"
-#include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
-#include "PlaylistManager.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
+#include "playlistmanager/file/PlaylistFileProvider.h"
+#include "PlaylistManager.h"
 
 #include <KMimeType>
 #include <KUrl>
@@ -35,7 +36,8 @@ namespace Playlists {
 
 M3UPlaylist::M3UPlaylist()
     : m_url( Playlists::newPlaylistFilePath( "m3u" ) )
-    , m_tracksLoaded( false )
+    , m_tracksLoaded( true )
+    , m_tracks( Meta::TrackList() )
 {
     m_name = m_url.fileName();
 }
@@ -52,9 +54,9 @@ M3UPlaylist::M3UPlaylist( const KUrl &url )
     : m_url( url )
     , m_tracksLoaded( false )
 {
-    //DEBUG_BLOCK
-    //debug() << "url: " << m_url;
     m_name = m_url.fileName();
+
+    triggerTrackLoad();
 }
 
 M3UPlaylist::~M3UPlaylist()
@@ -68,19 +70,37 @@ M3UPlaylist::description() const
     return QString( "%1 (%2)").arg( mimeType->name(), "m3u" );
 }
 
+int
+M3UPlaylist::trackCount() const
+{
+    if( m_tracksLoaded )
+        return m_tracks.count();
+
+    //TODO: count the number of lines starting with #
+    return -1;
+}
+
 Meta::TrackList
 M3UPlaylist::tracks()
 {
+    return m_tracks;
+}
+
+void
+M3UPlaylist::triggerTrackLoad()
+{
+    //TODO make sure we've got all tracks first.
     if( m_tracksLoaded )
-        return m_tracks;
+        return;
 
     //check if file is local or remote
-    if ( m_url.isLocalFile() )
+    if( m_url.isLocalFile() )
     {
         QFile file( m_url.toLocalFile() );
-        if( !file.open( QIODevice::ReadOnly ) ) {
-            debug() << "cannot open file";
-            return m_tracks;
+        if( !file.open( QIODevice::ReadOnly ) )
+        {
+            error() << "cannot open file";
+            return;
         }
 
         QString contents( file.readAll() );
@@ -95,16 +115,45 @@ M3UPlaylist::tracks()
     {
         The::playlistManager()->downloadPlaylist( m_url, PlaylistFilePtr( this ) );
     }
-    return m_tracks;
+}
+
+void
+M3UPlaylist::addTrack( Meta::TrackPtr track, int position )
+{
+    if( !m_tracksLoaded )
+        triggerTrackLoad();
+
+    int trackPos = position < 0 ? m_tracks.count() : position;
+    if( trackPos > m_tracks.count() )
+        trackPos = m_tracks.count();
+    m_tracks.insert( trackPos, track );
+    //set in case no track was in the playlist before
+    m_tracksLoaded = true;
+
+    notifyObserversTrackAdded( track, trackPos );
+
+    if( !m_url.isEmpty() )
+        saveLater();
+}
+
+void
+M3UPlaylist::removeTrack( int position )
+{
+    if( position < 0 || position >= m_tracks.count() )
+        return;
+    m_tracks.removeAt( position );
+
+    notifyObserversTrackRemoved( position );
+
+    if( !m_url.isEmpty() )
+        saveLater();
 }
 
 bool
 M3UPlaylist::loadM3u( QTextStream &stream )
 {
-    DEBUG_BLOCK
-
     const QString directory = m_url.directory();
-    bool hasTracks( false );
+    bool hasTracks = false;
     m_tracksLoaded = false;
 
     do
@@ -117,9 +166,8 @@ M3UPlaylist::loadM3u( QTextStream &stream )
         }
         else if( !line.startsWith( '#' ) && !line.isEmpty() )
         {
+            Meta::TrackPtr trackPtr;
             line = line.replace( "\\", "/" );
-
-            debug() << "line:" << line;
 
             // KUrl::isRelativeUrl() expects absolute URLs to start with a protocol, so prepend it if missing
             QString url = line;
@@ -129,29 +177,24 @@ M3UPlaylist::loadM3u( QTextStream &stream )
             // Also won't be windows url, so no need to worry about swapping \ for /
             if( KUrl::isRelativeUrl( url ) )
             {
-                debug() << "relative url";
                 //Replace \ with / for windows playlists
                 line.replace('\\','/');
                 KUrl kurl( directory );
                 kurl.addPath( line ); // adds directory separator if required
                 kurl.cleanPath();
-                Meta::TrackPtr trackPtr = CollectionManager::instance()->trackForUrl( kurl );
 
-                if ( trackPtr ) {
-                    debug() << "track url: " << trackPtr->prettyUrl();
-                    m_tracks.append( trackPtr );
-                    hasTracks = true;
-                    m_tracksLoaded = true;
-                }
+                trackPtr = CollectionManager::instance()->trackForUrl( kurl );
             }
             else
             {
-                Meta::TrackPtr trackPtr = CollectionManager::instance()->trackForUrl( KUrl( line ) );
-                if ( trackPtr ) {
-                    m_tracks.append( trackPtr );
-                    hasTracks = true;
-                    m_tracksLoaded = true;
-                }
+                trackPtr = CollectionManager::instance()->trackForUrl( KUrl( line ) );
+            }
+
+            if( trackPtr )
+            {
+                m_tracks.append( trackPtr );
+                hasTracks = true;
+                m_tracksLoaded = true;
             }
         }
     } while( !stream.atEnd() );
@@ -170,7 +213,7 @@ M3UPlaylist::save( const KUrl &location, bool relative )
 
     if( !file.open( QIODevice::WriteOnly ) )
     {
-        debug() << "Unable to write to playlist " << savePath.path();
+        error() << "Unable to write to playlist " << savePath.path();
         return false;
     }
 
@@ -183,33 +226,37 @@ M3UPlaylist::save( const KUrl &location, bool relative )
     QList<int> lengths;
     foreach( Meta::TrackPtr track, m_tracks )
     {
-        if( track )
-        {
-            urls << track->playableUrl();
-            titles << track->name();
-            lengths << track->length();
-        }
-    }
+        Q_ASSERT(track);
 
-    for( int i = 0, n = urls.count(); i < n; ++i )
-    {
-        const KUrl &url = urls[i];
+        const KUrl &url = track->playableUrl();
+        int length = track->length() / 1000;
+        const QString &title = track->name();
+        const QString &artist = track->artist()->name();
 
-        if( !titles.isEmpty() && !lengths.isEmpty() )
+        if( !title.isEmpty() && !artist.isEmpty() && length )
         {
             stream << "#EXTINF:";
-            stream << QString::number( lengths[i] );
+            stream << QString::number( length );
             stream << ',';
-            stream << titles[i];
+            stream << artist << " - " << title;
             stream << '\n';
         }
-        if (url.protocol() == "file" ) {
-            if ( relative ) {
-                const QFileInfo fi(file);
-                stream << KUrl::relativePath(fi.path(), url.path());
-            } else
+        if( url.protocol() == "file" )
+        {
+            if( relative )
+            {
+                const QFileInfo fi( file );
+                QString relativePath = KUrl::relativePath( fi.path(), url.path() );
+                relativePath.remove( 0, 2 ); //remove "./"
+                stream << relativePath;
+            }
+            else
+            {
                 stream << url.path();
-        } else {
+            }
+        }
+        else
+        {
             stream << url.url();
         }
         stream << "\n";

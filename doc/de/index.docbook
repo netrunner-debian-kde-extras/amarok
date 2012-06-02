@@ -37,7 +37,7 @@
 <legalnotice
 >&FDLNotice;</legalnotice>
 <date
->2010-08-04</date>
+>04.08.2010</date>
     <releaseinfo
 >&kde; SC 4.5</releaseinfo>
 <abstract>
@@ -86,7 +86,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1left.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1left.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -124,7 +124,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1center.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1center.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -152,7 +152,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1right.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1right.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -180,7 +180,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1svn965006.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1svn965006.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -201,7 +201,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1ipod.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1ipod.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -226,7 +226,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1contextviewconfig.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1contextviewconfig.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -253,7 +253,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1internetservices.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1internetservices.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -309,7 +309,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1scriptmanager.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1scriptmanager.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -334,7 +334,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1covermanager.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1covermanager.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -357,7 +357,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1rating.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1rating.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -378,7 +378,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1popup.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1popup.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -399,7 +399,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1pleditor.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1pleditor.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -426,7 +426,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1dynamicplaylist.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1dynamicplaylist.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase

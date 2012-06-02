@@ -13,36 +13,32 @@
  * You should have received a copy of the GNU General Public License along with         *
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
- 
+
 #include "BrowserCategory.h"
 
+#include "App.h"
+#include "amarokconfig.h"
 #include "BrowserBreadcrumbItem.h"
 #include "BrowserCategoryList.h"
 
 #include "core/support/Debug.h"
 
-#include "ToolBar.h"
-
-#include <QVBoxLayout>
 #include <QWidget>
 
 BrowserCategory::BrowserCategory( const QString &name, QWidget *parent )
     : KVBox( parent )
     , m_name( name )
-    , m_prettyName( QString() )
-    , m_shortDescription( QString() )
-    , m_longDescription( QString() )
     , m_parentList( 0 )
     , m_breadcrumb( 0 )
 {
+    setObjectName( name );
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     setFrameShape( QFrame::NoFrame );
-
+    connect( App::instance(), SIGNAL(settingsChanged()), SLOT(slotSettingsChanged()) );
 }
 
 BrowserCategory::~BrowserCategory()
 {
-    delete m_breadcrumb;
 }
 
 QString
@@ -99,6 +95,30 @@ BrowserCategory::icon() const
     return m_icon;
 }
 
+void
+BrowserCategory::setBackgroundImage(const QString& path)
+{
+    if ( path.isEmpty() || !KUrl(path).isLocalFile() ) {
+        setStyleSheet( QString() );
+        return;
+    }
+
+    // Hack alert: Use the class name of the most derived object (using polymorphism) for CSS
+    // This is required to limit the style to this specific class only (avoiding cascading)
+    // \sa http://doc.qt.nokia.com/latest/stylesheet-syntax.html#widgets-inside-c-namespaces
+    const QString escapedClassName = QString( metaObject()->className() ).replace( "::", "--" );
+    setStyleSheet( QString("%1 { background-image: url(\"%2\"); \
+            background-repeat: no-repeat; \
+            background-attachment: fixed; \
+            background-position: center; }").arg( escapedClassName, path )
+    );
+}
+
+void BrowserCategory::slotSettingsChanged()
+{
+    setBackgroundImage( AmarokConfig::showBrowserBackgroundImage() ? m_imagePath : QString() );
+}
+
 void BrowserCategory::setParentList( BrowserCategoryList * parent )
 {
     m_parentList = parent;
@@ -113,14 +133,12 @@ void BrowserCategory::activate()
 {
     DEBUG_BLOCK
     if ( parentList() )
-        parentList()->activate( this );
+        parentList()->setActiveCategory( this );
 }
 
 BrowserBreadcrumbItem * BrowserCategory::breadcrumb()
 {
-    if ( m_breadcrumb == 0 )
-        m_breadcrumb = new BrowserBreadcrumbItem( this );
-    return m_breadcrumb;
+    return new BrowserBreadcrumbItem( this );
 }
 
 void BrowserCategory::setImagePath( const QString & path )
@@ -128,7 +146,7 @@ void BrowserCategory::setImagePath( const QString & path )
     m_imagePath = path;
 }
 
-QString BrowserCategory::imagePath()
+QString BrowserCategory::imagePath() const
 {
     return m_imagePath;
 }

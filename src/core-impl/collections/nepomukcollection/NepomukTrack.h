@@ -80,8 +80,8 @@ class NepomukTrack : public Track
 
         virtual int discNumber() const;
 
-        virtual uint firstPlayed() const;
-        virtual uint lastPlayed() const;
+        virtual QDateTime firstPlayed() const;
+        virtual QDateTime lastPlayed() const;
         virtual int playCount() const;
 
         virtual QString type() const;
@@ -96,7 +96,7 @@ class NepomukTrack : public Track
         QUrl resourceUri() const;
         void valueChangedInNepomuk( qint64 value, const Soprano::LiteralValue& );
 
-        void setUid ( const QString& value );
+        void setUidUrl( const QString& value );
         QString uid() const;
 
          Nepomuk::Resource& resource();

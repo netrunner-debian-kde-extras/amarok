@@ -17,11 +17,19 @@
 #ifndef MEDIADEVICEHANDLER_CAPABILITY_H
 #define MEDIADEVICEHANDLER_CAPABILITY_H
 
-
 #include "mediadevicecollection_export.h"
 
 #include <QObject>
 
+/**
+ * Base class for all media device Capabilities
+ *
+ * Following rules apply when working with capabilities:
+ *  * Capabilities get deleted along their media device handler. Therefore use
+ *    QWeakPointer everywhere to detect that.
+ *  * the one who creates capability using create<Type>() must deleteLater() it when no
+ *    longer used.
+ */
 namespace Handler
 {
     class MEDIADEVICECOLLECTION_EXPORT Capability : public QObject
@@ -39,10 +47,28 @@ namespace Handler
                         , Podcast = 5 // can read/write podcasts
                       };
 
+            /**
+             * @param handler should be set to associated MediaDeviceHandler or Collection.
+             *
+             * The capability sets its parent to handler, so that it can be guaranteed that
+             * the handler is valid for Capability's lifetime.
+             */
+            Capability( QObject *handler );
             virtual ~Capability();
 
+        signals:
+            /**
+             * Signals that parent of this object should be set to @param parent
+             */
+            void signalSetParent( QObject *parent );
+
+        private slots:
+            /**
+             * Simply calls setParent( parent ); needed for cases where moveToThread() is
+             * called in constructor - setting parent needs to be done in the new thread.
+             */
+            void slotSetParent( QObject *parent );
     };
 }
-
 
 #endif

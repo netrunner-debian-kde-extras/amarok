@@ -41,34 +41,34 @@ class AMAROK_EXPORT ProgressBar : public QFrame
         ~ProgressBar();
 
         void setDescription( const QString &description );
-        ProgressBar *setAbortSlot( QObject *receiver, const char *slot, Qt::ConnectionType type = Qt::AutoConnection );
+        ProgressBar *setAbortSlot( QObject *receiver, const char *slot,
+                                  Qt::ConnectionType type = Qt::AutoConnection );
 
         QToolButton *cancelButton() { return m_cancelButton; }
         QProgressBar *progressBar() { return m_progressBar;  }
-        QLabel *descriptionLabel()  { return m_descriptionLabel; }
-        KHBox* extrabuttonSpace()   { return m_extraButtonSpace; }
+        QLabel *descriptionLabel() { return m_descriptionLabel; }
 
-        int maximum()               { return  m_progressBar->maximum(); }
-        void setMaximum( int max )  { m_progressBar->setMaximum( max ); }
-        int value()                 { return m_progressBar->value(); }
+        int maximum() { return  m_progressBar->maximum(); }
+        void setMaximum( int max ) { m_progressBar->setMaximum( max ); }
+        int value() { return m_progressBar->value(); }
         void setValue( int value );
         int percentage();
 
     public slots:
         void cancel();
         void delayedDone();
+        void slotTotalSteps( int steps ) { m_progressBar->setMaximum( steps ); }
 
     signals:
-        void cancelled( ProgressBar* );
+        void cancelled( ProgressBar * );
         void cancelled();
-        void complete( ProgressBar* );
+        void complete( ProgressBar * );
         void percentageChanged( int );
 
     private:
         QToolButton *m_cancelButton;
         QProgressBar *m_progressBar;
         QLabel *m_descriptionLabel;
-        KHBox *m_extraButtonSpace;
 };
 
 #endif

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2010 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2011 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -25,6 +25,7 @@
 #include "core/support/Debug.h"
 
 #include <KRandom>
+#include <KLocalizedString>
 
 #include <QtGlobal>
 
@@ -176,11 +177,15 @@ ConstraintTypes::TagMatch::toXml( QDomDocument& doc, QDomElement& elem ) const
 QString
 ConstraintTypes::TagMatch::getName() const
 {
-    QString v( i18n("Match tag:%1 %2 %3 %4") );
+    QString v( i18nc( "%1 = empty string or \"not\"; "
+                      "%2 = a metadata field, like \"title\" or \"artist name\"; "
+                      "%3 = a predicate, can be equals, starts with, ends with or contains; "
+                      "%4 = a string to match; "
+                      "Example: Match tag: not title contains \"foo\"", "Match tag:%1 %2 %3 %4") );
     v = v.arg( ( m_invert ? i18n(" not") : "" ), m_fieldsModel->pretty_name_of( m_field ), comparisonToString() );
     if ( m_field == "rating" ) {
         double r = m_value.toDouble() / 2.0;
-        return v.arg( QString( i18nc("number of stars in the rating of a track", "%1 stars") ).arg( r ) );
+        return v.arg( i18ncp("number of stars in the rating of a track", "%1 star", "%1 stars", r) );
     } else if ( m_field == "length" ) {
         return v.arg( QTime().addMSecs( m_value.toInt() ).toString( "H:mm:ss" ) );
     } else {
@@ -302,111 +307,16 @@ ConstraintTypes::TagMatch::initQueryMaker( Collections::QueryMaker* qm ) const
 }
 
 double
-ConstraintTypes::TagMatch::satisfaction( const Meta::TrackList& tl )
+ConstraintTypes::TagMatch::satisfaction( const Meta::TrackList& tl ) const
 {
-    m_satisfaction = 0.0;
+    double satisfaction = 0.0;
     foreach( Meta::TrackPtr t, tl ) {
         if ( matches( t ) ) {
-            m_satisfaction += 1.0;
+            satisfaction += 1.0;
         }
     }
-    m_satisfaction /= ( double )tl.size();
-    return m_satisfaction;
-}
-
-double
-ConstraintTypes::TagMatch::deltaS_insert( const Meta::TrackList& tl, const Meta::TrackPtr t, const int ) const
-{
-    double s = m_satisfaction * tl.size();
-    if ( matches( t ) ) {
-        s += 1.0;
-    }
-    return s / ( double )( tl.size() + 1 ) - m_satisfaction;
-}
-
-double
-ConstraintTypes::TagMatch::deltaS_replace( const Meta::TrackList& tl, const Meta::TrackPtr t, const int i ) const
-{
-    bool oldT = matches( tl.at( i ) );
-    bool newT = matches( t );
-    if ( !( oldT ^ newT ) ) {
-        return 0.0;
-    } else if ( newT ) {
-        return 1.0 / ( double )tl.size();
-    } else if ( oldT ) {
-        return -1.0 / ( double )tl.size();
-    } else {
-        return 0.0;
-    }
-}
-
-double
-ConstraintTypes::TagMatch::deltaS_delete( const Meta::TrackList& tl, const int i ) const
-{
-    double s = m_satisfaction * tl.size();
-    if ( matches( tl.at( i ) ) ) {
-        s -= 1.0;
-    }
-    return s / ( double )( tl.size() - 1 ) - m_satisfaction;
-}
-
-double
-ConstraintTypes::TagMatch::deltaS_swap( const Meta::TrackList&, const int, const int ) const
-{
-    return 0.0;
-}
-
-void
-ConstraintTypes::TagMatch::insertTrack( const Meta::TrackList& tl, const Meta::TrackPtr t, const int i )
-{
-    m_satisfaction += deltaS_insert( tl, t, i );
-}
-
-void
-ConstraintTypes::TagMatch::replaceTrack( const Meta::TrackList& tl, const Meta::TrackPtr t, const int i )
-{
-    m_satisfaction += deltaS_replace( tl, t, i );
-}
-
-void
-ConstraintTypes::TagMatch::deleteTrack( const Meta::TrackList& tl, const int i )
-{
-    m_satisfaction += deltaS_delete( tl, i );
-}
-
-void
-ConstraintTypes::TagMatch::swapTracks( const Meta::TrackList&, const int, const int ) {}
-
-ConstraintNode::Vote*
-ConstraintTypes::TagMatch::vote( const Meta::TrackList& playlist, const Meta::TrackList& domain ) const
-{
-    ConstraintNode::Vote* v = new ConstraintNode::Vote();
-    v->operation = ConstraintNode::OperationReplace;
-    v->place = -1;
-    v->track = Meta::TrackPtr();
-
-    // find a non-matching track in the playlist
-    for ( int i = 0; i < playlist.length() ; i++ ) {
-        if ( !matches( playlist.at( i ) ) ) {
-            v->place = i;
-            break;
-        }
-    }
-    if ( v->place < 0 ) {
-        delete v;
-        return 0;
-    }
-
-    // replace it with a track from the domain that matches
-    for ( int i = 0; i < 100; i++ ) {
-        v->track = domain.at( KRandom::random() % domain.size() );
-        if ( matches( v->track ) ) {
-            return v;
-        }
-    }
-
-    delete v;
-    return 0;
+    satisfaction /= ( double )tl.size();
+    return satisfaction;
 }
 
 void
@@ -457,8 +367,6 @@ ConstraintTypes::TagMatch::comparisonToString() const
             return QString( i18n("within") );
         }
     } else {
-#if 0
-        // FIXME: Replace the block below with this one after string freeze is lifted
         if ( m_comparison == CompareStrEquals ) {
             return QString( i18nc("an alphabetical tag (like title or artist name) equals some string","equals") );
         } else if ( m_comparison == CompareStrStartsWith ) {
@@ -467,18 +375,6 @@ ConstraintTypes::TagMatch::comparisonToString() const
             return QString( i18nc("an alphabetical tag (like title or artist name) ends with some string","ends with") );
         } else if ( m_comparison == CompareStrContains ) {
             return QString( i18nc("an alphabetical tag (like title or artist name) contains some string","contains") );
-        } else if ( m_comparison == CompareStrRegExp ) {
-            return QString( i18n("regexp") );
-        }
-#endif
-        if ( m_comparison == CompareStrEquals ) {
-            return QString( i18nc("an alphabetical tag (like title or artist name) equals some string","equals") );
-        } else if ( m_comparison == CompareStrStartsWith ) {
-            return QString( i18n("starts with") );
-        } else if ( m_comparison == CompareStrEndsWith ) {
-            return QString( i18n("ends with") );
-        } else if ( m_comparison == CompareStrContains ) {
-            return QString( i18n("contains") );
         } else if ( m_comparison == CompareStrRegExp ) {
             return QString( i18n("regexp") );
         }
@@ -493,21 +389,21 @@ ConstraintTypes::TagMatch::valueToString() const
         if ( m_comparison != CompareDateWithin ) {
             return m_value.toDate().toString( Qt::ISODate );
         } else {
-            QString unit;
+            KLocalizedString unit;
             switch ( m_value.value<DateRange>().second ) {
                 case 0:
-                    unit = "days";
+                    unit = ki18np("%1 day", "%1 days");
                     break;
                 case 1:
-                    unit = "months";
+                    unit = ki18np("%1 month", "%1 months");
                     break;
                 case 2:
-                    unit = "years";
+                    unit = ki18np("%1 year", "%1 years");
                     break;
                 default:
                     break;
             }
-            return QString("%1 %2").arg( m_value.value<DateRange>().first ).arg( unit );
+            return unit.subs( m_value.value<DateRange>().first ).toString();
         }
     } else {
         return m_value.toString();
@@ -570,10 +466,10 @@ ConstraintTypes::TagMatch::matches( Meta::TrackPtr track ) const
                 v = m_comparer->compareNum( track->rating(), m_comparison, m_value.toInt(), m_strictness, fmv );
                 break;
             case Meta::valFirstPlayed:
-                v = m_comparer->compareDate( track->firstPlayed(), m_comparison, m_value, m_strictness );
+                v = m_comparer->compareDate( track->firstPlayed().toTime_t(), m_comparison, m_value, m_strictness );
                 break;
             case Meta::valLastPlayed:
-                v = m_comparer->compareDate( track->lastPlayed(), m_comparison, m_value, m_strictness );
+                v = m_comparer->compareDate( track->lastPlayed().toTime_t(), m_comparison, m_value, m_strictness );
                 break;
             case Meta::valPlaycount:
                 v = m_comparer->compareNum( track->playCount(), m_comparison, m_value.toInt(), m_strictness, fmv );

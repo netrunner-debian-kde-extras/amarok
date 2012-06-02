@@ -25,7 +25,6 @@
 #include <QImage>
 #include <QList>
 #include <QObject>
-#include <QPixmap>
 #include <QStringList>
 
 #include <kio/job.h>
@@ -51,7 +50,7 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
         QString cachedName;
         QString cachedGenre;
         QString cachedComposer;
-        QString cachedYear;
+        int cachedYear;
         qint64 cachedLength;
         qreal  cachedBpm;
         int cachedTrackNumber;
@@ -93,13 +92,21 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
             if( newTrackProvider->possiblyContainsTrack( url ) )
             {
                 Meta::TrackPtr track = newTrackProvider->trackForUrl( url );
-                if( track )
-                {
-                    subscribeTo( track );
-                    realTrack = track;
-                    notifyObservers();
-                    disconnect( CollectionManager::instance(), SIGNAL( trackProviderAdded( Collections::TrackProvider* ) ), this, SLOT( slotNewTrackProvider( Collections::TrackProvider* ) ) );
-                }
+                slotUpdateTrack( track );
+            }
+        }
+
+        void slotNewCollection( Collections::Collection *newCollection )
+        {
+            if ( !newCollection )
+            {
+                return;
+            }
+
+            if( newCollection->possiblyContainsTrack( url ) )
+            {
+                Meta::TrackPtr track = newCollection->trackForUrl( url );
+                slotUpdateTrack( track );
             }
         }
 
@@ -110,15 +117,9 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
                 subscribeTo( track );
                 realTrack = track;
                 notifyObservers();
+                disconnect( CollectionManager::instance(), SIGNAL( trackProviderAdded( Collections::TrackProvider* ) ), this, SLOT( slotNewTrackProvider( Collections::TrackProvider* ) ) );
+                disconnect( CollectionManager::instance(), SIGNAL( collectionAdded( Collections::Collection* ) ), this, SLOT( slotNewCollection( Collections::Collection* ) ) );
             }
-        }
-        void slotCheckCollectionManager()
-        {
-            Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
-            if( track )
-                realTrack = track;
-            notifyObservers();
-            disconnect( CollectionManager::instance(), SIGNAL( collectionAdded( Collections::Collection* ) ), this, SLOT( slotNewCollection( Collections::Collection* ) ) );
         }
 };
 
@@ -138,14 +139,6 @@ public:
             return d->realTrack->artist()->tracks();
         else
             return Meta::TrackList();
-    }
-
-    Meta::AlbumList albums()
-    {
-        if( d && d->realTrack )
-            return d->realTrack->artist()->albums();
-        else
-            return Meta::AlbumList();
     }
 
     QString name() const
@@ -185,6 +178,7 @@ public:
     MetaProxy::Track::Private * const d;
 };
 
+/** TODO: what about MetaDataChanged? */
 class ProxyAlbum : public Meta::Album
 {
 public:
@@ -247,7 +241,7 @@ public:
             return name();
     }
 
-    QPixmap image( int size )
+    QImage image( int size ) const
     {
         if( d && d->realTrack ) {
             if ( d->realTrack->album() )
@@ -386,7 +380,7 @@ public:
         if( d && d->realTrack && d->realTrack->year() )
             return d->realTrack->year()->name();
         else if( d )
-            return d->cachedYear;
+            return QString::number(d->cachedYear);
         else
             return QString();
     }

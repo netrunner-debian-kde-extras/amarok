@@ -30,7 +30,6 @@ namespace Meta
 {
 
 //forward declaration
-class ServiceAlbumCoverDownloader;
 class ServiceAlbumWithCover;
 
 typedef KSharedPtr<ServiceAlbumWithCover> ServiceAlbumWithCoverPtr;
@@ -85,7 +84,7 @@ public:
      * Set the cover image of thes album.
      * @param image The cover image.
      */
-    void setImage( const QPixmap &image );
+    void setImage( const QImage &image );
 
     /**
      * Notify album that the download of the cover has been cancelled.
@@ -106,15 +105,14 @@ public:
      * @param withShadow Unused.
      * @return The cover image or a default cover.
      */
-    virtual QPixmap image( int size = 1 ); //overridden from Meta::Album
+    virtual QImage image( int size = 0 ) const; //overridden from Meta::Album
 
 protected:
 
-    mutable QPixmap *m_cover;
+    mutable QImage m_cover;
     mutable bool m_hasFetchedCover;
     mutable bool m_isFetchingCover;
     QString m_coverDownloadPath;
-    mutable ServiceAlbumCoverDownloader *m_coverDownloader;
 };
 
 
@@ -144,7 +142,7 @@ class ServiceAlbumCoverDownloader : public QObject
          * Start the download of the cover of a ServiceAlbumWithCover.
          * @param album The albumwhose cover should be downloaded.
          */
-        void downloadCover( Meta::ServiceAlbumWithCover * album );
+        void downloadCover( Meta::ServiceAlbumWithCoverPtr album );
 
     private slots:
 
@@ -160,7 +158,7 @@ class ServiceAlbumCoverDownloader : public QObject
          */
         void coverDownloadCanceled( KJob * downloadJob );
     private:
-        ServiceAlbumWithCover * m_album;
+        Meta::ServiceAlbumWithCoverPtr m_album;
         QString m_coverDownloadPath;
         KIO::FileCopyJob * m_albumDownloadJob;
         KTempDir * m_tempDir;

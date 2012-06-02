@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2009 Kevin Funk <krf@electrostorm.net>                                 *
+ * Copyright (c) 2009-2011 Kevin Funk <krf@electrostorm.net>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -17,8 +17,6 @@
 #ifndef AMAROK_KNOTIFICATIONBACKEND_H
 #define AMAROK_KNOTIFICATIONBACKEND_H
 
-#include "core/engine/EngineObserver.h"
-
 #include <KNotification>
 
 namespace Amarok {
@@ -26,7 +24,7 @@ namespace Amarok {
 /**
  * Class for accessing KNotify in KDE
  **/
-class KNotificationBackend : public QObject, public Engine::EngineObserver
+class KNotificationBackend : public QObject
 {
     Q_OBJECT
 
@@ -37,15 +35,19 @@ public:
     void setEnabled(bool enabled);
     bool isEnabled() const;
 
+    /**
+     * Checks if a fullscreen window is currently active.
+     */
+    bool isFullscreenWindowActive() const;
+
 public Q_SLOTS:
-    void showCurrentTrack();
+    void show( const QString& title, const QString& body, const QPixmap& pixmap = QPixmap() );
+    void showCurrentTrack( bool force = false );
 
 protected:
-    // Reimplemented from engineobserver
-    virtual void engineStateChanged( Phonon::State state, Phonon::State oldState = Phonon::StoppedState );
-    virtual void engineNewTrackPlaying();
 
 private slots:
+    void trackPlaying();
     void notificationClosed();
 
 private:

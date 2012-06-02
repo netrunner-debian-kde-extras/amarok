@@ -29,9 +29,12 @@
 #include "SvgHandler.h"
 #include "amarokconfig.h"
 #include "core/meta/support/MetaUtility.h"
+#include "KNotificationBackend.h"
 
 #include <KApplication>
+#include <KDebug>
 #include <KIcon>
+#include <KLocale>
 #include <KWindowSystem>
 
 #include <QDesktopWidget>
@@ -60,8 +63,9 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
         , m_y( MARGIN )
         , m_drawShadow( true )
         , m_rating( 0 )
-        , m_volume( 0 )
+        , m_volume( The::engineController()->volume() )
         , m_showVolume( false )
+        , m_hideWhenFullscreenWindowIsActive( false )
 {
     Qt::WindowFlags flags;
     flags = Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint;
@@ -79,6 +83,8 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
     setFocusPolicy( Qt::NoFocus );
     unsetColors();
 
+    setFont(QFont("sans-serif"));
+
     #ifdef Q_WS_X11
     KWindowSystem::setType( winId(), NET::Notification );
     #endif
@@ -86,15 +92,8 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
     m_timer->setSingleShot( true );
     connect( m_timer, SIGNAL( timeout() ), SLOT( hide() ) );
 
-    QFont f = font();
-    f.setFamily( "Arial" );
-    f.setPointSize( f.pointSize() + 8 );
-    setFont( f );
-
     //or crashes, KWindowSystem bug I think, crashes in QWidget::icon()
     kapp->setTopWidget( this );
-
-    m_volume = The::engineController()->volume();
 }
 
 OSDWidget::~OSDWidget()
@@ -103,7 +102,7 @@ OSDWidget::~OSDWidget()
 }
 
 void
-OSDWidget::show( const QString &text, QImage newImage )
+OSDWidget::show( const QString &text, const QImage &newImage )
 {
     DEBUG_BLOCK
     m_showVolume = false;
@@ -120,6 +119,27 @@ OSDWidget::show( const QString &text, QImage newImage )
     m_text = text;
     show();
 }
+
+void
+OSDWidget::show()
+{
+    if ( !isTemporaryDisabled() )
+        QWidget::show();
+}
+
+bool
+OSDWidget::isTemporaryDisabled()
+{
+    // Check if the OSD should not be shown,
+    // if a fullscreen window is focused.
+    if ( m_hideWhenFullscreenWindowIsActive )
+    {
+        return Amarok::KNotificationBackend::instance()->isFullscreenWindowActive();
+    }
+
+    return false;
+}
+
 
 void
 OSDWidget::ratingChanged( const QString& path, int rating )
@@ -147,9 +167,7 @@ OSDWidget::volumeChanged( int volume )
 
     if ( isEnabled() )
     {
-        QString muteState = "";
         m_showVolume = true;
-
         m_text = i18n("Volume: %1% %2", m_volume, ( The::engineController()->isMuted() ? i18n("(muted)") : "" ) );
 
         show();
@@ -166,7 +184,6 @@ OSDWidget::setVisible( bool visible )
 
         const uint M = fontMetrics().width( 'x' );
 
-        const QRect oldGeometry = QRect( pos(), size() );
         const QRect newGeometry = determineMetrics( M );
 
         if( newGeometry.width() > 0 && newGeometry.height() > 0 )
@@ -298,8 +315,8 @@ OSDWidget::determineMetrics( const int M )
 void
 OSDWidget::paintEvent( QPaintEvent *e )
 {
-    int M = m_m;
-    QSize size = m_size;
+    const int& M = m_m;
+    const QSize& size = m_size;
 
     QPoint point;
     QRect rect( point, size );
@@ -383,8 +400,6 @@ OSDWidget::paintEvent( QPaintEvent *e )
     p.setPen( palette().color( QPalette::Active, QPalette::WindowText ) );
     //p.setPen( Qt::white ); // This too.
     p.drawText( rect, align, m_text );
-
-    m_paused = false;
 }
 
 void
@@ -427,10 +442,35 @@ OSDWidget::unsetColors()
 }
 
 void
+OSDWidget::setTextColor(const QColor& color)
+{
+    QPalette palette = this->palette();
+    palette.setColor( QPalette::Active, QPalette::WindowText, color );
+    setPalette(palette);
+}
+
+void
 OSDWidget::setScreen( int screen )
 {
     const int n = QApplication::desktop()->numScreens();
     m_screen = ( screen >= n ) ? n - 1 : screen;
+}
+
+void
+OSDWidget::setFontScale( int scale )
+{
+    double fontScale = static_cast<double>( scale ) / 100.0;
+
+    // update font, reuse old one
+    QFont newFont( font() );
+    newFont.setPointSizeF( defaultPointSize() * fontScale );
+    setFont( newFont );
+}
+
+void
+OSDWidget::setHideWhenFullscreenWindowIsActive( bool hide )
+{
+    m_hideWhenFullscreenWindowIsActive = hide;
 }
 
 
@@ -443,14 +483,10 @@ OSDPreviewWidget::OSDPreviewWidget( QWidget *parent )
         , m_dragging( false )
 {
     setObjectName( "osdpreview" );
-    m_text = i18n( "On-Screen-Display preview\nDrag to reposition" );
-    m_duration = 0;
-    m_alignment = static_cast<Alignment>( AmarokConfig::osdAlignment() );
-    m_y = AmarokConfig::osdYOffset();
-    m_cover = Amarok::icon();
+    setDuration( 0 );
+    setImage( Amarok::icon() );
     setTranslucent( AmarokConfig::osdUseTranslucency() );
-    setText( m_text );
-    setImage( m_cover );
+    setText( i18n( "On-Screen-Display preview\nDrag to reposition" ) );
 }
 
 void
@@ -463,6 +499,15 @@ OSDPreviewWidget::mousePressEvent( QMouseEvent *event )
         grabMouse( Qt::SizeAllCursor );
         m_dragging = true;
     }
+}
+
+void
+OSDPreviewWidget::setUseCustomColors(const bool use, const QColor& fg)
+{
+    if( use )
+        setTextColor( fg );
+    else
+        unsetColors();
 }
 
 void
@@ -480,8 +525,8 @@ OSDPreviewWidget::mouseReleaseEvent( QMouseEvent * /*event*/ )
         if( currentScreen != -1 )
         {
             // set new data
-            m_screen = currentScreen;
-            m_y      = QWidget::y();
+            setScreen( currentScreen );
+            setOffset( QWidget::y() );
 
             emit positionChanged();
         }
@@ -495,13 +540,13 @@ OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
     {
         // Here we implement a "snap-to-grid" like positioning system for the preview widget
 
-        const QRect screen      = QApplication::desktop()->screenGeometry( m_screen );
-        const uint  hcenter     = screen.width() / 2;
-        const uint  eGlobalPosX = e->globalPos().x() - screen.left();
-        const uint  snapZone    = screen.width() / 24;
+        const QRect screenRect  = QApplication::desktop()->screenGeometry( screen() );
+        const uint  hcenter     = screenRect.width() / 2;
+        const uint  eGlobalPosX = e->globalPos().x() - screenRect.left();
+        const uint  snapZone    = screenRect.width() / 24;
 
-        QPoint destination = e->globalPos() - m_dragOffset - screen.topLeft();
-        int maxY = screen.height() - height() - MARGIN;
+        QPoint destination = e->globalPos() - m_dragOffset - screenRect.topLeft();
+        int maxY = screenRect.height() - height() - MARGIN;
         if( destination.y() < MARGIN )
             destination.ry() = MARGIN;
         if( destination.y() > maxY )
@@ -509,29 +554,30 @@ OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
 
         if( eGlobalPosX < ( hcenter - snapZone ) )
         {
-            m_alignment = Left;
+            setAlignment(Left);
             destination.rx() = MARGIN;
         }
         else if( eGlobalPosX > ( hcenter + snapZone ) )
         {
-            m_alignment = Right;
-            destination.rx() = screen.width() - MARGIN - width();
+            setAlignment(Right);
+            destination.rx() = screenRect.width() - MARGIN - width();
         }
         else {
-            const uint eGlobalPosY = e->globalPos().y() - screen.top();
-            const uint vcenter     = screen.height() / 2;
+            const uint eGlobalPosY = e->globalPos().y() - screenRect.top();
+            const uint vcenter     = screenRect.height() / 2;
 
             destination.rx() = hcenter - width() / 2;
 
             if( eGlobalPosY >= ( vcenter - snapZone ) && eGlobalPosY <= ( vcenter + snapZone ) )
             {
-                m_alignment = Center;
+                setAlignment(Center);
                 destination.ry() = vcenter - height() / 2;
             }
-            else m_alignment = Middle;
+            else
+                setAlignment(Middle);
         }
 
-        destination += screen.topLeft();
+        destination += screenRect.topLeft();
 
         move( destination );
     }
@@ -562,9 +608,32 @@ Amarok::OSD::destroy()
 
 Amarok::OSD::OSD()
     : OSDWidget( 0 )
-    , Engine::EngineObserver( The::engineController() )
 {
     s_instance = this;
+
+    EngineController* const engine = The::engineController();
+
+    if( engine->isPlaying() )
+        trackPlaying( engine->currentTrack() );
+
+    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
+             this, SLOT( trackPlaying( Meta::TrackPtr ) ) );
+    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
+             this, SLOT( stopped() ) );
+    connect( engine, SIGNAL( paused() ),
+             this, SLOT( paused() ) );
+
+    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
+             this, SLOT( metadataChanged() ) );
+    connect( engine, SIGNAL( albumMetadataChanged( Meta::AlbumPtr ) ),
+             this, SLOT( metadataChanged() ) );
+
+    connect( engine, SIGNAL( volumeChanged( int ) ),
+             this, SLOT( volumeChanged( int ) ) );
+
+    connect( engine, SIGNAL( muteStateChanged( bool ) ),
+             this, SLOT( muteStateChanged( bool ) ) );
+
 }
 
 Amarok::OSD::~OSD()
@@ -622,6 +691,8 @@ Amarok::OSD::applySettings()
     setEnabled( AmarokConfig::osdEnabled() );
     setOffset( AmarokConfig::osdYOffset() );
     setScreen( AmarokConfig::osdScreen() );
+    setFontScale( AmarokConfig::osdFontScaling() );
+    setHideWhenFullscreenWindowIsActive( AmarokConfig::osdHideOnFullscreen() );
 
     if( AmarokConfig::osdUseCustomColors() )
         setTextColor( AmarokConfig::osdTextColor() );
@@ -646,63 +717,44 @@ Amarok::OSD::forceToggleOSD()
 }
 
 void
-Amarok::OSD::engineVolumeChanged( int newVolume )
-{
-    volumeChanged( newVolume );
-}
-
-void
-Amarok::OSD::engineMuteStateChanged( bool mute )
+Amarok::OSD::muteStateChanged( bool mute )
 {
     Q_UNUSED( mute )
 
-    volumeChanged( m_volume );
+    volumeChanged( The::engineController()->volume() );
 }
 
 void
-Amarok::OSD::engineNewTrackPlaying()
+Amarok::OSD::trackPlaying( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
+    m_currentTrack = track;
 
-    if( m_currentTrack )
-        unsubscribeFrom( m_currentTrack->album() );
-
-    if( The::engineController()->currentTrack() )
-    {
-        m_currentTrack = The::engineController()->currentTrack();
-        subscribeTo( m_currentTrack->album() );
-    }
-
+    setPaused(false);
     show( m_currentTrack );
 }
 
 void
-Amarok::OSD::engineStateChanged( Phonon::State state, Phonon::State oldState )
+Amarok::OSD::stopped()
 {
-    switch( state )
-    {
-        case Phonon::PlayingState:
-            m_paused = false;
-            if( oldState == Phonon::PausedState )
-                show( m_currentTrack );
-            break;
-
-        case Phonon::PausedState:
-            setImage( QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
-            OSDWidget::show( i18n( "Paused" ) );
-            m_paused = true;
-            break;
-
-        default:
-            break;
-    }
+    setImage( QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
+    setRating( 0 ); // otherwise stars from last rating change are visible
+    OSDWidget::show( i18n( "Stopped" ) );
+    setPaused(false);
 }
 
 void
-Amarok::OSD::metadataChanged( Meta::AlbumPtr album )
+Amarok::OSD::paused()
 {
-    Q_UNUSED( album )
+    setImage( QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
+    setRating( 0 ); // otherwise stars from last rating change are visible
+    OSDWidget::show( i18n( "Paused" ) );
+    setPaused(true);
+}
 
+void
+Amarok::OSD::metadataChanged()
+{
+    // this also covers all cases where a stream get's new metadata.
     show( m_currentTrack );
 }
 

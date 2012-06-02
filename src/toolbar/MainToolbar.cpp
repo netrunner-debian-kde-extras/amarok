@@ -15,6 +15,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "MainToolbar"
+
 #include "MainToolbar.h"
 
 #include "amarokconfig.h"
@@ -22,6 +24,7 @@
 #include "App.h"
 #include "ActionClasses.h"
 #include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "GlobalCurrentTrackActions.h"
 #include "MainWindow.h"
@@ -32,12 +35,14 @@
 
 #include "browsers/collectionbrowser/CollectionWidget.h"
 
-#include "core/capabilities/CurrentTrackActionsCapability.h"
+#include "core/capabilities/ActionsCapability.h"
+#include "core/capabilities/BookmarkThisCapability.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
 
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
+#include "playlist/PlaylistController.h"
 
 #include "widgets/AnimatedLabelStack.h"
 #include "widgets/PlayPauseButton.h"
@@ -56,8 +61,6 @@
 #include <QTimer>
 #include <QVBoxLayout>
 
-static const QString promoString = i18n( "Rediscover Your Music" );
-
 // #define prev_next_role QPalette::Link
 #define prev_next_role foregroundRole()
 static const int prevOpacity = 128;
@@ -68,7 +71,7 @@ static const int icnSize = 48;
 static const int leftRightSpacer = 15;
 static const int timeLabelMargin = 6;
 static const int skipPadding = 6;
-static const int skipMargin = 12;
+static const int skipMargin = 20;
 static const int constant_progress_ratio_minimum_width = 640;
 static const int space_between_tracks_and_slider = 2;
 static const float track_fontsize_factor = 1.1f;
@@ -77,16 +80,19 @@ static const int track_action_spacing = 6;
 
 MainToolbar::MainToolbar( QWidget *parent )
     : QToolBar( i18n( "Main Toolbar" ), parent )
-    , Engine::EngineObserver( The::engineController() )
     , m_lastTime( -1 )
+    , m_trackBarAnimationTimer( 0 )
 {
+    DEBUG_BLOCK
     setObjectName( "MainToolbar" );
+
+    m_promoString = i18n( "Rediscover Your Music" );
 
     // control padding between buttons and labels, it's style controlled by default
     layout()->setSpacing( 0 );
 
     EngineController *engine = The::engineController();
-    m_currentEngineState = The::engineController()->state();
+
     setIconSize( QSize( icnSize, icnSize ) );
 
     QWidget *spacerWidget = new QWidget(this);
@@ -94,16 +100,16 @@ MainToolbar::MainToolbar( QWidget *parent )
     addWidget( spacerWidget );
 
     m_playPause = new PlayPauseButton;
-    m_playPause->setPlaying( engine->state() == Phonon::PlayingState );
+    m_playPause->setPlaying( engine->isPlaying() );
     m_playPause->setFixedSize( icnSize, icnSize );
     addWidget( m_playPause );
-    connect ( m_playPause, SIGNAL( toggled(bool) ), this, SLOT( setPlaying(bool) ) );
+    connect( m_playPause, SIGNAL(toggled(bool)), engine, SLOT(playPause()) );
 
     QWidget *info = new QWidget(this);
     QVBoxLayout *vl = new QVBoxLayout( info );
 
     QFont fnt = QApplication::font(); // don't use the toolbar font. Often small to support icons only.
-    if ( fnt.pointSize() > 0 )
+    if( fnt.pointSize() > 0 )
         fnt.setPointSize( qRound(fnt.pointSize() * track_fontsize_factor) );
     const int fntH = QFontMetrics( QApplication::font() ).height();
 
@@ -113,7 +119,7 @@ MainToolbar::MainToolbar( QWidget *parent )
     m_prev.key = 0;
     m_prev.label = new AnimatedLabelStack(QStringList(), info);
     m_prev.label->setFont( fnt );
-    if ( layoutDirection() == Qt::LeftToRight )
+    if( layoutDirection() == Qt::LeftToRight )
         m_prev.label->setPadding( m_skip_right.width() + skipPadding + skipMargin, 0 );
     else
         m_prev.label->setPadding( 0, m_skip_right.width() + skipPadding + skipMargin );
@@ -122,20 +128,21 @@ MainToolbar::MainToolbar( QWidget *parent )
     m_prev.label->setOpacity( prevOpacity );
     m_prev.label->installEventFilter( this );
     m_prev.label->setForegroundRole( prev_next_role );
-    connect ( m_prev.label, SIGNAL( clicked(const QString&) ), The::playlistActions(), SLOT( back() ) );
+    connect( m_prev.label, SIGNAL(clicked(QString)), The::playlistActions(), SLOT(back()) );
 
-    m_current.label = new AnimatedLabelStack( QStringList( promoString ), info );
+    m_current.label = new AnimatedLabelStack( QStringList( m_promoString ), info );
     m_current.label->setFont( fnt );
     m_current.label->setPadding( 24, 24 );
     m_current.label->setBold( true );
     m_current.label->setLayout( new QHBoxLayout );
     m_current.label->installEventFilter( this );
-    connect ( m_current.label, SIGNAL( clicked(const QString&) ), Amarok::actionCollection()->action("show_active_track"), SLOT( trigger() ) );
+    connect( m_current.label, SIGNAL(clicked(QString)),
+             Amarok::actionCollection()->action("show_active_track"), SLOT(trigger()) );
 
     m_next.key = 0;
     m_next.label = new AnimatedLabelStack(QStringList(), info);
     m_next.label->setFont( fnt );
-    if ( layoutDirection() == Qt::LeftToRight )
+    if( layoutDirection() == Qt::LeftToRight )
         m_next.label->setPadding( 0, m_skip_left.width() + skipPadding + skipMargin );
     else
         m_next.label->setPadding( m_skip_left.width() + skipPadding + skipMargin, 0 );
@@ -144,7 +151,7 @@ MainToolbar::MainToolbar( QWidget *parent )
     m_next.label->setOpacity( nextOpacity );
     m_next.label->installEventFilter( this );
     m_next.label->setForegroundRole( prev_next_role );
-    connect ( m_next.label, SIGNAL( clicked(const QString&) ), The::playlistActions(), SLOT( next() ) );
+    connect( m_next.label, SIGNAL(clicked(QString)), The::playlistActions(), SLOT(next()) );
 
     m_dummy.label = new AnimatedLabelStack(QStringList(), info);
     m_next.label->setFont( fnt );
@@ -154,16 +161,16 @@ MainToolbar::MainToolbar( QWidget *parent )
 
     vl->addSpacing( space_between_tracks_and_slider );
 
-    connect ( m_prev.label, SIGNAL( pulsing(bool) ), m_current.label, SLOT( setStill(bool) ) );
-    connect ( m_next.label, SIGNAL( pulsing(bool) ), m_current.label, SLOT( setStill(bool) ) );
+    connect( m_prev.label, SIGNAL(pulsing(bool)), m_current.label, SLOT(setStill(bool)) );
+    connect( m_next.label, SIGNAL(pulsing(bool)), m_current.label, SLOT(setStill(bool)) );
 
     m_timeLabel = new QLabel( info );
     m_timeLabel->setAlignment( Qt::AlignVCenter | Qt::AlignRight );
 
     m_slider = new Amarok::TimeSlider( info );
-    connect( m_slider, SIGNAL( sliderReleased( int ) ), The::engineController(), SLOT( seek( int ) ) );
-    connect( m_slider, SIGNAL( valueChanged( int ) ), SLOT( setLabelTime( int ) ) );
-    connect( App::instance(), SIGNAL( settingsChanged() ), this, SLOT( layoutProgressBar() ) );
+    connect( m_slider, SIGNAL(sliderReleased(int)), The::engineController(), SLOT(seek(int)) );
+    connect( m_slider, SIGNAL(valueChanged(int)), SLOT( setLabelTime(int) ) );
+    connect( App::instance(), SIGNAL(settingsChanged()), SLOT(layoutProgressBar()) );
 
     m_remainingTimeLabel = new QLabel( info );
     m_remainingTimeLabel->setAlignment( Qt::AlignVCenter | Qt::AlignLeft );
@@ -181,9 +188,11 @@ MainToolbar::MainToolbar( QWidget *parent )
     m_volume->addWheelProxies( QList<QWidget*>() << this << info
                                                  << m_prev.label << m_current.label << m_next.label
                                                  << m_timeLabel << m_remainingTimeLabel );
+
     addWidget( m_volume );
-    connect ( m_volume, SIGNAL( valueChanged(int) ), engine, SLOT( setVolume(int) ) );
-    connect ( m_volume, SIGNAL( muteToggled(bool) ), engine, SLOT( setMuted(bool) ) );
+    connect( engine, SIGNAL(volumeChanged(int)), m_volume, SLOT(setValue(int)) );
+    connect( m_volume, SIGNAL(valueChanged(int)), engine, SLOT(setVolume(int)) );
+    connect( m_volume, SIGNAL(muteToggled(bool)), engine, SLOT(setMuted(bool)) );
 
     spacerWidget = new QWidget(this);
     spacerWidget->setFixedWidth( leftRightSpacer );
@@ -193,7 +202,7 @@ MainToolbar::MainToolbar( QWidget *parent )
 void
 MainToolbar::addBookmark( const QString &name, int milliSeconds )
 {
-    if ( m_slider )
+    if( m_slider )
         m_slider->drawTriangle( name, milliSeconds, false );
 }
 
@@ -202,7 +211,7 @@ static void adjustLabelPos( QWidget *label, int targetX )
 {
     QRect r = label->geometry();
     int d = targetX - r.x();
-    if ( d )
+    if( d )
     {
         r.translate( qMin( qAbs(d), r.width()/6 ) * (d > 0 ? 1 : -1), 0 );
         label->setGeometry( r );
@@ -217,25 +226,25 @@ MainToolbar::animateTrackLabels()
     int off = -m_current.label->parentWidget()->geometry().x();
     adjustLabelPos( m_prev.label, m_prev.rect.x() + off );
     m_prev.label->setOpacity( prevOpacity );
-    if (done)
+    if(done)
         done = m_prev.label->geometry().x() == m_prev.rect.x() + off;
 
     adjustLabelPos( m_current.label, m_current.rect.x() + off );
-    if (done)
+    if(done)
         done = m_current.label->geometry().x() == m_current.rect.x() + off;
 
     adjustLabelPos( m_next.label, m_next.rect.x() + off );
     m_next.label->setOpacity( nextOpacity );
-    if (done)
+    if(done)
         done = m_next.label->geometry().x() == m_next.rect.x() + off;
 
     adjustLabelPos( m_dummy.label, m_dummy.targetX );
-    if ( m_dummy.label->geometry().x() == m_dummy.targetX )
+    if( m_dummy.label->geometry().x() == m_dummy.targetX )
         m_dummy.label->hide();
     else
         done = false;
 
-    if ( done )
+    if( done )
     {
         killTimer( m_trackBarAnimationTimer );
         setCurrentTrackActionsVisible( true );
@@ -244,67 +253,42 @@ MainToolbar::animateTrackLabels()
 }
 
 void
-MainToolbar::checkEngineState()
+MainToolbar::stopped()
 {
-    Phonon::State newState = The::engineController()->state();
-    if ( m_currentEngineState == newState )
-        return;
-
-    m_currentEngineState = newState;
-    switch ( m_currentEngineState )
-    {
-        case Phonon::PlayingState:
-            m_playPause->setPlaying( true );
-            break;
-        case Phonon::StoppedState:
-            m_slider->setValue( m_slider->minimum() );
-            m_slider->update(); // necessary to clean the moodbar...
-            setLabelTime( -1 );
-            // fall through
-        case Phonon::PausedState:
-            m_playPause->setPlaying( false );
-            break;
-        case Phonon::LoadingState:
-        {
-            Meta::TrackPtr track = The::engineController()->currentTrack();
-            if ( !( track && m_current.uidUrl == track->uidUrl() ) )
-            {
-                setLabelTime( -1 );
-                m_slider->setEnabled( false );
-            }
-            break;
-        }
-        default:
-            break;
-    }
+    m_slider->setValue( m_slider->minimum() );
+    m_slider->update(); // necessary to clean the moodbar...
+    setLabelTime( -1 );
+    m_playPause->setPlaying( false );
 }
 
 void
-MainToolbar::engineVolumeChanged( int percent )
+MainToolbar::paused()
+{
+    m_playPause->setPlaying( false );
+}
+
+void
+MainToolbar::playing()
+{
+    m_playPause->setPlaying( true );
+}
+
+void
+MainToolbar::volumeChanged( int percent )
 {
     m_volume->setValue( percent );
 }
 
 void
-MainToolbar::engineMuteStateChanged( bool mute )
+MainToolbar::muteStateChanged( bool mute )
 {
     m_volume->setMuted( mute );
 }
 
 void
-MainToolbar::engineStateChanged( Phonon::State currentState, Phonon::State oldState )
-{
-    if ( !isVisible() || currentState == oldState )
-        return;
-    // when changing a track, we get an interm pause what leads to stupid flicker
-    // therefore we wait a few ms before we actually check the _then_ current state
-    QTimer::singleShot( 100, this, SLOT( checkEngineState() ) );
-}
-
-void
 MainToolbar::filter( const QString &string )
 {
-    if ( CollectionWidget::instance() )
+    if( CollectionWidget::instance() )
         CollectionWidget::instance()->setFilter( string );
 }
 
@@ -316,7 +300,7 @@ MainToolbar::layoutProgressBar()
 
     const int bw = AmarokConfig::showMoodbarInSlider() ? 10 : 6;
     int w = bw;
-    if ( size().width() < limit )
+    if( size().width() < limit )
     {
         w = (limit<<7)/size().width();
         w = w*w*w*bw;
@@ -325,10 +309,10 @@ MainToolbar::layoutProgressBar()
 
     w = r.width() / w;
     int tlW = m_timeLabel->width();
-    if ( tlW + timeLabelMargin > w )
+    if( tlW + timeLabelMargin > w )
         w = tlW;
     int rtlW = m_remainingTimeLabel->width();
-    if ( rtlW + timeLabelMargin > w )
+    if( rtlW + timeLabelMargin > w )
         w = rtlW;
 
     QRect pb = r.adjusted( w, 0, -w, 0 );
@@ -337,7 +321,7 @@ MainToolbar::layoutProgressBar()
     QRect tlR( 0, 0, tlW, r.height() );
     QRect rtlR( 0, 0, rtlW, r.height() );
 
-    if ( layoutDirection() == Qt::LeftToRight )
+    if( layoutDirection() == Qt::LeftToRight )
     {
         tlR.moveTopRight( pb.topLeft() - QPoint( timeLabelMargin, 0 ) );
         rtlR.moveTopLeft( pb.topRight() + QPoint( timeLabelMargin, 0 )  );
@@ -362,7 +346,7 @@ MainToolbar::layoutTrackBar()
     r.setWidth( r.width() / 3);
     int d = r.width();
 
-    if ( layoutDirection() == Qt::RightToLeft )
+    if( layoutDirection() == Qt::RightToLeft )
     {
         d = -d;
         r.moveRight( m_trackBarSpacer->geometry().right() );
@@ -384,14 +368,6 @@ MainToolbar::layoutTrackBar()
     setCurrentTrackActionsVisible( true );
 }
 
-// The metadata (title, album) of 'currentTrack()' may have changed.
-// A bit crude because this triggers on any change of any track in the playlist, but that's
-// not a problem. Nicer but more complex approach: use 'Meta::Observer::subscribeTo()'.
-void MainToolbar::updateLabels()
-{
-    engineTrackChanged( The::engineController()->currentTrack() );
-}
-
 void
 MainToolbar::updateCurrentTrackActions()
 {
@@ -410,16 +386,15 @@ MainToolbar::updateCurrentTrackActions()
         actions << action;
 
     Meta::TrackPtr track = The::engineController()->currentTrack();
-    if( track && track->hasCapabilityInterface( Capabilities::Capability::CurrentTrackActions ) )
+    if( track )
     {
-        Capabilities::CurrentTrackActionsCapability *cac = track->create<Capabilities::CurrentTrackActionsCapability>();
-        if ( cac )
-        {
-            QList<QAction *> currentTrackActions = cac->customActions();
-            foreach( QAction *action, currentTrackActions )
-                actions << action;
-        }
-        delete cac;
+        QScopedPointer< Capabilities::ActionsCapability > ac( track->create<Capabilities::ActionsCapability>() );
+        if( ac )
+            actions << ac->actions();
+
+        QScopedPointer< Capabilities::BookmarkThisCapability > btc( track->create<Capabilities::BookmarkThisCapability>() );
+        if( btc && btc->bookmarkAction() )
+            actions << btc->bookmarkAction();
     }
 
     QHBoxLayout *hbl = static_cast<QHBoxLayout*>( m_current.label->layout() );
@@ -430,9 +405,11 @@ MainToolbar::updateCurrentTrackActions()
     const int n = actions.count() / 2;
     for ( int i = 0; i < actions.count(); ++i )
     {
-        if ( i == n )
+        if( i == n )
             hbl->addStretch( 10 );
         btn = new TrackActionButton( m_current.label, actions.at(i) );
+        if( !actions.at(i)->parent() ) // see documentation of ActionsCapability::actions
+            actions.at(i)->setParent(btn);
         btn->installEventFilter( this );
         hbl->addWidget( btn );
     }
@@ -445,29 +422,29 @@ MainToolbar::updateCurrentTrackActions()
 static QStringList metadata( Meta::TrackPtr track )
 {
     QStringList list;
-    if ( track )
+    if( track )
     {
         bool noTags = false;
         QString title = track->prettyName();
-        if (( noTags = title.isEmpty() )) // should not happen
+        if(( noTags = title.isEmpty() )) // should not happen
             title = track->prettyUrl();
-        if (( noTags = title.isEmpty() )) // should never happen
+        if(( noTags = title.isEmpty() )) // should never happen
             title = track->playableUrl().url();
-        if (( noTags = title.isEmpty() )) // sth's MEGA wrong ;-)
+        if(( noTags = title.isEmpty() )) // sth's MEGA wrong ;-)
             title = "???";
 
         // no tags -> probably filename. try to strip the suffix
-        if ( noTags || track->name().isEmpty() )
+        if( noTags || track->name().isEmpty() )
         {
             noTags = true;
             int dot = title.lastIndexOf('.');
-            if ( dot > 0 && title.length() - dot < 6 )
+            if( dot > 0 && title.length() - dot < 6 )
                 title = title.left( dot );
         }
 
         // the track has no tags, is long or contains tags other than the titlebar
         // ==> separate
-        if ( noTags || title.length() > 50 ||
+        if( noTags || title.length() > 50 ||
              (HAS_TAG(artist) && title.CONTAINS_TAG(artist)) ||
              (HAS_TAG(composer) && title.CONTAINS_TAG(composer)) ||
              (HAS_TAG(album) && title.CONTAINS_TAG(album)) )
@@ -481,7 +458,7 @@ static QStringList metadata( Meta::TrackPtr track )
             {
                 // check whether this entry is only a number, i.e. probably year or track #
                 i->toInt( &ok );
-                if ( ok )
+                if( ok )
                     i = list.erase( i );
                 else
                     ++i;
@@ -492,11 +469,11 @@ static QStringList metadata( Meta::TrackPtr track )
             list << title;
         }
 
-        if ( HAS_TAG(artist) && !list.CONTAINS_TAG(artist) )
+        if( HAS_TAG(artist) && !list.CONTAINS_TAG(artist) )
             list << TAG(artist);
-        else if ( HAS_TAG(composer) && !list.CONTAINS_TAG(composer) )
+        else if( HAS_TAG(composer) && !list.CONTAINS_TAG(composer) )
             list << TAG(composer);
-        if ( HAS_TAG(album) && !list.CONTAINS_TAG(album) )
+        if( HAS_TAG(album) && !list.CONTAINS_TAG(album) )
             list << TAG(album);
 
         /* other tags
@@ -526,7 +503,7 @@ static QStringList metadata( Meta::TrackPtr track )
 void
 MainToolbar::updatePrevAndNext()
 {
-    if ( !The::engineController()->currentTrack() )
+    if( !The::engineController()->currentTrack() )
     {
         m_prev.key = 0L;
         m_prev.label->setForegroundRole( foregroundRole() );
@@ -557,7 +534,7 @@ MainToolbar::updatePrevAndNext()
     m_next.label->setOpacity( nextOpacity );
     m_next.label->setData( metadata( track ) );
     m_next.label->setCursor( track ? Qt::PointingHandCursor : Qt::ArrowCursor );
-    if ( hadKey != bool(m_next.key) )
+    if( hadKey != bool(m_next.key) )
         needUpdate = true;
 
     hadKey = bool(m_prev.key);
@@ -567,36 +544,36 @@ MainToolbar::updatePrevAndNext()
     m_next.label->setOpacity( prevOpacity );
     m_prev.label->setData( metadata( track ) );
     m_prev.label->setCursor( track ? Qt::PointingHandCursor : Qt::ArrowCursor );
-    if ( hadKey != bool(m_prev.key) )
+    if( hadKey != bool(m_prev.key) )
         needUpdate = true;
 
     // we may have disbaled it as otherwise the current label gets updated one eventcycle before prev & next
     // see ::engineTrackChanged()
     m_current.label->setUpdatesEnabled( true );
 
-    if ( needUpdate )
+    if( needUpdate )
         update();
 
     // unanimated change, probably by sliding the bar - fix label positions
-    if ( !m_trackBarAnimationTimer )
+    if( !m_trackBarAnimationTimer )
         layoutTrackBar();
 }
 
 void
 MainToolbar::updateBookmarks( const QString *BookmarkName )
 {
-    DEBUG_BLOCK
+    // DEBUG_BLOCK
     m_slider->clearTriangles();
-    if ( Meta::TrackPtr track = The::engineController()->currentTrack() )
+    if( Meta::TrackPtr track = The::engineController()->currentTrack() )
     {
-        if ( track->hasCapabilityInterface( Capabilities::Capability::LoadTimecode ) )
+        if( track->hasCapabilityInterface( Capabilities::Capability::LoadTimecode ) )
         {
             Capabilities::TimecodeLoadCapability *tcl = track->create<Capabilities::TimecodeLoadCapability>();
             BookmarkList list = tcl->loadTimecodes();
-            debug() << "found " << list.count() << " timecodes on this track";
+            // debug() << "found " << list.count() << " timecodes on this track";
             foreach( AmarokUrlPtr url, list )
             {
-                if ( url->command() == "play" && url->args().keys().contains( "pos" ) )
+                if( url->command() == "play" && url->args().keys().contains( "pos" ) )
                 {
                     int pos = url->args().value( "pos" ).toDouble() * 1000;
                     debug() << "showing timecode: " << url->name() << " at " << pos ;
@@ -609,24 +586,23 @@ MainToolbar::updateBookmarks( const QString *BookmarkName )
 }
 
 void
-MainToolbar::engineTrackChanged( Meta::TrackPtr track )
+MainToolbar::trackChanged( Meta::TrackPtr track )
 {
-    if ( !isVisible() || (m_trackBarAnimationTimer && track && track.data() == m_current.key) )
+    if( !isVisible() || (m_trackBarAnimationTimer && track && track.data() == m_current.key) )
         return;
-    if ( m_trackBarAnimationTimer )
+    if( m_trackBarAnimationTimer )
     {
         killTimer( m_trackBarAnimationTimer );
         m_trackBarAnimationTimer = 0;
     }
 
-    if ( track )
+    if( track )
     {
         m_current.key = track.data();
         m_current.uidUrl = track->uidUrl();
         m_current.label->setUpdatesEnabled( false );
         m_current.label->setData( metadata( track ) );
         m_current.label->setCursor( Qt::PointingHandCursor );
-        updateCurrentTrackActions();
 
         // If all labels are in position and this is a single step for or back, we perform a slide
         // on the other two labels, i.e. e.g. move the prev to current label position and current
@@ -635,21 +611,21 @@ MainToolbar::engineTrackChanged( Meta::TrackPtr track )
         r.setWidth( r.width() / 3 );
         int d = r.width();
 
-        if ( layoutDirection() == Qt::RightToLeft )
+        if( layoutDirection() == Qt::RightToLeft )
         {
             d = -d;
             r.moveRight( m_trackBarSpacer->geometry().right() );
         }
 
-        if ( isVisible() &&  m_current.label->geometry().x() == r.x() + d )
+        if( isVisible() &&  m_current.label->geometry().x() == r.x() + d )
         {
-            if ( m_current.key == m_next.key && m_current.key != m_prev.key )
+            if( m_current.key == m_next.key && m_current.key != m_prev.key )
             {
                 setCurrentTrackActionsVisible( false );
 
                 // left
                 m_dummy.targetX = r.x() - d;
-//                 if ( d < 0 ) // rtl
+//                 if( d < 0 ) // rtl
 //                     m_dummy.targetX -= d;
                 m_dummy.label->setGeometry( r );
                 m_dummy.label->setData( m_prev.label->data() );
@@ -667,7 +643,7 @@ MainToolbar::engineTrackChanged( Meta::TrackPtr track )
                 animateTrackLabels();
                 m_trackBarAnimationTimer = startTimer( 40 );
             }
-            else if ( m_current.key == m_prev.key )
+            else if( m_current.key == m_prev.key )
             {
                 setCurrentTrackActionsVisible( false );
 
@@ -692,16 +668,20 @@ MainToolbar::engineTrackChanged( Meta::TrackPtr track )
                 m_trackBarAnimationTimer = startTimer( 40 );
             }
         }
+        trackLengthChanged( The::engineController()->trackLength() );
     }
     else
     {
+        // no track
         setLabelTime( -1 );
         m_slider->setValue( m_slider->minimum() );
         m_current.key = 0L;
         m_current.uidUrl.clear();
-        m_current.label->setData( QStringList( promoString ) );
+        m_current.label->setData( QStringList( m_promoString ) );
         m_current.label->setCursor( Qt::ArrowCursor );
     }
+
+    updateCurrentTrackActions();
 
     m_trackBarSpacer->changeSize(0, m_current.label->minimumHeight(), QSizePolicy::MinimumExpanding, QSizePolicy::Fixed );
     const int pbsH = qMax( m_timeLabel->sizeHint().height(), m_slider->sizeHint().height() );
@@ -711,42 +691,100 @@ MainToolbar::engineTrackChanged( Meta::TrackPtr track )
 }
 
 void
-MainToolbar::engineTrackLengthChanged( qint64 ms )
+MainToolbar::trackLengthChanged( qint64 ms )
 {
     m_slider->setRange( 0, ms );
     m_slider->setEnabled( ms > 0 );
 
     // get the urlid of the current track as the engine might stop and start several times
     // when skipping last.fm tracks, so we need to know if we are still on the same track...
-    if ( Meta::TrackPtr track = The::engineController()->currentTrack() )
+    if( Meta::TrackPtr track = The::engineController()->currentTrack() )
         m_current.uidUrl = track->uidUrl();
 
     updateBookmarks( 0 );
 }
 
 void
-MainToolbar::engineTrackPositionChanged( qint64 position, bool /*userSeek*/ )
+MainToolbar::trackPositionChanged( qint64 position, bool /*userSeek*/ )
 {
-    if ( m_slider->isEnabled() )
+    if( m_slider->isEnabled() )
         m_slider->setSliderValue( position );
     else
         setLabelTime( position );
 }
 
 void
+MainToolbar::showEvent( QShowEvent *ev )
+{
+    EngineController *engine = The::engineController();
+
+    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
+             this, SLOT( stopped() ) );
+    connect( engine, SIGNAL( paused() ),
+             this, SLOT( paused() ) );
+    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
+             this, SLOT( playing() ) );
+
+    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
+             this, SLOT( trackChanged( Meta::TrackPtr ) ) );
+    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
+             this, SLOT( trackChanged( Meta::TrackPtr ) ) );
+    connect( engine, SIGNAL( trackLengthChanged( qint64 ) ),
+             this, SLOT( trackLengthChanged( qint64 ) ) );
+    connect( engine, SIGNAL( trackPositionChanged( qint64, bool ) ),
+             this, SLOT( trackPositionChanged( qint64, bool ) ) );
+    connect( engine, SIGNAL( volumeChanged( int ) ),
+             this, SLOT( volumeChanged( int ) ) );
+    connect( engine, SIGNAL( muteStateChanged( bool ) ),
+             this, SLOT( muteStateChanged( bool ) ) );
+
+    // We need the three changed signals:
+    // 1. the playlist changes (PlaylistController)
+    // 2. the sorting of the playlist changed (Playlist)
+    // 3. The navigator changed to e.g. dynamic mode (PlaylistActions)
+
+    connect( The::playlistController(), SIGNAL( changed()),
+              this, SLOT( updatePrevAndNext() ) );
+
+    connect( The::playlist()->qaim(), SIGNAL( queueChanged() ),
+              this, SLOT( updatePrevAndNext() ) );
+
+    connect( The::playlistActions(), SIGNAL( navigatorChanged()),
+                 this, SLOT( updatePrevAndNext() ) );
+
+    connect( The::amarokUrlHandler(), SIGNAL( timecodesUpdated(const QString*) ),
+              this, SLOT( updateBookmarks(const QString*) ) );
+    connect( The::amarokUrlHandler(), SIGNAL( timecodeAdded(const QString&, int) ),
+              this, SLOT( addBookmark(const QString&, int) ) );
+
+    QToolBar::showEvent( ev );
+    trackChanged( The::engineController()->currentTrack() );
+    layoutTrackBar();
+    layoutProgressBar();
+    m_playPause->setPlaying( The::engineController()->isPlaying() );
+}
+
+
+void
 MainToolbar::hideEvent( QHideEvent *ev )
 {
     QToolBar::hideEvent( ev );
-    disconnect ( The::playlistController(), SIGNAL( changed()), this, SLOT( updatePrevAndNext() ) );
-    disconnect ( Playlist::ModelStack::instance()->bottom(), SIGNAL( queueChanged() ), this, SLOT( updatePrevAndNext() ) );
-    disconnect ( Playlist::ModelStack::instance()->bottom(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateLabels() ) );
-    disconnect ( The::playlistActions(), SIGNAL( navigatorChanged()), this, SLOT( updatePrevAndNext() ) );
-    disconnect ( The::amarokUrlHandler(), SIGNAL( timecodesUpdated(const QString*) ),
+
+    disconnect( The::engineController(), 0, this, 0 );
+
+    disconnect( The::playlistController(), SIGNAL( changed()),
+                 this, SLOT( updatePrevAndNext() ) );
+
+    disconnect( The::playlist()->qaim(), SIGNAL( queueChanged() ),
+                 this, SLOT( updatePrevAndNext() ) );
+
+    disconnect( The::playlistActions(), SIGNAL( navigatorChanged()),
+                 this, SLOT( updatePrevAndNext() ) );
+
+    disconnect( The::amarokUrlHandler(), SIGNAL( timecodesUpdated(const QString*) ),
                  this, SLOT( updateBookmarks(const QString*) ) );
-    disconnect ( The::amarokUrlHandler(), SIGNAL( timecodeAdded(const QString&, int) ),
+    disconnect( The::amarokUrlHandler(), SIGNAL( timecodeAdded(const QString&, int) ),
                  this, SLOT( addBookmark(const QString&, int) ) );
-    layoutTrackBar();
-    layoutProgressBar();
 }
 
 void
@@ -760,17 +798,17 @@ MainToolbar::paintEvent( QPaintEvent *ev )
     Skip *left = &m_prev;
     Skip *right = &m_next;
 
-    if ( layoutDirection() == Qt::RightToLeft )
+    if( layoutDirection() == Qt::RightToLeft )
     {
         left = &m_next;
         right = &m_prev;
     }
 
-    if ( left->key )
+    if( left->key )
         p.drawPixmap( left->rect.left() + skipMargin,
                       left->rect.y() + ( left->rect.height() - m_skip_left.height() ) /2,
                       m_skip_left );
-    if ( right->key )
+    if( right->key )
         p.drawPixmap( right->rect.right() - ( m_skip_right.width() + skipMargin ),
                       right->rect.y() + ( right->rect.height() - m_skip_right.height() ) /2,
                       m_skip_right );
@@ -781,7 +819,7 @@ MainToolbar::paintEvent( QPaintEvent *ev )
 void
 MainToolbar::resizeEvent( QResizeEvent *ev )
 {
-    if ( ev->size().width() > 0 && ev->size().width() != ev->oldSize().width() )
+    if( ev->size().width() > 0 && ev->size().width() != ev->oldSize().width() )
     {
         layoutProgressBar();
         layoutTrackBar();
@@ -791,14 +829,14 @@ MainToolbar::resizeEvent( QResizeEvent *ev )
 void
 MainToolbar::setCurrentTrackActionsVisible( bool vis )
 {
-    if ( m_current.actionsVisible == vis )
+    if( m_current.actionsVisible == vis )
         return;
     m_current.actionsVisible = vis;
     QLayoutItem *item;
     for ( int i = 0; i < m_current.label->layout()->count(); ++i )
     {
         item = m_current.label->layout()->itemAt( i );
-        if ( item->widget() )
+        if( item->widget() )
             item->widget()->setVisible( vis );
     }
 }
@@ -808,11 +846,11 @@ const char * timeString[4] = { "3:33", "33:33", "3:33:33", "33:33:33" };
 static inline int
 timeFrame( int secs )
 {
-    if ( secs < 10*60 ) // 9:59
+    if( secs < 10*60 ) // 9:59
         return 0;
-    if ( secs < 60*60 ) // 59:59
+    if( secs < 60*60 ) // 59:59
         return 1;
-    if ( secs < 10*60*60 ) // 9:59:59
+    if( secs < 10*60*60 ) // 9:59:59
         return 2;
     return 3; // 99:59:59
 }
@@ -821,7 +859,7 @@ void
 MainToolbar::setLabelTime( int ms )
 {
     bool relayout = false;
-    if ( ms < 0 ) // clear
+    if( ms < 0 ) // clear
     {
         m_timeLabel->hide();
         m_remainingTimeLabel->hide();
@@ -829,19 +867,20 @@ MainToolbar::setLabelTime( int ms )
         m_lastRemainingTime = -1;
         relayout = true;
     }
-    else if ( isVisible() ) // no need to do expensive stuff - it's updated every second anyway
+    else if( isVisible() ) // no need to do expensive stuff - it's updated every second anyway
     {
 
         const int secs = ms/1000;
         const int remainingSecs =  m_slider->maximum() > 0 ? (m_slider->maximum() - ms) / 1000 : 0;
 
-        if ( secs == m_lastTime && remainingSecs == m_lastRemainingTime )
+        if( secs == m_lastTime && remainingSecs == m_lastRemainingTime )
             return;
 
         m_timeLabel->setText( Meta::secToPrettyTime( secs ) );
 
+        // -- determine fix the timeLabel width at a sensible maximum
         int tf = timeFrame( secs );
-        if ( m_lastTime < 0 || tf != timeFrame( m_lastTime ) )
+        if( m_lastTime < 0 || tf != timeFrame( m_lastTime ) )
         {
             const int w = QFontMetrics( m_timeLabel->font() ).width( timeString[tf] );
             m_timeLabel->setFixedWidth( w );
@@ -849,11 +888,11 @@ MainToolbar::setLabelTime( int ms )
         }
         m_timeLabel->show();
 
-        if ( remainingSecs > 0 )
+        if( remainingSecs > 0 )
         {
             m_remainingTimeLabel->setText( '-' + Meta::secToPrettyTime( remainingSecs ) );
             tf = timeFrame( remainingSecs );
-            if ( m_lastRemainingTime < 0 || tf != timeFrame( m_lastRemainingTime ) )
+            if( m_lastRemainingTime < 0 || tf != timeFrame( m_lastRemainingTime ) )
             {
                 const int w = QFontMetrics( m_remainingTimeLabel->font() ).width( QString("-") + timeString[tf] );
                 m_remainingTimeLabel->setFixedWidth( w );
@@ -869,41 +908,14 @@ MainToolbar::setLabelTime( int ms )
 
     }
 
-    if (relayout)
+    if(relayout)
         layoutProgressBar();
-}
-
-void
-MainToolbar::setPlaying( bool on )
-{
-    if ( on )
-        The::engineController()->play();
-    else
-        The::engineController()->pause();
-}
-
-void
-MainToolbar::showEvent( QShowEvent *ev )
-{
-    connect ( The::playlistController(), SIGNAL( changed()), this, SLOT( updatePrevAndNext() ) );
-    connect ( Playlist::ModelStack::instance()->bottom(), SIGNAL( queueChanged() ), this, SLOT( updatePrevAndNext() ) );
-    connect ( Playlist::ModelStack::instance()->bottom(), SIGNAL( dataChanged( const QModelIndex&, const QModelIndex& ) ), this, SLOT( updateLabels() ) );
-    connect ( The::playlistActions(), SIGNAL( navigatorChanged()), this, SLOT( updatePrevAndNext() ) );
-    connect ( The::amarokUrlHandler(), SIGNAL( timecodesUpdated(const QString*) ),
-              this, SLOT( updateBookmarks(const QString*) ) );
-    connect ( The::amarokUrlHandler(), SIGNAL( timecodeAdded(const QString&, int) ),
-              this, SLOT( addBookmark(const QString&, int) ) );
-    QToolBar::showEvent( ev );
-    engineTrackChanged( The::engineController()->currentTrack() );
-    checkEngineState();
-    layoutTrackBar();
-    layoutProgressBar();
 }
 
 void
 MainToolbar::timerEvent( QTimerEvent *ev )
 {
-    if ( ev->timerId() == m_trackBarAnimationTimer )
+    if( ev->timerId() == m_trackBarAnimationTimer )
         animateTrackLabels();
     else
         QToolBar::timerEvent( ev );
@@ -912,20 +924,20 @@ MainToolbar::timerEvent( QTimerEvent *ev )
 bool
 MainToolbar::eventFilter( QObject *o, QEvent *ev )
 {
-    if ( ev->type() == QEvent::MouseMove )
+    if( ev->type() == QEvent::MouseMove )
     {
         QMouseEvent *mev = static_cast<QMouseEvent*>(ev);
-        if ( mev->buttons() & Qt::LeftButton )
-        if ( o == m_current.label || o == m_prev.label || o == m_next.label )
+        if( mev->buttons() & Qt::LeftButton )
+        if( o == m_current.label || o == m_prev.label || o == m_next.label )
         {
             setCurrentTrackActionsVisible( false );
             const int x = mev->globalPos().x();
             int d = x - m_drag.lastX;
             m_drag.lastX = x;
             const int globalDist = qAbs( x - m_drag.startX );
-            if ( globalDist > m_drag.max )
+            if( globalDist > m_drag.max )
                 m_drag.max = globalDist;
-            if ( globalDist > m_prev.label->width() )
+            if( globalDist > m_prev.label->width() )
                 return false; // constrain to one item width
 
             m_current.label->setGeometry( m_current.label->geometry().translated( d, 0 ) );
@@ -934,11 +946,11 @@ MainToolbar::eventFilter( QObject *o, QEvent *ev )
         }
         return false;
     }
-    if ( ev->type() == QEvent::MouseButtonPress )
+    if( ev->type() == QEvent::MouseButtonPress )
     {
         QMouseEvent *mev = static_cast<QMouseEvent*>(ev);
-        if ( mev->button() == Qt::LeftButton )
-        if ( o == m_current.label || o == m_prev.label || o == m_next.label )
+        if( mev->button() == Qt::LeftButton )
+        if( o == m_current.label || o == m_prev.label || o == m_next.label )
         {
             static_cast<QWidget*>(o)->setCursor( Qt::SizeHorCursor );
             m_drag.max = 0;
@@ -946,11 +958,11 @@ MainToolbar::eventFilter( QObject *o, QEvent *ev )
         }
         return false;
     }
-    if ( ev->type() == QEvent::MouseButtonRelease )
+    if( ev->type() == QEvent::MouseButtonRelease )
     {
         QMouseEvent *mev = static_cast<QMouseEvent*>(ev);
-        if ( mev->button() == Qt::LeftButton )
-        if ( o == m_current.label || o == m_prev.label || o == m_next.label )
+        if( mev->button() == Qt::LeftButton )
+        if( o == m_current.label || o == m_prev.label || o == m_next.label )
         {
             const int x = mev->globalPos().x();
             const int d = m_drag.startX - x;
@@ -963,7 +975,7 @@ MainToolbar::eventFilter( QObject *o, QEvent *ev )
 
             // if this was a _real_ drag, silently release the mouse
             const bool silentRelease = m_drag.max > 25;
-            if ( silentRelease )
+            if( silentRelease )
             {   // this is a drag, release secretly
                 o->blockSignals( true );
                 o->removeEventFilter( this );
@@ -977,12 +989,12 @@ MainToolbar::eventFilter( QObject *o, QEvent *ev )
             // if moved "far enough" jump to prev/next track
             // NOTICE the labels shall snap back _after_ the track has changed (in case)
             // as this is not reliable, we force a timered snapback sa well
-            if ( d > limit )
+            if( d > limit )
             {
                 The::playlistActions()->next();
                 QTimer::singleShot(500, this, SLOT( layoutTrackBar() ) );
             }
-            else if ( d < -limit )
+            else if( d < -limit )
             {
                 The::playlistActions()->back();
                 QTimer::singleShot(500, this, SLOT( layoutTrackBar() ) );
@@ -995,26 +1007,26 @@ MainToolbar::eventFilter( QObject *o, QEvent *ev )
         return false;
     }
 
-    if ( ev->type() == QEvent::Enter )
+    if( ev->type() == QEvent::Enter )
     {
-        if (o == m_next.label && m_next.key)
+        if(o == m_next.label && m_next.key)
             m_next.label->setOpacity( 255 );
-        else if (o == m_prev.label && m_prev.key)
+        else if(o == m_prev.label && m_prev.key)
             m_prev.label->setOpacity( 255 );
-        else if ( o->parent() == m_current.label ) // trackaction
+        else if( o->parent() == m_current.label ) // trackaction
         {
             QEvent e( QEvent::Leave );
             QCoreApplication::sendEvent( m_current.label, &e );
         }
         return false;
     }
-    if ( ev->type() == QEvent::Leave )
+    if( ev->type() == QEvent::Leave )
     {
-        if (o == m_next.label && m_next.key)
+        if(o == m_next.label && m_next.key)
             m_next.label->setOpacity( nextOpacity );
-        else if (o == m_prev.label && m_prev.key)
+        else if(o == m_prev.label && m_prev.key)
             m_prev.label->setOpacity( prevOpacity );
-        else if ( o->parent() == m_current.label &&  // trackaction
+        else if( o->parent() == m_current.label &&  // trackaction
                   m_current.label->rect().contains( m_current.label->mapFromGlobal(QCursor::pos()) ) )
         {
             QEvent e( QEvent::Enter );

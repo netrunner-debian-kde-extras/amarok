@@ -26,7 +26,6 @@
 
 #include <QSharedPointer>
 
-#include <KRandomSequence>
 #include <KSortableList>
 
 namespace Collections {
@@ -36,11 +35,10 @@ MemoryQueryMakerInternal::MemoryQueryMakerInternal( const QWeakPointer<MemoryCol
     , m_collection( collection )
     , m_matchers( 0 )
     , m_filters( 0 )
-    , m_randomize( false )
     , m_maxSize( 0 )
-    , m_returnAsDataPtrs( false )
     , m_type( QueryMaker::None )
     , m_albumQueryMode( QueryMaker::AllAlbums )
+    , m_artistQueryMode( QueryMaker::TrackArtists )
     , m_orderDescending( false )
     , m_orderByNumberField( false )
     , m_orderByField( 0 )
@@ -100,25 +98,11 @@ template <class PointerType>
 void MemoryQueryMakerInternal::emitProperResult( const QList<PointerType>& list )
 {
     QList<PointerType> resultList = list;
-    if( m_randomize )
-    {
-        KRandomSequence sequence;
-        sequence.randomize<PointerType>( resultList );
-    }
 
     if ( m_maxSize >= 0 && resultList.count() > m_maxSize )
         resultList = resultList.mid( 0, m_maxSize );
 
-    if( m_returnAsDataPtrs )
-    {
-        Meta::DataList data;
-        foreach( PointerType p, resultList )
-            data << Meta::DataPtr::staticCast( p );
-
-        emit newResultReady( m_collectionId, data );
-    }
-    else
-        emit newResultReady( m_collectionId, list );
+    emit newResultReady( list );
 }
 
 template<typename T>
@@ -172,11 +156,6 @@ MemoryQueryMakerInternal::handleResult()
                     else
                         tracks = MemoryQueryMakerHelper::orderListByString( tracks, m_orderByField, m_orderDescending );
                 }
-                if( m_randomize )
-                {
-                    KRandomSequence sequence;
-                    sequence.randomize<Meta::TrackPtr>( tracks );
-                }
 
                 int count = 0;
                 foreach( const Meta::TrackPtr &track, tracks )
@@ -191,7 +170,7 @@ MemoryQueryMakerInternal::handleResult()
                     count++;
                 }
             }
-            emit newResultReady( m_collectionId, result );
+            emit newResultReady( result );
             break;
         }
         case QueryMaker::Track :
@@ -201,9 +180,10 @@ MemoryQueryMakerInternal::handleResult()
             Meta::TrackList tmpTracks = coll ? coll->trackMap().values() : Meta::TrackList();
             foreach( Meta::TrackPtr track, tmpTracks )
             {
+                Meta::AlbumPtr album = track->album();
                 if( ( m_albumQueryMode == QueryMaker::AllAlbums
-                    || ( m_albumQueryMode == QueryMaker::OnlyCompilations && track->album()->isCompilation() )
-                    || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !track->album()->isCompilation()) ) &&
+                    || ( m_albumQueryMode == QueryMaker::OnlyCompilations && (!album || album->isCompilation()) )
+                    || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && (album && !album->isCompilation()) ) ) &&
                     ( m_labelQueryMode == QueryMaker::NoConstraint
                       || ( m_labelQueryMode == QueryMaker::OnlyWithLabels && track->labels().count() > 0 )
                       || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().count() == 0) ) )
@@ -232,9 +212,10 @@ MemoryQueryMakerInternal::handleResult()
                 Meta::TrackList tracks = album->tracks();
                 foreach( Meta::TrackPtr track, tracks )
                 {
+                    Meta::AlbumPtr album = track->album();
                     if( ( m_albumQueryMode == QueryMaker::AllAlbums
-                        || ( m_albumQueryMode == QueryMaker::OnlyCompilations && track->album()->isCompilation() )
-                        || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !track->album()->isCompilation()) ) &&
+                        || ( m_albumQueryMode == QueryMaker::OnlyCompilations && (!album || album->isCompilation()) )
+                        || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && (album && !album->isCompilation()) ) ) &&
                         ( m_labelQueryMode == QueryMaker::NoConstraint
                           || ( m_labelQueryMode == QueryMaker::OnlyWithLabels && track->labels().count() > 0 )
                           || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().count() == 0) ) )
@@ -267,6 +248,34 @@ MemoryQueryMakerInternal::handleResult()
                           || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().count() == 0) ) )
                     {
                         artists.append( artist );
+                        break;
+                    }
+                }
+            }
+            artists = MemoryQueryMakerHelper::orderListByName<Meta::ArtistPtr>( artists, m_orderDescending );
+            emitProperResult<Meta::ArtistPtr>( artists );
+            break;
+        }
+        case QueryMaker::AlbumArtist :
+        {
+            Meta::ArtistList artists;
+            Meta::AlbumList tmp = coll ? coll->albumMap().values() : Meta::AlbumList();
+            foreach( Meta::AlbumPtr album, tmp )
+            {
+                if( !album->hasAlbumArtist() )
+                    continue;
+
+                Meta::TrackList tracks = album->tracks();
+                foreach( Meta::TrackPtr track, tracks )
+                {
+                    if( ( m_albumQueryMode == QueryMaker::AllAlbums
+                        || ( m_albumQueryMode == QueryMaker::OnlyCompilations && album->isCompilation() )
+                        || ( m_albumQueryMode == QueryMaker::OnlyNormalAlbums && !album->isCompilation()) ) &&
+                        ( m_labelQueryMode == QueryMaker::NoConstraint
+                          || ( m_labelQueryMode == QueryMaker::OnlyWithLabels && track->labels().count() > 0 )
+                          || ( m_labelQueryMode == QueryMaker::OnlyWithoutLabels && track->labels().count() == 0) ) )
+                    {
+                        artists.append( album->albumArtist() );
                         break;
                     }
                 }
@@ -433,11 +442,6 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
                     else
                         resultTracks = MemoryQueryMakerHelper::orderListByString( resultTracks, m_orderByField, m_orderDescending );
                 }
-                if( m_randomize )
-                {
-                    KRandomSequence sequence;
-                    sequence.randomize<Meta::TrackPtr>( resultTracks );
-                }
 
                 int count = 0;
                 foreach( const Meta::TrackPtr &track, resultTracks )
@@ -452,7 +456,7 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
                     count++;
                 }
             }
-            emit newResultReady( m_collectionId, result );
+            emit newResultReady( result );
             break;
         }
         case QueryMaker::Track :
@@ -490,6 +494,19 @@ MemoryQueryMakerInternal::handleResult( const Meta::TrackList &tmpTracks )
             foreach( Meta::TrackPtr track, tracks )
             {
                 artistSet.insert( track->artist() );
+            }
+            Meta::ArtistList list = artistSet.toList();
+            list = MemoryQueryMakerHelper::orderListByName<Meta::ArtistPtr>( list, m_orderDescending );
+            emitProperResult<Meta::ArtistPtr>( list );
+            break;
+        }
+        case QueryMaker::AlbumArtist :
+        {
+            QSet<Meta::ArtistPtr> artistSet;
+            foreach( Meta::TrackPtr track, tracks )
+            {
+                if( !track->album().isNull() && track->album()->hasAlbumArtist() )
+                    artistSet.insert( track->album()->albumArtist() );
             }
             Meta::ArtistList list = artistSet.toList();
             list = MemoryQueryMakerHelper::orderListByName<Meta::ArtistPtr>( list, m_orderDescending );
@@ -570,21 +587,9 @@ MemoryQueryMakerInternal::setFilters( MemoryFilter *filters )
 }
 
 void
-MemoryQueryMakerInternal::setRandomize( bool randomize )
-{
-    m_randomize = randomize;
-}
-
-void
 MemoryQueryMakerInternal::setMaxSize( int maxSize )
 {
     m_maxSize = maxSize;
-}
-
-void
-MemoryQueryMakerInternal::setReturnAsDataPtrs( bool returnAsDataPtrs )
-{
-    m_returnAsDataPtrs = returnAsDataPtrs;
 }
 
 void

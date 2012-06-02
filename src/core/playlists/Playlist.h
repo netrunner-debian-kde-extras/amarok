@@ -93,8 +93,16 @@ namespace Playlists
               * be determined before loading them all.
               */
             virtual int trackCount() const { return -1; }
+
             /** returns all tracks in this playlist */
             virtual Meta::TrackList tracks() = 0;
+
+            /** Called to make a playlist load it's tracks in memory.
+              * This is used by PlaylistBrowserModel to do on-demand loading.
+              * It's recommended that this function starts a background task  in order not to block
+              * the GUI thread.
+              */
+            virtual void triggerTrackLoad() {}
 
             /** Add the track to a certain position in the playlist
              *  @arg position: place to add this track. The default value -1 appends to
@@ -106,6 +114,13 @@ namespace Playlists
                     { Q_UNUSED(track); Q_UNUSED(position); }
             /** Remove track at the specified position */
             virtual void removeTrack( int position ) { Q_UNUSED(position); }
+
+            /** Sync track status between two tracks. This is only
+             * useful for podcasts providers and some other exotic
+             * playlists providers.
+             */
+            virtual void syncTrackStatus( int position, Meta::TrackPtr otherTrack )
+                    { Q_UNUSED(position); Q_UNUSED(otherTrack); }
 
             virtual void subscribe( PlaylistObserver *observer )
                     { if( observer ) m_observers.insert( observer ); }

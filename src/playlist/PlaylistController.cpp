@@ -43,8 +43,38 @@
 #include <QAction>
 #include <typeinfo>
 
-Playlist::Controller::Controller( AbstractModel* bottomModel, AbstractModel* topModel, QObject* parent )
-        : QObject( parent )
+
+namespace The
+{
+    AMAROK_EXPORT Playlist::Controller* playlistController()
+    {
+        return Playlist::Controller::instance();
+    }
+}
+
+
+Playlist::Controller* Playlist::Controller::s_instance = 0;
+
+Playlist::Controller*
+Playlist::Controller::instance()
+{
+    if( s_instance == 0 )
+        s_instance = new Controller();
+    return s_instance;
+}
+
+void
+Playlist::Controller::destroy()
+{
+    if( s_instance )
+    {
+        delete s_instance;
+        s_instance = 0;
+    }
+}
+
+Playlist::Controller::Controller()
+        : QObject()
         , m_undoStack( new QUndoStack( this ) )
 {
     DEBUG_BLOCK
@@ -53,8 +83,10 @@ Playlist::Controller::Controller( AbstractModel* bottomModel, AbstractModel* top
     //Playlist::ModelStack::instance->top() or simply The::playlist().
     //This is an exception, because we handle the presence of tracks in the bottom model,
     //so we get a pointer to the bottom model and use it with great care.
-    m_bottomModel = bottomModel;
-    m_topModel = topModel;
+    // TODO: get these values only when we really need them to loosen up the
+    // coupling between Controller and Model
+    m_bottomModel = Playlist::ModelStack::instance()->bottom();
+    m_topModel = The::playlist();
 
     m_undoStack->setUndoLimit( 20 );
     connect( m_undoStack, SIGNAL( canRedoChanged( bool ) ), this, SIGNAL( canRedoChanged( bool ) ) );
@@ -117,7 +149,7 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
 
         topModelInsertRow = m_topModel->activeRow() + 1;
 
-        while( m_topModel->stateOfRow( topModelInsertRow ) & Item::Queued )
+        while( m_topModel->queuePositionOfRow( topModelInsertRow ) )
             topModelInsertRow++;    // We want to add the newly queued items after any items which are already queued
 
         int bottomModelInsertRow = insertionTopRowToBottom( topModelInsertRow );
@@ -141,17 +173,26 @@ Playlist::Controller::insertOptioned( Meta::TrackList list, int options )
         insertionHelper( insertionTopRowToBottom( topModelInsertRow ), list );
     }
 
-    const Phonon::State engineState = The::engineController()->state();
-    debug() << "engine state: " << engineState;
+    debug() << "engine playing?: " << The::engineController()->isPlaying();
 
     bool playNow = false;
-    if ( options & DirectPlay )
+    if( options & DirectPlay )
         playNow = true;
-    if ( options & StartPlay )
-        if ( ( engineState == Phonon::StoppedState ) || ( engineState == Phonon::LoadingState ) || ( engineState == Phonon::PausedState) )
-            playNow = true;
 
-    if ( playNow ) {
+    if( options & StartPlay )
+    {
+        bool isDynamic = AmarokConfig::dynamicMode();
+        bool isPaused  = The::engineController()->isPaused();
+        bool isPlaying = The::engineController()->isPlaying();
+
+        // when not in dyanmic mode: start playing when paused
+        // when in dyanmic mode: do not start playing when paused
+        if( !isPlaying && (!isDynamic || (isDynamic && !isPaused)) )
+            playNow = true;
+    }
+
+    if( playNow )
+    {
         if ( AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RandomTrack ||
              AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RandomAlbum )
             Actions::instance()->play();
@@ -169,6 +210,7 @@ Playlist::Controller::insertOptioned( Playlists::PlaylistPtr playlist, int optio
     if( !playlist )
         return;
 
+    playlist->triggerTrackLoad();
     insertOptioned( playlist->tracks(), options );
 }
 
@@ -179,17 +221,6 @@ Playlist::Controller::insertOptioned( Playlists::PlaylistList list, int options 
 
     foreach( Playlists::PlaylistPtr playlist, list )
         insertOptioned( playlist, options );
-}
-
-void
-Playlist::Controller::insertOptioned( Collections::QueryMaker *qm, int options )
-{
-    DEBUG_BLOCK
-    qm->setQueryType( Collections::QueryMaker::Track );
-    connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
-    connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( newResultReady( QString, Meta::TrackList ) ) );
-    m_optionedQueryMap.insert( qm, options );
-    qm->run();
 }
 
 void
@@ -226,6 +257,7 @@ void
 Playlist::Controller::insertPlaylist( int topModelRow, Playlists::PlaylistPtr playlist )
 {
     DEBUG_BLOCK
+    playlist->triggerTrackLoad();
     Meta::TrackList tl( playlist->tracks() );
     insertTracks( topModelRow, tl );
 }
@@ -237,20 +269,10 @@ Playlist::Controller::insertPlaylists( int topModelRow, Playlists::PlaylistList 
     Meta::TrackList tl;
     foreach( Playlists::PlaylistPtr playlist, playlists )
     {
+        playlist->triggerTrackLoad();
         tl += playlist->tracks();
     }
     insertTracks( topModelRow, tl );
-}
-
-void
-Playlist::Controller::insertTracks( int row, Collections::QueryMaker *qm )
-{
-    DEBUG_BLOCK
-    qm->setQueryType( Collections::QueryMaker::Track );
-    connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ) );
-    connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), SLOT( newResultReady( QString, Meta::TrackList ) ) );
-    m_queryMap.insert( qm, row );
-    qm->run();
 }
 
 void
@@ -494,42 +516,6 @@ Playlist::Controller::clear()
  **************************************************/
 
 void
-Playlist::Controller::newResultReady( const QString&, const Meta::TrackList& tracks )
-{
-    DEBUG_BLOCK
-
-    Collections::QueryMaker *qm = dynamic_cast<Collections::QueryMaker*>( sender() );
-    if( qm )
-    {
-        m_queryMakerTrackResults[qm] += tracks;
-    }
-}
-
-void
-Playlist::Controller::queryDone()
-{
-    DEBUG_BLOCK
-
-    Collections::QueryMaker *qm = dynamic_cast<Collections::QueryMaker*>( sender() );
-    if( qm )
-    {
-        qStableSort( m_queryMakerTrackResults[qm].begin(), m_queryMakerTrackResults[qm].end(), Meta::Track::lessThan );
-        if( m_queryMap.contains( qm ) )
-        {
-            insertTracks( m_queryMap.value( qm ), m_queryMakerTrackResults.value( qm ) );
-            m_queryMap.remove( qm );
-        }
-        else if( m_optionedQueryMap.contains( qm ) )
-        {
-            insertOptioned( m_queryMakerTrackResults.value( qm ), m_optionedQueryMap.value( qm ) );
-            m_optionedQueryMap.remove( qm );
-        }
-        m_queryMakerTrackResults.remove( qm );
-        qm->deleteLater();
-    }
-}
-
-void
 Playlist::Controller::slotFinishDirectoryLoader( const Meta::TrackList& tracks )
 {
     DEBUG_BLOCK
@@ -589,6 +575,7 @@ Playlist::Controller::insertionHelper( int bottomModelRow, Meta::TrackList& tl )
             Playlists::PlaylistPtr playlist = Playlists::expand( track ); //expand() can return 0 if the KIO job times out
             if( playlist )
             {
+                playlist->triggerTrackLoad(); //playlist track loading is on demand.
                 //since this is a playlist masqueurading as a single track, make a MultiTrack out of it:
                 if ( playlist->tracks().count() > 0 )
                     modifiedList << Meta::TrackPtr( new Meta::MultiTrack( playlist ) );
@@ -599,7 +586,7 @@ Playlist::Controller::insertionHelper( int bottomModelRow, Meta::TrackList& tl )
             KUrl cuesheet = MetaCue::CueFileSupport::locateCueSheet( track->playableUrl() );
             if( !cuesheet.isEmpty() )
             {
-                MetaCue::CueFileItemMap cueMap = MetaCue::CueFileSupport::loadCueFile( track );
+                MetaCue::CueFileItemMap cueMap = MetaCue::CueFileSupport::loadCueFile( cuesheet, track );
                 if( !cueMap.isEmpty() )
                 {
                     Meta::TrackList cueTracks = MetaCue::CueFileSupport::generateTimeCodeTracks( track, cueMap );

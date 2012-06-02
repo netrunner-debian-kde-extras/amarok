@@ -46,6 +46,7 @@ namespace CategoryId
     None = 0,
     Album,
     Artist,
+    AlbumArtist,
     Composer,
     Genre,
     Year,
@@ -81,14 +82,20 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         virtual QMimeData* mimeData( const QList<CollectionTreeItem*> &items ) const;
         virtual QMimeData* mimeData( const QModelIndexList &indices ) const;
 
-        virtual QPixmap iconForLevel( int level ) const;
+        virtual QIcon iconForLevel( int level ) const;
         virtual void listForLevel( int level, Collections::QueryMaker *qm, CollectionTreeItem* parent );
 
 
         virtual void setLevels( const QList<int> &levelType ) = 0;
         virtual QList<int> levels() const { return m_levelType; }
+        virtual int levelCategory( const int level ) const;
 
-        virtual void addFilters( Collections::QueryMaker *qm ) const;
+        QString currentFilter() const
+        { return m_currentFilter; }
+
+        /** Adds the query maker to the running queries and connects the slots */
+        void addQueryMaker( CollectionTreeItem* item,
+                            Collections::QueryMaker *qm ) const;
 
         void setCurrentFilter( const QString &filter );
 
@@ -100,8 +107,16 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
 
     public slots:
         virtual void queryDone();
-        virtual void newResultReady( const QString &collectionId, Meta::DataList data );
+        void newResultReady( Meta::TrackList );
+        void newResultReady( Meta::ArtistList );
+        void newResultReady( Meta::AlbumList );
+        void newResultReady( Meta::GenreList );
+        void newResultReady( Meta::ComposerList );
+        void newResultReady( Meta::YearList );
+        void newResultReady( Meta::LabelList );
+        virtual void newResultReady( Meta::DataList data );
 
+        /** Apply the current filter */
         void slotFilter();
 
         void slotCollapsed( const QModelIndex &index );
@@ -111,7 +126,6 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
     private:
         void handleSpecialQueryResult( CollectionTreeItem::Type type, Collections::QueryMaker *qm, const Meta::DataList &dataList );
         void handleNormalQueryResult( Collections::QueryMaker *qm, const Meta::DataList &dataList );
-        QDateTime semanticDateTimeParser( const QString &text ) const;
 
         Collections::QueryMaker::QueryType mapCategoryToQueryType( int levelType ) const;
 
@@ -127,7 +141,10 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
 
         void markSubTreeAsDirty( CollectionTreeItem *item );
 
+        /** Initiates a special search for albums without artists */
         void handleCompilations( CollectionTreeItem *parent ) const;
+
+        /** Initiates a special search for tracks without label */
         void handleTracksWithoutLabels( Collections::QueryMaker::QueryType queryType, CollectionTreeItem *parent ) const;
 
         QString m_headerText;
@@ -144,9 +161,8 @@ class AMAROK_EXPORT CollectionTreeItemModelBase : public QAbstractItemModel
         QString m_currentFilter;
         QSet<Meta::DataPtr> m_expandedItems;
         QSet<Collections::Collection*> m_expandedCollections;
-        QSet<Collections::Collection*> m_expandedVariousArtistsNodes;
-        QSet<Collections::Collection*> m_expandedNoLabelsNodes;
-        
+        QSet<Collections::Collection*> m_expandedSpecialNodes;
+
     protected slots:
         void startAnimationTick();
         void loadingAnimationTick();
@@ -163,7 +179,7 @@ class CollectionTreeItemModelBase::Private
     QHash<Collections::QueryMaker* , CollectionTreeItem* > childQueries;
     QHash<Collections::QueryMaker* , CollectionTreeItem* > compilationQueries;
     QHash<Collections::QueryMaker* , CollectionTreeItem* > noLabelsQueries;
-    QHash<CollectionTreeItem*, Collections::QueryMaker*>   runningQueries;
+    QMultiHash<CollectionTreeItem*, Collections::QueryMaker*> runningQueries;
     int rowHeight;
 };
 

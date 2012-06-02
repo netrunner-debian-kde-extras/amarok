@@ -44,11 +44,9 @@
 #include "meta/LastFmMeta.h"
 #include "playlist/PlaylistModelStack.h"
 #include "widgets/SearchWidget.h"
-#include "CustomBias.h"
 #include "NetworkAccessManagerProxy.h"
 
 #include <lastfm/Audioscrobbler> // from liblastfm
-#include <lastfm/NetworkAccessManager>
 #include <lastfm/XmlQuery>
 
 #include <KLocale>
@@ -59,19 +57,26 @@
 #include <QComboBox>
 #include <QCryptographicHash>
 #include <QGroupBox>
-#include <QNetworkAccessManager>
 #include <QNetworkReply>
 #include <QPainter>
 #include <QImage>
 #include <QFrame>
 #include <QTextDocument>        //Qt::escape
 
-AMAROK_EXPORT_PLUGIN( LastFmServiceFactory )
+AMAROK_EXPORT_SERVICE_PLUGIN( lastfm, LastFmServiceFactory )
 
 QString md5( const QByteArray& src )
 {
     QByteArray const digest = QCryptographicHash::hash( src, QCryptographicHash::Md5 );
     return QString::fromLatin1( digest.toHex() ).rightJustified( 32, '0' );
+}
+
+LastFmServiceFactory::LastFmServiceFactory( QObject *parent, const QVariantList &args )
+    : ServiceFactory( parent, args )
+{
+    KPluginInfo pluginInfo(  "amarok_service_lastfm.desktop", "services" );
+    pluginInfo.setConfig( config() );
+    m_info = pluginInfo;
 }
 
 void
@@ -147,7 +152,7 @@ LastFmServiceFactory::createLastFmService()
 //     if ( config.username().isEmpty() || config.password().isEmpty() )
 //         return 0;
 
-    ServiceBase* service = new LastFmService( this, "Last.fm", config.username(), config.password(), config.sessionKey(), config.scrobble(), config.fetchSimilar() );
+    ServiceBase* service = new LastFmService( this, "Last.fm", config.username(), config.password(), config.sessionKey(), config.scrobble(), config.fetchSimilar(), config.scrobbleComposer() );
     return service;
 }
 
@@ -158,16 +163,6 @@ LastFmServiceFactory::name()
     return "Last.fm";
 }
 
-
-KPluginInfo
-LastFmServiceFactory::info()
-{
-    KPluginInfo pluginInfo(  "amarok_service_lastfm.desktop", "services" );
-    pluginInfo.setConfig( config() );
-    return pluginInfo;
-}
-
-
 KConfigGroup
 LastFmServiceFactory::config()
 {
@@ -175,7 +170,7 @@ LastFmServiceFactory::config()
 }
 
 
-LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name, const QString &username, QString password, const QString& sessionKey, bool scrobble, bool fetchSimilar )
+LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name, const QString &username, QString password, const QString& sessionKey, bool scrobble, bool fetchSimilar, bool scrobbleComposer )
     : ServiceBase( name, parent, false ),
       m_inited( false),
       m_scrobble( scrobble ),
@@ -187,10 +182,10 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
       m_userinfo( 0 ),
       m_userName( username ),
       m_sessionKey( sessionKey ),
+      m_password( password ),
+      m_scrobbleComposer( scrobbleComposer ),
       m_userNameArray( 0 ),
-      m_sessionKeyArray( 0 ),
-      m_lastFmBiasFactory( 0 ),
-      m_weeklyTopBiasFactory( 0 )
+      m_sessionKeyArray( 0 )
 {
     DEBUG_BLOCK
 
@@ -199,7 +194,7 @@ LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name,
 
     setShortDescription( i18n( "Last.fm: The social music revolution" ) );
     setIcon( KIcon( "view-services-lastfm-amarok" ) );
-    setLongDescription( i18n( "Last.fm is a popular online service that provides personal radio stations and music recommendations. A personal listening station is tailored based on your listening habits and provides you with recommendations for new music. It is also possible to play stations with music that is similar to a particular artist as well as listen to streams from people you have added as friends or that last.fm considers your musical \"neighbors\"" ) );
+    setLongDescription( i18n( "Last.fm is a popular online service that provides personal radio stations and music recommendations. A personal listening station is tailored based on your listening habits and provides you with recommendations for new music. It is also possible to play stations with music that is similar to a particular artist as well as listen to streams from people you have added as friends or that Last.fm considers your musical \"neighbors\"" ) );
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_lastfm.png" ) );
 
     if( !username.isEmpty() && !password.isEmpty() )
@@ -212,8 +207,6 @@ LastFmService::~LastFmService()
 {
     DEBUG_BLOCK
 
-    delete m_lastFmBiasFactory;
-    delete m_weeklyTopBiasFactory;
     delete[] m_userNameArray;
     delete[] m_sessionKeyArray;
 
@@ -229,9 +222,6 @@ LastFmService::~LastFmService()
 void
 LastFmService::init()
 {
-    LastFmServiceConfig config;
-    const QString password = config.password();
-    const QString sessionKey = config.sessionKey();
     // set the global static Lastfm::Ws stuff
     lastfm::ws::ApiKey = Amarok::lastfmApiKey();
     lastfm::ws::SharedSecret = "fe0dcde9fcd14c2d1d50665b646335e9";
@@ -240,21 +230,15 @@ LastFmService::init()
     //Ws::ApiKey = "c8c7b163b11f92ef2d33ba6cd3c2c3c3";
     m_userNameArray = qstrdup( m_userName.toLatin1().data() );
     lastfm::ws::Username = m_userNameArray;
-
-
-    // set up proxy
-    if( !lastfm::nam() )
-    {
-        QNetworkAccessManager* qnam = The::networkAccessManager();
-        lastfm::setNetworkAccessManager( qnam );
-    }
+    if( lastfm::nam() != The::networkAccessManager() )
+        lastfm::setNetworkAccessManager( The::networkAccessManager() );
 
     debug() << "username:" << QString( QUrl::toPercentEncoding( lastfm::ws::Username ) );
 
-    QString authToken =  md5( ( m_userName + md5( password.toUtf8() ) ).toUtf8() );
+    const QString authToken = md5( QString( "%1%2" ).arg( m_userName ).arg( md5( m_password.toUtf8() ) ).toUtf8() );
 
     // now authenticate w/ last.fm and get our session key if we don't have one
-    if( sessionKey.isEmpty() )
+    if( m_sessionKey.isEmpty() )
     {
         debug() << "got no saved session key, authenticating with last.fm";
         QMap<QString, QString> query;
@@ -268,9 +252,8 @@ LastFmService::init()
     } else
     {
         debug() << "using saved sessionkey from last.fm";
-        m_sessionKeyArray = qstrdup( sessionKey.toLatin1().data() );
+        m_sessionKeyArray = qstrdup( m_sessionKey.toLatin1().data() );
         lastfm::ws::SessionKey = m_sessionKeyArray;
-        m_sessionKey = sessionKey;
 
         if( m_scrobble )
             m_scrobbler = new ScrobblerAdapter( this, "ark" );
@@ -286,11 +269,8 @@ LastFmService::init()
     m_searchWidget->setVisible( false );
 
     // enable custom bias
-    m_lastFmBiasFactory = new Dynamic::LastFmBiasFactory();
-    Dynamic::CustomBias::registerNewBiasFactory( m_lastFmBiasFactory );
-
-    m_weeklyTopBiasFactory = new Dynamic::WeeklyTopBiasFactory();
-    Dynamic::CustomBias::registerNewBiasFactory( m_weeklyTopBiasFactory );
+    Dynamic::BiasFactory::instance()->registerNewBiasFactory( new Dynamic::LastFmBiasFactory() );
+    Dynamic::BiasFactory::instance()->registerNewBiasFactory( new Dynamic::WeeklyTopBiasFactory() );
 
     m_collection = new Collections::LastFmServiceCollection( m_userName );
     CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
@@ -454,7 +434,7 @@ LastFmService::updateEditHint( int index )
             hint = i18n( "Enter a tag" );
             break;
         case 2:
-            hint = i18n( "Enter a last.fm user name" );
+            hint = i18n( "Enter a Last.fm user name" );
             break;
         default:
             return;
@@ -467,7 +447,7 @@ LastFmService::updateProfileInfo()
 {
     if( m_userinfo )
     {
-        m_userinfo->setText( i18n( "Username: ") + Qt::escape( m_userName ) );
+        m_userinfo->setText( i18n( "Username: %1", Qt::escape( m_userName ) ) );
     }
 
     if( m_profile && !m_playcount.isEmpty() )
@@ -479,23 +459,6 @@ LastFmService::updateProfileInfo()
 void
 LastFmService::polish()
 {
-    if( !m_inited )
-    {
-        KPasswordDialog dlg( 0 , KPasswordDialog::ShowUsernameLine );
-        dlg.setPrompt( i18n( "Enter login information for Last.fm" ) );
-        if( !dlg.exec() )
-            return; //the user canceled
-
-            m_userName = dlg.username();
-        const QString password = dlg.password();
-        if( password.isEmpty() || m_userName.isEmpty() )
-            return; // We can't create the service if we don't get the details..
-        LastFmServiceConfig config;
-        config.setPassword( password );
-        config.setUsername( m_userName );
-        config.save();
-        init();
-    }
     if( !m_polished )
     {
         LastFmTreeView* view = new LastFmTreeView( this );

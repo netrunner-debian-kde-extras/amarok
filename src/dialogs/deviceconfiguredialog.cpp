@@ -19,15 +19,17 @@
 
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "hintlineedit.h"
+#include "HintLineEdit.h"
 #include "mediabrowser.h"
 #include "MediaDevice.h"
-#include "core/plugins/PluginManager.h"
+#include "core/support/PluginManager.h"
 #include "ScriptManager.h"
 
 #include <KLocale>
 #include <KVBox>
 
+#include <QCheckBox>
+#include <QRadioButton>
 #include <QLabel>
 #include <q3buttongroup.h>
 

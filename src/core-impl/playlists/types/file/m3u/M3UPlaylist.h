@@ -48,9 +48,12 @@ class AMAROK_EXPORT_TESTS M3UPlaylist : public PlaylistFile
         virtual QString prettyName() const { return m_url.fileName(); }
         virtual QString description() const;
 
-        virtual int trackCount() const { return -1; }
-        /** returns all tracks in this playlist */
+        virtual int trackCount() const;
         virtual Meta::TrackList tracks();
+        virtual void triggerTrackLoad();
+
+        virtual void addTrack( Meta::TrackPtr track, int position = -1 );
+        virtual void removeTrack( int position );
 
        /* the following has been copied from Meta.h
         * it is my hope that we can integrate Playlists
@@ -60,8 +63,6 @@ class AMAROK_EXPORT_TESTS M3UPlaylist : public PlaylistFile
         bool hasCapabilityInterface( Capabilities::Capability::Type type ) const { Q_UNUSED( type ); return false; }
 
         Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type ) { Q_UNUSED( type ); return 0; }
-
-        virtual QStringList groups() { return m_groups; }
 
         /* PlaylistFile methods */
         bool isWritable();
@@ -78,7 +79,6 @@ class AMAROK_EXPORT_TESTS M3UPlaylist : public PlaylistFile
         bool m_tracksLoaded;
         Meta::TrackList m_tracks;
         QString m_name;
-        QStringList m_groups;
 };
 
 }

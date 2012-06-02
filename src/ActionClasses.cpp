@@ -16,6 +16,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "ActionClasses"
+
 #include "ActionClasses.h"
 
 #include <config-amarok.h>
@@ -26,7 +28,6 @@
 #include "EngineController.h"
 #include "MainWindow.h"
 #include "amarokconfig.h"
-#include "covermanager/CoverManager.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
 
@@ -35,9 +36,9 @@
 #include <KLocale>
 #include <KToolBar>
 #include <Osd.h>
+#include <EqualizerDialog.h>
 
 
-extern KAboutData aboutData;
 extern OcsData ocsData;
 
 namespace Amarok
@@ -147,7 +148,7 @@ KMenu*
 Menu::helpMenu( QWidget *parent ) //STATIC
 {
     if ( s_helpMenu == 0 )
-        s_helpMenu = new KHelpMenu( parent, &aboutData, Amarok::actionCollection() );
+        s_helpMenu = new KHelpMenu( parent, KGlobal::mainComponent().aboutData(), Amarok::actionCollection() );
 
     KMenu* menu = s_helpMenu->menu();
 
@@ -169,44 +170,54 @@ Menu::helpMenu( QWidget *parent ) //STATIC
 
 PlayPauseAction::PlayPauseAction( KActionCollection *ac, QObject *parent )
         : KToggleAction( parent )
-        , Engine::EngineObserver( The::engineController() )
 {
+
     ac->addAction( "play_pause", this );
     setText( i18n( "Play/Pause" ) );
     setShortcut( Qt::Key_Space );
     setGlobalShortcut( KShortcut( Qt::Key_MediaPlay ) );
-    PERF_LOG( "PlayPauseAction: before engineStateChanged" )
-    engineStateChanged( The::engineController()->state() );
-    PERF_LOG( "PlayPauseAction: after engineStateChanged" )
 
-    connect( this, SIGNAL(triggered()), The::engineController(), SLOT(playPause()) );
+    EngineController *engine = The::engineController();
+
+    if( engine->isPaused() )
+        paused();
+    else if( engine->isPlaying() )
+        playing();
+    else
+        stopped();
+
+    connect( this, SIGNAL(triggered()),
+             engine, SLOT(playPause()) );
+
+    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
+             this, SLOT( stopped() ) );
+    connect( engine, SIGNAL( paused() ),
+             this, SLOT( paused() ) );
+    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
+             this, SLOT( playing() ) );
 }
 
 void
-PlayPauseAction::engineStateChanged( Phonon::State state,  Phonon::State oldState )
+PlayPauseAction::stopped()
 {
-    Q_UNUSED( oldState)
-
-    switch( state )
-    {
-    case Phonon::PlayingState:
-        setChecked( false );
-        setIcon( KIcon("media-playback-pause-amarok") );
-        break;
-    case Phonon::PausedState:
-        setChecked( true );
-        setIcon( KIcon("media-playback-start-amarok") );
-        break;
-    case Phonon::StoppedState:
-    case Phonon::LoadingState:
-        setChecked( false );
-        setIcon( KIcon("media-playback-start-amarok") );
-        break;
-    case Phonon::ErrorState:
-    case Phonon::BufferingState:
-        break;
-    }
+    setChecked( false );
+    setIcon( KIcon("media-playback-start-amarok") );
 }
+
+void
+PlayPauseAction::paused()
+{
+    setChecked( true );
+    setIcon( KIcon("media-playback-start-amarok") );
+}
+
+void
+PlayPauseAction::playing()
+{
+    setChecked( false );
+    setIcon( KIcon("media-playback-pause-amarok") );
+}
+
 
 //////////////////////////////////////////////////////////////////////////////////////////
 // ToggleAction
@@ -361,49 +372,21 @@ EqualizerAction::newList() //SLOT
     }
     setEnabled( true );
     setToolTip( QString() );
-    setItems( QStringList() << i18nc( "Equalizer state, as in, disabled", "&Off" ) << eqGlobalList() );
+    setItems( QStringList() << i18nc( "Equalizer state, as in, disabled", "&Off" ) << EqualizerPresets::eqGlobalTranslatedList() );
 }
 
 void
 EqualizerAction::actTrigg( int index ) //SLOT
 {
-    if( The::engineController()->isEqSupported() )
-    {
-        AmarokConfig::setEqualizerGains( eqCfgGetPresetVal( index - 1 ) );
-        The::engineController()->eqUpdate();
-    }
-}
+    if( !The::engineController()->isEqSupported() )
+        return;
 
-QStringList
-EqualizerAction::eqGlobalList()
-{
-    // Prepare a global list with duplicates removed
-    QStringList mGlobalList;
-    mGlobalList += AmarokConfig::defEqualizerPresetsNames();
-    foreach( const QString &mUsrName, AmarokConfig::equalizerPresetsNames() )
-    {
-        if( mGlobalList.indexOf( mUsrName ) < 0 )
-            mGlobalList.append( mUsrName );
-    }
-    return mGlobalList;
-}
+    const QString presetName = EqualizerPresets::eqGlobalList().at( index - 1 );
+    if (presetName.isEmpty())
+        return;
 
-QList<int>
-EqualizerAction::eqCfgGetPresetVal( int mPresetNo )
-{
-    QList<int> mPresetVal;
-    if( mPresetNo > eqGlobalList().count() ||  mPresetNo < 0 )
-        return mPresetVal;
-    QString mPresetName = eqGlobalList().at(mPresetNo);
-    int idUsr = AmarokConfig::equalizerPresetsNames().indexOf( mPresetName );
-    int idDef = AmarokConfig::defEqualizerPresetsNames().indexOf( mPresetName );
-
-    if( idUsr >= 0 )
-        mPresetVal = AmarokConfig::equalizerPresestValues().mid( idUsr*11,11 );
-    else if( idDef >= 0)
-        mPresetVal = AmarokConfig::defEqualizerPresestValues().mid( idDef*11,11 );
-
-    return mPresetVal;
+    AmarokConfig::setEqualizerGains( EqualizerPresets::eqCfgGetPresetVal( presetName ) );
+    The::engineController()->eqUpdate();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -481,32 +464,37 @@ BurnMenu::slotBurnSelectedTracks() //SLOT
 
 StopAction::StopAction( KActionCollection *ac, QObject *parent )
   : KAction( parent )
-  , Engine::EngineObserver( The::engineController() )
 {
     ac->addAction( "stop", this );
     setText( i18n( "Stop" ) );
     setIcon( KIcon("media-playback-stop-amarok") );
     setGlobalShortcut( KShortcut( Qt::Key_MediaStop ) );
     connect( this, SIGNAL( triggered() ), this, SLOT( stop() ) );
-    setEnabled( false );  // Disable action at startup
+
+    EngineController *engine = The::engineController();
+
+    if( engine->isStopped() )
+        stopped();
+    else
+        playing();
+
+    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
+             this, SLOT( stopped() ) );
+    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
+             this, SLOT( playing() ) );
+
 }
 
 void
-StopAction::engineStateChanged( Phonon::State state,  Phonon::State /*oldState*/ )
+StopAction::stopped()
 {
-    switch( state ) {
-    case Phonon::PlayingState:
-    case Phonon::PausedState:
-        setEnabled( true );
-        break;
-    case Phonon::StoppedState:
-    case Phonon::LoadingState:
-        setDisabled( true );
-        break;
-    case Phonon::ErrorState:
-    case Phonon::BufferingState:
-        break;
-    }
+    setEnabled( false );
+}
+
+void
+StopAction::playing()
+{
+    setEnabled( true );
 }
 
 void
@@ -528,14 +516,12 @@ StopAction::stop()
 
 StopPlayingAfterCurrentTrackAction::StopPlayingAfterCurrentTrackAction( KActionCollection *ac, QObject *parent )
 : KAction( parent )
-, Engine::EngineObserver( The::engineController() )
 {
     ac->addAction( "stop_after_current", this );
     setText( i18n( "Stop after current Track" ) );
     setIcon( KIcon("media-playback-stop-amarok") );
     setGlobalShortcut( KShortcut( Qt::META + Qt::SHIFT + Qt::Key_V ) );
     connect( this, SIGNAL( triggered() ), SLOT( stopPlayingAfterCurrentTrack() ) );
-    setEnabled( false );  // Disable action at startup
 }
 
 void
@@ -554,24 +540,6 @@ StopPlayingAfterCurrentTrackAction::stopPlayingAfterCurrentTrack()
         The::playlistActions()->repaintPlaylist();
         Amarok::OSD::instance()->setImage( QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
         Amarok::OSD::instance()->OSDWidget::show( i18n( "Stop after current track: Off" ) );
-    }
-}
-
-void
-StopPlayingAfterCurrentTrackAction::engineStateChanged( Phonon::State state,  Phonon::State /*oldState*/ )
-{
-    switch( state ) {
-        case Phonon::PlayingState:
-        case Phonon::PausedState:
-        case Phonon::StoppedState:
-            setEnabled( true );
-            break;
-        case Phonon::LoadingState:
-            setDisabled( true );
-            break;
-        case Phonon::ErrorState:
-        case Phonon::BufferingState:
-            break;
     }
 }
 

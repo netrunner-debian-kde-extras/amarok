@@ -167,8 +167,8 @@ FastForwardWorker::run()
         QString url      = query.value( index++ ).toString();
         QString uniqueId = query.value( index++ ).toString();
 
-        uint firstPlayed = query.value( index++ ).toUInt();
-        uint lastPlayed  = query.value( index++ ).toUInt();
+        QDateTime firstPlayed = QDateTime::fromTime_t(query.value( index++ ).toUInt());
+        QDateTime lastPlayed  = QDateTime::fromTime_t(query.value( index++ ).toUInt());
         double score     = query.value( index++ ).toDouble();
         int rating       = query.value( index++ ).toInt();
         int playCount    = query.value( index++ ).toInt();
@@ -234,7 +234,7 @@ FastForwardWorker::run()
                     track = 0;
                     emit trackDiscarded( url );
                     emit showMessage( QString( "<font color='gray'>%1</font>" ).arg(
-                            i18n( "(track exists, but does not belong into any of your configured collection folders)" ) ) );
+                            i18n( "(track exists, but does not belong in any of your configured collection folders)" ) ) );
                 }
             }
         }
@@ -267,12 +267,17 @@ FastForwardWorker::run()
             i.next();
             Collections::CollectionLocation* location = i.key();
             QMap<Meta::TrackPtr, QString>* tracks = i.value();
-
             debug() << "Adding new tracks to collection";
-            emit showMessage( i18n( "Adding <b>%1 new tracks</b> to Amarok collection <b>%2</b>.",
-                                    tracks->size(), location->prettyLocation() ) );
-            location->insertTracks( *tracks );
-            location->insertStatistics( *tracks );
+            emit showMessage( i18np( "Adding <b>1 new track</b> to Amarok collection <b>%2</b>.",
+                                     "Adding <b>%1 new tracks</b> to Amarok collection <b>%2</b>.",
+                                     tracks->size(), location->prettyLocation() ) );
+
+            QMapIterator<Meta::TrackPtr, QString> j(*tracks);
+            while (j.hasNext()) {
+                j.next();
+                location->insert( j.key(), j.value() );
+            }
+
             delete tracks; // location is deleted by QSharedPointer
         }
     }
@@ -324,8 +329,8 @@ FastForwardWorker::trySmartMatch( const QString url, const QString title, const 
 
     connect( trackQueryMaker, SIGNAL( queryDone() ), SLOT( queryDone() ),
              Qt::QueuedConnection );
-    connect( trackQueryMaker, SIGNAL( newResultReady( QString, Meta::TrackList ) ),
-             SLOT( resultReady( QString, Meta::TrackList ) ),
+    connect( trackQueryMaker, SIGNAL( newResultReady( Meta::TrackList ) ),
+             SLOT( resultReady( Meta::TrackList ) ),
              Qt::QueuedConnection );
     trackQueryMaker->run();
 
@@ -358,7 +363,7 @@ FastForwardWorker::trySmartMatch( const QString url, const QString title, const 
 
 void
 FastForwardWorker::setTrackMetadata( Meta::TrackPtr track, double score, int rating,
-                                        uint firstPlayed, uint lastPlayed, int playCount )
+                                        QDateTime firstPlayed, QDateTime lastPlayed, int playCount )
 {
     /* import statistics. ec may be different object for different track types.
      * StatisticsCapability for MetaFile::Track only caches info (thus we need to call
@@ -435,8 +440,9 @@ FastForwardWorker::insertMiscData( const ImporterMiscDataStorage& dataForInsert 
      * hope it will return Meta::SqlTrack. */
 
     debug() << "updating cached lyrics and labels...";
-    emit showMessage( i18n( "Updating cached lyrics and labels for %1 tracks...",
-                            dataForInsert.size() ) );
+    emit showMessage( i18np( "Updating cached lyrics and labels for 1 track...",
+                             "Updating cached lyrics and labels for %1 tracks...",
+                             dataForInsert.size() ) );
     int lyricsCount = 0, labelsCount = 0;
     QMapIterator<QString, ImporterMiscData> i( dataForInsert );
     while( i.hasNext() )
@@ -470,8 +476,18 @@ FastForwardWorker::insertMiscData( const ImporterMiscDataStorage& dataForInsert 
     }
 
     debug() << "lyrics and labels updated";
-    emit showMessage( i18n( "Cached lyrics updated for %1 tracks, labels added to %2 tracks.",
-                            lyricsCount, labelsCount ) );
+    QString lyricUpdateMessage = i18np( "Cached lyrics updated for 1 track",
+                                        "Cached lyrics updated for %1 tracks", 
+                                        lyricsCount );
+
+    QString labelUpdateMessage = i18np( "labels added to 1 track",
+                                        "labels added to %1 tracks", 
+                                        labelsCount );
+
+
+    emit showMessage( i18nc( "%1 is e.g. Cached lyrics updated for 2 tracks, %2 is e.g. labels added to 3 tracks",
+                             "%1, %2.",
+                             lyricUpdateMessage, labelUpdateMessage ) );
 }
 
 void
@@ -511,14 +527,12 @@ FastForwardWorker::importArtwork()
             count++;
     }
 
-    emit showMessage( i18n( "Copied %1 cover images.", count ) );
+    emit showMessage( i18np( "Copied 1 cover image.", "Copied %1 cover images.", count ) );
 }
 
 void
-FastForwardWorker::resultReady( const QString &collectionId, const Meta::TrackList &tracks )
+FastForwardWorker::resultReady( const Meta::TrackList &tracks )
 {
-    Q_UNUSED( collectionId )
-
     m_matchTracks << tracks;
 }
 

@@ -20,163 +20,205 @@
 
 #include "CurrentTrack.h"
 
+#include "amarokurls/AmarokUrl.h"
 #include "core/support/Amarok.h"
 #include "App.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
 #include "GlobalCurrentTrackActions.h"
-#include "core/capabilities/CurrentTrackActionsCapability.h"
+#include "CollectionManager.h"
+#include "covermanager/CoverViewDialog.h"
+#include "core/capabilities/EditCapability.h"
+#include "core/capabilities/ActionsCapability.h"
+#include "core/capabilities/BookmarkThisCapability.h"
+#include "core/capabilities/FindInSourceCapability.h"
 #include "core/meta/support/MetaUtility.h"
+#include "MainWindow.h"
 #include "PaletteHandler.h"
+#include "PluginManager.h"
 #include "SvgHandler.h"
 #include "context/widgets/RatingWidget.h"
 #include "context/widgets/TextScrollingWidget.h"
 #include "context/widgets/DropPixmapItem.h"
+#include "context/widgets/RecentlyPlayedListWidget.h"
 #include "core/capabilities/UpdateCapability.h"
+#include "dialogs/TagDialog.h"
 
-#include <plasma/theme.h>
-#include <plasma/widgets/tabbar.h>
-
-#include <KColorScheme>
 #include <KConfigDialog>
 #include <KGlobalSettings>
+#include <Plasma/IconWidget>
+#include <Plasma/Label>
 
 #include <QFont>
+#include <QGraphicsAnchorLayout>
 #include <QGraphicsLinearLayout>
+#include <QGraphicsProxyWidget>
+#include <QGraphicsSceneMouseEvent>
+#include <QGraphicsScene>
+#include <QGraphicsView>
 #include <QPainter>
-
+#include <QScopedPointer>
+#include <QSignalMapper>
 
 CurrentTrack::CurrentTrack( QObject* parent, const QVariantList& args )
     : Context::Applet( parent, args )
+    , m_actionsLayout( 0 )
+    , m_findInSourceSignalMapper( 0 )
     , m_rating( -1 )
+    , m_score( 0 )
     , m_trackLength( 0 )
-    , m_showStatistics( true )
-    , m_tracksToShow( 0 )
-    , m_tabBar( 0 )
+    , m_playCount( 0 )
+    , m_trackCount( 0 )
+    , m_albumCount( 0 )
+    , m_artistCount( 0 )
+    , m_isStopped( true )
+    , m_coverKey( 0 )
+    , m_view( Stopped )
+    , m_showEditTrackDetailsAction( true )
+    , m_albumWidth( 135 )
 {
     setHasConfigurationInterface( true );
     setBackgroundHints( Plasma::Applet::NoBackground );
-    setImmutability( Plasma::Mutable );
-    // Fix for BUG 190923:
-    // If the widget receives focus, somehow this makes it impossible to open the Amarok menu. Reason unclear.
-    setFocusPolicy( Qt::NoFocus );
 }
 
 CurrentTrack::~CurrentTrack()
 {
-    delete m_tabBar;
+    clearTrackActions();
+    delete m_albumCover;
 }
 
 void
 CurrentTrack::init()
 {
     DEBUG_BLOCK
+    PERF_LOG( "Begin init" );
+
+    // Call the base implementation.
+    Context::Applet::init();
 
     m_ratingWidget = new RatingWidget( this );
     m_ratingWidget->setSpacing( 2 );
+    m_ratingWidget->setMinimumSize( m_albumWidth + 10, 30 );
+    m_ratingWidget->setMaximumSize( m_albumWidth + 10, 30 );
+    connect( m_ratingWidget, SIGNAL( ratingChanged( int ) ), SLOT( trackRatingChanged( int ) ) );
 
-    connect( m_ratingWidget, SIGNAL( ratingChanged( int ) ), SLOT( changeTrackRating( int ) ) );
+    QLabel *collectionLabel = new QLabel( i18n( "Local Collection" ) );
+    collectionLabel->setAttribute( Qt::WA_NoSystemBackground );
+    collectionLabel->setAlignment( Qt::AlignCenter );
+    m_collectionLabel = new QGraphicsProxyWidget( this );
+    m_collectionLabel->setWidget( collectionLabel );
 
-    // TextScrollingWidget is a QGraphicsSimpleTextItem which will scroll is content on mouse hover
-    m_title        = new TextScrollingWidget( this );
-    m_artist       = new TextScrollingWidget( this );
-    m_album        = new TextScrollingWidget( this );
-    m_noTrack      = new QGraphicsSimpleTextItem( this );
-    m_albumCover   = new DropPixmapItem( this );
-    m_byText       = new QGraphicsSimpleTextItem( i18nc( "What artist is this track by", "By" ), this );
-    m_onText       = new QGraphicsSimpleTextItem( i18nc( "What album is this track on", "On" ), this );
+    m_title  = new TextScrollingWidget( this );
+    m_artist = new TextScrollingWidget( this );
+    m_album  = new TextScrollingWidget( this );
+    m_byText = new QGraphicsSimpleTextItem( i18nc( "What artist is this track by", "By" ), this );
+    m_onText = new QGraphicsSimpleTextItem( i18nc( "What album is this track on", "On" ), this );
 
-    connect( m_albumCover, SIGNAL( imageDropped( QPixmap) ), this, SLOT( coverDropped( QPixmap ) ) );
+    m_recentWidget = new RecentlyPlayedListWidget( this );
+    m_recentHeader = new TextScrollingWidget( this );
+    m_recentHeader->setDrawBackground( true );
+    m_recentHeader->setAlignment( Qt::AlignLeft );
+    QFont recentHeaderFont;
+    recentHeaderFont.setPointSize( recentHeaderFont.pointSize() + 2 );
+    m_recentHeader->setFont( recentHeaderFont );
 
-    const QBrush brush = KColorScheme( QPalette::Active ).foreground( KColorScheme::NormalText );
+    m_title->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    m_artist->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    m_album->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    m_collectionLabel->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    m_recentHeader->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Fixed );
+    m_recentWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    m_recentWidget->setMinimumHeight( 10 );
 
+    m_albumCover = new DropPixmapLayoutItem( this );
+    m_albumCover->setPreferredSize( QSizeF( m_albumWidth, m_albumWidth ) );
+    connect( m_albumCover, SIGNAL(imageDropped(QPixmap)), SLOT(coverDropped(QPixmap)) );
+
+    const QBrush brush = normalBrush();
     m_title->setBrush( brush );
     m_artist->setBrush( brush );
     m_album->setBrush( brush );
-    m_noTrack->setBrush( brush );
     m_byText->setBrush( brush );
     m_onText->setBrush( brush );
-
-    // Read config
-    KConfigGroup config = Amarok::config("Current Track Applet");
-    const QString fontDesc = config.readEntry( "Font", QString() );
-    QFont font;
-
-    if( !fontDesc.isEmpty() )
-        font.fromString( fontDesc );
-    else
-        font.setPointSize( font.pointSize() + 3 );
-
-    m_noTrack->setFont( font );
-    m_title->setFont( font );
-    m_artist->setFont( font );
-    m_album->setFont( font );
 
     const QFont tinyFont = KGlobalSettings::smallestReadableFont();
     m_byText->setFont( tinyFont );
     m_onText->setFont( tinyFont );
 
-    m_noTrackText = i18n( "No track playing" );
-    m_noTrack->hide();
-    m_noTrack->setText( m_noTrackText );
+    m_actionsLayout = new QGraphicsLinearLayout;
+    m_actionsLayout->setMinimumWidth( 10 );
+    m_actionsLayout->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    QGraphicsLinearLayout *titlesLayout = new QGraphicsLinearLayout( Qt::Vertical );
+    titlesLayout->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    titlesLayout->setMinimumWidth( 10 );
+    titlesLayout->setSpacing( 2 );
+    titlesLayout->addItem( m_title );
+    titlesLayout->addItem( m_artist );
+    titlesLayout->addItem( m_album );
+    titlesLayout->addItem( m_actionsLayout );
+    titlesLayout->setItemSpacing( 2, 4 ); // a bit more spacing for the actions row
 
-    m_tabBar = new Plasma::TabBar( this );
+    const qreal pad = standardPadding();
+    QGraphicsAnchorLayout *l = new QGraphicsAnchorLayout( this );
+    l->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+    l->addCornerAnchors( m_ratingWidget, Qt::BottomLeftCorner, l, Qt::BottomLeftCorner );
+    l->addCornerAnchors( m_ratingWidget, Qt::BottomLeftCorner, m_collectionLabel, Qt::BottomLeftCorner );
+    l->addCornerAnchors( m_ratingWidget, Qt::TopRightCorner, m_collectionLabel, Qt::TopRightCorner );
+    l->addCornerAnchors( m_recentHeader, Qt::TopRightCorner, l, Qt::TopRightCorner );
+    l->addAnchor( m_albumCover, Qt::AnchorBottom, m_ratingWidget, Qt::AnchorTop )->setSpacing( 4 );
+    l->addAnchor( m_albumCover, Qt::AnchorHorizontalCenter, m_ratingWidget, Qt::AnchorHorizontalCenter );
+    l->addAnchor( titlesLayout, Qt::AnchorTop, l, Qt::AnchorTop )->setSpacing( 18 );
+    l->addAnchor( titlesLayout, Qt::AnchorRight, l, Qt::AnchorRight )->setSpacing( pad );
+    l->addAnchors( m_recentWidget, m_recentHeader, Qt::Horizontal );
+    l->addAnchor( m_recentWidget, Qt::AnchorTop, m_recentHeader, Qt::AnchorBottom );
+    l->addAnchor( m_recentWidget, Qt::AnchorRight, m_recentHeader, Qt::AnchorRight );
+    l->addAnchor( m_recentWidget, Qt::AnchorLeft, m_ratingWidget, Qt::AnchorRight )->setSpacing( pad * 2 );
+    l->addAnchor( m_recentWidget, Qt::AnchorBottom, m_albumCover, Qt::AnchorBottom )->setSpacing( 20 );
+    qreal midSpacing = qMax( m_byText->boundingRect().width(), m_onText->boundingRect().width() ) + pad;
+    l->addAnchor( titlesLayout, Qt::AnchorLeft, m_ratingWidget, Qt::AnchorRight )->setSpacing( midSpacing );
+    l->anchor( m_recentHeader, Qt::AnchorTop, l, Qt::AnchorTop )->setSpacing( 2 );
 
-    m_playCountLabel = i18n( "Play count" );
-    m_scoreLabel = i18n( "Score" );
-    m_lastPlayedLabel = i18n( "Last Played" );
+    // Read config
+    KConfigGroup config = Amarok::config("Current Track Applet");
+    const QString fontDesc = config.readEntry( "Font", QString() );
+    QFont font;
+    if( !fontDesc.isEmpty() )
+        font.fromString( fontDesc );
+    else
+        font.setPointSize( font.pointSize() + 3 );
 
-    for( int i = 0; i < MAX_PLAYED_TRACKS; i++ )
-        m_tracks[i] = new TrackWidget( this );
+    m_showEditTrackDetailsAction = config.readEntry( "ShowEditTrackAction", true );
 
-    m_tabBar->addTab( i18n( "Last played" ) );
-    m_tabBar->addTab( i18n( "Favorite tracks" ) );
+    m_title->setFont( font );
+    m_artist->setFont( font );
+    m_album->setFont( font );
 
-    // Note: TabBar disabled for 2.1-beta1 release, due to issues with visual appearance and usability
-    m_tabBar->hide();
+    m_title->setAlignment( Qt::AlignLeft );
+    m_artist->setAlignment( Qt::AlignLeft );
+    m_album->setAlignment( Qt::AlignLeft );
 
-    connectSource( "current" );
-    connect( m_tabBar, SIGNAL( currentChanged( int ) ), this, SLOT( tabChanged( int ) ) );
-    connect( dataEngine( "amarok-current" ), SIGNAL( sourceAdded( const QString& ) ), this, SLOT( connectSource( const QString& ) ) );
-    connect( The::paletteHandler(), SIGNAL( newPalette( const QPalette& ) ), SLOT(  paletteChanged( const QPalette &  ) ) );
+    dataEngine( "amarok-current" )->setProperty( "coverWidth", m_albumWidth );
+    dataEngine( "amarok-current" )->connectSource( "current", this );
+    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(paletteChanged(QPalette)) );
+    connect( CollectionManager::instance(), SIGNAL(collectionDataChanged(Collections::Collection*)),
+             this, SLOT(queryCollection()), Qt::QueuedConnection );
+    queryCollection();
+    setView( Stopped );
 
-    // figure out the size we want to be, in order to be able to squeeze in all that we want
-    // depends on the current font size,  basically
-    // height should be increased for larger point sizes. here, the layout works correctly with size 8, which has the fontMetrics height of 13
-    // a size too big, like font size 12, has a fontMetrics height of 19. So we add some height if it's too big
-    int additional = ( QApplication::fontMetrics().height()-13 ) * 2;
-    resize( 500, 180 + additional );
-    
-
-    // hide the items while we startup. as soon as the query is done, they'll be shown.
-    foreach ( QGraphicsItem * childItem, QGraphicsItem::children() )
-        childItem->hide();
+    PERF_LOG( "Finished init" );
 }
 
 void
-CurrentTrack::connectSource( const QString &source )
-{
-    if( source == "current" )
-    {
-        dataEngine( "amarok-current" )->connectSource( source, this );
-        dataUpdated( source, dataEngine("amarok-current" )->query( "current" ) ); // get data initially
-    }
-}
-
-void
-CurrentTrack::changeTrackRating( int rating )
+CurrentTrack::trackRatingChanged( int rating )
 {
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( !track )
         return;
 
     // Inform collections of end of a metadata update
-    Capabilities::UpdateCapability *uc = track->create<Capabilities::UpdateCapability>();
-    if( !uc )
-        return;
-
-    track->setRating( rating );
-    debug() << "Changed rating to:" << rating;
+    QScopedPointer<Capabilities::UpdateCapability> uc( track->create<Capabilities::UpdateCapability>() );
+    if( uc )
+        track->setRating( rating );
 }
 
 QList<QAction*>
@@ -184,520 +226,438 @@ CurrentTrack::contextualActions()
 {
     DEBUG_BLOCK
     QList<QAction*> actions;
-
     Meta::TrackPtr track = The::engineController()->currentTrack();
-
     if( !track )
         return actions;
 
+    if( !m_contextActions.isEmpty() )
+        return m_contextActions;
+
     Meta::AlbumPtr album = track->album();
+    if( !album )
+        return actions;
 
-    if( album )
+    QScopedPointer<Capabilities::ActionsCapability> ac( album->create<Capabilities::ActionsCapability>() );
+    if( ac )
     {
-        Capabilities::CustomActionsCapability *cac = album->create<Capabilities::CustomActionsCapability>();
-        if( cac )
-        {
-            QList<QAction *> customActions = cac->customActions();
-
-            foreach( QAction *action, customActions )
-                actions.append( action );
-        }
-        delete cac;
+        m_contextActions << ac->actions();
+        actions.append( m_contextActions );
     }
-
     return actions;
 }
 
-void CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
+void
+CurrentTrack::mousePressEvent( QGraphicsSceneMouseEvent *event )
 {
-    Q_UNUSED( constraints )
+    if( !m_isStopped
+        && event->modifiers() == Qt::NoModifier
+        && event->button() == Qt::LeftButton )
+    {
+        QGraphicsView *view = scene()->views().first();
+        QGraphicsItem *item = view->itemAt( view->mapFromScene(event->scenePos()) );
+        if( item == m_albumCover->graphicsItem() )
+        {
+            Meta::AlbumPtr album = The::engineController()->currentTrack()->album();
+            if( album )
+                ( new CoverViewDialog( album, The::mainWindow() ) )->show();
+            return;
+        }
+    }
+    Context::Applet::mousePressEvent( event );
+}
+
+void
+CurrentTrack::constraintsEvent( Plasma::Constraints constraints )
+{
+    Context::Applet::constraintsEvent( constraints );
 
     prepareGeometryChange();
+    m_byText->setPos( m_artist->pos() );
+    m_onText->setPos( m_album->pos() );
+    m_byText->setX( m_byText->x() - m_byText->boundingRect().width() - 4 );
+    m_onText->setX( m_onText->x() - m_onText->boundingRect().width() - 4 );
+    alignBaseLineToFirst( m_artist, m_byText );
+    alignBaseLineToFirst( m_album, m_onText );
 
-    // these all used to be based on fancy calculations based on the height
-    // guess what: the height is fixed. so that's a waste of hard-working gerbils
-    const qreal textHeight = 30;
-    const qreal albumWidth = 135;
-    const qreal padding = standardPadding();
-    const QPointF albumCoverPos( padding + 5, padding );
-
-    resizeCover( m_bigCover, albumWidth, albumCoverPos );
-
-    m_ratingWidget->setMinimumSize( albumWidth + 10, textHeight );
-    m_ratingWidget->setMaximumSize( albumWidth + 10, textHeight );
-
-    //place directly above the bottom of the applet
-    const qreal x = padding;
-    const qreal y = boundingRect().height() - m_ratingWidget->boundingRect().height() - padding;
-    m_ratingWidget->setPos( x, y );
-
-    /* this is the pos of the albumcover */
-    const qreal textX =  albumCoverPos.x() + albumWidth + padding;
-    const qreal textWidth = size().toSize().width() - ( textX + padding * 2 + 23 );
-    const qreal textY = albumCoverPos.y() + 20;
-
-    // calculate font sizes
-    QFontMetrics fm( m_title->font() );
-    qreal lineSpacing = fm.height() + 4;
-    m_maxTextWidth = textWidth;
-
-    const qreal byTextWidth = m_byText->boundingRect().width();
-    const qreal onTextWidth = m_onText->boundingRect().width();
-    const QPointF artistPos = m_artist->pos();
-    const QPointF albumPos  = m_album->pos();
-
-    // align to either the album or artist line, depending if "On" or "By" is longer in this current translation
-    // i18n makes things complicated :P
-    if( byTextWidth > onTextWidth )
+    update(); // ensure the stats bg is repainted with correct geometry
+    if( m_isStopped )
     {
-        // align to location of on text
-        m_byText->setPos( textX, textY + lineSpacing + 3 );
-        m_artist->setPos( m_byText->pos().x() + byTextWidth + 5, 0 );
-        alignBottomToFirst( m_byText, m_artist );
-        m_album->setPos( artistPos.x(), 0 );
-        m_onText->setPos( albumPos.x() - onTextWidth - 5, textY + lineSpacing * 2 + 3 );
-        alignBottomToFirst( m_onText, m_album );
-    }
-    else
-    {
-        // align to location/width of by text
-        m_onText->setPos( textX, textY + lineSpacing * 2 + 3 );
-        m_album->setPos( m_onText->pos().x() + onTextWidth + 5, 0 );
-        alignBottomToFirst( m_onText, m_album );
-        m_artist->setPos( albumPos.x(), 0 );
-        m_byText->setPos( artistPos.x() - byTextWidth - 5, textY + lineSpacing + 3 );
-        alignBottomToFirst( m_byText, m_artist );
+        m_recentHeader->setScrollingText( i18n("Recently Played Tracks") );
+        return;
     }
 
-    m_title->setPos( artistPos.x(), artistPos.y() - lineSpacing );
+    QString artist = handleUnknown( m_artist->text(), m_artist, UNKNOWN_ARTIST.toString() );
+    QString album = handleUnknown( m_album->text(), m_album, UNKNOWN_ALBUM.toString() );
+    m_title->setScrollingText( m_title->text() );
+    m_artist->setScrollingText( artist );
+    m_album->setScrollingText( album );
+}
 
-    const QString title = m_currentInfo[ Meta::Field::TITLE ].toString();
-    const QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
-    const QString album = m_currentInfo.contains( Meta::Field::ALBUM ) ? m_currentInfo[ Meta::Field::ALBUM ].toString() : QString();
-
-    m_title->setScrollingText( title, QRectF( m_title->pos().x(), textY, textWidth, 30 ) );
-    m_artist->setScrollingText( artist, QRectF( artistPos.x(), textY, textWidth, 30 ) );
-    m_album->setScrollingText( album, QRectF( albumPos.x(), textY, textWidth, 30 ) );
-
-    if( !m_trackActions.isEmpty() )
-    {
-        QPointF iconPos = albumPos;
-        iconPos.setY( iconPos.y() + m_album->boundingRect().height() );
-        foreach( Plasma::IconWidget *icon, m_trackActions )
-        {
-            const int iconSize = icon->size().width();
-            icon->setPos( iconPos );
-            iconPos.rx() += iconSize + 4;
-	        icon->setOpacity( .72 );
-        }
-    }
-
-    if( !m_lastTracks.isEmpty() )
-    {
-        m_tracksToShow = qMin( m_lastTracks.count(), ( int )( ( contentsRect().height() ) / ( textHeight ) ) );
-
-        // Note: TabBar disabled for 2.1-beta1 release, due to issues with visual appearance and usability
-#if 0
-        m_tracksToShow = qMin( m_lastTracks.count(), ( int )( ( contentsRect().height() - 30 ) / ( textHeight * 1.2 ) ) );
-        QFontMetrics fm( m_tabBar->font() );
-        m_tabBar->resize( QSizeF( contentsRect().width() - m_margin * 2 - 2, m_tabBar->size().height() * 0.7 ) ); // Why is the height factor ignored?
-        m_tabBar->setPos( size().width() / 2 - m_tabBar->size().width() / 2 - 1, 10 );
-
-        m_tabBar->show();
-#endif
-
-        for( int i = 0; i < m_tracksToShow; i++ )
-        {
-            m_tracks[i]->resize( contentsRect().width() - standardPadding() * 2, textHeight * .8 );
-
-            // Note: TabBar disabled for 2.1-beta1 release, due to issues with visual appearance and usability
-            //m_tracks[i]->setPos( ( rect().width() - m_tracks[i]->boundingRect().width() ) / 2, textHeight * 1.2 * i + 43 );
-            m_tracks[i]->setPos( ( rect().width() - m_tracks[i]->boundingRect().width() ) / 2, ( textHeight * .8 + standardPadding() / 2 ) * i + 25 );
-        }
-    }
-    else if( !m_noTrackText.isEmpty() )
-    {
-        m_noTrack->setText( truncateTextToFit( m_noTrackText, m_noTrack->font(), QRectF( 0, 0, textWidth, 30 ) ) );
-        m_noTrack->setPos( size().toSize().width() / 2 - m_noTrack->boundingRect().width() / 2,
-                       size().toSize().height() / 2  - 30 );
-    }
-
-    dataEngine( "amarok-current" )->setProperty( "coverWidth", albumWidth );
+QSizeF
+CurrentTrack::sizeHint( Qt::SizeHint which, const QSizeF &constraint ) const
+{
+    // figure out the size we want to be, in order to be able to squeeze in all
+    // that we want depends on the current font size,  basically height should
+    // be increased for larger point sizes. here, the layout works correctly
+    // with size 8, which has the fontMetrics height of 13 a size too big, like
+    // font size 12, has a fontMetrics height of 19. So we add some height if
+    // it's too big
+    int height = ( QApplication::fontMetrics().height() - 13 ) * 2 + 180;
+    return QSizeF( Context::Applet::sizeHint(which, constraint).width(), height );
 }
 
 void
 CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& data )
 {
+    if( data.isEmpty() || name != QLatin1String("current") )
+        return;
+
     DEBUG_BLOCK
-    Q_UNUSED( name );
-
-    if( data.size() == 0 )
-        return;
-
-    QRect textRect( 0, 0, m_maxTextWidth, 30 );
-
-    m_noTrackText = data[ "notrack" ].toString();
-    m_lastTracks = data[ "lastTracks" ].value<Meta::TrackList>();
-    m_favoriteTracks = data[ "favoriteTracks" ].value<Meta::TrackList>();
-
-    if( !m_lastTracks.isEmpty() )
+    if( data.contains( QLatin1String("notrack" ) ) )
     {
-        Meta::TrackList tracks;
-        if( m_tabBar->currentIndex() == 0 )
-            tracks = m_lastTracks;
-        else
-            tracks = m_favoriteTracks;
-        int i = 0;
-        foreach( Meta::TrackPtr track, tracks )
-        {
-            m_tracks[i]->setTrack( track );
-            i++;
-        }
-
-        updateConstraints();
-        update();
-        return;
-    }
-    else if( !m_noTrackText.isEmpty() )
-    {
-        QRect rect( 0, 0, size().toSize().width(), 30 );
-        m_noTrack->setText( truncateTextToFit( m_noTrackText, m_noTrack->font(), rect ) );
-        m_noTrack->setPos( size().toSize().width() / 2 - m_noTrack->boundingRect().width() / 2,
-                       size().toSize().height() / 2  - 30 );
-        update();
+        if( m_view != Stopped )
+            setView( Stopped );
         return;
     }
 
-    m_noTrack->setText( QString() );
-    m_lastTracks.clear();
-    m_favoriteTracks.clear();
+    const QPixmap &cover = data[ "albumart" ].value<QPixmap>();
+    const QVariantMap &currentInfo = data[ QLatin1String("current") ].toMap();
+    bool updateCover = ( m_coverKey != cover.cacheKey() );
+    if( (m_currentInfo == currentInfo) && !updateCover )
+        return;
 
-    m_currentInfo = data[ "current" ].toMap();
-    m_title->setScrollingText( m_currentInfo[ Meta::Field::TITLE ].toString(), textRect );
-    const QString artist = m_currentInfo.contains( Meta::Field::ARTIST ) ? m_currentInfo[ Meta::Field::ARTIST ].toString() : QString();
-    m_artist->setScrollingText( artist, textRect );
-    const QString album = m_currentInfo.contains( Meta::Field::ALBUM ) ? m_currentInfo[ Meta::Field::ALBUM ].toString() : QString();
-    m_album->setScrollingText( album, textRect );
+    if( m_view != Playing )
+        setView( Playing );
 
-    m_rating = m_currentInfo[ Meta::Field::RATING ].toInt();
+    QString title = currentInfo.value( Meta::Field::TITLE ).toString();
+    QString artist = currentInfo.value( Meta::Field::ARTIST ).toString();
+    QString album = currentInfo.value( Meta::Field::ALBUM ).toString();
+    artist = handleUnknown( artist, m_artist, UNKNOWN_ARTIST.toString() );
+    album = handleUnknown( album, m_album, UNKNOWN_ALBUM.toString() );
 
-    m_trackLength = m_currentInfo[ Meta::Field::LENGTH ].toInt();
+    if( title != m_currentInfo.value(Meta::Field::TITLE) )
+        m_title->setScrollingText( title );
+    if( artist != m_currentInfo.value(Meta::Field::ARTIST) )
+        m_artist->setScrollingText( artist );
+    if( album != m_currentInfo.value(Meta::Field::ALBUM) )
+        m_album->setScrollingText( album );
 
-    m_score = QString::number( m_currentInfo[ Meta::Field::SCORE ].toInt() );
-    m_playedLast = Amarok::verboseTimeSince( m_currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() );
-    m_numPlayed  = m_currentInfo[ Meta::Field::PLAYCOUNT ].toString();
+    m_rating      = currentInfo[ Meta::Field::RATING ].toInt();
+    m_trackLength = currentInfo[ Meta::Field::LENGTH ].toInt();
+    m_score       = currentInfo[ Meta::Field::SCORE ].toInt();
+    m_lastPlayed  = currentInfo[ Meta::Field::LAST_PLAYED ].toDateTime();
+    m_playCount   = currentInfo[ Meta::Field::PLAYCOUNT ].toInt();
 
     m_ratingWidget->setRating( m_rating );
 
-    //scale pixmap on demand
-    //store the big cover : avoid blur when resizing the applet
-    m_bigCover = data[ "albumart" ].value<QPixmap>();
-    m_sourceEmblemPath = data[ "source_emblem" ].toString();
-
-    qDeleteAll( m_trackActions );
-    m_trackActions.clear();
-
-    Meta::TrackPtr track = The::engineController()->currentTrack();
-    if( track )
+    if( updateCover )
     {
-
-        //first, add any global CurrentTrackActions (iow, actions that are shown for all tracks)
-
-        foreach( QAction* action, The::globalCurrentTrackActions()->actions() )
-        {
-            Plasma::IconWidget *icon = addAction( action, 24 );
-            icon->setText( QString() );
-            m_trackActions << icon;
-        }
-        
-        if( track->hasCapabilityInterface( Capabilities::Capability::CurrentTrackActions ) )
-        {
-            Capabilities::CurrentTrackActionsCapability *cac = track->create<Capabilities::CurrentTrackActionsCapability>();
-            if( cac )
-            {
-                QList<QAction*> actions = cac->customActions();
-                foreach( QAction *action, actions )
-                {
-                    Plasma::IconWidget *icon = addAction( action, 24 );
-                    icon->setText( QString() );
-                    m_trackActions << icon;
-                }
-            }
-        }
+        m_coverKey = cover.cacheKey();
+        resizeCover( cover, m_albumWidth );
     }
-
-    // without that the rating doesn't get update for a playing track
-    update();
+    m_currentInfo = currentInfo;
+    m_sourceEmblemPath = data[ "source_emblem" ].toString();
+    clearTrackActions();
+    setupLayoutActions( The::engineController()->currentTrack() );
     updateConstraints();
 }
 
 void
-CurrentTrack::paintInterface( QPainter *p, const QStyleOptionGraphicsItem *option, const QRect &contentsRect )
+CurrentTrack::editTrack()
 {
-    Q_UNUSED( option );
-    p->setRenderHint( QPainter::Antialiasing );
-
-    // tint the whole applet
-    addGradientToAppletBackground( p );
-
-    //bail out if there is no room to paint. Prevents crashes and really there is no sense in painting if the
-    //context view has been minimized completely
-    if( ( contentsRect.width() < 20 ) || ( contentsRect.height() < 20 ) )
-    {
-        foreach ( QGraphicsItem * childItem, QGraphicsItem::children() )
-            childItem->hide();
-        return;
-    }
-    else
-    {
-        foreach ( QGraphicsItem * childItem, QGraphicsItem::children () )
-            childItem->show();
-    }
-
-    if( !m_lastTracks.isEmpty() )
-    {
-        QList<QGraphicsItem*> children = QGraphicsItem::children();
-        foreach ( QGraphicsItem *childItem, children )
-            childItem->hide();
-
-        // Note: TabBar disabled for 2.1-beta1 release, due to issues with visual appearance and usability
-#if 0
-        m_tabBar->show();
-#endif
-        for( int i = 0; i < m_tracksToShow; i++)
-            m_tracks[i]->show();
-        return;
-    }
-    else if( !m_noTrack->text().isEmpty() )
-    {
-        QList<QGraphicsItem*> children = QGraphicsItem::children();
-        foreach ( QGraphicsItem *childItem, children )
-            childItem->hide();
-        m_noTrack->show();
-        return;
-    }
-    else
-    {
-        m_tabBar->hide();
-        m_noTrack->hide();
-        for( int i = 0; i < MAX_PLAYED_TRACKS; i++)
-            m_tracks[i]->hide();
-    }
-
-    p->save();
-
-
     Meta::TrackPtr track = The::engineController()->currentTrack();
-
-    bool hasActions = !m_trackActions.isEmpty();
-    bool updatable = false;
-
-    if( track )
-    {
-        // Don't show collection actions for local tracks
-        Capabilities::UpdateCapability *uc = track->create<Capabilities::UpdateCapability>();
-        if( uc )
-            updatable = true;
-
-        m_showStatistics = updatable || hasActions;
-    }
-
-    p->restore();
-
-    // draw border around ratingwidget
-    p->save();
-    p->setRenderHint( QPainter::Antialiasing );
-    QColor fillColor( 255, 255, 255, 90 );
-    QRectF borderRect = m_ratingWidget->boundingRect();
-    borderRect.moveTo( m_ratingWidget->pos() ) ;
-    QPainterPath toFill;
-    toFill.addRoundedRect( borderRect, 5, 5 );
-    //p->fillPath( toFill, fillColor );
-    p->restore();
-
-    p->save();
-    qreal leftEdge = qMax( m_onText->pos().x(), m_byText->pos().x() );
-    qreal localMaxTextWidth = m_maxTextWidth + qMax( m_onText->boundingRect().width(), m_byText->boundingRect().width() ) + 5;
-    QColor topColor( 255, 255, 255, 120 );
-    QColor bottomColor( 255, 255, 255, 90 );
-    qreal leftX = boundingRect().size().width() - standardPadding();
-    // draw the complete outline. lots of little steps :)
-    // at each corner, leave a 6x6 box. draw a quad bezier curve from the two ends of the lines, through  the original corner
-    if( m_showStatistics )
-    {
-        QPainterPath statsPath;
-        statsPath.moveTo( leftEdge + 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 ); // top left position of the rect, right below the album
-        statsPath.lineTo( leftX - 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 ); // go right to margin
-        statsPath.quadTo( leftX, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8,
-                        leftX, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 + 6 );
-        statsPath.lineTo( leftX, m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height() - 6 ); // go down to bottom ight corner
-        statsPath.quadTo( leftX, m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height(),
-                        leftX - 6, m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height() );
-        statsPath.lineTo( m_ratingWidget->pos().x() + 6, m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height() ); // way bottom left corner
-        statsPath.quadTo( m_ratingWidget->pos().x(), m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height(),
-                        m_ratingWidget->pos().x(), m_ratingWidget->pos().y() + m_ratingWidget->boundingRect().height() - 6 );
-        statsPath.lineTo( m_ratingWidget->pos().x(), m_ratingWidget->pos().y() + 6 ); // top left of rating widget
-        statsPath.quadTo( m_ratingWidget->pos().x(), m_ratingWidget->pos().y(),
-                        m_ratingWidget->pos().x() + 6, m_ratingWidget->pos().y() );
-        statsPath.lineTo( leftEdge - 6, m_ratingWidget->pos().y() ); // joining of two rects
-        statsPath.quadTo( leftEdge, m_ratingWidget->pos().y(),
-                        leftEdge, m_ratingWidget->pos().y() - 6 );
-        statsPath.lineTo( leftEdge, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 + 6 ); // back to start
-        statsPath.quadTo( leftEdge, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8,
-                        leftEdge + 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 );
-
-        p->fillPath( statsPath, bottomColor );
-
-        // draw just the overlay which is the "header" row, to emphasize that we have 2 rows here
-        QPainterPath headerPath;
-        headerPath.moveTo( leftEdge + 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 ); // top left position of the rect, right below the album
-        headerPath.lineTo( leftX - 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 ); // go right to margin
-        headerPath.quadTo( leftX, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8,
-                        leftX, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 + 6 );
-        headerPath.lineTo( leftX, m_ratingWidget->pos().y()  ); // middle of the right side
-        headerPath.lineTo( leftEdge - 6, m_ratingWidget->pos().y() ); // join spot, before quad curve
-        headerPath.quadTo( leftEdge, m_ratingWidget->pos().y(),
-                            leftEdge, m_ratingWidget->pos().y() - 6 );
-        headerPath.lineTo( leftEdge, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 + 6 ); // curve back through start
-        headerPath.quadTo( leftEdge, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8,
-                        leftEdge + 6, m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8 );
-
-        p->fillPath( headerPath, topColor );
-
-        // draw label text
-        p->save();
-        // draw "Play count"
-        const QString playCountText = i18n( "Play count" );
-        const QString scoreText = i18n( "Score" );
-        const QString lastPlayedText = i18n( "Last Played" );
-
-        //Align labels taking into account the string widths for each label
-        QFontMetrics fm( this->font() );
-        qreal totalWidth = fm.width( playCountText ) + fm.width( scoreText ) + fm.width( lastPlayedText );
-        qreal factor, prevFactor;
-        factor = fm.width( playCountText ) / totalWidth;
-        prevFactor = factor;
-
-        QRectF rect = QRectF(leftEdge, // align vertically with track info text
-                            m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8, // align bottom horizontally with top of rating rounded rect
-                            localMaxTextWidth * factor,
-                            m_ratingWidget->boundingRect().height() - 4 ); // just the "first" row, so go halfway down
-
-
-        m_playCountLabel = truncateTextToFit( playCountText, this->font(), rect );
-        p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_playCountLabel );
-
-        factor = fm.width( scoreText ) / totalWidth;
-        rect.setWidth( localMaxTextWidth * factor );
-        rect.moveLeft( rect.topLeft().x() + localMaxTextWidth * prevFactor );
-        prevFactor = factor;
-
-        m_scoreLabel = truncateTextToFit( scoreText, this->font(), rect );
-        p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_scoreLabel );
-
-        factor = fm.width( lastPlayedText ) / totalWidth;
-        rect.setWidth( localMaxTextWidth * factor );
-        rect.moveLeft( rect.topLeft().x() + localMaxTextWidth * prevFactor );
-
-        m_lastPlayedLabel = truncateTextToFit( lastPlayedText, this->font(), rect );
-        p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_lastPlayedLabel );
-
-        factor = fm.width( playCountText ) / totalWidth;
-        prevFactor = factor;
-        rect = QRectF( leftEdge,
-                    m_ratingWidget->pos().y() + 3,
-                    localMaxTextWidth * factor,
-                    m_ratingWidget->boundingRect().height() - 4 );
-        p->drawText( rect,  Qt::AlignCenter | Qt::TextSingleLine, m_numPlayed );
-
-        factor = fm.width( scoreText ) / totalWidth;
-        rect.setWidth( localMaxTextWidth * factor );
-        rect.moveLeft( rect.topLeft().x() + localMaxTextWidth * prevFactor );
-        prevFactor = factor;
-
-        p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_score );
-
-        factor = fm.width( lastPlayedText ) / totalWidth;
-        rect.setWidth( localMaxTextWidth * factor );
-        rect.moveLeft( rect.topLeft().x() + localMaxTextWidth * prevFactor );
-
-        m_playedLast = truncateTextToFit( Amarok::verboseTimeSince( m_currentInfo[ Meta::Field::LAST_PLAYED ].toUInt() ), this->font(), rect );
-        p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, m_playedLast );
-        p->restore();
-    }
-    p->restore();
-
-    // draw source emblem
-    if( !m_sourceEmblemPath.isEmpty() )
-    {
-        p->save();
-        p->setOpacity( 0.19 );
-        KSvgRenderer svg( m_sourceEmblemPath );
-
-        // paint the emblem half as tall as the applet, anchored at the top-right
-        // assume it is a square emblem
-        qreal height = boundingRect().height() / 2;
-        QRectF rect( boundingRect().width() - standardPadding() - height, standardPadding(),
-                     height, height );
-        svg.render( p, rect );
-
-        p->restore();
-    }
-}
-
-bool
-CurrentTrack::resizeCover( QPixmap cover, qreal width, QPointF albumCoverPos )
-{
-    const int borderWidth = 5;
-
-    if( !cover.isNull() )
-    {
-        width -= borderWidth * 2;
-
-        qreal size = width;
-        qreal pixmapRatio = (qreal)cover.width()/size;
-
-        qreal moveByX = albumCoverPos.x();
-        qreal moveByY = albumCoverPos.y();
-
-        //center the cover : if the cover is not squared, we get the missing pixels and center
-        if( cover.height()/pixmapRatio > width )
-            cover = cover.scaledToHeight( size, Qt::SmoothTransformation );
-        else
-            cover = cover.scaledToWidth( size, Qt::SmoothTransformation );
-        // center
-        moveByX += ( width / 2 ) - cover.rect().width() / 2;
-        moveByY += ( width / 2 ) - cover.rect().height() / 2;
-
-        m_albumCover->setPos( moveByX, moveByY );
-
-
-        QPixmap coverWithBorders = The::svgHandler()->addBordersToPixmap( cover, borderWidth, m_album->text(), true );
-
-        // HACK to make it "on top always !"
-        m_albumCover->setCacheMode(NoCache);
-        m_albumCover->setPixmap( coverWithBorders );
-        m_albumCover->update();
-        m_albumCover->setCacheMode(ItemCoordinateCache);
-        return true;
-    }
-    return false;
+    new TagDialog( track, scene()->views().first() );
 }
 
 void
-CurrentTrack::changeTitleFont()
+CurrentTrack::paintInterface( QPainter *p,
+                              const QStyleOptionGraphicsItem *option,
+                              const QRect &contentsRect )
 {
-    QFont font = ui_Settings.fontChooser->font();
+    Context::Applet::paintInterface( p, option, contentsRect );
+    drawSourceEmblem( p, contentsRect );
+    drawStatsBackground( p, contentsRect );
+    drawStatsTexts( p, contentsRect );
+}
 
-    m_noTrack->setFont( font );
+void
+CurrentTrack::drawStatsBackground( QPainter *const p, const QRect &rect )
+{
+    // draw the complete outline. lots of little steps :) at each corner, leave
+    // a 6x6 box. draw a quad bezier curve from the two ends of the lines,
+    // through  the original corner
+
+    const qreal leftEdge = m_ratingWidget->boundingRect().right() + standardPadding();
+    const qreal rightEdge = rect.right() - standardPadding() / 2;
+    const qreal ratingWidgetX = m_ratingWidget->pos().x();
+    const qreal ratingWidgetY = m_ratingWidget->pos().y();
+    const qreal ratingWidgetH = m_ratingWidget->boundingRect().height();
+    QColor topColor = The::paletteHandler()->palette().color( QPalette::Base );
+    QColor bottomColor = topColor;
+    topColor.setAlpha( 200 );
+    bottomColor.setAlpha( 100 );
+
+    QPainterPath statsPath;
+    statsPath.moveTo( leftEdge + 6, ratingWidgetY - ratingWidgetH + 8 ); // top left position of the rect, right below the album
+    statsPath.lineTo( rightEdge - 6, ratingWidgetY - ratingWidgetH + 8 ); // go right to margin
+    statsPath.quadTo( rightEdge, ratingWidgetY - ratingWidgetH + 8,
+                      rightEdge, ratingWidgetY - ratingWidgetH + 8 + 6 );
+    statsPath.lineTo( rightEdge, ratingWidgetY + ratingWidgetH - 6 ); // go down to bottom right corner
+    statsPath.quadTo( rightEdge, ratingWidgetY + ratingWidgetH,
+                      rightEdge - 6, ratingWidgetY + ratingWidgetH );
+    statsPath.lineTo( ratingWidgetX + 6, ratingWidgetY + ratingWidgetH ); // way bottom left corner
+    statsPath.quadTo( ratingWidgetX, ratingWidgetY + ratingWidgetH,
+                      ratingWidgetX, ratingWidgetY + ratingWidgetH - 6 );
+    statsPath.lineTo( ratingWidgetX, ratingWidgetY + 6 ); // top left of rating widget
+    statsPath.quadTo( ratingWidgetX, ratingWidgetY,
+                      ratingWidgetX + 6, ratingWidgetY );
+    statsPath.lineTo( leftEdge - 6, ratingWidgetY ); // joining of two rects
+    statsPath.quadTo( leftEdge, ratingWidgetY,
+                      leftEdge, ratingWidgetY - 6 );
+    statsPath.lineTo( leftEdge, ratingWidgetY - ratingWidgetH + 8 + 6 ); // back to start
+    statsPath.quadTo( leftEdge, ratingWidgetY - ratingWidgetH + 8,
+                      leftEdge + 6, ratingWidgetY - ratingWidgetH + 8 );
+
+    // draw just the overlay which is the "header" row, to emphasize that we have 2 rows here
+    QPainterPath headerPath;
+    headerPath.moveTo( leftEdge + 6, ratingWidgetY - ratingWidgetH + 8 ); // top left position of the rect, right below the album
+    headerPath.lineTo( rightEdge - 6, ratingWidgetY - ratingWidgetH + 8 ); // go right to margin
+    headerPath.quadTo( rightEdge, ratingWidgetY - ratingWidgetH + 8,
+                       rightEdge, ratingWidgetY - ratingWidgetH + 8 + 6 );
+    headerPath.lineTo( rightEdge, ratingWidgetY  ); // middle of the right side
+    headerPath.lineTo( leftEdge - 6, ratingWidgetY ); // join spot, before quad curve
+    headerPath.quadTo( leftEdge, ratingWidgetY,
+                       leftEdge, ratingWidgetY - 6 );
+    headerPath.lineTo( leftEdge, ratingWidgetY - ratingWidgetH + 8 + 6 ); // curve back through start
+    headerPath.quadTo( leftEdge, ratingWidgetY - ratingWidgetH + 8,
+                       leftEdge + 6, ratingWidgetY - ratingWidgetH + 8 );
+
+    p->save();
+    p->setRenderHint( QPainter::Antialiasing );
+    p->fillPath( statsPath, bottomColor );
+    p->fillPath( headerPath, topColor );
+    p->restore();
+
+}
+
+void
+CurrentTrack::drawStatsTexts( QPainter *const p, const QRect &contentsRect )
+{
+    const qreal leftEdge       = m_ratingWidget->boundingRect().right() + standardPadding();
+    const qreal maxTextWidth   = contentsRect.right() - standardPadding() * 2 - leftEdge;
+    const QString column1Label = m_isStopped ? i18n( "Tracks" ) : i18n( "Play Count" );
+    const QString column2Label = m_isStopped ? i18n( "Albums" ) : i18n( "Score" );
+    const QString column3Label = m_isStopped ? i18n( "Artists" ) : i18n( "Last Played" );
+
+    //Align labels taking into account the string widths for each label
+    QFontMetricsF fm( font() );
+    qreal totalWidth = fm.width( column1Label ) + fm.width( column2Label ) + fm.width( column3Label );
+    qreal factor, prevFactor;
+    factor = fm.width( column1Label ) / totalWidth;
+    prevFactor = factor;
+
+    QRectF rect( leftEdge, // align vertically with track info text
+                 m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8, // align bottom horizontally with top of rating rounded rect
+                 maxTextWidth * factor,
+                 m_ratingWidget->boundingRect().height() - 4 ); // just the "first" row, so go halfway down
+
+    p->save();
+    p->setRenderHint( QPainter::Antialiasing );
+    p->setPen( normalBrush().color() );
+
+    // labels
+    QString playCountLabel = fm.elidedText( column1Label, Qt::ElideRight, rect.width() );
+    p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, playCountLabel );
+
+    factor = fm.width( column2Label ) / totalWidth;
+    rect.setWidth( maxTextWidth * factor );
+    rect.moveLeft( rect.topLeft().x() + maxTextWidth * prevFactor );
+    prevFactor = factor;
+
+    QString scoreLabel = fm.elidedText( column2Label, Qt::ElideRight, rect.width() );
+    p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, scoreLabel );
+
+    factor = fm.width( column3Label ) / totalWidth;
+    rect.setWidth( maxTextWidth * factor );
+    rect.moveLeft( rect.topLeft().x() + maxTextWidth * prevFactor );
+
+    QString lastPlayedLabel = fm.elidedText( column3Label, Qt::ElideRight, rect.width() );
+    p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, lastPlayedLabel );
+
+    // stats
+
+    const int column1Stat = m_isStopped ? m_trackCount : m_playCount;
+    const int column2Stat = m_isStopped ? m_albumCount : m_score;
+
+    factor = fm.width( column1Label ) / totalWidth;
+    prevFactor = factor;
+    rect.setX( leftEdge );
+    rect.setY( m_ratingWidget->pos().y() + 3 );
+    rect.setWidth( maxTextWidth * factor);
+    rect.setHeight( m_ratingWidget->boundingRect().height() - 4 );
+    p->drawText( rect,  Qt::AlignCenter | Qt::TextSingleLine, QString::number(column1Stat) );
+
+    factor = fm.width( column2Label ) / totalWidth;
+    rect.setWidth( maxTextWidth * factor );
+    rect.moveLeft( rect.topLeft().x() + maxTextWidth * prevFactor );
+    prevFactor = factor;
+
+    p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, QString::number(column2Stat) );
+
+    factor = fm.width( column3Label ) / totalWidth;
+    rect.setWidth( maxTextWidth * factor );
+    rect.moveLeft( rect.topLeft().x() + maxTextWidth * prevFactor );
+
+    const QString column3Stat = ( m_isStopped )
+        ? QString::number( m_artistCount )
+        : fm.elidedText( Amarok::verboseTimeSince(m_lastPlayed), Qt::ElideRight, rect.width() );
+    p->drawText( rect, Qt::AlignCenter | Qt::TextSingleLine, column3Stat );
+
+    p->restore();
+}
+
+void
+CurrentTrack::drawSourceEmblem( QPainter *const p, const QRect &contentsRect )
+{
+    if( m_isStopped )
+        return;
+
+    p->save();
+    p->setOpacity( 0.19 );
+
+    if( m_sourceEmblemPath.isEmpty() )
+    {
+        QPixmap logo = Amarok::semiTransparentLogo( m_albumWidth );
+        QRect rect = logo.rect();
+        int y = standardPadding();
+        int x = contentsRect.right() - rect.width() - y;
+        rect.moveTo( x, y );
+        QRectF clipRect( rect );
+        qreal clipY = m_ratingWidget->pos().y() - m_ratingWidget->boundingRect().height() + 8;
+        clipRect.setBottom( clipY );
+        p->setClipRect( clipRect );
+        p->drawPixmap( rect, logo );
+    }
+    else
+    {
+        QSvgRenderer svg( m_sourceEmblemPath );
+        // paint the emblem half as tall as the applet, anchored at the top-right
+        // assume it is a square emblem
+        qreal height = boundingRect().height() / 2;
+        int y = standardPadding();
+        int x = contentsRect.right() - y - height;
+        QRectF rect( x, y, height, height );
+        svg.render( p, rect );
+    }
+    p->restore();
+}
+
+void
+CurrentTrack::clearTrackActions()
+{
+    prepareGeometryChange();
+    int actionCount = m_actionsLayout->count();
+    while( --actionCount >= 0 )
+    {
+        QGraphicsLayoutItem *child = m_actionsLayout->itemAt( 0 );
+        m_actionsLayout->removeItem( child );
+        delete child;
+    }
+    qDeleteAll( m_customActions );
+    qDeleteAll( m_contextActions );
+    m_customActions.clear();
+    m_contextActions.clear();
+}
+
+void
+CurrentTrack::resizeCover( const QPixmap &cover, qreal width )
+{
+    DEBUG_BLOCK
+    QPixmap coverWithBorders;
+    if( !cover.isNull() )
+    {
+        const int borderWidth = 5;
+        width -= borderWidth * 2;
+        qreal pixmapRatio = (qreal)cover.width() / width;
+
+        //center the cover : if the cover is not squared, we get the missing pixels and center
+        coverWithBorders = ( cover.height() / pixmapRatio > width )
+            ? cover.scaledToHeight( width, Qt::SmoothTransformation )
+            : cover.scaledToWidth( width, Qt::SmoothTransformation );
+
+        coverWithBorders = The::svgHandler()->addBordersToPixmap( coverWithBorders,
+                                                                  borderWidth,
+                                                                  m_album->text(),
+                                                                  true );
+    }
+    m_albumCover->setPixmap( coverWithBorders );
+    m_albumCover->graphicsItem()->setAcceptDrops( true );
+}
+
+void
+CurrentTrack::settingsAccepted()
+{
+    QFont font = ui_Settings.fontRequester->font();
+    m_showEditTrackDetailsAction = (ui_Settings.editTrackDetailsCheckBox->checkState() == Qt::Checked);
+
     m_title->setFont( font );
     m_artist->setFont( font );
     m_album->setFont( font );
 
     KConfigGroup config = Amarok::config("Current Track Applet");
     config.writeEntry( "Font", font.toString() );
+    config.writeEntry( "ShowEditTrackAction", m_showEditTrackDetailsAction );
 
-    constraintsEvent();
+    clearTrackActions();
+    setupLayoutActions( The::engineController()->currentTrack() );
+}
+
+void
+CurrentTrack::queryCollection()
+{
+    Collections::QueryMaker *qmTracks = CollectionManager::instance()->queryMaker();
+    Collections::QueryMaker *qmAlbums = CollectionManager::instance()->queryMaker();
+    Collections::QueryMaker *qmArtists = CollectionManager::instance()->queryMaker();
+    connect( qmTracks, SIGNAL(newResultReady(QStringList)),
+             this, SLOT(tracksCounted(QStringList)) );
+    connect( qmAlbums, SIGNAL(newResultReady(QStringList)),
+             this, SLOT(albumsCounted(QStringList)) );
+    connect( qmArtists, SIGNAL(newResultReady(QStringList)),
+             this, SLOT(artistsCounted(QStringList)) );
+
+    qmTracks->setAutoDelete( true )
+      ->setQueryType( Collections::QueryMaker::Custom )
+      ->addReturnFunction( Collections::QueryMaker::Count, Meta::valUrl )
+      ->run();
+    qmAlbums->setAutoDelete( true )
+      ->setQueryType( Collections::QueryMaker::Custom )
+      ->addReturnFunction( Collections::QueryMaker::Count, Meta::valAlbum )
+      ->run();
+    qmArtists->setAutoDelete( true )
+      ->setQueryType( Collections::QueryMaker::Custom )
+      ->addReturnFunction( Collections::QueryMaker::Count, Meta::valArtist )
+      ->run();
+}
+
+void
+CurrentTrack::tracksCounted( QStringList results )
+{
+    m_trackCount = !results.isEmpty() ? results.first().toInt() : 0;
+    update();
+}
+
+void
+CurrentTrack::albumsCounted( QStringList results )
+{
+    m_albumCount = !results.isEmpty() ? results.first().toInt() : 0;
+    update();
+}
+
+void
+CurrentTrack::artistsCounted( QStringList results )
+{
+    m_artistCount = !results.isEmpty() ? results.first().toInt() : 0;
+    update();
 }
 
 void
@@ -706,15 +666,16 @@ CurrentTrack::createConfigurationInterface( KConfigDialog *parent )
     KConfigGroup configuration = config();
     QWidget *settings = new QWidget;
     ui_Settings.setupUi( settings );
-    ui_Settings.fontChooser->setFont( m_title->font() );
+    ui_Settings.fontRequester->setFont( m_title->font() );
+    ui_Settings.editTrackDetailsCheckBox->setCheckState( m_showEditTrackDetailsAction ? Qt::Checked : Qt::Unchecked );
 
     parent->addPage( settings, i18n( "Current Track Settings" ), "preferences-system");
 
-    connect( parent, SIGNAL( accepted() ), this, SLOT( changeTitleFont() ) );
+    connect( parent, SIGNAL(accepted()), this, SLOT(settingsAccepted()) );
 }
 
 void
-CurrentTrack::coverDropped( QPixmap cover )
+CurrentTrack::coverDropped( const QPixmap &cover )
 {
     DEBUG_BLOCK
     Meta::TrackPtr track = The::engineController()->currentTrack();
@@ -726,49 +687,237 @@ CurrentTrack::coverDropped( QPixmap cover )
         return;
 
     if ( !cover.isNull() )
-        album->setImage( cover );
+        album->setImage( cover.toImage() );
 }
 
 void
-CurrentTrack::paletteChanged( const QPalette & palette )
+CurrentTrack::paletteChanged( const QPalette &palette )
 {
-    DEBUG_BLOCK
-
     m_title->setBrush( palette.text() );
     m_artist->setBrush( palette.text() );
     m_album->setBrush( palette.text() );
-    m_noTrack->setBrush( palette.text() );
     m_byText->setBrush( palette.text() );
     m_onText->setBrush( palette.text() );
 }
 
 void
-CurrentTrack::tabChanged( int index )
+CurrentTrack::alignBaseLineToFirst( TextScrollingWidget *a, QGraphicsSimpleTextItem *b )
 {
-    Meta::TrackList tracks;
-    if( index == 0 )
-        tracks = m_lastTracks;
-    else
-        tracks = m_favoriteTracks;
-
-    int i = 0;
-    foreach( Meta::TrackPtr track, tracks )
-    {
-        m_tracks[i]->hide();
-        m_tracks[i]->setTrack( track );
-        i++;
-    }
-    for( i = 0; i < m_tracksToShow; ++i )
-        m_tracks[i]->show();
-}
-
-void
-CurrentTrack::alignBottomToFirst( QGraphicsItem* a, QGraphicsItem* b )
-{
-    qreal guideY = a->pos().y() + a->boundingRect().height();
-    qreal newY = guideY - b->boundingRect().height() + 1; // just a bit off for some reason (when used w/ text)
+    qreal guideY = a->pos().y() + QFontMetricsF( a->font() ).ascent();
+    qreal newY   = guideY - QFontMetricsF( b->font() ).ascent();
     b->setPos( b->x(), newY );
 }
 
-#include "CurrentTrack.moc"
+QBrush
+CurrentTrack::normalBrush() const
+{
+    return The::paletteHandler()->palette().brush( QPalette::Active, QPalette::Text );
+}
 
+QBrush
+CurrentTrack::unknownBrush() const
+{
+    return The::paletteHandler()->palette().brush( QPalette::Disabled, QPalette::Text );
+}
+
+QString
+CurrentTrack::handleUnknown( const QString &original,
+                             TextScrollingWidget *widget,
+                             const QString &replacement )
+{
+    if( original.isEmpty() )
+    {
+        widget->setBrush( unknownBrush() );
+        return replacement;
+    }
+    else
+    {
+        widget->setBrush( normalBrush() );
+        return original;
+    }
+}
+
+void
+CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
+{
+    if( !track )
+        return;
+
+    PERF_LOG( "Begin actions layout setup" );
+    //first, add any global CurrentTrackActions (iow, actions that are shown for all tracks)
+    QList<QAction *> actions = The::globalCurrentTrackActions()->actions();
+
+    using namespace Capabilities;
+
+    QScopedPointer<ActionsCapability> ac( track->create<ActionsCapability>() );
+    if( ac )
+    {
+        QList<QAction*> trackActions = ac->actions();
+        // ensure that the actions get deleted afterwards
+        foreach( QAction* action, trackActions )
+        {
+            if( !action->parent() )
+                action->setParent( this );
+            actions << action;
+        }
+    }
+
+    QScopedPointer<BookmarkThisCapability> btc( track->create<BookmarkThisCapability>() );
+    if( btc && btc->bookmarkAction() )
+    {
+        actions << btc->bookmarkAction();
+    }
+
+    if( m_showEditTrackDetailsAction && track->hasCapabilityInterface( Capability::Editable ) )
+    {
+        QScopedPointer<EditCapability> ec( track->create<EditCapability>() );
+        if( ec && ec->isEditable() )
+        {
+            QAction *editAction = new QAction( KIcon("media-track-edit-amarok"),
+                                               i18n("Edit Track Details"), this );
+            connect( editAction, SIGNAL(triggered()), SLOT(editTrack()) );
+            m_customActions << editAction;
+        }
+    }
+
+    if( track->hasCapabilityInterface( Capability::FindInSource ) )
+    {
+        if( !m_findInSourceSignalMapper )
+        {
+            m_findInSourceSignalMapper = new QSignalMapper( this );
+            connect( m_findInSourceSignalMapper, SIGNAL(mapped(QString)), SLOT(findInSource(QString)) );
+        }
+
+        Meta::AlbumPtr album       = track->album();
+        Meta::ArtistPtr artist     = track->artist();
+        Meta::ComposerPtr composer = track->composer();
+        Meta::GenrePtr genre       = track->genre();
+        Meta::YearPtr year         = track->year();
+        QAction *act( 0 );
+
+        if( album && !album->name().isEmpty() )
+        {
+            act = new QAction( KIcon("current-track-amarok"), i18n("Show Album in Media Sources"), this );
+            connect( act, SIGNAL(triggered()), m_findInSourceSignalMapper, SLOT(map()) );
+            m_findInSourceSignalMapper->setMapping( act, QLatin1String("album") );
+            m_customActions << act;
+        }
+        if( artist && !artist->name().isEmpty() )
+        {
+            act = new QAction( KIcon("filename-artist-amarok"), i18n("Show Artist in Media Sources"), this );
+            connect( act, SIGNAL(triggered()), m_findInSourceSignalMapper, SLOT(map()) );
+            m_findInSourceSignalMapper->setMapping( act, QLatin1String("artist") );
+            m_customActions << act;
+
+            KPluginInfo::List services = The::pluginManager()->plugins( QLatin1String("Service") );
+            foreach( const KPluginInfo &service, services )
+            {
+                if( service.pluginName() == QLatin1String("amarok_service_amazonstore") )
+                {
+                    if( service.isPluginEnabled() )
+                    {
+                        act = new QAction( KIcon("view-services-amazon-amarok"),
+                                           i18n("Search for Artist in the MP3 Music Store"), this );
+                        connect( act, SIGNAL(triggered()), this, SLOT(findInStore()) );
+                        m_customActions << act;
+                    }
+                    break;
+                }
+            }
+        }
+        if( composer && !composer->name().isEmpty() && (composer->name() != i18n("Unknown Composer")) )
+        {
+            act = new QAction( KIcon("filename-composer-amarok"), i18n("Show Composer in Media Sources"), this );
+            connect( act, SIGNAL(triggered()), m_findInSourceSignalMapper, SLOT(map()) );
+            m_findInSourceSignalMapper->setMapping( act, QLatin1String("composer") );
+            m_customActions << act;
+        }
+        if( genre && !genre->name().isEmpty() )
+        {
+            act = new QAction( KIcon("filename-genre-amarok"), i18n("Show Genre in Media Sources"), this );
+            connect( act, SIGNAL(triggered()), m_findInSourceSignalMapper, SLOT(map()) );
+            m_findInSourceSignalMapper->setMapping( act, QLatin1String("genre") );
+            m_customActions << act;
+        }
+        if( year && !year->name().isEmpty() )
+        {
+            act = new QAction( KIcon("filename-year-amarok"), i18n("Show Year in Media Sources"), this );
+            connect( act, SIGNAL(triggered()), m_findInSourceSignalMapper, SLOT(map()) );
+            m_findInSourceSignalMapper->setMapping( act, QLatin1String("year") );
+            m_customActions << act;
+        }
+    }
+
+    actions << m_customActions;
+    foreach( QAction* action, actions )
+    {
+        Plasma::IconWidget *icon = addAction( this, action, 24 );
+        icon->setText( QString() );
+        m_actionsLayout->addItem( icon );
+    }
+    PERF_LOG( "Finished actions layout setup" );
+}
+
+void
+CurrentTrack::findInSource( const QString &name )
+{
+    using namespace Capabilities;
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    QScopedPointer<FindInSourceCapability> fis( track->create<FindInSourceCapability>() );
+    if( !fis )
+        return;
+
+    if( name == QLatin1String("album") )
+        fis->findInSource( FindInSourceCapability::Album );
+    else if( name == QLatin1String("artist") )
+        fis->findInSource( FindInSourceCapability::Artist );
+    else if( name == QLatin1String("composer") )
+        fis->findInSource( FindInSourceCapability::Composer );
+    else if( name == QLatin1String("genre") )
+        fis->findInSource( FindInSourceCapability::Genre );
+    else if( name == QLatin1String("year") )
+        fis->findInSource( FindInSourceCapability::Year );
+}
+
+void
+CurrentTrack::findInStore()
+{
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+    AmarokUrl url( "amarok://navigate/internet/MP3%20Music%20Store/?filter=\"" + AmarokUrl::escape( track.data()->artist().data()->name() ) + '\"' );
+    url.run();
+}
+
+void
+CurrentTrack::setView( CurrentTrack::View mode )
+{
+    m_view = mode;
+    m_isStopped = ( mode == CurrentTrack::Stopped );
+    if( m_isStopped )
+    {
+        m_coverKey = 0;
+        m_currentInfo.clear();
+        m_sourceEmblemPath.clear();
+        m_albumCover->setPixmap( Amarok::semiTransparentLogo(m_albumWidth) );
+        m_albumCover->graphicsItem()->setAcceptDrops( false );
+        m_albumCover->graphicsItem()->unsetCursor();
+        clearTrackActions();
+        updateConstraints();
+    }
+    else
+    {
+        m_albumCover->graphicsItem()->setCursor( Qt::PointingHandCursor );
+    }
+
+    m_collectionLabel->setVisible( m_isStopped );
+    m_recentWidget->setVisible( m_isStopped );
+    m_recentHeader->setVisible( m_isStopped );
+
+    m_ratingWidget->setVisible( !m_isStopped );
+    m_byText->setVisible( !m_isStopped );
+    m_onText->setVisible( !m_isStopped );
+    m_title->setVisible( !m_isStopped );
+    m_artist->setVisible( !m_isStopped );
+    m_album->setVisible( !m_isStopped );
+}
+
+#include "CurrentTrack.moc"

@@ -31,8 +31,7 @@
 #include <QList>
 #include <QListWidgetItem>
 #include <QObject>
-#include <QPixmap>
-#include <QPointer>
+#include <QWeakPointer>
 
 class CoverFoundItem;
 class CoverFoundSideBar;
@@ -44,7 +43,6 @@ class KListWidget;
 class KPushButton;
 class QFrame;
 class QGridLayout;
-class QSignalMapper;
 class QTabWidget;
 
 class CoverFoundDialog : public KDialog
@@ -53,14 +51,14 @@ class CoverFoundDialog : public KDialog
 
 public:
     explicit CoverFoundDialog( const CoverFetchUnit::Ptr unit,
-                               const CoverFetch::Metadata data = CoverFetch::Metadata(),
+                               const CoverFetch::Metadata &data = CoverFetch::Metadata(),
                                QWidget *parent = 0 );
     ~CoverFoundDialog();
 
     /**
      * @returns the currently selected cover image
      */
-    const QPixmap image() const { return m_pixmap; }
+    const QImage image() const { return m_image; }
 
     void setQueryPage( int page );
 
@@ -70,8 +68,8 @@ signals:
     void newCustomQuery( Meta::AlbumPtr album, const QString &query, int page );
 
 public slots:
-    void add( const QPixmap &cover,
-              const CoverFetch::Metadata metadata,
+    void add( const QImage &cover,
+              const CoverFetch::Metadata &metadata,
               const CoverFetch::ImageSize imageSize = CoverFetch::NormalSize );
 
 protected:
@@ -85,9 +83,10 @@ private slots:
     void clearQueryButtonClicked();
     void clearView();
     void downloadProgressed( qint64 bytesReceived, qint64 bytesTotal );
+    void fetchRequestRedirected( QNetworkReply *oldReply, QNetworkReply *newReply );
     void handleFetchResult( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
     void insertComboText( const QString &text );
-    void itemSelected();
+    void currentItemChanged( QListWidgetItem *current, QListWidgetItem *previous );
     void itemDoubleClicked( QListWidgetItem *item );
     void itemMenuRequested( const QPoint &pos );
     void processQuery();
@@ -103,7 +102,7 @@ private slots:
 
 private:
     void addToView( CoverFoundItem *item );
-    bool contains( const CoverFoundItem *item ) const;
+    bool contains( const CoverFetch::Metadata &metadata ) const;
     bool fetchBigPix(); ///< returns true if full-size image is fetched successfully
     void sortCoversBySize();
     void updateGui();
@@ -117,15 +116,14 @@ private:
     Meta::AlbumPtr m_album;           //!< Album associated with @ref m_unit;
     QAction *m_sortAction;            //!< Action to sort covers by size
     QList< int > m_sortSizes;         //!< List of sorted cover sizes used for indexing
-    QPixmap m_pixmap;                 //!< Currently selected cover image
+    QImage m_image;                   //!< Currently selected cover image
     QString m_query;                  //!< Cache for the last entered custom query
     bool m_isSorted;                  //!< Are the covers sorted in the view?
     bool m_sortEnabled;               //!< Sort covers by size
     const CoverFetchUnit::Ptr m_unit; //!< Cover fetch unit that initiated this dialog
     int m_queryPage;                  //!< Cache for the page number associated with @ref m_query
     QHash<KUrl, CoverFoundItem*> m_urls; //!< Urls hash for network access manager proxy
-    QPointer<KProgressDialog> m_dialog;  //!< Progress dialog for fetching big pix
-    QSignalMapper *m_errorSignalMapper;
+    QWeakPointer<KProgressDialog> m_dialog;  //!< Progress dialog for fetching big pix
 
     Q_DISABLE_COPY( CoverFoundDialog )
 };
@@ -162,19 +160,19 @@ private:
 class CoverFoundItem : public QListWidgetItem
 {
 public:
-    explicit CoverFoundItem( const QPixmap &cover,
-                             const CoverFetch::Metadata data,
+    explicit CoverFoundItem( const QImage &cover,
+                             const CoverFetch::Metadata &data,
                              const CoverFetch::ImageSize imageSize = CoverFetch::NormalSize,
                              QListWidget *parent = 0 );
     ~CoverFoundItem();
 
     const CoverFetch::Metadata metadata() const { return m_metadata; }
-    const QPixmap bigPix() const { return m_bigPix; }
-    const QPixmap thumb() const { return m_thumb; }
+    const QImage bigPix() const { return m_bigPix; }
+    const QImage thumb() const { return m_thumb; }
 
     bool hasBigPix() const { return !m_bigPix.isNull(); }
 
-    void setBigPix( const QPixmap &pixmap ) { m_bigPix = pixmap; }
+    void setBigPix( const QImage &image ) { m_bigPix = image; }
 
     bool operator==( const CoverFoundItem &other ) const;
     bool operator!=( const CoverFoundItem &other ) const;
@@ -183,8 +181,10 @@ private:
     void setCaption();
 
     CoverFetch::Metadata m_metadata;
-    QPixmap m_thumb;
-    QPixmap m_bigPix;
+    QImage m_thumb;
+    QImage m_bigPix;
+
+    Q_DISABLE_COPY( CoverFoundItem )
 };
 
 #endif /* AMAROK_COVERFOUNDDIALOG_H */

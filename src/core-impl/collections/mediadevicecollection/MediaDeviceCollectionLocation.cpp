@@ -21,7 +21,6 @@
 #include "MediaDeviceCollection.h"
 #include "MediaDeviceHandler.h"
 //#include "MediaDeviceMeta.h"
-#include "../../statusbar/StatusBar.h"
 #include "MediaDeviceCache.h" // for collection refresh hack
 
 #include "dialogs/OrganizeCollectionDialog.h"
@@ -53,7 +52,7 @@ MediaDeviceCollectionLocation::prettyLocation() const
 }
 
 // NOTE: must be overridden by child class if
-// it is writeable
+// it is writable
 bool
 MediaDeviceCollectionLocation::isWritable() const
 {
@@ -68,9 +67,11 @@ MediaDeviceCollectionLocation::remove( const Meta::TrackPtr &track )
 }
 
 void
-MediaDeviceCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, bool removeSources )
+MediaDeviceCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks, bool removeSources,
+                                                      const Transcoding::Configuration &configuration )
 {
     Q_UNUSED( removeSources )
+    Q_UNUSED( configuration )
     if( m_handler->isOrganizable() )
     {
         QStringList folders;
@@ -112,9 +113,11 @@ MediaDeviceCollectionLocation::getKIOCopyableUrls( const Meta::TrackList &tracks
 
 
 void
-MediaDeviceCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources )
+MediaDeviceCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
+                                                     const Transcoding::Configuration &configuration )
 {
     DEBUG_BLOCK
+    Q_UNUSED( configuration )
 
     if( m_handler->isOrganizable() )
         m_handler->setDestinations( m_destinations );

@@ -22,6 +22,8 @@
 #include "core/meta/Meta.h"
 #include "core/playlists/Playlist.h"
 
+// #include "covermanager/CoverCache.h"
+
 #include <KLocale>
 #include <KUrl>
 
@@ -103,7 +105,6 @@ class AMAROK_CORE_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta:
 
         //MetaBase methods
         virtual QString name() const { return m_title; }
-        virtual QString prettyName() const { return m_title; }
 
         //Track Methods
         virtual KUrl playableUrl() const { return m_localUrl.isEmpty() ? m_url : m_localUrl; }
@@ -136,7 +137,7 @@ class AMAROK_CORE_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta:
         virtual void setTrackNumber( int newTrackNumber ) { Q_UNUSED( newTrackNumber ); }
         virtual int discNumber() const { return 0; }
         virtual void setDiscNumber( int newDiscNumber ) { Q_UNUSED( newDiscNumber ); }
-        virtual uint lastPlayed() const { return 0; }
+        virtual QDateTime lastPlayed() const { return QDateTime(); }
         virtual int playCount() const { return 0; }
         virtual QString mimeType() const { return m_mimeType; }
 
@@ -151,6 +152,8 @@ class AMAROK_CORE_EXPORT PodcastEpisode : public PodcastMetaCommon, public Meta:
         virtual bool inCollection() const { return false; }
         virtual QString cachedLyrics() const { return QString(); }
         virtual void setCachedLyrics( const QString &lyrics ) { Q_UNUSED( lyrics ); }
+
+        virtual bool operator==( const Meta::Track &track ) const;
 
         //PodcastMetaCommon methods
         int podcastType() { return EpisodeType; }
@@ -226,11 +229,10 @@ class AMAROK_CORE_EXPORT PodcastChannel : public PodcastMetaCommon, public Playl
         //Playlist virtual methods
         virtual KUrl uidUrl() const { return m_url; }
         virtual QString name() const { return title(); }
-        virtual QString prettyName() const { return title(); }
 
+        virtual int trackCount() const { return m_episodes.count(); }
         virtual Meta::TrackList tracks();
         virtual void addTrack( Meta::TrackPtr track, int position = -1 );
-
         //PodcastMetaCommon methods
         int podcastType() { return ChannelType; }
         //override this since it's ambigous in PodcastMetaCommon and Playlist
@@ -241,14 +243,15 @@ class AMAROK_CORE_EXPORT PodcastChannel : public PodcastMetaCommon, public Playl
         virtual KUrl webLink() const { return m_webLink; }
         virtual bool hasImage() const { return !m_image.isNull(); }
         virtual KUrl imageUrl() const { return m_imageUrl; }
-        virtual QPixmap image() const { return m_image; }
+        virtual QImage image() const { return m_image; }
         virtual QString copyright() { return m_copyright; }
         virtual QStringList labels() const { return m_labels; }
         virtual QDate subscribeDate() const { return m_subscribeDate; }
 
         virtual void setUrl( const KUrl &url ) { m_url = url; }
         virtual void setWebLink( const KUrl &link ) { m_webLink = link; }
-        virtual void setImage( const QPixmap &image ) { m_image = image; }
+        // TODO: inform all albums with this channel of the changed image
+        virtual void setImage( const QImage &image ) { m_image = image; }
         virtual void setImageUrl( const KUrl &imageUrl ) { m_imageUrl = imageUrl; }
         virtual void setCopyright( const QString &copyright ) { m_copyright = copyright; }
         virtual void setLabels( const QStringList &labels ) { m_labels = labels; }
@@ -280,7 +283,7 @@ class AMAROK_CORE_EXPORT PodcastChannel : public PodcastMetaCommon, public Playl
     protected:
         KUrl m_url;
         KUrl m_webLink;
-        QPixmap m_image;
+        QImage m_image;
         KUrl m_imageUrl;
         QStringList m_labels;
         QDate m_subscribeDate;
@@ -290,7 +293,6 @@ class AMAROK_CORE_EXPORT PodcastChannel : public PodcastMetaCommon, public Playl
         PodcastChannel::FetchType m_fetchType; //'download when available' or 'stream or download on demand'
         bool m_purge; //remove old episodes?
         int m_purgeCount; //how many episodes do we keep on disk?
-
         PodcastEpisodeList m_episodes;
 };
 
@@ -323,11 +325,6 @@ public:
         return author;
     }
 
-    QString prettyName() const
-    {
-        return name();
-    }
-
     bool operator==( const Meta::Artist &other ) const
     {
         return name() == other.name();
@@ -343,6 +340,15 @@ public:
         : Meta::Album()
         , episode( episode )
     {}
+
+    /* Its all a little bit stupid.
+       When the cannel image (and also the album image) changes the album get's no indication.
+       Also the CoverCache is not in amarokcorelib but in amaroklib.
+       Why the PodcastAlbum is the only one with a concrete implementation in amarokcorelib is another question.
+
+       virtual ~PodcastAlbum()
+       { CoverCache::invalidateAlbum( Meta::AlbumPtr(this) ); }
+    */
 
     bool isCompilation() const
     {
@@ -375,14 +381,10 @@ public:
             return QString();
     }
 
-    QString prettyName() const
+    QImage image( int size ) const
     {
-        return name();
-    }
-
-    QPixmap image( int size )
-    {
-        QPixmap image = episode->channel()->image();
+        // This is a little stupid. If Channel::setImage is called we don't emit a MetaDataChanged or invalidate the cache
+        QImage image = episode->channel()->image();
         return image.scaledToHeight( size );
     }
 
@@ -411,11 +413,6 @@ public:
     {
         const QString genreName = i18n( "Podcast" );
         return genreName;
-    }
-
-    QString prettyName() const
-    {
-        return name();
     }
 
     bool operator==( const Meta::Genre &other ) const
@@ -451,11 +448,6 @@ public:
 
      }
 
-    QString prettyName() const
-    {
-        return name();
-    }
-
     bool operator==( const Meta::Composer &other ) const
     {
         return name() == other.name();
@@ -486,11 +478,6 @@ public:
         }
         else
             return QString();
-    }
-
-    QString prettyName() const
-    {
-        return name();
     }
 
     bool operator==( const Meta::Year &other ) const

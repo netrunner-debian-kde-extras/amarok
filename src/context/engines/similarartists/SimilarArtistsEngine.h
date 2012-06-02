@@ -19,13 +19,10 @@
 #ifndef SIMILARARTISTSENGINE_H
 #define SIMILARARTISTSENGINE_H
 
-#include "src/context/ContextObserver.h"
-#include "src/context/DataEngine.h"
-#include "core/meta/Meta.h"
 #include "NetworkAccessManagerProxy.h"
-#include "src/context/applets/similarartists/SimilarArtist.h"
-
-#include <QLocale>
+#include "context/DataEngine.h"
+#include "context/applets/similarartists/SimilarArtist.h"
+#include "core/meta/Meta.h"
 
 using namespace Context;
 
@@ -33,49 +30,26 @@ using namespace Context;
  *  This class provide SimilarArtists data for use in the SimilarArtists context applet.
  *  It gets its information from the API lastfm.
  */
-class SimilarArtistsEngine : public DataEngine, public ContextObserver, Meta::Observer
+class SimilarArtistsEngine : public DataEngine
 {
     Q_OBJECT
-    Q_PROPERTY( QString selectionType READ selection WRITE setSelection )
+    Q_PROPERTY( int maximumArtists READ maximumArtists WRITE setMaximumArtists )
+    Q_PROPERTY( QString artist READ artist WRITE setArtist )
 
 public:
 
     /**
      * Construct the engine
-     * @param parent The object parent to this engine     
+     * @param parent The object parent to this engine
      */
     SimilarArtistsEngine( QObject *parent, const QList<QVariant> &args );
+
+    virtual void init();
 
     /**
      * Destroy the dataEngine
      */
     virtual ~SimilarArtistsEngine();
-
-    QStringList sources() const;
-
-    // reimplemented from Context::Observer
-    virtual void message( const ContextState &state );
-
-    // reimplemented from Meta::Observer
-    using Observer::metadataChanged;
-    
-    void metadataChanged( Meta::TrackPtr track );
-
-    void setSelection( const QString &selection )
-    {
-        m_currentSelection = selection;
-    }
-    QString selection()
-    {
-        return m_currentSelection;
-    }
-
-    /**
-    * Fetches the similar artists for an artist thanks to the LastFm WebService
-    * @param artistName the name of the artist
-    * @return a map with the names of the artists with their match rate
-    */
-    QMap<int, QString> similarArtists( const QString &artistName );
 
     /**
      * Fetches the similar artists for an artist thanks to the LastFM WebService
@@ -84,83 +58,29 @@ public:
      */
     void similarArtistsRequest( const QString &artistName );
 
+    /**
+     * The maximum number of similar artists
+     * @return number of similar artists
+     */
+    int maximumArtists() const;
+
+    /**
+     * Set the maximum number of similar artists
+     * @param number The maximum number of similar artists
+     */
+    void setMaximumArtists( int number );
+
+    QString artist() const;
+    void setArtist( const QString &name );
 
 protected:
     bool sourceRequestEvent( const QString &name );
 
 private:
-    QString descriptionLocale() const;
-
-    QLocale m_descriptionLang;
-    QString m_descriptionWideLang;
-
-    /**
-     * Prepare the calling of the similarArtistsRequest method.
-     * Launch when the track played on amarok has changed.
-     */
-    void update();
-
-    /**
-     * Fetches the description of the artist artistName on the LastFM API.
-     * @param artistName the name of the artist
-     */
-    void artistDescriptionRequest( const QString &artistName );
-
-    /**
-     * Fetches the the most known artist track of the artist artistName on the LastFM API
-     * @param artistName the name of the artist
-     */
-    void artistTopTrackRequest( const QString &artistName );
-
     /**
      * The max number of similar artists to get
      */
     int m_maxArtists;
-
-    /**
-     * The number of artists description fetched
-     */
-    int m_descriptionArtists;
-
-    /**
-     * The number of top tracks fetched
-     */
-    int m_topTrackArtists;
-
-    /**
-     * The job for download the data from the lastFm API
-     */
-    KUrl m_similarArtistsUrl;
-
-    /**
-     * The list of jobs that fetch the artists description on the lastFM API
-     */
-    QSet<KUrl> m_artistDescriptionUrls;
-
-    /**
-     * The list of jobs that fetch the most known artists tracks on the lastFM API
-     */
-    QSet<KUrl> m_artistTopTrackUrls;
-
-    /**
-     * The current track played on amarok
-     */
-    Meta::TrackPtr m_currentTrack;
-
-    QString m_currentSelection;
-
-    /**
-     * Is true, if someone is asking for data
-     */
-    bool m_requested;
-    
-    QStringList m_sources;
-    short m_triedRefinedSearch;
-
-    /**
-     * The list of similar artists fetched on the last fm API
-     */
-    QList<SimilarArtist> m_similarArtists;
 
     /**
      * The artist, whose research is similar artists.
@@ -168,27 +88,20 @@ private:
     QString m_artist;
 
 private slots:
+    /**
+     * Update similar artists for the current playing track.
+     * Launch when the track played on amarok has changed.
+     * @param force force update to take place.
+     */
+    bool update( bool force = false );
+
+    bool update( const QString &name );
 
     /**
      * Parse the xml fetched on the lastFM API.
      * Launched when the download of the data are finished.
      */
     void parseSimilarArtists( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-
-    /**
-     * Parse the xml fetched on the lastFM API for the similarArtist description.
-     * Launched when the download of the data are finished and for each similarArtists.
-     */
-    void parseArtistDescription( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-
-    /**
-     * Parse the xml fetched on the lastFM API for the similarArtist most known track.
-     * Launched when the download of the data are finished and for each similarArtists.
-     */
-    void parseArtistTopTrack( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
-
 };
 
 #endif // SIMILARARTISTSENGINE_H
-
-

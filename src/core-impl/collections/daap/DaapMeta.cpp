@@ -18,6 +18,8 @@
 
 #include "DaapCollection.h"
 
+#include <Solid/Networking>
+
 using namespace Meta;
 
 DaapTrack::DaapTrack( Collections::DaapCollection *collection, const QString &host, quint16 port, const QString &dbId, const QString &itemId, const QString &format)
@@ -52,12 +54,6 @@ DaapTrack::name() const
     return m_name;
 }
 
-QString
-DaapTrack::prettyName() const
-{
-    return m_name;
-}
-
 KUrl
 DaapTrack::playableUrl() const
 {
@@ -81,6 +77,10 @@ DaapTrack::prettyUrl() const
 bool
 DaapTrack::isPlayable() const
 {
+    //daap tracks are accessed over the network, so check if network connectivity is present
+    if( Solid::Networking::status() != Solid::Networking::Connected )
+        return false;
+
     return true;
 }
 
@@ -145,7 +145,7 @@ DaapTrack::setGenre( const QString &newGenre )
 }
 
 void
-DaapTrack::setYear( const QString &newYear )
+DaapTrack::setYear( int newYear )
 {
     Q_UNUSED( newYear )
 }
@@ -251,12 +251,6 @@ DaapTrack::playCount() const
     return 0;
 }
 
-uint
-DaapTrack::lastPlayed() const
-{
-    return 0;
-}
-
 QString
 DaapTrack::type() const
 {
@@ -350,12 +344,6 @@ DaapArtist::name() const
     return m_name;
 }
 
-QString
-DaapArtist::prettyName() const
-{
-    return m_name;
-}
-
 TrackList
 DaapArtist::tracks()
 {
@@ -396,12 +384,6 @@ DaapAlbum::name() const
     return m_name;
 }
 
-QString
-DaapAlbum::prettyName() const
-{
-    return m_name;
-}
-
 bool
 DaapAlbum::isCompilation() const
 {
@@ -424,25 +406,6 @@ TrackList
 DaapAlbum::tracks()
 {
     return m_tracks;
-}
-
-QPixmap
-DaapAlbum::image( int size )
-{
-    return Meta::Album::image( size );
-}
-
-bool
-DaapAlbum::canUpdateImage() const
-{
-    return false;
-}
-
-void
-DaapAlbum::setImage( const QPixmap &pixmap )
-{
-    Q_UNUSED(pixmap);
-    //TODO
 }
 
 void
@@ -484,12 +447,6 @@ DaapGenre::name() const
     return m_name;
 }
 
-QString
-DaapGenre::prettyName() const
-{
-    return m_name;
-}
-
 TrackList
 DaapGenre::tracks()
 {
@@ -523,12 +480,6 @@ DaapComposer::name() const
     return m_name;
 }
 
-QString
-DaapComposer::prettyName() const
-{
-    return m_name;
-}
-
 TrackList
 DaapComposer::tracks()
 {
@@ -558,12 +509,6 @@ DaapYear::~DaapYear()
 
 QString
 DaapYear::name() const
-{
-    return m_name;
-}
-
-QString
-DaapYear::prettyName() const
 {
     return m_name;
 }

@@ -56,7 +56,7 @@ public:
     virtual bool containsTrack( const Meta::TrackPtr track ) const;
     virtual int currentSearchFields();
     virtual QString currentSearchTerm();
-    virtual bool exportPlaylist( const QString &path ) const;
+    virtual bool exportPlaylist( const QString &path, bool relative = false ) const;
     virtual void filterUpdated();
     virtual int find( const QString &searchTerm, int searchFields );
     virtual int findNext( const QString &searchTerm, int selectedRow, int searchFields );
@@ -69,8 +69,8 @@ public:
     virtual void setActiveId( const quint64 id );
     virtual void setActiveRow( int row );
     virtual void setAllUnplayed();
-    virtual void setRowQueued( int row );
-    virtual void setRowDequeued( int row );
+    virtual void emitQueueChanged();
+    virtual int queuePositionOfRow( int row );
     virtual void showOnlyMatches( bool onlyMatches );
     virtual Item::State stateOfId( quint64 id ) const;
     virtual Item::State stateOfRow( int row ) const;

@@ -31,14 +31,16 @@
 
 Playlist::TrackNavigator::TrackNavigator()
 {
-    m_model = Playlist::ModelStack::instance()->top();
+    m_model = The::playlist();
 
     // Connect to the QAbstractItemModel signals of the source model.
     //   Ignore SIGNAL dataChanged: we don't need to know when a playlist item changes.
     //   Ignore SIGNAL layoutChanged: we don't need to know when rows are moved around.
     connect( m_model->qaim(), SIGNAL( modelReset() ), this, SLOT( slotModelReset() ) );
+    connect( Playlist::ModelStack::instance()->bottom(),
+             SIGNAL( rowsAboutToBeRemoved( QModelIndex, int, int ) ),
+             SLOT( slotRowsAboutToBeRemoved( QModelIndex, int, int ) ) );
     //   Ignore SIGNAL rowsInserted.
-    connect( m_model->qaim(), SIGNAL( rowsAboutToBeRemoved( const QModelIndex&, int, int ) ), this, SLOT( slotRowsAboutToBeRemoved( const QModelIndex&, int, int ) ) );
 }
 
 void
@@ -52,9 +54,11 @@ Playlist::TrackNavigator::queueId( const quint64 id )
 void
 Playlist::TrackNavigator::queueIds( const QList<quint64> &ids )
 {
+    Meta::TrackPtr track;
     foreach( quint64 id, ids )
     {
-        if( !m_queue.contains( id ) )
+        track = m_model->trackForId( id );
+        if( !m_queue.contains( id ) && track->isPlayable() )
             m_queue.enqueue( id );
     }
 }
@@ -63,6 +67,30 @@ void
 Playlist::TrackNavigator::dequeueId( const quint64 id )
 {
     m_queue.removeAll( id );
+}
+
+bool
+Playlist::TrackNavigator::queueMoveUp( const quint64 id )
+{
+    const int idx = m_queue.indexOf( id );
+    if ( idx < 1 )
+        return false;
+    quint64 temp = m_queue[ idx - 1 ];
+    m_queue[ idx - 1 ] = m_queue[ idx ];
+    m_queue[ idx ] = temp;
+    return true;
+}
+
+bool
+Playlist::TrackNavigator::queueMoveDown( const quint64 id )
+{
+    const int idx = m_queue.indexOf( id );
+    if ( idx == -1 || idx == m_queue.count() - 1 )
+        return false;
+    quint64 temp = m_queue[ idx + 1 ];
+    m_queue[ idx + 1 ] = m_queue[ idx ];
+    m_queue[ idx ] = temp;
+    return true;
 }
 
 int
@@ -83,15 +111,16 @@ Playlist::TrackNavigator::slotModelReset()
     m_queue.clear();    // We should check 'm_model's new contents, but this is unlikely to bother anyone.
 }
 
-// This function can get called thousands of times during a single FilterProxy change.
-// Be very efficient here! (e.g. no DEBUG_BLOCK)
 void
-Playlist::TrackNavigator::slotRowsAboutToBeRemoved( const QModelIndex& parent, int startRow, int endRow )
+Playlist::TrackNavigator::slotRowsAboutToBeRemoved(const QModelIndex& parent, int start, int end)
 {
     Q_UNUSED( parent );
 
-    for (int row = startRow; row <= endRow; row++)
-        dequeueId( m_model->idAt( row ) );
+    for ( int row = start; row <= end; ++row )
+    {
+        const quint64 itemId = Playlist::ModelStack::instance()->bottom()->idAt( row );
+        m_queue.removeAll( itemId );
+    }
 }
 
 quint64

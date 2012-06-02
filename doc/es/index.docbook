@@ -6,13 +6,13 @@
 <book lang="&language;">
 <bookinfo>
 <title
->El manual de Amarok</title>
+>El manual de &amarok;</title>
 <authorgroup>
 <author>
 <personname
 ><firstname
->Esta documentación se convirtió desde KDE UserBase, página de <ulink url=" http://userbase.kde.org/Amarok"
->Amarok</ulink
+>Esta documentación se convirtió desde &kde; UserBase, página de <ulink url=" http://userbase.kde.org/Amarok"
+>&amarok;</ulink
 ></firstname
 > <surname
 ></surname
@@ -65,16 +65,15 @@
 <legalnotice
 >&FDLNotice;</legalnotice>
 <date
->2010-08-04</date>
+>2011-05-31</date>
     <releaseinfo
->&kde; SC 4.5</releaseinfo>
+>&kde; SC 4.6</releaseinfo>
 <abstract>
- <para
->Amarok es un reproductor de música para Linux, libre, versatil y potente. La últimas series 2.x, a las que se refiere con frecuencia como <quote
->Amarok&nbsp;2</quote
->, es multi-plataforma (puede usarse en muchas plataformas, incluidas Linux, MacOS y Microsft Windows) e implementa un código base completamente reformado, que le permitirá incorporar nuevas y características cuando la versión madure. La versión estable actual es la 2.3.</para>
-</abstract>
-
+<para
+>&amarok; es un reproductor de música para &Linux;, libre, versatil y potente. La últimas series 2.x, a las que se refiere con frecuencia como <quote
+>&amarok;&nbsp;2</quote
+>, es multiplataforma (puede usarse en muchas plataformas, incluidas Linux, MacOS y &Microsoft; &Windows;) e implementa un código base completamente reformado, que le permitirá incorporar nuevas y características cuando la versión madure. La versión estable actual es la 2.4.</para>
+    </abstract>
 <keywordset>
  <keyword
 >KDE</keyword>
@@ -97,116 +96,132 @@
 </keywordset>
 </bookinfo>
 <!--userbase <timestamp
->2010-08-04T20:37:13Z</timestamp
+>2011-05-22T05:48:00Z</timestamp
 >-->
 
 <!--userbase-content-->
 <chapter id="interface"
 ><title
->Interfaz</title>
+>Interfaz</title
+> 
 <para
->Amarok&nbsp;2 muestra por omisión una interfaz de tres paneles. </para>
-
-<sect1 id="the-left-pane"
+>&amarok; muestra por omisión una interfaz de tres paneles. </para>
+<sect1 id="the-left-pane-media-sources"
 ><title
->El panel izquierdo</title>
+>El panel izquierdo (Orígenes de medios)</title
+> 
 <para>
 <screenshot>
 <screeninfo
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1left.png" format="PNG"/>
+      <imagedata fileref="Amarokmediasources-home.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
-><quote
->A la izquierda, tenemos...</quote
 ></phrase>
     </textobject>
   </mediaobject>
 </screenshot>
 </para>
 <para
->El panel izquierdo dispone de pestañas y es retráctil. La primera pestaña es el <guilabel
->navegador de colección</guilabel
->, que es la interfaz primaria a su colección local. También se muestran aquí los dispositivos conectados. Hay una pestaña para todos los <guilabel
->servicios de Internet</guilabel
+>El panel <emphasis
+>Orígenes de medios</emphasis
+> de la izquierda es el lugar donde usted accede a su colección local así como a otros servicios: <guilabel
+>Música local</guilabel
+> en la parte superior, que es la interfaz primaria a su colección local y a los dispositivos conectados como reproductores de mp3 y &CD;. Hay una sección para todos los <guilabel
+>Servicios de Internet</guilabel
 > que usted tiene activados. Aquí, usted puede ver listas de emisoras de radio y podcast; escucharlas y suscribirse a ellas, interactuar con su cuenta <ulink url="http://www.last.fm"
 >last.fm</ulink
->, adquirir música desde tiendas en Internet como Magnatune y descargar música de artistas independientes desde Jamendo y mas. La pestaña <guilabel
+>, adquirir música desde tiendas en Internet como <guilabel
+>Magnatune</guilabel
+> y descargar música de artistas independientes desde <guilabel
+>Jamendo</guilabel
+> y mas. La pestaña <guilabel
 >Lista de reproducción</guilabel
-> le permite crear y manejar listas de reproducción dinámicas y tradicionales y podcast. Por último, la pestaña <guilabel
+> le permite crear y gestionar <emphasis
+>listas de reproducción dinámicas</emphasis
+>, acceder a sus <emphasis
+>Listas de reproducción almacenadas</emphasis
+> así como al <emphasis
+>Generador automático de listas de reproducción</emphasis
+>.La sección <guilabel
 >Archivos</guilabel
-> muestra un navegador de archivos integrado. </para>
+> muestra un navegador de archivos integrado y la sección <guilabel
+> Podcasts</guilabel
+> le permite acceder a sus suscripciones a podcasts. </para>
 </sect1>
-
 <sect1 id="the-central-pane-context-view"
 ><title
->El panel central (Vista de contexto)</title>
+>El panel central (Vista de contexto)</title
+> 
 <para>
 <screenshot>
 <screeninfo
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1center.png" format="PNG"/>
+      <imagedata fileref="Amarok-context.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
-><quote
->En el medio...</quote
 ></phrase>
     </textobject>
   </mediaobject>
 </screenshot>
 </para>
 <para
->Aquí es donde está la acción. El panel contiene mini-aplicaciones que cambian dinámicamente para mostrar información contextual sobre la canción que se está reproduciendo. Usted puede ver la clasificación, puntuación y contador de reproducciones de la canción que se está reproduciendo, otras canciones del mismo artista que usted tiene, la letra de la canción, la página de  <ulink url="http://www.wikipedia.org"
->Wikipedia</ulink
-> del artista y mas. Esas mini-aplicaciones se pueden añadir, eliminar o reorganizar utilizando la <guilabel
->barra de mini-aplicaciones</guilabel
+>Aquí es donde se muestra toda la información. El panel contiene tres miniaplicaciones que cambian dinámicamente para mostrar información contextual sobre la canción que se está reproduciendo. Usted puede ver la valoración, puntuación y contador de reproducciones de la <emphasis
+>pista actual</emphasis
+> o de la última pista reproducida si no se está reproduciendo ninguna, la <emphasis
+>letra</emphasis
+> de la canción, la página de la <emphasis
+><ulink url="http://www.wikipedia.org"
+>Wikipedia </ulink
+></emphasis
+> del artista. Se pueden añadir mas miniaplicaciones, eliminar o reorganizar utilizando la <emphasis
+>barra de miniaplicaciones</emphasis
 > de la parte inferior del panel. </para>
 </sect1>
-
 <sect1 id="the-right-pane-playlist-view"
 ><title
->El panel derecho (vista de lista de reproducción)</title>
+>El panel derecho (vista de lista de reproducción)</title
+> 
 <para>
 <screenshot>
 <screeninfo
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1right.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1right.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
-><quote
->Y a la derecha...</quote
 ></phrase>
     </textobject>
   </mediaobject>
 </screenshot>
 </para>
 <para
->Amarok&nbsp;2 dispone de la lista de reproducción mas configurable de cualquier reproductor de música que exista. Mientras que la mayor parte ofrecen un esquema predeterminado de columnas y quizás unos pocos otros vistas fijas de la lista de reproducción, Amarok&nbsp;2 pone el poder en sus manos para formar la lista de reproducción en cualquier modo en el que usted quiera que encaje. Para empezar bien, aquí hay tres ejemplos de esquemas de lista de reproducción que usted pueda utilizar como puntos de inicio para crear el esquema que se ajuste mejor con su flujo. </para>
+>&amarok; dispone de la lista de reproducción mas configurable de cualquier reproductor de música que exista. Pone el poder en sus manos para formar la lista de reproducción en cualquier modo en el que usted quiera que encaje. Para comenzar, hay tres esquemas preconfigurados de listas de reproducción que usted puede usar como puntos de inicio para crear el esquema que mejor se ajuste a su modo de trabajo. Usted puede generar dinámicamente listas de reproducción con varios sesgos o utilizar el generador automático de listas de reproducción, barajar, reproducir al azar o repetir, encolar pistas y guardar las listas de reproducción existentes para su uso posterior. </para>
 </sect1>
-
 </chapter>
 <chapter id="features"
 ><title
->Características</title>
-<sect1 id="plays-music"
+>Características</title
+> 
+<sect1 id="music-playback"
 ><title
->Reproduce música</title>
+>Reproducción de música</title
+> 
 <para>
 <screenshot>
 <screeninfo
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1svn965006.png" format="PNG"/>
+      <imagedata fileref="Amarokfull.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -216,18 +231,19 @@
 </screenshot>
 </para>
 <para
->Amarok&nbsp;2 puede admitir los formatos mas populares de archivos de música. La lista de formatos real depende de los codec y motores de audio que se usen en su sistema. También admite lists de reproducción tradicionales &mdash; que usted crea, guarda y carga todas las listas de reproducción que usted quiera. </para>
+>&amarok; puede admitir los formatos mas populares de archivos de música. La lista de formatos real depende de los codecs y motores de audio que se usen en su sistema. También admite listas de reproducción tradicionales &mdash; que usted crea, guarda y carga todas las listas de reproducción que usted quiera. </para>
 </sect1>
 <sect1 id="device-support"
 ><title
->Reconocimiento de dispositivos</title>
+>Reconocimiento de dispositivos</title
+> 
 <para>
 <screenshot>
 <screeninfo
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1ipod.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1ipod.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -237,22 +253,34 @@
 </screenshot>
 </para>
 <para
->En la actualidad, el reconocimiento básico de dispositivos iPod, MTP and UMS está activado si los paquetes necesarios están instalados. Esto se mejorará y se reconocerán mas dispositivos en futuras versiones. </para>
+>&amarok; reconoce una gran variedad de dispositivos de medios como <guilabel
+>iPods</guilabel
+>, <ulink url="http://en.wikipedia.org/wiki/Media_Transfer_Protocol"
+><guilabel
+>MTP</guilabel
+></ulink
+>u dispositivos <ulink url="http://en.wikipedia.org/wiki/USB_mass_storage_device_class"
+><guilabel
+>UMS</guilabel
+></ulink
+>. </para>
+ 
 <para
 >El botón <guilabel
->Conmutar modo de vista unificada</guilabel
-> en la parte superior de la colección le permite unificar colecciones. Esto significa que las canciones de su colección local, CD de audio, reproductores MP3, etc. se mostrarán en una colección unificada. </para>
+>Mezclar vista</guilabel
+> en la parte superior de la colección le permite mezclar colecciones. Esto significa que las canciones de su colección local, &CD; de audio, reproductores mp3, etc. se mostrarán en una colección unificada. Es un conmutador por lo que usted puede revertir fácilmente para mostrar las fuentes separadas. </para>
 </sect1>
 <sect1 id="configurable-context-view"
 ><title
->Vista de contexto configurable</title>
+>Vista de contexto configurable</title
+> 
 <para>
 <screenshot>
 <screeninfo
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1contextviewconfig.png" format="PNG"/>
+      <imagedata fileref="Context-applets-amarok.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -262,74 +290,82 @@
 </screenshot>
 </para>
 <para
->La <guilabel
->Vista de contexto</guilabel
->, la pieza central en Amarok&nbsp;2, puede recuperar automáticamente la información contextual sobre la canción que se está reproduciendo (tal como carátula del álbum, letra o información de la <ulink url="http://www.wikipedia.org"
+>La <emphasis
+>Vista de contexto</emphasis
+>, la pieza central en &amarok; puede obtener automáticamente la información contextual sobre la canción que se está reproduciendo (tal como carátula del álbum, letra o información de la <ulink url="http://www.wikipedia.org"
 >Wikipedia</ulink
->)de Internet y mostrarla. Esta es una de las características únicas de las series Amarok. </para>
+>) desde Internet y mostrarla. Esta es una de las características únicas de las series &amarok;. </para>
 </sect1>
-
-
 <sect1 id="more-internet-services"
 ><title
->Mas servicios de internet</title>
+>Mas servicios de Internet</title
+> 
 <para>
 <screenshot>
 <screeninfo
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1internetservices.png" format="PNG"/>
+      <imagedata fileref="Amarok_-_internet_services.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
-><quote
->Algunos servicios de Internet mostrados en el panel izquierdo</quote
 ></phrase>
     </textobject>
   </mediaobject>
 </screenshot>
 </para>
 <para
->Amarok&nbsp;2 abre la pasarela a una rica experiencia multimedia en Internet. </para>
+>&amarok; abre la pasarela a una rica experiencia multimedia en Internet. </para>
 <itemizedlist>
 <listitem
 ><para
->Implementa interfaces a servicios como servidores de música Ampache y mp3tunes, le permite escuchar su música desde cualquier lugar del mundo. </para
+>Implementa interfaces a servicios como <emphasis
+>servidores de música Ampache</emphasis
+> y <emphasis
+>mp3tunes</emphasis
+>, le permite escuchar su música desde cualquier lugar del mundo. </para
 ></listitem>
 <listitem
 ><para
->Usted puede probar y comprar música desde Magnatune. </para
+>Usted puede probar y comprar música desde <guilabel
+>Magnatune</guilabel
+>. </para
 ></listitem>
 <listitem
 ><para
->Usando el servicio Jamendo, usted puede escuchar y descargar música de artistas independientes a los que puede apoyar con sus donaciones. </para
+>Usando el servicio <guilabel
+>Jamendo</guilabel
+>, usted puede escuchar y descargar música de artistas independientes a los que puede apoyar con sus donaciones. </para
 ></listitem>
 <listitem
 ><para
 >Con la característica integrada <ulink url="http://www.last.fm"
 >last.fm</ulink
->, usted puede garabatear sus pistas, el uso de <ulink url="http://www.last.fm"
+>, usted puede <emphasis
+>garabatear</emphasis
+> sus pistas, el uso de <ulink url="http://www.last.fm"
 >last.fm</ulink
-> proporciona características como estadísticas, diagramas y escucha de emisiones de radio personalizadas a su gusto musical &mdash; todo desde Amarok&nbsp;2. </para
+> proporciona características como estadísticas, diagramas y los suscriptores pueden escucha de emisiones de radio personalizadas a su gusto musical &mdash; todo desde &amarok;. </para
 ></listitem>
 </itemizedlist>
+ 
 <para
->Y esto es solo el principio &mdash; usted puede incluso añadir mas servicios de Internet utilizando el <guilabel
+>Y, esto es solo el principio &mdash; usted puede incluso añadir mas servicios de Internet utilizando el <guilabel
 >Gestor de guiones</guilabel
 >. </para>
 </sect1>
-
 <sect1 id="script-manager"
 ><title
->Gestor de guiones</title>
+>Gestor de guiones</title
+> 
 <para>
 <screenshot>
 <screeninfo
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1scriptmanager.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1scriptmanager.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -339,22 +375,23 @@
 </screenshot>
 </para>
 <para
->Los guiones son añadidos que permiten ampliar la funcionalidad de Amarok&nbsp;2 de forma innovadora. Usando el <guilabel
+>Los guiones son añadidos que permiten ampliar la funcionalidad de &amarok;&rsquo; de forma innovadora. Usando el <guilabel
 >Gestor de guiones</guilabel
->, usted puede manejar estos guiones de forma que le permita instalar/eliminar o activar/desactivar guiones que usted ya disponga. Usted también puede usar la característica <guilabel
+>, usted puede gestionar estos guiones de forma que le permita instalar/eliminar o activar/desactivar guiones que usted ya disponga. Usted también puede usar la característica <guilabel
 >Obtener mas guiones</guilabel
 > para descargar nuevos guiones presentados por otros usuarios. </para>
 </sect1>
 <sect1 id="cover-manager"
 ><title
->Gestor de carátulas</title>
+>Gestor de carátulas</title
+> 
 <para>
 <screenshot>
 <screeninfo
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1covermanager.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1covermanager.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -364,18 +401,21 @@
 </screenshot>
 </para>
 <para
->Usted puede navegar a través de su colección de música empleando el elegante gestor de carátulas que muestra la portada del álbum. </para>
+>Usted puede navegar a través de su colección de música empleando el elegante <guilabel
+>Gestor de carátulas</guilabel
+> que muestra la portada del álbum, descarga carátulas desde varias fuentes y permite a &amarok; comprobar automáticamente las carátulas en Internet. </para>
 </sect1>
 <sect1 id="rating-and-scoring"
 ><title
->Clasificación y puntuación</title>
+>Clasificación y puntuación</title
+> 
 <para>
 <screenshot>
 <screeninfo
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1rating.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1rating.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -385,20 +425,19 @@
 </screenshot>
 </para>
 <para
->Usted puede mostrar sus gustos sobre las canciones puntuándolas. Amarok&nbsp;2 implementa también puntuaciones &frac12;&sdot;&#10025;. Además Amarok&nbsp;2 puede calcular una puntuación (una clase de clasificación adivinada) en función de métricas tales como la frecuencia con que la escucha o la salta. </para>
+>Usted puede mostrar sus gustos sobre las canciones puntuándolas. &amarok; implementa también puntuaciones &frac12;&sdot;&#10025;. Además, &amarok; puede calcular una puntuación (un tipo de medida adivinada) en función de métricas tales como la frecuencia con que la escucha o la salta. </para>
 </sect1>
 <sect1 id="pop-up-dropper"
 ><title
->Olivier Bédard (hospedaje del sitio web) <email
->paleo@pwsp.net</email
->.</title>
+>Gotero emergente</title
+> 
 <para>
 <screenshot>
 <screeninfo
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1popup.png" format="PNG"/>
+      <imagedata fileref="Pud-amarok.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -408,22 +447,23 @@
 </screenshot>
 </para>
 <para
->Esta es una interfaz innovadora que proporciona opciones de contexto (como las que se ven en el <guilabel
->menú pulsar-derecho</guilabel
+>Esta es una interfaz innovadora que proporciona opciones de contexto (como las que se ven en el <emphasis
+>menú pulsar-derecho</emphasis
 >) en el que usted puede <quote
 >soltar</quote
-> soltar una canción. ¡Escoja una canción y vea si aparece en el panel de vista de contexto! </para>
+> una canción. ¡Capture una canción y vea si el gotero emergente aparece en el panel de vista de contexto! </para>
 </sect1>
 <sect1 id="configurable-playlist-view"
 ><title
->Vista de lista de reproducción configurable</title>
+>Vista de lista de reproducción configurable</title
+> 
 <para>
 <screenshot>
 <screeninfo
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1pleditor.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1pleditor.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -435,58 +475,61 @@
 <para
 >La lista de reproducción cargada en la actualidad es altamente configurable y puede mostrar información sobre las canciones en la forma que usted quiera. Si usted está acostumbrado a la <guilabel
 >Vista de hoja de cálculo</guilabel
-> que se encontraba en las series Amarok&nbsp;1.x y en otros reproductores de música, ¡usted puede tenerla también! La <guilabel
+> que se encontraba en las series &amarok;&nbsp;1.x y en otros reproductores de música, ¡usted puede tenerla también! La <guilabel
 >Vista de lista de reproducción</guilabel
 > también le permite guardar y exportar la lista de reproducción actual. </para>
 </sect1>
-
-
 <sect1 id="dynamic-playlists"
 ><title
->Listas de reproducción dinámicas</title>
+>Listas de reproducción dinámicas</title
+> 
 <para>
 <screenshot>
 <screeninfo
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="Amarok2.1dynamicplaylist.png" format="PNG"/>
+      <imagedata fileref="Amarok2_1dynamicplaylist.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
-><quote
->Un poco de esto, un poco de aquello&hellip;</quote
 ></phrase>
     </textobject>
   </mediaobject>
 </screenshot>
 </para>
 <para
->Amarok&nbsp;2 le permite crear listas de reproducción aleatorias ponderadas que se ajustan a varios criterios exactamente (<emphasis
->Tendencia proporcional</emphasis
->) o aproximadamente (<emphasis
->Tendencia difusa</emphasis
->). Por ejemplo, ¡usted puede crear una lista que será alimentada aleatoriamente por canciones que puntuaron mas de 3 estrellas y que se encuentran aproximadamente alrededor del año 1967!</para>
+>&amarok; le permite crear listas de reproducción aleatorias ponderadas que se ajustan a varios criterios exactamente (<guilabel
+>Tendencia proporcional</guilabel
+>) o aproximadamente (<guilabel
+>Tendencia difusa </guilabel
+>). Por ejemplo, ¡usted puede crear una lista que será alimentada aleatoriamente por canciones que puntuaron mas de 3 estrellas y que se encuentran aproximadamente alrededor del año 1967! </para>
 </sect1>
-
 <sect1 id="replay-gain-support"
 ><title
->Uso de la ganancia de repetición</title>
+>Uso de la ganancia de repetición</title
+> 
 <para
->Amarok&nbsp;2 reconoce la información de la etiqueta de ganancia de repetición incrustada en los archivos y ajusta automáticamente el volumen total de la canción a un nivel común. </para>
+>&amarok; reconoce la información de la etiqueta de <emphasis
+>ganancia de repetición</emphasis
+> empotrada en los archivos y ajusta automáticamente el volumen total de la canción a un nivel común. </para>
 <para
 >¡Vuelva a descubrir su música! </para>
 </sect1>
 </chapter>
 <chapter id="hints-tips-and-faqs"
 ><title
->Consejos, trucos y preguntas frecuentes</title>
+>Consejos, trucos y preguntas frecuentes</title
+> 
 <para
->Si usted encuentra que Amarok reconoce la mayor parte de su musica, pero no recoge adecuadamente algunas carpetas, abra la consola y teclee </para>
+>Si usted encuentra que &amarok; reconoce la mayor parte de su musica, pero no recoge adecuadamente algunas carpetas, abra una consola y teclee </para>
 <para
+><userinput
 >touch <replaceable
 >carpeta</replaceable
-> </para>
+></userinput
+> 
+</para>
 <para
 >donde <replaceable
 >carpeta</replaceable
@@ -494,33 +537,1524 @@
 ><guimenu
 >Preferencias</guimenu
 ><guimenuitem
->Configurar Amarok</guimenuitem
+>Configurar &amarok;</guimenuitem
 ></menuchoice
-> en la ventana principal del menú de Amarok, y abra la página<menuchoice
+> en la ventana principal del menú de &amarok; y abra la página<menuchoice
 ><guimenu
 >Colección</guimenu
 ><guimenuitem
 >Volver a explorar la colección</guimenuitem
 ></menuchoice
->. Ahora su carpeta será visible de nuevo </para>
+>. Ahora su carpeta será visible de nuevo. </para>
 </chapter>
 <chapter id="more-information"
 ><title
->Mas información</title>
+>Mas información</title
+> 
 <itemizedlist>
 <listitem
 ><para
 ><ulink url="http://amarok.kde.org/"
->Página inicial de Amarok</ulink>
+>Página de inicio de &amarok;</ulink>
 </para
 ></listitem>
 <listitem
 ><para
 ><ulink url="http://forum.kde.org/viewforum.php?f=127"
->Foro de Amarok</ulink>
+>Foro de &amarok;</ulink>
 </para
 ></listitem>
 </itemizedlist>
+<para
+>Felicitaciones por instalar &amarok;, el programa de descubrimiento de música mas avanzado disponible. &amarok; le ayudará a explorar su música y disfrutarla como nunca antes. Usted también puede navegar a través de diferentes fuentes de música, emisoras de radio y audiolibros en línea. En esta guía, le mostraremos como dejar que &amarok; encuentre su colección, la reproduzca para usted y también como usar &amarok; para encontrar cosas en línea. Supondremos que usted no sabe nada de &amarok; pero sabe como utilizar menús, el ratón y el teclado. </para>
+</chapter>
+<chapter id="getting-started"
+><title
+>Primeros pasos</title>
+<sect1 id="starting-amarok"
+><title
+>Inicio de &amarok;</title>
+<para
+>Si usted ya sabe como manejarse con el sistema operativo, usted probablemente sabrá como iniciar &amarok; y puede <link linkend="first-time"
+>continuar</link
+>. En otro caso, continúe leyendo. </para>
+<sect2 id="from-plasma"
+><title
+>Desde &plasma;</title>
+<para
+>Si usted está ejecutando el <ulink url="http://userbase.kde.org/Special:mylanguage/Plasma"
+>Área de trabajo &plasma;</ulink
+>, puede iniciar &amarok; mediante: </para>
+<itemizedlist>
+<listitem
+><para
+>una pulsación sobre <ulink url="http://userbase.kde.org/Special:mylanguage/Kickoff"
+>&kickoff;</ulink
+> y a continuación <menuchoice
+><guimenu
+>Multimedia</guimenu
+><guimenuitem
+>&amarok;</guimenuitem
+></menuchoice
+>. </para
+></listitem>
+<listitem
+><para
+>al ejecutar <ulink url="http://userbase.kde.org/Special:mylanguage/KRunner"
+>&krunner;</ulink
+> (<keycombo
+>&Alt;<keycap
+>F2</keycap
+></keycombo
+> por omisión), enter <userinput
+>amarok</userinput
+> y a continuación pulsar &Enter;. </para
+></listitem>
+</itemizedlist>
+</sect2>
+<sect2 id="from-the-file-manager"
+><title
+>Desde el gestor de archivos</title
+> 
+<para
+>Abre un archivo multimedia que &amarok; sabe como reproducir.</para>
+</sect2>
+</sect1>
+<sect1 id="first-time"
+><title
+>Primera vez</title>
+<para
+>La primera vez que usted utilice &amarok; se muestra un cuadro de diálogo de primer uso, que le preguntará donde está ubicada su música. Si ya dispone de una carpeta de música <ulink url="help:/kcontrol/paths/index.html"
+> configurada en su sistema</ulink
+>, &amarok; debería detectarla y preguntarle como usarla: </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Firstruncollection2.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot
+></para>
+<para
+>Si usted elige <guilabel
+>No</guilabel
+> en este diálogo, se le presentará otro que le permite seleccionar su carpeta de música:</para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Configurecollection.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Consulte <link linkend="setting-up-a-collection"
+>Configurar una colección</link
+> </para>
+<para
+>Una vez que usted haya seleccionado la carpeta en la que está su música, &amarok; explorará la carpeta y sus subcarpetas, creando la colección. En función del número de pistas y la velocidad de la ubicación, esto puede tardar algún tiempo. </para>
+</sect1>
+<sect1 id="closing-amarok"
+><title
+>Cierre de &amarok;</title>
+<para
+>Si usted quiere cerrar &amarok;: </para>
+<itemizedlist>
+<listitem
+><para
+>Teclee <keycombo
+>&Ctrl;<keycap
+>Q</keycap
+></keycombo
+> Cuando esté en la ventana de &amarok;, o </para
+></listitem>
+<listitem
+><para
+>Seleccione la opción<guilabel
+>Salir</guilabel
+> del menú de &amarok; o </para
+></listitem>
+<listitem
+><para
+>Pulse con el botón derecho en el icono del lobo azul en la <emphasis
+>Bandeja del sistema</emphasis
+> en la parte inferior de la pantalla. Se le mostrará lo siguiente: </para
+></listitem>
+</itemizedlist>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokrightmenu.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Si usted cierra la ventana de &amarok; pulsando <emphasis
+>Cerrar</emphasis
+> en el borde de la ventana, &amarok; continuará ejecutándose como trabajo de fondo y solo se muestra el icono del lobo azul en la <emphasis
+>Bandeja del sistema</emphasis
+>: </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amaroksystray.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Si usted sale de su sesión o apaga el equipo sin salir de &amarok;, no se guardarán algunas de sus preferencias. </para>
+</sect1>
+</chapter>
+<chapter id="the-amarok-window"
+><title
+>La ventana de Amarok</title
+> 
+<para
+>La ventana de &amarok; está diseñada para que pueda redescubrir su música. Además, también le proporciona tanta información visual sobre su música como sea posible. Mientras que muchos usuarios disfrutarán con el diseño predeterminado, este es completamente configurable.</para>
+<sect1 id="default-layout-of-the-amarok-window"
+><title
+>Diseño predeterminado de la ventana de Amarok</title
+> 
+<para
+>Tras la instalación, &amarok; aparece así:</para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="AmarokNew2_4.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+>Amarok 2.4, instalado de nuevo</phrase>
+    </textobject>
+    <caption>
+      <para
+>Amarok 2.4, instalado de nuevo</para>
+    </caption>
+  </mediaobject>
+</screenshot
+></para>
+<para
+>La ventana de &amarok; tiene cuatro partes principales:</para>
+<orderedlist>
+<listitem
+><para
+>bajo los menús de nivel superior está la <emphasis
+>Barra de herramientas</emphasis
+> que está sobre tres paneles: </para
+></listitem>
+<listitem
+><para
+>sus <emphasis
+>Orígenes de medios</emphasis
+> (colección de música y otros medios) en el panel izquierdo, </para
+></listitem>
+<listitem
+><para
+>el panel <emphasis
+>Contexto</emphasis
+> en el centro y </para
+></listitem>
+<listitem
+><para
+>la <emphasis
+>Lista de reproducción</emphasis
+> en el panel derecho. </para
+></listitem>
+</orderedlist>
+</sect1>
+<sect1 id="using-the-amarok-window-to-manage-and-play-your-music"
+><title
+>Uso de la ventana de &amarok; para gestionar y reproducir su música</title>
+<para
+>Reproducir música mediante &amarok;, generalmente toma dos pasos: </para>
+<orderedlist>
+<listitem
+><para
+>Crea una lista de reproducción, seleccionando algunas pistas de su colección que usted encontrará listadas en el panel <emphasis
+>Orígenes de medios</emphasis
+> y envía su música al panel <emphasis
+>Lista de reproducción</emphasis
+>. </para
+></listitem>
+<listitem
+><para
+>Reproduce la música en su lista de reproducción, usando la <emphasis
+>Lista de reproducción</emphasis
+> o la <emphasis
+>Barra de herramientas</emphasis
+>. </para
+></listitem>
+</orderedlist>
+<para
+>Además, usted puede querer transferir parte de su música a reproductores de música portátiles, como un iPod. La siguiente sección le ayudará con estas tareas.</para>
+</sect1>
+</chapter>
+<chapter id="the-music-collection"
+><title
+>La colección de música</title>
+<sect1 id="the-media-sources-pane"
+><title
+>El panel de orígenes de medios</title>
+<para
+>El <emphasis
+>Panel de medios</emphasis
+> es el lugar donde usted navega y visualiza su colección de música completa. Esto incluye las pistas en su disco duro local, tanto como aquellas en dispositivos externos o medios conectados a su equipo, tales como &CD; de audio, dispositivos USB, reproductores de medios, discos de red o fuentes de Internet. </para>
+</sect1>
+<sect1 id="setting-up-a-collection"
+><title
+>Configuración de una colección</title>
+<para
+>¿Tiene usted pistas de música en formato mp3, ogg o FLAC en su equipo? Empiece por decirle a &amarok; donde encontrar esos archivos, de modo que pueda empezar a crear su colección. En el menú superior: <menuchoice
+><guimenu
+>Preferencias</guimenu
+><guimenuitem
+>Configurar &amarok;</guimenuitem
+></menuchoice
+>. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2_4_1ConfigureDialogCollection.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+>Diálogo de configuración de colección, como el de la versión 2.4.1</phrase>
+    </textobject>
+    <caption>
+      <para
+>Diálogo de configuración de colección, como el de la versión 2.4.1</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Se muestra una vista de árbol de su carpeta personal. Pulse la casilla de verificación donde se almacena su música; generalmente ~/Música. A continuación elija <guilabel
+>Volver a explorar la colección completa</guilabel
+>. Esto tarda un buen rato, por lo que no se alarme si &amarok; va mas lento. Una vez que la exploración esté completa, es mejor salir de &amarok; usando el menú superior de &amarok; o <keycombo
+>&Ctrl;<keycap
+>Q</keycap
+></keycombo
+> y reiniciarlo. Su música recién añadida debería mostrarse bajo la sección <emphasis
+>Colección local</emphasis
+>. </para>
+</sect1>
+<sect1 id="adding-media-devices-to-the-collection"
+><title
+>Añadir dispositivos de medios a la colección</title>
+<para
+>Por debajo de la barra de búsqueda cerca de la parte superior del panel de<emphasis
+>Orígenes de medios</emphasis
+> usted verá los diferentes dispositivos o categorías de contenido dentro del <emphasis
+>Navegador de contenido</emphasis
+>. Si usted inserta un CD; de audio en la unidad de CD; aparecerá el panel de <emphasis
+>Orígenes de medios</emphasis
+>, junto con los reproductores de medios, miniaturas de las unidades y otros dispositivos USB. Después de que se haya montado un dispositivo externo, se mostrará automáticamente con el panel de <emphasis
+>Orígenes de medios</emphasis
+>.</para>
+<para
+>Mas abajo se muestra una captura de pantalla que muestra las fuentes conectadas con música: CD; de audio, reproductores de mp3 y la <emphasis
+>Colección local</emphasis
+>.</para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Mediasources.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+<sect1 id="ripping-a-cd-into-the-collection"
+><title
+>Extraer un &CD; en la colección</title>
+<para
+>Su usted no tiene archivos de música en su equipo, es fácil <emphasis
+>extraerlos</emphasis
+> (copiar pistas de su &CD; a su colección). Solo introduzca un &CD; y pulse con el botón derecho en la imagen del dispositivo de &CD; en el <emphasis
+>Navegador de contenidos</emphasis
+>, para reproducir o copiar su colección que <emphasis
+>extraerá</emphasis
+> y <emphasis
+>etiquetará</emphasis
+> sus pistas (vea la imagen de mas abajo). Si usted copia música desde un &CD; de audio a su colección local, la <emphasis
+>barra de mensajes</emphasis
+> en la parte inferior de la ventana de &amarok; indicará que está ocupado copiando. La extracción puede tardar varios minutos. Una vez que la extracción está terminada, el mensaje en la <emphasis
+>barra de mensajes</emphasis
+> desaparece y la música aparece en el navegador de contexto de su <emphasis
+>Colección local</emphasis
+>. Si la música extraída no aparece en su panel de <emphasis
+>Orígenes de medios</emphasis
+> es mejor salir de &amarok; desde el menú superior de &amarok; o pulsar <keycombo
+>&Ctrl;<keycap
+>Q</keycap
+></keycombo
+> y reiniciarlo a continuación. Ahora usted debería verlo en su colección. La captura de pantalla de abajo muestra como usted puede mover pistas desde su &CD; de audio, iPod u otro dispositivo a su colección, usando el menú de contexto que se abre con el botón derecho. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokripcd.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>En el menú de contexto superior, usted también puede ver la posibilidad de <guilabel
+>Editar detalles de la pista</guilabel
+>. Use esta opción si usted tiene una pista que necesita editar una etiqueta. Esto se hace importante cuando usted extrae música a formato .WAV, perdiendo alguna de las etiquetas. Si una parte importante de su colección necesita etiquetado, considere aplicaciones específicas para etiquetado, como </para>
+<itemizedlist>
+<listitem
+><para
+><ulink url="http://musicbrainz.org/doc/PicardTagger"
+>Picard</ulink>
+</para
+></listitem>
+<listitem
+><para
+><ulink url="http://easytag.sourceforge.net"
+>EasyTag</ulink>
+</para
+></listitem>
+<listitem
+><para
+><ulink url="http://kid3.sourceforge.net"
+>Kid3</ulink>
+</para
+></listitem>
+</itemizedlist>
+<para
+>Corregir el etiquetado es importante para ayudar a que &amarok; muestre sus pistas en los álbumes adecuados y en el orden de clasificación adecuado. Aprenda mas sobre <link linkend="tags"
+>extracción y etiquetado</link
+>. </para>
+</sect1>
+<sect1 id="accessing-other-media-sources"
+><title
+>Acceder a otros orígenes de medios</title>
+<para
+>Usted puede haberse sorprendido porque el <emphasis
+>Panel de medios</emphasis
+> no se llama «Panel de colección». &amarok; le proporciona acceso a mucha mas música que la de su colección &mdash; Tiendas de Internet, audio libros, podcasts, archivos de música almacenados fuera de su colección y listas de reproducción almacenadas previamente. La <emphasis
+>ruta de navegación</emphasis
+> de &amarok; es la clave de todo esto. El icono inicial de la ruta de navegación es icono de carpeta personal en el extremo superior izquierdo del <emphasis
+>Panel de medios</emphasis
+>. Este icono se expande y contrae mientras usted navega por el <emphasis
+>Panel de orígenes de medios</emphasis
+>, permitiéndole navegar fácilmente por su colección pulsando su carpeta deseada en la barra de ruta.</para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokbreadcrumb.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Si usted pulsa la carpeta inicial de &amarok; usted verá el panel de <emphasis
+>Orígenes de medios</emphasis
+> en la parte inferior izquierda, que contiene iconos para los recursos disponibles. Si pulsa en el icono «Archivos» (imagen izquierda de mas abajo, segundo elemento desde abajo), verá algo similar a la imagen de la derecha, abajo. Dese cuenta como la barra de ruta se expande y como el contenido de la carpeta seleccionada se muestra en el <emphasis
+>Panel de medios</emphasis
+> (imagen derecha de mas abajo). Al pulsar los símbolos <guilabel
+>&gt;</guilabel
+> entre las rutas le permite ver las carpetas disponibles a ese nivel de la estructura de carpetas. El navegador de archivos de &amarok; le da acceso a su sistema de archivos completo, incluso fuera de su colección local. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokmediasources-home.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+    <caption>
+      <para
+>Panel de orígenes de medios</para>
+    </caption>
+  </mediaobject>
+</screenshot
+> 
+</para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokmediasources-files.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+    <caption>
+      <para
+>Iconos de archivo pulsados</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Las funciones de los iconos en la carpeta inicial de &amarok; (izquierda arriba) son: </para>
+<para>
+<table>
+  <title
+>Iconos en la carpeta personal</title>
+  <tgroup cols="3">
+  <tbody>
+  <row>
+    <entry>
+      <para
+>Icono</para>
+    </entry>
+    <entry>
+      <para
+>Nombre</para>
+    </entry>
+    <entry>
+      <para
+>Acción</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi32-action-collection-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+><guilabel
+>Música local</guilabel
+></para>
+    </entry>
+    <entry>
+      <para
+>Su colección de &amarok;</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Applications-internet.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+><guilabel
+>Internet</guilabel
+></para>
+    </entry>
+    <entry>
+      <para
+>Tiendas de Internet como Magnatune, Jamendo y Last.fm. Primero configure sus recursos de Internet en:<menuchoice
+><guimenu
+>Preferencias</guimenu
+><guimenuitem
+>Configurar &amarok;</guimenuitem
+></menuchoice
+></para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="View-media-playlist.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+><guilabel
+>Listas de reproducción</guilabel
+></para>
+    </entry>
+    <entry>
+      <para
+>Listas de reproducción almacenadas &mdash; consulte también <link linkend="playlists"
+>Listas de reproducción</link
+>. También listas de reproducción en dispositivos de medios.</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Folder-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+><guilabel
+>Archivos</guilabel
+></para>
+    </entry>
+    <entry>
+      <para
+>Su sistema de archivos</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-podcast-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+><guilabel
+>Podcasts</guilabel
+></para>
+    </entry>
+    <entry>
+      <para
+>Acceso a Podcasts vía fuentes RSS</para>
+    </entry>
+  </row>
+</tbody>
+  </tgroup>
+</table>
+</para>
+<para
+>Al pulsar el icono de música local sobre o en la carpeta de música local en la barra de ruta le devuelve a su colección, mostrándole una lista de todos los recursos disponibles, artistas álbumes y pistas que ha definido previamente como parte de su colección. La barra de ruta indica que usted está viendo su música local. </para>
+</sect1>
+<sect1 id="streams-and-podcasts"
+><title
+>Flujos y Podcasts</title>
+<para
+>Hay dos modos de escuchar emisiones. Si usted tiene una emisora favorita, obtenga la &URL; de la emisión y añádala: <menuchoice
+><guimenu
+>Lista de reproducción</guimenu
+><guimenuitem
+>Añadir emisión</guimenuitem
+></menuchoice
+>. Usted podrá encontrarla de nuevo en <emphasis
+>Listas de reproducción</emphasis
+>, como una <emphasis
+>Lista de reproducción almacenada</emphasis
+>. De otro modo, navegue por los guiones disponibles en su <emphasis
+>Gestor de guiones</emphasis
+> (<menuchoice
+><guimenu
+>Herramientas </guimenu
+><guimenuitem
+>Gestor de guiones</guimenuitem
+></menuchoice
+>). Hay algunas excelentes colecciones disponibles, que se mostrarán en la sección <emphasis
+>Internet</emphasis
+> de su <emphasis
+>Panel de medios</emphasis
+>. </para>
+<para
+>Los podcasts disponen de su propia sección en el <emphasis
+>Panel de medios</emphasis
+>, mas arriba. Si usted tiene la &URL; de una fuente RSS o Atom, pulse el <guilabel
+>+</guilabel
+> verde y añádala ahí. Si tiene un archivo OPML para importar, esta opción también está disponible. Use los menús de contexto (<keycap
+>pulsar con el botón derecho</keycap
+>) para <guilabel
+>Añadir a la lista de reproducción</guilabel
+>, <guilabel
+>Configurar</guilabel
+>, <guilabel
+>Eliminar suscripción</guilabel
+>, <guilabel
+>Actualizar canal</guilabel
+> o marque un episodio como <emphasis
+>Nuevo</emphasis
+>. Si usted está interesado en navegar a través de una gran colección de podcasts, marque <emphasis
+>Directorio de podcast</emphasis
+> disponible mediante el <emphasis
+>Gestor de guiones</emphasis
+> mencionado anteriormente. </para>
+</sect1>
+<sect1 id="using-the-content-browser"
+><title
+>Uso del navegador de contexto</title>
+<para
+>El disco duro de su equipo, &CD; de audio, dispositivos externos e Internet son los recursos básicos de su colección. Después de que se haya configurado su colección, es habitual que su colección mantenga un gran número de álbumes y pistas, muchas mas de las que se pueden mostrar en una sola ventana. </para>
+<para
+>Como modificar la visualización de su colección, abajo: </para>
+<sect2 id="hiding-or-expanding-information"
+><title
+>Esconder o expandir información</title>
+<para
+>El área del <emphasis
+>Panel de medios</emphasis
+> bajo la barra de búsqueda se denomina <emphasis
+>Navegador de contexto</emphasis
+>. En la imagen de mas abajo del navegador de contexto se indican tres orígenes de medios: &CD;, colección local y reproductor de medios: </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Cd_collection_sansa.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Al pulsar la bandera para un dispositivo muestra u oculta el contexto de ese dispositivo. La dirección de la flecha verde a la derecha indica si los contenidos del dispositivo se muestran o esconden. El contenido de un dispositivo concreto puede esconderse o mostrarse usando el mismo principio, pulsando en el artista o album adecuado. Un símbolo <guilabel
+>-</guilabel
+> a la izquierda de un artista o album indica que los contenidos se han expandido. Un símbolo <guilabel
+>+</guilabel
+> indica que están disponibles mas símbolos para esta categoría. En la imagen superior, la información para el &CD; <emphasis
+>Mike Oldfield - The Songs of Distant Earth</emphasis
+> se ha expandido, mostrando las pistas individuales. Por otro lado, los álbumes y pistas en la <emphasis
+>Colección local</emphasis
+> están escondidos. Pulsando estos símbolos <guilabel
+>+</guilabel
+> o <guilabel
+>-</guilabel
+> usted también puede expandir o contraer la información. </para>
+</sect2>
+<sect2 id="changing-the-order-of-tracks-and-albums"
+><title
+>Cambio del orden de las pistas y álbumes</title>
+<para
+>El orden en el que se clasifican las pistas en el <emphasis
+>Navegador de contexto</emphasis
+> se puede personalizar usando el botón de <emphasis
+> Opciones de ordenación</emphasis
+> en la parte superior del <emphasis
+>Panel de orígenes de medios</emphasis
+>: </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Preferences-other.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>El orden de clasificación se indica en la parte superior izquierda del panel de <emphasis
+>Orígenes de medios</emphasis
+>, justo debajo del área de texto <emphasis
+>Buscar </emphasis
+>. El orden predeterminado es <emphasis
+>Artista / Año - Álbum</emphasis
+>. El orden de visualización del <emphasis
+>Navegador de contenido</emphasis
+> puede intercambiarse temporalmente entre el definido por el usuario (descrito arriba) y una <emphasis
+>Vista mezclada</emphasis
+> en la que los artistas se listan alfabéticamente, sin importar en que medio se almacene la música. Para conmutar la <emphasis
+>Vista mezclada</emphasis
+>, pulse el <emphasis
+>Icono de mezcla</emphasis
+> en la parte superior derecha del panel de <emphasis
+>Orígenes de medios</emphasis
+>: </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="View-list-tree.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Para buscar en su colección, teclee su término de búsqueda en la barra de búsqueda de la parte superior de la sección <emphasis
+>Música local</emphasis
+>. Usted no solo puede buscar por artista, álbum o nombre de pista, sino cualquier otro componente. Usted podría crear una bonita lista de reproducción buscando <replaceable
+>invierno </replaceable
+>, por ejemplo, o simplemente buscar una pista de la que solo recuerde una palabra del título. Usted también puede buscar por puntuación, contador de reproducciones, incluso tipo de archivo. Consulte <ulink url="http://userbase.kde.org/Special:myLanguage/Amarok/Manual/AdvancedFeatures/SearchInCollection"
+>Búsqueda en colección</ulink
+> para mas detalles. </para>
+</sect2>
+<sect2 id="deleting-items-from-the-collection"
+><title
+>Borrado de elementos de la colección</title>
+<para
+><warning
+><para
+>Use esta opción con cuidado; las pistas se borrarán de su disco duro, no se envían a la papelera.</para
+></warning>
+</para>
+<para
+>Usted puede borrar cualquier elemento de su colección pulsando con el botón derecho y eligiendo la opción <guilabel
+>Borrar pistas</guilabel
+>. Aparecerá un diálogo de confirmación, evitando el borrado accidental de cualquier pista. Se puede seleccionar mas de un elemento mediante <keycombo
+>&Ctrl;<keycap
+>pulsar</keycap
+></keycombo
+>. </para>
+</sect2>
+</sect1>
+</chapter>
+<chapter id="playlists"
+><title
+>Listas de reproducción</title>
+<sect1 id="the-playlist-pane"
+><title
+>El panel de listas de reproducción</title>
+<para
+>Ahora que &amarok; ha explorado su colección de música, usted querrá escucharla. Por lo tanto, use el panel <emphasis
+>Lista de reproducción</emphasis
+> para crear una lista de reproducción que contenga la selección de pistas que usted quiera. Esto es donde usted reproduce su música, emisiones o podcasts.</para>
+<para
+>Usted puede ordenar su lista de reproducción por título, álbum, artista, género y otros muchos. Por ejemplo usted puede ordenar sus pistas primero por año, después por artistas y así en adelante.</para>
+<para
+>La casilla de búsqueda le permite buscar o filtrar sus pistas, Las dos grandes flechas grises de la parte superior de la <emphasis
+>Lista de reproducción</emphasis
+> le permite saltar a la pista siguiente o anterior que contenga las letras que usted haya elegido. La llave a la derecha le permite filtrar sus pistas por artista, álbum, &etc;.</para>
+<para
+>El esquema de la <emphasis
+>Lista de reproducción</emphasis
+> puede cambiarse mediante el menú de nivel superior: <menuchoice
+><guimenu
+>Lista de reproducción</guimenu
+><guimenuitem
+> Esquemas de listas de reproducción</guimenuitem
+></menuchoice
+>.</para>
+</sect1>
+<sect1 id="adding-music-to-a-playlist"
+><title
+>Añadir música a la lista de reproducción</title>
+<para
+>Hay cuatro formas de añadir música a la lista de reproducción.</para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok_addtoplaylist.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<orderedlist>
+<listitem
+><para
+>Elija algo de su música en el navegador de contexto y arrástrela a la derecha. Si usted la arrastra encima del panel de <emphasis
+>Contexto</emphasis
+> verá el <emphasis
+>Gotero emergente</emphasis
+>, también conocido como <emphasis
+>PUD</emphasis
+>. La imagen superior muestra PUD en acción. PUD proporciona tres opciones; <guilabel
+>Añadir a la lista de reproducción</guilabel
+>, <guilabel
+>Reemplazar lista de reproducción</guilabel
+> y <guilabel
+>Mas...</guilabel
+>. La opción resaltada en un área gris (<guilabel
+>Añadir a lista de reproducción</guilabel
+> en esta imagen) es la activa. Soltando el álbum allí lo añade a la lista de reproducción en la <emphasis
+>lista de reproducción</emphasis
+>. Elija alguna de las otras opciones para hacer algo mas con su selección. Arrastrándola sobre <guilabel
+>Mas...</guilabel
+> proporciona un nuevo menú de opciones en <emphasis
+>PUD</emphasis
+>. </para
+></listitem>
+<listitem
+><para
+>Arrastre su selección todo el camino hasta la <emphasis
+>Lista de reproducción</emphasis
+> del lado derecho de la pantalla de &amarok;. </para
+></listitem>
+<listitem
+><para
+><keycap
+>Haga doble clic</keycap
+> en el álbum/pista que usted quiera transferir a la lista de reproducción. </para
+></listitem>
+<listitem
+><para
+><keycap
+>Haga clic derecho</keycap
+> en el álbum o pista. Es su menú de clic derecho, usted encontrará opciones similares. La imagen inferior muestra el menú de contexto que aparece después de que un elemento se haya pulsado con el botón derecho. Seleccione <guilabel
+>Añadir a lista de reproducción</guilabel
+>. </para
+></listitem>
+</orderedlist>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok_addtoplaylist1.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+<sect1 id="using-the-toolbar"
+><title
+>Uso de la barra de herramientas</title>
+<para
+>La <emphasis
+>Barra de herramientas</emphasis
+> de la parte superior de la pantalla de &amarok; proporciona una interfaz sencilla para controlar la reproducción de música en la lista de reproducción. Pulse el icono redondo a la izquierda para iniciar la reproducción de su música y púlselo de nuevo para pausarla. A la derecha está el control de volume y silencio: pulse en el centro del icono para silenciar. Use la rueda de desplazamiento de su ratón para controlar el volumen o arrastre/pulse su ratón en el anillo exterior del icono de volumen. Una vez que una pista o emisión comienza a reproducirse, el <emphasis
+>artista</emphasis
+>/<emphasis
+>nombre de álbum</emphasis
+>/<emphasis
+> título de pista</emphasis
+> se alternan lentamente en negrita en el centro. A la derecha está la nueva pista, que usted puede pulsar para iniciar su reproducción inmediatamente. Una vez que una pistase ha reproducido aparecerá a la izquierda, por lo que puede pulsar en el título para regresar a ella. La barra de progreso en el medio de la <emphasis
+>Barra de herramientas</emphasis
+> indica el tiempo transcurrido (a mano izquierda) y el tiempo restante (a mano derecha) para la pista que se está reproduciendo. Si usted prefiere ver una barra de herramientas mas tradicional, puede seleccionar <guilabel
+>Barra de herramientas delgada</guilabel
+> del menú <guilabel
+>Ver</guilabel
+>. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Controlamarok.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+<sect1 id="manipulating-playlists"
+><title
+>Manipulación de listas de reproducción</title>
+<para
+>Usted puede querer borrar álbumes o pistas de su lista de reproducción, reorganizar los elementos mostrados para cada pista o reorganizar el orden de las pistas.</para>
+<sect2 id="removing-a-track"
+><title
+>Eliminar una pista</title>
+<para
+>Usted puede eliminar cualquier pista o album de su lista de reproducción mediante: </para>
+<orderedlist>
+<listitem
+><para
+><keycap
+>Pulsación con el botón derecho</keycap
+> en el elemento de la lista de reproducción y elegir la opción <guilabel
+>Eliminar de la lista de reproducción</guilabel
+>. </para
+></listitem>
+<listitem
+><para
+>Arrastre el elemento a borrar sobre el panel de <emphasis
+>Contexto</emphasis
+> para activar PUD. Aparecerán varias opciones sobre el panel de <emphasis
+>Contexto</emphasis
+>. Arrastre el elemento al área marcada <guilabel
+>Borrar de la lista de reproducción</guilabel
+>. Vea la imagen inferior que muestra una pista siendo arrastrada en la opción <guilabel
+>Eliminar</guilabel
+> del PUD. </para
+></listitem>
+<listitem
+><para
+>Seleccionando la pista o pistas y usando su tecla <keycap
+>Supr</keycap
+>. Se pueden seleccionar varias pistas usando &Shift; o &Ctrl;. </para
+></listitem>
+</orderedlist>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok-removefromplaylist.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Usted puede deshacer su borrado pulsando <keycombo
+>&Ctrl;<keycap
+>Z</keycap
+></keycombo
+> o pulsando la flecha adecuada en la <emphasis
+>Barra de herramientas de lista de reproducción</emphasis
+> al fondo del <emphasis
+>Panel de lista de reproducción</emphasis
+> (consulte mas abajo). </para>
+</sect2>
+<sect2 id="using-the-playlist-tools-at-the-bottom"
+><title
+>Uso de las herramientas de lista de reproducción de la parte inferior</title>
+<para
+>En la parte inferior del panel de lista de reproducción hay siete iconos: </para>
+<para>
+<table>
+  <title
+>Iconos del panel de lista de reproducción</title>
+  <tgroup cols="2">
+  <tbody>
+  <row>
+    <entry>
+      <para
+>Icono</para>
+    </entry>
+    <entry>
+      <para
+>Acción</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-clear-playlist-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Borrar lista de reproducción de todos los álbumes y pistas</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Document-save.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Guarde su lista de reproducción. Si usted no la renombra, toma la fecha como nombre por omisión.</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Edit-undo.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Deshace su última edición a la lista de reproducción</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Edit-redo.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Rehace su último deshacer a la lista de reproducción</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-music-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Resalta la pista actualmente en reproducción. Útil para listas de reproducción grandes</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-media-standard-track-progression-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Establece el modo de reproducción: repetir pistas, orden aleatorio, preferir la reproducida pocas veces, &etc;</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-media-standard-track-progression-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Establece el modo de reproducción: repetir pistas, orden aleatorio, preferir la reproducida pocas veces, &etc;</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-edit-playlist-queue.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Edite la cola de la lista de reproducción; las pistas se reproducen primero antes de que la lista de reproducción se reanude.</para>
+    </entry>
+  </row>
+</tbody>
+  </tgroup>
+</table>
+</para>
+<para
+>Esos botones proporcionan alternativas adecuadas a varias acciones de teclado. </para>
+</sect2>
+</sect1>
+<sect1 id="saving-and-retrieving-your-favourite-playlists"
+><title
+>Guardar y recuperar sus listas de reproducción favoritas</title>
+<para
+>El icono de disco (mostrado en la tabla de arriba), al fondo de su <emphasis
+>Panel de lista de reproducción</emphasis
+>, le permite guardar la lista de reproducción actual de &amarok;. Esto le permite volver a seleccionar una parte de su colección de música en cualquier momento. Las listas de reproducción solo contienen punteros a la musica seleccionada, no la propia música. Por tanto, si su lista de reproducción apunta a música de un dispositivo externo, este debe estar conectado y montado, de otro modo no se podrá reproducir la música. Hay tres lugares donde almacenar listas de reproducción: </para>
+<orderedlist>
+<listitem
+><para
+>fuera de &amarok; en el sistema de archivos de su equipo, </para
+></listitem>
+<listitem
+><para
+>en sus base de datos de listas de reproducción de &amarok; </para
+></listitem>
+<listitem
+><para
+>en un dispositivo de medios portátil. </para
+></listitem>
+</orderedlist>
+<para
+>Al pulsar el icono del disco en la parte inferior del panel de <emphasis
+>Lista de reproducción</emphasis
+> se guarda su lista de reproducción en la base de datos de listas de reproducción de &amarok;. Para guardarla a disco, mantenga pulsado el ratón y desplácelo hasta esa elección.</para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2_4_1SavePlaylistChoices.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+>Mantenga pulsado el ratón y desplácelo para guardar la lista de reproducción</phrase>
+    </textobject>
+    <caption>
+      <para
+>Mantenga pulsado el ratón y desplácelo para guardar la lista de reproducción</para>
+    </caption>
+  </mediaobject>
+</screenshot
+></para>
+<para
+>Por omisión, sus listas de reproducción almacenadas tienen un nombre compuesto por la fecha y hora en la que se guardaron (vea la imagen de mas abajo). Al pulsar con el botón derecho en el nombre de la lista de reproducción, usted puede renombrarla. Si pulsa con el botón derecho en un nombre de lista de reproducción también le permite añadirla a su lista de reproducción existente en la <emphasis
+>Lista de reproducción</emphasis
+> o reemplazar su lista de reproducción.</para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok-renameplaylist.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+</chapter>
+<chapter id="the-context-view"
+><title
+>La vista de contexto</title>
+<para
+>El poder de &amarok; es el panel de <emphasis
+>Contexto</emphasis
+> (en el centro de la ventana de &amarok;) donde usted puede instalar varias <emphasis
+>Miniaplicaciones</emphasis
+> para ayudarle a disfrutar y explorar su música. Mucha de esta información adicional se obtiene de Internet, por lo que una conexión es importante para obtener la mayoría de su panel de <emphasis
+>Contexto</emphasis
+>. Por omisión, están preseleccionadas tres <emphasis
+>Miniaplicaciones</emphasis
+>; <emphasis
+>Pista actual</emphasis
+>, <emphasis
+>Letras</emphasis
+> y <emphasis
+>Wikipedia</emphasis
+>. </para>
+<sect1 id="default-layout"
+><title
+>Diseño predeterminado</title>
+<para
+>Las búsquedas predeterminadas del panel de <emphasis
+>Contexto</emphasis
+> para las letras de la canción que está reproduciendo, se muestran en la mitad inferior del panel de contexto, mientras que la bandera superior del panel de <emphasis
+>Contexto</emphasis
+> muestra la carátula del álbum e información de la pista para la música actual. Algunas veces las letras no están disponibles, porque no pueden almacenarse en un recurso adecuado de Internet. Además, la información de la pista actual necesita ser <link linkend="tags"
+>etiquetada</link
+> correctamente para que puedan encontrarse las letras. Si las letras no se encuentran, esto puede deberse a varias razones, entre ellas las informaciones erróneas en las fuentes de Internet, como un sistema de numeración incorrecto de las pistas en el álbum y la mala representación de texto inusual, como cuando el título de la pista contiene caracteres como circunflejo, cedilla o acento (ê,ç,à), pero no es cierto. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok-context.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+<sect1 id="customizing-the-context-pane"
+><title
+>Personalización del panel de contexto</title>
+<para
+>En la parte inferior panel de <emphasis
+>Contexto</emphasis
+>, hay tres botones para las miniaplicaciones predeterminadas. A la derecha de estos tres botones, usted puede ver una llave, al pulsar sobre ella se mostrará una <guilabel
+>X</guilabel
+> roja que le permite eliminar estas miniaplicaciones. Pulse el <guilabel
+>+</guilabel
+> verde para añadir mas opciones de visualización (vea la imagen de abajo). Arrastre los botones etiquetados para reordenar las miniaplicaciones que usted tiene y pulse la llave de nuevo para fijar sus selecciones.</para>
+<para
+>Esto hace al panel <emphasis
+>Contexto</emphasis
+> extremadamente flexible, maximizando la posibilidad de una visualización personalizada que se ajuste a sus preferencias. Mas <ulink url="http://userbase.kde.org/Special:myLanguage/Amarok/Manual/AmarokWindow/ContextPane"
+>aquí</ulink
+>.</para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok-contextadd.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+</chapter>
+<chapter id="how-to-deal-with-problems"
+><title
+>Como arreglar los problemas</title>
+<sect1 id="some-of-the-music-is-being-rapidly-skipped-over"
+><title
+>Parte de la música se está saltando rápidamente</title>
+<para
+>Usted puede que no tenga instalados los <emphasis
+>codecs</emphasis
+> necesarios. Mas información aquí <ulink url="http://userbase.kde.org/Amarok/Manual/FAQ#What_media_types_does_Amarok_support.3F"
+>FAQ: Que hacen los tipos de medios &amarok; Apoyo</ulink
+>. Por favor, remítase a su distribución. </para>
+</sect1>
+<sect1 id="after-my-ipod-has-been-mounted-it-is-not-shown-in-the-content-browser"
+><title
+>Después de que se haya montado mi iPod, no se muestra en el navegador de contexto</title>
+<para
+>Esto no debería ocurrir. Compruebe que el dispositivo se ha montado adecuadamente. Sencillamente teclee <userinput
+>mount</userinput
+> en una consola lo que le mostrará todos los dispositivos montados. </para>
+</sect1>
+<sect1 id="amarok-cannot-see-the-predefined-playlists-on-my-portable-music-player"
+><title
+>&amarok; no puede ver las listas de reproducción predefinidas en mi reproductor de música portátil</title>
+<para
+>Espere a la siguiente versión de &amarok;. </para>
+</sect1>
+<sect1 id="after-i-have-updated-my-collection-the-additions-are-not-shown-in-the-content-browser"
+><title
+>Después de que haya actualizado mi colección, los añadidos no se muestran en el navegador de contexto</title>
+<para
+>Desde el menú de nivel superior <menuchoice
+><guimenu
+>Herramientas</guimenu
+><guimenuitem
+>Actualizar colección</guimenuitem
+></menuchoice
+>. Si no se muestran, salga de &amarok; desde el menú de <guilabel
+>Amarok</guilabel
+> o use <keycombo
+>&Ctrl;<keycap
+>Q</keycap
+></keycombo
+> para salir. Una vez que reinicie &amarok; su colección debería mostrar sus actualizaciones. </para>
+</sect1>
+<sect1 id="amarok-cannot-find-the-lyrics-of-the-songs-that-i-play"
+><title
+>&amarok; no puede encontrar las letras de las canciones que reproduzco</title>
+<para
+>Posibilidades: </para>
+<orderedlist>
+<listitem
+><para
+>Las letras no están disponibles en los sitios marcados en Internet. Usted podría querer añadir mas sitios vía el menú de guiones (antes de 2.4.1 <menuchoice
+><guimenu
+>Herramientas</guimenu
+><guimenuitem
+>Gestor de guiones</guimenuitem
+></menuchoice
+>, 2.4.1 en <menuchoice
+><guimenu
+>Preferencias</guimenu
+><guisubmenu
+>Configurar Amarok</guisubmenu
+><guimenuitem
+>Guiones</guimenuitem
+></menuchoice
+>). </para
+></listitem>
+<listitem
+><para
+>El sistema de numeración de pistas dentro de un álbum en su conexión no es correcto. </para
+></listitem>
+<listitem
+><para
+>El título de su canción contiene caracteres especiales como una cedilla, acento, &etc; que no se muestran en el título de su pista. Por lo tanto, el guion de la miniaplicación de letras no puede encontrar una que coincida con su título. Compruebe sus etiquetas y sistema de numeración de pistas con un etiquetador como <ulink url="http://musicbrainz.org/doc/MusicBrainz_Picard"
+>Picard</ulink
+>. </para
+></listitem>
+</orderedlist>
+</sect1>
+<sect1 id="my-question-isnt-answered-here"
+><title
+>Mi pregunta no está contestada aquí</title>
+<para
+>Los asuntos mas complejos están cubiertos en el <ulink url="http://userbase.kde.org/Special:myLanguage/Amarok/Manual"
+>Manual</ulink
+>, incluyendo <ulink url="http://userbase.kde.org/Special:myLanguage/Amarok/Manual/TroubleshootingAndCommonProblems"
+>Resolución de problemas y problemas comunes</ulink
+> y la <ulink url="http://userbase.kde.org/Special:mylanguage/Amarok/Manual/FAQ"
+>FAQ de Amarok</ulink
+>. </para>
+</sect1>
+</chapter>
+<chapter id="glossary"
+><title
+>GLOSARIO</title>
+<sect1 id="breadcrumbs"
+><title
+>Migas</title>
+<para
+>Este es un modo de navegar en una estructura jerárquica de archivos; en &amarok; cerca de la parte superior del panel de <emphasis
+>Orígenes de medios</emphasis
+>. Comenzando en el nivel de carpeta personal, muestra la profundidad en la que se ha navegado en el sistema de archivos. Cuando usted ha ido a un lugar concreto en el sistema de archivos, usted verá todas las carpetas de un nivel superior. En &amarok; los enlaces <guilabel
+>&gt;</guilabel
+> entre niveles de carpetas le permiten encontrar que carpetas alternativas están disponibles en un determinado nivel. Las migajas son un mecanismo eficiente para navegar por todo el sistema de archivos de su equipo. </para>
+</sect1>
+<sect1 id="collection"
+><title
+>Colección</title>
+<para
+>Todos los archivos de sonido que &amarok; ha compilado en su base de datos. Su colección puede variar en tamaño y composición de pistas de música, dependiendo de que dispositivos externos (como &CD; de audio o reproductores portátiles con música) se hayan conectado y montado en su equipo. </para>
+</sect1>
+<sect1 id="content-browser"
+><title
+>Navegador de contexto</title>
+<para
+>Esta es la parte central del panel de <emphasis
+>Orígenes de medios</emphasis
+> que le permite listar la música que usted tiene disponible en su colección. El navegador de contexto le permite seleccionar el orden de clasificación de su lista de pistas tanto como el detalle con el que desea ver su música. </para>
+</sect1>
+<sect1 id="playlist"
+><title
+>Lista de reproducción</title>
+<para
+>Una selección de pistas de su colección que usted desea reproducir. Algunos reproductores de musica portátiles disponen de listas de reproducción predefinidas que parecen diferir de las de &amarok;. </para>
+</sect1>
+<sect1 id="script5"
+><title
+>Guion</title
+> 
+<para
+>Complemento para extender la funcionalidad de &amarok;. Los guiones están disponibles en <menuchoice
+><guimenu
+>Herramientas</guimenu
+><guimenuitem
+>Gestor de guiones</guimenuitem
+></menuchoice
+> antes de 2.4.1, desde 2.4.1 en: <menuchoice
+><guimenu
+>Preferencias</guimenu
+><guisubmenu
+>Configurar Amarok</guisubmenu
+><guimenuitem
+>Guiones</guimenuitem
+></menuchoice
+>. Añada mas fuentes de letras, mas emisiones, guarde carátulas de sus carpetas de álbumes, grabe CD; desde listas de reproducción, &etc;</para>
+</sect1>
+<sect1 id="scrobble"
+><title
+>Scrobble</title>
+<para
+>Promocionar una pista quiere decir que mientras usted la escucha, el título de la pista y el artista se envían a un sitio web como <emphasis
+>Last.fm</emphasis
+> donde la información se añade a su perfil.</para>
+</sect1>
+<sect1 id="stream-streaming"
+><title
+>Emisiones, emisión</title>
+<para
+>Como las emisoras de radio del siglo 20, las emisoras de radio de Internet envían <quote
+>flujos</quote
+> de contenido. Uno puede encontrar música, noticias, comentarios y opiniones. Muchas emisiones pueden accederse mediante &amarok; bien mediante guiones como «Cool Streams» o añadidas individualmente por el menú (<menuchoice
+><guimenu
+>Lista de reproducción</guimenu
+><guimenuitem
+>Añadir emisión</guimenuitem
+></menuchoice
+>). </para>
+</sect1>
+<sect1 id="tags"
+><title
+>Etiquetas</title>
+<para
+>La información sobre cada una de las pistas que escucha, &eg; nombre del álbum, título de la pista, compositor, artista, año, &etc;. Existe un estándar denominado ID3 para incluir esta información en &CD; de audio. Usted puede editar las etiquetas de las pistas individuales dentro de &amarok; si los permisos de los archivos son correctos. </para>
+</sect1>
 </chapter>
 <!--userbase-content-->
 <chapter id="credits">
@@ -528,7 +2062,7 @@
 >Créditos y licencia</title>
     <para
 >Copyright de la documentación, consulte la UserBase <ulink url="http://userbase.kde.org/index.php?title=Amarok&amp;action=history"
->Página de historia de Amarok</ulink
+>Página de historia de &amarok;</ulink
 ></para>
     <para
 >Traducido por Carlos Mayo Hernández <email

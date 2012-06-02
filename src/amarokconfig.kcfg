@@ -35,6 +35,7 @@
         <whatsthis>Determines how amarok will progress through the tracks in the playlist</whatsthis>
         <choices>
             <choice name="Normal"></choice>
+            <choice name="OnlyQueue"></choice>
             <choice name="RepeatTrack"></choice>
             <choice name="RepeatAlbum"></choice>
             <choice name="RepeatPlaylist"></choice>
@@ -48,6 +49,11 @@
         <whatsthis>If set, dynamic mode will be on, and tracks will be added according to the dynamic playlist specified.</whatsthis>
         <default>false</default>
     </entry>
+    <entry key="Dynamic Duplicates" type="Bool">
+        <label>Duplicate tracks in dynamic mode.</label>
+        <whatsthis>If set, tracks added in the dynamic mode are allowed to have duplicates.</whatsthis>
+        <default>false</default>
+    </entry>
     <entry key="Previous Tracks" type="Int">
         <label>Previous tracks count.</label>
         <whatsthis>Number of tracks to leave in the playlist before the active track.</whatsthis>
@@ -57,11 +63,6 @@
         <label>Upcoming tracks count.</label>
         <whatsthis>Number of tracks to load into the playlist after the active track.</whatsthis>
         <default>10</default>
-    </entry>
-    <entry key="Last Dynamic Mode" type="String">
-        <label>The most recently used Dynamic Mode</label>
-        <whatsthis>The title of the Dynamic Mode that was most recently loaded in the playlist</whatsthis>
-        <default>Random Mix</default>
     </entry>
     <entry key="Show Tray Icon" type="Bool">
         <label>Whether to show icon in system tray</label>
@@ -88,7 +89,7 @@
         <whatsthis>The number of undo levels in the playlist.</whatsthis>
         <default>30</default>
     </entry>
-    <entry key="Show Splashscreen" type="Bool">
+    <entry key="Show Splash Screen" type="Bool">
         <label>Whether a splash-screen should be displayed on startup</label>
         <whatsthis>Enable/Disable splashscreen during Amarok startup.</whatsthis>
         <default>true</default>
@@ -106,6 +107,10 @@
         <label>Whether to automatically attempt to fetch cover art as needed</label>
         <default>false</default>
     </entry>
+    <entry key="ShowBrowserBackgroundImage" type="Bool">
+        <label>Whether to show background images in the browser pane</label>
+        <default>true</default>
+    </entry>
     <entry key="AutoScrollPlaylist" type="Bool">
         <label>Automatically scroll the playlist to make the currently playing song visible</label>
         <default>true</default>
@@ -121,6 +126,11 @@
     <entry key="PlayFirstRunJingle" type="Bool">
         <label>Play the first run jingle</label>
         <default>true</default>
+    </entry>
+    <entry key="AnimateAppletCollapse" type="Bool">
+        <label>Enable context applets collapse animations</label>
+        <whatsthis>If set, context applets will collapse using animations.</whatsthis>
+        <default>false</default>
     </entry>
 </group>
 
@@ -178,7 +188,7 @@
     <entry key="Custom Scheme" type="String">
         <label>Format string for Organize files, if a custom naming scheme is used.</label>
         <whatsthis>If the custom filename scheme is enabled, then Organize files will rename files according to this format string.</whatsthis>
-        <default>%artist/%album/%track_-_%title</default>
+        <default>%artist%/%album%/%track%_-_%title%</default>
     </entry>
     <entry key="Replacement Regexp" type="String">
         <label>Regular expression that is to be replaced.</label>
@@ -198,7 +208,7 @@
     <entry key="Format Presets" type="StringList">
         <label>Format Presets</label>
         <whatsthis>A list of preset formats (token schemas).</whatsthis>
-        <default>Default#DELIM#%artist/%album/%track_-_%title#DELIM#selected</default>
+        <default>Default#DELIM#%artist%/%album%/%track%_-_%title%#DELIM#selected</default>
     </entry>
 </group>
 
@@ -259,34 +269,6 @@
         <label>List with user equalizer preset names</label>
     </entry>
     <entry key="EqualizerPresestValues" type="IntList">
-        <label>List with user presets values</label>
-    </entry>
-    <entry key="DefEqualizerPresetsNames" type="StringList">
-        <label>List with user equalizer preset names</label>
-        <default>Manual,Classical,Club,Dance,Full Bass,Full Treble,Full Bass +  Treble,Laptop/Headphones,Large Hall,Live,Party,Pop,Reggae,Rock,Soft,Ska,Soft Rock,Techno,Zero</default>
-    </entry>
-    <entry key="DefEqualizerPresestValues" type="IntList">
-        <default>
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, <!-- Manual -->
-        0, 0, 0, 0, 0, 0, 0, -40, -40, -40, -50, <!-- Classical -->
-        0, 0, 0, 20, 30, 30, 30, 20, 0, 0, 0, <!-- Club -->
-        -10, 50, 35, 10, 0, 0, -30, -40, -40, 0, 0, <!-- Dance -->
-        0, 29, 40, 23, 15, 0, 0, 0, 0, 0, 0, <!-- Full Bass -->
-        -83, -50, -50, -50, -25, 15, 55, 80, 80, 80, 85, <!-- Full Treble -->
-        -41, 35, 30, 0, -40, -25, 10, 45, 55, 60, 60, <!-- Full Bass + Treble -->
-        -16, 25, 50, 25, -20, 0, -30, -40, -40, 0, 0, <!-- Laptop/Headphones -->
-        -25, 50, 50, 30, 30, 0, -25, -25, -25, 0, 0, <!-- Large Hall -->
-        0, -25, 0, 20, 25, 30, 30, 20, 15, 15, 10, <!-- Live -->
-        0, 35, 35, 0, 0, 0, 0, 0, 0, 35, 35, <!-- Party -->
-        -15, -10, 25, 35, 40, 25, -5, -15, -15, -10, -10, <!-- Pop -->
-        0, 0, 0, -5, -30, 0, -35, -35, 0, 0, 0, <!-- Reggae -->
-        -28, 40, 25, -30, -40, -20, 20, 45, 55, 55, 55, <!-- Rock -->
-        -33, 25, 10, -5, -15, -5, 20, 45, 50, 55, 60, <!-- Soft -->
-        -29, -15, -25, -25, -5, 20, 30, 45, 50, 55, 50, <!-- Ska -->
-        0, 20, 20, 10, -5, -25, -30, -20, -5, 15, 45, <!-- Soft Rock -->
-        -26, 40, 30, 0, -30, -25, 0, 40, 50, 50, 45, <!-- Techno -->
-        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 <!-- Zero -->
-        </default>
         <label>List with user presets values</label>
     </entry>
 
@@ -363,9 +345,16 @@
         <default>false</default>
     </entry>
     <entry key="Osd Text Color" type="Color">
-        <label>Font Color for On-Screen Display</label>
+        <label>Font color for OSD</label>
         <whatsthis>The color of the OSD text. The color is specified in RGB, a comma-separated list containing three integers between 0 and 255.</whatsthis>
         <default>#ffff00</default>
+    </entry>
+    <entry key="Osd Font Scaling" type="Int">
+        <label>Font scaling for OSD</label>
+        <whatsthis>The scaling multiplier for the OSD font, in percent-of-normal. 100 is &ldquo;normal size&rdquo;.</whatsthis>
+        <default>115</default>
+	<min>0</min>
+	<max>1000</max>
     </entry>
     <entry key="Osd Duration" type="Int">
         <label>How many milliseconds the text should be displayed for</label>
@@ -400,6 +389,11 @@
             <choice name="Right"/>
         </choices>
         <default>Middle</default>
+    </entry>
+    <entry key="OsdHideOnFullscreen" type="Bool">
+        <label>Don't show when a fullscreen application is active</label>
+        <whatsthis>Do not show the On-Screen-Display if another application is focused and running in fullscreen mode.</whatsthis>
+        <default>false</default>
     </entry>
 
 </group>
@@ -439,6 +433,18 @@
         <label>Whether Collection folders are rescanned on change</label>
         <default>true</default>
     </entry>
+    <entry key="Write Back" type="Bool">
+        <label>Whether meta data changes are written back</label>
+        <default>true</default>
+    </entry>
+    <entry key="Write Back Statistics" type="Bool">
+        <label>Whether changes to the track statistics are written back</label>
+        <default>false</default>
+    </entry>
+    <entry key="Write Back Cover" type="Bool">
+        <label>Whether changes to the album cover are written back</label>
+        <default>false</default>
+    </entry>
     <entry key="Collection Folders" type="PathList">
         <label>List of folders in the Collection</label>
     </entry>
@@ -472,6 +478,11 @@
         <whatsthis>The password to use for connecting to Audioscrobbler</whatsthis>
         <default/>
     </entry>
+    <entry key="ScrobbleComposer" type="Bool">
+        <label>Send composer data</label>
+        <whatsthis>Use composer data in Last.fm as artist</whatsthis>
+        <default>false</default>
+    </entry>
     <entry key="RetrieveSimilarArtists" type="Bool">
         <label>Retrieve similar artists</label>
         <whatsthis>Whether similar songs are retrieved from Audioscrobbler</whatsthis>
@@ -502,7 +513,7 @@
     </entry>
     <entry key="SyncStats" type="Bool">
         <label>Sync stats</label>
-        <whatsthis>Whether Amarok statistics should be synchronized with play count/ratings on device and whether tracks played should be submitted to last.fm.</whatsthis>
+        <whatsthis>Whether Amarok statistics should be synchronized with play count/ratings on device and whether tracks played should be submitted to Last.fm.</whatsthis>
     </entry>
 </group>
 
@@ -515,13 +526,6 @@
     <label>Server passwords</label>
     <whatsthis>Passwords stored by hostname.</whatsthis>
   </entry>
-</group>
-
-<group name="Panel Sizes">
-    <entry key="PanelsSavedState" type="IntList">
-        <label>State of main window splitter</label>
-        <default>-1</default>
-    </entry>
 </group>
 
 <group name="Playlist Search">
@@ -610,33 +614,6 @@
     <entry key="MoodbarPaintStyle" type="Int">
         <label>The style to use when painting the moodbar</label>
         <default>0</default>
-    </entry>
-</group>
-
-<group name="UpcomingEvents">
-    <entry key="enabledLinks" type="Bool">
-        <label>Clickable locations' names</label>
-        <whatsthis>Enable/Disable links to Google Map</whatsthis>
-        <default>true</default>
-    </entry>
-    <entry key="timeSpan" type="Enum">
-        <label>Timespan for upcoming events</label>
-        <whatsthis>Set the timespan for the upcoming events.</whatsthis>
-        <choices>
-            <choice name="AllEvents"/>
-            <choice name="ThisWeek"/>
-            <choice name="ThisMonth"/>
-            <choice name="ThisYear"/>
-        </choices>
-        <default>AllEvents</default>
-    </entry>
-</group>
-
-<group name="SimilarArtists">
-    <entry key="maxArtists" type="Int">
-        <label>Maximum similar artists</label>
-        <whatsthis>Maximum similar artists to be shown</whatsthis>
-        <default>20</default>
     </entry>
 </group>
 

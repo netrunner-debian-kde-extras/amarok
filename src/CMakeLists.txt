@@ -1,4 +1,9 @@
-add_definitions(${TAGLIB_CFLAGS} ${TAGLIB-EXTRAS_CFLAGS})
+# Improves speed of string concatenation
+add_definitions(-DQT_USE_FAST_CONCATENATION)
+add_definitions(-DQT_USE_FAST_OPERATOR_PLUS)
+if(NOT MSVC)
+    add_definitions(-DQT_STRICT_ITERATORS)
+endif(NOT MSVC)
 
 if(APPLE)
     set(mac_SRCS
@@ -16,13 +21,17 @@ add_subdirectory( core-impl/collections )
 add_subdirectory( context )
 add_subdirectory( images )
 add_subdirectory( services )
-add_subdirectory( scripts )
+if( QTSCRIPTQTBINDINGS_FOUND )
+    add_subdirectory( scripts )
+endif( QTSCRIPTQTBINDINGS_FOUND )
 add_subdirectory( themes )
 add_subdirectory( aboutdialog/libattica-ocsclient )
+add_subdirectory( transcoding )
+add_subdirectory( kconf_update )
 
-if( STRIGI_FOUND )
-    add_subdirectory( strigi )
-endif( STRIGI_FOUND )
+# if( STRIGI_FOUND )
+    # add_subdirectory( strigi )
+# endif( STRIGI_FOUND )
 
 include_directories(
     ${CMAKE_SOURCE_DIR}
@@ -32,7 +41,6 @@ include_directories(
     browsers/
     browsers/playlistbrowser
     browsers/servicebrowser
-    browsers/servicebrowser/scriptableservice
     core-impl/collections
     core-impl/collections/support
     core-impl/collections/mediadevicecollection
@@ -49,20 +57,17 @@ include_directories(
     dialogs
     dynamic
     likeback
+    musicbrainz
     network
     playlistmanager
     statusbar
     synchronization
-    timecode
+    transcoding
     widgets
     ${KDE4_INCLUDE_DIR}
-    ${TAGLIB-EXTRAS_INCLUDE_DIR}
-    ${TAGLIB-EXTRAS_INCLUDES}
     ${QT_INCLUDES}
     ${QT_QTSCRIPT_INCLUDE_DIR}
-    ${QCA2_INCLUDE_DIR}
 )
-
 
 if ( KDEMULTIMEDIA_FOUND )
     include_directories( ${KDEMULTIMEDIA_INCLUDE_DIR} )
@@ -93,8 +98,6 @@ set(libmediadeviceframework_SRCS
   core-impl/collections/mediadevicecollection/MediaDeviceCollection.cpp
   core-impl/collections/mediadevicecollection/MediaDeviceCollectionLocation.cpp
   core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp
-  core-impl/collections/mediadevicecollection/MediaDeviceCollectionCapability.cpp
-  core-impl/collections/mediadevicecollection/MediaDeviceDecoratorCapability.cpp
   core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp
   core-impl/collections/mediadevicecollection/handler/MediaDeviceHandlerCapability.cpp
   core-impl/collections/mediadevicecollection/handler/capabilities/ArtworkCapability.cpp
@@ -182,7 +185,9 @@ set(libconfigdialog_SRCS
     configdialog/dialogs/GeneralConfig.cpp
     configdialog/dialogs/NotificationsConfig.cpp
     configdialog/dialogs/PlaybackConfig.cpp
-    configdialog/dialogs/ServiceConfig.cpp
+    configdialog/dialogs/PluginsConfig.cpp
+    configdialog/dialogs/ScriptsConfig.cpp
+    configdialog/dialogs/ScriptSelector.cpp
     configdialog/dialogs/DatabaseConfig.cpp
 )
 
@@ -192,6 +197,7 @@ kde4_add_ui_files(libconfigdialog_SRCS
     configdialog/dialogs/NotificationsConfig.ui
     configdialog/dialogs/PlaybackConfig.ui
     configdialog/dialogs/DatabaseConfig.ui
+    configdialog/dialogs/ScriptsConfig.ui
 )
 
 set(libbrowserframework_SRCS
@@ -203,6 +209,7 @@ set(libbrowserframework_SRCS
     browsers/BrowserCategoryListModel.cpp
     browsers/BrowserCategoryListSortFilterProxyModel.cpp
     browsers/BrowserDock.cpp
+    browsers/BrowserMessageArea.cpp
     browsers/CollectionSortFilterProxyModel.cpp
     browsers/CollectionTreeItem.cpp
     browsers/CollectionTreeItemModel.cpp
@@ -251,7 +258,6 @@ set(libsynchronization_SRCS
 # STATUSBAR
 #####################################################################
 set(libstatusbar_SRCS
-    statusbar/StatusBar.cpp
     statusbar/ProgressBar.cpp
     statusbar/KJobProgressBar.cpp
     statusbar/NetworkProgressBar.cpp
@@ -266,8 +272,8 @@ set(libstatusbar_SRCS
 #####################################################################
 set(libmetaimpl_SRCS
     core-impl/playlists/types/file/m3u/M3UPlaylist.cpp
-    core-impl/meta/file/TagLibUtils.cpp
-    ../shared/MetaReplayGain.cpp
+    ../shared/MetaTagLib.cpp
+    ../shared/TagsFromFileNameGuesser.cpp
     core-impl/playlists/types/file/pls/PLSPlaylist.cpp
     core-impl/playlists/providers/user/UserPlaylistProvider.cpp
     core-impl/playlists/types/file/PlaylistFileSupport.cpp
@@ -282,9 +288,25 @@ set(libmetaimpl_SRCS
     core-impl/meta/cue/CueFileSupport.cpp
     core-impl/meta/proxy/MetaProxy.cpp
     core-impl/meta/stream/Stream.cpp
+    core-impl/playlists/types/file/PlaylistFile.cpp
     core-impl/statistics/providers/url/PermanentUrlStatisticsProvider.cpp
     core-impl/statistics/providers/tag/TagStatisticsProvider.cpp
 )
+
+if( TAGLIB_FOUND )
+    set(libmetaimpl_SRCS
+        ${libmetaimpl_SRCS}
+        ../shared/MetaReplayGain.cpp
+        ../shared/FileTypeResolver.cpp
+        ../shared/tag_helpers/APETagHelper.cpp
+        ../shared/tag_helpers/ASFTagHelper.cpp
+        ../shared/tag_helpers/ID3v2TagHelper.cpp
+        ../shared/tag_helpers/MP4TagHelper.cpp
+        ../shared/tag_helpers/StringHelper.cpp
+        ../shared/tag_helpers/TagHelper.cpp
+        ../shared/tag_helpers/VorbisCommentTagHelper.cpp
+    )
+endif( TAGLIB_FOUND )
 
 #####################################################################
 # COLLECTION
@@ -300,16 +322,29 @@ set(collection_SRCS
     core-impl/collections/support/MemoryQueryMakerHelper.cpp
     core-impl/collections/support/PlaylistCollection.cpp
     core-impl/collections/support/PlaylistCollectionLocation.cpp
+    core-impl/collections/support/TrashCollectionLocation.cpp
     core-impl/collections/support/XmlQueryReader.cpp
     core-impl/collections/support/XmlQueryWriter.cpp
     core-impl/collections/support/FileCollectionLocation.cpp
+    core-impl/collections/support/Expression.cpp
+    core-impl/collections/support/TextualQueryFilter.cpp
+)
+
+#####################################################################
+# SCANNER
+#####################################################################
+set( scanner_SRCS
+    scanner/GenericScanManager.cpp
+    ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/Album.cpp
+    ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/BatchFile.cpp
+    ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/Directory.cpp
+    ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/Playlist.cpp
+    ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/Track.cpp
 )
 
 #####################################################################
 # CONTEXT
 #####################################################################
-#
-
 set( libcontextview_SRCS
     context/Applet.cpp
     context/Containment.cpp
@@ -319,26 +354,22 @@ set( libcontextview_SRCS
     context/ContextView.cpp
     context/LyricsManager.cpp
     context/ToolbarView.cpp
-    context/layouts/ContextLayout.cpp
-    context/layouts/VerticalLayout.cpp
     context/toolbar/AppletItemOverlay.cpp
     context/toolbar/AppletToolbar.cpp
     context/toolbar/AppletToolbarAddItem.cpp
     context/toolbar/AppletToolbarAppletItem.cpp
     context/toolbar/AppletToolbarBase.cpp
     context/toolbar/AppletToolbarConfigItem.cpp
-    context/widgets/AmarokWebView.cpp
+    context/widgets/AppletHeader.cpp
     context/widgets/RatingWidget.cpp
     context/widgets/TextScrollingWidget.cpp
     context/widgets/DropPixmapItem.cpp
     context/widgets/ToolBoxIcon.cpp
-    context/widgets/ContainmentArrow.cpp
-    context/widgets/ContainmentSelectionLayer.cpp
+    # context/widgets/ContainmentArrow.cpp
+    # context/widgets/ContainmentSelectionLayer.cpp
     context/widgets/appletexplorer/AppletExplorer.cpp
     context/widgets/appletexplorer/AppletIcon.cpp
-    context/widgets/appletexplorer/AppletItemModel.cpp
-    context/widgets/appletexplorer/AppletsList.cpp
-    context/widgets/TrackWidget.cpp
+    context/widgets/RecentlyPlayedListWidget.cpp
 )
 
 #####################################################################
@@ -348,6 +379,7 @@ set(libpodcasts_SRCS
     core-impl/podcasts/sql/SqlPodcastMeta.cpp
     core-impl/podcasts/sql/SqlPodcastProvider.cpp
     core-impl/podcasts/sql/PodcastSettingsDialog.cpp
+    core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp
 )
 
 #####################################################################
@@ -355,11 +387,11 @@ set(libpodcasts_SRCS
 #####################################################################
 set(libplaylistbrowser_SRCS
     browsers/playlistbrowser/APGCategory.cpp
-    browsers/playlistbrowser/DynamicModel.cpp
     browsers/playlistbrowser/DynamicCategory.cpp
     browsers/playlistbrowser/DynamicBiasDelegate.cpp
-    browsers/playlistbrowser/DynamicBiasModel.cpp
     browsers/playlistbrowser/DynamicBiasWidgets.cpp
+    browsers/playlistbrowser/DynamicView.cpp
+    browsers/playlistbrowser/PlaylistBrowserFilterProxy.cpp
     browsers/playlistbrowser/PlaylistBrowserModel.cpp
     browsers/playlistbrowser/PlaylistBrowserCategory.cpp
     browsers/playlistbrowser/QtGroupingProxy.cpp
@@ -385,19 +417,8 @@ set(libplaylistmanager_SRCS
     playlistmanager/sql/SqlPlaylist.cpp
     playlistmanager/sql/SqlPlaylistGroup.cpp
     playlistmanager/SyncedPlaylist.cpp
+    playlistmanager/SyncedPodcast.cpp
     playlistmanager/SyncRelationStorage.cpp
-)
-
-#####################################################################
-# TOOLTIPS
-#####################################################################
-set(libtooltip_SRCS
-    playlist/view/tooltips/AmarokToolTip.cpp
-    playlist/view/tooltips/KToolTip.cpp
-    playlist/view/tooltips/KToolTipDelegate.cpp
-    playlist/view/tooltips/KToolTipItem.cpp
-    playlist/view/tooltips/KFormattedBalloonTipDelegate.cpp
-    playlist/view/tooltips/ToolTipManager.cpp
 )
 
 #####################################################################
@@ -408,14 +429,18 @@ set(libplaylist_SRCS
     playlist/PlaylistBreadcrumbItem.cpp
     playlist/PlaylistBreadcrumbItemSortButton.cpp
     playlist/PlaylistBreadcrumbLevel.cpp
+    playlist/PlaylistColumnNames.cpp
     playlist/PlaylistController.cpp
+    playlist/PlaylistInfoWidget.cpp
     playlist/PlaylistItem.cpp
     playlist/PlaylistModel.cpp
     playlist/PlaylistModelStack.cpp
+    playlist/PlaylistQueueEditor.cpp
     playlist/PlaylistSortWidget.cpp
     playlist/PlaylistViewUrlGenerator.cpp
     playlist/PlaylistViewUrlRunner.cpp
     playlist/PlaylistDock.cpp
+    playlist/PlaylistToolBar.cpp
     playlist/ProgressiveSearchWidget.cpp
     playlist/UndoCommands.cpp
     playlist/layouts/LayoutEditDialog.cpp
@@ -448,6 +473,10 @@ set(libplaylist_SRCS
     playlist/proxymodels/SearchProxy.cpp
 )
 
+kde4_add_ui_files(libplaylist_SRCS
+    playlist/PlaylistQueueEditor.ui
+)
+
 #####################################################################
 # AUDIO CD SUPPORT
 #####################################################################
@@ -463,27 +492,32 @@ endif(KDEMULTIMEDIA_FOUND)
 # DYNAMIC
 #####################################################################
 set(libdynamic_SRCS
-    dynamic/Bias.cpp
+    dynamic/TrackSet.cpp
+    dynamic/BiasFactory.cpp
     dynamic/BiasedPlaylist.cpp
     dynamic/BiasSolver.cpp
-    dynamic/CustomBias.cpp
-    dynamic/CustomBiasEntry.cpp
-    dynamic/CustomBiasEntryWidget.cpp
     dynamic/DynamicPlaylist.cpp
-    dynamic/TrackSet.cpp
-    dynamic/gsl/gauss.c
+    dynamic/DynamicModel.cpp
 
     # biases
-    dynamic/biases/EchoNest.cpp
+    dynamic/Bias.cpp
+    dynamic/biases/AlbumPlayBias.cpp
+    dynamic/biases/EchoNestBias.cpp
+    dynamic/biases/IfElseBias.cpp
+    dynamic/biases/PartBias.cpp
+    dynamic/biases/QuizPlayBias.cpp
+    dynamic/biases/TagMatchBias.cpp
+    dynamic/biases/SearchQueryBias.cpp
 )
 
 #####################################################################
 # DBUS
 #####################################################################
 set(dbus_SRCS
-    dbus/RootDBusHandler.cpp
-    dbus/PlayerDBusHandler.cpp
-    dbus/TracklistDBusHandler.cpp
+    dbus/mpris1/RootHandler.cpp
+    dbus/mpris1/PlayerHandler.cpp
+    dbus/mpris1/TrackListHandler.cpp
+    dbus/mpris2/Mpris2DBusHandler.cpp
     dbus/CollectionDBusHandler.cpp
     dbus/DBusQueryHelper.cpp
 )
@@ -501,6 +535,7 @@ set(scriptengine_SRCS
     scriptengine/AmarokScriptableServiceScript.cpp
     scriptengine/AmarokServicePluginManagerScript.cpp
     scriptengine/AmarokEngineScript.cpp
+    scriptengine/AmarokKNotifyScript.cpp
     scriptengine/AmarokOSDScript.cpp
     scriptengine/AmarokPlaylistScript.cpp
     scriptengine/AmarokStatusbarScript.cpp
@@ -519,16 +554,14 @@ set(apg_SRCS
     playlistgenerator/ConstraintFactory.cpp
     playlistgenerator/ConstraintNode.cpp
     playlistgenerator/ConstraintSolver.cpp
-    playlistgenerator/ConstraintTester.cpp
-    playlistgenerator/ConstraintTestWrapper.cpp
     playlistgenerator/Preset.cpp
     playlistgenerator/PresetEditDialog.cpp
     playlistgenerator/PresetModel.cpp
     playlistgenerator/TreeController.cpp
     playlistgenerator/TreeModel.cpp
     playlistgenerator/constraints/Checkpoint.cpp
-    playlistgenerator/constraints/CheckpointSupport.cpp
     playlistgenerator/constraints/Matching.cpp
+    playlistgenerator/constraints/PlaylistDuration.cpp
     playlistgenerator/constraints/PlaylistLength.cpp
     playlistgenerator/constraints/PreventDuplicates.cpp
     playlistgenerator/constraints/TagMatch.cpp
@@ -540,6 +573,7 @@ kde4_add_ui_files(apg_SRCS
     playlistgenerator/ConstraintGroupEditWidget.ui
     playlistgenerator/PresetEditDialog.ui
     playlistgenerator/constraints/CheckpointEditWidget.ui
+    playlistgenerator/constraints/PlaylistDurationEditWidget.ui
     playlistgenerator/constraints/PlaylistLengthEditWidget.ui
     playlistgenerator/constraints/PreventDuplicatesEditWidget.ui
     playlistgenerator/constraints/TagMatchEditWidget.ui
@@ -564,17 +598,6 @@ if( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
 endif( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
 
 #####################################################################
-# RESOLVERS
-#####################################################################
-set(taglib_filetype_resolver_SRCS
-    ../shared/taglib_filetype_resolvers/asffiletyperesolver.cpp
-    ../shared/taglib_filetype_resolvers/mp4filetyperesolver.cpp
-    ../shared/taglib_filetype_resolvers/wavfiletyperesolver.cpp
-    ../shared/taglib_filetype_resolvers/mimefiletyperesolver.cpp
-)
-
-
-#####################################################################
 # LIBAMAROK
 #####################################################################
 set(amaroklib_LIB_SRCS
@@ -597,6 +620,7 @@ set(amaroklib_LIB_SRCS
     ${core_interfaces_SRCS}
     ${apg_SRCS}
     ${collection_SRCS}
+    ${scanner_SRCS}
     ${mac_SRCS}
     ${network_access_SRCS}
     ${libplaylistbrowser_SRCS}
@@ -606,7 +630,6 @@ set(amaroklib_LIB_SRCS
     ${scriptengine_SRCS}
     ${libstatusbar_SRCS}
     ${libamarokurl_SRCS}
-    ${taglib_filetype_resolver_SRCS}
     ${libsynchronization_SRCS}
     core-impl/logger/ProxyLogger.cpp
     aboutdialog/AnimatedBarWidget.cpp
@@ -623,23 +646,29 @@ set(amaroklib_LIB_SRCS
     CaseConverter.cpp
     DirectoryLoader.cpp
     EngineController.cpp
-    Expression.cpp
     KNotificationBackend.cpp
     MainWindow.cpp
     MediaDeviceCache.cpp
     MediaDeviceMonitor.cpp
-    StarManager.cpp
+    MountPointManager.cpp
+    PluginManager.cpp
+    QStringx.cpp
+    ScriptManager.cpp
+    ScriptUpdater.cpp
     SvgHandler.cpp
     SvgTinter.cpp
+    TrayIcon.cpp
     core-impl/meta/timecode/TimecodeObserver.cpp
     core-impl/meta/timecode/TimecodeMeta.cpp
     core-impl/meta/timecode/TimecodeTrackProvider.cpp
+    covermanager/CoverCache.cpp
     covermanager/CoverFetcher.cpp
     covermanager/CoverFetchingActions.cpp
     covermanager/CoverFetchQueue.cpp
     covermanager/CoverFetchUnit.cpp
     covermanager/CoverFoundDialog.cpp
     covermanager/CoverManager.cpp
+    covermanager/CoverViewDialog.cpp
     databaseimporter/DatabaseImporter.cpp
     databaseimporter/amarok14/FastForwardImporter.cpp
     databaseimporter/amarok14/FastForwardImporterConfig.cpp
@@ -647,25 +676,31 @@ set(amaroklib_LIB_SRCS
     databaseimporter/itunes/ITunesImporterConfig.cpp
     databaseimporter/itunes/ITunesImporter.cpp
     databaseimporter/itunes/ITunesImporterWorker.cpp
+    databaseimporter/sqlbatch/SqlBatchImporter.cpp
+    databaseimporter/sqlbatch/SqlBatchImporterConfig.cpp
     dialogs/CollectionSetup.cpp
     dialogs/DatabaseImporterDialog.cpp
     dialogs/EditFilterDialog.cpp
     dialogs/EqualizerDialog.cpp
     dialogs/FilenameLayoutDialog.cpp
+    dialogs/MusicBrainzTagger.cpp
     dialogs/OrganizeCollectionDialog.cpp
     dialogs/TrackOrganizer.cpp
-    dialogs/ScriptSelector.cpp
-    dialogs/ScriptManager.cpp
-    dialogs/ScriptUpdater.cpp
     dialogs/TagDialog.cpp
     dialogs/TagGuesser.cpp
     dialogs/LabelListModel.cpp
+    equalizer/EqualizerPresets.cpp
     browsers/filebrowser/MimeTypeFilterProxyModel.cpp
     browsers/filebrowser/FileBrowser.cpp
     browsers/filebrowser/FileView.cpp
     firstruntutorial/FirstRunTutorial.cpp
     firstruntutorial/FirstRunTutorialPage.cpp
+    musicbrainz/MusicBrainzFinder.cpp
+    musicbrainz/MusicBrainzTags.cpp
+    musicbrainz/MusicBrainzXmlParser.cpp
+    OpmlOutline.cpp
     OpmlParser.cpp
+    OpmlWriter.cpp
     PaletteHandler.cpp
     PopupDropperFactory.cpp
     statemanagement/ApplicationController.cpp
@@ -678,8 +713,9 @@ set(amaroklib_LIB_SRCS
     widgets/AmarokDockWidget.cpp
     widgets/AnimatedLabelStack.cpp
     widgets/BreadcrumbItemButton.cpp
+    widgets/ClearSpinBox.cpp
     widgets/CoverLabel.cpp
-    widgets/hintlineedit.cpp
+    widgets/HintLineEdit.cpp
     widgets/kdatecombo.cpp
     widgets/kratingpainter.cpp
     widgets/kratingwidget.cpp
@@ -687,58 +723,43 @@ set(amaroklib_LIB_SRCS
     widgets/EditDeleteComboBoxView.cpp
     widgets/EditDeleteDelegate.cpp
     widgets/ElidingButton.cpp
-    widgets/ExpandingControlsWidget.cpp
     widgets/FlowLayout.cpp
     widgets/HorizontalDivider.cpp
     widgets/IconButton.cpp
     widgets/ComboBox.cpp
     widgets/LineEdit.cpp
-    widgets/MainControlsButton.cpp
-    widgets/MainControlsWidget.cpp
     widgets/Osd.cpp
+    widgets/TimeLabel.cpp
     widgets/PixmapViewer.cpp
     widgets/PlayPauseButton.cpp
     widgets/PrettyTreeView.cpp
     widgets/ProgressWidget.cpp
     widgets/SearchWidget.cpp
     widgets/SliderWidget.cpp
+    widgets/StarManager.cpp
     widgets/TokenPool.cpp
     widgets/Token.cpp
     widgets/TokenWithLayout.cpp
-    widgets/VolumeWidget.cpp
     widgets/VolumeDial.cpp
-    widgets/Splitter.cpp
     widgets/TrackActionButton.cpp
     widgets/BookmarkTriangle.cpp
     widgets/BookmarkPopup.cpp
     widgets/TrackSelectWidget.cpp
+    widgets/MetaQueryWidget.cpp
     GlobalCollectionActions.cpp
     GlobalCurrentTrackActions.cpp
     moodbar/MoodbarManager.cpp
+    ../shared/FileType.cpp
 )
 
-if(KSTATUSNOTIFIERITEM_FOUND)
+if( NOT BUILD_MYSQLE_COLLECTION )
     set(amaroklib_LIB_SRCS
         ${amaroklib_LIB_SRCS}
-        TrayIcon.cpp
-        )
-else(KSTATUSNOTIFIERITEM_FOUND)
-    set(amaroklib_LIB_SRCS
-        ${amaroklib_LIB_SRCS}
-        TrayIconLegacy.cpp
-        )
-endif(KSTATUSNOTIFIERITEM_FOUND)
-
-if( BUILD_MYSQLE_COLLECTION )
-else( BUILD_MYSQLE_COLLECTION )
-        set(amaroklib_LIB_SRCS
-            ${amaroklib_LIB_SRCS}
-            MySqlServerTester.cpp
-           )
-        add_definitions(${MYSQL_CFLAGS})
-        include_directories(${MYSQL_INCLUDE_DIR})
-        target_link_libraries(amaroklib ${MYSQL_LIBS})
-endif( BUILD_MYSQLE_COLLECTION )
+        MySqlServerTester.cpp
+    )
+    add_definitions(${MYSQL_CFLAGS})
+    include_directories(${MYSQL_INCLUDE_DIR})
+endif( NOT BUILD_MYSQLE_COLLECTION )
 
 if(KDE4_BUILD_TESTS)
     set(amaroklib_LIB_SRCS
@@ -763,6 +784,11 @@ if(KDE4_BUILD_TESTS)
     )
 endif()
 
+if( LIBMYGPO_QT_FOUND )
+    set( EXTRA_LIBS ${LIBMYGPO_QT_LIBRARIES} )
+    include_directories(     ${LIBMYGPO_QT_INCLUDE_DIRS} ${LIBMYGPO_QT_INCLUDE_DIRS}/../ )
+endif( LIBMYGPO_QT_FOUND )
+
 if( LIBLASTFM_FOUND )
     set(amaroklib_LIB_SRCS
         ${amaroklib_LIB_SRCS}
@@ -772,10 +798,97 @@ if( LIBLASTFM_FOUND )
     set( EXTRA_LIBS ${LIBLASTFM_LIBRARY} )
 endif( LIBLASTFM_FOUND )
 
-qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.root.xml RootDBusHandler.h Amarok::RootDBusHandler RootAdaptor RootAdaptor)
-qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.player.xml PlayerDBusHandler.h Amarok::PlayerDBusHandler PlayerAdaptor PlayerAdaptor)
-qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.freedesktop.MediaPlayer.tracklist.xml TracklistDBusHandler.h Amarok::TracklistDBusHandler TracklistAdaptor TracklistAdaptor)
-qt4_add_dbus_adaptor( amaroklib_LIB_SRCS dbus/org.kde.amarok.Collection.xml CollectionDBusHandler.h CollectionDBusHandler CollectionAdaptor CollectionAdaptor)
+if( LIBOFA_FOUND )
+    include_directories(
+        ${LIBAVCODEC_INCLUDE_DIR}
+        ${LIBAVFORMAT_INCLUDE_DIR}
+    )
+    set( EXTRA_LIBS
+        ${EXTRA_LIBS}
+        ${LIBOFA_LIBRARY}
+        ${LIBAVFORMAT_LIBRARY}
+        ${LIBAVCODEC_LIBRARY}
+    )
+    set( amaroklib_LIB_SRCS
+        ${amaroklib_LIB_SRCS}
+        musicbrainz/MusicDNSAudioDecoder.cpp
+        musicbrainz/MusicDNSFinder.cpp
+        musicbrainz/MusicDNSXmlParser.cpp
+    )
+endif( LIBOFA_FOUND )
+
+qt4_add_dbus_adaptor(
+   amaroklib_LIB_SRCS
+   dbus/mpris1/org.freedesktop.MediaPlayer.root.xml
+   dbus/mpris1/RootHandler.h
+   Mpris1::RootHandler
+   Mpris1RootAdaptor
+   Mpris1RootAdaptor )
+qt4_add_dbus_adaptor(
+   amaroklib_LIB_SRCS
+   dbus/mpris1/org.freedesktop.MediaPlayer.player.xml
+   dbus/mpris1/PlayerHandler.h
+   Mpris1::PlayerHandler
+   Mpris1PlayerAdaptor
+   Mpris1PlayerAdaptor )
+qt4_add_dbus_adaptor(
+   amaroklib_LIB_SRCS
+   dbus/mpris1/org.freedesktop.MediaPlayer.tracklist.xml
+   dbus/mpris1/TrackListHandler.h
+   Mpris1::TrackListHandler
+   Mpris1TrackListAdaptor
+   Mpris1TrackListAdaptor )
+qt4_add_dbus_adaptor(
+   amaroklib_LIB_SRCS
+   dbus/org.kde.amarok.App.xml
+   dbus/mpris1/RootHandler.h
+   Mpris1::RootHandler
+   Mpris1AmarokAppAdaptor
+   Mpris1AmarokAppAdaptor )
+qt4_add_dbus_adaptor(
+   amaroklib_LIB_SRCS
+   dbus/mpris1/org.kde.amarok.Mpris1Extensions.Player.xml
+   dbus/mpris1/PlayerHandler.h
+   Mpris1::PlayerHandler
+   Mpris1AmarokPlayerAdaptor
+   Mpris1AmarokPlayerAdaptor )
+
+qt4_add_dbus_adaptor(
+   amaroklib_LIB_SRCS
+   dbus/org.kde.amarok.Collection.xml
+   dbus/CollectionDBusHandler.h
+   CollectionDBusHandler
+   CollectionAdaptor
+   CollectionAdaptor )
+
+qt4_add_dbus_adaptor(
+   amaroklib_LIB_SRCS
+   dbus/mpris2/org.mpris.MediaPlayer2.root.xml
+   dbus/mpris2/Mpris2DBusHandler.h
+   Amarok::Mpris2DBusHandler
+   Mpris2RootAdaptor
+   Mpris2RootAdaptor )
+qt4_add_dbus_adaptor(
+   amaroklib_LIB_SRCS
+   dbus/mpris2/org.mpris.MediaPlayer2.Player.xml
+   dbus/mpris2/Mpris2DBusHandler.h
+   Amarok::Mpris2DBusHandler
+   Mpris2PlayerAdaptor
+   Mpris2PlayerAdaptor )
+qt4_add_dbus_adaptor(
+   amaroklib_LIB_SRCS
+   dbus/org.kde.amarok.App.xml
+   dbus/mpris2/Mpris2DBusHandler.h
+   Amarok::Mpris2DBusHandler
+   Mpris2AmarokAppAdaptor
+   Mpris2AmarokAppAdaptor )
+qt4_add_dbus_adaptor(
+   amaroklib_LIB_SRCS
+   dbus/mpris2/org.kde.amarok.Mpris2Extensions.Player.xml
+   dbus/mpris2/Mpris2DBusHandler.h
+   Amarok::Mpris2DBusHandler
+   Mpris2AmarokPlayerAdaptor
+   Mpris2AmarokPlayerAdaptor )
 
 set( amaroklib_DEPENDS "amarokpud" )
 set( amaroklib_DEPENDS "amarokcore" )
@@ -788,7 +901,7 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     aboutdialog/OcsPersonItem.ui
     dialogs/EditFilterDialog.ui
     dialogs/EqualizerDialog.ui
-    dialogs/ScriptManagerBase.ui
+    dialogs/MusicBrainzTagger.ui
     dialogs/TagDialogBase.ui
     dialogs/FilenameLayoutDialog.ui
     dialogs/OrganizeCollectionDialogBase.ui
@@ -797,6 +910,7 @@ kde4_add_ui_files(amaroklib_LIB_SRCS
     playlist/layouts/PlaylistLayoutEditDialog.ui
     core-impl/podcasts/sql/PodcastSettingsBase.ui
     core-impl/podcasts/sql/SqlPodcastProviderSettingsWidget.ui
+    core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui
     browsers/playlistbrowser/PodcastCategoryBase.ui
 )
 
@@ -805,40 +919,47 @@ kde4_add_library(amaroklib SHARED ${amaroklib_LIB_SRCS})
 target_link_libraries(amaroklib
     ${KDE4_KDEUI_LIBS}
     ${KDE4_KFILE_LIBS}
-    ${KDE4_KHTML_LIBS}
-    ${KDE4_KNEWSTUFF2_LIBS}
-    ${KDE4_KNEWSTUFF_LIBS}
+    ${KDE4_KNEWSTUFF3_LIBS}
     ${KDE4_KNOTIFYCONFIG_LIBS}
     ${KDE4_KUTILS_LIBS}
     ${KDE4_PHONON_LIBRARY}
     ${KDE4_PLASMA_LIBS}
     ${KDE4_SOLID_LIBRARY}
     ${KDE4_THREADWEAVER_LIBRARIES}
-    ${TAGLIB_LIBRARIES}
-    ${TAGLIB-EXTRAS_LIBRARIES}
     ${QT_QTSCRIPT_LIBRARY}
     ${QT_QTSQL_LIBRARY}
-    ${QT_QTWEBKIT_LIBRARY}
-    ${QCA2_LIBRARIES}
     ${CMAKE_THREAD_LIBS_INIT}
     ${EXTRA_LIBS}
     amarokpud
     amarokcore
     amarokocsclient
+    amarok-transcoding
 )
 
-if (KDE_VERSION VERSION_GREATER "4.3.80")
-    target_link_libraries(amaroklib ${KDE4_KNEWSTUFF3_LIBS})
-endif (KDE_VERSION VERSION_GREATER "4.3.80")
+if( TAGLIB_FOUND )
+    include_directories(${TAGLIB_INCLUDES})
+    add_definitions(${TAGLIB_CFLAGS})
+    target_link_libraries(amaroklib ${TAGLIB_LIBRARIES})
+endif( TAGLIB_FOUND )
+if( TAGLIB-EXTRAS_FOUND )
+    include_directories(${TAGLIB-EXTRAS_INCLUDES})
+    add_definitions(${TAGLIB-EXTRAS_CFLAGS})
+    target_link_libraries(amaroklib ${TAGLIB-EXTRAS_LIBRARIES})
+endif( TAGLIB-EXTRAS_FOUND )
+
+if( QCA2_FOUND )
+    include_directories( ${QCA2_INCLUDE_DIR} )
+    target_link_libraries(amaroklib ${QCA2_LIBRARIES})
+endif( QCA2_FOUND )
+
 
 if(KDE4_BUILD_TESTS)
     target_link_libraries(amaroklib ${QT_QTTEST_LIBRARY})
 endif()
 
-if( BUILD_MYSQLE_COLLECTION )
-else( BUILD_MYSQLE_COLLECTION )
+if( NOT BUILD_MYSQLE_COLLECTION )
     target_link_libraries(amaroklib ${MYSQL_LIBRARIES} ${ZLIB_LIBRARIES})
-endif( BUILD_MYSQLE_COLLECTION )
+endif( NOT BUILD_MYSQLE_COLLECTION )
 
 if(WIN32)
     target_link_libraries(amaroklib ${QT_QTWEBKIT_LIBRARY})
@@ -869,14 +990,16 @@ install(TARGETS amaroklib ${INSTALL_TARGETS_DEFAULT_ARGS} )
 # AMAROK
 #####################################################################
 
-set(amarok_SRCS main.cpp )
+set(amarok_SRCS equalizer/EqualizerPresets.cpp main.cpp )
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${KDE4_ENABLE_EXCEPTIONS}")
 
 kde4_add_app_icon(amarok_SRCS ${CMAKE_CURRENT_SOURCE_DIR}/images/hi*-app-amarok.png)
 
+find_package(X11)
+
 if(Q_WS_MAC)
     kde4_add_executable(Amarok ${amarok_SRCS})
-    target_link_libraries(Amarok ${KDE4_KDECORE_LIBS} amaroklib )
+    target_link_libraries(Amarok ${KDE4_KDECORE_LIBS} amarokcore amaroklib )
     SET_TARGET_PROPERTIES(Amarok PROPERTIES LINK_FLAGS "-undefined dynamic_lookup")
     set_target_properties(Amarok PROPERTIES MACOSX_BUNDLE_INFO_PLIST ${MAC_FILES_DIR}/Info.plist.template)
     set_target_properties(Amarok PROPERTIES MACOSX_BUNDLE_GUI_IDENTIFIER "org.kde.amarok")
@@ -884,17 +1007,20 @@ if(Q_WS_MAC)
     #the following line was copied from KDE4Macros.cmake. kde4_add_app_icon fails to actually copy the .icns file
     SET_SOURCE_FILES_PROPERTIES(${CMAKE_CURRENT_BINARY_DIR}/amarok.icns PROPERTIES MACOSX_PACKAGE_LOCATION Resources)
     install(TARGETS Amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
+elseif(X11_FOUND)
+    kde4_add_executable(amarok ${amarok_SRCS})
+    target_link_libraries(amarok ${KDE4_KDEUI_LIBS} amarokcore amaroklib ${X11_LIBRARIES})
+    install(TARGETS amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
 else(Q_WS_MAC)
     kde4_add_executable(amarok ${amarok_SRCS})
-    target_link_libraries(amarok ${KDE4_KDEUI_LIBS} amaroklib ${TAGLIB_LIBRARIES} ${TAGLIB-EXTRAS_LIBRARIES} )
-
+    target_link_libraries(amarok ${KDE4_KDEUI_LIBS} amarokcore amaroklib)
     install(TARGETS amarok ${INSTALL_TARGETS_DEFAULT_ARGS})
 endif(Q_WS_MAC)
 
 ########### install files ###############
 
-install(FILES amarok.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
-install(FILES amarok_containers.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
+install(PROGRAMS amarok.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
+install(PROGRAMS amarok_containers.desktop DESTINATION ${XDG_APPS_INSTALL_DIR} )
 
 install(FILES amarok_plugin.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
 install(FILES amarok_codecinstall.desktop DESTINATION ${SERVICETYPES_INSTALL_DIR})
@@ -914,10 +1040,13 @@ install(FILES context/servicetypes/amarok_context_applet.desktop
               DESTINATION ${SERVICETYPES_INSTALL_DIR} )
 
 install(FILES  amarokconfig.kcfg DESTINATION ${KCFG_INSTALL_DIR} )
-install(FILES dbus/org.freedesktop.MediaPlayer.root.xml
-              dbus/org.freedesktop.MediaPlayer.player.xml
-              dbus/org.freedesktop.MediaPlayer.tracklist.xml
+install(FILES dbus/mpris1/org.freedesktop.MediaPlayer.root.xml
+              dbus/mpris1/org.freedesktop.MediaPlayer.player.xml
+              dbus/mpris1/org.freedesktop.MediaPlayer.tracklist.xml
+              dbus/org.kde.amarok.App.xml
               dbus/org.kde.amarok.Collection.xml
+              dbus/mpris1/org.kde.amarok.Mpris1Extensions.Player.xml
+              dbus/mpris2/org.kde.amarok.Mpris2Extensions.Player.xml
               DESTINATION ${DBUS_INTERFACES_INSTALL_DIR})
 
 

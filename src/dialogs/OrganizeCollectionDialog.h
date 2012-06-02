@@ -41,43 +41,47 @@ class AMAROK_EXPORT OrganizeCollectionDialog : public KDialog
 
     public:
 
-        explicit OrganizeCollectionDialog( const Meta::TrackList &tracks, const QStringList &folders, QWidget *parent=0, const char *name=0,
-                                           bool modal=true, const QString &caption=QString(),
-                                           QFlags<KDialog::ButtonCode> buttonMask=Ok|Cancel );
+        explicit OrganizeCollectionDialog( const Meta::TrackList &tracks,
+                                           const QStringList &folders,
+                                           const QString &targetExtension = QString(),
+                                           QWidget *parent = 0,
+                                           const char *name = 0,
+                                           bool modal = true,
+                                           const QString &caption = QString(),
+                                           QFlags<KDialog::ButtonCode> buttonMask = Ok|Cancel );
 
         ~OrganizeCollectionDialog();
 
         QMap<Meta::TrackPtr, QString> getDestinations();
         bool overwriteDestinations() const;
 
-    signals:
-        void updatePreview(QString);
-
     public slots:
         void slotUpdatePreview();
         void slotDialogAccepted();
+
     private slots:
-        void slotFormatPresetSelected( int );
-        void slotAddFormat();
-        void slotRemoveFormat();
+        void previewNextBatch();
+        void slotOrganizerFinished();
 
     private:
         QString buildFormatTip() const;
         QString buildFormatString() const;
         QString commonPrefix( const QStringList &list ) const;
         void toggleDetails();
-        void preview( const QString &format );
         void update( int dummy );
-        void update( const QString & dummy );
+        void update( const QString &dummy );
         void init();
-        void populateFormatList();
-        void saveFormatList();
 
         Ui::OrganizeCollectionDialogBase *ui;
         FilenameLayoutDialog *m_filenameLayoutDialog;
-        TrackOrganizer *mTrackOrganizer;
+        TrackOrganizer *m_trackOrganizer;
+        bool m_trackOrganizerDone;
         bool m_detailed;
         Meta::TrackList m_allTracks;
+        QString m_targetFileExtension;
+        bool m_schemeModified;
+
+        bool m_conflict;
 
     private slots:
         void slotEnableOk( const QString & currentCollectionRoot );

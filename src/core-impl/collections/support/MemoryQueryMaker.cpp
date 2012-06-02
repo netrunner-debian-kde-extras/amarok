@@ -74,12 +74,12 @@ struct MemoryQueryMaker::Private {
     QList<CustomReturnFunction*> returnFunctions;
     QList<CustomReturnValue*> returnValues;
     bool usingFilters;
-    bool randomize;
     KRandomSequence sequence;   //do not reset
     qint64 orderByField;
     bool orderDescending;
     bool orderByNumberField;
     AlbumQueryMode albumQueryMode;
+    ArtistQueryMode artistQueryMode;
     LabelQueryMode labelQueryMode;
     QString collectionId;
 };
@@ -92,7 +92,19 @@ MemoryQueryMaker::MemoryQueryMaker( QWeakPointer<MemoryCollection> mc, const QSt
     d->collectionId = collectionId;
     d->matcher = 0;
     d->job = 0;
-    reset();
+    d->type = QueryMaker::None;
+    d->returnDataPtrs = false;
+    d->job = 0;
+    d->job = 0;
+    d->maxsize = -1;
+    d->containerFilters.push( new AndContainerMemoryFilter() );
+    d->usingFilters = false;
+    d->orderByField = 0;
+    d->orderDescending = false;
+    d->orderByNumberField = false;
+    d->albumQueryMode = AllAlbums;
+    d->artistQueryMode = TrackArtists;
+    d->labelQueryMode = QueryMaker::NoConstraint;
 }
 
 MemoryQueryMaker::~MemoryQueryMaker()
@@ -102,32 +114,6 @@ MemoryQueryMaker::~MemoryQueryMaker()
     if( !d->containerFilters.isEmpty() )
         delete d->containerFilters.first();
     delete d;
-}
-
-QueryMaker*
-MemoryQueryMaker::reset()
-{
-    d->type = QueryMaker::None;
-    d->returnDataPtrs = false;
-    delete d->matcher;
-    delete d->job;
-    d->maxsize = -1;
-    if( !d->containerFilters.isEmpty() )
-        delete d->containerFilters.first();
-    d->containerFilters.clear();
-    d->containerFilters.push( new AndContainerMemoryFilter() );
-    d->usingFilters = false;
-    d->randomize = false;
-    qDeleteAll( d->returnFunctions );
-    d->returnFunctions.clear();
-    qDeleteAll( d->returnValues );
-    d->returnValues.clear();
-    d->orderByField = 0;
-    d->orderDescending = false;
-    d->orderByNumberField = false;
-    d->albumQueryMode = AllAlbums;
-    d->labelQueryMode = QueryMaker::NoConstraint;
-    return this;
 }
 
 void
@@ -151,30 +137,28 @@ MemoryQueryMaker::run()
         }
         qmi->setMatchers( d->matcher );
         d->matcher = 0; //will be deleted by MemoryQueryMakerInternal
-        qmi->setRandomize( d->randomize );
         qmi->setMaxSize( d->maxsize );
-        qmi->setReturnAsDataPtrs( d->returnDataPtrs );
         qmi->setType( d->type );
         qmi->setCustomReturnFunctions( d->returnFunctions );
         d->returnFunctions.clear(); //will be deleted by MemoryQueryMakerInternal
         qmi->setCustomReturnValues( d->returnValues );
         d->returnValues.clear(); //will be deleted by MemoryQueryMakerInternal
         qmi->setAlbumQueryMode( d->albumQueryMode );
+        qmi->setArtistQueryMode( d->artistQueryMode );
         qmi->setLabelQueryMode( d->labelQueryMode );
         qmi->setOrderDescending( d->orderDescending );
         qmi->setOrderByNumberField( d->orderByNumberField );
         qmi->setOrderByField( d->orderByField );
         qmi->setCollectionId( d->collectionId );
 
-        connect( qmi, SIGNAL(newResultReady(QString,Meta::AlbumList)), SIGNAL(newResultReady(QString,Meta::AlbumList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(QString,Meta::ArtistList)), SIGNAL(newResultReady(QString,Meta::ArtistList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(QString,Meta::GenreList)), SIGNAL(newResultReady(QString,Meta::GenreList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(QString,Meta::ComposerList)), SIGNAL(newResultReady(QString,Meta::ComposerList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(QString,Meta::YearList)), SIGNAL(newResultReady(QString,Meta::YearList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(QString,Meta::TrackList)), SIGNAL(newResultReady(QString,Meta::TrackList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(QString,Meta::DataList)), SIGNAL(newResultReady(QString,Meta::DataList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(QString,QStringList)), SIGNAL(newResultReady(QString,QStringList)), Qt::DirectConnection );
-        connect( qmi, SIGNAL(newResultReady(QString,Meta::LabelList)), SIGNAL(newResultReady(QString,Meta::LabelList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(Meta::AlbumList)), SIGNAL(newResultReady(Meta::AlbumList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(Meta::ArtistList)), SIGNAL(newResultReady(Meta::ArtistList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(Meta::GenreList)), SIGNAL(newResultReady(Meta::GenreList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(Meta::ComposerList)), SIGNAL(newResultReady(Meta::ComposerList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(Meta::YearList)), SIGNAL(newResultReady(Meta::YearList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(Meta::TrackList)), SIGNAL(newResultReady(Meta::TrackList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(QStringList)), SIGNAL(newResultReady(QStringList)), Qt::DirectConnection );
+        connect( qmi, SIGNAL(newResultReady(Meta::LabelList)), SIGNAL(newResultReady(Meta::LabelList)), Qt::DirectConnection );
 
         d->job = new QueryJob( qmi );
         connect( d->job, SIGNAL( done( ThreadWeaver::Job * ) ), SLOT( done( ThreadWeaver::Job * ) ) );
@@ -213,6 +197,11 @@ MemoryQueryMaker::setQueryType( QueryType type )
             d->type = QueryMaker::Album;
         return this;
 
+    case QueryMaker::AlbumArtist:
+        if ( d->type == QueryMaker::None )
+            d->type = QueryMaker::AlbumArtist;
+        return this;
+
     case QueryMaker::Composer:
         if ( d->type == QueryMaker::None )
             d->type = QueryMaker::Composer;
@@ -241,13 +230,6 @@ MemoryQueryMaker::setQueryType( QueryType type )
     case QueryMaker::None:
         return this;
     }
-    return this;
-}
-
-QueryMaker*
-MemoryQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
-{
-    d->returnDataPtrs = resultAsDataPtrs;
     return this;
 }
 
@@ -307,29 +289,6 @@ MemoryQueryMaker::orderBy( qint64 value, bool descending )
 }
 
 QueryMaker*
-MemoryQueryMaker::orderByRandom()
-{
-    d->randomize = true;
-    return this;
-}
-
-QueryMaker*
-MemoryQueryMaker::includeCollection( const QString &collectionId )
-{
-    Q_UNUSED( collectionId );
-    //TODO stub
-    return this;
-}
-
-QueryMaker*
-MemoryQueryMaker::excludeCollection( const QString &collectionId )
-{
-    Q_UNUSED( collectionId );
-    //TODO stub
-    return this;
-}
-
-QueryMaker*
 MemoryQueryMaker::addMatch( const Meta::TrackPtr &track )
 {
     MemoryMatcher *trackMatcher = new TrackMatcher( track );
@@ -348,7 +307,7 @@ MemoryQueryMaker::addMatch( const Meta::TrackPtr &track )
 QueryMaker*
 MemoryQueryMaker::addMatch( const Meta::ArtistPtr &artist )
 {
-    MemoryMatcher *artistMatcher = new ArtistMatcher( artist );
+    MemoryMatcher *artistMatcher = new ArtistMatcher( artist, d->artistQueryMode );
     if ( d->matcher == 0 )
         d->matcher = artistMatcher;
     else
@@ -358,6 +317,8 @@ MemoryQueryMaker::addMatch( const Meta::ArtistPtr &artist )
             tmp = tmp->next();
         tmp->setNext( artistMatcher );
     }
+
+    d->artistQueryMode = QueryMaker::TrackArtists;
     return this;
 }
 
@@ -422,13 +383,6 @@ MemoryQueryMaker::addMatch( const Meta::YearPtr &year )
             tmp = tmp->next();
         tmp->setNext( yearMatcher );
     }
-    return this;
-}
-
-QueryMaker*
-MemoryQueryMaker::addMatch( const Meta::DataPtr &data )
-{
-    ( const_cast<Meta::DataPtr&>(data) )->addMatchTo( this );
     return this;
 }
 
@@ -530,6 +484,12 @@ MemoryQueryMaker::done( ThreadWeaver::Job *job )
 QueryMaker * MemoryQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
 {
     d->albumQueryMode = mode;
+    return this;
+}
+
+QueryMaker* MemoryQueryMaker::setArtistQueryMode( QueryMaker::ArtistQueryMode mode )
+{
+    d->artistQueryMode = mode;
     return this;
 }
 

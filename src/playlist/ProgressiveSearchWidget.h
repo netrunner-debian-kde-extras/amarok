@@ -26,6 +26,7 @@ class KAction;
 class QKeyEvent;
 class QLabel;
 class QMenu;
+class QToolBar;
 
 namespace Playlist
 {
@@ -57,12 +58,12 @@ public:
      */
     ~ProgressiveSearchWidget();
 
-    QString currentFilter() { return m_searchEdit->text(); }
+    QString currentFilter() const { return m_searchEdit->text(); }
 
     void focusInputLine();
     void setCurrentFilter( const QString filterExpr ) { m_searchEdit->setText( filterExpr ); }
 
-    bool onlyMatches() { return m_showOnlyMatches; }
+    bool onlyMatches() const { return m_showOnlyMatches; }
 
 signals:
     /**
@@ -108,6 +109,11 @@ signals:
      * Signal emitted when the down key is pressed. Forwarded on from Amarok::LineEdit
      */
     void downPressed();
+
+    /**
+     * Signal emitted when the up key is pressed. Forwarded on from Amarok::LineEdit
+     */
+    void upPressed();
 
 public slots:
     /**
@@ -214,6 +220,7 @@ private:
     KAction   *m_previousAction;
     QMenu     *m_menu;
     QLabel    *m_warningLabel;
+    QToolBar  *m_toolBar;
 
     int        m_searchFieldsMask;
     bool       m_showOnlyMatches;

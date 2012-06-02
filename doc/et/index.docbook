@@ -1,0 +1,1983 @@
+<?xml version="1.0" ?>
+<!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.2-Based Variant V1.1//EN" "dtd/kdex.dtd" [
+  <!ENTITY % addindex "IGNORE">
+  <!ENTITY % Estonian  "INCLUDE">
+]>
+<book lang="&language;">
+<bookinfo>
+<title
+>&amarok;i käsiraamat</title>
+<authorgroup>
+<author>
+<personname
+><firstname
+>Käesolev käsiraamat on teisendatud &kde; Userbase'i <ulink url=" http://userbase.kde.org/Amarok"
+>&amarok;i</ulink
+> leheküljelt.</firstname
+> <surname
+></surname
+> </personname>
+    </author>
+<othercredit role="translator"
+><firstname
+>Marek</firstname
+><surname
+>Laane</surname
+><affiliation
+><address
+><email
+>bald@smail.ee</email
+></address
+></affiliation
+><contrib
+>Tõlge eesti keelde</contrib
+></othercredit
+> 
+    </authorgroup>
+<legalnotice
+>&FDLNotice;</legalnotice>
+<date
+>2011-01-29</date>
+    <releaseinfo
+>&kde; SC 4.6</releaseinfo>
+<abstract>
+<para
+>&amarok; on vaba ja võimekas &Linux;i muusikamängija. Uusimad 2.x seeria väljalasked, mille kohta kasutatakse sageli väljendit <quote
+>Amarok&nbsp;2</quote
+>, on mitmeplatvormsed (see tähendab, et neid saab kasutada paljudel platvormidel, sealhulgas &Linux;, MacOS ja &Microsoft; &Windows;) ning sisaldavad täielikult ümber töötatud lähtekoodi, mis on võimaldanud lisada uusi huvipakkuvaid võimalusi. Praegu viimane stabiilne väljalase kannab numbrit 2.3.</para>
+    </abstract>
+<keywordset>
+ <keyword
+>KDE</keyword>
+ <keyword
+>multimeedia</keyword>
+ <keyword
+>mängija</keyword>
+ <keyword
+>audio</keyword>
+ <keyword
+>ogg</keyword>
+ <keyword
+>mp3</keyword>
+ <keyword
+>wav</keyword>
+ <keyword
+>muusika</keyword>
+ <keyword
+>heli</keyword>
+</keywordset>
+</bookinfo>
+<!--userbase <timestamp
+>2010-09-14T20:26:14Z</timestamp
+>-->
+
+<!--userbase-content-->
+<chapter id="interface"
+><title
+>Liides</title
+> 
+<para
+>&amarok; kasutab vaikimisi kolme paneeliga liidest. </para>
+<sect1 id="the-left-pane-media-sources"
+><title
+>Vasakpoolne paneel (muusikaallikad)</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokmediasources-home.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Vasakul asuv <emphasis
+>muusikaallikate</emphasis
+> paneel pakub ligipääsu nii sinu kohalikule muusikakogule kui ka muudele teenustele. Ülal asub <guilabel
+>Kohalik muusika</guilabel
+>, mis kujutab endast peamist liidest nii sinu kohalikule muusikakogule kui ka muudele ühendatud andmekandjatele, näiteks MP3-mängijatele ja &CD;-dele. Omaette sektsioon on kõigile <guilabel
+>internetiteenustele</guilabel
+>, mida oled kasutusele võtnud. Siin saab sirvida raadiojaamade ja taskuhäälingu pakutavat, neid kuulata või tellida, suhelda oma <ulink url="http://www.last.fm"
+>last.fm-i</ulink
+> kontoga, osta muusikat internetipoodidest (näiteks <guilabel
+>Magnatune</guilabel
+>), laadida sõltumatute esitajate muusikat alla <guilabel
+>Jamendost</guilabel
+> ja veel palju muud. Sektsioon <guilabel
+>Esitusnimekirjad</guilabel
+> võimaldab luua ja hallata <emphasis
+>dünaamilisi esitusnimekirju</emphasis
+>, kasutada nii oma <emphasis
+>salvestatud esitusnimekirju</emphasis
+> kui ka <emphasis
+>automaatset esitusnimekirja generaatorit</emphasis
+>. Sektsioonis <guilabel
+>Failid</guilabel
+> saab kasutada lõimitud failisirvijat ning sektsioonis <guilabel
+>Podcastid</guilabel
+> uurida oma podcastide tellimusi. </para>
+</sect1>
+<sect1 id="the-central-pane-context-view"
+><title
+>Keskmine paneel (kontekstivaade)</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok-context.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Siin näidatakse kogu teavet. Keskmine paneel sisaldab kolme apletti, mis muutuvad dünaamiliselt, näidates kontekstiteavet parajasti esitatava pala kohta. Apletis <emphasis
+>Aktiivne pala</emphasis
+> näeb hinnangut, hinnet ja esitamiste arvu või viimati esitatud pala, kui parajasti ühtegi pala ei esitata, apletis <emphasis
+>Sõnad</emphasis
+> laulu sõnu ning apletis <emphasis
+><ulink url="http://www.wikipedia.org"
+>Wikipedia</ulink
+></emphasis
+> esitaja lehekülge. Paneeli allosas oleva <emphasis
+>apletiriba</emphasis
+> abil saab lisada teisigi aplette, neid eemaldada või ümber korraldada. </para>
+</sect1>
+<sect1 id="the-right-pane-playlist-view"
+><title
+>Parempoolne paneel (esitusnimekirja vaade)</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2_1right.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>&amarok; pakub kõigist teadaolevatest muusikamängijatest kõige paremini seadistatavat esitusnimekirja. Seda võib tõepoolest muuta just selliseks, nagu sulle meeldib. Kõigepealt on olemas kolm esitusnimekirja valmispaigutust, mida võib niisama kasutada või mille põhjal saab välja töötada just endale sobiva esitusnimekirja. Esitusnimekirja võib genereerida dünaamiliselt mitmesuguste tunnuste alusel, aga võib ka kasutada automaatset esitusnimekirja generaatorit, esitada palasid suvalises järjekorras või lasta neid korrata, panna palasid järjekorda ning salvestada olemasolevaid esitusnimekirju, et neid ka hiljem kasutada. </para>
+</sect1>
+</chapter>
+<chapter id="features"
+><title
+>Võimalused</title
+> 
+<sect1 id="music-playback"
+><title
+>Muusika esitamine</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokfull.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>&amarok; võib toetada suuremat osa levinud muusikafailide vormingutest. Konkreetne vormingute toetus sõltub süsteemis kasutusel olevatest koodekitest ja heli-taustaprogrammist. Toetatud on ka traditsioonilised esitusnimekirjad &mdash; sa võid luua, salvestada ja laadida kõikvõimalikke esitusnimekirju. </para>
+</sect1>
+<sect1 id="device-support"
+><title
+>Seadmete toetus</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2_1ipod.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>&amarok; toetab väga paljusid meediaseadmeid, näiteks <guilabel
+>iPodid</guilabel
+>, <ulink url="http://en.wikipedia.org/wiki/Media_Transfer_Protocol"
+><guilabel
+>MTP</guilabel
+></ulink
+>- ja <ulink url="http://en.wikipedia.org/wiki/USB_mass_storage_device_class"
+><guilabel
+>UMS</guilabel
+></ulink
+>-seadmed. </para>
+ 
+<para
+>Muusikakogu ülaosas oleva nupuga <guilabel
+>Ühendvaade</guilabel
+> saab ühendada kogusid. See tähendab, et palasid sinu kohalikust kogust, heli-&CD;-delt, MP3-mängijalt ja mujalt näidatakse ühtse koguna. See on lülitatav valik, nii et soovi korral võib taas lasta näidata eraldi allikaid. </para>
+</sect1>
+<sect1 id="configurable-context-view"
+><title
+>Seadistatav kontekstivaade</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Context-applets-amarok.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>&amarok;i keskne osa <emphasis
+>kontekstivaade</emphasis
+> võib automaatselt tõmmata internetist kontekstiteavet parajasti esitatava pala kohta (näiteks albumi kaane- või muud pildid, sõnad või <ulink url="http://www.wikipedia.org"
+>Wikipedia</ulink
+> teave) ja seda kasutajale näidata. See üks paljudest &amarok;i ainulaadsetest omadustest. </para>
+</sect1>
+<sect1 id="more-internet-services"
+><title
+>Arvukad internetiteenused</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok_-_internet_services.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>&amarok; avab ukse rikkaliku multimeediakogemuse juurde, mida pakub internet. </para>
+<itemizedlist>
+<listitem
+><para
+>Pakkudes selliseid liideseid, nagu <emphasis
+>Ampache'i muusikaserverid</emphasis
+> ja <emphasis
+>mp3tunesi kogud</emphasis
+>, võimaldatakse sul kuulata muusikat millisest tahes maailma punktist. </para
+></listitem>
+<listitem
+><para
+>Muusikat võib otsustamiseks kuulata ja osta <guilabel
+>Magnatune'ist</guilabel
+>. </para
+></listitem>
+<listitem
+><para
+><guilabel
+>Jamendo</guilabel
+> teenuse kasutamine võimaldab kuulata ja alla laadida sõltumatute esitajate muusikat, kelle tegevust toetavad sinu annetused. </para
+></listitem>
+<listitem
+><para
+>Lõimitud <ulink url="http://www.last.fm"
+>last.fm-i</ulink
+> teenusega võib <emphasis
+>anda teada</emphasis
+> (scrobble) oma paladest, kasutada mitmeid <ulink url="http://www.last.fm"
+>last.fm-i</ulink
+> teenuseid, näiteks statistikat ja edetabeleid, ning tellijad saavad kuulata just enda maitsele kohandatud raadiovooge &mdash; seda kõike ainult &amarok;is. </para
+></listitem>
+</itemizedlist>
+ 
+<para
+>See on kõigest algus &mdash; internetiteenuseid saab veelgi lisada <guilabel
+>skriptihalduri</guilabel
+> abil. </para>
+</sect1>
+<sect1 id="script-manager"
+><title
+>Skriptihaldur</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2_1scriptmanager.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Skriptid on lisad, mis lubavad laiendada &amarok;i funktsionaalsust uuenduslikul viisil. <guilabel
+>Skriptihalduriga</guilabel
+> saab skripte hallata: sellega on võimalik neid paigaldada ja eemaldada või sisse või välja lülitada juba olemasolevaid skripte. Samuti võib kasutada võimalust <guilabel
+>Hangi rohkem skripte</guilabel
+>, et laadida alla uusi, teiste kasutajate üles laaditud skripte. </para>
+</sect1>
+<sect1 id="cover-manager"
+><title
+>Kaanepiltide haldur</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2_1covermanager.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Muusikakogu võib sirvida ka vahva <guilabel
+>kaanepiltide halduriga</guilabel
+>, mis näitab kaanepilte, võimaldab neid mitmest allikast alla laadida või paneb &amarok;i neid automaatselt internetist järele uurima. </para>
+</sect1>
+<sect1 id="rating-and-scoring"
+><title
+>Hinnangud ja hinded</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2_1rating.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Oma armastust laulude vastu võib välja näidata neid hinnates. &amarok; toetab ka <guilabel
+>&frac12;&sdot;&#10025;</guilabel
+> hinnanguid. Lisaks võib &amarok; välja arvutada hinde, mis sõltub sellest, kui sageli sa oled lugu kuulanud või selle vahele jätnud. </para>
+</sect1>
+<sect1 id="pop-up-dropper"
+><title
+>Lohistamishüpik</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Pud-amarok.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>See on uuendusmeelne liides, mis pakub kontekstipõhiseid valikuid (sarnaseid nendele, mida näeb hiire <emphasis
+>paremklõpsumenüüs</emphasis
+>), millele saab <quote
+>lohistada</quote
+> laulu. Haara kinni mõnest palast ja näedki lohistamishüpikut kontekstivaate paneelis. </para>
+</sect1>
+<sect1 id="configurable-playlist-view"
+><title
+>Seadistatav esitusnimekirja vaade</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2_1pleditor.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Laaditud esitusnimekiri on igati seadistatav ning võib näidata teavet laulude kohta igas mõeldavas vormis. Kui oled harjunud <guilabel
+>tabelivaatega</guilabel
+>, mida pakkus &amarok;&nbsp;1 ja teisedki muusikamängijad, võid ka selle valida! <guilabel
+>Esitusnimekirja vaade</guilabel
+> võimaldab aktiivset esitusnimekirja ka salvestada või eksportida. </para>
+</sect1>
+<sect1 id="dynamic-playlists"
+><title
+>Dünaamilised esitusnimekirjad</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok2_1dynamicplaylist.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>&amarok; võimaldab luua nõndanimetatud kaalutud esitusnimekirju, mis vastavad teatud kriteeriumidele täpselt (<guilabel
+>proportsionaalne eelistus</guilabel
+>) või ligilähedaselt (<guilabel
+>lõtv eelistus</guilabel
+>). Nii võib näiteks luua esitusnimekirja, mis täidetakse juhuslike lauludega, mida on hinnatud enam kui kolme tärniga ja mis on pärit umbes aastast 1967! </para>
+</sect1>
+<sect1 id="replay-gain-support"
+><title
+>Helitugevuse parandamine</title
+> 
+<para
+>&amarok; toetab failidesse põimitud helitugevuse <emphasis
+>võimsuse silti</emphasis
+> ning kohandab laulu üldist helitugevust automaatselt vastavalt üldisele tasemele. </para>
+<para
+>Naudi oma muusikat! </para>
+</sect1>
+</chapter>
+<chapter id="hints-tips-and-faqs"
+><title
+>Nipid, trikid ja KKK</title
+> 
+<para
+>Kui leiad, et &amarok; tunneb ära enamiku sinu muusikast, aga ei kaasa siiski korralikult mõningaid katalooge, ava konsool ja kirjuta </para>
+<para
+><userinput
+>touch <replaceable
+>kataloog</replaceable
+></userinput
+> 
+</para>
+<para
+>kus <replaceable
+>kataloog</replaceable
+> on selle kataloogi asukoht, millega probleem tekkis. Seejärel vali peaaknas menüükäsk <menuchoice
+><guimenu
+>Seadistused</guimenu
+><guimenuitem
+>&amarok;i seadistamine</guimenuitem
+></menuchoice
+> ning ilmuvas dialoogis <menuchoice
+><guimenu
+>Muusikakogu</guimenu
+><guimenuitem
+>Uurimine</guimenuitem
+></menuchoice
+>. Nüüd peaks vajalik kataloog taas näha olema. </para>
+</chapter>
+<chapter id="more-information"
+><title
+>Rohkem teavet</title
+> 
+<itemizedlist>
+<listitem
+><para
+><ulink url="http://amarok.kde.org/"
+>&amarok;i kodulehekülg</ulink>
+</para
+></listitem>
+<listitem
+><para
+><ulink url="http://forum.kde.org/viewforum.php?f=127"
+>&amarok;i foorum</ulink>
+</para
+></listitem>
+</itemizedlist>
+<para
+>Õnnitleme sind &amarok;i, saadaolevaist kõige täiuslikuma muusika nautimise tarkvara paigaldamise puhul. &amarok; aitab sul kulgeda läbi oma muusika ja nautida seda nii, nagu ei kunagi varem. Samuti võid ette võtta rännaku läbi eri muusikaallikate, raadiojaamade ja internetis leiduvate heliraamatute. Käesolevas käsiraamatus selgitame, kuidas lasta &amarok;il oma muusikakogu üles leida, seda sulle ette mängida, aga ka seda, kuidas panna &amarok; vajalikke asju internetist otsima. Me eeldame, et sa ei tea midagi &amarok;ist, küll aga oskad kasutada menüüd, hiirt ja klaviatuuri.  </para>
+</chapter>
+<chapter id="getting-started"
+><title
+>Alustamine</title>
+<sect1 id="starting-amarok"
+><title
+>&amarok;i käivitamine</title>
+<para
+>Kui sa oled oma operatsioonisüsteemi juba tundma õppinud, küllap tead siis sedagi, kuidas panna &amarok; tööle, millisel juhul võid kohe <link linkend="first-time"
+>edasi minna</link
+>. Vastasel juhul jätka lugemist. </para>
+<sect2 id="from-plasma"
+><title
+>&plasma; keskkonnast</title>
+<para
+>Kui sul on ees <ulink url="http://userbase.kde.org/Special:mylanguage/Plasma"
+>&plasma; töötsoon</ulink
+>, saab &amarok;i käivitada järgmistel viisidel: </para>
+<itemizedlist>
+<listitem
+><para
+>avades <ulink url="http://userbase.kde.org/Special:mylanguage/Kickoff"
+>&kickoff;i</ulink
+> ja valides seal <menuchoice
+><guimenu
+>Multimeedia</guimenu
+><guimenuitem
+>&amarok;</guimenuitem
+></menuchoice
+>. </para
+></listitem>
+<listitem
+><para
+>käivitades <ulink url="http://userbase.kde.org/Special:mylanguage/KRunner"
+>&krunner;i</ulink
+> (<keycombo
+>&Alt;<keycap
+>F2</keycap
+></keycombo
+> vaikimisi), kirjutades <userinput
+>amarok</userinput
+> ja vajutades klahvi &Enter;. </para
+></listitem>
+</itemizedlist>
+</sect2>
+</sect1>
+<sect1 id="first-time"
+><title
+>Esimene kord</title>
+<para
+>&amarok;i esmakäivitamisel ilmub vastav kasutajaliides, mis palub määrata, kus asub sinu muusika. Kui sul on muusikakataloog juba <ulink url="help:/kcontrol/paths/index.html"
+>süsteemis seadistatud</ulink
+>, tuvastab &amarok; selle ja pärib, kas tahad seda kasutada. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Firstruncollection2.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Kui valid selles dialoogis <quote
+>Ei</quote
+>, siis ilmub uus dialoog, mis lubab oma muusikakataloogi ise valida: </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Configurecollection.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Täpsemalt kõneleb sellest <link linkend="setting-up-a-collection"
+>Muusikakogu seadistamine</link
+>. </para>
+<para
+>Kui oled valinud kataloogi, kus sinu muusika asub, uurib &amarok; läbi kataloogi ja selle alamkataloogid, luues sel moel muusikakogu. Sõltuvalt palade arvust ja asukoha enda kiirusest võib see võtta omajagu aega. </para>
+</sect1>
+<sect1 id="closing-amarok"
+><title
+>&amarok;i sulgemine</title>
+<para
+>Kui soovid &amarok;ki sulgeda: </para>
+<itemizedlist>
+<listitem
+><para
+>vajuta <keycombo
+>&Ctrl;<keycap
+>Q</keycap
+></keycombo
+>, kui viibid &amarok;i aknas, või </para
+></listitem>
+<listitem
+><para
+>vali &amarok;i menüükäsk <guilabel
+>Välju</guilabel
+> või </para
+></listitem>
+<listitem
+><para
+>tee paremklõps sinise hundiga ikoonil sinu ekraani allosas asuvas <emphasis
+>süsteemisalves</emphasis
+>. Ilmub järgmine kontekstimenüü: </para
+></listitem>
+</itemizedlist>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokrightmenu.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Kui sulged &amarok;i klõpsuga akna serval asuvale ikoonile <emphasis
+>Sulge</emphasis
+>, jääb &amarok; taustal tööle ning näitab ainult sinise hundiga ikooni <emphasis
+>süsteemisalves</emphasis
+>. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amaroksystray.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Kui logid oma seansist välja või seiskad arvuti ilma &amarok;ist eelnevalt väljumata, võivad mõned sinu seadistused kaotsi minna. </para>
+</sect1>
+</chapter>
+<chapter id="the-amarok-window"
+><title
+>&amarok;i aken</title>
+<para
+>&amarok;i aken on vaikimisi kasutajaliides, mis on mõeldud selleks, et sina võiksid muusikat nautida. Lisaks peaks see andma sulle muusika kohta võimalikult palju visuaalset teavet. Paljusid kasutajaid rahuldab täielikult ka vaikimisi paigutus, aga kui peaksid eelistama midagi muud, siis on paigutus igati oma käe järgi seadistatav. </para>
+<sect1 id="default-layout-of-the-amarok-window"
+><title
+>&amarok;i akna vaikimisi paigutus</title>
+<para
+>Paigaldusjärgselt näeb &amarok; välja selline: </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokfull.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>&amarok;i aknal on neli põhikomponenti: </para>
+<orderedlist>
+<listitem
+><para
+>ülal asub menüüde all üle kolme paneeli ulatuv <emphasis
+>tööriistariba</emphasis
+>, </para
+></listitem>
+<listitem
+><para
+>vasakul paneelil asuvad sinu <emphasis
+>muusikaallikad</emphasis
+> (muusikakogu ja muud andmekandjad), </para
+></listitem>
+<listitem
+><para
+>keskmisel paneelil näeb <emphasis
+>konteksti</emphasis
+>, </para
+></listitem>
+<listitem
+><para
+>parempoolsel paneelil asub <emphasis
+>esitusnimekiri</emphasis
+>. </para
+></listitem>
+</orderedlist>
+</sect1>
+<sect1 id="using-the-amarok-window-to-manage-and-play-your-music"
+><title
+>&amarok;i akna kasutamine oma muusika haldamiseks ja mängimiseks</title>
+<para
+>Muusika mängimine &amarok;is vajab tavaliselt kaht sammu: </para>
+<orderedlist>
+<listitem
+><para
+>Esitusnimekirja loomine, valides välja mõned palad oma muusikakogust, mida näeb <emphasis
+>meediaallikate</emphasis
+> paneelil, ja lisades need <emphasis
+>esitusnimekirja</emphasis
+> paneelile. </para
+></listitem>
+<listitem
+><para
+>Esitusnimekirjas oleva muusika esitamine <emphasis
+>esitusnimekirja</emphasis
+> paneeli ja/või <emphasis
+>tööriistariba</emphasis
+> abil. </para
+></listitem>
+</orderedlist>
+<para
+>Lisaks on võimalik oma muusikat üle kanda ka mobiilsele muusikamängijale, näiteks iPodile. Kõigest sellest tuleb juttu veidi allpool. </para>
+</sect1>
+</chapter>
+<chapter id="the-music-collection"
+><title
+>Muusikakogu</title>
+<sect1 id="the-media-sources-pane"
+><title
+>Muusikaallikate paneel</title>
+<para
+><emphasis
+>Muusikaallikate</emphasis
+> paneelil saab näha ja sirvida tervet oma muusikakogu: nii palasid kohalikul kõvakettal kui ka mis tahes arvutiga ühendatud välistel seadmetel või andmekandjatel, näiteks audio &CD;, USB-seadmed, meediamängijad, võrgukettad või internetiressursid. </para>
+</sect1>
+<sect1 id="setting-up-a-collection"
+><title
+>Muusikakogu seadistamine</title>
+<para
+>On sul arvutis muusikapalu nii mp3, ogg kui ka FLAC vormingus? Kõigepealt tuleb &amarok;ile öelda, kus need failid asuvad, niisiis luua oma muusikakogu. Vali menüükäsk <menuchoice
+><guimenu
+>Seadistused</guimenu
+><guimenuitem
+>&amarok;i seadistamine</guimenuitem
+></menuchoice
+>. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokcollection.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Ülal näeb puukujuliselt kodukataloogi sisu. Märgi kastikesed kataloogide ees, kuhu su muusika on salvestatud (tavaliselt ~/Muusika). Seejärel klõpsa nupule <guilabel
+>Täielik läbiuurimine</guilabel
+>. See võtab mõnevõrra aega, nii et ära pane imeks, kui &amarok; tundub mõnda aega aeglane. Kui kõik on läbi uuritud, on kõige mõistlikum &amarok;ist väljuda, valides vastava &amarok;i menüükäsu või kasutades kiirklahvi <keycombo
+>&Ctrl;<keycap
+>Q</keycap
+></keycombo
+>, ning rakendust seejärel uuesti käivitades. Nüüd peaks äsja lisatud muusika olema näha sektsioonis <emphasis
+>Kohalik muusikakogu</emphasis
+>. </para>
+</sect1>
+<sect1 id="adding-media-devices-to-the-collection"
+><title
+>Andmekandjate lisamine kogusse</title>
+<para
+><emphasis
+>Muusikaallikate</emphasis
+> paneeli ülaosas on otsinguriba all <emphasis
+>kontekstibrauseris</emphasis
+> näha mitmesugused seadmed ja/või sisukategooriad. Kui sisestad audio &CD; &CD;-seadmesse, ilmub see nähtavale <emphasis
+>Muusikaallikate</emphasis
+> paneelil kõrvuti meediamängijate, mälupulkade ja muude USB-seadmetega. Kui väline seade on haagitud, peaks see olema automaatselt näha <emphasis
+>Muusikaallikate</emphasis
+> paneelil. Kui arvuti vähegi välise seadme ära tunneb, ei ole vaja <emphasis
+>Muusikaallikate</emphasis
+> paneelil selle tuvastamiseks mingeid muid samme ette võtta. </para>
+<para
+>Alloleval pildil on näha kolm ühendatud muusikaallikat: audio &CD;, mp3-mängija ja <emphasis
+>kohalik muusikakogu</emphasis
+>. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Mediasources.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+<sect1 id="ripping-a-cd-into-the-collection"
+><title
+>&CD; rippimine kogusse</title>
+<para
+>Kui sul pole oma arvutis muusikafaile, siis on väga lihtne neid <emphasis
+>rippida</emphasis
+> (see tähendab kopeerida palad &CD; pealt oma muusikakogusse). Pane &CD; sisse ning tee &CD;-seadme kirjel <emphasis
+>kontekstibrauseris</emphasis
+> paremklõps selle esitamiseks või kopeerimiseks kogusse, millega palad <emphasis
+>ripitakse</emphasis
+> ja <emphasis
+>sildistatakse</emphasis
+> (vt allolevat pilti). Kui kopeerid muusikat audio &CD; pealt oma muusikakogusse, näitab <emphasis
+>teateriba</emphasis
+> &amarok;i akna allosas käimasolevat tegevust. Rippimisele võib kuluda mitu minutit. Kui see on tehtud, kaob teade <emphasis
+>teateribalt</emphasis
+> ning muusika ilmub nähtavale kontekstibrauseris <emphasis
+>kohaliku muusikakogu</emphasis
+> all. Kui ripitud muusika ei peaks ilmuma nähtavale <emphasis
+>Muusikaallikate</emphasis
+> paneelil, on mõistlik &amarok;ist väljuda, kasutades kas &amarok;i vastavat menüükäsku või kiirklahvi <keycombo
+>&Ctrl;<keycap
+>Q</keycap
+></keycombo
+>, ja seejärel rakendus uuesti käivitada. Nüüd peaksid nägema seda oma muusikakogus. Allolev pilt näitab, kuidas liigutada palad audio &CD;, iPodi või muu seadme pealt oma muusikakogusse paremklõpsuga avanevat kontekstimenüüd kasutades. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokripcd.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Nagu näha, on kontekstimenüüs ka valik <guilabel
+>Muuda pala üksikasju</guilabel
+>. Kasuta seda, kui sul on palu, mille silte tuleb muuta. See on oluline eriti siis, kui ripid muusika .WAV-vormingusse, millega kaotatakse mõned sildid. Kui sildistamist vajab suur osa muusikakogust, võiks kasutada juba mõnda spetsiaalset sildistamistarkvara, näiteks </para>
+<itemizedlist>
+<listitem
+><para
+><ulink url="http://musicbrainz.org/doc/PicardTagger"
+>Picard</ulink>
+</para
+></listitem>
+<listitem
+><para
+><ulink url="http://easytag.sourceforge.net"
+>EasyTag</ulink>
+</para
+></listitem>
+<listitem
+><para
+><ulink url="http://kid3.sourceforge.net"
+>Kid3</ulink>
+</para
+></listitem>
+</itemizedlist>
+<para
+>Siltide korrastamine aitab &amarok;il näidata sinu palu õigetes albumites ja õiges sortimisjärjekorras. Lähemalt kõneleb <link linkend="tags"
+>rippimisest ja sildistamisest</link
+> vastav osa. </para>
+</sect1>
+<sect1 id="accessing-other-media-sources"
+><title
+>Muude muusikaallikate kasutamine</title>
+<para
+>Võib-olla oled juba mõelnud, miks ei ole <emphasis
+>Muusikaallikate</emphasis
+> paneeli nimi hoopis "Muusikakogude paneel". &amarok; tagab sulle nimelt ligipääsu palju rohkemale muusikale kui ainult sinu kogu: internetipoed, heliraamatud, taskuhääling, väljapoole kogu salvestatud muusikafailid, varem salvestatud esitusnimekirjad. Kõige selle kasutamise tagab &amarok;i nõndanimetatud <emphasis
+>leivaraasukese</emphasis
+> navigatsiooniriba. Selle esmane ikoon on sinine kodukataloogi ikoon <emphasis
+>Muusikaallikate</emphasis
+> paneeli ülal vasakus nurgas. Ikoon laieneb ja tõmbub kokku vastavalt sellele, kuidas liigud <emphasis
+>Muusikaallikate</emphasis
+> paneelil, võimaldades hõlpsalt navigeerida oma kogus vaid klõpsuga vajalikule kataloogile navigatsiooniribal. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokbreadcrumb.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Kui klõpsad &amarok;i kodukataloogi ikoonile, näeb <emphasis
+>Muusikaallikate</emphasis
+> paneelil allpool saadaolevate ressursside ikoone. Kui klõpsad failide ikoonile (vasakpoolne pilt allpool, teine element alt), näed umbes sellist pilti, mida näitab paremal allpool olev pilt. pane tähele, et navigatsiooniriba laieneb ning valitud kataloogi sisu näidatakse otse <emphasis
+>Muusikaallikate</emphasis
+> paneelil (pilt all paremal). Klõpsates navigatsiooniribal sümbolitele <guilabel
+>&gt;</guilabel
+>, saab näha kataloogistruktuuri sel tasandil saadaolevaid katalooge. &amarok;i failisirvija tagab ligipääsu kogu failisüsteemile, ka väljaspool sinu kohalikku muusikakogu. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokmediasources-home.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+    <caption>
+      <para
+>Muusikaallikate paneel</para>
+    </caption>
+  </mediaobject>
+</screenshot
+> 
+</para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarokmediasources-files.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+    <caption>
+      <para
+>Failide ikoonile klõpsamisel</para>
+    </caption>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>&amarok;i kodukataloogi (ülal vasakul) ikoonide funktsioonid on järgmised: </para>
+<para>
+<table>
+  <title
+>Ikoonid kodukataloogis</title>
+  <tgroup cols="3">
+  <tbody>
+  <row>
+    <entry>
+      <para
+>Ikoon</para>
+    </entry>
+    <entry>
+      <para
+>Nimi</para>
+    </entry>
+    <entry>
+      <para
+>Toiming</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi32-action-collection-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+><guilabel
+>Kohalik muusika</guilabel
+></para>
+    </entry>
+    <entry>
+      <para
+>Sinu &amarok;i muusikakogu</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Applications-internet.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+><guilabel
+>Internet</guilabel
+></para>
+    </entry>
+    <entry>
+      <para
+>Internetipoed, näiteks Magnatune, Kamendi ja Last.fm. Esmalt tuleb aga internetiressursid seadistada: <menuchoice
+><guimenu
+>Seadistused</guimenu
+><guimenuitem
+>&amarok;i seadistamine</guimenuitem
+></menuchoice
+></para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="View-media-playlist.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+><guilabel
+>Esitusnimekirjad</guilabel
+></para>
+    </entry>
+    <entry>
+      <para
+>Salvestatud esitusnimekirjad &mdash; vaata ka osa <link linkend="playlists"
+>Esitusnimekirjad</link
+>. Samuti meediaseadmetel asuvad esitusnimekirjad.</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Folder-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+><guilabel
+>Failid</guilabel
+></para>
+    </entry>
+    <entry>
+      <para
+>Sinu failisüsteem</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-podcast-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+><guilabel
+>Podcastid</guilabel
+></para>
+    </entry>
+    <entry>
+      <para
+>Ligipääs podcastidele RSS-uudistevoo vahendusel</para>
+    </entry>
+  </row>
+</tbody>
+  </tgroup>
+</table>
+</para>
+<para
+>Klõps kohaliku muusika ikoonile või kohaliku muusika kataloogile navigatsiooniribal viib sind tagasi muusikakogu juurde, näidates kõiki saadaolevaid ressursse, esitajaid, albumeid ja palasid, mille oled varem määratlenud oma muusikakogu osana. Navigatsiooniriba näitab samuti, et näed parajasti kohalikku muusikat. </para>
+</sect1>
+<sect1 id="streams-and-podcasts"
+><title
+>Vood ja podcastid</title>
+<para
+>Vooge saab kuulata kahel viisil. Kui sul on mõni lemmikjaam, hangi selle vee &URL; ja lisa see: <menuchoice
+><guimenu
+>Esitusnimekiri</guimenu
+><guimenuitem
+>Lisa raadiovoog</guimenuitem
+></menuchoice
+>. Selle leiab uuesti <emphasis
+>esitusnimekirjade</emphasis
+> alt kui <emphasis
+>salvestatud esitusnimekirja</emphasis
+>. Teine võimalus on leida vajalik skript <emphasis
+>skriptihalduris</emphasis
+> (<menuchoice
+><guimenu
+>Tööriistad</guimenu
+><guimenuitem
+>Skriptihaldur</guimenuitem
+></menuchoice
+>). Saada on mitmeid suurepäraseid kogusid, mida lisamise korral näeb <emphasis
+>Muusikaallikate</emphasis
+> paneelil sektsioonis <emphasis
+>Internet</emphasis
+>. </para>
+<para
+>Taskuhäälingul ehk podcastidel on oma sektsioon <emphasis
+>muusikaallikate</emphasis
+> paneelil. Kui sul on mõni RSS- või Atom-voo &URL;, klõpsa rohelisele <guilabel
+>+</guilabel
+>-märgile ja lisa see sinna. Kui tahad importida OPML-faili, on ka see võimalik. Kasuta kontekstimenüüd (hiire <keycap
+>paremklõps</keycap
+>) <guilabel
+>lisamiseks esitusnimekirja</guilabel
+>, <guilabel
+>seadistamiseks</guilabel
+>, <guilabel
+>tellimuse eemaldamiseks</guilabel
+>, <guilabel
+>kanali uuendamiseks</guilabel
+> või episoodi märkimiseks <emphasis
+>uuena</emphasis
+>. Kui soovid sirvida suurt podcastide kogu, uuri <emphasis
+>podcastide kataloogi</emphasis
+>, mille leiab ülal mainitud <emphasis
+>skriptihalduris</emphasis
+>. </para>
+</sect1>
+<sect1 id="using-the-content-browser"
+><title
+>Kontekstibrauseri kasutamine</title>
+<para
+>Sinu arvuti kõvaketas, audio-&CD;-d. välised seadmed ja internet on muusikakogu põhiressursid. Kui oled kogu seadistanud, on usutav, et selles on rohkelt albumeid ja palasid - hulga rohkem kui mahub ära ühte aknasse. </para>
+<para
+>Allpool tutvustame, kuidas muuta oma muusikakogu näitamise viisi. </para>
+<sect2 id="hiding-or-expanding-information"
+><title
+>Teabe peitmine või näitamine</title>
+<para
+><emphasis
+>Muusikaallikate</emphasis
+> paneeli osa allpool otsinguriba nimetatakse <emphasis
+>kontekstibrauseriks</emphasis
+>. Alloleval kontekstibrauseri pildil on näha kolm muusikaallikat: &CD;, kohalik muusikakogu ja meediamängija. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Cd_collection_sansa.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Seadme nimel klõpsates (ülaloleval pildil Sansa puhul sinine riba) saab lasta seadme sisu näidata või seda peita. Paremal paikneva rohelise noole sisu osutab sellele, kas seadme sisu näidatakse või mitte. Sisu konkreetses seadmes võib omakorda samuti sama põhimõtet kasutades lasta näidata või peita, klõpsates vastava esitaja või albumi nimel. Esitajast või albumist vasakul asuv sümbol <guilabel
+>-</guilabel
+> osutab, et sisu näidatakse. Sümbol <guilabel
+>+</guilabel
+> näitab, et kategoorias on veel sisu, see tähendab parajasti on midagi varjatud. Ülaloleval pildil on avatud &CD; <emphasis
+>Mike Oldfield - The Songs of Distant Earth</emphasis
+> teave ning näha on konkreetsed palad. Samas <emphasis
+>kohaliku muusikakogu</emphasis
+> albumid ja palad on varjatud. Klõpsates sümbolitele <guilabel
+>+</guilabel
+> või <guilabel
+>-</guilabel
+> saab ka nende puhul teavet näidata või peita. </para>
+</sect2>
+<sect2 id="changing-the-order-of-tracks-and-albums"
+><title
+>Palade ja albumite järjekorra muutmine</title>
+<para
+>Seda, millises järjekorras palasid <emphasis
+>kontekstibrauseris</emphasis
+> sorditakse, saab kohandada <emphasis
+>sortimisvalikute</emphasis
+> nupuga, mis asub <emphasis
+>muusikaallikate</emphasis
+> paneeli ülaosas: </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Preferences-other.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Sortimisjärjekorda näeb <emphasis
+>muusikaallikate</emphasis
+> paneelil ülal vasakul, kohe tekstikasti <emphasis
+>Otsing</emphasis
+> all. Vaikimisi järjekord on <emphasis
+>Esitaja / aasta - album</emphasis
+>. Näitamise järjekorda <emphasis
+>Sisubrauseri</emphasis
+> võib ajutiselt muuta, valides kasutaja määratud sortimisjärjekorra (millest oli äsja juttu) ja <emphasis
+>ühendvaate</emphasis
+> vahel, mille puhul esitajaid näidatakse tähestiku järjekorras sellest sõltumata, millisest allikast on muusika pärit. <emphasis
+>Ühendvaate</emphasis
+> sisse- või väljalülitamiseks klõpsa <emphasis
+>ühendvaate ikoonil</emphasis
+>, mis asub <emphasis
+>muusikaallikate</emphasis
+> paneelil ülal paremal. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="View-list-tree.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Kogus otsimiseks kirjuta otsitav sõna sektsiooni <emphasis
+>Kohalik muusikakogu</emphasis
+> ülaosas asuvale otsinguribale. Otsida saab lisaks esitaja, albumi või pala nimele ka kõigi muude parameetrite järgi. Kena esitusnimekirja võib näiteks kokku panna, kui otsida sõnaga <replaceable
+>winter</replaceable
+> (talv). Samuti võib kas või ühe meelesoleva sõna järgi leida vajaliku ala. Otsida saab ka hinnangu, esitamiste korda või isegi failitüübi järgi. Täpsemalt kõneleb sellest internetiressurss <ulink url="http://userbase.kde.org/Special:myLanguage/Amarok/Manual/AdvancedFeatures/SearchInCollection"
+>Search in Collection</ulink
+>. </para>
+</sect2>
+<sect2 id="deleting-items-from-the-collection"
+><title
+>Elementide kustutamine kogust</title>
+<para
+><warning
+><para
+>Kasuta seda võimalust ettevaatlikult: palad kustutatakse kohe ka sinu kõvakettalt, neid ei jäeta prügikasti.</para
+></warning>
+</para>
+<para
+>Muusikakogu mis tahes elemendi saab kustutada, kui teha sellel paremklõps ja valida kontekstimenüü allosast <guilabel
+>Kustuta palad</guilabel
+>. Seepeale ilmub kinnitust küsiv dialoog, mis peab vältida palade kustutamist kogemata. Rohkem kui ühe elemendi saab valida, kui teha korraga <keycombo
+>&Ctrl;<keycap
+>klõps</keycap
+></keycombo
+>. </para>
+</sect2>
+</sect1>
+</chapter>
+<chapter id="playlists"
+><title
+>Esitusnimekirjad</title>
+<sect1 id="the-playlist-pane"
+><title
+>Esitusnimekirjade paneel</title>
+<para
+>Kui oled muusikakogu loonud, on aeg seda kuulama asuda. Selleks loo vajalikke palu sisaldav esitusnimekiri, mida näeb <emphasis
+>esitusnimekirjade paneelil</emphasis
+>. Just selle vahendusel saab lasta esitada oma muusikat, vooge või podcaste. Esitusnimekirja saab sortida pealkirja, albumi, esitaja, žanri ja veel mitme parameetri alusel. Nii võib näiteks sortida palad esmalt aasta, siis esitaja ja nii edasi järgi. </para>
+<para
+>Otsingukast lubab palasid otsida või filtreerida. Kaks suurt halli noolt esitusnimekirjade paneeli ülaosas võimaldavad vahele jätta järgmise või eelmise pala, mis sisaldab valitud tähti. Paremal asuv mutrivõti lubab palasid filtreerida esitaja, albumi jms. järgi. <emphasis
+>Esitusnimekirja paneeli</emphasis
+> välimust saab muuta rakenduse põhimenüü abil: <menuchoice
+><guimenu
+>Esitusnimekiri</guimenu
+><guimenuitem
+>Esitusnimekirjade paigutused</guimenuitem
+></menuchoice
+>. </para>
+</sect1>
+<sect1 id="adding-music-to-a-playlist"
+><title
+>Muusika lisamine esitusnimekirja</title>
+<para
+>Muusikat saab <emphasis
+>esitusnimekirja paneelil</emphasis
+> paiknevasse esitusnimekirja lisada neljal viisil. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Addingmusic.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<orderedlist>
+<listitem
+><para
+>Vali muusika sisubrauseris ja lohista see paremale. Kui lohistad selle üle <emphasis
+>sisupaneeli</emphasis
+>, näed <emphasis
+>lohistamishüpikut</emphasis
+>. Ülaloleval pildil ongi seda näha. Hüpik pakub kolme valikut: <guilabel
+>Lisa esitusnimekirja</guilabel
+>, <guilabel
+>Asenda esitusnimekiri</guilabel
+> ja <guilabel
+>Rohkem...</guilabel
+> Halli alaga esile tõstetud valik (pildil <guilabel
+>Lisa esitusnimekirja</guilabel
+>) on aktiivne. Albumi lohistamine sinna lisab selle <emphasis
+>esitusnimekirja paneelil</emphasis
+> asuvasse esitusnimekirja. Kui soovid midagi muud teha, vali mõni muu valik. Lohistamine valiku <guilabel
+>Rohkem...</guilabel
+> peale avab uue valikute menüü. </para
+></listitem>
+<listitem
+><para
+>Lohista valik otse <emphasis
+>esitusnimekirja paneelile</emphasis
+> &amarok;i akna paremas servas. </para
+></listitem>
+<listitem
+><para
+>Tee <keycap
+>topeltklõps</keycap
+> albumil või palal, mida soovid lisada esitusnimekirja. </para
+></listitem>
+<listitem
+><para
+>Tee <keycap
+>paremklõps</keycap
+> albumil või palal. Kontekstimenüüs leiad samasugused valikud. Alloleval pildil näeb kontekstimenüüd, mis avaneb pärast paremklõpsu elemendile (antud juhul <emphasis
+>Brother Ali - Real As Can Be</emphasis
+>). Vali <guilabel
+>Lisa esitusnimekirja</guilabel
+>. </para
+></listitem>
+</orderedlist>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok-addingmusic2.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+<sect1 id="using-the-toolbar"
+><title
+>Tööriistariba kasutamine</title>
+<para
+><emphasis
+>Tööriistariba</emphasis
+> &amarok;i akna ülaosas pakub lihtsa liidese esitusnimekirja muusika esitamise juhtimiseks. Klõpsa ümaral ikoonil vasakul muusika esitamise alustamiseks ning klõpsa sellel uuesti, kui soovid teha pausi. Paremal asub helitugevuse regulaator: kui soovid üldse heli maha võtta ehk tummaks teha, klõpsa otse ikooni keskele. Helitugevuse muutmiseks keri hiirerattaga või lohista hiirega mööda helitugevuse ikooni välisringi. Kui pala või voogu esitatakse, on <emphasis
+>esitaja</emphasis
+>/<emphasis
+>albumi nimi</emphasis
+>/<emphasis
+>pala nimi</emphasis
+> näha keskel rasvases kirjas. Sellest paremal on näha järgmine pala, millele klõpsates saab seda aega viitmata mängima hakata. Kui pala esitamine on lõppenud, jääb see näha vasakule, nii et soovi korral saab lasta seda uuesti esitada. <emphasis
+>Tööriistariba</emphasis
+> keskel asub edenemisriba näitab parajasti esitatava pala esitamisel kulunud (vasakul) ja allesolevat (paremal) aega. Kui soovid näha traditsioonilisemat tööriistariba, vali menüüst <guilabel
+>Vaade</guilabel
+> valik <guilabel
+>Väike tööriistariba</guilabel
+>. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Controlamarok.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+<sect1 id="manipulating-playlists"
+><title
+>Esitusnimekirjade kasutamine</title>
+<para
+>Nähtavasti kõige olulisemad asjad, mida esitusnimekirjaga ette võtta, on albumite või palade kustutamine, iga pala näidatavate elementide ümberkorraldamine või palade näitamise järjekorra muutmine. </para>
+<sect2 id="removing-a-track"
+><title
+>Pala eemaldamine</title>
+<para
+>Suvalise pala või albumi saab esitusnimekirjast eemaldada nii: </para>
+<orderedlist>
+<listitem
+><para
+>Tee <keycap
+>paremklõps</keycap
+> esitusnimekirja elemendil ja vali <guilabel
+>Eemalda esitusnimekirjast</guilabel
+>. </para
+></listitem>
+<listitem
+><para
+>Lohista kustutatav element <emphasis
+>kontekstipaneelile</emphasis
+>, et aktiveerida lohistamishüpik. <emphasis
+>Paneeli</emphasis
+> kohal ilmub nähtavale mitu valikut. Lohista element valiku <guilabel
+>Eemalda esitusnimekirjast</guilabel
+> kohale. Alloleval pildil ongi näha, kuidas pala on lohistatud valikule <guilabel
+>Eemalda</guilabel
+>. </para
+></listitem>
+<listitem
+><para
+>Vali üks või rohkem ala ning vajuta klahvi <keycap
+>Delete</keycap
+>. Mitme pala valimiseks kasuta klahvi &Shift; või &Ctrl;. </para
+></listitem>
+</orderedlist>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok-removefromplaylist.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Kustutamise saab tagasi võtta, kui vajutada kiirklahvi <keycombo
+>&Ctrl;<keycap
+>Z</keycap
+></keycombo
+> või klõpsata sobivat noolt <emphasis
+>esitusnimekirja tööriistaribal</emphasis
+>, mis asub <emphasis
+>esitusnimekirja paneeli</emphasis
+> allosas (vaata allpool). </para>
+</sect2>
+<sect2 id="using-the-playlist-tools-at-the-bottom"
+><title
+>Esitusnimekirja tööriistariba kasutamine</title>
+<para
+>Esitusnimekirja paneeli allosas on seitse ikooni: </para>
+<para>
+<table>
+  <title
+>Esitusnimekirja paneeli ikoonid</title>
+  <tgroup cols="2">
+  <tbody>
+  <row>
+    <entry>
+      <para
+>Ikoon</para>
+    </entry>
+    <entry>
+      <para
+>Toiming</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-clear-playlist-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Esitusnimekirja puhastamine kõigist albumitest ja paladest</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Document-save.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Esitusnimekirja salvestamine. Kui sa sellele nime ei anna, siis saab vaikimisi nimeks kuupäev.</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Edit-undo.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Esitusnimekirja viimase muudatuse tagasivõtmine</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Edit-redo.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Esitusnimekirja viimase muudatuse taassooritamine</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-music-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Parajasti esitatava pala esiletõstmine. Kasulik pikkade esitusnimekirjade puhul</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-media-standard-track-progression-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Esitusrežiimi määramine: palade kordamine, juhuslik järjekord, harva esitatute eelistamine &etc;</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-media-standard-track-progression-amarok.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Esitusrežiimi määramine: palade kordamine, juhuslik järjekord, harva esitatute eelistamine &etc;</para>
+    </entry>
+  </row>
+    <row>
+    <entry>
+      <para>
+      <mediaobject>
+      <imageobject>
+        <imagedata fileref="Hi48-action-edit-playlist-queue.png" format="PNG"/>
+      </imageobject>
+      </mediaobject>
+      </para>
+    </entry>
+    <entry>
+      <para
+>Esitusnimekirja järjekorra muutmine; palad, mis esitatakse esimesena enne esitusnimekirjaga taasalustamist.</para>
+    </entry>
+  </row>
+</tbody>
+  </tgroup>
+</table>
+</para>
+<para
+>Need nupud pakuvad mugava võimaluse mitmetele klahvikombinatsioonidele. </para>
+</sect2>
+</sect1>
+<sect1 id="saving-and-retrieving-your-favourite-playlists"
+><title
+>Lemmikesitusnimekirjade salvestamine ja kasutusele võtmine</title>
+<para
+>Kettaikoon (mida näeb ülalolevas tabelis) <emphasis
+>esitusnimekirja paneeli</emphasis
+> allosas võimaldab salvestada aktiivse &amarok;i esitusnimekirja. See lubab soovi korral hiljem taas esitada just sama muusikavalikut. Esitusnimekiri sisaldab ainult viiteid valitud muusikale, mitte palasid endid. Seega kui esitusnimekiri osutab välisel seadmel asuvale muusikale, peab see olema ühendatud, muidu muusikat ei esitata. Esitusnimekirju saab salvestada kolme kohta: </para>
+<orderedlist>
+<listitem
+><para
+>väljaspool &amarok;ki sinu arvuti failisüsteemis, </para
+></listitem>
+<listitem
+><para
+>&amarok;i esitusnimekirjade andmebaasis, </para
+></listitem>
+<listitem
+><para
+>kaasaskantaval meediaseadmel. </para
+></listitem>
+</orderedlist>
+<para
+>Klõps kettaikoonile <emphasis
+>esitusnimekirja paneeli</emphasis
+> allosas salvestab sinu esitusnimekirja &amarok;i esitusnimekirjade andmebaasi. Vaikimisi saab salvestatud esitusnimekiri nime, mis koosneb salvestamisaegsest kuupäevast ja kellaajast (vaata pilti allpool). Paremklõpsuga esitusnimekirja nimele saab sellele anda mõistetavama nime. Paremklõpsuga esitusnimekirja nimele saab ka lisada selle olemasolevasse esitusnimekirja <emphasis
+>esitusnimekirja paneelil</emphasis
+> või asendada olemasoleva esitusnimekirja. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok-renameplaylist.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+</chapter>
+<chapter id="the-context-view"
+><title
+>Kontekstivaade</title>
+<para
+>&amarok;i jõud ja võimsus seisneb <emphasis
+>kontekstipaneelis</emphasis
+> (&amarok;i akna keskosa), kuhu saab paigaldada mitmesuguseid <emphasis
+>aplette</emphasis
+>, mis aitavad muusikat nautida ja sellega lähemalt tutvuda. Valdav osa lisateabest hangitakse internetist, mistõttu ühenduse olemasolu on <emphasis
+>kontekstipaneeli</emphasis
+> täielikuks ärakasutamiseks lausa hädavajalik. Vaikimisi on paneelil näha kolm <emphasis
+>apletti</emphasis
+>: <emphasis
+>aktiivne pala</emphasis
+>, <emphasis
+>sõnad</emphasis
+> ja <emphasis
+>Wikipedia</emphasis
+>. </para>
+<sect1 id="default-layout"
+><title
+>Vaikepaigutus</title>
+<para
+>Vaikimisi otsib <emphasis
+>kontekstipaneel</emphasis
+> parajasti esitatava laulu sõnu. Kui need leitakse, näidatakse sõnu kontekstipaneeli alumises osas, samal ajal kui <emphasis
+>kontekstipaneeli</emphasis
+> ülemine osa näitab albumi kaanepilti ja pala kohta käivat teavet. Mõnikord pole sõnu saadaval, sest neid ei pruugi leiduda vastavas internetiressursis. Lisaks võib aktiivse pala teave vajada korrektset <link linkend="tags"
+>sildistamist</link
+>, et sõnu üldse leitaks. Kui sõnu ei leita, võib põhjusi olla mitmeid, sealhulgas ka väär teabe internetiallikates, näiteks albumi palade vale nummerdamine või tavapärasest erineva teksti väär esitamine näiteks juhul, kui pala pealkiri peaks sisaldama mõnda rõhu- või muu märgiga tähte (ê,ç,à), kuid ei sisalda. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok-context.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+<sect1 id="customizing-the-context-pane"
+><title
+>Kontekstipaneeli kohandamine</title>
+<para
+><emphasis
+>Kontekstipaneeli</emphasis
+> allosas on kolm nuppu, mis vastavad vaikimisi aplettidele. Neist paremal asub mutrivõtmega ikoon, millele klõpsates ilmub punane <guilabel
+>X</guilabel
+>, mis lubab aplette eemaldada. Klõps rohelisele <guilabel
+>+</guilabel
+>-märgile võimaldab näitamisvalikuid lisada (vaata pilti allpool). Lohista nimega nuppe nende järjekorra muutmiseks ja klõpsa taas mutrivõtmele oma valiku jäädvustamiseks. See muudab <emphasis
+>kontekstipaneeli</emphasis
+> äärmiselt paindlikuks, lubades sul anda sellele just niisuguse väljanägemise, mis sind rahuldab. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="Amarok-contextadd.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect1>
+</chapter>
+<chapter id="how-to-deal-with-problems"
+><title
+>Probleemide lahendamine</title>
+<sect1 id="some-of-the-music-is-being-rapidly-skipped-over"
+><title
+>Osa muusikat jäetakse kiiresti vahele</title>
+<para
+>Võimalik, et sul pole paigaldatud kõik vajalikud <emphasis
+>koodekid</emphasis
+>. Täpsemalt kõneleb sellest <ulink url="http://userbase.kde.org/Amarok/Manual/FAQ#What_media_types_does_Amarok_support.3F"
+>FAQ: What Media Types Does &amarok; Support</ulink
+>. Uuri, mida pakub sinu distributsioon. </para>
+</sect1>
+<sect1 id="after-my-ipod-has-been-mounted-it-is-not-shown-in-the-content-browser"
+><title
+>Pärast minu iPodi ühendamist pole seda sisubrauseris näha</title>
+<para
+>Seda ei tohiks juhtuda. Kontrolli, kas seade on ikka korrektselt ühendatud. Konsoolis käsu <userinput
+>mount</userinput
+> andmine näitab kõiki ühendatud seadmeid. </para>
+</sect1>
+<sect1 id="amarok-cannot-see-the-predefined-playlists-on-my-portable-music-player"
+><title
+>&amarok; ei näe minu kaasaskantaval muusikamängijal olevaid esitusnimekirju</title>
+<para
+>Oota järgmist &amarok;i väljalaset. </para>
+</sect1>
+<sect1 id="after-i-have-updated-my-collection-the-additions-are-not-shown-in-the-content-browser"
+><title
+>Pärast muusikakogu uuendamist ei ole lisatud elemente sisubrauseris näha</title>
+<para
+>Vali rakenduse põhimenüüst <menuchoice
+><guimenu
+>Tööriistad</guimenu
+><guimenuitem
+>Uuenda muusikakogu</guimenuitem
+></menuchoice
+>. Kui neid näha pole, välju &amarok;ist menüü <guilabel
+>Amarok</guilabel
+> vahendusel või kiirklahviga <keycombo
+>&Ctrl;<keycap
+>Q</keycap
+></keycombo
+>. Pärast &amarok;i taaskäivitamist peaks muusikakogu sisaldama ka uuendusi. </para>
+</sect1>
+<sect1 id="amarok-cannot-find-the-lyrics-of-the-songs-that-i-play"
+><title
+>&amarok; ei leia esitatavate laulude sõnu</title>
+<para
+>Võimalused: </para>
+<orderedlist>
+<listitem
+><para
+>Kontrollitud internetisaitidel neid sõnu lihtsalt ei leidu. Soovi korral võib proovida lisada teisi saite skriptimenüü abil (<menuchoice
+><guimenu
+>Tööriistad</guimenu
+><guimenuitem
+>Skriptihaldur</guimenuitem
+></menuchoice
+>). </para
+></listitem>
+<listitem
+><para
+>Palade nummerdamine sinu muusikakogu albumis ei ole korrektne. </para
+></listitem>
+<listitem
+><para
+>Laulu pealkiri sisaldab erimärke (rõhumärgid &etc;), mida sinu pala pealkiri ei kajasta. Seepärast ei leia ka sõnadeskript sellele vastet. Kontrolli oma silte ja palade nummerdamist mõne sildistamisprogrammiga, näiteks <ulink url="http://musicbrainz.org/doc/MusicBrainz_Picard"
+>Picard</ulink
+>.</para
+></listitem>
+</orderedlist>
+</sect1>
+<sect1 id="my-question-isnt-answered-here"
+><title
+>Ma ei leia siit vastust oma küsimusele</title>
+<para
+>Paljusid keerukaid küsimusi käsitleb <ulink url="http://userbase.kde.org/Special:myLanguage/Amarok/Manual"
+>käsiraamat</ulink
+>, sealhulgas osad <ulink url="http://userbase.kde.org/Special:myLanguage/Amarok/Manual/TroubleshootingAndCommonProblems"
+>Troubleshooting and Common Problems</ulink
+> ja <ulink url="http://userbase.kde.org/Special:mylanguage/Amarok/Manual/FAQ"
+>Amarok FAQ</ulink
+>. </para>
+</sect1>
+</chapter>
+<chapter id="glossary"
+><title
+>Sõnastik</title>
+<sect1 id="breadcrumbs"
+><title
+>Leivaraasukesed</title>
+<para
+>See on hierarhilises failistruktuuris liikumise süsteem, mida &amarok;is saab kasutada <emphasis
+>muusikaallikate</emphasis
+> paneeli ülaosas. See näitab, alustades kodukataloogist, kui sügavale failisüsteemi oled liikunud. Kui suundud mõnda kindlasse kohta failisüsteemis, näed ka kõiki kõrgema tasandi katalooge. &amarok;is võimaldavad kataloogitasandite vahelised <guilabel
+>&gt;</guilabel
+> lingid leida, millised alternatiivsed kataloogid on konkreetsel tasandil saadaval. Leivaraasukesed on väga tõhus viis oma arvuti failisüsteemis navigeerimiseks. </para>
+</sect1>
+<sect1 id="collection"
+><title
+>Muusikakogu (ka lihtsalt kogu)</title>
+<para
+>Kõik helifailid, mille &amarok; on koondanud oma andmebaasi. Sinu kogu suurus ja muusikapalade koostis võib muutuda sõltuvalt sellest, kas välised seadmed (näiteks audio-&CD; või kaasaskantav muusikamängija) on arvutiga ühendatud või mitte. </para>
+</sect1>
+<sect1 id="content-browser"
+><title
+>Sisubrauser</title>
+<para
+>See on <emphasis
+>muusikaallikate</emphasis
+> paneeli keskne osa, mis võimaldab näha muusikakogus olevat muusikat. Sisubrauser lubab valida palade sortimise järjekorra, samuti määrata, kui detailselt soovid oma muusikat näha. </para>
+</sect1>
+<sect1 id="playlist"
+><title
+>Esitusnimekiri</title>
+<para
+>Valik palasid sinu muusikakogust, mida soovid esitada. Mõnel kaasaskantaval muusikamängijal on oma esitusnimekirjad, mis tõenäoliselt erinevad sinu &amarok;i esitusnimekirjadest. </para>
+</sect1>
+<sect1 id="script"
+><title
+>Skript</title>
+<para
+>&amarok;i plugin, mis laiendab rakenduse funktsionaalsust. Skriptid leiab menüükäsuga <menuchoice
+><guimenu
+>Tööriistad</guimenu
+><guimenuitem
+>Skriptihaldur</guimenuitem
+></menuchoice
+>. Nendega võib lisada uusi sõnade allikaid, vooge pakkuvaid raadiojaamu, salvestada kaanepilte oma albumikataloogidesse, kirjutada esitusnimekirjade põhjal &CD;-sid &etc; </para>
+</sect1>
+<sect1 id="scrobble"
+><title
+>Scrobble</title>
+<para
+>Seda mõistet kasutatakse siis, kui pala kuulamisel saadetakse selle pealkiri ja esitaja ühtlasi mõnele veebisaidile, näiteks Last.fm, mis lisab selle teabe sinu profiilile. </para>
+</sect1>
+<sect1 id="stream-streaming"
+><title
+>Voog</title>
+<para
+>Nagu 20. sajandi raadiojaamad, saadavad ka internetiraadiod oma sisu teele <quote
+>voona</quote
+>. See võib sisaldada muusikat, uudiseid, kommentaare, arvamusi. &amarok; võimaldab kuulata paljusid vooge kas skriptide vahendusel (näiteks Cool Streams) või siis individuaalselt lisatuna menüü abil (<menuchoice
+><guimenu
+>Esitusnimekiri</guimenu
+><guimenuitem
+>Lisa raadiovoog</guimenuitem
+></menuchoice
+>). </para>
+</sect1>
+<sect1 id="tags"
+><title
+>Sildid</title>
+<para
+>Teave kuulatava pala kohta, &eg; albumi nimi, pala pealkiri, helilooja, esitaja, aasta &etc;. Sellise teabe lisamiseks audio-&CD;-le on olemas standard nimega ID3. Üksikute palade silte võib muuta ka &amarok;is, kui failiõigused on korrektselt paigas. </para>
+</sect1>
+</chapter>
+<!--userbase-content-->
+<chapter id="credits">
+<title
+>Autorid ja litsents</title>
+    <para
+>Dokumentatsiooni autoriõigus: vt UserBase'is <ulink url="http://userbase.kde.org/index.php?title=Amarok&amp;action=history"
+>&amarok; lehekülje ajalugu</ulink
+></para>
+    <para
+>Tõlge eesti keelde: Marek Laane <email
+>bald@smail.ee</email
+></para
+> 
+&underFDL; </chapter>
+&documentation.index;
+</book>

@@ -56,11 +56,21 @@ public:
     bool fetchSimilar() { return m_fetchSimilar; }
     void setFetchSimilar( bool fetchSimilar ) { m_fetchSimilar = fetchSimilar; }
 
+    bool scrobbleComposer() { return m_scrobbleComposer; }
+    void setScrobbleComposer( bool scrobbleComposer ) { m_scrobbleComposer = scrobbleComposer; }
+
 private slots:
     void textDialogYes();
     void textDialogNo();
 
 private:
+    /**
+     * Tries to open KWallet and assigns it to m_wallet if successfull. Takes ignore
+     * wallet configuration key into account.
+     *
+     * @return true when m_wallet is valid, false otherwise
+     */
+    bool tryToOpenWallet();
     void askAboutMissingKWallet();
 
     QString m_username;
@@ -68,6 +78,7 @@ private:
     QString m_sessionKey;
     bool m_scrobble;
     bool m_fetchSimilar;
+    bool m_scrobbleComposer;
 
     KDialog* m_askDiag;
     KWallet::Wallet* m_wallet;

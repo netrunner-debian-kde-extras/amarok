@@ -14,12 +14,15 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "CurrentEngine"
+
 #include "CurrentEngine.h"
 
 #include "core/support/Amarok.h"
 #include "ContextView.h"
 #include "core/support/Debug.h"
 #include "EngineController.h"
+#include "covermanager/CoverCache.h"
 #include "core/collections/Collection.h"
 #include "core/collections/QueryMaker.h"
 #include "core-impl/collections/support/CollectionManager.h"
@@ -38,18 +41,26 @@ using namespace Context;
 
 CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
     : DataEngine( parent )
-    , ContextObserver( ContextView::self() )
-    , Engine::EngineObserver( The::engineController() )
     , m_coverWidth( 0 )
-    , m_state( Phonon::StoppedState )
-    , m_currentArtist( 0 )
+    , m_coverCacheKey( 0 )
+    , m_lastQueryMaker( 0 )
 {
-    DEBUG_BLOCK
     Q_UNUSED( args )
-    m_sources << "current" << "albums";
-    m_requested[ "current" ] = true;
-    m_requested[ "albums" ] = false;
-    update();
+
+    m_sources << QLatin1String("current") << QLatin1String("albums");
+    m_requested[ QLatin1String("current") ] = false;
+    m_requested[ QLatin1String("albums")  ] = false;
+    EngineController* engine = The::engineController();
+
+    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
+             this, SLOT( trackPlaying( Meta::TrackPtr ) ) );
+    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
+             this, SLOT( stopped() ) );
+
+    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
+             this, SLOT( metadataChanged( Meta::TrackPtr ) ) );
+    connect( engine, SIGNAL( albumMetadataChanged( Meta::AlbumPtr ) ),
+             this, SLOT( metadataChanged( Meta::AlbumPtr ) ) );
 }
 
 CurrentEngine::~CurrentEngine()
@@ -65,298 +76,195 @@ CurrentEngine::sources() const
 bool
 CurrentEngine::sourceRequestEvent( const QString& name )
 {
-    DEBUG_BLOCK
-
-    removeAllData( name );
-    setData( name, QVariant() );
+    Meta::TrackPtr track = The::engineController()->currentTrack();
     m_requested[ name ] = true;
-    update();
+    if( !track )
+        stopped();
+
+    if( name == QLatin1String("current") )
+        update( track );
+    else if( name == QLatin1String("albums") )
+        track ? update(track->album()) : setData(name, Plasma::DataEngine::Data());
+    else
+        return false;
+
     return true;
-}
-
-void
-CurrentEngine::engineStateChanged(Phonon::State newState, Phonon::State )
-{
-    m_state = newState;
-}
-
-void
-CurrentEngine::engineTrackChanged( Meta::TrackPtr track )
-{
-    if( track )
-    {
-        if( m_currentTrack )
-            unsubscribeFrom( m_currentTrack );
-        m_currentTrack = track;
-        subscribeTo( track );
-    }
-    else
-    {
-        m_currentTrack.clear();
-    }
-    update();
-}
-
-void
-CurrentEngine::message( const ContextState& state )
-{
-    Q_UNUSED( state )
-    /*
-    DEBUG_BLOCK
-    
-    if( state == Current )
-    {
-        update();
-    }
-    else if( state == Home )
-    {
-        if( m_currentTrack )
-        {
-            unsubscribeFrom( m_currentTrack );
-            if( m_currentTrack->album() )
-                unsubscribeFrom( m_currentTrack->album() );
-        }        
-    }
-    */
-}
-
-void
-CurrentEngine::stoppedState()
-{
-    DEBUG_BLOCK
-
-    //TODO
-    // if we are in buffering state or loading state, do not show the recently album etc ...
-    if ( m_state == Phonon::BufferingState || m_state== Phonon::LoadingState )
-        return;
-    
-    removeAllData( "current" );
-    setData( "current", "notrack", i18n( "No track playing") );
-    removeAllData( "albums" );
-    m_currentArtist = 0;
-
-
-    if( m_requested[ "albums" ] )
-    {
-        // Collect data for the recently added albums
-        setData( "albums", "headerText", QVariant( i18n( "Recently added albums" ) ) );
-
-        Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
-        if( coll )
-        {
-            Collections::QueryMaker *qm = coll->queryMaker();
-            qm->setAutoDelete( true );
-            qm->setQueryType( Collections::QueryMaker::Album );
-            qm->excludeFilter( Meta::valAlbum, QString(), true, true );
-            qm->orderBy( Meta::valCreateDate, true );
-            qm->limitMaxResultSize( Amarok::config("Albums Applet").readEntry("RecentlyAdded", 5) );
-            m_albums.clear();
-
-            connect( qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
-                    SLOT( resultReady( QString, Meta::AlbumList ) ), Qt::QueuedConnection );
-            connect( qm, SIGNAL( queryDone() ), SLOT( setupAlbumsData() ) );
-
-            qm->run();
-        }
-    }
-
-    // Get the latest tracks played:
-
-    if( m_requested[ "current" ] )
-    {
-        Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
-        if( !coll )
-            return;
-
-        Collections::QueryMaker *qm = coll->queryMaker();
-        qm->setAutoDelete( true );
-        qm->setQueryType( Collections::QueryMaker::Track );
-        qm->excludeFilter( Meta::valTitle, QString(), true, true );
-        qm->orderBy( Meta::valLastPlayed, true );
-        qm->limitMaxResultSize( 5 );
-
-        m_latestTracks.clear();
-
-        connect( qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ),
-                SLOT( resultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
-        connect( qm, SIGNAL( queryDone() ), SLOT( setupTracksData() ) );
-
-        qm->run();
-    }
-
-    // Get the favorite tracks:
-    /* commenting out for now, we disabled the tabbar so this is just taking up CPU cycles
-    if( m_qmFavTracks )
-        m_qmFavTracks->reset();
-    else
-        m_qmFavTracks = coll->queryMaker();
-    m_qmFavTracks->setQueryType( Collections::QueryMaker::Track );
-    m_qmFavTracks->excludeFilter( Meta::valTitle, QString(), true, true );
-    m_qmFavTracks->orderBy( Meta::valScore, true );
-    m_qmFavTracks->limitMaxResultSize( 5 );
-
-    m_qmFavTracks->run();
-
-    connect( m_qmFavTracks, SIGNAL( newResultReady( QString, Meta::TrackList ) ),
-            SLOT( resultReady( QString, Meta::TrackList ) ), Qt::QueuedConnection );
-    connect( m_qmFavTracks, SIGNAL( queryDone() ), SLOT( setupTracksData() ) );
-    */
-    
 }
 
 void
 CurrentEngine::metadataChanged( Meta::AlbumPtr album )
 {
-    const int width = 156;
-    setData( "current", "albumart", album->image( width ) );
+    QImage cover = album->image( m_coverWidth );
+    qint64 coverCacheKey = cover.cacheKey();
+    if( m_coverCacheKey != coverCacheKey )
+    {
+        m_coverCacheKey = coverCacheKey;
+        setData( "current", "albumart", cover );
+    }
 }
 
 void
 CurrentEngine::metadataChanged( Meta::TrackPtr track )
 {
     QVariantMap trackInfo = Meta::Field::mapFromTrack( track );
-    setData( "current", "current", trackInfo );
-    if( m_requested[ "albums" ] )
-        update();
+    if( m_trackInfo != trackInfo )
+    {
+        m_trackInfo = trackInfo;
+        setData( "current", "current", trackInfo );
+        if( track && m_requested.value( QLatin1String("albums") ) )
+            update( track->album() );
+    }
 }
 
 void
-CurrentEngine::update()
+CurrentEngine::trackPlaying( Meta::TrackPtr track )
 {
     DEBUG_BLOCK
+    m_lastQueryMaker = 0;
+    if( m_requested.value( QLatin1String("current") ) )
+        update( track );
+    if( track && m_requested.value( QLatin1String("albums") ) )
+        update( track->album() );
+}
 
-    if( !m_currentTrack )
+void
+CurrentEngine::stopped()
+{
+    if( m_requested.value( QLatin1String("current") ) )
     {
-        stoppedState();
-        return;
-    }
-
-    if( m_requested[ "current" ] )
-    {
-
-        QVariantMap trackInfo = Meta::Field::mapFromTrack( m_currentTrack );
-
-        //const int width = coverWidth(); // this is always == 0, someone needs to setCoverWidth()
-        const int width = 156; // workaround to make the art less grainy. 156 is the width of the nocover image
-                            // there is no way to resize the currenttrack applet at this time, so this size
-                            // will always look good.
-
         removeAllData( "current" );
-
-        if( m_currentTrack->album() )
-        {
-            QPixmap art = m_currentTrack->album()->image( width );
-            setData( "current", "albumart",  QVariant( art ) );
-        }
-        else
-            setData( "current", "albumart", QVariant( QPixmap() ) );
-
-        setData( "current", "current", trackInfo );
-
-        Capabilities::SourceInfoCapability *sic = m_currentTrack->create<Capabilities::SourceInfoCapability>();
-        if( sic )
-        {
-            //is the source defined
-            const QString source = sic->sourceName();
-            debug() <<" We have source " <<source;
-            if( !source.isEmpty() )
-                setData( "current", "source_emblem", sic->scalableEmblem() );
-
-            delete sic;
-        }
-        else
-                setData( "current", "source_emblem",  QVariant( QPixmap() ) );
+        setData( "current", "notrack", i18n( "No track playing") );
+        m_currentTrack.clear();
     }
 
-    if( m_requested[ "albums" ] )
+    if( m_requested.value( QLatin1String("albums") ) )
     {
-        //generate data for album applet
-        Meta::ArtistPtr artist = m_currentTrack->artist();
+        removeAllData( "albums" );
+        m_albumData.clear();
 
-        //We need to update the albums data even if the artist is the same, since the current track is
-        //most likely different, and thus the rendering of the albums applet should change
-        if( artist )
-        {
-            m_currentArtist = artist;
-            removeAllData( "albums" );
-            Meta::AlbumList albums = artist->albums();
-            setData( "albums", "headerText", QVariant( i18n( "Albums by %1", artist->name() ) ) );
+        // Collect data for the recently added albums
+        setData( "albums", "headerText", QVariant( i18n( "Recently Added Albums" ) ) );
+        m_albums.clear();
 
-            if( albums.count() == 0 )
-            {
-                //try searching the collection as we might be dealing with a non local track
-                Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
-                Collections::QueryMaker *qm = coll->queryMaker();
-                qm->setAutoDelete( true );
-                qm->setQueryType( Collections::QueryMaker::Album );
-                qm->addMatch( artist );
+        Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
+        qm->setAutoDelete( true );
+        qm->setQueryType( Collections::QueryMaker::Album );
+        qm->excludeFilter( Meta::valAlbum, QString(), true, true );
+        qm->orderBy( Meta::valCreateDate, true );
+        qm->limitMaxResultSize( Amarok::config("Albums Applet").readEntry("RecentlyAdded", 5) );
 
-                m_albums.clear();
+        connect( qm, SIGNAL( newResultReady( Meta::AlbumList ) ),
+                 SLOT( resultReady( Meta::AlbumList ) ), Qt::QueuedConnection );
+        connect( qm, SIGNAL( queryDone() ), SLOT( setupAlbumsData() ) );
 
-                connect( qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ),
-                        SLOT( resultReady( QString, Meta::AlbumList ) ), Qt::QueuedConnection );
-                connect( qm, SIGNAL( queryDone() ), SLOT( setupAlbumsData() ) );
-                qm->run();
+        m_lastQueryMaker = qm;
+        qm->run();
+    }
+}
 
-            }
-            else
-            {
-                m_albums.clear();
-                m_albums << albums;
-                setupAlbumsData();
-            }
-        }
+void
+CurrentEngine::update( Meta::TrackPtr track )
+{
+    if( !m_requested.value( QLatin1String("current") ) ||
+        track == m_currentTrack )
+        return;
+
+    DEBUG_BLOCK
+    m_currentTrack = track;
+    removeAllData( QLatin1String("current") );
+
+    if( !track )
+        return;
+
+    Plasma::DataEngine::Data data;
+    QVariantMap trackInfo = Meta::Field::mapFromTrack( track );
+    data["current"] = trackInfo;
+    Meta::AlbumPtr album = track->album();
+    data["albumart"] = QVariant( album ? The::coverCache()->getCover( album, m_coverWidth) : QPixmap() );
+
+    Capabilities::SourceInfoCapability *sic = track->create<Capabilities::SourceInfoCapability>();
+    if( sic )
+    {
+        //is the source defined
+        const QString source = sic->sourceName();
+        debug() <<" We have source " <<source;
+        if( !source.isEmpty() )
+            data["source_emblem"] = sic->scalableEmblem();
+
+        delete sic;
+    }
+    else
+        data["source_emblem"] = QVariant( QPixmap() );
+
+    debug() << "updating track" << track->name();
+    setData( "current", data );
+}
+
+void
+CurrentEngine::update( Meta::AlbumPtr album )
+{
+    if( !m_requested.value( QLatin1String("albums") ) )
+        return;
+
+    DEBUG_BLOCK
+    m_lastQueryMaker = 0;
+    Meta::TrackPtr track = The::engineController()->currentTrack();
+
+    if( !album )
+        return;
+
+    Meta::ArtistPtr artist = track->artist();
+
+    // Prefer track artist to album artist BUG: 266682
+    if( !artist )
+        artist = album->albumArtist();
+    
+    if( artist && !artist->name().isEmpty() )
+    {
+        m_albums.clear();
+        m_albumData.clear();
+        m_albumData[ QLatin1String("currentTrack") ] = qVariantFromValue( track );
+        m_albumData[ QLatin1String("headerText") ] = QVariant( i18n( "Albums by %1", artist->name() ) );
+
+        // -- search the collection for albums with the same artist
+        Collections::QueryMaker *qm = CollectionManager::instance()->queryMaker();
+        qm->setAutoDelete( true );
+        qm->addFilter( Meta::valArtist, artist->name(), true, true );
+        qm->setAlbumQueryMode( Collections::QueryMaker::AllAlbums );
+        qm->setQueryType( Collections::QueryMaker::Album );
+
+        connect( qm, SIGNAL(newResultReady( Meta::AlbumList)),
+                 SLOT(resultReady( Meta::AlbumList)), Qt::QueuedConnection );
+        connect( qm, SIGNAL(queryDone()), SLOT(setupAlbumsData()) );
+
+        m_lastQueryMaker = qm;
+        qm->run();
+    }
+    else
+    {
+        removeAllData( QLatin1String("albums") );
+        setData( QLatin1String("albums"), QLatin1String("headerText"),
+                 i18nc( "Header text for current album applet", "Albums" ) );
     }
 }
 
 void
 CurrentEngine::setupAlbumsData()
 {
-    QVariant v;
-    v.setValue( m_albums );
-    setData( "albums", "albums", v );
-}
-
-void
-CurrentEngine::setupTracksData()
-{
-    QVariant v;
-    v.setValue( m_latestTracks );
-    setData( "current", "lastTracks", v );
-    /*
-    else if( sender() == m_qmFavTracks )
+    DEBUG_BLOCK
+    if( sender() == m_lastQueryMaker )
     {
-        v.setValue( m_favoriteTracks );
-        setData( "current", "favoriteTracks", v );
+        debug() << "setting up" << m_albums.count() << "albums";
+        m_albumData[ QLatin1String("albums") ] = QVariant::fromValue( m_albums );
+        setData( QLatin1String("albums"), m_albumData );
     }
-    */
 }
 
 void
-CurrentEngine::resultReady( const QString &collectionId, const Meta::AlbumList &albums )
+CurrentEngine::resultReady( const Meta::AlbumList &albums )
 {
-    // DEBUG_BLOCK
-    Q_UNUSED( collectionId )
-
-    m_albums.clear();
-    m_albums << albums;
+    if( sender() == m_lastQueryMaker )
+        m_albums << albums;
 }
-
-void
-CurrentEngine::resultReady( const QString &collectionId, const Meta::TrackList &tracks )
-{
-    // DEBUG_BLOCK
-    Q_UNUSED( collectionId )
-    m_latestTracks.clear();
-    m_latestTracks << tracks;
-    /*
-    else if( sender() == m_qmFavTracks )
-    {
-        m_favoriteTracks.clear();
-        m_favoriteTracks << tracks;
-    }
-    */
-}
-
 
 #include "CurrentEngine.moc"

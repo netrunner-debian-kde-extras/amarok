@@ -103,36 +103,11 @@ XmlQueryReader::readQuery()
                 QStringRef fieldStr =  attr.value( "field" );
                 QStringRef valueStr =  attr.value( "value" );
 
-                if( valueStr == "random" )
-                    d->qm->orderByRandom();
-                else
-                {
-                    qint64 field = fieldVal( fieldStr );
-                    bool descending = valueStr == "descending";
+                qint64 field = Meta::fieldForName( fieldStr.toString() );
+                bool descending = valueStr == "descending";
 
-                    if( field != 0 )
-                        d->qm->orderBy( field, descending  );
-                }
-            }
-            else if( name() == "includeCollection" )
-            {
-                QStringRef id =  attributes().value( "id" );
-                if( !id.isEmpty() )
-                {
-                    d->qm->includeCollection( id.toString() );
-                }
-            }
-            else if( name() == "excludeCollection" )
-            {
-                QStringRef id =  attributes().value( "id" );
-                if( !id.isEmpty() )
-                {
-                    d->qm->excludeCollection( id.toString() );
-                }
-            }
-            else if( name() == "returnResultAsDataPtrs" )
-            {
-                d->qm->setReturnResultAsDataPtrs( true );
+                if( field != 0 )
+                    d->qm->orderBy( field, descending  );
             }
             else if( name() == "limit" )
             {
@@ -147,6 +122,18 @@ XmlQueryReader::readQuery()
             else if( name() == "onlyNormalAlbums" )
             {
                 d->qm->setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
+            }
+            else if( name() == "onlyTrackArtists" )
+            {
+                d->qm->setArtistQueryMode( Collections::QueryMaker::TrackArtists );
+            }
+            else if( name() == "onlyAlbumArtists" )
+            {
+                d->qm->setArtistQueryMode( Collections::QueryMaker::AlbumArtists );
+            }
+            else if( name() == "AlbumOrTrackArtists" )
+            {
+                d->qm->setArtistQueryMode( Collections::QueryMaker::AlbumOrTrackArtists );
             }
             else if( name() == "returnValues" )
                 readReturnValues();
@@ -198,6 +185,10 @@ XmlQueryReader::readReturnValues()
             {
                 d->qm->setQueryType( Collections::QueryMaker::Album );
             }
+            else if( name() == "albumartist" )
+            {
+                d->qm->setQueryType( Collections::QueryMaker::AlbumArtist );
+            }
             else if( name() == "genres" )
             {
                 d->qm->setQueryType( Collections::QueryMaker::Genre );
@@ -246,7 +237,7 @@ XmlQueryReader::readFilter(QXmlStreamReader *reader)
     QXmlStreamAttributes attr = reader->attributes();
 
     filter.exclude = (reader->name() != "include");
-    filter.field = fieldVal( attr.value( "field" ) );
+    filter.field = Meta::fieldForName( attr.value( "field" ).toString() );
     filter.value = attr.value( "value" ).toString();
 
     QStringRef compareStr = attr.value( "compare" );
@@ -329,34 +320,6 @@ XmlQueryReader::readFilters()
             readFilters();
         }
     }
-}
-
-qint64
-XmlQueryReader::fieldVal( QStringRef field )
-{
-    if     ( field == "url"        ) return Meta::valUrl;
-    else if( field == "title"      ) return Meta::valTitle;
-    else if( field == "artist"     ) return Meta::valArtist;
-    else if( field == "album"      ) return Meta::valAlbum;
-    else if( field == "genre"      ) return Meta::valGenre;
-    else if( field == "composer"   ) return Meta::valComposer;
-    else if( field == "year"       ) return Meta::valYear;
-    else if( field == "comment"    ) return Meta::valComment; 
-    else if( field == "tracknr"    ) return Meta::valTrackNr;
-    else if( field == "discnr"     ) return Meta::valDiscNr;
-    else if( field == "length"     ) return Meta::valLength;
-    else if( field == "bitrate"    ) return Meta::valBitrate;
-    else if( field == "samplerate" ) return Meta::valSamplerate;
-    else if( field == "filesize"   ) return Meta::valFilesize;
-    else if( field == "format"     ) return Meta::valFormat;
-    else if( field == "createdate" ) return Meta::valCreateDate;
-    else if( field == "score"      ) return Meta::valScore;
-    else if( field == "rating"     ) return Meta::valRating;
-    else if( field == "firstplay"  ) return Meta::valFirstPlayed;
-    else if( field == "lastplay"   ) return Meta::valLastPlayed;
-    else if( field == "playcount"  ) return Meta::valPlaycount;
-    else if( field == "label"      ) return Meta::valLabel;
-    else                             return 0;
 }
 
 int

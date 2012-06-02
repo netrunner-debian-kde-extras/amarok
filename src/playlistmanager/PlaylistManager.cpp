@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007 Bart Cerneels <bart.cerneels@kde.org>                             *
+ * Copyright (c) 2011 Lucas Lira Gomes <x8lucas8x@gmail.com>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -28,6 +29,7 @@
 #include "file/KConfigSyncRelStore.h"
 #include "core-impl/podcasts/sql/SqlPodcastProvider.h"
 #include "playlistmanager/sql/SqlUserPlaylistProvider.h"
+#include "playlistmanager/SyncedPlaylist.h"
 #include "core/support/Debug.h"
 #include "core/support/Components.h"
 #include "core/interfaces/Logger.h"
@@ -45,6 +47,7 @@
 #include <typeinfo>
 
 using namespace Meta;
+using namespace Playlists;
 
 PlaylistManager *PlaylistManager::s_instance = 0;
 
@@ -74,6 +77,9 @@ PlaylistManager::PlaylistManager()
 
     m_syncRelStore = new KConfigSyncRelStore();
 
+    m_playlistFileProvider = new Playlists::PlaylistFileProvider();
+    addProvider( m_playlistFileProvider, UserPlaylist );
+
     m_defaultPodcastProvider = new Podcasts::SqlPodcastProvider();
     addProvider( m_defaultPodcastProvider, PlaylistManager::PodcastChannel );
     CollectionManager::instance()->addTrackProvider( m_defaultPodcastProvider );
@@ -81,8 +87,6 @@ PlaylistManager::PlaylistManager()
     m_defaultUserPlaylistProvider = new Playlists::SqlUserPlaylistProvider();
     addProvider( m_defaultUserPlaylistProvider, UserPlaylist );
 
-    m_playlistFileProvider = new Playlists::PlaylistFileProvider();
-    addProvider( m_playlistFileProvider, UserPlaylist );
 }
 
 PlaylistManager::~PlaylistManager()
@@ -90,18 +94,20 @@ PlaylistManager::~PlaylistManager()
     delete m_defaultPodcastProvider;
     delete m_defaultUserPlaylistProvider;
     delete m_playlistFileProvider;
+    delete m_syncRelStore;
 }
 
 bool
-PlaylistManager::shouldBeSynced( Playlists::PlaylistPtr playlist )
+PlaylistManager::hasToSync( Playlists::PlaylistPtr master, Playlists::PlaylistPtr slave )
 {
     DEBUG_BLOCK
-    debug() << playlist->uidUrl();
+    debug() << "master: " << master->uidUrl();
+    debug() << "slave: " << slave->uidUrl();
 
     if( !m_syncRelStore )
         return false;
 
-    return m_syncRelStore->shouldBeSynced( playlist );
+    return m_syncRelStore->hasToSync( master, slave );
 }
 
 void
@@ -111,6 +117,9 @@ PlaylistManager::addProvider( Playlists::PlaylistProvider *provider, int categor
     if( !m_providerMap.uniqueKeys().contains( category ) )
             newCategory = true;
 
+    //disconnect all signals connected to this object to be sure.
+    provider->disconnect( this, 0 );
+
     m_providerMap.insert( category, provider );
     connect( provider, SIGNAL(updated()), SLOT(slotUpdated()));
     connect( provider, SIGNAL(playlistAdded( Playlists::PlaylistPtr )),
@@ -119,10 +128,10 @@ PlaylistManager::addProvider( Playlists::PlaylistProvider *provider, int categor
              SLOT(slotPlaylistRemoved( Playlists::PlaylistPtr )));
 
     if( newCategory )
-        emit( categoryAdded( category ) );
+        emit categoryAdded( category );
 
-    emit( providerAdded( provider, category ) );
-    emit( updated() );
+    emit providerAdded( provider, category );
+    emit updated( category );
 
     loadPlaylists( provider, category );
 }
@@ -137,21 +146,54 @@ PlaylistManager::loadPlaylists( Playlists::PlaylistProvider *provider, int categ
 void
 PlaylistManager::addPlaylist( Playlists::PlaylistPtr playlist, int category )
 {
-    if( shouldBeSynced( playlist ) )
+    SyncedPlaylistPtr syncedPlaylist = m_syncRelStore->asSyncedPlaylist( playlist );
+
+    //NULL when not synced or a slave added before it's master copy ("early slave")
+    if( syncedPlaylist )
     {
-        SyncedPlaylistPtr syncedPlaylist = m_syncRelStore->asSyncedPlaylist( playlist );
-        m_syncedPlaylistMap.insert( syncedPlaylist, playlist );
-        if( !m_playlistMap.values( category ).contains(
-                Playlists::PlaylistPtr::dynamicCast( syncedPlaylist ) ) )
+        if( !m_syncedPlaylistMap.keys().contains( syncedPlaylist ) )
         {
-            m_playlistMap.insert( category,
-                                  Playlists::PlaylistPtr::dynamicCast( syncedPlaylist ) );
+            //this can only happen when playlist == the master of the syncedPlaylist
+
+            //Search for any slaves created before their master ("early slaves")
+            //To set-up a sync between them
+            //Only search in the category of the new playlist, i.e. no cross category syncing.
+            foreach( Playlists::PlaylistPtr existingPlaylist, m_playlistMap.values( category ) )
+            {
+                //If this is a slave asSyncedPlaylist() will make it part of the syncedPlaylist
+                if( m_syncRelStore->asSyncedPlaylist( existingPlaylist ) == syncedPlaylist )
+                {
+                    m_playlistMap.remove( category, existingPlaylist );
+
+                    if( !m_syncedPlaylistMap.values( syncedPlaylist ).contains( existingPlaylist ) )
+                        m_syncedPlaylistMap.insert( syncedPlaylist, existingPlaylist );
+                }
+            }
+        }
+
+        if( !m_syncedPlaylistMap.values( syncedPlaylist ).contains( playlist ) )
+        {
+            m_syncedPlaylistMap.insert( syncedPlaylist, playlist );
+
+            //The synchronosation will be done in the next mainloop run
+            m_syncNeeded.append( syncedPlaylist );
+            QTimer::singleShot( 0, this, SLOT( slotSyncNeeded() ) );
+        }
+
+        //deliberatly reusing the passed argument
+        playlist = PlaylistPtr::dynamicCast( syncedPlaylist );
+
+        if( m_playlistMap.values( category ).contains( playlist ) )
+        {
+             //no need to add it again but do let the model know something changed.
+             emit playlistUpdated( playlist, category );
+             return;
         }
     }
-    else
-    {
-        m_playlistMap.insert( category, playlist );
-    }
+
+    m_playlistMap.insert( category, playlist );
+    //reemit so models know about new playlist in their category
+    emit playlistAdded( playlist, category );
 }
 
 void
@@ -171,8 +213,8 @@ PlaylistManager::removeProvider( Playlists::PlaylistProvider *provider )
 
     m_providerMap.remove( provider->category(), provider );
 
-    emit( providerRemoved( provider, provider->category() ) );
-    emit( updated() );
+    emit providerRemoved( provider, provider->category() );
+    emit updated( provider->category() );
 }
 
 void
@@ -180,23 +222,34 @@ PlaylistManager::removePlaylists( Playlists::PlaylistProvider *provider )
 {
     foreach( Playlists::PlaylistPtr playlist, m_playlistMap.values( provider->category() ) )
         if( playlist->provider() && playlist->provider() == provider )
+        {
+            foreach( SyncedPlaylistPtr syncedPlaylist, m_syncedPlaylistMap.keys( playlist ) )
+                m_syncedPlaylistMap.remove( syncedPlaylist, playlist );
+
             removePlaylist( playlist, provider->category() );
+        }
 }
 
 void
 PlaylistManager::removePlaylist( Playlists::PlaylistPtr playlist, int category )
 {
-    if( typeid( * playlist.data() ) == typeid( SyncedPlaylist ) )
+    if( typeid( *playlist.data() ) == typeid( SyncedPlaylist ) )
     {
         SyncedPlaylistPtr syncedPlaylist = SyncedPlaylistPtr::dynamicCast( playlist );
+        //TODO: this might be wrong if there were multiple playlists from the same provider.
+        //remove the specific child playlist, not all from same provider.
         syncedPlaylist->removePlaylistsFrom( playlist->provider() );
         if( syncedPlaylist->isEmpty() )
             m_playlistMap.remove( category, playlist );
+
+        m_syncNeeded.removeAll( syncedPlaylist );
     }
     else
     {
         m_playlistMap.remove( category, playlist );
     }
+
+    emit playlistRemoved( playlist, category );
 }
 
 void
@@ -211,21 +264,19 @@ PlaylistManager::slotUpdated()
     //This is an expensive operation, the provider should use playlistAdded/Removed signals instead.
     removePlaylists( provider );
     loadPlaylists( provider, provider->category() );
-    emit( updated() );
+    emit updated( provider->category() );
 }
 
 void
 PlaylistManager::slotPlaylistAdded( Playlists::PlaylistPtr playlist )
 {
     addPlaylist( playlist, playlist->provider()->category() );
-    emit updated();
 }
 
 void
 PlaylistManager::slotPlaylistRemoved( Playlists::PlaylistPtr playlist )
 {
     removePlaylist( playlist, playlist->provider()->category() );
-    emit updated();
 }
 
 Playlists::PlaylistList
@@ -291,28 +342,16 @@ bool
 PlaylistManager::save( Meta::TrackList tracks, const QString &name,
                        Playlists::UserPlaylistProvider *toProvider )
 {
-    AMAROK_DEPRECATED
-    // used by: Playlist::Widget::slotSaveCurrentPlaylist()
     //if toProvider is 0 use the default Playlists::UserPlaylistProvider (SQL)
     Playlists::UserPlaylistProvider *prov = toProvider ? toProvider : m_defaultUserPlaylistProvider;
-    Playlists::PlaylistPtr playlist = Playlists::PlaylistPtr();
-    if( name.isEmpty() )
-    {
-        debug() << "Empty name of playlist, or editing now";
-        playlist = prov->save( tracks );
-        if( playlist.isNull() )
-            return false;
+    Playlists::PlaylistPtr playlist = prov->save( tracks, name );
+    if( playlist.isNull() )
+        return false;
 
-        AmarokUrl("amarok://navigate/playlists/user playlists").run();
-        emit( renamePlaylist( playlist ) );
-    }
-    else
-    {
-        debug() << "Playlist is being saved with name: " << name;
-        playlist = prov->save( tracks, name );
-    }
+    AmarokUrl("amarok://navigate/playlists/user playlists").run();
+    emit renamePlaylist( playlist );
 
-    return !playlist.isNull();
+    return true;
 }
 
 bool
@@ -349,7 +388,6 @@ PlaylistManager::rename( Playlists::PlaylistPtr playlist )
     {
         debug() << "Changing name from " << playlist->name() << " to " << newName.trimmed();
         provider->rename( playlist, newName.trimmed() );
-        emit( updated() );
     }
 }
 
@@ -395,7 +433,8 @@ QList<Playlists::PlaylistProvider*>
 PlaylistManager::getProvidersForPlaylist( const Playlists::PlaylistPtr playlist )
 {
     QList<Playlists::PlaylistProvider*> providers;
-    if( !playlist )
+
+    if( playlist.isNull() )
         return providers;
 
     SyncedPlaylistPtr syncedPlaylist = SyncedPlaylistPtr::dynamicCast( playlist );
@@ -404,6 +443,7 @@ PlaylistManager::getProvidersForPlaylist( const Playlists::PlaylistPtr playlist 
         foreach( Playlists::PlaylistPtr playlist, m_syncedPlaylistMap.values( syncedPlaylist ) )
             if( !providers.contains( playlist->provider() ) )
                 providers << playlist->provider();
+
         return providers;
     }
 
@@ -411,13 +451,14 @@ PlaylistManager::getProvidersForPlaylist( const Playlists::PlaylistPtr playlist 
     if( provider )
         return providers << provider;
 
-    // Iteratively check all providers' playlists for ownership
+    //Iteratively check all providers' playlists for ownership
     QList< Playlists::PlaylistProvider* > userPlaylists = m_providerMap.values( UserPlaylist );
     foreach( Playlists::PlaylistProvider* provider, userPlaylists )
     {
         if( provider->playlists().contains( playlist ) )
                 return providers << provider;
     }
+
     return providers;
 }
 
@@ -445,6 +486,75 @@ PlaylistManager::completePodcastDownloads()
 
         podcastProvider->completePodcastDownloads();
     }
+}
+
+void
+PlaylistManager::setupSync( const Playlists::PlaylistPtr master, const Playlists::PlaylistPtr slave )
+{
+    DEBUG_BLOCK
+    debug() << "master: " << master->uidUrl();
+    debug() << "slave: " << slave->uidUrl();
+
+    //If there is no sync relation established between these two, then we must setup a sync.
+    if( hasToSync( master, slave ) )
+       return;
+
+    Playlists::PlaylistPtr tempMaster;
+    Playlists::PlaylistPtr tempSlave;
+
+    m_syncRelStore->addSync( master, slave );
+
+    foreach( const Playlists::PlaylistPtr tempPlaylist, m_playlistMap )
+    {
+        if( master == tempPlaylist )
+        {
+            tempMaster = tempPlaylist;
+            break;
+        }
+    }
+
+    foreach( const Playlists::PlaylistPtr tempPlaylist, m_playlistMap )
+    {
+        if( slave == tempPlaylist )
+        {
+            tempSlave = tempPlaylist;
+            break;
+        }
+    }
+
+    if( tempMaster && tempSlave )
+    {
+        SyncedPlaylistPtr syncedPlaylist = m_syncRelStore->asSyncedPlaylist( tempMaster );
+
+        m_syncRelStore->asSyncedPlaylist( tempSlave );
+
+        Playlists::PlaylistPtr syncedPlaylistPtr =
+                        Playlists::PlaylistPtr::dynamicCast( syncedPlaylist );
+
+        int category = syncedPlaylist->master()->provider()->category();
+
+        if( !m_playlistMap.values( category ).contains( syncedPlaylistPtr ) )
+        {
+            removePlaylist( tempMaster, tempMaster->provider()->category() );
+            removePlaylist( tempSlave, tempSlave->provider()->category() );
+
+            m_syncedPlaylistMap.insert( syncedPlaylist, tempMaster );
+            m_syncedPlaylistMap.insert( syncedPlaylist, tempSlave );
+
+            m_playlistMap.insert( category, syncedPlaylistPtr );
+            //reemit so models know about new playlist in their category
+            emit playlistAdded( syncedPlaylistPtr, category );
+        }
+    }
+}
+
+void PlaylistManager::slotSyncNeeded()
+{
+    foreach( SyncedPlaylistPtr syncedPlaylist, m_syncNeeded )
+        if ( syncedPlaylist->syncNeeded() )
+            syncedPlaylist->doSync();
+
+    m_syncNeeded.clear();
 }
 
 #include "PlaylistManager.moc"

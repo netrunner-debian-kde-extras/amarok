@@ -23,8 +23,11 @@
 #include "UserPlaylistModel.h"
 #include "playlist/PlaylistModelStack.h"
 
+#include <KDialog>
 #include <KIcon>
 #include <KInputDialog>
+
+#include <QLabel>
 
 PlaylistsInFoldersProxy::PlaylistsInFoldersProxy( QAbstractItemModel *model )
     : QtGroupingProxy( model, QModelIndex(), PlaylistBrowserNS::UserModel::LabelColumn )
@@ -38,10 +41,12 @@ PlaylistsInFoldersProxy::PlaylistsInFoldersProxy( QAbstractItemModel *model )
     m_deleteFolderAction = new QAction( KIcon( "media-track-remove-amarok" ),
                                         i18n( "&Delete Folder" ), this );
     m_deleteFolderAction->setProperty( "popupdropper_svg_id", "delete_group" );
+    m_deleteFolderAction->setObjectName( "deleteAction" );
     connect( m_deleteFolderAction, SIGNAL( triggered() ), this,
              SLOT( slotDeleteFolder() ) );
 
-    connect( m_model, SIGNAL( renameIndex( QModelIndex ) ), SLOT( slotRename( QModelIndex ) ) );
+    connect( sourceModel(), SIGNAL(renameIndex( const QModelIndex & )),
+             SLOT(slotRenameIndex( const QModelIndex & )) );
 }
 
 PlaylistsInFoldersProxy::~PlaylistsInFoldersProxy()
@@ -69,9 +74,12 @@ PlaylistsInFoldersProxy::data( const QModelIndex &idx, int role ) const
     {
         //wheter we use the list from m_deleteFolderAction or m_renameFolderAction does not matter
         //they are the same anyway
-        QModelIndexList actionList = m_deleteFolderAction->data().value<QModelIndexList>();
+        QPersistentModelIndexList actionList =
+                m_deleteFolderAction->data().value<QPersistentModelIndexList>();
 
-        actionList << idx;
+        //make a persistant modelindex since the location of the groups can change while executing
+        //actions.
+        actionList << QPersistentModelIndex( idx );
         QVariant value = QVariant::fromValue( actionList );
         m_deleteFolderAction->setData( value );
         m_renameFolderAction->setData( value );
@@ -101,7 +109,7 @@ PlaylistsInFoldersProxy::removeRows( int row, int count, const QModelIndex &pare
 
         //is a playlist not in a folder
         QModelIndex childIdx = mapToSource( index( row, 0, m_rootNode ) );
-        result = m_model->removeRows( childIdx.row(), count, m_rootNode );
+        result = sourceModel()->removeRows( childIdx.row(), count, m_rootNode );
         if( result )
         {
             beginRemoveRows( parent, row, row + count - 1 );
@@ -115,10 +123,9 @@ PlaylistsInFoldersProxy::removeRows( int row, int count, const QModelIndex &pare
         result = true;
         for( int i = row; i < row + count; i++ )
         {
-            //individually remove all children of this group in the source model
             QModelIndex childIdx = mapToSource( index( i, 0, parent ) );
             //set success to false if removeRows returns false
-            result = m_model->removeRow( childIdx.row(), QModelIndex() ) ? result : false;
+            result = sourceModel()->removeRow( childIdx.row(), QModelIndex() ) ? result : false;
         }
         return result;
     }
@@ -126,7 +133,7 @@ PlaylistsInFoldersProxy::removeRows( int row, int count, const QModelIndex &pare
     //removing a track from a playlist
     beginRemoveRows( parent, row, row + count - 1 );
     QModelIndex originalIdx = mapToSource( parent );
-    result = m_model->removeRows( row, count, originalIdx );
+    result = sourceModel()->removeRows( row, count, originalIdx );
     endRemoveRows();
 
     return result;
@@ -135,7 +142,7 @@ PlaylistsInFoldersProxy::removeRows( int row, int count, const QModelIndex &pare
 QStringList
 PlaylistsInFoldersProxy::mimeTypes() const
 {
-    QStringList mimeTypes = m_model->mimeTypes();
+    QStringList mimeTypes = sourceModel()->mimeTypes();
     mimeTypes << AmarokMimeData::PLAYLISTBROWSERGROUP_MIME;
     return mimeTypes;
 }
@@ -161,7 +168,7 @@ PlaylistsInFoldersProxy::mimeData( const QModelIndexList &indexes ) const
     }
 
     if( !sourceIndexes.isEmpty() )
-        return m_model->mimeData( sourceIndexes );
+        return sourceModel()->mimeData( sourceIndexes );
 
     return mime;
 }
@@ -234,7 +241,7 @@ PlaylistsInFoldersProxy::dropMimeData( const QMimeData *data, Qt::DropAction act
     else
     {
         QModelIndex sourceIndex = mapToSource( parent );
-        return m_model->dropMimeData( data, action, row, column,
+        return sourceModel()->dropMimeData( data, action, row, column,
                                sourceIndex );
     }
 
@@ -245,21 +252,34 @@ Qt::DropActions
 PlaylistsInFoldersProxy::supportedDropActions() const
 {
     //always add MoveAction because playlists can be put into a different group
-    return m_model->supportedDropActions() | Qt::MoveAction;
+    return sourceModel()->supportedDropActions() | Qt::MoveAction;
 }
 
 Qt::DropActions
 PlaylistsInFoldersProxy::supportedDragActions() const
 {
     //always add MoveAction because playlists can be put into a different group
-    return m_model->supportedDragActions() | Qt::MoveAction;
+    return sourceModel()->supportedDragActions() | Qt::MoveAction;
 }
 
 void
-PlaylistsInFoldersProxy::slotRename( QModelIndex sourceIdx )
+PlaylistsInFoldersProxy::setSourceModel( QAbstractItemModel *model )
 {
-    QModelIndex proxyIdx = mapFromSource( sourceIdx );
-    emit renameIndex( proxyIdx );
+    if( sourceModel() )
+        sourceModel()->disconnect();
+
+    QtGroupingProxy::setSourceModel( model );
+
+    connect( sourceModel(), SIGNAL(renameIndex( const QModelIndex & )),
+             SLOT(slotRenameIndex( const QModelIndex & )) );
+}
+
+void
+PlaylistsInFoldersProxy::slotRenameIndex( const QModelIndex &sourceIdx )
+{
+    QModelIndex idx = mapFromSource( sourceIdx );
+    if( idx.isValid() )
+        emit renameIndex( idx );
 }
 
 void
@@ -269,7 +289,7 @@ PlaylistsInFoldersProxy::slotDeleteFolder()
     if( action == 0 )
         return;
 
-    QModelIndexList indexes = action->data().value<QModelIndexList>();
+    QPersistentModelIndexList indexes = action->data().value<QPersistentModelIndexList>();
 
     foreach( const QModelIndex &groupIdx, indexes )
         deleteFolder( groupIdx );
@@ -282,7 +302,7 @@ PlaylistsInFoldersProxy::slotRenameFolder()
     if( action == 0 )
         return;
 
-    QModelIndexList indexes = action->data().value<QModelIndexList>();
+    QPersistentModelIndexList indexes = action->data().value<QPersistentModelIndexList>();
 
     if( indexes.isEmpty() )
         return;
@@ -300,15 +320,7 @@ PlaylistsInFoldersProxy::slotRenameFolder()
     if( !ok || newName == folderName )
         return;
 
-    for( int i = 0; i < rowCount( folder ); i++ )
-    {
-        QModelIndex idx = index( i, PlaylistBrowserNS::UserModel::LabelColumn, folder );
-        setData( idx, newName, Qt::DisplayRole );
-    }
-    //remove the old foldername from the map
-    m_groupMaps.removeAt( folder.row() );
-    buildTree();
-    emit layoutChanged();
+    setData( folder, newName );
 }
 
 void
@@ -316,16 +328,29 @@ PlaylistsInFoldersProxy::deleteFolder( const QModelIndex &groupIdx )
 {
     int childCount = rowCount( groupIdx );
     if( childCount > 0 )
+    {
+        KDialog dialog;
+        dialog.setCaption( i18n( "Confirm Delete" ) );
+        dialog.setButtons( KDialog::Ok | KDialog::Cancel );
+        QLabel label( i18n( "Are you sure you want to delete this folder and its contents?" )
+                      , &dialog
+                    );
+        //TODO:include a text area with all the names of the playlists
+        dialog.setButtonText( KDialog::Ok, i18n( "Yes, delete folder." ) );
+        dialog.setMainWidget( &label );
+        if( dialog.exec() != QDialog::Accepted )
+            return;
+
         removeRows( 0, childCount, groupIdx );
+    }
     removeGroup( groupIdx );
-    buildTree();
 }
 
 QModelIndex
 PlaylistsInFoldersProxy::createNewFolder( const QString &groupName )
 {
-    ColumnVariantMap data;
-    RoleVariantMap roleData;
+    RowData data;
+    ItemData roleData;
     roleData.insert( Qt::DisplayRole, groupName );
     roleData.insert( Qt::DecorationRole, QVariant( KIcon( "folder" ) ) );
     roleData.insert( Qt::EditRole, groupName );

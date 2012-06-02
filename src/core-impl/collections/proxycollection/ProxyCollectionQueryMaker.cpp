@@ -36,9 +36,7 @@ ProxyQueryMaker::ProxyQueryMaker( ProxyCollection *collection, const QList<Query
     , m_collection( collection )
     , m_builders( queryMakers )
     , m_queryDoneCount( 0 )
-    , m_returnDataPointers( false )
     , m_maxResultSize( -1 )
-    , m_randomize( false )
     , m_queryType( QueryMaker::None )
     , m_orderDescending( false )
     , m_orderField( 0 )
@@ -48,14 +46,13 @@ ProxyQueryMaker::ProxyQueryMaker( ProxyCollection *collection, const QList<Query
     foreach( QueryMaker *b, m_builders )
     {
         connect( b, SIGNAL( queryDone() ), this, SLOT( slotQueryDone() ) );
-        //relay signals directly
-        connect( b, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SLOT( slotNewResultReady( QString, Meta::TrackList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), this, SLOT( slotNewResultReady( QString, Meta::ArtistList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), this, SLOT( slotNewResultReady( QString, Meta::AlbumList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( QString, Meta::GenreList ) ), this, SLOT( slotNewResultReady( QString, Meta::GenreList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), this, SLOT( slotNewResultReady( QString, Meta::ComposerList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( QString, Meta::YearList ) ), this, SLOT( slotNewResultReady( QString, Meta::YearList ) ), Qt::DirectConnection );
-        connect( b, SIGNAL( newResultReady( QString, Meta::LabelList ) ), this, SLOT( slotNewResultReady( QString, Meta::LabelList ) ), Qt::DirectConnection );
+        connect( b, SIGNAL( newResultReady( Meta::TrackList ) ), this, SLOT( slotNewResultReady( Meta::TrackList ) ), Qt::QueuedConnection );
+        connect( b, SIGNAL( newResultReady( Meta::ArtistList ) ), this, SLOT( slotNewResultReady( Meta::ArtistList ) ), Qt::QueuedConnection );
+        connect( b, SIGNAL( newResultReady( Meta::AlbumList ) ), this, SLOT( slotNewResultReady( Meta::AlbumList ) ), Qt::QueuedConnection );
+        connect( b, SIGNAL( newResultReady( Meta::GenreList ) ), this, SLOT( slotNewResultReady( Meta::GenreList ) ), Qt::QueuedConnection );
+        connect( b, SIGNAL( newResultReady( Meta::ComposerList ) ), this, SLOT( slotNewResultReady( Meta::ComposerList ) ), Qt::QueuedConnection );
+        connect( b, SIGNAL( newResultReady( Meta::YearList ) ), this, SLOT( slotNewResultReady( Meta::YearList ) ), Qt::QueuedConnection );
+        connect( b, SIGNAL( newResultReady( Meta::LabelList ) ), this, SLOT( slotNewResultReady( Meta::LabelList ) ), Qt::QueuedConnection );
     }
 }
 
@@ -64,25 +61,6 @@ ProxyQueryMaker::~ProxyQueryMaker()
     qDeleteAll( m_returnFunctions );
     qDeleteAll( m_returnValues );
     qDeleteAll( m_builders );
-}
-
-QueryMaker*
-ProxyQueryMaker::reset()
-{
-    m_queryDoneCount = 0;
-    m_returnDataPointers = false;
-    m_maxResultSize = -1;
-    m_randomize = false;
-    m_queryType = QueryMaker::None;
-    m_orderDescending = false;
-    m_orderField = 0;
-    qDeleteAll( m_returnFunctions );
-    m_returnFunctions.clear();
-    qDeleteAll( m_returnValues );
-    m_returnValues.clear();
-    foreach( QueryMaker *b, m_builders )
-        b->reset();
-    return this;
 }
 
 void
@@ -97,12 +75,6 @@ ProxyQueryMaker::abortQuery()
 {
     foreach( QueryMaker *b, m_builders )
         b->abortQuery();
-}
-
-int
-ProxyQueryMaker::resultCount() const
-{
-    return 1;
 }
 
 QueryMaker*
@@ -150,57 +122,36 @@ ProxyQueryMaker::addReturnFunction( ReturnFunction function, qint64 value )
 QueryMaker*
 ProxyQueryMaker::orderBy( qint64 value, bool descending )
 {
-    m_orderDescending = descending;
     m_orderField = value;
+    m_orderDescending = descending;
     //copied from MemoryQueryMaker. TODO: think of a sensible place to put this code
     switch( value )
     {
         case Meta::valYear:
-        case Meta::valDiscNr:
         case Meta::valTrackNr:
+        case Meta::valDiscNr:
+        case Meta::valBpm:
+        case Meta::valLength:
+        case Meta::valBitrate:
+        case Meta::valSamplerate:
+        case Meta::valFilesize:
+        case Meta::valFormat:
+        case Meta::valCreateDate:
         case Meta::valScore:
         case Meta::valRating:
+        case Meta::valFirstPlayed:
+        case Meta::valLastPlayed:
         case Meta::valPlaycount:
-        case Meta::valFilesize:
-        case Meta::valSamplerate:
-        case Meta::valBitrate:
-        case Meta::valLength:
+        case Meta::valModified:
         {
             m_orderByNumberField = true;
             break;
         }
-        //TODO: what about Meta::valFirstPlayed, Meta::valCreateDate or Meta::valLastPlayed??
-
         default:
             m_orderByNumberField = false;
     }
     foreach( QueryMaker *b, m_builders )
         b->orderBy( value, descending );
-    return this;
-}
-
-QueryMaker*
-ProxyQueryMaker::orderByRandom()
-{
-    m_randomize = true;
-    foreach( QueryMaker *b, m_builders )
-        b->orderByRandom();
-    return this;
-}
-
-QueryMaker*
-ProxyQueryMaker::includeCollection( const QString &collectionId )
-{
-    foreach( QueryMaker *b, m_builders )
-        b->includeCollection( collectionId );
-    return this;
-}
-
-QueryMaker*
-ProxyQueryMaker::excludeCollection( const QString &collectionId )
-{
-    foreach( QueryMaker *b, m_builders )
-        b->excludeCollection( collectionId );
     return this;
 }
 
@@ -285,28 +236,10 @@ ProxyQueryMaker::addMatch( const Meta::YearPtr &year )
 }
 
 QueryMaker*
-ProxyQueryMaker::addMatch( const Meta::DataPtr &data )
-{
-    Meta::DataPtr tmp = const_cast<Meta::DataPtr&>( data );
-    foreach( QueryMaker *b, m_builders )
-        tmp->addMatchTo( b );
-    return this;
-}
-
-QueryMaker*
 ProxyQueryMaker::addMatch( const Meta::LabelPtr &label )
 {
     foreach( QueryMaker *b, m_builders )
         b->addMatch( label );
-    return this;
-}
-
-QueryMaker*
-ProxyQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
-{
-    //no point in forwarding this call
-    //just let all m_builders return the actual type, then we do not have to cast to subtypes here
-    m_returnDataPointers = resultAsDataPtrs;
     return this;
 }
 
@@ -355,6 +288,14 @@ ProxyQueryMaker::setAlbumQueryMode( AlbumQueryMode mode )
 }
 
 QueryMaker*
+ProxyQueryMaker::setArtistQueryMode( QueryMaker::ArtistQueryMode mode )
+{
+    foreach( QueryMaker *b, m_builders )
+        b->setArtistQueryMode( mode );
+    return this;
+}
+
+QueryMaker*
 ProxyQueryMaker::setLabelQueryMode( LabelQueryMode mode )
 {
     foreach( QueryMaker *b, m_builders )
@@ -384,22 +325,11 @@ template <class PointerType>
 void ProxyQueryMaker::emitProperResult( const QList<PointerType>& list )
 {
    QList<PointerType> resultList = list;
-    if( m_randomize )
-        m_sequence.randomize<PointerType>( resultList );
 
     if ( m_maxResultSize >= 0 && resultList.count() > m_maxResultSize )
         resultList = resultList.mid( 0, m_maxResultSize );
 
-    if( m_returnDataPointers )
-    {
-        Meta::DataList data;
-        foreach( PointerType p, resultList )
-            data << Meta::DataPtr::staticCast( p );
-
-        emit newResultReady( m_collection->collectionId(), data );
-    }
-    else
-        emit newResultReady( m_collection->collectionId(), list );
+    emit newResultReady( list );
 }
 
 void
@@ -433,10 +363,6 @@ ProxyQueryMaker::handleResult()
                     else
                         tracks = MemoryQueryMakerHelper::orderListByString( tracks, m_orderField, m_orderDescending );
                 }
-                if( m_randomize )
-                {
-                    m_sequence.randomize<Meta::TrackPtr>( tracks );
-                }
 
                 int count = 0;
                 foreach( const Meta::TrackPtr &track, tracks )
@@ -451,7 +377,7 @@ ProxyQueryMaker::handleResult()
                     count++;
                 }
             }
-            emit newResultReady( m_collection->collectionId(), result );
+            emit newResultReady( result );
             break;
         }
         case QueryMaker::Track :
@@ -487,6 +413,7 @@ ProxyQueryMaker::handleResult()
             break;
         }
         case QueryMaker::Artist :
+        case QueryMaker::AlbumArtist :
         {
             Meta::ArtistList artists;
             foreach( KSharedPtr<Meta::ProxyArtist> artist, m_artists )
@@ -566,10 +493,8 @@ ProxyQueryMaker::handleResult()
 }
 
 void
-ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::TrackList &tracks )
+ProxyQueryMaker::slotNewResultReady( const Meta::TrackList &tracks )
 {
-    Q_UNUSED( collectionId )
-
     foreach( const Meta::TrackPtr &track, tracks )
     {
         m_tracks.insert( KSharedPtr<Meta::ProxyTrack>( m_collection->getTrack( track ) ) );
@@ -577,10 +502,8 @@ ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::Tr
 }
 
 void
-ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::ArtistList &artists )
+ProxyQueryMaker::slotNewResultReady( const Meta::ArtistList &artists )
 {
-    Q_UNUSED( collectionId )
-
     foreach( const Meta::ArtistPtr &artist, artists )
     {
         m_artists.insert( KSharedPtr<Meta::ProxyArtist>( m_collection->getArtist( artist ) ) );
@@ -588,10 +511,8 @@ ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::Ar
 }
 
 void
-ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::AlbumList &albums )
+ProxyQueryMaker::slotNewResultReady( const Meta::AlbumList &albums )
 {
-    Q_UNUSED( collectionId )
-
     foreach( const Meta::AlbumPtr &album, albums )
     {
         m_albums.insert( KSharedPtr<Meta::ProxyAlbum>( m_collection->getAlbum( album ) ) );
@@ -599,10 +520,8 @@ ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::Al
 }
 
 void
-ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::GenreList &genres )
+ProxyQueryMaker::slotNewResultReady( const Meta::GenreList &genres )
 {
-    Q_UNUSED( collectionId )
-
     foreach( const Meta::GenrePtr &genre, genres )
     {
         m_genres.insert( KSharedPtr<Meta::ProxyGenre>( m_collection->getGenre( genre ) ) );
@@ -610,10 +529,8 @@ ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::Ge
 }
 
 void
-ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::ComposerList &composers )
+ProxyQueryMaker::slotNewResultReady( const Meta::ComposerList &composers )
 {
-    Q_UNUSED( collectionId )
-
     foreach( const Meta::ComposerPtr &composer, composers )
     {
         m_composers.insert( KSharedPtr<Meta::ProxyComposer>( m_collection->getComposer( composer ) ) );
@@ -621,10 +538,8 @@ ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::Co
 }
 
 void
-ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::YearList &years )
+ProxyQueryMaker::slotNewResultReady( const Meta::YearList &years )
 {
-    Q_UNUSED( collectionId )
-
     foreach( const Meta::YearPtr &year, years )
     {
         m_years.insert( KSharedPtr<Meta::ProxyYear>( m_collection->getYear( year ) ) );
@@ -632,10 +547,8 @@ ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::Ye
 }
 
 void
-ProxyQueryMaker::slotNewResultReady( const QString &collectionId, const Meta::LabelList &labels )
+ProxyQueryMaker::slotNewResultReady( const Meta::LabelList &labels )
 {
-    Q_UNUSED( collectionId )
-
     foreach( const Meta::LabelPtr &label, labels )
     {
         m_labels.insert( KSharedPtr<Meta::ProxyLabel>( m_collection->getLabel( label ) ) );

@@ -30,7 +30,6 @@
 #include "mocks/MockArtist.h"
 
 #include <QMap>
-#include <QDebug>
 
 #include <qtest_kde.h>
 #include <gmock/gmock.h>
@@ -39,9 +38,6 @@ using ::testing::Return;
 using ::testing::AnyNumber;
 
 QTEST_KDEMAIN_CORE( TestTrackOrganizer )
-
-//required for Debug.h
-QMutex Debug::mutex;
 
 namespace Collections {
 
@@ -76,7 +72,7 @@ void TestTrackOrganizer::testBasic()
   mTracks = makeTracks( 10 );
   mTrackOrganizer = new TrackOrganizer( mTracks, this );
   QString folder = "/home/user/Music" ;
-  mTrackOrganizer->setFormatString( "%folder/%artist/%album/%track-%title.%filetype" );
+  mTrackOrganizer->setFormatString( "%folder%/%artist%/%album%/%track%-%title%.%filetype%" );
   mTrackOrganizer->setFolderPrefix( folder );
   QMap <Meta::TrackPtr, QString > dests = mTrackOrganizer->getDestinations();
   QVERIFY( dests.size() == 10 );

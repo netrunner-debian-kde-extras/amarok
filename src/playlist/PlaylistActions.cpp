@@ -31,7 +31,6 @@
 #include "core/support/Debug.h"
 #include "DynamicModel.h"
 #include "EngineController.h"
-#include "core/engine/EngineObserver.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/interfaces/Logger.h"
 #include "MainWindow.h"
@@ -43,6 +42,7 @@
 #include "navigators/StandardTrackNavigator.h"
 #include "navigators/FavoredRandomTrackNavigator.h"
 #include "PlaylistModelStack.h"
+#include "PlaylistController.h"
 #include "playlist/PlaylistDock.h"
 #include "playlistmanager/PlaylistManager.h"
 
@@ -54,7 +54,10 @@ Playlist::Actions* Playlist::Actions::s_instance = 0;
 Playlist::Actions* Playlist::Actions::instance()
 {
     if( !s_instance )
+    {
         s_instance = new Actions();
+        s_instance->init(); // prevent infinite recursion by using the playlist actions only after setting the instance.
+    }
     return s_instance;
 }
 
@@ -67,24 +70,28 @@ Playlist::Actions::destroy()
 
 Playlist::Actions::Actions()
         : QObject()
-        , Engine::EngineObserver( The::engineController() )
         , m_nextTrackCandidate( 0 )
         , m_trackToBeLast( 0 )
         , m_navigator( 0 )
         , m_stopAfterMode( StopNever )
-        , m_trackError( false )
         , m_waitingForNextTrack( false )
 {
-    DEBUG_BLOCK
-    playlistModeChanged(); // sets m_navigator.
-    restoreDefaultPlaylist();
+    EngineController *engine = The::engineController();
+
+    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
+             this, SLOT( slotTrackPlaying( Meta::TrackPtr ) ) );
 }
 
 Playlist::Actions::~Actions()
 {
-    DEBUG_BLOCK
-
     delete m_navigator;
+}
+
+void
+Playlist::Actions::init()
+{
+    playlistModeChanged(); // sets m_navigator.
+    restoreDefaultPlaylist();
 }
 
 Meta::TrackPtr
@@ -105,11 +112,8 @@ Playlist::Actions::requestNextTrack()
     DEBUG_BLOCK
     if ( m_nextTrackCandidate != 0 )
         return;
-    if( m_trackError )
-        return;
 
     debug() << "so far so good!";
-    m_trackError = false;
     if( stopAfterMode() == StopAfterQueue && The::playlist()->activeId() == m_trackToBeLast )
     {
         setStopAfterMode( StopAfterCurrent );
@@ -150,7 +154,6 @@ Playlist::Actions::requestNextTrack()
 void
 Playlist::Actions::requestUserNextTrack()
 {
-    m_trackError = false;
     m_nextTrackCandidate = m_navigator->requestUserNextTrack();
     play( m_nextTrackCandidate );
 }
@@ -158,7 +161,6 @@ Playlist::Actions::requestUserNextTrack()
 void
 Playlist::Actions::requestPrevTrack()
 {
-    m_trackError = false;
     m_nextTrackCandidate = m_navigator->requestLastTrack();
     play( m_nextTrackCandidate );
 }
@@ -166,7 +168,6 @@ Playlist::Actions::requestPrevTrack()
 void
 Playlist::Actions::requestTrack( quint64 id )
 {
-    m_trackError = false;
     m_nextTrackCandidate = id;
 }
 
@@ -176,10 +177,12 @@ Playlist::Actions::play()
 {
     DEBUG_BLOCK
 
-    if( 0 == m_nextTrackCandidate )
+    if ( m_nextTrackCandidate == 0 )
     {
         m_nextTrackCandidate = The::playlist()->activeId();
-        if( 0 == m_nextTrackCandidate )
+        // the queue has priority, and requestNextTrack() respects the queue.
+        // this is a bit of a hack because we "know" that all navigators will look at the queue first.
+        if ( !m_nextTrackCandidate || !m_navigator->queue().isEmpty() )
             m_nextTrackCandidate = m_navigator->requestNextTrack();
     }
 
@@ -216,26 +219,12 @@ Playlist::Actions::play( const quint64 trackid, bool now )
     if ( track )
     {
         if ( now )
-        {
-            Meta::TrackPtr currentTrack = The::engineController()->currentTrack();
-            Phonon::State engineState = The::engineController()->state();
-            if( currentTrack && ( engineState == Phonon::PlayingState
-                               || engineState == Phonon::PausedState
-                               || engineState == Phonon::BufferingState ) )
-            {
-                //Theres a track playing now, calculate statistics for that track before playing a new one.
-                const double finishedPercent = (double)The::engineController()->trackPositionMs() / (double)currentTrack->length();
-                debug() << "Manually advancing to the next track, calculating previous statistics for track here.  Finished % is: "  << finishedPercent;
-                currentTrack->finishedPlaying( finishedPercent );
-            }
             The::engineController()->play( track );
-        }
         else
             The::engineController()->setNextTrack( track );
     }
     else
     {
-        m_trackError = true;
         warning() << "Invalid trackid" << trackid;
     }
 }
@@ -253,6 +242,29 @@ Playlist::Actions::back()
     DEBUG_BLOCK
     requestPrevTrack();
 }
+
+
+void
+Playlist::Actions::enableDynamicMode( bool enable )
+{
+    if( AmarokConfig::dynamicMode() == enable )
+        return;
+
+    AmarokConfig::setDynamicMode( enable );
+    // TODO: turn off other incompatible modes
+    // TODO: should we restore the state of other modes?
+    AmarokConfig::self()->writeConfig();
+
+    //if the playlist is empty, repopulate while we are at it:
+    if( enable )
+    {
+        if ( Playlist::ModelStack::instance()->bottom()->rowCount() == 0 )
+            repopulateDynamicPlaylist();
+    }
+
+    playlistModeChanged();
+}
+
 
 void
 Playlist::Actions::playlistModeChanged()
@@ -275,23 +287,12 @@ Playlist::Actions::playlistModeChanged()
 
     if ( AmarokConfig::dynamicMode() )
     {
-        PlaylistBrowserNS::DynamicModel* dm = PlaylistBrowserNS::DynamicModel::instance();
-
-        Dynamic::DynamicPlaylistPtr playlist = dm->activePlaylist();
-
-        if ( !playlist )
-        {
-            debug() << "No dynamic playlist current loaded! Creating dynamic track navigator with null playlist!";
-        }
-
-        m_navigator = new DynamicTrackNavigator( playlist );
-
+        m_navigator = new DynamicTrackNavigator();
+        emit navigatorChanged();
         return;
-
     }
 
     m_navigator = 0;
-
 
     switch( AmarokConfig::trackProgression() )
     {
@@ -324,8 +325,9 @@ Playlist::Actions::playlistModeChanged()
             m_navigator = new RandomAlbumNavigator();
             break;
 
-        //repeat playlist, standard and fallback are all the normal navigator.
+        //repeat playlist, standard, only queue and fallback are all the normal navigator.
         case AmarokConfig::EnumTrackProgression::RepeatPlaylist:
+        case AmarokConfig::EnumTrackProgression::OnlyQueue:
         case AmarokConfig::EnumTrackProgression::Normal:
         default:
             m_navigator = new StandardTrackNavigator();
@@ -360,6 +362,32 @@ Playlist::Actions::queue()
     return m_navigator->queue();
 }
 
+bool
+Playlist::Actions::queueMoveUp( quint64 id )
+{
+    const bool ret = m_navigator->queueMoveUp( id );
+    if ( ret )
+        Playlist::ModelStack::instance()->bottom()->emitQueueChanged();
+    return ret;
+}
+
+bool
+Playlist::Actions::queueMoveDown( quint64 id )
+{
+    const bool ret = m_navigator->queueMoveDown( id );
+    if ( ret )
+        Playlist::ModelStack::instance()->bottom()->emitQueueChanged();
+    return ret;
+}
+
+void
+Playlist::Actions::dequeue( quint64 id )
+{
+    m_navigator->dequeueId( id ); // has no return value, *shrug*
+    Playlist::ModelStack::instance()->bottom()->emitQueueChanged();
+    return;
+}
+
 void
 Playlist::Actions::queue( QList<int> rows )
 {
@@ -370,8 +398,9 @@ Playlist::Actions::queue( QList<int> rows )
         quint64 id = The::playlist()->idAt( row );
         debug() << "About to queue proxy row"<< row;
         m_navigator->queueId( id );
-        The::playlist()->setRowQueued( row );
     }
+    if ( !rows.isEmpty() )
+        Playlist::ModelStack::instance()->bottom()->emitQueueChanged();
 }
 
 void
@@ -383,47 +412,16 @@ Playlist::Actions::dequeue( QList<int> rows )
     {
         quint64 id = The::playlist()->idAt( row );
         m_navigator->dequeueId( id );
-        The::playlist()->setRowDequeued( row );
     }
+    if ( !rows.isEmpty() )
+        Playlist::ModelStack::instance()->bottom()->emitQueueChanged();
 }
 
 void
-Playlist::Actions::engineStateChanged( Phonon::State currentState, Phonon::State )
-{
-    static int failures = 0;
-    const int maxFailures = 10;
-
-    m_trackError = false;
-
-    if ( currentState == Phonon::ErrorState )
-    {
-        failures++;
-        warning() << "Error, can not play this track.";
-        warning() << "Failure count: " << failures;
-        if ( failures >= maxFailures )
-        {
-            Amarok::Components::logger()->longMessage( i18n( "Too many errors encountered in playlist. Playback stopped." ), Amarok::Logger::Warning );
-            error() << "Stopping playlist.";
-            failures = 0;
-            m_trackError = true;
-        }
-    }
-    else if ( currentState == Phonon::PlayingState )
-    {
-        if ( failures > 0 )
-        {
-            debug() << "Successfully played track. Resetting failure count.";
-            failures = 0;
-        }
-    }
-}
-
-void
-Playlist::Actions::engineNewTrackPlaying()
+Playlist::Actions::slotTrackPlaying( Meta::TrackPtr engineTrack )
 {
     DEBUG_BLOCK
 
-    Meta::TrackPtr engineTrack = The::engineController()->currentTrack();
     if ( engineTrack )
     {
         Meta::TrackPtr candidateTrack = The::playlist()->trackForId( m_nextTrackCandidate );    // May be 0.
@@ -478,17 +476,21 @@ Playlist::Actions::restoreDefaultPlaylist()
     // non-collection Tracks will not be loaded correctly.
     The::playlistManager();
 
-    Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( Playlist::ModelStack::instance()->bottom()->defaultPlaylistPath() );
-    if ( playlist && playlist->tracks().count() > 0 )
+    Playlists::PlaylistFilePtr playlist = Playlists::loadPlaylistFile( Amarok::defaultPlaylistPath() );
+
+    if( playlist ) // This pointer will be 0 on first startup
+        playlist->triggerTrackLoad(); // playlist track loading is on demand
+
+    if( playlist && playlist->tracks().count() > 0 )
     {
         Meta::TrackList tracks = playlist->tracks();
 
         QMutableListIterator<Meta::TrackPtr> i( tracks );
-        while ( i.hasNext() )
+        while( i.hasNext() )
         {
             i.next();
             Meta::TrackPtr track = i.value();
-            if ( ! track )
+            if( ! track )
                 i.remove();
             else if( Playlists::canExpand( track ) )
             {
@@ -497,6 +499,7 @@ Playlist::Actions::restoreDefaultPlaylist()
                 if( playlist )
                 {
                     i.remove();
+                    playlist->triggerTrackLoad(); //playlist track loading is on demand.
                     Meta::TrackList newtracks = playlist->tracks();
                     foreach( Meta::TrackPtr t, newtracks )
                         if( t )
@@ -515,6 +518,7 @@ Playlist::Actions::restoreDefaultPlaylist()
         if( lastPlayingRow >= 0 )
             Playlist::ModelStack::instance()->bottom()->setActiveRow( lastPlayingRow );
     }
+
     //Check if we should load the first run jingle, since there is no saved playlist to load
     else if( AmarokConfig::playFirstRunJingle() )
     {

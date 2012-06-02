@@ -17,9 +17,9 @@
 
 #include "CollectionLocationDelegateImpl.h"
 
+#include "core/interfaces/Logger.h"
 #include "core/collections/CollectionLocation.h"
-
-#include "statusbar/StatusBar.h"
+#include "core/support/Components.h"
 
 #include <KLocale>
 #include <KMessageBox>
@@ -37,8 +37,8 @@ CollectionLocationDelegateImpl::reallyDelete( CollectionLocation *loc, const Met
 
     // NOTE: taken from SqlCollection
     // TODO put the delete confirmation code somewhere else?
-    const QString text( i18ncp( "@info", "Do you really want to delete this track? It will be removed from disk as well as your collection.",
-                                "Do you really want to delete these %1 tracks? They will be removed from disk as well as your collection.", tracks.count() ) );
+    const QString text( i18ncp( "@info", "Do you really want to delete this track? It will be removed from your collection.",
+                                "Do you really want to delete these %1 tracks? They will be removed from your collection.", tracks.count() ) );
     const bool del = KMessageBox::warningContinueCancelList(0,
                                                      text,
                                                      files,
@@ -46,6 +46,30 @@ CollectionLocationDelegateImpl::reallyDelete( CollectionLocation *loc, const Met
                                                      KStandardGuiItem::del() ) == KMessageBox::Continue;
 
     return del;
+}
+
+bool
+CollectionLocationDelegateImpl::reallyTrash( CollectionLocation *loc, const Meta::TrackList &tracks ) const
+{
+    Q_UNUSED( loc );
+
+    QStringList files;
+    foreach( Meta::TrackPtr track, tracks )
+        files << track->prettyUrl();
+
+    const QString text( i18ncp( "@info",
+                                "Do you really want to move this track to the trash? "
+                                "It will be removed from your collection.",
+                                "Do you really want to move these %1 tracks to the trash? "
+                                "They will be removed from your collection.",
+                                tracks.count() ) );
+    const bool rm = KMessageBox::warningContinueCancelList(
+                                0,
+                                text,
+                                files,
+                                i18nc( "@title:window", "Confirm Move to Trash" ),
+                                KStandardGuiItem::remove() ) == KMessageBox::Continue;
+    return rm;
 }
 
 bool CollectionLocationDelegateImpl::reallyMove(CollectionLocation* loc, const Meta::TrackList& tracks) const
@@ -71,8 +95,8 @@ void CollectionLocationDelegateImpl::errorDeleting( CollectionLocation* loc, con
     foreach( Meta::TrackPtr track, tracks )
         files << track->prettyUrl();
 
-    const QString text( i18ncp( "@info", "There was a problem and this track could not be removed. Make sure the directory is writeable.",
-                                "There was a problem and %1 tracks could not be removed. Make sure the directory is writeable.", files.count() ) );
+    const QString text( i18ncp( "@info", "There was a problem and this track could not be removed. Make sure the directory is writable.",
+                                "There was a problem and %1 tracks could not be removed. Make sure the directory is writable.", files.count() ) );
                                 KMessageBox::informationList(0,
                                                              text,
                                                              files,
@@ -82,7 +106,9 @@ void CollectionLocationDelegateImpl::errorDeleting( CollectionLocation* loc, con
 void CollectionLocationDelegateImpl::notWriteable(CollectionLocation* loc) const
 {
     Q_UNUSED( loc )
-    The::statusBar()->longMessage( i18n( "The collection does not have enough free space available or is not writeable." ), StatusBar::Error );
+    Amarok::Components::logger()->longMessage(
+            i18n( "The collection does not have enough free space available or is not writable." ),
+            Amarok::Logger::Error );
 }
 
 bool CollectionLocationDelegateImpl::deleteEmptyDirs( CollectionLocation* loc ) const

@@ -33,23 +33,12 @@ class NepomukArtist : public Artist
         virtual ~NepomukArtist() {};
 
         virtual QString name() const;
-        virtual QString prettyName() const;
-        virtual QString sortableName() const;
 
         virtual TrackList tracks();
-
-        virtual AlbumList albums();
-
-        // for plugin internal use only
-
-        void emptyCache();
 
     private:
         NepomukCollection *m_collection;
         QString m_name;
-        AlbumList m_albums;
-        bool m_albumsLoaded;
-        mutable QString m_sortName;
 };
 
 }

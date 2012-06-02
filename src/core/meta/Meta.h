@@ -19,13 +19,14 @@
 #define AMAROK_META_H
 
 #include "shared/amarok_export.h"
+#include "shared/MetaReplayGain.h"
 
 #include "core/capabilities/Capability.h"
 
-#include <QDateTime>
 #include <QList>
 #include <QMetaType>
-#include <QPixmap>
+#include <QImage>
+#include <QDateTime>
 #include <QSet>
 #include <QSharedData>
 #include <QString>
@@ -93,6 +94,9 @@ namespace Meta
             virtual void metadataChanged( YearPtr year );
             virtual ~Observer();
 
+            // TODO: we really need a deleted notification.
+            // TODO: Why not change this Java-like observer pattern to a normal QObject
+
         private:
             QSet<TrackPtr> m_trackSubscriptions;
             QSet<ArtistPtr> m_artistSubscriptions;
@@ -147,20 +151,34 @@ namespace Meta
         public:
             MetaBase() {}
             virtual ~MetaBase() {}
+
+            /** The textual label for this object.
+                For a track this is the track title, for an album it is the
+                album name.
+                If the name is unknown or unset then this returns an empty string.
+            */
             virtual QString name() const = 0;
 
-            virtual QString prettyName() const = 0;
+            /** This is a nicer representation of the object.
+                We will try to prevent this name from being empty.
+                E.g. a track will fall back to the filename if possible.
+            */
+            virtual QString prettyName() const { return name(); };
+
+            /** A exact representation of the object.
+                This might include the artist name for a track or album.
+            */
             virtual QString fullPrettyName() const { return prettyName(); }
-            virtual QString sortableName() const { return prettyName(); }
+
+            /** A name that can be used for sorting.
+                This should usually mean that "The Beatles" is returned as "Beatles The"
+            */
+            virtual QString sortableName() const { return name(); }
 
             /**used for showing a fixed name in the tree view. Needed for items that change
              * their name occasionally such as some streams. These should overwrite this
              */
             virtual QString fixedName() const { return prettyName(); }
-
-            virtual void addMatchTo( Collections::QueryMaker *qm ) = 0;
-
-
 
         protected:
             virtual void subscribe( Observer *observer );
@@ -178,28 +196,22 @@ namespace Meta
     {
         public:
 
-            /**
-             * The Replay Gain mode.
-             */
-            enum ReplayGainMode
-            {
-                /** All tracks should be equally loud.  Also known as Radio mode. */
-                TrackReplayGain,
-                /** All albums should be equally loud.  Also known as Audiophile mode. */
-                AlbumReplayGain
-            };
-
             virtual ~Track() {}
             /** used to display the trackname, should never be empty, returns prettyUrl() by default if name() is empty */
-            virtual QString prettyName() const = 0;
+            virtual QString prettyName() const;
             /** an url which can be played by the engine backends */
             virtual KUrl playableUrl() const = 0;
             /** an url for display purposes */
             virtual QString prettyUrl() const = 0;
-            /** an url which is unique for this track. Use this if you need a key for the track */
+            /** an url which is unique for this track. Use this if you need a key for the track.
+                Actually this is not guaranteed to be an url at all and could be something like
+                mb-f5a3456bb0 for a MusicBrainz id.
+            */
             virtual QString uidUrl() const = 0;
 
-            /** Returns whether playableUrl() will return a playable Url */
+            /** Returns whether playableUrl() will return a playable Url
+                In principle this means that the url is valid.
+             */
             virtual bool isPlayable() const = 0;
             /** Returns the album this track belongs to */
             virtual AlbumPtr album() const = 0;
@@ -234,16 +246,19 @@ namespace Meta
             /** Returns the bitrate o this track */
             virtual int bitrate() const = 0;
             /** Returns the time when the track was added to the collection,
-                or an invalid QDateTime instance if the time is not known */
+                or an invalid QDateTime if the time is not known. */
             virtual QDateTime createDate() const;
+            /** Returns the time when the track was last modified (before being added to the collection)
+                or an invalid QDateTime if the time is not known. */
+            virtual QDateTime modifyDate() const;
             /** Returns the track number of this track */
             virtual int trackNumber() const = 0;
             /** Returns the discnumber of this track */
             virtual int discNumber() const = 0;
-            /** Returns the time the song was last played, or 0 if it has not been played yet */
-            virtual uint lastPlayed() const = 0;
-            /** Returns the time the song was first played, or 0 if it has not been played yet */
-            virtual uint firstPlayed() const;
+            /** Returns the time the song was last played, or an invalid QDateTime if it has not been played yet */
+            virtual QDateTime lastPlayed() const;
+            /** Returns the time the song was first played, or an invalid QDateTime if it has not been played yet */
+            virtual QDateTime firstPlayed() const;
             /** Returns the number of times the track was played (what about unknown?)*/
             virtual int playCount() const = 0;
             /**
@@ -254,9 +269,7 @@ namespace Meta
              * Should return the track replay gain if the album gain is requested but
              * is not available.
              */
-            virtual qreal replayGain( ReplayGainMode mode ) const;
-            /** Returns the peak (after gain adjustment) for a given replay gain mode */
-            virtual qreal replayPeakGain( ReplayGainMode mode ) const;
+            virtual qreal replayGain( ReplayGainTag mode ) const;
 
             /** Returns the type of this track, e.g. "ogg", "mp3", "stream" */
             virtual QString type() const = 0;
@@ -268,8 +281,6 @@ namespace Meta
             /** tell the track object that amarok finished playing it.
                 The argument is the percentage of the track which was played, in the range 0 to 1*/
             virtual void finishedPlaying( double playedFraction );
-
-            virtual void addMatchTo( Collections::QueryMaker* qm );
 
             /** returns true if the track is part of a collection false otherwise */
             virtual bool inCollection() const;
@@ -315,17 +326,14 @@ namespace Meta
     class AMAROK_CORE_EXPORT Artist : public MetaBase
     {
         Q_PROPERTY( TrackList tracks READ tracks )
-        Q_PROPERTY( AlbumList albums READ albums )
         public:
 
             virtual ~Artist() {}
+
+            virtual QString prettyName() const;
+
             /** returns all tracks by this artist */
             virtual TrackList tracks() = 0;
-
-            /** returns all albums by this artist */
-            virtual AlbumList albums() = 0;
-
-            virtual void addMatchTo( Collections::QueryMaker* qm );
 
             virtual bool operator==( const Meta::Artist &artist ) const;
 
@@ -338,6 +346,21 @@ namespace Meta
             mutable QString m_sortableName;
     };
 
+    /** Represents an album.
+        Most collections do not store a specific album object. Instead an album
+        is just a property of a track, a container containing one or more tracks.
+
+        Collections should proved an album for every track as the collection browser
+        will, depending on the setting, only display tracks inside albums.
+
+        For all albums in a compilation the pair album-title/album-artist should
+        be unique as this pair is used as a key in several places.
+
+        Albums without an artist are called compilations.
+        Albums without a title but with an artist should contain all singles of
+         the specific artist.
+        There should be one album without title and artist for all the rest.
+    */
     class AMAROK_CORE_EXPORT Album : public MetaBase
     {
         Q_PROPERTY( bool compilation READ isCompilation )
@@ -345,12 +368,15 @@ namespace Meta
         Q_PROPERTY( ArtistPtr albumArtist READ albumArtist )
         Q_PROPERTY( TrackList tracks READ tracks )
         Q_PROPERTY( bool hasImage READ hasImage )
-        Q_PROPERTY( QPixmap image READ image WRITE setImage )
+        // Q_PROPERTY( QPixmap image READ image WRITE setImage )
         Q_PROPERTY( bool supressImageAutoFetch READ suppressImageAutoFetch WRITE setSuppressImageAutoFetch )
 
         public:
             Album() {}
             virtual ~Album() {}
+
+            virtual QString prettyName() const;
+
             virtual bool isCompilation() const = 0;
 
             /** Returns true if this album has an album artist */
@@ -365,24 +391,37 @@ namespace Meta
              *  when size is <= 1, return the full size image
              */
             /** returns true if the album has a cover set */
-            virtual bool hasImage( int size = 1 ) const { Q_UNUSED( size ); return false; }
-            /** returns the "nocover" image; proper cover image getter is
-             * implemented in subclasses  */
-            virtual QPixmap image( int size = 1 );
-            /** returns the image location on disk */
-            virtual KUrl imageLocation( int size = 1 ) { Q_UNUSED( size ); return KUrl(); }
+            virtual bool hasImage( int size = 0 ) const { Q_UNUSED( size ); return false; }
+
+            /** Returns the image for the album, usually the cover image.
+                The default implementation returns an null image.
+                If you need a pixmap call The::coverCache()->getCover( album, size )
+                instead. That function also returns a "nocover" pixmap
+            */
+            virtual QImage image( int size = 0 ) const;
+
+            /** Returns the image location on disk.
+                The mpris interface is using this information for notifications so
+                it better is a local file url.
+            */
+            virtual KUrl imageLocation( int size = 0 ) { Q_UNUSED( size ); return KUrl(); }
+
             /** Returns true if it is possible to update the cover of the album */
             virtual bool canUpdateImage() const { return false; }
-            /** updates the cover of the album */
-            virtual void setImage( const QPixmap &pixmap ) { Q_UNUSED( pixmap ); } //TODO: choose parameter
+
+            /** updates the cover of the album
+                @param image The large scale image that should be used as cover for the album.
+                Note: the parameter should not be a QPixmap as a pixmap can only be created reliable in a UI thread.
+            */
+            virtual void setImage( const QImage &image ) { Q_UNUSED( image ); }
+
             /** removes the album art */
             virtual void removeImage() { }
+
             /** don't automatically fetch artwork */
             virtual void setSuppressImageAutoFetch( const bool suppress ) { Q_UNUSED( suppress ); }
             /** should automatic artwork retrieval be suppressed? */
             virtual bool suppressImageAutoFetch() const { return false; }
-
-            virtual void addMatchTo( Collections::QueryMaker* qm );
 
             virtual bool operator==( const Meta::Album &album ) const;
 
@@ -396,10 +435,9 @@ namespace Meta
         public:
 
             virtual ~Composer() {}
+            virtual QString prettyName() const;
             /** returns all tracks by this composer */
             virtual TrackList tracks() = 0;
-
-            virtual void addMatchTo( Collections::QueryMaker* qm );
 
             virtual bool operator==( const Meta::Composer &composer ) const;
 
@@ -413,10 +451,9 @@ namespace Meta
         public:
 
             virtual ~Genre() {}
+            virtual QString prettyName() const;
             /** returns all tracks which belong to the genre */
             virtual TrackList tracks() = 0;
-
-            virtual void addMatchTo( Collections::QueryMaker* qm );
 
             virtual bool operator==( const Meta::Genre &genre ) const;
 
@@ -430,10 +467,14 @@ namespace Meta
         public:
 
             virtual ~Year() {}
+
+            /** Returns the year this object represents.
+                A number of 0 is considered unset.
+            */
+            virtual int year() const { return name().toInt(); }
+
             /** returns all tracks which are tagged with this year */
             virtual TrackList tracks() = 0;
-
-            virtual void addMatchTo( Collections::QueryMaker* qm );
 
             virtual bool operator==( const Meta::Year &year ) const;
 
@@ -455,8 +496,6 @@ namespace Meta
           Destructs an existing Label.
           */
         virtual ~ Label() {}
-
-        virtual void addMatchTo( Collections::QueryMaker* qm );
 
     protected:
         virtual void notifyObservers() const;

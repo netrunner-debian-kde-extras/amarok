@@ -19,14 +19,20 @@
 #ifndef ALBUMS_APPLET_H
 #define ALBUMS_APPLET_H
 
-#include "AlbumsView.h"
-
-#include <context/Applet.h>
-#include <context/DataEngine.h>
+#include "context/Applet.h"
+#include "context/DataEngine.h"
 #include "core/meta/Meta.h"
 
-class QStandardItemModel;
-class TextScrollingWidget;
+#include <QGraphicsLinearLayout>
+
+class AlbumsView;
+class KLineEdit;
+namespace Collections {
+    class Collection;
+}
+namespace Plasma {
+    class IconWidget;
+}
 
 class Albums : public Context::Applet
 {
@@ -35,35 +41,52 @@ public:
     Albums( QObject* parent, const QVariantList& args );
     ~Albums();
 
-    void init();
-
-    void paintInterface( QPainter *painter, const QStyleOptionGraphicsItem *option, const QRect &contentsRect );
-
-    void constraintsEvent( Plasma::Constraints constraints = Plasma::AllConstraints);
-
 public slots:
+    virtual void init();
     void dataUpdated( const QString& name, const Plasma::DataEngine::Data &data );
 
 protected:
     void createConfigurationInterface( KConfigDialog *parent );
+    void keyPressEvent( QKeyEvent *event );
 
 private slots:
     void collectionDataChanged( Collections::Collection *collection );
-    void connectSource( const QString &source );
     void saveConfiguration();
     void setRecentCount( int val );
+    void setRightAlignLength( int state );
+    void showFilterBar();
+    void closeFilterBar();
+    void filterTextChanged( const QString &text );
 
 private:
-    const qreal m_albumWidth;
     int m_recentCount;
-    Meta::AlbumList m_albums;
-    QStandardItemModel *m_model;
+    bool m_rightAlignLength;
     AlbumsView *m_albumsView;
-    TextScrollingWidget *m_headerText;
-
-    void reconnectSource();
+    Meta::AlbumList m_albums;
+    Meta::TrackPtr m_currentTrack;
+    Plasma::IconWidget *m_filterIcon;
 };
 
-K_EXPORT_AMAROK_APPLET( albums, Albums )
+class AlbumsFilterBar : public QGraphicsWidget
+{
+    Q_OBJECT
+
+public:
+    AlbumsFilterBar( QGraphicsItem *parent = 0, Qt::WindowFlags wFlags = 0 );
+    ~AlbumsFilterBar() {}
+
+    bool eventFilter( QObject *obj, QEvent *e );
+    void focusEditor();
+
+signals:
+    void closeRequested();
+    void filterTextChanged( const QString &text );
+
+private:
+    KLineEdit *m_editor;
+    Plasma::IconWidget *m_closeIcon;
+};
+
+AMAROK_EXPORT_APPLET( albums, Albums )
 
 #endif

@@ -19,39 +19,72 @@
 
 #include "context/Applet.h"
 
-#include <QGraphicsTextItem>
-#include <QPixmap>
+#include <QGraphicsObject>
+#include <QWeakPointer>
 
+class LabelOverlayButton;
+class QGraphicsBlurEffect;
 class QGraphicsPixmapItem;
 class QGraphicsSceneHoverEvent;
 class QGraphicsSceneMouseEvent;
+class QGraphicsTextItem;
+class QPropertyAnimation;
 
-class LabelGraphicsItem : public QGraphicsTextItem
+class LabelGraphicsItem : public QGraphicsObject
 {
     Q_OBJECT
+    Q_PROPERTY( qreal hoverValue READ hoverValue WRITE setHoverValue )
+    Q_PROPERTY( QPointF pos READ pos WRITE setPos )
 
 public:
-    LabelGraphicsItem( const QString &text, int deltaPointSize, QGraphicsItem *parent );
+    LabelGraphicsItem( const QString& text, qreal deltaPointSize, QGraphicsItem *parent );
     ~LabelGraphicsItem();
 
-    void setDeltaPointSize( int deltaPointSize );
+    QString text();
+    void setText( const QString& text );
+    void setDeltaPointSize( qreal deltaPointSize );
     void setSelected( bool selected );
+    void setSelectedColor( QColor color );
+    void setBackgroundColor( QColor color );
+    void showBlacklistButton( bool enabled );
     
+    void updateHoverStatus();
+    
+    QRectF boundingRect() const;
+    void paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget );
+
 protected:
     virtual void hoverLeaveEvent( QGraphicsSceneHoverEvent *event );
     virtual void hoverEnterEvent( QGraphicsSceneHoverEvent *event );
     virtual void mousePressEvent( QGraphicsSceneMouseEvent *event );
 
 private:
-    bool                m_selected;
-    QPixmap             m_addLabelPixmap;
-    QPixmap             m_removeLabelPixmap;
-    QPixmap             m_listLabelPixmap;
-    QPixmap             m_blacklistLabelPixmap;
-    QGraphicsPixmapItem *m_addLabelItem;
-    QGraphicsPixmapItem *m_removeLabelItem;
-    QGraphicsPixmapItem *m_listLabelItem;
-    QGraphicsPixmapItem *m_blacklistLabelItem;
+    qreal hoverValue();
+    void setHoverValue( qreal value );
+    void updateGeometry();
+
+    QGraphicsTextItem               *m_textItem;
+    QGraphicsPixmapItem             *m_backgroundItem;
+    QGraphicsBlurEffect             *m_backgroundBlurEffect;
+    QColor                           m_backgroundColor;
+    
+    qreal                            m_hoverValue;
+    QColor                           m_hoverColor;
+    QWeakPointer<QPropertyAnimation> m_hoverValueAnimation;
+    bool                             m_selected;
+    QColor                           m_selectedColor;
+
+    bool                             m_showBlacklistButton;
+    
+    QWeakPointer<LabelOverlayButton> m_addLabelItem;
+    QWeakPointer<LabelOverlayButton> m_removeLabelItem;
+    QWeakPointer<LabelOverlayButton> m_listLabelItem;
+    QWeakPointer<LabelOverlayButton> m_blacklistLabelItem;
+    
+    QWeakPointer<QPropertyAnimation> m_addLabelAnimation;
+    QWeakPointer<QPropertyAnimation> m_removeLabelAnimation;
+    QWeakPointer<QPropertyAnimation> m_listLabelAnimation;
+    QWeakPointer<QPropertyAnimation> m_blacklistLabelAnimation;
     
 signals:
     void toggled( const QString &label );
@@ -60,3 +93,4 @@ signals:
 };
 
 #endif
+

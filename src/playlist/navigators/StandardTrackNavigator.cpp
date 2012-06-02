@@ -4,6 +4,7 @@
  * Copyright (c) 2008 Nikolaj Hald Nielsen <nhn@kde.org>                                *
  * Copyright (c) 2009 Téo Mrnjavac <teo@kde.org>                                        *
  * Copyright (c) 2010 Nanno Langstraat <langstr@gmail.com>                              *
+ * Copyright (c) 2011 Sandeep Raghuraman <sandy.8925@gmail.com>                         *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -23,12 +24,14 @@
 #include "StandardTrackNavigator.h"
 
 #include "core/support/Amarok.h"
+#include "playlist/PlaylistModelStack.h"
 #include "amarokconfig.h"
 
 
 Playlist::StandardTrackNavigator::StandardTrackNavigator()
 {
     m_repeatPlaylist = ( AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::RepeatPlaylist );
+    m_onlyQueue = ( AmarokConfig::trackProgression() == AmarokConfig::EnumTrackProgression::OnlyQueue );
 }
 
 quint64
@@ -52,8 +55,11 @@ Playlist::StandardTrackNavigator::likelyLastTrack()
 quint64
 Playlist::StandardTrackNavigator::requestNextTrack()
 {
-    if( !m_queue.isEmpty() )
-        return m_queue.takeFirst();
+    if( !m_queue.isEmpty() ) {
+        quint64 ret = m_queue.takeFirst();
+        Playlist::ModelStack::instance()->bottom()->emitQueueChanged();
+        return ret;
+    }
 
     return chooseNextTrack( m_repeatPlaylist );
 }
@@ -61,8 +67,11 @@ Playlist::StandardTrackNavigator::requestNextTrack()
 quint64
 Playlist::StandardTrackNavigator::requestUserNextTrack()
 {
-    if( !m_queue.isEmpty() )
-        return m_queue.takeFirst();
+    if( !m_queue.isEmpty() ) {
+        quint64 ret = m_queue.takeFirst();
+        Playlist::ModelStack::instance()->bottom()->emitQueueChanged();
+        return ret;
+    }
 
     // Don't make wrap-around conditional on 'm_repeatPlaylist': the user is explicitly asking for this.
     return chooseNextTrack( true );
@@ -80,13 +89,40 @@ Playlist::StandardTrackNavigator::chooseNextTrack( bool repeatPlaylist )
     if( !m_queue.isEmpty() )
         return m_queue.first();
 
-    int nextRow = m_model->activeRow() + 1;    // 'activeRow()' may be -1.
+    if( m_onlyQueue )
+        return 0;
 
-    if( nextRow >= m_model->qaim()->rowCount() )
-        if( repeatPlaylist )
-            nextRow = 0;    // This row is still invalid if 'rowCount() == 0'.
+    Meta::TrackPtr track;
+    bool playableTrackFound = false;
+    int nextRow;
 
-    if( m_model->rowExists( nextRow ) )
+    //search for a playable track in order from right after the currently active track till the end
+    for( nextRow = m_model->activeRow() + 1  ; nextRow < m_model->qaim()->rowCount() ; nextRow++ ) // 'activeRow()' may be -1.
+    {
+        track = m_model->trackAt(nextRow);
+        if( track->isPlayable() )
+        {
+            playableTrackFound = true;
+            break;
+        }
+    }
+
+    //if no playable track was found and the playlist needs to be repeated, search from top of playlist till currently active track
+    if( !playableTrackFound && repeatPlaylist )
+    {
+        //nextRow=0; This row is still invalid if 'rowCount() == 0'.
+        for( nextRow = 0 ; nextRow < m_model->activeRow() ; nextRow++)
+        {
+            track = m_model->trackAt( nextRow );
+            if( track->isPlayable() )
+            {
+                playableTrackFound = true;
+                break;
+            }
+        }
+    }
+
+    if( playableTrackFound && m_model->rowExists( nextRow ) )
         return m_model->idAt( nextRow );
     else
         return 0;

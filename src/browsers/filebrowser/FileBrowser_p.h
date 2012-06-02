@@ -28,9 +28,9 @@
 
 #include <QFontMetrics>
 #include <QStack>
-#include <QTimer>
 
 class DirBrowserModel;
+class SearchWidget;
 class FileView;
 class KAction;
 class KFilePlacesModel;
@@ -57,9 +57,9 @@ public:
 
     MimeTypeFilterProxyModel *mimeFilterProxyModel;
 
-    QTimer filterTimer;
-    QString currentFilter;
-    QString currentPath;
+    SearchWidget *searchWidget;
+
+    KUrl currentPath;
     FileView *fileView;
 
     KAction *upAction;

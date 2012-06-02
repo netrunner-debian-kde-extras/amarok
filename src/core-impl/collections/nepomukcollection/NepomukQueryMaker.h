@@ -36,29 +36,23 @@ class NepomukWorkerThread;
 class NepomukQueryMaker : public QueryMaker
 {
     Q_OBJECT
-    
+
 	public:
 	    NepomukQueryMaker(NepomukCollection *collection, Soprano::Model* model);
 	    virtual ~NepomukQueryMaker();
-	
-	    virtual QueryMaker* reset();
+
 	    virtual void abortQuery();
 	    virtual void run();
-	
-	    virtual QueryMaker* setReturnResultAsDataPtrs( bool resultAsDataPtrs );
-	    
-        virtual QueryMaker* setQueryType( QueryType type );	
-	    virtual QueryMaker* includeCollection( const QString &collectionId );
-	    virtual QueryMaker* excludeCollection( const QString &collectionId );
-	
+
+            virtual QueryMaker* setQueryType( QueryType type );
+
 	    virtual QueryMaker* addMatch( const Meta::TrackPtr &track );
 	    virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist );
 	    virtual QueryMaker* addMatch( const Meta::AlbumPtr &album );
 	    virtual QueryMaker* addMatch( const Meta::GenrePtr &genre );
 	    virtual QueryMaker* addMatch( const Meta::ComposerPtr &composer );
 	    virtual QueryMaker* addMatch( const Meta::YearPtr &year );
-	    virtual QueryMaker* addMatch( const Meta::DataPtr &data );
-	
+
 	    virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false );
 	    virtual QueryMaker* excludeFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false );
 	
@@ -68,7 +62,6 @@ class NepomukQueryMaker : public QueryMaker
 	    virtual QueryMaker* addReturnValue( qint64 value );
 	    virtual QueryMaker* addReturnFunction( ReturnFunction function, qint64 value );
 	    virtual QueryMaker* orderBy( qint64 value, bool descending = false );
-        virtual QueryMaker* orderByRandom();
 	
 	    virtual QueryMaker* limitMaxResultSize( int size );
 	
@@ -116,7 +109,6 @@ class NepomukQueryMaker : public QueryMaker
         QueryType m_queryType;
         QString m_queryMatch;
         QString m_queryFilter;
-        bool m_resultAsDataPtrs;
         NepomukWorkerThread *m_worker;
         NepomukCollection *m_collection;
         Soprano::Model *m_model;

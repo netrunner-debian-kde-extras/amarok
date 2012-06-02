@@ -41,21 +41,14 @@ class XmlQueryWriter : public QueryMaker
         QDomElement getDomElement() const;
         QueryMaker* getEmbeddedQueryMaker() const;
 
-        QueryMaker* reset();
         void run();
         void abortQuery();
-        int resultCount() const;
 
         QueryMaker* setQueryType( QueryType type );
-        QueryMaker* setReturnResultAsDataPtrs( bool resultAsDataPtrs );
 
         QueryMaker* addReturnValue( qint64 value );
         QueryMaker* addReturnFunction( ReturnFunction function, qint64 value );
         QueryMaker* orderBy( qint64 value, bool descending = false );
-        QueryMaker* orderByRandom();
-
-        QueryMaker* includeCollection( const QString &collectionId );
-        QueryMaker* excludeCollection( const QString &collectionId );
 
         QueryMaker* addMatch( const Meta::TrackPtr &track );
         QueryMaker* addMatch( const Meta::ArtistPtr &artist );
@@ -63,7 +56,6 @@ class XmlQueryWriter : public QueryMaker
         QueryMaker* addMatch( const Meta::ComposerPtr &composer );
         QueryMaker* addMatch( const Meta::GenrePtr &genre );
         QueryMaker* addMatch( const Meta::YearPtr &year );
-        QueryMaker* addMatch( const Meta::DataPtr &data );
         QueryMaker* addMatch( const Meta::LabelPtr &label );
 
         QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin = false, bool matchEnd = false );
@@ -75,6 +67,7 @@ class XmlQueryWriter : public QueryMaker
         QueryMaker* limitMaxResultSize( int size );
 
         QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
+        QueryMaker* setArtistQueryMode( ArtistQueryMode mode );
 
         QueryMaker* beginAnd();
         QueryMaker* beginOr();
@@ -90,7 +83,6 @@ class XmlQueryWriter : public QueryMaker
         static QDomElement xmlForFilter( QDomDocument doc, bool exclude, quint64 field, QString value);
         static QDomElement xmlForFilter( QDomDocument doc, bool exclude, quint64 field, quint64 numValue, NumberComparison compare);
 
-        static QString fieldName( qint64 );
         static QString compareName( QueryMaker::NumberComparison );
 
     private:

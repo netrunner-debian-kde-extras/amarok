@@ -49,7 +49,7 @@ MetaTrackPrototype : public QObject, protected QScriptable
     Q_PROPERTY( QString artist WRITE setArtist READ artist )
     Q_PROPERTY( QString composer WRITE setComposer READ composer )
     Q_PROPERTY( QString genre WRITE setGenre READ genre )
-    Q_PROPERTY( QString year WRITE setYear READ year )
+    Q_PROPERTY( int year WRITE setYear READ year )
     Q_PROPERTY( QString comment WRITE setComment READ comment )
     Q_PROPERTY( QString path READ path )
     Q_PROPERTY( bool isValid READ isValid )
@@ -60,7 +60,7 @@ MetaTrackPrototype : public QObject, protected QScriptable
     Q_PROPERTY( double bpm READ bpm ) // setter not yet available in Meta::Track
 
     public:
-        MetaTrackPrototype();
+        MetaTrackPrototype( QObject *parent );
         ~MetaTrackPrototype();
     public slots:
         QScriptValue imagePixmap( int size ) const;
@@ -83,7 +83,7 @@ MetaTrackPrototype : public QObject, protected QScriptable
         QString artist() const;
         QString composer() const;
         QString genre() const;
-        QString year() const;
+        int year() const;
         QString comment() const;
         QString path() const;
         bool isValid() const;
@@ -98,13 +98,13 @@ MetaTrackPrototype : public QObject, protected QScriptable
         void setRating( int rating );
         void setTrackNumber( int number );
         void setDiscNumber( int number );
-        void setAlbum( QString album );
-        void setArtist( QString artist );
-        void setComposer( QString composer );
-        void setGenre( QString genre );
-        void setYear( QString year );
-        void setComment( QString comment );
-        void setLyrics( QString lyrics );
+        void setAlbum( const QString &album );
+        void setArtist( const QString &artist );
+        void setComposer( const QString &composer );
+        void setGenre( const QString &genre );
+        void setYear( int year );
+        void setComment( const QString &comment );
+        void setLyrics( const QString &lyrics );
         void setTitle( const QString& name );
         void setImageUrl( const QString& imageUrl );
 };

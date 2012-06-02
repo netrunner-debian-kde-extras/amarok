@@ -26,8 +26,8 @@
 
 using namespace Amarok;
 
-DefaultApplicationController::DefaultApplicationController()
-    : ApplicationController()
+DefaultApplicationController::DefaultApplicationController( QObject *parent )
+    : ApplicationController( parent )
 {
     //there can be only one applicationcontroller
     ApplicationController *oldController = Components::setApplicationController( this );
@@ -56,9 +56,6 @@ DefaultApplicationController::shutdown()
 {
     //destroy all central components instead of letting them be
     //destroyed in a random order as static objects
-
-
-    //do more stuff
 
     delete Components::setEngineController( 0 );
     delete Components::setCollectionLocationDelegate( 0 );

@@ -22,6 +22,7 @@
 #include <QList>
 #include <QObject>
 #include <QtScript>
+#include <QWeakPointer>
 
 namespace AmarokScript
 {
@@ -31,7 +32,7 @@ namespace AmarokScript
         Q_OBJECT
 
         public:
-            AmarokWindowScript( QScriptEngine* ScriptEngine, QList<QObject*>* guiPtrList );
+            AmarokWindowScript( QScriptEngine* scriptEngine );
             ~AmarokWindowScript();
 
         public slots:
@@ -53,12 +54,12 @@ namespace AmarokScript
               *
               * @return true if adding the action was successful, false otherwise
               */
-            bool addMenuAction( KMenu* menu, QString id, QString menuTitle, QString menuProperty, QString icon );
+            bool addMenuAction( QWeakPointer<KMenu> menu, QString id, QString menuTitle, QString menuProperty, QString icon );
 
-            KMenu*           m_toolsMenu;
-            KMenu*           m_settingsMenu;
-            QScriptEngine*   m_ScriptEngine;
-            QList<QObject*>* m_guiPtrList;
+            QWeakPointer<KMenu> m_toolsMenu;
+            QWeakPointer<KMenu> m_settingsMenu;
+            QScriptEngine*   m_scriptEngine;
+            QList<QObject*> m_guiPtrList;
 
     };
 }

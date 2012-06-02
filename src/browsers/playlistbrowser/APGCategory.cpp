@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2010 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2011 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,26 +14,22 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#define DEBUG_PREFIX "APGCategory"
-
 #include "APGCategory.h"
 
 #include "amarokconfig.h"
 #include "playlistgenerator/ConstraintSolver.h"
 #include "playlistgenerator/PresetModel.h"
 #include "widgets/PrettyTreeView.h"
-#ifndef KDE_NO_DEBUG_OUTPUT
-#include "playlistgenerator/ConstraintTestWrapper.h"
-#endif
-
-#include "core/support/Debug.h"
 
 #include <KIcon>
+#include <KLocale>
+#include <KStandardDirs>
 
 #include <QAction>
 #include <QHBoxLayout>
 #include <QLabel>
 #include <QModelIndex>
+#include <QToolBar>
 
 PlaylistBrowserNS::APGCategory::APGCategory( QWidget* )
     : BrowserCategory ( "APG", 0 )
@@ -43,6 +39,10 @@ PlaylistBrowserNS::APGCategory::APGCategory( QWidget* )
     setPrettyName( i18n( "Automated Playlist Generator" ) );
     setShortDescription( i18n("Create playlists by specifying criteria") );
     setIcon( KIcon( "playlist-generator" ) );
+
+    // set background
+    if( AmarokConfig::showBrowserBackgroundImage() )
+        setBackgroundImage( imagePath() );
 
     setLongDescription( i18n("Create playlists by specifying criteria") );
 
@@ -81,16 +81,6 @@ PlaylistBrowserNS::APGCategory::APGCategory( QWidget* )
     a->setEnabled( false );
     connect( a, SIGNAL( triggered( bool ) ), presetmodel, SLOT( exportActive() ) );
     connect( this, SIGNAL( validIndexSelected( bool ) ), a, SLOT( setEnabled( bool ) ) );
-
-#ifndef KDE_NO_DEBUG_OUTPUT
-    toolBar_Actions->addSeparator();
-
-    a = toolBar_Actions->addAction( KIcon( "flag-amarok" ), "Run constraint tester" );
-    a->setEnabled( false );
-    connect( this, SIGNAL( validIndexSelected( bool ) ), a, SLOT( setEnabled( bool ) ) );
-    APG::ConstraintTestWrapper* ctw = new APG::ConstraintTestWrapper( this );
-    connect( a, SIGNAL( triggered( bool ) ), ctw, SLOT( runTest() ) );
-#endif
 
     toolBar_Actions->addSeparator();
 

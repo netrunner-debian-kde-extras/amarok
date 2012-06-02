@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2010 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2011 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -24,7 +24,8 @@
 namespace PlaylistBrowserNS {
 
     /* Playlist Browser toolbox item for the Automatic Playlist Generator */
-    class APGCategory : public BrowserCategory {
+    class APGCategory : public BrowserCategory
+    {
         Q_OBJECT
 
         public:

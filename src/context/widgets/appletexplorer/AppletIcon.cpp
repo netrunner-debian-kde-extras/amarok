@@ -24,83 +24,76 @@
  ****************************************************************************************/
 
 #include "AppletIcon.h"
-#include <KStandardDirs>
+
+#include "PaletteHandler.h"
+
+#include <KIcon>
+#include <KPluginInfo>
 
 #include <QColor>
-#include <QGraphicsSceneMouseEvent>
+#include <QPainter>
 
 namespace Context
 {
     
-AppletIconWidget::AppletIconWidget( AppletItem *appletItem, QGraphicsItem *parent )
+AppletIconWidget::AppletIconWidget( const KPluginInfo &info, QGraphicsItem *parent )
     : Plasma::IconWidget( parent )
-    , m_appletItem( appletItem )
+    , m_pluginName( info.pluginName() )
 {
-    if( appletItem )
-    {
-        setText( appletItem->name() );
-        setIcon( appletItem->icon() );
-        setToolTip( appletItem->name() );
-    }
-    else
-    {
-        setText( "no name" );
-        setIcon( "widgets/clock" );
-    }
-    setTextBackgroundColor( QColor() );
+    setText( info.name() );
+    setIcon( KIcon( info.icon().isEmpty() ? "application-x-plasma" : info.icon() ) );
+    setToolTip( info.name() );
+    setTextBackgroundColor( Qt::transparent );
 }
 
 AppletIconWidget::~AppletIconWidget()
 {}
 
-AppletItem *
-AppletIconWidget::appletItem() const
-{
-    return m_appletItem;
-}
-
 void
 AppletIconWidget::paint( QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget )
 {
-    Q_UNUSED( option )
-    Q_UNUSED( widget )
-
     painter->save();
     painter->setRenderHint( QPainter::Antialiasing );
 
-    QColor topColor( 255, 255, 255, 160 );
-    QColor bottomColor( 255, 255, 255, 90 );
+    QColor topColor = The::paletteHandler()->palette().color( QPalette::Base );
+    QColor bottomColor = topColor;
+    topColor.setAlpha( 200 );
+    bottomColor.setAlpha( 100 );
     qreal radius = 6;
+    qreal boundWidth = boundingRect().width();
+    qreal boundHeight = boundingRect().height();
 
     // draw top half of rounded applet
     QPainterPath path;
-    path.moveTo( 0, boundingRect().height() / 2 );
+    path.moveTo( 0, boundHeight / 2 );
     path.lineTo( 0, radius );
-    path.quadTo( 0, 0,
-                 radius, 0 );
-    path.lineTo( boundingRect().width() - radius, 0 );
-    path.quadTo( boundingRect().width(), 0,
-                 boundingRect().width(), radius );
-    path.lineTo( boundingRect().width(), boundingRect().height() / 2 );
-    path.lineTo( 0, boundingRect().height() / 2 );
+    path.quadTo( 0, 0, radius, 0 );
+    path.lineTo( boundWidth - radius, 0 );
+    path.quadTo( boundWidth, 0, boundWidth, radius );
+    path.lineTo( boundWidth, boundHeight / 2 );
+    path.lineTo( 0, boundHeight / 2 );
 
     painter->fillPath( path, topColor );
     QPainterPath bottom;
-    bottom.moveTo( 0, boundingRect().height() / 2 );
-    bottom.lineTo( 0, boundingRect().height() - radius );
-    bottom.quadTo( 0, boundingRect().height(),
-                   radius, boundingRect().height() );
-    bottom.lineTo( boundingRect().width() - radius, boundingRect().height() );
-    bottom.quadTo( boundingRect().width(), boundingRect().height(),
-                   boundingRect().width(), boundingRect().height() - radius );
-    bottom.lineTo( boundingRect().width(), boundingRect().height() / 2 );
-    bottom.lineTo( 0, boundingRect().height() / 2 );
+    bottom.moveTo( 0, boundHeight / 2 );
+    bottom.lineTo( 0, boundHeight - radius );
+    bottom.quadTo( 0, boundHeight, radius, boundHeight );
+    bottom.lineTo( boundWidth - radius, boundHeight );
+    bottom.quadTo( boundWidth, boundHeight, boundWidth, boundHeight - radius );
+    bottom.lineTo( boundWidth, boundHeight / 2 );
+    bottom.lineTo( 0, boundHeight / 2 );
 
     painter->fillPath( bottom, bottomColor );
     painter->restore();
     Plasma::IconWidget::paint( painter, option, widget );
 }
 
+QString
+AppletIconWidget::pluginName() const
+{
+    return m_pluginName;
 }
+
+} // namespace Context
 
 #include "AppletIcon.moc"

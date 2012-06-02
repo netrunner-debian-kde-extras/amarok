@@ -83,31 +83,16 @@ NepomukQueryMaker::NepomukQueryMaker(NepomukCollection *collection
     , m_model( model )
 {
     m_worker = 0;
-    reset();
+    m_used=false;
+    m_queryType = None;
+    m_queryOrderBy.clear();
+    m_queryLimit = 0;
+    m_blocking = false;
+    m_andStack.push( true );   //and is default
 }
 
 NepomukQueryMaker::~NepomukQueryMaker()
 {
-    
-}
-
-QueryMaker*
-NepomukQueryMaker::reset()
-{
-    m_used=false;
-    m_data.clear();
-    m_queryType = None;
-    m_queryMatch.clear();
-    m_queryFilter.clear();
-    if( m_worker && m_worker->isFinished() )
-        delete m_worker;   //TODO error handling
-    this->m_resultAsDataPtrs = false;
-    m_queryOrderBy.clear();
-    m_queryLimit = 0;
-    m_blocking = false;
-    m_andStack.clear();
-    m_andStack.push( true );   //and is default
-    return this;
 }
 
 void
@@ -134,6 +119,7 @@ NepomukQueryMaker::run()
     {
         m_worker = new NepomukWorkerThread(this);
         connect( m_worker, SIGNAL( done( ThreadWeaver::Job* ) ), SLOT( done( ThreadWeaver::Job* ) ) );
+        connect( m_worker, SIGNAL( done( ThreadWeaver::Job* ) ), m_worker, SLOT( deleteLater()) ); // an auto-delete worker :)
         ThreadWeaver::Weaver::instance()->enqueue( m_worker );
     }
     else
@@ -143,20 +129,6 @@ NepomukQueryMaker::run()
 
     }
     m_used = true;
-}
-
-QueryMaker*
-NepomukQueryMaker::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
-{
-    debug() << "setReturnResultAsDataPtrs()" << resultAsDataPtrs << endl;
-
-    // we need the unchanged resulttype in the blocking result methods so prevent
-    // reseting result type without reseting the QM
-    if ( m_used )
-        return this;
-    
-    this->m_resultAsDataPtrs = resultAsDataPtrs;
-    return this;
 }
 
 QueryMaker*
@@ -204,24 +176,6 @@ NepomukQueryMaker::setQueryType( QueryType type )
      default:
         return this;       
     }
-}
-
-QueryMaker*
-NepomukQueryMaker::includeCollection( const QString &collectionId )
-{
-    // TODO:  Find out what it is for. Seems to do nothing in SqlCollection
-    debug() << "includeCollection()" << endl;
-	Q_UNUSED( collectionId )
-    return this;
-}
-
-QueryMaker*
-NepomukQueryMaker::excludeCollection( const QString &collectionId )
-{
-    // TODO:  Find out what it is for. Seems to do nothing in SqlCollection
-    debug() << "excludeCollection()" << endl;
-	Q_UNUSED( collectionId )
-	return this;
 }
 
 QueryMaker*
@@ -298,14 +252,6 @@ NepomukQueryMaker::addMatch( const YearPtr &year )
             .arg( year->name() )
             .arg( Soprano::Vocabulary::XMLSchema::string().toString() );
 	return this;
-}
-
-QueryMaker*
-NepomukQueryMaker::addMatch( const DataPtr &data )
-{
-    debug() << "addMatch(data)" << endl;
-    ( const_cast<DataPtr&>(data) )->addMatchTo( this );
-    return this;
 }
 
 QueryMaker*
@@ -404,14 +350,6 @@ NepomukQueryMaker::orderBy( qint64 value, bool descending )
 }
 
 QueryMaker*
-NepomukQueryMaker::orderByRandom()
-{
-    // lets see if they are random enough
-    m_queryOrderBy.clear();
-    return this;
-}
-
-QueryMaker*
 NepomukQueryMaker::limitMaxResultSize( int size )
 {
     debug() << "limitMaxResultSize()" << endl;
@@ -461,7 +399,6 @@ void
 NepomukQueryMaker::done( ThreadWeaver::Job *job )
 {
     ThreadWeaver::Weaver::instance()->dequeue( job );
-    job->deleteLater();
     m_worker = 0;
     emit queryDone();
 }
@@ -510,7 +447,7 @@ QStringList
 Meta::DataList
 NepomukQueryMaker::data( const QString &id ) const
 {
-    if ( m_blocking && m_used && m_resultAsDataPtrs && m_collection->collectionId() == id )
+    if ( m_blocking && m_used && m_collection->collectionId() == id )
         return m_data;
     else
         return Meta::DataList();
@@ -653,17 +590,14 @@ NepomukQueryMaker::buildQuery()
     return query;
 }
 
-// The macro below will emit the proper result signal. If m_resultAsDataPtrs is true,
-// it'll emit the signal that takes a list of DataPtrs. Otherwise, it'll call the
+// The macro below will emit the proper result signal. It'll call the
 // signal that takes the list of the specific class.
 
 #define emitOrStoreProperResult( PointerType, list ) { \
-            if ( m_resultAsDataPtrs || m_blocking ) { \
+            if ( m_blocking ) { \
                 foreach( PointerType p, list ) { \
                     m_data << DataPtr::staticCast( p ); \
                 } \
-                if ( !m_blocking ) \
-                    emit newResultReady( m_collection->collectionId(), m_data ); \
             } \
             else { \
                 emit newResultReady( m_collection->collectionId(), list ); \

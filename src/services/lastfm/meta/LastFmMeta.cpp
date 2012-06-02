@@ -23,21 +23,23 @@
 #include "LastFmCapabilityImpl_p.moc"
 #include "MultiPlayableCapabilityImpl_p.h"
 #include "MultiPlayableCapabilityImpl_p.moc"
-#include "CurrentTrackActionsCapabilityImpl_p.h"
-#include "CurrentTrackActionsCapabilityImpl_p.moc"
 #include "ServiceCapabilities.h"
 
 #include "LastFmService.h"
 #include "LastFmStreamInfoCapability.h"
 #include "ScrobblerAdapter.h"
 
+#include "EngineController.h"
 #include "core/support/Debug.h"
+#include "core/capabilities/ActionsCapability.h"
 
-#include <QPointer>
-#include <QUrl>
-
+#include <KLocale>
 #include <KSharedPtr>
 #include <KStandardDirs>
+#include <Solid/Networking>
+
+#include <QWeakPointer>
+#include <QUrl>
 
 #include <lastfm/Track>
 
@@ -91,23 +93,23 @@ void Track::init( int id /* = -1*/ )
         d->lastFmUri = QUrl( "lastfm://play/tracks/" + QString::number( id ) );
     d->length = 0;
 
-    d->albumPtr = Meta::AlbumPtr( new LastFmAlbum( QPointer<Track::Private>( d ) ) );
-    d->artistPtr = Meta::ArtistPtr( new LastFmArtist( QPointer<Track::Private>( d ) ) );
-    d->genrePtr = Meta::GenrePtr( new LastFmGenre( QPointer<Track::Private>( d ) ) );
-    d->composerPtr = Meta::ComposerPtr( new LastFmComposer( QPointer<Track::Private>( d ) ) );
-    d->yearPtr = Meta::YearPtr( new LastFmYear( QPointer<Track::Private>( d ) ) );
+    d->albumPtr = Meta::AlbumPtr( new LastFmAlbum( d ) );
+    d->artistPtr = Meta::ArtistPtr( new LastFmArtist( d ) );
+    d->genrePtr = Meta::GenrePtr( new LastFmGenre( d ) );
+    d->composerPtr = Meta::ComposerPtr( new LastFmComposer( d ) );
+    d->yearPtr = Meta::YearPtr( new LastFmYear( d ) );
 
     QAction * banAction = new QAction( KIcon( "remove-amarok" ), i18n( "Last.fm: &Ban" ), this );
     banAction->setShortcut( i18n( "Ctrl+B" ) );
     banAction->setStatusTip( i18n( "Ban this track" ) );
     connect( banAction, SIGNAL( triggered() ), this, SLOT( ban() ) );
-    m_currentTrackActions.append( banAction );
+    m_trackActions.append( banAction );
 
     QAction * skipAction = new QAction( KIcon( "media-seek-forward-amarok" ), i18n( "Last.fm: &Skip" ), this );
     skipAction->setShortcut( i18n( "Ctrl+S" ) );
     skipAction->setStatusTip( i18n( "Skip this track" ) );
     connect( skipAction, SIGNAL( triggered() ), this, SLOT( skip() ) );
-    m_currentTrackActions.append( skipAction );
+    m_trackActions.append( skipAction );
 }
 
 QString
@@ -121,12 +123,6 @@ Track::name() const
     {
         return d->track;
     }
-}
-
-QString
-Track::prettyName() const
-{
-    return name();
 }
 
 QString
@@ -183,7 +179,9 @@ Track::uidUrl() const
 bool
 Track::isPlayable() const
 {
-    //we could check connectivity here...
+    if( Solid::Networking::status() != Solid::Networking::Connected )
+        return false;
+
     return !d->trackPath.isEmpty();
 }
 
@@ -303,34 +301,22 @@ Track::bitrate() const
     return 0; //does the engine deliver this??
 }
 
-uint
+QDateTime
 Track::lastPlayed() const
 {
     if( d->statisticsProvider )
-    {
-        QDateTime dt = d->statisticsProvider->lastPlayed();
-        if( dt.isValid() )
-            return dt.toTime_t();
-        else
-            return 0;
-    }
+        return d->statisticsProvider->lastPlayed();
     else
-        return 0;
+        return QDateTime();
 }
 
-uint
+QDateTime
 Track::firstPlayed() const
 {
     if( d->statisticsProvider )
-    {
-        QDateTime dt = d->statisticsProvider->firstPlayed();
-        if( dt.isValid() )
-            return dt.toTime_t();
-        else
-            return 0;
-    }
+        return d->statisticsProvider->firstPlayed();
     else
-        return 0;
+        return QDateTime();
 }
 
 int
@@ -422,9 +408,9 @@ Track::streamName() const
                 else if( elements[3] == "personal" )
                     return i18n( "%1's Personal Radio", elements[2] );
 
-                // lastfm://user/<user>/loved
-                else if( elements[3] == "loved" )
-                    return i18n( "%1's Loved Radio", elements[2] );
+                // lastfm://user/<user>/mix
+                else if( elements[3] == "mix" )
+                    return i18n( "%1's Mix Radio", elements[2] );
 
                 // lastfm://user/<user>/recommended
                 else if( elements.size() < 5 && elements[3] == "recommended" )
@@ -475,8 +461,8 @@ Track::ban()
     DEBUG_BLOCK
     d->wsReply = lastfm::MutableTrack( d->lastFmTrack ).ban();
     connect( d->wsReply, SIGNAL( finished() ), this, SLOT( slotWsReply() ) );
-    emit( skipTrack() );
-
+    if( The::engineController()->currentTrack() == this )
+        emit( skipTrack() );
 }
 
 void
@@ -531,7 +517,7 @@ Track::hasCapabilityInterface( Capabilities::Capability::Type type ) const
     return type == Capabilities::Capability::LastFm
                 || type == Capabilities::Capability::MultiPlayable
                 || type == Capabilities::Capability::SourceInfo
-                || type == Capabilities::Capability::CurrentTrackActions
+                || type == Capabilities::Capability::Actions
                 || type == Capabilities::Capability::StreamInfo;
 }
 
@@ -546,8 +532,8 @@ Track::createCapabilityInterface( Capabilities::Capability::Type type )
             return new MultiPlayableCapabilityImpl( this );
         case Capabilities::Capability::SourceInfo:
             return new ServiceSourceInfoCapability( this );
-        case Capabilities::Capability::CurrentTrackActions:
-            return new CurrentTrackActionsCapabilityImpl( this );
+        case Capabilities::Capability::Actions:
+            return new Capabilities::ActionsCapability( m_trackActions );
         case Capabilities::Capability::StreamInfo:
             return new LastFmStreamInfoCapability( this );
         default:
@@ -581,11 +567,6 @@ QString LastFm::Track::scalableEmblem()
         return KStandardDirs::locate( "data", "amarok/images/emblem-lastfm-scalable.svg" );
     else
         return QString();
-}
-
-QList< QAction * > LastFm::Track::nowPlayingActions() const
-{
-    return m_currentTrackActions;
 }
 
 #include "LastFmMeta.moc"

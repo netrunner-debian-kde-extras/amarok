@@ -36,12 +36,15 @@ class PlaylistsByProviderProxy : public QtGroupingProxy
         QList<QModelIndex> decodeMimeRows( QByteArray data, QAbstractItemModel *model ) const;
         static const QString AMAROK_PROVIDERPROXY_INDEXES;
 
-        PlaylistsByProviderProxy( QAbstractItemModel *model, int column );
+        PlaylistsByProviderProxy( QAbstractItemModel *model, int column, int playlistCategory );
         ~PlaylistsByProviderProxy() {}
 
         /* QtGroupingProxy methods */
         /* reimplement to handle tracks with multiple providers (synced) */
         virtual QVariant data( const QModelIndex &idx, int role ) const;
+
+        /* reimplemented to prevent changing providers name */
+        virtual Qt::ItemFlags flags( const QModelIndex &idx ) const;
 
         /* QAbstractModel methods */
         virtual bool removeRows( int row, int count,
@@ -54,15 +57,21 @@ class PlaylistsByProviderProxy : public QtGroupingProxy
         virtual Qt::DropActions supportedDropActions() const;
         virtual Qt::DropActions supportedDragActions() const;
 
+        // re-implement to connect renameIndex signal
+        virtual void setSourceModel( QAbstractItemModel *sourceModel );
+
     signals:
-        void renameIndex( QModelIndex idx );
+        void renameIndex( const QModelIndex &idx );
 
     protected slots:
+        //re-implemented to add empty providers
         virtual void buildTree();
 
     private slots:
-        void slotRename( QModelIndex idx );
+        void slotRenameIndex( const QModelIndex &index );
 
+    private:
+        int m_playlistCategory;
 };
 
 #endif // PLAYLISTSBYPROVIDERPROXY_H

@@ -60,7 +60,7 @@ LikeBack::LikeBack( Button buttons, bool showBarByDefault, KConfig *config, cons
     d->showBarByDefault = showBarByDefault;
 
     // Initialize properties (2/2) [Needs aboutData to be set]:
-    d->showBar = userWantsToShowBar();
+    d->showBar = d->config.readEntry( "userWantToShowBar", d->showBarByDefault );
 
     // Initialize the button-bar:
     d->bar = new LikeBackBar( this );
@@ -143,7 +143,8 @@ quint16 LikeBack::hostPort()
 void LikeBack::disableBar()
 {
     d->disabledCount++;
-    d->bar->setBarVisible( d->bar && d->disabledCount > 0 );
+    if( d->bar )
+        d->bar->setBarVisible( d->disabledCount <= 0 );
 }
 
 
@@ -159,7 +160,11 @@ void LikeBack::enableBar()
     }
 #endif
 
-    d->bar->setBarVisible( d->bar && d->disabledCount <= 0 );
+    if( d->bar )
+        d->bar->setBarVisible( d->disabledCount <= 0 && userWantsToShowBar() );
+#ifdef DEBUG_LIKEBACK
+        debug() << "User wants to show feedback bar: " << userWantsToShowBar() << " " << d->disabledCount;
+#endif
 }
 
 
@@ -174,11 +179,8 @@ bool LikeBack::enabledBar()
 void LikeBack::execCommentDialog( Button type, const QString &initialComment, const QString &windowPath, const QString &context )
 {
     LikeBackDialog *dialog = new LikeBackDialog( type, initialComment, windowPath, context, this );
-    if( userWantsToShowBar() )
-    {
-        disableBar();
-        connect( dialog, SIGNAL( destroyed( QObject* ) ), this, SLOT( enableBar() ) );
-    }
+    disableBar();
+    connect( dialog, SIGNAL( finished() ), this, SLOT( enableBar() ) );
     dialog->show();
 }
 
@@ -239,7 +241,7 @@ bool LikeBack::userWantsToShowBar()
     // it's very annoying to have the bar reappearing everytime.
     // return d->config.readEntry( "userWantToShowBarForVersion_" + d->aboutData->version(), d->showBarByDefault );
 
-    return d->config.readEntry( "userWantToShowBar", d->showBarByDefault );
+    return d->showBar;
 }
 
 
@@ -329,8 +331,8 @@ void LikeBack::showInformationMessage()
     {
         bugPhrase = i18nc( "Welcome dialog text, explanation for the bug button",
                            "If you experience an improper behavior in the application, just click on "
-                           "the bug icon in the top-right corner of the window, describe the behavior "
-                           "and click on 'Send'." );
+                           "the bug icon in the top-right corner of the window and follow the instructions "
+                           "to submit a bug report." );
     }
 
     // Construct the usage examples

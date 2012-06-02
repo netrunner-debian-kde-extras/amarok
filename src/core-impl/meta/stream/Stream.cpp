@@ -21,7 +21,9 @@
 #include "core/meta/Meta.h"
 #include "core-impl/meta/default/DefaultMetaTypes.h"
 
-#include <QPointer>
+#include <Solid/Networking>
+
+#include <QWeakPointer>
 #include <QString>
 
 using namespace MetaStream;
@@ -33,8 +35,8 @@ Track::Track( const KUrl &url )
     DEBUG_BLOCK
 
     d->url = url;
-    d->artistPtr = Meta::ArtistPtr( new StreamArtist( QPointer<Track::Private>( d ) ) );
-    d->albumPtr = Meta::AlbumPtr( new StreamAlbum( QPointer<Track::Private>( d ) ) );
+    d->artistPtr = Meta::ArtistPtr( new StreamArtist( d ) );
+    d->albumPtr = Meta::AlbumPtr( new StreamAlbum( d ) );
     d->genrePtr = Meta::GenrePtr( new Meta::DefaultGenre() );
     d->composerPtr = Meta::ComposerPtr( new Meta::DefaultComposer() );
     d->yearPtr = Meta::YearPtr( new Meta::DefaultYear() );
@@ -93,7 +95,9 @@ Track::uidUrl() const
 bool
 Track::isPlayable() const
 {
-    //simple implementation, check Internet connectivity or ping server?
+    if( Solid::Networking::status() != Solid::Networking::Connected )
+        return false;
+
     return true;
 }
 
@@ -158,7 +162,7 @@ Track::setComposer( const QString& newComposer )
 }
 
 void
-Track::setYear( const QString& newYear )
+Track::setYear( int newYear )
 {
     Q_UNUSED( newYear )
 }
@@ -258,12 +262,6 @@ Track::sampleRate() const
 
 int
 Track::bitrate() const
-{
-    return 0;
-}
-
-uint
-Track::lastPlayed() const
 {
     return 0;
 }

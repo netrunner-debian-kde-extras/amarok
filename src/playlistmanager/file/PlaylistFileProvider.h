@@ -17,10 +17,10 @@
 #ifndef PLAYLISTFILEPROVIDER_H
 #define PLAYLISTFILEPROVIDER_H
 
-#include "core-impl/playlists/providers/user/UserPlaylistProvider.h"
 #include "core/playlists/PlaylistFormat.h"
-#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 #include "core/playlists/PlaylistProvider.h"
+#include "core-impl/playlists/providers/user/UserPlaylistProvider.h"
+#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 
 #include <kicon.h>
 
@@ -28,9 +28,9 @@ class KConfigGroup;
 class KUrl;
 
 class QAction;
+class QTimer;
 
 namespace Playlists {
-
 /**
     @author Bart Cerneels <bart.cerneels@kde.org>
 */
@@ -56,9 +56,8 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
 
         virtual bool canSavePlaylists() { return true; }
 
-        virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks );
         virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks,
-                                        const QString &name );
+                                             const QString &name = QString() );
 
         virtual bool import( const KUrl &path );
 
@@ -66,13 +65,16 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
         virtual void rename( Playlists::PlaylistPtr playlist, const QString &newName );
         virtual bool deletePlaylists( Playlists::PlaylistList playlistList );
 
-        virtual void loadPlaylists();
-
-    signals:
-        void playlistAdded( Playlists::PlaylistPtr playlist );
-        void playlistRemoved( Playlists::PlaylistPtr playlist );
+        /* PlaylistFileProvider methods */
+        /** Schedules a PlaylistFile to be saved on the next iteration of the mainloop.
+          * Each playlist will be scheduled and saved only once.
+          */
+        void saveLater( Playlists::PlaylistFilePtr playlist );
 
     private slots:
+        void loadPlaylists();
+        void slotSaveLater();
+
         void slotDelete();
         void slotRename();
         void slotRemove();
@@ -82,6 +84,7 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
         KConfigGroup loadedPlaylistsConfig() const;
 
         bool m_playlistsLoaded;
+        QList<KUrl> m_urlsToLoad;
         Playlists::PlaylistFileList m_playlists;
         Playlists::PlaylistFormat m_defaultFormat;
         QMultiMap<QString, Playlists::PlaylistPtr> m_groupMap;
@@ -89,6 +92,9 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
         QAction *m_renameAction;
         QAction *m_deleteAction;
         QAction *m_removeTrackAction;
+
+        QTimer *m_saveLaterTimer;
+        QList<Playlists::PlaylistFilePtr> m_saveLaterPlaylists;
 };
 
 } //namespace Playlists

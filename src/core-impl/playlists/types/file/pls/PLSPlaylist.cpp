@@ -35,45 +35,24 @@ namespace Playlists {
 
 PLSPlaylist::PLSPlaylist()
     : m_url( Playlists::newPlaylistFilePath( "pls" ) )
+    , m_tracksLoaded( true )
 {
     m_name = m_url.fileName();
 }
 
 PLSPlaylist::PLSPlaylist( Meta::TrackList tracks )
-    : m_tracks( tracks )
-    , m_url( Playlists::newPlaylistFilePath( "pls" ) )
+    : m_url( Playlists::newPlaylistFilePath( "pls" ) )
+    , m_tracksLoaded( true )
+    , m_tracks( tracks )
 {
     m_name = m_url.fileName();
 }
 
 PLSPlaylist::PLSPlaylist( const KUrl &url )
     : m_url( url )
+    , m_tracksLoaded( false )
 {
-    DEBUG_BLOCK
-    debug() << "url: " << m_url;
-
     m_name = m_url.fileName();
-
-    //check if file is local or remote
-    if ( m_url.isLocalFile() )
-    {
-        QFile file( m_url.toLocalFile() );
-        if( !file.open( QIODevice::ReadOnly ) ) {
-            debug() << "cannot open file";
-            return;
-        }
-
-        QString contents = QString( file.readAll() );
-        file.close();
-
-        QTextStream stream;
-        stream.setString( &contents );
-        loadPls( stream );
-    }
-    else
-    {
-        The::playlistManager()->downloadPlaylist( m_url, PlaylistFilePtr( this ) );
-    }
 }
 
 PLSPlaylist::~PLSPlaylist()
@@ -85,6 +64,85 @@ PLSPlaylist::description() const
 {
     KMimeType::Ptr mimeType = KMimeType::mimeType( "audio/x-scpls" );
     return QString( "%1 (%2)").arg( mimeType->name(), "pls" );
+}
+
+int
+PLSPlaylist::trackCount() const
+{
+    if( m_tracksLoaded )
+        return m_tracks.count();
+
+    //TODO: count the number of lines starting with #
+    return -1;
+}
+
+Meta::TrackList
+PLSPlaylist::tracks()
+{
+    return m_tracks;
+}
+
+void
+PLSPlaylist::triggerTrackLoad()
+{
+    //TODO make sure we've got all tracks first.
+    if( m_tracksLoaded )
+        return;
+
+    //check if file is local or remote
+    if( m_url.isLocalFile() )
+    {
+        QFile file( m_url.toLocalFile() );
+        if( !file.open( QIODevice::ReadOnly ) )
+        {
+            error() << "cannot open file";
+            return;
+        }
+
+        QString contents( file.readAll() );
+        file.close();
+
+        QTextStream stream;
+        stream.setString( &contents );
+        loadPls( stream );
+        m_tracksLoaded = true;
+    }
+    else
+    {
+        The::playlistManager()->downloadPlaylist( m_url, PlaylistFilePtr( this ) );
+    }
+}
+
+void
+PLSPlaylist::addTrack( Meta::TrackPtr track, int position )
+{
+    if( !m_tracksLoaded )
+        triggerTrackLoad();
+
+    int trackPos = position < 0 ? m_tracks.count() : position;
+    if( trackPos > m_tracks.count() )
+        trackPos = m_tracks.count();
+    m_tracks.insert( trackPos, track );
+    //set in case no track was in the playlist before
+    m_tracksLoaded = true;
+
+    notifyObserversTrackAdded( track, trackPos );
+
+    if( !m_url.isEmpty() )
+        saveLater();
+}
+
+void
+PLSPlaylist::removeTrack( int position )
+{
+    if( position < 0 || position >= m_tracks.count() )
+        return;
+    m_tracks.removeAt( position );
+
+    notifyObserversTrackRemoved( position );
+
+    if( !m_url.isEmpty() )
+        saveLater();
 }
 
 bool
@@ -245,7 +303,7 @@ PLSPlaylist::save( const KUrl &location, bool relative )
     QTextStream stream( &file );
     stream << "[Playlist]\n";
     stream << "NumberOfEntries=" << m_tracks.count() << endl;
-    int i = 0;
+    int i = 1; //PLS starts at File1=
     foreach( Meta::TrackPtr track, m_tracks )
     {
         stream << "File" << i << "=";

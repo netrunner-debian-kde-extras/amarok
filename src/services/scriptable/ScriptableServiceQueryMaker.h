@@ -37,7 +37,6 @@ public:
     ScriptableServiceQueryMaker( ScriptableServiceCollection * collection, QString name );
     ~ScriptableServiceQueryMaker();
 
-    virtual QueryMaker* reset();
     virtual void run();
     virtual void abortQuery();
 
@@ -49,11 +48,8 @@ public:
     virtual QueryMaker* addMatch ( const Meta::GenrePtr &genre );
     virtual QueryMaker* addMatch ( const Meta::ArtistPtr &artist );
     virtual QueryMaker* addMatch ( const Meta::AlbumPtr &album );
-    virtual QueryMaker* addMatch ( const Meta::DataPtr &  data );
 
     virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
-
-    virtual QueryMaker* setReturnResultAsDataPtrs ( bool resultAsDataPtrs );
 
     void handleResult();
 

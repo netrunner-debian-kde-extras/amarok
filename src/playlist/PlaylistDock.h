@@ -23,15 +23,14 @@
 #include "view/listview/PrettyListView.h"
 #include "widgets/AmarokDockWidget.h"
 
-#include <KVBox>
-
-#include <QComboBox>
-#include <QLabel>
-#include <QPointer>
+#include <QWeakPointer>
 
 class KActionCollection;
 class KActionMenu;
+class KVBox;
+class QLabel;
 class QWidget;
+class PlaylistQueueEditor;
 
 namespace Playlists {
     class PlaylistProvider;
@@ -49,40 +48,44 @@ class Dock : public AmarokDockWidget
 
 public:
     Dock( QWidget* parent );
-    PrettyListView* currentView() { return m_playlistView; }
-
-    SortWidget * sortWidget() { return m_sortWidget; }
-    ProgressiveSearchWidget * searchWidget() { return m_searchWidget; }
+    PrettyListView *currentView();
+    SortWidget *sortWidget();
+    ProgressiveSearchWidget *searchWidget();
     void showActiveTrack();
 
     void polish();
 
 public slots:
-    void showDynamicHint( bool enabled );
     void clearFilterIfActive();
 
 protected:
     QSize sizeHint() const;
 
 private slots:
+    /** show or hide the dynamic playlist mode indicator */
+    void showDynamicHint();
+
     void paletteChanged( const QPalette& palette );
     void playlistProviderAdded( Playlists::PlaylistProvider *provider, int category );
     void playlistProviderRemoved( Playlists::PlaylistProvider *provider, int category );
     void slotSaveCurrentPlaylist();
+    void slotEditQueue();
 
 private:
     KActionMenu *m_savePlaylistMenu;
     KActionCollection *m_saveActions;
 
-    PrettyListView* m_playlistView;
-    ProgressiveSearchWidget * m_searchWidget;
-    SortWidget * m_sortWidget;
-    QLabel* m_dynamicHintWidget;
+    QWeakPointer<PlaylistQueueEditor> m_playlistQueueEditor;
 
-    KVBox * m_mainWidget;
+    PrettyListView *m_playlistView;
+    ProgressiveSearchWidget *m_searchWidget;
+    SortWidget *m_sortWidget;
+    QLabel *m_dynamicHintWidget;
 
+    KVBox *m_mainWidget;
+    QFrame *m_barBox;
 };
 }
 
-Q_DECLARE_METATYPE( QPointer<Playlists::UserPlaylistProvider> )
+Q_DECLARE_METATYPE( QWeakPointer<Playlists::UserPlaylistProvider> )
 #endif

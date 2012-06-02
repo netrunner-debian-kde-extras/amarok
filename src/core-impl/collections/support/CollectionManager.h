@@ -51,6 +51,9 @@ class AMAROK_EXPORT CollectionManager : public QObject
         static CollectionManager * instance();
         static void destroy();
 
+        /**
+         * Returns a query maker that queries ALL the collections
+         */
         Collections::QueryMaker * queryMaker() const;
 
         /**
@@ -88,14 +91,10 @@ class AMAROK_EXPORT CollectionManager : public QObject
         Meta::TrackList tracksForUrls( const KUrl::List &urls );
 
         /**
-         * When using this method, you must watch for the foundRelatedArtists signal
-         * for the returned Meta::ArtistList
-         */
-        void relatedArtists( Meta::ArtistPtr artist, int maxArtists );
-
-        /**
             retrieve an interface which allows client-code to store/load data in a relational database.
             Note: code using this method does NOT take ownership of the pointer, but may cache the pointer
+            Note2: You should never modify the database unless you really really know what you do.
+                   Using the SqlMeta (e.g. SqlRegistry or SqlTrack) is much better.
         */
         SqlStorage* sqlStorage() const;
 
@@ -136,6 +135,8 @@ class AMAROK_EXPORT CollectionManager : public QObject
 
         bool haveEmbeddedMysql() { return m_haveEmbeddedMysql; }
 
+        void init( const QList<Plugins::PluginFactory*> &factories );
+
     public slots:
         void startFullScan();
         void startIncrementalScan( const QString &directory = QString() );
@@ -162,19 +163,16 @@ class AMAROK_EXPORT CollectionManager : public QObject
         void slotRemoveCollection();
         void slotCollectionChanged();
         void slotArtistQueryResult( QString collectionId, Meta::ArtistList artists );
-        void slotContinueRelatedArtists();
 
     private:
         static CollectionManager* s_instance;
-        void loadServices( const KService::List &services );
+        void loadPlugins( const QList<Collections::CollectionFactory*> &factories );
         CollectionManager();
         ~CollectionManager();
 
         // Disable copy constructor and assignment
         CollectionManager( const CollectionManager& );
         CollectionManager& operator= ( const CollectionManager& );
-
-        void init();
 
         //used for related artists query
         QSet<QString>    m_artistNameSet;

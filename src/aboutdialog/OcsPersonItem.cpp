@@ -60,7 +60,8 @@ OcsPersonItem::init()
     layout()->invalidate();
 
     m_aboutText.append( "<b>" + m_person->name() + "</b>" );
-    m_aboutText.append( "<br/>" + m_person->task() );
+    if( !m_person->task().isEmpty() )
+        m_aboutText.append( "<br/>" + m_person->task() );
 
     m_iconsBar = new KToolBar( this, false, false );
     m_snBar = new KToolBar( this, false, false );
@@ -170,8 +171,15 @@ OcsPersonItem::fillOcsData( const AmarokAttica::Person &ocsPerson )
         m_avatar->setPixmap( ocsPerson.avatar() );
         m_avatar->setAlignment( Qt::AlignCenter );
     }
-    if( !( ocsPerson.city().isEmpty() && ocsPerson.country().isEmpty() ) )
-        m_aboutText.append( "<br/>" + ( ocsPerson.city().isEmpty() ? "" : ( ocsPerson.city() + ", " ) ) + ocsPerson.country() );
+
+    if( !ocsPerson.country().isEmpty() )
+    {
+        m_aboutText.append( "<br/>" );
+        if( !ocsPerson.city().isEmpty() )
+            m_aboutText.append( i18nc( "A person's location: City, Country", "%1, %2", ocsPerson.city(), ocsPerson.country() ) );
+        else
+            m_aboutText.append( ocsPerson.country() );
+    }
 
     if( m_status == Author )
     {

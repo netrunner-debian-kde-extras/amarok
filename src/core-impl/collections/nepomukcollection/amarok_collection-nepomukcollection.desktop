@@ -1,8 +1,10 @@
 [Desktop Entry]
 Type=Service
+Icon=nepomuk
 Name=Nepomuk Collection
 Name[be]=Калекцыя Nepomuk
 Name[bg]=Колекция Nepomuk
+Name[bs]=Nepomuk zbirka
 Name[ca]=Col·lecció Nepomuk
 Name[ca@valencia]=Col·lecció Nepomuk
 Name[cs]=Kolekce Nepomuku
@@ -24,7 +26,7 @@ Name[hu]=Nepomuk-gyűjtemény
 Name[is]=Nepomuk safn
 Name[it]=Collezione Nepomuk
 Name[ja]=Nepomuk コレクション
-Name[km]=ការ​សម្រាំង​របស់ Nepomuk
+Name[km]=សម្រាំង Nepomuk
 Name[ko]=Nepomuk 모음집
 Name[ku]=Berhevoka Nepomuk ji bo Amarok
 Name[lt]=Nepomuk fonoteka
@@ -61,7 +63,7 @@ X-KDE-Library=amarok_collection-nepomukcollection
 
 X-KDE-Amarok-authors=Daniel Winter
 X-KDE-Amarok-email=dw@danielwinter.de
-X-KDE-Amarok-framework-version=58
+X-KDE-Amarok-framework-version=67
 X-KDE-Amarok-name=nepomuk-collection
 X-KDE-Amarok-plugintype=collection
 X-KDE-Amarok-rank=100

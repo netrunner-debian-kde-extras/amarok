@@ -16,6 +16,7 @@
 
 
 #include "core-impl/capabilities/timecode/TimecodeWriteCapability.h"
+
 #include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
 #include "amarokurls/AmarokUrl.h"
 #include "amarokurls/AmarokUrlHandler.h"
@@ -24,6 +25,8 @@
 #include "core/support/Debug.h"
 #include "ProgressWidget.h"
 #include "EngineController.h"
+
+#include <KLocale>
 
 namespace Capabilities
 {
@@ -61,7 +64,7 @@ bool Capabilities::TimecodeWriteCapability::writeAutoTimecode( qint64 milisecond
     debug() << "deleting old auto timecodes";
     if( track->hasCapabilityInterface( Capabilities::Capability::LoadTimecode ) )
     {
-        TimecodeLoadCapability *tcl = track->create<TimecodeLoadCapability>();
+        QScopedPointer<TimecodeLoadCapability> tcl( track->create<TimecodeLoadCapability>() );
         BookmarkList list = tcl->loadTimecodes();
         foreach( AmarokUrlPtr oldUrl, list )
         {

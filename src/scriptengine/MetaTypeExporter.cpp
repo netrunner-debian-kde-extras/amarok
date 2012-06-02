@@ -1,7 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2008 Peter ZHOU <peterzhoulei@gmail.com>                               *
  * Copyright (c) 2008 Ian Monroe <ian@monroe.nu>                                        *
- *                                                                                      *
+Image*                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
  * Foundation; either version 2 of the License, or (at your option) any later           *
@@ -29,7 +29,8 @@ if( ec ) \
     ec->endMetaDataUpdate(); \
 }
 
-MetaTrackPrototype::MetaTrackPrototype()
+MetaTrackPrototype::MetaTrackPrototype( QObject *parent )
+    : QObject( parent )
 {
 }
 
@@ -149,11 +150,11 @@ MetaTrackPrototype::genre() const
     return ( track && track->genre() ) ? track->genre()->prettyName() : QString();
 }
 
-QString
+int
 MetaTrackPrototype::year() const
 {
     GET_TRACK
-    return ( track && track->year() ) ? track->year()->prettyName() : QString();
+    return ( track && track->year() ) ? track->year()->year() : 0;
 }
 
 QString
@@ -222,7 +223,7 @@ bool
 MetaTrackPrototype::isEditable() const
 {
     GET_TRACK
-    Capabilities::EditCapability* ec = track->create<Capabilities::EditCapability>();
+    QScopedPointer<Capabilities::EditCapability> ec( track->create<Capabilities::EditCapability>() );
     return ( ec && ec->isEditable() );
 }
 
@@ -260,46 +261,47 @@ MetaTrackPrototype::setDiscNumber( int number )
 }
 
 void
-MetaTrackPrototype::setAlbum( QString album )
+MetaTrackPrototype::setAlbum( const QString &album )
 {
     GET_TRACK_EC( ec->setAlbum( album ) )
 }
 
 void
-MetaTrackPrototype::setArtist( QString artist )
+MetaTrackPrototype::setArtist( const QString &artist )
 {
     GET_TRACK_EC( ec->setArtist( artist ) )
 }
 
 void
-MetaTrackPrototype::setComposer( QString composer )
+MetaTrackPrototype::setComposer( const QString &composer )
 {
     GET_TRACK_EC( ec->setComposer( composer ) )
 }
 
 void
-MetaTrackPrototype::setGenre( QString genre )
+MetaTrackPrototype::setGenre( const QString &genre )
 {
     GET_TRACK_EC( ec->setGenre( genre ) )
 }
 
 void
-MetaTrackPrototype::setYear( QString year )
+MetaTrackPrototype::setYear( int year )
 {
     GET_TRACK_EC( ec->setYear( year ) )
 }
 
 void
-MetaTrackPrototype::setComment( QString comment )
+MetaTrackPrototype::setComment( const QString &comment )
 {
     GET_TRACK_EC( ec->setComment( comment ) )
 }
 
 void
-MetaTrackPrototype::setLyrics( QString lyrics )
+MetaTrackPrototype::setLyrics( const QString &lyrics )
 {
     GET_TRACK
-    if ( track ) track->setCachedLyrics( lyrics );
+    if( track )
+        track->setCachedLyrics( lyrics );
 }
 
 void
@@ -312,7 +314,8 @@ void
 MetaTrackPrototype::setImageUrl( const QString& imageUrl )
 {
     GET_TRACK
-    if ( track && track->album() ) track->album()->setImage( QPixmap(imageUrl) );
+    if( track && track->album() )
+        track->album()->setImage( QImage(imageUrl) );
 }
 
 #undef GET_TRACK

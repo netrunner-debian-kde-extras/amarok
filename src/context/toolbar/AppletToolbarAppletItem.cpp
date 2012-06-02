@@ -19,23 +19,19 @@
 #include "AppletToolbarAppletItem.h"
 
 #include "core/support/Amarok.h"
-#include "App.h"
 #include "core/support/Debug.h"
 #include "PaletteHandler.h"
 
-#include <Plasma/Animator>
 #include <Plasma/Applet>
 #include <Plasma/IconWidget>
 
 #include <KIcon>
 
 #include <QAction>
-#include <QBitmap>
-#include <QDrag>
-#include <QMimeData>
-#include <QStyleOptionGraphicsItem>
 #include <QPainter>
 #include <QGraphicsSceneMouseEvent>
+#include <QGraphicsTextItem>
+#include <QPropertyAnimation>
 
 
 Context::AppletToolbarAppletItem::AppletToolbarAppletItem( QGraphicsItem* parent, Plasma::Applet* applet )
@@ -46,15 +42,15 @@ Context::AppletToolbarAppletItem::AppletToolbarAppletItem( QGraphicsItem* parent
     , m_labelPadding( 5 )
     , m_configEnabled( false )
 {
-    m_label = new QGraphicsSimpleTextItem( this );
+    m_label = new QGraphicsTextItem( this );
     if( m_applet )
     {
-       m_label->setText( m_applet->name() );
+       m_label->setPlainText( m_applet->name() );
        setToolTip( m_applet->name() );
     }
     else
     {
-        m_label->setText( i18n("no applet name") );
+        m_label->setPlainText( i18n("no applet name") );
     }
 
     setAcceptHoverEvents( true );
@@ -67,15 +63,18 @@ Context::AppletToolbarAppletItem::AppletToolbarAppletItem( QGraphicsItem* parent
     connect( delApplet, SIGNAL( triggered() ), this, SLOT( deleteApplet() ) );
     m_deleteIcon = addAction( delApplet, 18 );
     m_deleteIcon->hide();
-    
+
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
+
+    paletteChanged( palette() );
+    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(paletteChanged(QPalette)) );
 }
 
 Context::AppletToolbarAppletItem::~AppletToolbarAppletItem()
-{    
+{
 }
 
-void 
+void
 Context::AppletToolbarAppletItem::setConfigEnabled( bool config )
 {
     if( config && !m_configEnabled ) // switching to config mode
@@ -85,17 +84,17 @@ Context::AppletToolbarAppletItem::setConfigEnabled( bool config )
     }
     else
         m_deleteIcon->hide();
-    
+
     m_configEnabled = config;
 }
 
-bool 
+bool
 Context::AppletToolbarAppletItem::configEnabled()
 {
     return m_configEnabled;
 }
 
-QRectF 
+QRectF
 Context::AppletToolbarAppletItem::delIconSceneRect()
 {
     return mapToScene( m_deleteIcon->boundingRect() ).boundingRect();
@@ -111,34 +110,45 @@ Context::AppletToolbarAppletItem::resizeEvent( QGraphicsSceneResizeEvent *event 
         m_deleteIcon->setPos( ( boundingRect().width() - (m_deleteIcon->boundingRect().width() ) ) - 1, -1 );
 
         if( fm.width( m_applet->name() ) + m_deleteIcon->boundingRect().width() > boundingRect().width() )
-            m_label->setText( fm.elidedText( m_applet->name(), Qt::ElideRight, boundingRect().width() - m_deleteIcon->boundingRect().width() ) );
+            m_label->setPlainText( fm.elidedText( m_applet->name(), Qt::ElideRight, boundingRect().width() - m_deleteIcon->boundingRect().width() ) );
         else
-            m_label->setText( m_applet->name() );
-    } else
+            m_label->setPlainText( m_applet->name() );
+
+        m_label->setPos( ( ( boundingRect().width() - m_deleteIcon->boundingRect().width() ) - m_label->boundingRect().width() )  / 2,
+                         ( boundingRect().height() - m_label->boundingRect().height() ) / 2 );
+    }
+    else
     {
         if( fm.width( m_applet->name() ) > boundingRect().width() )
-            m_label->setText( fm.elidedText( m_applet->name(), Qt::ElideRight, boundingRect().width() ) );
+            m_label->setPlainText( fm.elidedText( m_applet->name(), Qt::ElideRight, boundingRect().width() ) );
         else
-            m_label->setText( m_applet->name() );
+            m_label->setPlainText( m_applet->name() );
+
+        m_label->setPos( ( boundingRect().width()  - m_label->boundingRect().width() )  / 2,
+                         ( boundingRect().height() - m_label->boundingRect().height() ) / 2 );
+
     }
-    
-    m_label->setPos( ( boundingRect().width() / 2 ) - ( m_label->boundingRect().width() / 2 ),  ( boundingRect().height() / 2 ) - ( m_label->boundingRect().height() / 2 ) );
-    
+
     emit geometryChanged();
 }
 
+void
+Context::AppletToolbarAppletItem::paletteChanged( const QPalette &palette )
+{
+    m_label->setDefaultTextColor( palette.text().color() );
+}
 
-QVariant 
+QVariant
 Context::AppletToolbarAppletItem::itemChange( GraphicsItemChange change, const QVariant &value )
 {
     QVariant ret = QGraphicsWidget::itemChange( change, value );
-    
+
     if( change == ItemPositionHasChanged )
         emit geometryChanged();
     return ret;
 }
 
-QSizeF 
+QSizeF
 Context::AppletToolbarAppletItem::sizeHint( Qt::SizeHint which, const QSizeF & constraint ) const
 {
     Q_UNUSED( constraint )
@@ -150,14 +160,14 @@ Context::AppletToolbarAppletItem::sizeHint( Qt::SizeHint which, const QSizeF & c
         return QSizeF( 10000, 10000 );
 }
 
-void 
+void
 Context::AppletToolbarAppletItem::mousePressEvent( QGraphicsSceneMouseEvent * event )
 {
     emit appletChosen( m_applet );
     event->accept();
 }
 
-void 
+void
 Context::AppletToolbarAppletItem::deleteApplet()
 {
     DEBUG_BLOCK
@@ -193,25 +203,41 @@ Context::AppletToolbarAppletItem::addAction( QAction *action, int size )
 void
 Context::AppletToolbarAppletItem::hoverEnterEvent( QGraphicsSceneHoverEvent * )
 {
-    Plasma::Animator::self()->customAnimation( 20, 300, Plasma::Animator::EaseInCurve, this, "animateHoverIn" );
+    QPropertyAnimation *animation = m_opacityAnimation.data();
+    if( !animation )
+    {
+        animation = new QPropertyAnimation( m_label, "opacity" );
+        animation->setDuration( 300 );
+        animation->setStartValue( 0.5 );
+        animation->setEndValue( 1.0 );
+        m_opacityAnimation = animation;
+    }
+    else if( animation->state() == QAbstractAnimation::Running )
+        animation->stop();
+
+    animation->setEasingCurve( QEasingCurve::InQuad );
+    animation->setDirection( QAbstractAnimation::Backward );
+    animation->start( QAbstractAnimation::KeepWhenStopped );
 }
 
 void
 Context::AppletToolbarAppletItem::hoverLeaveEvent( QGraphicsSceneHoverEvent * )
 {
-    Plasma::Animator::self()->customAnimation( 20, 300, Plasma::Animator::EaseOutCurve, this, "animateHoverOut" );
-}
+    QPropertyAnimation *animation = m_opacityAnimation.data();
+    if( !animation )
+    {
+        animation = new QPropertyAnimation( m_label, "opacity" );
+        animation->setDuration( 300 );
+        animation->setStartValue( 0.5 );
+        animation->setEndValue( 1.0 );
+        m_opacityAnimation = animation;
+    }
+    else if( animation->state() == QAbstractAnimation::Running )
+        animation->pause();
 
-void
-Context::AppletToolbarAppletItem::animateHoverIn( qreal progress )
-{
-    m_label->setOpacity( 1.0 - progress * 0.5 );
-}
-
-void
-Context::AppletToolbarAppletItem::animateHoverOut( qreal progress )
-{
-    m_label->setOpacity( 0.5 + progress * 0.5 );
+    animation->setEasingCurve( QEasingCurve::OutQuad );
+    animation->setDirection( QAbstractAnimation::Forward );
+    animation->start( QAbstractAnimation::DeleteWhenStopped );
 }
 
 

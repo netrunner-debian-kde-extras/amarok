@@ -17,26 +17,23 @@
 #ifndef COLLECTIONTREEVIEW_H
 #define COLLECTIONTREEVIEW_H
 
-#include "CollectionSortFilterProxyModel.h"
-#include "playlist/PlaylistController.h"
-#include "core/meta/Meta.h"
 #include "widgets/PrettyTreeView.h"
 
+#include "core/meta/Meta.h"
+#include "playlist/PlaylistController.h"
+#include "core/transcoding/TranscodingController.h"
 
 #include <QModelIndex>
 #include <QMutex>
-#include <QPoint>
 #include <QSet>
-#include <QSortFilterProxyModel>
-#include <QTimer>
 
-class QSortFilterProxyModel;
+class AmarokMimeData;
 class CollectionSortFilterProxyModel;
 class CollectionTreeItemModelBase;
 class CollectionTreeItem;
 class PopupDropper;
 class QAction;
-class AmarokMimeData;
+class QSortFilterProxyModel;
 
 typedef QList<QAction *> QActionList;
 
@@ -45,33 +42,28 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         Q_OBJECT
 
     public:
-        CollectionTreeView( QWidget *parent = 0 );
+        explicit CollectionTreeView( QWidget *parent = 0 );
         ~CollectionTreeView();
 
         QSortFilterProxyModel* filterModel() const;
 
         AMAROK_EXPORT void setLevels( const QList<int> &levels );
         QList<int> levels() const;
-        
+
         void setLevel( int level, int type );
 
         void setModel( QAbstractItemModel *model );
-        void contextMenuEvent(QContextMenuEvent *event);
 
         //Helper function to remove children if their parent is already present
         static QSet<CollectionTreeItem*> cleanItemSet( const QSet<CollectionTreeItem*> &items );
 
     public slots:
-        void slotSetFilterTimeout();
+        void slotSetFilter( const QString &filter );
 
         void playChildTracksSlot( Meta::TrackList list );
 
-        /**
-         * Bypass the filter timeout if we really need to start filtering *now*
-         */
-        void slotFilterNow();
-
     protected:
+        void contextMenuEvent( QContextMenuEvent *event );
         void mouseDoubleClickEvent( QMouseEvent *event );
         void mouseMoveEvent( QMouseEvent *event );
         void mousePressEvent( QMouseEvent *event );
@@ -83,15 +75,17 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         virtual void selectionChanged ( const QItemSelection & selected, const QItemSelection & deselected );
         void slotCollapsed( const QModelIndex &index );
         void slotExpanded( const QModelIndex &index );
+        void slotExpandIndex( const QModelIndex &index );
 
         void slotCheckAutoExpand();
-        
+
         void slotPlayChildTracks();
         void slotAppendChildTracks();
         void slotQueueChildTracks();
         void slotEditTracks();
         void slotCopyTracks();
         void slotMoveTracks();
+        void slotTrashTracks();
         void slotRemoveTracks();
         void slotOrganize();
 
@@ -102,8 +96,12 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void playChildTracks( const QSet<CollectionTreeItem*> &items, Playlist::AddOptions insertMode );
         void editTracks( const QSet<CollectionTreeItem*> &items ) const;
         void organizeTracks( const QSet<CollectionTreeItem*> &items ) const;
-        void copyTracks( const QSet<CollectionTreeItem*> &items, Collections::Collection *destination, bool removeSources ) const;
-        void removeTracks( const QSet<CollectionTreeItem*> &items ) const;
+        void copyTracks( const QSet<CollectionTreeItem*> &items, Collections::Collection *destination,
+                         bool removeSources, Transcoding::Configuration configuration = Transcoding::Configuration() ) const;
+        void removeTracks( const QSet<CollectionTreeItem*> &items, bool useTrash ) const;
+
+        // creates different actions from the different objects.
+        // note: you should not delete the created actions.
         QActionList createBasicActions( const QModelIndexList &indcies );
         QActionList createExtendedActions( const QModelIndexList &indcies );
         QActionList createCollectionActions( const QModelIndexList &indices );
@@ -120,7 +118,6 @@ class CollectionTreeView: public Amarok::PrettyTreeView
 
         CollectionSortFilterProxyModel *m_filterModel;
         CollectionTreeItemModelBase *m_treeModel;
-        QTimer m_filterTimer;
         PopupDropper* m_pd;
         QAction* m_appendAction;
         QAction* m_loadAction;

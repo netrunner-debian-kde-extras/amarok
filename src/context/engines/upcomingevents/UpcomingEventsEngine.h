@@ -20,7 +20,6 @@
 #define AMAROK_UPCOMINGEVENTS_ENGINE
 
 #include "context/applets/upcomingevents/LastFmEvent.h"
-#include "context/ContextObserver.h"
 #include "context/DataEngine.h"
 #include "core/meta/Meta.h"
 #include "network/NetworkAccessManagerProxy.h"
@@ -39,10 +38,9 @@ using namespace Context;
  *
  * This class provide UpcomingEvents data for use in Context applets
  */
-class UpcomingEventsEngine : public DataEngine, public ContextObserver, Meta::Observer
+class UpcomingEventsEngine : public DataEngine
 {
     Q_OBJECT
-    Q_PROPERTY( QString selectionType READ selection WRITE setSelection )
 
 public:
     /**
@@ -59,81 +57,20 @@ public:
      */
     virtual ~UpcomingEventsEngine();
 
-    /**
-     * Returns the sources
-     */
-    QStringList sources() const;
-
-    /**
-     * Overriden from Context::Observer
-     */
-    virtual void message( const ContextState& state );
-
-    /**
-     * This method is called when the metadata of a track has changed.
-     * The called class may not cache the pointer
-     */
-    using Observer::metadataChanged;
-    void metadataChanged( Meta::TrackPtr track );
-
-    /**
-     * Sets the selection
-     *
-     * \param selection : the current selection
-     */
-    void setSelection( const QString& selection );
-
-    /**
-     * Returns the current selection
-     */
-    QString selection();
-
-    /**
-     * Returns all the upcoming events
-     */
-    QList< LastFmEvent > upcomingEvents();
-
-    /**
-    * Fetches the upcoming events for an artist thanks to the LastFm WebService
-    *
-    * \param artist_name the name of the artist
-    * \return a list of events
-    */
-    void upcomingEventsRequest(const QString &artist_name);
-
-    /**
-     * Parses the upcoming events request result
-     */
-    void upcomingEventsParseResult(QXmlStreamReader& xml);
-
 protected:
     /**
-     * When a source that does not currently exist is requested by the
-     * consumer, this method is called to give the DataEngine the
-     * opportunity to create one.
-     *
-     * The name of the data source (e.g. the source parameter passed into
-     * setData) must be the same as the name passed to sourceRequestEvent
-     * otherwise the requesting visualization may not receive notice of a
-     * data update.
-     *
-     * If the source can not be populated with data immediately (e.g. due to
-     * an asynchronous data acquisition method such as an HTTP request)
-     * the source must still be created, even if it is empty. This can
-     * be accomplished in these cases with the follow line:
-     *
-     *      setData(name, DataEngine::Data());
-     *
-     * \param source : the name of the source that has been requested
-     * \return true if a DataContainer was set up, false otherwise
+     * Reimplemented from Plasma::DataEngine
      */
-    bool sourceRequestEvent( const QString& name );
+    bool sourceRequestEvent( const QString &name );
 
 private:
+
     /**
-     * Sends the data to the observers (e.g UpcomingEventsApplet)
+     * filterEvents filters a list of events depending on settings
+     * @param events a list of events to filter
+     * @return a new list of events that satisfies filter settings
      */
-    void update();
+    LastFmEvent::List filterEvents( const LastFmEvent::List &events ) const;
 
     /**
      * The value can be "AllEvents", "ThisWeek", "ThisMonth" or "ThisYear"
@@ -141,55 +78,33 @@ private:
     QString m_timeSpan;
 
     /**
-     * The upcoming events are displayed as web links
+     * The current artist
      */
-    bool m_enabledLinks;
+    Meta::ArtistPtr m_currentArtist;
 
     /**
-     * The current track playing
+     * Current URLs of events being fetched
      */
-    Meta::TrackPtr m_currentTrack;
+    QSet<KUrl> m_urls;
 
     /**
-     * The current selection
+     * @param ids LastFm's venue ids
      */
-    QString m_currentSelection;
-
-    /**
-     * True if a request has been done, false else
-     */
-    bool m_requested;
-
-    /**
-     * The list of all the sources
-     */
-    QStringList m_sources;
-
-    /**
-     * The list of all upcoming events
-     */
-    QList< LastFmEvent > m_upcomingEvents;
-
-    /**
-     * The XML text, result of LastFm request
-     */
-    QString m_xml;
-
-    /**
-     * The current artist name
-     */
-    QString m_artistName;
-
-    /**
-     * The URL for the network request
-     */
-    KUrl m_url;
+    QList<int> m_venueIds;
 
 private slots:
     /**
-     * Receive a network reply and parse the XML file
+     * Get events for specific artist
      */
-    void upcomingEventsResultFetched( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void updateDataForArtist();
+
+    /**
+     * Get events for specific venues
+     */
+    void updateDataForVenues();
+
+    void artistEventsFetched( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
+    void venueEventsFetched( const KUrl &url, QByteArray data, NetworkAccessManagerProxy::Error e );
 };
 
 #endif

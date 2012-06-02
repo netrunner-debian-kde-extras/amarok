@@ -26,12 +26,14 @@
 
 #include <amarokconfig.h>
 
+#include <KLocale>
 #include <KSqueezedTextLabel>
 #include <KVBox>
 
 #include <QLabel>
 
-TrackSelectWidget::TrackSelectWidget( QWidget* parent = 0 ) : KVBox( parent )
+TrackSelectWidget::TrackSelectWidget( QWidget* parent )
+    : KVBox( parent )
 {
     DEBUG_BLOCK
     m_label = new KSqueezedTextLabel( this );

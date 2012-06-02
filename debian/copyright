@@ -1,6 +1,6 @@
 Debianized by Peter Rockai <mornfall@mornfall.homeip.net>    2004-04-11
 New maintainer Adeodato Simó <dato@net.com.org.es>           2004-09-22
-New maintainer Modestas Vainius <modestas@vainius.eu>        2007-12-24
+New maintainer Modestas Vainius <modax@debian.org>           2007-12-24
 
 Original source was downloaded from:
 
@@ -28,7 +28,7 @@ Upstream Authors:
 
 Debian packaging (debian/*) is:
 Copyright: © 2004-2007 Adeodato Simó <dato@net.com.org.es>
-           © 2007-2009 Modestas Vainius <modestas@vainius.eu>
+           © 2007-2012 Modestas Vainius <modax@debian.org>
 License: GNU General Public License, version 2 or later (GPL-2+)
   On Debian systems, the complete text of the GNU General Public License
   version 2 can be found in /usr/share/common-licenses/GPL-2.

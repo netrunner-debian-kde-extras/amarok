@@ -1,6 +1,7 @@
 [Desktop Entry]
 Name=Wikipedia Data Engine
 Name[bg]=Ядро за Уикипедия
+Name[bs]=Pogon podataka Wikipediјe
 Name[ca]=Motor de dades de la Viquipèdia
 Name[ca@valencia]=Motor de dades de la Viquipèdia
 Name[cs]=Datový nástroj Wikipedia
@@ -12,7 +13,7 @@ Name[en_GB]=Wikipedia Data Engine
 Name[eo]=Datuma motoro de Vikipedio
 Name[es]=Motor de datos de Wikipedia
 Name[et]=Wikipedia andmete mootor
-Name[eu]=Wikipediaren datu motorea
+Name[eu]=Wikipediako datuen motorra
 Name[fr]=Moteur de données pour Wikipédia
 Name[ga]=Inneall Sonraí Vicipéide
 Name[gl]=Motor de dados da wikipedia

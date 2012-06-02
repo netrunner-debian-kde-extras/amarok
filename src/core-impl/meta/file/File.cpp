@@ -24,7 +24,7 @@
 #include <config-amarok.h>
 #include "MainWindow.h"
 #include "core/meta/Meta.h"
-#include "core/capabilities/CurrentTrackActionsCapability.h"
+#include "core/capabilities/BookmarkThisCapability.h"
 #include "core/capabilities/EditCapability.h"
 #include "core/capabilities/FindInSourceCapability.h"
 #include "core/capabilities/StatisticsCapability.h"
@@ -35,8 +35,9 @@
 #include "amarokurls/PlayUrlRunner.h"
 
 #include <QAction>
+#include <QFileInfo>
 #include <QList>
-#include <QPointer>
+#include <QWeakPointer>
 #include <QString>
 
 #ifdef HAVE_LIBLASTFM
@@ -55,15 +56,17 @@ class EditCapabilityImpl : public Capabilities::EditCapability
 
         virtual bool isEditable() const { return m_track->isEditable(); }
         virtual void setAlbum( const QString &newAlbum ) { m_track->setAlbum( newAlbum ); }
+        virtual void setAlbumArtist( const QString &newAlbumArtist ) { m_track->setAlbumArtist( newAlbumArtist ); }
         virtual void setArtist( const QString &newArtist ) { m_track->setArtist( newArtist ); }
         virtual void setComposer( const QString &newComposer ) { m_track->setComposer( newComposer ); }
         virtual void setGenre( const QString &newGenre ) { m_track->setGenre( newGenre ); }
-        virtual void setYear( const QString &newYear ) { m_track->setYear( newYear ); }
+        virtual void setYear( int newYear ) { m_track->setYear( newYear ); }
         virtual void setBpm( const qreal newBpm ) { m_track->setBpm( newBpm ); }
         virtual void setTitle( const QString &newTitle ) { m_track->setTitle( newTitle ); }
         virtual void setComment( const QString &newComment ) { m_track->setComment( newComment ); }
         virtual void setTrackNumber( int newTrackNumber ) { m_track->setTrackNumber( newTrackNumber ); }
         virtual void setDiscNumber( int newDiscNumber ) { m_track->setDiscNumber( newDiscNumber ); }
+        virtual void setUidUrl( const QString &newUidUrl ) { m_track->setUidUrl( newUidUrl ); }
         virtual void beginMetaDataUpdate() { m_track->beginMetaDataUpdate(); }
         virtual void endMetaDataUpdate() { m_track->endMetaDataUpdate(); }
 
@@ -81,8 +84,8 @@ class StatisticsCapabilityImpl : public Capabilities::StatisticsCapability
 
         virtual void setScore( const int score ) { m_track->setScore( score ); }
         virtual void setRating( const int rating ) { m_track->setRating( rating ); }
-        virtual void setFirstPlayed( const uint time ) { m_track->setFirstPlayed( time ); }
-        virtual void setLastPlayed( const uint time ) { m_track->setLastPlayed( time ); }
+        virtual void setFirstPlayed( const QDateTime &time ) { m_track->setFirstPlayed( time ); }
+        virtual void setLastPlayed( const QDateTime &time ) { m_track->setLastPlayed( time ); }
         virtual void setPlayCount( const int playcount ) { m_track->setPlayCount( playcount ); }
         virtual void beginStatisticsUpdate() {};
         virtual void endStatisticsUpdate() {};
@@ -148,9 +151,10 @@ public:
         : Capabilities::FindInSourceCapability()
         , m_track( track )
         {}
-        
-    virtual void findInSource()
+
+    virtual void findInSource( QFlags<TargetTag> tag )
     {
+        Q_UNUSED( tag )
         //first show the filebrowser
         AmarokUrl url;
         url.setCommand( "navigate" );
@@ -183,11 +187,12 @@ Track::Track( const KUrl &url )
     d->url = url;
     d->provider = new PermanentUrlStatisticsProvider( url.url() );
     d->readMetaData();
-    d->album = Meta::AlbumPtr( new MetaFile::FileAlbum( QPointer<MetaFile::Track::Private>( d ) ) );
-    d->artist = Meta::ArtistPtr( new MetaFile::FileArtist( QPointer<MetaFile::Track::Private>( d ) ) );
-    d->genre = Meta::GenrePtr( new MetaFile::FileGenre( QPointer<MetaFile::Track::Private>( d ) ) );
-    d->composer = Meta::ComposerPtr( new MetaFile::FileComposer( QPointer<MetaFile::Track::Private>( d ) ) );
-    d->year = Meta::YearPtr( new MetaFile::FileYear( QPointer<MetaFile::Track::Private>( d ) ) );
+    d->album = Meta::AlbumPtr( new MetaFile::FileAlbum( d ) );
+    d->artist = Meta::ArtistPtr( new MetaFile::FileArtist( d ) );
+    d->albumArtist = Meta::ArtistPtr( new MetaFile::FileArtist( d, true ) );
+    d->genre = Meta::GenrePtr( new MetaFile::FileGenre( d ) );
+    d->composer = Meta::ComposerPtr( new MetaFile::FileComposer( d ) );
+    d->year = Meta::YearPtr( new MetaFile::FileYear( d ) );
 }
 
 Track::~Track()
@@ -206,25 +211,6 @@ Track::name() const
     }
     return "This is a bug!";
 }
-
-QString
-Track::prettyName() const
-{
-    return name();
-}
-
-QString
-Track::fullPrettyName() const
-{
-    return name();
-}
-
-QString
-Track::sortableName() const
-{
-    return name();
-}
-
 
 KUrl
 Track::playableUrl() const
@@ -251,10 +237,29 @@ Track::uidUrl() const
     return d->url.url();
 }
 
+void
+Track::setUidUrl( const QString &newUid ) const
+{
+    if( newUid.isEmpty() )
+        return;
+
+    d->changes.insert( Meta::valUniqueId, QVariant( newUid ) );
+    if( !d->batchUpdate )
+    {
+        d->writeMetaData();
+        notifyObservers();
+    }
+}
+
 bool
 Track::isPlayable() const
 {
-    //simple implementation, check Internet connectivity or ping server?
+    KUrl trackUrl = playableUrl();
+    QFileInfo trackFileInfo = QFileInfo( trackUrl.pathOrUrl() );
+
+    if( !( trackFileInfo.exists() && trackFileInfo.isFile() && trackFileInfo.isReadable() ) )
+            return false;
+
     return true;
 }
 
@@ -313,7 +318,7 @@ void
 Track::setAlbum( const QString &newAlbum )
 {
     DEBUG_BLOCK
-    d->changes.insert( Meta::Field::ALBUM, QVariant( newAlbum ) );
+    d->changes.insert( Meta::valAlbum, QVariant( newAlbum ) );
     debug() << "CHANGES HERE: " << d->changes;
     if( !d->batchUpdate )
     {
@@ -324,9 +329,22 @@ Track::setAlbum( const QString &newAlbum )
 }
 
 void
+Track::setAlbumArtist( const QString &newAlbumArtist )
+{
+    DEBUG_BLOCK
+    d->changes.insert( Meta::valAlbumArtist, QVariant( newAlbumArtist ) );
+    if( !d->batchUpdate )
+    {
+        d->m_data.albumArtist = newAlbumArtist;
+        d->writeMetaData();
+        notifyObservers();
+    }
+}
+
+void
 Track::setArtist( const QString& newArtist )
 {
-    d->changes.insert( Meta::Field::ARTIST, QVariant( newArtist ) );
+    d->changes.insert( Meta::valArtist, QVariant( newArtist ) );
     if( !d->batchUpdate )
     {
         d->m_data.artist = newArtist;
@@ -338,7 +356,7 @@ Track::setArtist( const QString& newArtist )
 void
 Track::setGenre( const QString& newGenre )
 {
-    d->changes.insert( Meta::Field::GENRE, QVariant( newGenre ) );
+    d->changes.insert( Meta::valGenre, QVariant( newGenre ) );
     if( !d->batchUpdate )
     {
         d->writeMetaData();
@@ -349,7 +367,7 @@ Track::setGenre( const QString& newGenre )
 void
 Track::setComposer( const QString& newComposer )
 {
-    d->changes.insert( Meta::Field::COMPOSER, QVariant( newComposer ) );
+    d->changes.insert( Meta::valComposer, QVariant( newComposer ) );
     if( !d->batchUpdate )
     {
         d->m_data.composer = newComposer;
@@ -359,12 +377,12 @@ Track::setComposer( const QString& newComposer )
 }
 
 void
-Track::setYear( const QString& newYear )
+Track::setYear( int newYear )
 {
-    d->changes.insert( Meta::Field::YEAR, QVariant( newYear ) );
+    d->changes.insert( Meta::valYear, QVariant( newYear ) );
     if( !d->batchUpdate )
     {
-        d->m_data.year = newYear.toInt();
+        d->m_data.year = newYear;
         d->writeMetaData();
         notifyObservers();
     }
@@ -373,7 +391,7 @@ Track::setYear( const QString& newYear )
 void
 Track::setTitle( const QString &newTitle )
 {
-    d->changes.insert( Meta::Field::TITLE, QVariant( newTitle ) );
+    d->changes.insert( Meta::valTitle, QVariant( newTitle ) );
     if( !d->batchUpdate )
     {
         d->m_data.title = newTitle;
@@ -385,7 +403,7 @@ Track::setTitle( const QString &newTitle )
 void
 Track::setBpm( const qreal newBpm )
 {
-    d->changes.insert( Meta::Field::BPM, QVariant( newBpm ) );
+    d->changes.insert( Meta::valBpm, QVariant( newBpm ) );
     if( !d->batchUpdate )
     {
         d->m_data.bpm = newBpm;
@@ -413,7 +431,7 @@ Track::comment() const
 void
 Track::setComment( const QString& newComment )
 {
-    d->changes.insert( Meta::Field::COMMENT, QVariant( newComment ) );
+    d->changes.insert( Meta::valComment, QVariant( newComment ) );
     if( !d->batchUpdate )
     {
         d->m_data.comment = newComment;
@@ -464,7 +482,7 @@ Track::trackNumber() const
 void
 Track::setTrackNumber( int newTrackNumber )
 {
-    d->changes.insert( Meta::Field::TRACKNUMBER, QVariant( newTrackNumber ) );
+    d->changes.insert( Meta::valTrackNr, QVariant( newTrackNumber ) );
     if( !d->batchUpdate )
     {
         d->m_data.trackNumber = newTrackNumber;
@@ -482,7 +500,7 @@ Track::discNumber() const
 void
 Track::setDiscNumber( int newDiscNumber )
 {
-    d->changes.insert( Meta::Field::DISCNUMBER, QVariant ( newDiscNumber ) );
+    d->changes.insert( Meta::valDiscNr, QVariant ( newDiscNumber ) );
     if( !d->batchUpdate )
     {
         d->m_data.discNumber = newDiscNumber;
@@ -527,39 +545,42 @@ Track::bitrate() const
 QDateTime
 Track::createDate() const
 {
-    return d->m_data.created;
+    if( d->m_data.created > 0 )
+        return QDateTime::fromTime_t(d->m_data.created);
+    else
+        return QDateTime();
 }
 
-uint
+QDateTime
 Track::lastPlayed() const
 {
     if( d->provider )
-        return d->provider->lastPlayed().toTime_t();
+        return d->provider->lastPlayed();
     else
-        return 0;
+        return QDateTime();
 }
 
 void
-Track::setLastPlayed( uint newTime )
+Track::setLastPlayed( const QDateTime &newTime )
 {
     if( d->provider )
-        d->provider->setLastPlayed( QDateTime::fromTime_t( newTime ) );
+        d->provider->setLastPlayed( newTime );
 }
 
-uint
+QDateTime
 Track::firstPlayed() const
 {
     if( d->provider )
-        return d->provider->firstPlayed().toTime_t();
+        return d->provider->firstPlayed();
     else
-        return 0;
+        return QDateTime();
 }
 
 void
-Track::setFirstPlayed( uint newTime )
+Track::setFirstPlayed( const QDateTime &newTime )
 {
     if( d->provider )
-        d->provider->setFirstPlayed( QDateTime::fromTime_t( newTime ) );
+        d->provider->setFirstPlayed( newTime );
 }
 
 int
@@ -579,19 +600,20 @@ Track::setPlayCount( int newCount )
 }
 
 qreal
-Track::replayGain( Meta::Track::ReplayGainMode mode ) const
+Track::replayGain( Meta::ReplayGainTag mode ) const
 {
-    if ( mode == Meta::Track::AlbumReplayGain )
+    switch( mode )
+    {
+    case Meta::ReplayGain_Track_Gain:
         return d->m_data.trackGain;
-    return d->m_data.albumGain;
-}
-
-qreal
-Track::replayPeakGain( Meta::Track::ReplayGainMode mode ) const
-{
-    if ( mode == Meta::Track::AlbumReplayGain )
+    case Meta::ReplayGain_Track_Peak:
         return d->m_data.trackPeak;
-    return d->m_data.albumPeak;
+    case Meta::ReplayGain_Album_Gain:
+        return d->m_data.albumGain;
+    case Meta::ReplayGain_Album_Peak:
+        return d->m_data.albumPeak;
+    }
+    return 0.0;
 }
 
 QString
@@ -644,7 +666,7 @@ Track::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 #endif
     return type == Capabilities::Capability::Editable ||
            type == Capabilities::Capability::Importable ||
-           type == Capabilities::Capability::CurrentTrackActions ||
+           type == Capabilities::Capability::BookmarkThis ||
            type == Capabilities::Capability::WriteTimecode ||
            type == Capabilities::Capability::LoadTimecode ||
            ( type == Capabilities::Capability::ReadLabel && readlabel ) ||
@@ -662,14 +684,8 @@ Track::createCapabilityInterface( Capabilities::Capability::Type type )
         case Capabilities::Capability::Importable:
             return new StatisticsCapabilityImpl( this );
 
-        case Capabilities::Capability::CurrentTrackActions:
-            {
-                QList< QAction * > actions;
-                QAction* flag = new BookmarkCurrentTrackPositionAction( 0 );
-                actions << flag;
-                debug() << "returning bookmarkcurrenttrack action";
-                return new Capabilities::CurrentTrackActionsCapability( actions );
-            }
+        case Capabilities::Capability::BookmarkThis:
+            return new Capabilities::BookmarkThisCapability( new BookmarkCurrentTrackPositionAction( 0 ) );
 
         case Capabilities::Capability::WriteTimecode:
             return new TimecodeWriteCapabilityImpl( this );
@@ -693,70 +709,13 @@ Track::createCapabilityInterface( Capabilities::Capability::Type type )
     }
 }
 
-TagLib::FileRef //static
-Track::getFileRef( const KUrl &url )
-{
-#ifdef COMPLEX_TAGLIB_FILENAME
-    const wchar_t * encodedName;
-    if(url.isLocalFile())
-    {
-        encodedName = reinterpret_cast<const wchar_t *>(url.toLocalFile().utf16());
-    }
-    else
-    {
-        encodedName = reinterpret_cast<const wchar_t *>(url.path().utf16());
-    }
-#else
-    QByteArray fileName;
-    if(url.isLocalFile())
-    {
-        fileName = QFile::encodeName( url.toLocalFile() );
-    }
-    else
-    {
-        fileName = QFile::encodeName( url.path() );
-    }
-    const char * encodedName = fileName.constData(); // valid as long as fileName exists
-#endif
-    return TagLib::FileRef( encodedName, true, TagLib::AudioProperties::Fast );
-}
-
 QImage
 Track::getEmbeddedCover() const
 {
     if( d->m_data.embeddedImage )
-        return getEmbeddedCover( d->url.path()  );
+        return Meta::Tag::embeddedCover( d->url.path()  );
 
     return QImage();
-}
-
-QImage
-Track::getEmbeddedCover( const QString &path ) //static
-{
-    TagLib::FileRef fileref = getFileRef( path );
-
-    if( fileref.isNull() )
-        return QImage();
-
-    TagLib::MPEG::File *file = dynamic_cast<TagLib::MPEG::File *>( fileref.file() );
-    if( !file || !file->ID3v2Tag() || file->ID3v2Tag()->frameListMap()["APIC"].isEmpty() )
-        return QImage();
-
-    TagLib::ID3v2::FrameList apicList = file->ID3v2Tag()->frameListMap()["APIC"];
-    TagLib::ID3v2::FrameList::ConstIterator iter;
-    TagLib::ID3v2::AttachedPictureFrame* frameToUse = 0;
-    for( iter = apicList.begin(); iter != apicList.end(); ++iter )
-    {
-        TagLib::ID3v2::AttachedPictureFrame* currFrame = dynamic_cast<TagLib::ID3v2::AttachedPictureFrame*>(*iter);
-        if( currFrame->type() == TagLib::ID3v2::AttachedPictureFrame::FrontCover )
-            frameToUse = currFrame;
-        else if( !frameToUse && currFrame->type() == TagLib::ID3v2::AttachedPictureFrame::Other )
-            frameToUse = currFrame;
-    }
-    if( !frameToUse )
-        return QImage();
-
-    return QImage::fromData((uchar*)(frameToUse->picture().data()), frameToUse->picture().size());
 }
 
 #include "File.moc"

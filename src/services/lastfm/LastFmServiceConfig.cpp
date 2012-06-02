@@ -40,9 +40,7 @@ LastFmServiceConfig::LastFmServiceConfig()
     if( scrobble || fetch_sim ) // if either of these are true we need the wallet.
     {
         // open wallet unless explicitly told not to
-        if( !( config.readEntry( "ignoreWallet", QString() ) == "yes" ) ) {
-            m_wallet = KWallet::Wallet::openWallet( KWallet::Wallet::NetworkWallet(), 0, KWallet::Wallet::Synchronous );
-        }
+        tryToOpenWallet();
     }
     load();
 }
@@ -89,6 +87,7 @@ LastFmServiceConfig::load()
     m_sessionKey = config.readEntry( "sessionKey", QString() );
     m_scrobble = config.readEntry( "scrobble", true );
     m_fetchSimilar = config.readEntry( "fetchSimilar", true );
+    m_scrobbleComposer = config.readEntry( "scrobbleComposer", false );
 }
 
 
@@ -100,8 +99,9 @@ void LastFmServiceConfig::save()
     config.writeEntry( "sessionKey", m_sessionKey );
     config.writeEntry( "scrobble", m_scrobble );
     config.writeEntry( "fetchSimilar", m_fetchSimilar );
+    config.writeEntry( "scrobbleComposer", m_scrobbleComposer );
 
-    if ( !m_wallet && config.readEntry( "ignoreWallet", QString() ) != "yes" )
+    if ( !tryToOpenWallet() && config.readEntry( "ignoreWallet", QString() ) != "yes" )
         askAboutMissingKWallet();
 
     if( m_wallet )
@@ -132,6 +132,19 @@ LastFmServiceConfig::clearSessionKey()
     config.writeEntry( "sessionKey", m_sessionKey );
 }
 
+bool
+LastFmServiceConfig::tryToOpenWallet()
+{
+    if( m_wallet )
+        return true;
+
+    KConfigGroup config = KGlobal::config()->group( configSectionName() );
+    if( !( config.readEntry( "ignoreWallet", QString() ) == "yes" ) ) {
+        m_wallet = KWallet::Wallet::openWallet( KWallet::Wallet::NetworkWallet(), 0, KWallet::Wallet::Synchronous );
+    }
+    return m_wallet;
+}
+
 void
 LastFmServiceConfig::askAboutMissingKWallet()
 {
@@ -159,6 +172,7 @@ LastFmServiceConfig::reset()
     m_sessionKey = "";
     m_scrobble = false;
     m_fetchSimilar = false;
+    m_scrobbleComposer = false;
 }
 
 

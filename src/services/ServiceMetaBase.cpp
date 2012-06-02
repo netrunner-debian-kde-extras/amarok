@@ -125,9 +125,8 @@ ServiceMetaFactory::createGenre(const QStringList & rows)
 ServiceTrack::ServiceTrack( const QString & name )
     : Meta::Track()
     , ServiceDisplayInfoProvider()
-    , CustomActionsProvider()
+    , ActionsProvider()
     , SourceInfoProvider()
-    , CurrentTrackActionsProvider()
     , BookmarkThisProvider()
     , m_provider( 0 )
     , m_genre( 0 )
@@ -146,9 +145,8 @@ ServiceTrack::ServiceTrack( const QString & name )
 ServiceTrack::ServiceTrack( const QStringList & resultRow )
     : Meta::Track()
     , ServiceDisplayInfoProvider()
-    , CustomActionsProvider()
+    , ActionsProvider()
     , SourceInfoProvider()
-    , CurrentTrackActionsProvider()
     , BookmarkThisProvider()
     , m_provider( 0 )
     , m_genre( 0 )
@@ -213,12 +211,6 @@ QString
 ServiceTrack::name() const
 {
     return m_name;
-}
-
-QString
-ServiceTrack::prettyName() const
-{
-    return name();
 }
 
 KUrl
@@ -344,7 +336,7 @@ ServiceTrack::setGenre( const QString &newGenre )
 }
 
 void
-ServiceTrack::setYear( const QString &newYear )
+ServiceTrack::setYear( int newYear )
 {
     Q_UNUSED( newYear )
 }
@@ -469,22 +461,22 @@ ServiceTrack::playCount() const
         return 0;
 }
 
-uint
+QDateTime
 ServiceTrack::lastPlayed() const
 {
     if( m_provider )
-        return m_provider->lastPlayed().toTime_t();
+        return m_provider->lastPlayed();
     else
-        return 0;
+        return QDateTime();
 }
 
-uint
+QDateTime
 ServiceTrack::firstPlayed() const
 {
     if( m_provider )
-        return m_provider->firstPlayed().toTime_t();
+        return m_provider->firstPlayed();
     else
-        return 0;
+        return QDateTime();
 }
 
 void
@@ -566,7 +558,7 @@ void ServiceTrack::processInfoOf(InfoParserBase * infoParser)
 ServiceArtist::ServiceArtist( const QString & name )
     : Meta::Artist()
     , ServiceDisplayInfoProvider()
-    , CustomActionsProvider()
+    , ActionsProvider()
     , SourceInfoProvider()
     , BookmarkThisProvider()
     , m_id( 0 )
@@ -579,17 +571,14 @@ ServiceArtist::ServiceArtist( const QString & name )
 ServiceArtist::ServiceArtist(const QStringList & resultRow)
     : Meta::Artist()
     , ServiceDisplayInfoProvider()
-    , CustomActionsProvider()
+    , ActionsProvider()
     , SourceInfoProvider()
     , BookmarkThisProvider()
     , m_tracks()
 {
-
     m_id = resultRow[0].toInt();
     m_name = resultRow[1];
     m_description = resultRow[2];
-
-
 }
 
 ServiceArtist::~ServiceArtist()
@@ -616,12 +605,6 @@ ServiceArtist::name() const
     return m_name;
 }
 
-QString
-ServiceArtist::prettyName() const
-{
-    return m_name;
-}
-
 void
 ServiceArtist::setTitle(const QString & title)
 {
@@ -632,13 +615,6 @@ TrackList
 ServiceArtist::tracks()
 {
     return m_tracks;
-}
-
-AlbumList
-ServiceArtist::albums()
-{
-    //TODO
-    return Meta::AlbumList();
 }
 
 void
@@ -671,7 +647,7 @@ ServiceArtist::processInfoOf(InfoParserBase * infoParser)
 ServiceAlbum::ServiceAlbum( const QString & name )
     : Meta::Album()
     , ServiceDisplayInfoProvider()
-    , CustomActionsProvider()
+    , ActionsProvider()
     , SourceInfoProvider()
     , BookmarkThisProvider()
     , m_id( 0 )
@@ -687,7 +663,7 @@ ServiceAlbum::ServiceAlbum( const QString & name )
 ServiceAlbum::ServiceAlbum(const QStringList & resultRow)
     : Meta::Album()
     , ServiceDisplayInfoProvider()
-    , CustomActionsProvider()
+    , ActionsProvider()
     , SourceInfoProvider()
     , BookmarkThisProvider()
     , m_id( resultRow[0].toInt() )
@@ -743,12 +719,6 @@ ServiceAlbum::artistName() const
 
 QString
 ServiceAlbum::name() const
-{
-    return m_name;
-}
-
-QString
-ServiceAlbum::prettyName() const
 {
     return m_name;
 }
@@ -824,7 +794,7 @@ ServiceAlbum::processInfoOf(InfoParserBase * infoParser)
 ServiceGenre::ServiceGenre( const QString &name )
     : Meta::Genre()
     , ServiceDisplayInfoProvider()
-    , CustomActionsProvider()
+    , ActionsProvider()
     , SourceInfoProvider()
     , BookmarkThisProvider()
     , m_id( 0 )
@@ -838,7 +808,7 @@ ServiceGenre::ServiceGenre( const QString &name )
 ServiceGenre::ServiceGenre(const QStringList & row)
     : Meta::Genre()
     , ServiceDisplayInfoProvider()
-    , CustomActionsProvider()
+    , ActionsProvider()
     , SourceInfoProvider()
     , BookmarkThisProvider()
     , m_id( 0 )
@@ -867,12 +837,6 @@ ServiceGenre::id() const
 
 QString
 ServiceGenre::name() const
-{
-    return m_name;
-}
-
-QString
-ServiceGenre::prettyName() const
 {
     return m_name;
 }
@@ -914,7 +878,7 @@ ServiceGenre::processInfoOf(InfoParserBase * infoParser)
 ServiceComposer::ServiceComposer( const QString &name )
     : Meta::Composer()
     , ServiceDisplayInfoProvider()
-    , CustomActionsProvider()
+    , ActionsProvider()
     , SourceInfoProvider()
     , BookmarkThisProvider()
     , m_name( name )
@@ -930,12 +894,6 @@ ServiceComposer::~ServiceComposer()
 
 QString
 ServiceComposer::name() const
-{
-    return m_name;
-}
-
-QString
-ServiceComposer::prettyName() const
 {
     return m_name;
 }
@@ -964,7 +922,7 @@ ServiceComposer::processInfoOf(InfoParserBase * infoParser)
 ServiceYear::ServiceYear( const QString &name )
     : Meta::Year()
     , ServiceDisplayInfoProvider()
-    , CustomActionsProvider()
+    , ActionsProvider()
     , SourceInfoProvider()
     , BookmarkThisProvider()
     , m_name( name )
@@ -980,12 +938,6 @@ ServiceYear::~ServiceYear()
 
 QString
 ServiceYear::name() const
-{
-    return m_name;
-}
-
-QString
-ServiceYear::prettyName() const
 {
     return m_name;
 }

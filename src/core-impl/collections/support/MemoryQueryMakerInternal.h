@@ -21,7 +21,7 @@
 #include "core/meta/Meta.h"
 
 #include <QObject>
-#include <QPointer>
+#include <QWeakPointer>
 #include <QWeakPointer>
 
 class CustomReturnFunction;
@@ -63,13 +63,13 @@ public:
 
     void setMatchers( MemoryMatcher *matchers );
     void setFilters( MemoryFilter *filters );
-    void setRandomize( bool randomize );
     void setMaxSize( int maxSize );
     void setReturnAsDataPtrs( bool returnAsDataPtrs );
     void setType( QueryMaker::QueryType );
     void setCustomReturnFunctions( const QList<CustomReturnFunction*> &functions );
     void setCustomReturnValues( const QList<CustomReturnValue*> &values );
     void setAlbumQueryMode( Collections::QueryMaker::AlbumQueryMode mode ) { m_albumQueryMode = mode; }
+    void setArtistQueryMode( Collections::QueryMaker::ArtistQueryMode mode ) { m_artistQueryMode = mode; }
     void setOrderDescending( bool orderDescending ) { m_orderDescending = orderDescending; }
     void setOrderByNumberField( bool orderByNumberField ) { m_orderByNumberField = orderByNumberField; }
     void setOrderByField( qint64 orderByField ) { m_orderByField = orderByField; }
@@ -77,15 +77,15 @@ public:
     void setLabelQueryMode( Collections::QueryMaker::LabelQueryMode mode ) { m_labelQueryMode = mode; }
 
 signals:
-    void newResultReady( QString collectionId, Meta::TrackList );
-    void newResultReady( QString collectionId, Meta::ArtistList );
-    void newResultReady( QString collectionId, Meta::AlbumList );
-    void newResultReady( QString collectionId, Meta::GenreList );
-    void newResultReady( QString collectionId, Meta::ComposerList );
-    void newResultReady( QString collectionId, Meta::YearList );
-    void newResultReady( QString collectionId, Meta::DataList );
-    void newResultReady( QString collectionId, QStringList );
-    void newResultReady( QString collectionId, Meta::LabelList );
+    void newResultReady( Meta::TrackList );
+    void newResultReady( Meta::ArtistList );
+    void newResultReady( Meta::AlbumList );
+    void newResultReady( Meta::GenreList );
+    void newResultReady( Meta::ComposerList );
+    void newResultReady( Meta::YearList );
+    void newResultReady( QStringList );
+    void newResultReady( Meta::LabelList );
+    void newResultReady( Meta::DataList );
 
 private:
     template <class PointerType>
@@ -93,14 +93,14 @@ private:
 
 private:
     QWeakPointer<Collections::MemoryCollection> m_collection;
-    QPointer<QObject> m_guard;
+    QWeakPointer<QObject> m_guard;
     MemoryMatcher *m_matchers;
     MemoryFilter *m_filters;
-    bool m_randomize;
     int m_maxSize;
     bool m_returnAsDataPtrs;
     Collections::QueryMaker::QueryType m_type;
     Collections::QueryMaker::AlbumQueryMode m_albumQueryMode;
+    Collections::QueryMaker::ArtistQueryMode m_artistQueryMode;
     Collections::QueryMaker::LabelQueryMode m_labelQueryMode;
     bool m_orderDescending;
     bool m_orderByNumberField;

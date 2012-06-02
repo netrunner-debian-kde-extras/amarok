@@ -35,14 +35,14 @@ XmlQueryWriter::XmlQueryWriter( QueryMaker* qm, QDomDocument doc )
     m_element.appendChild( m_filterElement );
 
     // connect up the signals
-    connect( m_qm, SIGNAL( newResultReady( QString, Meta::TrackList ) ), this, SIGNAL( newResultReady( QString, Meta::TrackList ) ), Qt::DirectConnection );
-    connect( m_qm, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), this, SIGNAL( newResultReady( QString, Meta::ArtistList ) ), Qt::DirectConnection );
-    connect( m_qm, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), this, SIGNAL( newResultReady( QString, Meta::AlbumList ) ), Qt::DirectConnection );
-    connect( m_qm, SIGNAL( newResultReady( QString, Meta::GenreList ) ), this, SIGNAL( newResultReady( QString, Meta::GenreList ) ), Qt::DirectConnection );
-    connect( m_qm, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), this, SIGNAL( newResultReady( QString, Meta::ComposerList ) ), Qt::DirectConnection );
-    connect( m_qm, SIGNAL( newResultReady( QString, Meta::YearList ) ), this, SIGNAL( newResultReady( QString, Meta::YearList ) ), Qt::DirectConnection );
-    connect( m_qm, SIGNAL( newResultReady( QString, QStringList ) ), this, SIGNAL( newResultReady( QString, QStringList ) ), Qt::DirectConnection );
-    connect( m_qm, SIGNAL( newResultReady( QString, Meta::DataList ) ), this, SIGNAL( newResultReady( QString, Meta::DataList ) ), Qt::DirectConnection );
+    connect( m_qm, SIGNAL( newResultReady( Meta::TrackList ) ),    this, SIGNAL( newResultReady( Meta::TrackList ) ), Qt::DirectConnection );
+    connect( m_qm, SIGNAL( newResultReady( Meta::ArtistList ) ),   this, SIGNAL( newResultReady( Meta::ArtistList ) ), Qt::DirectConnection );
+    connect( m_qm, SIGNAL( newResultReady( Meta::AlbumList ) ),    this, SIGNAL( newResultReady( Meta::AlbumList ) ), Qt::DirectConnection );
+    connect( m_qm, SIGNAL( newResultReady( Meta::GenreList ) ),    this, SIGNAL( newResultReady( Meta::GenreList ) ), Qt::DirectConnection );
+    connect( m_qm, SIGNAL( newResultReady( Meta::ComposerList ) ), this, SIGNAL( newResultReady( Meta::ComposerList ) ), Qt::DirectConnection );
+    connect( m_qm, SIGNAL( newResultReady( Meta::YearList ) ),     this, SIGNAL( newResultReady( Meta::YearList ) ), Qt::DirectConnection );
+    connect( m_qm, SIGNAL( newResultReady( QStringList ) ),        this, SIGNAL( newResultReady( QStringList ) ), Qt::DirectConnection );
+    connect( m_qm, SIGNAL( newResultReady( Meta::DataList ) ),     this, SIGNAL( newResultReady( Meta::DataList ) ), Qt::DirectConnection );
     connect( m_qm, SIGNAL( queryDone() ), this, SIGNAL( queryDone() ) );
 }
 
@@ -75,21 +75,6 @@ XmlQueryWriter::getEmbeddedQueryMaker() const
     return m_qm;
 }
 
-
-QueryMaker*
-XmlQueryWriter::reset()
-{
-    QDomNode child = m_element.firstChild();
-    while( !child.isNull() )
-    {
-        m_element.removeChild( child );
-        child = m_element.firstChild();
-    }
-
-    m_qm->reset();
-    return this;
-}
-
 void
 XmlQueryWriter::run()
 {
@@ -104,12 +89,6 @@ XmlQueryWriter::abortQuery()
 }
 
 
-int
-XmlQueryWriter::resultCount() const
-{
-    return m_qm->resultCount();
-}
-
 QueryMaker*
 XmlQueryWriter::setQueryType( QueryType type )
 {
@@ -118,7 +97,7 @@ XmlQueryWriter::setQueryType( QueryType type )
         insertRetValue( "track" );
         m_qm->setQueryType( QueryMaker::Track );
         return this;
-            
+
     case QueryMaker::Artist:
         insertRetValue( "artist" );
         m_qm->setQueryType( QueryMaker::Artist );
@@ -128,7 +107,10 @@ XmlQueryWriter::setQueryType( QueryType type )
         insertRetValue( "album" );
         m_qm->setQueryType( QueryMaker::Album );
         return this;
-
+    case QueryMaker::AlbumArtist:
+        insertRetValue( "albumartist" );
+        m_qm->setQueryType( QueryMaker::AlbumArtist );
+        return this;
     case QueryMaker::Genre:
         insertRetValue( "genre" );
         m_qm->setQueryType( QueryMaker::Genre );
@@ -153,23 +135,12 @@ XmlQueryWriter::setQueryType( QueryType type )
         insertRetValue( "label" );
         m_qm->setQueryType( QueryMaker::Label );
         return this;
-    
+
     case QueryMaker::None:
         return this;
     }
     return this;
 }
-
-QueryMaker*
-XmlQueryWriter::setReturnResultAsDataPtrs( bool resultAsDataPtrs )
-{
-    QDomElement e = m_doc.createElement( "returnResultsAsDataPairs" );
-    m_element.appendChild( e );
-
-    m_qm->setReturnResultAsDataPtrs( resultAsDataPtrs );
-    return this;
-}
-
 
 QueryMaker*
 XmlQueryWriter::addReturnValue( qint64 value )
@@ -191,46 +162,11 @@ QueryMaker*
 XmlQueryWriter::orderBy( qint64 value, bool descending )
 {
     QDomElement e = m_doc.createElement( "order" );
-    e.setAttribute( "field", fieldName( value ) );
+    e.setAttribute( "field", Meta::nameForField( value ) );
     e.setAttribute( "value", descending ? "descending" : "ascending" );
     m_element.appendChild( e );
 
     m_qm->orderBy( value, descending );
-    return this;
-}
-
-QueryMaker*
-XmlQueryWriter::orderByRandom()
-{
-    QDomElement e = m_doc.createElement( "order" );
-    e.setAttribute( "value", "random" );
-    m_element.appendChild( e );
-
-    m_qm->orderByRandom();
-    return this;
-
-}
-
-QueryMaker*
-XmlQueryWriter::includeCollection( const QString &collectionId )
-{
-    QDomElement e = m_doc.createElement( "includeCollection" );
-    e.setAttribute( "id", collectionId );
-    m_element.appendChild( e );
-
-    m_qm->includeCollection( collectionId );
-    return this;
-}
-
-
-QueryMaker*
-XmlQueryWriter::excludeCollection( const QString &collectionId )
-{
-    QDomElement e = m_doc.createElement( "excludeElement" );
-    e.setAttribute( "id", collectionId );
-    m_element.appendChild( e );
-
-    m_qm->includeCollection( collectionId );
     return this;
 }
 
@@ -280,13 +216,6 @@ QueryMaker*
 XmlQueryWriter::addMatch( const Meta::LabelPtr &label )
 {
     m_qm->addMatch( label );
-    return this;
-}
-
-QueryMaker*
-XmlQueryWriter::addMatch( const Meta::DataPtr &data )
-{
-    m_qm->addMatch( data );
     return this;
 }
 
@@ -361,6 +290,33 @@ XmlQueryWriter::setAlbumQueryMode( AlbumQueryMode mode )
     return this;
 }
 
+QueryMaker *
+XmlQueryWriter::setArtistQueryMode( QueryMaker::ArtistQueryMode mode )
+{
+    m_element.removeChild( m_element.lastChildElement( "onlyTrackArtists" ) );
+    m_element.removeChild( m_element.lastChildElement( "onlyAlbumArtists" ) );
+    m_element.removeChild( m_element.lastChildElement( "AlbumOrTrackArtists" ) );
+
+    if( mode == TrackArtists )
+    {
+        QDomElement e = m_doc.createElement( "onlyTrackArtists" );
+        m_element.appendChild( e );
+    }
+    else if( mode == AlbumArtists )
+    {
+        QDomElement e = m_doc.createElement( "onlyAlbumArtists" );
+        m_element.appendChild( e );
+    }
+    else if( mode == AlbumOrTrackArtists )
+    {
+        QDomElement e = m_doc.createElement( "AlbumOrTrackArtists" );
+        m_element.appendChild( e );
+    }
+
+    m_qm->setArtistQueryMode( mode );
+    return this;
+}
+
 QueryMaker*
 XmlQueryWriter::beginAnd()
 {
@@ -409,7 +365,7 @@ QDomElement
 XmlQueryWriter::xmlForFilter( QDomDocument doc, bool exclude, quint64 field, QString value)
 {
     QDomElement e = doc.createElement( exclude ? "exclude" : "include" );
-    e.setAttribute( "field", fieldName( field ) );
+    e.setAttribute( "field", Meta::nameForField( field ) );
     e.setAttribute( "value", value );
 
     return e;
@@ -419,7 +375,7 @@ QDomElement
 XmlQueryWriter::xmlForFilter( QDomDocument doc, bool exclude, quint64 field, quint64 numValue, NumberComparison compare)
 {
     QDomElement e = doc.createElement( exclude ? "exclude" : "include" );
-    e.setAttribute( "field", fieldName( field ) );
+    e.setAttribute( "field", Meta::nameForField( field ) );
     e.setAttribute( "value", numValue );
     e.setAttribute( "compare", compareName( compare ) );
 
@@ -437,38 +393,6 @@ XmlQueryWriter::insertRetValue( QString val )
 
     QDomElement retval = m_doc.createElement( val );
     m_retvalElement.appendChild( retval );
-}
-
-
-QString
-XmlQueryWriter::fieldName( qint64 val )
-{
-    switch( val )
-    {
-        case Meta::valUrl:         return "url";
-        case Meta::valTitle:       return "title";
-        case Meta::valArtist:      return "artist";
-        case Meta::valAlbum:       return "album";
-        case Meta::valGenre:       return "genre";
-        case Meta::valComposer:    return "composer";
-        case Meta::valYear:        return "year";
-        case Meta::valComment:     return "comment";
-        case Meta::valTrackNr:     return "tracknr";
-        case Meta::valDiscNr:      return "discnr";
-        case Meta::valLength:      return "length";
-        case Meta::valBitrate:     return "bitrate";
-        case Meta::valSamplerate:  return "samplerate";
-        case Meta::valFilesize:    return "filesize";
-        case Meta::valFormat:      return "format";
-        case Meta::valCreateDate:  return "createdate";
-        case Meta::valScore:       return "score";
-        case Meta::valRating:      return "rating";
-        case Meta::valFirstPlayed: return "firstplay";
-        case Meta::valLastPlayed:  return "lastplay";
-        case Meta::valPlaycount:   return "playcount";
-        case Meta::valLabel:       return "label";
-        default:                   return "";
-    }
 }
 
 QString

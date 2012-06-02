@@ -34,19 +34,14 @@ class AMAROK_CORE_EXPORT MetaQueryMaker : public QueryMaker
         MetaQueryMaker( const QList<QueryMaker*> &queryMakers );
         ~MetaQueryMaker();
 
-        virtual QueryMaker* reset();
         virtual void run();
         virtual void abortQuery();
-        virtual int resultCount() const;
 
         virtual QueryMaker* setQueryType( QueryType type );
-
-        virtual QueryMaker* setReturnResultAsDataPtrs( bool resultAsDataPtrs );
 
         virtual QueryMaker* addReturnValue( qint64 value);
         virtual QueryMaker* addReturnFunction( ReturnFunction function, qint64 value );
         virtual QueryMaker* orderBy( qint64 value, bool descending = false );
-        virtual QueryMaker* orderByRandom();
 
         virtual QueryMaker* addMatch( const Meta::TrackPtr &track );
         virtual QueryMaker* addMatch( const Meta::ArtistPtr &artist );
@@ -54,7 +49,6 @@ class AMAROK_CORE_EXPORT MetaQueryMaker : public QueryMaker
         virtual QueryMaker* addMatch( const Meta::ComposerPtr &composer );
         virtual QueryMaker* addMatch( const Meta::GenrePtr &genre );
         virtual QueryMaker* addMatch( const Meta::YearPtr &year );
-        virtual QueryMaker* addMatch( const Meta::DataPtr &data );
         virtual QueryMaker* addMatch( const Meta::LabelPtr &label );
 
         virtual QueryMaker* addFilter( qint64 value, const QString &filter, bool matchBegin, bool matchEnd );
@@ -63,9 +57,6 @@ class AMAROK_CORE_EXPORT MetaQueryMaker : public QueryMaker
         virtual QueryMaker* addNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare );
         virtual QueryMaker* excludeNumberFilter( qint64 value, qint64 filter, QueryMaker::NumberComparison compare );
 
-        virtual QueryMaker* includeCollection( const QString &collectionId );
-        virtual QueryMaker* excludeCollection( const QString &collectionId );
-
         virtual QueryMaker* limitMaxResultSize( int size );
 
         virtual QueryMaker* beginAnd();
@@ -73,6 +64,7 @@ class AMAROK_CORE_EXPORT MetaQueryMaker : public QueryMaker
         virtual QueryMaker* endAndOr();
 
         virtual QueryMaker* setAlbumQueryMode( AlbumQueryMode mode );
+        virtual QueryMaker* setArtistQueryMode( ArtistQueryMode mode );
         virtual QueryMaker* setLabelQueryMode( LabelQueryMode mode );
 
     private slots:

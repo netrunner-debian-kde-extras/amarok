@@ -21,7 +21,8 @@
 
 #include <KSharedPtr>
 
-#include <QtCore/QXmlStreamReader>
+#include <QStringList>
+#include <QXmlStreamReader>
 
 class CoverFetchPayload;
 class CoverFetchSearchPayload;
@@ -223,5 +224,7 @@ private:
     Q_DISABLE_COPY( CoverFetchArtPayload )
 };
 
+
+Q_DECLARE_METATYPE( CoverFetchUnit::Ptr )
 
 #endif /* AMAROK_COVERFETCHUNIT_H */

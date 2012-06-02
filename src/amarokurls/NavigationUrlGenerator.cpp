@@ -26,7 +26,7 @@
 #include "browsers/collectionbrowser/CollectionWidget.h"
 #include "browsers/playlistbrowser/PlaylistBrowser.h"
 #include "browsers/filebrowser/FileBrowser.h"
-#include "core-impl/collections/sqlcollection/SqlMeta.h"
+#include "core-impl/collections/db/sql/SqlMeta.h"
 #include "PlaylistManager.h"
 
 NavigationUrlGenerator * NavigationUrlGenerator::s_instance = 0;
@@ -85,6 +85,9 @@ AmarokUrl NavigationUrlGenerator::CreateAmarokUrl()
                 break;
             case CategoryId::Album:
                 sortMode += "album-";
+                break;
+            case CategoryId::AlbumArtist:
+                sortMode += "albumartist-";
                 break;
             case CategoryId::Composer:
                 sortMode += "composer-";
@@ -149,7 +152,7 @@ AmarokUrl NavigationUrlGenerator::urlFromAlbum( Meta::AlbumPtr album )
 {
     AmarokUrl url;
 
-    Capabilities::BookmarkThisCapability *btc = album->create<Capabilities::BookmarkThisCapability>();
+    QScopedPointer<Capabilities::BookmarkThisCapability> btc( album->create<Capabilities::BookmarkThisCapability>() );
     if( btc )
     {
         if( btc->isBookmarkable() ) {
@@ -188,12 +191,10 @@ AmarokUrl NavigationUrlGenerator::urlFromAlbum( Meta::AlbumPtr album )
                 url.setName( i18n( "Album \"%1\"", albumName ) );
 
         }
-        delete btc;
     }
 
     //debug() << "got url: " << url.url();
     return url;
-
 }
 
 AmarokUrl NavigationUrlGenerator::urlFromArtist( Meta::ArtistPtr artist )
@@ -202,7 +203,7 @@ AmarokUrl NavigationUrlGenerator::urlFromArtist( Meta::ArtistPtr artist )
 
     AmarokUrl url;
 
-    Capabilities::BookmarkThisCapability *btc = artist->create<Capabilities::BookmarkThisCapability>();
+    QScopedPointer<Capabilities::BookmarkThisCapability> btc( artist->create<Capabilities::BookmarkThisCapability>() );
     if( btc )
     {
         if( btc->isBookmarkable() ) {
@@ -237,7 +238,6 @@ AmarokUrl NavigationUrlGenerator::urlFromArtist( Meta::ArtistPtr artist )
                 url.setName( i18n( "Artist \"%1\"", artistName ) );
 
         }
-        delete btc;
     }
 
     return url;
