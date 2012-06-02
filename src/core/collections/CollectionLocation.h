@@ -107,14 +107,14 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
 
     public:
         CollectionLocation();
-        CollectionLocation( const Collections::Collection* parentCollection );
+        CollectionLocation( Collections::Collection *parentCollection );
         virtual  ~CollectionLocation();
 
         /**
             Returns a pointer to the collection location's corresponding collection.
             @return a pointer to the collection location's corresponding collection
          */
-        const Collections::Collection* collection() const;
+        virtual Collections::Collection *collection() const;
 
         /**
             a displayable string representation of the collection location. use the return
@@ -151,40 +151,56 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         virtual bool isOrganizable() const;
 
         /**
-           convenience method for copying a single track,
+           Convenience method for copying a single track.
            @see prepareCopy( Meta::TrackList, CollectionLocation* )
         */
-        void prepareCopy( Meta::TrackPtr track, CollectionLocation *destination,
-                          const Transcoding::Configuration &configuration = Transcoding::Configuration() );
-        void prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination,
-                          const Transcoding::Configuration &configuration = Transcoding::Configuration() );
-        void prepareCopy( Collections::QueryMaker *qm, CollectionLocation *destination,
-                          const Transcoding::Configuration &configuration = Transcoding::Configuration() );
+        void prepareCopy( Meta::TrackPtr track, CollectionLocation *destination );
+        /**
+           Schedule copying of @param tracks to collection location @param destination.
+           This method takes ownership of the @param destination, you may not reference
+           or delete it after this call. This method returns immediately and the actual
+           copy is performed in the event loop and/or another thread.
+        */
+        void prepareCopy( const Meta::TrackList &tracks, CollectionLocation *destination );
+        /**
+           Convenience method for copying tracks based on QueryMaker restults,
+           takes ownership of the @param qm.
+           @see prepareCopy( Meta::TrackList, CollectionLocation* )
+        */
+        void prepareCopy( Collections::QueryMaker *qm, CollectionLocation *destination );
 
         /**
-           convenience method for moving a single track,
+         * Convenience method for moving a single track.
+         * @see prepareMove( Meta::TrackList, CollectionLocation* )
+         */
+        void prepareMove( Meta::TrackPtr track, CollectionLocation *destination );
+        /**
+           Schedule moving of @param tracks to collection location @param destination.
+           This method takes ownership of the @param destination, you may not reference
+           or delete it after this call. This method returns immediately and the actual
+           move is performed in the event loop and/or another thread.
+        */
+        void prepareMove( const Meta::TrackList &tracks, CollectionLocation *destination );
+        /**
+           Convenience method for moving tracks based on QueryMaker restults,
+           takes ownership of the @param qm.
            @see prepareMove( Meta::TrackList, CollectionLocation* )
         */
-        void prepareMove( Meta::TrackPtr track, CollectionLocation *destination );
-        void prepareMove( const Meta::TrackList &tracks, CollectionLocation *destination );
         void prepareMove( Collections::QueryMaker *qm, CollectionLocation *destination );
 
         /**
-           method to get tracks from qm to prepare them to be removed
-        */
+           Starts workflow for removing tracks.
+         */
         void prepareRemove( const Meta::TrackList &tracks );
+        /**
+           Convenience method for removing tracks selected by QueryMaker,
+           takes ownership of the @param qm.
+           @see prepareRemove( Meta::TrackList )
+         */
         void prepareRemove( Collections::QueryMaker *qm );
 
-        /** Removes a track from the collection (not from disk)
-         * Removes a track from the database ONLY if the file does NOT exist on disk.
-         * Do not call this method directly. Use the prepareRemove() method.
-         * @param track a track that does not exist on disk to be removed from the database
-         * @return true if the database entry was removed, false otherwise
-         */
-        virtual bool remove( const Meta::TrackPtr &track );
-
-        /** Adds or merges a track to the collection (not to the disk)
-         * In
+        /**
+         * Adds or merges a track to the collection (not to the disk)
          * Inserts a set of TrackPtrs directly into the database without needing to actual move any files
          * This is a hack required by the DatabaseImporter
          * TODO: Remove this hack
@@ -244,32 +260,59 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         virtual void getKIOCopyableUrls( const Meta::TrackList &tracks );
         /**
             this method is called on the destination. reimplement it if your implementation
-            is writable. you must call slotCopyOperationFinished() when you are done copying
+            is writable. You must call slotCopyOperationFinished() when you are done copying
             the files.
+
+            Before calling slotCopyOperationFinished(), you should call
+            source()->transferSuccessful() for every source track that was for sure
+            successfully copied to destination collection. Only such marked tracks are
+            then removed in case of a "move" action.
         */
         virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
-            const Transcoding::Configuration &configuration = Transcoding::Configuration() );
+                                           const Transcoding::Configuration &configuration );
 
         /**
            this method is called on the collection you want to remove tracks from.  it must
            be reimplemented if your collection is writable and you wish to implement
-           removing tracks
-        */
+           removing tracks. You must call slotRemoveOperationFinished() when you are done
+           removing the files.
 
+           Before calling slotRemoveOperationFinished(), you should call transferSuccessful()
+           for every track that was successfully deleted. CollectionLocation then scans
+           directories of such tracks and allows user to remove empty ones.
+        */
         virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
 
         /**
          * this method is called on the source. It allows the source CollectionLocation to
          * show a dialog. Classes that reimplement this method must call
          * slotShowSourceDialogDone() after they have acquired all necessary information from the user.
+         *
+         * Default implementation calls getDestinationTranscodingConfig() which may ask
+         * user. If you reimplement this you may (or not) call this base method instead
+         * of calling slotShowDestinationDialogDone() to support transcoding.
          */
         virtual void showSourceDialog( const Meta::TrackList &tracks, bool removeSources );
 
         /**
-         * this method is called on the destination. It allows the destination
+         * Get transcoding configuration to use when transferring tracks to destination.
+         * If destination collection doesn't support transcoding, JUST_COPY configuration
+         * is returned, otherwise preferred configuration is read or user is asked.
+         * Returns invalid configuration in case user has hit cancel or closed the dialog.
+         *
+         * This method is meant to be called by source collection.
+         */
+        virtual Transcoding::Configuration getDestinationTranscodingConfig();
+
+        /**
+         * This method is called on the destination. It allows the destination
          * CollectionLocation to show a dialog. Classes that reimplement this method
          * must call slotShowDestinationDialogDone() after they have acquired all necessary
          * information from the user.
+         *
+         * Default implementation calls setGoingToRemoveSources( removeSources ) so that
+         * isGoingToRemoveSources() is available on destination, too and then calls
+         * slotShowDestinationDialogDone()
          */
         virtual void showDestinationDialog( const Meta::TrackList &tracks,
                                             bool removeSources,
@@ -282,6 +325,28 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         */
 
         virtual void showRemoveDialog( const Meta::TrackList &tracks );
+
+        /**
+         * Get nice localised string describing the current operation based on transcoding
+         * configuraiton and isGoingToRemoveSources(); meant to be called by destination
+         * collection.
+         *
+         * @return "Copy Tracks", "Transcode and Organize Tracks" etc.
+         */
+        QString operationText( const Transcoding::Configuration &configuration );
+
+        /**
+         * Get nice localised string that can be used as progess bar text for the current
+         * operation; meant to be called by the destination collection.
+         *
+         * @param trackCount number of tracks in the transfer
+         * @param destinationName pretty localised name of the destination collection;
+         *        prettyLocation() is used if the string is empty or not specified
+         *
+         * @return "Transcoding and moving <trackCount> tracks to <destinationName>" etc.
+         */
+        QString operationInProgressText( const Transcoding::Configuration &configuration,
+                                         int trackCount, QString destinationName = QString() );
 
         /**
         * Sets or gets whether some source files may be removed
@@ -309,7 +374,7 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         void slotShowDestinationDialogDone();
 
     private slots:
-
+        void slotShowSourceDialog();  // trick to show dialog in next mainloop iteration
         void slotPrepareOperation( const Meta::TrackList &tracks, bool removeSources,
                                    const Transcoding::Configuration &configuration );
         void slotOperationPrepared();
@@ -340,14 +405,14 @@ class AMAROK_CORE_EXPORT CollectionLocation : public QObject
         void setSourceTracks( Meta::TrackList tracks ) { m_sourceTracks = tracks; }
         Meta::TrackList m_sourceTracks;
 
-        const Collections::Collection* m_parentCollection;
+        Collections::Collection *m_parentCollection;
 
         bool getRemoveSources() const { return m_removeSources; }
         void setRemoveSources( bool removeSources ) { m_removeSources = removeSources; }
         bool m_removeSources;
         bool m_isRemoveAction;
         bool m_noRemoveConfirmation;
-        Transcoding::Configuration m_transcodingConfiguration;  //only used when copying
+        Transcoding::Configuration m_transcodingConfiguration;
         //used by the source collection to store the tracks that were successfully
         //copied by the destination and can be removed as part of a move
         Meta::TrackList m_tracksSuccessfullyTransferred;

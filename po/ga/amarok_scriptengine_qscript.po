@@ -19,19 +19,19 @@ msgstr ""
 
 #: simplejavascriptapplet.cpp:512
 msgid "i18n() takes at least one argument"
-msgstr ""
+msgstr "Glacann i18n() le hargóint amháin ar a laghad"
 
 #: simplejavascriptapplet.cpp:528
 msgid "i18nc() takes at least two arguments"
-msgstr ""
+msgstr "Glacann i18nc() le dhá argóint ar a laghad"
 
 #: simplejavascriptapplet.cpp:545
 msgid "i18np() takes at least two arguments"
-msgstr ""
+msgstr "Glacann i18np() le dhá argóint ar a laghad"
 
 #: simplejavascriptapplet.cpp:562
 msgid "i18ncp() takes at least three arguments"
-msgstr ""
+msgstr "Glacann i18ncp() le trí argóint ar a laghad"
 
 #: simplejavascriptapplet.cpp:580
 msgid "dataEngine() takes one argument"

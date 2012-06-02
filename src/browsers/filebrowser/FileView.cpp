@@ -28,17 +28,14 @@
 #include "core/interfaces/Logger.h"
 #include "core/playlists/PlaylistFormat.h"
 #include "core/support/Debug.h"
+#include "core/support/Components.h"
 #include "dialogs/TagDialog.h"
 #include "DirectoryLoader.h"
 #include "EngineController.h"
 #include "PaletteHandler.h"
 #include "playlist/PlaylistController.h"
 #include "PopupDropperFactory.h"
-
 #include "SvgHandler.h"
-#include "src/transcoding/TranscodingJob.h"
-#include "src/transcoding/TranscodingAssistantDialog.h"
-#include "src/core/transcoding/TranscodingController.h"
 
 #include <KAction>
 #include <KIO/CopyJob>
@@ -140,10 +137,6 @@ FileView::contextMenuEvent( QContextMenuEvent *e )
         }
         menu->addMenu( copyMenu );
     }
-    KAction *transcodeAction = new KAction( "Transcode here", this );
-    connect( transcodeAction, SIGNAL( triggered() ), this, SLOT( slotPrepareTranscodeTracks() ) );
-    menu->addAction( transcodeAction );
-    transcodeAction->setVisible( false ); //This is just used for debugging, hide it!
 
     menu->exec( e->globalPos() );
 }
@@ -240,29 +233,6 @@ FileView::slotEditTracks()
 }
 
 void
-FileView::slotPrepareTranscodeTracks()
-{
-    DEBUG_BLOCK
-    KAction *action = qobject_cast< KAction * >( sender() );
-    if( !action )
-        return;
-
-    const KFileItemList list = selectedItems();
-    if( list.isEmpty() )
-        return;
-
-    if( !Amarok::Components::transcodingController()->availableFormats().isEmpty() )
-    {
-        Transcoding::AssistantDialog *d = new Transcoding::AssistantDialog( this );
-        d->show();
-    }
-    else
-    {
-        debug() << "FFmpeg is not installed or does not support any of the required formats.";
-    }
-}
-
-void
 FileView::slotPrepareMoveTracks()
 {
     if( m_moveActivated )
@@ -334,13 +304,7 @@ FileView::slotCopyTracks( const Meta::TrackList& tracks )
             source = new Collections::FileCollectionLocation();
         }
         Collections::CollectionLocation *destination = m_copyAction->collection()->location();
-        Transcoding::AssistantDialog dialog( this );
-        Transcoding::Configuration configuration = Transcoding::Configuration();
-        if( dialog.exec() )
-        {
-            configuration = dialog.configuration();
-            source->prepareCopy( tracks, destination, configuration );
-        }
+        source->prepareCopy( tracks, destination );
     }
     else
     {

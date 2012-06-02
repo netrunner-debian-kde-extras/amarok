@@ -50,9 +50,9 @@
 
 using namespace Collections;
 
-SqlCollectionLocation::SqlCollectionLocation( SqlCollection const *collection )
+SqlCollectionLocation::SqlCollectionLocation( SqlCollection *collection )
     : CollectionLocation( collection )
-    , m_collection( const_cast<Collections::SqlCollection*>( collection ) )
+    , m_collection( collection )
     , m_delegateFactory( 0 )
     , m_overwriteFiles( false )
     , m_transferjob( 0 )
@@ -81,7 +81,6 @@ SqlCollectionLocation::actualLocation() const
 bool
 SqlCollectionLocation::isWritable() const
 {
-    DEBUG_BLOCK
     // TODO: This function is also called when removing files to check
     //  if the tracks can be removed. In such a case we should not check the space
 
@@ -94,23 +93,17 @@ SqlCollectionLocation::isWritable() const
     {
         float used = KDiskFreeSpaceInfo::freeSpaceInfo( path ).used();
         float total = KDiskFreeSpaceInfo::freeSpaceInfo( path ).size();
-	debug() << path;
-	debug() << "\tused: " << used;
-	debug() << "\ttotal: " << total;
 
         if( total <= 0 ) // protect against div by zero
             continue; //How did this happen?
 
         float free_space = total - used;
-        debug() <<"\tfree space: " << free_space;
         if( free_space >= 500*1000*1000 ) // ~500 megabytes
             path_exists_with_space = true;
 
         QFileInfo info( path );
         if( info.isWritable() )
             path_exists_writable = true;
-	debug() << "\tpath_exists_writable" << path_exists_writable;
-	debug() << "\tpath_exists_with_space" << path_exists_with_space;
     }
     return path_exists_with_space && path_exists_writable;
 }
@@ -195,63 +188,63 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
 
     if( !track->name().isEmpty() )
         metaTrack->setTitle( track->name() );
-
     if( track->album() )
         metaTrack->setAlbum( track->album()->name() );
-
     if( track->artist() )
         metaTrack->setArtist( track->artist()->name() );
-
     if( track->composer() )
         metaTrack->setComposer( track->composer()->name() );
-
     if( track->year() && track->year()->year() > 0 )
         metaTrack->setYear( track->year()->year() );
-
     if( track->genre() )
         metaTrack->setGenre( track->genre()->name() );
 
-    // the filetype is not set or in the database.
-    // Meta::SqlTrack uses the file extension.
-
-    /* we've already done this
-    if( !track->path().isEmpty() )
-        metaTrack->setUrl( track->path() );
-
-     and that too
-    if( !track->uidUrl().isEmpty() )
-        metaTrack->setUidUrl( uid );
-    */
-
     if( track->bpm() > 0 )
         metaTrack->setBpm( track->bpm() );
-
     if( !track->comment().isEmpty() )
         metaTrack->setComment( track->comment() );
 
-    if( track->length() > 0 )
-        metaTrack->setLength( track->length() );
+    if( track->score() > 0 )
+        metaTrack->setScore( track->score() );
+    if( track->rating() > 0 )
+        metaTrack->setRating( track->rating() );
 
+    /* These tags change when transcoding. Prefer to read those from file */
+    if( fileTags.value( Meta::valLength, 0 ).toLongLong() > 0 )
+        metaTrack->setLength( fileTags.value( Meta::valLength ).value<qint64>() );
+    else if( track->length() > 0 )
+        metaTrack->setLength( track->length() );
     // the filesize is updated every time after the
     // file is changed. Doesn't make sense to set it.
-
-    if( track->sampleRate() > 0 )
+    if( fileTags.value( Meta::valSamplerate, 0 ).toInt() > 0 )
+        metaTrack->setSampleRate( fileTags.value( Meta::valSamplerate ).toInt() );
+    else if( track->sampleRate() > 0 )
         metaTrack->setSampleRate( track->sampleRate() );
-
-    if( track->bitrate() > 0 )
+    if( fileTags.value( Meta::valBitrate, 0 ).toInt() > 0 )
+        metaTrack->setBitrate( fileTags.value( Meta::valBitrate ).toInt() );
+    else if( track->bitrate() > 0 )
         metaTrack->setBitrate( track->bitrate() );
+
+    // createDate is already set in Track constructor
+    if( track->modifyDate().isValid() )
+        metaTrack->setModifyDate( track->modifyDate() );
 
     if( track->trackNumber() > 0 )
         metaTrack->setTrackNumber( track->trackNumber() );
-
     if( track->discNumber() > 0 )
         metaTrack->setDiscNumber( track->discNumber() );
+
+    if( track->lastPlayed().isValid() )
+        metaTrack->setLastPlayed( track->lastPlayed() );
+    if( track->firstPlayed().isValid() )
+        metaTrack->setFirstPlayed( track->firstPlayed() );
+    if( track->playCount() > 0 )
+        metaTrack->setPlayCount( track->playCount() );
 
     Meta::ReplayGainTag modes[] = { Meta::ReplayGain_Track_Gain,
         Meta::ReplayGain_Track_Peak,
         Meta::ReplayGain_Album_Gain,
         Meta::ReplayGain_Album_Peak };
-
     for( int i=0; i<4; i++ )
         if( track->replayGain( modes[i] ) != 0 )
             metaTrack->setReplayGain( modes[i], track->replayGain( modes[i] ) );
@@ -259,28 +252,25 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
     Meta::LabelList labels = track->labels();
     foreach( Meta::LabelPtr label, labels )
         metaTrack->addLabel( label );
-    
-    Amarok::FileType fileType = Amarok::FileTypeSupport::fileType( track->type() );
-    if( fileType != Amarok::Unknown )
-        metaTrack->setType( fileType );
 
-    metaTrack->endMetaDataUpdate();
+    if( fileTags.value( Meta::valFormat, int(Amarok::Unknown) ).toInt() != int(Amarok::Unknown) )
+        metaTrack->setType( Amarok::FileType( fileTags.value( Meta::valFormat ).toInt() ) );
+    else if( Amarok::FileTypeSupport::fileType( track->type() ) != Amarok::Unknown )
+        metaTrack->setType( Amarok::FileTypeSupport::fileType( track->type() ) );
 
     // Used to be updated after changes commit to prevent crash on NULL pointer access
     // if metaTrack had no album.
     if( track->album() && metaTrack->album() )
     {
-        metaTrack->beginMetaDataUpdate();
-        
         if( track->album()->hasAlbumArtist() && !metaTrack->album()->hasAlbumArtist() )
             metaTrack->setAlbumArtist( track->album()->albumArtist()->name() );
-        
+
         if( track->album()->hasImage() && !metaTrack->album()->hasImage() )
             metaTrack->album()->setImage( track->album()->image() );
-        
-        metaTrack->endMetaDataUpdate();
+
     }
 
+    metaTrack->endMetaDataUpdate();
     metaTrack->setWriteFile( true );
 
     // we have a first shot at the meta data (expecially ratings and playcounts from media
@@ -351,6 +341,7 @@ SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks,
     delegate->setFolders( available_folders );
     delegate->setIsOrganizing( ( collection() == source()->collection() ) );
     delegate->setTranscodingConfiguration( configuration );
+    delegate->setCaption( operationText( configuration ) );
 
     connect( delegate, SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
     connect( delegate, SIGNAL( rejected() ), SLOT( slotDialogRejected() ) );
@@ -491,20 +482,7 @@ SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
 
     m_sources = sources;
 
-    QString statusBarTxt;
-
-    if( destination() == source() )
-        statusBarTxt = i18n( "Organizing tracks" );
-    else if ( isGoingToRemoveSources() )
-        statusBarTxt = i18n( "Moving tracks" );
-    else
-    {
-        if( configuration.encoder() == Transcoding::NULL_CODEC )
-            statusBarTxt = i18n( "Copying tracks" );
-        else
-            statusBarTxt = i18n( "Transcoding tracks" );
-    }
-
+    QString statusBarTxt = operationInProgressText( configuration, sources.count() );
     m_transferjob = new TransferJob( this, configuration );
     Amarok::Components::logger()->newProgressOperation( m_transferjob, statusBarTxt, this,
                                                         SLOT(slotTransferJobAborted()) );
@@ -548,7 +526,7 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
 
         bool hasMoodFile = QFile::exists( moodFile( src ).toLocalFile() );
 
-        if( configuration.encoder() == Transcoding::NULL_CODEC )
+        if( configuration.isJustCopy() )
             debug() << "copying from " << src << " to " << dest;
         else
             debug() << "transcoding from " << src << " to " << dest;
@@ -566,7 +544,7 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
         }
 
         KIO::JobFlags flags;
-        if( configuration.encoder() == Transcoding::NULL_CODEC )
+        if( configuration.isJustCopy() )
         {
             flags = KIO::HideProgressInfo;
             if( m_overwriteFiles )
@@ -600,7 +578,7 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
         else
         {
             //later on in the case that remove is called, the file will be deleted because we didn't apply moveByDestination to the track
-            if( configuration.encoder() == Transcoding::NULL_CODEC )
+            if( configuration.isJustCopy() )
                 job = KIO::file_copy( src, dest, -1, flags );
             else
             {
@@ -636,7 +614,7 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
             if( track->artist() )
                 name = QString( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
 
-            if( configuration.encoder() == Transcoding::NULL_CODEC )
+            if( configuration.isJustCopy() )
                 m_transferjob->emitInfo( i18n( "Transferring: %1", name ) );
             else
                 m_transferjob->emitInfo( i18n( "Transcoding: %1", name ) );

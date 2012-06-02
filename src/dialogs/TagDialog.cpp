@@ -1234,7 +1234,11 @@ TagDialog::setControlsAccessability()
 {
     bool editable = true;
     if( m_currentTrack )
-        editable = m_currentTrack->hasCapabilityInterface( Capabilities::Capability::Editable );
+    {
+        QScopedPointer<Capabilities::EditCapability> ec(
+            m_currentTrack->create<Capabilities::EditCapability>() );
+        editable = ec && ec->isEditable();
+    }
 
     ui->kTabWidget->setTabEnabled( ui->kTabWidget->indexOf(ui->lyricsTab),
                                    m_perTrack );
@@ -1350,8 +1354,6 @@ TagDialog::saveTags()
                 ec->setDiscNumber( data.value( Meta::Field::DISCNUMBER ).toInt() );
             if( data.contains( Meta::Field::BPM ) )
                 ec->setBpm( data.value( Meta::Field::BPM ).toDouble() );
-            if( data.contains( Meta::Field::UNIQUEID ) )
-                ec->setUidUrl( data.value( Meta::Field::UNIQUEID ).toString() );
             if( data.contains( Meta::Field::ALBUMARTIST ) )
                 ec->setAlbumArtist( data.value( Meta::Field::ALBUMARTIST ).toString() );
 

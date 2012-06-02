@@ -23,6 +23,7 @@
 #include "CapabilityDelegateImpl.h"
 #include "DatabaseUpdater.h"
 #include "core/support/Debug.h"
+#include "core/capabilities/TranscodeCapability.h"
 #include "core/transcoding/TranscodingController.h"
 #include "core-impl/collections/db/ScanManager.h"
 #include "MountPointManager.h"
@@ -30,8 +31,9 @@
 #include "SqlQueryMaker.h"
 #include "SqlScanResultProcessor.h"
 #include "SvgHandler.h"
-
 #include "MainWindow.h"
+
+#include <KApplication>
 #include <KMessageBox>
 
 /*
@@ -65,10 +67,10 @@ public:
     virtual void setTracks( const Meta::TrackList &tracks ) { m_tracks = tracks; }
     virtual void setFolders( const QStringList &folders ) { m_folders = folders; }
     virtual void setIsOrganizing( bool organizing ) { m_organizing = organizing; }
-    virtual void setTranscodingConfiguration( const Transcoding::Configuration &configuration
-                                                  = Transcoding::Configuration() )
+    virtual void setTranscodingConfiguration( const Transcoding::Configuration &configuration )
     { m_targetFileExtension =
       Amarok::Components::transcodingController()->format( configuration.encoder() )->fileExtension(); }
+    virtual void setCaption( const QString &caption ) { m_caption = caption; }
 
     virtual void show()
     {
@@ -78,7 +80,7 @@ public:
                     The::mainWindow(), //parent
                     "", //name is unused
                     true, //modal
-                    i18n( "Organize Files" ) //caption
+                    m_caption //caption
                 );
 
         connect( m_dialog, SIGNAL( accepted() ), SIGNAL( accepted() ) );
@@ -95,6 +97,7 @@ private:
     OrganizeCollectionDialog *m_dialog;
     bool m_organizing;
     QString m_targetFileExtension;
+    QString m_caption;
 };
 
 
@@ -147,11 +150,35 @@ SqlCollection::SqlCollection( const QString &id, const QString &prettyName, SqlS
     qRegisterMetaType<TrackUrls>( "TrackUrls" );
     qRegisterMetaType<ChangedTrackUrls>( "ChangedTrackUrls" );
 
-    // setUpdater runs the update function; this must be run *before* MountPointManager
+    // update database to current schema version; this must be run *before* MountPointManager
     // is initialized or its handlers may try to insert
     // into the database before it's created/updated!
     DatabaseUpdater updater( this );
-    updater.update();
+    if( updater.needsUpdate() )
+    {
+        if( updater.schemaExists() ) // this is an update
+        {
+            KDialog dialog( 0, Qt::Dialog | Qt::CustomizeWindowHint | Qt::WindowTitleHint );
+            QLabel label( i18n( "Updating Amarok database schema. Please don't terminate "
+                "Amarok now as it may result in database corruption." ) );
+            label.setWordWrap( true );
+            dialog.setMainWidget( &label );
+            dialog.setCaption( i18n( "Updating Amarok database schema" ) );
+            dialog.setButtons( KDialog::None );
+            dialog.setSizePolicy( QSizePolicy::Fixed, QSizePolicy::Fixed );
+            dialog.show();
+            dialog.raise();
+            // otherwise the splash screen doesn't load image and this dialog is not shown:
+            kapp->processEvents();
+
+            updater.update();
+
+            dialog.hide();
+            kapp->processEvents();
+        }
+        else // this is new schema creation
+            updater.update();
+    }
 
     //perform a quick check of the database
     updater.cleanupDatabase();
@@ -399,36 +426,10 @@ SqlCollection::getAlbum( const QString &album, const QString &artist )
 }
 
 CollectionLocation*
-SqlCollection::location() const
+SqlCollection::location()
 {
     Q_ASSERT( m_collectionLocationFactory );
     return m_collectionLocationFactory->createSqlCollectionLocation();
-}
-
-bool
-SqlCollection::isWritable() const
-{
-    CollectionLocation *loc = location();
-    if( loc )
-    {
-        bool res = loc->isWritable();
-        delete loc;
-        return res;
-    }
-    return false;
-}
-
-bool
-SqlCollection::isOrganizable() const
-{
-    CollectionLocation *loc = location();
-    if( loc )
-    {
-        bool res = loc->isOrganizable();
-        delete loc;
-        return res;
-    }
-    return false;
 }
 
 QStringList
@@ -506,19 +507,34 @@ SqlCollection::slotDeviceRemoved( int id )
 bool
 SqlCollection::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
-    return ( type == Capabilities::Capability::CollectionScan && m_scanManager ) ||
-        ( type == Capabilities::Capability::CollectionImport && m_scanManager );
+    switch( type )
+    {
+        case Capabilities::Capability::CollectionImport:
+        case Capabilities::Capability::CollectionScan:
+            return (bool) m_scanManager;
+        case Capabilities::Capability::Transcode:
+            return true;
+        default:
+            break;
+    }
+    return false;
 }
 
 Capabilities::Capability*
 SqlCollection::createCapabilityInterface( Capabilities::Capability::Type type )
 {
-    if( type == Capabilities::Capability::CollectionScan && m_scanManager )
-        return new SqlCollectionScanCapability( m_scanManager );
-    else if( type == Capabilities::Capability::CollectionImport && m_scanManager )
-        return new SqlCollectionImportCapability( m_scanManager );
-    else
-        return 0;
+    switch( type )
+    {
+        case Capabilities::Capability::CollectionImport:
+            return m_scanManager ? new SqlCollectionImportCapability( m_scanManager ) : 0;
+        case Capabilities::Capability::CollectionScan:
+            return m_scanManager ? new SqlCollectionScanCapability( m_scanManager ) : 0;
+        case Capabilities::Capability::Transcode:
+            return new SqlCollectionTranscodeCapability();
+        default:
+            break;
+    }
+    return 0;
 }
 
 void
@@ -612,5 +628,24 @@ SqlCollectionImportCapability::import( QIODevice *input, QObject *listener )
     }
 }
 
-#include "SqlCollection.moc"
+SqlCollectionTranscodeCapability::~SqlCollectionTranscodeCapability()
+{
+    // nothing to do
+}
 
+Transcoding::Configuration
+SqlCollectionTranscodeCapability::savedConfiguration()
+{
+    KConfigGroup transcodeGroup = Amarok::config( SQL_TRANSCODING_GROUP_NAME );
+    return Transcoding::Configuration::fromConfigGroup( transcodeGroup );
+}
+
+void
+SqlCollectionTranscodeCapability::setSavedConfiguration( const Transcoding::Configuration &configuration )
+{
+    KConfigGroup transcodeGroup = Amarok::config( SQL_TRANSCODING_GROUP_NAME );
+    configuration.saveToConfigGroup( transcodeGroup );
+    transcodeGroup.sync();
+}
+
+#include "SqlCollection.moc"

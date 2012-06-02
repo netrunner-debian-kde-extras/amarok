@@ -2,13 +2,13 @@
 # Copyright (C) 2009 This_file_is_part_of_KDE
 # This file is distributed under the license LGPL version 2 or later.
 #
-# Josep Ma. Ferrer <txemaq@gmail.com>, 2009, 2010.
+# Josep Ma. Ferrer <txemaq@gmail.com>, 2009, 2010, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok_scriptengine_qscript\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2011-08-02 04:52+0200\n"
-"PO-Revision-Date: 2010-06-14 20:31+0200\n"
+"PO-Revision-Date: 2011-09-24 23:19+0200\n"
 "Last-Translator: Josep Ma. Ferrer <txemaq@gmail.com>\n"
 "Language-Team: Catalan <kde-i18n-ca@kde.org>\n"
 "Language: ca\n"
@@ -47,7 +47,7 @@ msgstr "No s'ha pogut extreure el «AppletObject»"
 #: simplejavascriptapplet.cpp:595 simplejavascriptapplet.cpp:620
 #: simplejavascriptapplet.cpp:787
 msgid "Could not extract the Applet"
-msgstr "No s'ha pogut extreure el «Applet»"
+msgstr "No s'ha pogut extreure la miniaplicació"
 
 #: simplejavascriptapplet.cpp:605
 msgid "service() takes two arguments"

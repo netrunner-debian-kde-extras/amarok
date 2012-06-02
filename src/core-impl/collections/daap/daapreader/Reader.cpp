@@ -116,13 +116,13 @@ Reader::contentCodesReceived( int /* id */, bool error )
     QList<QVariant> root = contentCodes["mccr"].toList();
     if( root.isEmpty() )
         return; //error
-    root = root[0].toMap()["mdcl"].toList();
+    root = root[0].toMap().value( "mdcl" ).toList();
     foreach( QVariant v, root )
     {
         Map entry = v.toMap();
-        QString code = entry["mcnm"].toList()[0].toString();
-        QString name = entry["mcna"].toList()[0].toString();
-        ContentTypes type = static_cast< ContentTypes > ( entry["mcty"].toList()[0].toInt() );
+        QString code = entry.value( "mcnm" ).toList().value( 0 ).toString();
+        QString name = entry.value( "mcna" ).toList().value( 0 ).toString();
+        ContentTypes type = ContentTypes( entry.value( "mcty" ).toList().value( 0 ).toInt() );
         if( !m_codes.contains( code ) && !code.isEmpty() && type > 0 )
         {
             m_codes[code] = Code( name, type );
@@ -347,13 +347,25 @@ Reader::addTrack( const QString& itemId, const QString& title, const QString& ar
     track->setComment( comment );
     track->setComposer( composer );
 
+    DaapArtistPtr artistPtr;
+    if ( m_artistMap.contains( artist ) )
+        artistPtr = DaapArtistPtr::staticCast( m_artistMap.value( artist ) );
+    else
+    {
+        artistPtr = DaapArtistPtr( new DaapArtist( artist ) );
+        m_artistMap.insert( artist, ArtistPtr::staticCast( artistPtr ) );
+    }
+    artistPtr->addTrack( track );
+    track->setArtist( artistPtr );
+
     DaapAlbumPtr albumPtr;
-    if ( m_albumMap.contains( album ) )
-        albumPtr = DaapAlbumPtr::staticCast( m_albumMap.value( album ) );
+    if ( m_albumMap.contains( album, artist ) )
+        albumPtr = DaapAlbumPtr::staticCast( m_albumMap.value( album, artist ) );
     else
     {
         albumPtr = DaapAlbumPtr( new DaapAlbum( album ) );
-        m_albumMap.insert( album, AlbumPtr::staticCast( albumPtr ) );
+        albumPtr->setAlbumArtist( artistPtr );
+        m_albumMap.insert( AlbumPtr::staticCast( albumPtr ) );
     }
     albumPtr->addTrack( track );
     track->setAlbum( albumPtr );
@@ -368,17 +380,6 @@ Reader::addTrack( const QString& itemId, const QString& title, const QString& ar
     }
     composerPtr->addTrack( track );
     track->setComposer ( composerPtr );
-
-    DaapArtistPtr artistPtr;
-    if ( m_artistMap.contains( artist ) )
-        artistPtr = DaapArtistPtr::staticCast( m_artistMap.value( artist ) );
-    else
-    {
-        artistPtr = DaapArtistPtr( new DaapArtist( artist ) );
-        m_artistMap.insert( artist, ArtistPtr::staticCast( artistPtr ) );
-    }
-    artistPtr->addTrack( track );
-    track->setArtist( artistPtr );
 
     DaapYearPtr yearPtr;
     if ( m_yearMap.contains( year ) )

@@ -31,7 +31,7 @@ msgstr "ھۆججەت «%1» نى ئاچقىلى بولمىدى."
 #: utilities/collectionscanner/CollectionScanner.cpp:499
 #, qt-format
 msgid "Missing argument for option %1"
-msgstr ""
+msgstr "تاللانما %1 نىڭ ئارگۇمېنتى يوق"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:536
 msgid ""

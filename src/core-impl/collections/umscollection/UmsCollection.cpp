@@ -18,6 +18,7 @@
 
 #include "UmsCollection.h"
 #include "UmsCollectionLocation.h"
+#include "UmsTranscodeCapability.h"
 
 #include "amarokconfig.h"
 #include "core/capabilities/ActionsCapability.h"
@@ -55,7 +56,6 @@ AMAROK_EXPORT_COLLECTION( UmsCollectionFactory, umscollection )
 
 UmsCollectionFactory::UmsCollectionFactory( QObject *parent, const QVariantList &args )
     : CollectionFactory( parent, args )
-    , m_initialized( false )
 {
     m_info = KPluginInfo( "amarok_collection-umscollection.desktop", "services" );
 }
@@ -67,65 +67,133 @@ UmsCollectionFactory::~UmsCollectionFactory()
 void
 UmsCollectionFactory::init()
 {
-    connect( Solid::DeviceNotifier::instance(), SIGNAL( deviceAdded( const QString & ) ),
-             SLOT( slotAddSolidDevice( const QString & ) ) );
-    connect( Solid::DeviceNotifier::instance(), SIGNAL( deviceRemoved( const QString & ) ),
-             SLOT( slotRemoveSolidDevice( const QString & ) ) );
+    connect( Solid::DeviceNotifier::instance(), SIGNAL(deviceAdded(QString)),
+             SLOT(slotAddSolidDevice(QString)) );
+    connect( Solid::DeviceNotifier::instance(), SIGNAL(deviceRemoved(QString)),
+             SLOT(slotRemoveSolidDevice(QString)) );
 
-    m_initialized = true;
-
-    QList<Solid::Device> usbDrives =
-            Solid::Device::listFromQuery( "[IS StorageDrive AND StorageDrive.bus=='Usb']" );
-    foreach( Solid::Device drive, usbDrives )
+    // detect UMS devices that were already connected on startup
+    QString query( "IS StorageAccess" );
+    QList<Solid::Device> devices = Solid::Device::listFromQuery( query );
+    foreach( Solid::Device device, devices )
     {
-        debug() << "USB StorageDrive detected on startup: " << drive.udi();
-        //search for volumes on this USB drive
-        QList<Solid::Device> usbStorages =
-                Solid::Device::listFromType( Solid::DeviceInterface::StorageAccess, drive.udi() );
-        foreach( Solid::Device storage, usbStorages )
-        {
-            debug() << "partition on a USB drive discovered: " << storage.udi();
-            //HACK: seems to be a bug in Solid
-            if( !storage.is<Solid::StorageAccess>() )
-                continue;
-            //TODO: blacklisted devices
-            slotAddSolidDevice( storage.udi() );
-        }
+        if( identifySolidDevice( device.udi() ) )
+            createCollectionForSolidDevice( device.udi() );
     }
+    m_initialized = true;
 }
 
 void
 UmsCollectionFactory::slotAddSolidDevice( const QString &udi )
 {
-    if( m_umsCollectionMap.keys().contains( udi ) )
-        return;
+    if( m_collectionMap.contains( udi ) )
+        return; // a device added twice (?)
 
-    Solid::Device device( udi );
-    if( !device.is<Solid::StorageAccess>() )
-        return;
+    if( identifySolidDevice( udi ) )
+        createCollectionForSolidDevice( udi );
+}
 
-    //HACK: ignore apple stuff until we have common MediaDeviceFactory.
-    if( device.vendor().contains("apple", Qt::CaseInsensitive) )
-        return;
-
-    debug() << "Found new USB Mass Storage device with udi = " << device.udi();
-    debug() << "Device name is " << device.product() << " and was made by " << device.vendor();
-    debug() << "Device product is " << device.product();
-    debug() << "Device description: " << device.description();
-
-    UmsCollection *umsCollection = new UmsCollection( device );
-    m_umsCollectionMap.insert( udi, umsCollection );
-    emit newCollection( umsCollection );
+void
+UmsCollectionFactory::slotAccessibilityChanged( bool accessible, const QString &udi )
+{
+    if( accessible )
+        slotAddSolidDevice( udi );
+    else
+        slotRemoveSolidDevice( udi );
 }
 
 void
 UmsCollectionFactory::slotRemoveSolidDevice( const QString &udi )
 {
-    if( !m_umsCollectionMap.keys().contains( udi ) )
-        return;
+    UmsCollection *collection = m_collectionMap.take( udi );
+    if( collection )
+        collection->slotDestroy();
+}
 
-    UmsCollection *removedCollection = m_umsCollectionMap.take( udi );
-    removedCollection->slotDeviceRemoved();
+void
+UmsCollectionFactory::slotRemoveAndTeardownSolidDevice( const QString &udi )
+{
+    UmsCollection *collection = m_collectionMap.take( udi );
+    if( collection )
+        collection->slotEject();
+}
+
+void
+UmsCollectionFactory::slotCollectionDestroyed( QObject *collection )
+{
+    // remove destroyed collection from m_collectionMap
+    QMutableMapIterator<QString, UmsCollection *> it( m_collectionMap );
+    while( it.hasNext() )
+    {
+        it.next();
+        if( (QObject *) it.value() == collection )
+            it.remove();
+    }
+}
+
+bool
+UmsCollectionFactory::identifySolidDevice( const QString &udi ) const
+{
+    Solid::Device device( udi );
+    if( !device.is<Solid::StorageAccess>() )
+        return false;
+    // HACK to exlude iPods until UMS and iPod have common collection factory
+    if( device.vendor().contains( "Apple", Qt::CaseInsensitive ) )
+        return false;
+
+    // everything okay, lets see whether there is parent USB StorageDrive device
+    while( device.isValid() )
+    {
+        if( device.is<Solid::StorageDrive>() )
+        {
+            Solid::StorageDrive *sd = device.as<Solid::StorageDrive>();
+            return sd->isHotpluggable() && sd->driveType() != Solid::StorageDrive::CdromDrive;
+        }
+        device = device.parent();
+    }
+    return false; // no valid parent USB StorageDrive
+}
+
+void
+UmsCollectionFactory::createCollectionForSolidDevice( const QString &udi )
+{
+    DEBUG_BLOCK
+    Solid::Device device( udi );
+    Solid::StorageAccess *ssa = device.as<Solid::StorageAccess>();
+    if( !ssa )
+    {
+        warning() << __PRETTY_FUNCTION__ << "called for non-StorageAccess device!?!";
+        return;
+    }
+    if( ssa->isIgnored() )
+    {
+        debug() << "device" << udi << "ignored, ignoring :-)";
+        return;
+    }
+
+    // we are definitely interested in this device, listen for accessibility changes
+    disconnect( ssa, SIGNAL(accessibilityChanged(bool,QString)), this, 0 );
+    connect( ssa, SIGNAL(accessibilityChanged(bool,QString)),
+             SLOT(slotAccessibilityChanged(bool,QString)) );
+
+    if( !ssa->isAccessible() )
+    {
+        debug() << "device" << udi << "not accessible, ignoring for now";
+        return;
+    }
+
+    UmsCollection *collection = new UmsCollection( device );
+    m_collectionMap.insert( udi, collection );
+
+    // when the collection is destroyed by someone else, remove it from m_collectionMap:
+    connect( collection, SIGNAL(destroyed(QObject*)), SLOT(slotCollectionDestroyed(QObject*)) );
+
+    // try to gracefully destroy collection when unmounting is requested using
+    // external means: (Device notifier plasmoid etc.). Because the original action could
+    // fail if we hold some files on the device open, we try to tearDown the device too.
+    connect( ssa, SIGNAL(teardownRequested(QString)), SLOT(slotRemoveAndTeardownSolidDevice(QString)) );
+
+    emit newCollection( collection );
 }
 
 //UmsCollection
@@ -141,12 +209,14 @@ QString UmsCollection::s_regexTextKey( "regex_text" );
 QString UmsCollection::s_replaceTextKey( "replace_text" );
 QString UmsCollection::s_podcastFolderKey( "podcast_folder" );
 QString UmsCollection::s_autoConnectKey( "use_automatically" );
+QString UmsCollection::s_collectionName( "collection_name" );
+QString UmsCollection::s_transcodingGroup( "transcoding" );
 
 UmsCollection::UmsCollection( Solid::Device device )
     : Collection()
     , m_device( device )
-    , m_mc( new MemoryCollection() )
-    , m_initialized( false )
+    , m_mc( 0 )
+    , m_tracksParsed( false )
     , m_autoConnect( false )
     , m_musicFilenameScheme( "%artist%/%album%/%track% %title%" )
     , m_vfatSafe( true )
@@ -155,29 +225,30 @@ UmsCollection::UmsCollection( Solid::Device device )
     , m_replaceSpaces( false )
     , m_regexText( QString() )
     , m_replaceText( QString() )
+    , m_collectionName( QString() )
     , m_scanManager( 0 )
+    , m_lastUpdated( 0 )
 {
-    debug() << "creating device with udi: " << m_device.udi();
-    Solid::StorageAccess *storageAccess = m_device.as<Solid::StorageAccess>();
-    connect( storageAccess, SIGNAL(accessibilityChanged( bool, QString )),
-             SLOT(slotAccessibilityChanged( bool, QString )) );
+    debug() << "Creating UmsCollection for device with udi: " << m_device.udi();
 
-    m_configureAction = new QAction( KIcon( "configure" ), i18n( "&Configure %1", prettyName() ),
-                this );
+    m_updateTimer.setSingleShot( true );
+    connect( this, SIGNAL(startUpdateTimer()), SLOT(slotStartUpdateTimer()) );
+    connect( &m_updateTimer, SIGNAL(timeout()), SLOT(collectionUpdated()) );
+
+    m_configureAction = new QAction( KIcon( "configure" ), i18n( "&Configure Device" ), this );
     m_configureAction->setProperty( "popupdropper_svg_id", "configure" );
     connect( m_configureAction, SIGNAL( triggered() ), SLOT( slotConfigure() ) );
 
-    m_parseAction = new QAction( KIcon( "checkbox" ), i18n(  "&Use as Collection" ), this );
+    m_parseAction = new QAction( KIcon( "checkbox" ), i18n(  "&Activate This Collection" ), this );
     m_parseAction->setProperty( "popupdropper_svg_id", "edit" );
     connect( m_parseAction, SIGNAL( triggered() ), this, SLOT( slotParseActionTriggered() ) );
 
-    m_ejectAction = new QAction( KIcon( "media-eject" ), i18n( "&Disconnect Device" ),
+    m_ejectAction = new QAction( KIcon( "media-eject" ), i18n( "&Eject Device" ),
                                  const_cast<UmsCollection*>( this ) );
     m_ejectAction->setProperty( "popupdropper_svg_id", "eject" );
     connect( m_ejectAction, SIGNAL( triggered() ), SLOT( slotEject() ) );
 
-    if( storageAccess->isAccessible() )
-        init();
+    init();
 }
 
 UmsCollection::~UmsCollection()
@@ -192,110 +263,56 @@ UmsCollection::init()
     m_mountPoint = storageAccess->filePath();
     debug() << "Mounted at: " << m_mountPoint;
 
-    //read .is_audio_player from filesystem
-    KUrl playerFilePath( m_mountPoint );
-    playerFilePath.addPath( s_settingsFileName );
-    QFile playerFile( playerFilePath.toLocalFile() );
-    //prevent BR 259849: no audio_folder key in .is_audio_player file.
-    m_musicPath = m_mountPoint;
-
-    if( playerFile.open( QIODevice::ReadOnly | QIODevice::Text ) )
+    // read .is_audio_player from filesystem
+    KConfig config( m_mountPoint + "/" + s_settingsFileName, KConfig::SimpleConfig );
+    KConfigGroup entries = config.group( QString() ); // default group
+    if( entries.hasKey( s_musicFolderKey ) )
     {
-        debug() << QString( "Found %1 file").arg( s_settingsFileName );
-        QTextStream in(&playerFile);
-        while( !in.atEnd() )
+        m_musicPath = KUrl( m_mountPoint );
+        m_musicPath.addPath( entries.readPathEntry( s_musicFolderKey, QString() ) );
+        m_musicPath.cleanPath();
+        if( !QDir( m_musicPath.toLocalFile() ).exists() )
         {
-            QString line = in.readLine();
-            if( line.startsWith( s_musicFolderKey + "=" ) )
-            {
-                debug() << QString( "Found %1" ).arg( s_musicFolderKey );
-                debug() << line;
-                m_musicPath = KUrl( m_mountPoint );
-                m_musicPath.addPath( line.section( '=', 1, 1 ) );
-                m_musicPath.cleanPath();
-                debug() << "Scan for music in " << m_musicPath.toLocalFile();
-                if( !QDir( m_musicPath.toLocalFile() ).exists() )
-                {
-                    debug() << "Music path doesn't exist! Using the mountpoint instead";
-                    //TODO: add user-visible warning after string freeze.
-                    m_musicPath = m_mountPoint;
-                }
-            }
-            else if( line.startsWith( s_musicFilenameSchemeKey + "=" ) )
-            {
-                QString scheme = line.section( '=', 1, 1 );
-                //protect against empty setting.
-                if( !scheme.isEmpty() )
-                    m_musicFilenameScheme = scheme;
-                debug() << QString( "filename scheme: %1" ).arg( m_musicFilenameScheme );
-            }
-            else if( line.startsWith( s_vfatSafeKey + "=" ) )
-            {
-                m_vfatSafe = ( line.section( '=', 1, 1 ) == "true" );
-                debug() << "vfat compatible: " << m_vfatSafe;
-            }
-            else if( line.startsWith( s_asciiOnlyKey + "=" ) )
-            {
-                m_asciiOnly = ( line.section( '=', 1, 1 ) == "true" );
-                debug() << "ASCII only: " << m_asciiOnly;
-            }
-            else if( line.startsWith( s_ignoreTheKey + "=" ) )
-            {
-                m_ignoreThe = ( line.section( '=', 1, 1 ) == "true" );
-                debug() << "ignore The in artist names: " << m_ignoreThe;
-            }
-            else if( line.startsWith( s_replaceSpacesKey + "=" ) )
-            {
-                m_replaceSpaces = ( line.section( '=', 1, 1 ) == "true" );
-                debug() << "replace spaces with underscores: " << m_replaceSpaces;
-            }
-            else if( line.startsWith( s_regexTextKey + "=" ) )
-            {
-                m_regexText = line.section( '=', 1, 1 );
-                debug() << "Regex match string: " << m_regexText;
-            }
-            else if( line.startsWith( s_replaceTextKey + "=" ) )
-            {
-                m_replaceText = line.section( '=', 1, 1 );
-                debug() << "Replace string: " << m_replaceText;
-            }
-            else if( line.startsWith( s_podcastFolderKey + "=" ) )
-            {
-                debug() << QString( "Found %1, initializing UMS podcast provider" )
-                                .arg( s_podcastFolderKey );
-                debug() << line;
-                m_podcastPath = KUrl( m_mountPoint );
-                m_podcastPath.addPath( line.section( '=', 1, 1 ) );
-                m_podcastPath.cleanPath();
-                debug() << "scan for podcasts in " <<
-                        m_podcastPath.toLocalFile( KUrl::AddTrailingSlash );
-            }
-            else if( line.startsWith( s_autoConnectKey + "=" ) )
-            {
-                debug() << "Use automatically: " << line.section( '=', 1, 1 );
-                m_autoConnect = ( line.section( '=', 1, 1 ) == "true" );
-            }
+            debug() << "Music path doesn't exist! Using the mountpoint instead";
+            //TODO: add user-visible warning after string freeze.
+            m_musicPath = m_mountPoint;
         }
     }
+    else if( !entries.keyList().isEmpty() )
+        // config file exists, but has no s_musicFolderKey -> music should be disabled
+        m_musicPath = KUrl();
+    else
+        m_musicPath = m_mountPoint; // related BR 259849
+    QString scheme = entries.readEntry( s_musicFilenameSchemeKey );
+    m_musicFilenameScheme = !scheme.isEmpty() ? scheme : m_musicFilenameScheme;
+    m_vfatSafe = entries.readEntry( s_vfatSafeKey, m_vfatSafe );
+    m_asciiOnly = entries.readEntry( s_asciiOnlyKey, m_asciiOnly );
+    m_ignoreThe = entries.readEntry( s_ignoreTheKey, m_ignoreThe );
+    m_replaceSpaces = entries.readEntry( s_replaceSpacesKey, m_replaceSpaces );
+    m_regexText = entries.readEntry( s_regexTextKey, m_regexText );
+    m_replaceText = entries.readEntry( s_replaceTextKey, m_replaceText );
+    if( entries.hasKey( s_podcastFolderKey ) )
+    {
+        m_podcastPath = KUrl( m_mountPoint );
+        m_podcastPath.addPath( entries.readPathEntry( s_podcastFolderKey, QString() ) );
+        m_podcastPath.cleanPath();
+    }
+    m_autoConnect = entries.readEntry( s_autoConnectKey, m_autoConnect );
+    m_collectionName = entries.readEntry( s_collectionName, m_collectionName );
 
-    m_initialized = true;
+    m_mc = QSharedPointer<MemoryCollection>(new MemoryCollection());
 
     if( m_autoConnect )
         QTimer::singleShot( 0, this, SLOT(slotParseTracks()) );
 }
 
-void
-UmsCollection::deInit()
-{
-    m_initialized = false;
-    m_mc.clear();
-
-    emit updated();
-}
-
 bool
 UmsCollection::possiblyContainsTrack( const KUrl &url ) const
 {
+    //not initialized yet.
+    if( m_mc.isNull() )
+        return false;
+
     QString u = QUrl::fromPercentEncoding( url.url().toUtf8() );
     return u.startsWith( m_mountPoint ) || u.startsWith( "file://" + m_mountPoint );
 }
@@ -303,6 +320,10 @@ UmsCollection::possiblyContainsTrack( const KUrl &url ) const
 Meta::TrackPtr
 UmsCollection::trackForUrl( const KUrl &url )
 {
+    //not initialized yet.
+    if( m_mc.isNull() )
+        return Meta::TrackPtr();
+
     QString uid = QUrl::fromPercentEncoding( url.url().toUtf8() );
     if( uid.startsWith("file://") )
         uid = uid.remove( 0, 7 );
@@ -330,15 +351,25 @@ UmsCollection::uidUrlProtocol() const
 QString
 UmsCollection::prettyName() const
 {
-    if( !m_device.description().isEmpty() )
-        return m_device.description();
+    QString actualName;
+    if( !m_collectionName.isEmpty() )
+        actualName = m_collectionName;
+    else if( !m_device.description().isEmpty() )
+        actualName = m_device.description();
+    else
+    {
+        actualName = m_device.vendor().simplified();
+        if( !actualName.isEmpty() )
+            actualName += " ";
+        actualName += m_device.product().simplified();
+    }
 
-    QString name = m_device.vendor().simplified();
-    if( !name.isEmpty() )
-        name += " ";
-    name += m_device.product().simplified();
-
-    return name;
+    if( m_tracksParsed )
+        return actualName;
+    else
+        return i18nc( "Name of the USB Mass Storage collection that has not yet been "
+                      "activated. See also the 'Activate This Collection' action; %1 is "
+                      "actual collection name", "%1 (not activated)", actualName );
 }
 
 KIcon
@@ -371,7 +402,7 @@ UmsCollection::totalCapacity() const
 }
 
 CollectionLocation *
-UmsCollection::location() const
+UmsCollection::location()
 {
     return new UmsCollectionLocation( this );
 }
@@ -395,8 +426,8 @@ UmsCollection::hasCapabilityInterface( Capabilities::Capability::Type type ) con
     switch( type )
     {
         case Capabilities::Capability::Actions:
+        case Capabilities::Capability::Transcode:
             return true;
-
         default:
             return false;
     }
@@ -410,23 +441,35 @@ UmsCollection::createCapabilityInterface( Capabilities::Capability::Type type )
         case Capabilities::Capability::Actions:
         {
             QList<QAction *> actions;
-            if( m_initialized )
+            if( m_tracksParsed )
             {
-                //HACK: use a bool or something else less unsafe
-                if( m_mc->trackMap().isEmpty() )
-                    actions << m_parseAction;
                 actions << m_configureAction;
                 actions << m_ejectAction;
             }
+            else
+            {
+                actions << m_parseAction;
+            }
             return new Capabilities::ActionsCapability( actions );
         }
+        case Capabilities::Capability::Transcode:
+            return new UmsTranscodeCapability( m_mountPoint + "/" + s_settingsFileName,
+                                               s_transcodingGroup );
         default:
             return 0;
     }
 }
 
+void
+UmsCollection::metadataChanged( Meta::TrackPtr track )
+{
+    if( MemoryMeta::MapChanger( m_mc.data() ).trackChanged( track ) )
+        // big-enough change:
+        emit startUpdateTimer();
+}
+
 KUrl
-UmsCollection::organizedUrl( Meta::TrackPtr track ) const
+UmsCollection::organizedUrl( Meta::TrackPtr track, const QString &fileExtension ) const
 {
     TrackOrganizer trackOrganizer( Meta::TrackList() << track );
     //%folder% prefix required to get absolute url.
@@ -437,12 +480,14 @@ UmsCollection::organizedUrl( Meta::TrackPtr track ) const
     trackOrganizer.setIgnoreThe( m_ignoreThe );
     trackOrganizer.setReplaceSpaces( m_replaceSpaces );
     trackOrganizer.setReplace( m_regexText, m_replaceText );
+    if( !fileExtension.isEmpty() )
+        trackOrganizer.setTargetFileExtension( fileExtension );
 
     return KUrl( trackOrganizer.getDestinations().value( track ) );
 }
 
 void
-UmsCollection::slotDeviceRemoved()
+UmsCollection::slotDestroy()
 {
     //TODO: stop scanner if running
     //unregister PlaylistProvider
@@ -451,21 +496,52 @@ UmsCollection::slotDeviceRemoved()
 }
 
 void
-UmsCollection::slotTrackAdded( KUrl location )
+UmsCollection::slotEject()
 {
-    Q_ASSERT( m_musicPath.isParentOf( location ) );
-    MetaFile::TrackPtr track = MetaFile::TrackPtr( new MetaFile::Track( location ) );
-    MemoryMeta::MapAdder( m_mc.data() ).addTrack( Meta::TrackPtr::dynamicCast( track ) );
+    slotDestroy();
+    Solid::StorageAccess *storageAccess = m_device.as<Solid::StorageAccess>();
+    storageAccess->teardown();
 }
 
 void
-UmsCollection::slotAccessibilityChanged( bool accessible, const QString &udi )
+UmsCollection::slotTrackAdded( KUrl location )
 {
-    Q_UNUSED(udi)
-    if( accessible )
-        init();
+    Q_ASSERT( m_musicPath.isParentOf( location ) );
+    MetaFile::Track *fileTrack = new MetaFile::Track( location );
+    fileTrack->setCollection( this );
+    Meta::TrackPtr fileTrackPtr = Meta::TrackPtr( fileTrack );
+    Meta::TrackPtr proxyTrack = MemoryMeta::MapChanger( m_mc.data() ).addTrack( fileTrackPtr );
+    if( proxyTrack )
+    {
+        subscribeTo( fileTrackPtr );
+        emit startUpdateTimer();
+    }
     else
-        deInit();
+        warning() << __PRETTY_FUNCTION__ << "Failed to add" << fileTrackPtr->playableUrl()
+                  << "to MemoryCollection. Perhaps already there?!?";
+}
+
+void
+UmsCollection::slotTrackRemoved( const Meta::TrackPtr &track )
+{
+    Meta::TrackPtr removedTrack = MemoryMeta::MapChanger( m_mc.data() ).removeTrack( track );
+    if( removedTrack )
+    {
+        unsubscribeFrom( removedTrack );
+        // we only added MetaFile::Tracks, following static cast is safe
+        static_cast<MetaFile::Track*>( removedTrack.data() )->setCollection( 0 );
+        emit startUpdateTimer();
+    }
+    else
+        warning() << __PRETTY_FUNCTION__ << "Failed to remove" << track->playableUrl()
+                  << "from MemoryCollection. Perhaps it was never there?";
+}
+
+void
+UmsCollection::collectionUpdated()
+{
+    m_lastUpdated = QDateTime::currentMSecsSinceEpoch();
+    emit updated();
 }
 
 void
@@ -478,6 +554,7 @@ UmsCollection::slotParseTracks()
                 SLOT(slotDirectoryScanned(CollectionScanner::Directory*)), Qt::DirectConnection );
     }
 
+    m_tracksParsed = true;
     m_scanManager->requestFullScan( QList<KUrl>() << m_musicPath );
 }
 
@@ -493,6 +570,7 @@ UmsCollection::slotConfigure()
 {
     KDialog umsSettingsDialog;
     QWidget *settingsWidget = new QWidget( &umsSettingsDialog );
+    QScopedPointer<Capabilities::TranscodeCapability> tc( create<Capabilities::TranscodeCapability>() );
 
     Ui::UmsConfiguration *settings = new Ui::UmsConfiguration();
     settings->setupUi( settingsWidget );
@@ -503,12 +581,15 @@ UmsCollection::slotConfigure()
     settings->m_musicCheckBox->setChecked( !m_musicPath.isEmpty() );
     settings->m_musicWidget->setEnabled( settings->m_musicCheckBox->isChecked() );
     settings->m_musicFolder->setUrl( m_musicPath.isEmpty() ? KUrl( m_mountPoint ) : m_musicPath );
+    settings->m_transcodeConfig->fillInChoices( tc->savedConfiguration() );
 
     settings->m_podcastFolder->setMode( KFile::Directory );
     settings->m_podcastCheckBox->setChecked( !m_podcastPath.isEmpty() );
     settings->m_podcastWidget->setEnabled( settings->m_podcastCheckBox->isChecked() );
     settings->m_podcastFolder->setUrl( m_podcastPath.isEmpty() ? KUrl( m_mountPoint )
                                          : m_podcastPath );
+
+    settings->m_collectionName->setText( prettyName() );
 
     FilenameLayoutDialog filenameLayoutDialog( &umsSettingsDialog, 1 );
     //TODO: save the setting that are normally written in onAccept()
@@ -564,6 +645,7 @@ UmsCollection::slotConfigure()
         m_replaceSpaces = filenameLayoutDialog.replaceSpaces();
         m_regexText = filenameLayoutDialog.regexpText();
         m_replaceText = filenameLayoutDialog.replaceText();
+        m_collectionName = settings->m_collectionName->text();
 
         if( settings->m_podcastCheckBox->isChecked() )
         {
@@ -586,56 +668,34 @@ UmsCollection::slotConfigure()
         if( !m_musicPath.isEmpty() && m_autoConnect )
             QTimer::singleShot( 0, this, SLOT(slotParseTracks()) );
 
-        //write the date to the on-disk file
-        KUrl localFile = KUrl( m_mountPoint );
-        localFile.addPath( s_settingsFileName );
-        QFile settingsFile( localFile.toLocalFile() );
-        if( settingsFile.open( QIODevice::WriteOnly | QIODevice::Truncate | QIODevice::Text ) )
-        {
-            QTextStream s( &settingsFile );
-            QString keyValuePair( "%1=%2\n" );
-
-#define TRUE_FALSE(x) x ? "true" : "false"
-            s << keyValuePair.arg( s_autoConnectKey, TRUE_FALSE(m_autoConnect) );
-
-            if( !m_musicPath.isEmpty() )
-            {
-                s << keyValuePair.arg( s_musicFolderKey, KUrl::relativePath( m_mountPoint,
-                    m_musicPath.toLocalFile() ) );
-            }
-
-            if( !m_musicFilenameScheme.isEmpty() )
-            {
-                s << keyValuePair.arg( s_musicFilenameSchemeKey, m_musicFilenameScheme );
-            }
-
-            s << keyValuePair.arg( s_vfatSafeKey, TRUE_FALSE(m_vfatSafe) );
-            s << keyValuePair.arg( s_asciiOnlyKey, TRUE_FALSE(m_asciiOnly) );
-            s << keyValuePair.arg( s_ignoreTheKey, TRUE_FALSE(m_ignoreThe) );
-            s << keyValuePair.arg( s_replaceSpacesKey, TRUE_FALSE(m_replaceSpaces) );
-            s << keyValuePair.arg( s_regexTextKey, m_regexText );
-            s << keyValuePair.arg( s_replaceTextKey, m_replaceText );
-
-            if( !m_podcastPath.isEmpty() )
-            {
-                s << keyValuePair.arg( s_podcastFolderKey, KUrl::relativePath( m_mountPoint,
-                    m_podcastPath.toLocalFile() ) );
-            }
-
-            settingsFile.close();
-        }
+        // write the data to the on-disk file
+        KConfig config( m_mountPoint + "/" + s_settingsFileName, KConfig::SimpleConfig );
+        KConfigGroup entries = config.group( QString() ); // default group
+        if( !m_musicPath.isEmpty() )
+            entries.writePathEntry( s_musicFolderKey, KUrl::relativePath( m_mountPoint,
+                m_musicPath.toLocalFile() ) );
         else
-            error() << "Could not open settingsfile " << localFile.toLocalFile();
+            entries.deleteEntry( s_musicFolderKey );
+        entries.writeEntry( s_musicFilenameSchemeKey, m_musicFilenameScheme );
+        entries.writeEntry( s_vfatSafeKey, m_vfatSafe );
+        entries.writeEntry( s_asciiOnlyKey, m_asciiOnly );
+        entries.writeEntry( s_ignoreTheKey, m_ignoreThe );
+        entries.writeEntry( s_replaceSpacesKey, m_replaceSpaces );
+        entries.writeEntry( s_regexTextKey, m_regexText );
+        entries.writeEntry( s_replaceTextKey, m_replaceText );
+        if( !m_podcastPath.isEmpty() )
+            entries.writePathEntry( s_podcastFolderKey, KUrl::relativePath( m_mountPoint,
+                m_podcastPath.toLocalFile() ) );
+        else
+            entries.deleteEntry( s_podcastFolderKey );
+        entries.writeEntry( s_autoConnectKey, m_autoConnect );
+        entries.writeEntry( s_collectionName, m_collectionName );
+        config.sync();
+
+        tc->setSavedConfiguration( settings->m_transcodeConfig->currentChoice() );
     }
 
     delete settings;
-}
-
-void
-UmsCollection::slotEject()
-{
-    Solid::StorageAccess *storageAccess = m_device.as<Solid::StorageAccess>();
-    storageAccess->teardown();
 }
 
 void
@@ -651,10 +711,23 @@ UmsCollection::slotDirectoryScanned( CollectionScanner::Directory *dir )
     foreach( const CollectionScanner::Track *scannerTrack, dir->tracks() )
     {
         //TODO: use proxy tracks so no real file read is required
+        // following method calls startUpdateTimer(), no need to emit updated()
         slotTrackAdded( scannerTrack->path() );
     }
 
-    emit updated();
-
     //TODO: read playlists
+}
+
+void
+UmsCollection::slotStartUpdateTimer()
+{
+    // there are no concurrency problems, this method can only be called from the main
+    // thread and that's where the timer fires
+    if( m_updateTimer.isActive() )
+        return; // already running, nothing to do
+
+    // number of milliseconds to next desired update, may be negative
+    int timeout = m_lastUpdated + 1000 - QDateTime::currentMSecsSinceEpoch();
+    // give at least 50 msecs to catch multi-tracks edits nicely on the first frame
+    m_updateTimer.start( qBound( 50, timeout, 1000 ) );
 }

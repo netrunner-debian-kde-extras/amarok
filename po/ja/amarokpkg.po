@@ -1,13 +1,15 @@
+# translation of amarokpkg.po to Japanese
 # Daniel E. Moctezuma <democtezuma@gmail.com>, 2010.
 # Fumiaki Okushi <okushi@kde.gr.jp>, 2011.
+# Yasuhiko Kamata <belphegor@belbel.or.jp>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarokpkg\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2011-08-02 04:52+0200\n"
-"PO-Revision-Date: 2011-04-10 13:51-0700\n"
-"Last-Translator: Fumiaki Okushi <okushi@kde.gr.jp>\n"
-"Language-Team: Japanese <Kdeveloper@kde.gr.jp>\n"
+"PO-Revision-Date: 2012-02-06 10:45+0900\n"
+"Last-Translator: Yasuhiko Kamata <belphegor@belbel.or.jp>\n"
+"Language-Team: Japanese <opensuse-ja@opensuse.org>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
@@ -15,7 +17,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Accelerator-Marker: &\n"
 "X-Text-Markup: kde4\n"
-"X-Generator: Lokalize 1.0\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #: amarokpkg.cpp:40
 msgid "Install, list, remove Amarok applets"
@@ -48,6 +50,8 @@ msgstr "開発者"
 #: amarokpkg.cpp:92
 msgid "For install or remove, operates on applets installed for all users."
 msgstr ""
+"インストールまたは削除を行なうには、すべてのユーザ向けにインストールされたア"
+"プレットで操作してください。"
 
 #: amarokpkg.cpp:95
 msgctxt "Do not translate <path>"
@@ -73,6 +77,8 @@ msgid ""
 "Absolute path to the package root. If not supplied, then the standard data "
 "directories for this KDE session will be searched instead."
 msgstr ""
+"パッケージルートに対する絶対パスを指定します。何も指定しない場合は、この KDE "
+"セッション向けの標準データディレクトリを検索します。"
 
 #: amarokpkg.cpp:162
 #, kde-format
@@ -104,7 +110,7 @@ msgctxt ""
 "No option was given, this is the error message telling the user he needs at "
 "least one, do not translate install, remove, upgrade nor list"
 msgid "One of install, remove, upgrade or list is required."
-msgstr ""
+msgstr "install/remove/upgrade/list のいずれかを指定する必要があります。"
 
 #: rc.cpp:1
 msgctxt "NAME OF TRANSLATORS"

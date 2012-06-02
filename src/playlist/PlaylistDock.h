@@ -52,6 +52,7 @@ public:
     SortWidget *sortWidget();
     ProgressiveSearchWidget *searchWidget();
     void showActiveTrack();
+    void editTrackInfo();
 
     void polish();
 
@@ -70,6 +71,7 @@ private slots:
     void playlistProviderRemoved( Playlists::PlaylistProvider *provider, int category );
     void slotSaveCurrentPlaylist();
     void slotEditQueue();
+    void slotDynamicHintLinkActivated( const QString &href );
 
 private:
     KActionMenu *m_savePlaylistMenu;

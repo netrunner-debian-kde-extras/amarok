@@ -75,13 +75,24 @@ public:
      * Starts the transcoding job.
      */
     void start();
-/*
-signals:
-    void percent( KJob *job, unsigned long percent );
-*/
+
+    /**
+     * Get the source url.
+     */
+    KUrl srcUrl() const { return m_src; }
+
+    /**
+     * Get the destination url.
+     */
+    KUrl destUrl() const { return m_dest; }
+
 private slots:
     void processOutput();
-    void transcoderDone( int exitCode, QProcess::ExitStatus exitStatus );
+    /**
+     * Default arguments are for convenience (read: lazyness) so that this can be
+     * connected to QTimer::singleShot()
+     */
+    void transcoderDone( int exitCode = -1, QProcess::ExitStatus exitStatus = QProcess::CrashExit );
     void init();
 
 private:

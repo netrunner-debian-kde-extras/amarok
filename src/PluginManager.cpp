@@ -34,7 +34,7 @@
 
 #include <cstdlib>
 
-const int Plugins::PluginManager::s_pluginFrameworkVersion = 67;
+const int Plugins::PluginManager::s_pluginFrameworkVersion = 68;
 Plugins::PluginManager* Plugins::PluginManager::s_instance = 0;
 
 Plugins::PluginManager*
@@ -141,7 +141,7 @@ Plugins::PluginManager::checkPluginEnabledStates()
 }
 
 KPluginInfo::List
-Plugins::PluginManager::plugins( const QString &category )
+Plugins::PluginManager::plugins( const QString &category ) const
 {
     return m_pluginInfos.value( category );
 }

@@ -50,12 +50,6 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
         virtual int playlistCount() const;
         virtual Playlists::PlaylistList playlists();
 
-        virtual QList<QAction *> playlistActions( Playlists::PlaylistPtr playlist );
-        virtual QList<QAction *> trackActions( Playlists::PlaylistPtr playlist,
-                                                  int trackIndex );
-
-        virtual bool canSavePlaylists() { return true; }
-
         virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks,
                                              const QString &name = QString() );
 
@@ -75,10 +69,6 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
         void loadPlaylists();
         void slotSaveLater();
 
-        void slotDelete();
-        void slotRename();
-        void slotRemove();
-
     private:
         bool deletePlaylistFiles( Playlists::PlaylistFileList playlistFiles );
         KConfigGroup loadedPlaylistsConfig() const;
@@ -86,12 +76,7 @@ class PlaylistFileProvider : public Playlists::UserPlaylistProvider
         bool m_playlistsLoaded;
         QList<KUrl> m_urlsToLoad;
         Playlists::PlaylistFileList m_playlists;
-        Playlists::PlaylistFormat m_defaultFormat;
         QMultiMap<QString, Playlists::PlaylistPtr> m_groupMap;
-
-        QAction *m_renameAction;
-        QAction *m_deleteAction;
-        QAction *m_removeTrackAction;
 
         QTimer *m_saveLaterTimer;
         QList<Playlists::PlaylistFilePtr> m_saveLaterPlaylists;

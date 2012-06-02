@@ -41,16 +41,16 @@ Required
     * Qt 4.6 (or newer)
       http://qt.nokia.com/
 
-    * TagLib 1.6 (or newer)
+    * TagLib 1.7 (or newer)
       (Metadata tagging library)
       http://developer.kde.org/~wheeler/taglib.html
-      svn://anonsvn.kde.org/home/kde/trunk/kdesupport/taglib
- 
+      https://github.com/taglib/taglib
+      
     * TagLib Extras 1.0.1 (or newer)
       (Support for metadata reading of additional file types)
       http://www.kollide.net/~jefferai/taglib-extras-1.0.1.tar.gz
       svn://anonsvn.kde.org/home/kde/trunk/kdesupport/taglib-extras
-
+      
     * MySQL 5.0 (or newer) Embedded: libmysqld compiled with fPIC
       (In-process database support)
 
@@ -65,11 +65,11 @@ Required
 
 Optional
     * iPod support requires:
-      * libgpod 0.7.0 (or newer)
+      * libgpod 0.8.2 (or newer)
         http://www.gtkpod.org/libgpod/
-      * GDKPixBuf 2.0 (or newer)
-        (For artwork support)
-        http://library.gnome.org/devel/gdk-pixbuf/stable/
+      * optional iPod album artwork support requires:
+        * libgpod built with GDKPixBuf support enabled
+        * GDKPixBuf 2.0 (or newer) itself
 
     * libmtp 1.0.0 (or newer)
       (MTP device support)
@@ -98,7 +98,7 @@ Optional
       * FFmpeg 0.6.0 (or newer) - http://ffmpeg.org/
         * libavcodec & libavformat specifically
       * LibOFA - http://code.google.com/p/musicip-libofa/
-      
+
     * gpodder.net Podcast Provider & Service
       * libmygpo-qt 1.0.5 (or newer)
 
@@ -112,6 +112,9 @@ Optional
         * libmp3lame (NOT just "mp3")
         * libvorbis (NOT just "vorbis")
         * wmav2
+
+    * Building tests require:
+      * gmock 1.4 (or newer) - http://code.google.com/p/googlemock/
 
 Please note that if compiling from source you also need to install -dev/-devel
 versions of these packages, depending on your distribution.

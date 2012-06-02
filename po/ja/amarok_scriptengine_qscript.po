@@ -1,10 +1,13 @@
+# translation of amarok_scriptengine_qscript.po to Japanese
+# Yasuhiko Kamata <belphegor@belbel.or.jp>, 2012.
+# Fumiaki Okushi <okushi@kde.gr.jp>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok_scriptengine_qscript\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2011-08-02 04:52+0200\n"
-"PO-Revision-Date: 2009-06-29 09:40+0900\n"
-"Last-Translator: Japanese KDE translation team <Kdeveloper@kde.gr.jp>\n"
+"PO-Revision-Date: 2012-03-24 16:20-0700\n"
+"Last-Translator: Fumiaki Okushi <okushi@kde.gr.jp>\n"
 "Language-Team: Japanese <Kdeveloper@kde.gr.jp>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
@@ -13,75 +16,76 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Accelerator-Marker: &\n"
 "X-Text-Markup: kde4\n"
+"X-Generator: KBabel 1.11.4\n"
 
 #: simplejavascriptapplet.cpp:512
 msgid "i18n() takes at least one argument"
-msgstr ""
+msgstr "i18n() には少なくとも 1 つのパラメータを指定します"
 
 #: simplejavascriptapplet.cpp:528
 msgid "i18nc() takes at least two arguments"
-msgstr ""
+msgstr "i18nc() には少なくとも 2 つのパラメータを指定します"
 
 #: simplejavascriptapplet.cpp:545
 msgid "i18np() takes at least two arguments"
-msgstr ""
+msgstr "i18np() には少なくとも 2 つのパラメータを指定します"
 
 #: simplejavascriptapplet.cpp:562
 msgid "i18ncp() takes at least three arguments"
-msgstr ""
+msgstr "i18ncp() には少なくとも 3 つのパラメータを指定します"
 
 #: simplejavascriptapplet.cpp:580
 msgid "dataEngine() takes one argument"
-msgstr ""
+msgstr "dataEngine() には 1 つのパラメータを指定します"
 
 #: simplejavascriptapplet.cpp:590 simplejavascriptapplet.cpp:615
 #: simplejavascriptapplet.cpp:782
 msgid "Could not extract the AppletObject"
-msgstr ""
+msgstr "AppletObject を抽出できませんでした"
 
 #: simplejavascriptapplet.cpp:595 simplejavascriptapplet.cpp:620
 #: simplejavascriptapplet.cpp:787
 msgid "Could not extract the Applet"
-msgstr ""
+msgstr "Applet を抽出できませんでした"
 
 #: simplejavascriptapplet.cpp:605
 msgid "service() takes two arguments"
-msgstr ""
+msgstr "service() には 2 つのパラメータを指定します"
 
 #: simplejavascriptapplet.cpp:633
 msgid "loadui() takes one argument"
-msgstr ""
+msgstr "loadui() には 1 つのパラメータを指定します"
 
 #: simplejavascriptapplet.cpp:639
 #, kde-format
 msgid "Unable to open '%1'"
-msgstr ""
+msgstr "'%1' を開くことができません"
 
 #: simplejavascriptapplet.cpp:679 simplejavascriptapplet.cpp:712
 msgid "Constructor takes at least 1 argument"
-msgstr ""
+msgstr "コンストラクタには少なくとも 1 つのパラメータを指定します"
 
 #: simplejavascriptapplet.cpp:764
 msgid "CreateWidget takes one argument"
-msgstr ""
+msgstr "CreateWidget には 1 つのパラメータを指定します"
 
 #: simplejavascriptapplet.cpp:772
 msgid "The parent must be a QGraphicsWidget"
-msgstr ""
+msgstr "親は QGraphicsWidget でなければなりません"
 
 #: simplejavascriptapplet.cpp:817
 #, kde-format
 msgid "This operation was not supported, %1"
-msgstr ""
+msgstr "この操作には対応していません (%1)"
 
 #: simplejavascriptapplet.cpp:824
 msgid "print() takes one argument"
-msgstr ""
+msgstr "print() にはパラメータを指定する必要があります"
 
 #: qtgui/linearlayout.cpp:70
 msgid "LinearLayout requires a parent"
-msgstr ""
+msgstr "LinearLayout には親が必要です"
 
 #: qtgui/linearlayout.cpp:76
 msgid "The parent must be a QGraphicsLayoutItem"
-msgstr ""
+msgstr "親は QGraphicsLayoutItem でなければなりません"

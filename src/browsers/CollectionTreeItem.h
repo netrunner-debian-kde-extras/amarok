@@ -18,11 +18,12 @@
 #ifndef COLLECTIONTREEITEM_H
 #define COLLECTIONTREEITEM_H
 
+#include "BrowserDefines.h"
 #include "core/collections/Collection.h"
-
 #include "core/meta/Meta.h"
 
 #include <QList>
+
 
 namespace CustomRoles
 {
@@ -31,12 +32,16 @@ namespace CustomRoles
         SortRole = Qt::UserRole + 1,
         FilterRole = Qt::UserRole + 2,
         ByLineRole = Qt::UserRole + 3,
+        /** Boolean value whether given collection knows about used and total capacity */
         HasCapacityRole = Qt::UserRole + 4,
+        /** Number of bytes used by music and other files in collection (float) */
         UsedCapacityRole = Qt::UserRole + 5,
+        /** Total capacity of the collection in bytes (float) */
+        TotalCapacityRole = Qt::UserRole + 6,
         /** The number of collection actions */
-        DecoratorRoleCount = Qt::UserRole + 6,
+        DecoratorRoleCount = Qt::UserRole + 7,
         /** The collection actions */
-        DecoratorRole = Qt::UserRole + 7
+        DecoratorRole = Qt::UserRole + 8
     };
 }
 
@@ -90,8 +95,16 @@ class CollectionTreeItem : public QObject
 
         Collections::QueryMaker* queryMaker() const;
 
-        /** Call addMatch for this objects data and it's query maker */
-        void addMatch( Collections::QueryMaker *qm ) const;
+        /**
+         * Call addMatch for this objects data and it's query maker. Handles VariousArtist
+         * item and NoLabel item, too.
+         *
+         * @param qm QueryMaker to add match to
+         * @param levelCategory category for level this item is in, one of the values from
+         *        CategoryId::CatMenuId enum. Used only for distinction between Artist and
+         *        AlbumArtist.
+         */
+        void addMatch( Collections::QueryMaker* qm, CategoryId::CatMenuId levelCategory ) const;
 
         bool operator<( const CollectionTreeItem& other ) const;
 

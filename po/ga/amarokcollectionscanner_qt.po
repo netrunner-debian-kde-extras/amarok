@@ -21,12 +21,12 @@ msgstr ""
 #: utilities/collectionscanner/CollectionScanner.cpp:267
 #, qt-format
 msgid "File \"%1\" not found."
-msgstr ""
+msgstr "Comhad \"%1\" gan aimsiú."
 
 #: utilities/collectionscanner/CollectionScanner.cpp:247
 #, qt-format
 msgid "Could not open file \"%1\"."
-msgstr ""
+msgstr "Ní féidir an comhad \"%1\" a oscailt."
 
 #: utilities/collectionscanner/CollectionScanner.cpp:499
 #, qt-format

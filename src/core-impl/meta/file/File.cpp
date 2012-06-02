@@ -66,7 +66,6 @@ class EditCapabilityImpl : public Capabilities::EditCapability
         virtual void setComment( const QString &newComment ) { m_track->setComment( newComment ); }
         virtual void setTrackNumber( int newTrackNumber ) { m_track->setTrackNumber( newTrackNumber ); }
         virtual void setDiscNumber( int newDiscNumber ) { m_track->setDiscNumber( newDiscNumber ); }
-        virtual void setUidUrl( const QString &newUidUrl ) { m_track->setUidUrl( newUidUrl ); }
         virtual void beginMetaDataUpdate() { m_track->beginMetaDataUpdate(); }
         virtual void endMetaDataUpdate() { m_track->endMetaDataUpdate(); }
 
@@ -237,51 +236,18 @@ Track::uidUrl() const
     return d->url.url();
 }
 
-void
-Track::setUidUrl( const QString &newUid ) const
-{
-    if( newUid.isEmpty() )
-        return;
-
-    d->changes.insert( Meta::valUniqueId, QVariant( newUid ) );
-    if( !d->batchUpdate )
-    {
-        d->writeMetaData();
-        notifyObservers();
-    }
-}
-
 bool
 Track::isPlayable() const
 {
-    KUrl trackUrl = playableUrl();
-    QFileInfo trackFileInfo = QFileInfo( trackUrl.pathOrUrl() );
-
-    if( !( trackFileInfo.exists() && trackFileInfo.isFile() && trackFileInfo.isReadable() ) )
-            return false;
-
-    return true;
+    QFileInfo info = QFileInfo( playableUrl().pathOrUrl() );
+    return info.isFile() && info.isReadable();
 }
 
 bool
 Track::isEditable() const
 {
-    DEBUG_BLOCK
-
-    //note this probably needs more work on *nix
-    QFile::Permissions p;
-    if(d->url.isLocalFile())
-    {
-        p = QFile::permissions( d->url.toLocalFile() );
-    }
-    else
-    {
-        p = QFile::permissions( d->url.path() );
-    }
-    const bool editable = ( p & QFile::WriteUser ) || ( p & QFile::WriteGroup ) || ( p & QFile::WriteOther );
-
-    debug() << d->url.path() << " editable: " << editable;
-    return editable;
+    QFileInfo info = QFileInfo( playableUrl().pathOrUrl() );
+    return info.isFile() && info.isWritable();
 }
 
 Meta::AlbumPtr
@@ -648,13 +614,19 @@ Track::finishedPlaying( double playedFraction )
 bool
 Track::inCollection() const
 {
-    return false;
+    return d->collection; // calls QWeakPointer's (bool) operator
 }
 
 Collections::Collection*
 Track::collection() const
 {
-    return 0;
+    return d->collection.data();
+}
+
+void
+Track::setCollection( Collections::Collection *newCollection )
+{
+    d->collection = newCollection;
 }
 
 bool

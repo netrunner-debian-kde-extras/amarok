@@ -319,7 +319,7 @@ ScanManager::slotJobDone()
     if( m_scanner )
     {
         // -- error reporting
-        if( !m_errorsReported )
+        if (QApplication::type() != QApplication::Tty && !m_errorsReported )
         {
             m_errorsReported = true;
 
@@ -367,6 +367,9 @@ void
 DirWatchJob::run()
 {
     DEBUG_BLOCK;
+
+    if( !m_collection || !m_collection->mountPointManager())
+        return; // it crashed below in BUG:298425 because of no collection
 
     // -- update the KDirWatch with the current set of directories
     QSet<QString> dirs = m_collection->mountPointManager()->collectionFolders().toSet();
@@ -713,7 +716,7 @@ ScannerJob::getScannerOutput()
     if( index >= 0 )
     {
         // append new data (we need to be locked. the reader is probalby not thread save)
-        m_reader.addData( m_incompleteTagBuffer.left( index + 10 ) );
+        m_reader.addData( QString( m_incompleteTagBuffer.left( index + 10 ) ) );
         m_incompleteTagBuffer = m_incompleteTagBuffer.mid( index + 10 );
     }
     else
@@ -722,7 +725,7 @@ ScannerJob::getScannerOutput()
         if( index >= 0 )
         {
             // append new data (we need to be locked. the reader is probalby not thread save)
-            m_reader.addData( m_incompleteTagBuffer.left( index + 12 ) );
+            m_reader.addData( QString( m_incompleteTagBuffer.left( index + 12 ) ) );
             m_incompleteTagBuffer = m_incompleteTagBuffer.mid( index + 12 );
         }
     }

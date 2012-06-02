@@ -17,11 +17,10 @@
 #ifndef COLLECTIONTREEVIEW_H
 #define COLLECTIONTREEVIEW_H
 
+#include "BrowserDefines.h"
 #include "widgets/PrettyTreeView.h"
-
 #include "core/meta/Meta.h"
 #include "playlist/PlaylistController.h"
-#include "core/transcoding/TranscodingController.h"
 
 #include <QModelIndex>
 #include <QMutex>
@@ -47,10 +46,10 @@ class CollectionTreeView: public Amarok::PrettyTreeView
 
         QSortFilterProxyModel* filterModel() const;
 
-        AMAROK_EXPORT void setLevels( const QList<int> &levels );
-        QList<int> levels() const;
+        AMAROK_EXPORT void setLevels( const QList<CategoryId::CatMenuId> &levels );
+        QList<CategoryId::CatMenuId> levels() const;
 
-        void setLevel( int level, int type );
+        void setLevel( int level, CategoryId::CatMenuId type );
 
         void setModel( QAbstractItemModel *model );
 
@@ -69,6 +68,8 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void mousePressEvent( QMouseEvent *event );
         void mouseReleaseEvent( QMouseEvent *event );
         void keyPressEvent( QKeyEvent * event );
+        void dragEnterEvent( QDragEnterEvent *event );
+        void dragMoveEvent( QDragMoveEvent *event );
         void startDrag( Qt::DropActions supportedActions );
 
     protected slots:
@@ -86,7 +87,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void slotCopyTracks();
         void slotMoveTracks();
         void slotTrashTracks();
-        void slotRemoveTracks();
+        void slotDeleteTracks();
         void slotOrganize();
 
     private:
@@ -97,7 +98,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         void editTracks( const QSet<CollectionTreeItem*> &items ) const;
         void organizeTracks( const QSet<CollectionTreeItem*> &items ) const;
         void copyTracks( const QSet<CollectionTreeItem*> &items, Collections::Collection *destination,
-                         bool removeSources, Transcoding::Configuration configuration = Transcoding::Configuration() ) const;
+                         bool removeSources) const;
         void removeTracks( const QSet<CollectionTreeItem*> &items, bool useTrash ) const;
 
         // creates different actions from the different objects.
@@ -111,7 +112,6 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         Collections::Collection *getCollection( const QModelIndex &index );
         QHash<QAction*, Collections::Collection*> getCopyActions( const QModelIndexList &indcies );
         QHash<QAction*, Collections::Collection*> getMoveActions( const QModelIndexList &indcies );
-        QHash<QAction*, Collections::Collection*> getRemoveActions( const QModelIndexList & indices );
 
         Collections::QueryMaker* createMetaQueryFromItems( const QSet<CollectionTreeItem*> &items, bool cleanItems=true ) const;
         CollectionTreeItem* getItemFromIndex( QModelIndex &index );
@@ -126,7 +126,6 @@ class CollectionTreeView: public Amarok::PrettyTreeView
 
         QHash<QAction*, Collections::Collection*> m_currentCopyDestination;
         QHash<QAction*, Collections::Collection*> m_currentMoveDestination;
-        QHash<QAction*, Collections::Collection*> m_currentRemoveDestination;
 
         QMap<AmarokMimeData*, Playlist::AddOptions> m_playChildTracksMode;
 

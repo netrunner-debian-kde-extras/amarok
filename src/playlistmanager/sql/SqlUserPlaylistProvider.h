@@ -48,22 +48,15 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         virtual int playlistCount() const;
         virtual Playlists::PlaylistList playlists();
 
-        virtual bool canSavePlaylists() { return true; }
         virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks );
         virtual Playlists::PlaylistPtr save( const Meta::TrackList &tracks, const QString& name );
 
-        virtual bool supportsEmptyGroups() { return true; }
-
-        QList<QAction *> playlistActions( Playlists::PlaylistPtr playlist );
-        QList<QAction *> trackActions( Playlists::PlaylistPtr playlist,
-                                                  int trackIndex );
-
         /* UserPlaylistProvider functions */
+        virtual bool isWritable();
         virtual bool deletePlaylists( Playlists::PlaylistList playlistlist );
         virtual void rename( Playlists::PlaylistPtr playlist, const QString &newName );
 
         Playlists::SqlPlaylistGroupPtr group( const QString &name );
-        bool import( const QString& fromLocation );
 
         static Playlists::SqlPlaylistList toSqlPlaylists( Playlists::PlaylistList playlists );
 
@@ -73,9 +66,10 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         void playlistRemoved( Playlists::PlaylistPtr playlist );
 
     private slots:
+        /**
+         * Overriden only bacause of the m_debug flag
+         */
         void slotDelete();
-        void slotRename();
-        void slotRemove();
 
     private:
         void reloadFromDb();
@@ -91,9 +85,6 @@ class AMAROK_EXPORT SqlUserPlaylistProvider : public UserPlaylistProvider
         Playlists::SqlPlaylistList selectedPlaylists() const
             { return m_selectedPlaylists; }
         Playlists::SqlPlaylistList m_selectedPlaylists;
-        QAction *m_renameAction;
-        QAction *m_deleteAction;
-        QAction *m_removeTrackAction;
 
         const bool m_debug;
 };

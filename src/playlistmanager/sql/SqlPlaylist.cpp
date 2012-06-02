@@ -16,10 +16,11 @@
 
 #include "SqlPlaylist.h"
 
-#include "core-impl/collections/support/CollectionManager.h"
-#include "core/support/Debug.h"
-#include "core-impl/meta/stream/Stream.h"
 #include "core/collections/support/SqlStorage.h"
+#include "core/support/Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/meta/proxy/MetaProxy.h"
+#include "core-impl/meta/stream/Stream.h"
 #include "core-impl/meta/timecode/TimecodeMeta.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "playlistmanager/sql/SqlPlaylistGroup.h"
@@ -251,9 +252,12 @@ SqlPlaylist::addTrack( Meta::TrackPtr track, int position )
     if( !m_tracksLoaded )
         loadTracks();
 
-    int insertAt = (position == -1) ? m_tracks.count() : position;
+    if( position < 0 )
+        position = m_tracks.count();
+    else
+        position = qMin( position, m_tracks.count() );
     subscribeTo( track ); //keep track of metadata changes.
-    m_tracks.insert( insertAt, track );
+    m_tracks.insert( position, track );
     saveToDb( true );
     notifyObserversTrackAdded( track, position );
 }
@@ -275,6 +279,9 @@ SqlPlaylist::removeTrack( int position )
 void
 SqlPlaylist::metadataChanged( Meta::TrackPtr track )
 {
+    //TODO: do we really need to observe track changes? Metadata will be properly saved
+    //on exit and proxy tracks are loaded with uidUrl. So at worse the save metadata in
+    //playlist_tracks will be outdated until real track is loaded.
     if( !m_tracksLoaded )
         loadTracks();
 
@@ -305,43 +312,15 @@ SqlPlaylist::loadTracks()
         QStringList row = result.mid( i*7, 7 );
         KUrl url = KUrl( row[2] );
 
-        Meta::TrackPtr trackPtr = CollectionManager::instance()->trackForUrl( url );
+        MetaProxy::Track *proxyTrack = new MetaProxy::Track( url );
 
-        if( trackPtr )
-        {
-            if( typeid( * trackPtr.data() ) == typeid( MetaStream::Track ) )
-            {
-
-                debug() << "got stream from trackForUrl, setting album to " << row[4];
-
-                MetaStream::Track * streamTrack =
-                        dynamic_cast<MetaStream::Track *> ( trackPtr.data() );
-                
-                if( streamTrack )
-                {
-                    streamTrack->setTitle( row[3] );
-                    streamTrack->setAlbum( row[4] );
-                    streamTrack->setArtist( row[5] );
-                }
-            }
-            else if( typeid( * trackPtr.data() ) == typeid( Meta::TimecodeTrack ) )
-            {
-                Meta::TimecodeTrack * timecodeTrack =
-                        dynamic_cast<Meta::TimecodeTrack *> ( trackPtr.data() );
-
-                if( timecodeTrack )
-                {
-                    timecodeTrack->beginMetaDataUpdate();
-                    timecodeTrack->setTitle( row[3] );
-                    timecodeTrack->setAlbum( row[4] );
-                    timecodeTrack->setArtist( row[5] );
-                    timecodeTrack->endMetaDataUpdate();
-                }
-            }
-
-            subscribeTo( trackPtr );
-            m_tracks << trackPtr;
-        }
+        proxyTrack->setName( row[3] );
+        proxyTrack->setAlbum( row[4] );
+        proxyTrack->setArtist( row[5] );
+        Meta::TrackPtr trackPtr = Meta::TrackPtr( proxyTrack );
+        //subscribed to force a save to db on any change (such as AFT file move)
+        subscribeTo( trackPtr );
+        m_tracks << trackPtr;
     }
 
     m_tracksLoaded = true;

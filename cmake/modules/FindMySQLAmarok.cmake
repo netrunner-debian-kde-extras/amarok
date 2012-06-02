@@ -16,8 +16,18 @@ if(NOT WIN32)
     find_program(MYSQLCONFIG_EXECUTABLE NAMES mysql_config mysql_config5 PATHS ${BIN_INSTALL_DIR} ~/usr/bin /usr/local/bin)
 endif(NOT WIN32)
 
+find_path(MYSQL_INCLUDE_DIR mysql.h
+    /opt/local/include/mysql5/mysql
+    /opt/mysql/mysql/include
+    /opt/mysqle/include/mysql
+    /opt/ports/include/mysql5/mysql
+    /usr/include/mysql
+    /usr/local/include/mysql
+    /usr/mysql/include/mysql
+    ~/usr/include/mysql
+)
+
 if(MYSQLCONFIG_EXECUTABLE)
-    exec_program(${MYSQLCONFIG_EXECUTABLE} ARGS --variable=pkgincludedir RETURN_VALUE _return_VALUE OUTPUT_VARIABLE MYSQL_INCLUDE_DIR)
     exec_program(${MYSQLCONFIG_EXECUTABLE} ARGS --cflags RETURN_VALUE _return_VALUE OUTPUT_VARIABLE MYSQL_CFLAGS)
     exec_program(${MYSQLCONFIG_EXECUTABLE} ARGS --libs RETURN_VALUE _return_VALUE OUTPUT_VARIABLE MYSQL_LIBRARIES)
     exec_program(${MYSQLCONFIG_EXECUTABLE} ARGS --libmysqld-libs RETURN_VALUE _return_VALUE OUTPUT_VARIABLE MYSQL_EMBEDDED_LIBSTEMP)
@@ -36,6 +46,10 @@ if(MYSQLCONFIG_EXECUTABLE)
 
     if(MYSQLD_PIC_SEPARATE)
         string(REPLACE "lmysqld" "lmysqld_pic" MYSQL_EMBEDDED_LIBRARIES ${MYSQL_EMBEDDED_LIBSTEMP})
+        # append link directory to variable as mysql_config is not always (since Ubuntu 12.04?)
+        # reporting this directory with when being called with --libs
+        get_filename_component(MYSQL_EMBEDDED_LIB_DIR_TMP "${MYSQLD_PIC_SEPARATE}" PATH)
+        set(MYSQL_EMBEDDED_LIBRARIES "${MYSQL_EMBEDDED_LIBRARIES} -L${MYSQL_EMBEDDED_LIB_DIR_TMP}")
     else(MYSQLD_PIC_SEPARATE)
         set(MYSQL_EMBEDDED_LIBRARIES ${MYSQL_EMBEDDED_LIBSTEMP})
     endif(MYSQLD_PIC_SEPARATE)
@@ -48,18 +62,6 @@ if(MYSQLCONFIG_EXECUTABLE)
     endif(UNIX)
 
 else(MYSQLCONFIG_EXECUTABLE)
-
-    find_path(MYSQL_INCLUDE_DIR mysql.h
-       ~/usr/include/mysql
-       /opt/local/include/mysql5/mysql
-       /opt/mysqle/include/mysql
-       /opt/mysql/mysql/include 
-       /usr/mysql/include/mysql
-       /usr/include/mysql
-       /usr/local/include/mysql
-       /opt/local/include/mysql
-       /opt/ports/include/mysql5/mysql
-    )
 
     if(WIN32)
         set(MYSQL_CLIENT_LIBRARY_NAME libmysql)
