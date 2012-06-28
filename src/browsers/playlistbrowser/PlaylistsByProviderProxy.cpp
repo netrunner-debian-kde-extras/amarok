@@ -27,12 +27,23 @@
 
 #include <QStack>
 
+PlaylistsByProviderProxy::PlaylistsByProviderProxy( int playlistCategory, QObject *parent )
+    : QtGroupingProxy( parent )
+    , m_playlistCategory( playlistCategory )
+{
+    // we need this to track providers with no playlists
+    connect( The::playlistManager(), SIGNAL(providerAdded(Playlists::PlaylistProvider*,int)),
+             this, SLOT(slotProviderAdded(Playlists::PlaylistProvider*,int)) );
+    connect( The::playlistManager(), SIGNAL(providerRemoved(Playlists::PlaylistProvider*,int)),
+             this, SLOT(slotProviderRemoved(Playlists::PlaylistProvider*,int)) );
+}
+
+//TODO: remove this contructor
 PlaylistsByProviderProxy::PlaylistsByProviderProxy( QAbstractItemModel *model, int column, int playlistCategory )
         : QtGroupingProxy( model, QModelIndex(), column )
         , m_playlistCategory( playlistCategory )
 {
-    connect( sourceModel(), SIGNAL(renameIndex(QModelIndex)),
-             SLOT(slotRenameIndex(QModelIndex)) );
+    setSourceModel( model );
 
     // we need this to track providers with no playlists
     connect( The::playlistManager(), SIGNAL(providerAdded(Playlists::PlaylistProvider*,int)),
@@ -229,9 +240,10 @@ PlaylistsByProviderProxy::slotProviderAdded( Playlists::PlaylistProvider *provid
     if( category != m_playlistCategory )
         return;
 
-    if(   provider->playlistCount() > 0 ||
-        ( provider->playlistCount() < 0 /* not counted */ && !provider->playlists().isEmpty() ) )
-        return; // non-empty providers are handled by PlaylistBrowserModel
+    if( provider->playlistCount() > 0
+        || ( provider->playlistCount() < 0 /* not counted */
+             && !provider->playlists().isEmpty() ) )
+            return; // non-empty providers are handled by PlaylistBrowserModel
 
     ItemData itemData;
     itemData.insert( Qt::DisplayRole, provider->prettyName() );

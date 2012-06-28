@@ -17,7 +17,6 @@
 #include "PlaylistFileProvider.h"
 #include "App.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
-#include "core/capabilities/EditablePlaylistCapability.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core/support/Components.h"
@@ -131,10 +130,11 @@ PlaylistFileProvider::save( const Meta::TrackList &tracks, const QString &name )
     DEBUG_BLOCK
     QString filename = name.isEmpty() ? QDateTime::currentDateTime().toString( "ddd MMMM d yy hh-mm") : name;
     filename.replace( QLatin1Char('/'), QLatin1Char('-') );
+    filename.replace( QLatin1Char('\\'), QLatin1Char('-') );
 
     QString ext = Amarok::extension( filename );
     Playlists::PlaylistFormat format = Playlists::getFormat( ext );
-    if( format == Unknown )
+    if( format == Playlists::Unknown )
     {
         format = Playlists::XSPF;
         filename.append( QLatin1String( ".xspf" ) );

@@ -19,7 +19,6 @@
 
 #include "shared/amarok_export.h"
 #include "core/meta/Meta.h"
-#include "core/capabilities/Capability.h"
 
 #include <QList>
 #include <QMetaType>
@@ -99,7 +98,7 @@ namespace Playlists
 
             /** Called to make a playlist load it's tracks in memory.
               * This is used by PlaylistBrowserModel to do on-demand loading.
-              * It's recommended that this function starts a background task  in order not to block
+              * It's recommended that this function starts a background task in order not to block
               * the GUI thread.
               */
             virtual void triggerTrackLoad() {}

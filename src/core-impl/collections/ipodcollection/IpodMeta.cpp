@@ -48,7 +48,6 @@ gpointer AmarokItdbUserDataDuplicateFunc( gpointer userdata )
 
 Track::Track( Itdb_Track *ipodTrack )
     : m_track( ipodTrack )
-    , m_tempImageFile( 0 )
 {
     Q_ASSERT( m_track != 0 );
     m_track->usertype = m_gpodTrackUserTypeAmarokTrackPtr;
@@ -58,7 +57,6 @@ Track::Track( Itdb_Track *ipodTrack )
 
 Track::Track( const Meta::TrackPtr &origTrack )
     : m_track( itdb_track_new() )
-    , m_tempImageFile( 0 )
 {
     Q_ASSERT( m_track != 0 );
     m_track->usertype = m_gpodTrackUserTypeAmarokTrackPtr;
@@ -132,7 +130,8 @@ Track::Track( const Meta::TrackPtr &origTrack )
 Track::~Track()
 {
     itdb_track_free( m_track );
-    delete m_tempImageFile;
+    if( !m_tempImageFilePath.isEmpty() )
+        QFile::remove( m_tempImageFilePath );
 }
 
 bool
@@ -145,7 +144,7 @@ Track::hasCapabilityInterface( Capabilities::Capability::Type type ) const
         default:
             break;
     }
-    return Meta::MetaCapability::hasCapabilityInterface( type );
+    return false;
 }
 
 Capabilities::Capability*
@@ -158,7 +157,7 @@ Track::createCapabilityInterface( Capabilities::Capability::Type type )
         default:
             break;
     }
-    return Meta::MetaCapability::createCapabilityInterface( type );
+    return 0;
 }
 
 QString
@@ -184,7 +183,9 @@ Track::playableUrl() const
         return KUrl();
     QReadLocker locker( &m_trackLock );
     gchar *relPathChar = g_strdup( m_track->ipod_path );
+    locker.unlock();
     itdb_filename_ipod2fs( relPathChar ); // in-place
+    // relPath begins with a slash
     QString relPath = QFile::decodeName( relPathChar );
     g_free( relPathChar );
     return KUrl( m_mountPoint + relPath );
@@ -207,9 +208,18 @@ Track::prettyUrl() const
 QString
 Track::uidUrl() const
 {
-    return QString( "%1://%2" )
-           .arg( IpodCollection::s_uidUrlProtocol )
-           .arg( playableUrl().toLocalFile() );
+    QReadLocker locker( &m_trackLock );
+    gchar *relPathChar = g_strdup( m_track->ipod_path );
+    locker.unlock();
+    itdb_filename_ipod2fs( relPathChar ); // in-place
+    // relPath begins with a slash
+    QString relPath = QFile::decodeName( relPathChar );
+    g_free( relPathChar );
+
+    if( m_coll )
+        return m_coll.data()->collectionId() + relPath;
+    else
+        return m_mountPoint + relPath;
 }
 
 bool
@@ -270,12 +280,11 @@ void
 Track::setImage( const QImage &newImage, bool doCommit )
 {
     QWriteLocker locker( &m_trackLock );
+    if( !m_tempImageFilePath.isEmpty() )
+        QFile::remove( m_tempImageFilePath );
+    m_tempImageFilePath.clear();
     if( newImage.isNull() )
-    {
         itdb_track_remove_thumbnails( m_track );
-        delete m_tempImageFile;
-        m_tempImageFile = 0;
-    }
     else
     {
         // we set artwork even for devices that don't support it, everyone has new-enough iPod nowadays
@@ -286,14 +295,16 @@ Track::setImage( const QImage &newImage, bool doCommit )
         else
             image = newImage;
 
-        delete m_tempImageFile; // delete possible previous temporary file
-        m_tempImageFile = new KTemporaryFile();
-        m_tempImageFile->setSuffix( QString( ".png" ) );
+        KTemporaryFile tempImageFile;
+        tempImageFile.setAutoRemove( false );
+        tempImageFile.setSuffix( QString( ".png" ) );
         // we save the file to disk rather than pass image data to save several megabytes of RAM
-        if( m_tempImageFile->open() && image.save( m_tempImageFile, "PNG" ) )
+        if( tempImageFile.open() )
+            m_tempImageFilePath = tempImageFile.fileName();
+        if( tempImageFile.isOpen() && image.save( &tempImageFile, "PNG" ) )
             /* this function remembers image path, it also fogots previous images (if any)
              * and sets artwork_size, artwork_count and has_artwork m_track fields */
-            itdb_track_set_thumbnails( m_track, QFile::encodeName( m_tempImageFile->fileName() ) );
+            itdb_track_set_thumbnails( m_track, QFile::encodeName( m_tempImageFilePath ) );
     }
     m_changedFields.insert( Meta::valImage, newImage );
     locker.unlock();

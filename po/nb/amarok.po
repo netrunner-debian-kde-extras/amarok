@@ -9,7 +9,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2012-05-22 05:12+0200\n"
+"POT-Creation-Date: 2012-06-15 03:52+0200\n"
 "PO-Revision-Date: 2011-12-31 12:25+0100\n"
 "Last-Translator: Kjetil Kilhavn <kjetil@kilhavn.no>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
@@ -175,12 +175,12 @@ msgid "Now playing"
 msgstr "Spiller nå"
 
 #: scanner/GenericScanManager.cpp:203
-#: core-impl/collections/db/ScanManager.cpp:482
+#: core-impl/collections/db/ScanManager.cpp:485
 msgid "Unable to start Amarok collection scanner."
 msgstr "Klarte ikke å starte Amarok samlingsskanner."
 
 #: scanner/GenericScanManager.cpp:300
-#: core-impl/collections/db/ScanManager.cpp:531
+#: core-impl/collections/db/ScanManager.cpp:534
 #, kde-format
 msgid "Found one directory"
 msgid_plural "Found %1 directories"
@@ -188,98 +188,14 @@ msgstr[0] "Fant en mappe"
 msgstr[1] "Fant %1 mapper"
 
 #: scanner/GenericScanManager.cpp:310
-#: core-impl/collections/db/ScanManager.cpp:542
+#: core-impl/collections/db/ScanManager.cpp:545
 #, kde-format
 msgid "Got directory \"%1\" from scanner."
 msgstr "Fikk mappa «%1» fra skanner."
 
-#: EngineController.cpp:289
-msgid ""
-"<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
-"the installation of the backend that phonon uses.</p><p>You may find useful "
-"information in the <i>FAQ</i> section of the <i>Amarok Handbook</i>.</p>"
-msgstr ""
-"<p>Phonon sier den <b>ikke</b> kan spille MP3-filer.  Kanskje du bør "
-"undersøke bakstykket som brukes av Phonen.</p><p>Du finner nyttig "
-"informasjon i <i>Spørsmål og svar</i>-avsnittet i <i>Amarok-håndboka</i>.</p>"
-
-#: EngineController.cpp:311
-msgid "Install MP3 Support"
-msgstr "Installer støtte for MP3"
-
-#: EngineController.cpp:313
-msgid ""
-"Amarok currently cannot play MP3 files. Do you want to install support for "
-"MP3?"
-msgstr ""
-"Amarok kan for tiden ikke spille MP3-filer. Vil du installere støtte for MP3?"
-
-#: EngineController.cpp:314
-msgid "No MP3 Support"
-msgstr "Ingen støtte for MP3"
-
-#: EngineController.cpp:892
-msgid "Preamp"
-msgstr "Forforsterkning"
-
-#: EngineController.cpp:898
-msgid ""
-"%0\n"
-"Hz"
-msgstr ""
-"%0\n"
-"Hz"
-
-#: EngineController.cpp:902
-msgid ""
-"%0\n"
-"kHz"
-msgstr ""
-"%0\n"
-"kHz"
-
-#: EngineController.cpp:1199
-msgid "Too many errors encountered in playlist. Playback stopped."
-msgstr "Det intraff for mange feil i spillelista. Avspilling stoppet."
-
-#: EngineController.cpp:1420
-#, kde-format
-msgctxt "track by artist on album"
-msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
-msgstr "<b>%1</b> av <b>%2</b> på <b>%3</b>"
-
-#: EngineController.cpp:1423
-#, kde-format
-msgctxt "track by artist"
-msgid "<b>%1</b> by <b>%2</b>"
-msgstr "<b>%1</b> av <b>%2</b>"
-
-#: EngineController.cpp:1427
-#, kde-format
-msgctxt "track on album"
-msgid "<b>%1</b> on <b>%2</b>"
-msgstr "<b>%1</b> på <b>%2</b>"
-
-#: EngineController.cpp:1432
-#: core-impl/collections/ipodcollection/IpodMeta.cpp:202
-#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:95
-msgid "Unknown track"
-msgstr "Ukjent spor"
-
-#: EngineController.cpp:1439
-#, kde-format
-msgctxt "track from source"
-msgid "from <b>%1</b>"
-msgstr "fra <b>%1</b>"
-
-#: EngineController.cpp:1453 context/engines/current/CurrentEngine.cpp:136
-#: mac/GrowlInterface.cpp:43 widgets/Osd.cpp:651
-msgid "No track playing"
-msgstr "Ingen spor spiller"
-
 #. i18n: file: core-impl/collections/audiocd/FormatSelectionDialog.ui:14
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: main.cpp:43 rc.cpp:1182 MainWindow.cpp:104
+#: main.cpp:43 MainWindow.cpp:104 rc.cpp:1182
 msgid "Amarok"
 msgstr "Amarok"
 
@@ -290,10 +206,8 @@ msgstr "Lydspilleren for KDE"
 #: main.cpp:45
 msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
-"(C) 2003-2011, The Amarok Development Squad"
+"(C) 2003-2012, The Amarok Development Squad"
 msgstr ""
-"© 2002–2003 Mark Kretschmann\n"
-"© 2003–2011 Amarok-utviklingslaget"
 
 #: main.cpp:46
 #, kde-format
@@ -711,7 +625,7 @@ msgstr "Thomas Lübking"
 msgid "Valentin Rouet"
 msgstr "Valentin Rouet"
 
-#: main.cpp:182 main.cpp:255
+#: main.cpp:182 main.cpp:256
 msgid "Valorie Zimmerman"
 msgstr "Valorie Zimmerman"
 
@@ -939,15 +853,15 @@ msgstr "Tomasz Dudzik"
 msgid "Splash screen"
 msgstr "Velkomstbilde"
 
-#: main.cpp:252
+#: main.cpp:253
 msgid "Andrew Browning"
 msgstr "Andrew Browning"
 
-#: main.cpp:253
+#: main.cpp:254
 msgid "David Roth"
 msgstr "David Powell"
 
-#: main.cpp:254
+#: main.cpp:255
 msgid "Dr. Tilmann Bubeck"
 msgstr "Dr. Tilmann Bubeck"
 
@@ -1153,21 +1067,9 @@ msgstr "Ukjent"
 msgid "New Bookmark"
 msgstr "Nytt bokmerke"
 
-#: amarokurls/BookmarkManager.cpp:43 MainWindow.cpp:757
+#: amarokurls/BookmarkManager.cpp:43 MainWindow.cpp:755
 msgid "Bookmark Manager"
 msgstr "Bokmerkestyring"
-
-#: amarokurls/BookmarkMetaActions.cpp:31
-msgid "Bookmark this Album"
-msgstr "Lag bokmerke for dette albumet"
-
-#: amarokurls/BookmarkMetaActions.cpp:47
-msgid "Bookmark this Artist"
-msgstr "Lag bokmerke for denne artisten"
-
-#: amarokurls/BookmarkMetaActions.cpp:62
-msgid "Add Position Marker"
-msgstr "Legg til posisjonsmarkør"
 
 #: amarokurls/ContextUrlRunner.cpp:75
 msgctxt "A type of command that affects the context view"
@@ -1193,7 +1095,7 @@ msgid "Start typing to progressively filter the bookmarks"
 msgstr "Begynn å taste for å filtrere bokmerkene fortløpende"
 
 #: amarokurls/BookmarkModel.cpp:86
-#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:415
+#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:411
 msgid "Group"
 msgstr "Gruppe"
 
@@ -1208,7 +1110,7 @@ msgstr "Gruppe"
 #. i18n: file: services/ampache/NewServerWidget.ui:17
 #. i18n: ectx: property (text), widget (QLabel, labelName)
 #: amarokurls/BookmarkModel.cpp:265
-#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:414
+#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:410
 #: playlistgenerator/TreeModel.cpp:64
 #: services/amazon/AmazonItemTreeModel.cpp:168 rc.cpp:587 rc.cpp:1994
 #: rc.cpp:2000 rc.cpp:2386 rc.cpp:2398
@@ -1216,7 +1118,7 @@ msgid "Name"
 msgstr "Navn"
 
 #: amarokurls/BookmarkModel.cpp:266
-#: browsers/playlistbrowser/PodcastModel.cpp:333 playlist/PlaylistModel.cpp:903
+#: browsers/playlistbrowser/PodcastModel.cpp:333 playlist/PlaylistModel.cpp:904
 msgid "Type"
 msgstr "Type"
 
@@ -1282,11 +1184,11 @@ msgstr "Nytt tidskodespor"
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:447
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:448
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:449
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:450 MainWindow.cpp:1179
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:450 MainWindow.cpp:1177
 msgid "Unknown"
 msgstr "Ukjent"
 
-#: amarokurls/NavigationUrlGenerator.cpp:135 MainWindow.cpp:288
+#: amarokurls/NavigationUrlGenerator.cpp:135 MainWindow.cpp:286
 msgid "Files"
 msgstr "Filer"
 
@@ -1315,7 +1217,7 @@ msgstr "Artist «%1» fra %2"
 msgid "Artist \"%1\""
 msgstr "Artist »%1»"
 
-#: amarokurls/NavigationUrlGenerator.cpp:250 MainWindow.cpp:753
+#: amarokurls/NavigationUrlGenerator.cpp:250 MainWindow.cpp:751
 msgid "Bookmark Media Sources View"
 msgstr "Bokmern mediekildevisning"
 
@@ -1323,6 +1225,18 @@ msgstr "Bokmern mediekildevisning"
 msgctxt "A type of command that affects the view in the browser category"
 msgid "Navigate"
 msgstr "Naviger"
+
+#: amarokurls/BookmarkMetaActions.cpp:31
+msgid "Bookmark this Album"
+msgstr "Lag bokmerke for dette albumet"
+
+#: amarokurls/BookmarkMetaActions.cpp:47
+msgid "Bookmark this Artist"
+msgstr "Lag bokmerke for denne artisten"
+
+#: amarokurls/BookmarkMetaActions.cpp:62
+msgid "Add Position Marker"
+msgstr "Legg til posisjonsmarkør"
 
 #: browsers/CollectionTreeItem.cpp:140
 msgctxt "No labels are assigned to the given item are any of its subitems"
@@ -1357,7 +1271,7 @@ msgstr "Ukjent"
 
 #: browsers/CollectionTreeItemModelBase.cpp:316
 #: core-impl/collections/db/sql/SqlMeta.cpp:422
-#: core-impl/collections/ipodcollection/IpodMeta.cpp:96
+#: core-impl/collections/ipodcollection/IpodMeta.cpp:94
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:155
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:703
 #: core-impl/collections/support/ArtistHelper.cpp:40
@@ -1376,7 +1290,7 @@ msgstr "År – album"
 #: context/applets/wikipedia/WikipediaApplet.cpp:618
 #: dialogs/FilenameLayoutDialog.cpp:74 dialogs/FilenameLayoutDialog.cpp:463
 #: dialogs/transferdialog.cpp:89 musicbrainz/MusicBrainzTags.cpp:360
-#: playlist/view/PlaylistViewCommon.cpp:64 playlist/PlaylistModel.cpp:896
+#: playlist/view/PlaylistViewCommon.cpp:64 playlist/PlaylistModel.cpp:897
 #: services/jamendo/JamendoInfoParser.cpp:83
 #: services/magnatune/MagnatuneStore.cpp:224
 #: widgets/SmartPlaylistEditor.cpp:183 widgets/SmartPlaylistEditor.cpp:197
@@ -1389,7 +1303,7 @@ msgstr "Album"
 #: context/applets/wikipedia/WikipediaApplet.cpp:612
 #: dialogs/FilenameLayoutDialog.cpp:62 dialogs/FilenameLayoutDialog.cpp:435
 #: dialogs/transferdialog.cpp:88 musicbrainz/MusicBrainzTags.cpp:359
-#: playlist/PlaylistModel.cpp:892 services/jamendo/JamendoInfoParser.cpp:51
+#: playlist/PlaylistModel.cpp:893 services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:507
 #: services/magnatune/MagnatuneStore.cpp:218
 #: widgets/SmartPlaylistEditor.cpp:183 widgets/SmartPlaylistEditor.cpp:197
@@ -1401,14 +1315,14 @@ msgstr "Artist"
 #. i18n: ectx: property (text), widget (QLabel, label_13)
 #: browsers/CollectionTreeItemModelBase.cpp:980
 #: dialogs/FilenameLayoutDialog.cpp:78 dialogs/FilenameLayoutDialog.cpp:456
-#: musicbrainz/MusicBrainzTags.cpp:361 playlist/PlaylistModel.cpp:893
+#: musicbrainz/MusicBrainzTags.cpp:361 playlist/PlaylistModel.cpp:894
 #: rc.cpp:1902
 msgid "Album Artist"
 msgstr "Album artist"
 
 #: browsers/CollectionTreeItemModelBase.cpp:981
 #: core/meta/support/MetaConstants.cpp:176 dialogs/FilenameLayoutDialog.cpp:66
-#: dialogs/FilenameLayoutDialog.cpp:442 playlist/PlaylistModel.cpp:894
+#: dialogs/FilenameLayoutDialog.cpp:442 playlist/PlaylistModel.cpp:895
 #: widgets/SmartPlaylistEditor.cpp:183 widgets/SmartPlaylistEditor.cpp:197
 msgid "Composer"
 msgstr "Komponist"
@@ -1416,14 +1330,14 @@ msgstr "Komponist"
 #: browsers/CollectionTreeItemModelBase.cpp:982
 #: core/meta/support/MetaConstants.cpp:175 dialogs/FilenameLayoutDialog.cpp:86
 #: dialogs/FilenameLayoutDialog.cpp:477 dialogs/transferdialog.cpp:90
-#: playlist/ProgressiveSearchWidget.cpp:95 playlist/PlaylistModel.cpp:900
+#: playlist/ProgressiveSearchWidget.cpp:95 playlist/PlaylistModel.cpp:901
 #: widgets/SmartPlaylistEditor.cpp:183 widgets/SmartPlaylistEditor.cpp:197
 msgid "Genre"
 msgstr "Sjanger"
 
 #: browsers/CollectionTreeItemModelBase.cpp:983
 #: core/meta/support/MetaConstants.cpp:177 dialogs/FilenameLayoutDialog.cpp:70
-#: dialogs/FilenameLayoutDialog.cpp:449 playlist/PlaylistModel.cpp:895
+#: dialogs/FilenameLayoutDialog.cpp:449 playlist/PlaylistModel.cpp:896
 #: widgets/SmartPlaylistEditor.cpp:184 widgets/SmartPlaylistEditor.cpp:197
 #: widgets/SmartPlaylistEditor.cpp:921
 msgid "Year"
@@ -1453,7 +1367,7 @@ msgstr ""
 "Her finner du din lokale musikk, og også musikk fra mobile lydspillere og CD-"
 "er."
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:179 MainWindow.cpp:862
+#: browsers/collectionbrowser/CollectionWidget.cpp:179 MainWindow.cpp:860
 msgid "Search collection"
 msgstr "Søk i samling"
 
@@ -1573,7 +1487,7 @@ msgstr "Kopier til samling"
 
 #: browsers/filebrowser/FileView.cpp:362
 #: browsers/playlistbrowser/PlaylistBrowserModel.cpp:49
-#: browsers/CollectionTreeView.cpp:956
+#: browsers/CollectionTreeView.cpp:951
 #: context/applets/albums/AlbumsView.cpp:240
 #: services/lastfm/LastFmTreeView.cpp:111
 msgid "&Add to Playlist"
@@ -1581,14 +1495,14 @@ msgstr "&Legg til spilleliste"
 
 #: browsers/filebrowser/FileView.cpp:374
 #: browsers/playlistbrowser/PlaylistBrowserModel.cpp:60
-#: browsers/CollectionTreeView.cpp:970
+#: browsers/CollectionTreeView.cpp:965
 #: context/applets/albums/AlbumsView.cpp:241
 #: services/lastfm/LastFmTreeView.cpp:120
 msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
 msgstr "E&rstatt spilleliste"
 
-#: browsers/filebrowser/FileView.cpp:386 browsers/CollectionTreeView.cpp:1052
+#: browsers/filebrowser/FileView.cpp:386 browsers/CollectionTreeView.cpp:1047
 msgid "&Edit Track Details"
 msgstr "Rediger spor&informasjon"
 
@@ -1646,9 +1560,13 @@ msgid_plural "%1 playlists"
 msgstr[0] ""
 msgstr[1] ""
 
-#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:416
+#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:412
 msgid "Source"
 msgstr "Kilde"
+
+#: browsers/playlistbrowser/PlaylistsByProviderProxy.cpp:253
+msgid "No playlists"
+msgstr ""
 
 #: browsers/playlistbrowser/APGCategory.cpp:39
 msgid "Automated Playlist Generator"
@@ -1699,23 +1617,37 @@ msgstr "Hastighet"
 msgid "Accuracy"
 msgstr "Nøyaktighet"
 
-#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:77
-#: services/opmldirectory/OpmlDirectoryModel.cpp:44
-msgid "Add Folder"
-msgstr "Legg til mappe"
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:36
+msgid "&Rename Folder..."
+msgstr "&Endre mappenavn …"
 
-#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:82
-msgid "Visible Sources"
-msgstr "Synlige kilder"
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:42
+msgid "&Delete Folder"
+msgstr "&Slett mappe"
 
-#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:186
-msgid "Folders are only shown in <b>merged view</b>."
-msgstr "Mapper vises bare i <b>flettet visning</b>."
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:315
+msgid "New name"
+msgstr "Nytt navn"
 
-#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:272
-msgctxt "default name for new folder"
-msgid "New Folder"
-msgstr "Ny mappe"
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:317
+msgctxt "Enter a new name for a folder that already exists"
+msgid "Enter new folder name:"
+msgstr "Oppgi nytt mappenavn:"
+
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:333
+#: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:254
+#: core-impl/playlists/providers/user/UserPlaylistProvider.cpp:140
+#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:98
+msgid "Confirm Delete"
+msgstr "Bekreft sletting"
+
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:335
+msgid "Are you sure you want to delete this folder and its contents?"
+msgstr "Er du sikker på at du vil slette denne mappa med alt innhold?"
+
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:339
+msgid "Yes, delete folder."
+msgstr "Ja, slett mappe"
 
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:43
 msgctxt "Bias dialog window title"
@@ -1784,38 +1716,6 @@ msgstr ""
 "spillelister. Der kan du også sette sammen krafrtige dynamiske spillelister "
 "og styre dine podkastabonnementer og episoder."
 
-#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:36
-msgid "&Rename Folder..."
-msgstr "&Endre mappenavn …"
-
-#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:42
-msgid "&Delete Folder"
-msgstr "&Slett mappe"
-
-#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:315
-msgid "New name"
-msgstr "Nytt navn"
-
-#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:317
-msgctxt "Enter a new name for a folder that already exists"
-msgid "Enter new folder name:"
-msgstr "Oppgi nytt mappenavn:"
-
-#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:333
-#: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:254
-#: core-impl/playlists/providers/user/UserPlaylistProvider.cpp:140
-#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:98
-msgid "Confirm Delete"
-msgstr "Bekreft sletting"
-
-#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:335
-msgid "Are you sure you want to delete this folder and its contents?"
-msgstr "Er du sikker på at du vil slette denne mappa med alt innhold?"
-
-#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:339
-msgid "Yes, delete folder."
-msgstr "Ja, slett mappe"
-
 #: browsers/playlistbrowser/UserPlaylistCategory.cpp:58
 msgid "Saved Playlists"
 msgstr "Lagrede spillelister"
@@ -1833,6 +1733,24 @@ msgstr ""
 "Opprett, rediger, organiser og last spillelister. Amarok legger til "
 "automatisk alle spillelister som finnes når samlinga gjennomsøkes, og "
 "spillelister som du lagrer vises også her."
+
+#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:77
+#: services/opmldirectory/OpmlDirectoryModel.cpp:44
+msgid "Add Folder"
+msgstr "Legg til mappe"
+
+#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:82
+msgid "Visible Sources"
+msgstr "Synlige kilder"
+
+#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:187
+msgid "Folders are only shown in <b>merged view</b>."
+msgstr "Mapper vises bare i <b>flettet visning</b>."
+
+#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:273
+msgctxt "default name for new folder"
+msgid "New Folder"
+msgstr "Ny mappe"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:53
 msgid "Dynamic Playlists"
@@ -1987,7 +1905,7 @@ msgstr[1] "%1 kanaler"
 #: browsers/playlistbrowser/PodcastModel.cpp:334
 #: core/meta/support/MetaConstants.cpp:172 dialogs/FilenameLayoutDialog.cpp:58
 #: dialogs/FilenameLayoutDialog.cpp:421 musicbrainz/MusicBrainzTags.cpp:358
-#: playlist/PlaylistModel.cpp:891 widgets/SmartPlaylistEditor.cpp:183
+#: playlist/PlaylistModel.cpp:892 widgets/SmartPlaylistEditor.cpp:183
 #: rc.cpp:1061
 msgid "Title"
 msgstr "Tittel"
@@ -2003,10 +1921,6 @@ msgstr "Legg til podcast"
 #: browsers/playlistbrowser/PodcastModel.cpp:356
 msgid "Enter RSS 1.0/2.0 or Atom feed URL:"
 msgstr "Oppgi nettadresse til RSS 1./2.0 eller Atom-kilden:"
-
-#: browsers/playlistbrowser/PlaylistsByProviderProxy.cpp:241
-msgid "No playlists"
-msgstr ""
 
 #: browsers/servicebrowser/ServiceBrowser.cpp:40
 msgid ""
@@ -2042,7 +1956,7 @@ msgstr "Slett spor"
 msgid "More..."
 msgstr "Mer …"
 
-#: browsers/CollectionTreeView.cpp:1019
+#: browsers/CollectionTreeView.cpp:1014
 msgctxt "Organize Files"
 msgid "Organize Files"
 msgstr "Organiser filer"
@@ -2093,8 +2007,8 @@ msgid "Generic"
 msgstr "Generisk"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:54
-#: context/applets/lyrics/LyricsApplet.cpp:445
-#: context/applets/lyrics/LyricsApplet.cpp:572 dialogs/TagDialog.cpp:512
+#: context/applets/lyrics/LyricsApplet.cpp:449
+#: context/applets/lyrics/LyricsApplet.cpp:576 dialogs/TagDialog.cpp:512
 msgid "Lyrics"
 msgstr "Sangtekst"
 
@@ -2219,7 +2133,7 @@ msgstr "Nylig tilførte albumg"
 #. i18n: ectx: property (title), widget (QGroupBox, settingsGroupBox)
 #: context/applets/albums/Albums.cpp:74
 #: context/applets/labels/LabelsApplet.cpp:111
-#: context/applets/lyrics/LyricsApplet.cpp:490
+#: context/applets/lyrics/LyricsApplet.cpp:494
 #: context/applets/photos/PhotosApplet.cpp:76
 #: context/applets/similarartists/SimilarArtistsApplet.cpp:97
 #: context/applets/tabs/TabsApplet.cpp:104
@@ -2259,13 +2173,12 @@ msgstr "Oppsett for album-miniprogram"
 #. i18n: file: services/magnatune/MagnatuneSignupDialogBase.ui:45
 #. i18n: ectx: property (text), widget (QPushButton, closeButton)
 #: context/applets/albums/Albums.cpp:342
-#: context/applets/lyrics/LyricsApplet.cpp:469
-#: firstruntutorial/FirstRunTutorialPage.cpp:56 rc.cpp:2550
+#: context/applets/lyrics/LyricsApplet.cpp:473 rc.cpp:2550
 msgid "Close"
 msgstr "Lukk"
 
 #: context/applets/currenttrack/CurrentTrack.h:38
-#: core-impl/collections/ipodcollection/IpodMeta.cpp:201
+#: core-impl/collections/ipodcollection/IpodMeta.cpp:202
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:93
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:421
 #: core/meta/Meta.cpp:394 covermanager/CoverFetchUnit.cpp:596
@@ -2299,12 +2212,12 @@ msgid "Tracks"
 msgstr "Spor"
 
 #: context/applets/currenttrack/CurrentTrack.cpp:444
-#: playlist/PlaylistModel.cpp:909
+#: playlist/PlaylistModel.cpp:910
 msgid "Play Count"
 msgstr "Avspillingsteller"
 
 #: context/applets/currenttrack/CurrentTrack.cpp:445
-#: core/meta/support/MetaConstants.cpp:188 playlist/PlaylistModel.cpp:907
+#: core/meta/support/MetaConstants.cpp:188 playlist/PlaylistModel.cpp:908
 #: widgets/SmartPlaylistEditor.cpp:185
 msgid "Score"
 msgstr "Poeng"
@@ -2375,7 +2288,7 @@ msgid "Add to blacklist"
 msgstr "Legg til i svartelista"
 
 #: context/applets/labels/LabelsApplet.cpp:91
-#: context/applets/labels/LabelsApplet.cpp:183 dialogs/TagDialog.cpp:513
+#: context/applets/labels/LabelsApplet.cpp:184 dialogs/TagDialog.cpp:513
 msgid "Labels"
 msgstr "Etiketter"
 
@@ -2384,33 +2297,33 @@ msgstr "Etiketter"
 msgid "Reload"
 msgstr "Last på nytt"
 
-#: context/applets/labels/LabelsApplet.cpp:195
+#: context/applets/labels/LabelsApplet.cpp:196
 msgid "Labels: No track playing"
 msgstr "Etiketter: Ingen spor spiller"
 
-#: context/applets/labels/LabelsApplet.cpp:517
+#: context/applets/labels/LabelsApplet.cpp:518
 msgid "Labels: Fetching..."
 msgstr "Etiketter: Henter …"
 
-#: context/applets/labels/LabelsApplet.cpp:527
+#: context/applets/labels/LabelsApplet.cpp:528
 #, kde-format
 msgid "Labels: %1"
 msgstr "Etiketter: %1"
 
-#: context/applets/labels/LabelsApplet.cpp:575
+#: context/applets/labels/LabelsApplet.cpp:576
 #, kde-format
 msgid "Labels for %1 by %2"
 msgstr "Etiketter for  %1 av %2"
 
-#: context/applets/labels/LabelsApplet.cpp:743
+#: context/applets/labels/LabelsApplet.cpp:744
 msgid "General Settings"
 msgstr "Generelle innstillinger"
 
-#: context/applets/labels/LabelsApplet.cpp:744
+#: context/applets/labels/LabelsApplet.cpp:745
 msgid "Blacklist Settings"
 msgstr "Innstillinger for svarteliste"
 
-#: context/applets/labels/LabelsApplet.cpp:745
+#: context/applets/labels/LabelsApplet.cpp:746
 msgid "Replacement Settings"
 msgstr "Innstillinger for erstatninger"
 
@@ -2442,49 +2355,49 @@ msgstr ""
 "Teksten til <b>%1 – %2</b> ble endret mens du redigerte den. Vil du lagre "
 "endringene dine?"
 
-#: context/applets/lyrics/LyricsApplet.cpp:455
+#: context/applets/lyrics/LyricsApplet.cpp:459
 msgid "Edit Lyrics"
 msgstr "Rediger sangtekst"
 
-#: context/applets/lyrics/LyricsApplet.cpp:462
+#: context/applets/lyrics/LyricsApplet.cpp:466
 msgid "Save Lyrics"
 msgstr "Lagre sangtekst"
 
-#: context/applets/lyrics/LyricsApplet.cpp:476
+#: context/applets/lyrics/LyricsApplet.cpp:480
 msgid "Scroll automatically"
 msgstr "Rull automatisk"
 
-#: context/applets/lyrics/LyricsApplet.cpp:483
+#: context/applets/lyrics/LyricsApplet.cpp:487
 msgid "Reload Lyrics"
 msgstr "Last inn sangtekst på nytt"
 
-#: context/applets/lyrics/LyricsApplet.cpp:567
+#: context/applets/lyrics/LyricsApplet.cpp:571
 msgid "Lyrics: No script is running"
 msgstr "Sangtekst: Intet skript kjører"
 
-#: context/applets/lyrics/LyricsApplet.cpp:579
+#: context/applets/lyrics/LyricsApplet.cpp:583
 msgid "Lyrics: Fetching ..."
 msgstr "Sangtekst: Henter …"
 
-#: context/applets/lyrics/LyricsApplet.cpp:583
+#: context/applets/lyrics/LyricsApplet.cpp:587
 msgid "Lyrics: Fetch error"
 msgstr "Sangtekst: Feil ved henting"
 
-#: context/applets/lyrics/LyricsApplet.cpp:589
+#: context/applets/lyrics/LyricsApplet.cpp:593
 msgid "Lyrics: Suggested URLs"
 msgstr "Sangtekst: foreslåtte URL-er"
 
-#: context/applets/lyrics/LyricsApplet.cpp:615
+#: context/applets/lyrics/LyricsApplet.cpp:619
 #, kde-format
 msgctxt "Lyrics: <artist> - <title>"
 msgid "Lyrics: %1 - %2"
 msgstr "Sangtekster : %1 – %2"
 
-#: context/applets/lyrics/LyricsApplet.cpp:621
+#: context/applets/lyrics/LyricsApplet.cpp:625
 msgid "Lyrics: Not found"
 msgstr "Sangtekst: ikke funnet"
 
-#: context/applets/lyrics/LyricsApplet.cpp:661
+#: context/applets/lyrics/LyricsApplet.cpp:665
 msgctxt "@info"
 msgid ""
 "Do you really want to refetch lyrics for this track? All changes you may "
@@ -2495,7 +2408,7 @@ msgstr ""
 
 #. i18n: file: context/applets/lyrics/lyricsSettings.ui:14
 #. i18n: ectx: property (windowTitle), widget (QWidget, lyricsSettings)
-#: context/applets/lyrics/LyricsApplet.cpp:698 rc.cpp:1005
+#: context/applets/lyrics/LyricsApplet.cpp:702 rc.cpp:1005
 msgid "Lyrics Settings"
 msgstr "Innstillinger for sangtekst"
 
@@ -2989,6 +2902,11 @@ msgid ""
 msgstr ""
 "Legg til noen miniprogrammer fra verktøylinja nederst i kontekstvisningen."
 
+#: context/engines/current/CurrentEngine.cpp:136 mac/GrowlInterface.cpp:43
+#: widgets/Osd.cpp:651 EngineController.cpp:1462
+msgid "No track playing"
+msgstr "Ingen spor spiller"
+
 #: context/engines/current/CurrentEngine.cpp:227
 #, kde-format
 msgid "Albums by %1"
@@ -3358,6 +3276,33 @@ msgstr "Laster inn nettverkssamling fra vert %1"
 msgid "Music share at %1"
 msgstr "Musikkressurs ved %1"
 
+#: core-impl/collections/db/sql/SqlCollection.cpp:162
+msgid ""
+"Updating Amarok database schema. Please don't terminate Amarok now as it may "
+"result in database corruption."
+msgstr ""
+
+#: core-impl/collections/db/sql/SqlCollection.cpp:166
+msgid "Updating Amarok database schema"
+msgstr ""
+
+#: core-impl/collections/db/sql/SqlCollection.cpp:200
+#, kde-format
+msgid ""
+"The amarok database reported the following errors:\n"
+"%1\n"
+"In most cases you will need to resolve these errors before Amarok will run "
+"properly."
+msgstr ""
+"Amarok-databasen meldte om følgende feil:\n"
+"%1\n"
+"I de fleste tilfeller vil du måtte rette på disse feilene før Amarok kan "
+"kjøre riktig."
+
+#: core-impl/collections/db/sql/SqlCollection.cpp:356
+msgid "Scanning music"
+msgstr "Skanner musikk"
+
 #: core-impl/collections/db/sql/SqlCollectionLocation.cpp:541
 #, kde-format
 msgid "Could not create directory: %1"
@@ -3378,23 +3323,6 @@ msgstr "Transkoder: %1"
 #, kde-format
 msgid "Removing: %1"
 msgstr "Fjerner: %1"
-
-#: core-impl/collections/db/sql/SqlCollection.cpp:175
-#, kde-format
-msgid ""
-"The amarok database reported the following errors:\n"
-"%1\n"
-"In most cases you will need to resolve these errors before Amarok will run "
-"properly."
-msgstr ""
-"Amarok-databasen meldte om følgende feil:\n"
-"%1\n"
-"I de fleste tilfeller vil du måtte rette på disse feilene før Amarok kan "
-"kjøre riktig."
-
-#: core-impl/collections/db/sql/SqlCollection.cpp:331
-msgid "Scanning music"
-msgstr "Skanner musikk"
 
 #: core-impl/collections/db/sql/SqlMeta.cpp:274
 #: covermanager/CoverManager.cpp:842 services/lastfm/meta/LastFmMeta.cpp:134
@@ -3429,21 +3357,21 @@ msgstr ""
 "I de fleste tilfeller betyr dette at ikke alle dine spor ble importert.\n"
 "Senere feil blir bare meldt på konsollet."
 
-#: core-impl/collections/db/ScanManager.cpp:474
+#: core-impl/collections/db/ScanManager.cpp:477
 #, kde-format
 msgid "Failed to write scanner batch file \"%1\""
 msgstr "Klarte ikke å skrive skanner-satsfil «%1»"
 
-#: core-impl/collections/db/ScanManager.cpp:585
+#: core-impl/collections/db/ScanManager.cpp:588
 #, kde-format
 msgid "Aborting scanner with error: %1"
 msgstr "Avbryter skanner med feil: %1"
 
-#: core-impl/collections/db/ScanManager.cpp:605
+#: core-impl/collections/db/ScanManager.cpp:608
 msgid "Scanner aborted."
 msgstr "Skanner avbrutt."
 
-#: core-impl/collections/db/ScanManager.cpp:698
+#: core-impl/collections/db/ScanManager.cpp:701
 msgid ""
 "The collection scan had to be aborted. Too many errors were encountered "
 "during the scan."
@@ -3457,11 +3385,6 @@ msgid "Removing one track from iPod"
 msgid_plural "Removing %1 tracks from iPod"
 msgstr[0] ""
 msgstr[1] ""
-
-#: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:42
-msgctxt "operation when iPod is connected"
-msgid "Reading iPod tracks"
-msgstr ""
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:217
 #, kde-format
@@ -3494,18 +3417,18 @@ msgid_plural "%2 %1 tracks were already there."
 msgstr[0] ""
 msgstr[1] ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:339
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:338
 #: core-impl/collections/ipodcollection/IpodCollectionLocation.cpp:52
 msgid "Disconnected iPod/iPad/iPhone"
 msgstr ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:341
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:340
 #, kde-format
 msgctxt "%1 is collection pretty name, e.g. My Little iPod"
 msgid "Transferred Tracks to %1"
 msgstr ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:344
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:343
 #, kde-format
 msgid ""
 "One track successfully transferred, but transfer of some other tracks failed."
@@ -3514,11 +3437,11 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:348
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:347
 msgid "Transfer of tracks failed."
 msgstr ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:353
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:352
 #, kde-format
 msgid ""
 "One track was not transferred because it would exceed iPod capacity.<br>"
@@ -3527,13 +3450,13 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:359
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:358
 #, kde-format
 msgctxt "Example of %1 would be: 20.0 MiB"
 msgid "<i>Amarok reserves %1 on iPod for iTunes database writing.</i><br>"
 msgstr ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:366
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:365
 #, kde-format
 msgid ""
 "One track was not copied because it wouldn't be playable - its  %2 format is "
@@ -3544,14 +3467,14 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:375
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:374
 #, kde-format
 msgid "One file could not be copied.<br>"
 msgid_plural "%1 files could not be copied.<br>"
 msgstr[0] ""
 msgstr[1] ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:381
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:380
 #, kde-format
 msgid "One track was not transferred due to an internal Amarok error.<br>"
 msgid_plural ""
@@ -3559,12 +3482,39 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:384
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:383
 msgid "<i>You can find details in Amarok debugging output.</i><br>"
 msgstr ""
 
-#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:389
+#: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:388
 msgid "The rest was not transferred because iPod collection disappeared.<br>"
+msgstr ""
+
+#: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:51
+msgctxt "operation when iPod is connected"
+msgid "Reading iPod tracks"
+msgstr ""
+
+#: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:95
+msgctxt "iPod playlist name"
+msgid "Stale tracks"
+msgstr ""
+
+#: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:104
+msgctxt "iPod playlist name"
+msgid "Orphaned tracks"
+msgstr ""
+
+#: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:124
+#, kde-format
+msgid ""
+"Stale and/or orphaned tracks detected on %1. You can resolve the situation "
+"using the <b>%2</b> collection action. You can also view the tracks under "
+"the Saved Playlists tab."
+msgstr ""
+
+#: core-impl/collections/ipodcollection/support/IphoneMountPoint.cpp:56
+msgid "Connecting to iPhone, iPad or iPod touch failed."
 msgstr ""
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:45
@@ -3589,23 +3539,23 @@ msgctxt "default iPod name (when user-set name is empty)"
 msgid "iPod"
 msgstr ""
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:198
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:211
 msgid "iPod model was not recognized."
 msgstr ""
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:210
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:222
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:223
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:235
 #, kde-format
 msgid "%1 family uses %2 file to generate correct database checksum."
 msgstr ""
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:212
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:224
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:225
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:237
 #, kde-format
 msgid "%1 family needs %2 file to generate correct database checksum!"
 msgstr ""
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:232
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:245
 #, kde-format
 msgctxt "Do not translate hash-AB, libgpod, libhashab.so"
 msgid ""
@@ -3614,12 +3564,12 @@ msgid ""
 "dynamically load external library libhashab.so to do it."
 msgstr ""
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:246
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:259
 #, kde-format
 msgid "Autodetect (%1 file(s) present)"
 msgstr ""
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:270
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:283
 #, kde-format
 msgctxt ""
 "Examples: %1: Nano with camera (5th Gen.); [generation]%2: 16 GiB; [capacity]"
@@ -3627,37 +3577,37 @@ msgctxt ""
 msgid "%1: %2 %3 [%4]"
 msgstr ""
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:286
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:299
 msgctxt "Unknown iPod model, generation..."
 msgid "Unknown"
 msgstr ""
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:287
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:300
 msgctxt "In a dialog: Video: Supported"
 msgid "Supported"
 msgstr ""
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:288
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:301
 msgctxt "In a dialog: Video: Not supported"
 msgid "Not supported"
 msgstr ""
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:289
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:302
 msgctxt "In a dialog: Some file: Present"
 msgid "Present"
 msgstr ""
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:290
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:303
 msgctxt "In a dialog: Some file: Not found"
 msgid "<b>Not found</b>"
 msgstr ""
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:291
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:304
 msgctxt "In a dialog: Some file: Not needed"
 msgid "Not needed"
 msgstr ""
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:334
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:347
 #, kde-format
 msgctxt "%1 is informational sentence giving reason"
 msgid ""
@@ -3667,7 +3617,7 @@ msgid ""
 "libgpod source repository for more information."
 msgstr ""
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:356
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:369
 #, kde-format
 msgid ""
 "<b>%1</b><br><br>Above problem prevents Amarok from using your iPod. You can "
@@ -3677,44 +3627,22 @@ msgid ""
 "tracks will become orphaned."
 msgstr ""
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:418
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:431
 #, kde-format
 msgctxt "Do not translate SysInfo"
 msgid "Failed to write SysInfo: %1"
 msgstr ""
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:423
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:436
 msgctxt "Do not translate SysInfo"
 msgid "Failed to write SysInfo file due to an unreported error"
 msgstr ""
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:445
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:458
 msgid "Cannot initialize iPod due to an unreported error."
 msgstr ""
 
-#: core-impl/collections/ipodcollection/support/IphoneMountPoint.cpp:54
-msgid "Connecting to iPhone, iPad or iPod touch failed."
-msgstr ""
-
-#: core-impl/collections/ipodcollection/IpodPlaylistProvider.cpp:225
-msgctxt "iPod playlist name"
-msgid "Stale tracks"
-msgstr ""
-
-#: core-impl/collections/ipodcollection/IpodPlaylistProvider.cpp:234
-msgctxt "iPod playlist name"
-msgid "Orphaned tracks"
-msgstr ""
-
-#: core-impl/collections/ipodcollection/IpodPlaylistProvider.cpp:257
-#, kde-format
-msgid ""
-"Stale and/or orphaned tracks detected on %1. You can resolve the situation "
-"using the <b>%2</b> collection action. You can also view the tracks under "
-"the Saved Playlists tab."
-msgstr ""
-
-#: core-impl/collections/ipodcollection/IpodPlaylistProvider.cpp:369
+#: core-impl/collections/ipodcollection/IpodPlaylistProvider.cpp:322
 #, kde-format
 msgid ""
 "Failed to process one track. (more info about it is in the Amarok debugging "
@@ -3725,7 +3653,7 @@ msgid_plural ""
 msgstr[0] ""
 msgstr[1] ""
 
-#: core-impl/collections/ipodcollection/IpodPlaylistProvider.cpp:374
+#: core-impl/collections/ipodcollection/IpodPlaylistProvider.cpp:327
 #, kde-format
 msgctxt ""
 "Infrequently displayed message, don't bother with singlar forms. %1 to %3 "
@@ -3736,47 +3664,53 @@ msgid ""
 "added back to the iTunes database. %4"
 msgstr ""
 
-#: core-impl/collections/ipodcollection/IpodMeta.cpp:200
-#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
-msgid "Unknown Collection"
-msgstr "Ukjent samling"
-
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:102
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:109
 #: core-impl/collections/umscollection/UmsCollection.cpp:238
 msgid "&Configure Device"
 msgstr ""
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:106
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:113
 #: core-impl/collections/umscollection/UmsCollection.cpp:246
 msgid "&Eject Device"
 msgstr ""
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:115
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:122
 msgid "Re-add orphaned and forget stale tracks"
 msgstr ""
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:438
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:462
 msgctxt "iPod was successfully initialized"
 msgid "Initialization successful."
 msgstr ""
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:636
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:683
 #, kde-format
 msgctxt "%1: iPod collection name"
 msgid "iTunes database successfully written to %1"
 msgstr ""
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:644
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:691
 #, kde-format
 msgctxt "%1: iPod collection name"
 msgid "Writing iTunes database to %1 failed without an indication of error"
 msgstr ""
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:648
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:695
 #, kde-format
 msgctxt "%1: iPod collection name, %2: technical error from libgpod"
 msgid "Writing iTunes database to %1 failed: %2"
 msgstr ""
+
+#: core-impl/collections/ipodcollection/IpodMeta.cpp:201
+#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
+msgid "Unknown Collection"
+msgstr "Ukjent samling"
+
+#: core-impl/collections/ipodcollection/IpodMeta.cpp:203
+#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:95
+#: EngineController.cpp:1441
+msgid "Unknown track"
+msgstr "Ukjent spor"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:315
 msgid "Copying Tracks Failed"
@@ -3932,6 +3866,15 @@ msgstr "to måneder siden"
 msgid "three months ago"
 msgstr "tre måneder siden"
 
+#: core-impl/collections/support/TrashCollectionLocation.cpp:47
+msgid "Trash"
+msgstr "Søppelbøtte"
+
+#: core-impl/collections/support/TrashCollectionLocation.cpp:101
+#, kde-format
+msgid "Moving to trash: %1"
+msgstr "Flytter til søppelkassen: %1"
+
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:36
 #, kde-format
 msgctxt "@info"
@@ -3949,10 +3892,10 @@ msgstr[1] ""
 msgctxt "@info"
 msgid ""
 "Do you really want to move this track to the trash? It will be removed from "
-"%1."
+"%2."
 msgid_plural ""
-"Do you really want to move these %2 tracks to the trash? They will be "
-"removed from %1."
+"Do you really want to move these %1 tracks to the trash? They will be "
+"removed from %2."
 msgstr[0] ""
 msgstr[1] ""
 
@@ -4033,15 +3976,6 @@ msgstr ""
 msgctxt "%1 is track url, %2 artist name"
 msgid "%1 (by %2)"
 msgstr ""
-
-#: core-impl/collections/support/TrashCollectionLocation.cpp:47
-msgid "Trash"
-msgstr "Søppelbøtte"
-
-#: core-impl/collections/support/TrashCollectionLocation.cpp:101
-#, kde-format
-msgid "Moving to trash: %1"
-msgstr "Flytter til søppelkassen: %1"
 
 #: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:184
 msgid "&Delete Episode"
@@ -4210,7 +4144,7 @@ msgid "Podcast Episode Filename Configuration"
 msgstr "Podcast oppsett av episode-filnavn"
 
 #: core-impl/podcasts/sql/SqlPodcastMeta.cpp:426
-#: core/podcasts/PodcastMeta.h:414
+#: core/podcasts/PodcastMeta.h:410
 msgid "Podcast"
 msgstr "Podkaster"
 
@@ -4418,7 +4352,7 @@ msgid "Album Name"
 msgstr "Albumnavn"
 
 #: core/meta/support/MetaConstants.cpp:178 dialogs/FilenameLayoutDialog.cpp:82
-#: dialogs/FilenameLayoutDialog.cpp:470 playlist/PlaylistModel.cpp:901
+#: dialogs/FilenameLayoutDialog.cpp:470 playlist/PlaylistModel.cpp:902
 #: widgets/SmartPlaylistEditor.cpp:184
 msgid "Comment"
 msgstr "Kommentar"
@@ -4428,7 +4362,7 @@ msgstr "Kommentar"
 msgid "Track Number"
 msgstr "Spornummer"
 
-#: core/meta/support/MetaConstants.cpp:180 playlist/PlaylistModel.cpp:897
+#: core/meta/support/MetaConstants.cpp:180 playlist/PlaylistModel.cpp:898
 msgid "Disc Number"
 msgstr "Plate nummer"
 
@@ -4438,7 +4372,7 @@ msgstr "Bpm"
 
 #. i18n: file: network/NetworkRequests.ui:56
 #. i18n: ectx: property (text), widget (QTreeWidget, requestList)
-#: core/meta/support/MetaConstants.cpp:182 playlist/PlaylistModel.cpp:904
+#: core/meta/support/MetaConstants.cpp:182 playlist/PlaylistModel.cpp:905
 #: widgets/SmartPlaylistEditor.cpp:183 rc.cpp:1979
 msgid "Length"
 msgstr "Lengde"
@@ -4447,11 +4381,11 @@ msgstr "Lengde"
 msgid "Bit Rate"
 msgstr "Bitrate"
 
-#: core/meta/support/MetaConstants.cpp:184 playlist/PlaylistModel.cpp:906
+#: core/meta/support/MetaConstants.cpp:184 playlist/PlaylistModel.cpp:907
 msgid "Sample Rate"
 msgstr "Samplingsrate"
 
-#: core/meta/support/MetaConstants.cpp:185 playlist/PlaylistModel.cpp:912
+#: core/meta/support/MetaConstants.cpp:185 playlist/PlaylistModel.cpp:913
 msgid "File Size"
 msgstr "Filstørrelse"
 
@@ -4464,7 +4398,7 @@ msgid "Added to Collection"
 msgstr "Lagt til i samling"
 
 #: core/meta/support/MetaConstants.cpp:189
-#: playlist/ProgressiveSearchWidget.cpp:109 playlist/PlaylistModel.cpp:908
+#: playlist/ProgressiveSearchWidget.cpp:109 playlist/PlaylistModel.cpp:909
 #: widgets/SmartPlaylistEditor.cpp:185
 msgid "Rating"
 msgstr "Karakter"
@@ -4668,14 +4602,14 @@ msgctxt "One word translation used in the collection filter"
 msgid "modified"
 msgstr "endret"
 
-#: core/meta/support/MetaUtility.cpp:407
+#: core/meta/support/MetaUtility.cpp:409
 msgctxt ""
 "the time format for a time length when the time is below 1 hour see QTime "
 "documentation."
 msgid "m:ss"
 msgstr "m:ss"
 
-#: core/meta/support/MetaUtility.cpp:414
+#: core/meta/support/MetaUtility.cpp:416
 #, kde-format
 msgctxt "number of days with spacing for the pretty time"
 msgid "%1 day, "
@@ -4683,14 +4617,14 @@ msgid_plural "%1 days, "
 msgstr[0] "%1 dag, "
 msgstr[1] "%1 dager, "
 
-#: core/meta/support/MetaUtility.cpp:415
+#: core/meta/support/MetaUtility.cpp:417
 msgctxt ""
 "the time format for a time length when the time is 1 hour or above see QTime "
 "documentation."
 msgid "h:mm:ss"
-msgstr "t:mm:ss"
+msgstr "n:mm:ss"
 
-#: core/meta/support/MetaUtility.cpp:429
+#: core/meta/support/MetaUtility.cpp:431
 #, kde-format
 msgctxt "number of years for the pretty time"
 msgid "%1 year"
@@ -4698,7 +4632,7 @@ msgid_plural "%1 years"
 msgstr[0] "%1 år"
 msgstr[1] "%1 år"
 
-#: core/meta/support/MetaUtility.cpp:431
+#: core/meta/support/MetaUtility.cpp:433
 #, kde-format
 msgctxt "number of months for the pretty time"
 msgid "%1 month"
@@ -4706,7 +4640,7 @@ msgid_plural "%1 months"
 msgstr[0] "%1 måned"
 msgstr[1] "%1 måneder"
 
-#: core/meta/support/MetaUtility.cpp:433
+#: core/meta/support/MetaUtility.cpp:435
 #, kde-format
 msgctxt "number of days for the pretty time"
 msgid "%1 day"
@@ -4714,7 +4648,7 @@ msgid_plural "%1 days"
 msgstr[0] "%1 dag"
 msgstr[1] "%1 dager"
 
-#: core/meta/support/MetaUtility.cpp:435
+#: core/meta/support/MetaUtility.cpp:437
 #, kde-format
 msgctxt "number of hours for the pretty time"
 msgid "%1 hour"
@@ -4722,7 +4656,7 @@ msgid_plural "%1 hours"
 msgstr[0] "%1 time"
 msgstr[1] "%1 timer"
 
-#: core/meta/support/MetaUtility.cpp:437
+#: core/meta/support/MetaUtility.cpp:439
 #, kde-format
 msgctxt "number of minutes for the pretty time"
 msgid "%1 minute"
@@ -4730,7 +4664,7 @@ msgid_plural "%1 minutes"
 msgstr[0] "%1 minutt"
 msgstr[1] "%1 minutter"
 
-#: core/meta/support/MetaUtility.cpp:439
+#: core/meta/support/MetaUtility.cpp:441
 #, kde-format
 msgctxt "number of seconds for the pretty time"
 msgid "%1 second"
@@ -4805,7 +4739,7 @@ msgid "unknown type"
 msgstr "ukjent type"
 
 #: core/support/Amarok.cpp:46 core/support/Amarok.cpp:91
-#: playlist/PlaylistModel.cpp:464
+#: playlist/PlaylistModel.cpp:465
 msgctxt "The amount of time since last played"
 msgid "Never"
 msgstr "Aldri"
@@ -5319,7 +5253,7 @@ msgstr "Klarte ikke finne et omslag til «%1»."
 msgid "Cover View"
 msgstr "Omslagsvisning"
 
-#: covermanager/CoverManager.cpp:105 MainWindow.cpp:773
+#: covermanager/CoverManager.cpp:105 MainWindow.cpp:771
 msgid "Cover Manager"
 msgstr "Omslagshåndtering"
 
@@ -5475,7 +5409,7 @@ msgstr "Sorter etter størrelse"
 msgid "Display Cover"
 msgstr "Vis omslag"
 
-#: covermanager/CoverFoundDialog.cpp:361 MainWindow.cpp:508
+#: covermanager/CoverFoundDialog.cpp:361 MainWindow.cpp:506
 msgid "Save As"
 msgstr "Lagre som"
 
@@ -6211,6 +6145,7 @@ msgstr "Det er en filnavn-konflikt, eksisterende filer vil ikke bli endret."
 
 #: dialogs/DiagnosticDialog.cpp:42
 #, kde-format
+msgctxt "%1 is the program name"
 msgid "%1 Diagnostics"
 msgstr ""
 
@@ -6227,7 +6162,7 @@ msgid " (stopped)"
 msgstr ""
 
 #: dialogs/DiagnosticDialog.cpp:92
-msgid "  (enabled)"
+msgid " (enabled)"
 msgstr ""
 
 #: dialogs/DiagnosticDialog.cpp:92
@@ -6247,7 +6182,7 @@ msgstr ""
 #: dialogs/DiagnosticDialog.cpp:103
 #, kde-format
 msgid ""
-"%1-Diagnostics\n"
+"%1 Diagnostics\n"
 "\n"
 "%1 Version: %2\n"
 "KDE Version: %3\n"
@@ -6741,44 +6676,6 @@ msgctxt "Part bias representation"
 msgid "Partition"
 msgstr "Partisjon"
 
-#: dynamic/biases/AlbumPlayBias.cpp:38
-msgctxt "Name of the \"AlbumPlay\" bias"
-msgid "Album play"
-msgstr "Albumspill"
-
-#: dynamic/biases/AlbumPlayBias.cpp:47
-msgctxt "Description of the \"AlbumPlay\" bias"
-msgid "The \"AlbumPlay\" bias adds tracks that belong to one album."
-msgstr ""
-"Tilbøyeligheten \"Albumspill\" legger til spor som hører til ett album."
-
-#: dynamic/biases/AlbumPlayBias.cpp:108
-msgctxt "AlbumPlay bias representation"
-msgid "The next track from the album"
-msgstr "Neste spor fra albumet"
-
-#: dynamic/biases/AlbumPlayBias.cpp:111
-msgctxt "AlbumPlay bias representation"
-msgid "Any later track from the album"
-msgstr "Et senere spor fra albumet"
-
-#: dynamic/biases/AlbumPlayBias.cpp:114
-msgctxt "AlbumPlay bias representation"
-msgid "Tracks from the same album"
-msgstr "Spor fra det samme albumet"
-
-#: dynamic/biases/AlbumPlayBias.cpp:124
-msgid "Track directly follows previous track in album"
-msgstr "Sporet følger rett etter forrige spor i albumet"
-
-#: dynamic/biases/AlbumPlayBias.cpp:126
-msgid "Track comes after previous track in album"
-msgstr "Spor kommer etter forrige spor i albumet"
-
-#: dynamic/biases/AlbumPlayBias.cpp:128
-msgid "Track is in the same album as previous track"
-msgstr "Spor er i samme album som forrige spor"
-
 #: dynamic/biases/TagMatchBias.cpp:45
 msgctxt "Name of the \"TagMatch\" bias"
 msgid "Match meta tag"
@@ -6884,6 +6781,44 @@ msgstr "i artisten (Artistspørring)"
 msgid "of the album name (Album quiz)"
 msgstr "i albumnavnet (Albumspørring)"
 
+#: dynamic/biases/AlbumPlayBias.cpp:38
+msgctxt "Name of the \"AlbumPlay\" bias"
+msgid "Album play"
+msgstr "Albumspill"
+
+#: dynamic/biases/AlbumPlayBias.cpp:47
+msgctxt "Description of the \"AlbumPlay\" bias"
+msgid "The \"AlbumPlay\" bias adds tracks that belong to one album."
+msgstr ""
+"Tilbøyeligheten \"Albumspill\" legger til spor som hører til ett album."
+
+#: dynamic/biases/AlbumPlayBias.cpp:108
+msgctxt "AlbumPlay bias representation"
+msgid "The next track from the album"
+msgstr "Neste spor fra albumet"
+
+#: dynamic/biases/AlbumPlayBias.cpp:111
+msgctxt "AlbumPlay bias representation"
+msgid "Any later track from the album"
+msgstr "Et senere spor fra albumet"
+
+#: dynamic/biases/AlbumPlayBias.cpp:114
+msgctxt "AlbumPlay bias representation"
+msgid "Tracks from the same album"
+msgstr "Spor fra det samme albumet"
+
+#: dynamic/biases/AlbumPlayBias.cpp:124
+msgid "Track directly follows previous track in album"
+msgstr "Sporet følger rett etter forrige spor i albumet"
+
+#: dynamic/biases/AlbumPlayBias.cpp:126
+msgid "Track comes after previous track in album"
+msgstr "Spor kommer etter forrige spor i albumet"
+
+#: dynamic/biases/AlbumPlayBias.cpp:128
+msgid "Track is in the same album as previous track"
+msgstr "Spor er i samme album som forrige spor"
+
 #: dynamic/Bias.cpp:239
 msgctxt "And bias representation"
 msgid "Match all"
@@ -6916,6 +6851,24 @@ msgstr "Tilfeldig"
 #: dynamic/BiasedPlaylist.cpp:137
 msgid "Generating playlist..."
 msgstr "Oppretter spilleliste …"
+
+#: dynamic/DynamicModel.cpp:792
+msgctxt "Default name for new playlists"
+msgid "New playlist"
+msgstr "Ny spilleliste"
+
+#: dynamic/DynamicModel.cpp:931
+msgid "Rock and Pop"
+msgstr "Rock og pop"
+
+#: dynamic/DynamicModel.cpp:937
+msgid "Album play"
+msgstr "Albumspill"
+
+#: dynamic/DynamicModel.cpp:946
+msgctxt "Name of a dynamic playlist"
+msgid "Rating"
+msgstr ">>>>Karakter"
 
 #: dynamic/BiasFactory.cpp:53
 msgctxt "Name of the random bias"
@@ -6963,24 +6916,6 @@ msgstr ""
 #, kde-format
 msgid "Replacement for bias %1"
 msgstr "Erstatning for tilbøyelighet %1"
-
-#: dynamic/DynamicModel.cpp:792
-msgctxt "Default name for new playlists"
-msgid "New playlist"
-msgstr "Ny spilleliste"
-
-#: dynamic/DynamicModel.cpp:931
-msgid "Rock and Pop"
-msgstr "Rock og pop"
-
-#: dynamic/DynamicModel.cpp:937
-msgid "Album play"
-msgstr "Albumspill"
-
-#: dynamic/DynamicModel.cpp:946
-msgctxt "Name of a dynamic playlist"
-msgid "Rating"
-msgstr ">>>>Karakter"
 
 #: k3bexporter.cpp:182
 msgid "Unable to start K3b."
@@ -7460,7 +7395,7 @@ msgstr "Spilleliste"
 msgid "Warning: tracks have been hidden in the playlist"
 msgstr "Advarsel: Spor er blitt gjemt i spillelista"
 
-#: playlist/ProgressiveSearchWidget.cpp:49 MainWindow.cpp:857
+#: playlist/ProgressiveSearchWidget.cpp:49 MainWindow.cpp:855
 msgid "Search playlist"
 msgstr "Søk i spillelista"
 
@@ -7794,7 +7729,7 @@ msgstr "Følgende kilder er tilgjengelige for dette sporet: "
 msgid "Ok"
 msgstr "Ok"
 
-#: playlist/view/PlaylistViewCommon.cpp:115 MainWindow.cpp:896
+#: playlist/view/PlaylistViewCommon.cpp:115 MainWindow.cpp:894
 msgid "Queue Track"
 msgstr "Legg spor i kø"
 
@@ -7853,57 +7788,9 @@ msgid "No tracks"
 msgstr "Ingen spor"
 
 #: playlist/PlaylistToolBar.cpp:39 playlist/PlaylistDock.cpp:60
-#: MainWindow.cpp:1039
+#: MainWindow.cpp:1037
 msgid "&Playlist"
 msgstr "&Spilleliste"
-
-#: playlist/PlaylistModel.cpp:283
-msgid "(...)"
-msgstr "(…)"
-
-#: playlist/PlaylistModel.cpp:312
-#, kde-format
-msgctxt "%1: bitrate"
-msgid "%1 kbps"
-msgstr ""
-
-#: playlist/PlaylistModel.cpp:315
-msgid "No extra information available"
-msgstr "Ingen ekstra informasjon tilgjengelig"
-
-#: playlist/PlaylistModel.cpp:890
-msgctxt "The name of the file this track is stored in"
-msgid "Filename"
-msgstr "Filnavn"
-
-# unreviewed-context
-#: playlist/PlaylistModel.cpp:898
-msgctxt "The Track number for this item"
-msgid "Track"
-msgstr "Spor"
-
-#: playlist/PlaylistModel.cpp:899 widgets/SmartPlaylistEditor.cpp:187
-msgid "BPM"
-msgstr "BPM"
-
-# unreviewed-context
-#: playlist/PlaylistModel.cpp:902
-msgctxt "The location on disc of this track"
-msgid "Directory"
-msgstr "Mappe"
-
-#: playlist/PlaylistModel.cpp:905 widgets/SmartPlaylistEditor.cpp:187
-msgid "Bitrate"
-msgstr "Bitrate"
-
-#: playlist/PlaylistModel.cpp:910
-msgctxt "Column name"
-msgid "Last Played"
-msgstr "Sist spilt"
-
-#: playlist/PlaylistModel.cpp:911
-msgid "Mood"
-msgstr "Stemning"
 
 #: playlist/PlaylistViewUrlGenerator.cpp:82
 #, kde-format
@@ -7920,9 +7807,57 @@ msgstr "Søk %1"
 msgid "%1 layout"
 msgstr "Utforming %1"
 
-#: playlist/PlaylistViewUrlGenerator.cpp:101 MainWindow.cpp:765
+#: playlist/PlaylistViewUrlGenerator.cpp:101 MainWindow.cpp:763
 msgid "Bookmark Playlist Setup"
 msgstr "Bokmerke spillelisteoppsett"
+
+#: playlist/PlaylistModel.cpp:284
+msgid "(...)"
+msgstr "(…)"
+
+#: playlist/PlaylistModel.cpp:313
+#, kde-format
+msgctxt "%1: bitrate"
+msgid "%1 kbps"
+msgstr ""
+
+#: playlist/PlaylistModel.cpp:316
+msgid "No extra information available"
+msgstr "Ingen ekstra informasjon tilgjengelig"
+
+#: playlist/PlaylistModel.cpp:891
+msgctxt "The name of the file this track is stored in"
+msgid "Filename"
+msgstr "Filnavn"
+
+# unreviewed-context
+#: playlist/PlaylistModel.cpp:899
+msgctxt "The Track number for this item"
+msgid "Track"
+msgstr "Spor"
+
+#: playlist/PlaylistModel.cpp:900 widgets/SmartPlaylistEditor.cpp:187
+msgid "BPM"
+msgstr "BPM"
+
+# unreviewed-context
+#: playlist/PlaylistModel.cpp:903
+msgctxt "The location on disc of this track"
+msgid "Directory"
+msgstr "Mappe"
+
+#: playlist/PlaylistModel.cpp:906 widgets/SmartPlaylistEditor.cpp:187
+msgid "Bitrate"
+msgstr "Bitrate"
+
+#: playlist/PlaylistModel.cpp:911
+msgctxt "Column name"
+msgid "Last Played"
+msgstr "Sist spilt"
+
+#: playlist/PlaylistModel.cpp:912
+msgid "Mood"
+msgstr "Stemning"
 
 #: playlist/PlaylistDock.cpp:111
 #, kde-format
@@ -7935,7 +7870,7 @@ msgstr ""
 msgid "&Save Current Playlist"
 msgstr "Lagre gjeldende &spilleliste"
 
-#: playlist/PlaylistDock.cpp:278
+#: playlist/PlaylistDock.cpp:281
 #, kde-format
 msgid "&Save playlist to \"%1\""
 msgstr "&Lagre spilleliste til «%1»"
@@ -8420,18 +8355,14 @@ msgstr ""
 "finne de sporene som passer best, men du vil kanskje lette på kravene for å "
 "finne flere spor."
 
-#: playlistmanager/file/PlaylistFileProvider.cpp:98
+#: playlistmanager/file/PlaylistFileProvider.cpp:97
 msgid "Playlist Files on Disk"
 msgstr "Spillelistefiler på disk"
 
-#: playlistmanager/file/PlaylistFileProvider.cpp:276
+#: playlistmanager/file/PlaylistFileProvider.cpp:275
 #, kde-format
 msgid "The playlist file \"%1\" could not be loaded."
 msgstr "Kunne ikke laste inn spillelistefila «%1»."
-
-#: playlistmanager/sql/SqlPlaylist.cpp:41
-msgid "Playlist in database"
-msgstr "Spilleliste i databasen"
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.h:44
 msgid "Amarok Database"
@@ -8440,6 +8371,10 @@ msgstr "Amarok database"
 #: playlistmanager/sql/SqlUserPlaylistProvider.h:45
 msgid "Local playlists stored in the database"
 msgstr "Lokale spillelister lagret i databasen"
+
+#: playlistmanager/sql/SqlPlaylist.cpp:41
+msgid "Playlist in database"
+msgstr "Spilleliste i databasen"
 
 #: playlistmanager/SyncedPlaylist.cpp:42 playlistmanager/SyncedPlaylist.cpp:50
 #: playlistmanager/SyncedPlaylist.cpp:58
@@ -9420,6 +9355,18 @@ msgstr ""
 "gpodder.net er en nettjeneste for podkast-kataloger og podkast-"
 "synkronisering."
 
+#: services/gpodder/GpodderProvider.cpp:281
+msgid "Gpodder Podcasts"
+msgstr "Gpodder podkaster"
+
+#: services/gpodder/GpodderProvider.cpp:452
+msgid "Trying to synchronize statuses with gpodder.net"
+msgstr "Forsøker å synkronisere statuser med gpodder.net"
+
+#: services/gpodder/GpodderProvider.cpp:510
+msgid "Trying to synchronize with gpodder.net"
+msgstr "Forsøker å synkronisere med gpodder.net"
+
 #: services/gpodder/GpodderServiceSettings.cpp:171
 msgid "Unable to connect to gpodder.net service or other error occurred."
 msgstr ""
@@ -9432,18 +9379,6 @@ msgid ""
 msgstr ""
 "Feil ved tolking av svaret, se etter om gpodder.net virker riktig og meld "
 "fra om feil"
-
-#: services/gpodder/GpodderProvider.cpp:281
-msgid "Gpodder Podcasts"
-msgstr "Gpodder podkaster"
-
-#: services/gpodder/GpodderProvider.cpp:452
-msgid "Trying to synchronize statuses with gpodder.net"
-msgstr "Forsøker å synkronisere statuser med gpodder.net"
-
-#: services/gpodder/GpodderProvider.cpp:510
-msgid "Trying to synchronize with gpodder.net"
-msgstr "Forsøker å synkronisere med gpodder.net"
 
 #: services/gpodder/GpodderServiceConfig.cpp:144
 msgid "gpodder.net credentials"
@@ -9470,6 +9405,29 @@ msgctxt ""
 msgid "Amazon"
 msgstr "Amazon"
 
+#: services/amazon/AmazonItemTreeModel.cpp:108
+#: services/amazon/AmazonItemTreeModel.cpp:129
+msgid "<b>Artist:</b> "
+msgstr "<b>Artist:</b> "
+
+#: services/amazon/AmazonItemTreeModel.cpp:112
+#: services/amazon/AmazonItemTreeModel.cpp:133
+msgid "<b>Album:</b> "
+msgstr "<b>Album:</b > "
+
+#: services/amazon/AmazonItemTreeModel.cpp:116
+#: services/amazon/AmazonItemTreeModel.cpp:141
+msgid "<b>Price:</b> "
+msgstr "<b>Pris:</b> "
+
+#: services/amazon/AmazonItemTreeModel.cpp:137
+msgid "<b>Track:</b> "
+msgstr "<b>Spor:</b> "
+
+#: services/amazon/AmazonItemTreeModel.cpp:171
+msgid "Price"
+msgstr "Pris"
+
 #: services/amazon/AmazonShoppingCartView.cpp:65
 msgid "Remove from Cart"
 msgstr "Ta ut av handlekurven"
@@ -9494,6 +9452,16 @@ msgstr ""
 msgid "Search for Album..."
 msgstr "Søk etter album …"
 
+#: services/amazon/AmazonShoppingCartDialog.cpp:34
+#: services/amazon/AmazonShoppingCartDialog.cpp:59
+#, kde-format
+msgid "Shopping cart value: %1"
+msgstr "Verdi i handlekurven: %1"
+
+#: services/amazon/AmazonMeta.cpp:137
+msgid "Snippet taken from the Amazon MP3 store"
+msgstr "Bit tatt fra Amazons MP3-butikk"
+
 #: services/amazon/AmazonStore.cpp:101
 msgid "Access the Amazon MP3 Store directly from Amarok"
 msgstr "Bruk Amazons M3-butikk direkte fra Amarok"
@@ -9512,15 +9480,11 @@ msgstr ""
 msgid "<em>%1</em> has been added to your shopping cart."
 msgstr "<em>%1</em> er blitt lagt til handlekurven."
 
-#: services/amazon/AmazonStore.cpp:215 services/amazon/AmazonStore.cpp:346
-msgid "Error: Unable to write temporary file. :-("
-msgstr "Feil: Klarer ikke å skrive midlertidig fil. :-("
-
-#: services/amazon/AmazonStore.cpp:304
+#: services/amazon/AmazonStore.cpp:293
 msgid "Select your Amazon locale - Amarok"
 msgstr "Velg ditt Amazon-lokale – Amarok"
 
-#: services/amazon/AmazonStore.cpp:316
+#: services/amazon/AmazonStore.cpp:307
 msgid ""
 "<b>MP3 Music Store</b><br/><br/>Please select a valid country in the "
 "settings to make the store work."
@@ -9528,85 +9492,48 @@ msgstr ""
 "<b>MP3 Musikkbutikk</b><br/> <br/>Velg land i innstillingene, ellers "
 "fungerer ikke butikken."
 
-#: services/amazon/AmazonStore.cpp:436
+#: services/amazon/AmazonStore.cpp:338
+msgid "Error: Unable to write temporary file. :-("
+msgstr "Feil: Klarer ikke å skrive midlertidig fil. :-("
+
+#: services/amazon/AmazonStore.cpp:437
 msgid "Select results page to show"
 msgstr "Velg resultatside som skal vises"
 
-#: services/amazon/AmazonStore.cpp:460
+#: services/amazon/AmazonStore.cpp:461
 msgctxt "Add selected item to your shopping cart"
 msgid "Add to Cart"
 msgstr "Legg til handlekurven"
 
-#: services/amazon/AmazonStore.cpp:461
+#: services/amazon/AmazonStore.cpp:462
 msgid "Add selected item to your shopping cart"
 msgstr "Legg til den valgte varen til handlekurven"
 
-#: services/amazon/AmazonStore.cpp:468
+#: services/amazon/AmazonStore.cpp:469
 msgctxt "View your shopping cart contents"
 msgid "View Cart"
 msgstr "Vis handlekurv"
 
-#: services/amazon/AmazonStore.cpp:469
+#: services/amazon/AmazonStore.cpp:470
 msgid "View your shopping cart contents"
 msgstr "Se innholdet i handlekurven"
 
-#: services/amazon/AmazonStore.cpp:476
+#: services/amazon/AmazonStore.cpp:477
 msgctxt "Checkout your shopping cart"
 msgid "Checkout"
 msgstr "SJekk ut"
 
-#: services/amazon/AmazonStore.cpp:477
+#: services/amazon/AmazonStore.cpp:478
 msgid "Checkout your shopping cart"
 msgstr "Sjekk ut handlekurven"
 
-#: services/amazon/AmazonStore.cpp:498
+#: services/amazon/AmazonStore.cpp:499
 msgid "Error: Querying MP3 Music Store database failed. :-("
 msgstr "Feil: Forespørsel til MP3 musikkbutikkens database mislyktes. :-("
 
-#: services/amazon/AmazonStore.cpp:533
+#: services/amazon/AmazonStore.cpp:534
 msgid "Error: Received an invalid reply. :-("
 msgstr "Feil: Fikk et ugyldig svar. :-("
-
-#: services/amazon/AmazonStore.cpp:553
-msgid "Error: Unable to open temporary file. :-("
-msgstr "Feil: Kan ikke åpne midlertidig fil. :-("
-
-#: services/amazon/AmazonStore.cpp:573
-msgid "Error: Unable to parse temporary file. :-("
-msgstr "Feil: Klarte ikke å tolke midlertidig fil. :-("
-
-#: services/amazon/AmazonShoppingCartDialog.cpp:34
-#: services/amazon/AmazonShoppingCartDialog.cpp:59
-#, kde-format
-msgid "Shopping cart value: %1"
-msgstr "Verdi i handlekurven: %1"
-
-#: services/amazon/AmazonMeta.cpp:137
-msgid "Snippet taken from the Amazon MP3 store"
-msgstr "Bit tatt fra Amazons MP3-butikk"
-
-#: services/amazon/AmazonItemTreeModel.cpp:108
-#: services/amazon/AmazonItemTreeModel.cpp:129
-msgid "<b>Artist:</b> "
-msgstr "<b>Artist:</b> "
-
-#: services/amazon/AmazonItemTreeModel.cpp:112
-#: services/amazon/AmazonItemTreeModel.cpp:133
-msgid "<b>Album:</b> "
-msgstr "<b>Album:</b > "
-
-#: services/amazon/AmazonItemTreeModel.cpp:116
-#: services/amazon/AmazonItemTreeModel.cpp:141
-msgid "<b>Price:</b> "
-msgstr "<b>Pris:</b> "
-
-#: services/amazon/AmazonItemTreeModel.cpp:137
-msgid "<b>Track:</b> "
-msgstr "<b>Spor:</b> "
-
-#: services/amazon/AmazonItemTreeModel.cpp:171
-msgid "Price"
-msgstr "Pris"
 
 #. i18n: file: playlist/layouts/PlaylistLayoutEditDialog.ui:312
 #. i18n: ectx: property (text), widget (QLabel, label)
@@ -10204,6 +10131,356 @@ msgstr ""
 "kbuildsycoca --noincremental<br/>$ amarok</pre>Du finner mer informasjon i "
 "fila «README». Du kan også få hjelp på IRC-kanalen #amarok på irc.freenode."
 "net.</p>"
+
+#: EngineController.cpp:297
+msgid ""
+"<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
+"the installation of the backend that phonon uses.</p><p>You may find useful "
+"information in the <i>FAQ</i> section of the <i>Amarok Handbook</i>.</p>"
+msgstr ""
+"<p>Phonon sier den <b>ikke</b> kan spille MP3-filer.  Kanskje du bør "
+"undersøke bakstykket som brukes av Phonen.</p><p>Du finner nyttig "
+"informasjon i <i>Spørsmål og svar</i>-avsnittet i <i>Amarok-håndboka</i>.</p>"
+
+#: EngineController.cpp:320
+msgid "Install MP3 Support"
+msgstr "Installer støtte for MP3"
+
+#: EngineController.cpp:322
+msgid ""
+"Amarok currently cannot play MP3 files. Do you want to install support for "
+"MP3?"
+msgstr ""
+"Amarok kan for tiden ikke spille MP3-filer. Vil du installere støtte for MP3?"
+
+#: EngineController.cpp:323
+msgid "No MP3 Support"
+msgstr "Ingen støtte for MP3"
+
+#: EngineController.cpp:901
+msgid "Preamp"
+msgstr "Forforsterkning"
+
+#: EngineController.cpp:907
+msgid ""
+"%0\n"
+"Hz"
+msgstr ""
+"%0\n"
+"Hz"
+
+#: EngineController.cpp:911
+msgid ""
+"%0\n"
+"kHz"
+msgstr ""
+"%0\n"
+"kHz"
+
+#: EngineController.cpp:1208
+msgid "Too many errors encountered in playlist. Playback stopped."
+msgstr "Det intraff for mange feil i spillelista. Avspilling stoppet."
+
+#: EngineController.cpp:1429
+#, kde-format
+msgctxt "track by artist on album"
+msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
+msgstr "<b>%1</b> av <b>%2</b> på <b>%3</b>"
+
+#: EngineController.cpp:1432
+#, kde-format
+msgctxt "track by artist"
+msgid "<b>%1</b> by <b>%2</b>"
+msgstr "<b>%1</b> av <b>%2</b>"
+
+#: EngineController.cpp:1436
+#, kde-format
+msgctxt "track on album"
+msgid "<b>%1</b> on <b>%2</b>"
+msgstr "<b>%1</b> på <b>%2</b>"
+
+#: EngineController.cpp:1448
+#, kde-format
+msgctxt "track from source"
+msgid "from <b>%1</b>"
+msgstr "fra <b>%1</b>"
+
+#: OpmlParser.cpp:109
+#, kde-format
+msgid "Reading OPML podcast from %1 failed with error:\n"
+msgstr "Klarte ikke lese OPML-podkast fra %1, feil:\n"
+
+#: MainWindow.cpp:260
+msgid "Local Music"
+msgstr "Lokal musikk"
+
+#: MainWindow.cpp:262
+msgid "Local sources of content"
+msgstr "Lokale innholdskilder"
+
+#: MainWindow.cpp:270
+msgid "Internet"
+msgstr "Internett"
+
+#: MainWindow.cpp:272
+msgid "Online sources of content"
+msgstr "Kilder for tilkoblet innhold"
+
+#: MainWindow.cpp:278
+msgid "Playlists"
+msgstr "Spillelister"
+
+#: MainWindow.cpp:280
+msgid "Various types of playlists"
+msgstr "Forskjellige slags spillelister"
+
+#: MainWindow.cpp:288
+msgid "Browse local hard drive for content"
+msgstr "Bla etter innhold på den lokale disken"
+
+#: MainWindow.cpp:349
+msgctxt "@item:inmenu"
+msgid "&View"
+msgstr "&Vis"
+
+#: MainWindow.cpp:352
+msgid "Lock Layout"
+msgstr "Lås utforming"
+
+#: MainWindow.cpp:463
+msgid ""
+"<qt>Closing the main window will keep Amarok running in the System Tray. Use "
+"<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
+"qt>"
+msgstr ""
+"<qt>Hvis du lukker hovedvinduet, vil Amarok fortsette i systemkurven. Velg "
+"<b>Avslutt</b> fra menyen, eller kurv-ikonet for Amarok for å avslutte "
+"programmet.</qt>"
+
+#: MainWindow.cpp:465
+msgid "Docking in System Tray"
+msgstr "Legger i systemkurven"
+
+#: MainWindow.cpp:494
+msgid "Use relative path for &saving"
+msgstr "Bruk relativ &sti til lagring"
+
+#: MainWindow.cpp:571
+msgid "Play Media (Files or URLs)"
+msgstr "Spill media (filer eller nettadresser)"
+
+#: MainWindow.cpp:571
+msgid "Add Media (Files or URLs)"
+msgstr "Legg til media (filer eller nettadresser)"
+
+#: MainWindow.cpp:589
+msgid "Add Stream"
+msgstr "Legg til strøm"
+
+#: MainWindow.cpp:589
+msgid "Enter Stream URL:"
+msgstr "Oppgi nettadresse til strømmen:"
+
+#: MainWindow.cpp:721
+msgid "&Add Media..."
+msgstr "&Legg til medium …"
+
+#: MainWindow.cpp:726
+msgctxt "clear playlist"
+msgid "&Clear Playlist"
+msgstr "&Tøm spillelista"
+
+#: MainWindow.cpp:731
+msgctxt "edit play queue of playlist"
+msgid "Edit &Queue"
+msgstr "Rediger &kø"
+
+#: MainWindow.cpp:736
+msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
+msgid "Re&move Duplicates"
+msgstr "&Fjern duplikater"
+
+#: MainWindow.cpp:743
+msgid "&Add Stream..."
+msgstr "Le&gg til strøm …"
+
+#: MainWindow.cpp:747
+msgid "&Export Playlist As..."
+msgstr "&Eksporter spilleliste som …"
+
+#: MainWindow.cpp:759
+msgid "Equalizer"
+msgstr "Lydbalanse"
+
+#: MainWindow.cpp:767
+msgid "Bookmark Context Applets"
+msgstr "Lag bokmerke for kontekst-miniprogram"
+
+#: MainWindow.cpp:775
+msgid "Play Media..."
+msgstr "Spill medium …"
+
+#: MainWindow.cpp:780
+msgid "Edit Details of Currently Selected Track"
+msgstr ""
+
+#: MainWindow.cpp:785
+msgid "&Seek Forward"
+msgstr "&Søk fremover"
+
+#: MainWindow.cpp:791
+msgid "&Seek Backward"
+msgstr "&Søk bakover"
+
+#: MainWindow.cpp:798
+msgid "Update Collection"
+msgstr "Oppdater samling"
+
+#: MainWindow.cpp:805
+msgid "Previous Track"
+msgstr "Forrige spor"
+
+#: MainWindow.cpp:812
+msgid "Restart current track"
+msgstr "Start gjeldende spor på nytt"
+
+#: MainWindow.cpp:818
+msgid "Repopulate Playlist"
+msgstr "Fyll opp spilleliste på nytt"
+
+#: MainWindow.cpp:824
+msgid "Disable Dynamic Playlist"
+msgstr "Slå av dynamisk spilleliste"
+
+#: MainWindow.cpp:828
+msgid "Next Track"
+msgstr "Neste spor"
+
+#: MainWindow.cpp:833
+msgid "Increase Volume"
+msgstr "Høyere lyd"
+
+#: MainWindow.cpp:839
+msgid "Decrease Volume"
+msgstr "Lavere lyd"
+
+#: MainWindow.cpp:845
+msgid "Toggle Main Window"
+msgstr "Slå på/av hovedvindu"
+
+#: MainWindow.cpp:850
+msgid "Toggle Full Screen"
+msgstr "Vend fullskjerm av/på"
+
+#: MainWindow.cpp:865
+msgid "Show active track"
+msgstr "Ingen aktive spor"
+
+#: MainWindow.cpp:869
+msgid "Show Notification Popup"
+msgstr "Vis oppsprettsvarsling"
+
+#: MainWindow.cpp:874
+msgid "Mute Volume"
+msgstr "Demp lyd"
+
+#: MainWindow.cpp:879
+msgid "Last.fm: Love Current Track"
+msgstr "Last.fm: Elsker dette sporet"
+
+#: MainWindow.cpp:884
+msgid "Last.fm: Ban Current Track"
+msgstr "Last.fm: Bannlys dette sporet"
+
+#: MainWindow.cpp:889
+msgid "Last.fm: Skip Current Track"
+msgstr "Last.fm: Hopp over dette sporet"
+
+#: MainWindow.cpp:899
+msgid "Rate Current Track: 1"
+msgstr "Ranger dette sporet: 1"
+
+#: MainWindow.cpp:904
+msgid "Rate Current Track: 2"
+msgstr "Ranger dette sporet: 2"
+
+#: MainWindow.cpp:909
+msgid "Rate Current Track: 3"
+msgstr "Ranger dette sporet: 3"
+
+#: MainWindow.cpp:914
+msgid "Rate Current Track: 4"
+msgstr "Ranger dette sporet: 4"
+
+#: MainWindow.cpp:919
+msgid "Rate Current Track: 5"
+msgstr "Ranger dette sporet: 5"
+
+#: MainWindow.cpp:925
+msgid "Network Request Viewer"
+msgstr "Framviser for nettverksforespørsler"
+
+#: MainWindow.cpp:943
+msgid "&About Amarok"
+msgstr "&Om Amarok"
+
+#: MainWindow.cpp:947
+msgid "&Diagnostics"
+msgstr ""
+
+#: MainWindow.cpp:951
+msgid "&Report Bug..."
+msgstr "&Rapporter feil …"
+
+#: MainWindow.cpp:1011
+msgid "&Music"
+msgstr "&Musikk"
+
+#: MainWindow.cpp:1013
+msgid "&Amarok"
+msgstr "&Amarok"
+
+#: MainWindow.cpp:1054
+msgid "&Tools"
+msgstr "Verk&tøy"
+
+#: MainWindow.cpp:1071
+msgid "&Settings"
+msgstr "&Innstillinger"
+
+#: MainWindow.cpp:1120
+#, kde-format
+msgid ""
+"You have chosen to hide the menu bar.\n"
+"\n"
+"Please remember that you can always use the shortcut \"%1\" to bring it back."
+msgstr ""
+"Du har valgt å gjemme menylinja.\n"
+"\n"
+"Husk at du kan alltid bruke snarveien «%1» for å vise den igjen."
+
+#: MainWindow.cpp:1122
+msgid "Hide Menu"
+msgstr "Gjem menyen"
+
+#: MainWindow.cpp:1164
+#, kde-format
+msgid "Paused  ::  %1"
+msgstr "Pause :: %1"
+
+#: MainWindow.cpp:1177
+#, kde-format
+msgid "%1 - %2  ::  %3"
+msgstr "%1 – %2 :: %3"
+
+#: ScriptManager.cpp:304
+#, kde-format
+msgid ""
+"Script error reported by: %1\n"
+"%2"
+msgstr ""
+"Skriptfeil  meldt av: %1\n"
+"%2"
 
 #: rc.cpp:1
 msgctxt "NAME OF TRANSLATORS"
@@ -14248,7 +14525,7 @@ msgstr ""
 #. i18n: ectx: property (displayFormat), widget (QTimeEdit, timeEdit_TimeValue)
 #: rc.cpp:2084 rc.cpp:2123 rc.cpp:2332
 msgid "h:mm:ss"
-msgstr "t:mm:ss"
+msgstr "h:mm:ss"
 
 #. i18n: file: playlistgenerator/constraints/CheckpointEditWidget.ui:107
 #. i18n: ectx: property (whatsThis), widget (QLabel, label_Strictness)
@@ -15306,283 +15583,6 @@ msgstr "Ingen gruppering (enkelt linje)"
 msgid "Verbose"
 msgstr "Pratsom"
 
-#: OpmlParser.cpp:109
-#, kde-format
-msgid "Reading OPML podcast from %1 failed with error:\n"
-msgstr "Klarte ikke lese OPML-podkast fra %1, feil:\n"
-
-#: MainWindow.cpp:262
-msgid "Local Music"
-msgstr "Lokal musikk"
-
-#: MainWindow.cpp:264
-msgid "Local sources of content"
-msgstr "Lokale innholdskilder"
-
-#: MainWindow.cpp:272
-msgid "Internet"
-msgstr "Internett"
-
-#: MainWindow.cpp:274
-msgid "Online sources of content"
-msgstr "Kilder for tilkoblet innhold"
-
-#: MainWindow.cpp:280
-msgid "Playlists"
-msgstr "Spillelister"
-
-#: MainWindow.cpp:282
-msgid "Various types of playlists"
-msgstr "Forskjellige slags spillelister"
-
-#: MainWindow.cpp:290
-msgid "Browse local hard drive for content"
-msgstr "Bla etter innhold på den lokale disken"
-
-#: MainWindow.cpp:351
-msgctxt "@item:inmenu"
-msgid "&View"
-msgstr "&Vis"
-
-#: MainWindow.cpp:354
-msgid "Lock Layout"
-msgstr "Lås utforming"
-
-#: MainWindow.cpp:465
-msgid ""
-"<qt>Closing the main window will keep Amarok running in the System Tray. Use "
-"<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
-"qt>"
-msgstr ""
-"<qt>Hvis du lukker hovedvinduet, vil Amarok fortsette i systemkurven. Velg "
-"<b>Avslutt</b> fra menyen, eller kurv-ikonet for Amarok for å avslutte "
-"programmet.</qt>"
-
-#: MainWindow.cpp:467
-msgid "Docking in System Tray"
-msgstr "Legger i systemkurven"
-
-#: MainWindow.cpp:496
-msgid "Use relative path for &saving"
-msgstr "Bruk relativ &sti til lagring"
-
-#: MainWindow.cpp:573
-msgid "Play Media (Files or URLs)"
-msgstr "Spill media (filer eller nettadresser)"
-
-#: MainWindow.cpp:573
-msgid "Add Media (Files or URLs)"
-msgstr "Legg til media (filer eller nettadresser)"
-
-#: MainWindow.cpp:591
-msgid "Add Stream"
-msgstr "Legg til strøm"
-
-#: MainWindow.cpp:591
-msgid "Enter Stream URL:"
-msgstr "Oppgi nettadresse til strømmen:"
-
-#: MainWindow.cpp:723
-msgid "&Add Media..."
-msgstr "&Legg til medium …"
-
-#: MainWindow.cpp:728
-msgctxt "clear playlist"
-msgid "&Clear Playlist"
-msgstr "&Tøm spillelista"
-
-#: MainWindow.cpp:733
-msgctxt "edit play queue of playlist"
-msgid "Edit &Queue"
-msgstr "Rediger &kø"
-
-#: MainWindow.cpp:738
-msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
-msgid "Re&move Duplicates"
-msgstr "&Fjern duplikater"
-
-#: MainWindow.cpp:745
-msgid "&Add Stream..."
-msgstr "Le&gg til strøm …"
-
-#: MainWindow.cpp:749
-msgid "&Export Playlist As..."
-msgstr "&Eksporter spilleliste som …"
-
-#: MainWindow.cpp:761
-msgid "Equalizer"
-msgstr "Lydbalanse"
-
-#: MainWindow.cpp:769
-msgid "Bookmark Context Applets"
-msgstr "Lag bokmerke for kontekst-miniprogram"
-
-#: MainWindow.cpp:777
-msgid "Play Media..."
-msgstr "Spill medium …"
-
-#: MainWindow.cpp:782
-msgid "Edit Details of Currently Selected Track"
-msgstr ""
-
-#: MainWindow.cpp:787
-msgid "&Seek Forward"
-msgstr "&Søk fremover"
-
-#: MainWindow.cpp:793
-msgid "&Seek Backward"
-msgstr "&Søk bakover"
-
-#: MainWindow.cpp:800
-msgid "Update Collection"
-msgstr "Oppdater samling"
-
-#: MainWindow.cpp:807
-msgid "Previous Track"
-msgstr "Forrige spor"
-
-#: MainWindow.cpp:814
-msgid "Restart current track"
-msgstr "Start gjeldende spor på nytt"
-
-#: MainWindow.cpp:820
-msgid "Repopulate Playlist"
-msgstr "Fyll opp spilleliste på nytt"
-
-#: MainWindow.cpp:826
-msgid "Disable Dynamic Playlist"
-msgstr "Slå av dynamisk spilleliste"
-
-#: MainWindow.cpp:830
-msgid "Next Track"
-msgstr "Neste spor"
-
-#: MainWindow.cpp:835
-msgid "Increase Volume"
-msgstr "Høyere lyd"
-
-#: MainWindow.cpp:841
-msgid "Decrease Volume"
-msgstr "Lavere lyd"
-
-#: MainWindow.cpp:847
-msgid "Toggle Main Window"
-msgstr "Slå på/av hovedvindu"
-
-#: MainWindow.cpp:852
-msgid "Toggle Full Screen"
-msgstr "Vend fullskjerm av/på"
-
-#: MainWindow.cpp:867
-msgid "Show active track"
-msgstr "Ingen aktive spor"
-
-#: MainWindow.cpp:871
-msgid "Show Notification Popup"
-msgstr "Vis oppsprettsvarsling"
-
-#: MainWindow.cpp:876
-msgid "Mute Volume"
-msgstr "Demp lyd"
-
-#: MainWindow.cpp:881
-msgid "Last.fm: Love Current Track"
-msgstr "Last.fm: Elsker dette sporet"
-
-#: MainWindow.cpp:886
-msgid "Last.fm: Ban Current Track"
-msgstr "Last.fm: Bannlys dette sporet"
-
-#: MainWindow.cpp:891
-msgid "Last.fm: Skip Current Track"
-msgstr "Last.fm: Hopp over dette sporet"
-
-#: MainWindow.cpp:901
-msgid "Rate Current Track: 1"
-msgstr "Ranger dette sporet: 1"
-
-#: MainWindow.cpp:906
-msgid "Rate Current Track: 2"
-msgstr "Ranger dette sporet: 2"
-
-#: MainWindow.cpp:911
-msgid "Rate Current Track: 3"
-msgstr "Ranger dette sporet: 3"
-
-#: MainWindow.cpp:916
-msgid "Rate Current Track: 4"
-msgstr "Ranger dette sporet: 4"
-
-#: MainWindow.cpp:921
-msgid "Rate Current Track: 5"
-msgstr "Ranger dette sporet: 5"
-
-#: MainWindow.cpp:927
-msgid "Network Request Viewer"
-msgstr "Framviser for nettverksforespørsler"
-
-#: MainWindow.cpp:945
-msgid "&About Amarok"
-msgstr "&Om Amarok"
-
-#: MainWindow.cpp:949
-msgid "&Diagnostics"
-msgstr ""
-
-#: MainWindow.cpp:953
-msgid "&Report Bug..."
-msgstr "&Rapporter feil …"
-
-#: MainWindow.cpp:1013
-msgid "&Music"
-msgstr "&Musikk"
-
-#: MainWindow.cpp:1015
-msgid "&Amarok"
-msgstr "&Amarok"
-
-#: MainWindow.cpp:1056
-msgid "&Tools"
-msgstr "Verk&tøy"
-
-#: MainWindow.cpp:1073
-msgid "&Settings"
-msgstr "&Innstillinger"
-
-#: MainWindow.cpp:1122
-#, kde-format
-msgid ""
-"You have chosen to hide the menu bar.\n"
-"\n"
-"Please remember that you can always use the shortcut \"%1\" to bring it back."
-msgstr ""
-"Du har valgt å gjemme menylinja.\n"
-"\n"
-"Husk at du kan alltid bruke snarveien «%1» for å vise den igjen."
-
-#: MainWindow.cpp:1124
-msgid "Hide Menu"
-msgstr "Gjem menyen"
-
-#: MainWindow.cpp:1166
-#, kde-format
-msgid "Paused  ::  %1"
-msgstr "Pause :: %1"
-
-#: MainWindow.cpp:1179
-#, kde-format
-msgid "%1 - %2  ::  %3"
-msgstr "%1 – %2 :: %3"
-
-#: ScriptManager.cpp:304
-#, kde-format
-msgid ""
-"Script error reported by: %1\n"
-"%2"
-msgstr ""
-"Skriptfeil  meldt av: %1\n"
-"%2"
-
 #: TrayIcon.cpp:145
 #, kde-format
 msgid "%1%"
@@ -15613,91 +15613,91 @@ msgstr "Avspillingsteller: %1"
 msgid "Last played: %1"
 msgstr "Sist spilt: %1"
 
-#: App.cpp:410
+#: App.cpp:409
 msgid "Files/URLs to open"
 msgstr "Filer/nettadresser som skal åpnes"
 
-#: App.cpp:411
+#: App.cpp:410
 msgid "Immediately start playing an audio cd"
 msgstr "Begynn å spille en lydcd med en gang"
 
-#: App.cpp:413
+#: App.cpp:412
 msgid "Skip backwards in playlist"
 msgstr "Hopp bakover i spillelista"
 
-#: App.cpp:415
+#: App.cpp:414
 msgid "Start playing current playlist"
 msgstr "Spill av gjeldende spilleliste"
 
-#: App.cpp:417
+#: App.cpp:416
 msgid "Play if stopped, pause if playing"
 msgstr "Spill av hvis stoppet. Pause hvis spiller."
 
-#: App.cpp:418
+#: App.cpp:417
 msgid "Pause playback"
 msgstr "Pause i avspilling"
 
-#: App.cpp:420
+#: App.cpp:419
 msgid "Stop playback"
 msgstr "Stopp avspilling"
 
-#: App.cpp:422
+#: App.cpp:421
 msgid "Skip forwards in playlist"
 msgstr "Hopp fremover i spillelista"
 
-#: App.cpp:423
+#: App.cpp:422
 msgid "Additional options:"
 msgstr "Flere valg:"
 
-#: App.cpp:425
+#: App.cpp:424
 msgid "Append files/URLs to playlist"
 msgstr "Legg filer og nettadresser til spillelista"
 
-#: App.cpp:426
+#: App.cpp:425
 msgid "Queue URLs after the currently playing track"
 msgstr "Legg nettadresser i kø etter sporet som spiller"
 
-#: App.cpp:428
+#: App.cpp:427
 msgid "Load URLs, replacing current playlist"
 msgstr "Last inn nettadresser, erstatt gjeldende spilleliste"
 
-#: App.cpp:430
+#: App.cpp:429
 msgid "Print verbose debugging information"
 msgstr "Skriv ut detaljert feilsøkingsinformasjon"
 
-#: App.cpp:432
+#: App.cpp:431
 msgid "Disable colorization for debug output."
 msgstr "Slå av fargesetting for utdata fra feilsøking."
 
-#: App.cpp:434
+#: App.cpp:433
 msgid "Allow running multiple Amarok instances"
 msgstr "Tillat kjøring av flere Amarok-instanser"
 
-#: App.cpp:435
+#: App.cpp:434
 msgid "Base for relative filenames/URLs"
 msgstr "Grunnlag for relative filnavn/URL-er"
 
-#: App.cpp:437
+#: App.cpp:436
 msgid "Unit test options:"
 msgstr "Valg for enhetstest:"
 
-#: App.cpp:438
+#: App.cpp:437
 msgid "Run integrated unit tests"
 msgstr "Kjør integrerte enhetstester"
 
-#: App.cpp:439
+#: App.cpp:438
 msgid "Destination of test output: 'stdout', 'log'"
 msgstr "Hvor skal utdata fra test skrives: 'stdout, log'"
 
-#: App.cpp:440
+#: App.cpp:439
 msgid "Format of test output: 'xml', 'lightxml', 'plaintext'"
 msgstr "Format for utdata fra test: «xml», «lightxml», «plaintext»"
 
-#: App.cpp:441
+#: App.cpp:440
 msgid "Verbosity from 0-3 (highest)"
 msgstr "Utdatamengde fra 0-3 (mest)"
 
-#: App.cpp:635
+#: App.cpp:621
 msgid ""
 "The embedded database was not found; you must set up a database server "
 "connection.\n"
@@ -15707,7 +15707,7 @@ msgstr ""
 "en databasetjener\n"
 "Du må starte Amarok på nytt etter dette."
 
-#: App.cpp:636
+#: App.cpp:622
 msgid ""
 "The connection details for the database server were invalid.\n"
 "You must enter correct settings and restart Amarok after doing this."
@@ -15715,15 +15715,15 @@ msgstr ""
 "Ugyldige tilkoblingsdetaljer for databasetjeneren.\n"
 "Du må oppgi riltige innstillinger og deretter starte Amarok på nytt."
 
-#: App.cpp:637
+#: App.cpp:623
 msgid "Database Error"
 msgstr "Databasefeil"
 
-#: App.cpp:682
+#: App.cpp:668
 msgid "Moving files to trash"
 msgstr "Flytter filer til søppelkurven"
 
-#: App.cpp:770
+#: App.cpp:756
 #, kde-format
 msgid ""
 "A music path, %1, is set in System Settings.\n"

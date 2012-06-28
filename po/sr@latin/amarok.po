@@ -1,16 +1,14 @@
 # Translation of amarok.po into Serbian.
 # Chusslove Illich <caslav.ilic@gmx.net>, 2004, 2005, 2006, 2007, 2009, 2010, 2011, 2012.
 # Slobodan Simic <slsimic@gmail.com>, 2005, 2008.
-# Slobodan Terzic <githzerai06@gmail.com>, 2009.
 # Slobodan Terzić <githzerai06@gmail.com>, 2009, 2010, 2011.
-# Dalibor Djuric <dalibor.djuric@mozilla-srbija.org>, 2010.
 # Dalibor Djuric <daliborddjuric@gmail.com>, 2010, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2012-05-25 06:47+0200\n"
-"PO-Revision-Date: 2011-11-24 20:47+0100\n"
+"POT-Creation-Date: 2012-06-26 06:14+0200\n"
+"PO-Revision-Date: 2012-06-17 13:28+0200\n"
 "Last-Translator: Chusslove Illich <caslav.ilic@gmx.net>\n"
 "Language-Team: Serbian <kde-i18n-sr@kde.org>\n"
 "Language: sr@latin\n"
@@ -196,12 +194,12 @@ msgid "Now playing"
 msgstr "Sad puštam"
 
 #: scanner/GenericScanManager.cpp:203
-#: core-impl/collections/db/ScanManager.cpp:482
+#: core-impl/collections/db/ScanManager.cpp:485
 msgid "Unable to start Amarok collection scanner."
 msgstr "Ne mogu da pokrenem Amarokov pretraživač zbirke."
 
 #: scanner/GenericScanManager.cpp:300
-#: core-impl/collections/db/ScanManager.cpp:531
+#: core-impl/collections/db/ScanManager.cpp:534
 #, kde-format
 msgid "Found one directory"
 msgid_plural "Found %1 directories"
@@ -211,100 +209,14 @@ msgstr[2] "Nađeno %1 fascikli"
 msgstr[3] "Nađena jedna fascikla"
 
 #: scanner/GenericScanManager.cpp:310
-#: core-impl/collections/db/ScanManager.cpp:542
+#: core-impl/collections/db/ScanManager.cpp:545
 #, kde-format
 msgid "Got directory \"%1\" from scanner."
 msgstr "Pretraživač je našao fasciklu „%1“."
 
-#: EngineController.cpp:289
-msgid ""
-"<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
-"the installation of the backend that phonon uses.</p><p>You may find useful "
-"information in the <i>FAQ</i> section of the <i>Amarok Handbook</i>.</p>"
-msgstr ""
-"<p>Phonon tvrdi da <b>ne može</b> da pušta MP3 fajlove. Možda bi trebalo da "
-"proverite instalaciju pozadine koju Phonon koristi.</p><p>Možete naći "
-"korisne informacije u ČPP odeljku <i>Priručnika za Amarok</i>.</p>"
-
-#: EngineController.cpp:311
-msgid "Install MP3 Support"
-msgstr "Instaliraj podršku za MP3"
-
-#: EngineController.cpp:313
-msgid ""
-"Amarok currently cannot play MP3 files. Do you want to install support for "
-"MP3?"
-msgstr ""
-"Amarok trenutno ne može da pušta MP3 fajlove. Želite li da instalirate "
-"podršku za MP3?"
-
-#: EngineController.cpp:314
-msgid "No MP3 Support"
-msgstr "Nema podrške za MP3"
-
-# >> @item
-#: EngineController.cpp:892
-msgid "Preamp"
-msgstr "pretpojačanje"
-
-#: EngineController.cpp:898
-msgid ""
-"%0\n"
-"Hz"
-msgstr ""
-"%0\n"
-"Hz"
-
-#: EngineController.cpp:902
-msgid ""
-"%0\n"
-"kHz"
-msgstr ""
-"%0\n"
-"kHz"
-
-#: EngineController.cpp:1199
-msgid "Too many errors encountered in playlist. Playback stopped."
-msgstr "Suviše grešaka u listi numera. Puštanje zaustavljeno."
-
-#: EngineController.cpp:1420
-#, kde-format
-msgctxt "track by artist on album"
-msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
-msgstr "<b>%1</b> — <b>%2</b> (<b>%3</b>)"
-
-#: EngineController.cpp:1423
-#, kde-format
-msgctxt "track by artist"
-msgid "<b>%1</b> by <b>%2</b>"
-msgstr "<b>%1</b> — <b>%2</b>"
-
-#: EngineController.cpp:1427
-#, kde-format
-msgctxt "track on album"
-msgid "<b>%1</b> on <b>%2</b>"
-msgstr "<b>%1</b> (<b>%2</b>)"
-
-#: EngineController.cpp:1432
-#: core-impl/collections/ipodcollection/IpodMeta.cpp:202
-#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:95
-msgid "Unknown track"
-msgstr "Nepoznata numera"
-
-#: EngineController.cpp:1439
-#, kde-format
-msgctxt "track from source"
-msgid "from <b>%1</b>"
-msgstr " <b>%1</b>"
-
-#: EngineController.cpp:1453 context/engines/current/CurrentEngine.cpp:136
-#: mac/GrowlInterface.cpp:43 widgets/Osd.cpp:651
-msgid "No track playing"
-msgstr "Ništa nije pušteno"
-
 #. i18n: file: core-impl/collections/audiocd/FormatSelectionDialog.ui:14
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
-#: main.cpp:43 rc.cpp:1182 MainWindow.cpp:104
+#: main.cpp:43 MainWindow.cpp:104 rc.cpp:1182
 msgid "Amarok"
 msgstr "Amarok"
 
@@ -315,10 +227,10 @@ msgstr "Audio plejer za KDE"
 #: main.cpp:45
 msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
-"(C) 2003-2011, The Amarok Development Squad"
+"(C) 2003-2012, The Amarok Development Squad"
 msgstr ""
 "© 2002–2003, Mark Krečman\n"
-"© 2003–2011, Amarokov razvojni odred"
+"© 2003–2012, Amarokov razvojni odred"
 
 #: main.cpp:46
 #, kde-format
@@ -394,10 +306,8 @@ msgid "Myriam Schweingruber"
 msgstr "Mirijam Švajngruber"
 
 #: main.cpp:75
-#, fuzzy
-#| msgid "Rokymoter, bug squashing (Mamarok)"
 msgid "Rokymoter, Bug triaging (Mamarok)"
-msgstr "Rokymoterka, ispravke grešaka (Mamarok)"
+msgstr "Rokymoterka, trijažiranje grešaka (Mamarok)"
 
 #: main.cpp:78
 msgid "Nikolaj Hald 'Also very hot' Nielsen"
@@ -407,15 +317,14 @@ msgstr "Nikolaj Hald Nilsen „Pride vrlo vruć“"
 msgid "Developer (nhn)"
 msgstr "Programer (nhn)"
 
+# well-spelled: салсе
 #: main.cpp:82
 msgid "Ralf 'SalsaMaster' Engels"
-msgstr ""
+msgstr "Ralf Engels „Majstor salse“"
 
 #: main.cpp:83
-#, fuzzy
-#| msgid "Developer (nhn)"
 msgid "Developer (rengels)"
-msgstr "Programer (nhn)"
+msgstr "Programer (rengels)"
 
 #: main.cpp:86
 msgid "Rick W. Chen"
@@ -518,10 +427,8 @@ msgid "Daniel Dewald"
 msgstr "Danijel Devald"
 
 #: main.cpp:119
-#, fuzzy
-#| msgid "Tag Guesser, Labels"
 msgid "Tag Guesser, Labels, Spectrum Analyzer"
-msgstr "Pogađač oznaka, etikete"
+msgstr "Pogađač oznaka, etikete, analizator spektra"
 
 #: main.cpp:121
 msgid "Daniel Winter"
@@ -611,21 +518,19 @@ msgstr "Rokymoter (ljubomir)"
 
 #: main.cpp:144
 msgid "Lucas Gomes"
-msgstr ""
+msgstr "Lukas Gomes"
 
 #: main.cpp:144
-#, fuzzy
-#| msgid "Developer (sebr)"
 msgid "Developer (MaskMaster)"
-msgstr "Programer (sebr)"
+msgstr "Programer (MaskMaster)"
 
 #: main.cpp:146
 msgid "Matěj Laitl"
-msgstr ""
+msgstr "Matjej Laitl"
 
 #: main.cpp:146
 msgid "iPod collection rewrite & more"
-msgstr ""
+msgstr "Pisanje iznova zbirke iPoda i još toga"
 
 #: main.cpp:148
 msgid "Mathias Panzenböck"
@@ -686,11 +591,11 @@ msgstr "Rokymoter (emunkki)"
 
 #: main.cpp:164
 msgid "Patrick von Reth"
-msgstr ""
+msgstr "Patrik fon Ret"
 
 #: main.cpp:164
 msgid "Windows build (TheOneRing)"
-msgstr ""
+msgstr "Gradnja za Windows (TheOneRing)"
 
 #: main.cpp:166
 msgid "Peter Zhou Lei"
@@ -702,13 +607,11 @@ msgstr "Sučelje za skriptovanje"
 
 #: main.cpp:168
 msgid "Sam Lade"
-msgstr ""
+msgstr "Sem Lejdi"
 
 #: main.cpp:168
-#, fuzzy
-#| msgid "Developer (nhn)"
 msgid "Developer (Sentynel)"
-msgstr "Programer (nhn)"
+msgstr "Programer (Sentynel)"
 
 #: main.cpp:170
 msgid "Scott Wheeler"
@@ -751,7 +654,7 @@ msgstr "Tomas Libking"
 msgid "Valentin Rouet"
 msgstr "Valanten Rue"
 
-#: main.cpp:182 main.cpp:255
+#: main.cpp:182 main.cpp:256
 msgid "Valorie Zimmerman"
 msgstr "Valori Cimerman"
 
@@ -981,17 +884,15 @@ msgstr "Tomaš Duđik"
 msgid "Splash screen"
 msgstr "Uvodni ekran"
 
-#: main.cpp:252
-#, fuzzy
-#| msgid "Andrew Turner"
-msgid "Andrew Browning"
-msgstr "Endru Terner"
-
 #: main.cpp:253
-msgid "David Roth"
-msgstr ""
+msgid "Andrew Browning"
+msgstr "Endru Brauning"
 
 #: main.cpp:254
+msgid "David Roth"
+msgstr "Dejvid Rot"
+
+#: main.cpp:255
 msgid "Dr. Tilmann Bubeck"
 msgstr "Tilman Bubek"
 
@@ -1202,21 +1103,9 @@ msgstr "nepoznato"
 msgid "New Bookmark"
 msgstr "Novi obeleživač"
 
-#: amarokurls/BookmarkManager.cpp:43 MainWindow.cpp:757
+#: amarokurls/BookmarkManager.cpp:43 MainWindow.cpp:755
 msgid "Bookmark Manager"
 msgstr "Menadžer obeleživača"
-
-#: amarokurls/BookmarkMetaActions.cpp:31
-msgid "Bookmark this Album"
-msgstr "Obeleži album"
-
-#: amarokurls/BookmarkMetaActions.cpp:47
-msgid "Bookmark this Artist"
-msgstr "Obeleži izvođača"
-
-#: amarokurls/BookmarkMetaActions.cpp:62
-msgid "Add Position Marker"
-msgstr "Dodaj pozicioni obeleživač"
 
 #: amarokurls/ContextUrlRunner.cpp:75
 msgctxt "A type of command that affects the context view"
@@ -1243,7 +1132,7 @@ msgstr "Počnite da kucate za postepeno filtriranje obeleživača."
 
 # >> @title:column
 #: amarokurls/BookmarkModel.cpp:86
-#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:415
+#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:411
 msgid "Group"
 msgstr "grupa"
 
@@ -1259,7 +1148,7 @@ msgstr "grupa"
 #. i18n: file: services/ampache/NewServerWidget.ui:17
 #. i18n: ectx: property (text), widget (QLabel, labelName)
 #: amarokurls/BookmarkModel.cpp:265
-#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:414
+#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:410
 #: playlistgenerator/TreeModel.cpp:64
 #: services/amazon/AmazonItemTreeModel.cpp:168 rc.cpp:587 rc.cpp:1994
 #: rc.cpp:2000 rc.cpp:2386 rc.cpp:2398
@@ -1268,7 +1157,7 @@ msgstr "ime"
 
 # >! Contexts.
 #: amarokurls/BookmarkModel.cpp:266
-#: browsers/playlistbrowser/PodcastModel.cpp:333 playlist/PlaylistModel.cpp:903
+#: browsers/playlistbrowser/PodcastModel.cpp:333 playlist/PlaylistModel.cpp:904
 msgid "Type"
 msgstr "vrsta"
 
@@ -1338,12 +1227,12 @@ msgstr "Novi vremenski kô̂d numere"
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:447
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:448
 #: core-impl/collections/audiocd/AudioCdCollection.cpp:449
-#: core-impl/collections/audiocd/AudioCdCollection.cpp:450 MainWindow.cpp:1179
+#: core-impl/collections/audiocd/AudioCdCollection.cpp:450 MainWindow.cpp:1177
 msgid "Unknown"
 msgstr "Nepoznato"
 
 # >> @title
-#: amarokurls/NavigationUrlGenerator.cpp:135 MainWindow.cpp:288
+#: amarokurls/NavigationUrlGenerator.cpp:135 MainWindow.cpp:286
 msgid "Files"
 msgstr "Fajlovi"
 
@@ -1373,7 +1262,7 @@ msgstr "Izvođač „%1“ od %2"
 msgid "Artist \"%1\""
 msgstr "Izvođač „%1“"
 
-#: amarokurls/NavigationUrlGenerator.cpp:250 MainWindow.cpp:753
+#: amarokurls/NavigationUrlGenerator.cpp:250 MainWindow.cpp:751
 msgid "Bookmark Media Sources View"
 msgstr "Obeleži prikaz medijskih izvora"
 
@@ -1381,6 +1270,18 @@ msgstr "Obeleži prikaz medijskih izvora"
 msgctxt "A type of command that affects the view in the browser category"
 msgid "Navigate"
 msgstr "Idi"
+
+#: amarokurls/BookmarkMetaActions.cpp:31
+msgid "Bookmark this Album"
+msgstr "Obeleži album"
+
+#: amarokurls/BookmarkMetaActions.cpp:47
+msgid "Bookmark this Artist"
+msgstr "Obeleži izvođača"
+
+#: amarokurls/BookmarkMetaActions.cpp:62
+msgid "Add Position Marker"
+msgstr "Dodaj pozicioni obeleživač"
 
 #: browsers/CollectionTreeItem.cpp:140
 msgctxt "No labels are assigned to the given item are any of its subitems"
@@ -1418,7 +1319,7 @@ msgstr "Nepoznato"
 
 #: browsers/CollectionTreeItemModelBase.cpp:316
 #: core-impl/collections/db/sql/SqlMeta.cpp:422
-#: core-impl/collections/ipodcollection/IpodMeta.cpp:96
+#: core-impl/collections/ipodcollection/IpodMeta.cpp:94
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:155
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:703
 #: core-impl/collections/support/ArtistHelper.cpp:40
@@ -1438,7 +1339,7 @@ msgstr "godina — album"
 #: context/applets/wikipedia/WikipediaApplet.cpp:618
 #: dialogs/FilenameLayoutDialog.cpp:74 dialogs/FilenameLayoutDialog.cpp:463
 #: dialogs/transferdialog.cpp:89 musicbrainz/MusicBrainzTags.cpp:360
-#: playlist/view/PlaylistViewCommon.cpp:64 playlist/PlaylistModel.cpp:896
+#: playlist/view/PlaylistViewCommon.cpp:64 playlist/PlaylistModel.cpp:897
 #: services/jamendo/JamendoInfoParser.cpp:83
 #: services/magnatune/MagnatuneStore.cpp:224
 #: widgets/SmartPlaylistEditor.cpp:183 widgets/SmartPlaylistEditor.cpp:197
@@ -1452,7 +1353,7 @@ msgstr "album"
 #: context/applets/wikipedia/WikipediaApplet.cpp:612
 #: dialogs/FilenameLayoutDialog.cpp:62 dialogs/FilenameLayoutDialog.cpp:435
 #: dialogs/transferdialog.cpp:88 musicbrainz/MusicBrainzTags.cpp:359
-#: playlist/PlaylistModel.cpp:892 services/jamendo/JamendoInfoParser.cpp:51
+#: playlist/PlaylistModel.cpp:893 services/jamendo/JamendoInfoParser.cpp:51
 #: services/lastfm/LastFmService.cpp:507
 #: services/magnatune/MagnatuneStore.cpp:218
 #: widgets/SmartPlaylistEditor.cpp:183 widgets/SmartPlaylistEditor.cpp:197
@@ -1465,7 +1366,7 @@ msgstr "izvođač"
 #. i18n: ectx: property (text), widget (QLabel, label_13)
 #: browsers/CollectionTreeItemModelBase.cpp:980
 #: dialogs/FilenameLayoutDialog.cpp:78 dialogs/FilenameLayoutDialog.cpp:456
-#: musicbrainz/MusicBrainzTags.cpp:361 playlist/PlaylistModel.cpp:893
+#: musicbrainz/MusicBrainzTags.cpp:361 playlist/PlaylistModel.cpp:894
 #: rc.cpp:1902
 msgid "Album Artist"
 msgstr "izvođač albuma"
@@ -1473,7 +1374,7 @@ msgstr "izvođač albuma"
 # >! Contexts.
 #: browsers/CollectionTreeItemModelBase.cpp:981
 #: core/meta/support/MetaConstants.cpp:176 dialogs/FilenameLayoutDialog.cpp:66
-#: dialogs/FilenameLayoutDialog.cpp:442 playlist/PlaylistModel.cpp:894
+#: dialogs/FilenameLayoutDialog.cpp:442 playlist/PlaylistModel.cpp:895
 #: widgets/SmartPlaylistEditor.cpp:183 widgets/SmartPlaylistEditor.cpp:197
 msgid "Composer"
 msgstr "kompozitor"
@@ -1482,7 +1383,7 @@ msgstr "kompozitor"
 #: browsers/CollectionTreeItemModelBase.cpp:982
 #: core/meta/support/MetaConstants.cpp:175 dialogs/FilenameLayoutDialog.cpp:86
 #: dialogs/FilenameLayoutDialog.cpp:477 dialogs/transferdialog.cpp:90
-#: playlist/ProgressiveSearchWidget.cpp:95 playlist/PlaylistModel.cpp:900
+#: playlist/ProgressiveSearchWidget.cpp:95 playlist/PlaylistModel.cpp:901
 #: widgets/SmartPlaylistEditor.cpp:183 widgets/SmartPlaylistEditor.cpp:197
 msgid "Genre"
 msgstr "žanr"
@@ -1491,7 +1392,7 @@ msgstr "žanr"
 # >? Малим словом у core/meta/support/MetaConstants.cpp:111
 #: browsers/CollectionTreeItemModelBase.cpp:983
 #: core/meta/support/MetaConstants.cpp:177 dialogs/FilenameLayoutDialog.cpp:70
-#: dialogs/FilenameLayoutDialog.cpp:449 playlist/PlaylistModel.cpp:895
+#: dialogs/FilenameLayoutDialog.cpp:449 playlist/PlaylistModel.cpp:896
 #: widgets/SmartPlaylistEditor.cpp:184 widgets/SmartPlaylistEditor.cpp:197
 #: widgets/SmartPlaylistEditor.cpp:921
 msgid "Year"
@@ -1512,7 +1413,7 @@ msgstr "Domaće"
 #, kde-format
 msgctxt "Example: 3.5 GB free (unit is part of %1)"
 msgid "%1 free"
-msgstr ""
+msgstr "%1 slobodno"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:146
 msgid ""
@@ -1522,7 +1423,7 @@ msgstr ""
 "Ovde ćete pronaći lokalnu muziku, kao i muziku sa prenosnih audio plejera i "
 "CD‑ova."
 
-#: browsers/collectionbrowser/CollectionWidget.cpp:179 MainWindow.cpp:862
+#: browsers/collectionbrowser/CollectionWidget.cpp:179 MainWindow.cpp:860
 msgid "Search collection"
 msgstr "Pretraži zbirku"
 
@@ -1539,7 +1440,7 @@ msgstr "dodato u toku dana"
 #: browsers/collectionbrowser/CollectionWidget.cpp:188
 msgctxt "@item:inlistbox Collection widget filter preset"
 msgid "Added This Week"
-msgstr "dodato ove nedelje"
+msgstr "dodato ove sedmice"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:190
 msgctxt "@item:inlistbox Collection widget filter preset"
@@ -1643,7 +1544,7 @@ msgstr "Kopiraj u zbirku"
 
 #: browsers/filebrowser/FileView.cpp:362
 #: browsers/playlistbrowser/PlaylistBrowserModel.cpp:49
-#: browsers/CollectionTreeView.cpp:956
+#: browsers/CollectionTreeView.cpp:951
 #: context/applets/albums/AlbumsView.cpp:240
 #: services/lastfm/LastFmTreeView.cpp:111
 msgid "&Add to Playlist"
@@ -1651,14 +1552,14 @@ msgstr "Dod&aj u listu numera"
 
 #: browsers/filebrowser/FileView.cpp:374
 #: browsers/playlistbrowser/PlaylistBrowserModel.cpp:60
-#: browsers/CollectionTreeView.cpp:970
+#: browsers/CollectionTreeView.cpp:965
 #: context/applets/albums/AlbumsView.cpp:241
 #: services/lastfm/LastFmTreeView.cpp:120
 msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
 msgstr "&Zameni listu numera"
 
-#: browsers/filebrowser/FileView.cpp:386 browsers/CollectionTreeView.cpp:1052
+#: browsers/filebrowser/FileView.cpp:386 browsers/CollectionTreeView.cpp:1047
 msgid "&Edit Track Details"
 msgstr "&Uredi podatke numere"
 
@@ -1703,10 +1604,8 @@ msgstr[2] "Premeštam u smeće: %1 fajlova"
 msgstr[3] "Premeštam u smeće: 1 fajl"
 
 #: browsers/playlistbrowser/PlaylistBrowserModel.cpp:44
-#, fuzzy
-#| msgid "Create Smart Playlist"
 msgid "Create empty playlist"
-msgstr "Napravi pametnu listu"
+msgstr "Napravi praznu listu numera"
 
 #: browsers/playlistbrowser/PlaylistBrowserModel.cpp:143
 #, kde-format
@@ -1719,10 +1618,7 @@ msgstr[2] "%1 listi numera"
 msgstr[3] "Jedna lista numera"
 
 #: browsers/playlistbrowser/PlaylistBrowserModel.cpp:185
-#, fuzzy, kde-format
-#| msgctxt "number of playlists from one source"
-#| msgid "One Playlist"
-#| msgid_plural "%1 playlists"
+#, kde-format
 msgctxt "number of playlists from one source"
 msgid "One playlist"
 msgid_plural "%1 playlists"
@@ -1732,9 +1628,13 @@ msgstr[2] "%1 listi numera"
 msgstr[3] "Jedna lista numera"
 
 # >> @title:column
-#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:416
+#: browsers/playlistbrowser/PlaylistBrowserModel.cpp:412
 msgid "Source"
 msgstr "izvor"
+
+#: browsers/playlistbrowser/PlaylistsByProviderProxy.cpp:253
+msgid "No playlists"
+msgstr "Nema listi numera"
 
 #: browsers/playlistbrowser/APGCategory.cpp:39
 msgid "Automated Playlist Generator"
@@ -1785,23 +1685,38 @@ msgstr "Brzina"
 msgid "Accuracy"
 msgstr "Preciznost"
 
-#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:77
-#: services/opmldirectory/OpmlDirectoryModel.cpp:44
-msgid "Add Folder"
-msgstr "Dodaj fasciklu"
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:36
+msgid "&Rename Folder..."
+msgstr "&Preimenuj fasciklu..."
 
-#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:82
-msgid "Visible Sources"
-msgstr "Vidljivi izvori"
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:42
+msgid "&Delete Folder"
+msgstr "&Obriši fasciklu"
 
-#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:186
-msgid "Folders are only shown in <b>merged view</b>."
-msgstr "Fascikle se prikazuju samo u <b>objedinjenom prikazu</b>."
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:315
+msgid "New name"
+msgstr "Novo ime"
 
-#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:272
-msgctxt "default name for new folder"
-msgid "New Folder"
-msgstr "Nova fascikla"
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:317
+msgctxt "Enter a new name for a folder that already exists"
+msgid "Enter new folder name:"
+msgstr "Unesite novo ime fascikle:"
+
+# >> @title:window
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:333
+#: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:254
+#: core-impl/playlists/providers/user/UserPlaylistProvider.cpp:140
+#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:98
+msgid "Confirm Delete"
+msgstr "Potvrda brisanja"
+
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:335
+msgid "Are you sure you want to delete this folder and its contents?"
+msgstr "Želite li zaista da obrišete ovu fasciklu i njen sadržaj?"
+
+#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:339
+msgid "Yes, delete folder."
+msgstr "Da, obriši fasciklu."
 
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:43
 msgctxt "Bias dialog window title"
@@ -1870,39 +1785,6 @@ msgstr ""
 "možete odrediti moćne dinamičke liste numera i upravljati pretplatama i "
 "epizodama podemisija."
 
-#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:36
-msgid "&Rename Folder..."
-msgstr "&Preimenuj fasciklu..."
-
-#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:42
-msgid "&Delete Folder"
-msgstr "&Obriši fasciklu"
-
-#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:315
-msgid "New name"
-msgstr "Novo ime"
-
-#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:317
-msgctxt "Enter a new name for a folder that already exists"
-msgid "Enter new folder name:"
-msgstr "Unesite novo ime fascikle:"
-
-# >> @title:window
-#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:333
-#: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:254
-#: core-impl/playlists/providers/user/UserPlaylistProvider.cpp:140
-#: playlistmanager/sql/SqlUserPlaylistProvider.cpp:98
-msgid "Confirm Delete"
-msgstr "Potvrda brisanja"
-
-#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:335
-msgid "Are you sure you want to delete this folder and its contents?"
-msgstr "Želite li zaista da obrišete ovu fasciklu i njen sadržaj?"
-
-#: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:339
-msgid "Yes, delete folder."
-msgstr "Da, obriši fasciklu."
-
 #: browsers/playlistbrowser/UserPlaylistCategory.cpp:58
 msgid "Saved Playlists"
 msgstr "Sačuvane liste numera"
@@ -1920,6 +1802,24 @@ msgstr ""
 "Stvara, uređuje, organizuje i učitava liste numera. Amarok ovde automatski "
 "dodaje sve liste numere koje pronađe tokom pretrage zbirke i sve koje ste "
 "sačuvali."
+
+#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:77
+#: services/opmldirectory/OpmlDirectoryModel.cpp:44
+msgid "Add Folder"
+msgstr "Dodaj fasciklu"
+
+#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:82
+msgid "Visible Sources"
+msgstr "Vidljivi izvori"
+
+#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:187
+msgid "Folders are only shown in <b>merged view</b>."
+msgstr "Fascikle se prikazuju samo u <b>objedinjenom prikazu</b>."
+
+#: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:273
+msgctxt "default name for new folder"
+msgid "New Folder"
+msgstr "Nova fascikla"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:53
 msgid "Dynamic Playlists"
@@ -2078,7 +1978,7 @@ msgstr[3] "1 kanal"
 #: browsers/playlistbrowser/PodcastModel.cpp:334
 #: core/meta/support/MetaConstants.cpp:172 dialogs/FilenameLayoutDialog.cpp:58
 #: dialogs/FilenameLayoutDialog.cpp:421 musicbrainz/MusicBrainzTags.cpp:358
-#: playlist/PlaylistModel.cpp:891 widgets/SmartPlaylistEditor.cpp:183
+#: playlist/PlaylistModel.cpp:892 widgets/SmartPlaylistEditor.cpp:183
 #: rc.cpp:1061
 msgid "Title"
 msgstr "Naslov"
@@ -2097,12 +1997,6 @@ msgstr "Dodavanje podemisije"
 msgid "Enter RSS 1.0/2.0 or Atom feed URL:"
 msgstr "Unesite URL RSS 1.0, 2.0 ili Atom dovoda:"
 
-#: browsers/playlistbrowser/PlaylistsByProviderProxy.cpp:241
-#, fuzzy
-#| msgid "New playlist"
-msgid "No playlists"
-msgstr "Nova lista numera"
-
 #: browsers/servicebrowser/ServiceBrowser.cpp:40
 msgid ""
 "The Internet browser lets you browse online sources of content that "
@@ -2119,17 +2013,15 @@ msgstr "Zbirka"
 
 #: browsers/CollectionTreeView.cpp:303
 msgid "Press Shift key for move"
-msgstr ""
+msgstr "Pritisnite taster Shift za premeštanje"
 
 #: browsers/CollectionTreeView.cpp:315
-#, fuzzy
-#| msgid "Moving files to trash"
 msgid "Move Tracks to Trash"
-msgstr "Premeštam fajlove u smeće"
+msgstr "Premesti numere u smeće"
 
 #: browsers/CollectionTreeView.cpp:319
 msgid "Press Shift key to delete"
-msgstr ""
+msgstr "Pritisnite taster Shift za brisanje"
 
 #: browsers/CollectionTreeView.cpp:326
 msgid "Delete Tracks"
@@ -2139,7 +2031,7 @@ msgstr "Obriši numere"
 msgid "More..."
 msgstr "Više..."
 
-#: browsers/CollectionTreeView.cpp:1019
+#: browsers/CollectionTreeView.cpp:1014
 msgctxt "Organize Files"
 msgid "Organize Files"
 msgstr "Organizuj fajlove"
@@ -2191,8 +2083,8 @@ msgid "Generic"
 msgstr "Opšte"
 
 #: configdialog/dialogs/ScriptsConfig.cpp:54
-#: context/applets/lyrics/LyricsApplet.cpp:445
-#: context/applets/lyrics/LyricsApplet.cpp:572 dialogs/TagDialog.cpp:512
+#: context/applets/lyrics/LyricsApplet.cpp:449
+#: context/applets/lyrics/LyricsApplet.cpp:576 dialogs/TagDialog.cpp:512
 msgid "Lyrics"
 msgstr "Stihovi"
 
@@ -2225,10 +2117,8 @@ msgid "Internet Services"
 msgstr "Internet servisi"
 
 #: configdialog/dialogs/PluginsConfig.cpp:52
-#, fuzzy
-#| msgid "Local Collection"
 msgid "Local Collection Backends"
-msgstr "Lokalna zbirka"
+msgstr "Pozadine lokalne zbirke"
 
 #: configdialog/ConfigDialog.cpp:58
 msgctxt "Miscellaneous settings"
@@ -2250,10 +2140,8 @@ msgstr "Lokalna zbirka"
 
 # rewrite-msgid: /Configure/Settings/
 #: configdialog/ConfigDialog.cpp:59
-#, fuzzy
-#| msgid "Configure Collection"
 msgid "Configure Local Collection"
-msgstr "Postavke zbirke"
+msgstr "Postavke lokalne zbirke"
 
 #: configdialog/ConfigDialog.cpp:60
 msgid "Playback"
@@ -2327,7 +2215,7 @@ msgstr "Nedavno dodati albumi"
 #. i18n: ectx: property (title), widget (QGroupBox, settingsGroupBox)
 #: context/applets/albums/Albums.cpp:74
 #: context/applets/labels/LabelsApplet.cpp:111
-#: context/applets/lyrics/LyricsApplet.cpp:490
+#: context/applets/lyrics/LyricsApplet.cpp:494
 #: context/applets/photos/PhotosApplet.cpp:76
 #: context/applets/similarartists/SimilarArtistsApplet.cpp:97
 #: context/applets/tabs/TabsApplet.cpp:104
@@ -2370,13 +2258,12 @@ msgstr "Postavke apleta albuma"
 #. i18n: file: services/magnatune/MagnatuneSignupDialogBase.ui:45
 #. i18n: ectx: property (text), widget (QPushButton, closeButton)
 #: context/applets/albums/Albums.cpp:342
-#: context/applets/lyrics/LyricsApplet.cpp:469
-#: firstruntutorial/FirstRunTutorialPage.cpp:56 rc.cpp:2550
+#: context/applets/lyrics/LyricsApplet.cpp:473 rc.cpp:2550
 msgid "Close"
 msgstr "Zatvori"
 
 #: context/applets/currenttrack/CurrentTrack.h:38
-#: core-impl/collections/ipodcollection/IpodMeta.cpp:201
+#: core-impl/collections/ipodcollection/IpodMeta.cpp:202
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:93
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:421
 #: core/meta/Meta.cpp:394 covermanager/CoverFetchUnit.cpp:596
@@ -2416,14 +2303,14 @@ msgstr "numere"
 
 # >! Contexts.
 #: context/applets/currenttrack/CurrentTrack.cpp:444
-#: playlist/PlaylistModel.cpp:909
+#: playlist/PlaylistModel.cpp:910
 msgid "Play Count"
 msgstr "Broj puštanja"
 
 # >! Contexts.
 # >? Малим словом у core/meta/support/MetaConstants.cpp:122
 #: context/applets/currenttrack/CurrentTrack.cpp:445
-#: core/meta/support/MetaConstants.cpp:188 playlist/PlaylistModel.cpp:907
+#: core/meta/support/MetaConstants.cpp:188 playlist/PlaylistModel.cpp:908
 #: widgets/SmartPlaylistEditor.cpp:185
 msgid "Score"
 msgstr "Rezultat"
@@ -2457,10 +2344,8 @@ msgid "Show Artist in Media Sources"
 msgstr "Prikaži izvođača u medijskim izvorima"
 
 #: context/applets/currenttrack/CurrentTrack.cpp:816
-#, fuzzy
-#| msgid "Show Artist in Media Sources"
 msgid "Search for Artist in the MP3 Music Store"
-msgstr "Prikaži izvođača u medijskim izvorima"
+msgstr "Potraži izvođača u MP3 muzičkoj prodavnici"
 
 #: context/applets/currenttrack/CurrentTrack.cpp:824 core/meta/Meta.cpp:509
 msgid "Unknown Composer"
@@ -2499,7 +2384,7 @@ msgstr "Dodaj u listu zabrana"
 
 # >> @title:tab
 #: context/applets/labels/LabelsApplet.cpp:91
-#: context/applets/labels/LabelsApplet.cpp:183 dialogs/TagDialog.cpp:513
+#: context/applets/labels/LabelsApplet.cpp:184 dialogs/TagDialog.cpp:513
 msgid "Labels"
 msgstr "Etikete"
 
@@ -2508,34 +2393,34 @@ msgstr "Etikete"
 msgid "Reload"
 msgstr "Učitaj ponovo"
 
-#: context/applets/labels/LabelsApplet.cpp:195
+#: context/applets/labels/LabelsApplet.cpp:196
 msgid "Labels: No track playing"
 msgstr "Etikete: ništa nije pušteno"
 
-#: context/applets/labels/LabelsApplet.cpp:517
+#: context/applets/labels/LabelsApplet.cpp:518
 msgid "Labels: Fetching..."
 msgstr "Etikete: dobavljam ..."
 
 # >> @title:tab
-#: context/applets/labels/LabelsApplet.cpp:527
+#: context/applets/labels/LabelsApplet.cpp:528
 #, kde-format
 msgid "Labels: %1"
 msgstr "Etikete: %1"
 
-#: context/applets/labels/LabelsApplet.cpp:575
+#: context/applets/labels/LabelsApplet.cpp:576
 #, kde-format
 msgid "Labels for %1 by %2"
 msgstr "Etikete za %1 — %2"
 
-#: context/applets/labels/LabelsApplet.cpp:743
+#: context/applets/labels/LabelsApplet.cpp:744
 msgid "General Settings"
 msgstr "Opšte postavke"
 
-#: context/applets/labels/LabelsApplet.cpp:744
+#: context/applets/labels/LabelsApplet.cpp:745
 msgid "Blacklist Settings"
 msgstr "Postavke zabrana"
 
-#: context/applets/labels/LabelsApplet.cpp:745
+#: context/applets/labels/LabelsApplet.cpp:746
 msgid "Replacement Settings"
 msgstr "Postavke zamena"
 
@@ -2567,49 +2452,49 @@ msgstr ""
 "Stihovi za <b>%1 — %2</b> izmenjeni su dok ste ih uređivali. Želite li da "
 "sačuvate izmene?"
 
-#: context/applets/lyrics/LyricsApplet.cpp:455
+#: context/applets/lyrics/LyricsApplet.cpp:459
 msgid "Edit Lyrics"
 msgstr "Uredi stihove"
 
-#: context/applets/lyrics/LyricsApplet.cpp:462
+#: context/applets/lyrics/LyricsApplet.cpp:466
 msgid "Save Lyrics"
 msgstr "Sačuvaj stihove"
 
-#: context/applets/lyrics/LyricsApplet.cpp:476
+#: context/applets/lyrics/LyricsApplet.cpp:480
 msgid "Scroll automatically"
 msgstr "Automatsko klizanje"
 
-#: context/applets/lyrics/LyricsApplet.cpp:483
+#: context/applets/lyrics/LyricsApplet.cpp:487
 msgid "Reload Lyrics"
 msgstr "Ponovo učitaj stihove"
 
-#: context/applets/lyrics/LyricsApplet.cpp:567
+#: context/applets/lyrics/LyricsApplet.cpp:571
 msgid "Lyrics: No script is running"
 msgstr "Stihovi: ne izvršava se nijedna skripta"
 
-#: context/applets/lyrics/LyricsApplet.cpp:579
+#: context/applets/lyrics/LyricsApplet.cpp:583
 msgid "Lyrics: Fetching ..."
 msgstr "Stihovi: dobavljam..."
 
-#: context/applets/lyrics/LyricsApplet.cpp:583
+#: context/applets/lyrics/LyricsApplet.cpp:587
 msgid "Lyrics: Fetch error"
 msgstr "Stihovi: greška pri dobavljanju"
 
-#: context/applets/lyrics/LyricsApplet.cpp:589
+#: context/applets/lyrics/LyricsApplet.cpp:593
 msgid "Lyrics: Suggested URLs"
 msgstr "Stihovi: predloženi URL‑ovi"
 
-#: context/applets/lyrics/LyricsApplet.cpp:615
+#: context/applets/lyrics/LyricsApplet.cpp:619
 #, kde-format
 msgctxt "Lyrics: <artist> - <title>"
 msgid "Lyrics: %1 - %2"
 msgstr "Stihovi: %1 — %2"
 
-#: context/applets/lyrics/LyricsApplet.cpp:621
+#: context/applets/lyrics/LyricsApplet.cpp:625
 msgid "Lyrics: Not found"
 msgstr "Stihovi: nisu nađeni"
 
-#: context/applets/lyrics/LyricsApplet.cpp:661
+#: context/applets/lyrics/LyricsApplet.cpp:665
 msgctxt "@info"
 msgid ""
 "Do you really want to refetch lyrics for this track? All changes you may "
@@ -2620,7 +2505,7 @@ msgstr ""
 
 #. i18n: file: context/applets/lyrics/lyricsSettings.ui:14
 #. i18n: ectx: property (windowTitle), widget (QWidget, lyricsSettings)
-#: context/applets/lyrics/LyricsApplet.cpp:698 rc.cpp:1005
+#: context/applets/lyrics/LyricsApplet.cpp:702 rc.cpp:1005
 msgid "Lyrics Settings"
 msgstr "Postavke stihova"
 
@@ -2997,8 +2882,6 @@ msgid "Map View"
 msgstr "Prikaz mape"
 
 #: context/applets/upcomingevents/UpcomingEventsApplet.cpp:532
-#, fuzzy
-#| msgid "Events Calender"
 msgid "Events Calendar"
 msgstr "Kalendar događaja"
 
@@ -3009,7 +2892,7 @@ msgstr "Kalendar događaja"
 #: context/applets/upcomingevents/UpcomingEventsApplet.cpp:551 rc.cpp:1079
 #: rc.cpp:1133
 msgid "This week"
-msgstr "ove nedelje"
+msgstr "ove sedmice"
 
 #. i18n: file: context/applets/upcomingevents/upcomingEventsSettings.ui:31
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox)
@@ -3070,67 +2953,65 @@ msgstr "Postavke jezika Wikipedije"
 
 #: context/applets/spectrumanalyzer/SpectrumAnalyzerApplet.cpp:48
 msgid "Your system has no OpenGL support"
-msgstr ""
+msgstr "Sistem ne podržava OpenGL"
 
 #: context/applets/spectrumanalyzer/SpectrumAnalyzerApplet.cpp:64
 msgid "Could not create an OpenGL rendering context."
-msgstr ""
+msgstr "Ne mogu da napravim OpenGL renderski kontekst."
 
 #: context/applets/spectrumanalyzer/SpectrumAnalyzerApplet.cpp:68
 msgid "Your system has no sample buffer support."
-msgstr ""
+msgstr "Sistem ne podržava bafer uzorkovanja."
 
 #: context/applets/spectrumanalyzer/SpectrumAnalyzerApplet.cpp:72
 msgid "Your system has no stencil buffer support."
-msgstr ""
+msgstr "Sistem ne podržava bafer maske."
 
 #: context/applets/spectrumanalyzer/SpectrumAnalyzerApplet.cpp:76
 msgid "Your system has no double buffer support."
-msgstr ""
+msgstr "Sistem ne podržava dvostruki bafer."
 
 #: context/applets/spectrumanalyzer/SpectrumAnalyzerApplet.cpp:80
 msgid "Your system has no accumulation buffer support."
-msgstr ""
+msgstr "Sistem ne podržava akumulacioni bafer."
 
 #: context/applets/spectrumanalyzer/SpectrumAnalyzerApplet.cpp:84
 msgid "Your system has no direct rendering support."
-msgstr ""
+msgstr "Sistem ne podržava direktno renderovanje."
 
 #: context/applets/spectrumanalyzer/SpectrumAnalyzerApplet.cpp:138
 msgid "Spectrum-Analyzer"
-msgstr ""
+msgstr "Analizator spektra"
 
 #: context/applets/spectrumanalyzer/SpectrumAnalyzerApplet.cpp:166
 msgid "Detach"
-msgstr ""
+msgstr "Otkači"
 
 #: context/applets/spectrumanalyzer/SpectrumAnalyzerApplet.cpp:175
-#, fuzzy
-#| msgid "E&xit fullscreen"
 msgid "Fullscreen"
-msgstr "&Napusti ceo ekran"
+msgstr "Ceo ekran"
 
 #: context/applets/spectrumanalyzer/SpectrumAnalyzerApplet.cpp:184
 msgid "Power"
-msgstr ""
+msgstr "Snaga"
 
-# >> @action:button
 #: context/applets/spectrumanalyzer/SpectrumAnalyzerApplet.cpp:193
-#, fuzzy
-#| msgid "Data Mode"
 msgid "Switch Mode"
-msgstr "Režim podataka"
+msgstr "Prebaci režim"
 
 #: context/applets/spectrumanalyzer/SpectrumAnalyzerApplet.cpp:665
-#, fuzzy
-#| msgid "Albums Applet Settings"
 msgid "Spectrum Analyzer Settings"
-msgstr "Postavke apleta albuma"
+msgstr "Postavke analizatora spektra"
 
-#: context/containments/verticallayout/VerticalToolbarContainment.cpp:191
+#: context/containments/verticallayout/VerticalToolbarContainment.cpp:192
 msgid ""
 "Please add some applets from the toolbar at the bottom of the context view."
 msgstr "Dodajte neke aplete iz trake alatki na dnu prikaza konteksta."
+
+#: context/engines/current/CurrentEngine.cpp:136 mac/GrowlInterface.cpp:43
+#: widgets/Osd.cpp:651 EngineController.cpp:1462
+msgid "No track playing"
+msgstr "Ništa nije pušteno"
 
 #: context/engines/current/CurrentEngine.cpp:227
 #, kde-format
@@ -3510,12 +3391,12 @@ msgid ""
 "Updating Amarok database schema. Please don't terminate Amarok now as it may "
 "result in database corruption."
 msgstr ""
+"Ažuriram šemu Amarokove baze. Ne obustavljajte Amarok sada, inače može doći "
+"do iskvarenja baze."
 
 #: core-impl/collections/db/sql/SqlCollection.cpp:166
-#, fuzzy
-#| msgid "Updating podcast channel"
 msgid "Updating Amarok database schema"
-msgstr "Ažuriram kanal podemisije"
+msgstr "Ažuriram šemu Amarokove baze"
 
 #: core-impl/collections/db/sql/SqlCollection.cpp:200
 #, kde-format
@@ -3587,96 +3468,84 @@ msgstr ""
 "Ovo najčešće znači da neke od vaših numera nisu uvezene.\n"
 "Naknadne greške će biti prijavljene samo u konzoli."
 
-#: core-impl/collections/db/ScanManager.cpp:474
+#: core-impl/collections/db/ScanManager.cpp:477
 #, kde-format
 msgid "Failed to write scanner batch file \"%1\""
 msgstr "Neuspelo upisivanje paketnog fajla pretrage „%1“"
 
-#: core-impl/collections/db/ScanManager.cpp:585
+#: core-impl/collections/db/ScanManager.cpp:588
 #, kde-format
 msgid "Aborting scanner with error: %1"
 msgstr "Obustavljam pretraživanje usled greške: %1"
 
-#: core-impl/collections/db/ScanManager.cpp:605
+#: core-impl/collections/db/ScanManager.cpp:608
 msgid "Scanner aborted."
 msgstr "Pretraživanje obustavljeno."
 
-#: core-impl/collections/db/ScanManager.cpp:698
+#: core-impl/collections/db/ScanManager.cpp:701
 msgid ""
 "The collection scan had to be aborted. Too many errors were encountered "
 "during the scan."
 msgstr "Pretraživanje zbirke je moralo biti otkazano zbog previše grešaka."
 
 #: core-impl/collections/ipodcollection/jobs/IpodDeleteTracksJob.cpp:40
-#, fuzzy, kde-format
-#| msgid "Removing Track from Device"
-#| msgid_plural "Removing Tracks from Device"
+#, kde-format
 msgid "Removing one track from iPod"
 msgid_plural "Removing %1 tracks from iPod"
-msgstr[0] "Uklanjam numere sa uređaja"
-msgstr[1] "Uklanjam numere sa uređaja"
-msgstr[2] "Uklanjam numere sa uređaja"
-msgstr[3] "Uklanjam numere sa uređaja"
-
-#: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:42
-#, fuzzy
-#| msgid "Moving tracks"
-msgctxt "operation when iPod is connected"
-msgid "Reading iPod tracks"
-msgstr "Premeštam numere"
+msgstr[0] "Uklanjam %1 numeru sa iPoda"
+msgstr[1] "Uklanjam %1 numere sa iPoda"
+msgstr[2] "Uklanjam %1 numera sa iPoda"
+msgstr[3] "Uklanjam numeru sa iPoda"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:217
-#, fuzzy, kde-format
-#| msgid "Copying tracks"
+#, kde-format
 msgctxt "%2 is collection name"
 msgid "Transferred one track to %2."
 msgid_plural "Transferred %1 tracks to %2."
-msgstr[0] "Kopiram numere"
-msgstr[1] "Kopiram numere"
-msgstr[2] "Kopiram numere"
-msgstr[3] "Kopiram numere"
+msgstr[0] "%1 numera prenesena na %2."
+msgstr[1] "%1 numere prenesene na %2."
+msgstr[2] "%1 numera preneseno na %2."
+msgstr[3] "Jedna numera prenesena na %2."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:220
-#, fuzzy, kde-format
-#| msgid "Transcoding tracks"
+#, kde-format
 msgctxt "%2 is collection name"
 msgid "Transcoded one track to %2."
 msgid_plural "Transcoded %1 tracks to %2."
-msgstr[0] "Transkodiram numere"
-msgstr[1] "Transkodiram numere"
-msgstr[2] "Transkodiram numere"
-msgstr[3] "Transkodiram numere"
+msgstr[0] "%1 numera transkodirana na %2."
+msgstr[1] "%1 numere transkodirane na %2."
+msgstr[2] "%1 numera transkodirano na %2."
+msgstr[3] "Jedna numera transkodirana na %2."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:229
 #, kde-format
 msgid "Transfer aborted. Managed to transfer one track."
 msgid_plural "Transfer aborted. Managed to transfer %1 tracks."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "Prenos obustavljen. Uspešno preneta %1 numera."
+msgstr[1] "Prenos obustavljen. Uspešno prenete %1 numere."
+msgstr[2] "Prenos obustavljen. Uspešno preneto %1 numera."
+msgstr[3] "Prenos obustavljen. Uspešno preneta jedna numera."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:237
 #, kde-format
 msgctxt "%2 is the 'Transferred 123 tracks to Some collection.' message"
 msgid "%2 One track was already there."
 msgid_plural "%2 %1 tracks were already there."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%2 %1 numera već bila tamo."
+msgstr[1] "%2 %1 numere već bile tamo."
+msgstr[2] "%2 %1 numera već bilo tamo."
+msgstr[3] "%2 Jedna numera već bila tamo."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:338
 #: core-impl/collections/ipodcollection/IpodCollectionLocation.cpp:52
 msgid "Disconnected iPod/iPad/iPhone"
-msgstr ""
+msgstr "Nepovezani iPod/iPad/iPhone"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:340
-#, fuzzy, kde-format
-#| msgid "Transferring Tracks to Device"
+#, kde-format
 msgctxt "%1 is collection pretty name, e.g. My Little iPod"
 msgid "Transferred Tracks to %1"
-msgstr "Prenosim numere na uređaj"
+msgstr "Numere prenesene na %1"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:343
 #, kde-format
@@ -3684,16 +3553,14 @@ msgid ""
 "One track successfully transferred, but transfer of some other tracks failed."
 msgid_plural ""
 "%1 tracks successfully transferred, but transfer of some other tracks failed."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
+msgstr[0] "%1 numera je uspešno prenesena, ali neke druge nisu."
+msgstr[1] "%1 numere su uspešno prenesene, ali neke druge nisu."
+msgstr[2] "%1 numera je uspešno preneseno, ali neke druge nisu."
+msgstr[3] "Jedna numera je uspešno prenesena, ali neke druge nisu."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:347
-#, fuzzy
-#| msgid "Transferring Tracks to Device"
 msgid "Transfer of tracks failed."
-msgstr "Prenosim numere na uređaj"
+msgstr "Prenos numera propao."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:352
 #, kde-format
@@ -3702,15 +3569,24 @@ msgid ""
 msgid_plural ""
 "%1 tracks were not transferred because it would exceed iPod capacity.<br>"
 msgstr[0] ""
+"<html>%1 numera nije prenesena zato što bi to premašilo kapacitet iPoda.<br /"
+"></html>"
 msgstr[1] ""
+"<html>%1 numere nisu prenesene zato što bi to premašilo kapacitet iPoda.<br /"
+"></html>"
 msgstr[2] ""
+"<html>%1 numera nije preneseno zato što bi to premašilo kapacitet iPoda.<br /"
+"></html>"
 msgstr[3] ""
+"<html>Jedna numera nije prenesena zato što bi to premašilo kapacitet iPoda."
+"<br /></html>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:358
 #, kde-format
 msgctxt "Example of %1 would be: 20.0 MiB"
 msgid "<i>Amarok reserves %1 on iPod for iTunes database writing.</i><br>"
 msgstr ""
+"<i>Amarok rezerviše %1 na iPodu radi upisivanja iTunesove baze.</i><br />"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:365
 #, kde-format
@@ -3721,19 +3597,26 @@ msgid_plural ""
 "%1 tracks were not copied because they wouldn't be playable - they are in "
 "unsupported formats (%2).<br>"
 msgstr[0] ""
+"<html>%1 numera nije kopirana zato što ne bi mogle da se puste zbog "
+"nepodržanog formata (%2).<br /></html>"
 msgstr[1] ""
+"<html>%1 numere nisu kopirane zato što ne bi mogle da se puste zbog "
+"nepodržanog formata (%2).<br /></html>"
 msgstr[2] ""
+"<html>%1 numera nije kopirano zato što ne bi mogle da se puste zbog "
+"nepodržanog formata (%2).<br /></html>"
 msgstr[3] ""
+"<html>Jedna numera nije kopirana zato što ne bi mogla da se pusti zbog "
+"nepodržanog formata (%2).<br /></html>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:374
-#, fuzzy, kde-format
-#| msgid "The playlist file \"%1\" could not be loaded."
+#, kde-format
 msgid "One file could not be copied.<br>"
 msgid_plural "%1 files could not be copied.<br>"
-msgstr[0] "Ne mogu da učitam fajl liste numera „%1“."
-msgstr[1] "Ne mogu da učitam fajl liste numera „%1“."
-msgstr[2] "Ne mogu da učitam fajl liste numera „%1“."
-msgstr[3] "Ne mogu da učitam fajl liste numera „%1“."
+msgstr[0] "<html>%1 fajl nije mogao da se kopira.<br /></html>"
+msgstr[1] "<html>%1 fajla nisu mogla da se kopiraju.<br /></html>"
+msgstr[2] "<html>%1 fajlova nije moglo da se kopira.<br /></html>"
+msgstr[3] "<html>Jedan fajl nije mogao da se kopira.<br /></html>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:380
 #, kde-format
@@ -3741,26 +3624,62 @@ msgid "One track was not transferred due to an internal Amarok error.<br>"
 msgid_plural ""
 "%1 tracks were not transferred due to an internal Amarok error.<br>"
 msgstr[0] ""
+"<html>%1 numera nije prenesena zbog unutrašnje greške u Amaroku.<br /></html>"
 msgstr[1] ""
+"<html>%1 numere nisu prenesene zbog unutrašnje greške u Amaroku.<br /></html>"
 msgstr[2] ""
+"<html>%1 numera nije preneseno zbog unutrašnje greške u Amaroku.<br /></html>"
 msgstr[3] ""
+"<html>Jedna numera nije prenesena zbog unutrašnje greške u Amaroku.<br /></"
+"html>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:383
 msgid "<i>You can find details in Amarok debugging output.</i><br>"
-msgstr ""
+msgstr "<i>Detalje potražite u Amarokovom ispravljačkom izlazu.</i><br />"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:388
 msgid "The rest was not transferred because iPod collection disappeared.<br>"
 msgstr ""
+"<html>Ostatak nije prenesen zato što je zbirka sa iPoda nestala.<br /></html>"
+
+#: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:51
+msgctxt "operation when iPod is connected"
+msgid "Reading iPod tracks"
+msgstr "Čitam numere sa iPoda"
+
+#: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:95
+msgctxt "iPod playlist name"
+msgid "Stale tracks"
+msgstr "Ustajale numere"
+
+#: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:104
+msgctxt "iPod playlist name"
+msgid "Orphaned tracks"
+msgstr "Numere siročići"
+
+#: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:124
+#, kde-format
+msgid ""
+"Stale and/or orphaned tracks detected on %1. You can resolve the situation "
+"using the <b>%2</b> collection action. You can also view the tracks under "
+"the Saved Playlists tab."
+msgstr ""
+"<html>Ustajale numere ili numere siročići otkrivene na %1. Ovo stanje možete "
+"razrešiti radnjom zbirke <b>%2</b>. Takođe možete pogledati numere pod "
+"jezičkom <interface>Sačuvane liste numera</interface>.</html>"
+
+#: core-impl/collections/ipodcollection/support/IphoneMountPoint.cpp:56
+msgid "Connecting to iPhone, iPad or iPod touch failed."
+msgstr "Povezivanje iPhonea, iPada ili iPoda propalo."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:45
 msgid "Cannot parse iTunes database due to an unreported error."
-msgstr ""
+msgstr "Ne mogu da raščlanim iTunesovu bazu zbog neprijavljene greške."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:54
 msgctxt "iPod model that is not (yet) recognized"
 msgid "Unrecognized model"
-msgstr ""
+msgstr "Nepoznati model"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:57
 #, kde-format
@@ -3768,32 +3687,32 @@ msgctxt ""
 "Name of the iPod collection; %1 is iPod name, %2 is iPod model; example: My "
 "iPod: Nano (Blue)"
 msgid "%1: %2"
-msgstr ""
+msgstr "%1: %2"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:66
 msgctxt "default iPod name (when user-set name is empty)"
 msgid "iPod"
-msgstr ""
+msgstr "iPod"
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:198
-#, fuzzy
-#| msgid "iPod was not initialized:"
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:211
 msgid "iPod model was not recognized."
-msgstr "IPod nije pripremljen:"
+msgstr "Model iPoda nije prepoznat."
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:210
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:222
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:223
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:235
 #, kde-format
 msgid "%1 family uses %2 file to generate correct database checksum."
 msgstr ""
+"Familija %1 koristi fajl %2 za generisanje ispravne kontrolne sume baze."
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:212
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:224
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:225
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:237
 #, kde-format
 msgid "%1 family needs %2 file to generate correct database checksum!"
 msgstr ""
+"Familija %1 zahteva fajl %2 za generisanje ispravne kontrolne sume baze."
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:232
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:245
 #, kde-format
 msgctxt "Do not translate hash-AB, libgpod, libhashab.so"
 msgid ""
@@ -3801,68 +3720,54 @@ msgid ""
 "libgpod (as of version 0.8.2) doesn't know how to compute it, but tries to "
 "dynamically load external library libhashab.so to do it."
 msgstr ""
+"Familija %1 verovatno koristi hash-AB za generisanje ispravne kontrolne sume "
+"baze. libgpod (zaključno sa izdanjem 0.8.2) ne zna kako da je izračuna, već "
+"pokušava da dinamički učita spoljašnju biblioteku libhashab.so radi toga."
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:246
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:259
 #, kde-format
 msgid "Autodetect (%1 file(s) present)"
-msgstr ""
+msgstr "Automatski otkrij (fajl %1 prisutan)"
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:270
-#, fuzzy, kde-format
-#| msgctxt ""
-#| "%1 = empty string or \"not\"; %2 = a metadata field, like \"title\" or "
-#| "\"artist name\"; %3 = a predicate, can be equals, starts with, ends with "
-#| "or contains; %4 = a string to match; Example: Match tag: not title "
-#| "contains \"foo\""
-#| msgid "Match tag:%1 %2 %3 %4"
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:283
+#, kde-format
 msgctxt ""
 "Examples: %1: Nano with camera (5th Gen.); [generation]%2: 16 GiB; [capacity]"
 "%3: Nano (Orange); [model name]%4: A123 [model number]"
 msgid "%1: %2 %3 [%4]"
-msgstr "Poklopi oznaku:%1 %2 %3 %4"
+msgstr "%1: %2 %3 [%4]"
 
-# >! Contexts.
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:286
-#, fuzzy
-#| msgid "Unknown"
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:299
 msgctxt "Unknown iPod model, generation..."
 msgid "Unknown"
-msgstr "Nepoznato"
+msgstr "nepoznato"
 
-# >? Сугестија? Само да извођач не „подржава“ или „гостује“ себе/себи.
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:287
-#, fuzzy
-#| msgctxt "@label:textbox Supporing acts for an event"
-#| msgid "Supporting:"
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:300
 msgctxt "In a dialog: Video: Supported"
 msgid "Supported"
-msgstr "Učesnici:"
+msgstr "podržan"
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:288
-#, fuzzy
-#| msgid "Use KNotify support"
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:301
 msgctxt "In a dialog: Video: Not supported"
 msgid "Not supported"
-msgstr "Koristi podršku za K‑obaveštenja"
+msgstr "nije podržan"
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:289
-#, fuzzy
-#| msgid "Presets:"
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:302
 msgctxt "In a dialog: Some file: Present"
 msgid "Present"
-msgstr "Pretpodešavanje:"
+msgstr "prisutan"
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:290
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:303
 msgctxt "In a dialog: Some file: Not found"
 msgid "<b>Not found</b>"
-msgstr ""
+msgstr "<b>nije nađen</b>"
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:291
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:304
 msgctxt "In a dialog: Some file: Not needed"
 msgid "Not needed"
-msgstr ""
+msgstr "nije potreban"
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:334
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:347
 #, kde-format
 msgctxt "%1 is informational sentence giving reason"
 msgid ""
@@ -3871,8 +3776,12 @@ msgid ""
 "the device point of view)<br>See <a href='%2'>README.overview</a> file from "
 "libgpod source repository for more information."
 msgstr ""
+"<p><b>%1</b></p><p>Sigurnosti radi, Amarok će <i>odbiti da išta upiše</i> na "
+"iPod (izmena iTunesove baze mogla bi učiniti da ona izgleda prazno sa "
+"stanovišta uređaja).</p><p>Za više detalja pogledajte fajl <a href='"
+"%2'>README.overview</a> u izvornoj riznici libgpod‑a.</p>"
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:356
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:369
 #, kde-format
 msgid ""
 "<b>%1</b><br><br>Above problem prevents Amarok from using your iPod. You can "
@@ -3881,55 +3790,28 @@ msgid ""
 "track and photo database</b>, however it should not delete any tracks. The "
 "tracks will become orphaned."
 msgstr ""
+"<p><b>%1</b></p><p>Gornji problem sprečava Amarok da koristi iPod. Možete "
+"pokušati da ponovo napravite ključne fascikle i fajlove na iPodu "
+"(uključujući i iTunesovu bazu) klikom na dugme <b>%2</b> ispod.</"
+"p><p>Pripremanje iPoda <b>uništava bazu numera i slika na njemu</b>, ali ne "
+"bi trebalo da obriše nijednu numeru. Numere će postati siročići.</p>"
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:418
-#, fuzzy, kde-format
-#| msgid "Failed to write scanner batch file \"%1\""
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:431
+#, kde-format
 msgctxt "Do not translate SysInfo"
 msgid "Failed to write SysInfo: %1"
-msgstr "Neuspelo upisivanje paketnog fajla pretrage „%1“"
+msgstr "Neuspelo upisivanje SysInfo‑a: %1"
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:423
-#, fuzzy
-#| msgid ""
-#| "%1 failed to write SysInfo file to iPod, make sure you have write "
-#| "permissions on the iPod"
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:436
 msgctxt "Do not translate SysInfo"
 msgid "Failed to write SysInfo file due to an unreported error"
-msgstr "%1 greška pri upisu fajla SysInfo na iPod, proverite dozvole upisa."
+msgstr "Neuspelo upisivanje SysInfo‑a zbog neprijavljene greške"
 
-#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:445
+#: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:458
 msgid "Cannot initialize iPod due to an unreported error."
-msgstr ""
+msgstr "Ne mogu da pripremim iPod zbog neprijavljene greške."
 
-#: core-impl/collections/ipodcollection/support/IphoneMountPoint.cpp:54
-msgid "Connecting to iPhone, iPad or iPod touch failed."
-msgstr ""
-
-#: core-impl/collections/ipodcollection/IpodPlaylistProvider.cpp:225
-#, fuzzy
-#| msgid "Stale Tracks"
-msgctxt "iPod playlist name"
-msgid "Stale tracks"
-msgstr "Ustajale numere"
-
-# >> @title:window
-#: core-impl/collections/ipodcollection/IpodPlaylistProvider.cpp:234
-#, fuzzy
-#| msgid "Find Orphaned Tracks"
-msgctxt "iPod playlist name"
-msgid "Orphaned tracks"
-msgstr "Traženje numera siročića"
-
-#: core-impl/collections/ipodcollection/IpodPlaylistProvider.cpp:257
-#, kde-format
-msgid ""
-"Stale and/or orphaned tracks detected on %1. You can resolve the situation "
-"using the <b>%2</b> collection action. You can also view the tracks under "
-"the Saved Playlists tab."
-msgstr ""
-
-#: core-impl/collections/ipodcollection/IpodPlaylistProvider.cpp:369
+#: core-impl/collections/ipodcollection/IpodPlaylistProvider.cpp:322
 #, kde-format
 msgid ""
 "Failed to process one track. (more info about it is in the Amarok debugging "
@@ -3938,11 +3820,19 @@ msgid_plural ""
 "Failed to process %1 tracks. (more info about these is in the Amarok "
 "debugging log)"
 msgstr[0] ""
+"Propala obrada %1 numere (više podataka o ovome u Amarokovom ispravljačkom "
+"dnevniku)"
 msgstr[1] ""
+"Propala obrada %1 numere (više podataka o ovome u Amarokovom ispravljačkom "
+"dnevniku)"
 msgstr[2] ""
+"Propala obrada %1 numera (više podataka o ovome u Amarokovom ispravljačkom "
+"dnevniku)"
 msgstr[3] ""
+"Propala obrada %1 numere (više podataka o ovome u Amarokovom ispravljačkom "
+"dnevniku)"
 
-#: core-impl/collections/ipodcollection/IpodPlaylistProvider.cpp:374
+#: core-impl/collections/ipodcollection/IpodPlaylistProvider.cpp:327
 #, kde-format
 msgctxt ""
 "Infrequently displayed message, don't bother with singlar forms. %1 to %3 "
@@ -3952,61 +3842,65 @@ msgid ""
 "database entries, %2 stale database entries removed, %3 orphaned tracks "
 "added back to the iTunes database. %4"
 msgstr ""
+"Završeno objedinjavanje fajlova sa iPoda. %1 numera siročića poklopljeno sa "
+"ustajalim unosima iTunesove baze, %2 ustajalih unosa baze uklonjeno, %3 "
+"numera siročića dodato nazad u iTunesovu bazu. %4"
+"|/|"
+"Završeno objedinjavanje fajlova sa iPoda. %1 $[množ ^1 'numera siroče "
+"poklopljena' 'numere siročića poklopljene' 'numera siročića poklopljeno'] sa "
+"ustajalim unosima iTunesove baze, %2 $[množ ^2 'ustajao unos baze uklonjen' "
+"'ustajala unosa baze uklonjena' 'ustajalih unosa baze uklonjeno'], %3 $[množ "
+"^3 'numera siroče dodata' 'numere siročića dodate' 'numera siročića dodato'] "
+"nazad u iTunesovu bazu. %4"
 
-#: core-impl/collections/ipodcollection/IpodMeta.cpp:200
-#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
-#, fuzzy
-#| msgid "Collection"
-msgid "Unknown Collection"
-msgstr "Zbirka"
-
-# >> @title:window
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:102
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:109
 #: core-impl/collections/umscollection/UmsCollection.cpp:238
-#, fuzzy
-#| msgid "Configure Media Device"
 msgid "&Configure Device"
-msgstr "Podešavanje multimedijalnog uređaja"
+msgstr "&Podesi uređaj"
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:106
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:113
 #: core-impl/collections/umscollection/UmsCollection.cpp:246
-#, fuzzy
-#| msgid "&Disconnect Device"
 msgid "&Eject Device"
-msgstr "Prekini vezu sa &uređajem"
+msgstr "&Izbaci uređaj"
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:115
-#, fuzzy
-#| msgid "Transcoding tracks"
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:122
 msgid "Re-add orphaned and forget stale tracks"
-msgstr "Transkodiram numere"
+msgstr "Ponovo dodaj numere siročiće i zaboravi ustajale"
 
 # >> @title:window
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:438
-#, fuzzy
-#| msgid "iPod Initialization Failed"
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:462
 msgctxt "iPod was successfully initialized"
 msgid "Initialization successful."
-msgstr "Neuspelo pripremanje iPoda"
+msgstr "Pripremanje uspešno."
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:636
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:683
 #, kde-format
 msgctxt "%1: iPod collection name"
 msgid "iTunes database successfully written to %1"
-msgstr ""
+msgstr "ITunesova baza uspešno upisana u %1"
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:644
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:691
 #, kde-format
 msgctxt "%1: iPod collection name"
 msgid "Writing iTunes database to %1 failed without an indication of error"
-msgstr ""
+msgstr "Upisivanje iTunesove baze u %1 propalo bez naznačavanja greške"
 
-#: core-impl/collections/ipodcollection/IpodCollection.cpp:648
-#, fuzzy, kde-format
-#| msgid "Failed to write scanner batch file \"%1\""
+#: core-impl/collections/ipodcollection/IpodCollection.cpp:695
+#, kde-format
 msgctxt "%1: iPod collection name, %2: technical error from libgpod"
 msgid "Writing iTunes database to %1 failed: %2"
-msgstr "Neuspelo upisivanje paketnog fajla pretrage „%1“"
+msgstr "Upisivanje iTunesove baze u %1 propalo: %2"
+
+#: core-impl/collections/ipodcollection/IpodMeta.cpp:201
+#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
+msgid "Unknown Collection"
+msgstr "Nepoznata zbirka"
+
+#: core-impl/collections/ipodcollection/IpodMeta.cpp:203
+#: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:95
+#: EngineController.cpp:1441
+msgid "Unknown track"
+msgstr "Nepoznata numera"
 
 #: core-impl/collections/mediadevicecollection/handler/MediaDeviceHandler.cpp:315
 msgid "Copying Tracks Failed"
@@ -4159,7 +4053,7 @@ msgstr "danas"
 
 #: core-impl/collections/support/TextualQueryFilter.cpp:281
 msgid "last week"
-msgstr "prošle nedelje"
+msgstr "prošle sedmice"
 
 #: core-impl/collections/support/TextualQueryFilter.cpp:283
 msgid "last month"
@@ -4173,15 +4067,17 @@ msgstr "pre dva meseca"
 msgid "three months ago"
 msgstr "pre tri meseca"
 
+#: core-impl/collections/support/TrashCollectionLocation.cpp:47
+msgid "Trash"
+msgstr "Smeće"
+
+#: core-impl/collections/support/TrashCollectionLocation.cpp:101
+#, kde-format
+msgid "Moving to trash: %1"
+msgstr "Premeštam u smeće: %1"
+
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:36
-#, fuzzy, kde-format
-#| msgctxt "@info"
-#| msgid ""
-#| "Do you really want to delete this track? It will be removed from disk as "
-#| "well as your collection."
-#| msgid_plural ""
-#| "Do you really want to delete these %1 tracks? They will be removed from "
-#| "disk as well as your collection."
+#, kde-format
 msgctxt "@info"
 msgid ""
 "Do you really want to delete this track? It will be removed from %2 and from "
@@ -4190,46 +4086,35 @@ msgid_plural ""
 "Do you really want to delete these %1 tracks? They will be removed from %2 "
 "and from underlying storage medium."
 msgstr[0] ""
-"Želite li zaista da uklonite ovu %1 numeru? Biće uklonjene i iz zbirke i sa "
-"diska."
+"Želite li zaista da uklonite ovu %1 numeru? Biće uklonjene iz %2 i sa "
+"podložnog skladišnog medijuma."
 msgstr[1] ""
-"Želite li zaista da uklonite ove %1 numere? Biće uklonjene i iz zbirke i sa "
-"diska."
+"Želite li zaista da uklonite ove %1 numere? Biće uklonjene iz %2 i sa "
+"podložnog skladišnog medijuma."
 msgstr[2] ""
-"Želite li zaista da uklonite ove %1 numere? Biće uklonjene i iz zbirke i sa "
-"diska."
+"Želite li zaista da uklonite ovih %1 numera? Biće uklonjene iz %2 i sa "
+"podložnog skladišnog medijuma."
 msgstr[3] ""
-"Želite li zaista da uklonite ovu numeru? Biće uklonjena i iz zbirke i sa "
-"diska."
+"Želite li zaista da uklonite ovu numeru? Biće uklonjena iz %2 i sa podložnog "
+"skladišnog medijuma."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:49
-#, fuzzy, kde-format
-#| msgctxt "@info"
-#| msgid ""
-#| "Do you really want to move this track to the trash? It will be removed "
-#| "from disk as well as your collection."
-#| msgid_plural ""
-#| "Do you really want to move these %1 tracks to the trash? They will be "
-#| "removed from disk as well as your collection."
+#, kde-format
 msgctxt "@info"
 msgid ""
 "Do you really want to move this track to the trash? It will be removed from "
-"%1."
+"%2."
 msgid_plural ""
-"Do you really want to move these %2 tracks to the trash? They will be "
-"removed from %1."
+"Do you really want to move these %1 tracks to the trash? They will be "
+"removed from %2."
 msgstr[0] ""
-"Želite li zaista da premestite ovu %1 numeru u smeće? Biće uklonjene i iz "
-"zbirke i sa diska."
+"Želite li zaista da premestite ovu %1 numeru u smeće? Biće uklonjene iz %2."
 msgstr[1] ""
-"Želite li zaista da premestite ove %1 numere u smeće? Biće uklonjene i iz "
-"zbirke i sa diska."
+"Želite li zaista da premestite ove %1 numere u smeće? Biće uklonjene iz %2."
 msgstr[2] ""
-"Želite li zaista da premestite ovih %1 numera u smeće? Biće uklonjene i iz "
-"zbirke i sa diska."
+"Želite li zaista da premestite ovih %1 numera u smeće? Biće uklonjene iz %2."
 msgstr[3] ""
-"Želite li zaista da premestite ovu numeru u smeće? Biće uklonjena i iz "
-"zbirke i sa diska."
+"Želite li zaista da premestite ovu numeru u smeće? Biće uklonjena iz %2."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:63
 #, kde-format
@@ -4253,30 +4138,18 @@ msgstr[3] ""
 "Želite li zaista da premestite ovu numeru? Biće preimenovana a original "
 "obrisan."
 
-# >> @title
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:67
-#, fuzzy
-#| msgid "Move Files"
 msgctxt "@title:window"
 msgid "Move Files"
 msgstr "Premeštanje fajlova"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:67
-#, fuzzy
-#| msgid "&Rename..."
 msgctxt "rename files button"
 msgid "&Rename"
-msgstr "P&reimenuj..."
+msgstr "&Preimenuj..."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:77
-#, fuzzy, kde-format
-#| msgctxt "@info"
-#| msgid ""
-#| "There was a problem and this track could not be removed. Make sure the "
-#| "directory is writeable."
-#| msgid_plural ""
-#| "There was a problem and %1 tracks could not be removed. Make sure the "
-#| "directory is writeable."
+#, kde-format
 msgctxt "@info"
 msgid ""
 "There was a problem and this track could not be removed. Make sure the "
@@ -4298,16 +4171,10 @@ msgstr[3] ""
 "fascikla upisiva."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:80
-#, fuzzy
-#| msgid "Unable to be removed tracks"
 msgid "Unable to remove tracks"
-msgstr "Numere koje nije moguće ukloniti"
+msgstr "Numere nije moguće ukloniti"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:88
-#, fuzzy
-#| msgid ""
-#| "The collection does not have enough free space available or is not "
-#| "writeable."
 msgid ""
 "The collection does not have enough free space available or is not writable."
 msgstr "Zbirka nema dovoljno slobodnog prostora ili nije upisiva."
@@ -4324,32 +4191,19 @@ msgstr "Ukloniti prazne fascikle?"
 #, kde-format
 msgctxt "%1 is track url, %2 track title, %3 track artist"
 msgid "%1 (%2 by %3)"
-msgstr ""
+msgstr "%1 (%2 — %3)"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:135
-#, fuzzy, kde-format
-#| msgctxt "%1 is number of tracks, %2 is time"
-#| msgid "%1 track (%2)"
-#| msgid_plural "%1 tracks (%2)"
+#, kde-format
 msgctxt "%1 is track url, %2 track name"
 msgid "%1 (%2)"
-msgstr "%1 numera (%2)"
+msgstr "%1 (%2)"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:137
-#, fuzzy, kde-format
-#| msgid "\"%1\" (track) by %2"
+#, kde-format
 msgctxt "%1 is track url, %2 artist name"
 msgid "%1 (by %2)"
-msgstr "„%1“ (numera) od %2"
-
-#: core-impl/collections/support/TrashCollectionLocation.cpp:47
-msgid "Trash"
-msgstr "Smeće"
-
-#: core-impl/collections/support/TrashCollectionLocation.cpp:101
-#, kde-format
-msgid "Moving to trash: %1"
-msgstr "Premeštam u smeće: %1"
+msgstr "%1 (%2)"
 
 #: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:184
 msgid "&Delete Episode"
@@ -4375,10 +4229,8 @@ msgid "&Delete Channel and Episodes"
 msgstr "&Obriši kanal i epizode"
 
 #: core-impl/collections/umscollection/UmsCollection.cpp:242
-#, fuzzy
-#| msgid "&Use as Collection"
 msgid "&Activate This Collection"
-msgstr "&Koristi kao zbirku"
+msgstr "&Aktiviraj ovu zbirku"
 
 #: core-impl/collections/umscollection/UmsCollection.cpp:372
 #, kde-format
@@ -4386,7 +4238,7 @@ msgctxt ""
 "Name of the USB Mass Storage collection that has not yet been activated. See "
 "also the 'Activate This Collection' action; %1 is actual collection name"
 msgid "%1 (not activated)"
-msgstr ""
+msgstr "%1 (nije aktivirana)"
 
 # >> @title:window
 #: core-impl/collections/umscollection/UmsCollection.cpp:615
@@ -4394,15 +4246,13 @@ msgid "Configure USB Mass Storage Device"
 msgstr "Podešavanje USB uređaja za opšte skladištenje"
 
 #: core-impl/collections/umscollection/UmsCollectionLocation.cpp:119
-#, fuzzy, kde-format
-#| msgid "Removing Track from Device"
-#| msgid_plural "Removing Tracks from Device"
+#, kde-format
 msgid "Removing one track from %2"
 msgid_plural "Removing %1 tracks from %2"
-msgstr[0] "Uklanjam numere sa uređaja"
-msgstr[1] "Uklanjam numere sa uređaja"
-msgstr[2] "Uklanjam numere sa uređaja"
-msgstr[3] "Uklanjam numere sa uređaja"
+msgstr[0] "Uklanjam %1 numeru iz %2"
+msgstr[1] "Uklanjam %1 numere iz %2"
+msgstr[2] "Uklanjam %1 numera iz %2"
+msgstr[3] "Uklanjam numeru iz %2"
 
 #: core-impl/collections/upnpcollection/UpnpBrowseCollection.cpp:118
 #, kde-format
@@ -4444,34 +4294,42 @@ msgstr "O&briši..."
 msgid "&Rename..."
 msgstr "P&reimenuj..."
 
+# >! Plurals on %2 also, does not matter that %2 >= 2.
 #: core-impl/playlists/providers/user/UserPlaylistProvider.cpp:114
-#, fuzzy, kde-format
-#| msgid "Remove From Playlist"
+#, kde-format
 msgctxt "Number of playlists is >= 2"
 msgid "Remove a track from %2 playlists"
 msgid_plural "Remove %1 tracks from %2 playlists"
-msgstr[0] "Ukloni sa liste numera"
-msgstr[1] "Ukloni sa liste numera"
-msgstr[2] "Ukloni sa liste numera"
-msgstr[3] "Ukloni sa liste numera"
+msgstr[0] ""
+"Ukloni %1 numeru iz %2 liste numera"
+"|/|"
+"Ukloni %1 numeru iz %2 $[množ ^2 liste liste listi] numera"
+msgstr[1] ""
+"Ukloni %1 numere iz %2 liste numera"
+"|/|"
+"Ukloni %1 numere iz %2 $[množ ^2 liste liste listi] numera"
+msgstr[2] ""
+"Ukloni %1 numera iz %2 liste numera"
+"|/|"
+"Ukloni %1 numera iz %2 $[množ ^2 liste liste listi] numera"
+msgstr[3] ""
+"Ukloni numeru iz %2 liste numera"
+"|/|"
+"Ukloni numeru iz %2 $[množ ^2 liste liste listi] numera"
 
 #: core-impl/playlists/providers/user/UserPlaylistProvider.cpp:120
-#, fuzzy, kde-format
-#| msgid "Removing Track from Device"
-#| msgid_plural "Removing Tracks from Device"
+#, kde-format
 msgctxt "%2 is saved playlist name"
 msgid "Remove a track from %2"
 msgid_plural "Remove %1 tracks from %2"
-msgstr[0] "Uklanjam numere sa uređaja"
-msgstr[1] "Uklanjam numere sa uređaja"
-msgstr[2] "Uklanjam numere sa uređaja"
-msgstr[3] "Uklanjam numere sa uređaja"
+msgstr[0] "Ukloni %1 numeru iz %2"
+msgstr[1] "Ukloni %1 numere iz %2"
+msgstr[2] "Ukloni %1 numera iz %2"
+msgstr[3] "Ukloni numeru iz %2"
 
 #: core-impl/playlists/providers/user/UserPlaylistProvider.cpp:142
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:100
-#, fuzzy, kde-format
-#| msgid "Are you sure you want to delete this playlist?"
-#| msgid_plural "Are you sure you want to delete these %1 playlist files?"
+#, kde-format
 msgid "Are you sure you want to delete this playlist?"
 msgid_plural "Are you sure you want to delete these %1 playlists?"
 msgstr[0] "Želite li zaista da obrišete ovu %1 listu numera?"
@@ -4481,8 +4339,7 @@ msgstr[3] "Želite li zaista da obrišete ovu listu numera?"
 
 #: core-impl/playlists/providers/user/UserPlaylistProvider.cpp:149
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:107
-#, fuzzy, kde-format
-#| msgid "Yes, delete from %1."
+#, kde-format
 msgctxt "%1 is playlist provider pretty name"
 msgid "Yes, delete from %1."
 msgstr "Da, obriši sa %1."
@@ -4543,7 +4400,7 @@ msgid "Podcast Episode Filename Configuration"
 msgstr "Podešavanje imena fajla podemisije"
 
 #: core-impl/podcasts/sql/SqlPodcastMeta.cpp:426
-#: core/podcasts/PodcastMeta.h:414
+#: core/podcasts/PodcastMeta.h:410
 msgid "Podcast"
 msgstr "Podemisija"
 
@@ -4673,102 +4530,83 @@ msgstr "Preuzimam podemisijski medijum"
 msgid "Downloading Podcast \"%1\""
 msgstr "Preuzimam podemisiju „%1“"
 
-# >> @title:window
 #: core/collections/CollectionLocation.cpp:373
-#, fuzzy
-#| msgid "Find Orphaned Tracks"
 msgid "Organize tracks"
-msgstr "Traženje numera siročića"
+msgstr "Organizuj numere"
 
 #: core/collections/CollectionLocation.cpp:375
-#, fuzzy
-#| msgid "Transcoding tracks"
 msgid "Transcode and organize tracks"
-msgstr "Transkodiram numere"
+msgstr "Transkodiraj i organizuj numere"
 
 #: core/collections/CollectionLocation.cpp:380
-#, fuzzy
-#| msgid "Remove tracks"
 msgid "Move tracks"
-msgstr "Ukloni numere"
+msgstr "Premesti numere"
 
 #: core/collections/CollectionLocation.cpp:382
-#, fuzzy
-#| msgid "Transcoding tracks"
 msgid "Transcode and move tracks"
-msgstr "Transkodiram numere"
+msgstr "Transkodiraj i premesti numere"
 
 #: core/collections/CollectionLocation.cpp:387
-#, fuzzy
-#| msgid "Copying tracks"
 msgid "Copy tracks"
-msgstr "Kopiram numere"
+msgstr "Kopiraj numere"
 
 #: core/collections/CollectionLocation.cpp:389
-#, fuzzy
-#| msgid "Transcoding tracks"
 msgid "Transcode and copy tracks"
-msgstr "Transkodiram numere"
+msgstr "Transkodiraj i kopiraj numere"
 
 #: core/collections/CollectionLocation.cpp:402
-#, fuzzy, kde-format
-#| msgid "Copying tracks"
+#, kde-format
 msgid "Organizing one track"
 msgid_plural "Organizing %1 tracks"
-msgstr[0] "Kopiram numere"
-msgstr[1] "Kopiram numere"
-msgstr[2] "Kopiram numere"
-msgstr[3] "Kopiram numere"
+msgstr[0] "Organizujem %1 numeru"
+msgstr[1] "Organizujem %1 numere"
+msgstr[2] "Organizujem %1 numera"
+msgstr[3] "Organizujem numeru"
 
 #: core/collections/CollectionLocation.cpp:405
-#, fuzzy, kde-format
-#| msgid "Transcoding tracks"
+#, kde-format
 msgid "Transcoding and organizing one track"
 msgid_plural "Transcoding and organizing %1 tracks"
-msgstr[0] "Transkodiram numere"
-msgstr[1] "Transkodiram numere"
-msgstr[2] "Transkodiram numere"
-msgstr[3] "Transkodiram numere"
+msgstr[0] "Transkodiram %1 numeru"
+msgstr[1] "Transkodiram %1 numere"
+msgstr[2] "Transkodiram %1 numera"
+msgstr[3] "Transkodiram numeru"
 
 #: core/collections/CollectionLocation.cpp:411
-#, fuzzy, kde-format
-#| msgid "Copying tracks"
+#, kde-format
 msgid "Moving one track to %2"
 msgid_plural "Moving %1 tracks to %2"
-msgstr[0] "Kopiram numere"
-msgstr[1] "Kopiram numere"
-msgstr[2] "Kopiram numere"
-msgstr[3] "Kopiram numere"
+msgstr[0] "Premeštam %1 numeru u %2"
+msgstr[1] "Premeštam %1 numere u %2"
+msgstr[2] "Premeštam %1 numera u %2"
+msgstr[3] "Premeštam numeru u %2"
 
 #: core/collections/CollectionLocation.cpp:414
-#, fuzzy, kde-format
-#| msgid "Transcoding tracks"
+#, kde-format
 msgid "Transcoding and moving one track to %2"
 msgid_plural "Transcoding and moving %1 tracks to %2"
-msgstr[0] "Transkodiram numere"
-msgstr[1] "Transkodiram numere"
-msgstr[2] "Transkodiram numere"
-msgstr[3] "Transkodiram numere"
+msgstr[0] "Transkodiram i premeštam %1 numeru u %2"
+msgstr[1] "Transkodiram i premeštam %1 numere u %2"
+msgstr[2] "Transkodiram i premeštam %1 numera u %2"
+msgstr[3] "Transkodiram i premeštam numeru u %2"
 
 #: core/collections/CollectionLocation.cpp:420
-#, fuzzy, kde-format
-#| msgid "Copying tracks"
+#, kde-format
 msgid "Copying one track to %2"
 msgid_plural "Copying %1 tracks to %2"
-msgstr[0] "Kopiram numere"
-msgstr[1] "Kopiram numere"
-msgstr[2] "Kopiram numere"
-msgstr[3] "Kopiram numere"
+msgstr[0] "Kopiram %1 numeru u %2"
+msgstr[1] "Kopiram %1 numere u %2"
+msgstr[2] "Kopiram %1 numera u %2"
+msgstr[3] "Kopiram numeru u %2"
 
 #: core/collections/CollectionLocation.cpp:423
-#, fuzzy, kde-format
-#| msgid "Transcoding tracks"
+#, kde-format
 msgid "Transcoding and copying one track to %2"
 msgid_plural "Transcoding and copying %1 tracks to %2"
-msgstr[0] "Transkodiram numere"
-msgstr[1] "Transkodiram numere"
-msgstr[2] "Transkodiram numere"
-msgstr[3] "Transkodiram numere"
+msgstr[0] "Transkodiram i kopiram %1 numeru u %2"
+msgstr[1] "Transkodiram i kopiram %1 numere u %2"
+msgstr[2] "Transkodiram i kopiram %1 numera u %2"
+msgstr[3] "Transkodiram i kopiram numeru u %2"
 
 #: core/meta/support/MetaConstants.cpp:170
 msgctxt ""
@@ -4793,7 +4631,7 @@ msgstr "ime albuma"
 # >! Contexts.
 # >? малим словом у core/meta/support/MetaConstants.cpp:112
 #: core/meta/support/MetaConstants.cpp:178 dialogs/FilenameLayoutDialog.cpp:82
-#: dialogs/FilenameLayoutDialog.cpp:470 playlist/PlaylistModel.cpp:901
+#: dialogs/FilenameLayoutDialog.cpp:470 playlist/PlaylistModel.cpp:902
 #: widgets/SmartPlaylistEditor.cpp:184
 msgid "Comment"
 msgstr "Komentar"
@@ -4807,7 +4645,7 @@ msgstr "Broj numere"
 
 # >! Contexts.
 # >> @title:column
-#: core/meta/support/MetaConstants.cpp:180 playlist/PlaylistModel.cpp:897
+#: core/meta/support/MetaConstants.cpp:180 playlist/PlaylistModel.cpp:898
 msgid "Disc Number"
 msgstr "broj diska"
 
@@ -4820,7 +4658,7 @@ msgstr "opm"
 # >? Малим словом у core/meta/support/MetaConstants.cpp:116
 #. i18n: file: network/NetworkRequests.ui:56
 #. i18n: ectx: property (text), widget (QTreeWidget, requestList)
-#: core/meta/support/MetaConstants.cpp:182 playlist/PlaylistModel.cpp:904
+#: core/meta/support/MetaConstants.cpp:182 playlist/PlaylistModel.cpp:905
 #: widgets/SmartPlaylistEditor.cpp:183 rc.cpp:1979
 msgid "Length"
 msgstr "Trajanje"
@@ -4829,12 +4667,12 @@ msgstr "Trajanje"
 msgid "Bit Rate"
 msgstr "bitski protok"
 
-#: core/meta/support/MetaConstants.cpp:184 playlist/PlaylistModel.cpp:906
+#: core/meta/support/MetaConstants.cpp:184 playlist/PlaylistModel.cpp:907
 msgid "Sample Rate"
 msgstr "uzorkovanje"
 
 # >> @title:column
-#: core/meta/support/MetaConstants.cpp:185 playlist/PlaylistModel.cpp:912
+#: core/meta/support/MetaConstants.cpp:185 playlist/PlaylistModel.cpp:913
 msgid "File Size"
 msgstr "veličina fajla"
 
@@ -4848,7 +4686,7 @@ msgstr "dodato u zbirku"
 
 # >! Contexts.
 #: core/meta/support/MetaConstants.cpp:189
-#: playlist/ProgressiveSearchWidget.cpp:109 playlist/PlaylistModel.cpp:908
+#: playlist/ProgressiveSearchWidget.cpp:109 playlist/PlaylistModel.cpp:909
 #: widgets/SmartPlaylistEditor.cpp:185
 msgid "Rating"
 msgstr "rejting"
@@ -5071,35 +4909,33 @@ msgstr "izmenjeno"
 
 # >! (qtdt-format) +
 # |, no-check-spell
-#: core/meta/support/MetaUtility.cpp:407
+#: core/meta/support/MetaUtility.cpp:409
 msgctxt ""
 "the time format for a time length when the time is below 1 hour see QTime "
 "documentation."
 msgid "m:ss"
 msgstr "m:ss"
 
-#: core/meta/support/MetaUtility.cpp:414
-#, fuzzy, kde-format
-#| msgid "%1 day"
-#| msgid_plural "%1 days"
+#: core/meta/support/MetaUtility.cpp:416
+#, kde-format
 msgctxt "number of days with spacing for the pretty time"
 msgid "%1 day, "
 msgid_plural "%1 days, "
-msgstr[0] "%1 dan"
-msgstr[1] "%1 dana"
-msgstr[2] "%1 dana"
-msgstr[3] "%1 dan"
+msgstr[0] "%1 dan, "
+msgstr[1] "%1 dana, "
+msgstr[2] "%1 dana, "
+msgstr[3] "%1 dan, "
 
 # >! (qtdt-format) +
 # |, no-check-spell
-#: core/meta/support/MetaUtility.cpp:415
+#: core/meta/support/MetaUtility.cpp:417
 msgctxt ""
 "the time format for a time length when the time is 1 hour or above see QTime "
 "documentation."
 msgid "h:mm:ss"
 msgstr "h:mm:ss"
 
-#: core/meta/support/MetaUtility.cpp:429
+#: core/meta/support/MetaUtility.cpp:431
 #, kde-format
 msgctxt "number of years for the pretty time"
 msgid "%1 year"
@@ -5109,7 +4945,7 @@ msgstr[1] "%1 godine"
 msgstr[2] "%1 godina"
 msgstr[3] "1 godina"
 
-#: core/meta/support/MetaUtility.cpp:431
+#: core/meta/support/MetaUtility.cpp:433
 #, kde-format
 msgctxt "number of months for the pretty time"
 msgid "%1 month"
@@ -5119,7 +4955,7 @@ msgstr[1] "%1 meseca"
 msgstr[2] "%1 meseci"
 msgstr[3] "1 mesec"
 
-#: core/meta/support/MetaUtility.cpp:433
+#: core/meta/support/MetaUtility.cpp:435
 #, kde-format
 msgctxt "number of days for the pretty time"
 msgid "%1 day"
@@ -5129,7 +4965,7 @@ msgstr[1] "%1 dana"
 msgstr[2] "%1 dana"
 msgstr[3] "1 dan"
 
-#: core/meta/support/MetaUtility.cpp:435
+#: core/meta/support/MetaUtility.cpp:437
 #, kde-format
 msgctxt "number of hours for the pretty time"
 msgid "%1 hour"
@@ -5139,7 +4975,7 @@ msgstr[1] "%1 sata"
 msgstr[2] "%1 sati"
 msgstr[3] "1 sat"
 
-#: core/meta/support/MetaUtility.cpp:437
+#: core/meta/support/MetaUtility.cpp:439
 #, kde-format
 msgctxt "number of minutes for the pretty time"
 msgid "%1 minute"
@@ -5149,7 +4985,7 @@ msgstr[1] "%1 minuta"
 msgstr[2] "%1 minuta"
 msgstr[3] "1 minut"
 
-#: core/meta/support/MetaUtility.cpp:439
+#: core/meta/support/MetaUtility.cpp:441
 #, kde-format
 msgctxt "number of seconds for the pretty time"
 msgid "%1 second"
@@ -5229,7 +5065,7 @@ msgstr "nepoznata vrsta"
 
 # >> @item
 #: core/support/Amarok.cpp:46 core/support/Amarok.cpp:91
-#: playlist/PlaylistModel.cpp:464
+#: playlist/PlaylistModel.cpp:465
 msgctxt "The amount of time since last played"
 msgid "Never"
 msgstr "nikada"
@@ -5252,10 +5088,10 @@ msgstr "%1 %2."
 #, kde-format
 msgid "One week ago"
 msgid_plural "%1 weeks ago"
-msgstr[0] "pre %1 nedelju"
-msgstr[1] "pre %1 nedelje"
-msgstr[2] "pre %1 nedelja"
-msgstr[3] "pre nedelju dana"
+msgstr[0] "pre %1 sedmicu"
+msgstr[1] "pre %1 sedmice"
+msgstr[2] "pre %1 sedmica"
+msgstr[3] "pre 1 sedmice"
 
 # >> @item
 #: core/support/Amarok.cpp:72
@@ -5270,7 +5106,7 @@ msgid_plural "%1 days ago"
 msgstr[0] "pre %1 dan"
 msgstr[1] "pre %1 dana"
 msgstr[2] "pre %1 dana"
-msgstr[3] "pre 1 dan"
+msgstr[3] "pre 1 dana"
 
 # >> @item
 #: core/support/Amarok.cpp:76
@@ -5280,7 +5116,7 @@ msgid_plural "%1 hours ago"
 msgstr[0] "pre %1 sat"
 msgstr[1] "pre %1 sata"
 msgstr[2] "pre %1 sati"
-msgstr[3] "pre 1 sat"
+msgstr[3] "pre 1 sata"
 
 # >> @item
 #: core/support/Amarok.cpp:82
@@ -5290,12 +5126,12 @@ msgid_plural "%1 minutes ago"
 msgstr[0] "pre %1 minut"
 msgstr[1] "pre %1 minuta"
 msgstr[2] "pre %1 minuta"
-msgstr[3] "pre 1 minut"
+msgstr[3] "pre 1 minuta"
 
 # >> @item
 #: core/support/Amarok.cpp:83
 msgid "Within the last minute"
-msgstr "u toku poslednjeg minuta"
+msgstr "u toku prošlog minuta"
 
 # >> @item
 #: core/support/Amarok.cpp:85
@@ -5380,11 +5216,7 @@ msgid "0"
 msgstr "0"
 
 #: core/support/Amarok.cpp:170
-#, fuzzy, kde-format
-#| msgctxt ""
-#| "A saved playlist with the current time (KLocale::Shortdate) added between "
-#| "                      the parentheses"
-#| msgid "Empty Playlist (%1)"
+#, kde-format
 msgctxt ""
 "A saved playlist with the current time (KLocale::Shortdate) added between    "
 "                       the parentheses"
@@ -5392,11 +5224,7 @@ msgid "Empty Playlist (%1)"
 msgstr "Prazna lista numera (%1)"
 
 #: core/support/Amarok.cpp:198
-#, fuzzy, kde-format
-#| msgctxt ""
-#| "A saved playlist with the current time (KLocale::Shortdate) added between "
-#| "                      the parentheses"
-#| msgid "Various Tracks (%1)"
+#, kde-format
 msgctxt ""
 "A saved playlist with the current time (KLocale::Shortdate) added between    "
 "                       the parentheses"
@@ -5729,27 +5557,25 @@ msgstr ""
 "je razvio Microsoft. Preporučuje se samo za prenosne muzičke plejere koji ne "
 "podržavaju OGG Vorbis."
 
+# >> @item encoder name
 #: core/transcoding/TranscodingConfiguration.cpp:101
 msgid "Invalid encoder"
-msgstr ""
+msgstr "loš koder"
 
+# >> @item encoder name
 #: core/transcoding/TranscodingConfiguration.cpp:103
 msgid "Just copy or move"
-msgstr ""
+msgstr "samo kopiranje ili premeštanje"
 
 # >> @item
 #: core/transcoding/TranscodingConfiguration.cpp:127
-#, fuzzy, kde-format
-#| msgctxt "monthname year"
-#| msgid "%1 %2"
+#, kde-format
 msgctxt "%1 example: 'Compression level' %2 example: '5'"
 msgid "%1 %2"
-msgstr "%1 %2."
+msgstr "%1 %2"
 
 #: core/transcoding/TranscodingConfiguration.cpp:131
-#, fuzzy, kde-format
-#| msgctxt "A person's location: City, Country"
-#| msgid "%1, %2"
+#, kde-format
 msgctxt "%1 example: 'MP3' %2 example: 'VBR 175kb/s'"
 msgid "%1, %2"
 msgstr "%1, %2"
@@ -5787,7 +5613,7 @@ msgstr "Ne mogu da nađem omot za „%1“."
 msgid "Cover View"
 msgstr "Prikaz omota"
 
-#: covermanager/CoverManager.cpp:105 MainWindow.cpp:773
+#: covermanager/CoverManager.cpp:105 MainWindow.cpp:771
 msgid "Cover Manager"
 msgstr "Menadžer omota"
 
@@ -5957,7 +5783,7 @@ msgid "Display Cover"
 msgstr "Prikaži omot"
 
 # >> @title:window
-#: covermanager/CoverFoundDialog.cpp:361 MainWindow.cpp:508
+#: covermanager/CoverFoundDialog.cpp:361 MainWindow.cpp:506
 msgid "Save As"
 msgstr "Upisivanje kao"
 
@@ -6392,15 +6218,7 @@ msgstr "tip fajla"
 
 # literal-segment: %\w+%
 #: dialogs/FilenameLayoutDialog.cpp:648
-#, fuzzy, no-c-format
-#| msgctxt ""
-#| "Please do not translate the %foo% words as they define a syntax used "
-#| "internally by a parser to describe a filename."
-#| msgid ""
-#| "The following tokens can be used to define a filename scheme:             "
-#| "                         <br>%track%, %title%, %artist%, %composer%, %year"
-#| "%, %album%, %albumartist%, %comment%, %genre%, %initial%, %folder%, "
-#| "%filetype%, %discnumber%."
+#, no-c-format
 msgctxt ""
 "Please do not translate the %foo% words as they define a syntax used "
 "internally by a parser to describe a filename."
@@ -6415,20 +6233,7 @@ msgstr ""
 "%comment%, %genre%, %initial%, %folder%, %filetype%, %discnumber%.</html>"
 
 #: dialogs/FilenameLayoutDialog.cpp:707
-#, fuzzy, no-c-format, kde-format
-#| msgctxt ""
-#| "Please do not translate the %foo% words as they define a syntax used "
-#| "internally by a parser to describe a filename."
-#| msgid ""
-#| "The following tokens can be used to define a filename scheme:<br>         "
-#| "                             <font color=\"%1\">%track%</font>, <font "
-#| "color=\"%2\">%title%</font>,                                      <font "
-#| "color=\"%3\">%artist%</font>, <font color=\"%4\">%composer%</font>,       "
-#| "                               <font color=\"%5\">%year%</font>, <font "
-#| "color=\"%6\">%album%</font>,                                      <font "
-#| "color=\"%7\">%albumartist%</font>, <font color=\"%8\">%comment%</font>,   "
-#| "                                   <font color=\"%9\">%genre%</font>, "
-#| "%ignore%."
+#, no-c-format, kde-format
 msgctxt ""
 "Please do not translate the %foo% words as they define a syntax used "
 "internally by a parser to describe a filename."
@@ -6462,52 +6267,36 @@ msgid "New Preset"
 msgstr "Novo pretpodešavanje"
 
 #: dialogs/TrackOrganizer.cpp:105
-#, fuzzy
-#| msgid "Unknown Album"
 msgid "Unknown album"
 msgstr "Nepoznat album"
 
 #: dialogs/TrackOrganizer.cpp:106
-#, fuzzy
-#| msgid "Unknown Artist"
 msgid "Unknown artist"
 msgstr "Nepoznat izvođač"
 
 #: dialogs/TrackOrganizer.cpp:110
-#, fuzzy
-#| msgid "comment"
 msgid "No comments"
-msgstr "komentar"
+msgstr "Nema komentara"
 
 #: dialogs/TrackOrganizer.cpp:111
-#, fuzzy
-#| msgid "Unknown Composer"
 msgid "Unknown composer"
 msgstr "Nepoznat kompozitor"
 
 #: dialogs/TrackOrganizer.cpp:112
-#, fuzzy
-#| msgid "disc number"
 msgid "Unknown disc number"
-msgstr "broj diska"
+msgstr "Nepoznat broj diska"
 
 #: dialogs/TrackOrganizer.cpp:113
-#, fuzzy
-#| msgid "Unknown Genre"
 msgid "Unknown genre"
 msgstr "Nepoznat žanr"
 
 #: dialogs/TrackOrganizer.cpp:114
-#, fuzzy
-#| msgid "Unknown Artist"
 msgid "Unknown title"
-msgstr "Nepoznat izvođač"
+msgstr "Nepoznat naslov"
 
 #: dialogs/TrackOrganizer.cpp:115
-#, fuzzy
-#| msgid "Unknown Genre"
 msgid "Unknown year"
-msgstr "Nepoznat žanr"
+msgstr "Nepoznata godina"
 
 #: dialogs/CollectionSetup.cpp:78
 #, kde-format
@@ -6567,30 +6356,32 @@ msgstr "Upisuj statistiku u fajl"
 
 # >> @option:check
 #: dialogs/CollectionSetup.cpp:137
-#, fuzzy
-#| msgid "Write covers to file"
 msgid "Write covers to file, maximum size:"
-msgstr "Upisuj omote u fajl"
+msgstr "Upisuj omote u fajl, najveća veličina:"
 
+# well-spelled: пкс
 #: dialogs/CollectionSetup.cpp:139
 msgctxt "Maximum cover size option"
 msgid "Small (200 px)"
-msgstr ""
+msgstr "mali (200 pks)"
 
+# well-spelled: пкс
 #: dialogs/CollectionSetup.cpp:140
 msgctxt "Maximum cover size option"
 msgid "Medium (400 px)"
-msgstr ""
+msgstr "srednji (400 pks)"
 
+# well-spelled: пкс
 #: dialogs/CollectionSetup.cpp:141
 msgctxt "Maximum cover size option"
 msgid "Large (800 px)"
-msgstr ""
+msgstr "veliki (800 pks)"
 
+# well-spelled: пкс
 #: dialogs/CollectionSetup.cpp:142
 msgctxt "Maximum cover size option"
 msgid "Huge (1600 px)"
-msgstr ""
+msgstr "ogromni (1600 pks)"
 
 #: dialogs/CollectionSetup.cpp:143
 msgid "&Enable character set detection in ID3 tags"
@@ -6642,7 +6433,7 @@ msgstr ""
 
 #: dialogs/CollectionSetup.cpp:157
 msgid "Scale covers down if necessary."
-msgstr ""
+msgstr "Umanji omote ako je potrebno."
 
 #: dialogs/CollectionSetup.cpp:158
 msgid ""
@@ -6776,55 +6567,51 @@ msgstr "Postoji sukob u imenima fajlova, postojeći fajlovi neće biti menjani."
 
 #: dialogs/DiagnosticDialog.cpp:42
 #, kde-format
+msgctxt "%1 is the program name"
 msgid "%1 Diagnostics"
 msgstr ""
+"Dijagnostika za %1"
+"|/|"
+"Dijagnostika za $[aku %1]"
 
 #: dialogs/DiagnosticDialog.cpp:45
-#, fuzzy
-#| msgid "Copy to Collection"
 msgid "Copy to Clipboard"
-msgstr "Kopiraj u zbirku"
+msgstr "Kopiraj u klipbord"
 
+# >> plugin running
 #: dialogs/DiagnosticDialog.cpp:77
 msgid " (running)"
-msgstr ""
+msgstr " (radi)"
 
+# >> plugin stopped
 #: dialogs/DiagnosticDialog.cpp:77
-#, fuzzy
-#| msgid "Stopped"
 msgid " (stopped)"
-msgstr "Zaustavljeno"
+msgstr " (zaustavljen)"
 
+# >> plugin enabled
 #: dialogs/DiagnosticDialog.cpp:92
-msgid "  (enabled)"
-msgstr ""
+msgid " (enabled)"
+msgstr " (uključen)"
 
+# >> plugin disabled
 #: dialogs/DiagnosticDialog.cpp:92
-#, fuzzy
-#| msgctxt "automatic updates turned off"
-#| msgid "disabled"
 msgid " (disabled)"
-msgstr "isključeno"
+msgstr " (isključen)"
 
-# >> @option:check
 #: dialogs/DiagnosticDialog.cpp:100
-#, fuzzy
-#| msgid "Years"
 msgctxt "Usage"
 msgid "Yes"
-msgstr "godine"
+msgstr "da"
 
 #: dialogs/DiagnosticDialog.cpp:100
-#, fuzzy
-#| msgid "None"
 msgctxt "Usage"
 msgid "No"
-msgstr "ništa"
+msgstr "ne"
 
 #: dialogs/DiagnosticDialog.cpp:103
 #, kde-format
 msgid ""
-"%1-Diagnostics\n"
+"%1 Diagnostics\n"
 "\n"
 "%1 Version: %2\n"
 "KDE Version: %3\n"
@@ -6834,6 +6621,25 @@ msgid ""
 "PulseAudio: %8\n"
 "\n"
 msgstr ""
+"Dijagnostika za %1\n"
+"\n"
+"Izdanje %1: %2\n"
+"Izdanje KDE‑a: %3\n"
+"Izdanje Qt‑a: %4\n"
+"Izdanje Phonona: %5\n"
+"Pozadina Phonona: %6 (%7)\n"
+"PulseAudio: %8\n"
+"\n"
+"|/|"
+"Dijagnostika za $[aku %1]\n"
+"\n"
+"Izdanje $[gen %1]: %2\n"
+"Izdanje KDE‑a: %3\n"
+"Izdanje Qt‑a: %4\n"
+"Izdanje Phonona: %5\n"
+"Pozadina Phonona: %6 (%7)\n"
+"PulseAudio: %8\n"
+"\n"
 
 #: dialogs/DiagnosticDialog.cpp:119
 #, kde-format
@@ -6843,6 +6649,10 @@ msgid ""
 "Amarok Plugins:\n"
 "    %2\n"
 msgstr ""
+"Amarokove skripte:\n"
+"    %1\n"
+"Amarokovi priključci:\n"
+"    %2\n"
 
 #: dialogs/MusicBrainzTagger.cpp:67
 msgid "Expand All"
@@ -7337,46 +7147,6 @@ msgctxt "Part bias representation"
 msgid "Partition"
 msgstr "Proporcija"
 
-#: dynamic/biases/AlbumPlayBias.cpp:38
-msgctxt "Name of the \"AlbumPlay\" bias"
-msgid "Album play"
-msgstr "Puštanje albuma"
-
-# ? Зашто ручни преломи?
-#: dynamic/biases/AlbumPlayBias.cpp:47
-msgctxt "Description of the \"AlbumPlay\" bias"
-msgid "The \"AlbumPlay\" bias adds tracks that belong to one album."
-msgstr ""
-"Naklonost „Puštanje albuma“ dodaje\n"
-"numere koje pripadaju istom albumu."
-
-#: dynamic/biases/AlbumPlayBias.cpp:108
-msgctxt "AlbumPlay bias representation"
-msgid "The next track from the album"
-msgstr "Sledeća numera sa albuma"
-
-#: dynamic/biases/AlbumPlayBias.cpp:111
-msgctxt "AlbumPlay bias representation"
-msgid "Any later track from the album"
-msgstr "Bilo koja naredna numera sa albuma"
-
-#: dynamic/biases/AlbumPlayBias.cpp:114
-msgctxt "AlbumPlay bias representation"
-msgid "Tracks from the same album"
-msgstr "Numere sa istog albuma"
-
-#: dynamic/biases/AlbumPlayBias.cpp:124
-msgid "Track directly follows previous track in album"
-msgstr "Numera neposredno za prethodnom numerom u albumu"
-
-#: dynamic/biases/AlbumPlayBias.cpp:126
-msgid "Track comes after previous track in album"
-msgstr "Numera sledi nakon prethodne numere u albumu"
-
-#: dynamic/biases/AlbumPlayBias.cpp:128
-msgid "Track is in the same album as previous track"
-msgstr "Numera je u istom albumu kao i prethodna"
-
 #: dynamic/biases/TagMatchBias.cpp:45
 msgctxt "Name of the \"TagMatch\" bias"
 msgid "Match meta tag"
@@ -7411,12 +7181,6 @@ msgstr "Ako—inače"
 
 # ? Зашто ручни преломи?
 #: dynamic/biases/IfElseBias.cpp:46
-#, fuzzy
-#| msgctxt "Description of the \"IfElse\" bias"
-#| msgid ""
-#| "The \"IfElse\" bias adds tracks that match at least one of the sub "
-#| "biases. It will only check the second sub-bias if the first doesn't "
-#| "return any results."
 msgctxt "Description of the \"IfElse\" bias"
 msgid ""
 "The \"IfElse\" bias adds tracks that match at least one of the sub biases.\n"
@@ -7458,11 +7222,6 @@ msgstr ""
 # ? Зашто ручни преломи?
 # rewrite-msgid: /character/letter/
 #: dynamic/biases/QuizPlayBias.cpp:118
-#, fuzzy
-#| msgctxt "QuizPlay bias representation"
-#| msgid ""
-#| "Tracks whose title start with a\n"
-#| " character the last track ended with"
 msgctxt "QuizPlay bias representation"
 msgid ""
 "Tracks whose title start with a\n"
@@ -7474,11 +7233,6 @@ msgstr ""
 # ? Зашто ручни преломи?
 # rewrite-msgid: /character/letter/
 #: dynamic/biases/QuizPlayBias.cpp:122
-#, fuzzy
-#| msgctxt "QuizPlay bias representation"
-#| msgid ""
-#| "Tracks whose artist name start\n"
-#| " with a character the last track ended with"
 msgctxt "QuizPlay bias representation"
 msgid ""
 "Tracks whose artist name start\n"
@@ -7490,11 +7244,6 @@ msgstr ""
 # ? Зашто ручни преломи?
 # rewrite-msgid: /character/letter/
 #: dynamic/biases/QuizPlayBias.cpp:126
-#, fuzzy
-#| msgctxt "QuizPlay bias representation"
-#| msgid ""
-#| "Tracks whose album name start\n"
-#| " with a character the last track ended with"
 msgctxt "QuizPlay bias representation"
 msgid ""
 "Tracks whose album name start\n"
@@ -7524,6 +7273,46 @@ msgstr "iz imena izvođača (kviz izvođača)"
 #: dynamic/biases/QuizPlayBias.cpp:147
 msgid "of the album name (Album quiz)"
 msgstr "iz imena albuma (kviz albuma)"
+
+#: dynamic/biases/AlbumPlayBias.cpp:38
+msgctxt "Name of the \"AlbumPlay\" bias"
+msgid "Album play"
+msgstr "Puštanje albuma"
+
+# ? Зашто ручни преломи?
+#: dynamic/biases/AlbumPlayBias.cpp:47
+msgctxt "Description of the \"AlbumPlay\" bias"
+msgid "The \"AlbumPlay\" bias adds tracks that belong to one album."
+msgstr ""
+"Naklonost „Puštanje albuma“ dodaje\n"
+"numere koje pripadaju istom albumu."
+
+#: dynamic/biases/AlbumPlayBias.cpp:108
+msgctxt "AlbumPlay bias representation"
+msgid "The next track from the album"
+msgstr "Sledeća numera sa albuma"
+
+#: dynamic/biases/AlbumPlayBias.cpp:111
+msgctxt "AlbumPlay bias representation"
+msgid "Any later track from the album"
+msgstr "Bilo koja naredna numera sa albuma"
+
+#: dynamic/biases/AlbumPlayBias.cpp:114
+msgctxt "AlbumPlay bias representation"
+msgid "Tracks from the same album"
+msgstr "Numere sa istog albuma"
+
+#: dynamic/biases/AlbumPlayBias.cpp:124
+msgid "Track directly follows previous track in album"
+msgstr "Numera neposredno za prethodnom numerom u albumu"
+
+#: dynamic/biases/AlbumPlayBias.cpp:126
+msgid "Track comes after previous track in album"
+msgstr "Numera sledi nakon prethodne numere u albumu"
+
+#: dynamic/biases/AlbumPlayBias.cpp:128
+msgid "Track is in the same album as previous track"
+msgstr "Numera je u istom albumu kao i prethodna"
 
 #: dynamic/Bias.cpp:239
 msgctxt "And bias representation"
@@ -7557,6 +7346,24 @@ msgstr "Nasumična"
 #: dynamic/BiasedPlaylist.cpp:137
 msgid "Generating playlist..."
 msgstr "Pravim listu numera..."
+
+#: dynamic/DynamicModel.cpp:792
+msgctxt "Default name for new playlists"
+msgid "New playlist"
+msgstr "Nova lista numera"
+
+#: dynamic/DynamicModel.cpp:931
+msgid "Rock and Pop"
+msgstr "Rok i pop"
+
+#: dynamic/DynamicModel.cpp:937
+msgid "Album play"
+msgstr "Puštanje albuma"
+
+#: dynamic/DynamicModel.cpp:946
+msgctxt "Name of a dynamic playlist"
+msgid "Rating"
+msgstr "Rejting"
 
 #: dynamic/BiasFactory.cpp:53
 msgctxt "Name of the random bias"
@@ -7607,24 +7414,6 @@ msgstr ""
 #, kde-format
 msgid "Replacement for bias %1"
 msgstr "Zamena za naklonost %1"
-
-#: dynamic/DynamicModel.cpp:792
-msgctxt "Default name for new playlists"
-msgid "New playlist"
-msgstr "Nova lista numera"
-
-#: dynamic/DynamicModel.cpp:931
-msgid "Rock and Pop"
-msgstr "Rok i pop"
-
-#: dynamic/DynamicModel.cpp:937
-msgid "Album play"
-msgstr "Puštanje albuma"
-
-#: dynamic/DynamicModel.cpp:946
-msgctxt "Name of a dynamic playlist"
-msgid "Rating"
-msgstr "Rejting"
 
 #: k3bexporter.cpp:182
 msgid "Unable to start K3b."
@@ -7821,6 +7610,11 @@ msgid ""
 "application, try to send the same amount of positive and negative comments."
 "<br/>"
 msgstr ""
+"<b>Reagovanja služe samo za statistiku, nećete dobiti odgovor ako postavite "
+"neko pitanje. Za podršku nam se obratite <a href=\"http://forum.kde.org/"
+"Amarok\">na forumu</a> ili kanalu #amarok na irc.freenode.net</b>. Da bi "
+"komentari koje pošaljete bili što korisniji, pokušajte da pošaljete jednak "
+"broj pozitivnih i negativnih komentara.<br/>"
 
 #: likeback/LikeBackDialog.cpp:186
 msgctxt "Feedback dialog text, text to disallow feature requests"
@@ -8131,7 +7925,7 @@ msgstr "Lista numera"
 msgid "Warning: tracks have been hidden in the playlist"
 msgstr "Upozorenje: postoje skrivene numere u listi"
 
-#: playlist/ProgressiveSearchWidget.cpp:49 MainWindow.cpp:857
+#: playlist/ProgressiveSearchWidget.cpp:49 MainWindow.cpp:855
 msgid "Search playlist"
 msgstr "Pretraži listu numera"
 
@@ -8473,7 +8267,7 @@ msgstr "Sledeći izvori su dostupni za ovu numeru:"
 msgid "Ok"
 msgstr "U redu"
 
-#: playlist/view/PlaylistViewCommon.cpp:115 MainWindow.cpp:896
+#: playlist/view/PlaylistViewCommon.cpp:115 MainWindow.cpp:894
 msgid "Queue Track"
 msgstr "Stavi u red"
 
@@ -8536,64 +8330,9 @@ msgid "No tracks"
 msgstr "nema numera"
 
 #: playlist/PlaylistToolBar.cpp:39 playlist/PlaylistDock.cpp:60
-#: MainWindow.cpp:1039
+#: MainWindow.cpp:1037
 msgid "&Playlist"
 msgstr "&Lista numera"
-
-#: playlist/PlaylistModel.cpp:283
-msgid "(...)"
-msgstr "(...)"
-
-#: playlist/PlaylistModel.cpp:312
-#, fuzzy, kde-format
-#| msgctxt "Unit for data rate kilo bit per seconds"
-#| msgid "kbps"
-msgctxt "%1: bitrate"
-msgid "%1 kbps"
-msgstr "kb/s"
-
-#: playlist/PlaylistModel.cpp:315
-msgid "No extra information available"
-msgstr "Dodatni podaci nisu dostupni"
-
-# >! Contexts.
-#: playlist/PlaylistModel.cpp:890
-msgctxt "The name of the file this track is stored in"
-msgid "Filename"
-msgstr "Ime fajla"
-
-# >> @title:column
-#: playlist/PlaylistModel.cpp:898
-msgctxt "The Track number for this item"
-msgid "Track"
-msgstr "numera"
-
-# >> @title:column
-#: playlist/PlaylistModel.cpp:899 widgets/SmartPlaylistEditor.cpp:187
-msgid "BPM"
-msgstr "opm"
-
-# >> @title:column
-#: playlist/PlaylistModel.cpp:902
-msgctxt "The location on disc of this track"
-msgid "Directory"
-msgstr "fascikla"
-
-# >> @title:column
-#: playlist/PlaylistModel.cpp:905 widgets/SmartPlaylistEditor.cpp:187
-msgid "Bitrate"
-msgstr "bitski protok"
-
-# >> @title:column
-#: playlist/PlaylistModel.cpp:910
-msgctxt "Column name"
-msgid "Last Played"
-msgstr "poslednje puštanje"
-
-# >> @title:column
-#: playlist/PlaylistModel.cpp:911
-msgid "Mood"
-msgstr "raspoloženje"
 
 # >> @item:intext
 #: playlist/PlaylistViewUrlGenerator.cpp:82
@@ -8613,9 +8352,62 @@ msgstr "pretraga %1"
 msgid "%1 layout"
 msgstr "raspored %1"
 
-#: playlist/PlaylistViewUrlGenerator.cpp:101 MainWindow.cpp:765
+#: playlist/PlaylistViewUrlGenerator.cpp:101 MainWindow.cpp:763
 msgid "Bookmark Playlist Setup"
 msgstr "Obeleži postavke liste numera"
+
+#: playlist/PlaylistModel.cpp:284
+msgid "(...)"
+msgstr "(...)"
+
+#: playlist/PlaylistModel.cpp:313
+#, kde-format
+msgctxt "%1: bitrate"
+msgid "%1 kbps"
+msgstr "%1 kb/s"
+
+#: playlist/PlaylistModel.cpp:316
+msgid "No extra information available"
+msgstr "Dodatni podaci nisu dostupni"
+
+# >! Contexts.
+#: playlist/PlaylistModel.cpp:891
+msgctxt "The name of the file this track is stored in"
+msgid "Filename"
+msgstr "Ime fajla"
+
+# >> @title:column
+#: playlist/PlaylistModel.cpp:899
+msgctxt "The Track number for this item"
+msgid "Track"
+msgstr "numera"
+
+# >> @title:column
+#: playlist/PlaylistModel.cpp:900 widgets/SmartPlaylistEditor.cpp:187
+msgid "BPM"
+msgstr "opm"
+
+# >> @title:column
+#: playlist/PlaylistModel.cpp:903
+msgctxt "The location on disc of this track"
+msgid "Directory"
+msgstr "fascikla"
+
+# >> @title:column
+#: playlist/PlaylistModel.cpp:906 widgets/SmartPlaylistEditor.cpp:187
+msgid "Bitrate"
+msgstr "bitski protok"
+
+# >> @title:column
+#: playlist/PlaylistModel.cpp:911
+msgctxt "Column name"
+msgid "Last Played"
+msgstr "poslednje puštanje"
+
+# >> @title:column
+#: playlist/PlaylistModel.cpp:912
+msgid "Mood"
+msgstr "raspoloženje"
 
 #: playlist/PlaylistDock.cpp:111
 #, kde-format
@@ -8623,12 +8415,14 @@ msgid ""
 "<a href='%1'>Dynamic Mode</a> Enabled. <a href='%2'>Repopulate</a> | <a "
 "href='%3'>Turn off</a>"
 msgstr ""
+"<a href='%1'>Dinamički režim</a> uključen. <a href='%2'>Popuni ponovo</a> | "
+"<a href='%3'>Isključi</a>"
 
 #: playlist/PlaylistDock.cpp:186
 msgid "&Save Current Playlist"
 msgstr "&Sačuvaj tekuću listu numera"
 
-#: playlist/PlaylistDock.cpp:278
+#: playlist/PlaylistDock.cpp:281
 #, kde-format
 msgid "&Save playlist to \"%1\""
 msgstr "&Sačuvaj listu numera u <filename>%1</filename>"
@@ -8947,14 +8741,12 @@ msgstr "kompozitor"
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:92
 #: widgets/MetaQueryWidget.cpp:144
-#, fuzzy
-#| msgid "year"
 msgid "year"
 msgid_plural "years"
-msgstr[0] "godina"
-msgstr[1] "godina"
-msgstr[2] "godina"
-msgstr[3] "godina"
+msgstr[0] " godina"
+msgstr[1] " godine"
+msgstr[2] " godina"
+msgstr[3] " godina"
 
 #: playlistgenerator/constraints/TagMatchSupport.cpp:93
 msgid "comment"
@@ -9139,7 +8931,7 @@ msgstr ""
 "pokušati da približno poklopi, ali bi trebalo da razmislite o ublažavanju "
 "ograničenja kako biste našli više numera."
 
-#: playlistmanager/file/PlaylistFileProvider.cpp:98
+#: playlistmanager/file/PlaylistFileProvider.cpp:97
 msgid "Playlist Files on Disk"
 msgstr "Fajlovi listi numera na disku"
 
@@ -9148,10 +8940,6 @@ msgstr "Fajlovi listi numera na disku"
 msgid "The playlist file \"%1\" could not be loaded."
 msgstr "Ne mogu da učitam fajl liste numera „%1“."
 
-#: playlistmanager/sql/SqlPlaylist.cpp:41
-msgid "Playlist in database"
-msgstr "Lista numera u bazi"
-
 #: playlistmanager/sql/SqlUserPlaylistProvider.h:44
 msgid "Amarok Database"
 msgstr "Amarokova baza podataka"
@@ -9159,6 +8947,10 @@ msgstr "Amarokova baza podataka"
 #: playlistmanager/sql/SqlUserPlaylistProvider.h:45
 msgid "Local playlists stored in the database"
 msgstr "Lokalne liste numere skladištene u bazi"
+
+#: playlistmanager/sql/SqlPlaylist.cpp:41
+msgid "Playlist in database"
+msgstr "Lista numera u bazi"
 
 #: playlistmanager/SyncedPlaylist.cpp:42 playlistmanager/SyncedPlaylist.cpp:50
 #: playlistmanager/SyncedPlaylist.cpp:58
@@ -9294,7 +9086,7 @@ msgstr[3] "1 izvođača."
 
 #: services/jamendo/JamendoService.cpp:80
 msgid "A archive of free, Creative Commons licensed music"
-msgstr ""
+msgstr "Arhiva besplatne muzike, pod Creative Commonsovim licencama"
 
 #: services/jamendo/JamendoService.cpp:83
 msgid ""
@@ -9403,10 +9195,6 @@ msgid "to:"
 msgstr "do:"
 
 #: services/lastfm/meta/MultiPlayableCapabilityImpl_p.h:111
-#, fuzzy
-#| msgid ""
-#| "To listen to this stream you need to be a paying Last.Fm subscriber. All "
-#| "the other Last.Fm features are unaffected."
 msgid ""
 "To listen to this stream you need to be a paying Last.fm subscriber. All the "
 "other Last.fm features are unaffected."
@@ -9415,8 +9203,6 @@ msgstr ""
 "utiče na ostale last.fm‑ove mogućnosti."
 
 #: services/lastfm/meta/MultiPlayableCapabilityImpl_p.h:117
-#, fuzzy
-#| msgid "Error starting track from Last.Fm radio"
 msgid "Error starting track from Last.fm radio"
 msgstr "Greška pri pokretanju numera sa last.fm‑ovog radija"
 
@@ -9678,7 +9464,7 @@ msgid "User"
 msgstr "korisnik"
 
 #: services/lastfm/LastFmService.cpp:543
-#: services/lastfm/ScrobblerAdapter.cpp:219
+#: services/lastfm/ScrobblerAdapter.cpp:213
 #, kde-format
 msgctxt "As in, lastfm"
 msgid "Loved Track: %1"
@@ -10181,50 +9967,41 @@ msgstr "gpodder.net: servis kataloga podemisija"
 msgid "gpodder.net is an online Podcast Directory & Synchonisation Service."
 msgstr "Gpodder.net je katalog podemisija i servis za sinhronizaciju na vezi."
 
+#: services/gpodder/GpodderProvider.cpp:281
+msgid "Gpodder Podcasts"
+msgstr "Podemisije sa gpoddera"
+
+#: services/gpodder/GpodderProvider.cpp:452
+msgid "Trying to synchronize statuses with gpodder.net"
+msgstr "Pokušavam da sinhronizujem stanja sa gpodderom"
+
+#: services/gpodder/GpodderProvider.cpp:510
+msgid "Trying to synchronize with gpodder.net"
+msgstr "Pokušavam da sinhronizujem sa gpodderom"
+
 #: services/gpodder/GpodderServiceSettings.cpp:171
-#, fuzzy
-#| msgid "Unable to connect to Last.fm service."
 msgid "Unable to connect to gpodder.net service or other error occurred."
-msgstr "Ne mogu da se povežem sa last.fm‑ovim servisom."
+msgstr "Ne mogu da se povežem sa servisom gpoddera, ili neka druga greška."
 
 #: services/gpodder/GpodderServiceSettings.cpp:186
 msgid ""
 "Error parsing the Reply, check if gpodder.net is working correctly and "
 "report a bug"
 msgstr ""
-
-# >> @title:window
-#: services/gpodder/GpodderProvider.cpp:281
-#, fuzzy
-#| msgid "Move Podcasts"
-msgid "Gpodder Podcasts"
-msgstr "Premeštanje podemisija"
-
-#: services/gpodder/GpodderProvider.cpp:452
-msgid "Trying to synchronize statuses with gpodder.net"
-msgstr ""
-
-#: services/gpodder/GpodderProvider.cpp:510
-msgid "Trying to synchronize with gpodder.net"
-msgstr ""
+"Greška pri raščlanjivanju odgovora, proverite da li gpodder.net radi "
+"ispravno i prijavite grešku."
 
 #: services/gpodder/GpodderServiceConfig.cpp:144
-#, fuzzy
-#| msgid "Last.fm credentials"
 msgid "gpodder.net credentials"
-msgstr "Akreditivi na last.fm‑u"
+msgstr "Akreditivi na gpodderu"
 
 #: services/gpodder/GpodderServiceConfig.cpp:145
-#, fuzzy
-#| msgid ""
-#| "No running KWallet found. Would you like Amarok to save your Last.fm "
-#| "credentials in plaintext?"
 msgid ""
 "No running KWallet found. Would you like Amarok to save your gpodder.net "
 "credentials in plaintext?"
 msgstr ""
 "Nema K‑novčanika u pogonu. Želite li da Amarok sačuva vaše akreditive na "
-"last.fm‑u u običnom tekstu?"
+"gpodderu u običnom tekstu?"
 
 #: services/ServicePluginManager.cpp:161 services/ServicePluginManager.cpp:178
 #: services/ServicePluginManager.cpp:195
@@ -10237,161 +10014,142 @@ msgctxt ""
 "A type of command that triggers an action in the integrated MP3 Music Store "
 "service"
 msgid "Amazon"
-msgstr ""
+msgstr "Amazon"
 
 #: services/amazon/AmazonItemTreeModel.cpp:108
 #: services/amazon/AmazonItemTreeModel.cpp:129
-#, fuzzy
-#| msgid "Artist: %1"
 msgid "<b>Artist:</b> "
-msgstr "Izvođač: %1"
+msgstr "<b>Izvođač:</b>"
 
 #: services/amazon/AmazonItemTreeModel.cpp:112
 #: services/amazon/AmazonItemTreeModel.cpp:133
-#, fuzzy
-#| msgid "Album: %1"
 msgid "<b>Album:</b> "
-msgstr "Album: %1"
+msgstr "<b>Album:</b>"
 
 #: services/amazon/AmazonItemTreeModel.cpp:116
 #: services/amazon/AmazonItemTreeModel.cpp:141
-#, fuzzy
-#| msgid "<b>%1</b>"
 msgid "<b>Price:</b> "
-msgstr "<b>%1</b>"
+msgstr "<b>Cena:</b>"
 
 #: services/amazon/AmazonItemTreeModel.cpp:137
-#, fuzzy
-#| msgid "Track: %1"
 msgid "<b>Track:</b> "
-msgstr "Numera: %1"
+msgstr "<b>Numera:</b>"
 
 #: services/amazon/AmazonItemTreeModel.cpp:171
 msgid "Price"
-msgstr ""
+msgstr "Cena"
 
 #: services/amazon/AmazonShoppingCartView.cpp:65
-#, fuzzy
-#| msgid "Remove From Playlist"
 msgid "Remove from Cart"
-msgstr "Ukloni sa liste numera"
+msgstr "Ukloni iz korpe"
 
 #: services/amazon/AmazonItemTreeView.cpp:277
-#, fuzzy
-#| msgid "&Add to Playlist"
 msgid "Add to Cart"
-msgstr "Dod&aj u listu numera"
+msgstr "Dodaj u korpu"
 
 #: services/amazon/AmazonItemTreeView.cpp:286
-#, fuzzy
-#| msgid "&Add to Playlist"
 msgid "Add Preview to Playlist"
-msgstr "Dod&aj u listu numera"
+msgstr "Dodaj pregled u listu numera"
 
 #: services/amazon/AmazonItemTreeView.cpp:295
-#, fuzzy
-#| msgid "Loading info..."
 msgid "Load Details..."
-msgstr "Učitavam podatke..."
+msgstr "Učitaj detalje..."
 
 #: services/amazon/AmazonItemTreeView.cpp:304
-#, fuzzy
-#| msgid "Checkpoint"
 msgid "Direct Checkout"
-msgstr "Kontrolna tačka"
+msgstr "Pravo na kasu"
 
 #: services/amazon/AmazonItemTreeView.cpp:313
-#, fuzzy
-#| msgctxt "SearchQuery bias representation"
-#| msgid "Search for: %1"
 msgid "Search for Album..."
-msgstr "Traži: %1"
+msgstr "Potraži album..."
 
 #: services/amazon/AmazonShoppingCartDialog.cpp:34
 #: services/amazon/AmazonShoppingCartDialog.cpp:59
 #, kde-format
 msgid "Shopping cart value: %1"
-msgstr ""
+msgstr "Vrednost u korpi: %1"
 
 #: services/amazon/AmazonMeta.cpp:137
 msgid "Snippet taken from the Amazon MP3 store"
-msgstr ""
+msgstr "Isečak dobavljen iz Amazonove MP3 prodavnice"
 
 #: services/amazon/AmazonStore.cpp:101
 msgid "Access the Amazon MP3 Store directly from Amarok"
-msgstr ""
+msgstr "Pristupite Amazonovoj MP3 prodavnici neposredno iz Amaroka"
 
+# rewrite-msgid: /service//
 #: services/amazon/AmazonStore.cpp:105
 msgid ""
 "This plugin allows searching and purchasing songs and albums from the Amazon "
 "MP3 store. Amarok gets a share of the profits made by this service."
 msgstr ""
+"Ovaj priključak vam omogućava traženje i kupovanje pesama i albuma na "
+"Amazonovoj MP3 prodavnici. Amarok dobija deo profita koji se ovako napravi."
 
 #: services/amazon/AmazonStore.cpp:192
 #, kde-format
 msgid "<em>%1</em> has been added to your shopping cart."
-msgstr ""
+msgstr "<em>%1</em> dodato u vašu korpu."
 
+# >> @title:window
 #: services/amazon/AmazonStore.cpp:293
 msgid "Select your Amazon locale - Amarok"
-msgstr ""
+msgstr "Izbor Amazonovog lokaliteta — Amarok"
 
-#: services/amazon/AmazonStore.cpp:305
+#: services/amazon/AmazonStore.cpp:307
 msgid ""
 "<b>MP3 Music Store</b><br/><br/>Please select a valid country in the "
 "settings to make the store work."
 msgstr ""
+"<b>MP3 muzička prodavnica</b><br/><br/>Izaberite odgovarajuću državu u "
+"postavkama da bi prodavnica radila."
 
-#: services/amazon/AmazonStore.cpp:335
-#, fuzzy
-#| msgid "Unable to parse avatar image data."
+#: services/amazon/AmazonStore.cpp:338
 msgid "Error: Unable to write temporary file. :-("
-msgstr "Ne mogu da raščlanim podatke slike avatara."
+msgstr "Greška: ne mogu da upišem privremeni fajl."
 
-#: services/amazon/AmazonStore.cpp:434
+# >> @info:tooltip
+#: services/amazon/AmazonStore.cpp:437
 msgid "Select results page to show"
-msgstr ""
+msgstr "Izaberite stranicu rezultata za prikazivanje."
 
-#: services/amazon/AmazonStore.cpp:458
-#, fuzzy
-#| msgid "&Add to Playlist"
+#: services/amazon/AmazonStore.cpp:461
 msgctxt "Add selected item to your shopping cart"
 msgid "Add to Cart"
-msgstr "Dod&aj u listu numera"
+msgstr "Dodaj u korpu"
 
-#: services/amazon/AmazonStore.cpp:459
+# >> @info:tooltip
+#: services/amazon/AmazonStore.cpp:462
 msgid "Add selected item to your shopping cart"
-msgstr ""
+msgstr "Dodajte izabranu stavu u svoju korpu za kupovinu."
 
-#: services/amazon/AmazonStore.cpp:466
-#, fuzzy
-#| msgid "View map"
+#: services/amazon/AmazonStore.cpp:469
 msgctxt "View your shopping cart contents"
 msgid "View Cart"
-msgstr "Prikaz mape"
+msgstr "Prikaži korpu"
 
-#: services/amazon/AmazonStore.cpp:467
+# >> @info:tooltip
+#: services/amazon/AmazonStore.cpp:470
 msgid "View your shopping cart contents"
-msgstr ""
+msgstr "Prikažite sadržaj svoje korpe za kupovinu."
 
-#: services/amazon/AmazonStore.cpp:474
-#, fuzzy
-#| msgid "Checkpoint"
+#: services/amazon/AmazonStore.cpp:477
 msgctxt "Checkout your shopping cart"
 msgid "Checkout"
-msgstr "Kontrolna tačka"
+msgstr "Na kasu"
 
-#: services/amazon/AmazonStore.cpp:475
+# >> @info:tooltip
+#: services/amazon/AmazonStore.cpp:478
 msgid "Checkout your shopping cart"
-msgstr ""
+msgstr "Ponesite korpu za kupovinu na kasu"
 
-#: services/amazon/AmazonStore.cpp:496
+#: services/amazon/AmazonStore.cpp:499
 msgid "Error: Querying MP3 Music Store database failed. :-("
-msgstr ""
+msgstr "Greška: upit baze na MP3 muzičkoj prodavnici propao."
 
-#: services/amazon/AmazonStore.cpp:531
+#: services/amazon/AmazonStore.cpp:534
 msgid "Error: Received an invalid reply. :-("
-msgstr ""
+msgstr "Greška: primljen loš odgovor."
 
 #. i18n: file: playlist/layouts/PlaylistLayoutEditDialog.ui:312
 #. i18n: ectx: property (text), widget (QLabel, label)
@@ -10454,21 +10212,13 @@ msgstr "Transk&odiraj"
 
 # skip-rule: t-save
 #: transcoding/TranscodingAssistantDialog.cpp:60
-#, fuzzy
-#| msgid ""
-#| "You are about to copy one or more tracks.\n"
-#| "While copying, you can also choose to transcode your music files into "
-#| "another format with an encoder (codec). This can be done to save space or "
-#| "to make your files readable by a portable music player or a particular "
-#| "software program."
 msgid ""
 "While copying, you can choose to transcode your music files into another "
 "format with an encoder (codec). This can be done to save space or to make "
 "your files readable by a portable music player or a particular software "
 "program."
 msgstr ""
-"Upravo ćete kopirati jednu ili više numera.\n"
-"Ako želite, pri kopiranju možete i transkodirati muzičke fajlove u drugi "
+"Ako želite, pri kopiranju možete transkodirati muzičke fajlove u drugi "
 "format, jednim od kodera (kodeka). Ovim možete uštedeti prostor ili učiniti "
 "fajlove čitljivim za prenosni muzički plejer ili određeni program."
 
@@ -10482,13 +10232,6 @@ msgstr "Samo kopiraj numere bez transkodiranja."
 
 # skip-rule: t-save
 #: transcoding/TranscodingAssistantDialog.cpp:70
-#, fuzzy
-#| msgid ""
-#| "You are about to copy one or more tracks.\n"
-#| "While copying, you can also choose to transcode your music files into "
-#| "another format with an encoder (codec). This can be done to save space or "
-#| "to make your files readable by a portable music player or a particular "
-#| "software program."
 msgid ""
 "While moving, you can choose to transcode your music files into another "
 "format with an encoder (codec). This can be done to save space or to make "
@@ -10496,31 +10239,27 @@ msgid ""
 "program. Only successfully transcoded files will be removed from their "
 "original location."
 msgstr ""
-"Upravo ćete kopirati jednu ili više numera.\n"
-"Ako želite, pri kopiranju možete i transkodirati muzičke fajlove u drugi "
+"Ako želite, pri premeštanju možete transkodirati muzičke fajlove u drugi "
 "format, jednim od kodera (kodeka). Ovim možete uštedeti prostor ili učiniti "
-"fajlove čitljivim za prenosni muzički plejer ili određeni program."
+"fajlove čitljivim za prenosni muzički plejer ili određeni program. Samo će "
+"uspešno transkodirani fajlovi biti uklonjeni sa prvobitne lokacije."
 
 #: transcoding/TranscodingAssistantDialog.cpp:76
-#, fuzzy
-#| msgid "Move Up"
 msgid "&Move"
-msgstr "Pomeri nagore"
+msgstr "&Premesti"
 
 #: transcoding/TranscodingAssistantDialog.cpp:77
-#, fuzzy
-#| msgid "Just copy the tracks without transcoding them."
 msgid "Just move the tracks without transcoding them."
-msgstr "Samo kopiraj numere bez transkodiranja."
+msgstr "Samo premesti numere bez transkodiranja."
 
 #: transcoding/TranscodingAssistantDialog.cpp:123
 msgctxt "Tooltip of a disabled transcoding encoder option"
 msgid "Not currently available on your system."
-msgstr ""
+msgstr "Trenutno nedostupno na ovom sistemu."
 
 #: transcoding/TranscodingAssistantDialog.cpp:130
 msgid "Target collection indicates this format would not be playable."
-msgstr ""
+msgstr "Ciljna zbirka ukazuje da ovaj format ne bi mogao da se pušta."
 
 #: transcoding/TranscodingOptionsStackedWidget.cpp:56
 msgid ""
@@ -10532,26 +10271,20 @@ msgstr "Da biste podesili parametre transkodiranja, izaberite koder sa spiska."
 msgid " (recommended)"
 msgstr " (preporučen)"
 
-# >> @title
 #: transcoding/TranscodingSelectConfigWidget.cpp:37
-#, fuzzy, kde-format
-#| msgid "Files (%1)"
+#, kde-format
 msgctxt ""
 "An option in combo box to always transcode; %1 are transcoding options"
 msgid "Always (%1)"
-msgstr "Fajlovi (%1)"
+msgstr "uvek (%1)"
 
 #: transcoding/TranscodingSelectConfigWidget.cpp:41
 #: transcoding/TranscodingSelectConfigWidget.cpp:43
 msgid "Ask before each transfer"
-msgstr ""
+msgstr "pitaj pre svakog prenosa"
 
-# >> @item
 #: transcoding/TranscodingSelectConfigWidget.cpp:47
 #: transcoding/TranscodingSelectConfigWidget.cpp:51
-#, fuzzy
-#| msgctxt "The amount of time since last played"
-#| msgid "Never"
 msgid "Never"
 msgstr "nikada"
 
@@ -10891,14 +10624,12 @@ msgstr[2] "dana"
 msgstr[3] "dan"
 
 #: widgets/MetaQueryWidget.cpp:142
-#, fuzzy
-#| msgid "This week"
 msgid "week"
 msgid_plural "weeks"
-msgstr[0] "ove nedelje"
-msgstr[1] "ove nedelje"
-msgstr[2] "ove nedelje"
-msgstr[3] "ove nedelje"
+msgstr[0] "sedmica"
+msgstr[1] "sedmice"
+msgstr[2] "sedmica"
+msgstr[3] "sedmica"
 
 #: widgets/MetaQueryWidget.cpp:143
 msgid "month"
@@ -10953,11 +10684,9 @@ msgid "older than"
 msgstr "starije od"
 
 #: widgets/MetaQueryWidget.cpp:956
-#, fuzzy
-#| msgid "fewer than"
 msgctxt "The date lies after the given time interval"
 msgid "newer than"
-msgstr "manje od"
+msgstr "novije od"
 
 #: widgets/MetaQueryWidget.cpp:972
 msgctxt "a numerical tag (like year or track number) is between two values"
@@ -11060,6 +10789,366 @@ msgstr ""
 "$ kbuildsycoca4 --noincremental\n"
 "$ amarok</pre><p>Više informacija možete pronaći u fajlu README. Za više "
 "pomoći pridružite nam se na #amarok na irc.freenode.net.</p>"
+
+#: EngineController.cpp:297
+msgid ""
+"<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
+"the installation of the backend that phonon uses.</p><p>You may find useful "
+"information in the <i>FAQ</i> section of the <i>Amarok Handbook</i>.</p>"
+msgstr ""
+"<p>Phonon tvrdi da <b>ne može</b> da pušta MP3 fajlove. Možda bi trebalo da "
+"proverite instalaciju pozadine koju Phonon koristi.</p><p>Možete naći "
+"korisne informacije u ČPP odeljku <i>Priručnika za Amarok</i>.</p>"
+
+#: EngineController.cpp:320
+msgid "Install MP3 Support"
+msgstr "Instaliraj podršku za MP3"
+
+#: EngineController.cpp:322
+msgid ""
+"Amarok currently cannot play MP3 files. Do you want to install support for "
+"MP3?"
+msgstr ""
+"Amarok trenutno ne može da pušta MP3 fajlove. Želite li da instalirate "
+"podršku za MP3?"
+
+#: EngineController.cpp:323
+msgid "No MP3 Support"
+msgstr "Nema podrške za MP3"
+
+# >> @item
+#: EngineController.cpp:901
+msgid "Preamp"
+msgstr "pretpojačanje"
+
+#: EngineController.cpp:907
+msgid ""
+"%0\n"
+"Hz"
+msgstr ""
+"%0\n"
+"Hz"
+
+#: EngineController.cpp:911
+msgid ""
+"%0\n"
+"kHz"
+msgstr ""
+"%0\n"
+"kHz"
+
+#: EngineController.cpp:1208
+msgid "Too many errors encountered in playlist. Playback stopped."
+msgstr "Suviše grešaka u listi numera. Puštanje zaustavljeno."
+
+#: EngineController.cpp:1429
+#, kde-format
+msgctxt "track by artist on album"
+msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
+msgstr "<b>%1</b> — <b>%2</b> (<b>%3</b>)"
+
+#: EngineController.cpp:1432
+#, kde-format
+msgctxt "track by artist"
+msgid "<b>%1</b> by <b>%2</b>"
+msgstr "<b>%1</b> — <b>%2</b>"
+
+#: EngineController.cpp:1436
+#, kde-format
+msgctxt "track on album"
+msgid "<b>%1</b> on <b>%2</b>"
+msgstr "<b>%1</b> (<b>%2</b>)"
+
+#: EngineController.cpp:1448
+#, kde-format
+msgctxt "track from source"
+msgid "from <b>%1</b>"
+msgstr " <b>%1</b>"
+
+#: OpmlParser.cpp:109
+#, kde-format
+msgid "Reading OPML podcast from %1 failed with error:\n"
+msgstr "Čitanje OPML podemisije sa %1 propalo uz grešku:\n"
+
+# >> @title
+#: MainWindow.cpp:260
+msgid "Local Music"
+msgstr "Lokalna muzika"
+
+#: MainWindow.cpp:262
+msgid "Local sources of content"
+msgstr "Lokalni izvori sadržaja"
+
+# >> @title
+#: MainWindow.cpp:270
+msgid "Internet"
+msgstr "Internet"
+
+#: MainWindow.cpp:272
+msgid "Online sources of content"
+msgstr "Izvori sadržaja na vezi"
+
+# >> @title
+#: MainWindow.cpp:278
+msgid "Playlists"
+msgstr "Liste numera"
+
+#: MainWindow.cpp:280
+msgid "Various types of playlists"
+msgstr "Razne vrste listi numera"
+
+#: MainWindow.cpp:288
+msgid "Browse local hard drive for content"
+msgstr "Pregledajte sadržaj lokalnog hard‑diska"
+
+# >! Wrong context marker.
+# >> @title:menu
+#: MainWindow.cpp:349
+msgctxt "@item:inmenu"
+msgid "&View"
+msgstr "&Prikaz"
+
+#: MainWindow.cpp:352
+msgid "Lock Layout"
+msgstr "Zaključaj raspored"
+
+#: MainWindow.cpp:463
+msgid ""
+"<qt>Closing the main window will keep Amarok running in the System Tray. Use "
+"<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
+"qt>"
+msgstr ""
+"<qt>Zatvaranjem glavnog prozora, Amarok će nastaviti da radi u sistemskoj "
+"kaseti. Koristite <interface>Napusti</interface> iz menija ili Amarokovu "
+"ikonu u sistemskoj kaseti da biste izašli iz programa.</qt>"
+
+# >> @title:window
+#: MainWindow.cpp:465
+msgid "Docking in System Tray"
+msgstr "Pristajanje u sistemsku kasetu"
+
+#: MainWindow.cpp:494
+msgid "Use relative path for &saving"
+msgstr "Relativna putanja pri &upisivanju"
+
+#: MainWindow.cpp:571
+msgid "Play Media (Files or URLs)"
+msgstr "Pusti medijum (fajlovi ili URL‑ovi)"
+
+#: MainWindow.cpp:571
+msgid "Add Media (Files or URLs)"
+msgstr "Dodaj medijum (fajlovi ili URL‑ovi)"
+
+# >> @title:window
+#: MainWindow.cpp:589
+msgid "Add Stream"
+msgstr "Dodavanje toka"
+
+#: MainWindow.cpp:589
+msgid "Enter Stream URL:"
+msgstr "Unesite URL toka:"
+
+#: MainWindow.cpp:721
+msgid "&Add Media..."
+msgstr "&Dodaj medijum..."
+
+#: MainWindow.cpp:726
+msgctxt "clear playlist"
+msgid "&Clear Playlist"
+msgstr "&Očisti listu numera"
+
+#: MainWindow.cpp:731
+msgctxt "edit play queue of playlist"
+msgid "Edit &Queue"
+msgstr "Uredi &red"
+
+#: MainWindow.cpp:736
+msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
+msgid "Re&move Duplicates"
+msgstr "Ukloni &duplikate"
+
+#: MainWindow.cpp:743
+msgid "&Add Stream..."
+msgstr "&Dodaj tok..."
+
+#: MainWindow.cpp:747
+msgid "&Export Playlist As..."
+msgstr "Izvezi listu numera &kao..."
+
+#: MainWindow.cpp:759
+msgid "Equalizer"
+msgstr "Ekvilajzer"
+
+#: MainWindow.cpp:767
+msgid "Bookmark Context Applets"
+msgstr "Obeleži kontekstne aplete"
+
+#: MainWindow.cpp:775
+msgid "Play Media..."
+msgstr "Pusti medijum..."
+
+#: MainWindow.cpp:780
+msgid "Edit Details of Currently Selected Track"
+msgstr "Uredi detalje trenutno izabrane numere"
+
+#: MainWindow.cpp:785
+msgid "&Seek Forward"
+msgstr "&Traži unapred"
+
+#: MainWindow.cpp:791
+msgid "&Seek Backward"
+msgstr "&Traži unazad"
+
+#: MainWindow.cpp:798
+msgid "Update Collection"
+msgstr "Ažuriraj zbirku"
+
+#: MainWindow.cpp:805
+msgid "Previous Track"
+msgstr "Prethodna numera"
+
+#: MainWindow.cpp:812
+msgid "Restart current track"
+msgstr "Ponovo pokreni tekuću numeru"
+
+#: MainWindow.cpp:818
+msgid "Repopulate Playlist"
+msgstr "Ponovo popuni listu numera"
+
+#: MainWindow.cpp:824
+msgid "Disable Dynamic Playlist"
+msgstr "Isključi dinamičku listu numera"
+
+#: MainWindow.cpp:828
+msgid "Next Track"
+msgstr "Sledeća numera"
+
+#: MainWindow.cpp:833
+msgid "Increase Volume"
+msgstr "Povećaj jačinu"
+
+#: MainWindow.cpp:839
+msgid "Decrease Volume"
+msgstr "Smanji jačinu"
+
+#: MainWindow.cpp:845
+msgid "Toggle Main Window"
+msgstr "Uključi/isključi glavni prozor"
+
+#: MainWindow.cpp:850
+msgid "Toggle Full Screen"
+msgstr "Preko celog ekrana"
+
+#: MainWindow.cpp:865
+msgid "Show active track"
+msgstr "Prikaži tekuću numeru"
+
+#: MainWindow.cpp:869
+msgid "Show Notification Popup"
+msgstr "Prikazuj iskačuća obaveštenja"
+
+#: MainWindow.cpp:874
+msgid "Mute Volume"
+msgstr "Utišaj zvuk"
+
+#: MainWindow.cpp:879
+msgid "Last.fm: Love Current Track"
+msgstr "Last.fm: voli tekuću numeru"
+
+#: MainWindow.cpp:884
+msgid "Last.fm: Ban Current Track"
+msgstr "Last.fm: zabrani tekuću numeru"
+
+#: MainWindow.cpp:889
+msgid "Last.fm: Skip Current Track"
+msgstr "Last.fm: preskoči tekuću numeru"
+
+#: MainWindow.cpp:899
+msgid "Rate Current Track: 1"
+msgstr "Oceni tekuću numeru: 1"
+
+#: MainWindow.cpp:904
+msgid "Rate Current Track: 2"
+msgstr "Oceni tekuću numeru: 2"
+
+#: MainWindow.cpp:909
+msgid "Rate Current Track: 3"
+msgstr "Oceni tekuću numeru: 3"
+
+#: MainWindow.cpp:914
+msgid "Rate Current Track: 4"
+msgstr "Oceni tekuću numeru: 4"
+
+#: MainWindow.cpp:919
+msgid "Rate Current Track: 5"
+msgstr "Oceni tekuću numeru: 5"
+
+#: MainWindow.cpp:925
+msgid "Network Request Viewer"
+msgstr "Prikazivač mrežnih zahteva"
+
+#: MainWindow.cpp:943
+msgid "&About Amarok"
+msgstr "&O Amaroku"
+
+#: MainWindow.cpp:947
+msgid "&Diagnostics"
+msgstr "&Dijagnostika"
+
+#: MainWindow.cpp:951
+msgid "&Report Bug..."
+msgstr "P&rijavi grešku..."
+
+#: MainWindow.cpp:1011
+msgid "&Music"
+msgstr "&Muzika"
+
+#: MainWindow.cpp:1013
+msgid "&Amarok"
+msgstr "&Amarok"
+
+#: MainWindow.cpp:1054
+msgid "&Tools"
+msgstr "Ala&tke"
+
+#: MainWindow.cpp:1071
+msgid "&Settings"
+msgstr "&Podešavanje"
+
+#: MainWindow.cpp:1120
+#, kde-format
+msgid ""
+"You have chosen to hide the menu bar.\n"
+"\n"
+"Please remember that you can always use the shortcut \"%1\" to bring it back."
+msgstr ""
+"Izabrali ste da sakrijete traku menija.\n"
+"\n"
+"U svakom trenutku možete je vratiti prečicom „%1“."
+
+# >> @title:window
+#: MainWindow.cpp:1122
+msgid "Hide Menu"
+msgstr "Sakrivanje menija"
+
+#: MainWindow.cpp:1164
+#, kde-format
+msgid "Paused  ::  %1"
+msgstr "Pauzirano  ::  %1"
+
+#: MainWindow.cpp:1177
+#, kde-format
+msgid "%1 - %2  ::  %3"
+msgstr "%1 — %2 ::  %3"
+
+#: ScriptManager.cpp:304
+#, kde-format
+msgid ""
+"Script error reported by: %1\n"
+"%2"
+msgstr ""
+"Grešku u skripti prijavljuje: %1\n"
+"%2"
 
 #: rc.cpp:1
 msgctxt "NAME OF TRANSLATORS"
@@ -11289,10 +11378,8 @@ msgstr "Da li automatski pribaviti nedostajuće omote albuma."
 #. i18n: file: amarokconfig.kcfg:111
 #. i18n: ectx: label, entry, group (General Options)
 #: rc.cpp:101
-#, fuzzy
-#| msgid "Whether to show icon in system tray"
 msgid "Whether to show background images in the browser pane"
-msgstr "Da li prikazati ikonu u sistemskoj kaseti."
+msgstr "Da li prikazivati pozadinske slike u oknu pregledača."
 
 #. i18n: file: amarokconfig.kcfg:115
 #. i18n: ectx: label, entry, group (General Options)
@@ -12052,7 +12139,7 @@ msgstr "Da li se izmene omota albuma upisuju nazad"
 #. i18n: ectx: label, entry, group (Collection)
 #: rc.cpp:428
 msgid "Maximum embedded cover dimensions"
-msgstr ""
+msgstr "Najveće dimenzije ugnežđenog omota"
 
 #. i18n: file: amarokconfig.kcfg:453
 #. i18n: ectx: label, entry, group (Collection)
@@ -12863,7 +12950,7 @@ msgstr "Popunite ako želite animirano sažimanje kontekstnih apleta."
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ShowBrowserBackgroundImage)
 #: rc.cpp:849
 msgid "Show background images in the browser panel"
-msgstr ""
+msgstr "Pozadinska slika u panelu pregledača"
 
 #. i18n: file: configdialog/dialogs/GeneralConfig.ui:91
 #. i18n: ectx: property (title), widget (QGroupBox, playlistBox)
@@ -12929,7 +13016,7 @@ msgstr "Izaberite stil prikaza raspoloženja"
 #. i18n: ectx: property (text), item, widget (QComboBox, kcfg_MoodbarPaintStyle)
 #: rc.cpp:880
 msgid "Default (System colours)"
-msgstr ""
+msgstr "podrazumevano (sistemske boje)"
 
 #. i18n: file: configdialog/dialogs/GeneralConfig.ui:146
 #. i18n: ectx: property (text), item, widget (QComboBox, kcfg_MoodbarPaintStyle)
@@ -12952,10 +13039,8 @@ msgstr "radostan"
 #. i18n: file: configdialog/dialogs/GeneralConfig.ui:161
 #. i18n: ectx: property (text), item, widget (QComboBox, kcfg_MoodbarPaintStyle)
 #: rc.cpp:892
-#, fuzzy
-#| msgid "Format"
 msgid "Normal"
-msgstr "format"
+msgstr "normalan"
 
 # rewrite-msgid: /Setup/Settings/
 #. i18n: file: configdialog/dialogs/CollectionConfig.ui:14
@@ -12974,7 +13059,7 @@ msgstr "Fascikle zbirke"
 #. i18n: ectx: property (title), widget (QGroupBox, importingBox)
 #: rc.cpp:901
 msgid "Importing Music"
-msgstr ""
+msgstr "Uvoz muzike"
 
 #. i18n: file: configdialog/dialogs/CollectionConfig.ui:33
 #. i18n: ectx: property (toolTip), widget (QLabel, transcodeLabel)
@@ -12985,15 +13070,14 @@ msgid ""
 "Whether Amarok should transcode tracks when they are copied or moved to "
 "Local Collection."
 msgstr ""
+"Da li da Amarok transkodira numere kada se kopiraju ili premeste u lokalnu "
+"zbirku."
 
-# >> @title:window
 #. i18n: file: configdialog/dialogs/CollectionConfig.ui:36
 #. i18n: ectx: property (text), widget (QLabel, transcodeLabel)
 #: rc.cpp:907
-#, fuzzy
-#| msgid "Transcode Tracks"
 msgid "Transcode tracks:"
-msgstr "Transkodiranje numera"
+msgstr "Transkodiraj numere:"
 
 # rewrite-msgid: /Actions//
 #. i18n: file: context/applets/currenttrack/currentTrackSettings.ui:32
@@ -13399,62 +13483,63 @@ msgstr "Koristi &mobilnu verziju Wikipedije"
 #. i18n: ectx: property (text), widget (QLabel, Label5)
 #: rc.cpp:1148
 msgid "Analyzer Mode"
-msgstr ""
+msgstr "Režim analizatora"
 
 #. i18n: file: context/applets/spectrumanalyzer/spectrumAnalyzerSettings.ui:34
 #. i18n: ectx: property (text), item, widget (KComboBox, modeComboBox)
 #: rc.cpp:1151
 msgid "Bars"
-msgstr ""
+msgstr "trake"
 
 #. i18n: file: context/applets/spectrumanalyzer/spectrumAnalyzerSettings.ui:39
 #. i18n: ectx: property (text), item, widget (KComboBox, modeComboBox)
 #: rc.cpp:1154
 msgid "Wave"
-msgstr ""
+msgstr "talas"
 
 #. i18n: file: context/applets/spectrumanalyzer/spectrumAnalyzerSettings.ui:44
 #. i18n: ectx: property (text), item, widget (KComboBox, modeComboBox)
 #: rc.cpp:1157
 msgid "Waterfall Diagram"
-msgstr ""
+msgstr "vodopadni dijagram"
 
 #. i18n: file: context/applets/spectrumanalyzer/spectrumAnalyzerSettings.ui:49
 #. i18n: ectx: property (text), item, widget (KComboBox, modeComboBox)
 #: rc.cpp:1160
 msgid "3D Frequency Waves"
-msgstr ""
+msgstr "3D frekvencijski talasi"
 
 #. i18n: file: context/applets/spectrumanalyzer/spectrumAnalyzerSettings.ui:57
 #. i18n: ectx: property (text), widget (QLabel, Label2)
 #: rc.cpp:1164
 #, no-c-format
 msgid "Amount of Data (in %)"
-msgstr ""
+msgstr "Količina podataka (%)"
 
 #. i18n: file: context/applets/spectrumanalyzer/spectrumAnalyzerSettings.ui:80
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: rc.cpp:1167
 msgid "Show Peaks (Bar Mode Only)"
-msgstr ""
+msgstr "Sa vrhovima (samo režim traka)"
 
 #. i18n: file: context/applets/spectrumanalyzer/spectrumAnalyzerSettings.ui:97
 #. i18n: ectx: property (text), widget (QLabel, label_3)
 #: rc.cpp:1170
 msgid "Peaks Sinkrate"
-msgstr ""
+msgstr "Brzina spuštanja vrhova"
 
 #. i18n: file: context/applets/spectrumanalyzer/spectrumAnalyzerSettings.ui:117
 #. i18n: ectx: property (text), widget (QLabel, label_2)
 #: rc.cpp:1173
 msgid "Show Wave (Bar Mode Only)"
-msgstr ""
+msgstr "Sa talasom (samo režim traka)"
 
+# skip-rule: t-cut
 #. i18n: file: context/applets/spectrumanalyzer/spectrumAnalyzerSettings.ui:147
 #. i18n: ectx: property (text), widget (QLabel, label_4)
 #: rc.cpp:1179
 msgid "Cut out lower frequencies"
-msgstr ""
+msgstr "Odseci niske frekvencije"
 
 #. i18n: file: core-impl/collections/audiocd/FormatSelectionDialog.ui:26
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
@@ -13489,29 +13574,22 @@ msgstr "Napredno"
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:14
 #. i18n: ectx: property (windowTitle), widget (QWidget, IpodConfiguration)
 #: rc.cpp:1206
-#, fuzzy
-#| msgid "Podcast Configuration"
 msgid "iPod device configuration"
-msgstr "Podešavanje podemisije"
+msgstr "Podešavanje uređaja iPoda"
 
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:26
 #. i18n: ectx: property (text), widget (QLabel, nameLabel)
 #: rc.cpp:1212
-#, fuzzy
-#| msgctxt "'File name' playlist column name and token for playlist layouts"
-#| msgid "File name"
 msgid "iPod name:"
-msgstr "ime fajla"
+msgstr "Ime iPoda:"
 
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:36
 #. i18n: ectx: property (text), widget (QLabel, transcodeLabel)
 #. i18n: file: core-impl/collections/umscollection/UmsConfiguration.ui:117
 #. i18n: ectx: property (text), widget (QLabel, m_transcodeLabel)
 #: rc.cpp:1215 rc.cpp:1266
-#, fuzzy
-#| msgid "&Transcode"
 msgid "Transcode:"
-msgstr "&Transkodiraj"
+msgstr "Transkodiranje:"
 
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:50
 #. i18n: ectx: property (text), widget (QLabel, modelComboLabel)
@@ -13519,59 +13597,50 @@ msgstr "&Transkodiraj"
 #. i18n: ectx: property (text), widget (QLabel, modelLabel)
 #: rc.cpp:1218 rc.cpp:1227
 msgid "Model:"
-msgstr ""
+msgstr "Model:"
 
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:91
 #. i18n: ectx: property (text), widget (QPushButton, initializeButton)
 #: rc.cpp:1221
-#, fuzzy
-#| msgid "Initialize iPod?"
 msgid "&Initialize iPod"
-msgstr "Pripremiti iPod?"
+msgstr "&Pripremi iPod"
 
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:123
 #. i18n: ectx: property (text), widget (QLabel, generationLabel)
 #: rc.cpp:1230
-#, fuzzy
-#| msgid "General Options"
 msgid "Generation:"
-msgstr "Opšte opcije"
+msgstr "Generacija:"
 
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:137
 #. i18n: ectx: property (text), widget (QLabel, videoLabel)
 #: rc.cpp:1233
-#, fuzzy
-#| msgid "Video Clip"
 msgid "Video:"
-msgstr "Video isečak"
+msgstr "Video:"
 
+# rewrite-msgid: /artwork/cover/
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:151
 #. i18n: ectx: property (text), widget (QLabel, albumArtworkLabel)
 #: rc.cpp:1236
-#, fuzzy
-#| msgid "Album artist:"
 msgid "Album artwork:"
-msgstr "Izvođač albuma:"
+msgstr "Omot albuma:"
 
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:168
 #. i18n: ectx: property (title), widget (QGroupBox, troubleshootingGroupBox)
 #: rc.cpp:1239
 msgid "Troubleshooting"
-msgstr ""
+msgstr "Pretresanje problema"
 
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:174
 #. i18n: ectx: property (text), widget (QLabel, sysInfoLabel)
 #: rc.cpp:1242
-#, fuzzy
-#| msgid "Input file"
 msgid "SysInfo file:"
-msgstr "Ulazni fajl"
+msgstr "Fajl SysInfo:"
 
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:188
 #. i18n: ectx: property (text), widget (QLabel, sysInfoExtendedLabel)
 #: rc.cpp:1245
 msgid "SysInfoExtended file:"
-msgstr ""
+msgstr "Fajl SysInfoExtended:"
 
 #. i18n: file: core-impl/collections/umscollection/UmsConfiguration.ui:20
 #. i18n: ectx: property (windowTitle), widget (QWidget, UmsConfiguration)
@@ -13588,10 +13657,8 @@ msgstr "Automatski upotrebi po priključivanju"
 #. i18n: file: core-impl/collections/umscollection/UmsConfiguration.ui:57
 #. i18n: ectx: property (text), widget (QCheckBox, m_musicCheckBox)
 #: rc.cpp:1257
-#, fuzzy
-#| msgid "&Music"
 msgid "Music"
-msgstr "&Muzika"
+msgstr "Muzika"
 
 #. i18n: file: core-impl/collections/umscollection/UmsConfiguration.ui:94
 #. i18n: ectx: property (text), widget (QLabel, label_4)
@@ -13603,7 +13670,7 @@ msgstr "Fascikla muzike:"
 #. i18n: ectx: property (title), widget (QGroupBox, m_filenameSchemeBox)
 #: rc.cpp:1263
 msgid "Filename scheme of tracks that are added to the device"
-msgstr ""
+msgstr "Šema imena fajlova numera koje se dodaju na uređaj"
 
 #. i18n: file: core-impl/collections/umscollection/UmsConfiguration.ui:182
 #. i18n: ectx: property (text), widget (QLabel, label_3)
@@ -15922,25 +15989,11 @@ msgstr "Ukoliko je prazno naslov će biti preuzet od OPML‑a."
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox3)
 #: rc.cpp:2596
 msgid "gpodder.net Profile"
-msgstr ""
+msgstr "Profil na gpodderu"
 
 #. i18n: file: services/gpodder/GpodderConfigWidget.ui:78
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel1)
 #: rc.cpp:2605
-#, fuzzy
-#| msgid ""
-#| "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
-#| "REC-html40/strict.dtd\">\n"
-#| "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-#| "css\">\n"
-#| "p, li { white-space: pre-wrap; }\n"
-#| "</style></head><body style=\" font-family:'DejaVu Sans'; font-size:10pt; "
-#| "font-weight:400; font-style:normal;\">\n"
-#| "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#| "right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"https://shop."
-#| "mp3tunes.com/myaccount/registration/\"><span style=\" text-decoration: "
-#| "underline; color:#0057ae;\">Get an MP3tunes locker</span></a></p></body></"
-#| "html>"
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
@@ -15954,46 +16007,39 @@ msgid ""
 "gpodder.net/register/\"><span style=\" text-decoration: underline; "
 "color:#0057ae;\">Sign up to gpodder.net</span></a></p></body></html>"
 msgstr ""
-"<html><a href=\"https://shop.mp3tunes.com/myaccount/registration/\">Nabavite "
-"ormarić na MP3Tunesu</a></html>"
+"<html><a href=\"http://www.gpodder.net/register/\"><u>Prijavi me na gpodder</"
+"u></a></html>"
 
 #. i18n: file: services/amazon/AmazonShoppingCartDialog.ui:14
 #. i18n: ectx: property (windowTitle), widget (QDialog, AmazonShoppingCartDialog)
 #: rc.cpp:2615
 msgid "Amarok - Your Shopping Cart"
-msgstr ""
+msgstr "Amarok — korpa za kupovinu"
 
 #. i18n: file: services/amazon/AmazonShoppingCartDialog.ui:30
 #. i18n: ectx: property (text), widget (QLabel, cartValueLabel)
 #: rc.cpp:2618
 msgid "Shopping cart value: "
-msgstr ""
+msgstr "Vrednost u korpi:"
 
 #. i18n: file: services/amazon/AmazonShoppingCartDialog.ui:39
 #. i18n: ectx: property (text), widget (QPushButton, checkoutButton)
 #: rc.cpp:2621
-#, fuzzy
-#| msgid "Checkpoint"
 msgid "Checkout"
-msgstr "Kontrolna tačka"
+msgstr "Na kasu"
 
 # >> @title:window
 #. i18n: file: services/amazon/AmazonConfigWidget.ui:32
 #. i18n: ectx: property (windowTitle), widget (QWidget, AmazonConfigWidget)
 #: rc.cpp:2624
-#, fuzzy
-#| msgid "Select Importer"
 msgid "Select Your Country"
-msgstr "Izbor uvoznika"
+msgstr "Izbor države"
 
 #. i18n: file: services/amazon/AmazonConfigWidget.ui:47
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: rc.cpp:2627
-#, fuzzy
-#| msgctxt "@item::intable"
-#| msgid "Country"
 msgid "Country"
-msgstr "zemlja"
+msgstr "Država"
 
 #. i18n: file: services/amazon/AmazonConfigWidget.ui:59
 #. i18n: ectx: property (text), widget (QLabel, textLabel)
@@ -16005,61 +16051,58 @@ msgid ""
 "supported by the store, you can only buy items if you live in one of the "
 "listed countries."
 msgstr ""
+"Ponuda Amazonove MP3 prodavnice zavisi od vaše lokacije. Izaberite državu u "
+"kojoj se nalazite. Imajte u vidu da promena države takođe prazni vašu korpu "
+"za kupovinu. Ako država nije navedena na spisku, prodavnica je još uvek ne "
+"podržava; možete kupovati samo ako ste u jednoj od nabrojanih država."
 
-# >> @item equalizer preset name
 #. i18n: file: services/amazon/AmazonConfigWidget.ui:100
 #. i18n: ectx: property (text), item, widget (QComboBox, countrySelectionComboBox)
 #: rc.cpp:2636
-#, fuzzy
-#| msgid "Dance"
 msgid "France"
-msgstr "plesna"
+msgstr "Francuska"
 
 #. i18n: file: services/amazon/AmazonConfigWidget.ui:105
 #. i18n: ectx: property (text), item, widget (QComboBox, countrySelectionComboBox)
 #: rc.cpp:2639
 msgid "Austria, Germany, Switzerland"
-msgstr ""
+msgstr "Austrija, Nemačka, Švajcarska"
 
 #. i18n: file: services/amazon/AmazonConfigWidget.ui:110
 #. i18n: ectx: property (text), item, widget (QComboBox, countrySelectionComboBox)
 #: rc.cpp:2642
 msgid "Japan"
-msgstr ""
+msgstr "Japan"
 
 #. i18n: file: services/amazon/AmazonConfigWidget.ui:115
 #. i18n: ectx: property (text), item, widget (QComboBox, countrySelectionComboBox)
 #: rc.cpp:2645
 msgid "United Kingdom"
-msgstr ""
+msgstr "Velika Britanija"
 
 #. i18n: file: services/amazon/AmazonConfigWidget.ui:120
 #. i18n: ectx: property (text), item, widget (QComboBox, countrySelectionComboBox)
 #: rc.cpp:2648
-#, fuzzy
-#| msgid "Mute state"
 msgid "United States"
-msgstr "Stanje utišanosti"
+msgstr "Sjedinjene Američke Države"
 
 #. i18n: file: services/amazon/AmazonConfigWidget.ui:125
 #. i18n: ectx: property (text), item, widget (QComboBox, countrySelectionComboBox)
 #: rc.cpp:2651
 msgid "none of the above (store won't work)"
-msgstr ""
+msgstr "nijedna od navedenih (prodavnica neće raditi)"
 
 #. i18n: file: transcoding/TranscodingAssistantDialog.ui:89
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: rc.cpp:2654
-#, fuzzy
-#| msgid "&Transcode"
 msgid "Transcode"
-msgstr "&Transkodiraj"
+msgstr "Transkodiranje"
 
 #. i18n: file: transcoding/TranscodingAssistantDialog.ui:223
 #. i18n: ectx: property (text), widget (QCheckBox, rememberCheckBox)
 #: rc.cpp:2657
 msgid "Remember this choice for the next time"
-msgstr ""
+msgstr "Zapamti ovaj izbor za sledeći put"
 
 #. i18n: tag layout attribute name
 #. i18n: file: data/DefaultPlaylistLayouts.xml:3
@@ -16078,293 +16121,6 @@ msgstr "Bez grupisanja (u jednom redu)"
 #: rc.cpp:2669
 msgid "Verbose"
 msgstr "Detaljnije"
-
-#: OpmlParser.cpp:109
-#, kde-format
-msgid "Reading OPML podcast from %1 failed with error:\n"
-msgstr "Čitanje OPML podemisije sa %1 propalo uz grešku:\n"
-
-# >> @title
-#: MainWindow.cpp:262
-msgid "Local Music"
-msgstr "Lokalna muzika"
-
-#: MainWindow.cpp:264
-msgid "Local sources of content"
-msgstr "Lokalni izvori sadržaja"
-
-# >> @title
-#: MainWindow.cpp:272
-msgid "Internet"
-msgstr "Internet"
-
-#: MainWindow.cpp:274
-msgid "Online sources of content"
-msgstr "Izvori sadržaja na vezi"
-
-# >> @title
-#: MainWindow.cpp:280
-msgid "Playlists"
-msgstr "Liste numera"
-
-#: MainWindow.cpp:282
-msgid "Various types of playlists"
-msgstr "Razne vrste listi numera"
-
-#: MainWindow.cpp:290
-msgid "Browse local hard drive for content"
-msgstr "Pregledajte sadržaj lokalnog hard‑diska"
-
-# >! Wrong context marker.
-# >> @title:menu
-#: MainWindow.cpp:351
-msgctxt "@item:inmenu"
-msgid "&View"
-msgstr "&Prikaz"
-
-#: MainWindow.cpp:354
-msgid "Lock Layout"
-msgstr "Zaključaj raspored"
-
-#: MainWindow.cpp:465
-msgid ""
-"<qt>Closing the main window will keep Amarok running in the System Tray. Use "
-"<B>Quit</B> from the menu, or the Amarok tray icon to exit the application.</"
-"qt>"
-msgstr ""
-"<qt>Zatvaranjem glavnog prozora, Amarok će nastaviti da radi u sistemskoj "
-"kaseti. Koristite <interface>Napusti</interface> iz menija ili Amarokovu "
-"ikonu u sistemskoj kaseti da biste izašli iz programa.</qt>"
-
-# >> @title:window
-#: MainWindow.cpp:467
-msgid "Docking in System Tray"
-msgstr "Pristajanje u sistemsku kasetu"
-
-#: MainWindow.cpp:496
-msgid "Use relative path for &saving"
-msgstr "Relativna putanja pri &upisivanju"
-
-#: MainWindow.cpp:573
-msgid "Play Media (Files or URLs)"
-msgstr "Pusti medijum (fajlovi ili URL‑ovi)"
-
-#: MainWindow.cpp:573
-msgid "Add Media (Files or URLs)"
-msgstr "Dodaj medijum (fajlovi ili URL‑ovi)"
-
-# >> @title:window
-#: MainWindow.cpp:591
-msgid "Add Stream"
-msgstr "Dodavanje toka"
-
-#: MainWindow.cpp:591
-msgid "Enter Stream URL:"
-msgstr "Unesite URL toka:"
-
-#: MainWindow.cpp:723
-msgid "&Add Media..."
-msgstr "&Dodaj medijum..."
-
-#: MainWindow.cpp:728
-msgctxt "clear playlist"
-msgid "&Clear Playlist"
-msgstr "&Očisti listu numera"
-
-#: MainWindow.cpp:733
-msgctxt "edit play queue of playlist"
-msgid "Edit &Queue"
-msgstr "Uredi &red"
-
-#: MainWindow.cpp:738
-msgctxt "Remove duplicate and dead (unplayable) tracks from the playlist"
-msgid "Re&move Duplicates"
-msgstr "Ukloni &duplikate"
-
-#: MainWindow.cpp:745
-msgid "&Add Stream..."
-msgstr "&Dodaj tok..."
-
-#: MainWindow.cpp:749
-msgid "&Export Playlist As..."
-msgstr "Izvezi listu numera &kao..."
-
-#: MainWindow.cpp:761
-msgid "Equalizer"
-msgstr "Ekvilajzer"
-
-#: MainWindow.cpp:769
-msgid "Bookmark Context Applets"
-msgstr "Obeleži kontekstne aplete"
-
-#: MainWindow.cpp:777
-msgid "Play Media..."
-msgstr "Pusti medijum..."
-
-#: MainWindow.cpp:782
-#, fuzzy
-#| msgid "Save changes of currently selected preset"
-msgid "Edit Details of Currently Selected Track"
-msgstr "Sačuvaj izmene izabranog pretpodešavanja"
-
-#: MainWindow.cpp:787
-msgid "&Seek Forward"
-msgstr "&Traži unapred"
-
-#: MainWindow.cpp:793
-msgid "&Seek Backward"
-msgstr "&Traži unazad"
-
-#: MainWindow.cpp:800
-msgid "Update Collection"
-msgstr "Ažuriraj zbirku"
-
-#: MainWindow.cpp:807
-msgid "Previous Track"
-msgstr "Prethodna numera"
-
-#: MainWindow.cpp:814
-msgid "Restart current track"
-msgstr "Ponovo pokreni tekuću numeru"
-
-#: MainWindow.cpp:820
-msgid "Repopulate Playlist"
-msgstr "Ponovo popuni listu numera"
-
-#: MainWindow.cpp:826
-msgid "Disable Dynamic Playlist"
-msgstr "Isključi dinamičku listu numera"
-
-#: MainWindow.cpp:830
-msgid "Next Track"
-msgstr "Sledeća numera"
-
-#: MainWindow.cpp:835
-msgid "Increase Volume"
-msgstr "Povećaj jačinu"
-
-#: MainWindow.cpp:841
-msgid "Decrease Volume"
-msgstr "Smanji jačinu"
-
-#: MainWindow.cpp:847
-msgid "Toggle Main Window"
-msgstr "Uključi/isključi glavni prozor"
-
-#: MainWindow.cpp:852
-msgid "Toggle Full Screen"
-msgstr "Preko celog ekrana"
-
-#: MainWindow.cpp:867
-msgid "Show active track"
-msgstr "Prikaži tekuću numeru"
-
-#: MainWindow.cpp:871
-msgid "Show Notification Popup"
-msgstr "Prikazuj iskačuća obaveštenja"
-
-#: MainWindow.cpp:876
-msgid "Mute Volume"
-msgstr "Utišaj zvuk"
-
-#: MainWindow.cpp:881
-msgid "Last.fm: Love Current Track"
-msgstr "Last.fm: voli tekuću numeru"
-
-#: MainWindow.cpp:886
-msgid "Last.fm: Ban Current Track"
-msgstr "Last.fm: zabrani tekuću numeru"
-
-#: MainWindow.cpp:891
-msgid "Last.fm: Skip Current Track"
-msgstr "Last.fm: preskoči tekuću numeru"
-
-#: MainWindow.cpp:901
-msgid "Rate Current Track: 1"
-msgstr "Oceni tekuću numeru: 1"
-
-#: MainWindow.cpp:906
-msgid "Rate Current Track: 2"
-msgstr "Oceni tekuću numeru: 2"
-
-#: MainWindow.cpp:911
-msgid "Rate Current Track: 3"
-msgstr "Oceni tekuću numeru: 3"
-
-#: MainWindow.cpp:916
-msgid "Rate Current Track: 4"
-msgstr "Oceni tekuću numeru: 4"
-
-#: MainWindow.cpp:921
-msgid "Rate Current Track: 5"
-msgstr "Oceni tekuću numeru: 5"
-
-#: MainWindow.cpp:927
-msgid "Network Request Viewer"
-msgstr "Prikazivač mrežnih zahteva"
-
-#: MainWindow.cpp:945
-msgid "&About Amarok"
-msgstr "&O Amaroku"
-
-#: MainWindow.cpp:949
-msgid "&Diagnostics"
-msgstr ""
-
-#: MainWindow.cpp:953
-msgid "&Report Bug..."
-msgstr "P&rijavi grešku..."
-
-#: MainWindow.cpp:1013
-msgid "&Music"
-msgstr "&Muzika"
-
-#: MainWindow.cpp:1015
-msgid "&Amarok"
-msgstr "&Amarok"
-
-#: MainWindow.cpp:1056
-msgid "&Tools"
-msgstr "Ala&tke"
-
-#: MainWindow.cpp:1073
-msgid "&Settings"
-msgstr "&Podešavanje"
-
-#: MainWindow.cpp:1122
-#, kde-format
-msgid ""
-"You have chosen to hide the menu bar.\n"
-"\n"
-"Please remember that you can always use the shortcut \"%1\" to bring it back."
-msgstr ""
-"Izabrali ste da sakrijete traku menija.\n"
-"\n"
-"U svakom trenutku možete je vratiti prečicom „%1“."
-
-# >> @title:window
-#: MainWindow.cpp:1124
-msgid "Hide Menu"
-msgstr "Sakrivanje menija"
-
-#: MainWindow.cpp:1166
-#, kde-format
-msgid "Paused  ::  %1"
-msgstr "Pauzirano  ::  %1"
-
-#: MainWindow.cpp:1179
-#, kde-format
-msgid "%1 - %2  ::  %3"
-msgstr "%1 — %2 ::  %3"
-
-#: ScriptManager.cpp:304
-#, kde-format
-msgid ""
-"Script error reported by: %1\n"
-"%2"
-msgstr ""
-"Grešku u skripti prijavljuje: %1\n"
-"%2"
 
 #: TrayIcon.cpp:145
 #, kde-format
@@ -16396,93 +16152,93 @@ msgstr "Broj puštanja: %1"
 msgid "Last played: %1"
 msgstr "Poslednje puštanje: %1"
 
-#: App.cpp:410
+#: App.cpp:409
 msgid "Files/URLs to open"
 msgstr "Fajlovi/URL‑ovi za otvaranje"
 
-#: App.cpp:411
+#: App.cpp:410
 msgid "Immediately start playing an audio cd"
 msgstr "Odmah započni puštanje audio CD‑a"
 
-#: App.cpp:413
+#: App.cpp:412
 msgid "Skip backwards in playlist"
 msgstr "Preskoči unazad u listi numera"
 
-#: App.cpp:415
+#: App.cpp:414
 msgid "Start playing current playlist"
 msgstr "Počni da puštaš tekuću listu numera"
 
-#: App.cpp:417
+#: App.cpp:416
 msgid "Play if stopped, pause if playing"
 msgstr "Pusti ako je zaustavljeno, pauziraj ako se pušta"
 
-#: App.cpp:418
+#: App.cpp:417
 msgid "Pause playback"
 msgstr "Pauziraj puštanje"
 
-#: App.cpp:420
+#: App.cpp:419
 msgid "Stop playback"
 msgstr "Zaustavi puštanje"
 
-#: App.cpp:422
+#: App.cpp:421
 msgid "Skip forwards in playlist"
 msgstr "Preskoči unapred u listi numera"
 
-#: App.cpp:423
+#: App.cpp:422
 msgid "Additional options:"
 msgstr "Dodatne opcije:"
 
-#: App.cpp:425
+#: App.cpp:424
 msgid "Append files/URLs to playlist"
 msgstr "Dodaj fajlove/URL‑ove u listu numera"
 
-#: App.cpp:426
+#: App.cpp:425
 msgid "Queue URLs after the currently playing track"
 msgstr "Stavi URL‑ove u red posle numere koja se trenutno pušta"
 
-#: App.cpp:428
+#: App.cpp:427
 msgid "Load URLs, replacing current playlist"
 msgstr "Učitaj URL‑ove, zamenivši tekuću listu"
 
-#: App.cpp:430
+#: App.cpp:429
 msgid "Print verbose debugging information"
 msgstr "Ispisuj opširne ispravljačke podatke"
 
-#: App.cpp:432
+#: App.cpp:431
 msgid "Disable colorization for debug output."
 msgstr "Isključi bojenje u ispravljačkom izlazu."
 
-#: App.cpp:434
+#: App.cpp:433
 msgid "Allow running multiple Amarok instances"
 msgstr "Dozvoli pokretanje više primeraka Amaroka"
 
-#: App.cpp:435
+#: App.cpp:434
 msgid "Base for relative filenames/URLs"
 msgstr "Osnova za relativna imena fajlova/URL‑ova"
 
-#: App.cpp:437
+#: App.cpp:436
 msgid "Unit test options:"
 msgstr "Opcije jediničnih proba:"
 
-#: App.cpp:438
+#: App.cpp:437
 msgid "Run integrated unit tests"
 msgstr "Izvrši ugrađene jedinične probe"
 
 # literal-segment: :.*
-#: App.cpp:439
+#: App.cpp:438
 msgid "Destination of test output: 'stdout', 'log'"
 msgstr "Odredište izlaza proba: stdout, log"
 
 # literal-segment: :.*
-#: App.cpp:440
+#: App.cpp:439
 msgid "Format of test output: 'xml', 'lightxml', 'plaintext'"
 msgstr "Format izlaza proba: xml, lightxml, plaintext"
 
-#: App.cpp:441
+#: App.cpp:440
 msgid "Verbosity from 0-3 (highest)"
 msgstr "Opširnost od 0 do 3 (najveća)"
 
-#: App.cpp:635
+#: App.cpp:621
 msgid ""
 "The embedded database was not found; you must set up a database server "
 "connection.\n"
@@ -16491,7 +16247,7 @@ msgstr ""
 "Nije pronađena ugnežđena baza; morate podesiti vezu sa serverom baze.\n"
 "Nakon ovoga morate ponovo pokrenuti Amarok."
 
-#: App.cpp:636
+#: App.cpp:622
 msgid ""
 "The connection details for the database server were invalid.\n"
 "You must enter correct settings and restart Amarok after doing this."
@@ -16499,15 +16255,15 @@ msgstr ""
 "Podaci za povezivanje sa serverom baze nisu ispravni.\n"
 "Morate uneti ispravne postavke i nakon toga ponovo pokrenuti Amarok."
 
-#: App.cpp:637
+#: App.cpp:623
 msgid "Database Error"
 msgstr "Greška u bazi"
 
-#: App.cpp:682
+#: App.cpp:668
 msgid "Moving files to trash"
 msgstr "Premeštam fajlove u smeće"
 
-#: App.cpp:770
+#: App.cpp:756
 #, kde-format
 msgid ""
 "A music path, %1, is set in System Settings.\n"

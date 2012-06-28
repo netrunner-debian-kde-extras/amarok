@@ -14921,397 +14921,403 @@ msgid "Last played: %1"
 msgstr "Zadnji put svirana:"
 
 #, fuzzy
+#~| msgid "Genre"
+#~ msgid "Genres"
+#~ msgstr "Žanr"
 
+#~ msgid "Mute"
+#~ msgstr "Utišati"
 
-
-
-
-
-
-
-
-
-#, fuzzy
-
-
-
+#~ msgid "Volume: <i>Muted</i>"
+#~ msgstr "Glasnoća: <i>utišano</i>"
 
 #, fuzzy
-
-
-
-
-#, fuzzy
-
-
-
-
-
-
-
+#~| msgid "Automatic"
+#~ msgid "Automatic Preview"
+#~ msgstr "Automatski"
 
 #, fuzzy
-
-
-
-
-#, fuzzy
-
-
-
-
-
+#~| msgid "Source"
+#~ msgid "Show In Media Sources"
+#~ msgstr "Izvor"
 
 #, fuzzy
+#~| msgid "1 fetched"
+#~| msgid_plural "%1 fetched"
+#~ msgid "Cover fetcher"
+#~ msgstr "%1 dohvaćen"
 
-
-
-
-
-#, fuzzy
-
-
-
-
+#~ msgid "Warning"
+#~ msgstr "Upozorenje"
 
 #, fuzzy
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#~| msgid "modified"
+#~ msgid "%1 (modified) "
+#~ msgstr "izmijenjeno"
 
 #, fuzzy
-
-
-
-
-#, fuzzy
-
-
-
+#~| msgctxt "When this track was first played"
+#~| msgid "Never"
+#~ msgctxt "prefix to update interval in minutes"
+#~ msgid "every "
+#~ msgstr "Nikad"
 
 #, fuzzy
-
-
-
-
-#, fuzzy
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#~| msgid "Confirm Delete"
+#~ msgctxt "The name of the file this track is stored in"
+#~ msgid "filename"
+#~ msgstr "Potvrda brisanja"
 
 #, fuzzy
-
-
-
-
-#, fuzzy
-
-
-
+#~| msgid "with"
+#~ msgctxt "The date lies after the given time interval"
+#~ msgid "within"
+#~ msgstr "sa"
 
 #, fuzzy
+#~| msgid "Replace"
+#~ msgctxt "an alphabetical tag (like title or artist name) equals some string"
+#~ msgid "matches"
+#~ msgstr "Zamijeni"
 
+#~ msgid "&OK"
+#~ msgstr "&U redu"
 
+#~ msgid "Form"
+#~ msgstr "Obrazac"
 
-
-
-
-#, fuzzy
-
-
-
-
-#, fuzzy
-
-
-
-
-#, fuzzy
-
-
-
+#~ msgctxt "When this track was first played"
+#~ msgid "Never"
+#~ msgstr "Nikad"
 
 #, fuzzy
-
-
-
-
-#, fuzzy
-
-
-
-
-
-
-
-
-
-
-
-
-
+#~| msgid "Bitrate"
+#~ msgid "bit rate"
+#~ msgstr "Protok bitova"
 
 #, fuzzy
-
-
-
-
-
-#, fuzzy
-
-
-
+#~| msgid "Size:"
+#~ msgid "file size"
+#~ msgstr "Veličina:"
 
 #, fuzzy
-
-
-
-
-#, fuzzy
-
-
-
+#~| msgid "Format:"
+#~ msgid "format"
+#~ msgstr "Oblik:"
 
 #, fuzzy
+#~| msgid "Current Playlist"
+#~ msgctxt ""
+#~ "One word translation used in the collection filter. Last played time / "
+#~ "access date"
+#~ msgid "last"
+#~ msgstr "Trenutna lista izvođenja"
 
+#~ msgid "Attribute"
+#~ msgstr "Obilježja"
 
+#~ msgid "Filter Action"
+#~ msgstr "Filterske akcije"
 
+#~ msgid "Zoom Out"
+#~ msgstr "Udalji"
 
-#, fuzzy
-
-
-
-
-#, fuzzy
-
-
-
-
-
-#, fuzzy
-
-
-
-
-#, fuzzy
-
-
-
-
+#~ msgid "Add Widgets..."
+#~ msgstr "Dodaj widgete …"
 
 #, fuzzy
-
-
-
-
-#, fuzzy
-
-
-
-
-
-
-
-
-
+#~| msgid "Delete Files"
+#~ msgid "Remove Track"
+#~ msgstr "Izbriši datoteke"
 
 #, fuzzy
-
-
-
-
-#, fuzzy
-
-
-
+#~| msgid "Settings"
+#~ msgid "Similar Artist: No track playing"
+#~ msgstr "Postavke"
 
 #, fuzzy
-
-
-
-
-
-#, fuzzy
-
-
-
+#~| msgctxt "a single item (singular)"
+#~| msgid "Last Played:"
+#~ msgctxt "last played time / access date"
+#~ msgid "played"
+#~ msgstr "Zadnji put svirana:"
 
 #, fuzzy
-
-
-
-
-#, fuzzy
-
-
-
+#~| msgid "Unable to parse avatar image data."
+#~ msgid "Unable to retrieve tab information from Ultimate Guitar: %1"
+#~ msgstr "Nemoguće obraditi podatke avatar slike."
 
 #, fuzzy
-
-
-
-
-
-#, fuzzy
-
-
-
+#~| msgid "Unable to parse avatar image data."
+#~ msgid "Unable to retrieve tab information from fretplay.com: %1"
+#~ msgstr "Nemoguće obraditi podatke avatar slike."
 
 #, fuzzy
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+#~| msgid "Collection"
+#~ msgid "Fully Rescan Entire Collection"
+#~ msgstr "Kolekcija"
 
 #, fuzzy
-
-
-
-
-#, fuzzy
-
-
-
+#~| msgid "Length"
+#~ msgid "Track Length"
+#~ msgstr "Trajanje"
 
 #, fuzzy
+#~| msgctxt "a single item (singular)"
+#~| msgid "Last Played:"
+#~ msgid "played"
+#~ msgstr "Zadnji put svirana:"
 
+#~ msgid "English"
+#~ msgstr "Engleski"
 
+#~ msgid "French"
+#~ msgstr "Francuski"
 
-
-
-
-
-
-
-
-
-
-
-
-#, fuzzy
-
-
-
-
-
-
+#~ msgid "German"
+#~ msgstr "Njemački"
 
 #, fuzzy
-
-
-
-
-#, fuzzy
-
-
-
-
-
-
-
-
-
-
-
-
+#~| msgid "Automatic"
+#~ msgctxt "automatic language selection"
+#~ msgid "Automatic"
+#~ msgstr "Automatski"
 
 #, fuzzy
+#~| msgid "Cover Manager"
+#~ msgid "Sync Manager"
+#~ msgstr "Upravitelj pokrova"
+
+#, fuzzy
+#~| msgid "Loading info..."
+#~ msgid "Loading the picture..."
+#~ msgstr "Učitavanje informacija …"
+
+#, fuzzy
+#~| msgid "Current Playlist"
+#~ msgid "Current Tags"
+#~ msgstr "Trenutna lista izvođenja"
+
+#, fuzzy
+#~| msgid "Selected Tracks"
+#~ msgid "Suggested Tags"
+#~ msgstr "Odabrane trake"
+
+#, fuzzy
+#~| msgid "year"
+#~ msgid "&Start search"
+#~ msgstr "godina"
+
+#, fuzzy
+#~| msgid "composer"
+#~ msgctxt "(Front) Cover of an album"
+#~ msgid "cover"
+#~ msgstr "skladatelj"
+
+#, fuzzy
+#~| msgid "All Artists"
+#~ msgid "Similar artists"
+#~ msgstr "Svi umjetnici"
+
+#, fuzzy
+#~| msgid "Automatic"
+#~ msgctxt "automatic time span"
+#~ msgid "Automatic"
+#~ msgstr "Automatski"
+
+#, fuzzy
+#~| msgid "Minutes"
+#~ msgid "minutes"
+#~ msgstr "Minute"
+
+#, fuzzy
+#~| msgid "Days"
+#~ msgid "days"
+#~ msgstr "Dani"
+
+#~ msgid "Server:"
+#~ msgstr "Poslužitelj:"
+
+#~ msgid "Modify"
+#~ msgstr "Izmijeni"
+
+#, fuzzy
+#~| msgid "Title"
+#~ msgid "Track Title"
+#~ msgstr "Naslov"
+
+#, fuzzy
+#~| msgid "Albums"
+#~ msgid "Values"
+#~ msgstr "Albumi"
+
+#, fuzzy
+#~| msgid "Filter %1"
+#~ msgctxt "default name for new folder"
+#~ msgid "New Folder (%1)"
+#~ msgstr "Filtar %1"
+
+#, fuzzy
+#~| msgid "Track"
+#~ msgid "Show top tracks"
+#~ msgstr "Zapis"
+
+#, fuzzy
+#~| msgid "Use KNotify support"
+#~ msgid "Use &KNotify"
+#~ msgstr "Koristi podršku KNotifya"
+
+#, fuzzy
+#~| msgid "year"
+#~ msgid "years"
+#~ msgstr "godina"
+
+#, fuzzy
+#~| msgid "Add Folder"
+#~ msgctxt "(Front) Cover of an album"
+#~ msgid "folder"
+#~ msgstr "Dodaj mapu"
+
+#, fuzzy
+#~| msgid "Text color:"
+#~ msgid "Text completion"
+#~ msgstr "Boja teksta:"
+
+#, fuzzy
+#~| msgid "Settings"
+#~ msgid "Coverbling Settings"
+#~ msgstr "Postavke"
+
+#~ msgid "50 fps"
+#~ msgstr "50 fps"
+
+#~ msgid "33 fps"
+#~ msgstr "33 fps"
+
+#~ msgid "25 fps"
+#~ msgstr "25 fps"
+
+#~ msgid "20 fps"
+#~ msgstr "20 fps"
+
+#~ msgid "10 fps"
+#~ msgstr "10 fps"
+
+#~ msgid "group"
+#~ msgstr "grupa"
+
+#~ msgid "Launch Year:"
+#~ msgstr "Godina izdavanja:"
+
+#~ msgid "Payment"
+#~ msgstr "Plaćanje"
+
+#~ msgctxt "The name of the person buying songs from magnatune"
+#~ msgid "Name:"
+#~ msgstr "Ime:"
+
+#~ msgctxt "The e-mail address of the user"
+#~ msgid "E-mail:"
+#~ msgstr "E-pošta:"
+
+#~ msgid "5"
+#~ msgstr "5"
+
+#~ msgid "6"
+#~ msgstr "6"
+
+#~ msgid "7"
+#~ msgstr "7"
+
+#~ msgid "8"
+#~ msgstr "8"
+
+#~ msgid "9"
+#~ msgstr "9"
+
+#~ msgid "10"
+#~ msgstr "10"
+
+#~ msgid "11"
+#~ msgstr "11"
+
+#~ msgid "12"
+#~ msgstr "12"
+
+#~ msgid "13"
+#~ msgstr "13"
+
+#~ msgid "14"
+#~ msgstr "14"
+
+#~ msgid "15"
+#~ msgstr "15"
+
+#~ msgid "16"
+#~ msgstr "16"
+
+#~ msgid "17"
+#~ msgstr "17"
+
+#~ msgid "18"
+#~ msgstr "18"
+
+#, fuzzy
+#~| msgid "with"
+#~ msgid "width"
+#~ msgstr "sa"
+
+#, fuzzy
+#~| msgid "Bitrate"
+#~ msgid "Abstract"
+#~ msgstr "Protok bitova"
+
+#, fuzzy
+#~| msgid "Disc number"
+#~ msgid "Disk Number"
+#~ msgstr "Broj diska"
+
+#~ msgctxt "The Mp3Tunes password"
+#~ msgid "Password:"
+#~ msgstr "Zaporka:"
+
+#~ msgid "Previous"
+#~ msgstr "Prethodni"
+
+#~ msgid "Bookmarks"
+#~ msgstr "Oznake"
+
+#, fuzzy
+#~| msgid "Source"
+#~ msgid "Find in Source"
+#~ msgstr "Izvor"
+
+#~ msgid "Untitled"
+#~ msgstr "Nenaslovljeno"
+
+#, fuzzy
+#~| msgid "Album"
+#~ msgid " Album"
+#~ msgstr "Album"
+
+#, fuzzy
+#~| msgid "A&uthor"
+#~ msgid "Author:"
+#~ msgstr "&Autor"
+
+#~ msgid "Ra&ndom"
+#~ msgstr "&Nasumično"
+
+#~ msgid "&Albums"
+#~ msgstr "&Albumi"
+
+#~ msgid "&Repeat"
+#~ msgstr "Pona&vljanje"
+
+#, fuzzy
+#~| msgid "Bookmarks"
+#~ msgid "Remove Bookmark"
+#~ msgstr "Oznake"
+
+#~ msgid "Miscellaneous"
+#~ msgstr "Razno"
