@@ -8,6 +8,7 @@ amarok (2.6~beta1+75.g47e75df-0r1) UNRELEASED; urgency=low
     there is no Phonon Xine backend anymore.
   * Update information in debian/not-installed.
   * Lengthen descriptions of amarok-common and amarok-doc packages a bit.
+  * Disable LikeBack by default by shipping appropriate amarokrc.
 
  -- Modestas Vainius <modax@debian.org>  Fri, 29 Jun 2012 01:50:42 +0300
 
