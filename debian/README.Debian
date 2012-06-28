@@ -13,30 +13,3 @@ General notes
   "mood" files for your tracks and to enable moodbar in Amarok preferences.
   Refer to http://amarok.kde.org/wiki/Moodbar#Usage for more information.
 
-Importing Amarok 1.4 database to Amarok 2
------------------------------------------
-
-Amarok 2 features collection importer from Amarok 1.4. You may open it by going
-to "Settings" menu, opening "Configure Amarok" dialog, "Collection" tab and
-clicking on the "Import Collection" button. Depeding on the database backend
-you used with Amarok 1.4, make sure you have the respective Qt4 SQL plugins
-installed before using the collection importer:
-
-- libqt4-sql-sqlite for SQLite (SQLite database was default in Amarok 1.4).
-- libqt4-sql-mysql for importing from MySQL.
-- libqt4-sql-psql for importing from PostgreSQL.
-
-Upgrading from earlier 2.x versions to 2.2.1 or later
------------------------------------------------------
-
-If you experience weird issues like 0:00 track lengths or last.fm scrobbling
-problems after upgrading from earlier version of the 2.x series, full rescan of
-the local collection may help. Go to "Settings" menu, select "Configure
-Amarok", open "Collection" tab and click "Fully Rescan Collection" button. Wait
-while scanning process is complete and restart Amarok. You will not lose any
-statistics in the process.
-
-Visit the following URLs for more information about related issues:
-
-https://bugs.kde.org/show_bug.cgi?id=207153
-http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=556621
