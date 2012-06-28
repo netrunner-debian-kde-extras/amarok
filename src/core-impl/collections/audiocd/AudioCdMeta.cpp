@@ -72,13 +72,8 @@ AudioCdTrack::prettyUrl() const
 bool
 AudioCdTrack::isPlayable() const
 {
-    KUrl trackUrl = playableUrl();
-    QFileInfo trackFileInfo = QFileInfo( trackUrl.toLocalFile() );
-    //track can be played only if it's readable
-    if( trackFileInfo.exists() && trackFileInfo.isFile() && trackFileInfo.isReadable() )
-        return true;
-
-    return false;
+    //TODO: check availablity of correct CD somehow
+    return true;
 }
 
 bool
@@ -395,6 +390,19 @@ AudioCdAlbum::isCompilation() const
 }
 
 bool
+AudioCdAlbum::canUpdateCompilation() const
+{
+    return true;
+}
+
+void
+AudioCdAlbum::setCompilation( bool compilation )
+{
+    DEBUG_BLOCK
+    m_isCompilation = compilation;
+}
+
+bool
 AudioCdAlbum::hasAlbumArtist() const
 {
     return !m_albumArtist.isNull();
@@ -422,6 +430,15 @@ AudioCdAlbum::image( int size ) const
 }
 
 bool
+AudioCdAlbum::hasImage( int size ) const
+{
+    if ( m_cover.isNull() )
+        return Meta::Album::hasImage( size );
+    else
+        return true;
+}
+
+bool
 AudioCdAlbum::canUpdateImage() const
 {
     return false;
@@ -444,13 +461,6 @@ void
 AudioCdAlbum::setAlbumArtist( AudioCdArtistPtr artist )
 {
     m_albumArtist = artist;
-}
-
-void
-AudioCdAlbum::setIsCompilation( bool compilation )
-{
-    DEBUG_BLOCK
-    m_isCompilation = compilation;
 }
 
 //AudioCdGenre

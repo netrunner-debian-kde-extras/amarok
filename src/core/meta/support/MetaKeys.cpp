@@ -31,15 +31,25 @@ Meta::AlbumKey::AlbumKey( const QString &name, const QString &artistName )
 Meta::AlbumKey::AlbumKey( const Meta::AlbumPtr &album )
 {
     m_albumName = album->name();
-    if( album->albumArtist() )
+    if( album->hasAlbumArtist() && album->albumArtist() )
         m_artistName = album->albumArtist()->name();
 }
 
-Meta::AlbumKey& Meta::AlbumKey::operator=( const Meta::AlbumKey &o )
+Meta::AlbumKey&
+Meta::AlbumKey::operator=( const Meta::AlbumKey &o )
 {
     m_albumName = o.m_albumName;
     m_artistName = o.m_artistName;
     return *this;
+}
+
+bool
+Meta::AlbumKey::operator<( const Meta::AlbumKey &other ) const
+{
+    // sort first by artist name, then by album name
+    if( m_artistName == other.m_artistName )
+        return m_albumName < other.m_albumName;
+    return m_artistName < other.m_artistName;
 }
 
 Meta::TrackKey::TrackKey()
@@ -49,6 +59,8 @@ Meta::TrackKey::TrackKey()
 Meta::TrackKey::TrackKey( const Meta::TrackPtr &track )
 {
     m_trackName = track->name();
+    m_discNumber = track->discNumber();
+    m_trackNumber = track->trackNumber();
     if( track->artist() )
         m_artistName = track->artist()->name();
 
@@ -58,6 +70,8 @@ Meta::TrackKey::TrackKey( const Meta::TrackPtr &track )
 
 Meta::TrackKey& Meta::TrackKey::operator=( const Meta::TrackKey &o )
 {
+    m_discNumber = o.m_discNumber;
+    m_trackNumber = o.m_trackNumber;
     m_trackName = o.m_trackName;
     m_albumName = o.m_albumName;
     m_artistName = o.m_artistName;

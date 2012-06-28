@@ -1,3 +1,15 @@
+amarok (2.6~beta1-1) experimental; urgency=low
+
+  * New upstream development release (2.5.90).
+  * Drop upstream_fix_lyrics_autorefresh_in_some_cases.patch, merged upstream.
+  * Adapt debian_find_mysql_fix.diff to upstream changes.
+  * Update debian_fix_doc_nl_build.diff patch to fix a new build problem with
+    KDE 4.7, require kdelibs5-dev 4:4.7.
+  * Update install files.
+  * Remove ${perl:Depends} from amarok-doc Depends, not needed.
+
+ -- Modestas Vainius <modax@debian.org>  Sun, 03 Jun 2012 01:17:19 +0300
+
 amarok (2.5.0-3) unstable; urgency=low
 
   * Depend on libmysql-pic 5.5.23+dfsg so we can drop libssl-dev from

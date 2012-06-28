@@ -74,7 +74,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlCollectionLocation : public Collectio
     Q_OBJECT
 
     public:
-        SqlCollectionLocation( SqlCollection const *collection );
+        SqlCollectionLocation( SqlCollection *collection );
         virtual ~SqlCollectionLocation();
 
         virtual QString prettyLocation() const;
@@ -82,14 +82,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlCollectionLocation : public Collectio
         virtual bool isWritable() const;
         virtual bool isOrganizable() const;
 
-        /**
-         * reimplementation
-         */
-        virtual bool remove( const Meta::TrackPtr &track );
-
-        /**
-         * reimplementation
-         */
+        bool remove( const Meta::TrackPtr &track );
         virtual bool insert( const Meta::TrackPtr &track, const QString &url );
 
         //dependency injectors
@@ -100,7 +93,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlCollectionLocation : public Collectio
                                             bool removeSources,
                                             const Transcoding::Configuration &configuration );
         virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
-                                           const Transcoding::Configuration & configuration = Transcoding::Configuration() );
+                                           const Transcoding::Configuration & configuration );
         virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
 
     private slots:
@@ -150,6 +143,7 @@ public:
     virtual void setFolders( const QStringList &folders ) = 0;
     virtual void setIsOrganizing( bool organizing ) = 0;
     virtual void setTranscodingConfiguration( const Transcoding::Configuration &configuration ) = 0;
+    virtual void setCaption( const QString &caption ) = 0;
 
     virtual void show() = 0;
 

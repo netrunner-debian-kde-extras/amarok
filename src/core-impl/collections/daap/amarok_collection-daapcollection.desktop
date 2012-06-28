@@ -94,7 +94,7 @@ Comment[nn]=Amarok-samlingstillegg for DAAP
 Comment[pa]=ਅਮਰੋਕ ਲਈ DAAP ਭੰਡਾਰ ਪਲੱਗਇਨ
 Comment[pl]=Wtyczka kolekcji DAAP dla Amaroka
 Comment[pt]=Um 'plugin' de colecção para DAAP no Amarok
-Comment[pt_BR]=Plug-in de coleção DAAP para o Amarok
+Comment[pt_BR]=Plugin de coleção DAAP para o Amarok
 Comment[ro]=Modul de colecție DAAP pentru Amarok
 Comment[ru]=Модуль коллекции DAAP для Amarok
 Comment[sk]=Modul DAAP kolekcia pre Amarok
@@ -116,7 +116,7 @@ ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-authors=Maximilian Kossick
 X-KDE-Amarok-email=maximilian.kossick@googlemail.com
-X-KDE-Amarok-framework-version=67
+X-KDE-Amarok-framework-version=68
 X-KDE-Amarok-name=daap-collection
 X-KDE-Amarok-plugintype=collection
 X-KDE-Amarok-rank=100

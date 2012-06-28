@@ -31,9 +31,9 @@
 #include "core/capabilities/FindInSourceCapability.h"
 #include "core/capabilities/StatisticsCapability.h"
 #include "core/capabilities/OrganiseCapability.h"
-#include "core/capabilities/UpdateCapability.h"
 #include "core/collections/support/SqlStorage.h"
 #include "core/meta/support/MetaConstants.h"
+#include "core-impl/capabilities/AlbumActionsCapability.h"
 #include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
 #include "core-impl/capabilities/timecode/TimecodeWriteCapability.h"
 #include "amarokurls/PlayUrlRunner.h"
@@ -43,38 +43,6 @@
 #include <QFile>
 #include <QList>
 
-class CompilationAction : public QAction
-{
-    Q_OBJECT
-    public:
-        CompilationAction( QObject* parent, Meta::SqlAlbumPtr album )
-                : QAction( parent )
-                , m_album( album )
-                , m_isCompilation( album->isCompilation() )
-            {
-                connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
-                if( m_isCompilation )
-                {
-                    setIcon( KIcon( "filename-artist-amarok" ) );
-                    setText( i18n( "Do not show under Various Artists" ) );
-                }
-                else
-                {
-                    setIcon( KIcon( "similarartists-amarok" ) );
-                    setText( i18n( "Show under Various Artists" ) );
-                }
-            }
-
-    private slots:
-        void slotTriggered()
-        {
-            m_album->setCompilation( !m_isCompilation );
-        }
-
-    private:
-        Meta::SqlAlbumPtr m_album;
-        bool m_isCompilation;
-};
 
 namespace Capabilities {
 
@@ -98,7 +66,6 @@ class EditCapabilityImpl : public Capabilities::EditCapability
         virtual void setComment( const QString &newComment ) { m_track->setComment( newComment ); }
         virtual void setTrackNumber( int newTrackNumber ) { m_track->setTrackNumber( newTrackNumber ); }
         virtual void setDiscNumber( int newDiscNumber ) { m_track->setDiscNumber( newDiscNumber ); }
-        virtual void setUidUrl( const QString &newUidUrl ) { m_track->setUidUrl( newUidUrl ); }
         virtual void beginMetaDataUpdate() { m_track->beginMetaDataUpdate(); }
         virtual void endMetaDataUpdate() { m_track->endMetaDataUpdate(); }
 
@@ -159,21 +126,6 @@ class OrganiseCapabilityImpl : public Capabilities::OrganiseCapability
             if( QFile::remove( m_track->playableUrl().path() ) )
                 m_track->remove();
         }
-
-    private:
-        KSharedPtr<Meta::SqlTrack> m_track;
-};
-
-class UpdateCapabilityImpl : public Capabilities::UpdateCapability
-{
-    Q_OBJECT
-    public:
-        UpdateCapabilityImpl( Meta::SqlTrack *track )
-            : Capabilities::UpdateCapability()
-            , m_track( track ) {}
-
-        virtual void collectionUpdated() const { m_track->collection()->collectionUpdated(); }
-
 
     private:
         KSharedPtr<Meta::SqlTrack> m_track;
@@ -267,8 +219,7 @@ class FindInSourceCapabilityImpl : public Capabilities::FindInSourceCapability
                 AmarokUrl url;
                 url.setCommand( "navigate" );
                 url.setPath( "collections" );
-                url.appendArg( "filter", filters.join( QLatin1String(" AND ") ) );
-                url.appendArg( "levels", "artist-album" );
+                url.setArg( "filter", filters.join( QLatin1String(" AND ") ) );
 
                 debug() << "running url: " << url.url();
                 url.run();
@@ -296,7 +247,6 @@ TrackCapabilityDelegateImpl::hasCapabilityInterface( Capabilities::Capability::T
         case Capabilities::Capability::Actions:
         case Capabilities::Capability::Importable:
         case Capabilities::Capability::Organisable:
-        case Capabilities::Capability::Updatable:
         case Capabilities::Capability::BookmarkThis:
         case Capabilities::Capability::WriteTimecode:
         case Capabilities::Capability::LoadTimecode:
@@ -343,10 +293,6 @@ TrackCapabilityDelegateImpl::createCapabilityInterface( Capabilities::Capability
 
         case Capabilities::Capability::Organisable:
             return new OrganiseCapabilityImpl( track );
-
-        case Capabilities::Capability::Updatable:
-            return new UpdateCapabilityImpl( track );
-
         case Capabilities::Capability::BookmarkThis:
             return new Capabilities::BookmarkThisCapability( new BookmarkCurrentTrackPositionAction( 0 ) );
         case Capabilities::Capability::WriteTimecode:
@@ -428,7 +374,6 @@ AlbumCapabilityDelegateImpl::hasCapabilityInterface( Capabilities::Capability::T
     switch( type )
     {
         case Capabilities::Capability::Actions:
-            return true;
         case Capabilities::Capability::BookmarkThis:
             return true;
         default:
@@ -440,33 +385,14 @@ Capabilities::Capability*
 AlbumCapabilityDelegateImpl::createCapabilityInterface( Capabilities::Capability::Type type, Meta::SqlAlbum *album )
 {
     if( !album )
-    {
         return 0;
-    }
 
     switch( type )
     {
         case Capabilities::Capability::Actions:
-        {
-            QList<QAction*> actions;
-            actions.append( new CompilationAction( 0, Meta::SqlAlbumPtr( album ) ) );
-            actions.append( new FetchCoverAction( 0, Meta::AlbumPtr( album ) ) );
-            actions.append( new SetCustomCoverAction( 0, Meta::AlbumPtr( album ) ) );
-            QAction *displayCoverAction = new DisplayCoverAction( 0, Meta::AlbumPtr( album ) );
-            QAction *unsetCoverAction   = new UnsetCoverAction( 0, Meta::AlbumPtr( album ) );
-
-            if( !album->hasImage() )
-            {
-                displayCoverAction->setEnabled( false );
-                unsetCoverAction->setEnabled( false );
-            }
-            actions.append( displayCoverAction );
-            actions.append( unsetCoverAction );
-            return new Capabilities::ActionsCapability( actions );
-        }
+            return new Capabilities::AlbumActionsCapability( Meta::AlbumPtr( album ) );
         case Capabilities::Capability::BookmarkThis:
             return new Capabilities::BookmarkThisCapability( new BookmarkAlbumAction( 0, Meta::AlbumPtr( album ) ) );
-
         default:
             return 0;
     }

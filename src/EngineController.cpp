@@ -58,6 +58,8 @@ namespace The {
     EngineController* engineController() { return EngineController::instance(); }
 }
 
+QMutex EngineController::s_supportedMimeTypesMutex;
+
 EngineController*
 EngineController::instance()
 {
@@ -263,13 +265,19 @@ EngineController::supportedMimeTypes() //static
     //NOTE this function must be thread-safe
 
     // Filter the available mime types to only include audio and video, as amarok does not intend to play photos
-    static QRegExp avFilter( "^(audio|video)/", Qt::CaseInsensitive );
-    // NB: we can't make this static, as we edit it later in the method; however, this method
-    //     should not be called too often.
-    QStringList mimeTable = Phonon::BackendCapabilities::availableMimeTypes().filter( avFilter );
+    static QStringList mimeTable;
+    // theoretically not needed, but static initialization of mimeTable may have threading
+    // issues, so rather use boolean flag for it:
+    static bool mimeTableAlreadyFilled = false;
+
+    QMutexLocker locker( &s_supportedMimeTypesMutex );
+    if( mimeTableAlreadyFilled )
+        return mimeTable;
+
+    QRegExp avFilter( "^(audio|video)/", Qt::CaseInsensitive );
+    mimeTable = Phonon::BackendCapabilities::availableMimeTypes().filter( avFilter );
 
     // Add whitelist hacks
-
     // MP4 Audio Books have a different extension that KFileItem/Phonon don't grok
     if( !mimeTable.contains( "audio/x-m4b" ) )
         mimeTable << "audio/x-m4b";
@@ -293,6 +301,7 @@ EngineController::supportedMimeTypes() //static
         mimeTable << "audio/mp3" << "audio/x-mp3";
     }
 
+    mimeTableAlreadyFilled = true;
     return mimeTable;
 }
 
@@ -468,9 +477,8 @@ EngineController::playUrl( const KUrl &url, uint offset )
     debug() << "URL: " << url << url.url();
     debug() << "Offset: " << offset;
 
-    if ( url.url().startsWith( "audiocd:/" ) )
+    if( url.url().startsWith( "audiocd:/" ) )
     {
-
         m_currentIsAudioCd = true;
         //disconnect this signal for now or it will cause a loop that will cause a mutex lockup
         disconnect( m_controller.data(), SIGNAL( titleChanged( int ) ), this, SLOT( slotTitleChanged( int ) ) );
@@ -481,10 +489,11 @@ EngineController::playUrl( const KUrl &url, uint offset )
 
         const QString devicePrefix( "?device=" );
         QString device("");
-        if (trackNumberString.contains(devicePrefix))
+        if( trackNumberString.contains( devicePrefix ) )
         {
             int pos = trackNumberString.indexOf( devicePrefix );
-            device = trackNumberString.mid( pos + devicePrefix.size() );
+            device = QUrl::fromPercentEncoding(
+                        trackNumberString.mid( pos + devicePrefix.size() ).toLocal8Bit() );
             trackNumberString = trackNumberString.left( pos );
         }
 
@@ -510,7 +519,8 @@ EngineController::playUrl( const KUrl &url, uint offset )
         debug() << "Old device: " << m_media.data()->currentSource().deviceName();
 
         Phonon::MediaSource::Type type = m_media.data()->currentSource().type();
-        if( type != Phonon::MediaSource::Disc || m_media.data()->currentSource().deviceName() != device )
+        if( type != Phonon::MediaSource::Disc
+                || m_media.data()->currentSource().deviceName() != device )
         {
             m_media.data()->clear();
             debug() << "New device: " << device;

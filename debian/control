@@ -6,7 +6,7 @@ Uploaders: Modestas Vainius <modax@debian.org>
 Build-Depends: debhelper (>= 9), cmake (>= 2.6.2), pkg-kde-tools (>= 0.5),
  libtag1-dev (>= 1.6-2~), libtag-extras-dev (>= 1.0.1),
  libqtwebkit-dev | libqt4-dev (<< 4:4.7.0),
- kdelibs5-dev (>= 4:4.6), libsoprano-dev (>= 2.1.67),
+ kdelibs5-dev (>= 4:4.7), libsoprano-dev (>= 2.1.67),
  libstreamanalyzer-dev (>= 0.6.3), libstrigiqtdbusclient-dev (>= 0.6.3),
  libnjb-dev, libifp-dev, libmtp-dev (>= 1.0.0), libqjson-dev,
  libglib2.0-dev, libgpod-nogtk-dev (>= 0.7.0) | libgpod-dev (>= 0.7.0),
@@ -67,7 +67,7 @@ Description: architecture independent files for Amarok
 Package: amarok-doc
 Section: doc
 Architecture: all
-Depends: ${misc:Depends}, ${perl:Depends}
+Depends: ${misc:Depends}
 Replaces: amarok-common (<= 2.5.0-2)
 Breaks: amarok-common (<= 2.5.0-2)
 Recommends: amarok (>= ${source:Version})

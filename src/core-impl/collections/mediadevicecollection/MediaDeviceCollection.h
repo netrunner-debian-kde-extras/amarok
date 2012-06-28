@@ -121,7 +121,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Collections::C
         virtual float totalCapacity() const;
 
         // NOTE: location will have same method calls always, no need to redo each time
-        virtual CollectionLocation* location() const { return new MediaDeviceCollectionLocation(this); }
+        virtual CollectionLocation* location() { return new MediaDeviceCollectionLocation( this ); }
 
         /** Capability-related methods */
         virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
@@ -129,8 +129,6 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceCollection : public Collections::C
 
         /** MediaDeviceCollection methods */
         QString udi() const { return m_udi; }
-
-        virtual void writeDatabase() {} // threaded
 
         /** MediaDeviceCollection-specific */
         Meta::MediaDeviceHandler* handler();

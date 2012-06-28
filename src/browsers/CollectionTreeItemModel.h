@@ -22,28 +22,32 @@
 #include "CollectionTreeItemModelBase.h"
 #include "core/meta/Meta.h"
 
+#include "core/collections/Collection.h"
 
 #include <QMap>
 #include <QPair>
 
 class CollectionTreeItem;
-class Collection;
 
 class CollectionTreeItemModel: public CollectionTreeItemModelBase
 {
         Q_OBJECT
 
     public:
-        CollectionTreeItemModel( const QList<int> &levelType );
+        CollectionTreeItemModel( const QList<CategoryId::CatMenuId> &levelType );
         ~CollectionTreeItemModel();
 
+        /* QAbstractItemModel methods */
         virtual Qt::ItemFlags flags( const QModelIndex &index ) const;
         virtual QVariant data( const QModelIndex &index, int role ) const;
         virtual bool dropMimeData( const QMimeData *data, Qt::DropAction action, int row,
                                   int column, const QModelIndex &parent );
         virtual bool canFetchMore( const QModelIndex &parent ) const;
         virtual void fetchMore( const QModelIndex &parent );
-        virtual void setLevels( const QList<int> &levelType );
+        virtual Qt::DropActions supportedDropActions() const;
+
+        /* CollectionTreeItemModelBase methods */
+        virtual void setLevels( const QList<CategoryId::CatMenuId> &levelType );
 
     public slots:
         virtual void collectionAdded( Collections::Collection *newCollection );

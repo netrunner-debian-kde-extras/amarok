@@ -32,7 +32,7 @@ class AMAROK_EXPORT ServiceCollectionLocation : public CollectionLocation
     Q_OBJECT
     public:
         ServiceCollectionLocation();
-        ServiceCollectionLocation( const ServiceCollection* parentCollection );
+        ServiceCollectionLocation( ServiceCollection *parentCollection );
         virtual ~ServiceCollectionLocation();
 
         virtual void getKIOCopyableUrls( const Meta::TrackList &tracks );
@@ -41,7 +41,6 @@ class AMAROK_EXPORT ServiceCollectionLocation : public CollectionLocation
         virtual QString prettyLocation() const;
         virtual bool isWritable() const;
         virtual bool isOrganizable() const;
-        //virtual bool remove( const Meta::TrackPtr &track );
     private:
         ServiceCollection *m_collection; //parent collection
         bool m_removeSources;    //used by the destination to remember the value, needed in copyurlsToCollection

@@ -84,12 +84,15 @@ AudioCdCollection::~AudioCdCollection()
 
 
 KUrl
-AudioCdCollection::audiocdUrl( const QString & path ) const
+AudioCdCollection::audiocdUrl( const QString &path ) const
 {
-    if (m_device.isNull())
-        return KUrl( QString( "audiocd:/" + path ) );
-    else
-        return KUrl( QString( "audiocd:/%1?device=%2" ).arg( path ).arg( m_device ) );
+    KUrl url("audiocd:/");
+    url.addPath( path );
+
+    if( !m_device.isEmpty() )
+        url.addQueryItem( "device", m_device );
+
+    return url;
 }
 
 
@@ -288,7 +291,7 @@ AudioCdCollection::infoFetchComplete( KJob *job )
                     trackPtr->setArtist( artistPtr );
                 else
                 {
-                    albumPtr->setIsCompilation( true );
+                    albumPtr->setCompilation( true );
 
                     Meta::AudioCdArtistPtr trackArtistPtr = Meta::AudioCdArtistPtr( new Meta::AudioCdArtist( trackArtist ) );
                     trackArtistPtr->addTrack( trackPtr );
@@ -404,7 +407,7 @@ AudioCdCollection::setEncodingFormat( int format ) const
 }
 
 CollectionLocation *
-AudioCdCollection::location() const
+AudioCdCollection::location()
 {
     return new AudioCdCollectionLocation( this );
 }
@@ -572,7 +575,7 @@ AudioCdCollection::updateProxyTracks()
     foreach( const KUrl &url, m_proxyMap.keys() )
     {
 
-        const QString &urlString = url.url().remove( "audiocd:/" );
+        QString urlString = url.url().remove( "audiocd:/" );
         const QStringList &parts = urlString.split( '/' );
 
         if( parts.count() != 2 )

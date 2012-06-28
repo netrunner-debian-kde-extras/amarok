@@ -37,10 +37,21 @@ public:
 
     static int expectedDatabaseVersion();
 
+    /**
+     * Return true if the current database schema is outdated or non-existent and needs to
+     * be updated using to update() method.
+     */
     bool needsUpdate() const;
 
-    /** Updates the database to adminValue( "DB_VERSION" ).
-     *  @returns true if a update was performed.
+    /**
+     * Return true if database schema already exists in the database. When this method
+     * returns false, needsUpdate() returns true.
+     */
+    bool schemaExists() const;
+
+    /**
+     * Updates the database to @see expectedDatabaseVersion()
+     * @returns true if a update was performed, false otherwise
      */
     bool update();
 
@@ -56,6 +67,7 @@ public:
     void upgradeVersion10to11();
     void upgradeVersion11to12();
     void upgradeVersion12to13();
+    void upgradeVersion13to14();
 
     /** Checks the given table for redundant entries.
      *  Table can be artist,album,genre,composer,urls or year

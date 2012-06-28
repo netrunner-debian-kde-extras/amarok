@@ -20,12 +20,19 @@
 #define AMAROK_META_FILE_P_H
 
 #include "amarokconfig.h"
+#include "core/collections/Collection.h"
 #include "core/support/Debug.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
 #include "shared/MetaReplayGain.h"
 #include "shared/MetaTagLib.h"
 #include "core/statistics/StatisticsProvider.h"
+#include "core-impl/collections/support/jobs/WriteTagsJob.h"
+#include "core-impl/collections/support/ArtistHelper.h"
+#include "core-impl/capabilities/AlbumActionsCapability.h"
+#include "covermanager/CoverCache.h"
+
+#include <ThreadWeaver/Weaver>
 
 #include <QDateTime>
 #include <QFile>
@@ -111,8 +118,8 @@ public:
     Meta::YearPtr year;
     Statistics::StatisticsProvider *provider;
     QWeakPointer<Capabilities::LastfmReadLabelCapability> readLabelCapability;
+    QWeakPointer<Collections::Collection> collection;
 
-    void readMetaData();
     Meta::FieldHash changes;
 
     void writeMetaData()
@@ -123,7 +130,15 @@ public:
         readMetaData();
     }
 
+    void notifyObservers()
+    {
+        track->notifyObservers();
+    }
+
     MetaData m_data;
+
+public slots:
+    void readMetaData();
 
 private:
     TagLib::FileRef getFileRef();
@@ -205,10 +220,9 @@ void Track::Private::readMetaData()
         m_data.title = url.fileName();
     }
 
-//    Disabled because of BUG 281283
-//    if( m_data.artist.isEmpty() && !m_data.albumArtist.isEmpty() )
-//        m_data.artist = m_data.albumArtist;
-
+    // try to guess best album artist (even if non-empty, part of compilation detection)
+    m_data.albumArtist = ArtistHelper::bestGuessAlbumArtist( m_data.albumArtist,
+        m_data.artist, m_data.genre, m_data.composer );
 }
 
 // internal helper classes
@@ -250,9 +264,33 @@ public:
         , d( dptr )
     {}
 
+    bool hasCapabilityInterface( Capabilities::Capability::Type type ) const
+    {
+        switch( type )
+        {
+            case Capabilities::Capability::Actions:
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type )
+    {
+        switch( type )
+        {
+            case Capabilities::Capability::Actions:
+                return new Capabilities::AlbumActionsCapability( Meta::AlbumPtr( this ) );
+            default:
+                return 0;
+        }
+    }
+
     bool isCompilation() const
     {
-        return false;
+        /* non-compilation albums with no album artists may be hidden in collection
+         * browser if certain modes are used, so force compilation in this case */
+        return !hasAlbumArtist();
     }
 
     bool hasAlbumArtist() const
@@ -262,7 +300,12 @@ public:
 
     Meta::ArtistPtr albumArtist() const
     {
-        return d.data()->albumArtist;
+        /* only return album artist if it would be non-empty, some Amarok parts do not
+         * call hasAlbumArtist() prior to calling albumArtist() and it is better to be
+         * consistent with other Meta::Track implementations */
+        if( hasAlbumArtist() )
+            return d.data()->albumArtist;
+        return Meta::ArtistPtr();
     }
 
     Meta::TrackList tracks()
@@ -279,6 +322,58 @@ public:
         }
         else
             return QString();
+    }
+
+    bool hasImage( int /* size */ = 0 ) const
+    {
+        if( d && d.data()->m_data.embeddedImage )
+            return true;
+        return false;
+    }
+
+    QImage image( int size = 0 ) const
+    {
+        QImage image;
+        if( d && d.data()->m_data.embeddedImage )
+        {
+            image = Meta::Tag::embeddedCover( d.data()->url.toLocalFile() );
+        }
+
+        if( image.isNull() || size <= 0 /* do not scale */ )
+            return image;
+        return image.scaled( size, size, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+    }
+
+    bool canUpdateImage() const
+    {
+        return d; // true if underlying track is not null
+    }
+
+    void setImage( const QImage &image )
+    {
+        if( !d )
+            return;
+
+        Meta::FieldHash fields;
+        fields.insert( Meta::valImage, image );
+        WriteTagsJob *job = new WriteTagsJob( d.data()->url.toLocalFile(), fields );
+        QObject::connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
+        ThreadWeaver::Weaver::instance()->enqueue( job );
+        if( d.data()->m_data.embeddedImage == image.isNull() )
+            // we need to toggle the embeddedImage switch in this case
+            QObject::connect( job, SIGNAL(done(ThreadWeaver::Job*)), d.data(), SLOT(readMetaData()) );
+
+        CoverCache::invalidateAlbum( this );
+        notifyObservers();
+        // following call calls Track's notifyObservers. This is needed because for example
+        // UmsCollection justifiably listens only to Track's metadataChanged() to update
+        // its MemoryCollection maps
+        d.data()->notifyObservers();
+    }
+
+    void removeImage()
+    {
+        setImage( QImage() );
     }
 
     bool operator==( const Meta::Album &other ) const {

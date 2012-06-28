@@ -67,6 +67,19 @@ Context::AppletToolbar::~AppletToolbar()
 }
 
 void
+
+Context::AppletToolbar::setContainment( Containment * containment )
+{
+    m_cont = containment;
+}
+
+Context::Containment *
+Context::AppletToolbar::containment() const
+{
+    return m_cont;
+}
+
+void
 Context::AppletToolbar::resizeEvent( QGraphicsSceneResizeEvent * event )
 {
     debug() << "setting layout to" << QRectF( QPointF( 0, 0 ), event->newSize() );

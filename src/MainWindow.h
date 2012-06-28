@@ -136,9 +136,11 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
 
         void exportPlaylist() const;
         void slotShowActiveTrack() const;
+        void slotEditTrackInfo() const;
         void slotShowBookmarkManager() const;
         void slotShowEqualizer() const;
         void slotShowCoverManager() const;
+        void slotShowDiagnosticsDialog() const;
         void slotShowMenuBar();
         void slotPlayMedia();
         void slotAddLocation( bool directPlay = false );

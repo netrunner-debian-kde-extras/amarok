@@ -86,6 +86,7 @@ AmazonItemTreeView::contextMenuEvent( QContextMenuEvent *event )
     }
 
     actions.append( createAddToCartAction() );
+    actions.append( createDirectCheckoutAction() );
 
     menu.exec( actions, event->globalPos() );
     event->accept();
@@ -178,8 +179,7 @@ AmazonItemTreeView::startDrag( Qt::DropActions supportedActions )
         if( amazonModel->isAlbum( indices.at( 0 ) ) )
         {
             QAction *detailsAction = createDetailsAction();
-            // TODO: add correct icon here
-            // detailsAction->setProperty( "popupdropper_svg_id", "load" );
+            detailsAction->setProperty( "popupdropper_svg_id", "loading" );
             m_pd->addItem( The::popupDropperFactory()->createItem( detailsAction ) );
         }
         else // track
@@ -189,12 +189,17 @@ AmazonItemTreeView::startDrag( Qt::DropActions supportedActions )
             m_pd->addItem( The::popupDropperFactory()->createItem( addToPlaylistAction ) );
 
             QAction *searchForAlbumAction = createSearchForAlbumAction();
-            // TODO: add correct icon here
-            // addToPlaylistAction->setProperty( "popupdropper_svg_id", "media-optical-amarok" );
+            addToPlaylistAction->setProperty( "popupdropper_svg_id", "collection" );
             m_pd->addItem( The::popupDropperFactory()->createItem( searchForAlbumAction ) );
         }
 
-        m_pd->addItem( The::popupDropperFactory()->createItem( createAddToCartAction() ) );
+        QAction *addToCartAction = createAddToCartAction();
+        addToCartAction->setProperty( "popupdropper_svg_id", "cart_in" );
+        m_pd->addItem( The::popupDropperFactory()->createItem( addToCartAction ) );
+
+        QAction *directCheckoutAction = createDirectCheckoutAction();
+        directCheckoutAction->setProperty( "popupdropper_svg_id", "download" );
+        m_pd->addItem( The::popupDropperFactory()->createItem( directCheckoutAction ) );
 
         m_pd->show();
     }
@@ -291,6 +296,15 @@ AmazonItemTreeView::createDetailsAction()
     connect( getDetailsAction, SIGNAL( triggered() ), this, SLOT( itemActivatedAction() ) );
 
     return getDetailsAction;
+}
+
+QAction*
+AmazonItemTreeView::createDirectCheckoutAction()
+{
+    QAction *directCheckoutAction = new QAction( KIcon( "download-amarok" ), QString( i18n( "Direct Checkout" ) ), this );
+    connect( directCheckoutAction, SIGNAL( triggered() ), this, SIGNAL( directCheckout() ) );
+
+    return directCheckoutAction;
 }
 
 QAction*

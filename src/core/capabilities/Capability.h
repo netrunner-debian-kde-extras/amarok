@@ -50,7 +50,7 @@ namespace Capabilities
                         , SourceInfo = 8
                         // not longer used
                         , StreamInfo = 10
-                        , Updatable = 11
+                        // not longer used
                         , Importable = 12
                         // not longer used
                         , BookmarkThis = 14
@@ -64,6 +64,7 @@ namespace Capabilities
                         , FindInSource = 22
                         , CollectionImport = 23
                         , CollectionScan = 24
+                        , Transcode = 25
                       };
 
             virtual ~Capability();

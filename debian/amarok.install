@@ -23,7 +23,6 @@ usr/lib/kde4/amarok_context_applet_similarArtists.so
 usr/lib/kde4/amarok_context_applet_spectrum_analyzer.so
 usr/lib/kde4/amarok_context_applet_tabs.so
 usr/lib/kde4/amarok_context_applet_upcomingEvents.so
-usr/lib/kde4/amarok_context_applet_videoclip.so
 usr/lib/kde4/amarok_context_applet_wikipedia.so
 usr/lib/kde4/amarok_data_engine_current.so
 usr/lib/kde4/amarok_data_engine_info.so
@@ -34,7 +33,6 @@ usr/lib/kde4/amarok_data_engine_similarArtists.so
 usr/lib/kde4/amarok_data_engine_spectrum_analyzer.so
 usr/lib/kde4/amarok_data_engine_tabs.so
 usr/lib/kde4/amarok_data_engine_upcomingEvents.so
-usr/lib/kde4/amarok_data_engine_videoclip.so
 usr/lib/kde4/amarok_data_engine_wikipedia.so
 usr/lib/kde4/amarok_device_massstorage.so
 usr/lib/kde4/amarok_device_nfs.so

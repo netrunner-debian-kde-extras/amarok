@@ -19,15 +19,15 @@ msgstr ""
 
 #: amarokpkg.cpp:40
 msgid "Install, list, remove Amarok applets"
-msgstr ""
+msgstr "Suiteáil, taispeáin, bain feidhmchláiríní Amarok"
 
 #: amarokpkg.cpp:76
 msgid "Amarok Applet Manager"
-msgstr ""
+msgstr "Bainisteoir Feidhmchláiríní Amarok"
 
 #: amarokpkg.cpp:78
 msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-msgstr ""
+msgstr "© 2008, Aaron Seigo, © 2009, Leo Franchi"
 
 #: amarokpkg.cpp:79
 msgid "Aaron Seigo"
@@ -48,25 +48,27 @@ msgstr "Forbróir"
 #: amarokpkg.cpp:92
 msgid "For install or remove, operates on applets installed for all users."
 msgstr ""
+"Le linn suiteála nó bainte, oibríonn sé ar fheidhmchláiríní atá suiteáilte "
+"ar son gach úsáideoir."
 
 #: amarokpkg.cpp:95
 msgctxt "Do not translate <path>"
 msgid "Install the applet at <path>"
-msgstr ""
+msgstr "Suiteáil an feidhmchláirín ag <path>"
 
 #: amarokpkg.cpp:97
 msgctxt "Do not translate <path>"
 msgid "Upgrade the applet at <path>"
-msgstr ""
+msgstr "Nuashonraigh an feidhmchláirín ag <path>"
 
 #: amarokpkg.cpp:99
 msgid "List installed applets"
-msgstr ""
+msgstr "Taispeáin na feidhmchláiríní suiteáilte"
 
 #: amarokpkg.cpp:101
 msgctxt "Do not translate <name>"
 msgid "Remove the applet named <name>"
-msgstr ""
+msgstr "Bain an feidhmchláirín darb ainm <name>"
 
 #: amarokpkg.cpp:103
 msgid ""
@@ -114,9 +116,9 @@ msgstr ""
 #: rc.cpp:1
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr ""
+msgstr "Kevin Scannell"
 
 #: rc.cpp:2
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
-msgstr ""
+msgstr "kscanne@gmail.com"

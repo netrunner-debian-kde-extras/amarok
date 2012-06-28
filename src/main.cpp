@@ -42,7 +42,7 @@ int main( int argc, char *argv[] )
         "amarok", 0,
         ki18n( "Amarok" ), AMAROK_VERSION,
         ki18n( "The audio player for KDE" ), KAboutData::License_GPL,
-        ki18n( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2011, The Amarok Development Squad" ),
+        ki18n( "(C) 2002-2003, Mark Kretschmann\n(C) 2003-2012, The Amarok Development Squad" ),
         ki18n( "IRC:\nirc.freenode.net - #amarok, #amarok.de, #amarok.es, #amarok.fr\n\nFeedback:\namarok@kde.org\n\n(Build Date: %1)" ).subs( __DATE__ ),
         ( "http://amarok.kde.org" ) );
 
@@ -143,6 +143,8 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( "ljubomir", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Lucas Gomes"), ki18n("Developer (MaskMaster)"), "x8lucas8x@gmail.com" );
         ocsData.addCredit( "x8lucas8x", aboutData.credits().last() );
+    aboutData.addCredit( ki18n("Matěj Laitl"), ki18n("iPod collection rewrite & more"), "matej@laitl.cz" );
+        ocsData.addCredit( "strohel", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Mathias Panzenböck"), ki18n("Podcast improvements"), "grosser.meister.morti@gmx.net" );
         ocsData.addCredit( "panzi", aboutData.credits().last() );
     aboutData.addCredit( ki18n("Max Howell"), ki18n("Developer, Vision"), "max.howell@methylblue.com" );
@@ -247,12 +249,11 @@ int main( int argc, char *argv[] )
         ocsData.addCredit( QString(), aboutData.credits().last() );
 
     //Donors:
+    //Last update: 2011/12/08, post Rocktober 2011
     ocsData.addDonor( "drew826", KAboutPerson( ki18n( "Andrew Browning" ) ) );
     ocsData.addDonor( QString(), KAboutPerson( ki18n( "David Roth" ) ) );
     ocsData.addDonor( QString(), KAboutPerson( ki18n( "Dr. Tilmann Bubeck" ) ) );
     ocsData.addDonor( "valoriez", KAboutPerson( ki18n( "Valorie Zimmerman" ) ) );
-
-    //Last update: 2011/12/08, post Rocktober 2011
 
     KCmdLineArgs::reset();
     KCmdLineArgs::init( argc, argv, &aboutData ); //calls KCmdLineArgs::addStdCmdLineOptions()
@@ -263,7 +264,9 @@ int main( int argc, char *argv[] )
     KCmdLineArgs* const args = KCmdLineArgs::parsedArgs();
 
     KUniqueApplication::StartFlag startFlag;
-    startFlag = args->isSet( "multipleinstances" ) ? KUniqueApplication::NonUniqueInstance : KUniqueApplication::StartFlag( 0 );
+    startFlag = args->isSet( "multipleinstances" )
+                ? KUniqueApplication::NonUniqueInstance
+                : KUniqueApplication::StartFlag( 0 );
 
     const bool debugColorsEnabled = !args->isSet( "coloroff" );
     const bool debugEnabled = args->isSet( "debug" );

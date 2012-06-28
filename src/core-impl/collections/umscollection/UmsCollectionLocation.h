@@ -30,12 +30,10 @@ class UmsTransferJob;
 
 class UmsCollectionLocation : public Collections::CollectionLocation
 {
-        Q_OBJECT
+    Q_OBJECT
     public:
-        UmsCollectionLocation( const UmsCollection *umsCollection );
+        UmsCollectionLocation( UmsCollection *umsCollection );
         ~UmsCollectionLocation();
-
-        const UmsCollection *umsCollection() const { return m_umsCollection; }
 
         /* CollectionLocation methods */
         virtual QString prettyLocation() const;
@@ -43,30 +41,36 @@ class UmsCollectionLocation : public Collections::CollectionLocation
         virtual bool isWritable() const;
         virtual bool isOrganizable() const;
 
-        virtual bool remove( const Meta::TrackPtr &track );
-        virtual bool insert( const Meta::TrackPtr &track, const QString &url );
-
         virtual void copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &sources,
-            const Transcoding::Configuration &configuration = Transcoding::Configuration() );
+                                           const Transcoding::Configuration &configuration );
         virtual void removeUrlsFromCollection( const Meta::TrackList &sources );
 
+    protected slots:
+        void slotRemoveOperationFinished(); // hides intentionally parent methods
+
+    private slots:
+        /**
+         * Needed for removal of source tracks during move operation
+         */
+        void slotTrackTransferred( const KUrl &sourceTrackUrl );
+
     private:
-        const UmsCollection *m_umsCollection;
+        UmsCollection *m_umsCollection;
+        QHash<KUrl, Meta::TrackPtr> m_sourceUrlToTrackMap;
 };
 
 class UmsTransferJob : public KCompositeJob
 {
     Q_OBJECT
     public:
-        UmsTransferJob( UmsCollectionLocation *location );
+        UmsTransferJob( UmsCollectionLocation *location, const Transcoding::Configuration &configuration );
 
         virtual void addCopy( const KUrl &from, const KUrl &to );
         virtual void start();
 
     signals:
+        void sourceFileTransferDone( KUrl source );
         void fileTransferDone( KUrl destination );
-        void percent( KJob *job, unsigned long percent );
-        void infoMessage( KJob *job, QString plain, QString rich );
 
     public slots:
         void slotCancel();
@@ -80,10 +84,12 @@ class UmsTransferJob : public KCompositeJob
 
     private:
         UmsCollectionLocation *m_location;
-        bool m_cancled;
+        Transcoding::Configuration m_transcodingConfiguration;
+        bool m_abort;
 
         typedef QPair<KUrl,KUrl> KUrlPair;
         QList<KUrlPair> m_transferList;
+        int m_totalTracks; // total number of tracks in whole transfer
 };
 
 #endif // UMSCOLLECTIONLOCATION_H

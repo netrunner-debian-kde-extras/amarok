@@ -19,7 +19,7 @@ check_library_exists(dl dlopen "" LIBDL_FOUND)
 # --------- taglib --------
 # building without taglib is stupid, but it's possible
 
-set(TAGLIB_MIN_VERSION "1.6")
+set(TAGLIB_MIN_VERSION "1.7")
 find_package(Taglib)
 
 if(TAGLIB_FOUND)
@@ -114,6 +114,10 @@ if( WITH_PLAYER )
     find_package(QCA2)
     macro_log_feature( QCA2_FOUND "qca2" "Qt Cryptographic Architecture" "http://delta.affinix.com/qca/" FALSE "" "" )
 
+    # OpenGL is required for the spectrum analyzer
+    find_package(OpenGL)
+    macro_log_feature( OPENGL_FOUND "OpenGL" "Support for hardware acceleration (enables the Spectrum Analyzer)" FALSE "" "" )
+
     # QJson is required for the PlaydarCollection
     macro_optional_find_package(QJSON)
     macro_log_feature( QJSON_FOUND "QJson" "Qt JSON Parser used for the Playdar Collection" "http://qjson.sourceforge.net/" FALSE "" "" )
@@ -133,7 +137,7 @@ if( WITH_PLAYER )
         macro_log_feature( LIBOFA_FOUND "libofa" "Enable MusicDNS service" "http://code.google.com/p/musicip-libofa/" FALSE "0.9.x" "" )
         macro_bool_to_01( LIBOFA_FOUND HAVE_LIBOFA )
     endif( FFMPEG_FOUND )
-    
+
     ##gpodder Service
     macro_optional_find_package( Mygpo-qt )
     macro_log_feature( LIBMYGPO_QT_FOUND "libmygpo-qt" "Enable gpodder.net service" "http://wiki.gpodder.org/wiki/Libmygpo-qt" FALSE "1.0.5" "" )
@@ -141,12 +145,13 @@ if( WITH_PLAYER )
 
     if( WITH_IPOD )
         find_package(Ipod)
+        SET(IPOD_MIN_VERSION "0.8.2")
         if( IPOD_FOUND AND NOT WIN32 )
-            macro_ensure_version("0.7.0" ${IPOD_VERSION} IPOD_FOUND)
+            macro_ensure_version(${IPOD_MIN_VERSION} ${IPOD_VERSION} IPOD_FOUND)
         endif( IPOD_FOUND AND NOT WIN32 )
-        macro_log_feature( IPOD_FOUND "libgpod" "Support Apple iPod audio devices" "http://sourceforge.net/projects/gtkpod/" FALSE "0.7.0" "" )
-	macro_optional_find_package(GDKPixBuf)
-	macro_log_feature( GDKPIXBUF_FOUND "GDK-PixBuf" "Support for artwork on iPod audio devices via GDK-PixBuf" "http://developer.gnome.org/arch/imaging/gdkpixbuf.html" FALSE "2.0.x" "" )
+        macro_log_feature( IPOD_FOUND "libgpod" "Support Apple iPod/iPad/iPhone audio devices" "http://sourceforge.net/projects/gtkpod/" FALSE ${IPOD_MIN_VERSION} "" )
+        macro_optional_find_package(GDKPixBuf)
+        macro_log_feature( GDKPIXBUF_FOUND "GDK-PixBuf" "Support for artwork on iPod audio devices via GDK-PixBuf" "http://developer.gnome.org/arch/imaging/gdkpixbuf.html" FALSE "2.0.x" "" )
     endif( WITH_IPOD )
 
     macro_optional_find_package(Mtp)
@@ -206,6 +211,9 @@ if( WITH_PLAYER )
 
     add_subdirectory( src )
     add_subdirectory( external )
+
+    # Also display taglib in the feature log
+    macro_log_feature( TAGLIB_FOUND "taglib" "Support for Audio metadata." "http://developer.kde.org/~wheeler/taglib.html" FALSE "" "STRONGLY RECOMMENDED" )
 
     macro_display_feature_log()
 

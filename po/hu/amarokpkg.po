@@ -3,20 +3,20 @@
 # This file is distributed under the same license as the Amarok package.
 #
 # Arpad Biro <biro.arpad gmail>, 2009, 2010.
-# Kristóf Kiszel <ulysses@kubuntu.org>, 2010.
+# Kristóf Kiszel <ulysses@kubuntu.org>, 2010, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarokpkg\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2011-08-02 04:52+0200\n"
-"PO-Revision-Date: 2010-09-26 21:12+0200\n"
+"PO-Revision-Date: 2012-01-22 14:37+0100\n"
 "Last-Translator: Kristóf Kiszel <ulysses@kubuntu.org>\n"
-"Language-Team: Magyar <kde-l10n-hu@kde.org>\n"
+"Language-Team: Hungarian <kde-l10n-hu@kde.org>\n"
 "Language: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Lokalize 1.0\n"
+"X-Generator: Lokalize 1.2\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 #: amarokpkg.cpp:40
@@ -29,7 +29,7 @@ msgstr "Kisalkalmazás-kezelő az Amarokhoz"
 
 #: amarokpkg.cpp:78
 msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
+msgstr "© Aaron Seigo, 2008. © Leo Franchi, 2009."
 
 #: amarokpkg.cpp:79
 msgid "Aaron Seigo"

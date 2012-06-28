@@ -26,6 +26,7 @@
 #include <core/support/Debug.h>
 #include <core/meta/support/MetaUtility.h>
 #include <shared/MetaTagLib.h> // for getting an embedded cover
+#include "core-impl/collections/support/jobs/WriteTagsJob.h"
 #include <core-impl/collections/support/ArtistHelper.h>
 #include "SqlCollection.h"
 #include "SqlQueryMaker.h"
@@ -48,6 +49,7 @@
 #include <KCodecs>
 #include <KLocale>
 #include <KSharedPtr>
+#include <ThreadWeaver/Weaver>
 
 // additional constants
 namespace Meta
@@ -1153,8 +1155,8 @@ SqlTrack::collection() const
 QString
 SqlTrack::cachedLyrics() const
 {
-    QString query = QString( "SELECT lyrics FROM lyrics WHERE url = '%1'" )
-                        .arg( m_collection->sqlStorage()->escape( m_rpath ) );
+    /* We don't cache the string as it may be potentially very long */
+    QString query = QString( "SELECT lyrics FROM lyrics WHERE url = %1" ).arg( m_urlId );
     QStringList result = m_collection->sqlStorage()->query( query );
     if( result.isEmpty() )
         return QString();
@@ -1164,26 +1166,23 @@ SqlTrack::cachedLyrics() const
 void
 SqlTrack::setCachedLyrics( const QString &lyrics )
 {
-    QString query = QString( "SELECT count(*) FROM lyrics WHERE url = '%1'")
-                        .arg( m_collection->sqlStorage()->escape(m_rpath) );
-
+    QString query = QString( "SELECT count(*) FROM lyrics WHERE url = %1").arg( m_urlId );
     const QStringList queryResult = m_collection->sqlStorage()->query( query );
-
     if( queryResult.isEmpty() )
-        return;
+        return;  // error in the query?
 
     if( queryResult.first().toInt() == 0 )
     {
-        QString insert = QString( "INSERT INTO lyrics( url, lyrics ) VALUES ( '%1', '%2' );" )
-                            .arg( m_collection->sqlStorage()->escape( m_rpath ),
+        QString insert = QString( "INSERT INTO lyrics( url, lyrics ) VALUES ( %1, '%2' )" )
+                            .arg( QString::number( m_urlId ),
                                   m_collection->sqlStorage()->escape( lyrics ) );
         m_collection->sqlStorage()->insert( insert, "lyrics" );
     }
     else
     {
-        QString update = QString( "UPDATE lyrics SET lyrics = '%1' WHERE url = '%2';" )
+        QString update = QString( "UPDATE lyrics SET lyrics = '%1' WHERE url = %2" )
                             .arg( m_collection->sqlStorage()->escape( lyrics ),
-                                  m_collection->sqlStorage()->escape( m_rpath ) );
+                                  QString::number( m_urlId ) );
         m_collection->sqlStorage()->query( update );
     }
 
@@ -1631,8 +1630,8 @@ SqlAlbum::setImage( const QImage &image )
     {
         // - scale to cover to a sensible size
         QImage scaledImage( image );
-        if( scaledImage.width() > 200 || scaledImage.height() > 200 )
-            scaledImage = scaledImage.scaled( 200, 200, Qt::KeepAspectRatio, Qt::SmoothTransformation );
+        if( scaledImage.width() > AmarokConfig::writeBackCoverDimensions() || scaledImage.height() > AmarokConfig::writeBackCoverDimensions() )
+            scaledImage = scaledImage.scaled( AmarokConfig::writeBackCoverDimensions(), AmarokConfig::writeBackCoverDimensions(), Qt::KeepAspectRatio, Qt::SmoothTransformation );
 
         // - set the image for each track
         Meta::TrackList myTracks = tracks();
@@ -1641,7 +1640,13 @@ SqlAlbum::setImage( const QImage &image )
             // the song needs to be at least one mb big or we won't set an image
             // that means that the new image will increase the file size by less than 2%
             if( metaTrack->filesize() > 1024l * 1024l )
-                Meta::Tag::setEmbeddedCover( metaTrack->playableUrl().path(), scaledImage );
+            {
+                Meta::FieldHash fields;
+                fields.insert( Meta::valImage, scaledImage );
+                WriteTagsJob *job = new WriteTagsJob( metaTrack->playableUrl().path(), fields );
+                QObject::connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
+                ThreadWeaver::Weaver::instance()->enqueue( job );
+            }
             // note: we might want to update the track file size after writing the image
         }
     }
@@ -1893,6 +1898,14 @@ SqlAlbum::setImage( const QString &path )
     }
 }
 
+/** Set the compilation flag.
+ *  Actually it does not cange this album but instead moves
+ *  the tracks to other albums (e.g. one with the same name which is a
+ *  compilation)
+ *  If the compilation flag is set to "false" then all songs
+ *  with different artists will be moved to other albums, possibly even
+ *  creating them.
+ */
 void
 SqlAlbum::setCompilation( bool compilation )
 {

@@ -21,6 +21,9 @@
 
 #include <KProcess>
 
+#include <QFile>
+#include <QTimer>
+
 namespace Transcoding
 {
 
@@ -34,7 +37,6 @@ Job::Job( const KUrl &src,
     , m_configuration( configuration )
     , m_duration( -1 )
 {
-    DEBUG_BLOCK
     init();
 }
 
@@ -47,10 +49,6 @@ Job::Job( KUrl &src,
     , m_configuration( configuration )
     , m_duration( -1 )
 {
-    DEBUG_BLOCK
-    debug() << "Transcoding::Job ctor!!";
-    debug()<< src;
-    debug()<< src.path();
     QString fileExtension = Amarok::Components::transcodingController()->format( configuration.encoder() )->fileExtension();
     if( !( fileExtension.isEmpty() ) )
     {
@@ -65,27 +63,24 @@ Job::Job( KUrl &src,
 void
 Job::init()
 {
-    DEBUG_BLOCK
     m_transcoder = new KProcess( this );
 
     m_transcoder->setOutputChannelMode( KProcess::MergedChannels );
 
     //First the executable...
     m_transcoder->setProgram( "ffmpeg" );
+    //... prevent ffmpeg from being interactive when destination file already exists. We
+    //    would use -n to exit immediatelly, but libav's ffmpeg doesn't support it, so we
+    //    check for destination file existence manually and pass -y (overwrite) to avoid
+    //    race condition
+    *m_transcoder << QString( "-y" );
     //... then we'd have the infile configuration followed by "-i" and the infile path...
     *m_transcoder << QString( "-i" )
                   << m_src.path();
     //... and finally, outfile configuration followed by the outfile path.
     const Transcoding::Format *format = Amarok::Components::transcodingController()->format( m_configuration.encoder() );
     *m_transcoder << format->ffmpegParameters( m_configuration )
-                  << QString( "-map_meta_data" )
-                  << QString( m_dest.path() + ":" + m_src.path() )
                   << m_dest.path();
-
-    //debug spam follows
-    debug() << "foo";
-    debug() << format->ffmpegParameters( m_configuration );
-    debug() << QString( "FFMPEG call is " ) << m_transcoder->program();
 
     connect( m_transcoder, SIGNAL( readyRead() ),
              this, SLOT( processOutput() ) );
@@ -97,37 +92,41 @@ void
 Job::start()
 {
     DEBUG_BLOCK
-    debug()<< "starting ffmpeg";
-    debug()<< "call is " << m_transcoder->program();
-    m_transcoder->start();
-    debug() << m_transcoder->readAllStandardOutput();
-    debug()<< "ffmpeg started";
+    if( QFile::exists( m_dest.path() ) )
+    {
+        debug() << "Not starting ffmpeg encoder, file already exists:" << m_dest.path();
+        QTimer::singleShot( 0, this, SLOT(transcoderDone()) );
+    }
+    else
+    {
+        QString commandline = QString( "'" ) + m_transcoder->program().join("' '") + QString( "'" );
+        debug()<< "Calling" << commandline.toLocal8Bit().constData();
+        m_transcoder->start();
+    }
 }
 
 void
 Job::transcoderDone( int exitCode, QProcess::ExitStatus exitStatus ) //SLOT
 {
-    DEBUG_BLOCK
-    Q_UNUSED( exitStatus );
-    debug() << m_transcoder->readAll();
-    if( !exitCode )
-    {
+    if( exitCode == 0 && exitStatus == QProcess::NormalExit )
         debug() << "YAY, transcoding done!";
-        emitResult();
-    }
     else
     {
         debug() << "NAY, transcoding fail!";
-        emitResult();
+        setError( KJob::UserDefinedError );
+        setErrorText( QString( "Calling `" ) + m_transcoder->program().join(" ") + "` failed" );
     }
+    emitResult();
 }
 
 void
 Job::processOutput()
 {
-    QString output = m_transcoder->readAllStandardOutput().data();
+    QString output = QString::fromLocal8Bit( m_transcoder->readAllStandardOutput().data() );
     if( output.simplified().isEmpty() )
         return;
+    foreach( const QString &line, output.split( QChar( '\n' ) ) )
+        debug() << "ffmpeg:" << line.toLocal8Bit().constData();
 
     if( m_duration == -1 )
     {

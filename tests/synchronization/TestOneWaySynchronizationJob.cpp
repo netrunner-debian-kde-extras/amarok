@@ -49,20 +49,10 @@ public:
 
     QString prettyLocation() const { return "foo"; }
     bool isWritable() const { return true; }
-    bool remove( const Meta::TrackPtr &track )
-    {
-        coll->mc->acquireWriteLock();
-        //theoretically we should clean up the other maps as well...
-        TrackMap map = coll->mc->trackMap();
-        map.remove( track->uidUrl() );
-        coll->mc->setTrackMap( map );
-        coll->mc->releaseLock();
-        return true;
-    }
     void copyUrlsToCollection(const QMap<Meta::TrackPtr, KUrl> &sources, const Transcoding::Configuration& conf)
     {
         Q_UNUSED( conf )
-        qDebug() << "adding " << sources.count() << " tracks to " << coll->collectionId();
+        // qDebug() << "adding " << sources.count() << " tracks to " << coll->collectionId();
         trackCopyCount = sources.count();
         foreach( const Meta::TrackPtr &track, sources.keys() )
         {
@@ -76,10 +66,10 @@ class MyCollectionTestImpl : public CollectionTestImpl
 public:
     MyCollectionTestImpl( const QString &id ) : CollectionTestImpl( id ) {}
 
-    CollectionLocation* location() const
+    CollectionLocation* location()
     {
         MyCollectionLocation *r = new MyCollectionLocation();
-        r->coll = const_cast<MyCollectionTestImpl*>( this );
+        r->coll = this;
         return r;
     }
 };
@@ -100,7 +90,7 @@ void addMockTrack( Collections::CollectionTestImpl *coll, const QString &trackNa
     EXPECT_CALL( *track, year() ).Times( AnyNumber() ).WillRepeatedly( Return( Meta::YearPtr() ) );
     coll->mc->addTrack( trackPtr );
 
-    Meta::AlbumPtr albumPtr = coll->mc->albumMap().value( albumName );
+    Meta::AlbumPtr albumPtr = coll->mc->albumMap().value( albumName, QString() /* no album artist */ );
     Meta::MockAlbum *album;
     Meta::TrackList albumTracks;
     if( albumPtr )
