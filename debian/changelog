@@ -6,6 +6,7 @@ amarok (2.6~beta1+75.g47e75df-0r1) UNRELEASED; urgency=low
     README.Debian. They are no longer relevant.
   * Drop libxine1-ffmpeg from amarok Suggests. It is no longer relevant as
     there is no Phonon Xine backend anymore.
+  * Update information in debian/not-installed.
 
  -- Modestas Vainius <modax@debian.org>  Fri, 29 Jun 2012 01:50:42 +0300
 
