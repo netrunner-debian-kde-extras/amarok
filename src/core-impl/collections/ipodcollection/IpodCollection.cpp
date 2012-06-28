@@ -40,6 +40,7 @@
 #include <solid/storageaccess.h>
 #include <ThreadWeaver/Weaver>
 
+#include <QTemporaryFile>
 #include <QWeakPointer>
 
 #include <gpod/itdb.h>
@@ -51,7 +52,7 @@ const QStringList IpodCollection::s_audioFileTypes = QStringList() << "mp3" << "
 const QStringList IpodCollection::s_videoFileTypes = QStringList() << "m4v" << "mov";
 const QStringList IpodCollection::s_audioVideoFileTypes = QStringList() << "mp4";
 
-IpodCollection::IpodCollection( const QDir &mountPoint )
+IpodCollection::IpodCollection( const QDir &mountPoint, const QString &uuid )
     : Collections::Collection()
     , m_configureDialog( 0 )
     , m_mc( new Collections::MemoryCollection() )
@@ -59,6 +60,7 @@ IpodCollection::IpodCollection( const QDir &mountPoint )
     , m_lastUpdated( 0 )
     , m_preventUnmountTempFile( 0 )
     , m_mountPoint( mountPoint.absolutePath() )
+    , m_uuid( uuid )
     , m_iphoneAutoMountpoint( 0 )
     , m_playlistProvider( 0 )
     , m_configureAction( 0 )
@@ -66,6 +68,8 @@ IpodCollection::IpodCollection( const QDir &mountPoint )
     , m_consolidateAction( 0 )
 {
     DEBUG_BLOCK
+    if( m_uuid.isEmpty() )
+        m_uuid = m_mountPoint;
 }
 
 IpodCollection::IpodCollection( const QString &uuid )
@@ -75,6 +79,7 @@ IpodCollection::IpodCollection( const QString &uuid )
     , m_itdb( 0 )
     , m_lastUpdated( 0 )
     , m_preventUnmountTempFile( 0 )
+    , m_uuid( uuid )
     , m_playlistProvider( 0 )
     , m_configureAction( 0 )
     , m_ejectAction( 0 )
@@ -84,6 +89,8 @@ IpodCollection::IpodCollection( const QString &uuid )
     // following constructor displays sorry message if it cannot mount iPhone:
     m_iphoneAutoMountpoint = new IphoneMountPoint( uuid );
     m_mountPoint = m_iphoneAutoMountpoint->mountPoint();
+    if( m_uuid.isEmpty() )
+        m_uuid = m_mountPoint;
 }
 
 bool IpodCollection::init()
@@ -123,6 +130,7 @@ bool IpodCollection::init()
     {
         // parse tracks in a thread in order not to block main thread
         IpodParseTracksJob *job = new IpodParseTracksJob( this );
+        m_parseTracksJob = job;
         connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
         ThreadWeaver::Weaver::instance()->enqueue( job );
     }
@@ -135,6 +143,8 @@ bool IpodCollection::init()
 IpodCollection::~IpodCollection()
 {
     DEBUG_BLOCK
+    The::playlistManager()->removeProvider( m_playlistProvider );
+
     // this is not racy: destructor should be called in a main thread, the timer fires in the
     // same thread
     if( m_writeDatabaseTimer.isActive() )
@@ -149,15 +159,12 @@ IpodCollection::~IpodCollection()
     /* because m_itdb takes ownership of the tracks added to it, we need to remove the
      * tracks from itdb before we delete it because in Amarok, IpodMeta::Track is the owner
      * of the track */
-    IpodDeviceHelper::unlinkTracksFromItdb( m_itdb );  // does nothing if m_itdb is null
+    IpodDeviceHelper::unlinkPlaylistsTracksFromItdb( m_itdb );  // does nothing if m_itdb is null
     itdb_free( m_itdb );  // does nothing if m_itdb is null
     m_itdb = 0;
 
     delete m_configureDialog;
     delete m_iphoneAutoMountpoint; // this can unmount iPhone and remove temporary dir
-
-    The::playlistManager()->removeProvider( m_playlistProvider );
-    delete m_playlistProvider;
 }
 
 bool
@@ -169,9 +176,8 @@ IpodCollection::possiblyContainsTrack( const KUrl &url ) const
 Meta::TrackPtr
 IpodCollection::trackForUrl( const KUrl &url )
 {
-    QString uidUrl = QString( "%1://%2" )
-                     .arg( s_uidUrlProtocol )
-                     .arg( url.toLocalFile() );
+    QString relativePath = url.toLocalFile().mid( m_mountPoint.size() + 1 );
+    QString uidUrl = QString( "%1/%2" ).arg( collectionId(), relativePath );
     return trackForUidUrl( uidUrl );
 }
 
@@ -233,9 +239,7 @@ IpodCollection::uidUrlProtocol() const
 QString
 IpodCollection::collectionId() const
 {
-    return QString( "%1://%2" )
-           .arg( s_uidUrlProtocol )
-           .arg( m_mountPoint );
+    return QString( "%1://%2" ).arg( s_uidUrlProtocol, m_uuid );
 }
 
 QString
@@ -336,39 +340,59 @@ IpodCollection::trackForUidUrl( const QString &uidUrl )
 void
 IpodCollection::slotDestroy()
 {
-    // this is not racy: destroy() is delivered to main thread, the timer fires in the
+    // guard against user hitting the button twice or hitting it while there is another
+    // write database job alreaddy running
+    if( m_writeDatabaseJob )
+    {
+        IpodWriteDatabaseJob *job = m_writeDatabaseJob.data();
+        // don't create duplicate connections:
+        disconnect( job, SIGNAL(destroyed(QObject*)), this, SLOT(slotRemove()) );
+        disconnect( job, SIGNAL(destroyed(QObject*)), this, SLOT(slotPerformTeardownAndRemove()) );
+        connect( job, SIGNAL(destroyed(QObject*)), SLOT(slotRemove()) );
+    }
+    // this is not racy: slotDestroy() is delivered to main thread, the timer fires in the
     // same thread
-    if( m_writeDatabaseTimer.isActive() )
+    else if( m_writeDatabaseTimer.isActive() )
     {
         // write database in a thread so that it need not be written in destructor
         m_writeDatabaseTimer.stop();
         IpodWriteDatabaseJob *job = new IpodWriteDatabaseJob( this );
-        connect( job, SIGNAL(done(ThreadWeaver::Job*)), SIGNAL(remove()) );
+        m_writeDatabaseJob = job;
         connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
+        connect( job, SIGNAL(destroyed(QObject*)), SLOT(slotRemove()) );
         ThreadWeaver::Weaver::instance()->enqueue( job );
     }
     else
-        emit remove();  // CollectionManager will call deleteLater()
+        slotRemove();
 }
 
 void
 IpodCollection::slotEject()
 {
-    // this is not racy: destroy() is delivered to main thread, the timer fires in the
-    // same thread
-    if( m_writeDatabaseTimer.isActive() )
+    // guard against user hitting the button twice or hitting it while there is another
+    // write database job alreaddy running
+    if( m_writeDatabaseJob )
     {
-        // write database now because iPod will be unmounted in destructor
+        IpodWriteDatabaseJob *job = m_writeDatabaseJob.data();
+        // don't create duplicate connections:
+        disconnect( job, SIGNAL(destroyed(QObject*)), this, SLOT(slotRemove()) );
+        disconnect( job, SIGNAL(destroyed(QObject*)), this, SLOT(slotPerformTeardownAndRemove()) );
+        connect( job, SIGNAL(destroyed(QObject*)), SLOT(slotPerformTeardownAndRemove()) );
+    }
+    // this is not racy: slotEject() is delivered to main thread, the timer fires in the
+    // same thread
+    else if( m_writeDatabaseTimer.isActive() )
+    {
+        // write database now because iPod will be already unmounted in destructor
         m_writeDatabaseTimer.stop();
         IpodWriteDatabaseJob *job = new IpodWriteDatabaseJob( this );
-        connect( job, SIGNAL(done(ThreadWeaver::Job*)), SLOT(slotPerformTeardownAndRemove()) );
+        m_writeDatabaseJob = job;
         connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
+        connect( job, SIGNAL(destroyed(QObject*)), SLOT(slotPerformTeardownAndRemove()) );
         ThreadWeaver::Weaver::instance()->enqueue( job );
     }
     else
-    {
         slotPerformTeardownAndRemove();
-    }
 }
 
 void
@@ -499,7 +523,14 @@ IpodCollection::slotStartWriteDatabaseTimer()
 
 void IpodCollection::slotInitiateDatabaseWrite()
 {
+    if( m_writeDatabaseJob )
+    {
+        warning() << __PRETTY_FUNCTION__ << "called while m_writeDatabaseJob still points"
+                  << "to an older job. Not doing anyhing.";
+        return;
+    }
     IpodWriteDatabaseJob *job = new IpodWriteDatabaseJob( this );
+    m_writeDatabaseJob = job;
     connect( job, SIGNAL(done(ThreadWeaver::Job*)), job, SLOT(deleteLater()) );
     ThreadWeaver::Weaver::instance()->enqueue( job );
 }
@@ -520,7 +551,23 @@ void IpodCollection::slotPerformTeardownAndRemove()
             ssa->teardown();
     }
 
-    emit remove(); // CollectionManager will call deleteLater()
+    slotRemove();
+}
+
+void IpodCollection::slotRemove()
+{
+    // this is not racy, we are in the main thread and parseTracksJob can be deleted only
+    // in the main thread
+    if( m_parseTracksJob )
+    {
+        // we need to wait until parseTracksJob finishes, because it acceses IpodCollection
+        // and IpodPlaylistProvider in an asynchronous way that cannot safely cope with
+        // IpodCollection disappearing
+        connect( m_parseTracksJob.data(), SIGNAL(destroyed(QObject*)), SIGNAL(remove()) );
+        m_parseTracksJob.data()->abort();
+    }
+    else
+        emit remove();
 }
 
 Meta::TrackPtr

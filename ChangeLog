@@ -2,6 +2,27 @@ Amarok ChangeLog
 ================
 (C) 2002-2012 the Amarok authors.
 
+VERSION 2.6
+  CHANGES:
+    * Building the spectrum analyzer applet can now be disabled with a CMake
+      argument.
+
+  BUGFIXES:
+    * Fix Context view not being fully formed on startup. (BR 292895)
+    * Fix memory leaks and a string zero termination issue in MP3tunes.
+    * Don't poll for mounts every second, solid notifies us. (BR 289462)
+    * Fix inconsistent Last.fm scrobbling in some cases with GStreamer
+      backend.
+    * Use colors from KDE style in Dynamic Playlist strip. (BR 301303)
+    * Finally fix crash on startup in addCollapseAnimation. (BR 258741)
+    * Don't hit "too many open files" when copying covers to iPod. (BR 301207)
+    * Don't crash if iPod's eject button is hit twice. (BR 301208)
+    * Don't crash even if the iPod is connected and quickly ejected. (BR 301166)
+    * Play the correct track when adding tracks to a sorted playlist. (BR
+      244595)
+    * Provide full-size covers via MPRIS1 if available. (BR 278550)
+    * Fix serving out of embedded images via MPRIS. (BR 301399)
+
 VERSION 2.6-Beta 1
   FEATURES:
     * Amazon store: improved album search

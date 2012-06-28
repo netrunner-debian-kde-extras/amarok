@@ -1,6 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
- *                                                                                      *
+ * Copyright (c) 2012 Jasneet Singh Bhatti <jazneetbhatti@gmail.com>                    *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
  * Foundation; either version 2 of the License, or (at your option) any later           *
@@ -14,24 +13,27 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef AMAROK_BACKENDSTARTINGSTATE_H
-#define AMAROK_BACKENDSTARTINGSTATE_H
+#ifndef TESTQUERYMAKER_H
+#define TESTQUERYMAKER_H
 
-#include "State.h"
+#include <QtTest>
 
-namespace Amarok {
-    class BackendStartingState : public State {
-        Q_OBJECT
-    public:
-        BackendStartingState();
+class MockQueryMaker;
 
-        void activated();
+class TestQueryMaker : public QObject
+{
+    Q_OBJECT
 
-        virtual CollectionManager* collectionManager() const;
-        virtual EngineController* engineController() const;
-        virtual MountPointManager* mountPointManager() const;
-        virtual ServiceBrowser* serviceBrowser() const;
-    };
-}
+    private slots:
+        void initTestCase();
+        void cleanupTestCase();
 
-#endif
+        // Data driven testing of setAutoDelete
+        void testSetAutoDelete_data();
+        void testSetAutoDelete();
+
+    private:
+        MockQueryMaker *m_mockQueryMaker;
+};
+
+#endif // TESTQUERYMAKER_H

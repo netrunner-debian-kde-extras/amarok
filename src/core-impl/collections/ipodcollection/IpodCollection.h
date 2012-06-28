@@ -28,6 +28,8 @@
 namespace Collections { class MemoryCollection; }
 namespace IpodMeta { class Track; }
 class IphoneMountPoint;
+class IpodParseTracksJob;
+class IpodWriteDatabaseJob;
 class IpodPlaylistProvider;
 class QTemporaryFile;
 struct _Itdb_iTunesDB;
@@ -46,8 +48,9 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
          * @param mountPoint actual iPod mount point to use, must be already mounted and
          * accessible. When eject is requested, solid StorageAccess with this mount point
          * is searched for to perform unmounting.
+         * @param uuid filesystem volume UUID or another unique identifier for this iPod
          */
-        explicit IpodCollection( const QDir &mountPoint );
+        explicit IpodCollection( const QDir &mountPoint, const QString &uuid );
 
         /**
          * Creates an iPod collection on top of not-mounted iPhone/iPad by accessing it
@@ -199,6 +202,12 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
          */
         void slotPerformTeardownAndRemove();
 
+        /**
+         * Do sanity checks and emit remove() so that this collection is destroyed by
+         * CollectionManager. No other method is allowed to emit remove()!
+         */
+        void slotRemove();
+
     private:
         friend class IpodCopyTracksJob;
         friend class IpodDeleteTracksJob;
@@ -259,12 +268,15 @@ class IpodCollection : public Collections::Collection, public Meta::Observer
         QTimer m_writeDatabaseTimer;
         QTemporaryFile *m_preventUnmountTempFile;
         QString m_mountPoint;
+        QString m_uuid;
         IphoneMountPoint *m_iphoneAutoMountpoint;
         QString m_prettyName;
         IpodPlaylistProvider *m_playlistProvider;
         QAction *m_configureAction;
         QAction *m_ejectAction;
         QAction *m_consolidateAction;
+        QWeakPointer<IpodParseTracksJob> m_parseTracksJob;
+        QWeakPointer<IpodWriteDatabaseJob> m_writeDatabaseJob;
 };
 
 #endif // IPODCOLLECTION_H

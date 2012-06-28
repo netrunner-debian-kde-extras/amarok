@@ -1,6 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
- *                                                                                      *
+ * Copyright (c) 2012 Jasneet Singh Bhatti <jazneetbhatti@gmail.com>                    *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
  * Foundation; either version 2 of the License, or (at your option) any later           *
@@ -14,29 +13,31 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "BackendStartingState.h"
+#ifndef TESTACTIONSCAPABILITY_H
+#define TESTACTIONSCAPABILITY_H
 
-#include "EngineController.h"
-#include "core-impl/collections/support/CollectionManager.h"
-#include "MountPointManager.h"
+#include "shared/amarok_export.h"
+#include "core/capabilities/Capability.h"
 
-Amarok::BackendStartingState::BackendStartingState
-    : State()
+#include <QAction>
+#include <QList>
+#include <QtTest/QtTest>
+
+#include <KTempDir>
+
+class TestActionsCapability : public QObject
 {
-}
+    Q_OBJECT
 
-void
-Amarok::BackendStartingState::activated()
-{
-    //this probably won't compile
-    EngineController *ec = new EngineController();
-    CollectionManager *cm = new CollectionManager();
-    context()->setEngineController( ec );
-    context()->setCollectionManager( cm );
-    
-    
-    //TODO: move mpm into SqlCollection. keeping it in libamarok is so wrong
-    MountPointManager *mpm = new MountPointManager();
-    context()->setMountPointManager( mpm );
-    //TODO activate dbus interface for backend subsystems
-}
+public:
+    TestActionsCapability();
+
+private slots:
+    void testActions();
+    void testCapabilityInterfaceType();
+
+private:
+    QList< QAction* > m_actions;
+};
+
+#endif // TESTACTIONSCAPABILITY_H

@@ -1,6 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
- *                                                                                      *
+ * Copyright (c) 2012 Jasneet Singh Bhatti <jazneetbhatti@gmail.com>                    *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
  * Foundation; either version 2 of the License, or (at your option) any later           *
@@ -14,62 +13,31 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "Transition.h"
+#ifndef TESTMETACAPABILITY_H
+#define TESTMETACAPABILITY_H
 
-#include "State.h"
+#include <QtTest>
 
-Amarok::Transition::Transition(State* state)
-    : QObject()
-    , m_active( false )
-    , m_targetState( state )
+class TestMetaCapability : public QObject
 {
-}
+    Q_OBJECT
 
-void
-Amarok::Transition::activate()
-{
-    if( m_active )
-        return;
-    m_active = true;
-    doActivate();
-}
+    public:
+        TestMetaCapability();
 
-void
-Amarok::Transition::deactivate()
-{
-    if( !m_active )
-        return;
-    m_active = false;
-    doDeactivate();
-}
+    private slots:
+        /**
+         * Test whether has() properly delegates work to hasCapabilityInterface()
+         */
+        void testHas();
 
-bool
-Amarok::Transition::isActive() const
-{
-    return m_active;
-}
+        /**
+         * Test whether create() properly delegates work to createCapabilityInterface()
+         */
+        void testCreate();
 
-bool
-Amarok::Transition::isPriorityTransition() const
-{
-    return false;
-}
+        /* hasCapabilityInterface() and createCapabilityInterface() are both meant to be
+         * overridden in the subclasses, so no need to test them here. */
+};
 
-void
-Amarok::Transition::doActivate()
-{
-    //reimplement in subclasses
-}
-
-void
-Amarok::Transition::doDeactivate()
-{
-    //reimplement in subclasses
-}
-
-void
-Amarok::Transition::requestTransition()
-{
-    if( m_active )
-        emit transitionRequested( targetState );
-}
+#endif // TESTMETACAPABILITY_H

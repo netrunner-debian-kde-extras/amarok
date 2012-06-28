@@ -17,16 +17,12 @@
 #ifndef IPODMETA_H
 #define IPODMETA_H
 
-#include "core/meta/Meta.h"
 #include "MetaValues.h"
-
-#include <KTemporaryFile>
+#include "core/meta/Meta.h"
 
 #include <QReadWriteLock>
 
 #include <glib.h>
-#include <glibconfig.h>
-
 
 struct _Itdb_Track;
 typedef _Itdb_Track Itdb_Track;
@@ -212,9 +208,10 @@ namespace IpodMeta
             /**
              * We need the temporary image file to exist for the lifetime of Track because
              * calling itdb_track_set_thumbnails() only saves the filename - the file is
-             * read only when needed
+             * read only when needed. If this path is non-empty, it means that the file
+             * should be deleted in destructor.
              */
-            KTemporaryFile *m_tempImageFile;
+            QString m_tempImageFilePath;
 
             /**
              * Set of field types (identified by constants from MetaValues.h) changed by
@@ -223,7 +220,7 @@ namespace IpodMeta
              */
             Meta::FieldHash m_changedFields;
 
-            static const guint64 m_gpodTrackUserTypeAmarokTrackPtr = G_GUINT64_CONSTANT(0x416d61726f6b5472); /* AmarokTr */
+            static const quint64 m_gpodTrackUserTypeAmarokTrackPtr = Q_UINT64_C(0x416d61726f6b5472); /* AmarokTr */
     };
 
     /**
