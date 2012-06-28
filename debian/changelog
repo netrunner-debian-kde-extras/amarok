@@ -1,4 +1,4 @@
-amarok (2.6~beta1+75.g47e75df-0r1) UNRELEASED; urgency=low
+amarok (2.6~beta1+75.g47e75df-1) unstable; urgency=low
 
   * New upstream development snapshot (very close 2.6 release).
   * Override lintian embedded-library: zlib error. It comes from MySQLe.
@@ -10,7 +10,7 @@ amarok (2.6~beta1+75.g47e75df-0r1) UNRELEASED; urgency=low
   * Lengthen descriptions of amarok-common and amarok-doc packages a bit.
   * Disable LikeBack by default by shipping appropriate amarokrc.
 
- -- Modestas Vainius <modax@debian.org>  Fri, 29 Jun 2012 01:50:42 +0300
+ -- Modestas Vainius <modax@debian.org>  Fri, 29 Jun 2012 02:51:17 +0300
 
 amarok (2.6~beta1-1) experimental; urgency=low
 
