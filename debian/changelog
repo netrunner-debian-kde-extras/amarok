@@ -1,3 +1,9 @@
+amarok (2.6~beta1+75.g47e75df-0r1) UNRELEASED; urgency=low
+
+  * New upstream development snapshot (very close 2.6 release).
+
+ -- Modestas Vainius <modax@debian.org>  Fri, 29 Jun 2012 01:50:42 +0300
+
 amarok (2.6~beta1-1) experimental; urgency=low
 
   * New upstream development release (2.5.90).
