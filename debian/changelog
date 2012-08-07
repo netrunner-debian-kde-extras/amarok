@@ -1,6 +1,7 @@
 amarok (2.6~rc1-1) UNRELEASED; urgency=low
 
   * New upstream release (release candidate).
+  * Drop patch debian_fix_doc_nl_build.diff, merged upstream.
 
  -- Modestas Vainius <modax@debian.org>  Tue, 07 Aug 2012 09:14:21 +0300
 
