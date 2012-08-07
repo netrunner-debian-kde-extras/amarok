@@ -2,13 +2,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Jure Repinc <jlp@holodeck1.com>, 2009, 2010.
+# Andrej Mernik <andrejm@ubuntu.si>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2011-08-02 04:52+0200\n"
-"PO-Revision-Date: 2010-04-24 19:32+0200\n"
-"Last-Translator: Jure Repinc <jlp@holodeck1.com>\n"
+"PO-Revision-Date: 2012-06-01 12:49+0200\n"
+"Last-Translator: Andrej Mernik <andrejm@ubuntu.si>\n"
 "Language-Team: Slovenian <lugos-slo@lugos.si>\n"
 "Language: sl\n"
 "MIME-Version: 1.0\n"
@@ -20,11 +21,11 @@ msgstr ""
 
 #: amarokpkg.cpp:40
 msgid "Install, list, remove Amarok applets"
-msgstr "Nameščajte, odstranjujte in izpišite seznam gradnikov za Amarok"
+msgstr "Nameščajte, odstranjujte in izpišite seznam apletov za Amarok"
 
 #: amarokpkg.cpp:76
 msgid "Amarok Applet Manager"
-msgstr "Upravljalnik gradnikov za Amarok"
+msgstr "Upravljalnik apletov za Amarok"
 
 #: amarokpkg.cpp:78
 msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
@@ -49,27 +50,27 @@ msgstr "Razvijalec"
 #: amarokpkg.cpp:92
 msgid "For install or remove, operates on applets installed for all users."
 msgstr ""
-"Za nameščanje in odstranjevanje, dela na gradnikih, nameščenih za vse "
+"Za nameščanje in odstranjevanje, dela na apletih, nameščenih za vse "
 "uporabnike."
 
 #: amarokpkg.cpp:95
 msgctxt "Do not translate <path>"
 msgid "Install the applet at <path>"
-msgstr "Namesti gradnik v <pot>"
+msgstr "Namesti aplet v <path>"
 
 #: amarokpkg.cpp:97
 msgctxt "Do not translate <path>"
 msgid "Upgrade the applet at <path>"
-msgstr "Nadgradi gradnik v <pot>"
+msgstr "Nadgradi aplet v <path>"
 
 #: amarokpkg.cpp:99
 msgid "List installed applets"
-msgstr "Prikaži seznam nameščenih gradnikov"
+msgstr "Prikaži seznam nameščenih apletov"
 
 #: amarokpkg.cpp:101
 msgctxt "Do not translate <name>"
 msgid "Remove the applet named <name>"
-msgstr "Odstrani gradnik imenovan <ime>"
+msgstr "Odstrani aplet imenovan <name>"
 
 #: amarokpkg.cpp:103
 msgid ""
@@ -82,12 +83,12 @@ msgstr ""
 #: amarokpkg.cpp:162
 #, kde-format
 msgid "Successfully removed %1"
-msgstr "%1 je bil uspešno odstranjen."
+msgstr "%1 je bil uspešno odstranjen"
 
 #: amarokpkg.cpp:164
 #, kde-format
 msgid "Removal of %1 failed."
-msgstr "Odstranitev %1 ni bila uspešna."
+msgstr "Odstranitev %1 ni uspela."
 
 #: amarokpkg.cpp:169
 #, kde-format
@@ -97,7 +98,7 @@ msgstr "Vstavek %1 ni nameščen."
 #: amarokpkg.cpp:174
 #, kde-format
 msgid "Successfully installed %1"
-msgstr "%1 je bil uspešno nameščen."
+msgstr "%1 je bil uspešno nameščen"
 
 #: amarokpkg.cpp:177
 #, kde-format
@@ -109,14 +110,15 @@ msgctxt ""
 "No option was given, this is the error message telling the user he needs at "
 "least one, do not translate install, remove, upgrade nor list"
 msgid "One of install, remove, upgrade or list is required."
-msgstr "Zahtevano je eno dejanje izmed install, remove, upgrade ali list."
+msgstr ""
+"Zahtevano je eno dejanje izmed sledečih: install, remove, upgrade ali list."
 
 #: rc.cpp:1
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
-msgstr "Jure Repinc"
+msgstr "Jure Repinc,Andrej Mernik"
 
 #: rc.cpp:2
 msgctxt "EMAIL OF TRANSLATORS"
 msgid "Your emails"
-msgstr "jlp@holodeck1.com"
+msgstr "jlp@holodeck1.com,andrejm@ubuntu.si"

@@ -83,8 +83,8 @@ Optional
       * Loudmouth, the Jabber library, http://www.loudmouth-project.org/
       * Qt must be compiled with Glib enabled
 
-    * Liblastfm 0.3
-      (For scrobbling, internet radio, and artist info)
+    * Liblastfm 0.3 (1.0 or newer is incompatible, porting is pending for Amarok 2.7)
+      (scrobbling, internet radio, and artist info)
       http://cdn.last.fm/src/liblastfm-0.3.0.tar.bz2
       http://github.com/mxcl/liblastfm/tree/master
 
@@ -95,7 +95,7 @@ Optional
     * MySQL 5.0 (or newer) Server (external database support)
 
     * MusicBrainz-based audio fingerprint tag lookup requires:
-      * FFmpeg 0.6.0 (or newer) - http://ffmpeg.org/
+      * FFmpeg 0.7.0 (or newer) - http://ffmpeg.org/
         * libavcodec & libavformat specifically
       * LibOFA - http://code.google.com/p/musicip-libofa/
 
@@ -103,7 +103,7 @@ Optional
       * libmygpo-qt 1.0.5 (or newer)
 
     * Transcoding requires (at runtime):
-      * FFmpeg 0.6.0 (or newer) - http://ffmpeg.org/
+      * FFmpeg 0.7.0 (or newer) - http://ffmpeg.org/
       * For all supported encoders to be available in Amarok, FFmpeg needs to
         support the following codecs:
         * libfaac (NOT just "aac")

@@ -334,6 +334,7 @@ ScanManager::slotJobDone()
                                     arg(m_scanner->getLastErrors().join("\n")) );
             }
         }
+        emit scanDone( m_scanner );
 
         m_scanner->deleteLater();
         m_scanner = 0;
@@ -481,7 +482,7 @@ ScannerJob::run()
 
         if( !createScannerProcess( false ) )
         {
-            warning() << "Unable to start Amarok colleciton scanner.";
+            warning() << "Unable to start Amarok collection scanner.";
             emit failed( i18n("Unable to start Amarok collection scanner." ) );
             return;
         }

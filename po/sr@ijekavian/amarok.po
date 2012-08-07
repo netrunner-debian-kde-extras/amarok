@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2012-06-26 06:14+0200\n"
+"POT-Creation-Date: 2012-07-20 04:07+0200\n"
 "PO-Revision-Date: 2012-06-17 13:28+0200\n"
 "Last-Translator: Chusslove Illich <caslav.ilic@gmx.net>\n"
 "Language-Team: Serbian <kde-i18n-sr@kde.org>\n"
@@ -194,12 +194,12 @@ msgid "Now playing"
 msgstr "Сад пуштам"
 
 #: scanner/GenericScanManager.cpp:203
-#: core-impl/collections/db/ScanManager.cpp:485
+#: core-impl/collections/db/ScanManager.cpp:486
 msgid "Unable to start Amarok collection scanner."
 msgstr "Не могу да покренем Амароков претраживач збирке."
 
 #: scanner/GenericScanManager.cpp:300
-#: core-impl/collections/db/ScanManager.cpp:534
+#: core-impl/collections/db/ScanManager.cpp:535
 #, kde-format
 msgid "Found one directory"
 msgid_plural "Found %1 directories"
@@ -209,7 +209,7 @@ msgstr[2] "Нађено %1 фасцикли"
 msgstr[3] "Нађена једна фасцикла"
 
 #: scanner/GenericScanManager.cpp:310
-#: core-impl/collections/db/ScanManager.cpp:545
+#: core-impl/collections/db/ScanManager.cpp:546
 #, kde-format
 msgid "Got directory \"%1\" from scanner."
 msgstr "Претраживач је нашао фасциклу „%1“."
@@ -1208,7 +1208,7 @@ msgctxt "Load the view represented by this bookmark"
 msgid "&Load"
 msgstr "&Учитај"
 
-#: amarokurls/BookmarkTreeView.cpp:118 browsers/filebrowser/FileView.cpp:403
+#: amarokurls/BookmarkTreeView.cpp:118 browsers/filebrowser/FileView.cpp:404
 msgid "&Delete"
 msgstr "О&бриши"
 
@@ -1405,7 +1405,7 @@ msgstr "Година"
 msgid "Label"
 msgstr "етикета"
 
-#: browsers/InfoProxy.cpp:164 browsers/filebrowser/FileBrowser.cpp:379
+#: browsers/InfoProxy.cpp:164 browsers/filebrowser/FileBrowser.cpp:383
 msgid "Home"
 msgstr "Домаће"
 
@@ -1510,17 +1510,17 @@ msgstr "Обједињени приказ"
 msgid "Sort Options"
 msgstr "Опције ређања"
 
-#: browsers/filebrowser/FileBrowser.cpp:66
+#: browsers/filebrowser/FileBrowser.cpp:68
 msgctxt "Show Dolphin Places the user configured"
 msgid "Places"
 msgstr "Мјеста"
 
 # >> @title:window
-#: browsers/filebrowser/FileBrowser.cpp:76
+#: browsers/filebrowser/FileBrowser.cpp:78
 msgid "Filter Files"
 msgstr "Филтрирање фајлова"
 
-#: browsers/filebrowser/FileBrowser.cpp:174
+#: browsers/filebrowser/FileBrowser.cpp:176
 msgid ""
 "The file browser lets you browse files anywhere on your system, regardless "
 "of whether these files are part of your local collection. You can then add "
@@ -1530,19 +1530,19 @@ msgstr ""
 "обзира на то да ли су ти фајлови дио збирке. Поред обављања основних радњи, "
 "фајлове можете и додавати у листу нумера."
 
-#: browsers/filebrowser/FileBrowser.cpp:523
+#: browsers/filebrowser/FileBrowser.cpp:527
 msgid "Places"
 msgstr "Мјеста"
 
-#: browsers/filebrowser/FileView.cpp:122 browsers/CollectionTreeView.cpp:291
+#: browsers/filebrowser/FileView.cpp:123 browsers/CollectionTreeView.cpp:291
 msgid "Move to Collection"
 msgstr "Премјести у збирку"
 
-#: browsers/filebrowser/FileView.cpp:131 browsers/CollectionTreeView.cpp:286
+#: browsers/filebrowser/FileView.cpp:132 browsers/CollectionTreeView.cpp:286
 msgid "Copy to Collection"
 msgstr "Копирај у збирку"
 
-#: browsers/filebrowser/FileView.cpp:362
+#: browsers/filebrowser/FileView.cpp:363
 #: browsers/playlistbrowser/PlaylistBrowserModel.cpp:49
 #: browsers/CollectionTreeView.cpp:951
 #: context/applets/albums/AlbumsView.cpp:240
@@ -1550,7 +1550,7 @@ msgstr "Копирај у збирку"
 msgid "&Add to Playlist"
 msgstr "Дод&ај у листу нумера"
 
-#: browsers/filebrowser/FileView.cpp:374
+#: browsers/filebrowser/FileView.cpp:375
 #: browsers/playlistbrowser/PlaylistBrowserModel.cpp:60
 #: browsers/CollectionTreeView.cpp:965
 #: context/applets/albums/AlbumsView.cpp:241
@@ -1559,17 +1559,17 @@ msgctxt "Replace the currently loaded tracks with these"
 msgid "&Replace Playlist"
 msgstr "&Замијени листу нумера"
 
-#: browsers/filebrowser/FileView.cpp:386 browsers/CollectionTreeView.cpp:1047
+#: browsers/filebrowser/FileView.cpp:387 browsers/CollectionTreeView.cpp:1047
 msgid "&Edit Track Details"
 msgstr "&Уреди податке нумере"
 
-#: browsers/filebrowser/FileView.cpp:536
+#: browsers/filebrowser/FileView.cpp:538
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:40
 msgctxt "@title:window"
 msgid "Confirm Delete"
 msgstr "Потврда брисања"
 
-#: browsers/filebrowser/FileView.cpp:537
+#: browsers/filebrowser/FileView.cpp:539
 #, kde-format
 msgid "Are you sure you want to delete this item?"
 msgid_plural "Are you sure you want to delete these %1 items?"
@@ -1578,13 +1578,13 @@ msgstr[1] "Желите ли заиста да обришете ове %1 ста
 msgstr[2] "Желите ли заиста да обришете ових %1 ставки?"
 msgstr[3] "Желите ли заиста да обришете ову ставку?"
 
-#: browsers/filebrowser/FileView.cpp:543
+#: browsers/filebrowser/FileView.cpp:545
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:53
 msgctxt "@title:window"
 msgid "Confirm Move to Trash"
 msgstr "Потврда премијештања у смеће"
 
-#: browsers/filebrowser/FileView.cpp:544
+#: browsers/filebrowser/FileView.cpp:546
 #, kde-format
 msgid "Are you sure you want to move this item to trash?"
 msgid_plural "Are you sure you want to move these %1 items to trash?"
@@ -1593,7 +1593,7 @@ msgstr[1] "Желите ли заиста да премјестите ове %1 
 msgstr[2] "Желите ли заиста да премјестите ових %1 ставки у смеће?"
 msgstr[3] "Желите ли заиста да премјестите ову ставку у смеће?"
 
-#: browsers/filebrowser/FileView.cpp:578
+#: browsers/filebrowser/FileView.cpp:580
 #, kde-format
 msgctxt "@info:status"
 msgid "Moving to trash: 1 file"
@@ -3009,7 +3009,7 @@ msgid ""
 msgstr "Додајте неке аплете из траке алатки на дну приказа контекста."
 
 #: context/engines/current/CurrentEngine.cpp:136 mac/GrowlInterface.cpp:43
-#: widgets/Osd.cpp:651 EngineController.cpp:1462
+#: widgets/Osd.cpp:651 EngineController.cpp:1406
 msgid "No track playing"
 msgstr "Ништа није пуштено"
 
@@ -3386,7 +3386,13 @@ msgstr "Учитавам удаљену збирку са домаћина %1...
 msgid "Music share at %1"
 msgstr "Дијељење музике на %1"
 
-#: core-impl/collections/db/sql/SqlCollection.cpp:162
+#: core-impl/collections/db/sql/SqlMeta.cpp:274
+#: covermanager/CoverManager.cpp:842 services/lastfm/meta/LastFmMeta.cpp:134
+#, kde-format
+msgid "%1 - %2"
+msgstr "%1 — %2"
+
+#: core-impl/collections/db/sql/SqlCollection.cpp:164
 msgid ""
 "Updating Amarok database schema. Please don't terminate Amarok now as it may "
 "result in database corruption."
@@ -3394,11 +3400,11 @@ msgstr ""
 "Ажурирам шему Амарокове базе. Не обустављајте Амарок сада, иначе може доћи "
 "до искварења базе."
 
-#: core-impl/collections/db/sql/SqlCollection.cpp:166
+#: core-impl/collections/db/sql/SqlCollection.cpp:168
 msgid "Updating Amarok database schema"
 msgstr "Ажурирам шему Амарокове базе"
 
-#: core-impl/collections/db/sql/SqlCollection.cpp:200
+#: core-impl/collections/db/sql/SqlCollection.cpp:204
 #, kde-format
 msgid ""
 "The amarok database reported the following errors:\n"
@@ -3411,7 +3417,7 @@ msgstr ""
 "У већини случајева мораћете да разрешите ове грешке да би Амарок радио "
 "исправно."
 
-#: core-impl/collections/db/sql/SqlCollection.cpp:356
+#: core-impl/collections/db/sql/SqlCollection.cpp:374
 msgid "Scanning music"
 msgstr "Претражујем музику"
 
@@ -3435,12 +3441,6 @@ msgstr "Транскодирам: %1"
 #, kde-format
 msgid "Removing: %1"
 msgstr "Уклањам: %1"
-
-#: core-impl/collections/db/sql/SqlMeta.cpp:274
-#: covermanager/CoverManager.cpp:842 services/lastfm/meta/LastFmMeta.cpp:134
-#, kde-format
-msgid "%1 - %2"
-msgstr "%1 — %2"
 
 #: core-impl/collections/db/ScanManager.cpp:134
 msgid "Database import requested"
@@ -3468,21 +3468,21 @@ msgstr ""
 "Ово најчешће значи да неке од ваших нумера нису увезене.\n"
 "Накнадне грешке ће бити пријављене само у конзоли."
 
-#: core-impl/collections/db/ScanManager.cpp:477
+#: core-impl/collections/db/ScanManager.cpp:478
 #, kde-format
 msgid "Failed to write scanner batch file \"%1\""
 msgstr "Неуспело уписивање пакетног фајла претраге „%1“"
 
-#: core-impl/collections/db/ScanManager.cpp:588
+#: core-impl/collections/db/ScanManager.cpp:589
 #, kde-format
 msgid "Aborting scanner with error: %1"
 msgstr "Обустављам претраживање услед грешке: %1"
 
-#: core-impl/collections/db/ScanManager.cpp:608
+#: core-impl/collections/db/ScanManager.cpp:609
 msgid "Scanner aborted."
 msgstr "Претраживање обустављено."
 
-#: core-impl/collections/db/ScanManager.cpp:701
+#: core-impl/collections/db/ScanManager.cpp:702
 msgid ""
 "The collection scan had to be aborted. Too many errors were encountered "
 "during the scan."
@@ -3669,10 +3669,6 @@ msgstr ""
 "разрешити радњом збирке <b>%2</b>. Такође можете погледати нумере под "
 "језичком <interface>Сачуване листе нумера</interface>.</html>"
 
-#: core-impl/collections/ipodcollection/support/IphoneMountPoint.cpp:56
-msgid "Connecting to iPhone, iPad or iPod touch failed."
-msgstr "Повезивање и‑фона, и‑пада или и‑пода пропало."
-
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:45
 msgid "Cannot parse iTunes database due to an unreported error."
 msgstr "Не могу да рашчланим и‑Тјунсову базу због непријављене грешке."
@@ -3812,6 +3808,10 @@ msgstr "Неуспело уписивање SysInfo‑а због неприја
 msgid "Cannot initialize iPod due to an unreported error."
 msgstr "Не могу да припремим и‑под због непријављене грешке."
 
+#: core-impl/collections/ipodcollection/support/IphoneMountPoint.cpp:56
+msgid "Connecting to iPhone, iPad or iPod touch failed."
+msgstr "Повезивање и‑фона, и‑пада или и‑пода пропало."
+
 #: core-impl/collections/ipodcollection/IpodPlaylistProvider.cpp:322
 #, kde-format
 msgid ""
@@ -3899,7 +3899,7 @@ msgstr "Непозната збирка"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:203
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:95
-#: EngineController.cpp:1441
+#: EngineController.cpp:1384
 msgid "Unknown track"
 msgstr "Непозната нумера"
 
@@ -4375,10 +4375,6 @@ msgstr "Непознат формат листе нумера"
 msgid "Playlist_%1"
 msgstr "Листа_%1"
 
-#: core-impl/podcasts/sql/SqlPodcastProvider.h:54
-msgid "Local Podcasts"
-msgstr "Локалне подемисије"
-
 # >> @title:window
 #: core-impl/podcasts/sql/PodcastSettingsDialog.cpp:36
 #, kde-format
@@ -4531,31 +4527,35 @@ msgstr "Преузимам подемисијски медијум"
 msgid "Downloading Podcast \"%1\""
 msgstr "Преузимам подемисију „%1“"
 
-#: core/collections/CollectionLocation.cpp:373
+#: core-impl/podcasts/sql/SqlPodcastProvider.h:54
+msgid "Local Podcasts"
+msgstr "Локалне подемисије"
+
+#: core/collections/CollectionLocation.cpp:377
 msgid "Organize tracks"
 msgstr "Организуј нумере"
 
-#: core/collections/CollectionLocation.cpp:375
+#: core/collections/CollectionLocation.cpp:379
 msgid "Transcode and organize tracks"
 msgstr "Транскодирај и организуј нумере"
 
-#: core/collections/CollectionLocation.cpp:380
+#: core/collections/CollectionLocation.cpp:384
 msgid "Move tracks"
 msgstr "Премести нумере"
 
-#: core/collections/CollectionLocation.cpp:382
+#: core/collections/CollectionLocation.cpp:386
 msgid "Transcode and move tracks"
 msgstr "Транскодирај и премести нумере"
 
-#: core/collections/CollectionLocation.cpp:387
+#: core/collections/CollectionLocation.cpp:391
 msgid "Copy tracks"
 msgstr "Копирај нумере"
 
-#: core/collections/CollectionLocation.cpp:389
+#: core/collections/CollectionLocation.cpp:393
 msgid "Transcode and copy tracks"
 msgstr "Транскодирај и копирај нумере"
 
-#: core/collections/CollectionLocation.cpp:402
+#: core/collections/CollectionLocation.cpp:406
 #, kde-format
 msgid "Organizing one track"
 msgid_plural "Organizing %1 tracks"
@@ -4564,7 +4564,7 @@ msgstr[1] "Организујем %1 нумере"
 msgstr[2] "Организујем %1 нумера"
 msgstr[3] "Организујем нумеру"
 
-#: core/collections/CollectionLocation.cpp:405
+#: core/collections/CollectionLocation.cpp:409
 #, kde-format
 msgid "Transcoding and organizing one track"
 msgid_plural "Transcoding and organizing %1 tracks"
@@ -4573,7 +4573,7 @@ msgstr[1] "Транскодирам %1 нумере"
 msgstr[2] "Транскодирам %1 нумера"
 msgstr[3] "Транскодирам нумеру"
 
-#: core/collections/CollectionLocation.cpp:411
+#: core/collections/CollectionLocation.cpp:415
 #, kde-format
 msgid "Moving one track to %2"
 msgid_plural "Moving %1 tracks to %2"
@@ -4582,7 +4582,7 @@ msgstr[1] "Премештам %1 нумере у %2"
 msgstr[2] "Премештам %1 нумера у %2"
 msgstr[3] "Премештам нумеру у %2"
 
-#: core/collections/CollectionLocation.cpp:414
+#: core/collections/CollectionLocation.cpp:418
 #, kde-format
 msgid "Transcoding and moving one track to %2"
 msgid_plural "Transcoding and moving %1 tracks to %2"
@@ -4591,7 +4591,7 @@ msgstr[1] "Транскодирам и премештам %1 нумере у %2"
 msgstr[2] "Транскодирам и премештам %1 нумера у %2"
 msgstr[3] "Транскодирам и премештам нумеру у %2"
 
-#: core/collections/CollectionLocation.cpp:420
+#: core/collections/CollectionLocation.cpp:424
 #, kde-format
 msgid "Copying one track to %2"
 msgid_plural "Copying %1 tracks to %2"
@@ -4600,7 +4600,7 @@ msgstr[1] "Копирам %1 нумере у %2"
 msgstr[2] "Копирам %1 нумера у %2"
 msgstr[3] "Копирам нумеру у %2"
 
-#: core/collections/CollectionLocation.cpp:423
+#: core/collections/CollectionLocation.cpp:427
 #, kde-format
 msgid "Transcoding and copying one track to %2"
 msgid_plural "Transcoding and copying %1 tracks to %2"
@@ -4608,6 +4608,94 @@ msgstr[0] "Транскодирам и копирам %1 нумеру у %2"
 msgstr[1] "Транскодирам и копирам %1 нумере у %2"
 msgstr[2] "Транскодирам и копирам %1 нумера у %2"
 msgstr[3] "Транскодирам и копирам нумеру у %2"
+
+# >! (qtdt-format) +
+# |, no-check-spell
+#: core/meta/support/MetaUtility.cpp:409
+msgctxt ""
+"the time format for a time length when the time is below 1 hour see QTime "
+"documentation."
+msgid "m:ss"
+msgstr "m:ss"
+
+#: core/meta/support/MetaUtility.cpp:416
+#, kde-format
+msgctxt "number of days with spacing for the pretty time"
+msgid "%1 day, "
+msgid_plural "%1 days, "
+msgstr[0] "%1 дан, "
+msgstr[1] "%1 дана, "
+msgstr[2] "%1 дана, "
+msgstr[3] "%1 дан, "
+
+# >! (qtdt-format) +
+# |, no-check-spell
+#: core/meta/support/MetaUtility.cpp:417
+msgctxt ""
+"the time format for a time length when the time is 1 hour or above see QTime "
+"documentation."
+msgid "h:mm:ss"
+msgstr "h:mm:ss"
+
+#: core/meta/support/MetaUtility.cpp:431
+#, kde-format
+msgctxt "number of years for the pretty time"
+msgid "%1 year"
+msgid_plural "%1 years"
+msgstr[0] "%1 година"
+msgstr[1] "%1 године"
+msgstr[2] "%1 година"
+msgstr[3] "1 година"
+
+#: core/meta/support/MetaUtility.cpp:433
+#, kde-format
+msgctxt "number of months for the pretty time"
+msgid "%1 month"
+msgid_plural "%1 months"
+msgstr[0] "%1 мјесец"
+msgstr[1] "%1 мјесеца"
+msgstr[2] "%1 мјесеци"
+msgstr[3] "1 мјесец"
+
+#: core/meta/support/MetaUtility.cpp:435
+#, kde-format
+msgctxt "number of days for the pretty time"
+msgid "%1 day"
+msgid_plural "%1 days"
+msgstr[0] "%1 дан"
+msgstr[1] "%1 дана"
+msgstr[2] "%1 дана"
+msgstr[3] "1 дан"
+
+#: core/meta/support/MetaUtility.cpp:437
+#, kde-format
+msgctxt "number of hours for the pretty time"
+msgid "%1 hour"
+msgid_plural "%1 hours"
+msgstr[0] "%1 сат"
+msgstr[1] "%1 сата"
+msgstr[2] "%1 сати"
+msgstr[3] "1 сат"
+
+#: core/meta/support/MetaUtility.cpp:439
+#, kde-format
+msgctxt "number of minutes for the pretty time"
+msgid "%1 minute"
+msgid_plural "%1 minutes"
+msgstr[0] "%1 минут"
+msgstr[1] "%1 минута"
+msgstr[2] "%1 минута"
+msgstr[3] "1 минут"
+
+#: core/meta/support/MetaUtility.cpp:441
+#, kde-format
+msgctxt "number of seconds for the pretty time"
+msgid "%1 second"
+msgid_plural "%1 seconds"
+msgstr[0] "%1 секунда"
+msgstr[1] "%1 секунде"
+msgstr[2] "%1 секунди"
+msgstr[3] "1 секунда"
 
 #: core/meta/support/MetaConstants.cpp:170
 msgctxt ""
@@ -4907,94 +4995,6 @@ msgstr "етикета"
 msgctxt "One word translation used in the collection filter"
 msgid "modified"
 msgstr "измијењено"
-
-# >! (qtdt-format) +
-# |, no-check-spell
-#: core/meta/support/MetaUtility.cpp:409
-msgctxt ""
-"the time format for a time length when the time is below 1 hour see QTime "
-"documentation."
-msgid "m:ss"
-msgstr "m:ss"
-
-#: core/meta/support/MetaUtility.cpp:416
-#, kde-format
-msgctxt "number of days with spacing for the pretty time"
-msgid "%1 day, "
-msgid_plural "%1 days, "
-msgstr[0] "%1 дан, "
-msgstr[1] "%1 дана, "
-msgstr[2] "%1 дана, "
-msgstr[3] "%1 дан, "
-
-# >! (qtdt-format) +
-# |, no-check-spell
-#: core/meta/support/MetaUtility.cpp:417
-msgctxt ""
-"the time format for a time length when the time is 1 hour or above see QTime "
-"documentation."
-msgid "h:mm:ss"
-msgstr "h:mm:ss"
-
-#: core/meta/support/MetaUtility.cpp:431
-#, kde-format
-msgctxt "number of years for the pretty time"
-msgid "%1 year"
-msgid_plural "%1 years"
-msgstr[0] "%1 година"
-msgstr[1] "%1 године"
-msgstr[2] "%1 година"
-msgstr[3] "1 година"
-
-#: core/meta/support/MetaUtility.cpp:433
-#, kde-format
-msgctxt "number of months for the pretty time"
-msgid "%1 month"
-msgid_plural "%1 months"
-msgstr[0] "%1 мјесец"
-msgstr[1] "%1 мјесеца"
-msgstr[2] "%1 мјесеци"
-msgstr[3] "1 мјесец"
-
-#: core/meta/support/MetaUtility.cpp:435
-#, kde-format
-msgctxt "number of days for the pretty time"
-msgid "%1 day"
-msgid_plural "%1 days"
-msgstr[0] "%1 дан"
-msgstr[1] "%1 дана"
-msgstr[2] "%1 дана"
-msgstr[3] "1 дан"
-
-#: core/meta/support/MetaUtility.cpp:437
-#, kde-format
-msgctxt "number of hours for the pretty time"
-msgid "%1 hour"
-msgid_plural "%1 hours"
-msgstr[0] "%1 сат"
-msgstr[1] "%1 сата"
-msgstr[2] "%1 сати"
-msgstr[3] "1 сат"
-
-#: core/meta/support/MetaUtility.cpp:439
-#, kde-format
-msgctxt "number of minutes for the pretty time"
-msgid "%1 minute"
-msgid_plural "%1 minutes"
-msgstr[0] "%1 минут"
-msgstr[1] "%1 минута"
-msgstr[2] "%1 минута"
-msgstr[3] "1 минут"
-
-#: core/meta/support/MetaUtility.cpp:441
-#, kde-format
-msgctxt "number of seconds for the pretty time"
-msgid "%1 second"
-msgid_plural "%1 seconds"
-msgstr[0] "%1 секунда"
-msgstr[1] "%1 секунде"
-msgstr[2] "%1 секунди"
-msgstr[3] "1 секунда"
 
 #: core/podcasts/PodcastReader.cpp:455
 #, kde-format
@@ -6161,6 +6161,27 @@ msgstr "Улазни фајл"
 msgid "Could not open file \"%1\"."
 msgstr "Не могу да отворим фајл „%1“."
 
+#. i18n: file: dialogs/EditFilterDialog.ui:172
+#. i18n: ectx: property (text), item, widget (QComboBox, cbAndOr)
+#: dialogs/EditFilterDialog.cpp:40 rc.cpp:1563
+msgid "AND"
+msgstr "И"
+
+#. i18n: file: dialogs/EditFilterDialog.ui:177
+#. i18n: ectx: property (text), item, widget (QComboBox, cbAndOr)
+#: dialogs/EditFilterDialog.cpp:41 rc.cpp:1566
+msgid "OR"
+msgstr "ИЛИ"
+
+#: dialogs/EditFilterDialog.cpp:42
+msgid "Simple text"
+msgstr "обичан текст"
+
+# >> @title:window
+#: dialogs/EditFilterDialog.cpp:50
+msgid "Edit Filter"
+msgstr "Уређивање филтера"
+
 #: dialogs/FilenameLayoutDialog.cpp:240 dialogs/FilenameLayoutDialog.cpp:245
 #: dialogs/FilenameLayoutDialog.cpp:250 dialogs/FilenameLayoutDialog.cpp:255
 #: dialogs/FilenameLayoutDialog.cpp:260 dialogs/FilenameLayoutDialog.cpp:265
@@ -6888,6 +6909,71 @@ msgid ""
 "been discarded."
 msgstr "Двосмислена одбачена <b><font color='red'>%1</font></b>"
 
+# >> @title:window
+#: dialogs/EqualizerDialog.cpp:44
+msgid "Configure Equalizer"
+msgstr "Подешавање еквилајзера"
+
+#: dialogs/EqualizerDialog.cpp:100
+msgid ""
+"Sorry, your current Phonon backend version does not provide equalizer "
+"support."
+msgstr "Тренутна позадина Фонона нема подршку за еквилајзер."
+
+#: dialogs/EqualizerDialog.cpp:156 dialogs/EqualizerDialog.cpp:165
+msgid ""
+"%0\n"
+"dB"
+msgstr ""
+"%0\n"
+"dB"
+
+#: dialogs/EqualizerDialog.cpp:265
+msgctxt "Equalizer state, as in, disabled"
+msgid "Off"
+msgstr "искључен"
+
+#: dialogs/EqualizerDialog.cpp:282
+msgid "Cannot delete this preset"
+msgstr "Не могу да обришем ово претподешавање"
+
+#: dialogs/EqualizerDialog.cpp:283
+msgid "Default presets can not be deleted"
+msgstr "Не могу се брисати подразумијевана претподешавања"
+
+#: dialogs/EqualizerDialog.cpp:284
+msgid "Error deleting preset"
+msgstr "Грешка при брисању претподешавања"
+
+#: dialogs/EqualizerDialog.cpp:307
+msgid "Cannot restore this preset"
+msgstr "Не могу да обновим ово претподешавање"
+
+#: dialogs/EqualizerDialog.cpp:308
+msgid "Only default presets can be restored"
+msgstr "Обнављати се могу само подразумијевана претподешавања"
+
+#: dialogs/EqualizerDialog.cpp:309
+msgid "Error restoring preset"
+msgstr "Грешка при обнављању претподешавања"
+
+#: dialogs/EqualizerDialog.cpp:328
+msgid "Cannot save this preset"
+msgstr "Не могу да сачувам ово претподешавање"
+
+#: dialogs/EqualizerDialog.cpp:329
+msgid ""
+"Preset 'Manual' is reserved for momentary settings.\n"
+"                                              Please choose different name "
+"and try again."
+msgstr ""
+"Претподешавање ручно резервисано је за тренутачне поставке.\n"
+"Изаберите други назив и покушајте поново."
+
+#: dialogs/EqualizerDialog.cpp:331
+msgid "Error saving preset"
+msgstr "Грешка при уписивању претподешавања"
+
 # rewrite-msgid: /Layout/Scheme/
 #: dialogs/TagDialog.cpp:420
 msgid "Filename Layout Chooser"
@@ -6960,7 +7046,7 @@ msgctxt "The collection this track is part of"
 msgid "None"
 msgstr "ниједна"
 
-#: dialogs/TagDialog.cpp:1332
+#: dialogs/TagDialog.cpp:1333
 msgid ""
 "Writing to file failed. Please check permissions and available disc space."
 msgstr ""
@@ -6968,95 +7054,9 @@ msgstr ""
 
 #. i18n: file: dialogs/MusicBrainzTagger.ui:12
 #. i18n: ectx: property (windowTitle), widget (QWidget, MusicBrainzTagger)
-#: dialogs/TagDialog.cpp:1388 rc.cpp:1482
+#: dialogs/TagDialog.cpp:1389 rc.cpp:1482
 msgid "MusicBrainz Tagger"
 msgstr "Мјузикбрејнзов уређивач ознака"
-
-#. i18n: file: dialogs/EditFilterDialog.ui:172
-#. i18n: ectx: property (text), item, widget (QComboBox, cbAndOr)
-#: dialogs/EditFilterDialog.cpp:40 rc.cpp:1563
-msgid "AND"
-msgstr "И"
-
-#. i18n: file: dialogs/EditFilterDialog.ui:177
-#. i18n: ectx: property (text), item, widget (QComboBox, cbAndOr)
-#: dialogs/EditFilterDialog.cpp:41 rc.cpp:1566
-msgid "OR"
-msgstr "ИЛИ"
-
-#: dialogs/EditFilterDialog.cpp:42
-msgid "Simple text"
-msgstr "обичан текст"
-
-# >> @title:window
-#: dialogs/EditFilterDialog.cpp:50
-msgid "Edit Filter"
-msgstr "Уређивање филтера"
-
-# >> @title:window
-#: dialogs/EqualizerDialog.cpp:44
-msgid "Configure Equalizer"
-msgstr "Подешавање еквилајзера"
-
-#: dialogs/EqualizerDialog.cpp:100
-msgid ""
-"Sorry, your current Phonon backend version does not provide equalizer "
-"support."
-msgstr "Тренутна позадина Фонона нема подршку за еквилајзер."
-
-#: dialogs/EqualizerDialog.cpp:156 dialogs/EqualizerDialog.cpp:165
-msgid ""
-"%0\n"
-"dB"
-msgstr ""
-"%0\n"
-"dB"
-
-#: dialogs/EqualizerDialog.cpp:265
-msgctxt "Equalizer state, as in, disabled"
-msgid "Off"
-msgstr "искључен"
-
-#: dialogs/EqualizerDialog.cpp:282
-msgid "Cannot delete this preset"
-msgstr "Не могу да обришем ово претподешавање"
-
-#: dialogs/EqualizerDialog.cpp:283
-msgid "Default presets can not be deleted"
-msgstr "Не могу се брисати подразумијевана претподешавања"
-
-#: dialogs/EqualizerDialog.cpp:284
-msgid "Error deleting preset"
-msgstr "Грешка при брисању претподешавања"
-
-#: dialogs/EqualizerDialog.cpp:307
-msgid "Cannot restore this preset"
-msgstr "Не могу да обновим ово претподешавање"
-
-#: dialogs/EqualizerDialog.cpp:308
-msgid "Only default presets can be restored"
-msgstr "Обнављати се могу само подразумијевана претподешавања"
-
-#: dialogs/EqualizerDialog.cpp:309
-msgid "Error restoring preset"
-msgstr "Грешка при обнављању претподешавања"
-
-#: dialogs/EqualizerDialog.cpp:328
-msgid "Cannot save this preset"
-msgstr "Не могу да сачувам ово претподешавање"
-
-#: dialogs/EqualizerDialog.cpp:329
-msgid ""
-"Preset 'Manual' is reserved for momentary settings.\n"
-"                                              Please choose different name "
-"and try again."
-msgstr ""
-"Претподешавање ручно резервисано је за тренутачне поставке.\n"
-"Изаберите други назив и покушајте поново."
-
-#: dialogs/EqualizerDialog.cpp:331
-msgid "Error saving preset"
-msgstr "Грешка при уписивању претподешавања"
 
 #: dynamic/biases/EchoNestBias.cpp:47
 msgctxt "Name of the \"EchoNest\" bias"
@@ -8933,10 +8933,14 @@ msgstr ""
 msgid "Playlist Files on Disk"
 msgstr "Фајлови листи нумера на диску"
 
-#: playlistmanager/file/PlaylistFileProvider.cpp:276
+#: playlistmanager/file/PlaylistFileProvider.cpp:275
 #, kde-format
 msgid "The playlist file \"%1\" could not be loaded."
 msgstr "Не могу да учитам фајл листе нумера „%1“."
+
+#: playlistmanager/sql/SqlPlaylist.cpp:41
+msgid "Playlist in database"
+msgstr "Листа нумера у бази"
 
 #: playlistmanager/sql/SqlUserPlaylistProvider.h:44
 msgid "Amarok Database"
@@ -8945,10 +8949,6 @@ msgstr "Амарокова база података"
 #: playlistmanager/sql/SqlUserPlaylistProvider.h:45
 msgid "Local playlists stored in the database"
 msgstr "Локалне листе нумере складиштене у бази"
-
-#: playlistmanager/sql/SqlPlaylist.cpp:41
-msgid "Playlist in database"
-msgstr "Листа нумера у бази"
 
 #: playlistmanager/SyncedPlaylist.cpp:42 playlistmanager/SyncedPlaylist.cpp:50
 #: playlistmanager/SyncedPlaylist.cpp:58
@@ -10768,7 +10768,7 @@ msgid "empty"
 msgstr "празно"
 
 # literal-segment: kde4-config
-#: PluginManager.cpp:256
+#: PluginManager.cpp:259
 msgid ""
 "<p>Amarok could not find any collection plugins. It is possible that Amarok "
 "is installed under the wrong prefix, please fix your installation "
@@ -10788,38 +10788,12 @@ msgstr ""
 "$ amarok</pre><p>Више информација можете пронаћи у фајлу README. За више "
 "помоћи придружите нам се на #amarok на irc.freenode.net.</p>"
 
-#: EngineController.cpp:297
-msgid ""
-"<p>Phonon claims it <b>cannot</b> play MP3 files. You may want to examine "
-"the installation of the backend that phonon uses.</p><p>You may find useful "
-"information in the <i>FAQ</i> section of the <i>Amarok Handbook</i>.</p>"
-msgstr ""
-"<p>Фонон тврди да <b>не може</b> да пушта МП3 фајлове. Можда би требало да "
-"провјерите инсталацију позадине коју Фонон користи.</p><p>Можете наћи "
-"корисне информације у ЧПП одијељку <i>Приручника за Амарок</i>.</p>"
-
-#: EngineController.cpp:320
-msgid "Install MP3 Support"
-msgstr "Инсталирај подршку за МП3"
-
-#: EngineController.cpp:322
-msgid ""
-"Amarok currently cannot play MP3 files. Do you want to install support for "
-"MP3?"
-msgstr ""
-"Амарок тренутно не може да пушта МП3 фајлове. Желите ли да инсталирате "
-"подршку за МП3?"
-
-#: EngineController.cpp:323
-msgid "No MP3 Support"
-msgstr "Нема подршке за МП3"
-
 # >> @item
-#: EngineController.cpp:901
+#: EngineController.cpp:841
 msgid "Preamp"
 msgstr "претпојачање"
 
-#: EngineController.cpp:907
+#: EngineController.cpp:847
 msgid ""
 "%0\n"
 "Hz"
@@ -10827,7 +10801,7 @@ msgstr ""
 "%0\n"
 "Hz"
 
-#: EngineController.cpp:911
+#: EngineController.cpp:851
 msgid ""
 "%0\n"
 "kHz"
@@ -10835,29 +10809,29 @@ msgstr ""
 "%0\n"
 "kHz"
 
-#: EngineController.cpp:1208
+#: EngineController.cpp:1153
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "Сувише грешака у листи нумера. Пуштање заустављено."
 
-#: EngineController.cpp:1429
+#: EngineController.cpp:1374
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> — <b>%2</b> (<b>%3</b>)"
 
-#: EngineController.cpp:1432
+#: EngineController.cpp:1376
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> — <b>%2</b>"
 
-#: EngineController.cpp:1436
+#: EngineController.cpp:1379
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> (<b>%2</b>)"
 
-#: EngineController.cpp:1448
+#: EngineController.cpp:1391
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
@@ -11147,6 +11121,156 @@ msgid ""
 msgstr ""
 "Грешку у скрипти пријављује: %1\n"
 "%2"
+
+#: TrayIcon.cpp:145
+#, kde-format
+msgid "%1%"
+msgstr "%1%"
+
+#: TrayIcon.cpp:147
+#, kde-format
+msgid "<i>Volume: %1</i>"
+msgstr "<i>Јачина: %1</i>"
+
+#: TrayIcon.cpp:152
+#, kde-format
+msgid "Score: %1"
+msgstr "Резултат: %1"
+
+#: TrayIcon.cpp:170
+#, kde-format
+msgid "Rating: %1"
+msgstr "Рејтинг: %1"
+
+#: TrayIcon.cpp:176
+#, kde-format
+msgid "Play count: %1"
+msgstr "Број пуштања: %1"
+
+#: TrayIcon.cpp:180
+#, kde-format
+msgid "Last played: %1"
+msgstr "Посљедње пуштање: %1"
+
+#: App.cpp:409
+msgid "Files/URLs to open"
+msgstr "Фајлови/УРЛ‑ови за отварање"
+
+#: App.cpp:410
+msgid "Immediately start playing an audio cd"
+msgstr "Одмах започни пуштање аудио ЦД‑а"
+
+#: App.cpp:412
+msgid "Skip backwards in playlist"
+msgstr "Прескочи уназад у листи нумера"
+
+#: App.cpp:414
+msgid "Start playing current playlist"
+msgstr "Почни да пушташ текућу листу нумера"
+
+#: App.cpp:416
+msgid "Play if stopped, pause if playing"
+msgstr "Пусти ако је заустављено, паузирај ако се пушта"
+
+#: App.cpp:417
+msgid "Pause playback"
+msgstr "Паузирај пуштање"
+
+#: App.cpp:419
+msgid "Stop playback"
+msgstr "Заустави пуштање"
+
+#: App.cpp:421
+msgid "Skip forwards in playlist"
+msgstr "Прескочи унапред у листи нумера"
+
+#: App.cpp:422
+msgid "Additional options:"
+msgstr "Додатне опције:"
+
+#: App.cpp:424
+msgid "Append files/URLs to playlist"
+msgstr "Додај фајлове/УРЛ‑ове у листу нумера"
+
+#: App.cpp:425
+msgid "Queue URLs after the currently playing track"
+msgstr "Стави УРЛ‑ове у ред послије нумере која се тренутно пушта"
+
+#: App.cpp:427
+msgid "Load URLs, replacing current playlist"
+msgstr "Учитај УРЛ‑ове, замијенивши текућу листу"
+
+#: App.cpp:429
+msgid "Print verbose debugging information"
+msgstr "Исписуј опширне исправљачке податке"
+
+#: App.cpp:431
+msgid "Disable colorization for debug output."
+msgstr "Искључи бојење у исправљачком излазу."
+
+#: App.cpp:433
+msgid "Allow running multiple Amarok instances"
+msgstr "Дозволи покретање више примјерака Амарока"
+
+#: App.cpp:434
+msgid "Base for relative filenames/URLs"
+msgstr "Основа за релативна имена фајлова/УРЛ‑ова"
+
+#: App.cpp:436
+msgid "Unit test options:"
+msgstr "Опције јединичних проба:"
+
+#: App.cpp:437
+msgid "Run integrated unit tests"
+msgstr "Изврши уграђене јединичне пробе"
+
+# literal-segment: :.*
+#: App.cpp:438
+msgid "Destination of test output: 'stdout', 'log'"
+msgstr "Одредиште излаза проба: stdout, log"
+
+# literal-segment: :.*
+#: App.cpp:439
+msgid "Format of test output: 'xml', 'lightxml', 'plaintext'"
+msgstr "Формат излаза проба: xml, lightxml, plaintext"
+
+#: App.cpp:440
+msgid "Verbosity from 0-3 (highest)"
+msgstr "Опширност од 0 до 3 (највећа)"
+
+#: App.cpp:621
+msgid ""
+"The embedded database was not found; you must set up a database server "
+"connection.\n"
+"You must restart Amarok after doing this."
+msgstr ""
+"Није пронађена угнијежђена база; морате подесити везу са сервером базе.\n"
+"Након овога морате поново покренути Амарок."
+
+#: App.cpp:622
+msgid ""
+"The connection details for the database server were invalid.\n"
+"You must enter correct settings and restart Amarok after doing this."
+msgstr ""
+"Подаци за повезивање са сервером базе нису исправни.\n"
+"Морате унијети исправне поставке и након тога поново покренути Амарок."
+
+#: App.cpp:623
+msgid "Database Error"
+msgstr "Грешка у бази"
+
+#: App.cpp:668
+msgid "Moving files to trash"
+msgstr "Премијештам фајлове у смеће"
+
+#: App.cpp:756
+#, kde-format
+msgid ""
+"A music path, %1, is set in System Settings.\n"
+"Would you like to use that as a collection folder?"
+msgstr ""
+"Путања музике, %1, постављена је у Системским поставкама.\n"
+"Желите ли користити њу као фасциклу збирке?"
 
 #: rc.cpp:1
 msgctxt "NAME OF TRANSLATORS"
@@ -16118,153 +16242,3 @@ msgstr "Без груписања (у једном реду)"
 #: rc.cpp:2669
 msgid "Verbose"
 msgstr "Детаљније"
-
-#: TrayIcon.cpp:145
-#, kde-format
-msgid "%1%"
-msgstr "%1%"
-
-#: TrayIcon.cpp:147
-#, kde-format
-msgid "<i>Volume: %1</i>"
-msgstr "<i>Јачина: %1</i>"
-
-#: TrayIcon.cpp:152
-#, kde-format
-msgid "Score: %1"
-msgstr "Резултат: %1"
-
-#: TrayIcon.cpp:170
-#, kde-format
-msgid "Rating: %1"
-msgstr "Рејтинг: %1"
-
-#: TrayIcon.cpp:176
-#, kde-format
-msgid "Play count: %1"
-msgstr "Број пуштања: %1"
-
-#: TrayIcon.cpp:180
-#, kde-format
-msgid "Last played: %1"
-msgstr "Посљедње пуштање: %1"
-
-#: App.cpp:409
-msgid "Files/URLs to open"
-msgstr "Фајлови/УРЛ‑ови за отварање"
-
-#: App.cpp:410
-msgid "Immediately start playing an audio cd"
-msgstr "Одмах започни пуштање аудио ЦД‑а"
-
-#: App.cpp:412
-msgid "Skip backwards in playlist"
-msgstr "Прескочи уназад у листи нумера"
-
-#: App.cpp:414
-msgid "Start playing current playlist"
-msgstr "Почни да пушташ текућу листу нумера"
-
-#: App.cpp:416
-msgid "Play if stopped, pause if playing"
-msgstr "Пусти ако је заустављено, паузирај ако се пушта"
-
-#: App.cpp:417
-msgid "Pause playback"
-msgstr "Паузирај пуштање"
-
-#: App.cpp:419
-msgid "Stop playback"
-msgstr "Заустави пуштање"
-
-#: App.cpp:421
-msgid "Skip forwards in playlist"
-msgstr "Прескочи унапред у листи нумера"
-
-#: App.cpp:422
-msgid "Additional options:"
-msgstr "Додатне опције:"
-
-#: App.cpp:424
-msgid "Append files/URLs to playlist"
-msgstr "Додај фајлове/УРЛ‑ове у листу нумера"
-
-#: App.cpp:425
-msgid "Queue URLs after the currently playing track"
-msgstr "Стави УРЛ‑ове у ред послије нумере која се тренутно пушта"
-
-#: App.cpp:427
-msgid "Load URLs, replacing current playlist"
-msgstr "Учитај УРЛ‑ове, замијенивши текућу листу"
-
-#: App.cpp:429
-msgid "Print verbose debugging information"
-msgstr "Исписуј опширне исправљачке податке"
-
-#: App.cpp:431
-msgid "Disable colorization for debug output."
-msgstr "Искључи бојење у исправљачком излазу."
-
-#: App.cpp:433
-msgid "Allow running multiple Amarok instances"
-msgstr "Дозволи покретање више примјерака Амарока"
-
-#: App.cpp:434
-msgid "Base for relative filenames/URLs"
-msgstr "Основа за релативна имена фајлова/УРЛ‑ова"
-
-#: App.cpp:436
-msgid "Unit test options:"
-msgstr "Опције јединичних проба:"
-
-#: App.cpp:437
-msgid "Run integrated unit tests"
-msgstr "Изврши уграђене јединичне пробе"
-
-# literal-segment: :.*
-#: App.cpp:438
-msgid "Destination of test output: 'stdout', 'log'"
-msgstr "Одредиште излаза проба: stdout, log"
-
-# literal-segment: :.*
-#: App.cpp:439
-msgid "Format of test output: 'xml', 'lightxml', 'plaintext'"
-msgstr "Формат излаза проба: xml, lightxml, plaintext"
-
-#: App.cpp:440
-msgid "Verbosity from 0-3 (highest)"
-msgstr "Опширност од 0 до 3 (највећа)"
-
-#: App.cpp:621
-msgid ""
-"The embedded database was not found; you must set up a database server "
-"connection.\n"
-"You must restart Amarok after doing this."
-msgstr ""
-"Није пронађена угнијежђена база; морате подесити везу са сервером базе.\n"
-"Након овога морате поново покренути Амарок."
-
-#: App.cpp:622
-msgid ""
-"The connection details for the database server were invalid.\n"
-"You must enter correct settings and restart Amarok after doing this."
-msgstr ""
-"Подаци за повезивање са сервером базе нису исправни.\n"
-"Морате унијети исправне поставке и након тога поново покренути Амарок."
-
-#: App.cpp:623
-msgid "Database Error"
-msgstr "Грешка у бази"
-
-#: App.cpp:668
-msgid "Moving files to trash"
-msgstr "Премијештам фајлове у смеће"
-
-#: App.cpp:756
-#, kde-format
-msgid ""
-"A music path, %1, is set in System Settings.\n"
-"Would you like to use that as a collection folder?"
-msgstr ""
-"Путања музике, %1, постављена је у Системским поставкама.\n"
-"Желите ли користити њу као фасциклу збирке?"

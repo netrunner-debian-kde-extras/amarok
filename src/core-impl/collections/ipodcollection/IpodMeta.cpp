@@ -16,15 +16,15 @@
 
 #include "IpodMeta.h"
 
-#include "IpodCollection.h"
-#include "IpodMetaEditCapability.h"
-#include "config-ipodcollection.h"
 #include "amarokconfig.h"
 #include "core/support/Debug.h"
+#include "core-impl/collections/ipodcollection/IpodCollection.h"
+#include "core-impl/collections/ipodcollection/IpodMetaEditCapability.h"
+#include "core-impl/collections/ipodcollection/config-ipodcollection.h"
 #include "core-impl/collections/support/jobs/WriteTagsJob.h"
 #include "core-impl/collections/support/ArtistHelper.h"
 #include "covermanager/CoverCache.h"
-#include "FileType.h"
+#include "shared/FileType.h"
 
 #include <KTemporaryFile>
 #include <ThreadWeaver/Weaver>
@@ -727,7 +727,7 @@ Track::setCollection( QWeakPointer<IpodCollection> collection )
     // by us, it can be more accurate than file extension, so we prefer it)
     if( !Amarok::FileTypeSupport::possibleFileTypes().contains( type() ) )
         setType( Amarok::extension( playableUrl().path() ) );
-        // we dont make the datbase dirty, this can be recomputed every time
+        // we don't make the datbase dirty, this can be recomputed every time
 }
 
 void

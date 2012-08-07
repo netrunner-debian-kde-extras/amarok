@@ -2,13 +2,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Jure Repinc <jlp@holodeck1.com>, 2009, 2010.
+# Andrej Mernik <andrejm@ubuntu.si>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2011-08-18 02:51+0200\n"
-"PO-Revision-Date: 2010-04-24 19:32+0200\n"
-"Last-Translator: Jure Repinc <jlp@holodeck1.com>\n"
+"PO-Revision-Date: 2012-06-01 12:48+0200\n"
+"Last-Translator: Andrej Mernik <andrejm@ubuntu.si>\n"
 "Language-Team: Slovenian <lugos-slo@lugos.si>\n"
 "Language: sl\n"
 "MIME-Version: 1.0\n"
@@ -22,17 +23,17 @@ msgstr ""
 #: utilities/collectionscanner/CollectionScanner.cpp:267
 #, qt-format
 msgid "File \"%1\" not found."
-msgstr ""
+msgstr "Datoteka \"%1\" ni bila najdena."
 
 #: utilities/collectionscanner/CollectionScanner.cpp:247
 #, qt-format
 msgid "Could not open file \"%1\"."
-msgstr ""
+msgstr "Datoteke \"%1\" ni bilo mogoče odpreti."
 
 #: utilities/collectionscanner/CollectionScanner.cpp:499
 #, qt-format
 msgid "Missing argument for option %1"
-msgstr ""
+msgstr "Za možnost %1 manjka argument"
 
 #: utilities/collectionscanner/CollectionScanner.cpp:536
 msgid ""
@@ -65,6 +66,36 @@ msgid ""
 "   </scanner>\n"
 "                          You can also use a previous scan result for that.\n"
 msgstr ""
+"Preiskovalnik zbirke za Amarok\n"
+"Preišče mape in izpiše datoteko XML z rezultati.\n"
+"Za več podrobnosti si oglejte http://amarok.kde.org/wiki/Batch_Mode\n"
+"\n"
+"Uporaba: amarokcollectionscanner [možnosti] <mape>\n"
+"Možnosti, ki jih lahko spremeni uporabnik:\n"
+"<mape>             : seznam map, ki bodo preiskane\n"
+"-h, --help              : izpiše to besedilo s pomočjo\n"
+"-v, --version           : izpiše različico tega orodja\n"
+"-r, --recursive         : preišče mape rekurzivno\n"
+"-i, --incremental       : nov zagon preišče le spremenjene mape\n"
+"-s, --restart           : po sesutju preiskovalnik nadaljuje od prejšnjega "
+"položaja\n"
+"    --idlepriority      : zažene s prednostjo: \n"
+"    --sharedmemory <ključ> : za ponoven zagon preiskovanja bo uporabljen "
+"deljen odsek pomnilnika\n"
+"    --newer <pot>      : preišče samo mape katerih datum spremembe je "
+"novejši kot <pot>\n"
+"                          uporabno le v načinu incremental\n"
+"    --batch <pot>      : doda mape iz paketne datoteke XML\n"
+"                          oblika paketne datoteke bi naj izgledala nekako "
+"tako:\n"
+"   <scanner>\n"
+"    <directory>\n"
+"     <path>/absolutna/pot/do/mape</path>\n"
+"     <mtime>1234</mtime>   (to je izbirno)\n"
+"    </directory>\n"
+"   </scanner>\n"
+"                          Za to lahko uporabite tudi predhodni rezultat "
+"preiskovanja.\n"
 
 
 

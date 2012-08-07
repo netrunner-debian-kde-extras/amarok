@@ -2,6 +2,9 @@
 <!DOCTYPE book PUBLIC "-//KDE//DTD DocBook XML V4.2-Based Variant V1.1//EN" "dtd/kdex.dtd" [
   <!ENTITY % addindex "IGNORE">
   <!ENTITY % Dutch "INCLUDE">
+  <!ENTITY Thom.Castermans '<othercredit role="translator"><firstname>Thom</firstname><surname>Castermans</surname><affiliation><address><email>thomcastermans@kde.nl</email></address></affiliation><contrib>Vertaler/Nalezer</contrib></othercredit>'>
+  <!ENTITY vertaling.thom "<para>Dit document is vertaald in het Nederlands door &Thom.Castermans;.</para>">
+  <!ENTITY ged.vertaald '<othercredit role="translator"><firstname>Dit document is nog maar gedeeltelijk vertaald.</firstname> <surname>Wilt u meehelpen, stuur een bericht naar:</surname><affiliation><address> <email>kde-i18n-nl@kde.org</email></address></affiliation> <contrib>Nieuwe vertaler</contrib></othercredit>'>
 ]>
 <book lang="&language;">
 <bookinfo>
@@ -23,7 +26,7 @@
 <legalnotice
 >&FDLNotice;</legalnotice>
 <date
->2012-01-19</date>
+>2012-05-18</date>
       <releaseinfo
 >2.5.0</releaseinfo>
 <abstract>
@@ -54,7 +57,7 @@
 </keywordset>
 </bookinfo>
 <!--userbase <timestamp
->2012-01-19T19:28:52Z</timestamp
+>2012-05-19T14:29:24Z</timestamp
 >-->
 
 <!--userbase-content-->
@@ -10057,7 +10060,7 @@
 </sect3>
 <sect3 id="debian-packages"
 ><title
->Debian packages</title
+>Debian pakketten</title
 > 
 <para
 >A package for Moodbar is now available in Debian unstable. Simply run <userinput
@@ -10066,7 +10069,7 @@
 </sect3>
 <sect3 id="kubuntu-and-ubuntu-packages"
 ><title
->Kubuntu and Ubuntu packages</title
+>Kubuntu en Ubuntu pakketten</title
 > 
 <para
 >A package for Moodbar is available in the official package repository; just ensure the universe section is activated (which should be default anyway). Just install the package moodbar with your preferred package manager (<guilabel
@@ -10098,7 +10101,7 @@
 </sect3>
 <sect3 id="rpm-builds"
 ><title
->RPM builds</title
+>RPM-builds</title
 > 
 <para
 >If you are a rpm-based distro user, you can build a .rpm using rpmbuild with latest </para>
@@ -10122,10 +10125,10 @@
 </sect3>
 <sect3 id="opensuse-packages"
 ><title
->openSUSE packages</title
+>openSUSE pakketten</title
 > 
 <para
->openSUSE 11.0 and later, automatically install the following packages: </para>
+>openSUSE 11.0 en later installeert automatisch de volgende pakketten: </para>
 <itemizedlist>
 <listitem
 ><para
@@ -10146,7 +10149,7 @@
 </itemizedlist>
 <sect4 id="moodbar-installation"
 ><title
->Moodbar Installation</title
+>Installatie van Moodbar</title
 > 
 <para
 >1-Click Install for openSUSE 11. - just choose your version and installation procedure will do the rest: </para>
@@ -10370,7 +10373,7 @@
 ><para
 >If the <guilabel
 >Moodbar</guilabel
-> executable tells you that it can't find an element &mdash; i.e., it gives an error message like <screen
+> executable tells you that it can't find an element &mdash; &ie;, it gives an error message like <screen
 >Could not create element of type fftwspectrum, please install it.</screen
 >&mdash; that usually means that you either don't have the required plugins installed (see the plugin list <link linkend="supported-filetypes"
 >here</link
@@ -10418,14 +10421,14 @@
     <entry
 >Required Plugin</entry>
     <entry
->Note</entry>
+>Notitie</entry>
   </row>
   </thead>
   <tbody>
   <row>
     <entry>
     <para
->All</para>
+>Alles</para>
     </entry>
     <entry>
     <para
@@ -10771,7 +10774,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect2>
 <sect2 id="amarok-on-windows"
 ><title
->Amarok on Windows</title
+>Amarok in Windows</title
 > 
 <para
 >As you already know, a normal Windows install doesn't use KDE, so if you want to install &amarok;, you can't just download the &amarok; package. You must install a compatible compiler first. Here is described how to download, install and run &amarok; in the Windows operating system. </para>
@@ -10794,7 +10797,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect4>
 <sect4 id="amarok-2-4-only"
 ><title
->Amarok-2.4 Only</title
+>Alleen Amarok-2.4</title
 > 
 <para
 >If you already have &amarok; installed, you can update to the newest version from here: <ulink url="http://kollide.net/~dgran10/amarok/"
@@ -10816,7 +10819,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </para>
 <sect4 id="step-1"
 ><title
->Step 1</title
+>Stap 1</title
 > 
 <para
 >First, review on the license terms. </para>
@@ -10838,7 +10841,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect4>
 <sect4 id="step-2"
 ><title
->Step 2</title
+>Stap 2</title
 > 
 <para
 >Second, choose the install location. </para>
@@ -10864,7 +10867,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect4>
 <sect4 id="step-3"
 ><title
->Step 3</title
+>Stap 3</title
 > 
 <para
 >Wait a few minutes while the installation finishes. </para>
@@ -10886,7 +10889,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect4>
 <sect4 id="step-4"
 ><title
->Step 4</title
+>Stap 3</title
 >  
 <para
 >When the installation is done, dismiss the window with <guilabel
@@ -10911,7 +10914,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect3>
 <sect3 id="running-amarok"
 ><title
->Running Amarok</title
+>Amarok uitvoeren</title
 > 
 <para
 >When the installation finishes, you'll find an &amarok; shortcut on your desktop. To run &amarok;, just click the shortcut. </para>
@@ -10937,7 +10940,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect3>
 <sect3 id="installation-using-macports"
 ><title
->Installation using MacPorts</title
+>Installatie met gebruik van MacPorts</title
 > 
 <para
 >To install &amarok; on &MacOS; X, first one needs to install MacPorts from <ulink url="http://www.macports.org/install.php"
@@ -11049,7 +11052,7 @@ ftpProxy=http://username:password@proxyserver:port/
 > 
 <sect3 id="playlist-errors"
 ><title
->Playlist errors</title
+>Fouten met Afspeellijst</title
 > 
 <para
 >The current playlist can occasionally get corrupt, which will prevent &amarok; from starting. This can be fixed by simply removing the current playlist file in the &amarok; directory, <filename
@@ -11112,9 +11115,9 @@ ftpProxy=http://username:password@proxyserver:port/
 ></menuchoice
 > whenever you make changes to your collection. </para>
 <para
->More about <link linkend="collection-scanning"
->Amarok collection scanning here</link
->. </para>
+>Meer over <link linkend="collection-scanning"
+>Scannen van Amarok verzameling hier</link
+> </para>
 <sect3 id="corrupt-tags"
 ><title
 >Corrupt tags</title
@@ -11256,7 +11259,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect1>
 <sect1 id="frequently-asked-questions"
 ><title
->Frequently Asked Questions</title
+>Veel voorkomende vragen</title
 > 
 <sect2 id="what-is-amarok"
 ><title
@@ -11517,6 +11520,94 @@ ftpProxy=http://username:password@proxyserver:port/
 >mp3 information page</ulink
 >. You probably lack the codecs required by your particular Phonon backend (VLC, Gstreamer, or Xine). </para>
 </sect3>
+<sect3 id="i-have-the-codecs-but-amarok-still-wont-play-mp4s-and-mkas"
+><title
+>I have the codecs, but Amarok still won't play mp4s and mkas</title
+> 
+<para
+>When using some phonon backend, like the gstreamer one, &amarok; might refuse to play <filename
+>mp4</filename
+> and <filename
+>mka</filename
+> files. This is a known problem, see <ulink url="https://bugs.kde.org/show_bug.cgi?id=290168"
+>bug #290168</ulink
+> for more technical information. </para>
+<para
+>A very simple workaround is to change the file extension. Change <filename
+>mp4</filename
+> extension to <filename
+>m4a</filename
+> and for <filename
+>mka</filename
+> change it to <filename
+>mkv</filename
+>. Of course you must be sure the files contains audio only. You can use the ffprobe command to look at what data streams are present in the file. If the file has a video stream it must be stripped out. There are a lot of tools able to edit these formats and most of them are based on <filename
+>ffmpeg</filename
+>/<filename
+>libav</filename
+>, which you can use if you are familiar with them. If you prefer graphical tools one possible choice is <ulink url="http://www.avidemux.org/"
+>avidemux</ulink
+>. </para>
+<para
+>This is a quick example how you can remove a video stream from an <filename
+>mp4</filename
+> video with ffmpeg. Stripping a video stream from an <filename
+>mkv</filename
+> file is the same. First check if there is a video stream </para>
+<para
+><userinput
+><command
+>$ ffprobe example.mp4 2&gt;&amp;1 | grep Video</command
+></userinput>
+</para>
+<para
+><screen
+><command>Stream #0.1(und): Video: h264 (Baseline), yuv420p, 480x360 [PAR 1:1 DAR 4:3], 242 kb/s, 25 fps, 25 tbr, 25k tbn, 50k tbc</command></screen>
+</para>
+<para
+>If the output of the previous command is null there is no video stream in the file. To create an <filename
+>m4a</filename
+> file with just the audio stream you can use something like </para>
+<para
+><screen
+>ffmpeg -i example.mp4 -acodec copy -vn example.m4a
+</screen>
+</para>
+<para
+>You can also use <filename
+>avconv</filename
+> in place of <filename
+>ffmpeg</filename
+> with the same options, where </para>
+<itemizedlist>
+<listitem
+><para
+><emphasis
+>-i example.mp4</emphasis
+> option is the input file name</para
+></listitem>
+<listitem
+><para
+><emphasis
+>-acodec copy</emphasis
+> is used to not encode again the audio stream but just copy it. This to avoid quality loss, but you can also encode in a different format if you want, and you are not forced to use m4a container in this case</para
+></listitem>
+<listitem
+><para
+><emphasis
+>-vn</emphasis
+> strips the video stream</para
+></listitem>
+<listitem
+><para
+><replaceable
+>example.m4a</replaceable
+> is the output file name</para
+></listitem>
+</itemizedlist>
+<para
+>Another possible workaround is to change the phonon backend. For example the VLC backend doesn't suffer this problem. </para>
+</sect3>
 <sect3 id="i-cant-get-any-media-to-play-in-amarok-why-not"
 ><title
 >I can't get any media to play in Amarok, why not?</title
@@ -11602,6 +11693,78 @@ ftpProxy=http://username:password@proxyserver:port/
 >If you want to stream directly to an icecast or shoutcast server the answer simply is: it is not supported. You could use <ulink url="http://giss.tv/sahabuntu/doc/idjc.html"
 >IDJC</ulink
 > for that. </para>
+</sect3>
+</sect2>
+<sect2 id="collection-questions"
+><title
+>Collection questions</title
+> 
+<sect3 id="folder-not-properly-picked-up"
+><title
+>Folder not properly picked up</title
+> 
+<para
+>Als u ontdekt dat het meeste van uw muziek door &amarok; wordt herkend, maar sommige mappen niet juist worden opgepakt, open dan een console en type </para>
+<para
+><userinput
+>touch <replaceable
+>map</replaceable
+></userinput>
+</para>
+<para
+>where <replaceable
+>folder</replaceable
+> is the path to the folder that has the problem. Then select <menuchoice
+><guimenu
+>Settings</guimenu
+><guimenuitem
+>Configure Amarok</guimenuitem
+></menuchoice
+> in Amarok main window menu, open <guilabel
+>Collection</guilabel
+> page and click the <guilabel
+>Full Rescan</guilabel
+> button. Your folder should be visible again now. </para>
+<para
+><warning
+><para
+>this will not work on Windows, as the touch command is specific to &Linux; and BSD-like systems.</para
+></warning>
+</para>
+</sect3>
+<sect3 id="can-i-use-removable-media-inside-amarok"
+><title
+>Can I use removable media inside Amarok?</title
+> 
+<para
+>&amarok; has a greatly improved support for the media devices based on Solid, the KDE hardware layer, that doesn't need a lot of configuration. You should be able to just plug in your device and access it within &amarok;. Also, thanks to the <emphasis
+>Dynamic Collections</emphasis
+>, your media devices could become part of your music collection, and be searchable and accessible within the <guilabel
+>Local Music</guilabel
+> section of the <guilabel
+>Media Sources</guilabel
+> pane when it's connected. </para>
+<para
+>You can transfer your songs, albums and artists from your local collection by right-clicking, selecting <guilabel
+>Copy to Collection</guilabel
+> and picking your device; and you can also do it in the other way: right-click and select <menuchoice
+><guimenu
+>Copy to Collection</guimenu
+><guimenuitem
+>Local Collection</guimenuitem
+></menuchoice
+>. More about &amarok; and devices <link linkend="working-with-media-devices"
+>here</link
+>. </para>
+</sect3>
+<sect3 id="can-i-use-the-old-amaroks-collection-in-amarok-2-will-my-tags-score-are-ratings-be-lost"
+><title
+>Can I use the old Amarok's collection in Amarok 2? Will my tags, score are ratings be lost?</title
+> 
+<para
+>A database importer is available. You will be able to keep your ratings and statistics just fine. More <link linkend="collection"
+>here</link
+>. </para>
 </sect3>
 </sect2>
 <sect2 id="general-questions"
@@ -11738,31 +11901,6 @@ ftpProxy=http://username:password@proxyserver:port/
 <para
 >No, but there are many Plasmoids available for your Desktop, which will let you display information provided by &amarok; as well as control &amarok;. </para>
 </sect3>
-<sect3 id="can-i-use-removable-media-inside-amarok"
-><title
->Can I use removable media inside Amarok?</title
-> 
-<para
->&amarok; has a greatly improved support for the media devices based on Solid, the KDE hardware layer, that doesn't need a lot of configuration. You should be able to just plug in your device and access it within &amarok;. Also, thanks to the <emphasis
->Dynamic Collections</emphasis
->, your media devices could become part of your music collection, and be searchable and accessible within the <guilabel
->Local Music</guilabel
-> section of the <guilabel
->Media Sources</guilabel
-> pane when it's connected. </para>
-<para
->You can transfer your songs, albums and artists from your local collection by right-clicking, selecting <guilabel
->Copy to Collection</guilabel
-> and picking your device; and you can also do it in the other way: right-click and select <menuchoice
-><guimenu
->Copy to Collection</guimenu
-><guimenuitem
->Local Collection</guimenuitem
-></menuchoice
->. More about &amarok; and devices <link linkend="working-with-media-devices"
->here</link
->. </para>
-</sect3>
 <sect3 id="how-can-i-save-a-stream"
 ><title
 >How can I save a stream?</title
@@ -11787,15 +11925,6 @@ ftpProxy=http://username:password@proxyserver:port/
 > pane, and giving it a meaningful name. The Stream will then be added to the <guilabel
 >Saved Playlists</guilabel
 > view for later reference. </para>
-</sect3>
-<sect3 id="can-i-use-the-old-amaroks-collection-in-amarok-2-will-my-tags-score-are-ratings-be-lost"
-><title
->Can I use the old Amarok's collection in Amarok 2? Will my tags, score are ratings be lost?</title
-> 
-<para
->A database importer is available. You will be able to keep your ratings and statistics just fine. More <link linkend="collection"
->here</link
->. </para>
 </sect3>
 <sect3 id="where-do-i-find-the-settings-for-amarok"
 ><title
@@ -12046,7 +12175,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->View</guilabel
+>Beeld</guilabel
 ></para>
     </entry>
     <entry>
@@ -12060,7 +12189,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Playlist</guilabel
+>Afspeellijst</guilabel
 ></para>
     </entry>
     <entry>
@@ -12074,7 +12203,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Tools</guilabel
+>Hulpmiddelen</guilabel
 ></para>
     </entry>
     <entry>

@@ -27,6 +27,7 @@
 #include "core-impl/collections/db/sql/mysqlecollection/MySqlEmbeddedStorage.h"
 
 #include "config-amarok-test.h"
+#include "SqlMountPointManagerMock.h"
 
 #include <QTest>
 
@@ -56,6 +57,8 @@ TestSqlScanManager::initTestCase()
     m_storage = new MySqlEmbeddedStorage( m_tmpDatabaseDir->name() );
     m_collection = Collections::SqlCollectionFactory().createSqlCollection( "testId", "testscanmanager", m_storage );
     connect( m_collection, SIGNAL( updated() ), this, SLOT( slotCollectionUpdated() ) );
+    SqlMountPointManagerMock *mock = new SqlMountPointManagerMock( this, m_storage );
+    m_collection->setMountPointManager( mock );
     m_scanManager = m_collection->scanManager();
 
     AmarokConfig::setScanRecursively( true );
@@ -182,6 +185,7 @@ TestSqlScanManager::testScanDirectory()
     // -- check the commit
     Meta::AlbumPtr album;
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
+    QVERIFY( album );
     QCOMPARE( album->name(), QString("Thriller") );
     QCOMPARE( album->tracks().count(), 9 );
     QVERIFY( !album->isCompilation() );
@@ -212,11 +216,10 @@ TestSqlScanManager::testDuplicateUid()
     // -- check the commit (the database needs to have been updated correctly)
     m_collection->registry()->emptyCache();
 
-    // -- we need to have at least one of the tracks present
+    // -- both tracks should be present
     Meta::AlbumPtr album;
     album = m_collection->registry()->getAlbum( 1 );
-
-    // both tracks should be present
+    QVERIFY( album );
     QVERIFY( album->tracks().count() >= 1 );
 }
 
@@ -244,10 +247,10 @@ TestSqlScanManager::testLongUid()
     // -- check the commit (the database needs to have been updated correctly)
     m_collection->registry()->emptyCache();
 
+    // both tracks should be present
     Meta::AlbumPtr album;
     album = m_collection->registry()->getAlbum( 1 );
-
-    // both tracks should be present
+    QVERIFY( album );
     QCOMPARE( album->tracks().count(), 2 );
 }
 
@@ -358,7 +361,7 @@ TestSqlScanManager::testRestartScanner()
     // -- check the commit
     Meta::AlbumPtr album;
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
-
+    QVERIFY( album );
     QCOMPARE( album->tracks().count(), 9 );
 
 #else
@@ -404,6 +407,7 @@ TestSqlScanManager::testAddDirectory()
     QVERIFY( !album->isCompilation() );
 
     album = m_collection->registry()->getAlbum( "Top Gun", QString() );
+    QVERIFY( album );
     QCOMPARE( album->tracks().count(), 10 );
     QVERIFY( album->isCompilation() );
 }
@@ -420,15 +424,18 @@ TestSqlScanManager::testRemoveDir()
 
     // -- check the commit
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
+    QVERIFY( album );
     QCOMPARE( album->tracks().count(), 9 );
     QVERIFY( !album->isCompilation() );
 
     album = m_collection->registry()->getAlbum( "Top Gun", QString() );
+    QVERIFY( album );
     QCOMPARE( album->tracks().count(), 10 );
     QVERIFY( album->isCompilation() );
 
     // -- remove one album
     album = m_collection->registry()->getAlbum( "Top Gun", QString() );
+    QVERIFY( album );
     foreach( Meta::TrackPtr t, album->tracks() )
         QVERIFY( QFile::remove( t->playableUrl().path() ) );
     QVERIFY( QDir( m_tmpCollectionDir->name() ).rmpath( QFileInfo( album->tracks().first()->playableUrl().path() ).path() ) );
@@ -438,17 +445,20 @@ TestSqlScanManager::testRemoveDir()
 
     // this one is still here
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
+    QVERIFY( album );
     QCOMPARE( album->tracks().count(), 9 );
     QVERIFY( !album->isCompilation() );
 
     // this one is gone
     album = m_collection->registry()->getAlbum( "Top Gun", QString() );
+    QVERIFY( album );
     QCOMPARE( album->tracks().count(), 0 );
 
 
     // -- remove the second album
     // this time it's a directory inside a directory
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
+    QVERIFY( album );
     QCOMPARE( album->tracks().count(), 9 );
     foreach( Meta::TrackPtr t, album->tracks() )
         QVERIFY( QFile::remove( t->playableUrl().path() ) );
@@ -460,8 +470,10 @@ TestSqlScanManager::testRemoveDir()
 
     // this both are gone
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
+    QVERIFY( album );
     QCOMPARE( album->tracks().count(), 0 );
     album = m_collection->registry()->getAlbum( "Top Gun", QString() );
+    QVERIFY( album );
     QCOMPARE( album->tracks().count(), 0 );
 
 }
@@ -478,6 +490,7 @@ TestSqlScanManager::testUidChangeMoveDirectoryIncrementalScan()
 
     // -- check the commit
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
+    QVERIFY( album );
     tracks = album->tracks();
     QCOMPARE( tracks.count(), 9 );
     QCOMPARE( tracks.first()->uidUrl(), QString("amarok-sqltrackuid://1dc7022c52a3e4c51b46577da9b3c8ff") );
@@ -511,6 +524,7 @@ TestSqlScanManager::testUidChangeMoveDirectoryIncrementalScan()
 
     // recheck album
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
+    QVERIFY( album );
     tracks = album->tracks();
     QCOMPARE( tracks.count(), 9 );
 
@@ -535,6 +549,7 @@ TestSqlScanManager::testRemoveTrack()
 
     // -- check the commit
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
+    QVERIFY( album );
     QCOMPARE( album->tracks().count(), 9 );
     QVERIFY( !album->isCompilation() );
     track = album->tracks().first(); // the tracks are sorted, so this is always the same track
@@ -550,25 +565,6 @@ TestSqlScanManager::testRemoveTrack()
 
     // -- check that the track is really gone
     QCOMPARE( album->tracks().count(), 8 );
-
-    // -- get the track back and verify that the statistics really haven't been deleted
-    Meta::FieldHash values;
-
-    values.insert( Meta::valUniqueId, QVariant("1dc7022c52a3e4c51b46577da9b3c8ff") );
-    values.insert( Meta::valUrl, QVariant("Thriller/Thriller - 01 - Michael Jackson - Track01.mp3") );
-    values.insert( Meta::valTitle, QVariant("Wanna Be Startin' Somethin'") );
-    values.insert( Meta::valArtist, QVariant("Michael Jackson") );
-    values.insert( Meta::valAlbum, QVariant("Thriller") );
-    createTrack( values );
-
-    m_scanManager->requestFullScan();
-    waitScannerFinished();
-
-    // -- check that the track is back
-    QCOMPARE( album->tracks().count(), 9 );
-    track = album->tracks().first();
-    QVERIFY( track->firstPlayed().isValid() );
-    QCOMPARE( track->firstPlayed().toTime_t(), aDate.toTime_t() );
 }
 
 void
@@ -589,6 +585,7 @@ TestSqlScanManager::testMove()
 
     // -- check the commit
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
+    QVERIFY( album );
     QCOMPARE( album->tracks().count(), 9 );
     QVERIFY( !album->isCompilation() );
     track = album->tracks().first();
@@ -612,6 +609,7 @@ TestSqlScanManager::testMove()
 
     // --- move a directory
     album = m_collection->registry()->getAlbum( "Top Gun", QString() );
+    QVERIFY( album );
     QCOMPARE( album->tracks().count(), 10 );
     track = album->tracks().first();
     KUrl oldUrl = track->playableUrl();
@@ -648,6 +646,7 @@ TestSqlScanManager::testFeat()
     // -- check the commit
     Meta::AlbumPtr album;
     album = m_collection->registry()->getAlbum( "The Last Unicorn", "In-Mood" );
+    QVERIFY( album );
     QCOMPARE( album->tracks().count(), 1 );
 }
 
@@ -680,12 +679,15 @@ TestSqlScanManager::testAlbumImage()
     Meta::AlbumPtr album;
 
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
+    QVERIFY( album );
     QVERIFY( album->hasImage() );
 
     album = m_collection->registry()->getAlbum( "Top Gun", QString() );
+    QVERIFY( album );
     QVERIFY( album->hasImage() );
 
     album = m_collection->registry()->getAlbum( "Big Screen Adventures", "Theme Orchestra" );
+    QVERIFY( album );
     QVERIFY( album->hasImage() );
 }
 
@@ -772,10 +774,12 @@ TestSqlScanManager::testMerges()
     // the old track is still there
     // and it's still has an album artist "various artists" so it's still a compilation
     album = m_collection->registry()->getAlbum( "Big Screen Adventures", QString() );
+    QVERIFY( album );
     QCOMPARE( album->tracks().count(), 1 );
 
     // the new album is now here
     album = m_collection->registry()->getAlbum( "Thriller", "Michael Jackson" );
+    QVERIFY( album );
     QCOMPARE( album->tracks().count(), 9 );
     QVERIFY( !album->isCompilation() );
 }
@@ -987,13 +991,10 @@ TestSqlScanManager::slotCollectionUpdated()
 void
 TestSqlScanManager::waitScannerFinished()
 {
-    QTest::qWait( 500 );
-    for( int i=0; i<800 && m_scanManager->isRunning(); i++)
-    {
-        QTest::qWait( 100 );
-    }
+    QVERIFY( m_scanManager->isRunning() );
+    QVERIFY2( QTest::kWaitForSignal( m_scanManager, SIGNAL(scanDone(ScannerJob*)), 60*1000 ),
+              "ScanManager didn't finish scan within timeout" );
 }
-
 
 void
 TestSqlScanManager::createTrack( const Meta::FieldHash &values )

@@ -51,7 +51,7 @@
 <legalnotice
 >&FDLNotice;</legalnotice>
 <date
->2012-01-19</date>
+>2012-05-18</date>
       <releaseinfo
 >2.5.0</releaseinfo>
 <abstract>
@@ -82,7 +82,7 @@
 </keywordset>
 </bookinfo>
 <!--userbase <timestamp
->2012-01-19T19:28:52Z</timestamp
+>2012-05-19T14:29:24Z</timestamp
 >-->
 
 <!--userbase-content-->
@@ -10382,7 +10382,7 @@
 >Could not create element of type fftwspectrum, please install it</screen
 > betyder det i regel att du antingen inte har rätt insticksprogram installerade (se listan över insticksprogrammen <link linkend="supported-filetypes"
 >här</link
->), eller att du inte installerade paketet Moodbar med samma prefix som GStreamer. Om libmoodbar.so och libgstdecodebin.so inte finns i samma katalog är Moodbar inte installerad i samma katalog som GStreamer. Se filen INSTALL för instruktioner om hur paketet moodbar konfigureras på rätt sätt. Annars kan det vara lättare att ta en titt på miljövariabeln <filename
+>), eller att du inte installerade paketet Moodbar med samma prefix som GStreamer. Om libmoodbar.so och libgstdecodebin.so inte finns i samma katalog är Moodbar inte installerad med samma prefix som GStreamer. Se filen INSTALL för instruktioner om hur paketet moodbar konfigureras på rätt sätt. Alternativt kan det vara lättare att ta en titt på miljövariabeln <filename
 >GST_PLUGIN_PATH</filename
 >, <emphasis
 >om du vet vad du håller på med</emphasis
@@ -11527,6 +11527,96 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 >Xine</guilabel
 >). </para>
 </sect3>
+<sect3 id="i-have-the-codecs-but-amarok-still-wont-play-mp4s-and-mkas"
+><title
+>Jag har avkodare, men Amarok vill ändå inte spela mp4 och mka</title
+> 
+<para
+>När vissa Phonon-gränssnitt, såsom gstreamer, kanske &amarok; vägrar att spela <filename
+>mp4</filename
+>- och <filename
+>mka</filename
+>-filer. Det är ett känt problem, se <ulink url="https://bugs.kde.org/show_bug.cgi?id=290168"
+>felrapport nummer 290168</ulink
+> för mer teknisk information. </para>
+<para
+>Ett mycket enkelt sätt att gå förbi problemet är att ändra filändelsen. Ändra ändelsen <filename
+>mp4</filename
+> till <filename
+>m4a</filename
+> och ändra <filename
+>mka</filename
+> till <filename
+>mkv</filename
+>. Du måste förstås försäkra dig om att filerna bara innehåller ljud. Du kan använda kommandot ffprobe för att titta på vilka dataströmmar som ingår i filen. Om filen har en videoström måste den tas bort. Det finns många verktyg tillgängliga som kan redigera formaten, och de flesta är baserade på <filename
+>ffmpeg</filename
+>/<filename
+>libav</filename
+>, som du kan använda om du känner till dem. Om du föredrar grafiska verktyg är ett möjligt val <ulink url="http://www.avidemux.org/"
+>avidemux</ulink
+>. </para>
+<para
+>Här är ett snabbt exempel på hur man kan ta bort en videoström från en <filename
+>mp4</filename
+>-video med ffmpeg. Att ta bort videoströmmen från en <filename
+>mkv</filename
+>-fil görs på samma sätt. Kontrollera först om det finns en videoström </para>
+<para
+><userinput
+><command
+>$ ffprobe exempel.mp4 2&gt;&amp;1 | grep Video</command
+></userinput>
+</para>
+<para
+><screen
+><command
+>Stream #0.1(und): Video: h264 (Baseline), yuv420p, 480x360 [PAR 1:1 DAR 4:3], 242 kb/s, 25 fps, 25 tbr, 25k tbn, 50k tbc</command
+></screen>
+</para>
+<para
+>Om utdata från föregående kommando är tom, finns det inte någon videoström i filen. För att skapa en <filename
+>m4a</filename
+>-fil med bara ljudströmmen kan du använda något som liknar </para>
+<para
+><screen
+>ffmpeg -i exempel.mp4 -acodec copy -vn example.m4a
+</screen>
+</para>
+<para
+>Du kan också använda <filename
+>avconv</filename
+> istället för <filename
+>ffmpeg</filename
+> med samma väljare, där </para>
+<itemizedlist>
+<listitem
+><para
+>väljaren <emphasis
+>-i exempel.mp4</emphasis
+> är indatafilens namn</para
+></listitem>
+<listitem
+><para
+><emphasis
+>-acodec copy</emphasis
+> används för att inte koda om ljudströmmen utan bara kopiera den. Det görs för att undvika kvalitetsförlust, men du kan också koda om med ett annat format om du vill, och du är inte tvingad att använda m4a om så är fallet</para
+></listitem>
+<listitem
+><para
+><emphasis
+>vn</emphasis
+> tar bort videoströmmen</para
+></listitem>
+<listitem
+><para
+><replaceable
+>exempel.m4a</replaceable
+> är utdatafilens namn</para
+></listitem>
+</itemizedlist>
+<para
+>Ett annat möjligt sätt att går runt problemet är att ändra Phonon-gränssnitt. Exempelvis VLC-gränssnittet lider inte av detta problem. </para>
+</sect3>
 <sect3 id="i-cant-get-any-media-to-play-in-amarok-why-not"
 ><title
 >Det går inte att spela upp något alls i Amarok, varför det?</title
@@ -11612,6 +11702,80 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 >Om du vill skicka strömmar direkt till en icecast- eller shoutcast-server, är svaret enkelt: Det finns inget stöd för det. Du skulle kunna använda <ulink url="http://giss.tv/sahabuntu/doc/idjc.html"
 >IDJC</ulink
 > för det ändamålet. </para>
+</sect3>
+</sect2>
+<sect2 id="collection-questions"
+><title
+>Samlingsfrågor</title
+> 
+<sect3 id="folder-not-properly-picked-up"
+><title
+>Katalog hämtas inte på rätt sätt</title
+> 
+<para
+>Om du märker att den största delen av din musik känns igen av &amarok;, men vissa kataloger inte hämtas på rätt sätt, öppna en terminal och skriv </para>
+<para
+><userinput
+>touch <replaceable
+>katalog</replaceable
+></userinput>
+</para>
+<para
+>där <replaceable
+>katalog</replaceable
+> är sökvägen till katalogen som har problemet. Välj därefter <menuchoice
+><guimenu
+>Inställningar</guimenu
+> <guimenuitem
+>Anpassa Amarok</guimenuitem
+></menuchoice
+> i menyn i  Amaroks huvudfönster, och öppna sidan <menuchoice
+><guimenu
+>Samling</guimenu
+> <guimenuitem
+>Fullständig omsökning</guimenuitem
+></menuchoice
+>. Katalogen ska nu vara synlig igen. </para>
+<para
+><warning
+><para
+>Det fungerar inte på Windows, eftersom kommandot touch är specifikt för &Linux; och BSD-liknande system.</para
+></warning>
+</para>
+</sect3>
+<sect3 id="can-i-use-removable-media-inside-amarok"
+><title
+>Kan man använda flyttbara medier i Amarok?</title
+> 
+<para
+>&amarok; har ett starkt förbättrat stöd för mediaenheter baserat på Solid, KDE:s hårdvarulager, som inte behöver mycket anpassning. Det borde gå att bara ansluta en enhet och komma åt den i &amarok;. Tack vare de <emphasis
+>dynamiska samlingarna</emphasis
+> bör mediaenheter också bli en del av musiksamlingen, och kunna sökas igenom och kommas åt i avdelningen <guilabel
+>Lokal musik</guilabel
+> inom rutan <guilabel
+>Mediakällor</guilabel
+> när de har anslutits. </para>
+<para
+>Du kan överföra dina låtar, album och artister från den lokala samlingen genom att högerklicka på <guilabel
+>Kopiera till samling</guilabel
+> och välja enhet. Du kan också göra på det andra sättet: Högerklicka på <menuchoice
+><guimenu
+>Kopiera till samling</guimenu
+><guimenuitem
+>Lokal samling</guimenuitem
+></menuchoice
+>. Mer om &amarok; och enheter <link linkend="working-with-media-devices"
+>här</link
+>. </para>
+</sect3>
+<sect3 id="can-i-use-the-old-amaroks-collection-in-amarok-2-will-my-tags-score-are-ratings-be-lost"
+><title
+>Kan man använda samlingar från äldre Amarok-versioner i Amarok 2? Kommer taggar, poäng och betyg att gå förlorade?</title
+> 
+<para
+>Ett verktyg för att importera databaser finns tillgängligt. Du kommer kunna behålla dina betyg och statistik utan problem. Mer finns <link linkend="collection"
+>här</link
+>. </para>
 </sect3>
 </sect2>
 <sect2 id="general-questions"
@@ -11748,31 +11912,6 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 <para
 >Nej, men det finns många Plasmoider tillgängliga för skrivbordet som låter dig visa information från &amarok;, samt styra &amarok;. </para>
 </sect3>
-<sect3 id="can-i-use-removable-media-inside-amarok"
-><title
->Kan man använda flyttbara medier i Amarok?</title
-> 
-<para
->&amarok; har ett starkt förbättrat stöd för mediaenheter baserat på Solid, KDE:s hårdvarulager, som inte behöver mycket anpassning. Det borde gå att bara ansluta en enhet och komma åt den i &amarok;. Tack vare de <emphasis
->dynamiska samlingarna</emphasis
-> bör mediaenheter också bli en del av musiksamlingen, och kunna sökas igenom och kommas åt i avdelningen <guilabel
->Lokal musik</guilabel
-> inom rutan <guilabel
->Mediakällor</guilabel
-> när de har anslutits. </para>
-<para
->Du kan överföra dina låtar, album och artister från den lokala samlingen genom att högerklicka på <guilabel
->Kopiera till samling</guilabel
-> och välja enhet. Du kan också göra på det andra sättet: Högerklicka på <menuchoice
-><guimenu
->Kopiera till samling</guimenu
-><guimenuitem
->Lokal samling</guimenuitem
-></menuchoice
->. Mer om &amarok; och enheter <link linkend="working-with-media-devices"
->här</link
->. </para>
-</sect3>
 <sect3 id="how-can-i-save-a-stream"
 ><title
 >Hur kan man spara en ström?</title
@@ -11797,15 +11936,6 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 >, och ge den ett igenkännbart namn. Strömmen kommer sedan läggas till i vyn <emphasis
 >Sparade spellistor</emphasis
 > för senare åtkomst. </para>
-</sect3>
-<sect3 id="can-i-use-the-old-amaroks-collection-in-amarok-2-will-my-tags-score-are-ratings-be-lost"
-><title
->Kan man använda samlingar från äldre Amarok-versioner i Amarok 2? Kommer taggar, poäng och betyg att gå förlorade?</title
-> 
-<para
->Ett verktyg för att importera databaser finns tillgängligt. Du kommer kunna behålla dina betyg och statistik utan problem. Mer finns <link linkend="collection"
->här</link
->. </para>
 </sect3>
 <sect3 id="where-do-i-find-the-settings-for-amarok"
 ><title
