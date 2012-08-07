@@ -124,7 +124,7 @@
 </informaltable>
 </para>
 <para
->O &amarok; é um aplicativo de música de primeira linha Livre e de Código Aberto. Mais do que simplesmente um reprodutor, o &amarok; o ajuda a redescobrir suas músicas. A interface inovadora fornece à você um controle sem precedentes sobre toda a sua coleção, e permite que você encontre sua música em qualquer lugar. Use nosso <link linkend="quick-start-guide"
+>O &amarok; é um aplicativo de música de primeira linha, Livre e de Código Aberto. Mais do que simplesmente um reprodutor, o &amarok; o ajuda a redescobrir suas músicas. A interface inovadora fornece à você um controle sem precedentes sobre toda a sua coleção, e permite-lhe encontrar sua música em qualquer lugar. Use nosso <link linkend="quick-start-guide"
 >Guia de Inicialização Rápida</link
 > para se familiarizar rapidamente, ou pesquise informações mais detalhadas neste manual. </para>
 </chapter>
@@ -1547,7 +1547,7 @@
     </entry>
     <entry>
     <para
->Limpar todos álbuns e faixas da lista de músicas</para>
+>Limpar todos álbuns e faixas da lista de músicas.</para>
     </entry>
   </row>
   <row>
@@ -1866,7 +1866,7 @@
 <para
 ><link linkend="what-media-types-does-amarok-support"
 >FAQ: Que tipos de mídia o Amarok suporta</link
-> </para>
+>. </para>
 <para
 >Por favor, verifique sua distribuição. </para>
 </sect2>
@@ -2205,16 +2205,16 @@
 </para>
 <para
 >A <emphasis
->barra de ferramentas</emphasis
+>Barra de ferramentas</emphasis
 > é usada para gerenciar a música que está sendo reproduzida no momento. Você pode alternar entre a barra de ferramentas principal e a compacta usando o menu <guilabel
 >Exibir</guilabel
 > na <emphasis
->barra de menu</emphasis
+>Barra de menu</emphasis
 >. A barra de menu pode, opcionalmente, ser oculta; use o <keycombo
 >&Ctrl;<keycap
 >M</keycap
 ></keycombo
-> para ocultá-la e reexibi-la. </para>
+> para ocultá-la ou reexibi-la. </para>
 <para
 >A barra de ferramentas pode ser desacoplada e movida para qualquer local na sua tela, e até mesmo usada sem que o resto da janela do &amarok; esteja em exibição. Para desacoplar a barra de ferramentas, inicialmente certifique-se de que o item de menu <menuchoice
 ><guimenu
@@ -2257,7 +2257,7 @@
 >As faixas anterior e seguinte são exibidas em cada lado do título da faixa atual. Clicar em uma delas fará com que o &amarok; pule para esta faixa. </para>
 <para
 >Uma <emphasis
->barra de progresso</emphasis
+>Barra de progresso</emphasis
 > com o tempo já decorrido à esquerda e o tempo restante à direita exibe a posição atual na faixa. Se você tiver as <emphasis
 >Moodbars</emphasis
 > ativas, e arquivos .mood para suas faixas, aqui é onde eles serão exibidos. Mais informações sobre <link linkend="the-moodbar"
@@ -2322,7 +2322,7 @@
 <para
 >O painel de <emphasis
 >Fontes de mídia</emphasis
-> à esquerda por padrão é onde você acessa sua coleção local bem como outros serviços: <emphasis
+> à esquerda por padrão é onde você acessa sua coleção local, bem como outros serviços: <emphasis
 >Músicas locais</emphasis
 > no topo, que é a interface primária para sua coleção local e mídias conectadas como reprodutores de MP3 e CDs. </para>
 <para
@@ -2330,16 +2330,16 @@
 >Serviços Internet</emphasis
 > que você tiver ativado. Aqui você pode navegar por listas de estações de rádio e podcasts; ouvir e/ou inscrever-se a eles, interagir com sua conta do <ulink url="http://www.last.fm"
 >last.fm</ulink
->, comprar música de uma das lojas online como a <ulink url="http://www.magnatune.com/"
+>, comprar música de uma das lojas on-line como a <ulink url="http://www.magnatune.com/"
 >Magnatune</ulink
 >, baixar músicas de artistas independentes do <ulink url="http://www.jamendo.com/"
 >Jamendo</ulink
-> e mais. </para>
+> entre outros. </para>
 <para
 >A seção de <emphasis
 >Listas de músicas</emphasis
 > permite que você crie e gerencie <emphasis
->Listas dinâmicas de músicas</emphasis
+>Listas de músicas dinâmicas</emphasis
 >, acesse suas <emphasis
 >Listas de músicas salvas</emphasis
 > bem como o <emphasis
@@ -2402,7 +2402,7 @@
 <para
 >A <emphasis
 >Barra de filtro</emphasis
-> filtra o conteúdo de acordo com o texto na caixa. </para>
+> filtra o conteúdo de acordo com o texto do campo de pesquisa. </para>
 </sect3>
 <sect3 id="bookmarks"
 ><title
@@ -2437,7 +2437,7 @@
   <thead>
   <row>
     <entry
->Item de menu</entry>
+>Item do menu</entry>
     <entry
 >Descrição</entry>
   </row>
@@ -2589,7 +2589,7 @@
   <thead>
   <row>
     <entry
->Item de menu</entry>
+>Item do menu</entry>
     <entry
 >Descrição</entry>
   </row>
@@ -2599,7 +2599,7 @@
     <entry>
     <para
 ><guilabel
->Artista / Álbum</guilabel
+>Artista/Álbum</guilabel
 ></para>
     </entry>
     <entry>
@@ -2623,7 +2623,7 @@
     <entry>
     <para
 ><guilabel
->Gênero / Artista</guilabel
+>Gênero/Artista</guilabel
 ></para>
     </entry>
     <entry>
@@ -2635,7 +2635,7 @@
     <entry>
     <para
 ><guilabel
->Gênero / Artista / Álbum</guilabel
+>Gênero/Artista/Álbum</guilabel
 ></para>
     </entry>
     <entry>
@@ -2729,7 +2729,7 @@
   <thead>
   <row>
     <entry
->Item de menu</entry>
+>Item do menu</entry>
     <entry
 >Descrição</entry>
   </row>
@@ -2744,7 +2744,7 @@
     </entry>
     <entry>
     <para
->Lista transmissões de rádio de qualidade.</para>
+>Lista transmissões de rádio com qualidade.</para>
     </entry>
   </row>
   <row>
@@ -2839,7 +2839,7 @@
 >Lista de músicas</title
 > 
 <para
->Menu listas de músicas de fontes de mídia: </para>
+>Menu Listas de músicas de fontes de mídia: </para>
 <para>
 <screenshot>
 <screeninfo
@@ -2861,7 +2861,7 @@
   <thead>
   <row>
     <entry
->Item de menu</entry>
+>Item do menu</entry>
     <entry
 >Descrição</entry>
   </row>
@@ -2871,7 +2871,7 @@
     <entry>
     <para
 ><guilabel
->Listas dinâmicas de músicas</guilabel
+>Listas de músicas dinâmicas</guilabel
 ></para>
     </entry>
     <entry>
@@ -2945,7 +2945,7 @@
 > </inlinemediaobject
 > (locais), muito semelhante a um menu de navegador Web; ou clique em qualquer local na <emphasis
 >trilha de pão</emphasis
-> para ir diretamente para o nível desejado. </para>
+> para ir diretamente ao nível desejado. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -3008,7 +3008,7 @@
   <thead>
   <row>
     <entry
->Item de menu</entry>
+>Item do menu</entry>
     <entry
 >Descrição</entry>
   </row>
@@ -3023,7 +3023,7 @@
     </entry>
     <entry>
     <para
->Adiciona URL de um podcast: <emphasis
+>Adiciona a URL de um podcast: <emphasis
 >RSS 1.0/2.0</emphasis
 > ou <emphasis
 >Atom feed</emphasis
@@ -3053,7 +3053,7 @@
     </entry>
     <entry>
     <para
->Seleciona que categoria de podcasts você pode visualizar.</para>
+>Seleciona a categoria de podcasts que você pode visualizar.</para>
     </entry>
   </row>
   <row>
@@ -3109,10 +3109,10 @@
 <para
 >O painel de <emphasis
 >Contexto</emphasis
-> é um painel ao qual você pode adicionar diversos miniaplicativos que oferecem informações e mídias sobre a música atual. Uma conexão com a Internet é necessária para um uso mais útil destas pequenas aplicações, que obterão letras, informações, fotos, vídeos e até mesmo tablaturas de violão ou baixo, dependendo de quais miniaplicativos você selecionar para exibição. </para>
+> é um painel ao qual você pode adicionar diversos miniaplicativos que oferecem informações e mídias sobre a música que está sendo reproduzida. Uma conexão com a Internet é necessária para um uso mais útil destes pequenos aplicativos, que obterão letras, informações, fotos, vídeos e até mesmo tablaturas de violão ou baixo, dependendo de quais miniaplicativos você selecionar para exibição. </para>
 <sect2 id="using-the-context-pane"
 ><title
->Usando o painel de Contexto</title
+>Usando o painel Contexto</title
 > 
 <para>
 <screenshot>
@@ -3124,11 +3124,11 @@
     </imageobject>
     <textobject>
       <phrase
->O painel de contexto com os miniaplicativos Faixa Atual, Letras e Tablaturas</phrase>
+>O painel Contexto com os miniaplicativos Faixa Atual, Letras e Tablaturas</phrase>
     </textobject>
     <caption>
       <para
->O painel de contexto com os miniaplicativos Faixa Atual, Letras e Tablaturas</para>
+>O painel Contexto com os miniaplicativos Faixa Atual, Letras e Tablaturas</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -3136,7 +3136,7 @@
 <para
 >Na figura está o painel de <emphasis
 >Contexto</emphasis
-> quando nenhuma faixa está sendo reproduzida. Se ele estiver oculte, use o <menuchoice
+> quando nenhuma faixa está sendo reproduzida. Se ele estiver oculto, use o <menuchoice
 ><guimenu
 >Exibir</guimenu
 ><guimenuitem
@@ -3185,7 +3185,7 @@
 > <imageobject
 > <imagedata fileref="Icon-application-exit.png" format="PNG"/> </imageobject
 > </inlinemediaobject
-> que você pode clicar para removê-lo e aparecer uma lista de miniaplicativos. Para adicionar um novo miniaplicativo, basta clicar sobre ele para aparecer no painel e estar pronto para ser usado. Para alterar a ordem de exibição dos miniaplicativos, clique nas abas e arraste-as pela barra. </para>
+> que você pode clicar para removê-lo e aparecer uma lista de miniaplicativos. Para adicionar um novo miniaplicativo, basta clicar sobre ele para aparecer no painel e estar pronto para ser usado. Para alterar a ordem de exibição dos miniaplicativos, clique nas abas e arraste-os pela barra. </para>
 </sect3>
 </sect2>
 <sect2 id="applets"
@@ -3212,7 +3212,7 @@
 </screenshot>
 </para>
 <para
->Existem vários miniaplicativos disponível para acoplagem em seu painel de <emphasis
+>Existem vários miniaplicativos disponíveis para acoplagem em seu painel de <emphasis
 >Contexto</emphasis
 >; abaixo está uma descrição de cada um deles. </para>
 <para>
@@ -3284,7 +3284,7 @@
 >Wikipédia</emphasis
 > para a faixa ou artista. Permite também navegar em outros links da <emphasis
 >Wikipédia</emphasis
->, e usar o botão 'voltar' para retornar para a página inicial.</para>
+>, e usar o botão 'voltar' para retornar à página inicial.</para>
     </entry>
   </row>
   <row>
@@ -3296,7 +3296,7 @@
     </entry>
     <entry>
     <para
->Exibe, adiciona e edita rótulos para a faixa atual. Para adicionar um rótulo, basta digitá-lo na caixa de texto e pressionar &Enter;. Rótulos sugeridos são marcas sugeridas por usuários a partir do <emphasis
+>Exibe, adiciona e edita rótulos para a faixa atual. Para adicionar um rótulo, basta digitá-lo na caixa de texto e pressionar &Enter;. Rótulos sugeridos são marcas indicadas por usuários a partir do <emphasis
 >Last.fm</emphasis
 >.</para>
     </entry>
@@ -3310,9 +3310,9 @@
     </entry>
     <entry>
     <para
->Mostra diversos clipes de vídeo que correspondem no <emphasis
+>Mostra diversos clipes de vídeo <emphasis
 >Youtube</emphasis
-> à faixa atual.</para>
+> que correspondem à faixa atual.</para>
     </entry>
   </row>
   <row>
@@ -3364,7 +3364,7 @@
     <para
 >Este miniaplicativo pesquisa no <emphasis
 >Flickr.com</emphasis
-> por figuras da banda que você está ouvindo. Abra as configurações para adicionar mais palavras-chave à sua consulta (&eg; live in Rio).</para>
+> por fotos da banda que você está ouvindo. Abra as configurações para adicionar mais palavras-chave à sua consulta (&eg; live in Rio).</para>
     </entry>
   </row>
   <row>
@@ -3466,7 +3466,7 @@
 >Adicionar à lista de músicas</guilabel
 >. </para>
 <para
->Se você solicitar ao navegador de arquivos para abrir um arquivo multimídia suportado, o &amarok; adicionará o arquivo selecionado à lista de música atual. Alguns arquivos multimídia contém listas de música em si ou podem ter arquivos de lista de músicas associados pelo nome (&eg; <emphasis
+>Se você solicitar ao navegador de arquivos para abrir um arquivo multimídia suportado, o &amarok; adicionará o arquivo selecionado à lista de músicas atual. Alguns arquivos multimídia contém listas de músicas em si ou podem ter arquivos de lista de músicas associados pelo nome (&eg; <emphasis
 >wav</emphasis
 > com <emphasis
 >cue</emphasis
@@ -3518,7 +3518,7 @@
 <para
 >Você poderá ler mais sobre o <link linkend="queue-manager"
 >Gerenciador de fila</link
-> mais tarde. </para>
+> posteriormente. </para>
 </sect3>
 <sect3 id="stop-playing-after-this-track"
 ><title
@@ -3574,7 +3574,7 @@
 </screenshot>
 </para>
 <para
->Estas são as opções específicas dos álbuns que irão afetar todo o álbum a que pertence a faixa, em vez de ser apenas à faixa em si. As opções são mais ou menos as mesmas que o menu do álbum no painel de <link linkend="the-media-sources-pane"
+>Estas são as opções específicas dos álbuns que irão afetar todo o álbum a que pertence a faixa, em vez de ser apenas a faixa em si. As opções são mais ou menos as mesmas que o menu do álbum no painel de <link linkend="the-media-sources-pane"
 >Fontes multimídia</link
 >. </para>
 </sect3>
@@ -3659,7 +3659,7 @@
 >Mostrar apenas igualadas</guilabel
 > do menu fará com que a sua lista de músicas mostre apenas as faixas correspondentes à pesquisa. </para>
 <para
->Você pode ler mais sobre a filtragem da lista de músicas <link linkend="playlist-filtering"
+>Você pode ler mais sobre filtragem da lista de músicas <link linkend="playlist-filtering"
 >aqui</link
 >. </para>
 </sect2>
@@ -4102,11 +4102,11 @@
     </imageobject>
     <textobject>
       <phrase
->Amarok 2.4.1 em diante</phrase>
+>No Amarok 2.4.1</phrase>
     </textobject>
     <caption>
       <para
->Amarok 2.4.1 em diante</para>
+>No Amarok 2.4.1</para>
     </caption>
   </mediaobject>
 </screenshot
@@ -4123,11 +4123,11 @@
     </imageobject>
     <textobject>
       <phrase
->Amarok 2.5 em diante</phrase>
+>No Amarok 2.5</phrase>
     </textobject>
     <caption>
       <para
->Amarok 2.5 em diante</para>
+>No Amarok 2.5</para>
     </caption>
   </mediaobject>
 </screenshot
@@ -4147,7 +4147,7 @@
 >Opções gerais</emphasis
 > que podem ser configuradas. Dependendo da distribuição, as opções predefinidas podem variar; em algumas das vezes, a <emphasis
 >Tela de apresentação</emphasis
-> está desativada, por exemplo. Ao passar o mouse sobre as opções, irá aparecer uma dica que explica cada uma das opções individualmente. </para>
+> está desativada, por exemplo. Ao passar o mouse sobre as opções, irá aparecer uma dica que explica cada uma delas individualmente. </para>
 <para
 >Opções gerais: </para>
 <para>
@@ -4166,7 +4166,7 @@
     <entry>
     <para
 ><guilabel
->Exibir a tela de apresentação na inicialização</guilabel
+>Mostrar a tela de apresentação ao iniciar</guilabel
 ></para>
     </entry>
     <entry>
@@ -4183,7 +4183,7 @@
     </entry>
     <entry>
     <para
->Selecione para habilitar um ícone do &amarok;na área de notificação do sistema.</para>
+>Selecione para habilitar um ícone do &amarok; na área de notificação do sistema.</para>
     </entry>
   </row>
   <row>
@@ -4195,7 +4195,7 @@
     </entry>
     <entry>
     <para
->Verifique para permitir a recuperação automática de capas da Internet.</para>
+>Assinale para permitir a recuperação automática de capas da Internet.</para>
     </entry>
   </row>
   <row>
@@ -4207,7 +4207,7 @@
     </entry>
     <entry>
     <para
->Habilitar as animações de fechamento dos miniaplicativos de contexto.</para>
+>Assinale para ativar as animações de fechamento dos miniaplicativos de contexto.</para>
     </entry>
   </row>
   <row>
@@ -4307,7 +4307,7 @@
     </entry>
     <entry>
     <para
->Analisar completamente a sua coleção. Isso <emphasis
+>Analisa completamente a sua coleção. Isso <emphasis
 >não</emphasis
 > excluirá nenhuma estatística.</para>
     </entry>
@@ -4328,7 +4328,7 @@
     <entry>
     <para
 ><guilabel
->Procurar as pastas recursivamente (necessita de uma procura completa se acabada de verificar)</guilabel
+>Analisar as pastas recursivamente (necessita de uma reanálise completa se acabada de verificar)</guilabel
 ></para>
     </entry>
     <entry>
@@ -4340,7 +4340,7 @@
     <entry>
     <para
 ><guilabel
->Monitorar pastas por mudanças</guilabel
+>Monitorar alterações nas pastas</guilabel
 ></para>
     </entry>
     <entry>
@@ -4369,7 +4369,7 @@
     </entry>
     <entry>
     <para
->Gravar as capas alteradas no arquivo. Isto substituirá as capas incorporadas existentes.</para>
+>Grava as capas alteradas no arquivo. Isto substituirá as capas incorporadas existentes.</para>
     </entry>
   </row>
   <row>
@@ -4488,12 +4488,12 @@
     <entry>
     <para
 ><guilabel
->Continuar reprodução ao inicializar</guilabel
+>Continuar reprodução ao iniciar</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Se a opção estiver assinalada, o &amarok; irá continuar a reprodução da última música que você estava ouvindo na sessão anterior -- como em um reprodutor de fitas cassete.</para
+>Se a opção estiver assinalada, o &amarok; irá continuar a reprodução da última música que você estava ouvindo na sessão anterior -- como em um toca-fita.</para
 ></entry>
   </row>
   </tbody>
@@ -4505,7 +4505,7 @@
 >Configurando o Phonon</title
 > 
 <para
->O &phonon; é a plataforma multimídia usada pelo &amarok;. Foi criada para permitir que o KDE 4 fosse independente de outras plataformas multimídia, tais como o <guilabel
+>&phonon; é a plataforma multimídia usada pelo &amarok;. Foi criada para permitir que o KDE 4 fosse independente de outras plataformas multimídia, tais como o <guilabel
 >GStreamer</guilabel
 > ou o <guilabel
 >Xine</guilabel
@@ -4568,7 +4568,7 @@
 </screenshot>
 </para>
 <para
->Se quiser alterar a configuração normal dos alto-falantes, aqui é o local indicado para fazer isto. </para>
+>Se quiser alterar a configuração padrão dos alto-falantes, aqui é o local indicado para fazer isto. </para>
 </sect3>
 <sect3 id="backend-tab"
 ><title
@@ -4614,10 +4614,10 @@
 >phonon-backend-vlc</guilabel
 >. </para>
 <para
->Cada infraestrutura vem com os seus próprios codecs. Por isso, dependendo da infraestrutura que você escolher, pode ser preciso também baixar os codecs, pois a maioria das distribuições não os disponibilizam por questões legais. </para>
+>Cada infraestrutura vem com os seus próprios codecs. Por isso, dependendo da infraestrutura que você escolher, pode ser preciso também baixar os codecs, pois a maioria das distribuições não os disponibilizam por razões de natureza jurídica. </para>
 <para
 >Para mais informações sobre codecs e a reprodução de MP3, veja a página de <ulink url="http://amarok.kde.org/wiki/MP3"
->informação sobre MP3</ulink
+>informações sobre MP3</ulink
 >. </para>
 </sect3>
 </sect2>
@@ -4648,11 +4648,11 @@
     </imageobject>
     <textobject>
       <phrase
->Amarok 2.4.1 em diante</phrase>
+>No Amarok 2.4.1</phrase>
     </textobject>
     <caption>
       <para
->Amarok 2.4.1 em diante</para>
+>No Amarok 2.4.1</para>
     </caption>
   </mediaobject>
 </screenshot
@@ -4669,11 +4669,11 @@
     </imageobject>
     <textobject>
       <phrase
->Amarok 2.5 em diante</phrase>
+>No Amarok 2.5</phrase>
     </textobject>
     <caption>
       <para
->Amarok 2.5 em diante</para>
+>No Amarok 2.5</para>
     </caption>
   </mediaobject>
 </screenshot
@@ -4705,11 +4705,11 @@
     </entry>
     <entry>
     <para
->Assinale para ativar a <emphasis
->Mensagem na tela</emphasis
+>Assinale para ativar o <emphasis
+>On-Screen Display</emphasis
 >. O <emphasis
 >OSD</emphasis
-> mostra de repente os dados das faixas ao reproduzir uma nova faixa. Se tiver assinalado a opção, o OSD ficará visível na sua tela para que você possa arrastá-lo para o local desejado.</para>
+> mostra de repente os dados das faixas ao reproduzir uma nova faixa. Se a opção estiver assinalada, o OSD ficará visível na sua tela para que você possa arrastá-lo para o local desejado.</para>
     </entry>
   </row>
   <row>
@@ -4843,7 +4843,7 @@
 >MySQL</guilabel
 > externo. </para>
 <para
->O &amarok; espera que o banco de dados externo e a conta do usuário já existam. O usuário também necessita de acesso completo ao banco de dados. É necessário reiniciar o &amarok; depois de alterar estas configurações. </para>
+>O &amarok; espera que o banco de dados externo e a conta do usuário já existam. O usuário também precisa de acesso completo ao banco de dados. É necessário reiniciar o &amarok; depois de alterar estas configurações. </para>
 <para
 >Se o seu banco de dados não estiver configurado, você pode usar os comandos SQL no campo inferior para fazer isto, depois de substituir a senha pelo valor correto. </para>
 <para>
@@ -4929,7 +4929,7 @@
     </entry>
     <entry>
     <para
->Insira o nome do banco de dados. Amarokdb é o preset padrão.</para
+>Insira o nome do banco de dados. O amarokdb é o preset padrão.</para
 ></entry>
   </row>
   </tbody>
@@ -4943,7 +4943,7 @@
 </sect1>
 <sect1 id="plugins-formerly-internet-services"
 ><title
->Plugins (antigamente os Serviços de Internet)</title
+>Plugins (antes chamados de Serviços de Internet)</title
 > 
 <para>
 <informaltable>
@@ -5034,7 +5034,7 @@
     </entry>
     <entry>
     <para
->Plug-in de coleção de CDs de áudio para o &amarok;</para>
+>Plugin de coleção de CDs de áudio para o &amarok;</para>
     </entry>
   </row>
   <row>
@@ -5046,7 +5046,7 @@
     </entry>
     <entry>
     <para
->Plug-in de coleção DAAP para o &amarok;</para>
+>Plugin de coleção DAAP para o &amarok;</para>
     </entry>
   </row>
   <row>
@@ -5058,7 +5058,7 @@
     </entry>
     <entry>
     <para
->Plug-in de coleção do iPod para o &amarok;</para>
+>Plugin de coleção do iPod para o &amarok;</para>
     </entry>
   </row>
   <row>
@@ -5070,7 +5070,7 @@
     </entry>
     <entry>
     <para
->Plug-in de coleção de MTP para o &amarok;</para>
+>Plugin de coleção de MTP para o &amarok;</para>
     </entry>
   </row>
   <row>
@@ -5094,7 +5094,7 @@
     </entry>
     <entry>
     <para
->Plug-in de coleção UPnP para o &amarok;</para
+>Plugin de coleção UPnP para o &amarok;</para
 ></entry>
   </row>
   </tbody>
@@ -5248,7 +5248,7 @@
     </entry>
     <entry>
     <para
->Um serviço de rádio pela Internet popular, transmitindo somente para usuários inscritos. Veja também o <ulink url="http://www.last.fm/about"
+>Um popular serviço de rádio pela Internet, que transmite somente para usuários inscritos. Veja também o <ulink url="http://www.last.fm/about"
 >Last.fm</ulink
 ></para>
     </entry>
@@ -5379,7 +5379,7 @@
 </sect2>
 <sect2 id="magnatune-store-configuration"
 ><title
->Configuração da loja do Magnatune</title
+>Configuração da loja Magnatune</title
 > 
 <para
 >Ouça a música oferecida pelo Magnatune de graça e compre-a diretamente através do &amarok;. Clique em <inlinemediaobject
@@ -5550,7 +5550,7 @@
 <para
 >Usando o <emphasis
 >Instalador de complementos</emphasis
->, é possível instalar os últimos scripts disponibilizados pelos usuários para o &amarok;. Existem também opções para procurar, ordenar e classificar os scripts. </para>
+> é possível instalar os últimos scripts disponibilizados pelos usuários para o &amarok;. Existem também opções para procurar, ordenar e classificar os scripts. </para>
 <para
 >Os botões <guilabel
 >Instalar scripts</guilabel
@@ -5560,7 +5560,7 @@
 </sect3>
 <sect3 id="script-information"
 ><title
->Informações do script</title
+>Informações sobre o script</title
 > 
 <para
 >Aprenda mais sobre um script específico com o botão <inlinemediaobject
@@ -5768,8 +5768,8 @@
 >Conteúdo</emphasis
 > do álbum (com um conteúdo especial para as faixas dos Vários Artistas) e a configuração de faixas <emphasis
 >Únicas</emphasis
->, que podem ser selecionadas nas abas da parte central do editor. Para adicionar um item, basta arrastá-lo do seletor na parte superior e soltá-lo na aba do leiaute selecionado abaixo. Para mostrar a capa do álbum, basta assinalar o campo <emphasis
->Capa</emphasis
+>, que podem ser selecionadas nas abas da parte central do editor. Para adicionar um item, basta arrastá-lo do seletor na parte superior e soltá-lo na aba do leiaute selecionado abaixo. Para mostrar a capa do álbum, basta assinalar o campo <guilabel
+>Capa</guilabel
 >. </para>
 <para
 >Além disso, você pode também adicionar: </para>
@@ -5779,7 +5779,7 @@
   <thead>
   <row>
     <entry
->Item de menu</entry>
+>Item do menu</entry>
     <entry
 >Descrição</entry>
   </row>
@@ -6045,7 +6045,7 @@
 >Analisando a coleção</title
 > 
 <para
->Sempre que o &amarok; está mostrando uma coleção, a informação sobre as faixas e álbuns precisam vir a partir de uma origem. </para>
+>Sempre que o &amarok; está mostrando uma coleção, a informação sobre as faixas e álbuns precisam ser obtidas a partir de uma origem. </para>
 <para
 >A origem pode ser um dispositivo portátil, um serviço na Internet ou um banco de dados. </para>
 <para
@@ -6055,7 +6055,7 @@
 <para
 >Este processo é chamado de análise da coleção. </para>
 <para
->É útil compreender o processo de análise para poder funcionar melhor com o &amarok;. </para>
+>É útil compreender o processo de análise para poder utilizar melhor o &amarok;. </para>
 <sect3 id="incremental-scan---update-collection"
 ><title
 >Análise incremental / Atualizar coleção</title
@@ -6083,7 +6083,7 @@
 ></listitem>
 <listitem
 ><para
->Se as pastas da coleção estiverem em uma partição bastante lenta, o processo de verificação de todas as horas de modificação poderá levar algum tempo. Normalmente, esta informação fica em cache no sistema operacional, mas com grandes coleções, isso pode não ser possível. Nesse caso, o analisador pode parecer que continua indefinidamente. Com coleções acima de 5000 faixas ou quando as coleções são armazenadas em uma unidade de rede ou partição de NTFS, recomenda-se desativar a opção <guilabel
+>Se as pastas da coleção estiverem em uma partição bastante lenta, o processo de verificação de todas as horas de modificação poderá levar algum tempo. Normalmente, esta informação fica em cache no sistema operacional, mas com grandes coleções, isso pode não ser possível. Nesse caso, o analisador pode parecer que continua indefinidamente. Com coleções acima de 5.000 faixas ou quando as coleções são armazenadas em uma unidade de rede ou partição de NTFS, recomenda-se desativar a opção <guilabel
 >Monitorar pastas por alterações</guilabel
 >.</para
 ></listitem>
@@ -6097,7 +6097,7 @@
 <para
 >A <guilabel
 >Análise completa</guilabel
-> não se importará com as datas de modificação. Ela não excluirá as suas estatísticas, mas irá restaurar a<emphasis
+> não se importará com as datas de modificação. Ela não excluirá as suas estatísticas, mas irá restaurar a <emphasis
 >classificação</emphasis
 > e o <emphasis
 >número de reproduções</emphasis
@@ -6110,11 +6110,11 @@
 <para
 >A barra de progresso irá mostrar a evolução da análise. </para>
 <para
->Até os 50%, o analisador irá analisar o sistema de arquivos e registrar temporariamente o resultado. </para>
+>Até os 50%, o analisador irá verificar o sistema de arquivos e registrar temporariamente o resultado. </para>
 <para
 >O período acima dos 50% indica que o analisador está armazenando os resultados no banco de dados. </para>
 <para
->Normalmente, o segundo passo é muito mais rápido que o primeiro, por isso fique surpreso se a barra de progresso parecer dar um salto. </para>
+>Normalmente, o segundo passo é muito mais rápido que o primeiro, por isso fique surpreso se a barra de progresso avançar rapidamente. </para>
 <para
 >Até os 50% é possível interromper a análise. Após os 50%, a gravação dos dados não pode ser interrompida. </para>
 <para
@@ -6163,7 +6163,7 @@
 <itemizedlist>
 <listitem
 ><para
->As faixas sem um artista (ou um compositor, no caso de uma faixa de música clássica) são colocadas em uma compilação.</para
+>As faixas sem um artista ou álbum (ou um compositor, no caso de uma faixa de música clássica) são colocadas em uma compilação.</para
 ></listitem>
 <listitem
 ><para
@@ -6185,7 +6185,7 @@
 ></listitem>
 <listitem
 ><para
->Se tiver terminado com várias faixas de diferentes artistas, serão colocadas dentro de uma compilação; por outro lado poderá criar um álbum com base nelas.</para
+>Se tiver concluído com várias faixas de diferentes artistas serão colocadas dentro de uma compilação; por outro lado poderá criar um álbum com base nelas.</para
 ></listitem>
 </itemizedlist>
 <para
@@ -6207,7 +6207,7 @@
 <para
 >Você pode remover a etiqueta dos arquivos MP3 com o seguinte comando: <userinput
 >id3v2 -r TCMP <replaceable
->arquivo</replaceable
+>seu arquivo aqui</replaceable
 ></userinput
 > </para>
 </sect3>
@@ -6554,7 +6554,7 @@
 >Organizar a coleção</title
 > 
 <para
->Embora organizar a sua coleção no &amarok; seja uma tarefa simples, você irá manipular as arquivos reais no seu disco rígido. Certifique-se de que possui uma cópia de segurança dos seus arquivos antes de começar. </para>
+>Embora organizar a sua coleção no &amarok; seja uma tarefa simples, você irá manipular os arquivos reais no seu disco rígido. Certifique-se de que possui uma cópia de segurança dos seus arquivos antes de começar. </para>
 <para
 >Com a janela <guilabel
 >Organizar arquivos</guilabel
@@ -6719,7 +6719,7 @@
 >MS-DOS</emphasis
 > ou <emphasis
 >VFAT</emphasis
-> por sublinhados. A maioria das pessoas poderão deixar esta opção ativada.</para>
+> por sublinhados. A maioria das pessoas pode deixar esta opção ativada.</para>
     </entry>
   </row>
   <row>
@@ -6733,7 +6733,7 @@
     <para
 >Se estiver assinalada, todos os caracteres não-ASCII serão substituídos por sublinhados. <emphasis
 >Não assinale esta opção se tiver caracteres não-Ingleses nas suas etiquetas</emphasis
->. A maioria das pessoas poderão deixar esta opção desativada.</para>
+>. A maioria das pessoas pode deixar esta opção desativada.</para>
     </entry>
   </row>
   <row>
@@ -6747,7 +6747,7 @@
     <para
 >Substitui as expressões das etiquetas que você digitar no campo <guilabel
 >Substituir</guilabel
-> pelos textos de caracteres que digitar no campo <guilabel
+> pelos caracteres que digitar no campo <guilabel
 >Por</guilabel
 >. Útil se existirem erros ortográficos no CDDB.</para>
     </entry>
@@ -6978,7 +6978,7 @@
 </screenshot>
 </para>
 <para
->Configurar o serviço com os dados introduzidos no servidor: </para>
+>Configure o serviço com os dados introduzidos no servidor: </para>
 <para>
 <screenshot>
 <screeninfo
@@ -7233,9 +7233,9 @@
 >Universal Plug and Play (UPnP)</title
 > 
 <para
->O <emphasis
+><emphasis
 >UPnP</emphasis
-> é um conjunto de protocolos para compartilhar conteúdos na rede. Também é suportado por um conjunto de gateways residenciais e dispositivos de armazenamento de rede (NAS). O suporte a UPnP agora é comercializado como <ulink url="http://en.wikipedia.org/wiki/DLNA"
+> é um conjunto de protocolos para compartilhar conteúdos na rede. Também é suportado por um conjunto de gateways residenciais e dispositivos de armazenamento de rede (NAS). O suporte a UPnP agora é comercializado como <ulink url="http://pt.wikipedia.org/wiki/DLNA"
 >DLNA</ulink
 >. </para>
 <para
@@ -7283,7 +7283,7 @@
 </sect3>
 <sect3 id="configure-database"
 ><title
->Configurar banco de dados</title
+>Configurar o banco de dados</title
 > 
 <para
 >Conecte-se ao banco de dados local com o comando </para>
@@ -7296,15 +7296,15 @@
 >root</emphasis
 > do <guilabel
 >MySQL</guilabel
->. Você irá obter a linha de comando <screen
+>. Você irá obter a linha de comando: <screen
 >mysql&gt;</screen
->. </para>
+> </para>
 <para
 >Crie um novo usuário <replaceable
 >usuario_amarok</replaceable
 > com a senha <replaceable
 >senha_amarok</replaceable
-> com o comando </para>
+> usando o comando </para>
 <para
 ><userinput
 >CREATE USER <guilabel
@@ -7375,7 +7375,7 @@
 >Configurar o cliente</title
 > 
 <para
->Abra a janela de configuração clicando na opção do menu  <menuchoice
+>Abra a janela de configuração clicando na opção do menu <menuchoice
 ><guimenu
 >Configurações</guimenu
 ><guisubmenu
@@ -7411,7 +7411,7 @@
 >MySQL</guilabel
 > incorporado anterior ao &amarok; 2.2, poderá fazer o seguinte: </para>
 <para
->Primeiramente, inicie o  &amarok; 2.2+ pelo menos uma vez antes de dar a oportunidade de atualizar o modelo de dados para a última versão. </para>
+>Primeiramente, inicie o &amarok; 2.2+ pelo menos uma vez antes de dar a oportunidade de atualizar o modelo de dados para a última versão. </para>
 <para
 >Depois, finalize o serviço do <guilabel
 >MySQL</guilabel
@@ -7474,7 +7474,7 @@
 >Trabalhando com dispositivos multimídia</title
 > 
 <para
->Use o &amarok; para reproduzira as músicas dos dispositivos multimídia, como os dispositivos MTP, iPods e os dispositivos USB genéricos. </para>
+>Use o &amarok; para reproduzir as músicas dos dispositivos multimídia, tais como os dispositivos MTP, iPods e os dispositivos USB genéricos. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -7584,7 +7584,7 @@
   <thead>
   <row>
     <entry
->Item de menu</entry>
+>Item do menu</entry>
     <entry
 >Descrição</entry>
   </row>
@@ -7659,7 +7659,7 @@
     </entry>
     <entry>
     <para
->Move todas as faixas selecionadas para a coleção local ou para outros dispositivos multimídia.</para>
+>Move todas as faixas selecionadas para a coleção local ou para outros dispositivos multimídia conectados.</para>
     </entry>
   </row>
   <row>
@@ -7671,7 +7671,7 @@
     </entry>
     <entry>
     <para
->Move todas as faixas selecionadas do dispositivo multimídia para a lixeira</para>
+>Move todas as faixas selecionadas do dispositivo multimídia para a lixeira.</para>
     </entry>
   </row>
   <row>
@@ -7860,10 +7860,10 @@
 > 
 <para
 >Altere a linha adequada para o valor necessário e clique em <guilabel
->Salvar &amp; Fechar</guilabel
+>Salvar e fechar</guilabel
 >. Se clicar em <guilabel
 >Cancelar</guilabel
->, irá eliminar as alterações não gravadas. </para>
+> irá eliminar as alterações não salvas. </para>
 <sect3 id="tags9"
 ><title
 >Marcas</title
@@ -8057,7 +8057,7 @@
 >Tudo de uma vez</title
 > 
 <para
->As etiquetas mais gerais podem ser definidas para um grupo de etiquetas de uma vez. Funciona como no modo de faixas únicas, mas as etiquetas do título e do número da faixa estão bloqueadas. </para>
+>As etiquetas mais comuns podem ser definidas para um grupo de etiquetas de uma vez. Funciona como no modo de faixas únicas, mas as etiquetas do título e do número da faixa ficam bloqueadas. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -8304,7 +8304,7 @@
 </sect2>
 <sect2 id="transcode-menu"
 ><title
->O menu Converter</title
+>Menu Converter</title
 > 
 <para
 >Se você optar por copiar os arquivo para a sua coleção, irá aparecer a seguinte janela. </para>
@@ -8329,7 +8329,7 @@
   <thead>
   <row>
     <entry
->Item de menu</entry>
+>Item do menu</entry>
     <entry
 >Descrição</entry>
   </row>
@@ -8383,7 +8383,7 @@
 >Codificação personalizada</title
 > 
 <para
->Se deve poupar espaço para que os seus arquivos sejam legíveis por um reprodutor multimídia ou um determinado programa, o &amarok; saberá lidar com ele. Escolha um codificador na lista, configure as opções personalizadas e clique em <guilabel
+>Se precisar poupar espaço para que os seus arquivos sejam legíveis por um reprodutor multimídia ou um determinado programa, o &amarok; saberá lidar com ele. Escolha um codificador na lista, configure as opções personalizadas e clique em <guilabel
 >Converter</guilabel
 >. </para>
 <para>
@@ -8407,7 +8407,7 @@
   <thead>
   <row>
     <entry
->Item de menu</entry>
+>Item do menu</entry>
     <entry
 >Descrição</entry>
   </row>
@@ -8436,7 +8436,7 @@
     </entry>
     <entry>
     <para
->Apresenta todos os seus codificadores instalados; escolha um deles para definir os parâmetros ao seu gosto. Se esta lista estiver vazia, você precisa instalar o <emphasis
+>Apresenta todos os codificadores instalados; escolha um deles para definir os parâmetros ao seu gosto. Se esta lista estiver vazia, você precisa instalar o <emphasis
 >FFmpeg</emphasis
 >.</para>
     </entry>
@@ -8500,7 +8500,7 @@
 >Gerenciar scripts</guilabel
 > (anteriormente chamado de <guilabel
 >Obter mais scripts</guilabel
->) que permite-lhe baixar e instalar os mais recentes scripts disponibilizados pelos usuários na Internet. </para>
+>), que permite-lhe baixar e instalar os mais recentes scripts disponibilizados pelos usuários na Internet. </para>
 <para>
 <informaltable>
   <tgroup cols="1">
@@ -8561,7 +8561,7 @@
 </para>
 <para
 >Por favor, consulte a referência <link linkend="scripts"
->Configurar o Amarok -&gt; Scripts</link
+>Configurando o Amarok -&gt; Scripts</link
 > para obter mais informações. </para>
 </sect1>
 </chapter>
@@ -8610,8 +8610,8 @@
 >Listas de músicas salvas</title
 > 
 <para
->Uma <emphasis
->lista de músicas salva</emphasis
+>A <emphasis
+>Lista de músicas salvas</emphasis
 > é um tipo de lista de músicas tradicional. As listas salvas funcionam como a lista atual do &amarok; e são gravadas no banco de dados do &amarok; ou no seu sistema de arquivos para uso posterior. O compartilhamento das suas listas gravadas com os seus amigos é simples e pode ser divertido para uso em eventos onde você tenha músicas que deseje reproduzir. </para>
 <para
 >As listas de músicas salvas podem ser criadas com o &amarok; ou importadas a partir do seu sistema de arquivos. A criação de uma lista salva é bastante simples com as músicas exatas e a ordem que deseja. Para utilização no dia a dia, normalmente é mais rápido usar as <link linkend="dynamic-playlists"
@@ -8794,7 +8794,7 @@
 </para>
 <sect3 id="check-boxes"
 ><title
->Caixas de verificação</title
+>Opções</title
 > 
 <para>
 <informaltable>
@@ -8877,7 +8877,7 @@
     </entry>
     <entry>
     <para
->Procura a classificação de todas as músicas na lista de músicas</para>
+>Procura a avaliação de todas as músicas na sua lista de músicas</para>
     </entry>
   </row>
   <row>
@@ -8938,9 +8938,9 @@
 <para
 >As faixas são carregadas na <guilabel
 >Lista de músicas</guilabel
->. Em uma evolução normal das faixas, quando terminar uma música é reproduzida a próxima música por baixo da atual. A <emphasis
+>. Em uma evolução normal das faixas, ao terminar uma música é reproduzida a próxima por baixo da atual. A <emphasis
 >Fila</emphasis
-> é uma forma de alterar a ordem pela qual são as músicas são reproduzidas. </para>
+> é uma forma de alterar a ordem pela qual as músicas são reproduzidas. </para>
 <sect2 id="how-to-create-a-queue"
 ><title
 >Como criar uma fila</title
@@ -9095,7 +9095,7 @@
     </entry>
     <entry>
     <para
->Sobe a faixa selecionada na lista.</para>
+>Move para cima a faixa selecionada na lista.</para>
     </entry>
   </row>
   <row>
@@ -9109,7 +9109,7 @@
     </entry>
     <entry>
     <para
->Desce a faixa selecionada na lista.</para>
+>Move para baixo a faixa selecionada na lista.</para>
     </entry>
   </row>
   <row>
@@ -9149,11 +9149,11 @@
 </sect1>
 <sect1 id="dynamic-playlists"
 ><title
->Listas dinâmicas de músicas</title
+>Listas de músicas dinâmicas</title
 > 
 <para
 >Alguns reprodutores multimídia estão desenhados para carregar a coleção inteira de músicas em uma única lista de músicas, depois tocando-a aleatoriamente ou com base em uma pesquisa/ordem. Com uma coleção maior, esta forma de gerenciar a sua lista de músicas não é eficiente. A <guilabel
->Lista de música dinâmica</guilabel
+>Lista de músicas dinâmica</guilabel
 > do &amarok; é uma forma melhor de explorar as suas músicas. </para>
 <para
 >A <guilabel
@@ -9186,7 +9186,7 @@
 </para>
 <sect2 id="how-the-dynamic-playlist-works"
 ><title
->Como a listas de músicas dinâmica funciona</title
+>Como a lista de músicas dinâmica funciona</title
 > 
 <para
 >A lista de músicas dinâmica é uma lista que cresce à medida em que você ouve suas músicas. </para>
@@ -9211,7 +9211,7 @@
 > indicando que ela está ativada. Selecione a lista de músicas dinâmica a ser usada na lista de opções com um clique duplo. A lista selecionada aparece em negrito. </para>
 <para
 >Você pode ajustar o número de músicas antes e depois da música atual a ser exibida na lista de músicas com os campos <guilabel
->Anterior</guilabel
+>Anteriores</guilabel
 > e <guilabel
 >Seguintes</guilabel
 >. Poderá evitar que a mesma faixa apareça na lista de músicas atual mais de uma vez, usando o botão <inlinemediaobject
@@ -9220,9 +9220,9 @@
 > </inlinemediaobject
 >. O botão <guilabel
 >Repovoar</guilabel
-> permite-lhe gerar um novo conjunto de faixas. Isto pode ser usado em conjunto com um valor <guilabel
->Seguinte</guilabel
-> alto para gerar listas de músicas fixas para exportar. </para>
+> permite-lhe gerar um novo conjunto de faixas. Isto pode ser usado em conjunto com uma configuração do campo <guilabel
+>Seguintes</guilabel
+> alta para gerar listas de músicas fixas para exportar. </para>
 </sect2>
 <sect2 id="defining-dynamic-playlists"
 ><title
@@ -9260,7 +9260,7 @@
   <varlistentry
 ><term
 ><emphasis role="bold"
->Search</emphasis
+>Pesquisar</emphasis
 ></term>
     <listitem>
     <para
@@ -9477,7 +9477,7 @@
 >Ponderação difusa</title
 > 
 <para
->A ponderação difusa irá corresponder a um valor aproximado e tem um  controle de <guilabel
+>A ponderação difusa irá corresponder a um valor aproximado e tem um controle de <guilabel
 >restrição</guilabel
 > em oposição a um campo de porcentagem. Uma maior restrição corresponde a valores mais exatos. A lista de músicas resultante irá consistir em faixas distribuídas normalmente em torno do valor solicitado. </para>
 </sect3>
@@ -9536,8 +9536,8 @@
 > 
 <para
 >O <guilabel
->Gerenciador de listas de músicas automático (APG)</guilabel
-> gera lista automaticamente com base nas restrições que você definir. Estas restrições podem ser definidas com base nos dados da música (artista, gênero ano) ou no tempo de acesso (última reprodução). Existem também restrições especiais para determinar como o &amarok; vai procurar pelas músicas. Você encontrará o <emphasis
+>Gerador de listas de músicas automático (APG)</guilabel
+> gera listas automaticamente com base nas restrições que você definir. Estas restrições podem ser definidas com base nos dados da música (artista, gênero, ano) ou no tempo de acesso (última reprodução). Existem também restrições especiais para determinar como o &amarok; vai procurar pelas músicas. Você encontrará o <emphasis
 >APG</emphasis
 > no seu painel <guilabel
 >Fontes multimídia</guilabel
@@ -9578,7 +9578,7 @@
 > <imageobject
 > <imagedata fileref="Icon-list-add.png" format="PNG"/> </imageobject
 > </inlinemediaobject
-> Adiciona uma predefinição em branco que poderá ser modificada</para
+> Adiciona uma predefinição em branco que poderá ser modificada.</para
 ></listitem>
 <listitem
 ><para
@@ -9750,7 +9750,7 @@
     <entry>
     <para
 ><guilabel
->Evitar duplicados</guilabel
+>Evitar duplicadas</guilabel
 ></para>
     </entry>
     <entry>
@@ -9901,7 +9901,7 @@
 <listitem
 ><para
 ><link linkend="amarok-on-non-kde-desktops"
->Ambientes de trabalho não KDE</link
+>Ambientes de trabalho não-KDE</link
 >&nbsp;</para
 ></listitem>
 <listitem
@@ -9943,7 +9943,7 @@
 >atmosfera</quote
 > de uma faixa, onde você pode usar para descobrir quando algo de interessante ocorrer na música. </para>
 <para
->Para o &amarok; analisar os seus arquivos de música para criar barras de de atmosfera, você precisa do programa <guilabel
+>Para o &amarok; analisar os seus arquivos de música para criar barras de atmosfera, você precisa do programa <guilabel
 >Moodbar</guilabel
 > (veja abaixo para <link linkend="source-downloads"
 >transferências</link
@@ -10396,11 +10396,7 @@
 >Não foi possível criar um elemento do tipo fftwspectrum, por favor, instale-o.</screen
 > &mdash; isto normalmente significa que você não possui os plugins necessários instalados (veja a lista de plugins <link linkend="supported-filetypes"
 >aqui</link
->) ou que você não instalou o pacote do Moodbar no mesmo prefixo que o GStreamer. Se os arquivos libmoodbar.so e libgstdecodebin.so não estiverem na mesma pasta, então o <guilabel
->Moodbar</guilabel
-> não está instalado no mesmo prefixo que o <emphasis
->GStreamer</emphasis
->. Por favor, leia o arquivo INSTALL à procura de instruções para correta configuração do pacote moodbar. Alternativamente, <emphasis
+>) ou que você não instalou o pacote do Moodbar no mesmo prefixo que o GStreamer. Se os arquivos libmoodbar.so e libgstdecodebin.so não estiverem na mesma pasta, então o Moodbar não está instalado no mesmo prefixo que o GStreamer. Por favor, leia o arquivo INSTALL para mais instruções sobre a correta configuração do pacote moodbar. Alternativamente, <emphasis
 >se você souber o que está fazendo</emphasis
 >, pode ser mais simples olhar a variável de ambiente <filename
 >GST_PLUGIN_PATH</filename
@@ -10585,7 +10581,7 @@
     <entry>
     <para
 ><link linkend="amarok-on-non-kde-desktops"
->Ambientes de trabalho não KDE</link
+>Ambientes de trabalho não-KDE</link
 >&nbsp;</para>
     </entry>
   </row>
@@ -10645,12 +10641,12 @@
 </para>
 <sect2 id="amarok-on-non-kde-desktops"
 ><title
->O Amarok nos ambientes Não KDE</title
+>O Amarok nos ambientes Não-KDE</title
 > 
 <para
 >Ainda que o &amarok; seja um dos aplicativos mais conhecidos do KDE, ele também funciona em outros ambientes de trabalho. </para>
 <para
->Esta seção mostra como o &amarok; pode ser usado em outros ambientes de trabalho do &Linux; que não seja o KDE. Este são apenas alguns exemplos; poderão existir outros. </para>
+>Esta seção mostra como o &amarok; pode ser usado em outros ambientes de trabalho do &Linux; que não seja o KDE. Estes são apenas alguns exemplos e podem existir outros. </para>
 <sect3 id="gnome"
 ><title
 >GNOME</title
@@ -10800,7 +10796,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 >Amarok no Windows</title
 > 
 <para
->Como você já deve saber, uma instalação normal do Windows não usa o KDE. Por isso, se quiser instalar o &amarok;, não basta apenas baixar o pacote de do programa. Você precisa instalar primeiro um compilador compatível. Aqui está descrito como baixar, instalar e executar o &amarok; no sistema operacional Windows. </para>
+>Como você já deve saber, uma instalação normal do Windows não usa o KDE. Por isso, se quiser instalar o &amarok;, não basta apenas baixar o pacote do programa. Você precisa instalar primeiro um compilador compatível. Aqui está descrito como baixar, instalar e executar o &amarok; no sistema operacional Windows. </para>
 <sect3 id="how-to-download"
 ><title
 >Como baixar</title
@@ -10816,7 +10812,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 <para
 ><ulink url="http://kollide.net/~dgran10/amarok/"
 >Aqui</ulink
-> você pode baixar o instalador para Windows que é fornecido pela Nitrostemp,  onde encontrará o pacote do &amarok; e o compilador do KDE necessário para o Windows. </para>
+> você pode baixar o instalador para Windows que é fornecido pela Nitrostemp, onde encontrará o pacote do &amarok; e o compilador do KDE necessário para o Windows. </para>
 </sect4>
 <sect4 id="amarok-2-4-only"
 ><title
@@ -11396,7 +11392,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 >Porque o Amarok usa a KDElibs?</title
 > 
 <para
->Estamos comprometidos em suportar o &amarok; em todas as plataformas. Usamos a KDElibs e o Qt porque eles oferecem um excelente ambiente de desenvolvimento. Além de funcionar no &Linux; e no BSD, o &amarok; também pode ser executado no Windows e no MacOS, e apesar de existirem instaladores disponíveis, ainda não temos recursos para oferecer um suporte completo a estes sistemas operacionais. Quase todos os nossos desenvolvedores usam sistemas operacionais livres e eles tem prioridade para nós. Contudo, damos as boas-vindas aos desenvolvedores do Windows e do OS X  que queiram ajudar e melhorar o &amarok; nessas plataformas. </para>
+>Estamos comprometidos em suportar o &amarok; em todas as plataformas. Usamos a KDElibs e o Qt porque eles oferecem um excelente ambiente de desenvolvimento. Além de funcionar no &Linux; e no BSD, o &amarok; também pode ser executado no Windows e no MacOS, e apesar de existirem instaladores disponíveis, ainda não temos recursos para oferecer um suporte completo a estes sistemas operacionais. Quase todos os nossos desenvolvedores usam sistemas operacionais livres e eles tem prioridade para nós. Contudo, damos as boas-vindas aos desenvolvedores do Windows e do OS X que queiram ajudar e melhorar o &amarok; nessas plataformas. </para>
 </sect3>
 </sect2>
 <sect2 id="general-usage"
@@ -11517,7 +11513,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 >Quais os tipos de mídia o Amarok suporta?</title
 > 
 <para
->O &amarok; não reproduz música por si próprio, mas permite que o Phonon faça isso por ele, especificamente as infraestruturas VLC, GStreamer ou Xine do Phonon. Portanto, o &amarok;  poderá reproduzir todos os tipos de arquivos por elas suportados. Para analisar as etiquetas dos arquivos, o &amarok; usa a Taglib, que suporta a maioria dos tipos de arquivos que contenham metadados. </para>
+>O &amarok; não reproduz música por si próprio, mas permite que o Phonon faça isso por ele, especificamente as infraestruturas VLC, GStreamer ou Xine do Phonon. Portanto, o &amarok; poderá reproduzir todos os tipos de arquivos por elas suportados. Para analisar as etiquetas dos arquivos, o &amarok; usa a Taglib, que suporta a maioria dos tipos de arquivos que contenham metadados. </para>
 </sect3>
 <sect3 id="what-is-phonon-what-are-phonon-backends"
 ><title
@@ -11674,7 +11670,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 <para
 >O equalizador só está disponível se você estiver usando uma infraestrutura do Phonon que o suporte, atualmente disponível na maioria das infraestruturas. Você pode encontrá-lo no menu <guilabel
 >Ferramentas</guilabel
->. Mais informações informações sobre a configuração das infraestruturas do Phonon podem ser obtidas na <ulink url="http://amarok.kde.org/wiki/Download"
+>. Mais informações sobre a configuração das infraestruturas do Phonon podem ser obtidas na <ulink url="http://amarok.kde.org/wiki/Download"
 >página de download</ulink
 >. </para>
 </sect3>
@@ -11766,8 +11762,8 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 >Coleções dinâmicas</emphasis
 >, os seus dispositivos multimídia poderão fazer parte da sua coleção de músicas, podendo pesquisar e acessar o seu conteúdo dentro da seção <guilabel
 >Músicas locais</guilabel
-> do painel <emphasis
->Fontes multimídia</emphasis
+> do painel <guilabel
+>Fontes multimídia</guilabel
 > quando estiverem conectados. </para>
 <para
 >Você pode transferir as suas músicas, álbuns e artistas da sua coleção local, clicando com o botão direito do mouse e escolhendo a opção <guilabel
@@ -11809,7 +11805,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 >aqui</link
 >. Após o &amarok; 2.4.1, você irá encontrar o <guilabel
 >Gerenciador de scripts</guilabel
-> no menu  <guilabel
+> no menu <guilabel
 >Configurações</guilabel
 >, em <menuchoice
 ><guimenu
@@ -11990,7 +11986,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 >  
 </para>
 <para
->Depois disso, basta publicar o backtrace no <ulink url="http://paste.kde.org"
+>Depois disso, basta publicar o backtrace no <ulink url="http://paste.kde.org/"
 >PasteBin</ulink
 >, da forma descrita no <ulink url="http://amarok.kde.org/wiki/Debugging_%28documentation%29"
 >HOWTO de depuração</ulink
@@ -12047,7 +12043,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 > 
 <para
 >Ficaremos muito felizes! A sua melhor estratégia é comunicar-nos o que está planejando fazer antes mesmos de iniciar o trabalho, para que possamos discuti-lo, mas não se preocupe: nós ainda não recusamos uma alteração! A discussão serve mais para ajudá-lo a alterar as partes corretas do &amarok;. Envie as suas contribuições de código para o git.reviewboard.kde.org. Veja também <ulink url="http://blogs.fsfe.org/myriam/2010/09/how-to-submit-patches-for-amarok/"
->Como enviar alterações para o  &amarok;</ulink
+>Como enviar alterações para o &amarok;</ulink
 >. Se tiver uma correção de erros pode seguir em frente; isto é código aberto, afinal de contas. <inlinemediaobject
 > <imageobject
 > <imagedata fileref="Face-smile.png" format="PNG"/> </imageobject
@@ -12079,42 +12075,42 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 <listitem
 ><para
 ><link linkend="menu-and-command-reference"
->Referência do menu e dos "comandos</link
+>Referência de menus e comandos</link
 >&nbsp;<itemizedlist>
 <listitem
 ><para
 ><link linkend="amarok-menu"
->O menu Amarok</link
+>Menu Amarok</link
 >&nbsp;</para
 ></listitem>
 <listitem
 ><para
 ><link linkend="view-menu"
->O menu Exibir</link
+>Menu Exibir</link
 >&nbsp;</para
 ></listitem>
 <listitem
 ><para
 ><link linkend="playlist"
->O menu Lista de músicas</link
+>Menu Lista de músicas</link
 >&nbsp;</para
 ></listitem>
 <listitem
 ><para
 ><link linkend="tools-menu"
->O menu Ferramentas</link
+>Menu Ferramentas</link
 >&nbsp;</para
 ></listitem>
 <listitem
 ><para
 ><link linkend="settings-menu"
->O menu Configurações</link
+>Menu Configurações</link
 >&nbsp;</para
 ></listitem>
 <listitem
 ><para
 ><link linkend="help-menu"
->O menu Ajuda</link
+>Menu Ajuda</link
 >&nbsp;</para
 ></listitem>
 </itemizedlist>
@@ -12149,7 +12145,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 </itemizedlist>
 <sect1 id="menu-and-command-reference"
 ><title
->Referência de menus e de comandos</title
+>Referência de menus e comandos</title
 > 
 <sect2 id="amarok-top-level-menus"
 ><title
@@ -12190,7 +12186,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
     <entry>
     <para
 ><link linkend="amarok-menu"
->Ações comuns, como reproduzir, pausa, &etc;</link
+>Ações comuns, como reproduzir, pausar, &etc;</link
 >&nbsp;</para>
     </entry>
   </row>
@@ -12305,7 +12301,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
   <thead>
   <row>
     <entry
->Item de menu</entry>
+>Item do menu</entry>
     <entry
 >Descrição</entry>
     <entry
@@ -12376,7 +12372,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
     </entry>
     <entry>
     <para
->Para todas as reproduções em curso.</para>
+>Para todas as reproduções em andamento.</para>
     </entry>
     <entry>
     <para
@@ -12655,7 +12651,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 </sect2>
 <sect2 id="playlist-menu"
 ><title
->Menu da lista de músicas</title
+>Menu Lista de músicas</title
 > 
 <para
 >Este é um menu onde você poderá configurar a sua <guilabel
@@ -12675,11 +12671,11 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
     </imageobject>
     <textobject>
       <phrase
->O menu Lista de músicas do Amarok</phrase>
+>Menu Lista de músicas do Amarok</phrase>
     </textobject>
     <caption>
       <para
->O menu Lista de músicas do Amarok</para>
+>Menu Lista de músicas do Amarok</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -12690,7 +12686,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
   <thead>
   <row>
     <entry
->Item de menu</entry>
+>Item do menu</entry>
     <entry
 >Descrição</entry>
     <entry
@@ -12782,7 +12778,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
     <entry>
     <para
 ><guilabel
->Limpar lista de músicas</guilabel
+>Limpar a lista de músicas</guilabel
 ></para>
     </entry>
     <entry>
@@ -12842,7 +12838,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 ><guimenu
 >Lista de músicas</guimenu
 ><guimenuitem
->Leiautes da lista de músicas</guimenuitem
+>Leiautes de lista de músicas</guimenuitem
 ></menuchoice
 >, você poderá alternar entre vários leiautes através dos botões de opção disponíveis, assim como configurar o seu leiaute pessoal da <guilabel
 >Lista de músicas</guilabel
@@ -12856,7 +12852,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 ><guimenu
 >Lista de músicas</guimenu
 ><guisubmenu
->Leiautes da lista de músicas</guisubmenu
+>Leiautes de lista de músicas</guisubmenu
 ><guimenuitem
 >Padrão</guimenuitem
 ></menuchoice>
@@ -12901,7 +12897,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 ><guimenu
 >Lista de músicas</guimenu
 ><guisubmenu
->Leiautes da lista de músicas</guisubmenu
+>Leiautes de lista de músicas</guisubmenu
 ><guimenuitem
 >Sem agrupamento</guimenuitem
 ></menuchoice>
@@ -12946,7 +12942,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 ><guimenu
 >Lista de músicas</guimenu
 ><guisubmenu
->Leiautes da lista de músicas</guisubmenu
+>Leiautes de lista de músicas</guisubmenu
 ><guimenuitem
 >Sem agrupamento (única linha)</guimenuitem
 ></menuchoice>
@@ -12991,7 +12987,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 ><guimenu
 >Lista de músicas</guimenu
 ><guisubmenu
->Leiautes da lista de músicas</guisubmenu
+>Leiautes de lista de músicas</guisubmenu
 ><guimenuitem
 >Detalhada</guimenuitem
 ></menuchoice>
@@ -13036,7 +13032,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 ><guimenu
 >Lista de músicas</guimenu
 ><guisubmenu
->Leiautes da lista de músicas</guisubmenu
+>Leiautes de lista de músicas</guisubmenu
 ><guimenuitem
 >Configurar o leiaute da lista de músicas...</guimenuitem
 ></menuchoice>
@@ -13072,7 +13068,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 >O menu Ferramentas</title
 > 
 <para
->A partir deste menu você poderá usar as ferramentas e scripts adicionais. </para>
+>A partir deste menu você poderá usar ferramentas e scripts adicionais. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -13098,7 +13094,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
   <thead>
   <row>
     <entry
->Item de menu</entry>
+>Item do menu</entry>
     <entry
 >Descrição</entry>
   </row>
@@ -13137,7 +13133,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
     </entry>
     <entry>
     <para
->Mostra o equalizador</para>
+>Mostra o equalizador.</para>
     </entry>
   </row>
   <row>
@@ -13187,7 +13183,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
   <thead>
   <row>
     <entry
->Item de menu</entry>
+>Item do menu</entry>
     <entry
 >Descrição</entry>
   </row>
@@ -13251,8 +13247,8 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 >Gerenciador de capas</title
 >  
 <para
->Mostra todos os álbuns na sua coleção. Aqui você poderá configurar as capas personalizadas dos álbuns e obter as que faltam. Para obter mais informações sobre o gerenciador de capas clique <link linkend="cover-manager"
->aqui</link
+>Mostra todos os álbuns da sua coleção. Aqui você poderá configurar as capas personalizadas dos álbuns e obter as que faltam. Para obter mais informações sobre o gerenciador de capas clique em <link linkend="cover-manager"
+>Gerenciador de capas</link
 >. </para>
 <para>
 <screenshot>
@@ -13316,11 +13312,11 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
     </imageobject>
     <textobject>
       <phrase
->O menu de Configurações do Amarok</phrase>
+>Menu Configurações do Amarok</phrase>
     </textobject>
     <caption>
       <para
->O menu de Configurações do Amarok</para>
+>Menu Configurações do Amarok</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -13331,7 +13327,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
   <thead>
   <row>
     <entry
->Item de menu</entry>
+>Item do menu</entry>
     <entry
 >Descrição</entry>
   </row>
@@ -13346,7 +13342,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
     </entry>
     <entry>
     <para
->Oculta a barra do menus. Mostre-a novamente pressionando <keycombo
+>Oculta a barra de menus. Mostre-a novamente pressionando <keycombo
 >&Ctrl;<keycap
 >M</keycap
 ></keycombo
@@ -13479,7 +13475,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
     </imageobject>
     <textobject>
       <phrase
->O menu de Ajuda do Amarok</phrase>
+>Menu de Ajuda do Amarok</phrase>
     </textobject>
     <caption>
       <para
@@ -13494,7 +13490,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
   <thead>
   <row>
     <entry
->Item de menu</entry>
+>Item do menu</entry>
     <entry
 >Descrição</entry>
   </row>
@@ -13509,7 +13505,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
     </entry>
     <entry>
     <para
->Comunica os erros diretamente ao sistema de relatórios de erros, com muita da informação gerada automaticamente.</para>
+>Comunica os erros diretamente ao sistema de relatórios de erros, com muita informação gerada automaticamente.</para>
     </entry>
   </row>
   <row>
@@ -13557,7 +13553,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
     </entry>
     <entry>
     <para
->Altera os menus do &amarok; e o idioma principal ou secundário</para>
+>Altera os menus do &amarok; e o idioma principal ou secundário.</para>
     </entry>
   </row>
   <row>
@@ -13719,7 +13715,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
   <row>
     <entry>
     <para
->Last.fm: adorar faixa atual</para>
+>Last.fm: Adorar a faixa atual</para>
     </entry>
     <entry>
     <para
@@ -13735,7 +13731,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
   <row>
     <entry>
     <para
->Last.fm: pular faixa atual</para>
+>Last.fm: Pular a faixa atual</para>
     </entry>
     <entry>
     <para
@@ -13751,7 +13747,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
   <row>
     <entry>
     <para
->Mudo</para>
+>Sem volume</para>
     </entry>
     <entry>
     <para
@@ -13772,7 +13768,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
     <entry>
     <para
 ><keycap
->Próxima mídia</keycap
+>Multimídia Próximo</keycap
 ></para>
     </entry>
   </row>
@@ -13784,7 +13780,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
     <entry>
     <para
 ><keycap
->Reproduzir mídia</keycap
+>Multimídia Reproduzir</keycap
 ></para>
     </entry>
   </row>
@@ -13796,7 +13792,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
     <entry>
     <para
 ><keycap
->Parar mídia</keycap
+>Multimídia Parar</keycap
 ></para>
     </entry>
   </row>
@@ -13808,7 +13804,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
     <entry>
     <para
 ><keycap
->Mídia anterior</keycap
+>Multimídia Anterior</keycap
 ></para>
     </entry>
   </row>
@@ -13927,7 +13923,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
   <row>
     <entry>
     <para
->Mostrar Menu de Notificação</para>
+>Mostrar mensagem de notificação</para>
     </entry>
     <entry>
     <para
@@ -13943,7 +13939,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
   <row>
     <entry>
     <para
->Alternar janela principal</para>
+>Alternar a janela principal</para>
     </entry>
     <entry>
     <para
@@ -13967,12 +13963,12 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 >Atalhos do Amarok</title
 > 
 <para
->Controle o  &amarok; com os <emphasis
+>Controle o &amarok; com os <emphasis
 >atalhos de teclado</emphasis
 >, que são combinações de teclas que podem controlar uma ação específica. O &amarok; tem atalhos predefinidos, mas você também pode criar os seus. </para>
 <sect3 id="default-shortcuts"
 ><title
->Atalhos padrão</title
+>Atalhos predefinidos</title
 > 
 <para>
 <informaltable>
@@ -14147,7 +14143,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
   <row>
     <entry>
     <para
->Alternar tela cheia</para>
+>Alternar para tela cheia</para>
     </entry>
     <entry>
     <para
@@ -14334,7 +14330,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
     </entry>
     <entry>
     <para
->Salvar todas as alterações.</para>
+>Salva todas as alterações.</para>
     </entry>
   </row>
   <row>
@@ -14354,7 +14350,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 </informaltable>
 </para>
 <para
->Quando selecionar uma ação, isso abre uma subjanela onde você poderá escolher um dos dois botões de opção, o  <guilabel
+>Quando selecionar uma ação, isso abre uma subjanela onde você poderá escolher um dos dois botões de opção, o <guilabel
 >Padrão</guilabel
 > e o <guilabel
 >Personalizado</guilabel
@@ -14362,7 +14358,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 >Padrão</guilabel
 >, poderá usar o atalho padrão. Se escolher o <guilabel
 >Personalizado</guilabel
->, irá configurar e usar o seu atalho para esta ação." </para>
+>, irá configurar e usar o seu atalho para esta ação. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -14401,7 +14397,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 <para
 ><note
 ><para
->Por favor, adicione aqui o seu nome se tiver contribuído para o manual. Por favor, respeite a ordem alfabética</para
+>Adicione aqui o seu nome se contribuiu para elaboração do manual. Por favor, respeite a ordem alfabética</para
 ></note>
 </para>
 <para
@@ -14456,7 +14452,7 @@ ftpProxy=http://usuario:senha@servidor-proxy:porta/
 > Licença de Documentação Livre da GNU</ulink
 >. </para>
 <para
->Este programa está licenciado de acordo com os termos da <ulink url="http://www.gnu.org/licenses/gpl-2.0.txt"
+>Este programa está licenciado segundo os termos da <ulink url="http://www.gnu.org/licenses/gpl-2.0.txt"
 >Licença Pública Geral da GNU (GPL)</ulink
 >. </para>
 

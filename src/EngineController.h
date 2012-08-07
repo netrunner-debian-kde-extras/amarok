@@ -26,6 +26,8 @@
 
 #include <QMutex>
 #include <QObject>
+#include <QSemaphore>
+#include <QStringList>
 #include <QWeakPointer>
 
 #include <Phonon/Path>
@@ -50,6 +52,9 @@ class AMAROK_EXPORT EngineController : public QObject, public Meta::Observer
     Q_OBJECT
 
 public:
+    /**
+     * Construct EngineController. Must be called from the main thread.
+     */
     EngineController();
     ~EngineController();
 
@@ -57,11 +62,6 @@ public:
      * Returns the global EngineController instance
      */
     static EngineController* instance();
-
-    /**
-     * Destroys the global EngineController instance
-     */
-    static void destroy();
 
     /**
      * Loads and plays the track that was playing when endSession() was last
@@ -75,20 +75,15 @@ public:
     void endSession();
 
     /**
-     * Checks whether the media file at the specified URL can be decoded
+     * Returns a list of backend supported mime types. This method is thread-safe.
      */
-    static bool canDecode( const KUrl& );
-
-    /**
-     * Returns a list of backend supported mime types.
-     */
-    static QStringList supportedMimeTypes();
+    QStringList supportedMimeTypes();
 
     /** @return track position (elapsed time) in seconds */
     int trackPosition() const;
 
     /** @return track position (elapsed time) in milliseconds */
-    int trackPositionMs() const;
+    qint64 trackPositionMs() const;
 
     /**
      * Returns the current track that is loaded into the engine.
@@ -108,9 +103,6 @@ public:
      * @p track will be played immediately.
      */
     void setNextTrack( Meta::TrackPtr track );
-
-    /*enum Filetype { MP3 };*/ //assuming MP3 for time being
-    /*AMAROK_EXPORT*/ static bool installDistroCodec();
 
     /** Returns the media object Amarok is using for playback.
      *  Provides access to the Phonon MediaObject for components that need more information
@@ -147,13 +139,6 @@ public:
      * Note: A fading out track is considered already stopped.
      */
     bool isStopped() const;
-
-    /**
-     * @return @c true if Amarok is currently buffering or loading.
-     * Usually Amarok isPlaying is true in those cases too but that depends on the
-     * Phonon backend.
-     */
-    bool isBuffering() const;
 
     /**
      * Streams sometimes have to be treated specially.
@@ -238,8 +223,11 @@ public slots:
     /**
      * Stops playing
      * This happens asynchronously.
+     *
+     * @param forceInstant skip any fade-out effects
+     * @param playingWillContinue don't emit stopped() or trackChanged( 0 ) signals
      */
-    void stop( bool forceInstant = false );
+    void stop( bool forceInstant = false, bool playingWillContinue = false );
 
     /**
      * Pauses if Amarok is currently playing, plays if Amarok is stopped or paused
@@ -353,7 +341,7 @@ Q_SIGNALS:
      */
     void paused();
 
-    /** While trying to play the track an error occured.
+    /** While trying to play the track an error occurred.
      *  This usually means that the engine will try to play the next track in
      *  the playlist until it gives up.
      *  So you will get a trackPlaying or stopped signal next.
@@ -435,6 +423,18 @@ Q_SIGNALS:
     void trackPositionChanged( qint64 position, bool userSeek );
 
     /**
+     * Emitted when a track finished playing. You generally get this signal once per
+     * played track, but in case of a stream this may be emitted more than once when
+     * stream meta-data changes (which usually indicates that the next track started
+     * playing) - meta-data in the track are updated in this case. When you receive
+     * this signal, track score, play count etc. will be already updated.
+     *
+     * @param track track that has just finished playing
+     * @param playedFraction played/total length fraction, between 0 and 1
+     */
+    void trackFinishedPlaying( Meta::TrackPtr track, double playedFraction );
+
+    /**
        Called when the track length changes, typically because the track has changed but
        also when phonon manages to determine the full track length.
     */
@@ -456,6 +456,12 @@ Q_SIGNALS:
     *   @param audioData The audio data that is available
     */
     void audioDataReady( const QMap<Phonon::AudioDataOutput::Channel, QVector<qint16> > &audioData );
+
+    /**
+     * A trick to call slotFillInSupportedMimeTypes() in a main thread, not to be used
+     * anywhere else than in supportedMimeTypes().
+     */
+    void fillInSupportedMimeTypes();
 
 private slots:
     /**
@@ -489,6 +495,20 @@ private slots:
      */
     void slotTitleChanged( int titleNumber );
 
+    /**
+     * Fill in m_supportedMimeTypes list and release m_supportedMimeTypesSemaphore. This
+     * method must be called in the main thread so that there is no chance
+     * Phonon::BackendCapabilities::availableMimeTypes() is called in a non-gui thread
+     * for the first time.
+     */
+    void slotFillInSupportedMimeTypes();
+
+    /**
+     * Calls track->finishedPlaying(), connected to trackFinishedPlaying() signal to
+     * reduce code duplication.
+     */
+    void slotTrackFinishedPlaying( Meta::TrackPtr track, double playedFraction );
+
 protected:
     // reimplemented from Meta::Observer
     using Observer::metadataChanged;
@@ -496,20 +516,6 @@ protected:
     virtual void metadataChanged( Meta::AlbumPtr album );
 
 private:
-
-    /** Tries to get the url of the given track setting it as current.
-        This function will cause slotPlayableUrlFetched
-        to be called eventually.
-    */
-    void getUrl( Meta::TrackPtr track, uint offset );
-
-    /** Will try to get either the next url or the next track.
-        This function will call or initiate a call to slotPlayableUrlFetched or
-        setNextTrack.
-        slotPlayableUrlFetched, setNextTrack or slotQueueEnded.
-    */
-    void getNextUrlOrTrack();
-
     /**
      * Plays the media at a specified URL
      *
@@ -521,24 +527,15 @@ private:
     void createFadeoutEffect();
     void resetFadeout();
 
-    void setGain();
-
-    /** Returns the meta data sub set needed for currentMetadataChanged */
-    QVariantMap trackData( Meta::TrackPtr track );
-
-    /** Try to detect MetaData spam in Streams.
-        Some streams are doing advertisment in the metadata. We try to filter that out
-    */
-    bool isMetadataSpam( QVariantMap meta );
-
-    /** Will change the current track, notifying everybody about the change.
-        This function will also update the different variables connected to the current track e.g. m_boundedPlayback or m_fetchFirst.
-    */
-    void setCurrentTrack( Meta::TrackPtr track );
+    /**
+     * Try to detect MetaData spam in Streams etc.
+     * Some streams are doing advertisment in the metadata. We try to filter that out.
+     * Additionally, some Phonon back-ends emit more than one metadataChanged() signals
+     * per on track, so filter it all altogether.
+     */
+    bool isInRecentMetaDataHistory( const QVariantMap &meta );
 
     Q_DISABLE_COPY( EngineController )
-
-    static QMutex s_supportedMimeTypesMutex; // guards access to supportedMimeTypes()::mimeTable
 
     QWeakPointer<Phonon::MediaObject>       m_media;
     QWeakPointer<Phonon::VolumeFaderEffect> m_preamp;
@@ -554,7 +551,6 @@ private:
 
     Meta::TrackPtr  m_currentTrack;
     Meta::AlbumPtr  m_currentAlbum;
-    Meta::TrackPtr  m_lastTrack;
     Meta::TrackPtr  m_nextTrack;
     KUrl            m_nextUrl;
     Capabilities::BoundedPlaybackCapability* m_boundedPlayback;
@@ -579,6 +575,11 @@ private:
     qint64 m_lastTickCount;
 
     QMutex m_mutex;
+
+    // FIXME: this variable should be updated when
+    // Phonon::BackendCapabilities::notifier()'s capabilitiesChanged signal is emitted
+    QStringList m_supportedMimeTypes;
+    QSemaphore m_supportedMimeTypesSemaphore;
 };
 
 namespace The {

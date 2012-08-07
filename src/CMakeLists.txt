@@ -17,7 +17,7 @@ endif(APPLE)
 
 add_subdirectory( core )
 add_subdirectory( core-impl/collections )
-#dont use our own libplasma anymore, but still pick up our applets/engines/containments
+#don't use our own libplasma anymore, but still pick up our applets/engines/containments
 add_subdirectory( context )
 add_subdirectory( images )
 add_subdirectory( services )
@@ -698,7 +698,7 @@ set(amaroklib_LIB_SRCS
     dialogs/TagGuesser.cpp
     dialogs/LabelListModel.cpp
     equalizer/EqualizerPresets.cpp
-    browsers/filebrowser/MimeTypeFilterProxyModel.cpp
+    browsers/filebrowser/DirPlaylistTrackFilterProxyModel.cpp
     browsers/filebrowser/FileBrowser.cpp
     browsers/filebrowser/FileView.cpp
     musicbrainz/MusicBrainzFinder.cpp
@@ -809,12 +809,14 @@ if( LIBOFA_FOUND )
     include_directories(
         ${LIBAVCODEC_INCLUDE_DIR}
         ${LIBAVFORMAT_INCLUDE_DIR}
+        ${LIBAVUTIL_INCLUDE_DIR}
     )
     set( EXTRA_LIBS
         ${EXTRA_LIBS}
         ${LIBOFA_LIBRARY}
         ${LIBAVFORMAT_LIBRARY}
         ${LIBAVCODEC_LIBRARY}
+        ${LIBAVUTIL_LIBRARY}
     )
     set( amaroklib_LIB_SRCS
         ${amaroklib_LIB_SRCS}

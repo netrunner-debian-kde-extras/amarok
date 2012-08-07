@@ -22,6 +22,9 @@
 
 #include <QHash>
 
+class TestMetaAlbumKey;
+class TestMetaTrackKey;
+
 namespace Meta
 {
 
@@ -48,6 +51,9 @@ namespace Meta
 
             friend bool operator==( const AlbumKey &k1, const AlbumKey &k2 );
             friend uint qHash( const AlbumKey &key );
+
+            // Required for unit testing
+            friend class ::TestMetaAlbumKey;
     };
 
     /** The TrackKey can be used when an album needs to be identified independent of a collection */
@@ -68,6 +74,9 @@ namespace Meta
 
             friend bool operator==( const TrackKey &k1, const TrackKey &k2 );
             friend uint qHash( const TrackKey &key );
+
+            // Required for unit testing
+            friend class ::TestMetaTrackKey;
     };
 
 

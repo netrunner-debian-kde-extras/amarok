@@ -10384,21 +10384,17 @@
 ></listitem>
 <listitem
 ><para
->Se o executável <guilabel
+>If the <guilabel
 >Moodbar</guilabel
-> lhe disser que não consegue encontrar um elemento &mdash; i.e., lhe dá uma mensagem de erro do tipo  <screen
->Não foi possível criar um elemento do tipo 'fftwspectrum', por favor instale.</screen
-> &mdash; isto significa normalmente que não possui os 'plugins' necessários instalados (veja a lista de 'plugins' <link linkend="supported-filetypes"
->aqui</link
->) ou que não instalou o pacote do <guilabel
->Moodbar</guilabel
-> no mesmo prefixo que o GStreamer. Se os ficheiros 'libmoodbar.so' e 'libgstdecodebin.so' não estiverem na mesma pasta, então o <guilabel
->Moodbar</guilabel
-> não está instalado no mesmo prefixo que o GStreamer. Por favor, leia o ficheiro INSTALL à procura de instruções correctas de configuração do pacote 'moodbar'. Em alternativa, <emphasis
->se souber o que faz</emphasis
->, poderá ser mais simples para si dar uma vista de olhos na variável de ambiente <filename
+> executable tells you that it can't find an element &mdash; i.e., it gives an error message like <screen
+>Could not create element of type fftwspectrum, please install it.</screen
+>&mdash; that usually means that you either don't have the required plugins installed (see the plugin list <link linkend="supported-filetypes"
+>here</link
+>), or that you didn't install the Moodbar package in the same prefix as GStreamer. If libmoodbar.so and libgstdecodebin.so are not in the same directory, then Moodbar is not installed in the same prefix as GStreamer. Please read the INSTALL file for instructions on how to configure the moodbar package correctly. Alternatively, <emphasis
+>if you know what you're doing,</emphasis
+> it may be easier for you to take a look at the <filename
 >GST_PLUGIN_PATH</filename
->.</para
+> environment variable.</para
 ></listitem>
 <listitem
 ><para
