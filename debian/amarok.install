@@ -1,5 +1,4 @@
 debian/icons/*                          /usr/share/pixmaps
-debian/amarokrc                         /usr/share/kde4/config
 usr/bin/amarok
 usr/bin/amarokmp3tunesharmonydaemon
 usr/bin/amarokpkg
