@@ -1839,15 +1839,15 @@
 >Soms wordt muziek snel overgeslagen</title
 > 
 <para
->You may not have installed the necessary <emphasis
->codecs.</emphasis
-> More about that here: </para>
+>U is mogelijk dat u niet de noodzakelijke <emphasis
+>codecs</emphasis
+> hebt geïnstalleerd. Meer hierover hier: </para>
 <para
 ><link linkend="what-media-types-does-amarok-support"
->FAQ: What Media Types Does Amarok Support</link
+>FAQ: Welke mediatypes ondersteunt Amarok</link
 >. </para>
 <para
->Please refer to your distribution. </para>
+>U wordt verwezen naar uw distributie. </para>
 </sect2>
 <sect2 id="after-my-ipod-has-been-mounted-it-is-not-shown-in-the-content-browser"
 ><title
@@ -9241,7 +9241,7 @@
   <varlistentry
 ><term
 ><emphasis role="bold"
->Search</emphasis
+>Zoeken</emphasis
 ></term>
     <listitem>
     <para
@@ -11395,7 +11395,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect3>
 <sect3 id="where-can-i-get-support-for-amarok"
 ><title
->Where can I get support for Amarok?</title
+>Waar kan ik ondersteuning voor Amarok krijgen?</title
 > 
 <para
 >There are several options. Often times problems you have with the initial install of &amarok; are best answered by experts of your particular &UNIX; or &Linux; distribution. You may seek help from fellow users and developers at the <ulink url="http://forum.kde.org/viewforum.php?f=127"
@@ -11411,7 +11411,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect2>
 <sect2 id="questions-about-the-playlist"
 ><title
->Questions about the Playlist</title
+>Vragen over de afspeellijst</title
 > 
 <para
 >More about the <link linkend="the-playlist-pane"
@@ -11596,7 +11596,7 @@ ftpProxy=http://username:password@proxyserver:port/
 ><para
 ><emphasis
 >-vn</emphasis
-> strips the video stream</para
+> stript de videostream</para
 ></listitem>
 <listitem
 ><para
@@ -11630,15 +11630,15 @@ ftpProxy=http://username:password@proxyserver:port/
 >I have a second soundcard and I'm using ALSA. How do I make Amarok use it instead of the default?</title
 > 
 <para
->Configure this in the Phonon system settings module. <menuchoice
+>Stel dit in in de Phonon systeeminstellingenmodule. <menuchoice
 ><guimenu
->Settings</guimenu
+>Instellingen</guimenu
 ><guisubmenu
->Configure Amarok</guisubmenu
+>Amarok instellen</guisubmenu
 ><guimenuitem
->Playback</guimenuitem
+>Afspelen</guimenuitem
 ><guimenuitem
->Configure Phonon</guimenuitem
+>Phonon instellen</guimenuitem
 ></menuchoice
 > </para>
 </sect3>
@@ -11697,7 +11697,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect2>
 <sect2 id="collection-questions"
 ><title
->Collection questions</title
+>Vragen over de verzameling</title
 > 
 <sect3 id="folder-not-properly-picked-up"
 ><title
@@ -11712,19 +11712,19 @@ ftpProxy=http://username:password@proxyserver:port/
 ></userinput>
 </para>
 <para
->where <replaceable
->folder</replaceable
-> is the path to the folder that has the problem. Then select <menuchoice
+>waar <replaceable
+>map</replaceable
+> het pad naar de map is die het probleem heeft. Selecteer daarna <menuchoice
 ><guimenu
->Settings</guimenu
+>Instellingen</guimenu
 ><guimenuitem
->Configure Amarok</guimenuitem
+>Amarok instellen</guimenuitem
 ></menuchoice
-> in Amarok main window menu, open <guilabel
->Collection</guilabel
-> page and click the <guilabel
->Full Rescan</guilabel
-> button. Your folder should be visible again now. </para>
+> in het menu van het hoofdvenster van Amarok en open de pagina <guilabel
+>Verzameling</guilabel
+> en klik op de knop <guilabel
+>Scan opnieuw de volledige verzameling</guilabel
+>. Uw map zou dan weer zichtbaar moeten zijn. </para>
 <para
 ><warning
 ><para
@@ -11989,7 +11989,7 @@ ftpProxy=http://username:password@proxyserver:port/
 > 
 <sect3 id="how-do-i-get-a-git-version-of-amarok"
 ><title
->How do I get a GIT version of Amarok?</title
+>Hoe krijg ik de GIT-versie van Amarok?</title
 > 
 <para
 ><ulink url="http://techbase.kde.org/Getting_Started/Sources/KDE_git-tutorial"
@@ -12085,7 +12085,7 @@ ftpProxy=http://username:password@proxyserver:port/
 <listitem
 ><para
 ><link linkend="settings-menu"
->Settings Menu</link
+>Instellingenmenu</link
 >&nbsp;</para
 ></listitem>
 <listitem
@@ -12223,7 +12223,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><link linkend="settings-menu"
->Change settings and configure Amarok</link
+>Instellingen en Amarok instellen</link
 >&nbsp;</para>
     </entry>
   </row>
@@ -12267,11 +12267,11 @@ ftpProxy=http://username:password@proxyserver:port/
     </imageobject>
     <textobject>
       <phrase
->The Amarok Menu</phrase>
+>Het menu Amarok</phrase>
     </textobject>
     <caption>
       <para
->The Amarok Menu</para>
+>Het menu Amarok</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -12294,12 +12294,12 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Play Media...</guilabel
+>Media afspelen...</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Opens a media file to be played.</para>
+>Open een af te spelen mediumbestand.</para>
     </entry>
     <entry>
     <para
@@ -12314,7 +12314,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Previous Track</guilabel
+>Vorige track</guilabel
 ></para>
     </entry>
     <entry>
@@ -12330,7 +12330,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Play/Pause</guilabel
+>Afspelen/pauzeren</guilabel
 ></para>
     </entry>
     <entry>
@@ -12340,7 +12340,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><keycap
->Space</keycap
+>Spatie</keycap
 ></para>
     </entry>
   </row>
@@ -12348,7 +12348,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Stop</guilabel
+>Stoppen</guilabel
 ></para>
     </entry>
     <entry>
@@ -12380,7 +12380,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Next Track</guilabel
+>Volgende track</guilabel
 ></para>
     </entry>
     <entry>
@@ -12392,12 +12392,12 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Quit</guilabel
+>Afsluiten</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Exits out of &amarok;.</para>
+>Verlaat &amarok;.</para>
     </entry>
     <entry>
     <para
@@ -12416,7 +12416,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect1>
 <sect1 id="view-menu"
 ><title
->View Menu</title>
+>Menu Beeld</title>
 <para
 >This top-level menu contains options to adjust the layout of &amarok;, and a checkbox to lock the configuration; use this to prevent any accidental changes to the &amarok; window layout. </para>
 <para>
@@ -12429,18 +12429,18 @@ ftpProxy=http://username:password@proxyserver:port/
     </imageobject>
     <textobject>
       <phrase
->View Menu</phrase>
+>Menu Beeld</phrase>
     </textobject>
     <caption>
       <para
->View Menu</para>
+>Menu Beeld</para>
     </caption>
   </mediaobject>
 </screenshot>
 </para>
 <sect2 id="changing-the-amarok-toolbar"
 ><title
->Changing the Amarok Toolbar</title>
+>De werkbalk van Amarok wijzigen</title>
 <para
 >There are also two radio buttons in this menu, which are used to choose which <emphasis
 >Toolbar</emphasis
@@ -12467,11 +12467,11 @@ ftpProxy=http://username:password@proxyserver:port/
     </imageobject>
     <textobject>
       <phrase
->The Main Toolbar</phrase>
+>De hoofdwerkbalk</phrase>
     </textobject>
     <caption>
       <para
->The Main Toolbar</para>
+>De hoofdwerkbalk</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -12498,7 +12498,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect2>
 <sect2 id="amarok-window-layouts"
 ><title
->Amarok Window Layouts</title>
+>Indeling van de vensters van Amarok</title>
 <para
 >If the <guilabel
 >Lock Layout</guilabel
@@ -12632,7 +12632,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect2>
 <sect2 id="playlist-menu"
 ><title
->Playlist Menu</title
+>Menu Afspeellijst</title
 > 
 <para
 >This is a top-level drop down menu where can configure your <guilabel
@@ -12652,11 +12652,11 @@ ftpProxy=http://username:password@proxyserver:port/
     </imageobject>
     <textobject>
       <phrase
->The Amarok Playlist Menu</phrase>
+>Het menu Afspeellijst van Amarok</phrase>
     </textobject>
     <caption>
       <para
->The Amarok Playlist Menu</para>
+>Het menu Afspeellijst van Amarok</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -12679,50 +12679,50 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Add Media...</guilabel
+>Medium toevoegen</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Opens a media file to be played in &amarok;</para>
+>Opent een af te spelen mediumbestand in &amarok;</para>
     </entry>
   </row>
   <row>
     <entry>
     <para
 ><guilabel
->Add Stream...</guilabel
+>Stream toevoegen...</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Choose different streaming radio channels using the <emphasis
->URL bar</emphasis
->, by pasting or typing the link</para>
+>Kies andere streaming radiokanalen met de <emphasis
+>URL-balk</emphasis
+>, door plakken of typen van de koppeling</para>
     </entry>
   </row>
   <row>
     <entry>
     <para
 ><guilabel
->Export Playlist As...</guilabel
+>Afspeellijst exporteren als...</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Save your favorite playlists in various formats - mp3 streaming, Shoutcast, xspf</para>
+>Sla uw favoriete afspeellijsten in verschillende formaten op - mp3-streaming, shoutcast, xspf</para>
     </entry>
   </row>
   <row>
     <entry>
     <para
 ><guilabel
->Undo</guilabel
+>Ongedaan maken</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Go one step backward</para>
+>Ga één stap terug</para>
     </entry>
     <entry>
     <para
@@ -12737,14 +12737,14 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Redo</guilabel
+>Opnieuw</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Click <quote
->Redo</quote
-> to do the last step over again</para>
+>Klik op <quote
+>Opnieuw</quote
+> om de laatste stap opnieuw te doen</para>
     </entry>
     <entry>
     <para
@@ -12759,37 +12759,37 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Clear PlayList</guilabel
+>Afspeellijst wissen</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Cleans the current playlist</para>
+>Wist de huidige afspeellijst</para>
     </entry>
   </row>
   <row>
     <entry>
     <para
 ><guilabel
->Remove Duplicates</guilabel
+>Duplicaten verwijderen</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Removes duplicate entries in the playlist</para>
+>Verwijdert dubbele items in de afspeellijst</para>
     </entry>
   </row>
   <row>
     <entry>
     <para
 ><guilabel
->Playlist Layouts</guilabel
+>Afspeellijstindelingen</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Changes the visual style of the <guilabel
->Playlist</guilabel
+>Wijzigt de visuele stijl van de <guilabel
+>Afspeellijst</guilabel
 ></para>
     </entry>
   </row>
@@ -12797,12 +12797,12 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Edit Queue</guilabel
+>Wachtrij bewerken</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Allows you to change the order of your queue</para
+>Stelt u in staat de volgorde in uw wachtrij te wijzigen</para
 ></entry>
   </row>
   </tbody>
@@ -12812,30 +12812,30 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect3>
 <sect3 id="playlist-layouts"
 ><title
->Playlist Layouts</title
+>Afspeellijstindelingen</title
 > 
 <para
->From <menuchoice
+>Uit <menuchoice
 ><guimenu
->Playlist</guimenu
-><guimenuitem
->Playlist Layouts</guimenuitem
+>Afspeellijst</guimenu
+><guisubmenu
+>Afspeellijstindelingen</guisubmenu
 ></menuchoice
-> switch between different layouts with radio buttons, and configure your personal <guilabel
->Playlist</guilabel
-> layout. </para>
+> schakel tussen verschillende indelingen met keuzerondjes en stel uw persoonlijke indeling van de <guilabel
+>Afspeellijst</guilabel
+> in. </para>
 <sect4 id="default"
 ><title
->Default</title
+>Standaard</title
 > 
 <para
 ><menuchoice
 ><guimenu
->Playlist</guimenu
+>Afspeellijst</guimenu
 ><guisubmenu
->Playlist Layouts</guisubmenu
+>Afspeellijstindelingen</guisubmenu
 ><guimenuitem
->Default</guimenuitem
+>Standaard</guimenuitem
 ></menuchoice>
 </para>
 <para>
@@ -12876,11 +12876,11 @@ ftpProxy=http://username:password@proxyserver:port/
 <para
 ><menuchoice
 ><guimenu
->Playlist</guimenu
+>Afspeellijst</guimenu
 ><guisubmenu
->Playlist Layouts</guisubmenu
+>Afspeellijstindelingen</guisubmenu
 ><guimenuitem
->No Grouping</guimenuitem
+>Geen groepering</guimenuitem
 ></menuchoice>
 </para>
 <para>
@@ -12916,16 +12916,16 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect4>
 <sect4 id="no-grouping-single-line"
 ><title
->No Grouping (Single line)</title
+>Geen groepering (één regel)</title
 > 
 <para
 ><menuchoice
 ><guimenu
->Playlist</guimenu
+>Afspeellijst</guimenu
 ><guisubmenu
->Playlist Layouts</guisubmenu
+>Afspeellijstindelingen</guisubmenu
 ><guimenuitem
->No Grouping(Single line)</guimenuitem
+>Geen groepering (één regel)</guimenuitem
 ></menuchoice>
 </para>
 <para>
@@ -12961,16 +12961,16 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect4>
 <sect4 id="verbose"
 ><title
->Verbose</title
+>Uitgebreid</title
 > 
 <para
 ><menuchoice
 ><guimenu
->Playlist</guimenu
+>Afspeellijst</guimenu
 ><guisubmenu
->Playlist Layouts</guisubmenu
+>Afspeellijstindelingen</guisubmenu
 ><guimenuitem
->Verbose</guimenuitem
+>Uitgebreid</guimenuitem
 ></menuchoice>
 </para>
 <para>
@@ -13006,22 +13006,22 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect4>
 <sect4 id="configure-playlist-layout---"
 ><title
->Configure playlist layout...</title
+>Afspeellijstindeling instellen...</title
 > 
 <para
 ><menuchoice
 ><guimenu
->Playlist</guimenu
+>Afspeellijst</guimenu
 ><guisubmenu
->Playlist Layouts</guisubmenu
+>Afspeellijstindelingen</guisubmenu
 ><guimenuitem
->Configure playlist layout...</guimenuitem
+>Afspeellijstindeling instellen...</guimenuitem
 ></menuchoice>
 </para>
 <para
->This option allows you to make your own <guilabel
->Playlist</guilabel
-> layout; display Artist, Genre, Year, BPM and so forth. </para>
+>Deze optie stelt u in staat om uw eigen indeling van de <guilabel
+>Afspeellijst</guilabel
+> te maken; weergave Artist, Genre, Year, BPM  enzovoort. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -13032,11 +13032,11 @@ ftpProxy=http://username:password@proxyserver:port/
     </imageobject>
     <textobject>
       <phrase
->Make your own layout</phrase>
+>Stel uw eigen indeling samen</phrase>
     </textobject>
     <caption>
       <para
->Make your own layout</para>
+>Stel uw eigen indeling samen</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -13046,7 +13046,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect2>
 <sect2 id="tools-menu"
 ><title
->Tools Menu</title
+>Menu Hulpmiddelen</title
 > 
 <para
 >From this menu you can use additional tools and scripts. </para>
@@ -13060,11 +13060,11 @@ ftpProxy=http://username:password@proxyserver:port/
     </imageobject>
     <textobject>
       <phrase
->The Tools Menu</phrase>
+>Het menu Hulpmiddelen</phrase>
     </textobject>
     <caption>
       <para
->The Tools Menu</para>
+>Het menu Hulpmiddelen</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -13097,7 +13097,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Cover Manager</guilabel
+>Hoesbeheerder</guilabel
 ></para>
     </entry>
     <entry>
@@ -13121,12 +13121,12 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Update Collection</guilabel
+>Verzameling bijwerken</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Checks the tracks in your collection.</para
+>Controleer de tracks in uw verzameling.</para
 ></entry>
   </row>
   </tbody>
@@ -13135,7 +13135,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </para>
 <sect3 id="bookmark-manager"
 ><title
->Bookmark Manager</title
+>Bladwijzerbeheerder</title
 > 
 <para
 >The bookmark manager allows you to bookmark different kinds of things to recall them later. You can also create folders to organize your collection of bookmarks. The search box provides a convenient way to find bookmarks. The context menu offers the possibility to <guilabel
@@ -13186,7 +13186,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Bookmark Media Source View</guilabel
+>Bladwijzer mediabronweergave</guilabel
 ></para>
     </entry>
     <entry>
@@ -13271,7 +13271,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect3>
 <sect3 id="update-collection"
 ><title
->Update Collection</title
+>Verzameling bijwerken</title
 > 
 <para
 >Checks the files in the folders you defined as your collection. New files will be added and missing ones removed from the left pane. </para>
@@ -13293,11 +13293,11 @@ ftpProxy=http://username:password@proxyserver:port/
     </imageobject>
     <textobject>
       <phrase
->The Amarok Settings Menu</phrase>
+>Het menu Instellingen van Amarok</phrase>
     </textobject>
     <caption>
       <para
->The Amarok Settings Menu</para>
+>Het menu Instellingen van Amarok</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -13318,7 +13318,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Show Menubar</guilabel
+>Menubalk tonen</guilabel
 ></para>
     </entry>
     <entry>
@@ -13334,7 +13334,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Replay Gain Mode</guilabel
+>Afspeelversterkingmodus</guilabel
 ></para>
     </entry>
     <entry>
@@ -13352,7 +13352,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Configure Shortcuts...</guilabel
+>Sneltoetsen instellen...</guilabel
 ></para>
     </entry>
     <entry>
@@ -13364,7 +13364,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Configure Amarok...</guilabel
+>Amarok instellen...</guilabel
 ></para>
     </entry>
     <entry>
@@ -13378,7 +13378,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </para>
 <sect3 id="show-menubar"
 ><title
->Show Menubar</title
+>Menubalk tonen</title
 > 
 <para
 >Clicking this option will hide the menu bar. </para>
@@ -13393,7 +13393,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect3>
 <sect3 id="replay-gain-mode"
 ><title
->Replay Gain Mode</title
+>Afspeelversterkingmodus</title
 > 
 <para
 >The replay gain mode will change the volume depending on meta information of the track. More about replay gain: <ulink url="http://en.wikipedia.org/wiki/Replay_Gain"
@@ -13404,7 +13404,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect3>
 <sect3 id="configure-shortcuts---"
 ><title
->Configure Shortcuts...</title
+>Sneltoetsen instellen...</title
 > 
 <para
 >Change and define new keyboard shortcuts, or turn on multimedia keys if your keyboard has them. More about <link linkend="keybinding-reference"
@@ -13425,11 +13425,11 @@ ftpProxy=http://username:password@proxyserver:port/
     </imageobject>
     <textobject>
       <phrase
->Configure Amarok (v.2.4.1)</phrase>
+>Amarok instellen...</phrase>
     </textobject>
     <caption>
       <para
->Configure Amarok (v.2.4.1)</para>
+>Amarok (v.2.4.1) instellen...</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -13456,11 +13456,11 @@ ftpProxy=http://username:password@proxyserver:port/
     </imageobject>
     <textobject>
       <phrase
->The Amarok help menu</phrase>
+>Het menu Help van Amarok</phrase>
     </textobject>
     <caption>
       <para
->The Amarok help menu</para>
+>Het menu Help van Amarok</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -13493,7 +13493,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Amarok Handbook</guilabel
+>Het handboek van Amarok</guilabel
 ></para>
     </entry>
     <entry>
@@ -13517,7 +13517,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Show Feedback Icons</guilabel
+>Terugkoppelpictogrammen tonen</guilabel
 ></para>
     </entry>
     <entry>
@@ -13529,7 +13529,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Switch Application Language...</guilabel
+>Taal van toepassing wijzigen...</guilabel
 ></para>
     </entry>
     <entry>
@@ -13541,7 +13541,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->About Amarok</guilabel
+>Info over Amarok</guilabel
 ></para>
     </entry>
     <entry>
@@ -13553,7 +13553,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->About KDE</guilabel
+>Info over KDE</guilabel
 ></para>
     </entry>
     <entry>
@@ -13573,15 +13573,13 @@ ftpProxy=http://username:password@proxyserver:port/
 >Sneltoetsenreferentie</title>
 <sect1 id="keyboard-shortcuts"
 ><title
->Keyboard Shortcuts</title>
+>Sneltoetsen</title>
 <para
->Keyboard shortcuts let you quickly access &amarok;<command
->'s</command
-> power. Change the shortcuts using <menuchoice
+>Sneltoetsen geven u snel toegang tot kracht van &amarok;. Wijzig de sneltoetsen met <menuchoice
 ><guimenu
->Settings</guimenu
+>Instellingen</guimenu
 ><guimenuitem
->Configure Shortcuts...</guimenuitem
+>Sneltoetsen instellen...</guimenuitem
 ></menuchoice
 >. </para>
 <para>
@@ -13625,7 +13623,7 @@ ftpProxy=http://username:password@proxyserver:port/
 > for a current complete list of available commands. </para>
 <sect2 id="kde-global-shortcuts"
 ><title
->KDE Global Shortcuts</title
+>KDE globale sneltoetsen</title
 > 
 <para
 ><emphasis
@@ -13633,7 +13631,7 @@ ftpProxy=http://username:password@proxyserver:port/
 > are KDE's control key combinations. Use them to control &amarok; from the keyboard as an alternative to using the mouse. </para>
 <sect3 id="default-global-shortcuts"
 ><title
->Default Global Shortcuts</title
+>Standaard globale sneltoetsen</title
 > 
 <para>
 <informaltable>
@@ -13643,14 +13641,14 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry
 >Actie</entry>
     <entry
->Default Global Shortcut</entry>
+>Standaard globale sneltoets</entry>
   </row>
   </thead>
   <tbody>
   <row>
     <entry>
     <para
->Add Media...</para>
+>Medium toevoegen</para>
     </entry>
     <entry>
     <para
@@ -13666,7 +13664,7 @@ ftpProxy=http://username:password@proxyserver:port/
   <row>
     <entry>
     <para
->Decrease Volume</para>
+>Volume verlagen</para>
     </entry>
     <entry>
     <para
@@ -13682,7 +13680,7 @@ ftpProxy=http://username:password@proxyserver:port/
   <row>
     <entry>
     <para
->Increase Volume</para>
+>Volume verhogen</para>
     </entry>
     <entry>
     <para
@@ -13714,7 +13712,7 @@ ftpProxy=http://username:password@proxyserver:port/
   <row>
     <entry>
     <para
->Last.fm Skip Current Track</para>
+>Last.fm: Huidige track overslaan</para>
     </entry>
     <entry>
     <para
@@ -13746,7 +13744,7 @@ ftpProxy=http://username:password@proxyserver:port/
   <row>
     <entry>
     <para
->Next Track</para>
+>Volgende track</para>
     </entry>
     <entry>
     <para
@@ -13758,7 +13756,7 @@ ftpProxy=http://username:password@proxyserver:port/
   <row>
     <entry>
     <para
->Play/Pause</para>
+>Afspelen/pauzeren</para>
     </entry>
     <entry>
     <para
@@ -13770,7 +13768,7 @@ ftpProxy=http://username:password@proxyserver:port/
   <row>
     <entry>
     <para
->Stop</para>
+>Stoppen</para>
     </entry>
     <entry>
     <para
@@ -13782,7 +13780,7 @@ ftpProxy=http://username:password@proxyserver:port/
   <row>
     <entry>
     <para
->Previous Track</para>
+>Vorige track</para>
     </entry>
     <entry>
     <para
@@ -13794,7 +13792,7 @@ ftpProxy=http://username:password@proxyserver:port/
   <row>
     <entry>
     <para
->Rate Current Track: 1 star</para>
+>Waardeer huidige track op: 1 ster</para>
     </entry>
     <entry>
     <para
@@ -13810,7 +13808,7 @@ ftpProxy=http://username:password@proxyserver:port/
   <row>
     <entry>
     <para
->Rate Current Track: 2 stars</para>
+>Waardeer huidige track op: 2 sterren</para>
     </entry>
     <entry>
     <para
@@ -13826,7 +13824,7 @@ ftpProxy=http://username:password@proxyserver:port/
   <row>
     <entry>
     <para
->Rate Current Track: 3 stars</para>
+>Waardeer huidige track op: 3 sterren</para>
     </entry>
     <entry>
     <para
@@ -13842,7 +13840,7 @@ ftpProxy=http://username:password@proxyserver:port/
   <row>
     <entry>
     <para
->Rate Current Track: 4 stars</para>
+>Waardeer huidige track op: 4 sterren</para>
     </entry>
     <entry>
     <para
@@ -13858,7 +13856,7 @@ ftpProxy=http://username:password@proxyserver:port/
   <row>
     <entry>
     <para
->Rate Current Track: 5 stars</para>
+>Waardeer huidige track op: 5 sterren</para>
     </entry>
     <entry>
     <para
@@ -13943,7 +13941,7 @@ ftpProxy=http://username:password@proxyserver:port/
 </sect2>
 <sect2 id="amarok-shortcuts"
 ><title
->Amarok Shortcuts</title
+>Sneltoetsen van Amarok</title
 > 
 <para
 >Control &amarok; using <emphasis
@@ -13968,7 +13966,7 @@ ftpProxy=http://username:password@proxyserver:port/
   <row>
     <entry>
     <para
->Increase Volume</para>
+>Volume verhogen</para>
     </entry>
     <entry>
     <para
@@ -13980,7 +13978,7 @@ ftpProxy=http://username:password@proxyserver:port/
   <row>
     <entry>
     <para
->Decrease Volume</para>
+>Volume verlagen</para>
     </entry>
     <entry>
     <para
@@ -14006,7 +14004,7 @@ ftpProxy=http://username:password@proxyserver:port/
   <row>
     <entry>
     <para
->Play Media...</para>
+>Medium afspelen</para>
     </entry>
     <entry>
     <para
@@ -14020,12 +14018,12 @@ ftpProxy=http://username:password@proxyserver:port/
   <row>
     <entry>
     <para
->Play/Pause</para>
+>Afspelen/pauzeren</para>
     </entry>
     <entry>
     <para
 ><keycap
->Space</keycap
+>Spatie</keycap
 ></para>
     </entry>
   </row>
@@ -14038,7 +14036,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <para
 ><keycombo
 >&Ctrl;<keycap
->Left</keycap
+>Links</keycap
 ></keycombo
 ></para>
     </entry>
@@ -14060,7 +14058,7 @@ ftpProxy=http://username:password@proxyserver:port/
   <row>
     <entry>
     <para
->Quit</para>
+>Afsluiten</para>
     </entry>
     <entry>
     <para
@@ -14074,7 +14072,7 @@ ftpProxy=http://username:password@proxyserver:port/
   <row>
     <entry>
     <para
->Redo</para>
+>Opnieuw</para>
     </entry>
     <entry>
     <para
@@ -14093,7 +14091,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><keycap
->Left</keycap
+>Links</keycap
 ></para>
     </entry>
   </row>
@@ -14105,14 +14103,14 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><keycap
->Right</keycap
+>Rechts</keycap
 ></para>
     </entry>
   </row>
   <row>
     <entry>
     <para
->Activate Search Bar</para>
+>Zoekbalk activeren</para>
     </entry>
     <entry>
     <para
@@ -14126,7 +14124,7 @@ ftpProxy=http://username:password@proxyserver:port/
   <row>
     <entry>
     <para
->Toggle Full Screen</para>
+>Volledig scherm omschakelen</para>
     </entry>
     <entry>
     <para
@@ -14140,7 +14138,7 @@ ftpProxy=http://username:password@proxyserver:port/
   <row>
     <entry>
     <para
->Undo</para>
+>Ongedaan maken</para>
     </entry>
     <entry>
     <para
@@ -14154,7 +14152,7 @@ ftpProxy=http://username:password@proxyserver:port/
   <row>
     <entry>
     <para
->Save Playlist</para>
+>Afspeellijst opslaan</para>
     </entry>
     <entry>
     <para
@@ -14168,7 +14166,7 @@ ftpProxy=http://username:password@proxyserver:port/
   <row>
     <entry>
     <para
->Select all</para>
+>Alles selecteren</para>
     </entry>
     <entry>
     <para
@@ -14201,13 +14199,13 @@ ftpProxy=http://username:password@proxyserver:port/
 >How to make shortcuts</title
 > 
 <para
->You can configure shortcuts from <menuchoice
+>U kunt sneltoetsen instellen via: <menuchoice
 ><guimenu
->Settings</guimenu
+>Instellingen</guimenu
 ><guimenuitem
->Configure Shortcuts...</guimenuitem
+>Sneltoetsen instellen...</guimenuitem
 ></menuchoice
-> where you can change or make new shortcuts. </para>
+> waarin u sneltoetsen kunt wijzigen of nieuwe maken. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -14260,7 +14258,7 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Search</guilabel
+>Zoeken</guilabel
 ></para>
     </entry>
     <entry>
@@ -14284,24 +14282,24 @@ ftpProxy=http://username:password@proxyserver:port/
     <entry>
     <para
 ><guilabel
->Reset to Defaults</guilabel
+>Naar standaardinstellingen terugzetten</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Reset all custom shortcuts back to default.</para>
+>Herstel alle eigen sneltoetsen naar hun standaard.</para>
     </entry>
   </row>
   <row>
     <entry>
     <para
 ><guilabel
->Print</guilabel
+>Afdrukken</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Print the list of shortcuts.</para>
+>Druk de lijst met sneltoetsen af.</para>
     </entry>
   </row>
   <row>
@@ -14313,7 +14311,7 @@ ftpProxy=http://username:password@proxyserver:port/
     </entry>
     <entry>
     <para
->Save all changes.</para>
+>Alle wijzigen opslaan.</para>
     </entry>
   </row>
   <row>
@@ -14325,7 +14323,7 @@ ftpProxy=http://username:password@proxyserver:port/
     </entry>
     <entry>
     <para
->Close window without saving changes.</para
+>Het venster zonder opslaan sluiten.</para
 ></entry>
   </row>
   </tbody>
@@ -14371,16 +14369,16 @@ ftpProxy=http://username:password@proxyserver:port/
 <para
 >Copyright 2002, 2003 Mark Kretschmann (kretschmann kde.org). </para>
 <para
->Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011 The Amarok Development Squad </para>
+>Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011 Het ontwikkelteam van Amarok </para>
 </sect1>
 <sect1 id="documentation-copyright"
 ><title
->Documentation copyright</title
+>Documentatie copyright</title
 > 
 <para
 ><note
 ><para
->Please add your name here if you contribute to the handbook. Please respect alphabetical order</para
+>Voeg uw naam hier in als u aan het handboek hebt bijgedragen. Gaarne in alfabetische volgorde</para
 ></note>
 </para>
 <para
@@ -14412,7 +14410,7 @@ ftpProxy=http://username:password@proxyserver:port/
 <para
 >Pedro Raimundo (pedrooraimundo gmail.com) </para>
 <para
->Pete Daniels (pete guerrillatechsupport.com), screenshots </para>
+>Pete Daniels (pete guerrillatechsupport.com), schermafdrukken </para>
 <para
 >Salma Sultana (salma4534 yahoo.com) </para>
 <para
@@ -14431,11 +14429,11 @@ ftpProxy=http://username:password@proxyserver:port/
 >Licenties</title
 > 
 <para
->This documentation is licensed under the terms of the <ulink url="http://userbase.kde.org/Special:myLanguage/KDE_UserBase_Wiki:Copyrights"
+>Deze documentatie valt onder de bepalingen van de licentie <ulink url="http://userbase.kde.org/Special:myLanguage/KDE_UserBase_Wiki:Copyrights"
 >GNU Free Documentation License</ulink
 >. </para>
 <para
->This program is licensed under the terms of the <ulink url="http://www.gnu.org/licenses/gpl-2.0.txt"
+>Dit programma is beschikbaar onder de licentie van de <ulink url="http://www.gnu.org/licenses/gpl-2.0.txt"
 >GNU General Public License</ulink
 >. </para>
 

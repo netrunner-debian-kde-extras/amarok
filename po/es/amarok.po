@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2012-07-27 03:46+0200\n"
-"PO-Revision-Date: 2012-07-09 22:03+0200\n"
+"POT-Creation-Date: 2012-08-10 04:39+0200\n"
+"PO-Revision-Date: 2012-07-31 16:56+0200\n"
 "Last-Translator: Javier Viñal <fjvinal@gmail.com>\n"
 "Language-Team: Spanish <kde-l10n-es@kde.org>\n"
 "Language: es\n"
@@ -356,7 +356,8 @@ msgstr ""
 #: rc.cpp:140
 msgid "Whether organize files will ignore The in artist names."
 msgstr ""
-"Si organizar archivos ignorará el artículo Los en el nombre de los artistas."
+"Si organizar archivos ignorará el artículo «Los» en el nombre de los "
+"artistas."
 
 #. i18n: file: amarokconfig.kcfg:155
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
@@ -4155,7 +4156,7 @@ msgstr ""
 "<html>Especificar una dirección de correo ayudará a los desarrolladores a "
 "pedirle más información sobre su informe o contarle cuando se implementará "
 "su característica.<br/>\n"
-"<b>Su dirección de correo no se usará par nada más que este informe.</b></"
+"<b>Su dirección de correo no se usará para nada más que este informe.</b></"
 "html>"
 
 #. i18n: file: network/NetworkRequests.ui:14
@@ -4705,7 +4706,7 @@ msgstr ""
 "Un editor para restricciones de emparejamiento de etiquetas. El usuario "
 "puede especificar una característica de una pista y el APG llenará la lista "
 "de reproducción con pistas que coincidan con las características. Esto "
-"funciona parecido al los atributos de coincidencia de las listas de "
+"funciona parecido a los atributos de coincidencia de las listas de "
 "reproducción inteligentes de Amarok 1.4."
 
 #. i18n: file: playlistgenerator/constraints/TagMatchEditWidget.ui:21
@@ -5794,7 +5795,7 @@ msgstr "Liberación Vixen (Nightrose)"
 
 #: main.cpp:71
 msgid "Mark 'It's good, but it's not irssi' Kretschmann"
-msgstr "Mark «It»s good, but it«s not irssi» Kretschmann"
+msgstr "Mark «It's good, but it's not irssi» Kretschmann"
 
 #: main.cpp:72
 msgid "Project founder (markey)"
@@ -6589,11 +6590,11 @@ msgstr "Visite el perfil de los colaboradores en StackOverflow"
 msgid "Unable to parse avatar image data."
 msgstr "No es posible analizar los datos de la imagen del avatar."
 
-#: EngineController.cpp:844
+#: EngineController.cpp:837
 msgid "Preamp"
 msgstr "Preamplificación"
 
-#: EngineController.cpp:850
+#: EngineController.cpp:843
 msgid ""
 "%0\n"
 "Hz"
@@ -6601,7 +6602,7 @@ msgstr ""
 "%0\n"
 "Hz"
 
-#: EngineController.cpp:854
+#: EngineController.cpp:847
 msgid ""
 "%0\n"
 "kHz"
@@ -6609,43 +6610,43 @@ msgstr ""
 "%0\n"
 "kHz"
 
-#: EngineController.cpp:1156
+#: EngineController.cpp:1158
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr ""
 "Se encontraron demasiados errores en la lista de reproducción. Reproducción "
 "parada."
 
-#: EngineController.cpp:1377
+#: EngineController.cpp:1368
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> de <b>%2</b> en <b>%3</b>"
 
-#: EngineController.cpp:1379
+#: EngineController.cpp:1370
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> de <b>%2</b>"
 
-#: EngineController.cpp:1382
+#: EngineController.cpp:1373
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> en <b>%2</b>"
 
-#: EngineController.cpp:1387
+#: EngineController.cpp:1378
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:203
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:95
 msgid "Unknown track"
 msgstr "Pista desconocida"
 
-#: EngineController.cpp:1394
+#: EngineController.cpp:1385
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
 msgstr "de <b>%1</b>"
 
-#: EngineController.cpp:1409 context/engines/current/CurrentEngine.cpp:136
+#: EngineController.cpp:1400 context/engines/current/CurrentEngine.cpp:136
 #: mac/GrowlInterface.cpp:43 widgets/Osd.cpp:651
 msgid "No track playing"
 msgstr "Ninguna pista en reproducción"
@@ -8564,7 +8565,7 @@ msgstr "Fallo al borrar %1."
 #: context/tools/amarokpkg.cpp:169
 #, kde-format
 msgid "Plugin %1 is not installed."
-msgstr "Complemento %1 no esta instalado."
+msgstr "Complemento %1 no está instalado."
 
 #: context/tools/amarokpkg.cpp:174
 #, kde-format
@@ -9020,7 +9021,7 @@ msgid ""
 "dynamically load external library libhashab.so to do it."
 msgstr ""
 "La familia %1 probablemente usa hash-AB para generar la suma de verificación "
-"correcta de la base de datos. libgpod (como en la versión 0.8.2) no sabe "
+"correcta de la base de datos. Libgpod (como en la versión 0.8.2) no sabe "
 "como calcularla, pero intenta cargar dinámicamente la biblioteca externa "
 "libhashab para hacerlo."
 
@@ -9290,7 +9291,7 @@ msgstr "Género desconocido"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:593
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:725
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:908
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:910
 msgid "Could not delete item"
 msgstr "No se ha podido borrar el elemento"
 
@@ -9298,7 +9299,7 @@ msgstr "No se ha podido borrar el elemento"
 msgid "Delete failed"
 msgstr "Fallo al borrar"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:881
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:883
 msgid "Could not save playlist."
 msgstr "No se pudo guardar la lista de reproducción."
 
@@ -9529,7 +9530,7 @@ msgctxt "The Value is not known"
 msgid "Unknown"
 msgstr "Desconocido"
 
-#: core-impl/meta/stream/Stream.cpp:54
+#: core-impl/meta/stream/Stream.cpp:55
 #, kde-format
 msgid "Stream (%1)"
 msgstr "Flujo (%1)"
@@ -11004,7 +11005,7 @@ msgstr[1] "Eliminar material gráfico para %1 álbumes"
 msgid "Are you sure you want to remove this cover from the Collection?"
 msgid_plural ""
 "Are you sure you want to delete these %1 covers from the Collection?"
-msgstr[0] "¿Está seguro que quiere eliminar esta carátula de la colección?"
+msgstr[0] "¿Está seguro de que quiere eliminar esta carátula de la colección?"
 msgstr[1] "¿Está seguro que quiere borrar estas %1 carátulas de la colección?"
 
 #: covermanager/CoverFetchingActions.cpp:134

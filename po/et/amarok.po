@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2012-07-27 03:46+0200\n"
+"POT-Creation-Date: 2012-08-10 04:39+0200\n"
 "PO-Revision-Date: 2012-06-04 16:15+0300\n"
 "Last-Translator: Marek Laane <bald@smail.ee>\n"
 "Language-Team: Estonian <kde-et@linux.ee>\n"
@@ -6491,11 +6491,11 @@ msgstr "Külasta kaasautori StackOverflow' profiili"
 msgid "Unable to parse avatar image data."
 msgstr "Avatari pildiandmete parsimine nurjus."
 
-#: EngineController.cpp:844
+#: EngineController.cpp:837
 msgid "Preamp"
 msgstr "Eelmoonutus"
 
-#: EngineController.cpp:850
+#: EngineController.cpp:843
 msgid ""
 "%0\n"
 "Hz"
@@ -6503,7 +6503,7 @@ msgstr ""
 "%0\n"
 "Hz"
 
-#: EngineController.cpp:854
+#: EngineController.cpp:847
 msgid ""
 "%0\n"
 "kHz"
@@ -6511,41 +6511,41 @@ msgstr ""
 "%0\n"
 "kHz"
 
-#: EngineController.cpp:1156
+#: EngineController.cpp:1158
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "Esitusnimekirjas esines liiga palju vigu. Esitamine peatati."
 
-#: EngineController.cpp:1377
+#: EngineController.cpp:1368
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> esitajalt <b>%2</b> (album <b>%3</b>)"
 
-#: EngineController.cpp:1379
+#: EngineController.cpp:1370
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> esitajalt <b>%2</b>"
 
-#: EngineController.cpp:1382
+#: EngineController.cpp:1373
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> albumilt <b>%2</b>"
 
-#: EngineController.cpp:1387
+#: EngineController.cpp:1378
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:203
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:95
 msgid "Unknown track"
 msgstr "Tundmatu pala"
 
-#: EngineController.cpp:1394
+#: EngineController.cpp:1385
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
 msgstr " allikast <b>%1</b>"
 
-#: EngineController.cpp:1409 context/engines/current/CurrentEngine.cpp:136
+#: EngineController.cpp:1400 context/engines/current/CurrentEngine.cpp:136
 #: mac/GrowlInterface.cpp:43 widgets/Osd.cpp:651
 msgid "No track playing"
 msgstr "Ühtki pala ei esitata"
@@ -9168,7 +9168,7 @@ msgstr "Tundmatu žanr"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:593
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:725
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:908
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:910
 msgid "Could not delete item"
 msgstr "Elemendi kustutamine nurjus"
 
@@ -9176,7 +9176,7 @@ msgstr "Elemendi kustutamine nurjus"
 msgid "Delete failed"
 msgstr "Kustutamine nurjus"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:881
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:883
 msgid "Could not save playlist."
 msgstr "Esitusnimekirja salvestamine nurjus."
 
@@ -9408,7 +9408,7 @@ msgctxt "The Value is not known"
 msgid "Unknown"
 msgstr "Tundmatu"
 
-#: core-impl/meta/stream/Stream.cpp:54
+#: core-impl/meta/stream/Stream.cpp:55
 #, kde-format
 msgid "Stream (%1)"
 msgstr "Voog (%1)"
