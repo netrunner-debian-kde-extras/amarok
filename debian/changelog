@@ -1,6 +1,8 @@
 amarok (2.6.0-1) UNRELEASED; urgency=low
 
   * New upstream release.
+  * Add --no-relax when linking on Alpha in order to fix FTBFS.
+    (Closes: #684932)
 
  -- Modestas Vainius <modax@debian.org>  Sat, 18 Aug 2012 11:35:10 +0300
 
