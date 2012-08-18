@@ -1,5 +1,7 @@
 amarok (2.6.0-2) UNRELEASED; urgency=low
 
+  * Really add --no-relax on Alpha (forgot to export appropriate variable).
+    (Closes: #684932)
 
  -- Modestas Vainius <modax@debian.org>  Sat, 18 Aug 2012 16:19:58 +0300
 

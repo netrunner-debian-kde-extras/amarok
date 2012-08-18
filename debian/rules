@@ -4,7 +4,7 @@
 
 # Add --no-relax when linking on Alpha in order to fix FTBFS (#684932)
 ifeq (alpha,$(shell dpkg-architecture -qDEB_HOST_ARCH))
-    DEB_LDFLAGS_MAINT_APPEND := -Wl,--no-relax
+    export DEB_LDFLAGS_MAINT_APPEND := -Wl,--no-relax
 endif
 
 override_dh_auto_configure:
