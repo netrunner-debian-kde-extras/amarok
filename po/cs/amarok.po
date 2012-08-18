@@ -3,15 +3,16 @@
 # This file is distributed under the same license as the PACKAGE package.
 # Lukáš Tinkl <ltinkl@redhat.com>, 2010, 2011.
 # Vít Pelčák <vit@pelcak.org>, 2010, 2011, 2012.
+# Tomáš Chvátal <tomas.chvatal@gmail.com>, 2012.
 #
 # Hynek, 2010.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2012-07-27 03:46+0200\n"
-"PO-Revision-Date: 2012-05-31 09:22+0200\n"
-"Last-Translator: Vit Pelcak <vit@pelcak.org>\n"
+"POT-Creation-Date: 2012-08-10 04:39+0200\n"
+"PO-Revision-Date: 2012-08-08 18:52+0200\n"
+"Last-Translator: Tomáš Chvátal <tomas.chvatal@gmail.com>\n"
 "Language-Team: Czech <kde-i18n-doc@kde.org>\n"
 "Language: cs\n"
 "MIME-Version: 1.0\n"
@@ -25,7 +26,8 @@ msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
 msgstr ""
 "Lukáš Tinkl, Klára Cihlářová, Milan Šádek, Jakub Friedl, Vít Pelčák, David "
-"Kolibáč, Pavel Fric, Vlastimil Ott, Jiří Eischmann, Hynek Janoušek"
+"Kolibáč, Pavel Fric, Vlastimil Ott, Jiří Eischmann, Hynek Janoušek, Matěj "
+"Laitl,Anička Nešverová"
 
 #: rc.cpp:2
 msgctxt "EMAIL OF TRANSLATORS"
@@ -33,7 +35,7 @@ msgid "Your emails"
 msgstr ""
 "lukas@kde.org, koty@seznam.cz, milan.sadek@atlas.cz, jfriedl@suse.cz, "
 "vit@pelcak.org, david@kolibac.cz, pavelfric@yahoo.com, vlastimil@e-ott.info, "
-"jiri@eischmann.cz, hynek.janousek@seznam.cz"
+"jiri@eischmann.cz, hynek.janousek@seznam.cz, matej@laitl.cz, null@example.com"
 
 #. i18n: file: amarokconfig.kcfg:13
 #. i18n: ectx: label, entry, group (General Options)
@@ -282,7 +284,7 @@ msgstr "Zobrazovat kontext"
 #. i18n: ectx: label, entry, group (General Options)
 #: rc.cpp:113
 msgid "Play the first run jingle"
-msgstr ""
+msgstr "Přehrát znělku prvního spuštění"
 
 #. i18n: file: amarokconfig.kcfg:131
 #. i18n: ectx: label, entry, group (General Options)
@@ -536,7 +538,7 @@ msgstr "Přednastavení formátů"
 #. i18n: ectx: whatsthis, entry, group (OrganizeCollectionDialog)
 #: rc.cpp:209
 msgid "A list of preset formats (token schemas)."
-msgstr ""
+msgstr "Seznam přednastavených formátů."
 
 #. i18n: file: amarokconfig.kcfg:217
 #. i18n: ectx: label, entry, group (Playback)
@@ -1031,7 +1033,7 @@ msgstr "Zda jsou zapsány změny obalu alba"
 #. i18n: ectx: label, entry, group (Collection)
 #: rc.cpp:428
 msgid "Maximum embedded cover dimensions"
-msgstr ""
+msgstr "Maximální velikost vloženého obalu"
 
 #. i18n: file: amarokconfig.kcfg:453
 #. i18n: ectx: label, entry, group (Collection)
@@ -1543,7 +1545,7 @@ msgid ""
 "If your database is not already set up, you can use the following S&QL "
 "commands (after replacing the password with the correct one):"
 msgstr ""
-"Pokud vaše databáze není ještě nastavena, můžete použít následující S&QL "
+"Pokud Vaše databáze není ještě nastavena, můžete použít následující S&QL "
 "příkazy (po nahrazení hesla správným heslem):"
 
 #. i18n: file: configdialog/dialogs/ScriptsConfig.ui:36
@@ -1877,7 +1879,7 @@ msgstr "Zaškrtněte pro povolení animaci při sbalení kontextových appletů"
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ShowBrowserBackgroundImage)
 #: rc.cpp:849
 msgid "Show background images in the browser panel"
-msgstr ""
+msgstr "Zobrazit obrázky na pozadí panelu prohlížeče"
 
 #. i18n: file: configdialog/dialogs/GeneralConfig.ui:91
 #. i18n: ectx: property (title), widget (QGroupBox, playlistBox)
@@ -1913,7 +1915,7 @@ msgid ""
 "Please note that this feature requires the external \"Moodbar Generator\" "
 "tool."
 msgstr ""
-"Moodbar umožňuje vizuálně se orientovat ve vaší hudbě.\n"
+"Moodbar umožňuje vizuálně se orientovat ve Vaší hudbě.\n"
 "Vezměte prosím na vědomí, že tato funkce vyžaduje externí nástroj \"Moodbar "
 "Generator\"."
 
@@ -1941,7 +1943,7 @@ msgstr "Zvolte styl zobrazení nálady"
 #. i18n: ectx: property (text), item, widget (QComboBox, kcfg_MoodbarPaintStyle)
 #: rc.cpp:880
 msgid "Default (System colours)"
-msgstr ""
+msgstr "Výchozí (Systémové barvy)"
 
 #. i18n: file: configdialog/dialogs/GeneralConfig.ui:146
 #. i18n: ectx: property (text), item, widget (QComboBox, kcfg_MoodbarPaintStyle)
@@ -1994,6 +1996,7 @@ msgid ""
 "Whether Amarok should transcode tracks when they are copied or moved to "
 "Local Collection."
 msgstr ""
+"Zda má Amarok převést skladby při kopírování nebo přenášení do místní sbírky."
 
 #. i18n: file: configdialog/dialogs/CollectionConfig.ui:36
 #. i18n: ectx: property (text), widget (QLabel, transcodeLabel)
@@ -2052,10 +2055,8 @@ msgstr "Zobrazit pouze skladby, které byly hodnoceny minimálně takto vysoko."
 #. i18n: file: context/applets/labels/labelsGeneralSettings.ui:75
 #. i18n: ectx: property (text), widget (QLabel, label_3)
 #: rc.cpp:934
-#, fuzzy
-#| msgid "Maximum similar artists to be shown"
 msgid "Maximum labels to show:"
-msgstr "Ukázat maximální počet podobných umělců"
+msgstr "Maximální počet zobrazených štítků:"
 
 #. i18n: file: context/applets/labels/labelsGeneralSettings.ui:95
 #. i18n: ectx: property (toolTip), widget (QSpinBox, numLabelsSpinBox)
@@ -2064,86 +2065,80 @@ msgid ""
 "Do not show more than this many labels.\n"
 "Note that personal labels will always be shown."
 msgstr ""
+"Nezobrazovat více než zadaný počet štítků.\n"
+"Osobní štítky budou vždy zobrazeny"
 
 #. i18n: file: context/applets/labels/labelsGeneralSettings.ui:108
 #. i18n: ectx: property (text), widget (QLabel, label_2)
 #: rc.cpp:941
 msgid "Show personal labels with score:"
-msgstr ""
+msgstr "Osobní štítky zobrazit, jako kdyby měly skóre:"
 
 #. i18n: file: context/applets/labels/labelsGeneralSettings.ui:127
 #. i18n: ectx: property (toolTip), widget (QSpinBox, personalCountSpinBox)
 #: rc.cpp:944
 msgid "Affects the font size of the personal labels."
-msgstr ""
+msgstr "Ovlivňuje velikost písma osobních štítků."
 
 #. i18n: file: context/applets/labels/labelsGeneralSettings.ui:145
 #. i18n: ectx: property (text), widget (QCheckBox, autoAddCheckBox)
 #: rc.cpp:947
 msgid "Automatically add downloaded labels if none are assigned"
-msgstr ""
+msgstr "Automaticky přiřadit stažené štítky, pokud skladba žádné nemá"
 
 #. i18n: file: context/applets/labels/labelsGeneralSettings.ui:185
 #. i18n: ectx: property (toolTip), widget (QSpinBox, minAutoAddCountSpinBox)
 #: rc.cpp:953
 msgid "Add only labels that are rated at least that high."
-msgstr ""
+msgstr "Přidat pouze ty štítky, které mají aspoň takto vysoké skóre."
 
 #. i18n: file: context/applets/labels/labelsGeneralSettings.ui:227
 #. i18n: ectx: property (text), widget (QLabel, label_5)
 #: rc.cpp:956
 msgid "Color for assigned labels:"
-msgstr ""
+msgstr "Barva pro přiřazené štítky:"
 
 #. i18n: file: context/applets/labels/labelsGeneralSettings.ui:257
 #. i18n: ectx: property (text), widget (QLabel, label_6)
 #: rc.cpp:959
 msgid "Color for labels background:"
-msgstr ""
+msgstr "Barva pro pozadí štítků:"
 
 #. i18n: file: context/applets/labels/labelsGeneralSettings.ui:297
 #. i18n: ectx: property (toolTip), widget (QPushButton, resetColorsPushButton)
 #: rc.cpp:962
 msgid "Sets the label colors according to the current color scheme."
-msgstr ""
+msgstr "Nastavit barvu štítku podle aktuálního barevného schématu."
 
 #. i18n: file: context/applets/labels/labelsGeneralSettings.ui:300
 #. i18n: ectx: property (text), widget (QPushButton, resetColorsPushButton)
 #: rc.cpp:965
-#, fuzzy
-#| msgid "Text color:"
 msgid "Reset colors"
-msgstr "Barva textu:"
+msgstr "Obnovit výchozí barvy"
 
 #. i18n: file: context/applets/labels/labelsBlacklistSettings.ui:17
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: rc.cpp:968
-#, fuzzy
-#| msgid "You can use the following tokens:"
 msgid "Do not show the following labels:"
-msgstr "Můžete používat následující výrazy:"
+msgstr "Nezobrazovat následující štítky:"
 
 #. i18n: file: context/applets/labels/labelsBlacklistSettings.ui:24
 #. i18n: ectx: property (text), widget (QCheckBox, matchArtistCheckBox)
 #: rc.cpp:971
-#, fuzzy
-#| msgid "is in the last"
 msgid "Labels matching the artist"
-msgstr "je v posledních"
+msgstr "Štítky odpovídající umělci"
 
 #. i18n: file: context/applets/labels/labelsBlacklistSettings.ui:31
 #. i18n: ectx: property (text), widget (QCheckBox, matchTitleCheckBox)
 #: rc.cpp:974
 msgid "Labels matching the title"
-msgstr ""
+msgstr "Štítky odpovídající názvu"
 
 #. i18n: file: context/applets/labels/labelsBlacklistSettings.ui:38
 #. i18n: ectx: property (text), widget (QCheckBox, matchAlbumCheckBox)
 #: rc.cpp:977
-#, fuzzy
-#| msgid "is in the last"
 msgid "Labels matching the album"
-msgstr "je v posledních"
+msgstr "Štítky odpovídající albu"
 
 #. i18n: file: context/applets/labels/labelsBlacklistSettings.ui:61
 #. i18n: ectx: property (text), widget (QLabel, label_4)
@@ -2154,10 +2149,8 @@ msgstr "Černá listina"
 #. i18n: file: context/applets/labels/labelsReplacementSettings.ui:19
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: rc.cpp:983
-#, fuzzy
-#| msgid "Delete downloaded episodes"
 msgid "Replace downloaded label"
-msgstr "Smazat stažené díly"
+msgstr "Nahradit stažený štítek"
 
 #. i18n: file: context/applets/labels/labelsReplacementSettings.ui:36
 #. i18n: ectx: property (text), widget (QLabel, label_2)
@@ -2183,14 +2176,15 @@ msgid ""
 "labels according to your preferences.\n"
 "Eg. \"hip hop\" -> \"hip-hop\""
 msgstr ""
+"Pomáhá udržet vaši sbírku štítků organizovanou nahrazováním stažených štítků "
+"podle vašich představ.\n"
+"Např.: \"hip hop\" -> \"hip-hop\""
 
 #. i18n: file: context/applets/labels/labelsReplacementSettings.ui:98
 #. i18n: ectx: property (text), widget (QTreeWidget, replacementTreeWidget)
 #: rc.cpp:996
-#, fuzzy
-#| msgid "Download Album"
 msgid "Downloaded label"
-msgstr "Stáhnout album"
+msgstr "Stažený štítek"
 
 #. i18n: file: context/applets/labels/labelsReplacementSettings.ui:103
 #. i18n: ectx: property (text), widget (QTreeWidget, replacementTreeWidget)
@@ -2306,15 +2300,14 @@ msgstr "Ukázat maximální počet podobných umělců:"
 #. i18n: file: context/applets/tabs/ReloadEditDialog.ui:32
 #. i18n: ectx: property (windowTitle), widget (QWidget, ReloadEditDialog)
 #: rc.cpp:1052
-#, fuzzy
 msgid "Reload tabs"
-msgstr "Znovu načíst karty"
+msgstr "Obnovit tabulaturu"
 
 #. i18n: file: context/applets/tabs/ReloadEditDialog.ui:61
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: rc.cpp:1055
 msgid "Reload tabs with the following title and artist"
-msgstr ""
+msgstr "Obnovit tabulaturu s následujícím názvem a umělcem"
 
 #. i18n: file: context/applets/tabs/ReloadEditDialog.ui:73
 #. i18n: ectx: property (text), widget (QLabel, artistLabel)
@@ -2341,11 +2334,8 @@ msgstr "Název"
 #. i18n: file: context/applets/tabs/TabsSettings.ui:38
 #. i18n: ectx: property (title), widget (QGroupBox, gbFetchTabs)
 #: rc.cpp:1067
-#, fuzzy
-#| msgid "Fetch Cover"
-#| msgid_plural "Fetch Covers"
 msgid "Fetch tabs for"
-msgstr "Získat obrázek obalu"
+msgstr "Získat tabulaturu pro"
 
 #. i18n: file: context/applets/tabs/TabsSettings.ui:47
 #. i18n: ectx: property (text), widget (QCheckBox, cbFetchGuitar)
@@ -2403,16 +2393,14 @@ msgstr "Zobrazit místa jako odkazy"
 #. i18n: file: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:45
 #. i18n: ectx: property (clickMessage), widget (KLineEdit, searchLineEdit)
 #: rc.cpp:1091
-#, fuzzy
-#| msgid "Search"
 msgid "Search Venue"
-msgstr "Hledat"
+msgstr "Hledat místo konání"
 
 #. i18n: file: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:55
 #. i18n: ectx: property (toolTip), widget (KComboBox, countryCombo)
 #: rc.cpp:1094
 msgid "Restrict venues to a specific country"
-msgstr ""
+msgstr "Omezit místo konání na danou zemi"
 
 #. i18n: file: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:65
 #. i18n: ectx: property (text), item, widget (KComboBox, countryCombo)
@@ -2429,10 +2417,8 @@ msgstr "Výsledky hledání:"
 #. i18n: file: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:104
 #. i18n: ectx: property (text), widget (QLabel, selectedVenuesLabel)
 #: rc.cpp:1103
-#, fuzzy
-#| msgid "Selected Tracks"
 msgid "Selected Venues:"
-msgstr "Vybrané skladby"
+msgstr "Vybraná místa konání:"
 
 #. i18n: file: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:155
 #. i18n: ectx: property (text), widget (QLabel, photoLabel)
@@ -2494,7 +2480,7 @@ msgstr "Filtrovat události podle data:"
 #. i18n: ectx: property (text), widget (QCheckBox, groupVenueCheckBox)
 #: rc.cpp:1142
 msgid "&Group venue events"
-msgstr ""
+msgstr "&Seskupit dle místa konání"
 
 #. i18n: file: context/applets/wikipedia/wikipediaGeneralSettings.ui:31
 #. i18n: ectx: property (text), widget (QCheckBox, mobileCheckBox)
@@ -2524,13 +2510,13 @@ msgstr "Vlna"
 #. i18n: ectx: property (text), item, widget (KComboBox, modeComboBox)
 #: rc.cpp:1157
 msgid "Waterfall Diagram"
-msgstr ""
+msgstr "Spektrogram"
 
 #. i18n: file: context/applets/spectrumanalyzer/spectrumAnalyzerSettings.ui:49
 #. i18n: ectx: property (text), item, widget (KComboBox, modeComboBox)
 #: rc.cpp:1160
 msgid "3D Frequency Waves"
-msgstr ""
+msgstr "3D frekvenční vlny"
 
 #. i18n: file: context/applets/spectrumanalyzer/spectrumAnalyzerSettings.ui:57
 #. i18n: ectx: property (text), widget (QLabel, Label2)
@@ -2543,19 +2529,19 @@ msgstr "Množství dat (v %)"
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: rc.cpp:1167
 msgid "Show Peaks (Bar Mode Only)"
-msgstr ""
+msgstr "Zobrazit vrcholy (pouze ve sloupcovém módu)"
 
 #. i18n: file: context/applets/spectrumanalyzer/spectrumAnalyzerSettings.ui:97
 #. i18n: ectx: property (text), widget (QLabel, label_3)
 #: rc.cpp:1170
 msgid "Peaks Sinkrate"
-msgstr ""
+msgstr "Rychlost klesání vrcholů"
 
 #. i18n: file: context/applets/spectrumanalyzer/spectrumAnalyzerSettings.ui:117
 #. i18n: ectx: property (text), widget (QLabel, label_2)
 #: rc.cpp:1173
 msgid "Show Wave (Bar Mode Only)"
-msgstr ""
+msgstr "Zobrazit vlny (pouze ve sloupcovém módu)"
 
 #. i18n: file: context/applets/spectrumanalyzer/spectrumAnalyzerSettings.ui:137
 #. i18n: ectx: property (shortcut), widget (QCheckBox, cutCheckBox)
@@ -2567,7 +2553,7 @@ msgstr "Ctrl+S"
 #. i18n: ectx: property (text), widget (QLabel, label_4)
 #: rc.cpp:1179
 msgid "Cut out lower frequencies"
-msgstr ""
+msgstr "Vynechat nízké frekvence"
 
 #. i18n: file: core-impl/collections/audiocd/FormatSelectionDialog.ui:14
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
@@ -2620,10 +2606,8 @@ msgstr "Pokročilé"
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:14
 #. i18n: ectx: property (windowTitle), widget (QWidget, IpodConfiguration)
 #: rc.cpp:1206
-#, fuzzy
-#| msgid "Podcast Configuration"
 msgid "iPod device configuration"
-msgstr "Nastavení podcastu"
+msgstr "Nastavení iPodu"
 
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
 #. i18n: ectx: property (title), widget (QGroupBox, settingsGroupBox)
@@ -2659,7 +2643,7 @@ msgstr "Převést:"
 #. i18n: ectx: property (text), widget (QLabel, modelLabel)
 #: rc.cpp:1218 rc.cpp:1227
 msgid "Model:"
-msgstr ""
+msgstr "Model:"
 
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:91
 #. i18n: ectx: property (text), widget (QPushButton, initializeButton)
@@ -2688,30 +2672,26 @@ msgstr "Video:"
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:151
 #. i18n: ectx: property (text), widget (QLabel, albumArtworkLabel)
 #: rc.cpp:1236
-#, fuzzy
-#| msgid "Album artist:"
 msgid "Album artwork:"
-msgstr "Umělec alba:"
+msgstr "Obaly alba:"
 
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:168
 #. i18n: ectx: property (title), widget (QGroupBox, troubleshootingGroupBox)
 #: rc.cpp:1239
 msgid "Troubleshooting"
-msgstr ""
+msgstr "Řešení problémů"
 
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:174
 #. i18n: ectx: property (text), widget (QLabel, sysInfoLabel)
 #: rc.cpp:1242
-#, fuzzy
-#| msgid "Input file"
 msgid "SysInfo file:"
-msgstr "Vstupní soubor"
+msgstr "Soubor SysInfo:"
 
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:188
 #. i18n: ectx: property (text), widget (QLabel, sysInfoExtendedLabel)
 #: rc.cpp:1245
 msgid "SysInfoExtended file:"
-msgstr ""
+msgstr "Soubor SysInfoExtended:"
 
 #. i18n: file: core-impl/collections/umscollection/UmsConfiguration.ui:20
 #. i18n: ectx: property (windowTitle), widget (QWidget, UmsConfiguration)
@@ -2741,7 +2721,7 @@ msgstr "Složka s hudbou:"
 #. i18n: ectx: property (title), widget (QGroupBox, m_filenameSchemeBox)
 #: rc.cpp:1263
 msgid "Filename scheme of tracks that are added to the device"
-msgstr ""
+msgstr "Schéma pro pojmenování souborů, které jsou přidány na zařízení"
 
 #. i18n: file: core-impl/collections/umscollection/UmsConfiguration.ui:142
 #. i18n: ectx: property (text), widget (QCheckBox, m_podcastCheckBox)
@@ -2780,8 +2760,8 @@ msgstr "Základní adresář:"
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
-"\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
+"css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'DejaVu Sans'; font-size:8pt; font-"
 "weight:400; font-style:normal;\">\n"
@@ -2799,8 +2779,8 @@ msgid ""
 msgstr ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
-"\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
+"css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'DejaVu Sans'; font-size:8pt; font-"
 "weight:400; font-style:normal;\">\n"
@@ -2945,10 +2925,8 @@ msgstr "Zapiš po stažení informace kanálu do štítků."
 #. i18n: file: core-impl/podcasts/sql/PodcastSettingsBase.ui:251
 #. i18n: ectx: property (text), widget (QPushButton, m_filenameLayoutConfigWidgetButton)
 #: rc.cpp:1361
-#, fuzzy
-#| msgid "Sound System Configuration"
 msgid "Episode Filename Configuration"
-msgstr "Nastavení zvukového systému"
+msgstr "Nastavení jmen souborů dílů"
 
 #. i18n: file: core-impl/podcasts/sql/PodcastFilenameLayoutConfigWidget.ui:30
 #. i18n: ectx: property (windowTitle), widget (QWidget, PodcastFilenameLayoutConfigWidget)
@@ -3141,7 +3119,7 @@ msgstr "Značkovač MusicBrainz"
 #. i18n: ectx: property (toolTip), widget (QPushButton, pushButton_saveAndClose)
 #: rc.cpp:1485
 msgid "Update tags for checked tracks and exit"
-msgstr ""
+msgstr "Aktualizovat značky zaškrnutých skladeb a zavřít"
 
 #. i18n: file: dialogs/MusicBrainzTagger.ui:52
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_saveAndClose)
@@ -3250,7 +3228,7 @@ msgstr "Sl&ožka se sbírkou:"
 #. i18n: ectx: property (whatsThis), widget (KComboBox, folderCombo)
 #: rc.cpp:1532 rc.cpp:1535
 msgid "The collection folder to which the files will be transferred."
-msgstr ""
+msgstr "Složka se sbírkou, do které budou soubory přeneseny."
 
 #. i18n: file: dialogs/OrganizeCollectionDialogBase.ui:78
 #. i18n: ectx: property (title), widget (QGroupBox, previewBox)
@@ -3281,25 +3259,11 @@ msgstr "Je-li zaškrtnuto, budou soubory se stejným názvem přepsány bez ptan
 #. i18n: file: dialogs/OrganizeCollectionDialogBase.ui:166
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, overwriteCheck)
 #: rc.cpp:1550
-#, fuzzy
-#| msgid ""
-#| "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
-#| "REC-html40/strict.dtd\">\n"
-#| "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-#| "css\">\n"
-#| "p, li { white-space: pre-wrap; }\n"
-#| "</style></head><body style=\" font-family:'DejaVu Sans'; font-size:10pt; "
-#| "font-weight:400; font-style:normal;\">\n"
-#| "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#| "right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"https://shop."
-#| "mp3tunes.com/myaccount/registration/\"><span style=\" text-decoration: "
-#| "underline; color:#0057ae;\">Get an Mp3tunes locker</span></a></p></body></"
-#| "html>"
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
-"\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
+"css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-"
 "weight:400; font-style:normal;\">\n"
@@ -3310,15 +3274,15 @@ msgid ""
 msgstr ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
-"\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
+"css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:'DejaVu Sans'; font-size:10pt; "
-"font-weight:400; font-style:normal;\">\n"
+"</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-"
+"weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"https://shop."
-"mp3tunes.com/myaccount/registration/\"><span style=\" text-decoration: "
-"underline; color:#0057ae;\">Získat Mp3tunes Locker</span></a></p></body></"
+"right:0px; -qt-block-indent:0; text-indent:0px;\">Pokud je zaškrtnuto "
+"soubory se stejný názvem se automaticky přepíší. <span style=\" font-"
+"style:italic;\">(Upozornění: Přepsání nelze vzít zpět)</span></p></body></"
 "html>"
 
 #. i18n: file: dialogs/OrganizeCollectionDialogBase.ui:169
@@ -3523,7 +3487,7 @@ msgstr "&Komentář:"
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_musicbrainz)
 #: rc.cpp:1674
 msgid "Get Tags from MusicBrain&z"
-msgstr ""
+msgstr "Získat značky z MusicBrain&z"
 
 #. i18n: file: dialogs/TagDialogBase.ui:928
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_guessTags)
@@ -3604,8 +3568,8 @@ msgstr "Uložit a za&vřít"
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
-"\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
+"css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-"
 "weight:400; font-style:normal;\">\n"
@@ -3620,8 +3584,8 @@ msgid ""
 msgstr ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
-"\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
+"css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-"
 "weight:400; font-style:normal;\">\n"
@@ -3650,15 +3614,13 @@ msgstr "Přednastavení formátů:"
 #. i18n: ectx: property (whatsThis), widget (QComboBox, presetCombo)
 #: rc.cpp:1734
 msgid "A list of selectable filename scheme/format presets."
-msgstr ""
+msgstr "Seznam možných schémat pro pojmenování souborů."
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:328
 #. i18n: ectx: property (toolTip), widget (QPushButton, removePresetButton)
 #: rc.cpp:1737
-#, fuzzy
-#| msgid "Save changes of currently selected preset"
 msgid "Removes the currently selected format preset"
-msgstr "Uložit změny aktuálně vybraného přednastavení"
+msgstr "Odstraní aktuálně vybrané přednastavení formátu"
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:331
 #. i18n: ectx: property (text), widget (QPushButton, removePresetButton)
@@ -3669,10 +3631,8 @@ msgstr "Odstranit přednastavení"
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:338
 #. i18n: ectx: property (toolTip), widget (QPushButton, addPresetButton)
 #: rc.cpp:1743
-#, fuzzy
-#| msgid "Save changes of currently selected preset"
 msgid "Saves the current scheme/format above as a preset."
-msgstr "Uložit změny aktuálně vybraného přednastavení"
+msgstr "Uloží aktuální schéma/formát výše jako přednastavení."
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:341
 #. i18n: ectx: property (text), widget (QPushButton, addPresetButton)
@@ -3742,18 +3702,16 @@ msgstr "I&gnorovat 'The' ve jménech umělců"
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:438
 #. i18n: ectx: property (toolTip), widget (QCheckBox, vfatCheck)
 #: rc.cpp:1773
-#, fuzzy
-#| msgid ""
-#| "If checked, replace characters that are incompatible with MS-DOS/VFAT "
-#| "file systems."
 msgid ""
 "Replace characters that are incompatible with MS-DOS/VFAT file systems with "
 "underscores. \n"
 "\n"
 "Most people can leave this option enabled."
 msgstr ""
-"Je-li zaškrtnuto, budou nahrazeny znaky, které nejsou slučitelné se "
-"souborovým systémem MS-DOS/VFAT."
+"Nahradí znaky, které nejsou kompatibilní se souborovým systémem MS-DOS/VFAT, "
+"podtržítky. \n"
+"\n"
+"Většina uživatelů může nechat tuto volbu povolenou."
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:443
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, vfatCheck)
@@ -3767,8 +3725,8 @@ msgid ""
 "devices will function correctly."
 msgstr ""
 "Je-li tato volba zatržena, dojde k záměně všech znaků nekompatibilních s "
-"formátem souborů MS-DOS/VFAT podtržítky. Mezi nekompatibilní znaky patří |?*<"
-"\":>+[] a řídící znaky unicode. \n"
+"formátem souborů MS-DOS/VFAT podtržítky. Mezi nekompatibilní znaky patří "
+"|?*<\":>+[] a řídící znaky unicode. \n"
 "\n"
 "Většina uživatelů může nechat tuto volbu povolenu, protože zajišťuje, aby "
 "kopírování na mediální zařízení správně fungovalo."
@@ -3782,27 +3740,11 @@ msgstr "Bezpečné náz&vy VFAT"
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:467
 #. i18n: ectx: property (toolTip), widget (QCheckBox, asciiCheck)
 #: rc.cpp:1786
-#, fuzzy
-#| msgid ""
-#| "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
-#| "REC-html40/strict.dtd\">\n"
-#| "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-#| "css\">\n"
-#| "p, li { white-space: pre-wrap; }\n"
-#| "</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; "
-#| "font-weight:400; font-style:normal;\">\n"
-#| "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#| "right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;\"><span "
-#| "style=\" font-size:9pt;\">For more information about the Magnatune.com "
-#| "memberships, and to sign up, go to  </span><a href=\"http://magnatune.com/"
-#| "compare_plans?referal_id=amarok\"><span style=\" font-size:9pt; text-"
-#| "decoration: underline; color:#0000ff;\">http://magnatune.com/"
-#| "compare_plans</span></a></p></body></html>"
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
-"\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
+"css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-"
 "weight:400; font-style:normal;\">\n"
@@ -3826,43 +3768,37 @@ msgid ""
 msgstr ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
-"\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
+"css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-"
 "weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;\"><span "
-"style=\" font-size:9pt;\">Pro více informací o členství v Magnatune.com a "
-"kvůli přihlášení přejděte na  </span><a href=\"http://magnatune.com/"
-"compare_plans?referal_id=amarok\"><span style=\" font-size:9pt; text-"
-"decoration: underline; color:#0000ff;\">http://magnatune.com/compare_plans</"
-"span></a></p></body></html>"
+"right:0px; -qt-block-indent:0; text-indent:0px;\">Pokud je zaškrtnuto, "
+"všechny ne-ASCII znaky budou nahrazeny podtržítky.<span style=\" font-"
+"weight:600;\"> </span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
+"margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-"
+"weight:600;\"></p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-"
+"weight:600;\">Nezaškrtávejte tuto volbu, pokud máte ve značkách znaky s "
+"diakritikou. </span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
+"margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></"
+"p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\">Většina uživatelů může "
+"nechat tuto volbu nezaškrtnutou.</p></body></html>"
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:476
 #. i18n: ectx: property (whatsThis), widget (QCheckBox, asciiCheck)
 #: rc.cpp:1797
-#, fuzzy
-#| msgid ""
-#| "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
-#| "REC-html40/strict.dtd\">\n"
-#| "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-#| "css\">\n"
-#| "p, li { white-space: pre-wrap; }\n"
-#| "</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; "
-#| "font-weight:400; font-style:normal;\">\n"
-#| "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#| "right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;\"><span "
-#| "style=\" font-size:9pt;\">For more information about the Magnatune.com "
-#| "memberships, and to sign up, go to  </span><a href=\"http://magnatune.com/"
-#| "compare_plans?referal_id=amarok\"><span style=\" font-size:9pt; text-"
-#| "decoration: underline; color:#0000ff;\">http://magnatune.com/"
-#| "compare_plans</span></a></p></body></html>"
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
-"\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
+"css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-"
 "weight:400; font-style:normal;\">\n"
@@ -3881,18 +3817,23 @@ msgid ""
 msgstr ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
-"\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
+"css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Sans Serif'; font-size:9pt; font-"
 "weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px; font-size:10pt;\"><span "
-"style=\" font-size:9pt;\">Pro více informací o členství v Magnatune.com a "
-"kvůli přihlášení přejděte na  </span><a href=\"http://magnatune.com/"
-"compare_plans?referal_id=amarok\"><span style=\" font-size:9pt; text-"
-"decoration: underline; color:#0000ff;\">http://magnatune.com/compare_plans</"
-"span></a></p></body></html>"
+"right:0px; -qt-block-indent:0; text-indent:0px;\">Pokud je zaškrtnuto, "
+"všechny ne-ASCII znaky budou nahrazeny podtržítky.<span style=\" font-"
+"weight:600;\"> Nezaškrtávejte tuto volbu, pokud máte ve značkách znaky s "
+"diakritikou. </span></p>\n"
+"<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
+"margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></"
+"p>\n"
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
+"right:0px; -qt-block-indent:0; text-indent:0px;\">Většina uživatelů nechává "
+"tuto volbu <span style=\" font-style:italic;\">nezaškrtnutou.</span></p></"
+"body></html>"
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:479
 #. i18n: ectx: property (text), widget (QCheckBox, asciiCheck)
@@ -3934,7 +3875,7 @@ msgstr "Upravovat &velikost písmen"
 #. i18n: ectx: property (text), widget (QRadioButton, rbTitleCase)
 #: rc.cpp:1827
 msgid "&Title case"
-msgstr "&Velikost písmen v názvech"
+msgstr "&První Písmeno Velké"
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:704
 #. i18n: ectx: property (text), widget (QRadioButton, rbFirstLetter)
@@ -3970,13 +3911,13 @@ msgstr "Nah&radit podtržítka mezerami"
 #. i18n: ectx: property (text), widget (QCheckBox, cbUseFullPath)
 #: rc.cpp:1845
 msgid "Use full file path"
-msgstr ""
+msgstr "Použít celou cestu k souboru"
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:800
 #. i18n: ectx: property (text), widget (QLabel, label_14)
 #: rc.cpp:1848
 msgid "Reduce directories nesting level to:"
-msgstr ""
+msgstr "Redukovat úroveň vnoření adresářů na:"
 
 #. i18n: file: dialogs/FilenameLayoutDialog.ui:851
 #. i18n: ectx: property (title), widget (QGroupBox, resultGroupBox)
@@ -4069,7 +4010,7 @@ msgstr "Umělec alba"
 #. i18n: ectx: property (toolTip), widget (QToolButton, m_likeButton)
 #: rc.cpp:1908
 msgid "Tell the developers about something you liked"
-msgstr "Povězte vývojářům o něčem, co se vám líbilo"
+msgstr "Povězte vývojářům o něčem, co se Vám líbilo"
 
 #. i18n: file: likeback/LikeBackBar.ui:33
 #. i18n: ectx: property (whatsThis), widget (QToolButton, m_likeButton)
@@ -4086,7 +4027,7 @@ msgid ""
 "checkbox in the Help menu.</html>\n"
 "      "
 msgstr ""
-"<html>Klikněte na jednu z těchto ikon pro odeslání vašich reakcí vývojářům "
+"<html>Klikněte na jednu z těchto ikon pro odeslání Vašich reakcí vývojářům "
 "této aplikace. Ikony můžete skrýt ve volbě \"Zobrazit ikony reakcí\" v menu "
 "nápověda.</html>\n"
 "      "
@@ -4095,7 +4036,7 @@ msgstr ""
 #. i18n: ectx: property (toolTip), widget (QToolButton, m_dislikeButton)
 #: rc.cpp:1915
 msgid "Tell the developers about something you did not like"
-msgstr "Povězte vývojářům o něčem, co se vám nelíbilo"
+msgstr "Povězte vývojářům o něčem, co se Vám nelíbilo"
 
 #. i18n: file: likeback/LikeBackBar.ui:63
 #. i18n: ectx: property (toolTip), widget (QToolButton, m_bugButton)
@@ -4122,19 +4063,19 @@ msgstr "Váš komentář:"
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: rc.cpp:1939
 msgid "Your comment is about:"
-msgstr "Téma vašeho komentáře je:"
+msgstr "Téma Vašeho komentáře je:"
 
 #. i18n: file: likeback/LikeBackDialog.ui:86
 #. i18n: ectx: property (text), widget (QRadioButton, likeRadio_)
 #: rc.cpp:1942
 msgid "Something you like"
-msgstr "Co se vám líbilo"
+msgstr "Co se Vám líbilo"
 
 #. i18n: file: likeback/LikeBackDialog.ui:99
 #. i18n: ectx: property (text), widget (QRadioButton, dislikeRadio_)
 #: rc.cpp:1945
 msgid "Something you dislike"
-msgstr "Co se vám nelíbilo"
+msgstr "Co se Vám nelíbilo"
 
 #. i18n: file: likeback/LikeBackDialog.ui:112
 #. i18n: ectx: property (text), widget (QRadioButton, bugRadio_)
@@ -4152,7 +4093,7 @@ msgstr "Nová vlastnost, kterou byste si přáli"
 #. i18n: ectx: property (text), widget (QCheckBox, specifyEmailCheckBox_)
 #: rc.cpp:1954
 msgid "Specify an email address to be contacted back:"
-msgstr "Zadejte e-mailovou adresu, na níž vás je možno kontaktovat:"
+msgstr "Zadejte e-mailovou adresu, na níž Vás je možno kontaktovat:"
 
 #. i18n: file: likeback/LikeBackDialog.ui:188
 #. i18n: ectx: property (text), widget (QLabel, label)
@@ -4165,7 +4106,7 @@ msgid ""
 "b></html>"
 msgstr ""
 "<html>Udání e-mailové adresy umožní vývojářům zeptat se na další informací "
-"týkající se vašeho hlášení, popř. vám sdělit, kdy bude vámi požadovaná "
+"týkající se Vašeho hlášení, popř. Vám sdělit, kdy bude Vámi požadovaná "
 "funkce implementována.<br/>\n"
 "<b>Vaše e-mailová adresa nebude použita k ničemu jinému než k tomuto hlášení."
 "</b></html>"
@@ -4311,20 +4252,24 @@ msgstr "Zobrazovat nástrojové tipy"
 #. i18n: ectx: property (whatsThis), widget (QWidget, ConstraintGroupEditWidget)
 #: rc.cpp:2042
 msgid ""
-"An editor for Constraint Groups.  You can set the group type to \"match all"
-"\" or \"match any\".  When the group type is set to \"match all\", the "
+"An editor for Constraint Groups.  You can set the group type to \"match "
+"all\" or \"match any\".  When the group type is set to \"match all\", the "
 "Generator will try to have the playlist match all the constraints within the "
 "group.  When the group type is set to \"match any\", the Generator will try "
 "to have the playlist match any of the constraints within the group."
 msgstr ""
+"Editor pro skupiny kritérií. Můžete nastavit typ skupiny buď \"odpovídat "
+"všem\" nebo \"odpovídat kterémukoliv\". Když je typ skupiny nastaven jako "
+"\"odpovídat všem\", tak se generátor pokusí vybrat skladby, které odpovídají "
+"všem kritériím ve skupině. Když je typ skupiny nastaven jako \"odpovídat "
+"kterémukoliv\", tak se generátor pokusí vybrat skladby, které odpovídají "
+"kterémukoliv kritériu ve skupině."
 
 #. i18n: file: playlistgenerator/ConstraintGroupEditWidget.ui:21
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: rc.cpp:2045
-#, fuzzy
-#| msgid "Connection Settings"
 msgid "Constraint Group Settings"
-msgstr "Nastavení připojení"
+msgstr "Nastavení skupiny kritérií"
 
 #. i18n: file: playlistgenerator/ConstraintGroupEditWidget.ui:29
 #. i18n: ectx: property (whatsThis), widget (QRadioButton, radioButton_MatchAll)
@@ -4334,12 +4279,15 @@ msgid ""
 "constraints within the group are satisfied.  This is analogous to a logical "
 "AND: \"the tracks should match properties A, B, and C\"."
 msgstr ""
+"APG bude považovat skupinu kritérií za splněnou pouze tehdy, pokud všechna "
+"kritéria ve skupině budou splněna. To je analogie s logickým A ZÁROVEŇ: "
+"\"skladby budou odpovídat vlastnostem A, B a C\"."
 
 #. i18n: file: playlistgenerator/ConstraintGroupEditWidget.ui:32
 #. i18n: ectx: property (text), widget (QRadioButton, radioButton_MatchAll)
 #: rc.cpp:2051
 msgid "Match all constraints in the group"
-msgstr ""
+msgstr "Najít shodu všech kritérií ve skupině"
 
 #. i18n: file: playlistgenerator/ConstraintGroupEditWidget.ui:39
 #. i18n: ectx: property (whatsThis), widget (QRadioButton, radioButton_MatchAny)
@@ -4349,12 +4297,15 @@ msgid ""
 "constraints within it is satisfied.  This is analogous to a logical OR: "
 "\"the tracks should match properties A, B, or C\"."
 msgstr ""
+"APG bude považovat skupinu kritérií za splněnou pouze tehdy, pokud alespoň "
+"jedno kritérium ve skupině bude splněno. To je analogie s logickým NEBO: "
+"\"skladby budou odpovídat vlastnostem A, B a C\"."
 
 #. i18n: file: playlistgenerator/ConstraintGroupEditWidget.ui:42
 #. i18n: ectx: property (text), widget (QRadioButton, radioButton_MatchAny)
 #: rc.cpp:2057
 msgid "Match any constraint in the group"
-msgstr ""
+msgstr "Najít shodu jakéhokoliv kritéria ve skupině"
 
 #. i18n: file: playlistgenerator/PresetEditDialog.ui:15
 #. i18n: ectx: property (windowTitle), widget (QDialog, PresetEditDialog)
@@ -4366,7 +4317,7 @@ msgstr "Editor přednastavení AGS"
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_Tree)
 #: rc.cpp:2063
 msgid "Constraint Tree"
-msgstr ""
+msgstr "Strom kritérií"
 
 #. i18n: file: playlistgenerator/PresetEditDialog.ui:41
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_Title)
@@ -4381,20 +4332,20 @@ msgid ""
 "An editor for a CheckPoint constraint.  The user can set the track, album, "
 "or artist to be placed at a certain position in the playlist."
 msgstr ""
+"Editor pro kritérium Kontrolní bod. Můžete nastavit, že skladba, album nebo "
+"umělec bude umístěn na určité místo v seznamu skladeb."
 
 #. i18n: file: playlistgenerator/constraints/CheckpointEditWidget.ui:21
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: rc.cpp:2072
-#, fuzzy
-#| msgid "Connection Settings"
 msgid "Checkpoint Constraint Settings"
-msgstr "Nastavení připojení"
+msgstr "Nastavení kritéria Kontrolní bod"
 
 #. i18n: file: playlistgenerator/constraints/CheckpointEditWidget.ui:35
 #. i18n: ectx: property (whatsThis), widget (TrackSelectWidget, trackSelector)
 #: rc.cpp:2075
 msgid "Select the track that you want to use as the checkpoint."
-msgstr ""
+msgstr "Vyberte skladby, které chcete použít jako kontrolní bod."
 
 #. i18n: file: playlistgenerator/constraints/CheckpointEditWidget.ui:48
 #. i18n: ectx: property (text), widget (QLabel, label_Position)
@@ -4410,6 +4361,9 @@ msgid ""
 "seconds.  Note: because of Qt limitations, the maximum position that you can "
 "specify is 24 hours."
 msgstr ""
+"Požadovaná pozice skladby v seznamu skladeb, v hodinách, minutách a "
+"sekundách. Poznámka: kvůli limitu knihovny Qt je maximální pozice, kterou "
+"můžete zadat, 24 hodin."
 
 #. i18n: file: playlistgenerator/constraints/CheckpointEditWidget.ui:72
 #. i18n: ectx: property (displayFormat), widget (QTimeEdit, timeEdit_Position)
@@ -4429,7 +4383,7 @@ msgstr "h:mm:ss"
 msgid ""
 "How strict the APG should be about placing the selected track at the "
 "specified time."
-msgstr ""
+msgstr "Jak striktní má být APG při umísťování vybrané skladby na zadaný čas."
 
 #. i18n: file: playlistgenerator/constraints/CheckpointEditWidget.ui:110
 #. i18n: ectx: property (text), widget (QLabel, label_Strictness)
@@ -4497,14 +4451,16 @@ msgid ""
 "than, equal to, or greater than that duration; and the strictness with which "
 "the APG should match that duration."
 msgstr ""
+"Editor pro kritérium délka seznamu skladeb. Můžete nastavit jméno kritéria; "
+"cílovou délku; jestliže seznam skladeb bude kratší než, stejně dlouhý jako "
+"nebo delší než zadaná délka; a nakonec striktnost, se kterou se APG bude "
+"snažit dodržet zadanou délku."
 
 #. i18n: file: playlistgenerator/constraints/PlaylistDurationEditWidget.ui:21
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: rc.cpp:2105
-#, fuzzy
-#| msgid "Connection Settings"
 msgid "Playlist Duration Constraint Settings"
-msgstr "Nastavení připojení"
+msgstr "Nastavení kritéria délka seznamu skladeb"
 
 #. i18n: file: playlistgenerator/constraints/PlaylistDurationEditWidget.ui:32
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_Comparison)
@@ -4513,6 +4469,8 @@ msgid ""
 "Whether the duration of the generated playlist should be shorter than, equal "
 "to, or longer than the specified value."
 msgstr ""
+"Jestliže má být délka vygenerovaného seznamu skladeb kratší než, stejná "
+"jako, nebo delší než zadaná hodnota."
 
 #. i18n: file: playlistgenerator/constraints/PlaylistDurationEditWidget.ui:39
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Comparison)
@@ -4548,6 +4506,8 @@ msgid ""
 "because of Qt limitations, the maximum playlist duration that you can "
 "specify is 24 hours."
 msgstr ""
+"Požadovaná délka seznamu skladeb v hodinách, minutách a sekundách. Poznámka: "
+"kvůli limitu knihovny Qt je maximální délka, kterou můžete zadat, 24 hodin."
 
 #. i18n: file: playlistgenerator/constraints/PlaylistDurationEditWidget.ui:94
 #. i18n: ectx: property (whatsThis), widget (QLabel, label_Strictness)
@@ -4559,7 +4519,7 @@ msgstr ""
 msgid ""
 "How strict the APG should be about matching the playlist duration to the "
 "specified time."
-msgstr ""
+msgstr "Jak striktní má APG být při dodržování zadané délky seznamu skladeb."
 
 #. i18n: file: playlistgenerator/constraints/PlaylistLengthEditWidget.ui:15
 #. i18n: ectx: property (whatsThis), widget (QWidget, PlaylistLengthEditWidget)
@@ -4570,14 +4530,16 @@ msgid ""
 "than that number of tracks; and the strictness with which the APG should "
 "match the target number of tracks."
 msgstr ""
+"Editor pro kritérium délka seznamu skladeb. Můžete nastavit jméno kritéria; "
+"cílový počet skladeb; jestliže seznam skladeb bude obsahovat méně než, "
+"stejně jako,nebo více než zadaný počet skladeb; a nakonec striktnost, se "
+"kterou se APG bude snažit dodržet zadaný počet skladeb."
 
 #. i18n: file: playlistgenerator/constraints/PlaylistLengthEditWidget.ui:21
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: rc.cpp:2144
-#, fuzzy
-#| msgid "Connection Settings"
 msgid "Playlist Length Constraint Settings"
-msgstr "Nastavení připojení"
+msgstr "Nastavení kritéria délka seznamu skladeb"
 
 #. i18n: file: playlistgenerator/constraints/PlaylistLengthEditWidget.ui:32
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_Comparison)
@@ -4586,6 +4548,8 @@ msgid ""
 "Whether the number of tracks in the generated playlist should be less than, "
 "equal to, or more than the specified value."
 msgstr ""
+"Jestliže má být počet skladeb vygenerovaného seznamu skladeb menší než, "
+"stejný jako, nebo větší než zadaná hodnota."
 
 #. i18n: file: playlistgenerator/constraints/PlaylistLengthEditWidget.ui:39
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_Comparison)
@@ -4612,6 +4576,8 @@ msgid ""
 "How strict the APG should be about matching the playlist length to the "
 "specified number of tracks."
 msgstr ""
+"Jak striktní má APG být při dodržování zadaného počtu skladeb seznamu "
+"skladeb."
 
 #. i18n: file: playlistgenerator/constraints/PreventDuplicatesEditWidget.ui:15
 #. i18n: ectx: property (whatsThis), widget (QWidget, PreventDuplicatesEditWidget)
@@ -4623,12 +4589,17 @@ msgid ""
 "more than one track from a given album or a given artist from ending up in "
 "the playlist."
 msgstr ""
+"Editor kritéria zabránit duplicitám. Když je nastaveno \"skladba\", pokusí "
+"se zabránit více než jedné kopii stejné skladby v tom, aby se objevila v "
+"seznamu skladeb. Když je nastaveno \"album\" nebo \"umělec\", pokusí se "
+"zabránit více než jedné skladbě z daného alba nebo umělce v tom, aby se "
+"objevila v seznamu skladeb."
 
 #. i18n: file: playlistgenerator/constraints/PreventDuplicatesEditWidget.ui:21
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: rc.cpp:2180
 msgid "Prevent Duplicates Constraint Settings"
-msgstr ""
+msgstr "Nastavení kritéria zabránit duplicitám"
 
 #. i18n: file: playlistgenerator/constraints/PreventDuplicatesEditWidget.ui:29
 #. i18n: ectx: property (whatsThis), widget (QLabel, label_Field)
@@ -4639,6 +4610,9 @@ msgid ""
 "Control which duplicates to prevent.  \"Prevent duplicate tracks\" is the "
 "least restrictive, and \"prevent duplicate artists\" is the most restrictive."
 msgstr ""
+"Nastavit, kterým duplicitám má být zabráněno. \"Zabránit duplicitním "
+"skladbám\" je nejméně omezující a \"zabránit duplicitním umělcům\" je "
+"nejvíce omezující."
 
 #. i18n: file: playlistgenerator/constraints/PreventDuplicatesEditWidget.ui:32
 #. i18n: ectx: property (text), widget (QLabel, label_Field)
@@ -4673,14 +4647,15 @@ msgid ""
 "that characteristic.  This functions similarity to the matching attributes "
 "of the smart playlists in Amarok 1.4."
 msgstr ""
+"Editor kritéria najít shodu značky. Můžete určit charakteristiku skladby a "
+"APG doplní seznam skladeb skladbou, která odpovídá této charakteristice. "
+"Tato funguje podobně jako smart playlist v Amaroku 1.4."
 
 #. i18n: file: playlistgenerator/constraints/TagMatchEditWidget.ui:21
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: rc.cpp:2204
-#, fuzzy
-#| msgid "Connection Settings"
 msgid "Match Tag Constraint Settings"
-msgstr "Nastavení připojení"
+msgstr "Nastavení kritéria najít shodu značky"
 
 #. i18n: file: playlistgenerator/constraints/TagMatchEditWidget.ui:29
 #. i18n: ectx: property (whatsThis), widget (QLabel, label_Match)
@@ -4688,7 +4663,7 @@ msgstr "Nastavení připojení"
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_Field)
 #: rc.cpp:2207 rc.cpp:2213
 msgid "Selects which track characteristic you want to match."
-msgstr ""
+msgstr "Vybere, která charakteristika skladby má odpovídat."
 
 #. i18n: file: playlistgenerator/constraints/TagMatchEditWidget.ui:32
 #. i18n: ectx: property (text), widget (QLabel, label_Match)
@@ -4701,25 +4676,11 @@ msgstr "Pole:"
 #. i18n: file: playlistgenerator/constraints/TagMatchEditWidget.ui:84
 #. i18n: ectx: property (whatsThis), widget (QLabel, label_Invert)
 #: rc.cpp:2216 rc.cpp:2223
-#, fuzzy
-#| msgid ""
-#| "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
-#| "REC-html40/strict.dtd\">\n"
-#| "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
-#| "css\">\n"
-#| "p, li { white-space: pre-wrap; }\n"
-#| "</style></head><body style=\" font-family:'DejaVu Sans'; font-size:10pt; "
-#| "font-weight:400; font-style:normal;\">\n"
-#| "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-#| "right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"https://shop."
-#| "mp3tunes.com/myaccount/registration/\"><span style=\" text-decoration: "
-#| "underline; color:#0057ae;\">Get an Mp3tunes locker</span></a></p></body></"
-#| "html>"
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
-"\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
+"css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Calibri'; font-size:10pt; font-"
 "weight:400; font-style:normal;\">\n"
@@ -4730,16 +4691,15 @@ msgid ""
 msgstr ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
-"\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
+"css\">\n"
 "p, li { white-space: pre-wrap; }\n"
-"</style></head><body style=\" font-family:'DejaVu Sans'; font-size:10pt; "
-"font-weight:400; font-style:normal;\">\n"
+"</style></head><body style=\" font-family:'Calibri'; font-size:10pt; font-"
+"weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"https://shop."
-"mp3tunes.com/myaccount/registration/\"><span style=\" text-decoration: "
-"underline; color:#0057ae;\">Získat Mp3tunes Locker</span></a></p></body></"
-"html>"
+"right:0px; -qt-block-indent:0; text-indent:0px;\">APG vybere všechny "
+"skladby, které <span style=\" font-weight:600;\">neodpovídají</span> dané "
+"charakteristice</p></body></html>"
 
 #. i18n: file: playlistgenerator/constraints/TagMatchEditWidget.ui:87
 #. i18n: ectx: property (text), widget (QLabel, label_Invert)
@@ -4754,6 +4714,8 @@ msgid ""
 "Whether the APG should choose tracks that are less than, equal to, or "
 "greater than the specified value."
 msgstr ""
+"Jestliže má APG vybrat skladby, které jsou menší než, stejné jako, nebo "
+"větší než zadaná hodnota."
 
 #. i18n: file: playlistgenerator/constraints/TagMatchEditWidget.ui:113
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonInt)
@@ -4784,7 +4746,7 @@ msgstr "větší než"
 #. i18n: ectx: property (whatsThis), widget (KIntSpinBox, spinBox_ValueInt)
 #: rc.cpp:2245
 msgid "The numerical value that the track characteristic should match."
-msgstr ""
+msgstr "Číselná hodnota, se kterou se má charakteristika skladby shodovat."
 
 #. i18n: file: playlistgenerator/constraints/TagMatchEditWidget.ui:158
 #. i18n: ectx: property (whatsThis), widget (QLabel, label_StrictnessInt)
@@ -4794,6 +4756,7 @@ msgstr ""
 msgid ""
 "How strict the APG should be about matching tracks to the specified value."
 msgstr ""
+"Jak striktní má APG být při dodržování shody skladeb se zadanou hodnotou."
 
 #. i18n: file: playlistgenerator/constraints/TagMatchEditWidget.ui:226
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_ComparisonDate)
@@ -4803,6 +4766,9 @@ msgid ""
 "specific date; or whether it should choose tracks that are within a certain "
 "time range."
 msgstr ""
+"Jestliže APG má vybrat skladby, které mají datum před, v, nebo po určitém "
+"datu; nebo jestliže má vybrat skladby, které mají datum v určitém časovém "
+"rozsahu."
 
 #. i18n: file: playlistgenerator/constraints/TagMatchEditWidget.ui:233
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonDate)
@@ -4832,13 +4798,13 @@ msgstr "během posledních"
 #. i18n: ectx: property (whatsThis), widget (QWidget, page_DateSpecific)
 #: rc.cpp:2278
 msgid "The specific date that the APG should use for matching."
-msgstr ""
+msgstr "Datum, které má APG použít pro shodu."
 
 #. i18n: file: playlistgenerator/constraints/TagMatchEditWidget.ui:300
 #. i18n: ectx: property (whatsThis), widget (QWidget, page_DateRange)
 #: rc.cpp:2281
 msgid "The relative time period that the APG should try to match."
-msgstr ""
+msgstr "Relativní časové období, ve kterém se má APG pokusit o shodu."
 
 #. i18n: file: playlistgenerator/constraints/TagMatchEditWidget.ui:337
 #. i18n: ectx: property (whatsThis), widget (QLabel, label_strictnessDate)
@@ -4847,7 +4813,7 @@ msgstr ""
 #: rc.cpp:2284 rc.cpp:2293
 msgid ""
 "How strict the APG should be about matching tracks to the specified date."
-msgstr ""
+msgstr "Jak striktní má APG být při dodržování shody skladeb se zadaným datem."
 
 #. i18n: file: playlistgenerator/constraints/TagMatchEditWidget.ui:405
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_ComparisonString)
@@ -4856,6 +4822,8 @@ msgid ""
 "Whether the APG should match tracks that equal, start with, end with, or "
 "contain the specified string."
 msgstr ""
+"Jestliže má APG najít shodu skladeb, které se rovnají, začínají s, končí s, "
+"nebo obsahují zadaný text."
 
 #. i18n: file: playlistgenerator/constraints/TagMatchEditWidget.ui:409
 #. i18n: ectx: property (text), item, widget (QComboBox, comboBox_ComparisonString)
@@ -4888,7 +4856,7 @@ msgstr "obsahuje"
 #. i18n: ectx: property (whatsThis), widget (QLineEdit, lineEdit_StringValue)
 #: rc.cpp:2314
 msgid "The string that the APG should use when matching tracks."
-msgstr ""
+msgstr "Text, který má APG použít pro shodu skladeb."
 
 #. i18n: file: playlistgenerator/constraints/TagMatchEditWidget.ui:460
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_ComparisonTime)
@@ -4897,12 +4865,14 @@ msgid ""
 "Whether the APG should choose tracks that are less than, equal to, or "
 "greater than the specified time."
 msgstr ""
+"Jestliže má APG vybrat skladby, které jsou menší než, stejné jako, nebo "
+"větší než zadaný čas."
 
 #. i18n: file: playlistgenerator/constraints/TagMatchEditWidget.ui:487
 #. i18n: ectx: property (whatsThis), widget (QTimeEdit, timeEdit_TimeValue)
 #: rc.cpp:2329
 msgid "The time that the APG should try to match."
-msgstr ""
+msgstr "Čas, se kterým se má APG pokusit o shodu."
 
 #. i18n: file: playlistgenerator/constraints/TagMatchEditWidget.ui:529
 #. i18n: ectx: property (whatsThis), widget (QLabel, label_StrictnessTime)
@@ -4911,25 +4881,23 @@ msgstr ""
 #: rc.cpp:2335 rc.cpp:2344
 msgid ""
 "How strict the APG should be about matching tracks to the specified time."
-msgstr ""
+msgstr "Jak striktní má APG být při dodržování shody skladeb se zadaným časem."
 
 #. i18n: file: playlistgenerator/constraints/TagMatchEditWidget.ui:597
 #. i18n: ectx: property (whatsThis), widget (QComboBox, comboBox_ComparisonRating)
 #: rc.cpp:2350
-#, fuzzy
-#| msgid "Number of tracks to load into the playlist after the active track."
 msgid ""
 "Whether the APG should choose tracks that are less than, equal to, or "
 "greater than the specified rating."
 msgstr ""
-"Počet skladeb, které mají být nahrány do seznamu skladeb za právě "
-"přehrávanou skladbu."
+"Jestliže má APG vybrat skladby, které mají hodnocení menší než, stejné jako, "
+"nebo větší než určité hodnocení."
 
 #. i18n: file: playlistgenerator/constraints/TagMatchEditWidget.ui:624
 #. i18n: ectx: property (whatsThis), widget (Amarok::KRatingWidget, rating_RatingValue)
 #: rc.cpp:2362
 msgid "The rating that the APG should try to match."
-msgstr ""
+msgstr "Hodnocení, se kterým se má APG pokusit o shodu."
 
 #. i18n: file: playlistgenerator/constraints/TagMatchEditWidget.ui:652
 #. i18n: ectx: property (whatsThis), widget (QLabel, label_StrictnessRating)
@@ -4939,6 +4907,7 @@ msgstr ""
 msgid ""
 "How strict the APG should be about matching tracks to the specified rating."
 msgstr ""
+"Jak striktní má APG být při dodržování shody skladeb se zadaným hodnocením."
 
 #. i18n: file: services/ampache/AmpacheConfigWidget.ui:23
 #. i18n: ectx: property (text), widget (QPushButton, addButton)
@@ -5030,7 +4999,7 @@ msgstr "Na&jít podobné umělce"
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_ScrobbleComposer)
 #: rc.cpp:2440
 msgid "&Use composer data if available in Last.fm as artist"
-msgstr ""
+msgstr "&Použít v Last.fm skladatele, pokud je dostupný, jako umělce"
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:17
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_3)
@@ -5104,8 +5073,8 @@ msgstr "Heslo:"
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
-"\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
+"css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'DejaVu Serif'; font-size:8pt; "
 "font-weight:400; font-style:normal;\">\n"
@@ -5119,18 +5088,18 @@ msgid ""
 msgstr ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
-"\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
+"css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'DejaVu Serif'; font-size:8pt; "
 "font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-"
 "family:'Sans Serif';\">Pro více informací o členství v Magnatune.com a kvůli "
-"přihlášení přejděte na  </span><a href=\"http://magnatune.com/compare_plans?"
-"referal_id=amarok\"><span style=\" font-family:'Sans Serif'; text-"
-"decoration: underline; color:#0000ff;\">http://magnatune.com/compare_plans</"
-"span></a></p></body></html>"
+"přihlášení přejděte na  </span><a href=\"http://magnatune.com/"
+"compare_plans?referal_id=amarok\"><span style=\" font-family:'Sans Serif'; "
+"text-decoration: underline; color:#0000ff;\">http://magnatune.com/"
+"compare_plans</span></a></p></body></html>"
 
 #. i18n: file: services/magnatune/MagnatuneConfigWidget.ui:157
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox_2)
@@ -5194,7 +5163,7 @@ msgid ""
 "album will automatically be added to your collection."
 msgstr ""
 "Jestliže budete stahovat do umístění, které je již sledováno Amarokem, album "
-"bude automaticky přidáno do vaší sbírky."
+"bude automaticky přidáno do Vaší sbírky."
 
 #. i18n: file: services/magnatune/MagnatuneDownloadDialogBase.ui:67
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox2)
@@ -5246,8 +5215,8 @@ msgstr "Členské přihlášení k Magnatune.com"
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
-"\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
+"css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Liberation Sans'; font-size:9pt; "
 "font-weight:400; font-style:normal;\">\n"
@@ -5288,46 +5257,46 @@ msgid ""
 msgstr ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
-"\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
+"css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Liberation Sans'; font-size:9pt; "
 "font-weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">Stanete-li se členem "
 "Magnatune.com, získáte neomezený přístup ke stahování a můžete si stáhnout "
-"jakékoliv album v Amaroku jediným kliknutím myši. Členství vám také umožní "
+"jakékoliv album v Amaroku jediným kliknutím myši. Členství Vám také umožní "
 "poslouchat všechny streamované skladby z Magnatune.com bez reklam.</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
 "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></"
 "p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">Tým Amaroku obdrží 10% z "
-"vašeho počátečního členského poplatku, takže tím, že se stanete členem, také "
+"Vašeho počátečního členského poplatku, takže tím, že se stanete členem, také "
 "podpoříte vývoj Amaroku.</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
 "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></"
 "p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
-"right:0px; -qt-block-indent:0; text-indent:0px;\">Jako vždy, umělci obdrží "
-"50% vašeho členského poplatku s ohledem na to jaké umělce si stahujete a "
+"right:0px; -qt-block-indent:0; text-indent:0px;\">Jako vždy, umělci obdrží 50"
+"% Vašeho členského poplatku s ohledem na to jaké umělce si stahujete a "
 "streamujete.</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
 "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></"
 "p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">Chcete-li si přečíst více "
-"o členství v Magnatune.com, anebo se přihlásit, klikněte na: <a href="
-"\"http://magnatune.com/downloads?referal_id=amarok\"><span style=\" text-"
-"decoration: underline; color:#0057ae;\">Informace o členství</span></a> </"
-"p>\n"
+"o členství v Magnatune.com, anebo se přihlásit, klikněte na: <a "
+"href=\"http://magnatune.com/downloads?referal_id=amarok\"><span style=\" "
+"text-decoration: underline; color:#0057ae;\">Informace o členství</span></a> "
+"</p>\n"
 "<p style=\"-qt-paragraph-type:empty; margin-top:0px; margin-bottom:0px; "
 "margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"></"
 "p>\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\">Po přihlášení jděte do "
 "nastavení Magnatune v \"Nastavení->Nastavit  Amarok->IZásuvné moduly\" a "
-"zadejte údaje o vašem členství. </p></body></html>"
+"zadejte údaje o Vašem členství. </p></body></html>"
 
 #. i18n: file: services/magnatune/MagnatuneSignupDialogBase.ui:45
 #. i18n: ectx: property (text), widget (QPushButton, closeButton)
@@ -5365,7 +5334,7 @@ msgid ""
 "AutoSync is a feature from MP3tunes which allows you to automatically move "
 "your music between computers and devices."
 msgstr ""
-"AutoSync je program od MP3tunes, který vám umožní automaticky přesunovat "
+"AutoSync je program od MP3tunes, který Vám umožní automaticky přesunovat "
 "hudbu mezi počítači a zařízeními."
 
 #. i18n: file: services/mp3tunes/Mp3tunesConfigWidget.ui:52
@@ -5376,7 +5345,7 @@ msgid ""
 "your music between computers and devices. You can upload music from one "
 "location and have it download instantly to other locations."
 msgstr ""
-"AutoSync je program od MP3tunes, který vám umožní automaticky přesunovat "
+"AutoSync je program od MP3tunes, který Vám umožní automaticky přesunovat "
 "hudbu mezi počítači a zařízeními. Můžete nahrávat hudbu z jednoho umístění a "
 "mít ji okamžitě staženou do jiných umístění."
 
@@ -5399,8 +5368,8 @@ msgstr "PIN kód:"
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
-"\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
+"css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'DejaVu Sans'; font-size:10pt; "
 "font-weight:400; font-style:normal;\">\n"
@@ -5412,8 +5381,8 @@ msgid ""
 msgstr ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
-"\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
+"css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'DejaVu Sans'; font-size:10pt; "
 "font-weight:400; font-style:normal;\">\n"
@@ -5427,13 +5396,13 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QLabel, instructionsLabel)
 #: rc.cpp:2584
 msgid "Add a local or remote OPML file to be included in the list."
-msgstr ""
+msgstr "Přidat lokální nebo vzdálený OPML soubor k zahrnutí do seznamu"
 
 #. i18n: file: services/opmldirectory/AddOpmlWidget.ui:88
 #. i18n: ectx: property (clickMessage), widget (KLineEdit, titleEdit)
 #: rc.cpp:2593
 msgid "If left blank the title from the OPML will be used."
-msgstr ""
+msgstr "Pokud ponecháte prázdné, bude použit název z OPML."
 
 #. i18n: file: services/gpodder/GpodderConfigWidget.ui:26
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox3)
@@ -5447,48 +5416,45 @@ msgstr "Profil gpodder.net"
 msgid ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
-"\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
+"css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Ubuntu'; font-size:9pt; font-"
 "weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"http://www."
-"gpodder.net/register/\"><span style=\" text-decoration: underline; color:"
-"#0057ae;\">Sign up to gpodder.net</span></a></p></body></html>"
+"gpodder.net/register/\"><span style=\" text-decoration: underline; "
+"color:#0057ae;\">Sign up to gpodder.net</span></a></p></body></html>"
 msgstr ""
 "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/"
 "REC-html40/strict.dtd\">\n"
-"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css"
-"\">\n"
+"<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/"
+"css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:'Ubuntu'; font-size:9pt; font-"
 "weight:400; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-"
 "right:0px; -qt-block-indent:0; text-indent:0px;\"><a href=\"http://www."
-"gpodder.net/register/\"><span style=\" text-decoration: underline; color:"
-"#0057ae;\">Zaregistrovat se u gpodder.net</span></a></p></body></html>"
+"gpodder.net/register/\"><span style=\" text-decoration: underline; "
+"color:#0057ae;\">Zaregistrovat se u gpodder.net</span></a></p></body></html>"
 
 #. i18n: file: services/amazon/AmazonShoppingCartDialog.ui:14
 #. i18n: ectx: property (windowTitle), widget (QDialog, AmazonShoppingCartDialog)
 #: rc.cpp:2615
 msgid "Amarok - Your Shopping Cart"
-msgstr ""
+msgstr "Amarok - Váš nákupní košík"
 
 #. i18n: file: services/amazon/AmazonShoppingCartDialog.ui:30
 #. i18n: ectx: property (text), widget (QLabel, cartValueLabel)
 #: rc.cpp:2618
 msgid "Shopping cart value: "
-msgstr ""
+msgstr "Hodnota nákupního košíku: "
 
 #. i18n: file: services/amazon/AmazonShoppingCartDialog.ui:39
 #. i18n: ectx: property (text), widget (QPushButton, checkoutButton)
 #: rc.cpp:2621
-#, fuzzy
-#| msgctxt "track from source"
-#| msgid "from <b>%1</b>"
 msgid "Checkout"
-msgstr "od <b>%1</b>"
+msgstr "Koupit"
 
 #. i18n: file: services/amazon/AmazonConfigWidget.ui:32
 #. i18n: ectx: property (windowTitle), widget (QWidget, AmazonConfigWidget)
@@ -5512,6 +5478,11 @@ msgid ""
 "supported by the store, you can only buy items if you live in one of the "
 "listed countries."
 msgstr ""
+"Amazon MP3 Store nabízí různé zboží v závislosti na Vašem regionu. Vyberte "
+"prosím zemi, ve které se nalézáte. Vězte, že změna regionu zneplatní Váš "
+"nákupní košík. Země, které nejsou v tomto seznamu zatím nejsou obchodem "
+"podporovány, pouze obyvatelé zemí ze seznamu mohou mohou nakupovat v obchodu "
+"Amazon."
 
 #. i18n: file: services/amazon/AmazonConfigWidget.ui:100
 #. i18n: ectx: property (text), item, widget (QComboBox, countrySelectionComboBox)
@@ -5523,7 +5494,7 @@ msgstr "Francie"
 #. i18n: ectx: property (text), item, widget (QComboBox, countrySelectionComboBox)
 #: rc.cpp:2639
 msgid "Austria, Germany, Switzerland"
-msgstr ""
+msgstr "Rakousko, Německo, Švýcarsko"
 
 #. i18n: file: services/amazon/AmazonConfigWidget.ui:110
 #. i18n: ectx: property (text), item, widget (QComboBox, countrySelectionComboBox)
@@ -5547,7 +5518,7 @@ msgstr "Spojené státy"
 #. i18n: ectx: property (text), item, widget (QComboBox, countrySelectionComboBox)
 #: rc.cpp:2651
 msgid "none of the above (store won't work)"
-msgstr ""
+msgstr "žádná z výše uvedených (obchod nebude fungovat)"
 
 #. i18n: file: transcoding/TranscodingAssistantDialog.ui:89
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
@@ -5559,7 +5530,7 @@ msgstr "Převést"
 #. i18n: ectx: property (text), widget (QCheckBox, rememberCheckBox)
 #: rc.cpp:2657
 msgid "Remember this choice for the next time"
-msgstr ""
+msgstr "Zapamatovat si tuto volbu pro příště."
 
 #. i18n: tag layout attribute name
 #. i18n: file: data/DefaultPlaylistLayouts.xml:3
@@ -5667,10 +5638,8 @@ msgstr "Nyní přehrávám"
 
 #: scanner/GenericScanManager.cpp:203
 #: core-impl/collections/db/ScanManager.cpp:486
-#, fuzzy
-#| msgid "Amarok Applet Manager"
 msgid "Unable to start Amarok collection scanner."
-msgstr "Správce appletů Amaroku"
+msgstr "Nelze spustit prohledávač sbírky Amaroku."
 
 #: scanner/GenericScanManager.cpp:300
 #: core-impl/collections/db/ScanManager.cpp:535
@@ -5685,7 +5654,7 @@ msgstr[2] "Nalezeno %1 adresářů"
 #: core-impl/collections/db/ScanManager.cpp:546
 #, kde-format
 msgid "Got directory \"%1\" from scanner."
-msgstr ""
+msgstr "Mám složku \"%1\" z prohledávače."
 
 #: main.cpp:44
 msgid "The audio player for KDE"
@@ -5784,7 +5753,7 @@ msgstr "Vývojář (nhn)"
 
 #: main.cpp:82
 msgid "Ralf 'SalsaMaster' Engels"
-msgstr ""
+msgstr "Ralf 'SalsaMaster' Engels"
 
 #: main.cpp:83
 msgid "Developer (rengels)"
@@ -5990,11 +5959,11 @@ msgstr "Vývojář (MaskMaster)"
 
 #: main.cpp:146
 msgid "Matěj Laitl"
-msgstr ""
+msgstr "Matěj Laitl"
 
 #: main.cpp:146
 msgid "iPod collection rewrite & more"
-msgstr ""
+msgstr "Přepsání sbírky pro iPod a více"
 
 #: main.cpp:148
 msgid "Mathias Panzenböck"
@@ -6054,11 +6023,11 @@ msgstr "Rokymoter (emunkki)"
 
 #: main.cpp:164
 msgid "Patrick von Reth"
-msgstr ""
+msgstr "Patrick von Reth"
 
 #: main.cpp:164
 msgid "Windows build (TheOneRing)"
-msgstr ""
+msgstr "Sestavení pro Windows (TheOneRing)"
 
 #: main.cpp:166
 msgid "Peter Zhou Lei"
@@ -6549,11 +6518,11 @@ msgstr "Navštívit přispěvatelův profil na StackOverflow"
 msgid "Unable to parse avatar image data."
 msgstr "Nelze analyzovat obrazová data avataru."
 
-#: EngineController.cpp:844
+#: EngineController.cpp:837
 msgid "Preamp"
 msgstr "Předzesílení"
 
-#: EngineController.cpp:850
+#: EngineController.cpp:843
 msgid ""
 "%0\n"
 "Hz"
@@ -6561,7 +6530,7 @@ msgstr ""
 "%0\n"
 "Hz"
 
-#: EngineController.cpp:854
+#: EngineController.cpp:847
 msgid ""
 "%0\n"
 "kHz"
@@ -6569,41 +6538,41 @@ msgstr ""
 "%0\n"
 "kHz"
 
-#: EngineController.cpp:1156
+#: EngineController.cpp:1158
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "V seznamu skladeb je příliš mnoho chyb. Přehrávání bylo zastaveno."
 
-#: EngineController.cpp:1377
+#: EngineController.cpp:1368
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> od <b>%2</b> na <b>%3</b>"
 
-#: EngineController.cpp:1379
+#: EngineController.cpp:1370
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> od <b>%2</b>"
 
-#: EngineController.cpp:1382
+#: EngineController.cpp:1373
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> na <b>%2</b>"
 
-#: EngineController.cpp:1387
+#: EngineController.cpp:1378
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:203
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:95
 msgid "Unknown track"
 msgstr "Neznámá skladba"
 
-#: EngineController.cpp:1394
+#: EngineController.cpp:1385
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
 msgstr "od <b>%1</b>"
 
-#: EngineController.cpp:1409 context/engines/current/CurrentEngine.cpp:136
+#: EngineController.cpp:1400 context/engines/current/CurrentEngine.cpp:136
 #: mac/GrowlInterface.cpp:43 widgets/Osd.cpp:651
 msgid "No track playing"
 msgstr "Nepřehrává se žádná skladba"
@@ -6650,8 +6619,7 @@ msgid "Group"
 msgstr "Seskupit"
 
 #: amarokurls/BookmarkModel.cpp:266
-#: browsers/playlistbrowser/PodcastModel.cpp:333
-#: playlist/PlaylistModel.cpp:904
+#: browsers/playlistbrowser/PodcastModel.cpp:333 playlist/PlaylistModel.cpp:904
 msgid "Type"
 msgstr "Typ"
 
@@ -6968,8 +6936,8 @@ msgid ""
 "of whether these files are part of your local collection. You can then add "
 "these files to the playlist as well as perform basic file operations."
 msgstr ""
-"Prohlížeč souborů vám umožňuje procházet soubory na všech místech vašeho "
-"systému bez ohledu na to, zda jsou tyto soubory částí vaší místní sbírky. "
+"Prohlížeč souborů Vám umožňuje procházet soubory na všech místech Vašeho "
+"systému bez ohledu na to, zda jsou tyto soubory částí Vaší místní sbírky. "
 "Tyto soubory poté můžete přidat na seznam skladeb a stejně tak můžete "
 "provádět i základní operace se soubory."
 
@@ -7016,9 +6984,9 @@ msgstr "Potvrzení smazání"
 #, kde-format
 msgid "Are you sure you want to delete this item?"
 msgid_plural "Are you sure you want to delete these %1 items?"
-msgstr[0] "Opravdu chcete smazat tuto položku?"
-msgstr[1] "Opravdu chcete smazat tyto %1 položky?"
-msgstr[2] "Opravdu chcete smazat těchto %1 položek?"
+msgstr[0] "Opravdu si přejete smazat tuto položku?"
+msgstr[1] "Opravdu si přejete smazat tyto %1 položky?"
+msgstr[2] "Opravdu si přejete smazat těchto %1 položek?"
 
 #: browsers/filebrowser/FileView.cpp:545
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:53
@@ -7030,9 +6998,9 @@ msgstr "Potvrdit přesun do koše"
 #, kde-format
 msgid "Are you sure you want to move this item to trash?"
 msgid_plural "Are you sure you want to move these %1 items to trash?"
-msgstr[0] "Opravdu chcete přesunout tuto položku do koše?"
-msgstr[1] "Opravdu chcete přesunout %1 tyto položky do koše?"
-msgstr[2] "Opravdu chcete přesunout %1 tyto položky do koše?"
+msgstr[0] "Opravdu si přejete přesunout tuto položku do koše?"
+msgstr[1] "Opravdu si přejete přesunout %1 tyto položky do koše?"
+msgstr[2] "Opravdu si přejete přesunout %1 tyto položky do koše?"
 
 #: browsers/filebrowser/FileView.cpp:580
 #, kde-format
@@ -7073,7 +7041,7 @@ msgstr "Potvrdit odstranění"
 
 #: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:335
 msgid "Are you sure you want to delete this folder and its contents?"
-msgstr "Opravdu chcete smazat tuto složku a její obsah?"
+msgstr "Opravdu si přejete smazat tuto složku a její obsah?"
 
 #: browsers/playlistbrowser/PlaylistsInFoldersProxy.cpp:339
 msgid "Yes, delete folder."
@@ -7155,11 +7123,9 @@ msgid "Source"
 msgstr "Zdroj"
 
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:43
-#, fuzzy
-#| msgid "Edit &case"
 msgctxt "Bias dialog window title"
 msgid "Edit bias"
-msgstr "Upravovat &velikost písmen"
+msgstr "Upravit zkreslení"
 
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:47
 msgctxt "Bias selection label in bias view."
@@ -7173,10 +7139,12 @@ msgid ""
 "which is currently not loaded or deactivated.\n"
 "The original bias name was %1."
 msgstr ""
+"Toto zkreslení nahrazuje jiné zkreslení, kterév tuto chvíli není načtené "
+"nebo je vypnuté. Název původního zkreslení bylo %1."
 
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:178
 msgid "This bias has no settings."
-msgstr ""
+msgstr "Toto zkreslení se nijak nenastavuje."
 
 #: browsers/playlistbrowser/DynamicView.cpp:231
 msgid "&Rename playlist"
@@ -7195,20 +7163,16 @@ msgid "&Delete playlist"
 msgstr "Smazat seznam skla&deb"
 
 #: browsers/playlistbrowser/DynamicView.cpp:257
-#, fuzzy
-#| msgid "&Add Media..."
 msgid "&Edit bias..."
-msgstr "Přid&at média..."
+msgstr "&Upravit zkreslení..."
 
 #: browsers/playlistbrowser/DynamicView.cpp:261
 msgid "&Clone bias"
-msgstr ""
+msgstr "&Duplikovat zkreslení"
 
 #: browsers/playlistbrowser/DynamicView.cpp:271
-#, fuzzy
-#| msgid "Delete Files"
 msgid "&Delete bias"
-msgstr "Smazat soubory"
+msgstr "&Smazat zkreslení"
 
 #: browsers/playlistbrowser/DynamicView.cpp:278
 msgid "&Add new bias"
@@ -7220,9 +7184,9 @@ msgid ""
 "is also where you can specify powerful dynamic playlists and manage your "
 "podcast subscriptions and episodes."
 msgstr ""
-"Prohlížeč seznamů skladeb obsahuje váš seznam importovaných a uložených "
+"Prohlížeč seznamů skladeb obsahuje Váš seznam importovaných a uložených "
 "seznamů skladeb. Můžete v něm také upřesnit výkonné dynamické seznamy "
-"skladeb a řídit vaše odběry podcastů a dílů."
+"skladeb a řídit Vaše odběry podcastů a dílů."
 
 #: browsers/playlistbrowser/UserPlaylistCategory.cpp:58
 msgid "Saved Playlists"
@@ -7240,7 +7204,7 @@ msgid ""
 msgstr ""
 "Vytvořte, upravte, organizujte a nahrávejte seznamy skladeb. Amarok "
 "automaticky přidá kterýkoli seznam skladeb, který najde při prohledávání "
-"vaší sbírky, a všechny seznamy skladeb, jež uložíte, se zde taktéž ukáží."
+"Vaší sbírky, a všechny seznamy skladeb, jež uložíte, se zde taktéž ukáží."
 
 #: browsers/playlistbrowser/PlaylistBrowserCategory.cpp:77
 #: services/opmldirectory/OpmlDirectoryModel.cpp:44
@@ -7273,7 +7237,7 @@ msgid ""
 "With a dynamic playlist, Amarok becomes your own personal dj, automatically "
 "selecting tracks for you, based on a number of parameters that you select."
 msgstr ""
-"Díky dynamickému seznamu skladeb se z Amaroku stane váš osobní dj, který vám "
+"Díky dynamickému seznamu skladeb se z Amaroku stane Váš osobní DJ, který Vám "
 "bude automaticky vybírat skladby podle řady parametrů, které zvolíte."
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:72
@@ -7323,20 +7287,16 @@ msgid "Edit"
 msgstr "Upravit"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:131
-#, fuzzy
-#| msgid "Export the selected preset"
 msgid "Edit the selected playlist or bias"
-msgstr "Exportovat zvolené přednastavení"
+msgstr "Upravit vybraný seznam skladeb nebo zkreslení"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:135
 msgid "Delete"
 msgstr "Smazat"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:138
-#, fuzzy
-#| msgid "Delete selected preset"
 msgid "Delete the selected playlist or bias"
-msgstr "Smazat zvolené přednastavení"
+msgstr "Smazat vybraný seznam skladeb nebo zkreslení"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:142
 msgid "Repopulate"
@@ -7356,7 +7316,7 @@ msgid ""
 "Downloading episodes to the disk is also done here, or you can tell Amarok "
 "to do this automatically."
 msgstr ""
-"Řízení vašich odběrů podcastů a procházení individuálními díly. Zde se též "
+"Řízení Vašich odběrů podcastů a procházení individuálními díly. Zde se též "
 "odehrává stahování epizod na disk, anebo můžete říci Amaroku, aby tak činil "
 "automaticky."
 
@@ -7426,7 +7386,7 @@ msgid ""
 "integrates directly into Amarok. Amarok ships with a number of these "
 "sources, but many more can be added using scripts."
 msgstr ""
-"Internetový prohlížeč vám umožňuje procházet online zdroje obsahu, který se "
+"Internetový prohlížeč Vám umožňuje procházet online zdroje obsahu, který se "
 "začleňuje přímo do Amaroku. Amarok je dodáván s množstvím těchto zdrojů, "
 "avšak mnoho dalších může být přidáno prostřednictvím skriptů."
 
@@ -7436,7 +7396,7 @@ msgstr "Sbírka"
 
 #: browsers/CollectionTreeView.cpp:303
 msgid "Press Shift key for move"
-msgstr ""
+msgstr "Stiskněte Shift pro přesun"
 
 #: browsers/CollectionTreeView.cpp:315
 msgid "Move Tracks to Trash"
@@ -7444,7 +7404,7 @@ msgstr "Přesunout skladby do koše"
 
 #: browsers/CollectionTreeView.cpp:319
 msgid "Press Shift key to delete"
-msgstr ""
+msgstr "Stiskněte Shift pro smazání"
 
 #: browsers/CollectionTreeView.cpp:326
 msgid "Delete Tracks"
@@ -7631,7 +7591,7 @@ msgstr "Disk %1"
 
 #: context/applets/albums/Albums.cpp:254
 msgid "Right align track lengths"
-msgstr ""
+msgstr "Zarovnat délky stop doprava"
 
 #: context/applets/albums/Albums.cpp:259
 msgid "Number of recently added albums:"
@@ -7754,16 +7714,12 @@ msgid "Reload"
 msgstr "Obnovit"
 
 #: context/applets/labels/LabelsApplet.cpp:196
-#, fuzzy
-#| msgid "No track playing"
 msgid "Labels: No track playing"
-msgstr "Nepřehrává se žádná skladba"
+msgstr "Štítky: nepřehrává se žádná hudba"
 
 #: context/applets/labels/LabelsApplet.cpp:518
-#, fuzzy
-#| msgid "Fetching ..."
 msgid "Labels: Fetching..."
-msgstr "Získává se..."
+msgstr "Štítky: stahuji..."
 
 #: context/applets/labels/LabelsApplet.cpp:528
 #, kde-format
@@ -7780,16 +7736,12 @@ msgid "General Settings"
 msgstr "Obecná nastavení"
 
 #: context/applets/labels/LabelsApplet.cpp:745
-#, fuzzy
-#| msgid "Labels Settings"
 msgid "Blacklist Settings"
-msgstr "Nastavení popisků"
+msgstr "Nastavení vyloučených štítků"
 
 #: context/applets/labels/LabelsApplet.cpp:746
-#, fuzzy
-#| msgid "Upcoming Events Settings"
 msgid "Replacement Settings"
-msgstr "Nastavení nadcházejících událostí"
+msgstr "Nastavení nahrazování"
 
 #: context/applets/lyrics/LyricsSuggestionsListWidget.cpp:90
 #, kde-format
@@ -7807,6 +7759,8 @@ msgid ""
 "While you were editing the lyrics of <b>%1 - %2</b> the track has changed. "
 "Do you want to save your changes?"
 msgstr ""
+"Zatímco jste upravovali text písně <b>%1 - %2</b> se skladba změnila. "
+"Přejete si uložit změny?"
 
 #: context/applets/lyrics/LyricsApplet.cpp:206
 #, kde-format
@@ -7814,6 +7768,8 @@ msgid ""
 "The lyrics of <b>%1 - %2</b> changed while you were editing them. Do you "
 "want to save your changes?"
 msgstr ""
+"Text písně <b>%1 - %2</b> se změnil zatímco jste jej upravovali. Přejete si "
+"uložit vaše změny?"
 
 #: context/applets/lyrics/LyricsApplet.cpp:459
 msgid "Edit Lyrics"
@@ -7863,7 +7819,7 @@ msgid ""
 "Do you really want to refetch lyrics for this track? All changes you may "
 "have made will be lost."
 msgstr ""
-"Opravdu chcete zopakovat získání textu písně pro tuto skladbu ? Všechny "
+"Opravdu si přejete zopakovat získání textu písně pro tuto skladbu ? Všechny "
 "změny, které jste dosud provedly, budou ztraceny."
 
 #: context/applets/photos/PhotosApplet.cpp:62
@@ -7871,10 +7827,8 @@ msgid "Photos"
 msgstr "Fotografie"
 
 #: context/applets/photos/PhotosApplet.cpp:117
-#, fuzzy
-#| msgid "No track playing"
 msgid "Photos: No Track Playing"
-msgstr "Nepřehrává se žádná skladba"
+msgstr "Fotky: nepřehrává se žádná skladba"
 
 #: context/applets/photos/PhotosApplet.cpp:132
 #, kde-format
@@ -7920,10 +7874,8 @@ msgid "Forward"
 msgstr "Vpřed"
 
 #: context/applets/similarartists/SimilarArtistsApplet.cpp:90
-#, fuzzy
-#| msgid "Similar Artists Settings"
 msgid "Show Similar Artists for Currently Playing Track"
-msgstr "Nastavení podobných umělců"
+msgstr "Zobrazit umělce podobné umělci právě přehrávané skladby"
 
 #: context/applets/similarartists/SimilarArtistsApplet.cpp:178
 msgid "Similar Artists Settings"
@@ -7949,10 +7901,8 @@ msgid "Add Last.fm artist station to the Playlist"
 msgstr "Přidat umělce z Last.fm do seznamu skladeb."
 
 #: context/applets/similarartists/ArtistWidget.cpp:142
-#, fuzzy
-#| msgid "Add last.fm artist station to the Playlist"
 msgid "Add top track to the Playlist"
-msgstr "Přidat umělce z last.fm do seznamu skladeb."
+msgstr "Přidat nejlepší skladbu do seznamu skladeb"
 
 #: context/applets/similarartists/ArtistWidget.cpp:149
 #, kde-format
@@ -8028,57 +7978,49 @@ msgstr "Žádné Informace o této skladbě nebyly nalezeny"
 
 #: context/applets/tabs/TabsView.cpp:174
 msgid "tab provided from: "
-msgstr ""
+msgstr "tabulatura poskytnuta z: "
 
 #: context/applets/tabs/TabsApplet.cpp:79
 #: context/applets/tabs/TabsApplet.cpp:129
 #: context/applets/tabs/TabsApplet.cpp:146
-#, fuzzy
 msgctxt "Guitar tablature"
 msgid "Tabs"
-msgstr "Karty"
+msgstr "Tabulatura"
 
 #: context/applets/tabs/TabsApplet.cpp:95
-#, fuzzy
 msgctxt "Guitar tablature"
 msgid "Reload tabs"
-msgstr "Znovu načíst karty"
+msgstr "Obnovit tabulaturu"
 
 #: context/applets/tabs/TabsApplet.cpp:158
-#, fuzzy
-#| msgid "Fetching ..."
 msgid "Tabs: Fetching..."
-msgstr "Získává se..."
+msgstr "Tabulatura: stahuji..."
 
 #: context/applets/tabs/TabsApplet.cpp:170
-#, fuzzy, kde-format
-#| msgid "Labels for %1 - %2"
+#, kde-format
 msgctxt "Guitar tablature"
 msgid "No Tabs for %1 by %2"
-msgstr "Popisky pro %1 - %2"
+msgstr "Žádná tabulatura pro %1 od umělce %2"
 
 #: context/applets/tabs/TabsApplet.cpp:176
-#, fuzzy
 msgctxt "Guitar tablature"
 msgid "Tabs: Fetch Error"
-msgstr "Chyba ve stahování karet"
+msgstr "Tabulatura: chyba stahování"
 
 #: context/applets/tabs/TabsApplet.cpp:201
-#, fuzzy, kde-format
+#, kde-format
 msgctxt "Guitar tablature"
 msgid "Tabs: %1 - %2"
-msgstr "Karty: %1 - %2"
+msgstr "Tabulatura: %1 - %2"
 
 #: context/applets/tabs/TabsApplet.cpp:266
-#, fuzzy
 msgctxt "Guitar tablature settings"
 msgid "Tabs Settings"
-msgstr "Nastavení karet"
+msgstr "Nastavení tabulatury"
 
 #: context/applets/tabs/TabsApplet.cpp:309
-#, fuzzy
 msgid "Reload Tabs"
-msgstr "Znovu načíst karty"
+msgstr "Obnovit tabulaturu"
 
 #: context/applets/upcomingevents/UpcomingEventsCalendarWidget.cpp:160
 msgctxt "@info:tooltip Calendar action"
@@ -8117,18 +8059,14 @@ msgid "Open Last.fm webpage for this event"
 msgstr "Otevřít pro tuto událost webové stránky Last.fm"
 
 #: context/applets/upcomingevents/UpcomingEventsWidget.cpp:95
-#, fuzzy
-#| msgid "Proportion:"
 msgctxt "@label:textbox Supporing acts for an event"
 msgid "Supporting:"
-msgstr "Část:"
+msgstr "Předkapely:"
 
 #: context/applets/upcomingevents/UpcomingEventsWidget.cpp:96
-#, fuzzy
-#| msgid "Genre:"
 msgctxt "@label:textbox"
 msgid "Venue:"
-msgstr "Žánr:"
+msgstr "Místo konání:"
 
 #: context/applets/upcomingevents/UpcomingEventsWidget.cpp:97
 msgctxt "@label:textbox"
@@ -8141,11 +8079,9 @@ msgid "Date:"
 msgstr "Datum:"
 
 #: context/applets/upcomingevents/UpcomingEventsWidget.cpp:99
-#, fuzzy
-#| msgid "Ascending"
 msgctxt "@label:textbox"
 msgid "Attending:"
-msgstr "Vzestupně"
+msgstr "Účastníci:"
 
 #: context/applets/upcomingevents/UpcomingEventsWidget.cpp:100
 msgctxt "@label:textbox"
@@ -8162,7 +8098,7 @@ msgstr "<strong>Značky:</strong><nl/>%1"
 #, kde-format
 msgctxt "@info:tooltip Supporting artists for an event"
 msgid "<strong>Supporting artists:</strong><nl/>%1"
-msgstr ""
+msgstr "<strong>Předkapely:</strong><nl/>%1"
 
 #: context/applets/upcomingevents/UpcomingEventsWidget.cpp:254
 #, kde-format
@@ -8195,10 +8131,8 @@ msgstr "Nepřehrává se žádná skladba"
 
 #: context/applets/upcomingevents/UpcomingEventsApplet.cpp:158
 #: context/applets/upcomingevents/UpcomingEventsApplet.cpp:303
-#, fuzzy
-#| msgid "Favorite music: "
 msgid "Favorite Venues"
-msgstr "Oblíbená hudba: "
+msgstr "Oblíbená místa konání"
 
 #: context/applets/upcomingevents/UpcomingEventsApplet.cpp:224
 msgid "No upcoming events"
@@ -8247,11 +8181,9 @@ msgid "Events Calendar"
 msgstr "Kalendář událostí"
 
 #: context/applets/upcomingevents/UpcomingEventsApplet.cpp:638
-#, fuzzy
-#| msgid "Favorite music: "
 msgctxt "@title:group"
 msgid "Favorite Venues"
-msgstr "Oblíbená hudba: "
+msgstr "Oblíbená místa konání"
 
 #: context/applets/wikipedia/WikipediaApplet.cpp:357
 #: context/applets/wikipedia/WikipediaApplet.cpp:433
@@ -8289,31 +8221,31 @@ msgstr "Nastavení jazyka Wikipedie"
 
 #: context/applets/spectrumanalyzer/SpectrumAnalyzerApplet.cpp:48
 msgid "Your system has no OpenGL support"
-msgstr ""
+msgstr "Váš systém nepodporuje OpenGL"
 
 #: context/applets/spectrumanalyzer/SpectrumAnalyzerApplet.cpp:64
 msgid "Could not create an OpenGL rendering context."
-msgstr ""
+msgstr "Nelze vytvořit kontext OpenGL vykreslování."
 
 #: context/applets/spectrumanalyzer/SpectrumAnalyzerApplet.cpp:68
 msgid "Your system has no sample buffer support."
-msgstr ""
+msgstr "Váš systém nepodporuje OpenGL \"sample buffer\"."
 
 #: context/applets/spectrumanalyzer/SpectrumAnalyzerApplet.cpp:72
 msgid "Your system has no stencil buffer support."
-msgstr ""
+msgstr "Váš systém nepodporuje OpenGL \"stencil buffer\"."
 
 #: context/applets/spectrumanalyzer/SpectrumAnalyzerApplet.cpp:76
 msgid "Your system has no double buffer support."
-msgstr ""
+msgstr "Váš systém nepodporuje OpenGL \"double buffer\"."
 
 #: context/applets/spectrumanalyzer/SpectrumAnalyzerApplet.cpp:80
 msgid "Your system has no accumulation buffer support."
-msgstr ""
+msgstr "Váš systém nepodporuje OpenGL \"accumulation buffer\"."
 
 #: context/applets/spectrumanalyzer/SpectrumAnalyzerApplet.cpp:84
 msgid "Your system has no direct rendering support."
-msgstr ""
+msgstr "Váš systém nepodporuje přímé vykreslování."
 
 #: context/applets/spectrumanalyzer/SpectrumAnalyzerApplet.cpp:138
 msgid "Spectrum-Analyzer"
@@ -8329,7 +8261,7 @@ msgstr "Celá obrazovka"
 
 #: context/applets/spectrumanalyzer/SpectrumAnalyzerApplet.cpp:184
 msgid "Power"
-msgstr ""
+msgstr "Výkon"
 
 #: context/applets/spectrumanalyzer/SpectrumAnalyzerApplet.cpp:193
 msgid "Switch Mode"
@@ -8660,7 +8592,7 @@ msgid ""
 "mobile players support the Ogg Vorbis format."
 msgstr ""
 "Ogg Vorbis je zcela svobodný a volný kompresní audio formát, který je "
-"dokonale vhodný pro ukládání vaší zkomprimované hudby na vašem počítače. Při "
+"dokonale vhodný pro ukládání Vaší zkomprimované hudby na Vašem počítače. Při "
 "tom samém datovém toku je kvalita zvuku mírně lepší než MP3. Mějte na "
 "paměti, že ne všechna přenosná zařízení formát Ogg Vorbis podporují."
 
@@ -8674,7 +8606,7 @@ msgstr ""
 "Flac je bezeztrátový kompresní audio formát, který je prostý jakýchkoli "
 "patentů nebo licenčních poplatků. Udržuje dokonalou CD audio kvalitu a "
 "zároveň zmenšuje velikost souborů o asi 50 %. Protože je velikost souborů "
-"mnohem větší, než je tomu u Ogg Vorbis nebo MP3, nedoporučuje se vám hudbu "
+"mnohem větší, než je tomu u Ogg Vorbis nebo MP3, nedoporučuje se Vám hudbu "
 "přenášet do přenosného přehrávače."
 
 #: core-impl/collections/audiocd/FormatSelectionDialog.cpp:74
@@ -8719,6 +8651,8 @@ msgid ""
 "Updating Amarok database schema. Please don't terminate Amarok now as it may "
 "result in database corruption."
 msgstr ""
+"Aktualizuje se databázové schéma Amaroku. Neukončujte prosím Amarok, protože "
+"by to mohlo vyústit v poškození databáze."
 
 #: core-impl/collections/db/sql/SqlCollection.cpp:168
 msgid "Updating Amarok database schema"
@@ -8779,8 +8713,8 @@ msgid ""
 "Scanning may not work correctly.</p>"
 msgstr ""
 "<p>Verze nástroje 'amarokcollectionscanner'\n"
-"neodpovídá vaší verzi Amaroku.</p><p>Vezměte prosím na vědomí, že "
-"prohledávání vaší kolekce nemusí pracovat správně.</p>"
+"neodpovídá Vaší verzi Amaroku.</p><p>Vezměte prosím na vědomí, že "
+"prohledávání Vaší sbírky nemusí pracovat správně.</p>"
 
 #: core-impl/collections/db/ScanManager.cpp:329
 #, kde-format
@@ -8790,11 +8724,15 @@ msgid ""
 "In most cases this means that not all of your tracks were imported.\n"
 "Further errors will only be reported on the console."
 msgstr ""
+"Prohledávač sbírky hlásí následující chyby:\n"
+"%1\n"
+"Ve většině případů to znamená, že některé vaše skladby nebyly načteny.\n"
+"Další chyby budou hlášeny pouze v ladícím výstupu."
 
 #: core-impl/collections/db/ScanManager.cpp:478
 #, kde-format
 msgid "Failed to write scanner batch file \"%1\""
-msgstr ""
+msgstr "Zápis do dávkového souboru prohledávače \"%1\" selhal"
 
 #: core-impl/collections/db/ScanManager.cpp:589
 #, kde-format
@@ -8814,64 +8752,58 @@ msgstr ""
 "mnoho chyb."
 
 #: core-impl/collections/ipodcollection/jobs/IpodDeleteTracksJob.cpp:40
-#, fuzzy, kde-format
-#| msgid "Removing one track from %2"
-#| msgid_plural "Removing %1 tracks from %2"
+#, kde-format
 msgid "Removing one track from iPod"
 msgid_plural "Removing %1 tracks from iPod"
-msgstr[0] "Odstraňuje se 1 skladba z %2"
-msgstr[1] "Odstraňují se %1 skladby z %2"
-msgstr[2] "Odstraňuje se %1 skladeb z %2"
+msgstr[0] "Odstraňuje se jedna skladba z iPodu."
+msgstr[1] "Odstraňují se %1 skladby z iPodu"
+msgstr[2] "Odstraňuje se %1 skladeb z iPodu"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:217
-#, fuzzy, kde-format
-#| msgid "Moving one track to %2"
-#| msgid_plural "Moving %1 tracks to %2"
+#, kde-format
 msgctxt "%2 is collection name"
 msgid "Transferred one track to %2."
 msgid_plural "Transferred %1 tracks to %2."
-msgstr[0] "Přesunuje se 1 skladba do %2"
-msgstr[1] "Přesunují se %1 skladby do %2"
-msgstr[2] "Přesunuje se %1 skladeb do %2"
+msgstr[0] "Přenesena jedna skladba do sbírky %2."
+msgstr[1] "Přeneseny %1 skladby do sbírky %2."
+msgstr[2] "Přeneseno %1 skladeb do sbírky %2."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:220
-#, fuzzy, kde-format
-#| msgid "Transcode and move tracks"
+#, kde-format
 msgctxt "%2 is collection name"
 msgid "Transcoded one track to %2."
 msgid_plural "Transcoded %1 tracks to %2."
-msgstr[0] "Převést a přesunout skladby"
-msgstr[1] "Převést a přesunout skladby"
-msgstr[2] "Převést a přesunout skladby"
+msgstr[0] "Převedena jedna skladba do %2."
+msgstr[1] "Převedeny %1 skladby do %2."
+msgstr[2] "Převedeno %1 skladeb do %2."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:229
 #, kde-format
 msgid "Transfer aborted. Managed to transfer one track."
 msgid_plural "Transfer aborted. Managed to transfer %1 tracks."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Přenos přerušen. Povedlo se přenést jednu skladbu."
+msgstr[1] "Přenos přerušen. Povedlo se přenést %1 skladby."
+msgstr[2] "Přenos přerušen. Povedlo se přenést %1 skladeb."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:237
 #, kde-format
 msgctxt "%2 is the 'Transferred 123 tracks to Some collection.' message"
 msgid "%2 One track was already there."
 msgid_plural "%2 %1 tracks were already there."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "%2 Jedna skladba už tam byla."
+msgstr[1] "%2 %1 skladby už tam byly."
+msgstr[2] "%2 %1 skladeb už tam bylo."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:338
 #: core-impl/collections/ipodcollection/IpodCollectionLocation.cpp:52
 msgid "Disconnected iPod/iPad/iPhone"
-msgstr ""
+msgstr "Odpojený iPod/iPad/iPhone"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:340
-#, fuzzy, kde-format
-#| msgid "Transferring Tracks to Device"
+#, kde-format
 msgctxt "%1 is collection pretty name, e.g. My Little iPod"
 msgid "Transferred Tracks to %1"
-msgstr "Skladby se přenášejí na zařízení"
+msgstr "Skladby přeneseny do sbírky %1"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:343
 #, kde-format
@@ -8880,15 +8812,15 @@ msgid ""
 msgid_plural ""
 "%1 tracks successfully transferred, but transfer of some other tracks failed."
 msgstr[0] ""
+"Jedna skladba byla úspěšně přenesena, ale přenos ostatních skladeb selhal."
 msgstr[1] ""
+"%1 skladby byly úspěšně přeneseny, ale přenos ostatních skladeb selhal."
 msgstr[2] ""
+"%1 skladeb bylo úspěšně přeneseno, ale přenos ostatních skladeb selhal."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:347
-#, fuzzy
-#| msgid "Moving one track to %2"
-#| msgid_plural "Moving %1 tracks to %2"
 msgid "Transfer of tracks failed."
-msgstr "Přesunuje se 1 skladba do %2"
+msgstr "Přenos skladeb selhal."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:352
 #, kde-format
@@ -8897,14 +8829,19 @@ msgid ""
 msgid_plural ""
 "%1 tracks were not transferred because it would exceed iPod capacity.<br>"
 msgstr[0] ""
+"Jedna skladba nebyla přenesena, protože by byla překročena kapacita iPodu."
+"<br>"
 msgstr[1] ""
+"%1 skladby nebyly přeneseny, protože by byla překročena kapacita iPodu.<br>"
 msgstr[2] ""
+"%1 skladeb nebylo přenesených, protože by byla překročena kapacita iPodu.<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:358
 #, kde-format
 msgctxt "Example of %1 would be: 20.0 MiB"
 msgid "<i>Amarok reserves %1 on iPod for iTunes database writing.</i><br>"
 msgstr ""
+"<i>Amarok vyhrazuje %1 na iPodu pro zapisování iTunes databáze.</i><br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:365
 #, kde-format
@@ -8915,55 +8852,54 @@ msgid_plural ""
 "%1 tracks were not copied because they wouldn't be playable - they are in "
 "unsupported formats (%2).<br>"
 msgstr[0] ""
+"Jedna skladba nebyla zkopírována, protože by nemohla být přehrána - její %2 "
+"formát není podporován.<br>"
 msgstr[1] ""
+"%1 skladby nebyly zkopírovány, protože by nemohly být přehrány - mají "
+"nepodporované formáty (%2).<br>"
 msgstr[2] ""
+"%1 skladeb nebylo zkopírováno, protože by nemohlo být přehráno - mají "
+"nepodporované formáty (%2).<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:374
-#, fuzzy, kde-format
-#| msgid "The playlist file \"%1\" could not be loaded."
+#, kde-format
 msgid "One file could not be copied.<br>"
 msgid_plural "%1 files could not be copied.<br>"
-msgstr[0] "Soubor se seznamem skladeb \"%1\" nelze načíst."
-msgstr[1] "Soubor se seznamem skladeb \"%1\" nelze načíst."
-msgstr[2] "Soubor se seznamem skladeb \"%1\" nelze načíst."
+msgstr[0] "Jeden soubor nelze zkopírovat.<br>"
+msgstr[1] "%1 soubory nelze zkopírovat.<br>"
+msgstr[2] "%1 souborů nelze zkopírovat.<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:380
 #, kde-format
 msgid "One track was not transferred due to an internal Amarok error.<br>"
 msgid_plural ""
 "%1 tracks were not transferred due to an internal Amarok error.<br>"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Jedna skladba nebyla přenesena z důvodu vnitřní chyby Amaroku.<br>"
+msgstr[1] "%1 skladby nebyly přeneseny z důvodu vnitřní chyby Amaroku.<br>"
+msgstr[2] "%1 skladeb nebylo přenesených z důvodu vnitřní chyby Amaroku.<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:383
 msgid "<i>You can find details in Amarok debugging output.</i><br>"
-msgstr ""
+msgstr "<i>Detaily najdete v ladícím výstupu Amaroku.</i><br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:388
 msgid "The rest was not transferred because iPod collection disappeared.<br>"
-msgstr ""
+msgstr "Zbytek nebyl přenesen, protože iPod sbírka zmizela.<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:51
-#, fuzzy
-#| msgid "Moving tracks"
 msgctxt "operation when iPod is connected"
 msgid "Reading iPod tracks"
-msgstr "Skladby se přesunují"
+msgstr "Načítání skladeb z iPodu"
 
 #: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:95
-#, fuzzy
-#| msgid "Stale Tracks"
 msgctxt "iPod playlist name"
 msgid "Stale tracks"
-msgstr "Staré skladby"
+msgstr "Nadbytečné záznamy"
 
 #: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:104
-#, fuzzy
-#| msgid "Find Orphaned Tracks"
 msgctxt "iPod playlist name"
 msgid "Orphaned tracks"
-msgstr "Nalézt osiřelé skladby"
+msgstr "Osiřelé skladby"
 
 #: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:124
 #, kde-format
@@ -8972,15 +8908,18 @@ msgid ""
 "using the <b>%2</b> collection action. You can also view the tracks under "
 "the Saved Playlists tab."
 msgstr ""
+"Osiřelé skladby anebo nadbytečné záznamy zjištěny na %1. Situaci můžete "
+"vyřešit pomocí akce sbírka <b>%2</b>. Můžete si také prohlédnout zmínění "
+"skladby v kartě Uložené seznamy skladeb."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:45
 msgid "Cannot parse iTunes database due to an unreported error."
-msgstr ""
+msgstr "Nelze zpracovat iTunes databázi, došlo k neznámé chybě."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:54
 msgctxt "iPod model that is not (yet) recognized"
 msgid "Unrecognized model"
-msgstr ""
+msgstr "Nerozpoznaný model"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:57
 #, kde-format
@@ -8988,30 +8927,32 @@ msgctxt ""
 "Name of the iPod collection; %1 is iPod name, %2 is iPod model; example: My "
 "iPod: Nano (Blue)"
 msgid "%1: %2"
-msgstr ""
+msgstr "%1: %2"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:66
 msgctxt "default iPod name (when user-set name is empty)"
 msgid "iPod"
-msgstr ""
+msgstr "iPod"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:211
-#, fuzzy
-#| msgid "iPod was not initialized:"
 msgid "iPod model was not recognized."
-msgstr "iPod nebyl inicializován:"
+msgstr "Model iPodu nebyl rozpoznán."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:223
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:235
 #, kde-format
 msgid "%1 family uses %2 file to generate correct database checksum."
 msgstr ""
+"Rodina %1 používá soubor %2 k vytvoření správného kontrolního součtu "
+"databáze."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:225
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:237
 #, kde-format
 msgid "%1 family needs %2 file to generate correct database checksum!"
 msgstr ""
+"Rodina %1 potřebuje soubor %2 k vytvoření správného kontrolního součtu "
+"databáze."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:245
 #, kde-format
@@ -9021,17 +8962,20 @@ msgid ""
 "libgpod (as of version 0.8.2) doesn't know how to compute it, but tries to "
 "dynamically load external library libhashab.so to do it."
 msgstr ""
+"Rodina %1 pravděpodobně používá hash-AB k vytvoření správného kontrolního "
+"součtu databáze. libgpod (k verzi 0.8.2) ho neumí spočítat, ale pokusí se "
+"načíst dynamickou sdílenou knihovnu libhashab.so pro jeho spočítání."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:259
 #, kde-format
 msgid "Autodetect (%1 file(s) present)"
-msgstr ""
+msgstr "Automaticky detekovat (soubor %1 je přítomen)"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:283
 #, kde-format
 msgctxt ""
-"Examples: %1: Nano with camera (5th Gen.); [generation]%2: 16 GiB; "
-"[capacity]%3: Nano (Orange); [model name]%4: A123 [model number]"
+"Examples: %1: Nano with camera (5th Gen.); [generation]%2: 16 GiB; [capacity]"
+"%3: Nano (Orange); [model name]%4: A123 [model number]"
 msgid "%1: %2 %3 [%4]"
 msgstr "%1: %2 %3 [%4]"
 
@@ -9051,24 +8995,19 @@ msgid "Not supported"
 msgstr "Nepodporováno"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:302
-#, fuzzy
-#| msgid "Presets:"
 msgctxt "In a dialog: Some file: Present"
 msgid "Present"
-msgstr "Přednastavení:"
+msgstr "Přítomen"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:303
 msgctxt "In a dialog: Some file: Not found"
 msgid "<b>Not found</b>"
-msgstr ""
+msgstr "<b>Nenalezen</b>"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:304
-#, fuzzy
-#| msgctxt "The quality of music"
-#| msgid "Not rated"
 msgctxt "In a dialog: Some file: Not needed"
 msgid "Not needed"
-msgstr "Nehodnoceno"
+msgstr "Není třeba"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:347
 #, kde-format
@@ -9079,6 +9018,10 @@ msgid ""
 "the device point of view)<br>See <a href='%2'>README.overview</a> file from "
 "libgpod source repository for more information."
 msgstr ""
+"<b>%1</b><br><br>Jako bezpečnostní opatření Amarok <i>nedovolí provádět "
+"žádné zápisy</i> na iPod. (jakákoliv změna iTunes databáze by mohla "
+"způsobit, že bude vypadat prázdná)<br>Viz soubor <a href='%2'>README."
+"overview</a> ze zdrojového repositáře projektu libgpod."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:369
 #, kde-format
@@ -9089,31 +9032,30 @@ msgid ""
 "track and photo database</b>, however it should not delete any tracks. The "
 "tracks will become orphaned."
 msgstr ""
+"<b>%1</b><br><br>Výše zmíněný problém brání Amaroku v používání iPodu. "
+"Můžete zkusit obnovit důležité soubory a složky iPodu (včetně iTunes "
+"databáze) pomocí tlačítka <b>%2</b> níže.<br><br> Inicializace iPodu "
+"<b>zničí databázi skladeb a fotek na iPodu</b>, neodstraní ovšem skladby "
+"samotné. Skladby se stanou osiřelými."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:431
 #, kde-format
 msgctxt "Do not translate SysInfo"
 msgid "Failed to write SysInfo: %1"
-msgstr ""
+msgstr "Zápis souboru SysInfo selhal: %1"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:436
-#, fuzzy
-#| msgid ""
-#| "%1 failed to write SysInfo file to iPod, make sure you have write "
-#| "permissions on the iPod"
 msgctxt "Do not translate SysInfo"
 msgid "Failed to write SysInfo file due to an unreported error"
-msgstr ""
-"%1 selhalo při zápisu souboru SysInfo do iPodu. Ujistěte se, že máte "
-"oprávnění k zápisu do iPodu"
+msgstr "Zápis souboru SysInfo selhal z neznámého důvodu."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:458
 msgid "Cannot initialize iPod due to an unreported error."
-msgstr ""
+msgstr "Inicializace iPodu selhala z neznámého důvodu."
 
 #: core-impl/collections/ipodcollection/support/IphoneMountPoint.cpp:56
 msgid "Connecting to iPhone, iPad or iPod touch failed."
-msgstr ""
+msgstr "Nepovedlo se připojit k iPhonu, iPadu nebo iPodu touch."
 
 #: core-impl/collections/ipodcollection/IpodPlaylistProvider.cpp:322
 #, kde-format
@@ -9124,8 +9066,12 @@ msgid_plural ""
 "Failed to process %1 tracks. (more info about these is in the Amarok "
 "debugging log)"
 msgstr[0] ""
+"Zpracování jedné skladby selhalo. (více informací naleznete v ladícím "
+"výstupu)"
 msgstr[1] ""
+"Zpracování %1 skladeb selhalo. (více informací naleznete v ladícím výstupu)"
 msgstr[2] ""
+"Zpracování %1 skladeb selhalo. (více informací naleznete v ladícím výstupu)"
 
 #: core-impl/collections/ipodcollection/IpodPlaylistProvider.cpp:327
 #, kde-format
@@ -9137,6 +9083,9 @@ msgid ""
 "database entries, %2 stale database entries removed, %3 orphaned tracks "
 "added back to the iTunes database. %4"
 msgstr ""
+"Konsolidace iPodu dokončena. %1 osiřelých skladeb bylo spojeno s "
+"nadbytečnými záznamy v iTunes databázi, %2 nadbytečných záznamů bylo smazáno "
+"z databáze, %3 osiřelých skladeb bylo přidáno zpět do iTunes databáze. %4"
 
 #: core-impl/collections/ipodcollection/IpodCollection.cpp:109
 #: core-impl/collections/umscollection/UmsCollection.cpp:238
@@ -9149,10 +9098,8 @@ msgid "&Eject Device"
 msgstr "Odpojit zaříz&ení"
 
 #: core-impl/collections/ipodcollection/IpodCollection.cpp:122
-#, fuzzy
-#| msgid "Transcode and organize tracks"
 msgid "Re-add orphaned and forget stale tracks"
-msgstr "Převést a uspořádat skladby"
+msgstr "Přidat osiřelé skladby zpět a smazat nadbytečné záznamy"
 
 #: core-impl/collections/ipodcollection/IpodCollection.cpp:462
 msgctxt "iPod was successfully initialized"
@@ -9163,19 +9110,19 @@ msgstr "Inicializace byla úspěšná"
 #, kde-format
 msgctxt "%1: iPod collection name"
 msgid "iTunes database successfully written to %1"
-msgstr ""
+msgstr "Databáze iTunes úspěšně zapsána na %1"
 
 #: core-impl/collections/ipodcollection/IpodCollection.cpp:691
 #, kde-format
 msgctxt "%1: iPod collection name"
 msgid "Writing iTunes database to %1 failed without an indication of error"
-msgstr ""
+msgstr "Zápis databáze iTunes na %1 selhal bez uvedení příčiny"
 
 #: core-impl/collections/ipodcollection/IpodCollection.cpp:695
 #, kde-format
 msgctxt "%1: iPod collection name, %2: technical error from libgpod"
 msgid "Writing iTunes database to %1 failed: %2"
-msgstr ""
+msgstr "Zápis databáze iTunes na %1 selhal: %2"
 
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:201
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:92
@@ -9287,7 +9234,7 @@ msgstr "Neznámý žánr"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:593
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:725
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:908
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:910
 msgid "Could not delete item"
 msgstr "Položku není možné smazat"
 
@@ -9295,7 +9242,7 @@ msgstr "Položku není možné smazat"
 msgid "Delete failed"
 msgstr "Mazání selhalo"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:881
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:883
 msgid "Could not save playlist."
 msgstr "Nelze uložit seznam skladeb."
 
@@ -9309,7 +9256,7 @@ msgstr "Sbírka Nepomuku (pomalé, používající Redland)"
 
 #: core-impl/collections/playdarcollection/PlaydarCollection.cpp:125
 msgid "Playdar Collection"
-msgstr "Kolekce Playdar"
+msgstr "Sbírka Playdar"
 
 #: core-impl/collections/proxycollection/ProxyCollection.cpp:53
 msgid "Proxy Collection"
@@ -9350,14 +9297,7 @@ msgid "Moving to trash: %1"
 msgstr "Přesunuji do koše: %1"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:36
-#, fuzzy, kde-format
-#| msgctxt "@info"
-#| msgid ""
-#| "Do you really want to delete this track? It will be removed from your "
-#| "collection."
-#| msgid_plural ""
-#| "Do you really want to delete these %1 tracks? They will be removed from "
-#| "your collection."
+#, kde-format
 msgctxt "@info"
 msgid ""
 "Do you really want to delete this track? It will be removed from %2 and from "
@@ -9366,13 +9306,14 @@ msgid_plural ""
 "Do you really want to delete these %1 tracks? They will be removed from %2 "
 "and from underlying storage medium."
 msgstr[0] ""
-"Opravdu chcete tuto skladbu smazat? Bude odstraněna z disku a z vaší sbírky."
+"Opravdu si přejete smazat tuto skladbu? Bude odebrána z %2 a smazána z "
+"média, na kterém se nalézá."
 msgstr[1] ""
-"Opravdu chcete tyto %1 skladby smazat? Budou odstraněny z disku a z vaší "
-"sbírky."
+"Opravdu si přejete smazat tyto %1 skladby? Budou odebrány z %2 a smazány z "
+"média, na kterém se nalézají."
 msgstr[2] ""
-"Opravdu chcete těchto %1 skladeb smazat? Budou odstraněny z disku a z vaší "
-"sbírky."
+"Opravdu si přejete smazat těchto %1 skladeb? Budou odebrány z %2 a smazány z "
+"média, na kterém se nalézají."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:49
 #, kde-format
@@ -9383,11 +9324,12 @@ msgid ""
 msgid_plural ""
 "Do you really want to move these %1 tracks to the trash? They will be "
 "removed from %2."
-msgstr[0] "Opravdu chcete tuto skladbu vyhodit do koše? Bude odstraněna z %2."
+msgstr[0] ""
+"Opravdu si přejete tuto skladbu vyhodit do koše? Bude odstraněna z %2."
 msgstr[1] ""
-"Opravdu chcete tyto %1 skladby vyhodit do koše? Budou odstraněny z %2."
+"Opravdu si přejete tyto %1 skladby vyhodit do koše? Budou odstraněny z %2."
 msgstr[2] ""
-"Opravdu chcete těchto %1 skladeb vyhodit do koše? Budou odstraněny z %2."
+"Opravdu si přejete těchto %1 skladeb vyhodit do koše? Budou odstraněny z %2."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:63
 #, kde-format
@@ -9399,14 +9341,14 @@ msgid_plural ""
 "Do you really want to move these %1 tracks? They will be renamed and the "
 "originals deleted."
 msgstr[0] ""
-"Opravdu chcete tuto skladbu přesunout? Bude přejmenována a originální "
+"Opravdu si přejete tuto skladbu přesunout? Bude přejmenována a originální "
 "skladba bude smazána."
 msgstr[1] ""
-"Opravdu chcete tyto %1 skladby přesunout? Bude přejmenována a originální "
+"Opravdu si přejete tyto %1 skladby přesunout? Bude přejmenována a originální "
 "skladby budou smazány."
 msgstr[2] ""
-"Opravdu chcete těchto %1 skladeb přesunout? Bude přejmenována a originální "
-"skladby budou smazány."
+"Opravdu si přejete těchto %1 skladeb přesunout? Bude přejmenována a "
+"originální skladby budou smazány."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:67
 msgctxt "@title:window"
@@ -9445,7 +9387,7 @@ msgstr "Skladby nelze smazat"
 msgid ""
 "The collection does not have enough free space available or is not writable."
 msgstr ""
-"Kolekce nemá k dispozici dostatek volného místa, anebo do ní nelze zapisovat."
+"Sbírka nemá k dispozici dostatek volného místa, anebo do ní nelze zapisovat."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:95
 msgid "Do you want to remove empty folders?"
@@ -9459,7 +9401,7 @@ msgstr "Odstranit prázdné složky?"
 #, kde-format
 msgctxt "%1 is track url, %2 track title, %3 track artist"
 msgid "%1 (%2 by %3)"
-msgstr ""
+msgstr "%1 (%2 od umělce %3)"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:135
 #, kde-format
@@ -9481,9 +9423,9 @@ msgstr "Smazat epizo&du"
 #, kde-format
 msgid "Are you sure you want to delete this episode?"
 msgid_plural "Are you sure you want to delete these %1 episodes?"
-msgstr[0] "Opravdu chcete smazat tento díl?"
-msgstr[1] "Opravdu chcete smazat tyto %1 díly?"
-msgstr[2] "Opravdu chcete smazat těchto %1 dílů?"
+msgstr[0] "Opravdu si přejete smazat tento díl?"
+msgstr[1] "Opravdu si přejete smazat tyto %1 díly?"
+msgstr[2] "Opravdu si přejete smazat těchto %1 dílů?"
 
 #: core-impl/collections/umscollection/podcasts/UmsPodcastProvider.cpp:272
 #, kde-format
@@ -9513,7 +9455,7 @@ msgctxt ""
 "Name of the USB Mass Storage collection that has not yet been activated. See "
 "also the 'Activate This Collection' action; %1 is actual collection name"
 msgid "%1 (not activated)"
-msgstr ""
+msgstr "%1 (neaktivováno)"
 
 #: core-impl/collections/umscollection/UmsCollection.cpp:615
 msgid "Configure USB Mass Storage Device"
@@ -9546,7 +9488,7 @@ msgctxt "The Value is not known"
 msgid "Unknown"
 msgstr "Neznámý"
 
-#: core-impl/meta/stream/Stream.cpp:54
+#: core-impl/meta/stream/Stream.cpp:55
 #, kde-format
 msgid "Stream (%1)"
 msgstr "Proud (%1)"
@@ -9560,41 +9502,35 @@ msgid "&Rename..."
 msgstr "Pře&jmenovat..."
 
 #: core-impl/playlists/providers/user/UserPlaylistProvider.cpp:114
-#, fuzzy, kde-format
-#| msgid "Remove From Playlist"
+#, kde-format
 msgctxt "Number of playlists is >= 2"
 msgid "Remove a track from %2 playlists"
 msgid_plural "Remove %1 tracks from %2 playlists"
-msgstr[0] "Odstranit ze seznamu skladeb"
-msgstr[1] "Odstranit ze seznamu skladeb"
-msgstr[2] "Odstranit ze seznamu skladeb"
+msgstr[0] "Smazat skladbu z %2 seznamů skladeb"
+msgstr[1] "Smazat %1 skladby z %2 seznamů skladeb"
+msgstr[2] "Smazat %1 skladeb z %2 seznamů skladeb"
 
 #: core-impl/playlists/providers/user/UserPlaylistProvider.cpp:120
-#, fuzzy, kde-format
-#| msgid "Removing one track from %2"
-#| msgid_plural "Removing %1 tracks from %2"
+#, kde-format
 msgctxt "%2 is saved playlist name"
 msgid "Remove a track from %2"
 msgid_plural "Remove %1 tracks from %2"
-msgstr[0] "Odstraňuje se 1 skladba z %2"
-msgstr[1] "Odstraňují se %1 skladby z %2"
-msgstr[2] "Odstraňuje se %1 skladeb z %2"
+msgstr[0] "Smazat skladbu z %2"
+msgstr[1] "Smazat %1 skladby z %2"
+msgstr[2] "Smazat %1 skladeb z %2"
 
 #: core-impl/playlists/providers/user/UserPlaylistProvider.cpp:142
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:100
-#, fuzzy, kde-format
-#| msgid "Are you sure you want to delete this playlist?"
-#| msgid_plural "Are you sure you want to delete these %1 playlist files?"
+#, kde-format
 msgid "Are you sure you want to delete this playlist?"
 msgid_plural "Are you sure you want to delete these %1 playlists?"
-msgstr[0] "Opravdu chcete smazat tento seznam skladeb?"
-msgstr[1] "Opravdu chcete smazat tyto %1 seznamy skladeb?"
-msgstr[2] "Opravdu chcete smazat těchto %1 seznamů skladeb?"
+msgstr[0] "Opravdu si přejete smazat tento seznam skladeb?"
+msgstr[1] "Opravdu si přejete smazat tyto %1 seznamy skladeb?"
+msgstr[2] "Opravdu si přejete smazat těchto %1 seznamů skladeb?"
 
 #: core-impl/playlists/providers/user/UserPlaylistProvider.cpp:149
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:107
-#, fuzzy, kde-format
-#| msgid "Yes, delete from %1."
+#, kde-format
 msgctxt "%1 is playlist provider pretty name"
 msgid "Yes, delete from %1."
 msgstr "Ano, smazat z %1."
@@ -9647,11 +9583,9 @@ msgid "Local Podcasts"
 msgstr "Místní podcasty"
 
 #: core-impl/podcasts/sql/PodcastFilenameLayoutConfigDialog.cpp:31
-#, fuzzy
-#| msgid "Podcast Configuration"
 msgctxt "Change filename layout"
 msgid "Podcast Episode Filename Configuration"
-msgstr "Nastavení podcastu"
+msgstr "Nastavení jmen souborů dílů podcastu"
 
 #: core-impl/podcasts/sql/SqlPodcastMeta.cpp:426
 #: core/podcasts/PodcastMeta.h:410
@@ -9668,7 +9602,7 @@ msgstr "Nastavit obe&cné volby"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:304
 msgid "&Export subscriptions to OPML file"
-msgstr ""
+msgstr "&Exportovat odběr do OPML souboru"
 
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:328
 #: core-impl/podcasts/sql/SqlPodcastProvider.cpp:884
@@ -10004,28 +9938,20 @@ msgid "Unique Id"
 msgstr "Unikátní ID"
 
 #: core/meta/support/MetaConstants.cpp:195
-#, fuzzy
-#| msgid "No track playing"
 msgid "Track Gain"
-msgstr "Nepřehrává se žádná skladba"
+msgstr "Zisk skladby"
 
 #: core/meta/support/MetaConstants.cpp:196
-#, fuzzy
-#| msgid "No track playing"
 msgid "Track Gain Peak"
-msgstr "Nepřehrává se žádná skladba"
+msgstr "Vrchol zisku skladby"
 
 #: core/meta/support/MetaConstants.cpp:197
-#, fuzzy
-#| msgid "album name"
 msgid "Album Gain"
-msgstr "název alba"
+msgstr "Zisk alba"
 
 #: core/meta/support/MetaConstants.cpp:198
-#, fuzzy
-#| msgid "album name"
 msgid "Album Gain Peak"
-msgstr "název alba"
+msgstr "Vrchol zisku alba"
 
 #: core/meta/support/MetaConstants.cpp:200
 msgid "Album Artist Name"
@@ -10047,7 +9973,7 @@ msgctxt ""
 "One word translation used in the collection filter. The name of the file "
 "this track is stored in"
 msgid "filename"
-msgstr "název souboru"
+msgstr "soubor"
 
 #: core/meta/support/MetaConstants.cpp:215
 msgctxt "One word translation used in the collection filter"
@@ -10087,12 +10013,12 @@ msgstr "komentář"
 #: core/meta/support/MetaConstants.cpp:222
 msgctxt "One word translation used in the collection filter"
 msgid "tracknumber"
-msgstr "číslo skladby"
+msgstr "skladbačíslo"
 
 #: core/meta/support/MetaConstants.cpp:223
 msgctxt "One word translation used in the collection filter"
 msgid "discnumber"
-msgstr "číslo disku"
+msgstr "diskčíslo"
 
 #: core/meta/support/MetaConstants.cpp:224
 msgctxt "One word translation used in the collection filter"
@@ -10107,17 +10033,17 @@ msgstr "délka"
 #: core/meta/support/MetaConstants.cpp:226
 msgctxt "One word translation used in the collection filter"
 msgid "bitrate"
-msgstr "datový tok"
+msgstr "datovýtok"
 
 #: core/meta/support/MetaConstants.cpp:227
 msgctxt "One word translation used in the collection filter"
 msgid "samplerate"
-msgstr "vzorkovací kmitočet"
+msgstr "kmitočet"
 
 #: core/meta/support/MetaConstants.cpp:228
 msgctxt "One word translation used in the collection filter"
 msgid "filesize"
-msgstr "velikost souboru"
+msgstr "velikost"
 
 #: core/meta/support/MetaConstants.cpp:229
 msgctxt "One word translation used in the collection filter"
@@ -10144,52 +10070,44 @@ msgctxt ""
 "One word translation used in the collection filter. First played time / "
 "access date"
 msgid "firstplay"
-msgstr "poprvé přehráno"
+msgstr "poprvé"
 
 #: core/meta/support/MetaConstants.cpp:234
 msgctxt ""
 "One word translation used in the collection filter. Last played time / "
 "access date"
 msgid "lastplay"
-msgstr "naposledy hrané"
+msgstr "naposledy"
 
 #: core/meta/support/MetaConstants.cpp:235
 msgctxt "One word translation used in the collection filter"
 msgid "playcount"
-msgstr "počet přehrání"
+msgstr "přehrání"
 
 #: core/meta/support/MetaConstants.cpp:236
 msgctxt "One word translation used in the collection filter"
 msgid "uniqueid"
-msgstr ""
+msgstr "unikátníklíč"
 
 #: core/meta/support/MetaConstants.cpp:238
-#, fuzzy
-#| msgid "No track playing"
 msgctxt "One word translation used in the collection filter"
 msgid "trackgain"
-msgstr "Nepřehrává se žádná skladba"
+msgstr "ziskskladby"
 
 #: core/meta/support/MetaConstants.cpp:239
-#, fuzzy
-#| msgid "No track playing"
 msgctxt "One word translation used in the collection filter"
 msgid "trackgainpeak"
-msgstr "Nepřehrává se žádná skladba"
+msgstr "vrcholziskuskladby"
 
 #: core/meta/support/MetaConstants.cpp:240
-#, fuzzy
-#| msgid "album name"
 msgctxt "One word translation used in the collection filter"
 msgid "albumgain"
-msgstr "název alba"
+msgstr "ziskalba"
 
 #: core/meta/support/MetaConstants.cpp:241
-#, fuzzy
-#| msgid "album name"
 msgctxt "One word translation used in the collection filter"
 msgid "albumgainpeak"
-msgstr "název alba"
+msgstr "vrcholziskualba"
 
 #: core/meta/support/MetaConstants.cpp:243
 msgctxt "One word translation used in the collection filter"
@@ -10371,16 +10289,16 @@ msgstr "%1h"
 #: core/support/Amarok.cpp:170
 #, kde-format
 msgctxt ""
-"A saved playlist with the current time (KLocale::Shortdate) added "
-"between                           the parentheses"
+"A saved playlist with the current time (KLocale::Shortdate) added between    "
+"                       the parentheses"
 msgid "Empty Playlist (%1)"
 msgstr "Prázdný seznam skladeb (%1)"
 
 #: core/support/Amarok.cpp:198
 #, kde-format
 msgctxt ""
-"A saved playlist with the current time (KLocale::Shortdate) added "
-"between                           the parentheses"
+"A saved playlist with the current time (KLocale::Shortdate) added between    "
+"                       the parentheses"
 msgid "Various Tracks (%1)"
 msgstr "Různé skladby (%1)"
 
@@ -10406,19 +10324,31 @@ msgstr "%1 - %2"
 msgid ""
 "The bitrate is a measure of the quantity of data used to represent a second "
 "of the audio track.<br>The <b>AAC</b> encoder used by Amarok supports a <a "
-"href=http://en.wikipedia.org/wiki/"
-"Variable_bitrate#Advantages_and_disadvantages_of_VBR>variable bitrate (VBR)</"
-"a> setting, which means that the bitrate value fluctuates along the track "
-"based on the complexity of the audio content. More complex intervals of data "
-"are encoded with a higher bitrate than less complex ones; this approach "
-"yields overall better quality and a smaller file than having a constant "
-"bitrate throughout the track.<br>For this reason, the bitrate measure in "
-"this slider is just an estimate of the <a href=http://www.ffmpeg.org/faq."
-"html#SEC21>average bitrate</a> of the encoded track.<br><b>150kb/s</b> is a "
-"good choice for music listening on a portable player.<br/>Anything below "
-"<b>120kb/s</b> might be unsatisfactory for music and anything above <b>200kb/"
-"s</b> is probably overkill."
+"href=http://en.wikipedia.org/wiki/Variable_bitrate#Advantages_and_disadvantag"
+"es_of_VBR>variable bitrate (VBR)</a> setting, which means that the bitrate "
+"value fluctuates along the track based on the complexity of the audio "
+"content. More complex intervals of data are encoded with a higher bitrate "
+"than less complex ones; this approach yields overall better quality and a "
+"smaller file than having a constant bitrate throughout the track.<br>For "
+"this reason, the bitrate measure in this slider is just an estimate of the "
+"<a href=http://www.ffmpeg.org/faq.html#SEC21>average bitrate</a> of the "
+"encoded track.<br><b>150kb/s</b> is a good choice for music listening on a "
+"portable player.<br/>Anything below <b>120kb/s</b> might be unsatisfactory "
+"for music and anything above <b>200kb/s</b> is probably overkill."
 msgstr ""
+"Datový tok je velikost dat, které reprezentují sekundu zvuku skladby."
+"<br>Kodek <b>AAC</b> použitý Amarokem podporuje <a href=http://en.wikipedia."
+"org/wiki/Variable_bitrate#Advantages_and_disadvantages_of_VBR>proměnný "
+"datový tok (VBR)</a>, což znamená, že datový tok kolísá během skladby v "
+"závislosti na složitosti zvukového obsahu. Složitější úseky skladby jsou "
+"kódovány s vyšším datovým tokem než ty jednodušší; tento přístup dává lepší "
+"celkovou kvalitu a menší soubor než konstantní datový tok po celou dobu "
+"skladby.<br> Z tohoto důvodu je míra datového toku na tomto posuvníku jen "
+"odhadem <a href=http://www.ffmpeg.org/faq.html#SEC21>průměrného datového "
+"toku</a> kódované skladby.<br><b>150kb/s</b> je dobrá volba pro poslouchání "
+"hudby na přenosném přehrávači.<br/>Vše pod <b>120kb/s</b> může být "
+"nevyhovující pro poslech hudby a vše nad <b>200kb/s</b> je pravděpodobně "
+"přestřel."
 
 #: core/transcoding/formats/TranscodingAacFormat.cpp:59
 #: core/transcoding/formats/TranscodingMp3Format.cpp:56
@@ -10493,6 +10423,16 @@ msgid ""
 "dramatically increase compression time but create an only slightly smaller "
 "file, and are not recommended."
 msgstr ""
+"<a href=http://flac.sourceforge.net/documentation_tools_flac.html>Míra "
+"komprese</a> je číselná hodnota mezi 0 a 8, která představuje kompromis mezi "
+"velikostí souboru a rychlostí komprese během kódování kodekem <b>FLAC</b>."
+"<br/>Nastavení míry komprese na <b>0</b> je nejrychlejší, ale vytváří "
+"poměrně velké soubory<br/>Na druhou stranu míra komprese <b>8</b> je o něco "
+"pomalejší, ale zato vytváří nejmenší soubory.<br/>Povšimněte si, že FLAC je "
+"z definice bezztrátový kodek, a tedy zvuková kvalita výstupu je naprosto "
+"stejná bez ohledu na míru komprese.<br/>Při míře komprese nad <b>5</b> se "
+"dramaticky zvyšuje čas komprese a vytváří se pouze nepatrně menší soubory. "
+"Proto není doporučována."
 
 #: core/transcoding/formats/TranscodingFlacFormat.cpp:42
 msgid "Compression level"
@@ -10536,6 +10476,17 @@ msgid ""
 ">Anything below <b>120kb/s</b> might be unsatisfactory for music and "
 "anything above <b>205kb/s</b> is probably overkill."
 msgstr ""
+"Datový tok je velikost dat, které reprezentují sekundu zvuku skladby."
+"<br>Kodek <b>MP3</b> použitý Amarokem podporuje <a href=http://en.wikipedia."
+"org/wiki/MP3#VBR>proměnný datový tok (VBR), což znamená, že datový tok "
+"kolísá během skladby v závislosti na složitosti zvukového obsahu Složitější "
+"úseky skladby jsou kódovány s vyšším datovým tokem než ty jednodušší; tento "
+"přístup dává lepší celkovou kvalitu a menší soubor než konstantní datový tok "
+"po celou dobu skladby.<br>Z tohoto důvodu je míra datového toku na tomto "
+"posuvníku jen odhadem průměrného datového toku</a> kódované skladby."
+"<br><b>160kb/s</b> je dobrá volba pro poslouchání hudby na přenosném "
+"přehrávači.<br/>Vše pod <b>120kb/s</b> může být nevyhovující pro poslech "
+"hudby a vše nad <b>205kb/s</b> je pravděpodobně přestřel."
 
 #: core/transcoding/formats/TranscodingMp3Format.cpp:64
 msgid "MP3"
@@ -10574,6 +10525,21 @@ msgid ""
 "a portable player.<br/>Anything below <b>-q3</b> might be unsatisfactory for "
 "music and anything above <b>-q8</b> is probably overkill."
 msgstr ""
+"Datový tok je velikost dat, které reprezentují sekundu zvuku skladby."
+"<br>Kodek <b>Vorbis</b> použitý Amarokem podporuje <a href=http://en."
+"wikipedia.org/wiki/Vorbis#Technical_details>proměnný datový tok (VBR)</a>, "
+"což znamená, že datový tok kolísá během skladby v závislosti na složitosti "
+"zvukového obsahu. Složitější úseky skladby jsou kódovány s vyšším datovým "
+"tokem než ty jednodušší; tento přístup dává lepší celkovou kvalitu a menší "
+"soubor než konstantní datový tok po celou dobu skladby.<br>Kodek Vorbis "
+"používá hodnocení kvality (-q parametr) mezi -1 a 10 ke stanovení určité "
+"očekávané hodnotě hudební kvality. Míra datového toku na tomto posuvníku jen "
+"odhadem (poskytnutá kodekem Vorbis) průměrného toku kódované sklady pro "
+"danou q hodnotu. Ve skutečnosti je současný datový tok s novější a "
+"výkonnější verzí Vorbis ještě menší.<br><b>-q5</b> je dobrá volba pro "
+"poslouchání hudby na přenosném přehrávači.<br/>Vše pod <b>-q3</b> může být "
+"nevyhovující pro poslech hudby a vše nad <b>-q8</b> je pravděpodobně "
+"přestřel."
 
 #: core/transcoding/formats/TranscodingVorbisFormat.cpp:60
 msgid "Quality rating for variable bitrate encoding"
@@ -10607,6 +10573,14 @@ msgid ""
 "s</b> might be unsatisfactory for music and anything above <b>182kb/s</b> is "
 "probably overkill."
 msgstr ""
+"Datový tok je velikost dat, které reprezentují sekundu zvuku skladby."
+"<br>Kvůli omezením proprietárního <b>WMA</b> formátu a složitosti reverzního "
+"inženýrství proprietárního kodeku, kodek WMA používaný Amarokem používá <a "
+"href=http://en.wikipedia.org/wiki/Windows_Media_Audio#Windows_Media_Audio>kon"
+"stantní datový tok (CBR)</a>.<br>Z tohoto důvodu je velikost datového toku "
+"na tomto posuvníku docela přesným odhadem výsledného datového toku kódované "
+"skladby.<br>Vše pod <b>112kb/s</b> může být nevyhovující pro poslech hudby a "
+"vše nad <b>182kb/s</b> je pravděpodobně přestřel."
 
 #: core/transcoding/formats/TranscodingWmaFormat.cpp:60
 msgid "Bitrate target for constant bitrate encoding"
@@ -10632,14 +10606,12 @@ msgstr ""
 "Ogg Vorbis."
 
 #: core/transcoding/TranscodingConfiguration.cpp:101
-#, fuzzy
-#| msgid "Invalid gift card code"
 msgid "Invalid encoder"
-msgstr "Neplatný kód dárkového poukazu"
+msgstr "Neplatný kodek"
 
 #: core/transcoding/TranscodingConfiguration.cpp:103
 msgid "Just copy or move"
-msgstr ""
+msgstr "Jen kopírovat nebo přesunout"
 
 #: core/transcoding/TranscodingConfiguration.cpp:127
 #, kde-format
@@ -11000,9 +10972,9 @@ msgstr[2] "Odstranit obal těchto %1 alb"
 msgid "Are you sure you want to remove this cover from the Collection?"
 msgid_plural ""
 "Are you sure you want to delete these %1 covers from the Collection?"
-msgstr[0] "Opravdu chcete odstranit tento obal ze sbírky?"
-msgstr[1] "Opravdu chcete odstranit tyto %1 obaly ze sbírky?"
-msgstr[2] "Opravdu chcete odstranit těchto %1 obalů ze sbírky?"
+msgstr[0] "Opravdu si přejete odstranit tento obal ze sbírky?"
+msgstr[1] "Opravdu si přejete odstranit tyto %1 obaly ze sbírky?"
+msgstr[2] "Opravdu si přejete odstranit těchto %1 obalů ze sbírky?"
 
 #: covermanager/CoverFetchingActions.cpp:134
 msgid "Set Custom Cover"
@@ -11046,6 +11018,8 @@ msgid ""
 "Perform meta information search on non-existing files, possibly detecting "
 "file renames. See <b>What's This</b>"
 msgstr ""
+"Pokud soubory neexistují, hledat pomocí meta informací, což pomůže, pokud "
+"byly soubory přejmenovány. Viz <b>Co je toto?</b>"
 
 #: databaseimporter/amarok14/FastForwardImporterConfig.cpp:95
 msgid ""
@@ -11054,6 +11028,10 @@ msgid ""
 "match is found, statistics for the matched track are updated, even if the "
 "file locations differ."
 msgstr ""
+"Pokud je povoleno, skladby ze staré sbírky které už neexistují v souborovém "
+"systému jsou hledány v současné sbírce (pomocí metadat). Jestliže je "
+"nalezena shoda, statistiky pro spárovanou skladbu jsou aktualizovány dokonce "
+"i když je jejich umístění rozdílné."
 
 #: databaseimporter/amarok14/FastForwardImporterConfig.cpp:101
 msgid "Import downloaded artwork"
@@ -11087,14 +11065,16 @@ msgid ""
 "(track exists, but does not belong in any of your configured collection "
 "folders)"
 msgstr ""
+"(skladba existuje, ale nepatří do žádné z vašich nastavených složek se "
+"sbírkou)"
 
 #: databaseimporter/amarok14/FastForwardWorker.cpp:271
 #, kde-format
 msgid "Adding <b>1 new track</b> to Amarok collection <b>%2</b>."
 msgid_plural "Adding <b>%1 new tracks</b> to Amarok collection <b>%2</b>."
-msgstr[0] "Do kolekce Amaroku <b>%2</b> se přidává <b>%1 nová skladba</b>."
-msgstr[1] "Do kolekce Amaroku <b>%2</b> se přidávají <b>%1 nové skladby</b>."
-msgstr[2] "Do kolekce Amaroku <b>%2</b> se přidává <b>%1 nových skladeb</b>."
+msgstr[0] "Do sbírky Amaroku <b>%2</b> se přidává <b>%1 nová skladba</b>."
+msgstr[1] "Do sbírky Amaroku <b>%2</b> se přidávají <b>%1 nové skladby</b>."
+msgstr[2] "Do sbírky Amaroku <b>%2</b> se přidává <b>%1 nových skladeb</b>."
 
 #: databaseimporter/amarok14/FastForwardWorker.cpp:390
 #, kde-format
@@ -11110,31 +11090,30 @@ msgstr "Nelze provést požadavek pro import štítků: %1; požadavek byl: %2"
 #, kde-format
 msgid "Updating cached lyrics and labels for 1 track..."
 msgid_plural "Updating cached lyrics and labels for %1 tracks..."
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Aktualizuji text písně a štítky 1 skladby..."
+msgstr[1] "Aktualizuji text písně a štítky %1 skladeb..."
+msgstr[2] "Aktualizuji text písně a štítky %1 skladeb..."
 
 #: databaseimporter/amarok14/FastForwardWorker.cpp:459
 #, kde-format
 msgid "Failed to update lyrics/labels for track %1"
-msgstr ""
+msgstr "Nepodařilo se aktualizovat text písně nebo štítky skladby %1"
 
 #: databaseimporter/amarok14/FastForwardWorker.cpp:479
-#, fuzzy, kde-format
-#| msgid "There were no lyrics found for this track"
+#, kde-format
 msgid "Cached lyrics updated for 1 track"
 msgid_plural "Cached lyrics updated for %1 tracks"
-msgstr[0] "Pro tuto skladbu nebyl nalezen žádný text"
-msgstr[1] "Pro tuto skladbu nebyl nalezen žádný text"
-msgstr[2] "Pro tuto skladbu nebyl nalezen žádný text"
+msgstr[0] "Text jedné písně aktualizován"
+msgstr[1] "Text %1 písní aktualizován"
+msgstr[2] "Text %1 písní aktualizován"
 
 #: databaseimporter/amarok14/FastForwardWorker.cpp:483
 #, kde-format
 msgid "labels added to 1 track"
 msgid_plural "labels added to %1 tracks"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "štítky přidány k jedné skladbě"
+msgstr[1] "štítky přidány ke %1 skladbám"
+msgstr[2] "štítky přidány k %1 skladbám"
 
 #: databaseimporter/amarok14/FastForwardWorker.cpp:489
 #, kde-format
@@ -11161,6 +11140,8 @@ msgid ""
 "Input file produced by amarokcollectionscanner.<br>See <a href=\"http://"
 "amarok.kde.org/wiki/Batch_Mode\">Batch Mode</a>."
 msgstr ""
+"Vstupní soubor vytvořený programem amarokcollectionscanner.<br>Viz <a "
+"href=\"http://amarok.kde.org/wiki/Batch_Mode\">dávkový mód</a>."
 
 #: databaseimporter/sqlbatch/SqlBatchImporterConfig.cpp:43
 msgid "Input file"
@@ -11228,15 +11209,15 @@ msgctxt ""
 "Please do not translate the %foo% words as they define a syntax used "
 "internally by a parser to describe a filename."
 msgid ""
-"The following tokens can be used to define a filename "
-"scheme:                           <br>%track%, %title%, %artist%, %composer"
-"%, %year%, %album%, %albumartist%, %comment%, %genre%, %initial%, %folder%, "
-"%filetype%, %discnumber%."
+"The following tokens can be used to define a filename scheme:                "
+"           <br>%track%, %title%, %artist%, %composer%, %year%, %album%, "
+"%albumartist%, %comment%, %genre%, %initial%, %folder%, %filetype%, "
+"%discnumber%."
 msgstr ""
-"Následující výrazy se používají k určení schématu názvu "
-"souboru:                           <br>%track%, %title%, %artist%, %composer"
-"%, %year%, %album%, %albumartist%, %comment%, %genre%, %initial%, %folder%, "
-"%filetype%, %discnumber%."
+"Následující výrazy se používají k určení schématu názvu souboru:             "
+"              <br>%track%, %title%, %artist%, %composer%, %year%, %album%, "
+"%albumartist%, %comment%, %genre%, %initial%, %folder%, %filetype%, "
+"%discnumber%."
 
 #: dialogs/FilenameLayoutDialog.cpp:707
 #, no-c-format, kde-format
@@ -11244,23 +11225,23 @@ msgctxt ""
 "Please do not translate the %foo% words as they define a syntax used "
 "internally by a parser to describe a filename."
 msgid ""
-"The following tokens can be used to define a filename scheme:"
-"<br>                           <font color=\"%1\">%track%</font>, <font "
-"color=\"%2\">%title%</font>,                           <font color=\"%3\">"
-"%artist%</font>, <font color=\"%4\">%composer%</"
-"font>,                           <font color=\"%5\">%year%</font>, <font "
-"color=\"%6\">%album%</font>,                           <font color=\"%7\">"
-"%albumartist%</font>, <font color=\"%8\">%comment%</"
-"font>,                           <font color=\"%9\">%genre%</font>, %ignore%."
+"The following tokens can be used to define a filename scheme:<br>            "
+"               <font color=\"%1\">%track%</font>, <font color=\"%2\">%title"
+"%</font>,                           <font color=\"%3\">%artist%</font>, "
+"<font color=\"%4\">%composer%</font>,                           <font "
+"color=\"%5\">%year%</font>, <font color=\"%6\">%album%</font>,               "
+"            <font color=\"%7\">%albumartist%</font>, <font color=\"%8\">"
+"%comment%</font>,                           <font color=\"%9\">%genre%</"
+"font>, %ignore%."
 msgstr ""
-"Následující výrazy se používají k určení schématu názvu souboru:"
-"<br>                           <font color=\"%1\">%track%</font>, <font "
-"color=\"%2\">%title%</font>,                           <font color=\"%3\">"
-"%artist%</font>, <font color=\"%4\">%composer%</"
-"font>,                           <font color=\"%5\">%year%</font>, <font "
-"color=\"%6\">%album%</font>,                           <font color=\"%7\">"
-"%albumartist%</font>, <font color=\"%8\">%comment%</"
-"font>,                           <font color=\"%9\">%genre%</font>, %ignore%."
+"Následující výrazy se používají k určení schématu názvu souboru:<br>         "
+"                  <font color=\"%1\">%track%</font>, <font color=\"%2\">"
+"%title%</font>,                           <font color=\"%3\">%artist%</"
+"font>, <font color=\"%4\">%composer%</font>,                           <font "
+"color=\"%5\">%year%</font>, <font color=\"%6\">%album%</font>,               "
+"            <font color=\"%7\">%albumartist%</font>, <font color=\"%8\">"
+"%comment%</font>,                           <font color=\"%9\">%genre%</"
+"font>, %ignore%."
 
 #: dialogs/FilenameLayoutDialog.cpp:786
 msgid "New Format Preset"
@@ -11300,7 +11281,7 @@ msgstr "Neznámý žánr"
 
 #: dialogs/TrackOrganizer.cpp:114
 msgid "Unknown title"
-msgstr "Neznámý titul"
+msgstr "Neznámý název"
 
 #: dialogs/TrackOrganizer.cpp:115
 msgid "Unknown year"
@@ -11317,7 +11298,7 @@ msgid ""
 "right-click on a folder to individually rescan it, if it was previously "
 "selected:"
 msgstr ""
-"V těchto složkách budou hledána média, která mají vytvořit vaší sbírku. "
+"V těchto složkách budou hledána média, která mají vytvořit Vaší sbírku. "
 "Můžete na složku kliknout pravým tlačítkem tak, abyste ji, pokud byla již "
 "vybrána, znovu individuálně načetli:"
 
@@ -11336,16 +11317,12 @@ msgid "Import"
 msgstr "Importovat"
 
 #: dialogs/CollectionSetup.cpp:129
-#, fuzzy
-#| msgid ""
-#| "Import collection statistics from older Amarok versions, or from other "
-#| "media players."
 msgid ""
 "Import collection and/or statistics from older Amarok versions, the batch "
 "scanner or media players."
 msgstr ""
-"Importovat statistiku sbírky ze starších verzí Amaroku, či z jiných "
-"přehrávačů médií."
+"Importovat sbírku a/nebo statistiky ze starší verze Amaroku, dávkového "
+"prohledávače nebo hudebního přehrávače."
 
 #: dialogs/CollectionSetup.cpp:132
 msgid "&Scan folders recursively (requires full rescan if newly checked)"
@@ -11372,22 +11349,22 @@ msgstr "Ukládat obaly do souboru, maximální velikost:"
 #: dialogs/CollectionSetup.cpp:139
 msgctxt "Maximum cover size option"
 msgid "Small (200 px)"
-msgstr ""
+msgstr "Malý (200 px)"
 
 #: dialogs/CollectionSetup.cpp:140
 msgctxt "Maximum cover size option"
 msgid "Medium (400 px)"
-msgstr ""
+msgstr "Střední (400 px)"
 
 #: dialogs/CollectionSetup.cpp:141
 msgctxt "Maximum cover size option"
 msgid "Large (800 px)"
-msgstr ""
+msgstr "Velký (800 px)"
 
 #: dialogs/CollectionSetup.cpp:142
 msgctxt "Maximum cover size option"
 msgid "Huge (1600 px)"
-msgstr ""
+msgstr "Obrovský (1600 px)"
 
 #: dialogs/CollectionSetup.cpp:143
 msgid "&Enable character set detection in ID3 tags"
@@ -11402,31 +11379,44 @@ msgid ""
 "If selected, the collection folders will be watched for changes.\n"
 "The watcher will not notice changes behind symbolic links."
 msgstr ""
+"Pokud je povoleno, složky se sbírkou budou sledovány pro změny.\n"
+"Sledování nezaznamená změny za symbolickými odkazy."
 
 #: dialogs/CollectionSetup.cpp:154
 msgid ""
-"Write meta data changes (including 'stars' rating) back to the original "
-"file.\n"
+"Write meta data changes (including 'stars' rating) back to the original file."
+"\n"
 "You can also prevent writing back by write protecting the file.\n"
 "This might be a good idea if you are currently\n"
 "sharing those files via the Internet."
 msgstr ""
+"Zapisovat změny meta dat (obsahující hodnocení 'hvězdičky') zpět do souboru."
+"\n"
+"Zpětnému zapisování můžete zabránit tím, že odeberete právo k zápisu do "
+"souboru.\n"
+"To může být dobrý nápad, když současně\n"
+"sdílíte tyto soubory přes internet."
 
 #: dialogs/CollectionSetup.cpp:155
 msgid ""
 "Write play-changing statistics (e.g. score, lastplayed, playcount)\n"
 "as tags back to the file."
 msgstr ""
+"Zapisovat statistiky, které se mění s přehráním (např. skóre, poslední "
+"přehrání, počet přehrání)\n"
+"jako značky zpět do souboru."
 
 #: dialogs/CollectionSetup.cpp:156
 msgid ""
 "Write changed covers back to the file.\n"
 "This will replace existing embedded covers."
 msgstr ""
+"Zapisovat změněné obaly zpět do souboru.\n"
+"Nahradí již existující vložené obaly."
 
 #: dialogs/CollectionSetup.cpp:157
 msgid "Scale covers down if necessary."
-msgstr ""
+msgstr "Přeškáluje obaly, pokud je to nezbytné."
 
 #: dialogs/CollectionSetup.cpp:158
 msgid ""
@@ -11449,7 +11439,7 @@ msgstr[2] "<b>%1</b> souborů vybráno."
 #: dialogs/deletedialog.cpp:69
 msgid ""
 "<qt>These items will be <b>permanently deleted</b> from your hard disk.</qt>"
-msgstr "<qt>Tyto položky budou <b>navždy smazány</b> z vašeho disku.</qt>"
+msgstr "<qt>Tyto položky budou <b>navždy smazány</b> z Vašeho disku.</qt>"
 
 #: dialogs/deletedialog.cpp:75
 msgid "<qt>These items will be moved to the Trash Bin.</qt>"
@@ -11566,7 +11556,7 @@ msgstr "Zkopírovat do schránky"
 
 #: dialogs/DiagnosticDialog.cpp:77
 msgid " (running)"
-msgstr ""
+msgstr " (běží)"
 
 #: dialogs/DiagnosticDialog.cpp:77
 msgid " (stopped)"
@@ -11603,6 +11593,15 @@ msgid ""
 "PulseAudio: %8\n"
 "\n"
 msgstr ""
+"Diagnostika %1\n"
+"\n"
+"Verze %1: %2\n"
+"Verze KDE: %3\n"
+"Verze Qt: %4\n"
+"Verze Phononu: %5\n"
+"Podpůrná vrstva Phononu: %6 (%7)\n"
+"PulseAudio: %8\n"
+"\n"
 
 #: dialogs/DiagnosticDialog.cpp:119
 #, kde-format
@@ -11612,6 +11611,10 @@ msgid ""
 "Amarok Plugins:\n"
 "    %2\n"
 msgstr ""
+"Skripty Amaroku:\n"
+"    %1\n"
+"Zásuvné moduly Amaroku:\n"
+"    %2\n"
 
 #: dialogs/MusicBrainzTagger.cpp:67
 msgid "Expand All"
@@ -11655,7 +11658,7 @@ msgid ""
 "%d is replaced by the device node, %m by the mount point.\n"
 "Empty commands are not executed."
 msgstr ""
-"Zadejte příkaz, který se použije před připojením k vašemu zařízení (např. "
+"Zadejte příkaz, který se použije před připojením k Vašemu zařízení (např. "
 "příkaz mount).\n"
 "%d je nahrazeno uzlem zařízení, %m je nahrazeno přípojným bodem.\n"
 "Příkazy bez pomocných proměnných nebudou provedeny."
@@ -11677,7 +11680,7 @@ msgid ""
 "%d is replaced by the device node, %m by the mount point.\n"
 "Empty commands are not executed."
 msgstr ""
-"Zadejte příkaz, který se má použít po odpojení vašeho zařízení (např. příkaz "
+"Zadejte příkaz, který se má použít po odpojení Vašeho zařízení (např. příkaz "
 "pro vysunutí média).\n"
 "%d je nahrazeno uzlem zařízení, %m je nahrazeno přípojným bodem.\n"
 "Příkazy bez pomocných proměnných nebudou provedeny."
@@ -11717,15 +11720,13 @@ msgid ""
 "from another music application.<br><br>Any statistical data in your database "
 "will be <i>overwritten</i>"
 msgstr ""
-"Tento nástroj vám umožní importovat informace o skladbě a<br>statistické "
+"Tento nástroj Vám umožní importovat informace o skladbě a<br>statistické "
 "údaje z jiného hudebního programu.<br><br>Jakákoliv statistická data ve Vaší "
 "databázi budou <i>přepsána</i>"
 
 #: dialogs/DatabaseImporterDialog.cpp:55
-#, fuzzy
-#| msgid "Amarok Applet Manager"
 msgid "Amarok collection scanner"
-msgstr "Správce appletů Amaroku"
+msgstr "Prohledávač sbírky Amaroku"
 
 #: dialogs/DatabaseImporterDialog.cpp:56
 msgid "Amarok 1.4"
@@ -11858,7 +11859,7 @@ msgid ""
 "Sorry, your current Phonon backend version does not provide equalizer "
 "support."
 msgstr ""
-"Bohužel, vaše současná verze podpůrné vrstvy Phonon nepodporuje ekvalizér."
+"Bohužel, Vaše současná verze podpůrné vrstvy Phonon nepodporuje ekvalizér."
 
 #: dialogs/EqualizerDialog.cpp:156 dialogs/EqualizerDialog.cpp:165
 msgid ""
@@ -11988,11 +11989,9 @@ msgstr ""
 "prostor."
 
 #: dynamic/biases/EchoNestBias.cpp:47
-#, fuzzy
-#| msgid "Echo Nest Similar Artists"
 msgctxt "Name of the \"EchoNest\" bias"
 msgid "EchoNest similar artist"
-msgstr "Podobní umělci podle Echo Nest"
+msgstr "EchoNest podobný umělec"
 
 #: dynamic/biases/EchoNestBias.cpp:56
 msgctxt "Description of the \"EchoNest\" bias"
@@ -12000,30 +11999,30 @@ msgid ""
 "The \"EchoNest\" bias looks up tracks on echo nest and only adds similar "
 "tracks."
 msgstr ""
+"Zkreslení \"EchoNest\" vyhledá skladby v echo nest a přidá pouze podobné "
+"skladby."
 
 #: dynamic/biases/EchoNestBias.cpp:126
 msgctxt "EchoNest bias representation"
 msgid "Similar to the previous track (as reported by EchoNest)"
-msgstr ""
+msgstr "Podobné předchozí skladbě (dle EchoNestu)"
 
 #: dynamic/biases/EchoNestBias.cpp:129
 msgctxt "EchoNest bias representation"
 msgid "Similar to any track in the current playlist (as reported by EchoNest)"
-msgstr ""
+msgstr "Podobné nějaké skladbě ze současného seznamu skladeb (dle EchoNestu)"
 
 #: dynamic/biases/EchoNestBias.cpp:140
 msgid "Echo nest thinks the track is similar to"
-msgstr ""
+msgstr "Echo nest si myslí, že se tato skladba podobá"
 
 #: dynamic/biases/EchoNestBias.cpp:143
 msgid "the previous Track"
 msgstr "předchozí skladba"
 
 #: dynamic/biases/EchoNestBias.cpp:145
-#, fuzzy
-#| msgid "How to progress through tracks in the playlist"
 msgid "one of the tracks in the current playlist"
-msgstr "Jakým způsobem se má postupovat skladbami v seznamu skladeb"
+msgstr "jedna ze skladeb v současném seznamu skladeb"
 
 #: dynamic/biases/SearchQueryBias.cpp:43
 msgctxt "Name of the \"SearchQuery\" bias"
@@ -12037,6 +12036,9 @@ msgid ""
 "found by a search query. It uses the same search\n"
 "query as the collection browser."
 msgstr ""
+"Zkreslení \"Prohledávání\" přidává skladby, které odpovídají\n"
+"vyhledávacímu dotazu. Používá stejné dotazy\n"
+"jako prohlížeč sbírky."
 
 #: dynamic/biases/SearchQueryBias.cpp:116 dynamic/Bias.cpp:138
 msgctxt "Random bias representation"
@@ -12052,7 +12054,7 @@ msgstr "Hledat: %1"
 #: dynamic/biases/IfElseBias.cpp:37
 msgctxt "Name of the \"IfElse\" bias"
 msgid "If Else"
-msgstr ""
+msgstr "Buď a nebo"
 
 #: dynamic/biases/IfElseBias.cpp:46
 msgctxt "Description of the \"IfElse\" bias"
@@ -12061,11 +12063,14 @@ msgid ""
 "It will only check the second sub-bias if the first doesn't return any "
 "results."
 msgstr ""
+"Zkreslení \"Buď a nebo\" přidává skladby, které vyhovují alespoň jednomu z "
+"pod-zkreslení.\n"
+"Zkusí druhé pod-zkreslení pouze v případě, že to první nedá žádné výsledky."
 
 #: dynamic/biases/IfElseBias.cpp:74
 msgctxt "IfElse bias representation"
 msgid "Match all sequentially"
-msgstr ""
+msgstr "Postupně hledat shodu všech"
 
 #: dynamic/biases/IfElseBias.cpp:83
 msgctxt ""
@@ -12076,7 +12081,7 @@ msgstr "jinak"
 #: dynamic/biases/QuizPlayBias.cpp:44
 msgctxt "Name of the \"QuizPlay\" bias"
 msgid "Quiz play"
-msgstr ""
+msgstr "Slovní kopaná"
 
 #: dynamic/biases/QuizPlayBias.cpp:53
 msgctxt "Description of the \"QuizPlay\" bias"
@@ -12084,6 +12089,8 @@ msgid ""
 "The \"QuizPlay\" bias adds tracks that start\n"
 "with a character the last track ended with."
 msgstr ""
+"Zkreslení \"Slovní kopaná\" přidává skladby, které začínají\n"
+"písmenem, kterým končí předchozí skladba."
 
 #: dynamic/biases/QuizPlayBias.cpp:118
 msgctxt "QuizPlay bias representation"
@@ -12091,6 +12098,8 @@ msgid ""
 "Tracks whose title start with a\n"
 "character the last track ended with"
 msgstr ""
+"Skladby, jejichž název začíná\n"
+"písmenem, kterým název poslední skladby skončil."
 
 #: dynamic/biases/QuizPlayBias.cpp:122
 msgctxt "QuizPlay bias representation"
@@ -12098,6 +12107,8 @@ msgid ""
 "Tracks whose artist name start\n"
 "with a character the last track ended with"
 msgstr ""
+"Skladby, jejichž jméno umělce začíná\n"
+"písmenem, kterým jméno umělce poslední skladby skončilo"
 
 #: dynamic/biases/QuizPlayBias.cpp:126
 msgctxt "QuizPlay bias representation"
@@ -12105,36 +12116,39 @@ msgid ""
 "Tracks whose album name start\n"
 "with a character the last track ended with"
 msgstr ""
+"Skladby, jejichž jméno alba začíná\n"
+"písmenem, kterým jméno alba poslední skladby skončilo"
 
 #: dynamic/biases/QuizPlayBias.cpp:138
 msgid ""
 "Last character of the previous song is\n"
 "the first character of the next song"
 msgstr ""
+"Poslední písmeno předchozí skladby\n"
+"je prvním písmenem skladby následující"
 
 #: dynamic/biases/QuizPlayBias.cpp:143
 msgid "of the track title (Title quiz)"
-msgstr ""
+msgstr "z názvu skladby (Slovní kopaná s názvem skladby)"
 
 #: dynamic/biases/QuizPlayBias.cpp:145
 msgid "of the artist (Artist quiz)"
-msgstr ""
+msgstr "z názvu umělce (Slovní kopaná s názvem umělce)"
 
 #: dynamic/biases/QuizPlayBias.cpp:147
 msgid "of the album name (Album quiz)"
-msgstr ""
+msgstr "z názvu alba (Slovní kopaná s názvem alba)"
 
 #: dynamic/biases/AlbumPlayBias.cpp:38
-#, fuzzy
-#| msgid "Album page"
 msgctxt "Name of the \"AlbumPlay\" bias"
 msgid "Album play"
-msgstr "Stránka alba"
+msgstr "Přehrávání alb"
 
 #: dynamic/biases/AlbumPlayBias.cpp:47
 msgctxt "Description of the \"AlbumPlay\" bias"
 msgid "The \"AlbumPlay\" bias adds tracks that belong to one album."
 msgstr ""
+"Zkreslení \"Přehrávání alb\" přidává skladby, které patří do jednoho alba."
 
 #: dynamic/biases/AlbumPlayBias.cpp:108
 msgctxt "AlbumPlay bias representation"
@@ -12142,29 +12156,26 @@ msgid "The next track from the album"
 msgstr "Další skladba z alba"
 
 #: dynamic/biases/AlbumPlayBias.cpp:111
-#, fuzzy
-#| msgid "Display artwork for this album"
 msgctxt "AlbumPlay bias representation"
 msgid "Any later track from the album"
-msgstr "Zobrazit obal pro toto album"
+msgstr "Jakákoliv následující skladba z alba"
 
 #: dynamic/biases/AlbumPlayBias.cpp:114
-#, fuzzy
 msgctxt "AlbumPlay bias representation"
 msgid "Tracks from the same album"
 msgstr "Skladby ze stejného alba"
 
 #: dynamic/biases/AlbumPlayBias.cpp:124
 msgid "Track directly follows previous track in album"
-msgstr ""
+msgstr "Přímo následující skladba z alba"
 
 #: dynamic/biases/AlbumPlayBias.cpp:126
 msgid "Track comes after previous track in album"
-msgstr ""
+msgstr "Skladba se nachází po předchozí skladbě v albu"
 
 #: dynamic/biases/AlbumPlayBias.cpp:128
 msgid "Track is in the same album as previous track"
-msgstr ""
+msgstr "Skladba je ve stejném albu jako předchozí skladba"
 
 #: dynamic/biases/PartBias.cpp:44
 msgctxt "Name of the \"Part\" bias"
@@ -12176,6 +12187,7 @@ msgctxt "Description of the \"Part\" bias"
 msgid ""
 "The \"Part\" bias fills parts of the playlist from different sub-biases."
 msgstr ""
+"Zkreslení \"Část\" vyplňuje části seznamu skladeb z různých pod-zkreslení."
 
 #: dynamic/biases/PartBias.cpp:260
 msgid "This controls what portion of the playlist should match the criteria"
@@ -12188,11 +12200,9 @@ msgid "Partition"
 msgstr "Diskový oddíl"
 
 #: dynamic/biases/TagMatchBias.cpp:45
-#, fuzzy
-#| msgid "Match tracks by meta tags"
 msgctxt "Name of the \"TagMatch\" bias"
 msgid "Match meta tag"
-msgstr "Najít skladby podle meta značek"
+msgstr "Najít podle meta značky"
 
 #: dynamic/biases/TagMatchBias.cpp:54
 msgctxt "Description of the \"TagMatch\" bias"
@@ -12200,6 +12210,8 @@ msgid ""
 "The \"TagMatch\" bias adds tracks that\n"
 "fulfill a specific condition."
 msgstr ""
+"Zkreslení \"Najít podle meta značky\" přidává skladby,\n"
+"které splňují konkrétní podmínku."
 
 #: dynamic/biases/TagMatchBias.cpp:283
 #, kde-format
@@ -12250,10 +12262,8 @@ msgid "Rock and Pop"
 msgstr "Rock a Pop"
 
 #: dynamic/DynamicModel.cpp:937
-#, fuzzy
-#| msgid "Album page"
 msgid "Album play"
-msgstr "Stránka alba"
+msgstr "Přehrávání alb"
 
 #: dynamic/DynamicModel.cpp:946
 msgctxt "Name of a dynamic playlist"
@@ -12271,6 +12281,8 @@ msgid ""
 "The random bias adds random tracks from the\n"
 "whole collection without any bias."
 msgstr ""
+"Náhodné zkreslení přidává náhodné skladby z\n"
+"celé sbírky bez jakéhokoliv upřednostňování."
 
 #: dynamic/BiasFactory.cpp:71
 msgctxt "Name of the \"And\" bias"
@@ -12283,6 +12295,8 @@ msgid ""
 "The \"And\" bias adds tracks that match all\n"
 "of the sub biases."
 msgstr ""
+"Zkreslení \"A zároveň\" přidává skladby, které odpovídají všem\n"
+"pod-zkreslením."
 
 #: dynamic/BiasFactory.cpp:89
 msgctxt "Name of the \"Or\" bias"
@@ -12295,12 +12309,13 @@ msgid ""
 "The \"Or\" bias adds tracks that match at\n"
 "least one of the sub biases."
 msgstr ""
+"Zkreslení \"Nebo\" přidává skladby, které odpovídají\n"
+"alespoň jednomu pod-zkreslení."
 
 #: dynamic/BiasFactory.cpp:185 dynamic/BiasFactory.cpp:191
-#, fuzzy, kde-format
-#| msgid "Upcoming Events Settings"
+#, kde-format
 msgid "Replacement for bias %1"
-msgstr "Nastavení nadcházejících událostí"
+msgstr "Nahrazuje zkreslení %1"
 
 #: k3bexporter.cpp:182
 msgid "Unable to start K3b."
@@ -12342,7 +12357,7 @@ msgid ""
 "Please, write it in <b>%1</b> (you may want to use an <a href=\"%2\">online "
 "translation tool</a> for this).<br/>"
 msgstr ""
-"Pište prosím v <b>%1</b> (k tomu vám může přijít vhod <a href=\"%2\">nástroj "
+"Pište prosím v <b>%1</b> (k tomu Vám může přijít vhod <a href=\"%2\">nástroj "
 "pro online překládání</a>).<br/>"
 
 #: likeback/LikeBackDialog.cpp:162
@@ -12351,11 +12366,11 @@ msgctxt ""
 "Feedback dialog text, message with list of accepted languages for the "
 "comments"
 msgid ""
-"Please, write it in <b>%1 or %2</b> (you may want to use an <a href="
-"\"%3\">online translation tool</a> for this).<br/>"
+"Please, write it in <b>%1 or %2</b> (you may want to use an <a href=\""
+"%3\">online translation tool</a> for this).<br/>"
 msgstr ""
-"Pište prosím v <b>%1 nebo %2</b> (k tomu vám může přijít vhod <a href="
-"\"%3\">nástroj pro online překládání</a>).<br/>"
+"Pište prosím v <b>%1 nebo %2</b> (k tomu Vám může přijít vhod <a href=\""
+"%3\">nástroj pro online překládání</a>).<br/>"
 
 #: likeback/LikeBackDialog.cpp:175
 msgctxt ""
@@ -12368,6 +12383,11 @@ msgid ""
 "application, try to send the same amount of positive and negative comments."
 "<br/>"
 msgstr ""
+"<b>LikeBack je používán pouze pro statistické účely. Na položené otázky "
+"nedostanete odpověď. Pro podporu se ptejte <a href=\"http://forum.kde.org/"
+"Amarok\">ve fóru,</a> nebo se připojte na IRC kanál #amarok na irc.freenode."
+"net</b>. Aby byly vaše komentáře více užitečné pro vylepšení Amaroku, zkuste "
+"posílat podobný počet kladných i záporných komentářů.<br/>"
 
 #: likeback/LikeBackDialog.cpp:186
 msgctxt "Feedback dialog text, text to disallow feature requests"
@@ -12387,7 +12407,7 @@ msgid ""
 "<p>You can provide the developers a brief description of your opinions about "
 "%1.<br/>%2 %3%4</p>"
 msgstr ""
-"<p>Vývojářům můžete poskytnout krátké vyjádření vašich názorů týkajících se "
+"<p>Vývojářům můžete poskytnout krátké vyjádření Vašich názorů týkajících se "
 "%1.<br/>%2 %3%4</p>"
 
 #: likeback/LikeBackDialog.cpp:238
@@ -12403,6 +12423,9 @@ msgid ""
 "an exotic one.\n"
 "%1"
 msgstr ""
+"Zkontrolujte prosím svou e-mailovou adresu, aby v ní nebyly chyby. Zdá se "
+"být trochu exotická.\n"
+"%1"
 
 #: likeback/LikeBackDialog.cpp:310
 msgctxt "Dialog box text"
@@ -12460,7 +12483,7 @@ msgid ""
 "or dislike and click on 'Send'."
 msgstr ""
 "Pokaždé, když zažijete něco skvělého či frustrujícího, klikněte prosím na "
-"příslušnou tvář pod lištou s názvem okna, krátce popište, co se vám líbí, či "
+"příslušnou tvář pod lištou s názvem okna, krátce popište, co se Vám líbí, či "
 "nelíbí a klikněte na 'Poslat'."
 
 #: likeback/LikeBack.cpp:316
@@ -12471,7 +12494,7 @@ msgid ""
 "'Send'."
 msgstr ""
 "Pokaždé, když zažijete něco skvělého, klikněte prosím na usměvavou tvář pod "
-"lištou s názvem okna, krátce popište, co se vám líbí a klikněte na 'Poslat'."
+"lištou s názvem okna, krátce popište, co se Vám líbí a klikněte na 'Poslat'."
 
 #: likeback/LikeBack.cpp:323
 msgctxt "Welcome dialog text, explanation for the dislike button alone"
@@ -12481,7 +12504,7 @@ msgid ""
 "on 'Send'."
 msgstr ""
 "Pokaždé, když zažijete něco frustrujícího, klikněte prosím na zachmuřenou "
-"tvář pod lištou s názvem okna, krátce popište, co se vám nelíbí a klikněte "
+"tvář pod lištou s názvem okna, krátce popište, co se Vám nelíbí a klikněte "
 "na 'Poslat'."
 
 #: likeback/LikeBack.cpp:333
@@ -12555,7 +12578,7 @@ msgstr "Míra shody s MusicDNS: %1%"
 
 #: musicbrainz/MusicBrainzTags.cpp:499
 msgid "Click here to choose best matches"
-msgstr ""
+msgstr "Klikněte sem pro vybrání nejlepších shod"
 
 #: musicbrainz/MusicBrainzTags.cpp:666
 msgid "Artist page"
@@ -12791,8 +12814,7 @@ msgstr "Začněte psát, abyste postupně prohledali seznam skladeb"
 msgid "Composers"
 msgstr "Skladatelé"
 
-#: playlist/ProgressiveSearchWidget.cpp:116
-#: widgets/SmartPlaylistEditor.cpp:976
+#: playlist/ProgressiveSearchWidget.cpp:116 widgets/SmartPlaylistEditor.cpp:976
 msgid "Years"
 msgstr "Roky"
 
@@ -12987,8 +13009,8 @@ msgstr "Vlastní"
 msgid ""
 "Either a fixed (absolute) value, or a relative value (e.g. 128px or 12%)."
 msgstr ""
-"Buď pevná (absolutní) hodnota, nebo hodnota relativní (např. 128px, nebo "
-"12%.)"
+"Buď pevná (absolutní) hodnota, nebo hodnota relativní (např. 128px, nebo 12"
+"%.)"
 
 #: playlist/layouts/LayoutEditDialog.cpp:105
 msgid "Fit content"
@@ -13031,7 +13053,7 @@ msgid ""
 "changes and setting this as active"
 msgstr ""
 "Momentální rozvržení vzhledu '%1' je pouze ke čtení. Vytvářím nové rozvržení "
-"vzhledu '%2' s vašimi změnami a nastavuji jej jako aktivní"
+"vzhledu '%2' s Vašimi změnami a nastavuji jej jako aktivní"
 
 #: playlist/layouts/LayoutManager.cpp:413
 #, kde-format
@@ -13229,6 +13251,8 @@ msgid ""
 "<a href='%1'>Dynamic Mode</a> Enabled. <a href='%2'>Repopulate</a> | <a "
 "href='%3'>Turn off</a>"
 msgstr ""
+"<a href='%1'>Dynamický režim</a> povolen. <a href='%2'>Osvěžit</a> | <a "
+"href='%3'>Vypnout</a>"
 
 #: playlist/PlaylistDock.cpp:186
 msgid "&Save Current Playlist"
@@ -13246,27 +13270,22 @@ msgstr "Přidat nové"
 #: playlistgenerator/PresetEditDialog.cpp:62
 #: playlistgenerator/PresetEditDialog.cpp:64
 #: playlistgenerator/PresetEditDialog.cpp:92
-#, fuzzy
-#| msgid "Connection Settings"
 msgid "Constraint Group"
-msgstr "Nastavení připojení"
+msgstr "Skupina kritérií"
 
 #: playlistgenerator/constraints/Checkpoint.cpp:61
 msgid "Checkpoint"
-msgstr ""
+msgstr "Kontrolní bod"
 
 #: playlistgenerator/constraints/Checkpoint.cpp:62
-#, fuzzy
-#| msgid "Match a certain portion of the playlist to a value."
 msgid "Fixes a track, album, or artist to a certain position in the playlist"
-msgstr "Srovnat určitou část seznamu skladeb s hodnotou."
+msgstr ""
+"Zafixuje skladbu, album nebo umělce na určitou pozici v seznamu skladeb"
 
 #: playlistgenerator/constraints/Checkpoint.cpp:177
-#, fuzzy, kde-format
-#| msgctxt "track from source"
-#| msgid "from <b>%1</b>"
+#, kde-format
 msgid "Checkpoint: %1"
-msgstr "od <b>%1</b>"
+msgstr "Kontrolní bod: %1"
 
 #: playlistgenerator/constraints/Checkpoint.cpp:185
 #: playlistgenerator/constraints/Checkpoint.cpp:193
@@ -13301,7 +13320,7 @@ msgstr "Zabránit duplicitám"
 #: playlistgenerator/constraints/PreventDuplicates.cpp:54
 msgid ""
 "Prevents duplicate tracks, albums, or artists from appearing in the playlist"
-msgstr ""
+msgstr "Zabránit duplicitě skladeb, alb nebo umělců v seznamu skladeb"
 
 #: playlistgenerator/constraints/PreventDuplicates.cpp:101
 msgid "Prevent duplicate tracks"
@@ -13316,18 +13335,14 @@ msgid "Prevent duplicate albums"
 msgstr "Zabránit duplicitě alb"
 
 #: playlistgenerator/constraints/TagMatch.cpp:57
-#, fuzzy
-#| msgid "My Tags"
 msgid "Match Tags"
-msgstr "Mé značky"
+msgstr "Najít shodu značek"
 
 #: playlistgenerator/constraints/TagMatch.cpp:58
-#, fuzzy
-#| msgid "Number of tracks to load into the playlist after the active track."
 msgid "Make all tracks in the playlist match the specified characteristic"
 msgstr ""
-"Počet skladeb, které mají být nahrány do seznamu skladeb za právě "
-"přehrávanou skladbu."
+"Způsobit aby všechny skladby v seznamu skladeb odpovídaly určité "
+"charakteristice"
 
 #: playlistgenerator/constraints/TagMatch.cpp:184
 #, kde-format
@@ -13337,7 +13352,7 @@ msgctxt ""
 "contains; %4 = a string to match; Example: Match tag: not title contains "
 "\"foo\""
 msgid "Match tag:%1 %2 %3 %4"
-msgstr ""
+msgstr "Najít shodu značky: %1 %2 %3 %4"
 
 #: playlistgenerator/constraints/TagMatch.cpp:185
 msgid " not"
@@ -13556,10 +13571,8 @@ msgid "Playlist Duration"
 msgstr "Délka seznamu skladeb"
 
 #: playlistgenerator/constraints/PlaylistDuration.cpp:58
-#, fuzzy
-#| msgid "User generated and imported playlists"
 msgid "Sets the preferred duration of the playlist"
-msgstr "Uživatelem vytvořené a importované seznamy skladeb"
+msgstr "Nastaví preferovanou délku seznamu skladeb"
 
 #: playlistgenerator/constraints/PlaylistDuration.cpp:124
 #, kde-format
@@ -13635,21 +13648,17 @@ msgid "\"Match All\" group"
 msgstr "Skupina \"odpovídá vše\""
 
 #: playlistgenerator/ConstraintGroup.cpp:91
-#, fuzzy
-#| msgid "Unknown track"
 msgctxt "name of a type of constraint group"
 msgid "Unknown match group"
-msgstr "Neznámá skladba"
+msgstr "Neznámá skupina shody"
 
 #: playlistgenerator/Preset.cpp:42 playlistgenerator/Preset.cpp:55
 msgid "New playlist preset"
 msgstr "Nová předvolba seznamu skladeb"
 
 #: playlistgenerator/Preset.cpp:45 playlistgenerator/Preset.cpp:67
-#, fuzzy
-#| msgid "Biased playlists"
 msgid "Unnamed playlist preset"
-msgstr "Seznamy skladeb se zkreslením"
+msgstr "Nepojmenovaná předvolba seznamu skladeb"
 
 #: playlistgenerator/Preset.cpp:129
 msgid "Generating a new playlist"
@@ -13661,10 +13670,14 @@ msgid ""
 "constraints.  If you are not satisfied with the results, try loosening or "
 "removing some constraints and then generating a new playlist."
 msgstr ""
+"Generátor seznamu skladeb vytvořil seznam skladeb, který neodpovídá Vašem "
+"kritériím. Pokud s výsledkem nejste spokojeni, pokuste se zmírnit nebo "
+"odebrat některé kritéria a pak vygenerujte nový seznam skladeb."
 
 #: playlistgenerator/ConstraintSolver.cpp:210
 msgid "The playlist generator failed to load any tracks from the collection."
 msgstr ""
+"Generátoru seznamu skladeb se nepodařilo nahrát žádné skladby ze sbírky."
 
 #: playlistgenerator/ConstraintSolver.cpp:216
 msgid ""
@@ -13672,6 +13685,9 @@ msgid ""
 "find the tracks that match best, but you may want to consider loosening the "
 "constraints to find more tracks."
 msgstr ""
+"Nebyly nalezeny žádné skladby, které by se shodovaly ve všech kritériích. "
+"Generátor seznamu skladeb najde skladby, které mají nejlepší shodu. Můžete "
+"zmírnit kritéria, aby se našlo více skladeb."
 
 #: playlistmanager/file/PlaylistFileProvider.cpp:97
 msgid "Playlist Files on Disk"
@@ -13752,15 +13768,15 @@ msgstr "Server Ampache %1"
 
 #: services/ampache/AmpacheService.cpp:100
 msgid "Amarok frontend for your Ampache server"
-msgstr "Amarok jako rozhraní pro spojení s vaším serverem Ampache"
+msgstr "Amarok jako rozhraní pro spojení s Vaším serverem Ampache"
 
 #: services/ampache/AmpacheService.cpp:102
 msgid ""
 "Use Amarok as a seamless frontend to your Ampache server. This lets you "
 "browse and play all the Ampache contents from within Amarok."
 msgstr ""
-"Použijte Amarok jako jednolité rozhraní pro spojení s vaším Ampache serverem."
-"To vám umožní procházet a přehrát veškerý obsah Ampache z Amaroku."
+"Použijte Amarok jako jednolité rozhraní pro spojení s Vaším Ampache serverem."
+"To Vám umožní procházet a přehrát veškerý obsah Ampache z Amaroku."
 
 #: services/jamendo/JamendoInfoParser.cpp:46
 #: services/jamendo/JamendoInfoParser.cpp:77
@@ -13819,7 +13835,7 @@ msgstr[2] "%1 umělců."
 
 #: services/jamendo/JamendoService.cpp:80
 msgid "A archive of free, Creative Commons licensed music"
-msgstr ""
+msgstr "Archiv volně dostupné hudby pod licencemi Creative Commons"
 
 #: services/jamendo/JamendoService.cpp:83
 msgid ""
@@ -13846,8 +13862,7 @@ msgstr "Stahuje se databáze z Jamendo.com..."
 msgid "Updating the local Jamendo database."
 msgstr "Aktualizuje se místní databáze Jamendo."
 
-#: services/lastfm/LoveTrackAction.cpp:25
-#: services/lastfm/LastFmService.cpp:284
+#: services/lastfm/LoveTrackAction.cpp:25 services/lastfm/LastFmService.cpp:284
 msgid "Last.fm: Love"
 msgstr "Last.fm: Oblíbené"
 
@@ -13862,16 +13877,18 @@ msgid ""
 "The \"Last.fm\" similar bias looks up tracks on Last.fm and only adds "
 "similar tracks."
 msgstr ""
+"Zkreslení Podobní podle Last.fm vyhledá skladby na Last.fm a přidá pouze ty "
+"podobné."
 
 #: services/lastfm/biases/LastFmBias.cpp:132
 msgctxt "Last.fm bias representation"
 msgid "Similar to the previous track (as reported by Last.fm)"
-msgstr ""
+msgstr "Podobné předchozí skladbě (dle Last.fm)"
 
 #: services/lastfm/biases/LastFmBias.cpp:135
 msgctxt "Last.fm bias representation"
 msgid "Similar to the previous artist (as reported by Last.fm)"
-msgstr ""
+msgstr "Podobné předchozímu umělci (dle Last.fm)"
 
 #: services/lastfm/biases/LastFmBias.cpp:147
 msgid "Last.fm thinks the track is similar to"
@@ -13896,12 +13913,14 @@ msgid ""
 "The \"WeeklyTop\" bias adds tracks that are in the weekly top chart of Last."
 "fm."
 msgstr ""
+"Zkreslení Nejlepší umělci Last.fm tohoto týdne přidá skladby z týdenní "
+"hitparády Last.fm."
 
 #: services/lastfm/biases/WeeklyTopBias.cpp:133
 #, kde-format
 msgctxt "WeeklyTopBias bias representation"
 msgid "Tracks from the Last.fm top lists from %1 to %2"
-msgstr ""
+msgstr "Skladby z Last.fm hitparády od %1 do %2"
 
 #: services/lastfm/biases/WeeklyTopBias.cpp:144
 msgctxt "in WeeklyTopBias. Label for the date widget"
@@ -13981,10 +14000,9 @@ msgid "%1's Personal Radio"
 msgstr "Osobní rádio %1"
 
 #: services/lastfm/meta/LastFmMeta.cpp:413
-#, fuzzy, kde-format
-#| msgid "%1's Loved Radio"
+#, kde-format
 msgid "%1's Mix Radio"
-msgstr "Zbožňované rádio %1"
+msgstr "Rádio mix uživatele %1"
 
 #: services/lastfm/meta/LastFmMeta.cpp:417
 #, kde-format
@@ -14097,11 +14115,11 @@ msgid ""
 msgstr ""
 "Last.fm je oblíbená internetová služba, která poskytuje osobní doporučení "
 "týkající se rádiových stanic a hudby. Osobní doporučení ohledně poslechu "
-"stanic je děláno přesně podle vašich zvyků a poskytuje vám rady při hledání "
+"stanic je děláno přesně podle Vašich zvyků a poskytuje Vám rady při hledání "
 "nové hudby. Je taktéž možné pouštět si stanice hrající hudbu, která se "
 "podobá určitému umělci a stejně tak poslouchat rádiové proudy od lidí, jež "
-"jste si přidal jako přátele, nebo aby Last.fm zvážilo vaše hudební \"sousedy"
-"\""
+"jste si přidal jako přátele, nebo aby Last.fm zvážilo Vaše hudební "
+"\"sousedy\""
 
 #: services/lastfm/LastFmService.cpp:286
 msgid "Ctrl+L"
@@ -14183,7 +14201,7 @@ msgstr "Moje rozhlasová stanice"
 
 #: services/lastfm/LastFmTreeModel.cpp:335
 msgid "My Mix Radio"
-msgstr ""
+msgstr "Rádio Můj mix"
 
 #: services/lastfm/LastFmTreeModel.cpp:337
 msgid "My Neighborhood"
@@ -14214,7 +14232,7 @@ msgid ""
 "No running KWallet found. Would you like Amarok to save your Last.fm "
 "credentials in plaintext?"
 msgstr ""
-"Nenalezen spuštěný KWallet. Chcete, aby Amarok uložil vaše poslední "
+"Nenalezen spuštěný KWallet. Chcete, aby Amarok uložil Vaše poslední "
 "přihlašovací údaje Last.fm jako obyčejný text?"
 
 #: services/magnatune/MagnatuneDownloadInfo.cpp:210
@@ -14369,12 +14387,12 @@ msgstr "Načítá se úvodní stránka Magnatune.com"
 #: services/magnatune/MagnatuneInfoParser.cpp:182
 #: services/magnatune/MagnatuneInfoParser.cpp:198
 msgid "Loading your Magnatune.com favorites page..."
-msgstr "Načítá se vaše oblíbená stránka Magnatune.com..."
+msgstr "Načítá se Vaše oblíbená stránka Magnatune.com..."
 
 #: services/magnatune/MagnatuneInfoParser.cpp:211
 #: services/magnatune/MagnatuneInfoParser.cpp:227
 msgid "Loading your personal Magnatune.com recommendations page..."
-msgstr "Z Magnatune.com se načítá vaše osobní stránka s doporučeními..."
+msgstr "Z Magnatune.com se načítá Vaše osobní stránka s doporučeními..."
 
 #: services/magnatune/MagnatuneCollectionLocation.cpp:39
 msgid "Preview Tracks"
@@ -14390,7 +14408,7 @@ msgstr ""
 "Skladby, které se chystáte kopírovat, jsou ukázkami proudů Magnatune.com. "
 "Jestli chcete lepší kvalitu a proudy zdarma, uvažujte o zakoupení stažené "
 "kopie. Pamatujte na to, že když nakupujete na Magnatune, dostane umělec "
-"polovinu z vámi zaplacené částky. A pokud nákup provedete v Amaroku, "
+"polovinu z Vámi zaplacené částky. A pokud nákup provedete v Amaroku, "
 "podpoříte jej deseti procenty."
 
 #: services/magnatune/MagnatuneStore.cpp:106
@@ -14409,7 +14427,7 @@ msgstr ""
 "Magnatune.com je odlišný druh nahrávací společnosti, jejímž heslem je "
 "\"Nejsme zlí!\" 50 % každého prodeje jde přímo k umělci a jestliže si album "
 "zakoupíte přes Amarok, dostane z toho projekt Amarok 10 % odměnu. Magnatune."
-"com rovněž nabízí členství nazvané \"vše co dokážete sníst\", které vám "
+"com rovněž nabízí členství nazvané \"vše co dokážete sníst\", které Vám "
 "umožňuje stáhnout tolik hudby, kolik byste rádi."
 
 #: services/magnatune/MagnatuneStore.cpp:245
@@ -14506,7 +14524,8 @@ msgid ""
 "amarok@kde.org"
 msgstr ""
 "IRC:\n"
-"server: irc.freenode.net / kanály: #amarok #amarok.de #amarok.es  #amarok.fr\n"
+"server: irc.freenode.net / kanály: #amarok #amarok.de #amarok.es  #amarok."
+"fr\n"
 "\n"
 "Zpětná vazba:\n"
 "amarok@kde.org"
@@ -14645,14 +14664,12 @@ msgid "Loading info..."
 msgstr "Načítají se informace..."
 
 #: services/gpodder/GpodderService.cpp:128
-#, fuzzy
-#| msgid "Podcast Directory"
 msgid "gpodder.net: Podcast Directory Service"
-msgstr "Adresář s podcasty"
+msgstr "gpodder.net: Služba adresáře podcastů"
 
 #: services/gpodder/GpodderService.cpp:131
 msgid "gpodder.net is an online Podcast Directory & Synchonisation Service."
-msgstr ""
+msgstr "gpodder.net je online adresář podcastů a synchronizační služba"
 
 #: services/gpodder/GpodderProvider.cpp:281
 msgid "Gpodder Podcasts"
@@ -14660,11 +14677,11 @@ msgstr "Podcasty Gpodder"
 
 #: services/gpodder/GpodderProvider.cpp:452
 msgid "Trying to synchronize statuses with gpodder.net"
-msgstr ""
+msgstr "Zkouší se synchronizovat statusy s gpodder.net"
 
 #: services/gpodder/GpodderProvider.cpp:510
 msgid "Trying to synchronize with gpodder.net"
-msgstr ""
+msgstr "Zkouší se synchronizovat s gpodder.net"
 
 #: services/gpodder/GpodderServiceSettings.cpp:171
 msgid "Unable to connect to gpodder.net service or other error occurred."
@@ -14675,6 +14692,8 @@ msgid ""
 "Error parsing the Reply, check if gpodder.net is working correctly and "
 "report a bug"
 msgstr ""
+"Chyba při zpracování odpovědi, zkontrolujte, zda gpodder.net běží a nahlaste "
+"chybu"
 
 #: services/gpodder/GpodderServiceConfig.cpp:144
 msgid "gpodder.net credentials"
@@ -14741,11 +14760,8 @@ msgid "Load Details..."
 msgstr "Načíst podrobnosti..."
 
 #: services/amazon/AmazonItemTreeView.cpp:304
-#, fuzzy
-#| msgctxt "track from source"
-#| msgid "from <b>%1</b>"
 msgid "Direct Checkout"
-msgstr "od <b>%1</b>"
+msgstr "Přímý nákup"
 
 #: services/amazon/AmazonItemTreeView.cpp:313
 msgid "Search for Album..."
@@ -14755,36 +14771,40 @@ msgstr "Hledat album..."
 #: services/amazon/AmazonShoppingCartDialog.cpp:59
 #, kde-format
 msgid "Shopping cart value: %1"
-msgstr ""
+msgstr "Hodnota nákupního košíku: %1"
 
 #: services/amazon/AmazonMeta.cpp:137
 msgid "Snippet taken from the Amazon MP3 store"
-msgstr ""
+msgstr "Ukázka převzata z Amazon MP3 Store"
 
 #: services/amazon/AmazonStore.cpp:101
 msgid "Access the Amazon MP3 Store directly from Amarok"
-msgstr ""
+msgstr "Přistupujte k Amazon MP3 Store přímo z Amaroku"
 
 #: services/amazon/AmazonStore.cpp:105
 msgid ""
 "This plugin allows searching and purchasing songs and albums from the Amazon "
 "MP3 store. Amarok gets a share of the profits made by this service."
 msgstr ""
+"Tento zásuvný modul umožňuje prohledávání a nakupování skladeb a alb z "
+"Amazon MP3 Store. Amarok získá podíl ze zisků vytvořených pomocí této služby."
 
 #: services/amazon/AmazonStore.cpp:192
 #, kde-format
 msgid "<em>%1</em> has been added to your shopping cart."
-msgstr ""
+msgstr "<em>%1</em> bylo přidáno do Vašeho nákupního košíku."
 
 #: services/amazon/AmazonStore.cpp:293
 msgid "Select your Amazon locale - Amarok"
-msgstr ""
+msgstr "Vyberte jazyk Amazonu - Amarok"
 
 #: services/amazon/AmazonStore.cpp:307
 msgid ""
 "<b>MP3 Music Store</b><br/><br/>Please select a valid country in the "
 "settings to make the store work."
 msgstr ""
+"<b>MP3 Music Store</b><br/><br/>Aby obchod fungoval, vyberte prosím platnou "
+"zemi v nastavení."
 
 #: services/amazon/AmazonStore.cpp:338
 msgid "Error: Unable to write temporary file. :-("
@@ -14792,7 +14812,7 @@ msgstr "Chyba: Nelze zapsat dočasný soubor. :-("
 
 #: services/amazon/AmazonStore.cpp:437
 msgid "Select results page to show"
-msgstr ""
+msgstr "Zvolte, kterou stránku výsledků zobrazit"
 
 #: services/amazon/AmazonStore.cpp:461
 msgctxt "Add selected item to your shopping cart"
@@ -14801,7 +14821,7 @@ msgstr "Přidat do košíku"
 
 #: services/amazon/AmazonStore.cpp:462
 msgid "Add selected item to your shopping cart"
-msgstr ""
+msgstr "Přidat označenou položku do Vašeho nákupního košíku"
 
 #: services/amazon/AmazonStore.cpp:469
 msgctxt "View your shopping cart contents"
@@ -14810,27 +14830,24 @@ msgstr "Zobrazit nákupní košík"
 
 #: services/amazon/AmazonStore.cpp:470
 msgid "View your shopping cart contents"
-msgstr ""
+msgstr "Ukázat obsah nákupního košíku"
 
 #: services/amazon/AmazonStore.cpp:477
-#, fuzzy
-#| msgctxt "track from source"
-#| msgid "from <b>%1</b>"
 msgctxt "Checkout your shopping cart"
 msgid "Checkout"
-msgstr "od <b>%1</b>"
+msgstr "Koupit"
 
 #: services/amazon/AmazonStore.cpp:478
 msgid "Checkout your shopping cart"
-msgstr ""
+msgstr "Koupit obsah nákupního košíku"
 
 #: services/amazon/AmazonStore.cpp:499
 msgid "Error: Querying MP3 Music Store database failed. :-("
-msgstr ""
+msgstr "Chyba: dotazování databáze MP3 Music Store selhalo. :-("
 
 #: services/amazon/AmazonStore.cpp:534
 msgid "Error: Received an invalid reply. :-("
-msgstr ""
+msgstr "Chyba: přijata neplatná odpověď. :-("
 
 #: services/ServiceBase.cpp:311
 msgid "This service does not accept any messages"
@@ -14891,6 +14908,10 @@ msgid ""
 "your files readable by a portable music player or a particular software "
 "program."
 msgstr ""
+"Můžete zvolit, že se hudební soubory převedou do jiného formátu pomocí "
+"nějakého kodeku během kopírování. Toto může být vhodné pro ušetření místa na "
+"přenosném přehrávači nebo pro to, aby daný přehrávač nebo program byl "
+"schopný soubory přehrát."
 
 #: transcoding/TranscodingAssistantDialog.cpp:65
 msgid "&Copy"
@@ -14898,7 +14919,7 @@ msgstr "&Kopírovat"
 
 #: transcoding/TranscodingAssistantDialog.cpp:66
 msgid "Just copy the tracks without transcoding them."
-msgstr ""
+msgstr "Pouze kopírovat skladby bez jakéhokoliv převádění."
 
 #: transcoding/TranscodingAssistantDialog.cpp:70
 msgid ""
@@ -14908,6 +14929,11 @@ msgid ""
 "program. Only successfully transcoded files will be removed from their "
 "original location."
 msgstr ""
+"Můžete zvolit, že se hudební soubory převedou do jiného formátu pomocí "
+"nějakého kodeku během přesouvání. Toto může být vhodné pro ušetření místa na "
+"přenosném přehrávači nebo pro to, aby daný přehrávač nebo program byl "
+"schopný soubory přehrát. Pouze úspěšně převedené skladby budou smazány z "
+"jejich původního umístění."
 
 #: transcoding/TranscodingAssistantDialog.cpp:76
 msgid "&Move"
@@ -14915,24 +14941,23 @@ msgstr "Pře&sunout"
 
 #: transcoding/TranscodingAssistantDialog.cpp:77
 msgid "Just move the tracks without transcoding them."
-msgstr ""
+msgstr "Pouze přesunout skladby bez jakéhokoliv převádění."
 
 #: transcoding/TranscodingAssistantDialog.cpp:123
-#, fuzzy
-#| msgid "No description available in your language"
 msgctxt "Tooltip of a disabled transcoding encoder option"
 msgid "Not currently available on your system."
-msgstr "Popis nedostupný pro váš jazyk"
+msgstr "V současnosti nedostupný na Vašem systému."
 
 #: transcoding/TranscodingAssistantDialog.cpp:130
 msgid "Target collection indicates this format would not be playable."
-msgstr ""
+msgstr "Cílová sbírka naznačuje, že tento formát by nešel přehrát."
 
 #: transcoding/TranscodingOptionsStackedWidget.cpp:56
 msgid ""
 "In order to configure the parameters of the transcoding operation, please "
 "pick an encoder from the list."
 msgstr ""
+"Pro nastavení parametrů převodu skladeb prosím vyberte kodek ze seznamu."
 
 #: transcoding/TranscodingPropertySliderWidget.cpp:100
 msgid " (recommended)"
@@ -15351,7 +15376,7 @@ msgid ""
 "Drag to reposition"
 msgstr ""
 "OSD náhled\n"
-"přetáhněte jej na vámi požadovanou pozici"
+"přetáhněte jej na Vámi požadovanou pozici"
 
 #: widgets/Osd.cpp:741
 msgid "Stopped"
@@ -15388,12 +15413,12 @@ msgstr "prázdné"
 #: PluginManager.cpp:259
 msgid ""
 "<p>Amarok could not find any collection plugins. It is possible that Amarok "
-"is installed under the wrong prefix, please fix your installation using:<pre>"
-"$ cd /path/to/amarok/source-code/<br>$ su -c \"make uninstall\"<br>$ cmake -"
-"DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -c \"make install\"<br>$ "
-"kbuildsycoca4 --noincremental<br>$ amarok</pre>More information can be found "
-"in the README file. For further assistance join us at #amarok on irc."
-"freenode.net.</p>"
+"is installed under the wrong prefix, please fix your installation "
+"using:<pre>$ cd /path/to/amarok/source-code/<br>$ su -c \"make "
+"uninstall\"<br>$ cmake -DCMAKE_INSTALL_PREFIX=`kde4-config --prefix` && su -"
+"c \"make install\"<br>$ kbuildsycoca4 --noincremental<br>$ amarok</pre>More "
+"information can be found in the README file. For further assistance join us "
+"at #amarok on irc.freenode.net.</p>"
 msgstr ""
 "<p>Amarok nemohl najít žádné moduly sbírky. Počkejte prosím několik minut a "
 "potom Amarok znovu spusťte.</p><p>Pokud to nepomůže, je pravděpodobné, že "
@@ -15617,7 +15642,7 @@ msgstr "Hodnotit aktuální skladbu: 5"
 
 #: MainWindow.cpp:925
 msgid "Network Request Viewer"
-msgstr ""
+msgstr "Prohlížeč síťových dotazů"
 
 #: MainWindow.cpp:943
 msgid "&About Amarok"
@@ -15654,6 +15679,10 @@ msgid ""
 "\n"
 "Please remember that you can always use the shortcut \"%1\" to bring it back."
 msgstr ""
+"Zvolili jste skrýt hlavní lištu.\n"
+"\n"
+"Mějte na vědomí, že můžete vždy použít zkratku \"%1\" pro opětovné zobrazení "
+"lišty."
 
 #: MainWindow.cpp:1122
 msgid "Hide Menu"
@@ -15675,6 +15704,8 @@ msgid ""
 "Script error reported by: %1\n"
 "%2"
 msgstr ""
+"Chyba nahlášená skriptem %1\n"
+"%2"
 
 #: TrayIcon.cpp:145
 #, kde-format

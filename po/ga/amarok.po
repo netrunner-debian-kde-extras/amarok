@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: extragear-multimedia/amarok.po\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2012-07-27 03:46+0200\n"
+"POT-Creation-Date: 2012-08-10 04:39+0200\n"
 "PO-Revision-Date: 2007-04-15 19:39-0500\n"
 "Last-Translator: Kevin Scannell <kscanne@gmail.com>\n"
 "Language-Team: Irish <gaeilge-gnulinux@lists.sourceforge.net>\n"
@@ -619,7 +619,7 @@ msgstr "An ndéanfar céimniú amach nuair a chuirfear deireadh leis an gclár?"
 #. i18n: ectx: label, entry, group (Playback)
 #: rc.cpp:257
 msgid "Equalizer mode - 0 = off, 1 to n = preset no"
-msgstr ""
+msgstr "Mód an chothromóra - 0 = as, 1...n = réamhshocruithe"
 
 #. i18n: file: amarokconfig.kcfg:261
 #. i18n: ectx: whatsthis, entry, group (Playback)
@@ -715,7 +715,7 @@ msgstr "Úsáid tacaíocht KNotify"
 #. i18n: ectx: label, entry, group (OSD)
 #: rc.cpp:302
 msgid "Use On-Screen Display"
-msgstr "Úsáid Taispeáint ar Scáileán (TarS)"
+msgstr "Úsáid Taispeáint ar Scáileán (T-ar-S)"
 
 #. i18n: file: amarokconfig.kcfg:319
 #. i18n: ectx: whatsthis, entry, group (OSD)
@@ -739,7 +739,7 @@ msgstr "Cumasaigh/Díchumasaigh Growl le haghaidh fógraí."
 #. i18n: ectx: label, entry, group (OSD)
 #: rc.cpp:314
 msgid "Display the same information in the OSD as in the playlist columns."
-msgstr "Taispeáin an t-eolas céánna sa TarS mar atá sa cholúin seinmliosta."
+msgstr "Taispeáin an t-eolas céánna sa T-ar-S mar atá sa cholúin seinmliosta."
 
 #. i18n: file: amarokconfig.kcfg:329
 #. i18n: ectx: whatsthis, entry, group (OSD)
@@ -748,20 +748,20 @@ msgid ""
 "If enabled, the OSD will display the same information and in the same order "
 "as the columns in the playlist."
 msgstr ""
-"Leis seo, taispeánfaidh an TarS an t-eolas céánna, san ord céanna, mar atá "
+"Leis seo, taispeánfaidh an T-ar-S an t-eolas céánna, san ord céanna, mar atá "
 "sna colúin sa seinmliosta."
 
 #. i18n: file: amarokconfig.kcfg:333
 #. i18n: ectx: label, entry, group (OSD)
 #: rc.cpp:320
 msgid "The OSD text to show"
-msgstr "Téacs TarS le taispeáint"
+msgstr "Téacs T-ar-S le taispeáint"
 
 #. i18n: file: amarokconfig.kcfg:334
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: rc.cpp:323
 msgid "Customize the OSD display text."
-msgstr "Saincheap an téacs TarS."
+msgstr "Saincheap an téacs T-ar-S."
 
 #. i18n: file: amarokconfig.kcfg:338
 #. i18n: ectx: label, entry, group (OSD)
@@ -773,25 +773,25 @@ msgstr "Scoránaigh Tréshoilseacht"
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: rc.cpp:329
 msgid "Make the background of the OSD translucent."
-msgstr "Déan cúlra an TarS tréshoilseach."
+msgstr "Déan cúlra an T-ar-S tréshoilseach."
 
 #. i18n: file: amarokconfig.kcfg:343
 #. i18n: ectx: label, entry, group (OSD)
 #: rc.cpp:332
 msgid "Whether to use custom colors for the OSD"
-msgstr "An úsáidfear dathanna saincheaptha sa TarS?"
+msgstr "An úsáidfear dathanna saincheaptha sa T-ar-S?"
 
 #. i18n: file: amarokconfig.kcfg:344
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: rc.cpp:335
 msgid "You can use custom colors for the OSD if you set this true."
-msgstr "Leis seo, úsáidfear dathanna saincheaptha sa TarS."
+msgstr "Leis seo, úsáidfear dathanna saincheaptha sa T-ar-S."
 
 #. i18n: file: amarokconfig.kcfg:348
 #. i18n: ectx: label, entry, group (OSD)
 #: rc.cpp:338
 msgid "Font color for OSD"
-msgstr "Dath an Chló sa TarS"
+msgstr "Dath an Chló sa T-ar-S"
 
 #. i18n: file: amarokconfig.kcfg:349
 #. i18n: ectx: whatsthis, entry, group (OSD)
@@ -800,14 +800,14 @@ msgid ""
 "The color of the OSD text. The color is specified in RGB, a comma-separated "
 "list containing three integers between 0 and 255."
 msgstr ""
-"Dath an téacs sa TarS.  Sonraigh an dath mar RGB, .i. trí shlánuimhir idir 0 "
-"agus 255 le camóga eatarthu."
+"Dath an téacs sa T-ar-S.  Sonraigh an dath mar RGB, .i. trí shlánuimhir idir "
+"0 agus 255 le camóga eatarthu."
 
 #. i18n: file: amarokconfig.kcfg:353
 #. i18n: ectx: label, entry, group (OSD)
 #: rc.cpp:344
 msgid "Font scaling for OSD"
-msgstr ""
+msgstr "Scálú cló le haghaidh na T-ar-S"
 
 #. i18n: file: amarokconfig.kcfg:354
 #. i18n: ectx: whatsthis, entry, group (OSD)
@@ -852,7 +852,7 @@ msgstr ""
 #. i18n: ectx: label, entry, group (OSD)
 #: rc.cpp:362
 msgid "OSD screen"
-msgstr "Scáileán OSD"
+msgstr "Scáileán T-ar-S"
 
 #. i18n: file: amarokconfig.kcfg:374
 #. i18n: ectx: whatsthis, entry, group (OSD)
@@ -861,8 +861,8 @@ msgid ""
 "The screen that should display the OSD. For single-headed environments this "
 "setting should be 0."
 msgstr ""
-"An scáileán ar a dtaispeánfar an TarS. Mura bhfuil ach scáileán amháin agat, "
-"ba chóir é seo a shocrú go 0."
+"An scáileán ar a dtaispeánfar an T-ar-S. Mura bhfuil ach scáileán amháin "
+"agat, ba chóir é seo a shocrú go 0."
 
 #. i18n: file: amarokconfig.kcfg:378
 #. i18n: ectx: label, entry, group (OSD)
@@ -874,13 +874,13 @@ msgstr "An dtaispeánfar clúdach an albaim?"
 #. i18n: ectx: whatsthis, entry, group (OSD)
 #: rc.cpp:371
 msgid "If enabled, shows the album cover in the OSD."
-msgstr "Leis seo, taispeánfar clúdach an albaim sa TarS."
+msgstr "Leis seo, taispeánfar clúdach an albaim sa T-ar-S."
 
 #. i18n: file: amarokconfig.kcfg:383
 #. i18n: ectx: label, entry, group (OSD)
 #: rc.cpp:374
 msgid "Align OSD to"
-msgstr "Ailínigh an TarS le"
+msgstr "Ailínigh an T-ar-S le"
 
 #. i18n: file: amarokconfig.kcfg:384
 #. i18n: ectx: whatsthis, entry, group (OSD)
@@ -896,7 +896,7 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_OsdHideOnFullscreen)
 #: rc.cpp:380 rc.cpp:801
 msgid "Don't show when a fullscreen application is active"
-msgstr ""
+msgstr "Ná taispeáin nuair a bhíonn feidhmchlár lánscáileáin ar siúl"
 
 #. i18n: file: amarokconfig.kcfg:395
 #. i18n: ectx: whatsthis, entry, group (OSD)
@@ -907,6 +907,8 @@ msgid ""
 "Do not show the On-Screen-Display if another application is focused and "
 "running in fullscreen mode."
 msgstr ""
+"Ná húsáid Taispeáint-ar-Scáileán má tá feidhmchlár eile i bhfócas agus ar "
+"siúl sa mhód lánscáileáin."
 
 #. i18n: file: amarokconfig.kcfg:403
 #. i18n: ectx: label, entry, group (Session)
@@ -1085,7 +1087,7 @@ msgstr ""
 #. i18n: ectx: whatsthis, entry, group (Scrobbler)
 #: rc.cpp:464
 msgid "Use composer data in Last.fm as artist"
-msgstr ""
+msgstr "Úsáid sonraí faoin chumadóir in Last.fm mar ealaíontóir"
 
 #. i18n: file: amarokconfig.kcfg:491
 #. i18n: ectx: label, entry, group (Scrobbler)
@@ -1535,7 +1537,7 @@ msgstr "Nuashonraigh scripteanna insuite go huathoibríoch"
 #. i18n: ectx: property (toolTip), widget (QPushButton, manageButton)
 #: rc.cpp:670
 msgid "Browse, install, and uninstall scripts"
-msgstr ""
+msgstr "Brabhsáil, suiteáil, agus díshuiteáil scripteanna"
 
 #. i18n: file: configdialog/dialogs/ScriptsConfig.ui:65
 #. i18n: ectx: property (text), widget (QPushButton, manageButton)
@@ -1653,8 +1655,8 @@ msgid ""
 "Check to enable the On-Screen-Display. The OSD briefly displays track data "
 "when a new track is played."
 msgstr ""
-"Cuir tic anseo chun Taispeáint-ar-Scáileán (TarS) a chumasú. Taispeánann "
-"TarS faisnéis faoi amhrán nuair atá sé seinnte."
+"Cuir tic anseo chun Taispeáint-ar-Scáileán (T-ar-S) a chumasú. Taispeánann T-"
+"ar-S faisnéis faoi amhrán nuair atá sé seinnte."
 
 #. i18n: file: configdialog/dialogs/NotificationsConfig.ui:29
 #. i18n: ectx: property (title), widget (QGroupBox, kcfg_OsdEnabled)
@@ -1696,7 +1698,7 @@ msgstr "&Scáileán:"
 #. i18n: ectx: property (whatsThis), widget (KComboBox, kcfg_OsdScreen)
 #: rc.cpp:758 rc.cpp:761
 msgid "The screen that should display the OSD."
-msgstr "An scáileán a dtaispeánfar an TarS air."
+msgstr "An scáileán a dtaispeánfar an T-ar-S air."
 
 #. i18n: file: configdialog/dialogs/NotificationsConfig.ui:133
 #. i18n: ectx: property (toolTip), widget (QGroupBox, kcfg_OsdUseCustomColors)
@@ -1704,7 +1706,7 @@ msgstr "An scáileán a dtaispeánfar an TarS air."
 #. i18n: ectx: property (whatsThis), widget (QGroupBox, kcfg_OsdUseCustomColors)
 #: rc.cpp:764 rc.cpp:767
 msgid "Check to enable custom colors for the On-Screen-Display."
-msgstr "Cuir tic anseo chun dathanna saincheaptha a úsáid ar an TarS."
+msgstr "Cuir tic anseo chun dathanna saincheaptha a úsáid ar an T-ar-S."
 
 #. i18n: file: configdialog/dialogs/NotificationsConfig.ui:139
 #. i18n: ectx: property (title), widget (QGroupBox, kcfg_OsdUseCustomColors)
@@ -1718,7 +1720,7 @@ msgstr "Úsáid &dathanna saincheaptha"
 #. i18n: ectx: property (whatsThis), widget (KColorButton, kcfg_OsdTextColor)
 #: rc.cpp:773 rc.cpp:782
 msgid "The color of the OSD text."
-msgstr "Dath an téacs ar an TarS."
+msgstr "Dath an téacs ar an T-ar-S."
 
 #. i18n: file: configdialog/dialogs/NotificationsConfig.ui:166
 #. i18n: ectx: property (text), widget (QLabel, textLabel2)
@@ -1730,7 +1732,7 @@ msgstr "Dath téacs:"
 #. i18n: ectx: property (toolTip), widget (KColorButton, kcfg_OsdTextColor)
 #: rc.cpp:779
 msgid "Click to select the color of the OSD text."
-msgstr "Cliceáil chun dath an téacs ar an TarS a roghnú."
+msgstr "Cliceáil chun dath an téacs ar an T-ar-S a roghnú."
 
 #. i18n: file: configdialog/dialogs/NotificationsConfig.ui:211
 #. i18n: ectx: property (toolTip), widget (QCheckBox, kcfg_OsdUseTranslucency)
@@ -1748,7 +1750,7 @@ msgstr "&Tréshoilseach"
 #. i18n: ectx: property (text), widget (QLabel, label)
 #: rc.cpp:791
 msgid "Font scale:"
-msgstr ""
+msgstr "Scála an chló:"
 
 #. i18n: file: configdialog/dialogs/NotificationsConfig.ui:233
 #. i18n: ectx: property (suffix), widget (QSpinBox, kcfg_OsdFontScaling)
@@ -1810,6 +1812,7 @@ msgstr "Taispeáin de&ilbhín sa tráidire"
 #: rc.cpp:831 rc.cpp:834
 msgid "Check to enable the automatic retrieval of cover art from the Internet."
 msgstr ""
+"Cuir tic anseo chun ealaín chlúdaigh a fháil go huathoibríoch ón Idirlíon."
 
 #. i18n: file: configdialog/dialogs/GeneralConfig.ui:61
 #. i18n: ectx: property (text), widget (QCheckBox, kcfg_AutoGetCoverArt)
@@ -1894,7 +1897,7 @@ msgstr "Roghnaigh stíl an bharra mothaithe"
 #. i18n: ectx: property (text), item, widget (QComboBox, kcfg_MoodbarPaintStyle)
 #: rc.cpp:880
 msgid "Default (System colours)"
-msgstr ""
+msgstr "Réamhshocrú (dathanna an chórais)"
 
 #. i18n: file: configdialog/dialogs/GeneralConfig.ui:146
 #. i18n: ectx: property (text), item, widget (QComboBox, kcfg_MoodbarPaintStyle)
@@ -1935,10 +1938,8 @@ msgstr "Fillteáin Bhailiúcháin"
 #. i18n: file: configdialog/dialogs/CollectionConfig.ui:27
 #. i18n: ectx: property (title), widget (QGroupBox, importingBox)
 #: rc.cpp:901
-#, fuzzy
-#| msgid "Import Statistics"
 msgid "Importing Music"
-msgstr "Iompórtáil Staitisticí"
+msgstr "Ceol á Iompórtáil"
 
 #. i18n: file: configdialog/dialogs/CollectionConfig.ui:33
 #. i18n: ectx: property (toolTip), widget (QLabel, transcodeLabel)
@@ -1953,10 +1954,8 @@ msgstr ""
 #. i18n: file: configdialog/dialogs/CollectionConfig.ui:36
 #. i18n: ectx: property (text), widget (QLabel, transcodeLabel)
 #: rc.cpp:907
-#, fuzzy
-#| msgid "Transcode Tracks"
 msgid "Transcode tracks:"
-msgstr "Amhráin Traschódaithe"
+msgstr "Traschódaigh amhráin:"
 
 #. i18n: file: context/applets/currenttrack/currentTrackSettings.ui:20
 #. i18n: ectx: property (windowTitle), widget (QWidget, currentTrackSettings)
@@ -2343,7 +2342,7 @@ msgstr "Taispeáin áiteanna mar naisc"
 #. i18n: ectx: property (clickMessage), widget (KLineEdit, searchLineEdit)
 #: rc.cpp:1091
 msgid "Search Venue"
-msgstr ""
+msgstr "Lorg Ionad"
 
 #. i18n: file: context/applets/upcomingevents/upcomingEventsVenueSettings.ui:55
 #. i18n: ectx: property (toolTip), widget (KComboBox, countryCombo)
@@ -2441,13 +2440,13 @@ msgstr "Úsáid an leagan &soghluaiste den Vicipéid"
 #. i18n: ectx: property (text), widget (QLabel, Label5)
 #: rc.cpp:1148
 msgid "Analyzer Mode"
-msgstr ""
+msgstr "Mód an Anailíseora"
 
 #. i18n: file: context/applets/spectrumanalyzer/spectrumAnalyzerSettings.ui:34
 #. i18n: ectx: property (text), item, widget (KComboBox, modeComboBox)
 #: rc.cpp:1151
 msgid "Bars"
-msgstr ""
+msgstr "Barraí"
 
 #. i18n: file: context/applets/spectrumanalyzer/spectrumAnalyzerSettings.ui:39
 #. i18n: ectx: property (text), item, widget (KComboBox, modeComboBox)
@@ -2465,14 +2464,14 @@ msgstr ""
 #. i18n: ectx: property (text), item, widget (KComboBox, modeComboBox)
 #: rc.cpp:1160
 msgid "3D Frequency Waves"
-msgstr ""
+msgstr "Tonnta Minicíochta 3T"
 
 #. i18n: file: context/applets/spectrumanalyzer/spectrumAnalyzerSettings.ui:57
 #. i18n: ectx: property (text), widget (QLabel, Label2)
 #: rc.cpp:1164
 #, no-c-format
 msgid "Amount of Data (in %)"
-msgstr ""
+msgstr "Méid Sonraí (%)"
 
 #. i18n: file: context/applets/spectrumanalyzer/spectrumAnalyzerSettings.ui:80
 #. i18n: ectx: property (text), widget (QLabel, label)
@@ -2490,7 +2489,7 @@ msgstr ""
 #. i18n: ectx: property (text), widget (QLabel, label_2)
 #: rc.cpp:1173
 msgid "Show Wave (Bar Mode Only)"
-msgstr ""
+msgstr "Taispeáin Tonn (Mód Barraí Amháin)"
 
 #. i18n: file: context/applets/spectrumanalyzer/spectrumAnalyzerSettings.ui:137
 #. i18n: ectx: property (shortcut), widget (QCheckBox, cutCheckBox)
@@ -2502,7 +2501,7 @@ msgstr "Ctrl+G"
 #. i18n: ectx: property (text), widget (QLabel, label_4)
 #: rc.cpp:1179
 msgid "Cut out lower frequencies"
-msgstr ""
+msgstr "Gearr minicíochtaí ísle amach"
 
 #. i18n: file: core-impl/collections/audiocd/FormatSelectionDialog.ui:14
 #. i18n: ectx: property (windowTitle), widget (QDialog, FormatSelectionDialog)
@@ -2555,10 +2554,8 @@ msgstr "Casta"
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:14
 #. i18n: ectx: property (windowTitle), widget (QWidget, IpodConfiguration)
 #: rc.cpp:1206
-#, fuzzy
-#| msgid "ALSA Device Configuration"
 msgid "iPod device configuration"
-msgstr "Cumraíocht Ghléis ALSA"
+msgstr "Cumraíocht ghléis iPod"
 
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:20
 #. i18n: ectx: property (title), widget (QGroupBox, settingsGroupBox)
@@ -2577,39 +2574,30 @@ msgstr "Socruithe"
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:26
 #. i18n: ectx: property (text), widget (QLabel, nameLabel)
 #: rc.cpp:1212
-#, fuzzy
-#| msgctxt "'File name' playlist column name and token for playlist layouts"
-#| msgid "File name"
 msgid "iPod name:"
-msgstr "Ainm an chomhaid"
+msgstr "Ainm an iPod:"
 
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:36
 #. i18n: ectx: property (text), widget (QLabel, transcodeLabel)
 #. i18n: file: core-impl/collections/umscollection/UmsConfiguration.ui:117
 #. i18n: ectx: property (text), widget (QLabel, m_transcodeLabel)
 #: rc.cpp:1215 rc.cpp:1266
-#, fuzzy
-#| msgid "&Transcode"
 msgid "Transcode:"
-msgstr "&Traschódú"
+msgstr "Traschódaigh:"
 
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:50
 #. i18n: ectx: property (text), widget (QLabel, modelComboLabel)
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:109
 #. i18n: ectx: property (text), widget (QLabel, modelLabel)
 #: rc.cpp:1218 rc.cpp:1227
-#, fuzzy
-#| msgid "&Mode"
 msgid "Model:"
-msgstr "&Mód"
+msgstr "Déanamh:"
 
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:91
 #. i18n: ectx: property (text), widget (QPushButton, initializeButton)
 #: rc.cpp:1221
-#, fuzzy
-#| msgid "Initialize iPod"
 msgid "&Initialize iPod"
-msgstr "Túsaigh iPod"
+msgstr "&Túsaigh an iPod"
 
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:103
 #. i18n: ectx: property (title), widget (QGroupBox, infoGroupBox)
@@ -2620,48 +2608,38 @@ msgstr "Eolas"
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:123
 #. i18n: ectx: property (text), widget (QLabel, generationLabel)
 #: rc.cpp:1230
-#, fuzzy
-#| msgid "General Options"
 msgid "Generation:"
-msgstr "Roghanna Ginearálta"
+msgstr "Glúin:"
 
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:137
 #. i18n: ectx: property (text), widget (QLabel, videoLabel)
 #: rc.cpp:1233
-#, fuzzy
-#| msgid "Video Clip"
 msgid "Video:"
-msgstr "Gearrthóg Fhíse"
+msgstr "Fís:"
 
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:151
 #. i18n: ectx: property (text), widget (QLabel, albumArtworkLabel)
 #: rc.cpp:1236
-#, fuzzy
-#| msgid "Album artist:"
 msgid "Album artwork:"
-msgstr "Ealaíontóir an albaim:"
+msgstr "Ealaín an albaim:"
 
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:168
 #. i18n: ectx: property (title), widget (QGroupBox, troubleshootingGroupBox)
 #: rc.cpp:1239
 msgid "Troubleshooting"
-msgstr ""
+msgstr "Fabhtcheartú"
 
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:174
 #. i18n: ectx: property (text), widget (QLabel, sysInfoLabel)
 #: rc.cpp:1242
-#, fuzzy
-#| msgid "Input file"
 msgid "SysInfo file:"
-msgstr "Inchomhad"
+msgstr "Comhad SysInfo:"
 
 #. i18n: file: core-impl/collections/ipodcollection/support/IpodConfiguration.ui:188
 #. i18n: ectx: property (text), widget (QLabel, sysInfoExtendedLabel)
 #: rc.cpp:1245
-#, fuzzy
-#| msgid "&Show Extended Info"
 msgid "SysInfoExtended file:"
-msgstr "Tai&speáin Eolas Breisithe"
+msgstr "Comhad SysInfoExtended:"
 
 #. i18n: file: core-impl/collections/umscollection/UmsConfiguration.ui:20
 #. i18n: ectx: property (windowTitle), widget (QWidget, UmsConfiguration)
@@ -2899,6 +2877,8 @@ msgid ""
 "Available fields : %artist%,%title%,%genre%,%year%,%composer%,%pubdate%,"
 "%number%,%album%"
 msgstr ""
+"Réimsí atá ar fáil : %artist%,%title%,%genre%,%year%,%composer%,%pubdate%,"
+"%number%,%album%"
 
 #. i18n: file: dialogs/EqualizerDialog.ui:23
 #. i18n: ectx: property (title), widget (QGroupBox, EqualizerGroupBox)
@@ -3418,7 +3398,7 @@ msgstr "&Nóta:"
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_musicbrainz)
 #: rc.cpp:1674
 msgid "Get Tags from MusicBrain&z"
-msgstr ""
+msgstr "Faigh Clibeanna ó MusicBrain&z"
 
 #. i18n: file: dialogs/TagDialogBase.ui:928
 #. i18n: ectx: property (text), widget (QPushButton, pushButton_guessTags)
@@ -5166,7 +5146,7 @@ msgstr ""
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox3)
 #: rc.cpp:2596
 msgid "gpodder.net Profile"
-msgstr ""
+msgstr "Próifíl gpodder.net"
 
 #. i18n: file: services/gpodder/GpodderConfigWidget.ui:78
 #. i18n: ectx: property (text), widget (QLabel, kActiveLabel1)
@@ -5206,13 +5186,13 @@ msgstr "Amarok - Do Thralaí"
 #. i18n: ectx: property (text), widget (QLabel, cartValueLabel)
 #: rc.cpp:2618
 msgid "Shopping cart value: "
-msgstr ""
+msgstr "Luach do thralaí: "
 
 #. i18n: file: services/amazon/AmazonShoppingCartDialog.ui:39
 #. i18n: ectx: property (text), widget (QPushButton, checkoutButton)
 #: rc.cpp:2621
 msgid "Checkout"
-msgstr ""
+msgstr "Seiceáil Amach"
 
 #. i18n: file: services/amazon/AmazonConfigWidget.ui:32
 #. i18n: ectx: property (windowTitle), widget (QWidget, AmazonConfigWidget)
@@ -5247,7 +5227,7 @@ msgstr "An Fhrainc"
 #. i18n: ectx: property (text), item, widget (QComboBox, countrySelectionComboBox)
 #: rc.cpp:2639
 msgid "Austria, Germany, Switzerland"
-msgstr ""
+msgstr "An Ostair, An Ghearmáin, An Eilvéis"
 
 #. i18n: file: services/amazon/AmazonConfigWidget.ui:110
 #. i18n: ectx: property (text), item, widget (QComboBox, countrySelectionComboBox)
@@ -5265,7 +5245,7 @@ msgstr "An Ríocht Aontaithe"
 #. i18n: ectx: property (text), item, widget (QComboBox, countrySelectionComboBox)
 #: rc.cpp:2648
 msgid "United States"
-msgstr ""
+msgstr "Na Stáit Aontaithe"
 
 #. i18n: file: services/amazon/AmazonConfigWidget.ui:125
 #. i18n: ectx: property (text), item, widget (QComboBox, countrySelectionComboBox)
@@ -5276,16 +5256,14 @@ msgstr ""
 #. i18n: file: transcoding/TranscodingAssistantDialog.ui:89
 #. i18n: ectx: property (title), widget (QGroupBox, groupBox)
 #: rc.cpp:2654
-#, fuzzy
-#| msgid "&Transcode"
 msgid "Transcode"
-msgstr "&Traschódú"
+msgstr "Traschódaigh"
 
 #. i18n: file: transcoding/TranscodingAssistantDialog.ui:223
 #. i18n: ectx: property (text), widget (QCheckBox, rememberCheckBox)
 #: rc.cpp:2657
 msgid "Remember this choice for the next time"
-msgstr ""
+msgstr "Meabhraigh an rogha seo"
 
 #. i18n: tag layout attribute name
 #. i18n: file: data/DefaultPlaylistLayouts.xml:3
@@ -5341,7 +5319,7 @@ msgstr ""
 
 #: equalizer/EqualizerPresets.cpp:97
 msgid "Laptop/Headphones"
-msgstr ""
+msgstr "Ríomhaire Glúine/Cluasáin"
 
 #: equalizer/EqualizerPresets.cpp:98
 msgid "Large Hall"
@@ -5361,7 +5339,7 @@ msgstr "Popcheol"
 
 #: equalizer/EqualizerPresets.cpp:102
 msgid "Reggae"
-msgstr ""
+msgstr "Reggae"
 
 #: equalizer/EqualizerPresets.cpp:103
 msgid "Rock"
@@ -5377,7 +5355,7 @@ msgstr "Ska"
 
 #: equalizer/EqualizerPresets.cpp:106
 msgid "Soft Rock"
-msgstr ""
+msgstr "Rac-cheol Bog"
 
 #: equalizer/EqualizerPresets.cpp:107
 msgid "Techno"
@@ -5411,23 +5389,19 @@ msgstr[4] "Aimsíodh %1 comhadlann"
 #: core-impl/collections/db/ScanManager.cpp:546
 #, kde-format
 msgid "Got directory \"%1\" from scanner."
-msgstr ""
+msgstr "Fuarthas comhadlann \"%1\" ón scanóir."
 
 #: main.cpp:44
 msgid "The audio player for KDE"
 msgstr "Seinnteoir fuaime KDE"
 
 #: main.cpp:45
-#, fuzzy
-#| msgid ""
-#| "(C) 2002-2003, Mark Kretschmann\n"
-#| "(C) 2003-2011, The Amarok Development Squad"
 msgid ""
 "(C) 2002-2003, Mark Kretschmann\n"
 "(C) 2003-2012, The Amarok Development Squad"
 msgstr ""
 "© 2002-2003, Mark Kretschmann\n"
-"© 2003-2011, Meitheal Forbartha Amarok"
+"© 2003-2012, Meitheal Forbartha Amarok"
 
 #: main.cpp:46
 #, kde-format
@@ -5721,7 +5695,7 @@ msgstr "Forbróir (MaskMaster)"
 
 #: main.cpp:146
 msgid "Matěj Laitl"
-msgstr ""
+msgstr "Matěj Laitl"
 
 #: main.cpp:146
 msgid "iPod collection rewrite & more"
@@ -6288,11 +6262,11 @@ msgstr "Déan cuairt ar phróifíl StackOverflow an rannpháirtí"
 msgid "Unable to parse avatar image data."
 msgstr "Ní féidir sonraí íomhá an abhatáir a pharsáil."
 
-#: EngineController.cpp:844
+#: EngineController.cpp:837
 msgid "Preamp"
 msgstr "Réamhaimplitheoir"
 
-#: EngineController.cpp:850
+#: EngineController.cpp:843
 msgid ""
 "%0\n"
 "Hz"
@@ -6300,7 +6274,7 @@ msgstr ""
 "%0\n"
 "Hz"
 
-#: EngineController.cpp:854
+#: EngineController.cpp:847
 msgid ""
 "%0\n"
 "kHz"
@@ -6308,41 +6282,41 @@ msgstr ""
 "%0\n"
 "kHz"
 
-#: EngineController.cpp:1156
+#: EngineController.cpp:1158
 msgid "Too many errors encountered in playlist. Playback stopped."
 msgstr "Casadh ar an iomarca earráidí sa seinmliosta. Stopadh an athsheinm."
 
-#: EngineController.cpp:1377
+#: EngineController.cpp:1368
 #, kde-format
 msgctxt "track by artist on album"
 msgid "<b>%1</b> by <b>%2</b> on <b>%3</b>"
 msgstr "<b>%1</b> le <b>%2</b> ar <b>%3</b>"
 
-#: EngineController.cpp:1379
+#: EngineController.cpp:1370
 #, kde-format
 msgctxt "track by artist"
 msgid "<b>%1</b> by <b>%2</b>"
 msgstr "<b>%1</b> le <b>%2</b>"
 
-#: EngineController.cpp:1382
+#: EngineController.cpp:1373
 #, kde-format
 msgctxt "track on album"
 msgid "<b>%1</b> on <b>%2</b>"
 msgstr "<b>%1</b> ar <b>%2</b>"
 
-#: EngineController.cpp:1387
+#: EngineController.cpp:1378
 #: core-impl/collections/ipodcollection/IpodMeta.cpp:203
 #: core-impl/collections/mediadevicecollection/MediaDeviceMeta.cpp:95
 msgid "Unknown track"
 msgstr "Amhrán anaithnid"
 
-#: EngineController.cpp:1394
+#: EngineController.cpp:1385
 #, kde-format
 msgctxt "track from source"
 msgid "from <b>%1</b>"
 msgstr "ó <b>%1</b>"
 
-#: EngineController.cpp:1409 context/engines/current/CurrentEngine.cpp:136
+#: EngineController.cpp:1400 context/engines/current/CurrentEngine.cpp:136
 #: mac/GrowlInterface.cpp:43 widgets/Osd.cpp:651
 msgid "No track playing"
 msgstr "Níl aon amhrán ag seinm"
@@ -6597,7 +6571,7 @@ msgstr "Baile"
 #, kde-format
 msgctxt "Example: 3.5 GB free (unit is part of %1)"
 msgid "%1 free"
-msgstr ""
+msgstr "%1 saor"
 
 #: browsers/collectionbrowser/CollectionWidget.cpp:146
 msgid ""
@@ -6913,7 +6887,7 @@ msgstr "Foinse"
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:43
 msgctxt "Bias dialog window title"
 msgid "Edit bias"
-msgstr ""
+msgstr "Cuir claonadh in eagar"
 
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:47
 msgctxt "Bias selection label in bias view."
@@ -6930,7 +6904,7 @@ msgstr ""
 
 #: browsers/playlistbrowser/DynamicBiasWidgets.cpp:178
 msgid "This bias has no settings."
-msgstr ""
+msgstr "Níl aon socruithe ag an gclaonadh seo."
 
 #: browsers/playlistbrowser/DynamicView.cpp:231
 msgid "&Rename playlist"
@@ -6950,15 +6924,15 @@ msgstr "&Scrios an seinmliosta"
 
 #: browsers/playlistbrowser/DynamicView.cpp:257
 msgid "&Edit bias..."
-msgstr ""
+msgstr "Cuir an claonadh in &eagar..."
 
 #: browsers/playlistbrowser/DynamicView.cpp:261
 msgid "&Clone bias"
-msgstr ""
+msgstr "&Cóipeáil an claonadh"
 
 #: browsers/playlistbrowser/DynamicView.cpp:271
 msgid "&Delete bias"
-msgstr ""
+msgstr "&Scrios an claonadh"
 
 #: browsers/playlistbrowser/DynamicView.cpp:278
 msgid "&Add new bias"
@@ -7074,7 +7048,7 @@ msgstr "Eagar"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:131
 msgid "Edit the selected playlist or bias"
-msgstr ""
+msgstr "Cuir an seinmliosta nó claonadh roghnaithe in eagar"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:135
 msgid "Delete"
@@ -7082,7 +7056,7 @@ msgstr "Scrios"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:138
 msgid "Delete the selected playlist or bias"
-msgstr ""
+msgstr "Scrios an seinmliosta nó claonadh roghnaithe"
 
 #: browsers/playlistbrowser/DynamicCategory.cpp:142
 msgid "Repopulate"
@@ -7567,7 +7541,7 @@ msgstr "Sábháil Liricí"
 
 #: context/applets/lyrics/LyricsApplet.cpp:480
 msgid "Scroll automatically"
-msgstr ""
+msgstr "Scrollaigh go huathoibríoch"
 
 #: context/applets/lyrics/LyricsApplet.cpp:487
 msgid "Reload Lyrics"
@@ -7788,7 +7762,7 @@ msgstr "Noda Táibléadacha: Á bhFáil..."
 #, kde-format
 msgctxt "Guitar tablature"
 msgid "No Tabs for %1 by %2"
-msgstr ""
+msgstr "Gan Noda Táibléadacha do %1 le %2"
 
 #: context/applets/tabs/TabsApplet.cpp:176
 msgctxt "Guitar tablature"
@@ -7869,7 +7843,7 @@ msgstr "Dáta:"
 #: context/applets/upcomingevents/UpcomingEventsWidget.cpp:99
 msgctxt "@label:textbox"
 msgid "Attending:"
-msgstr ""
+msgstr "I láthair:"
 
 #: context/applets/upcomingevents/UpcomingEventsWidget.cpp:100
 msgctxt "@label:textbox"
@@ -8015,11 +7989,11 @@ msgstr "Socruithe Teanga Vicipéide"
 
 #: context/applets/spectrumanalyzer/SpectrumAnalyzerApplet.cpp:48
 msgid "Your system has no OpenGL support"
-msgstr ""
+msgstr "Ní thacaíonn do chóras le OpenGL"
 
 #: context/applets/spectrumanalyzer/SpectrumAnalyzerApplet.cpp:64
 msgid "Could not create an OpenGL rendering context."
-msgstr ""
+msgstr "Níorbh fhéidir comhthéacs rindreála OpenGL a chruthú."
 
 #: context/applets/spectrumanalyzer/SpectrumAnalyzerApplet.cpp:68
 msgid "Your system has no sample buffer support."
@@ -8358,7 +8332,7 @@ msgstr "&Comhthéacs"
 
 #: context/LyricsManager.cpp:135
 msgid "Retrieved lyrics is empty"
-msgstr ""
+msgstr "Bhí na liricí faighte folamh"
 
 #: context/LyricsManager.cpp:176
 msgid "Lyrics data could not be parsed"
@@ -8452,10 +8426,8 @@ msgid ""
 msgstr ""
 
 #: core-impl/collections/db/sql/SqlCollection.cpp:168
-#, fuzzy
-#| msgid "Updating podcast channel"
 msgid "Updating Amarok database schema"
-msgstr "Cainéal podchraolta á nuashonrú"
+msgstr ""
 
 #: core-impl/collections/db/sql/SqlCollection.cpp:204
 #, kde-format
@@ -8553,28 +8525,26 @@ msgstr[3] "%1 n-amhrán á bhaint ó iPod"
 msgstr[4] "%1 amhrán á bhaint ó iPod"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:217
-#, fuzzy, kde-format
-#| msgid "Transferring Tracks to MTP"
+#, kde-format
 msgctxt "%2 is collection name"
 msgid "Transferred one track to %2."
 msgid_plural "Transferred %1 tracks to %2."
-msgstr[0] "Amhráin á nAistriú go MTP"
-msgstr[1] "Amhráin á nAistriú go MTP"
-msgstr[2] "Amhráin á nAistriú go MTP"
-msgstr[3] "Amhráin á nAistriú go MTP"
-msgstr[4] "Amhráin á nAistriú go MTP"
+msgstr[0] "Aistríodh amhrán amháin go %2."
+msgstr[1] "Aistríodh %1 amhrán go %2."
+msgstr[2] "Aistríodh %1 amhrán go %2."
+msgstr[3] "Aistríodh %1 n-amhrán go %2."
+msgstr[4] "Aistríodh %1 amhrán go %2."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:220
-#, fuzzy, kde-format
-#| msgid "Transcoding tracks"
+#, kde-format
 msgctxt "%2 is collection name"
 msgid "Transcoded one track to %2."
 msgid_plural "Transcoded %1 tracks to %2."
-msgstr[0] "Amhráin á dtraschódú"
-msgstr[1] "Amhráin á dtraschódú"
-msgstr[2] "Amhráin á dtraschódú"
-msgstr[3] "Amhráin á dtraschódú"
-msgstr[4] "Amhráin á dtraschódú"
+msgstr[0] "Traschódaíodh amhrán amháin go %2."
+msgstr[1] "Traschódaíodh %1 amhrán go %2."
+msgstr[2] "Traschódaíodh %1 amhrán go %2."
+msgstr[3] "Traschódaíodh %1 amhrán go %2."
+msgstr[4] "Traschódaíodh %1 amhrán go %2."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:229
 #, kde-format
@@ -8599,17 +8569,14 @@ msgstr[4] ""
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:338
 #: core-impl/collections/ipodcollection/IpodCollectionLocation.cpp:52
-#, fuzzy
-#| msgid "&Disconnect the iPod"
 msgid "Disconnected iPod/iPad/iPhone"
-msgstr "&Dícheangail an iPod"
+msgstr "iPod/iPad/iPhone Dícheangailte"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:340
-#, fuzzy, kde-format
-#| msgid "Transferring Tracks to MTP"
+#, kde-format
 msgctxt "%1 is collection pretty name, e.g. My Little iPod"
 msgid "Transferred Tracks to %1"
-msgstr "Amhráin á nAistriú go MTP"
+msgstr "Aistríodh Amhráin go %1"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:343
 #, kde-format
@@ -8624,10 +8591,8 @@ msgstr[3] ""
 msgstr[4] ""
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:347
-#, fuzzy
-#| msgid "Transferring Tracks to iPod"
 msgid "Transfer of tracks failed."
-msgstr "Amhráin á nAistriú go iPod"
+msgstr "Níorbh fhéidir na hamhráin a aistriú."
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:352
 #, kde-format
@@ -8662,15 +8627,14 @@ msgstr[3] ""
 msgstr[4] ""
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:374
-#, fuzzy, kde-format
-#| msgid "The playlist file \"%1\" could not be loaded."
+#, kde-format
 msgid "One file could not be copied.<br>"
 msgid_plural "%1 files could not be copied.<br>"
-msgstr[0] "Níorbh fhéidir seinmliosta \"%1\" a luchtú."
-msgstr[1] "Níorbh fhéidir seinmliosta \"%1\" a luchtú."
-msgstr[2] "Níorbh fhéidir seinmliosta \"%1\" a luchtú."
-msgstr[3] "Níorbh fhéidir seinmliosta \"%1\" a luchtú."
-msgstr[4] "Níorbh fhéidir seinmliosta \"%1\" a luchtú."
+msgstr[0] "Níorbh fhéidir comhad amháin a chóipeáil.<br>"
+msgstr[1] "Níorbh fhéidir %1 chomhad a chóipeáil.<br>"
+msgstr[2] "Níorbh fhéidir %1 chomhad a chóipeáil.<br>"
+msgstr[3] "Níorbh fhéidir %1 gcomhad a chóipeáil.<br>"
+msgstr[4] "Níorbh fhéidir %1 comhad a chóipeáil.<br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:380
 #, kde-format
@@ -8685,7 +8649,7 @@ msgstr[4] ""
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:383
 msgid "<i>You can find details in Amarok debugging output.</i><br>"
-msgstr ""
+msgstr "<i>Gheobhaidh tú mionsonraí in aschur dífhabhtaithe Amarok.</i><br>"
 
 #: core-impl/collections/ipodcollection/jobs/IpodCopyTracksJob.cpp:388
 msgid "The rest was not transferred because iPod collection disappeared.<br>"
@@ -8697,18 +8661,14 @@ msgid "Reading iPod tracks"
 msgstr "Amhráin iPod á léamh"
 
 #: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:95
-#, fuzzy
-#| msgid "Stale Tracks"
 msgctxt "iPod playlist name"
 msgid "Stale tracks"
 msgstr "Amhráin Neamhchláraithe"
 
 #: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:104
-#, fuzzy
-#| msgid "Find Orphaned Tracks"
 msgctxt "iPod playlist name"
 msgid "Orphaned tracks"
-msgstr "Aimsigh Amhráin Dhílleachtaithe"
+msgstr "Amhráin dhílleachtaithe"
 
 #: core-impl/collections/ipodcollection/jobs/IpodParseTracksJob.cpp:124
 #, kde-format
@@ -8721,11 +8681,13 @@ msgstr ""
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:45
 msgid "Cannot parse iTunes database due to an unreported error."
 msgstr ""
+"Ní féidir an bunachar sonraí iTunes a pharsáil mar gheall ar earráid gan "
+"tuairisc."
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:54
 msgctxt "iPod model that is not (yet) recognized"
 msgid "Unrecognized model"
-msgstr ""
+msgstr "Déanamh anaithnid"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:57
 #, kde-format
@@ -8796,7 +8758,7 @@ msgstr "Gan tacaíocht"
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:302
 msgctxt "In a dialog: Some file: Present"
 msgid "Present"
-msgstr ""
+msgstr "I láthair"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:303
 msgctxt "In a dialog: Some file: Not found"
@@ -8806,7 +8768,7 @@ msgstr "<b>Gan aimsiú</b>"
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:304
 msgctxt "In a dialog: Some file: Not needed"
 msgid "Not needed"
-msgstr ""
+msgstr "Neamhriachtanach"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:347
 #, kde-format
@@ -8832,26 +8794,21 @@ msgstr ""
 #, kde-format
 msgctxt "Do not translate SysInfo"
 msgid "Failed to write SysInfo: %1"
-msgstr ""
+msgstr "Níorbh fhéidir SysInfo a scríobh: %1"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:436
-#, fuzzy
-#| msgid ""
-#| "%1 failed to write SysInfo file to iPod, make sure you have write "
-#| "permissions on the iPod"
 msgctxt "Do not translate SysInfo"
 msgid "Failed to write SysInfo file due to an unreported error"
 msgstr ""
-"%1 níorbh fhéidir comhad SysInfo a scríobh ar an iPod; bí cinnte go bhfuil "
-"cead agat scríobh air"
+"Níorbh fhéidir comhad SysInfo a scríobh mar gheall ar earráid gan tuairisc"
 
 #: core-impl/collections/ipodcollection/support/IpodDeviceHelper.cpp:458
 msgid "Cannot initialize iPod due to an unreported error."
-msgstr ""
+msgstr "Níorbh fhéidir an iPod a thúsú mar gheall ar earráid gan tuairisc."
 
 #: core-impl/collections/ipodcollection/support/IphoneMountPoint.cpp:56
 msgid "Connecting to iPhone, iPad or iPod touch failed."
-msgstr ""
+msgstr "Níorbh fhéidir ceangal le iPhone, iPad, nó iPod touch."
 
 #: core-impl/collections/ipodcollection/IpodPlaylistProvider.cpp:322
 #, kde-format
@@ -8885,23 +8842,17 @@ msgstr "&Cumraigh Gléas"
 
 #: core-impl/collections/ipodcollection/IpodCollection.cpp:113
 #: core-impl/collections/umscollection/UmsCollection.cpp:246
-#, fuzzy
-#| msgid "&Disconnect Device"
 msgid "&Eject Device"
-msgstr "&Dícheangail an Gléas"
+msgstr "&Díchuir an Gléas"
 
 #: core-impl/collections/ipodcollection/IpodCollection.cpp:122
-#, fuzzy
-#| msgid "Transcoding tracks"
 msgid "Re-add orphaned and forget stale tracks"
-msgstr "Amhráin á dtraschódú"
+msgstr ""
 
 #: core-impl/collections/ipodcollection/IpodCollection.cpp:462
-#, fuzzy
-#| msgid "iPod Initialization Failed"
 msgctxt "iPod was successfully initialized"
 msgid "Initialization successful."
-msgstr "Theip ar thúsú an iPod"
+msgstr "D'éirigh leis an túsú."
 
 #: core-impl/collections/ipodcollection/IpodCollection.cpp:683
 #, kde-format
@@ -9039,7 +8990,7 @@ msgstr "Seánra Anaithnid"
 
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:593
 #: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:725
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:908
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:910
 msgid "Could not delete item"
 msgstr "Níorbh fhéidir an mhír a scriosadh"
 
@@ -9047,7 +8998,7 @@ msgstr "Níorbh fhéidir an mhír a scriosadh"
 msgid "Delete failed"
 msgstr "Theip ar scriosadh"
 
-#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:881
+#: core-impl/collections/mtpcollection/handler/MtpHandler.cpp:883
 msgid "Could not save playlist."
 msgstr "Níorbh fhéidir an seinmliosta a shábháil."
 
@@ -9102,14 +9053,7 @@ msgid "Moving to trash: %1"
 msgstr "Á chur sa bhruscar: %1"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:36
-#, fuzzy, kde-format
-#| msgctxt "@info"
-#| msgid ""
-#| "Do you really want to delete this track? It will be removed from your "
-#| "collection."
-#| msgid_plural ""
-#| "Do you really want to delete these %1 tracks? They will be removed from "
-#| "your collection."
+#, kde-format
 msgctxt "@info"
 msgid ""
 "Do you really want to delete this track? It will be removed from %2 and from "
@@ -9118,30 +9062,23 @@ msgid_plural ""
 "Do you really want to delete these %1 tracks? They will be removed from %2 "
 "and from underlying storage medium."
 msgstr[0] ""
-"An bhfuil tú cinnte gur mian leat an t-amhrán seo a scriosadh? Bainfear ó do "
-"bhailiúchán é."
+"An bhfuil tú cinnte gur mian leat an t-amhrán seo a scriosadh? Bainfear ó %2 "
+"agus ón meán stórála."
 msgstr[1] ""
 "An bhfuil tú cinnte gur mian leat an %1 amhrán seo a scriosadh? Bainfear ó "
-"do bhailiúchán iad."
+"%2 agus ón meán stórála."
 msgstr[2] ""
 "An bhfuil tú cinnte gur mian leat na %1 amhrán seo a scriosadh? Bainfear ó "
-"do bhailiúchán iad."
+"%2 agus ón meán stórála."
 msgstr[3] ""
 "An bhfuil tú cinnte gur mian leat na %1 n-amhrán seo a scriosadh? Bainfear ó "
-"do bhailiúchán iad."
+"%2 agus ón meán stórála."
 msgstr[4] ""
 "An bhfuil tú cinnte gur mian leat na %1 amhrán seo a scriosadh? Bainfear ó "
-"do bhailiúchán iad."
+"%2 agus ón meán stórála."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:49
-#, fuzzy, kde-format
-#| msgctxt "@info"
-#| msgid ""
-#| "Do you really want to move this track to the trash? It will be removed "
-#| "from your collection."
-#| msgid_plural ""
-#| "Do you really want to move these %1 tracks to the trash? They will be "
-#| "removed from your collection."
+#, kde-format
 msgctxt "@info"
 msgid ""
 "Do you really want to move this track to the trash? It will be removed from "
@@ -9151,19 +9088,19 @@ msgid_plural ""
 "removed from %2."
 msgstr[0] ""
 "An bhfuil tú cinnte gur mian leat an t-amhrán seo a chur sa bhruscar? "
-"Bainfear ó do bhailiúchán é."
+"Bainfear ó %2 é."
 msgstr[1] ""
 "An bhfuil tú cinnte gur mian leat an %1 amhrán seo a chur sa bhruscar? "
-"Bainfear ó do bhailiúchán iad."
+"Bainfear ó %2 iad."
 msgstr[2] ""
 "An bhfuil tú cinnte gur mian leat na %1 amhrán seo a chur sa bhruscar? "
-"Bainfear ó do bhailiúchán iad."
+"Bainfear ó %2 iad."
 msgstr[3] ""
 "An bhfuil tú cinnte gur mian leat na %1 n-amhrán seo a chur sa bhruscar? "
-"Bainfear ó do bhailiúchán iad."
+"Bainfear ó %2 iad."
 msgstr[4] ""
 "An bhfuil tú cinnte gur mian leat na %1 amhrán seo a chur sa bhruscar? "
-"Bainfear ó do bhailiúchán iad."
+"Bainfear ó %2 iad."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:63
 #, kde-format
@@ -9191,18 +9128,14 @@ msgstr[4] ""
 "ainmneacha nua orthu agus scriosfar na bunchomhaid."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:67
-#, fuzzy
-#| msgid "Move Files"
 msgctxt "@title:window"
 msgid "Move Files"
 msgstr "Bog Comhaid"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:67
-#, fuzzy
-#| msgid "&Rename..."
 msgctxt "rename files button"
 msgid "&Rename"
-msgstr "&Athainmnigh..."
+msgstr "&Athainmnigh"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:77
 #, kde-format
@@ -9230,10 +9163,8 @@ msgstr[4] ""
 "chomhadlann inscríofa."
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:80
-#, fuzzy
-#| msgid "Unable to be removed tracks"
 msgid "Unable to remove tracks"
-msgstr "Amhráin nach féidir baint"
+msgstr "Níorbh fhéidir na hamhráin a bhaint"
 
 #: core-impl/collections/support/CollectionLocationDelegateImpl.cpp:88
 msgid ""
@@ -9302,10 +9233,8 @@ msgstr[3] "%1 n-amhrán á bhaint ó %2"
 msgstr[4] "%1 amhrán á bhaint ó %2"
 
 #: core-impl/collections/umscollection/UmsCollection.cpp:242
-#, fuzzy
-#| msgid "&Use as Collection"
 msgid "&Activate This Collection"
-msgstr "Ú&sáid mar Bhailiúchán"
+msgstr "Gníomh&achtaigh an Bailiúchán seo"
 
 #: core-impl/collections/umscollection/UmsCollection.cpp:372
 #, kde-format
@@ -9313,7 +9242,7 @@ msgctxt ""
 "Name of the USB Mass Storage collection that has not yet been activated. See "
 "also the 'Activate This Collection' action; %1 is actual collection name"
 msgid "%1 (not activated)"
-msgstr ""
+msgstr "%1 (neamhghníomhach)"
 
 #: core-impl/collections/umscollection/UmsCollection.cpp:615
 msgid "Configure USB Mass Storage Device"
@@ -9346,7 +9275,7 @@ msgctxt "The Value is not known"
 msgid "Unknown"
 msgstr "Anaithnid"
 
-#: core-impl/meta/stream/Stream.cpp:54
+#: core-impl/meta/stream/Stream.cpp:55
 #, kde-format
 msgid "Stream (%1)"
 msgstr "Sruth (%1)"
@@ -9360,35 +9289,30 @@ msgid "&Rename..."
 msgstr "&Athainmnigh..."
 
 #: core-impl/playlists/providers/user/UserPlaylistProvider.cpp:114
-#, fuzzy, kde-format
-#| msgid "Remove From Playlist"
+#, kde-format
 msgctxt "Number of playlists is >= 2"
 msgid "Remove a track from %2 playlists"
 msgid_plural "Remove %1 tracks from %2 playlists"
-msgstr[0] "Bain as an Seinmliosta"
-msgstr[1] "Bain as an Seinmliosta"
-msgstr[2] "Bain as an Seinmliosta"
-msgstr[3] "Bain as an Seinmliosta"
-msgstr[4] "Bain as an Seinmliosta"
+msgstr[0] "Bain amhrán ó %2 seinmliosta"
+msgstr[1] "Bain %1 amhrán ó %2 seinmliosta"
+msgstr[2] "Bain %1 amhrán ó %2 seinmliosta"
+msgstr[3] "Bain %1 n-amhrán ó %2 seinmliosta"
+msgstr[4] "Bain %1 amhrán ó %2 seinmliosta"
 
 #: core-impl/playlists/providers/user/UserPlaylistProvider.cpp:120
-#, fuzzy, kde-format
-#| msgid "Removing one track from %2"
-#| msgid_plural "Removing %1 tracks from %2"
+#, kde-format
 msgctxt "%2 is saved playlist name"
 msgid "Remove a track from %2"
 msgid_plural "Remove %1 tracks from %2"
-msgstr[0] "Amhrán amháin á bhaint ó %2"
-msgstr[1] "%1 amhrán á bhaint ó %2"
-msgstr[2] "%1 amhrán á bhaint ó %2"
-msgstr[3] "%1 n-amhrán á bhaint ó %2"
-msgstr[4] "%1 amhrán á bhaint ó %2"
+msgstr[0] "Bain amhrán amháin ó %2"
+msgstr[1] "Bain %1 amhrán ó %2"
+msgstr[2] "Bain %1 amhrán ó %2"
+msgstr[3] "Bain %1 n-amhrán ó %2"
+msgstr[4] "Bain %1 amhrán ó %2"
 
 #: core-impl/playlists/providers/user/UserPlaylistProvider.cpp:142
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:100
-#, fuzzy, kde-format
-#| msgid "Are you sure you want to delete this playlist?"
-#| msgid_plural "Are you sure you want to delete these %1 playlist files?"
+#, kde-format
 msgid "Are you sure you want to delete this playlist?"
 msgid_plural "Are you sure you want to delete these %1 playlists?"
 msgstr[0] "An bhfuil tú cinnte gur mian leat an seinmliosta seo a bhaint?"
@@ -9399,8 +9323,7 @@ msgstr[4] "An bhfuil tú cinnte gur mian leat na %1 seinmliosta seo a bhaint?"
 
 #: core-impl/playlists/providers/user/UserPlaylistProvider.cpp:149
 #: playlistmanager/sql/SqlUserPlaylistProvider.cpp:107
-#, fuzzy, kde-format
-#| msgid "Yes, delete from %1."
+#, kde-format
 msgctxt "%1 is playlist provider pretty name"
 msgid "Yes, delete from %1."
 msgstr "Tá, scrios ó %1."
@@ -9589,58 +9512,48 @@ msgid "Downloading Podcast \"%1\""
 msgstr "Podchraoladh \"%1\" á Íosluchtú"
 
 #: core/collections/CollectionLocation.cpp:377
-#, fuzzy
-#| msgid "Organizing tracks"
 msgid "Organize tracks"
-msgstr "Amhráin á n-eagrú"
+msgstr "Eagraigh amhráin"
 
 #: core/collections/CollectionLocation.cpp:379
-#, fuzzy
-#| msgid "Transcoding tracks"
 msgid "Transcode and organize tracks"
-msgstr "Amhráin á dtraschódú"
+msgstr "Traschódaigh agus eagraigh amhráin"
 
 #: core/collections/CollectionLocation.cpp:384
 msgid "Move tracks"
 msgstr "Bog amhráin"
 
 #: core/collections/CollectionLocation.cpp:386
-#, fuzzy
-#| msgid "Transcoding tracks"
 msgid "Transcode and move tracks"
-msgstr "Amhráin á dtraschódú"
+msgstr "Traschódaigh agus bog amhráin"
 
 #: core/collections/CollectionLocation.cpp:391
 msgid "Copy tracks"
 msgstr "Cóipeáil amhráin"
 
 #: core/collections/CollectionLocation.cpp:393
-#, fuzzy
-#| msgid "Transcoding tracks"
 msgid "Transcode and copy tracks"
-msgstr "Amhráin á dtraschódú"
+msgstr "Traschódaigh agus cóipeáil amhráin"
 
 #: core/collections/CollectionLocation.cpp:406
-#, fuzzy, kde-format
-#| msgid "Organizing tracks"
+#, kde-format
 msgid "Organizing one track"
 msgid_plural "Organizing %1 tracks"
-msgstr[0] "Amhráin á n-eagrú"
-msgstr[1] "Amhráin á n-eagrú"
-msgstr[2] "Amhráin á n-eagrú"
-msgstr[3] "Amhráin á n-eagrú"
-msgstr[4] "Amhráin á n-eagrú"
+msgstr[0] "Amhrán amháin á eagrú"
+msgstr[1] "%1 amhrán á n-eagrú"
+msgstr[2] "%1 amhrán á n-eagrú"
+msgstr[3] "%1 n-amhrán á n-eagrú"
+msgstr[4] "%1 amhrán á n-eagrú"
 
 #: core/collections/CollectionLocation.cpp:409
-#, fuzzy, kde-format
-#| msgid "Transcoding tracks"
+#, kde-format
 msgid "Transcoding and organizing one track"
 msgid_plural "Transcoding and organizing %1 tracks"
-msgstr[0] "Amhráin á dtraschódú"
-msgstr[1] "Amhráin á dtraschódú"
-msgstr[2] "Amhráin á dtraschódú"
-msgstr[3] "Amhráin á dtraschódú"
-msgstr[4] "Amhráin á dtraschódú"
+msgstr[0] "Amhrán amháin á thraschódú agus á eagrú"
+msgstr[1] "%1 amhrán á dtraschódú agus á n-eagrú"
+msgstr[2] "%1 amhrán á dtraschódú agus á n-eagrú"
+msgstr[3] "%1 n-amhrán á dtraschódú agus á n-eagrú"
+msgstr[4] "%1 amhrán á dtraschódú agus á n-eagrú"
 
 #: core/collections/CollectionLocation.cpp:415
 #, kde-format
@@ -9653,15 +9566,14 @@ msgstr[3] "%1 n-amhrán á mbogadh go %2"
 msgstr[4] "%1 amhrán á mbogadh go %2"
 
 #: core/collections/CollectionLocation.cpp:418
-#, fuzzy, kde-format
-#| msgid "Transcoding tracks"
+#, kde-format
 msgid "Transcoding and moving one track to %2"
 msgid_plural "Transcoding and moving %1 tracks to %2"
-msgstr[0] "Amhráin á dtraschódú"
-msgstr[1] "Amhráin á dtraschódú"
-msgstr[2] "Amhráin á dtraschódú"
-msgstr[3] "Amhráin á dtraschódú"
-msgstr[4] "Amhráin á dtraschódú"
+msgstr[0] "Amhrán amháin á thraschódú agus á bhogadh go %2"
+msgstr[1] "%1 amhrán á dtraschódú agus á mbogadh go %2"
+msgstr[2] "%1 amhrán á dtraschódú agus á mbogadh go %2"
+msgstr[3] "%1 n-amhrán á dtraschódú agus á mbogadh go %2"
+msgstr[4] "%1 amhrán á dtraschódú agus á mbogadh go %2"
 
 #: core/collections/CollectionLocation.cpp:424
 #, kde-format
@@ -9674,15 +9586,14 @@ msgstr[3] "%1 n-amhrán á gcóipeáil go %2"
 msgstr[4] "%1 amhrán á gcóipeáil go %2"
 
 #: core/collections/CollectionLocation.cpp:427
-#, fuzzy, kde-format
-#| msgid "Transcoding tracks"
+#, kde-format
 msgid "Transcoding and copying one track to %2"
 msgid_plural "Transcoding and copying %1 tracks to %2"
-msgstr[0] "Amhráin á dtraschódú"
-msgstr[1] "Amhráin á dtraschódú"
-msgstr[2] "Amhráin á dtraschódú"
-msgstr[3] "Amhráin á dtraschódú"
-msgstr[4] "Amhráin á dtraschódú"
+msgstr[0] "Amhrán amháin á thraschódú agus á chóipeáil go %2"
+msgstr[1] "%1 amhrán á dtraschódú agus á gcóipeáil go %2"
+msgstr[2] "%1 amhrán á dtraschódú agus á gcóipeáil go %2"
+msgstr[3] "%1 amhrán á dtraschódú agus á gcóipeáil go %2"
+msgstr[4] "%1 amhrán á dtraschódú agus á gcóipeáil go %2"
 
 #: core/meta/support/MetaUtility.cpp:409
 msgctxt ""
@@ -10450,10 +10361,8 @@ msgid ""
 msgstr ""
 
 #: core/transcoding/TranscodingConfiguration.cpp:101
-#, fuzzy
-#| msgid "Invalid Format"
 msgid "Invalid encoder"
-msgstr "Formáid Neamhbhailí"
+msgstr "Ionchódóir neamhbhailí"
 
 #: core/transcoding/TranscodingConfiguration.cpp:103
 msgid "Just copy or move"
@@ -11234,30 +11143,28 @@ msgid "Write statistics to file"
 msgstr "Scríobh staitisticí i gcomhad"
 
 #: dialogs/CollectionSetup.cpp:137
-#, fuzzy
-#| msgid "Write covers to file"
 msgid "Write covers to file, maximum size:"
-msgstr "Scríobh clúdaigh i gcomhad"
+msgstr "Scríobh clúdaigh i gcomhad, uasmhéid:"
 
 #: dialogs/CollectionSetup.cpp:139
 msgctxt "Maximum cover size option"
 msgid "Small (200 px)"
-msgstr ""
+msgstr "Beag (200 pct)"
 
 #: dialogs/CollectionSetup.cpp:140
 msgctxt "Maximum cover size option"
 msgid "Medium (400 px)"
-msgstr ""
+msgstr "Meán (400 pct)"
 
 #: dialogs/CollectionSetup.cpp:141
 msgctxt "Maximum cover size option"
 msgid "Large (800 px)"
-msgstr ""
+msgstr "Mór (800 pct)"
 
 #: dialogs/CollectionSetup.cpp:142
 msgctxt "Maximum cover size option"
 msgid "Huge (1600 px)"
-msgstr ""
+msgstr "Ollmhór (1600 pct)"
 
 #: dialogs/CollectionSetup.cpp:143
 msgid "&Enable character set detection in ID3 tags"
@@ -11296,7 +11203,7 @@ msgstr ""
 
 #: dialogs/CollectionSetup.cpp:157
 msgid "Scale covers down if necessary."
-msgstr ""
+msgstr "Laghdaigh na clúdaigh más gá."
 
 #: dialogs/CollectionSetup.cpp:158
 msgid ""
@@ -11428,52 +11335,37 @@ msgstr ""
 "Tháinig ainmneacha comhad salach ar a chéile, ní athrófar na comhaid atá ann."
 
 #: dialogs/DiagnosticDialog.cpp:42
-#, fuzzy, kde-format
-#| msgid "St&atistics"
+#, kde-format
 msgctxt "%1 is the program name"
 msgid "%1 Diagnostics"
-msgstr "St&aitisticí"
+msgstr "Diagnóisic %1"
 
 #: dialogs/DiagnosticDialog.cpp:45
-#, fuzzy
-#| msgid "Copy to Collection"
 msgid "Copy to Clipboard"
-msgstr "Cóipeáil go dtí an Bailiúchán"
+msgstr "Cóipeáil go dtí an Ghearrthaisce"
 
 #: dialogs/DiagnosticDialog.cpp:77
 msgid " (running)"
-msgstr ""
+msgstr " (ar siúl)"
 
 #: dialogs/DiagnosticDialog.cpp:77
-#, fuzzy
-#| msgid "Stopped"
 msgid " (stopped)"
-msgstr "Stadtha"
+msgstr " (stadtha)"
 
 #: dialogs/DiagnosticDialog.cpp:92
-#, fuzzy
-#| msgid "Enabled"
 msgid " (enabled)"
-msgstr "Cumasaithe"
+msgstr " (cumasaithe)"
 
 #: dialogs/DiagnosticDialog.cpp:92
-#, fuzzy
-#| msgctxt "automatic updates turned off"
-#| msgid "disabled"
 msgid " (disabled)"
-msgstr "díchumasaithe"
+msgstr " (díchumasaithe)"
 
-# answer to "Autodetected"?
 #: dialogs/DiagnosticDialog.cpp:100
-#, fuzzy
-#| msgid "Yes"
 msgctxt "Usage"
 msgid "Yes"
 msgstr "Tá"
 
 #: dialogs/DiagnosticDialog.cpp:100
-#, fuzzy
-#| msgid "No"
 msgctxt "Usage"
 msgid "No"
 msgstr "Níl"
@@ -11491,6 +11383,15 @@ msgid ""
 "PulseAudio: %8\n"
 "\n"
 msgstr ""
+"%1 Diagnóisic\n"
+"\n"
+"Leagan %1: %2\n"
+"Leagan KDE: %3\n"
+"Leagan Qt: %4\n"
+"Leagan Phonon: %5\n"
+"Leagan Inneall Phonon: %6 (%7)\n"
+"PulseAudio: %8\n"
+"\n"
 
 #: dialogs/DiagnosticDialog.cpp:119
 #, kde-format
@@ -11500,6 +11401,10 @@ msgid ""
 "Amarok Plugins:\n"
 "    %2\n"
 msgstr ""
+"Scripteanna Amarok:\n"
+"    %1\n"
+"Breiseáin Amarok:\n"
+"    %2\n"
 
 #: dialogs/MusicBrainzTagger.cpp:67
 msgid "Expand All"
@@ -11896,24 +11801,24 @@ msgstr ""
 #: dynamic/biases/EchoNestBias.cpp:126
 msgctxt "EchoNest bias representation"
 msgid "Similar to the previous track (as reported by EchoNest)"
-msgstr ""
+msgstr "Cosúil leis an amhrán roimhe seo (de réir EchoNest)"
 
 #: dynamic/biases/EchoNestBias.cpp:129
 msgctxt "EchoNest bias representation"
 msgid "Similar to any track in the current playlist (as reported by EchoNest)"
-msgstr ""
+msgstr "Cosúil le haon amhrán sa seinmliosta seo (de réir EchoNest)"
 
 #: dynamic/biases/EchoNestBias.cpp:140
 msgid "Echo nest thinks the track is similar to"
-msgstr ""
+msgstr "Ceapann EchoNest go bhfuil an t-amhrán cosúil"
 
 #: dynamic/biases/EchoNestBias.cpp:143
 msgid "the previous Track"
-msgstr "an t-amhrán roimhe seo"
+msgstr "leis an amhrán roimhe seo"
 
 #: dynamic/biases/EchoNestBias.cpp:145
 msgid "one of the tracks in the current playlist"
-msgstr ""
+msgstr "le hamhrán eile sa seinmliosta seo"
 
 #: dynamic/biases/SearchQueryBias.cpp:43
 msgctxt "Name of the \"SearchQuery\" bias"
@@ -12214,7 +12119,7 @@ msgstr "Mód Sonraí"
 
 #: likeback/LikeBackDialog.cpp:43
 msgid "Send a Comment to the Developers"
-msgstr ""
+msgstr "Seol Nóta chuig na forbróirí"
 
 #: likeback/LikeBackDialog.cpp:155
 #, kde-format
@@ -12289,7 +12194,7 @@ msgstr ""
 #: likeback/LikeBackDialog.cpp:312
 msgctxt "Dialog box title"
 msgid "Comment Sent"
-msgstr ""
+msgstr "Seoladh an Nóta"
 
 #: likeback/LikeBackDialog.cpp:323
 msgctxt "Dialog box text"
@@ -13754,24 +13659,24 @@ msgstr ""
 #: services/lastfm/biases/LastFmBias.cpp:132
 msgctxt "Last.fm bias representation"
 msgid "Similar to the previous track (as reported by Last.fm)"
-msgstr ""
+msgstr "Cosúil leis an amhrán roimhe seo (de réir Last.fm)"
 
 #: services/lastfm/biases/LastFmBias.cpp:135
 msgctxt "Last.fm bias representation"
 msgid "Similar to the previous artist (as reported by Last.fm)"
-msgstr ""
+msgstr "Cosúil leis an ealaíontóir roimhe seo (de réir Last.fm)"
 
 #: services/lastfm/biases/LastFmBias.cpp:147
 msgid "Last.fm thinks the track is similar to"
-msgstr ""
+msgstr "Ceapann Last.fm go bhfuil an t-amhrán cosúil"
 
 #: services/lastfm/biases/LastFmBias.cpp:150
 msgid "the previous artist"
-msgstr "an ealaíontóir roimhe seo"
+msgstr "leis an ealaíontóir roimhe seo"
 
 #: services/lastfm/biases/LastFmBias.cpp:152
 msgid "the previous track"
-msgstr "an t-amhrán roimhe seo"
+msgstr "leis an amhrán roimhe seo"
 
 #: services/lastfm/biases/WeeklyTopBias.cpp:50
 msgctxt "Name of the \"WeeklyTop\" bias"
@@ -13871,7 +13776,7 @@ msgstr "Raidió Pearsanta %1"
 #: services/lastfm/meta/LastFmMeta.cpp:413
 #, kde-format
 msgid "%1's Mix Radio"
-msgstr ""
+msgstr "Raidió Measctha %1"
 
 #: services/lastfm/meta/LastFmMeta.cpp:417
 #, kde-format
@@ -14071,7 +13976,7 @@ msgstr "Mo Stáisiún Raidió"
 
 #: services/lastfm/LastFmTreeModel.cpp:335
 msgid "My Mix Radio"
-msgstr ""
+msgstr "Mo Raidió Measctha"
 
 #: services/lastfm/LastFmTreeModel.cpp:337
 msgid "My Neighborhood"
@@ -14562,11 +14467,11 @@ msgstr "Podchraoltaí Gpodder"
 
 #: services/gpodder/GpodderProvider.cpp:452
 msgid "Trying to synchronize statuses with gpodder.net"
-msgstr ""
+msgstr "Ag iarraidh stádais a shioncrónú le gpodder.net"
 
 #: services/gpodder/GpodderProvider.cpp:510
 msgid "Trying to synchronize with gpodder.net"
-msgstr ""
+msgstr "Ag iarraidh sioncrónú le gpodder.net"
 
 #: services/gpodder/GpodderServiceSettings.cpp:171
 msgid "Unable to connect to gpodder.net service or other error occurred."
@@ -14638,7 +14543,7 @@ msgstr "Cuir le do Thralaí"
 
 #: services/amazon/AmazonItemTreeView.cpp:286
 msgid "Add Preview to Playlist"
-msgstr ""
+msgstr "Cuir Réamhamharc leis an Seinmliosta"
 
 #: services/amazon/AmazonItemTreeView.cpp:295
 msgid "Load Details..."
@@ -14646,7 +14551,7 @@ msgstr "Luchtaigh na Mionsonraí..."
 
 #: services/amazon/AmazonItemTreeView.cpp:304
 msgid "Direct Checkout"
-msgstr ""
+msgstr "Seiceáil Amach Go Díreach"
 
 #: services/amazon/AmazonItemTreeView.cpp:313
 msgid "Search for Album..."
@@ -14656,11 +14561,11 @@ msgstr "Cuardaigh Albam..."
 #: services/amazon/AmazonShoppingCartDialog.cpp:59
 #, kde-format
 msgid "Shopping cart value: %1"
-msgstr ""
+msgstr "Luach do thralaí: %1"
 
 #: services/amazon/AmazonMeta.cpp:137
 msgid "Snippet taken from the Amazon MP3 store"
-msgstr ""
+msgstr "Blúire ón siopa MP3 Amazon"
 
 #: services/amazon/AmazonStore.cpp:101
 msgid "Access the Amazon MP3 Store directly from Amarok"
@@ -14675,7 +14580,7 @@ msgstr ""
 #: services/amazon/AmazonStore.cpp:192
 #, kde-format
 msgid "<em>%1</em> has been added to your shopping cart."
-msgstr ""
+msgstr "Cuireadh <em>%1</em> le do thralaí."
 
 #: services/amazon/AmazonStore.cpp:293
 msgid "Select your Amazon locale - Amarok"
@@ -14689,20 +14594,20 @@ msgstr ""
 
 #: services/amazon/AmazonStore.cpp:338
 msgid "Error: Unable to write temporary file. :-("
-msgstr ""
+msgstr "Earráid: Ní féidir comhad sealadach a scríobh."
 
 #: services/amazon/AmazonStore.cpp:437
 msgid "Select results page to show"
-msgstr ""
+msgstr "Roghnaigh leathanach torthaí le taispeáint"
 
 #: services/amazon/AmazonStore.cpp:461
 msgctxt "Add selected item to your shopping cart"
 msgid "Add to Cart"
-msgstr "Cuir le do Thralaí"
+msgstr "Cuir i do Thralaí é"
 
 #: services/amazon/AmazonStore.cpp:462
 msgid "Add selected item to your shopping cart"
-msgstr ""
+msgstr "Cuir an táirge roghnaithe i do thralaí"
 
 #: services/amazon/AmazonStore.cpp:469
 msgctxt "View your shopping cart contents"
@@ -14711,16 +14616,16 @@ msgstr "Féach ar do Thralaí"
 
 #: services/amazon/AmazonStore.cpp:470
 msgid "View your shopping cart contents"
-msgstr ""
+msgstr "Féach ar na rudaí i do thralaí"
 
 #: services/amazon/AmazonStore.cpp:477
 msgctxt "Checkout your shopping cart"
 msgid "Checkout"
-msgstr ""
+msgstr "Seiceáil Amach"
 
 #: services/amazon/AmazonStore.cpp:478
 msgid "Checkout your shopping cart"
-msgstr ""
+msgstr "Seiceáil amach na rudaí i do thralaí"
 
 #: services/amazon/AmazonStore.cpp:499
 msgid "Error: Querying MP3 Music Store database failed. :-("
@@ -14728,7 +14633,7 @@ msgstr ""
 
 #: services/amazon/AmazonStore.cpp:534
 msgid "Error: Received an invalid reply. :-("
-msgstr ""
+msgstr "Earráid: Fuarthas freagra neamhbhailí."
 
 #: services/ServiceBase.cpp:311
 msgid "This service does not accept any messages"
@@ -14808,23 +14713,17 @@ msgid ""
 msgstr ""
 
 #: transcoding/TranscodingAssistantDialog.cpp:76
-#, fuzzy
-#| msgid "Move Up"
 msgid "&Move"
-msgstr "Bog Suas"
+msgstr "&Bog"
 
 #: transcoding/TranscodingAssistantDialog.cpp:77
-#, fuzzy
-#| msgid "Just copy the tracks without transcoding them."
 msgid "Just move the tracks without transcoding them."
-msgstr "Cóipeáil na hamhráin gan iad a thraschódú."
+msgstr "Bog na hamhráin gan iad a thraschódú."
 
 #: transcoding/TranscodingAssistantDialog.cpp:123
-#, fuzzy
-#| msgid "No description available in your language"
 msgctxt "Tooltip of a disabled transcoding encoder option"
 msgid "Not currently available on your system."
-msgstr "Níl aon chur síos ar fáil i do theanga"
+msgstr "Níl an rogha seo ar fáil ar do chóras faoi láthair."
 
 #: transcoding/TranscodingAssistantDialog.cpp:130
 msgid "Target collection indicates this format would not be playable."
@@ -14841,23 +14740,19 @@ msgid " (recommended)"
 msgstr " (molta)"
 
 #: transcoding/TranscodingSelectConfigWidget.cpp:37
-#, fuzzy, kde-format
-#| msgid "Always"
+#, kde-format
 msgctxt ""
 "An option in combo box to always transcode; %1 are transcoding options"
 msgid "Always (%1)"
-msgstr "I gcónaí"
+msgstr "I gcónaí (%1)"
 
 #: transcoding/TranscodingSelectConfigWidget.cpp:41
 #: transcoding/TranscodingSelectConfigWidget.cpp:43
 msgid "Ask before each transfer"
-msgstr ""
+msgstr "Fiafraigh díom roimh gach aistriú"
 
 #: transcoding/TranscodingSelectConfigWidget.cpp:47
 #: transcoding/TranscodingSelectConfigWidget.cpp:51
-#, fuzzy
-#| msgctxt "The amount of time since last played"
-#| msgid "Never"
 msgid "Never"
 msgstr "Riamh"
 
@@ -15542,10 +15437,8 @@ msgid "&About Amarok"
 msgstr "Maidir le h&Amarok"
 
 #: MainWindow.cpp:947
-#, fuzzy
-#| msgid "St&atistics"
 msgid "&Diagnostics"
-msgstr "St&aitisticí"
+msgstr "&Diagnóisic"
 
 #: MainWindow.cpp:951
 msgid "&Report Bug..."
@@ -15851,17 +15744,6 @@ msgstr "Stop tar éis an Amhráin reatha: As"
 
 
 
-
-
-
-
-
-
-
-
-
-
-#, fuzzy
 
 
 
@@ -17137,15 +17019,6 @@ msgstr "Stop tar éis an Amhráin reatha: As"
 
 
 # not "ainm an ghrúpa nua"!
-
-
-
-
-
-
-
-
-
 
 
 
