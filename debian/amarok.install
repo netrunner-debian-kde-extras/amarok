@@ -2,6 +2,7 @@ debian/icons/*                          /usr/share/pixmaps
 usr/bin/amarok
 usr/bin/amarokmp3tunesharmonydaemon
 usr/bin/amarokpkg
+usr/bin/amzdownloader
 usr/lib/kde4/amarok_appletscript_simple_javascript.so
 usr/lib/kde4/amarok_collection-audiocdcollection.so
 usr/lib/kde4/amarok_collection-daapcollection.so
@@ -20,7 +21,6 @@ usr/lib/kde4/amarok_context_applet_labels.so
 usr/lib/kde4/amarok_context_applet_lyrics.so
 usr/lib/kde4/amarok_context_applet_photos.so
 usr/lib/kde4/amarok_context_applet_similarArtists.so
-usr/lib/kde4/amarok_context_applet_spectrum_analyzer.so
 usr/lib/kde4/amarok_context_applet_tabs.so
 usr/lib/kde4/amarok_context_applet_upcomingEvents.so
 usr/lib/kde4/amarok_context_applet_wikipedia.so
@@ -30,13 +30,9 @@ usr/lib/kde4/amarok_data_engine_labels.so
 usr/lib/kde4/amarok_data_engine_lyrics.so
 usr/lib/kde4/amarok_data_engine_photos.so
 usr/lib/kde4/amarok_data_engine_similarArtists.so
-usr/lib/kde4/amarok_data_engine_spectrum_analyzer.so
 usr/lib/kde4/amarok_data_engine_tabs.so
 usr/lib/kde4/amarok_data_engine_upcomingEvents.so
 usr/lib/kde4/amarok_data_engine_wikipedia.so
-usr/lib/kde4/amarok_device_massstorage.so
-usr/lib/kde4/amarok_device_nfs.so
-usr/lib/kde4/amarok_device_smb.so
 usr/lib/kde4/amarok_runnerscript_javascript.so
 usr/lib/kde4/amarok_service_amazonstore.so
 usr/lib/kde4/amarok_service_ampache.so
