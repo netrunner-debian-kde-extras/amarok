@@ -18,6 +18,7 @@ Name[es]=Jamendo
 Name[et]=Jamendo
 Name[eu]=Jamendo
 Name[fi]=Jamendo
+Name[fr]=Jamendo
 Name[ga]=Jamendo
 Name[gl]=Jamendo
 Name[hu]=Jamendo
@@ -102,7 +103,7 @@ Comment[tr]=Bağımsız sanaçtılar tarafından yüklenmiş müzikleri dinleyin
 Comment[uk]=Прослухайте і звантажте музику, записану незалежними виконавцями
 Comment[wa]=Schoûter eyet aberweter del muzike eberwetêye pa des årtisses dislaxhîs
 Comment[x-test]=xxListen to and download music uploaded by independent artistsxx
-Comment[zh_CN]=收听并下载由自由艺术家上传的音乐
+Comment[zh_CN]=收听并下载由独立艺术家上传的音乐
 Comment[zh_TW]=聆聽並下載由獨立藝人所上傳的音樂
 
 
@@ -110,7 +111,7 @@ ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-authors=Nikolaj Hald Nielsen
 X-KDE-Amarok-email=nhnFreespirit@gmail.com
-X-KDE-Amarok-framework-version=69
+X-KDE-Amarok-framework-version=70
 X-KDE-Amarok-name=JamendoService
 X-KDE-Amarok-plugintype=service
 X-KDE-Amarok-rank=100

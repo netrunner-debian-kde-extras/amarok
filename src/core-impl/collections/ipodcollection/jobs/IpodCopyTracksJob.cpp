@@ -17,21 +17,23 @@
 #include "IpodCopyTracksJob.h"
 
 #include "IpodMeta.h"
+#include "core/collections/QueryMaker.h"
 #include "core/interfaces/Logger.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "core/transcoding/TranscodingController.h"
-#include "transcoding/TranscodingJob.h"
 #include "MetaTagLib.h"
 #include "FileType.h"
+#include "transcoding/TranscodingJob.h"
 
 #include <KIO/CopyJob>
 #include <KIO/Job>
 #include <KMessageBox>
 
+#include <QFile>
+
 #include <gpod/itdb.h>
 #include <unistd.h>  // fsync()
-
 
 IpodCopyTracksJob::IpodCopyTracksJob( const QMap<Meta::TrackPtr,KUrl> &sources,
                                       const QWeakPointer<IpodCollection> &collection,
@@ -260,8 +262,7 @@ IpodCopyTracksJob::slotStartDuplicateTrackSearch( const Meta::TrackPtr &track )
     // we cannot qm->addMatch( track ) - it matches by uidUrl()
     qm->addFilter( Meta::valTitle, track->name(), true, true );
     qm->addMatch( track->album() );
-    qm->setArtistQueryMode( Collections::QueryMaker::TrackArtists );
-    qm->addMatch( track->artist() );
+    qm->addMatch( track->artist(), Collections::QueryMaker::TrackArtists );
     qm->addMatch( track->composer() );
     qm->addMatch( track->year() );
     qm->addNumberFilter( Meta::valTrackNr, track->trackNumber(), Collections::QueryMaker::Equals );

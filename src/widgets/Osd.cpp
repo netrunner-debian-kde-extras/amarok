@@ -22,14 +22,15 @@
 
 #include "Osd.h"
 
-#include "core/support/Amarok.h"
-#include "core/support/Debug.h"
 #include "EngineController.h"
-#include "StarManager.h"
+#include "KNotificationBackend.h"
 #include "SvgHandler.h"
 #include "amarokconfig.h"
+#include "core/meta/Statistics.h"
 #include "core/meta/support/MetaUtility.h"
-#include "KNotificationBackend.h"
+#include "core/support/Amarok.h"
+#include "widgets/StarManager.h"
+#include "core/support/Debug.h"
 
 #include <KApplication>
 #include <KDebug>
@@ -653,7 +654,7 @@ Amarok::OSD::show( Meta::TrackPtr track ) //slot
     }
     else
     {
-        setRating( track->rating() );
+        setRating( track->statistics()->rating() );
         text = track->prettyName();
         if( track->artist() && !track->artist()->prettyName().isEmpty() )
             text = track->artist()->prettyName() + " - " + text;

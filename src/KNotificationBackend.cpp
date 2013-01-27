@@ -16,74 +16,67 @@
 
 #include "KNotificationBackend.h"
 
-#include "core/support/Amarok.h"
-#include "core/meta/Meta.h"
-#include "SvgHandler.h"
 #include "EngineController.h"
+#include "SvgHandler.h"
+#include "core/support/Debug.h"
 
-#include <KIcon>
-#include <KLocale>
+#include <KIconLoader>
+#include <KLocalizedString>
+#include <KNotification>
 #include <KWindowSystem>
 
-#include <QTimer>
+using namespace Amarok;
 
-namespace Amarok
+KNotificationBackend *
+KNotificationBackend::s_instance = 0;
+
+KNotificationBackend *
+KNotificationBackend::instance()
 {
-    KNotificationBackend*
-    KNotificationBackend::s_instance = 0;
-
-    KNotificationBackend*
-    KNotificationBackend::instance()
-    {
-        return s_instance ? s_instance : s_instance = new KNotificationBackend();
-    }
-
-    void
-    KNotificationBackend::destroy()
-    {
-        if( s_instance ) { delete s_instance; s_instance = 0; }
-    }
-}
-
-Amarok::KNotificationBackend::KNotificationBackend()
-    : m_notify( 0 )
-    , m_enabled( false )
-{
-    m_timer = new QTimer( this );
-    m_timer->setSingleShot( true );
-    connect( m_timer, SIGNAL( timeout() ), this, SLOT( showCurrentTrack() ) );
-
-    EngineController *engine = The::engineController();
-
-    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
-             this, SLOT( trackPlaying() ) );
-    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
-             this, SLOT( trackPlaying() ) );
-    connect( engine, SIGNAL( albumMetadataChanged( Meta::AlbumPtr ) ),
-             this, SLOT( trackPlaying() ) );
-
-}
-
-Amarok::KNotificationBackend::~KNotificationBackend()
-{
-    if (m_notify)
-        m_notify->close();
+    if( !s_instance )
+        s_instance = new KNotificationBackend();
+    return s_instance;
 }
 
 void
-Amarok::KNotificationBackend::setEnabled(bool enable)
+KNotificationBackend::destroy()
+{
+    delete s_instance;
+    s_instance = 0;
+}
+
+KNotificationBackend::KNotificationBackend()
+    : m_enabled( false )
+{
+    EngineController *engine = The::engineController();
+    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)), SLOT(showCurrentTrack()) );
+    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)), SLOT(showCurrentTrack()) );
+    connect( engine, SIGNAL(albumMetadataChanged(Meta::AlbumPtr)), SLOT(showCurrentTrack()) );
+
+    if( engine->isPlaying() )
+        showCurrentTrack();
+}
+
+KNotificationBackend::~KNotificationBackend()
+{
+    if( m_notify )
+        m_notify.data()->close();
+}
+
+void
+KNotificationBackend::setEnabled( bool enable )
 {
     m_enabled = enable;
 }
 
 bool
-Amarok::KNotificationBackend::isEnabled() const
+KNotificationBackend::isEnabled() const
 {
     return m_enabled;
 }
 
 bool
-Amarok::KNotificationBackend::isFullscreenWindowActive() const
+KNotificationBackend::isFullscreenWindowActive() const
 {
     // Get information of the active window.
     KWindowInfo activeWindowInfo = KWindowSystem::windowInfo( KWindowSystem::activeWindow(), NET::WMState );
@@ -93,61 +86,52 @@ Amarok::KNotificationBackend::isFullscreenWindowActive() const
 }
 
 void
-Amarok::KNotificationBackend::notificationClosed()
-{
-    if( sender() == m_notify )
-        m_notify = 0;
-}
-
-void
-Amarok::KNotificationBackend::trackPlaying()
-{
-    if( !m_enabled )
-        return; // KNotify is disabled, so don't start timer
-
-    m_timer->start( 3000 ); // Wait some time to display the correct cover and also to check if phonon really managed to play the track
-}
-
-void Amarok::KNotificationBackend::show(const QString& title, const QString& body, const QPixmap& pixmap)
+KNotificationBackend::show( const QString &title, const QString &body, const QPixmap &pixmap )
 {
     QPixmap icon;
-    if (pixmap.isNull()) {
+    if( pixmap.isNull() )
+    {
         KIconLoader loader;
         icon = loader.loadIcon( QString("amarok"), KIconLoader::Desktop );
     }
     else
         icon = pixmap;
 
-    KNotification::event( KNotification::Notification , title, body, icon );
+    KNotification *notify = new KNotification( "message" );
+    notify->setTitle( title );
+    notify->setText( body );
+    notify->setPixmap( icon );
+    notify->sendEvent();
 }
 
 void
-Amarok::KNotificationBackend::showCurrentTrack( bool force ) // slot
+KNotificationBackend::showCurrentTrack( bool force )
 {
-    if( !force && !m_enabled )
+    if( !m_enabled && !force )
         return;
 
     EngineController *engine = The::engineController();
-
     Meta::TrackPtr track = engine->currentTrack();
-    if( engine->isPlaying() && track )
+    if( !track )
     {
-        if( m_notify ) {
-            m_notify->close(); // Close old notification (when switching quickly between tracks)
-        }
-
-        m_notify = new KNotification( "trackChange" );
-        connect( m_notify, SIGNAL(closed()), this, SLOT(notificationClosed()) );
-
-        Meta::AlbumPtr album = track->album();
-        if( album )
-            m_notify->setPixmap( The::svgHandler()->imageWithBorder( album, 80 ) );
-
-        m_notify->setTitle( i18n( "Now playing" ) );
-
-        m_notify->setText( engine->prettyNowPlaying() );
-        m_notify->sendEvent();
+        warning() << __PRETTY_FUNCTION__ << "null track!";
+        return;
     }
-}
 
-#include "KNotificationBackend.moc"
+    const QString title = i18n( "Now playing" );
+    const QString text = engine->prettyNowPlaying();
+    Meta::AlbumPtr album = track->album();
+    const QPixmap pixmap = album ? The::svgHandler()->imageWithBorder( album, 80 ) : QPixmap();
+
+    KNotification *notify = m_notify.data();
+    if( !notify )
+        notify = new KNotification( "trackChange" );
+    notify->setTitle( title );
+    notify->setText( text );
+    notify->setPixmap( pixmap );
+
+    if( m_notify ) // existing notification already shown
+        notify->update();
+    notify->sendEvent(); // (re)start timeout in both cases
+    m_notify = notify;
+}

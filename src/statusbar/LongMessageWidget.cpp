@@ -62,8 +62,10 @@ LongMessageWidget::LongMessageWidget( QWidget *anchor, const QString &message,
 
     QLabel *alabel = new QLabel( message, hbox );
     alabel->setWordWrap( true );
+    alabel->setOpenExternalLinks( true );
     alabel->setObjectName( "label" );
     alabel->setTextFormat( Qt::RichText );
+    alabel->setTextInteractionFlags( Qt::TextBrowserInteraction );
     alabel->setSizePolicy( QSizePolicy::MinimumExpanding, QSizePolicy::Preferred );
     alabel->setPalette( p );
 

@@ -23,7 +23,7 @@
 #ifndef AMAROK_CONTEXT_VIEW_H
 #define AMAROK_CONTEXT_VIEW_H
 
-#include "src/context/ContextObserver.h"
+#include "context/ContextObserver.h"
 
 namespace Context
 {
@@ -40,11 +40,8 @@ public:
      */
     static ContextView* self();
 
-        
 private:
     static ContextView* s_self;
-
-   
 };
 
 } // Context namespace

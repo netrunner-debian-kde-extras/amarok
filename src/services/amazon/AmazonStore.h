@@ -20,6 +20,7 @@
 #define AMAZONSTORE_H
 
 #include "AmazonCollection.h"
+#include "AmazonInfoParser.h"
 #include "AmazonItemTreeModel.h"
 #include "AmazonItemTreeView.h"
 #include "AmazonMeta.h"
@@ -40,6 +41,9 @@
 #include <threadweaver/ThreadWeaver.h>
 
 class AmazonMetaFactory;
+class AmazonInfoParser;
+
+class AmazonWantCountryWidget;
 
 class AmazonServiceFactory : public ServiceFactory
 {
@@ -75,6 +79,14 @@ public:
     virtual Collections::Collection* collection() { return m_collection; }
     void polish();
 
+    /**
+     * Convert an ISO 3166 two-letter country code to Amazon
+     * top level domain
+     *
+     * @returns a TLD for corresponding Amazon store, or "none"
+     */
+    static QString iso3166toAmazon(const QString& country);
+
 public slots:
     /**
     * Adds the currently selected item to the cart.
@@ -103,7 +115,7 @@ public slots:
     void itemDoubleClicked( QModelIndex index );
 
     /**
-    * Activates buttons required to interact with the currently selected item.
+    * Activates buttons required to interact with the currently selected item and updates the context view.
     * @param index The QModelIndex of the item.
     */
     void itemSelected( QModelIndex index );
@@ -128,7 +140,7 @@ public slots:
 
 private:
     /**
-    * Helper function. Creates a valid request URL for the Amazon service.
+    * Helper method. Creates a valid request URL for the Amazon service.
     * @param request string to search for.
     */
     QUrl createRequestUrl( const QString request );
@@ -137,6 +149,14 @@ private:
     * Inits the top part of the Amazon store browser view with its widgets.
     */
     void initTopPanel();
+
+    /**
+     * Initializes the bottom panel of Amazon store browser.
+     *
+     * Currently this contains nothing, except for possible "Select country"
+     * widget.
+     */
+    void initBottomPanel();
 
     /**
     * Inits the Amazon store browser view with its widgets.
@@ -154,6 +174,8 @@ private:
     QPushButton* m_viewCartButton;
     QPushButton* m_checkoutButton;
 
+    AmazonWantCountryWidget* m_wantCountryWidget;
+
     QSpinBox* m_resultpageSpinBox;
     KAction* m_forwardAction;
     KAction* m_backwardAction;
@@ -168,6 +190,8 @@ private:
     AmazonItemTreeModel* m_itemModel;
 
     QModelIndex m_selectedIndex;
+
+    AmazonInfoParser* m_amazonInfoParser;
 
 private slots:
     /**
@@ -194,6 +218,11 @@ private slots:
     * Go forward in Amazon store.
     */
     void forward();
+
+    /**
+     * Country has been updated in the configuration
+     */
+    void countryUpdated();
 };
 
 #endif // AMAZONSTORE_H

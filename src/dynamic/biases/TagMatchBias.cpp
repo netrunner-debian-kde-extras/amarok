@@ -22,23 +22,20 @@
 
 #include "TagMatchBias.h"
 
+#include "browsers/playlistbrowser/DynamicBiasWidgets.h"
 #include "core/collections/Collection.h"
-#include "core-impl/collections/support/CollectionManager.h"
 #include "core/collections/QueryMaker.h"
 #include "core/support/Debug.h"
-
-#include "TrackSet.h"
-#include "DynamicBiasWidgets.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "dynamic/TrackSet.h"
 
 #include <QDateTime>
+#include <QCheckBox>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QTimer>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
-
-#include <QHBoxLayout>
-#include <QCheckBox>
-#include <QLabel>
-
 
 QString
 Dynamic::TagMatchBiasFactory::i18nName() const
@@ -62,8 +59,7 @@ Dynamic::TagMatchBiasFactory::createBias()
 // ----- SimpleMatchBias --------
 
 Dynamic::SimpleMatchBias::SimpleMatchBias()
-    : m_tracksValid( false )
-    , m_invert( false )
+    : m_invert( false )
 { }
 
 void
@@ -93,7 +89,7 @@ Dynamic::SimpleMatchBias::setInvert( bool value )
         return;
 
     m_invert = value;
-    // setting "invert" does not invalidate the search results invalidate();
+    // setting "invert" does not invalidate the search results
     emit changed( BiasPtr(this) );
 }
 
@@ -108,7 +104,7 @@ Dynamic::SimpleMatchBias::matchingTracks( int position,
     Q_UNUSED( playlist );
     Q_UNUSED( contextCount );
 
-    if( m_tracksValid )
+    if( tracksValid() )
         return m_tracks;
 
     m_tracks = Dynamic::TrackSet( universe, m_invert );
@@ -132,10 +128,17 @@ Dynamic::SimpleMatchBias::updateReady( QStringList uids )
 void
 Dynamic::SimpleMatchBias::updateFinished()
 {
-    m_tracksValid = true;
+    m_tracksTime = QDateTime::currentDateTime();
     m_qm.reset();
     debug() << "SimpleMatchBias::"<<name()<<"updateFinished"<<m_tracks.trackCount();
     emit resultReady( m_tracks );
+}
+
+bool
+Dynamic::SimpleMatchBias::tracksValid() const
+{
+    return m_tracksTime.isValid() &&
+        m_tracksTime.secsTo(QDateTime::currentDateTime()) < 60 * 3;
 }
 
 bool
@@ -144,7 +147,7 @@ Dynamic::SimpleMatchBias::trackMatches( int position,
                                         int contextCount ) const
 {
     Q_UNUSED( contextCount );
-    if( m_tracksValid )
+    if( tracksValid() )
         return m_tracks.contains( playlist.at(position) );
     return true; // we should have already received the tracks before some-one calls trackMatches
 }
@@ -153,7 +156,7 @@ Dynamic::SimpleMatchBias::trackMatches( int position,
 void
 Dynamic::SimpleMatchBias::invalidate()
 {
-    m_tracksValid = false;
+    m_tracksTime = QDateTime();
     m_tracks = TrackSet();
     // TODO: need to finish a running query
     m_qm.reset();
@@ -297,7 +300,7 @@ Dynamic::TagMatchBias::trackMatches( int position,
                                      int contextCount ) const
 {
     Q_UNUSED( contextCount );
-    if( m_tracksValid )
+    if( tracksValid() )
         return m_tracks.contains( playlist.at(position) );
     else
         return matches( playlist.at(position) );

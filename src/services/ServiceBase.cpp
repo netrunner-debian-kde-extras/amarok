@@ -16,17 +16,15 @@
 
 #include "ServiceBase.h"
 
-#include "core/support/Amarok.h"
-
-#include "core/support/Debug.h"
-
 #include "browsers/CollectionTreeItem.h"
 #include "browsers/CollectionTreeItemModelBase.h"
-#include "core/collections/Collection.h"
-#include "SearchWidget.h"
 #include "browsers/InfoProxy.h"
+#include "core/collections/Collection.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
+#include "widgets/SearchWidget.h"
 
-#include <khbox.h>
+#include <KHBox>
 #include <KMenuBar>
 
 #include <QFrame>
@@ -38,6 +36,8 @@ ServiceFactory::ServiceFactory( QObject *parent, const QVariantList &args )
 {
     m_type = Plugins::PluginFactory::Service;
     CollectionManager::instance()->addTrackProvider( this );
+    connect( this, SIGNAL(newService(ServiceBase*)), SLOT(slotNewService(ServiceBase*)) );
+    connect( this, SIGNAL(removeService(ServiceBase*)), SLOT(slotRemoveService(ServiceBase*)) );
 }
 
 ServiceFactory::~ServiceFactory()
@@ -47,35 +47,32 @@ ServiceFactory::~ServiceFactory()
 
 
 Meta::TrackPtr
-ServiceFactory::trackForUrl(const KUrl & url)
+ServiceFactory::trackForUrl( const KUrl &url )
 {
     if ( m_activeServices.size() == 0 ) {
         debug() << "our service (" << name() << ") is needed for a url, so init it!";
         init();
     }
 
-    /*Meta::ServiceTrack * serviceTrack = new Meta::ServiceTrack();
-    serviceTrack->setUidUrl( url.url() );
-    Meta::TrackPtr track( serviceTrack );*/
-
-    Meta::TrackPtr track;
-    foreach( ServiceBase * service, m_activeServices )
+    foreach( ServiceBase *service, m_activeServices )
     {
-        if( !service->serviceReady() ){
+        if( !service->serviceReady() )
+        {
             debug() << "our service is not ready! queuing track and returning proxy";
-            MetaProxy::Track* ptrack = new MetaProxy::Track( url.url(), true );
+            MetaProxy::Track *ptrack = new MetaProxy::Track( url, MetaProxy::Track::ManualLookup );
             MetaProxy::TrackPtr trackptr( ptrack );
             m_tracksToLocate.enqueue( trackptr );
             return Meta::TrackPtr::staticCast( trackptr );
-        } else if (  service->collection() ) {
-            debug() << "Service Ready. Collection is: " << service->collection();
-            track = service->collection()->trackForUrl( url );
         }
-
-        if ( track )
-            return track;
+        else if( service->collection() )
+        {
+            debug() << "Service Ready. Collection is: " << service->collection();
+            return service->collection()->trackForUrl( url );
+        }
+        else
+            warning() << __PRETTY_FUNCTION__ << "service is ready, but service->collection() is null!";
     }
-    return track;
+    return Meta::TrackPtr();
 }
 
 void ServiceFactory::clearActiveServices()
@@ -88,9 +85,27 @@ void ServiceFactory::slotServiceReady()
     while( !m_tracksToLocate.isEmpty() )
     {
         MetaProxy::TrackPtr track = m_tracksToLocate.dequeue();
-        if( track ) 
-            track->lookupTrack( this );
+        if( !track )
+            continue;
+
+        track->lookupTrack( this );
     }
+}
+
+void
+ServiceFactory::slotNewService( ServiceBase *newService )
+{
+    Q_ASSERT( newService );
+    connect( newService, SIGNAL(ready()), this, SLOT(slotServiceReady()) );
+    m_activeServices << newService;
+}
+
+void
+ServiceFactory::slotRemoveService( ServiceBase *service )
+{
+    Q_ASSERT( service );
+    m_activeServices.remove( service );
+    service->deleteLater();
 }
 
 ServiceBase *ServiceBase::s_instance = 0;
@@ -100,10 +115,11 @@ ServiceBase::ServiceBase( const QString &name, ServiceFactory *parent, bool useC
     , m_contentView ( 0 )
     , m_parentFactory( parent )
     , m_polished( false )
-    , m_serviceready( false )
     , m_useCollectionTreeView( useCollectionTreeView )
     , m_infoParser( 0 )
+    , m_serviceready( false )
     , m_model( 0 )
+    , m_filterModel( 0 )
 {
     DEBUG_BLOCK
 
@@ -175,10 +191,9 @@ ServiceBase::itemActivated ( const QModelIndex & index )
 void
 ServiceBase::setModel( QAbstractItemModel * model )
 {
-    //m_filterModel->setSourceModel( model );
-    //m_contentView->setModel( m_filterModel );
-    m_contentView->setModel( model );
-    m_model  = model;
+    if( m_contentView )
+        m_contentView->setModel( model );
+    m_model = model;
 }
 
 QAbstractItemModel *
@@ -207,6 +222,17 @@ bool
 ServiceBase::serviceReady() const
 {
     return m_serviceready;
+}
+
+void
+ServiceBase::setServiceReady( bool newReady )
+{
+    if( newReady == m_serviceready )
+        return; // nothing to do
+
+    m_serviceready = newReady;
+    if( m_serviceready )
+        emit ready();
 }
 
 void

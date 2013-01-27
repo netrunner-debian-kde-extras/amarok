@@ -18,6 +18,14 @@ msgstr ""
 "Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Lokalize 1.0\n"
 
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "KDE 中国,Funda Wang,Ni Hui"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "kde-china@kde.org,fundawang@gmail.com,shuizhuyuanluo@126.com"
+
 #: amarokpkg.cpp:40
 msgid "Install, list, remove Amarok applets"
 msgstr "安装、列出、删除 Amarok 小程序"
@@ -108,13 +116,3 @@ msgctxt ""
 msgid "One of install, remove, upgrade or list is required."
 msgstr ""
 "需要使用安装(install)、删除(remove)、升级(upgrade)或列出(list)四个选项之一。"
-
-#: rc.cpp:1
-msgctxt "NAME OF TRANSLATORS"
-msgid "Your names"
-msgstr "KDE 中国,Funda Wang,Ni Hui"
-
-#: rc.cpp:2
-msgctxt "EMAIL OF TRANSLATORS"
-msgid "Your emails"
-msgstr "kde-china@kde.org,fundawang@gmail.com,shuizhuyuanluo@126.com"

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2011 Sven Krohlas <sven@getamarok.com>                                 *
+ * Copyright (c) 2011, 2012 Sven Krohlas <sven@getamarok.com>                           *
  * The Amazon store in based upon the Magnatune store in Amarok,                        *
  * Copyright (c) 2006,2007 Nikolaj Hald Nielsen <nhn@kde.org>                           *
  *                                                                                      *
@@ -25,6 +25,7 @@
 #include "AmazonShoppingCart.h"
 #include "AmazonShoppingCartDialog.h"
 #include "AmazonUrlRunner.h"
+#include "AmazonWantCountryWidget.h"
 
 #include "amarokurls/AmarokUrlHandler.h"
 #include "browsers/CollectionTreeItem.h"
@@ -65,7 +66,6 @@ AmazonServiceFactory::init()
 {
     DEBUG_BLOCK
     AmazonStore* service = new AmazonStore( this, "MP3 Music Store" );
-    m_activeServices << service;
     m_initialized = true;
     emit newService( service );
 }
@@ -91,6 +91,7 @@ AmazonServiceFactory::config()
 
 AmazonStore::AmazonStore( AmazonServiceFactory* parent, const char *name )
     : ServiceBase( name, parent, false )
+    , m_wantCountryWidget(0)
 {
     DEBUG_BLOCK
     setObjectName( name );
@@ -110,7 +111,6 @@ AmazonStore::AmazonStore( AmazonServiceFactory* parent, const char *name )
     m_collection = new Collections::AmazonCollection( this, "amazon", "MP3 Music Store" );
     polish();
     setPlayableTracks( true );
-    m_serviceready = true;
 
     m_lastSearch = QString();
 
@@ -119,7 +119,7 @@ AmazonStore::AmazonStore( AmazonServiceFactory* parent, const char *name )
 
     connect( m_searchWidget, SIGNAL( filterChanged( const QString ) ), this, SLOT( newSearchRequest( const QString ) ) );
 
-    emit( ready() );
+    setServiceReady( true );
     newSearchRequest( QLatin1String( "" ) ); // to get some default content
 }
 
@@ -138,11 +138,16 @@ AmazonStore::polish()
         m_polished = true;
 
         initTopPanel();
+        initBottomPanel();
         initView();
 
         connect( m_itemView, SIGNAL( itemSelected( QModelIndex ) ), this, SLOT( itemSelected( QModelIndex ) ) );
         connect( m_itemView, SIGNAL( itemDoubleClicked( QModelIndex ) ), this, SLOT( itemDoubleClicked( QModelIndex ) ) );
         connect( m_itemView, SIGNAL( searchForAlbum( QModelIndex ) ), this, SLOT( searchForAlbum( QModelIndex ) ) );
+
+        m_amazonInfoParser = new AmazonInfoParser();
+        setInfoParser( m_amazonInfoParser );
+        m_amazonInfoParser->showFrontPage();
 
         AmazonUrlRunner *runner = new AmazonUrlRunner();
         connect( runner, SIGNAL( search( const QString ) ), this, SLOT( newSearchRequest( QString ) ) );
@@ -157,13 +162,12 @@ void
 AmazonStore::addToCart()
 {
     QString asin, name, price;
-    int id = 0;
+    int id = m_itemModel->idForIndex( m_selectedIndex );;
 
     // get item from collection
     if( m_itemModel->isAlbum( m_selectedIndex ) ) // album
     {
         Meta::AmazonAlbum* album;
-        id = m_itemModel->idForIndex( m_selectedIndex );
 
         album = dynamic_cast<Meta::AmazonAlbum*>( m_collection->albumById( id ).data() );
 
@@ -177,7 +181,6 @@ AmazonStore::addToCart()
     else // track
     {
         Meta::AmazonTrack* track;
-        id = m_itemModel->idForIndex( m_selectedIndex );
         track = dynamic_cast<Meta::AmazonTrack*>( m_collection->trackById( id ).data() );
 
         if( !track )
@@ -189,7 +192,6 @@ AmazonStore::addToCart()
     }
 
     AmazonShoppingCart::instance()->add( asin, price, name );
-    Amarok::Components::logger()->shortMessage( i18n( "<em>%1</em> has been added to your shopping cart.", name ) );
     m_checkoutButton->setEnabled( true );
 }
 
@@ -211,6 +213,8 @@ AmazonStore::checkout()
         m_checkoutButton->setEnabled( false );
         AmazonShoppingCart::instance()->clear();
     }
+
+    Amarok::Components::logger()->longMessage( i18n( "<b>MP3 Music Store</b><br/><br/>You are now being redirected to Amazon for the checkout process.<br/>To simplify that process please click <a href=\"%1\">this link</a> to tell Amazon that you have a downloader application for their MP3s installed.", Amazon::createCookieUrl().toString() ) );
 }
 
 void
@@ -245,12 +249,11 @@ AmazonStore::itemDoubleClicked( QModelIndex index )
     // for albums: search for the album ASIN to get details about it
     // for tracks: add it to the playlist
 
-    int id = 0;
+    int id = m_itemModel->idForIndex( index );
 
     if( m_itemModel->isAlbum( index ) ) // album
     {
         Meta::AmazonAlbum* album;
-        id = m_itemModel->idForIndex( index );
         album = dynamic_cast<Meta::AmazonAlbum*>( m_collection->albumById( id ).data() );
 
         if( !album )
@@ -261,7 +264,6 @@ AmazonStore::itemDoubleClicked( QModelIndex index )
     else // track
     {
         Meta::AmazonTrack* track;
-        id = m_itemModel->idForIndex( index );
         track = dynamic_cast<Meta::AmazonTrack*>( m_collection->trackById( id ).data() );
 
         if( !track )
@@ -278,27 +280,22 @@ AmazonStore::itemSelected( QModelIndex index )
 {
     m_addToCartButton->setEnabled( true );
     m_selectedIndex = index;
+
+    int id = m_itemModel->idForIndex( index );
+    Meta::AlbumPtr album;
+
+    if( m_itemModel->isAlbum( index ) )
+        album = m_collection->albumById( id ).data();
+    else // track
+        album = m_collection->trackById( id ).data()->album();
+
+    m_amazonInfoParser->getInfo( album );
 }
 
 void
 AmazonStore::newSearchRequest( const QString request )
 {
     DEBUG_BLOCK
-
-    // make sure we know where to search
-    if( AmazonConfig::instance()->country().isEmpty() )
-    {
-        KCMultiDialog KCM;
-
-        KCM.setWindowTitle( i18n( "Select your Amazon locale - Amarok" ) );
-        KCM.addModule( KCModuleInfo( QString( "amarok_service_amazonstore_config.desktop" ) ) );
-        KCM.setButtons( KCMultiDialog::Ok | KCMultiDialog::Cancel | KCMultiDialog::Default );
-        KCM.adjustSize();
-
-        // if the user selects an option we continue our quest for search results
-        if( !(KCM.exec() == QDialog::Accepted) )
-            return;
-    }
 
     if( AmazonConfig::instance()->country() == QLatin1String( "none" ) || AmazonConfig::instance()->country().isEmpty() )
     {
@@ -335,7 +332,7 @@ AmazonStore::newSearchRequest( const QString request )
 
     if( !tempFile.open() )
     {
-        Amarok::Components::logger()->shortMessage( i18n( "Error: Unable to write temporary file. :-(" ) );
+        Amarok::Components::logger()->longMessage( i18n( "<b>MP3 Music Store</b><br/><br/>Error: Unable to write temporary file. :-(" ) );
         return;
     }
 
@@ -444,6 +441,18 @@ AmazonStore::initTopPanel()
 }
 
 void
+AmazonStore::initBottomPanel()
+{
+    QString country(AmazonConfig::instance()->country());
+    if( country.isEmpty() || country == QLatin1String( "none" ) )
+    {
+        m_wantCountryWidget = new AmazonWantCountryWidget(m_bottomPanel);
+        connect(m_wantCountryWidget, SIGNAL(countrySelected()),
+                SLOT(countryUpdated()));
+    }
+}
+
+void
 AmazonStore::initView()
 {
     m_itemView = new AmazonItemTreeView( this );
@@ -488,6 +497,25 @@ AmazonStore::initView()
     connect( m_checkoutButton, SIGNAL( clicked() ), this, SLOT( checkout() ) );
 }
 
+QString AmazonStore::iso3166toAmazon( const QString& country )
+{
+    static QHash<QString, QString> table;
+    if( table.isEmpty() )
+    {
+        table["at"] = "de";
+        table["ch"] = "de";
+        table["de"] = "de";
+        table["es"] = "es";
+        table["fr"] = "fr";
+        table["it"] = "it";
+        table["jp"] = "co.jp";
+        table["gb"] = "co.uk";
+        table["us"] = "com";
+    }
+
+    return table.value( country, "none" );
+}
+
 /* private slots */
 
 void
@@ -496,7 +524,7 @@ AmazonStore::parseReply( KJob* requestJob )
     DEBUG_BLOCK
     if( requestJob->error() )
     {
-        Amarok::Components::logger()->shortMessage( i18n( "Error: Querying MP3 Music Store database failed. :-(" ) );
+        Amarok::Components::logger()->longMessage( i18n( "<b>MP3 Music Store</b><br/><br/>Error: Querying MP3 Music Store database failed. :-(" ) );
         debug() << requestJob->errorString();
         requestJob->deleteLater();
         m_searchWidget->searchEnded();
@@ -531,7 +559,7 @@ void
 AmazonStore::parsingFailed( ThreadWeaver::Job* parserJob )
 {
     Q_UNUSED( parserJob )
-    Amarok::Components::logger()->shortMessage( i18n( "Error: Received an invalid reply. :-(" ) );
+    Amarok::Components::logger()->longMessage( i18n( "<b>MP3 Music Store</b><br/><br/>Error: Received an invalid reply. :-(" ) );
     m_searchWidget->searchEnded();
 }
 
@@ -557,4 +585,20 @@ AmazonStore::forward()
     m_backStack.push( m_lastSearch );
     m_isNavigation = true;
     m_searchWidget->setSearchString( request );
+}
+
+void
+AmazonStore::countryUpdated()
+{
+    QString country( AmazonConfig::instance()->country() );
+    if( country.isEmpty() || country == QLatin1String( "none" ) )
+        return;
+
+    if( m_wantCountryWidget )
+    {
+        m_wantCountryWidget->setParent( 0 );
+        m_wantCountryWidget->deleteLater();
+        m_wantCountryWidget = 0;
+    }
+    newSearchRequest( QString() );
 }

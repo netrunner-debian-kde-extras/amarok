@@ -22,6 +22,7 @@
 #include "playlist/PlaylistModelStack.h"
 
 #include "amarokconfig.h"
+#include "core/meta/Statistics.h"
 #include "core/support/Debug.h"
 
 #include <KRandom>
@@ -80,6 +81,7 @@ Playlist::FavoredRandomTrackNavigator::rowWeights( QSet<quint64> avoidSet )
     for( int row = 0; row < rowCount; row++ )
     {
         qreal weight = 0.0;
+        Meta::StatisticsPtr statistics = m_model->trackAt( row )->statistics();
 
         if ( !avoidSet.contains( m_model->idAt( row ) ) )
         {
@@ -87,21 +89,21 @@ Playlist::FavoredRandomTrackNavigator::rowWeights( QSet<quint64> avoidSet )
             {
                 case AmarokConfig::EnumFavorTracks::HigherScores:
                 {
-                    int score = m_model->trackAt( row )->score();
+                    int score = statistics->score();
                     weight = score ? score : 50.0;    // "Unknown" weight: in the middle, 50%
                     break;
                 }
 
                 case AmarokConfig::EnumFavorTracks::HigherRatings:
                 {
-                    int rating = m_model->trackAt( row )->rating();
+                    int rating = statistics->rating();
                     weight = rating ? rating : 5.0;
                     break;
                 }
 
                 case AmarokConfig::EnumFavorTracks::LessRecentlyPlayed:
                 {
-                    QDateTime lastPlayed = m_model->trackAt( row )->lastPlayed();
+                    QDateTime lastPlayed = statistics->lastPlayed();
                     if ( lastPlayed.isValid() )
                     {
                         weight = lastPlayed.secsTo( QDateTime::currentDateTime() );

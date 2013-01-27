@@ -32,6 +32,7 @@
 #include "core/capabilities/ActionsCapability.h"
 #include "core/capabilities/BookmarkThisCapability.h"
 #include "core/capabilities/FindInSourceCapability.h"
+#include "core/meta/Statistics.h"
 #include "core/meta/support/MetaUtility.h"
 #include "MainWindow.h"
 #include "PaletteHandler.h"
@@ -214,7 +215,7 @@ CurrentTrack::trackRatingChanged( int rating )
     if( !track )
         return;
 
-    track->setRating( rating );
+    track->statistics()->setRating( rating );
 }
 
 QList<QAction*>
@@ -308,7 +309,6 @@ CurrentTrack::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
     if( data.isEmpty() || name != QLatin1String("current") )
         return;
 
-    DEBUG_BLOCK
     if( data.contains( QLatin1String("notrack" ) ) )
     {
         if( m_view != Stopped )
@@ -568,7 +568,6 @@ CurrentTrack::clearTrackActions()
 void
 CurrentTrack::resizeCover( const QPixmap &cover, qreal width )
 {
-    DEBUG_BLOCK
     QPixmap coverWithBorders;
     if( !cover.isNull() )
     {

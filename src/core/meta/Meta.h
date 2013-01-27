@@ -18,18 +18,20 @@
 #ifndef AMAROK_META_H
 #define AMAROK_META_H
 
-#include "shared/amarok_export.h"
-#include "shared/MetaReplayGain.h"
+#include "amarok_export.h"
+#include "MetaReplayGain.h"
 
-#include "core/capabilities/Capability.h"
+#include "core/interfaces/MetaCapability.h"
 
 #include <QList>
 #include <QMetaType>
+#include <QMutex>
 #include <QImage>
 #include <QDateTime>
 #include <QSet>
 #include <QSharedData>
 #include <QString>
+#include <QReadWriteLock>
 
 #include <KSharedPtr>
 #include <KUrl>
@@ -39,10 +41,11 @@ namespace Collections
     class Collection;
     class QueryMaker;
 }
+class PersistentStatisticsStore;
 
 namespace Meta
 {
-    class MetaBase;
+    class Base;
     class Track;
     class Artist;
     class Album;
@@ -51,7 +54,11 @@ namespace Meta
     class Year;
     class Label;
 
-    typedef KSharedPtr<MetaBase> DataPtr;
+    class Statistics;
+    typedef KSharedPtr<Statistics> StatisticsPtr;
+    typedef KSharedPtr<const Statistics> ConstStatisticsPtr;
+
+    typedef KSharedPtr<Base> DataPtr;
     typedef QList<DataPtr> DataList;
     typedef KSharedPtr<Track> TrackPtr;
     typedef QList<TrackPtr> TrackList;
@@ -70,92 +77,57 @@ namespace Meta
 
     class AMAROK_CORE_EXPORT Observer
     {
-        public:
-            void subscribeTo( TrackPtr );
-            void unsubscribeFrom( TrackPtr );
-            void subscribeTo( ArtistPtr );
-            void unsubscribeFrom( ArtistPtr );
-            void subscribeTo( AlbumPtr );
-            void unsubscribeFrom( AlbumPtr );
-            void subscribeTo( ComposerPtr );
-            void unsubscribeFrom( ComposerPtr );
-            void subscribeTo( GenrePtr );
-            void unsubscribeFrom( GenrePtr );
-            void subscribeTo( YearPtr );
-            void unsubscribeFrom( YearPtr );
+        friend class Base; // so that is can call destroyedNotify()
 
-            /** This method is called when the metadata of a track has changed.
-                The called class may not cache the pointer */
+        public:
+            virtual ~Observer();
+
+            /**
+             * Subscribe to changes made by @param entity.
+             *
+             * Changed in 2.7: being subscribed to an entity no longer prevents its
+             * destruction.
+             */
+            template <typename T>
+            void subscribeTo( KSharedPtr<T> entity ) { subscribeTo( entity.data() ); }
+            template <typename T>
+            void unsubscribeFrom( KSharedPtr<T> entity ) { unsubscribeFrom( entity.data() ); }
+
+            /**
+             * This method is called when the metadata of a track has changed.
+             * The called class may not cache the pointer.
+             */
             virtual void metadataChanged( TrackPtr track );
             virtual void metadataChanged( ArtistPtr artist );
             virtual void metadataChanged( AlbumPtr album );
             virtual void metadataChanged( GenrePtr genre );
             virtual void metadataChanged( ComposerPtr composer );
             virtual void metadataChanged( YearPtr year );
-            virtual ~Observer();
 
-            // TODO: we really need a deleted notification.
-            // TODO: Why not change this Java-like observer pattern to a normal QObject
+            /**
+             * One of the subscribed entities was destroyed. You don't get which one
+             * because it is already invalid.
+             */
+            virtual void entityDestroyed();
 
         private:
-            QSet<TrackPtr> m_trackSubscriptions;
-            QSet<ArtistPtr> m_artistSubscriptions;
-            QSet<AlbumPtr> m_albumSubscriptions;
-            QSet<ComposerPtr> m_composerSubscriptions;
-            QSet<GenrePtr> m_genreSubscriptions;
-            QSet<YearPtr> m_yearSubscriptions;
+            friend class ::PersistentStatisticsStore; // so that is can call KSharedPtr-free subscribe:
+            void subscribeTo( Base *ptr );
+            void unsubscribeFrom( Base *ptr );
+
+            /**
+             * Called in Meta::Base destructor so that Observer doesn't have a stale pointer.
+             */
+            void destroyedNotify( Base *ptr );
+
+            QSet<Base *> m_subscriptions;
+            QMutex m_subscriptionsMutex; /// mutex guarding access to m_subscriptions
     };
 
-    class AMAROK_CORE_EXPORT MetaCapability
+    class AMAROK_CORE_EXPORT Base : public virtual QSharedData, public MetaCapability
+    // virtual inherit. so that implementations can be both Meta::Track and Meta::Statistics
     {
-        public:
-            virtual ~MetaCapability() {}
-
-            /**
-             * Return true if this entity has capability @param CapIface, false otherwise.
-             */
-            template <class CapIface> bool has() const
-            {
-                return hasCapabilityInterface( CapIface::capabilityInterfaceType() );
-            }
-
-            /**
-             * Creates a specialized interface which represents a capability of this
-             * MetaBase object. The caller of this method is responsible for deleting
-             * created capability!
-             *
-             * @returns a pointer to the capability interface if it exists, 0 otherwise
-             */
-            template <class CapIface> CapIface *create()
-            {
-                Capabilities::Capability::Type type = CapIface::capabilityInterfaceType();
-                Capabilities::Capability *iface = createCapabilityInterface( type );
-                return qobject_cast<CapIface *>( iface );
-            }
-
-            /**
-             * Subclasses should override this method to denote they provide particular
-             * capability type. Must match @see createCapabilityInterface()
-             *
-             * This method should be considered protected (but is not because of practical
-             * reasons), you should normally call @see has()
-             */
-            virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-
-            /**
-             * Subclasses should override this method to create particular capability.
-             * Memory-management of the returned pointer is the responsibility of the
-             * caller of this method. Must match @see hasCapabilityInterface()
-             *
-             * This method should be considered protected (but is not because of practical
-             * reasons), you should normally call @see create()
-             */
-            virtual Capabilities::Capability *createCapabilityInterface( Capabilities::Capability::Type type );
-    };
-
-    class AMAROK_CORE_EXPORT MetaBase : public QSharedData, public MetaCapability
-    {
-        friend class Observer;
+        friend class Observer; // so that Observer can call (un)subscribe()
 
         Q_PROPERTY( QString name READ name )
         Q_PROPERTY( QString prettyName READ prettyName )
@@ -163,8 +135,8 @@ namespace Meta
         Q_PROPERTY( QString sortableName READ sortableName )
 
         public:
-            MetaBase() {}
-            virtual ~MetaBase() {}
+            Base();
+            virtual ~Base();
 
             /** The textual label for this object.
                 For a track this is the track title, for an album it is the
@@ -195,18 +167,33 @@ namespace Meta
             virtual QString fixedName() const { return prettyName(); }
 
         protected:
-            virtual void subscribe( Observer *observer );
-            virtual void unsubscribe( Observer *observer );
+            /**
+             * Subscribe @param observer for change updates. Don't ever think of calling
+             * this method yourself or overriding it, it's highly coupled with Observer.
+             */
+            void subscribe( Observer *observer );
+
+            /**
+             * Unsubscribe @param observer from change updates. Don't ever think of
+             * calling this method yourself or overriging it, it's highly coupled with
+             * Observer.
+             */
+            void unsubscribe( Observer *observer );
 
             virtual void notifyObservers() const = 0;
 
-            QSet<Meta::Observer*> m_observers;
+            template <typename T>
+            void notifyObserversHelper( const T *self ) const;
 
-        private: // no copy allowed, since it's not safe with observer list
-            Q_DISABLE_COPY(MetaBase)
+        private:
+            // no copy allowed, since it's not safe with observer list
+            Q_DISABLE_COPY( Base )
+
+            QSet<Meta::Observer*> m_observers;
+            mutable QReadWriteLock m_observersLock; // guards access to m_observers
     };
 
-    class AMAROK_CORE_EXPORT Track : public MetaBase
+    class AMAROK_CORE_EXPORT Track : public Base
     {
         public:
 
@@ -245,12 +232,6 @@ namespace Meta
             virtual qreal bpm() const = 0;
             /** Returns the comment of this track */
             virtual QString comment() const = 0;
-            /** Returns the score of this track */
-            virtual double score() const = 0;
-            virtual void setScore( double newScore ) = 0;
-            /** Returns the rating of this track */
-            virtual int rating() const = 0;
-            virtual void setRating( int newRating ) = 0;
             /** Returns the length of this track in milliseconds, or 0 if unknown */
             virtual qint64 length() const = 0;
             /** Returns the filesize of this track in bytes */
@@ -269,12 +250,6 @@ namespace Meta
             virtual int trackNumber() const = 0;
             /** Returns the discnumber of this track */
             virtual int discNumber() const = 0;
-            /** Returns the time the song was last played, or an invalid QDateTime if it has not been played yet */
-            virtual QDateTime lastPlayed() const;
-            /** Returns the time the song was first played, or an invalid QDateTime if it has not been played yet */
-            virtual QDateTime firstPlayed() const;
-            /** Returns the number of times the track was played (what about unknown?)*/
-            virtual int playCount() const = 0;
             /**
              * Returns the gain adjustment for a given replay gain mode.
              *
@@ -285,7 +260,12 @@ namespace Meta
              */
             virtual qreal replayGain( ReplayGainTag mode ) const;
 
-            /** Returns the type of this track, e.g. "ogg", "mp3", "stream" */
+            /**
+             * Returns the type of this track, e.g. "ogg", "mp3", "stream"
+             *
+             * TODO: change return type to Amarok::FileType enum. Clients needing
+             * user-representation would call FileTypeSupport::toLocalizedString()
+             */
             virtual QString type() const = 0;
 
             /** tell the track to perform any prerequisite
@@ -332,12 +312,21 @@ namespace Meta
 
             static bool lessThan( const TrackPtr& left, const TrackPtr& right );
 
+            /**
+             * Return a pointer to track's Statistics interface. May never be null.
+             *
+             * Subclasses: always return the default implementation instead of returning 0.
+             */
+            virtual StatisticsPtr statistics();
+            ConstStatisticsPtr statistics() const; // allow const statistics methods on const tracks
+
         protected:
+            friend class ::PersistentStatisticsStore; // so that it can call notifyObservers
             virtual void notifyObservers() const;
 
     };
 
-    class AMAROK_CORE_EXPORT Artist : public MetaBase
+    class AMAROK_CORE_EXPORT Artist : public Base
     {
         Q_PROPERTY( TrackList tracks READ tracks )
         public:
@@ -375,7 +364,7 @@ namespace Meta
          the specific artist.
         There should be one album without title and artist for all the rest.
     */
-    class AMAROK_CORE_EXPORT Album : public MetaBase
+    class AMAROK_CORE_EXPORT Album : public Base
     {
         Q_PROPERTY( bool compilation READ isCompilation )
         Q_PROPERTY( bool hasAlbumArtist READ hasAlbumArtist )
@@ -456,7 +445,7 @@ namespace Meta
             virtual void notifyObservers() const;
     };
 
-    class AMAROK_CORE_EXPORT Composer : public MetaBase
+    class AMAROK_CORE_EXPORT Composer : public Base
     {
         Q_PROPERTY( TrackList tracks READ tracks )
         public:
@@ -472,7 +461,7 @@ namespace Meta
             virtual void notifyObservers() const;
     };
 
-    class AMAROK_CORE_EXPORT Genre : public MetaBase
+    class AMAROK_CORE_EXPORT Genre : public Base
     {
         Q_PROPERTY( TrackList tracks READ tracks )
         public:
@@ -488,7 +477,7 @@ namespace Meta
             virtual void notifyObservers() const;
     };
 
-    class AMAROK_CORE_EXPORT Year : public MetaBase
+    class AMAROK_CORE_EXPORT Year : public Base
     {
         Q_PROPERTY( TrackList tracks READ tracks )
         public:
@@ -512,13 +501,13 @@ namespace Meta
     /**
       A Label represents an arbitrary classification of a Track.
       */
-    class AMAROK_CORE_EXPORT Label : public MetaBase
+    class AMAROK_CORE_EXPORT Label : public Base
     {
     public:
         /**
           Constructs a new Label.
           */
-        Label() : MetaBase() {}
+        Label() : Base() {}
         /**
           Destructs an existing Label.
           */

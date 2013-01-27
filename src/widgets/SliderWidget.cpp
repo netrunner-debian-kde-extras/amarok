@@ -18,7 +18,7 @@
 
 #include "SliderWidget.h"
 
-#include <config-amarok.h>
+#include "config.h"
 
 #include "core/support/Amarok.h"
 #include "amarokurls/AmarokUrlHandler.h"
@@ -379,7 +379,6 @@ void Amarok::TimeSlider::slotTriangleFocused( int seconds )
 
 void Amarok::TimeSlider::clearTriangles()
 {
-    DEBUG_BLOCK
     QList<BookmarkTriangle *>::iterator i;
     for( i = m_triangles.begin(); i != m_triangles.end(); ++i ){
       (*i)->deleteLater();

@@ -21,11 +21,10 @@
 #ifndef AMAROK_METATAGBIAS_H
 #define AMAROK_METATAGBIAS_H
 
-#include "shared/amarok_export.h"
-#include "Bias.h"
-#include "BiasFactory.h"
-
-#include <widgets/MetaQueryWidget.h>
+#include "amarok_export.h"
+#include "dynamic/Bias.h"
+#include "dynamic/BiasFactory.h"
+#include "widgets/MetaQueryWidget.h"
 
 class QWidget;
 class QCheckBox;
@@ -37,6 +36,8 @@ namespace Dynamic
 
     /** An abstract bias that will check matching tracks agains the results from a query maker.
         You can use this base class for writing your own biases.
+        In all cases you have to implement newQuery which creates a
+        QueryMaker and starts it.
     */
     class AMAROK_EXPORT SimpleMatchBias : public AbstractBias
     {
@@ -78,9 +79,18 @@ namespace Dynamic
 
             mutable QScopedPointer<Collections::QueryMaker> m_qm;
 
-            /** The result from the current query manager are buffered in the m_uids set. */
-            bool m_tracksValid;
             mutable TrackSet m_tracks;
+
+            /** Time when we got the query result.
+                We don't want results to be valid forever.
+                Fix 311906 */
+            QDateTime m_tracksTime;
+
+            /** Returns true if the tracks in m_tracks reflect the
+                current filter.
+                Tracks are only valid for a short time.
+            */
+            bool tracksValid() const;
 
             /** The results are reported inverted (tracks that not match) */
             bool m_invert;

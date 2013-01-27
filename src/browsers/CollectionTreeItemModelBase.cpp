@@ -20,17 +20,17 @@
 
 #include "CollectionTreeItemModelBase.h"
 
-#include "core/support/Amarok.h"
 #include "AmarokMimeData.h"
-#include "core/collections/Collection.h"
-#include "CollectionTreeItem.h"
-#include "core/support/Debug.h"
-#include "core/meta/support/MetaConstants.h"
-#include "core/collections/QueryMaker.h"
-#include "amarokconfig.h"
-#include "core/capabilities/EditCapability.h"
-#include "shared/FileType.h"
+#include "FileType.h"
 #include "SvgHandler.h"
+#include "amarokconfig.h"
+#include "browsers/CollectionTreeItem.h"
+#include "core/capabilities/EditCapability.h"
+#include "core/collections/Collection.h"
+#include "core/collections/QueryMaker.h"
+#include "core/meta/support/MetaConstants.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 #include "core-impl/collections/support/TextualQueryFilter.h"
 
 #include <KGlobalSettings>
@@ -1151,7 +1151,7 @@ void CollectionTreeItemModelBase::itemAboutToBeDeleted( CollectionTreeItem *item
 
     if( !d->runningQueries.contains( item ) )
         return;
-    //replace this hack with QWeakPointer as soon as we depend on Qt 4.6
+    // TODO: replace this hack with QWeakPointer now than we depend on Qt >= 4.8
     foreach(Collections::QueryMaker *qm, d->runningQueries.values( item ))
     {
         d->childQueries.remove( qm );

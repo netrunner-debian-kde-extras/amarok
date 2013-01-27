@@ -30,7 +30,7 @@
 #include <KGlobal>
 #include <KMessageBox>
 
-static const int DB_VERSION = 14;
+static const int DB_VERSION = 15;
 
 int
 DatabaseUpdater::expectedDatabaseVersion()
@@ -75,95 +75,56 @@ DatabaseUpdater::update()
         createTables();
         QString query = QString( "INSERT INTO admin(component, version) VALUES ('DB_VERSION', %1);" ).arg( DB_VERSION );
         m_collection->sqlStorage()->query( query );
+        return true;
     }
-    else if( dbVersion < DB_VERSION )
+
+    if( dbVersion < DB_VERSION )
     {
         debug() << "Database out of date: database version is" << dbVersion << ", current version is" << DB_VERSION;
-        if ( dbVersion == 1 && dbVersion < DB_VERSION )
+        switch( dbVersion )
         {
-            upgradeVersion1to2();
-            dbVersion = 2;
+            case 1:
+                upgradeVersion1to2();
+            case 2:
+                upgradeVersion2to3();
+            case 3:
+                upgradeVersion3to4();
+            case 4:
+                upgradeVersion4to5();
+            case 5:
+                upgradeVersion5to6();
+            case 6:
+                upgradeVersion6to7();
+            case 7:
+                upgradeVersion7to8();
+            case 8:
+                //removes stray rows from albums that were caused by the initial full scan
+                upgradeVersion8to9();
+            case 9:
+                //removes stray rows from albums that were caused by the initial full scan
+                upgradeVersion9to10();
+            case 10:
+                upgradeVersion10to11();
+            case 11:
+                upgradeVersion11to12();
+            case 12:
+                upgradeVersion12to13();
+            case 13:
+                upgradeVersion13to14();
+            case 14:
+                upgradeVersion14to15();
+                dbVersion = 15; // be sure to update this manually when introducing new version!
         }
-        if( dbVersion == 2 && dbVersion < DB_VERSION )
-        {
-            upgradeVersion2to3();
-            dbVersion = 3;
-        }
-        if( dbVersion == 3 && dbVersion < DB_VERSION )
-        {
-            upgradeVersion3to4();
-            dbVersion = 4;
-        }
-        if( dbVersion == 4 && dbVersion < DB_VERSION )
-        {
-            upgradeVersion4to5();
-            dbVersion = 5;
-        }
-        if( dbVersion == 5 && dbVersion < DB_VERSION )
-        {
-            upgradeVersion5to6();
-            dbVersion = 6;
-        }
-        if( dbVersion == 6 && dbVersion < DB_VERSION )
-        {
-            upgradeVersion6to7();
-            dbVersion = 7;
-        }
-        if( dbVersion == 7 && dbVersion < DB_VERSION )
-        {
-            upgradeVersion7to8();
-            dbVersion = 8;
-        }
-        if( dbVersion == 8 && dbVersion < DB_VERSION )
-        {
-            //removes stray rows from albums that were caused by the initial full scan
-            upgradeVersion8to9();
-            dbVersion = 9;
-        }
-        if( dbVersion == 9 && dbVersion < DB_VERSION )
-        {
-            //removes stray rows from albums that were caused by the initial full scan
-            upgradeVersion9to10();
-            dbVersion = 10;
-        }
-        if( dbVersion == 10 && dbVersion < DB_VERSION )
-        {
-            upgradeVersion10to11();
-            dbVersion = 11;
-        }
-        if( dbVersion == 11 && dbVersion < DB_VERSION )
-        {
-            upgradeVersion11to12();
-            dbVersion = 12;
-        }
-        if( dbVersion == 12 && dbVersion < DB_VERSION )
-        {
-            upgradeVersion12to13();
-            dbVersion = 13;
-        }
-        if( dbVersion == 13 && dbVersion < DB_VERSION )
-        {
-            upgradeVersion13to14();
-            dbVersion = 14;
-        }
-        /*
-        if( dbVersion == X && dbVersion < DB_VERSION )
-        {
-            upgradeVersionXtoY();
-            dbVersion = Y;
-        }
-        */
+
         QString query = QString( "UPDATE admin SET version = %1 WHERE component = 'DB_VERSION';" ).arg( dbVersion );
         m_collection->sqlStorage()->query( query );
 
         //NOTE: A rescan will be triggered automatically as a result of an upgrade.  Don't trigger it here, as the
         //collection isn't fully initialized and this will trigger a crash/assert.
+        return true;
     }
-    else if( dbVersion == DB_VERSION )
-    {
-        return false; // no update needed
-    }
-    else if( dbVersion > DB_VERSION )
+
+    if( dbVersion > DB_VERSION )
     {
         KMessageBox::error(0,
                 "<p>The Amarok collection database was created by a newer version of Amarok, "
@@ -174,7 +135,7 @@ DatabaseUpdater::update()
         exit(1);
     }
 
-    return true;
+    return false;
 }
 
 void
@@ -664,6 +625,95 @@ DatabaseUpdater::upgradeVersion13to14()
     storage->query( "ALTER TABLE lyrics ADD PRIMARY KEY(url)" );
 }
 
+void
+DatabaseUpdater::upgradeVersion14to15()
+{
+    /* This update solves bug 302837. In short, updates
+     * 4 -> 5, 5 -> 6, 6 -> 7 and 9 -> 10 ignored NULL status of some columns and replaced
+     * them with NOT NULL columns, causing various consequences, one of them is Dynamic
+     * Collection not working. Fix it back.
+     *
+     * A list of columns to fix was obtained by comparing a database created by
+     * Amarok 2.1.1 and then upgraded to current versin with a db freshly created by
+     * Amarok 2.6-git.
+     */
+    DEBUG_BLOCK
+    SqlStorage *storage = m_collection->sqlStorage();
+
+    // zero length = TEXT datatype
+    typedef QPair<QString, int> vcpair;
+    QMultiMap<QString, vcpair> columns;
+
+    columns.insert( "admin", vcpair( "component", 255 ) );
+    columns.insert( "devices", vcpair( "type", 255 ) );
+    columns.insert( "devices", vcpair( "label", 255 ) );
+    columns.insert( "devices", vcpair( "lastmountpoint", 255 ) );
+    columns.insert( "devices", vcpair( "uuid", 255 ) );
+    columns.insert( "devices", vcpair( "servername", 80 ) );
+    columns.insert( "devices", vcpair( "sharename", 240 ) );
+    columns.insert( "labels", vcpair( "label", 255 ) );
+    columns.insert( "lyrics", vcpair( "lyrics", 0 ) );
+    columns.insert( "playlists", vcpair( "name", 255 ) );
+    columns.insert( "playlists", vcpair( "description", 255 ) );
+    columns.insert( "playlists", vcpair( "urlid", 1000 ) );
+    columns.insert( "playlist_groups", vcpair( "name", 255 ) );
+    columns.insert( "playlist_groups", vcpair( "description", 255 ) );
+    columns.insert( "playlist_tracks", vcpair( "url", 1000 ) );
+    columns.insert( "playlist_tracks", vcpair( "title", 255 ) );
+    columns.insert( "playlist_tracks", vcpair( "album", 255 ) );
+    columns.insert( "playlist_tracks", vcpair( "artist", 255 ) );
+    columns.insert( "playlist_tracks", vcpair( "uniqueid", 128 ) );
+    columns.insert( "podcastchannels", vcpair( "url", 0 ) );
+    columns.insert( "podcastchannels", vcpair( "title", 0 ) );
+    columns.insert( "podcastchannels", vcpair( "weblink", 0 ) );
+    columns.insert( "podcastchannels", vcpair( "image", 0 ) );
+    columns.insert( "podcastchannels", vcpair( "description", 0 ) );
+    columns.insert( "podcastchannels", vcpair( "copyright", 255 ) );
+    columns.insert( "podcastchannels", vcpair( "directory", 255 ) );
+    columns.insert( "podcastchannels", vcpair( "labels", 255 ) );
+    columns.insert( "podcastchannels", vcpair( "subscribedate", 255 ) );
+    columns.insert( "podcastepisodes", vcpair( "url", 0 ) );
+    columns.insert( "podcastepisodes", vcpair( "localurl", 0 ) );
+    columns.insert( "podcastepisodes", vcpair( "guid", 1000 ) );
+    columns.insert( "podcastepisodes", vcpair( "title", 0 ) );
+    columns.insert( "podcastepisodes", vcpair( "subtitle", 0 ) );
+    columns.insert( "podcastepisodes", vcpair( "description", 0 ) );
+    columns.insert( "podcastepisodes", vcpair( "mimetype", 255 ) );
+    columns.insert( "podcastepisodes", vcpair( "pubdate", 255 ) );
+    columns.insert( "statistics_tag", vcpair( "name", 108 ) );
+    columns.insert( "statistics_tag", vcpair( "artist", 108 ) );
+    columns.insert( "statistics_tag", vcpair( "album", 108 ) );
+    columns.insert( "tracks", vcpair( "title", 255 ) );
+    columns.insert( "tracks", vcpair( "comment", 0 ) );
+    columns.insert( "urls", vcpair( "uniqueid", 128 ) );
+
+    QMapIterator<QString, vcpair> it( columns );
+    while( it.hasNext() )
+    {
+        it.next();
+        QString table = it.key();
+        QString column = it.value().first;
+        int length = it.value().second;
+
+        QString query;
+        if( length > 0 )
+            query = QString( "ALTER TABLE `%1` CHANGE `%2` `%2` VARCHAR(%3) CHARACTER SET utf8 "
+                    "COLLATE utf8_bin NULL DEFAULT NULL" ).arg( table, column ).arg( length );
+        else
+            query = QString( "ALTER TABLE `%1` CHANGE `%2` `%2` TEXT CHARACTER SET utf8 "
+                    "COLLATE utf8_bin" ).arg( table, column );
+        storage->query( query );
+    }
+
+    // there may be a stale unique index on the urls table, remove it if it is there:
+    QStringList results = storage->query( "SHOW CREATE TABLE urls" );
+    bool oldIndexFound = results.value( 1 ).contains( "UNIQUE KEY `uniqueid`" );
+    if( oldIndexFound )
+    {
+        debug() << "dropping obsolete INDEX uniqueid on table urls";
+        storage->query( "DROP INDEX uniqueid ON urls" );
+    }
+}
 
 void
 DatabaseUpdater::cleanupDatabase()

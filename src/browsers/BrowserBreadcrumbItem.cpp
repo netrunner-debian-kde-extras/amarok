@@ -15,10 +15,11 @@
  ****************************************************************************************/
  
 #include "BrowserBreadcrumbItem.h"
-#include "widgets/BreadcrumbItemButton.h"
 
-#include "BrowserCategoryList.h"
+#include "browsers/BrowserCategoryList.h"
+#include "browsers/filebrowser/FileBrowser.h"
 #include "core/support/Debug.h"
+#include "widgets/BreadcrumbItemButton.h"
 
 #include <KIcon>
 #include <KLocale>
@@ -26,7 +27,7 @@
 #include <QDir>
 #include <QMenu>
 
-BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory* category, QWidget* parent )
+BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory *category, QWidget *parent )
     : KHBox( parent )
     , m_menuButton( 0 )
 {
@@ -39,8 +40,8 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory* category, QWidget
     if( parentList )
     {
         m_menuButton = new BreadcrumbItemMenuButton( this );
-        QMenu *menu = new QMenu( 0 );
-        
+        QMenu *menu = new QMenu( this ); //see QMenu docs: it's still a top-level widget.
+                                         //parent is only for memory management.
         QMap<QString,BrowserCategory *> siblingMap = parentList->categories();
 
         QStringList siblingNames = siblingMap.keys();
@@ -50,9 +51,9 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory* category, QWidget
             //no point in adding ourselves to this menu
             if ( siblingName == category->name() )
                 continue;
-            
+
             BrowserCategory *siblingCategory = siblingMap.value( siblingName );
-            
+
             QAction *action = menu->addAction( siblingCategory->icon(), siblingCategory->prettyName() );
             connect( action, SIGNAL( triggered() ), siblingMap.value( siblingName ), SLOT( activate() ) );
         }
@@ -85,60 +86,58 @@ BrowserBreadcrumbItem::BrowserBreadcrumbItem( BrowserCategory* category, QWidget
 
     adjustSize();
     m_nominalWidth = width();
-    
+
     hide();
 
     updateSizePolicy();
 }
 
-BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QStringList &childItems, const QString &callback, BrowserCategory * handler, QWidget* parent )
+BrowserBreadcrumbItem::BrowserBreadcrumbItem( const QString &name, const QString &callback,
+        const BreadcrumbSiblingList &childItems, FileBrowser *handler, QWidget *parent )
     : KHBox( parent )
     , m_menuButton( 0 )
     , m_callback( callback )
 {
-
     if ( !childItems.isEmpty() )
     {
         m_menuButton = new BreadcrumbItemMenuButton( this );
-        QMenu *menu = new QMenu( 0 );
+        QMenu *menu = new QMenu( this );
 
-        foreach( const QString &siblingName, childItems )
+        int i = 0;
+        foreach( const BreadcrumbSibling &sibling, childItems )
         {
-            QAction *action = menu->addAction( KIcon("folder-amarok"), siblingName );
-            action->setProperty( "directory", siblingName );
+            QString visibleName = sibling.name;
+            visibleName.replace( '&', "&&" ); // prevent bug 244817
+            QAction *action = menu->addAction( sibling.icon, visibleName );
+            action->setProperty( "callback", sibling.callback );
 
             // the current action should be bolded
-            if( siblingName == name )
+            if( sibling.name == name )
             {
                 QFont font = action->font();
                 font.setBold( true );
                 action->setFont( font );
             }
-            connect( action, SIGNAL( triggered() ), this, SLOT( activateSibling() ) );
+            connect( action, SIGNAL(triggered()), this, SLOT(activateSibling()) );
+            i++;
         }
         m_menuButton->setMenu( menu );
     }
 
     m_mainButton = new BreadcrumbItemButton( name, this );
-    
-    connect( m_mainButton, SIGNAL( sizePolicyChanged() ), this, SLOT( updateSizePolicy() ) );
+    connect( m_mainButton, SIGNAL(sizePolicyChanged()), this, SLOT(updateSizePolicy()) );
     connect( m_mainButton, SIGNAL( clicked( bool ) ), this, SLOT( activate() ) );
-    connect( this, SIGNAL( activated( const QString & ) ), handler, SLOT( addItemActivated( const QString & ) ) );
+    connect( this, SIGNAL(activated(QString)), handler, SLOT(addItemActivated(QString)) );
 
     adjustSize();
     m_nominalWidth = width();
-    
-    hide();
 
+    hide();
     updateSizePolicy(); 
 }
 
-
-
 BrowserBreadcrumbItem::~BrowserBreadcrumbItem()
 {
-    if( m_menuButton )
-        delete m_menuButton->menu();
 }
 
 void
@@ -165,21 +164,11 @@ void BrowserBreadcrumbItem::activate()
 void BrowserBreadcrumbItem::activateSibling()
 {
     QAction *action = qobject_cast<QAction *>( sender() );
-
     if( action )
-    {
-        QDir dir( m_callback );
-        dir.cdUp();
-
-        QString siblingCallback = dir.path() + QDir::separator() + action->property( "directory" ).toString();
-
-        emit activated( siblingCallback );
-    }
+        emit activated( action->property( "callback" ).toString() );
 }
 
 int BrowserBreadcrumbItem::nominalWidth() const
 {
     return m_nominalWidth;
 }
-
-#include "BrowserBreadcrumbItem.moc"

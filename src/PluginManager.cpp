@@ -21,7 +21,6 @@
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/db/sql/SqlCollection.h"
-#include "MountPointManager.h"
 #include "services/ServicePluginManager.h"
 
 #include <KBuildSycocaProgressDialog>
@@ -35,7 +34,7 @@
 
 #include <cstdlib>
 
-const int Plugins::PluginManager::s_pluginFrameworkVersion = 69;
+const int Plugins::PluginManager::s_pluginFrameworkVersion = 70;
 Plugins::PluginManager* Plugins::PluginManager::s_instance = 0;
 
 Plugins::PluginManager*
@@ -89,21 +88,6 @@ Plugins::PluginManager::init()
     m_factories[ key ] = createFactories( key );
     m_servicePluginManager->init( m_factories.value( key ) );
     PERF_LOG( "Loaded service plugins" )
-
-    PERF_LOG( "Loading device plugins" )
-    key = QLatin1String( "Device" );
-    Collections::Collection *coll = CollectionManager::instance()->primaryCollection();
-    if( !coll )
-    {
-        error() << "No primary collection available. You might have problems with your installation. Amarok will not be usable like this.";
-    }
-    else
-    {
-        m_mountPointManager = static_cast<Collections::SqlCollection*>( coll )->mountPointManager();
-        m_factories[ key ] = createFactories( key );
-        m_mountPointManager->loadDevicePlugins( m_factories.value( key ) );
-    }
-    PERF_LOG( "Loaded device plugins" )
 }
 
 QList<Plugins::PluginFactory*>
@@ -221,7 +205,8 @@ Plugins::PluginManager::findAllPlugins()
 {
     DEBUG_BLOCK
     QString query = QString::fromLatin1( "[X-KDE-Amarok-framework-version] == %1"
-                                         "and [X-KDE-Amarok-rank] > 0" ).arg( s_pluginFrameworkVersion );
+                                         " and [X-KDE-Amarok-rank] > 0" )
+                    .arg( s_pluginFrameworkVersion );
 
     KConfigGroup pluginsConfig = Amarok::config(QLatin1String("Plugins"));
     KService::List services = KServiceTypeTrader::self()->query( "Amarok/Plugin", query );

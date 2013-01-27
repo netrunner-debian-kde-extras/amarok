@@ -18,7 +18,7 @@
 #ifndef LASTFMSERVICECOLLECTION_H
 #define LASTFMSERVICECOLLECTION_H
 
-#include <ServiceCollection.h>
+#include "services/ServiceCollection.h"
 
 class QNetworkReply;
 
@@ -33,7 +33,7 @@ class LastFmServiceCollection : public ServiceCollection
 {
     Q_OBJECT
 public:
-    LastFmServiceCollection( const QString& userName );
+    LastFmServiceCollection( const QString &userName );
     virtual ~LastFmServiceCollection();
 
     virtual bool possiblyContainsTrack( const KUrl &url ) const;
@@ -52,7 +52,6 @@ private slots:
     
 private:
     QMap< QString, QNetworkReply* > m_jobs;
-    QString m_userName;
     Meta::ServiceGenre *m_neighborsLoved;
     Meta::ServiceGenre *m_neighborsPersonal;
     Meta::ServiceGenre *m_friendsLoved;

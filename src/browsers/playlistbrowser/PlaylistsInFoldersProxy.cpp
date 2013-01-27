@@ -344,6 +344,9 @@ PlaylistsInFoldersProxy::deleteFolder( const QModelIndex &groupIdx )
         removeRows( 0, childCount, groupIdx );
     }
     removeGroup( groupIdx );
+    //force a rebuild because groupHash might be incorrect
+    //TODO: make QtGroupingProxy adjust groupHash keys
+    buildTree();
 }
 
 QModelIndex
@@ -356,6 +359,15 @@ PlaylistsInFoldersProxy::createNewFolder( const QString &groupName )
     roleData.insert( Qt::EditRole, groupName );
     data.insert( 0, roleData );
     return addEmptyGroup( data );
+}
+
+Qt::ItemFlags PlaylistsInFoldersProxy::flags(const QModelIndex &idx) const
+{
+    if( isGroup(idx) && idx.column() == 0)
+        return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable |
+               Qt::ItemIsDropEnabled;
+
+    return QtGroupingProxy::flags(idx);
 }
 
 #include "PlaylistsInFoldersProxy.moc"

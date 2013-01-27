@@ -18,13 +18,11 @@
 
 #include "MediaDeviceHandler.h"
 
-#include "MediaDeviceHandlerCapability.h"
 #include "core/interfaces/Logger.h"
 #include "core/support/Components.h"
 #include "core-impl/collections/mediadevicecollection/MediaDeviceCollection.h"
+#include "core-impl/collections/mediadevicecollection/handler/MediaDeviceHandlerCapability.h"
 #include "core-impl/collections/support/ArtistHelper.h"
-#include "playlist/MediaDeviceUserPlaylistProvider.h"
-#include "playlist/MediaDevicePlaylist.h"
 #include "playlistmanager/PlaylistManager.h"
 
 #include <KMessageBox>
@@ -167,9 +165,9 @@ MediaDeviceHandler::setBasicMediaDeviceTrackInfo( const Meta::TrackPtr& srcTrack
     m_wc->libSetSamplerate( destTrack, srcTrack->sampleRate() );
     m_wc->libSetBpm( destTrack, srcTrack->bpm() );
     m_wc->libSetFileSize( destTrack, srcTrack->filesize() );
-    m_wc->libSetPlayCount( destTrack, srcTrack->playCount() );
-    m_wc->libSetLastPlayed( destTrack, srcTrack->lastPlayed() );
-    m_wc->libSetRating( destTrack, srcTrack->rating() );
+    m_wc->libSetPlayCount( destTrack, srcTrack->statistics()->playCount() );
+    m_wc->libSetLastPlayed( destTrack, srcTrack->statistics()->lastPlayed() );
+    m_wc->libSetRating( destTrack, srcTrack->statistics()->rating() );
     // MediaDeviceTrack stores only track gain:
     m_wc->libSetReplayGain( destTrack, srcTrack->replayGain( Meta::ReplayGain_Track_Gain ) );
     m_wc->libSetType( destTrack, srcTrack->type() );

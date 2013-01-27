@@ -17,6 +17,14 @@ msgstr ""
 "X-Generator: Lokalize 1.0\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "ਅਮਨਪਰੀਤ ਸਿੰਘ ਆਲਮ"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "aalam@users.sf.net"
+
 #: amarokpkg.cpp:40
 msgid "Install, list, remove Amarok applets"
 msgstr "ਅਮਰੋਕ ਐਪਲਿਟ ਇੰਸਟਾਲ ਕਰੋ, ਵੇਖੋ, ਹਟਾਓ"
@@ -107,13 +115,3 @@ msgctxt ""
 "least one, do not translate install, remove, upgrade nor list"
 msgid "One of install, remove, upgrade or list is required."
 msgstr "ਇੰਸਟਾਲ ਕਰਨ, ਹਟਾਉਣ, ਅੱਪਡੇਟ ਜਾਂ ਲਿਸਟ ਵੇਖਣ ਵਿੱਚੋਂ ਇੱਕ ਚਾਹੀਦਾ ਹੈ।"
-
-#: rc.cpp:1
-msgctxt "NAME OF TRANSLATORS"
-msgid "Your names"
-msgstr "ਅਮਨਪਰੀਤ ਸਿੰਘ ਆਲਮ"
-
-#: rc.cpp:2
-msgctxt "EMAIL OF TRANSLATORS"
-msgid "Your emails"
-msgstr "aalam@users.sf.net"

@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarokcollectionscanner_qt\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-18 02:51+0200\n"
+"POT-Creation-Date: 2012-10-10 10:03+0200\n"
 "PO-Revision-Date: 2011-09-07 13:49+0400\n"
 "Last-Translator: Yuri Efremov <yur.arh@gmail.com>\n"
 "Language-Team: Russian <kde-russian@lists.kde.ru>\n"
@@ -25,23 +25,23 @@ msgstr ""
 "X-Accelerator-Marker: &\n"
 "X-Text-Markup: qtrich\n"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:244
-#: utilities/collectionscanner/CollectionScanner.cpp:267
+#: utilities/collectionscanner/CollectionScanner.cpp:115
+#: utilities/collectionscanner/CollectionScanner.cpp:138
 #, qt-format
 msgid "File \"%1\" not found."
 msgstr "Файл «%1» не найден."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:247
+#: utilities/collectionscanner/CollectionScanner.cpp:118
 #, qt-format
 msgid "Could not open file \"%1\"."
 msgstr "Не удалось открыть файл «%1»."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:499
+#: utilities/collectionscanner/CollectionScanner.cpp:370
 #, qt-format
 msgid "Missing argument for option %1"
 msgstr "Пропущен аргумент для параметра %1"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:536
+#: utilities/collectionscanner/CollectionScanner.cpp:407
 msgid ""
 "Amarok Collection Scanner\n"
 "Scans directories and outputs a xml file with the results.\n"

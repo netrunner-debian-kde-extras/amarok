@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-18 02:51+0200\n"
+"POT-Creation-Date: 2012-10-10 10:03+0200\n"
 "PO-Revision-Date: 2012-06-01 12:48+0200\n"
 "Last-Translator: Andrej Mernik <andrejm@ubuntu.si>\n"
 "Language-Team: Slovenian <lugos-slo@lugos.si>\n"
@@ -19,23 +19,23 @@ msgstr ""
 "Plural-Forms: nplurals=4; plural=(n%100==1 ? 1 : n%100==2 ? 2 : n%100==3 || n"
 "%100==4 ? 3 : 0);\n"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:244
-#: utilities/collectionscanner/CollectionScanner.cpp:267
+#: utilities/collectionscanner/CollectionScanner.cpp:115
+#: utilities/collectionscanner/CollectionScanner.cpp:138
 #, qt-format
 msgid "File \"%1\" not found."
 msgstr "Datoteka \"%1\" ni bila najdena."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:247
+#: utilities/collectionscanner/CollectionScanner.cpp:118
 #, qt-format
 msgid "Could not open file \"%1\"."
 msgstr "Datoteke \"%1\" ni bilo mogoče odpreti."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:499
+#: utilities/collectionscanner/CollectionScanner.cpp:370
 #, qt-format
 msgid "Missing argument for option %1"
 msgstr "Za možnost %1 manjka argument"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:536
+#: utilities/collectionscanner/CollectionScanner.cpp:407
 msgid ""
 "Amarok Collection Scanner\n"
 "Scans directories and outputs a xml file with the results.\n"

@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2011 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2012 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,12 +20,6 @@
 
 #include "playlistgenerator/Constraint.h"
 #include "playlistgenerator/ConstraintFactory.h"
-
-#include "core/support/Debug.h"
-
-#include <KRandom>
-
-#include <QtGlobal>
 
 #include <stdlib.h>
 #include <math.h>
@@ -61,8 +55,10 @@ ConstraintTypes::PlaylistDuration::registerMe()
 
 ConstraintTypes::PlaylistDuration::PlaylistDuration( QDomElement& xmlelem, ConstraintNode* p )
         : Constraint( p )
+        , m_duration( 0 )
+        , m_comparison( CompareNumEquals )
+        , m_strictness( 1.0 )
 {
-    DEBUG_BLOCK
     QDomAttr a;
 
     a = xmlelem.attributeNode( "duration" );
@@ -83,8 +79,6 @@ ConstraintTypes::PlaylistDuration::PlaylistDuration( QDomElement& xmlelem, Const
     a = xmlelem.attributeNode( "strictness" );
     if ( !a.isNull() )
         m_strictness = a.value().toDouble();
-
-    debug() << getName();
 }
 
 ConstraintTypes::PlaylistDuration::PlaylistDuration( ConstraintNode* p )
@@ -93,8 +87,6 @@ ConstraintTypes::PlaylistDuration::PlaylistDuration( ConstraintNode* p )
         , m_comparison( CompareNumEquals )
         , m_strictness( 1.0 )
 {
-    DEBUG_BLOCK
-    debug() << "new default PlaylistLength";
 }
 
 QWidget*
@@ -121,9 +113,18 @@ ConstraintTypes::PlaylistDuration::toXml( QDomDocument& doc, QDomElement& elem )
 QString
 ConstraintTypes::PlaylistDuration::getName() const
 {
-    return i18n("Playlist duration: %1 %2",
-                comparisonToString(),
-                QTime().addMSecs( m_duration ).toString( "H:mm:ss" ));
+    KLocalizedString v;
+    if ( m_comparison == CompareNumEquals ) {
+        v = ki18nc( "%1 is a length of time (e.g. 5:00 for 5 minutes)", "Playlist duration: equals %1");
+    } else if ( m_comparison == CompareNumGreaterThan ) {
+        v = ki18nc( "%1 is a length of time (e.g. 5:00 for 5 minutes)", "Playlist duration: more than %1");
+    } else if ( m_comparison == CompareNumLessThan ) {
+        v = ki18nc( "%1 is a length of time (e.g. 5:00 for 5 minutes)", "Playlist duration: less than %1");
+    } else {
+        v = ki18n( "Playlist duration: unknown");
+    }
+    v = v.subs( QTime().addMSecs( m_duration ).toString( "H:mm:ss" ) );
+    return v.toString();
 }
 
 double
@@ -146,7 +147,7 @@ ConstraintTypes::PlaylistDuration::satisfaction( const Meta::TrackList& tl ) con
 }
 
 quint32
-ConstraintTypes::PlaylistDuration::suggestInitialPlaylistSize() const
+ConstraintTypes::PlaylistDuration::suggestPlaylistSize() const
 {
     if ( m_comparison == CompareNumLessThan ) {
         return static_cast<quint32>( m_duration ) / 300000 ;
@@ -154,20 +155,6 @@ ConstraintTypes::PlaylistDuration::suggestInitialPlaylistSize() const
         return static_cast<quint32>( m_duration ) / 180000;
     } else {
         return static_cast<quint32>( m_duration ) / 240000;
-    }
-}
-
-QString
-ConstraintTypes::PlaylistDuration::comparisonToString() const
-{
-    if ( m_comparison == CompareNumEquals ) {
-        return QString( i18nc("duration of playlist equals some time", "equals") );
-    } else if ( m_comparison == CompareNumGreaterThan ) {
-        return QString( i18n("longer than") );
-    } else if ( m_comparison == CompareNumLessThan ) {
-        return QString( i18n("shorter than") );
-    } else {
-        return QString( i18n("unknown comparison") );
     }
 }
 

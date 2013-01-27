@@ -22,11 +22,13 @@
 #include "CapabilityDelegate.h"
 #include "CapabilityDelegateImpl.h"
 #include "DatabaseUpdater.h"
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core/capabilities/TranscodeCapability.h"
 #include "core/transcoding/TranscodingController.h"
+#include "core-impl/collections/db/MountPointManager.h"
 #include "core-impl/collections/db/ScanManager.h"
-#include "MountPointManager.h"
+#include "dialogs/OrganizeCollectionDialog.h"
 #include "SqlCollectionLocation.h"
 #include "SqlQueryMaker.h"
 #include "SqlScanResultProcessor.h"
@@ -37,23 +39,7 @@
 #include <KMessageBox>
 
 #include <QApplication>
-
-/*
- * #ifdef Q_OS_WIN32
- *
- * #include <QTimer>
- *
- * class XesamCollectionBuilder
- * {
- * public:
- *     XesamCollectionBuilder(Collections::SqlCollection *collection) {}
- * };
- * #else
- * #include "XesamCollectionBuilder.h"
- * #endif
- */
-
-#include "dialogs/OrganizeCollectionDialog.h"
+#include <QDir>
 
 namespace Collections {
 
@@ -145,7 +131,6 @@ SqlCollection::SqlCollection( const QString &id, const QString &prettyName, SqlS
     , m_mpm( 0 )
     , m_collectionId( id )
     , m_prettyName( prettyName )
-    // , m_xesamBuilder( 0 )
     , m_blockUpdatedSignalCount( 0 )
     , m_updatedSignalRequested( false )
 {
@@ -230,16 +215,6 @@ SqlCollection::~SqlCollection()
     delete m_mpm;
 }
 
-void
-SqlCollection::init()
-{
-    // QTimer::singleShot( 0, this, SLOT( initXesam() ) );
-
-    // note: do not start scanning here.
-    // on first start up the application will ask the user and then initiate a scan
-    // else the ScanManager will continuously scan for updates
-}
-
 QString
 SqlCollection::uidUrlProtocol() const
 {
@@ -318,28 +293,24 @@ SqlCollection::setMountPointManager( MountPointManager *mpm )
 void
 SqlCollection::blockUpdatedSignal()
 {
-    {
-        QMutexLocker locker( &m_mutex );
-        m_blockUpdatedSignalCount ++;
-    }
+    QMutexLocker locker( &m_mutex );
+    m_blockUpdatedSignalCount ++;
 }
 
 void
 SqlCollection::unblockUpdatedSignal()
 {
+    QMutexLocker locker( &m_mutex );
+
+    Q_ASSERT( m_blockUpdatedSignalCount > 0 );
+    m_blockUpdatedSignalCount --;
+
+    // check if meanwhile somebody had updated the collection
+    if( m_blockUpdatedSignalCount == 0 && m_updatedSignalRequested == true )
     {
-        QMutexLocker locker( &m_mutex );
-
-        Q_ASSERT( m_blockUpdatedSignalCount > 0 );
-        m_blockUpdatedSignalCount --;
-
-        // check if meanwhile somebody had updated the collection
-        if( m_blockUpdatedSignalCount == 0 && m_updatedSignalRequested == true )
-        {
-            m_updatedSignalRequested = false;
-            locker.unlock();
-            emit updated();
-        }
+        m_updatedSignalRequested = false;
+        locker.unlock();
+        emit updated();
     }
 }
 
@@ -376,12 +347,6 @@ SqlCollection::slotScanStarted( ScannerJob *job )
                                                             m_scanManager,
                                                             SLOT(abort()) );
     }
-}
-
-void
-SqlCollection::removeCollection()
-{
-    emit remove();
 }
 
 bool
@@ -475,14 +440,6 @@ SqlCollection::setCollectionFolders( const QStringList &folders )
 {
     mountPointManager()->setCollectionFolders( folders );
 }
-
-/*
- * void
- * SqlCollection::initXesam() //SLOT
- * {
- *     m_xesamBuilder = new XesamCollectionBuilder( this );
- * }
- */
 
 void
 SqlCollection::slotDeviceAdded( int id )

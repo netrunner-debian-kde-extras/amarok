@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2008-2011 Soren Harward <stharward@gmail.com>                          *
+ * Copyright (c) 2008-2012 Soren Harward <stharward@gmail.com>                          *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -22,12 +22,8 @@
 #include "playlistgenerator/ConstraintFactory.h"
 
 #include "core/collections/QueryMaker.h"
+#include "core/meta/Statistics.h"
 #include "core/support/Debug.h"
-
-#include <KRandom>
-#include <KLocalizedString>
-
-#include <QtGlobal>
 
 #include <math.h>
 #include <stdlib.h>
@@ -64,15 +60,12 @@ ConstraintTypes::TagMatch::TagMatch( QDomElement& xmlelem, ConstraintNode* p )
         , m_comparer( new Comparer() )
         , m_fieldsModel( new TagMatchFieldsModel() )
 {
-    DEBUG_BLOCK
     QDomAttr a;
 
     a = xmlelem.attributeNode( "field" );
     if ( !a.isNull() ) {
         if ( m_fieldsModel->contains( a.value() ) )
             m_field = a.value();
-        else
-            debug() << a.value() << "is not a recognized field name" << endl;
     }
 
     a = xmlelem.attributeNode( "comparison" );
@@ -113,8 +106,6 @@ ConstraintTypes::TagMatch::TagMatch( QDomElement& xmlelem, ConstraintNode* p )
     a = xmlelem.attributeNode( "strictness" );
     if ( !a.isNull() )
         m_strictness = a.value().toDouble();
-
-    debug() << getName();
 }
 
 ConstraintTypes::TagMatch::TagMatch( ConstraintNode* p )
@@ -127,8 +118,6 @@ ConstraintTypes::TagMatch::TagMatch( ConstraintNode* p )
         , m_comparer( new Comparer() )
         , m_fieldsModel( new TagMatchFieldsModel() )
 {
-    DEBUG_BLOCK
-    debug() << "new default TagMatch";
 }
 
 ConstraintTypes::TagMatch::~TagMatch()
@@ -319,14 +308,6 @@ ConstraintTypes::TagMatch::satisfaction( const Meta::TrackList& tl ) const
     return satisfaction;
 }
 
-void
-ConstraintTypes::TagMatch::audit( const Meta::TrackList& tl ) const
-{
-    foreach( const Meta::TrackPtr t, tl ) {
-        debug() << t->prettyName() << matches( t );
-    }
-}
-
 const QBitArray
 ConstraintTypes::TagMatch::whatTracksMatch( const Meta::TrackList& tl )
 {
@@ -460,19 +441,19 @@ ConstraintTypes::TagMatch::matches( Meta::TrackPtr track ) const
                 v = m_comparer->compareDate( track->createDate().toTime_t(), m_comparison, m_value, m_strictness );
                 break;
             case Meta::valScore:
-                v = m_comparer->compareNum( track->score(), m_comparison, m_value.toDouble(), m_strictness, fmv );
+                v = m_comparer->compareNum( track->statistics()->score(), m_comparison, m_value.toDouble(), m_strictness, fmv );
                 break;
             case Meta::valRating:
-                v = m_comparer->compareNum( track->rating(), m_comparison, m_value.toInt(), m_strictness, fmv );
+                v = m_comparer->compareNum( track->statistics()->rating(), m_comparison, m_value.toInt(), m_strictness, fmv );
                 break;
             case Meta::valFirstPlayed:
-                v = m_comparer->compareDate( track->firstPlayed().toTime_t(), m_comparison, m_value, m_strictness );
+                v = m_comparer->compareDate( track->statistics()->firstPlayed().toTime_t(), m_comparison, m_value, m_strictness );
                 break;
             case Meta::valLastPlayed:
-                v = m_comparer->compareDate( track->lastPlayed().toTime_t(), m_comparison, m_value, m_strictness );
+                v = m_comparer->compareDate( track->statistics()->lastPlayed().toTime_t(), m_comparison, m_value, m_strictness );
                 break;
             case Meta::valPlaycount:
-                v = m_comparer->compareNum( track->playCount(), m_comparison, m_value.toInt(), m_strictness, fmv );
+                v = m_comparer->compareNum( track->statistics()->playCount(), m_comparison, m_value.toInt(), m_strictness, fmv );
                 break;
             case Meta::valLabel:
                 v = m_comparer->compareLabels( track, m_comparison, m_value.toString() );

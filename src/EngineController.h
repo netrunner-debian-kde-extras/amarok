@@ -184,11 +184,6 @@ public:
     QStringList eqBandsFreq() const;
 
     /**
-    * @return whether the currently playing track is from an audiocd
-    */
-    bool isPlayingAudioCd();
-
-    /**
      * @return QString with a pretty name for the current track
      * @param whether to include the playing progress (default false)
      */
@@ -372,11 +367,14 @@ Q_SIGNALS:
      */
     void trackChanged( Meta::TrackPtr track );
 
-    /** Emitted when the metadata of the current track changes.
-        You might want to connect also to trackChanged to get more changes because
-        this signal is only emitted when the track metadata changes while it's playing.
-        Also connecting to currentMetadataChanged would give you information when the current track
-        is a stream. In such a case the meta information from track might be unreliable.
+    /**
+     * Emitted when the metadata of the current track changes.
+     *
+     * You might want to connect also to trackChanged() or trackPlaying() to get more
+     * changes because this signal is only emitted when the track metadata changes
+     * while it's playing, not when new track starts playing. This method now works
+     * correctly also for streams and is preferred to currentMetaDataChanged() because
+     * it providers somehow more filtered values.
      */
     void trackMetadataChanged( Meta::TrackPtr track );
 
@@ -450,7 +448,7 @@ Q_SIGNALS:
      * Called when playback state changes to PlayingState, StoppedState or PausedState.
      */
     void playbackStateChanged();
-    
+
     /**
     *   Is emitted when new audio Data is ready
     *   @param audioData The audio data that is available
@@ -529,11 +527,26 @@ private:
 
     /**
      * Try to detect MetaData spam in Streams etc.
-     * Some streams are doing advertisment in the metadata. We try to filter that out.
-     * Additionally, some Phonon back-ends emit more than one metadataChanged() signals
-     * per on track, so filter it all altogether.
+     *
+     * Some streams are doing advertisment in the metadata. We try to filter that
+     * out. Additionally, some Phonon back-ends emit more than one
+     * metadataChanged() signals per on track, so filter it all altogether.
      */
     bool isInRecentMetaDataHistory( const QVariantMap &meta );
+
+    /**
+     * If m_lastStreamStampPosition is non-negative, update it to current position
+     * and update track length in current stream.
+     */
+    void stampStreamTrackLength();
+
+    /**
+     * emit metadataChanged() with info so that MetaStream::Track that is
+     * currently listening updates its length.
+     *
+     * @param length new track length in milliseconds
+     */
+    void updateStreamLength( qint64 length );
 
     Q_DISABLE_COPY( EngineController )
 
@@ -555,13 +568,14 @@ private:
     KUrl            m_nextUrl;
     Capabilities::BoundedPlaybackCapability* m_boundedPlayback;
     Capabilities::MultiPlayableCapability* m_multiPlayback;
-    Capabilities::MultiSourceCapability* m_multiSource;
+    QScopedPointer<Capabilities::MultiSourceCapability> m_multiSource;
     bool m_playWhenFetched;
     int m_volume;
-    bool m_currentIsAudioCd;
     int m_currentAudioCdTrack;
 
     QList<QVariantMap> m_metaDataHistory; // against metadata spam
+    // last position (in ms) when the song changed (within the current stream) or -1 for non-stream
+    qint64 m_lastStreamStampPosition;
 
     /**
      * Some flags to prevent feedback loops in volume updates
@@ -585,6 +599,5 @@ private:
 namespace The {
     AMAROK_EXPORT EngineController* engineController();
 }
-
 
 #endif

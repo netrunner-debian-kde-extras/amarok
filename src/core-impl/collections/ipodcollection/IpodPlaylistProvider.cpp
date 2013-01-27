@@ -25,8 +25,10 @@
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/FileCollectionLocation.h"
 
-#include <gpod/itdb.h>
+#include <QDir>
+#include <QFileInfo>
 
+#include <gpod/itdb.h>
 
 IpodPlaylistProvider::IpodPlaylistProvider( IpodCollection* collection )
     : UserPlaylistProvider( collection )
@@ -182,6 +184,12 @@ IpodPlaylistProvider::deletePlaylists( Playlists::PlaylistList playlistlist )
         emit startWriteDatabaseTimer();
     }
     return true;
+}
+
+void
+IpodPlaylistProvider::metadataChanged( Playlists::PlaylistPtr )
+{
+    emit startWriteDatabaseTimer();
 }
 
 void

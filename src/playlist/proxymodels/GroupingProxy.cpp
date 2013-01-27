@@ -27,6 +27,7 @@
 
 #include "core/support/Debug.h"
 #include "core/collections/Collection.h"
+#include "core/meta/Statistics.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/capabilities/SourceInfoCapability.h"
 #include "playlist/PlaylistDefines.h"
@@ -318,8 +319,8 @@ Playlist::GroupingProxy::shouldBeGrouped( Meta::TrackPtr track1, Meta::TrackPtr 
                 return ( *track1->genre().data() ) == ( *track2->genre().data() );
             }
         case 5: //Rating
-            if( track1 && track1->rating() && track2 && track2->rating() )
-                return ( track1->rating() ) == ( track2->rating() );
+            if( track1 && track1->statistics()->rating() && track2 && track2->statistics()->rating() )
+                return ( track1->statistics()->rating() ) == ( track2->statistics()->rating() );
         case 6: //Source
             if( track1 && track2 )
             {

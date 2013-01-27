@@ -18,60 +18,101 @@
 #ifndef LASTFMSERVICECONFIG_H
 #define LASTFMSERVICECONFIG_H
 
+#include "services/lastfm/amarok_lastfm_shared_export.h"
+
 #include <QObject>
+#include <QSharedPointer>
 #include <QString>
 
 namespace KWallet {
     class Wallet;
 }
-
 class KDialog;
+class LastFmServiceConfig;
+typedef QSharedPointer<LastFmServiceConfig> LastFmServiceConfigPtr;
 
-class LastFmServiceConfig : public QObject
+/**
+ * Configuration of the Last.fm plugin. Because some operations are async, you should
+ * connect to the updated() signal and listen to changes, especially ones to username,
+ * password or sessionKey.
+ */
+class AMAROK_LASTFM_SHARED_EXPORT LastFmServiceConfig : public QObject
 {
     Q_OBJECT
 public:
     static const char *configSectionName() { return "Service_LastFm"; }
 
-    LastFmServiceConfig();
+    /**
+     * Singleton pattern accessor. Not thread safe - must be called from the main
+     * thread.
+     */
+    static LastFmServiceConfigPtr instance();
+
     ~LastFmServiceConfig();
 
-    void load();
+    /**
+     * Saves the configuration back to the storage and notifies other users about
+     * the change. This method must be called after calling any of the set* methods.
+     */
     void save();
-    void reset();
 
-    const QString &username() { return m_username; }
+    QString username() const { return m_username; }
     void setUsername( const QString &username ) { m_username = username; }
 
-    const QString &password() { return m_password; }
+    QString password() const { return m_password; }
     void setPassword( const QString &password ) { m_password = password; }
 
-    const QString sessionKey() { return m_sessionKey; }
-    void setSessionKey( const QString& sessionKey ) { m_sessionKey = sessionKey; }
-    void clearSessionKey();
+    QString sessionKey() const { return m_sessionKey; }
+    void setSessionKey( const QString &sessionKey ) { m_sessionKey = sessionKey; }
 
-    bool scrobble() { return m_scrobble; }
+    bool scrobble() const { return m_scrobble; }
+    static bool defaultScrobble() { return true; }
     void setScrobble( bool scrobble ) { m_scrobble = scrobble; }
 
-    bool fetchSimilar() { return m_fetchSimilar; }
+    bool fetchSimilar() const { return m_fetchSimilar; }
+    static bool defaultFetchSimilar() { return true; }
     void setFetchSimilar( bool fetchSimilar ) { m_fetchSimilar = fetchSimilar; }
 
-    bool scrobbleComposer() { return m_scrobbleComposer; }
+    bool scrobbleComposer() const { return m_scrobbleComposer; }
+    static bool defaultScrobbleComposer() { return false; }
     void setScrobbleComposer( bool scrobbleComposer ) { m_scrobbleComposer = scrobbleComposer; }
 
+    bool useFancyRatingTags() const { return m_useFancyRatingTags; }
+    static bool defaultUseFancyRatingTags() { return true; }
+    void setUseFancyRatingTags( bool useFancyRatingTags ) { m_useFancyRatingTags = useFancyRatingTags; }
+
+    bool announceCorrections() const { return m_announceCorrections; }
+    static bool defaultAnnounceCorrections() { return true; }
+    void setAnnounceCorrections( bool announceCorrections ) { m_announceCorrections = announceCorrections; }
+
+signals:
+    /**
+     * Emitted when settings are changed. (after save() is called)
+     */
+    void updated();
+
 private slots:
-    void textDialogYes();
-    void textDialogNo();
+    void slotWalletOpenedToRead( bool success );
+    void slotWalletOpenedToWrite( bool success );
+
+    void slotStoreCredentialsInAscii();
 
 private:
-    /**
-     * Tries to open KWallet and assigns it to m_wallet if successful. Takes ignore
-     * wallet configuration key into account.
-     *
-     * @return true when m_wallet is valid, false otherwise
-     */
-    bool tryToOpenWallet();
+    Q_DISABLE_COPY( LastFmServiceConfig )
+    LastFmServiceConfig();
+
+    void openWalletToRead();
+    void openWalletToWrite();
+    void openWalletAsync();
+    void prepareOpenedWallet();
     void askAboutMissingKWallet();
+
+    // don't remove or reorder entires, would break saved config
+    enum KWalletUsage {
+        NoPasswordEnteredYet,
+        PasswodInKWallet,
+        PasswordInAscii
+    };
 
     QString m_username;
     QString m_password;
@@ -79,9 +120,14 @@ private:
     bool m_scrobble;
     bool m_fetchSimilar;
     bool m_scrobbleComposer;
+    bool m_useFancyRatingTags;
+    bool m_announceCorrections;
+    KWalletUsage m_kWalletUsage;
 
     KDialog* m_askDiag;
     KWallet::Wallet* m_wallet;
+
+    static QWeakPointer<LastFmServiceConfig> s_instance;
 };
 
 #endif // LASTFMSERVICECONFIG_H

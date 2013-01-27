@@ -17,7 +17,7 @@
 #ifndef AMAROK_COMPONENTS_H
 #define AMAROK_COMPONENTS_H
 
-#include "shared/amarok_export.h"
+#include "amarok_export.h"
 
 namespace Amarok
 {
@@ -31,6 +31,11 @@ namespace Collections
 }
 
 namespace Transcoding
+{
+    class Controller;
+}
+
+namespace StatSyncing
 {
     class Controller;
 }
@@ -63,6 +68,9 @@ namespace Amarok
 
         AMAROK_CORE_EXPORT Transcoding::Controller *transcodingController();
         AMAROK_CORE_EXPORT Transcoding::Controller *setTranscodingController( Transcoding::Controller *controller );
+
+        AMAROK_CORE_EXPORT StatSyncing::Controller *statSyncingController();
+        AMAROK_CORE_EXPORT StatSyncing::Controller *setStatSyncingController( StatSyncing::Controller *controller );
     }
 }
 

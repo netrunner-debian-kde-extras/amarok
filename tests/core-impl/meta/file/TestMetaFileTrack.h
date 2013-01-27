@@ -21,13 +21,10 @@
 #define TESTMETAFILETRACK_H
 
 #include "TestBase.h"
+#include "core-impl/meta/file/File.h"
 
 #include <QtCore/QObject>
 #include <QtCore/QString>
-
-namespace MetaFile {
-    class Track;
-}
 
 class KTempDir;
 
@@ -42,13 +39,15 @@ private slots:
     void initTestCase();
     void cleanupTestCase();
 
-    //methods inherited from Meta::MetaBase
+    void init();
+
+    // methods inherited from Meta::Base
     void testNameAndSetTitle();
     void testPrettyName();
     void testFullPrettyName();
     void testSortableName();
 
-    //methods inherited from Meta::Track
+    // methods inherited from Meta::Track
     void testPlayableUrl();
     void testPrettyUrl();
     void testUidUrl();
@@ -78,9 +77,10 @@ private slots:
     void testCreateDate();
 
 private:
-    MetaFile::Track *m_track;
+    MetaFile::TrackPtr m_track;
     KTempDir *m_tmpDir;
-    const QString m_tmpFileName;
+    QString m_tmpFileName;
+    QString m_origTrackPath;
 };
 
 #endif // TESTMETAFILETRACK_H

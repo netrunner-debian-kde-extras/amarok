@@ -24,16 +24,16 @@
 
 #include "PlaylistActions.h"
 
+#include "EngineController.h"
+#include "MainWindow.h"
+#include "amarokconfig.h"
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
-#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
-#include "amarokconfig.h"
 #include "core/support/Debug.h"
-#include "DynamicModel.h"
-#include "EngineController.h"
-#include "core-impl/collections/support/CollectionManager.h"
 #include "core/interfaces/Logger.h"
-#include "MainWindow.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
+#include "dynamic/DynamicModel.h"
 #include "navigators/DynamicTrackNavigator.h"
 #include "navigators/RandomAlbumNavigator.h"
 #include "navigators/RandomTrackNavigator.h"
@@ -41,9 +41,9 @@
 #include "navigators/RepeatTrackNavigator.h"
 #include "navigators/StandardTrackNavigator.h"
 #include "navigators/FavoredRandomTrackNavigator.h"
-#include "PlaylistModelStack.h"
-#include "PlaylistController.h"
+#include "playlist/PlaylistController.h"
 #include "playlist/PlaylistDock.h"
+#include "playlist/PlaylistModelStack.h"
 #include "playlistmanager/PlaylistManager.h"
 
 #include <KStandardDirs>
@@ -71,16 +71,19 @@ Playlist::Actions::destroy()
 Playlist::Actions::Actions()
         : QObject()
         , m_nextTrackCandidate( 0 )
-        , m_trackToBeLast( 0 )
+        , m_stopAfterPlayingTrackId( 0 )
         , m_navigator( 0 )
-        , m_stopAfterMode( StopNever )
         , m_waitingForNextTrack( false )
 {
     EngineController *engine = The::engineController();
 
     if( engine ) // test cases might create a playlist without having an EngineController
-        connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
-                 this, SLOT( slotTrackPlaying( Meta::TrackPtr ) ) );
+    {
+        connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr) ),
+                 this, SLOT(slotTrackPlaying(Meta::TrackPtr)) );
+        connect( engine, SIGNAL(stopped(qint64,qint64)),
+                 this, SLOT(slotPlayingStopped(qint64,qint64)) );
+    }
 }
 
 Playlist::Actions::~Actions()
@@ -114,43 +117,15 @@ Playlist::Actions::requestNextTrack()
     if ( m_nextTrackCandidate != 0 )
         return;
 
-    debug() << "so far so good!";
-    if( stopAfterMode() == StopAfterQueue && The::playlist()->activeId() == m_trackToBeLast )
-    {
-        setStopAfterMode( StopAfterCurrent );
-        m_trackToBeLast = 0;
-    }
-
     m_nextTrackCandidate = m_navigator->requestNextTrack();
     if( m_nextTrackCandidate == 0 )
         return;
 
-    if( stopAfterMode() == StopAfterCurrent )  //stop after current / stop after track starts here
-    {
+    if( willStopAfterTrack( ModelStack::instance()->bottom()->activeId() ) )
+        // Tell playlist what track to play after users hits Play again:
         The::playlist()->setActiveId( m_nextTrackCandidate );
-        setStopAfterMode( StopNever );
-    }
     else
-    {
         play( m_nextTrackCandidate, false );
-    }
-}
-
-void
-Playlist::Actions::reflectPlaybackFinished()
-{
-    if( m_nextTrackCandidate )
-        // this must ba a result of StopAfterCurrent or similar, nothing to do
-        return;
-
-    debug() << "nothing more to play...";
-    // no more stuff to play. make sure to reset the active track so that pressing play
-    // will start at the top of the playlist (or whereever the navigator wants to start)
-    // instead of just replaying the last track
-    The::playlist()->setActiveRow( -1 );
-
-    // we also need to mark all tracks as unplayed or some navigators might be unhappy
-    The::playlist()->setAllUnplayed();
 }
 
 void
@@ -173,6 +148,23 @@ Playlist::Actions::requestTrack( quint64 id )
     m_nextTrackCandidate = id;
 }
 
+void
+Playlist::Actions::stopAfterPlayingTrack( quint64 id )
+{
+    if( id == quint64( -1 ) )
+        id = ModelStack::instance()->bottom()->activeId(); // 0 is fine
+    if( id != m_stopAfterPlayingTrackId )
+    {
+        m_stopAfterPlayingTrackId = id;
+        repaintPlaylist(); // to get the visual change
+    }
+}
+
+bool
+Playlist::Actions::willStopAfterTrack( const quint64 id ) const
+{
+    return m_stopAfterPlayingTrackId && m_stopAfterPlayingTrackId == id;
+}
 
 void
 Playlist::Actions::play()
@@ -457,6 +449,29 @@ Playlist::Actions::slotTrackPlaying( Meta::TrackPtr engineTrack )
     m_nextTrackCandidate = 0;
 }
 
+void
+Playlist::Actions::slotPlayingStopped( qint64 finalPosition, qint64 trackLength )
+{
+    DEBUG_BLOCK;
+
+    stopAfterPlayingTrack( 0 ); // reset possible "Stop after playing track";
+
+    // we have to determine if we reached the end of the playlist.
+    // in such a case there would be no new track and the current one
+    // played until the end.
+    // else this must be a result of StopAfterCurrent or the user stopped
+    if( m_nextTrackCandidate || finalPosition < trackLength )
+        return;
+
+    debug() << "nothing more to play...";
+    // no more stuff to play. make sure to reset the active track so that pressing play
+    // will start at the top of the playlist (or whereever the navigator wants to start)
+    // instead of just replaying the last track
+    The::playlist()->setActiveRow( -1 );
+
+    // we also need to mark all tracks as unplayed or some navigators might be unhappy
+    The::playlist()->setAllUnplayed();
+}
 
 void
 Playlist::Actions::normalizeDynamicPlaylist()
@@ -470,7 +485,7 @@ Playlist::Actions::normalizeDynamicPlaylist()
 void
 Playlist::Actions::repaintPlaylist()
 {
-    The::mainWindow()->playlistDock()->currentView()->repaint();
+    The::mainWindow()->playlistDock()->currentView()->update();
 }
 
 void

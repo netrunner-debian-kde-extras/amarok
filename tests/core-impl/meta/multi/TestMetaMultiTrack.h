@@ -20,7 +20,7 @@
 #ifndef TESTMETAMULTITRACK_H
 #define TESTMETAMULTITRACK_H
 
-#include "TestBase.h"
+#include "core/playlists/Playlist.h"
 
 #include <QtCore/QObject>
 
@@ -37,16 +37,37 @@ public:
 
 private slots:
     void initTestCase();
-    void cleanupTestCase();
+    void init();
+    void cleanup();
 
-    void testFirst();
-    void testNext();
-    void testCurrentAndSetSource();
     void testSources();
+    void testSetSourceCurrentNextUrl();
     void testHasCapabilityInterface();
 
 private:
+    Playlists::PlaylistPtr m_playlist;
     Meta::MultiTrack *m_testMultiTrack;
+};
+
+/**
+ * A helper class that waits until all tracks have called notifyObservers at least once
+ * and then emits a signal done()
+ */
+class NotifyObserversWaiter : public QObject, private Meta::Observer
+{
+    Q_OBJECT
+
+    public:
+        NotifyObserversWaiter( const QSet<Meta::TrackPtr> &tracks, QObject *parent = 0 );
+
+    signals:
+        void done();
+
+    private:
+        using Observer::metadataChanged; // silence gcc warning
+        virtual void metadataChanged(Meta::TrackPtr track);
+
+        QSet<Meta::TrackPtr> m_tracks;
 };
 
 #endif // TESTMETAMULTITRACK_H

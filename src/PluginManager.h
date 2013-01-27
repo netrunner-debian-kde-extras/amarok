@@ -17,10 +17,9 @@
 #ifndef AMAROK_PLUGINMANAGER_H
 #define AMAROK_PLUGINMANAGER_H
 
+#include "amarok_export.h"
 #include "core/support/PluginFactory.h"
-#include "shared/amarok_export.h"
 
-class MountPointManager;
 class ServicePluginManager;
 
 namespace Plugins {
@@ -57,7 +56,6 @@ class AMAROK_EXPORT PluginManager : public QObject
         QList<PluginFactory*> createFactories( const QString &category );
         PluginFactory* createFactory( const KPluginInfo &plugin );
 
-        MountPointManager *m_mountPointManager;
         ServicePluginManager *m_servicePluginManager;
         QHash<QString, QList<PluginFactory*> > m_factories;
         QHash<QString, KPluginInfo::List> m_pluginInfos;

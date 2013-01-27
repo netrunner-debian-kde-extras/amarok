@@ -82,6 +82,8 @@ TokenPool::addToken( Token * token )
     item->setToolTip( "<font color=\"" + token->textColor().name() + "\">" + token->name() + "</font>" );
     addItem( item );
 
+    token->setParent( this );
+    token->hide();
     m_itemTokenMap.insert( item, token );
 }
 
@@ -174,7 +176,7 @@ TokenPool::performDrag( QMouseEvent *event )
         QByteArray itemData;
 
         QDataStream dataStream( &itemData, QIODevice::WriteOnly );
-        dataStream << token->name() << token->iconName() << token->value() << QPoint( event->pos() - rect().topLeft() );
+        dataStream << token->name() << token->iconName() << token->value() << token->textColor() << QPoint( event->pos() - rect().topLeft() );
 
         QMimeData *mimeData = new QMimeData;
         mimeData->setData( m_mimeType, itemData );

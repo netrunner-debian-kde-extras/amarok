@@ -18,12 +18,14 @@
  ***************************************************************************/
 
 #include "TestTimecodeTrackProvider.h"
+
 #include "config-amarok-test.h"
+#include "core/meta/Meta.h"
 #include "core-impl/meta/timecode/TimecodeTrackProvider.h"
 
-#include <QtTest/QTest>
-
 #include <qtest_kde.h>
+
+#include <QtTest/QTest>
 
 QTEST_KDEMAIN_CORE( TestTimecodeTrackProvider )
 

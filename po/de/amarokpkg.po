@@ -15,6 +15,14 @@ msgstr ""
 "X-Generator: Lokalize 1.0\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Thomas Reitelbach"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "tr@erdfunkstelle.de"
+
 #: amarokpkg.cpp:40
 msgid "Install, list, remove Amarok applets"
 msgstr "Installieren, Auflisten, Entfernen von Amarok-Miniprogrammen"
@@ -106,13 +114,3 @@ msgctxt ""
 msgid "One of install, remove, upgrade or list is required."
 msgstr ""
 "Eine Option aus „install“, „remove“, „upgrade“ oder „list“ ist erforderlich."
-
-#: rc.cpp:1
-msgctxt "NAME OF TRANSLATORS"
-msgid "Your names"
-msgstr "Thomas Reitelbach"
-
-#: rc.cpp:2
-msgctxt "EMAIL OF TRANSLATORS"
-msgid "Your emails"
-msgstr "tr@erdfunkstelle.de"

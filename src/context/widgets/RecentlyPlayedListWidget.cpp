@@ -16,11 +16,12 @@
 
 #define DEBUG_PREFIX "RecentlyPlayedListWidget"
 
+#include "EngineController.h"
 #include "RecentlyPlayedListWidget.h"
-#include "CollectionManager.h"
+#include "core/meta/Statistics.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "EngineController.h"
+#include "core-impl/collections/support/CollectionManager.h"
 
 #include <KIcon>
 #include <KSqueezedTextLabel>
@@ -79,7 +80,7 @@ RecentlyPlayedListWidget::updateWidget()
         labelWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Preferred );
         labelWidget->setWidget( squeezer );
 
-        QLabel *lastPlayed = new QLabel( Amarok::verboseTimeSince( track->lastPlayed() ) );
+        QLabel *lastPlayed = new QLabel( Amarok::verboseTimeSince( track->statistics()->lastPlayed() ) );
         lastPlayed->setAttribute( Qt::WA_NoSystemBackground );
         lastPlayed->setAlignment( Qt::AlignRight );
         lastPlayed->setWordWrap( false );
@@ -109,13 +110,13 @@ RecentlyPlayedListWidget::addTrack( const Meta::TrackPtr &track )
 {
     if( !track )
         return;
-    if( !track->lastPlayed().isValid() )
+    if( !track->statistics()->lastPlayed().isValid() )
         return;
 
     if( m_recentTracks.size() > 12 )
         m_recentTracks.erase( m_recentTracks.begin() );
 
-    m_recentTracks.insert( track->lastPlayed().toTime_t(), track );
+    m_recentTracks.insert( track->statistics()->lastPlayed().toTime_t(), track );
 }
 
 void
@@ -145,7 +146,6 @@ RecentlyPlayedListWidget::startQuery()
 void
 RecentlyPlayedListWidget::trackChanged( Meta::TrackPtr track )
 {
-    DEBUG_BLOCK
     // engine controller will give a null track when playback stops
     if( !track )
     {
@@ -186,7 +186,7 @@ void
 RecentlyPlayedListWidget::tracksReturned( Meta::TrackList tracks )
 {
     foreach( const Meta::TrackPtr &track, tracks )
-        m_recentTracks.insert( track->lastPlayed().toTime_t(), track );
+        m_recentTracks.insert( track->statistics()->lastPlayed().toTime_t(), track );
 }
 
 void

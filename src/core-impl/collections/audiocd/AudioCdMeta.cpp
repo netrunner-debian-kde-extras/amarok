@@ -34,7 +34,6 @@ AudioCdTrack::AudioCdTrack( Collections::AudioCdCollection *collection, const QS
     , m_name( name)
     , m_length( 0 )
     , m_trackNumber( 0 )
-    , m_displayUrl( url.url() )
     , m_playableUrl( url )
 {
 }
@@ -53,8 +52,7 @@ AudioCdTrack::name() const
 KUrl
 AudioCdTrack::playableUrl() const
 {
-    KUrl url( m_playableUrl );
-    return url;
+    return m_playableUrl;
 }
 
 QString
@@ -66,7 +64,7 @@ AudioCdTrack::uidUrl() const
 QString
 AudioCdTrack::prettyUrl() const
 {
-    return m_displayUrl;
+    return m_playableUrl.prettyUrl();
 }
 
 bool
@@ -112,36 +110,6 @@ AudioCdTrack::year() const
     return YearPtr::staticCast( m_year );
 }
 
-void
-AudioCdTrack::setAlbum( const QString &newAlbum )
-{
-    Q_UNUSED( newAlbum )
-}
-
-void
-AudioCdTrack::setArtist( const QString &newArtist )
-{
-    Q_UNUSED( newArtist )
-}
-
-void
-AudioCdTrack::setComposer( const QString &newComposer )
-{
-    Q_UNUSED( newComposer )
-}
-
-void
-AudioCdTrack::setGenre( const QString &newGenre )
-{
-    Q_UNUSED( newGenre )
-}
-
-void
-AudioCdTrack::setYear( int newYear )
-{
-    Q_UNUSED( newYear )
-}
-
 qreal
 AudioCdTrack::bpm() const
 {
@@ -158,30 +126,6 @@ void
 AudioCdTrack::setComment( const QString &newComment )
 {
     Q_UNUSED( newComment )
-}
-
-double
-AudioCdTrack::score() const
-{
-    return 0.0;
-}
-
-void
-AudioCdTrack::setScore( double newScore )
-{
-    Q_UNUSED( newScore )
-}
-
-int
-AudioCdTrack::rating() const
-{
-    return 0;
-}
-
-void
-AudioCdTrack::setRating( int newRating )
-{
-    Q_UNUSED( newRating )
 }
 
 qint64
@@ -232,28 +176,10 @@ AudioCdTrack::setDiscNumber( int newDiscNumber )
     Q_UNUSED( newDiscNumber )
 }
 
-int
-AudioCdTrack::playCount() const
-{
-    return 0;
-}
-
 QString
 AudioCdTrack::type() const
 {
     return m_collection->encodingFormat();
-}
-
-void
-AudioCdTrack::subscribe( Observer *observer )
-{
-    Q_UNUSED( observer )    //read only
-}
-
-void
-AudioCdTrack::unsubscribe( Observer *observer )
-{
-    Q_UNUSED( observer )    //read only
 }
 
 bool
@@ -385,7 +311,6 @@ AudioCdAlbum::name() const
 bool
 AudioCdAlbum::isCompilation() const
 {
-    DEBUG_BLOCK
     return m_isCompilation;
 }
 
@@ -398,7 +323,6 @@ AudioCdAlbum::canUpdateCompilation() const
 void
 AudioCdAlbum::setCompilation( bool compilation )
 {
-    DEBUG_BLOCK
     m_isCompilation = compilation;
 }
 

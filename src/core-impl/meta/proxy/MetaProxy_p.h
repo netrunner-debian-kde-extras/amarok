@@ -17,10 +17,9 @@
 #ifndef AMAROK_METAPROXY_P_H
 #define AMAROK_METAPROXY_P_H
 
-#include "core/support/Amarok.h"
 #include "core/collections/Collection.h"
-#include "core-impl/collections/support/CollectionManager.h"
 #include "core/meta/Meta.h"
+#include "core-impl/meta/stream/Stream.h"
 
 #include <QImage>
 #include <QList>
@@ -43,8 +42,6 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
 
         Meta::TrackPtr realTrack;
 
-        QList<Meta::Observer *> observers;
-
         QString cachedArtist;
         QString cachedAlbum;
         QString cachedName;
@@ -63,22 +60,11 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
         Meta::YearPtr yearPtr;
 
     public:
-        void notifyObservers()
-        {
-            if( proxy )
-            {
-                foreach( Meta::Observer *observer, observers )
-                {
-                    if( observer != this )
-                        observer->metadataChanged( Meta::TrackPtr( const_cast<MetaProxy::Track*>(proxy) ) );
-                }
-            }
-        }
         using Observer::metadataChanged;
         void metadataChanged( Meta::TrackPtr track )
         {
             Q_UNUSED( track )
-            notifyObservers();
+            proxy->notifyObservers();
         }
 
     public slots:
@@ -86,9 +72,24 @@ class MetaProxy::Track::Private : public QObject, public Meta::Observer
         {
             if( track )
             {
+                // special handling for streams that cannot fetch metadata until played, bug 305389
+                MetaStream::Track *stream = dynamic_cast<MetaStream::Track *>( track.data() );
+                if( stream )
+                    stream->setInitialInfo( cachedArtist, cachedAlbum, cachedName,
+                                            cachedLength, cachedTrackNumber );
+
                 subscribeTo( track );
                 realTrack = track;
-                notifyObservers();
+
+                // clear memory of now-unused cached fields:
+                url.clear();
+                cachedArtist.clear();
+                cachedAlbum.clear();
+                cachedName.clear();
+                cachedGenre.clear();
+                cachedComposer.clear();
+
+                proxy->notifyObservers();
             }
         }
 };

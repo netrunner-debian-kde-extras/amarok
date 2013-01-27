@@ -20,7 +20,7 @@
 #include "TestMetaFileTrack.h"
 
 #include "config-amarok-test.h"
-#include "core-impl/meta/file/File.h"
+#include "amarokconfig.h"
 
 #include <KTempDir>
 
@@ -35,9 +35,7 @@
 QTEST_KDEMAIN_CORE( TestMetaFileTrack )
 
 TestMetaFileTrack::TestMetaFileTrack()
-    : m_track( 0 )
-    , m_tmpDir( 0 )
-    , m_tmpFileName( "tempfile.mp3" )
+    : m_tmpDir( 0 )
 {}
 
 void TestMetaFileTrack::initTestCase()
@@ -45,20 +43,25 @@ void TestMetaFileTrack::initTestCase()
     m_tmpDir = new KTempDir();
     QVERIFY( m_tmpDir->exists() );
 
-    const QString path = QDir::toNativeSeparators( QString( AMAROK_TEST_DIR ) + "/data/audio/Platz 01.mp3" );
-    QVERIFY( QFile::exists( path ) );
-
-    const QString tmpFile = m_tmpDir->name() + m_tmpFileName;
-    QVERIFY( QFile::copy( path, tmpFile ) );
-
-    m_track = new MetaFile::Track( tmpFile );
-    QVERIFY( m_track );
+    m_origTrackPath = QString( AMAROK_TEST_DIR ) + "/data/audio/Platz 01.mp3";
+    QVERIFY( QFile::exists( m_origTrackPath ) );
 }
 
 void TestMetaFileTrack::cleanupTestCase()
 {
     delete m_tmpDir;
-    delete m_track;
+}
+
+void TestMetaFileTrack::init()
+{
+    static const QString tmpFileNameBase( "tempfile.mp3" );
+    static int i = 0;
+    // create new file name for every test: we need to start with clean statistics
+    m_tmpFileName = QString( "%1%2-%3" ).arg( m_tmpDir->name() ).arg( i++ ).arg( tmpFileNameBase );
+    QVERIFY( QFile::copy( m_origTrackPath, m_tmpFileName ) );
+
+    m_track = new MetaFile::Track( m_tmpFileName );
+    QVERIFY( m_track );
 }
 
 void TestMetaFileTrack::testNameAndSetTitle()
@@ -145,21 +148,21 @@ void TestMetaFileTrack::testSortableName()
 void TestMetaFileTrack::testPlayableUrl()
 {
     const KUrl tempUrl = m_track->playableUrl();
-    QCOMPARE( tempUrl.toLocalFile(), m_tmpDir->name() + m_tmpFileName );
+    QCOMPARE( tempUrl.toLocalFile(), m_tmpFileName );
 }
 
 void TestMetaFileTrack::testPrettyUrl()
 {
     KUrl tempUrl;
     tempUrl = m_track->prettyUrl();
-    QCOMPARE( tempUrl.toLocalFile(), m_tmpDir->name() + m_tmpFileName );
+    QCOMPARE( tempUrl.toLocalFile(), m_tmpFileName );
 }
 
 void TestMetaFileTrack::testUidUrl()
 {
     KUrl tempUrl;
     tempUrl = m_track->uidUrl();
-    QCOMPARE( tempUrl.toLocalFile(), m_tmpDir->name() + m_tmpFileName );
+    QCOMPARE( tempUrl.toLocalFile(), m_tmpFileName );
 }
 
 void TestMetaFileTrack::testIsPlayable()
@@ -171,7 +174,7 @@ void TestMetaFileTrack::testIsEditable()
 {
     QVERIFY( m_track->isEditable() );
 
-    QFile testFile( m_tmpDir->name() + m_tmpFileName );
+    QFile testFile( m_tmpFileName );
 
     QVERIFY( testFile.setPermissions( 0x0000 ) );
     /* When the tests are run as root under Linux, the file is accessible even when it
@@ -300,36 +303,63 @@ void TestMetaFileTrack::testSetGetComment()
 
 void TestMetaFileTrack::testSetGetScore()
 {
-    QCOMPARE( m_track->score(), 0.0 );
+    // try with write back enabled...
+    AmarokConfig::setWriteBackStatistics( true );
 
-    m_track->setScore( 1 );
-    QCOMPARE( m_track->score(), 1.0 );
+    Meta::StatisticsPtr statistics = m_track->statistics();
+    QCOMPARE( statistics->score(), 0.0 );
 
-    m_track->setScore( 23.42 );
-    QCOMPARE( m_track->score(), 23.42 );
+    /* now the code actually stores the score in track and then it reads it back.
+     * the precision it uses is pretty low and it was failing the qFuzzyCompare<double>
+     * Just make it use qFuzzyCompare<float>() */
 
-    m_track->setScore( -12 );
-    QCOMPARE( m_track->score(), -12.0 ); // should this be possible?
+    statistics->setScore( 3 );
+    QCOMPARE( float( statistics->score() ), float( 3.0 ) );
 
-    m_track->setScore( 0 );
-    QCOMPARE( m_track->score(), 0.0 );
+    statistics->setScore( 12.55 );
+    QCOMPARE( float( statistics->score() ), float( 12.55 ) );
+
+    statistics->setScore( 100 );
+    QCOMPARE( float( statistics->score() ), float( 100.0 ) );
+
+    statistics->setScore( 0 );
+    QCOMPARE( float( statistics->score() ), float( 0.0 ) );
+
+    // and with writeback disabled
+    AmarokConfig::setWriteBackStatistics( false );
+
+    statistics->setScore( 3 );
+    QCOMPARE( float( statistics->score() ), float( 0.0 ) );
+
+    statistics->setScore( 12.55 );
+    QCOMPARE( float( statistics->score() ), float( 0.0 ) );
 }
 
 void TestMetaFileTrack::testSetGetRating()
 {
-    QCOMPARE( m_track->rating(), 0 );
+    // try with write back enabled...
+    AmarokConfig::setWriteBackStatistics( true );
 
-    m_track->setRating( 1 );
-    QCOMPARE( m_track->rating(), 1 );
+    Meta::StatisticsPtr statistics = m_track->statistics();
+    QCOMPARE( m_track->statistics()->rating(), 0 );
 
-    m_track->setRating( 23 );
-    QCOMPARE( m_track->rating(), 23 ); // should this be possible?
+    m_track->statistics()->setRating( 1 );
+    QCOMPARE( m_track->statistics()->rating(), 1 );
 
-    m_track->setRating( -12 );
-    QCOMPARE( m_track->rating(), -12 ); // should this be possible?
+    m_track->statistics()->setRating( 23 );
+    QCOMPARE( m_track->statistics()->rating(), 23 ); // should this be possible?
 
-    m_track->setRating( 0 );
-    QCOMPARE( m_track->rating(), 0 );
+    m_track->statistics()->setRating( 0 );
+    QCOMPARE( m_track->statistics()->rating(), 0 );
+
+    // and with writeback disabled
+    AmarokConfig::setWriteBackStatistics( false );
+
+    m_track->statistics()->setRating( 1 );
+    QCOMPARE( m_track->statistics()->rating(), 0 );
+
+    m_track->statistics()->setRating( 23 );
+    QCOMPARE( m_track->statistics()->rating(), 0 );
 }
 
 void TestMetaFileTrack::testSetGetTrackNumber()
@@ -373,7 +403,7 @@ void TestMetaFileTrack::testLength()
 
 void TestMetaFileTrack::testFilesize()
 {
-    QCOMPARE( m_track->filesize(), 389530 );
+    QCOMPARE( m_track->filesize(), 389454 );
 }
 
 void TestMetaFileTrack::testSampleRate()
@@ -388,53 +418,43 @@ void TestMetaFileTrack::testBitrate()
 
 void TestMetaFileTrack::testSetGetLastPlayed()
 {
-    QCOMPARE( m_track->lastPlayed(), QDateTime() ); // portability?
+    QSKIP( "lastPlayed reading/saving not (yet) available in MetaFile::Track", SkipAll );
+    QCOMPARE( m_track->statistics()->lastPlayed(), QDateTime() );
 
-    m_track->setLastPlayed( QDateTime::fromTime_t(0) );
-    QCOMPARE( m_track->lastPlayed().toTime_t(), 0U );
-
-    m_track->setLastPlayed( QDateTime::fromTime_t(1) );
-    QCOMPARE( m_track->lastPlayed().toTime_t(), 1U );
-
-    m_track->setLastPlayed( QDateTime::fromTime_t(23) );
-    QCOMPARE( m_track->lastPlayed().toTime_t(), 23U );
-
-    m_track->setLastPlayed( QDateTime::fromTime_t(4294967295U) );
-    QCOMPARE( m_track->lastPlayed().toTime_t(), 4294967295U );
+    m_track->finishedPlaying( 1.0 );
+    QVERIFY( m_track->statistics()->lastPlayed().isValid() );
 }
 
 void TestMetaFileTrack::testSetGetFirstPlayed()
 {
-    QCOMPARE( m_track->firstPlayed(), QDateTime() );
+    QSKIP( "firstPlayed reading/saving not (yet) available in MetaFile::Track", SkipAll );
+    QCOMPARE( m_track->statistics()->firstPlayed(), QDateTime() );
 
-    m_track->setFirstPlayed( QDateTime::fromTime_t(0) );
-    QCOMPARE( m_track->firstPlayed().toTime_t(), 0U );
-
-    m_track->setFirstPlayed( QDateTime::fromTime_t(1) );
-    QCOMPARE( m_track->firstPlayed().toTime_t(), 1U );
-
-    m_track->setFirstPlayed( QDateTime::fromTime_t(23) );
-    QCOMPARE( m_track->firstPlayed().toTime_t(), 23U );
-
-    m_track->setFirstPlayed( QDateTime::fromTime_t(4294967295U) );
-    QCOMPARE( m_track->firstPlayed().toTime_t(), 4294967295U );
+    m_track->finishedPlaying( 1.0 );
+    QVERIFY( m_track->statistics()->firstPlayed().isValid() );
 }
 
 void TestMetaFileTrack::testSetGetPlayCount()
 {
-    QCOMPARE( m_track->playCount(), 0 );
+    // try with write back enabled...
+    AmarokConfig::setWriteBackStatistics( true );
 
-    m_track->setPlayCount( 1 );
-    QCOMPARE( m_track->playCount(), 1 );
+    QCOMPARE( m_track->statistics()->playCount(), 0 );
 
-    m_track->setPlayCount( 23 );
-    QCOMPARE( m_track->playCount(), 23 );
+    m_track->finishedPlaying( 1.0 );
+    QCOMPARE( m_track->statistics()->playCount(), 1 );
 
-    m_track->setPlayCount( -12 );
-    QCOMPARE( m_track->playCount(), -12 ); // should this be possible?
+    m_track->statistics()->setPlayCount( 0 );
+    QCOMPARE( m_track->statistics()->playCount(), 0 );
 
-    m_track->setPlayCount( 0 );
-    QCOMPARE( m_track->playCount(), 0 );
+    // and with writeback disabled
+    AmarokConfig::setWriteBackStatistics( false );
+
+    m_track->finishedPlaying( 1.0 );
+    QCOMPARE( m_track->statistics()->playCount(), 0 );
+
+    m_track->statistics()->setPlayCount( 12 );
+    QCOMPARE( m_track->statistics()->playCount(), 0 );
 }
 
 void TestMetaFileTrack::testReplayGain()
@@ -452,7 +472,7 @@ void TestMetaFileTrack::testType()
 
 void TestMetaFileTrack::testCreateDate()
 {
-    QFileInfo fi( m_tmpDir->name() + m_tmpFileName );
+    QFileInfo fi( m_tmpFileName );
     QDateTime created = fi.created();
     QCOMPARE( m_track->createDate(), created );
 }

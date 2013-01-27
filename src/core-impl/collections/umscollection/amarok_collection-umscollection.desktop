@@ -15,6 +15,8 @@ Name[en_GB]=Universal Mass Storage Collection
 Name[es]=Colección universal de almacenamiento masivo
 Name[et]=Universaalse massmäluseadme kogu
 Name[eu]=Biltegiratze gailu unibertsalen bilduma
+Name[fr]=Collection de stockage de masse universel
+Name[ga]=Bailiúchán Uilíoch Ollstórála
 Name[gl]=Colección de almacenamento masivo universal
 Name[hu]=Univerzális tárolóhoz (UMS) tartozó gyűjtemény
 Name[is]=Universal Mass Storage safn
@@ -51,7 +53,7 @@ ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-authors=Alejandro Wainzinger
 X-KDE-Amarok-email=aikawarazuni@gmail.com
-X-KDE-Amarok-framework-version=69
+X-KDE-Amarok-framework-version=70
 X-KDE-Amarok-name=ums-collection
 X-KDE-Amarok-plugintype=collection
 X-KDE-Amarok-rank=100

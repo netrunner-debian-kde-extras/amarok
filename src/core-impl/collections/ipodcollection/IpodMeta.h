@@ -19,6 +19,7 @@
 
 #include "MetaValues.h"
 #include "core/meta/Meta.h"
+#include "core/meta/Statistics.h"
 
 #include <QReadWriteLock>
 
@@ -35,7 +36,7 @@ namespace IpodMeta
      * proxied in the MemoMeta track. All methods in this class are thread-safe with a few
      * exceptions that are noted in relevant method docstrings.
      */
-    class Track : public Meta::Track
+    class Track : public Meta::Track, public Meta::Statistics
     {
         public:
             /**
@@ -55,9 +56,10 @@ namespace IpodMeta
             virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
             virtual Capabilities::Capability *createCapabilityInterface( Capabilities::Capability::Type type );
 
-            // Meeta::MetaBase methods:
+            // Meta::Base methods:
             virtual QString name() const;
 
+            // Meta::Track methods:
             virtual KUrl playableUrl() const;
             virtual QString prettyUrl() const;
             virtual QString uidUrl() const;
@@ -72,13 +74,6 @@ namespace IpodMeta
             virtual qreal bpm() const;
             virtual QString comment() const;
 
-            virtual double score() const;
-            virtual void setScore( double newScore );
-
-            virtual int rating() const;
-            virtual void setRating( int newRating ) { setRating( newRating, true ); }
-            virtual void setRating( int newRating, bool doCommit );
-
             virtual qint64 length() const;
             virtual int filesize() const;
             virtual int sampleRate() const;
@@ -90,20 +85,32 @@ namespace IpodMeta
             virtual int trackNumber() const;
             virtual int discNumber() const;
 
-            virtual QDateTime lastPlayed() const;
-            virtual QDateTime firstPlayed() const;
-            virtual int playCount() const;
-
             virtual qreal replayGain( Meta::ReplayGainTag mode ) const;
             virtual QString type() const;
-
-            virtual void finishedPlaying( double playedFraction );
 
             virtual bool inCollection() const;
             virtual Collections::Collection* collection() const;
 
-            // IpodMeta::Track methods:
+            virtual Meta::StatisticsPtr statistics();
 
+            // Meta::Statistics methods:
+            virtual int rating() const;
+            virtual void setRating( int newRating );
+
+            virtual QDateTime lastPlayed() const;
+            virtual void setLastPlayed( const QDateTime &time );
+
+            virtual QDateTime firstPlayed() const;
+            virtual void setFirstPlayed( const QDateTime &time );
+
+            virtual int playCount() const;
+            virtual int recentPlayCount() const;
+            virtual void setPlayCount( const int playcount );
+
+            virtual void beginUpdate();
+            virtual void endUpdate();
+
+            // IpodMeta::Track methods:
             /**
              * Return a pointer to IpodMeta::Track given pointer to underlying libgpod
              * track. Does not attempt to create the track, so it may return null ptr if
@@ -154,11 +161,8 @@ namespace IpodMeta
             void setBpm( const qreal newBpm );
 
             // Methods for copy constructor:
-            void setFirstPlayed( const QDateTime &time );
-            void setLastPlayed( const QDateTime &time );
-            void setPlayCount( const int playcount );
-            void setIsCompilation( bool newIsCompilation, bool doCommit = true );
-            void setImage( const QImage &newImage, bool doCommit = true );
+            void setIsCompilation( bool newIsCompilation );
+            void setImage( const QImage &newImage );
             void setLength( qint64 newLength );
             void setSampleRate( int newSampleRate );
             void setBitrate( int newBitrate );
@@ -167,16 +171,14 @@ namespace IpodMeta
             void setReplayGain( Meta::ReplayGainTag mode, qreal newReplayGain );
             void setType( const QString &newType );
 
-            /**
-             * calls notifyObservers() so that observers (mainly IpodCollection) catch the
-             * changes. You _must_ call this method adter using one of the set* methods,
-             * with exception of setRating() and setScore() that are part of Meta::Track.
-             *
-             * This method also sets modifyDate() to currect moment.
-             */
-            void commitChanges();
-
         private:
+            /**
+             * Must be called at end of every set*() method, with m_trackLock locked for
+             * writing. Takes care of writing back the fields and notifying observers.
+             */
+            void commitIfInNonBatchUpdate( qint64 field, const QVariant &value );
+            void commitIfInNonBatchUpdate();
+
             friend class Album; // so that is can access m_track and friends
 
             /**
@@ -219,6 +221,12 @@ namespace IpodMeta
              * underlying file
              */
             Meta::FieldHash m_changedFields;
+
+            /**
+             * Number of current batch operations started by @see beginUpdate() and not
+             * yet ended by @see endUpdate(). Must only be accessed with m_trackLock held.
+             */
+            int m_batch;
 
             static const quint64 m_gpodTrackUserTypeAmarokTrackPtr = Q_UINT64_C(0x416d61726f6b5472); /* AmarokTr */
     };

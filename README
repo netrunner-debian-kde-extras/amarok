@@ -35,22 +35,27 @@ that really makes playlist handling easy.
 ==============
 
 Required
-    * KDE-Libs 4.6 + KDE-Base-runtime 4.6(oxygen-icons) (or newer)
+    * KDE-Libs 4.8.4 (or newer) + KDE-Base-runtime 4.8 (oxygen-icons) (or newer)
       http://www.kde.org
 
-    * Qt 4.6 (or newer)
+    * Phonon backend, one of the following is strongly recommended
+      * phonon-gstreamer 4.6.2 (or newer)
+      * phonon-vlc 0.6.1 (or newer; as of 0.6.1 doesn't yet play Audio CDs, bug 313046)
+
+    * Qt 4.8 (or newer)
       http://qt.nokia.com/
 
     * TagLib 1.7 (or newer)
       (Metadata tagging library)
+      When compiling against 1.8 more file types are supported (MOD, IT, S3M, XM).
       http://developer.kde.org/~wheeler/taglib.html
       https://github.com/taglib/taglib
-      
+
     * TagLib Extras 1.0.1 (or newer)
       (Support for metadata reading of additional file types)
       http://www.kollide.net/~jefferai/taglib-extras-1.0.1.tar.gz
       svn://anonsvn.kde.org/home/kde/trunk/kdesupport/taglib-extras
-      
+
     * MySQL 5.0 (or newer) Embedded: libmysqld compiled with fPIC
       (In-process database support)
 
@@ -83,10 +88,10 @@ Optional
       * Loudmouth, the Jabber library, http://www.loudmouth-project.org/
       * Qt must be compiled with Glib enabled
 
-    * Liblastfm 0.3 (1.0 or newer is incompatible, porting is pending for Amarok 2.7)
-      (scrobbling, internet radio, and artist info)
-      http://cdn.last.fm/src/liblastfm-0.3.0.tar.bz2
-      http://github.com/mxcl/liblastfm/tree/master
+    * Liblastfm 1.0.3 (or newer)
+      (For scrobbling, internet radio, and artist info)
+      http://cdn.last.fm/client/liblastfm-1.0.3.tar.gz
+      https://github.com/eartle/liblastfm
 
     * QJson 0.7 (or newer)
       (Qt JSON Parser for the Playdar Collection)
@@ -100,7 +105,7 @@ Optional
       * LibOFA - http://code.google.com/p/musicip-libofa/
 
     * gpodder.net Podcast Provider & Service
-      * libmygpo-qt 1.0.5 (or newer)
+      * libmygpo-qt 1.0.6 (or newer)
 
     * Transcoding requires (at runtime):
       * FFmpeg 0.7.0 (or newer) - http://ffmpeg.org/
@@ -112,6 +117,13 @@ Optional
         * libmp3lame (NOT just "mp3")
         * libvorbis (NOT just "vorbis")
         * wmav2
+
+    * CD support requires:
+      * audiocd-kio - http://www.kde.org/ (part of KDE multimedia)
+
+    * Downloading songs from Amazon works best on non Windows systems using
+      * clamz - https://code.google.com/p/clamz/
+      * The official downloader should work fine on Windows, too. But it's broken on many Linux systems.
 
     * Building tests require:
       * gmock 1.4 (or newer) - http://code.google.com/p/googlemock/
@@ -172,7 +184,7 @@ notification of commits, visit http://commitfilter.kde.org/ , and http://amarok.
 provides a slightly-less-instant overview.
 
 More information at:
-http://amarok.kde.org/wiki/Development/Join
+http://community.kde.org/Amarok/Development/Join
 
 See you on IRC!
 

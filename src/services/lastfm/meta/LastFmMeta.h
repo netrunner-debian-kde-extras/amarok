@@ -21,15 +21,11 @@
 
 #include "core/meta/Meta.h"
 #include "core/capabilities/Capability.h"
-#include "ServiceMetaBase.h" // for the SourceInfoProvider
+#include "services/ServiceMetaBase.h" // for the SourceInfoProvider
 
-
-#include <lastfm/Track>
-
-
-#include <QObject>
-
-class WsReply;
+namespace lastfm {
+    class Track;
+}
 
 namespace LastFm
 {
@@ -43,12 +39,13 @@ namespace LastFm
             Track( lastfm::Track track ); //Convienience Constructor to allow constructing a Meta::LastFmTrack from a LastFmTrack (confusing?)
             virtual ~Track();
 
-        //methods inherited from Meta::MetaBase
+        // methods inherited from Meta::Base
             virtual QString name() const;
             virtual QString fullPrettyName() const;
             virtual QString sortableName() const;
             virtual QString fixedName() const;
-        //methods inherited from Meta::Track
+
+        // methods inherited from Meta::Track
             virtual KUrl playableUrl() const;
             virtual QString prettyUrl() const;
             virtual QString uidUrl() const;
@@ -65,12 +62,6 @@ namespace LastFm
 
             virtual QString comment() const;
 
-            virtual double score() const;
-            virtual void setScore( double newScore );
-
-            virtual int rating() const;
-            virtual void setRating( int newRating );
-
             virtual int trackNumber() const;
 
             virtual int discNumber() const;
@@ -79,21 +70,18 @@ namespace LastFm
             virtual int filesize() const;
             virtual int sampleRate() const;
             virtual int bitrate() const;
-            virtual QDateTime lastPlayed() const;
-            virtual QDateTime firstPlayed() const;
-            virtual int playCount() const;
 
             virtual QString type() const;
-
-            virtual void finishedPlaying( double playedFraction );
 
             virtual bool inCollection() const;
             virtual Collections::Collection *collection() const;
 
             virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-
             virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
+            virtual Meta::StatisticsPtr statistics();
+
+        // own methods:
             void setTrackInfo( const lastfm::Track &trackInfo );
 
             virtual QString sourceName();
@@ -106,10 +94,9 @@ namespace LastFm
             KUrl internalUrl() const; // this returns the private temporary url to the .mp3, DO NOT USE,
                                    // if you are asking, it has already expired
             QString streamName() const; // A nice name for the stream..
+
         public slots:
-            void love();
             void ban();
-            void skip();
 
         private slots:
             void slotResultReady();
@@ -117,6 +104,7 @@ namespace LastFm
 
         signals:
             void skipTrack(); // needed for communication with multiplayablecapability
+
         private:
             void init( int id = -1 );
             //use a d-pointer because some code is going to work directly with LastFm::Track

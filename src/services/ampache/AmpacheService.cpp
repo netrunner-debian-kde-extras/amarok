@@ -26,7 +26,7 @@
 #include "core/interfaces/Logger.h"
 #include "browsers/SingleCollectionTreeItemModel.h"
 #include "core-impl/collections/support/CollectionManager.h"
-#include <config-amarok.h>
+#include "config.h"
 #include "core/support/Debug.h"
 
 #ifdef HAVE_LIBLASTFM
@@ -56,9 +56,6 @@ void AmpacheServiceFactory::init()
     {
         AmpacheServerEntry server = servers.at( i );
         ServiceBase* service = new AmpacheService( this, "Ampache (" + server.name + ')', server.url, server. username, server.password );
-        m_activeServices << service;
-        debug() << "Emitting service!!!!!!";
-        connect( service, SIGNAL( ready() ), this, SLOT( slotServiceReady() ) );
         emit newService( service );
     }
 }
@@ -135,13 +132,12 @@ AmpacheService::onLoginSuccessful()
 {
     m_collection = new Collections::AmpacheServiceCollection( this, m_ampacheLogin->server(), m_ampacheLogin->sessionId() );
     // connect( m_collection, SIGNAL( authenticationNeeded() ), SLOT( authenticate() ) );
-    
+
     CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
     QList<CategoryId::CatMenuId> levels;
     levels << CategoryId::Artist << CategoryId::Album;
     setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
-    m_serviceready = true;
-    emit ready();
+    setServiceReady( true );
 }
 
 #include "AmpacheService.moc"

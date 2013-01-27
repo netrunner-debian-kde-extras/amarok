@@ -107,7 +107,8 @@ LikeBackDialog::LikeBackDialog( LikeBack::Button reason, const QString &initialC
 
     // The introduction message is long and will require a new minimum dialog size
     m_informationLabel->setText( introductionText() );
-    setMinimumSize( minimumSizeHint() );
+    m_informationLabel->setOpenExternalLinks( true );
+    setMinimumSize( sizeHint() );
 
     // Initially verify the widgets status
     verify();
@@ -172,8 +173,8 @@ QString LikeBackDialog::introductionText()
     && ( m_typeGroup_->checkedId() == LikeBack::Like || m_typeGroup_->checkedId() == LikeBack::Dislike ) )
     {
         balancingMessage = i18nc( "Feedback dialog text, message to remind to balance the likes and dislikes",
-                                  "<b>LikeBack is used for statistical reasons only, you will not get an answer if you ask "
-                                  "questions. For support, please ask <a href=\"http://forum.kde.org/Amarok\">in the forum</a> "
+                                  "<b>This feedback tool is used for statistical reasons only, you will not get an answer if you ask "
+                                  "questions. For support, please ask <a href=\"http://forum.kde.org/viewforum.php?f=127\">in the forum</a> "
                                   "or join the #amarok channel on irc.freenode.net</b>. To make the comments you have sent more useful "
                                   "in improving this application, try to send the same amount of positive and negative comments.<br/>" );
     }

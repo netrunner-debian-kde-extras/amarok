@@ -102,7 +102,10 @@ Playlist::PrettyListView::PrettyListView( QWidget* parent )
 
 
     // Signal connections
-    connect( this, SIGNAL( doubleClicked( const QModelIndex& ) ), this, SLOT( trackActivated( const QModelIndex& ) ) );
+    connect( this, SIGNAL( doubleClicked( const QModelIndex& ) ),
+             this, SLOT( trackActivated( const QModelIndex& ) ) );
+    connect( selectionModel(), SIGNAL( selectionChanged( const QItemSelection&, const QItemSelection& ) ),
+             this, SLOT( slotSelectionChanged() ) );
 
     connect( LayoutManager::instance(), SIGNAL( activeLayoutChanged() ), this, SLOT( playlistLayoutChanged() ) );
 
@@ -316,6 +319,12 @@ Playlist::PrettyListView::slotPlaylistActiveTrackChanged()
 }
 
 void
+Playlist::PrettyListView::slotSelectionChanged()
+{
+    m_lastTimeSelectionChanged = QDateTime::currentDateTime();
+}
+
+void
 Playlist::PrettyListView::trackActivated( const QModelIndex& idx )
 {
     DEBUG_BLOCK
@@ -414,18 +423,11 @@ Playlist::PrettyListView::dragLeaveEvent( QDragLeaveEvent* event )
 void
 Playlist::PrettyListView::stopAfterTrack()
 {
-    DEBUG_BLOCK
     const quint64 id = currentIndex().data( UniqueIdRole ).value<quint64>();
     if( Actions::instance()->willStopAfterTrack( id ) )
-    {
-        Actions::instance()->setStopAfterMode( StopNever );
-        Actions::instance()->setTrackToBeLast( 0 );
-    }
+        Actions::instance()->stopAfterPlayingTrack( 0 ); // disable stopping
     else
-    {
-        Actions::instance()->setStopAfterMode( StopAfterQueue );
-        Actions::instance()->setTrackToBeLast( id );
-    }
+        Actions::instance()->stopAfterPlayingTrack( id );
 }
 
 void
@@ -711,6 +713,15 @@ Playlist::PrettyListView::startDrag( Qt::DropActions supportedActions )
         m_pd->hide();
     }
     ongoingDrags = false;
+}
+
+bool
+Playlist::PrettyListView::edit( const QModelIndex &index, EditTrigger trigger, QEvent *event )
+{
+    // we want to prevent a click to change the selection and open the editor (BR 220818)
+    if( m_lastTimeSelectionChanged.msecsTo( QDateTime::currentDateTime() ) < qApp->doubleClickInterval() + 50 )
+        return false;
+    return QListView::edit( index, trigger, event );
 }
 
 QItemSelectionModel::SelectionFlags

@@ -18,7 +18,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <config-amarok.h>
+#include "config.h"
 
 #include "amarok_export.h"
 #include "core/meta/Meta.h"
@@ -115,20 +115,22 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
 
     signals:
         void loveTrack( Meta::TrackPtr track );
-        void banTrack();
+        void banTrack( Meta::TrackPtr track );
         void skipTrack();
         void switchQueueStateShortcut();
 
     public slots:
         void showHide();
         void slotFullScreen();
-        void slotLoveTrack();
         void showNotificationPopup();
         void setLayoutLocked( bool locked );
         void showAbout();
         void showReportBug();
 
     private slots:
+        void slotLoveTrack();
+        void slotBanTrack();
+
         void slotStopped();
         void slotPaused();
         void slotNewTrackPlaying();

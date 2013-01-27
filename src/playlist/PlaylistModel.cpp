@@ -36,6 +36,7 @@
 #include "core/capabilities/MultiSourceCapability.h"
 #include "core/capabilities/SourceInfoCapability.h"
 #include "core/collections/Collection.h"
+#include "core/meta/Statistics.h"
 #include "core/meta/support/MetaUtility.h"
 #include "PlaylistColumnNames.h"
 #include "PlaylistActions.h"
@@ -247,6 +248,7 @@ Playlist::Model::tooltipFor( Meta::TrackPtr track ) const
     Meta::GenrePtr genre = track->genre();
     Meta::ComposerPtr composer = track->composer();
     Meta::YearPtr year = track->year();
+    Meta::StatisticsPtr statistics = track->statistics();
 
     if( s_tooltipColumns[Playlist::Title] )
         text += HTMLLine( Playlist::Title, track->name() );
@@ -298,16 +300,16 @@ Playlist::Model::tooltipFor( Meta::TrackPtr track ) const
     }
 
     if( s_tooltipColumns[Playlist::Score] )
-        text += HTMLLine( Playlist::Score, track->score() );
+        text += HTMLLine( Playlist::Score, statistics->score() );
 
     if( s_tooltipColumns[Playlist::Rating] )
-        text += HTMLLine( Playlist::Rating, QString::number( static_cast<double>(track->rating())/2.0 ) );
+        text += HTMLLine( Playlist::Rating, QString::number( statistics->rating()/2.0 ) );
 
     if( s_tooltipColumns[Playlist::PlayCount] )
-        text += HTMLLine( Playlist::PlayCount, track->playCount(), true );
+        text += HTMLLine( Playlist::PlayCount, statistics->playCount(), true );
 
-    if( s_tooltipColumns[Playlist::LastPlayed] && track->lastPlayed().isValid() )
-        text += HTMLLine( Playlist::LastPlayed, locale->formatDateTime( track->lastPlayed() ) );
+    if( s_tooltipColumns[Playlist::LastPlayed] && statistics->lastPlayed().isValid() )
+        text += HTMLLine( Playlist::LastPlayed, locale->formatDateTime( statistics->lastPlayed() ) );
 
     if( s_tooltipColumns[Playlist::Bitrate] && track->bitrate() )
         text += HTMLLine( Playlist::Bitrate, i18nc( "%1: bitrate", "%1 kbps", track->bitrate() ) );
@@ -358,6 +360,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
     else if ( role == Qt::DisplayRole )
     {
         Meta::AlbumPtr album = m_items.at( row )->track()->album();
+        Meta::StatisticsPtr statistics = m_items.at( row )->track()->statistics();
         switch ( index.column() )
         {
             case PlaceHolder:
@@ -459,8 +462,8 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case LastPlayed:
             {
-                if( m_items.at( row )->track()->lastPlayed().isValid() )
-                    return Amarok::verboseTimeSince( m_items.at( row )->track()->lastPlayed() );
+                if( statistics->lastPlayed().isValid() )
+                    return Amarok::verboseTimeSince( statistics->lastPlayed() );
                 else
                     return i18nc( "The amount of time since last played", "Never" );
             }
@@ -478,11 +481,11 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case PlayCount:
             {
-                return m_items.at( row )->track()->playCount();
+                return statistics->playCount();
             }
             case Rating:
             {
-                return m_items.at( row )->track()->rating();
+                return statistics->rating();
             }
             case SampleRate:
             {
@@ -492,7 +495,7 @@ Playlist::Model::data( const QModelIndex& index, int role ) const
             }
             case Score:
             {
-                return (int)m_items.at( row )->track()->score(); // Cast to int, as we don't need to show the decimals in the view..
+                return int( statistics->score() ); // Cast to int, as we don't need to show the decimals in the view..
             }
             case Source:
             {
@@ -1152,7 +1155,7 @@ Playlist::Model::moveTracksCommand( const MoveCmdList& cmds, bool reverse )
     }
 
     // We have 3 choices:
-    //   - Qt 4.6 'beginMoveRows()' / 'endMoveRows()'. Drawback: we'd need to do N of them, all causing resorts etc.
+    //   - Call 'beginMoveRows()' / 'endMoveRows()'. Drawback: we'd need to do N of them, all causing resorts etc.
     //   - Emit 'layoutAboutToChange' / 'layoutChanged'. Drawback: unspecific, 'changePersistentIndex()' complications.
     //   - Emit 'dataChanged'. Drawback: a bit inappropriate. But not wrong.
     emit dataChanged( index( min, 0 ), index( max, columnCount() - 1 ) );

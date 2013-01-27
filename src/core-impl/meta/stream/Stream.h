@@ -17,7 +17,7 @@
 #ifndef AMAROK_STREAM_H
 #define AMAROK_STREAM_H
 
-#include "shared/amarok_export.h"
+#include "amarok_export.h"
 #include "core/meta/Meta.h"
 
 namespace MetaStream
@@ -30,10 +30,10 @@ namespace MetaStream
             Track( const KUrl &url );
             virtual ~Track();
 
-        //methods inherited from Meta::MetaBase
+        // methods inherited from Meta::Base
             virtual QString name() const;
 
-        //methods inherited from Meta::Track
+        // methods inherited from Meta::Track
             virtual KUrl playableUrl() const;
             virtual QString prettyUrl() const;
             virtual QString uidUrl() const;
@@ -46,26 +46,30 @@ namespace MetaStream
             virtual Meta::YearPtr year() const;
 
             virtual qreal bpm() const;
-
             virtual QString comment() const;
-            virtual double score() const;
-            virtual void setScore( double newScore );
-            virtual int rating() const;
-            virtual void setRating( int newRating );
             virtual int trackNumber() const;
             virtual int discNumber() const;
-            virtual QDateTime lastPlayed() const;
-            virtual QDateTime firstPlayed() const;
-            virtual int playCount() const;
 
             virtual qint64 length() const;
             virtual int filesize() const;
             virtual int sampleRate() const;
             virtual int bitrate() const;
 
+            virtual void finishedPlaying( double playedFraction );
+
             virtual QString type() const;
 
-            virtual void finishedPlaying( double playedFraction );
+        // MetaStream::Track methods, used to restore initial stream info
+
+            /**
+             * Set initial values to display before more accurate info can be fetched.
+             * This method doesn't call notifyObservers(), it is the caller's
+             * responsibility; it also doesn't overwrite already filled entries.
+             *
+             * @param length is in milliseconds
+             */
+            void setInitialInfo( const QString &artist, const QString &album,
+                                 const QString &title, qint64 length, int trackNumber );
 
         private:
             Private * const d;

@@ -17,39 +17,19 @@
  ****************************************************************************************/
 
 #include "LastFmMeta.h"
-#include "LastFmMeta_p.h"
-#include "LastFmMeta_p.moc"
-#include "LastFmCapabilityImpl_p.h"
-#include "LastFmCapabilityImpl_p.moc"
-#include "MultiPlayableCapabilityImpl_p.h"
-#include "MultiPlayableCapabilityImpl_p.moc"
-#include "ServiceCapabilities.h"
-
-#include "LastFmService.h"
-#include "LastFmStreamInfoCapability.h"
-#include "ScrobblerAdapter.h"
 
 #include "EngineController.h"
-#include "core/support/Debug.h"
-#include "core/capabilities/ActionsCapability.h"
+#include "services/lastfm/meta/LastFmMeta_p.h"
+#include "services/lastfm/meta/LastFmMultiPlayableCapability.h"
+#include "services/lastfm/meta/LastFmStreamInfoCapability.h"
 
-#include <KLocale>
-#include <KSharedPtr>
-#include <KStandardDirs>
+#include <KIcon>
 #include <Solid/Networking>
 
-#include <QWeakPointer>
-#include <QUrl>
+#include <QCoreApplication>
+#include <QThread>
 
-#include <lastfm/Track>
-
-namespace LastFm {
-
-class LastFmArtist;
-class LastFmAlbum;
-class LastFmGenre;
-class LastFmComposer;
-class LastFmYear;
+using namespace LastFm;
 
 Track::Track( const QString &lastFmUri )
     : QObject()
@@ -58,7 +38,6 @@ Track::Track( const QString &lastFmUri )
 {
     d->lastFmUri = QUrl( lastFmUri );
     d->t = this;
-
 
     init();
 }
@@ -99,17 +78,25 @@ void Track::init( int id /* = -1*/ )
     d->composerPtr = Meta::ComposerPtr( new LastFmComposer( d ) );
     d->yearPtr = Meta::YearPtr( new LastFmYear( d ) );
 
-    QAction * banAction = new QAction( KIcon( "remove-amarok" ), i18n( "Last.fm: &Ban" ), this );
+    QAction *banAction = new QAction( KIcon( "remove-amarok" ), i18n( "Last.fm: &Ban" ), this );
     banAction->setShortcut( i18n( "Ctrl+B" ) );
     banAction->setStatusTip( i18n( "Ban this track" ) );
     connect( banAction, SIGNAL( triggered() ), this, SLOT( ban() ) );
     m_trackActions.append( banAction );
 
-    QAction * skipAction = new QAction( KIcon( "media-seek-forward-amarok" ), i18n( "Last.fm: &Skip" ), this );
-    skipAction->setShortcut( i18n( "Ctrl+S" ) );
-    skipAction->setStatusTip( i18n( "Skip this track" ) );
-    connect( skipAction, SIGNAL( triggered() ), this, SLOT( skip() ) );
+    QAction *skipAction = new QAction( KIcon( "media-seek-forward-amarok" ), QString( "Last.fm: &Skip" ), this ); // i18n after string freeze
+    skipAction->setShortcut( QString( "Ctrl+S" ) ); // i18n after string freeze
+    skipAction->setStatusTip( QString( "Skip this track" ) ); // i18n after string freeze
+    connect( skipAction, SIGNAL(triggered()), this, SIGNAL(skipTrack()) );
     m_trackActions.append( skipAction );
+
+    QThread *mainThread = QCoreApplication::instance()->thread();
+    bool foreignThread = QThread::currentThread() != mainThread;
+    if( foreignThread )
+    {
+        moveToThread( mainThread ); // the actions are children and are moved together with parent
+        d->moveToThread( mainThread );
+    }
 }
 
 QString
@@ -179,10 +166,17 @@ Track::uidUrl() const
 bool
 Track::isPlayable() const
 {
-    if( Solid::Networking::status() != Solid::Networking::Connected )
-        return false;
-
-    return !d->trackPath.isEmpty();
+    switch( Solid::Networking::status() )
+    {
+        case Solid::Networking::Unknown:
+        case Solid::Networking::Connected:
+            return true;
+        case Solid::Networking::Unconnected:
+        case Solid::Networking::Disconnecting:
+        case Solid::Networking::Connecting:
+            return false;
+    }
+    return true;
 }
 
 Meta::AlbumPtr
@@ -227,44 +221,6 @@ Track::comment() const
     return QString();
 }
 
-double
-Track::score() const
-{
-    if( d->statisticsProvider )
-        return d->statisticsProvider->score();
-    else
-        return 0.0;
-}
-
-void
-Track::setScore( double newScore )
-{
-    if( d->statisticsProvider )
-    {
-        d->statisticsProvider->setScore( newScore );
-        notifyObservers();
-    }
-}
-
-int
-Track::rating() const
-{
-    if( d->statisticsProvider )
-        return d->statisticsProvider->rating();
-    else
-        return 0;
-}
-
-void
-Track::setRating( int newRating )
-{
-    if( d->statisticsProvider )
-    {
-        d->statisticsProvider->setRating( newRating );
-        notifyObservers();
-    }
-}
-
 int
 Track::trackNumber() const
 {
@@ -301,45 +257,10 @@ Track::bitrate() const
     return 0; //does the engine deliver this??
 }
 
-QDateTime
-Track::lastPlayed() const
-{
-    if( d->statisticsProvider )
-        return d->statisticsProvider->lastPlayed();
-    else
-        return QDateTime();
-}
-
-QDateTime
-Track::firstPlayed() const
-{
-    if( d->statisticsProvider )
-        return d->statisticsProvider->firstPlayed();
-    else
-        return QDateTime();
-}
-
-int
-Track::playCount() const
-{
-    if( d->statisticsProvider )
-        return d->statisticsProvider->playCount();
-    return 0;
-}
-
 QString
 Track::type() const
 {
     return "stream/lastfm";
-}
-void
-Track::finishedPlaying( double playedFraction )
-{
-    if( d->statisticsProvider )
-    {
-        d->statisticsProvider->played( playedFraction, Meta::TrackPtr( this ) );
-        notifyObservers();
-    }
 }
 
 bool
@@ -446,40 +367,22 @@ Track::streamName() const
 }
 
 void
-Track::love()
-{
-    DEBUG_BLOCK
-
-    debug() << "info:" << d->lastFmTrack.artist() << d->lastFmTrack.title();
-    d->wsReply = lastfm::MutableTrack( d->lastFmTrack ).love();
-    connect( d->wsReply, SIGNAL( finished() ), this, SLOT( slotWsReply() ) );
-}
-
-void
 Track::ban()
 {
     DEBUG_BLOCK
     d->wsReply = lastfm::MutableTrack( d->lastFmTrack ).ban();
     connect( d->wsReply, SIGNAL( finished() ), this, SLOT( slotWsReply() ) );
     if( The::engineController()->currentTrack() == this )
-        emit( skipTrack() );
-}
-
-void
-Track::skip()
-{
-    DEBUG_BLOCK
-    //MutableTrack( d->lastFmTrack ).skip();
-    emit( skipTrack() );
+        emit skipTrack();
 }
 
 void Track::slotResultReady()
 {
     if( d->trackFetch->error() == QNetworkReply::NoError )
     {
-        try
+        lastfm::XmlQuery lfm;
+        if( lfm.parse( d->trackFetch->readAll() ) )
         {
-            lastfm::XmlQuery lfm( d->trackFetch->readAll() );
             QString id = lfm[ "track" ][ "id" ].text();
             QString streamable = lfm[ "track" ][ "streamable" ].text();
             if( streamable.toInt() == 1 )
@@ -487,9 +390,10 @@ void Track::slotResultReady()
             else
                 init();
 
-        } catch( lastfm::ws::ParseError& e )
+        }
+        else
         {
-            debug() << "Got exception in parsing from last.fm:" << e.what();
+            debug() << "Got exception in parsing from last.fm:" << lfm.parseError().message();
         }
     } else
     {
@@ -507,18 +411,17 @@ Track::slotWsReply()
         //debug() << "successfully completed WS transaction";
     } else
     {
-        debug() << "ERROR in last.fm skip or ban!" << d->wsReply->error();
+        debug() << "ERROR in last.fm ban!" << d->wsReply->error();
     }
 }
 
 bool
 Track::hasCapabilityInterface( Capabilities::Capability::Type type ) const
 {
-    return type == Capabilities::Capability::LastFm
-                || type == Capabilities::Capability::MultiPlayable
-                || type == Capabilities::Capability::SourceInfo
-                || type == Capabilities::Capability::Actions
-                || type == Capabilities::Capability::StreamInfo;
+    return type == Capabilities::Capability::MultiPlayable ||
+           type == Capabilities::Capability::SourceInfo ||
+           type == Capabilities::Capability::Actions ||
+           type == Capabilities::Capability::StreamInfo;
 }
 
 Capabilities::Capability*
@@ -526,10 +429,8 @@ Track::createCapabilityInterface( Capabilities::Capability::Type type )
 {
     switch( type )
     {
-        case Capabilities::Capability::LastFm:
-            return new LastFmCapabilityImpl( this );
         case Capabilities::Capability::MultiPlayable:
-            return new MultiPlayableCapabilityImpl( this );
+            return new LastFmMultiPlayableCapability( this );
         case Capabilities::Capability::SourceInfo:
             return new ServiceSourceInfoCapability( this );
         case Capabilities::Capability::Actions:
@@ -541,7 +442,13 @@ Track::createCapabilityInterface( Capabilities::Capability::Type type )
     }
 }
 
-} // namespace LastFm
+Meta::StatisticsPtr
+Track::statistics()
+{
+    if( d->statsStore )
+        return d->statsStore;
+    return Meta::Track::statistics();
+}
 
 QString LastFm::Track::sourceName()
 {
@@ -570,6 +477,4 @@ QString LastFm::Track::scalableEmblem()
 }
 
 #include "LastFmMeta.moc"
-
-
-
+#include "LastFmMeta_p.moc"
