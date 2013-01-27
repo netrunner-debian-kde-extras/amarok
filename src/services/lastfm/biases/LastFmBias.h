@@ -18,14 +18,12 @@
 #ifndef LASTFM_BIAS_H
 #define LASTFM_BIAS_H
 
-#include "dynamic/Bias.h"
-#include "dynamic/BiasFactory.h"
 #include "dynamic/biases/TagMatchBias.h"
 
 #include <QMutex>
-#include <QNetworkReply>
 
 class KJob;
+class QNetworkReply;
 
 namespace Dynamic
 {
@@ -78,6 +76,7 @@ namespace Dynamic
 
             void similarArtistQueryDone();
             void similarTrackQueryDone();
+            void queryFailed( const char *message );
 
             void selectionChanged( int );
 
@@ -97,8 +96,6 @@ namespace Dynamic
 
             mutable QString m_currentArtist;
             mutable QString m_currentTrack;
-            QNetworkReply* m_artistQuery;
-            QNetworkReply* m_trackQuery;
 
             MatchType m_match;
 

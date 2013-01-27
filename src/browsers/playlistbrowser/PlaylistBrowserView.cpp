@@ -71,7 +71,8 @@ PlaylistBrowserNS::PlaylistBrowserView::~PlaylistBrowserView()
 void
 PlaylistBrowserNS::PlaylistBrowserView::setModel( QAbstractItemModel *model )
 {
-    disconnect( this->model(), 0, this, 0 );
+    if( this->model() )
+        disconnect( this->model(), 0, this, 0 );
     Amarok::PrettyTreeView::setModel( model );
 
     connect( this->model(), SIGNAL(renameIndex(QModelIndex)), SLOT(edit(QModelIndex)) );
@@ -253,10 +254,17 @@ PlaylistBrowserNS::PlaylistBrowserView::keyPressEvent( QKeyEvent *event )
 
     switch( event->key() )
     {
+        //activated() only works for current index, not all selected
         case Qt::Key_Enter:
         case Qt::Key_Return:
-            appendAndPlay( indices );
-            return;
+            if( !state() == EditingState )
+            {
+                //Why do we even get in this state? Shouldn't the editor consume the
+                //keypress? The delete works. see bug 305203
+                appendAndPlay( indices );
+                return;
+            }
+            break;
         case Qt::Key_Delete:
             deletePlaylistsTracks( indices );
             return;
@@ -400,7 +408,9 @@ PlaylistBrowserNS::PlaylistBrowserView::deletePlaylistsTracks( const QModelIndex
     performActionNamed( "deleteAction", list );
 }
 
-void PlaylistBrowserNS::PlaylistBrowserView::performActionNamed( const QString &name, const QModelIndexList &list )
+void
+PlaylistBrowserNS::PlaylistBrowserView::performActionNamed( const QString &name,
+                                                            const QModelIndexList &list )
 {
     QActionList actions = actionsFor( list );
 

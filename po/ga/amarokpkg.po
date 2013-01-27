@@ -17,6 +17,14 @@ msgstr ""
 "Plural-Forms: nplurals=5; plural=n==1 ? 0 : n==2 ? 1 : n<7 ? 2 : n < 11 ? "
 "3 : 4\n"
 
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Kevin Scannell"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "kscanne@gmail.com"
+
 #: amarokpkg.cpp:40
 msgid "Install, list, remove Amarok applets"
 msgstr "Suiteáil, taispeáin, bain feidhmchláiríní Amarok"
@@ -112,13 +120,3 @@ msgid "One of install, remove, upgrade or list is required."
 msgstr ""
 "Ní mór duit ceann de na gníomhartha seo a roghnú: suiteáil, baint, "
 "uasghrádú, nó taispeáint."
-
-#: rc.cpp:1
-msgctxt "NAME OF TRANSLATORS"
-msgid "Your names"
-msgstr "Kevin Scannell"
-
-#: rc.cpp:2
-msgctxt "EMAIL OF TRANSLATORS"
-msgid "Your emails"
-msgstr "kscanne@gmail.com"

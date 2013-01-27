@@ -61,7 +61,7 @@ class Base
 class Artist : public Meta::Artist, public Base
 {
     public:
-        Artist( const QString &name ) : Base( name ) {}
+        Artist( const QString &name ) : MemoryMeta::Base( name ) {}
 
         virtual QString name() const { return Base::name(); }
         virtual Meta::TrackList tracks() { return Base::tracks(); }
@@ -71,7 +71,7 @@ class Album : public Meta::Album, public Base
 {
     public:
         Album( const QString &name, const Meta::ArtistPtr &albumArtist )
-            : Base( name )
+            : MemoryMeta::Base( name )
             , m_albumArtist( albumArtist )
             , m_isCompilation( false )
             , m_canUpdateCompilation( false )
@@ -86,7 +86,7 @@ class Album : public Meta::Album, public Base
         virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
         virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
-        /* Meta::MetaBase virtual methods */
+        /* Meta::Base virtual methods */
         virtual QString name() const { return Base::name(); }
 
         /* Meta::Album virtual methods */
@@ -122,7 +122,7 @@ class Album : public Meta::Album, public Base
 class Composer : public Meta::Composer, public Base
 {
     public:
-        Composer( const QString &name ) : Base( name ) {}
+        Composer( const QString &name ) : MemoryMeta::Base( name ) {}
 
         virtual QString name() const { return Base::name(); }
         virtual Meta::TrackList tracks() { return Base::tracks(); }
@@ -131,7 +131,7 @@ class Composer : public Meta::Composer, public Base
 class Genre : public Meta::Genre, public Base
 {
     public:
-        Genre( const QString &name ) : Base( name ) {}
+        Genre( const QString &name ) : MemoryMeta::Base( name ) {}
 
         virtual QString name() const { return Base::name(); }
         virtual Meta::TrackList tracks() { return Base::tracks(); }
@@ -140,7 +140,7 @@ class Genre : public Meta::Genre, public Base
 class Year : public Meta::Year, public Base
 {
     public:
-        Year( const QString &name ) : Base( name ) {}
+        Year( const QString &name ) : MemoryMeta::Base( name ) {}
 
         virtual QString name() const { return Base::name(); }
         virtual Meta::TrackList tracks() { return Base::tracks(); }
@@ -158,7 +158,7 @@ class AMAROK_EXPORT Track : public Meta::Track
         virtual Capabilities::Capability *createCapabilityInterface( Capabilities::Capability::Type type )
             { return m_track->createCapabilityInterface( type ); }
 
-        /* Meta::MetaBase virtual methods */
+        /* Meta::Base virtual methods */
         virtual QString name() const { return m_track->name(); }
 
         /* Meta::Track virtual methods */
@@ -178,10 +178,6 @@ class AMAROK_EXPORT Track : public Meta::Track
         virtual Meta::LabelList labels() const { return Meta::LabelList(); }
         virtual qreal bpm() const { return m_track->bpm(); }
         virtual QString comment() const { return m_track->comment(); }
-        virtual double score() const { return m_track->score(); }
-        virtual void setScore( double newScore ) { m_track->setScore( newScore ); }
-        virtual int rating() const { return m_track->rating(); }
-        virtual void setRating( int newRating ) { m_track->setRating( newRating ); }
         virtual qint64 length() const { return m_track->length(); }
         virtual int filesize() const { return m_track->filesize(); }
         virtual int sampleRate() const { return m_track->sampleRate(); }
@@ -190,9 +186,6 @@ class AMAROK_EXPORT Track : public Meta::Track
         virtual QDateTime modifyDate() const { return m_track->modifyDate(); }
         virtual int trackNumber() const { return m_track->trackNumber(); }
         virtual int discNumber() const { return m_track->discNumber(); }
-        virtual QDateTime lastPlayed() const { return m_track->lastPlayed(); }
-        virtual QDateTime firstPlayed() const { return m_track->firstPlayed(); }
-        virtual int playCount() const { return m_track->playCount(); }
 
         virtual qreal replayGain( Meta::ReplayGainTag mode ) const
                 { return m_track->replayGain( mode ); }
@@ -211,6 +204,8 @@ class AMAROK_EXPORT Track : public Meta::Track
         virtual void addLabel( const QString &label ) { Q_UNUSED( label ) }
         virtual void addLabel( const Meta::LabelPtr &label ) { Q_UNUSED( label ) }
         virtual void removeLabel( const Meta::LabelPtr &label ) { Q_UNUSED( label ) }
+
+        virtual Meta::StatisticsPtr statistics();
 
         // MemoryMeta::Track methods:
 
@@ -348,7 +343,7 @@ class AMAROK_EXPORT MapChanger
          * returns true if one entity is null and the other non-null, but returns true if
          * both are null.
          */
-        static bool entitiesDiffer( const Meta::MetaBase *first, const Meta::MetaBase *second );
+        static bool entitiesDiffer( const Meta::Base *first, const Meta::Base *second );
         /**
          * Overload for albums, we compare album artist, isCollection and image too
          */

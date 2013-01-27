@@ -19,6 +19,14 @@ msgstr ""
 "X-POT-Import-Date: 2012-06-15 07:05:17+0000\n"
 "X-Generator: MediaWiki 1.20alpha (r113129); Translate 2012-07-04\n"
 
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Tommi Nieminen"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "translator@legisign.org"
+
 #: amarokpkg.cpp:40
 msgid "Install, list, remove Amarok applets"
 msgstr "Asenna, luettele, poista Amarok-sovelmia"
@@ -111,13 +119,3 @@ msgctxt ""
 "least one, do not translate install, remove, upgrade nor list"
 msgid "One of install, remove, upgrade or list is required."
 msgstr "Toiminnon on oltava joko asennus, poisto, päivitys tai luettelu."
-
-#: rc.cpp:1
-msgctxt "NAME OF TRANSLATORS"
-msgid "Your names"
-msgstr "Tommi Nieminen"
-
-#: rc.cpp:2
-msgctxt "EMAIL OF TRANSLATORS"
-msgid "Your emails"
-msgstr "translator@legisign.org"

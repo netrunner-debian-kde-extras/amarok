@@ -19,6 +19,18 @@ msgstr ""
 "X-Generator: Lokalize 1.0\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr ""
+"Carlos Mayo Hernández,Salvador Gimeno Zanón,Miguel Revilla Rodríguez,Jairo "
+"Serrano,Carlos Dávila Martín,Fco. Javier Viñal Gutiérrez"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr ""
+"carlos.mayo@hispalinux.es,salgiza@ono.com,yo@miguelrevilla.com,jserrano@cutb."
+"edu.co,carluti@users.sourceforge.net,fjvinal@gmail.com"
+
 #: amarokpkg.cpp:40
 msgid "Install, list, remove Amarok applets"
 msgstr "Instalar, listar y eliminar miniaplicaciones de Amarok"
@@ -111,17 +123,3 @@ msgctxt ""
 "least one, do not translate install, remove, upgrade nor list"
 msgid "One of install, remove, upgrade or list is required."
 msgstr "Se necesita instalar, eliminar, actualizar o listar."
-
-#: rc.cpp:1
-msgctxt "NAME OF TRANSLATORS"
-msgid "Your names"
-msgstr ""
-"Carlos Mayo Hernández,Salvador Gimeno Zanón,Miguel Revilla Rodríguez,Jairo "
-"Serrano,Carlos Dávila Martín,Fco. Javier Viñal Gutiérrez"
-
-#: rc.cpp:2
-msgctxt "EMAIL OF TRANSLATORS"
-msgid "Your emails"
-msgstr ""
-"carlos.mayo@hispalinux.es,salgiza@ono.com,yo@miguelrevilla.com,jserrano@cutb."
-"edu.co,carluti@users.sourceforge.net,fjvinal@gmail.com"

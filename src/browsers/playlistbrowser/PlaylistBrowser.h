@@ -17,7 +17,7 @@
 #ifndef PLAYLISTBROWSERNSPLAYLISTBROWSER_H
 #define PLAYLISTBROWSERNSPLAYLISTBROWSER_H
 
-#include "BrowserCategoryList.h"
+#include "browsers/BrowserCategoryList.h"
 
 #include <QMap>
 
@@ -36,10 +36,6 @@ class PlaylistBrowser : public BrowserCategoryList
     public:
         PlaylistBrowser( const QString &name, QWidget *parent = 0 );
         ~PlaylistBrowser();
-
-
-    public slots:
-        void addCategory( int category );
 
     private:
         PodcastCollection* m_localPodcasts;

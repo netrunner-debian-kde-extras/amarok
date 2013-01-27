@@ -17,14 +17,14 @@
 #include "PodcastModel.h"
 
 #include "AmarokMimeData.h"
-#include "core/support/Debug.h"
-#include "core/podcasts/PodcastMeta.h"
-#include "core/podcasts/PodcastImageFetcher.h"
-#include "context/popupdropper/libpud/PopupDropperItem.h"
 #include "context/popupdropper/libpud/PopupDropper.h"
-#include "PodcastCategory.h"
+#include "context/popupdropper/libpud/PopupDropperItem.h"
+#include "core/podcasts/PodcastImageFetcher.h"
+#include "core/podcasts/PodcastMeta.h"
+#include "core/support/Debug.h"
 #include "playlistmanager/PlaylistManager.h"
 #include "playlistmanager/SyncedPodcast.h"
+#include "PodcastCategory.h"
 #include "SvgHandler.h"
 #include <ThreadWeaver/Weaver>
 
@@ -56,7 +56,8 @@ PlaylistBrowserNS::PodcastModel::instance()
 void
 PlaylistBrowserNS::PodcastModel::destroy()
 {
-    if (s_instance) {
+    if ( s_instance )
+    {
         delete s_instance;
         s_instance = 0;
     }
@@ -64,17 +65,17 @@ PlaylistBrowserNS::PodcastModel::destroy()
 
 PlaylistBrowserNS::PodcastModel::PodcastModel()
     : PlaylistBrowserModel( PlaylistManager::PodcastChannel )
- , m_setNewAction( 0 )
+    , m_setNewAction( 0 )
 {
     s_instance = this;
     m_setNewAction = new QAction( KIcon( "rating" ),
-                    i18nc( "toggle the \"new\" status of this podcast episode",
-                           "&New" ),
-                                 this
+                                  i18nc( "toggle the \"new\" status of this podcast episode",
+                                         "&New" ),
+                                  this
                                 );
     m_setNewAction->setProperty( "popupdropper_svg_id", "new" );
     m_setNewAction->setCheckable( true );
-    connect( m_setNewAction, SIGNAL( triggered( bool ) ), SLOT( slotSetNew( bool ) ) );
+    connect( m_setNewAction, SIGNAL(triggered(bool)), SLOT(slotSetNew(bool)) );
 }
 
 PlaylistBrowserNS::PodcastModel::~PodcastModel()
@@ -238,7 +239,6 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &idx, int role ) const
 
                     case IsEpisodeColumn:
                         return bool( pmc->podcastType() == Podcasts::EpisodeType );
-
                 }
                 break;
             }
@@ -250,7 +250,7 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &idx, int role ) const
                 break;
             }
 
-            case ByLineRole:
+            case PlaylistBrowserModel::ByLineRole:
             {
                 if( idx.column() == PlaylistBrowserModel::ProviderColumn )
                 {
@@ -282,12 +282,10 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &idx, int role ) const
 bool
 PlaylistBrowserNS::PodcastModel::setData( const QModelIndex &idx, const QVariant &value, int role )
 {
-
     DEBUG_BLOCK
 
     //TODO: implement setNew.
     return PlaylistBrowserModel::setData( idx, value, role );
-
 }
 
 int
@@ -398,9 +396,10 @@ PlaylistBrowserNS::PodcastModel::actionsFor( const QModelIndex &idx ) const
 
     QActionList actions = PlaylistBrowserModel::actionsFor( idx );
 
-    /* by default a list of podcast episodes can only be changed to isNew = false, except
-       when all selected episodes are the same state */
+    /* by default a list of podcast episodes can only be changed to isNew = false or
+       isKeep = false, except when all selected episodes are the same state */
     m_setNewAction->setChecked( false );
+
     Podcasts::PodcastEpisodeList episodes = m_setNewAction->data().value<Podcasts::PodcastEpisodeList>();
     if( IS_TRACK(idx) )
         episodes << episodeForIndex( idx );
@@ -412,6 +411,7 @@ PlaylistBrowserNS::PodcastModel::actionsFor( const QModelIndex &idx ) const
         if( episode->isNew() )
             m_setNewAction->setChecked( true );
     }
+
     m_setNewAction->setData( QVariant::fromValue( episodes ) );
 
     actions << m_setNewAction;
@@ -432,7 +432,12 @@ PlaylistBrowserNS::PodcastModel::slotSetNew( bool newState )
     foreach( Podcasts::PodcastEpisodePtr episode, episodes )
     {
         if( !episode.isNull() )
+        {
             episode->setNew( action->isChecked() );
+
+            if( action->isChecked() )
+                emit episodeMarkedAsNew( episode );
+        }
     }
 }
 

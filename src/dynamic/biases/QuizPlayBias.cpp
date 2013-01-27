@@ -20,13 +20,12 @@
 
 #include "QuizPlayBias.h"
 
+#include "browsers/playlistbrowser/DynamicBiasWidgets.h"
 #include "core/collections/Collection.h"
-#include "core-impl/collections/support/CollectionManager.h"
 #include "core/collections/QueryMaker.h"
 #include "core/support/Debug.h"
-
-#include "TrackSet.h"
-#include "DynamicBiasWidgets.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "dynamic/TrackSet.h"
 
 #include <QLabel>
 #include <QComboBox>
@@ -189,7 +188,7 @@ Dynamic::QuizPlayBias::matchingTracks( int position,
     // debug() << "QuizPlay: data for"<<lastTrack->name()<<"is"<<m_currentCharacter;
 
     // -- look if we already buffered it
-    if( m_tracksValid && m_characterTrackMap.contains( m_currentCharacter ) )
+    if( m_characterTrackMap.contains( m_currentCharacter ) )
         return m_characterTrackMap.value( m_currentCharacter );
 
     // -- start a new query

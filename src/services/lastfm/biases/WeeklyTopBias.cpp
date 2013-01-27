@@ -17,33 +17,21 @@
 
 #include "WeeklyTopBias.h"
 
+#include "browsers/playlistbrowser/DynamicBiasWidgets.h"
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-
-#include "TrackSet.h"
-#include "DynamicBiasWidgets.h"
-
-#include <QDomDocument>
-#include <QDomNode>
-#include <QDomElement>
-
-#include <QXmlStreamReader>
-#include <QXmlStreamWriter>
-
-#include "core/meta/Meta.h"
-#include "core/collections/Collection.h"
-#include "core/collections/QueryMaker.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
-#include "lastfm/Artist"
-#include "lastfm/ws.h"
-#include "lastfm/XmlQuery"
-
-#include <QNetworkReply>
-
+#include <QDomDocument>
+#include <QDomElement>
+#include <QDomNode>
 #include <QLabel>
+#include <QNetworkReply>
 #include <QTimeEdit>
 #include <QVBoxLayout>
+#include <QXmlStreamReader>
 
+#include <XmlQuery.h>
 
 QString
 Dynamic::WeeklyTopBiasFactory::i18nName() const
@@ -371,10 +359,9 @@ Dynamic::WeeklyTopBias::weeklyArtistQueryFinished()
     }
 
 
-    try
+    lastfm::XmlQuery lfm;
+    if( lfm.parse( reply->readAll() ) )
     {
-        lastfm::XmlQuery lfm( reply->readAll() );
-
         // debug() << "got response:" << lfm;
         QStringList artists;
         for( int i = 0; i < lfm[ "weeklyartistchart" ].children( "artist" ).size(); i++ )
@@ -398,10 +385,10 @@ Dynamic::WeeklyTopBias::weeklyArtistQueryFinished()
             warning() << "Got a reply for a week"<<week<<"that was not requested.";
             return;
         }
-
-    } catch( lastfm::ws::ParseError& e )
+    }
+    else
     {
-        debug() << "caught exception parsing weekly artist chart.";
+        debug() << "failed to parse weekly artist chart.";
     }
 
     reply->deleteLater();

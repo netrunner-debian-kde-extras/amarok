@@ -24,9 +24,8 @@
 #include "core/support/Debug.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
-#include "shared/MetaReplayGain.h"
-#include "shared/MetaTagLib.h"
-#include "core/statistics/StatisticsProvider.h"
+#include "MetaReplayGain.h"
+#include "MetaTagLib.h"
 #include "core-impl/collections/support/jobs/WriteTagsJob.h"
 #include "core-impl/collections/support/ArtistHelper.h"
 #include "core-impl/capabilities/AlbumActionsCapability.h"
@@ -69,6 +68,9 @@ struct MetaData
         , albumGain( 0.0 )
         , albumPeak( 0.0 )
         , embeddedImage( false )
+        , rating( 0 )
+        , score( 0.0 )
+        , playCount( 0 )
     { }
     QString title;
     QString artist;
@@ -91,6 +93,10 @@ struct MetaData
     qreal albumGain;
     qreal albumPeak;
     bool embeddedImage;
+
+    int rating;
+    double score;
+    int playCount;
 };
 
 class Track::Private : public QObject
@@ -99,32 +105,37 @@ public:
     Private( Track *t )
         : QObject()
         , url()
-        , batchUpdate( false )
         , album()
         , artist()
         , albumArtist()
-        , provider( 0 )
+        , batchUpdate( 0 )
         , track( t )
     {}
 
 public:
     KUrl url;
-    bool batchUpdate;
+
     Meta::AlbumPtr album;
     Meta::ArtistPtr artist;
     Meta::ArtistPtr albumArtist;
     Meta::GenrePtr genre;
     Meta::ComposerPtr composer;
     Meta::YearPtr year;
-    Statistics::StatisticsProvider *provider;
     QWeakPointer<Capabilities::LastfmReadLabelCapability> readLabelCapability;
     QWeakPointer<Collections::Collection> collection;
 
+    /**
+     * Number of current batch operations started by @see beginUpdate() and not
+     * yet ended by @see endUpdate(). Must only be accessed with lock held.
+     */
+    int batchUpdate;
     Meta::FieldHash changes;
+    QReadWriteLock lock;
 
     void writeMetaData()
     {
         DEBUG_BLOCK;
+        debug() << "changes:" << changes;
         Meta::Tag::writeTags( url.isLocalFile() ? url.toLocalFile() : url.path(), changes );
         changes.clear();
         readMetaData();
@@ -152,57 +163,38 @@ void Track::Private::readMetaData()
 
     Meta::FieldHash values = Meta::Tag::readTags( fi.absoluteFilePath() );
 
-    if( values.contains(Meta::valTitle) )
-        m_data.title = values.value(Meta::valTitle).toString();
-    if( values.contains(Meta::valArtist) )
-        m_data.artist = values.value(Meta::valArtist).toString();
-    if( values.contains(Meta::valAlbum) )
-        m_data.album = values.value(Meta::valAlbum).toString();
-    if( values.contains(Meta::valAlbumArtist) )
-        m_data.albumArtist = values.value(Meta::valAlbumArtist).toString();
-    if( values.contains(Meta::valHasCover) )
-        m_data.embeddedImage = values.value(Meta::valHasCover).toBool();
-    if( values.contains(Meta::valComment) )
-        m_data.comment = values.value(Meta::valComment).toString();
-    if( values.contains(Meta::valGenre) )
-        m_data.genre = values.value(Meta::valGenre).toString();
-    if( values.contains(Meta::valYear) )
-        m_data.year = values.value(Meta::valYear).toInt();
-    if( values.contains(Meta::valDiscNr) )
-        m_data.discNumber = values.value(Meta::valDiscNr).toInt();
-    if( values.contains(Meta::valTrackNr) )
-        m_data.trackNumber = values.value(Meta::valTrackNr).toInt();
-    if( values.contains(Meta::valBpm) )
-        m_data.bpm = values.value(Meta::valBpm).toReal();
-    if( values.contains(Meta::valBitrate) )
-        m_data.bitRate = values.value(Meta::valBitrate).toInt();
-    if( values.contains(Meta::valLength) )
-        m_data.length = values.value(Meta::valLength).toLongLong();
-    if( values.contains(Meta::valSamplerate) )
-        m_data.sampleRate = values.value(Meta::valSamplerate).toInt();
-    if( values.contains(Meta::valFilesize) )
-        m_data.fileSize = values.value(Meta::valFilesize).toLongLong();
+    // (re)set all fields to behave the same as the constructor. E.g. catch even complete
+    // removal of tags etc.
+    MetaData def; // default
+    m_data.title = values.value( Meta::valTitle, def.title ).toString();
+    m_data.artist = values.value( Meta::valArtist, def.artist ).toString();
+    m_data.album = values.value( Meta::valAlbum, def.album ).toString();
+    m_data.albumArtist = values.value( Meta::valAlbumArtist, def.albumArtist ).toString();
+    m_data.embeddedImage = values.value( Meta::valHasCover, def.embeddedImage ).toBool();
+    m_data.comment = values.value( Meta::valComment, def.comment ).toString();
+    m_data.genre = values.value( Meta::valGenre, def.genre ).toString();
+    m_data.composer = values.value( Meta::valComposer, def.composer ).toString();
+    m_data.year = values.value( Meta::valYear, def.year ).toInt();
+    m_data.discNumber = values.value( Meta::valDiscNr, def.discNumber ).toInt();
+    m_data.trackNumber = values.value( Meta::valTrackNr, def.trackNumber ).toInt();
+    m_data.bpm = values.value( Meta::valBpm, def.bpm ).toReal();
+    m_data.bitRate = values.value( Meta::valBitrate, def.bitRate ).toInt();
+    m_data.length = values.value( Meta::valLength, def.length ).toLongLong();
+    m_data.sampleRate = values.value( Meta::valSamplerate, def.sampleRate ).toInt();
+    m_data.fileSize = values.value( Meta::valFilesize, def.fileSize ).toLongLong();
 
-    if( values.contains(Meta::valTrackGain) )
-        m_data.trackGain = values.value(Meta::valTrackGain).toReal();
-    if( values.contains(Meta::valTrackGainPeak) )
-        m_data.trackPeak= values.value(Meta::valTrackGainPeak).toReal();
-    if( values.contains(Meta::valAlbumGain) )
-        m_data.albumGain = values.value(Meta::valAlbumGain).toReal();
-    if( values.contains(Meta::valAlbumGainPeak) )
-        m_data.albumPeak= values.value(Meta::valAlbumGainPeak).toReal();
+    m_data.trackGain = values.value( Meta::valTrackGain, def.trackGain ).toReal();
+    m_data.trackPeak= values.value( Meta::valTrackGainPeak, def.trackPeak ).toReal();
+    m_data.albumGain = values.value( Meta::valAlbumGain, def.albumGain ).toReal();
+    m_data.albumPeak= values.value( Meta::valAlbumGainPeak, def.albumPeak ).toReal();
 
-    if( values.contains(Meta::valComposer) )
-        m_data.composer = values.value(Meta::valComposer).toString();
-
-    if( provider )
+    // only read the stats if we can write them later. Would be annoying to have
+    // read-only rating that you don't like
+    if( AmarokConfig::writeBackStatistics() )
     {
-        if( values.contains(Meta::valRating) )
-            provider->setRating( values.value(Meta::valRating).toReal() );
-        if( values.contains(Meta::valScore) )
-            provider->setScore( values.value(Meta::valScore).toReal() );
-        if( values.contains(Meta::valPlaycount) )
-            provider->setPlayCount( values.value(Meta::valPlaycount).toReal() );
+        m_data.rating = values.value( Meta::valRating, def.rating ).toInt();
+        m_data.score = values.value( Meta::valScore, def.score ).toDouble();
+        m_data.playCount = values.value( Meta::valPlaycount, def.playCount ).toInt();
     }
 
     if(url.isLocalFile())

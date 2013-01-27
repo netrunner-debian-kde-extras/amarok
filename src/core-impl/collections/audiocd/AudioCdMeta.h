@@ -62,24 +62,12 @@ class AudioCdTrack : public Meta::Track
         virtual ComposerPtr composer() const;
         virtual YearPtr year() const;
 
-        virtual void setAlbum ( const QString &newAlbum );
-        virtual void setArtist ( const QString &newArtist );
-        virtual void setGenre ( const QString &newGenre );
-        virtual void setComposer ( const QString &newComposer );
-        virtual void setYear ( int newYear );
-
         virtual void setTitle( const QString &newTitle );
 
         virtual qreal bpm() const;
 
         virtual QString comment() const;
         virtual void setComment ( const QString &newComment );
-
-        virtual double score() const;
-        virtual void setScore ( double newScore );
-
-        virtual int rating() const;
-        virtual void setRating ( int newRating );
 
         virtual qint64 length() const;
 
@@ -93,15 +81,7 @@ class AudioCdTrack : public Meta::Track
         virtual int discNumber() const;
         virtual void setDiscNumber ( int newDiscNumber );
 
-        virtual int playCount() const;
-
         virtual QString type() const;
-
-        virtual void beginMetaDataUpdate() {}    //read only
-        virtual void endMetaDataUpdate() {}      //read only
-
-        virtual void subscribe ( Observer *observer );
-        virtual void unsubscribe ( Observer *observer );
 
         virtual bool inCollection() const;
         virtual Collections::Collection* collection() const;
@@ -130,7 +110,6 @@ class AudioCdTrack : public Meta::Track
         QString m_name;
         qint64 m_length;
         int m_trackNumber;
-        QString m_displayUrl;
         KUrl m_playableUrl;
         QString m_fileNameBase;
 };

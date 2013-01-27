@@ -23,6 +23,14 @@ msgstr ""
 "X-Accelerator-Marker: &\n"
 "X-Text-Markup: kde4\n"
 
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Miguel Anxo Bouzada"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "mbouzada@gmail.com"
+
 #: amarokpkg.cpp:40
 msgid "Install, list, remove Amarok applets"
 msgstr "Instalar, listar ou eliminar miniaplicativos de Amarok"
@@ -115,13 +123,3 @@ msgctxt ""
 "least one, do not translate install, remove, upgrade nor list"
 msgid "One of install, remove, upgrade or list is required."
 msgstr "Requírese unha de install, remove, upgrade ou list."
-
-#: rc.cpp:1
-msgctxt "NAME OF TRANSLATORS"
-msgid "Your names"
-msgstr "Miguel Anxo Bouzada"
-
-#: rc.cpp:2
-msgctxt "EMAIL OF TRANSLATORS"
-msgid "Your emails"
-msgstr "mbouzada@gmail.com"

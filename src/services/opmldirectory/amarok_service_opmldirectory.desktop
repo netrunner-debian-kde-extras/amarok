@@ -17,6 +17,7 @@ Name[es]=Directorio de podcast
 Name[et]=Podcastide kataloog
 Name[eu]=Podcast-en direktorioa
 Name[fi]=Podcast-kansio
+Name[fr]=Dossier de podcasts
 Name[ga]=Eolaire Podchraoltaí
 Name[gl]=Directorio de Podcast
 Name[hu]=Podcast Directory
@@ -108,7 +109,7 @@ X-KDE-Library=amarok_service_opmldirectory
 
 X-KDE-Amarok-authors=Nikolaj Hald Nielsen
 X-KDE-Amarok-email=nhnFreespirit@gmail.com
-X-KDE-Amarok-framework-version=69
+X-KDE-Amarok-framework-version=70
 X-KDE-Amarok-name=JamendoService
 X-KDE-Amarok-plugintype=service
 X-KDE-Amarok-rank=100

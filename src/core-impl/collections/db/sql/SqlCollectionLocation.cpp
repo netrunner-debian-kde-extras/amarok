@@ -21,20 +21,20 @@
 
 #include "SqlCollectionLocation.h"
 
+#include "MetaTagLib.h" // for getting the uid
 #include "core/collections/CollectionLocationDelegate.h"
+#include "core/collections/support/SqlStorage.h"
+#include "core/interfaces/Logger.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
-#include "core/interfaces/Logger.h"
-#include "core/collections/support/SqlStorage.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
-#include "core-impl/collections/db/ScanManager.h"
-#include "MountPointManager.h"
-#include "SqlCollection.h"
-#include "SqlMeta.h"
-#include "transcoding/TranscodingJob.h"
 #include "core/transcoding/TranscodingController.h"
-#include <shared/MetaTagLib.h> // for getting the uid
+#include "core-impl/collections/db/MountPointManager.h"
+#include "core-impl/collections/db/ScanManager.h"
+#include "core-impl/collections/db/sql/SqlCollection.h"
+#include "core-impl/collections/db/sql/SqlMeta.h"
+#include "transcoding/TranscodingJob.h"
 
 #include <QDir>
 #include <QFile>
@@ -46,7 +46,6 @@
 #include <kio/job.h>
 #include <kio/jobclasses.h>
 #include <kio/deletejob.h>
-
 
 using namespace Collections;
 
@@ -169,7 +168,7 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
     Meta::FieldHash fileTags = Meta::Tag::readTags( url );
     QString uid = fileTags.value( Meta::valUniqueId ).toString();
 
-    // -- the the track from the registry
+    // -- the track from the registry
     KSharedPtr<Meta::SqlTrack> metaTrack;
     metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( registry->getTrackFromUid( uid ) );
 
@@ -182,9 +181,11 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
         metaTrack = KSharedPtr<Meta::SqlTrack>::staticCast( registry->getTrack( deviceId, rpath, directoryId, uid ) );
     }
 
+    Meta::ConstStatisticsPtr origStats = track->statistics();
+
     // -- set the values
     metaTrack->setWriteFile( false ); // no need to write the tags back
-    metaTrack->beginMetaDataUpdate();
+    metaTrack->beginUpdate();
 
     if( !track->name().isEmpty() )
         metaTrack->setTitle( track->name() );
@@ -204,10 +205,10 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
     if( !track->comment().isEmpty() )
         metaTrack->setComment( track->comment() );
 
-    if( track->score() > 0 )
-        metaTrack->setScore( track->score() );
-    if( track->rating() > 0 )
-        metaTrack->setRating( track->rating() );
+    if( origStats->score() > 0 )
+        metaTrack->setScore( origStats->score() );
+    if( origStats->rating() > 0 )
+        metaTrack->setRating( origStats->rating() );
 
     /* These tags change when transcoding. Prefer to read those from file */
     if( fileTags.value( Meta::valLength, 0 ).toLongLong() > 0 )
@@ -234,12 +235,12 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
     if( track->discNumber() > 0 )
         metaTrack->setDiscNumber( track->discNumber() );
 
-    if( track->lastPlayed().isValid() )
-        metaTrack->setLastPlayed( track->lastPlayed() );
-    if( track->firstPlayed().isValid() )
-        metaTrack->setFirstPlayed( track->firstPlayed() );
-    if( track->playCount() > 0 )
-        metaTrack->setPlayCount( track->playCount() );
+    if( origStats->lastPlayed().isValid() )
+        metaTrack->setLastPlayed( origStats->lastPlayed() );
+    if( origStats->firstPlayed().isValid() )
+        metaTrack->setFirstPlayed( origStats->firstPlayed() );
+    if( origStats->playCount() > 0 )
+        metaTrack->setPlayCount( origStats->playCount() );
 
     Meta::ReplayGainTag modes[] = { Meta::ReplayGain_Track_Gain,
         Meta::ReplayGain_Track_Peak,
@@ -270,7 +271,7 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
 
     }
 
-    metaTrack->endMetaDataUpdate();
+    metaTrack->endUpdate();
     metaTrack->setWriteFile( true );
 
     // we have a first shot at the meta data (expecially ratings and playcounts from media
@@ -383,7 +384,7 @@ SqlCollectionLocation::slotJobFinished( KJob *job )
     DEBUG_BLOCK
 
     Meta::TrackPtr track = m_jobs.value( job );
-    if( job->error() )
+    if( job->error()  && job->error() != KIO::ERR_FILE_ALREADY_EXIST )
     {
         //TODO: proper error handling
         warning() << "An error occurred when copying a file: " << job->errorString();
@@ -701,6 +702,15 @@ void TransferJob::emitInfo(const QString& message)
     emit infoMessage( this, message );
 }
 
+void TransferJob::slotResult( KJob *job )
+{
+    // When copying without overwriting some files might already be
+    // there and it is not a reason for stopping entire transfer.
+    if ( job->error() == KIO::ERR_FILE_ALREADY_EXIST )
+        removeSubjob( job );
+    else
+        KCompositeJob::slotResult( job );
+}
 
 void TransferJob::start()
 {

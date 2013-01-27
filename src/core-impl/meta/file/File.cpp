@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2007 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
  * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
+ * Copyright (c) 2012 Matěj Laitl <matej@laitl.cz>                                      *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -18,7 +19,7 @@
 #include "File.h"
 #include "File_p.h"
 
-#include <config-amarok.h>
+#include "config.h"
 #include "MainWindow.h"
 #include "amarokurls/BookmarkMetaActions.h"
 #include "amarokurls/PlayUrlRunner.h"
@@ -26,14 +27,13 @@
 #include "core/capabilities/BookmarkThisCapability.h"
 #include "core/capabilities/EditCapability.h"
 #include "core/capabilities/FindInSourceCapability.h"
-#include "core/capabilities/StatisticsCapability.h"
 #include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/playlists/PlaylistFormat.h"
 #include "core/support/Amarok.h"
 #include "core-impl/capabilities/timecode/TimecodeWriteCapability.h"
 #include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
-#include "core-impl/statistics/providers/url/PermanentUrlStatisticsProvider.h"
+#include "core-impl/support/UrlStatisticsStore.h"
 
 #include <KMimeType>
 
@@ -69,28 +69,8 @@ class EditCapabilityImpl : public Capabilities::EditCapability
         virtual void setComment( const QString &newComment ) { m_track->setComment( newComment ); }
         virtual void setTrackNumber( int newTrackNumber ) { m_track->setTrackNumber( newTrackNumber ); }
         virtual void setDiscNumber( int newDiscNumber ) { m_track->setDiscNumber( newDiscNumber ); }
-        virtual void beginMetaDataUpdate() { m_track->beginMetaDataUpdate(); }
-        virtual void endMetaDataUpdate() { m_track->endMetaDataUpdate(); }
-
-    private:
-        KSharedPtr<MetaFile::Track> m_track;
-};
-
-class StatisticsCapabilityImpl : public Capabilities::StatisticsCapability
-{
-    public:
-        StatisticsCapabilityImpl( MetaFile::Track *track )
-            : Capabilities::StatisticsCapability()
-            , m_track( track )
-        {}
-
-        virtual void setScore( const int score ) { m_track->setScore( score ); }
-        virtual void setRating( const int rating ) { m_track->setRating( rating ); }
-        virtual void setFirstPlayed( const QDateTime &time ) { m_track->setFirstPlayed( time ); }
-        virtual void setLastPlayed( const QDateTime &time ) { m_track->setLastPlayed( time ); }
-        virtual void setPlayCount( const int playcount ) { m_track->setPlayCount( playcount ); }
-        virtual void beginStatisticsUpdate() {};
-        virtual void endStatisticsUpdate() {};
+        virtual void beginMetaDataUpdate() { m_track->beginUpdate(); }
+        virtual void endMetaDataUpdate() { m_track->endUpdate(); }
 
     private:
         KSharedPtr<MetaFile::Track> m_track;
@@ -187,7 +167,6 @@ Track::Track( const KUrl &url )
     , d( new Track::Private( this ) )
 {
     d->url = url;
-    d->provider = new PermanentUrlStatisticsProvider( url.url() );
     d->readMetaData();
     d->album = Meta::AlbumPtr( new MetaFile::FileAlbum( d ) );
     d->artist = Meta::ArtistPtr( new MetaFile::FileArtist( d ) );
@@ -199,7 +178,6 @@ Track::Track( const KUrl &url )
 
 Track::~Track()
 {
-    delete d->provider;
     delete d;
 }
 
@@ -286,99 +264,57 @@ Track::year() const
 void
 Track::setAlbum( const QString &newAlbum )
 {
-    DEBUG_BLOCK
-    d->changes.insert( Meta::valAlbum, QVariant( newAlbum ) );
-    debug() << "CHANGES HERE: " << d->changes;
-    if( !d->batchUpdate )
-    {
-        d->m_data.album = newAlbum;
-        d->writeMetaData();
-        notifyObservers();
-    }
+    QWriteLocker locker( &d->lock );
+    commitIfInNonBatchUpdate( Meta::valAlbum, newAlbum );
 }
 
 void
 Track::setAlbumArtist( const QString &newAlbumArtist )
 {
-    DEBUG_BLOCK
-    d->changes.insert( Meta::valAlbumArtist, QVariant( newAlbumArtist ) );
-    if( !d->batchUpdate )
-    {
-        d->m_data.albumArtist = newAlbumArtist;
-        d->writeMetaData();
-        notifyObservers();
-    }
+    QWriteLocker locker( &d->lock );
+    commitIfInNonBatchUpdate( Meta::valAlbumArtist, newAlbumArtist );
 }
 
 void
-Track::setArtist( const QString& newArtist )
+Track::setArtist( const QString &newArtist )
 {
-    d->changes.insert( Meta::valArtist, QVariant( newArtist ) );
-    if( !d->batchUpdate )
-    {
-        d->m_data.artist = newArtist;
-        d->writeMetaData();
-        notifyObservers();
-    }
+    QWriteLocker locker( &d->lock );
+    commitIfInNonBatchUpdate( Meta::valArtist, newArtist );
 }
 
 void
-Track::setGenre( const QString& newGenre )
+Track::setGenre( const QString &newGenre )
 {
-    d->changes.insert( Meta::valGenre, QVariant( newGenre ) );
-    if( !d->batchUpdate )
-    {
-        d->writeMetaData();
-        notifyObservers();
-    }
+    QWriteLocker locker( &d->lock );
+    commitIfInNonBatchUpdate( Meta::valGenre, newGenre );
 }
 
 void
-Track::setComposer( const QString& newComposer )
+Track::setComposer( const QString &newComposer )
 {
-    d->changes.insert( Meta::valComposer, QVariant( newComposer ) );
-    if( !d->batchUpdate )
-    {
-        d->m_data.composer = newComposer;
-        d->writeMetaData();
-        notifyObservers();
-    }
+    QWriteLocker locker( &d->lock );
+    commitIfInNonBatchUpdate( Meta::valComposer, newComposer );
 }
 
 void
 Track::setYear( int newYear )
 {
-    d->changes.insert( Meta::valYear, QVariant( newYear ) );
-    if( !d->batchUpdate )
-    {
-        d->m_data.year = newYear;
-        d->writeMetaData();
-        notifyObservers();
-    }
+    QWriteLocker locker( &d->lock );
+    commitIfInNonBatchUpdate( Meta::valYear, newYear );
 }
 
 void
 Track::setTitle( const QString &newTitle )
 {
-    d->changes.insert( Meta::valTitle, QVariant( newTitle ) );
-    if( !d->batchUpdate )
-    {
-        d->m_data.title = newTitle;
-        d->writeMetaData();
-        notifyObservers();
-    }
+    QWriteLocker locker( &d->lock );
+    commitIfInNonBatchUpdate( Meta::valTitle, newTitle );
 }
 
 void
 Track::setBpm( const qreal newBpm )
 {
-    d->changes.insert( Meta::valBpm, QVariant( newBpm ) );
-    if( !d->batchUpdate )
-    {
-        d->m_data.bpm = newBpm;
-        d->writeMetaData();
-        notifyObservers();
-    }
+    QWriteLocker locker( &d->lock );
+    commitIfInNonBatchUpdate( Meta::valBpm, newBpm );
 }
 
 qreal
@@ -400,46 +336,8 @@ Track::comment() const
 void
 Track::setComment( const QString& newComment )
 {
-    d->changes.insert( Meta::valComment, QVariant( newComment ) );
-    if( !d->batchUpdate )
-    {
-        d->m_data.comment = newComment;
-        d->writeMetaData();
-        notifyObservers();
-    }
-}
-
-double
-Track::score() const
-{
-
-    if( d->provider )
-        return d->provider->score();
-    else
-        return 0.0;
-}
-
-void
-Track::setScore( double newScore )
-{
-    if( d->provider )
-        d->provider->setScore( newScore );
-}
-
-int
-Track::rating() const
-{
-    if( d->provider )
-        return d->provider->rating();
-    else
-        return 0;
-}
-
-void
-Track::setRating( int newRating )
-{
-    if( d->provider )
-        d->provider->setRating( newRating );
+    QWriteLocker locker( &d->lock );
+    commitIfInNonBatchUpdate( Meta::valComment, newComment );
 }
 
 int
@@ -451,13 +349,8 @@ Track::trackNumber() const
 void
 Track::setTrackNumber( int newTrackNumber )
 {
-    d->changes.insert( Meta::valTrackNr, QVariant( newTrackNumber ) );
-    if( !d->batchUpdate )
-    {
-        d->m_data.trackNumber = newTrackNumber;
-        d->writeMetaData();
-        notifyObservers();
-    }
+    QWriteLocker locker( &d->lock );
+    commitIfInNonBatchUpdate( Meta::valTrackNr, newTrackNumber );
 }
 
 int
@@ -469,13 +362,8 @@ Track::discNumber() const
 void
 Track::setDiscNumber( int newDiscNumber )
 {
-    d->changes.insert( Meta::valDiscNr, QVariant ( newDiscNumber ) );
-    if( !d->batchUpdate )
-    {
-        d->m_data.discNumber = newDiscNumber;
-        d->writeMetaData();
-        notifyObservers();
-    }
+    QWriteLocker locker( &d->lock );
+    commitIfInNonBatchUpdate( Meta::valDiscNr, newDiscNumber );
 }
 
 qint64
@@ -520,54 +408,6 @@ Track::createDate() const
         return QDateTime();
 }
 
-QDateTime
-Track::lastPlayed() const
-{
-    if( d->provider )
-        return d->provider->lastPlayed();
-    else
-        return QDateTime();
-}
-
-void
-Track::setLastPlayed( const QDateTime &newTime )
-{
-    if( d->provider )
-        d->provider->setLastPlayed( newTime );
-}
-
-QDateTime
-Track::firstPlayed() const
-{
-    if( d->provider )
-        return d->provider->firstPlayed();
-    else
-        return QDateTime();
-}
-
-void
-Track::setFirstPlayed( const QDateTime &newTime )
-{
-    if( d->provider )
-        d->provider->setFirstPlayed( newTime );
-}
-
-int
-Track::playCount() const
-{
-    if( d->provider )
-        return d->provider->playCount();
-    else
-        return 0;
-}
-
-void
-Track::setPlayCount( int newCount )
-{
-    if( d->provider )
-        d->provider->setPlayCount( newCount );
-}
-
 qreal
 Track::replayGain( Meta::ReplayGainTag mode ) const
 {
@@ -602,7 +442,7 @@ Track::isTrack( const KUrl &url )
     if( !url.isLocalFile() )
         return true;
 
-    QFileInfo  fileInfo( url.toLocalFile() );
+    QFileInfo fileInfo( url.toLocalFile() );
     if( fileInfo.size() <= 0 )
         return false;
 
@@ -616,26 +456,19 @@ Track::isTrack( const KUrl &url )
 }
 
 void
-Track::beginMetaDataUpdate()
+Track::beginUpdate()
 {
-    d->batchUpdate = true;
+    QWriteLocker locker( &d->lock );
+    d->batchUpdate++;
 }
 
 void
-Track::endMetaDataUpdate()
+Track::endUpdate()
 {
- DEBUG_LINE_INFO
-    debug() << "CHANGES HERE: " << d->changes;
-    d->writeMetaData();
-    d->batchUpdate = false;
-    notifyObservers();
-}
-
-void
-Track::finishedPlaying( double playedFraction )
-{
-    if( d->provider )
-        d->provider->played( playedFraction, Meta::TrackPtr( this ) );
+    QWriteLocker locker( &d->lock );
+    Q_ASSERT( d->batchUpdate > 0 );
+    d->batchUpdate--;
+    commitIfInNonBatchUpdate();
 }
 
 bool
@@ -664,7 +497,6 @@ Track::hasCapabilityInterface( Capabilities::Capability::Type type ) const
     readlabel = true;
 #endif
     return ( type == Capabilities::Capability::Editable && isEditable() ) ||
-           type == Capabilities::Capability::Importable ||
            type == Capabilities::Capability::BookmarkThis ||
            type == Capabilities::Capability::WriteTimecode ||
            type == Capabilities::Capability::LoadTimecode ||
@@ -682,9 +514,6 @@ Track::createCapabilityInterface( Capabilities::Capability::Type type )
                 return new EditCapabilityImpl( this );
             else
                 return 0;
-
-        case Capabilities::Capability::Importable:
-            return new StatisticsCapabilityImpl( this );
 
         case Capabilities::Capability::BookmarkThis:
             return new Capabilities::BookmarkThisCapability( new BookmarkCurrentTrackPositionAction( 0 ) );
@@ -711,6 +540,51 @@ Track::createCapabilityInterface( Capabilities::Capability::Type type )
     }
 }
 
+Meta::StatisticsPtr
+Track::statistics()
+{
+    return Meta::StatisticsPtr( this );
+}
+
+double
+Track::score() const
+{
+    return d->m_data.score;
+}
+
+void
+Track::setScore( double newScore )
+{
+    QWriteLocker locker( &d->lock );
+    commitIfInNonBatchUpdate( Meta::valScore, newScore );
+}
+
+int
+Track::rating() const
+{
+    return d->m_data.rating;
+}
+
+void
+Track::setRating( int newRating )
+{
+    QWriteLocker locker( &d->lock );
+    commitIfInNonBatchUpdate( Meta::valRating, newRating );
+}
+
+int
+Track::playCount() const
+{
+    return d->m_data.playCount;
+}
+
+void
+Track::setPlayCount( int newPlayCount )
+{
+    QWriteLocker locker( &d->lock );
+    commitIfInNonBatchUpdate( Meta::valPlaycount, newPlayCount );
+}
+
 QImage
 Track::getEmbeddedCover() const
 {
@@ -718,6 +592,36 @@ Track::getEmbeddedCover() const
         return Meta::Tag::embeddedCover( d->url.path()  );
 
     return QImage();
+}
+
+void
+Track::commitIfInNonBatchUpdate( qint64 field, const QVariant &value )
+{
+    d->changes.insert( field, value );
+    commitIfInNonBatchUpdate();
+}
+
+void
+Track::commitIfInNonBatchUpdate()
+{
+    static const QSet<qint64> statFields = ( QSet<qint64>() << Meta::valFirstPlayed <<
+        Meta::valLastPlayed << Meta::valPlaycount << Meta::valScore << Meta::valRating );
+
+    if( d->batchUpdate > 0 || d->changes.isEmpty() )
+        return;
+
+    // special case (shortcut) when writing statistics is disabled
+    if( !AmarokConfig::writeBackStatistics() &&
+        (QSet<qint64>::fromList( d->changes.keys() ) - statFields).isEmpty() )
+    {
+        d->changes.clear();
+        return;
+    }
+
+    d->writeMetaData(); // clears d->chages
+    d->lock.unlock(); // rather call notifyObservers() without a lock
+    notifyObservers();
+    d->lock.lockForWrite(); // return to original state
 }
 
 #include "File.moc"

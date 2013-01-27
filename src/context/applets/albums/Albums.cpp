@@ -132,7 +132,6 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
     if( name != QLatin1String("albums") )
         return;
 
-    DEBUG_BLOCK
     Meta::AlbumList albums = data[ "albums" ].value<Meta::AlbumList>();
     Meta::TrackPtr track = data[ "currentTrack" ].value<Meta::TrackPtr>();
     QString headerText = data[ "headerText" ].toString();
@@ -140,10 +139,7 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
 
     //Don't keep showing the albums for the artist of the last track that had album in the collection
     if( (m_currentTrack == track) && (m_albums == albums) )
-    {
-        debug() << "albums view data unchanged, not updating";
         return;
-    }
 
     if( albums.isEmpty() )
     {
@@ -193,7 +189,7 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
             trackItem->setTrack( trackPtr );
 
             // bold the current track to make it more visible
-            if( m_currentTrack == trackPtr )
+            if( m_currentTrack && *m_currentTrack == *trackPtr )
             {
                 currentItem = trackItem;
                 trackItem->bold();
@@ -201,7 +197,8 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
 
             // If compilation and same artist, then highlight, but only if there's a current track
             if( m_currentTrack
-                && (m_currentTrack->artist() == trackPtr->artist())
+                && m_currentTrack->artist() && trackPtr->artist()
+                && (*m_currentTrack->artist() == *trackPtr->artist())
                 && albumPtr->isCompilation() )
             {
                 trackItem->italicise();

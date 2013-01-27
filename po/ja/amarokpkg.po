@@ -19,6 +19,14 @@ msgstr ""
 "X-Text-Markup: kde4\n"
 "X-Generator: KBabel 1.11.4\n"
 
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Daniel E. Moctezuma"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "democtezuma@gmail.com"
+
 #: amarokpkg.cpp:40
 msgid "Install, list, remove Amarok applets"
 msgstr "Amarok アプレットのインストール、一覧表示、削除"
@@ -111,13 +119,3 @@ msgctxt ""
 "least one, do not translate install, remove, upgrade nor list"
 msgid "One of install, remove, upgrade or list is required."
 msgstr "install/remove/upgrade/list のいずれかを指定する必要があります。"
-
-#: rc.cpp:1
-msgctxt "NAME OF TRANSLATORS"
-msgid "Your names"
-msgstr "Daniel E. Moctezuma"
-
-#: rc.cpp:2
-msgctxt "EMAIL OF TRANSLATORS"
-msgid "Your emails"
-msgstr "democtezuma@gmail.com"

@@ -14,17 +14,15 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "core-impl/playlists/types/file/m3u/M3UPlaylist.h"
-
-#define _PREFIX "M3UPlaylist"
+#include "M3UPlaylist.h"
 
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/meta/proxy/MetaProxy.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
+#include "playlistmanager/PlaylistManager.h"
 #include "playlistmanager/file/PlaylistFileProvider.h"
-#include "PlaylistManager.h"
 
 #include <KMimeType>
 #include <KUrl>
@@ -169,7 +167,6 @@ M3UPlaylist::loadM3u( QTextStream &stream )
         }
         else if( !line.startsWith( '#' ) && !line.isEmpty() )
         {
-            MetaProxy::Track *proxyTrack;
             line = line.replace( "\\", "/" );
 
             // KUrl's constructor handles detection of local file paths without
@@ -182,7 +179,7 @@ M3UPlaylist::loadM3u( QTextStream &stream )
                 url.cleanPath();
             }
 
-            proxyTrack = new MetaProxy::Track( url );
+            MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( url ) );
             QString artist = extinfTitle.section( " - ", 0, 0 );
             QString title = extinfTitle.section( " - ", 1, 1 );
             //if title and artist are saved such as in M3UPlaylist::save()
@@ -196,7 +193,7 @@ M3UPlaylist::loadM3u( QTextStream &stream )
                 proxyTrack->setName( extinfTitle );
             }
             proxyTrack->setLength( length );
-            m_tracks << Meta::TrackPtr( proxyTrack );
+            m_tracks << Meta::TrackPtr( proxyTrack.data() );
             m_tracksLoaded = true;
         }
     } while( !stream.atEnd() );

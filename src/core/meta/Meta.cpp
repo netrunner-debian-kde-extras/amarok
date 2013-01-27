@@ -18,146 +18,27 @@
 
 #include "core/meta/Meta.h"
 
-#include "core/support/Amarok.h"
 #include "core/collections/Collection.h"
-#include "core/support/Debug.h"
 #include "core/collections/QueryMaker.h"
+#include "core/meta/Statistics.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 
 #include <QImage>
 
 #include <KLocale>
+
+using namespace Meta;
 
 //Meta::Observer
 
 Meta::Observer::~Observer()
 {
     // Unsubscribe all stray Meta subscriptions:
-
-    foreach( TrackPtr ptr, m_trackSubscriptions )
+    foreach( Base *ptr, m_subscriptions )
+    {
         if( ptr )
             ptr->unsubscribe( this );
-    foreach( ArtistPtr ptr, m_artistSubscriptions )
-        if( ptr )
-            ptr->unsubscribe( this );
-    foreach( AlbumPtr ptr, m_albumSubscriptions )
-        if( ptr )
-            ptr->unsubscribe( this );
-    foreach( GenrePtr ptr, m_genreSubscriptions )
-        if( ptr )
-            ptr->unsubscribe( this );
-    foreach( ComposerPtr ptr, m_composerSubscriptions )
-        if( ptr )
-            ptr->unsubscribe( this );
-    foreach( YearPtr ptr, m_yearSubscriptions )
-        if( ptr )
-            ptr->unsubscribe( this );
-}
-
-void
-Meta::Observer::subscribeTo( TrackPtr ptr )
-{
-    if( ptr ) {
-        ptr->subscribe( this );
-        m_trackSubscriptions.insert( ptr );
-    }
-}
-
-void
-Meta::Observer::unsubscribeFrom( TrackPtr ptr )
-{
-    if( ptr ) {
-        ptr->unsubscribe( this );
-        m_trackSubscriptions.remove( ptr );
-    }
-}
-
-void
-Meta::Observer::subscribeTo( ArtistPtr ptr )
-{
-    if( ptr ) {
-        ptr->subscribe( this );
-        m_artistSubscriptions.insert( ptr );
-    }
-}
-
-void
-Meta::Observer::unsubscribeFrom( ArtistPtr ptr )
-{
-    if( ptr ) {
-        ptr->unsubscribe( this );
-        m_artistSubscriptions.remove( ptr );
-    }
-}
-
-void
-Meta::Observer::subscribeTo( AlbumPtr ptr )
-{
-    if( ptr ) {
-        ptr->subscribe( this );
-        m_albumSubscriptions.insert( ptr );
-    }
-}
-
-void
-Meta::Observer::unsubscribeFrom( AlbumPtr ptr )
-{
-    if( ptr ) {
-        ptr->unsubscribe( this );
-        m_albumSubscriptions.remove( ptr );
-    }
-}
-
-void
-Meta::Observer::subscribeTo( ComposerPtr ptr )
-{
-    if( ptr ) {
-        ptr->subscribe( this );
-        m_composerSubscriptions.insert( ptr );
-    }
-}
-
-void
-Meta::Observer::unsubscribeFrom( ComposerPtr ptr )
-{
-    if( ptr ) {
-        ptr->unsubscribe( this );
-        m_composerSubscriptions.remove( ptr );
-    }
-}
-
-void
-Meta::Observer::subscribeTo( GenrePtr ptr )
-{
-    if( ptr ) {
-        ptr->subscribe( this );
-        m_genreSubscriptions.insert( ptr );
-    }
-}
-
-void
-Meta::Observer::unsubscribeFrom( GenrePtr ptr )
-{
-    if( ptr ) {
-        ptr->unsubscribe( this );
-        m_genreSubscriptions.remove( ptr );
-    }
-}
-
-void
-Meta::Observer::subscribeTo( YearPtr ptr )
-{
-    if( ptr ) {
-        ptr->subscribe( this );
-        m_yearSubscriptions.insert( ptr );
-    }
-}
-
-void
-Meta::Observer::unsubscribeFrom( YearPtr ptr )
-{
-    if( ptr ) {
-        ptr->unsubscribe( this );
-        m_yearSubscriptions.remove( ptr );
     }
 }
 
@@ -197,35 +78,92 @@ Meta::Observer::metadataChanged( YearPtr year )
     Q_UNUSED( year );
 }
 
-//Meta::MetaCapability
-
-bool
-Meta::MetaCapability::hasCapabilityInterface( Capabilities::Capability::Type type ) const
+void
+Meta::Observer::entityDestroyed()
 {
-    Q_UNUSED( type );
-    return false;
 }
-
-Capabilities::Capability*
-Meta::MetaCapability::createCapabilityInterface( Capabilities::Capability::Type type )
-{
-    Q_UNUSED( type );
-    return 0;
-}
-
-//Meta::MetaBase
 
 void
-Meta::MetaBase::subscribe( Observer *observer )
+Meta::Observer::subscribeTo( Meta::Base *ptr )
+{
+    if( !ptr )
+        return;
+    QMutexLocker locker( &m_subscriptionsMutex );
+    ptr->subscribe( this );
+    m_subscriptions.insert( ptr );
+}
+
+void
+Meta::Observer::unsubscribeFrom( Meta::Base *ptr )
+{
+    QMutexLocker locker( &m_subscriptionsMutex );
+    if( ptr )
+        ptr->unsubscribe( this );
+    m_subscriptions.remove( ptr );
+}
+
+void
+Meta::Observer::destroyedNotify( Meta::Base *ptr )
+{
+    {
+        QMutexLocker locker( &m_subscriptionsMutex );
+        m_subscriptions.remove( ptr );
+    }
+    entityDestroyed();
+}
+
+// Meta::Base
+
+Base::Base()
+    : m_observersLock( QReadWriteLock::Recursive )
+{
+}
+
+Meta::Base::~Base()
+{
+    // we need to notify all observers that we're deleted to avoid stale pointers
+    foreach( Observer *observer, m_observers )
+    {
+        observer->destroyedNotify( this );
+    }
+}
+
+void
+Meta::Base::subscribe( Observer *observer )
 {
     if( observer )
+    {
+        QWriteLocker locker( &m_observersLock );
         m_observers.insert( observer );
+    }
 }
 
 void
-Meta::MetaBase::unsubscribe( Observer *observer )
+Meta::Base::unsubscribe( Observer *observer )
 {
+    QWriteLocker locker( &m_observersLock );
     m_observers.remove( observer );
+}
+
+// this is a template method that should be normally in the .h file, the thing is that
+// only legit callers of this are also lie in this .cpp file, so it works like this
+template <typename T>
+void
+Meta::Base::notifyObserversHelper( const T *self ) const
+{
+    // observers ale allowed to remove themselves during metadataChanged() call. That's
+    // why the lock needs to be recursive AND the lock needs to be for writing, because
+    // a lock for reading cannot be recursively relocked for writing.
+    QWriteLocker locker( &m_observersLock );
+    foreach( Observer *observer, m_observers )
+    {
+        // observers can potentially remove or even destory other observers during
+        // metadataChanged() call. Guard against it. The guarding doesn't need to be
+        // thread-safe,  because we already hold m_observersLock (which is recursive),
+        // so other threads wait on potential unsubscribe().
+        if( m_observers.contains( observer ) )
+            observer->metadataChanged( KSharedPtr<T>( const_cast<T *>( self ) ) );
+    }
 }
 
 //Meta::Track
@@ -311,30 +249,34 @@ Meta::Track::prepareToPlay()
 }
 
 void
-Meta::Track::finishedPlaying( double /*playedFraction*/ )
+Meta::Track::finishedPlaying( double playedFraction )
 {
+    qint64 len = length();
+    bool updatePlayCount;
+    if( len <= 30 * 1000 )
+        updatePlayCount = ( playedFraction >= 1.0 );
+    else
+        // at least half the song or at least 5 minutes played
+        updatePlayCount = ( playedFraction >= 0.5 || ( playedFraction * len ) >= 5 * 60 * 1000 );
+
+    StatisticsPtr stats = statistics();
+    stats->beginUpdate();
+    // we should update score even if updatePlayCount is false to record skips
+    stats->setScore( Amarok::computeScore( stats->score(), stats->playCount(), playedFraction ) );
+    if( updatePlayCount )
+    {
+        stats->setPlayCount( stats->playCount() + 1 );
+        if( !stats->firstPlayed().isValid() )
+            stats->setFirstPlayed( QDateTime::currentDateTime() );
+        stats->setLastPlayed( QDateTime::currentDateTime() );
+    }
+    stats->endUpdate();
 }
 
 void
 Meta::Track::notifyObservers() const
 {
-    foreach( Observer *observer, m_observers )
-    {
-        if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
-            observer->metadataChanged( Meta::TrackPtr( const_cast<Meta::Track*>(this) ) );
-    }
-}
-
-QDateTime
-Meta::Track::lastPlayed() const
-{
-    return QDateTime();
-}
-
-QDateTime
-Meta::Track::firstPlayed() const
-{
-    return QDateTime();
+    notifyObserversHelper<Track>( this );
 }
 
 bool
@@ -384,6 +326,21 @@ Meta::Track::lessThan( const Meta::TrackPtr& left, const Meta::TrackPtr& right )
     return QString::localeAwareCompare( left->prettyName(), right->prettyName() ) < 0;
 }
 
+StatisticsPtr
+Track::statistics()
+{
+    // return dummy implementation
+    return StatisticsPtr( new Statistics() );
+}
+
+ConstStatisticsPtr
+Track::statistics() const
+{
+    StatisticsPtr statistics = const_cast<Track *>( this )->statistics();
+    return ConstStatisticsPtr( statistics.data() );
+}
+
+
 //Meta::Artist
 
 QString
@@ -397,11 +354,7 @@ Meta::Artist::prettyName() const
 void
 Meta::Artist::notifyObservers() const
 {
-    foreach( Observer *observer, m_observers )
-    {
-        if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
-            observer->metadataChanged( Meta::ArtistPtr( const_cast<Meta::Artist*>(this) ) );
-    }
+    notifyObserversHelper<Artist>( this );
 }
 
 bool
@@ -447,11 +400,7 @@ Meta::Album::prettyName() const
 void
 Meta::Album::notifyObservers() const
 {
-    foreach( Observer *observer, m_observers )
-    {
-        if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
-            observer->metadataChanged( Meta::AlbumPtr( const_cast<Meta::Album*>(this) ));
-    }
+    notifyObserversHelper<Album>( this );
 }
 
 /*
@@ -484,13 +433,7 @@ Meta::Genre::prettyName() const
 void
 Meta::Genre::notifyObservers() const
 {
-    foreach( Observer *observer, m_observers )
-    {
-        if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
-        {
-            observer->metadataChanged( Meta::GenrePtr( const_cast<Meta::Genre*>(this) ) );
-        }
-    }
+    notifyObserversHelper<Genre>( this );
 }
 
 bool
@@ -512,11 +455,7 @@ Meta::Composer::prettyName() const
 void
 Meta::Composer::notifyObservers() const
 {
-    foreach( Observer *observer, m_observers )
-    {
-        if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
-            observer->metadataChanged( Meta::ComposerPtr( const_cast<Meta::Composer*>(this) ) );
-    }
+    notifyObserversHelper<Composer>( this );
 }
 
 bool
@@ -530,11 +469,7 @@ Meta::Composer::operator==( const Meta::Composer &composer ) const
 void
 Meta::Year::notifyObservers() const
 {
-    foreach( Observer *observer, m_observers )
-    {
-        if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
-            observer->metadataChanged( Meta::YearPtr( const_cast<Meta::Year *>(this) ) );
-    }
+    notifyObserversHelper<Year>( this );
 }
 
 bool
@@ -546,6 +481,6 @@ Meta::Year::operator==( const Meta::Year &year ) const
 void
 Meta::Label::notifyObservers() const
 {
-    //TODO: not sure if labels have to be observable, or whether it makes sense for them to notify observers
+    // labels are not observable
 }
 

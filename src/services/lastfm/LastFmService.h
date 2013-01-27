@@ -18,28 +18,22 @@
 #ifndef LASTFMSERVICE_H
 #define LASTFMSERVICE_H
 
+#include "services/ServiceBase.h"
+#include "services/lastfm/LastFmServiceConfig.h"
+#include "statsyncing/Provider.h"
 
-#include "../ServiceBase.h"
-
-#include <KLineEdit>
-#include <QLabel>
-class ScrobblerAdapter;
-class LastFmService;
 
 namespace Collections {
     class LastFmServiceCollection;
 }
-
-class QNetworkReply;
-
-class KHBox;
-
-class QComboBox;
-
-namespace The
-{
-    LastFmService *lastFmService();
+namespace Dynamic {
+    class AbstractBiasFactory;
 }
+class ScrobblerAdapter;
+class KLineEdit;
+class QComboBox;
+class QLabel;
+class QNetworkReply;
 
 class LastFmServiceFactory : public ServiceFactory
 {
@@ -47,20 +41,12 @@ class LastFmServiceFactory : public ServiceFactory
 
 public:
     LastFmServiceFactory( QObject *parent, const QVariantList &args );
-    virtual ~LastFmServiceFactory() {}
 
     virtual void init();
     virtual QString name();
     virtual KConfigGroup config();
 
-    virtual bool possiblyContainsTrack( const KUrl &url ) const { return url.protocol() == "lastfm"; }
-
-private slots:
-    void slotCreateLastFmService();
-    void slotRemoveLastFmService();
-
-private:
-    ServiceBase* createLastFmService();
+    virtual bool possiblyContainsTrack( const KUrl &url ) const;
 };
 
 class LastFmService : public ServiceBase
@@ -68,12 +54,10 @@ class LastFmService : public ServiceBase
     Q_OBJECT
 
 public:
-    LastFmService( LastFmServiceFactory* parent, const QString &name, const QString &username, QString password, const QString &sessionKey, bool scrobble, bool fetchSimilar, bool scrobbleComposer );
+    LastFmService( LastFmServiceFactory* parent, const QString &name );
     virtual ~LastFmService();
 
     virtual void polish();
-
-    ScrobblerAdapter *scrobbler() { return m_scrobbler; }
 
     virtual Collections::Collection * collection();
 
@@ -81,42 +65,35 @@ public:
 
 private slots:
     void love();
-    void skip();
-    void ban();
 
     void playCustomStation();
     void updateEditHint( int index );
 
+    void slotReconfigure();
     void onAuthenticated();
     void onGetUserInfo();
     void onAvatarDownloaded( const QString& username, QPixmap avatar );
 
 private:
-    void init();
-
-    bool m_inited;
-    bool m_scrobble;
-    ScrobblerAdapter *m_scrobbler;
-    Collections::LastFmServiceCollection *m_collection;
-
+    void continueReconfiguring();
     void playLastFmStation( const KUrl &url );
     void updateProfileInfo();
+
+    QExplicitlySharedDataPointer<ScrobblerAdapter> m_scrobbler;
+    StatSyncing::ProviderPtr m_synchronizationAdapter;
+    Collections::LastFmServiceCollection *m_collection;
+    QList<Dynamic::AbstractBiasFactory *> m_biasFactories;
 
     bool m_polished;
     QWidget *m_profileBox;
     QLabel *m_avatarLabel;
     QLabel *m_profile;
     QLabel *m_userinfo;
-
     QComboBox *m_globalComboBox;
+    KLineEdit *m_customStationEdit;
+    QPushButton *m_customStationButton;
+    QComboBox *m_customStationCombo;
 
-    KLineEdit * m_customStationEdit;
-    QPushButton * m_customStationButton;
-    QComboBox * m_customStationCombo;
-
-    QString m_userName;
-    QString m_sessionKey;
-    QString m_password;
     QString m_station;
     QString m_age;
     QString m_gender;
@@ -124,15 +101,9 @@ private:
     QString m_playcount;
     QPixmap m_avatar;
     bool m_subscriber;
-    bool m_scrobbleComposer;
 
-    char *m_userNameArray;
-    char *m_sessionKeyArray;
-
-    QMap< QString, QNetworkReply* > m_jobs;
-    static LastFmService *ms_service;
-
-    friend LastFmService *The::lastFmService();
+    QNetworkReply *m_authenticateReply;
+    LastFmServiceConfigPtr m_config;
 };
 
 #endif // LASTFMSERVICE_H

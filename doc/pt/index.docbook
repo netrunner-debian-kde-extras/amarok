@@ -4861,9 +4861,9 @@
     </entry>
     <entry>
     <para
->Indique o nome do servidor de <guilabel
+>Enter the name of the existing <guilabel
 >MySQL</guilabel
-> existente</para>
+> server</para>
     </entry>
   </row>
   <row>
@@ -13585,7 +13585,7 @@ ftpProxy=http://utilizador:senha@servidor:porto/
   <row>
     <entry>
     <para
->Last.fm: Ignorar a Faixa Actual</para>
+>Last.fm Skip Current Track</para>
     </entry>
     <entry>
     <para

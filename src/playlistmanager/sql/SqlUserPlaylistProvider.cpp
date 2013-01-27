@@ -17,17 +17,17 @@
 
 #include "SqlUserPlaylistProvider.h"
 
-#include "core/support/Amarok.h"
+#include "SvgHandler.h"
+#include "browsers/playlistbrowser/UserPlaylistModel.h"
+#include "core/collections/support/SqlStorage.h"
 #include "core/playlists/PlaylistFormat.h"
-#include "core-impl/collections/support/CollectionManager.h"
+#include "core/support/Amarok.h"
 #include "core/support/Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/playlists/types/file/m3u/M3UPlaylist.h"
 #include "core-impl/playlists/types/file/pls/PLSPlaylist.h"
 #include "core-impl/playlists/types/file/xspf/XSPFPlaylist.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
-#include "core/collections/support/SqlStorage.h"
-#include "SvgHandler.h"
-#include "UserPlaylistModel.h"
 
 #include <KDialog>
 #include <KGlobal>
@@ -274,9 +274,9 @@ SqlUserPlaylistProvider::deleteTables()
     sqlStorage->query( "DROP INDEX parent_playlist_tracks ON playlist_tracks;" );
     sqlStorage->query( "DROP INDEX playlist_tracks_uniqueid ON playlist_tracks;" );
 
-    sqlStorage->query( "DROP TABLE playlist_groups;" );
-    sqlStorage->query( "DROP TABLE playlists;" );
-    sqlStorage->query( "DROP TABLE playlist_tracks;" );
+    sqlStorage->query( "DROP TABLE IF EXISTS playlist_groups;" );
+    sqlStorage->query( "DROP TABLE IF EXISTS playlists;" );
+    sqlStorage->query( "DROP TABLE IF EXISTS playlist_tracks;" );
 
 }
 

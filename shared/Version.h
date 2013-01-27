@@ -17,13 +17,7 @@
 #ifndef AMAROK_VERSION_H
 #define AMAROK_VERSION_H
 
-
 /// Update this when necessary
-//#ifdef CURRENT_GIT_VERSION
-//#define AMAROK_VERSION #CURRENT_GIT_VERSION
-//#else
-#define AMAROK_VERSION "2.6.0"
-//#endif
-
+#define AMAROK_VERSION "2.7.0"
 
 #endif  // End include guard

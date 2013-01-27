@@ -40,17 +40,20 @@ QStringList FileTypeSupport::s_fileTypeStrings = QStringList()
         << QLatin1String( "wav" )
         << QLatin1String( "wv" )
         << QLatin1String( "m4a" )
-        << QLatin1String( "m4v" );
-
+        << QLatin1String( "m4v" )
+        << QLatin1String( "mod" )
+        << QLatin1String( "s3m" )
+        << QLatin1String( "it" )
+        << QLatin1String( "xm" );
 
 QString
 FileTypeSupport::toString( Amarok::FileType ft )
 {
 #ifndef UTILITIES_BUILD
-    return i18n( s_fileTypeStrings.at( ft ).toLatin1() );
-#else
-    return s_fileTypeStrings.at( ft );
+    if( ft == Amarok::Unknown )
+        return i18n( s_fileTypeStrings.at( ft ).toLatin1() );
 #endif
+    return s_fileTypeStrings.at( ft );
 }
 
 QStringList

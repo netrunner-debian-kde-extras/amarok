@@ -21,6 +21,7 @@
 #include "core/support/Debug.h"
 #include "core/meta/Meta.h"
 #include "core-impl/meta/default/DefaultMetaTypes.h"
+#include "core-impl/support/UrlStatisticsStore.h"
 
 #include <Solid/Networking>
 
@@ -125,32 +126,6 @@ Track::comment() const
     return d->comment;
 }
 
-double
-Track::score() const
-{
-    return d->score;
-}
-
-void
-Track::setScore( double newScore )
-{
-    d->score = newScore;
-    notifyObservers();
-}
-
-int
-Track::rating() const
-{
-    return d->rating;
-}
-
-void
-Track::setRating( int newRating )
-{
-    d->rating = newRating;
-    notifyObservers();
-}
-
 int
 Track::trackNumber() const
 {
@@ -161,24 +136,6 @@ int
 Track::discNumber() const
 {
     return 0;
-}
-
-QDateTime
-Track::lastPlayed() const
-{
-    return d->lastPlayed;
-}
-
-QDateTime
-Track::firstPlayed() const
-{
-    return d->firstPlayed;
-}
-
-int
-Track::playCount() const
-{
-    return d->playcount;
 }
 
 qint64
@@ -205,25 +162,39 @@ Track::bitrate() const
     return 0;
 }
 
+void
+Track::finishedPlaying( double playedFraction )
+{
+    // playedFraction will nearly always be 1, because EngineController updates length
+    // just before calling finishedPlaying(). Mimic Last.fm scrobbling wrt min length
+    // requirement, tracks shorter than 30s are often ads etc.
+    if( length() < 30 * 1000 )
+        return;
+    Meta::Track::finishedPlaying( playedFraction );
+}
+
 QString
 Track::type() const
 {
+    // don't localize. See EngineController quirks
     return "stream";
 }
 
 void
-Track::finishedPlaying( double playedFraction )
+Track::setInitialInfo( const QString &artist, const QString &album, const QString &title,
+                       qint64 length, int trackNumber )
 {
-    // following code is more or less copied from SqlMeta::Track::finishedPlaying()
-    if( playedFraction < 0.8 )
-        return;
+    if( d->artist.isEmpty() )
+        d->artist = artist;
+    if( d->album.isEmpty() )
+        d->album = album;
+    if( d->title.isEmpty() )
+        d->title = title;
 
-    d->playcount++;
-    if( !firstPlayed().isValid() )
-        d->firstPlayed = QDateTime::currentDateTime();
-    d->lastPlayed = QDateTime::currentDateTime();
-    d->score = Amarok::computeScore( d->score, d->playcount, playedFraction );
-    notifyObservers();
+    if( d->length == 0 )
+        d->length = length;
+    if( d->trackNumber == 0 )
+        d->trackNumber = trackNumber;
 }
 
 #include "Stream_p.moc"

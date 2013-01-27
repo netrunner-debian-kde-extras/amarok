@@ -18,14 +18,15 @@
 
 #include "amarokurls/BookmarkMetaActions.h"
 #include "amarokurls/PlayUrlRunner.h"
-#include "core-impl/collections/support/CollectionManager.h"
-#include "core/support/Debug.h"
-#include "core/capabilities/EditCapability.h"
 #include "core/capabilities/ActionsCapability.h"
+#include "core/capabilities/EditCapability.h"
+#include "core/collections/support/SqlStorage.h"
 #include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
 #include "core-impl/capabilities/timecode/TimecodeWriteCapability.h"
-#include "SqlPodcastProvider.h"
-#include "core/collections/support/SqlStorage.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/meta/proxy/MetaProxy.h"
+#include "core-impl/podcasts/sql/SqlPodcastProvider.h"
+#include "core/support/Debug.h"
 
 #include <QDate>
 #include <QFile>
@@ -134,19 +135,18 @@ SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, SqlPodcastChann
     m_duration = (*(iter++)).toInt();
     m_fileSize = (*(iter++)).toInt();
     m_isNew = sqlStorage->boolTrue() == (*(iter++));
+    m_isKeep = sqlStorage->boolTrue() == (*(iter++));
 
     Q_ASSERT_X( iter == result.constEnd(), "SqlPodcastEpisode( PodcastCollection*, QStringList )", "number of expected fields did not match number of actual fields" );
 
-    if( !m_localUrl.isEmpty() && QFileInfo( m_localUrl.toLocalFile() ).exists() )
-    {
-        m_localFile = new MetaFile::Track( m_localUrl );
-    }
+    setupLocalFile();
 }
 
 //TODO: why do PodcastMetaCommon and PodcastEpisode not have an appropriate copy constructor?
 SqlPodcastEpisode::SqlPodcastEpisode( Podcasts::PodcastEpisodePtr episode )
     : Podcasts::PodcastEpisode()
     , m_dbId( 0 )
+    , m_isKeep( false )
 {
     m_channel = SqlPodcastChannelPtr::dynamicCast( episode->channel() );
 
@@ -183,16 +183,13 @@ SqlPodcastEpisode::SqlPodcastEpisode( Podcasts::PodcastEpisodePtr episode )
 
     //commit to the database
     updateInDb();
-
-    if( !m_localUrl.isEmpty() && QFileInfo( m_localUrl.toLocalFile() ).exists() )
-    {
-        m_localFile = new MetaFile::Track( m_localUrl );
-    }
+    setupLocalFile();
 }
 
 SqlPodcastEpisode::SqlPodcastEpisode( PodcastChannelPtr channel, Podcasts::PodcastEpisodePtr episode )
     : Podcasts::PodcastEpisode()
     , m_dbId( 0 )
+    , m_isKeep( false )
 {
     m_channel = SqlPodcastChannelPtr::dynamicCast( channel );
 
@@ -229,11 +226,21 @@ SqlPodcastEpisode::SqlPodcastEpisode( PodcastChannelPtr channel, Podcasts::Podca
 
     //commit to the database
     updateInDb();
+    setupLocalFile();
+}
 
-    if( !m_localUrl.isEmpty() && QFileInfo( m_localUrl.toLocalFile() ).exists() )
-    {
-        m_localFile = new MetaFile::Track( m_localUrl );
-    }
+void
+SqlPodcastEpisode::setupLocalFile()
+{
+    if( m_localUrl.isEmpty() || !QFileInfo( m_localUrl.toLocalFile() ).exists() )
+        return;
+
+    MetaProxy::TrackPtr proxyTrack( new MetaProxy::Track( m_localUrl, MetaProxy::Track::ManualLookup ) );
+    m_localFile = Meta::TrackPtr( proxyTrack.data() ); // avoid static_cast
+    /* following won't write to actual file, because MetaProxy::Track hasn't yet looked
+     * up the underlying track. It will just set some cached values. */
+    writeTagsToFile();
+    proxyTrack->lookupTrack( CollectionManager::instance()->fileTrackProvider() );
 }
 
 SqlPodcastEpisode::~SqlPodcastEpisode()
@@ -243,7 +250,13 @@ SqlPodcastEpisode::~SqlPodcastEpisode()
 void
 SqlPodcastEpisode::setNew( bool isNew )
 {
-    m_isNew = isNew;
+    PodcastEpisode::setNew( isNew );
+    updateInDb();
+}
+
+void SqlPodcastEpisode::setKeep( bool isKeep )
+{
+    m_isKeep = isKeep;
     updateInDb();
 }
 
@@ -323,10 +336,10 @@ SqlPodcastEpisode::createCapabilityInterface( Capabilities::Capability::Type typ
 bool
 SqlPodcastEpisode::isEditable() const
 {
-     if( m_localFile.isNull() )
-         return false;
-
-     return m_localFile->isEditable();
+     using namespace Capabilities;
+     Meta::TrackPtr file = m_localFile; // prevent discarding const qualifier
+     QScopedPointer<EditCapability> ec( file ? file->create<EditCapability>() : 0 );
+     return ec && ec->isEditable();
 }
 
 void
@@ -359,12 +372,14 @@ SqlPodcastEpisode::prettyName() const
 void
 SqlPodcastEpisode::setTitle( const QString &title )
 {
-    if( !m_localFile.isNull() )
-    {
-        m_localFile->setTitle( title );
-    }
-
     m_title = title;
+
+    using namespace Capabilities;
+    QScopedPointer<EditCapability> ec( m_localFile ? m_localFile->create<EditCapability>() : 0 );
+    if( ec && ec->isEditable() )
+    {
+        ec->setTitle( title );
+    }
 }
 
 Meta::ArtistPtr
@@ -406,10 +421,11 @@ SqlPodcastEpisode::year() const
 bool
 SqlPodcastEpisode::writeTagsToFile()
 {
-    if( m_localFile.isNull() )
+    if( !m_localFile )
         return false;
 
-    QScopedPointer<Capabilities::EditCapability> ec( m_localFile->create<Capabilities::EditCapability>() );
+    using namespace Capabilities;
+    QScopedPointer<EditCapability> ec( m_localFile->create<EditCapability>() );
     if( !ec )
         return false;
 
@@ -470,7 +486,9 @@ SqlPodcastEpisode::updateInDb()
         stream << ", filesize=";
         stream << m_fileSize;
         stream << ", isnew=";
-        stream << (m_isNew ? boolTrue : boolFalse);
+        stream << (isNew() ? boolTrue : boolFalse);
+        stream << ", iskeep=";
+        stream << (isKeep() ? boolTrue : boolFalse);
         stream << " WHERE id=";
         stream << m_dbId;
         stream << ";";
@@ -480,7 +498,7 @@ SqlPodcastEpisode::updateInDb()
     {
         stream << "INSERT INTO podcastepisodes (";
         stream << "url,channel,localurl,guid,title,subtitle,sequencenumber,description,";
-        stream << "mimetype,pubdate,duration,filesize,isnew) ";
+        stream << "mimetype,pubdate,duration,filesize,isnew,iskeep) ";
         stream << "VALUES ( '";
         stream << escape(m_url.url()) << "', ";
         stream << m_channel->dbId() << ", '";
@@ -494,7 +512,8 @@ SqlPodcastEpisode::updateInDb()
         stream << escape(m_pubDate.toString(Qt::ISODate)) << "', ";
         stream << m_duration << ", ";
         stream << m_fileSize << ", ";
-        stream << (m_isNew ? boolTrue : boolFalse);
+        stream << (isNew() ? boolTrue : boolFalse) << ", ";
+        stream << (isKeep() ? boolTrue : boolFalse);
         stream << ");";
         m_dbId = sqlStorage->insert( command, "podcastepisodes" );
     }
@@ -749,18 +768,28 @@ SqlPodcastChannel::addEpisode( PodcastEpisodePtr episode )
 void
 SqlPodcastChannel::applyPurge()
 {
+    DEBUG_BLOCK
     if( !hasPurge() )
         return;
 
-    while( m_episodes.count() > purgeCount() )
+    if( m_episodes.count() > purgeCount() )
     {
-        SqlPodcastEpisodePtr removedEpisode = m_episodes.takeLast();
-        m_provider->deleteDownloadedEpisode( removedEpisode );
+        int purgeIndex = 0;
 
-        notifyObserversTrackRemoved( m_episodes.count() );
+        foreach( SqlPodcastEpisodePtr episode, m_episodes )
+        {
+            if ( !episode->isKeep() )
+            {
+                if( purgeIndex >= purgeCount() )
+                {
+                    m_provider->deleteDownloadedEpisode( episode );
+                    m_episodes.removeOne( episode );
+                }
+                else
+                    purgeIndex++;
+            }
+        }
     }
-
-    //TODO: load missing episodes in case m_episodes.count() <= purgeCount()
 }
 
 void
@@ -826,38 +855,53 @@ SqlPodcastChannel::loadEpisodes()
 
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
 
-    //if purge is enabled is true we limit the number of results
+    //If purge is enabled we must limit the number of results
     QString command;
+
+    int rowLength = 15;
+
+    //If purge is enabled we must limit the number of results, though there are some files
+    //the user want to be shown even if there is no more slot
     if( hasPurge() )
     {
-        command = QString( "SELECT id, url, channel, localurl, guid, "
-        "title, subtitle, sequencenumber, description, mimetype, pubdate, "
-        "duration, filesize, isnew FROM podcastepisodes WHERE channel = %1 "
-        "ORDER BY pubdate DESC LIMIT " + QString::number( purgeCount() ) + ';' );
+        command = QString( "(SELECT id, url, channel, localurl, guid, "
+                           "title, subtitle, sequencenumber, description, mimetype, pubdate, "
+                           "duration, filesize, isnew, iskeep FROM podcastepisodes WHERE channel = %1 "
+                           "AND iskeep IS FALSE ORDER BY pubdate DESC LIMIT " + QString::number( purgeCount() ) + ") "
+                           "UNION "
+                           "(SELECT id, url, channel, localurl, guid, "
+                           "title, subtitle, sequencenumber, description, mimetype, pubdate, "
+                           "duration, filesize, isnew, iskeep FROM podcastepisodes WHERE channel = %1 "
+                           "AND iskeep IS TRUE) "
+                           "ORDER BY pubdate DESC;"
+                           );
     }
     else
     {
         command = QString( "SELECT id, url, channel, localurl, guid, "
-            "title, subtitle, sequencenumber, description, mimetype, pubdate, "
-            "duration, filesize, isnew FROM podcastepisodes WHERE channel = %1 "
-            "ORDER BY pubdate DESC;" );
+                           "title, subtitle, sequencenumber, description, mimetype, pubdate, "
+                           "duration, filesize, isnew, iskeep FROM podcastepisodes WHERE channel = %1 "
+                           "ORDER BY pubdate DESC;"
+                           );
     }
 
     QStringList results = sqlStorage->query( command.arg( m_dbId ) );
 
-    int rowLength = 14;
-    for(int i=0; i < results.size(); i+=rowLength)
+    for( int i = 0; i < results.size(); i += rowLength )
     {
         QStringList episodesResult = results.mid( i, rowLength );
         SqlPodcastEpisodePtr sqlEpisode = SqlPodcastEpisodePtr(
-                new SqlPodcastEpisode( episodesResult, SqlPodcastChannelPtr( this ) ) );
-        m_episodes <<  sqlEpisode;
+                                              new SqlPodcastEpisode(
+                                                  episodesResult,
+                                                  SqlPodcastChannelPtr( this ) ) );
+        m_episodes << sqlEpisode;
     }
 
     m_episodesLoaded = true;
 }
 
-Meta::TrackList Podcasts::SqlPodcastChannel::tracks()
+Meta::TrackList
+Podcasts::SqlPodcastChannel::tracks()
 {
     //If you do not load before, m_episodes
     //can be empty before usage.
@@ -866,7 +910,8 @@ Meta::TrackList Podcasts::SqlPodcastChannel::tracks()
     return Podcasts::SqlPodcastEpisode::toTrackList( m_episodes );
 }
 
-void Podcasts::SqlPodcastChannel::syncTrackStatus( int position, Meta::TrackPtr otherTrack )
+void
+Podcasts::SqlPodcastChannel::syncTrackStatus( int position, Meta::TrackPtr otherTrack )
 {
     Q_UNUSED( position );
 
@@ -881,9 +926,10 @@ void Podcasts::SqlPodcastChannel::syncTrackStatus( int position, Meta::TrackPtr 
     }
 }
 
-void Podcasts::SqlPodcastChannel::addTrack(Meta::TrackPtr track, int position)
+void
+Podcasts::SqlPodcastChannel::addTrack( Meta::TrackPtr track, int position )
 {
-    Q_UNUSED(position);
+    Q_UNUSED( position );
 
     addEpisode( Podcasts::PodcastEpisodePtr::dynamicCast( track ) );
 }

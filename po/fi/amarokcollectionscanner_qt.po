@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarokcollectionscanner_qt\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-18 02:51+0200\n"
+"POT-Creation-Date: 2012-10-10 10:03+0200\n"
 "PO-Revision-Date: 2011-06-06 20:29+0300\n"
 "Last-Translator: Tommi Nieminen <translator@legisign.org>\n"
 "Language-Team: Finnish <lokalisointi@lists.coss.fi>\n"
@@ -19,23 +19,23 @@ msgstr ""
 "X-POT-Import-Date: 2012-06-15 07:05:17+0000\n"
 "X-Generator: MediaWiki 1.20alpha (r113129); Translate 2012-07-04\n"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:244
-#: utilities/collectionscanner/CollectionScanner.cpp:267
+#: utilities/collectionscanner/CollectionScanner.cpp:115
+#: utilities/collectionscanner/CollectionScanner.cpp:138
 #, qt-format
 msgid "File \"%1\" not found."
 msgstr "Tiedostoa ”%1” ei löytynyt."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:247
+#: utilities/collectionscanner/CollectionScanner.cpp:118
 #, qt-format
 msgid "Could not open file \"%1\"."
 msgstr "Tiedostoa ”%1” ei voitu avata."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:499
+#: utilities/collectionscanner/CollectionScanner.cpp:370
 #, qt-format
 msgid "Missing argument for option %1"
 msgstr "Valitsimelta %1 puuttuu parametri"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:536
+#: utilities/collectionscanner/CollectionScanner.cpp:407
 #, fuzzy
 #| msgid ""
 #| "Amarok Collection Scanner\n"

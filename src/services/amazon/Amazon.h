@@ -26,6 +26,7 @@
 #include "AmazonConfig.h"
 
 #include <QString>
+#include <QUrl>
 
 #include <KGlobal>
 #include <KLocale>
@@ -39,13 +40,22 @@
 
 namespace Amazon
 {
+/**
+* Returns a valid URL that upon opening sets a cookie indicating that
+* the user has a .amz downloader installed. This simplifies the checkout
+* process a lot.
+*/
+inline QUrl
+createCookieUrl()
+{
+    return QUrl( "http://www.amazon." + AmazonConfig::instance()->country() + "/gp/dmusic/after_download_manager_install.html?AMDVersion=1.0.9" );
+}
 
 /**
  * Returns the human readable pretty price for a given price.
  * The pretty price includes the currency symbol at a position
  * according to the current KDE locale.
  */
-
 inline QString
 prettyPrice( QString price )
 {
@@ -56,12 +66,12 @@ prettyPrice( QString price )
     QString value;
 
     // determine human readable value
-    if( country == "de" || country == "fr" || country == "com" || country == "co.uk" )
+    if( country == "com" || country == "co.uk" || country == "de" || country == "es" || country == "fr" || country == "it" )
         value.setNum( price.toDouble() / 100 );
     else if( country == "co.jp" )
         value.setNum( price.toInt() );
 
-    if( country == "de" || country == "fr" )
+    if( country == "de" || country == "es" || country == "fr" || country == "it" )
         return KGlobal::locale()->formatMoney( value.toFloat(), "€" , 2 );
     if( country == "co.uk" )
         return KGlobal::locale()->formatMoney( value.toFloat(), "£" , 2 );

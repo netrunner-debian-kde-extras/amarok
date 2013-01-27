@@ -22,7 +22,6 @@
 #define AMAROK_DATABASE_SCANMANAGER_H
 
 #include "AmarokProcess.h"
-#include "amarok_databasecollection_export.h"
 #include "ScanResultProcessor.h"
 #include "DatabaseCollection.h"
 
@@ -58,7 +57,7 @@ class KDirWatch;
     After that we use KDirWatch to track directory changes.
     KDirWatch will not track changes to symbolic links!
 */
-class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanManager : public QObject
+class ScanManager : public QObject
 {
     Q_OBJECT
 
@@ -152,7 +151,6 @@ class AMAROK_DATABASECOLLECTION_EXPORT_TESTS ScanManager : public QObject
         Collections::DatabaseCollection *m_collection;
 
         ScannerJob *m_scanner;
-        bool m_errorsReported;
 
         int m_restartCount;
         int m_blockCount;
@@ -273,7 +271,6 @@ class ScannerJob : public ThreadWeaver::Job
         AmarokProcess *m_scanner;
         QString m_batchfilePath;
         QSharedMemory *m_scannerStateMemory; // a persistent storage of the current scanner state in case it needs to be restarted.
-        QString       m_sharedMemoryKey;
 
         QXmlStreamReader m_reader;
 

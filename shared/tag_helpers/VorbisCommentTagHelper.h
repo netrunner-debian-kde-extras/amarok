@@ -20,8 +20,10 @@
 
 #include "TagHelper.h"
 
-#include <taglib/xiphcomment.h>
-#include <taglib/flacfile.h>
+#include <xiphcomment.h>
+#include <flacfile.h>
+
+class QImage;
 
 namespace Meta
 {
@@ -45,6 +47,7 @@ namespace Meta
 #endif  //UTILITIES_BUILD
 
             private:
+                static bool parsePictureBlock( const TagLib::StringList& block, QImage* result = 0 );
                 TagLib::Ogg::XiphComment *m_tag;
                 TagLib::FLAC::File *m_flacFile;
         };

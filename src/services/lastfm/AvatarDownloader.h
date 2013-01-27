@@ -17,11 +17,10 @@
 #ifndef AVATAR_DOWNLOADER_H
 #define AVATAR_DOWNLOADER_H
 
-#include "NetworkAccessManagerProxy.h"
+#include "network/NetworkAccessManagerProxy.h"
 
 #include <QHash>
 #include <QObject>
-#include <QPixmap>
 
 class AvatarDownloader : public QObject
 {

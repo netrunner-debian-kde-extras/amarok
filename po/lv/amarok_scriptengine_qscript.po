@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2011-08-02 04:52+0200\n"
+"POT-Creation-Date: 2012-08-19 03:31+0200\n"
 "PO-Revision-Date: 2009-10-06 19:56+0300\n"
 "Last-Translator: Viesturs Zariņš <viesturs.zarins@mii.lu.lv>\n"
 "Language-Team: Latvian <locale@laka.lv>\n"
@@ -17,6 +17,14 @@ msgstr ""
 "X-Generator: Lokalize 1.0\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n != 0 ? 1 : "
 "2);\n"
+
+#: qtgui/linearlayout.cpp:70
+msgid "LinearLayout requires a parent"
+msgstr "LinearLayout nepieciešams vecāks"
+
+#: qtgui/linearlayout.cpp:76
+msgid "The parent must be a QGraphicsLayoutItem"
+msgstr "Vecākam ir jābūt QGraphicsLayoutItem"
 
 #: simplejavascriptapplet.cpp:512
 msgid "i18n() takes at least one argument"
@@ -81,11 +89,3 @@ msgstr "Darbība nav atbalstīta, %1"
 #: simplejavascriptapplet.cpp:824
 msgid "print() takes one argument"
 msgstr "print() nepieciešams viens parametrs"
-
-#: qtgui/linearlayout.cpp:70
-msgid "LinearLayout requires a parent"
-msgstr "LinearLayout nepieciešams vecāks"
-
-#: qtgui/linearlayout.cpp:76
-msgid "The parent must be a QGraphicsLayoutItem"
-msgstr "Vecākam ir jābūt QGraphicsLayoutItem"

@@ -14,15 +14,15 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include "core-impl/playlists/types/file/pls/PLSPlaylist.h"
+#include "PLSPlaylist.h"
 
-#include "core-impl/collections/support/CollectionManager.h"
-#include "core/support/Debug.h"
 #include "core/capabilities/EditCapability.h"
 #include "core/meta/Meta.h"
-#include "PlaylistManager.h"
+#include "core/support/Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/meta/proxy/MetaProxy.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
+#include "playlistmanager/PlaylistManager.h"
 
 #include <KMimeType>
 #include <KLocale>
@@ -149,7 +149,7 @@ PLSPlaylist::removeTrack( int position )
 bool
 PLSPlaylist::loadPls( QTextStream &textStream )
 {
-    MetaProxy::Track *proxyTrack = 0;
+    MetaProxy::TrackPtr proxyTrack;
 
     // Counted number of "File#=" lines.
     unsigned int entryCnt = 0;
@@ -244,7 +244,7 @@ PLSPlaylist::loadPls( QTextStream &textStream )
                 url.cleanPath();
             }
             proxyTrack = new MetaProxy::Track( url );
-            m_tracks << Meta::TrackPtr( proxyTrack );
+            m_tracks << Meta::TrackPtr( proxyTrack.data() );
             continue;
         }
         if( (*i).contains(regExp_Title) )

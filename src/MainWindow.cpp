@@ -23,23 +23,27 @@
 
 #include "MainWindow.h"
 
-#include "aboutdialog/ExtendedAboutDialog.h"
 #include "ActionClasses.h"
-#include "core/support/Amarok.h"
-#include "core/support/Debug.h"
 #include "EngineController.h" //for actions in ctor
 #include "KNotificationBackend.h"
-#include "Osd.h"
 #include "PaletteHandler.h"
+#include "PluginManager.h"
+#include "SvgHandler.h"
 #include "amarokconfig.h"
+#include "aboutdialog/ExtendedAboutDialog.h"
 #include "aboutdialog/OcsData.h"
 #include "amarokurls/AmarokUrlHandler.h"
 #include "amarokurls/BookmarkManager.h"
 #include "browsers/collectionbrowser/CollectionWidget.h"
 #include "browsers/filebrowser/FileBrowser.h"
 #include "browsers/playlistbrowser/PlaylistBrowser.h"
+#include "browsers/playlistbrowser/PodcastCategory.h"
 #include "browsers/servicebrowser/ServiceBrowser.h"
 #include "context/ContextDock.h"
+#include "core/meta/Statistics.h"
+#include "core/support/Amarok.h"
+#include "core/support/Components.h"
+#include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "covermanager/CoverManager.h" // for actions
 #include "dialogs/DiagnosticDialog.h"
@@ -50,21 +54,19 @@
 #ifdef DEBUG_BUILD_TYPE
 #include "network/NetworkAccessViewer.h"
 #endif // DEBUG_BUILD_TYPE
-#include "playlist/layouts/LayoutConfigAction.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
 #include "playlist/PlaylistModelStack.h"
 #include "playlist/PlaylistDock.h"
 #include "playlist/ProgressiveSearchWidget.h"
-#include "playlistmanager/file/PlaylistFileProvider.h"
+#include "playlist/layouts/LayoutConfigAction.h"
 #include "playlistmanager/PlaylistManager.h"
-#include "PodcastCategory.h"
+#include "playlistmanager/file/PlaylistFileProvider.h"
 #include "services/scriptable/ScriptableService.h"
-#include "toolbar/SlimToolbar.h"
+#include "statsyncing/Controller.h"
 #include "toolbar/MainToolbar.h"
-#include "SvgHandler.h"
-#include "PluginManager.h"
-//#include "mediabrowser.h"
+#include "toolbar/SlimToolbar.h"
+#include "widgets/Osd.h"
 
 #include <KAction>          //m_actionCollection
 #include <KActionCollection>
@@ -302,20 +304,16 @@ MainWindow::init()
     The::amarokUrlHandler(); //Instantiate
     The::coverFetcher(); //Instantiate
 
-    // Runtime check for Qt 4.6 here.
     // We delete the layout file once, because of binary incompatibility with older Qt version.
+    // We now depend on Qt >= 4.8, no need to check its version at runtime. Still support
+    // users upgrading from ancient Qt versions.
     // @see: https://bugs.kde.org/show_bug.cgi?id=213990
-    const QChar major = qVersion()[0];
-    const QChar minor = qVersion()[2];
-    if( major.digitValue() >= 4 && minor.digitValue() > 5 )
+    KConfigGroup config = Amarok::config();
+    if( !config.readEntry( "LayoutFileDeleted", false ) )
     {
-        KConfigGroup config = Amarok::config();
-        if( !config.readEntry( "LayoutFileDeleted", false ) )
-        {
-            QFile::remove( Amarok::saveLocation() + "layout" );
-            config.writeEntry( "LayoutFileDeleted", true );
-            config.sync();
-        }
+        QFile::remove( Amarok::saveLocation() + "layout" );
+        config.writeEntry( "LayoutFileDeleted", true );
+        config.sync();
     }
 
     // we must filter ourself to get mouseevents on the "splitter" - what is us, but filtered by the layouter
@@ -685,6 +683,12 @@ MainWindow::slotLoveTrack()
 }
 
 void
+MainWindow::slotBanTrack()
+{
+    emit banTrack( The::engineController()->currentTrack() );
+}
+
+void
 MainWindow::activate()
 {
 #ifdef Q_WS_X11
@@ -799,6 +803,10 @@ MainWindow::createActions()
     connect ( action, SIGNAL( triggered( bool ) ), CollectionManager::instance(), SLOT( checkCollectionChanges() ) );
     ac->addAction( "update_collection", action );
 
+    action =  new KAction( KIcon( "amarok_playcount" ), i18n( "Synchronize Statistics..." ), this );
+    ac->addAction( "synchronize_statistics", action );
+    connect( action, SIGNAL(triggered(bool)), Amarok::Components::statSyncingController(), SLOT(synchronize()) );
+
     action = new KAction( this );
     ac->addAction( "prev", action );
     action->setIcon( KIcon("media-skip-backward-amarok") );
@@ -884,12 +892,12 @@ MainWindow::createActions()
     action = new KAction( i18n( "Last.fm: Ban Current Track" ), this );
     ac->addAction( "banTrack", action );
     //action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_B ) );
-    connect( action, SIGNAL( triggered() ), SIGNAL( banTrack() ) );
+    connect( action, SIGNAL( triggered() ), SLOT(slotBanTrack()) );
 
-    action = new KAction( i18n( "Last.fm: Skip Current Track" ), this );
+    action = new KAction( QString( "Last.fm: Skip Current Track" ), this ); // i18n after string freeze
     ac->addAction( "skipTrack", action );
     action->setGlobalShortcut( KShortcut( Qt::META + Qt::Key_S ) );
-    connect( action, SIGNAL( triggered() ), SIGNAL( skipTrack() ) );
+    connect( action, SIGNAL( triggered() ), SIGNAL(skipTrack()) );
 
     action = new KAction( KIcon( "media-track-queue-amarok" ), i18n( "Queue Track" ), this );
     ac->addAction( "queueTrack", action );
@@ -954,7 +962,7 @@ MainWindow::createActions()
 
     LikeBack *likeBack = new LikeBack( LikeBack::AllButBugs,
         LikeBack::isDevelopmentVersion( KGlobal::mainComponent().aboutData()->version() ) );
-    likeBack->setServer( "likeback.kollide.net", "/send.php" );
+    likeBack->setServer( "amarok.likeback.kde.org", "/send.php" );
     likeBack->setAcceptedLanguages( QStringList( "en" ) );
     likeBack->setWindowNamesListing( LikeBack::WarnUnnamedWindows );    //Notify if a window has no name
 
@@ -986,13 +994,14 @@ MainWindow::setRating( int n )
     Meta::TrackPtr track = The::engineController()->currentTrack();
     if( track )
     {
+        Meta::StatisticsPtr statistics = track->statistics();
         // if we're setting an identical rating then we really must
         // want to set the half-star below rating
-        if( track->rating() == n )
+        if( statistics->rating() == n )
             n -= 1;
 
-        track->setRating( n );
-        Amarok::OSD::instance()->OSDWidget::ratingChanged( track->rating() );
+        statistics->setRating( n );
+        Amarok::OSD::instance()->OSDWidget::ratingChanged( statistics->rating() );
     }
 }
 
@@ -1064,6 +1073,7 @@ MainWindow::createMenus()
 #endif // DEBUG_BUILD_TYPE
     m_toolsMenu.data()->addSeparator();
     m_toolsMenu.data()->addAction( Amarok::actionCollection()->action("update_collection") );
+    m_toolsMenu.data()->addAction( Amarok::actionCollection()->action("synchronize_statistics") );
     //END Tools menu
 
     //BEGIN Settings menu

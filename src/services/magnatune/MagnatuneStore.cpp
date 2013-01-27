@@ -26,6 +26,7 @@
 #include "MagnatuneConfig.h"
 #include "MagnatuneDatabaseWorker.h"
 #include "MagnatuneInfoParser.h"
+#include "MagnatuneNeedUpdateWidget.h"
 #include "browsers/InfoProxy.h"
 #include "MagnatuneUrlRunner.h"
 
@@ -69,7 +70,6 @@ void MagnatuneServiceFactory::init()
 {
     DEBUG_BLOCK
     MagnatuneStore* service = new MagnatuneStore( this, "Magnatune.com" );
-    m_activeServices << service;
     m_initialized = true;
     emit newService( service );
 }
@@ -92,6 +92,7 @@ MagnatuneStore::MagnatuneStore( MagnatuneServiceFactory* parent, const char *nam
         : ServiceBase( name, parent )
         , m_downloadHandler( 0 )
         , m_redownloadHandler( 0 )
+        , m_needUpdateWidget( 0 )
         , m_downloadInProgress( 0 )
         , m_currentAlbum( 0 )
         , m_streamType( MagnatuneMetaFactory::OGG )
@@ -133,9 +134,8 @@ MagnatuneStore::MagnatuneStore( MagnatuneServiceFactory* parent, const char *nam
     metaFactory->setStreamType( m_streamType );
     m_registry = new ServiceSqlRegistry( metaFactory );
     m_collection = new Collections::MagnatuneSqlCollection( "magnatune", "Magnatune.com", metaFactory, m_registry );
-    m_serviceready = true;
     CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
-    emit( ready() );
+    setServiceReady( true );
 }
 
 MagnatuneStore::~MagnatuneStore()
@@ -283,8 +283,16 @@ void MagnatuneStore::initBottomPanel()
     m_downloadAlbumButton->setObjectName( "downloadButton" );
     m_downloadAlbumButton->setIcon( KIcon( "download-amarok" ) );
     
-
     connect( m_downloadAlbumButton, SIGNAL( clicked() ) , this, SLOT( download() ) );
+
+    if ( !config.lastUpdateTimestamp() )
+    {
+        m_needUpdateWidget = new MagnatuneNeedUpdateWidget(m_bottomPanel);
+
+        connect( m_needUpdateWidget, SIGNAL(wantUpdate()), SLOT(updateButtonClicked()) );
+
+        m_downloadAlbumButton->setParent(0);
+    }
 }
 
 
@@ -292,6 +300,9 @@ void MagnatuneStore::updateButtonClicked()
 {
     DEBUG_BLOCK
     m_updateAction->setEnabled( false );
+    if ( m_needUpdateWidget )
+        m_needUpdateWidget->disable();
+
     updateMagnatuneList();
 }
 
@@ -306,7 +317,7 @@ bool MagnatuneStore::updateMagnatuneList()
 
     KTemporaryFile tempFile;
     tempFile.setSuffix( ".bz2" );
-    tempFile.setAutoRemove( false );  //file must be removed later
+    tempFile.setAutoRemove( false );  // file will be removed in MagnatuneXmlParser
     if( !tempFile.open() )
     {
         return false; //error
@@ -336,6 +347,7 @@ void MagnatuneStore::listDownloadComplete( KJob * downLoadJob )
     }
 
     m_updateAction->setEnabled( true );
+
     if ( !downLoadJob->error() == 0 )
     {
         debug() << "Got an error, bailing out: " << downLoadJob->errorString();
@@ -362,6 +374,8 @@ void MagnatuneStore::listDownloadCancelled( )
     debug() << "Aborted xml download";
 
     m_updateAction->setEnabled( true );
+    if ( m_needUpdateWidget )
+        m_needUpdateWidget->enable();
 }
 
 
@@ -380,6 +394,15 @@ void MagnatuneStore::doneParsing()
         config.setLastUpdateTimestamp( m_magnatuneTimestamp );
 
     config.save();
+
+    if ( m_needUpdateWidget )
+    {
+        m_needUpdateWidget->setParent(0);
+        m_needUpdateWidget->deleteLater();
+        m_needUpdateWidget = 0;
+
+        m_downloadAlbumButton->setParent(m_bottomPanel);
+    }
 }
 
 
@@ -500,7 +523,8 @@ void MagnatuneStore::polish()
     connect( databaseWorker, SIGNAL( gotMoodMap(QMap< QString, int >) ), this, SLOT( moodMapReady(QMap< QString, int >) ) );
     ThreadWeaver::Weaver::instance()->enqueue( databaseWorker );
 
-    checkForUpdates();
+    if ( MagnatuneConfig().autoUpdateDatabase() )
+        checkForUpdates();
 }
 
 

@@ -3,7 +3,7 @@
   <!ENTITY % addindex "IGNORE">
   <!ENTITY % Swedish "INCLUDE">
 ]>
-<book lang="&language;">
+<book id="amarok" lang="&language;">
 <bookinfo>
 <title
 >Handbok Amarok</title>
@@ -51,9 +51,9 @@
 <legalnotice
 >&FDLNotice;</legalnotice>
 <date
->2012-05-18</date>
+>2012-12-22</date>
       <releaseinfo
->2.5.0</releaseinfo>
+>2.7.0</releaseinfo>
 <abstract>
 <para
 >&amarok; är en fri, mångsidig och kraftfull musikspelare för &Linux;. De senaste utgåvorna i 2.x-serien, ofta kallade <quote
@@ -82,7 +82,7 @@
 </keywordset>
 </bookinfo>
 <!--userbase <timestamp
->2012-05-19T14:29:24Z</timestamp
+>2012-12-23T12:57:51Z</timestamp
 >-->
 
 <!--userbase-content-->
@@ -102,7 +102,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4.png" format="PNG"/>
+      <imagedata fileref="amarok2-6.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -116,7 +116,7 @@
   <row>
     <entry>
     <para
->Amarok 2.4, som spelar fri musik från Magnatunes</para
+>Amarok 2.7, som spelar fri musik från Jamendo</para
 ></entry>
   </row>
   </tbody>
@@ -635,7 +635,7 @@
 ><guisubmenu
 >Anpassa Amarok</guisubmenu
 ><guimenuitem
->Samling</guimenuitem
+>Lokal samling</guimenuitem
 ></menuchoice
 >. </para>
 <para>
@@ -644,15 +644,15 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4-1configuredialogcollection.png" format="PNG"/>
+      <imagedata fileref="amarokconfigurationdialoglocalcollection2-7.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
->Dialogrutan för att anpassa samlingen, från version 2.5</phrase>
+>Dialogrutan för att anpassa samlingen, från version 2.7</phrase>
     </textobject>
     <caption>
       <para
->Dialogrutan för att anpassa samlingen, från version 2.5</para>
+>Dialogrutan för att anpassa samlingen, från version 2.7</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -1249,14 +1249,8 @@
 >Ta bort objekt från samlingen</title
 > 
 <para
-><warning
-><para
->Använd alternativet med försiktighet: Spåren kommer att tas bort från hårddisken, inte skickas till papperskorgen.</para
-></warning>
-</para>
-<para
 >Du kan ta bort vilket objekt som helst från samlingen genom att högerklicka på det och välja det nedersta alternativet <guilabel
->Ta bort spår</guilabel
+>Flytta spår till papperskorgen</guilabel
 >. En dialogruta för bekräftelse visas, vilket förhindrar borttagning av spår av misstag. Fler än ett objekt kan markeras med <keycombo
 >&Ctrl;<keycap
 >-klick</keycap
@@ -1318,7 +1312,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok_addtoplaylist.png" format="PNG"/>
+      <imagedata fileref="amarok2-7addtoplaylist.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -1473,7 +1467,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok_removeformplaylist.png" format="PNG"/>
+      <imagedata fileref="amarok2-7removefromplaylist.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -1689,9 +1683,9 @@
 >Spara och hämta favoritspellistor</title
 > 
 <para
->Diskikonen (visad i tabellen ovan), längst ner i rutan <guilabel
+>Diskikonen, på raden som kan visas längst ner i rutan <guilabel
 >Spellista</guilabel
-> låter dig spara den nuvarande spellistan i &amarok;. Det gör det möjligt att återkalla ett visst musikurval från samlingen när som helst. Spellistor innehåller bara pekare till vald musik, inte själva musiken. Om spellistan alltså pekar på musik i en extern enhet, måste den vara ansluten och monterad, annars kan inte musiken spelas. Det finns tre ställe spellistor kan lagras: </para>
+>, låter dig spara den nuvarande spellistan i &amarok;. Det gör det möjligt att återkalla ett visst musikurval från samlingen när som helst. Spellistor innehåller bara pekare till vald musik, inte själva musiken. Om spellistan alltså pekar på musik i en extern enhet, måste den vara ansluten och monterad, annars kan inte musiken spelas. Det finns tre ställe spellistor kan lagras: </para>
 <orderedlist>
 <listitem
 ><para
@@ -1716,7 +1710,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4-1saveplaylistchoices.png" format="PNG"/>
+      <imagedata fileref="amarok2-7saveplaylistchoices.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -1739,7 +1733,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok-renameplaylist.png" format="PNG"/>
+      <imagedata fileref="amarok2-7renamesavedplaylist.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -1828,7 +1822,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="app.png" format="PNG"/>
+      <imagedata fileref="applet_explorer.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -1867,13 +1861,6 @@
 >mount</userinput
 > i en terminal, visas alla monterade enheter. </para>
 </sect2>
-<sect2 id="amarok-cannot-see-the-predefined-playlists-on-my-portable-music-player"
-><title
->Amarok kan inte se de fördefinierade spellistorna på min bärbara musikspelare</title
-> 
-<para
->Vänta på nästa version av &amarok;. </para>
-</sect2>
 <sect2 id="after-i-have-updated-my-collection-the-additions-are-not-shown-in-the-content-browser"
 ><title
 >Efter att jag har uppdaterat samlingen, visas inte tilläggen i samlingsbläddraren.</title
@@ -1900,21 +1887,7 @@
 <orderedlist>
 <listitem
 ><para
->Sångtexten är inte tillgänglig på de platser som kontrollerats på Internet. Du kan behöva lägga till flera platser via skriptmenyn (innan 2.4.1:<menuchoice
-><guimenu
->Verktyg</guimenu
-><guimenuitem
->Skripthantering</guimenuitem
-></menuchoice
->, från 2.4.1: <menuchoice
-><guimenu
->Inställningar</guimenu
-><guisubmenu
->Anpassa  Amarok</guisubmenu
-><guimenuitem
->Skript</guimenuitem
-></menuchoice
->).</para
+>Sångtexten är inte tillgänglig på de Internet-platser som kontrollerades. Du kan välja att lägga till fler platser via skriptmenyn.</para
 ></listitem>
 <listitem
 ><para
@@ -1960,14 +1933,16 @@
 <para
 >Alla ljudfiler som &amarok; har samlat i databasen. Samlingen kan variera i storlek och musikspårens sammansättning, beroende på vilka externa enheter (som musik-cd eller bärbara spelare med musik) är anslutna till och monterade på datorn. </para>
 </sect2>
-<sect2 id="content-browser"
+<sect2 id="collection-browser"
 ><title
 >Samlingsbläddraren</title
 > 
 <para
->Det här är den centrala delen i rutan <emphasis
+>Den finns i rutan <emphasis
 >Mediakällor</emphasis
-> som låter dig lyssna på musik som finns i din samling. Samlingsbläddraren låter dig välja spårlistans sorteringsordning, samt detaljnivån du vill se musiken. </para>
+> under <quote
+>Lokal musik</quote
+> och visar listan med den musik som finns i dina samlingar. Samlingsbläddraren låter dig söka och välja spårlistans sorteringsordning enligt diverse ID3-taggar. </para>
 </sect2>
 <sect2 id="playlist"
 ><title
@@ -1981,13 +1956,7 @@
 >Skript</title
 > 
 <para
->Insticksprogram i &amarok; för att utöka funktionerna. Innan 2.4.1 är skript tillgängliga med <menuchoice
-><guimenu
->Verktyg</guimenu
-><guimenuitem
->Skripthantering</guimenuitem
-></menuchoice
->, från 2.4.1 med <menuchoice
+>Insticksprogram i &amarok; för att utöka funktionerna. Skript är tillgängliga med <menuchoice
 ><guimenu
 >Inställningar</guimenu
 ><guisubmenu
@@ -2044,7 +2013,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amaroknew2-4.png" format="PNG"/>
+      <imagedata fileref="amarok2-7aftersplash.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -2071,7 +2040,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok_main_toolbar.png" format="PNG"/>
+      <imagedata fileref="amarok2-7thetoolbar.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -2083,8 +2052,8 @@
     </entry>
     <entry>
     <para
-><link linkend="toolbar"
->Verktygsraden</link
+><link linkend="main-toolbar"
+>Huvudverktygsraden</link
 >&nbsp;</para
 >    </entry>
   </row>
@@ -2096,7 +2065,32 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarokwindow_mediasources.png" format="PNG"/>
+      <imagedata fileref="slim_toolbar.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot
+></para>
+    </entry>
+    <entry>
+    <para
+><link linkend="slim-toolbar"
+>Den tunna verktygsraden</link
+>&nbsp;</para
+>    </entry>
+  </row>
+  <row>
+    <entry>
+    <para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="amarok2-7themediasources.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -2146,7 +2140,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarokwindow_playlist.png" format="PNG"/>
+      <imagedata fileref="amarok2-7theplaylist.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -2276,7 +2270,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="toolbar_slim.png" format="PNG"/>
+      <imagedata fileref="slim_toolbar.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -2318,7 +2312,7 @@
 >Internettjänster</emphasis
 > som du har aktiverat. Här kan du bläddra bland listor över radiostationer och podsändningar, lyssna på eller prenumerera på dem, interagera med ditt konto på <ulink url="http://www.last.fm"
 >last.fm</ulink
->, köpa musik från Internetbutiker som <ulink url="http://www.magnatune.com/"
+>, köpa musik från Internetbutiker som vår nya Amazon MP3-butik, <ulink url="http://www.magnatune.com/"
 >Magnatune</ulink
 > och ladda ner oberoende artisters musik från <ulink url="http://www.jamendo.com/"
 >Jamendo</ulink
@@ -2354,9 +2348,9 @@
   </mediaobject>
 </screenshot>
 </para>
-<sect2 id="menu-interface"
+<sect2 id="navigation-menu"
 ><title
->Menygränssnitt</title
+>Menyn Navigering</title
 > 
 <para
 ><emphasis
@@ -2486,7 +2480,8 @@
 </informaltable>
 </para>
 </sect3>
-<sect3 id="local-music"
+</sect2>
+<sect2 id="local-music"
 ><title
 >Lokal musik</title
 > 
@@ -2683,7 +2678,6 @@
   </tgroup>
 </informaltable>
 </para>
-</sect3>
 </sect2>
 <sect2 id="internet"
 ><title
@@ -2698,15 +2692,7 @@
 ><guimenuitem
 >Insticksprogram</guimenuitem
 ></menuchoice
-> (innan Amarok 2.4.1 var det: <menuchoice
-><guimenu
->Inställningar</guimenu
-><guisubmenu
->Anpassa Amarok...</guisubmenu
-><guimenuitem
->Internettjänster</guimenuitem
-></menuchoice
->). Mer <link linkend="internet-services"
+>. Mer <link linkend="internet-services"
 >om inställning av Internettjänster</link
 >. Det finns några skript som lägger till Internettjänster; se <link linkend="scripts"
 >Skript</link
@@ -2774,7 +2760,7 @@
     <para
 >Ansluter till <guilabel
 >Librivox</guilabel
-> en omfattande samling fria ljudböcker.</para>
+>, en omfattande samling fria ljudböcker.</para>
     </entry>
   </row>
   <row>
@@ -3097,7 +3083,7 @@
 <para
 ><emphasis
 >Sammanhangsrutan</emphasis
-> är en ruta där du kan lägga till olika komponenter som visar information och andra medier om den aktuella musiken. En Internetanslutning krävs för de mest användbara, som kan hämta sångtexter, information, foton, videor och t.o.m. gitarr- eller bastablaturer, beroende på vilka miniprogram du väljer att visa. </para>
+> är en ruta där du kan lägga till olika komponenter som visar information och andra medier om den aktuella musiken. En Internetanslutning krävs för de mest användbara, som kan hämta sångtexter, information, foton och t.o.m. gitarr- eller bastablaturer, beroende på vilka miniprogram du väljer att visa. </para>
 <sect2 id="using-the-context-pane"
 ><title
 >Använda sammanhangsrutan</title
@@ -3140,7 +3126,11 @@
 ><para
 >Den nedre delen av panelen, där du kan expandera och fälla ihop komponenter och hantera dem på olika sätt när du klickar på ikonen <emphasis
 >Anpassa miniprogram</emphasis
-> (skiftnyckeln).</para
+> <inlinemediaobject
+> <imageobject
+> <imagedata fileref="Icon-configure.png" format="PNG"/> </imageobject
+> </inlinemediaobject
+>.</para
 ></listitem>
 </itemizedlist>
 <sect3 id="configuring-applets"
@@ -3153,7 +3143,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="app.png" format="PNG"/>
+      <imagedata fileref="amarok2-6appletbrowser.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -3293,20 +3283,6 @@
     <entry>
     <para
 ><guilabel
->Videoklipp</guilabel
-></para>
-    </entry>
-    <entry>
-    <para
->Visar flera matchande videoklipp från <emphasis
->YouTube</emphasis
-> för den aktuella låten.</para>
-    </entry>
-  </row>
-  <row>
-    <entry>
-    <para
-><guilabel
 >Tablatur</guilabel
 ></para>
     </entry>
@@ -3387,7 +3363,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="playlist2.png" format="PNG"/>
+      <imagedata fileref="amarok2-7theplaylist.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -3474,7 +3450,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="context_menu.png" format="PNG"/>
+      <imagedata fileref="amarok2-6trackcontextmenu.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -3506,7 +3482,7 @@
 <para
 >Mer om <link linkend="queue-manager"
 >köhantering</link
-> senare. </para>
+>. </para>
 </sect3>
 <sect3 id="stop-playing-after-this-track"
 ><title
@@ -3548,7 +3524,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="album.png" format="PNG"/>
+      <imagedata fileref="amarok2-6playlistalbumcontextmenu.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -4069,62 +4045,19 @@
 ></menuchoice
 > och visa följande dialogruta: </para>
 <para>
-<informaltable>
-  <tgroup cols="1">
-  <thead>
-  <row>
-    <entry
->Amaroks inställningsdialogruta</entry>
-  </row>
-  </thead>
-  <tbody>
-  <row>
-    <entry>
-    <para>
 <screenshot>
 <screeninfo
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4-1configuredialog.png" format="PNG"/>
+      <imagedata fileref="amarokconfigurationdialoggeneral2-7.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
->Amarok 2.4.1 på</phrase>
+></phrase>
     </textobject>
-    <caption>
-      <para
->Amarok 2.4.1 på</para>
-    </caption>
   </mediaobject>
-</screenshot
-></para>
-    </entry>
-    <entry>
-    <para>
-<screenshot>
-<screeninfo
-></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="new_amarok_configuration_options_general_edit.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase
->Amarok 2.5 på</phrase>
-    </textobject>
-    <caption>
-      <para
->Amarok 2.5 på</para>
-    </caption>
-  </mediaobject>
-</screenshot
-></para
-></entry>
-  </row>
-  </tbody>
-  </tgroup>
-</informaltable>
+</screenshot>
 </para>
 <sect1 id="general"
 ><title
@@ -4249,9 +4182,9 @@
 >Stämningsraden</link
 >. </para>
 </sect1>
-<sect1 id="collection4"
+<sect1 id="local-collection"
 ><title
->Samling</title
+>Lokal samling</title
 > 
 <para>
 <screenshot>
@@ -4259,7 +4192,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4-1configuredialogcollection.png" format="PNG"/>
+      <imagedata fileref="amarokconfigurationdialoglocalcollection2-7.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -4340,36 +4273,14 @@
     <entry>
     <para
 ><guilabel
->Skriv statistik i fil</guilabel
+>Importera musik: Omkoda spår</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Skriv tillbaka ändrad statistik (tex poäng, senaste spelning, antal spelningar) som taggar i filen.</para>
-    </entry>
-  </row>
-  <row>
-    <entry>
-    <para
-><guilabel
->Skriv omslag i fil</guilabel
-></para>
-    </entry>
-    <entry>
-    <para
->Skriv tillbaka ändrade omslag till filen. Det kommer att ersätta befintliga inbäddade omslag.</para>
-    </entry>
-  </row>
-  <row>
-    <entry>
-    <para
-><guilabel
->Aktivera detektering av teckenuppsättning för ID3-taggar</guilabel
-></para>
-    </entry>
-    <entry>
-    <para
->Om markerad, kommer &amarok; att använda Mozillas detektering av teckenuppsättning för att automatiskt försöka gissa teckenuppsättningar använda i ID3-taggar.</para
+>Om &amarok; ska koda om spår när de kopieras eller flyttas till <emphasis
+>Lokal samling</emphasis
+>.</para
 ></entry>
   </row>
   </tbody>
@@ -4406,14 +4317,168 @@
 > statistik från en &amarok; 2.x-databas, så om du vill infoga en äldre v2.x-databasversion, måste du göra det för hand. </para>
 </sect2>
 </sect1>
-<sect1 id="formerly-internet-services-before-amarok-2-4-1-now-plugins"
+<sect1 id="metadata"
 ><title
->Tidigare Internettjänster före Amarok 2.4.1, nu Insticksprogram</title
+>Metadata</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="metadatadialog.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Den här dialogrutan gör det möjligt att anpassa inställningarna för hantering av metadata. Det är en separat sida från och med Amarok 2.7. </para>
+<para
+>Metadata-alternativ: </para>
+<para>
+<informaltable>
+  <tgroup cols="2">
+  <thead>
+  <row>
+    <entry
+>Alternativ</entry>
+    <entry
+>Verktygstips</entry>
+  </row>
+  </thead>
+  <tbody>
+  <row>
+    <entry>
+    <para
+><guilabel
+>Skriv statistik i fil</guilabel
+></para>
+    </entry>
+    <entry>
+    <para
+>Markera för att skriva tillbaka uppspelningsändrande statistik som taggar i ljudfilerna.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+><guilabel
+>Skriv omslag i fil, maximal storlek...</guilabel
+></para>
+    </entry>
+    <entry>
+    <para
+>Markera för att skriva tillbaka ändrade omslag i ljudfilerna. Det kommer att ersätta befintliga inbäddade omslag. Välj ett värde i kombinationslistan för att ställa in omslagets maximala storlek.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+><guilabel
+>Aktivera detektering av teckenuppsättning för ID3-taggar</guilabel
+></para>
+    </entry>
+    <entry>
+    <para
+>Om markerad, kommer &amarok; att använda Mozillas detektering av teckenuppsättning för att automatiskt försöka gissa teckenuppsättningar använda i ID3-taggar. Om taggarna är riktiga är det säkrare att lämna alternativet avstängt.</para
+></entry>
+  </row>
+  </tbody>
+  </tgroup>
+</informaltable>
+</para>
+<sect2 id="statistics-synchronization"
+><title
+>Statistiksynkronisering</title
 > 
 <para
->Se avsnittet <link linkend="plugins-formerly-internet-services"
->Insticksprogram</link
->. </para>
+>Den här dialogrutan låter dig <link linkend="statistics-synchronization"
+>hålla statistik i olika samlingar synkroniserad</link
+>. Försäkra dig om att bara markera samlingar mellan vilka du vill synkronisera metadata. </para>
+<para
+>Alternativ för statistiksynkronisering: </para>
+<para>
+<informaltable>
+  <tgroup cols="2">
+  <thead>
+  <row>
+    <entry
+>Alternativ</entry>
+    <entry
+>Verktygstips</entry>
+  </row>
+  </thead>
+  <tbody>
+  <row>
+    <entry>
+    <para
+><guilabel
+>Synkronisera Betyg</guilabel
+></para>
+    </entry>
+    <entry>
+    <para
+>Markera för att synkronisera betyg mellan samlingar.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+><guilabel
+>Synkronisera Först spelad</guilabel
+></para>
+    </entry>
+    <entry>
+    <para
+>Markera för att synkronisera datum först spelad mellan samlingar.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+><guilabel
+>Synkronisera Senast spelad</guilabel
+></para>
+    </entry>
+    <entry>
+    <para
+>Markera för att synkronisera datum senast spelad mellan samlingar.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+><guilabel
+>Synkronisera Uppspelningsräknare</guilabel
+></para>
+    </entry>
+    <entry>
+    <para
+>Markera för att synkronisera antal spelningar mellan samlingar.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+><guilabel
+>Synkronisera Beteckningar</guilabel
+></para>
+    </entry>
+    <entry>
+    <para
+>Markera för att synkronisera beteckningar mellan samlingar.</para
+></entry>
+  </row>
+  </tbody>
+  </tgroup>
+</informaltable>
+</para>
+</sect2>
 </sect1>
 <sect1 id="playback"
 ><title
@@ -4425,7 +4490,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4-1configplayback.png" format="PNG"/>
+      <imagedata fileref="amarokconfigurationdialog2-7playback.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -4496,7 +4561,7 @@
 >&phonon; är det multimediasystem &amarok; använder. Det skapades för att låta KDE 4 vara oberoende av enskilda multimediasystem, som <guilabel
 >GStreamer</guilabel
 > eller <guilabel
->Xine</guilabel
+>VLC</guilabel
 >, och för att tillhandahålla ett stabilt API under KDE 4:s livstid. Som en bonus förenklar det programmering genom att tillhandahålla ett enkelt API som fungerar på flera plattformer, som <guilabel
 >Windows</guilabel
 > och <guilabel
@@ -4516,7 +4581,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4-1phonondevices.png" format="PNG"/>
+      <imagedata fileref="amarokconfigurationdialog2-7phonondevice.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -4546,7 +4611,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4-1configspeakersetup.png" format="PNG"/>
+      <imagedata fileref="amarokconfigurationdialog2-7phononhardware.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -4568,7 +4633,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4-1phononbackends.png" format="PNG"/>
+      <imagedata fileref="amarokconfigurationdialog2-7phononbackend.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -4579,8 +4644,6 @@
 </para>
 <para
 >Beroende på operativsystem kan du se alternativ som <emphasis
->Xine</emphasis
->, <emphasis
 >GStreamer</emphasis
 >, <emphasis
 >VLC</emphasis
@@ -4603,10 +4666,6 @@
 >. </para>
 <para
 >Varje bakgrundsprogram inkluderar sina egna avkodare, så, beroende på det bakgrundsprogram du väljer kan du också behöva ladda ner avkodare, eftersom de flesta distributioner inte skickar med dem av juridiska skäl. </para>
-<para
->För information om avkodare och uppspelning av MP3-filer, se sidan <ulink url="http://amarok.kde.org/wiki/MP3"
->Information om MP3</ulink
->. </para>
 </sect3>
 </sect2>
 </sect1>
@@ -4615,62 +4674,19 @@
 >Underrättelser</title
 > 
 <para>
-<informaltable>
-  <tgroup cols="1">
-  <thead>
-  <row>
-    <entry
->Amaroks dialogruta för anpassning av underrättelser</entry>
-  </row>
-  </thead>
-  <tbody>
-  <row>
-    <entry>
-    <para>
 <screenshot>
 <screeninfo
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4-1notifications.png" format="PNG"/>
+      <imagedata fileref="amarokconfigurationdialog2-7notifications.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
->Amarok 2.4.1 på</phrase>
+></phrase>
     </textobject>
-    <caption>
-      <para
->Amarok 2.4.1 på</para>
-    </caption>
   </mediaobject>
-</screenshot
-></para>
-    </entry>
-    <entry>
-    <para>
-<screenshot>
-<screeninfo
-></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="new_amarok_configuration_options_notifications_edit.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase
->Amarok 2.5 på</phrase>
-    </textobject>
-    <caption>
-      <para
->Amarok 2.5 på</para>
-    </caption>
-  </mediaobject>
-</screenshot
-></para
-></entry>
-  </row>
-  </tbody>
-  </tgroup>
-</informaltable>
+</screenshot>
 </para>
 <para>
 <informaltable>
@@ -4813,7 +4829,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4-1databaseconfig.png" format="PNG"/>
+      <imagedata fileref="amarokconfigurationdialog2-7database.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -4867,7 +4883,7 @@
     <para
 >Skriv in namnet på den befintliga <guilabel
 >MySQL</guilabel
->-servern</para>
+>-servern.</para>
     </entry>
   </row>
   <row>
@@ -4927,71 +4943,36 @@
 >här</link
 >. </para>
 </sect1>
-<sect1 id="plugins-formerly-internet-services"
+<sect1 id="plugins"
 ><title
->Insticksprogram (tidigare Internettjänster)</title
+>Insticksprogram</title
 > 
 <para>
-<informaltable>
-  <tgroup cols="1">
-  <thead>
-  <row>
-    <entry
->Amaroks dialogruta för anpassning av insticksprogram</entry>
-  </row>
-  </thead>
-  <tbody>
-  <row>
-    <entry>
-    <para>
 <screenshot>
 <screeninfo
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="settings-internet-amarok.png" format="PNG"/>
+      <imagedata fileref="amarok2-7settingsplugins.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
->Internettjänster innan Amarok 2.4.1</phrase>
+>(Klicka för att förstora)</phrase>
     </textobject>
     <caption>
       <para
->Internettjänster innan Amarok 2.4.1</para>
+>(Klicka för att förstora)</para>
     </caption>
   </mediaobject>
 </screenshot>
-<screenshot>
-<screeninfo
-></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="mediasources4.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase
->Internettjänster nu</phrase>
-    </textobject>
-    <caption>
-      <para
->Internettjänster nu</para>
-    </caption>
-  </mediaobject>
-</screenshot
-></para
-></entry>
-  </row>
-  </tbody>
-  </tgroup>
-</informaltable>
 </para>
 <para
 >Anpassning av insticksprogram styr nu <guilabel
 >Samlingar</guilabel
 >, <guilabel
->Enheter</guilabel
->, och <guilabel
 >Internettjänster</guilabel
+>, och <guilabel
+>Gränssnitt för lokal samling</guilabel
 >. </para>
 <sect2 id="collections"
 ><title
@@ -5039,12 +5020,12 @@
     <entry>
     <para
 ><guilabel
->Ipod-samling</guilabel
+>Samling på iPod, iPad och iPhone</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Insticksprogram med Ipod-samling för &amarok;</para>
+>Insticksprogram för att använda iPod-liknande enheter som samlingar i &amarok;</para>
     </entry>
   </row>
   <row>
@@ -5088,65 +5069,6 @@
 </informaltable>
 </para>
 </sect2>
-<sect2 id="devices"
-><title
->Enheter</title
-> 
-<para
->&amarok; låter dig komma åt följande enheter, om de är tillgängliga: </para>
-<para>
-<informaltable>
-  <tgroup cols="2">
-  <thead>
-  <row>
-    <entry
->Enheter</entry>
-    <entry
->Beskrivning</entry>
-  </row>
-  </thead>
-  <tbody>
-  <row>
-    <entry>
-    <para
-><guilabel
->Masslagringsenhet</guilabel
-></para>
-    </entry>
-    <entry>
-    <para
->Enhetsinsticksprogram för &amarok;s allmänna masslagring</para>
-    </entry>
-  </row>
-  <row>
-    <entry>
-    <para
-><guilabel
->NFS-enhet</guilabel
-></para>
-    </entry>
-    <entry>
-    <para
->Enhetsinsticksprogram för &amarok; som ger stöd för NFS (Network File System)</para>
-    </entry>
-  </row>
-  <row>
-    <entry>
-    <para
-><guilabel
->SMB-enhet</guilabel
-></para>
-    </entry>
-    <entry>
-    <para
->Enhetsinsticksprogram för &amarok; som ger stöd för SMBFS (Samba File System)</para
-></entry>
-  </row>
-  </tbody>
-  </tgroup>
-</informaltable>
-</para>
-</sect2>
 <sect2 id="internet-services"
 ><title
 >Internettjänster</title
@@ -5163,7 +5085,7 @@
     <entry
 >Beskrivning</entry>
     <entry
->Behöver anpassning<inlinemediaobject
+>Behöver anpassning <inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-configure.png" format="PNG"/> </imageobject
 > </inlinemediaobject
@@ -5249,24 +5171,6 @@
     <entry>
     <para
 ><guilabel
->mp3tunes</guilabel
-></para>
-    </entry>
-    <entry>
-    <para
->Privat MP3-förvaring. Se också <ulink url="http://www.mp3tunes.com/cb/about/"
->mp3tunes.com</ulink
->.</para>
-    </entry>
-    <entry>
-    <para
->Ja</para>
-    </entry>
-  </row>
-  <row>
-    <entry>
-    <para
-><guilabel
 >Magnatune butik</guilabel
 ></para>
     </entry>
@@ -5301,6 +5205,24 @@
     <entry>
     <para
 ><guilabel
+>mp3tunes</guilabel
+></para>
+    </entry>
+    <entry>
+    <para
+>Privat MP3-förvaring. Se också <ulink url="http://www.mp3tunes.com/cb/about/"
+>mp3tunes.com</ulink
+>.</para>
+    </entry>
+    <entry>
+    <para
+>Ja</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+><guilabel
 >Podsändningskatalog</guilabel
 ></para>
     </entry>
@@ -5319,6 +5241,65 @@
 </para>
 <para
 >Andra tjänster är tillgängliga via skript. </para>
+</sect2>
+<sect2 id="local-collection-backends"
+><title
+>Gränssnitt för lokal samling</title
+> 
+<para
+>&amarok; erbjuder åtkomst av följande gränssnitt för lokal samling, om de är tillgängliga: </para>
+<para>
+<informaltable>
+  <tgroup cols="2">
+  <thead>
+  <row>
+    <entry
+>Enheter</entry>
+    <entry
+>Beskrivning</entry>
+  </row>
+  </thead>
+  <tbody>
+  <row>
+    <entry>
+    <para
+><guilabel
+>Gränssnitt för lokala filer och USB-masslagring</guilabel
+></para>
+    </entry>
+    <entry>
+    <para
+>Lokala samlingskataloger på lokala och inkopplingsbara diskar</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+><guilabel
+>Gränssnitt för delade NFS kataloger</guilabel
+></para>
+    </entry>
+    <entry>
+    <para
+>Lokala samlingskataloger på delade NFS fjärrkataloger (nätverksfilsystem)</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+><guilabel
+>Gränssnitt för delade SMB (Windows) kataloger</guilabel
+></para>
+    </entry>
+    <entry>
+    <para
+>Lokala samlingskataloger på delade Samba (Windows) fjärrkataloger</para
+></entry>
+  </row>
+  </tbody>
+  </tgroup>
+</informaltable>
+</para>
 </sect2>
 <sect2 id="ampache-configuration"
 ><title
@@ -5351,17 +5332,6 @@
 >. Om du inte vill använda <guilabel
 >plånboken</guilabel
 >, kommer ditt lösenord lagras i klartext istället. </para>
-</sect2>
-<sect2 id="mp3tunes-configuration"
-><title
->Inställning av mp3tunes</title
-> 
-<para
->Om du har en privat mp3tunes-lagring, klicka på <inlinemediaobject
-> <imageobject
-> <imagedata fileref="Icon-configure.png" format="PNG"/> </imageobject
-> </inlinemediaobject
-> och skriv in ditt användarnamn och lösenord. Du kommer sedan ha tillgång till din Internetlagring. </para>
 </sect2>
 <sect2 id="magnatune-store-configuration"
 ><title
@@ -5411,6 +5381,17 @@
 <para
 >Observera: Att ändra land gör att kundvagnen inte gäller längre. Om landet du bor i inte finns i listan kan du inte använda Amazons MP3-butik eftersom det inte stöds av Amazon. </para>
 </sect2>
+<sect2 id="mp3tunes-configuration"
+><title
+>Inställning av mp3tunes</title
+> 
+<para
+>Om du har en privat mp3tunes-lagring, klicka på <inlinemediaobject
+> <imageobject
+> <imagedata fileref="Icon-configure.png" format="PNG"/> </imageobject
+> </inlinemediaobject
+> och skriv in ditt användarnamn och lösenord. Du kommer sedan ha tillgång till din Internetlagring. </para>
+</sect2>
 </sect1>
 <sect1 id="scripts"
 ><title
@@ -5422,15 +5403,15 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4-1configscripts.png" format="PNG"/>
+      <imagedata fileref="amarok2-6scriptsconfigmenu.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
->Dialogrutan för skriptanpassning i Amarok 2.4.1</phrase>
+>Dialogrutan för skriptanpassning</phrase>
     </textobject>
     <caption>
       <para
->Dialogrutan för skriptanpassning i Amarok 2.4.1</para>
+>Dialogrutan för skriptanpassning</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -5507,8 +5488,6 @@
 <para
 >Bläddra, installera och avinstallera skript från andra användare. Du kan också söka, sortera, och betygsätta skripten i <emphasis
 >Amaroks tilläggsinstallation</emphasis
->. Kallades före &amarok; 2.4.1 <emphasis
->Hämta nya skript</emphasis
 >. </para>
 <sect3 id="add-on-installer"
 ><title
@@ -5554,22 +5533,24 @@
 > <imagedata fileref="Icon-dialog-information.png" format="PNG"/> </imageobject
 > </inlinemediaobject
 >. </para>
+<para
+>Ett skript kan också köras direkt i Amarok Script Console. Den aktiveras genom att markera Script Console och bekräfta valet genom att antingen klicka på knappen <guilabel
+>Ok</guilabel
+> eller <guilabel
+>Verkställ</guilabel
+>. För att inaktivera Script Console, avmarkera den och bekräfta igen. </para>
 <para>
 <screenshot>
 <screeninfo
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok_script_info.png" format="PNG"/>
+      <imagedata fileref="amarokconfigurationdialog2-7scriptconsole.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
->Amaroks skriptinformation</phrase>
+></phrase>
     </textobject>
-    <caption>
-      <para
->Amaroks skriptinformation</para>
-    </caption>
   </mediaobject>
 </screenshot>
 </para>
@@ -5578,17 +5559,19 @@
 </sect1>
 <sect1 id="changing-layouts"
 ><title
->Ändra layout</title>
+>Ändra layout</title
+> 
 <sect2 id="changing-the-amarok-window-layout"
 ><title
->Ändra Amaroks fönsterlayout</title>
+>Ändra Amaroks fönsterlayout</title
+> 
 <para>
 <screenshot>
 <screeninfo
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok_windowlayout.png" format="PNG"/>
+      <imagedata fileref="amarok2-6viewconfigmenu.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -5607,13 +5590,30 @@
 >. </para>
 <sect3 id="undocking-amarok-panes"
 ><title
->Koppla loss Amaroks rutor</title>
+>Koppla loss Amaroks rutor</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="amarok2-6viewundocksymbols.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
 <para
 >Klickar du på den ihåliga symbolen till vänster om korset kommer panelen kopplas loss, och visas som ett separat fönster på skrivbordet. På samma sätt kan du återställa vyn igen i &amarok;-fönstret. Du kan dra vyerna inuti &amarok;-fönstret för att arrangera om dem. Du kan stapla vyerna, eller till och med låta en eller två av dem täcka de andra, och växla mellan dem med flikar. </para>
 </sect3>
 <sect3 id="lock-and-save-amarok-window-layout"
 ><title
->Lås och spara Amaroks fönsterlayout</title>
+>Lås och spara Amaroks fönsterlayout</title
+> 
 <para
 >Om du är nöjd med layouten i &amarok;-fönstret, kan du låsa den genom att klicka på lämpligt alternativ i menyn <guilabel
 >Visa</guilabel
@@ -5632,7 +5632,8 @@
 </sect2>
 <sect2 id="changing-the-toolbar"
 ><title
->Ändra verktygsraden</title>
+>Ändra verktygsraden</title
+> 
 <para
 >Du kan också välja mellan två layouter för verktygsraden genom att klicka på lämpligt alternativ i menyn <guilabel
 >Visa</guilabel
@@ -5702,7 +5703,8 @@
 </sect2>
 <sect2 id="changing-the-playlist-layout"
 ><title
->Ändra spellistans layout</title>
+>Ändra spellistans layout</title
+> 
 <para>
 <screenshot>
 <screeninfo
@@ -5736,7 +5738,8 @@
 >. </para>
 <sect3 id="modifying-a-default-layout"
 ><title
->Ändra en standardlayout</title>
+>Ändra en standardlayout</title
+> 
 <para
 >För att ändra en av standardlayouterna, gör först en kopia av den: klicka bara på ikonen <inlinemediaobject
 > <imageobject
@@ -5801,7 +5804,8 @@
 </para>
 <sect4 id="item-layout-configuration"
 ><title
->Anpassning av objektlayout</title>
+>Anpassning av objektlayout</title
+> 
 <para
 >Varje tillagt objekt kan sedan få sin egen layout anpassad: hålls muspekaren över objektet visas en skiftnyckel. Genom att klicka på den kommer du åt en inställningsdialogruta för objektet. Exemplet nedanför visar inställningsdialogrutan för objektet <guilabel
 >Album</guilabel
@@ -5826,7 +5830,8 @@
 </sect4>
 <sect4 id="example--single-line-layout"
 ><title
->Exempel: enkelradslayout</title>
+>Exempel: enkelradslayout</title
+> 
 <para
 ><emphasis
 >sdExempel</emphasis
@@ -5836,7 +5841,8 @@
 </sect4>
 <sect4 id="playlist-layout-storage"
 ><title
->Lagring av spellistelayout</title>
+>Lagring av spellistelayout</title
+> 
 <para
 >Spellistelayouterna lagras med XML-format i <filename
 >$HOME/.kde/share/apps/amarok/playlist_layouts</filename
@@ -5905,9 +5911,9 @@
 ></listitem>
 <listitem
 ><para
-><link linkend="universal-plug-and-play-upnp"
+><link linkend="universal-plug-and-play-upnp---dlna"
 >UPnP</link
->&nbsp;</para
+></para
 ></listitem>
 </itemizedlist>
 </para
@@ -5954,7 +5960,7 @@
 >&nbsp;</para
 ></listitem>
 </itemizedlist>
-<sect1 id="collection5"
+<sect1 id="collection4"
 ><title
 >Samling</title
 > 
@@ -5983,6 +5989,18 @@
 ></listitem>
 <listitem
 ><para
+><link linkend="statistics-synchronization"
+>Statistiksynkronisering mellan samlingar och med Last.fm</link
+>&nbsp;</para
+></listitem>
+<listitem
+><para
+><link linkend="nepomuk-collection-in-amarok"
+>Nepomuk-samling</link
+></para
+></listitem>
+<listitem
+><para
 ><link linkend="remote-collections"
 >Fjärrsamlingar</link
 >&nbsp;<itemizedlist>
@@ -6006,9 +6024,9 @@
 ></listitem>
 <listitem
 ><para
-><link linkend="universal-plug-and-play-upnp"
+><link linkend="universal-plug-and-play-upnp---dlna"
 >UPnP</link
->&nbsp;</para
+></para
 ></listitem>
 </itemizedlist>
 </para
@@ -6035,9 +6053,13 @@
 <para
 >Källan kan vara en portabel enhet, en Internet-tjänst eller en databas. </para>
 <para
->För spår som lagras på filsystemet använder &amarok; en databas för att ha snabb tillgång till den metainformation som behövs. </para>
+>För spår som lagras i kataloger för <guilabel
+>Lokal samling</guilabel
+> använder &amarok; en databas för att ha snabb tillgång till den metainformation som behövs. </para>
 <para
->Först måste denna information importeras till databasen, vilket i regel görs genom att söka igenom samlingskatalogerna efter musikfiler. </para>
+>Först måste denna information läsas in i databasen, vilket i regel görs genom att söka igenom kataloger med <guilabel
+>Lokal samling</guilabel
+> efter musikfiler. </para>
 <para
 >Denna process kallas samlingsgenomsökning. </para>
 <para
@@ -6049,7 +6071,9 @@
 <para
 >Den så kallade successiva sökningen övervakar samlingskatalogerna efter uppdateringar. </para>
 <para
->Det görs ofta varje minut, men kan också utlösas manuellt genom att välja <guilabel
+>Det görs varje minut om <guilabel
+>Bevaka kataloger efter ändringar</guilabel
+> är aktiverat (det normala värdet), men kan också utföras manuellt genom att välja <guilabel
 >Uppdatera samling</guilabel
 > i menyn. </para>
 <para
@@ -6059,35 +6083,37 @@
 <itemizedlist>
 <listitem
 ><para
->Du kan utlösa en omsökning av en katalog genom att ändra dess tid (t.ex. genom att använda <varname
->touch</varname
+>Du kan utföra en omsökning av en katalog genom att ändra dess tid (t.ex. genom att använda <varname
+>touch /sökväg/till/katalog</varname
 > i en terminal).</para
 ></listitem>
 <listitem
 ><para
->Om filer i en katalog ändras, kommer sökningen inte märka det, eftersom en ändring av en fil uppdaterar dess ändringstid, men inte den för överliggande katalog.</para
+>Om filer inne i en katalog ändras kommer inte sökfunktionen att märka det, eftersom när en fil ändras uppdateras dess ändringstid, men inte den överliggande katalogens tid. Å andra sidan så sparar de flesta program som ändrar filer dem atomärt genom att använda en tillfällig fil vars namn därefter ändras. Sådana procedurer uppdaterar faktiskt katalogernas ändringstid och gör därmed att en omsökning av katalogen utförs.</para
 ></listitem>
 <listitem
 ><para
->Om samlingskatalogerna finns på en mycket långsam partition, kan processen att kontrollera alla ändringstider ta en stund. Oftast lagras informationen i arbetsminnet av operativsystemet, men med stora samlingar kan det vara omöjligt. I sådana fall kan sökningen verka ske kontinuerligt. Med samlingar på över 5000 spår, eller när samlingar lagras på en nätverksenhet eller en NTFS-partition rekommenderas det att stänga av alternativet <guilabel
+>Om samlingskatalogerna finns på en mycket långsam partition, kan processen att kontrollera alla ändringstider ta en stund. Oftast lagras informationen i arbetsminnet av operativsystemet, men med stora samlingar kan det vara omöjligt. I sådana fall kan sökningen verka ske kontinuerligt. Med samlingar på över tusentals kataloger, eller när samlingar lagras på en nätverksenhet eller en NTFS-partition rekommenderas det att stänga av alternativet <guilabel
 >Bevaka kataloger efter ändringar</guilabel
 >.</para
 ></listitem>
 </itemizedlist>
 <para
->Om du har problem med att borttagna spår fortfarande visas i samlingen, eller om du vill uppdatera omslagsbilderna (vilka inte uppdateras genom att endast <quote
->uppdatera samlingen</quote
+>Om du har problem med att borttagna spår fortfarande visas i samlingen, eller om du vill uppdatera omslagsbilderna (vilka inte uppdateras genom endast <guilabel
+>Uppdatera samling</guilabel
 >), kan du använda alternativet <guilabel
 >Fullständig omsökning</guilabel
 > i inställningsdialogrutan. </para>
 <para
 ><guilabel
 >Fullständig omsökning</guilabel
-> bryr sig inte om ändringstider. Den kommer inte ta bort statistik, men den kommer däremot att återställa <emphasis
->poäng</emphasis
-> och <emphasis
->antal uppspelningar</emphasis
-> om de lagras i filen. </para>
+> bryr sig inte om ändringstider. Den tar inte bort statistik för befintliga filer, men tar dock bort statistik för spår som försvunnit från samlingskatalogerna som för närvarande är monterade. På grund av detta är det lämpligt att bara utföra <guilabel
+>Fullständig omsökning</guilabel
+> när alla kataloger i <guilabel
+>Lokal samling</guilabel
+> är monterade om spår flyttas mellan monterade kataloger. <guilabel
+>Fullständig omsökning</guilabel
+> uppdaterar också antal spelningar om den lagrad i filens tagg är större, betyg om sången saknar betyg och filens tagg innehåller betyg eller poäng (med samma förutsättningar). </para>
 </sect3>
 <sect3 id="progress-bar---scanning-time"
 ><title
@@ -6108,7 +6134,7 @@
 <para
 >Oftast är den första sökningen mycket långsammare än följande sökningar, då filerna lagrats i arbetsminnet av operativsystemet. </para>
 <para
->En sökning av 10000 filer borde ta omkring tre minuter på en modern dator. 50000 filer borde ta omkring 13 minuter. </para>
+>En sökning av 10000 filer borde ta omkring tre minuter på en modern dator. 50000 filer borde ta omkring 13 minuter. Med en SSD (flashdisk) går det mycket snabbare. </para>
 </sect3>
 <sect3 id="backup-of-collection"
 ><title
@@ -6124,19 +6150,15 @@
 >Om unika identifierare</title
 > 
 <para
->&amarok; följer filer med en identifierare som antingen lagras i musikfilen eller räknas ut från metainformationen artist, albumtitel och spårtitel. </para>
+>&amarok; följer filer med en identifierare som antingen lagras i musikfilen eller räknas ut från filens metadata, tagg-metadata och några av de första kilobyte data i filen. </para>
 <para
->Denna identifierare hjälper &amarok; att identifiera spår som flyttas till andra platser, så att statistik (betyg, poäng, antal uppspelningar) inte går förlorad. </para>
+>Denna identifierare hjälper &amarok; att identifiera spår som flyttas till andra platser, så att statistikinformation (betyg, poäng, antal uppspelningar, första och senaste uppspelningen) inte går förlorad. </para>
 <para
 >För närvarande kommer &amarok; inte importera spår med befintliga unika identifierare. </para>
 <para
 >Detta leder till det oväntade beteendet att kopierade spår bara visas en gång i &amarok;. </para>
 <para
->Under vissa omständigheter kan t.o.m. olika spår få samma unika identifierare. Det är mycket ovanligt, och beror oftast på att man under flera år har kört instabila utgåvor av &amarok;. </para>
-<para
->Sådana problem kan ses i felsökningsutmatningen (starta &amarok; med väljaren --debug) under sökning. </para>
-<para
->Om du använder 2.4-beta kan du vara med om att en stor del av din samling inte importeras. Det ses tydligast på de misslyckade SQL-kommandona i felsökningsutmatningen. I så fall, använd den slutliga 2.4-versionen. </para>
+>Under vissa omständigheter kan till och med olika spår råka få samma unika identifierare. Sådana problem kan ses i felsökningsutmatningen (starta &amarok; med väljaren --debug i en terminal) under sökning. </para>
 </sect3>
 <sect3 id="about-albums"
 ><title
@@ -6179,7 +6201,7 @@
 <para
 >I så fall, försök köra (på kommandoraden) <userinput
 >amarokcollectionscanner -r <replaceable
->~/Musik/katalog</replaceable
+>~/din/musik/katalog</replaceable
 ></userinput
 > </para>
 <para
@@ -6191,7 +6213,9 @@
 >albumartist</quote
 >. </para>
 <para
->Du kan ta bort taggen från MP3-filer med följande kommando: <userinput
+>Du kan ta bort taggen <emphasis
+>compilation</emphasis
+> från MP3-filer med följande kommando: <userinput
 >id3v2 -r TCMP <replaceable
 >filnamn</replaceable
 ></userinput
@@ -6246,7 +6270,7 @@
 >&lt;</quote
 > kan användas för att skapa mer allmänna villkor. Flera villkor kan användas tillsammans genom att avskilja dem med mellanslag. För tidsvillkor, använd följande förkortningar: d=dag, w=vecka, m=månad, y=år. </para>
 </sect3>
-<sect3 id="tags6"
+<sect3 id="tags5"
 ><title
 >Taggar</title
 > 
@@ -6823,6 +6847,356 @@
 </para>
 </sect3>
 </sect2>
+<sect2 id="statistics-synchronization-between-collections-and-with-last-fm"
+><title
+>Statistiksynkronisering mellan samlingar och med Last.fm</title
+> 
+<para
+>Från och med version 2.7 tillåter &amarok; att uppspelningsrelaterad metadata och spårstatistik (som betyg och antal spelningar) synkroniseras mellan vilka samlingar som helst som visas under <menuchoice
+><guimenu
+>Mediakällor</guimenu
+><guimenuitem
+>Lokal musik</guimenuitem
+></menuchoice
+> och med webbtjänsten Last.fm, om du väljer att använda Last.fm. </para>
+<sect3 id="manual-syncing"
+><title
+>Manuell synkronisering</title
+> 
+<para
+>Det går att starta manuell synkronisering när som helst från <menuchoice
+><guimenu
+>Verktyg</guimenu
+> <guimenuitem
+>Synkronisera statistik...</guimenuitem
+></menuchoice
+> </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="amarok-statsyncing.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Härifrån går det att starta en synkronisering mellan samlingarna som har valts här, vilket normalt är det som har ställts in i &amarok;s inställning av <link linkend="metadata"
+>Metadata</link
+>. </para>
+<sect4 id="conflicts-and-syncing-statistics-dialog"
+><title
+>Dialogrutan för konflikter och statistiksynkronisering</title
+> 
+<para
+>Vid synkronisering visar &amarok; ett dialogfönster som anger konflikter och statistik för synkroniseringen som senast pågått. I detta fönster visas tre flikar: <guilabel
+>Matchade spår</guilabel
+>, <guilabel
+>Unika spår</guilabel
+> och <guilabel
+>Undantagna spår</guilabel
+>. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="matchedtrackspage.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<variablelist>
+  <varlistentry
+><term
+><emphasis role="bold"
+>Matchade spår</emphasis
+></term>
+    <listitem>
+    <para
+>Den här fliken visar alla spår som &amarok; har hittat i mer än en samling, och återger konflikter. När spår är grupperade syns två olika bakgrunder: ljusgrön och ljusröd. En ljusgrön bakgrund anger det nya eller uppdaterade fältet, medan en ljusröd bakgrund anger det gamla, överskrivna fältet. Du behöver inte lösa alla konflikter som listas här. Det specifika fältet i de listade spåren kommer inte att synkroniseras om konflikten inte löses.</para>
+     </listitem>
+  </varlistentry>
+  <varlistentry
+><term
+><emphasis role="bold"
+>Unika spår</emphasis
+></term>
+    <listitem>
+    <para
+>Detta är spår som bara finns i en samling. Du kan använda det som <emphasis
+>visning av skillnader</emphasis
+>. Att dra spår stöds här.</para>
+     </listitem>
+  </varlistentry>
+  <varlistentry
+><term
+><emphasis role="bold"
+>Undantagna spår</emphasis
+></term>
+    <listitem>
+    <para
+>Detta är spår som inte synkroniseras av olika orsaker, såsom identisk metadata, för att inte orsaka oordning i databasen.</para>
+     </listitem>
+  </varlistentry>
+</variablelist>
+</sect4>
+</sect3>
+<sect3 id="synchronizing-with-last-fm"
+><title
+>Synkronisering med Last.fm</title
+> 
+<para
+>Om du har aktiverat insticksprogrammet Last.fm och anpassat det på ett riktigt sätt med ditt konto på Last.fm, kan du också välja att synkronisera &amarok;s antal uppspelningar, betyg och beteckningar med biblioteket på Last.fm. Synkroniseringen tar en viss tid, men du kan fortsätta att använda &amarok; medan synkroniseringen pågår. Observera att obevakad synkronisering (som förklaras senare) inte är möjlig med Last.fm, och att synkronisering från Last.fm till &amarok; måste startas manuellt. </para>
+<sect4 id="spelling-auto-correction"
+><title
+>Automatisk korrektion av stavning</title
+> 
+<para
+>Last.fm aktiverar normalt en funktion som automatiskt korrigerar vanliga stavfel under synkronisering. Det kan hända att även om du skickar in många spelningar av ett spår, så visas det inte under Matchade spår eftersom Last.fm känner till spåret med ett något annorlunda namn. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="last-fm-spelling-correction.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Funktionen kan inaktiveras på hemsidan för Last.fm, och ändringar gäller också tidigare inskickningar. Det finns två alternativ: </para>
+<variablelist>
+  <varlistentry
+><term
+><emphasis role="bold"
+>Av</emphasis
+></term>
+    <listitem>
+    <para
+>Spår matchas på ett riktigt sätt, men om taggarna ändras efter en viss tid kommer antal uppspelningar delas upp i två spår.</para>
+     </listitem>
+  </varlistentry>
+  <varlistentry
+><term
+><emphasis role="bold"
+>På</emphasis
+></term>
+    <listitem>
+    <para
+>Antal spelningar av spåren kan räknas även om taggar ändras efter en viss tid, men du måste använda stavningen som föredras av Last.fm.</para>
+     </listitem>
+  </varlistentry>
+</variablelist>
+</sect4>
+</sect3>
+<sect3 id="unattended-syncing"
+><title
+>Obevakad synkronisering</title
+> 
+<para
+><important
+><para
+>Observera att dialogrutan visas bara i fallet med iPod.</para
+></important>
+</para>
+<para
+>När en enhet ansluts som kan synkronisera med dina samlingar, dyker ett meddelande som liknar det följande upp. </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="ipod-connected-dialog.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>För att starta obevakad synkronisering behöver du bara klicka på <guilabel
+>Ja</guilabel
+> i meddelanderutan. &amarok; arbetar i bakgrunden så att metadata på enheten, inklusive betyg, första och senaste uppspelningstid, antal uppspelningar och beteckningar synkroniseras med andra samlingar <link linkend="metadata"
+> inställda att delta i synkroniseringen</link
+>, och spår som senast spelats på enheten kommer att skickas in till Last.fm, om det är aktiverat. Processen frågar inte efter interaktion med användaren, om inte någon konflikt hittas under tiden. </para>
+</sect3>
+</sect2>
+<sect2 id="nepomuk-collection-in-amarok"
+><title
+>Nepomuk-samling i Amarok</title
+> 
+<para
+>Nepomuk har varit ett utmärkt semantiskt ramverk under de senaste åren, använt av många program såsom &dolphin; för att hantera metadata som hör ihop med filer och resurser. Nu använder till och med &amarok; Nepomuk för att hämta sånger i datorn. Samlingen använder inte SQLite-gränssnittet för att lagra statistik och metadata (artist, album, år, genre, etiketter, etc.). Istället använder den Nepomuk för att lagra och hämta dem. </para>
+<para
+>För mer information om Nepomuk, besök <ulink url="http://nepomuk.kde.org"
+>den officiella sidan</ulink
+>. </para>
+<sect3 id="why-use-the-nepomuk-collection-at-all"
+><title
+>Varför ska man använda Nepomuk-samlingen överhuvudtaget?</title
+> 
+<para
+>Nepomuk är ett systemomfattande gränssnitt redan använt av flera program för sökning och metadata. När ett spår i &amarok; betygsätts speglas det också i &dolphin;. När musikspår bränns på en skiva, inkluderas också betygen! Du behöver inte komma ihåg var du har lagrat musikspår längre. Nepomuk hämtar spår överallt i datorn. Du behöver inte organisera musikspår i en enda katalog. Tänk efter hur många gånger du har laddat ner ett spår igen bara för att du inte kunde hitta den i datorn. Det behövs inte längre. </para>
+</sect3>
+<sect3 id="getting-started6"
+><title
+>Komma igång</title
+> 
+<sect4 id="indexing-files"
+><title
+>Indexerar filer</title
+> 
+<para
+>För att spår ska visas i &amarok; måste de först <emphasis
+>indexeras</emphasis
+> av Nepomuk, och Nepomuk indexerar inte alla filer på hårddisken. Standardinställningen i de flesta &Linux;-distributioner undantar några vanliga mönster för säkerhetskopior och och inställningskataloger, och den indexerar bara vissa kataloger i hemkatalogen.  </para>
+<para
+>Se upp: indexering av filer kan ta lång tid beroende på antal filer som ska indexeras samt hur mycket minne som skrivbordssökning tillåts använda för indexering. Se också <ulink url="help:/kcontrol/nepomuk"
+>Söka på skrivbordet</ulink
+>. </para>
+</sect4>
+<sect4 id="choosing-directories-to-index"
+><title
+>Välja kataloger att indexera</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="desktop_search.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Kataloger som ska indexeras kan ändras under <menuchoice
+><guimenu
+>Systeminställningar</guimenu
+> <guisubmenu
+>Skrivbordssökning</guisubmenu
+> <guimenuitem
+>Skrivbordsförfrågan</guimenuitem
+><guimenuitem
+>Anpassa indexkataloger</guimenuitem
+></menuchoice
+>. </para>
+</sect4>
+<sect4 id="enabling-nepomuk-collection-in-amarok"
+><title
+>Aktivera Nepomuk-samlingen i Amarok</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="amaroknepomukpluginconfig2-7.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+><guilabel
+>Nepomuk-samlingen</guilabel
+> i &amarok; är ett insticksprogram som kan aktiveras under <menuchoice
+><guimenu
+>Inställningar</guimenu
+> <guisubmenu
+>Anpassa Amarok</guisubmenu
+><guimenuitem
+>Insticksprogram</guimenuitem
+><guimenuitem
+>Nepomuk</guimenuitem
+></menuchoice
+>. Efter att ha aktiverat den, starta om &amarok; för att få insticksprogrammet att läsas in fullständigt. </para>
+</sect4>
+</sect3>
+<sect3 id="collections7"
+><title
+>Samlingar</title
+> 
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="amaroknepomukcollectionbrowser2-7.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Efter att ha aktiverat insticksprogrammet finns en ny samling vid namn <guilabel
+>Nepomuk-samling</guilabel
+> som innehåller spåren som Nepomuk har indexerat. </para>
+</sect3>
+<sect3 id="using-nepomuk-collection"
+><title
+>Använda Nepomuk-samlingen</title
+> 
+<sect4 id="rating-tracks"
+><title
+>Betygsätta spår</title
+> 
+<para
+>Efter att ha aktiverat skrivbordssökning med Nepomuk, kan spår och andra filer betygsättas i filbläddraren &dolphin;. Spår i <guilabel
+>Nepomuk-samlingen</guilabel
+> kan betygsättas utanför och betygen visas omedelbart i &amarok;. </para>
+</sect4>
+<sect4 id="moving-tracks"
+><title
+>Flytta spår</title
+> 
+<para
+>Spår som visas i <guilabel
+>Nepomuk-samlingen</guilabel
+> kan spelas även om de flyttas från sin ursprungliga plats. De är också användbara även om deras namn ändras. </para>
+</sect4>
+<sect4 id="playlists8"
+><title
+>Spellistor</title
+> 
+<para
+>Alla funktioner i Nepomuk kan också användas med skapade spellistor. </para>
+</sect4>
+</sect3>
+</sect2>
 <sect2 id="remote-collections"
 ><title
 >Fjärrsamlingar</title
@@ -6850,9 +7224,9 @@
 ></listitem>
 <listitem
 ><para
-><link linkend="universal-plug-and-play-upnp"
+><link linkend="universal-plug-and-play-upnp---dlna"
 >UPnP</link
->&nbsp;</para
+></para
 ></listitem>
 </itemizedlist>
 <sect3 id="ampache"
@@ -6875,74 +7249,33 @@
 <para
 >Aktivera <guilabel
 >Ampache</guilabel
->-tjänsten med <menuchoice
+>-tjänsten genom att använda <menuchoice
 ><guimenu
 >Inställningar</guimenu
-><guisubmenu
->Anpassa Amarok...</guisubmenu
-><guimenuitem
->Internettjänster</guimenuitem
-></menuchoice
-> före &amarok; 2.4.1. För 2.4.1 och senare: <menuchoice
-><guimenu
->Inställningar</guimenu
-><guisubmenu
->Anpassa Amarok...</guisubmenu
-><guimenuitem
+> <guisubmenu
+>Anpassa Amarok</guisubmenu
+> <guimenuitem
 >Insticksprogram</guimenuitem
 ></menuchoice
 >. </para>
 <para>
-<informaltable>
-  <tgroup cols="2">
-  <tbody>
-  <row>
-    <entry>
-    <para>
 <screenshot>
 <screeninfo
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="remotecollections_ampache_client.png" format="PNG"/>
+      <imagedata fileref="amarok2-6pluginsconfigmenu.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
->Före 2.4.1: Klicka på skiftnyckelikonen för att öppna inställningsdialogrutan</phrase>
+>Klicka på skiftnyckelikonen för att öppna inställningsdialogrutan</phrase>
     </textobject>
     <caption>
       <para
->Före 2.4.1: Klicka på skiftnyckelikonen för att öppna inställningsdialogrutan</para>
+>Klicka på skiftnyckelikonen för att öppna inställningsdialogrutan</para>
     </caption>
   </mediaobject>
-</screenshot
-></para>
-    </entry>
-    <entry>
-    <para>
-<screenshot>
-<screeninfo
-></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="amarok2-4-1configuredialogplugins.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase
->2.4.1 och senare: Klicka på skiftnyckelikonen för att öppna inställningsdialogrutan</phrase>
-    </textobject>
-    <caption>
-      <para
->2.4.1 och senare: Klicka på skiftnyckelikonen för att öppna inställningsdialogrutan</para>
-    </caption>
-  </mediaobject>
-</screenshot
-></para
-></entry>
-  </row>
-  </tbody>
-  </tgroup>
-</informaltable>
+</screenshot>
 </para>
 <para
 >Välj <guilabel
@@ -7013,7 +7346,7 @@
 <para
 >DAAP är ett protokoll avsett för att dela media över ett nätverk. Det användes först i musikspelaren <guilabel
 >iTunes</guilabel
->, men har idag en bred användning. </para>
+>, men har nu en omfattande användning. </para>
 </sect3>
 <sect3 id="client"
 ><title
@@ -7026,7 +7359,17 @@
 > <guimenuitem
 >Lokal musik</guimenuitem
 ></menuchoice
->, och ingen ytterligare inställning krävs. Om samlingen inte visas, klicka på ikonen <inlinemediaobject
+> om DAAP-samlingen är aktiverad med <menuchoice
+><guimenu
+>Inställningar</guimenu
+><guisubmenu
+>Anpassa Amarok</guisubmenu
+><guimenuitem
+>Anpassa insticksprogram</guimenuitem
+><guimenuitem
+>Samlingar</guimenuitem
+></menuchoice
+>. Om samlingen inte visas, klicka på ikonen <inlinemediaobject
 ><imageobject
 ><imagedata fileref="Icon-view-list-tree.png" format="PNG"/></imageobject
 ></inlinemediaobject
@@ -7038,42 +7381,6 @@
   <mediaobject>
     <imageobject>
       <imagedata fileref="remotecollections_daap.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase
-></phrase>
-    </textobject>
-  </mediaobject>
-</screenshot>
-</para>
-</sect3>
-<sect3 id="server"
-><title
->Server</title
-> 
-<para
->På <guilabel
->Debian</guilabel
->-baserade distributioner som &ubuntu; kan du installera en DAAP-server genom att använda </para>
-<para
-><userinput
->sudo apt-get install mt-daapd</userinput>
-</para>
-<para
->Det installerar DAAP-servern <guilabel
->Firefly</guilabel
->. Du kan anpassa den via dess webbgränssnitt genom att öppna sidan <userinput
->http://localhost:3689/index.html</userinput
->. Det förvalda lösenordet är <guilabel
->mt-daapd</guilabel
->, och användarfältet ska förbli tomt. </para>
-<para>
-<screenshot>
-<screeninfo
-></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="remotecollections_daap_config.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -7096,7 +7403,7 @@
 >Nautilus</guilabel
 > stöder protokollet. </para>
 </sect3>
-<sect3 id="client7"
+<sect3 id="client9"
 ><title
 >Klient</title
 > 
@@ -7117,7 +7424,7 @@
 <para
 >för att montera den delade katalogen. Efteråt kan du använda den som en lokal katalog och lägga till den i den lokala samlingen. </para>
 </sect3>
-<sect3 id="server8"
+<sect3 id="server"
 ><title
 >Server</title
 > 
@@ -7212,11 +7519,25 @@
 </screenshot>
 </para>
 <para
->Katalogen ska nu vara tillgänglig på nätverket. </para>
+>Katalogen ska nu vara tillgänglig i nätverket. För att tala om för &amarok; att leta efter delade <guilabel
+>Samba</guilabel
+>-kataloger, gå till <menuchoice
+><guimenu
+>Inställningar</guimenu
+> <guisubmenu
+>Anpassa Amarok</guisubmenu
+> <guimenuitem
+>Insticksprogram</guimenuitem
+> <guimenuitem
+>Anpassa lokal samling</guimenuitem
+></menuchoice
+> och klicka i rutan. Spåren visas i <guilabel
+>Lokal samling</guilabel
+>. </para>
 </sect3>
-<sect3 id="universal-plug-and-play-upnp"
+<sect3 id="universal-plug-and-play-upnp---dlna"
 ><title
->Universal Plug and Play (UPnP)</title
+>Universal Plug and Play (UPnP) eller DLNA</title
 > 
 <para
 ><emphasis
@@ -7225,7 +7546,17 @@
 >DLNA</ulink
 >. </para>
 <para
->&amarok; har en inbyggd klient för UPnP-mediadelning, så spår som delas på nätverket kan spelas upp. När delad media upptäcks kommer de att visas i <guilabel
+>&amarok; har en inbyggd klient för UPnP-mediadelning, så spår som delas på nätverket kan spelas upp. Använd <menuchoice
+><guimenu
+>Inställningar</guimenu
+><guisubmenu
+>Anpassa Amarok</guisubmenu
+><guimenuitem
+>Insticksprogram</guimenuitem
+><guimenuitem
+>Samlingar</guimenuitem
+></menuchoice
+> för att aktivera den. När delad media upptäcks kommer de att visas i <guilabel
 >Lokal musik</guilabel
 >. </para>
 <para
@@ -7365,7 +7696,7 @@
 ><guimenu
 >Inställningar</guimenu
 ><guisubmenu
->Anpassa Amarok...</guisubmenu
+>Anpassa Amarok</guisubmenu
 ><guimenuitem
 >Databas</guimenuitem
 ></menuchoice
@@ -7481,7 +7812,7 @@
 >Ansluta mediaenheter</title
 > 
 <para
->Anslut mediaenheter med USB-kabeln. Miniprogrammet för underrättelse om enhet kommer automatiskt visa en lista över alla tillgängliga mediaenheter. Klicka på ikonen <inlinemediaobject
+>Anslut mediaenheter med USB-kabeln. Miniprogrammet för underrättelse om enhet i &kde; kommer automatiskt visa en lista över alla tillgängliga mediaenheter. Klicka på ikonen <inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-emblem-mounted.png" format="PNG"/> </imageobject
 > </inlinemediaobject
@@ -7850,7 +8181,7 @@
 >. Klicka på <guilabel
 >Avbryt</guilabel
 > för att kasta alla osparade ändringar. </para>
-<sect3 id="tags9"
+<sect3 id="tags10"
 ><title
 >Taggar</title
 > 
@@ -8094,7 +8425,7 @@
 >Hämta taggar från MusicBrainz</title
 > 
 <para
->En ny funktion i &amarok; 2.4 är förmågan att gissa taggar från databasen <guilabel
+>&amarok; 2.7 har förmågan att gissa taggar från databasen <guilabel
 >MusicBrainz</guilabel
 >. Klicka på <guilabel
 >Hämta taggar från MusicBrainz</guilabel
@@ -8237,7 +8568,7 @@
 </screenshot>
 </para>
 </sect3>
-<sect3 id="example10"
+<sect3 id="example11"
 ><title
 >Exempel</title
 > 
@@ -8274,33 +8605,37 @@
 <para
 ><emphasis
 >Omkodning</emphasis
-> är en ny funktion i &amarok; 2.4. Den låter dig koda om mediafiler till ett antal olika format medan du kopierar dem till din samling. Ett varningens ord: var försiktig när du använder funktionen, eftersom den arbetar direkt med filerna som finns på hårddisken. Gör säkerhetskopior! </para>
+> låter dig koda om mediafiler till ett antal olika format medan du kopierar dem till en samling (<guilabel
+>Lokal samling</guilabel
+>, USB <guilabel
+>Samling på generell lagringsenhet</guilabel
+> samt <guilabel
+>Samling på iPod, iPad och iPhone</guilabel
+> stöder omkodning från och med &amarok; 2.6). Ett varningens ord: var försiktig när du använder funktionen, eftersom den arbetar direkt med filerna som finns på hårddisken. Gör säkerhetskopior! </para>
 <sect2 id="interface"
 ><title
 >Gränssnitt</title
 > 
 <para
->Använd omkodning medan du kopierar filer till din samlingskatalog genom att högerklicka på en mediafil, sedan <menuchoice
-><guimenu
->Kopiera till samling</guimenu
-><guimenuitem
->Lokal samling</guimenuitem
-></menuchoice
->, så visas en meny. </para>
+>Dialogrutan för omkodning visas så fort spår kopieras eller flyttas till en av samlingarna som stöder omkodning. Du kan också koda om spår inne i <emphasis
+>Lokal samling</emphasis
+> genom att använda funktionen <guilabel
+>Organisera filer</guilabel
+>. </para>
 </sect2>
-<sect2 id="transcode-menu"
+<sect2 id="transcode-dialog"
 ><title
->Omkodningsmeny</title
+>Omkodningsdialogruta</title
 > 
 <para
->Om du väljer att kopiera filer till samlingen dyker följande dialogruta upp. </para>
+>Om du väljer att kopiera eller flytta filer till en samling som stöds, dyker följande dialogruta upp. </para>
 <para>
 <screenshot>
 <screeninfo
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="transcode_1.png" format="PNG"/>
+      <imagedata fileref="amarok2-6transcodemenu.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -8336,14 +8671,12 @@
   <row>
     <entry>
     <para
-><guilabel
->Omkoda</guilabel
-></para>
+>Kodarlista</para>
     </entry>
     <entry>
     <para
->Markerade mediafiler kommer kodas med de förvalda omkodningsinställningar: medelkomprimering, hög kvalitet, Ogg Vorbis (med kvalitetsförlust), och så dyker ett menygränssnitt upp. Mer om gränssnittet <link linkend="contents"
->här</link
+>En lista över alla dina installerade kodare. Välj bland dem för att kunna koda om. Om listan är tom måste du installera <emphasis
+>FFmpeg</emphasis
 >.</para>
     </entry>
   </row>
@@ -8351,12 +8684,28 @@
     <entry>
     <para
 ><guilabel
->Omkoda med egna parametrar</guilabel
+>Kom ihåg valet nästa gång</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Mediafiler kommer kodas med anpassade format, förutsatt att du har de omkodare som krävs. Att välja alternativet gör att en ny meny visas.</para
+>Spara inställningarna för <guilabel
+>aktuell målsamling</guilabel
+>. Det omfattar inställningar av kopiering och omkodning samt parametrar för omkodningen.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+><guilabel
+>Avbryt</guilabel
+></para>
+    </entry>
+    <entry>
+    <para
+>Avslutar dialogrutan <guilabel
+>Omkoda spår</guilabel
+>.</para
 ></entry>
   </row>
   </tbody>
@@ -8378,7 +8727,7 @@
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4transcodetracksdialog.png" format="PNG"/>
+      <imagedata fileref="amarok2-6flactranscodemenu.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -8403,40 +8752,18 @@
     <entry>
     <para
 ><guilabel
->Tillbaka</guilabel
-></para>
-    </entry>
-    <entry>
-    <para
->Tillbaka till den enkla dialogrutan <guilabel
->Omkoda spår</guilabel
->.</para>
-    </entry>
-  </row>
-  <row>
-    <entry>
-    <para
-><guilabel
->Kodarlista</guilabel
-></para>
-    </entry>
-    <entry>
-    <para
->En lista över alla dina installerade kodare. Välj bland dem för att skapa egna förval. Om listan är tom måste du installera <emphasis
->FFmpeg</emphasis
->.</para>
-    </entry>
-  </row>
-  <row>
-    <entry>
-    <para
-><guilabel
 >Omkoda</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Startar kodning med valda omkodare och parametrar.</para>
+>Startar kodning med valda omkodare och parametrar. I fallet med <guilabel
+>Lokal samling</guilabel
+> dyker dialogrutan <guilabel
+>Organisera spår</guilabel
+> upp. <link linkend="contents"
+>Mer om Organisera spår</link
+>.</para>
     </entry>
   </row>
   <row>
@@ -8448,10 +8775,8 @@
     </entry>
     <entry>
     <para
->Lämnar dialogrutan <guilabel
+>Avslutar dialogrutan <guilabel
 >Omkoda spår</guilabel
-> och återvänder till rutan <guilabel
->Mediakällor</guilabel
 >.</para
 ></entry>
   </row>
@@ -8459,6 +8784,38 @@
   </tgroup>
 </informaltable>
 </para>
+</sect2>
+<sect2 id="saving-transcoding-preferences"
+><title
+>Sparar omkodningsinställningar</title
+> 
+<para
+>Som nämndes under beskrivningen av <guilabel
+>Kom ihåg valet nästa gång</guilabel
+>, kan &amarok; komma ihåg omkodningsinställningarna för var och en av dina samlingar. Inställningarna kan ändras när som helst på dialogsidan <guilabel
+>Anpassa lokal samling</guilabel
+> <guilabel
+>Anpassa Amarok</guilabel
+>för <guilabel
+>Lokal samling</guilabel
+> och i inställningsdialogrutorna för samlingarna <guilabel
+>iPod, iPad och iPhone</guilabel
+> och <guilabel
+>Generell lagringsenhet</guilabel
+>. </para>
+</sect2>
+<sect2 id="pro-tip--strip-audio-out-of-video-files"
+><title
+>Proffstips: Extrahera ljud från videofiler</title
+> 
+<para
+>&amarok;s omkodningsförmåga kan användas för att extrahera ljud från videofiler medan de kopieras eller flyttas till en samling. Markera bara videofil(er) i Amaroks inbäddade filbläddrare, högerklicka och välj <guilabel
+>Kopiera till samling</guilabel
+>. Den vanliga dialogrutan <guilabel
+>Koda om spår</guilabel
+> dyker upp. Välj en av kodarna, klicka på <guilabel
+>Koda om</guilabel
+> så börjar omkodningen. </para>
 </sect2>
 </sect1>
 <sect1 id="script-manager"
@@ -8468,13 +8825,7 @@
 <para
 ><guilabel
 >Skripthantering</guilabel
-> innehåller de alternativ som behövs för att utöka &amarok;s funktionalitet genom anpassade skript. Den nåddes tidigare från toppnivåmenyn <menuchoice
-><guimenu
->Verktyg</guimenu
-><guimenuitem
->Skripthantering</guimenuitem
-></menuchoice
-> fram till &amarok; 2.4.1. Nu nås den från menyn <guilabel
+> innehåller de alternativ som behövs för att utöka &amarok;s funktionalitet genom anpassade skript. Den nås från menyn <guilabel
 >Inställningar</guilabel
 >, <menuchoice
 ><guimenu
@@ -8484,66 +8835,21 @@
 ></menuchoice
 >. Skript kan installeras från nerladdade skriptpaket, eller med knappen <guilabel
 >Hantera skript</guilabel
-> (tidigare kallad <guilabel
->Hämta nya skript</guilabel
->) som kan hämta och installera de senaste skript som andra användare gjort tillgängliga på Internet. </para>
+> som kan hämta och installera de senaste skript som andra användare gjort tillgängliga på Internet. </para>
 <para>
-<informaltable>
-  <tgroup cols="1">
-  <thead>
-  <row>
-    <entry
->Skript i Amarok</entry>
-  </row>
-  </thead>
-  <tbody>
-  <row>
-    <entry>
-    <para>
 <screenshot>
 <screeninfo
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok_script_manager.png" format="PNG"/>
+      <imagedata fileref="amarok2-6scriptsconfigmenu.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
->Skripthantering före 2.4.1</phrase>
+></phrase>
     </textobject>
-    <caption>
-      <para
->Skripthantering före 2.4.1</para>
-    </caption>
   </mediaobject>
-</screenshot
-></para>
-    </entry>
-    <entry>
-    <para>
-<screenshot>
-<screeninfo
-></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="amarok2-4-1configscripts.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase
->Dialogrutan Anpassa skript 2.4.1</phrase>
-    </textobject>
-    <caption>
-      <para
->Dialogrutan Anpassa skript 2.4.1</para>
-    </caption>
-  </mediaobject>
-</screenshot
-></para
-></entry>
-  </row>
-  </tbody>
-  </tgroup>
-</informaltable>
+</screenshot>
 </para>
 <para
 >Se <link linkend="scripts"
@@ -8551,7 +8857,7 @@
 > för mer information. </para>
 </sect1>
 </chapter>
-<chapter id="playlist11"
+<chapter id="playlist12"
 ><title
 >Spellista</title
 > 
@@ -8598,9 +8904,9 @@
 <para
 >En <emphasis
 >sparad spellista</emphasis
-> är en traditionell sorts spellista. Sparade spellistor fungerar som &amarok;s nuvarande spellista, sparad i &amarok;s databas eller filsystemet för senare åtkomst. Att dela sparade spellistor med dina vänner är lätt, och det kan vara kul att använda dem vid tillfällen då du vill höra vissa speciella låtar. </para>
+> är en traditionell sorts spellista. Sparade spellistor fungerar som &amarok;s nuvarande spellista, sparad i &amarok;s databas eller filsystemet för senare åtkomst. Det kan vara kul att använda dem vid tillfällen då du vill höra vissa speciella låtar. </para>
 <para
->Sparade spellistor kan skapas med &amarok; eller importeras från filsystemet. Att skapa en sparad spellista med just de låtar du vill ha, i just den följd du vill ha, är mycket lätt. I vardagligt bruk är det ibland snabbare att använda <link linkend="dynamic-playlists"
+>Att skapa en sparad spellista med just de låtar du vill ha, i just den följd du vill ha, är mycket enkelt. I vardagligt bruk är det ibland snabbare att använda <link linkend="dynamic-playlists"
 >dynamiska spellistor</link
 > eller <link linkend="automatic-playlist-generator"
 >skapa automatiska spellistor</link
@@ -8724,7 +9030,7 @@
   </mediaobject>
 </screenshot>
 </para>
-<sect2 id="edit-box12"
+<sect2 id="edit-box13"
 ><title
 >Redigeringsrutan</title
 > 
@@ -8732,7 +9038,7 @@
 >När du skriver något i fältet <guilabel
 >Sök spellista</guilabel
 > kommer &amarok; söka i spellistan och markera de spår, artister, och så vidare, som matchar sökningen. </para>
-<sect3 id="examples13"
+<sect3 id="examples14"
 ><title
 >Exempel</title
 > 
@@ -8939,7 +9245,7 @@
 >. </para>
 <para
 >Allt eftersom du lägger till låtar i kön, får var och en ett nummer. Numret visar i vilken ordning låtarna kommer att spelas. </para>
-<sect3 id="example14"
+<sect3 id="example15"
 ><title
 >Exempel</title
 > 
@@ -9153,8 +9459,6 @@
 > i rutan <emphasis
 >Mediakällor</emphasis
 >. </para>
-<para
->Dessa instruktioner gäller för den nya versionen av den dynamiska spellistan i &amarok; 2.4.2 och senare. Se nedan för instruktioner för 2.4.1 och tidigare. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -9413,60 +9717,6 @@
   </mediaobject>
 </screenshot>
 </para>
-</sect2>
-<sect2 id="old-2-4-1-and-earlier-dynamic-playlist"
-><title
->Gammal (2.4.1 och äldre) dynamisk spellista</title
-> 
-<para>
-<screenshot>
-<screeninfo
-></screeninfo>
-  <mediaobject>
-    <imageobject>
-      <imagedata fileref="dynamic_playlist.png" format="PNG"/>
-    </imageobject>
-    <textobject>
-      <phrase
-></phrase>
-    </textobject>
-  </mediaobject>
-</screenshot>
-</para>
-<sect3 id="biases15"
-><title
->Preferenser</title
-> 
-<para
->Preferenser är det som gör din dynamiska spellista speciell! Standardvärdet för den dynamiska spellistan, utan preferenser, är slumpmässig uppspelning. Preferenser av olika slag ändrar det på olika sätt. </para>
-</sect3>
-<sect3 id="proportional-bias"
-><title
->Proportionell preferens</title
-> 
-<para
->Proportionella preferenser matchar en viss del av spellistan med ett specifikt värde, som artist, tonsättare, titel, genre, år, etc. Du kan ange hur många preferenser som du vill att fungera tillsammans. Det är ett mycket flexibelt sätt att välja ut spellistan. </para>
-<para
->Men bli inte förvirrad, en dynamisk spellista som innehåller följande två preferenser: 50 % artist: Michael Jackson, 50 % genre: Rock kan innehålla spår som varken är från Michael Jackson eller hör till rockgenren. Det beror på att när båda preferenserna används kommer låtar från Michael Jackson väljas hälften av gångerna, hälften inte, och samma för rock. Så, om du vill ha hälften Jackson och hälften rock, ange istället 100 % för varje preferens. </para>
-</sect3>
-<sect3 id="custom-bias"
-><title
->Egen preferens</title
-> 
-<para
->Här hittar du de nya preferenserna från Last.fm och Echo Nest. Använd Last.fm eller Echo Nest för att styra spellistan mot artister som antingen liknar den artist som nu spelas, veckans toppartister på Last.fm, eller spellistan i dess helhet för Echo Nest. </para>
-<para
->Denna funktion kommer utgå från den låt som spelas när spellistan fylls i på nytt, så att musiken utvecklas medan du lyssnar, medan den förblir något lik det som spelas nu. </para>
-</sect3>
-<sect3 id="fuzzy-bias"
-><title
->Inexakt preferens</title
-> 
-<para
->En inexakt preferens kommer matcha ett ungefärligt värde, och har skjutreglaget<guilabel
->Noggrannhet</guilabel
-> istället för ett procentreglage. Högre noggrannhet ger mer exakta träffar. Den resulterande spellistan består av spår som är normalfördelade omkring det begärda värdet. </para>
-</sect3>
 </sect2>
 <sect2 id="using-your-dynamic-playlist"
 ><title
@@ -9925,7 +10175,7 @@
 <para
 ><emphasis
 >Stämningsraden</emphasis
-> är officiellt tillbaka sedan &amarok; 2.2.2. Den visar spårets <quote
+> visar spårets <quote
 >stämning</quote
 >, vilket sedan kan användas för att lista ut när något intressant händer i låten. </para>
 <para
@@ -10782,33 +11032,21 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 >Amarok i Windows</title
 > 
 <para
+><warning
+><para
+>Den här sidan behöver skärmbilder för version 2.6 av Amarok</para
+></warning>
+</para>
+<para
 >Som du redan vet använder en normal Windows-installation inte KDE, så om du vill installera &amarok; kan du inte bara ladda ner paketet &amarok;. Du måste först installera en kompatibel kompilator. Här beskriver vi hur man laddar ner, installerar, och kör &amarok; i operativsystemet Windows. </para>
 <sect3 id="how-to-download"
 ><title
 >Hur man laddar ner</title
 > 
 <para
->Om du får problem, besök gärna <ulink url="http://amarok.kde.org/wiki/Download:Windows"
+>Om du får problem, besök gärna <ulink url="http://community.kde.org/Amarok/GettingStarted/Download/Windows"
 >Amarok i Windows wiki-sida</ulink
 >, där de senaste länkarna hålls uppdaterade. Använd annars det senaste på följande länkar: </para>
-<sect4 id="amarok-2-4-with-base-packages"
-><title
->Amarok-2.4 med baspaket</title
-> 
-<para
-><ulink url="http://kollide.net/~dgran10/amarok/"
->Här</ulink
-> kan du laddaner installationsprogrammet för Windows som tillhandahålls av Nitrostemp, där du hittar både &amarok;-paketet och den KDE-kompilator som behövs för Windows. </para>
-</sect4>
-<sect4 id="amarok-2-4-only"
-><title
->Bara Amarok-2.4</title
-> 
-<para
->Om du redan har installerat &amarok; kan du uppdatera till den senaste versionen här: <ulink url="http://kollide.net/~dgran10/amarok/"
->Amarok-2.4-Only</ulink
->. Paketet kommer uppdatera filerna, så du behöver inte ladda ner allt igen. </para>
-</sect4>
 </sect3>
 <sect3 id="how-to-install"
 ><title
@@ -10930,6 +11168,12 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 >Amarok i &MacOS; X</title
 > 
 <para
+><warning
+><para
+>Nuvarande Macports 2.1.2 levererar bara en föråldrad version 2.4.3 av Amarok</para
+></warning>
+</para>
+<para
 >&amarok; kan installeras och användas i &MacOS; X. </para>
 <sect3 id="dependencies"
 ><title
@@ -11002,7 +11246,7 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 >Andra resurser</title
 > 
 <para
->Om du får problem finns det en <ulink url="http://amarok.kde.org/wiki/Amarok2_On_OS_X"
+>Om du får problem finns det en <ulink url="http://community.kde.org/Amarok/Development/OS_X"
 >felsökningssida här</ulink
 >. </para>
 </sect3>
@@ -11136,7 +11380,7 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 <para
 >För att hitta de felaktiga filerna, kör <varname
 >amarokcollectionscanner</varname
-> från terminalen. Detaljer finns <ulink url="http://amarok.kde.org/wiki/Batch_Mode"
+> från terminalen. Detaljer finns <ulink url="http://community.kde.org/Amarok/Development/BatchMode"
 >här</ulink
 >. </para>
 </sect3>
@@ -11167,6 +11411,42 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 >Om taggen album inte finns, och inte heller taggen albumartist, sorterar &amarok; spåret som Okänt album under Diverse artister. Om du vill att de ska sorteras annorlunda, redigera taggarna på det sätt du vill sortera dem. Om du inte känner till all information, prova den nya funktionen <emphasis
 >MusicBrainz</emphasis
 > i taggeditorn, eller använd ett taggprogram. </para>
+</sect3>
+<sect3 id="duplicate-tracks"
+><title
+>Duplicerade spår</title
+> 
+<para
+>Ibland dyker följande dialogruta upp i Amarok under (eller i början av) samlingssökningen: </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="amarok-2-6-duplicates-during-collection-scan.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para
+>Det betyder troligen att en identisk fil har hamnat i samlingen två gånger på olika ställen. Du kan använda Amaroks filbläddrare för att kontrollera filerna individuellt, där den vanliga åtgärden är att ta bort en av de duplicerade filerna. Om du är säker på att spåren inte är dubbletter kan du använda kommandoradverktyget <guilabel
+>amarok_afttagger</guilabel
+>för att återställa ett av spårens unika identifierare: </para>
+<para
+><userinput
+>amarok_afttagger --newid --verbose sökväg/till/ett/av/spåren.mp3</userinput>
+</para>
+<para
+>Som ett alternativ kan du ta bort den unika identifieraren från ett av spåren, och förlora funktionen att följa spåret även om det ändras utifrån: </para>
+<para
+><userinput
+>amarok_afttagger --delete --verbose sökväg/till/ett/av/spåren.mp3</userinput>
+</para>
 </sect3>
 </sect2>
 <sect2 id="problems-playing-files"
@@ -11199,7 +11479,7 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 ><guimenuitem
 >Bakgrundsprogram</guimenuitem
 ></menuchoice
->. Fundera på att använda ett annat bakgrundsprogram: VLC, GStreamer och Xine bör finnas tillgängliga i distributionen, även om användning av Xine avråds från. GStreamer eller VLC rekommenderas oftast. </para>
+>. Överväg att använda ett annat bakgrundsprogram: VLC och GStreamer bör finnas tillgängliga i distributionen. Båda bakgrundsprogrammen GStreamer och VLC rekommenderas. Om distributionen fortfarande levereras med andra bakgrundsprogram, använd dem inte. </para>
 <para
 >Kontrollera också om bakgrundsprogrammets fristående program kan spela upp filerna korrekt. Om inte, är det ett problem med det programmet, och du bör hitta information i dess hjälpfiler. Med andra ord, kan GStreamer eller VLC spela samma fil? Går den att spela med <ulink url="help:/dragonplayer"
 >Dragon</ulink
@@ -11208,6 +11488,20 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 >Om det verkar vara ett problem med PulseAudio, och du vill skicka en loggfil till PulseAudios utvecklare, finns deras felsökningssida <ulink url="https://wiki.ubuntu.com/PulseAudio/Log"
 >här</ulink
 >. </para>
+</sect3>
+</sect2>
+<sect2 id="problems-with-collections-on-ipod-etc-"
+><title
+>Problem med samlingar på iPod, etc.</title
+> 
+<sect3 id="amarok-show-no-cover-images-or-images-are-lost-when-transferring-to-device"
+><title
+>Amarok visar inga omslagsbilder, eller bilderna går förlorade vid överföring till enheten.</title
+> 
+<para
+>Troligtvis har fel version av libgpod4 installerats. På Debian och dess derivat, som Kubuntu är standardversionen libgpod4-nogtk, vilket levereras utan stöd för omslag. Installera helt enkelt versionen libgpod4: <userinput
+>sudo apt-get install libgpod4</userinput
+>. Paketet libgpod4-nogtk kan därefter tas bort utan problem. Från och med Kubuntu Quantal Quetzal (utgiven som version 12.10) har paketet tagits bort och standardversionen är libgpod4. </para>
 </sect3>
 </sect2>
 <sect2 id="crashes-and-bugs"
@@ -11269,7 +11563,7 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 >Vad är Amarok?</title
 > 
 <para
->&amarok; är en musikspelare. Mer information hittar du i <link linkend="amarok-menu"
+>&amarok; är en ljudspelare. Mer information hittar du i <link linkend="amarok-menu"
 >en sammanfattning av dess funktioner</link
 > och <ulink url="http://amarok.kde.org/en/screenshots"
 >skärmbildsgalleriet</ulink
@@ -11409,6 +11703,57 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 >bugzilla</ulink
 > inte är avsett för att söka hjälp. Men skicka gärna in en felrapport, om du har för avsikt att hjälpa till med att fixa ett fel i &amarok;. </para>
 </sect3>
+<sect3 id="how-do-i-report-a-bug"
+><title
+>Hur rapporterar man ett fel?</title
+> 
+<para
+>Om du hittar ett fel i &amarok;, skicka gärna in det till <ulink url="https://bugs.kde.org"
+>KDE:s Bugzilla-verktyg</ulink
+>. Inkludera alltid följande information för att skapa en fullständig felrapport: </para>
+<itemizedlist>
+<listitem
+><para
+>Använd version av &amarok; (versionen finns under <menuchoice
+><guimenu
+>Hjälp</guimenu
+><guimenuitem
+>Om Amarok</guimenuitem
+></menuchoice
+>). Man bör inte rapportera fel för versioner av &amarok; som är äldre än den nuvarande stabila utgåvan, eftersom vi inte tillhandahåller rättningar för äldre versioner.</para
+></listitem>
+<listitem
+><para
+>Använd version av KDE och Qt, även om du inte kör &amarok; under KDE (<menuchoice
+><guimenu
+>Hjälp</guimenu
+> <guimenuitem
+>Om KDE</guimenuitem
+></menuchoice
+>).</para
+></listitem>
+<listitem
+><para
+>Använd version av Phonon-bakgrundsprogrammet. Informationen går att hitta under Diagnostik (<menuchoice
+><guimenu
+>Hjälp</guimenu
+> <guimenuitem
+>Diagnostik</guimenuitem
+></menuchoice
+>).</para
+></listitem>
+<listitem
+><para
+>Om felet går att upprepa. Rapportera inte fel som du inte kan upprepa, eftersom de är nästan omöjliga att rätta.</para
+></listitem>
+<listitem
+><para
+>De exakta stegen för att upprepa felet</para
+></listitem>
+</itemizedlist>
+<para
+>Om någon av denna information saknas är inte felrapporten fullständig. Var också beredd att svara på frågor från utvecklare eller testare och eventuellt prova andra inställningar. </para>
+</sect3>
 </sect2>
 <sect2 id="questions-about-the-playlist"
 ><title
@@ -11495,7 +11840,7 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 >Vilka mediatyper har Amarok stöd för?</title
 > 
 <para
->&amarok; spelar själv inte musik, utan låter Phonon göra jobbet, särskilt dess bakgrundsprogram VLC, GStreamer eller Xine. Därför kan &amarok; spela upp de filer som dessa program själva kan spela upp. För att analysera filtaggar använder &amarok; Taglib, som har stöd för de flesta filtyper som innehåller metadata. </para>
+>&amarok; spelar själv inte musik, utan låter Phonon göra jobbet, särskilt dess bakgrundsprogram VLC eller GStreamer. Därför kan &amarok; spela upp de filer som dessa program själva kan spela upp. För att analysera filtaggar använder &amarok; Taglib, som har stöd för de flesta filtyper som innehåller metadata. </para>
 </sect3>
 <sect3 id="what-is-phonon-what-are-phonon-backends"
 ><title
@@ -11508,24 +11853,14 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 >här</link
 >. </para>
 <para
->Oftast fungerar bakgrundsprogrammet VLC bättre än Xine, men det stämmer inte alltid. Vi föreslår också att du provar GStreamer, även om det fortfarande är under utveckling. Du kan läsa mer om installation av bakgrundsprogram på <ulink url="http://amarok.kde.org/wiki/Download"
->nedladdningssidan</ulink
->. </para>
+>Vi rekommenderar både Gstreamer- och VLC-gränssnittet, eftersom båda underhålls aktivt. Försäkra dig om att du inte använder något annat gränssnitt, eftersom de är föråldrade. </para>
 </sect3>
 <sect3 id="amarok-wont-play-mp3s-what-can-i-do"
 ><title
 >Amarok spelar inte MP3-filer. Vad kan man göra?</title
 > 
 <para
->Ta en titt på <ulink url="http://amarok.kde.org/wiki/MP3"
->informationssidan om MP3</ulink
->. Du saknar antagligen de avkodare som krävs av Phonon-bakgrundsprogrammet (<guilabel
->VLC</guilabel
->, <guilabel
->GStreamer</guilabel
-> eller <guilabel
->Xine</guilabel
->). </para>
+>Du saknar troligtvis avkodarna som krävs av det specifika Phonon-gränssnittet du använder (Gstreamer eller VLC). Rapportera detta till din distribution, om du inte blev tillfrågad om att installera dem automatiskt när du startade &amarok; för första gången. </para>
 </sect3>
 <sect3 id="i-have-the-codecs-but-amarok-still-wont-play-mp4s-and-mkas"
 ><title
@@ -11536,8 +11871,10 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 >mp4</filename
 >- och <filename
 >mka</filename
->-filer. Det är ett känt problem, se <ulink url="https://bugs.kde.org/show_bug.cgi?id=290168"
+>-filer. Det är ett känt problem, se <emphasis role="strikethrough"
+><ulink url="https://bugs.kde.org/show_bug.cgi?id=290168"
 >felrapport nummer 290168</ulink
+></emphasis
 > för mer teknisk information. </para>
 <para
 >Ett mycket enkelt sätt att gå förbi problemet är att ändra filändelsen. Ändra ändelsen <filename
@@ -11617,23 +11954,6 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 <para
 >Ett annat möjligt sätt att går runt problemet är att ändra Phonon-gränssnitt. Exempelvis VLC-gränssnittet lider inte av detta problem. </para>
 </sect3>
-<sect3 id="i-cant-get-any-media-to-play-in-amarok-why-not"
-><title
->Det går inte att spela upp något alls i Amarok, varför det?</title
-> 
-<para
->Prova ljudsystemen på kommandoraden: </para>
-<para
-><userinput
->xine-check</userinput>
-</para>
-<para
->(Paketet xine-ui innehåller <guilabel
->xine-check</guilabel
->) </para>
-<para
->Utdata från dessa kommandon bör hjälpa dig identifiera de problem du har, och visa hur du kan lösa dem. </para>
-</sect3>
 <sect3 id="i-have-a-second-soundcard-and-im-using-alsa--how-do-i-make-amarok-use-it-instead-of-the-default"
 ><title
 >Jag har ett andra ljudkort och använder ALSA. Hur får jag Amarok att använda det istället för det primära ljudkortet?</title
@@ -11656,10 +11976,8 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 >Var är equalizern?</title
 > 
 <para
->Equalizern är bara tillgänglig om du använder ett Phonon-bakgrundsprogram som har stöd för det, vilket de moderna programmen nu har. Du hittar den i menyn <guilabel
+>Equalizern är bara tillgänglig om du använder Phonon-bakgrundsprogrammet GStreamer. Du hittar den i menyn <guilabel
 >Verktyg</guilabel
->. Du hittar mer information om hur du ställer in Phonon-bakgrundsprogram i din distribution på <ulink url="http://amarok.kde.org/wiki/Download"
->nerladdningssidan</ulink
 >. </para>
 </sect3>
 <sect3 id="how-do-i-turn-on-visualizations"
@@ -11729,7 +12047,7 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 > <guimenuitem
 >Anpassa Amarok</guimenuitem
 ></menuchoice
-> i menyn i  Amaroks huvudfönster, och öppna sidan <menuchoice
+> i menyn i  &amarok;s huvudfönster, och öppna sidan <menuchoice
 ><guimenu
 >Samling</guimenu
 > <guimenuitem
@@ -11791,11 +12109,11 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 >kde-apps.org</ulink
 > eller med <guilabel
 >Skripthantering</guilabel
-> i &amarok; (t.o.m. &amarok; 2.4.1). Fler detaljer finns <link linkend="script-manager"
+> i &amarok;. Mer information finns <link linkend="script-manager"
 >här</link
->. Efter &amarok; 2.4.1 hittar du <guilabel
+>. <guilabel
 >Skripthantering</guilabel
-> via menyn <guilabel
+> hittar man via menyn <guilabel
 >Inställningar</guilabel
 >, <menuchoice
 ><guimenu
@@ -11810,7 +12128,7 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 >Kan man använda Amarok 1.4-skript i Amarok 2?</title
 > 
 <para
->Nej. Ett nytt och kraftfullt programmeringsgränssnitt för skript har skapats, vilket leder till betydande förbättringar, men det låter dig inte använda gamla skript. Det nya skriptsystemet baseras på QtScript, och kommer minska &amarok;s beroenden drastiskt, något som varit ett stort problem för användare som inte är bekanta med tekniken eller använder andra plattformar. Dessutom kommer antalet externa processer som startas vid körning minskas stort. En annan fördel är att det nya programmeringsgränssnittet möjliggör mycket djupare integrering med &amarok; än det äldre systemet. <ulink url="http://amarok.kde.org/wiki/Development/Script_API"
+>Nej. Ett nytt och kraftfullt programmeringsgränssnitt för skript har skapats, vilket leder till betydande förbättringar, men det låter dig inte använda gamla skript. Det nya skriptsystemet baseras på QtScript, och kommer minska &amarok;s beroenden drastiskt, något som varit ett stort problem för användare som inte är bekanta med tekniken eller använder andra plattformar. Dessutom kommer antalet externa processer som startas vid körning minskas stort. En annan fördel är att det nya programmeringsgränssnittet möjliggör mycket djupare integrering med &amarok; än det äldre systemet. <ulink url="http://community.kde.org/Amarok/Development/Script_API"
 >Amaroks programmeringsgränssnitt för skript</ulink
 >. </para>
 </sect3>
@@ -11832,9 +12150,7 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 >Kan man spela upp videofiler?</title
 > 
 <para
->&amarok; är i huvudsak en musikspelare, så ingen videofilhantering, samlingsstöd, dvd-uppspelning, textning eller andra sofistikerade funktioner är tillgängliga. Dock låter miniprogrammet <guilabel
->Video</guilabel
-> dig spela YouTube-klipp inne i &amarok;. </para>
+>&amarok; är i huvudsak en musikspelare, så ingen videofilhantering, samlingsstöd, dvd-uppspelning, textning eller andra sofistikerade funktioner är tillgängliga. </para>
 </sect3>
 <sect3 id="is-it-amarok-amarok-or-amarok"
 ><title
@@ -11843,7 +12159,7 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 <para
 >Det heter &amarok;! Den tidigare stavningen var <emphasis
 >amaroK</emphasis
->, men det ändrades på grund av att det såg så konstigt ut. </para>
+>, men det ändrades omkring 2005 på grund av att det såg så konstigt ut. </para>
 </sect3>
 <sect3 id="how-are-track-scores-determined"
 ><title
@@ -11863,7 +12179,7 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 </screen>
 </para>
 <para
->Du kan enkelt skapa ett eget skript med en egen algoritm. Se <ulink url="http://amarok.kde.org/wiki/Development/Scripting_HowTo_2.0"
+>Du kan enkelt skapa ett eget skript med en egen algoritm. Se <ulink url="http://community.kde.org/Amarok/Development/Scripting_HowTo_2.0"
 >handledningen för att skriva skript</ulink
 > för mer information. </para>
 </sect3>
@@ -11878,8 +12194,6 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 >Redigera spårinformation</guilabel
 >, och gå till fliken <guilabel
 >Sammanfattning</guilabel
->. Före &amarok; 2.4.1 kallades fliken <guilabel
->Statistik</guilabel
 >. </para>
 </sect3>
 <sect3 id="but-i-also-want-that-stars-system-like-in-other-players"
@@ -11895,13 +12209,7 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 ><guimenuitem
 >Sammanfattning</guimenuitem
 ></menuchoice
-> (före Amarok 2.4.1 är det <menuchoice
-><guimenu
->Redigera spårinformation</guimenu
-><guimenuitem
->Statistik</guimenuitem
-></menuchoice
->). Om du ser betygstjärnor i spellistelayouten kan du också redigera dem där, med <emphasis
+>. Om du ser betygstjärnor i spellistelayouten kan du också redigera dem där, med <emphasis
 >långsamma dubbelklick</emphasis
 >. </para>
 </sect3>
@@ -11910,16 +12218,14 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 >Kan man dra och släppa Plasma-miniprogram från huvudfönstret till skrivbordet?</title
 > 
 <para
->Nej, men det finns många Plasmoider tillgängliga för skrivbordet som låter dig visa information från &amarok;, samt styra &amarok;. </para>
+>Nej, men det finns flera Plasmoider tillgängliga för skrivbordet som låter dig visa information från &amarok;, samt styra &amarok;. </para>
 </sect3>
 <sect3 id="how-can-i-save-a-stream"
 ><title
 >Hur kan man spara en ström?</title
 > 
 <para
->Ladda först strömmen i spellistan. Det finns flera sätt att göra det: ladda ner filen, exempelvis från <ulink url="http://www.shoutcast.com"
->shoutcast.com</ulink
->, och öppna den med &amarok;. Använd bland annat menyn <menuchoice
+>Ladda först strömmen i spellistan. Det finns flera sätt att göra det: ladda ner filen, och öppna den med &amarok;. Använd bland annat menyn <menuchoice
 ><guimenu
 >Spellista</guimenu
 ><guimenuitem
@@ -11960,11 +12266,11 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 >Hur skapar man en bakåtspårning?</title
 > 
 <para
->Om &amarok; har kraschat och du vill rapportera det, besök <ulink url="http://amarok.kde.org/wiki/Debugging_(documentation)"
+>Om &amarok; har kraschat och du vill rapportera det, besök <ulink url="http://community.kde.org/Amarok/Development/DebuggingHowTo"
 >Felsökningsguiden</ulink
->. Felrapporten måste skickas in via <ulink url="http://bugs.kde.org"
+>. Felrapporten måste skapas i <ulink url="http://bugs.kde.org"
 >bugs.kde.org</ulink
-> efter att du har kontrollerat att felet inte redan har rapporterats. </para>
+> efter att ha kontrollerat att felet inte redan har rapporterats. </para>
 </sect3>
 <sect3 id="amarok-just-freezes-how-can-i-help-get-this-fixed"
 ><title
@@ -11980,7 +12286,7 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 <para
 >Skicka därefter bara bakåtspårningen till <ulink url="http://paste.kde.org/"
 >PasteBin</ulink
->, enligt beskrivningen i <ulink url="http://amarok.kde.org/wiki/Debugging_%28documentation%29"
+>, enligt beskrivningen i <ulink url="http://community.kde.org/Amarok/Development/DebuggingHowTo"
 >Felsökningsguiden</ulink
 >. </para>
 </sect3>
@@ -11989,7 +12295,7 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 >Amarok tar lång tid att starta</title
 > 
 <para
->Om det händer måste du kontrollera vilka skript som är installerade och vilka Internettjänster som körs, eftersom en del av dem kan fördröja programstart. Har du också strömmar i spellistan när du öppnar &amarok; kan starten ta lite längre tid. </para>
+>Om det händer måste du kontrollera vilka skript som är installerade och vilka Internettjänster som körs, eftersom en del av dem kan fördröja programstart. Har du också strömmar i spellistan när du öppnar &amarok; kan starten ta lite längre tid. Samma sak händer om du har ett stort antal spår i spellistan (över 300 eller ännu fler). </para>
 <para
 >Å andra sidan, om du använder en annan skrivbordsmiljö än KDE, kan starttiden ökas en aning eftersom fler bibliotek måste laddas in. </para>
 </sect3>
@@ -12003,20 +12309,18 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 >Hur skaffar man en GIT-version av Amarok?</title
 > 
 <para
-><ulink url="http://techbase.kde.org/Getting_Started/Sources/KDE_git-tutorial"
->Hur du hämtar och kompilerar &amarok; via Git</ulink
+>Se instruktionssidan <ulink url="http://community.kde.org/Amarok/Development/Development_HowTo"
+>Bygg Amarok utvecklingsversion</ulink
 >. Gå hit för en lokal kompilering: <ulink url="http://blogs.fsfe.org/myriam/2009/09/compiling-amarok-from-git-locally-full-summary/"
 >Kompilera lokalt från Git: Fullständig sammanfattning</ulink
-> </para>
+>. </para>
 </sect3>
-<sect3 id="why-isnt-amarok-part-of-kdemultimedia"
+<sect3 id="why-isnt-amarok-part-of-kde-multimedia"
 ><title
->Varför är inte Amarok en del av KDEmultimedia?</title
+>Varför är inte Amarok en del av KDE multimedia?</title
 > 
 <para
->Utvecklarna vill inte att <emphasis
->de som bestämmer</emphasis
-> ska tala om när en ny utgåva kan släppas. (Vilket betyder att paket som ingår i själva KDE:s programvara har en utgivningstidplan som inte passar &amarok;s snabba utvecklingstempo.) </para>
+>Paket i själva KDE:s programvarusamling har en utgivningstidplan som inte passar med utvecklingstakten i &amarok;, och eftersom inga övriga program i KDE beror på &amarok; finns det ingen anledning att följa den utgivningstidplanen. </para>
 </sect3>
 <sect3 id="ive-found-a-bug---ive-got-a-great-idea-for-amarok"
 ><title
@@ -12062,7 +12366,8 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 </chapter>
 <chapter id="references"
 ><title
->Referenser</title>
+>Referenser</title
+> 
 <itemizedlist>
 <listitem
 ><para
@@ -12427,7 +12732,8 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 </sect1>
 <sect1 id="view-menu"
 ><title
->Menyn Visa</title>
+>Menyn Visa</title
+> 
 <para
 >Den här toppnivåmenyn innehåller alternativ för att justera &amarok;s layout, och en kryssruta för att låsa inställningen. Använd den för att förhindra oavsiktliga ändringar av &amarok;s fönsterlayout. </para>
 <para>
@@ -12451,7 +12757,8 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 </para>
 <sect2 id="changing-the-amarok-toolbar"
 ><title
->Ändra Amarok-verktygsraden</title>
+>Ändra Amarok-verktygsraden</title
+> 
 <para
 >Det finns också två alternativknappar i menyn, vilka används för att välja vilken <emphasis
 >verktygsrad</emphasis
@@ -12509,7 +12816,8 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 </sect2>
 <sect2 id="amarok-window-layouts"
 ><title
->Amaroks fönsterlayout</title>
+>Amaroks fönsterlayout</title
+> 
 <para
 >Om knappen <guilabel
 >Lås layout</guilabel
@@ -12632,6 +12940,21 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
   <mediaobject>
     <imageobject>
       <imagedata fileref="amarok_layout24.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="amarok_2-6_layout.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -13067,7 +13390,7 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="toolmenu.png" format="PNG"/>
+      <imagedata fileref="amarok2-7menutools.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -13132,12 +13455,48 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
     <entry>
     <para
 ><guilabel
+>Visning av nätverksbegäran</guilabel
+></para>
+    </entry>
+    <entry>
+    <para
+>Öppnar Visning av nätverksbegäran.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+><guilabel
 >Uppdatera samling</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Kontrollerar spåren i samlingen.</para
+>Kontrollerar spåren i samlingen och uppdaterar databasen.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+><guilabel
+>Synkronisera statistik...</guilabel
+></para>
+    </entry>
+    <entry>
+    <para
+>Öppnar dialogrutan för statistiksynkronisering.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+><guilabel
+>Free Music Charts Voting</guilabel
+></para>
+    </entry>
+    <entry>
+    <para
+>Öppnar en extern webbsida för att rösta på Free Music Charts.</para
 ></entry>
   </row>
   </tbody>
@@ -13263,7 +13622,11 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 >Equalizer</title
 > 
 <para
->Ger dig möjligheten att anpassa ljudinställningar. Du kan välja mellan att justera inställningarna manuellt eller använda mallar. </para>
+>Ger dig möjligheten att anpassa ljudinställningar. Du kan välja mellan att justera inställningarna manuellt eller använda mallar. För närvarande behövs <emphasis
+>Phonon</emphasis
+> <emphasis
+>GStreamer</emphasis
+> för att equalizern ska fungera. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -13280,12 +13643,56 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 </screenshot>
 </para>
 </sect3>
+<sect3 id="network-requests-viewer"
+><title
+>Visning av nätverksbegäran</title
+> 
+<para
+><guilabel
+>Visning av nätverksbegäran</guilabel
+> låter dig övervaka alla nätverksbegäran som görs av &amarok;. Väljes alternativet öppnas följande fönster: </para>
+<para>
+<screenshot>
+<screeninfo
+></screeninfo>
+  <mediaobject>
+    <imageobject>
+      <imagedata fileref="amarok2-7networkrequestsviewer.png" format="PNG"/>
+    </imageobject>
+    <textobject>
+      <phrase
+></phrase>
+    </textobject>
+  </mediaobject>
+</screenshot>
+</para>
+</sect3>
 <sect3 id="update-collection"
 ><title
 >Uppdatera samling</title
 > 
 <para
 >Kontrollerar filerna i katalogerna du angav som samling. Nya filer kommer att läggas till, och saknade filer tas bort från rutan till vänster. </para>
+</sect3>
+<sect3 id="synchronize-statistics"
+><title
+>Synkronisera statistik</title
+> 
+<para
+>Alternativet gör det möjligt att synkronisera statistik i olika samlingar. Det är en ny funktion i &amarok; sedan version 2.7. För mer information, se också <link linkend="statistics-synchronization"
+>Statistiksynkronisering mellan samlingar och med Last.fm</link
+> i handboken. </para>
+</sect3>
+<sect3 id="free-music-charts-voting"
+><title
+>Free Music Charts Voting</title
+> 
+<para
+>Genom att välja menyalternativet öppnas den externa webbplatsen <ulink url="http://www.darkerradio.com/free-music-charts/free-music-charts-voting/"
+>Free Music Charts Voting</ulink
+>, som låter dig rösta på den senaste topplistan över fri musik. Alternativet är nytt sedan <guilabel
+>Amarok 2.6</guilabel
+>. </para>
 </sect3>
 </sect2>
 <sect2 id="settings-menu"
@@ -13432,15 +13839,15 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4-1configuredialog.png" format="PNG"/>
+      <imagedata fileref="amarok2-6configgeneralmenu.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
->Anpassa Amarok (v.2.4.1)</phrase>
+>Anpassa Amarok</phrase>
     </textobject>
     <caption>
       <para
->Anpassa Amarok (v.2.4.1)</para>
+>Anpassa Amarok</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -13463,7 +13870,7 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 ></screeninfo>
   <mediaobject>
     <imageobject>
-      <imagedata fileref="amarok2-4helpmenu.png" format="PNG"/>
+      <imagedata fileref="amarok2-6helpmenu.png" format="PNG"/>
     </imageobject>
     <textobject>
       <phrase
@@ -13564,6 +13971,18 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
     <entry>
     <para
 ><guilabel
+>Diagnostik</guilabel
+></para>
+    </entry>
+    <entry>
+    <para
+>Visar den fullständiga information som behövs för att skicka in bra felrapporter, såsom Amaroks version, versioner för KDE, Qt, Phonon, och Phonons bakgrundsprogram, och om PulseAudio är installerat eller inte. samt vilka Amarok-skript som är installerade och om de kör eller inte. Det finns en knapp längst ner för att kopiera informationen till klippbordet.</para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+><guilabel
 >Om KDE</guilabel
 ></para>
     </entry>
@@ -13581,10 +14000,12 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 </chapter>
 <chapter id="keybinding-reference"
 ><title
->Tangentbindningsreferens</title>
+>Tangentbindningsreferens</title
+> 
 <sect1 id="keyboard-shortcuts"
 ><title
->Snabbtangenter</title>
+>Snabbtangenter</title
+> 
 <para
 >Snabbtangenter låter dig snabbt tygla &amarok;s kraft. Ändra snabbtangenterna genom att använda <menuchoice
 ><guimenu
@@ -13627,7 +14048,8 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 </sect1>
 <sect1 id="control-from-console"
 ><title
->Styr från en terminal</title>
+>Styr från en terminal</title
+> 
 <para
 >För att styra &amarok; från en terminal, skriv <userinput
 >amarok --help-all</userinput
@@ -14001,7 +14423,21 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
   <row>
     <entry>
     <para
->Gå till</para>
+>Redigera det aktuella markerade spårets information</para>
+    </entry>
+    <entry>
+    <para
+><keycombo
+>&Ctrl;<keycap
+>E</keycap
+></keycombo
+></para>
+    </entry>
+  </row>
+  <row>
+    <entry>
+    <para
+>Sök i spellistan</para>
     </entry>
     <entry>
     <para
@@ -14380,7 +14816,7 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 <para
 >Copyright 2002, 2003 Mark Kretschmann (kretschmann kde.org). </para>
 <para
->Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011 Amarok-utvecklingspatrullen </para>
+>Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011, 2012 Amarok-utvecklingspatrullen </para>
 </sect1>
 <sect1 id="documentation-copyright"
 ><title
@@ -14413,7 +14849,11 @@ ftpProxy=http://användarnamn:lösenord@proxyserver:port/
 <para
 >Jeff Mitchell (mitchell kde.org) </para>
 <para
+>José Antonio Rey (joseeantonior ubuntu.com) </para>
+<para
 >Lydia Pintscher (lydia kde.org) </para>
+<para
+>Mayank Madan (mayankmadan live.com) </para>
 <para
 >Myriam Schweingruber (myriam kde.org) </para>
 <para

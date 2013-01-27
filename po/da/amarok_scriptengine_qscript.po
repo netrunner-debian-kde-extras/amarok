@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2011-08-02 04:52+0200\n"
+"POT-Creation-Date: 2012-08-19 03:31+0200\n"
 "PO-Revision-Date: 2009-09-06 13:01+0200\n"
 "Last-Translator: Martin Schlander <mschlander@opensuse.org>\n"
 "Language-Team: Danish <dansk@dansk-gruppen.dk>\n"
@@ -16,6 +16,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Lokalize 1.0\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
+
+#: qtgui/linearlayout.cpp:70
+msgid "LinearLayout requires a parent"
+msgstr "LinearLayout kræver en forælder"
+
+#: qtgui/linearlayout.cpp:76
+msgid "The parent must be a QGraphicsLayoutItem"
+msgstr "Forælderen skal være et QGraphicsLayoutItem"
 
 #: simplejavascriptapplet.cpp:512
 msgid "i18n() takes at least one argument"
@@ -80,11 +88,3 @@ msgstr "Denne operation var ikke understøttet, %1"
 #: simplejavascriptapplet.cpp:824
 msgid "print() takes one argument"
 msgstr "print() accpeterer et argument"
-
-#: qtgui/linearlayout.cpp:70
-msgid "LinearLayout requires a parent"
-msgstr "LinearLayout kræver en forælder"
-
-#: qtgui/linearlayout.cpp:76
-msgid "The parent must be a QGraphicsLayoutItem"
-msgstr "Forælderen skal være et QGraphicsLayoutItem"

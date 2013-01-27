@@ -10,7 +10,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok_scriptengine_qscript\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2011-08-02 04:52+0200\n"
+"POT-Creation-Date: 2012-08-19 03:31+0200\n"
 "PO-Revision-Date: 2010-09-07 15:40-0300\n"
 "Last-Translator: André Marcelo Alvarenga <andrealvarenga@gmx.net>\n"
 "Language-Team: Brazilian Portuguese <kde-i18n-pt_br@mail.kde.org>\n"
@@ -20,6 +20,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: KBabel 1.11.4\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: qtgui/linearlayout.cpp:70
+msgid "LinearLayout requires a parent"
+msgstr "O LinearLayout exige um item-pai"
+
+#: qtgui/linearlayout.cpp:76
+msgid "The parent must be a QGraphicsLayoutItem"
+msgstr "O item-pai dever ser um QGraphicsLayoutItem"
 
 #: simplejavascriptapplet.cpp:512
 msgid "i18n() takes at least one argument"
@@ -84,11 +92,3 @@ msgstr "Esta operação não é suportada, %1"
 #: simplejavascriptapplet.cpp:824
 msgid "print() takes one argument"
 msgstr "O print() aceita um argumento"
-
-#: qtgui/linearlayout.cpp:70
-msgid "LinearLayout requires a parent"
-msgstr "O LinearLayout exige um item-pai"
-
-#: qtgui/linearlayout.cpp:76
-msgid "The parent must be a QGraphicsLayoutItem"
-msgstr "O item-pai dever ser um QGraphicsLayoutItem"

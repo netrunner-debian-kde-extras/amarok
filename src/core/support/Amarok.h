@@ -18,10 +18,9 @@
 #ifndef AMAROK_H
 #define AMAROK_H
 
+#include "amarok_export.h"
+#include "Version.h"
 #include "core/meta/Meta.h"
-
-#include "shared/amarok_export.h"
-#include "shared/Version.h"
 
 #include <KActionCollection>
 #include <KConfig>
@@ -85,17 +84,17 @@ namespace Amarok
      * Compute score for a track that has finished playing.
      * The resulting score is between 0 and 100
      */
-    inline double computeScore( double oldScore, unsigned int playCount, double playedFraction )
+    inline double computeScore( double oldScore, unsigned int oldPlayCount, double playedFraction )
     {
-        const int percentage = qBound(0, static_cast<int>(playedFraction * 100), 100);
+        const int percentage = qBound(0, int(playedFraction * 100), 100);
         double newScore;
 
-        if( playCount <= 0 )
+        if( oldPlayCount <= 0 )
             newScore = ( oldScore + percentage ) / 2;
         else
-            newScore = ( ( oldScore * playCount ) + percentage ) / ( playCount + 1 );
+            newScore = ( ( oldScore * oldPlayCount ) + percentage ) / ( oldPlayCount + 1 );
 
-        return qBound( double(0.0), newScore, double(100.0) );
+        return qBound( 0.0, newScore, 100.0 );
     }
 
     /**
@@ -203,6 +202,7 @@ namespace Amarok
 
     inline const char* discogsApiKey() { return "91734dd989"; }
     inline const char* lastfmApiKey() { return "402d3ca8e9bc9d3cf9b85e1202944ca5"; }
+    inline const char* lastfmApiSharedSecret() { return "fe0dcde9fcd14c2d1d50665b646335e9"; }
     inline const char* yahooBossApiKey() { return "oQepTNrV34G9Satb1dgRZ8hdl1uhJvguDSU5Knl2Xd4ALK85knYt6ylr.FTA57XMRBA-"; }
     inline const char* flickrApiKey() { return "9c5a288116c34c17ecee37877397fe31"; }
 }

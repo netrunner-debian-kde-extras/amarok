@@ -17,7 +17,7 @@
 #ifndef AMAROK_CAPABILITY_H
 #define AMAROK_CAPABILITY_H
 
-#include "shared/amarok_export.h"
+#include "amarok_export.h"
 
 #include <QObject>
 
@@ -41,7 +41,7 @@ namespace Capabilities
             //add additional capabilities here
             enum Type { Unknown = 0
                         , Editable = 1
-                        , LastFm = 2
+                        // not longer used
                         , Buyable = 3
                         , Actions = 4
                         , EditablePlaylist = 5
@@ -51,7 +51,7 @@ namespace Capabilities
                         // not longer used
                         , StreamInfo = 10
                         // not longer used
-                        , Importable = 12
+                        // not longe used
                         // not longer used
                         , BookmarkThis = 14
                         , WriteTimecode = 15

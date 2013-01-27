@@ -17,12 +17,12 @@
 #ifndef SQLPODCASTPROVIDER_H
 #define SQLPODCASTPROVIDER_H
 
-#include "core/podcasts/PodcastReader.h"
 #include "core/podcasts/PodcastProvider.h"
+#include "core/podcasts/PodcastReader.h"
 #include "SqlPodcastMeta.h"
 
-#include <kio/jobclasses.h>
-#include <klocale.h>
+#include <KIcon>
+#include <KLocale>
 
 class PodcastImageFetcher;
 
@@ -41,20 +41,22 @@ namespace Podcasts {
 /**
 	@author Bart Cerneels <bart.cerneels@kde.org>
 */
-class SqlPodcastProvider : public Podcasts::PodcastProvider
+class AMAROK_EXPORT SqlPodcastProvider : public Podcasts::PodcastProvider
 {
     Q_OBJECT
     public:
         SqlPodcastProvider();
-        ~SqlPodcastProvider();
+        virtual ~SqlPodcastProvider();
 
-        bool possiblyContainsTrack( const KUrl &url ) const;
-        Meta::TrackPtr trackForUrl( const KUrl &url );
+        //TrackProvider methods
+        virtual bool possiblyContainsTrack( const KUrl &url ) const;
+        virtual Meta::TrackPtr trackForUrl( const KUrl &url );
 
-        QString prettyName() const { return i18n("Local Podcasts"); }
-        KIcon icon() const { return KIcon( "server-database" ); }
+        //PlaylistProvider methods
+        virtual QString prettyName() const { return i18n("Local Podcasts"); }
+        virtual KIcon icon() const { return KIcon( "server-database" ); }
 
-        Playlists::PlaylistList playlists();
+        virtual Playlists::PlaylistList playlists();
 
         //PlaylistProvider methods
         virtual QList<QAction *> providerActions();
@@ -66,20 +68,20 @@ class SqlPodcastProvider : public Podcasts::PodcastProvider
 
         virtual void addPodcast( const KUrl &url );
 
-        Podcasts::PodcastChannelPtr addChannel( Podcasts::PodcastChannelPtr channel );
-        Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode );
+        virtual Podcasts::PodcastChannelPtr addChannel( Podcasts::PodcastChannelPtr channel );
+        virtual Podcasts::PodcastEpisodePtr addEpisode( Podcasts::PodcastEpisodePtr episode );
 
-        Podcasts::PodcastChannelList channels();
+        virtual Podcasts::PodcastChannelList channels();
 
-        QList<QAction *> episodeActions( Podcasts::PodcastEpisodeList );
-        QList<QAction *> channelActions( Podcasts::PodcastChannelList );
+        virtual QList<QAction *> episodeActions( Podcasts::PodcastEpisodeList );
+        virtual QList<QAction *> channelActions( Podcasts::PodcastChannelList );
 
-        void completePodcastDownloads();
+        virtual void completePodcastDownloads();
 
         //SqlPodcastProvider specific methods
-        Podcasts::SqlPodcastChannelPtr podcastChannelForId( int podcastChannelDbId );
+        virtual Podcasts::SqlPodcastChannelPtr podcastChannelForId( int podcastChannelDbId );
 
-        KUrl baseDownloadDir() const { return m_baseDownloadDir; }
+        virtual KUrl baseDownloadDir() const { return m_baseDownloadDir; }
 
     public slots:
         void updateAll();
@@ -97,6 +99,7 @@ class SqlPodcastProvider : public Podcasts::PodcastProvider
         void autoUpdate();
         void slotDeleteDownloadedEpisodes();
         void slotDownloadEpisodes();
+        void slotSetKeep();
         void slotConfigureChannel();
         void slotRemoveChannels();
         void slotUpdateChannels();
@@ -107,6 +110,10 @@ class SqlPodcastProvider : public Podcasts::PodcastProvider
 
     signals:
         void totalPodcastDownloadProgress( int progress );
+
+        //SqlPodcastProvider signals
+        void episodeDownloaded( Podcasts::PodcastEpisodePtr );
+        void episodeDeleted( Podcasts::PodcastEpisodePtr );
 
     private slots:
         void channelImageReady( Podcasts::PodcastChannelPtr, QImage );
@@ -188,6 +195,7 @@ class SqlPodcastProvider : public Podcasts::PodcastProvider
         QAction *m_configureChannelAction; //Configure a Channel
         QAction *m_deleteAction; //delete a downloaded Episode
         QAction *m_downloadAction;
+        QAction *m_keepAction;
         QAction *m_removeAction; //remove a subscription
         QAction *m_renameAction; //rename a Channel or Episode
         QAction *m_updateAction;

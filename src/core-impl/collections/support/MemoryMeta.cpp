@@ -16,6 +16,8 @@
  ****************************************************************************************/
 
 #include "MemoryMeta.h"
+
+#include "core/meta/Statistics.h"
 #include "core-impl/capabilities/AlbumActionsCapability.h"
 #include "covermanager/CoverCache.h"
 
@@ -50,7 +52,7 @@ Base::removeTrack( Track *track )
 }
 
 Album::Album( const Meta::AlbumPtr &other )
-    : Base( other->name() )
+    : MemoryMeta::Base( other->name() )
     , m_isCompilation( other->isCompilation() )
     , m_canUpdateCompilation( other->canUpdateCompilation() )
     , m_image( other->image() )
@@ -145,6 +147,9 @@ Album::updateCachedValues()
         Track *memoryTrack = static_cast<Track *>( track.data() );
         Meta::AlbumPtr album = memoryTrack->originalTrack()->album();
 
+        if( !album )
+            continue;
+
         if( !m_isCompilation )
             m_isCompilation = album->isCompilation();
         if( !m_canUpdateCompilation )
@@ -181,6 +186,12 @@ Track::~Track()
         static_cast<Genre *>( m_genre.data() )->removeTrack( this );
     if( m_year )
         static_cast<Year *>( m_year.data() )->removeTrack( this );
+}
+
+Meta::StatisticsPtr
+Track::statistics()
+{
+    return m_track->statistics();
 }
 
 void
@@ -478,7 +489,7 @@ MapChanger::referencedAsAlbumArtist( const Meta::ArtistPtr &artist, const AlbumM
     return false;
 }
 
-bool MapChanger::entitiesDiffer( const Meta::MetaBase *first, const Meta::MetaBase *second )
+bool MapChanger::entitiesDiffer( const Meta::Base *first, const Meta::Base *second )
 {
     if( !first && !second )
         return false;  // both null -> do not differ

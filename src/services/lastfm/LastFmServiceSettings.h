@@ -42,9 +42,11 @@ private slots:
     void testLogin();
     void onAuthenticated();
     void onError( QNetworkReply::NetworkError code );
+    void onConfigUpdated();
+
 private:
     Ui::LastFmConfigWidget *m_configDialog;
-    LastFmServiceConfig     m_config;
+    LastFmServiceConfigPtr m_config;
 
     QNetworkReply* m_authQuery;
 

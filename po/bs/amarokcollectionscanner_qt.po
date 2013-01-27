@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-18 02:51+0200\n"
+"POT-Creation-Date: 2012-10-10 10:03+0200\n"
 "PO-Revision-Date: 2011-03-09 14:45+0000\n"
 "Last-Translator: Samir Ribić <Unknown>\n"
 "Language-Team: Bosnian <bs@li.org>\n"
@@ -20,54 +20,24 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:244
-#: utilities/collectionscanner/CollectionScanner.cpp:267
+#: utilities/collectionscanner/CollectionScanner.cpp:115
+#: utilities/collectionscanner/CollectionScanner.cpp:138
 #, qt-format
 msgid "File \"%1\" not found."
 msgstr "Datoteka '%1' nije pronađena."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:247
+#: utilities/collectionscanner/CollectionScanner.cpp:118
 #, qt-format
 msgid "Could not open file \"%1\"."
 msgstr "Nisam mogao da otvorim datoteku \"%1\"."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:499
+#: utilities/collectionscanner/CollectionScanner.cpp:370
 #, qt-format
 msgid "Missing argument for option %1"
 msgstr "Nedostaje argument za opciju %1"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:536
+#: utilities/collectionscanner/CollectionScanner.cpp:407
 #, fuzzy
-#| msgid ""
-#| "Amarok Collection Scanner\n"
-#| "Scans directories and outputs a xml file with the results.\n"
-#| "For more information see http://amarok.kde.org/wiki/Batch_Mode\n"
-#| "\n"
-#| "Usage: amarokcollectionscanner [options] <Folder(s)>\n"
-#| "User-modifiable Options:\n"
-#| "<Folder(s)>             : list of folders to scan\n"
-#| "-h, --help              : This help text\n"
-#| "-v, --version           : Print the version of this tool\n"
-#| "-r, --recursive         : Scan folders recursively\n"
-#| "-i, --incremental       : Incremental scan (modified folders only)\n"
-#| "-s, --restart           : After a crash, restart the scanner in its last "
-#| "position\n"
-#| "    --idlepriority      : Run at idle priority\n"
-#| "    --sharedmemory <key> : A shared memory segment to be used for "
-#| "restarting a scan\n"
-#| "    --newer <path>      : Only scan directories if modification time is "
-#| "new than <path>\n"
-#| "                          Only useful in incremental scan mode\n"
-#| "    --batch <path>      : Add the directories from the batch xml file\n"
-#| "                          batch file format should look like this:\n"
-#| "   <scanner>\n"
-#| "    <directory>\n"
-#| "     <path>/absolute/path/of/directory</path>\n"
-#| "     <mtime>1234</mtime>   (this is optional)\n"
-#| "    </directory>\n"
-#| "   </scanner>\n"
-#| "                          You can also use a previous scan result for "
-#| "that.\n"
 msgid ""
 "Amarok Collection Scanner\n"
 "Scans directories and outputs a xml file with the results.\n"

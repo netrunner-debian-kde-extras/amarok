@@ -18,6 +18,7 @@
 #include "ProxyBase.h"
 
 #include "core/meta/Meta.h"
+#include "core/meta/Statistics.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 
 namespace Playlist
@@ -340,7 +341,7 @@ ProxyBase::rowMatch( int sourceModelRow, const QString &searchTerms, int searchF
         {
             bool ok;
             int rating = QString( searchTerm ).remove( "rating:" ).toInt( &ok );
-            if( ok && ( track->rating() == rating ) )
+            if( ok && ( track->statistics()->rating() == rating ) )
                 match = true;
         }
 

@@ -21,20 +21,19 @@
 
 #include "PlaylistViewCommon.h"
 
-#include "covermanager/CoverFetchingActions.h"
-#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "GlobalCurrentTrackActions.h"
 #include "core/capabilities/ActionsCapability.h"
 #include "core/capabilities/FindInSourceCapability.h"
+#include "core/support/Debug.h"
+#include "covermanager/CoverFetchingActions.h"
+#include "dialogs/TagDialog.h"
 #include "playlist/proxymodels/GroupingProxy.h"
-#include "TagDialog.h"
-
-#include <QObject>
-#include <QModelIndex>
 
 #include <KMenu>
 
+#include <QObject>
+#include <QModelIndex>
 
 Playlist::ViewCommon::ViewCommon()
     : m_stopAfterTrackAction( 0 )
@@ -153,7 +152,7 @@ Playlist::ViewCommon::trackActionsFor( QWidget *parent, const QModelIndex *index
             QObject::connect( m_stopAfterTrackAction, SIGNAL(triggered()),
                               parent, SLOT(stopAfterTrack()) );
         }
-            actions << m_stopAfterTrackAction;
+        actions << m_stopAfterTrackAction;
     }
 
     //actions << separator;

@@ -20,24 +20,24 @@
 
 #include "ActionClasses.h"
 
-#include <config-amarok.h>
 
-#include "core/support/Amarok.h"
 #include "App.h"
-#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "MainWindow.h"
 #include "amarokconfig.h"
+#include "config.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
+#include "dialogs/EqualizerDialog.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
+#include "widgets/Osd.h"
+#include "KNotificationBackend.h"
 
 #include <KAuthorized>
 #include <KHelpMenu>
 #include <KLocale>
 #include <KToolBar>
-#include <Osd.h>
-#include <EqualizerDialog.h>
-
 
 extern OcsData ocsData;
 
@@ -500,12 +500,6 @@ StopAction::playing()
 void
 StopAction::stop()
 {
-    if( The::playlistActions()->stopAfterMode() )
-    {
-        The::playlistActions()->setStopAfterMode( Playlist::StopNever );
-        The::playlistActions()->setTrackToBeLast( 0 );
-        The::playlistActions()->repaintPlaylist();
-    }
     The::engineController()->stop();
 }
 
@@ -521,27 +515,32 @@ StopPlayingAfterCurrentTrackAction::StopPlayingAfterCurrentTrackAction( KActionC
     setText( i18n( "Stop after current Track" ) );
     setIcon( KIcon("media-playback-stop-amarok") );
     setGlobalShortcut( KShortcut( Qt::META + Qt::SHIFT + Qt::Key_V ) );
-    connect( this, SIGNAL( triggered() ), SLOT( stopPlayingAfterCurrentTrack() ) );
+    connect( this, SIGNAL(triggered()), SLOT(stopPlayingAfterCurrentTrack()) );
 }
 
 void
 StopPlayingAfterCurrentTrackAction::stopPlayingAfterCurrentTrack()
 {
-    if ( !The::playlistActions()->willStopAfterTrack( Playlist::ModelStack::instance()->bottom()->activeId() ) )
+    QString text;
+
+    quint64 activeTrack = Playlist::ModelStack::instance()->bottom()->activeId();
+    if( activeTrack )
     {
-        The::playlistActions()->setStopAfterMode( Playlist::StopAfterCurrent );
-        The::playlistActions()->setTrackToBeLast( Playlist::ModelStack::instance()->bottom()->activeId() );
-        The::playlistActions()->repaintPlaylist();
-        Amarok::OSD::instance()->setImage( QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
-        Amarok::OSD::instance()->OSDWidget::show( i18n( "Stop after current track: On" ) );
-    } else {
-        The::playlistActions()->setStopAfterMode( Playlist::StopNever );
-        The::playlistActions()->setTrackToBeLast( 0 );
-        The::playlistActions()->repaintPlaylist();
-        Amarok::OSD::instance()->setImage( QImage( KIconLoader::global()->iconPath( "amarok", -KIconLoader::SizeHuge ) ) );
-        Amarok::OSD::instance()->OSDWidget::show( i18n( "Stop after current track: Off" ) );
+        if( The::playlistActions()->willStopAfterTrack( activeTrack ) )
+        {
+            The::playlistActions()->stopAfterPlayingTrack( 0 );
+            text = i18n( "Stop after current track: Off" );
+        }
+        else
+        {
+            The::playlistActions()->stopAfterPlayingTrack( activeTrack );
+            text = i18n( "Stop after current track: On" );
+        }
     }
+    else
+        text = i18n( "No track playing" );
+
+    Amarok::OSD::instance()->OSDWidget::show( text );
+    if( Amarok::KNotificationBackend::instance()->isEnabled() )
+        Amarok::KNotificationBackend::instance()->show( i18n( "Amarok" ), text );
 }
-
-#include "ActionClasses.moc"
-

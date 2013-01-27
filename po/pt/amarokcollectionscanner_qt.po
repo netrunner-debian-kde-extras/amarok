@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarokcollectionscanner_qt\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2011-08-18 02:51+0200\n"
+"POT-Creation-Date: 2012-10-10 10:03+0200\n"
 "PO-Revision-Date: 2011-08-19 13:58+0100\n"
 "Last-Translator: José Nuno Coelho Pires <zepires@gmail.com>\n"
 "Language-Team: Portuguese <kde-i18n-pt@kde.org>\n"
@@ -16,23 +16,23 @@ msgstr ""
 "X-POFile-SpellExtra: nocharset savelocation version idlepriority newer\n"
 "X-POFile-SpellExtra: sharedmemory\n"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:244
-#: utilities/collectionscanner/CollectionScanner.cpp:267
+#: utilities/collectionscanner/CollectionScanner.cpp:115
+#: utilities/collectionscanner/CollectionScanner.cpp:138
 #, qt-format
 msgid "File \"%1\" not found."
 msgstr "O ficheiro \"%1\" não foi encontrado."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:247
+#: utilities/collectionscanner/CollectionScanner.cpp:118
 #, qt-format
 msgid "Could not open file \"%1\"."
 msgstr "Não foi possível aceder ao ficheiro \"%1\"."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:499
+#: utilities/collectionscanner/CollectionScanner.cpp:370
 #, qt-format
 msgid "Missing argument for option %1"
 msgstr "Falta um argumento para a opção '%1'"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:536
+#: utilities/collectionscanner/CollectionScanner.cpp:407
 msgid ""
 "Amarok Collection Scanner\n"
 "Scans directories and outputs a xml file with the results.\n"

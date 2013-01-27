@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok_scriptengine_qscript\n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
-"POT-Creation-Date: 2011-08-02 04:52+0200\n"
+"POT-Creation-Date: 2012-08-19 03:31+0200\n"
 "PO-Revision-Date: 2009-09-05 13:44+0000\n"
 "Last-Translator: Kristof Bal <kristof.bal@gmail.com>\n"
 "Language-Team: Dutch <kde-i18n-nl@kde.org>\n"
@@ -16,6 +16,14 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Lokalize 1.0\n"
+
+#: qtgui/linearlayout.cpp:70
+msgid "LinearLayout requires a parent"
+msgstr "LinearLayout vereist een ouder"
+
+#: qtgui/linearlayout.cpp:76
+msgid "The parent must be a QGraphicsLayoutItem"
+msgstr "De ouder dient een QGraphicsLayoutItem te zijn"
 
 #: simplejavascriptapplet.cpp:512
 msgid "i18n() takes at least one argument"
@@ -80,11 +88,3 @@ msgstr "Deze handeling wordt niet ondersteund, %1"
 #: simplejavascriptapplet.cpp:824
 msgid "print() takes one argument"
 msgstr "print() heeft een argument nodig"
-
-#: qtgui/linearlayout.cpp:70
-msgid "LinearLayout requires a parent"
-msgstr "LinearLayout vereist een ouder"
-
-#: qtgui/linearlayout.cpp:76
-msgid "The parent must be a QGraphicsLayoutItem"
-msgstr "De ouder dient een QGraphicsLayoutItem te zijn"

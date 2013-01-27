@@ -15,17 +15,19 @@
  ****************************************************************************************/
 
 #include "LayoutEditWidget.h"
-#include "TokenDropTarget.h"
-#include "playlist/PlaylistDefines.h"
-#include "playlist/PlaylistColumnNames.h"
 
 #include "core/support/Debug.h"
+#include "playlist/PlaylistColumnNames.h"
+#include "playlist/PlaylistDefines.h"
+#include "widgets/TokenDropTarget.h"
 
 #include <KHBox>
 #include <KMessageBox>
 
 #include <QCheckBox>
 #include <QSpinBox>
+#include <QSpacerItem>
+#include <QLayout>
 
 using namespace Playlist;
 
@@ -37,6 +39,11 @@ LayoutEditWidget::LayoutEditWidget( QWidget *parent )
     m_dragstack->setCustomTokenFactory( m_tokenFactory );
     connect ( m_dragstack, SIGNAL( focusReceived(QWidget*) ), this, SIGNAL( focusReceived(QWidget*) ) );
     connect ( m_dragstack, SIGNAL( changed() ), this, SIGNAL( changed() ) );
+
+    // top-align content by adding a stretch
+    QBoxLayout *l = qobject_cast<QBoxLayout*>(layout());
+    l->setStretch( 0, 0 );
+    l->addStretch( 1 );
 
     m_showCoverCheckBox = new QCheckBox( i18n( "Show cover" ) , this );
 }
@@ -121,7 +128,7 @@ Playlist::LayoutItemConfig LayoutEditWidget::config()
             if ( TokenWithLayout *twl = dynamic_cast<TokenWithLayout *>( token ) )
             {
                 qreal width = 0.0;
-                if ( twl->widthForced() && twl->width() > 0.01) {
+                if ( twl->widthForced() && twl->width() >= 0.01) {
                     width = twl->width();
                 }
                 currentRowConfig.addElement( LayoutItemConfigRowElement( twl->value(), width,

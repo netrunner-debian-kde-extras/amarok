@@ -15,6 +15,11 @@ if(APPLE)
     set( MAC_FILES_DIR  ${CMAKE_SOURCE_DIR}/src/mac )
 endif(APPLE)
 
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
+)
+
 add_subdirectory( core )
 add_subdirectory( core-impl/collections )
 #don't use our own libplasma anymore, but still pick up our applets/engines/containments
@@ -27,46 +32,6 @@ endif( QTSCRIPTQTBINDINGS_FOUND )
 add_subdirectory( aboutdialog/libattica-ocsclient )
 add_subdirectory( transcoding )
 add_subdirectory( kconf_update )
-
-# if( STRIGI_FOUND )
-    # add_subdirectory( strigi )
-# endif( STRIGI_FOUND )
-
-include_directories(
-    ${CMAKE_SOURCE_DIR}
-    aboutdialog
-    aboutdialog/libattica-ocsclient
-    amarokurls
-    browsers/
-    browsers/playlistbrowser
-    browsers/servicebrowser
-    core-impl/collections
-    core-impl/collections/support
-    core-impl/collections/mediadevicecollection
-    core-impl/collections/mediadevicecollection/handler  # for Handler
-    core-impl/collections/mediadevicecollection/support  # for MediaDeviceInfo
-    core-impl/collections/mediadevicecollection/playlist # for MediaDevicePlaylist etc.
-    core-impl/collections/mediadevicecollection/podcast
-    configdialog
-    configdialog/dialogs
-    context
-    context/widgets
-    context/widgets/appletexplorer/
-    dbus
-    dialogs
-    dynamic
-    likeback
-    musicbrainz
-    network
-    playlistmanager
-    statusbar
-    synchronization
-    transcoding
-    widgets
-    ${KDE4_INCLUDE_DIR}
-    ${QT_INCLUDES}
-    ${QT_QTSCRIPT_INCLUDE_DIR}
-)
 
 if ( KDEMULTIMEDIA_FOUND )
     include_directories( ${KDEMULTIMEDIA_INCLUDE_DIR} )
@@ -179,7 +144,9 @@ set(libconfigdialog_SRCS
     configdialog/ConfigDialog.cpp
     configdialog/ConfigDialogBase.cpp
     configdialog/dialogs/CollectionConfig.cpp
+    configdialog/dialogs/ExcludedLabelsDialog.cpp
     configdialog/dialogs/GeneralConfig.cpp
+    configdialog/dialogs/MetadataConfig.cpp
     configdialog/dialogs/NotificationsConfig.cpp
     configdialog/dialogs/PlaybackConfig.cpp
     configdialog/dialogs/PluginsConfig.cpp
@@ -191,6 +158,8 @@ set(libconfigdialog_SRCS
 kde4_add_ui_files(libconfigdialog_SRCS
     configdialog/dialogs/CollectionConfig.ui
     configdialog/dialogs/GeneralConfig.ui
+    configdialog/dialogs/MetadataConfig.ui
+    configdialog/dialogs/ExcludedLabelsDialog.ui
     configdialog/dialogs/NotificationsConfig.ui
     configdialog/dialogs/PlaybackConfig.ui
     configdialog/dialogs/DatabaseConfig.ui
@@ -269,8 +238,6 @@ set(libstatusbar_SRCS
 #####################################################################
 set(libmetaimpl_SRCS
     core-impl/playlists/types/file/m3u/M3UPlaylist.cpp
-    ../shared/MetaTagLib.cpp
-    ../shared/TagsFromFileNameGuesser.cpp
     core-impl/playlists/types/file/pls/PLSPlaylist.cpp
     core-impl/playlists/providers/user/UserPlaylistProvider.cpp
     core-impl/playlists/types/file/PlaylistFileSupport.cpp
@@ -282,30 +249,17 @@ set(libmetaimpl_SRCS
     core-impl/capabilities/timecode/TimecodeWriteCapability.cpp
     core-impl/capabilities/multisource/MultiSourceCapabilityImpl.cpp
     core-impl/meta/file/File.cpp
+    core-impl/meta/file/FileTrackProvider.cpp
     core-impl/meta/multi/MultiTrack.cpp
     core-impl/meta/cue/CueFileSupport.cpp
     core-impl/meta/proxy/MetaProxy.cpp
     core-impl/meta/proxy/MetaProxyWorker.cpp
     core-impl/meta/stream/Stream.cpp
     core-impl/playlists/types/file/PlaylistFile.cpp
-    core-impl/statistics/providers/url/PermanentUrlStatisticsProvider.cpp
-    core-impl/statistics/providers/tag/TagStatisticsProvider.cpp
+    core-impl/support/PersistentStatisticsStore.cpp
+    core-impl/support/TagStatisticsStore.cpp
+    core-impl/support/UrlStatisticsStore.cpp
 )
-
-if( TAGLIB_FOUND )
-    set(libmetaimpl_SRCS
-        ${libmetaimpl_SRCS}
-        ../shared/MetaReplayGain.cpp
-        ../shared/FileTypeResolver.cpp
-        ../shared/tag_helpers/APETagHelper.cpp
-        ../shared/tag_helpers/ASFTagHelper.cpp
-        ../shared/tag_helpers/ID3v2TagHelper.cpp
-        ../shared/tag_helpers/MP4TagHelper.cpp
-        ../shared/tag_helpers/StringHelper.cpp
-        ../shared/tag_helpers/TagHelper.cpp
-        ../shared/tag_helpers/VorbisCommentTagHelper.cpp
-    )
-endif( TAGLIB_FOUND )
 
 #####################################################################
 # COLLECTION
@@ -326,7 +280,6 @@ set(collection_SRCS
     core-impl/collections/support/PlaylistCollectionLocation.cpp
     core-impl/collections/support/TrashCollectionLocation.cpp
     core-impl/collections/support/XmlQueryReader.cpp
-    core-impl/collections/support/XmlQueryWriter.cpp
     core-impl/collections/support/FileCollectionLocation.cpp
     core-impl/collections/support/Expression.cpp
     core-impl/collections/support/TextualQueryFilter.cpp
@@ -337,11 +290,6 @@ set(collection_SRCS
 #####################################################################
 set( scanner_SRCS
     scanner/GenericScanManager.cpp
-    ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/Album.cpp
-    ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/BatchFile.cpp
-    ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/Directory.cpp
-    ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/Playlist.cpp
-    ${CMAKE_SOURCE_DIR}/utilities/collectionscanner/Track.cpp
 )
 
 #####################################################################
@@ -569,6 +517,7 @@ set(apg_SRCS
     playlistgenerator/constraints/Checkpoint.cpp
     playlistgenerator/constraints/Matching.cpp
     playlistgenerator/constraints/PlaylistDuration.cpp
+    playlistgenerator/constraints/PlaylistFileSize.cpp
     playlistgenerator/constraints/PlaylistLength.cpp
     playlistgenerator/constraints/PreventDuplicates.cpp
     playlistgenerator/constraints/TagMatch.cpp
@@ -581,6 +530,7 @@ kde4_add_ui_files(apg_SRCS
     playlistgenerator/PresetEditDialog.ui
     playlistgenerator/constraints/CheckpointEditWidget.ui
     playlistgenerator/constraints/PlaylistDurationEditWidget.ui
+    playlistgenerator/constraints/PlaylistFileSizeEditWidget.ui
     playlistgenerator/constraints/PlaylistLengthEditWidget.ui
     playlistgenerator/constraints/PreventDuplicatesEditWidget.ui
     playlistgenerator/constraints/TagMatchEditWidget.ui
@@ -603,6 +553,66 @@ if( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
         network/NetworkRequests.ui
         )
 endif( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
+
+#####################################################################
+# SHARED
+#####################################################################
+set( shared_SRCS
+    ${CMAKE_SOURCE_DIR}/shared/MetaTagLib.cpp
+    ${CMAKE_SOURCE_DIR}/shared/TagsFromFileNameGuesser.cpp
+    ${CMAKE_SOURCE_DIR}/shared/FileType.cpp
+    ${CMAKE_SOURCE_DIR}/shared/collectionscanner/Album.cpp
+    ${CMAKE_SOURCE_DIR}/shared/collectionscanner/BatchFile.cpp
+    ${CMAKE_SOURCE_DIR}/shared/collectionscanner/Directory.cpp
+    ${CMAKE_SOURCE_DIR}/shared/collectionscanner/Playlist.cpp
+    ${CMAKE_SOURCE_DIR}/shared/collectionscanner/ScanningState.cpp
+    ${CMAKE_SOURCE_DIR}/shared/collectionscanner/Track.cpp
+)
+
+if( TAGLIB_FOUND )
+    set( shared_SRCS
+        ${shared_SRCS}
+        ${CMAKE_SOURCE_DIR}/shared/MetaReplayGain.cpp
+        ${CMAKE_SOURCE_DIR}/shared/FileTypeResolver.cpp
+        ${CMAKE_SOURCE_DIR}/shared/tag_helpers/APETagHelper.cpp
+        ${CMAKE_SOURCE_DIR}/shared/tag_helpers/ASFTagHelper.cpp
+        ${CMAKE_SOURCE_DIR}/shared/tag_helpers/ID3v2TagHelper.cpp
+        ${CMAKE_SOURCE_DIR}/shared/tag_helpers/MP4TagHelper.cpp
+        ${CMAKE_SOURCE_DIR}/shared/tag_helpers/StringHelper.cpp
+        ${CMAKE_SOURCE_DIR}/shared/tag_helpers/TagHelper.cpp
+        ${CMAKE_SOURCE_DIR}/shared/tag_helpers/VorbisCommentTagHelper.cpp
+    )
+endif( TAGLIB_FOUND )
+
+#####################################################################
+# STATISTICS SYNCHRONIZATION
+#####################################################################
+set( statsyncing_SRCS
+    statsyncing/Config.cpp
+    statsyncing/Controller.cpp
+    statsyncing/Options.cpp
+    statsyncing/Process.cpp
+    statsyncing/Provider.cpp
+    statsyncing/ScrobblingService.cpp
+    statsyncing/Track.cpp
+    statsyncing/TrackTuple.cpp
+    statsyncing/collection/CollectionProvider.cpp
+    statsyncing/collection/CollectionTrack.cpp
+    statsyncing/jobs/MatchTracksJob.cpp
+    statsyncing/jobs/SynchronizeTracksJob.cpp
+    statsyncing/models/CommonModel.cpp
+    statsyncing/models/MatchedTracksModel.cpp
+    statsyncing/models/ProvidersModel.cpp
+    statsyncing/models/SingleTracksModel.cpp
+    statsyncing/ui/ChooseProvidersPage.cpp
+    statsyncing/ui/MatchedTracksPage.cpp
+    statsyncing/ui/TrackDelegate.cpp
+)
+
+kde4_add_ui_files(statsyncing_SRCS
+    statsyncing/ui/ChooseProvidersPage.ui
+    statsyncing/ui/MatchedTracksPage.ui
+)
 
 #####################################################################
 # LIBAMAROK
@@ -638,6 +648,8 @@ set(amaroklib_LIB_SRCS
     ${libstatusbar_SRCS}
     ${libamarokurl_SRCS}
     ${libsynchronization_SRCS}
+    ${shared_SRCS}
+    ${statsyncing_SRCS}
     core-impl/logger/ProxyLogger.cpp
     aboutdialog/AnimatedBarWidget.cpp
     aboutdialog/AnimatedWidget.cpp
@@ -657,7 +669,6 @@ set(amaroklib_LIB_SRCS
     MainWindow.cpp
     MediaDeviceCache.cpp
     MediaDeviceMonitor.cpp
-    MountPointManager.cpp
     PluginManager.cpp
     QStringx.cpp
     ScriptManager.cpp
@@ -709,6 +720,7 @@ set(amaroklib_LIB_SRCS
     OpmlWriter.cpp
     PaletteHandler.cpp
     PopupDropperFactory.cpp
+    playback/DelayedDoers.cpp
     statemanagement/ApplicationController.cpp
     statemanagement/DefaultApplicationController.cpp
     toolbar/CurrentTrackToolbar.cpp
@@ -721,11 +733,10 @@ set(amaroklib_LIB_SRCS
     widgets/AnimatedLabelStack.cpp
     widgets/BreadcrumbItemButton.cpp
     widgets/ClearSpinBox.cpp
+    widgets/CollectionSetupTreeView.cpp
     widgets/CoverLabel.cpp
     widgets/HintLineEdit.cpp
     widgets/kdatecombo.cpp
-    widgets/kratingpainter.cpp
-    widgets/kratingwidget.cpp
     widgets/TokenDropTarget.cpp
     widgets/EditDeleteComboBoxView.cpp
     widgets/EditDeleteDelegate.cpp
@@ -756,7 +767,6 @@ set(amaroklib_LIB_SRCS
     GlobalCollectionActions.cpp
     GlobalCurrentTrackActions.cpp
     moodbar/MoodbarManager.cpp
-    ../shared/FileType.cpp
 )
 
 if( NOT BUILD_MYSQLE_COLLECTION )
@@ -877,7 +887,6 @@ set( amaroklib_DEPENDS "amarok-transcoding" ) # depends on generated ui_*.h file
 
 kde4_add_kcfg_files(amaroklib_LIB_SRCS amarokconfig.kcfgc)
 add_custom_target(amarokconfig_h DEPENDS ${CMAKE_CURRENT_BINARY_DIR}/amarokconfig.h)
-
 
 kde4_add_ui_files(amaroklib_LIB_SRCS
     aboutdialog/OcsPersonItem.ui

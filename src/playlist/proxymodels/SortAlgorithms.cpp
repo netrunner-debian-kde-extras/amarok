@@ -18,6 +18,7 @@
 #include "SortAlgorithms.h"
 
 #include "AbstractModel.h"
+#include "core/meta/Statistics.h"
 
 namespace Playlist
 {
@@ -66,13 +67,13 @@ multilevelLessThan::operator()( const QAbstractItemModel* sourceModel, int sourc
             //played.
             if( currentCategory == Playlist::LastPlayed )
             {
-                if( trackA->lastPlayed() < trackB->lastPlayed() )
+                if( trackA->statistics()->lastPlayed() < trackB->statistics()->lastPlayed() )
                     return inverted;
-                else if( trackA->lastPlayed() > trackB->lastPlayed() )
+                else if( trackA->statistics()->lastPlayed() > trackB->statistics()->lastPlayed() )
                     return !inverted;
             }
 
-            //Handle Title, Album, Artist as special cases with Meta::MetaBase::sortableName().
+            //Handle Title, Album, Artist as special cases with Meta::Base::sortableName().
             //This is necessary in order to have the same sort order policy regarding "The" in
             //both the playlist and the collection browser.
             else if( currentCategory == Playlist::Title )

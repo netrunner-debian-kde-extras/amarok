@@ -18,6 +18,7 @@
 #define METAMOCK_H
 
 #include "core/meta/Meta.h"
+#include "core/meta/Statistics.h"
 #include "core/meta/support/MetaConstants.h"
 
 #include <QDateTime>
@@ -28,10 +29,10 @@
   * it will look for the keys defined in meta/MetaConstants.h
   * in the given QVariantMap and return those values in the respective methods.
   */
-class MetaMock : public Meta::Track
+class MetaMock : public Meta::Track, Meta::Statistics
 {
 public:
-    MetaMock( const QVariantMap &data ) : Meta::Track(), m_data( data ) {}
+    MetaMock( const QVariantMap &data ) : Meta::Track(), m_data( data ), m_labels( Meta::LabelList() ) {}
     virtual ~MetaMock() {}
 
     Meta::AlbumPtr album() const { return m_album; }
@@ -39,7 +40,6 @@ public:
     Meta::GenrePtr genre() const { return m_genre; }
     Meta::ArtistPtr artist() const { return m_artist; }
     Meta::ComposerPtr composer() const { return m_composer; }
-
 
     QString name() const { return m_data.value( Meta::Field::TITLE ).toString(); }
     QString prettyName() const { return name(); }
@@ -56,14 +56,18 @@ public:
     QDateTime createDate() const { return QDateTime(); }    //field missing
     int trackNumber() const { return m_data.value( Meta::Field::TRACKNUMBER ).toInt(); }
     int discNumber() const { return m_data.value( Meta::Field::DISCNUMBER ).toInt(); }
+    QString type() const { return "Mock"; }
+
+    Meta::LabelList labels() const { return m_labels; }
+
+    virtual Meta::StatisticsPtr statistics() { return Meta::StatisticsPtr( this ); }
+
+    // Meta::Statistics methods
+    double score() const { return m_data.value( Meta::Field::SCORE ).toDouble(); }
+    int rating() const { return m_data.value( Meta::Field::RATING ).toInt(); }
     QDateTime firstPlayed() const { return m_data.value( Meta::Field::FIRST_PLAYED ).toDateTime(); }
     QDateTime lastPlayed() const { return m_data.value( Meta::Field::LAST_PLAYED ).toDateTime(); }
     int playCount() const { return m_data.value( Meta::Field::PLAYCOUNT ).toInt(); }
-    QString type() const { return "Mock"; }
-    double score() const { return m_data.value( Meta::Field::SCORE ).toDouble(); }
-    void setScore( double newScore ) { Q_UNUSED( newScore ); }
-    int rating() const { return m_data.value( Meta::Field::RATING ).toInt(); }
-    void setRating( int newRating ) { Q_UNUSED( newRating ); }
 
 public:
     QVariantMap m_data;
@@ -72,6 +76,7 @@ public:
     Meta::GenrePtr m_genre;
     Meta::YearPtr m_year;
     Meta::ComposerPtr m_composer;
+    Meta::LabelList m_labels;
 };
 
 class MockYear : public Meta::Year
@@ -136,14 +141,28 @@ class MockAlbum : public Meta::Album
 public:
     MockAlbum( const QString &name )
         : Meta::Album()
-        , m_name( name ) {}
+        , m_name( name )
+        , m_albumArtist( Meta::ArtistPtr() ) {}
 
     QString name() const { return m_name; }
     QString prettyName() const { return m_name; }
     Meta::TrackList tracks() { return Meta::TrackList(); }
-    bool hasAlbumArtist() const { return false; }
-    Meta::ArtistPtr albumArtist() const { return Meta::ArtistPtr(); }
+    bool hasAlbumArtist() const { return ( m_albumArtist ) ? true : false; }
+    Meta::ArtistPtr albumArtist() const { return m_albumArtist; }
     bool isCompilation() const { return !hasAlbumArtist(); }
+
+    QString m_name;
+    Meta::ArtistPtr m_albumArtist;
+};
+
+class MockLabel : public Meta::Label
+{
+    public:
+        MockLabel( const QString &name )
+            : Meta::Label()
+            , m_name( name ) {}
+
+    QString name() const { return m_name; }
 
     QString m_name;
 };

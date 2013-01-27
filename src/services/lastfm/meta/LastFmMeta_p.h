@@ -20,16 +20,10 @@
 
 #include "core/support/Debug.h"
 
-#include "core/support/Amarok.h"
 #include "amarokconfig.h"
 #include "core/meta/Meta.h"
-#include "core/statistics/StatisticsProvider.h"
-#include "core-impl/statistics/providers/tag/TagStatisticsProvider.h"
-
-#include <lastfm/Track>
-#include <lastfm/ws.h>
-#include <lastfm/RadioTuner>
-#include <lastfm/XmlQuery>
+#include "core/support/Amarok.h"
+#include "core-impl/support/TagStatisticsStore.h"
 
 #include <kio/job.h>
 #include <kio/jobclasses.h>
@@ -41,7 +35,10 @@
 #include <QPixmap>
 #include <QStringList>
 
-
+#include <Track.h>
+#include <ws.h>
+#include <RadioTuner.h>
+#include <XmlQuery.h>
 
 namespace LastFm
 {
@@ -77,13 +74,12 @@ class Track::Private : public QObject
         QNetworkReply* trackFetch;
         QNetworkReply* wsReply;
 
-        Statistics::StatisticsProvider *statisticsProvider;
+        Meta::StatisticsPtr statsStore;
         uint currentTrackStartTime;
 
     public:
         Private()
             : lastFmUri( QUrl() )
-            , statisticsProvider( 0 )
             , currentTrackStartTime( 0 )
         {
             artist = QString ( "Last.fm" );
@@ -117,8 +113,7 @@ class Track::Private : public QObject
 
             if( newTrackInfo )
             {
-                delete statisticsProvider;
-                statisticsProvider = new TagStatisticsProvider( track, artist, album );
+                statsStore = new TagStatisticsStore( t );
                 currentTrackStartTime = QDateTime::currentDateTime().toTime_t();
             }
 
@@ -144,9 +139,9 @@ class Track::Private : public QObject
                 return;
             if( m_userFetch->error() == QNetworkReply::NoError )
             {
-                try
+                lastfm::XmlQuery lfm;
+                if( lfm.parse( m_userFetch->readAll() ) )
                 {
-                    lastfm::XmlQuery lfm( m_userFetch->readAll() );
                     albumUrl = lfm[ "track" ][ "album" ][ "url" ].text();
                     trackUrl = lfm[ "track" ][ "url" ].text();
                     artistUrl = lfm[ "track" ][ "artist" ][ "url" ].text();
@@ -160,10 +155,11 @@ class Track::Private : public QObject
                         KIO::Job* job = KIO::storedGet( KUrl( imageUrl ), KIO::Reload, KIO::HideProgressInfo );
                         connect( job, SIGNAL( result( KJob* ) ), this, SLOT( fetchImageFinished( KJob* ) ) );
                     }
-
-                } catch( lastfm::ws::ParseError& e )
+                }
+                else
                 {
-                    debug() << "Got exception in parsing from last.fm:" << e.what();
+                    debug() << "Got exception in parsing from last.fm:" << lfm.parseError().message();
+                    return;
                 }
             }
 

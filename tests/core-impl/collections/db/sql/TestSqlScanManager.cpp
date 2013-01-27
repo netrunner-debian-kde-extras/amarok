@@ -18,7 +18,7 @@
 #include "TestSqlScanManager.h"
 
 #include "amarokconfig.h"
-#include "shared/MetaTagLib.h"
+#include "MetaTagLib.h"
 #include "core-impl/collections/db/ScanManager.h"
 #include "core-impl/collections/db/sql/SqlCollection.h"
 #include "core-impl/collections/db/sql/SqlCollectionFactory.h"
@@ -160,10 +160,11 @@ TestSqlScanManager::testScanSingle()
     QVERIFY( track->createDate().secsTo( aDate ) >= 0 );
     QVERIFY( track->modifyDate().secsTo( aDate ) < 5 ); // I just wrote the file
     QVERIFY( track->modifyDate().secsTo( aDate ) >= 0 );
-    qFuzzyCompare( track->score(), 0.875 );
-    QCOMPARE( track->playCount(), 5 );
-    QVERIFY( !track->firstPlayed().isValid() );
-    QVERIFY( !track->lastPlayed().isValid() );
+    Meta::StatisticsPtr statistics = track->statistics();
+    qFuzzyCompare( statistics->score(), 0.875 );
+    QCOMPARE( statistics->playCount(), 5 );
+    QVERIFY( !statistics->firstPlayed().isValid() );
+    QVERIFY( !statistics->lastPlayed().isValid() );
     QVERIFY( track->createDate().isValid() );
 
     // -- check that a further scan doesn't change anything
@@ -378,7 +379,7 @@ TestSqlScanManager::testBlock()
     m_scanManager->blockScan(); // block the incremental scanning
     m_scanManager->requestFullScan();
 
-    QTest::qWait( 2000 );
+    QTest::qWait( 100 );
     track = m_collection->registry()->getTrack( 1 );
     QVERIFY( !track );
     QVERIFY( !m_scanManager->isRunning() );
@@ -554,7 +555,7 @@ TestSqlScanManager::testRemoveTrack()
     QVERIFY( !album->isCompilation() );
     track = album->tracks().first(); // the tracks are sorted, so this is always the same track
     QCOMPARE( track->trackNumber(), 1 );
-    QVERIFY( !track->firstPlayed().isValid() );
+    QVERIFY( !track->statistics()->firstPlayed().isValid() );
     static_cast<Meta::SqlTrack*>(track.data())->setFirstPlayed( aDate );
 
     // -- remove one track
@@ -604,7 +605,7 @@ TestSqlScanManager::testMove()
     // -- check that the track is moved
     QVERIFY( createDate == track->createDate() ); // create date should not have changed
     QVERIFY( modifyDate == track->modifyDate() ); // we just changed the track. it should have changed
-    QCOMPARE( track->firstPlayed(), aDate );
+    QCOMPARE( track->statistics()->firstPlayed(), aDate );
     QCOMPARE( track->playableUrl().path(), targetPath );
 
     // --- move a directory
@@ -756,10 +757,11 @@ TestSqlScanManager::testMerges()
     QCOMPARE( track->length(), qint64(12000) );
     QCOMPARE( track->sampleRate(), 44100 );
     QCOMPARE( track->filesize(), 389679 );
-    qFuzzyCompare( track->score(), 0.875 );
-    QCOMPARE( track->playCount(), 5 );
-    QVERIFY( !track->firstPlayed().isValid() );
-    QVERIFY( !track->lastPlayed().isValid() );
+    Meta::StatisticsPtr statistics = track->statistics();
+    qFuzzyCompare( statistics->score(), 0.875 );
+    QCOMPARE( statistics->playCount(), 5 );
+    QVERIFY( !statistics->firstPlayed().isValid() );
+    QVERIFY( !statistics->lastPlayed().isValid() );
     QVERIFY( track->createDate().isValid() );
 
 
@@ -787,6 +789,9 @@ TestSqlScanManager::testMerges()
 void
 TestSqlScanManager::testLargeInsert()
 {
+    if( qgetenv("AMAROK_RUN_LONG_TESTS").isNull() )
+        QSKIP( "takes too long to be run by default;\nDefine AMAROK_RUN_LONG_TESTS "
+               "environment variable to run all tests.", SkipAll );
     // the old large insert test was misleading as the problems with
     // the insertion started upwards of 20000 tracks.
     //

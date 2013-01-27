@@ -17,7 +17,7 @@
 #ifndef AMAROK_PLUGINFACTORY_H
 #define AMAROK_PLUGINFACTORY_H
 
-#include "shared/amarok_export.h"
+#include "amarok_export.h"
 
 #include <KPluginInfo>
 
@@ -33,7 +33,7 @@ class AMAROK_CORE_EXPORT PluginFactory : public QObject
     Q_PROPERTY( Type pluginType READ pluginType )
 
 public:
-    enum Type { Unknown, Collection, Device, Service };
+    enum Type { Unknown, Collection, Service };
     PluginFactory( QObject *parent, const QVariantList &args );
     virtual ~PluginFactory() = 0;
 

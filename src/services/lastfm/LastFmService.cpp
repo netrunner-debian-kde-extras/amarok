@@ -25,8 +25,6 @@
 #include "EngineController.h"
 #include "biases/LastFmBias.h"
 #include "biases/WeeklyTopBias.h"
-#include "browsers/CollectionTreeItem.h"
-#include "browsers/CollectionTreeItemModelBase.h"
 #include "LastFmServiceCollection.h"
 #include "LastFmServiceConfig.h"
 #include "LoveTrackAction.h"
@@ -34,34 +32,24 @@
 #include "LastFmTreeModel.h"
 #include "LastFmTreeView.h"
 #include "ScrobblerAdapter.h"
-#include "widgets/FlowLayout.h"
-#include "GlobalCollectionActions.h"
 #include "GlobalCurrentTrackActions.h"
-#include "core-impl/collections/support/CollectionManager.h"
-#include "core/capabilities/LastFmCapability.h"
 #include "core/support/Components.h"
 #include "core/interfaces/Logger.h"
 #include "meta/LastFmMeta.h"
-#include "playlist/PlaylistModelStack.h"
+#include "SynchronizationAdapter.h"
+#include "statsyncing/Controller.h"
 #include "widgets/SearchWidget.h"
-#include "NetworkAccessManagerProxy.h"
 
-#include <lastfm/Audioscrobbler> // from liblastfm
-#include <lastfm/XmlQuery>
-
-#include <KLocale>
-#include <KPasswordDialog>
+#include <KLineEdit>
 #include <KStandardDirs>
-#include <solid/networking.h>
 
-#include <QComboBox>
 #include <QCryptographicHash>
 #include <QGroupBox>
-#include <QNetworkReply>
-#include <QPainter>
-#include <QImage>
-#include <QFrame>
+#include <QHBoxLayout>
+#include <QLabel>
 #include <QTextDocument>        //Qt::escape
+
+#include <XmlQuery.h>
 
 AMAROK_EXPORT_SERVICE_PLUGIN( lastfm, LastFmServiceFactory )
 
@@ -82,80 +70,10 @@ LastFmServiceFactory::LastFmServiceFactory( QObject *parent, const QVariantList 
 void
 LastFmServiceFactory::init()
 {
-   /* Fancy network detection is nice, but buggy if you're stepping outside your currently selected
-    * backend -- and since this is currently the only service using it, it makes it seem like there's just
-    * a last.fm bug.  Disable until such a time as *all* the Internet services go away and are replaced by
-    * helpful text describing how to change your backend if your network is actually running.
-    */
-   // if( Solid::Networking::status() == Solid::Networking::Unknown ) // No working solid network backend, so force creation of the service
-    //{
-        ServiceBase *service = createLastFmService();
-        if( service )
-        {
-            m_activeServices << service;
-            m_initialized = true;
-            emit newService( service );
-        }
-   /* }
-    else
-    {
-        if( Solid::Networking::status() == Solid::Networking::Connected )
-        {
-            ServiceBase *service = createLastFmService();
-            if( service )
-            {
-                m_activeServices << service;
-                m_initialized = true;
-                emit newService( service );
-            }
-        }
-
-            connect( Solid::Networking::notifier(), SIGNAL( shouldConnect() ),
-                    this, SLOT( slotCreateLastFmService() ) );
-            connect( Solid::Networking::notifier(), SIGNAL( shouldDisconnect() ),
-                        this, SLOT( slotRemoveLastFmService() ) );
-    } */
+    ServiceBase *service = new LastFmService( this, "Last.fm" );
+    m_initialized = true;
+    emit newService( service );
 }
-
-void
-LastFmServiceFactory::slotCreateLastFmService()
-{
-    if( !m_initialized ) // Until we can remove a service when networking gets disabled, only create it the first time.
-    {
-        ServiceBase *service = createLastFmService();
-        if( service )
-        {
-            m_activeServices << service;
-            m_initialized = true;
-            emit newService( service );
-        }
-    }
-}
-
-void
-LastFmServiceFactory::slotRemoveLastFmService()
-{
-    if( m_activeServices.size() == 0 )
-        return;
-
-    m_initialized = false;
-    emit removeService( m_activeServices.first() );
-    m_activeServices.clear();
-}
-
-ServiceBase*
-LastFmServiceFactory::createLastFmService()
-{
-    LastFmServiceConfig config;
-
-    //  The user activated the service, but didn't fill the username/password? Don't start it.
-//     if ( config.username().isEmpty() || config.password().isEmpty() )
-//         return 0;
-
-    ServiceBase* service = new LastFmService( this, "Last.fm", config.username(), config.password(), config.sessionKey(), config.scrobble(), config.fetchSimilar(), config.scrobbleComposer() );
-    return service;
-}
-
 
 QString
 LastFmServiceFactory::name()
@@ -169,200 +87,247 @@ LastFmServiceFactory::config()
     return Amarok::config( LastFmServiceConfig::configSectionName() );
 }
 
+bool
+LastFmServiceFactory::possiblyContainsTrack( const KUrl &url ) const
+{
+    return url.protocol() == "lastfm";
+}
 
-LastFmService::LastFmService( LastFmServiceFactory* parent, const QString &name, const QString &username, QString password, const QString& sessionKey, bool scrobble, bool fetchSimilar, bool scrobbleComposer )
-    : ServiceBase( name, parent, false ),
-      m_inited( false),
-      m_scrobble( scrobble ),
-      m_scrobbler( 0 ),
-      m_collection( 0 ),
-      m_polished( false ),
-      m_avatarLabel( 0 ),
-      m_profile( 0 ),
-      m_userinfo( 0 ),
-      m_userName( username ),
-      m_sessionKey( sessionKey ),
-      m_password( password ),
-      m_scrobbleComposer( scrobbleComposer ),
-      m_userNameArray( 0 ),
-      m_sessionKeyArray( 0 )
+
+LastFmService::LastFmService( LastFmServiceFactory *parent, const QString &name )
+    : ServiceBase( name, parent, false )
+    , m_collection( 0 )
+    , m_polished( false )
+    , m_avatarLabel( 0 )
+    , m_profile( 0 )
+    , m_userinfo( 0 )
+    , m_subscriber( false )
+    , m_authenticateReply( 0 )
+    , m_config( LastFmServiceConfig::instance() )
 {
     DEBUG_BLOCK
-
-    Q_UNUSED( sessionKey );
-    Q_UNUSED( fetchSimilar ); // TODO implement..
-
     setShortDescription( i18n( "Last.fm: The social music revolution" ) );
     setIcon( KIcon( "view-services-lastfm-amarok" ) );
     setLongDescription( i18n( "Last.fm is a popular online service that provides personal radio stations and music recommendations. A personal listening station is tailored based on your listening habits and provides you with recommendations for new music. It is also possible to play stations with music that is similar to a particular artist as well as listen to streams from people you have added as friends or that Last.fm considers your musical \"neighbors\"" ) );
     setImagePath( KStandardDirs::locate( "data", "amarok/images/hover_info_lastfm.png" ) );
 
-    if( !username.isEmpty() && !password.isEmpty() )
-        init();
+    //We have no use for searching currently..
+    m_searchWidget->setVisible( false );
 
+    // set the global static Lastfm::Ws stuff
+    lastfm::ws::ApiKey = Amarok::lastfmApiKey();
+    lastfm::ws::SharedSecret = Amarok::lastfmApiSharedSecret();
+
+    // set the nam TWICE. Yes. It prevents liblastfm from deleting it, see their code
+    lastfm::setNetworkAccessManager( The::networkAccessManager() );
+    lastfm::setNetworkAccessManager( The::networkAccessManager() );
+
+    // enable custom bias
+    m_biasFactories << new Dynamic::LastFmBiasFactory();
+    Dynamic::BiasFactory::instance()->registerNewBiasFactory( m_biasFactories.last() );
+    m_biasFactories << new Dynamic::WeeklyTopBiasFactory();
+    Dynamic::BiasFactory::instance()->registerNewBiasFactory( m_biasFactories.last() );
+
+    // add the "play similar artists" action to all artist
+    The::globalCollectionActions()->addArtistAction( new SimilarArtistsAction( this ) );
+    The::globalCollectionActions()->addTrackAction( new LoveTrackAction( this ) );
+
+    QAction *loveAction = new QAction( KIcon( "love-amarok" ), i18n( "Last.fm: Love" ), this );
+    connect( loveAction, SIGNAL(triggered()), this, SLOT(love()) );
+    loveAction->setShortcut( i18n( "Ctrl+L" ) );
+    The::globalCurrentTrackActions()->addAction( loveAction );
+
+    connect( m_config.data(), SIGNAL(updated()), this, SLOT(slotReconfigure()) );
+    slotReconfigure();
 }
-
 
 LastFmService::~LastFmService()
 {
     DEBUG_BLOCK
+    using namespace Dynamic;
+    QMutableListIterator<AbstractBiasFactory *> it( m_biasFactories );
+    while( it.hasNext() )
+    {
+        AbstractBiasFactory *factory = it.next();
+        it.remove();
 
-    delete[] m_userNameArray;
-    delete[] m_sessionKeyArray;
+        BiasFactory::instance()->removeBiasFactory( factory );
+        delete factory;
+    }
 
     if( m_collection && CollectionManager::instance() )
     {
         CollectionManager::instance()->removeUnmanagedCollection( m_collection );
-        delete m_collection;
+        m_collection->deleteLater();
         m_collection = 0;
     }
-    ms_service = 0;
+
+    StatSyncing::Controller *controller = Amarok::Components::statSyncingController();
+    if( m_scrobbler && controller )
+        controller->unregisterScrobblingService( StatSyncing::ScrobblingServicePtr( m_scrobbler.data() ) );
+    if( m_synchronizationAdapter && controller )
+        controller->unregisterProvider( m_synchronizationAdapter );
 }
 
 void
-LastFmService::init()
+LastFmService::slotReconfigure()
 {
-    // set the global static Lastfm::Ws stuff
-    lastfm::ws::ApiKey = Amarok::lastfmApiKey();
-    lastfm::ws::SharedSecret = "fe0dcde9fcd14c2d1d50665b646335e9";
-    // testing w/ official keys
-    //Ws::SharedSecret = "73582dfc9e556d307aead069af110ab8";
-    //Ws::ApiKey = "c8c7b163b11f92ef2d33ba6cd3c2c3c3";
-    m_userNameArray = qstrdup( m_userName.toLatin1().data() );
-    lastfm::ws::Username = m_userNameArray;
-    if( lastfm::nam() != The::networkAccessManager() )
-        lastfm::setNetworkAccessManager( The::networkAccessManager() );
+    lastfm::ws::Username = m_config->username();
+    bool ready = !m_config->username().isEmpty(); // core features require just username
 
-    debug() << "username:" << QString( QUrl::toPercentEncoding( lastfm::ws::Username ) );
-
-    const QString authToken = md5( QString( "%1%2" ).arg( m_userName ).arg( md5( m_password.toUtf8() ) ).toUtf8() );
-
-    // now authenticate w/ last.fm and get our session key if we don't have one
-    if( m_sessionKey.isEmpty() )
+    /* create ServiceCollection only once the username is known (remember, getting
+     * username from KWallet is async! */
+    if( !m_collection && ready )
     {
-        debug() << "got no saved session key, authenticating with last.fm";
-        QMap<QString, QString> query;
-        query[ "method" ] = "auth.getMobileSession";
-        query[ "username" ] = m_userName;
-        query[ "authToken" ] = authToken;
-        m_jobs[ "auth" ] = lastfm::ws::post( query );
-
-        connect( m_jobs[ "auth" ], SIGNAL( finished() ), SLOT( onAuthenticated() ) );
-
-    } else
-    {
-        debug() << "using saved sessionkey from last.fm";
-        m_sessionKeyArray = qstrdup( m_sessionKey.toLatin1().data() );
-        lastfm::ws::SessionKey = m_sessionKeyArray;
-
-        if( m_scrobble )
-            m_scrobbler = new ScrobblerAdapter( this, "ark" );
-        QMap< QString, QString > params;
-        params[ "method" ] = "user.getInfo";
-        m_jobs[ "getUserInfo" ] = lastfm::ws::post( params );
-
-        connect( m_jobs[ "getUserInfo" ], SIGNAL( finished() ), SLOT( onGetUserInfo() ) );
+        m_collection = new Collections::LastFmServiceCollection( m_config->username() );
+        CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
     }
 
+    // create Model once the username is known, it depends on it implicitly
+    if( !model() && ready )
+    {
+        setModel( new LastFmTreeModel( this ) );
+    }
 
-    //We have no use for searching currently..
-    m_searchWidget->setVisible( false );
+    setServiceReady( ready ); // emits ready(), which needs to be done *after* creating collection
 
-    // enable custom bias
-    Dynamic::BiasFactory::instance()->registerNewBiasFactory( new Dynamic::LastFmBiasFactory() );
-    Dynamic::BiasFactory::instance()->registerNewBiasFactory( new Dynamic::WeeklyTopBiasFactory() );
+    // now authenticate w/ last.fm and get our session key if we don't have one
+    if( !m_config->sessionKey().isEmpty() )
+    {
+        debug() << __PRETTY_FUNCTION__ << "using saved session key for last.fm";
+        continueReconfiguring();
+    }
+    else if( !m_config->username().isEmpty() && !m_config->password().isEmpty() )
+    {
+        debug() << __PRETTY_FUNCTION__ << "got no saved session key, authenticating with last.fm";
 
-    m_collection = new Collections::LastFmServiceCollection( m_userName );
-    CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
+        // discard any possible ongoing auth connections
+        if( m_authenticateReply )
+        {
+            disconnect( m_authenticateReply, SIGNAL(finished()), this, SLOT(onAuthenticated()) );
+            m_authenticateReply->abort();
+            m_authenticateReply->deleteLater();
+            m_authenticateReply = 0;
+        }
 
-
-    //add the "play similar artists" action to all artist
-    The::globalCollectionActions()->addArtistAction( new SimilarArtistsAction( this ) );
-    The::globalCollectionActions()->addTrackAction( new LoveTrackAction( this ) );
-
-
-    QAction * loveAction = new QAction( KIcon( "love-amarok" ), i18n( "Last.fm: Love" ), this );
-    connect( loveAction, SIGNAL( triggered() ), this, SLOT( love() ) );
-    loveAction->setShortcut( i18n( "Ctrl+L" ) );
-    The::globalCurrentTrackActions()->addAction( loveAction );
-
-
-    Q_ASSERT( ms_service == 0 );
-    ms_service = this;
-    m_serviceready = true;
-
-    m_inited = true;
+        const QString authToken = md5( QString( "%1%2" ).arg( m_config->username() ).arg(
+                md5( m_config->password().toUtf8() ) ).toUtf8() );
+        QMap<QString, QString> query;
+        query[ "method" ] = "auth.getMobileSession";
+        query[ "username" ] = m_config->username();
+        query[ "authToken" ] = authToken;
+        m_authenticateReply = lastfm::ws::post( query );
+        connect( m_authenticateReply, SIGNAL(finished()), this, SLOT(onAuthenticated()) ); // calls continueReconfiguring()
+    }
+    else
+    {
+        debug() << __PRETTY_FUNCTION__ << "either last.fm username or password is empty";
+        continueReconfiguring();
+    }
 }
 
+void
+LastFmService::continueReconfiguring()
+{
+    StatSyncing::Controller *controller = Amarok::Components::statSyncingController();
+    Q_ASSERT( controller );
+
+    lastfm::ws::SessionKey = m_config->sessionKey();
+    // we also check username, KWallet may deliver it really late, but we need it
+    bool authenticated = serviceReady() && !m_config->sessionKey().isEmpty();
+
+    if( m_scrobbler && (!authenticated || !m_config->scrobble()) )
+    {
+        debug() << __PRETTY_FUNCTION__ << "unregistering and destorying ScrobblerAdapter";
+        controller->unregisterScrobblingService( StatSyncing::ScrobblingServicePtr( m_scrobbler.data() ) );
+        m_scrobbler = 0;
+    }
+    else if( !m_scrobbler && authenticated && m_config->scrobble() )
+    {
+        debug() << __PRETTY_FUNCTION__ << "creating and registering ScrobblerAdapter";
+        m_scrobbler = new ScrobblerAdapter( "Amarok", m_config );
+        controller->registerScrobblingService( StatSyncing::ScrobblingServicePtr( m_scrobbler.data() ) );
+    }
+
+    if( m_synchronizationAdapter && !authenticated )
+    {
+        debug() << __PRETTY_FUNCTION__ << "unregistering and destorying SynchronizationAdapter";
+        controller->unregisterProvider( m_synchronizationAdapter );
+        m_synchronizationAdapter = 0;
+    }
+    else if( !m_synchronizationAdapter && authenticated )
+    {
+        debug() << __PRETTY_FUNCTION__ << "creating and registering SynchronizationAdapter";
+        m_synchronizationAdapter = new SynchronizationAdapter( m_config );
+        controller->registerProvider( m_synchronizationAdapter );
+    }
+
+    // update possibly changed user info
+    QNetworkReply *reply = lastfm::User::getInfo();
+    connect( reply, SIGNAL(finished()), SLOT(onGetUserInfo()) );
+}
 
 void
 LastFmService::onAuthenticated()
 {
-    if( !m_jobs[ "auth" ] )
-    {
-        debug() << "WARNING: GOT RESULT but no object";
-        return;
-    }
+    if( !m_authenticateReply )
+        warning() << __PRETTY_FUNCTION__ << "null reply!";
+    else
+        m_authenticateReply->deleteLater();
 
-    switch ( m_jobs[ "auth" ]->error() )
+    /* temporarily disconnect form config updates to prevent calling
+     * slotReconfigure() for the second time. */
+    disconnect( m_config.data(), SIGNAL(updated()), this, SLOT(slotReconfigure()) );
+
+    switch( m_authenticateReply ? m_authenticateReply->error() : QNetworkReply::UnknownNetworkError )
     {
         case QNetworkReply::NoError:
         {
-
-            lastfm::XmlQuery lfm = lastfm::XmlQuery( m_jobs[ "auth" ]->readAll() );
-            LastFmServiceConfig config;
-
-            if( lfm.children( "error" ).size() > 0 )
+            lastfm::XmlQuery lfm;
+            if( !lfm.parse( m_authenticateReply->readAll() ) || lfm.children( "error" ).size() > 0 )
             {
                 debug() << "error from authenticating with last.fm service:" << lfm.text();
-                config.clearSessionKey();
+                m_config->setSessionKey( QString() );
+                m_config->save();
                 break;
             }
-            m_sessionKey = lfm[ "session" ][ "key" ].text();
-
-            m_sessionKeyArray = qstrdup( m_sessionKey.toLatin1().data() );
-            lastfm::ws::SessionKey = m_sessionKeyArray;
-            config.setSessionKey( m_sessionKey );
-            config.save();
-
-            if( m_scrobble )
-                m_scrobbler = new ScrobblerAdapter( this, "ark" );
-            QMap< QString, QString > params;
-            params[ "method" ] = "user.getInfo";
-            m_jobs[ "getUserInfo" ] = lastfm::ws::post( params );
-
-            connect( m_jobs[ "getUserInfo" ], SIGNAL( finished() ), SLOT( onGetUserInfo() ) );
+            m_config->setSessionKey( lfm[ "session" ][ "key" ].text() );
+            m_config->save();
 
             break;
         }
         case QNetworkReply::AuthenticationRequiredError:
-            Amarok::Components::logger()->longMessage( i18nc("Last.fm: errorMessage", "Either the username was not recognized, or the password was incorrect." ) );
+            Amarok::Components::logger()->longMessage( i18nc("Last.fm: errorMessage",
+                    "Either the username was not recognized, or the password was incorrect." ) );
             break;
 
         default:
-            Amarok::Components::logger()->longMessage( i18nc("Last.fm: errorMessage", "There was a problem communicating with the Last.fm services. Please try again later." ) );
+            Amarok::Components::logger()->longMessage( i18nc("Last.fm: errorMessage",
+                    "There was a problem communicating with the Last.fm services. Please try again later." ) );
             break;
     }
-    m_jobs[ "auth" ]->deleteLater();
+    m_authenticateReply = 0;
+
+    // connect back to config updates
+    connect( m_config.data(), SIGNAL(updated()), this, SLOT(slotReconfigure()) );
+    continueReconfiguring();
 }
 
 void
 LastFmService::onGetUserInfo()
 {
-    DEBUG_BLOCK
-    if( !m_jobs[ "getUserInfo" ] )
-    {
-        debug() << "GOT RESULT FROM USER QUERY, but no object..!";
-        return;
-    }
-    switch (m_jobs[ "getUserInfo" ]->error())
+    QNetworkReply *reply = qobject_cast<QNetworkReply *>( sender() );
+    if( !reply )
+        warning() << __PRETTY_FUNCTION__ << "null reply!";
+    else
+        reply->deleteLater();
+
+    switch( reply ? reply->error() : QNetworkReply::UnknownNetworkError )
     {
         case QNetworkReply::NoError:
         {
-            try
-            {
-                lastfm::XmlQuery lfm( m_jobs[ "getUserInfo" ]->readAll() );
-
+            lastfm::XmlQuery lfm;
+            if( lfm.parse( reply->readAll() ) ) {
                 m_country = lfm["user"]["country"].text();
                 m_age = lfm["user"]["age"].text();
                 m_gender = lfm["user"]["gender"].text();
@@ -375,39 +340,35 @@ LastFmService::onGetUserInfo()
                     debug() << "profile avatar: " <<lfm["user"][ "image" ].text();
                     AvatarDownloader* downloader = new AvatarDownloader();
                     KUrl url( lfm["user"][ "image" ].text() );
-                    downloader->downloadAvatar( m_userName,  url);
+                    downloader->downloadAvatar( m_config->username(),  url);
                     connect( downloader, SIGNAL(avatarDownloaded(const QString&, QPixmap)),
                                          SLOT(onAvatarDownloaded(const QString&, QPixmap)) );
                 }
                 updateProfileInfo();
-
-            } catch( lastfm::ws::ParseError& e )
-            {
-                debug() << "Got exception in parsing from last.fm:" << e.what();
             }
+            else
+                debug() << "Got exception in parsing from last.fm:" << lfm.parseError().message();
             break;
-        } case QNetworkReply::AuthenticationRequiredError:
+        }
+        case QNetworkReply::AuthenticationRequiredError:
             debug() << "Last.fm: errorMessage: Sorry, we don't recognise that username, or you typed the password incorrectly.";
             break;
-
         default:
             debug() << "Last.fm: errorMessage: There was a problem communicating with the Last.fm services. Please try again later.";
             break;
     }
-
-    m_jobs[ "getUserInfo" ]->deleteLater();
 }
 
 void
 LastFmService::onAvatarDownloaded( const QString &username, QPixmap avatar )
 {
     DEBUG_BLOCK
-    if( username == m_userName && !avatar.isNull() ) {
-
-        if( !m_polished )
-            polish();
-
+    sender()->deleteLater();
+    if( username == m_config->username() && !avatar.isNull() )
+    {
         LastFmTreeModel* lfm = dynamic_cast<LastFmTreeModel*>( model() );
+        if( !lfm )
+            return;
 
         int m = lfm->avatarSize();
         avatar = avatar.scaled( m, m, Qt::KeepAspectRatio, Qt::SmoothTransformation );
@@ -417,7 +378,6 @@ LastFmService::onAvatarDownloaded( const QString &username, QPixmap avatar )
         if( m_avatarLabel )
             m_avatarLabel->setPixmap( m_avatar );
     }
-    sender()->deleteLater();
 }
 
 void
@@ -447,7 +407,7 @@ LastFmService::updateProfileInfo()
 {
     if( m_userinfo )
     {
-        m_userinfo->setText( i18n( "Username: %1", Qt::escape( m_userName ) ) );
+        m_userinfo->setText( i18n( "Username: %1", Qt::escape( m_config->username() ) ) );
     }
 
     if( m_profile && !m_playcount.isEmpty() )
@@ -467,7 +427,6 @@ LastFmService::polish()
         view->setSortingEnabled( false );
         view->setDragDropMode ( QAbstractItemView::DragOnly );
         setView( view );
-        setModel( new LastFmTreeModel( m_userName, this ) );
 
         //m_bottomPanel->setMaximumHeight( 300 );
         m_bottomPanel->hide();
@@ -480,7 +439,7 @@ LastFmService::polish()
         m_avatarLabel = new QLabel(outerProfilebox);
         if( !m_avatar )
         {
-            int m = dynamic_cast<LastFmTreeModel*>( model() )->avatarSize();
+            int m = LastFmTreeModel::avatarSize();
             m_avatarLabel->setPixmap( KIcon( "filename-artist-amarok" ).pixmap(m, m) );
             m_avatarLabel->setFixedSize( m, m );
         }
@@ -495,7 +454,7 @@ LastFmService::polish()
         innerProfilebox->setSpacing(0);
         innerProfilebox->setSizePolicy( QSizePolicy::Minimum, QSizePolicy::Minimum );
         m_userinfo = new QLabel(innerProfilebox);
-        m_userinfo->setText( m_userName );
+        m_userinfo->setText( m_config->username() );
         m_profile = new QLabel(innerProfilebox);
         m_profile->setText(QString());
         updateProfileInfo();
@@ -528,67 +487,17 @@ LastFmService::polish()
     }
 }
 
-
 void
 LastFmService::love()
 {
-    DEBUG_BLOCK
+    love( The::engineController()->currentTrack() );
+}
 
-    Meta::TrackPtr track = The::engineController()->currentTrack();
-    LastFm::Track* lastfmTrack = dynamic_cast< LastFm::Track* >( track.data() );
-
-    if( lastfmTrack )
-    {
-        lastfmTrack->love();
-        Amarok::Components::logger()->shortMessage( i18nc( "As in, lastfm", "Loved Track: %1", track->prettyName() ) );
-    }
-    else
-    {
+void
+LastFmService::love( Meta::TrackPtr track )
+{
+    if( m_scrobbler )
         m_scrobbler->loveTrack( track );
-    }
-
-}
-
-void LastFmService::love( Meta::TrackPtr track )
-{
-    DEBUG_BLOCK
-    m_scrobbler->loveTrack( track );
-}
-
-
-void
-LastFmService::ban()
-{
-    DEBUG_BLOCK
-
-    Meta::TrackPtr track = The::engineController()->currentTrack();
-    LastFm::Track* lastfmTrack = dynamic_cast< LastFm::Track* >( track.data() );
-    if( lastfmTrack )
-        lastfmTrack->ban();
-}
-
-
-void
-LastFmService::skip()
-{
-    DEBUG_BLOCK
-
-    Meta::TrackPtr track = The::engineController()->currentTrack();
-    LastFm::Track* lastfmTrack = dynamic_cast< LastFm::Track* >( track.data() );
-    if( lastfmTrack )
-        lastfmTrack->skip();
-}
-
-
-LastFmService *LastFmService::ms_service = 0;
-
-
-namespace The
-{
-    LastFmService *lastFmService()
-    {
-        return LastFmService::ms_service;
-    }
 }
 
 void LastFmService::playCustomStation()

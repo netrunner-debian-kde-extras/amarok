@@ -19,6 +19,14 @@ msgstr ""
 "X-Generator: Lokalize 1.2\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+msgctxt "NAME OF TRANSLATORS"
+msgid "Your names"
+msgstr "Bíró Árpád,Szántó Tamás,Kiszel Kristóf"
+
+msgctxt "EMAIL OF TRANSLATORS"
+msgid "Your emails"
+msgstr "biro.arpad@gmail.com,taszanto@gmail.com,ulysses@kubuntu.org"
+
 #: amarokpkg.cpp:40
 msgid "Install, list, remove Amarok applets"
 msgstr "Amarok-kisalkalmazások telepítése, listázása és törlése"
@@ -112,13 +120,3 @@ msgctxt ""
 msgid "One of install, remove, upgrade or list is required."
 msgstr ""
 "A telepítés, törlés, frissítés és listázás műveletek egyikét meg kell adni."
-
-#: rc.cpp:1
-msgctxt "NAME OF TRANSLATORS"
-msgid "Your names"
-msgstr "Bíró Árpád,Szántó Tamás,Kiszel Kristóf"
-
-#: rc.cpp:2
-msgctxt "EMAIL OF TRANSLATORS"
-msgid "Your emails"
-msgstr "biro.arpad@gmail.com,taszanto@gmail.com,ulysses@kubuntu.org"

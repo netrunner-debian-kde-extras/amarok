@@ -16,25 +16,16 @@
 
 #include "App.h"
 
-#include <config-amarok.h>
-
-#include "ConfigDialog.h"
-#include "covermanager/CoverCache.h"
-#include "covermanager/CoverFetcher.h"
-#include "dialogs/EqualizerDialog.h"
-#include "dbus/CollectionDBusHandler.h"
-#include "core/support/Debug.h"
+#include "config.h"
 #include "EngineController.h"
 #include "KNotificationBackend.h"
-#include "Osd.h"
-#include "PlaybackConfig.h"
 #include "PluginManager.h"
 #include "ScriptManager.h"
 #include "TrayIcon.h"
 #include "amarokconfig.h"
 #include "amarokurls/AmarokUrl.h"
-#include "core-impl/collections/support/CollectionManager.h"
-#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
+#include "configdialog/ConfigDialog.h"
+#include "configdialog/dialogs/PlaybackConfig.h"
 #include "core/capabilities/SourceInfoCapability.h"
 #include "core/interfaces/Logger.h"
 #include "core/meta/Meta.h"
@@ -47,6 +38,9 @@
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
 #include "core/transcoding/TranscodingController.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/playlists/types/file/PlaylistFileSupport.h"
+#include "covermanager/CoverCache.h"
 #include "covermanager/CoverFetcher.h"
 #include "dbus/CollectionDBusHandler.h"
 #include "dbus/mpris1/PlayerHandler.h"
@@ -61,6 +55,8 @@
 #include "playlistmanager/PlaylistManager.h"
 #include "statemanagement/ApplicationController.h"
 #include "statemanagement/DefaultApplicationController.h"
+#include "statsyncing/Controller.h"
+#include "widgets/Osd.h"
 
 
 #ifdef NO_MYSQL_EMBEDDED
@@ -427,6 +423,7 @@ App::initCliArgs() //static
     options.add("load", ki18n("Load URLs, replacing current playlist"));
     options.add("d");
     options.add("debug", ki18n("Print verbose debugging information"));
+    options.add("debug-audio", ki18n("Print verbose debugging information from the audio system"));
     options.add("c");
     options.add("coloroff", ki18n("Disable colorization for debug output."));
     options.add("m");
@@ -540,6 +537,10 @@ App::continueInit()
         splash->show();
     }
 #endif
+
+    // Instantiate statistics synchronization controller. Needs to be before creating
+    // MainWindow as MainWindow connects a signal to StatSyncing::Controller.
+    Amarok::Components::setStatSyncingController( new StatSyncing::Controller( this ) );
 
     PERF_LOG( "Creating MainWindow" )
     m_mainWindow = new MainWindow();

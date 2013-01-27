@@ -17,10 +17,11 @@
 #ifndef FILEBROWSERMKII_H
 #define FILEBROWSERMKII_H
 
-#include "BrowserCategory.h"
+#include "browsers/BrowserCategory.h"
 
 #include <KUrl>
 
+class QAbstractItemView;
 class QModelIndex;
 
 class FileBrowser : public BrowserCategory
@@ -32,9 +33,6 @@ public:
     ~FileBrowser();
 
     virtual void setupAddItems();
-    virtual void polish();
-
-    virtual QString prettyName() const;
 
     /**
     * Navigate to a specific directory
@@ -47,7 +45,7 @@ public:
     QString currentDir() const;
 
 protected slots:
-    void itemActivated( const QModelIndex &index );
+    void slotNavigateToDirectory( const QModelIndex &index );
 
     void addItemActivated( const QString &callback );
 
@@ -81,11 +79,6 @@ protected slots:
     void home();
 
     /**
-     * Navigates to "places"
-     */
-    void showPlaces();
-
-    /**
      * Handle results of tryiong to setup an item in "places" that needed mouting or other
      * special setup.
      * @param index the index that we tried to setup
@@ -100,7 +93,25 @@ private:
     class Private;
     Private *const d;
 
-    Q_PRIVATE_SLOT( d, void slotSaveHeaderState() )
+    Q_PRIVATE_SLOT( d, void updateHeaderState() )
+};
+
+/**
+ * Helper class that calls setCurrentIndex on a model view as soon as the model
+ * adds a row and then it auto-deletes itself.
+ */
+class DelayedActivator : public QObject
+{
+    Q_OBJECT
+
+    public:
+        explicit DelayedActivator( QAbstractItemView *view );
+
+    private slots:
+        void slotRowsInserted( const QModelIndex &parent, int start );
+
+    private:
+        QAbstractItemView *m_view;
 };
 
 #endif // FILEBROWSERMKII_H

@@ -173,30 +173,6 @@ DaapTrack::setComment( const QString &newComment )
     Q_UNUSED( newComment )
 }
 
-double
-DaapTrack::score() const
-{
-    return 0.0;
-}
-
-void
-DaapTrack::setScore( double newScore )
-{
-    Q_UNUSED( newScore )
-}
-
-int
-DaapTrack::rating() const
-{
-    return 0;
-}
-
-void
-DaapTrack::setRating( int newRating )
-{
-    Q_UNUSED( newRating )
-}
-
 qint64
 DaapTrack::length() const
 {
@@ -245,28 +221,10 @@ DaapTrack::setDiscNumber( int newDiscNumber )
     Q_UNUSED( newDiscNumber )
 }
 
-int
-DaapTrack::playCount() const
-{
-    return 0;
-}
-
 QString
 DaapTrack::type() const
 {
     return m_type;
-}
-
-void
-DaapTrack::subscribe( Observer *observer )
-{
-    Q_UNUSED( observer )    //read only
-}
-
-void
-DaapTrack::unsubscribe( Observer *observer )
-{
-    Q_UNUSED( observer )    //read only
 }
 
 bool

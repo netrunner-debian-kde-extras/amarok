@@ -22,39 +22,59 @@
 #include <QStringList>
 #include <QString>
 
-
 namespace Amarok
 {
+    //New FileTypes must also be added to s_fileTypeStrings in FileType.cpp
+    enum FileType
+    {
+        Unknown     =  0,
+        Mp3         =  1,
+        Ogg         =  2,
+        Flac        =  3,
+        Mp4         =  4, // a file in MPEG-4 container that may or may not contain video
+        Wma         =  5,
+        Aiff        =  6,
+        Mpc         =  7,
+        TrueAudio   =  8,
+        Wav         =  9,
+        WavPack     = 10,
+        M4a         = 11, // a file in MPEG-4 container that contains only audio
+        M4v         = 12, // a file in MPEG-4 container that for sure contains video
+        Mod         = 13,
+        S3M         = 14,
+        IT          = 15,
+        XM          = 16
+    };
 
-//New FileTypes must also be added to s_fileTypeStrings in FileType.cpp
-enum FileType
-{
-    Unknown     =  0,
-    Mp3         =  1,
-    Ogg         =  2,
-    Flac        =  3,
-    Mp4         =  4, // a file in MPEG-4 container that may or may not contain video
-    Wma         =  5,
-    Aiff        =  6,
-    Mpc         =  7,
-    TrueAudio   =  8,
-    Wav         =  9,
-    WavPack     = 10,
-    M4a         = 11, // a file in MPEG-4 container that contains only audio
-    M4v         = 12  // a file in MPEG-4 container that for sure contains video
-};
+    class FileTypeSupport
+    {
+        public:
+            /**
+             * Return string representation of a filetype.
+             *
+             * WARNING: the return string is only partially localized currently
+             * TODO: rename to toLocalizedString() and localise all filetypes
+             */
+            static QString toString( Amarok::FileType ft );
 
+            /**
+             * Return a list of possible localized filetype strings.
+             *
+             * TODO: actualy localize the types
+             */
+            static QStringList possibleFileTypes();
 
-class FileTypeSupport
-{
-public:
-    static QString toString( Amarok::FileType ft );
-    static QStringList possibleFileTypes();
-    static Amarok::FileType fileType( const QString& extension );
-private:
-    static QStringList s_fileTypeStrings;
-};
+            /**
+             * Return file type given file extension, which must exclude the leading dot.
+             *
+             * @return Amarok::FileType enum, Amarok::Unknown if no other suitable
+             *         type is in the enum
+             */
+            static Amarok::FileType fileType( const QString& extension );
 
+        private:
+            static QStringList s_fileTypeStrings;
+    };
 }
 
 #endif /* SHARED_FILETYPE_H */

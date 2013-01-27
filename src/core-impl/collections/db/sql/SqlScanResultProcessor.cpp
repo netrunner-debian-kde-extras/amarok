@@ -20,15 +20,13 @@
 
 #include "SqlScanResultProcessor.h"
 
+#include "collectionscanner/Directory.h"
+#include "collectionscanner/Album.h"
+#include "collectionscanner/Track.h"
+#include "collectionscanner/Playlist.h"
 #include "core/support/Debug.h"
-#include "SqlQueryMaker.h"
+#include "core-impl/collections/db/sql/SqlQueryMaker.h"
 #include "playlistmanager/PlaylistManager.h"
-
-// include files from the collection scanner utility
-#include <collectionscanner/Directory.h>
-#include <collectionscanner/Album.h>
-#include <collectionscanner/Track.h>
-#include <collectionscanner/Playlist.h>
 
 SqlScanResultProcessor::SqlScanResultProcessor( Collections::SqlCollection *collection, QObject *parent )
     : ScanResultProcessor( parent ),
@@ -150,12 +148,11 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
     if( m_foundTracks.contains( uid ) )
     {
         const UrlEntry old = m_urlsCache.value( m_uidCache.value( uid ) );
-        QString text = QString( "When commiting track %1 with uid %2 we detected that the "
-                "same uid is already commited. This means that you most probably have "
-                "duplicates in your collection folders. The offending track is %3." ).arg(
-                track->path(), uid, old.path );
-        warning() << "commitTrack():" << text.toLocal8Bit().data();
-        m_lastErrors.append( text );
+        const char *pattern = I18N_NOOP( "Duplicates found, the second file will be ignored:\n%1\n%2" );
+
+        // we want translated version for GUI and non-translated for debug log
+        warning() << "commitTrack():" << QString( pattern ).arg( old.path, track->path() );
+        m_lastErrors.append( i18n( pattern, old.path, track->path() ) );
         return;
     }
 
@@ -216,7 +213,7 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
 
     // -- set the values
     metaTrack->setWriteFile( false ); // no need to write the tags back
-    metaTrack->beginMetaDataUpdate();
+    metaTrack->beginUpdate();
 
     metaTrack->setUidUrl( uid );
     metaTrack->setUrl( deviceId, rpath, directoryId );
@@ -305,7 +302,7 @@ SqlScanResultProcessor::commitTrack( CollectionScanner::Track *track,
             metaTrack->setReplayGain( modes[i], track->replayGain( modes[i] ) );
     }
 
-    metaTrack->endMetaDataUpdate();
+    metaTrack->endUpdate();
     metaTrack->setWriteFile( true );
 }
 

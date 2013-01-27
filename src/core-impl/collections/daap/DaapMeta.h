@@ -74,12 +74,6 @@ class DaapTrack : public Meta::Track
         virtual QString comment() const;
         virtual void setComment ( const QString &newComment );
 
-        virtual double score() const;
-        virtual void setScore ( double newScore );
-
-        virtual int rating() const;
-        virtual void setRating ( int newRating );
-
         virtual qint64 length() const;
 
         virtual int filesize() const;
@@ -92,15 +86,7 @@ class DaapTrack : public Meta::Track
         virtual int discNumber() const;
         virtual void setDiscNumber ( int newDiscNumber );
 
-        virtual int playCount() const;
-
         virtual QString type() const;
-
-        virtual void beginMetaDataUpdate() {}    //read only
-        virtual void endMetaDataUpdate() {}      //read only
-
-        virtual void subscribe ( Observer *observer );
-        virtual void unsubscribe ( Observer *observer );
 
         virtual bool inCollection() const;
         virtual Collections::Collection* collection() const;

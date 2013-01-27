@@ -17,15 +17,12 @@
 
 #define DEBUG_PREFIX "EditFilterDialog"
 
-#include "EditFilterDialog.h"
-
-#include "ui_EditFilterDialog.h"
-
 #include "amarokconfig.h"
-
-#include "Expression.h"
+#include "ui_EditFilterDialog.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
+#include "core-impl/collections/support/Expression.h"
+#include "dialogs/EditFilterDialog.h"
 #include "widgets/TokenDropTarget.h"
 
 #include <KGlobal>
@@ -55,7 +52,6 @@ EditFilterDialog::EditFilterDialog( QWidget* parent, const QString &text )
 
     m_dropTarget = new TokenDropTarget( "application/x-amarok-tag-token", m_ui->dtTokens );
     m_dropTarget->setRowLimit( 1 );
-    m_dropTarget->layout()->setContentsMargins( 1, 1, 1, 1 );
 
     QVBoxLayout *l = new QVBoxLayout( m_ui->dtTokens );
     l->setContentsMargins( 0, 0, 0, 0 );
