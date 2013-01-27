@@ -1,4 +1,4 @@
-amarok (2.7.0-0r1) UNRELEASED; urgency=low
+amarok (2.7.0-1) experimental; urgency=low
 
   * New upstream release.
   * Really add --no-relax on Alpha (forgot to export appropriate variable).
@@ -12,8 +12,9 @@ amarok (2.7.0-0r1) UNRELEASED; urgency=low
     (patch debian_clamz_is_runtime_dependency.diff). In addition, add
     README.Debian entry about clamz.
   * Bump Standards-Version to 3.9.4: no changes needed.
+  * Upload to experimental since we require some dependencies from it.
 
- -- Modestas Vainius <modax@debian.org>  Sat, 18 Aug 2012 16:19:58 +0300
+ -- Modestas Vainius <modax@debian.org>  Sun, 27 Jan 2013 14:27:15 +0200
 
 amarok (2.6.0-1) unstable; urgency=low
 
