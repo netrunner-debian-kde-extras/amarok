@@ -1,5 +1,6 @@
-amarok (2.6.0-2) UNRELEASED; urgency=low
+amarok (2.7.0-0r1) UNRELEASED; urgency=low
 
+  * New upstream release.
   * Really add --no-relax on Alpha (forgot to export appropriate variable).
     (Closes: #684932)
 
