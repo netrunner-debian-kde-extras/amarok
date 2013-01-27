@@ -25,7 +25,7 @@ Architecture: any
 Depends: amarok-common (= ${source:Version}), amarok-utils (= ${binary:Version}),
  ${shlibs:Depends}, ${misc:Depends},
  libqtscript4-core, libqtscript4-gui, libqtscript4-network, libqtscript4-xml, libqtscript4-sql, libqtscript4-uitools
-Recommends: kdemultimedia-kio-plugins (>= 4:4.2.0)
+Recommends: kdemultimedia-kio-plugins (>= 4:4.2.0), clamz
 Suggests: amarok-doc (>= ${source:Version}), libqt4-sql-sqlite, libqt4-sql-mysql, libqt4-sql-psql,
  moodbar
 Description: easy to use media player based on the KDE Platform

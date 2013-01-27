@@ -12,4 +12,5 @@ General notes
 * In order to use moodbar support in Amarok, you will have to manually generate
   "mood" files for your tracks and to enable moodbar in Amarok preferences.
   Refer to http://amarok.kde.org/wiki/Moodbar#Usage for more information.
-
+* As of 2.7.0, you should install clamz package if you wish to download songs
+  from Amazon with Amarok.

@@ -8,6 +8,9 @@ amarok (2.7.0-0r1) UNRELEASED; urgency=low
     - require kde4libs 4.8.4 (with implicit Qt 4.8 requirement);
     - require taglib 1.8;
     - require liblastfm 1.0.3.
+  * Add clamz to amarok Recommends and disable clamz check at build time
+    (patch debian_clamz_is_runtime_dependency.diff). In addition, add
+    README.Debian entry about clamz.
 
  -- Modestas Vainius <modax@debian.org>  Sat, 18 Aug 2012 16:19:58 +0300
 
