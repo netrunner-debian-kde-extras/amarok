@@ -48,6 +48,7 @@ usr/lib/kde4/kcm_amarok_service_magnatunestore.so
 usr/lib/kde4/kcm_amarok_service_mp3tunes.so
 usr/lib/libamarok-sqlcollection.so.1*
 usr/lib/libamarok-transcoding.so.1*
+usr/lib/libamarok_service_lastfm_shared.so
 usr/lib/libamarokcore.so.1*
 usr/lib/libamaroklib.so.1*
 usr/lib/libamarokocsclient.so.4*
