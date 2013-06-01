@@ -4,6 +4,7 @@ amarok (2.7.1-1) UNRELEASED; urgency=low
     - this release supports liblastfm (>= 1.0.3). (Closes: #710705)
   * Install libamarok_service_lastfm_shared.so into amarok package again.
     It has somehow slipped through my eyes before. (Closes: #702802)
+  * Adapt debian_mysqle_force_defaults_file.diff to upstream changes.
 
  -- Modestas Vainius <modax@debian.org>  Fri, 31 May 2013 23:50:51 +0300
 

@@ -15,8 +15,8 @@ looking for /etc/mysql/conf.d/ or reading system errmsg.sys.
 +++ b/src/core-impl/collections/db/sql/mysqlecollection/MySqlEmbeddedStorage.cpp
 @@ -92,8 +92,12 @@ MySqlEmbeddedStorage::MySqlEmbeddedStora
  
-     setenv( "MYSQL_HOME", storagePath.toAscii().data(), 1 );
-     setenv( "DEFAULT_HOME_ENV", storagePath.toAscii().data(), 1 );
+     setenv( "MYSQL_HOME", storagePath.toLocal8Bit().data(), 1 );
+     setenv( "DEFAULT_HOME_ENV", storagePath.toLocal8Bit().data(), 1 );
 -    char *args[] = { (char*) "amarok" };
 -    if( mysql_library_init( 1 , args, 0 ) != 0 )
 +    QByteArray defaultsFileArg = QByteArray("--defaults-file=") + QFile::encodeName(defaultsFile);
