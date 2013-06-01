@@ -1,4 +1,4 @@
-amarok (2.7.1-1) UNRELEASED; urgency=low
+amarok (2.7.1-1) unstable; urgency=low
 
   * New upstream release: (Closes: #708525)
     - this release supports liblastfm (>= 1.0.3). (Closes: #710705)
@@ -8,7 +8,7 @@ amarok (2.7.1-1) UNRELEASED; urgency=low
   * Update lintian overrides for embedded libmysqld and a new shared liblastfm
     library.
 
- -- Modestas Vainius <modax@debian.org>  Fri, 31 May 2013 23:50:51 +0300
+ -- Modestas Vainius <modax@debian.org>  Sun, 02 Jun 2013 01:58:55 +0300
 
 amarok (2.7.0-1) experimental; urgency=low
 
