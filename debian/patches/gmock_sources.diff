@@ -1,0 +1,50 @@
+diff --git a/cmake/modules/FindGooglemock.cmake b/cmake/modules/FindGooglemock.cmake
+index 91c96bc..23194f0 100644
+--- a/cmake/modules/FindGooglemock.cmake
++++ b/cmake/modules/FindGooglemock.cmake
+@@ -104,6 +104,14 @@ if( NOT GOOGLEMOCK_DEP_GTEST_LIBRARY )
+        ${KDE4_LIB_DIR}
+     )
+     set( CMAKE_FIND_LIBRARY_SUFFIXES ${OLD_CMAKE_FIND_LIBRARY_SUFFIXES})
++
++    if( NOT GOOGLEMOCK_LIBRARY_STATIC )
++        find_path( GOOGLEMOCK_SOURCES NAMES gmock 
++            PATHS /usr/src
++            NO_DEFAULT_PATH
++            NO_CMAKE_PATH
++        )
++    endif( NOT GOOGLEMOCK_LIBRARY_STATIC )
+ endif( NOT GOOGLEMOCK_DEP_GTEST_LIBRARY )
+ 
+ # -- googlemock and gtest library available
+@@ -120,6 +128,12 @@ elseif(GOOGLEMOCK_INCLUDE_DIR AND GOOGLEMOCK_LIBRARY AND GOOGLEMOCK_DEP_GTEST_SO
+    set(GOOGLEMOCK_GTEST_SOURCES "${GOOGLEMOCK_DEP_GTEST_SOURCES}/gtest" CACHE PATH "Path to the gtest sources")
+    message(STATUS "Found libgmock but need to build gtest: ${GOOGLEMOCK_INCLUDE_DIR}, ${GOOGLEMOCK_LIBRARIES} ${GOOGLEMOCK_DEP_GTEST_SOURCES}")
+ 
++elseif(GOOGLEMOCK_INCLUDE_DIR AND GOOGLEMOCK_SOURCES AND GOOGLEMOCK_DEP_GTEST_SOURCES)
++    set(GOOGLEMOCK_FOUND TRUE)
++    set(GOOGLEMOCK_GMOCK_SOURCES "${GOOGLEMOCK_SOURCES}/gmock" CACHE PATH "Path to the gmock sources")
++    set(GOOGLEMOCK_GTEST_SOURCES "${GOOGLEMOCK_DEP_GTEST_SOURCES}/gtest" CACHE PATH "Path to the gtest sources")
++    message(STATUS "Found gmock and gtest but need to build both: ${GOOGLEMOCK_INCLUDE_DIR}, ${GOOGLEMOCK_SOURCES} ${GOOGLEMOCK_DEP_GTEST_SOURCES}")
++
+ # -- googlemock but no gtest
+ else(GOOGLEMOCK_INCLUDE_DIR AND GOOGLEMOCK_LIBRARY AND GOOGLEMOCK_DEP_GTEST_SOURCES)
+    set(GOOGLEMOCK_FOUND FALSE)
+diff --git a/tests/CMakeLists.txt b/tests/CMakeLists.txt
+index 894b9e5..8bdcdb7 100644
+--- a/tests/CMakeLists.txt
++++ b/tests/CMakeLists.txt
+@@ -138,6 +138,13 @@ if(GOOGLEMOCK_GTEST_SOURCES)
+     add_subdirectory( ${GOOGLEMOCK_GTEST_SOURCES} gtest )
+ endif(GOOGLEMOCK_GTEST_SOURCES)
+ 
++if(GOOGLEMOCK_GMOCK_SOURCES)
++    add_subdirectory( ${GOOGLEMOCK_GMOCK_SOURCES} gmock )
++    add_dependencies( gmock gtest )
++    target_link_libraries( gmock )
++    set ( GOOGLEMOCK_LIBRARIES gmock )
++endif(GOOGLEMOCK_GMOCK_SOURCES)
++
+ add_dependencies( testtrackorganizer amarokcore )
+ add_dependencies( testtrackorganizer amaroklib )
+ add_dependencies( testtrackorganizer gtest )
