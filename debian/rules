@@ -8,7 +8,7 @@ ifeq (alpha,$(shell dpkg-architecture -qDEB_HOST_ARCH))
 endif
 
 override_dh_auto_configure:
-	dh_auto_configure -Skde -- -DCMAKE_USE_RELATIVE_PATHS=ON
+	dh_auto_configure -Skde -- -DCMAKE_USE_RELATIVE_PATHS=ON -DKDE4_BUILD_TESTS=false
 
 override_dh_bugfiles:
 	dh_bugfiles -A

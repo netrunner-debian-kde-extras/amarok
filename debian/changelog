@@ -4,6 +4,9 @@ amarok (2.7.1-2) UNRELEASED; urgency=low
   * Drop libifp-dev and libnjb-dev build dependencies. Apparently, they have
     been unused since initial Amarok 2 release. Thanks to Pino Toscano for
     heads up.
+  * Disable test building explicitly. Tests are enabled by default since
+    KDE 4.9 so they will trigger FTBFS. We are not quite there yet with amarok
+    tests.
 
   [ Maximiliano Curia ]
   * Update watch file.
