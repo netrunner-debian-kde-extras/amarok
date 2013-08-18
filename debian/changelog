@@ -9,7 +9,7 @@ amarok (2.8.0-0r1) UNRELEASED; urgency=low
     heads up.
   * Disable test building explicitly. Tests are enabled by default since
     KDE 4.9 so they will trigger FTBFS. We are not quite there yet with amarok
-    tests.
+    tests (Closes: #719425).
 
   [ Maximiliano Curia ]
   * Update watch file.
