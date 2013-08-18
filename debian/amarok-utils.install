@@ -1,2 +1,5 @@
 usr/bin/amarok_afttagger
 usr/bin/amarokcollectionscanner
+usr/bin/amzdownloader
+usr/share/applications/kde4/amzdownloader.desktop
+usr/share/mime/packages/amzdownloader.xml

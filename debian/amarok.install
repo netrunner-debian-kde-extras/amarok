@@ -2,7 +2,6 @@ debian/icons/*                          /usr/share/pixmaps
 usr/bin/amarok
 usr/bin/amarokmp3tunesharmonydaemon
 usr/bin/amarokpkg
-usr/bin/amzdownloader
 usr/lib/kde4/amarok_collection-audiocdcollection.so
 usr/lib/kde4/amarok_collection-daapcollection.so
 usr/lib/kde4/amarok_collection-ipodcollection.so
