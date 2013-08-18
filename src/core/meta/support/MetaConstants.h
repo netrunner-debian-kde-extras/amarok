@@ -17,16 +17,14 @@
 #ifndef AMAROK_METACONSTANTS_H
 #define AMAROK_METACONSTANTS_H
 
-#include "amarok_export.h"
+#include "core/amarokcore_export.h"
 #include "MetaValues.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QString>
 
 namespace Meta
 {
-
-
     /** Returns a textual identification for the given field.
         This name can be used e.g. for identifying the field in a xml file.
      */

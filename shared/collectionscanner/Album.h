@@ -20,29 +20,24 @@
 #ifndef COLLECTIONSCANNER_ALBUM_H
 #define COLLECTIONSCANNER_ALBUM_H
 
+#include "amarokshared_export.h"
+
 #include <QList>
 #include <QString>
 #include <QStringList>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
-#include "Track.h"
-
-#ifndef UTILITIES_BUILD
-    #include "amarok_export.h"
-#else
-    #define AMAROK_EXPORT
-#endif
-
 namespace CollectionScanner
 {
+class Track;
 
 /** This album class is used by the ScanResultProcessor to sort tracks into albums.
     @class Album
     @short Represents a scanned album and it's contents
     @author Ralf Engels <ralf-engels@gmx.de>
 */
-class AMAROK_EXPORT Album
+class AMAROKSHARED_EXPORT Album
 {
 public:
     Album();
@@ -57,6 +52,7 @@ public:
 
     /** Returns the artist of this album.  */
     QString artist() const;
+    void setArtist( const QString &artist );
 
     /** Returns the picture best suited as cover for this album */
     QString cover() const;

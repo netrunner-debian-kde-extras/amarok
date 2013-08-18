@@ -1,13 +1,13 @@
 # Translation of amarokcollectionscanner_qt.po into Serbian.
-# Chusslove Illich <caslav.ilic@gmx.net>, 2009, 2010, 2011, 2012.
+# Chusslove Illich <caslav.ilic@gmx.net>, 2009, 2010, 2011, 2012, 2013.
 # Slobodan Terzić <githzerai06@gmail.com>, 2009, 2010, 2011.
 # Dalibor Djuric <daliborddjuric@gmail.com>, 2010, 2011.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarokcollectionscanner_qt\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-10-10 10:03+0200\n"
-"PO-Revision-Date: 2012-06-17 10:21+0200\n"
+"POT-Creation-Date: 2013-03-05 03:04+0100\n"
+"PO-Revision-Date: 2013-02-03 14:26+0100\n"
 "Last-Translator: Chusslove Illich <caslav.ilic@gmx.net>\n"
 "Language-Team: Serbian <kde-i18n-sr@kde.org>\n"
 "Language: sr\n"
@@ -22,28 +22,29 @@ msgstr ""
 "X-Generator: Lokalize 1.2\n"
 "X-Wrapping: fine\n"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:115
-#: utilities/collectionscanner/CollectionScanner.cpp:138
+#: utilities/collectionscanner/CollectionScanner.cpp:116
+#: utilities/collectionscanner/CollectionScanner.cpp:139
 #, qt-format
 msgid "File \"%1\" not found."
 msgstr "Фајл „%1“ није пронађен."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:118
+#: utilities/collectionscanner/CollectionScanner.cpp:119
 #, qt-format
 msgid "Could not open file \"%1\"."
 msgstr "Не могу да отворим фајл „%1“."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:370
+#: utilities/collectionscanner/CollectionScanner.cpp:371
 #, qt-format
 msgid "Missing argument for option %1"
 msgstr "Недостаје аргумент за опцију „%1“."
 
 # skip-rule: x-markup-q
-#: utilities/collectionscanner/CollectionScanner.cpp:407
+#: utilities/collectionscanner/CollectionScanner.cpp:408
 msgid ""
 "Amarok Collection Scanner\n"
 "Scans directories and outputs a xml file with the results.\n"
-"For more information see http://amarok.kde.org/wiki/Batch_Mode\n"
+"For more information see http://community.kde.org/Amarok/Development/"
+"BatchMode\n"
 "\n"
 "Usage: amarokcollectionscanner [options] <Folder(s)>\n"
 "User-modifiable Options:\n"
@@ -72,7 +73,8 @@ msgid ""
 msgstr ""
 "Амароков претраживач збирке\n"
 "Претражује фасцикле и као излаз даје ИксМЛ фајл са резултатима.\n"
-"За више информација погледајте http://amarok.kde.org/wiki/Batch_Mode\n"
+"За више информација погледајте http://community.kde.org/Amarok/Development/"
+"BatchMode\n"
 "\n"
 "Употреба: amarokcollectionscanner [опције] <фасцикла(е)>\n"
 "Кориснички измењиве опције:\n"

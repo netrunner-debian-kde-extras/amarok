@@ -18,6 +18,7 @@
 #include "WeeklyTopBias.h"
 
 #include "browsers/playlistbrowser/DynamicBiasWidgets.h"
+#include "core/meta/Meta.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
@@ -118,9 +119,7 @@ QString
 Dynamic::WeeklyTopBias::toString() const
 {
     return i18nc("WeeklyTopBias bias representation",
-                 "Tracks from the Last.fm top lists from %1 to %2")
-        .arg( m_range.from.toString() )
-        .arg( m_range.to.toString() );
+                 "Tracks from the Last.fm top lists from %1 to %2", m_range.from.toString(), m_range.to.toString() );
 }
 
 QWidget*
@@ -137,8 +136,8 @@ Dynamic::WeeklyTopBias::widget( QWidget* parent )
     if( m_range.from.isValid() )
         fromEdit->setDateTime( m_range.from );
 
-    connect( fromEdit, SIGNAL( dateTimeChanged( const QDateTime& ) ),
-             this, SLOT( fromDateChanged( const QDateTime& ) ) );
+    connect( fromEdit, SIGNAL(dateTimeChanged(QDateTime)),
+             this, SLOT(fromDateChanged(QDateTime)) );
     label->setBuddy( fromEdit );
     layout->addWidget( label );
     layout->addWidget( fromEdit );
@@ -151,8 +150,8 @@ Dynamic::WeeklyTopBias::widget( QWidget* parent )
     if( m_range.to.isValid() )
         toEdit->setDateTime( m_range.to );
 
-    connect( toEdit, SIGNAL( dateTimeChanged( const QDateTime& ) ),
-             this, SLOT( toDateChanged( const QDateTime& ) ) );
+    connect( toEdit, SIGNAL(dateTimeChanged(QDateTime)),
+             this, SLOT(toDateChanged(QDateTime)) );
     label->setBuddy( toEdit );
     layout->addWidget( label );
     layout->addWidget( toEdit );
@@ -265,8 +264,8 @@ Dynamic::WeeklyTopBias::newQuery()
     m_qm->setQueryType( Collections::QueryMaker::Custom );
     m_qm->addReturnValue( Meta::valUniqueId );
 
-    connect( m_qm.data(), SIGNAL(newResultReady( QStringList )),
-             this, SLOT(updateReady( QStringList )) );
+    connect( m_qm.data(), SIGNAL(newResultReady(QStringList)),
+             this, SLOT(updateReady(QStringList)) );
     connect( m_qm.data(), SIGNAL(queryDone()),
              this, SLOT(updateFinished()) );
 
@@ -285,8 +284,8 @@ Dynamic::WeeklyTopBias::newWeeklyTimesQuery()
 
     m_weeklyTimesJob = lastfm::ws::get( params );
 
-    connect( m_weeklyTimesJob, SIGNAL( finished() ),
-             this, SLOT( weeklyTimesQueryFinished() ) );
+    connect( m_weeklyTimesJob, SIGNAL(finished()),
+             this, SLOT(weeklyTimesQueryFinished()) );
 }
 
 
@@ -331,8 +330,8 @@ void Dynamic::WeeklyTopBias::newWeeklyArtistQuery()
                 params[ "to" ] = QString::number( m_weeklyToTimes[m_weeklyFromTimes.indexOf(lastWeekTime)] );
 
                 QNetworkReply* reply = lastfm::ws::get( params );
-                connect( reply, SIGNAL( finished() ),
-                         this, SLOT( weeklyArtistQueryFinished() ) );
+                connect( reply, SIGNAL(finished()),
+                         this, SLOT(weeklyArtistQueryFinished()) );
 
                 m_weeklyArtistJobs.insert( lastWeekTime, reply );
 

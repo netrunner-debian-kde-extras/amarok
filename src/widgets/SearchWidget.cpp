@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2007 Dan Meltzer <parallelgrapefruit@gmail.com>                        *
- * Copyright (c) 2011 Sven Krohlas <sven@getamarok.com>                                 *
+ * Copyright (c) 2011 Sven Krohlas <sven@asbest-online.de>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -50,12 +50,12 @@ SearchWidget::SearchWidget( QWidget *parent, bool advanced )
     m_sw->completionObject()->setIgnoreCase( true );
     m_sw->setToolTip( i18n( "Enter space-separated terms to search." ) );
     m_sw->addItem( KStandardGuiItem::find().icon(), QString() );
-    connect( m_sw, SIGNAL( returnPressed( const QString& ) ), SLOT( addCompletion( const QString& ) ) );
-    connect( m_sw, SIGNAL( activated( int ) ), SLOT( onComboItemActivated( int ) ) );
-    connect( m_sw, SIGNAL( editTextChanged( const QString & ) ), SLOT( resetFilterTimeout() ) );
-    connect( m_sw, SIGNAL( returnPressed() ), SLOT( filterNow() ) );
-    connect( m_sw, SIGNAL( returnPressed() ), SLOT( advanceFocus() ) );
-    connect( m_sw, SIGNAL( downPressed() ), SLOT( advanceFocus() ) );
+    connect( m_sw, SIGNAL(returnPressed(QString)), SLOT(addCompletion(QString)) );
+    connect( m_sw, SIGNAL(activated(int)), SLOT(onComboItemActivated(int)) );
+    connect( m_sw, SIGNAL(editTextChanged(QString)), SLOT(resetFilterTimeout()) );
+    connect( m_sw, SIGNAL(returnPressed()), SLOT(filterNow()) );
+    connect( m_sw, SIGNAL(returnPressed()), SIGNAL(returnPressed()) );
+    connect( m_sw, SIGNAL(downPressed()), SLOT(advanceFocus()) );
 
     QVBoxLayout *layout = new QVBoxLayout();
     layout->addWidget( searchBox );
@@ -72,23 +72,14 @@ SearchWidget::SearchWidget( QWidget *parent, bool advanced )
         m_filterAction->setObjectName( "filter" );
         m_toolBar->addAction( m_filterAction );
 
-        connect( m_filterAction, SIGNAL( triggered() ), this, SLOT( slotShowFilterEditor() ) );
+        connect( m_filterAction, SIGNAL(triggered()), this, SLOT(slotShowFilterEditor()) );
     }
 
     m_filterTimer.setSingleShot( true );
-    connect( &m_filterTimer, SIGNAL( timeout() ), SLOT( filterNow() ) );
+    connect( &m_filterTimer, SIGNAL(timeout()), SLOT(filterNow()) );
 
     m_animationTimer.setInterval( 500 );
-    connect( &m_animationTimer, SIGNAL( timeout() ), this, SLOT( nextAnimationTick() ) );
-}
-
-void
-SearchWidget::setSearchString( const QString &searchString )
-{
-    if( searchString != currentText() ) {
-        m_sw->setEditText( searchString );
-        filterNow();
-    }
+    connect( &m_animationTimer, SIGNAL(timeout()), this, SLOT(nextAnimationTick()) );
 }
 
 void
@@ -143,7 +134,7 @@ SearchWidget::slotShowFilterEditor()
     fd->setAttribute( Qt::WA_DeleteOnClose );
     m_filterAction->setEnabled( false );
 
-    connect( fd, SIGNAL(filterChanged(const QString&) ), m_sw, SLOT(setEditText(const QString&)) );
+    connect( fd, SIGNAL(filterChanged(QString)), m_sw, SLOT(setEditText(QString)) );
     connect( fd, SIGNAL(finished(int)), this, SLOT(slotFilterEditorFinished(int)) );
 
     fd->show();
@@ -174,7 +165,7 @@ SearchWidget::showAdvancedButton( bool show )
             m_filterAction = new QAction( KIcon( "document-properties" ), i18n( "Edit filter" ), this );
             m_filterAction->setObjectName( "filter" );
             m_toolBar->addAction( m_filterAction );
-            connect( m_filterAction, SIGNAL( triggered() ), this, SLOT( slotShowFilterEditor() ) );
+            connect( m_filterAction, SIGNAL(triggered()), this, SLOT(slotShowFilterEditor()) );
         }
     }
     else
@@ -200,18 +191,11 @@ SearchWidget::setTimeout( quint16 newTimeout )
 // public slots:
 
 void
-SearchWidget::searchEnded()
+SearchWidget::setSearchString( const QString &searchString )
 {
-    if( m_runningSearches > 0 ) // just to be sure...
-        m_runningSearches--;
-
-    // stop the animation
-    if( m_runningSearches == 0 )
-    {
-        m_animationTimer.stop();
-        saveLineEditStatus();
-        m_sw->setItemIcon( m_sw->currentIndex(), KStandardGuiItem::find().icon() );
-        restoreLineEditStatus();
+    if( searchString != currentText() ) {
+        m_sw->setEditText( searchString );
+        filterNow();
     }
 }
 
@@ -237,6 +221,22 @@ SearchWidget::searchStarted()
     {
         if( i != m_sw->currentIndex() ) // not the current one, which should be animated!
             m_sw->setItemIcon( i, KStandardGuiItem::find().icon() );
+    }
+}
+
+void
+SearchWidget::searchEnded()
+{
+    if( m_runningSearches > 0 ) // just to be sure...
+        m_runningSearches--;
+
+    // stop the animation
+    if( m_runningSearches == 0 )
+    {
+        m_animationTimer.stop();
+        saveLineEditStatus();
+        m_sw->setItemIcon( m_sw->currentIndex(), KStandardGuiItem::find().icon() );
+        restoreLineEditStatus();
     }
 }
 

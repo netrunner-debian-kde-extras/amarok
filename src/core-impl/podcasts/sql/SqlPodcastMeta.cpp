@@ -19,14 +19,14 @@
 #include "amarokurls/BookmarkMetaActions.h"
 #include "amarokurls/PlayUrlRunner.h"
 #include "core/capabilities/ActionsCapability.h"
-#include "core/capabilities/EditCapability.h"
 #include "core/collections/support/SqlStorage.h"
+#include "core/meta/TrackEditor.h"
+#include "core/support/Debug.h"
 #include "core-impl/capabilities/timecode/TimecodeLoadCapability.h"
 #include "core-impl/capabilities/timecode/TimecodeWriteCapability.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/meta/proxy/MetaProxy.h"
 #include "core-impl/podcasts/sql/SqlPodcastProvider.h"
-#include "core/support/Debug.h"
 
 #include <QDate>
 #include <QFile>
@@ -115,7 +115,6 @@ SqlPodcastEpisode::toPodcastEpisodeList( SqlPodcastEpisodeList episodes )
 
 SqlPodcastEpisode::SqlPodcastEpisode( const QStringList &result, SqlPodcastChannelPtr sqlChannel )
     : Podcasts::PodcastEpisode( Podcasts::PodcastChannelPtr::staticCast( sqlChannel ) )
-    , m_batchUpdate( false )
     , m_channel( sqlChannel )
 {
     SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
@@ -301,10 +300,6 @@ SqlPodcastEpisode::hasCapabilityInterface( Capabilities::Capability::Type type )
             //only downloaded episodes can be position marked
 //            return !localUrl().isEmpty();
             return true;
-            //TODO: downloaded episodes can be edited
-        case Capabilities::Capability::Editable:
-            return isEditable();
-
         default:
             return false;
     }
@@ -325,21 +320,9 @@ SqlPodcastEpisode::createCapabilityInterface( Capabilities::Capability::Type typ
             return new TimecodeWriteCapabilityPodcastImpl( this );
         case Capabilities::Capability::LoadTimecode:
             return new TimecodeLoadCapabilityPodcastImpl( this );
-        case Capabilities::Capability::Editable:
-            if( !m_localFile.isNull() )
-                return m_localFile->createCapabilityInterface( type );
         default:
             return 0;
     }
-}
-
-bool
-SqlPodcastEpisode::isEditable() const
-{
-     using namespace Capabilities;
-     Meta::TrackPtr file = m_localFile; // prevent discarding const qualifier
-     QScopedPointer<EditCapability> ec( file ? file->create<EditCapability>() : 0 );
-     return ec && ec->isEditable();
 }
 
 void
@@ -374,12 +357,9 @@ SqlPodcastEpisode::setTitle( const QString &title )
 {
     m_title = title;
 
-    using namespace Capabilities;
-    QScopedPointer<EditCapability> ec( m_localFile ? m_localFile->create<EditCapability>() : 0 );
-    if( ec && ec->isEditable() )
-    {
+    Meta::TrackEditorPtr ec = m_localFile ? m_localFile->editor() : Meta::TrackEditorPtr();
+    if( ec  )
         ec->setTitle( title );
-    }
 }
 
 Meta::ArtistPtr
@@ -418,33 +398,35 @@ SqlPodcastEpisode::year() const
     return m_localFile->year();
 }
 
+Meta::TrackEditorPtr
+SqlPodcastEpisode::editor()
+{
+    if( m_localFile )
+        return m_localFile->editor();
+    else
+        return Meta::TrackEditorPtr();
+}
+
 bool
 SqlPodcastEpisode::writeTagsToFile()
 {
     if( !m_localFile )
         return false;
 
-    using namespace Capabilities;
-    QScopedPointer<EditCapability> ec( m_localFile->create<EditCapability>() );
+    Meta::TrackEditorPtr ec = m_localFile->editor();
     if( !ec )
         return false;
 
     debug() << "writing tags for podcast episode " << title() << "to " << m_localUrl.url();
-    if( !ec->isEditable() )
-    {
-        debug() << QString( "local file (%1)is not editable!" ).arg( m_localUrl.url() );
-        return false;
-    }
-    ec->beginMetaDataUpdate();
+    ec->beginUpdate();
     ec->setTitle( m_title );
     ec->setAlbum( m_channel->title() );
     ec->setArtist( m_channel->author() );
     ec->setGenre( i18n( "Podcast" ) );
     ec->setYear( m_pubDate.date().year() );
-    ec->endMetaDataUpdate();
+    ec->endUpdate();
 
     notifyObservers();
-
     return true;
 }
 
@@ -620,21 +602,8 @@ SqlPodcastChannel::trackCount() const
 {
     if( m_episodesLoaded )
         return m_episodes.count();
-
-    QString query = "SELECT COUNT(id) FROM podcastepisodes WHERE channel = %1";
-
-    SqlStorage *sql = CollectionManager::instance()->sqlStorage();
-    Q_ASSERT( sql );
-
-    QStringList results = sql->query( query.arg( m_dbId ) );
-    if( results.isEmpty() )
-    {
-        error() << "no results for COUNT query on playlist_tracks table!";
+    else
         return -1;
-    }
-
-    int trackCount = results.first().toInt();
-    return m_purge ? qMin( m_purgeCount, trackCount ): trackCount;
 }
 
 void
@@ -642,6 +611,7 @@ SqlPodcastChannel::triggerTrackLoad()
 {
     if( !m_episodesLoaded )
         loadEpisodes();
+    notifyObserversTracksLoaded();
 }
 
 Playlists::PlaylistProvider *
@@ -684,7 +654,7 @@ SqlPodcastChannel::setTitle( const QString &title )
 }
 
 Podcasts::PodcastEpisodeList
-SqlPodcastChannel::episodes()
+SqlPodcastChannel::episodes() const
 {
     return SqlPodcastEpisode::toPodcastEpisodeList( m_episodes );
 }
@@ -903,10 +873,6 @@ SqlPodcastChannel::loadEpisodes()
 Meta::TrackList
 Podcasts::SqlPodcastChannel::tracks()
 {
-    //If you do not load before, m_episodes
-    //can be empty before usage.
-    triggerTrackLoad();
-
     return Podcasts::SqlPodcastEpisode::toTrackList( m_episodes );
 }
 
@@ -932,5 +898,5 @@ Podcasts::SqlPodcastChannel::addTrack( Meta::TrackPtr track, int position )
     Q_UNUSED( position );
 
     addEpisode( Podcasts::PodcastEpisodePtr::dynamicCast( track ) );
+    notifyObserversTrackAdded( track, position );
 }
-

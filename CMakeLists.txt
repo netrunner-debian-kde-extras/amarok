@@ -16,52 +16,52 @@ option(WITH_PLAYGROUND "Enable building of playground scripts and applets (WARNI
 include(CheckLibraryExists)
 check_library_exists(dl dlopen "" LIBDL_FOUND)
 
-# --------- taglib --------
-# building without taglib is stupid, but it's possible
 
+############### Taglib
 set(TAGLIB_MIN_VERSION "1.7")
-find_package(Taglib)
+find_package(Taglib REQUIRED)
 
-if(TAGLIB_FOUND)
-    # Check if TagLib is built with ASF and MP4 support
-    include(CheckCXXSourceCompiles)
-    set(CMAKE_REQUIRED_INCLUDES "${TAGLIB_INCLUDES}")
-    set(CMAKE_REQUIRED_LIBRARIES "${TAGLIB_LIBRARIES}")
+# Check if TagLib is built with ASF and MP4 support
+include(CheckCXXSourceCompiles)
+set(CMAKE_REQUIRED_INCLUDES "${TAGLIB_INCLUDES}")
+set(CMAKE_REQUIRED_LIBRARIES "${TAGLIB_LIBRARIES}")
 
-    check_cxx_source_compiles("#include <asftag.h>
-    int main() { TagLib::ASF::Tag tag; return 0;}" TAGLIB_ASF_FOUND)
-    if( NOT TAGLIB_ASF_FOUND )
-        message(FATAL_ERROR "TagLib does not have ASF support compiled in.")
-    endif( NOT TAGLIB_ASF_FOUND )
+check_cxx_source_compiles("#include <asftag.h>
+int main() { TagLib::ASF::Tag tag; return 0;}" TAGLIB_ASF_FOUND)
+if( NOT TAGLIB_ASF_FOUND )
+    message(FATAL_ERROR "TagLib does not have ASF support compiled in.")
+endif( NOT TAGLIB_ASF_FOUND )
 
-    check_cxx_source_compiles("#include <mp4tag.h>
-    int main() { TagLib::MP4::Tag tag(0, 0); return 0;}" TAGLIB_MP4_FOUND)
-    if( NOT TAGLIB_MP4_FOUND )
-        message(FATAL_ERROR "TagLib does not have MP4 support compiled in.")
-    endif( NOT TAGLIB_MP4_FOUND )
+check_cxx_source_compiles("#include <mp4tag.h>
+int main() { TagLib::MP4::Tag tag(0, 0); return 0;}" TAGLIB_MP4_FOUND)
+if( NOT TAGLIB_MP4_FOUND )
+    message(FATAL_ERROR "TagLib does not have MP4 support compiled in.")
+endif( NOT TAGLIB_MP4_FOUND )
 
-    check_cxx_source_compiles("#include <modtag.h>
-    #include <modfile.h>
-    #include <s3mfile.h>
-    #include <itfile.h>
-    #include <xmfile.h>
-    using namespace TagLib;
-    int main() { char *s; Mod::Tag tag; Mod::File modfile(s); S3M::File s3mfile(s);
-    IT::File itfile(s); XM::File xmfile(s); return 0; }" TAGLIB_MOD_FOUND)
+check_cxx_source_compiles("#include <modtag.h>
+#include <modfile.h>
+#include <s3mfile.h>
+#include <itfile.h>
+#include <xmfile.h>
+using namespace TagLib;
+int main() { char *s; Mod::Tag tag; Mod::File modfile(s); S3M::File s3mfile(s);
+IT::File itfile(s); XM::File xmfile(s); return 0; }" TAGLIB_MOD_FOUND)
 
-    set(CMAKE_REQUIRED_INCLUDES)
-    set(CMAKE_REQUIRED_LIBRARIES)
+check_cxx_source_compiles("#include <opusfile.h>
+int main() { char *s; TagLib::Ogg::Opus::File opusfile(s); return 0;}" TAGLIB_OPUS_FOUND)
 
-    set(TAGLIB-EXTRAS_MIN_VERSION "1.0")
-    find_package(Taglib-Extras)
-    set(TAGLIB_EXTRAS_FOUND ${TAGLIB-EXTRAS_FOUND}) # we need a c-compatible name for the include file
+set(CMAKE_REQUIRED_INCLUDES)
+set(CMAKE_REQUIRED_LIBRARIES)
 
-    include(CheckTagLibFileName)
+set(TAGLIB-EXTRAS_MIN_VERSION "1.0")
+find_package(Taglib-Extras)
+set(TAGLIB_EXTRAS_FOUND ${TAGLIB-EXTRAS_FOUND}) # we need a c-compatible name for the include file
 
-    check_taglib_filename(COMPLEX_TAGLIB_FILENAME)
-else()
-    message(WARNING "You are building Amarok without taglib. This has been known to cause many strange behaviours and is strongly advised against.")
-endif()
+include(CheckTagLibFileName)
+
+check_taglib_filename(COMPLEX_TAGLIB_FILENAME)
+###############
+
 
 # Needed to conditionally build tests and gui
 if(KDE4_BUILD_TESTS)
@@ -81,24 +81,58 @@ endif (CMAKE_COMPILER_IS_GNUCXX)
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/shared
-    ${CMAKE_CURRENT_BINARY_DIR}/shared )
+    ${CMAKE_CURRENT_BINARY_DIR}/shared
+)
 
-set(QT_MIN_VERSION "4.8.0")
+find_package( Qt4 4.8.3 COMPONENTS QtCore QtGui QtScript QtSvg QtXml QtWebKit REQUIRED )
+find_package( KDE4 4.8.4 REQUIRED )
+
+include( KDE4Defaults )
+include( MacroBoolTo01 )
+include( MacroLibrary )
+add_definitions( ${QT_DEFINITIONS} ${KDE4_DEFINITIONS} )
+
+# QCA2 is required for the Script Updater
+find_package( QCA2 )
+
+find_package( QtScriptQtBindings )
+
+macro_optional_find_package( LibLastFm )
+set( LIBLASTFM_MIN_VERSION "1.0.0" )
+if( LIBLASTFM_FOUND )
+    macro_ensure_version( ${LIBLASTFM_MIN_VERSION} ${LIBLASTFM_VERSION} LIBLASTFM_FOUND )
+endif( LIBLASTFM_FOUND )
+macro_bool_to_01( LIBLASTFM_FOUND HAVE_LIBLASTFM )
+
+macro_optional_find_package( FFmpeg )
+
+if( FFMPEG_FOUND )
+    macro_optional_find_package( LibOFA )
+    macro_bool_to_01( LIBOFA_FOUND HAVE_LIBOFA )
+endif( FFMPEG_FOUND )
+
+string( TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_TOLOWER )
+if( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
+    set( DEBUG_BUILD_TYPE ON )
+    add_definitions(-Wall -Wextra)
+endif( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
+
+# this needs to be here because also code in shared/ needs config.h. This is also the
+# reason why various checks are above why they belong under if( WITH_PLAYER )
+configure_file( shared/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/shared/config.h )
+
+add_subdirectory( data )
+add_subdirectory( images )
+add_subdirectory( shared )
+
 if( WITH_PLAYER )
-    set(KDE_MIN_VERSION "4.8.4")
-    find_package( KDE4 REQUIRED ) # honours QT_MIN_VERSION
-    include (KDE4Defaults)
-    include (MacroLibrary)
-
-    include(MacroBoolTo01)
     include(MacroLogFeature)
 
     macro_log_feature( KDE4_FOUND "kdelibs" "The toolkit Amarok uses to build" "http://www.kde.org" TRUE ${KDE_MIN_VERSION} "" )
 
-    find_package( QtScriptQtBindings )
-    macro_log_feature( QTSCRIPTQTBINDINGS_FOUND "qtscript-qt" "QtScript Qt Bindings" "http://code.google.com/p/qtscriptgenerator/" FALSE "" "" )
+    macro_log_feature( QT_QTOPENGL_FOUND "QtOpenGL" "Required for the spectrum analyzer" "http://qt-project.org" FALSE "" "" )
 
-    add_definitions(${QT_DEFINITIONS} ${KDE4_DEFINITIONS})
+    macro_log_feature( QTSCRIPTQTBINDINGS_FOUND "qtscript-qt" "QtScript Qt Bindings" "http://code.google.com/p/qtscriptgenerator/" FALSE "" "" )
 
     find_package(MySQLAmarok REQUIRED)
     if( WITH_MYSQL_EMBEDDED )
@@ -113,42 +147,28 @@ if( WITH_PLAYER )
     find_package(ZLIB REQUIRED)
     macro_log_feature( ZLIB_FOUND "zlib" "zlib" "" TRUE "" "" )
 
-    # QCA2 is required for the Script Updater
-    find_package(QCA2)
     macro_log_feature( QCA2_FOUND "qca2" "Qt Cryptographic Architecture" "http://delta.affinix.com/qca/" FALSE "" "" )
 
     # QJson is required for the PlaydarCollection
     macro_optional_find_package(QJSON)
     macro_log_feature( QJSON_FOUND "QJson" "Qt JSON Parser used for the Playdar Collection" "http://qjson.sourceforge.net/" FALSE "" "" )
 
-    # macro_optional_find_package(Strigi)
-    # macro_log_feature( STRIGI_FOUND "strigi" "Index metadata of files" "http://strigi.sourceforge.net" FALSE "" "" )
-
-    macro_optional_find_package(LibLastFm)
-    set( LIBLASTFM_MIN_VERSION "1.0.0" )
-    if( LIBLASTFM_FOUND )
-        macro_ensure_version( ${LIBLASTFM_MIN_VERSION} ${LIBLASTFM_VERSION} LIBLASTFM_FOUND )
-    endif( LIBLASTFM_FOUND )
     # We tell users that we need 1.0.3, but we really check just >= 1.0.0. This is because
     # upstream forgot to update version in lastfm/global.h, so it looks like 1.0.2. :-(
     # will be fixed in liblastfm-1.0.4
     set( LIBLASTFM_MIN_VERSION "1.0.3" )
     macro_log_feature( LIBLASTFM_FOUND "liblastfm" "Enable Last.Fm service, including scrobbling, song submissions, and suggested song dynamic playlists"
                        "http://cdn.last.fm/client/liblastfm-${LIBLASTFM_MIN_VERSION}.tar.gz" FALSE ${LIBLASTFM_MIN_VERSION} "" )
-    macro_bool_to_01( LIBLASTFM_FOUND HAVE_LIBLASTFM )
 
-    macro_optional_find_package( FFmpeg )
     macro_log_feature( FFMPEG_FOUND "ffmpeg" "Libraries and tools for handling multimedia data" "http://www.ffmpeg.org/" FALSE "0.7" "" )
 
     if( FFMPEG_FOUND )
-        macro_optional_find_package(LibOFA)
         macro_log_feature( LIBOFA_FOUND "libofa" "Enable MusicDNS service" "http://code.google.com/p/musicip-libofa/" FALSE "0.9.x" "" )
-        macro_bool_to_01( LIBOFA_FOUND HAVE_LIBOFA )
     endif( FFMPEG_FOUND )
 
     ##gpodder Service
-    macro_optional_find_package( Mygpo-qt 1.0.6 )
-    macro_log_feature( LIBMYGPO_QT_FOUND "libmygpo-qt" "Enable gpodder.net service" "http://wiki.gpodder.org/wiki/Libmygpo-qt" FALSE "1.0.6" "" )
+    macro_optional_find_package( Mygpo-qt 1.0.7 QUIET )
+    macro_log_feature( LIBMYGPO_QT_FOUND "libmygpo-qt" "Enable gpodder.net service" "http://wiki.gpodder.org/wiki/Libmygpo-qt" FALSE "1.0.7" "" )
     macro_bool_to_01( LIBMYGPO_QT_FOUND HAVE_LIBMYGPOQT )
 
     if( WITH_IPOD )
@@ -198,13 +218,6 @@ if( WITH_PLAYER )
     find_program( CLAMZ_FOUND clamz PATH )
     macro_log_feature( CLAMZ_FOUND "clamz" "Optional requirement to download songs from the Amazon MP3 store. Highly recommended on Linux, as the official downloader from Amazon is quite broken on many systems." "https://code.google.com/p/clamz/" FALSE )
 
-    string( TOLOWER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE_TOLOWER )
-    if( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
-        set( DEBUG_BUILD_TYPE ON )
-    endif( CMAKE_BUILD_TYPE_TOLOWER MATCHES debug )
-
-    configure_file( shared/config.h.cmake ${CMAKE_CURRENT_BINARY_DIR}/shared/config.h )
-
     include_directories( ${KDE4_INCLUDES} )
 
     if( KDE4_BUILD_TESTS AND NOT WIN32 )
@@ -215,9 +228,10 @@ if( WITH_PLAYER )
     add_subdirectory( src )
 
     # Also display taglib in the feature log
-    macro_log_feature( TAGLIB_FOUND "taglib" "Support for Audio metadata." "http://developer.kde.org/~wheeler/taglib.html" FALSE "" "STRONGLY RECOMMENDED" )
+    macro_log_feature( TAGLIB_FOUND "taglib" "Support for Audio metadata." "http://developer.kde.org/~wheeler/taglib.html" TRUE "${TAGLIB_MIN_VERSION}" "Required for tag reading" )
     # following line is here (and not near TAGLIB_MOD_FOUND) because there may be no MacroLogFeature without kdelibs
     macro_log_feature( TAGLIB_MOD_FOUND "taglib" "Additional support for Audio metadata of mod, s3m, it and xm files." "http://developer.kde.org/~wheeler/taglib.html" FALSE "1.8" "" )
+    macro_log_feature( TAGLIB_OPUS_FOUND "taglib" "Additional support for Audio metadata of opus files." "http://developer.kde.org/~wheeler/taglib.html" FALSE "1.9" "" )
 
     macro_display_feature_log()
 
@@ -232,9 +246,6 @@ include(MacroOptionalAddSubdirectory)
 macro_optional_add_subdirectory( doc )
 
 
-else( WITH_PLAYER )
-    find_package( Qt4 REQUIRED ) # honours QT_MIN_VERSION
-    add_definitions(${QT_DEFINITIONS})
 endif( WITH_PLAYER )
 
 if( WITH_UTILITIES )

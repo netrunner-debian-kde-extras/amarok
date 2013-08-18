@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2010 Sergey Ivanov <123kash@gmail.com>                                 *
+ * Copyright (c) 2013 Alberto Villa <avilla@FreeBSD.org>                                *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -21,18 +22,19 @@
 
 namespace MusicBrainz
 {
-    static const QString ARTISTID   = "mb:ArtistID";
-    static const QString RELEASEID  = "mb:ReleaseID";
-    static const QString RELEASELIST= "mb:ReleaseList";
-    static const QString TRACKID    = "mb:TrackID";
-    static const QString TRACKOFFSET= "mb:TrackOffset";
+    static const QString ARTISTID       = "mb:ArtistID";
+    static const QString RELEASEGROUPID = "mb:ReleaseGroupID";
+    static const QString RELEASEID      = "mb:ReleaseID";
+    static const QString RELEASELIST    = "mb:ReleaseList";
+    static const QString TRACKCOUNT     = "mb:TrackCount";
+    static const QString TRACKID        = "mb:TrackID";
+    static const QString TRACKINFO      = "mb:TrackInfo";
 
-    static const QString SIMILARITY = "mb:similarity";
+    static const QString MUSICBRAINZ    = "mb:musicbrainz";
+    static const QString MUSICDNS       = "mb:musicdns";
 
-    static const QString MUSICBRAINZ= "mb:musicbrainz";
-    static const QString MUSICDNS   = "mb:musicdns";
-
-    static const qreal MINSIMILARITY= 0.6;
+    static const QString SIMILARITY     = "mb:similarity";
+    static const qreal   MINSIMILARITY  = 0.6;
 }
 
-#endif //MUSICBRAINZMETA_H
+#endif // MUSICBRAINZMETA_H

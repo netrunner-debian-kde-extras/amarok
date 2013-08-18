@@ -19,6 +19,7 @@
 
 #include "collectionscanner/Directory.h"
 #include "core/collections/Collection.h"
+#include "core/meta/Observer.h"
 #include "core-impl/collections/support/MemoryCollection.h"
 
 #include <KDirWatch>
@@ -110,7 +111,6 @@ class UmsCollection : public Collection, public Meta::Observer
 
         /* Collection methods */
         virtual QueryMaker *queryMaker();
-        virtual bool isDirInCollection( const QString &path );
         virtual QString uidUrlProtocol() const;
 
         virtual QString collectionId() const;
@@ -123,7 +123,6 @@ class UmsCollection : public Collection, public Meta::Observer
 
         virtual CollectionLocation *location();
 
-        virtual bool isWritable() const;
         virtual bool isOrganizable() const;
 
         /* Capability-related methods */
@@ -173,17 +172,17 @@ class UmsCollection : public Collection, public Meta::Observer
         void slotTrackAdded( KUrl trackLocation );
         void slotTrackRemoved( const Meta::TrackPtr &track );
 
-        /**
-         * overridden to update m_lastUpdated timestamp
-         */
-        virtual void collectionUpdated();
-
     private slots:
+        /**
+         * Update m_lastUpdated timestamp and emit updated()
+         */
+        void collectionUpdated();
+
         void slotParseTracks();
         void slotParseActionTriggered();
         void slotConfigure();
 
-        void slotDirectoryScanned( CollectionScanner::Directory *dir );
+        void slotDirectoryScanned( QSharedPointer<CollectionScanner::Directory> dir );
 
         /**
          * Starts a timer that ensures we emit updated() signal sometime in future.
@@ -200,7 +199,7 @@ class UmsCollection : public Collection, public Meta::Observer
         static QString s_musicFilenameSchemeKey;
         static QString s_vfatSafeKey;
         static QString s_asciiOnlyKey;
-        static QString s_ignoreTheKey;
+        static QString s_postfixTheKey;
         static QString s_replaceSpacesKey;
         static QString s_regexTextKey;
         static QString s_replaceTextKey;
@@ -220,7 +219,7 @@ class UmsCollection : public Collection, public Meta::Observer
         QString m_musicFilenameScheme;
         bool m_vfatSafe;
         bool m_asciiOnly;
-        bool m_ignoreThe;
+        bool m_postfixThe;
         bool m_replaceSpaces;
         QString m_regexText;
         QString m_replaceText;

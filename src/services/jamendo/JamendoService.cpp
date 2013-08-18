@@ -17,6 +17,7 @@
 #include "JamendoService.h"
 
 #include "browsers/CollectionTreeItem.h"
+#include "browsers/CollectionTreeView.h"
 #include "browsers/SingleCollectionTreeItemModel.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "core/support/Debug.h"
@@ -28,6 +29,7 @@
 #include "widgets/SearchWidget.h"
 
 #include <KAction>
+#include <KFileDialog>
 #include <KMenuBar>
 #include <KRun>
 #include <KShell>
@@ -35,6 +37,7 @@
 #include <KTemporaryFile>
 #include <threadweaver/ThreadWeaver.h>
 
+#include <QDesktopServices>
 #include <QToolBar>
 #include <QToolButton>
 
@@ -125,8 +128,8 @@ JamendoService::polish()
     m_downloadButton->setIcon( KIcon( "download-amarok" ) );
     m_downloadButton->setEnabled( false );
 
-    connect( m_updateListButton, SIGNAL( clicked() ), this, SLOT( updateButtonClicked() ) );
-    connect( m_downloadButton, SIGNAL( clicked() ), this, SLOT( download() ) );
+    connect( m_updateListButton, SIGNAL(clicked()), this, SLOT(updateButtonClicked()) );
+    connect( m_downloadButton, SIGNAL(clicked()), this, SLOT(download()) );
 
     setInfoParser( new JamendoInfoParser() );
 
@@ -135,24 +138,24 @@ JamendoService::polish()
 
     setModel( new SingleCollectionTreeItemModel( m_collection, levels ) );
 
-    connect( m_contentView, SIGNAL( itemSelected( CollectionTreeItem * ) ), this, SLOT( itemSelected( CollectionTreeItem * ) ) );
+    connect( m_contentView, SIGNAL(itemSelected(CollectionTreeItem*)), this, SLOT(itemSelected(CollectionTreeItem*)) );
 
     QMenu *filterMenu = new QMenu( 0 );
 
 //     QAction *action = filterMenu->addAction( i18n("Artist") );
-//     connect( action, SIGNAL(triggered(bool)), SLOT(sortByArtist() ) );
+//     connect( action, SIGNAL(triggered(bool)), SLOT(sortByArtist()) );
 // 
 //     action = filterMenu->addAction( i18n( "Artist / Album" ) );
-//     connect( action, SIGNAL(triggered(bool)), SLOT(sortByArtistAlbum() ) );
+//     connect( action, SIGNAL(triggered(bool)), SLOT(sortByArtistAlbum()) );
 // 
 //     action = filterMenu->addAction( i18n( "Album" ) );
-//     connect( action, SIGNAL(triggered(bool)), SLOT( sortByAlbum() ) );
+//     connect( action, SIGNAL(triggered(bool)), SLOT(sortByAlbum()) );
 
     QAction *action = filterMenu->addAction( i18n( "Genre / Artist" ) );
-    connect( action, SIGNAL(triggered(bool)), SLOT( sortByGenreArtist() ) );
+    connect( action, SIGNAL(triggered(bool)), SLOT(sortByGenreArtist()) );
 
     action = filterMenu->addAction( i18n( "Genre / Artist / Album" ) );
-    connect( action, SIGNAL(triggered(bool)), SLOT(sortByGenreArtistAlbum() ) );
+    connect( action, SIGNAL(triggered(bool)), SLOT(sortByGenreArtistAlbum()) );
 
     KAction *filterMenuAction = new KAction( KIcon( "preferences-other" ), i18n( "Sort Options" ), this );
     filterMenuAction->setMenu( filterMenu );
@@ -184,10 +187,10 @@ JamendoService::updateButtonClicked()
     m_tempFileName = tempFile.fileName();
     m_listDownloadJob = KIO::file_copy( KUrl( "http://img.jamendo.com/data/dbdump_artistalbumtrack.xml.gz" ), KUrl( m_tempFileName ), 0700 , KIO::HideProgressInfo | KIO::Overwrite );
 
-    Amarok::Components::logger()->newProgressOperation( m_listDownloadJob, i18n( "Downloading Jamendo.com database..." ), this, SLOT( listDownloadCancelled() ) );
+    Amarok::Components::logger()->newProgressOperation( m_listDownloadJob, i18n( "Downloading Jamendo.com database..." ), this, SLOT(listDownloadCancelled()) );
 
-    connect( m_listDownloadJob, SIGNAL( result( KJob * ) ),
-            this, SLOT( listDownloadComplete( KJob * ) ) );
+    connect( m_listDownloadJob, SIGNAL(result(KJob*)),
+            this, SLOT(listDownloadComplete(KJob*)) );
 
 
 }
@@ -211,7 +214,7 @@ JamendoService::listDownloadComplete(KJob * downloadJob)
 
     if( m_xmlParser == 0 )
         m_xmlParser = new JamendoXmlParser( m_tempFileName );
-    connect( m_xmlParser, SIGNAL( doneParsing() ), SLOT( doneParsing() ) );
+    connect( m_xmlParser, SIGNAL(doneParsing()), SLOT(doneParsing()) );
 
     ThreadWeaver::Weaver::instance()->enqueue( m_xmlParser );
     downloadJob->deleteLater();
@@ -271,100 +274,17 @@ JamendoService::itemSelected( CollectionTreeItem * selectedItem )
 }
 
 void
-JamendoService::download()
-{
-    if ( m_currentAlbum )
-        download( m_currentAlbum );
-}
-
-void JamendoService::download( JamendoAlbum * album )
+JamendoService::download() // SLOT
 {
     DEBUG_BLOCK
+
     if ( !m_polished )
         polish();
 
-    m_downloadButton->setEnabled( false );
-
-    KTemporaryFile tempFile;
-    tempFile.setSuffix( ".torrent" );
-    tempFile.setAutoRemove( false ); // removed in torrentDownloadComplete()
-    if( !tempFile.open() )
-        return;
-
-    m_torrentFileName = tempFile.fileName();
-    debug() << "downloading " << album->oggTorrentUrl() << " to " << m_torrentFileName;
-    m_torrentDownloadJob = KIO::file_copy( KUrl( album->oggTorrentUrl() ), KUrl( m_torrentFileName ), 0774 , KIO::Overwrite );
-    connect( m_torrentDownloadJob, SIGNAL( result( KJob * ) ),
-             this, SLOT( torrentDownloadComplete( KJob * ) ) );
+    CollectionTreeView *treeView = static_cast<CollectionTreeView*>( view() );
+    treeView->copySelectedToLocalCollection();
 }
 
-void
-JamendoService::torrentDownloadComplete(KJob * downloadJob)
-{
-    if( downloadJob != m_torrentDownloadJob )
-        return; //not the right job, so let's ignore it
 
-    if( !downloadJob->error() == 0 )
-    {
-        //TODO: error handling here
-        return;
-    }
-
-    debug() << "Torrent downloaded";
-
-    //HACK: since all we get is actually the url of the really real torrent, pass the contents of the file to the system
-    //and not just the filename...
-
-    QFile torrentFile( m_torrentFileName );
-    if ( torrentFile.open( QFile::ReadOnly ) )
-    {
-        QString torrentLink = torrentFile.readAll();
-        KRun::runUrl( KShell::quoteArg( torrentLink ), "application/x-bittorrent", 0, false );
-        torrentFile.close();
-    }
-    torrentFile.remove();
-    downloadJob->deleteLater();
-    m_torrentDownloadJob = 0;
-}
-
-void
-JamendoService::downloadCurrentTrackAlbum()
-{
-    //get current track
-    Meta::TrackPtr track = The::engineController()->currentTrack();
-
-    //check if this is indeed a Jamendo track
-    Capabilities::SourceInfoCapability *sic = track->create<Capabilities::SourceInfoCapability>();
-    if( sic )
-    {
-        //is the source defined
-        QString source = sic->sourceName();
-        if ( source != "Jamendo.com" )
-        {
-            //not a Jamendo track, so don't bother...
-            delete sic;
-            return;
-        }
-        delete sic;
-    }
-    else
-    {
-        //not a Jamendo track, so don't bother...
-        return;
-    }
-
-    //so far so good...
-    //now the casting begins:
-
-    JamendoTrack * jamendoTrack = dynamic_cast<JamendoTrack *> ( track.data() );
-    if ( !jamendoTrack )
-        return;
-
-    JamendoAlbum * jamendoAlbum = dynamic_cast<JamendoAlbum *> ( jamendoTrack->album().data() );
-    if ( !jamendoAlbum )
-        return;
-
-    download( jamendoAlbum );
-}
 #include "JamendoService.moc"
 

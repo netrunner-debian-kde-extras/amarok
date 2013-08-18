@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2011 Sven Krohlas <sven@getamarok.com>                                 *
+ * Copyright (c) 2011 Sven Krohlas <sven@asbest-online.de>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -29,7 +29,7 @@ AmazonItemTreeModel::AmazonItemTreeModel( Collections::AmazonCollection* collect
 {
     m_collection = collection;
 
-    connect( m_collection, SIGNAL( updated() ), this, SLOT( collectionChanged() ) );
+    connect( m_collection, SIGNAL(updated()), this, SLOT(collectionChanged()) );
 }
 
 int

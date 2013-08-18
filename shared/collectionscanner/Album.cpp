@@ -18,6 +18,7 @@
  ***************************************************************************/
 
 #include "Album.h"
+
 #include "Track.h"
 
 #include <QDebug>
@@ -50,6 +51,12 @@ QString
 CollectionScanner::Album::artist() const
 {
     return m_artist;
+}
+
+void
+CollectionScanner::Album::setArtist( const QString &artist )
+{
+    m_artist = artist;
 }
 
 

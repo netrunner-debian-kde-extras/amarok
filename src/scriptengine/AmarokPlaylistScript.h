@@ -17,15 +17,13 @@
 #ifndef AMAROK_PLAYLIST_SCRIPT_H
 #define AMAROK_PLAYLIST_SCRIPT_H
 
-#include "MetaTypeExporter.h"
-
-#include <KUrl>
-
-#include <QList>
 #include <QObject>
-#include <QUrl>
-#include <QtScript>
+#include <QStringList>
 #include <QVariant>
+
+class QModelIndex;
+class QScriptEngine;
+class QUrl;
 
 namespace AmarokScript
 {
@@ -35,7 +33,6 @@ namespace AmarokScript
 
         public:
             AmarokPlaylistScript( QScriptEngine* ScriptEngine );
-            ~AmarokPlaylistScript();
 
         public slots:
             int activeIndex();

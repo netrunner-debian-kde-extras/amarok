@@ -19,18 +19,17 @@
 
 #define DEBUG_PREFIX "UpcomingEventsEngine"
 
-// Includes
 #include "UpcomingEventsEngine.h"
+
+#include "context/ContextView.h"
+#include "context/applets/upcomingevents/LastFmEventXmlParser.h"
+#include "core/meta/Meta.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "ContextView.h"
 #include "EngineController.h"
-#include "LastFmEventXmlParser.h"
 
-// KDE
 #include <KDateTime>
 
-// Qt
 #include <QXmlStreamReader>
 
 AMAROK_EXPORT_DATAENGINE( upcomingEvents, UpcomingEventsEngine )
@@ -44,10 +43,10 @@ UpcomingEventsEngine::UpcomingEventsEngine( QObject* parent, const QList<QVarian
 
     EngineController *engine = The::engineController();
 
-    connect( engine, SIGNAL( trackChanged( Meta::TrackPtr ) ),
-             this, SLOT( updateDataForArtist() ) );
-    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
-             this, SLOT( updateDataForArtist() ) );
+    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)),
+             this, SLOT(updateDataForArtist()) );
+    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)),
+             this, SLOT(updateDataForArtist()) );
 }
 
 UpcomingEventsEngine::~UpcomingEventsEngine()

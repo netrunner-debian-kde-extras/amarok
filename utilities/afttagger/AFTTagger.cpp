@@ -21,6 +21,8 @@
 #include "SafeFileSaver.h"
 
 //Taglib
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnon-virtual-dtor"
 #include <apetag.h>
 #include <fileref.h>
 #include <flacfile.h>
@@ -35,6 +37,7 @@
 #include <uniquefileidentifierframe.h>
 #include <vorbisfile.h>
 #include <xiphcomment.h>
+#pragma GCC diagnostic pop
 
 #include <QtDebug>
 #include <QCryptographicHash>
@@ -82,7 +85,7 @@ AFTTagger::AFTTagger( int &argc, char **argv )
                 "This program makes use of multiple libraries not written by the author, and as such neither\n"
                 "the author nor the Amarok project can or do take any responsibility for any damage that may\n"
                 "occur to your files through the use of this program.\n\n"
-                "If you want more information, please see http://amarok.kde.org/wiki/AFT\n\n"
+                "If you want more information, please see http://community.kde.org/Amarok/Development/AFT\n\n"
                 "If you agree to be bound by these terms of use, enter 'y' or 'Y', or anything else to exit:\n" ) );
 
         m_textStream.flush();

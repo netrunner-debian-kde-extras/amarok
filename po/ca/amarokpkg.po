@@ -1,6 +1,7 @@
 # Translation of amarokpkg.po to Catalan
-# Copyright (C) 2009 This_file_is_part_of_KDE
-# This file is distributed under the license LGPL version 2 or later.
+# Copyright (C) 2009-2010 This_file_is_part_of_KDE
+# This file is distributed under the license LGPL version 2.1 or
+# version 3 or later versions approved by the membership of KDE e.V.
 #
 # Josep Ma. Ferrer <txemaq@gmail.com>, 2009, 2010.
 msgid ""

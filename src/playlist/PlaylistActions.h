@@ -21,6 +21,7 @@
 #ifndef AMAROK_PLAYLISTACTIONS_H
 #define AMAROK_PLAYLISTACTIONS_H
 
+#include "amarok_export.h"
 #include "core/support/Debug.h"
 #include "core/playlists/Playlist.h"
 
@@ -120,8 +121,23 @@ public slots:
     void playlistModeChanged();
 
     void repopulateDynamicPlaylist();
-    void queue( QList<int> rows );
-    void dequeue( QList<int> rows );
+
+    /**
+      * Shuffles tracks (that are visible in the top model) at the bottom model level
+      */
+    void shuffle();
+
+    /**
+     * Adds a list of top playlist model rows to the queue.
+     */
+    void queue( const QList<int> &rows );
+
+    /**
+     * Adds a list of playlist item unique ids to the queue.
+     */
+    void queue( const QList<quint64> &ids );
+
+    void dequeue( const QList<int> &rows );
     void restoreDefaultPlaylist();
 
     /**

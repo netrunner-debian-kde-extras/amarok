@@ -19,6 +19,7 @@
 
 using namespace Collections;
 
+#include "core/meta/Meta.h"
 #include "core/support/Debug.h"
 
 QueryMaker::QueryMaker() : QObject()
@@ -52,9 +53,9 @@ QueryMaker*
 QueryMaker::setAutoDelete( bool autoDelete )
 {
     if( autoDelete )
-        connect( this, SIGNAL( queryDone() ), this, SLOT( deleteLater() ) );
+        connect( this, SIGNAL(queryDone()), this, SLOT(deleteLater()) );
     else
-        disconnect( this, SIGNAL( queryDone() ), this, SLOT( deleteLater() ) );
+        disconnect( this, SIGNAL(queryDone()), this, SLOT(deleteLater()) );
     return this;
 }
 

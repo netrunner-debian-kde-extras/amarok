@@ -20,10 +20,9 @@
 
 #include "UndoCommands.h"
 
-#include "PlaylistModelStack.h"
-
+#include "core/meta/Meta.h"
 #include "core/support/Debug.h"
-
+#include "playlist/PlaylistModelStack.h"
 
 /************************
  * Insert
@@ -31,7 +30,8 @@
 Playlist::InsertTracksCmd::InsertTracksCmd( QUndoCommand* parent, const InsertCmdList& cmds )
         : QUndoCommand( i18n( "Tracks Added" ), parent )
         , m_cmdlist( cmds )
-{ }
+{
+}
 
 void
 Playlist::InsertTracksCmd::redo()
@@ -73,7 +73,7 @@ Playlist::RemoveTracksCmd::undo()
  * Move
  ************************/
 Playlist::MoveTracksCmd::MoveTracksCmd( QUndoCommand* parent, const MoveCmdList& cmds )
-        : QUndoCommand( i18n( "Track moved" ), parent ) // FIXME: better translation after string freeze
+        : QUndoCommand( i18n( "Tracks moved" ), parent )
         , m_cmdlist( cmds )
 { }
 

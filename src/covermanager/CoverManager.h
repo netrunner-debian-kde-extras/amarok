@@ -18,7 +18,8 @@
 #ifndef COVERMANAGER_H
 #define COVERMANAGER_H
 
-#include "CoverFetcher.h"
+#include "core/meta/Observer.h"
+#include "covermanager/CoverFetcher.h"
 
 #include <KDialog>
 
@@ -59,8 +60,8 @@ class CoverManager : public KDialog, public Meta::Observer
         static bool isConstructed() { return s_constructed; }
         static CoverManager *instance() { return s_instance; }
 
-        static void showOnce( const QString &artist = QString() );
-        static void viewCover( Meta::AlbumPtr album, QWidget *parent=0 );
+        static void showOnce( const QString &artist = QString(), QWidget* parent = 0 );
+        static void viewCover( Meta::AlbumPtr album, QWidget* parent = 0 );
 
         void setStatusText( QString text );
 
@@ -95,13 +96,11 @@ class CoverManager : public KDialog, public Meta::Observer
         void updateFetchingProgress( int state );
         void stopFetching();
 
-        void playSelectedAlbums();
         void progressAllDone();
         void cancelCoverViewLoading();
 
     private:
         void loadCover( const QString &, const QString & );
-        QList<CoverViewItem*> selectedItems();
 
         QSplitter        *m_splitter;
         QTreeWidget      *m_artistView;
@@ -184,7 +183,6 @@ class CoverViewItem : public QListWidgetItem
         QString m_album;
         QString m_coverImagePath;
         bool    m_embedded;
-        QListWidget *m_parent;
 };
 
 #endif

@@ -27,9 +27,10 @@
 
 #include "core/support/Debug.h"
 
+#include <QDateTime>
 #include <QtGlobal> // For 'qrand()'
-#include <math.h> // For 'round()'
 
+#include <math.h> // For 'round()'
 
 Playlist::RandomTrackNavigator::RandomTrackNavigator()
 {

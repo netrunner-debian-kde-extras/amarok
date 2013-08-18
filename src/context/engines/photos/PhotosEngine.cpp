@@ -18,13 +18,12 @@
 
 #include "PhotosEngine.h"
 
-// Amarok
-#include "core/support/Amarok.h"
-#include "ContextView.h"
-#include "core/support/Debug.h"
 #include "EngineController.h"
+#include "context/ContextView.h"
+#include "core/meta/Meta.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
 
-// Qt
 #include <QXmlStreamReader>
 #include <QPixmap>
 
@@ -48,7 +47,7 @@ PhotosEngine::init()
     EngineController *controller = The::engineController();
     connect( controller, SIGNAL(trackMetadataChanged(Meta::TrackPtr)), SLOT(trackChanged(Meta::TrackPtr)) );
     connect( controller, SIGNAL(trackChanged(Meta::TrackPtr)), SLOT(trackChanged(Meta::TrackPtr)) );
-    connect( controller, SIGNAL(stopped(qint64, qint64)), SLOT(stopped()) );
+    connect( controller, SIGNAL(stopped(qint64,qint64)), SLOT(stopped()) );
 }
 
 void

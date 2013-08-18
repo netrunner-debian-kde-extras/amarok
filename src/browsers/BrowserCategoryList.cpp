@@ -19,12 +19,12 @@
 #include "BrowserCategoryList.h"
 
 #include "App.h"
-#include "BrowserCategoryListDelegate.h"
 #include "context/ContextView.h"
 #include "core/support/Debug.h"
 #include "InfoProxy.h"
 #include "PaletteHandler.h"
 #include "widgets/PrettyTreeView.h"
+#include "widgets/PrettyTreeDelegate.h"
 #include "widgets/SearchWidget.h"
 
 #include <QStackedWidget>
@@ -52,31 +52,18 @@ BrowserCategoryList::BrowserCategoryList( const QString &name, QWidget* parent, 
     m_searchWidget->setClickMessage( i18n( "Filter Music Sources" ) );
     vLayout->addWidget( m_searchWidget );
 
-    connect( m_searchWidget, SIGNAL( filterChanged( const QString & ) ), SLOT( setFilter( const QString & ) ) );
+    connect( m_searchWidget, SIGNAL(filterChanged(QString)), SLOT(setFilter(QString)) );
 
     // -- the main list view
     m_categoryListView = new Amarok::PrettyTreeView();
-#ifdef Q_WS_MAC
-    // for some bizarre reason w/ some styles on mac
-    // per-pixel scrolling is slower than per-item
-    m_categoryListView->setVerticalScrollMode( QAbstractItemView::ScrollPerItem );
-    m_categoryListView->setHorizontalScrollMode( QAbstractItemView::ScrollPerItem );
-#else
-    // Scrolling per item is really not smooth and looks terrible
-    m_categoryListView->setVerticalScrollMode( QAbstractItemView::ScrollPerPixel );
-    m_categoryListView->setHorizontalScrollMode( QAbstractItemView::ScrollPerPixel );
-#endif
-
     m_categoryListView->setFrameShape( QFrame::NoFrame );
 
     m_proxyModel = new BrowserCategoryListSortFilterProxyModel( this );
     m_proxyModel->setSourceModel( m_categoryListModel );
 
-    m_delegate = new BrowserCategoryListDelegate( m_categoryListView );
-    m_categoryListView->setItemDelegate( m_delegate );
+    m_categoryListView->setItemDelegate( new PrettyTreeDelegate( m_categoryListView ) );
     m_categoryListView->setHeaderHidden( true );
     m_categoryListView->setRootIsDecorated( false );
-    m_categoryListView->setAlternatingRowColors( true );
     m_categoryListView->setModel( m_proxyModel );
     m_categoryListView->setMouseTracking ( true );
 
@@ -87,16 +74,14 @@ BrowserCategoryList::BrowserCategoryList( const QString &name, QWidget* parent, 
         m_categoryListView->sortByColumn( 0 );
     }
 
-    connect( m_categoryListView, SIGNAL(activated(const QModelIndex &)),
-            SLOT(categoryActivated(const QModelIndex &)) );
+    connect( m_categoryListView, SIGNAL(activated(QModelIndex)),
+            SLOT(categoryActivated(QModelIndex)) );
 
-    connect( m_categoryListView, SIGNAL(entered( const QModelIndex &) ),
-            SLOT(categoryEntered( const QModelIndex &) ) );
+    connect( m_categoryListView, SIGNAL(entered(QModelIndex)),
+            SLOT(categoryEntered(QModelIndex)) );
 
     vLayout->addWidget( m_categoryListView );
     m_widgetStack->addWidget( mainWidget );
-
-    The::paletteHandler()->updateItemView( m_categoryListView );
 }
 
 BrowserCategoryList::~BrowserCategoryList()
@@ -163,7 +148,7 @@ BrowserCategoryList::addCategory( BrowserCategory *category )
 
     BrowserCategoryList *childList = qobject_cast<BrowserCategoryList*>( category );
     if ( childList )
-        connect( childList, SIGNAL( viewChanged() ), this, SLOT( childViewChanged() ) );
+        connect( childList, SIGNAL(viewChanged()), this, SLOT(childViewChanged()) );
 
     category->polish(); // service categories do an additional construction in polish
 

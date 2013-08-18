@@ -18,9 +18,12 @@
 
 #include "config.h"
 
+#include <QImage>
 #include <QRegExp>
 #include <QStringList>
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnon-virtual-dtor"
 #include <fileref.h>
 #include <aifffile.h>
 #include <asffile.h>
@@ -29,6 +32,9 @@
 #include <mpcfile.h>
 #include <mpegfile.h>
 #include <oggfile.h>
+#ifdef TAGLIB_OPUS_FOUND
+#include <opusfile.h>
+#endif
 #include <oggflacfile.h>
 #include <rifffile.h>
 #include <speexfile.h>
@@ -42,6 +48,7 @@
 #include <itfile.h>
 #include <xmfile.h>
 #endif
+#pragma GCC diagnostic pop
 
 #include "APETagHelper.h"
 #include "ASFTagHelper.h"
@@ -62,6 +69,10 @@ TagHelper::TagHelper( TagLib::Tag *tag, Amarok::FileType fileType )
 TagHelper::TagHelper( TagLib::ID3v1::Tag *tag, Amarok::FileType fileType )
          : m_tag( tag )
          , m_fileType( fileType )
+{
+}
+
+TagHelper::~TagHelper()
 {
 }
 
@@ -134,7 +145,6 @@ TagHelper::render() const
     return TagLib::ByteVector( byteArray.constData(), byteArray.size() );
 }
 
-#ifndef UTILITIES_BUILD
 bool
 TagHelper::hasEmbeddedCover() const
 {
@@ -153,7 +163,6 @@ TagHelper::setEmbeddedCover( const QImage &cover )
     Q_UNUSED( cover )
     return false;
 }
-#endif  //UTILITIES_BUILD
 
 TagLib::String
 TagHelper::fieldName( const qint64 field ) const
@@ -269,17 +278,24 @@ Meta::Tag::selectHelper( const TagLib::FileRef fileref, bool forceCreation )
     else if( TagLib::Ogg::FLAC::File *file = dynamic_cast< TagLib::Ogg::FLAC::File * >( fileref.file() ) )
     {
         if( file->tag() )
-            tagHelper = new VorbisCommentTagHelper( fileref.tag(), file->tag(), Amarok::Ogg );
+            tagHelper = new VorbisCommentTagHelper( fileref.tag(), file->tag(), Amarok::Flac );
     }
     else if( TagLib::Ogg::Speex::File *file = dynamic_cast< TagLib::Ogg::Speex::File * >( fileref.file() ) )
     {
         if( file->tag() )
-            tagHelper = new VorbisCommentTagHelper( fileref.tag(), file->tag(), Amarok::Ogg );
+            tagHelper = new VorbisCommentTagHelper( fileref.tag(), file->tag(), Amarok::Speex );
     }
+#ifdef TAGLIB_OPUS_FOUND
+    else if( TagLib::Ogg::Opus::File *file = dynamic_cast< TagLib::Ogg::Opus::File * >( fileref.file() ) )
+    {
+        if( file->tag() )
+            tagHelper = new VorbisCommentTagHelper( fileref.tag(), file->tag(), Amarok::Opus );
+    }
+#endif
     else if( TagLib::FLAC::File *file = dynamic_cast< TagLib::FLAC::File * >( fileref.file() ) )
     {
         if( file->xiphComment() )
-            tagHelper = new VorbisCommentTagHelper( fileref.tag(), file->xiphComment(), file, Amarok::Flac );
+            tagHelper = new VorbisCommentTagHelper( fileref.tag(), file->xiphComment(), Amarok::Flac, file );
         else if( file->ID3v2Tag() )
             tagHelper = new ID3v2TagHelper( fileref.tag(), file->ID3v2Tag(), Amarok::Flac );
         else if( file->ID3v1Tag() )

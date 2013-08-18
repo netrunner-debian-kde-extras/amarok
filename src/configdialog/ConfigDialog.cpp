@@ -56,7 +56,7 @@ Amarok2ConfigDialog::Amarok2ConfigDialog( QWidget *parent, const char* name, KCo
     //ConfigDialogBase* mediadevice = new MediadeviceConfig( this );
 
     addPage( general, i18nc( "Miscellaneous settings", "General" ), "preferences-other-amarok", i18n( "Configure General Options" ) );
-    addPage( collection, i18n( "Local Collection" ), "collection-amarok", i18n( "Configure Local Collection" ) );
+    addPage( collection, i18n( "Local Collection" ), "drive-harddisk", i18n( "Configure Local Collection" ) );
     addPage( metadata, i18n( "Metadata" ), "amarok_playcount", i18n( "Configure Metadata Handling" ) );
     addPage( playback, i18n( "Playback" ), "preferences-media-playback-amarok", i18n( "Configure Playback" ) );
     addPage( notify, i18n( "Notifications" ), "preferences-indicator-amarok", i18n( "Configure Notifications" ) );
@@ -99,7 +99,7 @@ void Amarok2ConfigDialog::updateButtons() //SLOT
 /** Reimplemented from KConfigDialog */
 void Amarok2ConfigDialog::addPage( ConfigDialogBase *page, const QString &itemName, const QString &pixmapName, const QString &header, bool manage )
 {
-    connect( page, SIGNAL( settingsChanged( const QString& ) ), this, SIGNAL( settingsChanged( const QString& ) ) );
+    connect( page, SIGNAL(settingsChanged(QString)), this, SIGNAL(settingsChanged(QString)) );
 
     // Add the widget pointer to our list, for later reference
     m_pageList << page;

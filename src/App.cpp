@@ -47,7 +47,6 @@
 #include "dbus/mpris1/RootHandler.h"
 #include "dbus/mpris1/TrackListHandler.h"
 #include "dbus/mpris2/Mpris2.h"
-#include "dialogs/EqualizerDialog.h"
 #include "network/NetworkAccessManagerProxy.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistController.h"
@@ -91,10 +90,6 @@
 #include <CoreFoundation/CoreFoundation.h>
 extern void setupEventHandler_mac(SRefCon);
 #endif
-
-#ifdef DEBUG
-#include "TestDirectoryLoader.h"
-#endif // DEBUG
 
 QStringList App::s_delayedAmarokUrls = QStringList();
 AMAROK_EXPORT OcsData ocsData( "opendesktop" );
@@ -203,6 +198,7 @@ App::~App()
         {
             AmarokConfig::setResumeTrack( engineTrack->playableUrl().prettyUrl() );
             AmarokConfig::setResumeTime( The::engineController()->trackPositionMs() );
+            AmarokConfig::setResumePaused( The::engineController()->isPaused() );
         }
         else
             AmarokConfig::setResumeTrack( QString() ); //otherwise it'll play previous resume next time!
@@ -247,7 +243,6 @@ App::~App()
     //this should be moved to App::quit() I guess
     Amarok::Components::applicationController()->shutdown();
 
-
 #ifdef Q_WS_WIN
     // work around for KUniqueApplication being not completely implemented on windows
     QDBusConnectionInterface* dbusService;
@@ -283,26 +278,20 @@ App::handleCliArgs() //static
                 The::playlistManager()->defaultPodcasts()->addPodcast( feedUrl );
             }
             else if( url.protocol() == "amarok" )
-            {
                 s_delayedAmarokUrls.append( url.url() );
-            }
             else
-            {
                 list << url;
-                DEBUG_LINE_INFO
-            }
         }
 
-        int options = Playlist::AppendAndPlay;
+        Playlist::AddOptions options;
         if( args->isSet( "queue" ) )
-           options = Playlist::Queue;
+           options = Playlist::OnQueueToPlaylistAction;
         else if( args->isSet( "append" ) )
-           options = Playlist::Append;
+           options = Playlist::OnAppendToPlaylistAction;
         else if( args->isSet( "load" ) )
-            options = Playlist::Replace;
-
-        if( args->isSet( "play" ) )
-            options |= Playlist::DirectPlay;
+            options = Playlist::OnReplacePlaylistAction;
+        else
+            options = Playlist::OnPlayMediaAction;
 
         The::playlistController()->insertOptioned( list, options );
     }
@@ -350,44 +339,6 @@ App::handleCliArgs() //static
     }
 
     firstTime = false;
-
-#ifdef DEBUG
-    if( args->isSet( "test" ) )
-    {
-        bool ok;
-        int verboseInt = args->getOption( "verbose" ).toInt( &ok );
-        verboseInt     = ok ? verboseInt : 2;
-
-        QStringList testOpt( "amarok" );
-
-        QString verbosity;
-        switch( verboseInt )
-        {
-        case 0:
-            verbosity = "-silent";
-            break;
-        case 1:
-            verbosity = "-v1";
-            break;
-        default:
-        case 2:
-            verbosity = "-v2";
-            break;
-        case 3:
-            verbosity = "-vs";
-            break;
-        }
-        testOpt << verbosity;
-
-        const QString format = args->getOption( "format" );
-        if( format == "xml" || format == "lightxml" )
-            testOpt << QString( '-' + format );
-
-        const bool _stdout = ( args->getOption( "output" ) == "log" ) ? false : true;
-        runUnitTests( testOpt, _stdout );
-    }
-#endif // DEBUG
-
     args->clear();    //free up memory
 }
 
@@ -429,13 +380,6 @@ App::initCliArgs() //static
     options.add("m");
     options.add("multipleinstances", ki18n("Allow running multiple Amarok instances"));
     options.add("cwd <directory>", ki18n( "Base for relative filenames/URLs" ));
-#ifdef DEBUG
-    options.add(":", ki18n("Unit test options:"));
-    options.add("test", ki18n( "Run integrated unit tests" ) );
-    options.add("output <dest>", ki18n( "Destination of test output: 'stdout', 'log'" ), "log" );
-    options.add("format <type>", ki18n( "Format of test output: 'xml', 'lightxml', 'plaintext'" ), "xml" );
-    options.add("verbose <level>", ki18n( "Verbosity from 0-3 (highest)" ), "2" );
-#endif // DEBUG
 
     KCmdLineArgs::addCmdLineOptions( options );   //add our own options
 }
@@ -470,45 +414,6 @@ void App::applySettings( bool firstTime )
         emit settingsChanged();
 }
 
-#ifdef DEBUG
-//SLOT
-void
-App::runUnitTests( const QStringList options, bool _stdout )
-{
-    DEBUG_BLOCK
-
-    QString logPath;
-    if( !_stdout )
-    {
-        const QString location = Amarok::saveLocation( "testresults/" );
-        const QString stamp    = QDateTime::currentDateTime().toString( "yyyy-MM-dd.HH-mm-ss" );
-        logPath                = QDir::toNativeSeparators( location + stamp + "/" );
-
-        // create log folder for this run:
-        QDir logDir( logPath );
-        logDir.mkpath( logPath );
-
-        QFile::remove( QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + "LATEST" ) );
-        QFile::link( logPath, QDir::toNativeSeparators( Amarok::saveLocation( "testresults/" ) + "LATEST" ) );
-
-        QFile logArgs( logPath + "test_options" );
-        if( logArgs.open( QIODevice::WriteOnly ) )
-        {
-            logArgs.write( options.join( " " ).toLatin1() );
-            logArgs.close();
-        }
-    }
-
-    PERF_LOG( "Running Unit Tests" )
-
-    // modifies the playlist asynchronously, so run this last to avoid messing other test results
-    TestDirectoryLoader *test015 = new TestDirectoryLoader( options, logPath );
-
-    PERF_LOG( "Done Running Unit Tests" )
-    Q_UNUSED( test015 )
-}
-#endif // DEBUG
-
 //SLOT
 void
 App::continueInit()
@@ -526,17 +431,6 @@ App::continueInit()
 
     new Amarok::DefaultApplicationController( this );
     Amarok::Components::applicationController()->start();
-
-    // splash screen makes problems on Windows, it cannot be closed with a click
-	KSplashScreen* splash = 0;
-#ifndef Q_WS_WIN
-    if( AmarokConfig::showSplashScreen() && !isSessionRestored() )
-    {
-        QPixmap splashimg( KGlobal::dirs()->findResource( "data", "amarok/images/splash_screen.jpg" ) );
-        splash = new KSplashScreen( splashimg, Qt::WindowStaysOnTopHint );
-        splash->show();
-    }
-#endif
 
     // Instantiate statistics synchronization controller. Needs to be before creating
     // MainWindow as MainWindow connects a signal to StatSyncing::Controller.
@@ -594,12 +488,6 @@ App::continueInit()
     //Instantiate the Transcoding::Controller, this fires up an asynchronous KProcess with
     //FFmpeg which should not take more than ~200msec.
     Amarok::Components::setTranscodingController( new Transcoding::Controller( this ) );
-
-    if( splash ) // close splash correctly
-    {
-        splash->close();
-        delete splash;
-    }
 
     PERF_LOG( "App init done" )
 
@@ -667,7 +555,7 @@ KIO::Job *App::trashFiles( const KUrl::List &files )
 {
     KIO::Job *job = KIO::trash( files );
     Amarok::Components::logger()->newProgressOperation( job, i18n("Moving files to trash") );
-    connect( job, SIGNAL( result( KJob* ) ), this, SLOT( slotTrashResult( KJob* ) ) );
+    connect( job, SIGNAL(result(KJob*)), this, SLOT(slotTrashResult(KJob*)) );
     return job;
 }
 
@@ -682,15 +570,8 @@ void App::quit()
     DEBUG_BLOCK
     The::playlistManager()->completePodcastDownloads();
 
+    // Following signal is relayed to scripts, which may block quitting for a while
     emit prepareToQuit();
-    /*
-    if( MediaBrowser::instance() && MediaBrowser::instance()->blockQuit() )
-    {
-        // don't quit yet, as some media devices still have to finish transferring data
-        QTimer::singleShot( 100, this, SLOT( quit() ) );
-        return;
-    }
-    */
     KApplication::quit();
 }
 
@@ -702,19 +583,7 @@ bool App::event( QEvent *event )
         case QEvent::FileOpen:
         {
             QString file = static_cast<QFileOpenEvent*>( event )->file();
-            //we are only going to receive local files here
-            KUrl url( file );
-            if( Playlists::isPlaylist( url ) )
-            {
-                Playlists::PlaylistPtr playlist =
-                        Playlists::PlaylistPtr::dynamicCast( Playlists::loadPlaylistFile( url ) );
-                The::playlistController()->insertOptioned( playlist, Playlist::AppendAndPlay );
-            }
-            else
-            {
-                Meta::TrackPtr track = CollectionManager::instance()->trackForUrl( url );
-                The::playlistController()->insertOptioned( track, Playlist::AppendAndPlay );
-            }
+            The::playlistController()->insertOptioned( KUrl( file ), Playlist::OnPlayMediaAction );
             return true;
         }
         default:

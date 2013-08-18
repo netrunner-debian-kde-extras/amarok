@@ -1,15 +1,15 @@
 # Copyright (C) YEAR This_file_is_part_of_KDE
 # This file is distributed under the same license as the PACKAGE package.
-#
 # Esneault <simon.esneault@gmail.com>, 2009.
 # Sebastien Renard <Sebastien.Renard@digitalfox.org>, 2009.
-# xavier <xavier.besnard@neuf.fr>, 2012.
+# xavier <xavier.besnard@neuf.fr>, 2012, 2013.
+#
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: http://bugs.kde.org\n"
 "POT-Creation-Date: 2011-08-02 04:52+0200\n"
-"PO-Revision-Date: 2012-08-01 21:53+0200\n"
+"PO-Revision-Date: 2013-07-01 10:29+0200\n"
 "Last-Translator: xavier <xavier.besnard@neuf.fr>\n"
 "Language-Team: French <kde-i18n-doc@kde.org>\n"
 "Language: fr\n"
@@ -17,6 +17,10 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Lokalize 1.5\n"
+"X-Environment: kde\n"
+"X-Accelerator-Marker: &\n"
+"X-Text-Markup: kde4\n"
 
 msgctxt "NAME OF TRANSLATORS"
 msgid "Your names"
@@ -28,17 +32,15 @@ msgstr "simon.esneault@gmail.com"
 
 #: amarokpkg.cpp:40
 msgid "Install, list, remove Amarok applets"
-msgstr "Installe, liste ou supprime les applets d'Amarok"
+msgstr "Installe, liste ou supprime les composants graphique de Amarok"
 
 #: amarokpkg.cpp:76
 msgid "Amarok Applet Manager"
-msgstr "Gestionnaire d'applet d'Amarok"
+msgstr "Gestionnaire de composants graphiques de Amarok"
 
 #: amarokpkg.cpp:78
-#, fuzzy
-#| msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo franchi"
 msgid "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
-msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo franchi"
+msgstr "(C) 2008, Aaron Seigo, (C) 2009, Leo Franchi"
 
 #: amarokpkg.cpp:79
 msgid "Aaron Seigo"
@@ -46,7 +48,7 @@ msgstr "Aaron Seigo"
 
 #: amarokpkg.cpp:80
 msgid "Original author"
-msgstr "Auteur"
+msgstr "Auteur original"
 
 #: amarokpkg.cpp:82
 msgid "Leo Franchi"
@@ -59,37 +61,36 @@ msgstr "Développeur"
 #: amarokpkg.cpp:92
 msgid "For install or remove, operates on applets installed for all users."
 msgstr ""
-"Pour une installation ou une suppression, sélectionne les applets installées "
-"pour tous les utilisateurs"
+"Pour une installation ou une suppression, fonctionne avec les composants "
+"graphiques installés pour tous les utilisateurs."
 
 #: amarokpkg.cpp:95
 msgctxt "Do not translate <path>"
 msgid "Install the applet at <path>"
-msgstr "Installe l'applet située <path>"
+msgstr "Installe le composant graphique situé à l'emplacement <path>"
 
 #: amarokpkg.cpp:97
 msgctxt "Do not translate <path>"
 msgid "Upgrade the applet at <path>"
-msgstr "Change la version de l'applet située <path>"
+msgstr "Met à jour le composant graphique situé à l'emplacement <path>"
 
 #: amarokpkg.cpp:99
-#, fuzzy
-#| msgid "List installed applet"
 msgid "List installed applets"
-msgstr "Liste les applets installées"
+msgstr "Liste les composants graphiques installés"
 
 #: amarokpkg.cpp:101
 msgctxt "Do not translate <name>"
 msgid "Remove the applet named <name>"
-msgstr "Supprime l'applet nommée <name>"
+msgstr "Supprime le composant graphique nommé <name>"
 
 #: amarokpkg.cpp:103
 msgid ""
 "Absolute path to the package root. If not supplied, then the standard data "
 "directories for this KDE session will be searched instead."
 msgstr ""
-"Position absolue vers la racine du paquetage. Si il n'est pas fourni, les "
-"dossiers de données standard de la session KDE vont alors être utilisés."
+"Emplacement absolu vers la racine du paquet. S'il n'est pas fourni, les "
+"dossiers standards de données pour cette session KDE vont alors être "
+"recherchés à la place."
 
 #: amarokpkg.cpp:162
 #, kde-format
@@ -122,5 +123,5 @@ msgctxt ""
 "least one, do not translate install, remove, upgrade nor list"
 msgid "One of install, remove, upgrade or list is required."
 msgstr ""
-"Une option est nécessaire parmi installation, suppression, mise à jour ou "
-"liste."
+"Une option est nécessaire parmi « Installation », « Suppression », « Mise à "
+"jour » ou « Liste »."

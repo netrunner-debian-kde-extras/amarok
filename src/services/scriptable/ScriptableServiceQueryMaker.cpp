@@ -14,15 +14,15 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "ScriptableServiceQueryMaker"
+
 #include "ScriptableServiceQueryMaker.h"
 
-#include "core/meta/support/MetaConstants.h"
-#include "ScriptableServiceMeta.h"
 #include "ScriptManager.h"
-
-#include "core-impl/collections/support/MemoryMatcher.h"
-
+#include "core/meta/support/MetaConstants.h"
 #include "core/support/Debug.h"
+#include "core-impl/collections/support/MemoryMatcher.h"
+#include "services/scriptable/ScriptableServiceMeta.h"
 
 #include <QTimer>
 
@@ -42,14 +42,15 @@ struct ScriptableServiceQueryMaker::Private {
 };
 
 ScriptableServiceQueryMaker::ScriptableServiceQueryMaker( ScriptableServiceCollection * collection, QString name )
- : DynamicServiceQueryMaker()
- , d( new Private )
-
+    : DynamicServiceQueryMaker()
+    , d( new Private )
+    , m_convertToMultiTracks( false )
 {
+    setParent( collection );
     m_collection = collection;
     m_name = name;
 
-    connect( collection, SIGNAL( updateComplete() ), this, SLOT( slotScriptComplete() ) );
+    connect( collection, SIGNAL(updateComplete()), this, SLOT(slotScriptComplete()) );
 
     d->type = Private::NONE;
     d->closestParent = Private::NONE;
@@ -66,8 +67,6 @@ ScriptableServiceQueryMaker::~ScriptableServiceQueryMaker()
 
 void ScriptableServiceQueryMaker::run()
 {
-    DEBUG_BLOCK
-
     if ( d->albumMode == OnlyCompilations )
         return;
 
@@ -84,7 +83,7 @@ void ScriptableServiceQueryMaker::run()
         {
             m_collection->clear();
         }
-        QTimer::singleShot( 0, this, SLOT( fetchGenre() ) );
+        QTimer::singleShot( 0, this, SLOT(fetchGenre()) );
     }
     else if ( d->type == Private::ARTIST )
     {
@@ -92,7 +91,7 @@ void ScriptableServiceQueryMaker::run()
         {
             m_collection->clear();
         }
-        QTimer::singleShot( 0, this, SLOT( fetchArtists() ) );
+        QTimer::singleShot( 0, this, SLOT(fetchArtists()) );
     }
     else if ( d->type == Private::ALBUM )
     {
@@ -100,7 +99,7 @@ void ScriptableServiceQueryMaker::run()
         {
             m_collection->clear();
         }
-        QTimer::singleShot( 0, this, SLOT( fetchAlbums() ) );
+        QTimer::singleShot( 0, this, SLOT(fetchAlbums()) );
     }
     else if ( d->type == Private::TRACK )
     {
@@ -108,7 +107,7 @@ void ScriptableServiceQueryMaker::run()
         {
             m_collection->clear();
         }
-        QTimer::singleShot( 0, this, SLOT( fetchTracks() ) );
+        QTimer::singleShot( 0, this, SLOT(fetchTracks()) );
     }
 
 }
@@ -119,7 +118,6 @@ void ScriptableServiceQueryMaker::abortQuery()
 
 QueryMaker * ScriptableServiceQueryMaker::setQueryType( QueryType type )
 {
-    DEBUG_BLOCK
     switch( type ) {
     case QueryMaker::Artist:
     case QueryMaker::AlbumArtist:
@@ -188,11 +186,11 @@ QueryMaker * ScriptableServiceQueryMaker::addMatch( const Meta::AlbumPtr & album
     return this;
 }
 
-
-void ScriptableServiceQueryMaker::handleResult()
+void
+ScriptableServiceQueryMaker::setConvertToMultiTracks( bool convert )
 {
+    m_convertToMultiTracks = convert;
 }
-
 
 void ScriptableServiceQueryMaker::handleResult( const Meta::GenreList & genres )
 {
@@ -218,17 +216,32 @@ void ScriptableServiceQueryMaker::handleResult( const Meta::ArtistList & artists
         emit newResultReady( artists );
 }
 
-void ScriptableServiceQueryMaker::handleResult( const Meta::TrackList & tracks )
+void ScriptableServiceQueryMaker::handleResult( const Meta::TrackList &tracks )
 {
-    debug() << "Emitting " << tracks.count() << " tracks";
-    if ( d->maxsize >= 0 && tracks.count() > d->maxsize )
-        emit newResultReady( tracks.mid( 0, d->maxsize ) );
+    Meta::TrackList ret;
+    if( m_convertToMultiTracks )
+    {
+        foreach( const Meta::TrackPtr &track, tracks )
+        {
+            using namespace Meta;
+            const ScriptableServiceTrack *serviceTrack =
+                    dynamic_cast<const ScriptableServiceTrack *>( track.data() );
+            if( !serviceTrack )
+            {
+                error() << "failed to convert generic track" << track.data() << "to ScriptableServiceTrack";
+                continue;
+            }
+            ret << serviceTrack->playableTrack();
+        }
+    }
     else
-        emit newResultReady( tracks );
+        ret = tracks;
+
+    if ( d->maxsize >= 0 && ret.count() > d->maxsize )
+        emit newResultReady( ret.mid( 0, d->maxsize ) );
+    else
+        emit newResultReady( ret );
 }
-
-
-
 
 void ScriptableServiceQueryMaker::fetchGenre()
 {

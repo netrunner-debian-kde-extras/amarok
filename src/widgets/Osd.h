@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2003 Christian Muehlhaeuser <chris@chris.de>                           *
- * Copyright (c) 2008,2009 Mark Kretschmann <kretschmann@kde.org>                       *
+ * Copyright (c) 2008-2013 Mark Kretschmann <kretschmann@kde.org>                       *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -18,7 +18,7 @@
 #ifndef AMAROK_OSD_H
 #define AMAROK_OSD_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QImage>
 #include <QPixmap>
@@ -27,6 +27,7 @@
 
 #define OSD_WINDOW_OPACITY 0.74
 
+class QTimeLine;
 
 class OSDWidget : public QWidget
 {
@@ -35,18 +36,24 @@ class OSDWidget : public QWidget
     public:
         enum Alignment { Left, Middle, Center, Right };
 
-        /** resets the colours to defaults */
-        void unsetColors();
+        /** shadow size in every direction */
+        static const int SHADOW_SIZE = 5;
 
+        static const int FADING_DURATION = 400; //ms
+         
     public slots:
         /** calls setText() then show(), after setting image if needed */
         void show( const QString &text, const QImage &newImage = QImage() );
+
         void ratingChanged( const short rating );
         void ratingChanged( const QString& path, int rating );
         void volumeChanged( int volume );
 
-        /** reimplemented, shows the OSD */
+        /** reimplemented, show the OSD */
         virtual void show();
+        /** reimplemented, hide the OSD */
+        virtual void hide();
+
         virtual void setVisible( bool visible );
 
         /**
@@ -59,8 +66,8 @@ class OSDWidget : public QWidget
         void setDuration( int ms ) { m_duration = ms; }
         void setTextColor( const QColor &color );
 
-        inline int offset() const { return m_y; }
-        void setOffset( int y ) { m_y = y; }
+        inline uint yOffset() const { return m_yOffset; }
+        void setYOffset( int y ) { m_yOffset = y; }
 
         inline int alignment() const { return m_alignment; }
         void setAlignment( Alignment alignment ) { m_alignment = alignment; }
@@ -72,7 +79,8 @@ class OSDWidget : public QWidget
         void setImage( const QImage &image ) { m_cover = image; }
         void setText( const QString &text ) { m_text = text; }
         void setRating( const short rating ) { m_rating = rating; }
-        void setTranslucent( bool enabled ) { setWindowOpacity( enabled ? OSD_WINDOW_OPACITY : 1.0 ); }
+        void setTranslucent( bool enabled ) { m_translucent = enabled; setWindowOpacity( maxOpacity() ); }
+        void setFadeOpacity( qreal value );
         void setFontScale( int scale );
         void setHideWhenFullscreenWindowIsActive( bool hide );
 
@@ -83,6 +91,8 @@ class OSDWidget : public QWidget
         // work-around to get default point size on this platform, Qt API does not offer this directly
         inline qreal defaultPointSize() const { return QFont(font().family()).pointSizeF(); }
 
+        inline qreal maxOpacity() const { return m_translucent ? OSD_WINDOW_OPACITY : 1.0; }
+
         /** determine new size and position */
         QRect determineMetrics( const int marginMetric );
 
@@ -92,26 +102,27 @@ class OSDWidget : public QWidget
          * if a fullscreen application is active (@see m_hideWhenFullscreenWindowIsActive)
          * (where the OSD could steal focus).
          */
-        bool isTemporaryDisabled();
+        bool isTemporaryDisabled() const;
+
+        /** resets the colours to defaults */
+        void unsetColors();
 
         // Reimplemented from QWidget
         virtual void paintEvent( QPaintEvent* );
         virtual void mousePressEvent( QMouseEvent* );
-        virtual void resizeEvent( QResizeEvent *e );
-        virtual bool event( QEvent* );
+        virtual void changeEvent( QEvent* );
 
         /** distance from screen edge */
         static const int MARGIN = 15;
 
     private:
-        uint        m_m;
+        uint        m_margin;
         QSize       m_size;
         int         m_duration;
         QTimer     *m_timer;
         Alignment   m_alignment;
         int         m_screen;
-        uint        m_y;
-        bool        m_drawShadow;
+        uint        m_yOffset;
         short       m_rating;
         int         m_volume;
         bool        m_showVolume;
@@ -120,6 +131,8 @@ class OSDWidget : public QWidget
         QPixmap     m_scaledCover;
         bool        m_paused;
         bool        m_hideWhenFullscreenWindowIsActive;
+        QTimeLine*  m_fadeTimeLine;
+        bool        m_translucent;
 };
 
 
@@ -132,12 +145,13 @@ public:
 
 public slots:
     void setTextColor( const QColor &color ) { OSDWidget::setTextColor( color ); doUpdate(); }
-    //void setFont( const QFont &font ) { OSDWidget::setFont( font ); doUpdate(); }
     void setScreen( int screen ) { OSDWidget::setScreen( screen ); doUpdate(); }
     void setFontScale( int scale ) { OSDWidget::setFontScale( scale ); doUpdate(); }
-    void setTranslucent( bool enabled ) { OSDWidget::setTranslucent( enabled );; doUpdate(); }
+    void setTranslucent( bool enabled ) { OSDWidget::setTranslucent( enabled ); doUpdate(); }
 
     void setUseCustomColors( const bool use, const QColor &fg );
+
+    virtual void hide() { QWidget::hide(); }
 
 private:
     inline void doUpdate() { if( !isHidden() ) show(); }
@@ -152,7 +166,7 @@ protected:
 
 private:
     bool   m_dragging;
-    QPoint m_dragOffset;
+    QPoint m_dragYOffset;
 };
 
 

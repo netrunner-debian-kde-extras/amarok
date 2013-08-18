@@ -23,8 +23,6 @@
 #include "core-impl/meta/default/DefaultMetaTypes.h"
 #include "core-impl/support/UrlStatisticsStore.h"
 
-#include <Solid/Networking>
-
 #include <QWeakPointer>
 #include <QString>
 
@@ -34,8 +32,6 @@ Track::Track( const KUrl &url )
     : Meta::Track()
     , d( new Track::Private( this ) )
 {
-    DEBUG_BLOCK
-
     d->url = url;
     d->artistPtr = Meta::ArtistPtr( new StreamArtist( d ) );
     d->albumPtr = Meta::AlbumPtr( new StreamAlbum( d ) );
@@ -66,7 +62,7 @@ Track::playableUrl() const
 QString
 Track::prettyUrl() const
 {
-    return playableUrl().url();
+    return playableUrl().prettyUrl();
 }
 
 QString
@@ -75,13 +71,10 @@ Track::uidUrl() const
     return playableUrl().url();
 }
 
-bool
-Track::isPlayable() const
+QString
+Track::notPlayableReason() const
 {
-    if( Solid::Networking::status() != Solid::Networking::Connected )
-        return false;
-
-    return true;
+    return networkNotPlayableReason();
 }
 
 Meta::AlbumPtr

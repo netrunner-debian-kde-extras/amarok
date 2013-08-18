@@ -6,7 +6,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-10-10 10:03+0200\n"
+"POT-Creation-Date: 2013-03-05 03:04+0100\n"
 "PO-Revision-Date: 2010-09-26 09:08+0530\n"
 "Last-Translator: A S Alam <aalam@users.sf.net>\n"
 "Language-Team: Punjabi/Panjabi <punjabi-users@lists.sf.net>\n"
@@ -17,27 +17,28 @@ msgstr ""
 "X-Generator: Lokalize 1.0\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:115
-#: utilities/collectionscanner/CollectionScanner.cpp:138
+#: utilities/collectionscanner/CollectionScanner.cpp:116
+#: utilities/collectionscanner/CollectionScanner.cpp:139
 #, qt-format
 msgid "File \"%1\" not found."
 msgstr ""
 
-#: utilities/collectionscanner/CollectionScanner.cpp:118
+#: utilities/collectionscanner/CollectionScanner.cpp:119
 #, qt-format
 msgid "Could not open file \"%1\"."
 msgstr ""
 
-#: utilities/collectionscanner/CollectionScanner.cpp:370
+#: utilities/collectionscanner/CollectionScanner.cpp:371
 #, qt-format
 msgid "Missing argument for option %1"
 msgstr ""
 
-#: utilities/collectionscanner/CollectionScanner.cpp:407
+#: utilities/collectionscanner/CollectionScanner.cpp:408
 msgid ""
 "Amarok Collection Scanner\n"
 "Scans directories and outputs a xml file with the results.\n"
-"For more information see http://amarok.kde.org/wiki/Batch_Mode\n"
+"For more information see http://community.kde.org/Amarok/Development/"
+"BatchMode\n"
 "\n"
 "Usage: amarokcollectionscanner [options] <Folder(s)>\n"
 "User-modifiable Options:\n"

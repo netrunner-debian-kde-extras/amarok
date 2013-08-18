@@ -54,8 +54,7 @@ UpnpBrowseCollection::UpnpBrowseCollection( const DeviceInfo& dev )
 
     // experimental code, will probably be moved to a better place
     OrgKdeKDirNotifyInterface *notify = new OrgKdeKDirNotifyInterface("", "", QDBusConnection::sessionBus(), this );
-    Q_ASSERT(connect( notify, SIGNAL( FilesChanged(const QStringList &) ),
-                      this, SLOT( slotFilesChanged(const QStringList &) ) ));
+    connect( notify, SIGNAL(FilesChanged(QStringList)), SLOT(slotFilesChanged(QStringList)) );
 }
 
 UpnpBrowseCollection::~UpnpBrowseCollection()
@@ -144,8 +143,8 @@ UpnpBrowseCollection::startIncrementalScan( const QString &directory )
     url.setPath( directory );
     KIO::ListJob *listJob = KIO::listRecursive( url, KIO::HideProgressInfo );
     addJob( listJob );
-    Q_ASSERT( connect( listJob, SIGNAL(entries(KIO::Job *, const KIO::UDSEntryList& )),
-                       this, SLOT(entries(KIO::Job *, const KIO::UDSEntryList&)), Qt::UniqueConnection ) );
+    Q_ASSERT( connect( listJob, SIGNAL(entries(KIO::Job*,KIO::UDSEntryList)),
+                       this, SLOT(entries(KIO::Job*,KIO::UDSEntryList)), Qt::UniqueConnection ) );
     Q_ASSERT( connect( listJob, SIGNAL(result(KJob*)),
                        this, SLOT(done(KJob*)), Qt::UniqueConnection ) );
     listJob->start();

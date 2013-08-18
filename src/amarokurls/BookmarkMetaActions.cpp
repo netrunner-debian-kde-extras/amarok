@@ -20,6 +20,7 @@
 #include "SvgHandler.h"
 #include "amarokurls/AmarokUrlHandler.h"
 #include "amarokurls/BookmarkModel.h"
+#include "core/meta/Meta.h"
 #include "core-impl/capabilities/timecode/TimecodeWriteCapability.h"
 #include "widgets/ProgressWidget.h"
 
@@ -30,7 +31,7 @@ BookmarkAlbumAction::BookmarkAlbumAction( QObject *parent, Meta::AlbumPtr album 
     : QAction( i18n( "Bookmark this Album" ), parent )
     , m_album( album )
 {
-    connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
+    connect( this, SIGNAL(triggered(bool)), SLOT(slotTriggered()) );
     setIcon( KIcon("bookmark-new") );
     setProperty( "popupdropper_svg_id", "lastfm" );
 }
@@ -46,7 +47,7 @@ BookmarkArtistAction::BookmarkArtistAction( QObject *parent, Meta::ArtistPtr art
     : QAction( i18n( "Bookmark this Artist" ), parent )
     , m_artist( artist )
 {
-    connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
+    connect( this, SIGNAL(triggered(bool)), SLOT(slotTriggered()) );
     setIcon( KIcon("bookmark-new") );
     setProperty( "popupdropper_svg_id", "lastfm" );
 }
@@ -60,7 +61,7 @@ BookmarkArtistAction::slotTriggered()
 BookmarkCurrentTrackPositionAction::BookmarkCurrentTrackPositionAction( QObject * parent )
     : QAction( i18n( "Add Position Marker" ), parent )
 {
-    connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
+    connect( this, SIGNAL(triggered(bool)), SLOT(slotTriggered()) );
     setIcon( KIcon("flag-amarok") );
 }
 

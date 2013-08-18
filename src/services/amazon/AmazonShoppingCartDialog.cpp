@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2011 Sven Krohlas <sven@getamarok.com>                                 *
+ * Copyright (c) 2011 Sven Krohlas <sven@asbest-online.de>                              *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -40,9 +40,9 @@ AmazonShoppingCartDialog::AmazonShoppingCartDialog( QWidget *parent, AmazonStore
     else
         ui->checkoutButton->setEnabled( true );
 
-    connect( ui->checkoutButton, SIGNAL( clicked() ), m_store, SLOT( checkout() ) );
-    connect( ui->checkoutButton, SIGNAL( clicked() ), this, SLOT( accept() ) );
-    connect( m_model, SIGNAL( contentsChanged() ), this, SLOT( contentsChanged() ) );
+    connect( ui->checkoutButton, SIGNAL(clicked()), m_store, SLOT(checkout()) );
+    connect( ui->checkoutButton, SIGNAL(clicked()), this, SLOT(accept()) );
+    connect( m_model, SIGNAL(contentsChanged()), this, SLOT(contentsChanged()) );
 }
 
 AmazonShoppingCartDialog::~AmazonShoppingCartDialog()

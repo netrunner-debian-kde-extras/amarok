@@ -20,19 +20,14 @@
 #ifndef COLLECTIONSCANNER_TRACK_H
 #define COLLECTIONSCANNER_TRACK_H
 
+#include "FileType.h"
+#include "MetaReplayGain.h"
+#include "amarokshared_export.h"
+
 #include <QString>
 #include <QDateTime>
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
-
-#include "FileType.h"
-#include "MetaReplayGain.h"
-
-#ifndef UTILITIES_BUILD
-    #include "amarok_export.h"
-#else
-    #define AMAROK_EXPORT
-#endif
 
 namespace CollectionScanner
 {
@@ -44,7 +39,7 @@ class Directory;
    @short Represents a scanned track
    An empty QString or a negative int means that the value is unset.
  */
-class AMAROK_EXPORT Track
+class AMAROKSHARED_EXPORT Track
 {
 public:
     /** Reads a track from the given path */
@@ -115,6 +110,7 @@ public:
     static void setUseCharsetDetector( bool value );
 
 private:
+    Q_DISABLE_COPY(Track)
 
     void write( QXmlStreamWriter *writer, const QString &tag, const QString &str ) const;
     bool m_valid;

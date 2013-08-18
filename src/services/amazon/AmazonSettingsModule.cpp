@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2011 Sven Krohlas <sven@getamarok.com>                                 *
+ * Copyright (c) 2011 Sven Krohlas <sven@asbest-online.de>                              *
  * The Amazon store in based upon the Magnatune store in Amarok,                        *
  * Copyright (c) 2006,2007 Nikolaj Hald Nielsen <nhn@kde.org>                           *
  *                                                                                      *
@@ -27,7 +27,6 @@
 #include <kgenericfactory.h>
 
 #include <QTimer>
-#include <QVBoxLayout>
 
 K_PLUGIN_FACTORY( AmazonSettingsFactory, registerPlugin<AmazonSettingsModule>(); )
 K_EXPORT_PLUGIN( AmazonSettingsFactory( "kcm_amarok_service_amazonstore" ) )
@@ -35,17 +34,16 @@ K_EXPORT_PLUGIN( AmazonSettingsFactory( "kcm_amarok_service_amazonstore" ) )
 AmazonSettingsModule::AmazonSettingsModule( QWidget *parent, const QVariantList &args )
     : KCModule( AmazonSettingsFactory::componentData(), parent, args )
 {
-    QVBoxLayout* l = new QVBoxLayout( this );
-    QWidget *w = new QWidget;
     m_configDialog = new Ui::AmazonConfigWidget;
-    m_configDialog->setupUi( w );
-    l->addWidget( w );
+    m_configDialog->setupUi( this );
 
-    connect( m_configDialog->countrySelectionComboBox, SIGNAL( currentIndexChanged( int ) ), this, SLOT( settingsChanged() ) );
+    connect( m_configDialog->countrySelectionComboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(settingsChanged()) );
 }
 
 AmazonSettingsModule::~AmazonSettingsModule()
 {
+    delete m_configDialog;
+
     // TODO: clear cart and collection, if the settings have changed
 }
 
@@ -133,7 +131,7 @@ AmazonSettingsModule::load()
          *
          * Workaround:
          */
-        QTimer::singleShot( 200, this, SLOT( settingsChanged() ) );
+        QTimer::singleShot( 200, this, SLOT(settingsChanged()) );
 
         /*
          * I'm going to burn in hell for that one, am I? :-/

@@ -3,14 +3,14 @@
 # This file is distributed under the same license as the PACKAGE package.
 #
 # Marce Villarino <mvillarino@users.sourceforge.net>, 2009.
-# Adrian Chaves Fernandez <adriyetichaves@gmail.com>, 2012.
+# Adrian Chaves Fernandez <adriyetichaves@gmail.com>, 2012, 2013.
 msgid ""
 msgstr ""
 "Project-Id-Version: amarokcollectionscanner_qt\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-10-10 10:03+0200\n"
-"PO-Revision-Date: 2012-12-29 22:28+0100\n"
-"Last-Translator: Adrian Chaves Fernandez <adriyetichaves@gmail.com>\n"
+"POT-Creation-Date: 2013-03-05 03:04+0100\n"
+"PO-Revision-Date: 2013-01-27 18:39+0100\n"
+"Last-Translator: Adrián Chaves Fernández <adriyetichaves@gmail.com>\n"
 "Language-Team: Galician <proxecto@trasno.net>\n"
 "Language: gl\n"
 "MIME-Version: 1.0\n"
@@ -23,27 +23,28 @@ msgstr ""
 "X-Accelerator-Marker: &\n"
 "X-Text-Markup: qtrich\n"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:115
-#: utilities/collectionscanner/CollectionScanner.cpp:138
+#: utilities/collectionscanner/CollectionScanner.cpp:116
+#: utilities/collectionscanner/CollectionScanner.cpp:139
 #, qt-format
 msgid "File \"%1\" not found."
 msgstr "Non se atopa o ficheiro «%1»"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:118
+#: utilities/collectionscanner/CollectionScanner.cpp:119
 #, qt-format
 msgid "Could not open file \"%1\"."
 msgstr "Non foi posíbel abrir o ficheiro «%1»."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:370
+#: utilities/collectionscanner/CollectionScanner.cpp:371
 #, qt-format
 msgid "Missing argument for option %1"
 msgstr "Non se atopa o argumento para a opción %1"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:407
+#: utilities/collectionscanner/CollectionScanner.cpp:408
 msgid ""
 "Amarok Collection Scanner\n"
 "Scans directories and outputs a xml file with the results.\n"
-"For more information see http://amarok.kde.org/wiki/Batch_Mode\n"
+"For more information see http://community.kde.org/Amarok/Development/"
+"BatchMode\n"
 "\n"
 "Usage: amarokcollectionscanner [options] <Folder(s)>\n"
 "User-modifiable Options:\n"
@@ -72,7 +73,8 @@ msgid ""
 msgstr ""
 "Explorador de coleccións de Amarok\n"
 "Explora os directorios e xera un ficheiro XML cos resultados.\n"
-"Para obter máis información, vexa http://amarok.kde.org/wiki/Batch_Mode\n"
+"Para obter máis información, vexa http://community.kde.org/Amarok/"
+"Development/BatchMode\n"
 "\n"
 "Uso: amarokcollectionscanner [opcións] <cartafol(es)>\n"
 "Opcións modificábeis polo usuario:\n"

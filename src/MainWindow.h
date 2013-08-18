@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2002-2009 Mark Kretschmann <kretschmann@kde.org>                       *
+ * Copyright (c) 2002-2013 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2002 Max Howell <max.howell@methylblue.com>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
@@ -21,7 +21,7 @@
 #include "config.h"
 
 #include "amarok_export.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "browsers/BrowserDock.h"
 
 #include <KMainWindow>
@@ -106,12 +106,18 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         bool isLayoutLocked() const;
 
         /**
-        *    If an audiocd collection is present. Stop current playback, clear playlist,
-        *    add cd to playlist and start playback
-        */
+         *    If an audiocd collection is present. Stop current playback, clear playlist,
+         *    add cd to playlist and start playback
+         */
         bool playAudioCd();
 
         bool isWaitingForCd() const;
+
+        /**
+         * @return Whether the application is on the currently active virtual desktop. On non-X11 systems
+           this is always true.
+         */
+        bool isOnCurrentDesktop() const;
 
     signals:
         void loveTrack( Meta::TrackPtr track );
@@ -124,10 +130,13 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         void slotFullScreen();
         void showNotificationPopup();
         void setLayoutLocked( bool locked );
+        void resetLayout();
         void showAbout();
         void showReportBug();
 
     private slots:
+        void setDefaultDockSizes();
+
         void slotLoveTrack();
         void slotBanTrack();
 
@@ -136,36 +145,35 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         void slotNewTrackPlaying();
         void slotMetadataChanged( Meta::TrackPtr track );
 
-        void exportPlaylist() const;
+        void exportPlaylist();
         void slotShowActiveTrack() const;
         void slotEditTrackInfo() const;
-        void slotShowBookmarkManager() const;
-        void slotShowEqualizer() const;
-        void slotShowCoverManager() const;
-        void slotShowDiagnosticsDialog() const;
+        void slotShowBookmarkManager();
+        void slotShowEqualizer();
+        void slotShowCoverManager();
+        void slotShowDiagnosticsDialog();
         void slotShowMenuBar();
         void slotPlayMedia();
         void slotAddLocation( bool directPlay = false );
         void slotAddStream();
         void slotFocusPlaylistSearch();
         void slotFocusCollectionSearch();
+        void slotShufflePlaylist();
+        void slotSeekForwardShort();
+        void slotSeekForwardMedium();
+        void slotSeekForwardLong();
+        void slotSeekBackwardShort();
+        void slotSeekBackwardMedium();
+        void slotSeekBackwardLong();
+        void slotPutCurrentTrackToClipboard();
+
 #ifdef DEBUG_BUILD_TYPE
         void showNetworkRequestViewer();
 #endif // DEBUG_BUILD_TYPE
 
-        /**
-         * Save state and position of dock widgets.
-         */
-        void saveLayout();
-
-        /**
-         * Try to restore saved layout, if this fails, try to use the default layout.
-         */
-        void restoreLayout();
-
     protected:
         virtual void closeEvent( QCloseEvent* );
-        virtual void paletteChange( const QPalette & oldPalette );
+        virtual void changeEvent( QEvent *event );
         virtual bool queryExit(); 
 
     private slots:
@@ -185,13 +193,11 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
         QWeakPointer<QMenuBar>  m_menubar;
         QWeakPointer<KMenu>     m_toolsMenu;
         QWeakPointer<KMenu>     m_settingsMenu;
-        QWeakPointer<BrowserDock> m_browserDock;
 #ifdef DEBUG_BUILD_TYPE
         QWeakPointer<NetworkAccessViewer> m_networkViewer;
 #endif // DEBUG_BUILD_TYPE
 
-        QByteArray m_splitterState;
-
+        QWeakPointer<BrowserDock> m_browserDock;
         QWeakPointer<ContextDock> m_contextDock;
         QWeakPointer<Playlist::Dock> m_playlistDock;
 
@@ -208,7 +214,6 @@ class AMAROK_EXPORT MainWindow : public KMainWindow
 
         static QWeakPointer<MainWindow> s_instance;
 
-        bool m_layoutLocked;
         bool m_waitingForCd;
 };
 

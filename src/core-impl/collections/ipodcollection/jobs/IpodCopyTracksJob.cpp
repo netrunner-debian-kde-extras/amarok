@@ -48,8 +48,8 @@ IpodCopyTracksJob::IpodCopyTracksJob( const QMap<Meta::TrackPtr,KUrl> &sources,
 {
     connect( this, SIGNAL(startDuplicateTrackSearch(Meta::TrackPtr)),
                    SLOT(slotStartDuplicateTrackSearch(Meta::TrackPtr)) );
-    connect( this, SIGNAL(startCopyOrTranscodeJob(KUrl,KUrl)),
-                   SLOT(slotStartCopyOrTranscodeJob(KUrl,KUrl)) );
+    connect( this, SIGNAL(startCopyOrTranscodeJob(KUrl,KUrl,bool)),
+                   SLOT(slotStartCopyOrTranscodeJob(KUrl,KUrl,bool)) );
     connect( this, SIGNAL(displaySorryDialog()), SLOT(slotDisplaySorryDialog()) );
 }
 
@@ -84,7 +84,10 @@ IpodCopyTracksJob::run()
 
         if( !m_coll )
             break;  // destructed behind our back
-        if( m_transcodingConfig.isJustCopy()  // if not copying, we catch big files later
+
+            bool isJustCopy = m_transcodingConfig.isJustCopy( track, m_coll.data()->supportedFormats() );
+
+        if( isJustCopy  // if not copying, we catch big files later
             && track->filesize() > totalSafeCapacity - m_coll.data()->usedCapacity() )
         {
             // this is a best effort check, we do one definite one after the file is copied
@@ -96,7 +99,7 @@ IpodCopyTracksJob::run()
             continue;
         }
         QString fileExtension;
-        if( m_transcodingConfig.isJustCopy() )
+        if( isJustCopy )
             fileExtension = track->type();
         else
             fileExtension = Amarok::Components::transcodingController()->format(
@@ -128,7 +131,7 @@ IpodCopyTracksJob::run()
 
         // start the physical copying
         KUrl destUrl = KUrl( QFile::decodeName( destFilename ) );
-        emit startCopyOrTranscodeJob( sourceUrl, destUrl );
+        emit startCopyOrTranscodeJob( sourceUrl, destUrl, isJustCopy );
 
         // wait for copying to finish:
         m_copying.acquire( 1 );
@@ -178,7 +181,7 @@ IpodCopyTracksJob::run()
             trackProcessed( InternalError, track );
             continue;
         }
-        if( !m_transcodingConfig.isJustCopy() )
+        if( !isJustCopy )
         {
             // we need to reread some metadata in case the file was transcoded
             Meta::FieldHash fields = Meta::Tag::readTags( destFile.fileName() );
@@ -293,10 +296,11 @@ IpodCopyTracksJob::slotDuplicateTrackSearchQueryDone()
 }
 
 void
-IpodCopyTracksJob::slotStartCopyOrTranscodeJob( const KUrl &sourceUrl, const KUrl &destUrl )
+IpodCopyTracksJob::slotStartCopyOrTranscodeJob( const KUrl &sourceUrl, const KUrl &destUrl,
+                                                bool isJustCopy )
 {
     KJob *job = 0;
-    if( m_transcodingConfig.isJustCopy() )
+    if( isJustCopy )
     {
         if( m_goingToRemoveSources && m_coll &&
             sourceUrl.toLocalFile().startsWith( m_coll.data()->mountPoint() ) )
@@ -319,13 +323,15 @@ IpodCopyTracksJob::slotStartCopyOrTranscodeJob( const KUrl &sourceUrl, const KUr
     }
     job->setUiDelegate( 0 ); // be non-interactive
     connect( job, SIGNAL(finished(KJob*)), // we must use this instead of result() to prevent deadlock
-             SLOT(slotCopyOrTranscodeJobFinished()) );
+             SLOT(slotCopyOrTranscodeJobFinished(KJob*)) );
     job->start();  // no-op for KIO job, but matters for transcoding job
 }
 
 void
-IpodCopyTracksJob::slotCopyOrTranscodeJobFinished()
+IpodCopyTracksJob::slotCopyOrTranscodeJobFinished( KJob *job )
 {
+    if( job->error() != 0 && m_copyErrors.count() < 10 )
+        m_copyErrors.insert( job->errorString() );
     m_copying.release( 1 ); // wakeup run()
 }
 
@@ -372,8 +378,8 @@ IpodCopyTracksJob::slotDisplaySorryDialog()
     int copyingFailedCount = m_sourceTrackStatus.count( CopyingFailed );
     if( copyingFailedCount )
     {
-        details += i18np( "One file could not be copied.<br>",
-                          "%1 files could not be copied.<br>", copyingFailedCount );
+        details += i18np( "Copy/move/transcode of one file failed.<br>",
+                          "Copy/move/transcode of %1 files failed.<br>", copyingFailedCount );
     }
     int internalErrorCount = m_sourceTrackStatus.count( InternalError );
     if( internalErrorCount )
@@ -387,6 +393,11 @@ IpodCopyTracksJob::slotDisplaySorryDialog()
     {
         // aborted case was already caught in run()
         details += i18n( "The rest was not transferred because iPod collection disappeared.<br>" );
+    }
+    if( !m_copyErrors.isEmpty() )
+    {
+        details += i18nc( "%1 is a list of errors that occurred during copying of tracks",
+                          "Error causes: %1<br>", QStringList( m_copyErrors.toList() ).join( "<br>" ) );
     }
     KMessageBox::detailedSorry( 0, text, details, caption );
 }

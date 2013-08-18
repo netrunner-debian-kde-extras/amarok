@@ -17,11 +17,12 @@
 #ifndef AMAROK_META_PLAYLIST_H
 #define AMAROK_META_PLAYLIST_H
 
-#include "amarok_export.h"
-#include "core/meta/Meta.h"
+#include "core/amarokcore_export.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QList>
 #include <QMetaType>
+#include <QMutex>
 #include <QPixmap>
 #include <QSet>
 #include <QSharedData>
@@ -50,6 +51,10 @@ namespace Playlists
         PodcastChannelPlaylist
     };
 
+    /**
+     * Subclass this class in order to be able to watch playlists as their metadata and
+     * track list changes.
+     */
     class AMAROK_CORE_EXPORT PlaylistObserver
     {
         public:
@@ -76,26 +81,46 @@ namespace Playlists
              * This method is called when playlist metadata (such as title) has changed.
              * This isn't called when just a list of tracks changes.
              *
+             * @param playlist playlist whose metadata were changed
+             *
              * @note this method may get called from non-main thread and must be
              * implemented in a thread-safe manner
              */
-            virtual void metadataChanged( PlaylistPtr playlist ) = 0;
+            virtual void metadataChanged( PlaylistPtr playlist );
 
             /**
              * This method is called when a track has been added to the playlist.
              *
-             * @note this method may get called from non-main thread and must be
-             * implemented in a thread-safe manner
-             */
-            virtual void trackAdded( PlaylistPtr playlist, Meta::TrackPtr track, int position ) = 0;
-
-            /**
-             * This method is called after a track is removed from to the playlist.
+             * @param playlist playlist whose track list was changed
+             * @param track track that was added
+             * @param position position where the track was inserted to, beginning from 0
              *
              * @note this method may get called from non-main thread and must be
              * implemented in a thread-safe manner
              */
-            virtual void trackRemoved( PlaylistPtr playlist, int position ) = 0;
+            virtual void trackAdded( PlaylistPtr playlist, Meta::TrackPtr track, int position );
+
+            /**
+             * This method is called after a track is removed from to the playlist.
+             *
+             * @param playlist playlist whose track list was changed
+             * @param position position occupied by the track right before it was removed
+             *
+             * @note this method may get called from non-main thread and must be
+             * implemented in a thread-safe manner
+             */
+            virtual void trackRemoved( PlaylistPtr playlist, int position );
+
+            /**
+             * This method is called after loading of playlist is finished
+             * (which was started by triggerTrackLoad()) and all tracks are already added.
+             *
+             * @param playlist playlist loading of which has finished
+             *
+             * @note this method may get called from non-main thread and must be
+             * implemented in a thread-safe manner
+             */
+            virtual void tracksLoaded( PlaylistPtr playlist );
 
         private:
             QSet<PlaylistPtr> m_playlistSubscriptions;
@@ -116,25 +141,28 @@ namespace Playlists
 
             virtual QString name() const = 0;
             virtual QString prettyName() const { return name(); }
-            virtual QString description() const { return QString(); }
 
             virtual PlaylistProvider *provider() const { return 0; }
 
-            /**override showing just the filename */
-            virtual void setName( const QString &name ) { Q_UNUSED( name ); }
+            virtual void setName( const QString &name );
 
             /**
-             * @returns the number of tracks this playlist contains. -1 if this can not
-             * be determined before loading them all.
-             *
-             * Default implementation returns -1.
+             * Returns the number of tracks this playlist contains. -1 if tracks are not
+             * yet loaded (call triggerTrackLoad() in this case). If you get non-negative
+             * number, all tracks have been already loaded.
              */
-            virtual int trackCount() const { return -1; }
+            virtual int trackCount() const = 0;
 
             /**
              * Returns loaded tracks in this playlist. Note that the list may be incomplete,
-             * to be sure, you have to become playlist observer, watch for trackAdded()
-             * methods and call triggerTrackLoad()
+             * to be sure, check that trackCount() is non-negative. Otherwise you have to
+             * become playlist observer, watch for trackAdded() methods and call
+             * triggerTrackLoad(). If you want to immediately play or
+             * extract metadata of the tracks, be aware that many playlist implementations
+             * initially return MetaProxy::Tracks that are resolved asynchronously.
+             *
+             * Convenient way to overcome the first and optionally the second
+             * inconvenience is to use TrackLoader helper class.
              */
             virtual Meta::TrackList tracks() = 0;
 
@@ -143,74 +171,92 @@ namespace Playlists
              * and metadataChanged() will be called as appropriate. This may even change
              * playlist metadata;
              *
-             * Implementators, you should start a background job in this method to
+             * Implementors, you should start a background job in this method to
              * actually load tracks, calling notifyObservers[Something]Added/Changed()
-             * as appropriate. You should also use MetaProxy::Track as a second-level
-             * lazy-loading so that you can return more quickly.
+             * as appropriate.
+             * It is guaranteed that tracksLoaded() observer method will be called
+             * exactly once, either sooner (before returning from this method) or
+             * later (asynchronously perhaps from a different thread).
              *
-             * Default implementation does nothing.
+             * Implementors should also use MetaProxy::Track as a second-level
+             * lazy-loading.
+             *
+             * Default implementation just calls notifyObserversTracksLoaded().
              */
             virtual void triggerTrackLoad();
 
-            /** Add the track to a certain position in the playlist
-             *  @arg position: place to add this track. The default value -1 appends to
-             *  the end.
+            /**
+             * Add the track to a certain position in the playlist
+             *
+             * @param position place to add this track. The default value -1 appends to
+             *                 the end.
+             *
              * @note if the position is larger then the size of the playlist append to the
              * end without generating an error.
              */
-            virtual void addTrack( Meta::TrackPtr track, int position = -1 )
-                    { Q_UNUSED(track); Q_UNUSED(position); }
-            /** Remove track at the specified position */
-            virtual void removeTrack( int position ) { Q_UNUSED(position); }
+            virtual void addTrack( Meta::TrackPtr track, int position = -1 );
 
-            /** Sync track status between two tracks. This is only
+            /**
+             * Remove track at the specified position
+             */
+            virtual void removeTrack( int position );
+
+            /**
+             * Sync track status between two tracks. This is only
              * useful for podcasts providers and some other exotic
-             * playlists providers.
+             * playlist providers.
              */
-            virtual void syncTrackStatus( int position, Meta::TrackPtr otherTrack )
-                    { Q_UNUSED(position); Q_UNUSED(otherTrack); }
-
-            /**
-             * Return user-activable actions for this playlist. Default implementation
-             * just returns provider actions for this playlist.
-             */
-            virtual QActionList actions();
-
-            /**
-             * Return actions for track at position @trackIndex fot this playlist. Default
-             * implementation returns provider()'s trackActions().
-             */
-            virtual QActionList trackActions( int trackIndex );
+            virtual void syncTrackStatus( int position, Meta::TrackPtr otherTrack );
 
             /**
              * A list of groups or labels this playlist belongs to.
              *
              * Can be used for grouping in folders (use ex. '/' as separator) or for
-             * labels.
+             * labels. Default implementation returns empty list.
              */
-            virtual QStringList groups() { return QStringList(); }
+            virtual QStringList groups();
 
             /**
              * Labels the playlist as part of a group.
              *
-             * In a folder-like hierachy this means adding the playlist to the folder with
+             * In a folder-like hierarchy this means adding the playlist to the folder with
              * name groups.first(). If groups is empty that means removing all groups from
-             * the playlist.
+             * the playlist. Default implementation does nothing.
              */
-            virtual void setGroups( const QStringList &groups ) { Q_UNUSED(groups) }
+            virtual void setGroups( const QStringList &groups );
+
+            // FIXME: two methods below are a temporary solution
+            // and should be removed after support of async loading will
+            // added everywhere
+            /**
+             * Call this method to assure synchronously loading.
+             * @note not all playlist implemetations support asynchronous loading
+             */
+            KDE_DEPRECATED void makeLoadingSync() { m_async = false; }
+            /**
+             * Allows to check if asynchronously loading is deactivated
+             */
+            bool isLoadingAsync() const { return m_async; }
 
         protected:
             /**
              * Implementations must call this when metadata such as title has changed. Do
              * not call this when just a list of track changes.
              *
-             * @param position is the actual new position of the added track, never negative
              * @note calling this from (code called by) Playlist constructor is FORBIDDEN.
              *
-             * TODO: find all occurences where this should be called in Playlist subclasses
+             * TODO: find all occurrences where this should be called in Playlist subclasses
              * and add the call!
              */
             void notifyObserversMetadataChanged();
+
+            /**
+             * Implementations must call this when playlist loading started
+             * by trriggerTrackLoad() is finished and all tracks are added.
+             *
+             * @note calling this from (code called by) Playlist constructor is FORBIDDEN.
+             */
+            void notifyObserversTracksLoaded();
 
             /**
              * Implementations must call this when a track is added to playlist
@@ -234,7 +280,14 @@ namespace Playlists
             void unsubscribe( PlaylistObserver *observer );
 
             QSet<PlaylistObserver *> m_observers;
-            QReadWriteLock m_observersLock; // guards access to m_observers
+            /**
+             * Guards access to m_observers. It would seem that QReadWriteLock would be
+             * more efficient, but when it is locked for read, it cannot be relocked for
+             * write, even if it is recursive. This can cause deadlocks, so it would be
+             * never safe to lock it just for read.
+             */
+            QMutex m_observersMutex;
+            bool m_async;
     };
 }
 

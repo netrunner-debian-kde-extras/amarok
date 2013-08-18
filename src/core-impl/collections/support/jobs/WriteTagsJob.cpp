@@ -19,6 +19,7 @@
 #include "amarokconfig.h"
 #include "MetaTagLib.h"
 
+#include <QImage>
 
 WriteTagsJob::WriteTagsJob(const QString& path, const Meta::FieldHash& changes)
     : Job()
@@ -29,7 +30,10 @@ WriteTagsJob::WriteTagsJob(const QString& path, const Meta::FieldHash& changes)
 
 void WriteTagsJob::run()
 {
-    Meta::Tag::writeTags( m_path, m_changes );
+    if( !AmarokConfig::writeBack() )
+        return;
+
+    Meta::Tag::writeTags( m_path, m_changes, AmarokConfig::writeBackStatistics() );
 
     if( m_changes.contains( Meta::valImage ) && AmarokConfig::writeBackCover() )
         Meta::Tag::setEmbeddedCover( m_path, m_changes.value( Meta::valImage ).value<QImage>() );

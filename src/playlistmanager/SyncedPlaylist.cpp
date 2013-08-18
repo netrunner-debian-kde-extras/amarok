@@ -17,6 +17,7 @@
 
 #include "SyncedPlaylist.h"
 
+#include "core/meta/Meta.h"
 #include "core/playlists/PlaylistProvider.h"
 #include "core/support/Debug.h"
 
@@ -49,20 +50,6 @@ SyncedPlaylist::prettyName() const
     if( isEmpty() )
         return i18n( "<Empty>" );
     return m_playlists.first()->prettyName();
-}
-
-QString
-SyncedPlaylist::description() const
-{
-    if( isEmpty() )
-        return i18n( "<Empty>" );
-    QStringList providerNames;
-    foreach( const Playlists::PlaylistPtr playlist, m_playlists )
-    {
-        if( playlist && playlist->provider() )
-            providerNames << playlist->provider()->prettyName();
-    }
-    return i18n( "Synchronized on: %1", providerNames.join( ", " ) );
 }
 
 Playlists::PlaylistProvider*
@@ -103,24 +90,6 @@ SyncedPlaylist::removeTrack( int position )
     m_playlists.first()->removeTrack( position );
 }
 
-QActionList
-SyncedPlaylist::actions()
-{
-    QActionList actions;
-    //only add actions from the master playlist
-    actions << playlists().first()->actions();
-    return actions;
-}
-
-QActionList
-SyncedPlaylist::trackActions( int trackIndex )
-{
-    QActionList actions;
-    //only add actions from the master playlist
-    actions << playlists().first()->trackActions( trackIndex );
-    return actions;
-}
-
 void
 SyncedPlaylist::metadataChanged( Playlists::PlaylistPtr playlist )
 {
@@ -129,6 +98,16 @@ SyncedPlaylist::metadataChanged( Playlists::PlaylistPtr playlist )
 
     // we pass on every subplaylist change because our description changes
     notifyObserversMetadataChanged();
+}
+
+void
+SyncedPlaylist::tracksLoaded( Playlists::PlaylistPtr playlist )
+{
+    if( !m_playlists.contains( playlist ) )
+        return;
+
+    // TODO: me may give more thought to this and emit tracksLoaded() only when all subplaylists load
+    notifyObserversTracksLoaded();
 }
 
 void

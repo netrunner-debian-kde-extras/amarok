@@ -1,5 +1,5 @@
 /****************************************************************************************
- * Copyright (c) 2011 Sven Krohlas <sven@getamarok.com>                                 *
+ * Copyright (c) 2011 Sven Krohlas <sven@asbest-online.de>                              *
  * Copyright (c) 2007 Alexandre Pereira de Oliveira <aleprj@gmail.com>                  *
  * Copyright (c) 2007 Ian Monroe <ian@monroe.nu>                                        *
  *                                                                                      *
@@ -47,8 +47,6 @@ protected:
 
     // Reimplemented from QTreeView
     virtual void mouseDoubleClickEvent( QMouseEvent *event );
-    virtual void mouseMoveEvent( QMouseEvent *event );
-    virtual void mousePressEvent( QMouseEvent *event );
     virtual void mouseReleaseEvent( QMouseEvent *event );
 
 protected slots:

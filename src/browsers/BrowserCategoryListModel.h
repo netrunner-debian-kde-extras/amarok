@@ -27,11 +27,7 @@ Q_DECLARE_METATYPE( BrowserCategory * )
 namespace CustomCategoryRoles
 {
     enum CustomCategoryRolesId {
-        ShortDescriptionRole = Qt::UserRole + 1,
-        LongDescriptionRole = Qt::UserRole + 2,
-        CategoryRole = Qt::UserRole + 3,
-        AlternateRowRole = Qt::UserRole + 4,
-        SortRole = Qt::UserRole + 5
+        CategoryRole = Qt::UserRole + 31,
     };
 }
 

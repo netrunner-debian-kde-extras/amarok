@@ -74,7 +74,7 @@ ScriptManager::ScriptManager( QObject* parent )
     s_instance = this;
 
     // Delay this call via eventloop, because it's a bit slow and would block
-    QTimer::singleShot( 0, this, SLOT( updateAllScripts() ) );
+    QTimer::singleShot( 0, this, SLOT(updateAllScripts()) );
 }
 
 ScriptManager::~ScriptManager()
@@ -250,6 +250,7 @@ ScriptManager::slotRunScript( const QString &name, bool silent )
     startScriptEngine( name );
     QFile scriptFile( url.path() );
     scriptFile.open( QIODevice::ReadOnly );
+    item->info.setPluginEnabled( true );
     item->running = true;
     item->evaluating = true;
     if( item->info.category() == "Lyrics" )
@@ -301,8 +302,7 @@ void ScriptManager::handleException(const QScriptValue& value)
     if (!engine)
         return;
 
-    Amarok::Components::logger()->longMessage( i18n( "Script error reported by: %1\n%2" )
-            .arg( scriptNameForEngine( engine ), value.toString() ), Amarok::Logger::Error );
+    Amarok::Components::logger()->longMessage( i18n( "Script error reported by: %1\n%2", scriptNameForEngine( engine ), value.toString() ), Amarok::Logger::Error );
 }
 
 void
@@ -311,6 +311,7 @@ ScriptManager::slotStopScript( const QString &name )
     DEBUG_BLOCK
 
     ScriptItem *item = m_scripts.value( name );
+    item->servicePtr = 0;
     if( !item->engine ) {
         warning() << "Script has no script engine attached:" << name;
         return;
@@ -340,17 +341,20 @@ void
 ScriptManager::ServiceScriptPopulate( const QString &name, int level, int parent_id,
                                       const QString &path, const QString &filter )
 {
-    m_scripts.value( name )->servicePtr->slotPopulate( name, level, parent_id, path, filter );
+    if( m_scripts.value( name )->servicePtr )
+        m_scripts.value( name )->servicePtr->slotPopulate( name, level, parent_id, path, filter );
 }
 
 void ScriptManager::ServiceScriptCustomize( const QString &name )
 {
-    m_scripts.value( name )->servicePtr->slotCustomize( name );
+    if( m_scripts.value( name )->servicePtr )
+        m_scripts.value( name )->servicePtr->slotCustomize( name );
 }
 
 void ScriptManager::ServiceScriptRequestInfo( const QString &name, int level, const QString &callbackString )
 {
-    m_scripts.value( name )->servicePtr->slotRequestInfo( name, level, callbackString );
+    if( m_scripts.value( name )->servicePtr )
+        m_scripts.value( name )->servicePtr->slotRequestInfo( name, level, callbackString );
 }
 
 void
@@ -428,8 +432,10 @@ ScriptManager::loadScript( const QString& path )
     const QString pluginName = pluginInfo.pluginName();
     const QString category   = pluginInfo.category();
     const QString version    = pluginInfo.version();
+    const QStringList dependencies = pluginInfo.dependencies();
 
-    if( pluginName.isEmpty() || category.isEmpty() || version.isEmpty() )
+    if( pluginName.isEmpty() || category.isEmpty() || version.isEmpty()
+        || dependencies.isEmpty() )
     {
         error() << "PluginInfo has empty values for" << specPath;
         return false;

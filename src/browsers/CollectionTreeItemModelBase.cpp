@@ -25,13 +25,14 @@
 #include "SvgHandler.h"
 #include "amarokconfig.h"
 #include "browsers/CollectionTreeItem.h"
-#include "core/capabilities/EditCapability.h"
 #include "core/collections/Collection.h"
 #include "core/collections/QueryMaker.h"
+#include "core/meta/TrackEditor.h"
 #include "core/meta/support/MetaConstants.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/TextualQueryFilter.h"
+#include "widgets/PrettyTreeRoles.h"
 
 #include <KGlobalSettings>
 #include <KIcon>
@@ -39,23 +40,30 @@
 #include <KLocale>
 #include <KStandardDirs>
 
-#include <QFontMetrics>
+#include <QApplication>
+#include <QStyle>
 #include <QPixmap>
 #include <QTimeLine>
 #include <QTimer>
 
 using namespace Meta;
 
+
 inline uint qHash( const Meta::DataPtr &data )
 {
     return qHash( data.data() );
 }
 
+/**
+ * This set determines which collection browser levels should have shown Various Artists
+ * item under them. AlbumArtist is certain, (Track)Artist is questionable.
+ */
+static const QSet<CategoryId::CatMenuId> variousArtistCategories =
+        QSet<CategoryId::CatMenuId>() << CategoryId::AlbumArtist;
 
 CollectionTreeItemModelBase::CollectionTreeItemModelBase( )
     : QAbstractItemModel()
     , m_rootItem( 0 )
-    , d( new Private )
     , m_animFrame( 0 )
     , m_loading1( QPixmap( KStandardDirs::locate("data", "amarok/images/loading1.png" ) ) )
     , m_loading2( QPixmap( KStandardDirs::locate("data", "amarok/images/loading2.png" ) ) )
@@ -64,15 +72,19 @@ CollectionTreeItemModelBase::CollectionTreeItemModelBase( )
     m_timeLine = new QTimeLine( 10000, this );
     m_timeLine->setFrameRange( 0, 20 );
     m_timeLine->setLoopCount ( 0 );
-    updateRowHeight();
-    connect( m_timeLine, SIGNAL( frameChanged( int ) ), this, SLOT( loadingAnimationTick() ) );
-    connect( KGlobalSettings::self(), SIGNAL(kdisplayFontChanged()), SLOT(updateRowHeight()) );
+    connect( m_timeLine, SIGNAL(frameChanged(int)), this, SLOT(loadingAnimationTick()) );
 }
 
 CollectionTreeItemModelBase::~CollectionTreeItemModelBase()
 {
-    delete m_rootItem;
-    delete d;
+    KConfigGroup config = Amarok::config( "Collection Browser" );
+    QList<int> levelNumbers;
+    foreach( CategoryId::CatMenuId category, levels() )
+        levelNumbers.append( category );
+    config.writeEntry( "TreeCategory", levelNumbers );
+
+    if( m_rootItem )
+        m_rootItem->deleteLater();
 }
 
 Qt::ItemFlags CollectionTreeItemModelBase::flags(const QModelIndex & index) const
@@ -99,14 +111,11 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
 
     if( Meta::TrackPtr track = Meta::TrackPtr::dynamicCast( data ) )
     {
-        if( !track->has<Capabilities::EditCapability>() )
-            return false;
-        Capabilities::EditCapability *ec = track->create<Capabilities::EditCapability>();
+        Meta::TrackEditorPtr ec = track->editor();
         if( ec )
         {
             ec->setTitle( value.toString() );
             emit dataChanged( index, index );
-            delete ec;
             return true;
         }
     }
@@ -117,7 +126,7 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
         {
             foreach( Meta::TrackPtr track, tracks )
             {
-                QScopedPointer<Capabilities::EditCapability> ec( track->create<Capabilities::EditCapability>() );
+                Meta::TrackEditorPtr ec = track->editor();
                 if( ec )
                     ec->setAlbum( value.toString() );
             }
@@ -132,10 +141,9 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
         {
             foreach( Meta::TrackPtr track, tracks )
             {
-                Capabilities::EditCapability *ec = track->create<Capabilities::EditCapability>();
+                Meta::TrackEditorPtr ec = track->editor();
                 if( ec )
                     ec->setArtist( value.toString() );
-                delete ec;
             }
             emit dataChanged( index, index );
             return true;
@@ -148,10 +156,9 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
         {
             foreach( Meta::TrackPtr track, tracks )
             {
-                Capabilities::EditCapability *ec = track->create<Capabilities::EditCapability>();
+                Meta::TrackEditorPtr ec = track->editor();
                 if( ec )
                     ec->setGenre( value.toString() );
-                delete ec;
             }
             emit dataChanged( index, index );
             return true;
@@ -164,10 +171,9 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
         {
             foreach( Meta::TrackPtr track, tracks )
             {
-                Capabilities::EditCapability *ec = track->create<Capabilities::EditCapability>();
+                Meta::TrackEditorPtr ec = track->editor();
                 if( ec )
                     ec->setYear( value.toInt() );
-                delete ec;
             }
             emit dataChanged( index, index );
             return true;
@@ -180,10 +186,9 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
         {
             foreach( Meta::TrackPtr track, tracks )
             {
-                Capabilities::EditCapability *ec = track->create<Capabilities::EditCapability>();
+                Meta::TrackEditorPtr ec = track->editor();
                 if( ec )
                     ec->setComposer( value.toString() );
-                delete ec;
             }
             emit dataChanged( index, index );
             return true;
@@ -195,18 +200,6 @@ CollectionTreeItemModelBase::setData( const QModelIndex &index, const QVariant &
 QVariant
 CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, int level ) const
 {
-    // -- do the decoration and the size hint role
-    if( role == Qt::SizeHintRole )
-    {
-        QSize size( 1, d->rowHeight );
-        if( item->isAlbumItem() && AmarokConfig::showAlbumArt() )
-        {
-            if( d->rowHeight < 34 )
-                size.setHeight( 34 );
-        }
-        return size;
-    }
-
     if( level == -1 )
         level = item->level();
 
@@ -217,7 +210,7 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
         {
         case Qt::DisplayRole:
         case Qt::ToolTipRole:
-        case CustomRoles::FilterRole:
+        case PrettyTreeRoles::FilterRole:
             {
                 QString name = track->prettyName();
                 Meta::AlbumPtr album = track->album();
@@ -241,7 +234,7 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
 
         case Qt::DecorationRole:
             return KIcon( "media-album-track" );
-        case CustomRoles::SortRole:
+        case PrettyTreeRoles::SortRole:
             return track->sortableName();
         }
     }
@@ -270,12 +263,20 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
 
         case Qt::DecorationRole:
             if( AmarokConfig::showAlbumArt() )
-                return The::svgHandler()->imageWithBorder( album, 32, 2 );
+            {
+                QStyle *style = QApplication::style();
+                const int largeIconSize = style->pixelMetric( QStyle::PM_LargeIconSize );
+
+                return The::svgHandler()->imageWithBorder( album, largeIconSize, 2 );
+            }
             else
                 return iconForLevel( level );
 
-        case CustomRoles::SortRole:
+        case PrettyTreeRoles::SortRole:
             return album->sortableName();
+
+        case PrettyTreeRoles::HasCoverRole:
+            return AmarokConfig::showAlbumArt();
         }
     }
     else if( item->isDataItem() )
@@ -284,7 +285,7 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
         {
         case Qt::DisplayRole:
         case Qt::ToolTipRole:
-        case CustomRoles::FilterRole:
+        case PrettyTreeRoles::FilterRole:
             {
                 QString name = item->data()->prettyName();
                 if( name.isEmpty() )
@@ -294,7 +295,7 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
 
         case Qt::DecorationRole:
             {
-                if( d->childQueries.values().contains( item ) )
+                if( m_childQueries.values().contains( item ) )
                 {
                     if( level < m_levelType.count() )
                         return m_currentAnimPixmap;
@@ -302,7 +303,7 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
                 return iconForLevel( level );
             }
 
-        case CustomRoles::SortRole:
+        case PrettyTreeRoles::SortRole:
             return item->data()->sortableName();
         }
     }
@@ -314,7 +315,7 @@ CollectionTreeItemModelBase::dataForItem( CollectionTreeItem *item, int role, in
             return KIcon( "similarartists-amarok" );
         case Qt::DisplayRole:
             return i18n( "Various Artists" );
-        case CustomRoles::SortRole:
+        case PrettyTreeRoles::SortRole:
             return QString(); // so that we can compare it against other strings
         }
     }
@@ -434,7 +435,7 @@ CollectionTreeItemModelBase::mimeData( const QModelIndexList &indices ) const
 }
 
 QMimeData*
-CollectionTreeItemModelBase::mimeData(const QList<CollectionTreeItem*> & items) const
+CollectionTreeItemModelBase::mimeData( const QList<CollectionTreeItem*> &items ) const
 {
     if ( items.isEmpty() )
         return 0;
@@ -482,34 +483,9 @@ void
 CollectionTreeItemModelBase::ensureChildrenLoaded( CollectionTreeItem *item )
 {
     //only start a query if necessary and we are not querying for the item's children already
-    if ( item->requiresUpdate() && !d->runningQueries.contains( item ) )
+    if ( item->requiresUpdate() && !m_runningQueries.contains( item ) )
     {
         listForLevel( item->level() + levelModifier(), item->queryMaker(), item );
-    }
-}
-
-QIcon
-CollectionTreeItemModelBase::iconForLevel(int level) const
-{
-    switch( m_levelType[level] )
-    {
-        case CategoryId::Album :
-            return KIcon( "media-optical-amarok" );
-        case CategoryId::Artist :
-            return KIcon( "view-media-artist-amarok" );
-        case CategoryId::AlbumArtist :
-            return KIcon( "amarok_artist" );
-        case CategoryId::Composer :
-            return KIcon( "filename-composer-amarok" );
-        case CategoryId::Genre :
-            return KIcon( "favorite-genres-amarok" );
-        case CategoryId::Year :
-            return KIcon( "clock" );
-        case CategoryId::Label :
-            return KIcon( "label-amarok" );
-        case CategoryId::None :
-        default:
-            return KIcon( "image-missing" );
     }
 }
 
@@ -518,10 +494,10 @@ void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMake
     if( qm && parent )
     {
         // this check should not hurt anyone... needs to check if single... needs it
-        if( d->runningQueries.contains( parent ) )
+        if( m_runningQueries.contains( parent ) )
             return;
 
-        // - check if we are finished
+        // following special cases are handled extra - right when the parent is added
         if( level > m_levelType.count() ||
             parent->isVariousArtistItem() ||
             parent->isNoLabelItem() )
@@ -541,55 +517,53 @@ void CollectionTreeItemModelBase::listForLevel(int level, Collections::QueryMake
             if( level + 1 >= m_levelType.count() )
                 nextLevel = Collections::QueryMaker::Track;
             else
-                nextLevel = mapCategoryToQueryType( m_levelType [ level + 1 ] );
+                nextLevel = mapCategoryToQueryType( m_levelType.value( level + 1 ) );
 
-            qm->setQueryType( mapCategoryToQueryType( m_levelType[ level ] ) );
+            qm->setQueryType( mapCategoryToQueryType( m_levelType.value( level ) ) );
 
-            switch( m_levelType[level] )
+            CategoryId::CatMenuId category = m_levelType.value( level );
+            if( category == CategoryId::Album )
             {
-                case CategoryId::Album :
-                    //restrict query to normal albums if the previous level
-                    //was the artist category. in that case we handle compilations below
-                    if( level > 0 &&
-                        ( m_levelType[level-1] == CategoryId::Artist ||
-                          m_levelType[level-1] == CategoryId::AlbumArtist
-                        ) &&
-                        !parent->isVariousArtistItem() )
-                    {
-                        qm->setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
-                    }
-                    break;
-
-                case CategoryId::Artist :
-                case CategoryId::AlbumArtist:
-                    //handle compilations only if the next level ist CategoryId::Album
-                    if( nextLevel == Collections::QueryMaker::Album )
-                    {
-                        handleCompilations( parent );
-                        qm->setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
-                    }
-                    break;
-
-                case CategoryId::Label:
-                    handleTracksWithoutLabels( nextLevel, parent );
-                    break;
-
-                default : //TODO handle error condition. return tracks?
-                    break;
+                // restrict query to normal albums if the previous level
+                // was the AlbumArtist category. In that case we handle compilations below
+                if( levelCategory( level - 1 ) == CategoryId::AlbumArtist )
+                    qm->setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
             }
+            else if( variousArtistCategories.contains( category ) )
+                // we used to handleCompilations() only if nextLevel is Album, but I cannot
+                // tell any reason why we should have done this --- strohel
+                handleCompilations( nextLevel, parent );
+            else if( category == CategoryId::Label )
+                handleTracksWithoutLabels( nextLevel, parent );
         }
 
         for( CollectionTreeItem *tmp = parent; tmp; tmp = tmp->parent() )
             tmp->addMatch( qm, levelCategory( tmp->level() - 1 ) );
         Collections::addTextualFilter( qm, m_currentFilter );
         addQueryMaker( parent, qm );
-        d->childQueries.insert( qm, parent );
+        m_childQueries.insert( qm, parent );
         qm->run();
 
         //some very quick queries may be done so fast that the loading
         //animation creates an unnecessary flicker, therefore delay it for a bit
-        QTimer::singleShot( 150, this, SLOT( startAnimationTick() ) );
+        QTimer::singleShot( 150, this, SLOT(startAnimationTick()) );
     }
+}
+
+void
+CollectionTreeItemModelBase::setLevels( const QList<CategoryId::CatMenuId> &levelType )
+{
+    if( m_levelType == levelType )
+        return;
+
+    m_levelType = levelType;
+    updateHeaderText();
+    m_expandedItems.clear();
+    m_expandedSpecialNodes.clear();
+    m_runningQueries.clear();
+    m_childQueries.clear();
+    m_compilationQueries.clear();
+    filterChildren();
 }
 
 Collections::QueryMaker::QueryType
@@ -631,18 +605,17 @@ void
 CollectionTreeItemModelBase::addQueryMaker( CollectionTreeItem* item,
                                             Collections::QueryMaker *qm ) const
 {
-    connect( qm, SIGNAL( newResultReady( Meta::TrackList ) ), SLOT( newResultReady( Meta::TrackList ) ), Qt::QueuedConnection );
-    connect( qm, SIGNAL( newResultReady( Meta::ArtistList ) ), SLOT( newResultReady( Meta::ArtistList ) ), Qt::QueuedConnection );
-    connect( qm, SIGNAL( newResultReady( Meta::AlbumList ) ), SLOT( newResultReady( Meta::AlbumList ) ), Qt::QueuedConnection );
-    connect( qm, SIGNAL( newResultReady( Meta::GenreList ) ), SLOT( newResultReady( Meta::GenreList ) ), Qt::QueuedConnection );
-    connect( qm, SIGNAL( newResultReady( Meta::ComposerList ) ), SLOT( newResultReady( Meta::ComposerList ) ), Qt::QueuedConnection );
-    connect( qm, SIGNAL( newResultReady( Meta::YearList ) ), SLOT( newResultReady( Meta::YearList ) ), Qt::QueuedConnection );
-    connect( qm, SIGNAL( newResultReady( Meta::LabelList ) ), SLOT( newResultReady( Meta::LabelList ) ), Qt::QueuedConnection );
-    connect( qm, SIGNAL( newResultReady( Meta::DataList ) ), SLOT( newResultReady( Meta::DataList ) ), Qt::QueuedConnection );
-    connect( qm, SIGNAL( queryDone() ), SLOT( queryDone() ), Qt::QueuedConnection );
-    d->runningQueries.insert( item, qm );
+    connect( qm, SIGNAL(newResultReady(Meta::TrackList)), SLOT(newResultReady(Meta::TrackList)), Qt::QueuedConnection );
+    connect( qm, SIGNAL(newResultReady(Meta::ArtistList)), SLOT(newResultReady(Meta::ArtistList)), Qt::QueuedConnection );
+    connect( qm, SIGNAL(newResultReady(Meta::AlbumList)), SLOT(newResultReady(Meta::AlbumList)), Qt::QueuedConnection );
+    connect( qm, SIGNAL(newResultReady(Meta::GenreList)), SLOT(newResultReady(Meta::GenreList)), Qt::QueuedConnection );
+    connect( qm, SIGNAL(newResultReady(Meta::ComposerList)), SLOT(newResultReady(Meta::ComposerList)), Qt::QueuedConnection );
+    connect( qm, SIGNAL(newResultReady(Meta::YearList)), SLOT(newResultReady(Meta::YearList)), Qt::QueuedConnection );
+    connect( qm, SIGNAL(newResultReady(Meta::LabelList)), SLOT(newResultReady(Meta::LabelList)), Qt::QueuedConnection );
+    connect( qm, SIGNAL(newResultReady(Meta::DataList)), SLOT(newResultReady(Meta::DataList)), Qt::QueuedConnection );
+    connect( qm, SIGNAL(queryDone()), SLOT(queryDone()), Qt::QueuedConnection );
+    m_runningQueries.insert( item, qm );
 }
-
 
 void
 CollectionTreeItemModelBase::queryDone()
@@ -652,15 +625,15 @@ CollectionTreeItemModelBase::queryDone()
         return;
 
     CollectionTreeItem* item = 0;
-    if( d->childQueries.contains( qm ) )
-        item = d->childQueries.take( qm );
-    else if( d->compilationQueries.contains( qm ) )
-        item = d->compilationQueries.take( qm );
-    else if( d->noLabelsQueries.contains( qm ) )
-        item = d->noLabelsQueries.take( qm );
+    if( m_childQueries.contains( qm ) )
+        item = m_childQueries.take( qm );
+    else if( m_compilationQueries.contains( qm ) )
+        item = m_compilationQueries.take( qm );
+    else if( m_noLabelsQueries.contains( qm ) )
+        item = m_noLabelsQueries.take( qm );
 
     if( item )
-        d->runningQueries.remove( item, qm );
+        m_runningQueries.remove( item, qm );
 
     //reset icon for this item
     if( item && item != m_rootItem )
@@ -669,7 +642,7 @@ CollectionTreeItemModelBase::queryDone()
     }
 
     //stop timer if there are no more animations active
-    if( d->runningQueries.isEmpty() )
+    if( m_runningQueries.isEmpty() )
     {
         emit allQueriesFinished();
         m_timeLine->stop();
@@ -742,28 +715,26 @@ CollectionTreeItemModelBase::newResultReady( Meta::DataList data )
     if( !qm )
         return;
 
-    if( d->childQueries.contains( qm ) )
+    if( m_childQueries.contains( qm ) )
         handleNormalQueryResult( qm, data );
 
-    else if( d->compilationQueries.contains( qm ) )
+    else if( m_compilationQueries.contains( qm ) )
         handleSpecialQueryResult( CollectionTreeItem::VariousArtist, qm, data );
 
-    else if( d->noLabelsQueries.contains( qm ) )
+    else if( m_noLabelsQueries.contains( qm ) )
         handleSpecialQueryResult( CollectionTreeItem::NoLabel, qm, data );
 }
 
 void
 CollectionTreeItemModelBase::handleSpecialQueryResult( CollectionTreeItem::Type type, Collections::QueryMaker *qm, const Meta::DataList &dataList )
 {
-    DEBUG_BLOCK
-    debug() << "Received special data: " << dataList.count();
     CollectionTreeItem *parent = 0;
 
     if( type == CollectionTreeItem::VariousArtist )
-        parent = d->compilationQueries.value( qm );
+        parent = m_compilationQueries.value( qm );
 
     else if( type == CollectionTreeItem::NoLabel )
-        parent = d->noLabelsQueries.value( qm );
+        parent = m_noLabelsQueries.value( qm );
 
     QModelIndex parentIndex;
     if( parent )
@@ -862,7 +833,7 @@ CollectionTreeItemModelBase::handleSpecialQueryResult( CollectionTreeItem::Type 
 void
 CollectionTreeItemModelBase::handleNormalQueryResult( Collections::QueryMaker *qm, const Meta::DataList &dataList )
 {
-    CollectionTreeItem *parent = d->childQueries.value( qm );
+    CollectionTreeItem *parent = m_childQueries.value( qm );
     QModelIndex parentIndex;
     if( parent ) {
         if( parent == m_rootItem ) // will never happen in CollectionTreeItemModel, but will happen in Single!
@@ -888,76 +859,81 @@ CollectionTreeItemModelBase::handleNormalQueryResult( Collections::QueryMaker *q
 }
 
 void
-CollectionTreeItemModelBase::populateChildren(const DataList & dataList, CollectionTreeItem * parent, const QModelIndex &parentIndex )
+CollectionTreeItemModelBase::populateChildren( const DataList &dataList, CollectionTreeItem *parent, const QModelIndex &parentIndex )
 {
-    //add new rows after existing ones here (which means all artists nodes
-    //will be inserted after the "Various Artists" node)
-    {
-        //figure out which children of parent have to be removed,
-        //which new children have to be added, and preemptively emit dataChanged for the rest
-        //have to check how that influences performance...
-        QHash<Meta::DataPtr, int> dataToIndex;
-        QSet<Meta::DataPtr> childrenSet;
-        foreach( CollectionTreeItem *child, parent->children() )
-        {
-            if( child->isVariousArtistItem() )
-                continue;
-            childrenSet.insert( child->data() );
-            dataToIndex.insert( child->data(), child->row() );
-        }
-        QSet<Meta::DataPtr> dataSet = dataList.toSet();
-        QSet<Meta::DataPtr> dataToBeAdded = dataSet - childrenSet;
-        QSet<Meta::DataPtr> dataToBeRemoved = childrenSet - dataSet;
+    CategoryId::CatMenuId childCategory = levelCategory( parent->level() );
 
-        QList<int> currentIndices;
-        //first remove all rows that have to be removed
-        //walking through the cildren in reverse order does not screw up the order
-        for( int i = parent->childCount() - 1; i >= 0; i-- )
-        {
-            CollectionTreeItem *child = parent->child( i );
-            bool toBeRemoved = child->isDataItem() && !child->isVariousArtistItem() && dataToBeRemoved.contains( child->data() ) ;
-            if( toBeRemoved )
-            {
-                currentIndices.append( i );
-            }
-            //make sure we remove the rows if the first row (we are using reverse order) has to be removed too!
-            if( ( !toBeRemoved || i == 0 ) && !currentIndices.isEmpty() )
-            {
-                //be careful in which order you insert the rows above!!
-                beginRemoveRows( parentIndex, currentIndices.last(), currentIndices.first() );
-                foreach( int i, currentIndices )
-                {
-                    parent->removeChild( i );
-                }
-                endRemoveRows();
-                currentIndices.clear();
-            }
-        }
-        //hopefully the view has figured out that we've removed rows yet!
-        int lastRow = parent->childCount() - 1;
-        if( lastRow >= 0 )
-        {
-            emit dataChanged( createIndex( 0, 0, parent->child( 0 ) ), createIndex( lastRow, 0, parent->child( lastRow ) ) );
-        }
-        //the remainging child items may be dirty, so refresh them
-        foreach( CollectionTreeItem *item, parent->children() )
-        {
-            if( item->isDataItem() && item->data() && m_expandedItems.contains( item->data() ) )
-                ensureChildrenLoaded( item );
-        }
-        //add the new rows
-        if( !dataToBeAdded.isEmpty() )
-        {
-            //the above check ensures that Qt does not crash on beginInsertRows ( because lastRow+1 > lastRow+0)
-            beginInsertRows( parentIndex, lastRow + 1, lastRow + dataToBeAdded.count() );
-            foreach( Meta::DataPtr data, dataToBeAdded )
-            {
-                new CollectionTreeItem( data, parent, this );
-            }
-            endInsertRows();
-        }
-        parent->setRequiresUpdate( false );
+    // add new rows after existing ones here (which means all artists nodes
+    // will be inserted after the "Various Artists" node)
+    // figure out which children of parent have to be removed,
+    // which new children have to be added, and preemptively emit dataChanged for the rest
+    // have to check how that influences performance...
+    const QSet<Meta::DataPtr> dataSet = dataList.toSet();
+    QSet<Meta::DataPtr> childrenSet;
+    foreach( CollectionTreeItem *child, parent->children() )
+    {
+        // we don't add null children, these are special-cased below
+        if( !child->data() )
+            continue;
+
+        childrenSet.insert( child->data() );
     }
+    const QSet<Meta::DataPtr> dataToBeAdded = dataSet - childrenSet;
+    const QSet<Meta::DataPtr> dataToBeRemoved = childrenSet - dataSet;
+
+    // first remove all rows that have to be removed
+    // walking through the cildren in reverse order does not screw up the order
+    for( int i = parent->childCount() - 1; i >= 0; i-- )
+    {
+        CollectionTreeItem *child = parent->child( i );
+
+        // should this child be removed?
+        bool toBeRemoved;
+
+        if( child->isDataItem() )
+            toBeRemoved = dataToBeRemoved.contains( child->data() );
+        else if( child->isVariousArtistItem() )
+            toBeRemoved = !variousArtistCategories.contains( childCategory );
+        else if( child->isNoLabelItem() )
+            toBeRemoved = childCategory != CategoryId::Label;
+        else
+        {
+            warning() << "Unknown child type encountered in populateChildren(), removing";
+            toBeRemoved = true;
+        }
+
+        if( toBeRemoved )
+        {
+            beginRemoveRows( parentIndex, i, i );
+            parent->removeChild( i );
+            endRemoveRows();
+        }
+        else
+        {
+            // the remainging child items may be dirty, so refresh them
+            if( child->isDataItem() && child->data() && m_expandedItems.contains( child->data() ) )
+                ensureChildrenLoaded( child );
+
+            // tell the view that the existing children may have changed
+            QModelIndex idx = index( i, 0, parentIndex );
+            emit dataChanged( idx, idx );
+        }
+    }
+
+    // add the new rows
+    if( !dataToBeAdded.isEmpty() )
+    {
+        int lastRow = parent->childCount() - 1;
+        //the above check ensures that Qt does not crash on beginInsertRows ( because lastRow+1 > lastRow+0)
+        beginInsertRows( parentIndex, lastRow + 1, lastRow + dataToBeAdded.count() );
+        foreach( Meta::DataPtr data, dataToBeAdded )
+        {
+            new CollectionTreeItem( data, parent, this );
+        }
+        endInsertRows();
+    }
+
+    parent->setRequiresUpdate( false );
 }
 
 void
@@ -970,45 +946,91 @@ CollectionTreeItemModelBase::updateHeaderText()
     m_headerText.chop( 3 );
 }
 
-QString
-CollectionTreeItemModelBase::nameForLevel(int level) const
+QIcon
+CollectionTreeItemModelBase::iconForCategory( CategoryId::CatMenuId category )
 {
-    switch( m_levelType[level] )
+    switch( category )
     {
-        case CategoryId::Album      : return AmarokConfig::showYears() ? i18n( "Year - Album" ) : i18n( "Album" );
-        case CategoryId::Artist     : return i18n( "Artist" );
-        case CategoryId::AlbumArtist: return i18n( "Album Artist" );
-        case CategoryId::Composer   : return i18n( "Composer" );
-        case CategoryId::Genre      : return i18n( "Genre" );
-        case CategoryId::Year       : return i18n( "Year" );
-        case CategoryId::Label      : return i18n( "Label" );
+        case CategoryId::Album :
+            return KIcon( "media-optical-amarok" );
+        case CategoryId::Artist :
+            return KIcon( "view-media-artist-amarok" );
+        case CategoryId::AlbumArtist :
+            return KIcon( "view-media-artist-amarok" );
+        case CategoryId::Composer :
+            return KIcon( "filename-composer-amarok" );
+        case CategoryId::Genre :
+            return KIcon( "favorite-genres-amarok" );
+        case CategoryId::Year :
+            return KIcon( "clock" );
+        case CategoryId::Label :
+            return KIcon( "label-amarok" );
+        case CategoryId::None:
+        default:
+            return KIcon( "image-missing" );
+    }
 
-        default: return QString();
+}
+
+QIcon
+CollectionTreeItemModelBase::iconForLevel( int level ) const
+{
+    return iconForCategory( m_levelType.value( level ) );
+}
+
+QString
+CollectionTreeItemModelBase::nameForCategory( CategoryId::CatMenuId category, bool showYears )
+{
+    switch( category )
+    {
+        case CategoryId::Album:
+            return showYears ? i18n( "Year - Album" ) : i18n( "Album" );
+        case CategoryId::Artist:
+            return i18n( "Track Artist" );
+        case CategoryId::AlbumArtist:
+            return i18n( "Album Artist" );
+        case CategoryId::Composer:
+            return i18n( "Composer" );
+        case CategoryId::Genre:
+            return i18n( "Genre" );
+        case CategoryId::Year:
+            return i18n( "Year" );
+        case CategoryId::Label:
+            return i18n( "Label" );
+        case CategoryId::None:
+            return i18n( "None" );
+        default:
+            return QString();
     }
 }
 
-void
-CollectionTreeItemModelBase::handleCompilations( CollectionTreeItem *parent ) const
+QString
+CollectionTreeItemModelBase::nameForLevel( int level ) const
 {
-    //this method will be called when we retrieve a list of artists from the database.
-    //we have to query for all compilations, and then add a "Various Artists" node if at least
-    //one compilation exists
+    return nameForCategory( m_levelType.value( level ), AmarokConfig::showYears() );
+}
+
+void
+CollectionTreeItemModelBase::handleCompilations( Collections::QueryMaker::QueryType queryType, CollectionTreeItem *parent ) const
+{
+    // this method will be called when we retrieve a list of artists from the database.
+    // we have to query for all compilations, and then add a "Various Artists" node if at least
+    // one compilation exists
     Collections::QueryMaker *qm = parent->queryMaker();
+    qm->setQueryType( queryType );
     qm->setAlbumQueryMode( Collections::QueryMaker::OnlyCompilations );
-    qm->setQueryType( Collections::QueryMaker::Album );
     for( CollectionTreeItem *tmp = parent; tmp; tmp = tmp->parent() )
         tmp->addMatch( qm, levelCategory( tmp->level() - 1 ) );
 
     Collections::addTextualFilter( qm, m_currentFilter );
     addQueryMaker( parent, qm );
-    d->compilationQueries.insert( qm, parent );
+    m_compilationQueries.insert( qm, parent );
     qm->run();
 }
 
 void
 CollectionTreeItemModelBase::handleTracksWithoutLabels( Collections::QueryMaker::QueryType queryType, CollectionTreeItem *parent ) const
 {
-    DEBUG_BLOCK
     Collections::QueryMaker *qm = parent->queryMaker();
     qm->setQueryType( queryType );
     qm->setLabelQueryMode( Collections::QueryMaker::OnlyWithoutLabels );
@@ -1017,7 +1039,7 @@ CollectionTreeItemModelBase::handleTracksWithoutLabels( Collections::QueryMaker:
 
     Collections::addTextualFilter( qm, m_currentFilter );
     addQueryMaker( parent, qm );
-    d->noLabelsQueries.insert( qm, parent );
+    m_noLabelsQueries.insert( qm, parent );
     qm->run();
 }
 
@@ -1025,7 +1047,7 @@ CollectionTreeItemModelBase::handleTracksWithoutLabels( Collections::QueryMaker:
 void CollectionTreeItemModelBase::startAnimationTick()
 {
     //start animation
-    if( ( m_timeLine->state() != QTimeLine::Running ) && !d->runningQueries.isEmpty() )
+    if( ( m_timeLine->state() != QTimeLine::Running ) && !m_runningQueries.isEmpty() )
         m_timeLine->start();
 }
 
@@ -1040,7 +1062,7 @@ void CollectionTreeItemModelBase::loadingAnimationTick()
 
     //trigger an update of all items being populated at the moment;
 
-    QList< CollectionTreeItem * > items = d->runningQueries.uniqueKeys();
+    QList< CollectionTreeItem * > items = m_runningQueries.uniqueKeys();
     foreach ( CollectionTreeItem* item, items  )
     {
         if( item == m_rootItem )
@@ -1064,7 +1086,7 @@ CollectionTreeItemModelBase::slotFilter()
     {
         foreach( Collections::Collection *expanded, m_expandedCollections )
         {
-            CollectionTreeItem *expandedItem = d->collections.value( expanded->collectionId() ).second;
+            CollectionTreeItem *expandedItem = m_collections.value( expanded->collectionId() ).second;
             if( expandedItem )
                 emit expandIndex( createIndex( expandedItem->row(), 0, expandedItem ) );
         }
@@ -1120,18 +1142,6 @@ CollectionTreeItemModelBase::slotExpanded( const QModelIndex &index )
     }
 }
 
-void CollectionTreeItemModelBase::update()
-{
-    reset();
-}
-
-void CollectionTreeItemModelBase::updateRowHeight()
-{
-    QFont font;
-    QFontMetrics fm( font );
-    d->rowHeight = fm.height() + 4;
-}
-
 void CollectionTreeItemModelBase::markSubTreeAsDirty( CollectionTreeItem *item )
 {
     //tracks are the leaves so they are never dirty
@@ -1149,15 +1159,15 @@ void CollectionTreeItemModelBase::itemAboutToBeDeleted( CollectionTreeItem *item
     foreach( CollectionTreeItem *child, item->children() )
         itemAboutToBeDeleted( child );
 
-    if( !d->runningQueries.contains( item ) )
+    if( !m_runningQueries.contains( item ) )
         return;
     // TODO: replace this hack with QWeakPointer now than we depend on Qt >= 4.8
-    foreach(Collections::QueryMaker *qm, d->runningQueries.values( item ))
+    foreach(Collections::QueryMaker *qm, m_runningQueries.values( item ))
     {
-        d->childQueries.remove( qm );
-        d->compilationQueries.remove( qm );
-        d->noLabelsQueries.remove( qm );
-        d->runningQueries.remove(item, qm);
+        m_childQueries.remove( qm );
+        m_compilationQueries.remove( qm );
+        m_noLabelsQueries.remove( qm );
+        m_runningQueries.remove(item, qm);
 
         //Disconnect all signals from the QueryMaker so we do not get notified about the results
         qm->disconnect();
@@ -1173,14 +1183,20 @@ CollectionTreeItemModelBase::setDragSourceCollections( const QSet<Collections::C
     m_dragSourceCollections = collections;
 }
 
+bool
+CollectionTreeItemModelBase::hasRunningQueries() const
+{
+    return !m_runningQueries.isEmpty();
+}
+
 CategoryId::CatMenuId
 CollectionTreeItemModelBase::levelCategory( const int level ) const
 {
-    if( level >= 0 && level + levelModifier() < m_levelType.count() )
-        return m_levelType[ level + levelModifier() ];
+    const int actualLevel = level + levelModifier();
+    if( actualLevel >= 0 && actualLevel < m_levelType.count() )
+        return m_levelType.at( actualLevel );
 
     return CategoryId::None;
 }
 
 #include "CollectionTreeItemModelBase.moc"
-

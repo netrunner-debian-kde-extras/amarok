@@ -14,6 +14,7 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#include "core/meta/Meta.h"
 #include "core/playlists/Playlist.h"
 #include "core/playlists/PlaylistProvider.h"
 
@@ -55,8 +56,25 @@ PlaylistObserver::unsubscribeFrom( PlaylistPtr playlist )
     }
 }
 
+void PlaylistObserver::metadataChanged( PlaylistPtr )
+{
+}
+
+void PlaylistObserver::trackAdded( PlaylistPtr, Meta::TrackPtr, int )
+{
+}
+
+void PlaylistObserver::trackRemoved( PlaylistPtr, int )
+{
+}
+
+void PlaylistObserver::tracksLoaded( PlaylistPtr )
+{
+}
+
 Playlist::Playlist()
-    : m_observersLock( QReadWriteLock::Recursive ) // prevent deadlocks
+    : m_observersMutex( QMutex::Recursive ) // prevent deadlocks
+    , m_async( true )
 {
 }
 
@@ -65,31 +83,44 @@ Playlist::~Playlist()
 }
 
 void
+Playlist::setName( const QString & )
+{
+}
+
+void
 Playlist::triggerTrackLoad()
 {
+    notifyObserversTracksLoaded();
 }
 
-QActionList
-Playlist::actions()
+void Playlist::addTrack( Meta::TrackPtr, int )
 {
-    if( provider() )
-        return provider()->playlistActions( PlaylistPtr( this ) );
-
-    return QActionList();
 }
 
-QActionList
-Playlist::trackActions( int trackIndex )
+void Playlist::removeTrack( int )
 {
-    if( provider() )
-        return provider()->trackActions( PlaylistPtr( this ), trackIndex );
-    return QActionList();
+}
+
+void
+Playlist::syncTrackStatus( int, Meta::TrackPtr )
+{
+}
+
+QStringList
+Playlist::groups()
+{
+    return QStringList();
+}
+
+void
+Playlist::setGroups( const QStringList & )
+{
 }
 
 void
 Playlist::notifyObserversMetadataChanged()
 {
-    QReadLocker locker( &m_observersLock );
+    QMutexLocker locker( &m_observersMutex );
     foreach( PlaylistObserver *observer, m_observers )
     {
         if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
@@ -98,10 +129,21 @@ Playlist::notifyObserversMetadataChanged()
 }
 
 void
+Playlist::notifyObserversTracksLoaded()
+{
+    QMutexLocker locker( &m_observersMutex );
+    foreach( PlaylistObserver *observer, m_observers )
+    {
+        if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
+            observer->tracksLoaded( PlaylistPtr( this ) );
+    }
+}
+
+void
 Playlist::notifyObserversTrackAdded( const Meta::TrackPtr &track, int position )
 {
     Q_ASSERT( position >= 0 ); // notice bug 293295 early
-    QReadLocker locker( &m_observersLock );
+    QMutexLocker locker( &m_observersMutex );
     foreach( PlaylistObserver *observer, m_observers )
     {
         if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
@@ -112,7 +154,7 @@ Playlist::notifyObserversTrackAdded( const Meta::TrackPtr &track, int position )
 void
 Playlist::notifyObserversTrackRemoved( int position )
 {
-    QReadLocker locker( &m_observersLock );
+    QMutexLocker locker( &m_observersMutex );
     foreach( PlaylistObserver *observer, m_observers )
     {
         if( m_observers.contains( observer ) ) // guard against observers removing themselves in destructors
@@ -125,7 +167,7 @@ Playlist::subscribe( PlaylistObserver* observer )
 {
     if( observer )
     {
-        QWriteLocker locker( &m_observersLock );
+        QMutexLocker locker( &m_observersMutex );
         m_observers.insert( observer );
     }
 }
@@ -133,6 +175,6 @@ Playlist::subscribe( PlaylistObserver* observer )
 void
 Playlist::unsubscribe( PlaylistObserver* observer )
 {
-    QWriteLocker locker( &m_observersLock );
+    QMutexLocker locker( &m_observersMutex );
     m_observers.remove( observer );
 }

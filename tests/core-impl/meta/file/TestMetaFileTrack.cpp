@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2009 Sven Krohlas <sven@getamarok.com>                  *
+ *   Copyright (c) 2009 Sven Krohlas <sven@asbest-online.de>               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -105,27 +105,6 @@ void TestMetaFileTrack::testPrettyName()
 
     m_track->setTitle( "Platz 01" );
     QCOMPARE( m_track->prettyName(), QString( "Platz 01" ) );
-}
-
-void TestMetaFileTrack::testFullPrettyName()
-{
-    QCOMPARE( m_track->fullPrettyName(), QString( "Platz 01" ) );
-
-    m_track->setTitle( "" );
-    //when there is no title, we default to using the filename without extension
-    QCOMPARE( m_track->fullPrettyName(), QString( "tempfile" ) );
-
-    m_track->setTitle( "test" );
-    QCOMPARE( m_track->fullPrettyName(), QString( "test" ) );
-
-    m_track->setTitle( "Another Test" );
-    QCOMPARE( m_track->fullPrettyName(), QString( "Another Test" ) );
-
-    m_track->setTitle( "Some Umlauts: äöü" );
-    QCOMPARE( m_track->fullPrettyName(), QString( "Some Umlauts: äöü" ) );
-
-    m_track->setTitle( "Platz 01" );
-    QCOMPARE( m_track->fullPrettyName(), QString( "Platz 01" ) );
 }
 
 void TestMetaFileTrack::testSortableName()
@@ -294,8 +273,8 @@ void TestMetaFileTrack::testSetGetComment()
     m_track->setComment( "2009" );
     QCOMPARE( m_track->comment(), QString( "2009" ) );
 
-    m_track->setComment( "Some Umlauts: äöü" );
-    QCOMPARE( m_track->comment(), QString( "Some Umlauts: äöü" ) );
+    m_track->setComment( QString::fromUtf8( "Some Umlauts: äöü" ) );
+    QCOMPARE( m_track->comment(), QString::fromUtf8( "Some Umlauts: äöü" ) );
 
     m_track->setComment( "" );
     QCOMPARE( m_track->comment(), QString( "" ) );

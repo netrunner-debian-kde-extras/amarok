@@ -75,7 +75,7 @@ PhotosApplet::init()
     settingsAction->setEnabled( true );
     settingsAction->setText( i18n( "Settings" ) );
     m_settingsIcon = addRightHeaderAction( settingsAction );
-    connect( m_settingsIcon, SIGNAL( clicked() ), this, SLOT( showConfigurationInterface() ) );
+    connect( m_settingsIcon, SIGNAL(clicked()), this, SLOT(showConfigurationInterface()) );
 
     m_widget = new PhotosScrollWidget( this );
     m_widget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
@@ -211,6 +211,8 @@ PhotosApplet::dataUpdated( const QString& name, const Plasma::DataEngine::Data& 
 void
 PhotosApplet::createConfigurationInterface( KConfigDialog *parent )
 {
+    parent->setButtons( KDialog::Ok | KDialog::Cancel );
+
     KConfigGroup configuration = config();
     QWidget *settings = new QWidget;
     ui_Settings.setupUi( settings );
@@ -220,7 +222,7 @@ PhotosApplet::createConfigurationInterface( KConfigDialog *parent )
     ui_Settings.animationComboBox->setCurrentIndex( ui_Settings.animationComboBox->findText( m_Animation ) );
     ui_Settings.photosSpinBox->setValue( m_nbPhotos );
     ui_Settings.additionalkeywordsLineEdit->setText( m_KeyWords.join(", ") );
-    connect( parent, SIGNAL( accepted() ), this, SLOT( saveSettings( ) ) );
+    connect( parent, SIGNAL(accepted()), this, SLOT(saveSettings()) );
 }
 
 void

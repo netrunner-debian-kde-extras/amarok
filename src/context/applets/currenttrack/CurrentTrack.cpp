@@ -20,28 +20,29 @@
 
 #include "CurrentTrack.h"
 
-#include "amarokurls/AmarokUrl.h"
-#include "core/support/Amarok.h"
 #include "App.h"
-#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "GlobalCurrentTrackActions.h"
-#include "CollectionManager.h"
-#include "covermanager/CoverViewDialog.h"
-#include "core/capabilities/EditCapability.h"
-#include "core/capabilities/ActionsCapability.h"
-#include "core/capabilities/BookmarkThisCapability.h"
-#include "core/capabilities/FindInSourceCapability.h"
-#include "core/meta/Statistics.h"
-#include "core/meta/support/MetaUtility.h"
 #include "MainWindow.h"
 #include "PaletteHandler.h"
 #include "PluginManager.h"
 #include "SvgHandler.h"
+#include "amarokurls/AmarokUrl.h"
 #include "context/widgets/RatingWidget.h"
 #include "context/widgets/TextScrollingWidget.h"
 #include "context/widgets/DropPixmapItem.h"
 #include "context/widgets/RecentlyPlayedListWidget.h"
+#include "core/capabilities/ActionsCapability.h"
+#include "core/capabilities/BookmarkThisCapability.h"
+#include "core/capabilities/FindInSourceCapability.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
+#include "core/meta/Meta.h"
+#include "core/meta/Statistics.h"
+#include "core/meta/TrackEditor.h"
+#include "core/meta/support/MetaUtility.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "covermanager/CoverViewDialog.h"
 #include "dialogs/TagDialog.h"
 
 #include <KConfigDialog>
@@ -100,7 +101,7 @@ CurrentTrack::init()
     m_ratingWidget->setSpacing( 2 );
     m_ratingWidget->setMinimumSize( m_albumWidth + 10, 30 );
     m_ratingWidget->setMaximumSize( m_albumWidth + 10, 30 );
-    connect( m_ratingWidget, SIGNAL( ratingChanged( int ) ), SLOT( trackRatingChanged( int ) ) );
+    connect( m_ratingWidget, SIGNAL(ratingChanged(int)), SLOT(trackRatingChanged(int)) );
 
     QLabel *collectionLabel = new QLabel( i18n( "Local Collection" ) );
     collectionLabel->setAttribute( Qt::WA_NoSystemBackground );
@@ -658,6 +659,8 @@ CurrentTrack::artistsCounted( QStringList results )
 void
 CurrentTrack::createConfigurationInterface( KConfigDialog *parent )
 {
+    parent->setButtons( KDialog::Ok | KDialog::Cancel );
+
     KConfigGroup configuration = config();
     QWidget *settings = new QWidget;
     ui_Settings.setupUi( settings );
@@ -763,16 +766,12 @@ CurrentTrack::setupLayoutActions( Meta::TrackPtr track )
         actions << btc->bookmarkAction();
     }
 
-    if( m_showEditTrackDetailsAction && track->has<EditCapability>() )
+    if( m_showEditTrackDetailsAction && track->editor() )
     {
-        QScopedPointer<EditCapability> ec( track->create<EditCapability>() );
-        if( ec && ec->isEditable() )
-        {
-            QAction *editAction = new QAction( KIcon("media-track-edit-amarok"),
-                                               i18n("Edit Track Details"), this );
-            connect( editAction, SIGNAL(triggered()), SLOT(editTrack()) );
-            m_customActions << editAction;
-        }
+        QAction *editAction = new QAction( KIcon("media-track-edit-amarok"),
+                                           i18n("Edit Track Details"), this );
+        connect( editAction, SIGNAL(triggered()), SLOT(editTrack()) );
+        m_customActions << editAction;
     }
 
     if( track->has<FindInSourceCapability>() )

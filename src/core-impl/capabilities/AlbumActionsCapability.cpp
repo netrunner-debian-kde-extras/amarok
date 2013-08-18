@@ -15,11 +15,12 @@
  ****************************************************************************************/
 
 #include "AlbumActionsCapability.h"
+
+#include "core/meta/Meta.h"
 #include "covermanager/CoverFetchingActions.h"
 
 #include <KIcon>
 #include <KLocalizedString>
-
 
 class CompilationAction : public QAction
 {
@@ -30,7 +31,7 @@ class CompilationAction : public QAction
                 : QAction( parent )
                 , m_album( album )
             {
-                connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
+                connect( this, SIGNAL(triggered(bool)), SLOT(slotTriggered()) );
                 if( m_album->isCompilation() )
                 {
                     setIcon( KIcon( "filename-artist-amarok" ) );

@@ -1,10 +1,8 @@
 set( amarok_collection-sqlcollection_SRCS
-    CapabilityDelegateImpl.cpp
+    SqlCapabilities.cpp
     DatabaseUpdater.cpp
     ../DatabaseCollection.cpp
     ../MountPointManager.cpp
-    ../ScanManager.cpp
-    ../ScanResultProcessor.cpp
     SqlCollection.cpp
     SqlCollectionFactory.cpp
     SqlCollectionLocation.cpp
@@ -19,7 +17,6 @@ set( amarok_collection-sqlcollection_SRCS
     device/massstorage/MassStorageDeviceHandler.cpp
     device/nfs/NfsDeviceHandler.cpp
     device/smb/SmbDeviceHandler.cpp
-    ${CMAKE_SOURCE_DIR}/shared/FileType.cpp
 )
 
 kde4_add_library(amarok-sqlcollection SHARED ${amarok_collection-sqlcollection_SRCS})
@@ -36,6 +33,7 @@ target_link_libraries(amarok-sqlcollection
     amarokcore
     amaroklib
     amarok-transcoding
+    amarokshared
 )
 
 if(APPLE)

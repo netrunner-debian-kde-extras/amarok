@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>440</width>
-    <height>340</height>
+    <height>420</height>
    </rect>
   </property>
   <property name="minimumSize">
@@ -24,19 +24,6 @@
      </property>
      <layout class="QGridLayout" name="gridLayout">
       <item row="0" column="0">
-       <widget class="QCheckBox" name="kcfg_ShowSplashScreen">
-        <property name="toolTip">
-         <string>Check to enable the splashscreen during Amarok startup.</string>
-        </property>
-        <property name="whatsThis">
-         <string>Check to enable the splashscreen during Amarok startup.</string>
-        </property>
-        <property name="text">
-         <string>Sho&amp;w splash-screen on startup</string>
-        </property>
-       </widget>
-      </item>
-      <item row="1" column="0">
        <widget class="QCheckBox" name="kcfg_ShowTrayIcon">
         <property name="toolTip">
          <string>Check to enable the Amarok system tray icon.</string>
@@ -49,7 +36,7 @@
         </property>
        </widget>
       </item>
-      <item row="2" column="0">
+      <item row="1" column="0">
        <widget class="QCheckBox" name="kcfg_AutoGetCoverArt">
         <property name="toolTip">
          <string>Check to enable the automatic retrieval of cover art from the Internet.</string>
@@ -62,7 +49,7 @@
         </property>
        </widget>
       </item>
-      <item row="3" column="0">
+      <item row="2" column="0">
        <widget class="QCheckBox" name="kcfg_AnimateAppletCollapse">
         <property name="toolTip">
          <string>Check to enable animations when context applets collapse.</string>
@@ -75,7 +62,7 @@
         </property>
        </widget>
       </item>
-      <item row="4" column="0">
+      <item row="3" column="0">
        <widget class="QCheckBox" name="kcfg_ShowBrowserBackgroundImage">
         <property name="text">
          <string>Show background images in the browser panel</string>
@@ -110,7 +97,20 @@
       <string>Moodbar Options</string>
      </property>
      <layout class="QGridLayout" name="gridLayout_3">
-      <item row="0" column="0" colspan="3">
+      <item row="2" column="0" colspan="2">
+       <widget class="QLabel" name="moodbarNote">
+        <property name="text">
+         <string>&lt;b&gt;Note&lt;/b&gt;: Mood files must be generated manually. For more information, visit &lt;a href=&quot;http://userbase.kde.org/Amarok/Manual/Various/Moodbar&quot;&gt;related article on KDE UserBase&lt;/a&gt;.</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
+        </property>
+        <property name="openExternalLinks">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" colspan="2">
        <widget class="QCheckBox" name="kcfg_ShowMoodbarInSlider">
         <property name="toolTip">
          <string>The Moodbar makes it possible to navigate in your music visually.
@@ -128,7 +128,7 @@ Please note that this feature requires the external &quot;Moodbar Generator&quot
         </property>
        </widget>
       </item>
-      <item row="1" column="2">
+      <item row="1" column="1">
        <widget class="QComboBox" name="kcfg_MoodbarPaintStyle">
         <property name="toolTip">
          <string>Choose the mood display style</string>
@@ -163,21 +163,21 @@ Please note that this feature requires the external &quot;Moodbar Generator&quot
         </item>
        </widget>
       </item>
-      <item row="2" column="1">
-       <spacer name="verticalSpacer">
-        <property name="orientation">
-         <enum>Qt::Vertical</enum>
-        </property>
-        <property name="sizeHint" stdset="0">
-         <size>
-          <width>20</width>
-          <height>26</height>
-         </size>
-        </property>
-       </spacer>
-      </item>
      </layout>
     </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
   </layout>
  </widget>

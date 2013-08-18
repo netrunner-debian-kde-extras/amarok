@@ -35,6 +35,7 @@ ContextDock::ContextDock( QWidget *parent )
     setContentsMargins( 0, 0, 0, 0 );
 
     m_mainWidget = new KVBox( this );
+    m_mainWidget->setMinimumWidth( 400 );
     m_mainWidget->setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
     m_mainWidget->setSpacing( 0 );
     m_mainWidget->setContentsMargins( 0, 0, 0, 0 );
@@ -42,24 +43,21 @@ ContextDock::ContextDock( QWidget *parent )
     setWidget( m_mainWidget );
 
     m_corona = new Context::ContextScene( this );
-    connect( m_corona.data(), SIGNAL( containmentAdded( Plasma::Containment* ) ),
-            this, SLOT( createContextView( Plasma::Containment* ) ) );
+    connect( m_corona.data(), SIGNAL(containmentAdded(Plasma::Containment*)),
+            this, SLOT(createContextView(Plasma::Containment*)) );
 
     m_corona.data()->loadDefaultSetup(); // this method adds our containment to the scene
 }
 
 void ContextDock::polish()
 {
-    DEBUG_BLOCK
 }
-
 
 void
 ContextDock::createContextView( Plasma::Containment *containment )
 {
-    DEBUG_BLOCK
-    disconnect( m_corona.data(), SIGNAL( containmentAdded( Plasma::Containment* ) ),
-            this, SLOT( createContextView( Plasma::Containment* ) ) );
+    disconnect( m_corona.data(), SIGNAL(containmentAdded(Plasma::Containment*)),
+            this, SLOT(createContextView(Plasma::Containment*)) );
 
     debug() << "Creating context view on containmend" << containment->name();
     PERF_LOG( "Creating ContexView" )
@@ -69,10 +67,11 @@ ContextDock::createContextView( Plasma::Containment *containment )
     PERF_LOG( "Created ContexToolbarView" )
 
     connect( m_corona.data(), SIGNAL(sceneRectChanged(QRectF)), m_contextView.data(), SLOT(updateSceneRect(QRectF)) );
-    connect( m_contextToolbarView.data(), SIGNAL( hideAppletExplorer() ), m_contextView.data(), SLOT( hideAppletExplorer() ) );
-    connect( m_contextToolbarView.data(), SIGNAL( showAppletExplorer() ), m_contextView.data(), SLOT( showAppletExplorer() ) );
+    connect( m_contextToolbarView.data(), SIGNAL(hideAppletExplorer()), m_contextView.data(), SLOT(hideAppletExplorer()) );
+    connect( m_contextToolbarView.data(), SIGNAL(showAppletExplorer()), m_contextView.data(), SLOT(showAppletExplorer()) );
     m_contextView.data()->showHome();
     PERF_LOG( "ContexView created" )
 }
+
 
 #include "ContextDock.moc"

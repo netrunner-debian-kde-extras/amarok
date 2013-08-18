@@ -67,7 +67,7 @@ Comment[es]=Escuchar música desde el servidor Ampache
 Comment[et]=Ampache serveri muusika kuulamine
 Comment[eu]=Entzun musika Ampache zerbitzari batetik
 Comment[fi]=Kuuntele musiikkia Ampache-palvelusta
-Comment[fr]=Écouter de la musique depuis un serveur Ampache
+Comment[fr]=Écouter de la musique depuis un serveur « Ampache »
 Comment[ga]=Éist le ceol ó fhreastalaí Ampache
 Comment[gl]=Escoite música dun servizo Ampache
 Comment[he]=האזנה למוזיקה משרת Ampache
@@ -110,7 +110,7 @@ ServiceTypes=Amarok/Plugin
 
 X-KDE-Amarok-authors=Nikolaj Hald Nielsen
 X-KDE-Amarok-email=nhnFreespirit@gmail.com
-X-KDE-Amarok-framework-version=70
+X-KDE-Amarok-framework-version=71
 X-KDE-Amarok-name=AmpacheService
 X-KDE-Amarok-plugintype=service
 X-KDE-Amarok-rank=100

@@ -28,7 +28,6 @@
 #include "config.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "dialogs/EqualizerDialog.h"
 #include "playlist/PlaylistActions.h"
 #include "playlist/PlaylistModelStack.h"
 #include "widgets/Osd.h"
@@ -152,13 +151,10 @@ Menu::helpMenu( QWidget *parent ) //STATIC
 
     KMenu* menu = s_helpMenu->menu();
 
-    // NOTE: We hide "Report Bug..." because we need to add it on our own to name the dialog
-    // so it can be blacklisted from LikeBack.
-    s_helpMenu->action( KHelpMenu::menuReportBug )->setVisible( false );
-
-    // NOTE: "What's This" isn't currently defined for anything in Amarok, so let's remove that too
+    // "What's This" isn't currently defined for anything in Amarok, so let's remove it
     s_helpMenu->action( KHelpMenu::menuWhatsThis )->setVisible( false );
 
+    // Hide the default "About App" dialog, as we replace it with a custom one
     s_helpMenu->action( KHelpMenu::menuAboutApp )->setVisible( false );
 
     return menu;
@@ -189,12 +185,12 @@ PlayPauseAction::PlayPauseAction( KActionCollection *ac, QObject *parent )
     connect( this, SIGNAL(triggered()),
              engine, SLOT(playPause()) );
 
-    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
-             this, SLOT( stopped() ) );
-    connect( engine, SIGNAL( paused() ),
-             this, SLOT( paused() ) );
-    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
-             this, SLOT( playing() ) );
+    connect( engine, SIGNAL(stopped(qint64,qint64)),
+             this, SLOT(stopped()) );
+    connect( engine, SIGNAL(paused()),
+             this, SLOT(paused()) );
+    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)),
+             this, SLOT(playing()) );
 }
 
 void
@@ -329,64 +325,20 @@ RandomAction::setCurrentItem( int n )
 ReplayGainModeAction::ReplayGainModeAction( KActionCollection *ac, QObject *parent ) :
     SelectAction( i18n( "&Replay Gain Mode" ), &AmarokConfig::setReplayGainMode, ac, "replay_gain_mode", parent )
 {
-    setItems( QStringList() << i18nc( "Replay Gain state, as in, disabled", "&Off" ) << i18nc( "Item, as in, music", "&Track" )
+    setItems( QStringList() << i18nc( "Replay Gain state, as in, disabled", "&Off" )
+                            << i18nc( "Item, as in, music", "&Track" )
                             << i18n( "&Album" ) );
-    //setIcons( QStringList() << "media-playlist-replaygain-off-amarok" << "media-track-replaygain-amarok" << "media-album-replaygain-amarok" );
-    setCurrentItem( AmarokConfig::replayGainMode() );
-}
-
-//////////////////////////////////////////////////////////////////////////////////////////
-// EqualizerAction
-//////////////////////////////////////////////////////////////////////////////////////////
-EqualizerAction::EqualizerAction( KActionCollection *ac, QObject *parent ) :
-    SelectAction( i18n( "&Equalizer" ), &AmarokConfig::setEqualizerMode, ac, "equalizer_mode", parent )
-{
-    // build a new preset list in menu
-    newList();
-    // set selected preset from config
-    updateContent();
-    connect( this, SIGNAL( triggered( int ) ), this, SLOT( actTrigg( int ) ) );
-}
-
-void
-EqualizerAction::updateContent() //SLOT
-{
-    // this slot update the content of equalizer main window menu
-    // according to config blocking is necessary to prevent
-    // circluar loop between menu and config dialog
-    blockSignals( true );
-    setCurrentItem( AmarokConfig::equalizerMode() );
-    blockSignals( false );
-}
-
-void
-EqualizerAction::newList() //SLOT
-{
-    // this slot build a new list of presets in equalizer menu
-    // or disable this menu if equalizer is not supported
-    if( !The::engineController()->isEqSupported() )
+    EngineController *engine = EngineController::instance();
+    Q_ASSERT( engine );
+    if( engine->supportsGainAdjustments() )
+        setCurrentItem( AmarokConfig::replayGainMode() );
+    else
     {
-        setEnabled( false );
-        setToolTip( i18n("Your current setup does not support the equalizer feature") );
-        return;
+        // Note: it would be nice to set a tooltip that would explain why this is disabled
+        // to users, but tooltips aren't shown in meny anyway :-(
+        actions().at( 1 )->setEnabled( false );
+        actions().at( 2 )->setEnabled( false );
     }
-    setEnabled( true );
-    setToolTip( QString() );
-    setItems( QStringList() << i18nc( "Equalizer state, as in, disabled", "&Off" ) << EqualizerPresets::eqGlobalTranslatedList() );
-}
-
-void
-EqualizerAction::actTrigg( int index ) //SLOT
-{
-    if( !The::engineController()->isEqSupported() )
-        return;
-
-    const QString presetName = EqualizerPresets::eqGlobalList().at( index - 1 );
-    if (presetName.isEmpty())
-        return;
-
-    AmarokConfig::setEqualizerGains( EqualizerPresets::eqCfgGetPresetVal( presetName ) );
-    The::engineController()->eqUpdate();
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -410,7 +362,7 @@ BurnMenuAction::createWidget( QWidget *w )
 
         //addContainer( bar, id );
         w->addAction( this );
-        connect( bar, SIGNAL( destroyed() ), SLOT( slotDestroyed() ) );
+        connect( bar, SIGNAL(destroyed()), SLOT(slotDestroyed()) );
 
         //bar->insertButton( QString::null, id, true, i18n( "Burn" ), index );
 
@@ -434,8 +386,8 @@ BurnMenu::BurnMenu( QWidget* parent )
 {
     s_instance = this;
 
-    addAction( i18n("Current Playlist"), this, SLOT( slotBurnCurrentPlaylist() ) );
-    addAction( i18n("Selected Tracks"), this, SLOT( slotBurnSelectedTracks() ) );
+    addAction( i18n("Current Playlist"), this, SLOT(slotBurnCurrentPlaylist()) );
+    addAction( i18n("Selected Tracks"), this, SLOT(slotBurnSelectedTracks()) );
     //TODO add "album" and "all tracks by artist"
 }
 
@@ -469,7 +421,7 @@ StopAction::StopAction( KActionCollection *ac, QObject *parent )
     setText( i18n( "Stop" ) );
     setIcon( KIcon("media-playback-stop-amarok") );
     setGlobalShortcut( KShortcut( Qt::Key_MediaStop ) );
-    connect( this, SIGNAL( triggered() ), this, SLOT( stop() ) );
+    connect( this, SIGNAL(triggered()), this, SLOT(stop()) );
 
     EngineController *engine = The::engineController();
 
@@ -478,10 +430,10 @@ StopAction::StopAction( KActionCollection *ac, QObject *parent )
     else
         playing();
 
-    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
-             this, SLOT( stopped() ) );
-    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
-             this, SLOT( playing() ) );
+    connect( engine, SIGNAL(stopped(qint64,qint64)),
+             this, SLOT(stopped()) );
+    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)),
+             this, SLOT(playing()) );
 
 }
 

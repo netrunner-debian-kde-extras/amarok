@@ -134,10 +134,10 @@ CoverManager::CoverManager( QWidget *parent )
     qm->setAlbumQueryMode( Collections::QueryMaker::OnlyNormalAlbums );
     qm->orderBy( Meta::valArtist );
 
-    connect( qm, SIGNAL( newResultReady( Meta::ArtistList ) ),
-             this, SLOT( slotArtistQueryResult( Meta::ArtistList ) ) );
+    connect( qm, SIGNAL(newResultReady(Meta::ArtistList)),
+             this, SLOT(slotArtistQueryResult(Meta::ArtistList)) );
 
-    connect( qm, SIGNAL( queryDone() ), this, SLOT( slotContinueConstruction() ) );
+    connect( qm, SIGNAL(queryDone()), this, SLOT(slotContinueConstruction()) );
 
     qm->run();
 }
@@ -183,9 +183,9 @@ CoverManager::slotContinueConstruction() //SLOT
     m_viewButton = new KPushButton( hbox );
 
     m_viewMenu = new KMenu( m_viewButton );
-    m_selectAllAlbums          = m_viewMenu->addAction( i18n("All Albums"),           this, SLOT( slotShowAllAlbums() ) );
-    m_selectAlbumsWithCover    = m_viewMenu->addAction( i18n("Albums With Cover"),    this, SLOT( slotShowAlbumsWithCover() ) );
-    m_selectAlbumsWithoutCover = m_viewMenu->addAction( i18n("Albums Without Cover"), this, SLOT( slotShowAlbumsWithoutCover() ) );
+    m_selectAllAlbums          = m_viewMenu->addAction( i18n("All Albums"),           this, SLOT(slotShowAllAlbums()) );
+    m_selectAlbumsWithCover    = m_viewMenu->addAction( i18n("Albums With Cover"),    this, SLOT(slotShowAlbumsWithCover()) );
+    m_selectAlbumsWithoutCover = m_viewMenu->addAction( i18n("Albums Without Cover"), this, SLOT(slotShowAlbumsWithoutCover()) );
 
     QActionGroup *viewGroup = new QActionGroup( m_viewButton );
     viewGroup->setExclusive( true );
@@ -244,13 +244,13 @@ CoverManager::slotContinueConstruction() //SLOT
     }
 
     // signals and slots connections
-    connect( m_artistView, SIGNAL(itemSelectionChanged() ),
-                           SLOT( slotArtistSelected() ) );
-    connect( m_coverView,  SIGNAL(itemActivated( QListWidgetItem* )),
-                           SLOT(coverItemClicked( QListWidgetItem* )) );
+    connect( m_artistView, SIGNAL(itemSelectionChanged()),
+                           SLOT(slotArtistSelected()) );
+    connect( m_coverView,  SIGNAL(itemActivated(QListWidgetItem*)),
+                           SLOT(coverItemClicked(QListWidgetItem*)) );
     connect( m_timer,      SIGNAL(timeout()),
                            SLOT(slotSetFilter()) );
-    connect( m_searchEdit, SIGNAL(textChanged( const QString& )),
+    connect( m_searchEdit, SIGNAL(textChanged(QString)),
                            SLOT(slotSetFilterTimeout()) );
 
     if( item == 0 )
@@ -318,12 +318,12 @@ CoverManager::fetchMissingCovers() //SLOT
 }
 
 void
-CoverManager::showOnce( const QString &artist )
+CoverManager::showOnce( const QString &artist, QWidget* parent )
 {
     if( !s_instance )
     {
         artistToSelectInInitFunction = artist;
-        new CoverManager();
+        new CoverManager( parent );
     }
     else
     {
@@ -369,10 +369,10 @@ CoverManager::slotArtistSelected() //SLOT
     qm->excludeFilter( Meta::valAlbum, QString(), true, true );
     qm->endAndOr();
 
-    connect( qm, SIGNAL( newResultReady( Meta::AlbumList ) ),
-             this, SLOT( slotAlbumQueryResult( Meta::AlbumList ) ) );
+    connect( qm, SIGNAL(newResultReady(Meta::AlbumList)),
+             this, SLOT(slotAlbumQueryResult(Meta::AlbumList)) );
 
-    connect( qm, SIGNAL( queryDone() ), this, SLOT( slotArtistQueryDone() ) );
+    connect( qm, SIGNAL(queryDone()), this, SLOT(slotArtistQueryDone()) );
 
     qm->run();
 }
@@ -592,26 +592,6 @@ CoverManager::loadCover( const QString &artist, const QString &album )
 }
 
 void
-CoverManager::playSelectedAlbums()
-{
-    // -- get all the track from the selected items
-    Meta::TrackList tracks;
-    foreach( CoverViewItem *item, selectedItems() )
-        tracks.append( item->albumPtr()->tracks() );
-    The::playlistController()->insertOptioned( tracks, Playlist::AppendAndPlay );
-}
-
-QList<CoverViewItem*>
-CoverManager::selectedItems()
-{
-    QList<CoverViewItem*> selectedItems;
-    foreach( QListWidgetItem *item, m_coverView->selectedItems() )
-        selectedItems.append( static_cast<CoverViewItem*>(item) );
-
-    return selectedItems;
-}
-
-void
 CoverManager::progressAllDone()
 {
     m_progress->hide();
@@ -640,7 +620,7 @@ CoverManager::updateStatusBar()
             m_progress->endProgressOperation( m_fetcher );
 
             disconnect( m_fetcher, SIGNAL(finishedSingle(int)), this, SLOT(updateFetchingProgress(int)) );
-            QTimer::singleShot( 2000, this, SLOT( updateStatusBar() ) );
+            QTimer::singleShot( 2000, this, SLOT(updateStatusBar()) );
         }
 
         if( m_fetchCovers.size() == 1 )
@@ -753,8 +733,8 @@ CoverView::CoverView( QWidget *parent, const char *name, Qt::WFlags f )
     setContextMenuPolicy( Qt::DefaultContextMenu );
     setMouseTracking( true ); // required for setting status text when itemEntered signal is emitted
 
-    connect( this, SIGNAL( itemEntered( QListWidgetItem * ) ), SLOT( setStatusText( QListWidgetItem * ) ) );
-    connect( this, SIGNAL( viewportEntered() ), CoverManager::instance(), SLOT( updateStatusBar() ) );
+    connect( this, SIGNAL(itemEntered(QListWidgetItem*)), SLOT(setStatusText(QListWidgetItem*)) );
+    connect( this, SIGNAL(viewportEntered()), CoverManager::instance(), SLOT(updateStatusBar()) );
 }
 
 void
@@ -851,7 +831,6 @@ CoverView::setStatusText( QListWidgetItem *item )
 CoverViewItem::CoverViewItem( QListWidget *parent, Meta::AlbumPtr album )
     : QListWidgetItem( parent )
     , m_albumPtr( album)
-    , m_parent( parent )
 {
     m_album = album->prettyName();
     if( album->hasAlbumArtist() )

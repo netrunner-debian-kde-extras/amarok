@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2011 Kevin Funk <krf@electrostorm.net>                                 *
+ * Copyright (c) 2013 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,21 +15,22 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#include <QWidget>
+#include <QLabel>
 
-class QLabel;
-
-class PlaylistInfoWidget : public QWidget
+/** A small widget that displays the current length and size of the playlist.
+    It is used in the bottom bar of the playlist view */
+class PlaylistInfoWidget : public QLabel
 {
     Q_OBJECT
 
 public:
-    explicit PlaylistInfoWidget(QWidget* parent = 0, Qt::WindowFlags f = 0);
+    explicit PlaylistInfoWidget( QWidget* parent = 0 );
     virtual ~PlaylistInfoWidget();
+
+protected:
+    bool event( QEvent *event );
 
 private Q_SLOTS:
     void updateTotalPlaylistLength();
 
-private:
-    QLabel* m_playlistLengthLabel;
 };

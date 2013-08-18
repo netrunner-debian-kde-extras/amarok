@@ -29,22 +29,19 @@ namespace Meta
 {
     namespace Tag
     {
-        class AMAROK_EXPORT VorbisCommentTagHelper : public TagHelper
+        class AMAROKSHARED_EXPORT VorbisCommentTagHelper : public TagHelper
         {
             public:
-                VorbisCommentTagHelper( TagLib::Tag *tag, TagLib::Ogg::XiphComment *commentsTag, Amarok::FileType fileType );
-                VorbisCommentTagHelper( TagLib::Tag *tag, TagLib::Ogg::XiphComment *commentsTag, TagLib::FLAC::File *file, Amarok::FileType fileType );
+                VorbisCommentTagHelper( TagLib::Tag *tag, TagLib::Ogg::XiphComment *commentsTag, Amarok::FileType fileType, TagLib::FLAC::File *file = 0 );
 
                 virtual Meta::FieldHash tags() const;
                 virtual bool setTags( const Meta::FieldHash &changes );
 
                 virtual TagLib::ByteVector render() const;
 
-#ifndef UTILITIES_BUILD
                 virtual bool hasEmbeddedCover() const;
                 virtual QImage embeddedCover() const;
                 virtual bool setEmbeddedCover( const QImage &cover );
-#endif  //UTILITIES_BUILD
 
             private:
                 static bool parsePictureBlock( const TagLib::StringList& block, QImage* result = 0 );

@@ -19,15 +19,16 @@
 #define DEBUG_PREFIX "LabelsApplet"
 
 #include "LabelsApplet.h"
-#include "LabelGraphicsItem.h"
 
 #include "App.h"
-#include "amarokurls/AmarokUrl.h"
-#include "context/widgets/AppletHeader.h"
-#include "core/support/Debug.h"
 #include "EngineController.h"
 #include "PaletteHandler.h"
-#include "Theme.h"
+#include "amarokurls/AmarokUrl.h"
+#include "context/Theme.h"
+#include "context/applets/labels/LabelGraphicsItem.h"
+#include "context/widgets/AppletHeader.h"
+#include "core/meta/Meta.h"
+#include "core/support/Debug.h"
 
 #include <Plasma/IconWidget>
 #include <Plasma/Containment>
@@ -40,9 +41,7 @@
 #include <QGraphicsProxyWidget>
 #include <QPropertyAnimation>
 
-
 #define LabelsAppletMaxLabelLength 40 // if a downloaded label is longer than this, don't show it
-
 
 LabelsApplet::LabelsApplet( QObject *parent, const QVariantList &args )
     : Context::Applet( parent, args ),
@@ -101,7 +100,7 @@ LabelsApplet::init()
     reloadAction->setText( i18n( "Reload" ) );
     m_reloadIcon = addLeftHeaderAction( reloadAction );
     m_reloadIcon.data()->setEnabled( false );
-    connect( m_reloadIcon.data(), SIGNAL( clicked() ), this, SLOT( reload() ) );
+    connect( m_reloadIcon.data(), SIGNAL(clicked()), this, SLOT(reload()) );
 
     // settings icon
     QAction *settingsAction = new QAction( this );
@@ -110,7 +109,7 @@ LabelsApplet::init()
     settingsAction->setEnabled( true );
     settingsAction->setText( i18n( "Settings" ) );
     m_settingsIcon = addRightHeaderAction( settingsAction );
-    connect( m_settingsIcon.data(), SIGNAL( clicked() ), this, SLOT( showConfigurationInterface() ) );
+    connect( m_settingsIcon.data(), SIGNAL(clicked()), this, SLOT(showConfigurationInterface()) );
 
     QGraphicsLinearLayout *layout = new QGraphicsLinearLayout( Qt::Vertical, this );
     layout->addItem( m_header );
@@ -127,7 +126,7 @@ LabelsApplet::init()
     m_addLabel.data()->setPalette( p );
     m_addLabel.data()->completionObject()->setIgnoreCase( true );
     m_addLabel.data()->setCompletionMode( KGlobalSettings::CompletionPopup );
-    connect( m_addLabel.data(), SIGNAL( returnPressed() ), this, SLOT( addLabelPressed() ) );
+    connect( m_addLabel.data(), SIGNAL(returnPressed()), this, SLOT(addLabelPressed()) );
     m_addLabelProxy.data()->setWidget( m_addLabel.data() );
 
     // Read config
@@ -163,8 +162,8 @@ LabelsApplet::init()
     setStoppedState( true );
 
     connectSource( "labels" );
-    connect( dataEngine( "amarok-labels" ), SIGNAL( sourceAdded( const QString & ) ),
-             this, SLOT( connectSource( const QString & ) ) );
+    connect( dataEngine( "amarok-labels" ), SIGNAL(sourceAdded(QString)),
+             this, SLOT(connectSource(QString)) );
 }
 
 void
@@ -390,7 +389,7 @@ LabelsApplet::updateLabels()
             }
             connect( labelGraphics, SIGNAL(toggled(QString)), SLOT(toggleLabel(QString)) );
             connect( labelGraphics, SIGNAL(list(QString)), SLOT(listLabel(QString)) );
-            connect( labelGraphics, SIGNAL(blacklisted(QString) ), SLOT(blacklistLabel(QString)) );
+            connect( labelGraphics, SIGNAL(blacklisted(QString)), SLOT(blacklistLabel(QString)) );
 
             labelAnimation = new QPropertyAnimation( labelGraphics, "pos" );
             labelAnimation->setEasingCurve( QEasingCurve::OutQuad );
@@ -729,6 +728,9 @@ void
 LabelsApplet::createConfigurationInterface( KConfigDialog *parent )
 {
     DEBUG_BLOCK
+
+    parent->setButtons( KDialog::Ok | KDialog::Cancel );
+
     KConfigGroup configuration = config();
     QWidget *generalSettings = new QWidget;
     ui_GeneralSettings.setupUi( generalSettings );
@@ -764,10 +766,10 @@ LabelsApplet::createConfigurationInterface( KConfigDialog *parent )
         new QTreeWidgetItem( ui_ReplacementSettings.replacementTreeWidget, QStringList() << it.key() << it.value() );
     }
 
-    connect( ui_GeneralSettings.resetColorsPushButton, SIGNAL( clicked() ), this, SLOT( settingsResetColors()) );
-    connect( ui_ReplacementSettings.addPushButton, SIGNAL( clicked() ), this, SLOT( settingsAddReplacement()) );
-    connect( ui_ReplacementSettings.removePushButton, SIGNAL( clicked() ), this, SLOT( settingsRemoveReplacement()) );
-    connect( parent, SIGNAL( accepted() ), this, SLOT( saveSettings( ) ) );
+    connect( ui_GeneralSettings.resetColorsPushButton, SIGNAL(clicked()), this, SLOT(settingsResetColors()) );
+    connect( ui_ReplacementSettings.addPushButton, SIGNAL(clicked()), this, SLOT(settingsAddReplacement()) );
+    connect( ui_ReplacementSettings.removePushButton, SIGNAL(clicked()), this, SLOT(settingsRemoveReplacement()) );
+    connect( parent, SIGNAL(accepted()), this, SLOT(saveSettings()) );
 }
 
 void

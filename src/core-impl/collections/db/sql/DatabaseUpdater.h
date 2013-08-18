@@ -30,7 +30,7 @@ namespace Collections {
 
 /** The DatabaseUpdater class is a collection of function that can update the sql database from previous versions or create it from new.
  */
-class AMAROK_SQLCOLLECTION_EXPORT_TESTS DatabaseUpdater {
+class AMAROK_SQLCOLLECTION_EXPORT DatabaseUpdater {
 public:
     DatabaseUpdater( Collections::SqlCollection *collection );
     ~DatabaseUpdater();
@@ -82,6 +82,12 @@ public:
     void deleteAllRedundant( const QString &type );
 
     /**
+     * Delete all entries from @p table with broken link to directories table. Currently
+     * had only sense on the urls table.
+     */
+    void deleteOrphanedByDirectory( const QString &table );
+
+    /**
      * Use on tables that link to non-existent entries in the urls table, for example
      * urls_labels, statistics, lyrics. @param table must have a column named url.
      */
@@ -103,6 +109,8 @@ public:
     void checkTables( bool full = true );
 
     void writeCSVFile( const QString &table, const QString &filename, bool forceDebug = false );
+
+    static int textColumnLength() { return 255; };
 
 private:
     /** creates all the necessary tables, indexes etc. for the database */

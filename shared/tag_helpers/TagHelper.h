@@ -17,27 +17,24 @@
 #ifndef TAGHELPER_H
 #define TAGHELPER_H
 
-#ifndef UTILITIES_BUILD
-    #include "amarok_export.h"
-    #include <QImage>
-#else
-    #define AMAROK_EXPORT
-#endif
-
 #define MIN_COVER_SIZE 1024 // Minimum size for an embedded cover to be loaded
 
 #include "MetaValues.h"
 #include "FileType.h"
+#include "amarokshared_export.h"
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnon-virtual-dtor"
 #include <fileref.h>
 #include <tag.h>
 #include <id3v1tag.h>
+#pragma GCC diagnostic pop
 
 namespace Meta
 {
     namespace Tag
     {
-        class AMAROK_EXPORT TagHelper
+        class AMAROKSHARED_EXPORT TagHelper
         {
             public:
                 enum UIDType
@@ -55,6 +52,7 @@ namespace Meta
 
                 TagHelper( TagLib::Tag *tag, Amarok::FileType fileType );
                 explicit TagHelper( TagLib::ID3v1::Tag *tag, Amarok::FileType fileType );
+                virtual ~TagHelper();
 
                 /**
                  * Read all supported tags from file.
@@ -71,21 +69,21 @@ namespace Meta
                  */
                 virtual TagLib::ByteVector render() const;
 
-#ifndef UTILITIES_BUILD
                 /**
                  * Check If file contains embedded cover.
                  */
                 virtual bool hasEmbeddedCover() const;
+
                 /**
                  * Read embedded cover from file.
                  */
                 virtual QImage embeddedCover() const;
+
                 /**
                  * Add or update cover in file. Will be set as FrontCover.
                  * Return true If something writen.
                  */
                 virtual bool setEmbeddedCover( const QImage &cover );
-#endif  //UTILITIES_BUILD
 
                 /**
                  * Return file type.
@@ -146,7 +144,7 @@ namespace Meta
          * @return TagHelper or NULL if file doesn't have tags.
          * Should be deleted by user after use.
          */
-        AMAROK_EXPORT TagHelper *selectHelper( const TagLib::FileRef fileref, bool forceCreation = false );
+        AMAROKSHARED_EXPORT TagHelper *selectHelper( const TagLib::FileRef fileref, bool forceCreation = false );
     }
 }
 

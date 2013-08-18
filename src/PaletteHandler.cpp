@@ -18,9 +18,6 @@
  
 #include "PaletteHandler.h"
 
-#include "App.h"
-#include "core/support/Debug.h"
-
 #include <kglobal.h>
 
 #include <QPainter>
@@ -46,8 +43,6 @@ PaletteHandler::PaletteHandler( QObject* parent )
 
 PaletteHandler::~PaletteHandler()
 {
-    DEBUG_BLOCK
-
     The::s_PaletteHandler_instance = 0;
 }
 
@@ -62,13 +57,23 @@ void
 PaletteHandler::updateItemView( QAbstractItemView * view )
 {
     QPalette p = m_palette;
+    QColor c;
 
-    QColor c = p.color( QPalette::AlternateBase );
-    c.setAlpha( 77 );
-    p.setColor( QPalette::AlternateBase, c );
-    // to fix hardcoded QPalette::Text usage in Qt classes
-    p.setColor( QPalette::Base, p.color(QPalette::Window) );
-    p.setColor( QPalette::Text, p.color(QPalette::WindowText) );
+    // Widgets with keyboard focus become slightly transparent
+    c = p.color( QPalette::Active, QPalette::AlternateBase );
+    c.setAlpha( 95 );
+    p.setColor( QPalette::Active, QPalette::AlternateBase, c );
+
+    // For widgets that don't have keyboard focus reduce the opacity further
+    c = p.color( QPalette::Inactive, QPalette::AlternateBase );
+    c.setAlpha( 75 );
+    p.setColor( QPalette::Inactive, QPalette::AlternateBase, c );
+
+    // Base color is used during the expand/shrink animation. We set it
+    // to transparent so that it won't interfere with our custom colors.
+    p.setColor( QPalette::Active, QPalette::Base, Qt::transparent );
+    p.setColor( QPalette::Inactive, QPalette::Base, Qt::transparent );
+
     view->setPalette( p );
     
     if ( QWidget *vp = view->viewport() )
@@ -94,13 +99,16 @@ PaletteHandler::foregroundColor( const QPainter *p, bool selected )
         pal = w->palette();
     }
     else
-        pal = App::instance()->palette();
+        pal = palette();
 
-    return pal.color( selected ? QPalette::HighlightedText : fg );
+    if( !selected )
+        return pal.color( QPalette::Active, fg );
+
+    return pal.color( QPalette::Active, QPalette::HighlightedText );
 }
 
 QPalette
-PaletteHandler::palette()
+PaletteHandler::palette() const
 {
     return m_palette;
 }
@@ -108,7 +116,7 @@ PaletteHandler::palette()
 QColor
 PaletteHandler::highlightColor( qreal saturationPercent, qreal valuePercent )
 {
-    QColor highlight = QColor( App::instance()->palette().highlight().color() );
+    QColor highlight = The::paletteHandler()->palette().color( QPalette::Active, QPalette::Highlight );
     qreal saturation = highlight.saturationF();
     saturation *= saturationPercent;
     qreal value = highlight.valueF();
@@ -123,7 +131,7 @@ PaletteHandler::highlightColor( qreal saturationPercent, qreal valuePercent )
 QColor
 PaletteHandler::backgroundColor()
 {
-    QColor base = App::instance()->palette().base().color();
+    QColor base = The::paletteHandler()->palette().color( QPalette::Active, QPalette::Base );
     base.setHsvF( highlightColor().hueF(), base.saturationF(), base.valueF() );
     return base;
 }
@@ -131,8 +139,8 @@ PaletteHandler::backgroundColor()
 QColor
 PaletteHandler::alternateBackgroundColor()
 {
-    const QColor alternate = App::instance()->palette().alternateBase().color();
-    const QColor window    = App::instance()->palette().window().color();
+    const QColor alternate = The::paletteHandler()->palette().color( QPalette::Active, QPalette::AlternateBase );
+    const QColor window    = The::paletteHandler()->palette().color( QPalette::Active, QPalette::Window );
     const QColor base      = backgroundColor();
 
     const int alternateDist = abs( alternate.value() - base.value() );

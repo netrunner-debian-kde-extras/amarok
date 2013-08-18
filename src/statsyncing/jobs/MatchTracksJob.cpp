@@ -14,17 +14,17 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "StatSyncing"
+
 #include "MatchTracksJob.h"
 
 #include "MetaValues.h"
 #include "core/meta/Meta.h"
 
-#undef VERBOSE_DEBUG
-
 using namespace StatSyncing;
 
+#undef VERBOSE_DEBUG
 #ifdef VERBOSE_DEBUG
-#define DEBUG_PREFIX "StatSyncing"
 #include "core/support/Debug.h"
 static void printPerProviderTrackList( const PerProviderTrackList &providerTracks,
                                        const QString *fromArtist = 0L )
@@ -192,7 +192,7 @@ MatchTracksJob::matchTracksFromArtist( const QMultiMap<ProviderPtr, QString> &pr
         PerProviderTrackList equalTracks = takeTracksEqualTo( firstTrack, providerTracks );
         Q_ASSERT( !equalTracks.isEmpty() );
 
-        // optimisation: continue early if there's only one provider left
+        // optimization: continue early if there's only one provider left
         if( equalTracks.keys().count() <= 1 )
         {
             ProviderPtr provider = equalTracks.keys().first();

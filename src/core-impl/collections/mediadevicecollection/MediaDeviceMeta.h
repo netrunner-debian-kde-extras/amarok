@@ -64,9 +64,9 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track, public
         virtual KUrl playableUrl() const;
         virtual QString uidUrl() const;
         virtual QString prettyUrl() const;
+        virtual QString notPlayableReason() const;
 
-        virtual bool isPlayable() const;
-        virtual bool isEditable() const;
+        bool isEditable() const;
 
         virtual AlbumPtr album() const;
         virtual ArtistPtr artist() const;
@@ -117,9 +117,7 @@ class MEDIADEVICECOLLECTION_EXPORT MediaDeviceTrack : public Meta::Track, public
         virtual bool inCollection() const;
         virtual Collections::Collection* collection() const;
 
-        virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-        virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
-
+        virtual TrackEditorPtr editor();
         virtual StatisticsPtr statistics();
 
         // Meta::Statistics methods

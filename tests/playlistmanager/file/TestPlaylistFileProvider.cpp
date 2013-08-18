@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2009 Sven Krohlas <sven@getamarok.com>                  *
+ *   Copyright (c) 2009 Sven Krohlas <sven@asbest-online.de>               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -125,9 +125,9 @@ void TestPlaylistFileProvider::testRename()
     tempList = m_testPlaylistFileProvider->playlists();
     QCOMPARE( tempList.size(), 1 );
 
-    m_testPlaylistFileProvider->rename( tempList.at( 0 ), "New Test Name" );
+    m_testPlaylistFileProvider->renamePlaylist( tempList.at( 0 ), "New Test Name" );
     tempList = m_testPlaylistFileProvider->playlists();
-    QCOMPARE( tempList.at( 0 )->name(), QString( "New Test Name" ) );
+    QCOMPARE( tempList.at( 0 )->name(), QString( "New Test Name.m3u" ) );
 
     m_testPlaylistFileProvider->deletePlaylists( tempList );
     tempList = m_testPlaylistFileProvider->playlists();

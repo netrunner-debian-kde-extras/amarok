@@ -54,15 +54,10 @@ Context::ToolbarView::ToolbarView( Plasma::Containment* containment, QGraphicsSc
     setAutoFillBackground( true );
     setContentsMargins( 0, 0, 0, 0 );
 
-    QPalette palette = QApplication::palette();
     setFrameStyle( QFrame::NoFrame );
-    setStyleSheet( QString( "QFrame#ContextToolbarView { border: 1px ridge %1; " \
-                            "background-color: %2; color: %3; border-radius: 3px; }" \
-                            "QLabel { color: %3; }" )
-                           .arg( palette.color( QPalette::Window ).name() )
-                           .arg( The::paletteHandler()->highlightColor().name() )
-                           .arg( palette.color( QPalette::HighlightedText ).name() )
-                 );
+    applyStyleSheet();
+
+    connect( The::paletteHandler(), SIGNAL(newPalette(QPalette)), SLOT(applyStyleSheet()) );
 
     //Padding required to prevent view scrolling, probably caused by the 1px ridge
     setSceneRect( TOOLBAR_X_OFFSET, 0, size().width()-TOOLBAR_SCENE_PADDING,
@@ -87,11 +82,11 @@ Context::ToolbarView::ToolbarView( Plasma::Containment* containment, QGraphicsSc
    Context::Containment* cont = dynamic_cast< Context::Containment* >( containment );
    if( cont )
    {
-       connect( cont, SIGNAL( appletAdded( Plasma::Applet*, int) ), m_toolbar.data(), SLOT( appletAdded( Plasma::Applet*, int ) ) );
-       connect( m_toolbar.data(), SIGNAL( appletAddedToToolbar( Plasma::Applet*, int ) ), this, SLOT( appletAdded( Plasma::Applet*, int ) ) );
-       connect( cont, SIGNAL( appletRemoved( Plasma::Applet* ) ), this, SLOT( appletRemoved( Plasma::Applet* ) ) );
-       connect( m_toolbar.data(), SIGNAL( showApplet( Plasma::Applet* ) ), cont, SLOT( showApplet( Plasma::Applet* ) ) );
-       connect( m_toolbar.data(), SIGNAL( moveApplet( Plasma::Applet*, int, int ) ), cont, SLOT( moveApplet( Plasma::Applet*, int, int ) ) );
+       connect( cont, SIGNAL(appletAdded(Plasma::Applet*,int)), m_toolbar.data(), SLOT(appletAdded(Plasma::Applet*,int)) );
+       connect( m_toolbar.data(), SIGNAL(appletAddedToToolbar(Plasma::Applet*,int)), this, SLOT(appletAdded(Plasma::Applet*,int)) );
+       connect( cont, SIGNAL(appletRemoved(Plasma::Applet*)), this, SLOT(appletRemoved(Plasma::Applet*)) );
+       connect( m_toolbar.data(), SIGNAL(showApplet(Plasma::Applet*)), cont, SLOT(showApplet(Plasma::Applet*)) );
+       connect( m_toolbar.data(), SIGNAL(moveApplet(Plasma::Applet*,int,int)), cont, SLOT(moveApplet(Plasma::Applet*,int,int)) );
    }
 
 }
@@ -132,6 +127,22 @@ Context::ToolbarView::dragLeaveEvent( QDragLeaveEvent *event )
 }
 
 void
+Context::ToolbarView::applyStyleSheet() // SLOT
+{
+    DEBUG_BLOCK
+
+    const QPalette palette = QApplication::palette();
+
+    setStyleSheet( QString( "QFrame#ContextToolbarView { border: 1px ridge %1; " \
+                            "background-color: %2; color: %3; border-radius: 3px; }" \
+                            "QLabel { color: %3; }" )
+                           .arg( palette.color( QPalette::Active, QPalette::Window ).name() )
+                           .arg( The::paletteHandler()->highlightColor().name() )
+                           .arg( palette.color( QPalette::Active, QPalette::HighlightedText ).name() )
+                 );
+}
+
+void
 Context::ToolbarView::toggleConfigMode()
 {
     DEBUG_BLOCK
@@ -158,9 +169,9 @@ Context::ToolbarView::toggleConfigMode()
             if( item )
             {
                 Context::AppletItemOverlay *moveOverlay = new Context::AppletItemOverlay( item, m_toolbar.data()->appletLayout(), this );
-                connect( moveOverlay, SIGNAL( moveApplet( Plasma::Applet*, int, int ) ), m_cont, SLOT( moveApplet( Plasma::Applet*, int, int ) ) );
-                connect( moveOverlay, SIGNAL( moveApplet( Plasma::Applet*, int, int ) ), this, SLOT( refreshOverlays() ) );
-                connect( moveOverlay, SIGNAL( deleteApplet( Plasma::Applet* ) ), this, SLOT( appletRemoved( Plasma::Applet* ) ) );
+                connect( moveOverlay, SIGNAL(moveApplet(Plasma::Applet*,int,int)), m_cont, SLOT(moveApplet(Plasma::Applet*,int,int)) );
+                connect( moveOverlay, SIGNAL(moveApplet(Plasma::Applet*,int,int)), this, SLOT(refreshOverlays()) );
+                connect( moveOverlay, SIGNAL(deleteApplet(Plasma::Applet*)), this, SLOT(appletRemoved(Plasma::Applet*)) );
                 moveOverlay->setPalette( p );
                 moveOverlay->show();
                 moveOverlay->raise();
@@ -232,9 +243,9 @@ Context::ToolbarView::recreateOverlays()
         if( item )
         {
             Context::AppletItemOverlay *moveOverlay = new Context::AppletItemOverlay( item, m_toolbar.data()->appletLayout(), this );
-            connect( moveOverlay, SIGNAL( moveApplet( Plasma::Applet*, int, int ) ), m_cont, SLOT( moveApplet( Plasma::Applet*, int, int ) ) );
-            connect( moveOverlay, SIGNAL( moveApplet( Plasma::Applet*, int, int ) ), this, SLOT( refreshOverlays() ) );
-            connect( moveOverlay, SIGNAL( deleteApplet( Plasma::Applet* ) ), this, SLOT( appletRemoved( Plasma::Applet* ) ) );
+            connect( moveOverlay, SIGNAL(moveApplet(Plasma::Applet*,int,int)), m_cont, SLOT(moveApplet(Plasma::Applet*,int,int)) );
+            connect( moveOverlay, SIGNAL(moveApplet(Plasma::Applet*,int,int)), this, SLOT(refreshOverlays()) );
+            connect( moveOverlay, SIGNAL(deleteApplet(Plasma::Applet*)), this, SLOT(appletRemoved(Plasma::Applet*)) );
             moveOverlay->setPalette( p );
             moveOverlay->show();
             moveOverlay->raise();

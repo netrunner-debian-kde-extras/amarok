@@ -27,7 +27,7 @@ TrackActionButton::TrackActionButton( QWidget *parent, const QAction *act ) : Ic
     if ( parent )
         parent->installEventFilter( this );
     // this is during the labelslide - so we wait a short time with image processing ;-)
-    QTimer::singleShot( 1200, this, SLOT( init() ) );
+    QTimer::singleShot( 1200, this, SLOT(init()) );
 }
 
 bool TrackActionButton::eventFilter( QObject *o, QEvent *e )
@@ -90,7 +90,7 @@ void TrackActionButton::reloadContent( const QSize &sz )
 
     // and a very translucent variant
     for (int i = 0; i < n; ++i)
-        pixel[i] = qRgba(r,g,b, ALPHA/6);
+        pixel[i] = qRgba(r,g,b, ALPHA/3);
 
 #undef ALPHA
 #undef GRAY
@@ -108,14 +108,14 @@ void TrackActionButton::reloadContent( const QSize &sz )
 
 void TrackActionButton::setAction( const QAction *act )
 {
-    disconnect( SIGNAL( clicked() ) );
+    disconnect( SIGNAL(clicked()) );
     m_action = act;
     if ( act )
     {
         m_icon.icon = act->icon();
         setToolTip( act->toolTip() );
-        connect ( this, SIGNAL( clicked() ), act, SLOT( trigger() ) );
-        connect ( act, SIGNAL( changed() ), SLOT( updateAction() ) );
+        connect ( this, SIGNAL(clicked()), act, SLOT(trigger()) );
+        connect ( act, SIGNAL(changed()), SLOT(updateAction()) );
     }
     else
     {
@@ -139,7 +139,7 @@ void TrackActionButton::updateAction()
             setToolTip( act->toolTip() );
         }
         else // old action, stop listening
-            disconnect ( act, SIGNAL( changed() ), this, SLOT( updateAction() ) );
+            disconnect ( act, SIGNAL(changed()), this, SLOT(updateAction()) );
     }
 }
 

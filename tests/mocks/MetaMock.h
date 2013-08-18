@@ -46,7 +46,7 @@ public:
     KUrl playableUrl() const { return m_data.value( Meta::Field::URL ).value<KUrl>(); }
     QString prettyUrl() const { return playableUrl().url(); }
     QString uidUrl() const { return m_data.value( Meta::Field::UNIQUEID ).toString(); }
-    bool isPlayable() const { return false; }
+    QString notPlayableReason() const { return QString( "dummy reason" ); }
     QString comment() const { return m_data.value( Meta::Field::COMMENT ).toString(); }
     qreal bpm() const { return m_data.value( Meta::Field::BPM ).toDouble(); }
     qint64 length() const { return m_data.value( Meta::Field::LENGTH ).toInt(); }
@@ -139,10 +139,10 @@ public:
 class MockAlbum : public Meta::Album
 {
 public:
-    MockAlbum( const QString &name )
+    MockAlbum( const QString &name, const Meta::ArtistPtr &albumArtist = Meta::ArtistPtr() )
         : Meta::Album()
         , m_name( name )
-        , m_albumArtist( Meta::ArtistPtr() ) {}
+        , m_albumArtist( albumArtist ) {}
 
     QString name() const { return m_name; }
     QString prettyName() const { return m_name; }

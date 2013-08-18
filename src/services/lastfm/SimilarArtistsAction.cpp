@@ -15,15 +15,17 @@
  ****************************************************************************************/
 
 #include "SimilarArtistsAction.h"
-#include "playlist/PlaylistController.h"
+
+#include "core/meta/Meta.h"
 #include "core-impl/collections/support/CollectionManager.h"
+#include "playlist/PlaylistController.h"
 
 #include <KIcon>
 
 SimilarArtistsAction::SimilarArtistsAction( QObject *parent )
     : GlobalCollectionArtistAction( i18n( "Play Similar Artists from Last.fm" ), parent )
 {
-    connect( this, SIGNAL( triggered( bool ) ), SLOT( slotTriggered() ) );
+    connect( this, SIGNAL(triggered(bool)), SLOT(slotTriggered()) );
 
     setIcon( KIcon("view-services-lastfm-amarok") );
     setProperty( "popupdropper_svg_id", "lastfm" );
@@ -33,7 +35,7 @@ void SimilarArtistsAction::slotTriggered()
 {
     const QString url = "lastfm://artist/" + artist()->prettyName() + "/similarartists";
     Meta::TrackPtr lastfmtrack = CollectionManager::instance()->trackForUrl( KUrl( url ) );
-    The::playlistController()->insertOptioned( lastfmtrack, Playlist::AppendAndPlay );
+    The::playlistController()->insertOptioned( lastfmtrack, Playlist::OnPlayMediaAction );
 }
 
 #include "SimilarArtistsAction.moc"

@@ -1,5 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2010 Rick W. Chen <stuffcorpse@archlinux.us>                           *
+ * Copyright (c) 2013 Konrad Zemek <konrad.zemek@gmail.com>                             *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -14,42 +15,95 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
-#ifndef RECENTLYPLAYEDLISTWIDGET_H
-#define RECENTLYPLAYEDLISTWIDGET_H
+#ifndef RECENTLY_PLAYED_LIST_WIDGET_H
+#define RECENTLY_PLAYED_LIST_WIDGET_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 
 #include <KIcon>
+#include <KUrl>
 #include <Plasma/ScrollWidget>
 
+#include <QDateTime>
+#include <QGraphicsWidget>
+#include <QLabel>
+#include <QQueue>
+
 class QGraphicsLinearLayout;
+
+class ClickableGraphicsWidget : public QGraphicsWidget
+{
+    Q_OBJECT
+
+public:
+    explicit ClickableGraphicsWidget( const QString &url, QGraphicsItem *parent = 0,
+                                      Qt::WindowFlags wFlags = 0 );
+    ~ClickableGraphicsWidget();
+
+signals:
+    void leftClicked( const QString &url );
+    void middleClicked( const QString &url );
+
+protected:
+    void hoverEnterEvent( QGraphicsSceneHoverEvent *event );
+    void hoverLeaveEvent( QGraphicsSceneHoverEvent *event );
+    void mousePressEvent( QGraphicsSceneMouseEvent *event );
+    void mouseReleaseEvent( QGraphicsSceneMouseEvent *event );
+
+private:
+    const QString m_url;
+};
+
+class TimeDifferenceLabel : public QLabel
+{
+    Q_OBJECT
+
+public:
+    explicit TimeDifferenceLabel( const QDateTime &eventTime, QWidget *parent = 0,
+                                  Qt::WindowFlags wFlags = 0 );
+    ~TimeDifferenceLabel();
+
+public slots:
+    void update();
+
+private:
+    const QDateTime m_eventTime;
+};
 
 class RecentlyPlayedListWidget : public Plasma::ScrollWidget
 {
     Q_OBJECT
 
+    struct RecentlyPlayedTrackData
+    {
+        QDateTime recentlyPlayed;
+        QString displayName;
+        QString trackUrl;
+        QGraphicsWidget *widget;
+    };
+
 public:
     explicit RecentlyPlayedListWidget( QGraphicsWidget *parent = 0 );
-    virtual ~RecentlyPlayedListWidget();
-
-    void clear();
+    ~RecentlyPlayedListWidget();
 
 private slots:
-    void tracksReturned( Meta::TrackList );
-    void trackChanged( Meta::TrackPtr track );
-    void setupTracksData();
-    void startQuery();
-    void updateWidget();
+    void itemLeftClicked( const QString &url );
+    void itemMiddleClicked( const QString &url );
+    void trackChanged( const Meta::TrackPtr &track );
 
 private:
-    void addTrack( const Meta::TrackPtr &track );
-    void removeItem( QGraphicsLayoutItem *item );
-
-    KIcon m_trackIcon;
-    Meta::TrackPtr m_currentTrack;
-    QMap<uint, Meta::TrackPtr> m_recentTracks;
-    QGraphicsLinearLayout *m_layout;
     Q_DISABLE_COPY( RecentlyPlayedListWidget )
+
+    void addTrack( const Meta::TrackPtr &track );
+    void addTrack( const QDateTime &recentlyPlayed, const QString &displayName,
+                   const QString &trackUrl );
+    QGraphicsWidget *addWidgetItem( const RecentlyPlayedTrackData &data );
+
+    Meta::TrackPtr m_currentTrack;
+    QGraphicsLinearLayout *m_layout;
+    QQueue<RecentlyPlayedTrackData> m_recentTracks;
+    KIcon m_trackIcon;
+    QTimer *m_updateTimer;
 };
 
-#endif // RECENTLYPLAYEDLISTWIDGET_H
+#endif // RECENTLY_PLAYED_LIST_WIDGET_H

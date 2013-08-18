@@ -1,6 +1,179 @@
 Amarok ChangeLog
 ================
-(C) 2002-2012 the Amarok authors.
+(C) 2002-2013 the Amarok authors.
+
+
+VERSION 2.8
+  FEATURES:
+   * Tracks from Recently Played List widget can now directly be added to the
+     playlist. (BR 279263, BR 296090)
+
+  CHANGES:
+   * The Jamendo service now uses a higher quality MP3 format instead of Ogg Vorbis.
+   * Added an option whether adding tracks to playlist should start playing. (BR 322428)
+   * Amarok now depends on Qt 4.8.3.
+   * Amarok now uses FindFFMpeg.cmake from kdelibs
+
+  BUGFIXES:
+   * Don't reload Wikipedia applet content if artist/album have not changed. 
+     Patch by Frank Meerkoetter <frank@meerkoetter.org>. (BR 112044)
+   * Jamendo service: Albums are now downloaded directly instead of going via
+     BitTorrent. This is far more reliable and also supports on-the-fly transcoding.
+     (BR 299434)
+   * Work-around Solid UDisks2 backend bug that caused USB Mass Storage devices and iPods
+     not being recognized when connected before Amarok was started. Also fixes a bug where
+     blank devices would appear in Play Media dialog. (BR 322980)
+   * Definitely fix a bug where storing Last.fm credentials in plain-text isn't offered
+     when KWallet is disabled. (BR 315306)
+   * Radio streams from scripted services are now instantly playable. (BR 320718)
+   * Recently Played List widget now keeps its own time for tracks instead of relying on
+     the Last Played statistic. (BR 302485)
+   * Prevent hitting an assertion failure if just removed track from the Local Collection
+     is edited. (BR 322474)
+   * Fixed a regression introduced in 2.8 Beta where tracks in the Local Collection were
+     sometimes forgotten and then found again. (BR 322603)
+   * Fixed invalid SQL queries when you have files or folders with an apostrophe in
+     your collection. (BR 322415)
+   * Fixed organizing/copying/moving tracks to Local Collection on Windows. (BR 279560,
+     BR 302251)
+   * Various usability improvements for the applet toolbar. (BR 197948)
+   * Removed broken Apply button in applets' settings dialog. (BR 322015)
+   * Fix incorrect colors in Context View toolbar when switching themes. (BR 301305)
+   * Many fixes for various bugs with switching desktop color themes at runtime,
+     including OSD, spectrum analyzer, collection browser.
+   * Avoid updating the MPRIS2 Metadata between tracks. (BR 321602)
+
+
+VERSION 2.8-Beta 1
+  FEATURES:
+   * Ctrl+C copies the currently playing artist & title to the clipboard. (BR 228872)
+     Patch by fleissig fleissig <fleissig@yandex.ru>.
+   * Volume fade-out is now also available for pause.
+   * The Files browser now has a Refresh button. (BR 213666)
+   * The active playlist item is animated with a soft glow effect.
+   * Added an audio analyzer visualization applet.
+   * Added a function for resetting the GUI layout back to default state. (BR 300753)
+   * Pressing enter when searching collections now adds found tracks to the playlist and
+     clears the search bar, this is a very convenient way to populate your playlist.
+   * Allow to transcode only certain (different format, playability) tracks when
+     transferring them to a collection; patch by Anmol Ahuja. (BR 312407)
+   * On-Screen-Display fades in/out smoothly.
+   * Added support for .asx playlists; patch by Tatjana Gornak. (BR 170207)
+   * Add Radio GFM radio streams to Cool Stream Script. (BR 317978)
+   * Added options to pause playback on system suspend and to inhibit automatic suspend
+     if playing a track (enabled by default); patch by Anmol Ahuja.
+     (BR 259862) (BR 222571)
+   * Playlist files are now read asynchronously when possible; patch and great deal of
+     refactoring by Tatjana Gornak. (BR 291934)
+   * Added support to filter tracks to scrobble to Last.fm by label. Patch by Vedant
+     Agarwala. (BR 140198)
+   * Added transcoding support for Opus codec if ffmpeg is compiled with support for the
+     libopus library, patch by Martin Brodbeck.
+   * Added keyboard shortcuts for small 2 s seeks (Ctrl + Left/Right) and long 1 minute
+     seeks (Shift + Left/Right) in addition to standard 10 s seeks. Durations are now
+     configurable in amarokrc, see Amarok Handbook. Patch by Anmol Ahuja. (BR 177258)
+   * Added support for files in Opus codec if Amarok is compiled against recent enough
+     TagLib (post 1.8), patch by Martin Brodbeck. (BR 312905)
+   * Added Ctrl+H shortcut to randomize playlist, patch by Harsh Gupta. (BR 208061)
+
+  CHANGES:
+   * Removed LikeBack (a development feature in debug builds). (BR 312498) (BR 252323)
+   * Collection Browser: Artist level was renamed to Track Artist and replaced by Album
+     Artist by default. Various Artists item is no longer shown under Track Artist level.
+   * Removed the splash screen.
+   * Playlist-related actions were harmonized, double-clicking or pressing enter will
+     append tracks to playlist, using any "play media" action or middle-clicking will
+     prepend tracks to queue and immediately start playing. (BR 145468, BR 145490,
+     BR 194549)
+   * When a new collection plugin is enabled, its collections appear immediately without a
+     need for restart.
+   * Update the MusicBrainz tagger to MusicBrainz web service 2, make it show some more
+     good suggestions for tagging, and add some options to help choosing the best results.
+   * Add note about generating .mood files into Moodbar Options; patch by Harsh Gupta with
+     tweaks by Matěj Laitl. (BR 289483)
+   * Amarok now depends on Qt 4.8.2.
+   * Add prepareToQuit() signal to Amarok.Window script bindings; patch by Anmol Ahuja.
+     (BR 241066)
+   * Data CDs are now recognized in Amarok; patch by Anmol Ahuja. (BR 316128)
+   * On-Screen-Display now uses the system font instead of hardcoded sans-serif.
+     (BR 248707)
+   * Fancy behavior of some context menus showing different actions when Shift key is held
+     has been reverted. All entries are now shown all the time.
+   * The dynamic playlist behavior has changed. It will no longer generate "pretty good"
+     playlists that do not fulfill the given biases. Instead it might add no song at all
+     if given impossible-to-fulfill conditions.
+   * The "tracks have been hidden in the playlist" warning when filtering the playlist is
+     now displayed inside the playlist. (BR 260352)
+   * Update tag widget for Layout edit, filter edit, organize collection and guess tag
+     dialog.
+   * When fadeout and/or Replay Gain isn't possible, gray-out related UI elements in order
+     not to fool users.
+
+  BUGFIXES:
+   * When you remove whole directories from the Local Collection and have Watch Folders
+     for Changes enabled, the tracks now disappear from Collection Browser. (BR 311078)
+   * Fix dynamic playlist bug: When "Automatically scroll playlist to current track"
+     was enabled, Amarok would keep scrolling to the bottom. (BR 284214)
+   * Fix a problem where ghost tracks would remain in the Local Collection until the
+     database is wiped. (BR 319084)
+   * Added missing CMake check for QtWebKit. (BR 321598)
+   * Definitely fix a bug where Local Collection wouldn't update in browser. (BR 262504)
+   * Fix crashed caused by race conditions at the end of the track scanning. (BR 319835)
+   * Fix crash when disabling the Free Music Charts script. (BR 321329)
+   * Albums having same name but different album artist won't be mixed together on the
+     playlist if sorting by album is enabled.
+   * Fix crash on startup with KDE 4.11. Patch by Hrvoje Senjan
+     <hrvoje.senjan@gmail.com>. (BR 320855)
+   * Fix tracks not able to be dragged around when playlist is shuffled. (BR 320129)
+   * Prevent Last.fm scrobbles not being submitted until restart due to change in
+     liblastfm 1.0.7. (BR 320219)
+   * Resume Playback on Start will correctly restore paused state, instead
+     of always starting in playing state. (BR 313330)
+   * Optimize removal of tens of thousands of tracks from playlist. (BR 316242)
+   * Fix `amarok --queue` which didn't actually queue the tracks. (BR 317385)
+   * Fix suboptimal initial MusicBrainz tag dialog size by remembering it. (BR 269454)
+   * Fix file-browser becoming empty when a file was moved to trash. (BR 317944)
+   * Fix `amarok --play file.mp3` option didn't actually start playback.
+   * Reason why a particular track is not playable is now shown in playlist tooltip; patch
+     by Anmol Ahuja. (BR 313649)
+   * Pre-apmlifier in equalizer is now only enabled if it is actually supported; patch by
+     Harsh Gupta. (BR 301311)
+   * Fix Amarok crashed while doing "Organize Files" (BR 317980)
+   * Fix Amarok erroneously merges two albums. (BR 216759, BR 272802)
+   * Fix Crash on very long artist names. (BR 276894)
+   * Fix Move tracks to rubbish and the current track cover changes to the deleted cover. (BR 306735)
+   * Fix theoretical configwidget leak in services. (BR 301352)
+   * Fix "Local collection" text label is truncated with large font. (BR 282561)
+   * Fix crash by putting a broadcast in the playlist. (BR 313718)
+   * Fix Keyboard navigates context menu in collection will move two items. (BR 307794)
+   * Fix add track to playlist by double click on arrow in the collection. (BR 279513)
+   * Fix VFAT safe names missing a couple of idiosyncrasies. (BR 312574)
+   * Clarify message when Last.fm streams are not available. (BR 315771)
+   * Fix crash when Dynamic Playlist based on last.fm is aborted. (BR 314243)
+   * Fix Group by directory doesn't work in main playlist. (BR 265415)
+   * Don't remove common labels when editing the tags of multiple tracks. (BR 316043)
+   * Fix vertical positioning of On-Screen-Display. (BR 269788)
+   * Fix OSD sometimes misplaces the font and the font's shadow. (BR 257643)
+   * Prevent inability to save Last.fm password in corner cases. (BR 315306)
+   * Fix "Copy to Collection" window doesn't fit on small screens. (BR 283361)
+   * Fix crash when quitting Amarok with Statistics Synchronization open. (BR 315525)
+   * Fix items moving around when expanded in collection browser. (BR 305602)
+   * Fix Organize collection folder deletion going 'too far'. (BR 314348)
+   * Fix %albumartist% placeholder translates to some strange unicode symbol. (BR 314351)
+   * Fix bumpy fade-out when first used. (BR 312062)
+   * Fix crash when switching/removing organize collection presets. (BR 314344)
+   * Fix crash on start if a playlist source is unavailable. (BR 313460)
+   * Fix Copy/Move to collection picks up wrong destination path and fails silently. (BR 314460)
+   * Cleanup TrackOrganizer. (BR 305291)
+   * Fix Editing Playist Layout Editor. (BR 250594)
+   * Fix Display glitch for rating in verbose playlist. (BR 300118)
+   * Refactoring Ampache service, fix Albums with multiple disks not listed correctly. (BR 249857)
+   * Fix playlist sorting by type. (BR 249338)
+   * Fix subtle bugs when a long fade-out is initiated near the song end.
+   * Don't try to fade-out with phonon backends that don't support it. (vlc)
+   * Fix Can't edit & save an existing equalizer preset. (BR 241874)
+   * Clean up Equalizer Dialog. (BR 274972)
+
 
 VERSION 2.7.1
   CHANGES:
@@ -16,6 +189,7 @@ VERSION 2.7.1
      (BR 313914)
    * Fix typo in Nepomuk query which did not let track numbers of Nepomuk Collection
      tracks show up in Amarok. (BR 311847)
+
 
 VERSION 2.7
   CHANGES:

@@ -80,10 +80,7 @@ class ServiceBrowser : public BrowserCategoryList
 
         static ServiceBrowser    *s_instance;
 
-        QTreeView                *m_serviceListView;
-
         ScriptableServiceManager *m_scriptableServiceManager;
-        bool                      m_usingContextView;
 
         QTimer m_filterTimer;
 

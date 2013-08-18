@@ -22,9 +22,10 @@
 #include "browsers/CollectionTreeItem.h"
 #include "browsers/CollectionTreeItemModel.h"
 #include "browsers/CollectionTreeView.h"
-#include "browsers/collectionbrowser/CollectionTreeItemDelegate.h"
+#include "core/meta/Meta.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
+#include "widgets/PrettyTreeDelegate.h"
 
 #include <KLocale>
 #include <KSqueezedTextLabel>
@@ -42,12 +43,10 @@ TrackSelectWidget::TrackSelectWidget( QWidget* parent )
     setData( Meta::DataPtr() );
 
     m_view = new CollectionTreeView( this );
-    m_view->setAlternatingRowColors( true );
     m_view->setRootIsDecorated( false );
     m_view->setFrameShape( QFrame::NoFrame );
 
-    CollectionTreeItemDelegate* delegate = new CollectionTreeItemDelegate( m_view );
-    m_view->setItemDelegate( delegate );
+    m_view->setItemDelegate( new PrettyTreeDelegate( m_view ) );
 
     QList<int> levelNumbers = Amarok::config( "Collection Browser" ).readEntry( "TreeCategory", QList<int>() );
     QList<CategoryId::CatMenuId> levels;
@@ -56,10 +55,11 @@ TrackSelectWidget::TrackSelectWidget( QWidget* parent )
     if ( levels.isEmpty() )
         levels << CategoryId::Artist << CategoryId::Album;
     m_model = new CollectionTreeItemModel( levels );
+    m_model->setParent( this );
     m_view->setModel( m_model );
 
-    connect( m_view, SIGNAL( itemSelected( CollectionTreeItem* ) ),
-             this, SLOT( recvNewSelection( CollectionTreeItem* ) ) );
+    connect( m_view, SIGNAL(itemSelected(CollectionTreeItem*)),
+             this, SLOT(recvNewSelection(CollectionTreeItem*)) );
 }
 
 TrackSelectWidget::~TrackSelectWidget() {}

@@ -20,17 +20,6 @@
 #include <QMap>
 #include <QString>
 
-#define album_color       Qt::red
-#define albumartist_color Qt::blue
-#define artist_color      Qt::blue
-#define comment_color     Qt::gray
-#define composer_color    Qt::magenta
-#define genre_color       Qt::cyan
-#define title_color       Qt::green
-#define track_color       Qt::yellow
-#define discnr_color      Qt::yellow
-#define year_color        Qt::darkRed
-
 class TagGuesser
 {
     public:
@@ -77,11 +66,6 @@ class TagGuesser
         */
         QMap<qint64,QString> tags() { return m_tags; };
 
-        /**
-        *   @Returns a colored version of the filename
-        */
-        QString coloredFileName();
-
     private:
 
         QMap<qint64,QString> m_tags;        //!< Taglist (e.g. < Meta::valArtist,"some artist" >
@@ -99,11 +83,6 @@ class TagGuesser
         *   @returns    the converted tag
         */
         QString convertTagCaseType( const QString &tag, int type );
-
-        /**
-         * @Returns color name for specified metadata field
-         */
-        QString fieldColor( qint64 field );
 };
 
 #endif /* TAGGUESSER_H */

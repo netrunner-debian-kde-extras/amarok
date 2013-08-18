@@ -19,9 +19,10 @@
 #define AMAROK_ORGANIZECOLLECTIONDIALOG_H
 
 #include "amarok_export.h"
-#include "core/meta/Meta.h"
-#include "FilenameLayoutDialog.h"
-#include "widgets/TokenPool.h"
+#include "core/meta/forward_declarations.h"
+
+#include "widgets/FilenameLayoutWidget.h"
+#include "ui_OrganizeCollectionOptions.h"
 
 #include <KDialog>
 #include <KVBox>
@@ -33,7 +34,52 @@ namespace Ui
     class OrganizeCollectionDialogBase;
 }
 
+class QFrame;
+class KLineEdit;
 class TrackOrganizer;
+
+
+/** A couple of options used in the filename layout dialog and the UmsCollection configuration dialog. */
+class AMAROK_EXPORT OrganizeCollectionOptionWidget : public QGroupBox, public Ui::OrganizeCollectionsOptions
+{
+    Q_OBJECT
+
+    public:
+        OrganizeCollectionOptionWidget( QWidget *parent = 0 );
+
+        bool asciiOnly() const { return asciiCheck->isChecked(); }
+        void setAsciiOnly( bool enable ) { asciiCheck->setChecked( enable ); }
+        bool vfatCompatible() const { return vfatCheck->isChecked(); }
+        void setVfatCompatible( bool enable ) { vfatCheck->setChecked( enable ); }
+        bool postfixThe() const { return ignoreTheCheck->isChecked(); }
+        void setPostfixThe( bool enable ) { ignoreTheCheck->setChecked( enable ); }
+        bool replaceSpaces() const { return spaceCheck->isChecked(); }
+        void setReplaceSpaces( bool enable ) { spaceCheck->setChecked( enable ); }
+        QString regexpText() const { return regexpEdit->text(); }
+        void setRegexpText( const QString &text ) { regexpEdit->setText( text ); }
+        QString replaceText() const { return replaceEdit->text(); }
+        void setReplaceText( const QString &text ) { replaceEdit->setText( text ); }
+
+    signals:
+        void optionsChanged();
+};
+
+
+/** A FilenameLayoutWidget that set's the needed tokens for organizing a collection.
+    Note: This widget is also used in the UmsCollection dialog at
+    src/core-impl/collections/umsCollection/UmsCollection.cpp */
+class AMAROK_EXPORT OrganizeCollectionWidget : public FilenameLayoutWidget
+{
+    Q_OBJECT
+
+    public:
+        explicit OrganizeCollectionWidget( QWidget *parent = 0 );
+        virtual ~OrganizeCollectionWidget() {}
+
+    protected:
+        QString buildFormatTip() const;
+};
+
 
 class AMAROK_EXPORT OrganizeCollectionDialog : public KDialog
 {
@@ -61,10 +107,8 @@ class AMAROK_EXPORT OrganizeCollectionDialog : public KDialog
 
     private slots:
         void previewNextBatch();
-        void slotOrganizerFinished();
 
     private:
-        QString buildFormatTip() const;
         QString buildFormatString() const;
         QString commonPrefix( const QStringList &list ) const;
         void toggleDetails();
@@ -73,9 +117,11 @@ class AMAROK_EXPORT OrganizeCollectionDialog : public KDialog
         void init();
 
         Ui::OrganizeCollectionDialogBase *ui;
-        FilenameLayoutDialog *m_filenameLayoutDialog;
+
+        OrganizeCollectionWidget *m_organizeCollectionWidget;
+        OrganizeCollectionOptionWidget* m_optionsWidget;
+
         TrackOrganizer *m_trackOrganizer;
-        bool m_trackOrganizerDone;
         bool m_detailed;
         Meta::TrackList m_allTracks;
         QString m_targetFileExtension;

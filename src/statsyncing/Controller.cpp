@@ -20,6 +20,7 @@
 #include "MainWindow.h"
 #include "amarokconfig.h"
 #include "core/interfaces/Logger.h"
+#include "core/meta/Meta.h"
 #include "core/support/Amarok.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
@@ -70,7 +71,7 @@ Controller::Controller( QObject* parent )
     connect( m_updateNowPlayingTimer, SIGNAL(timeout()),
              SLOT(slotUpdateNowPlayingWithCurrentTrack()) );
     // we need to reset m_lastSubmittedNowPlayingTrack when a track is played twice
-    connect( engine, SIGNAL(trackChanged(Meta::TrackPtr)),
+    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)),
              SLOT(slotResetLastSubmittedNowPlayingTrack()) );
 }
 

@@ -27,6 +27,7 @@
 #include "PodcastCategory.h"
 #include "SvgHandler.h"
 #include <ThreadWeaver/Weaver>
+#include "widgets/PrettyTreeRoles.h"
 
 #include <KIcon>
 
@@ -65,215 +66,200 @@ PlaylistBrowserNS::PodcastModel::destroy()
 
 PlaylistBrowserNS::PodcastModel::PodcastModel()
     : PlaylistBrowserModel( PlaylistManager::PodcastChannel )
-    , m_setNewAction( 0 )
 {
     s_instance = this;
-    m_setNewAction = new QAction( KIcon( "rating" ),
-                                  i18nc( "toggle the \"new\" status of this podcast episode",
-                                         "&New" ),
-                                  this
-                                );
-    m_setNewAction->setProperty( "popupdropper_svg_id", "new" );
-    m_setNewAction->setCheckable( true );
-    connect( m_setNewAction, SIGNAL(triggered(bool)), SLOT(slotSetNew(bool)) );
-}
-
-PlaylistBrowserNS::PodcastModel::~PodcastModel()
-{
 }
 
 bool
-PlaylistBrowserNS::PodcastModel::isOnDisk( Podcasts::PodcastMetaCommon *pmc ) const
+PlaylistBrowserNS::PodcastModel::isOnDisk( PodcastEpisodePtr episode ) const
 {
     bool isOnDisk = false;
-    if( pmc->podcastType() == Podcasts::EpisodeType )
-    {
-        Podcasts::PodcastEpisode *episode = static_cast<Podcasts::PodcastEpisode *>( pmc );
-        KUrl episodeFile( episode->localUrl() );
+    KUrl episodeFile( episode->localUrl() );
 
-        if( !episodeFile.isEmpty() )
-        {
-            isOnDisk = QFileInfo( episodeFile.toLocalFile() ).exists();
-            //reset localUrl because the file is not there.
-            if( !isOnDisk )
-                episode->setLocalUrl( KUrl() );
-        }            
+    if( !episodeFile.isEmpty() )
+    {
+        isOnDisk = QFileInfo( episodeFile.toLocalFile() ).exists();
+        // reset localUrl because the file is not there.
+        // FIXME: changing a podcast in innoncent-looking getter method is convoluted
+        if( !isOnDisk )
+            episode->setLocalUrl( KUrl() );
     }
 
     return isOnDisk;
 }
 
 QVariant
-PlaylistBrowserNS::PodcastModel::icon( Podcasts::PodcastMetaCommon *pmc ) const
+PlaylistBrowserNS::PodcastModel::icon( const PodcastChannelPtr &channel ) const
 {
-    Podcasts::PodcastChannel *channel = 0;
-    Podcasts::PodcastEpisode *episode = 0;
     QStringList emblems;
-
-    // I hope we are caching this icon somehow and not creating it every time new (Ralf)
-
-    switch( pmc->podcastType() )
+    //TODO: only check visible episodes. For now those are all returned by episodes().
+    foreach( const Podcasts::PodcastEpisodePtr ep, channel->episodes() )
     {
-        case Podcasts::ChannelType:
-            channel = static_cast<Podcasts::PodcastChannel *>( pmc );
-            //TODO: only check visible episodes. For now those are all returned by episodes().
-            foreach( const Podcasts::PodcastEpisodePtr ep, channel->episodes() )
-            {
-                if( ep->isNew() )
-                {
-                    emblems << "rating";
-                    break;
-                }
-            }
-
-            if( channel->hasImage() )
-            {
-                QSize size( channel->image().size() );
-                QPixmap pixmap( 32, 32 );
-                pixmap.fill( Qt::transparent );
-
-                size.scale( 32, 32, Qt::KeepAspectRatio );
-
-                int x = 32 / 2 - size.width()  / 2;
-                int y = 32 / 2 - size.height() / 2;
-
-                QPainter p( &pixmap );
-                p.drawPixmap( x, y,
-                              QPixmap::fromImage( channel->image().scaled( size,
-                                                                           Qt::KeepAspectRatio,
-                                                                           Qt::SmoothTransformation ) ) );
-
-                // if it's a new episode draw the overlay:
-                if( !emblems.isEmpty() )
-                {
-                    // draw the overlay the same way KIconLoader does:
-                    p.drawPixmap( 2, 32 - 16 - 2, KIcon( "rating" ).pixmap( 16, 16 ) );
-                }
-
-                p.end();
-
-                return pixmap;
-            }
-            else
-            {
-                return KIcon( "podcast-amarok", 0, emblems ).pixmap( 32, 32 );
-            }
-
-        case Podcasts::EpisodeType:
-            episode = static_cast<Podcasts::PodcastEpisode *>( pmc );
-
-            if( isOnDisk( pmc ) )
-                emblems << "go-down";
-
-            if( episode->isNew() )
-                return KIcon( "rating", 0, emblems ).pixmap( 24, 24 );
-            else
-                return KIcon( "podcast-amarok", 0, emblems ).pixmap( 24, 24 );
+        if( ep->isNew() )
+        {
+            emblems << "rating";
+            break;
+        }
     }
 
-    return QVariant();
+    if( channel->hasImage() )
+    {
+        QSize size( channel->image().size() );
+        QPixmap pixmap( 32, 32 );
+        pixmap.fill( Qt::transparent );
+
+        size.scale( 32, 32, Qt::KeepAspectRatio );
+
+        int x = 32 / 2 - size.width()  / 2;
+        int y = 32 / 2 - size.height() / 2;
+
+        QPainter p( &pixmap );
+        p.drawPixmap( x, y, QPixmap::fromImage( channel->image().scaled( size,
+                Qt::KeepAspectRatio, Qt::SmoothTransformation ) ) );
+
+        // if it's a new episode draw the overlay:
+        if( !emblems.isEmpty() )
+            // draw the overlay the same way KIconLoader does:
+            p.drawPixmap( 2, 32 - 16 - 2, KIcon( "rating" ).pixmap( 16, 16 ) );
+        p.end();
+
+        return pixmap;
+    }
+    else
+        return KIcon( "podcast-amarok", 0, emblems ).pixmap( 32, 32 );
+}
+
+QVariant
+PlaylistBrowserNS::PodcastModel::icon( const PodcastEpisodePtr &episode ) const
+{
+    QStringList emblems;
+    if( isOnDisk( episode ) )
+        emblems << "go-down";
+
+    if( episode->isNew() )
+        return KIcon( "rating", 0, emblems ).pixmap( 24, 24 );
+    else
+        return KIcon( "podcast-amarok", 0, emblems ).pixmap( 24, 24 );
 }
 
 QVariant
 PlaylistBrowserNS::PodcastModel::data( const QModelIndex &idx, int role ) const
 {
-    if( idx.isValid() )
+    if( !idx.isValid() )
+        return PlaylistBrowserModel::data( idx, role );
+
+    if( IS_TRACK(idx) )
+        return episodeData( episodeForIndex( idx ), idx, role );
+    else
+        return channelData( channelForIndex( idx ), idx, role );
+}
+
+QVariant
+PlaylistBrowserNS::PodcastModel::channelData( const PodcastChannelPtr &channel,
+                                              const QModelIndex &idx, int role ) const
+{
+    if( !channel )
+        return QVariant();
+
+    switch( role )
     {
-        Podcasts::PodcastMetaCommon *pmc;
-        if( IS_TRACK(idx) )
-            pmc = dynamic_cast<Podcasts::PodcastMetaCommon *>( trackFromIndex( idx ).data() );
-        else
-            //HACK: get rid of getPlaylist()
-            pmc = dynamic_cast<Podcasts::PodcastMetaCommon *>( playlistFromIndex( idx ).data() );
-
-        if( !pmc )
-            return QVariant();
-
-        switch( role )
-        {
-            case Qt::DisplayRole:
-            case Qt::ToolTipRole:
+        case Qt::DisplayRole:
+        case Qt::ToolTipRole:
+            switch( idx.column() )
             {
-                switch( idx.column() )
+                case PlaylistBrowserModel::PlaylistItemColumn:
+                    return channel->title();
+                case SubtitleColumn:
+                    return channel->subtitle();
+                case AuthorColumn:
+                    return channel->author();
+                case KeywordsColumn:
+                    return channel->keywords();
+                case ImageColumn:
                 {
-                    case PlaylistBrowserModel::PlaylistItemColumn:
-                        return pmc->title();
-
-                    case SubtitleColumn:
-                        return pmc->subtitle();
-
-                    case AuthorColumn:
-                        return pmc->author();
-
-                    case KeywordsColumn:
-                        return pmc->keywords();
-
-                    case FilesizeColumn:
-                        if( pmc->podcastType() == Podcasts::EpisodeType )
-                            return static_cast<Podcasts::PodcastEpisode *>( pmc )
-                                ->filesize();
-                        break;
-
-                    case ImageColumn:
-                        if( pmc->podcastType() == Podcasts::ChannelType )
-                        {
-                            Podcasts::PodcastChannel *pc =
-                                    static_cast<Podcasts::PodcastChannel *>( pmc );
-                            KUrl imageUrl( PodcastImageFetcher::cachedImagePath( pc ) );
-
-                            if( !QFile( imageUrl.toLocalFile() ).exists() )
-                            {
-                                imageUrl = pc->imageUrl();
-                            }
-                            return imageUrl;
-                        }
-                        break;
-
-                    case DateColumn:
-                        if( pmc->podcastType() == Podcasts::EpisodeType )
-                            return static_cast<Podcasts::PodcastEpisode *>( pmc )
-                                ->pubDate();
-                        else
-                            return static_cast<Podcasts::PodcastChannel *>( pmc )
-                                ->subscribeDate();
-
-                    case IsEpisodeColumn:
-                        return bool( pmc->podcastType() == Podcasts::EpisodeType );
+                    KUrl imageUrl( PodcastImageFetcher::cachedImagePath( channel ) );
+                    if( !QFile( imageUrl.toLocalFile() ).exists() )
+                        imageUrl = channel->imageUrl();
+                    return imageUrl;
                 }
-                break;
+                case DateColumn:
+                    channel->subscribeDate();
+                case IsEpisodeColumn:
+                    return false;
             }
-
-            case ShortDescriptionRole:
+            break;
+        case PrettyTreeRoles::ByLineRole:
+            if( idx.column() == PlaylistBrowserModel::ProviderColumn )
             {
-                if( idx.column() == PlaylistBrowserModel::PlaylistItemColumn )
-                    return pmc->description();
-                break;
+                Playlists::PlaylistProvider *provider = providerForIndex( idx );
+                if( provider )
+                    return i18ncp( "number of podcasts from one source",
+                                    "One Channel", "%1 channels",
+                                    provider->playlists().count() );
             }
+            if( idx.column() == PlaylistBrowserModel::PlaylistItemColumn )
+                return channel->description();
+            break;
+        case PrettyTreeRoles::HasCoverRole:
+            return idx.column() == PlaylistBrowserModel::PlaylistItemColumn;
+        case Qt::DecorationRole:
+            if( idx.column() == PlaylistBrowserModel::PlaylistItemColumn )
+                return icon( channel );
+            break;
+    }
 
-            case PlaylistBrowserModel::ByLineRole:
+    return PlaylistBrowserModel::data( idx, role );
+}
+
+QVariant
+PlaylistBrowserNS::PodcastModel::episodeData( const PodcastEpisodePtr &episode,
+                                              const QModelIndex &idx, int role ) const
+{
+    if( !episode )
+        return QVariant();
+
+    switch( role )
+    {
+        case Qt::DisplayRole:
+        case Qt::ToolTipRole:
+            switch( idx.column() )
             {
-                if( idx.column() == PlaylistBrowserModel::ProviderColumn )
-                {
-                    Playlists::PlaylistProvider *provider = providerForIndex( idx );
-                    if( provider )
-                        return i18ncp( "number of podcasts from one source",
-                                       "One Channel", "%1 channels",
-                                       provider->playlists().count() );
-                }
-                break;
+                case PlaylistBrowserModel::PlaylistItemColumn:
+                    return episode->title();
+                case SubtitleColumn:
+                    return episode->subtitle();
+                case AuthorColumn:
+                    return episode->author();
+                case KeywordsColumn:
+                    return episode->keywords();
+                case FilesizeColumn:
+                    return episode->filesize();
+                case DateColumn:
+                    return episode->pubDate();
+                case IsEpisodeColumn:
+                    return true;
             }
-
-            case Qt::DecorationRole:
+            break;
+        case PrettyTreeRoles::ByLineRole:
+            if( idx.column() == PlaylistBrowserModel::ProviderColumn )
             {
-                if( idx.column() == PlaylistBrowserModel::PlaylistItemColumn )
-                        return icon( pmc );
-                break;
+                Playlists::PlaylistProvider *provider = providerForIndex( idx );
+                if( provider )
+                    return i18ncp( "number of podcasts from one source",
+                                    "One Channel", "%1 channels",
+                                    provider->playlists().count() );
             }
-
-            case ActionCountRole:
-            case ActionRole:
-                return PlaylistBrowserModel::data( idx, role );
-        }
+            if( idx.column() == PlaylistBrowserModel::PlaylistItemColumn )
+                return episode->description();
+            break;
+        case PrettyTreeRoles::HasCoverRole:
+            return ( idx.column() == PlaylistBrowserModel::PlaylistItemColumn );
+        case Qt::DecorationRole:
+            if( idx.column() == PlaylistBrowserModel::PlaylistItemColumn )
+                return icon( episode );
+            break;
+        case EpisodeIsNewRole:
+            return episode->isNew();
     }
 
     return PlaylistBrowserModel::data( idx, role );
@@ -282,10 +268,18 @@ PlaylistBrowserNS::PodcastModel::data( const QModelIndex &idx, int role ) const
 bool
 PlaylistBrowserNS::PodcastModel::setData( const QModelIndex &idx, const QVariant &value, int role )
 {
-    DEBUG_BLOCK
+    PodcastEpisodePtr episode = episodeForIndex( idx );
+    if( !episode || !value.canConvert<bool>() || role != EpisodeIsNewRole )
+    {
+        return PlaylistBrowserModel::setData( idx, value, role );
+    }
 
-    //TODO: implement setNew.
-    return PlaylistBrowserModel::setData( idx, value, role );
+    bool checked = value.toBool();
+    episode->setNew( checked );
+    if( checked )
+        emit episodeMarkedAsNew( episode );
+    emit dataChanged( idx, idx );
+    return true;
 }
 
 int
@@ -294,31 +288,6 @@ PlaylistBrowserNS::PodcastModel::columnCount( const QModelIndex &parent ) const
     Q_UNUSED( parent )
     return ColumnCount;
 }
-
-//Qt::ItemFlags
-//PlaylistBrowserNS::PodcastModel::flags( const QModelIndex &idx ) const
-//{
-//    if( idx.row() == -1 )
-//    {
-//        switch( idx.column() )
-//        {
-//            case ProviderColumn:
-//                return Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
-//            default: break;
-//        }
-//    }
-//
-//    Qt::ItemFlags channelFlags;
-//    if( podcastItemType( idx ) == Podcasts::ChannelType )
-//    {
-//        channelFlags = Qt::ItemIsDropEnabled;
-//        if( idx.column() == ProviderColumn )
-//            channelFlags |= Qt::ItemIsEditable;
-//    }
-//
-//    return ( Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled
-//                 | channelFlags );
-//}
 
 QVariant
 PlaylistBrowserNS::PodcastModel::headerData( int section, Qt::Orientation orientation,
@@ -385,74 +354,6 @@ PlaylistBrowserNS::PodcastModel::refreshPodcasts()
     }
 }
 
-QActionList
-PlaylistBrowserNS::PodcastModel::actionsFor( const QModelIndex &idx ) const
-{
-    if( !idx.isValid() )
-    {
-        //TODO: add podcast action
-        return QActionList();
-    }
-
-    QActionList actions = PlaylistBrowserModel::actionsFor( idx );
-
-    /* by default a list of podcast episodes can only be changed to isNew = false or
-       isKeep = false, except when all selected episodes are the same state */
-    m_setNewAction->setChecked( false );
-
-    Podcasts::PodcastEpisodeList episodes = m_setNewAction->data().value<Podcasts::PodcastEpisodeList>();
-    if( IS_TRACK(idx) )
-        episodes << episodeForIndex( idx );
-    else
-        episodes << channelForIndex( idx )->episodes();
-
-    foreach( const Podcasts::PodcastEpisodePtr episode, episodes )
-    {
-        if( episode->isNew() )
-            m_setNewAction->setChecked( true );
-    }
-
-    m_setNewAction->setData( QVariant::fromValue( episodes ) );
-
-    actions << m_setNewAction;
-
-    return actions;
-}
-
-void
-PlaylistBrowserNS::PodcastModel::slotSetNew( bool newState )
-{
-    Q_UNUSED( newState );
-    QAction *action = qobject_cast<QAction *>( QObject::sender() );
-    if( action == 0 )
-        return;
-
-    Podcasts::PodcastEpisodeList episodes = action->data().value<Podcasts::PodcastEpisodeList>();
-
-    foreach( Podcasts::PodcastEpisodePtr episode, episodes )
-    {
-        if( !episode.isNull() )
-        {
-            episode->setNew( action->isChecked() );
-
-            if( action->isChecked() )
-                emit episodeMarkedAsNew( episode );
-        }
-    }
-}
-
-int
-PlaylistBrowserNS::PodcastModel::podcastItemType( const QModelIndex &idx ) const
-{
-    if( !idx.isValid() )
-        return NoType;
-
-    if( IS_TRACK(idx) )
-        return EpisodeType;
-    else
-        return ChannelType;
-}
-
 Podcasts::PodcastChannelPtr
 PlaylistBrowserNS::PodcastModel::channelForIndex( const QModelIndex &idx ) const
 {
@@ -473,5 +374,3 @@ PlaylistBrowserNS::PodcastModel::podcastEpisodesToTracks( Podcasts::PodcastEpiso
         tracks << Meta::TrackPtr::staticCast( episode );
     return tracks;
 }
-
-#include "PodcastModel.moc"

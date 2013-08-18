@@ -18,9 +18,11 @@
 #ifndef PERMANENTSTATISTICSSTORE_H
 #define PERMANENTSTATISTICSSTORE_H
 
-#include "core/meta/Meta.h"
+#include "amarok_export.h"
+#include "core/meta/Observer.h"
 #include "core/meta/Statistics.h"
 
+#include <QDateTime>
 #include <QReadWriteLock>
 
 /**

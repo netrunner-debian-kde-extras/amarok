@@ -4,6 +4,7 @@
  * Copyright (c) 2004-2008 Mark Kretschmann <kretschmann@kde.org>                       *
  * Copyright (c) 2008 Seb Ruiz <ruiz@kde.org>                                           *
  * Copyright (c) 2008 Sebastian Trueg <trueg@kde.org>                                   *
+ * Copyright (c) 2013 Ralf Engels <ralf-engels@gmx.de>                                  *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,10 +21,9 @@
 
 #include "CollectionSetup.h"
 
-#include "core-impl/collections/support/CollectionManager.h"
-#include "core-impl/collections/db/sql/SqlCollection.h"
-#include "core/support/Debug.h"
 #include "amarokconfig.h"
+#include "core/support/Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "dialogs/DatabaseImporterDialog.h"
 
 #include <KLocale>
@@ -33,6 +33,7 @@
 
 #include <QAction>
 #include <QApplication>
+#include <QCheckBox>
 #include <QDir>
 #include <QFile>
 #include <QLabel>
@@ -43,10 +44,9 @@ CollectionSetup* CollectionSetup::s_instance;
 
 CollectionSetup::CollectionSetup( QWidget *parent )
         : QWidget( parent )
-        , Ui::CollectionConfig()
-        , m_ui( new Ui::CollectionConfig() )
+        , m_rescanDirAction( new QAction( this ) )
 {
-    m_ui->setupUi(this);
+    m_ui.setupUi(this);
 
     setSizePolicy( QSizePolicy::Expanding, QSizePolicy::Expanding );
 
@@ -54,45 +54,52 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     s_instance = this;
 
     if( KGlobalSettings::graphicEffectsLevel() != KGlobalSettings::NoEffects )
-        m_ui->view->setAnimated( true );
-    connect( m_ui->view, SIGNAL( clicked( const QModelIndex & ) ), this, SIGNAL( changed() ) );
+        m_ui.view->setAnimated( true );
+    connect( m_ui.view, SIGNAL(clicked(QModelIndex)),
+             this, SIGNAL(changed()) );
 
-    KPushButton *rescan = new KPushButton( KIcon( "collection-rescan-amarok" ), i18n( "Full rescan" ), m_ui->buttonContainer );
+    connect( m_ui.view, SIGNAL(pressed(QModelIndex)),
+             this, SLOT(slotPressed(QModelIndex)) );
+    connect( m_rescanDirAction, SIGNAL(triggered()),
+             this, SLOT(slotRescanDirTriggered()) );
+
+    KPushButton *rescan = new KPushButton( KIcon( "collection-rescan-amarok" ), i18n( "Full rescan" ), m_ui.buttonContainer );
     rescan->setToolTip( i18n( "Rescan your entire collection. This will <i>not</i> delete any statistics." ) );
-    connect( rescan, SIGNAL( clicked() ), CollectionManager::instance(), SLOT( startFullScan() ) );
+    connect( rescan, SIGNAL(clicked()), CollectionManager::instance(), SLOT(startFullScan()) );
 
-    KPushButton *import = new KPushButton( KIcon( "tools-wizard" ), i18n( "Import" ), m_ui->buttonContainer );
+    KPushButton *import = new KPushButton( KIcon( "tools-wizard" ), i18n( "Import" ), m_ui.buttonContainer );
     import->setToolTip( i18n( "Import collection and/or statistics from older Amarok versions, the batch scanner or media players." ) );
-    connect( import, SIGNAL( clicked() ), this, SLOT( importCollection() ) );
+    connect( import, SIGNAL(clicked()), this, SLOT(importCollection()) );
 
     QHBoxLayout *buttonLayout = new QHBoxLayout();
     buttonLayout->addWidget( rescan );
     buttonLayout->addWidget( import );
-    m_ui->buttonContainer->setLayout( buttonLayout );
+    m_ui.buttonContainer->setLayout( buttonLayout );
 
-    m_recursive = new QCheckBox( i18n("&Scan folders recursively (requires full rescan if newly checked)"), m_ui->checkboxContainer );
-    m_monitor   = new QCheckBox( i18n("&Watch folders for changes"), m_ui->checkboxContainer );
-    connect( m_recursive, SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
-    connect( m_monitor  , SIGNAL( toggled( bool ) ), this, SIGNAL( changed() ) );
+    m_recursive = new QCheckBox( i18n("&Scan folders recursively (requires full rescan if newly checked)"), m_ui.checkboxContainer );
+    m_monitor   = new QCheckBox( i18n("&Watch folders for changes"), m_ui.checkboxContainer );
+    connect( m_recursive, SIGNAL(toggled(bool)), this, SIGNAL(changed()) );
+    connect( m_monitor  , SIGNAL(toggled(bool)), this, SIGNAL(changed()) );
 
     QVBoxLayout *checkboxLayout = new QVBoxLayout();
     checkboxLayout->addWidget( m_recursive );
     checkboxLayout->addWidget( m_monitor );
-    m_ui->checkboxContainer->setLayout( checkboxLayout );
+    m_ui.checkboxContainer->setLayout( checkboxLayout );
 
     m_recursive->setToolTip( i18n( "If selected, Amarok will read all subfolders." ) );
-    m_monitor->setToolTip(   i18n( "If selected, the collection folders will be watched for changes.\nThe watcher will not notice changes behind symbolic links." ) );
+    m_monitor->setToolTip( i18n( "If selected, the collection folders will be watched "
+            "for changes.\nThe watcher will not notice changes behind symbolic links." ) );
 
     m_recursive->setChecked( AmarokConfig::scanRecursively() );
     m_monitor->setChecked( AmarokConfig::monitorChanges() );
 
     // set the model _after_ constructing the checkboxes
-    m_model = new CollectionFolder::Model();
-    m_ui->view->setModel( m_model );
+    m_model = new CollectionFolder::Model( this );
+    m_ui.view->setModel( m_model );
     #ifndef Q_OS_WIN
-    m_ui->view->setRootIndex( m_model->setRootPath( QDir::rootPath() ) );
+    m_ui.view->setRootIndex( m_model->setRootPath( QDir::rootPath() ) );
     #else
-    m_ui->view->setRootIndex( m_model->setRootPath( m_model->myComputer().toString() ) );
+    m_ui.view->setRootIndex( m_model->setRootPath( m_model->myComputer().toString() ) );
     #endif
 
     Collections::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
@@ -103,20 +110,8 @@ CollectionSetup::CollectionSetup( QWidget *parent )
     foreach( const QString &dir, dirs )
     {
         QModelIndex index = m_model->index( dir );
-        m_ui->view->scrollTo( index, QAbstractItemView::EnsureVisible );
+        m_ui.view->scrollTo( index, QAbstractItemView::EnsureVisible );
     }
-}
-
-bool
-CollectionSetup::hasChanged() const
-{
-    Collections::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
-    QStringList collectionFolders = primaryCollection ? primaryCollection->property( "collectionFolders" ).toStringList() : QStringList();
-
-    return
-        m_model->directories() != collectionFolders ||
-        m_recursive->isChecked() != AmarokConfig::scanRecursively() ||
-        m_monitor->isChecked() != AmarokConfig::monitorChanges();
 }
 
 void
@@ -141,12 +136,25 @@ CollectionSetup::writeConfig()
     }
 }
 
-void
-CollectionSetup::importCollection()
+bool
+CollectionSetup::hasChanged() const
 {
-    DatabaseImporterDialog *dlg = new DatabaseImporterDialog( this );
-    dlg->exec(); // be modal to avoid messing about by the user in the application
+    Collections::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
+    QStringList collectionFolders = primaryCollection ? primaryCollection->property( "collectionFolders" ).toStringList() : QStringList();
+
+    return
+        m_model->directories() != collectionFolders ||
+        m_recursive->isChecked() != AmarokConfig::scanRecursively() ||
+        m_monitor->isChecked() != AmarokConfig::monitorChanges();
 }
+
+bool
+CollectionSetup::recursive() const
+{ return m_recursive && m_recursive->isChecked(); }
+
+bool
+CollectionSetup::monitor() const
+{ return m_monitor && m_monitor->isChecked(); }
 
 const QString
 CollectionSetup::modelFilePath( const QModelIndex &index ) const
@@ -155,14 +163,82 @@ CollectionSetup::modelFilePath( const QModelIndex &index ) const
 }
 
 
+void
+CollectionSetup::importCollection()
+{
+    DatabaseImporterDialog *dlg = new DatabaseImporterDialog( this );
+    dlg->exec(); // be modal to avoid messing about by the user in the application
+}
+
+void
+CollectionSetup::slotPressed( const QModelIndex &index )
+{
+    DEBUG_BLOCK
+
+    // --- show context menu on right mouse button
+    if( ( QApplication::mouseButtons() & Qt::RightButton ) )
+    {
+        m_currDir = modelFilePath( index );
+        debug() << "Setting current dir to " << m_currDir;
+
+        // check if there is an sql collection covering the directory
+        // it's covered, so we can show the rescan option
+        if( isDirInCollection( m_currDir ) )
+        {
+            m_rescanDirAction->setText( i18n( "Rescan '%1'", m_currDir ) );
+            QMenu menu;
+            menu.addAction( m_rescanDirAction );
+            menu.exec( QCursor::pos() );
+        }
+    }
+}
+
+void
+CollectionSetup::slotRescanDirTriggered()
+{
+    DEBUG_BLOCK
+    CollectionManager::instance()->startIncrementalScan( m_currDir );
+}
+
+
+bool
+CollectionSetup::isDirInCollection( const QString& path ) const
+{
+    DEBUG_BLOCK
+
+    Collections::Collection *primaryCollection = CollectionManager::instance()->primaryCollection();
+    QStringList collectionFolders = primaryCollection ? primaryCollection->property( "collectionFolders" ).toStringList() : QStringList();
+
+    KUrl url = KUrl( path );
+    KUrl parentUrl;
+    foreach( const QString &dir, collectionFolders )
+    {
+        debug() << "Collection Location: " << dir;
+        debug() << "path: " << path;
+        debug() << "scan Recursively: " << AmarokConfig::scanRecursively();
+        parentUrl.setPath( dir );
+        if ( !AmarokConfig::scanRecursively() )
+        {
+            if ( ( dir == path ) || ( QString( dir + '/' ) == path ) )
+                return true;
+        }
+        else //scan recursively
+        {
+            if ( parentUrl.isParentOf( path ) )
+                return true;
+        }
+    }
+    return false;
+}
+
 //////////////////////////////////////////////////////////////////////////////////////////
 // CLASS Model
 //////////////////////////////////////////////////////////////////////////////////////////
 
 namespace CollectionFolder {
 
-    Model::Model()
-        : QFileSystemModel()
+    Model::Model( QObject *parent )
+        : QFileSystemModel( parent )
     {
         setFilter( QDir::AllDirs | QDir::NoDotAndDotDot );
     }
@@ -337,12 +413,6 @@ namespace CollectionFolder {
         return false;
     }
 
-    /**
-     * Check the logical recursive difference of root and excludePath.
-     * For example, if excludePath is a grandchild of root, then this method
-     * will check all of the children of root except the one that is the
-     * parent of excludePath, as well as excludePath's siblings.
-     */
     void
     Model::checkRecursiveSubfolders( const QString &root, const QString &excludePath )
     {
@@ -364,4 +434,3 @@ namespace CollectionFolder {
     }
 
 } //namespace Collection
-

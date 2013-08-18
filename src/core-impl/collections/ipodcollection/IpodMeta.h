@@ -20,6 +20,7 @@
 #include "MetaValues.h"
 #include "core/meta/Meta.h"
 #include "core/meta/Statistics.h"
+#include "core/meta/TrackEditor.h"
 
 #include <QReadWriteLock>
 
@@ -36,7 +37,7 @@ namespace IpodMeta
      * proxied in the MemoMeta track. All methods in this class are thread-safe with a few
      * exceptions that are noted in relevant method docstrings.
      */
-    class Track : public Meta::Track, public Meta::Statistics
+    class Track : public Meta::Track, public Meta::Statistics, public Meta::TrackEditor
     {
         public:
             /**
@@ -52,10 +53,6 @@ namespace IpodMeta
 
             virtual ~Track();
 
-            // Meta::MetaCapability methods:
-            virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-            virtual Capabilities::Capability *createCapabilityInterface( Capabilities::Capability::Type type );
-
             // Meta::Base methods:
             virtual QString name() const;
 
@@ -63,7 +60,7 @@ namespace IpodMeta
             virtual KUrl playableUrl() const;
             virtual QString prettyUrl() const;
             virtual QString uidUrl() const;
-            virtual bool isPlayable() const;
+            virtual QString notPlayableReason() const;
 
             virtual Meta::AlbumPtr album() const;
             virtual Meta::ArtistPtr artist() const;
@@ -91,7 +88,21 @@ namespace IpodMeta
             virtual bool inCollection() const;
             virtual Collections::Collection* collection() const;
 
+            virtual Meta::TrackEditorPtr editor();
             virtual Meta::StatisticsPtr statistics();
+
+            // Meta::TrackEditor methods:
+            virtual void setAlbum( const QString &newAlbum );
+            virtual void setAlbumArtist( const QString &newAlbumArtist );
+            virtual void setArtist( const QString &newArtist );
+            virtual void setComposer( const QString &newComposer );
+            virtual void setGenre( const QString &newGenre );
+            virtual void setYear( int newYear );
+            virtual void setTitle( const QString &newTitle );
+            virtual void setComment( const QString &newComment );
+            virtual void setTrackNumber( int newTrackNumber );
+            virtual void setDiscNumber( int newDiscNumber );
+            virtual void setBpm( const qreal newBpm );
 
             // Meta::Statistics methods:
             virtual int rating() const;
@@ -107,6 +118,7 @@ namespace IpodMeta
             virtual int recentPlayCount() const;
             virtual void setPlayCount( const int playcount );
 
+            // Combined Meta::TrackEditor, Meta::Statistics methods:
             virtual void beginUpdate();
             virtual void endUpdate();
 
@@ -147,19 +159,6 @@ namespace IpodMeta
              */
             void setCollection( QWeakPointer<IpodCollection> collection );
 
-            // Methods for EditCapability:
-            void setAlbum( const QString &newAlbum );
-            void setAlbumArtist( const QString &newAlbumArtist );
-            void setArtist( const QString &newArtist );
-            void setComposer( const QString &newComposer );
-            void setGenre( const QString &newGenre );
-            void setYear( int newYear );
-            void setTitle( const QString &newTitle );
-            void setComment( const QString &newComment );
-            void setTrackNumber( int newTrackNumber );
-            void setDiscNumber( int newDiscNumber );
-            void setBpm( const qreal newBpm );
-
             // Methods for copy constructor:
             void setIsCompilation( bool newIsCompilation );
             void setImage( const QImage &newImage );
@@ -172,6 +171,8 @@ namespace IpodMeta
             void setType( const QString &newType );
 
         private:
+            bool isEditable() const;
+
             /**
              * Must be called at end of every set*() method, with m_trackLock locked for
              * writing. Takes care of writing back the fields and notifying observers.
@@ -217,7 +218,7 @@ namespace IpodMeta
 
             /**
              * Set of field types (identified by constants from MetaValues.h) changed by
-             * EditCapability or set{Rating,Score,...} not yet committed to database and
+             * TrackEditor or set{Rating,Score,...} not yet committed to database and
              * underlying file
              */
             Meta::FieldHash m_changedFields;

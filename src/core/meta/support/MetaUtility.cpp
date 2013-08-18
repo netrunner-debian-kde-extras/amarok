@@ -16,11 +16,11 @@
 
 #include "core/meta/support/MetaUtility.h"
 
-#include "core/support/Debug.h"
+#include "core/capabilities/Capability.h"
 #include "core/meta/Meta.h"
 #include "core/meta/Statistics.h"
-#include "core/capabilities/Capability.h"
-#include "core/capabilities/EditCapability.h"
+#include "core/meta/TrackEditor.h"
+#include "core/support/Debug.h"
 
 #include <QTime>
 #include <QChar>
@@ -180,26 +180,34 @@ Meta::Field::mpris20MapFromTrack( const Meta::TrackPtr track )
         // of the track in the playlist
         map["mpris:length"] = track->length() * 1000; // microseconds
 
-        if( track->album() ) {
-            QImage image = track->album()->image();
-            KUrl url = track->album()->imageLocation().url();
+        // get strong pointers (BR 317980)
+        Meta::AlbumPtr    album = track->album();
+        Meta::ArtistPtr   artist = track->artist();
+        Meta::ComposerPtr composer = track->composer();
+        Meta::YearPtr     year = track->year();
+        Meta::GenrePtr    genre = track->genre();
+        Meta::ConstStatisticsPtr statistics = track->statistics();
+
+        if( album ) {
+            QImage image = album->image();
+            KUrl url = album->imageLocation().url();
             debug() << "MPRIS2: Album image location is" << url;
             if ( url.isValid() && !url.isLocalFile() ) {
                 // embedded id?  Request a version to be put in the cache
-                int width = track->album()->image().width();
-                url = track->album()->imageLocation( width ).url();
+                int width = album->image().width();
+                url = album->imageLocation( width ).url();
                 debug() << "MPRIS2: New location for width" << width << "is" << url;
             }
             if ( url.isValid() && url.isLocalFile() )
                 map["mpris:artUrl"] = QString::fromLatin1( url.toEncoded() );
 
-            map["xesam:album"] = track->album()->name();
-            if ( track->album()->hasAlbumArtist() )
-                map["xesam:albumArtist"] = QStringList() << track->album()->albumArtist()->name();
+            map["xesam:album"] = album->name();
+            if ( album->hasAlbumArtist() )
+                map["xesam:albumArtist"] = QStringList() << album->albumArtist()->name();
         }
 
-        if( track->artist() )
-            map["xesam:artist"] = QStringList() << track->artist()->name();
+        if( artist )
+            map["xesam:artist"] = QStringList() << artist->name();
 
         const QString lyrics = track->cachedLyrics();
         if( !lyrics.isEmpty() )
@@ -208,20 +216,15 @@ Meta::Field::mpris20MapFromTrack( const Meta::TrackPtr track )
         if( track->bpm() > 0 )
             map["xesam:audioBPM"] = int(track->bpm());
 
-        Meta::ConstStatisticsPtr statistics = track->statistics();
         map["xesam:autoRating"] = statistics->score();
 
         map["xesam:comment"] = QStringList() << track->comment();
 
-        if( track->composer() )
-            map["xesam:composer"] = QStringList() << track->composer()->name();
+        if( composer )
+            map["xesam:composer"] = QStringList() << composer->name();
 
-        if( track->year() ) {
-            bool ok;
-            int year = track->year()->name().toInt(&ok);
-            if (ok)
-                map["xesam:contentCreated"] = QDateTime(QDate(year, 1, 1)).toString(Qt::ISODate);
-        }
+        if( year )
+            map["xesam:contentCreated"] = QDateTime(QDate(year->year(), 1, 1)).toString(Qt::ISODate);
 
         if( track->discNumber() )
             map["xesam:discNumber"] = track->discNumber();
@@ -229,8 +232,8 @@ Meta::Field::mpris20MapFromTrack( const Meta::TrackPtr track )
         if( statistics->firstPlayed().isValid() )
             map["xesam:firstUsed"] = statistics->firstPlayed().toString(Qt::ISODate);
 
-        if( track->genre() )
-            map["xesam:genre"] = QStringList() << track->genre()->name();
+        if( genre )
+            map["xesam:genre"] = QStringList() << genre->name();
 
         if( statistics->lastPlayed().isValid() )
             map["xesam:lastUsed"] = statistics->lastPlayed().toString(Qt::ISODate);
@@ -252,13 +255,13 @@ Meta::Field::mpris20MapFromTrack( const Meta::TrackPtr track )
 void
 Meta::Field::updateTrack( Meta::TrackPtr track, const QVariantMap &metadata )
 {
-    if( !track || !track->has<Capabilities::EditCapability>() )
+    if( !track )
+        return;
+    Meta::TrackEditorPtr ec = track->editor();
+    if( !ec )
         return;
 
-    QScopedPointer<Capabilities::EditCapability> ec( track->create<Capabilities::EditCapability>() );
-    if( !ec || !ec->isEditable() )
-        return;
-    ec->beginMetaDataUpdate();
+    ec->beginUpdate();
     QString title = metadata.contains( Meta::Field::TITLE ) ?
                             metadata.value( Meta::Field::TITLE ).toString() : QString();
     ec->setTitle( title );
@@ -288,8 +291,7 @@ Meta::Field::updateTrack( Meta::TrackPtr track, const QVariantMap &metadata )
     int year = metadata.contains( Meta::Field::YEAR ) ?
                             metadata.value( Meta::Field::YEAR ).toInt() : 0;
     ec->setYear( year );
-
-    ec->endMetaDataUpdate();
+    ec->endUpdate();
 }
 
 QString

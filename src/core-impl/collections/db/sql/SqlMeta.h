@@ -21,6 +21,7 @@
 
 #include "core/meta/Meta.h"
 #include "core/meta/Statistics.h"
+#include "core/meta/TrackEditor.h"
 #include "core/meta/support/MetaConstants.h"
 #include "amarok_sqlcollection_export.h"
 #include "FileType.h"
@@ -59,7 +60,7 @@ namespace Meta
 
     The whole class should be thread save.
 */
-class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Track, public Statistics
+class AMAROK_SQLCOLLECTION_EXPORT SqlTrack : public Track, public Statistics, public TrackEditor
 {
     public:
         /** Creates a new SqlTrack without.
@@ -73,89 +74,31 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Track, public Statisti
         SqlTrack( Collections::SqlCollection *collection, const QStringList &queryResult );
         ~ SqlTrack();
 
-        /** returns the title of this track as stored in the database **/
         virtual QString name() const;
-        /** returns the title of the track if existing in the database,
-            a value deduced from the file name otherwise */
         virtual QString prettyName() const;
-        /** returns "[artist] - [title]" if both are stored in the database,
-            a value deduced from the file name otherwise */
-        virtual QString fullPrettyName() const;
-
-        /** returns the KUrl object describing the position of the track */
         virtual KUrl playableUrl() const;
-
-        /** returns a string describing the position of the track; same as url() */
         virtual QString prettyUrl() const;
-
-        /** returns a string describing the position of the track */
         virtual QString uidUrl() const;
-        virtual void setUidUrl( const QString &uid );
-
-        /** true if there is a collection and the file exists on disk */
-        virtual bool isPlayable() const;
-        /** true if there is a collection, the file exists on disk and is writable */
-        virtual bool isEditable() const;
+        virtual QString notPlayableReason() const;
 
         virtual Meta::AlbumPtr album() const;
-        virtual void setAlbum( const QString &newAlbum );
-        virtual void setAlbum( int albumId );
-
-        virtual void setAlbumArtist( const QString &newAlbumArtist );
-
-        virtual void setArtist( const QString &newArtist );
         virtual Meta::ArtistPtr artist() const;
         virtual Meta::ComposerPtr composer() const;
-        virtual void setComposer( const QString &newComposer );
         virtual Meta::YearPtr year() const;
-        virtual void setYear( int newYear );
         virtual Meta::GenrePtr genre() const;
-        virtual void setGenre( const QString &newGenre );
 
         virtual QString type() const;
-        virtual void setType( Amarok::FileType newType );
-
-        virtual void setTitle( const QString &newTitle );
-
-        virtual void setUrl( int deviceId, const QString &rpath, int directoryId );
-
         virtual qreal bpm() const;
-        virtual void setBpm( const qreal newBpm );
-
         virtual QString comment() const;
-        virtual void setComment( const QString &newComment );
-
         virtual qint64 length() const;
-        virtual void setLength( qint64 newLength );
-
         virtual int filesize() const;
-
         virtual int sampleRate() const;
-        virtual void setSampleRate( int newSampleRate );
-
         virtual int bitrate() const;
-        virtual void setBitrate( int newBitrate );
-
         virtual QDateTime createDate() const;
-
         virtual QDateTime modifyDate() const;
-        virtual void setModifyDate( const QDateTime &newTime );
-
         virtual int trackNumber() const;
-        virtual void setTrackNumber( int newTrackNumber );
-
         virtual int discNumber() const;
-        virtual void setDiscNumber( int newDiscNumber );
-
         virtual qreal replayGain( Meta::ReplayGainTag mode ) const;
-        virtual void setReplayGain( Meta::ReplayGainTag mode, qreal value );
-
-        /** Enables or disables writing changes to the file.
-         *  This function can be useful when changes are imported from the file.
-         *  In such a case writing the changes back again is stupid.
-         */
-        virtual void setWriteFile( const bool enable )
-        { m_writeFile = enable; }
 
         virtual bool inCollection() const;
         virtual Collections::Collection* collection() const;
@@ -164,7 +107,6 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Track, public Statisti
         virtual void setCachedLyrics( const QString &lyrics );
 
         virtual bool hasCapabilityInterface( Capabilities::Capability::Type type ) const;
-
         virtual Capabilities::Capability* createCapabilityInterface( Capabilities::Capability::Type type );
 
         virtual void addLabel( const QString &label );
@@ -172,7 +114,21 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Track, public Statisti
         virtual void removeLabel( const Meta::LabelPtr &label );
         virtual Meta::LabelList labels() const;
 
+        virtual TrackEditorPtr editor();
         virtual StatisticsPtr statistics();
+
+        // Meta::TrackEditor methods:
+        virtual void setAlbum( const QString &newAlbum );
+        virtual void setAlbumArtist( const QString &newAlbumArtist );
+        virtual void setArtist( const QString &newArtist );
+        virtual void setComposer( const QString &newComposer );
+        virtual void setGenre( const QString &newGenre );
+        virtual void setYear( int newYear );
+        virtual void setTitle( const QString &newTitle );
+        virtual void setComment( const QString &newComment );
+        virtual void setTrackNumber( int newTrackNumber );
+        virtual void setDiscNumber( int newDiscNumber );
+        virtual void setBpm( const qreal newBpm );
 
         // Meta::Statistics methods:
         virtual double score() const;
@@ -190,10 +146,30 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Track, public Statisti
         virtual int playCount() const;
         virtual void setPlayCount( const int newCount );
 
+        // combined Meta::Statistics and Meta::TrackEditor methods:
         virtual void beginUpdate();
         virtual void endUpdate();
 
         // SqlTrack specific methods
+        /** true if there is a collection, the file exists on disk and is writable */
+        bool isEditable() const;
+
+        void setUidUrl( const QString &uid );
+        void setAlbum( int albumId );
+        void setType( Amarok::FileType newType );
+        void setLength( qint64 newLength );
+        void setSampleRate( int newSampleRate );
+        void setUrl( int deviceId, const QString &rpath, int directoryId );
+        void setBitrate( int newBitrate );
+        void setModifyDate( const QDateTime &newTime );
+        void setReplayGain( Meta::ReplayGainTag mode, qreal value );
+
+        /** Enables or disables writing changes to the file.
+         *  This function can be useful when changes are imported from the file.
+         *  In such a case writing the changes back again is stupid.
+         */
+        virtual void setWriteFile( const bool enable )
+        { m_writeFile = enable; }
 
         int id() const;
         int urlId() const;
@@ -319,7 +295,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlTrack : public Track, public Statisti
         friend class ::TrackStatisticsTableCommitter;
 };
 
-class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlArtist : public Meta::Artist
+class AMAROK_SQLCOLLECTION_EXPORT SqlArtist : public Meta::Artist
 {
     public:
         SqlArtist( Collections::SqlCollection* collection, int id, const QString &name );
@@ -354,7 +330,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlArtist : public Meta::Artist
     Note: The album without name is special. It will always be a compilation
     and never have a picture.
 */
-class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlAlbum : public Meta::Album
+class AMAROK_SQLCOLLECTION_EXPORT SqlAlbum : public Meta::Album
 {
     public:
         SqlAlbum( Collections::SqlCollection* collection, int id, const QString &name, int artist );
@@ -481,7 +457,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlAlbum : public Meta::Album
         friend class ::SqlScanResultProcessor; // needs to set images directly
 };
 
-class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlComposer : public Meta::Composer
+class AMAROK_SQLCOLLECTION_EXPORT SqlComposer : public Meta::Composer
 {
     public:
         SqlComposer( Collections::SqlCollection* collection, int id, const QString &name );
@@ -539,7 +515,7 @@ class SqlGenre : public Meta::Genre
         friend class Meta::SqlTrack; // needs to call notifyObservers
 };
 
-class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlYear : public Meta::Year
+class AMAROK_SQLCOLLECTION_EXPORT SqlYear : public Meta::Year
 {
     public:
         SqlYear( Collections::SqlCollection* collection, int id, int year );
@@ -570,7 +546,7 @@ class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlYear : public Meta::Year
         friend class Meta::SqlTrack; // needs to call notifyObservers
 };
 
-class AMAROK_SQLCOLLECTION_EXPORT_TESTS SqlLabel : public Meta::Label
+class AMAROK_SQLCOLLECTION_EXPORT SqlLabel : public Meta::Label
 {
 public:
     SqlLabel( Collections::SqlCollection *collection, int id, const QString &name );

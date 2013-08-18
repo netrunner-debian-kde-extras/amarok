@@ -17,7 +17,8 @@
 #include "PlaylistBreadcrumbLevel.h"
 
 #include "PlaylistDefines.h"
-#include "PlaylistColumnNames.h"
+
+#include <KLocale>
 
 namespace Playlist
 {
@@ -25,28 +26,10 @@ namespace Playlist
 BreadcrumbLevel::BreadcrumbLevel( QString internalColumnName )
     : m_name( internalColumnName )
 {
-    if( m_name == "Shuffle" )
-    {
-        m_icon = KIcon( "media-playlist-shuffle" );
-        m_prettyName = i18n( "Shuffle" );
-    }
-    else
-    {
-        m_icon = KIcon( iconNames.at( internalColumnNames.indexOf( internalColumnName ) ) );
-        m_prettyName = columnNames( internalColumnNames.indexOf( internalColumnName ) );
-    }
+    Column col = columnForName( internalColumnName );
 
-    for( int i = 0; i < NUM_COLUMNS; ++i )  //might be faster if it used a const_iterator
-    {
-        QString currentInternalColumnName = internalColumnNames.at( i );
-        if( !sortableCategories.contains( currentInternalColumnName ) ||
-            m_name == currentInternalColumnName )
-            continue;
-        m_siblings.insert( currentInternalColumnName,
-                           QPair< KIcon, QString>( KIcon( iconNames.at( i ) ), columnNames( i ) ) );
-    }
-    if( m_name != "Shuffle" )
-        m_siblings.insert( "Shuffle", QPair< KIcon, QString>( KIcon( "media-playlist-shuffle" ), i18n("Shuffle" ) ) );
+    m_icon = KIcon( iconName( col ) );
+    m_prettyName = columnName( col );
 }
 
 BreadcrumbLevel::~BreadcrumbLevel()
@@ -68,12 +51,6 @@ const KIcon &
 BreadcrumbLevel::icon()
 {
     return m_icon;
-}
-
-const QMap< QString, QPair< KIcon, QString > >
-BreadcrumbLevel::siblings()
-{
-    return m_siblings;
 }
 
 }   //namespace Playlist

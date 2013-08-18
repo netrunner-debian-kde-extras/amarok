@@ -17,6 +17,8 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "MoodbarManager"
+
 /*
 The mood file loading and rendering code is based on the Amarok 1.4 moodbar implementation
 by Gav Wood and Joseph Rabinoff, ported to Qt 4 with only a few modifications by me.
@@ -28,18 +30,16 @@ even porting to qtscript so it could be run, as needed, by Amarok.
 - Nikolaj
 */
 
-#define DEBUG_PREFIX "MoodbarManager"
-
 #include "MoodbarManager.h"
 
 #include "amarokconfig.h"
+#include "core/meta/Meta.h"
 #include "core/support/Debug.h"
 #include "PaletteHandler.h"
 
 #include <QFile>
 #include <QFileInfo>
 #include <QPainter>
-
 
 #define NUM_HUES 12
 
@@ -172,7 +172,7 @@ QPixmap MoodbarManager::getMoodbar( Meta::TrackPtr track, int width, int height,
             moodFilePath = m_moodFileMap.value( track );
         else
             moodFilePath = moodPath( track->playableUrl().path() );
-        
+
         data = readMoodFile( moodFilePath );
 
         if ( data.size() > 10 )

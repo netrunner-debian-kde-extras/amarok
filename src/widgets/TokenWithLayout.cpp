@@ -86,7 +86,7 @@ const QString ActionAlignLeftName = QLatin1String( "ActionAlignLeft" );
 const QString ActionAlignCenterName = QLatin1String( "ActionAlignCenter" );
 const QString ActionAlignRightName = QLatin1String( "ActionAlignRight" );
 
-Token * TokenWithLayoutFactory::createToken( const QString &text, const QString &iconName, qint64 value, QWidget *parent )
+Token * TokenWithLayoutFactory::createToken( const QString &text, const QString &iconName, qint64 value, QWidget *parent ) const
 {
     return new TokenWithLayout( text, iconName, value, parent );
 }
@@ -105,7 +105,7 @@ TokenWithLayout::TokenWithLayout( const QString &text, const QString &iconName, 
     m_wrench = new Wrench( this );
     m_wrench->installEventFilter( this );
     m_wrench->hide();
-    connect ( m_wrench, SIGNAL( clicked() ), this, SLOT( showConfig() ) );
+    connect ( m_wrench, SIGNAL(clicked()), this, SLOT(showConfig()) );
     setFocusPolicy( Qt::ClickFocus );
 }
 

@@ -119,9 +119,9 @@ QWidget*
 ConstraintTypes::Checkpoint::editWidget() const
 {
     CheckpointEditWidget* e = new CheckpointEditWidget( m_position, static_cast<int>( 10*m_strictness ), m_checkpointObject );
-    connect( e, SIGNAL( positionChanged( const int ) ), this, SLOT( setPosition( const int ) ) );
-    connect( e, SIGNAL( strictnessChanged( const int ) ), this, SLOT( setStrictness( const int ) ) );
-    connect( e, SIGNAL( checkpointChanged( const Meta::DataPtr& ) ), this, SLOT( setCheckpoint( const Meta::DataPtr& ) ) );
+    connect( e, SIGNAL(positionChanged(int)), this, SLOT(setPosition(int)) );
+    connect( e, SIGNAL(strictnessChanged(int)), this, SLOT(setStrictness(int)) );
+    connect( e, SIGNAL(checkpointChanged(Meta::DataPtr)), this, SLOT(setCheckpoint(Meta::DataPtr)) );
     return e;
 }
 
@@ -306,6 +306,10 @@ ConstraintTypes::Checkpoint::TrackMatcher::TrackMatcher( const Meta::TrackPtr& t
 {
 }
 
+ConstraintTypes::Checkpoint::TrackMatcher::~TrackMatcher()
+{
+}
+
 QList<int>
 ConstraintTypes::Checkpoint::TrackMatcher::find( const Meta::TrackList& tl ) const
 {
@@ -333,6 +337,10 @@ ConstraintTypes::Checkpoint::ArtistMatcher::ArtistMatcher( const Meta::ArtistPtr
 {
 }
 
+ConstraintTypes::Checkpoint::ArtistMatcher::~ArtistMatcher()
+{
+}
+
 QList<int>
 ConstraintTypes::Checkpoint::ArtistMatcher::find( const Meta::TrackList& tl ) const
 {
@@ -357,6 +365,10 @@ ConstraintTypes::Checkpoint::ArtistMatcher::match( const Meta::TrackPtr& t ) con
  ******************************/
 ConstraintTypes::Checkpoint::AlbumMatcher::AlbumMatcher( const Meta::AlbumPtr& l )
     : m_albumToMatch( l )
+{
+}
+
+ConstraintTypes::Checkpoint::AlbumMatcher::~AlbumMatcher()
 {
 }
 

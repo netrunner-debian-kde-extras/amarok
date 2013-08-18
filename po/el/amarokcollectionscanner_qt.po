@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarokcollectionscanner_qt\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-10-10 10:03+0200\n"
-"PO-Revision-Date: 2011-12-11 22:18+0300\n"
+"POT-Creation-Date: 2013-03-05 03:04+0100\n"
+"PO-Revision-Date: 2013-02-10 21:20+0300\n"
 "Last-Translator: Stelios <sstavra@gmail.com>\n"
 "Language-Team: Greek <kde-i18n-el@kde.org>\n"
 "Language: el\n"
@@ -17,27 +17,28 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:115
-#: utilities/collectionscanner/CollectionScanner.cpp:138
+#: utilities/collectionscanner/CollectionScanner.cpp:116
+#: utilities/collectionscanner/CollectionScanner.cpp:139
 #, qt-format
 msgid "File \"%1\" not found."
 msgstr "Το αρχείο \"%1\" δεν βρέθηκε."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:118
+#: utilities/collectionscanner/CollectionScanner.cpp:119
 #, qt-format
 msgid "Could not open file \"%1\"."
 msgstr "Αδυναμία ανοίγματος αρχείου \"%1\"."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:370
+#: utilities/collectionscanner/CollectionScanner.cpp:371
 #, qt-format
 msgid "Missing argument for option %1"
 msgstr "Λείπει το όρισμα για την επιλογή %1"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:407
+#: utilities/collectionscanner/CollectionScanner.cpp:408
 msgid ""
 "Amarok Collection Scanner\n"
 "Scans directories and outputs a xml file with the results.\n"
-"For more information see http://amarok.kde.org/wiki/Batch_Mode\n"
+"For more information see http://community.kde.org/Amarok/Development/"
+"BatchMode\n"
 "\n"
 "Usage: amarokcollectionscanner [options] <Folder(s)>\n"
 "User-modifiable Options:\n"
@@ -66,7 +67,8 @@ msgid ""
 msgstr ""
 "Σαρωτής συλλογών Amarok\n"
 "Σαρώνει καταλόγους και δίνει στην έξοδο ένα xml αρχείο με τα αποτελέσματα.\n"
-"Για περισσότερες πληροφορίες δείτε http://amarok.kde.org/wiki/Batch_Mode\n"
+"Για περισσότερες πληροφορίες δείτε http://community.kde.org/Amarok/"
+"Development/BatchMode\n"
 "\n"
 "Χρήση: amarokcollectionscanner [επιλογές] <Folder(s)>\n"
 "Επιλογές που ορίζει ο χρήστης:\n"

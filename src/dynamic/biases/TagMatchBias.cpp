@@ -25,6 +25,7 @@
 #include "browsers/playlistbrowser/DynamicBiasWidgets.h"
 #include "core/collections/Collection.h"
 #include "core/collections/QueryMaker.h"
+#include "core/meta/Meta.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "dynamic/TrackSet.h"
@@ -95,14 +96,13 @@ Dynamic::SimpleMatchBias::setInvert( bool value )
 
 
 Dynamic::TrackSet
-Dynamic::SimpleMatchBias::matchingTracks( int position,
-                                       const Meta::TrackList& playlist,
-                                       int contextCount,
-                                       Dynamic::TrackCollectionPtr universe ) const
+Dynamic::SimpleMatchBias::matchingTracks( const Meta::TrackList& playlist,
+                                          int contextCount, int finalCount,
+                                          Dynamic::TrackCollectionPtr universe ) const
 {
-    Q_UNUSED( position );
     Q_UNUSED( playlist );
     Q_UNUSED( contextCount );
+    Q_UNUSED( finalCount );
 
     if( tracksValid() )
         return m_tracks;
@@ -188,7 +188,7 @@ Dynamic::TagMatchBiasWidget::TagMatchBiasWidget( Dynamic::TagMatchBias* bias,
 
     connect( m_invertBox, SIGNAL(toggled(bool)),
              SLOT(syncBiasToControls()));
-    connect( m_queryWidget, SIGNAL(changed(const MetaQueryWidget::Filter&)),
+    connect( m_queryWidget, SIGNAL(changed(MetaQueryWidget::Filter)),
              SLOT(syncBiasToControls()));
 }
 
@@ -225,7 +225,7 @@ Dynamic::TagMatchBias::fromXml( QXmlStreamReader *reader )
         {
             QStringRef name = reader->name();
             if( name == "field" )
-                m_filter.field = Meta::fieldForPlaylistName( reader->readElementText(QXmlStreamReader::SkipChildElements) );
+                m_filter.setField( Meta::fieldForPlaylistName( reader->readElementText(QXmlStreamReader::SkipChildElements) ) );
             else if( name == "numValue" )
                 m_filter.numValue = reader->readElementText(QXmlStreamReader::SkipChildElements).toUInt();
             else if( name == "numValue2" )
@@ -251,7 +251,7 @@ void
 Dynamic::TagMatchBias::toXml( QXmlStreamWriter *writer ) const
 {
     SimpleMatchBias::toXml( writer );
-    writer->writeTextElement( "field", Meta::playlistNameForField( m_filter.field ) );
+    writer->writeTextElement( "field", Meta::playlistNameForField( m_filter.field() ) );
 
     if( m_filter.isNumeric() )
     {
@@ -283,7 +283,7 @@ Dynamic::TagMatchBias::toString() const
 {
     if( isInvert() )
         return i18nc("Inverted condition in tag match bias",
-                     "Not %1").arg( m_filter.toString() );
+                     "Not %1", m_filter.toString() );
     else
         return m_filter.toString();
 }
@@ -337,19 +337,19 @@ Dynamic::TagMatchBias::newQuery()
         case MetaQueryWidget::LessThan:
         case MetaQueryWidget::Equals:
         case MetaQueryWidget::GreaterThan:
-            m_qm->addNumberFilter( m_filter.field, m_filter.numValue,
+            m_qm->addNumberFilter( m_filter.field(), m_filter.numValue,
                                 (Collections::QueryMaker::NumberComparison)m_filter.condition );
             break;
         case MetaQueryWidget::Between:
             m_qm->beginAnd();
-            m_qm->addNumberFilter( m_filter.field, qMin(m_filter.numValue, m_filter.numValue2)-1,
+            m_qm->addNumberFilter( m_filter.field(), qMin(m_filter.numValue, m_filter.numValue2)-1,
                                 Collections::QueryMaker::GreaterThan );
-            m_qm->addNumberFilter( m_filter.field, qMax(m_filter.numValue, m_filter.numValue2)+1,
+            m_qm->addNumberFilter( m_filter.field(), qMax(m_filter.numValue, m_filter.numValue2)+1,
                                 Collections::QueryMaker::LessThan );
             m_qm->endAndOr();
             break;
         case MetaQueryWidget::OlderThan:
-            m_qm->addNumberFilter( m_filter.field, QDateTime::currentDateTime().toTime_t() - m_filter.numValue,
+            m_qm->addNumberFilter( m_filter.field(), QDateTime::currentDateTime().toTime_t() - m_filter.numValue,
                                 Collections::QueryMaker::LessThan );
             break;
         default:
@@ -363,14 +363,14 @@ Dynamic::TagMatchBias::newQuery()
         case MetaQueryWidget::LessThan:
         case MetaQueryWidget::Equals:
         case MetaQueryWidget::GreaterThan:
-            m_qm->addNumberFilter( m_filter.field, m_filter.numValue,
+            m_qm->addNumberFilter( m_filter.field(), m_filter.numValue,
                                 (Collections::QueryMaker::NumberComparison)m_filter.condition );
             break;
         case MetaQueryWidget::Between:
             m_qm->beginAnd();
-            m_qm->addNumberFilter( m_filter.field, qMin(m_filter.numValue, m_filter.numValue2)-1,
+            m_qm->addNumberFilter( m_filter.field(), qMin(m_filter.numValue, m_filter.numValue2)-1,
                                 Collections::QueryMaker::GreaterThan );
-            m_qm->addNumberFilter( m_filter.field, qMax(m_filter.numValue, m_filter.numValue2)+1,
+            m_qm->addNumberFilter( m_filter.field(), qMax(m_filter.numValue, m_filter.numValue2)+1,
                                 Collections::QueryMaker::LessThan );
             m_qm->endAndOr();
             break;
@@ -383,10 +383,10 @@ Dynamic::TagMatchBias::newQuery()
         switch( m_filter.condition )
         {
         case MetaQueryWidget::Equals:
-            m_qm->addFilter( m_filter.field, m_filter.value, true, true );
+            m_qm->addFilter( m_filter.field(), m_filter.value, true, true );
             break;
         case MetaQueryWidget::Contains:
-            if( m_filter.field == 0 )
+            if( m_filter.field() == 0 )
             {
                 // simple search
                 // TODO: split different words and make separate searches
@@ -402,7 +402,7 @@ Dynamic::TagMatchBias::newQuery()
             }
             else
             {
-                m_qm->addFilter( m_filter.field, m_filter.value );
+                m_qm->addFilter( m_filter.field(), m_filter.value );
             }
             break;
         default:
@@ -413,8 +413,8 @@ Dynamic::TagMatchBias::newQuery()
     m_qm->setQueryType( Collections::QueryMaker::Custom );
     m_qm->addReturnValue( Meta::valUniqueId );
 
-    connect( m_qm.data(), SIGNAL(newResultReady( QStringList )),
-             this, SLOT(updateReady( QStringList )) );
+    connect( m_qm.data(), SIGNAL(newResultReady(QStringList)),
+             this, SLOT(updateReady(QStringList)) );
     connect( m_qm.data(), SIGNAL(queryDone()),
              this, SLOT(updateFinished()) );
     m_qm.data()->run();
@@ -452,7 +452,7 @@ Dynamic::TagMatchBias::conditionForName( const QString &name )
 bool
 Dynamic::TagMatchBias::matches( const Meta::TrackPtr &track ) const
 {
-    QVariant value = Meta::valueForField( m_filter.field, track );
+    QVariant value = Meta::valueForField( m_filter.field(), track );
 
     bool result = false;
     if( m_filter.isDate() )

@@ -20,15 +20,16 @@
 #include "ArtistWidget.h"
 
 //Amarok
-#include "amarokurls/AmarokUrl.h"
-#include "core/collections/Collection.h"
-#include "core-impl/collections/support/CollectionManager.h"
-#include "core/collections/QueryMaker.h"
-#include "core/support/Amarok.h"
-#include "core/support/Debug.h"
-#include "playlist/PlaylistController.h"
 #include "PaletteHandler.h"
 #include "SvgHandler.h"
+#include "amarokurls/AmarokUrl.h"
+#include "core/collections/Collection.h"
+#include "core/collections/QueryMaker.h"
+#include "core/meta/Meta.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "playlist/PlaylistController.h"
 
 //KDE
 #include <KColorUtils>
@@ -558,7 +559,7 @@ ArtistWidget::fullBio() const
 void
 ArtistWidget::addTopTrackToPlaylist()
 {
-    The::playlistController()->insertOptioned( m_topTrack, Playlist::AppendAndPlay );
+    The::playlistController()->insertOptioned( m_topTrack, Playlist::OnAppendToPlaylistAction );
 }
 
 void
@@ -576,7 +577,7 @@ ArtistWidget::addLastfmArtistStation()
 {
     const QString url = "lastfm://artist/" + m_artist->name() + "/similarartists";
     Meta::TrackPtr lastfmtrack = CollectionManager::instance()->trackForUrl( KUrl( url ) );
-    The::playlistController()->insertOptioned( lastfmtrack, Playlist::AppendAndPlay );
+    The::playlistController()->insertOptioned( lastfmtrack, Playlist::OnAppendToPlaylistAction );
 }
 
 ArtistsListWidget::ArtistsListWidget( QGraphicsWidget *parent )

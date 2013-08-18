@@ -18,7 +18,7 @@
 #define PLAYDAR_QUERYOBJECT_H
 
 #include "Controller.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "../PlaydarMeta.h"
 
 #include <QWeakPointer>
@@ -39,7 +39,7 @@ namespace Playdar
      * so interested objects should be sure to store their QueryPtrs.
      * NOTE: artist(), album(), and title() are all empty until
      *       the first round of results has come in from Playdar.
-     *       Querys are matched with results by qid().
+     *       Queries are matched with results by qid().
      */
     class Query : public QObject
     {

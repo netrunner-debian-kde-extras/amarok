@@ -20,17 +20,16 @@
 
 #include "SimilarArtistsApplet.h"
 
-//Amarok
-#include "core/support/Amarok.h"
 #include "App.h"
 #include "EngineController.h"
-#include "core/support/Debug.h"
+#include "PaletteHandler.h"
 #include "context/Svg.h"
 #include "context/ContextView.h"
-#include "PaletteHandler.h"
 #include "context/widgets/AppletHeader.h"
+#include "core/support/Amarok.h"
+#include "core/support/Debug.h"
+#include "core/meta/Meta.h"
 
-//Kde
 #include <KConfigDialog>
 #include <KStandardDirs>
 #include <KTextBrowser>
@@ -38,7 +37,6 @@
 #include <Plasma/Theme>
 #include <plasma/widgets/iconwidget.h>
 
-//Qt
 #include <QDesktopServices>
 #include <QTextEdit>
 #include <QGraphicsLinearLayout>
@@ -169,6 +167,8 @@ SimilarArtistsApplet::configure()
 void
 SimilarArtistsApplet::createConfigurationInterface( KConfigDialog *parent )
 {
+    parent->setButtons( KDialog::Ok | KDialog::Cancel );
+
     KConfigGroup config = Amarok::config( "SimilarArtists Applet" );
     QWidget *settings = new QWidget();
     ui_Settings.setupUi( settings );

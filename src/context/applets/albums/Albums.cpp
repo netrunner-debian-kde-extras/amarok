@@ -22,9 +22,10 @@
 
 #include "AlbumItem.h"
 #include "AlbumsView.h"
+#include "core/collections/Collection.h"
+#include "core/meta/Meta.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "core/collections/Collection.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "context/widgets/AppletHeader.h"
 #include "TrackItem.h"
@@ -243,6 +244,8 @@ void Albums::dataUpdated( const QString &name, const Plasma::DataEngine::Data &d
 
 void Albums::createConfigurationInterface( KConfigDialog *parent )
 {
+    parent->setButtons( KDialog::Ok | KDialog::Cancel );
+
     QSpinBox *spinBox = new QSpinBox;
     spinBox->setRange( 1, 100 );
     spinBox->setValue( m_recentCount );

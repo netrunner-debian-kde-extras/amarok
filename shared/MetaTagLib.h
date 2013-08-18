@@ -17,14 +17,9 @@
 #ifndef AMAROK_METATAGLIB_H
 #define AMAROK_METATAGLIB_H
 
-#ifndef UTILITIES_BUILD
-    #include "amarok_export.h"
-    #include <QImage>
-#else
-    #define AMAROK_EXPORT
-#endif
-
 #include "MetaValues.h"
+#include "amarokshared_export.h"
+
 #include <QString>
 
 /* This file exists because we need to share the implementation between
@@ -34,8 +29,7 @@ namespace Meta
 {
     namespace Tag
     {
-
-        AMAROK_EXPORT Meta::FieldHash readTags( const QString &path, bool useCharsetDetector = true );
+        AMAROKSHARED_EXPORT Meta::FieldHash readTags( const QString &path, bool useCharsetDetector = true );
 
         /**
          * Writes tags stored in @param changes back to file. Respects
@@ -44,13 +38,20 @@ namespace Meta
          * If you are about to call this from the main thread, you should really think
          * of using WriteTagsJob instead.
          *
+         * Changed in 2.8: this method no longer checks AmarokConfig::writeBack()
+         *
+         * @param path path of the file to write the tags to
+         * @param changes Meta:val* key to value map of tags to write
+         * @param writeBackStatistics whether to include statistics-related tags when writing
+         *
          * @see WriteTagsJob
          */
-        AMAROK_EXPORT void writeTags( const QString &path, const FieldHash &changes );
+        AMAROKSHARED_EXPORT void writeTags( const QString &path,
+                                            const Meta::FieldHash &changes,
+                                            bool writeStatistics );
 
-#ifndef UTILITIES_BUILD
         // the utilities don't need to handle images
-        AMAROK_EXPORT QImage embeddedCover( const QString &path );
+        AMAROKSHARED_EXPORT QImage embeddedCover( const QString &path );
 
         /**
          * Writes embedded cover back to file. Overwrites any possible existing covers.
@@ -61,8 +62,7 @@ namespace Meta
          *
          * @see WriteTagsJob
          */
-        AMAROK_EXPORT void setEmbeddedCover( const QString &path, const QImage &cover );
-#endif
+        AMAROKSHARED_EXPORT void setEmbeddedCover( const QString &path, const QImage &cover );
     }
 }
 

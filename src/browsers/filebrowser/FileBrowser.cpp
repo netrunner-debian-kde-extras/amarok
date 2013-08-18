@@ -67,11 +67,14 @@ FileBrowser::Private::Private( FileBrowser *parent )
 
     upAction = KStandardAction::up( q, SLOT(up()), topHBox );
     homeAction = KStandardAction::home( q, SLOT(home()), topHBox );
+    refreshAction = new KAction( KIcon("view-refresh"), i18n( "Refresh" ), topHBox );
+    QObject::connect( refreshAction, SIGNAL(triggered(bool)), q, SLOT(refresh()) );
 
     navigationToolbar->addAction( backAction );
     navigationToolbar->addAction( forwardAction );
     navigationToolbar->addAction( upAction );
     navigationToolbar->addAction( homeAction );
+    navigationToolbar->addAction( refreshAction );
 
     searchWidget = new SearchWidget( topHBox, false );
     searchWidget->setClickMessage( i18n( "Filter Files" ) );
@@ -248,8 +251,8 @@ FileBrowser::initView()
     d->mimeFilterProxyModel->setSortCaseSensitivity( Qt::CaseInsensitive );
     d->mimeFilterProxyModel->setFilterCaseSensitivity( Qt::CaseInsensitive );
     d->mimeFilterProxyModel->setDynamicSortFilter( true );
-    connect( d->searchWidget, SIGNAL(filterChanged( const QString & )),
-             d->mimeFilterProxyModel, SLOT(setFilterFixedString( const QString & )) );
+    connect( d->searchWidget, SIGNAL(filterChanged(QString)),
+             d->mimeFilterProxyModel, SLOT(setFilterFixedString(QString)) );
 
     d->fileView->setModel( d->mimeFilterProxyModel );
     d->fileView->header()->setContextMenuPolicy( Qt::ActionsContextMenu );
@@ -273,13 +276,15 @@ FileBrowser::initView()
         action->setCheckable( true );
         if( !d->fileView->isColumnHidden( i ) )
             action->setChecked( true );
-        connect( action, SIGNAL(toggled(bool)), this, SLOT(toggleColumn(bool) ) );
+        connect( action, SIGNAL(toggled(bool)), this, SLOT(toggleColumn(bool)) );
     }
 
     connect( d->fileView->header(), SIGNAL(geometriesChanged()),
                                     SLOT(updateHeaderState()) );
     connect( d->fileView, SIGNAL(navigateToDirectory(QModelIndex)),
                           SLOT(slotNavigateToDirectory(QModelIndex)) );
+    connect( d->fileView, SIGNAL(refreshBrowser()),
+                          SLOT(refresh()) );
 }
 
 FileBrowser::~FileBrowser()
@@ -562,6 +567,12 @@ FileBrowser::home()
 }
 
 void
+FileBrowser::refresh()
+{
+    setDir( d->currentPath );
+}
+
+void
 FileBrowser::setupDone( const QModelIndex &index, bool success )
 {
     if( success )
@@ -582,7 +593,10 @@ DelayedActivator::DelayedActivator( QAbstractItemView *view )
 {
     QAbstractItemModel *model = view->model();
     if( !model )
+    {
         deleteLater();
+        return;
+    }
 
     // short-cut for already-filled models
     if( model->rowCount() > 0 )

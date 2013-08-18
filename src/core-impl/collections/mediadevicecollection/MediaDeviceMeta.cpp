@@ -18,11 +18,10 @@
 
 #include "SvgHandler.h"
 #include "core/capabilities/ActionsCapability.h"
-#include "core/capabilities/EditCapability.h"
 #include "core/support/Debug.h"
 #include "core-impl/capabilities/AlbumActionsCapability.h"
 #include "core-impl/collections/mediadevicecollection/MediaDeviceCollection.h"
-#include "core-impl/collections/mediadevicecollection/MediaDeviceEditCapability.h"
+#include "core-impl/collections/mediadevicecollection/MediaDeviceTrackEditor.h"
 #include "core-impl/collections/mediadevicecollection/handler/capabilities/ArtworkCapability.h"
 #include "covermanager/CoverCache.h"
 #include "covermanager/CoverFetchingActions.h"
@@ -96,15 +95,10 @@ MediaDeviceTrack::prettyUrl() const
     return  QString( "%1: %2 - %3" ).arg( collName, artistName, trackName );
 }
 
-bool
-MediaDeviceTrack::isPlayable() const
+QString
+MediaDeviceTrack::notPlayableReason() const
 {
-    KUrl trackUrl = playableUrl();
-    QFileInfo trackFileInfo = QFileInfo( trackUrl.pathOrUrl() );
-    if( trackFileInfo.exists() && trackFileInfo.isFile() && trackFileInfo.isReadable() )
-        return true;
-
-    return false;
+    return localFileNotPlayableReason( playableUrl().toLocalFile() );
 }
 
 bool
@@ -181,7 +175,7 @@ MediaDeviceTrack::setRating( int newRating )
     if( newRating == m_rating )
         return;
     m_rating = newRating;
-    // this method is _not_ called though EditCapability, notify observers manually
+    // this method is _not_ called though TrackEditor, notify observers manually
     notifyObservers();
 }
 
@@ -363,34 +357,10 @@ MediaDeviceTrack::collection() const
     return m_collection.data();
 }
 
-bool
-MediaDeviceTrack::hasCapabilityInterface( Capabilities::Capability::Type type ) const
+TrackEditorPtr
+MediaDeviceTrack::editor()
 {
-    if( !m_collection || !m_collection.data()->isWritable() )
-        return false;
-
-    switch( type )
-    {
-        case Capabilities::Capability::Editable:
-            return true;
-        default:
-            return false;
-    }
-}
-
-Capabilities::Capability*
-MediaDeviceTrack::createCapabilityInterface( Capabilities::Capability::Type type )
-{
-    if( !m_collection || !m_collection.data()->isWritable() )
-        return false;
-
-    switch( type )
-    {
-        case Capabilities::Capability::Editable:
-            return new MediaDeviceEditCapability( this );
-        default:
-            return 0;
-    }
+    return TrackEditorPtr( isEditable() ? new MediaDeviceTrackEditor( this ) : 0 );
 }
 
 StatisticsPtr

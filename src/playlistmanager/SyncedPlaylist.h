@@ -33,7 +33,6 @@ class SyncedPlaylist : public Playlists::Playlist, public Playlists::PlaylistObs
         virtual KUrl uidUrl() const;
         virtual QString name() const;
         virtual QString prettyName() const;
-        virtual QString description() const;
         virtual Playlists::PlaylistProvider *provider() const;
         virtual void setName( const QString &name ) { Q_UNUSED( name ); }
 
@@ -43,11 +42,9 @@ class SyncedPlaylist : public Playlists::Playlist, public Playlists::PlaylistObs
         virtual void addTrack( Meta::TrackPtr track, int position = -1 );
         virtual void removeTrack( int position );
 
-        virtual QActionList actions();
-        virtual QActionList trackActions( int trackIndex );
-
         //PlaylistObserver methods
         virtual void metadataChanged( Playlists::PlaylistPtr playlist );
+        virtual void tracksLoaded( Playlists::PlaylistPtr);
         virtual void trackAdded( Playlists::PlaylistPtr playlist, Meta::TrackPtr track,
                                  int position );
         virtual void trackRemoved( Playlists::PlaylistPtr playlist, int position );

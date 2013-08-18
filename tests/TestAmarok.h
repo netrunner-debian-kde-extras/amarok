@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2009 Sven Krohlas <sven@getamarok.com>                  *
+ *   Copyright (c) 2009 Sven Krohlas <sven@asbest-online.de>               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -20,8 +20,7 @@
 #ifndef TESTAMAROK_H
 #define TESTAMAROK_H
 
-#include <QtCore/QString>
-#include <QtCore/QObject>
+#include <QObject>
 
 class TestAmarok : public QObject
 {

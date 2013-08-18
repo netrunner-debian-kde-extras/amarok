@@ -16,6 +16,7 @@
 #include "TestTrackForUrlWorker.h"
 
 #include "config-amarok-test.h"
+#include "core/meta/Meta.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "mocks/MockTrackForUrlWorker.h"
 
@@ -93,7 +94,7 @@ TestTrackForUrlWorker::testCompleteJobInternal( MockTrackForUrlWorker *trackForU
     connect( trackForUrlWorker, SIGNAL(finishedLookup(Meta::TrackPtr)),
              this, SLOT(setEmittedTrack(Meta::TrackPtr)) );
 
-    QSignalSpy spyFinishedLookup( trackForUrlWorker, SIGNAL(finishedLookup(const Meta::TrackPtr)) );
+    QSignalSpy spyFinishedLookup( trackForUrlWorker, SIGNAL(finishedLookup(Meta::TrackPtr)) );
 
     // Enqueue the job for execution and verify that it emits done when finished, which triggers completeJob
     ThreadWeaver::Weaver::instance()->enqueue( trackForUrlWorker );
@@ -117,3 +118,5 @@ TestTrackForUrlWorker::setEmittedTrack( Meta::TrackPtr track )
 {
     m_emittedTrack = track;
 }
+
+#include "TestTrackForUrlWorker.moc"

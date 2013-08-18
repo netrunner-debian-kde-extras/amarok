@@ -237,6 +237,18 @@ ServiceTrack::prettyUrl() const
     return m_displayUrl;
 }
 
+QString
+ServiceTrack::notPlayableReason() const
+{
+    if( !m_playableUrl.isEmpty() && playableUrl().isLocalFile() )
+        return localFileNotPlayableReason( m_playableUrl );
+
+    if( !m_downloadableUrl.isEmpty() )
+        return networkNotPlayableReason();
+
+    return i18n( "Neither playable nor downloadable url specified." );
+}
+
 void
 ServiceTrack::setUidUrl(const QString & url)
 {
@@ -249,18 +261,6 @@ void
 ServiceTrack::setDownloadableUrl(const QString & url)
 {
     m_downloadableUrl = url;
-}
-
-bool
-ServiceTrack::isPlayable() const
-{
-    return true;
-}
-
-bool
-ServiceTrack::isEditable() const
-{
-    return false;
 }
 
 AlbumPtr

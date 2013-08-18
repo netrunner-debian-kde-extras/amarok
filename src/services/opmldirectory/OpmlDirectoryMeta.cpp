@@ -22,9 +22,8 @@
 
 using namespace Meta;
 
-OpmlDirectoryMetaFactory::OpmlDirectoryMetaFactory( const QString & dbPrefix, OpmlDirectoryService * service )
+OpmlDirectoryMetaFactory::OpmlDirectoryMetaFactory( const QString & dbPrefix, OpmlDirectoryService * )
     : ServiceMetaFactory( dbPrefix )
-    , m_service( service )
 {
 }
 
@@ -51,13 +50,6 @@ OpmlDirectoryFeed::OpmlDirectoryFeed( const QStringList & resultRow )
     : ServiceTrack( resultRow )
 {
 }
-
-QList< QAction * > Meta::OpmlDirectoryFeed::customActions()
-{
-    QList< QAction * > actions;
-    return actions;
-}
-
 
 OpmlDirectoryCategory::OpmlDirectoryCategory( const QString & name )
     : ServiceAlbum( name )

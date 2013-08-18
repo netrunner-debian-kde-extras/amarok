@@ -16,13 +16,12 @@
 
 #include "TimecodeObserver.h"
 
-#include "core-impl/collections/support/CollectionManager.h"
+#include "core/meta/Meta.h"
 #include "core/support/Debug.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/capabilities/timecode/TimecodeWriteCapability.h"
 
-
 const qint64 TimecodeObserver::m_threshold = 600 * 1000; // 6000000ms = 10 minutes
-
 
 TimecodeObserver::TimecodeObserver( QObject *parent )
     : QObject( parent )
@@ -32,12 +31,12 @@ TimecodeObserver::TimecodeObserver( QObject *parent )
 {
     EngineController *engine = The::engineController();
 
-    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
-             this, SLOT( stopped( qint64, qint64 ) ) );
-    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
-             this, SLOT( trackPlaying( Meta::TrackPtr ) ) );
-    connect( engine, SIGNAL( trackPositionChanged( qint64, bool ) ),
-             this, SLOT( trackPositionChanged( qint64, bool ) ) );
+    connect( engine, SIGNAL(stopped(qint64,qint64)),
+             this, SLOT(stopped(qint64,qint64)) );
+    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)),
+             this, SLOT(trackPlaying(Meta::TrackPtr)) );
+    connect( engine, SIGNAL(trackPositionChanged(qint64,bool)),
+             this, SLOT(trackPositionChanged(qint64,bool)) );
 }
 
 TimecodeObserver::~TimecodeObserver()

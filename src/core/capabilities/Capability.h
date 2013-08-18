@@ -17,7 +17,7 @@
 #ifndef AMAROK_CAPABILITY_H
 #define AMAROK_CAPABILITY_H
 
-#include "amarok_export.h"
+#include "core/amarokcore_export.h"
 
 #include <QObject>
 
@@ -40,7 +40,7 @@ namespace Capabilities
         public:
             //add additional capabilities here
             enum Type { Unknown = 0
-                        , Editable = 1
+                        // not longer used
                         // not longer used
                         , Buyable = 3
                         , Actions = 4

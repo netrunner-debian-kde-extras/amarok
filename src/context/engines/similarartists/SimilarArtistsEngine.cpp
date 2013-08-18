@@ -20,9 +20,10 @@
 
 #include "SimilarArtistsEngine.h"
 
+#include "EngineController.h"
+#include "core/meta/Meta.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
-#include "EngineController.h"
 
 #include <QTimer>
 #include <QXmlStreamReader>

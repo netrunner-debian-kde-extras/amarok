@@ -19,62 +19,28 @@
 
 #include "core-impl/playlists/types/file/PlaylistFile.h"
 
-class QTextStream;
-class QString;
-class QFile;
-
 namespace Playlists {
-
-class M3UPlaylist;
-
-typedef KSharedPtr<M3UPlaylist> M3UPlaylistPtr;
-typedef QList<M3UPlaylistPtr> M3UPlaylistList;
-
 /**
-	@author Bart Cerneels <bart.cerneels@kde.org>
-*/
-class AMAROK_EXPORT_TESTS M3UPlaylist : public PlaylistFile
+ * @author Bart Cerneels <bart.cerneels@kde.org>
+ */
+class AMAROK_EXPORT M3UPlaylist : public PlaylistFile
 {
     public:
-        M3UPlaylist();
-        M3UPlaylist( Meta::TrackList tracks );
-        M3UPlaylist( const KUrl &url );
-
-        ~M3UPlaylist();
-
-        /* Playlist virtual functions */
-        virtual KUrl uidUrl() const { return m_url; }
-        virtual QString name() const { return prettyName(); }
-        virtual QString prettyName() const { return m_url.fileName(); }
-        virtual QString description() const;
-
-        virtual int trackCount() const;
-        virtual Meta::TrackList tracks();
-        virtual void triggerTrackLoad();
-
-        virtual void addTrack( Meta::TrackPtr track, int position = -1 );
-        virtual void removeTrack( int position );
+        M3UPlaylist( const KUrl &url, PlaylistProvider *provider = 0 );
 
         /* PlaylistFile methods */
-        bool isWritable();
-        void setName( const QString &name );
+        using PlaylistFile::load;
+        virtual bool load( QTextStream &stream ) { return loadM3u( stream ); }
 
-        bool save( const KUrl &location, bool relative );
-        bool load( QTextStream &stream ) { return loadM3u( stream ); }
+        virtual QString extension() const { return "m3u"; }
+        virtual QString mimetype() const { return "audio/x-mpegurl"; }
+
+    protected:
+        virtual void savePlaylist( QFile &file );
 
     private:
         bool loadM3u( QTextStream &stream );
-
-        KUrl m_url;
-
-        bool m_tracksLoaded;
-        Meta::TrackList m_tracks;
-        QString m_name;
 };
-
 }
-
-Q_DECLARE_METATYPE( Playlists::M3UPlaylistPtr )
-Q_DECLARE_METATYPE( Playlists::M3UPlaylistList )
 
 #endif

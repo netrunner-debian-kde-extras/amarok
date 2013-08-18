@@ -2,6 +2,7 @@
  * Copyright (c) 2007 Shane King <kde@dontletsstart.com>                                *
  * Copyright (c) 2008 Leo Franchi <lfranchi@kde.org>                                    *
  * Copyright (c) 2012 Matěj Laitl <matej@laitlcz>                                       *
+ * Copyright (c) 2013 Vedant Agarwala <vedant.kota@gmail.com>                           *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -23,6 +24,7 @@
 #include "MainWindow.h"
 #include "core/collections/Collection.h"
 #include "core/interfaces/Logger.h"
+#include "core/meta/Meta.h"
 #include "core/meta/support/MetaConstants.h"
 #include "core/support/Components.h"
 #include "core/support/Debug.h"
@@ -76,6 +78,12 @@ ScrobblerAdapter::scrobble( const Meta::TrackPtr &track, double playedFraction,
                             const QDateTime &time )
 {
     Q_ASSERT( track );
+    if( isToBeSkipped( track ) )
+    {
+        debug() << "scrobble(): refusing track" << track->prettyUrl()
+                << "- contains label:" << m_config->filteredLabel() << "which is marked to be skipped";
+        return SkippedByUser;
+    }
     if( track->length() * qMin( 1.0, playedFraction ) < 30 * 1000 )
     {
         debug() << "scrobble(): refusing track" << track->prettyUrl() << "- played time ("
@@ -98,7 +106,8 @@ ScrobblerAdapter::scrobble( const Meta::TrackPtr &track, double playedFraction,
     debug() << "scrobble: " << lfmTrack.artist() << "-" << lfmTrack.album() << "-"
             << lfmTrack.title() << "source:" << lfmTrack.source() << "duration:"
             << lfmTrack.duration();
-    m_scrobbler.cache( lfmTrack ); // automatically calls submit()
+    m_scrobbler.cache( lfmTrack );
+    m_scrobbler.submit(); // since liblastfm 1.0.7, submit() is not called automatically upon cache()
     switch( lfmTrack.scrobbleStatus() )
     {
         case lastfm::Track::Cached:
@@ -117,6 +126,12 @@ ScrobblerAdapter::updateNowPlaying( const Meta::TrackPtr &track )
     lastfm::MutableTrack lfmTrack;
     if( track )
     {
+        if( isToBeSkipped( track ) )
+        {
+            debug() << "updateNowPlaying(): refusing track" << track->prettyUrl()
+                    << "- contains label:" << m_config->filteredLabel() << "which is marked to be skipped";
+            return;
+        }
         copyTrackMetadata( lfmTrack, track );
         debug() << "nowPlaying: " << lfmTrack.artist() << "-" << lfmTrack.album() << "-"
                 << lfmTrack.title() << "source:" << lfmTrack.source() << "duration:"
@@ -204,9 +219,12 @@ ScrobblerAdapter::copyTrackMetadata( lastfm::MutableTrack &to, const Meta::Track
     to.setArtist( artistOrComposer );
 
     Meta::AlbumPtr album = track->album();
+    Meta::ArtistPtr albumArtist;
     if( album )
+    {
         to.setAlbum( album->name() );
-    Meta::ArtistPtr albumArtist = album->hasAlbumArtist() ? album->albumArtist() : Meta::ArtistPtr();
+        albumArtist = album->hasAlbumArtist() ? album->albumArtist() : Meta::ArtistPtr();
+    }
     if( albumArtist )
         to.setAlbumArtist( albumArtist->name() );
 
@@ -265,4 +283,16 @@ ScrobblerAdapter::announceTrackCorrections( const lastfm::Track &track )
     if( !line.isEmpty() )
         lines << line;
     Amarok::Components::logger()->longMessage( lines.join( "<br>" ) );
+}
+
+bool
+ScrobblerAdapter::isToBeSkipped( const Meta::TrackPtr &track ) const
+{
+    Q_ASSERT( track );
+    if( !m_config->filterByLabel() )
+        return false;
+    foreach( const Meta::LabelPtr &label, track->labels() )
+        if( label->name() == m_config->filteredLabel() )
+            return true;
+    return false;
 }

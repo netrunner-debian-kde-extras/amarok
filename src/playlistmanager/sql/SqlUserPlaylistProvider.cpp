@@ -34,13 +34,15 @@
 #include <KIcon>
 #include <KInputDialog>
 #include <KLocale>
+#include <KMessageBox>
 #include <KUrl>
 
 #include <QAction>
 #include <QLabel>
 #include <QMap>
 
-static const int USERPLAYLIST_DB_VERSION = 2;
+static const int USERPLAYLIST_DB_VERSION = 3;
+// a database updater has been added in checkTables(). Use that when updating db version
 static const QString key("AMAROK_USERPLAYLIST");
 
 namespace Playlists {
@@ -76,41 +78,9 @@ SqlUserPlaylistProvider::playlists()
 }
 
 void
-SqlUserPlaylistProvider::rename( Playlists::PlaylistPtr playlist, const QString &newName )
+SqlUserPlaylistProvider::renamePlaylist( Playlists::PlaylistPtr playlist, const QString &newName )
 {
     playlist->setName( newName.trimmed() );
-}
-
-void
-SqlUserPlaylistProvider::slotDelete()
-{
-    QAction *action = qobject_cast<QAction *>( QObject::sender() );
-    if( action == 0 )
-        return;
-
-    Playlists::PlaylistList playlists = action->data().value<Playlists::PlaylistList>();
-    if( playlists.count() == 0 )
-        return;
-
-    if( !m_debug )
-    {
-        KDialog dialog;
-        dialog.setCaption( i18n( "Confirm Delete" ) );
-        dialog.setButtons( KDialog::Ok | KDialog::Cancel );
-        QLabel label( i18np( "Are you sure you want to delete this playlist?",
-                             "Are you sure you want to delete these %1 playlists?",
-                             playlists.count() )
-                      , &dialog
-                    );
-        //TODO:include a text area with all the names of the playlists
-        dialog.setButtonText( KDialog::Ok, i18nc( "%1 is playlist provider pretty name",
-                                                  "Yes, delete from %1.", prettyName() ) );
-        dialog.setMainWidget( &label );
-        if( dialog.exec() != QDialog::Accepted )
-            return;
-    }
-
-    deletePlaylists( playlists );
 }
 
 bool
@@ -120,7 +90,7 @@ SqlUserPlaylistProvider::isWritable()
 }
 
 bool
-SqlUserPlaylistProvider::deletePlaylists( Playlists::PlaylistList playlistList )
+SqlUserPlaylistProvider::deletePlaylists( const Playlists::PlaylistList &playlistList )
 {
     Playlists::SqlPlaylistList sqlPlaylists;
     foreach( Playlists::PlaylistPtr playlist, playlistList )
@@ -170,11 +140,10 @@ SqlUserPlaylistProvider::save( const Meta::TrackList &tracks, const QString& nam
                 this )
             );
     m_root->m_childPlaylists << sqlPlaylist;
-    Playlists::PlaylistPtr playlist = Playlists::PlaylistPtr::dynamicCast( sqlPlaylist );
+    Playlists::PlaylistPtr playlist( sqlPlaylist.data() );
 
     emit playlistAdded( playlist );
-
-    return playlist; //assumes insertion in db was successful!
+    return playlist; // assumes insertion in db was successful!
 }
 
 void
@@ -237,7 +206,6 @@ SqlUserPlaylistProvider::createTables()
             " id " + sqlStorage->idType() +
             ", parent_id INTEGER"
             ", name " + sqlStorage->textColumnType() +
-            ", description " + sqlStorage->textColumnType() +
             ", urlid " + sqlStorage->exactTextColumnType() + " ) ENGINE = MyISAM;" ) );
     sqlStorage->query( "CREATE INDEX parent_playlist ON playlists( parent_id );" );
 
@@ -305,15 +273,34 @@ SqlUserPlaylistProvider::checkTables()
     else
     {
         int dbVersion = values.at( 0 ).toInt();
-        if ( dbVersion != USERPLAYLIST_DB_VERSION ) {
-            //ah screw it, we do not have any stable releases of this out, so just redo the db. This wil also make sure that we do not
-            //get duplicate playlists from files due to one having a urlid and the other not having one
-            deleteTables();
-            createTables();
+        switch ( dbVersion )
+        {
+            case 2:
+                upgradeVersion2to3();
+                sqlStorage->query( "UPDATE admin SET version = '" + QString::number( USERPLAYLIST_DB_VERSION )  + "' WHERE component = '" + key + "';" );
+            case 3: // current version
+               break;
+            default:
+                KMessageBox::sorry(
+                    0, // QWidget *parent
+                    i18n( "Version %1 of playlist database schema encountered, however this "
+                        "Amarok version only supports version %2 (and previous versions "
+                        "starting with %2). Playlists saved in the Amarok Database probably "
+                        "will not work and any write operations with them may result in losing "
+                        "them. Perhaps you have started an older version of Amarok with a "
+                        "database written by newer version?", dbVersion, USERPLAYLIST_DB_VERSION ),
+                    i18nc( "the user's 'database version' is newer and unsupported by this software version",
+                           "Future version of Playlist Database?" ) );
+         }
+     }
+ }
 
-            sqlStorage->query( "UPDATE admin SET version = '" + QString::number( USERPLAYLIST_DB_VERSION )  + "' WHERE component = '" + key + "';" );
-        }
-    }
+void
+SqlUserPlaylistProvider::upgradeVersion2to3()
+{
+    DEBUG_BLOCK
+    SqlStorage *sqlStorage = CollectionManager::instance()->sqlStorage();
+    sqlStorage->query( "ALTER TABLE playlists DROP COLUMN description" );
 }
 
 Playlists::SqlPlaylistList

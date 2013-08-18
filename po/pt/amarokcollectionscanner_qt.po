@@ -2,8 +2,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarokcollectionscanner_qt\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-10-10 10:03+0200\n"
-"PO-Revision-Date: 2011-08-19 13:58+0100\n"
+"POT-Creation-Date: 2013-03-05 03:04+0100\n"
+"PO-Revision-Date: 2013-01-20 12:18+0000\n"
 "Last-Translator: José Nuno Coelho Pires <zepires@gmail.com>\n"
 "Language-Team: Portuguese <kde-i18n-pt@kde.org>\n"
 "Language: pt\n"
@@ -16,27 +16,28 @@ msgstr ""
 "X-POFile-SpellExtra: nocharset savelocation version idlepriority newer\n"
 "X-POFile-SpellExtra: sharedmemory\n"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:115
-#: utilities/collectionscanner/CollectionScanner.cpp:138
+#: utilities/collectionscanner/CollectionScanner.cpp:116
+#: utilities/collectionscanner/CollectionScanner.cpp:139
 #, qt-format
 msgid "File \"%1\" not found."
 msgstr "O ficheiro \"%1\" não foi encontrado."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:118
+#: utilities/collectionscanner/CollectionScanner.cpp:119
 #, qt-format
 msgid "Could not open file \"%1\"."
 msgstr "Não foi possível aceder ao ficheiro \"%1\"."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:370
+#: utilities/collectionscanner/CollectionScanner.cpp:371
 #, qt-format
 msgid "Missing argument for option %1"
 msgstr "Falta um argumento para a opção '%1'"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:407
+#: utilities/collectionscanner/CollectionScanner.cpp:408
 msgid ""
 "Amarok Collection Scanner\n"
 "Scans directories and outputs a xml file with the results.\n"
-"For more information see http://amarok.kde.org/wiki/Batch_Mode\n"
+"For more information see http://community.kde.org/Amarok/Development/"
+"BatchMode\n"
 "\n"
 "Usage: amarokcollectionscanner [options] <Folder(s)>\n"
 "User-modifiable Options:\n"
@@ -65,7 +66,8 @@ msgid ""
 msgstr ""
 "Analisador da Colecção do Amarok\n"
 "Sonda as pastas e devolve um ficheiro em XML com os resultados.\n"
-"Para mais informações, veja em http://amarok.kde.org/wiki/Batch_Mode\n"
+"Para mais informações, veja em http://community.kde.org/Amarok/Development/"
+"BatchMode\n"
 "\n"
 "Utilização: amarokcollectionscanner [opções] <Pasta(s)>\n"
 "Opções disponíveis ao utilizador:\n"

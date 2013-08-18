@@ -23,6 +23,7 @@
 #include "browsers/playlistbrowser/DynamicBiasWidgets.h"
 #include "core/collections/Collection.h"
 #include "core/collections/QueryMaker.h"
+#include "core/meta/Meta.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 #include "dynamic/TrackSet.h"
@@ -35,8 +36,7 @@
 #include <QXmlStreamReader>
 #include <QXmlStreamWriter>
 
-#include <klocale.h>
-
+#include <KLocale>
 
 QString
 Dynamic::QuizPlayBiasFactory::i18nName() const
@@ -151,25 +151,26 @@ Dynamic::QuizPlayBias::widget( QWidget* parent )
     case ArtistToArtist: combo->setCurrentIndex(1); break;
     case AlbumToAlbum:   combo->setCurrentIndex(2); break;
     }
-    connect( combo, SIGNAL( currentIndexChanged(int) ),
-             this, SLOT( selectionChanged( int ) ) );
+    connect( combo, SIGNAL(currentIndexChanged(int)),
+             this, SLOT(selectionChanged(int)) );
     layout->addWidget( combo );
 
     return widget;
 }
 
 Dynamic::TrackSet
-Dynamic::QuizPlayBias::matchingTracks( int position,
-                                       const Meta::TrackList& playlist, int contextCount,
+Dynamic::QuizPlayBias::matchingTracks( const Meta::TrackList& playlist,
+                                       int contextCount, int finalCount,
                                        Dynamic::TrackCollectionPtr universe ) const
 {
     Q_UNUSED( contextCount );
+    Q_UNUSED( finalCount );
 
-    if( position <= 0 || position > playlist.count())
+    if( playlist.isEmpty() )
         return Dynamic::TrackSet( universe, true );
 
     // determine the last character we need to quiz
-    Meta::TrackPtr lastTrack = playlist[position-1];
+    Meta::TrackPtr lastTrack = playlist.last();
     Meta::DataPtr lastData;
     if( m_follow == TitleToTitle )
         lastData = Meta::DataPtr::staticCast<Meta::Track>(lastTrack);
@@ -297,8 +298,8 @@ Dynamic::QuizPlayBias::newQuery()
     m_qm->setQueryType( Collections::QueryMaker::Custom );
     m_qm->addReturnValue( Meta::valUniqueId );
 
-    connect( m_qm.data(), SIGNAL(newResultReady( QStringList )),
-             this, SLOT(updateReady( QStringList )) );
+    connect( m_qm.data(), SIGNAL(newResultReady(QStringList)),
+             this, SLOT(updateReady(QStringList)) );
     connect( m_qm.data(), SIGNAL(queryDone()),
              this, SLOT(updateFinished()) );
     m_qm.data()->run();

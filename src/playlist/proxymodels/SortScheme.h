@@ -33,17 +33,17 @@ namespace Playlist
 class SortLevel
 {
     public:
-        explicit SortLevel( int sortCategory = PlaceHolder, Qt::SortOrder sortOrder = Qt::AscendingOrder );
-        int category() const;
+        explicit SortLevel( Column sortCategory = PlaceHolder, Qt::SortOrder sortOrder = Qt::AscendingOrder );
+        Column category() const;
         Qt::SortOrder order() const;
-        void setCategory( int sortCategory );
+        void setCategory( Column sortCategory );
         void setOrder( Qt::SortOrder sortOrder );
         bool isComparable() const;
         bool isString() const;
         bool isFloat() const;
         QString prettyName() const;
     private:
-        int m_category;     //Column from PlaylistDefines.h
+        Column m_category;     //Column from PlaylistDefines.h
         Qt::SortOrder m_order;
 };
 
@@ -51,19 +51,22 @@ class SortLevel
  * A sorting scheme for multilevel playlist sorting. This class wraps around a QStack to
  * define a way to sort the playlist and is used by Playlist::SortProxy.
  * @author Téo Mrnjavac <teo@kde.org>
+ * @author Konrad Zemek <konrad.zemek@gmail.com>
  */
-class SortScheme
+class SortScheme : private QStack<SortLevel>
 {
     public:
-        SortScheme();
-        ~SortScheme();
-        const SortLevel & level( int i ) const;
-        void addLevel( const SortLevel & level );
-        void trimToLevel( int lastLevel );        //deletes all the levels up to level # length
+        const SortLevel &level( int i ) const;
+        void addLevel( const SortLevel &level );
+
+        /** Deletes all the levels up to level # length */
+        void trimToLevel( int lastLevel );
         int length() const;
 
-    private:
-        QStack< SortLevel > m_scheme;
+        typedef QStack<SortLevel>::const_iterator const_iterator;
+
+        const_iterator begin() const;
+        const_iterator end() const;
 };
 
 }   //namespace Playlist

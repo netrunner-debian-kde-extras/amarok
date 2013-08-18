@@ -17,10 +17,11 @@
 #ifndef AMAROK_METAPROXY_H
 #define AMAROK_METAPROXY_H
 
-#include "MetaProxyWorker.h"
-
-#include "core/meta/Meta.h"
+#include "amarok_export.h"
 #include "core/capabilities/Capability.h"
+#include "core/meta/Meta.h"
+#include "core/meta/TrackEditor.h"
+#include "core-impl/meta/proxy/MetaProxyWorker.h"
 
 #include <QObject>
 
@@ -33,7 +34,7 @@ namespace MetaProxy
 {
     class Track;
     typedef KSharedPtr<Track> TrackPtr;
-    class AMAROK_EXPORT Track : public Meta::Track
+    class AMAROK_EXPORT Track : public Meta::Track, public Meta::TrackEditor
     {
         public:
             class Private;
@@ -77,16 +78,14 @@ namespace MetaProxy
         // methods inherited from Meta::Base
             virtual QString name() const;
             virtual QString prettyName() const;
-            virtual QString fullPrettyName() const;
             virtual QString sortableName() const;
-            virtual QString fixedName() const;
 
         // methods inherited from Meta::Track
             virtual KUrl playableUrl() const;
             virtual QString prettyUrl() const;
             virtual QString uidUrl() const;
+            virtual QString notPlayableReason() const;
 
-            virtual bool isPlayable() const;
             virtual Meta::AlbumPtr album() const;
             virtual Meta::ArtistPtr artist() const;
             virtual Meta::GenrePtr genre() const;
@@ -121,21 +120,33 @@ namespace MetaProxy
             virtual void addLabel( const Meta::LabelPtr &label );
             virtual void removeLabel( const Meta::LabelPtr &label );
 
-            virtual bool operator==( const Meta::Track &track ) const;
+            virtual Meta::TrackEditorPtr editor();
             virtual Meta::StatisticsPtr statistics();
 
-        // custom MetaProxy methods
-            virtual void setName( const QString &name );
+            virtual bool operator==( const Meta::Track &track ) const;
+
+        // Meta::TrackEditor methods:
             virtual void setAlbum( const QString &album );
             virtual void setAlbumArtist( const QString &artist );
             virtual void setArtist( const QString &artist );
-            virtual void setGenre( const QString &genre );
             virtual void setComposer( const QString &composer );
+            virtual void setGenre( const QString &genre );
             virtual void setYear( int year );
-            virtual void setBpm( const qreal bpm );
+            virtual void setComment( const QString &comment );
+            virtual void setTitle( const QString &name );
             virtual void setTrackNumber( int number );
             virtual void setDiscNumber( int discNumber );
-            virtual void setLength( qint64 length );
+            virtual void setBpm( const qreal bpm );
+
+            virtual void beginUpdate();
+            virtual void endUpdate();
+
+        // custom MetaProxy methods
+            /**
+             * Return true if underlying track has already been found, false otherwise.
+             */
+            bool isResolved() const;
+            void setLength( qint64 length );
 
             /**
              * MetaProxy will update the proxy with the track.

@@ -17,9 +17,10 @@
 #ifndef COLLECTIONTREEVIEW_H
 #define COLLECTIONTREEVIEW_H
 
+#include "amarok_export.h"
 #include "BrowserDefines.h"
 #include "widgets/PrettyTreeView.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "playlist/PlaylistController.h"
 
 #include <QModelIndex>
@@ -31,6 +32,10 @@ class CollectionSortFilterProxyModel;
 class CollectionTreeItemModelBase;
 class CollectionTreeItem;
 class PopupDropper;
+namespace Collections {
+    class Collection;
+    class QueryMaker;
+}
 class QAction;
 class QSortFilterProxyModel;
 
@@ -56,18 +61,36 @@ class CollectionTreeView: public Amarok::PrettyTreeView
         //Helper function to remove children if their parent is already present
         static QSet<CollectionTreeItem*> cleanItemSet( const QSet<CollectionTreeItem*> &items );
 
+        /**
+         * Copies all selected tracks to the local collection. The user can also
+         * choose to do on-the-fly transcoding.
+         */
+        AMAROK_EXPORT void copySelectedToLocalCollection();
+
     public slots:
         void slotSetFilter( const QString &filter );
 
+        /**
+         * This should append all currently visible tracks to the playlist. Takes
+         * care to ensure that the tracks are added only after any pending searches
+         * are finished.
+         */
+        void slotAddFilteredTracksToPlaylist();
+
         void playChildTracksSlot( Meta::TrackList list );
+
+    signals:
+        /**
+         * This signal is emitted when slotAddFilteredTracksToPlaylist() has done its
+         * work.
+         */
+        void addingFilteredTracksDone();
 
     protected:
         void contextMenuEvent( QContextMenuEvent *event );
         void mouseDoubleClickEvent( QMouseEvent *event );
-        void mouseMoveEvent( QMouseEvent *event );
-        void mousePressEvent( QMouseEvent *event );
         void mouseReleaseEvent( QMouseEvent *event );
-        void keyPressEvent( QKeyEvent * event );
+        void keyPressEvent( QKeyEvent *event );
         void dragEnterEvent( QDragEnterEvent *event );
         void dragMoveEvent( QDragMoveEvent *event );
         void startDrag( Qt::DropActions supportedActions );
@@ -80,13 +103,13 @@ class CollectionTreeView: public Amarok::PrettyTreeView
 
         void slotCheckAutoExpand();
 
-        void slotPlayChildTracks();
+        void slotReplacePlaylistWithChildTracks();
         void slotAppendChildTracks();
         void slotQueueChildTracks();
         void slotEditTracks();
         void slotCopyTracks();
         void slotMoveTracks();
-        void slotTrashTracks();
+        void slotTrashTracks( Qt::MouseButtons buttons, Qt::KeyboardModifiers modifiers );
         void slotDeleteTracks();
         void slotOrganize();
 
@@ -131,9 +154,7 @@ class CollectionTreeView: public Amarok::PrettyTreeView
 
         QSet<CollectionTreeItem*> m_currentItems;
 
-        QMutex m_dragMutex;
         bool m_ongoingDrag;
-        bool m_expandToggledWhenPressed;
 
     signals:
         void itemSelected( CollectionTreeItem * item );

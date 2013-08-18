@@ -31,7 +31,6 @@
 #include "core/meta/support/MetaUtility.h"
 #include "core/transcoding/TranscodingController.h"
 #include "core-impl/collections/db/MountPointManager.h"
-#include "core-impl/collections/db/ScanManager.h"
 #include "core-impl/collections/db/sql/SqlCollection.h"
 #include "core-impl/collections/db/sql/SqlMeta.h"
 #include "transcoding/TranscodingJob.h"
@@ -41,6 +40,7 @@
 #include <QFileInfo>
 
 #include <kdiskfreespaceinfo.h>
+#include <KFileItem>
 #include <kjob.h>
 #include <KSharedPtr>
 #include <kio/job.h>
@@ -277,7 +277,7 @@ SqlCollectionLocation::insert( const Meta::TrackPtr &track, const QString &url )
     // we have a first shot at the meta data (expecially ratings and playcounts from media
     // collections) but we still need to trigger the collection scanner
     // to get the album and other meta data correct.
-    m_collection->scanManager()->delayedIncrementalScan( QFileInfo(url).path() );
+    // TODO m_collection->directoryWatcher()->delayedIncrementalScan( QFileInfo(url).path() );
 
     return true;
 }
@@ -344,8 +344,8 @@ SqlCollectionLocation::showDestinationDialog( const Meta::TrackList &tracks,
     delegate->setTranscodingConfiguration( configuration );
     delegate->setCaption( operationText( configuration ) );
 
-    connect( delegate, SIGNAL( accepted() ), SLOT( slotDialogAccepted() ) );
-    connect( delegate, SIGNAL( rejected() ), SLOT( slotDialogRejected() ) );
+    connect( delegate, SIGNAL(accepted()), SLOT(slotDialogAccepted()) );
+    connect( delegate, SIGNAL(rejected()), SLOT(slotDialogRejected()) );
     delegate->show();
 }
 
@@ -429,7 +429,6 @@ SqlCollectionLocation::slotRemoveJobFinished( KJob *job )
 
     if( !startNextRemoveJob() )
     {
-        m_collection->scanManager()->unblockScan();
         slotRemoveOperationFinished();
     }
 
@@ -451,7 +450,6 @@ void SqlCollectionLocation::slotTransferJobFinished( KJob* job )
         m_originalUrls[track] = track->playableUrl();
     }
     debug () << "m_originalUrls" << m_originalUrls;
-    m_collection->scanManager()->unblockScan();
     slotCopyOperationFinished();
 }
 
@@ -469,7 +467,6 @@ void SqlCollectionLocation::slotTransferJobAborted()
             insert( track, m_destinations[ track ] ); // was already copied, so have to insert it in the db
         m_originalUrls[track] = track->playableUrl();
     }
-    m_collection->scanManager()->unblockScan();
     abort();
 }
 
@@ -479,15 +476,13 @@ SqlCollectionLocation::copyUrlsToCollection( const QMap<Meta::TrackPtr, KUrl> &s
                                              const Transcoding::Configuration &configuration )
 {
     DEBUG_BLOCK
-    m_collection->scanManager()->blockScan();  //make sure the collection scanner does not run while we are coyping stuff
-
     m_sources = sources;
 
     QString statusBarTxt = operationInProgressText( configuration, sources.count() );
     m_transferjob = new TransferJob( this, configuration );
     Amarok::Components::logger()->newProgressOperation( m_transferjob, statusBarTxt, this,
                                                         SLOT(slotTransferJobAborted()) );
-    connect( m_transferjob, SIGNAL(result( KJob * )), SLOT(slotTransferJobFinished( KJob * )) );
+    connect( m_transferjob, SIGNAL(result(KJob*)), SLOT(slotTransferJobFinished(KJob*)) );
     m_transferjob->start();
 }
 
@@ -496,15 +491,10 @@ SqlCollectionLocation::removeUrlsFromCollection(  const Meta::TrackList &sources
 {
     DEBUG_BLOCK
 
-    m_collection->scanManager()->blockScan();  //make sure the collection scanner does not run while we are deleting stuff
-
     m_removetracks = sources;
 
     if( !startNextRemoveJob() ) //this signal needs to be called no matter what, even if there are no job finishes to call it
-    {
-        m_collection->scanManager()->unblockScan();
         slotRemoveOperationFinished();
-    }
 }
 
 void
@@ -526,14 +516,23 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
         src.cleanPath();
 
         bool hasMoodFile = QFile::exists( moodFile( src ).toLocalFile() );
+        bool isJustCopy = configuration.isJustCopy( track );
 
-        if( configuration.isJustCopy() )
+        if( isJustCopy )
             debug() << "copying from " << src << " to " << dest;
         else
             debug() << "transcoding from " << src << " to " << dest;
 
-        QFileInfo info( dest.pathOrUrl() );
-        QDir dir = info.dir();
+        KFileItem srcInfo( src, src.toMimeDataString(), KFileItem::Unknown );
+        if( !srcInfo.isFile() )
+        {
+            warning() << "Source track" << src << "was no file";
+            source()->transferError( track, i18n( "Source track does not exist: %1", src.pathOrUrl() ) );
+            return true; // Attempt to copy/move the next item in m_sources
+        }
+
+        QFileInfo destInfo( dest.pathOrUrl() );
+        QDir dir = destInfo.dir();
         if( !dir.exists() )
         {
             if( !dir.mkpath( "." ) )
@@ -545,7 +544,7 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
         }
 
         KIO::JobFlags flags;
-        if( configuration.isJustCopy() )
+        if( isJustCopy )
         {
             flags = KIO::HideProgressInfo;
             if( m_overwriteFiles )
@@ -559,7 +558,7 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
 
         if( src.equals( dest ) )
         {
-            warning() << "move to itself found: " << info.absoluteFilePath();
+            warning() << "move to itself found: " << destInfo.absoluteFilePath();
             m_transferjob->slotJobFinished( 0 );
             if( m_sources.isEmpty() )
                 return false;
@@ -579,7 +578,7 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
         else
         {
             //later on in the case that remove is called, the file will be deleted because we didn't apply moveByDestination to the track
-            if( configuration.isJustCopy() )
+            if( isJustCopy )
                 job = KIO::file_copy( src, dest, -1, flags );
             else
             {
@@ -601,13 +600,13 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
         }
         if( job )   //just to be safe
         {
-            connect( job, SIGNAL( result( KJob* ) ), SLOT( slotJobFinished( KJob* ) ) );
-            connect( job, SIGNAL( result( KJob* ) ), m_transferjob, SLOT( slotJobFinished( KJob* ) ) );
+            connect( job, SIGNAL(result(KJob*)), SLOT(slotJobFinished(KJob*)) );
+            connect( job, SIGNAL(result(KJob*)), m_transferjob, SLOT(slotJobFinished(KJob*)) );
             m_transferjob->addSubjob( job );
 
             if( moodJob )
             {
-                connect( moodJob, SIGNAL( result( KJob* ) ), m_transferjob, SLOT( slotJobFinished( KJob* ) ) );
+                connect( moodJob, SIGNAL(result(KJob*)), m_transferjob, SLOT(slotJobFinished(KJob*)) );
                 m_transferjob->addSubjob( moodJob );
             }
 
@@ -615,7 +614,7 @@ bool SqlCollectionLocation::startNextJob( const Transcoding::Configuration confi
             if( track->artist() )
                 name = QString( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
 
-            if( configuration.isJustCopy() )
+            if( isJustCopy )
                 m_transferjob->emitInfo( i18n( "Transferring: %1", name ) );
             else
                 m_transferjob->emitInfo( i18n( "Transcoding: %1", name ) );
@@ -657,7 +656,7 @@ bool SqlCollectionLocation::startNextRemoveJob()
             if( QFile::exists( srcMoodFile.toLocalFile() ) )
                 KIO::del( srcMoodFile, KIO::HideProgressInfo );
            
-            connect( job, SIGNAL( result( KJob* ) ), SLOT( slotRemoveJobFinished( KJob* ) ) );
+            connect( job, SIGNAL(result(KJob*)), SLOT(slotRemoveJobFinished(KJob*)) );
             QString name = track->prettyName();
             if( track->artist() )
                 name = QString( "%1 - %2" ).arg( track->artist()->name(), track->prettyName() );
@@ -691,8 +690,8 @@ TransferJob::TransferJob( SqlCollectionLocation * location, const Transcoding::C
 
 bool TransferJob::addSubjob( KJob* job )
 {
-    connect( job, SIGNAL( processedAmount( KJob *, KJob::Unit, qulonglong ) ),
-             this, SLOT( propagateProcessedAmount( KJob *, KJob::Unit, qulonglong ) ) );
+    connect( job, SIGNAL(processedAmount(KJob*,KJob::Unit,qulonglong)),
+             this, SLOT(propagateProcessedAmount(KJob*,KJob::Unit,qulonglong)) );
     //KCompositeJob::addSubjob doesn't handle progress reporting.
     return KCompositeJob::addSubjob( job );
 }
@@ -722,7 +721,7 @@ void TransferJob::start()
         emitResult();
         return;
     }
-    QTimer::singleShot( 0, this, SLOT( doWork() ) );
+    QTimer::singleShot( 0, this, SLOT(doWork()) );
 }
 
 void TransferJob::doWork()

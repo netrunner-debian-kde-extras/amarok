@@ -31,6 +31,7 @@
 #include "core-impl/meta/stream/Stream.h"
 #include "core-impl/meta/timecode/TimecodeTrackProvider.h"
 
+#include <QCoreApplication>
 #include <QList>
 #include <QMetaEnum>
 #include <QMetaObject>
@@ -107,6 +108,9 @@ CollectionManager::CollectionManager()
     , d( new Private )
 {
     DEBUG_BLOCK
+    // ensure this object is created in a main thread
+    Q_ASSERT( thread() == QCoreApplication::instance()->thread() );
+
     setObjectName( "CollectionManager" );
     qRegisterMetaType<SqlStorage *>( "SqlStorage*" );
     d->sqlDatabase = 0;
@@ -142,34 +146,38 @@ CollectionManager::~CollectionManager()
 }
 
 void
-CollectionManager::init( const QList<Plugins::PluginFactory*> &factories )
+CollectionManager::init()
 {
-    DEBUG_BLOCK
-
     //register the timecode track provider now, as it needs to get added before loading
     //the stored playlist... Since it can have playable urls that might also match other providers, it needs to get added first.
     m_timecodeTrackProvider = new TimecodeTrackProvider();
     addTrackProvider( m_timecodeTrackProvider );
+}
 
-    QList<Collections::CollectionFactory*> orderdFactories;
+void
+CollectionManager::handleNewFactories( const QList<Plugins::PluginFactory*> &factories )
+{
+    using Collections::CollectionFactory;
+
+    QList<CollectionFactory*> cfactories;
     foreach( Plugins::PluginFactory *pFactory, factories )
     {
-        using namespace Collections;
         CollectionFactory *factory = qobject_cast<CollectionFactory*>( pFactory );
         if( !factory )
             continue;
 
         const QString name = factory->info().pluginName();
-        if( name == QLatin1String("amarok_collection-mysqlservercollection") || name == QLatin1String("amarok_collection-mysqlecollection") )
+        if( name == QLatin1String("amarok_collection-mysqlservercollection") ||
+            name == QLatin1String("amarok_collection-mysqlecollection") )
         {
-            orderdFactories.prepend( factory );
+            cfactories.prepend( factory );
         }
         else
         {
-            orderdFactories.append( factory );
+            cfactories.append( factory );
         }
     }
-    loadPlugins( orderdFactories );
+    loadPlugins( cfactories );
 }
 
 void
@@ -288,8 +296,8 @@ CollectionManager::slotNewCollection( Collections::Collection* newCollection )
     d->collections.append( pair );
     d->managedCollections.append( newCollection );
     d->trackProviders.append( newCollection );
-    connect( newCollection, SIGNAL( remove() ), SLOT( slotRemoveCollection() ), Qt::QueuedConnection );
-    connect( newCollection, SIGNAL( updated() ), SLOT( slotCollectionChanged() ), Qt::QueuedConnection );
+    connect( newCollection, SIGNAL(remove()), SLOT(slotRemoveCollection()), Qt::QueuedConnection );
+    connect( newCollection, SIGNAL(updated()), SLOT(slotCollectionChanged()), Qt::QueuedConnection );
     //by convention, collections that provide a SQL database have a Qt property called "sqlStorage"
     int propertyIndex = newCollection->metaObject()->indexOfProperty( "sqlStorage" );
     if( propertyIndex != -1 )
@@ -367,7 +375,7 @@ CollectionManager::slotRemoveCollection()
             }
         }
         emit collectionRemoved( collection->collectionId() );
-        QTimer::singleShot( 500, collection, SLOT( deleteLater() ) ); // give the tree some time to update itself until we really delete the collection pointers.
+        QTimer::singleShot( 500, collection, SLOT(deleteLater()) ); // give the tree some time to update itself until we really delete the collection pointers.
     }
 }
 
@@ -459,8 +467,9 @@ CollectionManager::trackForUrl( const KUrl &url )
     }
 
     // TODO: create specific TrackProviders for these:
-    if( url.protocol() == QLatin1String("http") || url.protocol() == QLatin1String("mms") ||
-        url.protocol() == QLatin1String("smb") )
+    static const QSet<QString> remoteProtocols = QSet<QString>()
+            << "http" << "https" << "mms" << "smb"; // consider unifying with TrackLoader::tracksLoaded()
+    if( remoteProtocols.contains( url.protocol() ) )
         return Meta::TrackPtr( new MetaStream::Track( url ) );
 
     /* TODO: add m_fileTrackProvider to normal providers once tested that the reorder

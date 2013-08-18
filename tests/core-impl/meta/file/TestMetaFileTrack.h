@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2009 Sven Krohlas <sven@getamarok.com>                  *
+ *   Copyright (c) 2009 Sven Krohlas <sven@asbest-online.de>               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -20,7 +20,6 @@
 #ifndef TESTMETAFILETRACK_H
 #define TESTMETAFILETRACK_H
 
-#include "TestBase.h"
 #include "core-impl/meta/file/File.h"
 
 #include <QtCore/QObject>
@@ -44,7 +43,6 @@ private slots:
     // methods inherited from Meta::Base
     void testNameAndSetTitle();
     void testPrettyName();
-    void testFullPrettyName();
     void testSortableName();
 
     // methods inherited from Meta::Track

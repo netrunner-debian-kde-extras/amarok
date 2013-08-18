@@ -17,18 +17,20 @@
 
 #include "FileTypeResolver.h"
 
+#include "config.h"
+
+#include <KMimeType>
+
 #include <QFile>
 #include <QFileInfo>
 #include <QtDebug>
 
-#include <kmimetype.h>
-
-#include <fileref.h>
-
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wnon-virtual-dtor"
 #ifdef TAGLIB_EXTRAS_FOUND
 #include <audiblefile.h>
 #include <realmediafile.h>
-#endif
+#endif // TAGLIB_EXTRAS_FOUND
 #include <aifffile.h>
 #include <asffile.h>
 #include <flacfile.h>
@@ -36,6 +38,9 @@
 #include <mpcfile.h>
 #include <mpegfile.h>
 #include <oggfile.h>
+#ifdef TAGLIB_OPUS_FOUND
+#include <opusfile.h>
+#endif // TAGLIB_OPUS_FOUND
 #include <oggflacfile.h>
 #include <speexfile.h>
 #include <trueaudiofile.h>
@@ -47,7 +52,8 @@
 #include <s3mfile.h>
 #include <itfile.h>
 #include <xmfile.h>
-#endif
+#endif // TAGLIB_MOD_FOUND
+#pragma GCC diagnostic pop
 
 TagLib::File *Meta::Tag::FileTypeResolver::createFile(TagLib::FileName fileName,
         bool readProperties,
@@ -86,7 +92,15 @@ TagLib::File *Meta::Tag::FileTypeResolver::createFile(TagLib::FileName fileName,
         result = new TagLibExtras::RealMedia::File(fileName, readProperties, propertiesStyle);
     }
 #endif
-    else if( mimetype->is( QLatin1String("audio/x-vorbis+ogg") ) )
+#ifdef TAGLIB_OPUS_FOUND
+    else if( mimetype->is( QLatin1String("audio/opus") )
+            || mimetype->is( QLatin1String("audio/x-opus+ogg") ) )
+    {
+        result = new TagLib::Ogg::Opus::File(fileName, readProperties, propertiesStyle);
+    }
+#endif
+    else if( mimetype->is( QLatin1String("audio/vorbis") )
+            || mimetype->is( QLatin1String("audio/x-vorbis+ogg") ) )
     {
         result = new TagLib::Ogg::Vorbis::File(fileName, readProperties, propertiesStyle);
     }
@@ -121,7 +135,7 @@ TagLib::File *Meta::Tag::FileTypeResolver::createFile(TagLib::FileName fileName,
     else if( mimetype->is( QLatin1String("audio/x-speex") )
              || mimetype->is( QLatin1String("audio/x-speex+ogg") ) )
     {
-        result = new TagLib::TrueAudio::File(fileName, readProperties, propertiesStyle);
+        result = new TagLib::Ogg::Speex::File(fileName, readProperties, propertiesStyle);
     }
 #ifdef TAGLIB_MOD_FOUND
     else if( mimetype->is( QLatin1String("audio/x-mod") ) )
@@ -161,10 +175,18 @@ TagLib::File *Meta::Tag::FileTypeResolver::createFile(TagLib::FileName fileName,
     {
         result = new TagLib::ASF::File(fileName, readProperties, propertiesStyle);
     }
+#ifdef TAGLIB_OPUS_FOUND
+    // this is currently needed because shared-mime-info database doesn't have opus entry (2013-01)
+    else if( suffix == QLatin1String("opus") )
+    {
+        result = new TagLib::Ogg::Opus::File(fileName, readProperties, propertiesStyle);
+    }
+#endif
 
 #ifndef Q_WS_WIN
      if( !result )
-         qDebug() << "kmimetype filetype guessing failed for" << fileName;
+         qDebug() << QString( "FileTypeResolver: file %1 (mimetype %2) not recognized as "
+                "Amarok-compatible" ).arg( fileName, mimetype->name() ).toLocal8Bit().data();
 #endif
 
     if( result && !result->isValid() ) {

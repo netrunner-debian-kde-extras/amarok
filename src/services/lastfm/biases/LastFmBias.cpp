@@ -14,19 +14,27 @@
  * this program.  If not, see <http://www.gnu.org/licenses/>.                           *
  ****************************************************************************************/
 
+#define DEBUG_PREFIX "LastFmBias"
+
 #include "LastFmBias.h"
 
+#include "core/meta/Meta.h"
 #include "core/support/Amarok.h"
 #include "core/support/Debug.h"
 #include "core-impl/collections/support/CollectionManager.h"
 
-#include <QComboBox>
+#include <KStandardDirs>
+
 #include <QDomDocument>
 #include <QDomNode>
+#include <QFile>
 #include <QLabel>
+#include <QPixmap>
+#include <QRadioButton>
 #include <QTimer>
 #include <QVBoxLayout>
 #include <QXmlStreamReader>
+#include <QXmlStreamWriter>
 
 #include <Artist.h>
 #include <ws.h>
@@ -57,7 +65,7 @@ Dynamic::LastFmBias::LastFmBias()
     , m_match( SimilarArtist )
     , m_mutex( QMutex::Recursive )
 {
-    loadFromFile();
+    loadDataFromFile();
 }
 
 Dynamic::LastFmBias::~LastFmBias()
@@ -68,7 +76,6 @@ Dynamic::LastFmBias::~LastFmBias()
 void
 Dynamic::LastFmBias::fromXml( QXmlStreamReader *reader )
 {
-    loadFromFile();
     while (!reader->atEnd()) {
         reader->readNext();
 
@@ -130,40 +137,40 @@ Dynamic::LastFmBias::widget( QWidget* parent )
     QWidget *widget = new QWidget( parent );
     QVBoxLayout *layout = new QVBoxLayout( widget );
 
-    QLabel *label = new QLabel( i18n( "Last.fm thinks the track is similar to" ) );
+    QLabel *imageLabel = new QLabel();
+    imageLabel->setPixmap( QPixmap( KStandardDirs::locate( "data", "amarok/images/lastfm.png" ) ) );
+    QLabel *label = new QLabel( i18n( "<a href=\"http://www.last.fm/\">Last.fm</a> thinks the track is similar to" ) );
 
-    QComboBox *combo = new QComboBox();
-    combo->addItem( i18n( "the previous artist" ),
-                    nameForMatch( SimilarArtist ) );
-    combo->addItem( i18n( "the previous track" ),
-                    nameForMatch( SimilarTrack ) );
-    switch( m_match )
-    {
-    case SimilarArtist: combo->setCurrentIndex( 0 ); break;
-    case SimilarTrack:  combo->setCurrentIndex( 1 ); break;
-    }
-    connect( combo, SIGNAL( currentIndexChanged(int) ),
-             this, SLOT( selectionChanged( int ) ) );
-    label->setBuddy( combo );
+    QRadioButton *rb1 = new QRadioButton( i18n( "the previous track's artist" ) );
+    QRadioButton *rb2 = new QRadioButton( i18n( "the previous track" ) );
+
+    rb1->setChecked( m_match == SimilarArtist );
+    rb2->setChecked( m_match == SimilarTrack );
+
+    connect( rb1, SIGNAL(toggled(bool)),
+             this, SLOT(setMatchTypeArtist(bool)) );
+
+    layout->addWidget( imageLabel );
     layout->addWidget( label );
-    layout->addWidget( combo );
+    layout->addWidget( rb1 );
+    layout->addWidget( rb2 );
 
     return widget;
 }
 
 Dynamic::TrackSet
-Dynamic::LastFmBias::matchingTracks( int position,
-                                       const Meta::TrackList& playlist,
-                                       int contextCount,
-                                       Dynamic::TrackCollectionPtr universe ) const
+Dynamic::LastFmBias::matchingTracks( const Meta::TrackList& playlist,
+                                     int contextCount, int finalCount,
+                                     Dynamic::TrackCollectionPtr universe ) const
 {
     Q_UNUSED( contextCount );
+    Q_UNUSED( finalCount );
 
-    if( position <= 0 || position > playlist.count())
+    if( playlist.isEmpty() )
         return Dynamic::TrackSet( universe, true );
 
     // determine the last track and artist
-    Meta::TrackPtr lastTrack = playlist[position-1];
+    Meta::TrackPtr lastTrack = playlist.last();
     Meta::ArtistPtr lastArtist = lastTrack->artist();
 
     m_currentTrack = lastTrack->name();
@@ -329,8 +336,8 @@ Dynamic::LastFmBias::newQuery()
     m_qm->setQueryType( Collections::QueryMaker::Custom );
     m_qm->addReturnValue( Meta::valUniqueId );
 
-    connect( m_qm.data(), SIGNAL(newResultReady( QStringList )),
-             this, SLOT(updateReady( QStringList )) );
+    connect( m_qm.data(), SIGNAL(newResultReady(QStringList)),
+             this, SLOT(updateReady(QStringList)) );
     connect( m_qm.data(), SIGNAL(queryDone()),
              this, SLOT(updateFinished()) );
 
@@ -350,8 +357,8 @@ void Dynamic::LastFmBias::newSimilarQuery()
         params[ "method" ] = "artist.getSimilar";
         params[ "artist" ] = m_currentArtist;
         QNetworkReply* request = lastfm::ws::get( params );
-        connect( request, SIGNAL( finished() ),
-                 this, SLOT( similarArtistQueryDone() ) );
+        connect( request, SIGNAL(finished()),
+                 this, SLOT(similarArtistQueryDone()) );
     }
     else if( m_match == SimilarTrack )
     {
@@ -361,8 +368,8 @@ void Dynamic::LastFmBias::newSimilarQuery()
         params[ "artist" ] = m_currentArtist;
         params[ "track" ] = m_currentTrack;
         QNetworkReply* request = lastfm::ws::get( params );
-        connect( request, SIGNAL( finished() ),
-                 this, SLOT( similarTrackQueryDone() ) );
+        connect( request, SIGNAL(finished()),
+                 this, SLOT(similarTrackQueryDone()) );
     }
 }
 
@@ -599,7 +606,7 @@ Dynamic::LastFmBias::readSimilarTracks( QXmlStreamReader *reader )
 }
 
 void
-Dynamic::LastFmBias::loadFromFile()
+Dynamic::LastFmBias::loadDataFromFile()
 {
     m_similarArtistMap.clear();
     m_similarTrackMap.clear();
@@ -655,10 +662,9 @@ Dynamic::LastFmBias::setMatch( Dynamic::LastFmBias::MatchType value )
 }
 
 void
-Dynamic::LastFmBias::selectionChanged( int which )
+Dynamic::LastFmBias::setMatchTypeArtist( bool matchArtist )
 {
-    if( QComboBox *box = qobject_cast<QComboBox*>(sender()) )
-        setMatch( matchForName( box->itemData( which ).toString() ) );
+    setMatch( matchArtist ? SimilarArtist : SimilarTrack );
 }
 
 QString

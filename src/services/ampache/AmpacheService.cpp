@@ -124,6 +124,8 @@ void
 AmpacheService::reauthenticate()
 {
     m_ampacheLogin->reauthenticate();
+    // it would make sense here to clean the complete cache
+    // information from a server might get outdated.
 }
 
 
@@ -131,7 +133,7 @@ void
 AmpacheService::onLoginSuccessful()
 {
     m_collection = new Collections::AmpacheServiceCollection( this, m_ampacheLogin->server(), m_ampacheLogin->sessionId() );
-    // connect( m_collection, SIGNAL( authenticationNeeded() ), SLOT( authenticate() ) );
+    // connect( m_collection, SIGNAL(authenticationNeeded()), SLOT(authenticate()) );
 
     CollectionManager::instance()->addUnmanagedCollection( m_collection, CollectionManager::CollectionDisabled );
     QList<CategoryId::CatMenuId> levels;

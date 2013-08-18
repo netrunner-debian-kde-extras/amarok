@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2009 Sven Krohlas <sven@getamarok.com>                  *
+ *   Copyright (c) 2009 Sven Krohlas <sven@asbest-online.de>               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -20,23 +20,31 @@
 #ifndef TESTMETAMULTITRACK_H
 #define TESTMETAMULTITRACK_H
 
+#include "core/meta/Observer.h"
 #include "core/playlists/Playlist.h"
 
-#include <QtCore/QObject>
+#include <QObject>
 
 namespace Meta {
     class MultiTrack;
 }
 
-class TestMetaMultiTrack : public QObject
+class TestMetaMultiTrack : public QObject, private Playlists::PlaylistObserver
 {
 Q_OBJECT
 
 public:
     TestMetaMultiTrack();
 
+    virtual void tracksLoaded( Playlists::PlaylistPtr playlist );
+
+signals:
+    void tracksLoadedSignal( Playlists::PlaylistPtr playlist );
+
 private slots:
     void initTestCase();
+    void cleanupTestCase();
+
     void init();
     void cleanup();
 
@@ -63,11 +71,15 @@ class NotifyObserversWaiter : public QObject, private Meta::Observer
     signals:
         void done();
 
+    private slots:
+        void slotFilterResovled();
+
     private:
         using Observer::metadataChanged; // silence gcc warning
-        virtual void metadataChanged(Meta::TrackPtr track);
+        virtual void metadataChanged( Meta::TrackPtr track );
 
         QSet<Meta::TrackPtr> m_tracks;
+        QMutex m_mutex;
 };
 
 #endif // TESTMETAMULTITRACK_H

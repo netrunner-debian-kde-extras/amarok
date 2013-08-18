@@ -26,9 +26,10 @@ using namespace Transcoding;
 
 AssistantDialog::AssistantDialog( const QStringList &playableFileTypes, bool saveSupported,
                                   Collections::CollectionLocationDelegate::OperationType operation,
-                                  const QString &destCollectionName, QWidget *parent )
+                                  const QString &destCollectionName,
+                                  const Configuration &prevConfiguration,
+                                  QWidget *parent )
     : KDialog( parent, Qt::Dialog )
-    , m_defaultEncoder( VORBIS )
     , m_configuration( JUST_COPY )
     , m_save( false )
     , m_playableFileTypes( playableFileTypes )
@@ -83,8 +84,8 @@ AssistantDialog::AssistantDialog( const QStringList &playableFileTypes, bool sav
     ui.justCopyButton->setText( justCopyText );
     ui.justCopyButton->setDescription( justCopyDescription );
     ui.justCopyButton->setMinimumHeight( ui.justCopyButton->iconSize().height() + 2*10 ); //we make room for the pretty icon
-    connect( ui.justCopyButton, SIGNAL( clicked() ),
-             this, SLOT( onJustCopyClicked() ) );
+    connect( ui.justCopyButton, SIGNAL(clicked()),
+             this, SLOT(onJustCopyClicked()) );
 
     //Let's set up the codecs page...
     populateFormatList();
@@ -100,6 +101,22 @@ AssistantDialog::AssistantDialog( const QStringList &playableFileTypes, bool sav
     ui.rememberCheckBox->setEnabled( saveSupported );
     connect( ui.rememberCheckBox, SIGNAL(toggled(bool)),
              this, SLOT(onRememberToggled(bool)) );
+
+    switch( prevConfiguration.trackSelection() ) //restore the previously selected TrackSelection radio button
+    {
+        case Configuration::TranscodeUnlessSameType:
+            ui.transcodeUnlessSameTypeRadioButton->setChecked( true );
+            break;
+        case Configuration::TranscodeOnlyIfNeeded:
+            ui.transcodeOnlyIfNeededRadioButton->setChecked( true );
+            break;
+        case Configuration::TranscodeAll:
+            ui.transcodeAllRadioButton->setChecked( true );
+    }
+
+    ui.transcodeAllRadioButton->setEnabled( false );
+    ui.transcodeUnlessSameTypeRadioButton->setEnabled( false );
+    ui.transcodeOnlyIfNeededRadioButton->setEnabled( false );
 }
 
 void
@@ -146,7 +163,7 @@ AssistantDialog::onJustCopyClicked() //SLOT
 void
 AssistantDialog::onTranscodeClicked() //SLOT
 {
-    m_configuration = ui.transcodingOptionsStackedWidget->configuration();
+    m_configuration = ui.transcodingOptionsStackedWidget->configuration( trackSelection() );
     KDialog::done( KDialog::Accepted );
 }
 
@@ -166,6 +183,11 @@ AssistantDialog::onFormatSelect( QListWidgetItem *item ) //SLOT
         ui.formatNameLabel->setToolTip( format->description() );
         ui.formatNameLabel->setWhatsThis( format->description() );
         ui.transcodingOptionsStackedWidget->switchPage( encoder );
+
+        ui.transcodeAllRadioButton->setEnabled( true );
+        ui.transcodeUnlessSameTypeRadioButton->setEnabled( true );
+        ui.transcodeOnlyIfNeededRadioButton->setEnabled( true );
+
         button( Ok )->setEnabled( true );
     }
 }
@@ -174,6 +196,17 @@ void
 AssistantDialog::onRememberToggled( bool checked ) //SLOT
 {
     m_save = checked;
+}
+
+Configuration::TrackSelection
+AssistantDialog::trackSelection() const
+{
+    if( ui.transcodeOnlyIfNeededRadioButton->isChecked() )
+        return Configuration::TranscodeOnlyIfNeeded;
+    else if( ui.transcodeUnlessSameTypeRadioButton->isChecked() )
+        return Configuration::TranscodeUnlessSameType;
+    else
+        return Configuration::TranscodeAll;
 }
 
 #include "TranscodingAssistantDialog.moc"

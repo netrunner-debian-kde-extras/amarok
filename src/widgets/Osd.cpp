@@ -3,7 +3,7 @@
  * Copyright (c) 2004-2006 Seb Ruiz <ruiz@kde.org>                                      *
  * Copyright (c) 2004,2005 Max Howell <max.howell@methylblue.com>                       *
  * Copyright (c) 2005 Gabor Lehel <illissius@gmail.com>                                 *
- * Copyright (c) 2008,2009 Mark Kretschmann <kretschmann@kde.org>                       *
+ * Copyright (c) 2008-2013 Mark Kretschmann <kretschmann@kde.org>                       *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -24,16 +24,17 @@
 
 #include "EngineController.h"
 #include "KNotificationBackend.h"
+#include "PaletteHandler.h"
 #include "SvgHandler.h"
 #include "amarokconfig.h"
+#include "core/meta/Meta.h"
 #include "core/meta/Statistics.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/support/Amarok.h"
-#include "widgets/StarManager.h"
 #include "core/support/Debug.h"
+#include "widgets/StarManager.h"
 
 #include <KApplication>
-#include <KDebug>
 #include <KIcon>
 #include <KLocale>
 #include <KWindowSystem>
@@ -43,6 +44,7 @@
 #include <QPainter>
 #include <QPixmap>
 #include <QRegExp>
+#include <QTimeLine>
 #include <QTimer>
 
 namespace ShadowEngine
@@ -61,12 +63,12 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
         , m_timer( new QTimer( this ) )
         , m_alignment( Middle )
         , m_screen( 0 )
-        , m_y( MARGIN )
-        , m_drawShadow( true )
+        , m_yOffset( MARGIN )
         , m_rating( 0 )
         , m_volume( The::engineController()->volume() )
         , m_showVolume( false )
         , m_hideWhenFullscreenWindowIsActive( false )
+        , m_fadeTimeLine( new QTimeLine( FADING_DURATION, this ) )
 {
     Qt::WindowFlags flags;
     flags = Qt::WindowStaysOnTopHint | Qt::FramelessWindowHint;
@@ -82,16 +84,16 @@ OSDWidget::OSDWidget( QWidget *parent, const char *name )
     setWindowFlags( flags );
     setObjectName( name );
     setFocusPolicy( Qt::NoFocus );
-    unsetColors();
-
-    setFont(QFont("sans-serif"));
 
     #ifdef Q_WS_X11
     KWindowSystem::setType( winId(), NET::Notification );
     #endif
 
     m_timer->setSingleShot( true );
-    connect( m_timer, SIGNAL( timeout() ), SLOT( hide() ) );
+    connect( m_timer, SIGNAL(timeout()), SLOT(hide()) );
+
+    m_fadeTimeLine->setUpdateInterval( 30 ); //~33 frames per second 
+    connect( m_fadeTimeLine, SIGNAL(valueChanged(qreal)), SLOT(setFadeOpacity(qreal)) );
 
     //or crashes, KWindowSystem bug I think, crashes in QWidget::icon()
     kapp->setTopWidget( this );
@@ -125,11 +127,39 @@ void
 OSDWidget::show()
 {
     if ( !isTemporaryDisabled() )
+    {
         QWidget::show();
+
+        if( windowOpacity() == 0.0 && KWindowSystem::compositingActive() )
+        {
+            m_fadeTimeLine->setDirection( QTimeLine::Forward );
+            m_fadeTimeLine->start();
+        }
+        // Skip fading if OSD is already visible or if compositing is disabled
+        else
+        {
+            m_fadeTimeLine->stop();
+            setWindowOpacity( maxOpacity() );
+        }
+    }
+}
+
+void
+OSDWidget::hide()
+{
+    if( KWindowSystem::compositingActive() )
+    {
+        m_fadeTimeLine->setDirection( QTimeLine::Backward );
+        m_fadeTimeLine->start();
+    }
+    else
+    {
+        QWidget::hide();
+    }
 }
 
 bool
-OSDWidget::isTemporaryDisabled()
+OSDWidget::isTemporaryDisabled() const
 {
     // Check if the OSD should not be shown,
     // if a fullscreen window is focused.
@@ -140,7 +170,6 @@ OSDWidget::isTemporaryDisabled()
 
     return false;
 }
-
 
 void
 OSDWidget::ratingChanged( const QString& path, int rating )
@@ -183,13 +212,13 @@ OSDWidget::setVisible( bool visible )
         if ( !isEnabled() || m_text.isEmpty() )
             return;
 
-        const uint M = fontMetrics().width( 'x' );
+        const uint margin = fontMetrics().width( 'x' );
 
-        const QRect newGeometry = determineMetrics( M );
+        const QRect newGeometry = determineMetrics( margin );
 
         if( newGeometry.width() > 0 && newGeometry.height() > 0 )
         {
-            m_m = M;
+            m_margin = margin;
             m_size = newGeometry.size();
             setGeometry( newGeometry );
             QWidget::setVisible( visible );
@@ -224,8 +253,8 @@ OSDWidget::determineMetrics( const int M )
 
     // The osd cannot be larger than the screen
     QRect rect = fontMetrics().boundingRect( 0, 0, max.width() - image.width(), max.height(),
-            Qt::AlignCenter | Qt::TextWordWrap, m_text );
-    rect.setHeight( rect.height() + M + M );
+        Qt::AlignCenter, m_text );
+    rect.adjust( 0, 0, SHADOW_SIZE * 2, SHADOW_SIZE * 2 ); // the shadow needs some space
 
     if( m_showVolume )
     {
@@ -234,19 +263,19 @@ OSDWidget::determineMetrics( const int M )
 
         QRect tmpRect = fontMetrics().boundingRect( 0, 0,
             max.width() - image.width(), max.height() - fontMetrics().height(),
-            Qt::AlignCenter | Qt::TextWordWrap, tmp );
+            Qt::AlignCenter, tmp );
         tmpRect.setHeight( tmpRect.height() + fontMetrics().height() / 2 );
 
         rect = tmpRect;
 
         if ( The::engineController()->isMuted() )
-            m_cover = KIcon( "audio-volume-muted-amarok" ).pixmap( 100, 100 ).toImage();
+            m_cover = The::svgHandler()->renderSvg( "Muted", 100, 100, "Muted" ).toImage();
         else if( m_volume > 66 )
-            m_cover = KIcon( "audio-volume-high-amarok" ).pixmap( 100, 100 ).toImage();
+            m_cover = The::svgHandler()->renderSvg( "Volume", 100, 100, "Volume" ).toImage();
         else if ( m_volume > 33 )
-            m_cover = KIcon( "audio-volume-medium-amarok" ).pixmap( 100, 100 ).toImage();
+            m_cover = The::svgHandler()->renderSvg( "Volume_mid", 100, 100, "Volume_mid" ).toImage();
         else
-            m_cover = KIcon( "audio-volume-low-amarok" ).pixmap( 100, 100 ).toImage();
+            m_cover = The::svgHandler()->renderSvg( "Volume_low", 100, 100, "Volume_low" ).toImage();
     }
     // Don't show both volume and rating
     else if( m_rating )
@@ -282,7 +311,7 @@ OSDWidget::determineMetrics( const int M )
 
     const QSize newSize = rect.size();
     const QRect screen = QApplication::desktop()->screenGeometry( m_screen );
-    QPoint newPos( MARGIN, m_y );
+    QPoint newPos( MARGIN, m_yOffset );
 
     switch( m_alignment )
     {
@@ -316,21 +345,16 @@ OSDWidget::determineMetrics( const int M )
 void
 OSDWidget::paintEvent( QPaintEvent *e )
 {
-    const int& M = m_m;
-    const QSize& size = m_size;
-
-    QPoint point;
-    QRect rect( point, size );
-    rect.adjust( 0, 0, -1, -1 );
+    QRect rect( QPoint(), m_size );
 
     QColor shadowColor;
     {
         int h, s, v;
-        palette().color( QPalette::Normal, QPalette::Foreground ).getHsv( &h, &s, &v );
+        palette().color( QPalette::Normal, QPalette::WindowText ).getHsv( &h, &s, &v );
         shadowColor = v > 128 ? Qt::black : Qt::white;
     }
 
-    int align = Qt::AlignCenter | Qt::TextWordWrap;
+    const int align = Qt::AlignCenter;
 
     QPainter p( this );
     p.setRenderHints( QPainter::Antialiasing | QPainter::TextAntialiasing | QPainter::SmoothPixmapTransform | QPainter::HighQualityAntialiasing );
@@ -339,18 +363,18 @@ OSDWidget::paintEvent( QPaintEvent *e )
     QPixmap background = The::svgHandler()->renderSvgWithDividers( "service_list_item", width(), height(), "service_list_item" );
     p.drawPixmap( 0, 0, background );
 
-    p.setPen( Qt::white ); // Revert this when the background can be colorized again.
-    rect.adjust( M, M, -M, -M );
+    //p.setPen( Qt::white ); // Revert this when the background can be colorized again.
+    rect.adjust( m_margin, m_margin, -m_margin, -m_margin ); // subtract margins
 
     if( !m_cover.isNull() )
     {
         QRect r( rect );
-        r.setTop( ( size.height() - m_scaledCover.height() ) / 2 );
+        r.setTop( ( m_size.height() - m_scaledCover.height() ) / 2 );
         r.setSize( m_scaledCover.size() );
 
         p.drawPixmap( r.topLeft(), m_scaledCover );
 
-        rect.setLeft( rect.left() + m_scaledCover.width() + M );
+        rect.setLeft( rect.left() + m_scaledCover.width() + m_margin );
     }
 
     int graphicsHeight = 0;
@@ -364,9 +388,9 @@ OSDWidget::paintEvent( QPaintEvent *e )
         //Align to center...
         r.setLeft( ( rect.left() + rect.width() / 2 ) - star->width() * m_rating / 4 );
         r.setTop( rect.bottom() - star->height() );
-        graphicsHeight += star->height() + M;
+        graphicsHeight += star->height() + m_margin;
 
-        bool half = m_rating % 2;
+        const bool half = m_rating % 2;
 
         if( half )
         {
@@ -383,46 +407,36 @@ OSDWidget::paintEvent( QPaintEvent *e )
 
     rect.setBottom( rect.bottom() - graphicsHeight );
 
-    // Draw "shadow" text effect (black outline)
-    if( m_drawShadow )
-    {
-        QPixmap pixmap( rect.size() + QSize( 10, 10 ) );
-        pixmap.fill( Qt::black );
+    // Draw "shadow" text effect (black outline) (currently it's up to five pixel in every dir.)
+    QPixmap pixmap( rect.size() );
+    pixmap.fill( Qt::black );
 
-        QPainter p2( &pixmap );
-        p2.setFont( font() );
-        p2.setPen( Qt::white );
-        p2.setBrush( Qt::white );
-        p2.drawText( QRect( QPoint( 5, 5 ), rect.size() ), align, m_text );
-        p2.end();
+    QPainter p2( &pixmap );
+    p2.setFont( font() );
+    p2.setPen( Qt::white );
+    p2.setBrush( Qt::white );
+    p2.drawText( QRect( QPoint( SHADOW_SIZE, SHADOW_SIZE ),
+                        QSize( rect.size().width() - SHADOW_SIZE * 2,
+                               rect.size().height() - SHADOW_SIZE * 2 ) ),
+                 align, m_text );
+    p2.end();
 
-        p.drawImage( rect.topLeft() - QPoint( 5, 5 ), ShadowEngine::makeShadow( pixmap, shadowColor ) );
-    }
+    p.drawImage( rect.topLeft(), ShadowEngine::makeShadow( pixmap, shadowColor ) );
+
     p.setPen( palette().color( QPalette::Active, QPalette::WindowText ) );
-    //p.setPen( Qt::white ); // This too.
-    p.drawText( rect, align, m_text );
+
+    p.drawText( rect.adjusted( SHADOW_SIZE, SHADOW_SIZE,
+                               -SHADOW_SIZE, -SHADOW_SIZE ), align, m_text );
 }
 
 void
-OSDWidget::resizeEvent(QResizeEvent *e)
+OSDWidget::changeEvent( QEvent *event )
 {
-    //setMask(m_background->mask());
-    QWidget::resizeEvent( e );
-}
+    QWidget::changeEvent( event );
 
-bool
-OSDWidget::event( QEvent *e )
-{
-    switch( e->type() )
-    {
-    case QEvent::ApplicationPaletteChange:
+    if( event->type() == QEvent::PaletteChange )
         if( !AmarokConfig::osdUseCustomColors() )
-            unsetColors(); //use new palette's colours
-        return true;
-
-    default:
-        return QWidget::event( e );
-    }
+            unsetColors(); // Use new palette's colors
 }
 
 void
@@ -434,12 +448,7 @@ OSDWidget::mousePressEvent( QMouseEvent* )
 void
 OSDWidget::unsetColors()
 {
-    QPalette p = QApplication::palette();
-    QPalette newPal = palette();
-
-    newPal.setColor( QPalette::Active, QPalette::WindowText, p.color( QPalette::Active, QPalette::WindowText ) );
-    newPal.setColor( QPalette::Active, QPalette::Window    , p.color( QPalette::Active, QPalette::Window ) );
-    setPalette( newPal );
+    setPalette( The::paletteHandler()->palette() );
 }
 
 void
@@ -455,6 +464,17 @@ OSDWidget::setScreen( int screen )
 {
     const int n = QApplication::desktop()->numScreens();
     m_screen = ( screen >= n ) ? n - 1 : screen;
+}
+
+void
+OSDWidget::setFadeOpacity( qreal value )
+{
+    setWindowOpacity( value * maxOpacity() );
+
+    if( value == 0.0 )
+    {
+        QWidget::hide();
+    }
 }
 
 void
@@ -493,7 +513,7 @@ OSDPreviewWidget::OSDPreviewWidget( QWidget *parent )
 void
 OSDPreviewWidget::mousePressEvent( QMouseEvent *event )
 {
-    m_dragOffset = event->pos();
+    m_dragYOffset = event->pos();
 
     if( event->button() == Qt::LeftButton && !m_dragging )
     {
@@ -519,18 +539,7 @@ OSDPreviewWidget::mouseReleaseEvent( QMouseEvent * /*event*/ )
         m_dragging = false;
         releaseMouse();
 
-        // compute current Position && offset
-        QDesktopWidget *desktop = QApplication::desktop();
-        int currentScreen = desktop->screenNumber( pos() );
-
-        if( currentScreen != -1 )
-        {
-            // set new data
-            setScreen( currentScreen );
-            setOffset( QWidget::y() );
-
-            emit positionChanged();
-        }
+        emit positionChanged();
     }
 }
 
@@ -546,7 +555,7 @@ OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
         const uint  eGlobalPosX = e->globalPos().x() - screenRect.left();
         const uint  snapZone    = screenRect.width() / 24;
 
-        QPoint destination = e->globalPos() - m_dragOffset - screenRect.topLeft();
+        QPoint destination = e->globalPos() - m_dragYOffset - screenRect.topLeft();
         int maxY = screenRect.height() - height() - MARGIN;
         if( destination.y() < MARGIN )
             destination.ry() = MARGIN;
@@ -579,8 +588,15 @@ OSDPreviewWidget::mouseMoveEvent( QMouseEvent *e )
         }
 
         destination += screenRect.topLeft();
-
         move( destination );
+
+        // compute current Position && Y-offset
+        QDesktopWidget *desktop = QApplication::desktop();
+        const int currentScreen = desktop->screenNumber( pos() );
+
+        // set new data
+        OSDWidget::setScreen( currentScreen );
+        setYOffset( y() );
     }
 }
 
@@ -617,23 +633,23 @@ Amarok::OSD::OSD()
     if( engine->isPlaying() )
         trackPlaying( engine->currentTrack() );
 
-    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
-             this, SLOT( trackPlaying( Meta::TrackPtr ) ) );
-    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
-             this, SLOT( stopped() ) );
-    connect( engine, SIGNAL( paused() ),
-             this, SLOT( paused() ) );
+    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)),
+             this, SLOT(trackPlaying(Meta::TrackPtr)) );
+    connect( engine, SIGNAL(stopped(qint64,qint64)),
+             this, SLOT(stopped()) );
+    connect( engine, SIGNAL(paused()),
+             this, SLOT(paused()) );
 
-    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
-             this, SLOT( metadataChanged() ) );
-    connect( engine, SIGNAL( albumMetadataChanged( Meta::AlbumPtr ) ),
-             this, SLOT( metadataChanged() ) );
+    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)),
+             this, SLOT(metadataChanged()) );
+    connect( engine, SIGNAL(albumMetadataChanged(Meta::AlbumPtr)),
+             this, SLOT(metadataChanged()) );
 
-    connect( engine, SIGNAL( volumeChanged( int ) ),
-             this, SLOT( volumeChanged( int ) ) );
+    connect( engine, SIGNAL(volumeChanged(int)),
+             this, SLOT(volumeChanged(int)) );
 
-    connect( engine, SIGNAL( muteStateChanged( bool ) ),
-             this, SLOT( muteStateChanged( bool ) ) );
+    connect( engine, SIGNAL(muteStateChanged(bool)),
+             this, SLOT(muteStateChanged(bool)) );
 
 }
 
@@ -644,7 +660,7 @@ void
 Amarok::OSD::show( Meta::TrackPtr track ) //slot
 {
     setAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) );
-    setOffset( AmarokConfig::osdYOffset() );
+    setYOffset( AmarokConfig::osdYOffset() );
 
     QString text;
     if( !track || track->playableUrl().isEmpty() )
@@ -690,7 +706,7 @@ Amarok::OSD::applySettings()
     setAlignment( static_cast<OSDWidget::Alignment>( AmarokConfig::osdAlignment() ) );
     setDuration( AmarokConfig::osdDuration() );
     setEnabled( AmarokConfig::osdEnabled() );
-    setOffset( AmarokConfig::osdYOffset() );
+    setYOffset( AmarokConfig::osdYOffset() );
     setScreen( AmarokConfig::osdScreen() );
     setFontScale( AmarokConfig::osdFontScaling() );
     setHideWhenFullscreenWindowIsActive( AmarokConfig::osdHideOnFullscreen() );
@@ -813,7 +829,7 @@ namespace ShadowEngine
         QImage result( w, h, QImage::Format_ARGB32 );
         result.fill( 0 ); // fill with black
 
-        static const int M = 5;
+        static const int M = OSDWidget::SHADOW_SIZE;
         for( int i = M; i < w - M; i++) {
             for( int j = M; j < h - M; j++ )
             {

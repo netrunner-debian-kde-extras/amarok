@@ -18,16 +18,17 @@
 
 #include "CurrentEngine.h"
 
-#include "core/support/Amarok.h"
-#include "ContextView.h"
-#include "core/support/Debug.h"
 #include "EngineController.h"
-#include "covermanager/CoverCache.h"
+#include "context/ContextView.h"
+#include "core/support/Debug.h"
+#include "core/capabilities/SourceInfoCapability.h"
 #include "core/collections/Collection.h"
 #include "core/collections/QueryMaker.h"
-#include "core-impl/collections/support/CollectionManager.h"
+#include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
-#include "core/capabilities/SourceInfoCapability.h"
+#include "core/support/Amarok.h"
+#include "core-impl/collections/support/CollectionManager.h"
+#include "covermanager/CoverCache.h"
 
 #include <KConfigDialog>
 
@@ -52,15 +53,15 @@ CurrentEngine::CurrentEngine( QObject* parent, const QList<QVariant>& args )
     m_requested[ QLatin1String("albums")  ] = false;
     EngineController* engine = The::engineController();
 
-    connect( engine, SIGNAL( trackPlaying( Meta::TrackPtr ) ),
-             this, SLOT( trackPlaying( Meta::TrackPtr ) ) );
-    connect( engine, SIGNAL( stopped( qint64, qint64 ) ),
-             this, SLOT( stopped() ) );
+    connect( engine, SIGNAL(trackPlaying(Meta::TrackPtr)),
+             this, SLOT(trackPlaying(Meta::TrackPtr)) );
+    connect( engine, SIGNAL(stopped(qint64,qint64)),
+             this, SLOT(stopped()) );
 
-    connect( engine, SIGNAL( trackMetadataChanged( Meta::TrackPtr ) ),
-             this, SLOT( metadataChanged( Meta::TrackPtr ) ) );
-    connect( engine, SIGNAL( albumMetadataChanged( Meta::AlbumPtr ) ),
-             this, SLOT( metadataChanged( Meta::AlbumPtr ) ) );
+    connect( engine, SIGNAL(trackMetadataChanged(Meta::TrackPtr)),
+             this, SLOT(metadataChanged(Meta::TrackPtr)) );
+    connect( engine, SIGNAL(albumMetadataChanged(Meta::AlbumPtr)),
+             this, SLOT(metadataChanged(Meta::AlbumPtr)) );
 }
 
 CurrentEngine::~CurrentEngine()
@@ -94,6 +95,10 @@ CurrentEngine::sourceRequestEvent( const QString& name )
 void
 CurrentEngine::metadataChanged( Meta::AlbumPtr album )
 {
+    // disregard changes for other albums (BR: 306735)
+    if( !m_currentTrack || m_currentTrack->album() != album )
+        return;
+
     QImage cover = album->image( m_coverWidth );
     qint64 coverCacheKey = cover.cacheKey();
     if( m_coverCacheKey != coverCacheKey )
@@ -106,6 +111,8 @@ CurrentEngine::metadataChanged( Meta::AlbumPtr album )
 void
 CurrentEngine::metadataChanged( Meta::TrackPtr track )
 {
+    DEBUG_BLOCK
+
     QVariantMap trackInfo = Meta::Field::mapFromTrack( track );
     if( m_trackInfo != trackInfo )
     {
@@ -153,9 +160,9 @@ CurrentEngine::stopped()
         qm->orderBy( Meta::valCreateDate, true );
         qm->limitMaxResultSize( Amarok::config("Albums Applet").readEntry("RecentlyAdded", 5) );
 
-        connect( qm, SIGNAL( newResultReady( Meta::AlbumList ) ),
-                 SLOT( resultReady( Meta::AlbumList ) ), Qt::QueuedConnection );
-        connect( qm, SIGNAL( queryDone() ), SLOT( setupAlbumsData() ) );
+        connect( qm, SIGNAL(newResultReady(Meta::AlbumList)),
+                 SLOT(resultReady(Meta::AlbumList)), Qt::QueuedConnection );
+        connect( qm, SIGNAL(queryDone()), SLOT(setupAlbumsData()) );
 
         m_lastQueryMaker = qm;
         qm->run();
@@ -231,8 +238,8 @@ CurrentEngine::update( Meta::AlbumPtr album )
         qm->setAlbumQueryMode( Collections::QueryMaker::AllAlbums );
         qm->setQueryType( Collections::QueryMaker::Album );
 
-        connect( qm, SIGNAL(newResultReady( Meta::AlbumList)),
-                 SLOT(resultReady( Meta::AlbumList)), Qt::QueuedConnection );
+        connect( qm, SIGNAL(newResultReady(Meta::AlbumList)),
+                 SLOT(resultReady(Meta::AlbumList)), Qt::QueuedConnection );
         connect( qm, SIGNAL(queryDone()), SLOT(setupAlbumsData()) );
 
         m_lastQueryMaker = qm;

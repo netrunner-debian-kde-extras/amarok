@@ -27,8 +27,9 @@ using namespace Transcoding;
 
 QMap<Encoder, QString> Configuration::s_encoderNames;
 
-Configuration::Configuration( Encoder encoder )
+Configuration::Configuration( Encoder encoder, TrackSelection trackSelection )
     : m_encoder( encoder )
+    , m_trackSelection( trackSelection )
 {
 }
 
@@ -52,9 +53,10 @@ Configuration::fromConfigGroup( const KConfigGroup &serialized )
 
     QString encoderName = serialized.readEntry( "Encoder", QString() );
     Encoder encoder = encoderNames().key( encoderName, INVALID );
-    Configuration ret( encoder );
+    TrackSelection trackSelection = TrackSelection( serialized.readEntry( "TrackSelection", int( TranscodeAll ) ) );
+    Configuration ret( encoder, trackSelection );
     if( !ret.isValid() )
-        return invalid;
+        return ret; // return ret, so that its trackSelection value may be used
 
     Format *format = controller->format( ret.encoder() );
     foreach( Property property, format->propertyList() )
@@ -86,6 +88,7 @@ Configuration::saveToConfigGroup( KConfigGroup &group ) const
     Q_ASSERT( encoderNames().contains( m_encoder ) );
     QString encoderName = encoderNames().value( m_encoder );
     group.writeEntry( QLatin1String( "Encoder" ), encoderName );
+    group.writeEntry( QLatin1String( "TrackSelection" ), int( m_trackSelection ) );
     QMapIterator<QByteArray, QVariant> it( m_values );
     while( it.hasNext() )
     {
@@ -98,13 +101,13 @@ QString
 Configuration::prettyName() const
 {
     if( !isValid() )
-        return i18n( "Invalid encoder" );
+        return i18n( "Invalid" );
     if( isJustCopy() )
-        return i18n( "Just copy or move" );
+        return i18n( "Just Copy" );
 
     Format *format = Amarok::Components::transcodingController()->format( m_encoder );
     if( format->propertyList().isEmpty() )
-        return format->prettyName();
+        return formatPrettyPrefix();
 
     // we take only the first property into account, assume it's the most significant
     const Property &property = format->propertyList().first();
@@ -116,11 +119,11 @@ Configuration::prettyName() const
     {
         case Property::TRADEOFF:
         {
-            int currValue = m_values.value( name ).toInt();
-            int min = property.min();
-            int max = property.max();
+            const int currValue = m_values.value( name ).toInt();
+            const int min = property.min();
+            const int max = property.max();
             Q_ASSERT( min <= currValue && currValue <= max );
-            if( property.valueLabels().size() == ( property.max() - property.min() + 1 ) )
+            if( property.valueLabels().size() == ( max - min + 1 ) )
                 propertyText = property.valueLabels().at( currValue - min );
             else
                 propertyText = i18nc( "%1 example: 'Compression level' %2 example: '5'",
@@ -128,8 +131,11 @@ Configuration::prettyName() const
             break;
         }
     }
-    return i18nc( "%1 example: 'MP3' %2 example: 'VBR 175kb/s'", "%1, %2",
-                  format->prettyName(), propertyText );
+
+    return i18nc( "Displayed next to the \"Transcode:\" label. "
+                  "%1 example: 'All Tracks to MP3' %2 example: 'VBR 175kb/s'",
+                  "%1, %2", formatPrettyPrefix(), propertyText );
+
 }
 
 const QMap<Encoder, QString>&
@@ -144,7 +150,80 @@ Configuration::encoderNames()
     s_encoderNames.insert( ALAC, QLatin1String( "ALAC" ) );
     s_encoderNames.insert( FLAC, QLatin1String( "FLAC" ) );
     s_encoderNames.insert( MP3, QLatin1String( "MP3" ) );
+    s_encoderNames.insert( OPUS, QLatin1String( "OPUS" ) );
     s_encoderNames.insert( VORBIS, QLatin1String( "VORBIS" ) );
     s_encoderNames.insert( WMA2, QLatin1String( "WMA2" ) );
     return s_encoderNames;
+}
+
+bool
+Configuration::isJustCopy( const Meta::TrackPtr &srcTrack,
+                           const QStringList &playableFileTypes ) const
+{
+    if( m_encoder == INVALID || m_encoder == JUST_COPY )
+        return true;
+
+    if( !srcTrack )
+        return false;
+
+    switch( m_trackSelection )
+    {
+        case TranscodeUnlessSameType:
+        {
+            QString srcExt = srcTrack->type();
+            QString destExt = Amarok::Components::transcodingController()->format( m_encoder )->fileExtension();
+            if( destExt.compare( srcExt, Qt::CaseInsensitive )  == 0 ) //if source and destination file formats are the same
+                return true;
+            else
+                return false;
+        }
+        case TranscodeOnlyIfNeeded:
+        {
+            QString srcExt = srcTrack->type();
+            //check if the file is already in a format supported by the target collection
+            if( playableFileTypes.isEmpty() || playableFileTypes.contains( srcExt ) )
+                return true; // if isEmpty(), assume all formats compatible
+            else
+                return false;
+        }
+        case TranscodeAll:
+            return false;
+    }
+    return false; // shouldn't really get here
+}
+
+QString
+Configuration::formatPrettyPrefix() const
+{
+    Format *format = Amarok::Components::transcodingController()->format( m_encoder );
+
+    switch( m_trackSelection )
+    {
+        case TranscodeAll:
+            return i18nc( "Displayed next to the \"Transcode:\" label. "
+                          "%1 example: 'MP3'",
+                          "All Tracks to %1", format->prettyName() );
+        case TranscodeUnlessSameType:
+            return i18nc( "Displayed next to the \"Transcode:\" label. "
+                          "%1 example: 'MP3'",
+                          "Non-%1 Tracks to %1", format->prettyName() );
+        case TranscodeOnlyIfNeeded:
+            return i18nc( "Displayed next to the \"Transcode:\" label. "
+                          "%1 example: 'MP3'",
+                          "When Needed to %1", format->prettyName() );
+    }
+    return format->prettyName();
+}
+
+void
+Configuration::setTrackSelection( TrackSelection trackSelection )
+{
+    m_trackSelection = trackSelection;
+}
+
+bool
+Configuration::operator!=( const Configuration &other ) const
+{
+    return m_encoder != other.m_encoder ||
+            m_trackSelection != other.m_trackSelection;
 }

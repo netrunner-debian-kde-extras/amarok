@@ -11,13 +11,15 @@ set(libcore_interfaces_SRCS
 )
 
 set(libcore_meta_SRCS
+    meta/Base.cpp
     meta/Meta.cpp
+    meta/Observer.cpp
     meta/Statistics.cpp
+    meta/TrackEditor.cpp
     meta/support/MetaConstants.cpp
     meta/support/MetaUtility.cpp
     meta/support/MetaKeys.cpp
     meta/support/PrivateMetaRegistry.cpp
-    ../../shared/FileType.cpp
 )
 
 set(libcore_playlists_SRCS
@@ -33,7 +35,6 @@ set(libcore_capabilities_SRCS
     capabilities/BoundedPlaybackCapability.cpp
     capabilities/CollectionScanCapability.cpp
     capabilities/CollectionImportCapability.cpp
-    capabilities/EditCapability.cpp
     capabilities/FindInSourceCapability.cpp
     capabilities/MultiPlayableCapability.cpp
     capabilities/MultiSourceCapability.cpp
@@ -74,6 +75,7 @@ set(libcore_transcoding_SRCS
     transcoding/formats/TranscodingAlacFormat.cpp
     transcoding/formats/TranscodingFlacFormat.cpp
     transcoding/formats/TranscodingMp3Format.cpp
+    transcoding/formats/TranscodingOpusFormat.cpp
     transcoding/formats/TranscodingVorbisFormat.cpp
     transcoding/formats/TranscodingWmaFormat.cpp
     transcoding/TranscodingConfiguration.cpp
@@ -98,9 +100,9 @@ set(libcore_LIB_SRCS
 kde4_add_library(amarokcore SHARED ${libcore_LIB_SRCS})
 
 target_link_libraries(amarokcore
+    amarokshared
     ${CMAKE_THREAD_LIBS_INIT}
     ${KDE4_KIO_LIBS}
-#    ${KDE4_KUTILS_LIBS}
     ${KDE4_SOLID_LIBRARY}
     ${KDE4_THREADWEAVER_LIBRARIES}
     ${QT_CORE_LIBRARY}
@@ -120,5 +122,3 @@ endif(CMAKE_COMPILER_IS_GNUCXX AND CMAKE_SYSTEM_NAME MATCHES Linux)
 
 set_target_properties(amarokcore PROPERTIES VERSION 1.0.0 SOVERSION 1 )
 install(TARGETS amarokcore ${INSTALL_TARGETS_DEFAULT_ARGS} )
-
-

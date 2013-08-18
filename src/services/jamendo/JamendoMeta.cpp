@@ -55,8 +55,8 @@ JamendoMetaFactory::getAlbumSqlRows()
     sqlRows += tablePrefix() + "_albums.cover_url, ";
     sqlRows += tablePrefix() + "_albums.launch_year, ";
     sqlRows += tablePrefix() + "_albums.genre, ";
-    sqlRows += tablePrefix() + "_albums.mp3_torrent_url, ";
-    sqlRows += tablePrefix() + "_albums.ogg_torrent_url ";
+    sqlRows += tablePrefix() + "_albums.mp3_torrent_url, "; // Deprecated
+    sqlRows += tablePrefix() + "_albums.ogg_torrent_url "; // Deprecated
 
     return sqlRows;
 }
@@ -111,53 +111,13 @@ JamendoMetaFactory::createGenre( const QStringList & rows )
 JamendoTrack::JamendoTrack( const QString &name )
     : ServiceTrack( name )
     , m_service ( 0 )
-    , m_downloadCustomAction( 0 )
-    , m_downloadCurrentTrackAction( 0 )
 {
 }
 
 JamendoTrack::JamendoTrack( const QStringList & resultRow )
     : ServiceTrack( resultRow )
     , m_service ( 0 )
-    , m_downloadCustomAction( 0 )
-    , m_downloadCurrentTrackAction( 0 )
 {
-}
-
-QList< QAction * >
-Meta::JamendoTrack::customActions()
-{
-    DEBUG_BLOCK
-    QList< QAction * > actions;
-
-    if ( !m_downloadCustomAction )
-    {
-        m_downloadCustomAction = new QAction( KIcon("download-amarok" ), i18n( "&Download" ), 0 );
-        m_downloadCustomAction->setProperty( "popupdropper_svg_id", "download" );
-        JamendoAlbum * jAlbum = static_cast<JamendoAlbum *> ( album().data() );
-        QObject::connect( m_downloadCustomAction, SIGNAL( activated() ), jAlbum->service(), SLOT( download() ) );
-    }
-
-    actions.append( m_downloadCustomAction );
-    return actions;
-}
-
-QList< QAction * >
-Meta::JamendoTrack::currentTrackActions()
-{
-    DEBUG_BLOCK
-    QList< QAction * > actions;
-
-    if ( !m_downloadCurrentTrackAction )
-    {
-        m_downloadCurrentTrackAction = new QAction( KIcon("download-amarok" ), i18n( "Jamendo.com: &Download" ), 0 );
-        m_downloadCurrentTrackAction->setProperty( "popupdropper_svg_id", "download" );
-        JamendoAlbum * jAlbum = static_cast<JamendoAlbum *> ( album().data() );
-        QObject::connect( m_downloadCurrentTrackAction, SIGNAL( activated() ), jAlbum->service(), SLOT( downloadCurrentTrackAlbum() ) );
-    }
-
-    actions.append( m_downloadCurrentTrackAction );
-    return actions;
 }
 
 QString
@@ -192,7 +152,7 @@ Meta::JamendoTrack::setService(JamendoService * service)
 
 QString JamendoTrack::type() const
 {
-    return "ogg";
+    return "mp3";
 }
 
 //// JamendoArtist ////
@@ -275,8 +235,6 @@ JamendoAlbum::JamendoAlbum( const QStringList & resultRow )
     m_coverURL = resultRow[5];
     m_launchYear = resultRow[6].toInt();
     m_genre = resultRow[7];
-    m_mp3TorrentUrl = resultRow[8];
-    m_oggTorrentUrl = resultRow[9];
 }
 
 void
@@ -328,30 +286,6 @@ JamendoAlbum::popularity() const
 }
 
 void
-JamendoAlbum::setMp3TorrentUrl( const QString &url )
-{
-    m_mp3TorrentUrl = url;
-}
-
-QString
-JamendoAlbum::mp3TorrentUrl()
-{
-    return m_mp3TorrentUrl;
-}
-
-void
-JamendoAlbum::setOggTorrentUrl( const QString &url )
-{
-   m_oggTorrentUrl = url;
-}
-
-QString
-JamendoAlbum::oggTorrentUrl()
-{
-    return m_oggTorrentUrl;
-}
-
-void
 Meta::JamendoAlbum::setService( JamendoService * service )
 {
     m_service = service;
@@ -361,20 +295,6 @@ JamendoService *
 Meta::JamendoAlbum::service()
 {
     return m_service;
-}
-
-QList< QAction * >
-Meta::JamendoAlbum::customActions()
-{
-    DEBUG_BLOCK
-    QList< QAction * > actions;
-    QAction * action = new QAction( KIcon("download-amarok" ), i18n( "&Download" ), 0 );
-    action->setProperty( "popupdropper_svg_id", "download" );
-
-    QObject::connect( action, SIGNAL( activated() ) , m_service, SLOT( download() ) );
-
-    actions.append( action );
-    return actions;
 }
 
 

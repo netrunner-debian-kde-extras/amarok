@@ -1,5 +1,5 @@
 /***************************************************************************
- *   Copyright (c) 2009 Sven Krohlas <sven@getamarok.com>                  *
+ *   Copyright (c) 2009 Sven Krohlas <sven@asbest-online.de>               *
  *                                                                         *
  *   This program is free software; you can redistribute it and/or modify  *
  *   it under the terms of the GNU General Public License as published by  *
@@ -22,6 +22,7 @@
 #include "core/support/Components.h"
 #include "EngineController.h"
 #include "config-amarok-test.h"
+#include "core-impl/collections/support/CollectionManager.h"
 #include "core-impl/meta/multi/MultiTrack.h"
 #include "core-impl/playlists/types/file/PlaylistFileSupport.h"
 
@@ -30,12 +31,20 @@
 #include <QtCore/QFileInfo>
 
 #include <qtest_kde.h>
+#include <ThreadWeaver/Weaver>
 
 QTEST_KDEMAIN( TestMetaMultiTrack, GUI )
 
 TestMetaMultiTrack::TestMetaMultiTrack()
     : m_testMultiTrack( 0 )
-{}
+{
+}
+
+void
+TestMetaMultiTrack::tracksLoaded( Playlists::PlaylistPtr playlist )
+{
+    emit tracksLoadedSignal( playlist );
+}
 
 void TestMetaMultiTrack::initTestCase()
 {
@@ -45,19 +54,35 @@ void TestMetaMultiTrack::initTestCase()
     EngineController *controller = new EngineController();
     Amarok::Components::setEngineController( controller );
 
+    /* Collection manager needs to be instantiated in the main thread, but
+     * MetaProxy::Tracks used by playlist may trigger its creation in a different thread.
+     * Pre-create it explicitly */
+    CollectionManager::instance();
+
     const QString path = QString( AMAROK_TEST_DIR ) + "/data/playlists/test.pls";
     const QFileInfo file( QDir::toNativeSeparators( path ) );
     QVERIFY( file.exists() );
     const QString filePath = file.absoluteFilePath();
-    m_playlist = Playlists::PlaylistPtr::dynamicCast( Playlists::loadPlaylistFile( filePath ) );
+    m_playlist = Playlists::loadPlaylistFile( filePath ).data();
     QVERIFY( m_playlist ); // no playlist -> no test. that's life ;)
+    subscribeTo( m_playlist );
     m_playlist->triggerTrackLoad();
+    if( m_playlist->trackCount() < 0 )
+        QVERIFY( QTest::kWaitForSignal( this, SIGNAL(tracksLoadedSignal(Playlists::PlaylistPtr)), 5000 ) );
+
     QCOMPARE( m_playlist->name(), QString("test.pls") );
     QCOMPARE( m_playlist->trackCount(), 4 );
 
     // now wait for all MetaProxy::Tracks to actually load their real tracks:
     NotifyObserversWaiter wainter( m_playlist->tracks().toSet() );
     QVERIFY( QTest::kWaitForSignal( &wainter, SIGNAL(done()), 5000 ) );
+}
+
+void
+TestMetaMultiTrack::cleanupTestCase()
+{
+    // Wait for other jobs, like MetaProxys fetching meta data, to finish
+    ThreadWeaver::Weaver::instance()->finish();
 }
 
 void TestMetaMultiTrack::init()
@@ -116,13 +141,34 @@ NotifyObserversWaiter::NotifyObserversWaiter( const QSet<Meta::TrackPtr> &tracks
     : QObject( parent )
     , m_tracks( tracks )
 {
-    foreach( const Meta::TrackPtr &track, m_tracks )
-        subscribeTo( track );
+    // we need to filter already resovled tracks in the next event loop iteration because
+    // the user wouldn't be able to get the done() signal yet.
+    QTimer::singleShot( 0, this, SLOT(slotFilterResovled()) );
+}
+
+void
+NotifyObserversWaiter::slotFilterResovled()
+{
+    QMutexLocker locker( &m_mutex );
+    QMutableSetIterator<Meta::TrackPtr> it( m_tracks );
+    while( it.hasNext() )
+    {
+        const Meta::TrackPtr &track = it.next();
+        const MetaProxy::Track *proxyTrack = dynamic_cast<const MetaProxy::Track *>( track.data() );
+        Q_ASSERT( proxyTrack );
+        if( proxyTrack->isResolved() )
+            it.remove();
+        else
+            subscribeTo( track );
+    }
+    if( m_tracks.isEmpty() )
+        emit done();
 }
 
 void
 NotifyObserversWaiter::metadataChanged( Meta::TrackPtr track )
 {
+    QMutexLocker locker( &m_mutex );
     m_tracks.remove( track );
     if( m_tracks.isEmpty() )
         emit done();

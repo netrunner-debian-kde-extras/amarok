@@ -1,6 +1,7 @@
 /****************************************************************************************
  * Copyright (c) 2007 Ian Monroe <ian@monroe.nu>                                        *
  * Copyright (c) 2008 Soren Harward <stharward@gmail.com>                               *
+ * Copyright (c) 2013 Mark Kretschmann <kretschmann@kde.org>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -20,7 +21,7 @@
 #ifndef PRETTYITEMDELEGATE_H
 #define PRETTYITEMDELEGATE_H
 
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "playlist/layouts/LayoutItemConfig.h"
 
 #include <QModelIndex>
@@ -28,12 +29,14 @@
 
 class InlineEditorWidget;
 class QPainter;
+class QTimeLine;
 
 namespace Playlist
 {
 class PrettyItemDelegate : public QStyledItemDelegate
 {
     Q_OBJECT
+
 public:
     static int rowsForItem( const QModelIndex &index );
 
@@ -83,12 +86,18 @@ public:
 
 
 protected slots:
-
     void editorDone( InlineEditorWidget * editor );
+
+signals:
+    void redrawRequested();
+
+private slots:
+    void currentDesktopChanged();
 
 private:
     void paintActiveTrackExtras( const QRect &rect, QPainter* painter, const QModelIndex& index ) const;
 
+    QTimeLine * m_animationTimeLine;
     QPointF centerImage( const QPixmap&, const QRectF& ) const;
 
     static int getGroupMode( const QModelIndex &index);

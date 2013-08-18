@@ -18,7 +18,7 @@
 #define COPYTRACKSJOB_H
 
 #include "IpodCollection.h"
-#include "core/meta/Meta.h"
+#include "core/meta/forward_declarations.h"
 #include "core/transcoding/TranscodingConfiguration.h"
 
 #include <ThreadWeaver/Job>
@@ -26,6 +26,7 @@
 #include <QMap>
 #include <QSemaphore>
 
+class KJob;
 
 class IpodCopyTracksJob : public ThreadWeaver::Job
 {
@@ -58,7 +59,7 @@ class IpodCopyTracksJob : public ThreadWeaver::Job
         void startDuplicateTrackSearch( const Meta::TrackPtr &track );
 
         // a hack to create copyjob in a thread with event loop:
-        void startCopyOrTranscodeJob( const KUrl &src, const KUrl &dest );
+        void startCopyOrTranscodeJob( const KUrl &src, const KUrl &dest, bool isJustCopy );
 
         // a hack to display KMessageBox in a gui thread:
         void displaySorryDialog();
@@ -84,8 +85,9 @@ class IpodCopyTracksJob : public ThreadWeaver::Job
         void slotDuplicateTrackSearchQueryDone();
 
         /// @see startCopyJob()
-        void slotStartCopyOrTranscodeJob( const KUrl &sourceUrl, const KUrl &destUrl );
-        void slotCopyOrTranscodeJobFinished();
+        void slotStartCopyOrTranscodeJob( const KUrl &sourceUrl, const KUrl &destUrl,
+                                          bool isJustCopy );
+        void slotCopyOrTranscodeJobFinished( KJob *job );
 
         /// @see displaySorryDialog()
         void slotDisplaySorryDialog();
@@ -103,6 +105,7 @@ class IpodCopyTracksJob : public ThreadWeaver::Job
         bool m_aborted;
         bool m_goingToRemoveSources;
         QSet<QString> m_notPlayableFormats;
+        QSet<QString> m_copyErrors;
 };
 
 #endif // COPYTRACKSJOB_H

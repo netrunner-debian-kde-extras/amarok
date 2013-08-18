@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: amarok\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2012-10-10 10:03+0200\n"
+"POT-Creation-Date: 2013-03-05 03:04+0100\n"
 "PO-Revision-Date: 2011-08-24 18:53+0200\n"
 "Last-Translator: Bjørn Steensrud <bjornst@skogkatt.homelinux.org>\n"
 "Language-Team: Norwegian Bokmål <i18n-nb@lister.ping.uio.no>\n"
@@ -22,27 +22,28 @@ msgstr ""
 "X-Accelerator-Marker: &\n"
 "X-Text-Markup: qtrich\n"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:115
-#: utilities/collectionscanner/CollectionScanner.cpp:138
+#: utilities/collectionscanner/CollectionScanner.cpp:116
+#: utilities/collectionscanner/CollectionScanner.cpp:139
 #, qt-format
 msgid "File \"%1\" not found."
 msgstr "Fant ikke fila «%1»."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:118
+#: utilities/collectionscanner/CollectionScanner.cpp:119
 #, qt-format
 msgid "Could not open file \"%1\"."
 msgstr "Klarte ikke åpne fila «%1»."
 
-#: utilities/collectionscanner/CollectionScanner.cpp:370
+#: utilities/collectionscanner/CollectionScanner.cpp:371
 #, qt-format
 msgid "Missing argument for option %1"
 msgstr "Manglende argument for valg %1"
 
-#: utilities/collectionscanner/CollectionScanner.cpp:407
+#: utilities/collectionscanner/CollectionScanner.cpp:408
 msgid ""
 "Amarok Collection Scanner\n"
 "Scans directories and outputs a xml file with the results.\n"
-"For more information see http://amarok.kde.org/wiki/Batch_Mode\n"
+"For more information see http://community.kde.org/Amarok/Development/"
+"BatchMode\n"
 "\n"
 "Usage: amarokcollectionscanner [options] <Folder(s)>\n"
 "User-modifiable Options:\n"
@@ -69,32 +70,3 @@ msgid ""
 "   </scanner>\n"
 "                          You can also use a previous scan result for that.\n"
 msgstr ""
-"Amarok samlingsskanner\n"
-"Skanner mapper og skriver ut en xml-fil med resultatene.\n"
-"Mer informasjon finnes på http://amarok.kde.org/wiki/Batch_Mode\n"
-"\n"
-"Bruk: amarokcollectionscanner [parametre] <mappe(r)>\n"
-"Parametre som bruker kan endre:\n"
-"<Mappe(r)>             : liste over mapper som skal skannes\n"
-"-h, --help              : denne hjelpeteksten\n"
-"-v, --version           : skriv ut versjonen for dette verktøyet\n"
-"-r, --recursive         : skann mapper rekursivt\n"
-"-i, --incremental       : inkrementell skann (bare mapper som er endret)\n"
-"-s, --restart           : restart skanneren i sin siste posisjon etter et "
-"krasj\n"
-"    --idlepriority      : kjør på tomgangsprioritet\n"
-"    --sharedmemory <key> : et delt minnesegment som skal brukes for å starte "
-"et skann på nytt\n"
-"    --newer <sti>      :  skann bare mapper som har endringstid nyere enn "
-"<sti>\n"
-"                                 Bare nyttig ved inkrementell skanning\n"
-"    --batch <sti>      : legg til mapper fra batch xml-fila ved <sti>\n"
-"                                formatet på batch-fila ser slik ut:\n"
-"   <scanner>\n"
-"    <directory>\n"
-"     <path>/absolutt/sti/til/mappe</path>\n"
-"     <mtime>1234</mtime>   (om ønskes)\n"
-"    </directory>\n"
-"   </scanner>\n"
-"                          Du kan også bruke resultatet av en tidligere "
-"skanning til det.\n"

@@ -17,7 +17,8 @@
 #ifndef COVERFETCHINGACTIONS_H
 #define COVERFETCHINGACTIONS_H
 
-#include "core/meta/Meta.h"
+#include "amarok_export.h"
+#include "core/meta/forward_declarations.h"
 
 #include <QAction>
 

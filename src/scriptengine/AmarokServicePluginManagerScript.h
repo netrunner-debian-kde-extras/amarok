@@ -18,7 +18,10 @@
 #define AMAROK_SERVICE_PLUGIN_MANAGER_SCRIPT_H
 
 #include <QObject>
-#include <QtScript>
+#include <QStringList>
+
+
+class QScriptEngine;
 
 namespace AmarokScript
 {
@@ -28,7 +31,6 @@ namespace AmarokScript
 
         public:
             AmarokServicePluginManagerScript( QScriptEngine* scriptEngine );
-            ~AmarokServicePluginManagerScript();
 
         public slots:
             QStringList loadedServices();
@@ -36,9 +38,6 @@ namespace AmarokScript
             QString serviceDescription( const QString &service );
             QString serviceMessages( const QString &service );
             QString sendMessage( const QString &service, const QString &message );
-
-        private:
-
     };
 }
 

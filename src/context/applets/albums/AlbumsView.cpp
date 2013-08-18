@@ -23,10 +23,11 @@
 #include "AlbumsDefs.h"
 #include "SvgHandler.h"
 #include "TrackItem.h"
-#include "dialogs/TagDialog.h"
 #include "core/capabilities/ActionsCapability.h"
+#include "core/meta/Meta.h"
 #include "core/meta/support/MetaUtility.h"
 #include "core/support/Debug.h"
+#include "dialogs/TagDialog.h"
 #include "playlist/PlaylistController.h"
 #include "widgets/PrettyTreeView.h"
 
@@ -112,7 +113,7 @@ AlbumsView::AlbumsView( QGraphicsWidget *parent )
     m_treeProxy = new QGraphicsProxyWidget( this );
     m_treeView = new AlbumsTreeView( 0 );
     connect( m_treeView, SIGNAL(clicked(QModelIndex)), this, SLOT(itemClicked(QModelIndex)) );
-    connect( m_treeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(slotAppendSelected()) );
+    connect( m_treeView, SIGNAL(doubleClicked(QModelIndex)), this, SLOT(slotDoubleClicked()) );
     m_treeProxy->setWidget( m_treeView );
 
     m_model = new AlbumsModel( this );
@@ -248,7 +249,7 @@ AlbumsView::contextMenuEvent( QGraphicsSceneContextMenuEvent *event )
     menu.addAction( editAction );
 
     connect( appendAction, SIGNAL(triggered()), this, SLOT(slotAppendSelected()) );
-    connect( loadAction  , SIGNAL(triggered()), this, SLOT(slotPlaySelected()) );
+    connect( loadAction  , SIGNAL(triggered()), this, SLOT(slotReplaceWithSelected()) );
     connect( queueAction , SIGNAL(triggered()), this, SLOT(slotQueueSelected()) );
     connect( editAction  , SIGNAL(triggered()), this, SLOT(slotEditSelected()) );
 
@@ -294,25 +295,31 @@ AlbumsView::resizeEvent( QGraphicsSceneResizeEvent *event )
     }
 }
 
+void AlbumsView::slotDoubleClicked()
+{
+    Meta::TrackList selected = getSelectedTracks();
+    The::playlistController()->insertOptioned( selected, Playlist::OnDoubleClickOnSelectedItems );
+}
+
 void
 AlbumsView::slotAppendSelected()
 {
     Meta::TrackList selected = getSelectedTracks();
-    The::playlistController()->insertOptioned( selected, Playlist::AppendAndPlay );
+    The::playlistController()->insertOptioned( selected, Playlist::OnAppendToPlaylistAction );
 }
 
 void
-AlbumsView::slotPlaySelected()
+AlbumsView::slotReplaceWithSelected()
 {
     Meta::TrackList selected = getSelectedTracks();
-    The::playlistController()->insertOptioned( selected, Playlist::LoadAndPlay );
+    The::playlistController()->insertOptioned( selected, Playlist::OnReplacePlaylistAction );
 }
 
 void
 AlbumsView::slotQueueSelected()
 {
     Meta::TrackList selected = getSelectedTracks();
-    The::playlistController()->insertOptioned( selected, Playlist::Queue );
+    The::playlistController()->insertOptioned( selected, Playlist::OnQueueToPlaylistAction );
 }
 
 void

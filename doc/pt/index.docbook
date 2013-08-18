@@ -102,7 +102,7 @@
   <row>
     <entry>
     <para
->O Amarok 2.4 a tocar Música Livre do Magnatunes</para
+>Amarok 2.4, playing Free Music from Magnatunes</para
 ></entry>
   </row>
   </tbody>
@@ -609,19 +609,19 @@
 >Configurar uma colecção</title
 > 
 <para
->Tem faixas de músicas no formato <emphasis
->MP3</emphasis
+>Do you have music tracks in <emphasis
+>mp3</emphasis
 >, <emphasis
->OGG</emphasis
-> ou <emphasis
+>Ogg</emphasis
+> or <emphasis
 >FLAC</emphasis
-> no seu computador? Comece por indicar ao &amarok; onde encontrar esses ficheiros, para que possa começar a criar a sua colecção. No menu de topo, escolha: <menuchoice
+> format on your computer? Begin by telling &amarok; where to find those files, so it can create your collection. In the top-level menu: <menuchoice
 ><guimenu
->Configuração</guimenu
+>Settings</guimenu
 ><guisubmenu
->Configurar o Amarok</guisubmenu
+>Configure Amarok</guisubmenu
 ><guimenuitem
->Colecção</guimenuitem
+>Collection</guimenuitem
 ></menuchoice
 >. </para>
 <para>
@@ -634,11 +634,11 @@
     </imageobject>
     <textobject>
       <phrase
->A Janela de Configuração da Colecção na versão 2.5</phrase>
+>Configure Collection Dialog, as of version 2.5</phrase>
     </textobject>
     <caption>
       <para
->A Janela de Configuração da Colecção na versão 2.5</para>
+>Configure Collection Dialog, as of version 2.5</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -1245,15 +1245,15 @@
 <para
 ><warning
 ><para
->Use esta opção com cuidado; as faixas serão removidas do seu disco rígido, não sendo enviadas para o Lixo.</para
+>Use this option with care; the tracks will be deleted from your hard drive, not sent to the Trash.</para
 ></warning>
 </para>
 <para
->Poderá apagar qualquer item da sua colecção se carregar com o botão direito sobre ele e escolher o item inferior <guilabel
->Apagar as Faixas</guilabel
->. Irá aparecer uma janela de confirmação que impede a remoção acidental de alguma faixa. Poderá seleccionar mais que um item com <keycombo
+>You can delete any item from your collection by right-clicking on it and choosing the bottom item <guilabel
+>Delete Tracks</guilabel
+>. A confirmation dialog will appear, preventing the accidental deletion of any tracks. More than one item can be selected with <keycombo
 >&Ctrl;<keycap
->botão</keycap
+>click</keycap
 ></keycombo
 >. </para>
 </sect3>
@@ -1681,9 +1681,9 @@
 >Gravar e obter as suas listas favoritas</title
 > 
 <para
->O ícone do disco (que aparece na tabela acima), no fundo da área da <guilabel
->Lista de Reprodução</guilabel
->, permite-lhe gravar a lista de reprodução actual do &amarok;. Isto permite-lhe invocar uma selecção em particular de músicas da sua colecção em qualquer altura. As listas de reprodução só contêm referências para a música que seleccionou, não contêm a música em si. Como tal, se a sua lista de reprodução apontar para as músicas num dispositivo externo, deverá estar ligado e montado, caso contrário não será possível reproduzir a música. Existem três locais onde guardar as listas de reprodução: </para>
+>The disk icon (shown in the table above), at the bottom of your <guilabel
+>Playlist</guilabel
+> pane, allows you to save the current &amarok; playlist. This enables you to recall a particular selection of music from your collection at any time. Playlists only contain pointers to the music you selected, not the music itself. So if your playlist is pointing to music on an external device, it must be connected and mounted, otherwise the music cannot be played. There are three places to store playlists: </para>
 <orderedlist>
 <listitem
 ><para
@@ -1861,10 +1861,10 @@
 </sect2>
 <sect2 id="amarok-cannot-see-the-predefined-playlists-on-my-portable-music-player"
 ><title
->O Amarok não consegue ver as listas de reprodução predefinidas no meu leitor de música portátil</title
+>Amarok cannot see the predefined playlists on my portable music player</title
 > 
 <para
->Espere pela próxima versão do &amarok;. </para>
+>Wait for the next version of &amarok;. </para>
 </sect2>
 <sect2 id="after-i-have-updated-my-collection-the-additions-are-not-shown-in-the-content-browser"
 ><title
@@ -1892,19 +1892,19 @@
 <orderedlist>
 <listitem
 ><para
->As letras não estão disponíveis nas páginas assinaladas na Internet. Poderá querer adicionar mais servidores destes com o menu de programas (antes do 2.4.1: <menuchoice
+>The lyrics are not available in the sites checked on the Internet. You may wish to add more sites via the script menu (before 2.4.1: <menuchoice
 ><guimenu
->Ferramentas</guimenu
+>Tools</guimenu
 ><guimenuitem
->Gestor de Programas</guimenuitem
+>Script Manager</guimenuitem
 ></menuchoice
->; a partir do 2.4.1: <menuchoice
+>, 2.4.1 on: <menuchoice
 ><guimenu
->Configuração</guimenu
-><guimenu
->Configurar o Amarok</guimenu
+>Settings</guimenu
+><guisubmenu
+>Configure Amarok</guisubmenu
 ><guimenuitem
->Programas</guimenuitem
+>Scripts</guimenuitem
 ></menuchoice
 >).</para
 ></listitem>
@@ -1956,12 +1956,12 @@
 </sect2>
 <sect2 id="content-browser"
 ><title
->Navegador de Conteúdos</title
+>Content Browser</title
 > 
 <para
->Esta é a parte central da área de <emphasis
->Fontes Multimédia</emphasis
->, permitindo-lhe enumerar a música que tem na sua colecção. O navegador de conteúdos permite-lhe seleccionar o critério de ordenação das suas listas de faixas, assim como o detalhe com que deseja ver a sua música. </para>
+>This is the central part of the <emphasis
+>Media Sources</emphasis
+> pane that allows you to list the music that you have in your collection. The Content browser allows you to select the sort order of your track lists as well as the detail in which you wish to see your music. </para>
 </sect2>
 <sect2 id="playlist"
 ><title
@@ -1975,21 +1975,21 @@
 >Programa</title
 > 
 <para
->Um 'plugin' do &amarok; para extender as funcionalidades. Os programas estão disponíveis na opção <menuchoice
+>&amarok; plugin to extend functionality. Scripts are available from <menuchoice
 ><guimenu
->Ferramentas</guimenu
+>Tools</guimenu
 ><guimenuitem
->Gestor de Programas</guimenuitem
+>Script Manager</guimenuitem
 ></menuchoice
->, nas versões anteriores à 2.4.1., e em <menuchoice
+> before 2.4.1; from 2.4.1 on: <menuchoice
 ><guimenu
->Configuração</guimenu
-><guimenu
->Configurar o Amarok</guimenu
+>Settings</guimenu
+><guisubmenu
+>Configure Amarok</guisubmenu
 ><guimenuitem
->Programas</guimenuitem
+>Scripts</guimenuitem
 ></menuchoice
->, a partir da 2.4.1. Adicione mais fontes de letras musicais, mais estações de transmissão, grave capas dos seus álbuns, grave &CD;'s apartir das listas de reprodução, &etc; </para>
+>. Add more lyrics sources, more streaming stations, save covers to your album folders, burn CDs from playlists, &etc; </para>
 </sect2>
 <sect2 id="scrobble"
 ><title
@@ -2078,7 +2078,7 @@
     <entry>
     <para
 ><link linkend="toolbar"
->A Barra de Ferramentas</link
+>The Toolbar</link
 >&nbsp;</para
 >    </entry>
   </row>
@@ -2308,15 +2308,15 @@
 >Música Local</emphasis
 > no topo, que é a interface principal para a sua colecção local e os dispositivos ligados, como os leitores de MP3 e CD's. </para>
 <para
->Aqui existe uma secção para todos os <emphasis
->Serviços da Internet</emphasis
-> que tiver activos. Aqui, poderá navegar pelas listagens das estações de rádio e 'podcasts'; escute e/ou subscreva-as, interaja com a sua conta da <ulink url="http://www.last.fm"
+>There is a section for all <emphasis
+>Internet Services</emphasis
+> that you have enabled. Here, you can browse listings of radio stations and podcasts; listen and/or subscribe to them, interact with your <ulink url="http://www.last.fm"
 >last.fm</ulink
->, compre músicas das lojas 'online' como a <ulink url="http://www.magnatune.com/"
+> account, purchase music from online stores such as <ulink url="http://www.magnatune.com/"
 >Magnatune</ulink
-> e transfira músicas de artistas independentes da <ulink url="http://www.jamendo.com/"
+> and download independent artists' music from <ulink url="http://www.jamendo.com/"
 >Jamendo</ulink
->, entre outras coisas. </para>
+> and more. </para>
 <para
 >A secção de <emphasis
 >Listas de Reprodução</emphasis
@@ -2350,7 +2350,7 @@
 </para>
 <sect2 id="menu-interface"
 ><title
->Interface do Menu</title
+>Menu Interface</title
 > 
 <para
 >O <emphasis
@@ -2684,27 +2684,27 @@
 >Internet</title
 > 
 <para
->Mostra a sua colecção da Internet, adicionada e configurada em <menuchoice
+>Shows your internet collection, added and configured in <menuchoice
 ><guimenu
->Configuração</guimenu
+>Settings</guimenu
 ><guisubmenu
->Configurar o Amarok...</guisubmenu
+>Configure Amarok...</guisubmenu
 ><guimenuitem
->'Plugins'</guimenuitem
+>Plugins</guimenuitem
 ></menuchoice
->(antes do Amarok 2.4.1, era em: <menuchoice
+>(before Amarok 2.4.1, it was: <menuchoice
 ><guimenu
->Configuração</guimenu
+>Settings</guimenu
 ><guisubmenu
->Configurar o Amarok...</guisubmenu
+>Configure Amarok...</guisubmenu
 ><guimenuitem
->Serviços Internet</guimenuitem
+>Internet Services</guimenuitem
 ></menuchoice
->). Poderá ler mais sobre a configuração dos Serviços da Internet <link linkend="internet-services"
->aqui</link
->. Existem alguns programas que adicionam Serviços da Internet; veja os <link linkend="scripts"
->Programas</link
-> para obter mais informações. </para>
+>). More <link linkend="internet-services"
+>about configuring Internet Services</link
+>. There are some scripts which add Internet Services; see <link linkend="scripts"
+>Scripts</link
+> for more information. </para>
 <para>
 <informaltable>
   <tgroup cols="2">
@@ -2766,9 +2766,9 @@
     </entry>
     <entry>
     <para
->Liga-se à <guilabel
+>Connects with <guilabel
 >Librivox</guilabel
->, uma colecção extensa de livros em áudio livres.</para>
+> an extensive collection of free audio books.</para>
     </entry>
   </row>
   <row>
@@ -2780,9 +2780,9 @@
     </entry>
     <entry>
     <para
->Liga-se à <guilabel
+>Connects with <guilabel
 >Magnatune</guilabel
-> uma grande loja de música 'online'.</para>
+> a great online music store.</para>
     </entry>
   </row>
   <row>
@@ -2794,9 +2794,9 @@
     </entry>
     <entry>
     <para
->Liga-se à <guilabel
->Loja MP3 da Amazon</guilabel
->, uma grande loja de música 'online'.</para>
+>Connects with <guilabel
+>Amazon MP3 Store</guilabel
+> an online music store.</para>
     </entry>
   </row>
   <row>
@@ -2944,9 +2944,9 @@
 </screenshot>
 </para>
 <para
->Se quiser porventura procurar ou filtrar por algo, em vez de navegar para o local deste, use o <emphasis
->campo de filtragem</emphasis
-> para procurar o conteúdo desejado. Basta escrever parcialmente o nome do ficheiro, para que seja apresentado como aparece neste exemplo. </para>
+>If you would rather search or filter for something rather than navigating to it, use the <emphasis
+>filter field</emphasis
+> to find the desired content. Just partially write the name of the file and it will be displayed as in this example. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -3089,9 +3089,9 @@
 >A área de contexto</title
 > 
 <para
->A área de <emphasis
->Contexto</emphasis
-> é um painel no qual poderá adicionar várias 'applets' que lhe oferecem informações e conteúdos sobre a música actual. É necessária uma ligação à Internet para utilizar essas pequenas aplicações, que servem para ir buscar letras das músicas, informações, fotografias, vídeos ou tablaturas, dependendo das 'applets' que tiver optado por mostrar. </para>
+>The <emphasis
+>Context</emphasis
+> pane is a panel to which you can add various applets which offer information and media on the current music. A connection to the Internet is required for the most useful use of these little applications, which will fetch lyrics, information, photos, videos, and even guitar or bass tabs, depending on which applets you choose to display. </para>
 <sect2 id="using-the-context-pane"
 ><title
 >Usar a área de contexto</title
@@ -3132,9 +3132,9 @@
 ></listitem>
 <listitem
 ><para
->A parte inferior do painel, onde poderá expandir e recolher as 'applets' e manipulá-las de várias formas, assim que carregar no ícone <emphasis
->Configurar as 'Applets'</emphasis
-> (o ícone da chave inglesa).</para
+>The lower portion of the panel, where you can expand and collapse applets and manipulate them in various ways once you click the <emphasis
+>Configure Applets</emphasis
+> icon (the wrench icon).</para
 ></listitem>
 </itemizedlist>
 <sect3 id="configuring-applets"
@@ -3287,14 +3287,14 @@
     <entry>
     <para
 ><guilabel
->'Clip' de vídeo</guilabel
+>Videoclip</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Mostra diversas correspondências de 'clips' de vídeo do <emphasis
+>Shows several videoclip matches from <emphasis
 >Youtube</emphasis
-> para a faixa actual.</para>
+> for the current track.</para>
     </entry>
   </row>
   <row>
@@ -3498,9 +3498,9 @@
 >Retirar a Faixa da Fila</guilabel
 >. </para>
 <para
->Poderá ler mais sobre o <link linkend="queue-manager"
->Gestor da Fila</link
-> mais tarde. </para>
+>More about the <link linkend="queue-manager"
+>Queue Manager</link
+> later. </para>
 </sect3>
 <sect3 id="stop-playing-after-this-track"
 ><title
@@ -4068,7 +4068,7 @@
   <thead>
   <row>
     <entry
->Janela de Configuração do Amarok</entry>
+>Amarok Configuration dialog</entry>
   </row>
   </thead>
   <tbody>
@@ -4084,11 +4084,11 @@
     </imageobject>
     <textobject>
       <phrase
->Do Amarok 2.4.1 em diante</phrase>
+>Amarok 2.4.1 on</phrase>
     </textobject>
     <caption>
       <para
->Do Amarok 2.4.1 em diante</para>
+>Amarok 2.4.1 on</para>
     </caption>
   </mediaobject>
 </screenshot
@@ -4105,11 +4105,11 @@
     </imageobject>
     <textobject>
       <phrase
->Do Amarok 2.5 em diante</phrase>
+>Amarok 2.5 on</phrase>
     </textobject>
     <caption>
       <para
->Do Amarok 2.5 em diante</para>
+>Amarok 2.5 on</para>
     </caption>
   </mediaobject>
 </screenshot
@@ -4339,19 +4339,19 @@
     </entry>
     <entry>
     <para
->Grava as estatísticas de mudança da reprodução (&eg; pontuação, última reprodução, número de reproduções) como marcas nos próprios ficheiros.</para>
+>Write play-changing statistics (&eg; score, lastplayed, playcount) as tags back to the file.</para>
     </entry>
   </row>
   <row>
     <entry>
     <para
 ><guilabel
->Gravar as capas num ficheiro</guilabel
+>Write covers to file</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Grava as capas alteradas de volta no ficheiro. Isto irá substituir as capas incorporadas existentes.</para>
+>Write changed covers back to the file. This will replace existing embedded covers.</para>
     </entry>
   </row>
   <row>
@@ -4363,7 +4363,7 @@
     </entry>
     <entry>
     <para
->Se estiver seleccionada, o &amarok; irá usar o detector de codificações de caracteres da Mozilla para tentar adivinhar a codificação de caracteres usada nas marcas ID3.</para
+>If selected, &amarok; will use Mozilla's Character Set Detector to attempt to automatically guess the character set used in ID3 tags.</para
 ></entry>
   </row>
   </tbody>
@@ -4402,12 +4402,12 @@
 </sect1>
 <sect1 id="formerly-internet-services-before-amarok-2-4-1-now-plugins"
 ><title
->Os Antigos Serviços da Internet antes do Amarok 2.4.1, Agora 'Plugins'</title
+>Formerly Internet Services before Amarok 2.4.1, now Plugins</title
 > 
 <para
->Veja a secção dos <link linkend="plugins-formerly-internet-services"
->'Plugins'</link
->. </para>
+>See the <link linkend="plugins-formerly-internet-services"
+>Plugins</link
+> section. </para>
 </sect1>
 <sect1 id="playback"
 ><title
@@ -4487,13 +4487,13 @@
 >Configurar o Phonon</title
 > 
 <para
->O &phonon; é a plataforma multimédia usada pelo &amarok;. Foi criada para permitir ao KDE 4 ser independente de outras plataformas multimédia, como o <guilabel
+>&phonon; is the multimedia framework used by &amarok;. It was created to allow KDE 4 to be independent of any single multimedia framework such as <guilabel
 >GStreamer</guilabel
-> ou o <guilabel
+> or <guilabel
 >Xine</guilabel
-> e para fornecer uma API estável durante o ciclo de vida do KDE 4. Como bónus, simplifica o desenvolvimento, oferecendo uma API única que funciona em várias plataformas, como o <guilabel
+> and to provide a stable API for KDE 4's lifetime. As an added bonus, it simplifies development by providing a simple API that works across different platforms such as <guilabel
 >Windows</guilabel
-> e o <guilabel
+> and <guilabel
 >OS X</guilabel
 >. </para>
 <para
@@ -4572,17 +4572,17 @@
 </screenshot>
 </para>
 <para
->Dependendo do seu sistema operativo, poderá ver aqui opções como o <emphasis
+>Depending on your operating system you may see options such as <emphasis
 >Xine</emphasis
 >, <emphasis
 >Gstreamer</emphasis
 >, <emphasis
 >VLC</emphasis
-> ou <emphasis
+>, or <emphasis
 >DS9</emphasis
-> (Windows). A infra-estrutura do Phonon recomendada para os utilizadores do &Linux; é o <emphasis
+> (Windows) here. The recommended phonon-backend for &Linux; users is <emphasis
 >VLC</emphasis
-> ou o <emphasis
+> or <emphasis
 >Gstreamer</emphasis
 >. </para>
 <para
@@ -4598,9 +4598,9 @@
 <para
 >Cada infra-estrutura vem com os seus próprios descodificadores; por isso, dependendo da infra-estrutura que escolher, poderá também ter de instalar os descodificadores, dado que a maioria das distribuições não os trazem por questões legais. </para>
 <para
->Para mais informações sobre os codificadores e a reprodução de MP3, veja a página de <ulink url="http://amarok.kde.org/wiki/MP3"
->informação do MP3</ulink
->. </para>
+>For information on codecs and playing mp3s see the <ulink url="http://amarok.kde.org/wiki/MP3"
+>mp3 information</ulink
+> page. </para>
 </sect3>
 </sect2>
 </sect1>
@@ -4614,7 +4614,7 @@
   <thead>
   <row>
     <entry
->Janela de Configuração das Notificações do Amarok</entry>
+>Amarok Notifications Configuration dialog</entry>
   </row>
   </thead>
   <tbody>
@@ -4630,11 +4630,11 @@
     </imageobject>
     <textobject>
       <phrase
->Do Amarok 2.4.1 em diante</phrase>
+>Amarok 2.4.1 on</phrase>
     </textobject>
     <caption>
       <para
->Do Amarok 2.4.1 em diante</para>
+>Amarok 2.4.1 on</para>
     </caption>
   </mediaobject>
 </screenshot
@@ -4651,11 +4651,11 @@
     </imageobject>
     <textobject>
       <phrase
->Do Amarok 2.5 em diante</phrase>
+>Amarok 2.5 on</phrase>
     </textobject>
     <caption>
       <para
->Do Amarok 2.5 em diante</para>
+>Amarok 2.5 on</para>
     </caption>
   </mediaobject>
 </screenshot
@@ -4925,7 +4925,7 @@
 </sect1>
 <sect1 id="plugins-formerly-internet-services"
 ><title
->'Plugins' (antigamente os Serviços da Internet)</title
+>Plugins (formerly Internet Services)</title
 > 
 <para>
 <informaltable>
@@ -4933,7 +4933,7 @@
   <thead>
   <row>
     <entry
->Janela de Configuração de 'Plugins' do Amarok</entry>
+>Amarok Plugins Configuration dialog</entry>
   </row>
   </thead>
   <tbody>
@@ -4949,11 +4949,11 @@
     </imageobject>
     <textobject>
       <phrase
->Serviços da Internet antes do Amarok 2.4.1</phrase>
+>Internet Services before Amarok 2.4.1</phrase>
     </textobject>
     <caption>
       <para
->Serviços da Internet antes do Amarok 2.4.1</para>
+>Internet Services before Amarok 2.4.1</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -4966,11 +4966,11 @@
     </imageobject>
     <textobject>
       <phrase
->Os Serviços da Internet agora</phrase>
+>Internet Services now</phrase>
     </textobject>
     <caption>
       <para
->Os Serviços da Internet agora</para>
+>Internet Services now</para>
     </caption>
   </mediaobject>
 </screenshot
@@ -4982,12 +4982,12 @@
 </informaltable>
 </para>
 <para
->A configuração dos 'plugins' agora controla as <guilabel
->Colecções</guilabel
+>Plugins configuration now controls <guilabel
+>Collections</guilabel
 >, <guilabel
->Dispositivos</guilabel
-> e os <guilabel
->Serviços da Internet</guilabel
+>Devices</guilabel
+>, and <guilabel
+>Internet Services</guilabel
 >. </para>
 <sect2 id="collections"
 ><title
@@ -5035,12 +5035,12 @@
     <entry>
     <para
 ><guilabel
->Colecção do iPod</guilabel
+>Ipod Collection</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Um 'plugin' de colecções iPod para o &amarok;</para>
+>iPod collection plugin for &amarok;</para>
     </entry>
   </row>
   <row>
@@ -5086,17 +5086,17 @@
 </sect2>
 <sect2 id="devices"
 ><title
->Dispositivos</title
+>Devices</title
 > 
 <para
->O &amarok; oferece-lhe o acesso aos seguintes dispositivos, caso estejam disponíveis: </para>
+>&amarok; offers you access to the following Devices, if they are available: </para>
 <para>
 <informaltable>
   <tgroup cols="2">
   <thead>
   <row>
     <entry
->Dispositivos</entry>
+>Devices</entry>
     <entry
 >Descrição</entry>
   </row>
@@ -5106,36 +5106,36 @@
     <entry>
     <para
 ><guilabel
->Dispositivo de Armazenamento em Massa</guilabel
+>Mass Storage Device</guilabel
 ></para>
     </entry>
     <entry>
     <para
->'Plugin' de dispositivos de armazenamento genéricos para o &amarok;</para>
+>Device Plugin for &amarok; generic mass storage</para>
     </entry>
   </row>
   <row>
     <entry>
     <para
 ><guilabel
->Dispositivo NFS</guilabel
+>NFS Device</guilabel
 ></para>
     </entry>
     <entry>
     <para
->'Plugin' de dispositivos do &amarok; que suportam o sistema de ficheiros na rede NFS</para>
+>Device Plugin for &amarok; which supports NFS (Network File System)</para>
     </entry>
   </row>
   <row>
     <entry>
     <para
 ><guilabel
->Dispositivo SMB</guilabel
+>SMB Device</guilabel
 ></para>
     </entry>
     <entry>
     <para
->'Plugin' de dispositivos do &amarok; que suportam o sistema de ficheiros SMBFS (Samba)</para
+>Device Plugin for &amarok; which supports SMBFS (Samba File System)</para
 ></entry>
   </row>
   </tbody>
@@ -5422,11 +5422,11 @@
     </imageobject>
     <textobject>
       <phrase
->A Janela de Configuração dos Programas no Amarok 2.4.1</phrase>
+>Script configuration dialog in Amarok 2.4.1</phrase>
     </textobject>
     <caption>
       <para
->A Janela de Configuração dos Programas no Amarok 2.4.1</para>
+>Script configuration dialog in Amarok 2.4.1</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -5501,10 +5501,10 @@
 ></listitem>
 </itemizedlist>
 <para
->Navegue, instale e desinstale os programas fornecidos pelo utilizador; também poderá procurar, ordenar e classificar os programas no <emphasis
->Instalador de Extensões do Amarok</emphasis
->. Antes do &amarok; 2.4.1, chamava-se <emphasis
->Obter Mais Programas</emphasis
+>Browse, install and uninstall user-supplied scripts; also search, sort and rate the scripts in the <emphasis
+>Amarok Add-on Installer</emphasis
+>. Before &amarok; 2.4.1, called <emphasis
+>Get More Scripts</emphasis
 >. </para>
 <sect3 id="add-on-installer"
 ><title
@@ -5560,11 +5560,11 @@
     </imageobject>
     <textobject>
       <phrase
->Informação do Programa do Amarok</phrase>
+>Amarok Script Info</phrase>
     </textobject>
     <caption>
       <para
->Informação do Programa do Amarok</para>
+>Amarok Script Info</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -6031,9 +6031,9 @@
 <para
 >A origem poderá ser um dispositivo portátil, um serviço na Internet ou uma base de dados. </para>
 <para
->Para as faixas que estão armazenadas no sistema de ficheiros, o &amarok; está a usar uma base de dados para ter um acesso rápido aos meta-dados necessários. </para>
+>For tracks that are stored on the file system &amarok; is using a database to have fast access to the required meta-information. </para>
 <para
->Da primeira vez, é necessário importar esta informação para a base de dados, o que é feito normalmente se sondar as pastas da colecção à procura dos ficheiros de áudio. </para>
+>At first this information needs to be imported into the database which is usually done by scanning the collection directories for audio files. </para>
 <para
 >Este processo é chamado de sondagem da colecção. </para>
 <para
@@ -6045,9 +6045,9 @@
 <para
 >A sondagem incremental irá procurar nas pastas da colecção por actualizações. </para>
 <para
->Isto normalmente é feito a cada minuto mas também poderá ser despoletado manualmente se escolher a opção <guilabel
->Actualizar a Colecção</guilabel
-> do menu. </para>
+>This is usually done every minute but can also be triggered manually by selecting <guilabel
+>Update Collection</guilabel
+> from the menu. </para>
 <para
 >A análise incremental irá verificar apenas a data de modificação de cada pasta da colecção, face à última data de modificação. </para>
 <para
@@ -6055,35 +6055,35 @@
 <itemizedlist>
 <listitem
 ><para
->Poderá despoletar a sondagem de uma pasta se modificar a sua hora de modificação (se usar por exemplo o <filename
->touch</filename
-> na consola).</para
+>You can trigger a rescan of one directory by modifying its time (such as using <varname
+>touch</varname
+> in the console).</para
 ></listitem>
 <listitem
 ><para
->Se os ficheiros dentro de uma pasta forem alterados, o analisador não irá notar, porque a actualização da hora de um ficheiro não implica a actualização da hora da pasta-mãe.</para
+>If files inside a directory are changed the scanner will not notice, because changing a file updates its modification time but not the time of the parent folder.</para
 ></listitem>
 <listitem
 ><para
->Se as pastas da colecção estiverem numa partição bastante lenta, o processo de verificação de todas as horas de modificação poderá levar algum tempo. Normalmente esta informação fica numa 'cache' do sistema operativo mas, com grandes colecções, isso poderá não ser possível. Nesse caso, o analisador poderá parecer que continua indefinidamente. Com colecções acima das 5000 faixas ou quando as colecções estão numa unidade de rede ou partição de NTFS, recomenda-se que desligue a opção <guilabel
->Vigiar alterações nas pastas</guilabel
->.</para
+>If the collection folders are on a very slow partition the process of checking all the modification times can take some time. Usually this information is cached by the operating system but with large collections that might not be possible. In such a case the scanner might appear to scan continuously. With collections above 5000 tracks or when collections are stored on a network drive or an NTFS partition it is recommended to switch off the <guilabel
+>Watch folders for change</guilabel
+> option.</para
 ></listitem>
 </itemizedlist>
 <para
->Se tiver problemas com as faixas apagadas que continuam a aparecer na colecção, ou caso queira actualizar as capas do álbum (que não são actualizadas ao executar a opção <quote
->actualizar a colecção</quote
->), então poderá usar a <guilabel
->Sondagem completa</guilabel
-> na janela de configuração. </para>
+>If you have problems with deleted tracks still appearing in the collection, or you want to update album covers (which are not updated by a mere <quote
+>update collection</quote
+>) then you can use the <guilabel
+>Full rescan</guilabel
+> option in the settings dialog. </para>
 <para
->A <guilabel
->Sondagem completa</guilabel
-> não se importará com as datas de modificação. Não ira apagar as suas estatísticas; irá sim contido repor a <emphasis
->classificação</emphasis
-> e o <emphasis
->número de reproduções</emphasis
->, caso estejam guardados dentro do ficheiro. </para>
+><guilabel
+>Full rescan</guilabel
+> will not care about modification dates. It will not delete your statistics; it will, however, restore <emphasis
+>rating</emphasis
+> and <emphasis
+>playcount</emphasis
+> if stored inside the file. </para>
 </sect3>
 <sect3 id="progress-bar---scanning-time"
 ><title
@@ -6098,13 +6098,13 @@
 <para
 >Normalmente, o segundo passo é muito mais rápido que o primeiro, por isso não se admire se a barra de progresso parecer dar um salto. </para>
 <para
->Até aos 50% é possível interromper a análise. Após os 50%, a gravação dos dados não pode ser interrompida. </para>
+>Up to 50% aborting the scan is possible. After 50%, the committing of the files can not be stopped. </para>
 <para
 >O tempo de análise depende da velocidade do seu disco e de outros factores. </para>
 <para
 >Normalmente a primeira análise é bastante mais lenta que as seguintes, dado que os ficheiros se encontram na 'cache' do sistema operativo. </para>
 <para
->Uma sondagem de 10 000 ficheiros deverá levar cerca de três minutos num computador moderno. 50 000 ficheiros deverão demorar cerca de 13 minutos. </para>
+>A scan of 10000 files should take around three minutes on a modern computer. 50000 files should be around 13 minutes. </para>
 </sect3>
 <sect3 id="backup-of-collection"
 ><title
@@ -6120,19 +6120,19 @@
 >Acerca dos ID's únicos</title
 > 
 <para
->O &amarok; regista os ficheiros com base num ID que é armazenado na faixa de áudio ou calculado com base no artista, título do álbum e da faixa. </para>
+>&amarok; is tracking files by an id that is either stored in the audio track or computed by the artist, album title and track title meta information. </para>
 <para
->Este ID ajuda o &amarok; a identificar as faixas que foram movidas para outros locais, para que as estatísticas informativas (classificação, pontuação, número de reproduções) não se percam. </para>
+>This id helps &amarok; to identify tracks that are moved to other locations so that statistics informations (rating, score, playcount) are not lost. </para>
 <para
 >De momento, o &amarok; não irá importar as faixas com ID's duplicados. </para>
 <para
 >Isto leva ao comportamento estranho de que as faixas copiadas aparecem à mesma apenas uma vez no &amarok;. </para>
 <para
->Em algumas circunstâncias, até mesmo faixas diferentes poderão ficar com o mesmo ID único. Isto é demasiado raro e normalmente é o resultado de correr diversos anos de versões instáveis do &amarok;. </para>
+>In some circumstances even different tracks can end up with the same unique id. That is very uncommon and usually the result of running years of unstable &amarok; releases. </para>
 <para
->Estes problemas poderão ser vistos no resultado de depuração (inicie o &amarok; com a opção '--debug') durante a análise. </para>
+>Such a problem can be seen by the debug output (start &amarok; with the --debug option) while scanning. </para>
 <para
->Se estiver a usar a versão 2.4 beta, poderá ocorrer um caso em que a maior parte da colecção não seja importada. Isto pode ser visto facilmente com os comandos de SQL inválidos que aparecem  com a opção '--debug'. Nesse caso, basta usar a versão final da 2.4. </para>
+>If you are using 2.4 beta you might run into a case where most of the collection is not imported. This can be easily seen by the failing sql commands in the debug output. In such a case just use 2.4 final. </para>
 </sect3>
 <sect3 id="about-albums"
 ><title
@@ -6187,9 +6187,9 @@
 >artista do álbum</quote
 >. </para>
 <para
->Poderá remover a marca dos ficheiros MP3 com o seguinte comando: <userinput
+>You can remove the tag from mp3 files with the following command: <userinput
 >id3v2 -r TCMP <replaceable
->o seu ficheiro</replaceable
+>your fileename here</replaceable
 ></userinput
 > </para>
 </sect3>
@@ -6871,23 +6871,23 @@
 >Cliente do Ampache</title
 > 
 <para
->Active o serviço <guilabel
+>Activate the <guilabel
 >Ampache</guilabel
-> com a opção <menuchoice
+> service using <menuchoice
 ><guimenu
->Configuração</guimenu
+>Settings</guimenu
 ><guisubmenu
->Configurar o Amarok...</guisubmenu
+>Configure Amarok...</guisubmenu
 ><guimenuitem
->Serviços da Internet</guimenuitem
+>Internet Services</guimenuitem
 ></menuchoice
-> antes do &amarok; 2.4.1, 2.4.1 em: <menuchoice
+> before &amarok; 2.4.1, 2.4.1 on: <menuchoice
 ><guimenu
->Configuração</guimenu
+>Settings</guimenu
 ><guisubmenu
->Configurar o Amarok...</guisubmenu
+>Configure Amarok...</guisubmenu
 ><guimenuitem
->'Plugins'</guimenuitem
+>Plugins</guimenuitem
 ></menuchoice
 >. </para>
 <para>
@@ -6906,11 +6906,11 @@
     </imageobject>
     <textobject>
       <phrase
->Antes do 2.4.1: Carregue no ícone da chave inglesa para abrir a janela de configuração</phrase>
+>Before 2.4.1: Click on the wrench icon to open the configuration dialog</phrase>
     </textobject>
     <caption>
       <para
->Antes do 2.4.1: Carregue no ícone da chave inglesa para abrir a janela de configuração</para>
+>Before 2.4.1: Click on the wrench icon to open the configuration dialog</para>
     </caption>
   </mediaobject>
 </screenshot
@@ -6927,11 +6927,11 @@
     </imageobject>
     <textobject>
       <phrase
->Desde o 2.4.1: Carregue no ícone da chave inglesa para abrir a janela de configuração</phrase>
+>2.4.1 on: Click on the wrench icon to open the configuration dialog</phrase>
     </textobject>
     <caption>
       <para
->Desde o 2.4.1: Carregue no ícone da chave inglesa para abrir a janela de configuração</para>
+>2.4.1 on: Click on the wrench icon to open the configuration dialog</para>
     </caption>
   </mediaobject>
 </screenshot
@@ -7009,26 +7009,26 @@
 >Digital Audio Access Protocol - Protocolo de Acesso de Áudio Digital (DAAP)</title
 > 
 <para
->O DAAP é um protocolo para partilhar conteúdos multimédia numa rede. Foi usado da primeira vez no leitor de música <guilabel
+>DAAP is a protocol to share media over a network. It was first used for the <guilabel
 >iTunes</guilabel
->, mas agora é amplamente usado. </para>
+> music player, but is widely used today. </para>
 </sect3>
 <sect3 id="client"
 ><title
 >Cliente</title
 > 
 <para
->O &amarok; mostra automaticamente as faixas do servidor nas <menuchoice
+>&amarok; automatically shows the tracks from the server in the <menuchoice
 ><guimenu
->Fontes Multimédia</guimenu
+>Media Sources</guimenu
 ><guimenuitem
->Música Local</guimenuitem
+>Local Music</guimenuitem
 ></menuchoice
->, não sendo necessária mais nenhuma configuração. Se a colecção não estiver a aparecer, carregue no ícone <inlinemediaobject
-><imageobject
+> pane and no further configuration is required. If the collection is not showing up, click the <inlinemediaobject
+> <imageobject
 > <imagedata fileref="Icon-view-list-tree.png" format="PNG"/> </imageobject
 > </inlinemediaobject
-> para se certificar que não aparecem os dados todos reunidos. </para>
+> icon to be sure you are not in Merged View. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -7050,21 +7050,21 @@
 >Servidor</title
 > 
 <para
->Nas distribuições baseadas no <guilabel
+>On <guilabel
 >Debian</guilabel
->, como o &ubuntu;, poderá instalar um servidor de DAAP com o comando </para>
+>-based distributions like &ubuntu; you can install a DAAP server using </para>
 <para
 ><userinput
 >sudo apt-get install mt-daapd</userinput>
 </para>
 <para
->Isto irá instalar o servidor de DAAP <guilabel
+>This will install the <guilabel
 >Firefly</guilabel
->. Podê-la-á configurar pela sua interface Web, abrindo a página <userinput
+> DAAP server. You can configure it using its web interface by opening the page <userinput
 >http://localhost:3689/index.html</userinput
-> . A senha predefinida é <guilabel
+> . The default password is <guilabel
 >mt-daapd</guilabel
->; o campo do utilizador fica em branco. </para>
+>; the user field stays empty. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -7212,7 +7212,7 @@
 </screenshot>
 </para>
 <para
->A pasta agora deverá estar acessível na rede. </para>
+>The folder should now be accessible to the network. </para>
 </sect3>
 <sect3 id="universal-plug-and-play-upnp"
 ><title
@@ -7225,8 +7225,8 @@
 >DLNA</ulink
 >. </para>
 <para
->O &amarok; tem um cliente de partilha multimédia por UPnP, pelo que poderá tocar faixas partilhadas na rede. Quando for descoberta uma partilha de música, esta irá aparecer na <guilabel
->Música Local</guilabel
+>&amarok; has a build in UPnP media share client so it can play tracks shared on the network. When a media share is discovered it will be shown in <guilabel
+>Local Music</guilabel
 >. </para>
 <para
 >A funcionalidade de UPnP depende do suporte para servidores multimédia UPnP no <guilabel
@@ -7361,15 +7361,15 @@
 >Configurar o Cliente</title
 > 
 <para
->Abra a janela de configuração com a opção do menu <menuchoice
+>Open the configuration dialog by clicking <menuchoice
 ><guimenu
->Configuração</guimenu
+>Settings</guimenu
 ><guisubmenu
->Configurar o Amarok...</guisubmenu
+>Configure Amarok...</guisubmenu
 ><guimenuitem
->Base de Dados</guimenuitem
+>Database</guimenuitem
 ></menuchoice
->. Active a opção e indique os dados do utilizador. </para>
+>. Enable the checkbox and enter the user data. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -7481,11 +7481,11 @@
 >Lidar os Dispositivos Multimédia</title
 > 
 <para
->Ligue o seu dispositivo multimédia com o cabo USB. A 'applet' de notificação de dispositivos irá mostrar automaticamente uma lista com todos os dispositivos multimédia disponíveis. Carregue no ícone <inlinemediaobject
+>Connect your media device using the USB cable. The device notifier applet will automatically pop up with a list of all available media devices. Click on the <inlinemediaobject
 > <imageobject
 > <imagedata fileref="Icon-emblem-mounted.png" format="PNG"/> </imageobject
 > </inlinemediaobject
-> para aceder ao seu dispositivo. </para>
+> icon to access your device. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -8094,14 +8094,14 @@
 >Obter as Marcas do MusicBrainz</title
 > 
 <para
->Uma nova funcionalidade do &amarok; 2.4 é a capacidade de adivinhar as marcas a partir da base de dados <guilabel
+>A new feature in &amarok; 2.4 is the ability to guess tags from the <guilabel
 >MusicBrainz</guilabel
->. Carregue na opção <guilabel
->Obter as Marcas do MusicBrainz</guilabel
->, espere um momento enquanto a base de dados é consultada e depois carregue em <guilabel
->Actualizar as Marcas</guilabel
-> ou em <guilabel
->Cancelar</guilabel
+> database. Click the <guilabel
+>Get Tags from MusicBrainz</guilabel
+>, wait a moment for the database to be searched for matches, and then <guilabel
+>Update Tags</guilabel
+>, or <guilabel
+>Cancel</guilabel
 >. </para>
 <para
 >Se tiver os pacotes <emphasis
@@ -8272,28 +8272,28 @@
 >Codificação</title
 > 
 <para
->A <emphasis
->codificação</emphasis
-> ou tradução é uma nova funcionalidade do &amarok; desde a versão 2.4. Ela permite-lhe codificar os ficheiros multimédia numa variedade de formatos enquanto os copia para a sua colecção. Uma palavra de aviso: tenha cuidado ao usar esta funcionalidade, dado que está a lidar com ficheiros reais no seu disco rígido. Tenha uma cópia de segurança! </para>
+><emphasis
+>Transcoding</emphasis
+> is a new &amarok; feature as of version 2.4. It allows you to encode media files to a variety of formats while copying them to your collection. A word of warning: be careful when you use this feature, as you are working with actual files on your hard drive. Have a backup! </para>
 <sect2 id="interface"
 ><title
 >Interface</title
 > 
 <para
->Use a codificação enquanto copia os ficheiros para a pasta da sua colecção, carregando com o botão direito do rato sobre um ficheiro multimédia e depois <menuchoice
+>Use transcoding while you copy files to your collection folder by right-clicking a media file then <menuchoice
 ><guimenu
->Copiar para a Colecção</guimenu
+>Copy to Collection</guimenu
 ><guimenuitem
->Colecção Local</guimenuitem
+>Local Collection</guimenuitem
 ></menuchoice
-> para que apareça um menu. </para>
+> and a menu will appear. </para>
 </sect2>
 <sect2 id="transcode-menu"
 ><title
->Menu de Codificação</title
+>Transcode Menu</title
 > 
 <para
->Se optar por copiar os ficheiros para a sua colecção, irá aparecer a seguinte janela. </para>
+>If you choose to copy files to your collection, the following dialog will pop up. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -8330,7 +8330,7 @@
     </entry>
     <entry>
     <para
->Os ficheiros multimédia serão copiados para a sua colecção sem qualquer codificação.</para>
+>Selected media files will be copied to your collection without encoding.</para>
     </entry>
   </row>
   <row>
@@ -8342,8 +8342,8 @@
     </entry>
     <entry>
     <para
->Os ficheiros multimédia seleccionados serão codificados com as opções predefinidas: compressão media, qualidade alta, Ogg Vorbis (com perdas), aparecendo então uma interface de menu. Poderá saber mais sobre esta interface <link linkend="contents"
->aqui</link
+>Selected media files will be coded with the default encoding preset: medium compression, high quality, Ogg Vorbis (lossy), and a menu interface will pop up. More about this interface <link linkend="contents"
+>here</link
 >.</para>
     </entry>
   </row>
@@ -8351,12 +8351,12 @@
     <entry>
     <para
 ><guilabel
->Tradução com Parâmetros Personalizados</guilabel
+>Transcode With Custom Parameters</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Os ficheiros multimédia serão codificados com formatos personalizados, desde que tenha os codificadores necessários. Se seleccionar esta opção, fará com que apareça um novo menu.</para
+>Media files will be encoded to custom formats, provided that you have the required codecs. Selecting this option causes a new menu to appear.</para
 ></entry>
   </row>
   </tbody>
@@ -8403,14 +8403,14 @@
     <entry>
     <para
 ><guilabel
->Recuar</guilabel
+>Back</guilabel
 ></para>
     </entry>
     <entry>
     <para
->Volta à janela básica para <guilabel
->Codificar as Faixas</guilabel
->.</para>
+>Back to the basic <guilabel
+>Transcode Tracks</guilabel
+> dialog.</para>
     </entry>
   </row>
   <row>
@@ -8422,7 +8422,7 @@
     </entry>
     <entry>
     <para
->Apresenta todos os seus codificadores instalados; escolha um deles para o parametrizar a seu gosto. Se esta lista estiver em branco, terá de instalar o <emphasis
+>List of all your installed codecs; choose among them to make custom presets. If this list is empty, you need to install <emphasis
 >FFmpeg</emphasis
 >.</para>
     </entry>
@@ -8436,7 +8436,7 @@
     </entry>
     <entry>
     <para
->Inicia a codificação com os codificadores e parâmetros seleccionados.</para>
+>Begins encoding with the selected codecs and parameters.</para>
     </entry>
   </row>
   <row>
@@ -8448,11 +8448,11 @@
     </entry>
     <entry>
     <para
->Sai da janela para <guilabel
->Codificar as Faixas</guilabel
-> e volta para a <guilabel
->área de Fontes Multimédia</guilabel
->.</para
+>Exits the <guilabel
+>Transcode Tracks</guilabel
+> dialog and returns to the <guilabel
+>Media Sources</guilabel
+> pane.</para
 ></entry>
   </row>
   </tbody>
@@ -8466,34 +8466,34 @@
 >Gestor de Programas</title
 > 
 <para
->O <guilabel
->Gestor de Programas</guilabel
-> contém as opções necessárias para extender a funcionalidade do &amarok; através de programas personalizados. Estava acessível a partir do menu em <menuchoice
+>The <guilabel
+>Script Manager</guilabel
+> contains the options required to extend the functionality of &amarok; through custom scripts. It was reached from the top-level menu <menuchoice
 ><guimenu
->Ferramentas</guimenu
+>Tools</guimenu
 ><guimenuitem
->Gestor de Programas</guimenuitem
+>Script Manager</guimenuitem
 ></menuchoice
-> até ao &amarok; 2.4.1. Agora, está acessível no menu <guilabel
->Configuração</guilabel
-> em <menuchoice
+> until &amarok; 2.4.1. Now, it is reached from the <guilabel
+>Settings</guilabel
+> menu, <menuchoice
 ><guimenu
->Configurar o Amarok</guimenu
+>Configure Amarok</guimenu
 ><guimenuitem
->Programas</guimenuitem
+>Scripts</guimenuitem
 ></menuchoice
->. Estes poderão ser instalados a partir dos pacotes de programas transferidos ou a partir do botão <guilabel
->Gerir os Programas</guilabel
-> (antigamente o <guilabel
->Obter Mais Programas</guilabel
->) que poderá obter e instalar os últimos programas contribuídos pelos utilizadores na Internet. </para>
+>. Scripts can be installed from downloaded script packages, or from the <guilabel
+>Manage Scripts</guilabel
+> button (formerly <guilabel
+>Get More Scripts</guilabel
+> installer) which can fetch and install the latest user-contributed scripts from the Internet. </para>
 <para>
 <informaltable>
   <tgroup cols="1">
   <thead>
   <row>
     <entry
->Programas do Amarok</entry>
+>Amarok Scripts</entry>
   </row>
   </thead>
   <tbody>
@@ -8509,11 +8509,11 @@
     </imageobject>
     <textobject>
       <phrase
->O Gestor de Programas antes do 2.4.1</phrase>
+>Script Manager before 2.4.1</phrase>
     </textobject>
     <caption>
       <para
->O Gestor de Programas antes do 2.4.1</para>
+>Script Manager before 2.4.1</para>
     </caption>
   </mediaobject>
 </screenshot
@@ -8530,11 +8530,11 @@
     </imageobject>
     <textobject>
       <phrase
->A Janela de Configuração dos Programas na versão 2.4.1</phrase>
+>Script Configuration dialog 2.4.1</phrase>
     </textobject>
     <caption>
       <para
->A Janela de Configuração dos Programas na versão 2.4.1</para>
+>Script Configuration dialog 2.4.1</para>
     </caption>
   </mediaobject>
 </screenshot
@@ -8596,15 +8596,15 @@
 >Listas de Reprodução Gravadas</title
 > 
 <para
->Uma <emphasis
->lista gravada</emphasis
-> é um tipo de lista de reprodução tradicional. As listas gravadas funcionam como a lista actual do &amarok; e são gravadas na base de dados do Amarok ou no seu sistema de ficheiros para uso posterior. A partilha das suas listas gravadas com os seus amigos é simples e poderá ser divertida para usar em eventos onde tenha músicas que deseje tocar. </para>
+><emphasis
+>Saved playlist</emphasis
+> is a traditional type of playlist. Saved playlists work like &amarok;'s current playlist, saved in the &amarok; database or your file system for later use. Sharing your saved playlists with your friends is easy and it can be fun to use them at events when you have specific songs you want played. </para>
 <para
->As listas gravadas poderão ser criadas com o &amarok; ou importadas a partir do seu sistema de ficheiros. A criação de uma lista gravada é bastante simples com as músicas exactas e a ordem que deseja. Para uma utilização no dia-a-dia, normalmente é mais rápido usar as <link linkend="dynamic-playlists"
->Listas de Reprodução Dinâmicas</link
-> ou o <link linkend="automatic-playlist-generator"
->Gerador de Listas Automático</link
-> quando tiver necessidades menos específicas para determinadas faixas ou evoluções. </para>
+>Saved playlists can be created with &amarok; or imported from your file system. Creating a saved playlist is very easy with the exact songs and order that you want. For every day use, sometimes it is faster to use <link linkend="dynamic-playlists"
+>Dynamic Playlists</link
+> or the <link linkend="automatic-playlist-generator"
+>Automatic Playlist Generator</link
+> when you have less specific needs for specific tracks and progression. </para>
 <para
 >Para navegar e gerir as suas listas de reprodução gravadas, vá a <menuchoice
 ><guimenu
@@ -9160,7 +9160,7 @@
 >Fontes Multimédias</guilabel
 >. </para>
 <para
->Estas instruções são para a versão nova da lista de reprodução dinâmica do &amarok; 2.4.2 e posteriores. Veja em baixo para o 2.4.1 e anteriores. </para>
+>These instructions are for the new version of the dynamic playlist in &amarok; 2.4.2 and above. See below for 2.4.1 and older. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -9418,7 +9418,7 @@
 </sect2>
 <sect2 id="old-2-4-1-and-earlier-dynamic-playlist"
 ><title
->Lista de Reprodução Dinâmica Antiga (2.4.1 e anteriores)</title
+>Old (2.4.1 and earlier) Dynamic Playlist</title
 > 
 <para>
 <screenshot>
@@ -9440,34 +9440,34 @@
 >Ponderações</title
 > 
 <para
->As ponderações são o que tornam as listas dinâmicas especiais! O valor por omissão para uma lista dinâmica, sem qualquer ponderação, é uma reprodução aleatória. As ponderações dos diferentes tipos irão alterar isso com diferentes circunstâncias. </para>
+>Biases are what makes your dynamic playlist special! The default value for the dynamic playlist, with no biases, is random play. Biases of various sorts will alter that in different ways. </para>
 </sect3>
 <sect3 id="proportional-bias"
 ><title
->Ponderação Proporcional</title
+>Proportional Bias</title
 > 
 <para
->As ponderações proporcionais correspondem uma dada porção da lista com um dado valor, como o Artist, Compositor, Título, Género, Ano, &etc; Poderá indicar tantas ponderações quantas desejar para funcionar em conjunto. Esta é uma forma muito flexível de escolher a sua lista. </para>
+>Proportional biases match a certain portion of the playlist to a specific value, such as Artist, Composer, Title, Genre, Year, &etc; You can specify as many biases as you like to work together. This is a very flexible way of choosing your playlist. </para>
 <para
->Não fique confuso, todavia &mdash; uma lista dinâmica que contenha as duas seguintes ponderações: 50% Artista: Michael Jackson, 50% Género:Rock poderão conter faixas que não sejam nem do Michael Jackson nem ter um género Rock. Isto é porque, quando ambas as ponderações forem usadas, em metade do tempo será escolhida uma que pertença ao Michael Jackson e na outra não, aplicando-se o mesmo ao Rock. Por isso, se quiser 50/50 Jackson e Rock, defina as ponderações como 100% para cada. </para>
+>Don't be confused, though &mdash; a dynamic playlist containing the following two biases: 50% Artist: Michael Jackson, 50% Genre:Rock can contain tracks that are from neither Michael Jackson nor have a Rock genre. This is because while both biases are used, half the time a track will be chosen which is Jackson, and half the time not, and the same for Rock. So if you want 50/50 Jackson and Rock, set the biases to 100% for each. </para>
 </sect3>
 <sect3 id="custom-bias"
 ><title
->Ponderação Personalizada</title
+>Custom Bias</title
 > 
 <para
->Aqui é onde irá encontrar as novas ponderações do Last.fm e do Echo Nest. Use o Last.fm ou o Echo Nest para ponderar as listas para artistas que sejam semelhantes ao que está actualmente em reprodução ou aos seus artistas de topo na Last.fm; no caso do Echo Nest, a lista de reprodução funciona como um todo. </para>
+>This is where you will find the new Last.fm and Echo Nest biases. Use Last.fm or Echo Nest to bias the playlist towards artists who are similar to either the currently playing artist, your weekly top artists in Last.fm; or for Echo Nest, the current playlist as a whole. </para>
 <para
->Esta função irá usar como valor de base a música que estiver a tocar quando a lista de reprodução voltar a ser preenchida, de modo que a sua música vai evoluindo à medida que a escuta, mantendo-se mais ou menos semelhante ao que está a tocar. </para>
+>This function will use as a seed whatever song is playing when the playlist is repopulated so your music evolves as you listen, while remaining somewhat similar to whatever is currently playing. </para>
 </sect3>
 <sect3 id="fuzzy-bias"
 ><title
->Ponderação Difusa</title
+>Fuzzy Bias</title
 > 
 <para
->A ponderação difusa irá corresponder a um valor aproximado e tem um campo de <guilabel
->restrição</guilabel
-> em oposição a um campo de percentagem. Uma maior restrição corresponde a valores mais exactos. A lista resultante irá consistir em faixas distribuídas normalmente em torno do valor pedido. </para>
+>Fuzzy bias will match an approximate value and has a <guilabel
+>strictness</guilabel
+> slider, as opposed to a percentage one. More strictness means more exact matches. The resulting playlist will consist of tracks normally distributed around the requested value. </para>
 </sect3>
 </sect2>
 <sect2 id="using-your-dynamic-playlist"
@@ -9923,11 +9923,11 @@
 >A Barra de Espírito</title
 > 
 <para
->A <emphasis
->Barra de Espírito</emphasis
-> vem oficialmente desde o &amarok; 2.2.2. Ela mostra-lhe o <quote
->estado de espírito</quote
-> de uma faixa, onde o poderá usar para descobrir quando algo de interessante ocorrer na música. </para>
+>The <emphasis
+>Moodbar</emphasis
+> officially returns as of &amarok; 2.2.2. It shows you the <quote
+>mood</quote
+> of a track, which you can then use to figure out when something interesting happens in the song. </para>
 <para
 >Para o &amarok; analisar s seus ficheiros de m´música para criar barras de espírito, irá necessitar do programa <guilabel
 >Moodbar</guilabel
@@ -10796,26 +10796,26 @@ ftpProxy=http://utilizador:senha@servidor:porto/
 >Como transferir</title
 > 
 <para
->Se tiver alguma dificuldade, por favor vá à <ulink url="http://amarok.kde.org/wiki/Download:Windows"
->página de Wiki do Amarok no Windows</ulink
->, onde estarão actualizadas as últimas referências. Caso contrário, use o último dos seguintes endereços: </para>
+>If you run into any difficulties, please visit the <ulink url="http://amarok.kde.org/wiki/Download:Windows"
+>Amarok on Windows wiki page</ulink
+> where the latest links will be kept updated. Otherwise, use the latest at the following links: </para>
 <sect4 id="amarok-2-4-with-base-packages"
 ><title
->Amarok-2.4 com os Pacotes de Base</title
+>Amarok-2.4 with Base Packages</title
 > 
 <para
 ><ulink url="http://kollide.net/~dgran10/amarok/"
->Aqui</ulink
-> poderá obter o instalador para Windows que é fornecido pela Nitrostemp; nesse caso, irá encontrar tanto o pacote do &amarok; como o compilador do KDE necessário para o Windows. </para>
+>Here</ulink
+> you can download the Windows installer provided by Nitrostemp, in which you will find both the &amarok; package and the needed KDE compiler for Windows. </para>
 </sect4>
 <sect4 id="amarok-2-4-only"
 ><title
->Apenas o Amarok-2.4</title
+>Amarok-2.4 Only</title
 > 
 <para
->Se já tiver instalado o &amarok;, poderá actualizar para a última versão a partir daqui: <ulink url="http://kollide.net/~dgran10/amarok/"
+>If you already have &amarok; installed, you can update to the newest version from here: <ulink url="http://kollide.net/~dgran10/amarok/"
 >Amarok-2.4-Only</ulink
->. Este pacote irá actualizar os ficheiros e poupá-lo-á a transferir tudo de novo. </para>
+>. This package will update the files and save you downloading everything again. </para>
 </sect4>
 </sect3>
 <sect3 id="how-to-install"
@@ -11010,8 +11010,8 @@ ftpProxy=http://utilizador:senha@servidor:porto/
 >Outros recursos</title
 > 
 <para
->Se tiver alguma dificuldade, existe uma <ulink url="http://amarok.kde.org/wiki/Amarok2_On_OS_X"
->página de resolução de problemas aqui</ulink
+>If you run into difficulties, there is a <ulink url="http://amarok.kde.org/wiki/Amarok2_On_OS_X"
+>troubleshooting page here</ulink
 >. </para>
 </sect3>
 </sect2>
@@ -11140,10 +11140,10 @@ ftpProxy=http://utilizador:senha@servidor:porto/
 >aqui</link
 >. </para>
 <para
->Para descobrir os ficheiros problemáticos, execute o comando <emphasis
->amarokcollectionscanner</emphasis
-> a partir da consola. Os detalhes encontram-se <ulink url="http://amarok.kde.org/wiki/Batch_Mode"
->aqui</ulink
+>To find the bad file(s), run <varname
+>amarokcollectionscanner</varname
+> from the console. Details <ulink url="http://amarok.kde.org/wiki/Batch_Mode"
+>here</ulink
 >. </para>
 </sect3>
 <sect3 id="inability-to-write-tags"
@@ -11193,19 +11193,19 @@ ftpProxy=http://utilizador:senha@servidor:porto/
 >Som ausente ou de fraca qualidade</title
 > 
 <para
->Para as questões de som mais genéricas, verifique primeiro qual a infra-estrutura do Phonon que está a usar na opção <menuchoice
+>For more general sound issues, first check what Phonon backend you are using in <menuchoice
 ><guimenu
->Configuração</guimenu
+>Settings</guimenu
 ><guisubmenu
->Configurar o Amarok</guisubmenu
+>Configure Amarok</guisubmenu
 ><guimenuitem
->Reprodução</guimenuitem
+>Playback</guimenuitem
 ><guimenuitem
->Configurar o Phonon</guimenuitem
+>Configure Phonon</guimenuitem
 ><guimenuitem
->Infra-Estrutura</guimenuitem
+>Backend</guimenuitem
 ></menuchoice
->. Pense em mudar para uma infra-estrutura diferente: deverão estar disponíveis o VLC, o GStreamer e o Xine para a sua distribuição, ainda que o Xine esteja descontinuado. O Gstreamer ou o VLC são normalmente os recomendados. </para>
+>. Consider switching to a different backend; VLC, GStreamer and Xine backends should be available from your distribution, although Xine is deprecated. Gstreamer or VLC is usually recommended. </para>
 <para
 >Verifique também se o programa autónomo da infra-estrutura consegue tocar os ficheiros correctamente; se não, isso é um problema com essa aplicação e assim poderá encontrar informações nos ficheiros de ajuda deles. Por outras palavras, será que o Gstreamer ou o VLC tocam o mesmo ficheiro? Será que vai tocar no <ulink url="help:/dragonplayer"
 >Dragon</ulink
@@ -11273,18 +11273,14 @@ ftpProxy=http://utilizador:senha@servidor:porto/
 >O que é o Amarok?</title
 > 
 <para
->O &amarok; é um leitor de música. Poderá encontrar mais informações com um <link linkend="amarok-menu"
->resumo das suas funcionalidades</link
-> e a <ulink url="http://amarok.kde.org/en/screenshots"
->galeria de imagens</ulink
->. Para começar a usar o &amarok;, veja o <link linkend="quick-start-guide"
-><emphasis
->Guia Introdutório Rápido</emphasis
-></link
->. O <guilabel
->Manual do Amarok</guilabel
-> está <link linkend="introduction"
->aqui</link
+>&amarok; is a music player. More information can be found in <link linkend="amarok-menu"
+>a summary of its features</link
+> and the <ulink url="http://amarok.kde.org/en/screenshots"
+>screenshot gallery</ulink
+>. To get started using &amarok;, see the <link linkend="quick-start-guide"
+>Quick Start Guide</link
+>. The &amarok; Handbook is <link linkend="introduction"
+>here</link
 >. </para>
 </sect2>
 <sect2 id="what-are-the-differences-between-amarok-2-and-the-previous-versions"
@@ -11501,7 +11497,7 @@ ftpProxy=http://utilizador:senha@servidor:porto/
 >Quais são os tipos de ficheiros que o Amarok suporta?</title
 > 
 <para
->O &amarok; não toca música por si próprio, mas sim permite ao Phonon que faça isso por ele, neste caso as infra-estruturas do VLC, GStreamer ou Xine do Phonon. Como tal, sejam quais for os ficheiros que elas toquem, o &amarok; poderá também tocá-las. Para analisar as marcas dos ficheiros, o &amarok; usa a Taglib, que suporta a maioria dos tipos de ficheiros que contenham meta-dados. </para>
+>&amarok; does not play music by itself, but lets Phonon do that job, specifically the VLC, GStreamer or Xine backends of Phonon. Therefore, whatever files they can play, &amarok; can play. To analyse file tags, &amarok; uses Taglib, which supports most file types that contain metadata. </para>
 </sect3>
 <sect3 id="what-is-phonon-what-are-phonon-backends"
 ><title
@@ -11514,8 +11510,8 @@ ftpProxy=http://utilizador:senha@servidor:porto/
 >aqui</link
 >. </para>
 <para
->Normalmente a infra-estrutura do VLC funciona melhor que a do Xine, ainda que nem sempre seja verdade. Também sugerimos que tente a infra-estrutura do Gstreamer, embora esteja ainda em desenvolvimento. Poderá encontrar mais detalhes sobre a instalação das infra-estruturas na <ulink url="http://amarok.kde.org/wiki/Download"
->página de transferências</ulink
+>Usually the VLC backend works better than the Xine one, although this is not always true. We also suggest you try the Gstreamer backend, although it is still in development. You can find more details on installing backends in the <ulink url="http://amarok.kde.org/wiki/Download"
+>download page</ulink
 >. </para>
 </sect3>
 <sect3 id="amarok-wont-play-mp3s-what-can-i-do"
@@ -11523,26 +11519,26 @@ ftpProxy=http://utilizador:senha@servidor:porto/
 >O Amarok não consegue tocar MP3's; o que é que se pode fazer?</title
 > 
 <para
->Dê uma vista de olhos na <ulink url="http://amarok.kde.org/wiki/MP3"
->página de informações do MP3</ulink
->. Provavelmente não tem os descodificadores necessários para a sua infra-estrutura do Phonon (VLC, GStreamer ou Xine). </para>
+>Have a look at the <ulink url="http://amarok.kde.org/wiki/MP3"
+>mp3 information page</ulink
+>. You probably lack the codecs required by your particular Phonon backend (VLC, Gstreamer, or Xine). </para>
 </sect3>
 <sect3 id="i-cant-get-any-media-to-play-in-amarok-why-not"
 ><title
->Não é possível ter nenhuns conteúdos a tocar no Amarok; porquê?</title
+>I can't get any media to play in Amarok, why not?</title
 > 
 <para
->Teste as plataformas de som na linha de comandos: </para>
+>Test the sound frameworks at the command line: </para>
 <para
 ><userinput
 >xine-check</userinput>
 </para>
 <para
->(O pacote 'xine-ui' contém o <guilabel
+>(The xine-ui package contains <guilabel
 >xine-check</guilabel
 >) </para>
 <para
->O resultado destes comandos deverá ajudá-lo a identificar os problemas que está a ter e como resolvê-los. </para>
+>The output from these commands should help you identify the problems you are having and how to fix them. </para>
 </sect3>
 <sect3 id="i-have-a-second-soundcard-and-im-using-alsa--how-do-i-make-amarok-use-it-instead-of-the-default"
 ><title
@@ -11566,10 +11562,10 @@ ftpProxy=http://utilizador:senha@servidor:porto/
 >Onde está o equalizador?</title
 > 
 <para
->O equalizador só está disponível se estiver a usar uma infra-estrutura do Phonon que o suporte; contudo, a maioria das mais recentes suportam-no. Poderá encontrá-lo no menu <guilabel
->Ferramentas</guilabel
->. Poderá obter mais informações sobre a configuração das infra-estruturas do Phonon na <ulink url="http://amarok.kde.org/wiki/Download"
->página de transferências</ulink
+>The equalizer is only available if you are using a Phonon backend which supports it, which the modern ones now do. You can find it in the <guilabel
+>Tools</guilabel
+> menu. You can get more information about configuring Phonon backends in your distribution in the <ulink url="http://amarok.kde.org/wiki/Download"
+>download page</ulink
 >. </para>
 </sect3>
 <sect3 id="how-do-i-turn-on-visualizations"
@@ -11621,19 +11617,21 @@ ftpProxy=http://utilizador:senha@servidor:porto/
 >O que são os programas?</title
 > 
 <para
->Existem algumas pequenas aplicações que adicionam algumas funções ao &amarok;. Existe um grande conjunto de programas que poderá encontrar no <ulink url="http://www.kde-apps.org/index.php?xcontentmode=57"
+>They are little pieces of software that add some functions to &amarok;. There are a lot of scripts, and you can find them in <ulink url="http://www.kde-apps.org/index.php?xcontentmode=57"
 >kde-apps.org</ulink
-> ou que poderá encontrar e instalar com o <emphasis
->Gestor de Programas</emphasis
-> (até ao &amarok; 2.4.1). Poderá encontrar mais detalhes <link linkend="script-manager"
->aqui</link
->. Depois do &amarok; 2.4.1, irá encontrar o Gestor de Programas no menu  <guilabel
->Configuração</guilabel
->, em <menuchoice
+> or you can find and install them inside &amarok; using the <guilabel
+>Script Manager</guilabel
+> (until &amarok; 2.4.1). More details <link linkend="script-manager"
+>here</link
+>. After &amarok; 2.4.1, you will find the <guilabel
+>Script Manager</guilabel
+> from the <guilabel
+>Settings</guilabel
+> menu, <menuchoice
 ><guimenu
->Configurar o Amarok</guimenu
+>Configure Amarok</guimenu
 ><guimenuitem
->Programas</guimenuitem
+>Scripts</guimenuitem
 ></menuchoice
 >. </para>
 </sect3>
@@ -11642,8 +11640,8 @@ ftpProxy=http://utilizador:senha@servidor:porto/
 >Posso usar os programas do Amarok 1.4 no Amarok 2?</title
 > 
 <para
->Não. Foi criada uma API nova e poderosa, que oferece grandes melhorias mas não o deixa usar os seus programas antigos. O novo sistema de programação é baseado no QtScript e irá reduzir as dependências do &amarok; de forma significativa, um grande problema para os utilizadores não-técnicos e multi-plataformas, reduzindo a quantidade de processos externos lançados no arranque. Outra vantagem é que a nova API irá permitir uma integração mais profunda com o &amarok; que o sistema de programação antigo. <ulink url="http://amarok.kde.org/wiki/Development/Script_API"
->API de Programação do Amarok</ulink
+>No. A new and powerful scripting API has been created, which provides huge improvements but won't let you use your old scripts. The new scripting system is based on QtScript and will significantly reduce &amarok;'s dependencies, a huge problem for non-technical and cross-platform users, and will greatly reduce the amount of external processes launched at runtime. Another advantage is that the new API will allow much deeper integration with &amarok; than the old scripting system. <ulink url="http://amarok.kde.org/wiki/Development/Script_API"
+>Amarok Scripting API</ulink
 >. </para>
 </sect3>
 <sect3 id="what-are-moodbars"
@@ -11662,18 +11660,18 @@ ftpProxy=http://utilizador:senha@servidor:porto/
 >Posso reproduzir ficheiros de vídeo?</title
 > 
 <para
->O &amarok; é principalmente um leitor de música, pelo que não estão disponíveis quaisquer funcionalidades de gestão de ficheiros de vídeo, colecções, reprodução de DVD's, legendas, entre outras para os vídeos. Contudo, a 'applet' de <guilabel
->Vídeo</guilabel
-> permite-lhe tocar vídeos do YouTube dentro do &amarok;. </para>
+>&amarok; is mainly a music player so no video file management, collection support, DVD playback, subtitles, or any other sophisticated features are available. However, the <guilabel
+>Video</guilabel
+> applet lets you play YouTube video clips inside &amarok;. </para>
 </sect3>
 <sect3 id="is-it-amarok-amarok-or-amarok"
 ><title
 >É Amarok, AmaroK ou amaroK?</title
 > 
 <para
->É &amarok;! O nome anterior era <emphasis
+>It is &amarok;! The former spelling was <emphasis
 >amaroK</emphasis
->, mas foi alterado devido à sua aparência estranha. </para>
+>, but it was changed due to its strange look. </para>
 </sect3>
 <sect3 id="how-are-track-scores-determined"
 ><title
@@ -11693,44 +11691,46 @@ ftpProxy=http://utilizador:senha@servidor:porto/
 </screen>
 </para>
 <para
->Poderá criar facilmente o seu próprio programa com o seu próprio algoritmo. Veja o <ulink url="http://amarok.kde.org/wiki/Development/Scripting_HowTo_2.0"
->HOWTO sobre Programação</ulink
-> para mais informações. </para>
+>You can easily create your own script with your own algorithm. Look at the <ulink url="http://amarok.kde.org/wiki/Development/Scripting_HowTo_2.0"
+>Script-Writing-Howto</ulink
+> for further information. </para>
 </sect3>
 <sect3 id="how-do-i-manually-change-a-tracks-score"
 ><title
 >Como é que altero manualmente a pontuação de uma faixa?</title
 > 
 <para
->Poderá alterar a pontuação manualmente na janela para <guilabel
->Editar as Detalhes da Faixa</guilabel
->, disponível ao carregar com o botão direito numa faixa e escolhendo a página do <guilabel
->Resumo</guilabel
->. Antes do &amarok; 2.4.1, a página chamava-se <guilabel
->Estatísticas</guilabel
->. </para>
+>You may change the score manually in the <guilabel
+>Track Details</guilabel
+> dialog, available by right-clicking on a track, choosing <guilabel
+>Edit Track Details</guilabel
+> and going to the <guilabel
+>Summary</guilabel
+> tab. Before &amarok; 2.4.1, this is called the <guilabel
+>Statistics</guilabel
+> tab. </para>
 </sect3>
 <sect3 id="but-i-also-want-that-stars-system-like-in-other-players"
 ><title
 >Mas também quero esse sistema de estrelas como nos outros leitores!</title
 > 
 <para
->O &amarok;, obviamente, suporta um sistema de classificação definido pelos utilizadores, podendo classificar as suas faixas com um único 'click' com a 'applet' da <guilabel
->Faixa Actual</guilabel
->. Também o poderá fazer no menu de contexto (botão direito) - página <menuchoice
+>&amarok;, of course, supports an user-defined rating system, and you can rate your tracks with a single click using the <guilabel
+>Current Track</guilabel
+> applet. You can also do this in the context menu (right-click) <menuchoice
 ><guimenu
->Editar os Detalhes da Faixa</guimenu
+>Edit Track Details</guimenu
 ><guimenuitem
->Resumo</guimenuitem
+>Summary</guimenuitem
 ></menuchoice
-> (antes do Amarok 2.4.1, isto estava em <menuchoice
+> tab (before Amarok 2.4.1, this is <menuchoice
 ><guimenu
->Editar os Detalhes da Faixa</guimenu
+>Edit Track Details</guimenu
 ><guimenuitem
->Estatísticas</guimenuitem
+>Statistics</guimenuitem
 ></menuchoice
->). Se tiver as estrelas da classificação visíveis na sua disposição da lista, podê-las-á editar aí, com o <emphasis
->duplo-click lento</emphasis
+>). If you have the rating stars displayed in your playlist layout, you can also edit there, with the <emphasis
+>slow double-click</emphasis
 >. </para>
 </sect3>
 <sect3 id="can-i-drag-and-drop-plasma-applets-from-the-main-window-to-the-desktop"
@@ -11738,7 +11738,7 @@ ftpProxy=http://utilizador:senha@servidor:porto/
 >Posso arrastar e largar 'applets' do Plasma da janela principal para o ecrã?</title
 > 
 <para
->Não, mas existem bastantes plasmóides disponíveis para o seu ambiente de trabalho que lhe permitem mostrar informações fornecidas pelo &amarok;, assim como controlar o &amarok; em si. </para>
+>No, but there are many Plasmoids available for your Desktop, which will let you display information provided by &amarok; as well as control &amarok;. </para>
 </sect3>
 <sect3 id="can-i-use-removable-media-inside-amarok"
 ><title
@@ -11772,15 +11772,15 @@ ftpProxy=http://utilizador:senha@servidor:porto/
 >Como é que posso gravar uma transmissão?</title
 > 
 <para
->Primeiro que tudo, carregue a transmissão na lista de reprodução. Existem diversas formas de o fazer: transferir o ficheiro, por exemplo de <ulink url="http://www.shoutcast.com"
+>First of all, load the stream into the playlist. There are several ways to do this: downloading the file, for example from <ulink url="http://www.shoutcast.com"
 >shoutcast.com</ulink
->, e abri-lo com o &amarok;; usando o menu <menuchoice
+>, and opening it with &amarok;; using the menu <menuchoice
 ><guimenu
->Lista de Reprodução</guimenu
+>Playlist</guimenu
 ><guimenuitem
->Adicionar uma transmissão</guimenuitem
+>Add stream</guimenuitem
 ></menuchoice
->; entre outras. </para>
+>; among others. </para>
 <para
 >Assim que a transmissão tenha sido carregada, podê-la-á gravar se carregar no botão <inlinemediaobject
 > <imageobject
@@ -11824,11 +11824,11 @@ ftpProxy=http://utilizador:senha@servidor:porto/
 >Como é que posso obter um registo de chamadas?</title
 > 
 <para
->Se o &amarok; estoirou e quiser comunicar esse problema, vá ao <ulink url="http://amarok.kde.org/wiki/Debugging_(documentation)"
->HOWTO de Depuração</ulink
->. O relatório de erros deverá ser enviado para o <ulink url="http://bugs.kde.org"
+>If &amarok; has crashed and you want to report it, visit the <ulink url="http://amarok.kde.org/wiki/Debugging_(documentation)"
+>Debugging HowTo</ulink
+>. The bug report must be sent in <ulink url="http://bugs.kde.org"
 >bugs.kde.org</ulink
-> depois de verificar se já foi comunicado anteriormente. </para>
+> after verifying if it has already been reported. </para>
 </sect3>
 <sect3 id="amarok-just-freezes-how-can-i-help-get-this-fixed"
 ><title
@@ -11842,10 +11842,10 @@ ftpProxy=http://utilizador:senha@servidor:porto/
 >  
 </para>
 <para
->Depois, basta publicar o registo de chamadas no <ulink url="http://paste.kde.org/"
+>Then just post the backtrace to <ulink url="http://paste.kde.org/"
 >PasteBin</ulink
->, tal como descrito no <ulink url="http://amarok.kde.org/wiki/Debugging_%28documentation%29"
->HOWTO de Depuração</ulink
+>, as described in the <ulink url="http://amarok.kde.org/wiki/Debugging_%28documentation%29"
+>Debugging HowTo</ulink
 >. </para>
 </sect3>
 <sect3 id="amarok-takes-a-lot-of-time-to-start"
@@ -11853,7 +11853,7 @@ ftpProxy=http://utilizador:senha@servidor:porto/
 >O Amarok leva bastante tempo a arrancar</title
 > 
 <para
->Se isto acontecer, terá de verificar quais os programas que tem instalados e quais os serviços de Internet em execução, porque alguns deles poderão atrasar o arranque. Do mesmo modo, se tiver transmissões na lista de reprodução, quando abrir o &amarok;, o arranque poderá levar um pouco mais de tempo. </para>
+>If this happens you have to check what scripts you have installed and what internet services are running, because some of them may slow down the startup. Also, if you have streams in the playlist when you open &amarok;, the startup can take a little longer. </para>
 <para
 >Por outro lado, se não usar o KDE, mas sim um ambiente de trabalho diferente, o tempo de arranque poderá aumentar ligeiramente, dado que existem mais bibliotecas para serem carregadas. </para>
 </sect3>
@@ -11868,17 +11868,19 @@ ftpProxy=http://utilizador:senha@servidor:porto/
 > 
 <para
 ><ulink url="http://techbase.kde.org/Getting_Started/Sources/KDE_git-tutorial"
->Como obter e compilar o &amarok; do Git</ulink
->. Procure aqui uma compilação local: <ulink url="http://blogs.fsfe.org/myriam/2009/09/compiling-amarok-from-git-locally-full-summary/"
->Compilar Localmente a Partir do Git Locally: Resumo Completo</ulink
+>How to obtain and build &amarok; Git</ulink
+>. Check here for a local build: <ulink url="http://blogs.fsfe.org/myriam/2009/09/compiling-amarok-from-git-locally-full-summary/"
+>Building from Git Locally: Full Summary</ulink
 > </para>
 </sect3>
 <sect3 id="why-isnt-amarok-part-of-kdemultimedia"
 ><title
->Porque é que o Amarok não faz parte do KDEmultimedia?</title
+>Why isn't Amarok part of KDEmultimedia?</title
 > 
 <para
->Os programadores não querem que lhes digam quando é que podem lançar uma nova versão. (Isto significa que os pacotes do KDE SC têm um calendário de versões que não se ajusta ao ritmo de desenvolvimento rápido do &amarok;.) </para>
+>The developers don't want <emphasis
+>the man</emphasis
+> telling them when they can release. (Meaning, packages in the KDE SC proper have a release schedule that doesn't fit with &amarok;'s fast-paced development.) </para>
 </sect3>
 <sect3 id="ive-found-a-bug---ive-got-a-great-idea-for-amarok"
 ><title
@@ -12999,7 +13001,7 @@ ftpProxy=http://utilizador:senha@servidor:porto/
     </entry>
     <entry>
     <para
->Verifica as faixas na sua colecção.</para
+>Checks the tracks in your collection.</para
 ></entry>
   </row>
   </tbody>
@@ -13125,7 +13127,7 @@ ftpProxy=http://utilizador:senha@servidor:porto/
 >Equalizador</title
 > 
 <para
->Oferece a possibilidade de configurar as opções do som. Poderá optar entre ajustar manualmente a configuração e usar determinados modelos. </para>
+>Provides the possibility to configure sound settings. You can choose between manually adjusting the settings and using templates. </para>
 <para>
 <screenshot>
 <screeninfo
@@ -13298,11 +13300,11 @@ ftpProxy=http://utilizador:senha@servidor:porto/
     </imageobject>
     <textobject>
       <phrase
->Configurar o Amarok (v.2.4.1)</phrase>
+>Configure Amarok (v.2.4.1)</phrase>
     </textobject>
     <caption>
       <para
->Configurar o Amarok (v.2.4.1)</para>
+>Configure Amarok (v.2.4.1)</para>
     </caption>
   </mediaobject>
 </screenshot>
@@ -13863,7 +13865,7 @@ ftpProxy=http://utilizador:senha@servidor:porto/
   <row>
     <entry>
     <para
->Ir para</para>
+>Jump to</para>
     </entry>
     <entry>
     <para
@@ -14242,7 +14244,7 @@ ftpProxy=http://utilizador:senha@servidor:porto/
 <para
 >'Copyright' 2002, 2003 de Mark Kretschmann (kretschmann kde.org). </para>
 <para
->'Copyright' 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011 da Equipa de Desenvolvimento do Amarok </para>
+>Copyright 2003, 2004, 2005, 2006, 2007, 2008, 2009, 2010, 2011 The Amarok Development Squad </para>
 </sect1>
 <sect1 id="documentation-copyright"
 ><title

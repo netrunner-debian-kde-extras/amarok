@@ -1,6 +1,6 @@
 /****************************************************************************************
  * Copyright (c) 2009 Maximilian Kossick <maximilian.kossick@googlemail.com>            *
- * Copyright (c) 2010 Ralf Engels <ralf-engels@gmx.de>                                  *
+ * Copyright (c) 2010, 2013 Ralf Engels <ralf-engels@gmx.de>                            *
  *                                                                                      *
  * This program is free software; you can redistribute it and/or modify it under        *
  * the terms of the GNU General Public License as published by the Free Software        *
@@ -25,7 +25,9 @@
 #include <KTempDir>
 
 class SqlStorage;
-class ScanManager;
+class GenericScanManager;
+
+class QIODevice;
 
 namespace Collections {
     class SqlCollection;
@@ -41,13 +43,15 @@ class TestSqlScanManager : public QObject
 public:
     TestSqlScanManager();
 
+signals:
+    void scanManagerResult();
+
 private slots:
     void initTestCase();
     void cleanupTestCase();
 
     void init();
     void cleanup();
-
     /**
      * Check that a single insert really inserts all the information
      */
@@ -74,11 +78,6 @@ private slots:
      * Test also compilation/no compilation tags
      */
     void testCompilation();
-
-    /**
-     * Check that the scanner continues if crashed
-     */
-    void testRestartScanner();
 
     /**
      * Check that a blocked scan really does nothing.
@@ -129,9 +128,23 @@ private slots:
 
     void testUidChangeMoveDirectoryIncrementalScan();
 
+    /** Test that Amarok respects the album artist from the tags.
+     *  (BR: 216759)
+     */
+    void testAlbumArtistMerges();
+
+    /** Test that two tracks getting their filename exchanged are still
+     *  handled correctly, ratings and all (BR: 272802)
+     */
+    void testCrossRenaming();
+
     void slotCollectionUpdated();
 
 private:
+    void fullScanAndWait();
+    void incrementalScanAndWait();
+    void importAndWait( QIODevice* import );
+
     void waitScannerFinished();
 
     /**
@@ -140,6 +153,10 @@ private:
     */
     void createTrack( const Meta::FieldHash &values );
     void createSingleTrack();
+
+    /** Creates a default album.
+      Meaning that album artist tag is not set, all songs are in one directory and the artist is the same for all the tracks.
+    */
     void createAlbum();
     void createCompilation();
     void createCompilationTrack();
@@ -158,7 +175,7 @@ private:
     QString m_sourcePath; // the path to the template .mp3 file
 
     Collections::SqlCollection *m_collection;
-    ScanManager *m_scanManager;
+    GenericScanManager *m_scanManager;
 };
 
 #endif // TESTSQLSCANMANAGER_H
